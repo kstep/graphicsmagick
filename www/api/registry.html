@@ -47,7 +47,7 @@
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
 <P>
 <H2><A NAME="deletemagickregistry">DeleteMagickRegistry</A></H2>
-<blockquote>DeleteMagickRegistry ( ) deletes an entry in the registry as defined by the id.It returns True if the entry is deleted otherwise False if no entry is foundin the registry that matches the id.; </blockquote><P>The format of the DeleteMagickRegistry method is:</P>
+<blockquote>DeleteMagickRegistry ( ) deletes an entry in the registry as defined by the id. It returns True if the entry is deleted otherwise False if no entry is found in the registry that matches the id. </blockquote><P>The format of the DeleteMagickRegistry method is:</P>
 <blockquote>unsigned int DeleteMagickRegistry ( const long id ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -57,7 +57,7 @@ The registry id.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getmagickregistry">GetMagickRegistry</A></H2>
-<blockquote>GetMagickRegistry ( ) gets a blob from the registry as defined by the id. Ifthe blob that matches the id is not found, NULL is returned.; </blockquote><P>The format of the getMagickRegistry method is:</P>
+<blockquote>GetMagickRegistry ( ) gets a blob from the registry as defined by the id. If the blob that matches the id is not found, NULL is returned. </blockquote><P>The format of the getMagickRegistry method is:</P>
 <blockquote>const void *GetMagickRegistry ( const long id, RegistryType *type, size_t *length ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -75,7 +75,7 @@ The blob length in number of bytes.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="setmagickregistry">SetMagickRegistry</A></H2>
-<blockquote>SetMagickRegistry ( ) sets a blob into the registry and returns a unique ID.If an error occurs, -1 is returned.; </blockquote><P>The format of the SetMagickRegistry method is:</P>
+<blockquote>SetMagickRegistry ( ) sets a blob into the registry and returns a unique ID. If an error occurs, -1 is returned. </blockquote><P>The format of the SetMagickRegistry method is:</P>
 <blockquote>long SetMagickRegistry ( const RegistryType type, const void *blob, const size_t length, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>

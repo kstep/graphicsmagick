@@ -100,7 +100,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="isgrayimage">IsGrayImage</A></H2>
-<blockquote>IsGrayImage ( ) returns True if all the pixels in the image have the samered, green, and blue intensities.; </blockquote><P>The format of the IsGrayImage method is:</P>
+<blockquote>IsGrayImage ( ) returns True if all the pixels in the image have the same red, green, and blue intensities. </blockquote><P>The format of the IsGrayImage method is:</P>
 <blockquote>unsigned int IsGrayImage ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -118,7 +118,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="ismonochromeimage">IsMonochromeImage</A></H2>
-<blockquote>IsMonochromeImage ( ) returns True if all the pixels in the image havethe same red, green, and blue intensities and the intensity is either0 or MaxRGB.; </blockquote><P>The format of the IsMonochromeImage method is:</P>
+<blockquote>IsMonochromeImage ( ) returns True if all the pixels in the image have the same red, green, and blue intensities and the intensity is either 0 or MaxRGB. </blockquote><P>The format of the IsMonochromeImage method is:</P>
 <blockquote>unsigned int IsMonochromeImage ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -132,7 +132,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="isopaqueimage">IsOpaqueImage</A></H2>
-<blockquote>IsOpaqueImage ( ) returns True if any of the pixels in the image have anopacity value other than opaque ( 0 ) .; </blockquote><P>The format of the IsOpaqueImage method is:</P>
+<blockquote>IsOpaqueImage ( ) returns True if any of the pixels in the image have an opacity value other than opaque ( 0 ) . </blockquote><P>The format of the IsOpaqueImage method is:</P>
 <blockquote>unsigned int IsOpaqueImage ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -169,7 +169,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="listcolorinfo">ListColorInfo</A></H2>
-<blockquote>ListColorInfo ( ) lists color names to the specified file. Color namesare a convenience. Rather than defining a color by its red, green, andblue intensities just use a color name such as white, blue, or yellow.; </blockquote><P>The format of the ListColorInfo method is:</P>
+<blockquote>ListColorInfo ( ) lists color names to the specified file. Color names are a convenience. Rather than defining a color by its red, green, and blue intensities just use a color name such as white, blue, or yellow. </blockquote><P>The format of the ListColorInfo method is:</P>
 <blockquote>unsigned int ListColorInfo ( FILE *file, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows.</P>
 <DL><DL>
@@ -183,7 +183,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="querycolordatabase">QueryColorDatabase</A></H2>
-<blockquote>QueryColorDatabase ( ) returns the red, green, blue, and opacity intensitiesfor a given color name.; </blockquote><P>The format of the QueryColorDatabase method is:</P>
+<blockquote>QueryColorDatabase ( ) returns the red, green, blue, and opacity intensities for a given color name. </blockquote><P>The format of the QueryColorDatabase method is:</P>
 <blockquote>unsigned int QueryColorDatabase ( const char *name, <A HREF="types/PixelPacket.html">PixelPacket</A> *color ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -197,7 +197,7 @@ The red, green, blue, and opacity intensities values of the named color in this 
 <P></P></DL></DL>
 <P>
 <H2><A NAME="querycolorname">QueryColorname</A></H2>
-<blockquote>QueryColorname ( ) returns a named color for the given color intensity. Ifan exact match is not found, a hex value is return instead. For examplean intensity of rgb: ( 0, 0, 0 ) returns black whereas rgb: ( 223, 223, 223 ) returns #dfdfdf.; </blockquote><P>The format of the QueryColorname method is:</P>
+<blockquote>QueryColorname ( ) returns a named color for the given color intensity. If an exact match is not found, a hex value is return instead. For example an intensity of rgb: ( 0, 0, 0 ) returns black whereas rgb: ( 223, 223, 223 ) returns #dfdfdf. </blockquote><P>The format of the QueryColorname method is:</P>
 <blockquote>unsigned int QueryColorname ( const <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/PixelPacket.html">PixelPacket</A> *color, ComplianceType compliance, char *name, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows.</P>
 <DL><DL>

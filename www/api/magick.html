@@ -70,10 +70,10 @@
 <P>The format of the DestroyMagick function is:</P>
 <blockquote>DestroyMagick ( void ); </blockquote><P>
 <H2><A NAME="destroymagickinfo">DestroyMagickInfo</A></H2>
-<blockquote>DestroyMagickInfo ( ) deallocates memory associated <A HREF="types/MagickInfo.html">MagickInfo</A> list.; </blockquote><P>The format of the DestroyMagickInfo method is:</P>
+<blockquote>DestroyMagickInfo ( ) deallocates memory associated <A HREF="types/MagickInfo.html">MagickInfo</A> list. </blockquote><P>The format of the DestroyMagickInfo method is:</P>
 <blockquote>void DestroyMagickInfo ( void ); </blockquote><P>
 <H2><A NAME="getimagemagick">GetImageMagick</A></H2>
-<blockquote>GetImageMagick ( ) searches for an image format that matches thespecified magick string. If one is found the name is returned otherwiseNULL.; </blockquote><P>The format of the GetImageMagick method is:</P>
+<blockquote>GetImageMagick ( ) searches for an image format that matches the specified magick string. If one is found the name is returned otherwise NULL. </blockquote><P>The format of the GetImageMagick method is:</P>
 <blockquote>const char *GetImageMagick ( const unsigned char *magick, const size_t length ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -87,7 +87,7 @@ The length of the binary string.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getmagickconfigurepath">GetMagickConfigurePath</A></H2>
-<blockquote>GetMagickConfigurePath ( ) searches a number of pre-defined locationsfor the specified ImageMagick configuration file and returns the path.The search order follows:; </blockquote><PRE>
+<blockquote>GetMagickConfigurePath ( ) searches a number of pre-defined locations for the specified ImageMagick configuration file and returns the path. The search order follows: </blockquote><PRE>
            &lt;current directory&gt;/
            &lt;client path&gt;/
            $MAGICK_HOME/
@@ -111,7 +111,7 @@ Method GetMagickConfigurePath returns the path if the configuration file is foun
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getmagickinfo">GetMagickInfo</A></H2>
-<blockquote>GetMagickInfo ( ) returns a pointer <A HREF="types/MagickInfo.html">MagickInfo</A> structure that matchesthe specified name. If name is NULL, the head of the image format listis returned.; </blockquote><P>The format of the GetMagickInfo method is:</P>
+<blockquote>GetMagickInfo ( ) returns a pointer <A HREF="types/MagickInfo.html">MagickInfo</A> structure that matches the specified name. If name is NULL, the head of the image format list is returned. </blockquote><P>The format of the GetMagickInfo method is:</P>
 <blockquote>const <A HREF="types/MagickInfo.html">MagickInfo</A> *GetMagickInfo ( const char *name, Exception *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -125,7 +125,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getmagickversion">GetMagickVersion</A></H2>
-<blockquote>GetMagickVersion ( ) returns the ImageMagick API version as a string andas a number.; </blockquote><P>The format of the GetMagickVersion method is:</P>
+<blockquote>GetMagickVersion ( ) returns the ImageMagick API version as a string and as a number. </blockquote><P>The format of the GetMagickVersion method is:</P>
 <blockquote>const char *GetMagickVersion ( unsigned int *version ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -135,7 +135,7 @@ The ImageMagick version is returned as a number.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="initializemagick">InitializeMagick</A></H2>
-<blockquote>InitializeMagick ( ) initializes the ImageMagick environment.; </blockquote><P>The format of the InitializeMagick function is:</P>
+<blockquote>InitializeMagick ( ) initializes the ImageMagick environment. </blockquote><P>The format of the InitializeMagick function is:</P>
 <blockquote>InitializeMagick ( const char *path ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -161,7 +161,7 @@ Specifies the image format.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="listmagickinfo">ListMagickInfo</A></H2>
-<blockquote>ListMagickInfo ( ) lists the image formats to a file.; </blockquote><P>The format of the ListMagickInfo method is:</P>
+<blockquote>ListMagickInfo ( ) lists the image formats to a file. </blockquote><P>The format of the ListMagickInfo method is:</P>
 <blockquote>unsigned int ListMagickInfo ( FILE *file, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows.</P>
 <DL><DL>
@@ -176,7 +176,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="registermagickinfo">RegisterMagickInfo</A></H2>
-<blockquote>RegisterMagickInfo ( ) adds attributes for a particular image format to thelist of supported formats. The attributes include the image format name, a method to read and/or write the format, whether the format supports thesaving of more than one frame to the same file or blob, whether the formatsupports native in-memory I/O, and a brief description of the format.; </blockquote><P>The format of the RegisterMagickInfo method is:</P>
+<blockquote>RegisterMagickInfo ( ) adds attributes for a particular image format to the list of supported formats. The attributes include the image format name, a method to read and/or write the format, whether the format supports the saving of more than one frame to the same file or blob, whether the format supports native in-memory I/O, and a brief description of the format. </blockquote><P>The format of the RegisterMagickInfo method is:</P>
 <blockquote><A HREF="types/MagickInfo.html">MagickInfo</A> *RegisterMagickInfo ( <A HREF="types/MagickInfo.html">MagickInfo</A> *magick_info ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>

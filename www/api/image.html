@@ -106,7 +106,7 @@
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
 <P>
 <H2><A NAME="allocateimage">AllocateImage</A></H2>
-<blockquote>AllocateImage ( ) returns a pointer to an image structure initialized todefault values.; </blockquote><P>The format of the AllocateImage method is:</P>
+<blockquote>AllocateImage ( ) returns a pointer to an image structure initialized to default values. </blockquote><P>The format of the AllocateImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *AllocateImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -116,7 +116,7 @@ Many of the image default values are set from this structure.  For example, file
 <P></P></DL></DL>
 <P>
 <H2><A NAME="allocateimagecolormap">AllocateImageColormap</A></H2>
-<blockquote>AllocateImageColormap ( ) allocates an image colormap and initializesit to a linear gray colorspace. If the image already has a colormap, it is replaced. AllocateImageColormap ( ) returns True if successful, otherwise False if there is not enough memory.; </blockquote><P>The format of the AllocateImageColormap method is:</P>
+<blockquote>AllocateImageColormap ( ) allocates an image colormap and initializes it to a linear gray colorspace. If the image already has a colormap, it is replaced. AllocateImageColormap ( ) returns True if successful, otherwise False if there is not enough memory. </blockquote><P>The format of the AllocateImageColormap method is:</P>
 <blockquote>unsigned int AllocateImageColormap ( <A HREF="types/Image.html">Image</A> *image, const unsigned long colors ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -130,7 +130,7 @@ The number of colors in the image colormap.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="allocatenextimage">AllocateNextImage</A></H2>
-<blockquote>Use AllocateNextImage ( ) to initialize the next image in a sequence todefault values. The next member of image points to the newly allocatedimage. If there is a memory shortage, next is assigned NULL.; </blockquote><P>The format of the AllocateNextImage method is:</P>
+<blockquote>Use AllocateNextImage ( ) to initialize the next image in a sequence to default values. The next member of image points to the newly allocated image. If there is a memory shortage, next is assigned NULL. </blockquote><P>The format of the AllocateNextImage method is:</P>
 <blockquote>void AllocateNextImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -144,7 +144,7 @@ The image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="animateimages">AnimateImages</A></H2>
-<blockquote>AnimateImages ( ) repeatedly displays an image sequence to any X windowscreen. It returns a value other than 0 if successful. Check theexception member of image to determine the reason for any failure.; </blockquote><P>The format of the AnimateImages method is:</P>
+<blockquote>AnimateImages ( ) repeatedly displays an image sequence to any X window screen. It returns a value other than 0 if successful. Check the exception member of image to determine the reason for any failure. </blockquote><P>The format of the AnimateImages method is:</P>
 <blockquote>unsigned int AnimateImages ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -158,7 +158,7 @@ The image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="appendimages">AppendImages</A></H2>
-<blockquote>The AppendImages ( ) method takes a set of images and appends them to eachother. Each image in the set must have the same width or height ( or both ) ( or both ) . Append ( ) returns a single image where each image in theoriginal set is side-by-side if all the heights are the same or stackedon top of each other if all widths are the same. On failure, a NULLimage is returned and exception describes the reason for the failure.; </blockquote><P>The format of the AppendImage method is:</P>
+<blockquote>The AppendImages ( ) method takes a set of images and appends them to each other. Each image in the set must have the same width or height ( or both ) ( or both ) . Append ( ) returns a single image where each image in the original set is side-by-side if all the heights are the same or stacked on top of each other if all widths are the same. On failure, a NULL image is returned and exception describes the reason for the failure. </blockquote><P>The format of the AppendImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *AppendImages ( const <A HREF="types/Image.html">Image</A> *image, const unsigned int stack, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -208,7 +208,7 @@ Identify which channel to extract: Red, Cyan, Green, Magenta, Blue, Yellow, or O
 <P></P></DL></DL>
 <P>
 <H2><A NAME="cloneimage">CloneImage</A></H2>
-<blockquote>CloneImage ( ) copies an image and returns the copy as a new image object.If the specified columns and rows is 0, an exact copy of the image isreturned, otherwise the pixel data is undefined and must be initializedwith the SetImagePixels ( ) and SyncImagePixels ( ) methods. On failure, a NULL image is returned and exception describes the reason for thefailure.; </blockquote><P>The format of the CloneImage method is:</P>
+<blockquote>CloneImage ( ) copies an image and returns the copy as a new image object. If the specified columns and rows is 0, an exact copy of the image is returned, otherwise the pixel data is undefined and must be initialized with the SetImagePixels ( ) and SyncImagePixels ( ) methods. On failure, a NULL image is returned and exception describes the reason for the failure. </blockquote><P>The format of the CloneImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *CloneImage ( const <A HREF="types/Image.html">Image</A> *image, const unsigned long columns, const unsigned long rows, const unsigned int orphan, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -235,7 +235,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="cloneimageinfo">CloneImageInfo</A></H2>
-<blockquote>CloneImageInfo ( ) makes a copy of the given image info structure. IfNULL is specified, a new image info structure is created initialized todefault values.; </blockquote><P>The format of the CloneImageInfo method is:</P>
+<blockquote>CloneImageInfo ( ) makes a copy of the given image info structure. If NULL is specified, a new image info structure is created initialized to default values. </blockquote><P>The format of the CloneImageInfo method is:</P>
 <blockquote><A HREF="types/ImageInfo.html">ImageInfo</A> *CloneImageInfo ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -245,7 +245,7 @@ The image info.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="compositeimage">CompositeImage</A></H2>
-<blockquote>CompositeImage ( ) returns the second image composited onto the first at thespecified offsets.; </blockquote><P>The format of the CompositeImage method is:</P>
+<blockquote>CompositeImage ( ) returns the second image composited onto the first at the specified offsets. </blockquote><P>The format of the CompositeImage method is:</P>
 <blockquote>unsigned int CompositeImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Enumerations.html#CompositeOperator">CompositeOperator</A> compose, const <A HREF="types/Image.html">Image</A> *composite_image, const long x_offset, const long y_offset ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -294,7 +294,7 @@ Offset the colormap this much.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="describeimage">DescribeImage</A></H2>
-<blockquote>DescribeImage ( ) describes an image by printing its attributes to the file.Attributes include the image width, height, size, and others.; </blockquote><P>The format of the DescribeImage method is:</P>
+<blockquote>DescribeImage ( ) describes an image by printing its attributes to the file. Attributes include the image width, height, size, and others. </blockquote><P>The format of the DescribeImage method is:</P>
 <blockquote>void DescribeImage ( <A HREF="types/Image.html">Image</A> *image, FILE *file, const unsigned int verbose ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -313,7 +313,7 @@ The file, typically stdout.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="destroyimage">DestroyImage</A></H2>
-<blockquote>DestroyImage ( ) dereferences an image, deallocating memory associated withthe image if the reference count becomes zero.; </blockquote><P>The format of the DestroyImage method is:</P>
+<blockquote>DestroyImage ( ) dereferences an image, deallocating memory associated with the image if the reference count becomes zero. </blockquote><P>The format of the DestroyImage method is:</P>
 <blockquote>void DestroyImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -323,7 +323,7 @@ The image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="destroyimageinfo">DestroyImageInfo</A></H2>
-<blockquote>DestroyImageInfo ( ) deallocates memory associated with an ImageInfostructure.; </blockquote><P>The format of the DestroyImageInfo method is:</P>
+<blockquote>DestroyImageInfo ( ) deallocates memory associated with an <A HREF="types/ImageInfo.html">ImageInfo</A> structure. </blockquote><P>The format of the DestroyImageInfo method is:</P>
 <blockquote>void DestroyImageInfo ( <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -333,7 +333,7 @@ The image info.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="destroyimages">DestroyImages</A></H2>
-<blockquote>DestroyImages ( ) is a convenience method. It calls DestroyImage ( ) for eachimage in the sequence.; </blockquote><P>The format of the DestroyImages method is:</P>
+<blockquote>DestroyImages ( ) is a convenience method. It calls DestroyImage ( ) for each image in the sequence. </blockquote><P>The format of the DestroyImages method is:</P>
 <blockquote>void DestroyImages ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -343,7 +343,7 @@ The image sequence.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="displayimages">DisplayImages</A></H2>
-<blockquote>DisplayImages ( ) displays an image sequence to any X window screen. Itreturns a value other than 0 if successful. Check the exception memberof image to determine the reason for any failure.; </blockquote><P>The format of the AllocateNextImage method is:</P>
+<blockquote>DisplayImages ( ) displays an image sequence to any X window screen. It returns a value other than 0 if successful. Check the exception member of image to determine the reason for any failure. </blockquote><P>The format of the AllocateNextImage method is:</P>
 <blockquote>unsigned int DisplayImages ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -357,7 +357,7 @@ The image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getimagedepth">GetImageDepth</A></H2>
-<blockquote>GetImageDepth ( ) returns the depth of the image, either 8 or 16 bits. Bydefault, pixels components are stored as 16-bit two byte unsigned shortintegers that range in value from 0 to 65535. However, if all the pixelshave lower-order bytes of zero, the image is considered to have a depth of8-bit.; </blockquote><P>The format of the GetImageDepth method is:</P>
+<blockquote>GetImageDepth ( ) returns the depth of the image, either 8 or 16 bits. By default, pixels components are stored as 16-bit two byte unsigned short integers that range in value from 0 to 65535. However, if all the pixels have lower-order bytes of zero, the image is considered to have a depth of 8-bit. </blockquote><P>The format of the GetImageDepth method is:</P>
 <blockquote>unsigned long GetImageDepth ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -371,7 +371,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getimageinfo">GetImageInfo</A></H2>
-<blockquote>GetImageInfo ( ) initializes image_info to default values.; </blockquote><P>The format of the GetImageInfo method is:</P>
+<blockquote>GetImageInfo ( ) initializes image_info to default values. </blockquote><P>The format of the GetImageInfo method is:</P>
 <blockquote>void GetImageInfo ( <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -381,7 +381,7 @@ The image info.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getimagetype">GetImageType</A></H2>
-<blockquote>GetImageType ( ) returns the type of image:; </blockquote><PRE>
+<blockquote>GetImageType ( ) returns the type of image: </blockquote><PRE>
       Bilevel        Grayscale       GrayscaleMatte
       Palette        PaletteMatte    TrueColor
       TrueColorMatte ColorSeparation ColorSeparationMatte</PRE>
@@ -399,7 +399,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getnextimage">GetNextImage</A></H2>
-<blockquote>GetNextImage ( ) returns the next image in an image sequence.; </blockquote><P>The format of the GetNextImage method is:</P>
+<blockquote>GetNextImage ( ) returns the next image in an image sequence. </blockquote><P>The format of the GetNextImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *GetNextImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -420,7 +420,7 @@ The image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="isimagesequal">IsImagesEqual</A></H2>
-<blockquote>IsImagesEqual ( ) measures the difference between colors at each pixellocation of two images. A value other than 0 means the colors matchexactly. Otherwise an error measure is computed by summing over allpixels in an image the distance squared in RGB space between each imagepixel and its corresponding pixel in the reference image. The errormeasure is assigned to these image members:; </blockquote><DL><DL>
+<blockquote>IsImagesEqual ( ) measures the difference between colors at each pixel location of two images. A value other than 0 means the colors match exactly. Otherwise an error measure is computed by summing over all pixels in an image the distance squared in RGB space between each image pixel and its corresponding pixel in the reference image. The error measure is assigned to these image members: </blockquote><DL><DL>
 <p><dt><STRONG><A NAME="item_o_mean_error_per_pixel%3A">mean_error_per_pixel:</A></STRONG><BR>
 <DD>
 The mean error for any single pixel in the image.
@@ -449,7 +449,7 @@ The reference image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="istaintimage">IsTaintImage</A></H2>
-<blockquote>IsTaintImage ( ) returns a value other than 0 if any pixel in the imagehas been altered since it was first constituted.; </blockquote><P>The format of the IsTaintImage method is:</P>
+<blockquote>IsTaintImage ( ) returns a value other than 0 if any pixel in the image has been altered since it was first constituted. </blockquote><P>The format of the IsTaintImage method is:</P>
 <blockquote>unsigned int IsTaintImage ( const <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -459,7 +459,7 @@ The image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="listtogroupimage">ListToGroupImage</A></H2>
-<blockquote>ListToGroupImage ( ) is a convenience method that converts a linked list ofimages to a sequential array. For example, ; </blockquote><blockquote>images = ListToGroupImage ( image_list, &n ); for ( i=0; i < n; i++ ) puts ( images[i]->filename ) ;; </blockquote><P>The format of the ListToGroupImage method is:</P>
+<blockquote>ListToGroupImage ( ) is a convenience method that converts a linked list of images to a sequential array. For example, </blockquote><blockquote>images = ListToGroupImage ( image_list, &n ); for ( i=0; i < n; i++ ) puts ( images[i]->filename ) ;; </blockquote><P>The format of the ListToGroupImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> **ListToGroupImage ( const <A HREF="types/Image.html">Image</A> *image, unsigned long *number_images ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -473,7 +473,7 @@ The length of the image array is returned here.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="modifyimage">ModifyImage</A></H2>
-<blockquote>ModifyImage ( ) ensures that there is only a single reference to the imageto be modified, updating the provided image pointer to point to a clone ofthe original image if necessary.; </blockquote><P>The format of the ModifyImage method is:</P>
+<blockquote>ModifyImage ( ) ensures that there is only a single reference to the image to be modified, updating the provided image pointer to point to a clone of the original image if necessary. </blockquote><P>The format of the ModifyImage method is:</P>
 <blockquote>ModifyImage ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -487,7 +487,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="referenceimage">ReferenceImage</A></H2>
-<blockquote>ReferenceImage ( ) increments the reference count associated with an imagereturning a pointer to the image.; </blockquote><P>The format of the ReferenceImage method is:</P>
+<blockquote>ReferenceImage ( ) increments the reference count associated with an image returning a pointer to the image. </blockquote><P>The format of the ReferenceImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *ReferenceImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -497,7 +497,7 @@ The image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="setimage">SetImage</A></H2>
-<blockquote>SetImage ( ) sets the red, green, and blue components of each pixel tothe image background color and the opacity component to the specifiedlevel of transparency. The background color is defined by thebackground_color member of the image.; </blockquote><P>The format of the SetImage method is:</P>
+<blockquote>SetImage ( ) sets the red, green, and blue components of each pixel to the image background color and the opacity component to the specified level of transparency. The background color is defined by the background_color member of the image. </blockquote><P>The format of the SetImage method is:</P>
 <blockquote>void SetImage ( <A HREF="types/Image.html">Image</A> *image, const Quantum opacity ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -511,7 +511,7 @@ Set each pixel to this level of transparency.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="setimageclipmask">SetImageClipMask</A></H2>
-<blockquote>SetImageClipMask ( ) associates a clip mask with the image. The clip maskmust be the same dimensions as the image.; </blockquote><P>The format of the SetImageClipMask method is:</P>
+<blockquote>SetImageClipMask ( ) associates a clip mask with the image. The clip mask must be the same dimensions as the image. </blockquote><P>The format of the SetImageClipMask method is:</P>
 <blockquote>unsigned int SetImageClipMask ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/Image.html">Image</A> *clip_mask ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -525,7 +525,7 @@ The image clip mask.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="setimagedepth">SetImageDepth</A></H2>
-<blockquote>SetImageDepth ( ) sets the depth of the image, either 8 or 16. Some imageformats support both 8 and 16-bits per color component ( e.g. PNG ) . UseSetImageDepth ( ) to specify your preference. A value other than 0 isreturned if the depth is set. Check the exception member of image todetermine the cause for any failure.; </blockquote><P>The format of the SetImageDepth method is:</P>
+<blockquote>SetImageDepth ( ) sets the depth of the image, either 8 or 16. Some image formats support both 8 and 16-bits per color component ( e.g. PNG ) . Use SetImageDepth ( ) to specify your preference. A value other than 0 is returned if the depth is set. Check the exception member of image to determine the cause for any failure. </blockquote><P>The format of the SetImageDepth method is:</P>
 <blockquote>unsigned int SetImageDepth ( <A HREF="types/Image.html">Image</A> *image, const unsigned long depth ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -539,7 +539,7 @@ The image depth.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="setimageopacity">SetImageOpacity</A></H2>
-<blockquote>SetImageOpacity ( ) attenuates the opacity channel of an image. If theimage pixels are opaque, they are set to the specified opacity level.Otherwise, the pixel oapcity values are blended with the suppliedtransparency value.; </blockquote><P>The format of the SetImageOpacity method is:</P>
+<blockquote>SetImageOpacity ( ) attenuates the opacity channel of an image. If the image pixels are opaque, they are set to the specified opacity level. Otherwise, the pixel oapcity values are blended with the supplied transparency value. </blockquote><P>The format of the SetImageOpacity method is:</P>
 <blockquote>void SetImageOpacity ( <A HREF="types/Image.html">Image</A> *image, const unsigned int opacity ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -553,7 +553,7 @@ The level of transparency: 0 is fully opaque and MaxRGB is fully transparent.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="setimagetype">SetImageType</A></H2>
-<blockquote>SetImageType ( ) sets the type of image. Choose from these types:; </blockquote><PRE>
+<blockquote>SetImageType ( ) sets the type of image. Choose from these types: </blockquote><PRE>
       Bilevel        Grayscale       GrayscaleMatte
       Palette        PaletteMatte    TrueColor
       TrueColorMatte ColorSeparation ColorSeparationMatte
@@ -572,7 +572,7 @@ Image type.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="textureimage">TextureImage</A></H2>
-<blockquote>TextureImage ( ) repeatedly tiles the texture image across and down the imagecanvas.; </blockquote><P>The format of the TextureImage method is:</P>
+<blockquote>TextureImage ( ) repeatedly tiles the texture image across and down the image canvas. </blockquote><P>The format of the TextureImage method is:</P>
 <blockquote>void TextureImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Image.html">Image</A> *texture ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>

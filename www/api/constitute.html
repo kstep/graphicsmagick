@@ -53,7 +53,7 @@
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
 <P>
 <H2><A NAME="constituteimage">ConstituteImage</A></H2>
-<blockquote>ConstituteImage ( ) returns an image from the the pixel data you supply.The pixel data must be in scanline order top-to-bottom. The data can bechar, short int, int, float, or double. Float and double require thepixels to be normalized [0..1], otherwise [0..MaxRGB]. For example, tocreate a 640x480 image from unsigned red-green-blue character data, use; </blockquote><blockquote>image=ConstituteImage ( 640, 480, "RGB", CharPixel, pixels, &exception );; </blockquote><P>The format of the Constitute method is:</P>
+<blockquote>ConstituteImage ( ) returns an image from the the pixel data you supply. The pixel data must be in scanline order top-to-bottom. The data can be char, short int, int, float, or double. Float and double require the pixels to be normalized [0..1], otherwise [0..MaxRGB]. For example, to create a 640x480 image from unsigned red-green-blue character data, use </blockquote><blockquote>image=ConstituteImage ( 640, 480, "RGB", CharPixel, pixels, &exception );; </blockquote><P>The format of the Constitute method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *ConstituteImage ( const unsigned long width, const unsigned long height, const char *map, const StorageType type, const void *pixels, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -96,7 +96,7 @@ Return any errors or warnings in this structure.
 <P>The format of the DestroyConstitute method is:</P>
 <blockquote>DestroyConstitute ( void ); </blockquote><P>
 <H2><A NAME="dispatchimage">DispatchImage</A></H2>
-<blockquote>DispatchImage ( ) extracts pixel data from an image and returns it to you.The method returns False on success otherwise True if an error isencountered. The data is returned as char, short int, int, long, float, or double in the order specified by map.; </blockquote><P>Suppose we want want to extract the first scanline of a 640x480 image as character data in red-green-blue order:</P>
+<blockquote>DispatchImage ( ) extracts pixel data from an image and returns it to you. The method returns False on success otherwise True if an error is encountered. The data is returned as char, short int, int, long, float, or double in the order specified by map. </blockquote><P>Suppose we want want to extract the first scanline of a 640x480 image as character data in red-green-blue order:</P>
 <blockquote>DispatchImage ( image, 0, 0, 640, 1, "RGB", 0, pixels, exception );; </blockquote><P>The format of the DispatchImage method is:</P>
 <blockquote>unsigned int DispatchImage ( const <A HREF="types/Image.html">Image</A> *image, const long x_offset, const long y_offset, const unsigned long columns, const unsigned long rows, const char *map, const StorageType type, void *pixels, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
@@ -136,7 +136,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="pingimage">PingImage</A></H2>
-<blockquote>PingImage ( ) returns all the attributes of an image or image sequenceexcept for the pixels. It is much faster and consumes far less memorythan ReadImage ( ) . On failure, a NULL image is returned and exceptiondescribes the reason for the failure.; </blockquote><P>The format of the PingImage method is:</P>
+<blockquote>PingImage ( ) returns all the attributes of an image or image sequence except for the pixels. It is much faster and consumes far less memory than ReadImage ( ) . On failure, a NULL image is returned and exception describes the reason for the failure. </blockquote><P>The format of the PingImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *PingImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -150,7 +150,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="readimage">ReadImage</A></H2>
-<blockquote>ReadImage ( ) reads an image or image sequence from a file or file handle.The method returns a NULL if there is a memory shortage or if the imagecannot be read. On failure, a NULL image is returned and exceptiondescribes the reason for the failure.; </blockquote><P>The format of the ReadImage method is:</P>
+<blockquote>ReadImage ( ) reads an image or image sequence from a file or file handle. The method returns a NULL if there is a memory shortage or if the image cannot be read. On failure, a NULL image is returned and exception describes the reason for the failure. </blockquote><P>The format of the ReadImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *ReadImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>

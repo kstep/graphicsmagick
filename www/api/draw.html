@@ -59,7 +59,7 @@
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
 <P>
 <H2><A NAME="clonedrawinfo">CloneDrawInfo</A></H2>
-<blockquote>CloneDrawInfo ( ) makes a copy of the given draw info structure. If NULLis specified, a new image info structure is created initialized todefault values.; </blockquote><P>The format of the CloneDrawInfo method is:</P>
+<blockquote>CloneDrawInfo ( ) makes a copy of the given draw info structure. If NULL is specified, a new image info structure is created initialized to default values. </blockquote><P>The format of the CloneDrawInfo method is:</P>
 <blockquote><A HREF="types/DrawInfo.html">DrawInfo</A> *CloneDrawInfo ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, const <A HREF="types/DrawInfo.html">DrawInfo</A> *draw_info ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -102,7 +102,7 @@ Choose either FloodfillMethod or FillToBorderMethod.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="destroydrawinfo">DestroyDrawInfo</A></H2>
-<blockquote>DestroyDrawInfo ( ) deallocates memory associated with an DrawInfostructure.; </blockquote><P>The format of the DestroyDrawInfo method is:</P>
+<blockquote>DestroyDrawInfo ( ) deallocates memory associated with an <A HREF="types/DrawInfo.html">DrawInfo</A> structure. </blockquote><P>The format of the DestroyDrawInfo method is:</P>
 <blockquote>void DestroyDrawInfo ( <A HREF="types/DrawInfo.html">DrawInfo</A> *draw_info ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -112,7 +112,7 @@ The draw info.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="drawclippath">DrawClipPath</A></H2>
-<blockquote>DrawClipPath ( ) draws the clip path on the image mask.; </blockquote><P>The format of the DrawClipPath method is:</P>
+<blockquote>DrawClipPath ( ) draws the clip path on the image mask. </blockquote><P>The format of the DrawClipPath method is:</P>
 <blockquote>unsigned int DrawClipPath ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/DrawInfo.html">DrawInfo</A> *draw_info ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -126,7 +126,7 @@ The draw info.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="drawimage">DrawImage</A></H2>
-<blockquote>Use DrawImage ( ) to draw a graphic primitive on your image. The primitivemay be represented as a string or filename. Precede the filename with anampersand ( @ ) and the contents of the file are drawn on the image. You canaffect how text is drawn by setting one or more members of the draw infostructure.; </blockquote><P>The format of the DrawImage method is:</P>
+<blockquote>Use DrawImage ( ) to draw a graphic primitive on your image. The primitive may be represented as a string or filename. Precede the filename with an ampersand ( @ ) and the contents of the file are drawn on the image. You can affect how text is drawn by setting one or more members of the draw info structure. </blockquote><P>The format of the DrawImage method is:</P>
 <blockquote>unsigned int DrawImage ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/DrawInfo.html">DrawInfo</A> *draw_info ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -140,7 +140,7 @@ The draw info.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="drawpatternpath">DrawPatternPath</A></H2>
-<blockquote>DrawPatternPath ( ) draws a pattern.; </blockquote><P>The format of the DrawPatternPath method is:</P>
+<blockquote>DrawPatternPath ( ) draws a pattern. </blockquote><P>The format of the DrawPatternPath method is:</P>
 <blockquote>unsigned int DrawPatternPath ( <A HREF="types/Image.html">Image</A> *image, <A HREF="types/DrawInfo.html">DrawInfo</A> *draw_info, const char *name, <A HREF="types/Image.html">Image</A> **pattern ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -191,7 +191,7 @@ Choose either FloodfillMethod or FillToBorderMethod.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="opaqueimage">OpaqueImage</A></H2>
-<blockquote>OpaqueImage ( ) changes any pixel that matches color with the colordefined by fill.; </blockquote><P>By default color must match a particular pixel color exactly.  However, in many cases two colors may differ by a small amount.  Fuzz defines how much tolerance is acceptable to consider two colors as the same.  For example, set fuzz to 10 and the color red at intensities of 100 and 102 respectively are now interpreted as the same color.</P>
+<blockquote>OpaqueImage ( ) changes any pixel that matches color with the color defined by fill. </blockquote><P>By default color must match a particular pixel color exactly.  However, in many cases two colors may differ by a small amount.  Fuzz defines how much tolerance is acceptable to consider two colors as the same.  For example, set fuzz to 10 and the color red at intensities of 100 and 102 respectively are now interpreted as the same color.</P>
 <P>The format of the OpaqueImage method is:</P>
 <blockquote>unsigned int OpaqueImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/PixelPacket.html">PixelPacket</A> target, const <A HREF="types/PixelPacket.html">PixelPacket</A> fill ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
@@ -211,7 +211,7 @@ The replacement color.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="transparentimage">TransparentImage</A></H2>
-<blockquote>TransparentImage ( ) changes the opacity value associated with any pixelthat matches color to the value defined by opacity.; </blockquote><P>By default color must match a particular pixel color exactly.  However, in many cases two colors may differ by a small amount.  Fuzz defines how much tolerance is acceptable to consider two colors as the same.  For example, set fuzz to 10 and the color red at intensities of 100 and 102 respectively are now interpreted as the same color.</P>
+<blockquote>TransparentImage ( ) changes the opacity value associated with any pixel that matches color to the value defined by opacity. </blockquote><P>By default color must match a particular pixel color exactly.  However, in many cases two colors may differ by a small amount.  Fuzz defines how much tolerance is acceptable to consider two colors as the same.  For example, set fuzz to 10 and the color red at intensities of 100 and 102 respectively are now interpreted as the same color.</P>
 <P>The format of the TransparentImage method is:</P>
 <blockquote>unsigned int TransparentImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/PixelPacket.html">PixelPacket</A> target, const unsigned int opacity ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>

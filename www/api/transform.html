@@ -86,7 +86,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="coalesceimages">CoalesceImages</A></H2>
-<blockquote>CoalesceImages ( ) composites a set of images while respecting any pageoffsets and disposal methods. GIF, MIFF, and MNG animation sequencestypically start with an image background and each subsequent imagevaries in size and offset. CoalesceImages ( ) returns a new sequencewhere each image in the sequence is the same size as the first andcomposited with the next image in the sequence.; </blockquote><P>The format of the CoalesceImages method is:</P>
+<blockquote>CoalesceImages ( ) composites a set of images while respecting any page offsets and disposal methods. GIF, MIFF, and MNG animation sequences typically start with an image background and each subsequent image varies in size and offset. CoalesceImages ( ) returns a new sequence where each image in the sequence is the same size as the first and composited with the next image in the sequence. </blockquote><P>The format of the CoalesceImages method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *CoalesceImages ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -100,7 +100,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="cropimage">CropImage</A></H2>
-<blockquote>Use CropImage ( ) to extract a region of the image starting at the offsetdefined by crop_info.; </blockquote><P>The format of the CropImage method is:</P>
+<blockquote>Use CropImage ( ) to extract a region of the image starting at the offset defined by crop_info. </blockquote><P>The format of the CropImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *CropImage ( const <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *crop_info, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -118,7 +118,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="deconstructimages">DeconstructImages</A></H2>
-<blockquote>DeconstructImages ( ) compares each image with the next in a sequence andreturns the maximum bounding region of any pixel differences it discovers.; </blockquote><P>The format of the DeconstructImages method is:</P>
+<blockquote>DeconstructImages ( ) compares each image with the next in a sequence and returns the maximum bounding region of any pixel differences it discovers. </blockquote><P>The format of the DeconstructImages method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *DeconstructImages ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -147,7 +147,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="flipimage">FlipImage</A></H2>
-<blockquote>FlipImage ( ) creates a vertical mirror image by reflecting the pixelsaround the central x-axis.; </blockquote><P>The format of the FlipImage method is:</P>
+<blockquote>FlipImage ( ) creates a vertical mirror image by reflecting the pixels around the central x-axis. </blockquote><P>The format of the FlipImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *FlipImage ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -161,7 +161,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="flopimage">FlopImage</A></H2>
-<blockquote>FlopImage ( ) creates a horizontal mirror image by reflecting the pixelsaround the central y-axis.; </blockquote><P>The format of the FlopImage method is:</P>
+<blockquote>FlopImage ( ) creates a horizontal mirror image by reflecting the pixels around the central y-axis. </blockquote><P>The format of the FlopImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *FlopImage ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -175,7 +175,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="mosaicimages">MosaicImages</A></H2>
-<blockquote>MosaicImages ( ) inlays an image sequence to form a single coherent picture.It returns a single image with each image in the sequence composited atthe location defined by the page member of the image structure.; </blockquote><P>The format of the MosaicImage method is:</P>
+<blockquote>MosaicImages ( ) inlays an image sequence to form a single coherent picture. It returns a single image with each image in the sequence composited at the location defined by the page member of the image structure. </blockquote><P>The format of the MosaicImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *MosaicImages ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -189,7 +189,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="profileimage">ProfileImage</A></H2>
-<blockquote>ProfileImage ( ) adds or removes a ICM, IPTC, or generic profile from animage. If the profile name is defined it is deleted from the image.If a filename is given, one or more profiles are read and added to theimage. ProfileImage ( ) returns a value other than 0 if the profile issuccessfully added or removed from the image.; </blockquote><P>The format of the ProfileImage method is:</P>
+<blockquote>ProfileImage ( ) adds or removes a ICM, IPTC, or generic profile from an image. If the profile name is defined it is deleted from the image. If a filename is given, one or more profiles are read and added to the image. ProfileImage ( ) returns a value other than 0 if the profile is successfully added or removed from the image. </blockquote><P>The format of the ProfileImage method is:</P>
 <blockquote>unsigned int ProfileImage ( <A HREF="types/Image.html">Image</A> *image, const char *profile_name, const char *filename ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -209,7 +209,7 @@ Filename of the
 <P></P></DL></DL>
 <P>
 <H2><A NAME="rollimage">RollImage</A></H2>
-<blockquote>RollImage ( ) offsets an image as defined by x_offset and y_offset.; </blockquote><P>The format of the RollImage method is:</P>
+<blockquote>RollImage ( ) offsets an image as defined by x_offset and y_offset. </blockquote><P>The format of the RollImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *RollImage ( const <A HREF="types/Image.html">Image</A> *image, const long x_offset, const long y_offset, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -255,7 +255,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="transformimage">TransformImage</A></H2>
-<blockquote>TransformImage ( ) is a convenience method that behaves like ResizeImage ( ) orCropImage ( ) but accepts scaling and/or cropping information as a regiongeometry specification. If the operation fails, the original image handleis returned.; </blockquote><P>The format of the TransformImage method is:</P>
+<blockquote>TransformImage ( ) is a convenience method that behaves like ResizeImage ( ) or CropImage ( ) but accepts scaling and/or cropping information as a region geometry specification. If the operation fails, the original image handle is returned. </blockquote><P>The format of the TransformImage method is:</P>
 <blockquote>void TransformImage ( <A HREF="types/Image.html">Image</A> **image, const char *crop_geometry, const char *image_geometry ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>

@@ -95,7 +95,7 @@
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
 <P>
 <H2><A NAME="addnoiseimage">AddNoiseImage</A></H2>
-<blockquote>AddNoiseImage ( ) adds random noise to the image.; </blockquote><P>The format of the AddNoiseImage method is:</P>
+<blockquote>AddNoiseImage ( ) adds random noise to the image. </blockquote><P>The format of the AddNoiseImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *AddNoiseImage ( const <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Enumerations.html#NoiseType">NoiseType</A> noise_type, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -113,7 +113,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="blurimage">BlurImage</A></H2>
-<blockquote>BlurImage ( ) blurs an image. We convolve the image with a Gaussianoperator of the given radius and standard deviation ( sigma ) .For reasonable results, the radius should be larger than sigma. Use aradius of 0 and BlurImage ( ) selects a suitable radius for you.; </blockquote><P>The format of the BlurImage method is:</P>
+<blockquote>BlurImage ( ) blurs an image. We convolve the image with a Gaussian operator of the given radius and standard deviation ( sigma ) . For reasonable results, the radius should be larger than sigma. Use a radius of 0 and BlurImage ( ) selects a suitable radius for you. </blockquote><P>The format of the BlurImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *BlurImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, const double sigma, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -159,7 +159,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="colorizeimage">ColorizeImage</A></H2>
-<P>The format of the ColorizeImage method is:</P>
+<blockquote>ColorizeImage ( ) blends the fill color with each pixel in the image. A percentage blend is specified with opacity. Control the application of different color components by specifying a different percentage for </blockquote><P>The format of the ColorizeImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *ColorizeImage ( const <A HREF="types/Image.html">Image</A> *image, const char *opacity, const <A HREF="types/PixelPacket.html">PixelPacket</A> target, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -183,7 +183,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="convolveimage">ConvolveImage</A></H2>
-<blockquote>ConvolveImage ( ) applies a custom convolution kernel to the image.; </blockquote><P>The format of the ConvolveImage method is:</P>
+<blockquote>ConvolveImage ( ) applies a custom convolution kernel to the image. </blockquote><P>The format of the ConvolveImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *ConvolveImage ( const <A HREF="types/Image.html">Image</A> *image, const unsigned int order, const double *kernel, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -220,7 +220,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="edgeimage">EdgeImage</A></H2>
-<blockquote>EdgeImage ( ) finds edges in an image. Radius defines the radius of theconvolution filter. Use a radius of 0 and Edge ( ) selects a suitableradius for you.; </blockquote><P>The format of the EdgeImage method is:</P>
+<blockquote>EdgeImage ( ) finds edges in an image. Radius defines the radius of the convolution filter. Use a radius of 0 and Edge ( ) selects a suitable radius for you. </blockquote><P>The format of the EdgeImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *EdgeImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -238,7 +238,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="embossimage">EmbossImage</A></H2>
-<blockquote>EmbossImage ( ) returns a grayscale image with a three-dimensional effect.We convolve the image with a Gaussian operator of the given radius andstandard deviation ( sigma ) . For reasonable results, radius should belarger than sigma. Use a radius of 0 and Emboss ( ) selects a suitableradius for you.; </blockquote><P>The format of the EmbossImage method is:</P>
+<blockquote>EmbossImage ( ) returns a grayscale image with a three-dimensional effect. We convolve the image with a Gaussian operator of the given radius and standard deviation ( sigma ) . For reasonable results, radius should be larger than sigma. Use a radius of 0 and Emboss ( ) selects a suitable radius for you. </blockquote><P>The format of the EmbossImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *EmbossImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, const double sigma, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -260,7 +260,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="enhanceimage">EnhanceImage</A></H2>
-<blockquote>EnhanceImage ( ) applies a digital filter that improves the quality of anoisy image.; </blockquote><P>The format of the EnhanceImage method is:</P>
+<blockquote>EnhanceImage ( ) applies a digital filter that improves the quality of a noisy image. </blockquote><P>The format of the EnhanceImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *EnhanceImage ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -274,7 +274,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="gaussianblurimage">GaussianBlurImage</A></H2>
-<blockquote>GaussianBlurImage ( ) blurs an image. We convolve the image with a Gaussian operator of the given radius and standard deviation ( sigma ) .For reasonable results, the radius should be larger than sigma. Use aradius of 0 and GaussianBlurImage ( ) selects a suitable radius for you; </blockquote><P>The format of the BlurImage method is:</P>
+<blockquote>GaussianBlurImage ( ) blurs an image. We convolve the image with a Gaussian operator of the given radius and standard deviation ( sigma ) . For reasonable results, the radius should be larger than sigma. Use a radius of 0 and GaussianBlurImage ( ) selects a suitable radius for you </blockquote><P>The format of the BlurImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *GaussianBlurImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, const double sigma, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -321,7 +321,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="medianfilterimage">MedianFilterImage</A></H2>
-<blockquote>MedianFilterImage ( ) applies a digital filter that improves the quality of a noisy image. Each pixel is replaced by the median in a set ofneighboring pixels as defined by radius. ; </blockquote><P>The format of the MedianFilterImage method is:</P>
+<blockquote>MedianFilterImage ( ) applies a digital filter that improves the quality of a noisy image. Each pixel is replaced by the median in a set of neighboring pixels as defined by radius. </blockquote><P>The format of the MedianFilterImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *MedianFilterImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -339,7 +339,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="morphimages">MorphImages</A></H2>
-<blockquote>The MorphImages ( ) method requires a minimum of two images. The firstimage is transformed into the second by a number of intervening imagesas specified by frames.; </blockquote><P>The format of the MorphImage method is:</P>
+<blockquote>The MorphImages ( ) method requires a minimum of two images. The first image is transformed into the second by a number of intervening images as specified by frames. </blockquote><P>The format of the MorphImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *MorphImages ( const <A HREF="types/Image.html">Image</A> *image, const unsigned long number_frames, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -357,7 +357,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="motionblurimage">MotionBlurImage</A></H2>
-<blockquote>MotionBlurImage ( ) simulates motion blur. We convolve the image with aGaussian operator of the given radius and standard deviation ( sigma ) .For reasonable results, radius should be larger than sigma. Use aradius of 0 and MotionBlurImage ( ) selects a suitable radius for you.Angle gives the angle of the blurring motion.; </blockquote><P>Andrew Protano contributed this effect.</P>
+<blockquote>MotionBlurImage ( ) simulates motion blur. We convolve the image with a Gaussian operator of the given radius and standard deviation ( sigma ) . For reasonable results, radius should be larger than sigma. Use a radius of 0 and MotionBlurImage ( ) selects a suitable radius for you. Angle gives the angle of the blurring motion. </blockquote><P>Andrew Protano contributed this effect.</P>
 <P>The format of the MotionBlurImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *MotionBlurImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, const double sigma, const double amount, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
@@ -384,7 +384,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="oilpaintimage">OilPaintImage</A></H2>
-<blockquote>OilPaintImage ( ) applies a special effect filter that simulates an oil painting. Each pixel is replaced by the most frequent color occurringin a circular region defined by radius.; </blockquote><P>The format of the OilPaintImage method is:</P>
+<blockquote>OilPaintImage ( ) applies a special effect filter that simulates an oil painting. Each pixel is replaced by the most frequent color occurring in a circular region defined by radius. </blockquote><P>The format of the OilPaintImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *OilPaintImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -402,7 +402,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="plasmaimage">PlasmaImage</A></H2>
-<blockquote>PlasmaImage ( ) initializes an image with plasma fractal values. The imagemust be initialized with a base color and the random number generatorseeded before this method is called.; </blockquote><P>The format of the PlasmaImage method is:</P>
+<blockquote>PlasmaImage ( ) initializes an image with plasma fractal values. The image must be initialized with a base color and the random number generator seeded before this method is called. </blockquote><P>The format of the PlasmaImage method is:</P>
 <blockquote>unsigned int PlasmaImage ( <A HREF="types/Image.html">Image</A> *image, const SegmentInfo *segment, int attenuate, int depth ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -424,7 +424,7 @@ Limit the plasma recursion depth.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="reducenoiseimage">ReduceNoiseImage</A></H2>
-<blockquote>ReduceNoiseImage ( ) smooths the contours of an image while still preservingedge information. The algorithm works by replacing each pixel with itsneighbor closest in value. A neighbor is defined by \texttt{radius}.Use a radius of 0 and ReduceNoise ( ) selects a suitable radius for you.; </blockquote><P>The format of the ReduceNoiseImage method is:</P>
+<blockquote>ReduceNoiseImage ( ) smooths the contours of an image while still preserving edge information. The algorithm works by replacing each pixel with its neighbor closest in value. A neighbor is defined by \texttt{radius}. Use a radius of 0 and ReduceNoise ( ) selects a suitable radius for you. </blockquote><P>The format of the ReduceNoiseImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *ReduceNoiseImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -442,7 +442,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="shadeimage">ShadeImage</A></H2>
-<blockquote>ShadeImage ( ) shines a distant light on an image to create athree-dimensional effect. You control the positioning of the light withazimuth and elevation; azimuth is measured in degrees off the x axisand elevation is measured in pixels above the Z axis.; </blockquote><P>The format of the ShadeImage method is:</P>
+<blockquote>ShadeImage ( ) shines a distant light on an image to create a three-dimensional effect. You control the positioning of the light with azimuth and elevation; azimuth is measured in degrees off the x axis and elevation is measured in pixels above the Z axis. </blockquote><P>The format of the ShadeImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *ShadeImage ( const <A HREF="types/Image.html">Image</A> *image, const unsigned int color_shading, double azimuth, double elevation, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -465,7 +465,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="sharpenimage">SharpenImage</A></H2>
-<blockquote>SharpenImage ( ) sharpens an image. We convolve the image with a Gaussian operator of the given radius and standard deviation ( sigma ) .For reasonable results, radius should be larger than sigma. Use a radius of 0 and SharpenImage ( ) selects a suitable radius for you.; </blockquote><P>The format of the SharpenImage method is:</P>
+<blockquote>SharpenImage ( ) sharpens an image. We convolve the image with a Gaussian operator of the given radius and standard deviation ( sigma ) . For reasonable results, radius should be larger than sigma. Use a radius of 0 and SharpenImage ( ) selects a suitable radius for you. </blockquote><P>The format of the SharpenImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *SharpenImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, const double sigma, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -487,7 +487,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="solarizeimage">SolarizeImage</A></H2>
-<blockquote>SolarizeImage ( ) applies a special effect to the image, similar to the effectachieved in a photo darkroom by selectively exposing areas of photosensitive paper to light. Threshold ranges from 0 to MaxRGB and is ameasure of the extent of the solarization.; </blockquote><P>The format of the SolarizeImage method is:</P>
+<blockquote>SolarizeImage ( ) applies a special effect to the image, similar to the effect achieved in a photo darkroom by selectively exposing areas of photo sensitive paper to light. Threshold ranges from 0 to MaxRGB and is a measure of the extent of the solarization. </blockquote><P>The format of the SolarizeImage method is:</P>
 <blockquote>void SolarizeImage ( <A HREF="types/Image.html">Image</A> *image, const double threshold ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -501,7 +501,7 @@ Define the extent of the solarization.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="spreadimage">SpreadImage</A></H2>
-<blockquote>SpreadImage ( ) is a special effects method that randomly displaces each pixel in a block defined by the amount parameter.; </blockquote><P>The format of the SpreadImage method is:</P>
+<blockquote>SpreadImage ( ) is a special effects method that randomly displaces each pixel in a block defined by the amount parameter. </blockquote><P>The format of the SpreadImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *SpreadImage ( const <A HREF="types/Image.html">Image</A> *image, const unsigned int radius, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -519,7 +519,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="steganoimage">SteganoImage</A></H2>
-<blockquote>Use SteganoImage ( ) to hide a digital watermark within the image. Recover the hidden watermark later to prove that the authenticity ofan image. texttt{Offset} defines the start position within the imageto hide the watermark.; </blockquote><P>The format of the SteganoImage method is:</P>
+<blockquote>Use SteganoImage ( ) to hide a digital watermark within the image. Recover the hidden watermark later to prove that the authenticity of an image. texttt{Offset} defines the start position within the image to hide the watermark. </blockquote><P>The format of the SteganoImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *SteganoImage ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/Image.html">Image</A> *watermark, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -537,7 +537,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="stereoimage">StereoImage</A></H2>
-<blockquote>StereoImage ( ) combines two images and produces a single image that is thecomposite of a left and right image of a stereo pair. Special red-greenstereo glasses are required to view this effect.; </blockquote><P>The format of the StereoImage method is:</P>
+<blockquote>StereoImage ( ) combines two images and produces a single image that is the composite of a left and right image of a stereo pair. Special red-green stereo glasses are required to view this effect. </blockquote><P>The format of the StereoImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *StereoImage ( const <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Image.html">Image</A> *offset_image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -560,7 +560,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="swirlimage">SwirlImage</A></H2>
-<blockquote>SwirlImage ( ) swirls the pixels about the center of the image, wheredegrees indicates the sweep of the arc through which each pixel is moved.You get a more dramatic effect as the degrees move from 1 to 360.; </blockquote><P>The format of the SwirlImage method is:</P>
+<blockquote>SwirlImage ( ) swirls the pixels about the center of the image, where degrees indicates the sweep of the arc through which each pixel is moved. You get a more dramatic effect as the degrees move from 1 to 360. </blockquote><P>The format of the SwirlImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *SwirlImage ( const <A HREF="types/Image.html">Image</A> *image, double degrees, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -578,7 +578,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="thresholdimage">ThresholdImage</A></H2>
-<blockquote>ThresholdImage ( ) changes the value of individual pixels based onthe intensity of each pixel compared to threshold. The result is ahigh-contrast, two color image.; </blockquote><P>The format of the ThresholdImage method is:</P>
+<blockquote>ThresholdImage ( ) changes the value of individual pixels based on the intensity of each pixel compared to threshold. The result is a high-contrast, two color image. </blockquote><P>The format of the ThresholdImage method is:</P>
 <blockquote>unsigned int ThresholdImage ( <A HREF="types/Image.html">Image</A> *image, const double threshold ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -592,7 +592,7 @@ Define the threshold value
 <P></P></DL></DL>
 <P>
 <H2><A NAME="unsharpmaskimage">UnsharpMaskImage</A></H2>
-<blockquote>UnsharpMaskImage ( ) sharpens an image. We convolve the image with a Gaussian operatorof the given radius and standard deviation ( sigma ) .For reasonable results, radius should be larger than sigma. Use a radiusof 0 and UnsharpMaskImage ( ) selects a suitable radius for you.; </blockquote><P>The format of the UnsharpMaskImage method is:</P>
+<blockquote>UnsharpMaskImage ( ) sharpens an image. We convolve the image with a Gaussian operatorof the given radius and standard deviation ( sigma ) . For reasonable results, radius should be larger than sigma. Use a radius of 0 and UnsharpMaskImage ( ) selects a suitable radius for you. </blockquote><P>The format of the UnsharpMaskImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *UnsharpMaskImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, const double sigma, const double amount, const double threshold, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
@@ -622,7 +622,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="waveimage">WaveImage</A></H2>
-<blockquote>The WaveImage ( ) filter creates a "ripple" effect in the image by shifting the pixels vertically along a sine wave whose amplitude and wavelengthis specified by the given parameters.; </blockquote><P>The format of the WaveImage method is:</P>
+<blockquote>The WaveImage ( ) filter creates a "ripple" effect in the image by shifting the pixels vertically along a sine wave whose amplitude and wavelength is specified by the given parameters. </blockquote><P>The format of the WaveImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *WaveImage ( const <A HREF="types/Image.html">Image</A> *image, const double amplitude, const double wave_length, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
