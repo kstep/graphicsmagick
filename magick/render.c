@@ -4667,6 +4667,7 @@ MagickExport void TraceArc(PrimitiveInfo *primitive_info,const PointInfo start,
   double
     alpha,
     beta,
+    delta,
     factor,
     gamma,
     theta;
@@ -4700,6 +4701,15 @@ MagickExport void TraceArc(PrimitiveInfo *primitive_info,const PointInfo start,
     }
   cosine=cos(DegreesToRadians(fmod(angle,360.0)));
   sine=sin(DegreesToRadians(fmod(angle,360.0)));
+  center.x=cosine*(end.x-start.x)/2+sine*(end.y-start.y)/2;
+  center.y=cosine*(end.y-start.y)/2-sine*(end.x-start.x)/2;
+  delta=(center.x*center.x)/(radii.x*radii.x)+
+    (center.y*center.y)/(radii.y*radii.y);
+  if (delta > 1.0)
+    {
+      radii.x*=sqrt(delta);
+      radii.y*=sqrt(delta);
+    }
   points[0].x=cosine*start.x/radii.x+sine*start.y/radii.x;
   points[0].y=cosine*start.y/radii.y-sine*start.x/radii.y;
   points[1].x=cosine*end.x/radii.x+sine*end.y/radii.x;
