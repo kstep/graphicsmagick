@@ -1352,7 +1352,7 @@ AC_PATH_PROG(RLEEncodeDelegate, rawtorle, rawtorle)
 AC_PATH_PROG(RMDelegate, rm, rm)
 AC_PATH_PROG(SCANDecodeDelegate, scanimage, scanimage)
 AC_PATH_PROG(TXTDelegate, enscript, enscript)
-AC_PATH_PROG(WMFDecodeDelegate, wmftopng, wmftopng)
+AC_PATH_PROG(WMFDecodeDelegate, wmf2magick, wmf2magick)
 AC_PATH_PROG(WWWDecodeDelegate, wget, wget)
 AC_PATH_PROG(XCFDecodeDelegate, xcftopnm, xcftopnm)
 AC_PATH_PROG(ZipDelegate, gzip, gzip)
@@ -1417,7 +1417,7 @@ then
   SCANDecodeDelegate='scanimage'
   ShowImageDelegate='display'
   TXTDelegate='enscript'
-  WMFDecodeDelegate='wmftopng'
+  WMFDecodeDelegate='wmf2magick'
   WWWDecodeDelegate='wget'
   XCFDecodeDelegate='xcftopnm'
   ZipDelegate='gzip'

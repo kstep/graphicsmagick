@@ -65,6 +65,44 @@ static unsigned int
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   I s M V G                                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsMVG returns True if the image format type, identified by the
+%  magick string, is MVG.
+%
+%  The format of the IsMVG method is:
+%
+%      unsigned int IsMVG(const unsigned char *magick,const size_t length)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method IsMVG returns True if the image format type is MVG.
+%
+%    o magick: This string is generally the first few bytes of an image file
+%      or blob.
+%
+%    o length: Specifies the length of the magick string.
+%
+%
+*/
+static unsigned int IsMVG(const unsigned char *magick,const size_t length)
+{
+  if (length < 7)
+    return(False);
+  if (LocaleNCompare((char *) magick,"viewbox",7) == 0)
+    return(True);
+  return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   R e a d M V G I m a g e                                                   %
 %                                                                             %
 %                                                                             %
@@ -181,6 +219,7 @@ ModuleExport void RegisterMVGImage(void)
   entry=SetMagickInfo("MVG");
   entry->decoder=ReadMVGImage;
   entry->encoder=WriteMVGImage;
+  entry->magick=IsMVG;
   entry->adjoin=False;
   entry->description=AllocateString("Magick Vector Graphics");
   entry->module=AllocateString("MVG");

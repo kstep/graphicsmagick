@@ -33,6 +33,7 @@
   <magic name="MIFF" offset="0" target="id=ImageMagick" />
   <magic name="MNG" offset="0" target="\212MNG\r\n\032\n" />
   <magic name="MPEG" offset="0" target="\000\000\001\263" />
+  <magic name="MVG" offset="0" target="viewbox" />
   <magic name="PCD" offset="2048" target="PCD_" />
   <magic name="PCL" offset="0" target="\033E\033" />
   <magic name="PCX" offset="0" target="\012\002" />
