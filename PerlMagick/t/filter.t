@@ -48,7 +48,7 @@ testFilter('input.miff', 'Colorize',
 testFilter('input.miff', 'Contrast',
   q/1/,
   'c2156d2134de57d98a03fe8ffdf0a3cd',
-  '0cbcdf4fd1a6c1232be97b1fcd309d84');
+  'e4d90d8d2af844650864c4e193acb270');
 
 ++$test;
 testFilter('input.miff', 'Crop',
@@ -179,7 +179,7 @@ testFilter('input.miff', 'Roll',
 testFilter('input.miff', 'Rotate',
   q/45/,
   '348660b245a850b59bc9df4bd3000331',
-  '875860134767aaf8dc05ab42fbfbd6cd');
+  'cf2cf4a4502d0c9147373d1c4db35907');
 
 ++$test;
 testFilter('input.miff', 'Sample',
@@ -207,7 +207,7 @@ testFilter('input.miff', 'Shade',
 testFilter('input.miff', 'Shear',
   q/45x45/,
   'c50868db64675f2e7692c93c0ca6798d',
-  '7f6ba57b2d1a6245bf7de081002ac094');
+  '791f8a7ea64989e01c9e5e27375574a2');
 
 ++$test;
 testFilter('input.miff', 'Solarize',
