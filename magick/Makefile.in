@@ -259,7 +259,7 @@ libMagick_la_LDFLAGS = -no-undefined \
 AM_CPPFLAGS = @LIBRARY_EXTRA_CPPFLAGS@
 
 # Library base sources
-MAGICK_BASE_SRCS = memory.c blob.c cache.c error.c monitor.c constitute.c \
+MAGICK_BASE_SRCS = memory.c blob.c cache.c message.c error.c monitor.c constitute.c \
   image.c composite.c list.c color.c quantize.c segment.c resize.c \
 	transform.c shear.c enhance.c effect.c fx.c decorate.c annotate.c type.c \
 	draw.c render.c montage.c semaphore.c attribute.c signature.c compress.c \
@@ -287,7 +287,7 @@ bin_SCRIPTS = Magick-config
 # Headers which are installed
 include_HEADERS = PreRvIcccm.h api.h attribute.h blob.h cache.h \
   cache_view.h classify.h command.h compress.h magick_config.h delegate.h \
-  draw.h render.h error.h gem.h image.h list.h magic.h magick.h module.h \
+  draw.h render.h message.h error.h gem.h image.h list.h magic.h magick.h module.h \
   monitor.h quantize.h registry.h semaphore.h timer.h utility.h version.h \
 	widget.h xwindow.h
 
@@ -321,7 +321,7 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 
 @WITH_MODULES_TRUE@libMagick_la_DEPENDENCIES =
 @WITH_MODULES_FALSE@libMagick_la_DEPENDENCIES = ../coders/libCoders.la
-am__objects_1 = memory.lo blob.lo cache.lo error.lo monitor.lo \
+am__objects_1 = memory.lo blob.lo cache.lo message.lo error.lo monitor.lo \
 	constitute.lo image.lo composite.lo list.lo color.lo \
 	quantize.lo segment.lo resize.lo transform.lo shear.lo \
 	enhance.lo effect.lo fx.lo decorate.lo annotate.lo type.lo \
@@ -356,7 +356,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/constitute.Plo ./$(DEPDIR)/decorate.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/delegate.Plo ./$(DEPDIR)/display.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/draw.Plo ./$(DEPDIR)/effect.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/enhance.Plo ./$(DEPDIR)/error.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/enhance.Plo ./$(DEPDIR)/message.Plo ./$(DEPDIR)/error.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/fx.Plo ./$(DEPDIR)/gem.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/image.Plo ./$(DEPDIR)/list.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/magic.Plo ./$(DEPDIR)/magick.Plo \
@@ -497,6 +497,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/draw.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/effect.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enhance.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/message.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/error.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fx.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gem.Plo@am__quote@

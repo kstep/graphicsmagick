@@ -165,7 +165,8 @@ static unsigned int WriteCImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   attribute=GetImageAttribute(image,"[mgk]");
   if (attribute == (const ImageAttribute *) NULL)
-    ThrowWriterException(FileOpenError,"Unable to open file",image);
+    ThrowWriterException(ConfigureError,"No required [mgk] image attribute",
+      image);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,"Unable to open file",image);
