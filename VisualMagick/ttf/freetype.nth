@@ -37,6 +37,8 @@
 /* whether EXPORT_DEF has been defined already.                     */
 
 #undef EXPORT
+#undef EXPORT_DEF
+#undef EXPORT_FUNC
 #if !defined(_VISUALC_)
 #	error Something is very very wrong. This header must only be used under Visual C++.
 #endif
@@ -62,17 +64,18 @@
 #		pragma warning( disable: 4273 )	/* Disable the stupid dll linkage warnings */
 #		if !defined(_TTFLIB_)
 #     define EXPORT __declspec(dllimport) type
+#     define EXPORT_DEF __declspec(dllimport) type
+#     define EXPORT_FUNC __declspec(dllimport) type
 #		else
 #     define EXPORT __declspec(dllexport)
+#     define EXPORT_DEF __declspec(dllexport)
+#     define EXPORT_FUNC __declspec(dllexport)
 #		endif
 #	else
 #   define EXPORT
+#   define EXPORT_DEF
+#   define EXPORT_FUNC
 #	endif
-
-#undef EXPORT_DEF
-#define EXPORT_DEF EXPORT
-#undef EXPORT_FUNC
-#define EXPORT_FUNC EXPORT
 
 #pragma warning(disable : 4018)
 #pragma warning(disable : 4244)
