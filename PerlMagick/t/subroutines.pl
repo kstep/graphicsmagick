@@ -229,7 +229,7 @@ sub testRead {
     $image=Graphics::Magick->new;
     $image->Set(size=>'512x512');
     $status=$image->ReadImage("$infile");
-    if( "$status" && !($status =~ /Exception 315/)) {
+    if( "$status" && !($status =~ /Exception 315/) && !($status =~ /Exception 350/)) {
       print "ReadImage $infile: $status";
       ++$failure;
     } else {

@@ -1,3 +1,8 @@
+2003-08-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/wpg.c: Incorporated patch from Fojtik Jaroslav to support
+	rendering embedded WMFs.
+
 2003-08-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/image.c (SetImageChannelDepth): New function to transform

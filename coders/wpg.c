@@ -496,6 +496,8 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
 
   Image
     *image2;
+    
+  char c,*FileFormat;    
 
   if ((clone_info=CloneImageInfo(image_info)) == NULL)
     return(image);
@@ -509,14 +511,28 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
 
   /* Copy postscript to temporary file */
   (void) SeekBlob(image,PS_Offset,SEEK_SET);
-  while(PS_Size-- > 0)
+  c=ReadBlobByte(image);
+  fputc(c,ps_file);
+  while(--PS_Size > 0)
     {
       (void) fputc(ReadBlobByte(image),ps_file);
     }
   (void) fclose(ps_file);
-
-  /* Read Postscript into image */
-  FormatString(clone_info->filename,"PS:%.1024s",postscript_file);
+  
+    /* Detect file format - brrrr this is ugly, why graphic magick cannot do this??? */
+  switch(c)
+    {
+    case 1:
+    case 215:FileFormat="WMF";
+	     break;
+    case '%':	     
+    case 4:
+    case 197:
+    default:FileFormat="PS";
+    }
+  
+    /* Read nested image */
+  FormatString(clone_info->filename,"%s:%.1024s",FileFormat,postscript_file);
   image2=ReadImage(clone_info,exception);
 
   if (!image2)
@@ -997,10 +1013,11 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
               break;
 
             case 0x12:  /* Postscript WPG2*/
-              if(Rec2.RecordLength>0x12)
+	      i=ReadBlobLSBShort(image);
+              if(Rec2.RecordLength>i)
                 image=ExtractPostscript(image,image_info,
-                  TellBlob(image)+0x12,   /*skip PS header in the wpg2*/
-                  (long) (Rec2.RecordLength-0x12),exception);
+                  TellBlob(image)+i,		/*skip PS header in the wpg2*/
+                  (long) (Rec2.RecordLength-i-2),exception);
               break;
             }
         }
