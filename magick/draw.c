@@ -905,7 +905,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             break;
           }
         GenerateArc(primitive_info+j,primitive_info[j].pixel,
-          primitive_info[j+1].pixel,primitive_info[j+2].pixel,0,False,False);
+          primitive_info[j+1].pixel,primitive_info[j+2].pixel,0,True,False);
         i=j+primitive_info[j].coordinates;
         break;
       }

@@ -114,7 +114,6 @@ static void Rd_WP_DWORD(Image *image,unsigned long *d)
   return;
 }
 
-
 static void InsertRow(unsigned char *p,int y,Image *image)
 {
 int bit,x;
@@ -245,7 +244,7 @@ register IndexPacket *indexes;
            if (q == (PixelPacket *) NULL) break;
            indexes=GetIndexes(image);
 
-           for (x=0; x < (int) image->columns; x++)
+	   for (x=0; x < (int) image->columns; x++)
                 {
                 index=(*p++);
                 indexes[x]=index;
@@ -262,7 +261,7 @@ register IndexPacket *indexes;
        case 24:     /*  Convert DirectColor scanline.  */
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
-            break;
+	    break;
           for (x=0; x < (int) image->columns; x++)
              {
              q->red=UpScale(*p++);
@@ -279,10 +278,7 @@ register IndexPacket *indexes;
        }
 }
 
-
 #define InsertByte(b) {BImgBuff[x]=b;x++;if(x>=ldblk) {InsertRow(BImgBuff,y,image);x=0;y++;}}
-
-
 static int UnpackWPGRaster(Image *image)
 {
 unsigned x,y,i;
@@ -313,11 +309,11 @@ long ldblk;
 	{
 	if(RunCount)	/* repeat next byte runcount * */
 		{
-                bbuf=ReadByte(image);
+		bbuf=ReadByte(image);
 		for(i=0;i<RunCount;i++) InsertByte(bbuf);
 		}
 	   else {	/* read next byte as RunCount; repeat 0xFF runcount* */
-                bbuf=ReadByte(image);
+		RunCount=ReadByte(image);
 		for(i=0;i<RunCount;i++) InsertByte(0xFF);
 		}
 	}
@@ -326,35 +322,104 @@ long ldblk;
 		{
 		for(i=0;i<RunCount;i++)
 			{
-                        bbuf=ReadByte(image);
+			bbuf=ReadByte(image);
 			InsertByte(bbuf);
-			};
+			}
 		}
 	   else {	/* repeat previous line runcount* */
 		RunCount=ReadByte(image);
 		if(x) {              /* attempt to duplicate row from x position: */
-                      free(BImgBuff);/* I do not know what to do here */
+		      free(BImgBuff);/* I do not know what to do here */
 		      return(-3);
 		      }
 		for(i=0;i<RunCount;i++)
 			{
 			x=0;
 			y++;    /* Here I need to duplicate previous row RUNCOUNT* */
-                        if(y<2) continue;
+			if(y<2) continue;
 			if(y>image->rows)
-                                 {
-                                 free(BImgBuff);
-                                 return(-4);
-                                 }
-                        InsertRow(BImgBuff,y-1,image);
+				 {
+				 free(BImgBuff);
+				 return(-4);
+				 }
+			InsertRow(BImgBuff,y-1,image);
 			}
-                }
-        }
+		}
+	}
    }
  free(BImgBuff);
  return(0);
 }
 
+#define InsertRByte(b) {BImgBuff[x]=b;x++;if(x>=ldblk) {InsertRow(BImgBuff,image->rows-y-1,image);x=0;y++;}}
+int UnpackWPG2Raster(Image *image)
+{
+unsigned x,y,i;
+unsigned char bbuf,RunCount;
+unsigned char *BImgBuff;
+long ldblk;
+
+
+ x=0;
+ y=0;
+ ldblk=((long)image->depth*image->columns+7)/8;
+ BImgBuff=(unsigned char *) malloc(ldblk);
+ if(BImgBuff==NULL) return(-2);
+
+ ReadByte(image);
+ ReadByte(image);
+
+ while(y<image->rows)
+     {
+     bbuf=ReadByte(image);
+
+
+     RunCount=bbuf & 0x7F;
+     if(bbuf & 0x80)
+	{
+	if(RunCount!=0x7F)	// repeat next byte runcount *
+		{
+		bbuf=ReadByte(image);
+		for(i=0;i<=RunCount;i++) InsertRByte(bbuf);
+		}
+	   else {	//read next byte as RunCount; repeat 0xFF runcount*
+		RunCount=ReadByte(image);
+		for(i=0;i<=RunCount;i++) InsertRByte(0xFF);
+		}
+	}
+   else {
+	if(RunCount!=0x7F)   // next runcount byte are readed directly
+		{
+		for(i=0;i<=RunCount;i++)
+			{
+			bbuf=ReadByte(image);
+			InsertRByte(bbuf);
+			}
+		}
+	   else {
+		RunCount=ReadByte(image);
+		if(x) {		//read next byte as RunCount; repeat 0 runcount*
+		      for(i=0;i<=RunCount;i++)
+				 InsertRByte(0);
+		      }
+		else for(i=0;i<=RunCount;i++) // repeat previous line runcount*
+			{
+			x=0;
+			y++;   /* Here I need to duplicate previous row RUNCOUNT* */
+			if(y<2) continue;
+			if(y>image->rows)
+				 {
+				 free(BImgBuff);
+				 return(-4);
+				 }
+			InsertRow(BImgBuff,image->rows-y-2,image);
+			}
+		}
+	}
+   }
+ free(BImgBuff);
+ return(0);
+}
 
 Image *ExtractPostscript(Image *image,const ImageInfo *image_info,long PS_Offset,long PS_Size)
 {
@@ -468,7 +533,8 @@ typedef struct
 	{
 	unsigned int Width;
 	unsigned int Heigth;
-	unsigned int Depth;
+	unsigned char Depth;
+	unsigned char Compression;
 	}WPG2BitmapType1;
 typedef struct
 	{
@@ -619,7 +685,7 @@ typedef struct {
 		 image->rows=BitmapHeader2.Heigth;
 		 image->depth=BitmapHeader2.Depth;
 
-    UnpackRaster:
+UnpackRaster:
 		 if (image->colors == 0 && image->depth!=24)
 		     {
 		     image->colors=1 << image->depth;
@@ -637,7 +703,7 @@ NoMemory:		ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
 
 		 if(UnpackWPGRaster(image)<0) /* The raster cannot be unpacked */
 		     {
-		     ThrowReaderException(ResourceLimitWarning,"Cannot decompress WPG raster",image);
+DecompressionFailed: ThrowReaderException(ResourceLimitWarning,"Cannot decompress WPG raster",image);
 		     }
 
 		 /* Allocate next image structure. */
@@ -647,19 +713,19 @@ NoMemory:		ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
 		 image->colors=image->columns=image->rows=image->depth=0;
 		 break;
 
-         case 0x1B:  /*Postscript l2*/
-	         if(Rec.RecordLength>0x3C)
+	 case 0x1B:  /*Postscript l2*/
+		 if(Rec.RecordLength>0x3C)
 		      image=ExtractPostscript(image,image_info,
-		               TellBlob(image)+0x3C,   /*skip PS l2 header in the wpg*/
+			       TellBlob(image)+0x3C,   /*skip PS l2 header in the wpg*/
 			       Rec.RecordLength-0x3C);
-		 break;		 
+		 break;
 	 }
       }
       break;
 
    case 2:  /*WPG level 2*/
      while(!EOFBlob(image)) /* object parser loop */
-   
+
        {
        SeekBlob(image,Header.DataOffset,SEEK_SET);
        if(EOFBlob(image)) break;
@@ -693,10 +759,10 @@ NoMemory:		ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
 	 case 0x0E:
 	     Bitmap2Header1.Width=LSBFirstReadShort(image);
 	     Bitmap2Header1.Heigth=LSBFirstReadShort(image);
-	     Bitmap2Header1.Depth=LSBFirstReadShort(image);
+	     Bitmap2Header1.Depth=ReadByte(image);
+	     Bitmap2Header1.Compression=ReadByte(image);
 
-	     image->columns=Bitmap2Header1.Width;
-	     image->rows=Bitmap2Header1.Heigth;
+	     if(Bitmap2Header1.Compression>1) continue; //Unknown compression method
 	     switch(Bitmap2Header1.Depth)
 	       {
 	       case 1:image->depth=1;break;
@@ -706,6 +772,8 @@ NoMemory:		ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
 	       case 8:image->depth=24;break;
 	       default:continue;  /*Ignore raster with unknown depth*/
 	       }
+	     image->columns=Bitmap2Header1.Width;
+	     image->rows=Bitmap2Header1.Heigth;  
 
 	     if (image->colors == 0 && image->depth!=24)
 		     {
@@ -719,24 +787,37 @@ NoMemory:		ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
 			 ReacquireMemory((void **)&image->colormap,(1<<image->depth)*sizeof(PixelPacket));
 		  }
 
-             ldblk=((long)image->depth*image->columns+7)/8;
-	     if( (BImgBuff=(unsigned char *) malloc(ldblk))==NULL) goto NoMemory;
 
-	     for(i=0;i<image->rows;i++)
+	     switch(Bitmap2Header1.Compression)
 		{
-		ReadBlob(image,ldblk,(char *)BImgBuff);
-		InsertRow(BImgBuff,i,image);
+		case 0:		//Uncompressed raster
+		   {
+		   ldblk=((long)image->depth*image->columns+7)/8;
+		   if( (BImgBuff=(unsigned char *) malloc(ldblk))==NULL) goto NoMemory;
+
+		   for(i=0;i<image->rows;i++)
+		      {
+		      ReadBlob(image,ldblk,(char *)BImgBuff);
+		      InsertRow(BImgBuff,i,image);
+		      }
+		   if(BImgBuff) free(BImgBuff);
+		   break;
+		   }
+		case 1:		//RLE for WPG2
+		   {
+		   if(UnpackWPG2Raster(image)<0)
+			goto DecompressionFailed;
+		   break;
+		   }   
 		}
-	     if(BImgBuff) free(BImgBuff);
-	     
-	          /* Allocate next image structure. */
+		  /* Allocate next image structure. */
 	     AllocateNextImage(image_info,image);
 	     if (image->next == (Image *) NULL) goto Finish;
 	     image=image->next;
 	     image->colors=image->columns=image->rows=image->depth=0;
 	     break;
-	     
-	 case 0x12:	/* Postscript WPG2*/     
+
+	 case 0x12:	/* Postscript WPG2*/
 	     if(Rec2.RecordLength>0x12)
 		      image=ExtractPostscript(image,image_info,
 		               TellBlob(image)+0x12,   /*skip PS header in the wpg2*/

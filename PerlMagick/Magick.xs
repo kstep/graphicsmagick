@@ -3675,14 +3675,14 @@ Mogrify(ref,...)
     StereoImage        = 126
     Stegano            = 127
     SteganoImage       = 128
-    Deconstruct        = 131
-    DeconstructImage   = 132
-    GaussianBlur       = 133
-    GaussianBlurImage  = 134
-    Convolve           = 135
-    ConvolveImage      = 136
-    Profile            = 137
-    ProfileImage       = 138
+    Deconstruct        = 129
+    DeconstructImage   = 130
+    GaussianBlur       = 131
+    GaussianBlurImage  = 132
+    Convolve           = 133
+    ConvolveImage      = 134
+    Profile            = 135
+    ProfileImage       = 136
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -5082,12 +5082,12 @@ Mogrify(ref,...)
           image=SteganoImage(image,argument_list[0].image_reference,&exception);
           break;
         }
-        case 66:  /* Deconstruct */
+        case 65:  /* Deconstruct */
         {
           image=DeconstructImages(image,&exception);
           break;
         }
-        case 67:  /* GaussianBlur */
+        case 66:  /* GaussianBlur */
         {
           double
             width,
@@ -5105,7 +5105,7 @@ Mogrify(ref,...)
           image=GaussianBlurImage(image,width,sigma,&exception);
           break;
         }
-        case 68:  /* Convolve */
+        case 67:  /* Convolve */
         {
           AV
             *av;
@@ -5129,7 +5129,7 @@ Mogrify(ref,...)
           LiberateMemory((void **) &kernel);
           break;
         }
-        case 69:  /* Profile */
+        case 68:  /* Profile */
         {
           if (!attribute_flag[0])
             argument_list[0].string_reference=(char *) NULL;
