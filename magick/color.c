@@ -399,6 +399,7 @@ MagickExport char **GetColorList(const char *pattern,int *number_colors)
   *number_colors=0;
   GetExceptionInfo(&exception);
   p=GetColorInfo("*",&exception);
+  DestroyExceptionInfo(&exception);
   if (p == (const ColorInfo *) NULL)
     return((char **) NULL);
   i=0;
@@ -1368,6 +1369,7 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
     }
   GetExceptionInfo(&exception);
   p=GetColorInfo(name,&exception);
+  DestroyExceptionInfo(&exception);
   if (p == (const ColorInfo *) NULL)
     return(False);
   *color=p->color;
