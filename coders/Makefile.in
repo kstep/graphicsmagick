@@ -151,6 +151,7 @@ LIB_THREAD = @LIB_THREAD@
 LIB_TIFF = @LIB_TIFF@
 LIB_TTF = @LIB_TTF@
 LIB_WMF = @LIB_WMF@
+LIB_WMF_DEPS = @LIB_WMF_DEPS@
 LIB_X11 = @LIB_X11@
 LIB_XEXT = @LIB_XEXT@
 LIB_XML = @LIB_XML@
@@ -646,7 +647,7 @@ wbmp_la_LIBADD = ../magick/libMagick.la
 # WMF module
 wmf_la_SOURCES = wmf.c
 wmf_la_LDFLAGS = -no-undefined -module -avoid-version
-wmf_la_LIBADD = ../magick/libMagick.la @LIB_WMF@ @LIB_JPEG@ @LIB_PNG@ @LIB_ZLIB@ $(LIB_MATH)
+wmf_la_LIBADD = ../magick/libMagick.la @LIB_WMF@ @LIB_WMF_DEPS@ $(LIB_MATH)
 
 # WPG module
 wpg_la_SOURCES = wpg.c

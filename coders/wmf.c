@@ -117,7 +117,7 @@ struct _wmf_magick_t
   char
     *mvg;
 
-  long
+  size_t
     mvg_alloc,
     mvg_length;
 
@@ -387,6 +387,10 @@ static void wmf_magick_device_open(wmfAPI * API)
     (long *) AcquireMemory(ddata->max_temp_file_index * sizeof(long));
   ddata->pattern_id = 0;
   ddata->clipping = False;
+
+  ddata->mvg = 0;
+  ddata->mvg_alloc = 0;
+  ddata->mvg_length = 0;
 }
 
 /*
@@ -1596,11 +1600,8 @@ static void magick_pen(wmfAPI * API, wmfDC * dc)
 /* Extend MVG, printf style */
 static int magick_mvg_printf(wmfAPI * API, char *format, ...)
 {
-  long
-    str_length;
-
-  va_list
-    argp;
+  const size_t
+    alloc_size = MaxTextExtent*2;
 
   wmf_magick_t
     *ddata = WMF_MAGICK_GetData(API);
@@ -1608,26 +1609,54 @@ static int magick_mvg_printf(wmfAPI * API, char *format, ...)
   /* Allocate initial memory */
   if(ddata->mvg == 0)
     {
-      ddata->mvg = AcquireMemory(MaxTextExtent);
-      ddata->mvg_alloc = MaxTextExtent;
+      ddata->mvg = AcquireMemory(alloc_size);
+      ddata->mvg_alloc = alloc_size;
       ddata->mvg_length = 0;
+      if(ddata->mvg == 0)
+        return -1;
     }
 
-  /* Re-allocate additional MaxTextExtent memory if necessary */
+  /* Re-allocate additional memory if necessary */
   if(ddata->mvg_alloc < (ddata->mvg_length+MaxTextExtent))
     {
-      ReacquireMemory((void**)&ddata->mvg,ddata->mvg_length+MaxTextExtent);
-      ddata->mvg_alloc = ddata->mvg_length+MaxTextExtent;
+      size_t
+        realloc_size = ddata->mvg_alloc + alloc_size;
+
+      ReacquireMemory((void**)&ddata->mvg,realloc_size);
+      if(ddata->mvg == NULL)
+        return -1;
+      ddata->mvg_alloc = realloc_size;
     }
 
-  /* Write to end of existing MVG string */
-  va_start(argp, format);
-  str_length = vsnprintf(ddata->mvg+ddata->mvg_length, MaxTextExtent - 1, format, argp);
-  /* printf("%s",ddata->mvg+ddata->mvg_length); */
-  ddata->mvg_length += str_length;
-  va_end(argp);
+/*   printf("ddata->mvg = %lx  ddata->mvg_length = %d  ddata->mvg_alloc = %d\n", */
+/*          (long)ddata->mvg, ddata->mvg_length, ddata->mvg_alloc); */
 
-  return str_length;
+  /* Write to end of existing MVG string */
+  {
+    char
+      buffer[MaxTextExtent];
+
+    long
+      str_length;
+
+    va_list
+      argp;
+
+    va_start(argp, format);
+    str_length = vsnprintf(buffer, MaxTextExtent - 1, format, argp);
+    va_end(argp);
+    if(str_length > 0 && str_length < (MaxTextExtent - 1))
+      {
+        /* printf("%s",buffer); */
+        strcpy(ddata->mvg+ddata->mvg_length, buffer);
+        ddata->mvg_length += str_length;
+        return str_length;
+      }
+
+    printf("vsnprintf return out of bounds (%ld)!\n", str_length);
+    
+    return -1;
+  }
 }
 
 /* Scribble MVG on image */
