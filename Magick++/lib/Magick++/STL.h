@@ -45,12 +45,9 @@ namespace Magick
   {
   public:
     addNoiseImage ( NoiseType noiseType_ );
-//       : _noiseType( noiseType_ ) { }
 
     void operator()( Image &image_ );
-//       {
-// 	image_.addNoise( _noiseType );
-//       }
+
   private:
     NoiseType _noiseType;
   };
@@ -61,43 +58,28 @@ namespace Magick
   public:
     // Annotate using specified text, and placement location
     annotateImage ( const std::string &text_,
-                    const Geometry &geometry_ )
-      : _text( text_ ),
-	_geometry( geometry_ ),
-	_gravity( NorthWestGravity ),
-        _degrees( 0 ) { }
+                    const Geometry &geometry_ );
+
     // Annotate using specified text, bounding area, and placement
     // gravity
     annotateImage ( const std::string &text_,
 		    const Geometry &geometry_,
-		    GravityType gravity_ )
-      : _text( text_ ),
-	_geometry( geometry_ ),
-	_gravity( gravity_ ),
-        _degrees( 0 ) { }
+		    const GravityType gravity_ );
+
     // Annotate with text using specified text, bounding area,
     // placement gravity, and rotation.
     annotateImage ( const std::string &text_,
                     const Geometry &geometry_,
-                    GravityType gravity_,
-                    double degrees_ )
-      : _text( text_ ),
-        _geometry( geometry_ ),
-        _gravity( gravity_ ),
-        _degrees( degrees_ ) { }
+                    const GravityType gravity_,
+                    const double degrees_ );
+
     // Annotate with text (bounding area is entire image) and
     // placement gravity.
     annotateImage ( const std::string &text_,
-		    GravityType gravity_ )
-      : _text( text_ ),
-	_geometry( ),
-	_gravity( gravity_ ),
-        _degrees( 0 ) { }
+		    const GravityType gravity_ );
     
-    void operator()( Image &image_ )
-      {
-        image_.annotate( _text, _geometry, _gravity, _degrees );
-      }
+    void operator()( Image &image_ );
+
   private:
     const std::string   _text;
     const Geometry      _geometry;
@@ -109,14 +91,10 @@ namespace Magick
   class blurImage : public std::unary_function<Image&,void>
   {
   public:
-    blurImage( const double radius_ = 1, const double sigma_ = 0.5 )
-      : _radius( radius_ ),
-        _sigma( sigma_ ){ }
+    blurImage( const double radius_ = 1, const double sigma_ = 0.5 );
 
-    void operator()( Image &image_ )
-      {
-	image_.blur( _radius, _sigma );
-      }
+    void operator()( Image &image_ );
+
   private:
     const double _radius;
     const double _sigma;
@@ -126,13 +104,10 @@ namespace Magick
   class borderImage : public std::unary_function<Image&,void>
   {
   public:
-    borderImage( const Geometry &geometry_ = borderGeometryDefault  )
-      : _geometry( geometry_ ) { }
+    borderImage( const Geometry &geometry_ = borderGeometryDefault  );
 
-    void operator()( Image &image_ )
-      {
-	image_.border( _geometry );
-      }
+    void operator()( Image &image_ );
+
   private:
     const Geometry _geometry;
   };
@@ -141,14 +116,10 @@ namespace Magick
   class charcoalImage : public std::unary_function<Image&,void>
   {
   public:
-    charcoalImage( const double radius_ = 1, const double sigma_ = 0.5  )
-      : _radius( radius_ ),
-        _sigma( sigma_ ) { }
+    charcoalImage( const double radius_ = 1, const double sigma_ = 0.5  );
 
-    void operator()( Image &image_ )
-      {
-	image_.charcoal( _radius, _sigma );
-      }
+    void operator()( Image &image_ );
+
   private:
     const double _radius;
     const double _sigma;
@@ -158,13 +129,10 @@ namespace Magick
   class chopImage : public std::unary_function<Image&,void>
   {
   public:
-    chopImage( const Geometry &geometry_ )
-      : _geometry( geometry_ ) { }
+    chopImage( const Geometry &geometry_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.chop( _geometry );
-      }
+    void operator()( Image &image_ );
+
   private:
     const Geometry _geometry;
   };
@@ -176,22 +144,13 @@ namespace Magick
     colorizeImage( const unsigned int opacityRed_,
                    const unsigned int opacityGreen_,
                    const unsigned int opacityBlue_,
-		   const Color &penColor_ )
-      : _opacityRed ( opacityRed_ ),
-        _opacityGreen ( opacityGreen_ ),
-        _opacityBlue ( opacityBlue_ ),
-	_penColor( penColor_ ) { }
-    colorizeImage( const unsigned int opacity_,
-                   const Color &penColor_ )
-      : _opacityRed ( opacity_ ),
-        _opacityGreen ( opacity_ ),
-        _opacityBlue ( opacity_ ),
-	_penColor( penColor_ ) { }
+		   const Color &penColor_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.colorize( _opacityRed, _opacityGreen, _opacityBlue, _penColor );
-      }
+    colorizeImage( const unsigned int opacity_,
+                   const Color &penColor_ );
+
+    void operator()( Image &image_ );
+
   private:
     const unsigned int _opacityRed;
     const unsigned int _opacityGreen;
@@ -203,13 +162,10 @@ namespace Magick
   class colorSpaceImage : public std::unary_function<Image&,void>
   {
   public:
-    colorSpaceImage( ColorspaceType colorSpace_ )
-      : _colorSpace( colorSpace_ ) { }
+    colorSpaceImage( ColorspaceType colorSpace_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.colorSpace( _colorSpace );
-      }
+    void operator()( Image &image_ );
+
   private:
     const ColorspaceType _colorSpace;
   };
@@ -218,13 +174,10 @@ namespace Magick
   class commentImage : public std::unary_function<Image&,void>
   {
   public:
-    commentImage( const std::string &comment_ )
-      : _comment( comment_ ) { }
+    commentImage( const std::string &comment_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.comment( _comment );
-      }
+    void operator()( Image &image_ );
+
   private:
     const std::string _comment;
   };
@@ -237,23 +190,14 @@ namespace Magick
     compositeImage( const Image &compositeImage_,
 		    int xOffset_,
 		    int yOffset_,
-		    CompositeOperator compose_ = InCompositeOp )
-      : _compositeImage( compositeImage_ ),
-	_xOffset ( xOffset_ ),
-	_yOffset ( yOffset_ ),
-	_compose ( compose_ ) {}
+		    CompositeOperator compose_ = InCompositeOp );
+
     compositeImage( const Image &compositeImage_,
 		    const Geometry &offset_,
-		    CompositeOperator compose_ = InCompositeOp )
-      : _compositeImage( compositeImage_ ),
-	_xOffset ( offset_.xOff() ),
-	_yOffset ( offset_.yOff() ),
-	_compose ( compose_ ) {}
+		    CompositeOperator compose_ = InCompositeOp );
     
-    void operator()( Image &image_ )
-      {
-	image_.composite( _compositeImage, _xOffset, _yOffset, _compose );
-      }
+    void operator()( Image &image_ );
+
   private:
     const Image             _compositeImage;
     const int               _xOffset;
@@ -265,13 +209,10 @@ namespace Magick
   class contrastImage : public std::unary_function<Image&,void>
   {
   public:
-    contrastImage( unsigned int sharpen_ )
-      : _sharpen( sharpen_ ) { }
+    contrastImage( const unsigned int sharpen_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.contrast( _sharpen );
-      }
+    void operator()( Image &image_ );
+
   private:
     const unsigned int _sharpen;
   };
@@ -280,13 +221,10 @@ namespace Magick
   class cropImage : public std::unary_function<Image&,void>
   {
   public:
-    cropImage( const Geometry &geometry_ )
-      : _geometry( geometry_ ) { }
+    cropImage( const Geometry &geometry_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.crop( _geometry );
-      }
+    void operator()( Image &image_ );
+
   private:
     const Geometry _geometry;
   };
@@ -295,13 +233,10 @@ namespace Magick
   class cycleColormapImage : public std::unary_function<Image&,void>
   {
   public:
-    cycleColormapImage( int amount_ )
-      : _amount( amount_ ) { }
+    cycleColormapImage( const int amount_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.cycleColormap( _amount );
-      }
+    void operator()( Image &image_ );
+
   private:
     const int _amount;
   };
@@ -310,12 +245,10 @@ namespace Magick
   class despeckleImage : public std::unary_function<Image&,void>
   {
   public:
-    despeckleImage( void ) { }
+    despeckleImage( void );
 
-    void operator()( Image &image_ )
-      {
-	image_.despeckle( );
-      }
+    void operator()( Image &image_ );
+
   private:
   };
 
@@ -325,19 +258,12 @@ namespace Magick
   public:
     // Draw on image using a single drawable
     // Store in list to make implementation easier
-    drawImage( const Drawable &drawable_ )
-      : _drawableList()
-      {
-        _drawableList.push_back( drawable_ );
-      }
-    // Draw on image using a drawable list
-    drawImage( const std::list<Drawable> &drawable_ )
-      : _drawableList( drawable_ ) {}
+    drawImage( const Drawable &drawable_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.draw( _drawableList );
-      }
+    // Draw on image using a drawable list
+    drawImage( const std::list<Drawable> &drawable_ );
+
+    void operator()( Image &image_ );
 
   private:
     std::list<Drawable> _drawableList;
@@ -347,13 +273,10 @@ namespace Magick
   class edgeImage : public std::unary_function<Image&,void>
   {
   public:
-    edgeImage( double radius_ = 0.0  )
-      : _radius( radius_ ) { }
+    edgeImage( const double radius_ = 0.0  );
 
-    void operator()( Image &image_ )
-      {
-	image_.edge( _radius );
-      }
+    void operator()( Image &image_ );
+
   private:
     const double _radius;
   };
@@ -362,17 +285,11 @@ namespace Magick
   class embossImage : public std::unary_function<Image&,void>
   {
   public:
-    embossImage( void )
-      : _radius( 1 ),
-        _sigma( 0.5 ) { }
-    embossImage( const double radius_, const double sigma_ )
-      : _radius( radius_ ),
-        _sigma( sigma_ ) { }
+    embossImage( void );
+    embossImage( const double radius_, const double sigma_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.emboss( _radius, _sigma );
-      }
+    void operator()( Image &image_ );
+
   private:
     const double _radius;
     const double _sigma;
@@ -382,12 +299,10 @@ namespace Magick
   class enhanceImage : public std::unary_function<Image&,void>
   {
   public:
-    enhanceImage( void ) { }
+    enhanceImage( void );
 
-    void operator()( Image &image_ )
-      {
-	image_.enhance( );
-      }
+    void operator()( Image &image_ );
+
   private:
   };
 
@@ -395,12 +310,10 @@ namespace Magick
   class equalizeImage : public std::unary_function<Image&,void>
   {
   public:
-    equalizeImage( void ) { }
+    equalizeImage( void );
 
-    void operator()( Image &image_ )
-      {
-	image_.equalize( );
-      }
+    void operator()( Image &image_ );
+
   private:
   };
 
@@ -408,13 +321,10 @@ namespace Magick
   class fillColorImage : public std::unary_function<Image&,void>
   {
   public:
-    fillColorImage( const Color &fillColor_ )
-      : _fillColor( fillColor_ ) { }
+    fillColorImage( const Color &fillColor_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.fillColor( _fillColor );
-      }
+    void operator()( Image &image_ );
+
   private:
     const Color _fillColor;
   };
@@ -423,12 +333,10 @@ namespace Magick
   class flipImage : public std::unary_function<Image&,void>
   {
   public:
-    flipImage( void ) { }
+    flipImage( void );
 
-    void operator()( Image &image_ )
-      {
-	image_.flip( );
-      }
+    void operator()( Image &image_ );
+
   private:
   };
 
@@ -439,48 +347,27 @@ namespace Magick
     // Flood-fill color across pixels starting at target-pixel and
     // stopping at pixels matching specified border color.
     // Uses current fuzz setting when determining color match.
-    floodFillColorImage( unsigned int x_, unsigned int y_,
-			 const Color &fillColor_ )
-      : _x(x_),
-	_y(y_),
-	_fillColor(fillColor_),
-	_borderColor() { }
+    floodFillColorImage( const unsigned int x_,
+                         const unsigned int y_,
+			 const Color &fillColor_ );
+
     floodFillColorImage( const Geometry &point_,
-			 const Color &fillColor_ )
-      : _x(point_.xOff()),
-	_y(point_.yOff()),
-	_fillColor(fillColor_),
-	_borderColor() { }
+			 const Color &fillColor_ );
 
     // Flood-fill color across pixels starting at target-pixel and
     // stopping at pixels matching specified border color.
     // Uses current fuzz setting when determining color match.
-    floodFillColorImage( unsigned int x_, unsigned int y_,
+    floodFillColorImage( const unsigned int x_,
+                         const unsigned int y_,
 			 const Color &fillColor_,
-			 const Color &borderColor_ )
-      : _x(x_),
-	_y(y_),
-	_fillColor(fillColor_),
-	_borderColor(borderColor_) { }
+			 const Color &borderColor_ );
+
     floodFillColorImage( const Geometry &point_,
 			 const Color &fillColor_,
-			 const Color &borderColor_ )
-      : _x(point_.xOff()),
-	_y(point_.yOff()),
-	_fillColor(fillColor_),
-	_borderColor(borderColor_) { }
+			 const Color &borderColor_ );
 
-    void operator()( Image &image_ )
-      {
-	if ( _borderColor.isValid() )
-	  {
-	    image_.floodFillColor( _x, _y, _fillColor, _borderColor );
-	  }
-	else
-	  {
-	    image_.floodFillColor( _x, _y, _fillColor );
-	  }
-      }
+    void operator()( Image &image_ );
+
   private:
     const unsigned int   _x;
     const unsigned int   _y;
@@ -495,48 +382,27 @@ namespace Magick
     // Flood-fill texture across pixels that match the color of the
     // target pixel and are neighbors of the target pixel.
     // Uses current fuzz setting when determining color match.
-    floodFillTextureImage( unsigned int x_, unsigned int y_,
-			   const Image &texture_ )
-      : _x(x_),
-	_y(y_),
-	_texture(texture_),
-	_borderColor() { }
+    floodFillTextureImage( const unsigned int x_,
+                           const unsigned int y_,
+			   const Image &texture_ );
+
     floodFillTextureImage( const Geometry &point_,
-			   const Image &texture_ )
-      : _x(point_.xOff()),
-	_y(point_.yOff()),
-	_texture(texture_),
-	_borderColor() { }
+			   const Image &texture_ );
 
     // Flood-fill texture across pixels starting at target-pixel and
     // stopping at pixels matching specified border color.
     // Uses current fuzz setting when determining color match.
-    floodFillTextureImage( unsigned int x_, unsigned int y_,
+    floodFillTextureImage( const unsigned int x_,
+                           const unsigned int y_,
 			   const Image &texture_,
-			   const Color &borderColor_ )
-      : _x(x_),
-	_y(y_),
-	_texture(texture_),
-	_borderColor(borderColor_) { }
+			   const Color &borderColor_ );
+
     floodFillTextureImage( const Geometry &point_,
 			   const Image &texture_,
-			   const Color &borderColor_ )
-      : _x(point_.xOff()),
-	_y(point_.yOff()),
-	_texture(texture_),
-	_borderColor(borderColor_) { }
+			   const Color &borderColor_ );
 
-    void operator()( Image &image_ )
-      {
-	if ( _borderColor.isValid() )
-	  {
-	    image_.floodFillTexture( _x, _y, _texture, _borderColor );
-	  }
-	else
-	  {
-	    image_.floodFillTexture( _x, _y, _texture );
-	  }
-      }
+    void operator()( Image &image_ );
+
   private:
     const unsigned int  _x;
     const unsigned int  _y;
@@ -548,12 +414,10 @@ namespace Magick
   class flopImage : public std::unary_function<Image&,void>
   {
   public:
-    flopImage( void ) { }
+    flopImage( void );
 
-    void operator()( Image &image_ )
-      {
-	image_.flop( );
-      }
+    void operator()( Image &image_ );
+
   private:
   };
 
@@ -561,22 +425,13 @@ namespace Magick
   class frameImage : public std::unary_function<Image&,void>
   {
   public:
-    frameImage( const Geometry &geometry_ = frameGeometryDefault )
-      : _width( geometry_.width() ),
-	_height( geometry_.height() ),
-	_outerBevel( geometry_.xOff() ),
-	_innerBevel( geometry_.yOff() ) { }
-    frameImage( unsigned int width_, unsigned int height_,
-		int innerBevel_ = 6, int outerBevel_ = 6 )
-      : _width( width_ ),
-	_height( height_ ),
-	_outerBevel( outerBevel_ ),
-	_innerBevel( innerBevel_ ) { }
+    frameImage( const Geometry &geometry_ = frameGeometryDefault );
 
-    void operator()( Image &image_ )
-      {
-	image_.frame( _width, _height, _innerBevel, _outerBevel );
-      }
+    frameImage( const unsigned int width_, const unsigned int height_,
+		const int innerBevel_ = 6, const int outerBevel_ = 6 );
+
+    void operator()( Image &image_ );
+
   private:
     unsigned int _width;
     unsigned int _height;
@@ -588,21 +443,14 @@ namespace Magick
   class gammaImage : public std::unary_function<Image&,void>
   {
   public:
-    gammaImage( double gamma_ )
-      : _gammaRed( gamma_ ),
-	_gammaGreen( gamma_ ),
-	_gammaBlue( gamma_ ) { }
-    gammaImage ( double gammaRed_,
-		 double gammaGreen_,
-		 double gammaBlue_ )
-      : _gammaRed( gammaRed_ ),
-	_gammaGreen( gammaGreen_ ),
-	_gammaBlue( gammaBlue_ ) { }
+    gammaImage( const double gamma_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.gamma( _gammaRed, _gammaGreen, _gammaBlue );
-      }
+    gammaImage ( const double gammaRed_,
+		 const double gammaGreen_,
+		 const double gammaBlue_ );
+
+    void operator()( Image &image_ );
+
   private:
     double _gammaRed;
     double _gammaGreen;
@@ -616,14 +464,10 @@ namespace Magick
   class gaussianBlurImage : public std::unary_function<Image&,void>
   {
   public:
-    gaussianBlurImage( double width_, double sigma_ )
-      : _width( width_ ),
-	_sigma( sigma_ ) { }
+    gaussianBlurImage( const double width_, const double sigma_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.gaussianBlur( _width, _sigma );
-      }
+    void operator()( Image &image_ );
+
   private:
     double _width;
     double _sigma;
@@ -633,13 +477,10 @@ namespace Magick
   class implodeImage : public std::unary_function<Image&,void>
   {
   public:
-    implodeImage( double factor_ = 50  )
-      : _factor( factor_ ) { }
+    implodeImage( const double factor_ = 50 );
 
-    void operator()( Image &image_ )
-      {
-	image_.implode( _factor );
-      }
+    void operator()( Image &image_ );
+
   private:
     const double _factor;
   };
@@ -649,13 +490,10 @@ namespace Magick
   class isValidImage : public std::unary_function<Image&,void>
   {
   public:
-    isValidImage( bool isValid_  )
-      : _isValid( isValid_ ) { }
+    isValidImage( const bool isValid_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.isValid( _isValid );
-      }
+    void operator()( Image &image_ );
+
   private:
     const bool _isValid;
   };
@@ -664,13 +502,10 @@ namespace Magick
   class labelImage : public std::unary_function<Image&,void>
   {
   public:
-    labelImage( const std::string &label_ )
-      : _label( label_ ) { }
+    labelImage( const std::string &label_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.label( _label );
-      }
+    void operator()( Image &image_ );
+
   private:
     const std::string _label;
   };
@@ -679,13 +514,10 @@ namespace Magick
   class channelImage : public std::unary_function<Image&,void>
   {
   public:
-    channelImage( ChannelType channel_ )
-      : _channel( channel_ ) { }
+    channelImage( const ChannelType channel_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.channel( _channel );
-      }
+    void operator()( Image &image_ );
+
   private:
     const ChannelType _channel;
   };
@@ -694,12 +526,10 @@ namespace Magick
   class magnifyImage : public std::unary_function<Image&,void>
   {
   public:
-    magnifyImage( void ) { }
+    magnifyImage( void );
 
-    void operator()( Image &image_ )
-      {
-	image_.magnify( );
-      }
+    void operator()( Image &image_ );
+
   private:
   };
 
@@ -707,14 +537,11 @@ namespace Magick
   class mapImage : public std::unary_function<Image&,void>
   {
   public:
-    mapImage( const Image &mapImage_ , bool dither_ = false )
-      : _mapImage( mapImage_ ),
-	_dither( dither_ ) { }
+    mapImage( const Image &mapImage_ ,
+              const bool dither_ = false );
 
-    void operator()( Image &image_ )
-      {
-	image_.map( _mapImage, _dither );
-      }
+    void operator()( Image &image_ );
+
   private:
     const Image   _mapImage;
     const bool    _dither;
@@ -725,25 +552,18 @@ namespace Magick
   {
   public:
     matteFloodfillImage( const Color &target_ ,
-			 unsigned int matte_,
-			 int x_, int y_,
-			 PaintMethod method_ )
-      : _target( target_ ),
-	_matte( matte_ ),
-	_x( x_ ),
-	_y( y_ ),
-	_method( method_ ) { }
+			 const unsigned int matte_,
+			 const int x_, const int y_,
+			 const PaintMethod method_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.matteFloodfill( _target, _matte, _x, _y, _method );
-      }
+    void operator()( Image &image_ );
+
   private:
-    const Color   _target;
-    unsigned int  _matte;
-    int           _x;
-    int           _y;
-    PaintMethod   _method;
+    const Color         _target;
+    const unsigned int  _matte;
+    const int           _x;
+    const int           _y;
+    const PaintMethod   _method;
   };
 
   // Filter image by replacing each pixel component with the median
@@ -751,13 +571,10 @@ namespace Magick
   class medianFilterImage : public std::unary_function<Image&,void>
   {
   public:
-    medianFilterImage( const double radius_ = 0.0 )
-      : _radius( radius_ ) { }
+    medianFilterImage( const double radius_ = 0.0 );
 
-    void operator()( Image &image_ )
-      {
-	image_.medianFilter( _radius );
-      }
+    void operator()( Image &image_ );
+
   private:
     const double _radius;
   };
@@ -766,12 +583,10 @@ namespace Magick
   class minifyImage : public std::unary_function<Image&,void>
   {
   public:
-    minifyImage( void ) { }
+    minifyImage( void );
 
-    void operator()( Image &image_ )
-      {
-	image_.minify( );
-      }
+    void operator()( Image &image_ );
+
   private:
   };
 
@@ -779,21 +594,16 @@ namespace Magick
   class modulateImage : public std::unary_function<Image&,void>
   {
   public:
-    modulateImage( double brightness_,
-		   double saturation_,
-		   double hue_ )
-      : _brightness( brightness_ ),
-	_saturation( saturation_ ),
-	_hue( hue_ ) { }
+    modulateImage( const double brightness_,
+		   const double saturation_,
+		   const double hue_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.modulate( _brightness, _saturation, _hue );
-      }
+    void operator()( Image &image_ );
+
   private:
-    double _brightness;
-    double _saturation;
-    double _hue;
+    const double _brightness;
+    const double _saturation;
+    const double _hue;
   };
 
   // Negate colors in image.  Set grayscale to only negate grayscale
@@ -801,13 +611,10 @@ namespace Magick
   class negateImage : public std::unary_function<Image&,void>
   {
   public:
-    negateImage( bool grayscale_ = false )
-      : _grayscale( grayscale_ ) { }
+    negateImage( const bool grayscale_ = false );
 
-    void operator()( Image &image_ )
-      {
-	image_.negate( _grayscale );
-      }
+    void operator()( Image &image_ );
+
   private:
     const bool _grayscale;
   };
@@ -817,12 +624,10 @@ namespace Magick
   class normalizeImage : public std::unary_function<Image&,void>
   {
   public:
-    normalizeImage( void ) { }
+    normalizeImage( void );
 
-    void operator()( Image &image_ )
-      {
-	image_.normalize( );
-      }
+    void operator()( Image &image_ );
+
   private:
   };  
 
@@ -830,13 +635,10 @@ namespace Magick
   class oilPaintImage : public std::unary_function<Image&,void>
   {
   public:
-    oilPaintImage( const double radius_ = 3 )
-      : _radius( radius_ ) { }
+    oilPaintImage( const double radius_ = 3 );
 
-    void operator()( Image &image_ )
-      {
-	image_.oilPaint( _radius );
-      }
+    void operator()( Image &image_ );
+
   private:
     const double _radius;
   };
@@ -851,13 +653,10 @@ namespace Magick
   class opacityImage : public std::unary_function<Image&,void>
   {
   public:
-    opacityImage( unsigned int opacity_ )
-      : _opacity( opacity_ ) { }
+    opacityImage( const unsigned int opacity_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.opacity( _opacity );
-      }
+    void operator()( Image &image_ );
+
   private:
     const unsigned int _opacity;
   };
@@ -867,14 +666,10 @@ namespace Magick
   {
   public:
     opaqueImage( const Color &opaqueColor_,
-		 const Color &penColor_ )
-      : _opaqueColor( opaqueColor_ ),
-	_penColor( penColor_ ) { }
+		 const Color &penColor_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.opaque( _opaqueColor, _penColor );
-      }
+    void operator()( Image &image_ );
+
   private:
     const Color & _opaqueColor;
     const Color & _penColor;
@@ -884,13 +679,10 @@ namespace Magick
   class quantizeImage : public std::unary_function<Image&,void>
   {
   public:
-    quantizeImage( bool measureError_ = false )
-      : _measureError( measureError_ ) { }
+    quantizeImage( const bool measureError_ = false );
 
-    void operator()( Image &image_ )
-      {
-	image_.quantize( _measureError );
-      }
+    void operator()( Image &image_ );
+
   private:
     const bool _measureError;
   };
@@ -901,14 +693,10 @@ namespace Magick
   {
   public:
     raiseImage( const Geometry &geometry_ = raiseGeometryDefault,
-		bool raisedFlag_ = false )
-      : _geometry( geometry_ ),
-	_raisedFlag( raisedFlag_ ) { };
+		const bool raisedFlag_ = false );
 
-    void operator()( Image &image_ )
-      {
-	image_.raise( _geometry, _raisedFlag );
-      }
+    void operator()( Image &image_ );
+
   private:
     const Geometry   _geometry;
     bool             _raisedFlag;
@@ -918,15 +706,12 @@ namespace Magick
   class reduceNoiseImage : public std::unary_function<Image&,void>
   {
   public:
-    reduceNoiseImage( void )
-      : _order(3) { }
-    reduceNoiseImage ( unsigned int order_ )
-      : _order(order_) { }
+    reduceNoiseImage( void );
 
-    void operator()( Image &image_ )
-      {
-	image_.reduceNoise( _order );
-      }
+    reduceNoiseImage (const  unsigned int order_ );
+
+    void operator()( Image &image_ );
+
   private:
     unsigned int _order;
   };
@@ -936,18 +721,12 @@ namespace Magick
   class rollImage : public std::unary_function<Image&,void>
   {
   public:
-    rollImage( const Geometry &roll_ )
-      : _columns( roll_.width() ),
-	_rows( roll_.height() ) { }
-    rollImage( int columns_,
-	       int rows_ )
-      : _columns( columns_ ),
-	_rows( rows_ ) { }
+    rollImage( const Geometry &roll_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.roll( _columns, _rows );
-      }
+    rollImage( const int columns_, const int rows_ );
+
+    void operator()( Image &image_ );
+
   private:
     int _columns;
     int _rows;
@@ -957,13 +736,10 @@ namespace Magick
   class rotateImage : public std::unary_function<Image&,void>
   {
   public:
-    rotateImage( double degrees_ )
-      : _degrees( degrees_ ) { }
+    rotateImage( const double degrees_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.rotate( _degrees );
-      }
+    void operator()( Image &image_ );
+
   private:
     const double       _degrees;
   };
@@ -972,13 +748,10 @@ namespace Magick
   class sampleImage : public std::unary_function<Image&,void>
   {
   public:
-    sampleImage( const Geometry &geometry_ )
-      : _geometry( geometry_ ) { }
+    sampleImage( const Geometry &geometry_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.sample( _geometry );
-      }
+    void operator()( Image &image_ );
+
   private:
     const Geometry  _geometry;
   };  
@@ -987,13 +760,10 @@ namespace Magick
   class scaleImage : public std::unary_function<Image&,void>
   {
   public:
-    scaleImage( const Geometry &geometry_ )
-      : _geometry( geometry_ ) { }
+    scaleImage( const Geometry &geometry_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.scale( _geometry );
-      }
+    void operator()( Image &image_ );
+
   private:
     const Geometry  _geometry;
   };
@@ -1005,50 +775,38 @@ namespace Magick
   class segmentImage : public std::unary_function<Image&,void>
   {
   public:
-    segmentImage( double clusterThreshold_ = 1.0, 
-		  double smoothingThreshold_ = 1.5 )
-      : _clusterThreshold( clusterThreshold_ ),
-	_smoothingThreshold( smoothingThreshold_ ) { }
+    segmentImage( const double clusterThreshold_ = 1.0, 
+		  const double smoothingThreshold_ = 1.5 );
 
-    void operator()( Image &image_ )
-      {
-	image_.segment( _clusterThreshold, _smoothingThreshold );
-      }
+    void operator()( Image &image_ );
+
   private:
-    double  _clusterThreshold;
-    double  _smoothingThreshold;
+    const double  _clusterThreshold;
+    const double  _smoothingThreshold;
   };
 
   // Shade image using distant light source
   class shadeImage : public std::unary_function<Image&,void>
   {
   public:
-    shadeImage( double clusterThreshold_ = 1.0, 
-		double smoothingThreshold_ = 1.5 )
-      : _clusterThreshold( clusterThreshold_ ),
-	_smoothingThreshold( smoothingThreshold_ ) { }
+    shadeImage( const double clusterThreshold_ = 1.0, 
+		const double smoothingThreshold_ = 1.5 );
 
-    void operator()( Image &image_ )
-      {
-	image_.shade( _clusterThreshold, _smoothingThreshold );
-      }
+    void operator()( Image &image_ );
+
   private:
-    double  _clusterThreshold;
-    double  _smoothingThreshold;
+    const double  _clusterThreshold;
+    const double  _smoothingThreshold;
   };
 
   // Sharpen pixels in image
   class sharpenImage : public std::unary_function<Image&,void>
   {
   public:
-    sharpenImage( const double radius_ = 1, const double sigma_ = 0.5 )
-      : _radius( radius_ ),
-        _sigma( sigma_ ) { }
+    sharpenImage( const double radius_ = 1, const double sigma_ = 0.5 );
 
-    void operator()( Image &image_ )
-      {
-	image_.sharpen( _radius, _sigma );
-      }
+    void operator()( Image &image_ );
+
   private:
     const double _radius;
     const double _sigma;
@@ -1058,13 +816,10 @@ namespace Magick
   class shaveImage : public std::unary_function<Image&,void>
   {
   public:
-    shaveImage( const Geometry &geometry_ )
-      : _geometry( geometry_ ) { }
+    shaveImage( const Geometry &geometry_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.shave( _geometry );
-      }
+    void operator()( Image &image_ );
+
   private:
     const Geometry _geometry;
   };
@@ -1074,15 +829,11 @@ namespace Magick
   class shearImage : public std::unary_function<Image&,void>
   {
   public:
-    shearImage( double xShearAngle_,
-		double yShearAngle_ )
-      : _xShearAngle( xShearAngle_ ),
-	_yShearAngle( yShearAngle_ ) { }
+    shearImage( const double xShearAngle_,
+		const double yShearAngle_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.shear( _xShearAngle, _yShearAngle );
-      }
+    void operator()( Image &image_ );
+
   private:
     const double _xShearAngle;
     const double _yShearAngle;
@@ -1093,13 +844,10 @@ namespace Magick
   class solarizeImage : public std::unary_function<Image&,void>
   {
   public:
-    solarizeImage( double factor_ )
-      : _factor( factor_ ) { }
+    solarizeImage( const double factor_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.solarize( _factor );
-      }
+    void operator()( Image &image_ );
+
   private:
     const double _factor;
   };
@@ -1108,13 +856,10 @@ namespace Magick
   class spreadImage : public std::unary_function<Image&,void>
   {
   public:
-    spreadImage( unsigned int amount_ = 3 )
-      : _amount( amount_ ) { }
+    spreadImage( const unsigned int amount_ = 3 );
 
-    void operator()( Image &image_ )
-      {
-	image_.spread( _amount );
-      }
+    void operator()( Image &image_ );
+
   private:
     const unsigned int _amount;
   };
@@ -1123,13 +868,10 @@ namespace Magick
   class steganoImage : public std::unary_function<Image&,void>
   {
   public:
-    steganoImage( const Image &waterMark_ )
-      : _waterMark( waterMark_ ) { }
+    steganoImage( const Image &waterMark_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.stegano( _waterMark );
-      }
+    void operator()( Image &image_ );
+
   private:
     const Image _waterMark;
   };
@@ -1139,13 +881,10 @@ namespace Magick
   class stereoImage : public std::unary_function<Image&,void>
   {
   public:
-    stereoImage( const Image &rightImage_ )
-      : _rightImage( rightImage_ ) { }
+    stereoImage( const Image &rightImage_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.stereo( _rightImage );
-      }
+    void operator()( Image &image_ );
+
   private:
     const Image _rightImage;
   };
@@ -1154,13 +893,10 @@ namespace Magick
   class strokeColorImage : public std::unary_function<Image&,void>
   {
   public:
-    strokeColorImage( const Color &strokeColor_ )
-      : _strokeColor( strokeColor_ ) { }
+    strokeColorImage( const Color &strokeColor_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.strokeColor( _strokeColor );
-      }
+    void operator()( Image &image_ );
+
   private:
     const Color _strokeColor;
   };
@@ -1169,13 +905,10 @@ namespace Magick
   class swirlImage : public std::unary_function<Image&,void>
   {
   public:
-    swirlImage( double degrees_ )
-      : _degrees( degrees_ ) { }
+    swirlImage( const double degrees_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.swirl( _degrees );
-      }
+    void operator()( Image &image_ );
+
   private:
     const double _degrees;
   };
@@ -1184,13 +917,10 @@ namespace Magick
   class textureImage : public std::unary_function<Image&,void>
   {
   public:
-    textureImage( const Image &texture_ )
-      : _texture( texture_ ) { }
+    textureImage( const Image &texture_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.texture( _texture );
-      }
+    void operator()( Image &image_ );
+
   private:
     const Image _texture;
   };
@@ -1199,13 +929,10 @@ namespace Magick
   class thresholdImage : public std::unary_function<Image&,void>
   {
   public:
-    thresholdImage( double threshold_ )
-      : _threshold( threshold_ ) { }
+    thresholdImage( const double threshold_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.threshold( _threshold );
-      }
+    void operator()( Image &image_ );
+
   private:
     const double _threshold;
   };
@@ -1214,21 +941,13 @@ namespace Magick
   class transformImage : public std::unary_function<Image&,void>
   {
   public:
-    transformImage( const Geometry &imageGeometry_ )
-      : _imageGeometry( imageGeometry_ ),
-	_cropGeometry( ) { }
-    transformImage( const Geometry &imageGeometry_,
-		    const Geometry &cropGeometry_  )
-      : _imageGeometry( imageGeometry_ ),
-	_cropGeometry( cropGeometry_ ) { }
+    transformImage( const Geometry &imageGeometry_ );
 
-    void operator()( Image &image_ )
-      {
-	if ( _cropGeometry.isValid() )
-	  image_.transform( _imageGeometry, _cropGeometry );
-	else
-	  image_.transform( _imageGeometry );
-      }
+    transformImage( const Geometry &imageGeometry_,
+		    const Geometry &cropGeometry_  );
+
+    void operator()( Image &image_ );
+
   private:
     const Geometry _imageGeometry;
     const Geometry _cropGeometry;
@@ -1238,13 +957,10 @@ namespace Magick
   class transparentImage : public std::unary_function<Image&,void>
   {
   public:
-    transparentImage( const Color& color_ )
-      : _color( color_ ) { }
+    transparentImage( const Color& color_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.transparent( _color );
-      }
+    void operator()( Image &image_ );
+
   private:
     const Color _color;
   };
@@ -1253,12 +969,10 @@ namespace Magick
   class trimImage : public std::unary_function<Image&,void>
   {
   public:
-    trimImage( void ) { }
+    trimImage( void );
 
-    void operator()( Image &image_ )
-      {
-	image_.trim( );
-      }
+    void operator()( Image &image_ );
+
   private:
   };
 
@@ -1266,15 +980,11 @@ namespace Magick
   class waveImage : public std::unary_function<Image&,void>
   {
   public:
-    waveImage( double amplitude_ = 25.0,
-	       double wavelength_ = 150.0 )
-      : _amplitude( amplitude_ ),
-	_wavelength( wavelength_ ) { }
+    waveImage( const double amplitude_ = 25.0,
+	       const double wavelength_ = 150.0 );
 
-    void operator()( Image &image_ )
-      {
-	image_.wave( _amplitude, _wavelength );
-      }
+    void operator()( Image &image_ );
+
   private:
     const double _amplitude;
     const double _wavelength;
@@ -1284,13 +994,10 @@ namespace Magick
   class zoomImage : public std::unary_function<Image&,void>
   {
   public:
-    zoomImage( const Geometry &geometry_ )
-      : _geometry( geometry_ ) { }
+    zoomImage( const Geometry &geometry_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.zoom( _geometry );
-      }
+    void operator()( Image &image_ );
+
   private:
     const Geometry _geometry;
   };
