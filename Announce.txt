@@ -1,77 +1,95 @@
 The ImageMagick Studio LLC development group announces the release of
 ImageMagick 5.4.8.  Version 5.4.8 is a feature release but also resolves
-bugs reported against 5.4.8.
+bugs reported against 5.4.7.
 
-ImageMagick is a robust collection of tools and libraries to read, write,
-and manipulate an image in many image formats (over 72 major formats)
-including popular formats like FlashPIX, GIF, JPEG, PDF, PNG, Photo CD,
-SVG, TIFF, and WMF.  With ImageMagick you can create images dynamically,
-making it suitable for Web applications.  You can also resize, rotate,
-sharpen, color reduce, or add special effects to an image and save your
-completed work in the same or differing image format.  Image processing
-operations are available from the command line, as well as through C,
-C++, and PERL-based programming interfaces.
+ImageMagick is a robust collection of tools and libraries to read,
+write, and manipulate an image in many image formats (over 72 major
+formats) including popular formats like FlashPIX, GIF, JPEG, PDF, PNG,
+Photo CD, SVG, TIFF, and WMF. With ImageMagick images can be created
+dynamically, making it suitable for Web applications. You can also
+resize, rotate, sharpen, color reduce, or add special effects to an
+image and save your completed work in the same or differing image
+format. Image processing operations are available from the command line,
+as well as through C, C++, PERL, Visual Basic, and WSH based programming
+interfaces. Support for programming with Java and Python is provided by
+3rd parties.
 
 ImageMagick is copyrighted by ImageMagick Studio, a nonprofit organization
 dedicated to making software imaging solutions freely available.
 ImageMagick is available for free, may be used to support both open and
 proprietary applications, and may be redistributed without fee.
 
-Significant changes from the 5.4.6 release (see release ChangeLog for
+Significant changes from the 5.4.7 release (see release ChangeLog for
 details):
 
   o General:
 
     - Platform independent changes
 
-     + IPTC support integrated. Supports both binary and text (iptcutil
-       style) forms of IPTC profiles.
-     + Lossless JPEG embedding (similar to provided by iptcutil) is
-       supported.
-     + Profile code enhanced to provide for not always copying the
-       profile data.
-     + The wbmp writer is fixed for monochrome images.
-     + PICT files are automatically identified.
+      + Fixed a problem when writing PPM files with all-gray pixels.
+
+      + Color profiles are identified as ICM rather than IPTC.
+
+      + 8-Bit Quantum PCD images now read correctly.
 
     - Windows specific changes
 
-     - A Windows binary install package is available which is based
+     + A Windows binary install package is available which is based
        on the Inno Setup Compiler "http://www.jrsoftware.org/isinfo.php".
-     - VisualMagick build works with both Visual C++ 6.0 and 7.0.
-     - Tracing support was incorporated for Win32 developers.
-     - An ATL-based COM interface to the ImageMagick APIs is provided in
-       the 'contrib' directory.  This is known to work with Visual Basic
-       and WSH.  Using the COM interface from ASP is *not* supported due
-       to threading issues.
-     - Building under MinGW (GNU tools for Windows) has been improved.
-     - The CLIPBOARD and EMF modules are now available in the Cygwin build.
 
-    - Linux specific changes
-     + Ghostscript fonts should be discovered automatically (while
-       configuring) under Linux.
+     + Link libraries and header files are provided so that applications
+       may compile with ImageMagick without building the ImageMagick
+       source package.
+
+     + PerlMagick built for ActiveState ActivePerl is optionally
+       installed.
+
+     + The ImageMagickObject OLE Control (usable from VisualBasic and
+       WSH) is optionally installed.
+
+     + ImageMagick installation locations are recorded via registry
+       settings so that it can find its components (no more need for
+       MAGICK_HOME!).
+
+     + File extension associations are created for file types that
+       ImageMagick supports.
+
+     + The list of TrueType fonts available is obtained from the
+       Windows Registry rather than being hard-coded.
+
+     + The Ghostscript executable and Ghostscript fonts are discovered
+       automatically.
+
+     + The Cygwin build should now properly distinguish between drive
+       letters and magick types for path specifications.
   
   o Utilities enhancements/changes:
-    - The -encoding option may be used to specify the font encoding
-      to use when rendering a TrueType font.  This is useful for
-      fonts (e.g. symbol and international) that use a non-default
-      encoding.
-
-  o C API enhancements:
-     - Locking under Windows has been rewritten.
-
-  o C++ API enhancements:
      - No changes in this release.
 
+  o C API enhancements:
+     - No changes in this release.
+
+  o C++ API enhancements:
+
+     - A profile() method is added to support accessing named profiles.
+
+     - The type() method now specifies the image type to use while
+       writing.
+
   o Perl API enhancements:
-     - Added multithread support.
+     - No changes in this release.
 
 The ImageMagick WWW page is
 
   http://www.imagemagick.org/
  
-ImageMagick 5.4.8 is available via ftp as
+The ImageMagick 5.4.8 source code is available via ftp as
 
   ftp://ftp.imagemagick.org/pub/ImageMagick/ImageMagick-5.4.8.tar.gz
+
+The ImageMagick 5.4.8 Windows install package is available via ftp as
+
+ ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-5.4.8-win2k.exe
 
 If ftp.imagemagick.org is overloaded, check the list of mirrors at
 http://www.imagemagick.org/www/archives.html for other mirrors.
@@ -81,7 +99,7 @@ team:
 
 John Cristy           - Principal designer and author.
 Bob Friesenhahn       - Magick++, Unix modules, magic, configure, CVS,
-                        tests, bug tracking, and WMF.
+                        tests, bug tracking, Windows install, WMF.
 William Radcliffe     - VisualMagick, FlashPix, TIFF, timers,
                         watermarking, Windows modules, and fast polygon
                         renderer.
