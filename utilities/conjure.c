@@ -1523,12 +1523,8 @@ static void MSLStartElement(void *context,const xmlChar *name,
     {
       if (LocaleCompare(name,"print") == 0)
         {
-          if (msl_info->image[n] == (Image *) NULL)
-            {
-              ThrowException(&msl_info->exception,OptionWarning,
-                "no images defined",name);
-              break;
-            }
+		  /* print does not require an image to be present! */
+
           if (attributes == (const xmlChar **) NULL)
             break;
           for (i=0; (attributes[i] != (const xmlChar *) NULL); i++)
@@ -3020,7 +3016,8 @@ int main(int argc,char **argv)
     msl_info;
 
   unsigned int
-    status;
+    status,
+	done = False;
 
   xmlSAXHandlerPtr
     SAXHandler;
@@ -3056,6 +3053,8 @@ int main(int argc,char **argv)
       (msl_info.image[0] == (Image *) NULL))
     MagickError(ResourceLimitError,"Unable to allocate image",
       "Memory allocation failed");
+
+#if 0
   for (i=1; i < (argc-1); i+=2)
   {
     status=SetImageAttribute(msl_info.attributes[0],argv[i]+1,argv[i+1]);
@@ -3065,45 +3064,76 @@ int main(int argc,char **argv)
   if (i != (argc-1))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
   (void) strcpy(msl_info.image[0]->filename,argv[argc-1]);
-  /*
-    Open image file.
-  */
-  status=OpenBlob(*msl_info.image_info,*msl_info.image,ReadBinaryType,
-    &msl_info.exception);
-  if (status == False)
-    MagickError(FileOpenWarning,"Unable to open file",
-      msl_info.image[0]->filename);
-  /*
-    Parse MSL file.
-  */
-  (void) xmlSubstituteEntitiesDefault(1);
-  SAXHandler=(&SAXModules);
-  msl_info.parser=xmlCreatePushParserCtxt(SAXHandler,&msl_info,(char *) NULL,0,
-    msl_info.image[0]->filename);
-  while (ReadBlobString(msl_info.image[0],message) != (char *) NULL)
-  {
-    n=(long) strlen(message);
-    if (n == 0)
-      continue;
-    status=xmlParseChunk(msl_info.parser,message,(int) n,False);
-    if (status != 0)
-      break;
-    (void) xmlParseChunk(msl_info.parser," ",1,False);
-    if (msl_info.exception.severity != UndefinedException)
-      {
-        MagickError(msl_info.exception.severity,msl_info.exception.reason,
-          msl_info.exception.description);
-        break;
-      }
-  }
-  (void) xmlParseChunk(msl_info.parser," ",1,True);
-  xmlFreeParserCtxt(msl_info.parser);
-  if (msl_info.debug)
-    (void) fprintf(stdout,"end SAX\n");
-  xmlCleanupParser();
-  DestroyImage(*msl_info.image);
-  DestroyMagick();
-  LiberateMemory((void **) &argv);
-  Exit(0);
-  return(False);
+#endif
+
+	i = 1;
+	while ( *argv[i] == '-' )	/* find all the key/value pairs */
+	{
+		status=SetImageAttribute(msl_info.attributes[0],argv[i]+1,argv[i+1]);
+		if (status == False)
+		  MagickError(OptionError,"Unable to persist key/value pair",argv[i]);	
+		i+=2;
+	}
+	if (i == argc)	/* no more parameters :( */
+		MagickError(OptionError,"Missing an image file name",(char *) NULL);
+	(void) strcpy(msl_info.image[0]->filename,argv[i++]);
+
+	/* at this point, the rest of the arguments should be filenames!! */
+
+	while (!done)
+	{
+		/* setup the filename attribute based on the passed names */
+		if (i < argc) {
+			status=SetImageAttribute(msl_info.attributes[0],"filename",NULL);	/* clear it out first */
+			status=SetImageAttribute(msl_info.attributes[0],"filename",argv[i]);
+			if (status == False)
+			  MagickError(OptionError,"Unable to persist key/value pair",argv[i]);	
+			i++;
+		}
+
+		/*
+			Open image file.
+		*/
+		status=OpenBlob(*msl_info.image_info,*msl_info.image,ReadBinaryType,
+						&msl_info.exception);
+		if (status == False)
+			MagickError(FileOpenWarning,"Unable to open file", msl_info.image[0]->filename);
+
+		/*
+			Parse MSL file.
+		*/
+		(void) xmlSubstituteEntitiesDefault(1);
+		SAXHandler=(&SAXModules);
+		msl_info.parser=xmlCreatePushParserCtxt(SAXHandler,&msl_info,(char *) NULL,0, msl_info.image[0]->filename);
+		while (ReadBlobString(msl_info.image[0],message) != (char *) NULL)
+		{
+			n=(long) strlen(message);
+			if (n == 0)
+				continue;
+			status=xmlParseChunk(msl_info.parser,message,(int) n,False);
+			if (status != 0)
+				break;
+
+			(void) xmlParseChunk(msl_info.parser," ",1,False);
+			if (msl_info.exception.severity != UndefinedException)
+			{
+				MagickError(msl_info.exception.severity,msl_info.exception.reason, msl_info.exception.description);
+			break;
+			}
+		}
+		(void) xmlParseChunk(msl_info.parser," ",1,True);
+		xmlFreeParserCtxt(msl_info.parser);
+		if (msl_info.debug)
+			(void) fprintf(stdout,"end SAX\n");
+		xmlCleanupParser();
+
+		if (i >= argc)
+			done = True;
+	}
+
+	DestroyImage(*msl_info.image);
+	DestroyMagick();
+	LiberateMemory((void **) &argv);
+	Exit(0);
+	return(False);
 }
