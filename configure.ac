@@ -1745,10 +1745,10 @@ AC_ARG_WITH(libstdc,
   [  --with-libstdc=DIR      use libstdc++ in DIR (for GNU C++)],
   [if test "$withval" != no -a "$withval" != yes; then
     if test -d "$withval"; then
-      LIBSTDC_LDFLAGS="-L$withval"
+      LIBSTDCLDFLAGS="-L$withval"
     fi
   fi])
-AC_SUBST(LIBSTDC_LDFLAGS)
+AC_SUBST(LIBSTDCLDFLAGS)
 
 #
 # C++ Support Tests (For Magick++)

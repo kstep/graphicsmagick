@@ -1,3 +1,7 @@
+2002-03-08 Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
+  * Update to Autoconf 2.53 (new release)
+  * Update to Automake 1.6 (new release)
+
 2002-03-07  Cristy  <cristy@mystic.es.dupont.com>
   * Bob Friesenhahn's execution profile results in a number of speed-ups
     with a faster LocaleCompare() algorithm and self-adjusting lists.
