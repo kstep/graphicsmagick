@@ -40,7 +40,7 @@
 ;   o Release date in AppVerName should reflect the release date.
 ;   o Ensure that the word "Beta" occurs in AppVerName before the date
 ;     if this is a beta release snapshot.  For example:
-;     "GraphicsMagick 1.0.0 Q:8 Beta (August 26, 2002)"
+;     "GraphicsMagick 1.0 Q:8 Beta (August 26, 2002)"
 ;   o Ensure that the quantum depth indication ("Q:8", "Q:8", or "Q:32")
 ;     is correct.  The normal release build should be Q:8.
 ;
@@ -49,19 +49,19 @@
 ; final build step.
 
 [Setup]
-AppName=GraphicsMagick 1.0.0 Q:8
+AppName=GraphicsMagick 1.0 Q:8
 ; When updating the version string, remember to also update the version in
 ; the [Registry] section
-AppVerName=GraphicsMagick 1.0.0 Q:8 Beta0 (April 16, 2003)
-AppVersion=1.0.0
+AppVerName=GraphicsMagick 1.0 Q:8 Beta1 (April 22, 2003)
+AppVersion=1.0
 AppCopyright=Copyright (C) 2003 GraphicsMagick Group
 AppPublisher=GraphicsMagick Group
 AppPublisherURL=http://www.GraphicsMagick.org/
 AppSupportURL=http://www.GraphicsMagick.org/www/magick-list.html
 AppUpdatesURL=http://www.GraphicsMagick.org/www/archives.html
-; Default install is under "C:\Program Files\GraphicsMagick-1.0.0-Q8":
-DefaultDirName={pf}\GraphicsMagick-1.0.0-Q8
-DefaultGroupName=GraphicsMagick 1.0.0 Q8
+; Default install is under "C:\Program Files\GraphicsMagick-1.0-Q8":
+DefaultDirName={pf}\GraphicsMagick-1.0-Q8
+DefaultGroupName=GraphicsMagick 1.0 Q8
 Compression=zip/9
 ChangesAssociations=1
 AllowRootDirectory=no
@@ -69,7 +69,7 @@ InfoBeforeFile=before.txt
 InfoAfterFile=after.txt
 UninstallDisplayIcon={app}\ImageMagick.ico
 OutputDir=..\bin
-OutputBaseFilename=GraphicsMagick-1.0.0-Beta0-Q8-windows
+OutputBaseFilename=GraphicsMagick-1.0-Beta1-Q8-windows
 ; uncomment the following line if you want your installation to run on NT 3.51 too.
 ; MinVersion=4,3.51
 
