@@ -493,18 +493,18 @@ MagickExport char *Base64Encode(const unsigned char *blob,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  CheckFileAssibility() returns True if the file as defined by filename is
+%  CheckFileAccessability() returns True if the file as defined by filename is
 %  accessible.
 %
-%  The format of the CheckFileAssibility method is:
+%  The format of the CheckFileAccessability method is:
 %
-%      unsigned int CheckFileAssibility(const char *filename,
+%      unsigned int CheckFileAccessability(const char *filename,
 %        const unsigned int debug)
 %
 %  A description of each parameter follows.
 %
-%    o status:  CheckFileAssibility() returns True is the file as defined by
-%      filename is accessible, otherwise False is returned.
+%    o status:  CheckFileAccessability() returns True is the file as defined
+%      by filename is accessible, otherwise False is returned.
 %
 %    o filename:  Specifies a pointer to an array of characters.  The unique
 %      file name is returned in this array.
