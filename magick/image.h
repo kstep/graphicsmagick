@@ -663,6 +663,7 @@ extern MagickExport Image
   *ScaleImage(Image *,const unsigned int,const unsigned int,ExceptionInfo *),
   *ShadeImage(Image *,const unsigned int,double,double,ExceptionInfo *),
   *SharpenImage(Image *,const double,const double,ExceptionInfo *),
+  *ShaveImage(Image *,const RectangleInfo *,ExceptionInfo *),
   *ShearImage(Image *,const double,const double,ExceptionInfo *),
   *SpreadImage(Image *,const unsigned int,ExceptionInfo *),
   *SteganoImage(Image *,Image *,ExceptionInfo *),

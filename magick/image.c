@@ -4552,6 +4552,32 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             *image=sharp_image;
             continue;
           }
+        if (LocaleCompare("-shave",option) == 0)
+          {
+            Image
+              *shave_image;
+
+            RectangleInfo
+              shave_info;
+
+            /*
+              Shave the image edges.
+            */
+            shave_info.width=0;
+            shave_info.height=0;
+            shave_info.x=0;
+            shave_info.y=0;
+            flags=ParseGeometry(argv[++i],&shave_info.x,&shave_info.y,
+              &shave_info.width,&shave_info.height);
+            if ((flags & HeightValue) == 0)
+              shave_info.height=shave_info.width;
+            shave_image=ShaveImage(*image,&shave_info,&(*image)->exception);
+            if (shave_image == (Image *) NULL)
+              break;
+            DestroyImage(*image);
+            *image=shave_image;
+            continue;
+          }
         if (LocaleNCompare("-shear",option,4) == 0)
           {
             double

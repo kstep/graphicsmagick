@@ -309,9 +309,7 @@ MagickExport Image *CoalesceImages(Image *image,ExceptionInfo *exception)
 %
 %  Method CropImage creates a new image that is a subregion of an existing
 %  one.  It allocates the memory necessary for the new Image structure and
-%  returns a pointer to the new image.  This method is optimized to preserve
-%  the runlength encoding.  That is, the crop image will always use less
-%  memory than the original.
+%  returns a pointer to the new image.
 %
 %  The format of the CropImage method is:
 %
@@ -320,7 +318,7 @@ MagickExport Image *CoalesceImages(Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o crop_image: Method CropImage returns a pointer to the crop
+%    o crop_image: Method CropImage returns a pointer to the cropped
 %      image.  A null image is returned if there is a memory shortage or
 %      if the image width or height is zero.
 %
@@ -1262,6 +1260,54 @@ MagickExport Image *RollImage(Image *image,const int x_offset,
       MagickMonitor(RollImageText,y,image->rows);
   }
   return(roll_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S h a v e I m a g e                                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ShaveImage shaves pixels from the image edges.  It allocates the
+%  memory necessary for the new Image structure and returns a pointer to the
+%  new image.
+%
+%  The format of the ShaveImage method is:
+%
+%      Image *ShaveImage(Image *image,const RectangleInfo *shave_info,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o shave_image: Method ShaveImage returns a pointer to the shaved
+%      image.  A null image is returned if there is a memory shortage or
+%      if the image width or height is zero.
+%
+%    o image: The address of a structure of type Image.
+%
+%    o shave_info: Specifies a pointer to a RectangleInfo which defines the
+%      region of the image to crop.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport Image *ShaveImage(Image *image,const RectangleInfo *shave_info,
+  ExceptionInfo *exception)
+{
+  RectangleInfo
+    crop_info;
+
+  crop_info.width=image->columns-2*shave_info->width;
+  crop_info.height=image->rows-2*shave_info->height;
+  crop_info.x=shave_info->width;
+  crop_info.y=shave_info->height;
+  return(CropImage(image,&crop_info,exception));
 }
 
 /*

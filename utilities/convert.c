@@ -133,6 +133,7 @@
 %    -segment values      segment an image
 %    -shade degrees       shade the image using a distant light source
 %    -sharpen geometry    sharpen the image
+%    -shave geometry      shave pixels from the image edges
 %    -shear geometry      slide one edge of the image along the X or Y axis
 %    -size geometry       width and height of image
 %    -solarize threshold  negate all pixels above the threshold level
@@ -334,6 +335,7 @@ static void Usage()
       "-seed value          pseudo-random number generator seed value",
       "-shade degrees       shade the image using a distant light source",
       "-sharpen geometry    sharpen the image",
+      "-shave geometry      shave pixels from the image edges",
       "-shear geometry      slide one edge of the image along the X or Y axis",
       "-size geometry       width and height of image",
       "-solarize threshold  negate all pixels above the threshold level",
@@ -1579,6 +1581,16 @@ int main(int argc,char **argv)
               i++;
               if ((i == argc) || !sscanf(argv[i],"%d",&x))
                 MagickError(OptionError,"Missing geometry",option);
+              break;
+            }
+          if (LocaleCompare("shave",option+1,5) == 0)
+            {
+              if (*option == '-')
+                {
+                  i++;
+                  if ((i == argc) || !IsGeometry(argv[i]))
+                    MagickError(OptionError,"Missing geometry",option);
+                }
               break;
             }
           if (LocaleNCompare("shear",option+1,3) == 0)
