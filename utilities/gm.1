@@ -151,7 +151,6 @@ The \fBGraphicsMagick\fP utilities recognize the following image formats:
  o  ICM       *rw- ICC Color Profile
  o  ICO       *r-- Microsoft icon
  o  ICON      *r-- Microsoft icon
- o  IMPLICIT  *--- 
  o  IPTC      *rw- IPTC Newsphoto
  o  JBG       *rw+ Joint Bi-level Image experts Group
                    interchange format
@@ -1011,19 +1010,33 @@ option appears after all of the input images, all images are deconstructed.
 .B "-define \fI<key>{=<value>},..."\fP
 \fRadd coder/decoder specific options
 This option creates one or more definitions for coders and
-decoders to use while reading and writing image data. Definitions may
-be passed to coders and decoders to control options that are very
+decoders to use while reading and writing image data. Definitions
+may be passed to coders and decoders to control options that are
 specific to certain image formats. If \fIvalue\fP is missing for a
-definition, an empty-valued definition will be created for that
-key. This is used to control on/off options. Use +define
+definition, an empty-valued definition of a flag will be created with
+that name. This is used to control on/off options. Use +define
 <key>,... to remove definitions previously created. Use
 +define "*" to remove all existing definitions.
 
-The following defintions may be created:
+The following definitions may be created:
 
 
+    jp2:rate=<value>
+	Specify the compression factor to use while writing JPEG-2000
+	files. The compression factor is the reciprocal of the compression
+	ratio. The valid range is 0.0 to 1.0, with 1.0 indicating lossless
+	compression. If defined, this value overrides the -quality setting.
+	The default quality setting of 75 results in a rate value of 0.06641.
+    jpeg:preserve-settings
+        If the jpeg:preserve-settings flag is defined, the JPEG encoder
+        will use the same "quality" and "sampling-factor" settings that
+        were found in the input file, if the input was in JPEG format.
+        These settings are also preserved if the input is a JPEG file
+        and the output is a JNG file.  If the colorspace of the output
+        file differs from that of the input file, the quality setting is
+        preserved but the sampling-factors are not.
     ps:imagemask
-        If the ps:imagemask key is defined, the PS3 and EPS3 coders will
+        If the ps:imagemask flag is defined, the PS3 and EPS3 coders will
         create Postscript files that render bilevel images with the Postscript
         imagemask operator instead of the image operator.
     tiff:bits-per-sample=<value>
@@ -2372,6 +2385,8 @@ and highest
 compression) to 100 (best quality but least effective compression). The default
 quality is 75.  Use the \fB-sampling-factor\fP option to specify the factors
 for chroma downsampling.
+To use the same quality value as that found by the JPEG decoder,
+use the -define jpeg:preserve-settings flag.
 
 
 For the MIFF image format, quality/10 is the zlib compression level, which
@@ -2550,6 +2565,8 @@ chroma downsampling.  If this option is omitted, the JPEG library
 will use its own default values.  When reading or writing the YUV format
 and when writing the M2V (MPEG-2) format, use
 \fB-sampling-factor 2x1\fP to specify the 4:2:2 downsampling method.
+To use the same sampling factors as those found by the JPEG decoder, use
+the -define jpeg:preserve-settings flag.
 .TP
 .B "-scale \fI<geometry>"\fP
 \fRscale the image.

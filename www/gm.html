@@ -235,7 +235,6 @@ The <strong>GraphicsMagick</strong> utilities recognize the following image form
 <tr><td><dd><img SRC="../images/ball.png" ALT="*">ICM      </td><td>*rw-</td><td>ICC Color Profile</td></tr>
 <tr><td><dd><img SRC="../images/ball.png" ALT="*">ICO      </td><td>*r--</td><td>Microsoft icon</td></tr>
 <tr><td><dd><img SRC="../images/ball.png" ALT="*">ICON     </td><td>*r--</td><td>Microsoft icon</td></tr>
-<tr><td><dd><img SRC="../images/ball.png" ALT="*">IMPLICIT </td><td>*---</td><td></td></tr>
 <tr><td><dd><img SRC="../images/ball.png" ALT="*">IPTC     </td><td>*rw-</td><td>IPTC Newsphoto</td></tr>
 <tr><td><dd><img SRC="../images/ball.png" ALT="*">JBG      </td><td>*rw+</td><td>Joint Bi-level Image experts Group</td></tr>
 <tr><td>          </td><td>    </td><td>interchange format</td></tr>
@@ -1314,19 +1313,33 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>add coder/decoder specific options</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">This option creates one or more definitions for coders and
-decoders to use while reading and writing image data. Definitions may
-be passed to coders and decoders to control options that are very
+decoders to use while reading and writing image data. Definitions
+may be passed to coders and decoders to control options that are
 specific to certain image formats. If <em>value</em> is missing for a
-definition, an empty-valued definition will be created for that
-key. This is used to control on/off options. Use <tt>+define
+definition, an empty-valued definition of a flag will be created with
+that name. This is used to control on/off options. Use <tt>+define
 &lt;key&gt;,...</tt> to remove definitions previously created. Use
 <tt>+define "*"</tt> to remove all existing definitions.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-The following defintions may be created:
+The following definitions may be created:
 </font></td></tr></table>
 <pre>
+    jp2:rate=&lt;value&gt;
+	Specify the compression factor to use while writing JPEG-2000
+	files. The compression factor is the reciprocal of the compression
+	ratio. The valid range is 0.0 to 1.0, with 1.0 indicating lossless
+	compression. If defined, this value overrides the -quality setting.
+	The default quality setting of 75 results in a rate value of 0.06641.
+    jpeg:preserve-settings
+        If the jpeg:preserve-settings flag is defined, the JPEG encoder
+        will use the same "quality" and "sampling-factor" settings that
+        were found in the input file, if the input was in JPEG format.
+        These settings are also preserved if the input is a JPEG file
+        and the output is a JNG file.  If the colorspace of the output
+        file differs from that of the input file, the quality setting is
+        preserved but the sampling-factors are not.
     ps:imagemask
-        If the ps:imagemask key is defined, the PS3 and EPS3 coders will
+        If the ps:imagemask flag is defined, the PS3 and EPS3 coders will
         create Postscript files that render bilevel images with the Postscript
         imagemask operator instead of the image operator.
     tiff:bits-per-sample=&lt;value&gt;
@@ -3326,6 +3339,8 @@ and highest
 compression) to 100 (best quality but least effective compression). The default
 quality is 75.  Use the <strong>-sampling-factor</strong> option to specify the factors
 for chroma downsampling.
+To use the same quality value as that found by the JPEG decoder,
+use the <tt>-define jpeg:preserve-settings</tt> flag.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 For the MIFF image format, quality/10 is the zlib compression level, which
@@ -3593,6 +3608,8 @@ chroma downsampling.  If this option is omitted, the JPEG library
 will use its own default values.  When reading or writing the YUV format
 and when writing the M2V (MPEG-2) format, use
 <strong>-sampling-factor 2x1</strong> to specify the 4:2:2 downsampling method.</font></td></tr></table>
+To use the same sampling factors as those found by the JPEG decoder, use
+the <tt>-define jpeg:preserve-settings</tt> flag.
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 

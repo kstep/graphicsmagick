@@ -693,7 +693,8 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
 {
   char
     magick[MaxTextExtent],
-    options[MaxTextExtent];
+    option_keyval[MaxTextExtent],
+    *options = NULL;
 
   int
     format;
@@ -721,6 +722,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
     x;
 
   unsigned int
+    rate_specified=False,
     status;
 
   unsigned int
@@ -881,61 +883,101 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   LocaleLower(magick);
   format=jas_image_strtofmt(magick);
 
-
+  /*
+    Support passing Jasper options.
+  */
   {
-    double
-      rate=1.0;
-
-    int
-      count=0;
-
     const char
-      *rate_string;
+      **option_name;
 
-    /*
-      Support providing a compression rate value (0.0-1.0)
-      using command line syntax similar to '-define jp2:rate=0.5'.
-    */
-    rate_string=AccessDefinition(image_info,"jp2","rate");
-    if (rate_string)
+    static const char *jasper_options[] =
       {
-        count=sscanf(rate_string,"%lf",&rate);
-      }
+        "imgareatlx",
+        "imgareatly",
+        "tilegrdtlx",
+        "tilegrdtly",
+        "tilewidth",
+        "tileheight",
+        "prcwidth",
+        "prcheight",
+        "cblkwidth",
+        "cblkheight",
+        "mode",
+        "ilyrrates",
+        "prg",
+        "nomct",
+        "numrlvls",
+        "sop",
+        "eph",
+        "lazy",
+        "rate",
+        "termall",
+        "segsym",
+        "vcausal",
+        "pterm",
+        "resetprob",
+        "numgbits",
+        NULL
+      };
+    for (option_name = jasper_options; *option_name != NULL; option_name++)
+      {
+        const char
+          *value;
 
-    if (count == 0)
-      {
-        /*
-          A rough approximation to JPEG v1 quality using JPEG-2000.
-          Default "quality" 75 results in a request for 16:1 compression, which
-          results in image sizes approximating that of JPEG v1.
-        */
-        if ((image_info->quality < 99.5) && (image->rows*image->columns > 2500))
+        if ((value=AccessDefinition(image_info,"jp2",*option_name)) != NULL)
           {
-            double
-              header_size,
-              current_size,
-              target_size,
-              d;
-            
-            d=115-image_info->quality;  /* Best number is 110-115 */
-            rate=100.0/(d*d);
-            header_size=550.0; /* Base file size. */
-            header_size+=(number_components-1)*142; /* Additional components */
-            /* FIXME: Need to account for any ICC profiles here */
-            
-            current_size=(double)image->rows*image->columns*(image->depth/8)*
-              number_components;
-            target_size=(current_size*rate)+header_size;
-            rate=target_size/current_size;
+            if(LocaleCompare(*option_name,"rate") == 0)
+              rate_specified=True;
+            FormatString(option_keyval,"%s=%.1024s ",*option_name,value);
+            ConcatenateString(&options,option_keyval);
           }
       }
-    FormatString(options,"rate=%g",rate);
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-      "Compression rate: %g (%3.2f:1)",rate,(double)1/rate);
   }
+  /*
+    Provide an emulation of IJG JPEG "quality" by default.
+  */
+  if (rate_specified == False)
+    {
+      double
+        rate=1.0;
+      
+      /*
+        A rough approximation to JPEG v1 quality using JPEG-2000.
+        Default "quality" 75 results in a request for 16:1 compression, which
+        results in image sizes approximating that of JPEG v1.
+      */
+      if ((image_info->quality < 99.5) && (image->rows*image->columns > 2500))
+        {
+          double
+            header_size,
+            current_size,
+            target_size,
+            d;
+          
+          d=115-image_info->quality;  /* Best number is 110-115 */
+          rate=100.0/(d*d);
+          header_size=550.0; /* Base file size. */
+          header_size+=(number_components-1)*142; /* Additional components */
+          /* FIXME: Need to account for any ICC profiles here */
+          
+          current_size=(double)image->rows*image->columns*(image->depth/8)*
+            number_components;
+          target_size=(current_size*rate)+header_size;
+          rate=target_size/current_size;
+        }
+      FormatString(option_keyval,"%s=%g ","rate",rate);
+      ConcatenateString(&options,option_keyval);
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+        "Compression rate: %g (%3.2f:1)",rate,(double)1/rate);
+    }
+  if (options)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+       "Jasper options: \"%s\"", options);
+
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Encoding image");
   status=jas_image_encode(jp2_image,jp2_stream,format,options);
   (void) jas_stream_close(jp2_stream);
+  MagickFreeMemory(options);
   for (i=0; i < (long) number_components; i++)
     jas_matrix_destroy(pixels[i]);
   jas_image_destroy(jp2_image);

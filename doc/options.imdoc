@@ -955,6 +955,12 @@ The following definitions may be created:
 </pp>
 
 <pre>
+    jp2:rate=<value>
+	Specify the compression factor to use while writing JPEG-2000
+	files. The compression factor is the reciprocal of the compression
+	ratio. The valid range is 0.0 to 1.0, with 1.0 indicating lossless
+	compression. If defined, this value overrides the -quality setting.
+	The default quality setting of 75 results in a rate value of 0.06641.
     jpeg:preserve-settings
         If the jpeg:preserve-settings flag is defined, the JPEG encoder
         will use the same "quality" and "sampling-factor" settings that

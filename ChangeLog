@@ -1,3 +1,8 @@
+2004-02-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/jp2.c (WriteJP2Image): Support passing all documented
+	Jasper options using -define.
+
 2004-02-13  Peter Boos  <pedib@colorfullife.com>
 
 	* coders/wmf.c (util_draw_arc): Fixes to improve handling for pie,
