@@ -3491,6 +3491,7 @@ irix5* | irix6* | nonstopux*)
     ;;
   esac
   lt_cv_file_magic_test_file=`echo /lib${libsuff}/libc.so*`
+  lt_cv_deplibs_check_method=pass_all
   ;;
 
 # This must be Linux ELF.
@@ -3504,7 +3505,6 @@ linux*)
   esac
   lt_cv_deplibs_check_method='file_magic ELF [0-9][0-9]*-bit [LM]SB (shared object|dynamic lib )'
   lt_cv_file_magic_test_file=`echo /lib/libc.so* /lib/libc-*.so`
-  lt_cv_deplibs_check_method=pass_all
   ;;
 
 netbsd*)
@@ -3582,7 +3582,6 @@ echo "$as_me:$LINENO: result: $lt_cv_deplibs_check_method" >&5
 echo "${ECHO_T}$lt_cv_deplibs_check_method" >&6
 file_magic_cmd=$lt_cv_file_magic_cmd
 deplibs_check_method=$lt_cv_deplibs_check_method
-deplibs_check_method=pass_all
 test -z "$deplibs_check_method" && deplibs_check_method=unknown
 
 
@@ -18088,7 +18087,14 @@ echo $ECHO_N "checking for FlashPIX components ... $ECHO_C" >&6
 echo "${ECHO_T}" >&6
     failed=0;
     passed=0;
-    if test "${ac_cv_header_fpxlib_h+set}" = set; then
+    ac_ext=cc
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+
+if test "${ac_cv_header_fpxlib_h+set}" = set; then
   echo "$as_me:$LINENO: checking for fpxlib.h" >&5
 echo $ECHO_N "checking for fpxlib.h... $ECHO_C" >&6
 if test "${ac_cv_header_fpxlib_h+set}" = set; then
@@ -18145,7 +18151,7 @@ if { (eval echo "$as_me:$LINENO: \"$ac_cpp conftest.$ac_ext\"") >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } >/dev/null; then
   if test -s conftest.err; then
-    ac_cpp_err=$ac_c_preproc_warn_flag
+    ac_cpp_err=$ac_cxx_preproc_warn_flag
   else
     ac_cpp_err=
   fi
@@ -18256,6 +18262,12 @@ if test $ac_cv_lib_fpx_FPX_OpenImageByFilename = yes; then
 else
   failed=`expr $failed + 1`
 fi
+
+    ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
     echo "$as_me:$LINENO: checking if FlashPIX package is complete" >&5
 echo $ECHO_N "checking if FlashPIX package is complete... $ECHO_C" >&6

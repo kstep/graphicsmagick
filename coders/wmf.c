@@ -170,8 +170,19 @@ struct _wmf_magick_t
     push_depth;
 };
 
+
 #define WMF_MAGICK_GetData(Z) ((wmf_magick_t*)((Z)->device_data))
 
+/* Enum to control whether util_set_brush applies brush to fill or
+   stroke. */
+typedef enum
+{
+  BrushApplyFill,
+  BrushApplyStroke
+} BrushApply;
+
+
+/* Enum to specify arc type */
 typedef enum
 {
   magick_arc_ellipse = 0,
@@ -187,6 +198,32 @@ static void  lite_font_map(wmfAPI* API,wmfFont* font);
 static float lite_font_stringwidth(wmfAPI* API, wmfFont* font, char* str);
 #endif
 
+/*
+need drawing commands for:
+  decorate
+  fill 'url(
+  fill-rule
+  stroke 'url(
+  stroke-antialias
+  stroke-dasharray ?
+  stroke-linecap
+  stroke-linejoin
+  stroke-width
+ */
+
+static void         draw_clip_pop( wmfAPI* API );
+static void         draw_clip_push( wmfAPI* API, unsigned long id );
+static void         draw_color_fill_pixelpacket( wmfAPI* API, const PixelPacket* color );
+static void         draw_color_fill_reset( wmfAPI* API );
+static void         draw_color_fill_rgb( wmfAPI* API, const wmfRGB* rgb );
+static void         draw_color_stroke_reset( wmfAPI* API );
+static void         draw_color_stroke_rgb( wmfAPI* API, const wmfRGB* rgb );
+static void         draw_context_pop( wmfAPI* API );
+static void         draw_context_push( wmfAPI* API );
+static void         draw_defs_pop( wmfAPI* API );
+static void         draw_defs_push( wmfAPI* API );
+static void         draw_pattern_pop( wmfAPI* API );
+static void         draw_pattern_push( wmfAPI* API, unsigned long id, unsigned long columns, unsigned long rows );
 static int          ipa_blob_read(void* context);
 static int          ipa_blob_seek(void* context,long position);
 static long         ipa_blob_tell(void* context);
@@ -222,22 +259,59 @@ static int          util_append_mvg(wmfAPI * API, char *format, ...);
 static void         util_draw_arc(wmfAPI * API, wmfDrawArc_t * draw_arc,magick_arc_t finish);
 static int          util_font_weight( const char* font );
 static double       util_pointsize( wmfAPI* API, wmfFont* font, char* str, double font_height);
-static void         util_clip_pop( wmfAPI* API );
-static void         util_clip_push( wmfAPI* API, unsigned long id );
-static void         util_context_pop( wmfAPI* API );
-static void         util_context_push( wmfAPI* API );
-static void         util_defs_pop( wmfAPI* API );
-static void         util_defs_push( wmfAPI* API );
-static void         util_pattern_pop( wmfAPI* API );
-static void         util_pattern_push( wmfAPI* API, unsigned long id, unsigned long columns, unsigned long rows );
 static long         util_registry_add(wmfAPI * API, const Image *image, ExceptionInfo *exception);
 static const Image* util_registry_get(wmfAPI * API, const long id, ExceptionInfo *exception);
 static void         util_registry_remove(wmfAPI * API, const long id);
 static void         util_render_mvg(wmfAPI * API);
-static void         util_set_brush(wmfAPI * API, wmfDC * dc);
+static void         util_set_brush(wmfAPI * API, wmfDC * dc, const BrushApply brush_apply);
 static void         util_set_pen(wmfAPI * API, wmfDC * dc);
 
-static void util_clip_pop( wmfAPI* API )
+/* Set fill color */
+static void draw_color_fill_rgb( wmfAPI* API, const wmfRGB* rgb )
+{
+  util_append_mvg(API, "fill #%02x%02x%02x\n",
+                  (int) rgb->r, (int) rgb->g, (int) rgb->b);
+}
+static void draw_color_fill_pixelpacket( wmfAPI* API, const PixelPacket* color )
+{
+  if(color->opacity == OpaqueOpacity)
+    util_append_mvg(API,
+#if QuantumDepth == 8
+                    "fill #%02x%02x%02x\n",
+#elif QuantumDepth == 16
+                    "fill #%04x%04x%04x\n",
+#endif
+                    color->red, color->green, color->blue);
+  else
+    util_append_mvg(API,
+#if QuantumDepth == 8
+                    "fill #%02x%02x%02x%02x\n",
+#elif QuantumDepth == 16
+                    "fill #%04x%04x%04x%04x\n",
+#endif
+                    color->red, color->green, color->blue, color->opacity);
+}
+
+/* Reset fill color */
+static void draw_color_fill_reset( wmfAPI* API )
+{
+  util_append_mvg(API, "fill none\n");
+}
+
+/* Set stroke color */
+static void draw_color_stroke_rgb( wmfAPI* API, const wmfRGB* rgb )
+{
+  util_append_mvg(API, "stroke #%02x%02x%02x\n",
+        (int) rgb->r, (int) rgb->g, (int) rgb->b);
+}
+
+/* Reset stroke color */
+static void draw_color_stroke_reset( wmfAPI* API )
+{
+  util_append_mvg(API, "stroke none\n");
+}
+
+static void draw_clip_pop( wmfAPI* API )
 {
   wmf_magick_t
     *ddata = WMF_MAGICK_GetData(API);
@@ -246,7 +320,7 @@ static void util_clip_pop( wmfAPI* API )
   util_append_mvg(API, "pop clip-path\n");
 }
 
-static void util_clip_push( wmfAPI* API, unsigned long id )
+static void draw_clip_push( wmfAPI* API, unsigned long id )
 {
   wmf_magick_t
     *ddata = WMF_MAGICK_GetData(API);
@@ -256,7 +330,7 @@ static void util_clip_push( wmfAPI* API, unsigned long id )
 }
 
 /* Pop graphic context */
-static void util_context_pop( wmfAPI* API )
+static void draw_context_pop( wmfAPI* API )
 {
   wmf_magick_t
     *ddata = WMF_MAGICK_GetData(API);
@@ -266,7 +340,7 @@ static void util_context_pop( wmfAPI* API )
 }
 
 /* Push graphic context */
-static void util_context_push( wmfAPI* API )
+static void draw_context_push( wmfAPI* API )
 {
   wmf_magick_t
     *ddata = WMF_MAGICK_GetData(API);
@@ -275,7 +349,7 @@ static void util_context_push( wmfAPI* API )
   ddata->push_depth++;
 }
 
-static void util_defs_pop( wmfAPI* API )
+static void draw_defs_pop( wmfAPI* API )
 {
   wmf_magick_t
     *ddata = WMF_MAGICK_GetData(API);
@@ -284,7 +358,7 @@ static void util_defs_pop( wmfAPI* API )
   util_append_mvg(API, "pop defs\n");
 }
 
-static void util_defs_push( wmfAPI* API )
+static void draw_defs_push( wmfAPI* API )
 {
   wmf_magick_t
     *ddata = WMF_MAGICK_GetData(API);
@@ -293,7 +367,7 @@ static void util_defs_push( wmfAPI* API )
   ddata->push_depth++;
 }
 
-static void util_pattern_pop( wmfAPI* API )
+static void draw_pattern_pop( wmfAPI* API )
 {
   wmf_magick_t
     *ddata = WMF_MAGICK_GetData(API);
@@ -302,7 +376,7 @@ static void util_pattern_pop( wmfAPI* API )
   util_append_mvg(API, "pop pattern\n");
 }
 
-static void util_pattern_push( wmfAPI* API,
+static void draw_pattern_push( wmfAPI* API,
                                unsigned long id,
                                unsigned long columns,
                                unsigned long rows )
@@ -366,11 +440,11 @@ static void ipa_rop_draw(wmfAPI * API, wmfROP_Draw_t * rop_draw)
     return;
 
   /* Save graphic context */
-  util_context_push(API);
+  draw_context_push(API);
 
   /* FIXME: finish implementing (once we know what it is supposed to do!)*/
 
-  util_set_brush(API, rop_draw->dc);
+  util_set_brush(API, rop_draw->dc, BrushApplyFill);
 
   switch (rop_draw->ROP) /* Ternary raster operations */
     {
@@ -428,7 +502,7 @@ static void ipa_rop_draw(wmfAPI * API, wmfROP_Draw_t * rop_draw)
                     XC(rop_draw->BR.x), YC(rop_draw->BR.y));
 
   /* Restore graphic context */
-  util_context_pop(API);
+  draw_context_pop(API);
 }
 
 static void ipa_bmp_draw(wmfAPI *API, wmfBMP_Draw_t *bmp_draw)
@@ -639,7 +713,7 @@ static void ipa_device_begin(wmfAPI * API)
     *ddata = WMF_MAGICK_GetData(API);
 
   /* Make SVG output happy */
-  util_context_push(API);
+  draw_context_push(API);
 
   util_append_mvg(API, "viewbox 0 0 %u %u\n", ddata->image->columns,
         ddata->image->rows);
@@ -662,27 +736,7 @@ static void ipa_device_begin(wmfAPI * API)
   if(ddata->image_info->texture == NULL)
     {
       /* Draw rectangle in background color */
-      if(ddata->image->background_color.opacity == OpaqueOpacity)
-        util_append_mvg(API,
-#if QuantumDepth == 8
-                          "fill #%02x%02x%02x\n",
-#elif QuantumDepth == 16
-                          "fill #%04x%04x%04x\n",
-#endif
-                          ddata->image->background_color.red,
-                          ddata->image->background_color.green,
-                          ddata->image->background_color.blue);
-      else
-        util_append_mvg(API,
-#if QuantumDepth == 8
-                          "fill #%02x%02x%02x%02x\n",
-#elif QuantumDepth == 16
-                          "fill #%04x%04x%04x%04x\n",
-#endif
-                          ddata->image->background_color.red,
-                          ddata->image->background_color.green,
-                          ddata->image->background_color.blue,
-                          ddata->image->background_color.opacity);
+      draw_color_fill_pixelpacket(API,&ddata->image->background_color);
       util_append_mvg(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
                         XC(ddata->bbox.TL.x),YC(ddata->bbox.TL.y),
                         XC(ddata->bbox.BR.x),YC(ddata->bbox.BR.y));
@@ -713,12 +767,12 @@ static void ipa_device_begin(wmfAPI * API)
           id = util_registry_add(API, image, &exception);
           if( id > -1 )
             {
-              util_defs_push(API);
-              util_pattern_push(API, ddata->pattern_id, image->columns, image->rows);
+              draw_defs_push(API);
+              draw_pattern_push(API, ddata->pattern_id, image->columns, image->rows);
               util_append_mvg(API, "image Copy 0,0 %lu,%lu 'mpri:%li'\n",
                                 image->columns, image->rows, id);
-              util_pattern_pop(API);
-              util_defs_pop(API);
+              draw_pattern_pop(API);
+              draw_defs_pop(API);
               util_append_mvg(API, "fill url(#brush_%lu)\n", ddata->pattern_id);
               ++ddata->pattern_id;
 
@@ -732,8 +786,8 @@ static void ipa_device_begin(wmfAPI * API)
     }
 
   util_append_mvg(API, "fill-opacity 1\n");
-  util_append_mvg(API, "fill none\n");
-  util_append_mvg(API, "stroke none\n");
+  draw_color_fill_reset(API);
+  draw_color_stroke_reset(API);
 }
 
 /*
@@ -746,76 +800,62 @@ static void ipa_device_end(wmfAPI * API)
 
   /* Reset any existing clip paths by popping context */
   if(ddata->clipping)
-    util_context_pop(API);
+    draw_context_pop(API);
   ddata->clipping = False;
 
   /* Make SVG output happy */
-  util_context_pop(API);
+  draw_context_pop(API);
 }
 
 static void ipa_flood_interior(wmfAPI * API, wmfFlood_t * flood)
 {
-  wmfRGB
-    *rgb = &(flood->color);
-
   /* Save graphic context */
-  util_context_push(API);
+  draw_context_push(API);
 
-  util_append_mvg(API, "fill #%02x%02x%02x\n",
-        (int) rgb->r, (int) rgb->g, (int) rgb->b);
+  draw_color_fill_rgb(API,&(flood->color));
 
   util_append_mvg(API, "color %.10g,%.10g filltoborder\n",
-        XC(flood->pt.x), YC(flood->pt.y));
+                  XC(flood->pt.x), YC(flood->pt.y));
 
   /* Restore graphic context */
-  util_context_pop(API);
+  draw_context_pop(API);
 }
 
 static void ipa_flood_exterior(wmfAPI * API, wmfFlood_t * flood)
 {
-  wmfRGB
-    *rgb = &(flood->color);
-
   /* Save graphic context */
-  util_context_push(API);
+  draw_context_push(API);
 
-  util_append_mvg(API, "fill #%02x%02x%02x\n",
-        (int) rgb->r, (int) rgb->g, (int) rgb->b);
+  draw_color_fill_rgb(API,&(flood->color));
 
   if (flood->type == FLOODFILLSURFACE)
     util_append_mvg(API, "color %.10g,%.10g floodfill\n",
-                      XC(flood->pt.x),YC(flood->pt.y));
+                    XC(flood->pt.x),YC(flood->pt.y));
   else
     util_append_mvg(API, "color %.10g,%.10g filltoborder\n",
-                      XC(flood->pt.x), YC(flood->pt.y));
+                    XC(flood->pt.x), YC(flood->pt.y));
 
   /* Restore graphic context */
-  util_context_pop(API);
+  draw_context_pop(API);
 }
 
 static void ipa_draw_pixel(wmfAPI * API, wmfDrawPixel_t * draw_pixel)
 {
-  wmfRGB
-    *rgb = &(draw_pixel->color);
-
   /* Save graphic context */
-  util_context_push(API);
+  draw_context_push(API);
 
-  util_append_mvg(API, "stroke none\n");
+  draw_color_stroke_reset(API);
 
-  util_append_mvg(API, "fill-opacity 1\n");
-
-  util_append_mvg(API, "fill #%02x%02x%02x\n",
-        (int) rgb->r, (int) rgb->g, (int) rgb->b);
+  draw_color_fill_rgb(API,&(draw_pixel->color));
 
   util_append_mvg(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
-        XC(draw_pixel->pt.x),
-        YC(draw_pixel->pt.y),
-        XC(draw_pixel->pt.x + draw_pixel->pixel_width),
-        YC(draw_pixel->pt.y + draw_pixel->pixel_height));
+                  XC(draw_pixel->pt.x),
+                  YC(draw_pixel->pt.y),
+                  XC(draw_pixel->pt.x + draw_pixel->pixel_width),
+                  YC(draw_pixel->pt.y + draw_pixel->pixel_height));
 
   /* Restore graphic context */
-  util_context_pop(API);
+  draw_context_pop(API);
 }
 
 static void ipa_draw_pie(wmfAPI * API, wmfDrawArc_t * draw_arc)
@@ -858,94 +898,94 @@ static void util_draw_arc(wmfAPI * API,
     Ry;
 
   /* Save graphic context */
-  util_context_push(API);
+  draw_context_push(API);
 
   if (TO_FILL(draw_arc) || TO_DRAW(draw_arc))
-  {
-    centre.x = (draw_arc->TL.x + draw_arc->BR.x) / 2;
-    centre.y = (draw_arc->TL.y + draw_arc->BR.y) / 2;
-
-    if (finish != magick_arc_ellipse)
     {
-      draw_arc->start.x += centre.x;
-      draw_arc->start.y += centre.y;
+      centre.x = (draw_arc->TL.x + draw_arc->BR.x) / 2;
+      centre.y = (draw_arc->TL.y + draw_arc->BR.y) / 2;
 
-      draw_arc->end.x += centre.x;
-      draw_arc->end.y += centre.y;
+      if (finish != magick_arc_ellipse)
+        {
+          draw_arc->start.x += centre.x;
+          draw_arc->start.y += centre.y;
+
+          draw_arc->end.x += centre.x;
+          draw_arc->end.y += centre.y;
+        }
+
+      TL = draw_arc->TL;
+      BR = draw_arc->BR;
+
+      O = centre;
+
+      if (finish != magick_arc_ellipse)
+        {
+          start = draw_arc->start;
+          end = draw_arc->end;
+        }
+
+      Rx = (BR.x - TL.x) / 2;
+      Ry = (BR.y - TL.y) / 2;
+
+      if (finish != magick_arc_ellipse)
+        {
+          start.x -= O.x;
+          start.y -= O.y;
+
+          end.x -= O.x;
+          end.y -= O.y;
+
+          phi_s = atan2((double) start.y, (double) start.x) * 180 / MagickPI;
+          phi_e = atan2((double) end.y, (double) end.x) * 180 / MagickPI;
+
+          if (phi_e <= phi_s)
+            phi_e += 360;
+        }
+
+      util_set_pen(API, draw_arc->dc);
+      if (finish == magick_arc_open)
+        draw_color_fill_reset(API);
+      else
+        util_set_brush(API, draw_arc->dc, BrushApplyFill);
+
+      if (finish == magick_arc_ellipse)
+        util_append_mvg(API, "ellipse %.10g,%.10g %.10g,%.10g 0,360\n",
+                        XC(O.x), YC(O.y), Rx, Ry);
+      else if (finish == magick_arc_pie)
+        util_append_mvg(API, "ellipse %.10g,%.10g %.10g,%.10g %.10g,%.10g\n",
+                        XC(O.x), YC(O.y), Rx, Ry, phi_s, phi_e);
+      else if (finish == magick_arc_chord)
+        {
+          util_append_mvg(API, "arc %.10g,%.10g %.10g,%.10g %.10g,%.10g\n",
+                          XC(O.x), YC(O.y), Rx, Ry, phi_s, phi_e);
+          util_append_mvg(API, "line %.10g,%.10g %.10g,%.10g\n",
+                          XC(start.x), YC(start.y), XC(end.x), YC(end.y));
+        }
+      else      /* if (finish == magick_arc_open) */
+        util_append_mvg(API, "arc %.10g,%.10g %.10g,%.10g %.10g,%.10g\n",
+                        XC(O.x), YC(O.y), Rx, Ry, phi_s, phi_e);
     }
-
-    TL = draw_arc->TL;
-    BR = draw_arc->BR;
-
-    O = centre;
-
-    if (finish != magick_arc_ellipse)
-    {
-      start = draw_arc->start;
-      end = draw_arc->end;
-    }
-
-    Rx = (BR.x - TL.x) / 2;
-    Ry = (BR.y - TL.y) / 2;
-
-    if (finish != magick_arc_ellipse)
-    {
-      start.x -= O.x;
-      start.y -= O.y;
-
-      end.x -= O.x;
-      end.y -= O.y;
-
-      phi_s = atan2((double) start.y, (double) start.x) * 180 / MagickPI;
-      phi_e = atan2((double) end.y, (double) end.x) * 180 / MagickPI;
-
-      if (phi_e <= phi_s)
-  phi_e += 360;
-    }
-
-    util_set_pen(API, draw_arc->dc);
-    if (finish == magick_arc_open)
-      util_append_mvg(API, "fill none\n");
-    else
-      util_set_brush(API, draw_arc->dc);
-
-    if (finish == magick_arc_ellipse)
-      util_append_mvg(API, "ellipse %.10g,%.10g %.10g,%.10g 0,360\n",
-      XC(O.x), YC(O.y), Rx, Ry);
-    else if (finish == magick_arc_pie)
-      util_append_mvg(API, "ellipse %.10g,%.10g %.10g,%.10g %.10g,%.10g\n",
-      XC(O.x), YC(O.y), Rx, Ry, phi_s, phi_e);
-    else if (finish == magick_arc_chord)
-    {
-      util_append_mvg(API, "arc %.10g,%.10g %.10g,%.10g %.10g,%.10g\n",
-      XC(O.x), YC(O.y), Rx, Ry, phi_s, phi_e);
-      util_append_mvg(API, "line %.10g,%.10g %.10g,%.10g\n",
-      XC(start.x), YC(start.y), XC(end.x), YC(end.y));
-    }
-    else      /* if (finish == magick_arc_open) */
-      util_append_mvg(API, "arc %.10g,%.10g %.10g,%.10g %.10g,%.10g\n",
-      XC(O.x), YC(O.y), Rx, Ry, phi_s, phi_e);
-  }
 
   /* Restore graphic context */
-  util_context_pop(API);
+  draw_context_pop(API);
 }
 
 static void ipa_draw_line(wmfAPI * API, wmfDrawLine_t * draw_line)
 {
   /* Save graphic context */
-  util_context_push(API);
+  draw_context_push(API);
 
   if (TO_DRAW(draw_line))
-  {
-    util_set_pen(API, draw_line->dc);
-    util_append_mvg(API, "line %.10g,%.10g %.10g,%.10g\n",
-          XC(draw_line->from.x), YC(draw_line->from.y),
-          XC(draw_line->to.x), YC(draw_line->to.y));
-  }
+    {
+      util_set_pen(API, draw_line->dc);
+      util_append_mvg(API, "line %.10g,%.10g %.10g,%.10g\n",
+                      XC(draw_line->from.x), YC(draw_line->from.y),
+                      XC(draw_line->to.x), YC(draw_line->to.y));
+    }
 
   /* Restore graphic context */
-  util_context_pop(API);
+  draw_context_pop(API);
 }
 
 static void ipa_poly_line(wmfAPI * API, wmfPolyLine_t * poly_line)
@@ -954,30 +994,30 @@ static void ipa_poly_line(wmfAPI * API, wmfPolyLine_t * poly_line)
     i;
 
   /* Save graphic context */
-  util_context_push(API);
+  draw_context_push(API);
 
   if (poly_line->count <= 1)
     return;
 
   if (TO_DRAW(poly_line))
-  {
-    util_append_mvg(API, "fill none\n");
-    util_set_pen(API, poly_line->dc);
-
-    util_append_mvg(API, "polyline");
-
-    for (i = 0; i < poly_line->count; i++)
     {
-      util_append_mvg(API, " %.10g,%.10g",
-      XC(poly_line->pt[i].x),
-      YC(poly_line->pt[i].y));
+      draw_color_fill_reset(API);
+      util_set_pen(API, poly_line->dc);
+
+      util_append_mvg(API, "polyline");
+
+      for (i = 0; i < poly_line->count; i++)
+        {
+          util_append_mvg(API, " %.10g,%.10g",
+                          XC(poly_line->pt[i].x),
+                          YC(poly_line->pt[i].y));
+        }
+
+      util_append_mvg(API, "\n");
     }
 
-    util_append_mvg(API, "\n");
-  }
-
   /* Restore graphic context */
-  util_context_pop(API);
+  draw_context_pop(API);
 }
 
 static void ipa_draw_polygon(wmfAPI * API, wmfPolyLine_t * poly_line)
@@ -986,75 +1026,70 @@ static void ipa_draw_polygon(wmfAPI * API, wmfPolyLine_t * poly_line)
     i;
 
   /* Save graphic context */
-  util_context_push(API);
+  draw_context_push(API);
 
   if (poly_line->count <= 2)
     return;
 
   if (TO_FILL(poly_line) || TO_DRAW(poly_line))
-  {
-    util_set_pen(API, poly_line->dc);
-    util_set_brush(API, poly_line->dc);
-
-    util_append_mvg(API, "polygon");
-
-    for (i = 0; i < poly_line->count; i++)
     {
-      util_append_mvg(API, " %.10g,%.10g",
-      XC(poly_line->pt[i].x),
-      YC(poly_line->pt[i].y));
+      util_set_pen(API, poly_line->dc);
+      util_set_brush(API, poly_line->dc, BrushApplyFill);
+
+      util_append_mvg(API, "polygon");
+
+      for (i = 0; i < poly_line->count; i++)
+        {
+          util_append_mvg(API, " %.10g,%.10g",
+                          XC(poly_line->pt[i].x),
+                          YC(poly_line->pt[i].y));
+        }
+
+      util_append_mvg(API, "\n");
     }
 
-    util_append_mvg(API, "\n");
-  }
-
   /* Restore graphic context */
-  util_context_pop(API);
+  draw_context_pop(API);
 }
 
 static void ipa_draw_rectangle(wmfAPI * API, wmfDrawRectangle_t * draw_rect)
 {
   /* Save graphic context */
-  util_context_push(API);
+  draw_context_push(API);
 
   if (TO_FILL(draw_rect) || TO_DRAW(draw_rect))
-  {
-    util_set_pen(API, draw_rect->dc);
-    util_set_brush(API, draw_rect->dc);
+    {
+      util_set_pen(API, draw_rect->dc);
+      util_set_brush(API, draw_rect->dc, BrushApplyFill);
 
-    if ((draw_rect->width > 0) || (draw_rect->height > 0))
-      util_append_mvg(API, "roundrectangle %.10g,%.10g %.10g,%.10g %.10g,%.10g\n",
-      XC(draw_rect->TL.x), YC(draw_rect->TL.y),
-      XC(draw_rect->BR.x), YC(draw_rect->BR.y),
-      draw_rect->width / 2, draw_rect->height / 2);
-    else
-      util_append_mvg(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
-      XC(draw_rect->TL.x), YC(draw_rect->TL.y),
-      XC(draw_rect->BR.x), YC(draw_rect->BR.y));
-  }
+      if ((draw_rect->width > 0) || (draw_rect->height > 0))
+        util_append_mvg(API, "roundrectangle %.10g,%.10g %.10g,%.10g %.10g,%.10g\n",
+                        XC(draw_rect->TL.x), YC(draw_rect->TL.y),
+                        XC(draw_rect->BR.x), YC(draw_rect->BR.y),
+                        draw_rect->width / 2, draw_rect->height / 2);
+      else
+        util_append_mvg(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
+                        XC(draw_rect->TL.x), YC(draw_rect->TL.y),
+                        XC(draw_rect->BR.x), YC(draw_rect->BR.y));
+    }
 
   /* Restore graphic context */
-  util_context_pop(API);
+  draw_context_pop(API);
 }
 
 /* Draw an un-filled rectangle using the current brush */
 static void ipa_region_frame(wmfAPI * API, wmfPolyRectangle_t * poly_rect)
 {
   /* Save graphic context */
-  util_context_push(API);
-
-  /* FIXME: rectangle outine is supposed to be drawn with brush, not
-     pen! */
-
-  printf("ipa_region_frame not properly implemented\n");
+  draw_context_push(API);
 
   if (TO_FILL(poly_rect) || TO_DRAW(poly_rect))
     {
       unsigned int
         i;
 
-      util_append_mvg(API, "stroke none\n");
-      util_set_brush(API, poly_rect->dc);
+      draw_color_fill_reset(API);
+      util_set_brush(API, poly_rect->dc, BrushApplyStroke);
 
       for (i = 0; i < poly_rect->count; i++)
         {
@@ -1065,7 +1100,7 @@ static void ipa_region_frame(wmfAPI * API, wmfPolyRectangle_t * poly_rect)
     }
 
   /* Restore graphic context */
-  util_context_pop(API);
+  draw_context_pop(API);
 }
 
 static void ipa_region_paint(wmfAPI * API, wmfPolyRectangle_t * poly_rect)
@@ -1075,26 +1110,26 @@ static void ipa_region_paint(wmfAPI * API, wmfPolyRectangle_t * poly_rect)
     return;
 
   /* Save graphic context */
-  util_context_push(API);
+  draw_context_push(API);
 
   if (TO_FILL (poly_rect))
     {
       unsigned int
         i;
 
-      util_append_mvg(API, "stroke none\n");
-      util_set_brush(API, poly_rect->dc);
+      draw_color_stroke_reset(API);
+      util_set_brush(API, poly_rect->dc, BrushApplyFill);
 
       for (i = 0; i < poly_rect->count; i++)
         {
           util_append_mvg(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
-                            XC(poly_rect->TL[i].x), YC(poly_rect->TL[i].y),
-                            XC(poly_rect->BR[i].x), YC(poly_rect->BR[i].y));
+                          XC(poly_rect->TL[i].x), YC(poly_rect->TL[i].y),
+                          XC(poly_rect->BR[i].x), YC(poly_rect->BR[i].y));
         }
     }
 
   /* Restore graphic context */
-  util_context_pop(API);
+  draw_context_pop(API);
 }
 
 static void ipa_region_clip(wmfAPI *API, wmfPolyRectangle_t *poly_rect)
@@ -1107,7 +1142,7 @@ static void ipa_region_clip(wmfAPI *API, wmfPolyRectangle_t *poly_rect)
 
   /* Reset any existing clip paths by popping context */
   if(ddata->clipping)
-    util_context_pop(API);
+    draw_context_pop(API);
   ddata->clipping = False;
 
   if(poly_rect->count > 0)
@@ -1115,21 +1150,21 @@ static void ipa_region_clip(wmfAPI *API, wmfPolyRectangle_t *poly_rect)
 
       /* Define clip path */
       ddata->clip_path_id++;
-      util_defs_push(API);
-      util_clip_push(API, ddata->clip_path_id);
-      util_context_push(API);
+      draw_defs_push(API);
+      draw_clip_push(API, ddata->clip_path_id);
+      draw_context_push(API);
       for (i = 0; i < poly_rect->count; i++)
         {
           util_append_mvg(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
-                            XC(poly_rect->TL[i].x), YC(poly_rect->TL[i].y),
-                            XC(poly_rect->BR[i].x), YC(poly_rect->BR[i].y));
+                          XC(poly_rect->TL[i].x), YC(poly_rect->TL[i].y),
+                          XC(poly_rect->BR[i].x), YC(poly_rect->BR[i].y));
         }
-      util_context_pop(API);
-      util_clip_pop(API);
-      util_defs_pop(API);
+      draw_context_pop(API);
+      draw_clip_pop(API);
+      draw_defs_pop(API);
 
       /* Push context for new clip paths */
-      util_context_push(API);
+      draw_context_push(API);
       util_append_mvg(API, "clip-path url(#clip_%lu)\n", ddata->clip_path_id);
       ddata->clipping = True;
     }
@@ -1256,7 +1291,7 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
   pointsize = util_pointsize( API, font, draw_text->str, draw_text->font_height);
 
   /* Save graphic context */
-  util_context_push(API);
+  draw_context_push(API);
 
 #if 0
   printf("\nipa_draw_text\n");
@@ -1314,16 +1349,12 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
   if (draw_text->flags & ETO_OPAQUE)
     {
       /* Draw bounding-box background color (META_EXTTEXTOUT mode) */
-      wmfRGB
-        *box = WMF_DC_BACKGROUND(draw_text->dc);
-
-      util_append_mvg(API, "stroke none\n");
-      util_append_mvg(API, "fill #%02x%02x%02x\n",
-                        (int) box->r, (int) box->g, (int) box->b);
+      draw_color_stroke_reset(API);
+      draw_color_fill_rgb(API,WMF_DC_BACKGROUND(draw_text->dc));
       util_append_mvg(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
-                        XC(draw_text->TL.x),YC(draw_text->TL.y),
-                        XC(draw_text->BR.x),YC(draw_text->BR.y));
-      util_append_mvg(API, "fill none\n");
+                      XC(draw_text->TL.x),YC(draw_text->TL.y),
+                      XC(draw_text->BR.x),YC(draw_text->BR.y));
+      draw_color_fill_reset(API);
     }
   else
     {
@@ -1334,7 +1365,7 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
             *box = WMF_DC_BACKGROUND(draw_text->dc);
 
           util_append_mvg(API, "decorate #%02x%02x%02x\n",
-                            (int) box->r, (int) box->g, (int) box->b);
+                          (int) box->r, (int) box->g, (int) box->b);
         }
       else
         util_append_mvg(API, "decorate none\n");
@@ -1346,16 +1377,10 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
     }
 
   /* Set stroke color */
-  util_append_mvg(API, "stroke none\n");
+  draw_color_stroke_reset(API);
 
   /* Set fill color */
-  {
-    wmfRGB
-      *fill = WMF_DC_TEXTCOLOR(draw_text->dc);
-
-    util_append_mvg(API, "fill #%02x%02x%02x\n",
-          (int) fill->r, (int) fill->g, (int) fill->b);
-  }
+  draw_color_fill_rgb(API,WMF_DC_TEXTCOLOR(draw_text->dc));
 
   /* Output font size */
   util_append_mvg(API, "font-size %.10g\n", pointsize);
@@ -1368,7 +1393,7 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
 
   /* Transform horizontal scale to draw text at 1:1 ratio */
   util_append_mvg(API, "scale %.10g,%.10g\n",
-        ddata->scale_y / ddata->scale_x, 1.0);
+                  ddata->scale_y / ddata->scale_x, 1.0);
 
   /* Apply rotation */
   /* ImageMagick's drawing rotation is clockwise from horizontal
@@ -1398,7 +1423,7 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
      * Build escaped string
      */
     for (p = (unsigned char *) draw_text->str, q = (unsigned char *) escaped_string, string_length = 0;
-   *p != 0 && string_length < ((int) sizeof(escaped_string) - 3); ++p)
+         *p != 0 && string_length < ((int) sizeof(escaped_string) - 3); ++p)
       {
         if (*p == '\'')
           {
@@ -1436,7 +1461,7 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
         ulBR.y = AbsoluteValue(metrics.descent);
 
         util_append_mvg(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
-                          XC(ulTL.x), YC(ulTL.y), XC(ulBR.x), YC(ulBR.y));
+                        XC(ulTL.x), YC(ulTL.y), XC(ulBR.x), YC(ulBR.y));
       }
 
     /* Strikeout text the Windows way */
@@ -1458,23 +1483,23 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
         ulBR.y = -(((double) metrics.ascent) / 2 - line_height / 2);
 
         util_append_mvg(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
-                          XC(ulTL.x), YC(ulTL.y), XC(ulBR.x), YC(ulBR.y));
+                        XC(ulTL.x), YC(ulTL.y), XC(ulBR.x), YC(ulBR.y));
 
       }
   }
 
   /* Restore graphic context */
-  util_context_pop(API);
+  draw_context_pop(API);
 
 #if 0
-  util_context_push(API);
+  draw_context_push(API);
   util_append_mvg(API, "stroke red\n");
-  util_append_mvg(API, "fill none\n");
+  draw_color_fill_reset(API);
   util_append_mvg(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
-                    XC(TL.x), YC(TL.y),
-                    XC(BR.x), YC(BR.y));
-  util_append_mvg(API, "stroke none\n");
-  util_context_pop(API);
+                  XC(TL.x), YC(TL.y),
+                  XC(BR.x), YC(BR.y));
+  draw_color_stroke_reset(API);
+  draw_context_pop(API);
 #endif
 
 }
@@ -1503,7 +1528,7 @@ static void ipa_udata_free(wmfAPI * API, wmfUserData_t * userdata)
 
 }
 
-static void util_set_brush(wmfAPI * API, wmfDC * dc)
+static void util_set_brush(wmfAPI * API, wmfDC * dc, const BrushApply brush_apply)
 {
   wmf_magick_t
     *ddata = WMF_MAGICK_GetData(API);
@@ -1546,16 +1571,19 @@ static void util_set_brush(wmfAPI * API, wmfDC * dc)
       /* WMF_BRUSH_COLOR specifies brush color, WMF_BRUSH_HATCH
          ignored */
       {
-        util_append_mvg(API, "fill #%02x%02x%02x\n",
-                        (int) WMF_BRUSH_COLOR(brush)->r,
-                        (int) WMF_BRUSH_COLOR(brush)->g,
-                        (int) WMF_BRUSH_COLOR(brush)->b);
+        if( brush_apply == BrushApplyStroke )
+          draw_color_stroke_rgb(API,WMF_BRUSH_COLOR(brush));
+        else
+          draw_color_fill_rgb(API,WMF_BRUSH_COLOR(brush));
         break;
       }
     case BS_HOLLOW /* 1 */:    /* BS_HOLLOW & BS_NULL share enum */
       /* WMF_BRUSH_COLOR and WMF_BRUSH_HATCH ignored */
       {
-        util_append_mvg(API, "fill none\n");
+        if( brush_apply == BrushApplyStroke )
+          draw_color_stroke_reset(API);
+        else
+          draw_color_fill_reset(API);
         break;
       }
     case BS_HATCHED /* 2 */:
@@ -1563,26 +1591,23 @@ static void util_set_brush(wmfAPI * API, wmfDC * dc)
          specifies the hatch brush style. If WMF_DC_OPAQUE, then
          WMF_DC_BACKGROUND specifies hatch background color.  */
       {
-        util_defs_push(API);
-        util_pattern_push(API, ddata->pattern_id, 8, 8);
-        util_context_push(API);
+        draw_defs_push(API);
+        draw_pattern_push(API, ddata->pattern_id, 8, 8);
+        draw_context_push(API);
         
         if (WMF_DC_OPAQUE(dc))
           {
-            util_append_mvg(API, "fill #%02x%02x%02x\n",
-                            (int) WMF_DC_BACKGROUND(dc)->r,
-                            (int) WMF_DC_BACKGROUND(dc)->g,
-                            (int) WMF_DC_BACKGROUND(dc)->b);
+            if( brush_apply == BrushApplyStroke )
+              draw_color_stroke_rgb(API,WMF_DC_BACKGROUND(dc));
+            else
+              draw_color_fill_rgb(API,WMF_DC_BACKGROUND(dc));
             util_append_mvg(API, "rectangle 0,0 7,7\n");
           }
         
         util_append_mvg(API, "stroke-antialias 0\n");
         util_append_mvg(API, "stroke-width 1\n");
         
-        util_append_mvg(API, "stroke #%02x%02x%02x\n",
-                        (int) WMF_BRUSH_COLOR(brush)->r,
-                        (int) WMF_BRUSH_COLOR(brush)->g,
-                        (int) WMF_BRUSH_COLOR(brush)->b);
+        draw_color_stroke_rgb(API,WMF_BRUSH_COLOR(brush));
         
         switch ((unsigned int) WMF_BRUSH_HATCH(brush))
           {
@@ -1623,10 +1648,13 @@ static void util_set_brush(wmfAPI * API, wmfDC * dc)
             {
             }
           }
-        util_context_pop(API);
-        util_pattern_pop(API);
-        util_defs_pop(API);
-        util_append_mvg(API, "fill 'url(#brush_%lu)'\n", ddata->pattern_id);
+        draw_context_pop(API);
+        draw_pattern_pop(API);
+        draw_defs_pop(API);
+        if( brush_apply == BrushApplyStroke )
+          util_append_mvg(API, "stroke 'url(#brush_%lu)'\n", ddata->pattern_id);
+        else
+          util_append_mvg(API, "fill 'url(#brush_%lu)'\n", ddata->pattern_id);
         ++ddata->pattern_id;
         break;
       }
@@ -1730,13 +1758,16 @@ static void util_set_brush(wmfAPI * API, wmfDC * dc)
 
             if( *id > -1 )
               {
-                util_defs_push(API);
-                util_pattern_push(API, ddata->pattern_id, brush_bmp->width, brush_bmp->height);
+                draw_defs_push(API);
+                draw_pattern_push(API, ddata->pattern_id, brush_bmp->width, brush_bmp->height);
                 util_append_mvg(API, "image %s 0,0 %u,%u 'mpri:%li'\n",
                                 mode, brush_bmp->width, brush_bmp->height, *id);
-                util_pattern_pop(API);
-                util_defs_pop(API);
-                util_append_mvg(API, "fill url(#brush_%lu)\n", ddata->pattern_id);
+                draw_pattern_pop(API);
+                draw_defs_pop(API);
+                if( brush_apply == BrushApplyStroke )
+                  util_append_mvg(API, "stroke url(#brush_%lu)\n", ddata->pattern_id);
+                else
+                  util_append_mvg(API, "fill url(#brush_%lu)\n", ddata->pattern_id);
                 ++ddata->pattern_id;
               }
             else
@@ -1779,9 +1810,6 @@ static void util_set_pen(wmfAPI * API, wmfDC * dc)
   wmfPen
     *pen = 0;
 
-  wmfRGB
-    *pen_color = 0;
-
   double
     pen_width,
     pixel_width;
@@ -1793,8 +1821,6 @@ static void util_set_pen(wmfAPI * API, wmfDC * dc)
     pen_type;
 
   pen = WMF_DC_PEN(dc);
-
-  pen_color = WMF_PEN_COLOR(pen);
 
   pen_width = (WMF_PEN_WIDTH(pen) + WMF_PEN_HEIGHT(pen)) / 2;
 
@@ -1814,7 +1840,7 @@ static void util_set_pen(wmfAPI * API, wmfDC * dc)
   /* Pen style specified? */
   if (pen_style == PS_NULL)
   {
-    util_append_mvg(API, "stroke none\n");
+    draw_color_stroke_reset(API);
     return;
   }
 
@@ -1894,8 +1920,7 @@ static void util_set_pen(wmfAPI * API, wmfDC * dc)
       break;
   }
 
-  util_append_mvg(API, "stroke #%02x%02x%02x\n",
-        (int) pen_color->r, (int) pen_color->g, (int) pen_color->b);
+  draw_color_stroke_rgb(API,WMF_PEN_COLOR(pen));
 }
 
 /* Estimate font pointsize based on Windows font parameters */

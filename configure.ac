@@ -720,8 +720,10 @@ then
     AC_MSG_RESULT()
     failed=0;
     passed=0;
+    AC_LANG_PUSH(C++)
     AC_CHECK_HEADER(fpxlib.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
     AC_CHECK_LIB(fpx,FPX_OpenImageByFilename,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+    AC_LANG_POP
     AC_MSG_CHECKING(if FlashPIX package is complete)
     if test $passed -gt 0
     then
