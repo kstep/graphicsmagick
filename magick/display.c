@@ -2058,7 +2058,7 @@ static unsigned int XColorEditImage(Display *display,
                       (*image)->colormap[i].blue=
                         ScaleShortToQuantum(color.blue);
                     }
-                SyncImage(*image);
+                (void) SyncImage(*image);
               }
             break;
           }

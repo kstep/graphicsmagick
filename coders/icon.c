@@ -403,7 +403,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
       default:
         ThrowReaderException(CorruptImageError,ImproperImageHeader,image)
     }
-    SyncImage(image);
+    (void) SyncImage(image);
     /*
       Convert bitmap scanline to pixel packets.
     */

@@ -463,7 +463,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,
   MagickFreeMemory(colors);
   XDestroyImage(dps_image);
   if (image->storage_class == PseudoClass)
-    SyncImage(image);
+    (void) SyncImage(image);
   /*
     Rasterize matte image.
   */

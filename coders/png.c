@@ -2470,7 +2470,7 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
       MagickFreeMemory(quantum_scanline);
     }
   if (image->storage_class == PseudoClass)
-    SyncImage(image);
+    (void) SyncImage(image);
   png_read_end(ping,ping_info);
 
   if (image_info->number_scenes != 0 && mng_info->scenes_found-1 <
@@ -6153,7 +6153,7 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
               quantize_info.number_colors=256;
               (void) QuantizeImage(&quantize_info,image);
               number_colors=image->colors;
-              SyncImage(image);
+              (void) SyncImage(image);
               if (logging)
                 (void) LogMagickEvent(CoderEvent,GetMagickModule(),
                     "    Colors quantized to %ld",number_colors);
@@ -7913,7 +7913,7 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
     for (p=image; p != (Image *) NULL; p=p->next)
     {
       if (p->taint && p->storage_class == PseudoClass)
-         SyncImage(p);
+        (void) SyncImage(p);
       if (!mng_info->adjoin)
         break;
     }

@@ -186,7 +186,7 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
       break;
   }
   DestroyImage(watermark);
-  SyncImage(image);
+  (void) SyncImage(image);
   return(image);
 }
 

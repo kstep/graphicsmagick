@@ -476,6 +476,8 @@ typedef struct _ChromaticityInfo
 typedef struct _PixelPacket
 {
 #if defined(WORDS_BIGENDIAN)
+  /* RGBA */
+#define MAGICK_PIXELS_RGBA 1
   Quantum
     red,
     green,
@@ -483,12 +485,16 @@ typedef struct _PixelPacket
     opacity;
 #else
 #if defined(macintosh)
+  /* ARGB (as used by MacOS) */
+#define MAGICK_PIXELS_ARGB 1
   Quantum
     opacity,
     red,
     green,
     blue;
 #else
+  /* BGRA (as used by Microsoft Windows DIB) */
+#define MAGICK_PIXELS_BGRA 1
   Quantum
     blue,
     green,
@@ -1013,6 +1019,7 @@ extern MagickExport Image
   *AverageImages(const Image *,ExceptionInfo *),
   *CloneImage(const Image *,const unsigned long,const unsigned long,
    const unsigned int,ExceptionInfo *),
+  *GetImageClipMask(const Image *,ExceptionInfo *),
   *ReferenceImage(Image *);
 
 extern MagickExport ImageInfo
@@ -1032,7 +1039,19 @@ extern MagickExport int
 extern MagickExport RectangleInfo
   GetImageBoundingBox(const Image *,ExceptionInfo *exception);
 
+/* Functions which return unsigned int as value */
 extern MagickExport unsigned int
+  GetImageChannelDepth(const Image *image,
+    const ChannelType channel, ExceptionInfo *exception);
+
+/* Functions which return unsigned int as a True/False boolean value */
+extern MagickExport MagickBool
+  IsImagesEqual(Image *,const Image *),
+  IsTaintImage(const Image *),
+  IsSubimage(const char *,const unsigned int);
+
+/* Functions which return unsigned int to indicate operation pass/fail */
+extern MagickExport MagickPassFail
   AddDefinitions(ImageInfo *image_info,const char *options,
     ExceptionInfo *exception),
   AllocateImageColormap(Image *,const unsigned long),
@@ -1043,36 +1062,30 @@ extern MagickExport unsigned int
   CycleColormapImage(Image *image,const int amount),
   DescribeImage(Image *image,FILE *file,const unsigned int verbose),
   DisplayImages(const ImageInfo *image_info,Image *image),
-  GetImageChannelDepth(const Image *image,
-    const ChannelType channel, ExceptionInfo *exception),
   GradientImage(Image *,const PixelPacket *,const PixelPacket *),
-  IsImagesEqual(Image *,const Image *),
-  IsTaintImage(const Image *),
-  IsSubimage(const char *,const unsigned int),
-  PlasmaImage(Image *,const SegmentInfo *,unsigned long,unsigned long),
-  RemoveDefinitions(const ImageInfo *image_info,const char *options),
-  RGBTransformImage(Image *,const ColorspaceType),
-  SetImageChannelDepth(Image *image,
-    const ChannelType channel, const unsigned int depth),
-  SetImageClipMask(Image *image,Image *clip_mask),
-  SetImageDepth(Image *,const unsigned long),
-  SetImageInfo(ImageInfo *,const unsigned int,ExceptionInfo *),
-  SetImageType(Image *,const ImageType),
-  SortColormapByIntensity(Image *),
-  TextureImage(Image *,const Image *),
-  TransformColorspace(Image *,const ColorspaceType),
-  TransformRGBImage(Image *,const ColorspaceType);
-
-extern MagickExport MagickPassFail
   GetImageStatistics(const Image *image,ImageStatistics *statistics,
     ExceptionInfo *exception),
+  PlasmaImage(Image *,const SegmentInfo *,unsigned long,unsigned long),
   QuantumOperatorImage(Image *image,const ChannelType channel,
     const QuantumOperator quantum_operator,const double rvalue,
     ExceptionInfo *exception),
   QuantumOperatorRegionImage(Image *image,const long x,const long y,
     const unsigned long columns,const unsigned long rows,
     const ChannelType channel,const QuantumOperator quantum_operator,
-    const double rvalue,ExceptionInfo *exception);
+    const double rvalue,ExceptionInfo *exception),
+  RemoveDefinitions(const ImageInfo *image_info,const char *options),
+  RGBTransformImage(Image *,const ColorspaceType),
+  SetImageChannelDepth(Image *image,
+    const ChannelType channel, const unsigned int depth),
+  SetImageClipMask(Image *image,const Image *clip_mask),
+  SetImageDepth(Image *,const unsigned long),
+  SetImageInfo(ImageInfo *,const unsigned int,ExceptionInfo *),
+  SetImageType(Image *,const ImageType),
+  SortColormapByIntensity(Image *),
+  SyncImage(Image *),
+  TextureImage(Image *,const Image *),
+  TransformColorspace(Image *,const ColorspaceType),
+  TransformRGBImage(Image *,const ColorspaceType);
 
 extern MagickExport unsigned long
   GetImageDepth(const Image *,ExceptionInfo *);
@@ -1086,8 +1099,7 @@ extern MagickExport void
   GrayscalePseudoClassImage(Image *,unsigned int),
   ModifyImage(Image **,ExceptionInfo *),
   SetImage(Image *,const Quantum),
-  SetImageOpacity(Image *,const unsigned int),
-  SyncImage(Image *);
+  SetImageOpacity(Image *,const unsigned int);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

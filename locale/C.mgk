@@ -643,9 +643,12 @@
       <Message name="UnableToSegmentImage">
         unable to segment image
       </Message>
-        <Message name="UnableToSetClipMask">
-          Unable to set clip mask
-        </Message>
+      <Message name="UnableToGetClipMask">
+        Unable to get clip mask
+      </Message>
+      <Message name="UnableToSetClipMask">
+        Unable to set clip mask
+      </Message>
       <Message name="UnableToShearImage">
         unable to shear image
       </Message>

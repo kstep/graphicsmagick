@@ -1139,6 +1139,12 @@ unable to flatten image
 .
 
 MessageId       = +1
+SymbolicName    = ImageErrorUnableToGetClipMask
+Language        = English
+Unable to get clip mask
+.
+
+MessageId       = +1
 SymbolicName    = ImageErrorUnableToResizeImage
 Language        = English
 unable to resize image

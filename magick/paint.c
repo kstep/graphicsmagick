@@ -126,7 +126,7 @@ static inline PixelPacket AlphaComposite(const PixelPacket *p,
   return(composite);
 }
 
-MagickExport unsigned int ColorFloodfillImage(Image *image,
+MagickExport MagickPassFail ColorFloodfillImage(Image *image,
   const DrawInfo *draw_info,const PixelPacket target,const long x_offset,
   const long y_offset,const PaintMethod method)
 {
@@ -161,6 +161,9 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
   unsigned char
     *floodplane;
 
+  MagickPassFail
+    status=MagickPass;
+
   /*
     Check boundary conditions.
   */
@@ -169,14 +172,14 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
   assert(draw_info != (DrawInfo *) NULL);
   assert(draw_info->signature == MagickSignature);
   if ((x_offset < 0) || (x_offset >= (long) image->columns))
-    return(False);
+    return(MagickFail);
   if ((y_offset < 0) || (y_offset >= (long) image->rows))
-    return(False);
+    return(MagickFail);
   /*
     Set floodfill color.
   */
   if (FuzzyColorMatch(&draw_info->fill,&target,image->fuzz))
-    return(False);
+    return(MagickFail);
   floodplane=MagickAllocateMemory(unsigned char *,image->columns*image->rows);
   segment_stack=MagickAllocateMemory(SegmentInfo *,MaxStacksize*sizeof(SegmentInfo));
   if ((floodplane== (unsigned char *) NULL) ||
@@ -209,7 +212,10 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
     */
     q=GetImagePixels(image,0,y,x1+1,1);
     if (q == (PixelPacket *) NULL)
-      break;
+      {
+        status=MagickFail;
+        break;
+      }
     q+=x1;
     for (x=x1; x >= 0; x--)
     {
@@ -227,7 +233,10 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
       q--;
     }
     if (!SyncImagePixels(image))
-      break;
+      {
+        status=MagickFail;
+        break;
+      }
     skip=x >= x1;
     if (!skip)
       {
@@ -244,7 +253,10 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
             {
               q=GetImagePixels(image,x,y,image->columns-x,1);
               if (q == (PixelPacket *) NULL)
-                break;
+                {
+                  status=MagickFail;
+                  break;
+                }
               for ( ; x < (long) image->columns; x++)
               {
                 if (method == FloodfillMethod)
@@ -261,7 +273,10 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
                 q++;
               }
               if (!SyncImagePixels(image))
-                break;
+                {
+                  status=MagickFail;
+                  break;
+                }
             }
           Push(y,start,x-1,offset);
           if (x > (x2+1))
@@ -273,7 +288,10 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
         {
           q=GetImagePixels(image,x,y,x2-x+1,1);
           if (q == (PixelPacket *) NULL)
-            break;
+            {
+              status=MagickFail;
+              break;
+            }
           for ( ; x <= x2; x++)
           {
             if (method == FloodfillMethod)
@@ -300,7 +318,10 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
       */
       q=GetImagePixels(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
-        break;
+        {
+          status=MagickFail;
+          break;
+        }
       for (x=0; x < (long) image->columns; x++)
       {
         if (floodplane[y*image->columns+x])
@@ -308,7 +329,10 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
         q++;
       }
       if (!SyncImagePixels(image))
-        break;
+        {
+          status=MagickFail;
+          break;
+        }
     }
   else
     {
@@ -319,7 +343,10 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
       {
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
-          break;
+          {
+            status=MagickFail;
+            break;
+          }
         for (x=0; x < (long) image->columns; x++)
         {
           if (floodplane[y*image->columns+x])
@@ -336,12 +363,15 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
           q++;
         }
         if (!SyncImagePixels(image))
-          break;
+          {
+            status=MagickFail;
+            break;
+          }
       }
     }
   MagickFreeMemory(segment_stack);
   MagickFreeMemory(floodplane);
-  return(True);
+  return(status);
 }
 
 /*
@@ -388,7 +418,7 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
 %
 %
 */
-MagickExport unsigned int MatteFloodfillImage(Image *image,
+MagickExport MagickPassFail MatteFloodfillImage(Image *image,
   const PixelPacket target,const unsigned int opacity,const long x_offset,
   const long y_offset,const PaintMethod method)
 {
@@ -414,22 +444,25 @@ MagickExport unsigned int MatteFloodfillImage(Image *image,
   SegmentInfo
     *segment_stack;
 
+  MagickPassFail
+    status=MagickPass;
+
   /*
     Check boundary conditions.
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if ((x_offset < 0) || (x_offset >= (long) image->columns))
-    return(False);
+    return(MagickFail);
   if ((y_offset < 0) || (y_offset >= (long) image->rows))
-    return(False);
+    return(MagickFail);
   if (target.opacity == opacity)
-    return(False);
+    return(MagickFail);
   q=GetImagePixels(image,x_offset,y_offset,1,1);
   if (q == (PixelPacket *) NULL)
-    return(False);
+    return(MagickFail);
   if (q->opacity == opacity)
-    return(False);
+    return(MagickFail);
   /*
     Allocate segment stack.
   */
@@ -462,7 +495,10 @@ MagickExport unsigned int MatteFloodfillImage(Image *image,
     */
     q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
-      break;
+      {
+        status=MagickFail;
+        break;
+      }
     q+=x1;
     for (x=x1; x >= 0; x--)
     {
@@ -478,7 +514,10 @@ MagickExport unsigned int MatteFloodfillImage(Image *image,
       q--;
     }
     if (!SyncImagePixels(image))
-      break;
+      {
+        status=MagickFail;
+        break;
+      }
     skip=x >= x1;
     if (!skip)
       {
@@ -493,7 +532,10 @@ MagickExport unsigned int MatteFloodfillImage(Image *image,
         {
           q=GetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
-            break;
+            {
+              status=MagickFail;
+              break;
+            }
           q+=x;
           for ( ; x < (long) image->columns; x++)
           {
@@ -510,7 +552,10 @@ MagickExport unsigned int MatteFloodfillImage(Image *image,
             q++;
           }
           if (!SyncImagePixels(image))
-            break;
+            {
+              status=MagickFail;
+              break;
+            }
           Push(y,start,x-1,offset);
           if (x > (x2+1))
             Push(y,x2+1,x-1,-offset);
@@ -518,7 +563,10 @@ MagickExport unsigned int MatteFloodfillImage(Image *image,
       skip=False;
       q=GetImagePixels(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
-        break;
+        {
+          status=MagickFail;
+          break;
+        }
       q+=x;
       for (x++; x <= x2; x++)
       {
@@ -537,7 +585,7 @@ MagickExport unsigned int MatteFloodfillImage(Image *image,
     } while (x <= x2);
   }
   MagickFreeMemory(segment_stack);
-  return(True);
+  return(status);
 }
 
 /*
@@ -574,7 +622,7 @@ MagickExport unsigned int MatteFloodfillImage(Image *image,
 %
 %
 */
-MagickExport unsigned int OpaqueImage(Image *image,const PixelPacket target,
+MagickExport MagickPassFail OpaqueImage(Image *image,const PixelPacket target,
   const PixelPacket fill)
 {
 #define OpaqueImageText  "  Setting opaque color in the image...  "
@@ -590,6 +638,9 @@ MagickExport unsigned int OpaqueImage(Image *image,const PixelPacket target,
 
   register long
     i;
+
+  MagickPassFail
+    status=MagickPass;
 
   /*
     Make image color opaque.
@@ -608,7 +659,10 @@ MagickExport unsigned int OpaqueImage(Image *image,const PixelPacket target,
       {
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
-          break;
+          {
+            status=MagickFail;
+            break;
+          }
         for (x=0; x < (long) image->columns; x++)
         {
           if (FuzzyColorMatch(q,&target,image->fuzz))
@@ -616,10 +670,16 @@ MagickExport unsigned int OpaqueImage(Image *image,const PixelPacket target,
           q++;
         }
         if (!SyncImagePixels(image))
-          break;
+          {
+            status=MagickFail;
+            break;
+          }
         if (QuantumTick(y,image->rows))
           if (!MagickMonitor(OpaqueImageText,y,image->rows,&image->exception))
-            break;
+            {
+              status=MagickFail;
+              break;
+            }
       }
       break;
     }
@@ -628,19 +688,23 @@ MagickExport unsigned int OpaqueImage(Image *image,const PixelPacket target,
       /*
         Make PseudoClass image opaque.
       */
+      assert(image->colormap != (PixelPacket *) NULL);
       for (i=0; i < (long) image->colors; i++)
       {
         if (FuzzyColorMatch(&image->colormap[i],&target,image->fuzz))
           image->colormap[i]=fill;
         if (QuantumTick(i,image->colors))
           if (!MagickMonitor(OpaqueImageText,i,image->colors,&image->exception))
-            break;
+            {
+              status=MagickFail;
+              break;
+            }
       }
-      SyncImage(image);
+      status &= SyncImage(image);
       break;
     }
   }
-  return(True);
+  return(status);
 }
 
 /*
@@ -677,7 +741,7 @@ MagickExport unsigned int OpaqueImage(Image *image,const PixelPacket target,
 %
 %
 */
-MagickExport unsigned int TransparentImage(Image *image,
+MagickExport MagickPassFail TransparentImage(Image *image,
   const PixelPacket target,const unsigned int opacity)
 {
 #define TransparentImageText  "  Setting transparent color in the image...  "
@@ -691,6 +755,9 @@ MagickExport unsigned int TransparentImage(Image *image,
   register PixelPacket
     *q;
 
+  MagickPassFail
+    status=MagickPass;
+
   /*
     Make image color transparent.
   */
@@ -702,7 +769,10 @@ MagickExport unsigned int TransparentImage(Image *image,
     {
       q=GetImagePixels(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
-        break;
+        {
+          status=MagickFail;
+          break;
+        }
       if (image->fuzz == 0.0)
         {
           for (x=(long) image->columns; x > 0; x--)
@@ -722,10 +792,16 @@ MagickExport unsigned int TransparentImage(Image *image,
             }
         }
       if (!SyncImagePixels(image))
-        break;
+        {
+          status=MagickFail;
+          break;
+        }
       if (QuantumTick(y,image->rows))
         if (!MagickMonitor(TransparentImageText,y,image->rows,&image->exception))
-          break;
+          {
+            status=MagickFail;
+            break;
+          }
     }
-  return(True);
+  return(status);
 }

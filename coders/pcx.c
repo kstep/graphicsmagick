@@ -574,7 +574,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
     }
     if (image->storage_class == PseudoClass)
-      SyncImage(image);
+      (void) SyncImage(image);
     MagickFreeMemory(pcx_colormap);
     MagickFreeMemory(scanline);
     MagickFreeMemory(pcx_pixels);

@@ -334,7 +334,7 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     MagickFreeMemory(hdf_pixels);
     if (image->storage_class == PseudoClass)
-      SyncImage(image);
+      (void) SyncImage(image);
     /*
       Proceed to next image.
     */

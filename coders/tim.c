@@ -350,7 +350,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ThrowReaderException(CorruptImageError,ImproperImageHeader,image)
     }
     if (image->storage_class == PseudoClass)
-      SyncImage(image);
+      (void) SyncImage(image);
     MagickFreeMemory(tim_pixels);
     if (EOFBlob(image))
       {

@@ -195,7 +195,7 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
       if (!MagickMonitor(LoadImageText,y,image->rows,exception))
         break;
   }
-  SyncImage(image);
+  (void) SyncImage(image);
   if (EOFBlob(image))
     ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
       image->filename);

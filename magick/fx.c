@@ -941,7 +941,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
 %
 %
 */
-MagickExport unsigned int SolarizeImage(Image *image,const double threshold)
+MagickExport MagickPassFail SolarizeImage(Image *image,const double threshold)
 {
 #define SolarizeImageText  "  Solarize the image colors...  "
 
@@ -953,16 +953,17 @@ MagickExport unsigned int SolarizeImage(Image *image,const double threshold)
     x;
 
   unsigned int
-    is_grayscale,
-    status;
+    is_grayscale;
 
   register PixelPacket
     *q;
 
+  MagickPassFail
+    status=MagickPass;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   is_grayscale=image->is_grayscale;
-  status=True;
   switch (image->storage_class)
   {
     case DirectClass:
@@ -976,7 +977,7 @@ MagickExport unsigned int SolarizeImage(Image *image,const double threshold)
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           {
-            status=False;
+            status=MagickFail;
             break;
           }
         for (x=0; x < (long) image->columns; x++)
@@ -989,13 +990,13 @@ MagickExport unsigned int SolarizeImage(Image *image,const double threshold)
         }
         if (!SyncImagePixels(image))
           {
-            status=False;
+            status=MagickFail;
             break;
           }
         if (QuantumTick(y,image->rows))
           if (!MagickMonitor(SolarizeImageText,y,image->rows,&image->exception))
             {
-              status=False;
+              status=MagickFail;
               break;
             }
       }
@@ -1015,7 +1016,7 @@ MagickExport unsigned int SolarizeImage(Image *image,const double threshold)
         image->colormap[i].blue=(Quantum) (image->colormap[i].blue > threshold ?
           MaxRGB-image->colormap[i].blue : image->colormap[i].blue);
       }
-      SyncImage(image);
+      status &= SyncImage(image);
       break;
     }
   }
@@ -1151,7 +1152,7 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
         break;
   }
   if (stegano_image->storage_class == PseudoClass)
-    SyncImage(stegano_image);
+    (void) SyncImage(stegano_image);
   stegano_image->is_grayscale=is_grayscale;
   return(stegano_image);
 }

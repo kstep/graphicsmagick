@@ -2091,16 +2091,7 @@ void Magick::Image::clipMask ( const Magick::Image & clipMask_ )
   if( clipMask_.isValid() )
     {
       // Set clip mask
-      ExceptionInfo exceptionInfo;
-      GetExceptionInfo( &exceptionInfo );
-      MagickLib::Image* clip_mask =
-	CloneImage( clipMask_.constImage(),
-                    0, // columns
-                    0, // rows
-                    1, // orphan
-                    &exceptionInfo);
-      throwException( exceptionInfo );
-      SetImageClipMask( image(), clip_mask );
+      SetImageClipMask( image(), clipMask_.constImage() );
     }
   else
     {
@@ -2113,12 +2104,7 @@ Magick::Image Magick::Image::clipMask ( void  ) const
       ExceptionInfo exceptionInfo;
       GetExceptionInfo( &exceptionInfo );
       MagickLib::Image* image =
-	CloneImage( constImage()->clip_mask,
-                    0, // columns
-                    0, // rows
-                    1, // orphan
-                    &exceptionInfo);
-
+        GetImageClipMask( constImage(), &exceptionInfo );
       throwException( exceptionInfo );
       return Magick::Image( image );
 }

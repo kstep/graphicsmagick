@@ -185,7 +185,7 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           break;
     }
     if (image->storage_class == PseudoClass)
-      SyncImage(image);
+      (void) SyncImage(image);
     if (EOFBlob(image))
       {
         ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,

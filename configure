@@ -22408,16 +22408,11 @@ echo "$as_me:$LINENO: result: $ac_cv_have_C__func__" >&5
 echo "${ECHO_T}$ac_cv_have_C__func__" >&6
 
 if test "$ac_cv_have_C__func__" = 'yes' ; then
- echo "$as_me:$LINENO: result: yes" >&5
-echo "${ECHO_T}yes" >&6
 
 cat >>confdefs.h <<\_ACEOF
 #define HAS_C__func__ 1
 _ACEOF
 
-else
- echo "$as_me:$LINENO: result: no" >&5
-echo "${ECHO_T}no" >&6
 fi
 fi
 
@@ -23246,16 +23241,11 @@ echo "$as_me:$LINENO: result: $ac_cv_have_CPP__func__" >&5
 echo "${ECHO_T}$ac_cv_have_CPP__func__" >&6
 
   if test "$ac_cv_have_CPP__func__" = 'yes' ; then
-   echo "$as_me:$LINENO: result: yes" >&5
-echo "${ECHO_T}yes" >&6
 
 cat >>confdefs.h <<\_ACEOF
 #define HAS_CPP__func__ 1
 _ACEOF
 
-  else
-   echo "$as_me:$LINENO: result: no" >&5
-echo "${ECHO_T}no" >&6
   fi
  fi
 
@@ -30459,12 +30449,8 @@ fi
 echo "$as_me:$LINENO: result: $ac_cv_jpeg_version_ok" >&5
 echo "${ECHO_T}$ac_cv_jpeg_version_ok" >&6
 if test "$ac_cv_jpeg_version_ok" = 'yes' ; then
- echo "$as_me:$LINENO: result: yes" >&5
-echo "${ECHO_T}yes" >&6
  passed=`expr $passed + 1`
 else
- echo "$as_me:$LINENO: result: no" >&5
-echo "${ECHO_T}no" >&6
  failed=`expr $failed + 1`
 fi
 fi

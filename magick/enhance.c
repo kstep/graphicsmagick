@@ -69,7 +69,7 @@
 %
 %
 */
-MagickExport unsigned int ContrastImage(Image *image,const unsigned int sharpen)
+MagickExport MagickPassFail ContrastImage(Image *image,const unsigned int sharpen)
 {
 #define DullContrastImageText  "  Dulling image contrast...  "
 #define SharpenContrastImageText  "  Sharpening image contrast...  "
@@ -90,6 +90,9 @@ MagickExport unsigned int ContrastImage(Image *image,const unsigned int sharpen)
   register PixelPacket
     *q;
 
+  MagickPassFail
+    status=MagickPass;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   is_grayscale=image->is_grayscale;
@@ -99,9 +102,6 @@ MagickExport unsigned int ContrastImage(Image *image,const unsigned int sharpen)
     case DirectClass:
     default:
     {
-      unsigned int
-        status;
-
       /*
         Contrast enhance DirectClass image.
       */
@@ -109,24 +109,36 @@ MagickExport unsigned int ContrastImage(Image *image,const unsigned int sharpen)
       {
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
-          break;
+          {
+            status=MagickFail;
+            break;
+          }
         for (x=(long) image->columns; x > 0; x--)
         {
           Contrast(sign,&q->red,&q->green,&q->blue);
           q++;
         }
         if (!SyncImagePixels(image))
-          break;
+          {
+            status=MagickFail;
+            break;
+          }
         if (QuantumTick(y,image->rows))
           {
+            unsigned int
+              monitor_status;
+
             if (sharpen)
-              status=MagickMonitor(SharpenContrastImageText,y,image->rows,
+              monitor_status=MagickMonitor(SharpenContrastImageText,y,image->rows,
                 &image->exception);
             else
-              status=MagickMonitor(DullContrastImageText,y,image->rows,
+              monitor_status=MagickMonitor(DullContrastImageText,y,image->rows,
                 &image->exception);
-            if (status == False)
-              break;
+            if (monitor_status == False)
+              {
+                status=MagickFail;
+                break;
+              }
           }
       }
       break;
@@ -136,18 +148,19 @@ MagickExport unsigned int ContrastImage(Image *image,const unsigned int sharpen)
       /*
         Contrast enhance PseudoClass image.
       */
+      assert(image->colormap != (PixelPacket *) NULL);
       q=image->colormap;
       for (i=(long) image->colors; i > 0; i--)
         {
           Contrast(sign,&(q->red),&(q->green),&(q->blue));
           q++;
         }
-      SyncImage(image);
+      status &= SyncImage(image);
       break;
     }
   }
   image->is_grayscale=is_grayscale;
-  return(False);
+  return(status);
 }
 
 /*
@@ -171,7 +184,7 @@ MagickExport unsigned int ContrastImage(Image *image,const unsigned int sharpen)
 %    o image: The image.
 %
 */
-MagickExport unsigned int EqualizeImage(Image *image)
+MagickExport MagickPassFail EqualizeImage(Image *image)
 {
 #define EqualizeImageText  "  Equalizing image...  "
 
@@ -201,6 +214,9 @@ MagickExport unsigned int EqualizeImage(Image *image)
   register PixelPacket
     *q;
 
+  MagickPassFail
+    status=MagickPass;
+
   /*
     Allocate and initialize histogram arrays.
   */
@@ -224,7 +240,10 @@ MagickExport unsigned int EqualizeImage(Image *image)
   {
     p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)
-      break;
+      {
+        status=MagickFail;
+        break;
+      }
     if (image->matte)
       for (x=(long) image->columns; x > 0; x--)
         {
@@ -300,7 +319,10 @@ MagickExport unsigned int EqualizeImage(Image *image)
       {
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
-          break;
+          {
+            status=MagickFail;
+            break;
+          }
         if (image->matte)
           for (x=(long) image->columns; x > 0; x--)
             {
@@ -326,10 +348,16 @@ MagickExport unsigned int EqualizeImage(Image *image)
               q++;
             }
         if (!SyncImagePixels(image))
-          break;
+          {
+            status=MagickFail;
+            break;
+          }
         if (QuantumTick(y,image->rows))
           if (!MagickMonitor(EqualizeImageText,y,image->rows,&image->exception))
-            break;
+            {
+              status=MagickFail;
+              break;
+            }
       }
       break;
     }
@@ -338,6 +366,7 @@ MagickExport unsigned int EqualizeImage(Image *image)
       /*
         Equalize PseudoClass packets.
       */
+      assert(image->colormap != (PixelPacket *) NULL);
       for (i=0; i < (long) image->colors; i++)
       {
         if (low.red != high.red)
@@ -350,13 +379,13 @@ MagickExport unsigned int EqualizeImage(Image *image)
           image->colormap[i].blue=
             equalize_map[ScaleQuantumToMap(image->colormap[i].blue)].blue;
       }
-      SyncImage(image);
+      status &= SyncImage(image);
       break;
     }
   }
   MagickFreeMemory(equalize_map);
   image->is_grayscale=is_grayscale;
-  return(True);
+  return(status);
 }
 
 /*
@@ -390,7 +419,7 @@ MagickExport unsigned int EqualizeImage(Image *image)
 %
 %
 */
-MagickExport unsigned int GammaImage(Image *image,const char *level)
+MagickExport MagickPassFail GammaImage(Image *image,const char *level)
 {
 #define GammaImageText  "  Gamma correcting the image...  "
 
@@ -414,10 +443,13 @@ MagickExport unsigned int GammaImage(Image *image,const char *level)
   register PixelPacket
     *q;
 
+  MagickPassFail
+    status=MagickPass;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (level == (char *) NULL)
-    return(False);
+    return(MagickFail);
   gamma.red=1.0;
   gamma.green=1.0;
   gamma.blue=1.0;
@@ -426,7 +458,7 @@ MagickExport unsigned int GammaImage(Image *image,const char *level)
   if (count == 1)
     {
       if (gamma.red == 1.0)
-        return(False);
+        return(MagickFail);
       gamma.green=gamma.red;
       gamma.blue=gamma.red;
     }
@@ -464,7 +496,10 @@ MagickExport unsigned int GammaImage(Image *image,const char *level)
       {
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
-          break;
+          {
+            status=MagickFail;
+            break;
+          }
         for (x=(long) image->columns; x > 0; x--)
         {
           q->red=gamma_map[ScaleQuantumToMap(q->red)].red;
@@ -473,10 +508,16 @@ MagickExport unsigned int GammaImage(Image *image,const char *level)
           q++;
         }
         if (!SyncImagePixels(image))
-          break;
+          {
+            status=MagickFail;
+            break;
+          }
         if (QuantumTick(y,image->rows))
           if (!MagickMonitor(GammaImageText,y,image->rows,&image->exception))
-            break;
+            {
+              status=MagickFail;
+              break;
+            }
       }
       break;
     }
@@ -494,7 +535,7 @@ MagickExport unsigned int GammaImage(Image *image,const char *level)
         image->colormap[i].blue=
           gamma_map[ScaleQuantumToMap(image->colormap[i].blue)].blue;
       }
-      SyncImage(image);
+      status &= SyncImage(image);
       break;
     }
   }
@@ -502,7 +543,7 @@ MagickExport unsigned int GammaImage(Image *image,const char *level)
     image->gamma*=(gamma.red+gamma.green+gamma.blue)/3.0;
   MagickFreeMemory(gamma_map);
   image->is_grayscale=is_grayscale;
-  return(True);
+  return(status);
 }
 
 /*
@@ -537,7 +578,7 @@ MagickExport unsigned int GammaImage(Image *image,const char *level)
 %
 %
 */
-MagickExport unsigned int LevelImage(Image *image,const char *levels)
+MagickExport MagickPassFail LevelImage(Image *image,const char *levels)
 {
 #define LevelImageText  "  Leveling the image...  "
 
@@ -563,13 +604,16 @@ MagickExport unsigned int LevelImage(Image *image,const char *levels)
   register PixelPacket
     *q;
 
+  MagickPassFail
+    status=MagickPass;
+
   /*
     Allocate and initialize levels map.
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (levels == (char *) NULL)
-    return(False);
+    return(MagickFail);
   is_grayscale=image->is_grayscale;
   black_point=0.0;
   mid_point=1.0;
@@ -616,7 +660,10 @@ MagickExport unsigned int LevelImage(Image *image,const char *levels)
       {
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
-          break;
+          {
+            status=MagickFail;
+            break;
+          }
         for (x=(long) image->columns; x > 0; x--)
         {
           q->red=ScaleMapToQuantum(levels_map[ScaleQuantumToMap(q->red)]);
@@ -625,10 +672,16 @@ MagickExport unsigned int LevelImage(Image *image,const char *levels)
           q++;
         }
         if (!SyncImagePixels(image))
-          break;
+          {
+            status=MagickFail;
+            break;
+          }
         if (QuantumTick(y,image->rows))
           if (!MagickMonitor(LevelImageText,y,image->rows,&image->exception))
-            break;
+            {
+              status=MagickFail;
+              break;
+            }
       }
       break;
     }
@@ -637,6 +690,7 @@ MagickExport unsigned int LevelImage(Image *image,const char *levels)
       /*
         Level PseudoClass image.
       */
+      assert(image->colormap != (PixelPacket *) NULL);
       for (i=0; i < (long) image->colors; i++)
       {
         image->colormap[i].red=ScaleMapToQuantum(
@@ -646,13 +700,13 @@ MagickExport unsigned int LevelImage(Image *image,const char *levels)
         image->colormap[i].blue=ScaleMapToQuantum(
           levels_map[ScaleQuantumToMap(image->colormap[i].blue)]);
       }
-      SyncImage(image);
+      status &= SyncImage(image);
       break;
     }
   }
   MagickFreeMemory(levels_map);
   image->is_grayscale=is_grayscale;
-  return(True);
+  return(status);
 }
 
 /*
@@ -692,7 +746,7 @@ MagickExport unsigned int LevelImage(Image *image,const char *levels)
 %
 %
 */
-MagickExport unsigned int LevelImageChannel(Image *image,
+MagickExport MagickPassFail LevelImageChannel(Image *image,
   const ChannelType channel,const double black_point,const double mid_point,
   const double white_point)
 {
@@ -710,6 +764,9 @@ MagickExport unsigned int LevelImageChannel(Image *image,
 
   register PixelPacket
     *q;
+
+  MagickPassFail
+    status=MagickPass;
 
   /*
     Allocate and initialize levels map.
@@ -749,7 +806,10 @@ MagickExport unsigned int LevelImageChannel(Image *image,
           {
             q=GetImagePixels(image,0,y,image->columns,1);
             if (q == (PixelPacket *) NULL)
-              break;
+              {
+                status=MagickFail;
+                break;
+              }
             switch (channel)
               {
               case RedChannel:
@@ -800,11 +860,17 @@ MagickExport unsigned int LevelImageChannel(Image *image,
                 break;
               }          
             if (!SyncImagePixels(image))
-              break;
+              {
+                status=MagickFail;
+                break;
+              }
             if (QuantumTick(y,image->rows))
               if (!MagickMonitor(LevelImageText,y,image->rows,
                 &image->exception))
-                break;
+                {
+                  status=MagickFail;
+                  break;
+                }
           }
         break;
       }
@@ -813,6 +879,7 @@ MagickExport unsigned int LevelImageChannel(Image *image,
         /*
           Level PseudoClass image.
         */
+        assert(image->colormap != (PixelPacket *) NULL);
         for (i=0; i < (long) image->colors; i++)
           {
             switch (channel)
@@ -842,12 +909,12 @@ MagickExport unsigned int LevelImageChannel(Image *image,
                 break;
               }
           }
-        SyncImage(image);
+        status &= SyncImage(image);
         break;
       }
     }
   MagickFreeMemory(levels_map);
-  return(True);
+  return(status);
 }
 
 /*
@@ -877,7 +944,7 @@ MagickExport unsigned int LevelImageChannel(Image *image,
 %
 %
 */
-MagickExport unsigned int ModulateImage(Image *image,const char *modulate)
+MagickExport MagickPassFail ModulateImage(Image *image,const char *modulate)
 {
 #define ModulateImageText  "  Modulating image...  "
 
@@ -899,10 +966,13 @@ MagickExport unsigned int ModulateImage(Image *image,const char *modulate)
   register PixelPacket
     *q;
 
+  MagickPassFail
+    status=MagickPass;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (modulate == (char *) NULL)
-    return(False);
+    return(MagickFail);
   is_grayscale=image->is_grayscale;
   percent_brightness=100.0;
   percent_saturation=100.0;
@@ -928,7 +998,10 @@ MagickExport unsigned int ModulateImage(Image *image,const char *modulate)
       {
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
-          break;
+          {
+            status=MagickFail;
+            break;
+          }
         for (x=(long) image->columns; x > 0; x--)
         {
           Modulate(percent_hue,percent_saturation,percent_brightness,
@@ -936,10 +1009,16 @@ MagickExport unsigned int ModulateImage(Image *image,const char *modulate)
           q++;
         }
         if (!SyncImagePixels(image))
-          break;
+          {
+            status=MagickFail;
+            break;
+          }
         if (QuantumTick(y,image->rows))
           if (!MagickMonitor(ModulateImageText,y,image->rows,&image->exception))
-            break;
+            {
+              status=MagickFail;
+              break;
+            }
       }
       break;
     }
@@ -951,6 +1030,7 @@ MagickExport unsigned int ModulateImage(Image *image,const char *modulate)
       PixelPacket
         *colormap;
 
+      assert(image->colormap != (PixelPacket *) NULL);
       colormap=image->colormap;
       for (i=(long) image->colors; i > 0; i--)
         {
@@ -958,12 +1038,12 @@ MagickExport unsigned int ModulateImage(Image *image,const char *modulate)
                    &(colormap->red),&(colormap->green),&(colormap->blue));
                    colormap++;
         }
-      SyncImage(image);
+      status &= SyncImage(image);
       break;
     }
   }
   image->is_grayscale=is_grayscale;
-  return(True);
+  return(status);
 }
 
 /*
@@ -990,7 +1070,7 @@ MagickExport unsigned int ModulateImage(Image *image,const char *modulate)
 %
 %
 */
-MagickExport unsigned int NegateImage(Image *image,const unsigned int grayscale)
+MagickExport MagickPassFail NegateImage(Image *image,const unsigned int grayscale)
 {
 #define NegateImageText  "  Negating the image colors...  "
 
@@ -1006,9 +1086,14 @@ MagickExport unsigned int NegateImage(Image *image,const unsigned int grayscale)
   register PixelPacket
     *q;
 
+  MagickPassFail
+    status=MagickPass;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   is_grayscale=image->is_grayscale;
+  if (image->clip_mask)
+    image->storage_class=DirectClass;
   switch (image->storage_class)
   {
     case DirectClass:
@@ -1021,7 +1106,10 @@ MagickExport unsigned int NegateImage(Image *image,const unsigned int grayscale)
       {
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
-          break;
+          {
+            status=MagickFail;
+            break;
+          }
 
         if (grayscale)
         {
@@ -1056,10 +1144,16 @@ MagickExport unsigned int NegateImage(Image *image,const unsigned int grayscale)
         }
 
         if (!SyncImagePixels(image))
-          break;
+          {
+            status=MagickFail;
+            break;
+          }
         if (QuantumTick(y,image->rows))
           if (!MagickMonitor(NegateImageText,y,image->rows,&image->exception))
-            break;
+            {
+              status=MagickFail;
+              break;
+            }
       }
       break;
     }
@@ -1068,6 +1162,7 @@ MagickExport unsigned int NegateImage(Image *image,const unsigned int grayscale)
       /*
         Negate PseudoClass packets.
       */
+      assert(image->colormap != (PixelPacket *) NULL);
       q=image->colormap;
       if (grayscale)
       {
@@ -1094,12 +1189,12 @@ MagickExport unsigned int NegateImage(Image *image,const unsigned int grayscale)
             q++;
           }
       }
-      SyncImage(image);
+      status &= SyncImage(image);
       break;
     }
   }
   image->is_grayscale=is_grayscale;
-  return(True);
+  return(status);
 }
 
 /*
@@ -1125,7 +1220,7 @@ MagickExport unsigned int NegateImage(Image *image,const unsigned int grayscale)
 %
 %
 */
-MagickExport unsigned int NormalizeImage(Image *image)
+MagickExport MagickPassFail NormalizeImage(Image *image)
 {
 #define MaxRange(color)  ScaleQuantumToMap(color)
 #define NormalizeImageText  "  Normalizing image...  "
@@ -1160,6 +1255,9 @@ MagickExport unsigned int NormalizeImage(Image *image)
   unsigned long
     threshold_intensity;
 
+  MagickPassFail
+    status=MagickPass;
+
   /*
     Allocate histogram and normalize map.
   */
@@ -1181,7 +1279,10 @@ MagickExport unsigned int NormalizeImage(Image *image)
   {
     p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)
-      break;
+      {
+        status=MagickFail;
+        break;
+      }
     if (image->matte)
       for (x=(long) image->columns; x > 0; x--)
         {
@@ -1413,7 +1514,10 @@ MagickExport unsigned int NormalizeImage(Image *image)
       {
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
-          break;
+          {
+            status=MagickFail;
+            break;
+          }
         if (image->matte)
           for (x=(long) image->columns; x > 0; x--)
             {
@@ -1439,10 +1543,16 @@ MagickExport unsigned int NormalizeImage(Image *image)
               q++;
             }
         if (!SyncImagePixels(image))
-          break;
+          {
+            status=MagickFail;
+            break;
+          }
         if (QuantumTick(y,image->rows))
           if (!MagickMonitor(NormalizeImageText,y,image->rows,exception))
-            break;
+            {
+              status=MagickFail;
+              break;
+            }
       }
       break;
     }
@@ -1463,11 +1573,11 @@ MagickExport unsigned int NormalizeImage(Image *image)
           image->colormap[i].blue=
             normalize_map[ScaleQuantumToMap(image->colormap[i].blue)].blue;
       }
-      SyncImage(image);
+      status &= SyncImage(image);
       break;
     }
   }
   MagickFreeMemory(normalize_map);
   image->is_grayscale=is_grayscale;
-  return(True);
+  return(status);
 }

@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003, 2004 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -196,12 +196,12 @@ static void
 %
 %
 */
-static unsigned int Classify(Image *image,short **extrema,
+#define SegmentImageText  "  Segmenting image...  "
+
+static MagickPassFail Classify(Image *image,short **extrema,
   const double cluster_threshold,const double weighting_exponent,
   const unsigned int verbose)
 {
-#define SegmentImageText  "  Segmenting image...  "
-
   typedef struct _Cluster
   {
     struct _Cluster
@@ -267,6 +267,9 @@ static unsigned int Classify(Image *image,short **extrema,
 
   unsigned long
     number_clusters;
+
+  MagickPassFail
+    status=MagickPass;
 
   /*
     Form clusters.
@@ -336,7 +339,10 @@ static unsigned int Classify(Image *image,short **extrema,
   {
     p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)
-      break;
+      {
+        status=MagickFail;
+        break;
+      }
     for (x=0; x < (long) image->columns; x++)
     {
       for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
@@ -361,7 +367,10 @@ static unsigned int Classify(Image *image,short **extrema,
     }
     if (QuantumTick(y,image->rows))
       if (!MagickMonitor(SegmentImageText,y,image->rows << 1,&image->exception))
-        break;
+        {
+          status=MagickFail;
+          break;
+        }
   }
   /*
     Remove clusters that do not meet minimum cluster threshold.
@@ -485,7 +494,10 @@ static unsigned int Classify(Image *image,short **extrema,
   {
     q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
-      break;
+      {
+        status=MagickFail;
+        break;
+      }
     indexes=GetIndexes(image);
     for (x=0; x < (long) image->columns; x++)
     {
@@ -549,12 +561,18 @@ static unsigned int Classify(Image *image,short **extrema,
       q++;
     }
     if (!SyncImagePixels(image))
-      break;
+      {
+        status=MagickFail;
+        break;
+      }
     if (QuantumTick(y,image->rows))
       if (!MagickMonitor(SegmentImageText,y+image->rows,image->rows << 1,&image->exception))
-        break;
+        {
+          status=MagickFail;
+          break;
+        }
   }
-  SyncImage(image);
+  status &= SyncImage(image);
   /*
     Free memory.
   */
@@ -566,7 +584,7 @@ static unsigned int Classify(Image *image,short **extrema,
   squares-=255;
   free_squares=squares;
   MagickFreeMemory(free_squares);
-  return(True);
+  return(status);
 }
 
 /*
@@ -1450,7 +1468,7 @@ static void ZeroCrossHistogram(double *second_derivative,
 %
 %
 */
-MagickExport unsigned int SegmentImage(Image *image,
+MagickExport MagickPassFail SegmentImage(Image *image,
   const ColorspaceType colorspace,const unsigned int verbose,
   const double cluster_threshold,const double smoothing_threshold)
 {
@@ -1464,7 +1482,7 @@ MagickExport unsigned int SegmentImage(Image *image,
   short
     *extrema[MaxDimension];
 
-  unsigned int
+  MagickPassFail
     status;
 
   /*

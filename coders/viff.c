@@ -683,7 +683,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
         }
     MagickFreeMemory(viff_pixels);
     if (image->storage_class == PseudoClass)
-      SyncImage(image);
+      (void) SyncImage(image);
     if (EOFBlob(image))
       {
         ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,

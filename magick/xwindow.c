@@ -119,31 +119,77 @@ static Window
 
 #if defined(HasSharedMemory)
 /*
-  System V shared memory wrappers to aid in diagnostics.
+  Attach to shared memory.
 */
 static void *GmShmAt(int shmid, void *shmaddr, int shmflg)
 {
   void *
     address;
 
-  address=shmat(shmid,shmaddr,shmflg);
+  if ((address=shmat(shmid,shmaddr,shmflg)) == (void *) -1)
+    {
+      if (shmaddr)
+        (void) LogMagickEvent(X11Event,GetMagickModule(),
+           "shm attach to id %d failed (%s)", shmid, strerror(errno));
+      else
+        (void) LogMagickEvent(X11Event,GetMagickModule(),
+           "shm attach to id %d at address 0x%p failed (%s)", shmid, shmaddr,
+             strerror(errno));
+    }
+  else
+    {
+      (void) LogMagickEvent(X11Event,GetMagickModule(),
+         "shm attach to id %d at address 0x%p", shmid, address);
+    }
+
+
   (void) LogMagickEvent(X11Event,GetMagickModule(),
-     "shm attach to id %d at address %p", shmid, address);
+    "shm attach to id %d at address 0x%p, errno=%d", shmid, address, errno);
   return (address);
 }
+/*
+  Shared memory control operations.
+*/
 static int GmShmCtl(int shmid, int cmd, struct shmid_ds *buf)
 {
-  (void) LogMagickEvent(X11Event,GetMagickModule(),"shm control id=%d cmd=%s",
-                        shmid, ((cmd == IPC_STAT) ? "IPC_STAT" : 
-                                (cmd == IPC_SET) ? "IPC_SET" :
-                                (cmd == IPC_RMID) ? "IPC_RMID" : "Unknown"));
-  return shmctl(shmid, cmd, buf);
+  int status;
+  if ((status=shmctl(shmid, cmd, buf)) == -1)
+    {
+      (void) LogMagickEvent(X11Event,GetMagickModule(),"shm control id=%d cmd=%s failed (%s)",
+                            shmid, ((cmd == IPC_STAT) ? "IPC_STAT" : 
+                                    (cmd == IPC_SET) ? "IPC_SET" :
+                                    (cmd == IPC_RMID) ? "IPC_RMID" : "Unknown"),
+                            strerror(errno));
+    }
+  else
+    {
+      (void) LogMagickEvent(X11Event,GetMagickModule(),"shm control id=%d cmd=%s",
+                            shmid, ((cmd == IPC_STAT) ? "IPC_STAT" : 
+                                    (cmd == IPC_SET) ? "IPC_SET" :
+                                    (cmd == IPC_RMID) ? "IPC_RMID" : "Unknown"));
+    }
+  return status;
 }
+/*
+  Detatch from shared memory.
+*/
 static int GmShmDt(void *shmaddr)
 {
-  (void) LogMagickEvent(X11Event,GetMagickModule(),"shm detatch at address %p",
-                        shmaddr);
-  return shmdt(shmaddr);
+  int result;
+  if ((result=shmdt(shmaddr)) == -1)
+    {
+      (void) LogMagickEvent(X11Event,GetMagickModule(),
+                            "shm detatch at address 0x%p failed (%s)",
+                            shmaddr,
+                            strerror(errno));
+    }
+  else
+    {
+      (void) LogMagickEvent(X11Event,GetMagickModule(),
+                            "shm detatch at address 0x%p",
+                            shmaddr);
+    }
+  return (result);
 }
 #endif
 

@@ -80,7 +80,7 @@
 %                          generic profile name.
 %
 */
-MagickExport unsigned int DeleteImageProfile(Image *image,const char *name)
+MagickExport MagickPassFail DeleteImageProfile(Image *image,const char *name)
 {
   return(SetImageProfile(image,name,0,0));
 }
@@ -229,12 +229,15 @@ static int lcmsReplacementErrorHandler(int ErrorCode, const char *ErrorText)
 #endif
 #endif
 
-MagickExport unsigned int ProfileImage(Image *image,const char *name,
+MagickExport MagickPassFail ProfileImage(Image *image,const char *name,
   const unsigned char *profile,const size_t length,unsigned int clone)
 {
   register long
     i,
     j;
+
+  MagickPassFail
+    status=MagickPass;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -273,7 +276,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
           image->generic_profile[j]=image->generic_profile[j+1];
         i--;
       }
-      return(True);
+      return(MagickPass);
     }
   /*
     Add a ICM, IPTC, or generic profile to the image.
@@ -296,7 +299,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
           image->iptc_profile.length=length;
           image->iptc_profile.info=(unsigned char *) profile;
         }
-      return(True);
+      return(MagickPass);
     }
   if (LocaleCompare("icm",name) == 0)
     {
@@ -308,7 +311,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
       if ((length != 0) && (length == image->color_profile.length) &&
           (memcmp(image->color_profile.info,profile,length) == 0))
         {
-          return(True);
+          return(MagickPass);
         }
 
       /* Convert to new colors if we have both an old and a new profile. */
@@ -470,6 +473,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
               break;
             }
           }
+
           if ((source_colorspace == UndefinedColorspace) ||
               (target_colorspace == UndefinedColorspace))
             {
@@ -503,6 +507,31 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
               ThrowBinaryException3(ImageError,UnableToAssignProfile,
                 ColorspaceColorProfileMismatch);
             }
+
+          (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                                "Source pixel format: COLORSPACE=%d SWAPFIRST=%d FLAVOR=%d PLANAR=%d ENDIAN16=%d DOSWAP=%d EXTRA=%d CHANNELS=%d BYTES=%d",
+                                (int) T_COLORSPACE(source_type),
+                                (int) T_SWAPFIRST(source_type),
+                                (int) T_FLAVOR(source_type),
+                                (int) T_PLANAR(source_type),
+                                (int) T_ENDIAN16(source_type),
+                                (int) T_DOSWAP(source_type),
+                                (int) T_EXTRA(source_type),
+                                (int) T_CHANNELS(source_type),
+                                (int) T_BYTES(source_type));
+
+          (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+                                "Target pixel format: COLORSPACE=%d SWAPFIRST=%d FLAVOR=%d PLANAR=%d ENDIAN16=%d DOSWAP=%d EXTRA=%d CHANNELS=%d BYTES=%d",
+                                (int) T_COLORSPACE(target_type),
+                                (int) T_SWAPFIRST(target_type),
+                                (int) T_FLAVOR(target_type),
+                                (int) T_PLANAR(target_type),
+                                (int) T_ENDIAN16(target_type),
+                                (int) T_DOSWAP(target_type),
+                                (int) T_EXTRA(target_type),
+                                (int) T_CHANNELS(target_type),
+                                (int) T_BYTES(target_type));
+
           switch (image->rendering_intent)
           {
             case AbsoluteIntent:
@@ -534,9 +563,13 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
                              ((source_colorspace != GRAYColorspace) ||
                               (source_colorspace == target_colorspace));
 
-          transform=cmsCreateTransform(source_profile,source_type,
-            target_profile,target_type,intent, 
-            (transform_colormap ? cmsFLAGS_NOTPRECALC : 0));
+          transform=cmsCreateTransform(source_profile, /* input profile */
+                                       source_type,    /* input pixel format */
+                                       target_profile, /* output profile */
+                                       target_type,    /* output pixel format */
+                                       intent,         /* rendering intent */
+                                                       /* build pre-computed transforms? */
+                                       (transform_colormap ? cmsFLAGS_NOTPRECALC : 0));
           cmsCloseProfile(source_profile);
           cmsCloseProfile(target_profile);
           if (transform == (cmsHTRANSFORM) NULL)
@@ -572,7 +605,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
                   }
                 q++;
               }
-              SyncImage(image);
+              status &= SyncImage(image);
             }
           else
             {
@@ -580,7 +613,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
                 "Performing direct class color conversion");
               if (image->storage_class == PseudoClass)
                 {
-                  SyncImage(image);
+                  status &= SyncImage(image);
                   image->storage_class=DirectClass;
                 }
               if (target_colorspace == CMYKColorspace)
@@ -589,7 +622,10 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
               {
                 q=GetImagePixels(image,0,y,image->columns,1);
                 if (q == (PixelPacket *) NULL)
-                  break;
+                  {
+                    status=MagickFail;
+                    break;
+                  }
                 indexes=GetIndexes(image);
                 for (x=0; x < (long) image->columns; x++)
                 {
@@ -628,7 +664,10 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
                   q++;
                 }
                 if (!SyncImagePixels(image))
-                  break;
+                  {
+                    status=MagickFail;
+                    break;
+                  }
               }
             }
           image->colorspace=target_colorspace;
@@ -676,7 +715,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
           image->color_profile.length=length;
           image->color_profile.info=(unsigned char *) profile;
         }
-      return(True);
+      return(status);
     }
   for (i=0; i < (long) image->generic_profiles; i++)
     if (LocaleCompare(image->generic_profile[i].name,name) == 0)
@@ -713,7 +752,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
       image->generic_profile[i].length=length;
       image->generic_profile[i].info=(unsigned char *) profile;
     }
-  return(True);
+  return(status);
 }
 
 /*
@@ -752,7 +791,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *name,
 %    o length: The length of the profile.
 %
 */
-MagickExport unsigned int SetImageProfile(Image *image,const char *name,
+MagickExport MagickPassFail SetImageProfile(Image *image,const char *name,
   const unsigned char *profile,const size_t length)
 {
   long
@@ -760,6 +799,9 @@ MagickExport unsigned int SetImageProfile(Image *image,const char *name,
   
   ProfileInfo
     *image_profile=0;
+
+  MagickPassFail
+    status=MagickPass;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -836,5 +878,5 @@ MagickExport unsigned int SetImageProfile(Image *image,const char *name,
           (void) memcpy(image_profile->info,profile,length);
         }
     }
-  return (True);
+  return (status);
 }

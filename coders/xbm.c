@@ -349,7 +349,7 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
          break;
   }
   MagickFreeMemory(data);
-  SyncImage(image);
+  (void) SyncImage(image);
   CloseBlob(image);
   return(image);
 }

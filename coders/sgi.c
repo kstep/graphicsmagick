@@ -546,7 +546,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (!MagickMonitor(LoadImageText,y,image->rows,exception))
                   break;
           }
-        SyncImage(image);
+        (void) SyncImage(image);
       }
     MagickFreeMemory(iris_pixels);
     if (EOFBlob(image))

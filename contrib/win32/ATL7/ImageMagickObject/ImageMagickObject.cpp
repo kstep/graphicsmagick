@@ -833,7 +833,7 @@ HRESULT MagickImage::Perform(unsigned int (*func)(MagickLib::ImageInfo *image_in
           {
 //------->
             ThrowPerformException(exception,MagickLib::ErrorException,
-              "Perform","A passed array is not a vlid array");
+              "Perform","A passed array is not a valid array");
           }
         }
 //----->

@@ -593,6 +593,7 @@ namespace Magick
   using MagickLib::GaussianBlurImage;
   using MagickLib::GetCacheView;
   using MagickLib::GetCacheViewIndexes;
+  using MagickLib::GetImageClipMask;
   using MagickLib::GetColorTuple;
   using MagickLib::GetDrawInfo;
   using MagickLib::GetExceptionInfo;

@@ -485,7 +485,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   if (!MagickMonitor(LoadImageText,y,image->rows,exception))
                     break;
             }
-            SyncImage(image);
+            (void) SyncImage(image);
           }
         else
           {

@@ -328,6 +328,7 @@
 #define GetImageAttribute GmGetImageAttribute
 #define GetImageBoundingBox GmGetImageBoundingBox
 #define GetImageChannelDepth GmGetImageChannelDepth
+#define GetImageClipMask GmGetImageClipMask
 #define GetImageClippingPathAttribute GmGetImageClippingPathAttribute
 #define GetImageDepth GmGetImageDepth
 #define GetImageException GmGetImageException

@@ -1,3 +1,45 @@
+2004-05-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/quantize.c (ClassifyImageColors): Properly return error status.
+	(GetImageQuantizeError): Properly return error status.
+	(OrderedDitherImage): Properly return error status.
+
+	* magick/profile.c (ProfileImage): Properly return error status.
+	* magick/paint.c (ColorFloodfillImage): Properly return error status.
+	(MatteFloodfillImage): Properly return error status.
+	(OpaqueImage): Properly return error status.
+	(TransparentImage): Properly return error status.
+	* magick/enhance.c (ContrastImage): Properly return error status.
+	(EqualizeImage): Properly return error status.
+	(GammaImage): Properly return error status.
+	(LevelImage): Properly return error status.
+	(LevelImageChannel): Properly return error status.
+	(ModulateImage): Properly return error status.
+	(NegateImage): Properly return error status.
+	(NormalizeImage): Properly return error status.
+	* magick/image.c (GetImageClipMask): New function to retrieve an
+	associated clip-mask image.
+	(SetImageClipMask): Clip-mask image parameter may be const since
+	it is cloned prior to storage.
+	(ChannelImage): Properly return error status.
+	(GradientImage): Properly return error status.
+	(RGBTransformImage): Properly return error status.
+	(TransformRGBImage): Properly return error status.
+	(SyncImage): Return an error status.
+	* magick/enhance.c (NegateImage): If image has a clip mask,
+	then force image to DirectClass so clip mask takes effect.
+
+2004-05-15  Vladimir Lukianov  <lvm@integrum.ru>
+
+	* magick/image.c (SetImageOpacity): Ensure that image is
+	DirectClass. If specified opacity is TransparentOpacity, then
+	replace existing opacity with TransparentOpacity.
+
+2004-04-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Avoid duplicated test status messages for __func__
+	tests.  Avoid duplicated test status message for jpeg 6b test.
+
 2004-04-19  Patrick Welche  <prlw1@newn.cam.ac.uk>
 
 	* www/header.html: HTML syntax fixes.
