@@ -113,9 +113,9 @@ static Image *ReadMPRImage(const ImageInfo *image_info,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   if (LocaleCompare(image_info->magick,"MPRI") != 0)
-    return(GetImageFromMagickRegistry(image_info->filename,exception));
+    return(GetImageFromMagickRegistry(image_info->filename,&id,exception));
   id=strtol(image_info->filename,&p,0);
-	return((Image *) GetMagickRegistry(id,&type,&length,exception));
+  return((Image *) GetMagickRegistry(id,&type,&length,exception));
 }
 
 /*
@@ -221,6 +221,12 @@ ModuleExport void UnregisterMPRImage(void)
 */
 static unsigned int WriteMPRImage(const ImageInfo *image_info,Image *image)
 {
+  ExceptionInfo
+    exception;
+
+  Image
+    *registry_image;
+
   long
     id;
 
@@ -228,6 +234,13 @@ static unsigned int WriteMPRImage(const ImageInfo *image_info,Image *image)
   assert(image_info->signature == MagickSignature);
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  GetExceptionInfo(&exception);
+  registry_image=GetImageFromMagickRegistry(image->filename,&id,&exception);
+  if (registry_image == (Image *) NULL)
+    {
+      DeleteMagickEntry(id);
+      DestroyImage(registry_image);
+    }
   id=SetMagickRegistry(ImageRegistryType,image,sizeof(Image),&image->exception);
   return(id >= 0);
 }

@@ -210,7 +210,7 @@ MagickExport void DestroyMagickRegistry(void)
 %
 %  The format of the GetImageFromMagickRegistry method is:
 %
-%      Image *GetImageFromMagickRegistry(const char *name,
+%      Image *GetImageFromMagickRegistry(const char *name,long *id,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -221,7 +221,7 @@ MagickExport void DestroyMagickRegistry(void)
 %
 %
 */
-MagickExport Image *GetImageFromMagickRegistry(const char *name,
+MagickExport Image *GetImageFromMagickRegistry(const char *name,long *id,
   ExceptionInfo *exception)
 {
   Image
@@ -238,6 +238,7 @@ MagickExport Image *GetImageFromMagickRegistry(const char *name,
       continue;
     if (LocaleCompare(((Image *) p->blob)->filename,name) == 0)
       {
+        *id=p->id;
         image=CloneImageList((Image *) p->blob,exception);
         break;
       }
