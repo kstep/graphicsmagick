@@ -96,7 +96,7 @@
 */
 MagickExport Image *AdaptiveThresholdImage(const Image *image,
   const unsigned long width,const unsigned long height,
-	const unsigned long offset,ExceptionInfo *exception)
+  const unsigned long offset,ExceptionInfo *exception)
 {
 #define ThresholdImageText  "  Threshold the image...  "
 
@@ -130,7 +130,7 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  if (((long) image->columns < width) || ((long) image->rows < height))
+  if ((image->columns < width) || (image->rows < height))
     ThrowImageException(OptionError,"UnableToThresholdImage",
       "ImageSmallerThanRadius");
   threshold_image=CloneImage(image,0,0,True,exception);
@@ -152,9 +152,9 @@ MagickExport Image *AdaptiveThresholdImage(const Image *image,
     {
       r=p;
       aggregate=zero;
-      for (v=0; v < height; v++)
+      for (v=0; v < (long) height; v++)
       {
-        for (u=0; u < width; u++)
+        for (u=0; u < (long) width; u++)
         {
           aggregate.red+=r[u].red;
           aggregate.green+=r[u].green;
@@ -332,14 +332,14 @@ static void BlurScanline(const double *kernel,const unsigned long width,
         q=source;
         for (i=0; i < (long) columns; i++)
         {
-          if ((i >= (x-width/2)) && (i <= (x+width/2)))
+          if ((i >= (x-(long) width/2)) && (i <= (x+(long) width/2)))
             {
               aggregate.red+=(*p)*q->red;
               aggregate.green+=(*p)*q->green;
               aggregate.blue+=(*p)*q->blue;
               aggregate.opacity+=(*p)*q->opacity;
             }
-          if (((long) (i+width/2-x) >= 0) && ((i+width/2-x) < (long) width))
+          if (((i+width/2-x) >= 0) && ((i+width/2-x) < width))
             scale+=kernel[i+width/2-x];
           p++;
           q++;
@@ -444,7 +444,7 @@ static int GetBlurKernel(unsigned long width,const double sigma,double **kernel)
   *kernel=(double *) AcquireMemory(width*sizeof(double));
   if (*kernel == (double *) NULL)
     return(0);
-  for (i=0; i < width; i++)
+  for (i=0; i < (long) width; i++)
     (*kernel)[i]=0.0;
   bias=KernelRank*width/2;
   for (i=(-bias); i <= bias; i++)
@@ -453,9 +453,9 @@ static int GetBlurKernel(unsigned long width,const double sigma,double **kernel)
     (*kernel)[(i+bias)/KernelRank]+=alpha/(MagickSQ2PI*sigma);
   }
   normalize=0;
-  for (i=0; i < width; i++)
+  for (i=0; i < (long) width; i++)
     normalize+=(*kernel)[i];
-  for (i=0; i < width; i++)
+  for (i=0; i < (long) width; i++)
     (*kernel)[i]/=normalize;
   return(width);
 }
