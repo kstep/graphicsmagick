@@ -100,6 +100,46 @@ Export IndexPacket *GetIndexes(const Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t P i x e l                                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetPixel returns a single pixel at the specified (x,y) location.
+%  The image background color is returned if an error occurs.
+%
+%  The format of the GetPixel method is:
+%
+%      PixelPacket *GetPixel(const Image image,const int x,const int y)
+%
+%  A description of each parameter follows:
+%
+%    o pixels: Method GetPixels returns the pixels associated with the
+%      last call to the SetPixelCache() or GetPixelCache() methods.
+%
+%    o image: The address of a structure of type Image.
+%
+%    o x,y:  These values define the location of the pixel to return.
+%
+*/
+Export PixelPacket GetPixel(Image *image,const int x,const int y)
+{
+  register PixelPacket
+    *pixel;
+
+  assert(image != (Image *) NULL);
+  pixel=GetPixelCache(image,x,y,1,1);
+  if (pixel != (PixelPacket *) NULL)
+    return(*pixel);
+  return(image->background_color);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t P i x e l C a c h e                                                 %
 %                                                                             %
 %                                                                             %

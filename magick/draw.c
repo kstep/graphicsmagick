@@ -182,9 +182,7 @@ Export unsigned int ColorFloodfillImage(Image *image,const PixelPacket *target,
     Set floodfill color.
   */
   (void) QueryColorDatabase("black",&color);
-  p=GetPixelCache(tile,0,0,1,1);
-  if (p != (PixelPacket *) NULL)
-    color=(*p);
+  color=GetPixel(tile,0,0);
   if (ColorMatch(color,*target,image->fuzz))
     return(False);
   segment_stack=(SegmentInfo *)
@@ -1290,14 +1288,8 @@ static unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
               target;
 
             if ((pixel->x == 0) && (pixel->y == 0))
-              {
-                q=GetPixelCache(image,(int) p->pixel.x,(int) p->pixel.y,1,1);
-                if (q != (PixelPacket *) NULL)
-                  target=(*q);
-              }
-            q=GetPixelCache(image,(int) pixel->x,(int) pixel->y,1,1);
-            if (q != (PixelPacket *) NULL)
-              color=(*q);
+              target=GetPixel(image,(int) p->pixel.x,(int) p->pixel.y);
+            color=GetPixel(image,(int) pixel->x,(int) pixel->y);
             if (ColorMatch(color,target,(int) image->fuzz))
               opacity=Opaque;
             break;
@@ -1308,9 +1300,7 @@ static unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
             if ((pixel->x != (int) (p->pixel.x+0.5)) &&
                 (pixel->y != (int) (p->pixel.y+0.5)))
               break;
-            q=GetPixelCache(image,(int) pixel->x,(int) pixel->y,1,1);
-            if (q != (PixelPacket *) NULL)
-              target=(*q);
+            target=GetPixel(image,(int) p->pixel.x,(int) p->pixel.y);
             if (p->method == FillToBorderMethod)
               {
                 border_color=annotate_info->image_info->border_color;
@@ -1362,16 +1352,12 @@ static unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
               target;
 
             if ((pixel->x == 0) && (pixel->y == 0))
-              {
-                q=GetPixelCache(image,(int) p->pixel.x,(int) p->pixel.y,1,1);
-                if (q != (PixelPacket *) NULL)
-                  target=(*q);
-              }
-            q=GetPixelCache(image,(int) pixel->x,(int) pixel->y,1,1);
-            if (q != (PixelPacket *) NULL)
-              color=(*q);
+              target=GetPixel(image,(int) p->pixel.x,(int) p->pixel.y);
+            color=GetPixel(image,(int) p->pixel.x,(int) p->pixel.y);
             if (ColorMatch(color,target,image->fuzz))
               {
+                q=GetPixelCache(image,(int) pixel->x,(int) pixel->y,1,1);
+                if (q != (PixelPacket *) NULL)
                 q->opacity=Transparent;
                 (void) SyncPixelCache(image);
               }
@@ -1383,9 +1369,7 @@ static unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
             if ((pixel->x != (int) (p->pixel.x+0.5)) &&
                 (pixel->y != (int) (p->pixel.y+0.5)))
               break;
-            q=GetPixelCache(image,(int) pixel->x,(int) pixel->y,1,1);
-            if (q != (PixelPacket *) NULL)
-              target=(*q);
+            target=GetPixel(image,(int) p->pixel.x,(int) p->pixel.y);
             if (p->method == FillToBorderMethod)
               {
                 border_color=annotate_info->image_info->border_color;

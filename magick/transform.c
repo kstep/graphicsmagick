@@ -394,18 +394,9 @@ Export Image *CropImage(Image *image,const RectangleInfo *crop_info,
       page.height=0;
       page.x=image->columns;
       page.y=image->rows;
-      p=GetPixelCache(image,0,0,1,1);
-      if (p == (PixelPacket *) NULL)
-        return((Image *) NULL);
-      corners[0]=(*p);
-      p=GetPixelCache(image,image->columns-1,0,1,1);
-      if (p == (PixelPacket *) NULL)
-        return((Image *) NULL);
-      corners[1]=(*p);
-      p=GetPixelCache(image,0,image->rows-1,1,1);
-      if (p == (PixelPacket *) NULL)
-        return((Image *) NULL);
-      corners[2]=(*p);
+      corners[0]=GetPixel(image,0,0);
+      corners[1]=GetPixel(image,image->columns-1,0);
+      corners[2]=GetPixel(image,0,image->rows-1);
       for (y=0; y < (int) image->rows; y++)
       {
         p=GetPixelCache(image,0,y,image->columns,1);

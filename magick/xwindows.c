@@ -255,12 +255,8 @@ Export unsigned int XAnnotateImage(Display *display,
   x=0;
   y=0;
   (void) XParseGeometry(annotate_info->geometry,&x,&y,&width,&height);
-  p=GetPixelCache(image,x,y,1,1);
-  if (p != (PixelPacket *) NULL)
-    {
-      annotate_image->background_color=(*p);
-      annotate_image->matte=True;
-    }
+  annotate_image->background_color=GetPixel(image,x,y);
+  annotate_image->matte=True;
   for (y=0; y < (int) annotate_image->rows; y++)
   {
     q=SetPixelCache(annotate_image,0,y,annotate_image->columns,1);
@@ -2066,12 +2062,8 @@ Export unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
   x=0;
   y=0;
   (void) XParseGeometry(draw_info->geometry,&x,&y,&width,&height);
-  p=GetPixelCache(image,x,y,1,1);
-  if (p != (PixelPacket *) NULL)
-    {
-      draw_image->background_color=(*p);
-      draw_image->matte=True;
-    }
+  draw_image->background_color=GetPixel(image,x,y);
+  draw_image->matte=True;
   for (y=0; y < (int) draw_image->rows; y++)
   {
     q=SetPixelCache(draw_image,0,y,draw_image->columns,1);

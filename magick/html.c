@@ -338,12 +338,14 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
           char
             color[MaxTextExtent] = "#000";
 
+          PixelPacket
+            pixel;
+
           /*
             Make montage background transparent.
           */
-          q=GetPixelCache(image,0,0,1,1);
-          if (q != (PixelPacket *) NULL)
-            FormatString(color,HexColorFormat,q->red,q->green,q->blue);
+          pixel=GetPixel(image,0,0);
+          FormatString(color,HexColorFormat,pixel.red,pixel.green,pixel.blue);
           TransparentImage(image,color);
         }
       (void) strcpy(filename,image->filename);

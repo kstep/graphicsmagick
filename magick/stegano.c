@@ -72,7 +72,8 @@
 %
 %  The format of the ReadSTEGANOImage method is:
 %
-%      Image *ReadSTEGANOImage(const ImageInfo *image_info,ExceptionInfo *exception)
+%      Image *ReadSTEGANOImage(const ImageInfo *image_info,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
