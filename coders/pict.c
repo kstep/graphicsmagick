@@ -1500,6 +1500,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
 
       TemporaryFilename(image->filename);
       (void) strcpy(image->magick,"JPEG");
+      length=image->columns*image->rows/4;
       blob=ImageToBlob(image_info,image,&length,&image->exception);
       if (blob == (void *) NULL)
         return(False);
