@@ -711,32 +711,22 @@ MagickExport void DestroyDrawInfo(DrawInfo *draw_info)
 {
   assert(draw_info != (DrawInfo *) NULL);
   assert(draw_info->signature == MagickSignature);
-  if (draw_info->primitive != (char *) NULL)
-    MagickFreeMemory(draw_info->primitive);
-  if (draw_info->text != (char *) NULL)
-    MagickFreeMemory(draw_info->text);
-  if (draw_info->geometry != (char *) NULL)
-    MagickFreeMemory(draw_info->geometry);
-  if (draw_info->tile != (Image *) NULL)
+  MagickFreeMemory(draw_info->primitive);
+  MagickFreeMemory(draw_info->text);
+  MagickFreeMemory(draw_info->geometry);
+  if (draw_info->tile != 0)
     DestroyImage(draw_info->tile);
   if (draw_info->fill_pattern != (Image *) NULL)
     DestroyImage(draw_info->fill_pattern);
   if (draw_info->stroke_pattern != (Image *) NULL)
     DestroyImage(draw_info->stroke_pattern);
-  if (draw_info->font != (char *) NULL)
-    MagickFreeMemory(draw_info->font);
-  if (draw_info->family != (char *) NULL)
-    MagickFreeMemory(draw_info->family);
-  if (draw_info->encoding != (char *) NULL)
-    MagickFreeMemory(draw_info->encoding);
-  if (draw_info->density != (char *) NULL)
-    MagickFreeMemory(draw_info->density);
-  if (draw_info->server_name != (char *) NULL)
-    MagickFreeMemory(draw_info->server_name);
-  if (draw_info->dash_pattern != (double *) NULL)
-    MagickFreeMemory(draw_info->dash_pattern);
-  if (draw_info->clip_path != (char *) NULL)
-    MagickFreeMemory(draw_info->clip_path);
+  MagickFreeMemory(draw_info->font);
+  MagickFreeMemory(draw_info->family);
+  MagickFreeMemory(draw_info->encoding);
+  MagickFreeMemory(draw_info->density);
+  MagickFreeMemory(draw_info->server_name);
+  MagickFreeMemory(draw_info->dash_pattern);
+  MagickFreeMemory(draw_info->clip_path);
   memset((void *)draw_info,0xbf,sizeof(DrawInfo));
   MagickFreeMemory(draw_info);
 }
@@ -1320,7 +1310,7 @@ MagickExport unsigned int DrawClipPath(Image *image,const DrawInfo *draw_info,
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   (void) CloneString(&clone_info->primitive,attribute->value);
   (void) QueryColorDatabase("white",&clone_info->fill,&image->exception);
-  clone_info->clip_path=(char *) NULL;
+  MagickFreeMemory(clone_info->clip_path);
   status=DrawImage(image->clip_mask,clone_info);
   (void) NegateImage(image->clip_mask,False);
   DestroyDrawInfo(clone_info);

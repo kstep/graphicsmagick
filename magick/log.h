@@ -28,7 +28,7 @@ extern "C" {
 #    if (((defined(__cplusplus) || defined(c_plusplus)) && defined(HAS_CPP__func__)) || \
         (!(defined(__cplusplus) || defined(c_plusplus)) && defined(HAS_C__func__)))
 #      define GetCurrentFunction() (__func__)
-#    elif defined(_VISUALC_)
+#    elif defined(_VISUALC_) && defined(__FUNCTION__)
 #      define GetCurrentFunction() (__FUNCTION__)
 #    else
 #      define GetCurrentFunction() ("unknown")

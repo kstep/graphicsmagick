@@ -70,7 +70,7 @@
 %
 %
 */
-MagickExport size_t CopyMagickString(char *destination,const char *source,
+WandExport size_t CopyMagickString(char *destination,const char *source,
   const size_t length)
 {
 #if defined(HAVE_STRLCPY)
@@ -136,7 +136,7 @@ MagickExport size_t CopyMagickString(char *destination,const char *source,
 %
 %
 */
-MagickExport int FormatMagickString(char *string,const size_t length,
+WandExport int FormatMagickString(char *string,const size_t length,
   const char *format,...)
 {
   int
@@ -185,7 +185,7 @@ MagickExport int FormatMagickString(char *string,const size_t length,
 %
 %
 */
-MagickExport size_t ConcatenateMagickString(char *destination,
+WandExport size_t ConcatenateMagickString(char *destination,
   const char *source,const size_t length)
 {
 #if defined(HAVE_STRLCAT)
@@ -570,7 +570,7 @@ WandExport unsigned int ParseGeometry(const char *geometry,
 %
 %
 */
-MagickExport void *RelinquishMagickMemory(void *memory)
+WandExport void *RelinquishMagickMemory(void *memory)
 {
   if (memory == (void *) NULL)
     return((void *) NULL);

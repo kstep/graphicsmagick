@@ -53,9 +53,36 @@
 </tr>
 </table>
 <p>
+2003-09-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/render.c (DrawClipPath): Fix memory leak of
+        clone_info-&gt;clip_path.  Problem reported by Vladimir
+        &lt;lvm@integrum.ru&gt;.<BR>
+        (DestroyDrawInfo): Remove unnecessary checks for non-null prior to
+        invoking MagickFreeMemory. MagickFreeMemory already checks for
+        non-null.<BR>
+  <LI> magick/log.h (GetCurrentFunction): Apparently Visual C++ 6.0
+        does not support __FUNCTION__.  Problem reported by Vladimir
+        &lt;lvm@integrum.ru&gt;.<BR>
+  <LI> wand/magick_compat.c: All functions in magick_compat.c must use
+        WandExport rather than MagickExport. Fix recommended by Vladimir
+        &lt;lvm@integrum.ru&gt;.<BR>
+  <LI> magick/constitute.c (PushImagePixels): number_pixels was always
+        cast to a long during use, so change to store value in a long
+        instead.<BR>
+        (PopImagePixels): number_pixels was always
+        cast to a long during use, so change to store value in a long
+        instead.
+
+</UL>
+<p>
 2003-09-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> coders/psd.c: Eliminated warning regarding unused initialized
+        variable.<BR>
+  <LI> magick/log.c: Eliminate type warnings regarding enum assignment.
   <LI> coders/locale.c (WriteLOCALEImage): Use UndefinedException
         rather than 0 in severity_list terminating entry in order to avoid
         a type conversion warning.<BR>

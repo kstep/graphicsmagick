@@ -1,3 +1,24 @@
+2003-09-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/render.c (DrawClipPath): Fix memory leak of
+	clone_info->clip_path.  Problem reported by Vladimir
+	<lvm@integrum.ru>.
+	(DestroyDrawInfo): Remove unnecessary checks for non-null prior to
+	invoking MagickFreeMemory. MagickFreeMemory already checks for
+	non-null.
+	* magick/log.h (GetCurrentFunction): Apparently Visual C++ 6.0
+	does not support __FUNCTION__.  Problem reported by Vladimir
+	<lvm@integrum.ru>.
+	* wand/magick_compat.c: All functions in magick_compat.c must use
+	WandExport rather than MagickExport. Fix recommended by Vladimir
+	<lvm@integrum.ru>.
+	* magick/constitute.c (PushImagePixels): number_pixels was always
+	cast to a long during use, so change to store value in a long
+	instead.
+	(PopImagePixels): number_pixels was always
+	cast to a long during use, so change to store value in a long
+	instead.
+
 2003-09-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/psd.c: Eliminated warning regarding unused initialized
