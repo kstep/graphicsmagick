@@ -60,8 +60,9 @@ Windows Win2K/95 VISUAL C++ 6.0 and 7.0 COMPILATION
   Visual C++ 6.0) or configure.sln (for Visual C++ 7.0). Set the build
   configuration to "Release" under the
 
-<p>
+<PRE>
       "Build..., Set Active Configuration..."  menu.
+</PRE>
 
 <p>
   Build and execute the configure program and follow the on-screen
@@ -71,8 +72,9 @@ Windows Win2K/95 VISUAL C++ 6.0 and 7.0 COMPILATION
 <p>
   The configure program provides a button entitled
 
-<p>
+<PRE>
      Edit "magick_config.h"
+</PRE>
 
 <p>
   Clicking this button brings up magick_config.h in Windows notepad for
@@ -86,50 +88,37 @@ Windows Win2K/95 VISUAL C++ 6.0 and 7.0 COMPILATION
 <p>
   Key user tunables in magick_config.h include:
 
-<p>
+<PRE>
     QuantumDepth (default 8)
 
-<PRE>
       Specify size of PixelPacket color Quantums (8, 16, or 32) A value of
       8 uses half the memory than 16 and may run 30% faster, but provides
       256 times less color resolution than a value of 16.
-</PRE>
 
-<p>
     UseInstalledGraphicsMagick (default undefined)
 
-<PRE>
       Define to build an GraphicsMagick which uses registry settings or
       embedded paths to locate installed components (coder modules and
       configuration files). The default is to look for all files in the
       same directory as the executable.
-</PRE>
 
-<p>
     ProvideDllMain (default undefined)
 
-<PRE>
       Define to include a DllMain() function ensures that the GraphicsMagick
       DLL is properly initialized without participation from dependent
       applications. This avoids the requirement to invoke IntializeMagick()
       from dependent applications but only works for DLL builds.
-</PRE>
 
-<p>
     Windows95 (default undefined)
 
-<PRE>
       Define to allow binaries to execute under Windows '95. Note that
       enabling support for Windows '95 disables support for the large
       (&gt;2GB) pixel cache, limiting the decompressed image size that can be
       processed. Input and output image files are currently limited to 2GB
       under Windows.
-</PRE>
 
-<p>
     HasLZW (default undefined)
 
-<PRE>
       Define to enable use of LZW compression in GIF, Postscript, PDF, and
       TIFF. Enabling LZW for TIFF also requires enabling LZW in the TIFF
       library. Note that LZW compression is patented by Unisys (until June,
@@ -185,8 +174,9 @@ Windows Win2K/95 VISUAL C++ 6.0 and 7.0 COMPILATION
   demos and test programs to be built by checking the box in configure
   that says:
 
-<p>
+<PRE>
     "Include all demo and test programs"
+</PRE>
 
 <p>
   In addition, there is another related checkbox (checked by default)
@@ -198,7 +188,9 @@ Windows Win2K/95 VISUAL C++ 6.0 and 7.0 COMPILATION
 
 <p>
    "Generate all utility projects with full paths rather then relative
+<PRE>
     paths"
+</PRE>
 
 <p>
   WOW - that a mouthfull - eh?
@@ -222,14 +214,13 @@ Windows Win2K/95 VISUAL C++ 6.0 and 7.0 COMPILATION
 <p>
   With this feature enabled, you should be able to nab a copy of...
 
-<p>
+<PRE>
     VisualMagick\utilities\UTIL_convert_xxx_exe.dsp  (for C)
 
-<p>
      -or-
 
-<p>
     VisualMagick\Magick++\demo\UTIL_demo_xxx_exe.dsp (for C++)
+</PRE>
 
 <p>
   ... and pop it into notepad, modify it (carefully) to your needs and
@@ -246,27 +237,30 @@ Windows Win2K/95 VISUAL C++ 6.0 and 7.0 COMPILATION
 <p>
   For straight C API command line applications use something from:
 
-<p>
+<PRE>
     GraphicsMagick\tests or GraphicsMagick\utilities (source code)
     GraphicsMagick\VisualMagick\tests or GraphicsMagick\Visualmagick\utilities
       (project - DSP)
+</PRE>
 
 <p>
   For C++ and Magick++ command line applications use something from:
 
-<p>
+<PRE>
     GraphicsMagick\Magick++\tests or GraphicsMagick\Magick++\demo
-      (source code)<BR>
+      (source code)
     GraphicsMagick\VisualMagick\Magick++\tests or
       GraphicsMagick\VisualMagick\Magick++\demo (project - DSP)
+</PRE>
 
 <p>
   For C++ and Magick++ and MFC windows applications use:
 
-<p>
+<PRE>
     GraphicsMagick\contrib\win32\MFC\NtMagick (source code)
     GraphicsMagick\VisualMagick\contrib\win32\MFC\NtMagick
       (project - DSP)
+</PRE>
 
 <p>
 <STRONG>NOTE #2:</STRONG>
@@ -327,8 +321,9 @@ Windows Win2K/95 VISUAL C++ 6.0 and 7.0 COMPILATION
    add the path to your "bin" directory in. For instance, you might add:
 
 </UL>
-<p>
+<PRE>
       D:\CVS\GraphicsMagick\VisualMagick\bin
+</PRE>
 
 <p>
    to do this for the default build environment like I do.
@@ -350,8 +345,9 @@ Windows Win2K/95 VISUAL C++ 6.0 and 7.0 COMPILATION
    then you can simply set this to the same place
    as you did the PATH variable. In my case:
 
-<p>
+<PRE>
       D:\\GraphicsMagick\coders
+</PRE>
 
 <p>
    This is also the place were GraphicsMagick expects to find the
@@ -375,14 +371,16 @@ Windows Win2K/95 VISUAL C++ 6.0 and 7.0 COMPILATION
 <p>
   defines.h has
 
-<p>
+<PRE>
       #define MagickConfigurePath  "c:\\GraphicsMagick\\"
+</PRE>
 
 <p>
   To view any image in a Microsoft window, type
 
-<p>
+<PRE>
       convert image.ext win:
+</PRE>
 
 <p>
   Make sure Ghostscript is installed, otherwise, you will be unable to

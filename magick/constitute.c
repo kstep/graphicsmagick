@@ -120,7 +120,8 @@ static Image
 %    o map: This string reflects the expected ordering of the pixel array.
 %      It can be any combination or order of R = red, G = green, B = blue,
 %      A = alpha, C = cyan, Y = yellow, M = magenta, K = black, or
-%      I = intensity (for grayscale).
+%      I = intensity (for grayscale). Creation of an alpha channel for CMYK
+%      images is currently not supported.
 %
 %    o type: Define the data type of the pixels.  Float and double types are
 %      expected to be normalized [0..1] otherwise [0..MaxRGB].  Choose from

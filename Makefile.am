@@ -220,20 +220,20 @@ $(top_srcdir)/www/NEWS.html: $(top_srcdir)/NEWS
 
 # Build HTML version of README
 $(top_srcdir)/www/README.html: $(top_srcdir)/README.txt
-	@PERL@ $(top_srcdir)/scripts/txt2html  -t 'GraphicsMagick Install README' < $(top_srcdir)/README.txt > $(top_srcdir)/www/README.html
+	@PERL@ $(top_srcdir)/scripts/txt2html -p 4 -pb 1 -t 'GraphicsMagick Install README' < $(top_srcdir)/README.txt > $(top_srcdir)/www/README.html
 
 # Build HTML version of INSTALL-mac.txt
 $(top_srcdir)/www/INSTALL-mac.html: $(top_srcdir)/INSTALL-unix.txt
-	@PERL@ $(top_srcdir)/scripts/txt2html  -t 'GraphicsMagick MacOS 9 Installation' < $(top_srcdir)/INSTALL-mac.txt > $(top_srcdir)/www/INSTALL-mac.html
+	@PERL@ $(top_srcdir)/scripts/txt2html -p 4 -pb 1 -t 'GraphicsMagick MacOS 9 Installation' < $(top_srcdir)/INSTALL-mac.txt > $(top_srcdir)/www/INSTALL-mac.html
 
 # Build HTML version of INSTALL-unix.txt
 $(top_srcdir)/www/INSTALL-unix.html: $(top_srcdir)/INSTALL-unix.txt
-	@PERL@ $(top_srcdir)/scripts/txt2html  -t 'GraphicsMagick Unix Installation' < $(top_srcdir)/INSTALL-unix.txt > $(top_srcdir)/www/INSTALL-unix.html
+	@PERL@ $(top_srcdir)/scripts/txt2html -p 4 -pb 1 -t 'GraphicsMagick Unix Installation' < $(top_srcdir)/INSTALL-unix.txt > $(top_srcdir)/www/INSTALL-unix.html
 
 # Build HTML version of INSTALL-vms.txt
 $(top_srcdir)/www/INSTALL-vms.html: $(top_srcdir)/INSTALL-vms.txt
-	@PERL@ $(top_srcdir)/scripts/txt2html  -t 'GraphicsMagick VMS Installation' < $(top_srcdir)/INSTALL-vms.txt > $(top_srcdir)/www/INSTALL-vms.html
+	@PERL@ $(top_srcdir)/scripts/txt2html -p 4 -pb 1 -t 'GraphicsMagick VMS Installation' < $(top_srcdir)/INSTALL-vms.txt > $(top_srcdir)/www/INSTALL-vms.html
 
 # Build HTML version of INSTALL-windows.txt
 $(top_srcdir)/www/INSTALL-windows.html: $(top_srcdir)/INSTALL-windows.txt
-	@PERL@ $(top_srcdir)/scripts/txt2html  -t 'GraphicsMagick Windows Installation' < $(top_srcdir)/INSTALL-windows.txt > $(top_srcdir)/www/INSTALL-windows.html
+	@PERL@ $(top_srcdir)/scripts/txt2html -p 4 -pb 1 -t 'GraphicsMagick Windows Installation' < $(top_srcdir)/INSTALL-windows.txt > $(top_srcdir)/www/INSTALL-windows.html

@@ -34,15 +34,56 @@ Copyright.txt for the GraphicsMagick licence.
 
 <p>
   GraphicsMagick is currently under development.  It may be retrieved
-  via CVS using the procedure
+  via CVS using the following procedure:
 
 <p>
-  cvs -d ":pserver:anonymous@cvs.graphicsmagick.org:/GraphicsMagick" login
-  [ enter "anonymous" ]
+  Use
+
+<PRE>
+    export CVSROOT=":pserver:anonymous@cvs.graphicsmagick.org:/GraphicsMagick"
+</PRE>
 
 <p>
-  cvs -d ":pserver:anonymous@cvs.graphicsmagick.org:/GraphicsMagick" \
-   co ImageMagick
+  or
+
+<PRE>
+    setenv CVSROOT=":pserver:anonymous@cvs.graphicsmagick.org:/GraphicsMagick"
+</PRE>
+
+<p>
+  to set CVSROOT in the environment (depending on your shell), or prepend
+  -d followed by the CVS root to every command. For example
+
+
+<PRE>
+    cvs -d ":pserver:anonymous@cvs ...
+</PRE>
+
+<p>
+  For brevity the following examples assume that CVSROOT is set in the
+  environment.
+
+<PRE>
+    cvs login
+    [ enter "anonymous" ]
+
+    cvs co GraphicsMagick
+</PRE>
+
+<p>
+  If you would like to retrieve the (huge) Windows source package use
+
+<PRE>
+    cvs co GraphicsMagick-NT
+</PRE>
+
+<p>
+  If  you  would like to retrieve *everything* associated with
+  GraphicsMagick (useful or not) use
+
+<PRE>
+    cvs co GraphicsMagick-World
+</PRE>
 
 <p>
 <STRONG>DOCUMENTATION</STRONG>
@@ -65,22 +106,25 @@ Copyright.txt for the GraphicsMagick licence.
   MacOS9, and VMS. Installation instructions may be found in the
   following files (or their HTML equivalents):
 
-<p>
-  Unix:<BR>
-    INSTALL-unix.txt
+<UL>
+  <LI> Unix:
 
-<p>
-  Microsoft Windows<BR>
-    INSTALL-windows.txt
+</UL>
+<PRE>
+       INSTALL-unix.txt
 
-<p>
-  Macintosh (for MacOS X follow the Unix procedure)
-    INSTALL-mac.txt
+    o Microsoft Windows:
 
-<p>
-<STRONG>VMS</STRONG><BR>
-    INSTALL-vms.txt
+      INSTALL-windows.txt
 
+    o MacOS 9 (for MacOS X follow the Unix procedure):
+
+      INSTALL-mac.txt:
+
+    o VMS:
+
+      INSTALL-vms.txt
+</PRE>
 
 <p>
 <STRONG>MAGICK DELEGATES</STRONG>
@@ -95,53 +139,35 @@ Copyright.txt for the GraphicsMagick licence.
   <LI> GraphicsMagick requires the BZLIB library from
 
 </UL>
-<p>
+<PRE>
         http://sourceware.cygnus.com/bzip2/index.html
 
-<p>
       to read and write BZip compressed MIFF images.
 
-<UL>
-  <LI> GraphicsMagick requires ralcgm from
+    o GraphicsMagick requires ralcgm from
 
-</UL>
-<p>
         http://www.agocg.ac.uk/train/cgm/ralcgm.htm
 
-<PRE>
       to read the Computer Graphics Metafile (CGM) image format. You also
       need Ghostscript (see below).
-</PRE>
 
-<UL>
-  <LI> GraphicsMagick requires fig2dev from
+    o GraphicsMagick requires fig2dev from
 
-</UL>
-<p>
         ftp://ftp.x.org/contrib/applications/drawing_tools/transfig
 
-<p>
       to read the Fig image format.
 
-<UL>
-  <LI> GraphicsMagick requires the FreeType software, version 2.0 or above,
+    o GraphicsMagick requires the FreeType software, version 2.0 or above,
       available as
 
-</UL>
-<p>
         http://www.freetype.org/
 
-<p>
       to annotate with TrueType and Postscript Type 1 fonts.
 
-<UL>
-  <LI> GraphicsMagick requires Ghostscript software available from
+    o GraphicsMagick requires Ghostscript software available from
 
-</UL>
-<p>
         http://www.cs.wisc.edu/~ghost/
 
-<PRE>
       to read the Postscript or the Portable Document format. It is used to
       annotate an image when the FreeType library is not used, or an X
       server is not available. See the FreeType library above for another
@@ -160,80 +186,51 @@ Copyright.txt for the GraphicsMagick licence.
       stand-alone libjpeg. If conflicts cause JPEG to fail, it may be
       necessary to use Ghostscript's copy of libjpeg for GraphicsMagick,
       and all delegate libraries which depend on libjpeg.
-</PRE>
 
-<UL>
-  <LI> GraphicsMagick requires hp2xx available from
+    o GraphicsMagick requires hp2xx available from
 
-</UL>
-<p>
          http://www.gnu.org/software/hp2xx/hp2xx.html
 
-<PRE>
       to read the HP-GL image format. Note that HPGL is a plotter file
       format. HP printers usually accept PCL format rather than HPGL
       format.
-</PRE>
 
-<UL>
-  <LI> GraphicsMagick requires the LCMS library available from
+    o GraphicsMagick requires the LCMS library available from
 
-</UL>
-<p>
          http://www.littlecms.com/
 
-<p>
       to perform ICC CMS color management.
 
-<UL>
-  <LI> GraphicsMagick requires gnuplot available via anonymous FTP as
+    o GraphicsMagick requires gnuplot available via anonymous FTP as
 
-</UL>
-<p>
          ftp://ftp.dartmouth.edu/pub/gnuplot/gnuplot-3.7.tar.gz
 
-<p>
       to read GNUPLOT plot files (with extension gplt).
 
-<UL>
-  <LI> GraphicsMagick requires html2ps available from
+    o GraphicsMagick requires html2ps available from
 
-</UL>
-<p>
          http://www.tdb.uu.se/~jan/html2ps.html
 
-<p>
       to rasterize HTML files.
 
-<UL>
-  <LI> GraphicsMagick requires the JBIG-Kit software available via
+    o GraphicsMagick requires the JBIG-Kit software available via
       HTTP from
 
-</UL>
-<p>
          http://www.cl.cam.ac.uk/~mgk25/jbigkit/
 
-<p>
       or via anonymous FTP as
 
-<p>
          ftp://ftp.informatik.uni-erlangen.de/pub/doc/ISO/JBIG/
 
-<p>
       to read the JBIG image format.
 
-<UL>
-  <LI> GraphicsMagick requires the Independent JPEG Group's software
+    o GraphicsMagick requires the Independent JPEG Group's software
       available via anonymous FTP as
 
-</UL>
-<p>
          ftp://ftp.uu.net/graphics/jpeg/jpegsrc.v6b.tar.gz
 
-<p>
       to read the JPEG v1 image format.
 
-<PRE>
       Apply this JPEG patch to Independent JPEG Group's source
       distribution if you want to read lossless jpeg-encoded DICOM
       (medical) images:
@@ -242,103 +239,67 @@ Copyright.txt for the GraphicsMagick licence.
 
       Use of lossless JPEG is not encouraged. Unless you have a requirement
       to read lossless jpeg-encoded DICOM images, please disregard the patch.
-</PRE>
 
-<UL>
-  <LI> GraphicsMagick requires the JasPer Project's Jasper library version
+    o GraphicsMagick requires the JasPer Project's Jasper library version
       1.700.1 available via http from
 
-</UL>
-<p>
          http://www.ece.uvic.ca/~mdadams/jasper/
 
-<p>
       to read and write the JPEG-2000 format.
 
-<UL>
-  <LI> GraphicsMagick requires the MPEG utilities from the MPEG Software
+    o GraphicsMagick requires the MPEG utilities from the MPEG Software
       Simulation Group, which are available via anonymous FTP as
 
-</UL>
-<p>
          ftp://ftp.mpeg.org/pub/mpeg/mssg/mpeg2vidcodec_v12.tar.gz
 
-<p>
       to read or write the MPEG image format.
 
-<UL>
-  <LI> GraphicsMagick requires the PNG library, version 1.0 or above, from
+    o GraphicsMagick requires the PNG library, version 1.0 or above, from
 
-</UL>
-<p>
          http://www.libpng.org/pub/png/pngcode.html
 
-<p>
       to read the PNG image format.
 
-<UL>
-  <LI> GraphicsMagick requires ra_ppm from Greg Ward's Radiance software
+    o GraphicsMagick requires ra_ppm from Greg Ward's Radiance software
       available from
 
-</UL>
-<p>
          http://radsite.lbl.gov/radiance/HOME.html
 
-<p>
       to read the Radiance image format.
 
-<UL>
-  <LI> GraphicsMagick requires rawtorle from the Utah Raster Toolkit
+    o GraphicsMagick requires rawtorle from the Utah Raster Toolkit
       available via anonymous FTP as
 
-</UL>
-<p>
          ftp://ftp.cs.utah.edu/pub/dept/OLD/pub/urt-3.1b.tar.Z
 
-<p>
       to write the RLE image format.
 
-<UL>
-  <LI> GraphicsMagick requires scanimage from
+    o GraphicsMagick requires scanimage from
 
-</UL>
-<p>
          http://www.mostang.com/sane/
 
-<p>
       to import an image from a scanner device.
 
-<UL>
-  <LI> GraphicsMagick requires Sam Leffler's TIFF software available via
+    o GraphicsMagick requires Sam Leffler's TIFF software available via
       anonymous FTP at
 
-</UL>
-<p>
          ftp://ftp.remotesensing.org/pub/libtiff/
 
-<p>
       or via HTTP at
 
-<p>
          http://www.libtiff.org/
 
-<PRE>
       to read the TIFF image format. It in turn optionally requires the
       JPEG and ZLIB libraries. Support for JPEG, ZIP, and LZW compression
       must be explicitly enabled by editing libtiff Makefiles. The TIFF
       library no longer includes support for LZW compression due to patent
       issues. If you need to use LZW compression, support is available via
       a seperate LZW compression kit (a patch) at the sites listed above.
-</PRE>
 
-<UL>
-  <LI> GraphicsMagick requires libwmf 0.2.5 (or later) from
+    o GraphicsMagick requires libwmf 0.2.5 (or later) from
 
-</UL>
-<p>
          http://sourceforge.net/projects/wvware/
 
-<PRE>
       to render files in the Windows Meta File (WMF) metafile format
       (16-bit WMF files only, not 32-bit "EMF"). This is the format
       commonly used for Windows clipart (available on CD at your local
@@ -363,74 +324,51 @@ Copyright.txt for the GraphicsMagick licence.
       The WMF renderer is not capable of using Windows fonts with libwmf
       0.2.2. Windows fonts are fully supported when using libwmf 0.2.5
       or later.
-</PRE>
 
-<UL>
-  <LI> GraphicsMagick requires the FlashPIX library version 1.2.0 from
+    o GraphicsMagick requires the FlashPIX library version 1.2.0 from
       the Digital Imaging Group in order to support the FlashPIX
       format. The FlashPIX library may be obtained from GraphicsMagick
       anonymous CVS by checking out the 'fpx' module, or retrieving the
       file libfpx-1.2.0.5.tar.gz from the ftp directory.
 
-</UL>
-<p>
          ftp://ftp.imagemagick.org/pub/GraphicsMagick/delegates/.
 
-<UL>
-  <LI> GraphicsMagick requires an X server for the 'display', 'animate',
+    o GraphicsMagick requires an X server for the 'display', 'animate',
       and 'import' commands to work properly. Unix systems usually provide
       an X server as part of their standard installation.
 
-</UL>
-<p>
       A free X server for Microsoft Windows is available from
 
-<p>
          http://sources.redhat.com/win32-x11/
 
-<p>
       The Cygwin port of XFree86 may also be used. It is available from
 
-<p>
          http://www.cygwin.com/xfree/
 
-<PRE>
       There is a nearly free X server available for Windows and
       Macintosh at
 
          http://www.microimages.com/freestuf/mix/
-</PRE>
 
-<UL>
-  <LI> GraphicsMagick requires libxml available from
+    o GraphicsMagick requires libxml available from
 
-</UL>
-<p>
          http://xmlsoft.org/
 
-<PRE>
       to read the SVG image format and to retrieve files from over a
       network via FTP and HTTP.
-</PRE>
 
-<UL>
-  <LI> GraphicsMagick requires the ZLIB library from
+    o GraphicsMagick requires the ZLIB library from
 
-</UL>
-<p>
          http://www.gzip.org/zlib/
 
-<p>
       to read or write the PNG or Zip compressed MIFF images.
 
-<UL>
-  <LI> GraphicsMagick requires a background texture for the TILE
+    o GraphicsMagick requires a background texture for the TILE
       format and for the -texture option of montage(1).  You can use
       your own or get samples from
 
-</UL>
-<p>
          http://the-tech.mit.edu/KPT/
+</PRE>
 
 
 <hr>

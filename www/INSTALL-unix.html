@@ -19,31 +19,35 @@ UNIX/Cygwin/MinGW COMPILATION
 <p>
   Note:
 
-<p>
+<PRE>
     Platform specific notes regarding specific operating systems may
     be found in the PLATFORMS.txt file.  This file (README.txt) provides
     generic instructions which work in most common cases.  Additional
     notes regarding Cygwin &amp; MinGW are provided later in this file.
+</PRE>
 
 <p>
   Type:
 
-<p>
+<PRE>
     gzip -dc GraphicsMagick-1.0.0.tar.gz | tar xvf -
     cd GraphicsMagick-1.0.0
+</PRE>
 
 <p>
   If you do not have gzip(1), the source for the gzip package is
   available as a shell archive at
 
-<p>
+<PRE>
     ftp://ftp.gnu.org/gnu/gzip/gzip-1.2.4a.shar
+</PRE>
 
 <p>
   or as a tar archive at
 
-<p>
+<PRE>
     ftp://ftp.gnu.org/gnu/gzip/gzip-1.2.4a.tar
+</PRE>
 
 <p>
   Use 'configure' to automatically configure, build, and install
@@ -59,8 +63,9 @@ UNIX/Cygwin/MinGW COMPILATION
   If you are willing to accept configure's default options, and build from
   within the source directory, type:
 
-<p>
+<PRE>
       ./configure
+</PRE>
 
 <p>
   and watch the configure script output to verify that it finds everything
@@ -80,8 +85,9 @@ UNIX/Cygwin/MinGW COMPILATION
   flags, or libraries, you can give `configure' initial values for
   variables by specifying them on the configure command line, e.g.:
 
-<p>
+<PRE>
       ./configure CC=c89 CFLAGS=-O2 LIBS=-lposix
+</PRE>
 
 <p>
   Options which should be common to packages installed under the same
@@ -102,8 +108,9 @@ UNIX/Cygwin/MinGW COMPILATION
   When the 'config.site' file is being used to supply configuration
   options, configure will issue a message similar to:
 
-<p>
+<PRE>
     configure: loading site script /usr/local/share/config.site
+</PRE>
 
 <p>
   The configure variables you should be aware of are:
@@ -155,8 +162,8 @@ UNIX/Cygwin/MinGW COMPILATION
 
 <p>
   Optional Packages/Options:<BR>
-   --with-quantum-depth    number of bits in a pixel quantum (default 8)
 <PRE>
+   --with-quantum-depth    number of bits in a pixel quantum (default 8)
    --with-modules          enable support for dynamically loadable modules
    --with-cache            set pixel cache threshhold (defaults to available memory)
    --without-threads       disable threads support
@@ -256,10 +263,8 @@ UNIX/Cygwin/MinGW COMPILATION
       statically linked extensions so --enable-shared should be specified
       if possible (note that all libraries used with GraphicsMagick must
       be shared libraries!).
-</PRE>
 
-<UL>
-  <LI> --disable-static: static archive libraries (with extension .a)
+    o --disable-static: static archive libraries (with extension .a)
       are not built.  If you are building shared libraries, there
       is little value to building static libraries. Reasons to build
       static libraries include: 1) they can be easier to debug; 2) the
@@ -267,7 +272,7 @@ UNIX/Cygwin/MinGW COMPILATION
       building PIC versions of the delegate libraries may take additional
       expertise and effort; 4) you are unable to build shared libraries.
 
-  <LI> --with-modules: image format coders are built as loadable modules
+    o --with-modules: image format coders are built as loadable modules
       which are installed in [prefix]/lib/GraphicsMagick/modules/coders.
       Support for modules allows the formats supported by GraphicsMagick
       to be extended by simply adding additional modules to the module
@@ -275,7 +280,7 @@ UNIX/Cygwin/MinGW COMPILATION
       with --enable-shared.  If --enable-shared is not also specified,
       then support for modules is disabled.
 
-  <LI> --enable-lzw: Unisys claims a patent on the algorithm supporting
+    o --enable-lzw: Unisys claims a patent on the algorithm supporting
       LZW compression (e.g. used by GIF and TIFF). To avoid possibly
       infringing on this patent, support for LZW is disabled by default.
       With LZW support, GIF files written by GraphicsMagick will be much
@@ -283,7 +288,7 @@ UNIX/Cygwin/MinGW COMPILATION
       in order to support LZW compression, and that this support must
       be explicitly enabled in the libtiff Makefiles.
 
-  <LI> --with-quantum-depth: This option allows the user to specify the
+    o --with-quantum-depth: This option allows the user to specify the
       number of bits to use per pixel quantum (the size of the red,
       green, blue, and alpha pixel components. For example,
       "--with-quantum-depth=8" builds GraphicsMagick using 8-bit quantums.
@@ -292,8 +297,6 @@ UNIX/Cygwin/MinGW COMPILATION
       option is the most important option in determining the overall
       run-time performance of GraphicsMagick.
 
-</UL>
-<PRE>
       The number of bits in a quantum determines how many values it may
       contain. Each quantum level supports 256 times as many values as
       the previous level. The following table shows the range available
@@ -321,10 +324,8 @@ UNIX/Cygwin/MinGW COMPILATION
               8              3MB
              16              8MB
              32             15MB
-</PRE>
 
-<UL>
-  <LI> --without-magick-plus-plus: Disable building Magick++, the C++
+    o --without-magick-plus-plus: Disable building Magick++, the C++
       application programming interface to GraphicsMagick. A suitable C++
       compiler is required in order to build Magick++. Specify the CXX
       configure variable to select the C++ compiler to use (default
@@ -333,22 +334,22 @@ UNIX/Cygwin/MinGW COMPILATION
       normally be rejected by configure tests so specifying this option
       should only be necessary if Magick++ fails to compile.
 
-  <LI> --without-frozenpaths: Normally full paths to external programs
+    o --without-frozenpaths: Normally full paths to external programs
       (based on searching the PATH set when configure is run) will be
       saved to the delegates.mgk file. Specify this option to disable
       saving full paths to programs.
 
-  <LI> --without-threads: By default, the GraphicsMagick library is compiled
+    o --without-threads: By default, the GraphicsMagick library is compiled
       with multi-thread support.  If this is undesireable, then specify
       --without-threads.
 
-  <LI> --with-cache: Specify a different image pixel cache threshold
+    o --with-cache: Specify a different image pixel cache threshold
       using the --with-cache option. This sets the maximum amount of
       heap memory that GraphicsMagick is allowed to consume before
       switching to using memory-mapped temporary files to store raw
       pixel data.
 
-  <LI> --disable-largefile: By default, GraphicsMagick is compiled with
+    o --disable-largefile: By default, GraphicsMagick is compiled with
       support for large (&gt; 2GB on a 32-bit CPU) files if the operating
       system supports large files.  All applications which use the
       GraphicsMagick library must then also include support for large
@@ -356,7 +357,7 @@ UNIX/Cygwin/MinGW COMPILATION
       dependent applications do not require special compilation options
       for large files in order to use the library.
 
-  <LI> --without-perl: By default, PerlMagick is conveniently compiled
+    o --without-perl: By default, PerlMagick is conveniently compiled
       and installed as part of GraphicsMagick's normal "configure", "make",
       "make install" process.. When --without-perl is specified, you must
       first install GraphicsMagick, change to the PerlMagick subdirectory,
@@ -367,7 +368,7 @@ UNIX/Cygwin/MinGW COMPILATION
       'perl' executable in your PATH is not PERL5, or is not the PERL
       you want to use.
 
-  <LI> --with-perl-options: The PerlMagick module is normally installed
+    o --with-perl-options: The PerlMagick module is normally installed
       using the Perl interpreter's installation PREFIX, rather than
       GraphicsMagick's. If GraphicsMagick's installation prefix is not
       the same as PERL's PREFIX, then you may find that PerlMagick's
@@ -381,14 +382,14 @@ UNIX/Cygwin/MinGW COMPILATION
       the ExtUtils::MakeMaker(3) manual page for more information on
       configuring PERL extensions.
 
-  <LI> --without-x: By default, GraphicsMagick will use X11 libraries if
+    o --without-x: By default, GraphicsMagick will use X11 libraries if
       they are available. When --without-x is specified, use of X11 is
       disabled. The display, animate, and import programs are not built or
       installed. The remaining programs have reduced functionality such
       as no access to X11 fonts (consider using Postscript or TrueType
       fonts instead).
 
-  <LI> --with-gs-font-dir: Specify the directory containing the
+    o --with-gs-font-dir: Specify the directory containing the
       Ghostscript Postscript Type 1 font files (e.g. "n022003l.pfb") so
       that they can be rendered using the FreeType library. If the font
       files are installed using the default Ghostscript installation paths
@@ -397,28 +398,24 @@ UNIX/Cygwin/MinGW COMPILATION
       necessary. Specify this option if the Ghostscript fonts fail to
       be located automatically, or the location needs to be overridden.
 
-  <LI> --with-windows-font-dir: Specify the directory containing
+    o --with-windows-font-dir: Specify the directory containing
       MS-Windows-compatible fonts. This is not necessary when GraphicsMagick
       is running under MS-Windows.
+</PRE>
 
-</UL>
 <p>
   Building under Cygwin
 
-<p>
+<PRE>
     GraphicsMagick may be built under the Windows '95-XP Cygwin
     Unix-emulation environment available for free from
 
-<p>
       http://www.cygwin.com/
 
-<p>
     X11R6 for Cygwin is available from
 
-<p>
       http://xfree86.cygwin.com/
 
-<p>
     It is strongly recommended that the
     X11R6 package be installed since this enables GraphicsMagick's X11
     support (animate, display, and import will work) and it includes the
@@ -429,36 +426,32 @@ UNIX/Cygwin/MinGW COMPILATION
     Specifying '--enable-shared' is required if you want to build
     PerlMagick under Cygwin because Cygwin does not provide the libperl.a
     static library required to create a static PerlMagick.
+</PRE>
 
 <p>
   Building under MinGW &amp; MSYS
 
-<p>
+<PRE>
     GraphicsMagick may be built using the free MinGW ("Minimalistic GNU for
     Windows") package version 1.1, available from
 
-<p>
       http://www.mingw.org
 
-<p>
     which consists of a GNU-based (e.g. gcc) compilation toolset plus
     headers and libraries required to build programs which are entirely
     based on standard Microsoft Windows DLLs. MSYS provides a Unix-like
     console shell window with sufficient functionality to run the
     GraphicsMagick configure script and execute make.
 
-<p>
     Unlike the Cygwin build which creates programs based on a
     Unix-emulation DLL, and which uses Unix-style paths to access
     Windows files, the MinGW build creates native Windows console
     applications similar to the Visual C++ build.
 
-<p>
     Please note that since the MinGW build is very new, some aspects of
     the installation may vary from Windows user's expectations, and that
     only a static build (no DLLs or modules) is currently supported.
 
-<p>
     Once MinGW &amp; MSYS have been installed, start the MSYS console (via
     the MSYS icon on the Windows desktop) and follow the Unix configure
     and build instructions. Note that the default installation prefix is
@@ -471,11 +464,12 @@ UNIX/Cygwin/MinGW COMPILATION
     "C:\GraphicsMagick\lib", "C:\GraphicsMagick\share", etc.). Any additional
     delegate libraries (e.g. libpng) will need to be built under MinGW
     in order to be used.
+</PRE>
 
 <p>
   Dealing with configuration failures:
 
-<p>
+<PRE>
     While configure is designed to ease installation of GraphicsMagick, it
     often discovers problems that would otherwise be encountered later
     when compiling GraphicsMagick. The configure script tests for headers
@@ -491,14 +485,12 @@ UNIX/Cygwin/MinGW COMPILATION
     running configure so that configure will re-inspect the environment
     rather than using cached values.
 
-<p>
     Common causes of configure failures are: 1) a delegate header is
     not in the header include path (CPPFLAGS -I option); 2) a delegate
     library is not in the linker search/run path (LDFLAGS -L/-R option);
     3) a delegate library is missing a function (old version?); 4)
     compilation environment is faulty.
 
-<p>
     If all reasonable corrective actions have been tried and the
     problem appears to be due to a flaw in the configure script,
     please send a bug report to the configure script maintainer
@@ -510,15 +502,15 @@ UNIX/Cygwin/MinGW COMPILATION
     the configure output and a description of what you expected to see
     (and why) so the failure you are observing can be identified and
     resolved.
+</PRE>
 
 <p>
   Makefile Build Targets
 
-<p>
+<PRE>
     Once GraphicsMagick is configured, these standard build targets are
     available from the generated Makefiles:
 
-<PRE>
        'make'
           Build the package
 
@@ -546,54 +538,45 @@ UNIX/Cygwin/MinGW COMPILATION
 <p>
   Build &amp; Install:
 
-<p>
+<PRE>
     Now that GraphicsMagick is configured, type
 
-<p>
        make
 
-<p>
     to build the package and
 
-<p>
        make install
 
-<p>
     to install it.
+</PRE>
 
 <p>
   Verifying The Build:
 
-<p>
+<PRE>
     To confirm your installation of the GraphicsMagick distribution was
     successful, type:
 
-<p>
         ./utilities/display
 
-<p>
     The GraphicsMagick logo is displayed.
 
-<p>
     If the image colors are not correct use this command:
 
-<p>
         ./utilities/display -visual default
 
-<p>
     For a more serious test, you may run the GraphicsMagick test suite by
     typing
 
-<p>
         make check
 
-<p>
     Note that due to differences between the developer's environment and
     your own it is possible that some tests may be indicated as failed
     even though the results are ok. Differences between the developer's
     environment environment and your own may include the compiler, the
     CPU type, and the library versions used. The GraphicsMagick developers
     use the current release of all dependent libraries.
+</PRE>
 
 
 

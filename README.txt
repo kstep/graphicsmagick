@@ -15,13 +15,38 @@ Copyright.txt for the GraphicsMagick licence.
 AVAILABILITY
 
   GraphicsMagick is currently under development.  It may be retrieved
-  via CVS using the procedure
+  via CVS using the following procedure:
 
-  cvs -d ":pserver:anonymous@cvs.graphicsmagick.org:/GraphicsMagick" login
-  [ enter "anonymous" ]
+  Use
 
-  cvs -d ":pserver:anonymous@cvs.graphicsmagick.org:/GraphicsMagick" \
-   co ImageMagick
+    export CVSROOT=":pserver:anonymous@cvs.graphicsmagick.org:/GraphicsMagick"
+
+  or
+
+    setenv CVSROOT=":pserver:anonymous@cvs.graphicsmagick.org:/GraphicsMagick"
+
+  to set CVSROOT in the environment (depending on your shell), or prepend
+  -d followed by the CVS root to every command. For example
+
+
+    cvs -d ":pserver:anonymous@cvs ...
+
+  For brevity the following examples assume that CVSROOT is set in the
+  environment.
+
+    cvs login
+    [ enter "anonymous" ]
+
+    cvs co GraphicsMagick
+
+  If you would like to retrieve the (huge) Windows source package use
+
+    cvs co GraphicsMagick-NT
+
+  If  you  would like to retrieve *everything* associated with
+  GraphicsMagick (useful or not) use
+
+    cvs co GraphicsMagick-World
 
 DOCUMENTATION
 
@@ -40,18 +65,21 @@ INSTALLATION
   MacOS9, and VMS. Installation instructions may be found in the
   following files (or their HTML equivalents):
 
-  Unix:
-    INSTALL-unix.txt
+    o Unix:
 
-  Microsoft Windows
-    INSTALL-windows.txt
+       INSTALL-unix.txt
 
-  Macintosh (for MacOS X follow the Unix procedure)
-    INSTALL-mac.txt
+    o Microsoft Windows:
 
-  VMS
-    INSTALL-vms.txt
+      INSTALL-windows.txt
 
+    o MacOS 9 (for MacOS X follow the Unix procedure):
+
+      INSTALL-mac.txt:
+
+    o VMS:
+
+      INSTALL-vms.txt
 
 MAGICK DELEGATES
 
