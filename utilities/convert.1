@@ -1913,20 +1913,13 @@ of the wave.
 
 .TP
 .B "-write \fI<filename>"\fP
-\fRwrite or reread an image sequence [\fIconvert, composite\fP]
+\fRwrite  an image sequence [\fIconvert, composite\fP]
 
-The image sequence following the \fB-write\fP \fIfilename\fPoption will 
-be written out, and then processing will continue with the
+The image sequence following the \fB-write\fP \fIfilename\fPoption is 
+written out, and then processing continues with the
 same image in its current state if there are additional options.  To
-restart from its original state, use the \fB+write\fP \fIfilename\fP
-option.
-
-After some options have been processed, a previously processed input image
-can be reread with the \fB+write\fP option.  This can allow ImageMagick to
-skip the decoding process, if it happens to have stored a copy of the original
-decoded image.  If there is no stored copy, the \fB+write\fP option is
-ignored and the file is read and decoded in the normal manner.
-
+restore the image to its original state after writing it, use
+the \fB+write\fP \fIfilename\fP option.
 .SH FILES AND FORMATS
 
 By default, the image format is determined by its magic number, i.e., the
