@@ -1313,6 +1313,7 @@ BOOL CConfigureApp::InitInstance()
 		  libs_list_shared.push_back("winmm.lib");
 		  libs_list_shared.push_back("dxguid.lib");
 		  libs_list_shared.push_back("wsock32.lib");
+		  libs_list_shared.push_back("advapi32.lib");
 		}
     else
     {
@@ -1326,6 +1327,7 @@ BOOL CConfigureApp::InitInstance()
 		  libs_list_shared.push_back("winmm.lib");
 		  libs_list_shared.push_back("dxguid.lib");
 		  libs_list_shared.push_back("wsock32.lib");
+		  libs_list_shared.push_back("advapi32.lib");
     }
 
     process_project_replacements(dsw,"..","*.in");
