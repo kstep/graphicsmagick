@@ -1914,8 +1914,6 @@ MagickExport unsigned int CompositeImage(Image *image,
 */
 MagickExport void CycleColormapImage(Image *image,const int amount)
 {
-#define CycleColormapImageText  "  Cycle image colormap...  "
-
   long
     index,
     y;
@@ -3639,6 +3637,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
         quantize_info.tree_depth=8;
         quantize_info.colorspace=GRAYColorspace;
       }
+  SetGeometry(image,&region_geometry);
   region_image=(Image *) NULL;
   /*
     Transmogrify the image.
@@ -5704,7 +5703,7 @@ MagickExport unsigned int RGBTransformImage(Image *image,
 #define RGBTransformImageText  "  Transform image colors...  "
 #define X 0
 #define Y (MaxRGB+1)
-#define Z (MaxRGB+1)*2
+#define Z (2*(MaxRGB+1))
 
   double
     blue,

@@ -98,8 +98,6 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
   XWindows *windows,const CommandType command_type,Image **image,
   unsigned int *state)
 {
-#define LoadImageText  "  Loading images...  "
-
   Image
     *nexus;
 
@@ -119,6 +117,9 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     {
       char
         **filelist;
+
+      ExceptionInfo
+        exception;
 
       Image
         *image,
@@ -175,6 +176,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       clone_info=CloneImageInfo(resource_info->image_info);
       if (clone_info == (ImageInfo *) NULL)
         break;
+      GetExceptionInfo(&exception);
       image=(Image *) NULL;
       handler=(MonitorHandler) NULL;
       XSetCursorState(display,windows,True);
@@ -185,10 +187,10 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           handler=SetMonitorHandler((MonitorHandler) NULL);
         (void) strncpy(clone_info->filename,filelist[i],MaxTextExtent-1);
         *clone_info->magick='\0';
-        next=ReadImage(clone_info,&image->exception);
-        if (image->exception.severity != UndefinedException)
-          MagickError(image->exception.severity,image->exception.reason,
-            image->exception.description);
+        next=ReadImage(clone_info,&exception);
+        if (exception.severity != UndefinedException)
+          MagickError(exception.severity,exception.reason,
+            exception.description);
         if (next != (Image *) NULL)
           {
             if (image == (Image *) NULL)
@@ -205,6 +207,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         (void) SetMonitorHandler(handler);
         MagickMonitor(LoadImageText,i,number_files);
       }
+      DestroyExceptionInfo(&exception);
       DestroyImageInfo(clone_info);
       if (image == (Image *) NULL)
         {
@@ -561,7 +564,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
     Free previous root colors.
   */
   if (window_info.id == root_window)
-    (void) XDestroyWindowColors(display,root_window);
+    XDestroyWindowColors(display,root_window);
   coalesce=False;
   if (images->next != (Image *) NULL)
     {
