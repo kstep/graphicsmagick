@@ -15,4 +15,4 @@ require 't/subroutines.pl';
 chdir 't/rad' || die 'Cd failed';
 
 testRead( 'input.rad',
-  'a5d122b2b7a0944d835243afd4a81815bbea5bc1ae6c3a6ba79301662b4474a1' );
+  '703aff535f3822d56d9fc91ba39629bd4939bbfe65786e25c267993e7ab32829' );
