@@ -13,10 +13,60 @@
 <h1>
 Enumerations</h1></center>
 
-<center>
-<h3>
-<a NAME="ClassType"></a>ClassType</h3></center>
-<i>ClassType</i> specifies the image class.
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>Contents</font></font></font></b></td>
+</tr>
+</table>
+
+<ul>
+<li>
+<a href="#ClassType">ClassType</a></li>
+
+<li>
+<a href="#ColorspaceType">ColorspaceType</a></li>
+
+<li>
+<a href="#CompositeOperator">CompositeOperator</a></li>
+
+<li>
+<a href="#CompressionType">CompressionType</a></li>
+
+<li>
+<a href="#FilterType">FilterType</a></li>
+
+<li>
+<a href="#GravityType">GravityType</a></li>
+
+<li>
+<a href="#ImageType">ImageType</a></li>
+
+<li>
+<a href="#InterlaceType">InterlaceType</a></li>
+
+<li>
+<a href="#LayerType">LayerType</a></li>
+
+<li>
+<a href="#NoiseType">NoiseType</a></li>
+
+<li>
+<a href="#PaintMethod">PaintMethod</a></li>
+
+<li>
+<a href="#RenderingIntent">RenderingIntent</a></li>
+
+<li>
+<a href="#ResolutionType">ResolutionType</a></li>
+</ul>
+
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><a NAME="ClassType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>ClassType</font></font></font></b></td>
+</tr>
+</table>
+
+<p><i>ClassType</i> specifies the image class.
 <table BORDER WIDTH="100%" NOSAVE >
 <caption>
 <center><b>ClassType</b></center>
@@ -51,15 +101,19 @@ Enumerations</h1></center>
 </tr>
 </table>
 
-<center>
-<h3>
-<a NAME="ColorspaceType"></a>ColorspaceType</h3></center>
-The ColorspaceType enumeration is used to specify the colorspace that quantization
-(color reduction and mapping) is done under or to specify the colorspace
-when encoding an output image. Colorspaces are ways of describing colors
-to fit the requirements of a particular application (e.g. Television, offset
-printing, color monitors).&nbsp; Color reduction, by default, takes place
-in the <i>RGBColorspace</i>. Empirical evidence suggests that distances
+<br>&nbsp;
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><a NAME="ColorspaceType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>ColorspaceType</font></font></font></b></td>
+</tr>
+</table>
+
+<p>The ColorspaceType enumeration is used to specify the colorspace that
+quantization (color reduction and mapping) is done under or to specify
+the colorspace when encoding an output image. Colorspaces are ways of describing
+colors to fit the requirements of a particular application (e.g. Television,
+offset printing, color monitors).&nbsp; Color reduction, by default, takes
+place in the <i>RGBColorspace</i>. Empirical evidence suggests that distances
 in color spaces such as <i>YUVColorspace</i> or <i>YIQColorspace</i> correspond
 to perceptual color differences more closely han do distances in RGB space.
 These color spaces may give better results when color reducing an image.
@@ -167,10 +221,14 @@ or emulsion, normally on a white surface.</td>
 </tr>
 </table>
 
-<center>
-<h3>
-<a NAME="CompositeOperator"></a><b>CompositeOperator</b></h3></center>
-<i>CompositeOperator</i> is used to select the image composition algorithm
+<br>&nbsp;
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><a NAME="CompositeOperator"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>CompositeOperator</font></font></font></b></td>
+</tr>
+</table>
+
+<p><i>CompositeOperator</i> is used to select the image composition algorithm
 used to compose a <i>composite image</i> with an <i>image</i>. By default,
 each of the composite image pixels are replaced by the corresponding image
 tile pixel. Specify <i>CompositeOperator</i> to select a different algorithm.
@@ -321,10 +379,14 @@ must be 0).</td>
 </tr>
 </table>
 
-<center>
-<h3>
-<a NAME="CompressionType"></a><b>CompressionType</b></h3></center>
-<i>CompressionType</i> is used to express the desired compression type
+<br>&nbsp;
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><a NAME="CompressionType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>CompressionType</font></font></font></b></td>
+</tr>
+</table>
+
+<p><i>CompressionType</i> is used to express the desired compression type
 when encoding an image. Be aware that most image types only support a sub-set
 of the available compression types. If the compression type specified is
 incompatable with the image, ImageMagick selects a compression type compatable
@@ -400,10 +462,13 @@ and Huffman coding)&nbsp; as used by bzip2 utilities</td>
 </table>
 
 <br>&nbsp;
-<center>
-<h3>
-<a NAME="FilterType"></a><b>FilterType</b></h3></center>
-<i>FilterType</i> is used to adjust the filter algorithm used when resizing
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><a NAME="FilterType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>FilterType</font></font></font></b></td>
+</tr>
+</table>
+
+<p><i>FilterType</i> is used to adjust the filter algorithm used when resizing
 images. Different filters experience varying degrees of success with various
 images and can take sigificantly different amounts of processing time.
 ImageMagick uses the <i>LanczosFilter</i> by default since this filter
@@ -523,15 +588,18 @@ images.
 </tr>
 </table>
 
-<center>
-<h3>
-<a NAME="GravityType"></a><b>GravityType</b></h3></center>
-Gravity specifies positioning of an object (e.g. text, image) within a
-bounding region (e.g. an image). Gravity provides a convenient way to locate
-objects irrespective of the size of the bounding region, in other words,
-you don't need to provide absolute coordinates in order to position an
-object. A common default for gravity is <i>NorthWestGravity</i>.
 <br>&nbsp;
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><a NAME="GravityType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>GravityType</font></font></font></b></td>
+</tr>
+</table>
+
+<p><i>GravityType</i> specifies positioning of an object (e.g. text, image)
+within a bounding region (e.g. an image). Gravity provides a convenient
+way to locate objects irrespective of the size of the bounding region,
+in other words, you don't need to provide absolute coordinates in order
+to position an object. A common default for gravity is <i>NorthWestGravity</i>.
 <br>&nbsp;
 <table BORDER WIDTH="100%" NOSAVE >
 <caption><b>GravityType</b></caption>
@@ -607,10 +675,14 @@ object. A common default for gravity is <i>NorthWestGravity</i>.
 </tr>
 </table>
 
-<center>
-<h3>
-<a NAME="ImageType"></a><b>ImageType</b></h3></center>
-The ImageType enumeration indicates the type classification of the image.
+<br>&nbsp;
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><a NAME="ImageType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>ImageType</font></font></font></b></td>
+</tr>
+</table>
+
+<p><i>ImageType</i> indicates the type classification of the image.
 <br>&nbsp;
 <table BORDER WIDTH="100%" NOSAVE >
 <caption><b>ImageType</b></caption>
@@ -668,10 +740,14 @@ The ImageType enumeration indicates the type classification of the image.
 </tr>
 </table>
 
-<center>
-<h3>
-<a NAME="InterlaceType"></a><b>InterlaceType</b></h3></center>
-<i>InterlaceType</i> specifies the ordering of the red, green, and blue
+<br>&nbsp;
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><a NAME="InterlaceType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>InterlaceType</font></font></font></b></td>
+</tr>
+</table>
+
+<p><i>InterlaceType</i> specifies the ordering of the red, green, and blue
 pixel information in the image. Interlacing is usually used to make image
 information available to the user faster by taking advantage of the space
 vs time tradeoff. For example, interlacing allows images on the Web to
@@ -725,13 +801,17 @@ to individual files (e.g. image.R, image.G, and image.B)</td>
 </tr>
 </table>
 
-<center>
-<h3>
-<a NAME="LayerType"></a><b>LayerType</b></h3></center>
-<i>LayerType</i> is used as an argument when doing color separations. Use
-<i>LayerType</i>
-when extracting a layer from an image. <i>MatteLayer</i> is useful for
-extracting the opacity values from an image.
+<br>&nbsp;
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><a NAME="LayerType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>LayerType</font></font></font></b></td>
+</tr>
+</table>
+
+<p><i>LayerType</i> is used as an argument when doing color separations.
+Use
+<i>LayerType</i> when extracting a layer from an image. <i>MatteLayer</i>
+is useful for extracting the opacity values from an image.
 <br>&nbsp;
 <table BORDER WIDTH="100%" NOSAVE >
 <caption><b>LayerType</b></caption>
@@ -777,11 +857,15 @@ extracting the opacity values from an image.
 </tr>
 </table>
 
-<center>
-<h3>
-<a NAME="NoiseType"></a><b>NoiseType</b></h3></center>
-NoiseType is used as an argument to select the type of noise to be added
-to the image.
+<br>&nbsp;
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><a NAME="NoiseType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>NoiseType</font></font></font></b></td>
+</tr>
+</table>
+
+<p><i>NoiseType</i> is used as an argument to select the type of noise
+to be added to the image.
 <br>&nbsp;
 <table BORDER COLS=2 WIDTH="100%" NOSAVE >
 <caption><b>NoiseType</b></caption>
@@ -833,11 +917,15 @@ to the image.
 </tr>
 </table>
 
-<center>
-<h3>
-<a NAME="PaintMethod"></a><b>PaintMethod</b></h3></center>
-PaintMethod specifies how pixel colors are to be replaced in the image.
-It is used to select the pixel-filling algorithm employed.
+<br>&nbsp;
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><a NAME="PaintMethod"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>PaintMethod</font></font></font></b></td>
+</tr>
+</table>
+
+<p><i>PaintMethod</i> specifies how pixel colors are to be replaced in
+the image. It is used to select the pixel-filling algorithm employed.
 <br>&nbsp;
 <table BORDER WIDTH="100%" NOSAVE >
 <caption><b>PaintMethod</b></caption>
@@ -885,10 +973,14 @@ matching border color.</td>
 </tr>
 </table>
 
-<center>
-<h3>
-<a NAME="RenderingIntent"></a><b>RenderingIntent</b></h3></center>
-Rendering intent is a concept defined by <a href="http://www.color.org/">ICC</a>
+<br>&nbsp;
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><a NAME="RenderingIntent"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>RenderingIntent</font></font></font></b></td>
+</tr>
+</table>
+
+<p>Rendering intent is a concept defined by <a href="http://www.color.org/">ICC</a>
 Spec ICC.1:1998-09, "File Format for Color Profiles". ImageMagick uses
 <i>RenderingIntent</i>
 in order to support ICC Color Profiles.
@@ -945,10 +1037,14 @@ preserved but colorimetric accuracy might not be preserved.</td>
 </tr>
 </table>
 
-<center>
-<h3>
-<a NAME="ResolutionType"></a><b>ResolutionType</b></h3></center>
-By default, ImageMagick defines resolutions in pixels per inch. <i>ResolutionType</i>
+<br>&nbsp;
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../../../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><a NAME="ResolutionType"></a><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>ResolutionType</font></font></font></b></td>
+</tr>
+</table>
+
+<p>By default, ImageMagick defines resolutions in pixels per inch. <i>ResolutionType</i>
 provides a means to adjust this.
 <br>&nbsp;
 <table BORDER WIDTH="100%" NOSAVE >
