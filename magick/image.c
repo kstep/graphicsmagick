@@ -982,7 +982,8 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   clone_image->directory=(char *) NULL;
   clone_image->semaphore=(SemaphoreInfo *) NULL;
   clone_image->clip_mask=(Image *) NULL;
-  GetExceptionInfo(&clone_image->exception);
+  ThrowException(&clone_image->exception,image->exception.severity,
+	  image->exception.reason,image->exception.description);
   clone_image->reference_count=1;
   GetCacheInfo(&clone_image->cache);
   clone_image->blob=CloneBlobInfo((BlobInfo *) NULL);
@@ -2258,9 +2259,6 @@ MagickExport void DescribeImage(Image *image,FILE *file,
     (void) fprintf(file,"  Montage: %.1024s\n",image->montage);
   if (image->directory != (char *) NULL)
     {
-      ExceptionInfo
-        exception;
-
       Image
         *tile;
 
@@ -2290,10 +2288,10 @@ MagickExport void DescribeImage(Image *image,FILE *file,
         p=q;
         (void) fprintf(file,"    %.1024s",image_info->filename);
         handler=SetWarningHandler((WarningHandler) NULL);
-        tile=ReadImage(image_info,&exception);
-        if (exception.severity != UndefinedException)
-          MagickWarning(exception.severity,exception.reason,
-            exception.description);
+        tile=ReadImage(image_info,&image->exception);
+        if (image->exception.severity != UndefinedException)
+          MagickWarning(image->exception.severity,image->exception.reason,
+            image->exception.description);
         (void) SetWarningHandler(handler);
         if (tile == (Image *) NULL)
           {
@@ -5077,15 +5075,14 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
   length=GetImageListSize(*images);
   if (length == 1)
     return(MogrifyImage(image_info,argc,argv,images));
+  status=True;
   mogrify_images=NewImageList();
   for (i=0; i < length; i++)
   {
     image=ShiftImageList(images);
     handler=SetMonitorHandler((MonitorHandler) NULL);
-    status=MogrifyImage(image_info,argc,argv,&image);
+    status&=MogrifyImage(image_info,argc,argv,&image);
     (void) SetMonitorHandler(handler);
-    if (status == False)
-      break;
     if (image_info->verbose)
       DescribeImage(image,stdout,False);
     PushImageList(&mogrify_images,image,&image->exception);

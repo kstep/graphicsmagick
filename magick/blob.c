@@ -147,13 +147,13 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
+  SetExceptionInfo(exception,UndefinedException);
   if ((blob == (const void *) NULL) || (length == 0))
     {
       ThrowException(exception,BlobWarning,"Zero-length blob not permitted",
         image_info->magick);
       return((Image *) NULL);
     }
-  SetExceptionInfo(exception,UndefinedException);
   clone_info=CloneImageInfo(image_info);
   AttachBlob(clone_info->blob,blob,length);
   (void) SetImageInfo(clone_info,False,exception);
@@ -473,6 +473,7 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
 
   assert(filename != (const char *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
+  SetExceptionInfo(exception,UndefinedException);
   file=open(filename,O_RDONLY | O_BINARY,0777);
   if (file == -1)
     {

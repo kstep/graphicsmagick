@@ -902,9 +902,6 @@ MagickExport void GetToken(const char *start,char **end,char *token)
 */
 MagickExport int GlobExpression(const char *expression,const char *pattern)
 {
-  ExceptionInfo
-    exception;
-
   unsigned int
     done,
     exempt;
@@ -920,12 +917,16 @@ MagickExport int GlobExpression(const char *expression,const char *pattern)
     return(True);
   if (strchr(pattern,'['))
     {
+      ExceptionInfo
+        exception;
+
       ImageInfo
         *image_info;
 
       /*
         Determine if pattern is a subimage, i.e. img0001.pcd[2].
       */
+      GetExceptionInfo(&exception);
       image_info=CloneImageInfo((ImageInfo *) NULL);
       (void) strncpy(image_info->filename,pattern,MaxTextExtent-1);
       (void) SetImageInfo(image_info,True,&exception);
@@ -933,6 +934,7 @@ MagickExport int GlobExpression(const char *expression,const char *pattern)
         (image_info->subimage &&
         (LocaleCompare(expression,image_info->filename) == 0));
       DestroyImageInfo(image_info);
+      DestroyExceptionInfo(&exception);
       if (exempt)
         return(False);
     }
@@ -2793,7 +2795,7 @@ MagickExport int Tokenizer(TokenInfo *token_info,unsigned flag,char *token,
 %
 %  The format of the TranslateText method is:
 %
-%      char *TranslateText(const ImageInfo *image_info,const Image *image,
+%      char *TranslateText(const ImageInfo *image_info,Image *image,
 %        const char *formatted_text)
 %
 %  A description of each parameter follows:
@@ -2810,8 +2812,8 @@ MagickExport int Tokenizer(TokenInfo *token_info,unsigned flag,char *token,
 %
 %
 */
-MagickExport char *TranslateText(const ImageInfo *image_info,
-  const Image *image,const char *formatted_text)
+MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
+  const char *formatted_text)
 {
   char
     filename[MaxTextExtent],

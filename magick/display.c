@@ -2196,9 +2196,6 @@ static unsigned int XCompositeImage(Display *display,
     blend,
     scale_factor;
 
-  ExceptionInfo
-    exception;
-
   Image
     *composite_image;
 
@@ -2233,9 +2230,10 @@ static unsigned int XCompositeImage(Display *display,
   XSetCursorState(display,windows,True);
   XCheckRefreshWindows(display,windows);
   (void) strncpy(resource_info->image_info->filename,filename,MaxTextExtent-1);
-  composite_image=ReadImage(resource_info->image_info,&exception);
-  if (exception.severity != UndefinedException)
-    MagickWarning(exception.severity,exception.reason,exception.description);
+  composite_image=ReadImage(resource_info->image_info,&image->exception);
+  if (image->exception.severity != UndefinedException)
+    MagickWarning(image->exception.severity,image->exception.reason,
+		  image->exception.description);
   XSetCursorState(display,windows,False);
   if (composite_image == (Image *) NULL)
     return(False);
@@ -2253,9 +2251,6 @@ static unsigned int XCompositeImage(Display *display,
           char
             size[MaxTextExtent];
 
-          ExceptionInfo
-            exception;
-
           Image
             *mask_image;
 
@@ -2272,10 +2267,10 @@ static unsigned int XCompositeImage(Display *display,
           (void) CloneString(&image_info->size,size);
           FormatString(image_info->size,"%lux%lu",composite_image->columns,
             composite_image->rows);
-          mask_image=ReadImage(image_info,&exception);
-          if (exception.severity != UndefinedException)
-            MagickWarning(exception.severity,exception.reason,
-              exception.description);
+          mask_image=ReadImage(image_info,&image->exception);
+          if (image->exception.severity != UndefinedException)
+            MagickWarning(image->exception.severity,image->exception.reason,
+              image->exception.description);
           XSetCursorState(display,windows,False);
           if (mask_image == (Image *) NULL)
             return(False);
@@ -3852,9 +3847,6 @@ static unsigned int XDrawEditImage(Display *display,
             }
             case DrawStippleCommand:
             {
-              ExceptionInfo
-                exception;
-
               Image
                 *stipple_image;
 
@@ -3946,10 +3938,10 @@ static unsigned int XDrawEditImage(Display *display,
               XCheckRefreshWindows(display,windows);
               image_info=CloneImageInfo((ImageInfo *) NULL);
               (void) strncpy(image_info->filename,filename,MaxTextExtent-1);
-              stipple_image=ReadImage(image_info,&exception);
-              if (exception.severity != UndefinedException)
-                MagickWarning(exception.severity,exception.reason,
-                  exception.description);
+              stipple_image=ReadImage(image_info,&(*image)->exception);
+              if ((*image)->exception.severity != UndefinedException)
+                MagickWarning((*image)->exception.severity,
+                  (*image)->exception.reason,(*image)->exception.description);
               XSetCursorState(display,windows,False);
               if (stipple_image == (Image *) NULL)
                 break;
@@ -5302,9 +5294,6 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     geometry[MaxTextExtent],
     modulate_factors[MaxTextExtent];
 
-  ExceptionInfo
-    exception;
-
   Image
     *nexus;
 
@@ -5416,9 +5405,6 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     }
     case NewCommand:
     {
-      ExceptionInfo
-        exception;
-
       static char
         *format = (char *) "gradient",
         color[MaxTextExtent] = "gray",
@@ -5441,10 +5427,10 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       FormatString(image_info->filename,"%.1024s:%.1024s",format,color);
       (void) CloneString(&image_info->size,geometry);
-      nexus=ReadImage(image_info,&exception);
-      if (exception.severity != UndefinedException)
-        MagickWarning(exception.severity,exception.reason,
-          exception.description);
+      nexus=ReadImage(image_info,&(*image)->exception);
+      if ((*image)->exception.severity != UndefinedException)
+        MagickWarning((*image)->exception.severity,(*image)->exception.reason,
+          (*image)->exception.description);
       XClientMessage(display,windows->image.id,windows->im_protocols,
         windows->im_next_image,CurrentTime);
       break;
@@ -6771,10 +6757,10 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           (char *) NULL);
       else
         {
-          nexus=ReadImage(resource_info->image_info,&exception);
-          if (exception.severity != UndefinedException)
-            MagickWarning(exception.severity,exception.reason,
-              exception.description);
+          nexus=ReadImage(resource_info->image_info,&(*image)->exception);
+          if ((*image)->exception.severity != UndefinedException)
+            MagickWarning((*image)->exception.severity,
+              (*image)->exception.reason,(*image)->exception.description);
           XClientMessage(display,windows->image.id,windows->im_protocols,
             windows->im_next_image,CurrentTime);
         }
@@ -7951,6 +7937,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
     return((Image *) NULL);
   image_info=CloneImageInfo(resource_info->image_info);
   (void) strncpy(image_info->filename,filename,MaxTextExtent-1);
+  GetExceptionInfo(&exception);
   (void) SetImageInfo(image_info,False,&exception);
   if (LocaleCompare(image_info->magick,"X") == 0)
     {
@@ -8022,7 +8009,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
       /*
         Unknown image format.
       */
-      text=(char *) FileToBlob(filename,&length,&exception);
+      text=(char *) FileToBlob(filename,&length,&nexus->exception);
       if (text == (char *) NULL)
         return((Image *) NULL);
       textlist=StringToList(text);
@@ -10727,9 +10714,6 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
   {
     case TileLoadCommand:
     {
-      ExceptionInfo
-        exception;
-
       /*
         Load tile image.
       */
@@ -10737,10 +10721,10 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
       (void) strcpy(resource_info->image_info->magick,"MIFF");
       (void) strncpy(resource_info->image_info->filename,filename,
         MaxTextExtent-1);
-      tile_image=ReadImage(resource_info->image_info,&exception);
-      if (exception.severity != UndefinedException)
-        MagickWarning(exception.severity,exception.reason,
-          exception.description);
+      tile_image=ReadImage(resource_info->image_info,&image->exception);
+      if (image->exception.severity != UndefinedException)
+        MagickWarning(image->exception.severity,image->exception.reason,
+          image->exception.description);
       (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
       break;
     }
@@ -11230,6 +11214,7 @@ static Image *XVisualDirectoryImage(Display *display,
   if (clone_info == (ImageInfo *) NULL)
     return((Image *) NULL);
   image=(Image *) NULL;
+  GetExceptionInfo(&exception);
   XSetCursorState(display,windows,True);
   XCheckRefreshWindows(display,windows);
   for (i=0; i < number_files; i++)
@@ -12610,19 +12595,18 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                 if (status == 0)
                   if (update_time != file_info.st_mtime)
                     {
-                      ExceptionInfo
-                        exception;
-
                       /*
                         Redisplay image.
                       */
                       FormatString(resource_info->image_info->filename,
                         "%.1024s:%.1024s",display_image->magick,
                         display_image->filename);
-                      nexus=ReadImage(resource_info->image_info,&exception);
-                      if (exception.severity != UndefinedException)
-                        MagickWarning(exception.severity,exception.reason,
-                          exception.description);
+                      nexus=ReadImage(resource_info->image_info,
+                        &display_image->exception);
+                      if (display_image->exception.severity != UndefinedException)
+                        MagickWarning(display_image->exception.severity,
+                          display_image->exception.reason,
+                          display_image->exception.description);
                       if (nexus != (Image *) NULL)
                         *state|=NextImageState | ExitState;
                     }
@@ -12916,9 +12900,6 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
               selection,
               type;
 
-            ExceptionInfo
-              exception;
-
             int
               format;
 
@@ -12961,10 +12942,12 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                 (void) strncpy(resource_info->image_info->filename,
                   ((char *) data)+5,MaxTextExtent-1);
               }
-            nexus=ReadImage(resource_info->image_info,&exception);
-            if (exception.severity != UndefinedException)
-              MagickWarning(exception.severity,exception.reason,
-                exception.description);
+            nexus=
+              ReadImage(resource_info->image_info,&display_image->exception);
+            if (display_image->exception.severity != UndefinedException)
+              MagickWarning(display_image->exception.severity,
+                display_image->exception.reason,
+                display_image->exception.description);
             if (nexus != (Image *) NULL)
               *state|=NextImageState | ExitState;
             (void) XFree((void *) data);
@@ -13381,9 +13364,6 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
         Atom
           type;
 
-        ExceptionInfo
-          exception;
-
         int
           format;
 
@@ -13409,10 +13389,11 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
           break;
         (void) strncpy(resource_info->image_info->filename,(char *) data,
           MaxTextExtent-1);
-        nexus=ReadImage(resource_info->image_info,&exception);
-        if (exception.severity != UndefinedException)
-          MagickWarning(exception.severity,exception.reason,
-            exception.description);
+        nexus=ReadImage(resource_info->image_info,&display_image->exception);
+        if (display_image->exception.severity != UndefinedException)
+          MagickWarning(display_image->exception.severity,
+            display_image->exception.reason,
+            display_image->exception.description);
         if (nexus != (Image *) NULL)
           *state|=NextImageState | ExitState;
         (void) XFree((void *) data);
