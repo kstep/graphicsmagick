@@ -2231,7 +2231,7 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
           case PointMethod:
           default:
           {
-            if ((pixel->x != (int) (p->pixel.x+0.5)) &&
+            if ((pixel->x != (int) (p->pixel.x+0.5)) ||
                 (pixel->y != (int) (p->pixel.y+0.5)))
               break;
             opacity=Opaque;
@@ -2254,7 +2254,7 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
           case FloodfillMethod:
           case FillToBorderMethod:
           {
-            if ((pixel->x != (int) (p->pixel.x+0.5)) &&
+            if ((pixel->x != (int) (p->pixel.x+0.5)) ||
                 (pixel->y != (int) (p->pixel.y+0.5)))
               break;
             target=GetOnePixel(image,(int) p->pixel.x,(int) p->pixel.y);
@@ -2287,7 +2287,7 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
           case PointMethod:
           default:
           {
-            if ((pixel->x != (int) (p->pixel.x+0.5)) &&
+            if ((pixel->x != (int) (p->pixel.x+0.5)) ||
                 (pixel->y != (int) (p->pixel.y+0.5)))
               break;
             q=GetImagePixels(image,(int) pixel->x,(int) pixel->y,1,1);
@@ -2319,7 +2319,7 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
           case FloodfillMethod:
           case FillToBorderMethod:
           {
-            if ((pixel->x != (int) (p->pixel.x+0.5)) &&
+            if ((pixel->x != (int) (p->pixel.x+0.5)) ||
                 (pixel->y != (int) (p->pixel.y+0.5)))
               break;
             target=GetOnePixel(image,(int) p->pixel.x,(int) p->pixel.y);
@@ -2356,7 +2356,7 @@ static double InsidePrimitive(PrimitiveInfo *primitive_info,
         register char
           *r;
 
-        if ((pixel->x != (int) (p->pixel.x+0.5)) &&
+        if ((pixel->x != (int) (p->pixel.x+0.5)) ||
             (pixel->y != (int) (p->pixel.y+0.5)))
           break;
         if (p->text == (char *) NULL)
