@@ -95,6 +95,9 @@ MagickExport void DestroyMagick(void)
   DestroyMagickRegistry();
   DestroyCache();
   DestroySemaphore();
+#if defined(WIN32)
+  DestroyTracingCriticalSection();
+#endif
 }
 
 /*
@@ -493,6 +496,9 @@ MagickExport void InitializeMagick(const char *path)
     filename[MaxTextExtent];
 
   InitializeSemaphore();
+#if defined(WIN32)
+  InitializeTracingCriticalSection();
+#endif
   (void) getcwd(directory,MaxTextExtent);
   (void) SetClientPath(directory);
   if (path != (const char *) NULL)

@@ -108,6 +108,109 @@ MagickExport void closedir(DIR *entry)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   D e b u g T r a c e                                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method DebugTrace formats and sends a prtinf like message to the NT
+%  debug trace API
+%
+%  The format of the DebugString method is:
+%
+%      void DebugString(const char *format,...)
+%
+%  A description of each parameter follows.
+%
+%   o  format:  A string describing the format to use to write the
+%      remaining arguments.
+%
+*/
+
+/*
+ * Uncomment this to enable the tracing code. This can
+ * be used to help locate problems in production code
+ * including multithreaded programs. It used a critical
+ * section to protect the logging.
+ */
+
+/* #define ENABLE_TRACING 1 */
+
+static CRITICAL_SECTION
+  critical_section;
+
+static unsigned int
+  critical_section_exists = False;
+
+static unsigned int
+  tracings_sequence = 0,
+  tracings_counter = 0;
+
+FILE
+  *trace_file = (FILE *) NULL;
+
+MagickExport void DestroyTracingCriticalSection(void)
+{
+#ifdef ENABLE_TRACING
+  if (critical_section_exists)
+    DeleteCriticalSection(&critical_section);
+#endif
+}
+
+MagickExport void InitializeTracingCriticalSection(void)
+{
+#ifdef ENABLE_TRACING
+  if (!critical_section_exists)
+    InitializeCriticalSection(&critical_section);
+  critical_section_exists=True;
+#endif
+}
+
+MagickExport void DebugString(char *format, ...)
+{
+#ifdef ENABLE_TRACING
+  va_list
+    operands;
+
+	char
+    string[MaxTextExtent],
+    trace_name[MaxTextExtent];
+
+	va_start(operands, format);
+  EnterTracingCriticalSection();
+  (void) _snprintf(string, MaxTextExtent-1, "%08d  ", (int) GetCurrentThreadId()); 
+	(void) _vsnprintf(&string[9], MaxTextExtent-10, format, operands);
+	/* OutputDebugString(string); */
+  if (trace_file == (FILE *) NULL)
+    {
+      tracings_counter=0;
+      (void) _snprintf(trace_name, MaxTextExtent-1,
+        "C:\\IM_%08x.log", tracings_sequence); 
+      trace_file=fopen(trace_name,"wS");
+    }
+  if (trace_file != (FILE *) NULL)
+    {
+      fputs(string, trace_file);
+      fflush(trace_file);
+      tracings_counter++;
+      if (tracings_counter > 0x2000)
+        {
+          fclose(trace_file);
+          trace_file = (FILE *) NULL;
+          tracings_sequence++;
+        }
+    }
+  LeaveTracingCriticalSection();
+  va_end(operands);
+#endif
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   E x i t                                                                   %
 %                                                                             %
 %                                                                             %
