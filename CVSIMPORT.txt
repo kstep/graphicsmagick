@@ -11,6 +11,11 @@ bzlib:
     import -m 'Import bzip2 1.0.2' delegates/bzlib \
     INITIAL BZIP2_1_0_2
 
+jasper
+  cvs -d :pserver:bfriesen@studio.imagemagick.org:/pathos/cvs \
+    import -m 'Import jasper 1.500.4' delegates/jp2 \
+    JASPER_DIST JASPER_1_500_4
+
 jbig:
 
   cvs -d :pserver:bfriesen@studio.imagemagick.org:/pathos/cvs \
@@ -26,8 +31,8 @@ lcms:
 png:
 
   cvs -d :pserver:bfriesen@studio.imagemagick.org:/pathos/cvs \
-    import -m 'Import latest libpng' delegates/png \
-    INITIAL LIBPNG_1_2_2
+    import -m 'Import libpng 1.2.3' delegates/png \
+    INITIAL LIBPNG_1_2_3
 
 wmf:
 
