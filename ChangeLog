@@ -1,3 +1,7 @@
+2003-06-01  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* NEWS: Added Bug Fixes item with info about the JNG encoder fix.
+
 2003-06-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* NEWS: Listed significant changes (thus far) in version 1.1.

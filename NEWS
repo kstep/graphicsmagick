@@ -1,5 +1,10 @@
 Significant changes associated with GraphicsMagick 1.1 (Under development)
 
+  Bug fixes:
+    * The JNG encoder was writing files with incorrect alpha_sample_value
+    in the header.  These can be repaired by reading them into GM 1.1
+    and rewriting them.
+
   Performance improvements:
     * Texture tiling is now 7X faster.
 
