@@ -98,7 +98,6 @@ static unsigned int IsMPEG(const unsigned char *magick,const size_t length)
   return(False);
 }
 
-#define HasMPEG2
 #if defined(HasMPEG2)
 #include <inttypes.h>
 #include "video_out.h"
