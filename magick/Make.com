@@ -50,6 +50,7 @@ $call Make montage.c
 $call Make quantize.c
 $call Make registry.c
 $call Make render.c
+$call Make resize.c
 $call Make segment.c
 $call Make shear.c
 $call Make signature.c
@@ -62,9 +63,8 @@ $call Make utility.c
 $call Make vms.c
 $call Make widget.c
 $call Make xwindow.c
-$call Make zoom.c
 $library/create libMagick.olb memory,blob,cache,error,monitor,constitute, -
-  image,list,color,quantize,segment,zoom,transform,shear,enhance,effect, -
+  image,list,color,quantize,segment,resize,transform,shear,enhance,effect, -
   decorate,annotate,type,draw,render,montage,semaphore,attribute,signature, -
 	compress,command,gem,registry,magic,magick,delegate,module,static,timer, -
 	utility,cache_view,stream,animate,display,widget,xwindow,PreRvIcccm,vms

@@ -2,15 +2,13 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
+%                 RRRR   EEEEE  SSSSS  IIIII  ZZZZZ  EEEEE                    %
+%                 R   R  E      SS       I       ZZ  E                        %
+%                 RRRR   EEE     SSS     I     ZZZ   EEE                      %
+%                 R R    E         SS    I    ZZ     E                        %
+%                 R  R   EEEEE  SSSSS  IIIII  ZZZZZ  EEEEE                    %
 %                                                                             %
-%                        ZZZZZ   OOO    OOO   M   M                           %
-%                           ZZ  O   O  O   O  MM MM                           %
-%                         ZZZ   O   O  O   O  M M M                           %
-%                        ZZ     O   O  O   O  M   M                           %
-%                        ZZZZZ   OOO    OOO   M   M                           %
-%                                                                             %
-%                                                                             %
-%                      ImageMagick Image Zoom Methods                         %
+%                     ImageMagick Image Resize Methods                        %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

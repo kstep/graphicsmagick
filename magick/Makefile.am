@@ -51,7 +51,7 @@ AM_CPPFLAGS = @LIBRARY_EXTRA_CPPFLAGS@
 
 # Library base sources
 MAGICK_BASE_SRCS = memory.c blob.c cache.c error.c monitor.c constitute.c \
-  image.c list.c color.c quantize.c segment.c zoom.c transform.c shear.c \
+  image.c list.c color.c quantize.c segment.c resize.c transform.c shear.c \
   enhance.c effect.c decorate.c annotate.c type.c draw.c render.c montage.c \
   semaphore.c attribute.c signature.c compress.c command.c gem.c registry.c \
 	magic.c magick.c delegate.c module.c static.c timer.c utility.c cache_view.c \

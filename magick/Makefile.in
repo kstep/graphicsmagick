@@ -260,7 +260,7 @@ AM_CPPFLAGS = @LIBRARY_EXTRA_CPPFLAGS@
 
 # Library base sources
 MAGICK_BASE_SRCS = memory.c blob.c cache.c error.c monitor.c constitute.c \
-  image.c list.c color.c quantize.c segment.c zoom.c transform.c shear.c \
+  image.c list.c color.c quantize.c segment.c resize.c transform.c shear.c \
   enhance.c effect.c decorate.c annotate.c type.c draw.c render.c montage.c \
   semaphore.c attribute.c signature.c compress.c command.c gem.c registry.c \
 	magic.c magick.c delegate.c module.c static.c timer.c utility.c cache_view.c \
@@ -322,7 +322,7 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 @WITH_MODULES_FALSE@libMagick_la_DEPENDENCIES = ../coders/libCoders.la
 am__objects_1 = memory.lo blob.lo cache.lo error.lo monitor.lo \
 	constitute.lo image.lo list.lo color.lo quantize.lo segment.lo \
-	zoom.lo transform.lo shear.lo enhance.lo effect.lo decorate.lo \
+	resize.lo transform.lo shear.lo enhance.lo effect.lo decorate.lo \
 	annotate.lo type.lo draw.lo render.lo montage.lo semaphore.lo \
 	attribute.lo signature.lo compress.lo command.lo gem.lo \
 	registry.lo magic.lo magick.lo delegate.lo module.lo static.lo \
@@ -367,7 +367,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/stream.Plo ./$(DEPDIR)/timer.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/transform.Plo ./$(DEPDIR)/type.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/utility.Plo ./$(DEPDIR)/widget.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/xwindow.Plo ./$(DEPDIR)/zoom.Plo
+@AMDEP_TRUE@	./$(DEPDIR)/xwindow.Plo ./$(DEPDIR)/resize.Plo
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
@@ -520,7 +520,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/utility.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/widget.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xwindow.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zoom.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/resize.Plo@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)
