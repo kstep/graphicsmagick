@@ -1130,7 +1130,7 @@
         Unrecognized virtual pixel method
       </Message>
     </Error>
-    </FatalError>
+    <FatalError>
       <Message name="MissingAnImageFilename">
         Missing an image filename
       </Message>

@@ -361,6 +361,10 @@ man_MANS = $(MANPAGES)
 
 # Additional files to distribute
 EXTRA_DIST = $(ALLMANPAGES)
+
+GM = gm
+MODEL_MIFF = $(top_srcdir)/Magick++/demo/model.miff
+SMILE_MIFF = $(top_srcdir)/Magick++/demo/smile.miff
 subdir = utilities
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/magick/magick_config.h
@@ -747,7 +751,8 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-am
 
-clean-am: clean-binPROGRAMS clean-generic clean-libtool mostlyclean-am
+clean-am: clean-binPROGRAMS clean-generic clean-libtool clean-local \
+	mostlyclean-am
 
 distclean: distclean-am
 
@@ -794,19 +799,85 @@ uninstall-am: uninstall-binPROGRAMS uninstall-info-am uninstall-man
 uninstall-man: uninstall-man1 uninstall-man4 uninstall-man5
 
 .PHONY: CTAGS GTAGS all all-am check check-am clean clean-binPROGRAMS \
-	clean-generic clean-libtool ctags distclean distclean-compile \
-	distclean-depend distclean-generic distclean-libtool \
-	distclean-tags distdir dvi dvi-am info info-am install \
-	install-am install-binPROGRAMS install-data install-data-am \
-	install-exec install-exec-am install-info install-info-am \
-	install-man install-man1 install-man4 install-man5 \
-	install-strip installcheck installcheck-am installdirs \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-compile mostlyclean-generic mostlyclean-libtool pdf \
-	pdf-am ps ps-am tags uninstall uninstall-am \
-	uninstall-binPROGRAMS uninstall-info-am uninstall-man \
-	uninstall-man1 uninstall-man4 uninstall-man5
+	clean-generic clean-libtool clean-local ctags distclean \
+	distclean-compile distclean-depend distclean-generic \
+	distclean-libtool distclean-tags distdir dvi dvi-am info \
+	info-am install install-am install-binPROGRAMS install-data \
+	install-data-am install-exec install-exec-am install-info \
+	install-info-am install-man install-man1 install-man4 \
+	install-man5 install-strip installcheck installcheck-am \
+	installdirs maintainer-clean maintainer-clean-generic \
+	mostlyclean mostlyclean-compile mostlyclean-generic \
+	mostlyclean-libtool pdf pdf-am ps ps-am tags uninstall \
+	uninstall-am uninstall-binPROGRAMS uninstall-info-am \
+	uninstall-man uninstall-man1 uninstall-man4 uninstall-man5
 
+
+clean-local:
+	$(RM) -f *_out.miff core
+
+check:
+	${GM} convert $(MODEL_MIFF) +noise Laplacian              -label AddNoise AddNoise_out.miff
+	${GM} convert $(MODEL_MIFF) -fill gold \
+	        -pointsize 14 -font Generic.ttf \
+	        -draw "gravity North text 0,20 'Magick'" -label Annotate Annotate_out.miff
+	${GM} convert $(MODEL_MIFF) -blur 0.0x1.0                 -label Blur Blur_out.miff
+	${GM} convert $(MODEL_MIFF) -bordercolor gold -border 6x6 -label Border Border_out.miff
+	${GM} convert $(MODEL_MIFF)                               -label Channel Channel_out.miff
+	${GM} convert $(MODEL_MIFF) -charcoal 0x1                 -label Charcoal Charcoal_out.miff
+	${GM} composite $(SMILE_MIFF) -geometry +35+65 $(MODEL_MIFF) -label Composite Comp_out.miff
+	${GM} convert $(MODEL_MIFF) -contrast                     -label Contrast Contrast_out.miff
+	${GM} convert $(MODEL_MIFF)                               -label Convolve Convolve_out.miff
+	${GM} convert $(MODEL_MIFF) -despeckle                    -label Despeckle Despeckle_out.miff
+	${GM} convert $(MODEL_MIFF) -crop '80x80+25+50'           -label Crop Crop_out.miff
+	${GM} convert $(MODEL_MIFF) -fill none -stroke gold \
+	        -draw "circle 60,90 60,120"              -label Draw Draw_out.miff
+	${GM} convert $(MODEL_MIFF) -edge 0x1                     -label Edge Edge_out.miff
+	${GM} convert $(MODEL_MIFF) -emboss 0x1                   -label Emboss Emboss_out.miff
+	${GM} convert $(MODEL_MIFF) -equalize                     -label Equalize Equalize_out.miff
+	${GM} convert $(MODEL_MIFF) -implode -1                   -label Explode Explode_out.miff
+	${GM} convert $(MODEL_MIFF) -flip                         -label Flip Flip_out.miff
+	${GM} convert $(MODEL_MIFF) -flop                         -label Flop Flop_out.miff
+	${GM} convert $(MODEL_MIFF) -frame 15x15+3+3              -label Frame Frame_out.miff
+	${GM} convert $(MODEL_MIFF) -gamma 1.6                    -label Gamma Gamma_out.miff
+	${GM} convert $(MODEL_MIFF) -gaussian 0.0x1.5             -label GaussianBlur GB_out.miff
+	${GM} convert -size 130x194 gradient:'#20a0ff-#ffff00' -label Gradient Gradient_out.miff
+	${GM} convert $(MODEL_MIFF) -colorspace gray              -label Grayscale Grayscale_out.miff
+	${GM} convert $(MODEL_MIFF) -implode 0.5                  -label Implode Implode_out.miff
+	${GM} convert $(MODEL_MIFF) -level 20%                    -label Level Level_out.miff
+	${GM} convert $(MODEL_MIFF) -median 3                     -label MedianFilter Median_out.miff
+	${GM} convert $(MODEL_MIFF) -modulate 110/110/110         -label Modulate Mod_out.miff
+	${GM} convert $(MODEL_MIFF) -colorspace gray -colors 2 \
+	       +dither                                   -label Monochrome Mono_out.miff
+	${GM} convert $(MODEL_MIFF) -negate                       -label Negate Negate_out.miff
+	${GM} convert $(MODEL_MIFF) -normalize                    -label Normalize Normal_out.miff
+	${GM} convert $(MODEL_MIFF) -paint 0x1                    -label Oilpaint Oil_out.miff
+	${GM} convert -size 130x194 plasma:fractal             -label Plasma Plasma_out.miff
+	${GM} convert $(MODEL_MIFF)                               -label Quantize Quantize_out.miff
+	${GM} convert $(MODEL_MIFF) -raise 10x10                  -label Raise Raise_out.miff
+	${GM} convert $(MODEL_MIFF) -noise 0x1                    -label ReduceNoise RedN_out.miff
+	${GM} convert $(MODEL_MIFF) -resize 50%                   -label Resize Resize_out.miff
+	${GM} convert $(MODEL_MIFF) -roll +20+10                  -label Roll Roll_out.miff
+	${GM} convert $(MODEL_MIFF) -fill black -rotate 45 \
+	        -transparent black                       -label Rotate Rotate_out.miff
+	${GM} convert $(MODEL_MIFF) -scale 60%                    -label Scale Scale_out.miff
+	${GM} convert $(MODEL_MIFF) -segment 1x1.5                -label Segment Segment_out.miff
+	${GM} convert $(MODEL_MIFF) -shade 30x30                  -label Shade Shade_out.miff
+	${GM} convert $(MODEL_MIFF) -sharpen 0.0x1.0              -label Sharpen Sharpen_out.miff
+	${GM} convert $(MODEL_MIFF) -shave 10x10                  -label Shave Shave_out.miff
+	${GM} convert $(MODEL_MIFF) -fill black -shear 45x45 \
+	        -transparent black                       -label Shear Shear_out.miff
+	${GM} convert $(MODEL_MIFF) -spread 3                     -label Spread Spread_out.miff
+	${GM} convert $(MODEL_MIFF) -solarize 50%                 -label Solarize Solar_out.miff
+	${GM} convert $(MODEL_MIFF) -background "#000000FF" \
+	        -swirl 90                                -label Swirl Swirl_out.miff
+	${GM} convert $(MODEL_MIFF) -unsharp 0.0x1.0              -label UnsharpMask Unsharp_out.miff
+	${GM} convert $(MODEL_MIFF) -background "#000000FF" \
+	        -wave 25x150                             -label Wave Wave_out.miff
+	${GM} montage -geometry '130x194+10+5>' -gravity 'Center' \
+	  -bordercolor 'green' -borderwidth 1x1 -tile '5x1000' -compose 'over' \
+	  -background '#ffffff' -font 'Generic.ttf' -pointsize 18 -fill '#600' \
+	  -stroke 'none' null: null: null: null: null: [A-Z]*_out.miff demo_out.miff
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
