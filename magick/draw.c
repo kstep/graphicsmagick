@@ -390,7 +390,7 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
               q=GetImagePixels(image,x,y,image->columns-x+1,1);
               if (q == (PixelPacket *) NULL)
                 break;
-              for (i=0; x < (long) image->columns; x++)
+              for ( ; x < (long) image->columns; x++)
               {
                 if (method == FloodfillMethod)
                   {
@@ -401,7 +401,7 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
                   if (ColorMatch(*q,target,image->fuzz) ||
                       ColorMatch(*q,draw_info->fill,image->fuzz))
                     break;
-                floodplane[y*image->columns+i]=True;
+                floodplane[y*image->columns+x]=True;
                 *q=draw_info->fill;
                 q++;
               }
