@@ -128,7 +128,7 @@ extern "C" {
 #define XFreeDeviceList XFREEDEVICELIST
 #define XFreeDeviceState XFREEDEVICESTATE
 #define XFreeFont XFREEFONT
-#define XFreeTypeInfo XFREEFONTINFO
+#define XFreeFontInfo XFREEFONTINFO
 #define XFreeFontNames XFREEFONTNAMES
 #define XFreeFontSet XFREEFONTSET
 #define XFreeGC XFREEGC
@@ -740,11 +740,13 @@ extern "C" {
 #define applicationShellWidgetClass APPLICATIONSHELLWIDGETCLASS
 #define compositeWidgetClass COMPOSITEWIDGETCLASS
 #define lib$ediv LIB$EDIV
+#define lib$find_file LIB$FIND_FILE
 #define lib$find_file_end LIB$FIND_FILE_END
 #define lib$set_symbol LIB$SET_SYMBOL
 #define lib$sfree1_dd LIB$SFREE1_DD
 #define lib$spawn LIB$SPAWN
 #define lib$subx LIB$SUBX
+#define lib$wait LIB$WAIT
 #define overrideShellWidgetClass OVERRIDESHELLWIDGETCLASS
 #define pthread_attr_create PTHREAD_ATTR_CREATE
 #define pthread_attr_delete PTHREAD_ATTR_DELETE
@@ -830,12 +832,15 @@ extern "C" {
 #define pthread_unlock_global_np PTHREAD_UNLOCK_GLOBAL_NP
 #define pthread_yield PTHREAD_YIELD
 #define pthread_yield_np PTHREAD_YIELD_NP
+#define pthread_exc_raise_np PTHREAD_EXC_RAISE_NP
+#define pthread_setcanceltype PTHREAD_SETCANCELTYPE
 #define shellWidgetClass SHELLWIDGETCLASS
 #define sys$assign SYS$ASSIGN
 #define sys$bintim SYS$BINTIM
 #define sys$crembx SYS$CREMBX
 #define sys$dassgn SYS$DASSGN
 #define sys$dclexh SYS$DCLEXH
+#define sys$getdviw SYS$GETDVIW
 #define sys$getsyiw SYS$GETSYIW
 #define sys$gettim SYS$GETTIM
 #define sys$qio SYS$QIO
@@ -887,6 +892,13 @@ extern "C" {
 #define xmToggleButtonWidgetClass XMTOGGLEBUTTONWIDGETCLASS
 #define _XInitImageFuncPtrs _XINITIMAGEFUNCPTRS
 #define XtParent XTPARENT
+#define XConnectionNumber XCONNECTIONNUMBER
+#define XDrawText16 XDRAWTEXT16
+#define XFindContext XFINDCONTEXT
+#define XGetInputFocus XGETINPUTFOCUS
+#define XSaveContext XSAVECONTEXT
+#define XUniqueContext XUNIQUECONTEXT
+#define XChangePointerControl XCHANGEPOINTERCONTROL
 
 #pragma __member_alignment __save
 typedef struct _ile3

@@ -87,18 +87,6 @@ extern "C" {
 #include "api.h"
 #endif
 
-#if defined(HAVE_MMAP) && !defined(WIN32)
-#include <sys/mman.h>
-#endif
-#if defined(HasPTHREADS)
-#if defined(vms)
-#include <vms_x_fix.h>
-#endif
-#include <pthread.h>
-#endif
-#if defined(HAVE_POLL)
-#include <sys/poll.h>
-#endif
 #if defined(WIN32)
 #include "nt.h"
 #endif
@@ -107,6 +95,15 @@ extern "C" {
 #endif
 #if defined(vms)
 #include "vms.h"
+#endif
+#if defined(HAVE_MMAP) && !defined(WIN32)
+#include <sys/mman.h>
+#endif
+#if defined(HasPTHREADS)
+#include <pthread.h>
+#endif
+#if defined(HAVE_POLL)
+#include <sys/poll.h>
 #endif
 
 #undef index
