@@ -269,7 +269,7 @@ static void ConcatenateImages(int argc,char **argv)
 %  The format of the SnapshotImages method is:
 %
 %      unsigned int SnapshotImages(const ImageInfo *image_info,const int argc,
-%        char **argv,Image **images,OptionInfo *option_info)
+%        char **argv,Image **image,OptionInfo *option_info)
 %
 %  A description of each parameter follows:
 %
@@ -289,13 +289,10 @@ static void ConcatenateImages(int argc,char **argv)
 %
 */
 static unsigned int SnapshotImages(ImageInfo *image_info,const int argc,
-  char **argv,Image **images,OptionInfo *option_info)
+  char **argv,Image **image,OptionInfo *option_info)
 {
   ExceptionInfo
     exception;
-
-  Image
-    *image;
 
   long
     scene;
@@ -308,17 +305,15 @@ static unsigned int SnapshotImages(ImageInfo *image_info,const int argc,
 
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
-  assert(images != (Image **) NULL);
-  assert((*images)->signature == MagickSignature);
+  assert(image != (Image **) NULL);
+  assert((*image)->signature == MagickSignature);
   if (argc < 2)
     return(False);
   scene=option_info->scene;
-  image=(*images);
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
-  status=MogrifyImages(image_info,argc-1,argv,images);
-  image=(*images);
-  CatchImageException(image);
+  while ((*image)->previous != (Image *) NULL)
+    (*image)=(*image)->previous;
+  status=MogrifyImages(image_info,argc-1,argv,image);
+  CatchImageException(*image);
   if (option_info->append != 0)
     {
       Image
@@ -327,11 +322,11 @@ static unsigned int SnapshotImages(ImageInfo *image_info,const int argc,
       /*
         Append an image sequence.
       */
-      append_image=AppendImages(image,option_info->append == 1,&exception);
+      append_image=AppendImages(*image,option_info->append == 1,&exception);
       if (append_image != (Image *) NULL)
         {
-          DestroyImages(image);
-          image=append_image;
+          DestroyImages(*image);
+          *image=append_image;
         }
     }
   if (option_info->average)
@@ -342,11 +337,11 @@ static unsigned int SnapshotImages(ImageInfo *image_info,const int argc,
       /*
         Average an image sequence.
       */
-      average_image=AverageImages(image,&exception);
+      average_image=AverageImages(*image,&exception);
       if (average_image != (Image *) NULL)
         {
-          DestroyImages(image);
-          image=average_image;
+          DestroyImages(*image);
+          *image=average_image;
         }
     }
   if (option_info->coalesce)
@@ -357,11 +352,11 @@ static unsigned int SnapshotImages(ImageInfo *image_info,const int argc,
       /*
         Coalesce an image sequence.
       */
-      coalesce_image=CoalesceImages(image,&exception);
+      coalesce_image=CoalesceImages(*image,&exception);
       if (coalesce_image != (Image *) NULL)
         {
-          DestroyImages(image);
-          image=coalesce_image;
+          DestroyImages(*image);
+          *image=coalesce_image;
         }
     }
   if (option_info->deconstruct)
@@ -372,11 +367,11 @@ static unsigned int SnapshotImages(ImageInfo *image_info,const int argc,
       /*
         Deconstruct an image sequence.
       */
-      deconstruct_image=DeconstructImages(image,&exception);
+      deconstruct_image=DeconstructImages(*image,&exception);
       if (deconstruct_image != (Image *) NULL)
         {
-          DestroyImages(image);
-          image=deconstruct_image;
+          DestroyImages(*image);
+          *image=deconstruct_image;
         }
     }
   if (option_info->flatten)
@@ -387,11 +382,11 @@ static unsigned int SnapshotImages(ImageInfo *image_info,const int argc,
       /*
         Flatten an image sequence.
       */
-      flatten_image=FlattenImages(image,&exception);
+      flatten_image=FlattenImages(*image,&exception);
       if (flatten_image != (Image *) NULL)
         {
-          DestroyImages(image);
-          image=flatten_image;
+          DestroyImages(*image);
+          *image=flatten_image;
         }
     }
   if (option_info->morph != 0)
@@ -402,11 +397,11 @@ static unsigned int SnapshotImages(ImageInfo *image_info,const int argc,
       /*
         Morph an image sequence.
       */
-      morph_image=MorphImages(image,option_info->morph,&exception);
+      morph_image=MorphImages(*image,option_info->morph,&exception);
       if (morph_image != (Image *) NULL)
         {
-          DestroyImages(image);
-          image=morph_image;
+          DestroyImages(*image);
+          *image=morph_image;
         }
     }
   if (option_info->mosaic)
@@ -417,26 +412,26 @@ static unsigned int SnapshotImages(ImageInfo *image_info,const int argc,
       /*
         Create an image mosaic.
       */
-      mosaic_image=MosaicImages(image,&exception);
+      mosaic_image=MosaicImages(*image,&exception);
       if (mosaic_image != (Image *) NULL)
         {
-          DestroyImages(image);
-          image=mosaic_image;
+          DestroyImages(*image);
+          *image=mosaic_image;
         }
     }
   if (option_info->global_colormap)
-    (void) MapImages(image,(Image *) NULL,image_info->dither);
+    (void) MapImages(*image,(Image *) NULL,image_info->dither);
   /*
     Write converted images.
   */
   (void) strncpy(image_info->filename,argv[argc-1],MaxTextExtent-1);
-  for (p=image; p != (Image *) NULL; p=p->next)
+  for (p=(*image); p != (Image *) NULL; p=p->next)
   {
     (void) strncpy(p->filename,argv[argc-1],MaxTextExtent-1);
     p->scene=scene++;
   }
-  (void) SetImageInfo(image_info,True,&image->exception);
-  for (p=image; p != (Image *) NULL; p=p->next)
+  (void) SetImageInfo(image_info,True,&(*image)->exception);
+  for (p=(*image); p != (Image *) NULL; p=p->next)
   {
     status=WriteImage(image_info,p);
     CatchImageException(p);
@@ -444,7 +439,7 @@ static unsigned int SnapshotImages(ImageInfo *image_info,const int argc,
       break;
   }
   if (image_info->verbose)
-    DescribeImage(image,stderr,False);
+    DescribeImage(*image,stderr,False);
   return(status);
 }
 
