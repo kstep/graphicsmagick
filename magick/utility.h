@@ -71,7 +71,6 @@ extern MagickExport void
   LiberateMemory(void **),
   LocaleLower(char *),
   LocaleUpper(char *),
-  LocaleFilename(char *),
   ReacquireMemory(void **,const size_t),
   Strip(char *),
   TemporaryFilename(char *);

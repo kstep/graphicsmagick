@@ -1570,7 +1570,7 @@ int main(int argc,char **argv)
           if (LocaleCompare(image_info->filename,"-") != 0)
             {
               (void) strcpy(filename,image->filename);
-              LocaleFilename(image->filename);
+              Temporary(image->filename);
             }
         for (p=image; p != (Image *) NULL; p=p->next)
         {

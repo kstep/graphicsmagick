@@ -1570,43 +1570,6 @@ MagickExport void LocaleUpper(char *string)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  L o c a l e F i l e n a m e                                                %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method LocaleFilename replaces the contents of the string pointed to
-%  by filename by a unique file name relative to the directory.
-%
-%  The format of the LocaleFilename method is:
-%
-%      void LocaleFilename(char *filename)
-%
-%  A description of each parameter follows.
-%
-%   o  filename:  Specifies a pointer to an array of characters.  The unique
-%      file name is returned in this array.
-%
-%
-*/
-MagickExport void LocaleFilename(char *filename)
-{
-  char
-    path[MaxTextExtent],
-    unique[MaxTextExtent];
-
-  assert(filename != (char *) NULL);
-  GetPathComponent(filename,HeadPath,path);
-  TemporaryFilename(unique);
-  FormatString(filename,"%.1024s%.1024s%.1024s",path,DirectorySeparator,unique);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %  M u l t i l i n e C e n s u s                                              %
 %                                                                             %
 %                                                                             %
