@@ -785,6 +785,7 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
   double
     blue,
     green,
+    opacity,
     red,
     y_scale,
     y_span;
@@ -799,9 +800,6 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
   register int
     i,
     x;
-
-  register long
-    opacity;
 
   register PixelPacket
     *p,
@@ -1021,10 +1019,10 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
                 opacity=0;
                 t++;
               }
-            red=red+x_span*s->red;
-            green=green+x_span*s->green;
-            blue=blue+x_span*s->blue;
-            opacity=opacity+x_span*s->opacity;
+            red+=x_span*s->red;
+            green+=x_span*s->green;
+            blue+=x_span*s->blue;
+            opacity+=x_span*s->opacity;
             t->red=red > MaxRGB ? MaxRGB : red;
             t->green=green > MaxRGB ? MaxRGB : green;
             t->blue=blue > MaxRGB ? MaxRGB : blue;
