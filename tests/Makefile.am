@@ -28,7 +28,7 @@
 # ImageMagick Studio.
 #
 
-AUTOMAKE_OPTIONS = 1.4 foreign
+AUTOMAKE_OPTIONS = 1.6 foreign
 
 INCLUDES = -I../ -I$(top_srcdir) -I../magick
 #INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/magick

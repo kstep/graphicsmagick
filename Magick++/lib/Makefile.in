@@ -90,6 +90,7 @@ DLLTOOL = @DLLTOOL@
 DOTDecodeDelegate = @DOTDecodeDelegate@
 DVIDecodeDelegate = @DVIDecodeDelegate@
 ECHO = @ECHO@
+EXEC_PREFIX_DIR = @EXEC_PREFIX_DIR@
 EchoDelegate = @EchoDelegate@
 EditorDelegate = @EditorDelegate@
 FIGDecodeDelegate = @FIGDecodeDelegate@
@@ -167,6 +168,7 @@ PERL = @PERL@
 PERL_MAKE_OPTIONS = @PERL_MAKE_OPTIONS@
 PGPDecodeDelegate = @PGPDecodeDelegate@
 POVDelegate = @POVDelegate@
+PREFIX_DIR = @PREFIX_DIR@
 PSDelegate = @PSDelegate@
 PrintDelegate = @PrintDelegate@
 RADDecodeDelegate = @RADDecodeDelegate@
@@ -202,9 +204,9 @@ xml2_config = @xml2_config@
 #
 # Makefile for Magick++ library
 #
-# Copyright Bob Friesenhahn, 1999, 2000, 2001
+# Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
 #
-AUTOMAKE_OPTIONS = 1.4
+AUTOMAKE_OPTIONS = 1.6
 
 SUBDIRS = Magick++
 
@@ -218,7 +220,11 @@ libMagick___la_SOURCES = \
 	Pixels.cpp STL.cpp Thread.cpp TypeMetric.cpp
 
 
-libMagick___la_LDFLAGS = -version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VERSION):0
+libMagick___la_LDFLAGS = -no-undefined \
+	-version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VERSION):0
+
+
+libMagick___la_LIBADD = ../../magick/libMagick.la
 
 include_HEADERS = Magick++.h
 
@@ -231,7 +237,7 @@ CONFIG_HEADER = $(top_builddir)/magick/magick_config.h
 CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(lib_LTLIBRARIES)
 
-libMagick___la_LIBADD =
+libMagick___la_DEPENDENCIES = ../../magick/libMagick.la
 am_libMagick___la_OBJECTS = Blob.lo CoderInfo.lo Color.lo Drawable.lo \
 	Exception.lo Functions.lo Geometry.lo Image.lo Montage.lo \
 	Options.lo Pixels.lo STL.lo Thread.lo TypeMetric.lo

@@ -28,7 +28,7 @@
 #
 
 # Don't require all the GNU mandated files
-AUTOMAKE_OPTIONS = 1.5 foreign
+AUTOMAKE_OPTIONS = 1.6 foreign
 
 INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/magick
 

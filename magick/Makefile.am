@@ -28,7 +28,7 @@
 #
 
 # Don't require all the GNU mandated files
-AUTOMAKE_OPTIONS = 1.4 foreign
+AUTOMAKE_OPTIONS = 1.6 foreign
 
 # Shared libraries built in this directory
 lib_LTLIBRARIES = libMagick.la

@@ -90,6 +90,7 @@ DLLTOOL = @DLLTOOL@
 DOTDecodeDelegate = @DOTDecodeDelegate@
 DVIDecodeDelegate = @DVIDecodeDelegate@
 ECHO = @ECHO@
+EXEC_PREFIX_DIR = @EXEC_PREFIX_DIR@
 EchoDelegate = @EchoDelegate@
 EditorDelegate = @EditorDelegate@
 FIGDecodeDelegate = @FIGDecodeDelegate@
@@ -167,6 +168,7 @@ PERL = @PERL@
 PERL_MAKE_OPTIONS = @PERL_MAKE_OPTIONS@
 PGPDecodeDelegate = @PGPDecodeDelegate@
 POVDelegate = @POVDelegate@
+PREFIX_DIR = @PREFIX_DIR@
 PSDelegate = @PSDelegate@
 PrintDelegate = @PrintDelegate@
 RADDecodeDelegate = @RADDecodeDelegate@
@@ -204,7 +206,7 @@ xml2_config = @xml2_config@
 #
 # Copyright Bob Friesenhahn, 1999, 2000, 2001
 #
-AUTOMAKE_OPTIONS = 1.4
+AUTOMAKE_OPTIONS = 1.6
 
 pkginclude_HEADERS = Blob.h CoderInfo.h Color.h Drawable.h \
 	Exception.h Functions.h Geometry.h Image.h \

@@ -3,7 +3,7 @@ dnl Process this file with autoconf to produce a configure script..
 # ImageMagick Configure Script
 #
 
-AC_PREREQ(2.2)
+AC_PREREQ(2.53)
 AC_INIT(magick/magick.h)
 
 # Set version
@@ -64,7 +64,7 @@ fi
 #
 # Configure libtool and ltdl
 #
-AC_LIBTOOL_WIN32_DLL
+#AC_LIBTOOL_WIN32_DLL
 AC_ENABLE_SHARED(no)
 AC_ENABLE_STATIC(yes)
 AC_LIBLTDL_CONVENIENCE

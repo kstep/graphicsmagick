@@ -89,6 +89,7 @@ DLLTOOL = @DLLTOOL@
 DOTDecodeDelegate = @DOTDecodeDelegate@
 DVIDecodeDelegate = @DVIDecodeDelegate@
 ECHO = @ECHO@
+EXEC_PREFIX_DIR = @EXEC_PREFIX_DIR@
 EchoDelegate = @EchoDelegate@
 EditorDelegate = @EditorDelegate@
 FIGDecodeDelegate = @FIGDecodeDelegate@
@@ -166,6 +167,7 @@ PERL = @PERL@
 PERL_MAKE_OPTIONS = @PERL_MAKE_OPTIONS@
 PGPDecodeDelegate = @PGPDecodeDelegate@
 POVDelegate = @POVDelegate@
+PREFIX_DIR = @PREFIX_DIR@
 PSDelegate = @PSDelegate@
 PrintDelegate = @PrintDelegate@
 RADDecodeDelegate = @RADDecodeDelegate@
@@ -201,9 +203,9 @@ xml2_config = @xml2_config@
 #
 # Top Makefile for Magick++
 #
-# Copyright Bob Friesenhahn, 1999, 2000
+# Copyright Bob Friesenhahn, 1999, 2000, 2002
 #
-AUTOMAKE_OPTIONS = 1.4 dist-zip
+AUTOMAKE_OPTIONS = 1.6 dist-zip
 
 # Additional files to distribute
 EXTRA_DIST = 

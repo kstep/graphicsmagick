@@ -3,7 +3,7 @@
 #
 # Copyright Bob Friesenhahn, 1999, 2000, 2001
 #
-AUTOMAKE_OPTIONS = 1.4
+AUTOMAKE_OPTIONS = 1.6
 
 includedir = ${prefix}/include
 pkgdatadir = $(datadir)/Magick++

@@ -3,7 +3,7 @@
 #
 # Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
 #
-AUTOMAKE_OPTIONS = 1.4
+AUTOMAKE_OPTIONS = 1.6
 
 INCLUDES = -I$(srcdir)/../lib -I../.. -I$(top_srcdir)
 
