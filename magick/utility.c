@@ -859,7 +859,7 @@ MagickExport int GetMagickGeometry(const char *geometry,long *x,long *y,
       former_height=(*height);
     }
   if (!(flags & AspectValue) && 
-	    ((*width != former_width) || (*height != former_height)))
+      ((*width != former_width) || (*height != former_height)))
     {
       double
         scale_factor;
@@ -1245,6 +1245,19 @@ MagickExport void GetToken(const char *start,char **end,char *token)
         for (p++; *p != '\0'; p++)
         {
           if ((*p == '\'') && (*(p-1) != '\\'))
+            {
+              p++;
+              break;
+            }
+          token[i++]=(*p);
+        }
+        break;
+      }
+      case '{':
+      {
+        for (p++; *p != '\0'; p++)
+        {
+          if ((*p == '}') && (*(p-1) != '\\'))
             {
               p++;
               break;
