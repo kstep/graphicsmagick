@@ -1061,30 +1061,20 @@ MagickExport unsigned int CompositeImage(Image *image,
   assert(image->signature == MagickSignature);
   assert(composite_image != (Image *) NULL);
   assert(composite_image->signature == MagickSignature);
-  switch (compose)
-  {
-    case XorCompositeOp:
-    case PlusCompositeOp:
-    case MinusCompositeOp:
-    case AddCompositeOp:
-    case SubtractCompositeOp:
-    case DifferenceCompositeOp:
-    case MultiplyCompositeOp:
-    case BumpmapCompositeOp:
-    case BlendCompositeOp:
-    case ReplaceRedCompositeOp:
-    case ReplaceGreenCompositeOp:
-    case ReplaceBlueCompositeOp:
+  if (image->colorspace == RGBColorspace)
     {
       image->storage_class=DirectClass;
-      break;
-    }
-    case ReplaceMatteCompositeOp:
-    {
       if (!image->matte)
         MatteImage(image,OpaqueOpacity);
-      break;
     }
+  if (composite_image->colorspace == RGBColorspace)
+    {
+      composite_image->storage_class=DirectClass;
+      if (!composite_image->matte)
+        MatteImage(composite_image,OpaqueOpacity);
+    }
+  switch (compose)
+  {
     case DisplaceCompositeOp:
     {
       double
@@ -1164,8 +1154,6 @@ MagickExport unsigned int CompositeImage(Image *image,
     }
     case ModulateCompositeOp:
     {
-      image->storage_class=DirectClass;
-      composite_image->storage_class=DirectClass;
       midpoint=0x80;
       percent_saturation=50.0;
       percent_brightness=50.0;
@@ -1193,83 +1181,14 @@ MagickExport unsigned int CompositeImage(Image *image,
       */
       amount=0.5;
       threshold=0.05;
-      image->storage_class=DirectClass;
-      composite_image->storage_class=DirectClass;
       if (composite_image->geometry != (char *) NULL)
         (void) sscanf(composite_image->geometry,"%lfx%lf\n",
           &amount,&threshold);
       threshold*=MaxRGB;
       break;
     }
-    case ReplaceCompositeOp:
-    {
-      /*
-        Promote image to DirectClass if colormaps differ.
-      */
-      if (image->storage_class == PseudoClass)
-        {
-          if ((composite_image->storage_class == DirectClass) ||
-              (composite_image->colors != image->colors))
-            image->storage_class=DirectClass;
-          else
-            {
-              for (x=0; x < (int) image->colors; x++)
-                if (!ColorMatch(image->colormap[x],
-                     composite_image->colormap[x],0))
-                  {
-                    image->storage_class=DirectClass;
-                    break;
-                  }
-            }
-        }
-      if (image->colorspace == RGBColorspace)
-        if (image->matte && !composite_image->matte)
-          MatteImage(composite_image,OpaqueOpacity);
-      break;
-    }
     default:
-    {
-      /*
-        Initialize image matte data.
-      */
-      image->storage_class=DirectClass;
-      if (!image->matte)
-        MatteImage(image,OpaqueOpacity);
-      if (!composite_image->matte)
-        {
-          unsigned int
-            monochrome;
-
-          monochrome=IsMonochromeImage(composite_image);
-          red=composite_image->background_color.red;
-          green=composite_image->background_color.green;
-          blue=composite_image->background_color.blue;
-          for (y=0; y < (int) composite_image->rows; y++)
-          {
-            q=GetImagePixels(composite_image,0,y,composite_image->columns,1);
-            if (q == (PixelPacket *) NULL)
-              break;
-            if ((y == 0) && !monochrome)
-              {
-                red=q->red;
-                green=q->green;
-                blue=q->blue;
-              }
-            for (x=0; x < (int) composite_image->columns; x++)
-            {
-              q->opacity=OpaqueOpacity;
-              if ((q->red == red) && (q->green == green) && (q->blue == blue))
-                q->opacity=TransparentOpacity;
-              q++;
-            }
-            if (!SyncImagePixels(composite_image))
-              break;
-          }
-          composite_image->storage_class=DirectClass;
-          composite_image->matte=True;
-        }
       break;
-    }
   }
   /*
     Composite image.
@@ -1560,9 +1479,8 @@ MagickExport unsigned int CompositeImage(Image *image,
       q->green=(Quantum)
         ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
       q->blue=(Quantum) ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
-      if ((image->colorspace != RGBColorspace) || composite_image->matte)
-        q->opacity=(Quantum)
-          ((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
+      q->opacity=(Quantum)
+        ((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
       q++;
     }
     if (!SyncImagePixels(image))
