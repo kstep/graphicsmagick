@@ -137,12 +137,12 @@ launch=>pnm
 	/usr/local/bin/gimp %i
 
 mpg=>
-	/usr/local/bin/mpeg2decode -q -b %i -f -r -o3 %o%%d
+	/usr/local/bin/mpeg2decode -q -b %i -f -r -o3 %o%%05d
 	/usr/local/bin/convert -concatenate %o*.ppm %o
 	/usr/bin/rm -f %o*.ppm
 
 m2v=>
-	/usr/local/bin/mpeg2decode -q -b %i -f -r -o3 %o%%d
+	/usr/local/bin/mpeg2decode -q -b %i -f -r -o3 %o%%05d
 	/usr/local/bin/convert -concatenate %o*.ppm %o
 	/usr/bin/rm -f %o*.ppm
 

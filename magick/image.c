@@ -3713,14 +3713,18 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
         {
           primitive_info[j].text=p;
           if (*p == '"')
-            for (p++; *p != '\0'; p++)
-              if ((*p == '"') && (*(p-1) != '\\'))
-                break;
+            {
+              for (p++; *p != '\0'; p++)
+                if ((*p == '"') && (*(p-1) != '\\'))
+                  break;
+            }
           else
             if (*p == '\'')
-              for (p++; *p != '\0'; p++)
-                if ((*p == '\'') && (*(p-1) != '\\'))
-                  break;
+              {
+                for (p++; *p != '\0'; p++)
+                  if ((*p == '\'') && (*(p-1) != '\\'))
+                    break;
+              }
             else
               for (p++;  *p != '\0'; p++)
                 if (isspace(*p) && (*(p-1) != '\\'))
@@ -9324,6 +9328,8 @@ Export void SetImageInfo(ImageInfo *image_info,unsigned int rectify)
     (void) strcpy(image_info->magick,"FIG");
   if (strncmp(magick,"GIF8",4) == 0)
     (void) strcpy(image_info->magick,"GIF");
+  if (strncmp(magick,"#!/usr/local/bin/gnuplot",24) == 0)
+    (void) strcpy(image_info->magick,"GPLT");
   if (strncmp(magick,"\016\003\023\001",4) == 0)
     (void) strcpy(image_info->magick,"HDF");
   if ((strncmp(magick,"<HTML",5) == 0) ||

@@ -111,6 +111,13 @@ fig=>
 ftp=>
 	@WWWDecodeDelegate@ %m:%i > %o 2>&1
 
+# Gnuplot format (rendered as EPS)
+# Add additional gnuplot commands to the input file to adjust output.
+gplt=>
+	@EchoDelegate@ "set size 1.25,0.62;set terminal postscript eps color solid;set output '%o'; load '%i'" > %u
+	@GnuplotDecodeDelegate@ %u
+	@RMDelegate@ -f %u
+
 gs-color=>
 	@PSDelegate@ -sDEVICE=@GSColorDevice@ -q -dNOPAUSE -dSAFER \
 	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s \
@@ -137,12 +144,12 @@ launch=>pnm
 	@LaunchDelegate@ %i
 
 mpg=>
-	@MPEGDecodeDelegate@ -q -b %i -f -r -o3 %o%%d
+	@MPEGDecodeDelegate@ -q -b %i -f -r -o3 %o%%05d
 	@ConvertDelegate@ %o*.ppm %o
 	@RMDelegate@ -f %o*.ppm
 
 m2v=>
-	@MPEGDecodeDelegate@ -q -b %i -f -r -o3 %o%%d
+	@MPEGDecodeDelegate@ -q -b %i -f -r -o3 %o%%05d
 	@ConvertDelegate@ %o*.ppm %o
 	@RMDelegate@ -f %o*.ppm
 

@@ -389,6 +389,12 @@ MAGICK DELEGATES
 
       to read the HP-GL image format.
 
+    o ImageMagick requires gnuplot available via anonymous FTP as
+
+          ftp://ftp.dartmouth.edu/pub/gnuplot/gnuplot3.5.tar.Z
+
+      to read GNUPLOT plot files (with extension gplt).
+
     o ImageMagick requires html2ps available from
 
           http://www.tdb.uu.se/~jan/html2ps-1.0b1.zip

@@ -128,12 +128,12 @@ launch=>pnm
 	gimp %i
 
 mpg=>
-	mpeg2decode -q -b %i -f -r -o3 %o%%d
+	mpeg2decode -q -b %i -f -r -o3 %o%%05d
 	convert -concatenate %o*.ppm %o
 	rm -f %o*.ppm
 
 m2v=>
-	mpeg2decode -q -b %i -f -r -o3 %o%%d
+	mpeg2decode -q -b %i -f -r -o3 %o%%05d
 	convert -concatenate %o*.ppm %o
 	rm -f %o*.ppm
 

@@ -237,3 +237,6 @@
 
 /* Define if you have the <unistd.h> header file.  */
 #undef HAVE_UNISTD_H
+
+/* Define if you have the <vsnprintf> header file.  */
+#undef HAVE_VSNPRINTF
