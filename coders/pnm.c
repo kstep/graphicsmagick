@@ -926,7 +926,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
             break;
           for (x=0; x < (int) image->columns; x++)
           {
-            index=Intensity(*p)+0.5;
+            index=Intensity(*p);
             FormatString(buffer,"%d ",index);
             (void) WriteBlob(image,strlen(buffer),buffer);
             i++;

@@ -213,7 +213,7 @@ testReadSized( 'input_70x46.rgba',
 	       '70x46',
 	       8,
 	       '33faa53b5e96ee9ffc00e5e115545d75',
-	       '97558e5d40363309da60696286664df1' );
+	       '0cb37a232fc38af9c00b730d057c68f7' );
 
 
 print("UYVY format ...\n");

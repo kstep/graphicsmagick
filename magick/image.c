@@ -1455,7 +1455,7 @@ MagickExport unsigned int CompositeImage(Image *image,
         }
         case BumpmapCompositeOp:
         {
-          shade=Intensity(*p)+0.5;
+          shade=Intensity(*p);
           red=alpha*(q->red*shade);
           green=alpha*(q->green*shade);
           blue=alpha*(q->blue*shade);
@@ -1473,7 +1473,7 @@ MagickExport unsigned int CompositeImage(Image *image,
         }
         case ReplaceRedCompositeOp:
         {
-          red=DownScale(Intensity(*p)+0.5);
+          red=DownScale(Intensity(*p));
           green=q->green;
           blue=q->blue;
           break;
@@ -1481,7 +1481,7 @@ MagickExport unsigned int CompositeImage(Image *image,
         case ReplaceGreenCompositeOp:
         {
           red=q->red;
-          green=DownScale(Intensity(*p)+0.5);
+          green=DownScale(Intensity(*p));
           blue=q->blue;
           break;
         }
@@ -1489,7 +1489,7 @@ MagickExport unsigned int CompositeImage(Image *image,
         {
           red=q->red;
           green=q->green;
-          blue=DownScale(Intensity(*p)+0.5);
+          blue=DownScale(Intensity(*p));
           break;
         }
         case ReplaceMatteCompositeOp:
@@ -1497,7 +1497,7 @@ MagickExport unsigned int CompositeImage(Image *image,
           red=q->red;
           green=q->green;
           blue=q->blue;
-          opacity=DownScale(Intensity(*p)+0.5);
+          opacity=DownScale(Intensity(*p));
           break;
         }
         case BlendCompositeOp:
@@ -1522,7 +1522,7 @@ MagickExport unsigned int CompositeImage(Image *image,
           int
             offset;
 
-          offset=(Intensity(*p)+0.5)-midpoint;
+          offset=Intensity(*p)-midpoint;
           if (offset != 0)
             {
               double

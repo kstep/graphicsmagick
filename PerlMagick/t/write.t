@@ -276,6 +276,6 @@ testReadWriteSized( 'RGBA:input_70x46.rgba',
 		    8,
 		    q//,
 		    '33faa53b5e96ee9ffc00e5e115545d75',
-                    '97558e5d40363309da60696286664df1' );
+                    'b1dcc83f5d70ba6ca5d517028455b7e1' );
 
 1;

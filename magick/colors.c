@@ -1559,7 +1559,8 @@ MagickExport unsigned int IsGrayImage(Image *image)
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (!IsPseudoClass(image))
+  (void) IsPseudoClass(image);
+  if (image->storage_class != PseudoClass)
     return(False);
   for (i=0; i < (int) image->colors; i++)
     if (!IsGray(image->colormap[i]))

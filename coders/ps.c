@@ -1266,7 +1266,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                   break;
                 for (x=0; x < (int) image->columns; x++)
                 {
-                  FormatString(buffer,"%02lx",(int) (Intensity(*p)+0.5));
+                  FormatString(buffer,"%02lx",(int) Intensity(*p));
                   (void) WriteBlob(image,strlen(buffer),buffer);
                   i++;
                   if (i == 36)

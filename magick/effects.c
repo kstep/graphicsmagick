@@ -1852,7 +1852,7 @@ MagickExport Image *OilPaintImage(Image *image,const unsigned int radius,
         s=p-(radius-i)*image->columns-i-1;
         for (j=0; j < (2*i+1); j++)
         {
-          k=Intensity(*s)+0.5;
+          k=Intensity(*s);
           histogram[k]++;
           if ((int) histogram[k] > count)
             {
@@ -1864,7 +1864,7 @@ MagickExport Image *OilPaintImage(Image *image,const unsigned int radius,
         s=p+(radius-i)*image->columns-i-1;
         for (j=0; j < (2*i+1); j++)
         {
-          k=Intensity(*s)+0.5;
+          k=Intensity(*s);
           histogram[k]++;
           if ((int) histogram[k] > count)
             {
@@ -1877,7 +1877,7 @@ MagickExport Image *OilPaintImage(Image *image,const unsigned int radius,
       s=p-radius;
       for (j=0; j < (int) (radius+radius+1); j++)
       {
-        k=Intensity(*s)+0.5;
+        k=Intensity(*s);
         histogram[k]++;
         if ((int) histogram[k] > count)
           {
@@ -2756,7 +2756,7 @@ MagickExport Image *SteganoImage(Image *image,Image *watermark,
   if (q == (PixelPacket *) NULL) \
     break;  \
   (byte)&=(~0x01); \
-  (byte)|=((unsigned int) (Intensity(*q)+0.5) >> shift) & 0x01; \
+  (byte)|=((unsigned int) Intensity(*q) >> shift) & 0x01; \
   j++; \
   if (j == (watermark->columns*watermark->rows)) \
     { \
@@ -3180,7 +3180,7 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
     indexes=GetIndexes(image);
     for (x=0; x < (int) image->columns; x++)
     {
-      index=(Intensity(*q)+0.5) < threshold ? 0 : 1;
+      index=Intensity(*q) < threshold ? 0 : 1;
       indexes[x]=index;
       *q++=image->colormap[index];
     }

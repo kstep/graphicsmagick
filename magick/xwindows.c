@@ -7003,7 +7003,7 @@ static int IntensityCompare(const void *x,const void *y)
 
   color_1=(DiversityPacket *) x;
   color_2=(DiversityPacket *) y;
-  return((int) (Intensity(*color_2)-Intensity(*color_1)+0.5));
+  return(Intensity(*color_2)-Intensity(*color_1));
 }
 
 static int PopularityCompare(const void *x,const void *y)
@@ -7195,7 +7195,7 @@ MagickExport void XMakeStandardColormap(Display *display,
         for (i=0; i < (int) image->colors; i++)
         {
           gray_value=
-            Intensity(gamma_map[(int) (Intensity(image->colormap[i])+0.5)])+0.5;
+            Intensity(gamma_map[(int) Intensity(image->colormap[i])]);
           color.red=XUpScale(gray_value);
           color.green=XUpScale(gray_value);
           color.blue=XUpScale(gray_value);
@@ -7321,8 +7321,8 @@ MagickExport void XMakeStandardColormap(Display *display,
             for (i=0; i < (int) image->colors; i++)
             {
               index=diversity[i].index;
-              gray_value=Intensity(
-                gamma_map[(int) (Intensity(image->colormap[index])+0.5)])+0.5;
+              gray_value=
+                Intensity(gamma_map[(int) Intensity(image->colormap[index])]);
               color.red=XUpScale(gray_value);
               color.green=XUpScale(gray_value);
               color.blue=XUpScale(gray_value);
@@ -7364,8 +7364,8 @@ MagickExport void XMakeStandardColormap(Display *display,
             for (; i < (int) image->colors; i++)
             {
               index=diversity[i].index;
-              gray_value=Intensity(
-                gamma_map[(int) (Intensity(image->colormap[index])+0.5)])+0.5;
+              gray_value=
+                Intensity(gamma_map[(int) Intensity(image->colormap[index])]);
               color.red=XUpScale(gray_value);
               color.green=XUpScale(gray_value);
               color.blue=XUpScale(gray_value);
@@ -7453,8 +7453,7 @@ MagickExport void XMakeStandardColormap(Display *display,
       else
         for (i=0; i < (int) image->colors; i++)
         {
-          gray_value=
-            Intensity(gamma_map[(int) (Intensity(image->colormap[i])+0.5)])+0.5;
+          gray_value=Intensity(gamma_map[(int) Intensity(image->colormap[i])]);
           color.red=XUpScale(gray_value);
           color.green=XUpScale(gray_value);
           color.blue=XUpScale(gray_value);
