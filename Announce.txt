@@ -1,3 +1,7 @@
+[ 5.4.1 source and binaries will be available via ftp starting 8AM
+  Monday December 3rd EST after they are mirrored;  Source is available
+  in CVS now. ]
+
 The ImageMagick Studio LLC development group announces the release of
 ImageMagick 5.4.1. Version 5.4.1 is a feature release but also resolves
 bugs reported against 5.4.0.
@@ -28,22 +32,22 @@ for details):
       tracking system, or via the mailing lists.
 
     - ImageMagick image registry format added (magick string "mpr").
-      This format provides a means for in-memory images to be registered
-      and passed to the drawing module (without use of temporary file)
-      via the filename "mpr:id". Registration of images is managed via the
-      SetMagickRegistry(), GetMagickRegistry(), and DeleteMagickRegistry()
-      C APIs.
+      This format provides a means for in-memory images to be
+      registered and passed to the drawing module (without use of
+      temporary file) via the filename "mpr:id". Registration of images
+      is managed via the SetMagickRegistry(), GetMagickRegistry(), and
+      DeleteMagickRegistry() C APIs.
 
     - Support added for reading the GIMP's native XCF image format
       (thanks to Leonard Rosenthol).
 
     - WMF rendering is improved. Dashed lines are now supported. Text
       scaling and placement is significantly improved. Scaling and
-      translation of coordinates to fit the image are done by the drawing
-      module rather than within the WMF renderer.
+      translation of coordinates to fit the image are done by the
+      drawing module rather than within the WMF renderer.
 
-    - Pattern definition, and filling with pattern, are now supported by
-      the SVG renderer, and by ImageMagick's native drawing format
+    - Pattern definition, and filling with pattern, are now supported
+      by the SVG renderer, and by ImageMagick's native drawing format
       (MVG). Support was also added for defining and filling with
       gradients (for simple gradients only).
 
@@ -65,10 +69,10 @@ for details):
 
     - AcquireImagePixels() now supports "virtual pixels" by replicating
       any edge pixel toward infinity.  This helps eliminate the need
-      for special case edge operations for kernel-based image processing
-      operations such as median filtering.  This means you can negative
-      offsets as well as widths or heights that exceed the boundaries
-      of an image:
+      for special case edge operations for kernel-based image
+      processing operations such as median filtering.  This means you
+      can use negative offsets as well as widths or heights that exceed
+      the boundaries of an image.  Fro example,
 
 	p=AcquireImagePixels(image,-width/2,y-width/2,image->columns+width,
 	  width,&exception).
@@ -110,5 +114,5 @@ Alexander Zimmermann  - Linux binary distributions.
 Jaroslav Fojtik       - CUT, ART, and MATLAB coder modules.
 
 There are many other individual contributors, some of whom made
-significant contributions to ImageMagick but shall remain anonymous.
-
+significant contributions to ImageMagick but shall remain anonymous
+anyway.
