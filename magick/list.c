@@ -101,7 +101,6 @@ MagickExport void AppendImageToList(Image **images,Image *image)
   for (p=(*images); p->next != (Image *) NULL; p=p->next);
   p->next=image;
   image->previous=p;
-  return;
 }
 
 /*
@@ -181,7 +180,7 @@ MagickExport Image *CloneImageList(const Image *images,ExceptionInfo *exception)
 %
 %  The format of the DeleteImageFromList method is:
 %
-%      unsigned int DeleteImageFromList(Image **images)
+%      DeleteImageFromList(Image **images)
 %
 %  A description of each parameter follows:
 %
@@ -189,14 +188,14 @@ MagickExport Image *CloneImageList(const Image *images,ExceptionInfo *exception)
 %
 %
 */
-MagickExport unsigned int DeleteImageFromList(Image **images)
+MagickExport void DeleteImageFromList(Image **images)
 {
   register Image
     *p;
 
   assert(images != (Image **) NULL);
   if ((*images) == (Image *) NULL)
-    return(False);
+    return;
   assert((*images)->signature == MagickSignature);
   p=(*images);
   if ((p->previous == (Image *) NULL) && (p->next == (Image *) NULL))
@@ -215,7 +214,6 @@ MagickExport unsigned int DeleteImageFromList(Image **images)
         }
     }
   DestroyImage(p);
-  return(True);
 }
 
 /*
@@ -526,7 +524,7 @@ MagickExport Image **ImageListToArray(const Image *images,
 %
 %  The format of the InsertImageInList method is:
 %
-%      unsigned int InsertImageInList(Image **images,Image *image)
+%      InsertImageInList(Image **images,Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -536,7 +534,7 @@ MagickExport Image **ImageListToArray(const Image *images,
 %
 %
 */
-MagickExport unsigned int InsertImageInList(Image **images,Image *image)
+MagickExport void InsertImageInList(Image **images,Image *image)
 {
   Image
     *split;
@@ -545,14 +543,13 @@ MagickExport unsigned int InsertImageInList(Image **images,Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if ((*images) == (Image *) NULL)
-    return(False);
+    return;
   assert((*images)->signature == MagickSignature);
   split=SplitImageList(*images);
   if (split == (Image *) NULL)
-    return(False);
+    return;
   AppendImageToList(images,image);
   AppendImageToList(images,split);
-  return(True);
 }
 
 /*
@@ -713,7 +710,7 @@ MagickExport Image *RemoveLastImageFromList(Image **images)
 %
 %
 */
-MagickExport unsigned int ReverseImageList(Image **images)
+MagickExport void ReverseImageList(Image **images)
 {
   Image
     *next;
@@ -723,7 +720,7 @@ MagickExport unsigned int ReverseImageList(Image **images)
 
   assert(images != (Image **) NULL);
   if ((*images) == (Image *) NULL)
-    return(False);
+    return;
   assert((*images)->signature == MagickSignature);
   for (p=(*images); p->next != (Image *) NULL; p=p->next);
   *images=p;
@@ -733,7 +730,6 @@ MagickExport unsigned int ReverseImageList(Image **images)
     p->next=p->previous;
     p->previous=next;
   }
-  return(True);
 }
 
 /*
@@ -752,8 +748,8 @@ MagickExport unsigned int ReverseImageList(Image **images)
 %
 %  The format of the SpliceImageIntoList method is:
 %
-%      unsigned int SpliceImageIntoList(Image **images,
-%        const unsigned long length,Image *splice)
+%      SpliceImageIntoList(Image **images,const unsigned long length,
+%        Image *splice)
 %
 %  A description of each parameter follows:
 %
@@ -765,8 +761,8 @@ MagickExport unsigned int ReverseImageList(Image **images)
 %
 %
 */
-MagickExport unsigned int SpliceImageIntoList(Image **images,
-  const unsigned long length,Image *splice)
+MagickExport void SpliceImageIntoList(Image **images,const unsigned long length,
+  Image *splice)
 {
   Image
     *split;
@@ -778,20 +774,19 @@ MagickExport unsigned int SpliceImageIntoList(Image **images,
   assert(splice != (Image *) NULL);
   assert(splice->signature == MagickSignature);
   if ((*images) == (Image *) NULL)
-    return(False);
+    return;
   assert((*images)->signature == MagickSignature);
   split=SplitImageList(*images);
   if (split == (Image *) NULL)
-    return(False);
+    return;
   AppendImageToList(images,splice);
   for (i=0; i < length; i++)
   {
     if (split == (Image *) NULL)
-      return(False);
+      return;
     (void) DeleteImageFromList(&split);
   }
   AppendImageToList(images,split);
-  return(True);
 }
 
 /*

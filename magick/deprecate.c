@@ -99,7 +99,8 @@ MagickExport unsigned int DeleteImageList(Image *images,const long offset)
       return(False);
     images=images->next;
   }
-  return(DeleteImageFromList(&images));
+  DeleteImageFromList(&images);
+  return(True);
 }
 
 /*
@@ -459,7 +460,8 @@ MagickExport char *PostscriptGeometry(const char *page)
 MagickExport unsigned int PushImageList(Image **images,const Image *image,
   ExceptionInfo *exception)
 {
-  return(AppendImageToList(images,CloneImageList(image,exception)));
+  AppendImageToList(images,CloneImageList(image,exception));
+  return(True);
 }
 
 /*
@@ -546,7 +548,8 @@ MagickExport unsigned int SetImageList(Image **images,const Image *image,
       return(False);
     (*images)=(*images)->next;
   }
-  return(InsertImageInList(images,clone));
+  InsertImageInList(images,clone);
+  return(True);
 }
 
 /*
@@ -703,7 +706,8 @@ MagickExport Image *SpliceImageList(Image *images,const long offset,
 MagickExport unsigned int UnshiftImageList(Image **images,const Image *image,
   ExceptionInfo *exception)
 {
-  return(PrependImageToList(images,CloneImageList(image,exception)));
+  PrependImageToList(images,CloneImageList(image,exception));
+  return(True);
 }
 
 /*

@@ -22,19 +22,17 @@ extern MagickExport Image
 extern MagickExport long
   GetImageIndexInList(const Image *);
 
-extern MagickExport unsigned int
-  DeleteImageFromList(Image **),
-  InsertImageInList(Image **,Image *),
-  ReverseImageList(Image **),
-  SpliceImageIntoList(Image **,const unsigned long,Image *);
-
 extern MagickExport unsigned long
   GetImageListLength(const Image *);
 
 extern MagickExport void
   AppendImageToList(Image **,Image *),
+  DeleteImageFromList(Image **),
   DestroyImageList(Image *),
-  PrependImageToList(Image **,Image *);
+  InsertImageInList(Image **,Image *),
+  PrependImageToList(Image **,Image *),
+  ReverseImageList(Image **),
+  SpliceImageIntoList(Image **,const unsigned long,Image *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
