@@ -1884,7 +1884,9 @@ MagickExport void GetToken(const char *start,char **end,char *token)
     i;
 
   i=0;
-  for (p=(char *) start; *p != '\0'; )
+  p=(char *) start;
+
+  if (*p != '\0')
   {
     while (isspace((int) (*p)) && (*p != '\0'))
       p++;
@@ -1950,7 +1952,6 @@ MagickExport void GetToken(const char *start,char **end,char *token)
         break;
       }
     }
-    break;
   }
   token[i]='\0';
   if (LocaleNCompare(token,"url(#",5) == 0)

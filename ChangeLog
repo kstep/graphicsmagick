@@ -1,5 +1,9 @@
 2003-06-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/utility.c (GetToken): Adjust code to avoid "end-of-loop
+	code not reached" warning.
+	* magick/log.c (GetLogBlob): Eliminate warning regarding
+	unreached code.	
 	* magick/command.c (AnimateImageCommand): Eliminate warning regarding
 	unreached code.	
 	(ConvertImageCommand): Eliminate warning regarding

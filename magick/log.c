@@ -371,7 +371,6 @@ static void *GetLogBlob(const char *filename,char *path,size_t *length,
 #endif
 #endif
   ThrowException(exception,ConfigureError,"UnableToAccessLogFile",filename);
-  return((void *) NULL);
 }
 
 /*
