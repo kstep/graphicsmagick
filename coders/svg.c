@@ -1155,6 +1155,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                 affine,
                 current,
                 transform;
+
               IdentityAffine(&transform);
               if (svg_info->debug)
                 (void) fprintf(stdout,"  \n");
