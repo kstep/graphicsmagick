@@ -440,6 +440,7 @@ Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
     *local_info;
 
   char
+    label[MaxTextExtent],
     size[MaxTextExtent],
     *text,
     **textlist;
@@ -453,7 +454,8 @@ Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
     y;
 
   register int
-    i;
+    i,
+    j;
 
   unsigned int
     height,
@@ -525,18 +527,26 @@ Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
     /*
       Convert text to image.
     */
-    FormatString(local_info->image_info->filename,"%.1024s",textlist[i]);
+    FormatString(label,"%.1024s",textlist[i]);
     FreeMemory(textlist[i]);
-    annotate_image=ReadLABELImage(local_info->image_info);
-    if (annotate_image == (Image *) NULL)
-      {
-        MagickWarning(ResourceLimitWarning,"Unable to annotate image",
-          (char *) NULL);
-        for ( ; textlist[i] != (char *) NULL; i++)
-          FreeMemory(textlist[i]);
-        FreeMemory((char *) textlist);
+    for (j=strlen(label)-1; ; j--)
+    {
+      (void) strcpy(local_info->image_info->filename,label);
+      annotate_image=ReadLABELImage(local_info->image_info);
+      if (annotate_image == (Image *) NULL)
+        {
+          MagickWarning(ResourceLimitWarning,"Unable to annotate image",
+            (char *) NULL);
+          for ( ; textlist[i] != (char *) NULL; i++)
+            FreeMemory(textlist[i]);
+          FreeMemory((char *) textlist);
+          break;
+        }
+      if ((annotate_image->columns <= width) || (strlen(label) < 4))
         break;
-      }
+      DestroyImage(annotate_image);
+      (void) strcpy(label+j,"...");
+    }
     /*
       Composite text onto the image.
     */
@@ -628,9 +638,9 @@ Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
         Image
           *rotated_image;
 
-	/*
-	  Rotate text.
-	*/
+        /*
+          Rotate text.
+        */
         rotated_image=
           RotateImage(annotate_image,annotate_info->degrees,False,False);
         if (rotated_image != (Image *) NULL)
@@ -1337,6 +1347,8 @@ Export Image *CloneImage(const Image *image,const unsigned int columns,
       */
       p=image->pixels;
       q=clone_image->pixels;
+      assert (p != (RunlengthPacket *)NULL);
+      assert (q != (RunlengthPacket *)NULL);
       for (i=0; i < (int) image->packets; i++)
       {
         *q=(*p);
@@ -1574,8 +1586,8 @@ Export void CloseImage(Image *image)
 %  A description of each parameter follows:
 %
 %    o image: The address of a structure of type Image;  returned from
-%      ReadImage.
-%
+%      ReadImage.  It points to the first image in the group to be
+%      coalesced.
 %
 */
 Export void CoalesceImages(Image *image)
@@ -1604,9 +1616,13 @@ Export void CoalesceImages(Image *image)
   assert(image != (Image *) NULL);
   for (p=image->next; p != (Image *) NULL; p=p->next)
   {
+    char
+      geometry[MaxTextExtent];
+
+    assert(p->previous != (Image *) NULL);
     x=0;
     y=0;
-    if (p->previous->page)
+    if (p->previous->page != (char *) NULL)
       (void) XParseGeometry(p->previous->page,&x,&y,&sans,&sans);
     previous_box.x1=x;
     previous_box.y1=y;
@@ -1615,9 +1631,9 @@ Export void CoalesceImages(Image *image)
     if (p->page != (char *) NULL)
       (void) XParseGeometry(p->page,&x,&y,&sans,&sans);
     if ((x <= previous_box.x1) && (y <= previous_box.y1) && !p->matte &&
-        (p->columns >= (p->previous->columns+previous_box.x1-x)) &&
-        (p->rows >= (p->previous->rows+previous_box.y1-y)))
-      continue;
+        (x+p->columns >= (p->previous->columns+previous_box.x1)) &&
+        (y+p->rows >= (p->previous->rows+previous_box.y1)))
+      continue; /* because p completely obscures p->previous */
     bounding_box.x1=x < previous_box.x1 ? x : previous_box.x1;
     bounding_box.y1=y < previous_box.y1 ? y : previous_box.y1;
     bounding_box.x2=(x+p->columns) > (previous_box.x1+p->previous->columns) ?
@@ -1630,36 +1646,50 @@ Export void CoalesceImages(Image *image)
     if (cloned_image == (Image *) NULL)
       {
         MagickWarning(ResourceLimitWarning,"Unable to coalesce image",
-          "Memory allocation failed");
+          "Memory allocation failed for cloned image");
         return;
       }
     p->columns=(unsigned int) (bounding_box.x2-bounding_box.x1);
     p->rows=(unsigned int) (bounding_box.y2-bounding_box.y1);
+    assert(p->columns > 0 && p->rows > 0);
     p->packets=p->columns*p->rows;
     p->pixels=(RunlengthPacket *) ReallocateMemory((char *)
       p->pixels,p->packets*sizeof(RunlengthPacket));
     if (p->pixels == (RunlengthPacket *) NULL)
       {
         MagickWarning(ResourceLimitWarning,"Unable to coalesce image",
-          "Memory allocation failed");
+          "Memory reallocation failed");
         return;
       }
-    if (p->page)
-      {
-        char
-          geometry[MaxTextExtent];
-
-        FormatString(geometry,"%ux%u%+d%+d",p->columns,p->rows,
-          (int) bounding_box.x1,(int) bounding_box.y1);
-        p->page=PostscriptGeometry(geometry);
-      }
+    if (p->page != (char *) NULL)
+       FreeMemory((char *) p->page);
+    if ((((bounding_box.x1 != x) && (bounding_box.y1 != y)) &&
+        ((bounding_box.x1 != previous_box.x1) &&
+         (bounding_box.y1 != previous_box.y1))) ||
+       (((bounding_box.x2 != (cloned_image->columns+x)) &&
+         (bounding_box.y2 != (cloned_image->rows+y))) &&
+        ((bounding_box.x2 != previous_box.x2) &&
+         (bounding_box.y2 != previous_box.y2))) ||
+       (((bounding_box.x1 != x) &&
+         (bounding_box.y2 != (cloned_image->rows+y))) &&
+        ((bounding_box.x1 != previous_box.x1) &&
+         (bounding_box.y2 != previous_box.y2))) ||
+       (((bounding_box.x2 != (cloned_image->columns+x)) &&
+         (bounding_box.y1 != y)) &&
+        ((bounding_box.x2 != previous_box.x2) &&
+         (bounding_box.y1 != previous_box.y1))))
+      p->matte=True;
     matte=p->matte;
     SetImage(p);
     CompositeImage(p,ReplaceCompositeOp,p->previous,(int) (previous_box.x1-
       bounding_box.x1),(int) (previous_box.y1-bounding_box.y1));
     CompositeImage(p,cloned_image->matte ? OverCompositeOp : ReplaceCompositeOp,
       cloned_image,(int) (x-bounding_box.x1),(int) (y-bounding_box.y1));
+    cloned_image->orphan=True;
     DestroyImage(cloned_image);
+    FormatString(geometry,"%ux%u%+d%+d",p->columns,p->rows,
+      (int) bounding_box.x1,(int) bounding_box.y1);
+    p->page=PostscriptGeometry(geometry);
     p->matte=matte;
     CondenseImage(p);
   }
@@ -3024,7 +3054,7 @@ Export Image *CropImage(const Image *image,const RectangleInfo *crop_info)
       (crop_info->y >= (int) image->rows))
     {
       MagickWarning(OptionWarning,"Unable to crop image",
-        "geometry does not contain image");
+        "geometry does not contain any part of the image");
       return((Image *) NULL);
     }
   local_info=(*crop_info);
@@ -8637,7 +8667,6 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
     Allocate image structure.
   */
   montage_image=AllocateImage(local_info);
-  DestroyImageInfo(local_info);
   if (montage_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to montage image_list",
@@ -8969,6 +8998,7 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
   if (texture != (Image *) NULL)
     FreeMemory((char *) texture);
   FreeMemory((char *) master_list);
+  DestroyImageInfo(local_info);
   while (montage_image->previous != (Image *) NULL)
     montage_image=montage_image->previous;
   return(montage_image);
@@ -9841,9 +9871,15 @@ Export int ParseImageGeometry(const char *geometry,int *x,int *y,
   if (flags & GreaterValue)
     {
       if ((*width+((*x) << 1)) > media_info.width)
-        *width=media_info.width-((*x) << 1);
+        {
+          *width-=(*x) << 1;
+          *height-=(*x) << 1;
+        }
       if ((*height+((*y) << 1)) > media_info.height)
-        *height=media_info.height-((*y) << 1);
+        {
+          *width-=(*y) << 1;
+          *height-=(*y) << 1;
+        }
     }
   return(flags);
 }
@@ -9927,10 +9963,10 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
       p=image->pixels;
       for (i=0; i < (int) image->packets; i++)
       {
-        cyan=p->red;
-        magenta=p->green;
-        yellow=p->blue;
-        black=MaxRGB-cyan;
+        cyan=MaxRGB-p->red;
+        magenta=MaxRGB-p->green;
+        yellow=MaxRGB-p->blue;
+        black=cyan;
         if (magenta < black)
           black=magenta;
         if (yellow < black)
@@ -12244,10 +12280,10 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
       p=image->pixels;
       for (i=0; i < (int) image->packets; i++)
       {
-        cyan=MaxRGB-p->red;
-        magenta=MaxRGB-p->green;
-        yellow=MaxRGB-p->blue;
-        black=MaxRGB-p->index;
+        cyan=p->red;
+        magenta=p->green;
+        yellow=p->blue;
+        black=p->index;
         if ((cyan+black) > MaxRGB)
           p->red=0;
         else

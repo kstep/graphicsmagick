@@ -125,6 +125,7 @@ typedef struct _ImageInfo
 
   ResolutionType
     units;
+
   /*
     Compression members.
   */
@@ -133,6 +134,7 @@ typedef struct _ImageInfo
 
   unsigned int
     quality;
+
   /*
     Annotation members.
   */
@@ -156,6 +158,7 @@ typedef struct _ImageInfo
     *background_color,
     *border_color,
     *matte_color;
+
   /*
     Color reduction members.
   */
@@ -165,6 +168,7 @@ typedef struct _ImageInfo
 
   ColorspaceType
     colorspace;
+
   /*
     Animation members.
   */
@@ -174,8 +178,10 @@ typedef struct _ImageInfo
     *iterations;
 
   unsigned int
+    decode_all_MNG_objects,
     coalesce_frames,
     insert_backdrops;
+
   /*
     Miscellaneous members.
   */

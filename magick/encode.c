@@ -3657,10 +3657,10 @@ Export unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
               /*
                 Convert DirectClass packets to contiguous CMYK scanlines.
               */
-              *q++=(JSAMPLE) (p->red >> 4);
-              *q++=(JSAMPLE) (p->green >> 4);
-              *q++=(JSAMPLE) (p->blue >> 4);
-              *q++=(JSAMPLE) (p->index >> 4);
+              *q++=(JSAMPLE) (MaxRGB-(p->red >> 4));
+              *q++=(JSAMPLE) (MaxRGB-(p->green >> 4));
+              *q++=(JSAMPLE) (MaxRGB-(p->blue >> 4));
+              *q++=(JSAMPLE) (MaxRGB-(p->index >> 4));
               x++;
               if (x == (int) image->columns)
                 {
@@ -3725,10 +3725,10 @@ Export unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
             /*
               Convert DirectClass packets to contiguous CMYK scanlines.
             */
-            *q++=(JSAMPLE) DownScale(p->red);
-            *q++=(JSAMPLE) DownScale(p->green);
-            *q++=(JSAMPLE) DownScale(p->blue);
-            *q++=(JSAMPLE) DownScale(p->index);
+            *q++=(JSAMPLE) DownScale(MaxRGB-p->red);
+            *q++=(JSAMPLE) DownScale(MaxRGB-p->green);
+            *q++=(JSAMPLE) DownScale(MaxRGB-p->blue);
+            *q++=(JSAMPLE) DownScale(MaxRGB-p->index);
             x++;
             if (x == (int) image->columns)
               {
@@ -5746,22 +5746,15 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     x=0;
     y=text_size;
     FormatString(geometry,"%ux%u",image->columns,image->rows);
-    if (Latin1Compare(image_info->magick,"PDF") == 0)
-      {
-        if (image_info->page != (char *) NULL)
-          {
-            (void) ParseImageGeometry(image_info->page,&x,&y,&width,&height);
-            (void) strcpy(geometry,image_info->page);
-          }
-        else
-          if (image->page != (char *) NULL)
-            {
-              (void) ParseImageGeometry(image->page,&x,&y,&width,&height);
-              (void) strcpy(geometry,image->page);
-            }
-          else
-            (void) strcpy(geometry,PSPageGeometry);
-      }
+    if (image_info->page != (char *) NULL)
+      (void) strcpy(geometry,image_info->page);
+    else
+      if (image->page != (char *) NULL)
+        (void) strcpy(geometry,image->page);
+      else
+        if (Latin1Compare(image_info->magick,"PDF") == 0)
+          (void) strcpy(geometry,PSPageGeometry);
+    (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
     (void) GetGeometry(geometry,&media_info.x,&media_info.y,
       &media_info.width,&media_info.height);
     /*
@@ -5770,15 +5763,10 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     dx_resolution=72.0;
     dy_resolution=72.0;
     x_resolution=72.0;
-    (void) strcpy(density,"72x72");
+    (void) strcpy(density,PSDensityGeometry);
     count=sscanf(density,"%fx%f",&x_resolution,&y_resolution);
     if (count != 2)
       y_resolution=x_resolution;
-    if ((image->x_resolution != 0) && (image->y_resolution != 0))
-      {
-        x_resolution=image->x_resolution;
-        y_resolution=image->y_resolution;
-      }
     if (image_info->density != (char *) NULL)
       {
         count=sscanf(image_info->density,"%fx%f",&x_resolution,&y_resolution);
@@ -5949,10 +5937,10 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                   }
                 else
                   {
-                    *q++=DownScale(MaxRGB-p->red);
-                    *q++=DownScale(MaxRGB-p->green);
-                    *q++=DownScale(MaxRGB-p->blue);
-                    *q++=DownScale(MaxRGB-p->index);
+                    *q++=DownScale(p->red);
+                    *q++=DownScale(p->green);
+                    *q++=DownScale(p->blue);
+                    *q++=DownScale(p->index);
                   }
             }
             p++;
@@ -6001,10 +5989,10 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                   }
                 else
                   {
-                    Ascii85Encode(DownScale(MaxRGB-p->red),image->file);
-                    Ascii85Encode(DownScale(MaxRGB-p->green),image->file);
-                    Ascii85Encode(DownScale(MaxRGB-p->blue),image->file);
-                    Ascii85Encode(DownScale(MaxRGB-p->index),image->file);
+                    Ascii85Encode(DownScale(p->red),image->file);
+                    Ascii85Encode(DownScale(p->green),image->file);
+                    Ascii85Encode(DownScale(p->blue),image->file);
+                    Ascii85Encode(DownScale(p->index),image->file);
                   }
             }
             p++;
@@ -6966,31 +6954,36 @@ Export unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
 %    o image:  A pointer to a Image structure.
 %
 %
+%  To do (as of version 4.2.4, 07 May 1999 -- glennrp):
+% 
+%    Figure out what to do with "dispose=<restore-to-previous>"
+%    This will be complicated if we limit ourselves to generating
+%    MNG-LC files.  For now we ignore the disposal method and
+%    simply overlay the next image on it.
+% 
+%    Check for identical PLTE's or PLTE/tRNS combinations and use a
+%    global MNG PLTE or PLTE/tRNS combination when appropriate.
+% 
+%    Improve selection of color type (use indexed-colour or indexed-colour
+%    with tRNS when 256 or fewer colors or 256 color-alpha combinations
+%    are present).
+% 
+%    Check for identical sRGB and replace with a global sRGB (and remove
+%    gAMA/cHRM if sRGB is found; check for identical gAMA/cHRM and
+%    replace with global gAMA/cHRM.
+%
+%    Provide option to skip writing the signature tEXt chunks.
+%
+%    Encode JNG datastreams.
+%
+%    Provide an option to force LC files (to ensure exact framing rate)
+%    instead of VLC (i.e., specify file type MNG-LC on the command line).
+% 
+%    Provide an option to force VLC files instead of LC (i.e., specify
+%    file type MNG-VLC on the command line), even when offsets are present.
+%    This will involve expanding the embedded images with a transparent
+%    region at the top and/or left.
 */
-
-/* To do (as of version 4.2.4, 06 May 1999 -- glennrp):
- *
- *   Figure out what to do with "dispose=<restore-to-previous>"
- *   This will be complicated if we limit ourselves to generating
- *   MNG-LC files.  For now we ignore the disposal method and
- *   simply overlay the next image on it.
- *
- *   Check for identical PLTE's and use a global MNG PLTE when
- *   appropriate.
- *
- *   Check for identical sRGB and replace with a global sRGB (and remove
- *   gAMA/cHRM if sRGB is found; check for identical gAMA/cHRM and
- *   replace with global gAMA/cHRM.
- *
- *   Provide an option to force LC files (to ensure exact framing rate)
- *   instead of VLC (i.e., specify file type MNG-LC on the command line).
- *
- *   Provide an option to force VLC files instead of LC (i.e., specify
- *   file type MNG-VLC on the command line), even when offsets are present.
- *   This will involve expanding the embedded images with a transparent
- *   region at the top and/or left.
- *
- */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
@@ -7020,8 +7013,10 @@ static void PNGTextChunk(const ImageInfo *image_info,png_info *ping_info,
   ping_info->text[i].key=keyword;
   ping_info->text[i].text=value;
   ping_info->text[i].text_length=Extent(value);
-  ping_info->text[i].compression= \
-    image_info->compression != NoCompression ? 0 : -1;
+  ping_info->text[i].compression=
+    image_info->compression == NoCompression ||
+    (image_info->compression == UndefinedCompression &&
+    ping_info->text[i].text_length < 128) ? -1 : 0;
 }
 
 static void PNGWarning(png_struct *ping,png_const_charp message)
@@ -7092,10 +7087,8 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     PrematureExit(FileOpenWarning,"Unable to open file",image);
   if (image_info->adjoin)
     {
-      /* Determine image bounding box.  */
-
       Image
-        *next_image;
+        *p;
 
       int
         need_geom;
@@ -7108,7 +7101,6 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       page_info.height=0;
       page_info.x=0;
       page_info.y=0;
-      next_image=image;
       have_global_srgb=False;
       have_global_plte=False;
       have_global_gamma= False;
@@ -7119,6 +7111,8 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       need_matte=False;
       framing_mode=1;
       old_framing_mode=1;
+
+      /* Determine image bounding box.  */
 
       if (image_info->page != (char *) NULL)
         {
@@ -7133,12 +7127,12 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       initial_delay = image->delay;
       need_iterations=False;
 
-      for (next_image=image; next_image != (Image *) NULL; )
+      for (p=image; p != (Image *) NULL; )
         {
-          if (next_image->page != (char *) NULL)
+          if (p->page != (char *) NULL)
             {
               /* Get "page" geometry of scene. */
-              (void) XParseGeometry(next_image->page,&page_info.x,
+              (void) XParseGeometry(p->page,&page_info.x,
                 &page_info.y, &width, &height);
             }
           else
@@ -7148,35 +7142,41 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             }
           if(need_geom)
             {
-              if ((next_image->columns+page_info.x) > page_info.width)
-                page_info.width=next_image->columns+page_info.x;
-              if ((next_image->rows+page_info.y) > page_info.height)
-                page_info.height=next_image->rows+page_info.y;
+              if ((p->columns+page_info.x) > page_info.width)
+                page_info.width=p->columns+page_info.x;
+              if ((p->rows+page_info.y) > page_info.height)
+                page_info.height=p->rows+page_info.y;
             }
           if (page_info.x || page_info.y)
                need_defi=True;
-          if (next_image->matte)
+          if (p->matte)
                need_matte=True;
-          if (next_image->dispose == 2)
+          if (p->dispose == 2)
                need_fram=True;
-          if (next_image->iterations)
+          if (p->iterations)
                need_iterations = True;
-          final_delay = next_image->delay;
+          final_delay = p->delay;
           if(final_delay != initial_delay) need_fram=1;
-          next_image=next_image->next;
-
+          p=p->next;
        }
 
        if(!need_fram)
         {
-          /*  Only certain framing rates 100/n are exactly representable without
-           *  the FRAM chunk but we'll allow some slop in VLC files */
+          /*
+             Only certain framing rates 100/n are exactly representable without
+             the FRAM chunk but we'll allow some slop in VLC files
+           */
 
           if(final_delay == 0)
             {
               if(need_iterations)
-                /* it's probably a GIF with loop; don't run it *too* fast */
+                {
+                  /* It's probably a GIF with loop; don't run it *too* fast */
                 final_delay=10;
+                  MagickWarning(DelegateWarning,
+                    "input has zero delay between all frames; assuming 10 cs",
+                    image->filename);
+                }
               else
                 ticks_per_second=0;
             }
@@ -7238,12 +7238,16 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           (void) strcpy((char *) chunk,"TERM");
           chunk[4]=3;  /* repeat animation */
           chunk[5]=0;  /* show last frame when done */
-          PNGLong(chunk+6, (png_uint_32)(0L));
+          PNGLong(chunk+6, (png_uint_32)(ticks_per_second*final_delay/100));
+          if(image_info->verbose)
+             printf("Wrote MNG TERM chunk with final_delay=%d\n", final_delay);
+          if(image->iterations == 0)
+             PNGLong(chunk+10, 0x7fffffffL);
+          else
           PNGLong(chunk+10, (png_uint_32)image->iterations);
           (void) fwrite(chunk,1,14,image->file);
           MSBFirstWriteLong(crc32(0,chunk,14),image->file);
           }
-
     }
   scene=0;
   delay=0;
@@ -7677,10 +7681,22 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     ping_info->text=(png_text *) AllocateMemory(256*sizeof(png_text));
     if (ping_info->text == (png_text *) NULL)
       PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
+    /* Write a Software tEXt chunk only in the first PNG datastream */
+    if (image->scene == 0)
     PNGTextChunk(image_info,ping_info,"Software",MagickVersion);
+    if (!image_info->adjoin)
+      {
     SignatureImage(image);
     if (image->signature != (char *) NULL)
       PNGTextChunk(image_info,ping_info,"Signature",image->signature);
+        if (image->delay != 0)
+          {
+            char
+              delay[MaxTextExtent];
+
+            FormatString(delay,"%u",image->delay);
+            PNGTextChunk(image_info,ping_info,"Delay",delay);
+          }
     if (image->scene != 0)
       {
         char
@@ -7689,18 +7705,11 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         FormatString(scene,"%u",image->scene);
         PNGTextChunk(image_info,ping_info,"Scene",scene);
       }
-    if (!image_info->adjoin && image->delay != 0)
-      {
-        char
-          delay[MaxTextExtent];
-
-        FormatString(delay,"%u",image->delay);
-        PNGTextChunk(image_info,ping_info,"Delay",delay);
+        if (image->page != (char *) NULL)
+          PNGTextChunk(image_info,ping_info,"Page",image->page);
       }
     if (image->label != (char *) NULL)
       PNGTextChunk(image_info,ping_info,"Label",image->label);
-    if (!image_info->adjoin && image->page != (char *) NULL)
-      PNGTextChunk(image_info,ping_info,"Page",image->page);
     if (image->montage != (char *) NULL)
       PNGTextChunk(image_info,ping_info,"Montage",image->montage);
     if (image->directory != (char *) NULL)
@@ -9686,21 +9695,30 @@ Export unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
       for (i=0; i < (int) image->packets; i++)
       {
         for (j=0; j <= ((int) p->length); j++)
-          WriteQuantumFile(p->red);
+          if (image->colorspace != CMYKColorspace)
+            WriteQuantumFile(p->red)
+          else
+            WriteQuantumFile(MaxRGB-p->red);
         p++;
       }
       p=image->pixels;
       for (i=0; i < (int) image->packets; i++)
       {
         for (j=0; j <= ((int) p->length); j++)
-          WriteQuantumFile(p->green);
+          if (image->colorspace != CMYKColorspace)
+            WriteQuantumFile(p->green)
+          else
+            WriteQuantumFile(MaxRGB-p->green);
         p++;
       }
       p=image->pixels;
       for (i=0; i < (int) image->packets; i++)
       {
         for (j=0; j <= ((int) p->length); j++)
-          WriteQuantumFile(p->blue);
+          if (image->colorspace != CMYKColorspace)
+            WriteQuantumFile(p->blue)
+          else
+            WriteQuantumFile(MaxRGB-p->blue);
         p++;
       }
       p=image->pixels;
@@ -9708,7 +9726,10 @@ Export unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
         for (i=0; i < (int) image->packets; i++)
         {
           for (j=0; j <= ((int) p->length); j++)
-            WriteQuantumFile(p->index);
+            if (image->colorspace != CMYKColorspace)
+              WriteQuantumFile(p->index)
+            else
+              WriteQuantumFile(MaxRGB-p->index);
           p++;
         }
     }
@@ -10166,10 +10187,10 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                   }
                 else
                   {
-                    *q++=DownScale(MaxRGB-p->red);
-                    *q++=DownScale(MaxRGB-p->green);
-                    *q++=DownScale(MaxRGB-p->blue);
-                    *q++=DownScale(MaxRGB-p->index);
+                    *q++=DownScale(p->red);
+                    *q++=DownScale(p->green);
+                    *q++=DownScale(p->blue);
+                    *q++=DownScale(p->index);
                   }
             }
             p++;
@@ -10218,10 +10239,10 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                   }
                 else
                   {
-                    Ascii85Encode(DownScale(MaxRGB-p->red),image->file);
-                    Ascii85Encode(DownScale(MaxRGB-p->green),image->file);
-                    Ascii85Encode(DownScale(MaxRGB-p->blue),image->file);
-                    Ascii85Encode(DownScale(MaxRGB-p->index),image->file);
+                    Ascii85Encode(DownScale(p->red),image->file);
+                    Ascii85Encode(DownScale(p->green),image->file);
+                    Ascii85Encode(DownScale(p->blue),image->file);
+                    Ascii85Encode(DownScale(p->index),image->file);
                   }
             }
             p++;

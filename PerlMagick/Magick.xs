@@ -1025,7 +1025,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
                   return;
                 }
               if (info)
-                info->image_info->colorspace=sp;
+                info->image_info->colorspace=(ColorspaceType) sp;
             }
         }
       if (strEQcase(attribute,"colors"))
@@ -5192,8 +5192,8 @@ Ping(ref,...)
           FormatString(message,"%u,%u,%u,%s",image->columns,image->rows,
             image->filesize,image->magick);
           s=sv_2mortal(newSVpv(message,0));
+          DestroyImage(image);
         }
-      DestroyImage(image);
       PUSHs(s);
     }
     SvREFCNT_dec(error_list);  /* throw away all errors */
