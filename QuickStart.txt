@@ -9,7 +9,7 @@ Environment Variables:
   to ImageMagick where to look with these environment variables:
 
 	MAGICK_DELEGATE_PATH	path to delegates.mgk and magic.mgk
-	MAGICK_MODULES_PATH	path to modules.mgk
+	MAGICK_MODULE_PATH	path to modules.mgk
 
   Other useful enviroment variables include
 
