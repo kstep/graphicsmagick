@@ -14,12 +14,12 @@ Configuration Files:
       MagickSharePath
 
   Where MagickSharePath, MagickLibPath, and MagickModulesPath are
-  defined by the configure program on Unix, and default to
+  defined by the configure program for Unix-style builds, and default to
   /usr/local/share/ImageMagick/, /usr/local/lib/ImageMagick/ and
   /usr/local/lib/ImageMagick/modules/coders/ respectively.
 
-  MagickLibPath and MagickModulesPath, and are defined under Win32, VMS, and
-  Macintosh as c:\ImageMagick\, sys$login, and the current directory
+  MagickLibPath and MagickModulesPath, and are defined under Win32, VMS,
+  and Macintosh as c:\ImageMagick\, sys$login, and the current directory
   respectively.
 
 
@@ -30,9 +30,9 @@ Environment Variables:
 
       MAGICK_CACHE_THRESHOLD  megabytes of memory available to pixel cache
       TMPDIR                  path to store temporary files
-      LD_LIBRARY_PATH         path to libMagick.so
+      LD_LIBRARY_PATH         path to libMagick.so and other libraries
 
-Unix/Linux/Darwin/Cygwin Install:
+Unix/Linux/Darwin/Cygwin/MinGW Install:
 
   Download
 
@@ -69,7 +69,7 @@ Win2K, WinME, NT, Win98, Win95 Install:
 
   Download
 
-      ftp://ftp.imagemagick.org/pub/ImageMagick/win2k/ImageMagick-win2k.zip
+      ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-win2k.zip
 
   and double click on it to extract the distribution.
 
@@ -95,7 +95,11 @@ MAC Install:
 
   Download
 
-      ftp://ftp.imagemagick.org/pub/ImageMagick/mac/ImageMagick-mac.sit
+      ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-mac.sit
+
+       or
+
+      ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-powerpc-apple-darwin5.4.tar.gz
 
   and double click on it to extract the distribution.   Move to the
   ImageMagick folder and double click on the convert program icon.
