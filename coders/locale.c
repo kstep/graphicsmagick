@@ -101,11 +101,13 @@ static void ChopPathComponents(char *path,const unsigned long components)
   register char
     *p;
 
+  if (*path == '\0') 
+    return;
   p=path+strlen(path)-1;
   if (*p == '/')
     *p='\0';
   for (count=0; (count < (long) components) && (p > path); p--)
-    if (*p == *DirectorySeparator)
+    if (*p == '/')
       {
         *p='\0';
         count++;
@@ -252,14 +254,18 @@ static unsigned int ReadConfigureFile(Image *image,const char *basename,
           (void) strncpy(message,p,q-p);
           message[q-p]='\0';
           Strip(message);
-          (void) strcat(message,"\n");
+          (void) strncat(locale,message,MaxTextExtent-strlen(locale)-2);
+          (void) strcat(locale,"\n");
           SetImageAttribute(image,"[Locale]",locale);
-          SetImageAttribute(image,"[Locale]",message);
         }
         continue;
       }
     if (LocaleCompare(keyword,"</message>") == 0)
+      {
+        ChopPathComponents(locale,2);
+        (void) strcat(locale,"/");
         continue;
+      }
     if (*keyword == '<')
       {
         /*
@@ -279,8 +285,6 @@ static unsigned int ReadConfigureFile(Image *image,const char *basename,
         (void) strcat(locale,"/");
         continue;
       }
-    if (*keyword == '<')
-      continue;
     GetToken(q,(char **) NULL,token);
     if (*token != '=')
       continue;

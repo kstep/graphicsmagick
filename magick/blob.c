@@ -727,9 +727,11 @@ static void ChopPathComponents(char *path,const unsigned long components)
   register char
     *p;
 
+  if (*path == '\0')
+    return;
   if (magick_debug)
     (void) fprintf(stdout,"original path  \"%s\"\n",path);
-  p=path+strlen(path)-1;
+  p=path+strlen(path);
   if (*p == *DirectorySeparator)
     *p='\0';
   for (count=0; (count < (long) components) && (p > path); p--)
