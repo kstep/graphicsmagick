@@ -1,8 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+  "http://www.w3.org/TR/html4/loose.dtd">
 <HTML>
 <HEAD>
 <TITLE>Magick++ ChangeLog</TITLE>
+	<STYLE>
+	<!--
+		@page { size: 8.5in 11in }
+		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
+		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
+		A:link { color: #0085c0 }
+		A:visited { color: #800080 }
+	-->
+	</STYLE>
 </HEAD>
-<BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#0000EE" VLINK="#551A8B" ALINK="#FF0000">
+<body LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
+<FORM ACTION="http://www.google.com/search">
+	<INPUT TYPE=HIDDEN NAME="domains" VALUE="www.graphicsmagick.org">
+	<INPUT TYPE=HIDDEN NAME="sitesearch" VALUE="www.graphicsmagick.org">
+	<TABLE WIDTH=100% BORDER=1 BORDERCOLOR="#000000" CELLPADDING=4 CELLSPACING=0 RULES=NONE STYLE="page-break-before: always">
+		<COL WIDTH=208*>
+		<COL WIDTH=48*>
+		<TR>
+			<TD WIDTH=81%>
+				<P ALIGN=LEFT>[<A HREF="../index.html">Home</A>] [<A HREF="mission.html">Mission Statement</A>]
+				[<A HREF="download.html">Download</A>] [<A HREF="install.html">Installation</A>]
+				[<A HREF="cvs.html">CVS</A>] [<A HREF="http://sourceforge.net/mail/?group_id=73485">Mailing
+				Lists</A>] [<A HREF="FAQ.html">FAQ</A>] [<A HREF="">Formats</A>]
+				[<A HREF="NEWS.html">News</A> ] [<A HREF="Changelog.html">ChangeLog</A>]
+				[<A HREF="http://sourceforge.net/projects/graphicsmagick/">Report
+				Bugs</A>] [<A HREF="utilities.html">Utilities</A>] [<A HREF="programming.html">Programming</A>]
+				[<A HREF="books.html">Books</A>] [<A HREF="links.html">Links</A>]</P>
+			</TD>
+			<TD ROWSPAN=2 WIDTH=19%>
+				<P ALIGN=CENTER><IMG SRC="../images/magick_small.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=81%>
+				<DIV ALIGN=CENTER>
+					<P><I>Search GraphicsMagick site <INPUT TYPE=TEXT NAME="q" SIZE=25 MAXLENGTH=255>
+					<INPUT TYPE=SUBMIT NAME="sa" VALUE="Search"> </I>
+					</P>
+				</DIV>
+			</TD>
+		</TR>
+	</TABLE>
+</FORM>
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" height=14 width=15>
+<b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Magick++ ChangeLog</font></font></font></b></td>
+</tr>
+</table>
+<p>
+2004-03-06  Vladimir Lukianov  &lt;lvm@integrum.ru&gt;
+
+<UL>
+  <LI> lib/Thread.cpp (lock): Use MsgWaitForMultipleObjects() rather than
+        WaitForSingleObject() in order to avoid possible deadlock when
+        application code directly or indirectly creates windows.
+
+</UL>
+<p>
+2004-02-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (Image): Delete the allocated image reference
+        object if a Magick::Error is thrown by the Image constructor.
+        Otherwise the image reference object becomes a memory leak.
+
+</UL>
+<p>
+2004-01-31  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> tests/readWriteBlob.cpp (main): Needed to delete character array
+        using array [] reference.<BR>
+  <LI> lib/Magick++/STL.h (writeImages): Pass Blob::MallocAllocator to
+        updateNoCopy() in order to ensure that correct deallocator is
+        used.
+
+</UL>
+<p>
+2003-12-08  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/Makefile.am (pkgincludedir): Improve header install
+        logic.
+
+</UL>
 <p>
 2003-06-22  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
@@ -1905,5 +1991,8 @@
 
 </UL>
 
+<hr>
+<p><a href="../index.html"><img SRC="../images/home.png" ALT="Home Page" BORDER=0 height=40 width=40 align=MIDDLE></a><font size="-2">
+Image manipulation software that works like magic.</font>
 </BODY>
 </HTML>

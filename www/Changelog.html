@@ -53,6 +53,17 @@
 </tr>
 </table>
 <p>
+2004-03-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/draw.c (DrawGetFillOpacity): Use fill opacity, and invert
+        opacity range so it is 0.0 to 1.0 (was acting like transparency).
+        (DrawSetStrokeOpacity): Validate range of stroke_opacity.
+        (DrawSetFillOpacity): Save value to context-&gt;fill.opacity and
+        validate the range of fill_opacity.
+
+</UL>
+<p>
 2004-03-06  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

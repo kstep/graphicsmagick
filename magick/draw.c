@@ -1540,7 +1540,7 @@ MagickExport double DrawGetFillOpacity(DrawContext context)
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  return ((double)CurrentContext->opacity/MaxRGB);
+  return (((double)(MaxRGB-CurrentContext->fill.opacity))/MaxRGB);
 }
 
 /*
@@ -1572,17 +1572,21 @@ MagickExport void DrawSetFillOpacity(DrawContext context,
                                      const double fill_opacity)
 {
   Quantum
-    opacity;
+    quantum_opacity;
+
+  double
+    validated_opacity;
 
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  opacity = (Quantum)((double) MaxRGB*(1.0-(fill_opacity <= 1.0 ? fill_opacity : 1.0 ))+0.5);
+  validated_opacity=(fill_opacity < 0.0 ? 0.0 : (fill_opacity > 1.0 ? 1.0 : fill_opacity));
+  quantum_opacity = (Quantum) (((double) MaxRGB*(1.0-validated_opacity))+0.5);
 
-  if (context->filter_off || (CurrentContext->opacity != opacity))
+  if (context->filter_off || (CurrentContext->fill.opacity != quantum_opacity))
     {
-      CurrentContext->opacity = opacity;
-      MvgPrintf(context, "fill-opacity %.4g\n", fill_opacity);
+      CurrentContext->fill.opacity = quantum_opacity;
+      MvgPrintf(context, "fill-opacity %.4g\n", validated_opacity);
     }
 }
 
@@ -5355,18 +5359,22 @@ MagickExport double DrawGetStrokeOpacity(DrawContext context)
 MagickExport void DrawSetStrokeOpacity(DrawContext context,
                                        const double stroke_opacity)
 {
+  Quantum
+    quantum_opacity;
+
   double
-    opacity;
+    validated_opacity;
 
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  opacity = (Quantum)((double) MaxRGB*(1.0-(stroke_opacity <= 1.0 ? stroke_opacity : 1.0 ))+0.5);
+  validated_opacity=(stroke_opacity < 0.0 ? 0.0 : (stroke_opacity > 1.0 ? 1.0 : stroke_opacity));
+  quantum_opacity = (Quantum) (((double) MaxRGB*(1.0-validated_opacity))+0.5);
 
-  if (context->filter_off || (CurrentContext->stroke.opacity != opacity))
+  if (context->filter_off || (CurrentContext->stroke.opacity != quantum_opacity))
     {
-      CurrentContext->stroke.opacity = (Quantum) ceil(opacity);
-      MvgPrintf(context, "stroke-opacity %.4g\n", stroke_opacity);
+      CurrentContext->stroke.opacity = quantum_opacity;
+      MvgPrintf(context, "stroke-opacity %.4g\n", validated_opacity);
     }
 }
 

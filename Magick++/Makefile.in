@@ -351,9 +351,9 @@ xml2_config = @xml2_config@
 #
 # Top Makefile for Magick++
 #
-# Copyright Bob Friesenhahn, 1999, 2000, 2002
+# Copyright Bob Friesenhahn, 1999, 2000, 2002, 2004
 #
-AUTOMAKE_OPTIONS = 1.7 foreign
+AUTOMAKE_OPTIONS = 1.8 foreign
 
 # Additional files to distribute
 EXTRA_DIST = 
@@ -649,19 +649,19 @@ uninstall-info: uninstall-info-recursive
 	tags tags-recursive uninstall uninstall-am uninstall-info-am
 
 
-@HasTXT2HTML_TRUE@all-local: ../www/Magick++/NEWS.html ../www/Magick++/ChangeLog.html
+@WITH_PERL_TRUE@all-local: ../www/Magick++/NEWS.html ../www/Magick++/ChangeLog.html
 
 # Build HTML version of news
-@HasTXT2HTML_TRUE@../www/Magick++/NEWS.html: NEWS
-@HasTXT2HTML_TRUE@	txt2html -t 'Magick++ News' < $(srcdir)/NEWS  > $(srcdir)/../www/Magick++/NEWS.html
-@HasTXT2HTML_TRUE@	echo "Please do a 'cvs commit www/Magick++/NEWS.html' to submit updated HTML file"
+@WITH_PERL_TRUE@../www/Magick++/NEWS.html: NEWS
+@WITH_PERL_TRUE@	@PERL@ $(top_srcdir)/scripts/txt2html -t 'Magick++ News' < $(srcdir)/NEWS  > $(srcdir)/../www/Magick++/NEWS.html
+@WITH_PERL_TRUE@	echo "Please do a 'cvs commit www/Magick++/NEWS.html' to submit updated HTML file"
 
 # Build HTML version of ChangeLog
-@HasTXT2HTML_TRUE@../www/Magick++/ChangeLog.html: ChangeLog
-@HasTXT2HTML_TRUE@	txt2html -t 'Magick++ ChangeLog' < $(srcdir)/ChangeLog > $(srcdir)/../www/Magick++/ChangeLog.html
-@HasTXT2HTML_TRUE@	echo "Please do a 'cvs commit www/Magick++/ChangeLog.html' to submit updated HTML file"
+@WITH_PERL_TRUE@../www/Magick++/ChangeLog.html: ChangeLog
+@WITH_PERL_TRUE@	@PERL@ $(top_srcdir)/scripts/txt2html -t 'Magick++ ChangeLog' < $(srcdir)/ChangeLog > $(srcdir)/../www/Magick++/ChangeLog.html
+@WITH_PERL_TRUE@	echo "Please do a 'cvs commit www/Magick++/ChangeLog.html' to submit updated HTML file"
 
-@HasTXT2HTML_FALSE@all-local:
+@WITH_PERL_FALSE@all-local:
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

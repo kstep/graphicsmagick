@@ -1,3 +1,11 @@
+2004-03-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/draw.c (DrawGetFillOpacity): Use fill opacity, and invert
+	opacity range so it is 0.0 to 1.0 (was acting like transparency).
+	(DrawSetStrokeOpacity): Validate range of stroke_opacity.
+	(DrawSetFillOpacity): Save value to context->fill.opacity and
+	validate the range of fill_opacity.
+
 2004-03-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* VisualMagick/bin/delegates.mgk: Quote delegate command names so
