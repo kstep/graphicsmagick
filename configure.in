@@ -1196,7 +1196,7 @@ AC_FUNC_MEMCMP
 AC_TYPE_SIGNAL
 AC_FUNC_VPRINTF
 AC_FUNC_MMAP
-AC_CHECK_FUNCS(getcwd gettimeofday mkdir select poll snprintf strchr strerror strtol sysconf tempnam vsnprintf)
+AC_CHECK_FUNCS(getcwd gettimeofday mkdir mkstemp select poll snprintf strchr strerror strtol sysconf tempnam vsnprintf)
 
 # Check for getexecname() under Solaris
 case "${host_os}" in

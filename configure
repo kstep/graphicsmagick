@@ -20845,7 +20845,7 @@ EOF
 fi
 rm -f conftest.mmap
 
-for ac_func in getcwd gettimeofday mkdir select poll snprintf strchr strerror strtol sysconf tempnam vsnprintf
+for ac_func in getcwd gettimeofday mkdir mkstemp select poll snprintf strchr strerror strtol sysconf tempnam vsnprintf
 do
 as_ac_var=`echo "ac_cv_func_$ac_func" | $as_tr_sh`
 echo "$as_me:20851: checking for $ac_func" >&5
