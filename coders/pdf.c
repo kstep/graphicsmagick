@@ -1160,19 +1160,10 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     /*
       Write Thumb object.
     */
-    width=image->columns;
-    height=image->rows;
-    x=0;
-    y=0;
-    (void) ParseImageGeometry("106x106+0+0>",&x,&y,&width,&height);
-    image->orphan=True;
-    if (image->storage_class == PseudoClass)
-      tile_image=SampleImage(image,width,height,&image->exception);
-    else
-      tile_image=ZoomImage(image,width,height,&image->exception);
+    tile_image=CloneImage(image,0,0,True,&image->exception);
     if (tile_image == (Image *) NULL)
-      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
-        image);
+      ThrowWriterException(DelegateWarning,"Unable to clone image",image);
+    TransformImage(&tile_image,(char *) NULL,"106x106+0+0>");
     xref[object++]=TellBlob(image);
     FormatString(buffer,"%u 0 obj\n",object);
     (void) WriteBlobString(image,buffer);
