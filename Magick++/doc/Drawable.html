@@ -375,7 +375,10 @@ list. If a <i>fill</i> color is specified, then the object is filled.</font></td
 
 <td><font size=-1>void</font></td>
 
-<td><font size=-1>Pop Graphic Context</font></td>
+<td><font size=-1>Pop Graphic Context. Removing the current graphic context
+from the graphic context stack returns the options to the settings they
+had prior to the preceding <i><a href="#DrawablePushGraphicContext">DrawablePushGraphicContext</a></i>
+operation.</font></td>
 </tr>
 
 <tr>
@@ -385,7 +388,13 @@ list. If a <i>fill</i> color is specified, then the object is filled.</font></td
 
 <td><font size=-1>void</font></td>
 
-<td><font size=-1>Push Graphic Context</font></td>
+<td><font size=-1>Push Graphic Context.&nbsp; When a graphic context is
+pushed, options such as coordinate transformations, color settings, etc.,
+are saved to a new graphic context. This allows related options to be saved
+on a graphic context "stack" in order to support heirarchical nesting of
+options. When <i><a href="#DrawablePopGraphicContext">DrawablePopGraphicContext</a></i>
+is used to pop the current graphic context, the options in effect during
+the last <i>DrawablePushGraphicContext</i> operation.</font></td>
 </tr>
 
 <tr NOSAVE>
