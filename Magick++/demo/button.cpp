@@ -79,6 +79,7 @@ int main( int /*argc*/, char ** argv)
     button.frame( "6x6+3+3" );
 
     // Quantize to desired colors
+    // button.quantizeTreeDepth(8);
     button.quantizeColors(16);
     button.quantize();
 

@@ -5,6 +5,7 @@ This file records noteworthy changes in Magick++.
     to use while writing.
   * Added a profile() method to Image to support adding, removing,
     and retrieving named embedded application profiles.
+  * Magick++ is built as a DLL under Windows.
 
 (5.4.7)
   * No changes to report.
