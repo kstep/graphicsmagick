@@ -10,6 +10,24 @@ Magick++ release number increments even if there are no changes associated
 with Magick++ itself.
 
 <p>
+(5.4.5)<BR>
+<UL>
+  <LI> Drawable classes have been re-written to use ImageMagick's draw.h
+    APIs.<BR>
+  <LI> Fixed a nasty bug when reporting some forms of errors.  The bug
+    was causing an exception in error.c.
+  <LI> Template API implementation cleanup.
+  <LI> Rationalized some parameter types.
+  <LI> New method, Pixels::getConst() to obtain read-only pixels.
+  <LI> DrawableDashArray() prefers an array of type 'double' rather than
+    'unsigned int'.  Please use the new form.
+  <LI> Composite images are output as embedded inlined Base64 when
+    preparing MVG data.<BR>
+  <LI> Blob class supports encoding and decoding Base64 data.
+  <LI> New method, Image::ping to ping a Blob.
+
+</UL>
+<p>
 (5.4.4)<BR>
 <UL>
   <LI> Fixed a bug in DrawableDashArray.
