@@ -10,7 +10,3 @@ hopefully have done before one of the next releases:
 
   - investigate whether there is a standard way of embedding JBIG
     into TIFF and implement it (see also RFC 2301)
-
-  - ITU-T T.85 compatibility (this means supporting files with
-    Y_D = 0xffffffff, L_D = 0xffffffff, and MX = 127)
-

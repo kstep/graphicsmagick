@@ -1,7 +1,7 @@
 /*
  *  pbmtojbg - Portable Bitmap to JBIG converter
  *
- *  Markus Kuhn -- mkuhn@acm.org
+ *  Markus Kuhn -- http://www.cl.cam.ac.uk/~mgk25/jbigkit/
  *
  *  $Id$
  */
@@ -11,30 +11,45 @@
 #include <ctype.h>
 #include "jbig.h"
 
-const char usage_msg[] = "PBMtoJBIG converter " JBG_VERSION " -- "
-"creates bi-level image entity (BIE) as output file\n\n"
-"usage: %s [<options>] [<input-file> | -  [<output-file>]]\n\n"
-"options:\n\n"
-"  -q\t\tsequential coding, no differential layers (like -d 0)\n"
-"  -x number\tmaximum width of lowest resolution layer (default 640)\n"
-"  -y number\tmaximum height of lowest resolution layer (default 480)\n"
-"  -l number\tlowest layer written to output file (default 0)\n"
-"  -h number\thighest layer written to output file (default max)\n"
-"  -b\t\tuse binary code for multiple bitplanes (default: Gray code)\n"
-"  -d number\ttotal number of differential layers (overrides -x and -y)\n"
-"  -s number\theight of a stripe in layer 0\n"
-"  -m number\tmaximum adaptive template pixel horizontal offset (default 8)\n"
-"  -t number\tencode only that many most significant planes\n"
-"  -o number\torder byte value: add 1=SMID, 2=ILEAVE, 4=SEQ, 8=HITOLO\n"
-"\t\t(default 3 = ILEAVE+SMID)\n"
-"  -p number\toptions byte value: add DPON=4, TPBON=8, TPDON=16, LRLTWO=64\n"
-"\t\t(default 28 = DPON+TPBON+TPDON)\n"
-"  -c\t\tdelay adaptive template changes to first line of next stripe\n"
-"\t\t(only provided for a conformance test)\n"
-"  -v\t\tverbose output\n\n";
 
 char *progname;                  /* global pointer to argv[0] */
 unsigned long total_length = 0;  /* used for determining output file length */
+
+
+/*
+ * Print usage message and abort
+ */
+static void usage(void)
+{
+  fprintf(stderr,
+     "PBMtoJBIG converter " JBG_VERSION " -- "
+     "creates bi-level image entity (BIE) as output file\n\n"
+     "usage: %s [<options>] [<input-file> | -  [<output-file>]]\n\n"
+     "options:\n\n", progname);
+  fprintf(stderr,
+     "  -q\t\tsequential coding, no differential layers (like -d 0)\n"
+     "  -x number\tmaximum width of lowest resolution layer (default 640)\n"
+     "  -y number\tmaximum height of lowest resolution layer (default 480)\n"
+     "  -l number\tlowest layer written to output file (default 0)\n"
+     "  -h number\thighest layer written to output file (default max)\n"
+     "  -b\t\tuse binary code for multiple bitplanes (default: Gray code)\n"
+     "  -d number\ttotal number of differential layers (overrides -x and -y)\n"
+     "  -s number\theight of a stripe in layer 0\n");
+  fprintf(stderr,
+     "  -m number\tmaximum adaptive template pixel horizontal offset (default 8)\n"
+     "  -t number\tencode only that many most significant planes\n"
+     "  -o number\torder byte value: add 1=SMID, 2=ILEAVE, 4=SEQ, 8=HITOLO\n"
+     "\t\t(default 3 = ILEAVE+SMID)\n"
+     "  -p number\toptions byte value: add DPON=4, TPBON=8, TPDON=16, LRLTWO=64\n"
+     "\t\t(default 28 = DPON+TPBON+TPDON)\n"
+     "  -c\t\tdelay adaptive template changes to first line of next stripe\n"
+	  "\t\t(only provided for a conformance test)\n");
+  fprintf(stderr,
+     "  -Y number\t\tannounce in header initially this larger image height\n"
+     "\t\t(only for generating test files with NEWLEN and VLENGTH=1)\n"
+     "  -v\t\tverbose output\n\n");
+  exit(1);
+}
 
 
 /*
@@ -86,20 +101,10 @@ static void data_out(unsigned char *start, size_t len, void *file)
 }
 
 
-/*
- * Print usage message and abort
- */
-static void usage(void)
-{
-  fprintf(stderr, usage_msg, progname);
-  exit(1);
-}
-
-
 int main (int argc, char **argv)
 {
   FILE *fin = stdin, *fout = stdout;
-  const char *fnin = "<stdin>", *fnout = "<stdout>";
+  const char *fnin = NULL, *fnout = NULL;
   int i, j, c;
   int all_args = 0, files = 0;
   unsigned long x, y;
@@ -113,6 +118,7 @@ int main (int argc, char **argv)
   int verbose = 0, delay_at = 0, use_graycode = 1;
   long mwidth = 640, mheight = 480;
   int dl = -1, dh = -1, d = -1, l0 = -1, mx = -1;
+  unsigned long y1 = 0;
   int options = JBG_TPDON | JBG_TPBON | JBG_DPON;
   int order = JBG_ILEAVE | JBG_SMID;
 
@@ -121,13 +127,16 @@ int main (int argc, char **argv)
   progname = argv[0];
   for (i = 1; i < argc; i++) {
     if (!all_args && argv[i][0] == '-')
-      if (argv[i][1] == '\0' && files == 0)
-	++files;
-      else
+      if (argv[i][1] == 0) {
+	if (files++) usage();
+      } else
 	for (j = 1; j > 0 && argv[i][j]; j++)
-	  switch(tolower(argv[i][j])) {
+	  switch(argv[i][j]) {
 	  case '-' :
 	    all_args = 1;
+	    break;
+	  case 0 :
+	    if (files++) usage();
 	    break;
 	  case 'v':
 	    verbose = 1;
@@ -147,6 +156,11 @@ int main (int argc, char **argv)
 	    if (++i >= argc) usage();
 	    j = -1;
 	    mheight = atol(argv[i]);
+	    break;
+	  case 'Y':
+	    if (++i >= argc) usage();
+	    j = -1;
+	    y1 = atol(argv[i]);
 	    break;
 	  case 'o':
 	    if (++i >= argc) usage();
@@ -196,31 +210,32 @@ int main (int argc, char **argv)
 	  }
     else
       switch (files++) {
-      case 0:
-	if (argv[i][0] != '-' || argv[i][1] != '\0') {
-	  fnin = argv[i];
-	  fin = fopen(fnin, "rb");
-	  if (!fin) {
-	    fprintf(stderr, "Can't open input file '%s", fnin);
-	    perror("'");
-	    exit(1);
-	  }
-	}
-	break;
-      case 1:
-	fnout = argv[i];
-	fout = fopen(fnout, "wb");
-	if (!fout) {
-	  fprintf(stderr, "Can't open input file '%s", fnout);
-	  perror("'");
-	  exit(1);
-	}
-	break;
+      case 0: fnin  = argv[i]; break;
+      case 1: fnout = argv[i]; break;
       default:
 	usage();
       }
   }
   
+  if (fnin) {
+    fin = fopen(fnin, "rb");
+    if (!fin) {
+      fprintf(stderr, "Can't open input file '%s", fnin);
+      perror("'");
+      exit(1);
+    }
+  } else
+    fnin  = "<stdin>";
+  if (fnout) {
+    fout = fopen(fnout, "wb");
+    if (!fout) {
+      fprintf(stderr, "Can't open input file '%s", fnout);
+      perror("'");
+      exit(1);
+    }
+  } else
+    fnout = "<stdout>";
+
   /* read PBM header */
   while ((c = getc(fin)) != EOF && (isspace(c) || c == '#'))
     if (c == '#')
@@ -322,6 +337,8 @@ int main (int argc, char **argv)
   /* Specify a few other options (each is ignored if negative) */
   if (delay_at)
     options |= JBG_DELAY_AT;
+  if (y1)
+    s.yd1 = y1;
   jbg_enc_lrange(&s, dl, dh);
   jbg_enc_options(&s, order, options, l0, mx, -1);
 
