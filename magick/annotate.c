@@ -1237,12 +1237,8 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
             p=bitmap->bitmap.buffer;
             for (y=0; y < (long) bitmap->bitmap.rows; y++)
             {
-              if ((unsigned long) ceil(point.y+y-0.5) >= image->rows)
-                {
-                  p+=bitmap->bitmap.width;
-                  continue;
-                }
-              if ((unsigned long) ceil(point.y+y-0.5) < 0)
+              if (((unsigned long) ceil(point.y+y-0.5) < 0) ||
+                  ((unsigned long) ceil(point.y+y-0.5) >= image->rows))
                 {
                   p+=bitmap->bitmap.width;
                   continue;
