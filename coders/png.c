@@ -2039,8 +2039,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 image->page.width=subframe_width;
                 image->page.height=subframe_height;
                 image->page.x=clip.left;
-                /* Correct for SouthWest gravity */
-                image->page.y=(long) image->page.height-clip.bottom;
+                image->page.y=clip.bottom;
                 image->background_color=mng_background_color;
                 image->matte=False;
                 image->delay=0;
@@ -2544,8 +2543,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image->page.width=subframe_width;
             image->page.height=subframe_height;
             image->page.x=clip.left;
-            /* Correct for SouthWest gravity */
-            image->page.y=(long) image->page.height-clip.bottom;
+            image->page.y=clip.bottom;
             image->background_color=mng_background_color;
             image->matte=False;
             SetImage(image,OpaqueOpacity);
@@ -2590,7 +2588,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image->page.height=mng_height;
         image->page.x=mng_info->x_off[object_id];
         image->page.y=mng_info->y_off[object_id];
-        /* Correct for SouthWest gravity later after image height is known. */
         image->iterations=mng_iterations;
         /*
           Seek back to the beginning of the IHDR chunk's length field.
@@ -2983,9 +2980,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     else
       {
-        /* Correct image->page.y for SouthWest gravity. */
-        image->page.y=(long) image->page.height-mng_info->y_off[object_id]
-          -(long) ping_info->height;
+        image->page.y=mng_info->y_off[object_id];
       }
     image->compression=ZipCompression;
     image->columns=ping_info->width;
@@ -3885,8 +3880,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     image->page.width=image->columns;
                     image->page.height=image->rows;
                     image->page.x=crop_box.left;
-                    /* Correct for SouthWest gravity */
-                    image->page.y=(long) image->page.height-crop_box.bottom;
+                    image->page.y=crop_box.bottom;
                   }
               }
             else
@@ -4588,9 +4582,6 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           SetGeometry(image,&page);
           (void) GetMagickGeometry(image_info->page,&page.x,&page.y,
             &page.width,&page.height);
-          /* change page.y from SouthWest to NorthWest gravity */
-          image->page.y=(long) image->page.height-image->page.y
-            -(long) image->rows;
           need_geom=False;
         }
       /*
@@ -4611,8 +4602,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       for (next_image=image; next_image != (Image *) NULL; )
       {
         page=next_image->page;
-        /* change page.y from SouthWest to NorthWest gravity */
-        page.y=(long) image->page.height-image->page.y-(long) image->rows;
+        page.y=image->page.y;
         if (need_geom)
           {
             if ((next_image->columns+page.x) > page.width)
