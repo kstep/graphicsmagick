@@ -424,13 +424,17 @@ color name</a></i></td>
  </tr>
   <tr>
  <td>Composite</td>
-  <td>compose=&gt;{Over, In, Out, Atop, Xor, Plus, Minus, Add, Subtract,
-Difference, Multiply, Bumpmap, Copy, CopyRed, CopyGreen, CopyBlue, CopyMatte,
-Dissolve, Clear, Displace, Modulate, Threshold}, image=&gt;<i>image-handle,
-geometry=&gt;geometry, x=&gt;integer, y=&gt;integer, gravity=&gt;{NorthWest,
-North, NorthEast, West, Center, East, SouthWest, South, SouthEast}</i>,
-opacity=&gt;<i>integer</i>, tile=&gt;{True, False}, rotate=&gt;<i>double</i>,
-color=&gt;<i><a href="color.html">color name</a></i>
+  <td> image=&gt;<i>image-handle</i>,
+  compose=&gt;{Over, In, Out, Atop, Xor, Plus, Minus, Add, Subtract,
+	  Difference, Multiply, Bumpmap, Copy, CopyRed, CopyGreen, CopyBlue,
+		CopyMatte, Dissolve, Clear, Displace, Modulate, Threshold},
+    mask=&gt;<i>image-handle</i>, geometry=&gt;<i>geometry</i>,
+    x=&gt;<i>integer</i>, y=&gt;<i>integer</i>,
+    gravity=&gt;{NorthWest, North, NorthEast, West, Center, East, SouthWest,
+		South, SouthEast}</i>, opacity=&gt;<i>integer</i>, tile=&gt;{True, False},
+    rotate=&gt;<i>double</i>, color=&gt;<i><a href="color.html">color name</a>
+		</i>
+
 </td>
   <td>composite one image onto another</td>
  </tr>

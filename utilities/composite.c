@@ -147,7 +147,6 @@ static unsigned int CompositeImageList(ImageInfo *image_info,Image **image,
       assert(composite_image->signature == MagickSignature);
       if (mask_image != (Image *) NULL)
         {
-          assert(mask_image != (Image *) NULL);
           assert(mask_image->signature == MagickSignature);
           SetImageType(composite_image,TrueColorMatteType);
           if (!composite_image->matte)

@@ -352,7 +352,8 @@ static struct
       {"geometry", StringReference}, {"x", IntegerReference},
       {"y", IntegerReference}, {"gravity", GravityTypes},
       {"opacity", DoubleReference}, {"tile", BooleanTypes},
-      {"rotate", DoubleReference}, {"color", StringReference} } },
+      {"rotate", DoubleReference}, {"color", StringReference},
+			{"mask", ImageReference} } },
     { "Contrast", { {"sharp", BooleanTypes} } },
     { "CycleColormap", { {"display", IntegerReference} } },
     { "Draw", { {"primitive", PrimitiveTypes}, {"points", StringReference},
@@ -4854,6 +4855,7 @@ Mogrify(ref,...)
 
           Image
             *composite_image,
+            *mask_image,
             *rotate_image;
 
           compose=OverCompositeOp;
@@ -4935,6 +4937,15 @@ Mogrify(ref,...)
             geometry.y=argument_list[4].int_reference;
           if (attribute_flag[5])
             image->gravity=(GravityType) argument_list[5].int_reference;
+          if (attribute_flag[10])
+            {
+              mask_image=argument_list[10].image_reference;
+              SetImageType(composite_image,TrueColorMatteType);
+              if (!composite_image->matte)
+                SetImageOpacity(composite_image,OpaqueOpacity);
+              (void) CompositeImage(composite_image,CopyOpacityCompositeOp,
+                mask_image,0,0);
+            }
           /*
             Composite image.
           */
