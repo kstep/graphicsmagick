@@ -812,6 +812,7 @@ MagickExport unsigned int SetImageProfile(Image *image,const char *name,
           image_profile=&image->generic_profile[image->generic_profiles-1];
           image_profile->info=0;
           image_profile->length=0;
+	  image_profile->name=NULL;
         }
     }
   if (image_profile)
@@ -823,12 +824,16 @@ MagickExport unsigned int SetImageProfile(Image *image,const char *name,
       if (profile)
         {
           /* Clone user-supplied profile */
+          CloneString(&image_profile->name, name);
+	  if (!image_profile->name)
+            ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
+              UnableToAddColorProfile);
           image_profile->info=MagickAllocateMemory(unsigned char *,length);
           if (!image_profile->info)
             ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
               UnableToAddColorProfile);
           image_profile->length=length;
-          (void) memcpy(image_profile,profile,length);
+          (void) memcpy(image_profile->info,profile,length);
         }
     }
   return (True);

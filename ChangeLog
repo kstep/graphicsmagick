@@ -1,3 +1,7 @@
+2004-02-12  Tim Hunter  <cyclists@nc.rr.com>
+
+	* magick/profile.c (SetImageProfile): Bug fixes.
+
 2004-02-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/xpm.c (UnregisterXPMImage): Unregister PICON registration.

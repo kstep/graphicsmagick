@@ -718,15 +718,47 @@ typedef struct _Image
   void
     *client_data;       /* User specified opaque data pointer */
 
+  /*
+    Output file name.
 
+    A colon delimited format identifier may be prepended to the file
+    name in order to force a particular output format. Otherwise the
+    file extension is used. If no format prefix or file extension is
+    present, then the output format is determined by the 'magick'
+    field.
+  */
   char
-    filename[MaxTextExtent], /* Output filename */
-    magick_filename[MaxTextExtent], /* Original image filename */
-    magick[MaxTextExtent];   /* Output format */
+    filename[MaxTextExtent];
 
+  /*
+    Original file name (name of input image file)
+  */
+  char
+    magick_filename[MaxTextExtent];
+
+  /*
+    File format of the input file, and the default output format.
+
+    The precedence when selecting the output format is:
+      1) magick prefix to file name (e.g. "jpeg:foo).
+      2) file name extension. (e.g. "foo.jpg")
+      3) content of this magick field.
+
+  */
+  char
+    magick[MaxTextExtent];
+
+  /*
+    Original image width (before transformations)
+  */
   unsigned long
-    magick_columns,     /* Base image width (before transformations) */
-    magick_rows;        /* Base image height (before transformations) */
+    magick_columns;
+
+  /*
+    Original image height (before transformations)
+  */
+  unsigned long
+    magick_rows;
 
   ExceptionInfo
     exception;          /* Any error associated with this image frame */
