@@ -2610,6 +2610,8 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
     if (status == False)
       break;
     primitive_info[i].primitive=UndefinedPrimitive;
+    if (i == 0)
+      continue;
     /*
       Transform points.
     */
