@@ -723,6 +723,10 @@ Root: HKCR; Subkey: "Magick.XWDFile\shell\edit"; ValueType: none; Tasks: associa
 Root: HKCR; Subkey: "Magick.XWDFile\shell\edit\command"; ValueType: string; ValueName: ""; ValueData: """{app}\IMDisplay.exe"" ""%1"""; Tasks: associate_extensions
 
 [Files]
+; Compiler-dependent DLLs
+Source: "..\bin\msvcr70.dll"; DestDir: "{app}"; CopyMode: alwaysoverwrite
+Source: "..\bin\msvcp70.dll"; DestDir: "{app}"; CopyMode: alwaysoverwrite
+Source: "..\bin\mfc70.dll"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 ; Executables
 Source: "..\bin\IMDisplay.exe"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 Source: "..\bin\animate.exe"; DestDir: "{app}"; CopyMode: alwaysoverwrite
@@ -812,11 +816,13 @@ Source: "..\..\magick\cache_view.h"; DestDir: "{app}\include\magick"; CopyMode: 
 Source: "..\..\magick\command.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\compress.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\delegate.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
+Source: "..\..\magick\deprecate.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\draw.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\error.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\gem.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\image.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\list.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
+Source: "..\..\magick\log.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\magic.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\magick_config.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\magick.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
@@ -826,6 +832,7 @@ Source: "..\..\magick\PreRvIcccm.h"; DestDir: "{app}\include\magick"; CopyMode: 
 Source: "..\..\magick\quantize.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\registry.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\render.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
+Source: "..\..\magick\resource.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\semaphore.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\timer.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
 Source: "..\..\magick\utility.h"; DestDir: "{app}\include\magick"; CopyMode: alwaysoverwrite
