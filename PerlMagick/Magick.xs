@@ -6061,7 +6061,7 @@ Morph(ref,...)
         case 'F':
         case 'f':
         {
-          if (strEQcase(attribute,"frame"))
+          if (strEQcase(attribute,"frames"))
             {
               number_frames=SvIV(ST(i));
               break;
