@@ -154,7 +154,7 @@ AC_ARG_ENABLE(sfio,
 
 # Set pixel cache threshold
 AC_ARG_WITH(cache,
-	      [  --with-cache          set pixel cache threshhold (default 80MB)],
+	      [  --with-cache            set pixel cache threshhold (default 80MB)],
 	      [with_cache=$withval],
 	      [with_cache=80])
 AC_DEFINE_UNQUOTED(PixelCacheThreshold,$with_cache)
