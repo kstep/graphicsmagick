@@ -2,6 +2,18 @@
 Items large and small which remain to be worked on.
 --------------------------------------------------------------------
 
+Immediate Bugs
+==============
+
+ o Under Windows (static build only), 'convert -list delegate' prints
+   infinite blank lines after displaying a correct list.
+ o Under Windows (static build only), type-ghostscript.mgk fails to load.
+ o Under Windows (static build only), MAGICK_DEBUG, -debug, and editing
+   log.mgk seem to have no effect at all.
+ o Under Windows, Magick++ exceptions do not have the exception ID codes
+   translated correctly.  Apparent failure of FormatMessage() in locale.c.
+ o SegmentImage is producing black images in some cases.
+
 For Next Release
 ===============
 

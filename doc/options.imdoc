@@ -2428,8 +2428,9 @@ You can use the option <tt>-list resource</tt> to find out the limits.</pp>
 <abs>the type of list</abs>
 
 <pp>
-Choices are: <s>Delegate</s>, <s>Format</s>, <s>Magic</s>,
-<s>Module</s>, <s>Resource</s>, or <s>Type</s>.
+Choices are: <s>Color</s>, <s>Delegate</s>, <s>Format</s>, <s>Magic</s>,
+<s>Module</s>, <s>Resource</s>, or <s>Type</s>. The <s>Module</s> option
+is only available if GraphicsMagick was built to support loadable modules.
 </pp>
 
 <pp>
