@@ -8,7 +8,7 @@
 extern "C" {
 #endif
 
-#define MinBlobExtent  102400L
+#define MinBlobExtent  32767L
 
 typedef struct _BlobInfo
 {
