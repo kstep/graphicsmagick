@@ -581,7 +581,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         bmp_info.alpha_mask=0;
         if (logging)
           {
-            LogMagickEvent(CoderEvent,"  Format: OS/2");
+            LogMagickEvent(CoderEvent,"  Format: OS/2 Bitmap");
             LogMagickEvent(CoderEvent,"  Geometry: %ldx%ld",bmp_info.width,
               bmp_info.height);
           }
@@ -608,7 +608,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         profile_size=0;
         if (logging)
           {
-            LogMagickEvent(CoderEvent,"  Format: MS Windows");
+            LogMagickEvent(CoderEvent,"  Format: MS Windows bitmap");
             LogMagickEvent(CoderEvent,"  Geometry: %ldx%ld",bmp_info.width,
               bmp_info.height);
             LogMagickEvent(CoderEvent,"  Bits per pixel: %d",
