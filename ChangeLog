@@ -1,3 +1,8 @@
+2003-04-28  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* magick/cache.c: CloneImagePixels(): applied Cristy's bugfix
+	from IM-5.5.7.
+
 2003-04-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* www/api.html: The demo program on the ImageMagick API page is

@@ -825,7 +825,7 @@ static unsigned int ClonePixelCache(Image *image,Image *clone_image)
             ThrowBinaryException(FileOpenError,"UnableToOpenFile",
               cache_info->cache_filename);
         }
-      (void) MagickSeek(cache_file,0,SEEK_SET);
+      (void) MagickSeek(cache_file,cache_info->offset,SEEK_SET);
       if (clone_info->type != DiskCache)
         {
           (void) LogMagickEvent(CacheEvent,GetMagickModule(),"disk => memory");
@@ -862,7 +862,7 @@ static unsigned int ClonePixelCache(Image *image,Image *clone_image)
                 clone_info->cache_filename)
             }
         }
-      (void) MagickSeek(clone_file,0,SEEK_SET);
+      (void) MagickSeek(clone_file,cache_info->offset,SEEK_SET);
       if (cache_info->type != DiskCache)
         {
           (void) LogMagickEvent(CacheEvent,GetMagickModule(),"memory => disk");
@@ -892,6 +892,8 @@ static unsigned int ClonePixelCache(Image *image,Image *clone_image)
       ThrowBinaryException(ResourceLimitFatalError,"MemoryAllocationFailed",
         "UnableToCloneImage")
     }
+  (void) MagickSeek(cache_file,cache_info->offset,SEEK_SET);
+  (void) MagickSeek(clone_file,cache_info->offset,SEEK_SET);
   for (i=0; (length=read(cache_file,buffer,MaxBufferSize)) > 0; )
   {
     for (i=0; i < length; i+=count)
@@ -2394,7 +2396,7 @@ MagickExport unsigned int PersistCache(Image *image,const char *filename,
       cache_info->offset=(*offset);
       if (!OpenCache(image,ReadMode))
         return(False);
-      (void) ReferenceCache(cache_info);
+      cache_info=ReferenceCache(cache_info);
       *offset+=cache_info->length+pagesize-(cache_info->length % pagesize);
       (void) LogMagickEvent(CacheEvent,GetMagickModule(),
         "Attach persistent cache");
@@ -2412,7 +2414,7 @@ MagickExport unsigned int PersistCache(Image *image,const char *filename,
         {
           (void) strncpy(cache_info->cache_filename,filename,MaxTextExtent-1);
           LiberateSemaphoreInfo(&cache_info->semaphore);
-          (void) ReferenceCache(cache_info);
+          cache_info=ReferenceCache(cache_info);
           *offset+=cache_info->length+pagesize-(cache_info->length % pagesize);
           (void) LogMagickEvent(CacheEvent,GetMagickModule(),
             "Usurp resident persistent cache");
@@ -2447,7 +2449,7 @@ MagickExport unsigned int PersistCache(Image *image,const char *filename,
     if (!SyncImagePixels(clone_image))
       break;
   }
-  (void) ReferenceCache(cache_info);
+  cache_info=ReferenceCache(cache_info);
   DestroyImage(clone_image);
   if (y < (long) image->rows)
     return(False);
