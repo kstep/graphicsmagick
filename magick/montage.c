@@ -738,7 +738,7 @@ MagickExport Image *MontageImages(const Image *image,
               for (rows=0; rows < ((long) next->rows-4); rows++)
               {
                 q=GetImagePixels(montage_next,x+x_offset+next->columns,
-                  y_offset+y+rows+4,Min(tile_info.x,4),1);
+                  y+y_offset+rows+4,Min(tile_info.x,4),1);
                 if (q == (PixelPacket *) NULL)
                   break;
                 for (columns=0; columns < Min(tile_info.x,4); columns++)
@@ -751,7 +751,7 @@ MagickExport Image *MontageImages(const Image *image,
               }
               for (rows=0; rows < Min(tile_info.y,4); rows++)
               {
-                q=GetImagePixels(montage_next,x+x_offset+4,y_offset+y+
+                q=GetImagePixels(montage_next,x+x_offset+4,y+y_offset+
                   next->rows+rows,next->columns,1);
                 if (q == (PixelPacket *) NULL)
                   break;
