@@ -425,7 +425,7 @@ static void Usage(void)
       "-geometry geometry  location of the composite image",
       "-gravity type       which direction to gravitate towards",
       "-interlace type     None, Line, Plane, or Partition",
-      "-label name         assign a label to an image",
+      "-label name         ssign a label to an image",
       "-matte              store matte channel if the image has one",
       "-monochrome         transform image to black and white",
       "-negate             replace every pixel with its complementary color ",
@@ -574,6 +574,8 @@ int main(int argc,char **argv)
             if (exception.severity != UndefinedException)
               MagickWarning(exception.severity,exception.reason,
                 exception.description);
+            status=MogrifyImages(image_info,i,argv,&composite_image);
+            CatchImageException(composite_image);
             continue;
           }
         if (mask_image != (Image *) NULL)
@@ -584,6 +586,8 @@ int main(int argc,char **argv)
             if (exception.severity != UndefinedException)
               MagickWarning(exception.severity,exception.reason,
                 exception.description);
+            status=MogrifyImages(image_info,i,argv,&image);
+            CatchImageException(image);
             continue;
           }
         mask_image=ReadImage(image_info,&exception);
@@ -593,6 +597,8 @@ int main(int argc,char **argv)
         if (exception.severity != UndefinedException)
           MagickWarning(exception.severity,exception.reason,
             exception.description);
+        status=MogrifyImages(image_info,i,argv,&mask_image);
+        CatchImageException(mask_image);
       }
     else
       switch(*(option+1))
@@ -872,13 +878,15 @@ int main(int argc,char **argv)
         {
           if (LocaleCompare("geometry",option+1) == 0)
             {
-              (void) CloneString(&option_info.geometry,(char *) NULL);
+              if (composite_image == (Image *) NULL)
+                (void) CloneString(&option_info.geometry,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !IsGeometry(argv[i]))
                     MagickError(OptionError,"Missing geometry",option);
-                  (void) CloneString(&option_info.geometry,argv[i]);
+                  if (composite_image == (Image *) NULL)
+                    (void) CloneString(&option_info.geometry,argv[i]);
                 }
               break;
             }
