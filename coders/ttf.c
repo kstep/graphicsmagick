@@ -126,7 +126,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   y=0;
   (void) fprintf(file,"font @%s\n",image_info->filename);
-  (void) fprintf(file,"pointsize 18\n");
+  (void) fprintf(file,"font-size 18\n");
   (void) fprintf(file,"text +10%+d 'abcdefghijklmnopqrstuvwxyz'\n",y+=20);
   (void) fprintf(file,"text +10%+d 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'\n",y+=20);
   (void) fprintf(file,"text +10%+d '1234567890.:,;(:*!?\")'\n",y+=20);
@@ -134,9 +134,9 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   for (i=12; i <= 72; i+=6)
   {
     y+=i+12;
-    (void) fprintf(file,"pointsize 18\n");
+    (void) fprintf(file,"font-size 18\n");
     (void) fprintf(file,"text +10+%d '%d'\n",y,i);
-    (void) fprintf(file,"pointsize %d",i);
+    (void) fprintf(file,"font-size %d",i);
     (void) fprintf(file,
       "text +50+%d 'That which does not destroy me, only makes me stronger'\n",
       y);
