@@ -566,7 +566,7 @@ static unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
           Write a bitmap byte to the image file.
         */
         byte>>=(8-bit);
-        FormatString(buffer,"0x%02X, ",(unsigned int) (byte & 0xff));
+        FormatString(buffer,"0x%02X, ",(unsigned int) !(byte & 0xff));
         (void) WriteBlob(image,strlen(buffer),buffer);
         count++;
         if (count == 12)

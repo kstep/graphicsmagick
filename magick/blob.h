@@ -63,9 +63,6 @@ typedef struct _BlobInfo
     mapped,
     eof;
 
-  unsigned char
-    *data;
-
   ExtendedSignedIntegralType
     offset,
     size;
@@ -75,14 +72,17 @@ typedef struct _BlobInfo
     status,
     temporary;
 
-  FILE
-    *file;
-
   StreamType
     type;
 
+  FILE
+    *file;
+
   StreamHandler
     stream;
+
+  unsigned char
+    *data;
 
   SemaphoreInfo
     *semaphore;
