@@ -629,7 +629,7 @@ MagickExport char *GetModulePath(const char *filename,ExceptionInfo *exception)
       (void) strcpy(prefix,SetClientPath((char *) NULL));
       if (debug)
         (void) fprintf(stdout,"original path  \"%s\"\n",prefix);
-      ChopPathComponents(prefix,1,debug);
+      ChopPathComponents(prefix,1);
       if (debug)
         (void) fprintf(stdout,"chopped path  \"%s\"\n",prefix);
       FormatString(path,"%.1024s/lib/ImageMagick/modules/coders/%.1024s",

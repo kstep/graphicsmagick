@@ -545,8 +545,7 @@ MagickExport unsigned int CheckFileAccessability(const char *filename,
 %
 %  The format of the ChopPathComponents function is:
 %
-%      ChopPathComponents(char *path,const unsigned long number_components,
-%        const unsigned int debug)
+%      ChopPathComponents(char *path,const unsigned long number_components)
 %
 %  A description of each parameter follows:
 %
@@ -555,11 +554,9 @@ MagickExport unsigned int CheckFileAccessability(const char *filename,
 %
 %    o numebr_components: The number of directory components to truncate.
 %
-%    o debug: display copious debugging information.
-%
 */
 MagickExport void ChopPathComponents(char *path,
-  const unsigned long number_components,const unsigned int debug)
+  const unsigned long number_components)
 {
   register char
     *p;
@@ -573,8 +570,6 @@ MagickExport void ChopPathComponents(char *path,
   count=0;
   length=strlen(path);
   p=path+length;
-  if (debug)
-    (void) fprintf(stdout,"original path  \"%s\"\n", path);
   if (*p == *DirectorySeparator)
     *p='\0';
   for (count=0; (count < (long) number_components) && (p > path); p--)
@@ -583,8 +578,6 @@ MagickExport void ChopPathComponents(char *path,
         *p='\0';
         count++;
       }
-  if (debug)
-    (void) fprintf(stdout,"chopped path \"%s\"\n", path);
 }
 
 /*
@@ -1134,7 +1127,11 @@ MagickExport char *GetConfigurePath(const char *filename,
         prefix[MaxTextExtent];
 
       strcpy(prefix,SetClientPath((char *) NULL));
-      ChopPathComponents(prefix,1,debug);
+      if (debug)
+        (void) fprintf(stdout,"original path  \"%s\"\n",prefix);
+      ChopPathComponents(prefix,1);
+      if (debug)
+        (void) fprintf(stdout,"chopped path  \"%s\"\n",prefix);
       FormatString(path,"%.1024s/lib/ImageMagick/%.1024s",prefix,filename);
 #else
       FormatString(path,"%.1024s%s%.1024s",SetClientPath((char *) NULL),
