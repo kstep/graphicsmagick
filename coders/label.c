@@ -658,8 +658,7 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
   if (status)
     ThrowReaderException(DelegateWarning,"Unable to open TTF font",image);
   TT_Get_Face_Properties(face,&face_properties);
-  if (strcmp(text,Alphabet) == 0)
-    GetFontInfo(face,&face_properties,image);
+  GetFontInfo(face,&face_properties,image);
   status=TT_New_Instance(face,&instance);
   if ((image->x_resolution == 0.0) || (image->y_resolution == 0.0))
     {
