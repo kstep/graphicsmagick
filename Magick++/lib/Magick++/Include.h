@@ -470,6 +470,7 @@ namespace Magick
   using MagickLib::SharpenImage;
   using MagickLib::ShaveImage;
   using MagickLib::ShearImage;
+  using MagickLib::SizeBlob;
   using MagickLib::SolarizeImage;
   using MagickLib::SpreadImage;
   using MagickLib::SteganoImage;
