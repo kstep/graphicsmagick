@@ -434,15 +434,15 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
           {
             case VFF_MAPTYP_2_BYTE:
             {
-              MSBOrderShort((char *) viff_colormap,(bytes_per_pixel*
-                image->colors*viff_info.map_rows));
+              MSBOrderShort(viff_colormap,(bytes_per_pixel*image->colors*
+                viff_info.map_rows));
               break;
             }
             case VFF_MAPTYP_4_BYTE:
             case VFF_MAPTYP_FLOAT:
             {
-              MSBOrderLong((char *) viff_colormap,(bytes_per_pixel*
-                image->colors*viff_info.map_rows));
+              MSBOrderLong(viff_colormap,(bytes_per_pixel*image->colors*
+                viff_info.map_rows));
               break;
             }
             default: break;
@@ -519,13 +519,13 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
       {
         case VFF_TYP_2_BYTE:
         {
-          MSBOrderShort((char *) viff_pixels,bytes_per_pixel*max_packets);
+          MSBOrderShort(viff_pixels,bytes_per_pixel*max_packets);
           break;
         }
         case VFF_TYP_4_BYTE:
         case VFF_TYP_FLOAT:
         {
-          MSBOrderLong((char *) viff_pixels,bytes_per_pixel*max_packets);
+          MSBOrderLong(viff_pixels,bytes_per_pixel*max_packets);
           break;
         }
         default: break;
