@@ -141,7 +141,7 @@ with a full rows of percent signs with comments describing the parameters
 required for the function and what it does. For ease in finding a function,
 they are sorted in alphabetical order. Most of the image functions are
 found in <tt>image.c</tt> and <tt>effects.c</tt>.
-<p>Here is a full example of a program, <tt>example.c</tt>, that reads
+<p>Here is a full example of a program, <tt>demo.c</tt>, that reads
 a JPEG image, creates a thumbnail, and writes it to disk in the PNG image
 format.
 <pre>&nbsp;&nbsp;&nbsp; #include &lt;stdio.h>
@@ -192,7 +192,7 @@ format.
 &nbsp;&nbsp;&nbsp; }</pre>
 Now we need to compile. On Unix, the command would look something like
 this:
-<pre>&nbsp;&nbsp;&nbsp; gcc `Magick-config --cflags --cppflags` example.c `Magick-config --ldflags --libs`</pre>
+<pre>&nbsp;&nbsp;&nbsp; gcc `Magick-config --cflags --cppflags` demo.c `Magick-config --ldflags --libs`</pre>
 Another example is <a href="smile.c">smile.c</a>. Compile and excute it
 to display a smiley face on your X server.
 <p>
