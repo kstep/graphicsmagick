@@ -906,7 +906,8 @@ MagickExport unsigned int NormalizeImage(Image *image)
       if (i > (long) high)
         normalize_map[i]=MaxRGB;
       else
-        normalize_map[i]=(Quantum) (MaxRGB*(i-low)/(high-low));
+        normalize_map[i]=(Quantum)
+          ((MaxRGB*(double) (i-low))/(double) (high-low));
   /*
     Normalize the image.
   */
