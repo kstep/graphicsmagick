@@ -1,6 +1,14 @@
 #!/bin/sh
-
+#
+# Configure options script for re-calling ImageMagick compilation
+# options required to use the ImageMagick library.
+#
+# Concept derived from gtk-config in the Gtk package except that Autoconf-style
+# configuration information is presented instead so that it may be used more
+# effictively in configure scripts.
+#
 prefix=@prefix@
+prefix_set=no
 exec_prefix=@exec_prefix@
 exec_prefix_set=no
 
@@ -21,6 +29,7 @@ while test $# -gt 0; do
   case $1 in
     --prefix=*)
       prefix=$optarg
+      prefix_set=yes
       if test $exec_prefix_set = no ; then
         exec_prefix=$optarg
       fi
@@ -42,10 +51,20 @@ while test $# -gt 0; do
       echo '@CFLAGS@'
       ;;
     --cppflags)
-      echo '@CPPFLAGS@'
+      if test $prefix_set = yes
+      then
+	echo "-I$prefix/include "'@CPPFLAGS@'
+      else
+	echo '@CPPFLAGS@'
+      fi
       ;;
     --ldflags)
-      echo '@LDFLAGS@'
+      if test $exec_prefix_set = yes || test $prefix_set = yes
+      then
+	echo "-L$exec_prefix/lib "'@LDFLAGS@'
+      else
+	echo '@LDFLAGS@'
+      fi
       ;;
     --libs)
       echo '@MAGICKLIB@ @LIBS@'

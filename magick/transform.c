@@ -314,7 +314,7 @@ Export void CoalesceImages(Image *images)
           "Memory reallocation failed");
         return;
       }
-    image->matte=
+    image->matte|=
       ((((bounding_box.x1 != x) ||
          (bounding_box.y1 != y)) &&
         ((bounding_box.x1 != previous_box.x1) ||

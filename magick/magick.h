@@ -67,7 +67,6 @@
 #endif
 
 #undef index
-#undef tainted
 
 #if defined(macintosh)
 #define HasJPEG
