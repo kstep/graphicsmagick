@@ -1018,7 +1018,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             image->background_color=target_color;
           return;
         }
-      if (strEQcase(attribute,"blue-point"))
+      if (strEQcase(attribute,"blue-") || strEQcase(attribute,"blue_"))
         {
           for ( ; image; image=image->next)
             (void) sscanf(SvPV(sval,na),"%lf,%lf",
@@ -1221,7 +1221,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
     case 'G':
     case 'g':
     {
-      if (strEQcase(attribute,"green-point"))
+      if (strEQcase(attribute,"green-") || strEQcase(attribute,"green_"))
         {
           for ( ; image; image=image->next)
             (void) sscanf(SvPV(sval,na),"%lf,%lf",
@@ -1461,7 +1461,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
     case 'R':
     case 'r':
     {
-      if (strEQcase(attribute,"red-point"))
+      if (strEQcase(attribute,"red-") || strEQcase(attribute,"red_"))
         {
           for ( ; image; image=image->next)
             (void) sscanf(SvPV(sval,na),"%lf,%lf",
@@ -1588,7 +1588,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
     case 'W':
     case 'w':
     {
-      if (strEQcase(attribute,"white-point"))
+      if (strEQcase(attribute,"white-") || strEQcase(attribute,"white_"))
         {
           for ( ; image; image=image->next)
             (void) sscanf(SvPV(sval,na),"%lf,%lf",
@@ -2717,37 +2717,28 @@ Get(ref,...)
               s=newSVpv(color,0);
               break;
             }
-          if (strEQcase(attribute,"base-column"))
+          if ((strEQcase(attribute,"base-column") ||
+              (strEQcase(attribute,"base_column"))
             {
               if (image)
                 s=newSViv(image->magick_columns);
               break;
             }
-          if (strEQcase(attribute,"base-filename"))
+          if ((strEQcase(attribute,"base-filename") ||
+              (strEQcase(attribute,"base_filename"))
             {
               if (image)
                 s=newSVpv(image->magick_filename,0);
               break;
             }
-          if (strEQcase(attribute,"base-height"))
+          if ((strEQcase(attribute,"base-row") ||
+              (strEQcase(attribute,"base_row"))
             {
               if (image)
                 s=newSViv(image->magick_rows);
               break;
             }
-          if (strEQcase(attribute,"base-row"))
-            {
-              if (image)
-                s=newSViv(image->magick_rows);
-              break;
-            }
-          if (strEQcase(attribute,"base-width"))
-            {
-              if (image)
-                s=newSViv(image->magick_columns);
-              break;
-            }
-          if (strEQcase(attribute,"blue-point"))
+          if ((strEQcase(attribute,"blue-") || (strEQcase(attribute,"blue_"))
             {
               if (!image)
                 break;
@@ -2990,7 +2981,7 @@ Get(ref,...)
                 s=newSVpv(image->geometry,0);
               break;
             }
-          if (strEQcase(attribute,"green-point"))
+          if ((strEQcase(attribute,"green-") || (strEQcase(attribute,"green_"))
             {
               if (!image)
                 break;
@@ -3241,7 +3232,7 @@ Get(ref,...)
                 }
               break;
             }
-          if (strEQcase(attribute,"red-point"))
+          if ((strEQcase(attribute,"red-") || (strEQcase(attribute,"red_"))
             {
               if (!image)
                 break;
@@ -3312,7 +3303,7 @@ Get(ref,...)
           if (strEQcase(attribute,"taint"))
             {
               if (image)
-                s=newSViv(IsTainted(image));
+                s=newSViv(IsImageTainted(image));
               break;
             }
           if (strEQcase(attribute,"temporary"))
@@ -3388,7 +3379,7 @@ Get(ref,...)
         case 'W':
         case 'w':
         {
-          if (strEQcase(attribute,"white-point"))
+          if ((strEQcase(attribute,"white-") || (strEQcase(attribute,"white_"))
             {
               if (!image)
                 break;
