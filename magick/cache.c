@@ -1598,7 +1598,10 @@ static unsigned int ModifyCache(Image *image)
       return(True);
    }
   cache_info->reference_count--;
-  clone_image=AllocateImage((ImageInfo *) NULL);
+  clone_image=(Image *) AcquireMemory(sizeof(Image));
+  if (clone_image == (Image *) NULL)
+    MagickError(ResourceLimitError,"Unable to clone image",
+      "Memory allocation failed");
   *clone_image=(*image);
   GetCacheInfo(&image->cache);
   for (y=0; y < (long) image->rows; y++)
