@@ -1288,7 +1288,7 @@ MagickExport unsigned int OpenCache(Image *image)
       /*
         Set cache memory threshold.
       */
-      SetCacheThreshold(1L << (8*sizeof(off_t)-1));
+      SetCacheThreshold(((off_t) 1L) << (8*sizeof(off_t)-21));
 #if defined(PixelCacheThreshold)
       SetCacheThreshold(PixelCacheThreshold);
 #endif
@@ -1763,7 +1763,7 @@ MagickExport PixelPacket *SetCacheNexus(Image *image,const long x,const long y,
 */
 MagickExport void SetCacheThreshold(const off_t threshold)
 {
-  cache_memory=1024*1024*threshold;
+  cache_memory=1024*1024*threshold-1;
 }
 
 /*
