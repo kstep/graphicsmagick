@@ -5,8 +5,6 @@
 #define _MAGICK_H
 
 #define __EXTENSIONS__  1
-#define _ISOC9X_SOURCE  1
-#define _LARGEFILE64_SOURCE  1
 #define _POSIX_C_SOURCE  199506L
 #define _XOPEN_SOURCE  500
 #define _XOPEN_SOURCE_EXTENDED  1
