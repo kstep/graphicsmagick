@@ -1,5 +1,5 @@
 2001-10-25 Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
-        * Fixed parsing bug for decorate #FFFFFF
+        * Fixed parsing bug for decorate #FFFFFF.
 
 2001-10-22 Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
         * Added tests for mpeg2 library to configure.
