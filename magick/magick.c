@@ -230,7 +230,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
   if(LoadModule(tag))
     for (p=magick_info_list; p != (MagickInfo *) NULL; p=p->next)
       if (Latin1Compare(p->tag,tag) == 0)
-	return(p);
+        return(p);
 #endif
   return((MagickInfo *) NULL);
 }
@@ -386,7 +386,7 @@ Export MagickInfo *SetMagickInfo(const char *tag)
   entry=(MagickInfo *) AllocateMemory(sizeof(MagickInfo));
   if (entry == (MagickInfo *) NULL)
     MagickError(ResourceLimitError,"Unable to allocate image",
-		"Memory allocation failed");
+                "Memory allocation failed");
   entry->tag=AllocateString(tag);
   entry->decoder=(Image *(*)(const ImageInfo *,ExceptionInfo *)) NULL;
   entry->encoder=(unsigned int (*)(const ImageInfo *,Image *)) NULL;
@@ -441,24 +441,24 @@ Export unsigned int UnregisterMagickInfo(const char *tag)
   for (p=magick_info_list; p != (MagickInfo *) NULL; p=p->next)
     {
       if (Latin1Compare(p->tag,tag) == 0)
-	{
-	  FreeMemory((void **) &p->tag);
-	  FreeMemory((void **) &p->description);
-	  FreeMemory((void **) &p->module);
-	  if (p->previous != (MagickInfo *) NULL)
-	    p->previous->next=p->next;
-	  else
-	    {
-	      magick_info=p->next;
-	      if (p->next != (MagickInfo *) NULL)
-		p->next->previous=(MagickInfo *) NULL;
-	    }
-	  if (p->next != (MagickInfo *) NULL)
-	    p->next->previous=p->previous;
-	  magick_info=p;
-	  FreeMemory((void **) &magick_info);
-	  return(True);
-	}
+        {
+          FreeMemory((void **) &p->tag);
+          FreeMemory((void **) &p->description);
+          FreeMemory((void **) &p->module);
+          if (p->previous != (MagickInfo *) NULL)
+            p->previous->next=p->next;
+          else
+            {
+              magick_info=p->next;
+              if (p->next != (MagickInfo *) NULL)
+                p->next->previous=(MagickInfo *) NULL;
+            }
+          if (p->next != (MagickInfo *) NULL)
+            p->next->previous=p->previous;
+          magick_info=p;
+          FreeMemory((void **) &magick_info);
+          return(True);
+        }
     }
   return(False);
 }

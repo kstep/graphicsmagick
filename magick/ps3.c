@@ -239,7 +239,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     else
       if ((image->page.width != 0) && (image->page.height != 0))
         (void) FormatString(geometry,"%ux%u%+d%+d",image->page.width,
-	  image->page.height,image->page.x,image->page.y);
+          image->page.height,image->page.x,image->page.y);
       else
         if (Latin1Compare(image_info->magick,"PDF") == 0)
           (void) strcpy(geometry,PSPageGeometry);

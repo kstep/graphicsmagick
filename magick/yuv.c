@@ -495,7 +495,7 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
         break;
       for (x=0; x < (int) chroma_image->columns; x++)
       {
-	(void) WriteByte(image,DownScale(p->blue));
+        (void) WriteByte(image,DownScale(p->blue));
         p++;
       }
     }

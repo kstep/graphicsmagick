@@ -502,11 +502,11 @@ Export unsigned int RaiseImage(Image *image,const RectangleInfo *raise_info,
     for (x=0; x < (int) raise_info->width; x++)
     {
       q->red=((unsigned long)
-	(q->red*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
+        (q->red*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
       q->green=((unsigned long)
-	(q->green*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
+        (q->green*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
       q->blue=((unsigned long)
-	(q->blue*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
+        (q->blue*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
       q++;
     }
     for (x=0; x < (int) (image->columns-(raise_info->width << 1)); x++)
@@ -534,11 +534,11 @@ Export unsigned int RaiseImage(Image *image,const RectangleInfo *raise_info,
     for (x=0; x < (int) (raise_info->width-y); x++)
     {
       q->red=((unsigned long)
-	(q->red*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
+        (q->red*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
       q->green=((unsigned long)
-	(q->green*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
+        (q->green*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
       q->blue=((unsigned long)
-	(q->blue*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
+        (q->blue*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
       q++;
     }
     for (x=0; x < (int) (image->columns-((raise_info->width-y) << 1)); x++)

@@ -2766,7 +2766,7 @@ static unsigned int XConfigureImage(Display *display,
   windows->pan.crop_geometry=windows->image.crop_geometry;
   XBestIconSize(display,&windows->pan,image);
   while ((windows->pan.width < MaxIconSize) &&
-	 (windows->pan.height < MaxIconSize))
+         (windows->pan.height < MaxIconSize))
   {
     windows->pan.width<<=1;
     windows->pan.height<<=1;
@@ -4766,7 +4766,7 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
       cache_image->list=CloneImage(*image,(*image)->columns,(*image)->rows,
-	True,&exception);
+        True,&exception);
       XSetCursorState(display,windows,False);
       if (cache_image->list == (Image *) NULL)
         {
@@ -10809,7 +10809,7 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
         y_offset;
 
       PixelPacket
-	pixel;
+        pixel;
 
       register int
         j;

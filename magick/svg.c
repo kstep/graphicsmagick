@@ -325,7 +325,7 @@ static char *TraversePath(const char *data)
       
         PointInfo
           pixel,
-	  pixels[BezierCoordinates];
+          pixels[BezierCoordinates];
       
         register int
           i,

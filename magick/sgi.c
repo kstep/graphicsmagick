@@ -799,7 +799,7 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
         offsets=(unsigned long *) AllocateMemory(iris_header.rows*
           iris_header.depth*sizeof(unsigned long));
         packets=(unsigned char *)
-	  AllocateMemory(4*(2*iris_header.columns+10)*image->rows);
+          AllocateMemory(4*(2*iris_header.columns+10)*image->rows);
         runlength=(unsigned long *) AllocateMemory(iris_header.rows*
           iris_header.depth*sizeof(unsigned long));
         if ((offsets == (unsigned long *) NULL) ||

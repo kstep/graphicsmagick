@@ -214,22 +214,22 @@ Export void ExitModules(void)
     {
       /* Unload and unregister all loaded modules */
       while((p = GetModuleInfo((char *)NULL)) != (ModuleInfo*) NULL)
-	UnloadDynamicModule(p->tag);
+        UnloadDynamicModule(p->tag);
 
       /* Free memory associated with ModuleAliases list */
       for(alias=module_aliases; alias != (ModuleAliases*)NULL; )
-	{
-	  entry=alias;
-	  alias=alias->next;
-	  FreeMemory((void**)&entry->alias);
-	  FreeMemory((void**)&entry->module);
-	  FreeMemory((void**)&entry);
-	}
+        {
+          entry=alias;
+          alias=alias->next;
+          FreeMemory((void**)&entry->alias);
+          FreeMemory((void**)&entry->module);
+          FreeMemory((void**)&entry);
+        }
       module_aliases=(ModuleAliases*)NULL;
 
       /* Free memory associated with module directory search list */
       for( i=0; module_path[i]; ++i )
-	FreeMemory((void**)&module_path[i]);
+        FreeMemory((void**)&module_path[i]);
       FreeMemory((void**)&module_path);
 
       /* Shut down libltdl */
@@ -329,50 +329,50 @@ static void InitializeModuleAliases(void)
 
       file = fopen(aliases, "r");
       if(file != (FILE*) NULL)
-	{
-	  while(!feof(file))
-	    {
-	      if(fscanf(file, "%s %s", alias, module) == 2)
-		{
-		  /* Append to list if alias is not already present */
-		  match=False;
-		  if(module_aliases != (ModuleAliases*) NULL)
-		    {
-		      for(entry=module_aliases;entry!=(ModuleAliases*)NULL;
-			  entry=entry->next)
-			{
-			  if(Latin1Compare(entry->alias,alias) == 0)
-			    {
-			      match=True;
-			      break;
-			    };
-			}
-		    }
-		  if(match == False)
-		    {
-		      entry = (ModuleAliases*)AllocateMemory(sizeof(ModuleAliases));
-		      if(entry != (ModuleAliases*) NULL)
-			{
-			  entry->alias = AllocateString(alias);
-			  entry->module = AllocateString(module);
-			  entry->next = (ModuleAliases*) NULL;
-			      
-			  if (module_aliases != (ModuleAliases*) NULL)
-			    {
-			      p->next = entry;
-			      p=p->next;
-			    }
-			  else
-			    {
-			      module_aliases = entry;
-			      p=module_aliases;
-			    }
-			}
-		    }
-		}
-	    }
-	  fclose(file);
-	}
+        {
+          while(!feof(file))
+            {
+              if(fscanf(file, "%s %s", alias, module) == 2)
+                {
+                  /* Append to list if alias is not already present */
+                  match=False;
+                  if(module_aliases != (ModuleAliases*) NULL)
+                    {
+                      for(entry=module_aliases;entry!=(ModuleAliases*)NULL;
+                          entry=entry->next)
+                        {
+                          if(Latin1Compare(entry->alias,alias) == 0)
+                            {
+                              match=True;
+                              break;
+                            };
+                        }
+                    }
+                  if(match == False)
+                    {
+                      entry = (ModuleAliases*)AllocateMemory(sizeof(ModuleAliases));
+                      if(entry != (ModuleAliases*) NULL)
+                        {
+                          entry->alias = AllocateString(alias);
+                          entry->module = AllocateString(module);
+                          entry->next = (ModuleAliases*) NULL;
+                              
+                          if (module_aliases != (ModuleAliases*) NULL)
+                            {
+                              p->next = entry;
+                              p=p->next;
+                            }
+                          else
+                            {
+                              module_aliases = entry;
+                              p=module_aliases;
+                            }
+                        }
+                    }
+                }
+            }
+          fclose(file);
+        }
     }
 }
 
@@ -389,64 +389,64 @@ static void InitializeModuleSearchPath(void)
   if(module_path != (char**)NULL)
     {
       char
-	*path,
-	*path_end;
+        *path,
+        *path_end;
 
       int
-	i;
-	
+        i;
+        
       /* Add user specified path */
       if((path=getenv("MAGICK_MODULE_PATH")) != NULL)
-	{
-	  while(path_index<max_path_elements)
-	    {
-	      path_end=strchr(path,DirectoryListSeparator);
-	      if (path_end == (char *) NULL)
-		{
-		  module_path[path_index]=AllocateString(path);
-		  ++path_index;
-		  break;
-		}
-	      else
-		{
-		  i=(int) (path_end-path);
-		  (void) strncpy(scratch,path,i);
-		  scratch[i]='\0';
-		  module_path[path_index]=AllocateString(scratch);
-		  ++path_index;
-		  path=path_end+1;
-		}
-	    }
-	}
+        {
+          while(path_index<max_path_elements)
+            {
+              path_end=strchr(path,DirectoryListSeparator);
+              if (path_end == (char *) NULL)
+                {
+                  module_path[path_index]=AllocateString(path);
+                  ++path_index;
+                  break;
+                }
+              else
+                {
+                  i=(int) (path_end-path);
+                  (void) strncpy(scratch,path,i);
+                  scratch[i]='\0';
+                  module_path[path_index]=AllocateString(scratch);
+                  ++path_index;
+                  path=path_end+1;
+                }
+            }
+        }
       /* Add HOME/.magick if it exists */
       if ((path_index<max_path_elements) &&
-	  ((path=getenv("HOME")) != NULL))
-	{
-	  strcpy(scratch,path);
-	  strcat(scratch,"/.magick");
-	  if(access(scratch,R_OK) == 0)
-	    {
-	      module_path[path_index]=AllocateString(scratch);
-	      ++path_index;
-	    }
-	}
+          ((path=getenv("HOME")) != NULL))
+        {
+          strcpy(scratch,path);
+          strcat(scratch,"/.magick");
+          if(access(scratch,R_OK) == 0)
+            {
+              module_path[path_index]=AllocateString(scratch);
+              ++path_index;
+            }
+        }
       /* Add default module installation directory */
       if (path_index<max_path_elements)
-	{
-	  module_path[path_index]=AllocateString(CoderModuleDirectory);
-	  ++path_index;
-	}
+        {
+          module_path[path_index]=AllocateString(CoderModuleDirectory);
+          ++path_index;
+        }
       /* Terminate list */
       module_path[path_index]=(char*) NULL;
 
       /* Tell ltdl about search path */
       *scratch='\0';
       for( i=0; module_path[i]; ++i)
-	{
-	  if(i != 0)
-	    strcat(scratch,":");
-	  strcat(scratch,module_path[i]);
-	}
+        {
+          if(i != 0)
+            strcat(scratch,":");
+          strcat(scratch,module_path[i]);
+        }
       lt_dlsetsearchpath(scratch);
     }
 }
@@ -457,11 +457,11 @@ Export void InitializeModules(void)
     {
       /* Initialize ltdl */
       if(lt_dlinit() != 0)
-	{
-	  const char *dlerror = lt_dlerror();
-	  printf("ERROR: failed to initialise ltdl: %s\n", dlerror);
-	  exit(1);
-	}
+        {
+          const char *dlerror = lt_dlerror();
+          printf("ERROR: failed to initialise ltdl: %s\n", dlerror);
+          exit(1);
+        }
       
       /* Determine and set module search path */
       InitializeModuleSearchPath();
@@ -584,29 +584,29 @@ Export char **ListModules(void)
       name_length=Extent(entry->d_name);
       p = (entry->d_name + name_length - 3);
       if ( name_length < 4 ||
-	   *p++ != '.' ||
-	   *p++ != 'l' ||
-	   *p != 'a' )
-	{
-	  entry=readdir(directory);
-	  continue;
-	}
+           *p++ != '.' ||
+           *p++ != 'l' ||
+           *p != 'a' )
+        {
+          entry=readdir(directory);
+          continue;
+        }
       if(entry_index >= max_entries)
-	{
-	  max_entries<<=1;
-	  module_list_tmp=(char **)
-	    ReallocateMemory((char **)module_list,max_entries*sizeof(char *));
-	  if (module_list_tmp == (char **) NULL)
-	    break;
-	  module_list=module_list_tmp;
-	}
+        {
+          max_entries<<=1;
+          module_list_tmp=(char **)
+            ReallocateMemory((char **)module_list,max_entries*sizeof(char *));
+          if (module_list_tmp == (char **) NULL)
+            break;
+          module_list=module_list_tmp;
+        }
       module_list[entry_index]=(char *)AllocateMemory(name_length);
       if(module_list[entry_index] == (char *) NULL)
-	break;
+        break;
       p=module_list[entry_index];
       q=entry->d_name;
       for( i=name_length-3; i != 0; --i)
-	*p++=toupper((int)*q++);
+        *p++=toupper((int)*q++);
       *p=0;
       ++entry_index;
       module_list[entry_index]=(char*)NULL;
@@ -665,11 +665,11 @@ Export int LoadDynamicModule(const char* module)
   if(module_aliases != (ModuleAliases*)NULL)
     {
       for(p=module_aliases; p->next != (ModuleAliases*)NULL; p=p->next)
-	if(Latin1Compare(p->alias,module) == 0)
-	  {
-	    strcpy(module_name,p->module);
-	    break;
-	  }
+        if(Latin1Compare(p->alias,module) == 0)
+          {
+            strcpy(module_name,p->module);
+            break;
+          }
     }
 
   /*
@@ -692,7 +692,7 @@ Export int LoadDynamicModule(const char* module)
   if( ( handle=lt_dlopen( module_file ) ) == 0)
     {
       printf("WARNING: failed to load module \"%s\": %s\n",
-	     module_file, lt_dlerror());
+             module_file, lt_dlerror());
       return False;
     }
 
@@ -729,7 +729,7 @@ Export int LoadDynamicModule(const char* module)
   if (register_func == NULL)
     {
       printf("WARNING: failed to find symbol : %s\n",
-	     lt_dlerror());
+             lt_dlerror());
       return False;
     }
   register_func();
@@ -771,17 +771,17 @@ Export ModuleInfo *RegisterModuleInfo(ModuleInfo *entry)
   if (module_info_list != (ModuleInfo *) NULL)
     {
       for (p=module_info_list; p->next != (ModuleInfo *) NULL; p=p->next)
-	{
-	  if (Latin1Compare(p->tag,entry->tag) >= 0)
-	    {
-	      if (Latin1Compare(p->tag,entry->tag) == 0)
-		{
-		  p=p->previous;
-		  UnregisterModuleInfo(entry->tag);
-		}
-	      break;
-	    }
-	}
+        {
+          if (Latin1Compare(p->tag,entry->tag) >= 0)
+            {
+              if (Latin1Compare(p->tag,entry->tag) == 0)
+                {
+                  p=p->previous;
+                  UnregisterModuleInfo(entry->tag);
+                }
+              break;
+            }
+        }
     }
   if (module_info_list == (ModuleInfo *) NULL)
     {
@@ -877,29 +877,29 @@ Export int UnloadDynamicModule(const char* module)
   if(module_info!=(ModuleInfo*)NULL)
     {
       /*
-	Locate and execute UnregisterFORMATImage function
+        Locate and execute UnregisterFORMATImage function
       */
       strcpy(func_name, "Unregister");
       strcat(func_name, module);
       strcat(func_name, "Image");
 
       /*
-	Locate and invoke module de-registration function
+        Locate and invoke module de-registration function
       */
       unregister_func=(void (*)(void))lt_dlsym(module_info->handle, func_name);
       if (unregister_func == NULL)
-	printf("WARNING: failed to find symbol : %s\n",
-	       lt_dlerror());
+        printf("WARNING: failed to find symbol : %s\n",
+               lt_dlerror());
       else
-	unregister_func();
+        unregister_func();
 
       /*
-	Close module
+        Close module
       */
       lt_dlclose(module_info->handle);
 
       /*
-	Remove module from list
+        Remove module from list
       */
       UnregisterModuleInfo(module);
       return True;
@@ -946,13 +946,13 @@ Export int UnregisterModuleInfo(const char *tag)
   {
     if (Latin1Compare(p->tag,tag) == 0)
       {
-	FreeMemory((void **) &p->tag);
+        FreeMemory((void **) &p->tag);
         if (p->previous != (ModuleInfo *) NULL)
-	  /* Not first in list */
+          /* Not first in list */
           p->previous->next=p->next;
         else
           {
-	    /* First in list */
+            /* First in list */
             module_info_list=p->next;
             if (p->next != (ModuleInfo *) NULL)
               p->next->previous=(ModuleInfo *) NULL;
