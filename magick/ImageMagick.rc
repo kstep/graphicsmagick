@@ -1,6 +1,6 @@
 #include "winver.h"
 #define WIN32
-#include "config.h"
+#include "magick_config.h"
 #include "version.h"
 
 /////////////////////////////////////////////////////////////////////////////

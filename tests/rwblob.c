@@ -12,7 +12,7 @@
  */
 
 #if !defined(_VISUALC_)
-#include <config.h>
+#include <magick_config.h>
 #endif
 #include <stdio.h>
 #include <stdlib.h>
