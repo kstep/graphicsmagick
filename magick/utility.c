@@ -1805,7 +1805,7 @@ MagickExport int ParseGeometry(const char *geometry,int *x,int *y,
       /*
         Parse width.
       */
-      bounds.width=(unsigned int)strtod(p,&p);
+      bounds.width=(unsigned int) strtod(p,&p);
       mask|=WidthValue;
     }
   if ((*p == 'x') || (*p == 'X'))
@@ -1815,6 +1815,8 @@ MagickExport int ParseGeometry(const char *geometry,int *x,int *y,
       */
       p++;
       bounds.height=(unsigned int) strtod(p,&p);
+      if (bounds.height == 0)
+        bounds.height=bounds.width;
       mask|=HeightValue;
     }
   if ((*p == '+') || (*p == '-'))
