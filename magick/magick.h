@@ -25,6 +25,7 @@
 
 #if defined(_VISUALC_)
 #  include <direct.h>
+#  define HAVE_STRERROR
 #else
 #  include <unistd.h>
 #endif
