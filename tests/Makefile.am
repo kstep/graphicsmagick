@@ -158,12 +158,11 @@ CHECK_BLOB_FORMATS = \
 	$(XWD) \
 	YUV
 
-# Formats that currently don't work: DPX EPDF $(FPX) PICON
+# Formats that currently don't work: DIB DPX EPDF $(FPX) PICON
 CHECK_FILE_FORMATS = \
 	AVS \
 	BMP \
 	CMYK \
-	DIB \
 	EPSF \
 	EPSI \
 	EPI \

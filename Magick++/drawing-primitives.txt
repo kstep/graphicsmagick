@@ -36,6 +36,7 @@ pop clip-path
 pop defs
 pop graphic-context
 pop linear-gradient
+pop pattern
 push clip-path-%s  (%s is the name of the clip path)
 push defs
 push gradient id linear x1,y1 x2,y2
@@ -62,3 +63,34 @@ text x,y "some text"
 text-antialias (0|1)
 translate x,y
 viewbox (e.g. "viewbox 0 0 640 480")
+
+Pattern syntax (saving and restoring context)
+
+  push pattern id x,y width,height
+  push graphic-context
+  [ drawing commands ]
+  pop graphic-context
+  pop pattern
+
+an example is
+
+  push pattern pat1 10,10 20,20
+  push graphic-context
+  fill red
+  rectangle 5,5 15,15
+  pop graphic-context
+  push graphic-context
+  fill green
+  rectangle 10,10 20,20
+  pop graphic-context
+  pop pattern
+
+For image tiling use
+
+  push pattern id x,y width,height
+    image Copy ...
+  pop pattern
+
+Note you can use the pattern for either the fill or stroke.
+
+
