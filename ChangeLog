@@ -8,6 +8,7 @@
 	IsMonochromeImage() test before writing them as one-bit-per-pixel
 	BMPs.  Decided to allow this after four readers (including Windows
 	XP) displayed the image using the proper colormap.
+	(WriteBMPImage): BMP2 encoder was writing colormap using wrong format.
 
 	* images: Updated logo images to GraphicsMagick
 

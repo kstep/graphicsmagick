@@ -1507,8 +1507,13 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
             SetImageType(image,TrueColorType);
           else
             {
-              bmp_info.file_size+=4*(1 << bmp_info.bits_per_pixel);
-              bmp_info.offset_bits+=4*(1 << bmp_info.bits_per_pixel);
+              bmp_info.file_size+=3*(1 << bmp_info.bits_per_pixel);
+              bmp_info.offset_bits+=3*(1 << bmp_info.bits_per_pixel);
+              if (type > 2)
+                {
+                  bmp_info.file_size+=(1 << bmp_info.bits_per_pixel);
+                  bmp_info.offset_bits+=(1 << bmp_info.bits_per_pixel);
+                }
             }
       }
     if (image->storage_class == DirectClass)
@@ -1912,17 +1917,23 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           *q++=ScaleQuantumToChar(image->colormap[i].blue);
           *q++=ScaleQuantumToChar(image->colormap[i].green);
           *q++=ScaleQuantumToChar(image->colormap[i].red);
-          *q++=(Quantum) 0x0;
+          if (type > 2)
+            *q++=(Quantum) 0x0;
         }
         for ( ; i < (1L << bmp_info.bits_per_pixel); i++)
         {
           *q++=(Quantum) 0x0;
           *q++=(Quantum) 0x0;
           *q++=(Quantum) 0x0;
-          *q++=(Quantum) 0x0;
+          if (type > 2)
+            *q++=(Quantum) 0x0;
         }
-        (void) WriteBlob(image,4*(1 << bmp_info.bits_per_pixel),
-          (char *) bmp_colormap);
+        if (type == 2)
+          (void) WriteBlob(image,3*(1 << bmp_info.bits_per_pixel),
+             (char *) bmp_colormap);
+          else
+            (void) WriteBlob(image,4*(1 << bmp_info.bits_per_pixel),
+              (char *) bmp_colormap);
         LiberateMemory((void **) &bmp_colormap);
       }
     if (logging)
