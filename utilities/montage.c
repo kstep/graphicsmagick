@@ -1236,32 +1236,6 @@ static unsigned int MontageUtility(int argc,char **argv)
   status&=MogrifyImages(image_info,i-j,argv+j,&montage_image);
   (void) CatchImageException(montage_image);
   (void) strncpy(image_info->filename,argv[argc-1],MaxTextExtent-1);
-  for (p=montage_image; p != (Image *) NULL; p=p->next)
-  {
-    if (transparent_color != (char *) NULL)
-      {
-        PixelPacket
-          target;
-
-        target=GetOnePixel(p,0,0);
-        (void) QueryColorDatabase(transparent_color,&target);
-        (void) TransparentImage(p,target,TransparentOpacity);
-      }
-    if (quantize_info.number_colors != 0)
-      {
-        /*
-          Reduce the number of colors in the image.
-        */
-        if ((p->storage_class == DirectClass) ||
-            (p->colors > quantize_info.number_colors) ||
-            (quantize_info.colorspace == GRAYColorspace))
-          (void) QuantizeImage(&quantize_info,p);
-        if (image_info->verbose)
-          (void) QuantizationError(p);
-        SyncImage(p);
-      }
-    (void) strncpy(p->filename,argv[argc-1],MaxTextExtent-1);
-  }
   (void) strncpy(montage_image->magick_filename,argv[argc-1],MaxTextExtent-1);
   status&=WriteImages(image_info,montage_image,argv[argc-1],&image->exception);
   DestroyImageList(montage_image);
