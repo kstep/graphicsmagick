@@ -5223,8 +5223,6 @@ MagickExport int ParseImageGeometry(const char *geometry,long *x,long *y,
     *x+=former_width-(*width);
   if ((flags & YValue) == 0)
     *height-=(*y) << 1;
-  if ((flags & XNegative) != 0)
-    *x+=former_width-(*width);
   if ((flags & YNegative) != 0)
     *y+=former_height-(*height);
   if (flags & GreaterValue)
