@@ -1,0 +1,8 @@
+2003-12-16  David N. Welton  <davidw@dedasys.com>
+
+	* ChangeLog: started adding TclMagick code to GraphicsMagick CVS.
+
+2003-12-01  David N. Welton  <davidw@dedasys.com>
+
+	* src/TclMagick.c (wandObjCmd): Added Image width/height commands.
+
