@@ -5049,7 +5049,8 @@ Mogrify(ref,...)
               goto ReturnIt;
             }
           if ((image->storage_class == DirectClass) ||
-              (image->colors > quantize_info.number_colors))
+              (image->colors > quantize_info.number_colors) ||
+              (quantize_info.colorspace == GRAYColorspace))
             (void) QuantizeImage(&quantize_info,image);
           else
             CompressColormap(image);
@@ -6112,14 +6113,18 @@ QueryColor(ref,...)
     {
       attribute=(char *) SvPV(ST(i),na);
       if (!QueryColorDatabase(attribute,&target_color))
-        s=(&sv_undef);
+        PUSHs(&sv_undef);
       else
         {
-          FormatString(message,"%u,%u,%u,%u",target_color.red,
-            target_color.green,target_color.blue,target_color.opacity);
-          s=sv_2mortal(newSVpv(message,0));
+          FormatString(message,"%u",target_color.red);
+          PUSHs(sv_2mortal(newSVpv(message,0)));
+          FormatString(message,"%u",target_color.green);
+          PUSHs(sv_2mortal(newSVpv(message,0)));
+          FormatString(message,"%u",target_color.blue);
+          PUSHs(sv_2mortal(newSVpv(message,0)));
+          FormatString(message,"%u",target_color.opacity);
+          PUSHs(sv_2mortal(newSVpv(message,0)));
         }
-      PUSHs(s);
     }
     SvREFCNT_dec(error_list);
     error_list=NULL;
