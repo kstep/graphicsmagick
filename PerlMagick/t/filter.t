@@ -190,7 +190,7 @@ testFilter('input.miff', 'Rotate',
 ++$test;
 testFilter('input.miff', 'Sample',
   q/50%/,
-  'cd5fa80486baa545df95bbae9a089d0946e9636ad413ec5bae10e350664ad975');
+  '549d7097906f38acb7f07af2a7e4721f72c0dc1b40b1981c4ba95355ef7fde0b');
 
 ++$test;
 testFilter('input.miff', 'Scale',
