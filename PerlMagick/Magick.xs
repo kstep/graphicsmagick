@@ -1354,6 +1354,8 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
         {
           sp=SvPOK(sval) ? LookupStr(DisposeTypes,SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
+            sp=SvIV(sval);
+          if (sp < 0)
             {
               MagickError(OptionError,"Invalid disposal type",SvPV(sval,na));
               return;
