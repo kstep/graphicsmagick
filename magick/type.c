@@ -225,40 +225,6 @@ MagickExport const TypeInfo *GetTypeInfo(const char *name,
 %
 %
 */
-
-static unsigned long TypeScore(const TypeInfo *type_info,const StyleType style,
-  const StretchType stretch,const unsigned long weight)
-{
-  long
-    range;
-
- unsigned long
-    score;
-
-  score=0;
-  if ((style == AnyStyle) || (type_info->style == style))
-    score=32;
-  else
-    if (((style == ItalicStyle) || (style == ObliqueStyle)) &&
-        ((type_info->style == ItalicStyle) ||
-         (type_info->style == ObliqueStyle)))
-      score=25;
-  if(weight == 0)
-    score+=16;
-  else
-    score+=(16*(800-((long) Max(Min(weight,900),type_info->weight)-
-		     (long) Min(Min(weight,900),type_info->weight))))/800;
-  if(stretch == AnyStretch)
-    score+=8;
-  else
-  {
-    range=(long) UltraExpandedStretch-(long) NormalStretch;
-    score+=(8*(range-((long) Max(stretch,type_info->stretch)-
-		      (long) Min(stretch,type_info->stretch))))/range;
-  }
-  return(score);
-}
-
 MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
   const StyleType style,const StretchType stretch,const unsigned long weight,
   ExceptionInfo *exception)
@@ -269,26 +235,28 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
       *name,
       *substitute;
   } Fontmap;
-  
+
   const TypeInfo
     *type_info;
 
-  static Fontmap
-    fontmap[] =
-    {
-      { "arial", "helvetica" }, { "fixed", "courier" },
-      { "helvetica","arial"},
-      { "modern","courier" }, { "monotype corsiva", "courier" },
-      { "news gothic", "helvetica" }, { "system", "courier" },
-      { "terminal", "courier" }, { "wingdings", "symbol" },
-      { (char *) NULL, (char *) NULL }
-    };
-  
+  long
+    range;
+
   register const TypeInfo
     *p;
 
   register long
     i;
+
+  static Fontmap
+    fontmap[] =
+    {
+      { "arial", "helvetica" }, { "fixed", "courier" }, { "helvetica","arial"},
+      { "modern","courier" }, { "monotype corsiva", "courier" },
+      { "news gothic", "helvetica" }, { "system", "courier" },
+      { "terminal", "courier" }, { "wingdings", "symbol" },
+      { (char *) NULL, (char *) NULL }
+    };
 
   unsigned long
     max_score,
@@ -300,11 +268,15 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
   (void) GetTypeInfo("*",exception);
   for (p=type_list; p != (TypeInfo *) NULL; p=p->next)
   {
-    if ((p->family == (char *) NULL) ||
-        ((LocaleCompare(p->family,family) != 0)) ||
-        ((style != AnyStyle) && (p->style != style)) ||
-        ((stretch != AnyStretch) && (p->stretch != stretch)) ||
-        ((weight != 0) && (p->weight != weight)))
+    if (p->family == (char *) NULL)
+      continue;
+    if (LocaleCompare(p->family,family) != 0)
+      continue;
+    if ((style != AnyStyle) && (p->style != style))
+      continue;
+    if ((stretch != AnyStretch) && (p->stretch != stretch))
+      continue;
+    if ((weight != 0) && (p->weight != weight))
       continue;
     return(p);
   }
@@ -315,10 +287,30 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
   type_info=(TypeInfo *) NULL;
   for (p=type_list; p != (TypeInfo *) NULL; p=p->next)
   {
-    if ((p->family == (char *) NULL) ||
-        ((LocaleCompare(p->family,family) != 0)))
+    if (p->family == (char *) NULL)
       continue;
-    score=TypeScore(p,style,stretch,weight);
+    if (LocaleCompare(p->family,family) != 0)
+      continue;
+    score=0;
+    if ((style == AnyStyle) || (p->style == style))
+      score+=32;
+    else
+      if (((style == ItalicStyle) || (style == ObliqueStyle)) &&
+          ((p->style == ItalicStyle) || (p->style == ObliqueStyle)))
+        score+=25;
+    if (weight == 0)
+      score+=16;
+    else
+      score+=(16*(800-((long) Max(Min(weight,900),type_info->weight)-
+        (long) Min(Min(weight,900),type_info->weight))))/800;
+    if (stretch == AnyStretch)
+      score+=8;
+    else
+      {
+        range=(long) UltraExpandedStretch-(long) NormalStretch;
+        score+=(8*(range-((long) Max(stretch,type_info->stretch)-
+          (long) Min(stretch,type_info->stretch))))/range;
+      }
     if (score > max_score)
       {
         max_score=score;
@@ -346,8 +338,7 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
   }
   if (type_info != (TypeInfo *) NULL)
     {
-      ThrowException(exception,TypeWarning,
-        "Unable to get font; substitute found",type_info->family);
+      ThrowException(exception,TypeWarning,"Unable to get font",family);
       return(type_info);
     }
   /*
@@ -357,8 +348,7 @@ MagickExport const TypeInfo *GetTypeInfoByFamily(const char *family,
     return((TypeInfo *) NULL);
   type_info=GetTypeInfoByFamily("helvetica",style,stretch,weight,exception);
   if (type_info != (TypeInfo *) NULL)
-    ThrowException(exception,TypeWarning,
-      "Unable to get font; substitute found",type_info->family);
+    ThrowException(exception,TypeWarning,"Unable to get font",family);
   return(type_info);
 }
 
