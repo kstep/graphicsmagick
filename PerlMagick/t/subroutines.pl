@@ -5,12 +5,13 @@
 #
 
 #
-# Test reading a file
+# Test reading a 16-bit file in which two signatures are possible,
+# depending on whether 16-bit pixels data has been enabled
 #
-# Usage: testRead( read filename, expected md5 );
+# Usage: testRead( read filename, expected md5 [, expected md5_16] );
 #
 sub testRead {
-  my( $infile, $md5 ) =  @_;
+  my( $infile, $md5, $md5_16 ) =  @_;
 
   my($image);
   
@@ -22,8 +23,13 @@ sub testRead {
     print "not ok $test\n";
   } else {
     $signature=$image->Get('signature');
-    if ( $signature ne $md5 ) {
-      print "Image: $infile, Computed: $signature, expected: $md5\n";
+    if ( ( $signature ne $md5 ) and ( $signature ne $md5_16 ) ) {
+      print "Image: $infile, signatures do not match.\n";
+      print "       Computed: $signature\n";
+      print "       Expected: $md5\n";
+      if ( $md5 ne $md5_16 and $md5_16 ne "same") {
+         print "      if 16-bit: $md5_16\n";
+      }
       print "not ok $test\n";
     } else {
       print "ok $test\n";
@@ -35,10 +41,10 @@ sub testRead {
 # Test reading a file which requires a file size to read (GRAY, RGB, CMYK)
 # or supports multiple resolutions (JBIG, JPEG, PCD)
 #
-# Usage: testRead( read filename, size, expected md5 );
+# Usage: testRead( read filename, size, expected md5 [, expected md5_16] );
 #
 sub testReadSized {
-  my( $infile, $size, $md5 ) =  @_;
+  my( $infile, $size, $md5, $md5_16 ) =  @_;
   
   my($image);
 
@@ -54,8 +60,13 @@ sub testReadSized {
     print "not ok $test\n";
   } else {
     $signature=$image->Get('signature');
-    if ( $signature ne $md5 ) {
-      print "Image: $infile, Computed: $signature, expected: $md5\n";
+    if ( ( $signature ne $md5 ) and ( $signature ne $md5_16 ) ) {
+      print "Image: $infile, signatures do not match.\n";
+      print "       Computed: $signature\n";
+      print "       Expected: $md5\n";
+      if ( $md5 ne $md5_16 and $md5_16 ne "same") {
+         print "      if 16-bit: $md5_16\n";
+      }
       print "not ok $test\n";
     } else {
       print "ok $test\n";
@@ -67,7 +78,8 @@ sub testReadSized {
 # Test writing a file by first reading a source image, writing to a new image,
 # reading the written image, and comparing with expected MD5.
 #
-# Usage: testReadWrite( read filename, write filename, write options, expected md5 );
+# Usage: testReadWrite( read filename, write filename, write options,
+#    expected md5 [, expected md5_16] );
 #
 # .e.g
 #
@@ -78,7 +90,7 @@ sub testReadSized {
 # image is preserved.  Otherwise, the written image is removed.
 #
 sub testReadWrite {
-  my( $infile, $outfile, $writeoptions, $md5 ) = @_;
+  my( $infile, $outfile, $writeoptions, $md5, $md5_16 ) = @_;
   
   my($image);
 
@@ -113,8 +125,13 @@ sub testReadWrite {
       } else {
 	# Check signature
 	$signature=$image->Get('signature');
-	if ( $signature ne $md5 ) {
-	  print " Image: $outfile, Got: $signature, expected: $md5\n";
+        if ( ( $signature ne $md5 ) and ( $signature ne $md5_16 ) ) {
+          print "Image: $infile, signatures do not match.\n";
+          print "       Computed: $signature\n";
+          print "       Expected: $md5\n";
+          if ( $md5 ne $md5_16 and $md5_16 ne "same") {
+             print "      if 16-bit: $md5_16\n";
+          }
 	  print "not ok $test\n";
 	} else {
 	  print "ok $test\n";
@@ -186,7 +203,7 @@ sub testReadWriteNoVerify {
 # reading the written image, and comparing with expected MD5.
 #
 # Usage: testReadWriteSized( read filename, write filename, read filename size,
-#                            write options, expected md5 );
+#                            write options, expected md5 [,expected md5_16] );
 #
 # .e.g
 #
@@ -197,7 +214,7 @@ sub testReadWriteNoVerify {
 # image is preserved.  Otherwise, the written image is removed.
 #
 sub testReadWriteSized {
-  my( $infile, $outfile, $size, $writeoptions, $md5 ) = @_;
+  my( $infile, $outfile, $size, $writeoptions, $md5, $md5_16 ) = @_;
   
   my($image);
   
@@ -242,8 +259,13 @@ sub testReadWriteSized {
       } else {
 	# Check signature
 	$signature=$image->Get('signature');
-	if ( $signature ne $md5 ) {
-	  print " Image: $outfile, Got: $signature, expected: $md5\n";
+        if ( ( $signature ne $md5 ) and ( $signature ne $md5_16 ) ) {
+          print "Image: $infile, signatures do not match.\n";
+          print "       Computed: $signature\n";
+          print "       Expected: $md5\n";
+          if ( $md5 ne $md5_16 and $md5_16 ne "same") {
+             print "   if 16-bit: $md5_16\n";
+          }
 	  print "not ok $test\n";
 	} else {
 	  print "ok $test\n";
@@ -337,10 +359,11 @@ sub testGetAttribute {
 #
 # Test MontageImage method
 #
-# Usage: testMontage( input image attributes, montage options, expected MD5);
+# Usage: testMontage( input image attributes, montage options, expected MD5
+#       [, expected MD5_16] );
 #
 sub testMontage {
-  my( $imageOptions, $montageOptions, $md5 ) = @_;
+  my( $imageOptions, $montageOptions, $md5, $md5_16 ) = @_;
 
   my($image);
 
@@ -394,8 +417,13 @@ sub testMontage {
     # Check MD5 signature
     $signature=$montage->GetAttribute('signature');
     if ( defined( $signature ) ) {
-      if ( $signature ne $md5 ) {
-	print "Test $test Computed: $signature, expected: $md5\n";
+      if ( ( $signature ne $md5 ) and ( $signature ne $md5_16 ) ) {
+          print "Test $test, signatures do not match.\n";
+          print "       Computed: $signature\n";
+          print "       Expected: $md5\n";
+          if ( $md5 ne $md5_16 and $md5_16 ne "same") {
+             print "   if 16-bit: $md5_16\n";
+          }
 	
         $status = $montage->Write("test_${test}_out.miff");
         warn "Write: $status" if "$status";
@@ -435,10 +463,11 @@ sub testMontage {
 #
 # Test filter method
 #
-# Usage: testFilter( input image attributes, filter, options expected MD5);
+# Usage: testFilter( input image attributes, filter, options expected MD5
+#      [, expected MD5_16] );
 #
 sub testFilter {
-  my( $srcimage, $filter, $options, $md5 ) = @_;
+  my( $srcimage, $filter, $options, $md5, $md5_16 ) = @_;
 
   my($image);
 
@@ -452,8 +481,13 @@ sub testFilter {
 
   $signature=$image->GetAttribute('signature');
   if ( defined( $signature ) ) {
-    if ( $signature ne $md5 ) {
-      print "Test $test Computed: $signature, expected: $md5\n";
+    if ( ( $signature ne $md5 ) and ( $signature ne $md5_16 ) ) {
+      print "Test $test, signatures do not match.\n";
+      print "       Computed: $signature\n";
+      print "       Expected: $md5\n";
+      if ( $md5 ne $md5_16 and $md5_16 ne "same") {
+         print "   if 16-bit: $md5_16\n";
+      }
       print "not ok $test\n";
     } else {
       print "ok $test\n";
