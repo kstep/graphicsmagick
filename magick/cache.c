@@ -67,6 +67,10 @@
 /*
   Declare pixel cache interfaces.
 */
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 static const PixelPacket
   *AcquirePixelCache(const Image *,const long,const long,const unsigned long,
     const unsigned long,ExceptionInfo *);
@@ -74,29 +78,40 @@ static const PixelPacket
 static IndexPacket
   *GetIndexesFromCache(const Image *);
 
+static PixelPacket
+  AcquireOnePixelFromCache(const Image *,const long,const long,ExceptionInfo *),
+  GetOnePixelFromCache(Image *,const long,const long),
+  *GetPixelCache(Image *,const long,const long,const unsigned long,
+    const unsigned long),
+  *GetPixelsFromCache(const Image *),
+  *SetPixelCache(Image *,const long,const long,const unsigned long,
+    const unsigned long);
+
+static unsigned int
+  SyncPixelCache(Image *);
+
+static void
+  DestroyPixelCache(Image *);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
+
+/*
+  Forward declaration.
+*/
 static inline unsigned int
   IsNexusInCore(const Cache,const unsigned long);
 
 static PixelPacket
-  AcquireOnePixelFromCache(const Image *,const long,const long,ExceptionInfo *),
-  GetOnePixelFromCache(Image *,const long,const long),
-  *GetPixelsFromCache(const Image *),
-  *GetPixelCache(Image *,const long,const long,const unsigned long,
-    const unsigned long),
-  *SetNexus(const Image *,const RectangleInfo *,const unsigned long),
-  *SetPixelCache(Image *,const long,const long,const unsigned long,
-    const unsigned long);
+  *SetNexus(const Image *,const RectangleInfo *,const unsigned long);
 
 static unsigned int
   ReadCacheIndexes(const Cache,const unsigned long),
   ReadCachePixels(const Cache,const unsigned long),
   SyncCache(Image *),
-  SyncPixelCache(Image *),
   WriteCacheIndexes(Cache,const unsigned long),
   WriteCachePixels(Cache,const unsigned long);
-
-static void
-  DestroyPixelCache(Image *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
