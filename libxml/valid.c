@@ -725,7 +725,7 @@ xmlFreeElement(xmlElementPtr elem) {
  *
  * Returns NULL if not, otherwise the entity
  */
-LIBXML_DLL_IMPORT xmlElementPtr
+xmlElementPtr
 xmlAddElementDecl(xmlValidCtxtPtr ctxt, xmlDtdPtr dtd, const xmlChar *name,
                   xmlElementTypeVal type,
 		  xmlElementContentPtr content) {
@@ -1235,7 +1235,7 @@ xmlFreeAttribute(xmlAttributePtr attr) {
  *
  * Returns NULL if not new, otherwise the attribute decl
  */
-LIBXML_DLL_IMPORT xmlAttributePtr
+xmlAttributePtr
 xmlAddAttributeDecl(xmlValidCtxtPtr ctxt, xmlDtdPtr dtd, const xmlChar *elem,
                     const xmlChar *name, const xmlChar *ns,
 		    xmlAttributeType type, xmlAttributeDefault def,
@@ -1624,7 +1624,7 @@ xmlFreeNotation(xmlNotationPtr nota) {
  *
  * Returns NULL if not, otherwise the entity
  */
-LIBXML_DLL_IMPORT xmlNotationPtr
+xmlNotationPtr
 xmlAddNotationDecl(xmlValidCtxtPtr ctxt ATTRIBUTE_UNUSED, xmlDtdPtr dtd,
 	           const xmlChar *name,
                    const xmlChar *PublicID, const xmlChar *SystemID) {

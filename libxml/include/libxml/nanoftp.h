@@ -59,13 +59,13 @@ typedef void (*ftpDataCallback) (void *userData,
 /*
  * Init
  */
-LIBXML_DLL_IMPORT void	xmlNanoFTPInit		(void);
+void	xmlNanoFTPInit		(void);
 void	xmlNanoFTPCleanup	(void);
 
 /*
  * Creating/freeing contexts.
  */
-LIBXML_DLL_IMPORT void *	xmlNanoFTPNewCtxt	(const char *URL);
+void *	xmlNanoFTPNewCtxt	(const char *URL);
 void	xmlNanoFTPFreeCtxt	(void * ctx);
 void * 	xmlNanoFTPConnectTo	(const char *server,
 				 int port);
@@ -73,8 +73,8 @@ void * 	xmlNanoFTPConnectTo	(const char *server,
  * Opening/closing session connections.
  */
 void * 	xmlNanoFTPOpen		(const char *URL);
-LIBXML_DLL_IMPORT int	xmlNanoFTPConnect	(void *ctx);
-LIBXML_DLL_IMPORT int	xmlNanoFTPClose		(void *ctx);
+int	xmlNanoFTPConnect	(void *ctx);
+int	xmlNanoFTPClose		(void *ctx);
 int	xmlNanoFTPQuit		(void *ctx);
 void	xmlNanoFTPScanProxy	(const char *URL);
 void	xmlNanoFTPProxy		(const char *host,
@@ -105,7 +105,7 @@ int	xmlNanoFTPList		(void *ctx,
 				 char *filename);
 int	xmlNanoFTPGetSocket	(void *ctx,
 				 const char *filename);
-LIBXML_DLL_IMPORT int	xmlNanoFTPGet		(void *ctx,
+int	xmlNanoFTPGet		(void *ctx,
 				 ftpDataCallback callback,
 				 void *userData,
 				 const char *filename);

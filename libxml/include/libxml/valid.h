@@ -122,7 +122,7 @@ xmlChar *           xmlSplitQName2	(const xmlChar *name,
 					 xmlChar **prefix);
 
 /* Notation */
-LIBXML_DLL_IMPORT xmlNotationPtr	    xmlAddNotationDecl	(xmlValidCtxtPtr ctxt,
+xmlNotationPtr	    xmlAddNotationDecl	(xmlValidCtxtPtr ctxt,
 					 xmlDtdPtr dtd,
 					 const xmlChar *name,
 					 const xmlChar *PublicID,
@@ -150,7 +150,7 @@ void		     xmlSprintfElementContent(char *buf,
 /* DEPRECATED */
 
 /* Element */
-LIBXML_DLL_IMPORT xmlElementPtr	   xmlAddElementDecl	(xmlValidCtxtPtr ctxt,
+xmlElementPtr	   xmlAddElementDecl	(xmlValidCtxtPtr ctxt,
 					 xmlDtdPtr dtd,
 					 const xmlChar *name,
 					 xmlElementTypeVal type,
@@ -168,7 +168,7 @@ void		   xmlFreeEnumeration	(xmlEnumerationPtr cur);
 xmlEnumerationPtr  xmlCopyEnumeration	(xmlEnumerationPtr cur);
 
 /* Attribute */
-LIBXML_DLL_IMPORT xmlAttributePtr	    xmlAddAttributeDecl	    (xmlValidCtxtPtr ctxt,
+xmlAttributePtr	    xmlAddAttributeDecl	    (xmlValidCtxtPtr ctxt,
 					     xmlDtdPtr dtd,
 					     const xmlChar *elem,
 					     const xmlChar *name,

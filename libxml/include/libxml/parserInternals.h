@@ -203,7 +203,7 @@ xmlParserCtxtPtr	xmlNewParserCtxt	(void);
 xmlParserCtxtPtr	xmlCreateEntityParserCtxt(const xmlChar *URL,
 						 const xmlChar *ID,
 						 const xmlChar *base);
-LIBXML_DLL_IMPORT int			xmlSwitchEncoding	(xmlParserCtxtPtr ctxt,
+int			xmlSwitchEncoding	(xmlParserCtxtPtr ctxt,
 						 xmlCharEncoding enc);
 int			xmlSwitchToEncoding	(xmlParserCtxtPtr ctxt,
 					     xmlCharEncodingHandlerPtr handler);
@@ -221,10 +221,10 @@ xmlParserInputPtr	xmlNewStringInputStream	(xmlParserCtxtPtr ctxt,
 						 const xmlChar *buffer);
 xmlParserInputPtr	xmlNewEntityInputStream	(xmlParserCtxtPtr ctxt,
 						 xmlEntityPtr entity);
-LIBXML_DLL_IMPORT void			xmlPushInput		(xmlParserCtxtPtr ctxt,
+void			xmlPushInput		(xmlParserCtxtPtr ctxt,
 						 xmlParserInputPtr input);
-LIBXML_DLL_IMPORT xmlChar			xmlPopInput		(xmlParserCtxtPtr ctxt);
-LIBXML_DLL_IMPORT void			xmlFreeInputStream	(xmlParserInputPtr input);
+xmlChar			xmlPopInput		(xmlParserCtxtPtr ctxt);
+void			xmlFreeInputStream	(xmlParserInputPtr input);
 xmlParserInputPtr	xmlNewInputFromFile	(xmlParserCtxtPtr ctxt,
 						 const char *filename);
 xmlParserInputPtr	xmlNewInputStream	(xmlParserCtxtPtr ctxt);
@@ -232,7 +232,7 @@ xmlParserInputPtr	xmlNewInputStream	(xmlParserCtxtPtr ctxt);
 /**
  * Namespaces.
  */
-LIBXML_DLL_IMPORT xmlChar *		xmlSplitQName		(xmlParserCtxtPtr ctxt,
+xmlChar *		xmlSplitQName		(xmlParserCtxtPtr ctxt,
 						 const xmlChar *name,
 						 xmlChar **prefix);
 xmlChar *		xmlNamespaceParseNCName	(xmlParserCtxtPtr ctxt);
@@ -309,7 +309,7 @@ int			xmlParseSDDecl		(xmlParserCtxtPtr ctxt);
 void			xmlParseXMLDecl		(xmlParserCtxtPtr ctxt);
 void			xmlParseTextDecl	(xmlParserCtxtPtr ctxt);
 void			xmlParseMisc		(xmlParserCtxtPtr ctxt);
-LIBXML_DLL_IMPORT void			xmlParseExternalSubset	(xmlParserCtxtPtr ctxt,
+void			xmlParseExternalSubset	(xmlParserCtxtPtr ctxt,
 						 const xmlChar *ExternalID,
 						 const xmlChar *SystemID); 
 /**
