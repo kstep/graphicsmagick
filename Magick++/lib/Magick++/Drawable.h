@@ -553,14 +553,14 @@ class DrawableCompositeImage : public DrawableBase
 {
 public:
   DrawableCompositeImage ( double x_, double y_,
-                           const std::string &image_ );
+                           const std::string &filename_ );
 
   DrawableCompositeImage ( double x_, double y_,
                            const Image &image_ );
 
   DrawableCompositeImage ( double x_, double y_,
                            double width_, double height_,
-                           const std::string &image_ );
+                           const std::string &filename_ );
 
   DrawableCompositeImage ( double x_, double y_,
                            double width_, double height_,
@@ -568,7 +568,7 @@ public:
 
   DrawableCompositeImage ( double x_, double y_,
                            double width_, double height_,
-                           const std::string &image_,
+                           const std::string &filename_,
                            CompositeOperator composition_ );
 
   DrawableCompositeImage ( double x_, double y_,

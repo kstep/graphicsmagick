@@ -329,14 +329,14 @@ void Magick::DrawableGravity::print (std::ostream& stream_) const
 // Draw image at point
 Magick::DrawableCompositeImage::DrawableCompositeImage ( double x_, double y_,
                                                          double width_, double height_,
-                                                         const std::string &image_,
+                                                         const std::string &filename_,
                                                          Magick::CompositeOperator composition_ )
   : _composition(composition_),
     _x(x_),
     _y(y_),
     _width(width_),
     _height(height_),
-    _image(new Image(image_))
+    _image(new Image(filename_))
 {
 }
 Magick::DrawableCompositeImage::DrawableCompositeImage ( double x_, double y_,
@@ -353,13 +353,13 @@ Magick::DrawableCompositeImage::DrawableCompositeImage ( double x_, double y_,
 }
 Magick::DrawableCompositeImage::DrawableCompositeImage ( double x_, double y_,
                                                          double width_, double height_,
-                                                         const std::string &image_ )
+                                                         const std::string &filename_ )
   :_composition(Magick::CopyCompositeOp),
    _x(x_),
    _y(y_),
    _width(width_),
    _height(height_),
-   _image(new Image(image_))
+   _image(new Image(filename_))
 {
 }
 Magick::DrawableCompositeImage::DrawableCompositeImage ( double x_, double y_,
@@ -374,13 +374,13 @@ Magick::DrawableCompositeImage::DrawableCompositeImage ( double x_, double y_,
 {
 }
 Magick::DrawableCompositeImage::DrawableCompositeImage ( double x_, double y_,
-                                                         const std::string &image_ )
+                                                         const std::string &filename_ )
   : _composition(Magick::CopyCompositeOp),
     _x(x_),
     _y(y_),
     _width(0),
     _height(0),
-    _image(new Image(image_))
+    _image(new Image(filename_))
 {
 }
 Magick::DrawableCompositeImage::DrawableCompositeImage ( double x_, double y_,

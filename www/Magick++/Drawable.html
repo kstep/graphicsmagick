@@ -1,9 +1,8 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-  "http://www.w3.org/TR/html4/loose.dtd">
-<HTML>
-<HEAD>
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <meta name="GENERATOR" content="Mozilla/4.72 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
+   <meta name="GENERATOR" content="Mozilla/4.78 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
    <meta name="Author" content="Bob Friesenhahn">
    <meta name="Description" content="Documentation for Magick::Drawable class">
    <title>Magick::Drawable Class</title>
@@ -169,7 +168,7 @@ the Coordinate structure are shown in the following table:</font>
 <p><font color="#000000">The Drawable classes are shown in the following
 table:</font>
 <br>&nbsp;
-<table BORDER WIDTH="100%" >
+<table BORDER WIDTH="100%" NOSAVE >
 <caption><b>Drawable Classes</b></caption>
 
 <tr>
@@ -261,48 +260,62 @@ whereas filltoborder recolors any neighbor pixel that is not the border
 color. Finally, reset recolors all pixels.</font></td>
 </tr>
 
-<tr>
-<td ROWSPAN="3">
+<tr NOSAVE>
+<td ROWSPAN="6" NOSAVE>
 <center><a NAME="DrawableCompositeImage"></a><font size=-1>DrawableCompositeImage</font></center>
 </td>
 
-<td><font size=-1>double x_, double y_, const std::string &amp;image_</font></td>
+<td><font size=-1>double x_, double y_, const std::string &amp;filename_</font></td>
 
-<td><font size=-1>Composite current image with contents of specified image
-file, at specified coordinates. If the <i>matte</i> attribute is set to
-<i>true</i>,
-then the image composition will consider an alpha channel, or transparency,
+<td ROWSPAN="2" NOSAVE><font size=-1>Composite current image with contents
+of specified image, at specified coordinates. If the <i>matte</i> attribute
+is set to
+<i>true</i>, then the image composition will consider an alpha
+channel, or transparency, present in the image file so that non-opaque
+portions allow part (or all) of the composite image to show through.</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>double x_, double y_, const Image &amp;image_</font></td>
+</tr>
+
+<tr NOSAVE>
+<td><font size=-1>double x_, double y_, double width_, double height_,
+const std::string &amp;filename_</font></td>
+
+<td ROWSPAN="2" NOSAVE><font size=-1>Composite current image with contents
+of specified image, rendered with specified width and height, at specified
+coordinates. If the <i>matte</i> attribute is set to <i>true</i>, then
+the image composition will consider an alpha channel, or transparency,
 present in the image file so that non-opaque portions allow part (or all)
-of the composite image to show through.</font></td>
-</tr>
-
-<tr>
-<td><font size=-1>double x_, double y_, double width_, double height_,
-const std::string &amp;image_</font></td>
-
-<td><font size=-1>Composite current image with contents of specified image
-file, rendered with specified width and height, at specified coordinates.
-If the <i>matte</i> attribute is set to <i>true</i>, then the image composition
-will consider an alpha channel, or transparency, present in the image file
-so that non-opaque portions allow part (or all) of the composite image
-to show through. If the specified <i>width</i> or <i>height</i> is zero,
-then the image is composited at its natural size, without enlargement or
-reduction.</font></td>
-</tr>
-
-<tr>
-<td><font size=-1>double x_, double y_, double width_, double height_,
-const std::string &amp;image_, CompositeOperator composition_</font></td>
-
-<td><font size=-1>Composite current image with contents of specified image
-file, rendered with specified width and height, using specified composition
-algorithm, at specified coordinates. If the <i>matte</i> attribute is set
-to <i>true</i>, then the image composition will consider an alpha channel,
-or transparency, present in the image file so that non-opaque portions
-allow part (or all) of the composite image to show through. If the specified
-<i>width</i>
-or <i>height</i> is zero, then the image is composited at its natural size,
+of the composite image to show through. If the specified <i>width</i> or
+<i>height</i> is zero, then the image is composited at its natural size,
 without enlargement or reduction.</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>double x_, double y_, double width_, double height_,
+const Image &amp;image_</font></td>
+</tr>
+
+<tr NOSAVE>
+<td><font size=-1>double x_, double y_, double width_, double height_,
+const std::string &amp;filename_, CompositeOperator composition_</font></td>
+
+<td ROWSPAN="2" NOSAVE><font size=-1>Composite current image with contents
+of specified image, rendered with specified width and height, using specified
+composition algorithm, at specified coordinates. If the <i>matte</i> attribute
+is set to <i>true</i>, then the image composition will consider an alpha
+channel, or transparency, present in the image file so that non-opaque
+portions allow part (or all) of the composite image to show through. If
+the specified
+<i>width</i> or <i>height</i> is zero, then the image is
+composited at its natural size, without enlargement or reduction.</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>double x_, double y_, double width_, double height_,
+const Image &amp;image_, CompositeOperator composition_</font></td>
 </tr>
 
 <tr>
@@ -545,9 +558,9 @@ the last <i>DrawablePushGraphicContext</i> operation.</font></td>
 <td><font size=-1>double upperLeftX_, double upperLeftY_, double lowerRightX_,
 double lowerRightY</font></td>
 
-<td><font size=-1>Draw a rectangle using <i>stroke</i> color and
-thickness from upper-left coordinates to lower-right coordinates.&nbsp;
-If a <i>fill</i> color is specified, then the object is filled.</font></td>
+<td><font size=-1>Draw a rectangle using <i>stroke</i> color and thickness
+from upper-left coordinates to lower-right coordinates.&nbsp; If a <i>fill</i>
+color is specified, then the object is filled.</font></td>
 </tr>
 
 <tr>
@@ -676,11 +689,11 @@ UndefinedJoin, MiterJoin, RoundJoin, and BevelJoin.</font></td>
 
 <td><font size=-1>double x_, double y_, std::string text_</font></td>
 
-<td><font size=-1>Annotate image with text using <i>stroke</i> color,
-font, font pointsize, and <i>box</i> color (text background color), at
-specified coordinates. If text contains <a href="FormatCharacters.html">special
-format characters</a> the image filename, type, width, height, or other
-image attributes may be incorporated in the text (see label()).</font></td>
+<td><font size=-1>Annotate image with text using <i>stroke</i> color, font,
+font pointsize, and <i>box</i> color (text background color), at specified
+coordinates. If text contains <a href="FormatCharacters.html">special format
+characters</a> the image filename, type, width, height, or other image
+attributes may be incorporated in the text (see label()).</font></td>
 </tr>
 
 <tr>
@@ -753,13 +766,12 @@ the first command) represent the start of a new subpath:
 
 <td><font size=-1>const Magick::Coordinate &amp;coordinate_</font></td>
 
-<td ROWSPAN="4"><font size=-1>Start a new sub-path at the given
-coordinate.&nbsp; <i>PathMovetoAbs</i> indicates that absolute coordinates
-will follow; <i>PathMovetoRel</i> indicates that relative coordinates will
-follow. If a relative moveto appears as the first element of the path,
-then it is treated as a pair of absolute coordinates. If a moveto is followed
-by multiple pairs of coordinates, the subsequent pairs are treated as implicit
-lineto commands.</font></td>
+<td ROWSPAN="4"><font size=-1>Start a new sub-path at the given coordinate.&nbsp;
+<i>PathMovetoAbs</i> indicates that absolute coordinates will follow; <i>PathMovetoRel</i>
+indicates that relative coordinates will follow. If a relative moveto appears
+as the first element of the path, then it is treated as a pair of absolute
+coordinates. If a moveto is followed by multiple pairs of coordinates,
+the subsequent pairs are treated as implicit lineto commands.</font></td>
 </tr>
 
 <tr>
@@ -843,8 +855,8 @@ to a new point:
 
 <td><font size=-1>const Magick::Coordinate&amp; coordinate_</font></td>
 
-<td ROWSPAN="4"><font size=-1>Draw a line from the current point
-to the given coordinate which becomes the new current point.&nbsp; <i>PathLinetoAbs</i>
+<td ROWSPAN="4"><font size=-1>Draw a line from the current point to the
+given coordinate which becomes the new current point.&nbsp; <i>PathLinetoAbs</i>
 indicates that absolute coordinates are used; <i>PathLinetoRel</i> indicates
 that relative coordinates are used. A number of coordinates pairs may be
 specified in a list to draw a polyline. At the end of the command, the
@@ -896,11 +908,11 @@ the new current point becomes (x, cpy) for the final value of x.</font></td>
 
 <td><font size=-1>double y_</font></td>
 
-<td ROWSPAN="2"><font size=-1>Draws a vertical line from the current
-point (cpx, cpy) to (cpx, y). <i>PathLinetoVerticalAbs</i> indicates that
-absolute coordinates are supplied; <i>PathLinetoVerticalRel</i> indicates
-that relative coordinates are supplied.&nbsp; At the end of the command,
-the new current point becomes (cpx, y) for the final value of y.</font></td>
+<td ROWSPAN="2"><font size=-1>Draws a vertical line from the current point
+(cpx, cpy) to (cpx, y). <i>PathLinetoVerticalAbs</i> indicates that absolute
+coordinates are supplied; <i>PathLinetoVerticalRel</i> indicates that relative
+coordinates are supplied.&nbsp; At the end of the command, the new current
+point becomes (cpx, y) for the final value of y.</font></td>
 </tr>
 
 <tr>
@@ -967,10 +979,10 @@ double x_, double y_ );</tt>
 
 <td><font size=-1>const Magick::PathCurvetoArgs &amp;args_</font></td>
 
-<td ROWSPAN="4"><font size=-1>Draws a cubic B&eacute;zier curve
-from the current point to (x,y) using (x1,y1) as the control point at the
-beginning of the curve and (x2,y2) as the control point at the end of the
-curve. <i>PathCurvetoAbs</i> indicates that absolutecoordinates will follow;
+<td ROWSPAN="4"><font size=-1>Draws a cubic B&eacute;zier curve from the
+current point to (x,y) using (x1,y1) as the control point at the beginning
+of the curve and (x2,y2) as the control point at the end of the curve.
+<i>PathCurvetoAbs</i> indicates that absolutecoordinates will follow;
 <i>PathCurvetoRel</i>
 indicates that relative coordinates will follow. Multiple sets of coordinates
 may be specified to draw a polybezier. At the end of the command, the new
@@ -1000,11 +1012,11 @@ current point becomes the final (x,y) coordinate pair used in the polybezier.</f
 
 <td><font size=-1>const Magick::Coordinate &amp;coordinates_</font></td>
 
-<td ROWSPAN="4"><font size=-1>Draws a cubic B&eacute;zier curve
-from the current point to (x,y). The first control point is assumed to
-be the reflection of the second control point on the previous command relative
-to the current point. (If there is no previous command or if the previous
-command was not an <i>PathCurvetoAbs</i>, <i>PathCurvetoRel</i>, <i>PathSmoothCurvetoAbs</i>
+<td ROWSPAN="4"><font size=-1>Draws a cubic B&eacute;zier curve from the
+current point to (x,y). The first control point is assumed to be the reflection
+of the second control point on the previous command relative to the current
+point. (If there is no previous command or if the previous command was
+not an <i>PathCurvetoAbs</i>, <i>PathCurvetoRel</i>, <i>PathSmoothCurvetoAbs</i>
 or <i>PathSmoothCurvetoRel</i>, assume the first control point is coincident
 with the current point.) (x2,y2) is the second control point (i.e., the
 control point at the end of the curve).&nbsp; <i>PathSmoothCurvetoAbs</i>
