@@ -54,7 +54,7 @@
 #include "magick.h"
 #include "define.h"
 
-/*  
+/*
   Define declarations.
 */
 #define ColorFilename  "colors.mgk"
@@ -746,8 +746,8 @@ static void Histogram(const Image *image,CubeInfo *cube_info,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method IsGrayImage returns True if the image is grayscale otherwise
-%  False is returned.
+%  Method IsGrayImage returns True if the image is grayscale otherwise False
+%  is returned.
 %
 %  The format of the IsGrayImage method is:
 %
@@ -758,29 +758,53 @@ static void Histogram(const Image *image,CubeInfo *cube_info,
 %    o status: Method IsGrayImage returns True if the image is grayscale
 %      otherwise False is returned.
 %
-%    o image: The image;  returned from
-%      ReadImage.
+%    o image: The image.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
 %
 */
-MagickExport unsigned int IsGrayImage(const Image *image,
-  ExceptionInfo *exception)
+MagickExport unsigned int IsGrayImage(const Image *image,ExceptionInfo *exception)
 {
-  register long
-    i;
+  long
+    y;
 
-  /*
-    Determine if image is grayscale.
-  */
+  register const PixelPacket
+    *p;
+
+  register long
+    i,
+    x;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if (!IsPaletteImage(image,exception))
-    return(False);
-  for (i=0; i < (long) image->colors; i++)
-    if (!IsGray(image->colormap[i]))
-      return(False);
+  switch (image->storage_class)
+  {
+    case DirectClass:
+    case UndefinedClass:
+    {
+      for (y=0; y < (long) image->rows; y++)
+      {
+        p=AcquireImagePixels(image,0,y,image->columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
+          return(False);
+        for (x=0; x < (long) image->columns; x++)
+        {
+          if (!IsGray(*p))
+            return(False);
+          p++;
+        }
+      }
+      break;
+    }
+    case PseudoClass:
+    {
+      for (i=0; i < (long) image->colors; i++)
+        if (!IsGray(image->colormap[i]))
+          return(False);
+      break;
+    }
+  }
   return(True);
 }
 
@@ -817,22 +841,47 @@ MagickExport unsigned int IsGrayImage(const Image *image,
 MagickExport unsigned int IsMonochromeImage(const Image *image,
   ExceptionInfo *exception)
 {
-  /*
-    Determine if image is grayscale.
-  */
+  long
+    y;
+
+  register const PixelPacket
+    *p;
+
+  register long
+    i,
+    x;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (!IsGrayImage(image,exception))
     return(False);
-  if (image->colors > 2)
-    return(False);
-  if ((Intensity(image->colormap[0]) != 0) &&
-      (Intensity(image->colormap[0]) != MaxRGB))
-    return(False);
-  if (image->colors == 2)
-    if ((Intensity(image->colormap[1]) != 0) &&
-        (Intensity(image->colormap[1]) != MaxRGB))
-      return(False);
+  switch (image->storage_class)
+  {
+    case DirectClass:
+    case UndefinedClass:
+    {
+      for (y=0; y < (long) image->rows; y++)
+      {
+        p=AcquireImagePixels(image,0,y,image->columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
+          return(False);
+        for (x=0; x < (long) image->columns; x++)
+        {
+          if ((p->red != 0) && (p->red != MaxRGB))
+            return(False);
+          p++;
+        }
+      }
+      break;
+    }
+    case PseudoClass:
+    {
+      for (i=0; i < (long) image->colors; i++)
+        if ((image->colormap[i].red != 0) && (image->colormap[i].red != MaxRGB))
+          return(False);
+      break;
+    }
+  }
   return(True);
 }
 
@@ -958,10 +1007,6 @@ MagickExport unsigned int IsPaletteImage(const Image *image,
   assert(image->signature == MagickSignature);
   if ((image->storage_class == PseudoClass) && (image->colors <= 256))
     return(True);
-  if (image->matte)
-    return(False);
-  if (image->colorspace == CMYKColorspace)
-    return(False);
   /*
     Initialize color description tree.
   */
