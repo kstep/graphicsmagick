@@ -1,5 +1,4 @@
 @echo off
-pushd ..\VisualMagick\bin
 set TESTS=0
 set TYPE=NONE
 
