@@ -186,7 +186,7 @@ testFilterSignature('input.miff', 'Rotate',
 ++$test;
 testFilterSignature('input.miff', 'Sample',
   q/50%/,
-  '73662fad184d63125ab5b41543be900b016afaeef20cfc23d7d657f53d2e2c03');
+  'b775c7c661bd6b2c4eab7d5c4202b67e37d38b2854dc037d000e2d5500a822e2');
 
 ++$test;
 testFilterSignature('input.miff', 'Scale',

@@ -1226,9 +1226,9 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
     Initialize pixel offsets.
   */
   for (x=0; x < (long) sample_image->columns; x++)
-    x_offset[x]=(double) (x+0.5)*image->columns/sample_image->columns;
+    x_offset[x]=(double) x*image->columns/sample_image->columns;
   for (y=0; y < (long) sample_image->rows; y++)
-    y_offset[y]=(double) (y+0.5)*image->rows/sample_image->rows;
+    y_offset[y]=(double) y*image->rows/sample_image->rows;
   /*
     Sample each row.
   */
@@ -1238,12 +1238,12 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
     q=SetImagePixels(sample_image,0,y,sample_image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    if (j != (long) y_offset[y])
+    if (j != (long) (y_offset[y]+0.5))
       {
         /*
           Read a scan line.
         */
-        j=(long) y_offset[y];
+        j=(long) (y_offset[y]+0.5);
         p=AcquireImagePixels(image,0,j,image->columns,1,exception);
         if (p == (const PixelPacket *) NULL)
           break;
@@ -1253,13 +1253,13 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
       Sample each column.
     */
     for (x=0; x < (long) sample_image->columns; x++)
-      *q++=pixels[(long) x_offset[x]];
+      *q++=pixels[(long) (x_offset[x]+0.5)];
     indexes=GetIndexes(image);
     sample_indexes=GetIndexes(sample_image);
     if ((indexes != (IndexPacket *) NULL) &&
         (sample_indexes != (IndexPacket *) NULL))
       for (x=0; x < (long) sample_image->columns; x++)
-        sample_indexes[x]=indexes[(long) x_offset[x]];
+        sample_indexes[x]=indexes[(long) (x_offset[x]+0.5)];
     if (!SyncImagePixels(sample_image))
       break;
     if (QuantumTick(y,sample_image->rows))
