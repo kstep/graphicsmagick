@@ -49,7 +49,7 @@ typedef enum
   LocaleBase = 86,
   DeprecateBase = 87,
   RegistryBase = 90,
-  ConfigureBase = 95,
+  ConfigureBase = 95
 } ExceptionBaseType;
 
 typedef enum

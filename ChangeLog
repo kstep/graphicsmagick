@@ -1,3 +1,7 @@
+2003-08-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/error.h (enum): Remove spurious comma.
+
 2003-08-17  William Radcliffe  <billr@corbis.com>
 	* coders\png.c: Had to modify a few excetpion calls to work with
 	newest macros.

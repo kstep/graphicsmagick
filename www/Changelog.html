@@ -53,6 +53,74 @@
 </tr>
 </table>
 <p>
+2003-08-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/error.h (enum): Remove spurious comma.
+
+</UL>
+<p>
+2003-08-17  William Radcliffe  &lt;billr@corbis.com&gt;
+<UL>
+  <LI> coders\png.c: Had to modify a few excetpion calls to work with
+        newest macros.
+
+</UL>
+<p>
+2003-08-17  William Radcliffe  &lt;billr@corbis.com&gt;
+<UL>
+  <LI> coders\locale.c magick/error.h locale.c locale_c.h studio.h:
+        The LOCALEH header file generator now adds an MGK_ prefiix to
+        all the ID defines as part of a fix to support the new error
+        and exception macros cross platform.
+
+</UL>
+<p>
+2003-08-16  William Radcliffe  &lt;billr@corbis.com&gt;
+<UL>
+  <LI> wand\magick_wand.c pixel_wand.c: The wand api code was totally
+        left out of the large macro conversion below as an oversight.
+
+</UL>
+<p>
+2003-08-15  William Radcliffe  &lt;billr@corbis.com&gt;
+
+<UL>
+  <LI> .\coders art.c avi.c avs.c bmp.c caption.c clipboard.c cmyk.c
+        cut.c dcm.c dib.c dps.c dpx.c emf.c ept.c fax.c fits.c fpx.c gif.c
+        gradient.c gray.c hdf.c histogram.c html.c icon.c jbig.c jp2.c
+        jpeg.c label.c locale.c logo.c map.c mat.c matte.c meta.c miff.c
+        mono.c mpc.c mpeg.c msl.c mtv.c mvg.c null.c otb.c palm.c pcd.c
+        pcl.c pcx.c pdb.c pdf.c pict.c pix.c png.c pnm.c preview.c ps.c
+        ps2.c ps3.c psd.c pwp.c rgb.c rla.c rle.c sct.c sfw.c sgi.c
+        stegano.c sun.c svg.c tga.c tiff.c tile.c tim.c topol.c ttf.c txt.c
+        uil.c url.c uyvy.c vicar.c vid.c viff.c wbmp.c wmf.c wpg.c x.c xbm.c
+        xc.c xcf.c xpm.c xtrn.c xwd.c yuv.c .\magick\animate.c annotate.c
+        blob.c cache.c cache_view.c color.c color.h command.c compress.c
+        constitute.c decorate.c delegate.c display.c draw.c effect.c
+        enhance.c error.c error.h fx.c gm_messages.bin image.c list.c
+        locale.c locale_c.h log.c mac.c magic.c magick.c module.c montage.c
+        nt_feature.c paint.c quantize.c registry.c render.c resize.c
+        segment.c semaphore.c shear.c signature.c static.c static.h
+        stream.c studio.h tempfile.h transform.c type.c utility.c widget.c
+        xwindow.c : Changes to support ID based message access and checking
+        all message usages. The main thing that was done was to remove all
+        the quotes around the "tags" used to lookup messages defined in
+        the locale\C.XML file. Macros were added to error.h to allow the
+        code to be compiled for either string based access or binary ID
+        based access. Using binary ID's will cause the code to fail to
+        compile if a message does not exist in C.XML, since no ID will be
+        created for a missing message. This change then allowed us to
+        easily track down all the messages that were "missing" or not
+        being accessed properly. The problems were massive and took many
+        days to resolve. I have left the code compiling in ID mode to keep
+        things in sync going forward and also because it makes message
+        lookup instantaneous. An ID is just an index into and array of
+        char *'s. There is still a lot of cleanup work remaining, but this
+        is a very good start.
+
+</UL>
+<p>
 2003-08-14  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
