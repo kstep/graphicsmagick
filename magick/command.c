@@ -3663,7 +3663,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
           if (LocaleCompare(image_info->filename,"-") != 0)
             {
               (void) strncpy(filename,image->filename,MaxTextExtent-1);
-              AppendImageFormat("mgk",image->filename);
+              AppendImageFormat("tmp",image->filename);
               if (IsAccessible(image->filename))
                 {
                   (void) strcat(image->filename,"~");
