@@ -8,7 +8,7 @@
 # Makefile for ImageMagick tests invoked via the C API
 #
 
-AUTOMAKE_OPTIONS = 1.7 foreign
+AUTOMAKE_OPTIONS = 1.8 foreign
 
 INCLUDES = -I$(top_builddir) -I$(top_srcdir) -I$(top_srcdir)/magick
 #INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/magick
@@ -253,7 +253,7 @@ CHECK_CONSTITUTE_STORAGETYPES = \
 	double
 
 check-constitute: constitute$(EXEEXT)
-	-@status=0 ; \
+	@status=0 ; \
 	storage_type='' ; \
 	for storage_type in $(CHECK_CONSTITUTE_STORAGETYPES) ; \
 	do \
@@ -398,7 +398,7 @@ CHECK_MIFF_FILE_COMPRESS= \
 	$(RLECOMPRESS)
 
 check-miff: rwfile$(EXEEXT)
-	-@status=0 ; \
+	@status=0 ; \
 	compress='' ; \
 	for compress in $(CHECK_MIFF_FILE_COMPRESS) ; \
 	do \

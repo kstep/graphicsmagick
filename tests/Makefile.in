@@ -415,7 +415,7 @@ target_vendor = @target_vendor@
 type_include_files = @type_include_files@
 windows_font_dir = @windows_font_dir@
 xml2_config = @xml2_config@
-AUTOMAKE_OPTIONS = 1.7 foreign
+AUTOMAKE_OPTIONS = 1.8 foreign
 INCLUDES = -I$(top_builddir) -I$(top_srcdir) -I$(top_srcdir)/magick
 #INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/magick
 # ../magick/config.h is needed.
@@ -882,7 +882,7 @@ clean-local:
 	rm -f *out*.*
 
 check-constitute: constitute$(EXEEXT)
-	-@status=0 ; \
+	@status=0 ; \
 	storage_type='' ; \
 	for storage_type in $(CHECK_CONSTITUTE_STORAGETYPES) ; \
 	do \
@@ -1021,7 +1021,7 @@ check-drawtest: drawtest$(EXEEXT)
 	$(RUNENV) ./drawtest rawtest_out.mvg
 
 check-miff: rwfile$(EXEEXT)
-	-@status=0 ; \
+	@status=0 ; \
 	compress='' ; \
 	for compress in $(CHECK_MIFF_FILE_COMPRESS) ; \
 	do \

@@ -27,7 +27,7 @@
 # ImageMagick Studio.
 #
 
-AUTOMAKE_OPTIONS = 1.6.2 foreign nostdinc
+AUTOMAKE_OPTIONS = 1.8 foreign nostdinc
 
 if WITH_LTDL
 

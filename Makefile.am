@@ -148,12 +148,20 @@ all-perl: $(PERLMAGICK)/$(PERLSTATICNAME)
 
 install-exec-perl: $(PERLMAGICK)/$(PERLSTATICNAME)
 	rm -f "$(DESTDIR)$(BIN_DIR)/$(PERLSTATICNAME)"
-	( cd $(PERLMAGICK) && \
-	$(MAKE) -f Makefile.aperl CC='@CC@' inst_perl MAP_TARGET=$(PERLSTATICNAME) \
-	  INSTALLBIN="$(DESTDIR)$(BIN_DIR)" )
+	if test "x$(DESTDIR)" = "x" ; then \
+	  ( cd $(PERLMAGICK) && \
+	    $(MAKE) -f Makefile.aperl CC='@CC@' inst_perl MAP_TARGET=$(PERLSTATICNAME) \
+	    INSTALLBIN="$(DESTDIR)$(BIN_DIR)" \
+	  ) ; \
+	else \
+	  ( cd $(PERLMAGICK) && \
+	    $(MAKE) -f Makefile.aperl CC='@CC@' inst_perl MAP_TARGET=$(PERLSTATICNAME) \
+	    INSTALLBIN="$(DESTDIR)$(BIN_DIR)" PREFIX="$(DESTDIR)$(prefix)" \
+	  ) ; \
+	fi
 
 uninstall-exec-perl:
-	rm -f '$(BIN_DIR)/$(PERLSTATICNAME)'
+	rm -f '$(DESTDIR)$(BIN_DIR)/$(PERLSTATICNAME)'
 
 check-perl: $(PERLMAGICK)/$(PERLSTATICNAME)
 	-cd $(PERLMAGICK) && $(MAKE) -f Makefile.aperl CC='@CC@' test
@@ -203,7 +211,7 @@ install-exec-local: install-exec-perl
 install-data-local: install-data-html
 
 # Uninstall arch-independent package data
-uninstall-local: uninstall-data-html
+uninstall-local: uninstall-data-html uninstall-exec-perl
 
 # Do a make clean in PerlMagick directory 
 clean-local: clean-perl

@@ -10,7 +10,7 @@
 #
 
 # Don't require all the GNU mandated files
-AUTOMAKE_OPTIONS = 1.7 foreign
+AUTOMAKE_OPTIONS = 1.8 foreign
 
 MAGICK_LIB	= $(top_builddir)/magick/libGraphicsMagick.la # libtool library name
 AM_CPPFLAGS	=  -I$(top_builddir) -I$(top_srcdir)

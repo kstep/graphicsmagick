@@ -39,14 +39,14 @@ RUNENV = $(SHELL) $(top_builddir)/rungm.sh
 
 # FIXME: MinGW needs Windows path form of srcdir here (or pass as command argument)
 check:
-	-@$(RUNENV) SRCDIR=$(SRCDIR) ./analyze '$(srcdir)/model.miff'
-	-@$(RUNENV) SRCDIR=$(SRCDIR) ./button
-	-@$(RUNENV) SRCDIR=$(SRCDIR) ./demo
-	-@$(RUNENV) SRCDIR=$(SRCDIR) ./flip
-	-@$(RUNENV) SRCDIR=$(SRCDIR) ./gravity
-	-@$(RUNENV) SRCDIR=$(SRCDIR) ./piddle
-	-@$(RUNENV) SRCDIR=$(SRCDIR) ./shapes
-	-@for filter in $(ZOOM_FILTERS) ; do  \
+	@$(RUNENV) SRCDIR=$(SRCDIR) ./analyze '$(srcdir)/model.miff'
+	@$(RUNENV) SRCDIR=$(SRCDIR) ./button
+	@$(RUNENV) SRCDIR=$(SRCDIR) ./demo
+	@$(RUNENV) SRCDIR=$(SRCDIR) ./flip
+	@$(RUNENV) SRCDIR=$(SRCDIR) ./gravity
+	@$(RUNENV) SRCDIR=$(SRCDIR) ./piddle
+	@$(RUNENV) SRCDIR=$(SRCDIR) ./shapes
+	@for filter in $(ZOOM_FILTERS) ; do  \
 	  echo "$$filter ..." ; \
 	  $(RUNENV) SRCDIR=$(SRCDIR) ./zoom -filter $$filter -geometry $(ZOOM_GEOMETRY) '$(srcdir)/model.miff' zoom_$${filter}_out.miff ; \
 	done

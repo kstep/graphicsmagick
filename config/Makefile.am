@@ -9,7 +9,7 @@
 #
 
 # Don't require all the GNU mandated files
-AUTOMAKE_OPTIONS = 1.7 foreign
+AUTOMAKE_OPTIONS = 1.8 foreign
 
 # Additional files to distribute
 EXTRA_DIST = \
