@@ -1469,7 +1469,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 MAJOR_VERSION=1
 MINOR_VERSION=2
 MICRO_VERSION=0
-PATCH_VERSION=6
+PATCH_VERSION=7
 echo "configuring Digital Imaging Group FlashPIX $MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION.$PATCH_VERSION"
 
 # Ensure that make can run correctly
