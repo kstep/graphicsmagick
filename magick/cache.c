@@ -241,7 +241,7 @@ static unsigned int CompressCache(Cache cache)
     }
   if (lseek(cache_info->file,0,SEEK_SET) == -1)
     return(False);
-  FormatString(filename,"%.1024s.gz",cache_info->cache_filename);
+  FormatString(filename,"%s.gz",cache_info->cache_filename);
   file=gzopen(filename,WriteBinaryType);
   if (file == (gzFile) NULL)
     return(False);
@@ -1700,7 +1700,7 @@ static unsigned int UncompressCache(Cache cache)
     }
   if (lseek(cache_info->file,0,SEEK_SET) == -1)
     return(False);
-  FormatString(filename,"%.1024s.gz",cache_info->cache_filename);
+  FormatString(filename,"%s.gz",cache_info->cache_filename);
   file=gzopen(filename,ReadBinaryType);
   if (file == (gzFile) NULL)
     return(False);
@@ -1891,14 +1891,14 @@ MagickExport unsigned int WriteCacheInfo(Image *image)
   (void) fprintf(file,"cache=%.1024s  quantum-depth=%d\n",
     cache_info->cache_filename,QuantumDepth);
   if (image->storage_class == PseudoClass)
-    (void) fprintf(file,"class=PseudoClass  colors=%u  matte=%.1024s\n",
+    (void) fprintf(file,"class=PseudoClass  colors=%u  matte=%s\n",
       image->colors,image->matte ? "True" : "False");
   else
     if (image->colorspace == CMYKColorspace)
-      (void) fprintf(file,"class=DirectClass  colorspace=CMYK  matte=%.1024s\n",
+      (void) fprintf(file,"class=DirectClass  colorspace=CMYK  matte=%s\n",
         image->matte ? "True" : "False");
     else
-      (void) fprintf(file,"class=DirectClass  matte=%.1024s\n",
+      (void) fprintf(file,"class=DirectClass  matte=%s\n",
         image->matte ? "True" : "False");
   (void) fprintf(file,"compression=");
   switch (image->compression)
@@ -1999,7 +1999,7 @@ MagickExport unsigned int WriteCacheInfo(Image *image)
         Generic profile.
       */
       for (i=0; i < image->generic_profiles; i++)
-        (void) fprintf(file,"profile-%.1024s=%u\n",
+        (void) fprintf(file,"profile-%s=%u\n",
           image->generic_profile[i].name == (char *) NULL ? "generic" :
           image->generic_profile[i].name,image->generic_profile[i].length);
     }

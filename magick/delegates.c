@@ -62,6 +62,11 @@
 #include "defines.h"
 
 /*
+  Define declarations.
+*/
+#define DelegateFilename  "delegates.mgk"
+
+/*
   Global declaractions.
 */
 static DelegateInfo
@@ -178,10 +183,10 @@ MagickExport DelegateInfo *GetDelegateInfo(const char *decode,
       /*
         Read delegates.
       */
-      status=ReadConfigurationFile("delegates.mgk");
+      status=ReadConfigurationFile(DelegateFilename);
       if (status == False)
         ThrowException(exception,FileOpenWarning,
-          "Unable to read delegates configuration file","delegates.mgk");
+          "Unable to read delegates configuration file",DelegateFilename);
       atexit(DestroyDelegateInfo);
     }
   LiberateSemaphore(&delegate_semaphore);
@@ -553,14 +558,16 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
 
   if (file == (const FILE *) NULL)
     file=stdout;
-  (void) fprintf(file,"ImageMagick uses these delegates to read or write "
-    "image formats it does not\ndirectly support:\n\n");
-  (void) fprintf(file,"Decode-Tag   Encode-Tag  Delegate\n");
-  (void) fprintf(file,"-------------------------------------------------------"
-    "------------------------\n");
+  (void) fprintf(file,"ImageMagick defines these delegates to read orwrite "
+    "image formats it does not\ndirectly support.\n");
   p=GetDelegateInfo("*","*",exception);
   if (p == (DelegateInfo *) NULL)
     return(False);
+  if (delegate_list->filename != (char *) NULL)
+    (void) fprintf(file,"\nFilename: %.1024s\n\n",delegate_list->filename);
+  (void) fprintf(file,"Decode-Tag   Encode-Tag  Delegate\n");
+  (void) fprintf(file,"-------------------------------------------------------"
+    "------------------------\n");
   for (p=delegate_list; p != (DelegateInfo *) NULL; p=p->next)
   {
     if (p->restrain)
@@ -575,7 +582,7 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
     tag[i]='\0';
     if (p->encode != (char *) NULL)
       (void) strncpy(tag,p->encode,Extent(p->encode));
-    (void) fprintf(file,"%10s%.1024s=%.1024s%.1024s  %.1024s\n",
+    (void) fprintf(file,"%10s%.1024s=%.1024s%.1024s  %s\n",
       p->decode ? p->decode : "",p->mode <= 0 ? "<" : " ",
       p->mode >= 0 ? ">" : " ",tag,delegate);
   }
@@ -606,13 +613,14 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
 %    o status: Method ReadConfigurationFile returns True if at least one delegate
 %      is defined otherwise False.
 %
-%    o filename:  The delegate configuration filename.
+%    o basename:  The delegate configuration filename.
 %
 %
 */
-static unsigned int ReadConfigurationFile(const char *filename)
+static unsigned int ReadConfigurationFile(const char *basename)
 {
   char
+    filename[MaxTextExtent],
     keyword[MaxTextExtent],
     *path,
     value[MaxTextExtent];
@@ -626,11 +634,12 @@ static unsigned int ReadConfigurationFile(const char *filename)
   register char
     *p;
 
-  path=GetMagickConfigurePath(filename);
+  path=GetMagickConfigurePath(basename);
   if (path == (char *) NULL)
     return(False);
-  file=fopen(path,"r");
+  FormatString(filename,"%.1024s",path);
   LiberateMemory((void **) &path);
+  file=fopen(filename,"r");
   if (file == (FILE *) NULL)
     return(False);
   for (c=fgetc(file); c != EOF; c=fgetc(file))
@@ -662,7 +671,10 @@ static unsigned int ReadConfigurationFile(const char *filename)
             "Memory allocation failed");
         memset(delegate_info,0,sizeof(DelegateInfo));
         if (delegate_list == (DelegateInfo *) NULL)
-          delegate_list=delegate_info;
+          {
+            delegate_info->filename=AllocateString(filename);
+            delegate_list=delegate_info;
+          }
         else
           {
             delegate_list->next=delegate_info;

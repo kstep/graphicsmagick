@@ -561,8 +561,8 @@ static void PrintPolygonInfo(const PolygonInfo *polygon_info)
   p=polygon_info->edges;
   for (i=0; i < polygon_info->number_edges; i++)
   {
-    (void) fprintf(stdout,"    edge %d:\n      direction: %.1024s\n      "
-      "ghostline: %.1024s\n      bounds: %g,%g - %g,%g\n",i,
+    (void) fprintf(stdout,"    edge %d:\n      direction: %s\n      "
+      "ghostline: %s\n      bounds: %g,%g - %g,%g\n",i,
       p->direction ? "down" : "up",p->ghostline ? "transparent" : "opaque",
       p->bounds.x1,p->bounds.y1,p->bounds.x2,p->bounds.y2);
     for (j=0; j < p->number_points; j++)
@@ -815,7 +815,7 @@ static void PrintPathInfo(const PathInfo *path_info)
 
   (void) fprintf(stdout,"  begin vector-path\n");
   for (p=path_info; p->code != EndCode; p++)
-    (void) fprintf(stdout,"    %g,%g %.1024s\n",p->point.x,p->point.y,
+    (void) fprintf(stdout,"    %g,%g %s\n",p->point.x,p->point.y,
       p->code == GhostlineCode ? "moveto ghostline" :
       p->code == OpenCode ? "moveto open" : p->code == MoveToCode ? "moveto" :
       p->code == LineToCode ? "lineto" : "?");
@@ -2876,19 +2876,19 @@ static void PrintPrimitiveInfo(const PrimitiveInfo *primitive_info)
   {
     case PointPrimitive:
     {
-      (void) fprintf(stdout,"PointPrimitive %d,%d %.1024s\n",x,y,
+      (void) fprintf(stdout,"PointPrimitive %d,%d %s\n",x,y,
         methods[primitive_info->method]);
       return;
     }
     case ColorPrimitive:
     {
-      (void) fprintf(stdout,"ColorPrimitive %d,%d %.1024s\n",x,y,
+      (void) fprintf(stdout,"ColorPrimitive %d,%d %s\n",x,y,
         methods[primitive_info->method]);
       return;
     }
     case MattePrimitive:
     {
-      (void) fprintf(stdout,"MattePrimitive %d,%d %.1024s\n",x,y,
+      (void) fprintf(stdout,"MattePrimitive %d,%d %s\n",x,y,
         methods[primitive_info->method]);
       return;
     }

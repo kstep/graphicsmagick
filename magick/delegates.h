@@ -14,6 +14,7 @@ extern "C" {
 typedef struct _DelegateInfo
 {
   char
+    *filename,
     *decode,
     *encode,
     *commands;

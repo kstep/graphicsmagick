@@ -6732,7 +6732,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
       TemporaryFilename(filename);
-      FormatString((*image)->filename,"launch:%.1024s",filename);
+      FormatString((*image)->filename,"launch:%s",filename);
       status=WriteImage(image_info,*image);
       if (status != False)
         XNoticeWidget(display,windows,"Unable to launch image editor",
@@ -6810,9 +6810,9 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       image_info->group=windows->image.id;
       (void) SetImageAttribute(*image,"Label","Preview");
       TemporaryFilename(filename);
-      FormatString((*image)->filename,"preview:%.1024s",filename);
+      FormatString((*image)->filename,"preview:%s",filename);
       status=WriteImage(image_info,*image);
-      FormatString((*image)->filename,"show:%.1024s",filename);
+      FormatString((*image)->filename,"show:%s",filename);
       status=WriteImage(image_info,*image);
       if (status)
         XNoticeWidget(display,windows,"Unable to show image preview",
@@ -6831,9 +6831,9 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       image_info->group=windows->image.id;
       (void) SetImageAttribute(*image,"Label","Histogram");
       TemporaryFilename(filename);
-      FormatString((*image)->filename,"histogram:%.1024s",filename);
+      FormatString((*image)->filename,"histogram:%s",filename);
       status=WriteImage(image_info,*image);
-      FormatString((*image)->filename,"show:%.1024s",filename);
+      FormatString((*image)->filename,"show:%s",filename);
       status=WriteImage(image_info,*image);
       if (status)
         XNoticeWidget(display,windows,"Unable to show histogram",
@@ -6858,9 +6858,9 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       image_info->group=windows->image.id;
       (void) SetImageAttribute(*image,"Label","Matte");
       TemporaryFilename(filename);
-      FormatString((*image)->filename,"matte:%.1024s",filename);
+      FormatString((*image)->filename,"matte:%s",filename);
       status=WriteImage(image_info,*image);
-      FormatString((*image)->filename,"show:%.1024s",filename);
+      FormatString((*image)->filename,"show:%s",filename);
       status=WriteImage(image_info,*image);
       if (status)
         XNoticeWidget(display,windows,"Unable to show histogram",
@@ -8673,7 +8673,7 @@ static unsigned int XPrintImage(Display *display,XResourceInfo *resource_info,
   */
   TemporaryFilename(print_image->magick_filename);
   TemporaryFilename(filename);
-  FormatString(print_image->filename,"print:%.1024s",filename);
+  FormatString(print_image->filename,"print:%s",filename);
   status=WriteImage(image_info,print_image);
   DestroyImage(print_image);
   DestroyImageInfo(image_info);

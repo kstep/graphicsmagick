@@ -68,7 +68,7 @@ extern "C" {
 # define MagickGlobal
 #endif
 
-#define MaxTextExtent  2053
+#define MaxTextExtent  1664
 #define MagickSignature  0xabacadab
 
 #if !defined(vms) && !defined(macintosh)

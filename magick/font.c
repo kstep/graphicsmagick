@@ -55,6 +55,11 @@
 #include "magick.h"
 #include "defines.h"
 
+/* 
+  Define declarations.
+*/ 
+#define FontFilename  "fonts.mgk"
+
 /*
   Static declarations.
 */
@@ -175,10 +180,10 @@ MagickExport FontInfo *GetFontInfo(const char *name,ExceptionInfo *exception)
       /*
         Read fonts.
       */
-      status=ReadConfigurationFile("fonts.mgk");
+      status=ReadConfigurationFile(FontFilename);
       if (status == False)
         ThrowException(exception,FileOpenWarning,
-          "Unable to read font configuration file","fonts.mgk");
+          "Unable to read font configuration file",FontFilename);
       atexit(DestroyFontInfo);
     }
   LiberateSemaphore(&font_semaphore);
@@ -228,13 +233,15 @@ MagickExport unsigned int ListFontInfo(FILE *file,ExceptionInfo *exception)
 
   if (file == (const FILE *) NULL)
     file=stdout;
-  (void) fprintf(file,"ImageMagick supports these built-in fonts:\n\n");
-  (void) fprintf(file,"Name                         Description\n");
-  (void) fprintf(file,"-------------------------------------------------------"
-    "------------------------\n");
+  (void) fprintf(file,"ImageMagick supports these built-in fonts.\n");
   p=GetFontInfo("*",exception);
   if (p == (FontInfo *) NULL)
     return(False);
+  if (font_list->filename != (char *) NULL)
+    (void) fprintf(file,"\nFilename: %.1024s\n\n",font_list->filename);
+  (void) fprintf(file,"Name                         Description\n");
+  (void) fprintf(file,"-------------------------------------------------------"
+    "------------------------\n");
   for (p=font_list; p != (FontInfo *) NULL; p=p->next)
   {
     (void) fprintf(file,"%.1024s",p->name);
@@ -264,20 +271,21 @@ MagickExport unsigned int ListFontInfo(FILE *file,ExceptionInfo *exception)
 %
 %  The format of the ReadConfigurationFile method is:
 %
-%      unsigned int ReadConfigurationFile(const char *filename)
+%      unsigned int ReadConfigurationFile(const char *basename)
 %
 %  A description of each parameter follows:
 %
 %    o status: Method ReadConfigurationFile returns True if at least one font
 %      is defined otherwise False.
 %
-%    o filename:  The font configuration filename.
+%    o basename:  The font configuration filename.
 %
 %
 */
-static unsigned int ReadConfigurationFile(const char *filename)
+static unsigned int ReadConfigurationFile(const char *basename)
 {
   char
+    filename[MaxTextExtent],
     keyword[MaxTextExtent],
     *path,
     value[MaxTextExtent];
@@ -297,8 +305,9 @@ static unsigned int ReadConfigurationFile(const char *filename)
   path=GetMagickConfigurePath(filename);
   if (path == (char *) NULL)
     return(False);
-  file=fopen(path,"r");
+  FormatString(filename,"%.1024s",path);
   LiberateMemory((void **) &path);
+  file=fopen(filename,"r");
   if (file == (FILE *) NULL)
     return(False);
   for (c=fgetc(file); c != EOF; c=fgetc(file))
@@ -330,7 +339,10 @@ static unsigned int ReadConfigurationFile(const char *filename)
             "Memory allocation failed");
         memset(font_info,0,sizeof(FontInfo));
         if (font_list == (FontInfo *) NULL)
-          font_list=font_info;
+          {
+            font_list->filename=AllocateString(filename);
+            font_list=font_info;
+          }
         else
           {
             font_list->next=font_info;
