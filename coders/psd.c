@@ -1228,7 +1228,7 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
 	channel_size,
 	channelLength,
 	force_white_background = image->matte,
-	invert_layer_count = force_white_background ? True : False;
+	invert_layer_count = /*force_white_background ? True :*/ False;
 
   register long
     i;
@@ -1264,7 +1264,8 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
     ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
   (void) WriteBlob(image,4,"8BPS");
   (void) WriteBlobMSBShort(image,1);  /* version */
-  (void) WriteBlob(image,6,"      ");  /* reserved */
+  for ( i=1; i<=6; i++)
+	(void) WriteBlobByte(image, 0);  /* 6 bytes of reserved */
   if ( force_white_background )
 	  num_channels = 3;
   else 
@@ -1363,7 +1364,7 @@ compute_layer_info:
 	WriteBlobMSBLong(image, 0);
   else 
   {
-	  (void) WriteBlobMSBLong(image,layer_info_size + 4 + 4);  
+	  (void) WriteBlobMSBLong(image,layer_info_size + 4);  
 
 		if( layer_info_size/2 != (layer_info_size+1)/2 ) /* odd */
 			rounded_layer_info_size = layer_info_size + 1;
@@ -1451,7 +1452,7 @@ compute_layer_info:
 		while ( tmp_image != NULL ) {
 		  WriteImageChannels( image, tmp_image, pixels );
 		  tmp_image = tmp_image->next;
-	  };
+		};
 
 			/* add in the pad! */
 		if ( rounded_layer_info_size != layer_info_size )
