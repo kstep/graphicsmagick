@@ -11,42 +11,38 @@ Welcome to ImageMagick!
   you the package is installed to view the license restrictions of
   additional package components.
 
-Installation
 
-   Please note that the user who installs this package may require
-   "Administrator" privileges in order to properly ImageMagick.
+Before You Start
 
-  Prerequisites
+  Please note that the user who installs this package may require
+  "Administrator" privileges in order to properly ImageMagick.
+
+  While multiple versions of ImageMagick may be installed at one time,
+  if your intention is to replace a prior installation of ImageMagick
+  with a newer version, then it may be wise to uninstall the existing
+  ImageMagick prior to installing the newer version.
+
+  Before installing ImageMagick, please make sure that you are
+  installing the current release version. The current release version is
+  posted to the site "http://www.imagemagick.org". Before submitting a
+  bug report please ensure that you are using the current release version.
   
-    While multiple versions of ImageMagick may be installed at one time,
-    if your intention is to replace a prior installation of ImageMagick
-    with a newer version, then it may be wise to uninstall the existing
-    ImageMagick prior to installing the newer version.
+  While it is not a requirement, it is recommended that the Ghostscript
+  package be installed. ImageMagick uses Ghostscript to render
+  Postscript and PDF files, as well as formats where a translator to
+  Postscript is available. ImageMagick will use the fonts delivered with
+  Ghostscript to support the set of standard Postscript fonts.
   
-    While it is not a requirement, it is recommended that the
-    Ghostscript package be installed. ImageMagick uses Ghostscript to
-    render Postscript and PDF files, as well as formats where a
-    translator to Postscript is available. ImageMagick will use the
-    fonts delivered with Ghostscript to support the set of standard
-    Postscript fonts.
-    
-    The installation package includes the ImageMagick Perl extension (
-    PerlMagick) as an installation option. If you would like to use this
-    extension, then you should install ActiveState ActivePerl prior to
-    commencing with installation of ImageMagick.
+  The installation package includes the Perl Image::Magick extension
+  (PerlMagick) as an installation option. If you would like to use this
+  extension, then you should install ActiveState ActivePerl prior to
+  commencing with installation of ImageMagick. If you should decide to
+  install ActivePerl later, you can simply re-run this installation
+  program to install PerlMagick.
   
-  Retrieve Install Package
-  
-    Retrieve the ImageMagick Windows binary install package from a one
-    of the ftp sites listed at the ImageMagick Download Sites page. The
-    file will be named similar to ImageMagick-5.4.9-win2k.exe and should
-    be found in the 'binaries' subdirectory of the ftp site.
-  
-  Start Installation Wizard
-  
-    Execute the downloaded file from your browser or by double-clicking
-    on the filename from within Windows Explorer. The ImageMagick Setup
-    Wizard will appear. Click on "Next" to continue.
+Installation Steps
+
+  The following describes the steps remaining to install ImageMagick.
   
   Select Destination Directory
   
@@ -64,11 +60,39 @@ Installation
   
   Select Additional Tasks
   
-    A screen is displayed which provides the option to create a desktop
-    shortcut icon to the imdisplay program and to update the executable
-    search path so that ImageMagick is available without specifying the
-    full path to the programs. The default is to enable both of these.
-    Once you have made your selections, click on "Next>" to continue.
+    A screen is displayed which provides the following options
+
+      o Create a desktop icon
+
+        This option adds an icon to the desktop for ImageMagick's
+        display program.
+
+      o Update executable search path
+
+        This option adds the ImageMagick installation directory to the
+        executable search path.
+
+      o Associate supported file extensions with ImageMagick
+
+        Regardless of this setting, formats which are invented by
+        ImageMagick will be associated with ImageMagick. If this box is
+        checkmarked, then *all* image formats that ImageMagick supports
+        (including popular formats like GIF, JPEG, TIFF, PDF, and
+        Postscript) will be associated with the ImageMagick display
+        program. Please consider carefully if you want to do this!
+
+      o Install PerlMagick for ActiveState Perl v5.6.1
+
+        This option runs the Perl installer to install the Image::Magick
+        extension.
+
+      o Install ImageMagickObject OLE Control
+
+        This option registers the ImageMagickObject DLL as an OLE Control
+        to support use from languages which support using COM objects.
+
+    Please ensure that you are satisified with your selections prior
+    to continuing.
   
   Ready to Install
   
