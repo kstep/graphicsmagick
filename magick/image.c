@@ -4869,16 +4869,16 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
   assert(image_info->signature == MagickSignature);
   assert(images != (Image **) NULL);
   assert((*images)->signature == MagickSignature);
-  mogrify_images=(*images);
-  if (mogrify_images->next == (Image *) NULL)
-    return(MogrifyImage(image_info,argc,argv,&mogrify_images));
   number_images=GetNumberScenes(*images);
+  if (number_images == 1)
+    return(MogrifyImage(image_info,argc,argv,images));
   MagickMonitor(MogrifyImageText,0,number_images);
   handler=SetMonitorHandler((MonitorHandler) NULL);
-  status=MogrifyImage(image_info,argc,argv,&mogrify_images);
+  status=MogrifyImage(image_info,argc,argv,images);
   (void) SetMonitorHandler(handler);
   if (status == False)
     return(False);
+  mogrify_images=(*images);
   image=(*images)->next;
   if (image_info->verbose)
     DescribeImage(mogrify_images,stdout,False);
