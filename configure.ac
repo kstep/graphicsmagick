@@ -1022,7 +1022,7 @@ then
 
     OLD_LDFLAGS="$LDFLAGS"
     OLD_CPPFLAGS="$CPPFLAGS"
-    if test "$with_delegate_build" != 'no' -a test -d "$builddir/ttf/include"
+    if test "$with_delegate_build" != 'no' -a -d "$builddir/ttf/include"
     then
        :
     else
