@@ -1680,7 +1680,8 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         TemporaryFilename(clone_info->filename);
         status=
           InvokeDelegate(clone_info,image,clone_info->magick,(char *) NULL);
-        *exception=image->exception;
+        ThrowException(exception,image->exception.severity,
+           image->exception.message,image->exception.qualifier);
         DestroyImages(image);
         image=(Image *) NULL;
         if (status != False)
