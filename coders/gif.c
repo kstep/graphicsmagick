@@ -1253,7 +1253,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
   scene=0;
   do
   {
-    (void) TransformRGBImage(image,image->colorspace);
+    TransformColorspace(image,RGBColorspace);
     if ((image->storage_class == DirectClass) || (image->colors > 256))
       {
         /*

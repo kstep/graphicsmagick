@@ -612,7 +612,7 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
-  (void) TransformRGBImage(image,image->colorspace);
+  TransformColorspace(image,RGBColorspace);
   /*
     Initialize XWD file header.
   */

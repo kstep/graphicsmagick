@@ -349,7 +349,7 @@ static unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
     /*
       Write AVS header.
     */
-    (void) TransformRGBImage(image,image->colorspace);
+    TransformColorspace(image,RGBColorspace);
     (void) WriteBlobMSBLong(image,image->columns);
     (void) WriteBlobMSBLong(image,image->rows);
     /*

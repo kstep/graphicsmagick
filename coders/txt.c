@@ -400,7 +400,7 @@ static unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
     /*
       Convert MIFF to TXT raster pixels.
     */
-    (void) TransformRGBImage(image,image->colorspace);
+    TransformColorspace(image,RGBColorspace);
     for (y=0; y < (long) image->rows; y++)
     {
       p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);

@@ -3865,8 +3865,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               channel=BlackChannel;
             if (LocaleCompare("Matte",option) == 0)
               channel=MatteChannel;
-            if ((*image)->colorspace != clone_info->colorspace)
-              (void) RGBTransformImage(*image,clone_info->colorspace);
+            TransformColorspace(*image,clone_info->colorspace);
             (void) ChannelImage(*image,channel);
             continue;
           }
@@ -3949,13 +3948,13 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             option=argv[++i];
             if (LocaleCompare("cmyk",option) == 0)
               {
-                (void) RGBTransformImage(*image,CMYKColorspace);
+                TransformColorspace(*image,CMYKColorspace);
                 /* Ignore request to quantize in CMYK colorspace */
                 quantize_info.colorspace=RGBColorspace;
               }
             if (LocaleCompare("gray",option) == 0)
               {
-                (void) TransformRGBImage(*image,GRAYColorspace);
+                TransformColorspace(*image,GRAYColorspace);
                 quantize_info.colorspace=GRAYColorspace;
               }
             if (LocaleCompare("hsl",option) == 0)
@@ -3966,7 +3965,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               quantize_info.colorspace=OHTAColorspace;
             if (LocaleCompare("rgb",option) == 0)
               {
-                (void) TransformRGBImage(*image,(*image)->colorspace);
+                TransformColorspace(*image,RGBColorspace);
                 quantize_info.colorspace=RGBColorspace;
               }
             if (LocaleCompare("srgb",option) == 0)
@@ -5597,7 +5596,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       if ( quantize_info.number_colors != 0 )
         (void) QuantizeImage(&quantize_info,*image);
       else
-        (void) RGBTransformImage(*image,GRAYColorspace);
+        TransformColorspace(*image,GRAYColorspace);
     }
   else
     {

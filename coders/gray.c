@@ -425,7 +425,7 @@ static unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
     /*
       Allocate memory for scanline.
     */
-    (void) TransformRGBImage(image,image->colorspace);
+    TransformColorspace(image,RGBColorspace);
     packet_size=image->depth > 8 ? 2: 1;
     scanline=(unsigned char *) AcquireMemory(packet_size*image->columns);
     if (scanline == (unsigned char *) NULL)

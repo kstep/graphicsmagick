@@ -1685,14 +1685,13 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
        (image->colorspace != CMYKColorspace)) &&
        (image_info->colorspace != CMYKColorspace))
     {
-      (void) TransformRGBImage(image,image->colorspace);
+      TransformColorspace(image,RGBColorspace);
       (void) WriteBlobMSBShort(image,
         image->storage_class == PseudoClass ? 2 : 3);
     }
   else
     {
-      if (image->colorspace != CMYKColorspace)
-        (void) RGBTransformImage(image,CMYKColorspace);
+      TransformColorspace(image,CMYKColorspace);
       (void) WriteBlobMSBShort(image,4);
     }
   if ((image->storage_class == DirectClass) || (image->colors > 256))

@@ -378,7 +378,7 @@ static unsigned int WriteWBMPImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
-  (void) TransformRGBImage(image,image->colorspace);
+  TransformColorspace(image,RGBColorspace);
   /*
     Convert image to a bi-level image.
   */

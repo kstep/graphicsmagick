@@ -1288,7 +1288,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
           if (info)
             info->image_info->colorspace=(ColorspaceType) sp;
           for ( ; image; image=image->next)
-            RGBTransformImage(image,(ColorspaceType) sp);
+            TransformColorspace(image,(ColorspaceType) sp);
           return;
         }
       if (LocaleCompare(attribute,"compression") == 0)

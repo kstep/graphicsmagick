@@ -923,89 +923,88 @@ typedef struct _ImageInfo
   Image const declarations.
 */
 extern MagickExport const char
-  *BackgroundColor, /* image.c */
-  *BorderColor, /* image.c */
-  *DefaultTileFrame, /* image.c */
-  *DefaultTileGeometry, /* image.c */
-  *DefaultTileLabel, /* image.c */
-  *ForegroundColor, /* image.c */
-  *MatteColor, /* image.c */
-  *LoadImageText, /* image.c */
-  *LoadImagesText, /* image.c */
-  *PSDensityGeometry, /* image.c */
-  *PSPageGeometry, /* image.c */
-  *SaveImageText, /* image.c */
-  *SaveImagesText; /* image.c */
+  *BackgroundColor,
+  *BorderColor,
+  *DefaultTileFrame,
+  *DefaultTileGeometry,
+  *DefaultTileLabel,
+  *ForegroundColor,
+  *MatteColor,
+  *LoadImageText,
+  *LoadImagesText,
+  *PSDensityGeometry,
+  *PSPageGeometry,
+  *SaveImageText,
+  *SaveImagesText;
 
 extern MagickExport const unsigned long
-  DefaultCompressionQuality; /* image.c */
+  DefaultCompressionQuality;
 
 /*
   Image utilities methods.
 */
 
 extern MagickExport ExceptionType
-  CatchImageException(Image *); /* image.c */
+  CatchImageException(Image *);
 
 extern MagickExport Image
-  *AllocateImage(const ImageInfo *), /* image.c */
-  *AppendImages(const Image *,const unsigned int,ExceptionInfo *), /* image.c */
-  *AverageImages(const Image *,ExceptionInfo *), /* image.c */
+  *AllocateImage(const ImageInfo *),
+  *AppendImages(const Image *,const unsigned int,ExceptionInfo *),
+  *AverageImages(const Image *,ExceptionInfo *),
   *CloneImage(const Image *,const unsigned long,const unsigned long,
-   const unsigned int,ExceptionInfo *), /* image.c */
-  *ReferenceImage(Image *); /* image.c */
+   const unsigned int,ExceptionInfo *),
+  *ReferenceImage(Image *);
 
 extern MagickExport ImageInfo
-  *CloneImageInfo(const ImageInfo *); /* image.c */
+  *CloneImageInfo(const ImageInfo *);
 
 extern MagickExport ImageType
-  GetImageType(const Image *,ExceptionInfo *); /* image.c */
+  GetImageType(const Image *,ExceptionInfo *);
 
 extern MagickExport int
   GetImageGeometry(const Image *,const char *,const unsigned int,
-  RectangleInfo *); /* image.c */
+  RectangleInfo *);
 
 
 extern MagickExport RectangleInfo
-  GetImageBoundingBox(const Image *,ExceptionInfo *exception); /* image.c */
+  GetImageBoundingBox(const Image *,ExceptionInfo *exception);
 
 extern MagickExport unsigned int
-  AllocateImageColormap(Image *,const unsigned long), /* image.c */
-  AnimateImages(const ImageInfo *image_info,Image *image), /* image.c */
-  ChannelImage(Image *,const ChannelType), /* image.c */
-  ClipImage(Image *), /* image.c */
-  DisplayImages(const ImageInfo *image_info,Image *image), /* image.c */
-  GradientImage(Image *,const PixelPacket *,const PixelPacket *), /* image.c */
-  IsImagesEqual(Image *,const Image *), /* image.c */
-  IsTaintImage(const Image *), /* image.c */
-  IsSubimage(const char *,const unsigned int), /* image.c */
-  PlasmaImage(Image *,const SegmentInfo *,unsigned long,unsigned long), /* image.c */
-  RGBTransformImage(Image *,const ColorspaceType), /* image.c */
-  SetImageClipMask(Image *,Image *), /* image.c */
-  SetImageDepth(Image *,const unsigned long), /* image.c */
-  SetImageInfo(ImageInfo *,const unsigned int,ExceptionInfo *), /* image.c */
-  SignatureImage(Image *), /* signature.c */
-  SortColormapByIntensity(Image *), /* image.c */
-  TransformRGBImage(Image *,const ColorspaceType); /* image.c */
+  AllocateImageColormap(Image *,const unsigned long),
+  AnimateImages(const ImageInfo *image_info,Image *image),
+  ChannelImage(Image *,const ChannelType),
+  ClipImage(Image *),
+  DisplayImages(const ImageInfo *image_info,Image *image),
+  GradientImage(Image *,const PixelPacket *,const PixelPacket *),
+  IsImagesEqual(Image *,const Image *),
+  IsTaintImage(const Image *),
+  IsSubimage(const char *,const unsigned int),
+  PlasmaImage(Image *,const SegmentInfo *,unsigned long,unsigned long),
+  RGBTransformImage(Image *,const ColorspaceType),
+  SetImageClipMask(Image *,Image *),
+  SetImageDepth(Image *,const unsigned long),
+  SetImageInfo(ImageInfo *,const unsigned int,ExceptionInfo *),
+  SortColormapByIntensity(Image *),
+  TransformRGBImage(Image *,const ColorspaceType);
 
 extern MagickExport unsigned long
-  GetImageDepth(const Image *,ExceptionInfo *); /* image.c */
+  GetImageDepth(const Image *,ExceptionInfo *);
 
 extern MagickExport void
-  AllocateNextImage(const ImageInfo *,Image *), /* image.c */
-  CycleColormapImage(Image *,const int), /* image.c */
-  DescribeImage(Image *,FILE *,const unsigned int), /* image.c */
-  DestroyColorInfo(void), /* color.c */
-  DestroyImage(Image *), /* image.c */
-  DestroyImageInfo(ImageInfo *), /* image.c */
-  GetImageException(Image *,ExceptionInfo *), /* image.c */
-  GetImageInfo(ImageInfo *), /* image.c */
-  ModifyImage(Image **,ExceptionInfo *), /* image.c */
-  SetImage(Image *,const Quantum), /* image.c */
-  SetImageOpacity(Image *,const unsigned int), /* image.c */
-  SetImageType(Image *,const ImageType), /* image.c */
-  SyncImage(Image *), /* image.c */
-  TextureImage(Image *,const Image *); /* image.c */
+  AllocateNextImage(const ImageInfo *,Image *),
+  CycleColormapImage(Image *,const int),
+  DescribeImage(Image *,FILE *,const unsigned int),
+  DestroyImage(Image *),
+  DestroyImageInfo(ImageInfo *),
+  GetImageException(Image *,ExceptionInfo *),
+  GetImageInfo(ImageInfo *),
+  ModifyImage(Image **,ExceptionInfo *),
+  SetImage(Image *,const Quantum),
+  SetImageOpacity(Image *,const unsigned int),
+  SetImageType(Image *,const ImageType),
+  SyncImage(Image *),
+  TextureImage(Image *,const Image *),
+  TransformColorspace(Image *,const ColorspaceType);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -1278,7 +1278,7 @@ MagickExport Image *XAnimateImages(Display *display,
   */
   nexus=(Image *) NULL;
   display_image=image_list[0];
-  (void) TransformRGBImage(display_image,display_image->colorspace);
+  TransformColorspace(display_image,RGBColorspace);
   for (scene=0; scene < (long) number_scenes; scene++)
   {
     if ((resource_info->map_type != (char *) NULL) ||
@@ -1682,7 +1682,7 @@ MagickExport Image *XAnimateImages(Display *display,
     /*
       Create X image.
     */
-    (void) TransformRGBImage(image_list[scene],image_list[scene]->colorspace);
+    TransformColorspace(image_list[scene],RGBColorspace);
     windows->image.pixmap=(Pixmap) NULL;
     windows->image.matte_pixmap=(Pixmap) NULL;
     if ((resource_info->map_type != (char *) NULL) ||

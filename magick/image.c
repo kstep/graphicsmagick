@@ -3344,8 +3344,20 @@ MagickExport unsigned int RGBTransformImage(Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
 
-  if ((colorspace == RGBColorspace) || (colorspace == TransparentColorspace))
-    return(True);
+  /* Detect bogus request to convert to RGB */
+  assert((colorspace != RGBColorspace) &&
+         (colorspace != TransparentColorspace));
+  /* if ((colorspace == RGBColorspace) || (colorspace == TransparentColorspace)) */
+/*     return(True); */
+
+  /*
+    Ensure that image is an RGB-compatable colorspace prior to
+    transforming to an alternate colorspace.
+  */
+  if ((image->colorspace != RGBColorspace) ||
+      (image->colorspace != GRAYColorspace) ||
+      (image->colorspace != TransparentColorspace))
+      TransformRGBImage(image,image->colorspace);
 
   /*
     Log colorspace transform event
@@ -3353,6 +3365,11 @@ MagickExport unsigned int RGBTransformImage(Image *image,
   LogMagickEvent(TransformEvent,GetMagickModule(),
                  "Transform colorspace from RGB to %s",
                  ColorspaceTypeToString(colorspace));
+
+  /*
+    Store colorspace in image.
+  */
+  image->colorspace=colorspace;
   
   if (colorspace == CMYKColorspace)
     {
@@ -3376,7 +3393,6 @@ MagickExport unsigned int RGBTransformImage(Image *image,
           SyncImage(image);
           image->storage_class=DirectClass;
         }
-      image->colorspace=CMYKColorspace;
       for (y=0; y < (long) image->rows; y++)
       {
         q=GetImagePixels(image,0,y,image->columns,1);
@@ -4580,7 +4596,7 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
     case BilevelType:
     {
       if (image->colorspace != RGBColorspace)
-        (void) TransformRGBImage(image,image->colorspace);
+        TransformColorspace(image,RGBColorspace);
       if ((image->storage_class != PseudoClass) ||
           !IsMonochromeImage(image,&image->exception))
         {
@@ -4612,17 +4628,17 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
     case GrayscaleType:
     {
       if (image->colorspace != RGBColorspace)
-        (void) TransformRGBImage(image,image->colorspace);
+        TransformColorspace(image,RGBColorspace);
       if (!IsGrayImage(image,&image->exception))
-          (void) RGBTransformImage(image,GRAYColorspace);
+        TransformColorspace(image,GRAYColorspace);
       break;
     }
     case GrayscaleMatteType:
     {
       if (image->colorspace != RGBColorspace)
-        (void) TransformRGBImage(image,image->colorspace);
+        TransformColorspace(image,RGBColorspace);
       if (!IsGrayImage(image,&image->exception))
-          (void) RGBTransformImage(image,GRAYColorspace);
+          TransformColorspace(image,GRAYColorspace);
       if (!image->matte)
         SetImageOpacity(image,OpaqueOpacity);
       break;
@@ -4630,7 +4646,7 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
     case PaletteType:
     {
       if (image->colorspace != RGBColorspace)
-        (void) TransformRGBImage(image,image->colorspace);
+        TransformColorspace(image,RGBColorspace);
       if (image->storage_class != PseudoClass)
         {
           GetQuantizeInfo(&quantize_info);
@@ -4642,7 +4658,7 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
     case PaletteMatteType:
     {
       if (image->colorspace != RGBColorspace)
-        (void) TransformRGBImage(image,image->colorspace);
+        TransformColorspace(image,RGBColorspace);
       if (!image->matte)
         SetImageOpacity(image,OpaqueOpacity);
       if (image->storage_class != PseudoClass)
@@ -4657,14 +4673,14 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
     case TrueColorType:
     {
       if (image->colorspace != RGBColorspace)
-        (void) TransformRGBImage(image,image->colorspace);
+        TransformColorspace(image,RGBColorspace);
       image->storage_class=DirectClass;
       break;
     }
     case TrueColorMatteType:
     {
       if (image->colorspace != RGBColorspace)
-        (void) TransformRGBImage(image,image->colorspace);
+        TransformColorspace(image,RGBColorspace);
       image->storage_class=DirectClass;
       if (!image->matte)
         SetImageOpacity(image,OpaqueOpacity);
@@ -4672,22 +4688,12 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
     }
     case ColorSeparationType:
     {
-      if (image->colorspace != CMYKColorspace)
-        {
-          if (image->colorspace != RGBColorspace)
-            (void) TransformRGBImage(image,image->colorspace);
-          (void) RGBTransformImage(image,CMYKColorspace);
-        }
+      TransformColorspace(image,CMYKColorspace);
       break;
     }
     case ColorSeparationMatteType:
     {
-      if (image->colorspace != CMYKColorspace)
-        {
-          if (image->colorspace != RGBColorspace)
-            (void) TransformRGBImage(image,image->colorspace);
-          (void) RGBTransformImage(image,CMYKColorspace);
-        }
+      TransformColorspace(image,CMYKColorspace);
       if (!image->matte)
         SetImageOpacity(image,OpaqueOpacity);
       break;
@@ -4933,6 +4939,70 @@ MagickExport void TextureImage(Image *image,const Image *texture)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++     T r a n s f o r m C o l o r s p a c e                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method TransformColorspace converts the image to a specified colorspace.
+%  If the image is already in the requested colorspace, no work is performed.
+%  Note that the current colorspace is stored in the image colorspace member.
+%  The transformation matrices are not necessarily the standard ones: the
+%  weights are rescaled to normalize the range of the transformed values to
+%  be [0..MaxRGB].
+%
+%  The format of the TransformColorspace method is:
+%
+%      unsigned int TransformColorspace(Image *image,
+%        const ColorspaceType colorspace)
+%
+%  A description of each parameter follows:
+%
+%    o image: the image to transform
+%
+%    o colorspace: the desired colorspace.
+%
+*/
+MagickExport void TransformColorspace(Image *image,
+  const ColorspaceType colorspace)
+{
+  /*
+    If the image colorspace is the same as requested, do nothing.
+  */
+  if (image->colorspace == colorspace)
+     return;
+
+  /*
+    If the requested colorspace is RGB or Transparent, then convert
+    via TransformRGBImage.
+  */
+  if ((colorspace == RGBColorspace) ||
+      (colorspace == TransparentColorspace))
+      {
+        (void) TransformRGBImage(image,image->colorspace);
+        return;
+      }
+
+  /*
+    If the image is not already in an RGB-compatible colorspace, then
+    convert it to RGB via TransformRGBImage, and then to the target
+    colorspace via RGBTransformImage, otherwise just convert to the
+    target colorspace via RGBTransformImage.
+  */
+  if ((image->colorspace != RGBColorspace) &&
+      (image->colorspace != TransparentColorspace) &&
+      (image->colorspace != GRAYColorspace))
+      (void) TransformRGBImage(image,image->colorspace);
+
+  (void) RGBTransformImage(image,colorspace);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +     T r a n s f o r m R G B I m a g e                                       %
 %                                                                             %
 %                                                                             %
@@ -5113,16 +5183,23 @@ MagickExport unsigned int TransformRGBImage(Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
 
-  if ((colorspace == RGBColorspace) || (colorspace == GRAYColorspace) ||
-      (colorspace == TransparentColorspace))
-    return(True);
+  /*
+    If colorspace is already RGB type, then simply return.
+  */
+  if ((image->colorspace == RGBColorspace) ||
+      (image->colorspace == GRAYColorspace) ||
+      (image->colorspace == TransparentColorspace))
+    {
+      image->colorspace=RGBColorspace;
+      return(True);
+    }
 
   {
     /*
       Log colorspace transform event
     */
     const char *
-      log_colorspace = ColorspaceTypeToString(colorspace);
+      log_colorspace = ColorspaceTypeToString(image->colorspace);
 
     if (log_colorspace != NULL)
       LogMagickEvent(TransformEvent,GetMagickModule(),
@@ -5168,7 +5245,8 @@ MagickExport unsigned int TransformRGBImage(Image *image,
       return(True);
     }
 
-  if (colorspace == HSLColorspace || colorspace == HWBColorspace)
+  if ((image->colorspace == HSLColorspace) ||
+      (image->colorspace == HWBColorspace))
     {
       void (*transform)(const double,const double,const double,
         Quantum *,Quantum *,Quantum *);
@@ -5235,6 +5313,7 @@ MagickExport unsigned int TransformRGBImage(Image *image,
             break;
           }
         }
+      image->colorspace=RGBColorspace;
       LogMagickEvent(TransformEvent,GetMagickModule(),
                      "Colorspace transform completed"); 
       return(True);
@@ -5254,7 +5333,7 @@ MagickExport unsigned int TransformRGBImage(Image *image,
       (blue_map == (RGBColorTransformPacket *) NULL))
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       "UnableToTransformColorspace");
-  switch (colorspace)
+  switch (image->colorspace)
   {
     case OHTAColorspace:
     {

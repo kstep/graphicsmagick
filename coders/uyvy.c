@@ -176,7 +176,8 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,
       if (!MagickMonitor(LoadImageText,y,image->rows,exception))
         break;
   }
-  (void) TransformRGBImage(image,YCbCrColorspace);
+  image->colorspace=YCbCrColorspace;
+  TransformColorspace(image,RGBColorspace);
   if (EOFBlob(image))
     ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
       image->filename);
@@ -304,6 +305,9 @@ static unsigned int WriteUYVYImage(const ImageInfo *image_info,Image *image)
     full,
     status;
 
+  ColorspaceType
+    original_colorspace;
+
   /*
     Open output image file.
   */
@@ -314,11 +318,11 @@ static unsigned int WriteUYVYImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
-  (void) TransformRGBImage(image,image->colorspace);
   /*
     Convert to YUV, at full resolution.
   */
-  (void) RGBTransformImage(image,YCbCrColorspace);
+  original_colorspace=image->colorspace;
+  TransformColorspace(image,YCbCrColorspace);
   /*
     Accumulate two pixels, then output.
   */
@@ -350,7 +354,10 @@ static unsigned int WriteUYVYImage(const ImageInfo *image_info,Image *image)
       if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
         break;
   }
-  (void) TransformRGBImage(image,YCbCrColorspace);
+  /*
+    Restore colorspace
+  */
+  TransformColorspace(image,original_colorspace);
   CloseBlob(image);
   return(True);
 }

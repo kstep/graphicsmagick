@@ -329,7 +329,7 @@ static unsigned int WriteFAXImage(const ImageInfo *image_info,Image *image)
     /*
       Convert MIFF to monochrome.
     */
-    (void) TransformRGBImage(image,image->colorspace);
+    TransformColorspace(image,RGBColorspace);
     status=HuffmanEncodeImage(clone_info,image);
     if (image->next == (Image *) NULL)
       break;

@@ -1507,8 +1507,7 @@ MagickExport unsigned int SegmentImage(Image *image,
           image->filename)
       }
   }
-  if (colorspace != RGBColorspace)
-    (void) RGBTransformImage(image,colorspace);
+  TransformColorspace(image,colorspace);
   /*
     Initialize histogram.
   */
@@ -1523,8 +1522,7 @@ MagickExport unsigned int SegmentImage(Image *image,
     Classify using the fuzzy c-Means technique.
   */
   status=Classify(image,extrema,cluster_threshold,(double)WeightingExponent,verbose);
-  if (colorspace != RGBColorspace)
-    (void) TransformRGBImage(image,colorspace);
+  TransformColorspace(image,RGBColorspace);
   /*
     Free memory.
   */

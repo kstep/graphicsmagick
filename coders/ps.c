@@ -875,7 +875,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     /*
       Scale image to size of Postscript page.
     */
-    (void) TransformRGBImage(image,image->colorspace);
+    TransformColorspace(image,RGBColorspace);
     text_size=0;
     attribute=GetImageAttribute(image,"label");
     if (attribute != (const ImageAttribute *) NULL)

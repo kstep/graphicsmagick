@@ -180,7 +180,7 @@ MagickExport void *CropImageToHBITMAP(Image *image,
     bitmap.bmBits = bitmap_bits;
 
   if (image->colorspace != RGBColorspace)
-    (void) TransformRGBImage(image,image->colorspace);
+    TransformColorspace(image,RGBColorspace);
 
   /*
     Extract crop image.
@@ -669,7 +669,7 @@ MagickExport void *ImageToHBITMAP(Image* image)
   if ( bitmap.bmBits == NULL )
     bitmap.bmBits = bitmap_bits;
 
-  (void) TransformRGBImage(image,image->colorspace);
+  TransformColorspace(image,RGBColorspace);
   for( row = 0 ; row < image->rows ; row++ )
     {
       pPixels = AcquireImagePixels(image,0,row,image->columns,1,

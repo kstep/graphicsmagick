@@ -1478,7 +1478,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
     /*
       Initialize BMP raster file header.
     */
-    (void) TransformRGBImage(image,image->colorspace);
+    TransformColorspace(image,RGBColorspace);
     memset(&bmp_info,0,sizeof(BMPInfo));
     bmp_info.file_size=14+12;
     if (type > 2)

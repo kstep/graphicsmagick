@@ -1558,7 +1558,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         /*
           Full color TIFF raster.
         */
-        (void) TransformRGBImage(image,image->colorspace);
+        TransformColorspace(image,RGBColorspace);
         photometric=PHOTOMETRIC_RGB;
         (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,3);
         if (image_info->type != TrueColorType)
@@ -1878,8 +1878,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         /*
           CMYK TIFF image.
         */
-        if (image->colorspace != CMYKColorspace)
-          (void) RGBTransformImage(image,CMYKColorspace);
+        TransformColorspace(image,CMYKColorspace);
         for (y=0; y < (long) image->rows; y++)
         {
           p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);

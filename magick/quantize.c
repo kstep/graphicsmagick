@@ -2149,7 +2149,7 @@ MagickExport unsigned int QuantizeImage(const QuantizeInfo *quantize_info,
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       "UnableToQuantizeImage");
   if (quantize_info->colorspace != RGBColorspace)
-    (void) RGBTransformImage(image,quantize_info->colorspace);
+    TransformColorspace(image,quantize_info->colorspace);
   status=ClassifyImageColors(cube_info,image,&image->exception);
   if (status != False)
     {
@@ -2159,7 +2159,7 @@ MagickExport unsigned int QuantizeImage(const QuantizeInfo *quantize_info,
       ReduceImageColors(cube_info,number_colors,&image->exception);
       status=AssignImageColors(cube_info,image);
       if (quantize_info->colorspace != RGBColorspace)
-        (void) TransformRGBImage(image,quantize_info->colorspace);
+        TransformColorspace(image,quantize_info->colorspace);
     }
   DestroyCubeInfo(cube_info);
   return(status);
@@ -2272,7 +2272,7 @@ MagickExport unsigned int QuantizeImages(const QuantizeInfo *quantize_info,
   for (i=0; image != (Image *) NULL; i++)
   {
     if (quantize_info->colorspace != RGBColorspace)
-      (void) RGBTransformImage(image,quantize_info->colorspace);
+      TransformColorspace(image,quantize_info->colorspace);
     image=image->next;
   }
   number_images=i;
@@ -2302,7 +2302,7 @@ MagickExport unsigned int QuantizeImages(const QuantizeInfo *quantize_info,
         if (status == False)
           break;
         if (quantize_info->colorspace != RGBColorspace)
-          (void) TransformRGBImage(image,quantize_info->colorspace);
+          TransformColorspace(image,quantize_info->colorspace);
         image=image->next;
         (void) SetMonitorHandler(handler);
         if (!MagickMonitor(AssignImageTag,i,number_images,&image->exception))

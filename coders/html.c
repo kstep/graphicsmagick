@@ -249,7 +249,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
   if (status == False)
     ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
   CloseBlob(image);
-  (void) TransformRGBImage(image,image->colorspace);
+  TransformColorspace(image,RGBColorspace);
   *url='\0';
   if ((LocaleCompare(image_info->magick,"FTP") == 0) ||
       (LocaleCompare(image_info->magick,"HTTP") == 0))

@@ -42,6 +42,7 @@ extern MagickExport unsigned long
   GetNumberColors(const Image *,FILE *,ExceptionInfo *);
 
 extern MagickExport void
+  DestroyColorInfo(void),
   GetColorTuple(const PixelPacket *,const unsigned int,const unsigned int,
     const unsigned int,char *);
 
