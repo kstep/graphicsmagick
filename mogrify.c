@@ -338,6 +338,7 @@ int main(int argc,char **argv)
   image=(Image *) NULL;
   GetImageInfo(&image_info);
   scene=0;
+  status=False;
   /*
     Parse command line.
   */

@@ -358,6 +358,7 @@ int main(int argc,char **argv)
   display=(Display *) NULL;
   first_scene=0;
   image_number=0;
+  last_image=0;
   last_scene=0;
   image_marker=(unsigned int *) AllocateMemory((argc+1)*sizeof(unsigned int));
   if (image_marker == (unsigned int *) NULL)

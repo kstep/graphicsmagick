@@ -1569,6 +1569,7 @@ Export void XBestPixel(Display *display,const Colormap colormap,XColor *colors,
       XQueryColors(display,colormap,colors,number_colors);
     }
   min_distance=0;
+  j=0;
   for (i=0; i < (int) number_colors; i++)
   {
     mean=(long) (colors[i].red+color->red)/2L;

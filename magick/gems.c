@@ -703,7 +703,7 @@ static unsigned short PixelOnLine(const PointInfo *pixel,
         alpha;
 
       alpha=sqrt(distance)-mid-0.5;
-      return((unsigned short) Max(opacity,Opaque*alpha*alpha));
+      return((unsigned short) Max((int) opacity,Opaque*alpha*alpha));
     }
   return(opacity);
 }
@@ -796,13 +796,15 @@ Export unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
         radius=sqrt(alpha*alpha+beta*beta);
         beta=fabs(distance-radius);
         if (beta < (mid+0.5))
-          if (beta <= (mid-0.5))
-            opacity=Opaque;
-          else
-            {
-              alpha=mid-beta+0.5;
-              opacity=(unsigned short) Max(opacity,Opaque*alpha*alpha);
-            }
+          {
+            if (beta <= (mid-0.5))
+              opacity=Opaque;
+            else
+              {
+                alpha=mid-beta+0.5;
+                opacity=(unsigned short) Max((int) opacity,Opaque*alpha*alpha);
+              }
+          }
         break;
       }
       case FillCirclePrimitive:
@@ -819,7 +821,7 @@ Export unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
           if (distance < (radius+1.0))
             {
               alpha=(radius-distance+1.0)/2.0;
-              opacity=(unsigned short) Max(opacity,Opaque*alpha*alpha);
+              opacity=(unsigned short) Max((int) opacity,Opaque*alpha*alpha);
             }
         break;
       }

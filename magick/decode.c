@@ -1950,6 +1950,7 @@ Export Image *ReadDPSImage(const ImageInfo *image_info)
     Allocate standard colormap.
   */
   map_info=XAllocStandardColormap();
+  visual_info=(XVisualInfo *) NULL;
   if (map_info == (XStandardColormap *) NULL)
     MagickWarning(ResourceLimitWarning,"Unable to create standard colormap",
       "Memory allocation failed");
@@ -8782,6 +8783,7 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
   /*
     Create black canvas.
   */
+  flags=0;
   image->columns=frame.right-frame.left;
   image->rows=frame.bottom-frame.top;
   if (image_info->ping)
@@ -8809,6 +8811,7 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
   /*
     Interpret PICT opcodes.
   */
+  code=0;
   for ( ; ; )
   {
     if ((version == 1) || ((ftell(image->file) % 2) != 0))
@@ -13113,7 +13116,7 @@ Export Image *ReadSFWImage(const ImageInfo *image_info)
     }
   TranslateSFWMarker(header);  /* translate soi and app tags */
   TranslateSFWMarker(header+2);
-  (void) memcpy(header+6,"JFIF\0\001\0",7);  /* JFIF magic */
+  (void) memcpy((char *) header+6,"JFIF\0\001\0",7);  /* JFIF magic */
   /*
     Translate remaining markers.
   */

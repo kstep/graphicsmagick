@@ -119,10 +119,12 @@ extern "C" {
 */
 #define AbsoluteValue(x)  ((x) < 0 ? -(x) : (x))
 #define ColorMatch(color,target,distance) \
-  (((((color).red-(int) (target).red)*((color).red-(int) (target).red))+ \
-    (((color).green-(int) (target).green)*((color).green-(int) (target).green))+ \
-    (((color).blue-(int) (target).blue)*((color).blue-(int) (target).blue))) <= \
-    (distance*distance))
+  (((((int) (color).red-(int) (target).red)* \
+     ((int) (color).red-(int) (target).red))+ \
+    (((int) (color).green-(int) (target).green)* \
+     ((int) (color).green-(int) (target).green))+ \
+    (((int) (color).blue-(int) (target).blue)* \
+     ((int) (color).blue-(int) (target).blue))) <= (distance*distance))
 #define DownShift(x) (((int) ((x)+(1L << 13))) >> 14)
 #define Extent(string)  ((int) strlen(string))
 #define False  0

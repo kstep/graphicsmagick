@@ -7875,6 +7875,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
   XSetCursorState(display,windows,True);
   XCheckRefreshWindows(display,windows);
   (void) strcpy(resource_info->image_info->filename,filename);
+  handler=(MonitorHandler) NULL;
   if (Latin1Compare(image_info.magick,"X") == 0)
     handler=SetMonitorHandler((MonitorHandler) NULL);
   loaded_image=ReadImage(resource_info->image_info);

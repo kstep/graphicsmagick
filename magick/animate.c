@@ -165,6 +165,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       if (local_info == (ImageInfo *) NULL)
         break;
       image=(Image *) NULL;
+      handler=(MonitorHandler) NULL;
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
       for (i=0; i < number_files; i++)
@@ -2283,7 +2284,6 @@ windows->image.pixel_info=(&scene_info);
   XCheckRefreshWindows(display,windows);
   for (scene=1; scene < (int) number_scenes; scene++)
   {
-    DestroyImage(images[scene]);
     if (windows->image.pixmaps[scene] != (Pixmap) NULL)
       XFreePixmap(display,windows->image.pixmaps[scene]);
     windows->image.pixmaps[scene]=(Pixmap) NULL;

@@ -606,17 +606,18 @@ static unsigned int Classification(CubeInfo *cube_info,const Image *image)
           distance_squared=squares[(int) (DownScale(p->red)-mid_red)]+
             squares[(int) (DownScale(p->green)-mid_green)]+
             squares[(int) (DownScale(p->blue)-mid_blue)];
-          node_info->quantization_error+=distance_squared*(p->length+1);
+          node_info->quantization_error+=
+            distance_squared*((double) p->length+1.0);
         }
       index--;
     }
     /*
       Sum RGB values for this leaf for later derivation of the mean cube color.
     */
-    node_info->number_unique+=(p->length+1);
-    node_info->total_red+=p->red*(p->length+1);
-    node_info->total_green+=p->green*(p->length+1);
-    node_info->total_blue+=p->blue*(p->length+1);
+    node_info->number_unique+=((int) p->length+1);
+    node_info->total_red+=p->red*((double) p->length+1.0);
+    node_info->total_green+=p->green*((double) p->length+1.0);
+    node_info->total_blue+=p->blue*((int) p->length+1.0);
     p++;
     if (QuantumTick(i,image->packets))
       ProgressMonitor(ClassifyImageText,i,image->packets);
@@ -1891,7 +1892,7 @@ unsigned int QuantizationError(Image *image)
     distance_squared=squares[p->red-(int) image->colormap[p->index].red]+
       squares[p->green-(int) image->colormap[p->index].green]+
       squares[p->blue-(int) image->colormap[p->index].blue];
-    total_error+=(distance_squared*(p->length+1));
+    total_error+=(distance_squared*((double) p->length+1.0));
     if (distance_squared > maximum_error_per_pixel)
       maximum_error_per_pixel=distance_squared;
     p++;

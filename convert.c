@@ -421,6 +421,7 @@ int main(int argc,char **argv)
   global_colormap=False;
   image=(Image *) NULL;
   GetImageInfo(&image_info);
+  option=(char *) NULL;
   scene=0;
   /*
     Parse command-line arguments.

@@ -243,7 +243,7 @@ Export char *BaseFilename(const char *name)
 %
 %  A description of each parameter follows:
 %
-%    o status:  Method IsAccessible returns True is the string is cloned,
+%    o status:  Method CloneString returns True is the string is cloned,
 %      otherwise False is returned.
 %
 %    o destination:  A pointer to a character string.

@@ -1051,13 +1051,15 @@ Export Image *EmbossImage(const Image *image)
 Export Image *EnhanceImage(const Image *image)
 {
 #define Enhance(weight) \
-  mean=(s->red+red)/2; \
+  mean=(int) (s->red+red)/2; \
   distance=s->red-(int) red; \
-  distance_squared=(2.0*(MaxRGB+1)+mean)*squares[distance]/(MaxRGB+1); \
+  distance_squared= \
+    (2.0*(MaxRGB+1)+mean)*squares[distance]/(double) (MaxRGB+1); \
   distance=s->green-(int) green; \
   distance_squared+=4.0*squares[distance]; \
   distance=s->blue-(int) blue; \
-  distance_squared+=(3*(MaxRGB+1)-1.0-mean)*squares[distance]/(MaxRGB+1); \
+  distance_squared+= \
+    (3.0*(MaxRGB+1)-1.0-mean)*squares[distance]/(double) (MaxRGB+1); \
   if (distance_squared < Threshold) \
     { \
       total_red+=(weight)*(s->red); \
@@ -1697,9 +1699,9 @@ Export unsigned int PlasmaImage(Image *image,const SegmentInfo *segment_info,
       p=PixelOffset(image,segment_info->x1,segment_info->y1);
       q=PixelOffset(image,segment_info->x1,segment_info->y2);
       r=PixelOffset(image,segment_info->x1,y_mid);
-      r->red=PlasmaPixel((p->red+q->red)/2,plasma);
-      r->green=PlasmaPixel((p->green+q->green)/2,plasma);
-      r->blue=PlasmaPixel((p->blue+q->blue)/2,plasma);
+      r->red=PlasmaPixel((int) (p->red+q->red)/2,plasma);
+      r->green=PlasmaPixel((int) (p->green+q->green)/2,plasma);
+      r->blue=PlasmaPixel((int) (p->blue+q->blue)/2,plasma);
       if (segment_info->x1 != segment_info->x2)
         {
           /*
@@ -1708,9 +1710,9 @@ Export unsigned int PlasmaImage(Image *image,const SegmentInfo *segment_info,
           p=PixelOffset(image,segment_info->x2,segment_info->y1);
           q=PixelOffset(image,segment_info->x2,segment_info->y2);
           r=PixelOffset(image,segment_info->x2,y_mid);
-          r->red=PlasmaPixel((p->red+q->red)/2,plasma);
-          r->green=PlasmaPixel((p->green+q->green)/2,plasma);
-          r->blue=PlasmaPixel((p->blue+q->blue)/2,plasma);
+          r->red=PlasmaPixel((int) (p->red+q->red)/2,plasma);
+          r->green=PlasmaPixel((int) (p->green+q->green)/2,plasma);
+          r->blue=PlasmaPixel((int) (p->blue+q->blue)/2,plasma);
         }
     }
   if ((segment_info->y1 != y_mid) || (segment_info->y2 != y_mid))
@@ -1723,9 +1725,9 @@ Export unsigned int PlasmaImage(Image *image,const SegmentInfo *segment_info,
           p=PixelOffset(image,segment_info->x1,segment_info->y2);
           q=PixelOffset(image,segment_info->x2,segment_info->y2);
           r=PixelOffset(image,x_mid,segment_info->y2);
-          r->red=PlasmaPixel((p->red+q->red)/2,plasma);
-          r->green=PlasmaPixel((p->green+q->green)/2,plasma);
-          r->blue=PlasmaPixel((p->blue+q->blue)/2,plasma);
+          r->red=PlasmaPixel((int) (p->red+q->red)/2,plasma);
+          r->green=PlasmaPixel((int) (p->green+q->green)/2,plasma);
+          r->blue=PlasmaPixel((int) (p->blue+q->blue)/2,plasma);
         }
       if (segment_info->y1 != segment_info->y2)
         {
@@ -1735,9 +1737,9 @@ Export unsigned int PlasmaImage(Image *image,const SegmentInfo *segment_info,
           p=PixelOffset(image,segment_info->x1,segment_info->y1);
           q=PixelOffset(image,segment_info->x2,segment_info->y1);
           r=PixelOffset(image,x_mid,segment_info->y1);
-          r->red=PlasmaPixel((p->red+q->red)/2,plasma);
-          r->green=PlasmaPixel((p->green+q->green)/2,plasma);
-          r->blue=PlasmaPixel((p->blue+q->blue)/2,plasma);
+          r->red=PlasmaPixel((int) (p->red+q->red)/2,plasma);
+          r->green=PlasmaPixel((int) (p->green+q->green)/2,plasma);
+          r->blue=PlasmaPixel((int) (p->blue+q->blue)/2,plasma);
         }
     }
   if ((segment_info->x1 != segment_info->x2) ||
@@ -1749,14 +1751,14 @@ Export unsigned int PlasmaImage(Image *image,const SegmentInfo *segment_info,
       p=PixelOffset(image,segment_info->x1,segment_info->y1);
       q=PixelOffset(image,segment_info->x2,segment_info->y2);
       r=PixelOffset(image,x_mid,y_mid);
-      r->red=PlasmaPixel((p->red+q->red)/2,plasma);
-      r->green=PlasmaPixel((p->green+q->green)/2,plasma);
-      r->blue=PlasmaPixel((p->blue+q->blue)/2,plasma);
+      r->red=PlasmaPixel((int) (p->red+q->red)/2,plasma);
+      r->green=PlasmaPixel((int) (p->green+q->green)/2,plasma);
+      r->blue=PlasmaPixel((int) (p->blue+q->blue)/2,plasma);
       p=PixelOffset(image,segment_info->x1,segment_info->y2);
       q=PixelOffset(image,segment_info->x2,segment_info->y1);
-      r->red=PlasmaPixel((p->red+q->red)/2,plasma);
-      r->green=PlasmaPixel((p->green+q->green)/2,plasma);
-      r->blue=PlasmaPixel((p->blue+q->blue)/2,plasma);
+      r->red=PlasmaPixel((int) (p->red+q->red)/2,plasma);
+      r->green=PlasmaPixel((int) (p->green+q->green)/2,plasma);
+      r->blue=PlasmaPixel((int) (p->blue+q->blue)/2,plasma);
     }
   if (((segment_info->x2-segment_info->x1) < 3.0) &&
       ((segment_info->y2-segment_info->y1) < 3.0))

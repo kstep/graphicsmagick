@@ -941,7 +941,7 @@ Export Image *AverageImages(const Image *images)
     p=image->pixels;
     for (i=0; i < (int) image->packets; i++)
     {
-      for (j=0; j <= p->length; j++)
+      for (j=0; j <= (int) p->length; j++)
       {
         sum[x].red+=p->red;
         sum[x].green+=p->green;
@@ -5753,7 +5753,7 @@ void GetPixels(const Image *image,float *red,float *green,float *blue,
   p=image->pixels;
   for (i=0; i < (int) image->packets; i++)
   {
-    for (j=0; j <= p->length; j++)
+    for (j=0; j <= (int) p->length; j++)
     {
       if (red != (float *) NULL)
         red[x]=(float) p->red/MaxRGB;

@@ -124,7 +124,7 @@ char *GetHostInfo(char *name)
   p=(char *) hp->h_name;
   while (*p)
   {
-    if (isupper(*p))
+    if (isupper((int) *p))
       *p=tolower(*p);
     p++;
   }
