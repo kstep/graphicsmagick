@@ -1778,7 +1778,7 @@ namespace Magick
     // Obtain first entry in MagickInfo list
     MagickLib::ExceptionInfo exceptionInfo;
     MagickLib::GetExceptionInfo( &exceptionInfo );
-    const MagickLib::MagickInfo *magickInfo =
+    volatile const MagickLib::MagickInfo *magickInfo =
       MagickLib::GetMagickInfo( "*", &exceptionInfo );
     throwException( exceptionInfo );
     if( !magickInfo )
