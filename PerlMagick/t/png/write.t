@@ -37,7 +37,7 @@ print( "16-bit grayscale PNG ...\n" );
 testReadWrite( 'input_16.png',
   'output_16.png',
   q/quality=>55/,
-  '31125327ff2da68823187c6869fdfddbc5f288bbcc9ae79f4408d75523fdcda3',
+  'a6c3f3ce8772cd6aa973ae1f3ebd94ee65292112d3f1e8e86171bf4d931bd181',
   'c87cc12715f3e0619d6fe871bd8132f88facffb3d38dd8869cb262ec6b9c4cef' );
 #
 # 4) Test pseudocolor image
