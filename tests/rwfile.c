@@ -98,6 +98,7 @@ int main ( int argc, char **argv )
   int fuzz_factor = 0;
   int diff = 0;
   ImageInfo imageInfo;
+  ErrorInfo error;
 
   if ( argc != 3 )
     {
@@ -121,7 +122,7 @@ int main ( int argc, char **argv )
   imageInfo.dither = 0;
   strcpy( imageInfo.filename, infile );
 
-  original = ReadImage ( &imageInfo );
+  original = ReadImage ( &imageInfo, &error );
   if ( original == (Image *)NULL )
     {
       printf ( "Failed to read original image %s\n", imageInfo.filename );
@@ -167,7 +168,7 @@ int main ( int argc, char **argv )
   strcpy( imageInfo.filename, filename );
   if ( size != NULL )
     CloneString( &imageInfo.size, size );
-  original = ReadImage ( &imageInfo );
+  original = ReadImage ( &imageInfo, &error );
   if ( original == (Image *)NULL )
     {
       printf ( "Failed to read image from file in format %s\n",
@@ -193,7 +194,7 @@ int main ( int argc, char **argv )
   strcpy( imageInfo.filename, filename );
   if ( size != NULL )
     CloneString( &imageInfo.size, size );
-  final = ReadImage ( &imageInfo );
+  final = ReadImage ( &imageInfo, &error );
   if ( final == (Image *)NULL )
     {
       printf ( "Failed to read image from file in format %s\n",

@@ -120,7 +120,7 @@ int main ( int argc, char **argv )
   imageInfo.dither = 0;
   strcpy( imageInfo.filename, infile );
 
-  original = ReadImage ( &imageInfo );
+  original = ReadImage ( &imageInfo, &error );
   if ( original == (Image *)NULL )
     {
       printf ( "Failed to read original image %s\n", imageInfo.filename );
