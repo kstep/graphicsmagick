@@ -36,20 +36,3 @@
 #endif
 
 #define SignChar char
-
-/*  Define STDC typedefs ( size_t is defined wrongly ?) */
-
-/*  typdedef unsigned int size_t  */
-
-/* typedef long fpos_t; */
-
-#ifdef CGMOXW_C     /* X-Windows specific settings  */
-
-#include <X11/cursorfont.h>
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-#include <X11/Xatom.h>
-
-#undef major
-#undef minor
-#endif  /*  CGMOXW_C  */
