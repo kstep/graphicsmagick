@@ -397,33 +397,23 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   tiff_exception=exception;
   (void) TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
   (void) TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
-  if (image->blob->type == FileStream)
+  if ((image->blob->type == FileStream) || (image->blob->type == BlobStream))
     tiff=TIFFClientOpen(image->filename,"rb",(thandle_t) image,TIFFReadBlob,
       TIFFWriteBlob,TIFFSeekBlob,TIFFCloseBlob,TIFFGetBlobSize,TIFFMapBlob,
       TIFFUnmapBlob);
   else
     {
-      FILE
-        *file;
-
-      int
-        c;
-
       TemporaryFilename(filename);
-      file=fopen(filename,"wb");
-      if (file == (FILE *) NULL)
-        ThrowReaderException(FileOpenWarning,"UnableToWriteFile",image);
-      for (c=ReadBlobByte(image); c != EOF; c=ReadBlobByte(image))
-        (void) fputc(c,file);
-      (void) fclose(file);
+      (void) ImageToFile(image,filename,exception);
       tiff=TIFFOpen(filename,"rb");
       if (logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-          "Opened temporary file=%s",filename);
+          "Open temporary file %.1024s",filename);
     }
   if (tiff == (TIFF *) NULL)
     {
-      if (image->blob->type != FileStream)
+      if ((image->blob->type != FileStream) &&
+          (image->blob->type != BlobStream))
         remove(filename);
       ThrowReaderException(FileOpenError,"UnableToOpenFile",image)
     }
@@ -438,7 +428,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       if (status == False)
         {
           TIFFClose(tiff);
-          if (image->blob->type != FileStream)
+          if ((image->blob->type != FileStream) &&
+              (image->blob->type != BlobStream))
             remove(filename);
           ThrowReaderException(CorruptImageError,"UnableToReadSubimage",
             image)
@@ -607,7 +598,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         if (!AllocateImageColormap(image,image->colors))
           {
             TIFFClose(tiff);
-            if (image->blob->type != FileStream)
+            if ((image->blob->type != FileStream) &&
+                (image->blob->type != BlobStream))
               remove(filename);
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
               image)
@@ -682,7 +674,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             (scanline == (unsigned char *) NULL))
           {
             TIFFClose(tiff);
-            if (image->blob->type != FileStream)
+            if ((image->blob->type != FileStream) &&
+                (image->blob->type != BlobStream))
               remove(filename);
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
               image)
@@ -879,7 +872,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         if (scanline == (unsigned char *) NULL)
           {
             TIFFClose(tiff);
-            if (image->blob->type != FileStream)
+            if ((image->blob->type != FileStream) &&
+                (image->blob->type != BlobStream))
               remove(filename);
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
               image)
@@ -960,7 +954,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
         if (pixels == (uint32 *) NULL)
           {
             TIFFClose(tiff);
-            if (image->blob->type != FileStream)
+            if ((image->blob->type != FileStream) &&
+                (image->blob->type != BlobStream))
               remove(filename);
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
               image)
@@ -1024,7 +1019,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       }
   } while (status == True);
   TIFFClose(tiff);
-  if (image->blob->type != FileStream)
+  if ((image->blob->type != FileStream) && (image->blob->type != BlobStream))
     remove(filename);
   while (image->previous != (Image *) NULL)
     image=image->previous;
@@ -1442,6 +1437,9 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     scene,
     strip_size;
 
+  StreamType
+    btype;
+
   /*
     Open TIFF file.
   */
@@ -1451,13 +1449,17 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   logging=LogMagickEvent(CoderEvent,GetMagickModule(),"enter");
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
+  btype=image->blob->type;
   if (status == False)
     ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
   tiff_exception=(&image->exception);
   (void) TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
   (void) TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
   (void) strncpy(filename,image->filename,MaxTextExtent-1);
-  TemporaryFilename(filename);
+  if (btype != FileStream)
+    TemporaryFilename(filename);
+  else
+    CloseBlob(image);
   tiff=TIFFOpen(filename,"wb");
   if (tiff == (TIFF *) NULL)
     return(False);
@@ -1581,7 +1583,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           TIFF has a matte channel.
         */
         extra_samples=1;
-        sample_info[0]=EXTRASAMPLE_UNASSALPHA;
+        //sample_info[0]=EXTRASAMPLE_UNASSALPHA;
+        sample_info[0]=EXTRASAMPLE_ASSOCALPHA;
         (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_SAMPLESPERPIXEL,
           &samples_per_pixel);
         (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,samples_per_pixel+1);
@@ -2017,7 +2020,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   while (image->previous != (Image *) NULL)
     image=image->previous;
   TIFFClose(tiff);
-  if ((image->blob->type != FileStream) || rename(filename,image->filename))
+  if (btype != FileStream)
+#ifdef SLOW_METHOD
     {
       FILE
         *file;
@@ -2035,10 +2039,78 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobByte(image,c);
       (void) fclose(file);
       (void) remove(filename);
+      CloseBlob(image);
     }
+#else
+    {
+      int
+        file;
+
+      struct stat
+        attributes;
+
+      unsigned char
+        *buffer;
+
+      void
+        *map;
+
+      size_t
+        length;
+
+      file=open(filename,O_RDONLY | O_BINARY,0777);
+      if (file == -1)
+        {
+          ThrowWriterException(FileOpenError,"Unable to open file",image);
+        }
+      if ((fstat(file,&attributes) < 0) ||
+          (attributes.st_size != (size_t) attributes.st_size) ||
+            (attributes.st_size <= (size_t) 0))
+        {
+          (void) close(file);
+          ThrowWriterException(FileOpenError,"Unable to open file",image);
+        }
+      length=(size_t) attributes.st_size;
+      map=MapBlob(file,ReadMode,0,length);
+      if (map != (void *) NULL)
+        {
+          (void) WriteBlob(image,length,map);
+          UnmapBlob(map,length);
+        }
+      else
+        {
+          off_t
+            count,
+            result;
+
+          register size_t
+            i;
+
+          count = 32768;
+          if (count > length)
+            count = length;
+          buffer=(unsigned char *) AcquireMemory(count);
+          if (buffer == (unsigned char *) NULL)
+            {
+              (void) close(file);
+              ThrowWriterException(FileOpenError,"Memory allocation failed",image);
+            }
+          for (i=0; i < length; i+=count)
+          {
+            result=read(file,buffer,count);
+            if (result <= 0)
+              break;
+            (void) WriteBlob(image,result,buffer);
+          }
+          LiberateMemory((void **) &buffer);
+        }
+      (void) close(file);
+      (void) remove(filename);
+      CloseBlob(image);
+    }
+#endif
   if (logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
-  CloseBlob(image);
   return(True);
 }
 #else
