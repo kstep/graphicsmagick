@@ -3105,7 +3105,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Display group data.
             */
-            for (i=0; i < Max(length,4); i++)
+            for (i=0; i < (long) Max(length,4); i++)
               if (!isprint(data[i]))
                 break;
             if ((i != (long) length) && (length <= 4))

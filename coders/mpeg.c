@@ -191,7 +191,7 @@ static Image *ReadMPEGImage(const ImageInfo *image_info,
         p->next=next_image;
       }
     if (clone_info->subrange != 0)
-      if (i >= (clone_info->subimage+clone_info->subrange-1))
+      if (i >= (long) (clone_info->subimage+clone_info->subrange-1))
         break;
   }
   while (image->previous != (Image *) NULL)
@@ -570,7 +570,7 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
     blob=(char *) NULL;
     length=0;
     scene=p->scene;
-    for (i=0; i < Max((p->delay+1)/3,1); i++)
+    for (i=0; i < (long) Max((p->delay+1)/3,1); i++)
     {
       p->scene=count++;
       FormatString(p->filename,"%.1024s.%%lu.yuv",basename);
@@ -615,7 +615,7 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
   count=0;
   for (p=coalesce_image; p != (Image *) NULL; p=p->next)
   {
-    for (i=0; i < Max((p->delay+1)/3,1); i++)
+    for (i=0; i < (long) Max((p->delay+1)/3,1); i++)
     {
       FormatString(p->filename,"%.1024s.%lu.yuv",basename,count++);
       (void) remove(p->filename);

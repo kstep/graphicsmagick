@@ -203,11 +203,11 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     *fits_pixels;
 
   unsigned int
-    scene,
     status,
     value_expected;
 
   unsigned long
+    scene,
     number_pixels;
 
   /*
@@ -325,7 +325,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
   if ((!fits_info.simple) || (fits_info.number_axes < 1) ||
       (fits_info.number_axes > 4) || (number_pixels == 0))
     ThrowReaderException(CorruptImageWarning,"image type not supported",image);
-  for (scene=0; scene < fits_info.number_scenes; scene++)
+  for (scene=0; scene < (long) fits_info.number_scenes; scene++)
   {
     /*
       Create linear colormap.
@@ -456,7 +456,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
-    if (scene < (fits_info.number_scenes-1))
+    if (scene < (long) (fits_info.number_scenes-1))
       {
         /*
           Allocate next image structure.

@@ -142,9 +142,9 @@ register PixelPacket *q;
    for (x=0; x < (long) image->columns; x++)
           {
 	  f=(double)MaxRGB* (*p-Min)/(Max-Min);
-          q->red=XDownScale(f);
-          q->green=XDownScale(f);
-          q->blue=XDownScale(f);
+          q->red=(Quantum) XDownScale(f);
+          q->green=(Quantum) XDownScale(f);
+          q->blue=(Quantum) XDownScale(f);
           p++;
           q++;
           }
@@ -341,7 +341,8 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
    BImgBuff=(unsigned char *) malloc(ldblk);  /*Ldblk was set in the check phase*/
    if(BImgBuff==NULL) goto NoMemory;
 
-
+   Min=0;
+   Max=0;
    if(CellType==9) /*Find Min and Max Values for floats*/
      {
      filepos=TellBlob(image);
