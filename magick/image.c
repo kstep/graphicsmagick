@@ -5553,7 +5553,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
   const unsigned int rectify)
 {
   char
-    magic[MaxTextExtent];
+    magic[2*MaxTextExtent];
 
   Image
     *image;
@@ -5723,7 +5723,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
       return(True);
     }
   if ((image->blob.data != (char *) NULL)  || !image->exempt)
-    (void) ReadBlob(image,MaxTextExtent,magick);
+    (void) ReadBlob(image,2*MaxTextExtent,magick);
   else
     {
       FILE
@@ -5754,7 +5754,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
       (void) fclose(file);
     }
   DestroyImage(image);
-  if (SetImageMagic(magick,MaxTextExtent,magic) == True)
+  if (SetImageMagic(magick,2*MaxTextExtent,magic) == True)
     (void) strcpy(image_info->magick,magic);
   return(True);
 }
