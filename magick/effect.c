@@ -78,9 +78,7 @@ typedef struct _AggregatePacket
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method AddNoiseImage creates a new image that is a copy of an existing
-%  one with noise added.  It allocates the memory necessary for the new Image
-%  structure and returns a pointer to the new image.
+%  AddNoiseImage() adds random noise to the image.
 %
 %  The format of the AddNoiseImage method is:
 %
@@ -89,14 +87,10 @@ typedef struct _AggregatePacket
 %
 %  A description of each parameter follows:
 %
-%    o noise_image: Method AddNoiseImage returns a pointer to the image after
-%      the noise is minified.  A null image is returned if there is a memory
-%      shortage.
-%
 %    o image: the image.
 %
-%    o noise_type:  The type of noise: Gaussian, multiplicative Gaussian,
-%      impulse, laplacian, or Poisson.
+%    o noise_type:  The type of noise: Uniform, Gaussian, Multiplicative,
+%      Impulse, Laplacian, or Poisson.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
@@ -168,55 +162,10 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method BlurImage creates a blurred copy of the input image.  We
-%  convolve the image with a Gaussian operator of the given radius and
-%  standard deviation (sigma).
-%
-%  Each output pixel is set to a value that is the weighted average of the
-%  input pixels in an area enclosing the pixel.  The width parameter
-%  determines how large the area is.  Each pixel in the area is weighted
-%  in the average according to its distance from the center, and the
-%  standard deviation, sigma. The actual weight is calculated according to
-%  the Gaussian distribution (also called normal distribution), which
-%  looks like a Bell Curve centered on a pixel.  The standard deviation
-%  controls how 'pointy' the curve is.  The pixels near the center of the
-%  curve (closer to the center of the area we are averaging) contribute
-%  more than the distant pixels.
-%
-%  In general, the width should be wide enough to include most of the
-%  total weight under the Gaussian for the standard deviation you choose.
-%  As a guideline about 90% of the weight lies within two standard
-%  deviations, and 98% of the weight within 3 standard deviations. Since
-%  the width parameter to the function specifies the radius of the
-%  Gaussian convolution mask in pixels, not counting the centre pixel, the
-%  width parameter should be chosen larger than the standard deviation,
-%  perhaps about twice as large to three times as large. A width of 1 will
-%  give a (standard) 3x3 convolution mask, a width of 2 gives a 5 by 5
-%  convolution mask. Using non-integral widths will result in some pixels
-%  being considered 'partial' pixels, in which case their weight will be
-%  reduced proportionally.
-%
-%  Pixels for which the convolution mask does not completely fit on the
-%  image (e.g. pixels without a full set of neighbours) are averaged with
-%  those neighbours they do have. Thus pixels at the edge of images are
-%  typically less blur.
-%
-%  Since a 2d Gaussian is seperable, we perform the Gaussian blur by
-%  convolving with two 1d Gaussians, first in the x, then in the y
-%  direction. For an n by n image and Gaussian width w this requires 2wn^2
-%  multiplications, while convolving with a 2d Gaussian requres w^2n^2
-%  mults.
-%
-%  We blur the image into a copy, and the original is left untouched.
-%  We must process the image in two passes, in each pass we change the
-%  pixel based on its neighbors, but we need the pixel's original value
-%  for the next pixel's calculation. For the first pass we could use the
-%  original image but that's no good for the second pass, and it would
-%  imply that the original image have to stay around in ram. Instead we
-%  use a small (size=width) buffer to store the pixels we have
-%  overwritten.
-%
-%  This method was contributed by runger@cs.mcgill.ca.
+%  BlurImage() blurs an image.  We convolve the image with a Gaussian
+%  operator of the given radius and standard deviation (sigma).
+%  For reasonable results, the radius should be larger than sigma.  Use a
+%  radius of 0 and BlurImage() selects a suitable radius for you.
 %
 %  The format of the BlurImage method is:
 %
@@ -224,10 +173,6 @@ MagickExport Image *AddNoiseImage(const Image *image,const NoiseType noise_type,
 %        const double sigma,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
-%
-%    o blur_image: Method BlurImage returns a pointer to the image
-%      after it is blur.  A null image is returned if there is a memory
-%      shortage.
 %
 %    o radius: The radius of the Gaussian, in pixels, not counting the center
 %      pixel.
