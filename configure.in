@@ -814,12 +814,12 @@ have_ttf='no'
 LIB_TTF=''
 if test "$with_ttf" != 'no'
 then
-    AC_MSG_CHECKING(for TrueType Font support )
+    AC_MSG_CHECKING(for FreeType 2.0 )
     AC_MSG_RESULT()
     failed=0;
     passed=0;
-    AC_CHECK_HEADERS(freetype.h freetype/freetype.h)
-    if test "$ac_cv_header_freetype_h" = 'yes' -o "$ac_cv_header_freetype_freetype_h" = 'yes'
+    AC_CHECK_HEADERS(freetype2/freetype.h)
+    if test "$ac_cv_header_freetype2_freetype_h" = 'yes'
     then
 	passed=`expr $passed + 1`
     else
@@ -831,16 +831,6 @@ then
       if test "$LIB_TTF" != ''
       then
          passed=`expr $passed + 1`
-      fi
-    fi
-    if test "$LIB_TTF" = ''
-    then
-      AC_CHECK_LIB(ttf,TT_Init_FreeType,LIB_TTF='-lttf',,)
-      if test "$LIB_TTF" != ''
-      then
-         passed=`expr $passed + 1`
-      else
-         failed=`expr $failed + 1`
       fi
     fi
     AC_MSG_CHECKING(if FreeType package is complete)
@@ -1489,7 +1479,7 @@ echo "JPEG              --with-jpeg=$with_jpeg		$have_jpeg"
 echo "LCMS              --with-lcms=$with_lcms		$have_lcms"
 echo "PNG               --with-png=$with_png		$have_png"
 echo "TIFF              --with-tiff=$with_tiff		$have_tiff"
-echo "TrueType (TTF)    --with-ttf=$with_ttf		$have_ttf"
+echo "FreeType 2.0      --with-ttf=$with_ttf		$have_ttf"
 echo "TTF Path          --with-ttf-fontpath=          \"$with_ttf_fontpath\""
 echo "XML               --with-xml=$with_xml		$have_xml"
 echo "ZLIB              --with-zlib=$with_zlib		$have_zlib"

@@ -322,11 +322,8 @@
 /* Define if you have the <fcntl.h> header file. */
 #undef HAVE_FCNTL_H
 
-/* Define if you have the <freetype/freetype.h> header file. */
-#undef HAVE_FREETYPE_FREETYPE_H
-
-/* Define if you have the <freetype.h> header file. */
-#undef HAVE_FREETYPE_H
+/* Define if you have the <freetype2/freetype.h> header file. */
+#undef HAVE_FREETYPE2_FREETYPE_H
 
 /* Define if you have the `getcwd' function. */
 #undef HAVE_GETCWD

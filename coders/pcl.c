@@ -171,7 +171,8 @@ ModuleExport void UnregisterPCLImage(void)
 %   W r i t e P C L I m a g e                                                 %
 %                                                                             %
 %                                                                             %
-%                                                                             % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method WritePCLImage writes an image in the Page Control Language encoded
 %  image format.
