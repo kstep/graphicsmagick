@@ -1409,16 +1409,18 @@ MagickExport unsigned int CompositeImage(Image *image,
             }
             case XorCompositeOp:
             {
-              red=AbsoluteValue((((double) MaxRGB-pixel.opacity)*pixel.red-
-                ((double) MaxRGB-q->opacity)*q->red)/MaxRGB);
+              red=((unsigned long) (MaxRGB-q->opacity)*pixel.red/MaxRGB+
+                (MaxRGB-pixel.opacity)*q->red/MaxRGB)/MaxRGB;
               q->red=(Quantum) (red > MaxRGB ? MaxRGB : red+0.5);
-              green=AbsoluteValue((((double) MaxRGB-pixel.opacity)*pixel.green-
-                ((double) MaxRGB-q->opacity)*q->green)/MaxRGB);
+              green=((unsigned long) (MaxRGB-q->opacity)*pixel.green/MaxRGB+
+                (MaxRGB-pixel.opacity)*q->green/MaxRGB)/MaxRGB;
               q->green=(Quantum) (green > MaxRGB ? MaxRGB : green+0.5);
-              blue=AbsoluteValue((((double) MaxRGB-pixel.opacity)*pixel.blue-
-                ((double) MaxRGB-q->opacity)*q->blue)/MaxRGB);
-              q->blue=(Quantum) (blue > MaxRGB ? MaxRGB : blue+0.5);
-              q->opacity=OpaqueOpacity;
+              green=((unsigned long) (MaxRGB-q->opacity)*pixel.green/MaxRGB+
+                (MaxRGB-pixel.opacity)*q->green/MaxRGB)/MaxRGB;
+              q->green=(Quantum) (green > MaxRGB ? MaxRGB : green+0.5);
+              opacity=((unsigned long) (MaxRGB-q->opacity)*pixel.opacity/MaxRGB+
+                (MaxRGB-pixel.opacity)*q->opacity/MaxRGB)/MaxRGB;
+              q->opacity=(Quantum) (opacity > MaxRGB ? MaxRGB : opacity+0.5);
               break;
             }
             case PlusCompositeOp:
