@@ -7,6 +7,7 @@
 
 #define MAGICK_IMPLEMENTATION
 
+#include <math.h>
 #include <string>
 #include <iostream>
 #include <strstream>
@@ -14,6 +15,8 @@
 #include "Magick++/Drawable.h"
 
 using namespace std;
+
+#define DegreesToRadians(x) ((x)*3.14159265358979323846/180.0)
 
 // Print coordinate to stream.
 std::ostream& Magick::operator<<( std::ostream& stream_, const Magick::Coordinate& coordinate_
@@ -124,6 +127,7 @@ Magick::DrawableAffine::DrawableAffine ( double scaleX_, double scaleY_,
           << translationY_
           << ends;
   _primitive.assign( buffer );
+  cout << "Primitive: \"" << _primitive << "\"" << endl;
 }
 
 // Angle (text drawing angle)
@@ -156,7 +160,6 @@ Magick::DrawableArc::DrawableArc ( double startX_, double startY_,
 Magick::DrawableBezier::DrawableBezier ( const std::list<Magick::Coordinate> &coordinates_ )
 {
   list_arg_impl( "bezier", coordinates_ );
-  // cout << "Primitive: \"" << _primitive << "\"" << endl;
 }
 
 // Circle
@@ -285,8 +288,8 @@ Magick::DrawableFont::DrawableFont ( const std::string &font_ )
           << font_
           << "\""
           << ends;
-
   _primitive.assign( buffer );
+  cout << "Primitive: \"" << _primitive << "\"" << endl;
 }
 
 // Specify text positioning gravity
@@ -441,6 +444,18 @@ Magick::DrawablePoint::DrawablePoint ( double x_,
   one_arg_impl( "point", Coordinate( x_, y_ ) );
 }
 
+// Text pointsize
+Magick::DrawablePointSize::DrawablePointSize( double pointSize_ )
+{
+  char buffer[MaxTextExtent + 1];
+  ostrstream buffstr( buffer, sizeof(buffer));
+  buffstr << "pointsize "
+          << pointSize_
+          << ends;
+
+  _primitive.assign( buffer );
+}
+
 // Polygon (Coordinate list must contain at least three members)
 Magick::DrawablePolygon::DrawablePolygon ( const std::list<Magick::Coordinate> &coordinates_ )
 {
@@ -464,7 +479,21 @@ Magick::DrawableRectangle::DrawableRectangle ( double upperLeftX_,
                 Coordinate( lowerRightX_, lowerRightY_ ) );
 }
 
-// RoundRectangle
+// Apply Rotation
+Magick::DrawableRotation::DrawableRotation ( double angle_ )
+  : DrawableAffine( -cos(DegreesToRadians(fmod(angle_,360.0))), // affine[0]
+                    -cos(DegreesToRadians(fmod(angle_,360.0))), // affine[3]
+                    sin(DegreesToRadians(fmod(angle_,360.0))),  // affine[1]
+                    -sin(DegreesToRadians(fmod(angle_,360.0))), // affine[2]
+                    0,
+                    0
+                    )
+{
+  // FIXME, should be based on defaults from ImageInfo?
+}
+
+
+// Round Rectangle
 Magick::DrawableRoundRectangle::DrawableRoundRectangle
 ( double centerX_, double centerY_,
   double width_, double hight_,
@@ -480,36 +509,11 @@ Magick::DrawableRoundRectangle::DrawableRoundRectangle
   _primitive.assign( buffer );
 }
 
-// Draw text at point
-Magick::DrawableText::DrawableText ( double x_,
-                                     double y_,
-                                     std::string text_ )
+// Apply Scaling
+Magick::DrawableScaling::DrawableScaling ( double x_, double y_ )
+  : DrawableAffine( x_, y_, 0, 0, 0, 0 )
 {
-  char buffer[MaxTextExtent + 1];
-  ostrstream buffstr( buffer, sizeof(buffer));
-  buffstr << "text " << Coordinate( x_, y_)
-	  << " \"";
-  for ( unsigned int i = 0; i < text_.length(); ++i )
-    {
-      if ( text_[i] == '"' )
-	buffstr << "\\";
-      buffstr << text_[i];
-    }
-  buffstr << "\"" << ends;
-
-  _primitive.assign( buffer );
-}
-
-// Text pointsize
-Magick::DrawablePointSize::DrawablePointSize( double pointSize_ )
-{
-  char buffer[MaxTextExtent + 1];
-  ostrstream buffstr( buffer, sizeof(buffer));
-  buffstr << "pointsize "
-          << pointSize_
-          << ends;
-
-  _primitive.assign( buffer );
+  // FIXME, should be based on defaults from ImageInfo?
 }
 
 // Stroke color
@@ -546,4 +550,31 @@ Magick::DrawableStrokeWidth::DrawableStrokeWidth ( double width_ )
           << ends;
 
   _primitive.assign( buffer );
+}
+
+// Draw text at point
+Magick::DrawableText::DrawableText ( double x_,
+                                     double y_,
+                                     std::string text_ )
+{
+  char buffer[MaxTextExtent + 1];
+  ostrstream buffstr( buffer, sizeof(buffer));
+  buffstr << "text " << Coordinate( x_, y_)
+	  << " \"";
+  for ( unsigned int i = 0; i < text_.length(); ++i )
+    {
+      if ( text_[i] == '"' )
+	buffstr << "\\";
+      buffstr << text_[i];
+    }
+  buffstr << "\"" << ends;
+
+  _primitive.assign( buffer );
+}
+
+// Apply Translation
+Magick::DrawableTranslation::DrawableTranslation ( double x_, double y_ )
+  : DrawableAffine( 1.0, 1.0, 0, 0, x_, y_ )
+{
+  // FIXME, should be based on defaults from ImageInfo?
 }

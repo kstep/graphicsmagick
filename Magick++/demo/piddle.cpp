@@ -124,11 +124,11 @@ int main( int /*argc*/, char ** argv)
     //
     // Draw text.
     //
-    drawList.push_back(DrawableFont("@Generic.ttf"));
+    drawList.push_back(DrawableFont(font));
     drawList.push_back(DrawableFillColor("green"));
     drawList.push_back(DrawableStrokeColor("green"));
     drawList.push_back(DrawablePointSize(24));
-    drawList.push_back(DrawableAngle(-45.0));
+    drawList.push_back(DrawableRotation(-45.0));
     drawList.push_back(DrawableText(30,140,"This is a test!"));
     
     image.draw(drawList);

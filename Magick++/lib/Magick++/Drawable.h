@@ -248,13 +248,27 @@ namespace Magick
                         double lowerRightX_, double lowerRightY );
   };
 
-  // RoundRectangle
+  // Apply Rotation
+  class DrawableRotation : public DrawableAffine
+  {
+  public:
+    DrawableRotation ( double angle_ );
+  };
+
+  // Round Rectangle
   class DrawableRoundRectangle : public Drawable
   {
   public:
     DrawableRoundRectangle ( double centerX_, double centerY_,
                              double width_, double hight_,
                              double cornerWidth_, double cornerHeight_ );
+  };
+
+  // Apply Scaling
+  class DrawableScaling : public DrawableAffine
+  {
+  public:
+    DrawableScaling ( double x_, double y_ );
   };
 
   // Stroke color
@@ -288,6 +302,13 @@ namespace Magick
   public:
     DrawableText ( double x_, double y_,
                    std::string text_ );
+  };
+
+  // Apply Translation
+  class DrawableTranslation : public DrawableAffine
+  {
+  public:
+    DrawableTranslation ( double x_, double y_ );
   };
 
   // text-antialias text_antialias FIXME!

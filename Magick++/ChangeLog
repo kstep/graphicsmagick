@@ -2,10 +2,13 @@
 
 	* lib/Drawable.cpp (DrawableStrokeColor): Renamed from DrawableStroke
 	(DrawableFillColor): Renamed from DrawableFill
+	(DrawableRotation): New class to influence object rotation.
+	(DrawableScaling): New class to influence object scaling.
+	(DrawableTranslation): New class to influence object translation.
 
 2000-10-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* lib/Drawable.cpp (DrawableAffine): New class to influence text
+	* lib/Drawable.cpp (DrawableAffine): New class to influence object
  	scaling, rotation, and translation (as defined by SVG XML).
 	(DrawableAngle): New class to influence text drawing angle.
 	(DrawableDecoration): New class to influence text decoration such
