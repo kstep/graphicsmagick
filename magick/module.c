@@ -741,7 +741,7 @@ MagickExport unsigned int OpenModules(ExceptionInfo *exception)
   modules=GetModuleList();
   if (modules == (char **) NULL)
     return(False);
-  for (p=modules; p != (char **) NULL; p++)
+  for (p=modules; *p != (char *) NULL; p++)
     OpenModule(*p,exception);
   /*
     Free resources.
