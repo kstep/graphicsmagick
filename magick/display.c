@@ -11541,8 +11541,8 @@ MagickExport unsigned int XDisplayBackgroundImage(Display *display,
   /*
     Create the X pixmap.
   */
-  window_info.pixmap=
-    XCreatePixmap(display,window_info.id,width,height,window_info.depth);
+  window_info.pixmap=XCreatePixmap(display,window_info.id,(unsigned int) width,
+    (unsigned int) height,window_info.depth);
   if (window_info.pixmap == (Pixmap) NULL)
     MagickError(XServerError,"Unable to create X pixmap",(char *) NULL);
   /*
@@ -11550,10 +11550,11 @@ MagickExport unsigned int XDisplayBackgroundImage(Display *display,
   */
   if ((width > window_info.width) || (height > window_info.height))
     (void) XFillRectangle(display,window_info.pixmap,
-      window_info.annotate_context,0,0,width,height);
+      window_info.annotate_context,0,0,(unsigned int) width,
+      (unsigned int) height);
   (void) XPutImage(display,window_info.pixmap,window_info.annotate_context,
-    window_info.ximage,0,0,window_info.x,window_info.y,window_info.width,
-    window_info.height);
+    window_info.ximage,0,0,window_info.x,window_info.y,
+    (unsigned int) window_info.width,(unsigned int) window_info.height);
   (void) XSetWindowBackgroundPixmap(display,window_info.id,window_info.pixmap);
   (void) XClearWindow(display,window_info.id);
   XDelay(display,10*image->delay);

@@ -96,19 +96,19 @@ static unsigned int DecodeImage(Image *image,const long opacity)
 #define NullCode  (-1)
 
   int
-    available,
     bits,
-    code,
-    clear,
-    code_mask,
     code_size,
-    end_of_information,
-    in_code,
     offset,
-    old_code,
     pass;
 
   long
+    available,
+    clear,
+    code,
+    code_mask,
+    end_of_information,
+    in_code,
+    old_code,
     y;
 
   register IndexPacket

@@ -615,7 +615,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          (void) TIFFReadScanline(tiff,(char *) scanline,y,0);
+          (void) TIFFReadScanline(tiff,(char *) scanline,(uint32) y,0);
           if (bits_per_sample == 16)
             {
               unsigned long
@@ -744,7 +744,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          (void) TIFFReadScanline(tiff,(char *) scanline,y,0);
+          (void) TIFFReadScanline(tiff,(char *) scanline,(uint32) y,0);
           if (bits_per_sample == 16)
             {
               unsigned long
@@ -822,8 +822,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
             ThrowReaderException(ResourceLimitWarning,
               "Memory allocation failed",image)
           }
-        (void) TIFFReadRGBAImage(tiff,image->columns,image->rows,
-          pixels+image->columns*sizeof(uint32),0);
+        (void) TIFFReadRGBAImage(tiff,(uint32) image->columns,
+          (uint32) image->rows,pixels+image->columns*sizeof(uint32),0);
         /*
           Convert image to DirectClass pixel packets.
         */
@@ -1071,7 +1071,7 @@ static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
 }
 #endif
 
-static int32 TIFFWritePixels(TIFF *tiff,tdata_t scanline,uint32 row,
+static int32 TIFFWritePixels(TIFF *tiff,tdata_t scanline,long row,
   tsample_t sample,Image *image)
 {
   int32
@@ -1094,7 +1094,7 @@ static int32 TIFFWritePixels(TIFF *tiff,tdata_t scanline,uint32 row,
     *tile_pixels = (unsigned char *) NULL;
 
   if (!TIFFIsTiled(tiff))
-    return(TIFFWriteScanline(tiff,scanline,row,sample));
+    return(TIFFWriteScanline(tiff,scanline,(uint32) row,sample));
   if (scanlines == (unsigned char *) NULL)
     scanlines=(unsigned char *)
       AcquireMemory(image->tile_info.height*TIFFScanlineSize(tiff));
@@ -1109,9 +1109,8 @@ static int32 TIFFWritePixels(TIFF *tiff,tdata_t scanline,uint32 row,
   */
   i=(row % image->tile_info.height)*TIFFScanlineSize(tiff);
   (void) memcpy(scanlines+i,(char *) scanline,TIFFScanlineSize(tiff));
-  if (((unsigned long) (row % image->tile_info.height) !=
-      (image->tile_info.height-1)) &&
-      ((unsigned long) row != image->rows-1))
+  if (((row % image->tile_info.height) != (image->tile_info.height-1)) &&
+      (row != image->rows-1))
     return(0);
   /*
     Write tile to TIFF image.
@@ -1362,9 +1361,11 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         */
         extra_samples=1;
         sample_info[0]=EXTRASAMPLE_ASSOCALPHA;
-        (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_SAMPLESPERPIXEL,&samples_per_pixel);
+        (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_SAMPLESPERPIXEL,
+          &samples_per_pixel);
         (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,samples_per_pixel+1);
-        (void) TIFFSetField(tiff,TIFFTAG_EXTRASAMPLES,extra_samples,&sample_info);
+        (void) TIFFSetField(tiff,TIFFTAG_EXTRASAMPLES,extra_samples,
+          &sample_info);
       }
     switch (image_info->compression)
     {
@@ -1453,8 +1454,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     if (adjoin && (GetNumberScenes(image) > 1))
       {
         (void) TIFFSetField(tiff,TIFFTAG_SUBFILETYPE,FILETYPE_PAGE);
-        (void) TIFFSetField(tiff,TIFFTAG_PAGENUMBER,(unsigned short) image->scene,
-          GetNumberScenes(image));
+        (void) TIFFSetField(tiff,TIFFTAG_PAGENUMBER,(unsigned short)
+          image->scene,GetNumberScenes(image));
       }
     attribute=GetImageAttribute(image,"artist");
     if (attribute != (ImageAttribute *) NULL)
