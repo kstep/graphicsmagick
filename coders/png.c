@@ -353,6 +353,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
     number_colors,
     remap_needed,
     j,
+    k,
     y;
 
   PixelPacket
@@ -441,8 +442,8 @@ static unsigned int CompressColormapTransFirst(Image *image)
   /*
     Count colors that still remain.
   */
-  new_number_colors=0;
   have_transparency=False;
+  new_number_colors=0;
   for (i=0; i < number_colors; i++)
     if (marker[i])
       {
@@ -450,8 +451,8 @@ static unsigned int CompressColormapTransFirst(Image *image)
         if (opacity[i] != OpaqueOpacity)
           have_transparency=True;
       } 
-  if ((!have_transparency || (opacity[0] == TransparentOpacity)) &&
-      (new_number_colors == number_colors))
+  if ((!have_transparency || (marker[0] && (opacity[0] == TransparentOpacity)))
+      && (new_number_colors == number_colors))
     {
       /*
         No duplicate or unused entries, and transparency-swap not needed
@@ -483,28 +484,22 @@ static unsigned int CompressColormapTransFirst(Image *image)
       ThrowBinaryException(ResourceLimitWarning,"Unable to compress colormap",
         "Memory allocation failed");
     }
-  j=0;
+  k=0;
   for (i=0; i < number_colors; i++)
   {
-    if (marker[i])
-      {
-        map[i]=j;
-        j++;
-      }
-  }
-  for (i=0; i < number_colors; i++)
-  {
+    map[i]=k;
     if (marker[i])
       {
         for (j=i+1; j < number_colors; j++)
         {
-          if (marker[j] && (opacity[i] == opacity[j]) &&
+          if ((opacity[i] == opacity[j]) &&
               (ColorMatch(image->colormap[i],image->colormap[j],0)))
             {
-               map[j]=map[i];
+               map[j]=k;
                marker[j]=False;
             }
         }
+      k++;
       }
   }
   j=0;
@@ -525,25 +520,20 @@ static unsigned int CompressColormapTransFirst(Image *image)
       */
       for (i=1; i < number_colors; i++)
       {
-        if (opacity[i] == TransparentOpacity)
+        if (marker[i] && opacity[i] == TransparentOpacity)
           {
             PixelPacket
               temp_colormap;
 
             temp_colormap=colormap[0];
-            colormap[0]=colormap[i];
-            colormap[i]=temp_colormap;
+            colormap[0]=colormap[map[i]];
+            colormap[map[i]]=temp_colormap;
             for (j=0; j < number_colors; j++)
             {
               if (map[j] == 0)
-                {
-                  map[j]=(unsigned short) i;
-                }
-              else
-                if (map[j] == i)
-                {
-                  map[j]=0;
-                }
+                map[j]=(unsigned short) i;
+              else if (map[j] == i)
+                map[j]=0;
             }
             remap_needed=True;
             break;
@@ -556,9 +546,13 @@ static unsigned int CompressColormapTransFirst(Image *image)
     for (i=new_number_colors; i < number_colors; i++)
     {
       if (marker[i])
-         remap_needed=True;
+         {
+           remap_needed=True;
+           image->colors=i;
+         }
     }
   LiberateMemory((void **) &marker);
+
   if(remap_needed)
     {
       /*
@@ -578,11 +572,10 @@ static unsigned int CompressColormapTransFirst(Image *image)
         if (!SyncImagePixels(image))
           break;
       }
-      LiberateMemory((void **) &image->colormap);
-      image->colormap=colormap;
+      for (i=0; i<new_number_colors; i++)
+         image->colormap[i]=colormap[i];
     }
-  else
-      LiberateMemory((void **) &colormap);
+  LiberateMemory((void **) &colormap);
   image->colors=new_number_colors;
   LiberateMemory((void **) &map);
   return(True);
@@ -2655,7 +2648,9 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         int
           scale;
 
-        scale=MaxRGB/(1<<ping_info->bit_depth);
+        scale=MaxRGB/(1<<ping_info->bit_depth-1);
+        if (scale < 1)
+           scale=1;
         /*
           Image has a transparent background.
         */
@@ -2757,6 +2752,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               scale;
 
             scale=MaxRGB/((1<<ping_info->bit_depth)-1);
+            if (scale < 1)
+               scale=1;
             for (i=0; i < (int) image->colors; i++)
             {
               image->colormap[i].red=i*scale;
