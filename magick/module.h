@@ -58,7 +58,7 @@ extern MagickExport void
   DestroyModuleInfo(void);
 
 extern void
-  InitializeStaticModules();
+  OpenStaticModules();
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
