@@ -1,3 +1,8 @@
+2003-02-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/utility.c (GetMagickGeometry): Scaling to an area now
+	preserves the image aspect ratio.
+
 2003-02-24  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* png.c: Added missing parentheses in typecast (cristy noticed

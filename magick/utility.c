@@ -1283,8 +1283,8 @@ MagickExport int GetGeometry(const char *image_geometry,long *x,long *y,
 %  The interpretation of the geometry string parameters are as follows:
 %    %: The geometry width and height parameters are interpreted as a
 %       percentage of the supplied width and height parameters.
-%    @: The geometry parameter represents the desired total area (i.e.
-%       width x height) of the final image.
+%    @: The geometry parameter represents the desired total area (e.g.
+%       "307520@") or width x height (e.g. "640*480@") of the final image.
 %    !: Force the width and height values to be absolute values.  The
 %       original image aspect ratio is not maintained.
 %    <: Update the provided width and height parameters if its dimensions
@@ -1370,23 +1370,29 @@ MagickExport int GetMagickGeometry(const char *geometry,long *x,long *y,
   if (flags & AreaValue)
     {
       double
-        distance,
-        x_area,
-        y_area;
+        scale_factor,
+        original_area,
+        target_area,
+        target_width,
+        target_height;
 
       /*
         Geometry is a maximum area in pixels.
       */
-      x_area=(*width);
-      y_area=(*height);
-      count=sscanf(geometry,"%lf%%x%lf",&x_area,&y_area);
+      target_width=(*width);
+      target_height=(*height);
+      target_area=target_width*target_height;
+      count=sscanf(geometry,"%lf%%x%lf",&target_width,&target_height);
       if (count != 2)
-        count=sscanf(geometry,"%lfx%lf",&x_area,&y_area);
+        count=sscanf(geometry,"%lfx%lf",&target_width,&target_height);
+      if (count == 2)
+        target_area=target_width*target_height;
       if (count == 1)
-        y_area=x_area;
-      distance=sqrt((double) former_width*former_height);
-      *width=(unsigned long) floor((x_area*former_width/distance)+0.5);
-      *height=(unsigned long) floor((y_area*former_height/distance)+0.5);
+        target_area=target_width;
+      original_area=(double)former_width*former_height;
+      scale_factor=1/sqrt(original_area/target_area);
+      *width=(unsigned long) floor(former_width*scale_factor+0.25);
+      *height=(unsigned long) floor(former_height*scale_factor+0.25);
       former_width=(*width);
       former_height=(*height);
     }
