@@ -6745,6 +6745,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
             command[MaxTextExtent];
 
           FormatString(command,"@%.1024s",image_info->filename);
+          (void) SetImageAttribute(*image,"comment",(char *) NULL);
           (void) SetImageAttribute(*image,"comment",command);
           (*image)->taint=True;
         }
@@ -6836,6 +6837,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       image_info->preview_type=(PreviewType) (i+1);
       image_info->group=(long) windows->image.id;
+      (void) SetImageAttribute(*image,"label",(char *) NULL);
       (void) SetImageAttribute(*image,"label","Preview");
       TemporaryFilename(filename);
       FormatString((*image)->filename,"preview:%s",filename);
@@ -6857,6 +6859,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
       image_info->group=(long) windows->image.id;
+      (void) SetImageAttribute(*image,"label",(char *) NULL);
       (void) SetImageAttribute(*image,"label","Histogram");
       TemporaryFilename(filename);
       FormatString((*image)->filename,"histogram:%s",filename);
@@ -6884,6 +6887,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
       image_info->group=(long) windows->image.id;
+      (void) SetImageAttribute(*image,"label",(char *) NULL);
       (void) SetImageAttribute(*image,"label","Matte");
       TemporaryFilename(filename);
       FormatString((*image)->filename,"matte:%s",filename);
@@ -11266,6 +11270,7 @@ static Image *XVisualDirectoryImage(Display *display,
       LiberateMemory((void **) &filelist[i]);
     if (next_image != (Image *) NULL)
       {
+        (void) SetImageAttribute(next_image,"label",(char *) NULL);
         (void) SetImageAttribute(next_image,"label",DefaultTileLabel);
         TransformImage(&next_image,(char *) NULL,DefaultTileGeometry);
         if (backdrop)
