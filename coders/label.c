@@ -93,7 +93,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   DrawInfo
     *draw_info;
 
-  FontMetrics
+  FontInfo
     metrics;
 
   Image
@@ -109,7 +109,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   draw_info->gravity=WestGravity;
   draw_info->text=AllocateString(image_info->filename);
-  status=GetFontMetrics(image,draw_info,&metrics);
+  status=GetFontInfo(image,draw_info,&metrics);
   if (status == False)
     ThrowReaderException(DelegateWarning,"Unable to get font metrics",image);
   image->columns=metrics.width;
