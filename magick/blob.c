@@ -1721,7 +1721,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
     case ReadBinaryBlobMode: type=(char *) "rb"; break;
     case WriteBlobMode: type=(char *) "w"; break;
     case WriteBinaryBlobMode: type=(char *) "wb"; break;
-/*     case IOBinaryBlobMode: type=(char *) "w+b"; break; */
+    case IOBinaryBlobMode: type=(char *) "w+b"; break;
   }
   if (image_info->stream != (StreamHandler) NULL)
     {

@@ -1,3 +1,9 @@
+2003-01-14 William Radcliffe <billr@corbis.com>
+	* magick/blob.c
+	* magick/blob.h
+	Added new stream type flag and support to match with the one
+        added to ImageMagick.
+
 2003-01-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* magick/image.c (RGBTransformImage): Fixed bug (thanks to
 	Bill for finding it) and finished optimizing XYZ table

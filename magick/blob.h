@@ -24,7 +24,8 @@ typedef enum
   ReadBlobMode,
   ReadBinaryBlobMode,
   WriteBlobMode,
-  WriteBinaryBlobMode
+  WriteBinaryBlobMode,
+  IOBinaryBlobMode
 } BlobMode;
 
 typedef enum
