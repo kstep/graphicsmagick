@@ -1570,12 +1570,13 @@ Export void CoalesceImages(Image *image)
     y;
 
   unsigned int
+    matte,
     sans;
 
-  assert(image != (Image *) NULL);
   /*
     Determine if all the images in the sequence are the same size.
   */
+  assert(image != (Image *) NULL);
   for (p=image->next; p != (Image *) NULL; p=p->next)
     if ((p->columns != p->previous->columns) ||
         (p->rows != p->previous->rows))
@@ -1585,7 +1586,6 @@ Export void CoalesceImages(Image *image)
   /*
     Coalesce the image sequence.
   */
-  image->matte=False;
   if (image->page)
     {
       FreeMemory((char *) image->page);
@@ -1621,11 +1621,12 @@ Export void CoalesceImages(Image *image)
         FreeMemory((char *) p->page);
         p->page=(char *) NULL;
       }
+    matte=p->matte;
     CompositeImage(p,ReplaceCompositeOp,p->previous,0,0);
     CompositeImage(p,cloned_image->matte ? OverCompositeOp : ReplaceCompositeOp,
       cloned_image,x,y);
     DestroyImage(cloned_image);
-    p->matte=False;
+    p->matte=matte;
     CondenseImage(p);
   }
 }
@@ -10469,7 +10470,13 @@ Export Image *SampleImage(const Image *image,const unsigned int columns,
 
   assert(image != (Image *) NULL);
   if ((columns == 0) || (rows == 0))
-    return((Image *) NULL);
+    {
+      MagickWarning(OptionWarning,"Unable to resize image",
+        "image dimensions are zero");
+      return((Image *) NULL);
+    }
+  if ((columns == image->columns) && (rows == image->rows))
+    return(CloneImage(image,columns,rows,True));
   /*
     Initialize sampled image attributes.
   */
