@@ -395,7 +395,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 	     if (!AllocateImageColormap(image,image->colors))
                     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
 			             image);
-             for (i=WPG_Palette.StartIndex; i < (int)WPG_Palette.NumOfEntries; i++)
+             for (i=WPG_Palette.StartIndex; i < (int)WPG_Palette.NumOfEntries; i++)
                {
 	       image->colormap[i].red=ReadByte(image);
 	       image->colormap[i].green=ReadByte(image);
