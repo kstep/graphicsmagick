@@ -36,6 +36,7 @@ typedef enum
 
 typedef enum
 {
+  UndefinedStream,
   FileStream,
   StandardStream,
   ZipStream,

@@ -499,7 +499,7 @@ MagickExport void DestroyBlobInfo(BlobInfo *blob)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method DetachBlob detaches a blob from the BlobInfo structure.
+%  DetachBlob() detaches a blob from the BlobInfo structure.
 %
 %  The format of the DetachBlob method is:
 %
@@ -522,6 +522,7 @@ MagickExport void DetachBlob(BlobInfo *blob_info)
   blob_info->offset=0;
   blob_info->eof=False;
   blob_info->exempt=False;
+  blob_info->type=UndefinedStream;
 }
 
 /*
