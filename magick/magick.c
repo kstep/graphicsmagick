@@ -252,12 +252,12 @@ MagickExport const MagickInfo *GetMagickInfo(const char *name,
     *p;
 
 #if defined(SupportMagickModules)
-  /*
-    If all modules are requested, then use OpenModules to load
-    all modules.
-  */
   if ((name != (const char *) NULL) && (LocaleCompare(name,"*") == 0))
     {
+      /*
+        If all modules are requested, then use OpenModules to load
+        all modules.
+      */
       if (!OpenModules(exception))
         return 0;
     }
@@ -310,22 +310,10 @@ MagickExport const MagickInfo *GetMagickInfo(const char *name,
       */
       if (*name != '\0')
         {
-#if 1
           /* Pass all exceptions up */
           LiberateSemaphoreInfo(&magick_semaphore);
           (void) OpenModule(name,exception);
           AcquireSemaphoreInfo(&magick_semaphore);
-#else
-          /* Throw away all exceptions */
-          ExceptionInfo
-            module_exception;
-
-          LiberateSemaphoreInfo(&magick_semaphore);
-          GetExceptionInfo(&module_exception);
-          (void) OpenModule(name,&module_exception);
-          DestroyExceptionInfo(&module_exception);
-          AcquireSemaphoreInfo(&magick_semaphore);
-#endif
         }
       for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
         if (LocaleCompare(p->name,name) == 0)
