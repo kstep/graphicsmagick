@@ -634,7 +634,7 @@ ModuleExport void RegisterSGIImage(void)
 %      UnregisterSGIImage(void)
 %
 */
-MagickExport void UnregisterSGIImage(void)
+ModuleExport void UnregisterSGIImage(void)
 {
   UnregisterMagickInfo("SGI");
 }

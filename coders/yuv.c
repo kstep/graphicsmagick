@@ -343,7 +343,7 @@ ModuleExport void RegisterYUVImage(void)
 %      UnregisterYUVImage(void)
 %
 */
-MagickExport void UnregisterYUVImage(void)
+ModuleExport void UnregisterYUVImage(void)
 {
   UnregisterMagickInfo("YUV");
 }

@@ -197,7 +197,7 @@ ModuleExport void RegisterPCLImage(void)
 %      UnregisterPCLImage(void)
 %
 */
-MagickExport void UnregisterPCLImage(void)
+ModuleExport void UnregisterPCLImage(void)
 {
   UnregisterMagickInfo("PCL");
 }

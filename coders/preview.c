@@ -123,7 +123,7 @@ ModuleExport void RegisterPREVIEWImage(void)
 %      UnregisterPREVIEWImage(void)
 %
 */
-MagickExport void UnregisterPREVIEWImage(void)
+ModuleExport void UnregisterPREVIEWImage(void)
 {
   UnregisterMagickInfo("PREVIEW");
 }

@@ -483,7 +483,7 @@ ModuleExport void RegisterPSImage(void)
 %      UnregisterPSImage(void)
 %
 */
-MagickExport void UnregisterPSImage(void)
+ModuleExport void UnregisterPSImage(void)
 {
   UnregisterMagickInfo("EPI");
   UnregisterMagickInfo("EPS");

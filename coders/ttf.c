@@ -273,7 +273,7 @@ ModuleExport void RegisterTTFImage(void)
 %      UnregisterTTFImage(void)
 %
 */
-MagickExport void UnregisterTTFImage(void)
+ModuleExport void UnregisterTTFImage(void)
 {
 #if defined(HasTTF)
   UnregisterMagickInfo("TTF");

@@ -173,7 +173,7 @@ ModuleExport void RegisterHTMLImage(void)
 %      UnregisterHTMLImage(void)
 %
 */
-MagickExport void UnregisterHTMLImage(void)
+ModuleExport void UnregisterHTMLImage(void)
 {
   UnregisterMagickInfo("HTM");
   UnregisterMagickInfo("HTML");

@@ -1424,7 +1424,7 @@ ModuleExport void RegisterLABELImage(void)
 %      UnregisterLABELImage(void)
 %
 */
-MagickExport void UnregisterLABELImage(void)
+ModuleExport void UnregisterLABELImage(void)
 {
   UnregisterMagickInfo("LABEL");
 }

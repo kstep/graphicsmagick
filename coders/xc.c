@@ -194,7 +194,7 @@ ModuleExport void RegisterXCImage(void)
 %      UnregisterXCImage(void)
 %
 */
-MagickExport void UnregisterXCImage(void)
+ModuleExport void UnregisterXCImage(void)
 {
   UnregisterMagickInfo("XC");
 }

@@ -262,7 +262,7 @@ ModuleExport void RegisterIPTCImage(void)
 %      UnregisterIPTCImage(void)
 %
 */
-MagickExport void UnregisterIPTCImage(void)
+ModuleExport void UnregisterIPTCImage(void)
 {
   UnregisterMagickInfo("IPTC");
 }

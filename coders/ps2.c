@@ -125,7 +125,7 @@ ModuleExport void RegisterPS2Image(void)
 %      UnregisterPS2Image(void)
 %
 */
-MagickExport void UnregisterPS2Image(void)
+ModuleExport void UnregisterPS2Image(void)
 {
   UnregisterMagickInfo("EPS2");
   UnregisterMagickInfo("PS2");

@@ -418,7 +418,7 @@ ModuleExport void RegisterXBMImage(void)
 %      UnregisterXBMImage(void)
 %
 */
-MagickExport void UnregisterXBMImage(void)
+ModuleExport void UnregisterXBMImage(void)
 {
   UnregisterMagickInfo("XBM");
 }

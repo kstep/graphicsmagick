@@ -194,7 +194,7 @@ ModuleExport void RegisterTILEImage(void)
 %      UnregisterTILEImage(void)
 %
 */
-MagickExport void UnregisterTILEImage(void)
+ModuleExport void UnregisterTILEImage(void)
 {
   UnregisterMagickInfo("TILE");
 }

@@ -422,7 +422,7 @@ ModuleExport void RegisterRLAImage(void)
 %      UnregisterRLAImage(void)
 %
 */
-MagickExport void UnregisterRLAImage(void)
+ModuleExport void UnregisterRLAImage(void)
 {
   UnregisterMagickInfo("RLA");
 }

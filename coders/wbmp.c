@@ -257,7 +257,7 @@ ModuleExport void RegisterWBMPImage(void)
 %      UnregisterWBMPImage(void)
 %
 */
-MagickExport void UnregisterWBMPImage(void)
+ModuleExport void UnregisterWBMPImage(void)
 {
   UnregisterMagickInfo("WBMP");
 }

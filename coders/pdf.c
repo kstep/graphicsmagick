@@ -418,7 +418,7 @@ ModuleExport void RegisterPDFImage(void)
 %      UnregisterPDFImage(void)
 %
 */
-MagickExport void UnregisterPDFImage(void)
+ModuleExport void UnregisterPDFImage(void)
 {
   UnregisterMagickInfo("EPDF");
   UnregisterMagickInfo("PDF");

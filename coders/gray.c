@@ -266,7 +266,7 @@ ModuleExport void RegisterGRAYImage(void)
 %      UnregisterGRAYImage(void)
 %
 */
-MagickExport void UnregisterGRAYImage(void)
+ModuleExport void UnregisterGRAYImage(void)
 {
   UnregisterMagickInfo("GRAY");
 }

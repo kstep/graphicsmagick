@@ -378,7 +378,7 @@ ModuleExport void RegisterVICARImage(void)
 %      UnregisterVICARImage(void)
 %
 */
-MagickExport void UnregisterVICARImage(void)
+ModuleExport void UnregisterVICARImage(void)
 {
   UnregisterMagickInfo("VICAR");
 }

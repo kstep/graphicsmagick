@@ -1283,7 +1283,7 @@ ModuleExport void RegisterPICTImage(void)
 %      UnregisterPICTImage(void)
 %
 */
-MagickExport void UnregisterPICTImage(void)
+ModuleExport void UnregisterPICTImage(void)
 {
   UnregisterMagickInfo("PCT");
   UnregisterMagickInfo("PICT");

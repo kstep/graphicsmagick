@@ -169,7 +169,7 @@ ModuleExport void RegisterMVGImage(void)
 %      UnregisterMVGImage(void)
 %
 */
-MagickExport void UnregisterMVGImage(void)
+ModuleExport void UnregisterMVGImage(void)
 {
   UnregisterMagickInfo("MVG");
 }

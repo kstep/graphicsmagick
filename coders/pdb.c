@@ -578,7 +578,7 @@ ModuleExport void RegisterPDBImage(void)
 %      UnregisterPDBImage(void)
 %
 */
-MagickExport void UnregisterPDBImage(void)
+ModuleExport void UnregisterPDBImage(void)
 {
   UnregisterMagickInfo("PDB");
 }

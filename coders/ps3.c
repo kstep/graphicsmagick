@@ -120,7 +120,7 @@ ModuleExport void RegisterPS3Image(void)
 %      UnregisterPS3Image(void)
 %
 */
-MagickExport void UnregisterPS3Image(void)
+ModuleExport void UnregisterPS3Image(void)
 {
   UnregisterMagickInfo("PS3");
 }

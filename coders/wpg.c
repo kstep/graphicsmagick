@@ -727,7 +727,7 @@ ModuleExport void RegisterWPGImage(void)
 %      UnregisterWPGImage(void)
 %
 */
-MagickExport void UnregisterWPGImage(void)
+ModuleExport void UnregisterWPGImage(void)
 {
   UnregisterMagickInfo("WPG");
 }

@@ -237,7 +237,7 @@ ModuleExport void RegisterFAXImage(void)
 %      UnregisterFAXImage(void)
 %
 */
-MagickExport void UnregisterFAXImage(void)
+ModuleExport void UnregisterFAXImage(void)
 {
   UnregisterMagickInfo("FAX");
   UnregisterMagickInfo("G3");

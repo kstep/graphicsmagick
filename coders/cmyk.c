@@ -422,7 +422,7 @@ ModuleExport void RegisterCMYKImage(void)
 %      UnregisterCMYKImage(void)
 %
 */
-MagickExport void UnregisterCMYKImage(void)
+ModuleExport void UnregisterCMYKImage(void)
 {
   UnregisterMagickInfo("CMYK");
 }

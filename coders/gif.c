@@ -1027,7 +1027,7 @@ ModuleExport void RegisterGIFImage(void)
 %      UnregisterGIFImage(void)
 %
 */
-MagickExport void UnregisterGIFImage(void)
+ModuleExport void UnregisterGIFImage(void)
 {
   UnregisterMagickInfo("GIF");
   UnregisterMagickInfo("GIF87");

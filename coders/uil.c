@@ -116,7 +116,7 @@ ModuleExport void RegisterUILImage(void)
 %      UnregisterUILImage(void)
 %
 */
-MagickExport void UnregisterUILImage(void)
+ModuleExport void UnregisterUILImage(void)
 {
   UnregisterMagickInfo("UIL");
 }

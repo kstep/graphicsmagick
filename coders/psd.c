@@ -843,7 +843,7 @@ ModuleExport void RegisterPSDImage(void)
 %      UnregisterPSDImage(void)
 %
 */
-MagickExport void UnregisterPSDImage(void)
+ModuleExport void UnregisterPSDImage(void)
 {
   UnregisterMagickInfo("PSD");
 }

@@ -257,7 +257,7 @@ ModuleExport void RegisterMAPImage(void)
 %      UnregisterMAPImage(void)
 %
 */
-MagickExport void UnregisterMAPImage(void)
+ModuleExport void UnregisterMAPImage(void)
 {
   UnregisterMagickInfo("MAP");
 }

@@ -585,7 +585,7 @@ ModuleExport void RegisterSUNImage(void)
 %      UnregisterSUNImage(void)
 %
 */
-MagickExport void UnregisterSUNImage(void)
+ModuleExport void UnregisterSUNImage(void)
 {
   UnregisterMagickInfo("RAS");
   UnregisterMagickInfo("SUN");

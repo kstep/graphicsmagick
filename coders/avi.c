@@ -850,7 +850,7 @@ ModuleExport void RegisterAVIImage(void)
 %      UnregisterAVIImage(void)
 %
 */
-MagickExport void UnregisterAVIImage(void)
+ModuleExport void UnregisterAVIImage(void)
 {
   UnregisterMagickInfo("AVI");
 }

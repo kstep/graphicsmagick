@@ -539,7 +539,7 @@ ModuleExport void RegisterFITSImage(void)
 %      UnregisterFITSImage(void)
 %
 */
-MagickExport void UnregisterFITSImage(void)
+ModuleExport void UnregisterFITSImage(void)
 {
   UnregisterMagickInfo("FITS");
 }

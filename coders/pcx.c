@@ -669,7 +669,7 @@ ModuleExport void RegisterPCXImage(void)
 %      UnregisterPCXImage(void)
 %
 */
-MagickExport void UnregisterPCXImage(void)
+ModuleExport void UnregisterPCXImage(void)
 {
   UnregisterMagickInfo("DCX");
   UnregisterMagickInfo("PCX");

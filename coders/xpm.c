@@ -483,7 +483,7 @@ ModuleExport void RegisterXPMImage(void)
 %      UnregisterXPMImage(void)
 %
 */
-MagickExport void UnregisterXPMImage(void)
+ModuleExport void UnregisterXPMImage(void)
 {
   UnregisterMagickInfo("PM");
   UnregisterMagickInfo("XPM");

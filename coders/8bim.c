@@ -245,7 +245,7 @@ ModuleExport void Register8BIMImage(void)
 %      Unregister8BIMImage(void)
 %
 */
-MagickExport void Unregister8BIMImage(void)
+ModuleExport void Unregister8BIMImage(void)
 {
   UnregisterMagickInfo("8BIM");
 }

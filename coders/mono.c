@@ -222,7 +222,7 @@ ModuleExport void RegisterMONOImage(void)
 %      UnregisterMONOImage(void)
 %
 */
-MagickExport void UnregisterMONOImage(void)
+ModuleExport void UnregisterMONOImage(void)
 {
   UnregisterMagickInfo("MONO");
 }

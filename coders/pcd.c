@@ -825,7 +825,7 @@ ModuleExport void RegisterPCDImage(void)
 %      UnregisterPCDImage(void)
 %
 */
-MagickExport void UnregisterPCDImage(void)
+ModuleExport void UnregisterPCDImage(void)
 {
   UnregisterMagickInfo("PCD");
   UnregisterMagickInfo("PCDS");

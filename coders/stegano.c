@@ -247,7 +247,7 @@ ModuleExport void RegisterSTEGANOImage(void)
 %      UnregisterSTEGANOImage(void)
 %
 */
-MagickExport void UnregisterSTEGANOImage(void)
+ModuleExport void UnregisterSTEGANOImage(void)
 {
   UnregisterMagickInfo("STEGANO");
 }

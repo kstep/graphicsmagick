@@ -116,7 +116,7 @@ ModuleExport void RegisterHISTOGRAMImage(void)
 %      UnregisterHISTOGRAMImage(void)
 %
 */
-MagickExport void UnregisterHISTOGRAMImage(void)
+ModuleExport void UnregisterHISTOGRAMImage(void)
 {
   UnregisterMagickInfo("HISTOGRAM");
 }

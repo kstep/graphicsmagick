@@ -163,7 +163,7 @@ ModuleExport void RegisterXImage(void)
 %      UnregisterXImage(void)
 %
 */
-MagickExport void UnregisterXImage(void)
+ModuleExport void UnregisterXImage(void)
 {
   UnregisterMagickInfo("X");
 }

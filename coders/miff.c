@@ -970,7 +970,7 @@ ModuleExport void RegisterMIFFImage(void)
 %      UnregisterMIFFImage(void)
 %
 */
-MagickExport void UnregisterMIFFImage(void)
+ModuleExport void UnregisterMIFFImage(void)
 {
   UnregisterMagickInfo("IMPLICIT");
   UnregisterMagickInfo("MIFF");

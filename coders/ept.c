@@ -157,7 +157,7 @@ ModuleExport void RegisterEPTImage(void)
 %      UnregisterEPTImage(void)
 %
 */
-MagickExport void UnregisterEPTImage(void)
+ModuleExport void UnregisterEPTImage(void)
 {
   UnregisterMagickInfo("EPT");
 }

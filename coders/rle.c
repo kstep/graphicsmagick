@@ -603,7 +603,7 @@ ModuleExport void RegisterRLEImage(void)
 %      UnregisterRLEImage(void)
 %
 */
-MagickExport void UnregisterRLEImage(void)
+ModuleExport void UnregisterRLEImage(void)
 {
   UnregisterMagickInfo("RLE");
 }

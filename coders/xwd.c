@@ -514,7 +514,7 @@ ModuleExport void RegisterXWDImage(void)
 %      UnregisterXWDImage(void)
 %
 */
-MagickExport void UnregisterXWDImage(void)
+ModuleExport void UnregisterXWDImage(void)
 {
 #if defined(HasX11)
   UnregisterMagickInfo("XWD");

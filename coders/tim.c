@@ -413,7 +413,7 @@ ModuleExport void RegisterTIMImage(void)
 %      UnregisterTIMImage(void)
 %
 */
-MagickExport void UnregisterTIMImage(void)
+ModuleExport void UnregisterTIMImage(void)
 {
   UnregisterMagickInfo("TIM");
 }

@@ -784,7 +784,7 @@ ModuleExport void RegisterVIFFImage(void)
 %      UnregisterVIFFImage(void)
 %
 */
-MagickExport void UnregisterVIFFImage(void)
+ModuleExport void UnregisterVIFFImage(void)
 {
   UnregisterMagickInfo("VIFF");
   UnregisterMagickInfo("XV");

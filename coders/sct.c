@@ -297,7 +297,7 @@ ModuleExport void RegisterSCTImage(void)
 %      UnregisterSCTImage(void)
 %
 */
-MagickExport void UnregisterSCTImage(void)
+ModuleExport void UnregisterSCTImage(void)
 {
   UnregisterMagickInfo("SCT");
 }

@@ -263,7 +263,7 @@ ModuleExport void RegisterAVSImage(void)
 %      UnregisterAVSImage(void)
 %
 */
-MagickExport void UnregisterAVSImage(void)
+ModuleExport void UnregisterAVSImage(void)
 {
   UnregisterMagickInfo("AVS");
 }

@@ -1010,7 +1010,7 @@ ModuleExport void RegisterTIFFImage(void)
 %      UnregisterTIFFImage(void)
 %
 */
-MagickExport void UnregisterTIFFImage(void)
+ModuleExport void UnregisterTIFFImage(void)
 {
 #if defined(HasTIFF)
   UnregisterMagickInfo("PTIF");

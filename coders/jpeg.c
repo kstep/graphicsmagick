@@ -781,7 +781,7 @@ ModuleExport void RegisterJPEGImage(void)
 %      UnregisterJPEGImage(void)
 %
 */
-MagickExport void UnregisterJPEGImage(void)
+ModuleExport void UnregisterJPEGImage(void)
 {
   UnregisterMagickInfo("JPEG24");
   UnregisterMagickInfo("JPEG");

@@ -515,7 +515,7 @@ ModuleExport void RegisterFPXImage(void)
 %      UnregisterFPXImage(void)
 %
 */
-MagickExport void UnregisterFPXImage(void)
+ModuleExport void UnregisterFPXImage(void)
 {
   UnregisterMagickInfo("FPX");
 }

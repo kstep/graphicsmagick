@@ -203,7 +203,7 @@ ModuleExport void RegisterICMImage(void)
 %      UnregisterICMImage(void)
 %
 */
-MagickExport void UnregisterICMImage(void)
+ModuleExport void UnregisterICMImage(void)
 {
   UnregisterMagickInfo("ICM");
 }

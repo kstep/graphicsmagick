@@ -481,7 +481,7 @@ ModuleExport void RegisterICONImage(void)
 %      UnregisterICONImage(void)
 %
 */
-MagickExport void UnregisterICONImage(void)
+ModuleExport void UnregisterICONImage(void)
 {
   UnregisterMagickInfo("ICO");
   UnregisterMagickInfo("ICON");

@@ -3918,7 +3918,7 @@ ModuleExport void RegisterLOGOImage(void)
 %      UnregisterLOGOImage(void)
 %
 */
-MagickExport void UnregisterLOGOImage(void)
+ModuleExport void UnregisterLOGOImage(void)
 {
   UnregisterMagickInfo("GRANITE");
   UnregisterMagickInfo("H");

@@ -503,7 +503,7 @@ ModuleExport void RegisterTGAImage(void)
 %      UnregisterTGAImage(void)
 %
 */
-MagickExport void UnregisterTGAImage(void)
+ModuleExport void UnregisterTGAImage(void)
 {
   UnregisterMagickInfo("ICB");
   UnregisterMagickInfo("TGA");

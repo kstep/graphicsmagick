@@ -286,7 +286,7 @@ ModuleExport void RegisterPWPImage(void)
 %      UnregisterPWPImage(void)
 %
 */
-MagickExport void UnregisterPWPImage(void)
+ModuleExport void UnregisterPWPImage(void)
 {
   UnregisterMagickInfo("PWP");
 }

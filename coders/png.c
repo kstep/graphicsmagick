@@ -3068,7 +3068,7 @@ ModuleExport void RegisterPNGImage(void)
 %      UnregisterPNGImage(void)
 %
 */
-MagickExport void UnregisterPNGImage(void)
+ModuleExport void UnregisterPNGImage(void)
 {
   UnregisterMagickInfo("MNG");
   UnregisterMagickInfo("PNG");

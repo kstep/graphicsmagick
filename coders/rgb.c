@@ -445,7 +445,7 @@ ModuleExport void RegisterRGBImage(void)
 %      UnregisterRGBImage(void)
 %
 */
-MagickExport void UnregisterRGBImage(void)
+ModuleExport void UnregisterRGBImage(void)
 {
   UnregisterMagickInfo("RGB");
   UnregisterMagickInfo("RGBA");

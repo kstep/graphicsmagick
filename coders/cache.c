@@ -798,7 +798,7 @@ ModuleExport void RegisterCACHEImage(void)
 %      UnregisterCACHEImage(void)
 %
 */
-MagickExport void UnregisterCACHEImage(void)
+ModuleExport void UnregisterCACHEImage(void)
 {
   UnregisterMagickInfo("CACHE");
 }

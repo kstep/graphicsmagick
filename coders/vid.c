@@ -242,7 +242,7 @@ ModuleExport void RegisterVIDImage(void)
 %      UnregisterVIDImage(void)
 %
 */
-MagickExport void UnregisterVIDImage(void)
+ModuleExport void UnregisterVIDImage(void)
 {
   UnregisterMagickInfo("VID");
 }

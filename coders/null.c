@@ -202,7 +202,7 @@ ModuleExport void RegisterNULLImage(void)
 %      UnregisterNULLImage(void)
 %
 */
-MagickExport void UnregisterNULLImage(void)
+ModuleExport void UnregisterNULLImage(void)
 {
   UnregisterMagickInfo("NULL");
 }

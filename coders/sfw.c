@@ -378,7 +378,7 @@ ModuleExport void RegisterSFWImage(void)
 %      UnregisterSFWImage(void)
 %
 */
-MagickExport void UnregisterSFWImage(void)
+ModuleExport void UnregisterSFWImage(void)
 {
   UnregisterMagickInfo("SFW");
 }

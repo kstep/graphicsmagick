@@ -550,7 +550,7 @@ ModuleExport void RegisterDPSImage(void)
 %      UnregisterDPSImage(void)
 %
 */
-MagickExport void UnregisterDPSImage(void)
+ModuleExport void UnregisterDPSImage(void)
 {
   UnregisterMagickInfo("DPS");
 }

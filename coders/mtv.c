@@ -264,7 +264,7 @@ ModuleExport void RegisterMTVImage(void)
 %      UnregisterMTVImage(void)
 %
 */
-MagickExport void UnregisterMTVImage(void)
+ModuleExport void UnregisterMTVImage(void)
 {
   UnregisterMagickInfo("MTV");
 }

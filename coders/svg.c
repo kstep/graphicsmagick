@@ -1630,7 +1630,7 @@ ModuleExport void RegisterSVGImage(void)
 %      UnregisterSVGImage(void)
 %
 */
-MagickExport void UnregisterSVGImage(void)
+ModuleExport void UnregisterSVGImage(void)
 {
   UnregisterMagickInfo("SVG");
 }

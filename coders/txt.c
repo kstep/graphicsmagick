@@ -307,7 +307,7 @@ ModuleExport void RegisterTXTImage(void)
 %      UnregisterTXTImage(void)
 %
 */
-MagickExport void UnregisterTXTImage(void)
+ModuleExport void UnregisterTXTImage(void)
 {
   UnregisterMagickInfo("TEXT");
   UnregisterMagickInfo("TXT");

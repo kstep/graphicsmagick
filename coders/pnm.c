@@ -698,7 +698,7 @@ ModuleExport void RegisterPNMImage(void)
 %      UnregisterPNMImage(void)
 %
 */
-MagickExport void UnregisterPNMImage(void)
+ModuleExport void UnregisterPNMImage(void)
 {
   UnregisterMagickInfo("P7");
   UnregisterMagickInfo("PBM");

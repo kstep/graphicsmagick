@@ -443,7 +443,7 @@ ModuleExport void RegisterHDFImage(void)
 %      UnregisterHDFImage(void)
 %
 */
-MagickExport void UnregisterHDFImage(void)
+ModuleExport void UnregisterHDFImage(void)
 {
   UnregisterMagickInfo("HDF");
 }

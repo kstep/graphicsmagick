@@ -116,7 +116,7 @@ ModuleExport void RegisterMATTEImage(void)
 %      UnregisterMATTEImage(void)
 %
 */
-MagickExport void UnregisterMATTEImage(void)
+ModuleExport void UnregisterMATTEImage(void)
 {
   UnregisterMagickInfo("MATTE");
 }

@@ -936,7 +936,7 @@ ModuleExport void RegisterBMPImage(void)
 %      UnregisterBMPImage(void)
 %
 */
-MagickExport void UnregisterBMPImage(void)
+ModuleExport void UnregisterBMPImage(void)
 {
   UnregisterMagickInfo("BMP");
   UnregisterMagickInfo("BMP24");

@@ -229,7 +229,7 @@ ModuleExport void RegisterUYVYImage(void)
 %      UnregisterUYVYImage(void)
 %
 */
-MagickExport void UnregisterUYVYImage(void)
+ModuleExport void UnregisterUYVYImage(void)
 {
   UnregisterMagickInfo("UYVY");
 }

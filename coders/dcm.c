@@ -3384,7 +3384,7 @@ ModuleExport void RegisterDCMImage(void)
 %      UnregisterDCMImage(void)
 %
 */
-MagickExport void UnregisterDCMImage(void)
+ModuleExport void UnregisterDCMImage(void)
 {
   UnregisterMagickInfo("DCM");
 }

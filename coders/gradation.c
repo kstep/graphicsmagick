@@ -225,7 +225,7 @@ ModuleExport void RegisterGRADATIONImage(void)
 %      UnregisterGRADATIONImage(void)
 %
 */
-MagickExport void UnregisterGRADATIONImage(void)
+ModuleExport void UnregisterGRADATIONImage(void)
 {
   UnregisterMagickInfo("GRADATION");
 }

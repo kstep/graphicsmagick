@@ -236,7 +236,7 @@ ModuleExport void RegisterPLASMAImage(void)
 %      UnregisterPLASMAImage(void)
 %
 */
-MagickExport void UnregisterPLASMAImage(void)
+ModuleExport void UnregisterPLASMAImage(void)
 {
   UnregisterMagickInfo("PLASMA");
 }

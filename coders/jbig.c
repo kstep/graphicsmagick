@@ -319,7 +319,7 @@ ModuleExport void RegisterJBIGImage(void)
 %      UnregisterJBIGImage(void)
 %
 */
-MagickExport void UnregisterJBIGImage(void)
+ModuleExport void UnregisterJBIGImage(void)
 {
   UnregisterMagickInfo("BIE");
   UnregisterMagickInfo("JBG");
