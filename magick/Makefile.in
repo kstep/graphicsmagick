@@ -286,7 +286,7 @@ X_PRE_LIBS = @X_PRE_LIBS@
 @WITH_MODULES_FALSE@am_libMagick_la_OBJECTS =  PreRvIcccm.lo animate.lo \
 @WITH_MODULES_FALSE@annotate.lo attribute.lo blob.lo cache.lo \
 @WITH_MODULES_FALSE@cache_view.lo color.lo compress.lo constitute.lo \
-@WITH_MODULES_FALSE@decorate.lo delegates.lo display.lo draw.lo \
+@WITH_MODULES_FALSE@decorate.lo delegate.lo display.lo draw.lo \
 @WITH_MODULES_FALSE@effect.lo enhance.lo error.lo type.lo gem.lo \
 @WITH_MODULES_FALSE@image.lo semaphore.lo magic.lo magick.lo memory.lo \
 @WITH_MODULES_FALSE@module.lo monitor.lo montage.lo quantize.lo \
@@ -296,7 +296,7 @@ X_PRE_LIBS = @X_PRE_LIBS@
 @WITH_MODULES_TRUE@am_libMagick_la_OBJECTS =  PreRvIcccm.lo animate.lo \
 @WITH_MODULES_TRUE@annotate.lo attribute.lo blob.lo cache.lo \
 @WITH_MODULES_TRUE@cache_view.lo color.lo compress.lo constitute.lo \
-@WITH_MODULES_TRUE@decorate.lo delegates.lo display.lo draw.lo \
+@WITH_MODULES_TRUE@decorate.lo delegate.lo display.lo draw.lo \
 @WITH_MODULES_TRUE@effect.lo enhance.lo error.lo type.lo gem.lo \
 @WITH_MODULES_TRUE@image.lo semaphore.lo magic.lo magick.lo memory.lo \
 @WITH_MODULES_TRUE@module.lo monitor.lo montage.lo quantize.lo \
@@ -325,7 +325,7 @@ DEP_FILES =  @AMDEP@ $(DEPDIR)/PreRvIcccm.Plo $(DEPDIR)/animate.Plo \
 $(DEPDIR)/annotate.Plo $(DEPDIR)/attribute.Plo $(DEPDIR)/blob.Plo \
 $(DEPDIR)/cache.Plo $(DEPDIR)/cache_view.Plo $(DEPDIR)/color.Plo \
 $(DEPDIR)/compress.Plo $(DEPDIR)/constitute.Plo $(DEPDIR)/decorate.Plo \
-$(DEPDIR)/delegates.Plo $(DEPDIR)/display.Plo $(DEPDIR)/draw.Plo \
+$(DEPDIR)/delegate.Plo $(DEPDIR)/display.Plo $(DEPDIR)/draw.Plo \
 $(DEPDIR)/effect.Plo $(DEPDIR)/enhance.Plo $(DEPDIR)/error.Plo \
 $(DEPDIR)/type.Plo $(DEPDIR)/gem.Plo $(DEPDIR)/image.Plo \
 $(DEPDIR)/magic.Plo $(DEPDIR)/magick.Plo $(DEPDIR)/memory.Plo \
@@ -600,7 +600,7 @@ maintainer-clean-tags:
 @AMDEP@include $(DEPDIR)/compress.Plo
 @AMDEP@include $(DEPDIR)/constitute.Plo
 @AMDEP@include $(DEPDIR)/decorate.Plo
-@AMDEP@include $(DEPDIR)/delegates.Plo
+@AMDEP@include $(DEPDIR)/delegate.Plo
 @AMDEP@include $(DEPDIR)/display.Plo
 @AMDEP@include $(DEPDIR)/draw.Plo
 @AMDEP@include $(DEPDIR)/effect.Plo
