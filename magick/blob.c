@@ -243,7 +243,7 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
   DetachBlob(clone_info->blob);
   TemporaryFilename(clone_info->filename);
   status=BlobToFile(clone_info->filename,blob,length,exception);
-  if (status == False);
+  if (status == False)
     {
       DestroyImageInfo(clone_info);
       return((Image *) NULL);
