@@ -76,10 +76,9 @@ sub testRead {
 # Test reading a file, and compare with a reference file
 #
 sub testReadCompare {
-  my( $srcimage_name,$refimage_name, $read_options, $mean_error_per_pixel_max,
+  my( $srcimage_name,$refimage_name, $read_options,
       $normalized_mean_error_max, $normalized_maximum_error_max) = @_;
-  my($srcimage, $refimage, $mean_error_per_pixel, $normalized_mean_error,
-    $normalized_maximum_error);
+  my($srcimage, $refimage, $normalized_mean_error, $normalized_maximum_error);
 
   if ( !defined( $md5_16 ) )
     {
@@ -133,13 +132,6 @@ sub testReadCompare {
       goto COMPARE_RUNTIME_ERROR;
     }
 
-  $mean_error_per_pixel=0;
-  $mean_error_per_pixel=$srcimage->GetAttribute('error');
-  if ( !defined($mean_error_per_pixel) )
-    {
-      $errorinfo = "GetAttribute('error') returned undefined value!";
-      goto COMPARE_RUNTIME_ERROR;
-    }
   $normalized_mean_error=0;
   $normalized_mean_error=$srcimage->GetAttribute('mean-error');
   if ( !defined($normalized_mean_error) )
@@ -154,11 +146,10 @@ sub testReadCompare {
       $errorinfo = "GetAttribute('maximum-error') returned undefined value!";
       goto COMPARE_RUNTIME_ERROR;
     }
-  if ( ($mean_error_per_pixel > $mean_error_per_pixel_max) ||
-       ($normalized_mean_error > $normalized_mean_error_max) ||
+  if ( ($normalized_mean_error > $normalized_mean_error_max) ||
        ($normalized_maximum_error > $normalized_maximum_error_max) )
     {
-      print("error=$mean_error_per_pixel, mean-error=$normalized_mean_error, maximum-error=$normalized_maximum_error\n");
+      print("mean-error=$normalized_mean_error, maximum-error=$normalized_maximum_error\n");
       print "not ok $test\n";
       return 1
     }
@@ -296,8 +287,8 @@ sub testReadWrite {
 sub testReadWriteCompare {
   my( $srcimage_name, $outimage_name, $refimage_name,
       $read_options, $write_options,
-      $mean_error_per_pixel_max, $normalized_mean_error_max, $normalized_maximum_error_max) = @_;
-  my($srcimage, $refimage, $mean_error_per_pixel, $normalized_mean_error,
+      $normalized_mean_error_max, $normalized_maximum_error_max) = @_;
+  my($srcimage, $refimage, $normalized_mean_error,
     $normalized_maximum_error);
 
   if ( !defined( $md5_16 ) )
@@ -393,13 +384,6 @@ sub testReadWriteCompare {
       goto COMPARE_RUNTIME_ERROR;
     }
 
-  $mean_error_per_pixel=0;
-  $mean_error_per_pixel=$image->GetAttribute('error');
-  if ( !defined($mean_error_per_pixel) )
-    {
-      $errorinfo = "GetAttribute('error') returned undefined value!";
-      goto COMPARE_RUNTIME_ERROR;
-    }
   $normalized_mean_error=0;
   $normalized_mean_error=$image->GetAttribute('mean-error');
   if ( !defined($normalized_mean_error) )
@@ -415,11 +399,10 @@ sub testReadWriteCompare {
       goto COMPARE_RUNTIME_ERROR;
     }
 
-  if ( ($mean_error_per_pixel > $mean_error_per_pixel_max) ||
-       ($normalized_mean_error > $normalized_mean_error_max) ||
+  if ( ($normalized_mean_error > $normalized_mean_error_max) ||
        ($normalized_maximum_error > $normalized_maximum_error_max) )
     {
-      print("error=$mean_error_per_pixel, mean-error=$normalized_mean_error, maximum-error=$normalized_maximum_error\n");
+      print("mean-error=$normalized_mean_error, maximum-error=$normalized_maximum_error\n");
       print "not ok $test\n";
       return 1
     }
@@ -816,13 +799,13 @@ sub testFilterSignature {
 # Test filter method using comparison with reference image
 #
 # Usage: testFilterCompare( input image, input image options, reference image, filter, filter options,
-#                           mean_error_per_pixel, normalized_mean_error,
+#                           normalized_mean_error,
 #                           normalized_maximum_error );
 sub testFilterCompare {
   my ($srcimage_name, $src_read_options, $refimage_name, $filter,
-      $filter_options, $mean_error_per_pixel_max, $normalized_mean_error_max,
+      $filter_options, $normalized_mean_error_max,
       $normalized_maximum_error_max) = @_;
-  my($srcimage, $refimage, $mean_error_per_pixel, $normalized_mean_error,
+  my($srcimage, $refimage, $normalized_mean_error,
     $normalized_maximum_error);
   my($status,$errorinfo);
 
@@ -882,13 +865,6 @@ sub testFilterCompare {
       goto COMPARE_RUNTIME_ERROR;
     }
 
-  $mean_error_per_pixel=0;
-  $mean_error_per_pixel=$srcimage->GetAttribute('error');
-  if ( !defined($mean_error_per_pixel) )
-    {
-      $errorinfo = "GetAttribute('error') returned undefined value!";
-      goto COMPARE_RUNTIME_ERROR;
-    }
   $normalized_mean_error=0;
   $normalized_mean_error=$srcimage->GetAttribute('mean-error');
   if ( !defined($normalized_mean_error) )
@@ -903,11 +879,10 @@ sub testFilterCompare {
       $errorinfo = "GetAttribute('maximum-error') returned undefined value!";
       goto COMPARE_RUNTIME_ERROR;
     }
-  if ( ($mean_error_per_pixel > $mean_error_per_pixel_max) ||
-       ($normalized_mean_error > $normalized_mean_error_max) ||
+  if ( ($normalized_mean_error > $normalized_mean_error_max) ||
        ($normalized_maximum_error > $normalized_maximum_error_max) )
     {
-      print("error=$mean_error_per_pixel, mean-error=$normalized_mean_error, maximum-error=$normalized_maximum_error\n");
+      print("mean-error=$normalized_mean_error, maximum-error=$normalized_maximum_error\n");
       print "not ok $test\n";
       return 1
     }

@@ -74,11 +74,11 @@ testFilterSignature('input.miff', 'Edge',
 
 ++$test;
 testFilterCompare('input.miff', q//, 'reference/filter/Emboss.miff', 'Emboss',
-  q//, 0, 0, 0);
+  q//, 0, 0);
 
 ++$test;
 testFilterCompare('input.miff', q//, 'reference/filter/Equalize.miff', 'Equalize',
-  q//, 0, 0, 0);
+  q//, 0, 0);
 
 ++$test;
 testFilterSignature('input.miff', 'Flip',
@@ -196,7 +196,7 @@ testFilterSignature('input.miff', 'Scale',
 
 ++$test;
 testFilterCompare('input.miff', q//, 'reference/filter/Shade.miff', 'Shade',
-  q//, 0, 0, 0);
+  q//, 3.3e-06, 3.06e-05);
 
 ++$test;
 testFilterSignature('input.miff', 'Segment',

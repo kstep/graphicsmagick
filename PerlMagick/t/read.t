@@ -83,7 +83,7 @@ testRead( 'input.mtv',
 print("Xv's visual schnauzer format. ...\n");
 ++$test;
 testReadCompare('input_p7.p7', 'reference/read/input_p7.miff', q//,
-                0.7, 0.000005, 0.00005);
+                0.000005, 0.00005);
 
 print("NULL (white image) ...\n");
 ++$test;

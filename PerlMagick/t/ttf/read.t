@@ -4,8 +4,6 @@
 #
 # Contributed by Bob Friesenhahn <bfriesen@simple.dallas.tx.us
 #
-# Signatures computed using freetype 2.0.4
-#
 
 BEGIN { $| = 1; $test=1; print "1..3\n"; }
 END {print "not ok $test\n" unless $loaded;}
@@ -22,7 +20,7 @@ chdir 't/ttf' || die 'Cd failed';
 print("Default ImageMagick read ...\n");
 testReadCompare('input.ttf', '../reference/ttf/read.miff',
                 q/size=>'512x512', depth=>8/,
-                0.0011, 5.5e-09, 3.1e-05);
+                5.5e-09, 3.1e-05);
 
 #
 # 2) Test drawing text using font
@@ -32,7 +30,7 @@ print("Draw text using font ...\n");
 testReadCompare(q!label:The quick brown fox jumps over the lazy dog.!,
                 q!../reference/ttf/label.miff!,
                 q!font=>'input.ttf', fill=>'#0000FF', pointsize=>14, depth=>8!,
-                0.012, 6.1e-08, 1.02e-05);
+                6.1e-08, 1.02e-05);
 
 #
 # 3) Test drawing text using annotate
@@ -49,6 +47,6 @@ testFilterCompare('xc:#FFFFFF',
                   font=>'input.ttf',
                   fill=>'#FF0000',
                   pointsize=>14!,
-                  0.009, 4.5e-08, 1.1e-05);
+                  4.5e-08, 1.1e-05);
 
 1;
