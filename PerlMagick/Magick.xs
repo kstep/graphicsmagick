@@ -6288,7 +6288,7 @@ Ping(ref,...)
           PUSHs(&sv_undef);
           continue;
         }
-      count+=GetNumberScene(image);
+      count+=GetNumberScenes(image);
       EXTEND(sp,4*count);
       for (p=image ; p != (Image *) NULL; p=p->next)
       {

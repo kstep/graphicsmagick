@@ -1052,6 +1052,7 @@ MagickExport Image *PingImage(const ImageInfo *image_info,
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
+  GetExceptionInfo(exception);
   clone_info=CloneImageInfo(image_info);
   clone_info->verbose=False;
   clone_info->subimage=0;
