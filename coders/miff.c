@@ -1021,6 +1021,7 @@ ModuleExport void RegisterMIFFImage(void)
     *entry;
 
   entry=SetMagickInfo("IMPLICIT");
+  entry->stealth=True;
   entry->module=AllocateString("MIFF");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("MIFF");
