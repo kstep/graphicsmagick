@@ -89,7 +89,7 @@ static SemaphoreInfo
   Forward declaractions.
 */
 static unsigned int
-  ReadConfigurationFile(const char *,ExceptionInfo *),
+  ReadConfigurationFile(const char *,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
