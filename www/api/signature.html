@@ -43,13 +43,9 @@
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
 <P>
 <H2><A NAME="signatureimage">SignatureImage</A></H2>
-<P>Method SignatureImage computes a digital signature from an image.  This signature uniquely identifies the image and is convenient for determining if the colormap of a sequence of images is identical when animating.  The digital signature is from 
-<FONT SIZE=-1>RSA</FONT> Data Security 
-<FONT SIZE=-1>MD5</FONT> Digest Algorithm described in Internet draft 
-<FONT SIZE=-1>[MD5],</FONT> July 1992, computed on the pixels after expanding them to 64-bit 
-<FONT SIZE=-1>RGBA</FONT> representation, with the two bytes of each 16-bit sample ordered most significant byte first.  The signature is in 
-<FONT SIZE=-1>RGBA</FONT> or 
-<FONT SIZE=-1>CMYK</FONT> order depending on the colorspace of the image.  If the image does not have any alpha information, an opaque value (65535) is used.</P>
+<P>Method SignatureImage computes a digital signature from an image with an implementation of the 
+<FONT SIZE=-1>NIST</FONT> 
+<FONT SIZE=-1>SHA-256</FONT> Message Digest algorithm.  This signature uniquely identifies the image and is convenient for determining whether two images are identical.</P>
 <P>The format of the SignatureImage method is:</P>
 <blockquote>unsigned int SignatureImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
