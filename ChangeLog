@@ -7,6 +7,8 @@
 	(IsTXT): Recognize files written by the TXT coder.
 	(ReadTXTImage): Reject files written by the TXT coder until support
 	for reading these files is implemented.
+	(IsTXT): Ensure that sscanf doesn't read outside of provided data
+	by using a fixed size buffer.
 
 2003-06-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

@@ -102,45 +102,48 @@ static unsigned int IsTXT(const unsigned char *magick,const size_t length)
     int
       count;
 
-    count=sscanf((const char *)magick,"%lu,%lu: (%u, %u, %u) #%02X%02X%02X",
+    char
+      buffer[MaxTextExtent];
+
+    memset((void *)buffer,0,MaxTextExtent);
+    memcpy((void *)buffer,(const void *)magick,Min(MaxTextExtent,length));
+
+    count=sscanf(buffer,"%lu,%lu: (%u, %u, %u) #%02X%02X%02X",
                  &column, &row, &red, &green, &blue, &hex_red, &hex_green,
                  &hex_blue);
     if ((count == 8) && (column == 0) && (row == 0) && (red == hex_red) &&
         (green == hex_green) && (blue == hex_blue))
       return(True);
 
-    count=sscanf((const char *)magick,"%lu,%lu: (%u, %u, %u) #%04X%04X%04X",
+    count=sscanf(buffer,"%lu,%lu: (%u, %u, %u) #%04X%04X%04X",
                  &column, &row, &red, &green, &blue, &hex_red, &hex_green,
                  &hex_blue);
     if ((count == 8) && (column == 0) && (row == 0) && (red == hex_red) &&
         (green == hex_green) && (blue == hex_blue))
       return(True);
 
-    count=sscanf((const char *)magick,"%lu,%lu: (%u, %u, %u) #%08X%08X%08X",
+    count=sscanf(buffer,"%lu,%lu: (%u, %u, %u) #%08X%08X%08X",
                  &column, &row, &red, &green, &blue, &hex_red, &hex_green,
                  &hex_blue);
     if ((count == 8) && (column == 0) && (row == 0) && (red == hex_red) &&
         (green == hex_green) && (blue == hex_blue))
       return(True);
 
-    count=sscanf((const char *)magick,
-                 "%lu,%lu: (%u, %u, %u, %u) #%02X%02X%02X%02X",
+    count=sscanf(buffer,"%lu,%lu: (%u, %u, %u, %u) #%02X%02X%02X%02X",
                  &column, &row, &red, &green, &blue, &opacity, &hex_red,
                  &hex_green, &hex_blue, &hex_opacity);
     if ((count == 10) && (column == 0) && (row == 0) && (red == hex_red) &&
         (green == hex_green) && (blue == hex_blue) && (opacity == hex_opacity))
       return(True);
 
-    count=sscanf((const char *)magick,
-                 "%lu,%lu: (%u, %u, %u, %u) #%04X%04X%04X%04X",
+    count=sscanf(buffer,"%lu,%lu: (%u, %u, %u, %u) #%04X%04X%04X%04X",
                  &column, &row, &red, &green, &blue, &opacity, &hex_red,
                  &hex_green, &hex_blue, &hex_opacity);
     if ((count == 10) && (column == 0) && (row == 0) && (red == hex_red) &&
         (green == hex_green) && (blue == hex_blue) && (opacity == hex_opacity))
       return(True);
 
-    count=sscanf((const char *)magick,
-                 "%lu,%lu: (%u, %u, %u, %u) #%08X%08X%08X%08X",
+    count=sscanf(buffer,"%lu,%lu: (%u, %u, %u, %u) #%08X%08X%08X%08X",
                  &column, &row, &red, &green, &blue, &opacity, &hex_red,
                  &hex_green, &hex_blue, &hex_opacity);
     if ((count == 10) && (column == 0) && (row == 0) && (red == hex_red) &&
