@@ -686,11 +686,11 @@ Optional Features:
   --disable-libtool-lock  avoid locking (might break parallel builds)
   --enable-maintainer-mode enable make rules and dependencies not useful
                           (and sometimes confusing) to the casual installer
-  --enable-prof           enable prof source profiling support (default is no)
-  --enable-gprof          enable gprof source profiling support (default is no)
-  --enable-gcov           enable gcov source profiling support (default is no)
-  --enable-lzw            enable LZW support (default is no)
-  --enable-16bit-pixel    enable 16 bit/quantum pixels (default is no)
+  --enable-prof           enable prof source profiling support (default disabled)
+  --enable-gprof          enable gprof source profiling support (default disabled)
+  --enable-gcov           enable gcov source profiling support (default disabled)
+  --enable-lzw            enable LZW support (default disabled)
+  --disable-16bit-pixel   disable 16 bit/quantum pixels (default enabled)
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -917,7 +917,7 @@ esac
 # Set version
 MAJOR_VERSION=5
 MINOR_VERSION=2
-MICRO_VERSION=7
+MICRO_VERSION=8
 echo "configuring ImageMagick $MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION"
 ac_aux_dir=
 for ac_dir in $srcdir $srcdir/.. $srcdir/../..; do
@@ -3273,13 +3273,13 @@ else
   HasLZW_FALSE=
 fi
 
-# Enable 16-bit pixels.
+# Disable 16-bit pixels.
 # Check whether --enable-16bit-pixel or --disable-16bit-pixel was given.
 if test "${enable_16bit_pixel+set}" = set; then
   enableval="$enable_16bit_pixel"
   with_16_bit_pixel=$enableval
 else
-  with_16_bit_pixel='no'
+  with_16_bit_pixel='yes'
 fi;
 test "$with_16_bit_pixel" = 'yes' &&
 cat >>confdefs.h <<\EOF
@@ -3631,7 +3631,7 @@ builddir=`pwd`
 #
 # Most delegates have includes in the same directory as the library
 #
-for dir in bzlib fpx hdf/hdf/src jbig/libjbig jpeg lcms/source png tiff/libtiff ttf/obj/.libs ttf/include xml xml/.libs zlib
+for dir in bzlib fpx hdf/hdf/src jbig/libjbig jpeg lcms/source png tiff/libtiff ttf/obj/.libs ttf/include wmf xml xml/.libs zlib
 do
   if test -d "$builddir/$dir"
   then

@@ -128,19 +128,19 @@ AM_MAINTAINER_MODE
 
 # Enable prof-based profiling support
 AC_ARG_ENABLE(prof,
-	      [  --enable-prof           enable prof source profiling support (default is no)],
+	      [  --enable-prof           enable prof source profiling support (default disabled)],
 	      [with_prof=$enableval],
 	      [with_prof='no'])
 
 # Enable gprof-based profiling support
 AC_ARG_ENABLE(gprof,
-	      [  --enable-gprof          enable gprof source profiling support (default is no)],
+	      [  --enable-gprof          enable gprof source profiling support (default disabled)],
 	      [with_gprof=$enableval],
 	      [with_gprof='no'])
 
 # Enable gcov-based profiling support
 AC_ARG_ENABLE(gcov,
-	      [  --enable-gcov           enable gcov source profiling support (default is no)],
+	      [  --enable-gcov           enable gcov source profiling support (default disabled)],
 	      [with_gcov=$enableval],
 	      [with_gcov='no'])
 
@@ -157,15 +157,15 @@ fi
 
 # Enable LZW compression.
 AC_ARG_ENABLE(lzw,
-	      [  --enable-lzw            enable LZW support (default is no)],
+	      [  --enable-lzw            enable LZW support (default disabled)],
 	      [with_lzw=$enableval],
 	      [with_lzw='no'])
 test "$with_lzw" = 'yes' && AC_DEFINE(HasLZW,1,Include LZW compression)
 AM_CONDITIONAL(HasLZW, test "$have_lzw" != 'no')
 
-# Enable 16-bit pixels.
+# Disable 16-bit pixels.
 AC_ARG_ENABLE(16bit-pixel,
-	      [  --enable-16bit-pixel    enable 16 bit/quantum pixels (default is yes)],
+	      [  --disable-16bit-pixel   disable 16 bit/quantum pixels (default enabled)],
 	      [with_16_bit_pixel=$enableval],
 	      [with_16_bit_pixel='yes'])
 test "$with_16_bit_pixel" = 'yes' && AC_DEFINE(QuantumLeap,,Increase max color value from 255 to 65535)
