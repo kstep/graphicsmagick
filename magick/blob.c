@@ -350,30 +350,33 @@ MagickExport void CloseBlob(Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   image->taint=False;
+  image->blob->eof=False;
+  if (!image->blob->exempt)
+    DetachBlob(image->blob);
+  if (image->blob->file != (FILE *) NULL)
+    {
+      image->blob->size=GetBlobSize(image);
+      image->blob->status=ferror(image->blob->file);
+      errno=0;
+      if (!image->blob->exempt)
+        {
+#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
+          if (image->blob->pipet)
+            (void) pclose(image->blob->file);
+          else
+#endif
+            (void) fclose(image->blob->file);
+          image->blob->file=(FILE *) NULL;
+        }
+    }
   if (image->blob->fifo !=
        (int (*)(const Image *,const void *,const size_t)) NULL)
     {
       (void) image->blob->fifo(image,(const void *) NULL,0);
-      image->blob->fifo=(int (*)(const Image *,const void *,const size_t)) NULL;
-      return;
+      if (!image->blob->exempt)
+        image->blob->fifo=
+          (int (*)(const Image *,const void *,const size_t)) NULL;
     }
-  image->blob->eof=False;
-  if (!image->blob->exempt)
-    DetachBlob(image->blob);
-  if (image->blob->file == (FILE *) NULL)
-    return;
-  image->blob->size=GetBlobSize(image);
-  image->blob->status=ferror(image->blob->file);
-  errno=0;
-  if (image->blob->exempt)
-    return;
-#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
-  if (image->blob->pipet)
-    (void) pclose(image->blob->file);
-  else
-#endif
-    (void) fclose(image->blob->file);
-  image->blob->file=(FILE *) NULL;
 }
 
 /*
