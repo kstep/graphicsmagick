@@ -2607,14 +2607,21 @@ example:
       <font face="Courier New,Courier"><font color="#ff0000"><font
  size="-1"> // Ensure that there are no other references to this image.</font></font></font><br>
       <font size="-1"><span
- style="color: rgb(0, 0, 153); font-family: courier new,courier,monospace;">image.modifyImage();</span></font><br>
+ style="color: rgb(0, 0, 153); font-family: courier new,courier,monospace;">image.modifyImage();<br>
+      </span></font><font face="Courier New,Courier"><font
+ color="#ff0000"><font size="-1"> // Set the image type to TrueColor
+DirectClass representation.</font></font></font><br>
+      <font size="-1"><span
+ style="color: rgb(0, 0, 153); font-family: courier new,courier,monospace;">image.type(TrueColorType</span></font><font
+ size="-1"><span
+ style="color: rgb(0, 0, 153); font-family: courier new,courier,monospace;">);</span></font><br>
       <font face="Courier New,Courier"><font color="#ff0000"><font
- size="-1"> // Obtain pixel region with size 60x40, and top origin at
+ size="-1"> // Request pixel region with size 60x40, and top origin at
 20x30</font></font></font> <br>
       <font face="Courier New,Courier"><font color="#000099"><font
  size="-1"> int columns = 60;</font></font></font> <br>
       <font face="Courier New,Courier"><font color="#000099"><font
- size="-1"> PixelPacket *pixel_cache = image.GetPixels(20,30,columns,40);</font></font></font> <br>
+ size="-1"> PixelPacket *pixel_cache = image.getPixels(20,30,columns,40);</font></font></font> <br>
       <font face="Courier New,Courier"><font color="#ff0000"><font
  size="-1"> // Set pixel at column 5, and row 10 in the pixel cache to
 red.</font></font></font> <br>
@@ -2626,11 +2633,13 @@ red.</font></font></font> <br>
  size="-1"> PixelPacket *pixel =
 pixel_cache+row*columns*sizeof(PixelPacket)+column;</font></font></font> <br>
       <font face="Courier New,Courier"><font color="#000099"><font
- size="-1"> pixel = Color("red");</font></font></font> <br>
+ size="-1"> *pixel = Color("red");</font></font></font> <br>
       <font face="Courier New,Courier"><font color="#ff0000"><font
- size="-1"> // Save updated pixel cache back to underlying image</font></font></font> <br>
+ size="-1"> // Save changes to underlying image</font></font></font> .<br>
       <font face="Courier New,Courier"><font color="#000099"><font
- size="-1"> image.syncPixels();</font></font></font> <br>
+ size="-1"> image.syncPixels();<br>
+      </font></font></font>&nbsp;<font face="Courier New,Courier"><font
+ color="#ff0000"><font size="-1"> // Save updated image to file.</font></font></font><br>
       <font face="Courier New,Courier"><font color="#000099"><font
  size="-1"> image.write("horse.png");</font></font></font></td>
       <td><img src="Cache.png" height="218" width="254"> </td>

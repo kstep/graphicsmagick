@@ -2187,9 +2187,12 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
       case COMPRESSION_ADOBE_DEFLATE:
       {
         (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,image->rows);
-        if((photometric == PHOTOMETRIC_RGB) ||
-           ((photometric == PHOTOMETRIC_MINISBLACK) && (bits_per_sample >= 8)))
+
+        if (((photometric == PHOTOMETRIC_RGB) ||
+             (photometric == PHOTOMETRIC_MINISBLACK)) &&
+            ((bits_per_sample == 8) || (bits_per_sample == 16)))
           (void) TIFFSetField(tiff,TIFFTAG_PREDICTOR,2);
+
         (void) TIFFSetField(tiff,TIFFTAG_ZIPQUALITY,9);
         break;
       }
@@ -2206,8 +2209,9 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
           likely to be continuous tone.  The TIFF spec says that this
           usually leads to better compression.
         */
-        if((photometric == PHOTOMETRIC_RGB) ||
-           ((photometric == PHOTOMETRIC_MINISBLACK) && (bits_per_sample >= 8)))
+        if (((photometric == PHOTOMETRIC_RGB) ||
+             (photometric == PHOTOMETRIC_MINISBLACK)) &&
+            ((bits_per_sample == 8) || (bits_per_sample == 16)))
           (void) TIFFSetField(tiff,TIFFTAG_PREDICTOR,2);
         break;
       }

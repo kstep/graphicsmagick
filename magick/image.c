@@ -1760,7 +1760,6 @@ MagickExport unsigned int DescribeImage(Image *image,FILE *file,
       (void) fprintf(file,"      Standard Deviation: %15.4lf\n",
                MaxRGB*statistics.green.standard_deviation);
       (void) fprintf(file,"    Yellow:\n");
-      (void) fprintf(file,"    Blue:\n");
       (void) fprintf(file,"      Minimum:            %10u\n",
                (unsigned int) RoundToQuantum(MaxRGB*statistics.blue.minimum));
       (void) fprintf(file,"      Maximum:            %10u\n",

@@ -1,13 +1,13 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML>
 <HEAD>
-	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=ibm437">
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
 	<TITLE>Magick::Geometry</TITLE>
-	<META NAME="GENERATOR" CONTENT="OpenOffice.org 1.0  (Win32)">
+	<META NAME="GENERATOR" CONTENT="StarOffice 7  (Solaris Sparc)">
 	<META NAME="AUTHOR" CONTENT="Bob Friesenhahn">
 	<META NAME="CREATED" CONTENT="20020805;15172876">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20020805;15234330">
+	<META NAME="CHANGED" CONTENT="20050103;22481700">
 	<META NAME="DESCRIPTION" CONTENT="Documentation for Magick::Geometry class">
 	<STYLE>
 	<!--
@@ -20,7 +20,7 @@
 	-->
 	</STYLE>
 </HEAD>
-<BODY LANG="en-US" TEXT="#000000" LINK="#0000ee" VLINK="#551a8b" BGCOLOR="#ffffff">
+<BODY LANG="en-US" TEXT="#000000" LINK="#0000ee" VLINK="#551a8b" BGCOLOR="#ffffff" DIR="LTR">
 <H1 ALIGN=CENTER>Magick::Geometry</H1>
 <P>Geometry provides a convenient means to specify a geometry
 argument. The object may be initialized from a C string or C++ string
@@ -35,7 +35,7 @@ Specifications</H3>
 are numbers) for specifying the size and placement location for an
 object. 
 </P>
-<P STYLE="margin-bottom: 0cm">The <I>width</I> and <I>height</I>
+<P STYLE="margin-bottom: 0in">The <I>width</I> and <I>height</I>
 parts of the geometry specification are measured in pixels. The
 <I>xoffset</I> and <I>yoffset</I> parts are also measured in pixels
 and are used to specify the distance of the placement coordinate from
@@ -68,7 +68,7 @@ following ways:
 		</TR>
 	</TABLE>
 </CENTER>
-<P STYLE="margin-bottom: 0cm">The Y offset has similar meanings: 
+<P STYLE="margin-bottom: 0in">The Y offset has similar meanings: 
 </P>
 <CENTER>
 	<TABLE WIDTH=90% BORDER=1 CELLPADDING=2 CELLSPACING=3>
@@ -99,16 +99,16 @@ specify either <I>xoffset</I> or <I>yoffset</I> both must be present.
 </P>
 <H3><A NAME="ExtendedX11GeometrySpecifications"></A>GraphicsMagick
 Extensions To X11 Geometry Specifications</H3>
-<P STYLE="margin-bottom: 0cm">GraphicsMagick has added a number of
+<P STYLE="margin-bottom: 0in">GraphicsMagick has added a number of
 qualifiers to the standard geometry string for use when resizing
 images. The form of an extended geometry string is
 &quot;<TT>&lt;width&gt;x&lt;height&gt;{+-}&lt;xoffset&gt;{+-}&lt;yoffset&gt;{%}{!}{&lt;}{&gt;}&quot;.
 Extended geometry strings should <B>only</B> be used <B>when resizing
 an image</B>. Using an extended geometry string for other
 applications may cause the API call to fail. </TT>The available
-qualifiers are shown in the following table: <BR> 
+qualifiers are shown in the following table: 
 </P>
-<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>GraphicsMagick Geometry
+<P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>GraphicsMagick Geometry
 Qualifiers</B></P>
 <CENTER>
 	<TABLE WIDTH=90% BORDER=1 CELLPADDING=2 CELLSPACING=3>
@@ -162,23 +162,22 @@ Qualifiers</B></P>
 </CENTER>
 <H3><A NAME="PostscriptPageSize"></A>Postscript Page Size Extension
 To Geometry Specifications</H3>
-<P>Any geometry string specification supplied to the Geometry<SPAN LANG="en-US">
-constructor </SPAN>is considered to be a Postscript page size
-nickname if the first character is not numeric. The Geometry
-constructor converts these page size specifications into the
-equivalent numeric geometry string specification (preserving any
-offset component) prior to conversion to the internal object format.
-Postscript page size specifications are short-hand for the pixel
-geometry required to fill a page of that size. Since the 11x17 inch
-page size used in the US starts with a digit, it is not supported as
-a Postscript page size nickname. Instead, substitute the geometry
-specification &quot;<TT>792x1224&gt;&quot;</TT> when 11x17 output is
-desired. 
+<P>Any geometry string specification supplied to the Geometry
+constructor is considered to be a Postscript page size nickname if
+the first character is not numeric. The Geometry constructor converts
+these page size specifications into the equivalent numeric geometry
+string specification (preserving any offset component) prior to
+conversion to the internal object format. Postscript page size
+specifications are short-hand for the pixel geometry required to fill
+a page of that size. Since the 11x17 inch page size used in the US
+starts with a digit, it is not supported as a Postscript page size
+nickname. Instead, substitute the geometry specification &quot;<TT>792x1224&gt;&quot;</TT>
+when 11x17 output is desired. 
 </P>
-<P STYLE="margin-bottom: 0cm">An example of a Postscript page size
-specification is <TT>&quot;letter+43+43&gt;&quot;</TT>. <BR><BR>
+<P STYLE="margin-bottom: 0in">An example of a Postscript page size
+specification is <TT>&quot;letter+43+43&gt;&quot;</TT>. 
 </P>
-<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>Postscript Page Size
+<P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>Postscript Page Size
 Nicknames</B></P>
 <CENTER>
 	<TABLE WIDTH=70% BORDER=1 CELLPADDING=2 CELLSPACING=3>
@@ -491,356 +490,346 @@ Nicknames</B></P>
 	</TABLE>
 </CENTER>
 <H3 ALIGN=CENTER>Geometry Methods</H3>
-<P STYLE="margin-bottom: 0cm">Geometry provides methods to initialize
+<P STYLE="margin-bottom: 0in">Geometry provides methods to initialize
 its value from strings, from a set of parameters, or via attributes.
 The methods available for use in Geometry are shown in the following
 table: 
 </P>
-<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><B>Geometry Methods</B></P>
-<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2>
+<P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>Geometry Methods</B></P>
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=3>
+	<COL WIDTH=25*>
+	<COL WIDTH=26*>
+	<COL WIDTH=111*>
+	<COL WIDTH=94*>
 	<TR>
-		<TD>
+		<TD WIDTH=10%>
 			<P ALIGN=CENTER><B>Method</B></P>
 		</TD>
-		<TD>
+		<TD WIDTH=10%>
 			<P ALIGN=CENTER><B>Return Type</B></P>
 		</TD>
-		<TD>
+		<TD WIDTH=44%>
 			<P ALIGN=CENTER><B>Signature(s)</B></P>
 		</TD>
-		<TD>
+		<TD WIDTH=37%>
 			<P ALIGN=CENTER><B>Description</B></P>
 		</TD>
 	</TR>
 	<TR>
-		<TD ROWSPAN=3>
+		<TD ROWSPAN=3 WIDTH=10%>
 			<P>Geometry</P>
 		</TD>
-		<TD ROWSPAN=3 BGCOLOR="#666666">
+		<TD ROWSPAN=3 WIDTH=10% BGCOLOR="#666666">
 			<P>&nbsp;</P>
 		</TD>
-		<TD>
+		<TD WIDTH=44%>
 			<P>unsigned int width_, unsigned int height_, unsigned int xOff_ =
 			0, unsigned int yOff_ = 0, bool xNegative_ = false, bool
 			yNegative_ = false</P>
 		</TD>
-		<TD>
+		<TD WIDTH=37%>
 			<P>Construct X11 geometry via explicit parameters.</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD>
+		<TD WIDTH=44%>
 			<P>const string geometry_</P>
 		</TD>
-		<TD>
+		<TD WIDTH=37%>
 			<P>Construct geometry from C++ string</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD>
+		<TD WIDTH=44%>
 			<P>const char * geometry_</P>
 		</TD>
-		<TD>
+		<TD WIDTH=37%>
 			<P>Construct geometry from C string</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD ROWSPAN=2>
+		<TD ROWSPAN=2 WIDTH=10%>
 			<P>width</P>
 		</TD>
-		<TD>
+		<TD WIDTH=10%>
 			<P>void</P>
 		</TD>
-		<TD>
+		<TD WIDTH=44%>
 			<P>unsigned int width_</P>
 		</TD>
-		<TD ROWSPAN=2>
+		<TD ROWSPAN=2 WIDTH=37%>
 			<P>Width</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD>
+		<TD WIDTH=10%>
 			<P>unsigned int</P>
 		</TD>
-		<TD>
+		<TD WIDTH=44%>
 			<P>void</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD ROWSPAN=2>
+		<TD ROWSPAN=2 WIDTH=10%>
 			<P>height</P>
 		</TD>
-		<TD>
+		<TD WIDTH=10%>
 			<P>void</P>
 		</TD>
-		<TD>
+		<TD WIDTH=44%>
 			<P>unsigned int height_</P>
 		</TD>
-		<TD ROWSPAN=2>
+		<TD ROWSPAN=2 WIDTH=37%>
 			<P>Height</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD>
+		<TD WIDTH=10%>
 			<P>unsigned int</P>
 		</TD>
-		<TD>
+		<TD WIDTH=44%>
 			<P>void</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD ROWSPAN=2>
+		<TD ROWSPAN=2 WIDTH=10%>
 			<P>xOff</P>
 		</TD>
-		<TD>
+		<TD WIDTH=10%>
 			<P>void</P>
 		</TD>
-		<TD>
+		<TD WIDTH=44%>
 			<P>unsigned int xOff_</P>
 		</TD>
-		<TD ROWSPAN=2>
+		<TD ROWSPAN=2 WIDTH=37%>
 			<P>X offset from origin</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD>
+		<TD WIDTH=10%>
 			<P>int</P>
 		</TD>
-		<TD>
+		<TD WIDTH=44%>
 			<P>void</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD ROWSPAN=2>
+		<TD ROWSPAN=2 WIDTH=10%>
 			<P>yOff</P>
 		</TD>
-		<TD>
+		<TD WIDTH=10%>
 			<P>void</P>
 		</TD>
-		<TD>
+		<TD WIDTH=44%>
 			<P>unsigned int yOff_</P>
 		</TD>
-		<TD ROWSPAN=2>
+		<TD ROWSPAN=2 WIDTH=37%>
 			<P>Y offset from origin</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD>
+		<TD WIDTH=10%>
 			<P>int</P>
 		</TD>
-		<TD>
+		<TD WIDTH=44%>
 			<P>void</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD ROWSPAN=2>
+		<TD ROWSPAN=2 WIDTH=10%>
 			<P>xNegative</P>
 		</TD>
-		<TD>
+		<TD WIDTH=10%>
 			<P>void</P>
 		</TD>
-		<TD>
+		<TD WIDTH=44%>
 			<P>bool xNegative_</P>
 		</TD>
-		<TD ROWSPAN=2>
+		<TD ROWSPAN=2 WIDTH=37%>
 			<P>Sign of X offset negative? (X origin at right)</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD>
+		<TD WIDTH=10%>
 			<P>bool</P>
 		</TD>
-		<TD>
+		<TD WIDTH=44%>
 			<P>void</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD ROWSPAN=2>
+		<TD ROWSPAN=2 WIDTH=10%>
 			<P>yNegative</P>
 		</TD>
-		<TD>
+		<TD WIDTH=10%>
 			<P>void</P>
 		</TD>
-		<TD>
+		<TD WIDTH=44%>
 			<P>bool yNegative_</P>
 		</TD>
-		<TD ROWSPAN=2>
+		<TD ROWSPAN=2 WIDTH=37%>
 			<P>Sign of Y offset negative? (Y origin at bottom)</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD>
+		<TD WIDTH=10%>
 			<P>bool</P>
 		</TD>
-		<TD>
+		<TD WIDTH=44%>
 			<P>void</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD ROWSPAN=2>
+		<TD ROWSPAN=2 WIDTH=10%>
 			<P>percent</P>
 		</TD>
-		<TD>
+		<TD WIDTH=10%>
 			<P>void</P>
 		</TD>
-		<TD>
+		<TD WIDTH=44%>
 			<P>bool percent_</P>
 		</TD>
-		<TD ROWSPAN=2>
+		<TD ROWSPAN=2 WIDTH=37%>
 			<P>Width and height are expressed as percentages</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD>
+		<TD WIDTH=10%>
 			<P>bool</P>
 		</TD>
-		<TD>
+		<TD WIDTH=44%>
 			<P>void</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD ROWSPAN=2>
+		<TD ROWSPAN=2 WIDTH=10%>
 			<P>aspect</P>
 		</TD>
-		<TD>
+		<TD WIDTH=10%>
 			<P>void</P>
 		</TD>
-		<TD>
+		<TD WIDTH=44%>
 			<P>bool aspect_</P>
 		</TD>
-		<TD ROWSPAN=2>
+		<TD ROWSPAN=2 WIDTH=37%>
 			<P>Resize without preserving aspect ratio (!)</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD>
+		<TD WIDTH=10%>
 			<P>bool</P>
 		</TD>
-		<TD>
+		<TD WIDTH=44%>
 			<P>void</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD ROWSPAN=2>
+		<TD ROWSPAN=2 WIDTH=10%>
 			<P>greater</P>
 		</TD>
-		<TD>
+		<TD WIDTH=10%>
 			<P>void</P>
 		</TD>
-		<TD>
+		<TD WIDTH=44%>
 			<P>bool greater_</P>
 		</TD>
-		<TD ROWSPAN=2>
+		<TD ROWSPAN=2 WIDTH=37%>
 			<P>Resize if image is greater than size (&gt;)</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD>
+		<TD WIDTH=10%>
 			<P>bool</P>
 		</TD>
-		<TD>
+		<TD WIDTH=44%>
 			<P>void</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD ROWSPAN=2>
+		<TD ROWSPAN=2 WIDTH=10%>
 			<P>less</P>
 		</TD>
-		<TD>
+		<TD WIDTH=10%>
 			<P>void</P>
 		</TD>
-		<TD>
+		<TD WIDTH=44%>
 			<P>bool less_</P>
 		</TD>
-		<TD ROWSPAN=2>
+		<TD ROWSPAN=2 WIDTH=37%>
 			<P>Resize if image is less than size (&lt;)</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD>
+		<TD WIDTH=10%>
 			<P>bool</P>
 		</TD>
-		<TD>
+		<TD WIDTH=44%>
 			<P>void</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD ROWSPAN=2>
+		<TD ROWSPAN=2 WIDTH=10%>
 			<P>isValid</P>
 		</TD>
-		<TD>
+		<TD WIDTH=10%>
 			<P>void</P>
 		</TD>
-		<TD>
+		<TD WIDTH=44%>
 			<P>bool isValid_</P>
 		</TD>
-		<TD ROWSPAN=2>
+		<TD ROWSPAN=2 WIDTH=37%>
 			<P>Does object contain a valid geometry? May be set to <I>false</I>
 			in order to invalidate an existing geometry object.</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD>
+		<TD WIDTH=10%>
 			<P>bool</P>
 		</TD>
-		<TD>
+		<TD WIDTH=44%>
 			<P>void</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD>
+		<TD WIDTH=10%>
 			<P>operator =</P>
 		</TD>
-		<TD>
+		<TD WIDTH=10%>
 			<P>const Geometry&amp;</P>
 		</TD>
-		<TD>
+		<TD WIDTH=44%>
 			<P>const string geometry_</P>
 		</TD>
-		<TD>
+		<TD WIDTH=37%>
 			<P>Set geometry via C++ string</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD>
+		<TD WIDTH=10%>
 			<P>operator =</P>
 		</TD>
-		<TD>
+		<TD WIDTH=10%>
 			<P>const Geometry&amp;</P>
 		</TD>
-		<TD>
+		<TD WIDTH=44%>
 			<P>const char * geometry_</P>
 		</TD>
-		<TD>
+		<TD WIDTH=37%>
 			<P>Set geometry via C string</P>
 		</TD>
 	</TR>
 	<TR>
-		<TD>
+		<TD WIDTH=10%>
 			<P>operator string</P>
 		</TD>
-		<TD>
+		<TD WIDTH=10%>
 			<P>string</P>
 		</TD>
-		<TD>
+		<TD WIDTH=44%>
 			<P>Geometry&amp;</P>
 		</TD>
-		<TD>
+		<TD WIDTH=37%>
 			<P>Obtain C++ string representation of geometry</P>
-		</TD>
-	</TR>
-	<TR>
-		<TD>
-			<P>operator&lt;&lt;</P>
-		</TD>
-		<TD>
-			<P><SPAN LANG="en-US">ostream</SPAN>&amp;</P>
-		</TD>
-		<TD>
-			<P>ostream&amp; stream_, const Geometry&amp; geometry_</P>
-		</TD>
-		<TD>
-			<P>Stream onto ostream</P>
 		</TD>
 	</TR>
 </TABLE>
