@@ -19,8 +19,6 @@ extern "C" {
 #  define __attribute__(x) /*nothing*/
 #endif
 
-#if defined(MAGICK_IMPLEMENTATION)
-
   /*
     Obtain the current C function name (if possible)
   */
@@ -43,7 +41,6 @@ extern "C" {
 #    define GetMagickModule()  __FILE__,GetCurrentFunction(),__LINE__
 #  endif
 
-#endif /* MAGICK_IMPLEMENTATION */
 
 /* NOTE: any changes to this effect PerlMagick */
 typedef enum

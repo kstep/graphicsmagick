@@ -4,6 +4,8 @@
 
 2003-09-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/log.h: It seems that test programs are using
+	GetMagickModule so make it visible by default.
 	* configure.ac: Use GM_FUNC_MMAP_FILEIO macro to test mmap.
 	* acinclude.m4 (GM_FUNC_MMAP_FILEIO): New macro to test mmap's
 	capability to do coherent file I/O.  The AC_FUNC_MMAP macro
