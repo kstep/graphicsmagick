@@ -1859,9 +1859,7 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
                 }
               if (distance > 1.0)
                 continue;
-              if (gamma == 0.0)
-                gamma=sqrt(distance);
-              beta=gamma-1.0;
+              beta=(gamma == 0.0 ? sqrt(distance) : gamma)-1.0;
               subpath_opacity=Max(subpath_opacity,beta*beta);
             }
           }
