@@ -780,7 +780,7 @@ static unsigned int ReadConfigurationFile(const char *filename)
   xmlFreeParserCtxt(parser);
   xmlCleanupParser();
   (void) fclose(file);
-  return(font_list == (FontInfo *) NULL);
+  return(font_list != (FontInfo *) NULL);
 }
 #else
 static unsigned int ReadConfigurationFile(const char *filename)
