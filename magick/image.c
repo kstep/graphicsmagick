@@ -5563,7 +5563,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
     *q;
 
   unsigned char
-    magick[MaxTextExtent];
+    magick[2*MaxTextExtent];
 
   unsigned int
     affirm,
