@@ -64,6 +64,246 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   C o m p r e s s C o l o r m a p T r a n s F i r s t                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method CompressColormapTransFirst compresses an image colormap removing
+%  any duplicate and unused color entries and putting the transparent colors
+%  first.
+%
+%  The format of the CompressColormapTransFirst method is:
+%
+%      void CompressColormapTransFirst(Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: The address of a structure of type Image.
+%
+%
+*/
+Export void CompressColormapTransFirst(Image *image)
+{
+  int
+    number_colors,
+    y;
+
+  PixelPacket
+    *colormap;
+
+  register IndexPacket
+    index;
+
+  register int
+    i,
+    j,
+    x;
+
+  unsigned char
+    have_transparency,
+    *marker;
+
+  unsigned short
+    *link,
+    *opacity;
+
+  /*
+    Determine if colormap can be compressed.
+  */
+  assert(image != (Image *) NULL);
+  if (image->class != PseudoClass)
+    return;
+  marker=(unsigned char *) AllocateMemory(image->colors*sizeof(unsigned char));
+  if (marker == (unsigned char *) NULL)
+    {
+      MagickWarning(ResourceLimitWarning,"Unable to compress colormap",
+        "Memory allocation failed");
+      return;
+    }
+  opacity=(unsigned short *) AllocateMemory(image->colors*sizeof(unsigned
+      short));
+  if (opacity == (unsigned short *) NULL)
+    {
+      MagickWarning(ResourceLimitWarning,"Unable to compress colormap",
+        "Memory allocation failed");
+      FreeMemory(marker);
+      return;
+    }
+  /*
+    Mark colors that are present.
+  */
+  number_colors=image->colors;
+  for (i=0; i < number_colors; i++)
+    {
+      marker[i]=False;
+      opacity[i]=Opaque;
+    }
+  for (y=0; y < (int) image->rows; y++)
+  {
+    register PixelPacket
+      *p;
+    p=GetPixelCache(image,0,y,image->columns,1);
+    if (p == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < (int) image->columns; x++)
+      {
+         marker[image->indexes[x]]=True;
+         opacity[image->indexes[x]]=p->opacity;
+         p++;
+      }
+  }
+  /*
+    Unmark duplicates.
+  */
+  for (i=0; i < number_colors-1; i++)
+     if (marker[i])
+       {
+        for (j=i+1; j<number_colors; j++)
+           if (marker[j] && (opacity[i]==opacity[j]) &&
+               (ColorMatch(image->colormap[i],image->colormap[j],0)))
+             {
+               marker[j]=False;
+             }
+       }
+  /*
+    Count colors that still remain.
+   */
+  image->colors=0;
+  have_transparency=False;
+  for (i=0; i < number_colors; i++)
+    if (marker[i])
+      {
+        image->colors++;
+        if (opacity[i] != Opaque)
+           have_transparency=True;
+      }
+  if ((!have_transparency || opacity[0] == Transparent) &&
+     ((int) image->colors == number_colors))
+    {
+      /* no duplicate or unused entries, and transparency-swap not needed */
+      FreeMemory(marker);
+      FreeMemory(opacity);
+      return;
+    }
+  /*
+    Compress colormap.
+  */
+  colormap=(PixelPacket *) AllocateMemory(image->colors*sizeof(PixelPacket));
+  if (colormap == (PixelPacket *) NULL)
+    {
+      MagickWarning(ResourceLimitWarning,"Unable to compress colormap",
+        "Memory allocation failed");
+      FreeMemory(marker);
+      FreeMemory(opacity);
+      image->colors=number_colors;
+      return;
+    }
+  /*
+    Eliminate unused colormap entries.
+  */
+  link=(unsigned short *) AllocateMemory(number_colors*sizeof(unsigned
+      short));
+  if (link == (unsigned short *) NULL)
+    {
+      MagickWarning(ResourceLimitWarning,"Unable to compress colormap",
+        "Memory allocation failed");
+      FreeMemory(marker);
+      FreeMemory(opacity);
+      FreeMemory(colormap);
+      image->colors=number_colors;
+      return;
+    }
+  index=0;
+  for (i=0; i < number_colors; i++)
+    {
+      if (marker[i])
+        {
+          link[i]=index;
+          index++;
+        }
+    }
+
+  for (i=0; i < number_colors; i++)
+  {
+     if (marker[i])
+       {
+         for (j=i+1; j<image->colors; j++)
+         {
+           if ((opacity[i]==opacity[j]) &&
+               (ColorMatch(image->colormap[i],image->colormap[j],0)))
+             {
+               link[j]=link[i];
+             }
+         }
+       }
+  }
+
+  index=0;
+  for (i=0; i < number_colors; i++)
+    {
+      if (marker[i])
+        {
+          colormap[index]=image->colormap[i];
+          opacity[index]=opacity[i];
+          index++;
+        }
+    }
+   
+  FreeMemory(marker);
+  if (have_transparency && opacity[0] != Transparent)
+    {
+      /* Move the first transparent color to palette entry 0 */
+      for (i=1; i < image->colors; i++)
+      {
+        if (opacity[i] == Transparent)
+          {
+            PixelPacket
+               temp_colormap;
+
+            temp_colormap=colormap[0];
+            colormap[0]=colormap[i];
+            colormap[i]=temp_colormap;
+
+            for (j=0; j < number_colors; j++)
+            {
+              if (link[j] == 0)
+                 link[j]=i;
+              else if (link[j] == i)
+                 link[j]=0;
+            }
+            break;
+          }
+      }
+   }
+  FreeMemory(opacity);
+  /*
+    Remap pixels.
+  */
+  for (y=0; y < (int) image->rows; y++)
+  {
+    if (!GetPixelCache(image,0,y,image->columns,1))
+      break;
+    for (x=0; x < (int) image->columns; x++)
+    {
+      index=image->indexes[x];
+      assert (index < number_colors);
+      assert (link[index] < image->colors);
+      image->indexes[x]=link[index];
+    }
+    if (!SyncPixelCache(image))
+      break;
+  }
+  FreeMemory(link);
+  FreeMemory(image->colormap);
+  image->colormap=colormap;
+}
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   I s M N G                                                                 %
 %                                                                             %
 %                                                                             %
@@ -112,7 +352,7 @@ Export unsigned int IsMNG(const unsigned char *magick,const unsigned int length)
 %  Method IsPNG returns True if the image format type, identified by the
 %  magick string, is PNG.
 %
-%  The format of the ReadPNGImage method is:
+%  The format of the IsPNG method is:
 %
 %      unsigned int IsPNG(const unsigned char *magick,
 %        const unsigned int length)
@@ -135,6 +375,63 @@ Export unsigned int IsPNG(const unsigned char *magick,const unsigned int length)
   if (strncmp((char *) magick,"\211PNG\r\n\032\n",8) == 0)
     return(True);
   return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%   S e t T r a n s p a r e n t I m a g e                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method SetTransparentImage initializes the reference image to the background
+%  color and the matte channel to transparent.
+%
+%  The format of the SetTransparentImage method is:
+%
+%      void SetTransparentImage(Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: The address of a structure of type Image;  returned from
+%      ReadImage.
+%
+%
+*/
+Export void SetTransparentImage(Image *image)
+{
+  int
+    y;
+
+  PixelPacket
+    background_color;
+
+  register int
+    x;
+
+  register PixelPacket
+    *q;
+
+  assert(image != (Image *) NULL);
+  background_color=image->background_color;
+  background_color.opacity=Transparent;
+  for (y=0; y < (int) image->rows; y++)
+  {
+    q=SetPixelCache(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < (int) image->columns; x++)
+    {
+      if (image->class == PseudoClass)
+        image->indexes[x]=0;
+      *q++=background_color;
+    }
+    if (!SyncPixelCache(image))
+      break;
+  }
 }
 
 /*
@@ -167,9 +464,15 @@ Export unsigned int IsPNG(const unsigned char *magick,const unsigned int length)
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%  To do, more or less in chronological order (as of version 4.2.9,
+%  To do, more or less in chronological order (as of version 5.1.1,
+%   January 25, 2000 -- glennrp -- see also "To do" under WritePNGImage):
 %
-%     August 29, 1999 -- glennrp -- see also "To do" under WritePNGImage):
+%    Restore features that were lost in the 4.2.9-to-5.1.0 update:
+%
+%       o preserve transparency when reading gray-alpha PNGs
+%       o variable interframe durations (restart_animation_here feature
+%         was broken)
+%       o coalescing frames that have zero interframe duration
 %
 %    (At this point, PNG decoding is supposed to be in full MNG-LC compliance)
 %
@@ -450,10 +753,10 @@ static MngBox mng_read_box(MngBox previous_box,char delta_type,unsigned char *p)
   /*
     Read clipping boundaries from DEFI, CLIP, FRAM, or PAST chunk.
   */
-  box.left=(long) ((p[0]  << 24)| (p[1]  << 16)| (p[2]  << 8) | p[3]);
-  box.right=(long) ((p[4]  << 24)| (p[5]  << 16)| (p[6]  << 8) | p[7]);
-  box.top=(long) ((p[8]  << 24)| (p[9]  << 16)| (p[10] << 8) | p[11]);
-  box.bottom=(long) ((p[12] << 24)| (p[13] << 16)| (p[14] << 8) | p[15]);
+  box.left=(long) ((p[0]  << 24) | (p[1]  << 16) | (p[2]  << 8) | p[3]);
+  box.right=(long) ((p[4]  << 24) | (p[5]  << 16) | (p[6]  << 8) | p[7]);
+  box.top=(long) ((p[8]  << 24) | (p[9]  << 16) | (p[10] << 8) | p[11]);
+  box.bottom=(long) ((p[12] << 24) | (p[13] << 16) | (p[14] << 8) | p[15]);
   if (delta_type != 0)
     {
       box.left+=previous_box.left;
@@ -490,8 +793,28 @@ static long mng_get_long(unsigned char *p)
 
 static void MNGCoalesce(Image *image)
 {
-  /* I have been unable to get this working after version 4.2.9
-     so it's dummied out for now.  See also transform.c */
+/* I have been unable to get this working after version 4.2.9 */
+#if 0
+  long
+    delay;
+
+  register Image
+    *p;
+
+  if (image->previous == (Image *) NULL)
+    return;
+  p=image->previous;
+  assert(p->next != (Image *) NULL);
+  if (p->delay != 0)
+    return;
+  delay=(long) image->delay;
+  CoalesceImages(p);
+  p->file=(FILE *) NULL;
+  p->blob_info.mapped=False;
+  p->orphan=False;
+  DestroyImage(p);
+  image->delay=delay;
+#endif
 }
 
 static void PNGErrorHandler(png_struct *ping,png_const_charp message)
@@ -500,12 +823,12 @@ static void PNGErrorHandler(png_struct *ping,png_const_charp message)
   longjmp(ping->jmpbuf,1);
 }
 
-static void ReadTextChunk(png_info *ping_info,unsigned int i,char **value)
+static void ReadTextChunk(png_textp text,unsigned int i,char **value)
 {
   unsigned int
     length;
 
-  length=ping_info->text[i].text_length;
+  length=text[i].text_length;
   if (*value != (char *) NULL)
     *value=(char *) ReallocateMemory((char *) *value,strlen(*value)+length+1);
   else
@@ -520,7 +843,7 @@ static void ReadTextChunk(png_info *ping_info,unsigned int i,char **value)
         (char *) NULL);
       return;
     }
-  (void) strncat(*value,ping_info->text[i].text,length);
+  (void) strncat(*value,text[i].text,length);
   (*value)[length]='\0';
 }
 
@@ -1681,31 +2004,45 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
     if (ping_info->bit_depth < 8)
       {
         if ((ping_info->color_type == PNG_COLOR_TYPE_PALETTE))
-          png_set_packing(ping);
-        image->depth=8;
+          {
+            png_set_packing(ping);
+            image->depth=8;
+          }
       }
 #if defined(PNG_READ_sRGB_SUPPORTED)
-    if (have_global_srgb)
-      image->rendering_intent=(RenderingIntent) (mng_info->global_srgb_intent+1);
-    if (ping_info->valid & PNG_INFO_sRGB)
-      image->rendering_intent=(RenderingIntent) (ping_info->srgb_intent+1);
+    {
+      int
+        intent;
+
+      if (have_global_srgb)
+        image->rendering_intent=
+          (RenderingIntent) (mng_info->global_srgb_intent+1);
+      if (png_get_sRGB(ping, ping_info, &intent))
+        image->rendering_intent=(RenderingIntent) (intent+1);
+    }
 #endif
-    if (have_global_gama)
-      image->gamma=mng_info->global_gamma;
-    if (ping_info->valid & PNG_INFO_gAMA)
-      image->gamma=ping_info->gamma;
+    {
+       double
+          file_gamma;
+
+       if (have_global_gama)
+         image->gamma=mng_info->global_gamma;
+       if (png_get_gAMA(ping, ping_info, &file_gamma))
+         image->gamma=(float) file_gamma;
+    }
     if (have_global_chrm)
         image->chromaticity=mng_info->global_chrm;
     if (ping_info->valid & PNG_INFO_cHRM)
       {
-        image->chromaticity.white_point.x=ping_info->x_white;
-        image->chromaticity.white_point.y=ping_info->y_white;
-        image->chromaticity.red_primary.x=ping_info->x_red;
-        image->chromaticity.red_primary.y=ping_info->y_red;
-        image->chromaticity.green_primary.x=ping_info->x_green;
-        image->chromaticity.green_primary.y=ping_info->y_green;
-        image->chromaticity.blue_primary.x=ping_info->x_blue;
-        image->chromaticity.blue_primary.y=ping_info->y_blue;
+        png_get_cHRM(ping, ping_info,
+          &image->chromaticity.white_point.x,
+          &image->chromaticity.white_point.y,
+          &image->chromaticity.red_primary.x,
+          &image->chromaticity.red_primary.y,
+          &image->chromaticity.green_primary.x,
+          &image->chromaticity.green_primary.y,
+          &image->chromaticity.blue_primary.x,
+          &image->chromaticity.blue_primary.y);
       }
     if (image->rendering_intent)
       {
@@ -1728,13 +2065,21 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
         /*
           Set image resolution.
         */
-        image->x_resolution=(float) ping_info->x_pixels_per_unit;
-        image->y_resolution=(float) ping_info->y_pixels_per_unit;
-        if (ping_info->phys_unit_type == PNG_RESOLUTION_METER)
+        png_uint_32
+           res_x,
+           res_y;
+
+        int
+           unit_type;
+
+        png_get_pHYs(ping, ping_info, &res_x, &res_y, &unit_type);
+        image->x_resolution=(float) res_x;
+        image->y_resolution=(float) res_y;
+        if (unit_type == PNG_RESOLUTION_METER)
           {
             image->units=PixelsPerCentimeterResolution;
-            image->x_resolution=(float) ping_info->x_pixels_per_unit/100.0;
-            image->y_resolution=(float) ping_info->y_pixels_per_unit/100.0;
+            image->x_resolution=(float) res_x/100.0;
+            image->y_resolution=(float) res_y/100.0;
           }
       }
     else
@@ -1888,7 +2233,14 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
         image->class=PseudoClass;
         image->colors=1 << ping_info->bit_depth;
         if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
-          image->colors=ping_info->num_palette;
+          {
+            png_colorp
+               palette;
+            int
+               num_palette;
+            png_get_PLTE(ping, ping_info, &palette, &num_palette);
+            image->colors=num_palette;
+          }
       }
     if (image_info->ping)
       {
@@ -1914,14 +2266,21 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
         if (image->colormap == (PixelPacket *) NULL)
           ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
         if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
-          for (i=0; i < (int) image->colors; i++)
           {
-            image->colormap[i].red=
-              (unsigned short) UpScale(ping_info->palette[i].red);
-            image->colormap[i].green=
-              (unsigned short) UpScale(ping_info->palette[i].green);
-            image->colormap[i].blue=
-              (unsigned short) UpScale(ping_info->palette[i].blue);
+            png_colorp
+               palette;
+
+            int
+               num_palette;
+
+            png_get_PLTE(ping, ping_info, &palette, &num_palette);
+            for (i=0; i < (int) image->colors; i++)
+            {
+              image->colormap[i].red= (unsigned short) UpScale(palette[i].red);
+              image->colormap[i].green=
+                (unsigned short) UpScale(palette[i].green);
+              image->colormap[i].blue= (unsigned short) UpScale(palette[i].blue);
+            }
           }
         else
           for (i=0; i < (int) image->colors; i++)
@@ -1986,9 +2345,11 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
           Convert image to PseudoClass pixel packets.
         */
         quantum_scanline=(Quantum *)
-          AllocateMemory(image->columns*sizeof(Quantum));
+          AllocateMemory((ping_info->color_type == 4 ? 2 : 1) * image->columns
+             *sizeof(Quantum));
         if (quantum_scanline == (Quantum *) NULL)
           ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+
         for (y=0; y < (int) image->rows; y++)
         {
           q=SetPixelCache(image,0,y,image->columns,1);
@@ -2045,28 +2406,47 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
             }
             case 8:
             {
-#if (QuantumDepth == 8)
-              memcpy(r,p,image->columns*sizeof(Quantum));
+#if (QuantumDepth == 108)
+              memcpy(r,p, (int) image->columns * sizeof(Quantum));
 #else
               for (x=0; x < (int) image->columns; x++)
+              {
                 *r++=(*p++);
+                if (ping_info->color_type == 4)
+                  {
+                    q->opacity=(*p++);
+                    q++;
+                  }
+              }
 #endif
               break;
             }
             case 16:
             {
-#if (QuantumDepth == 16 && WORDS_BIGENDIAN)
-              memcpy(r,p,image->columns*sizeof(Quantum));
+#if (QuantumDepth == 116 && WORDS_BIGENDIAN)
+              memcpy(r,p, (ping_info->color_type == 4 ? 2 : 1) *
+                   image->columns * sizeof(Quantum));
 #else
               for (x=0; x < (int) image->columns; x++)
               {
 #if (QuantumDepth == 16)
                 *r=((*p++) << 8);
                 *r++|=(*p++);
+                if (ping_info->color_type == 4)
+                  {
+                    q->opacity=((*p++) << 8);
+                    q->opacity|=(*p++);
+                    q++;
+                  }
 #else
                 image->indexes[x]=(unsigned short) (((*p) << 8) | (*(p+1)));
                 *r++=(*p++);
                 p++;
+                if (ping_info->color_type == 4)
+                  {
+                    *r++|=(*p++);
+                    p++;
+                  }
 #endif
               }
 #endif
@@ -2084,7 +2464,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
           if (ping_info->bit_depth < 16)
 #endif
             for (x=0; x < (int) image->columns; x++)
-              image->indexes[x]=(*r++);
+                image->indexes[x]=(*r++);
           if (!SyncPixelCache(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -2119,9 +2499,12 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                 if (class == PseudoClass)
                   {
                     index=image->indexes[x];
-                    q->red=image->colormap[index].red;
-                    q->green=image->colormap[index].green;
-                    q->blue=image->colormap[index].blue;
+                    if (ping_info->color_type != PNG_COLOR_TYPE_PALETTE)
+                      {
+                        q->red=image->colormap[index].red;
+                        q->green=image->colormap[index].green;
+                        q->blue=image->colormap[index].blue;
+                      }
                     if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
                       {
                         if (index < ping_info->num_trans)
@@ -2144,45 +2527,53 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
     if (image->depth > 8)
       image->depth = 8;
 #endif
-    if (ping_info->num_text > 0)
-      for (i=0; i < ping_info->num_text; i++)
+    {
+    png_textp
+       text;
+
+    int
+       num_text;
+
+    if (png_get_text(ping, ping_info, &text, &num_text) > 0)
+      for (i=0; i < num_text; i++)
         {
-          if (Latin1Compare(ping_info->text[i].key,"Comment") == 0)
-            ReadTextChunk(ping_info,i,&image->comments);
-          if (Latin1Compare(ping_info->text[i].key,"Delay") == 0)
+          if (Latin1Compare(text[i].key,"Comment") == 0)
+            ReadTextChunk(text,i,&image->comments);
+          if (Latin1Compare(text[i].key,"Delay") == 0)
             if (image_info->delay == (char *) NULL)
               {
                 char
                   *delay;
 
                 delay=(char *) NULL;
-                ReadTextChunk(ping_info,i,&delay);
+                ReadTextChunk(text,i,&delay);
                 image->delay=atoi(delay);
                 FreeMemory(delay);
               }
-          if (Latin1Compare(ping_info->text[i].key,"Description") == 0)
-            ReadTextChunk(ping_info,i,&image->comments);
-          if (Latin1Compare(ping_info->text[i].key,"Directory") == 0)
-            ReadTextChunk(ping_info,i,&image->directory);
-          if (Latin1Compare(ping_info->text[i].key,"Label") == 0)
-            ReadTextChunk(ping_info,i,&image->label);
-          if (Latin1Compare(ping_info->text[i].key,"Montage") == 0)
-            ReadTextChunk(ping_info,i,&image->montage);
-          if (Latin1Compare(ping_info->text[i].key,"Scene") == 0)
+          if (Latin1Compare(text[i].key,"Description") == 0)
+            ReadTextChunk(text,i,&image->comments);
+          if (Latin1Compare(text[i].key,"Directory") == 0)
+            ReadTextChunk(text,i,&image->directory);
+          if (Latin1Compare(text[i].key,"Label") == 0)
+            ReadTextChunk(text,i,&image->label);
+          if (Latin1Compare(text[i].key,"Montage") == 0)
+            ReadTextChunk(text,i,&image->montage);
+          if (Latin1Compare(text[i].key,"Scene") == 0)
             {
               char
                 *scene;
 
               scene=(char *) NULL;
-              ReadTextChunk(ping_info,i,&scene);
+              ReadTextChunk(text,i,&scene);
               image->scene=atoi(scene);
               FreeMemory(scene);
             }
-          if (Latin1Compare(ping_info->text[i].key,"Signature") == 0)
-            ReadTextChunk(ping_info,i,&image->signature);
-          if (Latin1Compare(ping_info->text[i].key,"Title") == 0)
-            ReadTextChunk(ping_info,i,&image->label);
+          if (Latin1Compare(text[i].key,"Signature") == 0)
+            ReadTextChunk(text,i,&image->signature);
+          if (Latin1Compare(text[i].key,"Title") == 0)
+            ReadTextChunk(text,i,&image->label);
         }
+    }
 #ifdef MNG_OBJECT_BUFFERS
     /*
       Store the object if necessary.
@@ -2340,11 +2731,11 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                   a layer, though, so make a single transparent pixel in
                   the top left corner.
                 */
-                image->columns=(unsigned int)1;
-                image->rows=(unsigned int)1;
+                image->columns=(unsigned int) 1;
+                image->rows=(unsigned int) 1;
                 image->matte=True;
                 image->colors=2;
-                SetImage(image);
+                SetTransparentImage(image);
                 image->page_info.width=1;
                 image->page_info.height=1;
                 image->page_info.x=0;
@@ -2567,7 +2958,16 @@ static void WriteTextChunk(const ImageInfo *image_info,png_struct *ping,
   register int
     i;
 
+  if (png_info->num_text == 0)
+    {
+      ping_info->text=(png_text *) AllocateMemory(256*sizeof(png_text));
+      if (ping_info->text == (png_text *) NULL)
+        WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+    }
   i=ping_info->num_text++;
+  if (i > 255)
+    WriterExit(ResourceLimitWarning,
+      "Cannot write more than 256 PNG text chunks",image);
   ping_info->text[i].key=keyword;
   ping_info->text[i].text=value;
   ping_info->text[i].text_length=Extent(value);
@@ -3023,6 +3423,8 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   equal_palettes=False;
   do
   {
+    png_colorp
+       palette;
     /*
       If we aren't using a global palette for the entire MNG, check to
       see if we can use one for two or more consecutive images.
@@ -3142,8 +3544,6 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     ping_info->height=image->rows;
     save_image_depth=image->depth;
     ping_info->bit_depth=save_image_depth;
-    if (IsMonochromeImage(image))
-      ping_info->bit_depth=1;
 #if (QuantumDepth == 16)
     if (ping_info->bit_depth == 16)
       {
@@ -3179,48 +3579,65 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           }
       }
 #endif
-    ping_info->color_type=PNG_COLOR_TYPE_RGB;
     if ((image->x_resolution != 0) && (image->y_resolution != 0) &&
         (!image_info->adjoin || !equal_physs))
       {
-        ping_info->valid|=PNG_INFO_pHYs;
-        ping_info->phys_unit_type=PNG_RESOLUTION_UNKNOWN;
-        ping_info->x_pixels_per_unit=(png_uint_32) image->x_resolution;
-        ping_info->y_pixels_per_unit=(png_uint_32) image->y_resolution;
+        png_uint_32
+          res_x,
+          res_y;
+
+        int
+          unit_type;
+
         if (image->units == PixelsPerInchResolution)
           {
-            ping_info->phys_unit_type=PNG_RESOLUTION_METER;
-            ping_info->x_pixels_per_unit=(png_uint_32)
-              (100.0*image->x_resolution/2.54);
-            ping_info->y_pixels_per_unit=(png_uint_32)
-              (100.0*image->y_resolution/2.54);
+            unit_type=PNG_RESOLUTION_METER;
+            res_x=(png_uint_32) (100.0*image->x_resolution/2.54);
+            res_y=(png_uint_32) (100.0*image->y_resolution/2.54);
           }
-        if (image->units == PixelsPerCentimeterResolution)
+        else if (image->units == PixelsPerCentimeterResolution)
           {
-            ping_info->phys_unit_type=PNG_RESOLUTION_METER;
-            ping_info->x_pixels_per_unit=(png_uint_32)
-              (100.0*image->x_resolution);
-            ping_info->y_pixels_per_unit=(png_uint_32)
+            unit_type=PNG_RESOLUTION_METER;
+            res_x=(png_uint_32) (100.0*image->x_resolution);
+            res_y=(png_uint_32)
               (100.0*image->y_resolution);
           }
+        else
+          {
+            unit_type=PNG_RESOLUTION_UNKNOWN;
+            res_x=(png_uint_32) image->x_resolution;
+            res_y=(png_uint_32) image->y_resolution;
+          }
+         png_set_pHYs(ping, ping_info, res_x, res_y, unit_type);
       }
-    if (image->matte)
-      if (!image_info->adjoin || !equal_backgrounds)
-        {
-          ping_info->valid|=PNG_INFO_bKGD;
-          ping_info->background.red=
-            (unsigned short) DownScale(image->background_color.red);
-          ping_info->background.green=
-            (unsigned short) DownScale(image->background_color.green);
-          ping_info->background.blue=
-            (unsigned short) DownScale(image->background_color.blue);
-          ping_info->background.gray=
-            (unsigned short) DownScale(Intensity(image->background_color));
-          ping_info->background.index=ping_info->background.gray;
-        }
+    if (image->matte && (!image_info->adjoin || !equal_backgrounds))
+      {
+        png_color_16
+           background;
+
+        background.red=
+          (unsigned short) DownScale(image->background_color.red);
+        background.green=
+          (unsigned short) DownScale(image->background_color.green);
+        background.blue=
+          (unsigned short) DownScale(image->background_color.blue);
+        background.gray=
+          (unsigned short) DownScale(Intensity(image->background_color));
+        background.index=background.gray;
+
+        png_set_bKGD(ping, ping_info, &background);
+      }
     /*
       Select the color type.
     */
+    if (IsMonochromeImage(image))
+      {
+        if (image->matte)
+          ping_info->bit_depth=8;
+        else
+          ping_info->bit_depth=1;
+      }
+    ping_info->color_type=PNG_COLOR_TYPE_RGB;
     matte=image->matte;
     if (matte)
       {
@@ -3301,11 +3718,13 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                  else
                   {
                     if (ColorMatch(ping_info->trans_values,*p,0))
-                        break; /* Can't use RGB + tRNS, another pixel having
-                                  the same RGB samples is transparent.  */
+                        break; /* Can't use RGB + tRNS when another pixel
+                                  having the same RGB samples is transparent. */
                   }
               p++;
               }
+              if (x < (int) image->columns)
+                 break;
             }
             if (x < (int) image->columns)
                 ping_info->valid&=(~PNG_INFO_tRNS);
@@ -3325,101 +3744,118 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     matte=image->matte;
     if (ping_info->valid & PNG_INFO_tRNS)
       image->matte=False;
-    if (IsGrayImage(image))
+    if (IsGrayImage(image) && (!image->matte || image->depth >= 8))
       {
         if (image->matte)
-          ping_info->color_type=PNG_COLOR_TYPE_GRAY_ALPHA;
+          {
+            ping_info->color_type=PNG_COLOR_TYPE_GRAY_ALPHA;
+          }
         else
-          ping_info->color_type=PNG_COLOR_TYPE_GRAY;
+          {
+            ping_info->color_type=PNG_COLOR_TYPE_GRAY;
+            if (save_image_depth == 16 && image->depth == 8)
+              ping_info->trans_values.gray*=0x0101;
+          }
       }
     else
-      if (image->depth <= 8 && IsPseudoClass(image))
-        {
-          if (matte)
-             ping_info->valid|=PNG_INFO_tRNS;
-          /*
-            Set image palette.
-          */
-          ping_info->color_type=PNG_COLOR_TYPE_PALETTE;
-          ping_info->valid|=PNG_INFO_PLTE;
-          if (have_write_global_plte && !(ping_info->valid & PNG_INFO_tRNS))
-            ping_info->num_palette=0;
-          else
-            {
-              ping_info->num_palette=image->colors;
-              ping_info->palette=(png_color *)
-                AllocateMemory(image->colors*sizeof(png_color));
-              if (ping_info->palette == (png_color *) NULL)
-                WriterExit(ResourceLimitWarning,"Memory allocation failed",
-                  image);
-              for (i=0; i < (int) image->colors; i++)
-              {
-                ping_info->palette[i].red=
-                  (unsigned short) DownScale(image->colormap[i].red);
-                ping_info->palette[i].green=
-                  (unsigned short) DownScale(image->colormap[i].green);
-                ping_info->palette[i].blue=
-                  (unsigned short) DownScale(image->colormap[i].blue);
-              }
-            }
-          ping_info->bit_depth=1;
-          while ((1 << ping_info->bit_depth) < (int) image->colors)
-            ping_info->bit_depth<<=1;
-          if (ping_info->valid & PNG_INFO_tRNS)
-            {
-              if (save_image_depth == 16 && image->depth == 8)
-                {
-                  ping_info->trans_values.red*=0x0101;
-                  ping_info->trans_values.green*=0x0101;
-                  ping_info->trans_values.blue*=0x0101;
-                  ping_info->trans_values.gray*=0x0101;
-                }
-              /*
-                Identify which colormap entry is transparent.
-              */
-              ping_info->trans=(unsigned char *)
-                AllocateMemory(image->colors*sizeof(unsigned char));
-              if (ping_info->trans == (unsigned char *) NULL)
-                WriterExit(ResourceLimitWarning,"Memory allocation failed",
-                  image);
-              for (i=0; i < (int) image->colors; i++)
-                 ping_info->trans[i]=DownScale(Opaque);
-              for (y=0; y < (int) image->rows; y++)
-              {
-                p=GetPixelCache(image,0,y,image->columns,1);
-                if (p == (PixelPacket *) NULL)
-                  break;
-                for (x=0; x < (int) image->columns; x++)
-                {
-                  if (p->opacity != Opaque)
-                    for (i=0; i < image->colors; i++)
-                      if (image->indexes[x] == i)
-                        {
-                          ping_info->trans[i]=DownScale(p->opacity);
-                          break;
-                        }
-                  p++;
-                }
-              }
-              ping_info->num_trans=0;
-              for (i=0; i < (int) image->colors; i++)
-                if (ping_info->trans[i] != DownScale(Opaque))
-                  ping_info->num_trans=i+1;
-              if (ping_info->num_trans == 0)
-                ping_info->valid&=(~PNG_INFO_tRNS);
-            }
-          else
-              ping_info->num_trans=0;
-          /*
-            Identify which colormap entry is the background color.
-          */
-          for (i=0; i < (int) (image->colors-1); i++)
+      if (IsPseudoClass(image))
+      {
+        if (image->depth <= 8)
           {
-            if (ColorMatch(ping_info->background,image->colormap[i],0))
-              break;
+            int
+               num_palette;
+            if (matte)
+               ping_info->valid|=PNG_INFO_tRNS;
+            /*
+              Set image palette.
+            */
+            ping_info->color_type=PNG_COLOR_TYPE_PALETTE;
+            ping_info->valid|=PNG_INFO_PLTE;
+            if (have_write_global_plte && !matte)
+              png_set_PLTE(ping, ping_info, NULL, 0);
+            else
+              {
+                CompressColormapTransFirst(image);
+                num_palette=image->colors;
+                palette=(png_color *)
+                  AllocateMemory(image->colors*sizeof(png_color));
+                if (palette == (png_color *) NULL)
+                  WriterExit(ResourceLimitWarning,"Memory allocation failed",
+                    image);
+                for (i=0; i < (int) image->colors; i++)
+                {
+                  palette[i].red=
+                    (unsigned short) DownScale(image->colormap[i].red);
+                  palette[i].green=
+                    (unsigned short) DownScale(image->colormap[i].green);
+                  palette[i].blue=
+                    (unsigned short) DownScale(image->colormap[i].blue);
+                }
+                png_set_PLTE(ping, ping_info, palette, num_palette);
+#if (PNG_LIBPNG_VER >= 10100)
+                FreeMemory(palette);
+#endif
+              }
+            ping_info->bit_depth=1;
+            while ((1 << ping_info->bit_depth) < (int) image->colors)
+              ping_info->bit_depth<<=1;
+            /*
+              Identify which colormap entry is transparent.
+            */
+            ping_info->trans=(unsigned char *)
+              AllocateMemory(image->colors*sizeof(unsigned char));
+            if (ping_info->trans == (unsigned char *) NULL)
+              WriterExit(ResourceLimitWarning,"Memory allocation failed",
+                image);
+            for (i=0; i < (int) image->colors; i++)
+               ping_info->trans[i]=(png_byte) DownScale(Opaque);
+            for (y=0; y < (int) image->rows; y++)
+            {
+              p=GetPixelCache(image,0,y,image->columns,1);
+              if (p == (PixelPacket *) NULL)
+                break;
+              for (x=0; x < (int) image->columns; x++)
+              {
+                if (p->opacity != Opaque)
+                  {
+                   unsigned short
+                      index;
+                   index=image->indexes[x];
+                   assert(index < image->colors);
+                   ping_info->trans[index]=(png_byte) DownScale(p->opacity);
+                  }
+                p++;
+              }
+            }
+            ping_info->num_trans=0;
+            for (i=0; i < (int) image->colors; i++)
+              if (ping_info->trans[i] != (png_byte) DownScale(Opaque))
+                ping_info->num_trans=i+1;
+            if (ping_info->num_trans == 0)
+                ping_info->valid&=(~PNG_INFO_tRNS);
+            if (!(ping_info->valid & PNG_INFO_tRNS))
+              ping_info->num_trans=0;
+            /*
+              Identify which colormap entry is the background color.
+            */
+            for (i=0; i < (int) (image->colors-1); i++)
+              if (ColorMatch(ping_info->background,image->colormap[i],0))
+                break;
+            ping_info->background.index=(unsigned short) i;
           }
-          ping_info->background.index=(unsigned short) i;
-        }
+      }
+    else
+      {
+        if (image->depth < 8)
+            image->depth = 8;
+        if (save_image_depth == 16 && image->depth == 8)
+          {
+            ping_info->trans_values.red*=0x0101;
+            ping_info->trans_values.green*=0x0101;
+            ping_info->trans_values.blue*=0x0101;
+            ping_info->trans_values.gray*=0x0101;
+          }
+      }
     image->matte=matte;
 #if defined(PNG_WRITE_sRGB_SUPPORTED)
     if (!have_write_global_srgb &&
@@ -3429,12 +3865,8 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         /*
           Note image rendering intent.
         */
-        ping_info->valid|=PNG_INFO_sRGB;
-        if (image->rendering_intent)
-          ping_info->srgb_intent=(int) image->rendering_intent+1;
-        else
-          ping_info->srgb_intent=1;
-        image->gamma=0.45455;
+        png_set_sRGB(ping, ping_info, (int) image->rendering_intent+1);
+        png_set_gAMA(ping, ping_info, 0.45455);
       }
     if (!image_info->adjoin || (!ping_info->valid&PNG_INFO_sRGB))
 #endif
@@ -3445,8 +3877,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               Note image gamma.
               To do: check for cHRM+gAMA == sRGB, and write sRGB instead. 
             */
-            ping_info->valid|=PNG_INFO_gAMA;
-            ping_info->gamma=image->gamma;
+            png_set_gAMA(ping, ping_info, image->gamma);
           }
         if (!have_write_global_chrm && image->chromaticity.white_point.x != 0.0)
           {
@@ -3454,15 +3885,15 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               Note image chromaticity.
               To do: check for cHRM+gAMA == sRGB, and write sRGB instead. 
             */
-            ping_info->valid|=PNG_INFO_cHRM;
-            ping_info->x_red=image->chromaticity.red_primary.x;
-            ping_info->y_red=image->chromaticity.red_primary.y;
-            ping_info->x_green=image->chromaticity.green_primary.x;
-            ping_info->y_green=image->chromaticity.green_primary.y;
-            ping_info->x_blue=image->chromaticity.blue_primary.x;
-            ping_info->y_blue=image->chromaticity.blue_primary.y;
-            ping_info->x_white=image->chromaticity.white_point.x;
-            ping_info->y_white=image->chromaticity.white_point.y;
+         png_set_cHRM(ping, ping_info,
+            image->chromaticity.white_point.x,
+            image->chromaticity.white_point.y,
+            image->chromaticity.red_primary.x,
+            image->chromaticity.red_primary.y,
+            image->chromaticity.green_primary.x,
+            image->chromaticity.green_primary.y,
+            image->chromaticity.blue_primary.x,
+            image->chromaticity.blue_primary.y);
          }
       }
     ping_info->interlace_type=image_info->interlace != NoInterlace;
@@ -3526,7 +3957,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       Allocate memory.
     */
     rowbytes=image->columns;
-    if (image->depth <= 8)
+    if (image->depth == 8)
       {
         if (IsGrayImage(image))
           rowbytes*=(matte ? 2 : 1);
@@ -3534,7 +3965,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           if (!IsPseudoClass(image))
             rowbytes*=(matte ? 4 : 3);
       }
-    else
+    else if (image->depth == 16)
       {
         if (IsGrayImage(image))
           rowbytes*=(matte ? 4 : 2);
@@ -3553,7 +3984,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     */
     for (i=0; i < (int) image->rows; i++)
       scanlines[i]=png_pixels+(rowbytes*i);
-    if (IsMonochromeImage(image))
+    if (!image->matte && IsMonochromeImage(image))
       {
         /*
           Convert PseudoClass image to a PNG monochrome image.
@@ -3569,7 +4000,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         }
       }
     else
-      if (IsGrayImage(image))
+      if ((!image->matte || ping_info->bit_depth >= 8) && IsGrayImage(image))
         {
           for (y=0; y < (int) image->rows; y++)
           {
@@ -3623,10 +4054,10 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     /*
       Generate text chunks.
     */
+    {
+#if (PNG_LIBPNG_VER <= 10005)
     ping_info->num_text=0;
-    ping_info->text=(png_text *) AllocateMemory(256*sizeof(png_text));
-    if (ping_info->text == (png_text *) NULL)
-      WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+#endif
     /*
       Write a Software tEXt chunk only in the first PNG datastream.
     */
@@ -3663,6 +4094,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       WriteTextChunk(image_info,ping,ping_info,"Directory",image->directory);
     if (image->comments != (char *) NULL)
       WriteTextChunk(image_info,ping,ping_info,"Comment",image->comments);
+    }
     png_write_end(ping,ping_info);
     if (need_fram && image->dispose == 2)
       {
@@ -3702,8 +4134,14 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     /*
       Free PNG resources.
     */
+#if (PNG_LIBPNG_VER < 10100)
+    /* Prior to libpng version 1.1.0, the palette had to be free'ed manually. */
     if (ping_info->valid & PNG_INFO_PLTE)
-      FreeMemory(ping_info->palette);
+      {
+        FreeMemory(ping_info->palette);
+        ping_info->valid &= (~PNG_INFO_PLTE);
+      }
+#endif
     png_destroy_write_struct(&ping,&ping_info);
     FreeMemory(scanlines);
     FreeMemory(png_pixels);
