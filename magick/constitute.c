@@ -2316,7 +2316,7 @@ static Image *ReadImages(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 */
 MagickExport Image *ReadInlineImage(const ImageInfo *image_info,
-	const char *content,ExceptionInfo *exception)
+  const char *content,ExceptionInfo *exception)
 {
   Image
     *image;
