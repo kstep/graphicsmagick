@@ -1,4 +1,13 @@
-2002-10-21  Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
+2002-10-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+  * display.c: removed unnecessary SignatureImage() calls which
+  dramatically slowed down loading images and quiting the program.
+  * xwindow.c: optimized image size reduction for the case where
+  the target size is a small fraction of the original size. This
+  makes creation of display's panner and thumbnail images
+  tremendously faster, with no noticeable degradation of thumbnail
+  quality.
+
+2002-10-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * Added Windows95 define to VisualMagick magick_config.h to
     disable use of features not available under Windows '95
 

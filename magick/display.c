@@ -12596,7 +12596,6 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       (char *) NULL);
   if (windows->image.mapped)
     XRefreshWindow(display,&windows->image,(XEvent *) NULL);
-  (void) SignatureImage(display_image);
   handler=SetMonitorHandler((MonitorHandler) NULL);
   status=XMakeImage(display,resource_info,&windows->magnify,(Image *) NULL,
     windows->magnify.width,windows->magnify.height);
@@ -13544,7 +13543,6 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       /*
         Query user if image has changed.
       */
-      (void) SignatureImage(display_image);
       if (!resource_info->immutable && display_image->taint)
         {
           status=XConfirmWidget(display,windows,"Your image changed.",

@@ -5024,7 +5024,7 @@ MagickExport unsigned int XMakeImage(Display *display,
           (height != (unsigned int) window->image->rows))
         {
           Image
-            *resize_image;
+            *resize_image = (Image *) NULL;
 
           /*
             Resize image.
@@ -5033,8 +5033,29 @@ MagickExport unsigned int XMakeImage(Display *display,
             resize_image=SampleImage(window->image,width,height,
               &image->exception);
           else
-            resize_image=
-              ZoomImage(window->image,width,height,&image->exception);
+            {
+              double
+                scale_factor;
+              
+              scale_factor=((double)width*height)/((double)window->image->columns*window->image->rows);
+              if ( scale_factor < 0.01 )
+                {
+                  Image
+                    *sample_image;
+
+                  sample_image=
+                    SampleImage(window->image,width*5,height*5,&image->exception);
+                  if (sample_image != (Image *) NULL)
+                    resize_image=
+                      ScaleImage(sample_image,width,height,&image->exception);
+                  DestroyImage(sample_image);
+                }
+              else
+                {
+                  resize_image=
+                    ZoomImage(window->image,width,height,&image->exception);
+                }
+            }
           if (resize_image != (Image *) NULL)
             {
               if (window->image != image)
