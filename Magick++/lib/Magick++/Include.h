@@ -169,6 +169,10 @@ namespace Magick
   using MagickLib::ThresholdCompositeOp;
   using MagickLib::UndefinedCompositeOp;
   using MagickLib::XorCompositeOp;
+  using MagickLib::CopyCyanCompositeOp;
+  using MagickLib::CopyMagentaCompositeOp;
+  using MagickLib::CopyYellowCompositeOp;
+  using MagickLib::CopyBlackCompositeOp;
   
   // Compression algorithms
   using MagickLib::CompressionType;

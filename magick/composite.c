@@ -521,16 +521,19 @@ MagickExport unsigned int CompositeImage(Image *image,
           break;
         }
         case CopyRedCompositeOp:
+        case CopyCyanCompositeOp:
         {
           destination.red=source.red;
           break;
         }
         case CopyGreenCompositeOp:
+        case CopyMagentaCompositeOp:
         {
           destination.green=source.green;
           break;
         }
         case CopyBlueCompositeOp:
+        case CopyYellowCompositeOp:
         {
           destination.blue=source.blue;
           break;
@@ -545,6 +548,13 @@ MagickExport unsigned int CompositeImage(Image *image,
               break;
             }
           destination.opacity=source.opacity;
+          break;
+        }
+        case CopyBlackCompositeOp:
+        {
+          if ((image->colorspace == CMYKColorspace) &&
+              (composite_image->colorspace == CMYKColorspace))
+            indexes[x]=(*composite_indexes++);
           break;
         }
         case ClearCompositeOp:

@@ -197,7 +197,7 @@ static char
     "CopyRed", "CopyGreen", "CopyBlue", "CopyOpacity", "Clear", "Dissolve",
     "Displace", "Modulate", "Threshold", "No", "Darken", "Lighten",
     "Hue", "Saturate", "Colorize", "Luminize", "Screen", "Overlay",
-    (char *) NULL
+    "CopyCyan", "CopyMagenta", "CopyYellow", "CopyBlack", (char *) NULL
   },
   *CompressionTypes[] =
   {

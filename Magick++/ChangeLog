@@ -1,3 +1,10 @@
+2003-08-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/Include.h (Magick): Added support for
+	CopyCyanCompositeOp, CopyMagentaCompositeOp,
+	CopyYellowCompositeOp, and CopyBlackCompositeOp, composition
+	operators.
+
 2003-08-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (depth): Method now only updates the

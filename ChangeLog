@@ -1,3 +1,12 @@
+2003-08-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* PerlMagick/Magick.xs: Add support for CopyCyan, CopyMagenta,
+	CopyYellow, and CopyBlack, composition operators.
+	* magick/composite.c (CompositeImage): Added support for
+	CopyCyanCompositeOp, CopyMagentaCompositeOp,
+	CopyYellowCompositeOp, and CopyBlackCompositeOp, composition
+	operators.
+
 2003-08-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* wand/*: Updated to current ImageMagick Wand API (minus a few
