@@ -1560,7 +1560,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
             *q++=Downscale(p->green);
             *q++=Downscale(p->blue);
             *q++=Downscale(p->opacity);
-            *q++=Downscale(indexes[x]);
+            *q++=Downscale(MaxRGB-indexes[x]);
             p++;
           }
           break;
@@ -1575,8 +1575,8 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         *q++=p->blue;
         *q++=p->opacity >> 8;
         *q++=p->opacity;
-        *q++=indexes[x] >> 8;
-        *q++=indexes[x];
+        *q++=(MaxRGB-indexes[x]) >> 8;
+        *q++=MaxRGB-indexes[x];
         p++;
       }
       break;
@@ -1954,7 +1954,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
             q->green=Upscale(*p++);
             q->blue=Upscale(*p++);
             q->opacity=Upscale(*p++);
-            indexes[x]=(IndexPacket) Upscale(*p++);
+            indexes[x]=(IndexPacket) (MaxRGB-Upscale(*p++));
             q++;
           }
           break;
@@ -1969,7 +1969,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
         p+=2;
         q->opacity=XDownscale((*p << 8) | *(p+1));
         p+=2;
-        indexes[x]=(IndexPacket) XDownscale((*p << 8) | *(p+1));
+        indexes[x]=XDownscale(XUpscale(MaxRGB)-(((*p) << 8) | *(p+1)));
         p+=2;
         q++;
       }
