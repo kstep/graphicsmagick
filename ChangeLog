@@ -1,3 +1,6 @@
+2002-10-18  Cristy  <cristy@mystic.es.dupont.com>
+  * Fixed Ping() memory leak in PerlMagick.
+
 2002-10-16  Cristy  <cristy@mystic.es.dupont.com>
   * -border with a single value now produces correct results
     (e.g. -border 10).

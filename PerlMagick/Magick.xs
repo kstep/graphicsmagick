@@ -6708,7 +6708,8 @@ Ping(ref,...)
       *hv;
 
     Image
-      *image;
+      *image,
+      *next;
 
     int
       ac,
@@ -6797,15 +6798,15 @@ Ping(ref,...)
         CatchException(&exception);
       count+=GetImageListSize(image);
       EXTEND(sp,4*count);
-      for ( ; image; image=image->next)
+      for (next=image; next; next=next->next)
       {
-        FormatString(message,"%u",image->columns);
+        FormatString(message,"%u",next->columns);
         PUSHs(sv_2mortal(newSVpv(message,0)));
-        FormatString(message,"%u",image->rows);
+        FormatString(message,"%u",next->rows);
         PUSHs(sv_2mortal(newSVpv(message,0)));
-        FormatString(message,"%lu",(unsigned long) GetBlobSize(image));
+        FormatString(message,"%lu",(unsigned long) GetBlobSize(next));
         PUSHs(sv_2mortal(newSVpv(message,0)));
-        PUSHs(sv_2mortal(newSVpv(image->magick,0)));
+        PUSHs(sv_2mortal(newSVpv(next->magick,0)));
       }
       DestroyImageList(image);
     }
@@ -7564,7 +7565,8 @@ Read(ref,...)
         goto ReturnIt;
       }
     GetExceptionInfo(&exception);
-    for (i=number_images=0; i < n; i++)
+    number_images=0;
+    for (i=0; i < n; i++)
     {
       (void) strncpy(package_info->image_info->filename,list[i],
         MaxTextExtent-1);
