@@ -496,11 +496,11 @@ MagickExport void InitializeMagick(const char *path)
       (void) SetClientName(filename);
     }
 #if defined(WIN32)
-#if defined(_DEBUG)
   {
     char
       *execution_path;
 
+#if defined(_DEBUG)
     int
       debug;
 
@@ -509,6 +509,7 @@ MagickExport void InitializeMagick(const char *path)
     debug|=_CRTDBG_DELAY_FREE_MEM_DF;
     debug|=_CRTDBG_LEAK_CHECK_DF;
     // debug=_CrtSetDbgFlag(debug);
+#endif
     execution_path=NTGetExecutionPath();
     GetPathComponent(execution_path,HeadPath,filename);
     (void) SetClientPath(filename);
@@ -516,7 +517,6 @@ MagickExport void InitializeMagick(const char *path)
     (void) SetClientName(filename);
     LiberateMemory((void **) &execution_path);
   }
-#endif
 #endif
 }
 
