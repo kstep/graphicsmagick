@@ -2,7 +2,7 @@
 <html>
 <head>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <meta name="GENERATOR" content="Mozilla/4.61 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
+   <meta name="GENERATOR" content="Mozilla/4.7 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
    <meta name="Author" content="Bob Friesenhahn">
    <meta name="Description" content="Documentation on Magick++'s STL support templates.">
    <meta name="Keywords" content="STL,Magick++,ImageMagick">
@@ -13,11 +13,12 @@
 <center>
 <h1>
 Magick++ STL Support</h1></center>
-Magick++ provides a set of STL algorithms for operating across ranges of
-image frames in a container. It also provides a set of STL unary function
-objects to apply an operation on image frames in a container via an algorithm
-which uses unary function objects. A good example of a standard algorithm
-which is useful for processing containers of image frames is the STL <i><a href="http://www.sgi.com/Technology/STL/for_each.html">for_each</a></i>
+Magick++ provides a set of Standard Template Libary (STL) algorithms for
+operating across ranges of image frames in a container. It also provides
+a set of STL unary function objects to apply an operation on image frames
+in a container via an algorithm which uses unary function objects. A good
+example of a standard algorithm which is useful for processing containers
+of image frames is the STL <i><a href="http://www.sgi.com/Technology/STL/for_each.html">for_each</a></i>
 algorithm which invokes a unary function object on a range of container
 elements.
 <p>Magick++ uses a limited set of template argument types. The current
@@ -245,8 +246,8 @@ be quantized to fewer colors. Use a copy of the original if this is a problem.</
 </tr>
 
 <tr>
-<td><font size=-1>InputIterator first_, InputIterator last_, const <a href="Blob.html">Blob</a>
-&amp;blob_, bool adjoin_</font></td>
+<td><font size=-1>InputIterator first_, InputIterator last_, <a href="Blob.html">Blob</a>
+*blob_, bool adjoin_ = true</font></td>
 
 <td><font size=-1>Write images in container to in-memory BLOB specified
 by <a href="Blob.html">Blob</a> blob_. Set adjoin_ to false to write a
@@ -275,18 +276,21 @@ error.</font></td>
 Magick++ Unary Function Objects</h3></center>
 Magick++ unary function objects inherit from the STL unary_function template
 class . The STL unary_function template class is of the form
-<blockquote><tt>unary_function&lt;Arg, Result></tt></blockquote>
+<blockquote><tt><font color="#000099">unary_function&lt;Arg, Result></font></tt></blockquote>
 and expects that derived classes implement a method of the form:
-<blockquote><tt>Result operator()( Arg argument_ );</tt></blockquote>
+<blockquote><tt><font color="#000099">Result operator()( Arg argument_
+);</font></tt></blockquote>
 which is invoked by algorithms using the function object. In the case of
 unary function objects defined by Magick++, the invoked function looks
 like:
-<blockquote><tt>void operator()( Image &amp;image_);</tt></blockquote>
+<blockquote><tt><font color="#000099">void operator()( Image &amp;image_);</font></tt></blockquote>
 with a typical implementation looking similar to:
-<blockquote><tt>void operator()( Image &amp;image_ )</tt>
-<br><tt>&nbsp; {</tt>
-<br><tt>&nbsp;&nbsp;&nbsp; image_.contrast( _sharpen );</tt>
-<br><tt>&nbsp; }</tt></blockquote>
+<blockquote><tt><font color="#000099">void operator()( Image &amp;image_
+)</font></tt>
+<br><tt><font color="#000099">&nbsp; {</font></tt>
+<br><tt><font color="#000099">&nbsp;&nbsp;&nbsp; image_.contrast( _sharpen
+);</font></tt>
+<br><tt><font color="#000099">&nbsp; }</font></tt></blockquote>
 where <i>contrast</i> is an Image method and <i>_sharpen </i>is an argument
 stored within the function object by its contructor. Since constructors
 may be polymorphic, a given function object may have several constructors
@@ -556,7 +560,7 @@ and allows batching draw objects together in a list for repeated use.</font></td
 <br><font size=-1>ColorImage</font></center>
 </td>
 
-<td><font size=-1>int x_, int y_, const <a href="Color.html">Color</a>
+<td><font size=-1>unsigned int x_, unsigned int y_, const <a href="Color.html">Color</a>
 &amp;fillColor_</font></td>
 
 <td ROWSPAN="2" NOSAVE><font size=-1>Flood-fill color across pixels that
@@ -570,7 +574,7 @@ const <a href="Color.html">Color</a> &amp;fillColor_</font></td>
 </tr>
 
 <tr NOSAVE>
-<td><font size=-1>int x_, int y_, const <a href="Color.html">Color</a>
+<td><font size=-1>unsigned int x_, unsigned int y_, const <a href="Color.html">Color</a>
 &amp;fillColor_, const <a href="Color.html">Color</a> &amp;borderColor_</font></td>
 
 <td ROWSPAN="2" NOSAVE><font size=-1>Flood-fill color across pixels starting
@@ -590,7 +594,7 @@ const <a href="Color.html">Color</a> &amp;fillColor_, const <a href="Color.html"
 <br><font size=-1>TextureImage</font></center>
 </td>
 
-<td><font size=-1>int x_, int y_,&nbsp; const Image &amp;texture_</font></td>
+<td><font size=-1>unsigned int x_, unsigned int y_,&nbsp; const Image &amp;texture_</font></td>
 
 <td ROWSPAN="2" NOSAVE><font size=-1>Flood-fill texture across pixels that
 match the color of the target pixel and are neighbors of the target pixel.
@@ -603,8 +607,8 @@ const Image &amp;texture_</font></td>
 </tr>
 
 <tr NOSAVE>
-<td><font size=-1>int x_, int y_, const Image &amp;texture_, const <a href="Color.html">Color</a>
-&amp;borderColor_</font></td>
+<td><font size=-1>unsigned int x_, unsigned int y_, const Image &amp;texture_,
+const <a href="Color.html">Color</a> &amp;borderColor_</font></td>
 
 <td ROWSPAN="2" NOSAVE><font size=-1>Flood-fill texture across pixels starting
 at target-pixel and stopping at pixels matching specified border color.
@@ -736,6 +740,15 @@ method_</font></td>
 </tr>
 
 <tr>
+<td><a NAME="medianFilterImage"></a><font size=-1>medianFilterImage</font></td>
+
+<td><font size=-1>unsigned int radius_</font></td>
+
+<td><font size=-1>Filter image by replacing each pixel component with the
+median color in a circular neighborhood</font></td>
+</tr>
+
+<tr>
 <td>
 <center><a NAME="minifyImage"></a><font size=-1>minifyImage</font></center>
 </td>
@@ -852,11 +865,10 @@ by specified number of columnms and rows)</font></td>
 <center><a NAME="rotateImage"></a><font size=-1>rotateImage</font></center>
 </td>
 
-<td><font size=-1>double degrees_, bool crop_ = false, unsigned int sharpen_
-= false</font></td>
+<td><font size=-1>double degrees_</font></td>
 
 <td><font size=-1>Rotate image counter-clockwise by specified number of
-degrees. Optionally crop image to original size and sharpen image.</font></td>
+degrees</font></td>
 </tr>
 
 <tr>
@@ -929,8 +941,7 @@ enhancement (0.0 - 99.9%).</font></td>
 <center><a NAME="shearImage"></a><font size=-1>shearImage</font></center>
 </td>
 
-<td><font size=-1>double xShearAngle_, double yShearAngle_,</font>
-<br><font size=-1>&nbsp;bool crop_ = false</font></td>
+<td><font size=-1>double xShearAngle_, double yShearAngle_</font></td>
 
 <td><font size=-1>Shear image (create parallelogram by sliding image by
 X or Y axis).&nbsp; Shearing slides one edge of an image along the X&nbsp;
@@ -941,8 +952,7 @@ the shear is controlled by a shear angle.&nbsp; For X direction&nbsp; shears,&nb
 x&nbsp; degrees is measured relative to the Y axis, and similarly, for
 Y direction shears&nbsp; y&nbsp; degrees is measured relative to the X
 axis. Empty triangles left over from shearing the&nbsp; image&nbsp; are
-filled&nbsp; with&nbsp; the&nbsp; color&nbsp; defined as <i>borderColor</i>.
-Specify crop_ as true_ to crop the sheared image to the original size.</font></td>
+filled&nbsp; with&nbsp; the&nbsp; color&nbsp; defined as <i>borderColor</i>.&nbsp;</font></td>
 </tr>
 
 <tr NOSAVE>
@@ -1032,16 +1042,6 @@ crop geometries. Crop geometry is optional.</font></td>
 <tr>
 <td><font size=-1>const <a href="Geometry.html">Geometry</a> &amp;imageGeometry_,
 const <a href="Geometry.html">Geometry</a> &amp;cropGeometry_&nbsp;</font></td>
-</tr>
-
-<tr>
-<td><a NAME="transformColorSpace"></a><font size=-1>transform-</font>
-<br><font size=-1>ColorSpaceImage</font></td>
-
-<td><font size=-1><a href="Enumerations.html#ColorspaceType">ColorspaceType</a>
-colorSpace_</font></td>
-
-<td><font size=-1>Transform the image representation to a different colorspace.</font></td>
 </tr>
 
 <tr>
@@ -1346,6 +1346,21 @@ color in RGB space.</font></td>
 </tr>
 
 <tr>
+<td><a NAME="colorSpaceImage"></a><font size=-1>colorSpaceImage</font></td>
+
+<td><font size=-1>Image</font></td>
+
+<td><font size=-1><a href="Enumerations.html#ColorspaceType">ColorspaceType</a></font></td>
+
+<td><font size=-1><a href="Enumerations.html#ColorspaceType">ColorspaceType</a>
+colorSpace_</font></td>
+
+<td><font size=-1>The colorspace (e.g. CMYK) used to represent the image
+pixel colors. Image pixels are always stored as RGB(A) except for the case
+of CMY(K).</font></td>
+</tr>
+
+<tr>
 <td>
 <center><a NAME="compressType"></a><font size=-1>compressType-</font>
 <br><font size=-1>Image</font></center>
@@ -1596,6 +1611,27 @@ matte channel if&nbsp; the image has one otherwise create an opaque one.</font><
 <td><font size=-1>bool flag_</font></td>
 
 <td><font size=-1>Transform the image to black and white</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="pageImage"></a>pageImage</center>
+</td>
+
+<td><font size=-1>Image &amp;</font>
+<br><font size=-1>Options</font></td>
+
+<td><font size=-1><a href="Geometry.html#PostscriptPageSize">Geometry</a></font></td>
+
+<td><font size=-1>const <a href="Geometry.html#PostscriptPageSize">Geometry</a>
+&amp;pageSize_</font></td>
+
+<td><font size=-1>Preferred size and location of an image canvas.</font>
+<p><font size=-1>Use this option to specify the dimensions and position
+of the Postscript page in dots per inch or a TEXT page in pixels. This
+option is typically used in concert with <i><a href="#density">density</a></i>.</font>
+<p><font size=-1>Page may also be used to position a GIF image (such as
+for a scene in an animation)</font></td>
 </tr>
 
 <tr>

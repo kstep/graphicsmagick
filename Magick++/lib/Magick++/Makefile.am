@@ -7,5 +7,5 @@ AUTOMAKE_OPTIONS = 1.2
 
 pkginclude_HEADERS = Blob.h Color.h Drawable.h \
 	Exception.h Functions.h Geometry.h Image.h \
-	Include.h LastError.h Montage.h Options.h \
-	STL.h
+	Include.h Montage.h Options.h \
+	Thread.h STL.h

@@ -12,8 +12,9 @@
 
 using namespace std;
 
-#include <Magick++/Blob.h>
-#include <Magick++/Include.h>
+#include "Magick++/Thread.h"
+#include "Magick++/Include.h"
+#include "Magick++/Blob.h"
 
 //
 // Implementation of Magick::Blob
@@ -26,7 +27,7 @@ Magick::Blob::Blob ( void )
 }
 
 // Construct with data
-Magick::Blob::Blob ( const void* data_, unsigned long length_ )
+Magick::Blob::Blob ( const void* data_, size_t length_ )
 {
   _blobRef = new Magick::BlobRef( data_, length_ );
 }
@@ -36,13 +37,21 @@ Magick::Blob::Blob ( const Magick::Blob& blob_ )
   : _blobRef(blob_._blobRef)
 {
   // Increase reference count
+  Lock( _blobRef->_mutexLock );
   ++_blobRef->_refCount;
 }
 
 // Destructor (reference counted)
 Magick::Blob::~Blob ()
 {
+  bool doDelete = false;
+  {
+    Lock( _blobRef->_mutexLock );
     if ( --_blobRef->_refCount == 0 )
+      doDelete = true;
+  }
+
+  if ( doDelete )
     {
       // Delete old blob reference with associated data
       delete _blobRef;
@@ -52,8 +61,17 @@ Magick::Blob::~Blob ()
 // Assignment operator (reference counted)
 Magick::Blob Magick::Blob::operator= ( const Magick::Blob& blob_ )
 {
-  ++blob_._blobRef->_refCount;
-  if ( --_blobRef->_refCount == 0 )
+  {
+    Lock( blob_._blobRef->_mutexLock );
+    ++blob_._blobRef->_refCount;
+  }
+  bool doDelete = false;
+  {
+    Lock( _blobRef->_mutexLock );
+    if ( --_blobRef->_refCount == 0 )
+      doDelete = true;
+  }
+  if ( doDelete )
     {
       delete _blobRef;
     }
@@ -64,9 +82,15 @@ Magick::Blob Magick::Blob::operator= ( const Magick::Blob& blob_ )
 
 // Update object contents, making a copy of the supplied data.
 // Any existing data in the object is deallocated.
-void Magick::Blob::update ( const void* data_, unsigned long length_ )
+void Magick::Blob::update ( const void* data_, size_t length_ )
 {
-  if ( --_blobRef->_refCount == 0 )
+  bool doDelete = false;
+  {
+    Lock( _blobRef->_mutexLock );
+    if ( --_blobRef->_refCount == 0 )
+      doDelete = true;
+  }
+  if ( doDelete )
     {
       // Delete old blob reference with associated data
       delete _blobRef;
@@ -79,9 +103,15 @@ void Magick::Blob::update ( const void* data_, unsigned long length_ )
 // Any existing data in the object is deallocated.  The user must
 // ensure that the pointer supplied is not deleted or otherwise
 // modified after it has been supplied to this method.
-void Magick::Blob::updateNoCopy ( void* data_, unsigned long length_ )
+void Magick::Blob::updateNoCopy ( void* data_, size_t length_ )
 {
-  if ( --_blobRef->_refCount == 0 )
+  bool doDelete = false;
+  {
+    Lock( _blobRef->_mutexLock );
+    if ( --_blobRef->_refCount == 0 )
+      doDelete = true;
+  }
+  if ( doDelete )
     {
       // Delete old blob reference with associated data
       delete _blobRef;
@@ -97,10 +127,10 @@ void Magick::Blob::updateNoCopy ( void* data_, unsigned long length_ )
 
 // Construct with data, making private copy of data
 Magick::BlobRef::BlobRef ( const void* data_,
-			   unsigned long length_ )
+			   size_t length_ )
   : _data(0),
     _length(length_),
-    _refCount(0)
+    _refCount(1)
 {
   if ( data_ != 0 )
     {

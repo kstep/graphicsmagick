@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4a from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -9,13 +9,6 @@
 # but WITHOUT ANY WARRANTY, to the extent permitted by law; without
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
-
-#
-# Makefile for Magick++ demo programs
-#
-# Copyright Bob Friesenhahn, 1999
-#
-
 
 SHELL = @SHELL@
 
@@ -52,9 +45,10 @@ AUTOMAKE = @AUTOMAKE@
 AUTOHEADER = @AUTOHEADER@
 
 INSTALL = @INSTALL@
-INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
+INSTALL_STRIP_FLAG =
 transform = @program_transform_name@
 
 NORMAL_INSTALL = :
@@ -63,93 +57,127 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
+
+@SET_MAKE@
 build_alias = @build_alias@
 build_triplet = @build@
 host_alias = @host_alias@
 host_triplet = @host@
 target_alias = @target_alias@
 target_triplet = @target@
+AMDEP = @AMDEP@
+AMTAR = @AMTAR@
 AS = @AS@
+AWK = @AWK@
 CC = @CC@
 CPP = @CPP@
 CXX = @CXX@
+CXXCPP = @CXXCPP@
+DEPDIR = @DEPDIR@
 DLLTOOL = @DLLTOOL@
+EXEEXT = @EXEEXT@
 INTERFACE_AGE = @INTERFACE_AGE@
 INTERFACE_CURRENT = @INTERFACE_CURRENT@
 INTERFACE_REVISION = @INTERFACE_REVISION@
-LD = @LD@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
-NM = @NM@
 OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
+STRIP = @STRIP@
 VERSION = @VERSION@
+install_sh = @install_sh@
+
+#
+# Makefile for Magick++ demo programs
+#
+# Copyright Bob Friesenhahn, 1999
+#
+
 
 AUTOMAKE_OPTIONS = 1.2
 
 INCLUDES = -I../lib
 
-noinst_PROGRAMS = button demo flip shapes
+noinst_PROGRAMS = button demo detrans flip shapes
 
 LDADD = ../lib/libMagick++.la
 
 button_SOURCES = button.cpp
 demo_SOURCES = demo.cpp
+detrans_SOURCES = detrans.cpp
 flip_SOURCES = flip.cpp
 shapes_SOURCES = shapes.cpp
 
-EXTRA_DIST = Generic.ttf model.gif smile.gif smile_anim.gif tile.gif 	button.dsp demo.dsp flip.dsp shapes.dsp
+EXTRA_DIST = Generic.ttf model.miff smile.miff smile_anim.miff tile.miff
 
+CLEANFILES = button.miff demo.miff flip_out.miff shapes.miff
+subdir = demo
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_CLEAN_FILES = 
+noinst_PROGRAMS =  button$(EXEEXT) demo$(EXEEXT) detrans$(EXEEXT) \
+flip$(EXEEXT) shapes$(EXEEXT)
 PROGRAMS =  $(noinst_PROGRAMS)
 
 
-DEFS = @DEFS@ -I. -I$(srcdir) 
+DEFS = @DEFS@ -I. -I$(srcdir)
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-button_OBJECTS =  button.o
+am_button_OBJECTS =  button.$(OBJEXT)
+button_OBJECTS =  $(am_button_OBJECTS)
 button_LDADD = $(LDADD)
 button_DEPENDENCIES =  ../lib/libMagick++.la
 button_LDFLAGS = 
-demo_OBJECTS =  demo.o
+am_demo_OBJECTS =  demo.$(OBJEXT)
+demo_OBJECTS =  $(am_demo_OBJECTS)
 demo_LDADD = $(LDADD)
 demo_DEPENDENCIES =  ../lib/libMagick++.la
 demo_LDFLAGS = 
-flip_OBJECTS =  flip.o
+am_detrans_OBJECTS =  detrans.$(OBJEXT)
+detrans_OBJECTS =  $(am_detrans_OBJECTS)
+detrans_LDADD = $(LDADD)
+detrans_DEPENDENCIES =  ../lib/libMagick++.la
+detrans_LDFLAGS = 
+am_flip_OBJECTS =  flip.$(OBJEXT)
+flip_OBJECTS =  $(am_flip_OBJECTS)
 flip_LDADD = $(LDADD)
 flip_DEPENDENCIES =  ../lib/libMagick++.la
 flip_LDFLAGS = 
-shapes_OBJECTS =  shapes.o
+am_shapes_OBJECTS =  shapes.$(OBJEXT)
+shapes_OBJECTS =  $(am_shapes_OBJECTS)
 shapes_LDADD = $(LDADD)
 shapes_DEPENDENCIES =  ../lib/libMagick++.la
 shapes_LDFLAGS = 
-CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
+CXXFLAGS = @CXXFLAGS@
 CXXLD = $(CXX)
-CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(LDFLAGS) -o $@
+CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+DIST_SOURCES =  $(button_SOURCES) $(demo_SOURCES) $(detrans_SOURCES) \
+$(flip_SOURCES) $(shapes_SOURCES)
 DIST_COMMON =  Makefile.am Makefile.in
 
 
-DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
+DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
 GZIP_ENV = --best
-SOURCES = $(button_SOURCES) $(demo_SOURCES) $(flip_SOURCES) $(shapes_SOURCES)
-OBJECTS = $(button_OBJECTS) $(demo_OBJECTS) $(flip_OBJECTS) $(shapes_OBJECTS)
+depcomp = $(SHELL) $(top_srcdir)/depcomp
+DEP_FILES =  @AMDEP@ $(DEPDIR)/button.Po $(DEPDIR)/demo.Po \
+$(DEPDIR)/detrans.Po $(DEPDIR)/flip.Po $(DEPDIR)/shapes.Po
+SOURCES = $(button_SOURCES) $(demo_SOURCES) $(detrans_SOURCES) $(flip_SOURCES) $(shapes_SOURCES)
+OBJECTS = $(am_button_OBJECTS) $(am_demo_OBJECTS) $(am_detrans_OBJECTS) $(am_flip_OBJECTS) $(am_shapes_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .cpp .lo .o .s
+.SUFFIXES: .c .cpp .lo .o .obj
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
-	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps demo/Makefile
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu demo/Makefile
 
-Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
@@ -163,17 +191,9 @@ distclean-noinstPROGRAMS:
 
 maintainer-clean-noinstPROGRAMS:
 
-.c.o:
-	$(COMPILE) -c $<
-
-.s.o:
-	$(COMPILE) -c $<
-
-.S.o:
-	$(COMPILE) -c $<
-
 mostlyclean-compile:
 	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
 
 clean-compile:
 
@@ -181,15 +201,6 @@ distclean-compile:
 	-rm -f *.tab.c
 
 maintainer-clean-compile:
-
-.c.lo:
-	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
-
-.s.lo:
-	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
-
-.S.lo:
-	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -201,45 +212,49 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-button: $(button_OBJECTS) $(button_DEPENDENCIES)
-	@rm -f button
+button$(EXEEXT): $(button_OBJECTS) $(button_DEPENDENCIES)
+	@rm -f button$(EXEEXT)
 	$(CXXLINK) $(button_LDFLAGS) $(button_OBJECTS) $(button_LDADD) $(LIBS)
 
-demo: $(demo_OBJECTS) $(demo_DEPENDENCIES)
-	@rm -f demo
+demo$(EXEEXT): $(demo_OBJECTS) $(demo_DEPENDENCIES)
+	@rm -f demo$(EXEEXT)
 	$(CXXLINK) $(demo_LDFLAGS) $(demo_OBJECTS) $(demo_LDADD) $(LIBS)
 
-flip: $(flip_OBJECTS) $(flip_DEPENDENCIES)
-	@rm -f flip
+detrans$(EXEEXT): $(detrans_OBJECTS) $(detrans_DEPENDENCIES)
+	@rm -f detrans$(EXEEXT)
+	$(CXXLINK) $(detrans_LDFLAGS) $(detrans_OBJECTS) $(detrans_LDADD) $(LIBS)
+
+flip$(EXEEXT): $(flip_OBJECTS) $(flip_DEPENDENCIES)
+	@rm -f flip$(EXEEXT)
 	$(CXXLINK) $(flip_LDFLAGS) $(flip_OBJECTS) $(flip_LDADD) $(LIBS)
 
-shapes: $(shapes_OBJECTS) $(shapes_DEPENDENCIES)
-	@rm -f shapes
+shapes$(EXEEXT): $(shapes_OBJECTS) $(shapes_DEPENDENCIES)
+	@rm -f shapes$(EXEEXT)
 	$(CXXLINK) $(shapes_LDFLAGS) $(shapes_OBJECTS) $(shapes_LDADD) $(LIBS)
-.cpp.o:
-	$(CXXCOMPILE) -c $<
-.cpp.lo:
-	$(LTCXXCOMPILE) -c $<
 
 tags: TAGS
 
-ID: $(HEADERS) $(SOURCES) $(LISP)
-	list='$(SOURCES) $(HEADERS)'; \
-	unique=`for i in $$list; do echo $$i; done | \
-	  awk '    { files[$$0] = 1; } \
+ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
+	list='$(SOURCES) $(HEADERS) $(TAGS_FILES)'; \
+	unique=`for i in $$list; do \
+	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
+	  done | \
+	  $(AWK) '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
-	here=`pwd` && cd $(srcdir) \
-	  && mkid -f$$here/ID $$unique $(LISP)
+	mkid -f$$here/ID $$unique $(LISP)
 
-TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
+		$(TAGS_FILES) $(LISP)
 	tags=; \
 	here=`pwd`; \
-	list='$(SOURCES) $(HEADERS)'; \
-	unique=`for i in $$list; do echo $$i; done | \
-	  awk '    { files[$$0] = 1; } \
+	list='$(SOURCES) $(HEADERS) $(TAGS_FILES)'; \
+	unique=`for i in $$list; do \
+	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
+	  done | \
+	  $(AWK) '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
+	  || etags $(ETAGS_ARGS) $$tags  $$unique $(LISP)
 
 mostlyclean-tags:
 
@@ -252,47 +267,52 @@ maintainer-clean-tags:
 
 distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 
-subdir = demo
-
 distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$/$$file $(distdir)/$$file; \
+	    cp -pR $$d/$$file $(distdir); \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-button.o: button.cpp ../lib/Magick++.h ../lib/Magick++/Image.h \
-	../lib/Magick++/Blob.h ../lib/Magick++/Color.h \
-	../lib/Magick++/Include.h ../lib/Magick++/Drawable.h \
-	../lib/Magick++/Geometry.h ../lib/Magick++/Exception.h \
-	../lib/Magick++/Options.h ../lib/Magick++/LastError.h \
-	../lib/Magick++/STL.h ../lib/Magick++/Montage.h \
-	../lib/Magick++/Functions.h
-demo.o: demo.cpp ../lib/Magick++.h ../lib/Magick++/Image.h \
-	../lib/Magick++/Blob.h ../lib/Magick++/Color.h \
-	../lib/Magick++/Include.h ../lib/Magick++/Drawable.h \
-	../lib/Magick++/Geometry.h ../lib/Magick++/Exception.h \
-	../lib/Magick++/Options.h ../lib/Magick++/LastError.h \
-	../lib/Magick++/STL.h ../lib/Magick++/Montage.h \
-	../lib/Magick++/Functions.h
-flip.o: flip.cpp ../lib/Magick++.h ../lib/Magick++/Image.h \
-	../lib/Magick++/Blob.h ../lib/Magick++/Color.h \
-	../lib/Magick++/Include.h ../lib/Magick++/Drawable.h \
-	../lib/Magick++/Geometry.h ../lib/Magick++/Exception.h \
-	../lib/Magick++/Options.h ../lib/Magick++/LastError.h \
-	../lib/Magick++/STL.h ../lib/Magick++/Montage.h \
-	../lib/Magick++/Functions.h
-shapes.o: shapes.cpp ../lib/Magick++.h ../lib/Magick++/Image.h \
-	../lib/Magick++/Blob.h ../lib/Magick++/Color.h \
-	../lib/Magick++/Include.h ../lib/Magick++/Drawable.h \
-	../lib/Magick++/Geometry.h ../lib/Magick++/Exception.h \
-	../lib/Magick++/Options.h ../lib/Magick++/LastError.h \
-	../lib/Magick++/STL.h ../lib/Magick++/Montage.h \
-	../lib/Magick++/Functions.h
+
+@AMDEP@include $(DEPDIR)/button.Po
+@AMDEP@include $(DEPDIR)/demo.Po
+@AMDEP@include $(DEPDIR)/detrans.Po
+@AMDEP@include $(DEPDIR)/flip.Po
+@AMDEP@include $(DEPDIR)/shapes.Po
+
+mostlyclean-depend:
+
+clean-depend:
+
+distclean-depend:
+	-rm -rf $(DEPDIR)
+
+maintainer-clean-depend:
+
+@AMDEP@CXXDEPMODE = @CXXDEPMODE@
+
+.cpp.o:
+@AMDEP@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
+@AMDEP@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXXCOMPILE) -c -o $@ $<
+
+.cpp.lo:
+@AMDEP@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
+@AMDEP@	depfile='$(DEPDIR)/$*.Plo' tmpdepfile='$(DEPDIR)/$*.TPlo' @AMDEPBACKSLASH@
+@AMDEP@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(LTCXXCOMPILE) -c -o $@ $<
+
+.cpp.obj:
+@AMDEP@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
+@AMDEP@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXXCOMPILE) -c -o $@ `cygpath -w $<`
 
 info-am:
 info: info-am
@@ -316,41 +336,43 @@ uninstall: uninstall-am
 all-am: Makefile $(PROGRAMS)
 all-redirect: all-am
 install-strip:
-	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
+	$(MAKE) $(AM_MAKEFLAGS) INSTALL_STRIP_FLAG=-s install
 installdirs:
 
 
 mostlyclean-generic:
 
 clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-rm -f Makefile $(CONFIG_CLEAN_FILES)
 	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
 
 maintainer-clean-generic:
+	-rm -f Makefile.in
 mostlyclean-am:  mostlyclean-noinstPROGRAMS mostlyclean-compile \
-		mostlyclean-libtool mostlyclean-tags \
+		mostlyclean-libtool mostlyclean-tags mostlyclean-depend \
 		mostlyclean-generic
 
 mostlyclean: mostlyclean-am
 
 clean-am:  clean-noinstPROGRAMS clean-compile clean-libtool clean-tags \
-		clean-generic mostlyclean-am
+		clean-depend clean-generic mostlyclean-am
 
 clean: clean-am
 
 distclean-am:  distclean-noinstPROGRAMS distclean-compile \
-		distclean-libtool distclean-tags distclean-generic \
-		clean-am
+		distclean-libtool distclean-tags distclean-depend \
+		distclean-generic clean-am
 	-rm -f libtool
 
 distclean: distclean-am
 
 maintainer-clean-am:  maintainer-clean-noinstPROGRAMS \
 		maintainer-clean-compile maintainer-clean-libtool \
-		maintainer-clean-tags maintainer-clean-generic \
-		distclean-am
+		maintainer-clean-tags maintainer-clean-depend \
+		maintainer-clean-generic distclean-am
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
@@ -361,13 +383,21 @@ clean-noinstPROGRAMS maintainer-clean-noinstPROGRAMS \
 mostlyclean-compile distclean-compile clean-compile \
 maintainer-clean-compile mostlyclean-libtool distclean-libtool \
 clean-libtool maintainer-clean-libtool tags mostlyclean-tags \
-distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
-dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
-install-exec install-data-am install-data install-am install \
-uninstall-am uninstall all-redirect all-am all installdirs \
-mostlyclean-generic distclean-generic clean-generic \
-maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+distclean-tags clean-tags maintainer-clean-tags distdir \
+mostlyclean-depend distclean-depend clean-depend \
+maintainer-clean-depend info-am info dvi-am dvi check check-am \
+installcheck-am installcheck install-exec-am install-exec \
+install-data-am install-data install-am install uninstall-am uninstall \
+all-redirect all-am all install-strip installdirs mostlyclean-generic \
+distclean-generic clean-generic maintainer-clean-generic clean \
+mostlyclean distclean maintainer-clean
 
+
+check:
+	./button
+	./demo
+	./flip
+	./shapes
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

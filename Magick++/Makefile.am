@@ -18,7 +18,7 @@ dist-hook:
 	  cd $(srcdir) && \
 	  ( \
 	    for dir in $(DISTDIRS) ; do \
-	      find $$dir -depth -print | egrep -v '(~$$)|(CVS)' | cpio -pdum $$builddir/$(distdir) 2> /dev/null ; \
+	      find $$dir -depth -print | egrep -v '(~$$)|(\.bak$$)|(CVS)' | cpio -pdum $$builddir/$(distdir) 2> /dev/null ; \
 	    done \
 	  ) \
 	)

@@ -11,7 +11,7 @@
 
 using namespace std;
 
-#include <Magick++/Exception.h>
+#include "Magick++/Exception.h"
 
 // Construct with message string
 Magick::Exception::Exception( const std::string& what_ )
@@ -84,6 +84,16 @@ Magick::WarningFileOpen::WarningFileOpen ( const std::string& what_ )
 {
 }
 
+Magick::WarningBlob::WarningBlob ( const std::string& what_ )
+  : Warning(what_)
+{
+}
+
+Magick::WarningCache::WarningCache ( const std::string& what_ )
+  : Warning(what_)
+{
+}
+
 //
 // Errors
 //
@@ -131,4 +141,94 @@ Magick::ErrorCorruptImage::ErrorCorruptImage ( const std::string& what_ )
 Magick::ErrorFileOpen::ErrorFileOpen ( const std::string& what_ )
   : Error(what_)
 {
+}
+
+Magick::ErrorBlob::ErrorBlob ( const std::string& what_ )
+  : Error(what_)
+{
+}
+
+Magick::ErrorCache::ErrorCache ( const std::string& what_ )
+  : Error(what_)
+{
+}
+
+// Format and throw exception
+void Magick::throwException( MagickLib::ExceptionType severity_,
+			     const char* message_,
+			     const char* qualifier_)
+{
+  // Just return if there is no reported error
+  if ( severity_ == MagickLib::UndefinedException )
+    return;
+
+  // Format error message ImageMagick-style
+  std::string message = MagickLib::SetClientName((char *) NULL);
+  if ( message_ )
+    {
+      message += std::string(": ");
+      message += std::string(message_);
+    }
+
+  if ( qualifier_ )
+    message += " (" + std::string(qualifier_) + ")";
+
+  switch ( severity_ )
+    {
+      // Warnings
+    case MagickLib::ResourceLimitWarning :
+      throw WarningResourceLimit( message );
+    case MagickLib::XServerWarning :
+      throw WarningXServer( message );
+    case MagickLib::OptionWarning :
+      throw WarningOption( message );
+    case MagickLib::DelegateWarning :
+      throw WarningDelegate( message );
+    case MagickLib::MissingDelegateWarning :
+      throw WarningMissingDelegate( message );
+    case MagickLib::CorruptImageWarning :
+      throw WarningCorruptImage( message );
+    case MagickLib::FileOpenWarning :
+      throw WarningFileOpen( message );
+    case MagickLib::BlobWarning :
+      throw WarningBlob ( message );
+    case MagickLib::CacheWarning :
+      throw WarningCache ( message );
+      // Errors
+      // FIXME: FatalException missing
+    case MagickLib::ResourceLimitError :
+      throw ErrorResourceLimit( message );
+    case MagickLib::XServerError :
+      throw ErrorXServer( message );
+    case MagickLib::OptionError :
+      throw ErrorOption( message );
+    case MagickLib::DelegateError :
+      throw ErrorDelegate( message );
+    case MagickLib::MissingDelegateError :
+      throw ErrorMissingDelegate( message );
+    case MagickLib::CorruptImageError :
+      throw ErrorCorruptImage( message );
+    case MagickLib::FileOpenError :
+      throw ErrorFileOpen( message );
+    case MagickLib::BlobError :
+      throw ErrorBlob ( message );
+    case MagickLib::CacheError :
+      throw ErrorCache ( message );
+    case MagickLib::UndefinedException :
+    default :
+      throw ErrorUndefined( message );
+    }
+}
+
+// Format and throw exception
+void Magick::throwException( const MagickLib::ExceptionInfo &exception_ )
+{
+
+  // Just return if there is no reported error
+  if ( exception_.severity == MagickLib::UndefinedException )
+    return;
+
+  throwException( exception_.severity,
+		  exception_.message,
+		  exception_.qualifier );
 }

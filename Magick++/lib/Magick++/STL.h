@@ -12,11 +12,10 @@
 #include <algorithm>
 #include <functional>
 #include <iterator>
-#include <Magick++/Drawable.h>
-#include <Magick++/Montage.h>
-#include <Magick++/LastError.h>
-#include <Magick++/Include.h>
-#include <Magick++/Functions.h>
+#include "Magick++/Drawable.h"
+#include "Magick++/Montage.h"
+#include "Magick++/Include.h"
+#include "Magick++/Functions.h"
 
 namespace Magick
 {
@@ -98,6 +97,7 @@ namespace Magick
   void readImages( Container *sequence_,
 		   const std::string &imageSpec_ );
   template <class Container>
+  // Read images from BLOB
   void readImages( Container *sequence_,
 		   const Blob &blob_ );
 
@@ -110,9 +110,10 @@ namespace Magick
 		    const std::string &imageSpec_,
 		    bool adjoin_ );
   template <class InputIterator>
+  // Write images to a BLOB
   void writeImages( InputIterator first_,
 		    InputIterator last_,
-		    const Blob &blob_,
+		    Blob *blob_,
 		    bool adjoin_ );
 
   //
@@ -256,6 +257,21 @@ namespace Magick
     const Color _penColor;
   };
 
+  // Convert the image colorspace representation
+  class colorSpaceImage : public std::unary_function<Image&,void>
+  {
+  public:
+    colorSpaceImage( ColorspaceType colorSpace_ )
+      : _colorSpace( colorSpace_ ) { }
+
+    void operator()( Image &image_ )
+      {
+	image_.colorSpace( _colorSpace );
+      }
+  private:
+    const ColorspaceType _colorSpace;
+  };
+
   // Comment image (add comment string to image)
   class commentImage : public std::unary_function<Image&,void>
   {
@@ -301,19 +317,6 @@ namespace Magick
     const int               _xOffset;
     const int               _yOffset;
     const CompositeOperator _compose;
-  };
-
-  // Condense image (Re-run-length encode image in memory)
-  class condenseImage : public std::unary_function<Image&,void>
-  {
-  public:
-    condenseImage( void ) { }
-
-    void operator()( Image &image_ )
-      {
-	image_.condense( );
-      }
-  private:
   };
 
   // Contrast image (enhance intensity differences in image)
@@ -470,7 +473,7 @@ namespace Magick
     // Flood-fill color across pixels starting at target-pixel and
     // stopping at pixels matching specified border color.
     // Uses current fuzz setting when determining color match.
-    floodFillColorImage( int x_, int y_,
+    floodFillColorImage( unsigned int x_, unsigned int y_,
 			 const Color &fillColor_ )
       : _x(x_),
 	_y(y_),
@@ -486,7 +489,7 @@ namespace Magick
     // Flood-fill color across pixels starting at target-pixel and
     // stopping at pixels matching specified border color.
     // Uses current fuzz setting when determining color match.
-    floodFillColorImage( int x_, int y_,
+    floodFillColorImage( unsigned int x_, unsigned int y_,
 			 const Color &fillColor_,
 			 const Color &borderColor_ )
       : _x(x_),
@@ -513,10 +516,10 @@ namespace Magick
 	  }
       }
   private:
-    const int   _x;
-    const int   _y;
-    const Color _fillColor;
-    const Color _borderColor;
+    const unsigned int   _x;
+    const unsigned int   _y;
+    const Color          _fillColor;
+    const Color          _borderColor;
   };
 
   // Flood-fill image with texture
@@ -526,7 +529,7 @@ namespace Magick
     // Flood-fill texture across pixels that match the color of the
     // target pixel and are neighbors of the target pixel.
     // Uses current fuzz setting when determining color match.
-    floodFillTextureImage( int x_, int y_,
+    floodFillTextureImage( unsigned int x_, unsigned int y_,
 			   const Image &texture_ )
       : _x(x_),
 	_y(y_),
@@ -542,7 +545,7 @@ namespace Magick
     // Flood-fill texture across pixels starting at target-pixel and
     // stopping at pixels matching specified border color.
     // Uses current fuzz setting when determining color match.
-    floodFillTextureImage( int x_, int y_,
+    floodFillTextureImage( unsigned int x_, unsigned int y_,
 			   const Image &texture_,
 			   const Color &borderColor_ )
       : _x(x_),
@@ -569,10 +572,10 @@ namespace Magick
 	  }
       }
   private:
-    const int     _x;
-    const int     _y;
-    const Image   _texture;
-    const Color   _borderColor;
+    const unsigned int  _x;
+    const unsigned int  _y;
+    const Image         _texture;
+    const Color         _borderColor;
   };
 
   // Flop image (reflect each scanline in the horizontal direction)
@@ -739,6 +742,22 @@ namespace Magick
     int           _x;
     int           _y;
     PaintMethod   _method;
+  };
+
+  // Filter image by replacing each pixel component with the median
+  // color in a circular neighborhood
+  class medianFilterImage : public std::unary_function<Image&,void>
+  {
+  public:
+    medianFilterImage( unsigned int radius_ )
+      : _radius( radius_ ) { }
+
+    void operator()( Image &image_ )
+      {
+	image_.medianFilter( _radius );
+      }
+  private:
+    const unsigned int _radius;
   };
 
   // Reduce image by integral size
@@ -912,21 +931,15 @@ namespace Magick
   class rotateImage : public std::unary_function<Image&,void>
   {
   public:
-    rotateImage( double degrees_,
-		 bool crop_ = false,
-		 unsigned int sharpen_ = false )
-      : _degrees( degrees_ ),
-	_crop( crop_ ),
-	_sharpen( sharpen_ ) { }
+    rotateImage( double degrees_ )
+      : _degrees( degrees_ ) { }
 
     void operator()( Image &image_ )
       {
-	image_.rotate( _degrees, _crop, _sharpen );
+	image_.rotate( _degrees );
       }
   private:
     const double       _degrees;
-    const bool         _crop;
-    const unsigned int _sharpen;
   };
 
   // Resize image by using pixel sampling algorithm
@@ -1018,20 +1031,17 @@ namespace Magick
   {
   public:
     shearImage( double xShearAngle_,
-		double yShearAngle_,
-		bool crop_ = false )
+		double yShearAngle_ )
       : _xShearAngle( xShearAngle_ ),
-	_yShearAngle( yShearAngle_ ),
-	_crop( crop_ ) { }
+	_yShearAngle( yShearAngle_ ) { }
 
     void operator()( Image &image_ )
       {
-	image_.shear( _xShearAngle, _yShearAngle, _crop );
+	image_.shear( _xShearAngle, _yShearAngle );
       }
   private:
     const double _xShearAngle;
     const double _yShearAngle;
-    const bool   _crop;
   };
 
   // Solarize image (similar to effect seen when exposing a
@@ -1163,21 +1173,6 @@ namespace Magick
   private:
     const Geometry _imageGeometry;
     const Geometry _cropGeometry;
-  };
-
-  // Convert the image colorspace representation
-  class transformColorSpaceImage : public std::unary_function<Image&,void>
-  {
-  public:
-    transformColorSpaceImage( ColorspaceType colorSpace_ )
-      : _colorSpace( colorSpace_ ) { }
-
-    void operator()( Image &image_ )
-      {
-	image_.transformColorSpace( _colorSpace );
-      }
-  private:
-    const ColorspaceType _colorSpace;
   };
 
   // Set image color to transparent
@@ -1728,15 +1723,15 @@ namespace Magick
   };
 
   // Postscript page size.
-  class psPageSizeImage : public std::unary_function<Image&,void>
+  class pageImage : public std::unary_function<Image&,void>
   {
   public:
-    psPageSizeImage( const Geometry &pageSize_ )
+    pageImage( const Geometry &pageSize_ )
       : _pageSize( pageSize_ ) { }
 
     void operator()( Image &image_ )
       {
-	image_.psPageSize( _pageSize );
+	image_.page( _pageSize );
       }
   private:
     const Geometry _pageSize;
@@ -2011,9 +2006,13 @@ namespace Magick
   template <class InputIterator>
   void animateImages( InputIterator first_,
 		      InputIterator last_ ) {
+    MagickLib::ExceptionInfo exceptionInfo;
+    MagickLib::GetExceptionInfo( &exceptionInfo );
     linkImages( first_, last_ );
     MagickLib::AnimateImages( first_->imageInfo(), first_->image() );
+    MagickLib::GetImageException( first_->image(), &exceptionInfo );
     unlinkImages( first_, last_ );
+    throwException( exceptionInfo );
   }
 
   template <class InputIterator>
@@ -2021,10 +2020,15 @@ namespace Magick
 		     InputIterator first_,
 		     InputIterator last_,
 		     bool stack_ = false) {
+    MagickLib::ExceptionInfo exceptionInfo;
+    MagickLib::GetExceptionInfo( &exceptionInfo );
     linkImages( first_, last_ );
-    MagickLib::Image* image = MagickLib::AppendImages( first_->image(), stack_ ); 
+    MagickLib::Image* image = MagickLib::AppendImages( first_->image(),
+						       stack_,
+						       &exceptionInfo ); 
     unlinkImages( first_, last_ );
     appendedImage_->replaceImage( image );
+    throwException( exceptionInfo );
   }
 
   // Average a set of images.
@@ -2033,10 +2037,14 @@ namespace Magick
   void averageImages( Image *averagedImage_,
 		      InputIterator first_,
 		      InputIterator last_ ) {
+    MagickLib::ExceptionInfo exceptionInfo;
+    MagickLib::GetExceptionInfo( &exceptionInfo );
     linkImages( first_, last_ );
-    MagickLib::Image* image = MagickLib::AverageImages( first_->image() );
+    MagickLib::Image* image = MagickLib::AverageImages( first_->image(),
+							&exceptionInfo );
     unlinkImages( first_, last_ );
     averagedImage_->replaceImage( image );
+    throwException( exceptionInfo );
   }
 
   // Merge a sequence of images.
@@ -2046,17 +2054,24 @@ namespace Magick
   template <class InputIterator>
   void coalesceImages( InputIterator first_,
 		       InputIterator last_ ) {
+    MagickLib::ExceptionInfo exceptionInfo;
+    MagickLib::GetExceptionInfo( &exceptionInfo );
     linkImages( first_, last_ );
-    MagickLib::CoalesceImages( first_->image() );
+    MagickLib::CoalesceImages( first_->image(), &exceptionInfo );
     unlinkImages( first_, last_ );
+    throwException( exceptionInfo );
   }
 
   template <class InputIterator>
   void displayImages( InputIterator first_,
 		      InputIterator last_ ) {
+    MagickLib::ExceptionInfo exceptionInfo;
+    MagickLib::GetExceptionInfo( &exceptionInfo );
     linkImages( first_, last_ );
     MagickLib::DisplayImages( first_->imageInfo(), first_->image() );
+    MagickLib::GetImageException( first_->image(), &exceptionInfo );
     unlinkImages( first_, last_ );
+    throwException( exceptionInfo );
   }
 
   // Replace the colors of a sequence of images with the closest color
@@ -2069,20 +2084,41 @@ namespace Magick
 		  const Image& mapImage_,
 		  bool dither_ = false,
 		  bool measureError_ = false ) {
+
+    MagickLib::ExceptionInfo exceptionInfo;
+    MagickLib::GetExceptionInfo( &exceptionInfo );
     linkImages( first_, last_ );
-     MagickLib::MapImages( first_->image(),
-			   mapImage_->image(),
-			   dither_ );
+    MagickLib::MapImages( first_->image(),
+			  mapImage_->image(),
+			  dither_ );
+    MagickLib::GetImageException( first_->image(), &exceptionInfo );
+    if ( exceptionInfo.severity != MagickLib::UndefinedException )
+      {
+	unlinkImages( first_, last_ );
+	throwException( exceptionInfo );
+      }
 
     MagickLib::Image* image = first_->image();
-    while( image != 0 )
+    while( image )
       {
 	// Calculate quantization error
 	if ( measureError_ )
-	  MagickLib::QuantizationError( image );
-
+	  {
+	    MagickLib::QuantizationError( image );
+	    if ( image->exception.severity > MagickLib::UndefinedException )
+	      {
+		unlinkImages( first_, last_ );
+		throwException( exceptionInfo );
+	      }
+	  }
+	
 	// Udate DirectClass representation of pixels
 	MagickLib::SyncImage( _imgRef->image() );
+	if ( _imgRef->image()->exception.severity > MagickLib::UndefinedException )
+	  {
+	    unlinkImages( first_, last_ );
+	    throwException( exceptionInfo );
+	  }
 
 	// Next image
 	image=image->next;
@@ -2103,15 +2139,12 @@ namespace Magick
     MagickLib::GetMontageInfo( montageInfo );
 
     // Set some default options based on current imageInfo settings.
-    if ( first_->backgroundColor().isValid() )
-      Magick::CloneString( &montageInfo->background_color,
-			   first_->backgroundColor() );
-    if ( first_->borderColor().isValid() )
-      Magick::CloneString ( &montageInfo->border_color,
-			    first_->borderColor() );
-    if ( first_->matteColor().isValid() )
-      Magick::CloneString ( &montageInfo->matte_color,
-			    first_->matteColor() );
+    montageInfo->background_color = first_->backgroundColor();
+
+    montageInfo->border_color = first_->borderColor();
+
+    montageInfo->matte_color = first_->matteColor();
+
     if ( first_->penColor().isValid() )
       Magick::CloneString ( &montageInfo->pen,
 			    first_->penColor() );
@@ -2135,8 +2168,11 @@ namespace Magick
     montageImages_->clear();
 
     // Do montage
+    MagickLib::ExceptionInfo exceptionInfo;
+    MagickLib::GetExceptionInfo( &exceptionInfo );
     MagickLib::Image *images = MagickLib::MontageImages( first_->image(),
-							 montageInfo);
+							 montageInfo,
+							 &exceptionInfo );
     if ( images != (MagickLib::Image *)NULL )
       {
 	Magick::Options options;
@@ -2149,11 +2185,18 @@ namespace Magick
     // Unlink linked image list
     unlinkImages( first_, last_ );
 
+    // Report any montage error
+    throwException( exceptionInfo );
+
     // Apply transparency to montage images
     if ( montageImages_->size() > 0 && montageOpts_.transparentColor().isValid() )
       {
 	for_each( first_, last_, transparentImage( montageOpts_.transparentColor() ) );
       }
+
+    // Report any transparentImage() error
+    MagickLib::GetImageException( first_->image(), &exceptionInfo );
+    throwException( exceptionInfo );
   }
 
   // Morph a set of images
@@ -2162,19 +2205,25 @@ namespace Magick
 		    InputIterator first_,
 		    InputIterator last_,
 		    unsigned int frames_ ) {
+    MagickLib::ExceptionInfo exceptionInfo;
+    MagickLib::GetExceptionInfo( &exceptionInfo );
+
+    // Build image list
     linkImages( first_, last_ );
-    MagickLib::Image* images = MagickLib::MorphImages( first_->image(), frames_);
+    MagickLib::Image* images = MagickLib::MorphImages( first_->image(), frames_,
+						       &exceptionInfo);
+    // Unlink image list
     unlinkImages( first_, last_ );
 
+    // Ensure container is empty
     morphedImages_->clear();
-
     Magick::Options options;
 
+    // Move images to container
     insertImages( morphedImages_, images, options );
 
-    LastError* errPtr = LastError::instance();
-    if ( errPtr->isError() )
-      errPtr->throwException();
+    // Report any error
+    throwException( exceptionInfo );
   }
 
   // Quantize colors in images using current quantization settings
@@ -2187,6 +2236,12 @@ namespace Magick
 
     MagickLib::QuantizeImages( first_->options()->quantizeInfo(),
 			       first_->image() );
+    MagickLib::GetImageException( first_->image(), &exceptionInfo );
+    if ( exceptionInfo.severity > MagickLib::UndefinedException )
+      {
+	unlinkImages( first_, last_ );
+	throwException( exceptionInfo );
+      }
 
     MagickLib::Image* image = first_->image();
     while( image != 0 )
@@ -2195,7 +2250,7 @@ namespace Magick
 	if ( measureError_ )
 	  MagickLib::QuantizationError( image );
 
-	// Udate DirectClass representation of pixels
+	// Update DirectClass representation of pixels
 	MagickLib::SyncImage( _imgRef->image() );
 
 	// Next image
@@ -2211,34 +2266,26 @@ namespace Magick
 		   const std::string &imageSpec_ ) {
     Magick::Options options;
     options.fileName( imageSpec_ );
-    MagickLib::Image* images =  MagickLib::ReadImage( options.imageInfo() );
+    MagickLib::ExceptionInfo exceptionInfo;
+    MagickLib::GetExceptionInfo( &exceptionInfo );
+    MagickLib::Image* images =  MagickLib::ReadImage( options.imageInfo(), &exceptionInfo );
     insertImages( sequence_, images, options );
-  
-    LastError* errPtr = LastError::instance();
-    if ( errPtr->isError() )
-      errPtr->throwException();
+    throwException( exceptionInfo );
   }
   template <class Container>
   void readImages( Container *sequence_,
 		   const Blob &blob_ ) {
     Magick::Options options;
+    MagickLib::ExceptionInfo exceptionInfo;
+    MagickLib::GetExceptionInfo( &exceptionInfo );
     MagickLib::Image *images = MagickLib::BlobToImage( options.imageInfo(),
 						       static_cast<const char *>(blob_.data()),
-						       blob_.length() );
-
-    // Reset-blob struct in Image.
-    // FIXME: requirement for this is eliminated in final 4.2.8
-    MagickLib::GetBlobInfo( &(images->blob) );
-
+						       blob_.length(), &exceptionInfo );
     insertImages( sequence_, images, options );
-
-    LastError* errPtr = LastError::instance();
-    if ( errPtr->isError() )
-      errPtr->throwException();
+    throwException( exceptionInfo );
   }
 
-  // Write
-  //unsigned int WriteImage(ImageInfo *,Image *);
+  // Write Images
   template <class InputIterator>
   void writeImages( InputIterator first_,
 		    InputIterator last_,
@@ -2253,6 +2300,9 @@ namespace Magick
     first_->fileName( imageSpec_ );
     first_->adjoin( adjoin_ );
 
+    MagickLib::ExceptionInfo exceptionInfo;
+    MagickLib::GetExceptionInfo( &exceptionInfo );
+
     linkImages( first_, last_ );
     int errorStat = MagickLib::WriteImage( first_->imageInfo(),
 					   first_->image() );
@@ -2266,15 +2316,15 @@ namespace Magick
     if ( errorStat != false )
       return;
 
-    LastError* errPtr = LastError::instance();
-    if ( errPtr->isError() )
-      errPtr->throwException();
+    MagickLib::GetImageException( first_->image(), &exceptionInfo );
+    throwException( exceptionInfo );
   }
+  // Write images to BLOB
   template <class InputIterator>
   void writeImages( InputIterator first_,
 		    InputIterator last_,
-		    const Blob &blob_,
-		    bool adjoin_ ) {
+		    Blob *blob_,
+		    bool adjoin_ = true) {
     // Save original image settings
     std::string origMagick = first_->magick();
     bool origAdjoin = first_->adjoin();
@@ -2283,14 +2333,14 @@ namespace Magick
 
     linkImages( first_, last_ );
 
-    unsigned long length = 24576; // 64 x 64 x 6
+    MagickLib::ExceptionInfo exceptionInfo;
+    MagickLib::GetExceptionInfo( &exceptionInfo );
+    size_t length = 2048; // Efficient size for small images
     void* data = MagickLib::ImageToBlob( first_->imageInfo(),
 					 first_->image(),
-					 &length );
+					 &length,
+					 &exceptionInfo);
     blob_->updateNoCopy( data, length );
-    // Reset-blob struct in Image.
-    // FIXME: requirement for this should be temporary
-    MagickLib::GetBlobInfo( &(first_->image()->blob) );
 
     unlinkImages( first_, last_ );
 
@@ -2298,9 +2348,7 @@ namespace Magick
     first_->magick( origMagick );
     first_->adjoin( origAdjoin );
 
-    LastError* errPtr = LastError::instance();
-    if ( errPtr->isError() )
-      errPtr->throwException();
+    throwException( exceptionInfo );
   }
 
   template <class InputIterator>
@@ -2308,8 +2356,8 @@ namespace Magick
 		   InputIterator last_ ) {
 
     MagickLib::Image* previous = (MagickLib::Image*) NULL;
-
-    for ( InputIterator iter = first_; iter != last_; iter++ )
+    int scene = 0;
+    for ( InputIterator iter = first_; iter != last_; ++iter )
       {
 	// Unless we reduce the reference count to one, the same image
 	// structure may occur more than once in the container, causing
@@ -2320,9 +2368,13 @@ namespace Magick
 
 	current->previous = previous;
 	current->next     = (MagickLib::Image*) NULL;
+	current->orphan   = (int)false; // In a list
 
 	if ( previous != (MagickLib::Image*) NULL)
 	  previous->next = current;
+
+	current->scene=scene;
+	++scene;
 
 	previous = current;
       }
@@ -2331,11 +2383,12 @@ namespace Magick
   template <class InputIterator>
   void unlinkImages( InputIterator first_,
 		     InputIterator last_ ) {
-    for( InputIterator iter = first_; iter != last_; iter++ )
+    for( InputIterator iter = first_; iter != last_; ++iter )
       {
 	MagickLib::Image* image = iter->image();
 	image->previous = (MagickLib::Image*) NULL;
 	image->next = (MagickLib::Image*) NULL;
+	image->orphan = (int)true; // Stand-alone
       }
   }
 
@@ -2344,7 +2397,7 @@ namespace Magick
 		     MagickLib::Image* images_,
 		     Options &options_ ) {
     MagickLib::Image *image = images_;
-    if ( image != (MagickLib::Image*)NULL )
+    if ( image )
       {
 	do
 	  {
@@ -2357,7 +2410,7 @@ namespace Magick
 	    sequence_->push_back( Magick::Image( image, &options_ ) );
 	  
 	    image=next_image;
-	  } while( image != (MagickLib::Image *) 0);
+	  } while( image );
       
 	return;
       }

@@ -11,22 +11,16 @@
 
 #include <string>
 
-#include <Magick++/Include.h>
+#include "Magick++/Include.h"
 
 namespace Magick
 {
   void CloneString( char **destination_, const std::string &source_ );
-  void ColorizeImage( MagickLib::Image &image_, const std::string &opacity_,
-		      const std::string &penColor_);
-  void CommentImage( MagickLib::Image &image_, const std::string &comments_ );
 
   int GetGeometry( const std::string &geometry_, int &x, int &y,
 		   unsigned int &width, unsigned int &height );
   bool IsGeometry( const std::string &geometry_ );
-  void LabelImage( MagickLib::Image &image_, const std::string &label_);
   
-  void OpaqueImage( MagickLib::Image &image_, const std::string &opaqueColor_,
-		    const std::string &penColor_);
   int ParseImageGeometry( const std::string &geometry_, int &x, int &y,
 			  unsigned int &width, unsigned int &height );
   std::string PostscriptGeometry( const std::string &page_ );

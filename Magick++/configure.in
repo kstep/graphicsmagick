@@ -9,8 +9,8 @@ dnl Written by Bob Friesenhahn, bfriesen@simple.dallas.tx.us
 
 AC_INIT(lib/Magick++.h)
 
-MAGICK_RELEASE="0.8.6"		# Magick++ release
-TESTED_MAGICK_VERSION="4.2.9"	# Last tested ImageMagick release
+MAGICK_RELEASE="0.9.3"		# Magick++ release
+TESTED_MAGICK_VERSION="5.2.0"	# Last tested ImageMagick release
 
 dnl The most recent interface number that this library implements.
 INTERFACE_CURRENT=0
@@ -60,18 +60,14 @@ AC_PROG_RANLIB
 # Configure libtool
 AM_ENABLE_SHARED(no)
 AM_ENABLE_STATIC(yes)
-AM_PROG_LIBTOOL
+AC_PROG_LIBTOOL
+AC_LIBTOOL_CXX
 
 # Add configure option --enable-maintainer-mode which enables dependency
 # checking and generation useful to package maintainers.  This is made an
 # option to avoid confusing end users.
 AM_MAINTAINER_MODE
 AC_CANONICAL_HOST
-
-#
-# Check for using dmalloc malloc debugging library
-#
-AM_WITH_DMALLOC
 
 #
 # Obtain ImageMagick compilation options from installed Magick-config script.

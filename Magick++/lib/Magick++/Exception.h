@@ -2,9 +2,11 @@
 //
 // Copyright Bob Friesenhahn, 1999
 //
-// Definition of Exception and derived classes MagickWarning*
-// and MagickError*.  Derived from C++ STD 'exception' class for
-// convenience.
+// Definition of Magick::Exception and derived classes
+// Magick::Warning* and Magick::Error*.  Derived from C++ STD
+// 'exception' class for convenience.
+//
+// These classes form part of the Magick++ user interface.
 //
 
 #if !defined(Exception_header)
@@ -12,10 +14,11 @@
 
 #include <string>
 #include <exception>
-#include <iostream>
+#include "Magick++/Include.h"
 
 namespace Magick
 {
+
   class Exception : public std::exception
   {
     friend std::ostream& operator<<(std::ostream& stream_, const Exception& exception_);
@@ -84,6 +87,18 @@ namespace Magick
     WarningFileOpen ( const std::string& what_ );
   };
 
+  class WarningBlob: public Warning
+  {
+  public:
+    WarningBlob ( const std::string& what_ );
+  };
+
+  class WarningCache: public Warning
+  {
+  public:
+    WarningCache ( const std::string& what_ );
+  };
+
   //
   // Error exceptions
   //
@@ -141,6 +156,31 @@ namespace Magick
   public:
     ErrorFileOpen ( const std::string& what_ );
   };
+
+  class ErrorBlob: public Error
+  {
+  public:
+    ErrorBlob ( const std::string& what_ );
+  };
+
+  class ErrorCache: public Error
+  {
+  public:
+    ErrorCache ( const std::string& what_ );
+  };
+
+  //
+  // No user-serviceable components beyond this point.
+  //
+
+  // Throw exception based on raw data
+  void throwException( MagickLib::ExceptionType severity_,
+		       const char* message_,
+		       const char* qualifier_ = 0 );
+
+  // Thow exception based on ImageMagick's ExceptionInfo
+  void throwException( const MagickLib::ExceptionInfo &exception_ );
+
 
 } // namespace Magick
 #endif
