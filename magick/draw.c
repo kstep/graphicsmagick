@@ -2898,7 +2898,7 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
   PixelPacket
     fill_color,
     stroke_color;
- 
+
   PolygonInfo
     *polygon_info;
 
@@ -3567,10 +3567,10 @@ static unsigned int DrawStrokePolygon(Image *image,const DrawInfo *draw_info,
     arc_segments,
     closed_path,
     j,
-    l,
     max_strokes,
     n,
-    r;
+    p,
+    q;
 
   LineSegment
     dx,
@@ -3580,12 +3580,12 @@ static unsigned int DrawStrokePolygon(Image *image,const DrawInfo *draw_info,
     theta;
 
   PointInfo
+    box_p[5],
+    box_q[5],
     center,
-    left_points[5],
-    *left_strokes,
     offset,
-    right_points[5],
-    *right_strokes;
+    *path_p,
+    *path_q;
 
   PrimitiveInfo
     *stroke_polygon,
@@ -3616,8 +3616,8 @@ static unsigned int DrawStrokePolygon(Image *image,const DrawInfo *draw_info,
   polygon_primitive=(PrimitiveInfo *)
     AcquireMemory((number_vertices+1)*sizeof(PrimitiveInfo));
   if (polygon_primitive == (PrimitiveInfo *) NULL)
-    MagickError(ResourceLimitWarning,"Unable to draw image",
-      "Memory allocation failed");
+    ThrowBinaryException(ResourceLimitWarning,"Unable to draw stroke polygon",
+      image->filename);
   memcpy(polygon_primitive,primitive_info,number_vertices*
     sizeof(PrimitiveInfo));
   /*
@@ -3660,15 +3660,12 @@ static unsigned int DrawStrokePolygon(Image *image,const DrawInfo *draw_info,
         slope.p=dy.p/dx.p;
         inverse_slope.p=(-1.0/slope.p);
       }
-  l=0;
-  r=0;
   max_strokes=2*number_vertices+1;
-  right_strokes=(PointInfo *) AcquireMemory(max_strokes*sizeof(PointInfo));
-  left_strokes=(PointInfo *) AcquireMemory(max_strokes*sizeof(PointInfo));
-  if ((right_strokes == (PointInfo *) NULL) ||
-      (left_strokes == (PointInfo *) NULL))
-    MagickError(ResourceLimitWarning,"Unable to draw image",
-      "Memory allocation failed");
+  path_p=(PointInfo *) AcquireMemory(max_strokes*sizeof(PointInfo));
+  path_q=(PointInfo *) AcquireMemory(max_strokes*sizeof(PointInfo));
+  if ((path_p == (PointInfo *) NULL) || (path_q == (PointInfo *) NULL))
+    ThrowBinaryException(ResourceLimitWarning,"Unable to draw stroke polygon",
+      image->filename);
   mid=ExpandAffine(&draw_info->affine)*draw_info->stroke_width/2.0;
   miterlimit=draw_info->miterlimit*draw_info->miterlimit*mid*mid;
   if ((draw_info->linecap == SquareCap) && !closed_path)
@@ -3677,36 +3674,33 @@ static unsigned int DrawStrokePolygon(Image *image,const DrawInfo *draw_info,
   offset.y=offset.x*inverse_slope.p;
   if ((dy.p*offset.x-dx.p*offset.y) > 0.0)
     {
-      left_points[0].x=polygon_primitive[0].point.x+offset.x;
-      left_points[1].x=polygon_primitive[n].point.x+offset.x;
-      left_points[0].y=polygon_primitive[0].point.y+offset.x*inverse_slope.p;
-      left_points[1].y=polygon_primitive[n].point.y+offset.x*inverse_slope.p;
-      right_points[0].x=polygon_primitive[0].point.x-offset.x;
-      right_points[1].x=polygon_primitive[n].point.x-offset.x;
-      right_points[0].y=polygon_primitive[0].point.y-offset.x*inverse_slope.p;
-      right_points[1].y=polygon_primitive[n].point.y-offset.x*inverse_slope.p;
+      box_p[0].x=polygon_primitive[0].point.x-offset.x;
+      box_p[0].y=polygon_primitive[0].point.y-offset.x*inverse_slope.p;
+      box_p[1].x=polygon_primitive[n].point.x-offset.x;
+      box_p[1].y=polygon_primitive[n].point.y-offset.x*inverse_slope.p;
+      box_q[0].x=polygon_primitive[0].point.x+offset.x;
+      box_q[0].y=polygon_primitive[0].point.y+offset.x*inverse_slope.p;
+      box_q[1].x=polygon_primitive[n].point.x+offset.x;
+      box_q[1].y=polygon_primitive[n].point.y+offset.x*inverse_slope.p;
     }
   else
     {
-      right_points[0].x=polygon_primitive[0].point.x+offset.x;
-      right_points[1].x=polygon_primitive[n].point.x+offset.x;
-      right_points[0].y=polygon_primitive[0].point.y+offset.y;
-      right_points[1].y=polygon_primitive[n].point.y+offset.y;
-      left_points[0].x=polygon_primitive[0].point.x-offset.x;
-      left_points[1].x=polygon_primitive[n].point.x-offset.x;
-      left_points[0].y=polygon_primitive[0].point.y-offset.y;
-      left_points[1].y=polygon_primitive[n].point.y-offset.y;
+      box_p[0].x=polygon_primitive[0].point.x+offset.x;
+      box_p[0].y=polygon_primitive[0].point.y+offset.y;
+      box_p[1].x=polygon_primitive[n].point.x+offset.x;
+      box_p[1].y=polygon_primitive[n].point.y+offset.y;
+      box_q[0].x=polygon_primitive[0].point.x-offset.x;
+      box_q[0].y=polygon_primitive[0].point.y-offset.y;
+      box_q[1].x=polygon_primitive[n].point.x-offset.x;
+      box_q[1].y=polygon_primitive[n].point.y-offset.y;
     }
   /*
     Create strokes for the line join attribute: bevel, miter, round.
   */
-  for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++);
-  left_strokes[0].x=left_points[0].x;
-  left_strokes[0].y=left_points[0].y;
-  right_strokes[0].x=right_points[0].x;
-  right_strokes[0].y=right_points[0].y;
-  l++;
-  r++;
+  p=0;
+  q=0;
+  path_q[p++]=box_q[0];
+  path_p[q++]=box_p[0];
   for (i=n+1; i < (int) number_vertices; i++)
   {
     /*
@@ -3744,54 +3738,48 @@ static unsigned int DrawStrokePolygon(Image *image,const DrawInfo *draw_info,
     dot_product=dy.q*offset.x-dx.q*offset.y;
     if (dot_product > 0.0)
       {
-        left_points[2].x=polygon_primitive[n].point.x+offset.x;
-        left_points[3].x=polygon_primitive[i].point.x+offset.x;
-        left_points[2].y=polygon_primitive[n].point.y+offset.y;
-        left_points[3].y=polygon_primitive[i].point.y+offset.y;
-        right_points[2].x=polygon_primitive[n].point.x-offset.x;
-        right_points[3].x=polygon_primitive[i].point.x-offset.x;
-        right_points[2].y=polygon_primitive[n].point.y-offset.y;
-        right_points[3].y=polygon_primitive[i].point.y-offset.y;
+        box_p[2].x=polygon_primitive[n].point.x-offset.x;
+        box_p[2].y=polygon_primitive[n].point.y-offset.y;
+        box_p[3].x=polygon_primitive[i].point.x-offset.x;
+        box_p[3].y=polygon_primitive[i].point.y-offset.y;
+        box_q[2].x=polygon_primitive[n].point.x+offset.x;
+        box_q[2].y=polygon_primitive[n].point.y+offset.y;
+        box_q[3].x=polygon_primitive[i].point.x+offset.x;
+        box_q[3].y=polygon_primitive[i].point.y+offset.y;
       }
     else
       {
-        right_points[2].x=polygon_primitive[n].point.x+offset.x;
-        right_points[3].x=polygon_primitive[i].point.x+offset.x;
-        right_points[2].y=polygon_primitive[n].point.y+offset.y;
-        right_points[3].y=polygon_primitive[i].point.y+offset.y;
-        left_points[2].x=polygon_primitive[n].point.x-offset.x;
-        left_points[3].x=polygon_primitive[i].point.x-offset.x;
-        left_points[2].y=polygon_primitive[n].point.y-offset.y;
-        left_points[3].y=polygon_primitive[i].point.y-offset.y;
+        box_p[2].x=polygon_primitive[n].point.x+offset.x;
+        box_p[2].y=polygon_primitive[n].point.y+offset.y;
+        box_p[3].x=polygon_primitive[i].point.x+offset.x;
+        box_p[3].y=polygon_primitive[i].point.y+offset.y;
+        box_q[2].x=polygon_primitive[n].point.x-offset.x;
+        box_q[2].y=polygon_primitive[n].point.y-offset.y;
+        box_q[3].x=polygon_primitive[i].point.x-offset.x;
+        box_q[3].y=polygon_primitive[i].point.y-offset.y;
       }
     if (fabs(slope.p-slope.q) <= MagickEpsilon)
       {
-        right_points[4].x=right_points[1].x;
-        left_points[4].x=left_points[1].x;
-        right_points[4].y=right_points[1].y;
-        left_points[4].y=left_points[1].y;
+        box_p[4]=box_p[1];
+        box_q[4]=box_q[1];
       }
     else
       {
-        right_points[4].x=(slope.p*right_points[0].x-right_points[0].y-
-          slope.q*right_points[3].x+right_points[3].y)/(slope.p-slope.q);
-        right_points[4].y=slope.p*(right_points[4].x-right_points[0].x)+
-          right_points[0].y;
-        left_points[4].x=(slope.p*left_points[0].x-left_points[0].y-slope.q*
-          left_points[3].x+left_points[3].y)/(slope.p-slope.q);
-        left_points[4].y=slope.p*(left_points[4].x-left_points[0].x)+
-          left_points[0].y;
+        box_p[4].x=(slope.p*box_p[0].x-box_p[0].y-slope.q*box_p[3].x+
+          box_p[3].y)/(slope.p-slope.q);
+        box_p[4].y=slope.p*(box_p[4].x-box_p[0].x)+box_p[0].y;
+        box_q[4].x=(slope.p*box_q[0].x-box_q[0].y-slope.q*box_q[3].x+
+          box_q[3].y)/(slope.p-slope.q);
+        box_q[4].y=slope.p*(box_q[4].x-box_q[0].x)+box_q[0].y;
       }
-    if (l >= (int) (max_strokes-6*BezierQuantum-360))
+    if (q >= (int) (max_strokes-6*BezierQuantum-360))
       {
          max_strokes+=6*BezierQuantum+360;
-         ReacquireMemory((void **) &right_strokes,
-           max_strokes*sizeof(PointInfo));
-         ReacquireMemory((void **) &left_strokes,max_strokes*sizeof(PointInfo));
-         if ((right_strokes == (PointInfo *) NULL) ||
-             (left_strokes == (PointInfo *) NULL))
-           MagickError(ResourceLimitWarning,"Unable to draw image",
-             "Memory allocation failed");
+         ReacquireMemory((void **) &path_p,max_strokes*sizeof(PointInfo));
+         ReacquireMemory((void **) &path_q,max_strokes*sizeof(PointInfo));
+         if ((path_p == (PointInfo *) NULL) || (path_q == (PointInfo *) NULL))
+           ThrowBinaryException(ResourceLimitWarning,
+             "Unable to draw stroke polygon",image->filename);
       }
     dot_product=dx.q*dy.p-dx.p*dy.q;
     if (dot_product <= 0.0)
@@ -3799,100 +3787,65 @@ static unsigned int DrawStrokePolygon(Image *image,const DrawInfo *draw_info,
       {
         case BevelJoin:
         {
-          left_strokes[l].x=left_points[1].x;
-          left_strokes[l].y=left_points[1].y;
-          l++;
-          left_strokes[l].x=left_points[2].x;
-          left_strokes[l].y=left_points[2].y;
-          l++;
-          dot_product=(left_points[4].x-right_points[4].x)*(left_points[4].x-
-            right_points[4].x)+(left_points[4].y-right_points[4].y)*
-            (left_points[4].y-right_points[4].y);
+          path_q[q++]=box_q[1];
+          path_q[q++]=box_q[2];
+          dot_product=(box_q[4].x-box_p[4].x)*(box_q[4].x-box_p[4].x)+
+            (box_q[4].y-box_p[4].y)*(box_q[4].y-box_p[4].y);
           if (dot_product <= miterlimit)
-            {
-              right_strokes[r].x=right_points[4].x;
-              right_strokes[r].y=right_points[4].y;
-            }
+            path_p[p++]=box_p[4];
           else
             {
-              right_strokes[r].x=right_points[1].x;
-              right_strokes[r].y=right_points[1].y;
-              r++;
-              right_strokes[r].x=right_points[2].x;
-              right_strokes[r].y=right_points[2].y;
+              path_p[p++]=box_p[1];
+              path_p[p++]=box_p[2];
             }
-          r++;
           break;
         }
         case MiterJoin:
         {
-          dot_product=(left_points[4].x-right_points[4].x)*(left_points[4].x-
-            right_points[4].x)+(left_points[4].y-right_points[4].y)*
-            (left_points[4].y-right_points[4].y);
+          dot_product=(box_q[4].x-box_p[4].x)*(box_q[4].x-box_p[4].x)+
+            (box_q[4].y-box_p[4].y)*(box_q[4].y-box_p[4].y);
           if (dot_product > miterlimit)
             {
-              left_strokes[l].x=left_points[1].x;
-              left_strokes[l].y=left_points[1].y;
-              l++;
-              left_strokes[l].x=left_points[2].x;
-              left_strokes[l].y=left_points[2].y;
-              l++;
-              right_strokes[r].x=right_points[1].x;
-              right_strokes[r].y=right_points[1].y;
-              r++;
-              right_strokes[r].x=right_points[2].x;
-              right_strokes[r].y=right_points[2].y;
-              r++;
+              path_q[q++]=box_q[1];
+              path_q[q++]=box_q[2];
+              path_p[p++]=box_p[1];
+              path_p[p++]=box_p[2];
            }
          else
            {
-             left_strokes[l].x=left_points[4].x;
-             left_strokes[l].y=left_points[4].y;
-             l++;
-             right_strokes[r].x=right_points[4].x;
-             right_strokes[r].y=right_points[4].y;
-             r++;
+             path_q[q++]=box_q[4];
+             path_p[p++]=box_p[4];
            }
           break;
         }
         case RoundJoin:
         {
-          dot_product=(left_points[4].x-right_points[4].x)*(left_points[4].x-
-            right_points[4].x)+(left_points[4].y-right_points[4].y)*
-            (left_points[4].y-right_points[4].y);
+          dot_product=(box_q[4].x-box_p[4].x)*(box_q[4].x-box_p[4].x)+
+            (box_q[4].y-box_p[4].y)*(box_q[4].y-box_p[4].y);
           if (dot_product <= miterlimit)
-            {
-              right_strokes[r].x=right_points[4].x;
-              right_strokes[r].y=right_points[4].y;
-            }
+            path_p[p++]=box_p[4];
           else
             {
-              right_strokes[r].x=right_points[1].x;
-              right_strokes[r].y=right_points[1].y;
-              r++;
-              right_strokes[r].x=right_points[2].x;
-              right_strokes[r].y=right_points[2].y;
+              path_p[p++]=box_p[1];
+              path_p[p++]=box_p[2];
             }
-          r++;
           center=polygon_primitive[n].point;
-          theta.p=atan2(left_points[1].y-center.y,left_points[1].x-center.x);
-          theta.q=atan2(left_points[2].y-center.y,left_points[2].x-center.x);
+          theta.p=atan2(box_q[1].y-center.y,box_q[1].x-center.x);
+          theta.q=atan2(box_q[2].y-center.y,box_q[2].x-center.x);
           if (theta.q < theta.p)
             theta.q+=2.0*MagickPI;
           arc_segments=(int) ceil((theta.q-theta.p)/(2.0*sqrt(1.0/mid)));
-          left_strokes[l].x=left_points[1].x;
-          left_strokes[l].y=left_points[1].y;
-          l++;
+          path_q[q].x=box_q[1].x;
+          path_q[q].y=box_q[1].y;
+          q++;
           for (j=1; j < arc_segments; j++)
           {
             delta_theta=j*(theta.q-theta.p)/arc_segments;
-            left_strokes[l].x=center.x+mid*cos(theta.p+delta_theta);
-            left_strokes[l].y=center.y+mid*sin(theta.p+delta_theta);
-            l++;
+            path_q[q].x=center.x+mid*cos(theta.p+delta_theta);
+            path_q[q].y=center.y+mid*sin(theta.p+delta_theta);
+            q++;
           }
-          left_strokes[l].x=left_points[2].x;
-          left_strokes[l].y=left_points[2].y;
-          l++;
+          path_q[q++]=box_q[2];
           break;
         }
         default:
@@ -3903,100 +3856,63 @@ static unsigned int DrawStrokePolygon(Image *image,const DrawInfo *draw_info,
       {
         case BevelJoin:
         {
-          right_strokes[r].x=right_points[1].x;
-          right_strokes[r].y=right_points[1].y;
-          r++;
-          right_strokes[r].x=right_points[2].x;
-          right_strokes[r].y=right_points[2].y;
-          r++;
-          dot_product=(left_points[4].x-right_points[4].x)*(left_points[4].x-
-            right_points[4].x)+(left_points[4].y-right_points[4].y)*
-            (left_points[4].y-right_points[4].y);
+          path_p[p++]=box_p[1];
+          path_p[p++]=box_p[2];
+          dot_product=(box_q[4].x-box_p[4].x)*(box_q[4].x-box_p[4].x)+
+            (box_q[4].y-box_p[4].y)*(box_q[4].y-box_p[4].y);
           if (dot_product <= miterlimit)
-            {
-              left_strokes[l].x=left_points[4].x;
-              left_strokes[l].y=left_points[4].y;
-            }
+            path_q[q++]=box_q[4];
           else
             {
-              left_strokes[l].x=left_points[1].x;
-              left_strokes[l].y=left_points[1].y;
-              l++;
-              left_strokes[l].x=left_points[2].x;
-              left_strokes[l].y=left_points[2].y;
+              path_q[q++]=box_q[1];
+              path_q[q++]=box_q[2];
             }
-          l++;
           break;
         }
         case MiterJoin:
         {
-          dot_product=(left_points[4].x-right_points[4].x)*(left_points[4].x-
-            right_points[4].x)+(left_points[4].y-right_points[4].y)*
-            (left_points[4].y-right_points[4].y);
+          dot_product=(box_q[4].x-box_p[4].x)*(box_q[4].x-box_p[4].x)+
+            (box_q[4].y-box_p[4].y)*(box_q[4].y-box_p[4].y);
           if (dot_product <= miterlimit)
             {
-              left_strokes[l].x=left_points[4].x;
-              left_strokes[l].y=left_points[4].y;
-              l++;
-              right_strokes[r].x=right_points[4].x;
-              right_strokes[r].y=right_points[4].y;
-              r++;
+              path_q[q++]=box_q[4];
+              path_p[p++]=box_p[4];
             }
           else
             {
-              left_strokes[l].x=left_points[1].x;
-              left_strokes[l].y=left_points[1].y;
-              l++;
-              left_strokes[l].x=left_points[2].x;
-              left_strokes[l].y=left_points[2].y;
-              l++;
-              right_strokes[r].x=right_points[1].x;
-              right_strokes[r].y=right_points[1].y;
-              r++;
-              right_strokes[r].x=right_points[2].x;
-              right_strokes[r].y=right_points[2].y;
-              r++;
+              path_q[q++]=box_q[1];
+              path_q[q++]=box_q[2];
+              path_p[p++]=box_p[1];
+              path_p[p++]=box_p[2];
             }
           break;
         }
         case RoundJoin:
         {
-          dot_product=(left_points[4].x-right_points[4].x)*(left_points[4].x-
-            right_points[4].x)+(left_points[4].y-right_points[4].y)*
-            (left_points[4].y-right_points[4].y);
+          dot_product=(box_q[4].x-box_p[4].x)*(box_q[4].x-box_p[4].x)+
+            (box_q[4].y-box_p[4].y)*(box_q[4].y-box_p[4].y);
           if (dot_product <= miterlimit)
-            {
-              left_strokes[l].x=left_points[4].x;
-              left_strokes[l].y=left_points[4].y;
-            }
+            path_q[q++]=box_q[4];
           else
             {
-              left_strokes[l].x=left_points[1].x;
-              left_strokes[l].y=left_points[1].y;
-              l++;
-              left_strokes[l].x=left_points[2].x;
-              left_strokes[l].y=left_points[2].y;
+              path_q[q++]=box_q[1];
+              path_q[q++]=box_q[2];
             }
-          l++;
           center=polygon_primitive[n].point;
-          theta.p=atan2(right_points[1].y-center.y,right_points[1].x-center.x);
-          theta.q=atan2(right_points[2].y-center.y,right_points[2].x-center.x);
+          theta.p=atan2(box_p[1].y-center.y,box_p[1].x-center.x);
+          theta.q=atan2(box_p[2].y-center.y,box_p[2].x-center.x);
           if (theta.p < theta.q)
             theta.p+=2.0*MagickPI;
           arc_segments=(int) ceil((theta.p-theta.q)/(2.0*sqrt(1.0/mid)));
-          right_strokes[r].x=right_points[1].x;
-          right_strokes[r].y=right_points[1].y;
-          r++;
+          path_p[p++]=box_p[1];
           for (j=1; j < arc_segments; j++)
           {
             delta_theta=j*(theta.q-theta.p)/arc_segments;
-            right_strokes[r].x=center.x+mid*cos(theta.p+delta_theta);
-            right_strokes[r].y=center.y+mid*sin(theta.p+delta_theta);
-            r++;
+            path_p[p].x=center.x+mid*cos(theta.p+delta_theta);
+            path_p[p].y=center.y+mid*sin(theta.p+delta_theta);
+            p++;
           }
-          right_strokes[r].x=right_points[2].x;
-          right_strokes[r].y=right_points[2].y;
-          r++;
+          path_p[p++]=box_p[2];
           break;
         }
         default:
@@ -4004,36 +3920,28 @@ static unsigned int DrawStrokePolygon(Image *image,const DrawInfo *draw_info,
       }
     slope.p=slope.q;
     inverse_slope.p=inverse_slope.q;
-    left_points[0].x=left_points[2].x;
-    left_points[1].x=left_points[3].x;
-    left_points[0].y=left_points[2].y;
-    left_points[1].y=left_points[3].y;
-    right_points[0].x=right_points[2].x;
-    right_points[1].x=right_points[3].x;
-    right_points[0].y=right_points[2].y;
-    right_points[1].y=right_points[3].y;
+    box_p[0]=box_p[2];
+    box_p[1]=box_p[3];
+    box_q[0]=box_q[2];
+    box_q[1]=box_q[3];
     dx.p=dx.q;
     dy.p=dy.q;
     n=i;
   }
-  right_strokes[r].x=right_points[1].x;
-  right_strokes[r].y=right_points[1].y;
-  r++;
-  left_strokes[l].x=left_points[1].x;
-  left_strokes[l].y=left_points[1].y;
-  l++;
+  path_p[p++]=box_p[1];
+  path_q[q++]=box_q[1];
   /*
     Trace stroked polygon.
   */
   stroke_polygon=(PrimitiveInfo *)
-    AcquireMemory((l+r+2*closed_path+2)*sizeof(PrimitiveInfo));
+    AcquireMemory((p+q+2*closed_path+2)*sizeof(PrimitiveInfo));
   if (stroke_polygon == (PrimitiveInfo *) NULL)
     MagickError(ResourceLimitWarning,"Unable to draw image",
       "Memory allocation failed");
-  for (i=0; i < r; i++)
+  for (i=0; i < p; i++)
   {
     stroke_polygon[i]=polygon_primitive[0];
-    stroke_polygon[i].point=right_strokes[i];
+    stroke_polygon[i].point=path_p[i];
     stroke_polygon[i].coordinates=1;
   }
   if (closed_path)
@@ -4043,26 +3951,26 @@ static unsigned int DrawStrokePolygon(Image *image,const DrawInfo *draw_info,
       stroke_polygon[i].coordinates=1;
       i++;
     }
-  for ( ; i < (r+l+closed_path); i++)
+  for ( ; i < (p+q+closed_path); i++)
   {
     stroke_polygon[i]=polygon_primitive[0];
-    stroke_polygon[i].point=left_strokes[l+r+closed_path-(i+1)];
+    stroke_polygon[i].point=path_q[p+q+closed_path-(i+1)];
     stroke_polygon[i].coordinates=1;
   }
   if (closed_path)
     {
       stroke_polygon[i]=polygon_primitive[0];
-      stroke_polygon[i].point=stroke_polygon[r+closed_path].point;
+      stroke_polygon[i].point=stroke_polygon[p+closed_path].point;
       stroke_polygon[i].coordinates=1;
       i++;
     }
+  stroke_polygon[i].coordinates=1;
   stroke_polygon[i]=polygon_primitive[0];
   stroke_polygon[i].point=stroke_polygon[0].point;
-  stroke_polygon[i].coordinates=1;
-  stroke_polygon[0].coordinates=l+r+2*closed_path+1;
+  stroke_polygon[0].coordinates=p+q+2*closed_path+1;
   stroke_polygon[i+1].primitive=UndefinedPrimitive;
-  LiberateMemory((void **) &left_strokes);
-  LiberateMemory((void **) &right_strokes);
+  LiberateMemory((void **) &path_p);
+  LiberateMemory((void **) &path_q);
   /*
     Draw stroked polygon.
   */
