@@ -266,9 +266,6 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
   FT_BBox
     bounding_box;
 
-  FT_Bitmap
-    *glyph;
-
   FT_BitmapGlyph
     bitmap;
 
@@ -285,14 +282,14 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
     affine;
 
   FT_Vector
-    bitmap_origin,
-    kern,
+    delta,
     origin;
 
   Image
     *image;
 
   int
+    id,
     length,
     y;
 
@@ -310,6 +307,7 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
     bounds;
 
   TGlyph
+    *glyph,
     *glyphs;
 
   unsigned short
@@ -399,7 +397,7 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
     Convert to Unicode.
   */
   unicode=ConvertTextToUnicode(text,&length);
-  glyphs=(TGlyph *) AcquireMemory(length*sizeof(TGlyph));
+  glyphs=(TGlyph *) AcquireMemory((length+1)*sizeof(TGlyph));
   if ((unicode == (unsigned short *) NULL) || (glyphs == (TGlyph *) NULL))
     {
       FT_Done_FreeType(library);
@@ -415,32 +413,31 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
   bounds.x2=(-32000);
   bounds.y1=32000;
   bounds.y2=(-32000);
-  affine.xx=(FT_Fixed) (65536.0*image_info->affine[0]);
-  affine.yx=(FT_Fixed) (-65536.0*image_info->affine[1]);
-  affine.xy=(FT_Fixed) (-65536.0*image_info->affine[2]);
-  affine.yy=(FT_Fixed) (65536.0*image_info->affine[3]);
+  affine.xx=(FT_Fixed) (0x10000*image_info->affine[0]);
+  affine.yx=(FT_Fixed) (-0x10000*image_info->affine[1]);
+  affine.xy=(FT_Fixed) (-0x10000*image_info->affine[2]);
+  affine.yy=(FT_Fixed) (0x10000*image_info->affine[3]);
+  glyph=glyphs;
   for (i=0; i < length; i++)
   {
-    glyphs[i].id=FT_Get_Char_Index(face,unicode[i]);
-    if (i > 0)
+    glyph->id=FT_Get_Char_Index(face,unicode[i]);
+    if ((glyph > glyphs) && glyph->id && FT_HAS_KERNING(face))
       {
-        FT_Get_Kerning(face,glyphs[i-1].id,glyphs[i].id,ft_kerning_default,
-          &kern);
-        origin.x+=kern.x;
+        FT_Get_Kerning(face,(glyph-1)->id,glyph->id,ft_kerning_default,&delta);
+        origin.x+=delta.x;
       }
-    origin.y=0;
-    status=FT_Load_Glyph(face,glyphs[i].id,FT_LOAD_DEFAULT);
-    status|=FT_Get_Glyph(face->glyph,&glyphs[i].image);
+    glyph->origin=origin;
+    status=FT_Load_Glyph(face,glyph->id,FT_LOAD_DEFAULT);
     if (status)
       continue;
-    glyphs[i].origin=origin;
-    bitmap_origin=origin;
-    FT_Vector_Transform(&bitmap_origin,&affine);
-    (void) FT_Glyph_Transform(glyphs[i].image,&affine,&bitmap_origin);
-    FT_Glyph_Get_CBox(glyphs[i].image,ft_glyph_bbox_pixels,&bounding_box);
-    status=FT_Glyph_To_Bitmap(&glyphs[i].image,
-      image_info->antialias ? ft_render_mode_normal : ft_render_mode_mono,
-      False,False);
+    status=FT_Get_Glyph(face->glyph,&glyph->image);
+    if (status)
+      continue;
+    FT_Vector_Transform(&glyph->origin,&affine);
+    FT_Glyph_Transform(glyphs[i].image,&affine,&glyph->origin);
+    FT_Glyph_Get_CBox(glyph->image,ft_glyph_bbox_pixels,&bounding_box);
+    status=FT_Glyph_To_Bitmap(&glyph->image,image_info->antialias ?
+      ft_render_mode_normal : ft_render_mode_mono,False,False);
     if (status)
       continue;
     if (bounding_box.xMin < bounds.x1)
@@ -452,7 +449,9 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
     if (bounding_box.yMax > bounds.y2)
       bounds.y2=bounding_box.yMax;
     origin.x+=face->glyph->advance.x;
+    glyph++;
   }
+  glyph->id=0;
   image->columns=(unsigned int) (bounds.x2-bounds.x1+1.0);
   image->rows=(unsigned int) (bounds.y2-bounds.y1+1.0);
   if ((image_info->affine[0] != 0.0) && (image_info->affine[4] != 0.0) ||
@@ -475,23 +474,22 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
   /*
     Render label.
   */
-  for (i=0; i < length; i++)
+  for (glyph=glyphs; glyph->id != 0; glyph++)
   {
-    if (glyphs[i].image == (FT_Glyph) NULL)
+    if (glyph->image == (FT_Glyph) NULL)
       continue;
-    bitmap=(FT_BitmapGlyph) glyphs[i].image;
-    glyph=(&bitmap->bitmap);
-    if ((glyph->width == 0) || (glyph->rows == 0))
+    bitmap=(FT_BitmapGlyph) glyph->image;
+    if ((bitmap->bitmap.width == 0) || (bitmap->bitmap.rows == 0))
       continue;
-    x=(unsigned int) (bitmap->left-bounds.x1+0.5);
-    y=(unsigned int) (image->rows-bitmap->top+bounds.y1+0.5);
-    q=GetImagePixels(image,x,y,glyph->width,glyph->rows);
+    x=(int) (bitmap->left-bounds.x1+0.5);
+    y=(int) (image->rows-bitmap->top+bounds.y1+0.5);
+    q=GetImagePixels(image,x,y,bitmap->bitmap.width,bitmap->bitmap.rows);
     if (q == (PixelPacket *) NULL)
       continue;
-    p=glyph->buffer;
-    for (y=0; y < glyph->rows; y++)
+    p=bitmap->bitmap.buffer;
+    for (y=0; y < bitmap->bitmap.rows; y++)
     {
-      for (x=0; x < glyph->width; x++)
+      for (x=0; x < bitmap->bitmap.width; x++)
       {
         if (*p != 0)
           {
@@ -511,8 +509,8 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
   /*
     Free resources.
   */
-  for (i=0; i < length; i++)
-    FT_Done_Glyph(glyphs[i].image);
+  for (glyph=glyphs; glyph->id != 0; glyph++)
+    FT_Done_Glyph(glyph->image);
   LiberateMemory((void **) &glyphs);
   LiberateMemory((void **) &unicode);
   FT_Done_Face(face);

@@ -933,15 +933,13 @@ static void SVGStartElement(void *context,const xmlChar *name,
             if (LocaleCompare(keyword,"skewX") == 0)
               {
                 affine[0]=1.0;
-                affine[2]=
-                  tan(DegreesToRadians(fmod(atof(value+1),360.0)));
+                affine[2]=tan(DegreesToRadians(fmod(atof(value+1),360.0)));
                 affine[3]=1.0;
               }
             if (LocaleCompare(keyword,"skewY") == 0)
               {
                 affine[0]=1.0;
-                affine[1]=
-                  tan(DegreesToRadians(fmod(atof(value+1),360.0)));
+                affine[1]=tan(DegreesToRadians(fmod(atof(value+1),360.0)));
                 affine[3]=1.0;
               }
             if (LocaleCompare(keyword,"translate") == 0)
