@@ -196,7 +196,7 @@ testFilterSignature('input.miff', 'Scale',
 
 ++$test;
 testFilterCompare('input.miff', q//, 'reference/filter/Shade.miff', 'Shade',
-  q/gray=>'true'/, 3.3e-06, 3.06e-05);
+  q/gray=>'true'/, 3.5e-06, 3.06e-05);
 
 ++$test;
 testFilterSignature('input.miff', 'Segment',

@@ -900,6 +900,7 @@ sub testFilterCompare {
     }
 
   $srcimage->set(depth=>8);
+  #$srcimage->Display();
 #  $srcimage->write(filename=>"$refimage_name", compression=>'None');
 
   $status=$refimage->ReadImage("$refimage_name");
