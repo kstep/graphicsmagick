@@ -334,15 +334,12 @@ MagickExport const ModuleAlias *GetModuleAlias(const char *name,
   if (module_aliases == (const ModuleAlias *) NULL)
     {
       /*
-        Initialize ltdl.
+        Read modules.
       */
       if (lt_dlinit() != 0)
         MagickError(DelegateError,"unable to initialize module loader",
           lt_dlerror());
       OpenStaticModules();
-      /*
-        Read modules.
-      */
       (void) ReadConfigurationFile(ModuleFilename,exception);
     }
   LiberateSemaphoreInfo(&module_semaphore);
@@ -732,30 +729,34 @@ MagickExport unsigned int OpenModule(const char *module,
 */
 MagickExport unsigned int OpenModules(ExceptionInfo *exception)
 {
-  char
-    **modules;
-
-  register char
-    **p;
-
-  register int
-    i;
-
-  /*
-    Load all modules.
-  */
   (void) GetMagickInfo((char *) NULL,exception);
-  modules=GetModuleList(exception);
-  if (modules == (char **) NULL)
-    return(False);
-  for (p=modules; *p != (char *) NULL; p++)
-    (void) OpenModule(*p,exception);
-  /*
-    Free resources.
-  */
-  for (i=0; modules[i]; i++)
-    LiberateMemory((void **) &modules[i]);
-  LiberateMemory((void **) &modules);
+#if defined(HasMODULES)
+  {
+    char
+      **modules;
+
+    register char
+      **p;
+
+    register int
+      i;
+
+    /*
+      Load all modules.
+    */
+    modules=GetModuleList(exception);
+    if (modules == (char **) NULL)
+      return(False);
+    for (p=modules; *p != (char *) NULL; p++)
+      (void) OpenModule(*p,exception);
+    /*
+      Free resources.
+    */
+    for (i=0; modules[i]; i++)
+      LiberateMemory((void **) &modules[i]);
+    LiberateMemory((void **) &modules);
+  }
+#endif
   return(True);
 }
 
