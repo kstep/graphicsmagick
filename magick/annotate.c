@@ -223,17 +223,17 @@ Export unsigned int AnnotateImage(Image *image,
     if (annotate_info->degrees != 0.0)
       {
         Image
-          *rotated_image;
+          *rotate_image;
 
         /*
           Rotate text.
         */
-        rotated_image=RotateImage(annotate_image,annotate_info->degrees,
+        rotate_image=RotateImage(annotate_image,annotate_info->degrees,
           &image->exception);
-        if (rotated_image == (Image *) NULL)
+        if (rotate_image == (Image *) NULL)
           return(False);
         DestroyImage(annotate_image);
-        annotate_image=rotated_image;
+        annotate_image=rotate_image;
         clone_info->bounds.height=annotate_image->rows;
       }
     /*

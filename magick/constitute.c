@@ -1586,7 +1586,7 @@ Export Image *ReadImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             DestroyImageInfo(clone_info);
             ThrowException(exception,MissingDelegateWarning,
-              "no delegate for this image format",clone_info->filename);
+              "no delegate for this image format",image_info->filename);
           }
       }
   if (clone_info->temporary)

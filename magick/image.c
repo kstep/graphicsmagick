@@ -103,7 +103,7 @@ const char
 %
 %  A description of each parameter follows:
 %
-%    o allocated_image: Method AllocateImage returns a pointer to an image
+%    o allocate_image: Method AllocateImage returns a pointer to an image
 %      structure initialized to default values.  A null image is returned if
 %      there is a memory shortage.
 %
@@ -114,7 +114,7 @@ const char
 Export Image *AllocateImage(const ImageInfo *image_info)
 {
   Image
-    *allocated_image;
+    *allocate_image;
 
   int
     flags;
@@ -122,150 +122,150 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   /*
     Allocate image structure.
   */
-  allocated_image=(Image *) AllocateMemory(sizeof(Image));
-  if (allocated_image == (Image *) NULL)
+  allocate_image=(Image *) AllocateMemory(sizeof(Image));
+  if (allocate_image == (Image *) NULL)
     MagickError(ResourceLimitError,"Unable to allocate image",
       "Memory allocation failed");
   /*
     Initialize Image structure.
   */
-  allocated_image->file=(FILE *) NULL;
-  GetBlobInfo(&allocated_image->blob);
-  allocated_image->exempt=False;
-  allocated_image->status=False;
-  allocated_image->temporary=False;
-  *allocated_image->filename='\0';
-  allocated_image->filesize=0;
-  allocated_image->pipe=False;
-  (void) strcpy(allocated_image->magick,"MIFF");
-  allocated_image->attributes=(ImageAttribute *) NULL;
-  allocated_image->class=DirectClass;
-  allocated_image->matte=False;
-  allocated_image->compression=UndefinedCompression;
-  allocated_image->columns=0;
-  allocated_image->rows=0;
-  allocated_image->depth=QuantumDepth;
-  allocated_image->tile_info.width=0;
-  allocated_image->tile_info.height=0;
-  allocated_image->tile_info.x=0;
-  allocated_image->tile_info.y=0;
-  allocated_image->offset=0;
-  allocated_image->interlace=NoInterlace;
-  allocated_image->scene=0;
-  allocated_image->units=UndefinedResolution;
-  allocated_image->x_resolution=0.0;
-  allocated_image->y_resolution=0.0;
-  allocated_image->montage=(char *) NULL;
-  allocated_image->directory=(char *) NULL;
-  allocated_image->colormap=(PixelPacket *) NULL;
-  allocated_image->colors=0;
-  allocated_image->colorspace=RGBColorspace;
-  allocated_image->rendering_intent=UndefinedIntent;
-  allocated_image->gamma=0.0;
-  allocated_image->chromaticity.red_primary.x=0.0;
-  allocated_image->chromaticity.red_primary.y=0.0;
-  allocated_image->chromaticity.green_primary.x=0.0;
-  allocated_image->chromaticity.green_primary.y=0.0;
-  allocated_image->chromaticity.blue_primary.x=0.0;
-  allocated_image->chromaticity.blue_primary.y=0.0;
-  allocated_image->chromaticity.white_point.x=0.0;
-  allocated_image->chromaticity.white_point.y=0.0;
-  allocated_image->color_profile.length=0;
-  allocated_image->color_profile.info=(unsigned char *) NULL;
-  allocated_image->iptc_profile.length=0;
-  allocated_image->iptc_profile.info=(unsigned char *) NULL;
-  (void) QueryColorDatabase(BackgroundColor,&allocated_image->background_color);
-  (void) QueryColorDatabase(BorderColor,&allocated_image->border_color);
-  (void) QueryColorDatabase(MatteColor,&allocated_image->matte_color);
-  allocated_image->geometry=(char *) NULL;
-  GetPageInfo(&allocated_image->page);
-  allocated_image->dispose=0;
-  allocated_image->delay=0;
-  allocated_image->iterations=1;
-  allocated_image->fuzz=0;
-  allocated_image->filter=LanczosFilter;
-  allocated_image->blur=1.0;
-  allocated_image->total_colors=0;
-  allocated_image->normalized_mean_error=0.0;
-  allocated_image->normalized_maximum_error=0.0;
-  allocated_image->mean_error_per_pixel=0;
-  *allocated_image->magick_filename='\0';
-  allocated_image->magick_columns=0;
-  allocated_image->magick_rows=0;
-  allocated_image->taint=False;
-  allocated_image->restart_animation_here=False;
-  GetExceptionInfo(&allocated_image->exception);
-  GetTimerInfo(&allocated_image->timer);
-  allocated_image->cache=(void *) NULL;
-  allocated_image->fifo=(void (*)(const Image *)) NULL;
-  allocated_image->orphan=False;
-  allocated_image->previous=(Image *) NULL;
-  allocated_image->list=(Image *) NULL;
-  allocated_image->next=(Image *) NULL;
+  allocate_image->file=(FILE *) NULL;
+  GetBlobInfo(&allocate_image->blob);
+  allocate_image->exempt=False;
+  allocate_image->status=False;
+  allocate_image->temporary=False;
+  *allocate_image->filename='\0';
+  allocate_image->filesize=0;
+  allocate_image->pipe=False;
+  (void) strcpy(allocate_image->magick,"MIFF");
+  allocate_image->attributes=(ImageAttribute *) NULL;
+  allocate_image->class=DirectClass;
+  allocate_image->matte=False;
+  allocate_image->compression=UndefinedCompression;
+  allocate_image->columns=0;
+  allocate_image->rows=0;
+  allocate_image->depth=QuantumDepth;
+  allocate_image->tile_info.width=0;
+  allocate_image->tile_info.height=0;
+  allocate_image->tile_info.x=0;
+  allocate_image->tile_info.y=0;
+  allocate_image->offset=0;
+  allocate_image->interlace=NoInterlace;
+  allocate_image->scene=0;
+  allocate_image->units=UndefinedResolution;
+  allocate_image->x_resolution=0.0;
+  allocate_image->y_resolution=0.0;
+  allocate_image->montage=(char *) NULL;
+  allocate_image->directory=(char *) NULL;
+  allocate_image->colormap=(PixelPacket *) NULL;
+  allocate_image->colors=0;
+  allocate_image->colorspace=RGBColorspace;
+  allocate_image->rendering_intent=UndefinedIntent;
+  allocate_image->gamma=0.0;
+  allocate_image->chromaticity.red_primary.x=0.0;
+  allocate_image->chromaticity.red_primary.y=0.0;
+  allocate_image->chromaticity.green_primary.x=0.0;
+  allocate_image->chromaticity.green_primary.y=0.0;
+  allocate_image->chromaticity.blue_primary.x=0.0;
+  allocate_image->chromaticity.blue_primary.y=0.0;
+  allocate_image->chromaticity.white_point.x=0.0;
+  allocate_image->chromaticity.white_point.y=0.0;
+  allocate_image->color_profile.length=0;
+  allocate_image->color_profile.info=(unsigned char *) NULL;
+  allocate_image->iptc_profile.length=0;
+  allocate_image->iptc_profile.info=(unsigned char *) NULL;
+  (void) QueryColorDatabase(BackgroundColor,&allocate_image->background_color);
+  (void) QueryColorDatabase(BorderColor,&allocate_image->border_color);
+  (void) QueryColorDatabase(MatteColor,&allocate_image->matte_color);
+  allocate_image->geometry=(char *) NULL;
+  GetPageInfo(&allocate_image->page);
+  allocate_image->dispose=0;
+  allocate_image->delay=0;
+  allocate_image->iterations=1;
+  allocate_image->fuzz=0;
+  allocate_image->filter=LanczosFilter;
+  allocate_image->blur=1.0;
+  allocate_image->total_colors=0;
+  allocate_image->normalized_mean_error=0.0;
+  allocate_image->normalized_maximum_error=0.0;
+  allocate_image->mean_error_per_pixel=0;
+  *allocate_image->magick_filename='\0';
+  allocate_image->magick_columns=0;
+  allocate_image->magick_rows=0;
+  allocate_image->taint=False;
+  allocate_image->restart_animation_here=False;
+  GetExceptionInfo(&allocate_image->exception);
+  GetTimerInfo(&allocate_image->timer);
+  allocate_image->cache=(void *) NULL;
+  allocate_image->fifo=(void (*)(const Image *)) NULL;
+  allocate_image->orphan=False;
+  allocate_image->previous=(Image *) NULL;
+  allocate_image->list=(Image *) NULL;
+  allocate_image->next=(Image *) NULL;
   if (image_info == (ImageInfo *) NULL)
-    return(allocated_image);
+    return(allocate_image);
   /*
     Transfer image info.
   */
-  allocated_image->blob=image_info->blob;
-  allocated_image->exempt=image_info->file != (FILE *) NULL;
-  (void) strcpy(allocated_image->filename,image_info->filename);
-  (void) strcpy(allocated_image->magick_filename,image_info->filename);
-  (void) strcpy(allocated_image->magick,image_info->magick);
+  allocate_image->blob=image_info->blob;
+  allocate_image->exempt=image_info->file != (FILE *) NULL;
+  (void) strcpy(allocate_image->filename,image_info->filename);
+  (void) strcpy(allocate_image->magick_filename,image_info->filename);
+  (void) strcpy(allocate_image->magick,image_info->magick);
   if (image_info->size != (char *) NULL)
     {
       int
         y;
 
       (void) sscanf(image_info->size,"%ux%u",
-        &allocated_image->columns,&allocated_image->rows);
-      flags=ParseGeometry(image_info->size,&allocated_image->offset,&y,
-        &allocated_image->columns,&allocated_image->rows);
+        &allocate_image->columns,&allocate_image->rows);
+      flags=ParseGeometry(image_info->size,&allocate_image->offset,&y,
+        &allocate_image->columns,&allocate_image->rows);
       if ((flags & HeightValue) == 0)
-        allocated_image->rows=allocated_image->columns;
-      allocated_image->tile_info.width=allocated_image->columns;
-      allocated_image->tile_info.height=allocated_image->rows;
+        allocate_image->rows=allocate_image->columns;
+      allocate_image->tile_info.width=allocate_image->columns;
+      allocate_image->tile_info.height=allocate_image->rows;
     }
   if (image_info->tile != (char *) NULL)
     if (!IsSubimage(image_info->tile,False))
       {
         (void) sscanf(image_info->tile,"%ux%u",
-          &allocated_image->columns,&allocated_image->rows);
-        flags=ParseGeometry(image_info->tile,&allocated_image->tile_info.x,
-          &allocated_image->tile_info.y,&allocated_image->columns,
-          &allocated_image->rows);
+          &allocate_image->columns,&allocate_image->rows);
+        flags=ParseGeometry(image_info->tile,&allocate_image->tile_info.x,
+          &allocate_image->tile_info.y,&allocate_image->columns,
+          &allocate_image->rows);
         if ((flags & HeightValue) == 0)
-          allocated_image->rows=allocated_image->columns;
+          allocate_image->rows=allocate_image->columns;
       }
-  allocated_image->compression=image_info->compression;
-  allocated_image->interlace=image_info->interlace;
-  allocated_image->units=image_info->units;
+  allocate_image->compression=image_info->compression;
+  allocate_image->interlace=image_info->interlace;
+  allocate_image->units=image_info->units;
   if (image_info->density != (char *) NULL)
     {
       int
         count;
 
-      count=sscanf(image_info->density,"%lfx%lf",&allocated_image->x_resolution,
-        &allocated_image->y_resolution);
+      count=sscanf(image_info->density,"%lfx%lf",&allocate_image->x_resolution,
+        &allocate_image->y_resolution);
       if (count != 2)
-        allocated_image->y_resolution=allocated_image->x_resolution;
+        allocate_image->y_resolution=allocate_image->x_resolution;
     }
   if (image_info->page != (char *) NULL)
     ParseImageGeometry(PostscriptGeometry(image_info->page),
-      &allocated_image->page.x,&allocated_image->page.y,
-      &allocated_image->page.width,&allocated_image->page.height);
+      &allocate_image->page.x,&allocate_image->page.y,
+      &allocate_image->page.width,&allocate_image->page.height);
   if (image_info->dispose != (char *) NULL)
-    allocated_image->dispose=atoi(image_info->dispose);
+    allocate_image->dispose=atoi(image_info->dispose);
   if (image_info->delay != (char *) NULL)
-    allocated_image->delay=atoi(image_info->delay);
+    allocate_image->delay=atoi(image_info->delay);
   if (image_info->iterations != (char *) NULL)
-    allocated_image->iterations=atoi(image_info->iterations);
-  allocated_image->depth=image_info->depth;
-  allocated_image->background_color=image_info->background_color;
-  allocated_image->border_color=image_info->border_color;
-  allocated_image->matte_color=image_info->matte_color;
-  allocated_image->fifo=image_info->fifo;
-  return(allocated_image);
+    allocate_image->iterations=atoi(image_info->iterations);
+  allocate_image->depth=image_info->depth;
+  allocate_image->background_color=image_info->background_color;
+  allocate_image->border_color=image_info->border_color;
+  allocate_image->matte_color=image_info->matte_color;
+  allocate_image->fifo=image_info->fifo;
+  return(allocate_image);
 }
 
 /*
@@ -2282,7 +2282,7 @@ Export void DestroyImages(Image *image)
     */
     next=image->next;
     if (next != (Image *)NULL)
-      next->previous=(Image *)NULL;
+      next->previous=(Image *) NULL;
     DestroyImage(image);
     image=next;
   } while (image != (Image *) NULL);
@@ -3130,7 +3130,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
     if (LocaleNCompare("-blur",option,4) == 0)
       {
         Image
-          *blurred_image;
+          *blur_image;
 
         unsigned int
           order;
@@ -3139,17 +3139,17 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
           Blur an image.
         */
         order=atoi(argv[++i]);
-        blurred_image=BlurImage(*image,order,&(*image)->exception);
-        if (blurred_image == (Image *) NULL)
+        blur_image=BlurImage(*image,order,&(*image)->exception);
+        if (blur_image == (Image *) NULL)
           break;
         DestroyImage(*image);
-        *image=blurred_image;
+        *image=blur_image;
         continue;
       }
     if (LocaleCompare("-border",option) == 0)
       {
         Image
-          *bordered_image;
+          *border_image;
 
         RectangleInfo
           border_info;
@@ -3165,12 +3165,12 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
           &border_info.width,&border_info.height);
         if ((flags & HeightValue) == 0)
           border_info.height=border_info.width;
-        bordered_image=BorderImage(*image,&border_info,&(*image)->exception);
-        if (bordered_image == (Image *) NULL)
+        border_image=BorderImage(*image,&border_info,&(*image)->exception);
+        if (border_image == (Image *) NULL)
           break;
         DestroyImage(*image);
-        bordered_image->class=DirectClass;
-        *image=bordered_image;
+        border_image->class=DirectClass;
+        *image=border_image;
         continue;
       }
     if (LocaleNCompare("-bordercolor",option,8) == 0)
@@ -3215,7 +3215,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
     if (LocaleNCompare("-colorize",option,8) == 0)
       {
         Image
-          *colorized_image;
+          *colorize_image;
 
         PixelPacket
           target;
@@ -3225,12 +3225,12 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         */
         target=GetOnePixel(*image,0,0);
         (void) QueryColorDatabase(clone_info->pen,&target);
-        colorized_image=
+        colorize_image=
           ColorizeImage(*image,argv[++i],target,&(*image)->exception);
-        if (colorized_image == (Image *) NULL)
+        if (colorize_image == (Image *) NULL)
           break;
         DestroyImage(*image);
-        *image=colorized_image;
+        *image=colorize_image;
         continue;
       }
     if (LocaleNCompare("-compress",option,6) == 0)
@@ -3356,16 +3356,16 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
     if (LocaleNCompare("-despeckle",option,4) == 0)
       {
         Image
-          *despeckled_image;
+          *despeckle_image;
 
         /*
           Reduce the speckles within an image.
         */
-        despeckled_image=DespeckleImage(*image,&(*image)->exception);
-        if (despeckled_image == (Image *) NULL)
+        despeckle_image=DespeckleImage(*image,&(*image)->exception);
+        if (despeckle_image == (Image *) NULL)
           break;
         DestroyImage(*image);
-        *image=despeckled_image;
+        *image=despeckle_image;
         continue;
       }
     if (LocaleNCompare("-display",option,6) == 0)
@@ -3429,16 +3429,16 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
     if (LocaleNCompare("-enhance",option,3) == 0)
       {
         Image
-          *enhanced_image;
+          *enhance_image;
 
         /*
           Enhance image.
         */
-        enhanced_image=EnhanceImage(*image,&(*image)->exception);
-        if (enhanced_image == (Image *) NULL)
+        enhance_image=EnhanceImage(*image,&(*image)->exception);
+        if (enhance_image == (Image *) NULL)
           break;
         DestroyImage(*image);
-        *image=enhanced_image;
+        *image=enhance_image;
         continue;
       }
     if (LocaleNCompare("-equalize",option,3) == 0)
@@ -3500,37 +3500,37 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
     if (LocaleNCompare("-flip",option,4) == 0)
       {
         Image
-          *flipped_image;
+          *flip_image;
 
         /*
           Flip image scanlines.
         */
-        flipped_image=FlipImage(*image,&(*image)->exception);
-        if (flipped_image == (Image *) NULL)
+        flip_image=FlipImage(*image,&(*image)->exception);
+        if (flip_image == (Image *) NULL)
           break;
         DestroyImage(*image);
-        *image=flipped_image;
+        *image=flip_image;
         continue;
       }
     if (LocaleNCompare("-flop",option,4) == 0)
       {
         Image
-          *flopped_image;
+          *flop_image;
 
         /*
           Flop image scanlines.
         */
-        flopped_image=FlopImage(*image,&(*image)->exception);
-        if (flopped_image == (Image *) NULL)
+        flop_image=FlopImage(*image,&(*image)->exception);
+        if (flop_image == (Image *) NULL)
           break;
         DestroyImage(*image);
-        *image=flopped_image;
+        *image=flop_image;
         continue;
       }
     if (LocaleCompare("-frame",option) == 0)
       {
         Image
-          *framed_image;
+          *frame_image;
 
         FrameInfo
           frame_info;
@@ -3554,12 +3554,12 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         frame_info.y=frame_info.height;
         frame_info.width=(*image)->columns+(frame_info.width << 1);
         frame_info.height=(*image)->rows+(frame_info.height << 1);
-        framed_image=FrameImage(*image,&frame_info,&(*image)->exception);
-        if (framed_image == (Image *) NULL)
+        frame_image=FrameImage(*image,&frame_info,&(*image)->exception);
+        if (frame_image == (Image *) NULL)
           break;
         DestroyImage(*image);
-        framed_image->class=DirectClass;
-        *image=framed_image;
+        frame_image->class=DirectClass;
+        *image=frame_image;
         continue;
       }
     if (LocaleNCompare("-fuzz",option,3) == 0)
@@ -3659,17 +3659,17 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
           amount;
 
         Image
-          *imploded_image;
+          *implode_image;
 
         /*
           Implode image.
         */
         amount=atof(argv[++i]);
-        imploded_image=ImplodeImage(*image,amount,&(*image)->exception);
-        if (imploded_image == (Image *) NULL)
+        implode_image=ImplodeImage(*image,amount,&(*image)->exception);
+        if (implode_image == (Image *) NULL)
           break;
         DestroyImage(*image);
-        *image=imploded_image;
+        *image=implode_image;
         continue;
       }
     if (LocaleNCompare("label",option+1,3) == 0)
@@ -3836,6 +3836,10 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
     if (LocaleCompare("-pen",option) == 0)
       {
         (void) CloneString(&clone_info->pen,argv[++i]);
+        (void) CloneString(&draw_info->pen,clone_info->pen);
+        (void) QueryColorDatabase(draw_info->pen,
+          &draw_info->tile->background_color);
+        SetImage(draw_info->tile,Opaque);
         continue;
       }
     if (LocaleNCompare("pointsize",option+1,2) == 0)
@@ -3936,7 +3940,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
     if (LocaleNCompare("region",option+1,3) == 0)
       {
         Image
-          *cropped_image;
+          *crop_image;
 
         if (region_image != (Image *) NULL)
           {
@@ -3962,17 +3966,17 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         region_info.y=0;
         (void) ParseGeometry(argv[++i],&region_info.x,&region_info.y,
           &region_info.width,&region_info.height);
-        cropped_image=CropImage(*image,&region_info,&(*image)->exception);
-        if (cropped_image == (Image *) NULL)
+        crop_image=CropImage(*image,&region_info,&(*image)->exception);
+        if (crop_image == (Image *) NULL)
           break;
         region_image=(*image);
-        *image=cropped_image;
+        *image=crop_image;
         continue;
       }
     if (LocaleNCompare("-roll",option,4) == 0)
       {
         Image
-          *rolled_image;
+          *roll_image;
 
         /*
           Roll image.
@@ -3980,11 +3984,11 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         x=0;
         y=0;
         flags=ParseGeometry(argv[++i],&x,&y,&width,&height);
-        rolled_image=RollImage(*image,x,y,&(*image)->exception);
-        if (rolled_image == (Image *) NULL)
+        roll_image=RollImage(*image,x,y,&(*image)->exception);
+        if (roll_image == (Image *) NULL)
           break;
         DestroyImage(*image);
-        *image=rolled_image;
+        *image=roll_image;
         continue;
       }
     if (LocaleNCompare("-rotate",option,4) == 0)
@@ -3993,7 +3997,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
           degrees;
 
         Image
-          *rotated_image;
+          *rotate_image;
 
         /*
           Check for conditional image rotation.
@@ -4009,17 +4013,17 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
           Rotate image.
         */
         degrees=atof(argv[i]);
-        rotated_image=RotateImage(*image,degrees,&(*image)->exception);
-        if (rotated_image == (Image *) NULL)
+        rotate_image=RotateImage(*image,degrees,&(*image)->exception);
+        if (rotate_image == (Image *) NULL)
           break;
         DestroyImage(*image);
-        *image=rotated_image;
+        *image=rotate_image;
         continue;
       }
     if (LocaleNCompare("-sample",option,3) == 0)
       {
         Image
-          *sampled_image;
+          *sample_image;
 
         /*
           Sample image with pixel replication.
@@ -4029,11 +4033,11 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         x=0;
         y=0;
         (void) ParseImageGeometry(argv[++i],&x,&y,&width,&height);
-        sampled_image=SampleImage(*image,width,height,&(*image)->exception);
-        if (sampled_image == (Image *) NULL)
+        sample_image=SampleImage(*image,width,height,&(*image)->exception);
+        if (sample_image == (Image *) NULL)
           break;
         DestroyImage(*image);
-        *image=sampled_image;
+        *image=sample_image;
         continue;
       }
     if (LocaleNCompare("sans",option+1,2) == 0)
@@ -5141,7 +5145,7 @@ Export unsigned int RGBTransformImage(Image *image,
     }
   }
   /*
-    Free allocated memory.
+    Free allocate memory.
   */
   FreeMemory((void **) &z_map);
   FreeMemory((void **) &y_map);
@@ -6171,7 +6175,7 @@ Export unsigned int TransformRGBImage(Image *image,
     }
   }
   /*
-    Free allocated memory.
+    Free allocate memory.
   */
   FreeMemory((void **) &blue_map);
   FreeMemory((void **) &green_map);

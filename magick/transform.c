@@ -1015,7 +1015,7 @@ Export void TransformImage(Image **image,const char *crop_geometry,
   const char *image_geometry)
 {
   Image
-    *transformed_image;
+    *transform_image;
 
   int
     flags,
@@ -1027,7 +1027,7 @@ Export void TransformImage(Image **image,const char *crop_geometry,
     width;
 
   assert(image != (Image **) NULL);
-  transformed_image=(*image);
+  transform_image=(*image);
   if (crop_geometry != (const char *) NULL)
     {
       Image
@@ -1039,22 +1039,22 @@ Export void TransformImage(Image **image,const char *crop_geometry,
       /*
         Crop image to a user specified size.
       */
-      width=transformed_image->columns;
-      height=transformed_image->rows;
+      width=transform_image->columns;
+      height=transform_image->rows;
       crop_info.x=0;
       crop_info.y=0;
       flags=ParseGeometry((char *) crop_geometry,&crop_info.x,&crop_info.y,
         &width,&height);
       if ((flags & WidthValue) == 0)
-        width=(unsigned int) ((int) transformed_image->columns-crop_info.x);
+        width=(unsigned int) ((int) transform_image->columns-crop_info.x);
       if ((flags & HeightValue) == 0)
-        height=(unsigned int) ((int) transformed_image->rows-crop_info.y);
+        height=(unsigned int) ((int) transform_image->rows-crop_info.y);
       if ((width != 0) || (height != 0))
         {
           if ((flags & XNegative) != 0)
-            crop_info.x+=transformed_image->columns-width;
+            crop_info.x+=transform_image->columns-width;
           if ((flags & YNegative) != 0)
-            crop_info.y+=transformed_image->rows-height;
+            crop_info.y+=transform_image->rows-height;
         }
       if (strchr(crop_geometry,'%') != (char *) NULL)
         {
@@ -1064,21 +1064,21 @@ Export void TransformImage(Image **image,const char *crop_geometry,
           x=0;
           y=0;
           (void) ParseImageGeometry(crop_geometry,&x,&y,&width,&height);
-          if (width > transformed_image->columns)
-            width=transformed_image->columns;
-          if (height > transformed_image->rows)
-            height=transformed_image->rows;
+          if (width > transform_image->columns)
+            width=transform_image->columns;
+          if (height > transform_image->rows)
+            height=transform_image->rows;
           crop_info.x=width >> 1;
           crop_info.y=height >> 1;
-          width=transformed_image->columns-width;
-          height=transformed_image->rows-height;
+          width=transform_image->columns-width;
+          height=transform_image->rows-height;
           flags|=XValue | YValue;
         }
       crop_info.width=width;
       crop_info.height=height;
       if ((width == 0) || (height == 0) ||
           ((flags & XValue) != 0) || ((flags & YValue) != 0))
-        crop_image=CropImage(transformed_image,&crop_info,&(*image)->exception);
+        crop_image=CropImage(transform_image,&crop_info,&(*image)->exception);
       else
         {
           Image
@@ -1089,16 +1089,16 @@ Export void TransformImage(Image **image,const char *crop_geometry,
           */
           next_image=(Image *) NULL;
           crop_image=(Image *) NULL;
-          for (y=0; y < (int) transformed_image->rows; y+=height)
+          for (y=0; y < (int) transform_image->rows; y+=height)
           {
-            for (x=0; x < (int) transformed_image->columns; x+=width)
+            for (x=0; x < (int) transform_image->columns; x+=width)
             {
               crop_info.width=width;
               crop_info.height=height;
               crop_info.x=x;
               crop_info.y=y;
               next_image=
-                CropImage(transformed_image,&crop_info,&(*image)->exception);
+                CropImage(transform_image,&crop_info,&(*image)->exception);
               if (next_image == (Image *) NULL)
                 break;
               if (crop_image == (Image *) NULL)
@@ -1116,36 +1116,34 @@ Export void TransformImage(Image **image,const char *crop_geometry,
         }
       if (crop_image != (Image *) NULL)
         {
-          DestroyImage(transformed_image);
+          DestroyImage(transform_image);
           while (crop_image->previous != (Image *) NULL)
             crop_image=crop_image->previous;
-          transformed_image=crop_image;
+          transform_image=crop_image;
         }
     }
   /*
     Scale image to a user specified size.
   */
-  width=transformed_image->columns;
-  height=transformed_image->rows;
+  width=transform_image->columns;
+  height=transform_image->rows;
   x=0;
   y=0;
   (void) ParseImageGeometry(image_geometry,&x,&y,&width,&height);
-  if ((transformed_image->columns != width) ||
-      (transformed_image->rows != height))
+  if ((transform_image->columns != width) || (transform_image->rows != height))
     {
       Image
-        *zoomed_image;
+        *zoom_image;
 
       /*
         Zoom image.
       */
-      zoomed_image=
-        ZoomImage(transformed_image,width,height,&(*image)->exception);
-      if (zoomed_image != (Image *) NULL)
+      zoom_image=ZoomImage(transform_image,width,height,&(*image)->exception);
+      if (zoom_image != (Image *) NULL)
         {
-          DestroyImage(transformed_image);
-          transformed_image=zoomed_image;
+          DestroyImage(transform_image);
+          transform_image=zoom_image;
         }
     }
-  *image=transformed_image;
+  *image=transform_image;
 }

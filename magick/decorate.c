@@ -78,7 +78,7 @@
 %
 %  A description of each parameter follows:
 %
-%    o bordered_image: Method BorderImage returns a pointer to the bordered
+%    o border_image: Method BorderImage returns a pointer to the border
 %      image.  A null image is returned if there is a memory shortage.
 %
 %    o image: The address of a structure of type Image.
@@ -97,7 +97,7 @@ Export Image *BorderImage(Image *image,const RectangleInfo *border_info,
     matte_color;
 
   Image
-    *bordered_image;
+    *border_image;
 
   FrameInfo
     frame_info;
@@ -112,10 +112,10 @@ Export Image *BorderImage(Image *image,const RectangleInfo *border_info,
   frame_info.outer_bevel=0;
   matte_color=image->matte_color;
   image->matte_color=image->border_color;
-  bordered_image=FrameImage(image,&frame_info,exception);
-  bordered_image->matte_color=matte_color;
+  border_image=FrameImage(image,&frame_info,exception);
+  border_image->matte_color=matte_color;
   image->matte_color=matte_color;
-  return(bordered_image);
+  return(border_image);
 }
 
 /*

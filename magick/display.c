@@ -2577,20 +2577,20 @@ static unsigned int XCompositeImage(Display *display,
       (composite_info.height != composite_image->rows))
     {
       Image
-        *zoomed_image;
+        *zoom_image;
 
       /*
         Scale composite image.
       */
-      zoomed_image=ZoomImage(composite_image,composite_info.width,
+      zoom_image=ZoomImage(composite_image,composite_info.width,
         composite_info.height,&exception);
       DestroyImage(composite_image);
-      if (zoomed_image == (Image *) NULL)
+      if (zoom_image == (Image *) NULL)
         {
           XSetCursorState(display,windows,False);
           return(False);
         }
-      composite_image=zoomed_image;
+      composite_image=zoom_image;
     }
   if (compose == DisplaceCompositeOp)
     composite_image->geometry=displacement_geometry;
@@ -4518,7 +4518,7 @@ static unsigned int XDrawEditImage(Display *display,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method XDrawPanRectangle draws a rectangle in the pan window.  The pan
-%  window displays a zoomed image and the rectangle shows which portion of
+%  window displays a zoom image and the rectangle shows which portion of
 %  the image is displayed in the Image window.
 %
 %  The format of the XDrawPanRectangle method is:
@@ -4852,7 +4852,7 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
 %
 %  A description of each parameter follows:
 %
-%    o loaded_image:  Method XImageWindowCommand returns an image when the
+%    o nexus:  Method XImageWindowCommand returns an image when the
 %      user chooses 'Open Image' from the command menu.  Otherwise a null
 %      image is returned.
 %
@@ -5252,7 +5252,7 @@ static CommandType XImageWindowCommand(Display *display,
 %
 %  A description of each parameter follows:
 %
-%    o loaded_image:  Method XMagickCommand returns an image when the
+%    o nexus:  Method XMagickCommand returns an image when the
 %      user chooses 'Load Image' from the command menu.  Otherwise a null
 %      image is returned.
 %
@@ -5282,7 +5282,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     exception;
 
   Image
-    *loaded_image;
+    *nexus;
 
   ImageInfo
     *image_info;
@@ -5305,7 +5305,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
   XCheckRefreshWindows(display,windows);
   XImageCache(display,resource_info,windows,command,image);
   argv[0]=resource_info->client_name;
-  loaded_image=(Image *) NULL;
+  nexus=(Image *) NULL;
   windows->image.window_changes.width=windows->image.ximage->width;
   windows->image.window_changes.height=windows->image.ximage->height;
   image_info=CloneImageInfo((ImageInfo *) NULL);
@@ -5316,7 +5316,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Load image.
       */
-      loaded_image=XOpenImage(display,resource_info,windows,False);
+      nexus=XOpenImage(display,resource_info,windows,False);
       break;
     }
     case NextCommand:
@@ -5343,7 +5343,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         Select image.
       */
       (void) chdir(resource_info->home_directory);
-      loaded_image=XOpenImage(display,resource_info,windows,True);
+      nexus=XOpenImage(display,resource_info,windows,True);
       break;
     }
     case SaveCommand:
@@ -5414,7 +5414,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       FormatString(image_info->filename,"%.1024s:%.1024s",format,color);
       (void) CloneString(&image_info->size,geometry);
-      loaded_image=ReadImage(image_info,&exception);
+      nexus=ReadImage(image_info,&exception);
       XClientMessage(display,windows->image.id,windows->im_protocols,
         windows->im_next_image,CurrentTime);
       break;
@@ -5424,7 +5424,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Visual Image directory.
       */
-      loaded_image=XVisualDirectoryImage(display,resource_info,windows);
+      nexus=XVisualDirectoryImage(display,resource_info,windows);
       break;
     }
     case QuitCommand:
@@ -6744,7 +6744,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           (char *) NULL);
       else
         {
-          loaded_image=ReadImage(resource_info->image_info,&exception);
+          nexus=ReadImage(resource_info->image_info,&exception);
           XClientMessage(display,windows->image.id,windows->im_protocols,
             windows->im_next_image,CurrentTime);
         }
@@ -6879,9 +6879,9 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       status=XBackgroundImage(display,resource_info,windows,image);
       if (status == False)
         break;
-      loaded_image=
+      nexus=
         CloneImage(*image,(*image)->columns,(*image)->rows,True,&exception);
-      if (loaded_image != (Image *) NULL)
+      if (nexus != (Image *) NULL)
         XClientMessage(display,windows->image.id,windows->im_protocols,
           windows->im_next_image,CurrentTime);
       break;
@@ -6912,9 +6912,9 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       status=XPreferencesWidget(display,resource_info,windows);
       if (status == False)
         break;
-      loaded_image=
+      nexus=
         CloneImage(*image,(*image)->columns,(*image)->rows,True,&exception);
-      if (loaded_image != (Image *) NULL)
+      if (nexus != (Image *) NULL)
         XClientMessage(display,windows->image.id,windows->im_protocols,
           windows->im_next_image,CurrentTime);
       break;
@@ -6983,7 +6983,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     }
   }
   DestroyImageInfo(image_info);
-  return(loaded_image);
+  return(nexus);
 }
 
 /*
@@ -7837,7 +7837,7 @@ static unsigned int XMatteEditImage(Display *display,
 %
 %  A description of each parameter follows:
 %
-%    o loaded_image: Method XOpenImage returns an image if can be loaded
+%    o nexus: Method XOpenImage returns an image if can be loaded
 %      successfully.  Otherwise a null image is returned.
 %
 %    o display: Specifies a connection to an X server; returned from
@@ -7859,7 +7859,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
     exception;
 
   Image
-    *loaded_image;
+    *nexus;
 
   ImageInfo
     *image_info;
@@ -7971,11 +7971,11 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
   handler=(MonitorHandler) NULL;
   if (LocaleCompare(image_info->magick,"X") == 0)
     handler=SetMonitorHandler((MonitorHandler) NULL);
-  loaded_image=ReadImage(image_info,&exception);
+  nexus=ReadImage(image_info,&exception);
   if (LocaleCompare(image_info->magick,"X") == 0)
     (void) SetMonitorHandler(handler);
   XSetCursorState(display,windows,False);
-  if (loaded_image != (Image *) NULL)
+  if (nexus != (Image *) NULL)
     XClientMessage(display,windows->image.id,windows->im_protocols,
       windows->im_next_image,CurrentTime);
   else
@@ -8043,7 +8043,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
       FreeMemory((void **) &text);
     }
   DestroyImageInfo(image_info);
-  return(loaded_image);
+  return(nexus);
 }
 
 /*
@@ -9565,7 +9565,7 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
 %  A description of each parameter follows:
 %
 %    o status: Method XRotateImage return True if the image is
-%      rotated.  False is returned is there is a memory shortage or if the
+%      rotate.  False is returned is there is a memory shortage or if the
 %      image fails to rotate.
 %
 %    o display: Specifies a connection to an X server; returned from
@@ -9626,7 +9626,7 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
     exception;
 
   Image
-    *rotated_image;
+    *rotate_image;
 
   int
     id,
@@ -9973,12 +9973,12 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
   (*image)->border_color.blue=
     XDownScale(windows->pixel_info->pen_colors[pen_id].blue);
   (*image)->border_color.opacity=Transparent;
-  rotated_image=RotateImage(*image,degrees,&exception);
+  rotate_image=RotateImage(*image,degrees,&exception);
   XSetCursorState(display,windows,False);
-  if (rotated_image == (Image *) NULL)
+  if (rotate_image == (Image *) NULL)
     return(False);
   DestroyImage(*image);
-  *image=rotated_image;
+  *image=rotate_image;
   if (windows->image.crop_geometry != (char *) NULL)
     {
       /*
@@ -10608,7 +10608,7 @@ static void XSetCropGeometry(Display *display,XWindows *windows,
 %
 %  A description of each parameter follows:
 %
-%    o tiled_image:  XTileImage reads or deletes the tiled image
+%    o tile_image:  XTileImage reads or deletes the tile image
 %      and returns it.  A null image is returned if an error occurs.
 %
 %    o display: Specifies a connection to an X server;  returned from
@@ -10661,7 +10661,7 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
     exception;
 
   Image
-    *tiled_image;
+    *tile_image;
 
   int
     id,
@@ -10748,7 +10748,7 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
   */
   XSetCursorState(display,windows,True);
   XCheckRefreshWindows(display,windows);
-  tiled_image=(Image *) NULL;
+  tile_image=(Image *) NULL;
   switch (TileCommands[id])
   {
     case TileLoadCommand:
@@ -10759,7 +10759,7 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       (void) strcpy(resource_info->image_info->magick,"MIFF");
       (void) strcpy(resource_info->image_info->filename,filename);
-      tiled_image=ReadImage(resource_info->image_info,&exception);
+      tile_image=ReadImage(resource_info->image_info,&exception);
       XWithdrawWindow(display,windows->info.id,windows->info.screen);
       break;
     }
@@ -10862,7 +10862,7 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
       break;
   }
   XSetCursorState(display,windows,False);
-  return(tiled_image);
+  return(tile_image);
 }
 
 /*
@@ -11147,7 +11147,7 @@ static unsigned int XTrimImage(Display *display,XResourceInfo *resource_info,
 %
 %  A description of each parameter follows:
 %
-%    o loaded_image: Method XVisualDirectoryImage returns a visual image
+%    o nexus: Method XVisualDirectoryImage returns a visual image
 %      directory if it can be created successfully.  Otherwise a null image
 %      is returned.
 %
@@ -11585,7 +11585,7 @@ Export unsigned int XDisplayBackgroundImage(Display *display,
 %
 %  A description of each parameter follows:
 %
-%    o loaded_image:  Method XDisplayImage returns an image when the
+%    o nexus:  Method XDisplayImage returns an image when the
 %      user chooses 'Open Image' from the command menu or picks a tile
 %      from the image directory.  Otherwise a null image is returned.
 %
@@ -11957,8 +11957,8 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     command_type;
 
   Image
-    *displayed_image,
-    *loaded_image;
+    *display_image,
+    *nexus;
 
   int
     entry,
@@ -12040,8 +12040,8 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   XWMHints
     *manager_hints;
 
-  displayed_image=(*image);
-  TransformRGBImage(displayed_image,RGBColorspace);
+  display_image=(*image);
+  TransformRGBImage(display_image,RGBColorspace);
   monitor_handler=(MonitorHandler) NULL;
   warning_handler=(WarningHandler) NULL;
   windows=XSetWindows((XWindows *) ~0);
@@ -12059,7 +12059,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       /*
         Allocate windows structure.
       */
-      resource_info->colors=displayed_image->colors;
+      resource_info->colors=display_image->colors;
       windows=XSetWindows(XInitializeWindows(display,resource_info));
       if (windows == (XWindows *) NULL)
         MagickError(XServerError,"Unable to create X windows",
@@ -12104,19 +12104,18 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   class_hints=windows->class_hints;
   manager_hints=windows->manager_hints;
   root_window=XRootWindow(display,visual_info->screen);
-  loaded_image=(Image *) NULL;
+  nexus=(Image *) NULL;
   if (resource_info->debug)
     {
-      (void) fprintf(stderr,"Image: %.1024s[%u] %ux%u ",
-        displayed_image->filename,displayed_image->scene,
-        displayed_image->columns,displayed_image->rows);
-      if (displayed_image->colors != 0)
-        (void) fprintf(stderr,"%uc ",displayed_image->colors);
-      (void) fprintf(stderr,"%.1024s\n",displayed_image->magick);
+      (void) fprintf(stderr,"Image: %.1024s[%u] %ux%u ",display_image->filename,
+        display_image->scene,display_image->columns,display_image->rows);
+      if (display_image->colors != 0)
+        (void) fprintf(stderr,"%uc ",display_image->colors);
+      (void) fprintf(stderr,"%.1024s\n",display_image->magick);
     }
-  XMakeStandardColormap(display,visual_info,resource_info,displayed_image,
+  XMakeStandardColormap(display,visual_info,resource_info,display_image,
     map_info,pixel);
-  displayed_image->taint=False;
+  display_image->taint=False;
   /*
     Initialize graphic context.
   */
@@ -12167,7 +12166,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   XGetWindowInfo(display,icon_visual,icon_map,icon_pixel,(XFontStruct *) NULL,
     icon_resources,&windows->icon);
   windows->icon.geometry=resource_info->icon_geometry;
-  XBestIconSize(display,&windows->icon,displayed_image);
+  XBestIconSize(display,&windows->icon,display_image);
   windows->icon.attributes.colormap=
     XDefaultColormap(display,icon_visual->screen);
   windows->icon.attributes.event_mask=ExposureMask | StructureNotifyMask;
@@ -12206,9 +12205,9 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   if ((resource_info->title != (char *) NULL) && !(*state & MontageImageState))
     {
       windows->image.name=TranslateText(resource_info->image_info,
-        displayed_image,resource_info->title);
+        display_image,resource_info->title);
       windows->image.icon_name=TranslateText(resource_info->image_info,
-        displayed_image,resource_info->title);
+        display_image,resource_info->title);
     }
   else
     {
@@ -12229,21 +12228,21 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       if ((windows->image.name == NULL) || (windows->image.icon_name == NULL))
         MagickError(ResourceLimitError,"Unable to create Image window",
           "Memory allocation failed");
-      p=displayed_image->filename+Extent(displayed_image->filename)-1;
-      while ((p > displayed_image->filename) && !IsBasenameSeparator(*(p-1)))
+      p=display_image->filename+Extent(display_image->filename)-1;
+      while ((p > display_image->filename) && !IsBasenameSeparator(*(p-1)))
         p--;
       FormatString(windows->image.name,"ImageMagick: %.1024s[%u]",p,
-        displayed_image->scene);
-      q=displayed_image;
+        display_image->scene);
+      q=display_image;
       while (q->previous != (Image *) NULL)
         q=q->previous;
       for (count=1; q->next != (Image *) NULL; count++)
         q=q->next;
       FormatString(windows->image.name,"ImageMagick: %.1024s[%u of %u]",p,
-        displayed_image->scene,count);
-      if ((displayed_image->previous == (Image *) NULL) &&
-          (displayed_image->next == (Image *) NULL) &&
-          (displayed_image->scene == 0))
+        display_image->scene,count);
+      if ((display_image->previous == (Image *) NULL) &&
+          (display_image->next == (Image *) NULL) &&
+          (display_image->scene == 0))
         FormatString(windows->image.name,"ImageMagick: %.1024s",p);
       (void) strcpy(windows->image.icon_name,p);
     }
@@ -12251,8 +12250,8 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     windows->image.immutable=True;
   windows->image.use_pixmap=resource_info->use_pixmap;
   windows->image.geometry=resource_info->image_geometry;
-  windows->image.width=displayed_image->columns;
-  windows->image.height=displayed_image->rows;
+  windows->image.width=display_image->columns;
+  windows->image.height=display_image->rows;
   FormatString(geometry,"%ux%u+0+0>!",
     XDisplayWidth(display,visual_info->screen),
     XDisplayHeight(display,visual_info->screen));
@@ -12342,8 +12341,8 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   /*
     Initialize Info widget.
   */
-  XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
-    resource_info,&windows->info);
+  XGetWindowInfo(display,visual_info,map_info,pixel,font_info,resource_info,
+    &windows->info);
   windows->info.name="Info";
   windows->info.icon_name="Info";
   windows->info.border_width=1;
@@ -12555,13 +12554,13 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   */
   windows->image.x=0;
   windows->image.y=0;
-  status=XMakeImage(display,resource_info,&windows->image,displayed_image,
-    displayed_image->columns,displayed_image->rows);
+  status=XMakeImage(display,resource_info,&windows->image,display_image,
+    display_image->columns,display_image->rows);
   if (status == False)
     MagickError(XServerError,"Unable to create X image",(char *) NULL);
   if (windows->image.mapped)
     XRefreshWindow(display,&windows->image,(XEvent *) NULL);
-  SignatureImage(displayed_image);
+  SignatureImage(display_image);
   handler=SetMonitorHandler((MonitorHandler) NULL);
   status=XMakeImage(display,resource_info,&windows->magnify,(Image *) NULL,
     windows->magnify.width,windows->magnify.height);
@@ -12586,7 +12585,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       /*
         Determine when file data was last modified.
       */
-      status=stat(displayed_image->filename,&file_info);
+      status=stat(display_image->filename,&file_info);
       if (status == 0)
         update_time=file_info.st_mtime;
     }
@@ -12609,7 +12608,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                 /*
                   Determine if image file was modified.
                 */
-                status=stat(displayed_image->filename,&file_info);
+                status=stat(display_image->filename,&file_info);
                 if (status == 0)
                   if (update_time != file_info.st_mtime)
                     {
@@ -12620,11 +12619,10 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                         Redisplay image.
                       */
                       FormatString(resource_info->image_info->filename,
-                        "%.1024s:%.1024s",displayed_image->magick,
-                        displayed_image->filename);
-                      loaded_image=
-                        ReadImage(resource_info->image_info,&exception);
-                      if (loaded_image != (Image *) NULL)
+                        "%.1024s:%.1024s",display_image->magick,
+                        display_image->filename);
+                      nexus=ReadImage(resource_info->image_info,&exception);
+                      if (nexus != (Image *) NULL)
                         *state|=NextImageState | ExitState;
                     }
                 timer=time((time_t *) NULL)+(resource_info->delay/100)+1;
@@ -12666,8 +12664,8 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
             command_type=Commands[id][entry];
           }
         if (command_type != NullCommand)
-          loaded_image=XMagickCommand(display,resource_info,windows,
-            command_type,&displayed_image);
+          nexus=XMagickCommand(display,resource_info,windows,command_type,
+            &display_image);
         continue;
       }
     switch (event.type)
@@ -12707,8 +12705,8 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                     entry=XMenuWidget(display,windows,"Commands",ImmutableMenu,
                       command);
                     if (entry >= 0)
-                      loaded_image=XMagickCommand(display,resource_info,
-                        windows,ImmutableCommands[entry],&displayed_image);
+                      nexus=XMagickCommand(display,resource_info,windows,
+                        ImmutableCommands[entry],&display_image);
                     break;
                   }
                 /*
@@ -12731,7 +12729,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                   User pressed the image magnify button.
                 */
                 (void) XMagickCommand(display,resource_info,windows,ZoomCommand,
-                  &displayed_image);
+                  &display_image);
                 XMagnifyImage(display,windows,&event);
                 break;
               }
@@ -12745,18 +12743,18 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                     entry=XMenuWidget(display,windows,"Commands",ImmutableMenu,
                       command);
                     if (entry >= 0)
-                      loaded_image=XMagickCommand(display,resource_info,
-                        windows,ImmutableCommands[entry],&displayed_image);
+                      nexus=XMagickCommand(display,resource_info,windows,
+                        ImmutableCommands[entry],&display_image);
                     break;
                   }
-                if (displayed_image->montage != (char *) NULL)
+                if (display_image->montage != (char *) NULL)
                   {
                     /*
                       Open or delete a tile from a visual image directory.
                     */
-                    loaded_image=XTileImage(display,resource_info,windows,
-                      displayed_image,&event);
-                    if (loaded_image != (Image *) NULL)
+                    nexus=XTileImage(display,resource_info,windows,
+                      display_image,&event);
+                    if (nexus != (Image *) NULL)
                       *state|=MontageImageState | NextImageState | ExitState;
                     vid_info.x=windows->image.x;
                     vid_info.y=windows->image.y;
@@ -12768,8 +12766,8 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                 entry=XMenuWidget(display,windows,"Short Cuts",ShortCutsMenu,
                   command);
                 if (entry >= 0)
-                  loaded_image=XMagickCommand(display,resource_info,windows,
-                    ShortCutsCommands[entry],&displayed_image);
+                  nexus=XMagickCommand(display,resource_info,windows,
+                    ShortCutsCommands[entry],&display_image);
                 break;
               }
               default:
@@ -12963,8 +12961,8 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                 (void) strcpy(resource_info->image_info->filename,
                   ((char *) data)+5);
               }
-            loaded_image=ReadImage(resource_info->image_info,&exception);
-            if (loaded_image != (Image *) NULL)
+            nexus=ReadImage(resource_info->image_info,&exception);
+            if (nexus != (Image *) NULL)
               *state|=NextImageState | ExitState;
             XFree((void *) data);
             break;
@@ -12990,7 +12988,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
             windows->image.window_changes.width=windows->image.ximage->width;
             windows->image.window_changes.height=windows->image.ximage->height;
             (void) XConfigureImage(display,resource_info,windows,
-              displayed_image);
+              display_image);
           }
         break;
       }
@@ -13076,7 +13074,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
             windows->image.height=event.xconfigure.height;
             windows->image.x=0;
             windows->image.y=0;
-            if (displayed_image->montage != (char *) NULL)
+            if (display_image->montage != (char *) NULL)
               {
                 windows->image.x=vid_info.x;
                 windows->image.y=vid_info.y;
@@ -13089,7 +13087,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                 windows->image.window_changes.width=event.xconfigure.width;
                 windows->image.window_changes.height=event.xconfigure.height;
                 (void) XConfigureImage(display,resource_info,windows,
-                  displayed_image);
+                  display_image);
               }
             if ((event.xconfigure.width < windows->image.ximage->width) ||
                 (event.xconfigure.height < windows->image.ximage->height))
@@ -13131,7 +13129,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
               }
             handler=SetMonitorHandler((MonitorHandler) NULL);
             status=XMakeImage(display,resource_info,&windows->magnify,
-              displayed_image,windows->magnify.width,windows->magnify.height);
+              display_image,windows->magnify.width,windows->magnify.height);
             XMakeMagnifyImage(display,windows);
             (void) SetMonitorHandler(handler);
             break;
@@ -13240,10 +13238,10 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
         if (event.xkey.window == windows->image.id)
           {
             command_type=XImageWindowCommand(display,resource_info,windows,
-              event.xkey.state,key_symbol,&displayed_image);
+              event.xkey.state,key_symbol,&display_image);
             if (command_type != NullCommand)
-              loaded_image=XMagickCommand(display,resource_info,windows,
-                command_type,&displayed_image);
+              nexus=XMagickCommand(display,resource_info,windows,command_type,
+                &display_image);
           }
         if (event.xkey.window == windows->magnify.id)
           XMagnifyWindowCommand(display,windows,event.xkey.state,key_symbol);
@@ -13298,10 +13296,10 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
           {
             if (windows->backdrop.id != (Window) NULL)
               XInstallColormap(display,map_info->colormap);
-            if (LocaleCompare(displayed_image->magick,"LOGO") == 0)
+            if (LocaleCompare(display_image->magick,"LOGO") == 0)
               {
-                if (LocaleCompare(displayed_image->filename,"Untitled") == 0)
-                  loaded_image=XOpenImage(display,resource_info,windows,False);
+                if (LocaleCompare(display_image->filename,"Untitled") == 0)
+                  nexus=XOpenImage(display,resource_info,windows,False);
                 else
                   *state|=NextImageState | ExitState;
               }
@@ -13320,7 +13318,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
           }
         if (event.xmap.window == windows->pan.id)
           {
-            XMakePanImage(display,resource_info,windows,displayed_image);
+            XMakePanImage(display,resource_info,windows,display_image);
             windows->pan.mapped=True;
             break;
           }
@@ -13337,12 +13335,12 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
             /*
               Create an icon image.
             */
-            taint=displayed_image->taint;
+            taint=display_image->taint;
             XMakeStandardColormap(display,icon_visual,icon_resources,
-              displayed_image,icon_map,icon_pixel);
+              display_image,icon_map,icon_pixel);
             (void) XMakeImage(display,icon_resources,&windows->icon,
-              displayed_image,windows->icon.width,windows->icon.height);
-            displayed_image->taint=taint;
+              display_image,windows->icon.width,windows->icon.height);
+            display_image->taint=taint;
             XSetWindowBackgroundPixmap(display,windows->icon.id,
               windows->icon.pixmap);
             XClearWindow(display,windows->icon.id);
@@ -13406,8 +13404,8 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
         if ((status != Success) || (length == 0))
           break;
         (void) strcpy(resource_info->image_info->filename,(char *) data);
-        loaded_image=ReadImage(resource_info->image_info,&exception);
-        if (loaded_image != (Image *) NULL)
+        nexus=ReadImage(resource_info->image_info,&exception);
+        if (nexus != (Image *) NULL)
           *state|=NextImageState | ExitState;
         XFree((void *) data);
         break;
@@ -13452,7 +13450,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
           {
             if (map_info->colormap == icon_map->colormap)
               XConfigureImageColormap(display,resource_info,windows,
-                displayed_image);
+                display_image);
             XFreeStandardColormap(display,icon_visual,icon_map,icon_pixel);
             windows->icon.mapped=False;
             break;
@@ -13491,14 +13489,14 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   while (!(*state & ExitState));
   if (!(*state & ExitState))
     (void) XMagickCommand(display,resource_info,windows,FreeBuffersCommand,
-      &displayed_image);
+      &display_image);
   else
     {
       /*
         Query user if image has changed.
       */
-      SignatureImage(displayed_image);
-      if (!resource_info->immutable && displayed_image->taint)
+      SignatureImage(display_image);
+      if (!resource_info->immutable && display_image->taint)
         {
           status=XConfirmWidget(display,windows,"Your image changed.",
             "Do you want to save it");
@@ -13507,7 +13505,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
           else
             if (status > 0)
               (void) XMagickCommand(display,resource_info,windows,SaveCommand,
-                &displayed_image);
+                &display_image);
         }
     }
   if ((windows->visual_info->class == GrayScale) ||
@@ -13538,7 +13536,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       }
   XSetCursorState(display,windows,True);
   XCheckRefreshWindows(display,windows);
-  if (!resource_info->immutable || (displayed_image->next != (Image *) NULL))
+  if (!resource_info->immutable || (display_image->next != (Image *) NULL))
     if ((*state & FormerImageState) || (*state & NextImageState))
       *state&=(~ExitState);
   if (*state & ExitState)
@@ -13614,7 +13612,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   */
   (void) getcwd(working_directory,MaxTextExtent-1);
   (void) chdir(resource_info->home_directory);
-  *image=displayed_image;
-  return(loaded_image);
+  *image=display_image;
+  return(nexus);
 }
 #endif

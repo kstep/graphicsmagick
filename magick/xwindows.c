@@ -5051,7 +5051,7 @@ Export unsigned int XMakeImage(Display *display,
     exception;
 
   Image
-    *transformed_image;
+    *transform_image;
 
   int
     depth,
@@ -5074,8 +5074,8 @@ Export unsigned int XMakeImage(Display *display,
   XDefineCursor(display,window->id,window->busy_cursor);
   XFlush(display);
   depth=window->depth;
-  transformed_image=image;
-  if (transformed_image != (Image *) NULL)
+  transform_image=image;
+  if (transform_image != (Image *) NULL)
     {
       if (window->crop_geometry)
         {
@@ -5091,51 +5091,50 @@ Export unsigned int XMakeImage(Display *display,
           /*
             Crop image.
           */
-          crop_info.width=transformed_image->columns;
-          crop_info.height=transformed_image->rows;
+          crop_info.width=transform_image->columns;
+          crop_info.height=transform_image->rows;
           crop_info.x=0;
           crop_info.y=0;
           (void) XParseGeometry(window->crop_geometry,&crop_info.x,
             &crop_info.y,&crop_info.width,&crop_info.height);
-          transformed_image->orphan=True;
-          crop_image=CropImage(transformed_image,&crop_info,&exception);
+          transform_image->orphan=True;
+          crop_image=CropImage(transform_image,&crop_info,&exception);
           if (crop_image != (Image *) NULL)
             {
-              if (transformed_image != image)
-                DestroyImage(transformed_image);
-              transformed_image=crop_image;
+              if (transform_image != image)
+                DestroyImage(transform_image);
+              transform_image=crop_image;
             }
         }
-      if ((width != transformed_image->columns) ||
-          (height != transformed_image->rows))
+      if ((width != transform_image->columns) ||
+          (height != transform_image->rows))
         {
           Image
-            *zoomed_image;
+            *zoom_image;
 
           /*
             Scale image.
           */
-          transformed_image->orphan=True;
-          if ((window->pixel_info->colors != 0) || transformed_image->matte)
-            zoomed_image=SampleImage(transformed_image,width,height,&exception);
+          transform_image->orphan=True;
+          if ((window->pixel_info->colors != 0) || transform_image->matte)
+            zoom_image=SampleImage(transform_image,width,height,&exception);
           else
             if ((width <= 160) && (height <= 160))
-              zoomed_image=
-                ScaleImage(transformed_image,width,height,&exception);
+              zoom_image=ScaleImage(transform_image,width,height,&exception);
             else
-              zoomed_image=ZoomImage(transformed_image,width,height,&exception);
-          if (zoomed_image != (Image *) NULL)
+              zoom_image=ZoomImage(transform_image,width,height,&exception);
+          if (zoom_image != (Image *) NULL)
             {
-              if (transformed_image != image)
-                DestroyImage(transformed_image);
-              transformed_image=zoomed_image;
+              if (transform_image != image)
+                DestroyImage(transform_image);
+              transform_image=zoom_image;
             }
         }
       if (window->immutable)
-        if (IsMonochromeImage(transformed_image))
+        if (IsMonochromeImage(transform_image))
           depth=1;
-      width=transformed_image->columns;
-      height=transformed_image->rows;
+      width=transform_image->columns;
+      height=transform_image->rows;
     }
   /*
     Create X image.
@@ -5163,8 +5162,8 @@ Export unsigned int XMakeImage(Display *display,
       /*
         Unable to create X image.
       */
-      if (transformed_image != image)
-        DestroyImage(transformed_image);
+      if (transform_image != image)
+        DestroyImage(transform_image);
       XDefineCursor(display,window->id,window->cursor);
       return(False);
     }
@@ -5224,8 +5223,8 @@ Export unsigned int XMakeImage(Display *display,
       /*
         Unable to allocate pixel data.
       */
-      if (transformed_image != image)
-        DestroyImage(transformed_image);
+      if (transform_image != image)
+        DestroyImage(transform_image);
       XDestroyImage(ximage);
       XDefineCursor(display,window->id,window->cursor);
       return(False);
@@ -5256,8 +5255,8 @@ Export unsigned int XMakeImage(Display *display,
 #endif
   window->ximage=ximage;
   matte_image=(XImage *) NULL;
-  if (transformed_image != (Image *) NULL)
-    if (transformed_image->matte)
+  if (transform_image != (Image *) NULL)
+    if (transform_image->matte)
       {
         /*
           Create matte image.
@@ -5310,14 +5309,14 @@ Export unsigned int XMakeImage(Display *display,
   /*
     Convert pixels to X image data.
   */
-  if (transformed_image != (Image *) NULL)
+  if (transform_image != (Image *) NULL)
     {
       if ((ximage->byte_order == LSBFirst) || ((ximage->format == XYBitmap) &&
           (ximage->bitmap_bit_order == LSBFirst)))
-        XMakeImageLSBFirst(resource_info,window,transformed_image,ximage,
+        XMakeImageLSBFirst(resource_info,window,transform_image,ximage,
           matte_image);
       else
-        XMakeImageMSBFirst(resource_info,window,transformed_image,ximage,
+        XMakeImageMSBFirst(resource_info,window,transform_image,ximage,
           matte_image);
     }
   if (window->matte_image != (XImage *) NULL)
@@ -5351,8 +5350,8 @@ Export unsigned int XMakeImage(Display *display,
 #endif
         }
       }
-  if (transformed_image != image)
-    DestroyImage(transformed_image);
+  if (transform_image != image)
+    DestroyImage(transform_image);
   (void) XMakePixmap(display,resource_info,window);
   /*
     Restore cursor.

@@ -103,7 +103,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
 #define LoadImageText  "  Loading images...  "
 
   Image
-    *loaded_image;
+    *nexus;
 
   int
     status;
@@ -114,7 +114,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
   /*
     Process user command.
   */
-  loaded_image=(Image *) NULL;
+  nexus=(Image *) NULL;
   switch (command_type)
   {
     case OpenCommand:
@@ -216,7 +216,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         }
       while (image->previous != (Image *) NULL)
         image=image->previous;
-      loaded_image=image;
+      nexus=image;
       *state|=ExitState;
       break;
     }
@@ -380,7 +380,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     default:
       break;
   }
-  return(loaded_image);
+  return(nexus);
 }
 
 /*
@@ -449,7 +449,7 @@ Export void XAnimateBackgroundImage(Display *display,
     exception;
 
   Image
-    *displayed_image,
+    *display_image,
     **images;
 
   int
@@ -610,22 +610,22 @@ Export void XAnimateBackgroundImage(Display *display,
     Initialize Standard Colormap.
   */
   resources.colormap=SharedColormap;
-  displayed_image=images[0];
+  display_image=images[0];
   for (scene=0; scene < (int) number_scenes; scene++)
   {
     if ((resource_info->map_type != (char *) NULL) ||
         (visual_info->class == TrueColor) ||
         (visual_info->class == DirectColor))
       images[scene]->class=DirectClass;
-    if ((displayed_image->columns < images[scene]->columns) &&
-        (displayed_image->rows < images[scene]->rows))
-      displayed_image=images[scene];
+    if ((display_image->columns < images[scene]->columns) &&
+        (display_image->rows < images[scene]->rows))
+      display_image=images[scene];
   }
   if ((resource_info->map_type != (char *) NULL) ||
       (visual_info->class == TrueColor) ||
       (visual_info->class == DirectColor))
-    displayed_image->class=DirectClass;
-  XMakeStandardColormap(display,visual_info,&resources,displayed_image,map_info,
+    display_image->class=DirectClass;
+  XMakeStandardColormap(display,visual_info,&resources,display_image,map_info,
     &pixel);
   /*
     Graphic context superclass.
@@ -978,9 +978,9 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
     exception;
 
   Image
-    *displayed_image,
+    *display_image,
     **images,
-    *loaded_image;
+    *nexus;
 
   int
     first_scene,
@@ -1193,29 +1193,29 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
   /*
     Initialize Standard Colormap.
   */
-  loaded_image=(Image *) NULL;
-  displayed_image=images[0];
-  TransformRGBImage(displayed_image,RGBColorspace);
+  nexus=(Image *) NULL;
+  display_image=images[0];
+  TransformRGBImage(display_image,RGBColorspace);
   for (scene=0; scene < (int) number_scenes; scene++)
   {
     if ((resource_info->map_type != (char *) NULL) ||
         (visual_info->class == TrueColor) ||
         (visual_info->class == DirectColor))
       images[scene]->class=DirectClass;
-    if ((displayed_image->columns < images[scene]->columns) &&
-        (displayed_image->rows < images[scene]->rows))
-      displayed_image=images[scene];
+    if ((display_image->columns < images[scene]->columns) &&
+        (display_image->rows < images[scene]->rows))
+      display_image=images[scene];
   }
   if (resource_info->debug)
     {
       (void) fprintf(stderr,"Image: %.1024s[%u] %ux%u ",
-        displayed_image->filename,displayed_image->scene,
-        displayed_image->columns,displayed_image->rows);
-      if (displayed_image->colors != 0)
-        (void) fprintf(stderr,"%uc ",displayed_image->colors);
-      (void) fprintf(stderr,"%.1024s\n",displayed_image->magick);
+        display_image->filename,display_image->scene,
+        display_image->columns,display_image->rows);
+      if (display_image->colors != 0)
+        (void) fprintf(stderr,"%uc ",display_image->colors);
+      (void) fprintf(stderr,"%.1024s\n",display_image->magick);
     }
-  XMakeStandardColormap(display,visual_info,resource_info,displayed_image,
+  XMakeStandardColormap(display,visual_info,resource_info,display_image,
     map_info,pixel);
   /*
     Initialize graphic context.
@@ -1267,7 +1267,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
   XGetWindowInfo(display,icon_visual,icon_map,icon_pixel,(XFontStruct *) NULL,
     icon_resources,&windows->icon);
   windows->icon.geometry=resource_info->icon_geometry;
-  XBestIconSize(display,&windows->icon,displayed_image);
+  XBestIconSize(display,&windows->icon,display_image);
   windows->icon.attributes.colormap=
     XDefaultColormap(display,icon_visual->screen);
   windows->icon.attributes.event_mask=ExposureMask | StructureNotifyMask;
@@ -1306,9 +1306,9 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
   if (resource_info->title != (char *) NULL)
     {
       windows->image.name=TranslateText(resource_info->image_info,
-        displayed_image,resource_info->title);
+        display_image,resource_info->title);
       windows->image.icon_name=TranslateText(resource_info->image_info,
-        displayed_image,resource_info->title);
+        display_image,resource_info->title);
     }
   else
     {
@@ -1320,21 +1320,21 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
       if ((windows->image.name == NULL) || (windows->image.icon_name == NULL))
         MagickError(ResourceLimitError,"Unable to create Image window",
           "Memory allocation failed");
-      p=displayed_image->filename+Extent(displayed_image->filename)-1;
-      while ((p > displayed_image->filename) && !IsBasenameSeparator(*(p-1)))
+      p=display_image->filename+Extent(display_image->filename)-1;
+      while ((p > display_image->filename) && !IsBasenameSeparator(*(p-1)))
         p--;
       FormatString(windows->image.name,"ImageMagick: %.1024s[%u of %u]",p,
-        displayed_image->scene,number_scenes);
+        display_image->scene,number_scenes);
       (void) strcpy(windows->image.icon_name,p);
     }
   if (resource_info->immutable)
     windows->image.immutable=True;
   windows->image.shape=True;
   windows->image.geometry=resource_info->image_geometry;
-  windows->image.width=displayed_image->columns;
+  windows->image.width=display_image->columns;
   if ((int) windows->image.width > XDisplayWidth(display,visual_info->screen))
     windows->image.width=XDisplayWidth(display,visual_info->screen);
-  windows->image.height=displayed_image->rows;
+  windows->image.height=display_image->rows;
   if ((int) windows->image.height > XDisplayHeight(display,visual_info->screen))
     windows->image.height=XDisplayHeight(display,visual_info->screen);
   windows->image.attributes.event_mask=ButtonMotionMask | ButtonPressMask |
@@ -1559,8 +1559,8 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
   */
   windows->image.x=0;
   windows->image.y=0;
-  status=XMakeImage(display,resource_info,&windows->image,displayed_image,
-    displayed_image->columns,displayed_image->rows);
+  status=XMakeImage(display,resource_info,&windows->image,display_image,
+    display_image->columns,display_image->rows);
   if (status == False)
     MagickError(XServerError,"Unable to create X image",(char *) NULL);
   if (windows->image.mapped)
@@ -1646,7 +1646,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
   /*
     Respond to events.
   */
-  loaded_image=(Image *) NULL;
+  nexus=(Image *) NULL;
   scene=0;
   first_scene=0;
   image=images[0];
@@ -1784,7 +1784,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
             command_type=Commands[id][entry];
           }
         if (command_type != NullCommand)
-          loaded_image=XMagickCommand(display,resource_info,windows,
+          nexus=XMagickCommand(display,resource_info,windows,
             command_type,&image,&state);
         continue;
       }
@@ -1940,8 +1940,8 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
                 (void) strcpy(resource_info->image_info->filename,
                   ((char *) data)+5);
               }
-            loaded_image=ReadImage(resource_info->image_info,&error);
-            if (loaded_image != (Image *) NULL)
+            nexus=ReadImage(resource_info->image_info,&error);
+            if (nexus != (Image *) NULL)
               state|=ExitState;
             XFree((void *) data);
             break;
@@ -2146,7 +2146,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
             break;
         }
         if (command_type != NullCommand)
-          loaded_image=XMagickCommand(display,resource_info,windows,
+          nexus=XMagickCommand(display,resource_info,windows,
             command_type,&image,&state);
         break;
       }
@@ -2189,8 +2189,8 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
               XInstallColormap(display,map_info->colormap);
             if (LocaleCompare(images[0]->magick,"LOGO") == 0)
               {
-                if (LocaleCompare(displayed_image->filename,"Untitled") == 0)
-                  loaded_image=XMagickCommand(display,resource_info,windows,
+                if (LocaleCompare(display_image->filename,"Untitled") == 0)
+                  nexus=XMagickCommand(display,resource_info,windows,
                     OpenCommand,&image,&state);
                 else
                   state|=ExitState;
@@ -2209,9 +2209,9 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
               Create an icon image.
             */
             XMakeStandardColormap(display,icon_visual,icon_resources,
-              displayed_image,icon_map,icon_pixel);
+              display_image,icon_map,icon_pixel);
             (void) XMakeImage(display,icon_resources,&windows->icon,
-              displayed_image,windows->icon.width,windows->icon.height);
+              display_image,windows->icon.width,windows->icon.height);
             XSetWindowBackgroundPixmap(display,windows->icon.id,
               windows->icon.pixmap);
             XClearWindow(display,windows->icon.id);
@@ -2275,8 +2275,8 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
         if ((status != Success) || (length == 0))
           break;
         (void) strcpy(resource_info->image_info->filename,(char *) data);
-        loaded_image=ReadImage(resource_info->image_info,&error);
-        if (loaded_image != (Image *) NULL)
+        nexus=ReadImage(resource_info->image_info,&error);
+        if (nexus != (Image *) NULL)
           state|=ExitState;
         XFree((void *) data);
         break;
@@ -2311,7 +2311,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
           {
             if (map_info->colormap == icon_map->colormap)
               XConfigureImageColormap(display,resource_info,windows,
-                displayed_image);
+                display_image);
             XFreeStandardColormap(display,icon_visual,icon_map,icon_pixel);
             windows->icon.mapped=False;
             break;
@@ -2385,7 +2385,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
   windows->image.pixmaps=(Pixmap *) NULL;
   FreeMemory((void **) &windows->image.matte_pixmaps);
   windows->image.matte_pixmaps=(Pixmap *) NULL;
-  if (loaded_image == (Image *) NULL)
+  if (nexus == (Image *) NULL)
     {
       /*
         Destroy X windows.
@@ -2456,6 +2456,6 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
   (void) getcwd(working_directory,MaxTextExtent-1);
   (void) chdir(resource_info->home_directory);
   DestroyImages(image);
-  return(loaded_image);
+  return(nexus);
 }
 #endif
