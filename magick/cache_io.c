@@ -409,15 +409,15 @@ Export unsigned int InitializePixelCache(CacheHandle cache_handle,
     status;
 
   off_t
-    number_pixels,
     offset;
 
   size_t
-    length;
+    length,
+    number_pixels;
 
   assert(cache_handle != (CacheHandle) NULL);
   cache_info=(CacheInfo *) cache_handle;
-  number_pixels=columns*rows;
+  number_pixels=(size_t) columns*rows;
   if (GetCacheClassType(cache_handle) == UndefinedClass)
     {
       length=number_pixels*sizeof(PixelPacket);
@@ -597,18 +597,18 @@ Export unsigned int ReadCacheIndexes(CacheHandle cache_handle,
   CacheInfo
     *cache_info;
 
-  register int
-    y;
-
-  size_t
+  long
     count;
 
   off_t
     offset;
 
+  register int
+    y;
+
   assert(cache_handle != (CacheHandle) NULL);
   cache_info=(CacheInfo *) cache_handle;
-  offset=region_info->y*cache_info->columns+region_info->x;
+  offset=(off_t) region_info->y*cache_info->columns+region_info->x;
   for (y=0; y < (int) region_info->height; y++)
   {
     if (cache_info->indexes != (IndexPacket *) NULL)
@@ -673,18 +673,18 @@ Export unsigned int ReadCachePixels(CacheHandle cache_handle,
   CacheInfo
     *cache_info;
 
-  register int
-    y;
-
-  size_t
+  long
     count;
 
   off_t
     offset;
 
+  register int
+    y;
+
   assert(cache_handle != (CacheHandle *) NULL);
   cache_info=(CacheInfo *) cache_handle;
-  offset=region_info->y*cache_info->columns+region_info->x;
+  offset(off_t) =region_info->y*cache_info->columns+region_info->x;
   for (y=0; y < (int) region_info->height; y++)
   {
     if (cache_info->pixels != (PixelPacket *) NULL)
@@ -815,18 +815,18 @@ Export unsigned int WriteCacheIndexes(CacheHandle cache_handle,
   CacheInfo
     *cache_info;
 
-  register int
-    y;
-
-  size_t
+  long
     count;
 
   off_t
     offset;
 
+  register int
+    y;
+
   assert(cache_handle != (CacheHandle) NULL);
   cache_info=(CacheInfo *) cache_handle;
-  offset=region_info->y*cache_info->columns+region_info->x;
+  offset=(off_t) region_info->y*cache_info->columns+region_info->x;
   for (y=0; y < (int) region_info->height; y++)
   {
     if (cache_info->indexes != (IndexPacket *) NULL)
@@ -891,18 +891,18 @@ Export unsigned int WriteCachePixels(CacheHandle cache_handle,
   CacheInfo
     *cache_info;
 
-  register int
-    y;
-
-  size_t
+  long
     count;
 
   off_t
     offset;
 
+  register int
+    y;
+
   assert(cache_handle != (CacheHandle) NULL);
   cache_info=(CacheInfo *) cache_handle;
-  offset=region_info->y*cache_info->columns+region_info->x;
+  offset=(off_t) region_info->y*cache_info->columns+region_info->x;
   for (y=0; y < (int) region_info->height; y++)
   {
     if (cache_info->pixels != (PixelPacket *) NULL)
