@@ -496,7 +496,7 @@ MagickExport unsigned int ListTypeInfo(FILE *file,ExceptionInfo *exception)
           (void) fprintf(file,"\n");
         (void) fprintf(file,"Filename: %.1024s\n\n",p->filename);
         (void) fprintf(file,format,"Name","Family","Style","Stretch","Weight");
-        (void) fprintf(file,"-------------------------------------------------"
+        (void) fprintf(file,"--------------------------------------------------"
           "------------------------------\n");
       }
     if (p->stealth)
