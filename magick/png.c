@@ -1092,7 +1092,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               mng_type=2; /* LC */
             if ((simplicity != 0) && ((simplicity | 9) == 9))
               mng_type=3; /* VLC */
-            if (GetPixels(image->cache) != (PixelPacket *) NULL)
+            if (GetPixels(image) != (PixelPacket *) NULL)
               {
                 /*
                   Allocate next image structure.
@@ -1816,7 +1816,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Read the PNG image.
         */
-        if (GetPixels(image->cache) != (PixelPacket *) NULL)
+        if (GetPixels(image) != (PixelPacket *) NULL)
           {
             /*
               Allocate next image structure.
@@ -2673,7 +2673,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Insert a background layer if nothing else was found.
       */
-      if (GetPixels(image->cache) != (PixelPacket *) NULL)
+      if (GetPixels(image) != (PixelPacket *) NULL)
         {
           /*
             Allocate next image structure.

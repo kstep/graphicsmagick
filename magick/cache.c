@@ -395,10 +395,13 @@ Export void DestroyCacheInfo(Cache cache)
     default:
       break;
   }
-  for (id=0; id <= cache_info->rows; id++)
-    if (cache_info->vista[id].stash != (void *) NULL)
-      FreeMemory(cache_info->vista[id].stash);
-  FreeMemory(cache_info->vista);
+  if (cache_info->vista != (VistaInfo *) NULL)
+    {
+      for (id=0; id <= cache_info->rows; id++)
+        if (cache_info->vista[id].stash != (void *) NULL)
+          FreeMemory(cache_info->vista[id].stash);
+      FreeMemory(cache_info->vista);
+    }
   FreeMemory(cache_info);
   cache=(void *) NULL;
 }

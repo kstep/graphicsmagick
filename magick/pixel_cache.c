@@ -148,7 +148,7 @@ Export PixelPacket *GetPixelCache(Image *image,const int x,const int y,
         "Unable to read pixels from cache",image->filename);
       return((PixelPacket *) NULL);
     }
-  return(GetPixels(image->cache));
+  return(GetPixels(image));
 }
 
 /*
@@ -238,7 +238,7 @@ unsigned int ReadPixelCache(const Image *image,const QuantumTypes quantum,
   assert(image != (Image *) NULL);
   assert(source != (const unsigned char *) NULL);
   p=source;
-  q=GetPixels(image->cache);
+  q=GetPixels(image);
   indexes=GetIndexes(image);
   switch (quantum)
   {
@@ -544,7 +544,7 @@ Export PixelPacket *SetPixelCache(Image *image,const int x,const int y,
   region.width=columns;
   region.height=rows;
   SetCacheVista(image->cache,0,&region);
-  return(GetPixels(image->cache));
+  return(GetPixels(image));
 }
 
 /*
@@ -647,7 +647,7 @@ unsigned int WritePixelCache(const Image *image,const QuantumTypes quantum,
 
   assert(image != (Image *) NULL);
   assert(destination != (unsigned char *) NULL);
-  p=GetPixels(image->cache);
+  p=GetPixels(image);
   indexes=GetIndexes(image);
   q=destination;
   switch (quantum)
