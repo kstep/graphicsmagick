@@ -310,8 +310,7 @@ Magick::Geometry::operator std::string() const
 
   geomStr << ends;
 
-  std::string geometry = buffer;
-  return geometry;
+  return string(buffer);
 }
 
 // print object to a stream

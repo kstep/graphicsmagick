@@ -9,9 +9,7 @@
 
 #include <string>
 #include <iostream>
-#include <strstream>
 #include <string.h>
-#include <stdio.h>
 #include <errno.h>
 #include <math.h>
 
@@ -275,20 +273,20 @@ void Magick::Image::annotate ( const std::string &text_,
   
   drawInfo->text = const_cast<char *>(text_.c_str());
 
-  ostrstream boundingArea;
   drawInfo->geometry = 0;
   if ( boundingArea_.isValid() ){
+    string boundingArea;
     if ( boundingArea_.width() == 0 || boundingArea_.height() == 0 )
       {
-        boundingArea << "+" << boundingArea_.xOff()
-                     << "+" << boundingArea_.yOff() << ends;
+        char buff[30];
+        FormatString(buff,"+%u+%u",boundingArea_.xOff(),boundingArea_.yOff());
+        boundingArea.assign(buff);
       }
     else
       {
-        boundingArea << string(boundingArea_) << ends;
+        boundingArea.assign(string(boundingArea_));
       }
-    drawInfo->geometry = boundingArea.str();
-    // cout << "Annotation geometry: \"" << drawInfo->geometry << "\"" << endl;
+    drawInfo->geometry = const_cast<char*>(boundingArea.c_str());
   }
 
   drawInfo->gravity = gravity_;
@@ -416,12 +414,8 @@ void Magick::Image::colorize ( const unsigned int opacityRed_,
 			    "Pen color argument is invalid");
   }
 
-  char opacity[MaxTextExtent + 1];
-  ostrstream buffstr( opacity, sizeof(opacity));
-  buffstr << opacityRed_ << "/"
-          << opacityGreen_ << "/"
-          << opacityBlue_
-          << ends;
+  char opacity[MaxTextExtent];
+  FormatString(opacity,"%u/%u/%u",opacityRed_,opacityGreen_,opacityBlue_);
 
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
@@ -618,25 +612,10 @@ void Magick::Image::draw ( const Magick::Drawable &drawable_ )
 {
   modifyImage();
 
-#if 1
   DrawContext context = DrawAllocateContext( options()->drawInfo(), image());
   drawable_.dp->operator()(context);
   DrawRender(context);
   DrawDestroyContext(context);
-#else
-  DrawInfo *drawInfo
-    = options()->drawInfo();
-
-  ostrstream primitive;
-  primitive << drawable_ << endl << ends;
-  drawInfo->primitive = primitive.str();
-  // cout << "Primitive: \"" << drawInfo->primitive << "\"" << endl;
-
-  DrawImage( image(), drawInfo );
-
-  delete drawInfo->primitive; // Frozen dynamic arrays must be deleted
-  drawInfo->primitive = 0;
-#endif
 
   throwImageException();
 }
@@ -646,31 +625,12 @@ void Magick::Image::draw ( const std::list<Magick::Drawable> &drawable_ )
 {
   modifyImage();
 
-#if 1
   DrawContext context = DrawAllocateContext( options()->drawInfo(), image());
   for( std::list<Magick::Drawable>::const_iterator p = drawable_.begin();
        p != drawable_.end(); p++ )
     p->dp->operator()(context);
   DrawRender(context);
   DrawDestroyContext(context);
-#else
-  DrawInfo *drawInfo
-    = options()->drawInfo();
-
-  ostrstream primitive;
-
-  std::list<Magick::Drawable>::const_iterator p = drawable_.begin();
-  while( p != drawable_.end() )
-    primitive << *p++ << endl;
-  primitive << ends;
-
-  drawInfo->primitive = primitive.str();
-  // cout << drawInfo->primitive;
-  DrawImage( image(), drawInfo );
-
-  delete drawInfo->primitive; // Frozen dynamic arrays must be deleted
-  drawInfo->primitive = 0;
-#endif
 
   throwImageException();
 }

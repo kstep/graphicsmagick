@@ -72,7 +72,7 @@ namespace Magick
 
     // Assignment operator
     Color& operator= ( const Color& color_ );
-    
+
     // Return X11 color specification string
     /* virtual */ operator std::string() const;
 

@@ -8,9 +8,6 @@
 #define MAGICK_IMPLEMENTATION
 
 #include <string>
-#include <iostream>
-#include <iomanip>
-#include <strstream>
 
 using namespace std;
 
@@ -136,37 +133,30 @@ const Magick::Color& Magick::Color::operator = ( const char * x11color_ )
 // Return X11 color specification string
 Magick::Color::operator std::string() const
 {
-
   if ( !isValid() )
     return std::string("none");
 
   char colorbuf[20];
-  ostrstream colorstr( colorbuf, sizeof(colorbuf ));
-  colorstr.setf(ios::right | ios::uppercase );
-  colorstr.fill('0');
 
 #if QuantumDepth == 8
-  colorstr << "#"
-	   << hex
-	   << setw(2) << static_cast<unsigned int>(redQuantum())
-	   << setw(2) << static_cast<unsigned int>(greenQuantum())
-	   << setw(2) << static_cast<unsigned int>(blueQuantum());
   if ( _pixelType == RGBAPixel )
-    colorstr << hex << setw(2) << static_cast<unsigned int>(alphaQuantum());
-#else
-  colorstr << "#"
-	   << hex
-	   << setw(4) << static_cast<unsigned int>(redQuantum())
-	   << setw(4) << static_cast<unsigned int>(greenQuantum())
-	   << setw(4) << static_cast<unsigned int>(blueQuantum());
+    FormatString(colorbuf,"#%02X%02X%02X%02X",redQuantum(),greenQuantum(),
+                 blueQuantum(),alphaQuantum());
+  else
+    FormatString(colorbuf,"#%02X%02X%02X",redQuantum(),greenQuantum(),
+                 blueQuantum());
+#elif QuantumDepth == 16
   if ( _pixelType == RGBAPixel )
-    colorstr << hex << setw(4) << (unsigned int)alphaQuantum();
+    FormatString(colorbuf,"#%04X%04X%04X%04X",redQuantum(),greenQuantum(),
+                 blueQuantum(),alphaQuantum());
+  else
+    FormatString(colorbuf,"#%04X%04X%04X",redQuantum(),greenQuantum(),
+                 blueQuantum());
 #endif
-
-  colorstr << ends;
 
   return std::string(colorbuf);
 }
+
 
 // Construct color via ImageMagick PixelPacket
 Magick::Color::Color ( const PixelPacket &color_ )

@@ -14,7 +14,6 @@
 #include <string>
 #include <list>
 #include <utility>
-#include <iostream>
 #include "Magick++/Color.h"
 #include "Magick++/Geometry.h"
 
@@ -82,9 +81,6 @@ namespace Magick
     // Destructor
     virtual ~DrawableBase ( void )
       { }
-
-    // Support a polymorphic print-to-stream operator
-    virtual void print (std::ostream& stream_) const = 0;
 
     // Operator to invoke equivalent draw API call
     virtual void operator()( MagickLib::DrawContext ) const = 0;
@@ -155,9 +151,6 @@ namespace Magick
 
     // Assignment operator
     const VPathBase& operator= (const VPathBase& original_ );
-
-    // Support a polymorphic print-to-stream operator
-    virtual void print (std::ostream& stream_) const = 0;
 
     // Operator to invoke equivalent draw API call
     virtual void operator()( MagickLib::DrawContext context_ ) const = 0;
@@ -230,9 +223,6 @@ namespace Magick
         _ty(ty_)
       {
       }
-
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
 
     // Operator to invoke equivalent draw API call
     void operator()( MagickLib::DrawContext context_ ) const;
@@ -322,9 +312,6 @@ namespace Magick
         _endDegrees(endDegrees_)
       { }
 
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
-
     // Operator to invoke equivalent draw API call
     void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -403,9 +390,6 @@ namespace Magick
   public:
     DrawableBezier ( const std::list<Magick::Coordinate> &coordinates_ );
 
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
-
     // Operator to invoke equivalent draw API call
     void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -432,9 +416,6 @@ namespace Magick
       {
       }
     
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
-
     // Operator to invoke equivalent draw API call
     void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -498,9 +479,6 @@ namespace Magick
         _y(y_),
         _paintMethod(paintMethod_)
       { }
-
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
 
     // Operator to invoke equivalent draw API call
     void operator()( MagickLib::DrawContext context_ ) const;
@@ -582,9 +560,6 @@ namespace Magick
 
     // Assignment operator
     DrawableCompositeImage& operator= (const DrawableCompositeImage& original_ );
-
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
 
     // Operator to invoke equivalent draw API call
     void operator()( MagickLib::DrawContext context_ ) const;
@@ -668,9 +643,6 @@ namespace Magick
       : _decoration(decoration_)
       { }
 
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
-
     // Operator to invoke equivalent draw API call
     void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -708,9 +680,6 @@ namespace Magick
         _arcStart(arcStart_),
         _arcEnd(arcEnd_)
       { }
-
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
 
     // Operator to invoke equivalent draw API call
     void operator()( MagickLib::DrawContext context_ ) const;
@@ -793,9 +762,6 @@ namespace Magick
       : _color(color_)
       { }
 
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
-
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -826,9 +792,6 @@ namespace Magick
       : _fillRule(fillRule_)
       {
       }
-
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -861,9 +824,6 @@ namespace Magick
       : _opacity(opacity_)
       {
       }
-
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -912,9 +872,6 @@ namespace Magick
       {
       }
 
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
-
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -951,9 +908,6 @@ namespace Magick
       {
       }
 
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
-
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -988,9 +942,6 @@ namespace Magick
         _endX(endX_),
         _endY(endY_)
       { }
-
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -1055,9 +1006,6 @@ namespace Magick
         _paintMethod(paintMethod_)
       { }
 
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
-
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -1109,9 +1057,6 @@ namespace Magick
       : _path(path_)
       { }
 
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
-
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -1134,9 +1079,6 @@ namespace Magick
       : _x(x_),
         _y(y_)
       { }
-
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -1179,9 +1121,6 @@ namespace Magick
       : _pointSize(pointSize_)
       { }
 
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
-
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -1211,9 +1150,6 @@ namespace Magick
   public:
     DrawablePolygon ( const std::list<Magick::Coordinate> &coordinates_ );
 
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
-
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -1233,9 +1169,6 @@ namespace Magick
   {
   public:
     DrawablePolyline ( const std::list<Magick::Coordinate> &coordinates_ );
-
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -1258,9 +1191,6 @@ namespace Magick
     DrawablePopGraphicContext ( void )
       { }
 
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
-
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -1280,9 +1210,6 @@ namespace Magick
     DrawablePushGraphicContext ( void )
       { }
 
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
-
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -1301,9 +1228,6 @@ namespace Magick
   public:
     DrawablePopPattern ( void )
       { }
-
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -1329,9 +1253,6 @@ namespace Magick
         _width(width_),
         _height(height_)
       { }
-
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -1361,9 +1282,6 @@ namespace Magick
         _lowerRightX(lowerRightX_),
         _lowerRightY(lowerRightY_)
       { }
-
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -1426,9 +1344,6 @@ namespace Magick
       : _angle( angle_ )
       { }
 
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
-
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -1466,9 +1381,6 @@ namespace Magick
         _cornerWidth(cornerWidth_),
         _cornerHeight(cornerHeight_)
       { }
-
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -1552,9 +1464,6 @@ namespace Magick
         _y(y_)
       { }
 
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
-
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -1596,9 +1505,6 @@ namespace Magick
       : _angle(angle_)
       { }
 
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
-
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -1630,9 +1536,6 @@ namespace Magick
       : _angle(angle_)
       { }
 
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
-
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -1663,9 +1566,6 @@ namespace Magick
     DrawableDashArray( const double* dasharray_ );
     DrawableDashArray( const unsigned int* dasharray_ ); // Deprecated
     DrawableDashArray( const Magick::DrawableDashArray &original_ );
-
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -1699,9 +1599,6 @@ namespace Magick
       : _offset(offset_)
       { }
 
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
-
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -1732,9 +1629,6 @@ namespace Magick
     DrawableStrokeLineCap ( LineCap linecap_ )
       : _linecap(linecap_)
       { }
-
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -1767,9 +1661,6 @@ namespace Magick
       : _linejoin(linejoin_)
       { }
 
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
-
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -1800,9 +1691,6 @@ namespace Magick
     DrawableMiterLimit ( unsigned int miterlimit_ )
       : _miterlimit(miterlimit_)
       { }
-
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -1836,9 +1724,6 @@ namespace Magick
       : _flag(flag_)
       { }
 
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
-
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -1869,9 +1754,6 @@ namespace Magick
     DrawableStrokeColor ( const Color &color_ )
       : _color(color_)
       { }
-
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -1905,9 +1787,6 @@ namespace Magick
       {
       }
 
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
-
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -1938,9 +1817,6 @@ namespace Magick
     DrawableStrokeWidth ( double width_ )
       : _width(width_)
       { }
-
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -1975,9 +1851,6 @@ namespace Magick
         _y(y_),
         _text(text_)
       { }
-
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -2031,9 +1904,6 @@ namespace Magick
         _y(y_)
       { }
 
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
-
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -2074,9 +1944,6 @@ namespace Magick
     DrawableTextAntialias ( bool flag_ )
       : _flag(flag_) { }
 
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
-
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -2110,9 +1977,6 @@ namespace Magick
         _y1(y1_),
         _x2(x2_),
         _y2(y2_) { }
-
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -2269,9 +2133,6 @@ namespace Magick
     PathArcAbs ( const std::list<Magick::PathArcArgs> &coordinates_ )
       : _coordinates(coordinates_) { }
 
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
-
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -2296,9 +2157,6 @@ namespace Magick
     PathArcRel ( const std::list<Magick::PathArcArgs> &coordinates_ )
       : _coordinates(coordinates_) { }
 
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
-
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -2317,9 +2175,6 @@ namespace Magick
   public:
     PathClosePath ( void )
       { }
-
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -2424,9 +2279,6 @@ namespace Magick
     PathCurvetoAbs ( const std::list<Magick::PathCurvetoArgs> &args_ )
       : _args(args_) { }
 
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
-
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -2450,9 +2302,6 @@ namespace Magick
     // Draw multiple curves
     PathCurvetoRel ( const std::list<Magick::PathCurvetoArgs> &args_ )
       : _args(args_) { }
-
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -2478,9 +2327,6 @@ namespace Magick
     PathSmoothCurvetoAbs ( const std::list<Magick::Coordinate> &coordinates_ )
       : _coordinates(coordinates_) { }
 
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
-
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -2504,9 +2350,6 @@ namespace Magick
     // Draw multiple curves
     PathSmoothCurvetoRel ( const std::list<Magick::Coordinate> &coordinates_ )
       : _coordinates(coordinates_) { }
-
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -2590,9 +2433,6 @@ namespace Magick
     PathQuadraticCurvetoAbs ( const std::list<Magick::PathQuadraticCurvetoArgs> &args_ )
       : _args(args_) { }
 
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
-
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -2616,9 +2456,6 @@ namespace Magick
     // Draw multiple curves
     PathQuadraticCurvetoRel ( const std::list<Magick::PathQuadraticCurvetoArgs> &args_ )
       : _args(args_) { }
-
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -2644,9 +2481,6 @@ namespace Magick
     PathSmoothQuadraticCurvetoAbs ( const std::list<Magick::Coordinate> &coordinates_ )
       : _coordinates(coordinates_) { }
 
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
-
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -2670,9 +2504,6 @@ namespace Magick
     // Draw multiple curves
     PathSmoothQuadraticCurvetoRel ( const std::list<Magick::Coordinate> &coordinates_ )
       : _coordinates(coordinates_) { }
-
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -2702,9 +2533,6 @@ namespace Magick
     PathLinetoAbs ( const std::list<Magick::Coordinate> &coordinates_ )
       : _coordinates(coordinates_) { }
 
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
-
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -2727,9 +2555,6 @@ namespace Magick
     PathLinetoRel ( const std::list<Magick::Coordinate> &coordinates_ )
       : _coordinates(coordinates_) { }
 
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
-
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -2748,9 +2573,6 @@ namespace Magick
   public:
     PathLinetoHorizontalAbs ( double x_ )
       : _x(x_) { }
-
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -2777,9 +2599,6 @@ namespace Magick
   public:
     PathLinetoHorizontalRel ( double x_ )
       : _x(x_) { }
-
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -2809,9 +2628,6 @@ namespace Magick
     PathLinetoVerticalAbs ( double y_ )
       : _y(y_) { }
 
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
-
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -2837,9 +2653,6 @@ namespace Magick
   public:
     PathLinetoVerticalRel ( double y_ )
       : _y(y_) { }
-
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -2874,9 +2687,6 @@ namespace Magick
     PathMovetoAbs ( const std::list<Magick::Coordinate> &coordinates_ )
       : _coordinates(coordinates_) { }
 
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
-
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -2899,9 +2709,6 @@ namespace Magick
     PathMovetoRel ( const std::list<Magick::Coordinate> &coordinates_ )
       : _coordinates(coordinates_) { }
 
-    // Support a polymorphic print-to-stream operator
-    /*virtual*/ void print (std::ostream& stream_) const;
-
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -2913,39 +2720,6 @@ namespace Magick
   private:
     std::list<Magick::Coordinate> _coordinates;
   };
-
-
-  // Write Coordinate to stream.
-  std::ostream& operator<<( std::ostream& stream_,
-                            const Magick::Coordinate& coordinate_);
-  
-  // Write DrawableBase to stream
-  std::ostream& operator<< (std::ostream& stream_,
-                            const Magick::DrawableBase& drawable_);
-  
-  // Write Drawable to stream
-  std::ostream& operator<< (std::ostream& stream_,
-                            const Magick::Drawable& drawable_);
-  
-  // Write VPathBase to stream
-  std::ostream& operator<< (std::ostream& stream_,
-                            const Magick::VPathBase& drawable_);
-  
-  // Write Path to stream
-  std::ostream& operator<< (std::ostream& stream_,
-                            const Magick::VPath& drawable_);
-  
-  // Write PathArcArgs to stream
-  std::ostream& operator<<( std::ostream& stream_,
-                            const Magick::PathArcArgs& args_ );
-  
-  // Write PathCurvetoArgs to stream
-  std::ostream& operator<<( std::ostream& stream_,
-                            const Magick::PathCurvetoArgs& args_ );
-  
-  // Write PathQuadraticCurvetoArgs to stream
-  std::ostream& operator<<( std::ostream& stream_,
-                            const Magick::PathQuadraticCurvetoArgs& args_);
 
 } // namespace Magick
 
