@@ -794,8 +794,6 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
       code=ReadBlobByte(image);
     if (version == 2)
       code=ReadBlobMSBShort(image);
-    if ((code == 0xff) || (code == 0xffff))
-      break;
     if (code > 0xa1)
       {
         if (image_info->verbose)
@@ -1224,6 +1222,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
         DestroyImage(tile_image);
         continue;
       }
+    if ((code == 0xff) || (code == 0xffff))
+      break;
     if (((code >= 0xd0) && (code <= 0xfe)) ||
         ((code >= 0x8100) && (code <= 0xffff)))
       {
@@ -1369,6 +1369,38 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
 #define PictPixmapOp  0x9A
 #define PictPICTOp  0x98
 #define PictVersion  0x11
+
+  static unsigned long
+    QuickTime[131] =
+    {
+      0x0098000AL, 0x00000000L, 0x002C0045L, 0x00000000L, 0x002C0045L,
+      0x01E00000L, 0x01FE0329L, 0x000008FDL, 0xFF020000L, 0xFEFE000BL,
+      0x07807FFFL, 0xFF0007FFL, 0xC0FF000BL, 0x07807FFFL, 0xFF001FFFL,
+      0xF0FF000BL, 0x07807FFFL, 0xFF007FFFL, 0xFCFF000BL, 0x07807FFFL,
+      0xFF00FFFFL, 0xFEFF000AL, 0x04807FC0L, 0xFF01FEFFL, 0xFF000B09L,
+      0x887F003FL, 0x03FF01FFL, 0x80000B09L, 0x887E001FL, 0x03FC007FL,
+      0x80000B09L, 0x887C000FL, 0x07F8003FL, 0xC0000B09L, 0x80781C07L,
+      0x07F0001FL, 0xC0000B09L, 0x80781C07L, 0x0FE0000FL, 0xE0000B09L,
+      0x80701C03L, 0x0FC00007L, 0xE0000B09L, 0x80701C03L, 0x1FC00007L,
+      0xF0000B09L, 0x80701C03L, 0x1F800003L, 0xF0000B09L, 0x80701C03L,
+      0x1F800003L, 0xF0000B09L, 0x80701C03L, 0x1F803FFCL, 0xF0000B09L,
+      0x80701C03L, 0x1F8027FCL, 0xF0000B09L, 0x80700803L, 0x1F803FFCL,
+      0xF0000B09L, 0x80700003L, 0x1F800003L, 0xF0000B09L, 0x80700003L,
+      0x1F800003L, 0xF0000B09L, 0x87F01C03L, 0x1FC00007L, 0xF0000B09L,
+      0x81F01C03L, 0x0FC00007L, 0xE0000B09L, 0x81F01C07L, 0x0FE0000FL,
+      0xE0000B09L, 0x81F00007L, 0x07F0001FL, 0xC0000B09L, 0x81F0000FL,
+      0x07F8003FL, 0xC0000B09L, 0x81E0001FL, 0x03FC007FL, 0x80000B09L,
+      0x8F80007FL, 0x03FF01FFL, 0xC0000B00L, 0x81FEFF00L, 0x01FEFF01L,
+      0xE0000B00L, 0x81FEFF00L, 0x00FEFF01L, 0xF0000B00L, 0x81FEFF05L,
+      0x007FFFFFL, 0xF0000B00L, 0x81FEFF05L, 0x001FFFFFL, 0xF00009FDL,
+      0xFF050007L, 0xFFCFF000L, 0x08FC0004L, 0x01FF03F0L, 0x0002F700L,
+      0x0B093800L, 0x0C7C0000L, 0x3DCFF800L, 0x0B094402L, 0x04548000L,
+      0x1291A800L, 0x0B098200L, 0x04100000L, 0x12A02000L, 0x0B0983B6L,
+      0x7591B7D8L, 0x1CA02000L, 0x0B098292L, 0x95109A64L, 0x10A02000L,
+      0x0B098292L, 0x8710927CL, 0x10A02000L, 0x0B094492L, 0x85109260L,
+      0x10912000L, 0x0B0938FFL, 0x7FB9FB7CL, 0x39CF7000L, 0x040018F8L,
+      0x0004000EL
+    };
 
   int
     y;
@@ -1563,20 +1595,24 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
       WriteBlobMSBShort(image,image->x_resolution);
       WriteBlobMSBShort(image,0x0000);
       WriteBlobMSBShort(image,image->y_resolution);
-      WriteBlobMSBLong(image,0x40000000L);
-      WriteBlobMSBLong(image,0x3EAB0001L);
-      WriteBlobMSBLong(image,0x0B466F74L);
-      WriteBlobMSBLong(image,0x6F202D20L);
-      WriteBlobMSBLong(image,0x4A504547L);
       WriteBlobMSBLong(image,0x00000000L);
+      WriteBlobMSBLong(image,0x82B60001L);
+      WriteBlobMSBLong(image,0x0C50685FL);
+      WriteBlobMSBLong(image,0x746F202DL);
+      WriteBlobMSBLong(image,0x204A5045L);
+      WriteBlobMSBLong(image,0x47000000L);
       WriteBlobMSBLong(image,0x00000000L);
       WriteBlobMSBLong(image,0x00000000L);
       WriteBlobMSBLong(image,0x00000000L);
       WriteBlobMSBLong(image,0x00000000L);
       WriteBlobMSBLong(image,0x0018FFFFL);
       WriteBlob(image,length,blob);
+      if (length & 0x01)
+        (void) WriteBlobByte(image,'\0');
+      for (i=0; i < 131; i++)
+        WriteBlobMSBLong(image,QuickTime[i]);
+      WriteBlobMSBShort(image,0xF800);
       WriteBlobMSBShort(image,PictEndOfPictureOp);
-      LiberateMemory((void **) &blob);
       LiberateMemory((void **) &scanline);
       LiberateMemory((void **) &packed_scanline);
       LiberateMemory((void **) &buffer);
