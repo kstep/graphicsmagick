@@ -86,7 +86,7 @@
 */
 #undef MNG_OBJECT_BUFFERS
 #undef MNG_BASI_SUPPORTED
-#define MNG_INSERT_LAYERS /* identify crashes in 5.4.4 */
+#define MNG_INSERT_LAYERS
 #define PNG_BUILD_PALETTE /* This works as of 5.4.3 */
 #define PNG_SORT_PALETTE  /* This works as of 5.4.0 */
 
@@ -1726,7 +1726,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     MngInfoFreeStruct(mng_info,&have_mng_structure);
                     return((Image *) NULL);
                   }
-                *image->next->blob=(*image->blob);
                 image=image->next;
                 mng_info->image=image;
               }
@@ -2051,7 +2050,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         MngInfoFreeStruct(mng_info,&have_mng_structure);
                         return((Image *) NULL);
                       }
-                    *image->next->blob=(*image->blob);
                     image=image->next;
                   }
                 mng_info->image=image;
@@ -2508,7 +2506,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                         MngInfoFreeStruct(mng_info,&have_mng_structure);
                         return((Image *) NULL);
                       }
-                    *image->next->blob=(*image->blob);
                     image=image->next;
                   }
                 mng_info->image=image;
@@ -2554,7 +2551,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   MngInfoFreeStruct(mng_info,&have_mng_structure);
                   return((Image *) NULL);
                 }
-              *image->next->blob=(*image->blob);
               image=image->next;
             }
             mng_info->image=image;
@@ -2594,7 +2590,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 MngInfoFreeStruct(mng_info,&have_mng_structure);
                 return((Image *) NULL);
               }
-            *image->next->blob=(*image->blob);
             image=image->next;
           }
         mng_info->image=image;
@@ -2669,7 +2664,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         CloseBlob(image);
         if ((image->columns == 0) || (image->rows == 0))
           {
-            DestroyImage(image);
+            DestroyImageList(image);
             MngInfoFreeStruct(mng_info,&have_mng_structure);
             return((Image *) NULL);
           }
@@ -3435,7 +3430,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (png_get_text(ping,ping_info,&text,&num_text) != 0)
       for (i=0; i < (long) num_text; i++)
       {
-
         /* Check for a profile */
 
         if (!memcmp(text[i].key, "Raw profile type ",17))
@@ -3606,8 +3600,9 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (magnified_height > image->rows ||
                 magnified_width > image->columns)
               {
-                Image *
-                  large_image;
+                Image
+                  *clone_image,
+                  *large_image;
 
                 int
                   yy;
@@ -3615,10 +3610,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 long
                   m,
                   y;
-/*
-                register IndexPacket
-                  *indexes;
-*/
 
                 register long
                   i,
@@ -3640,21 +3631,11 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   magn_methx,
                   magn_methy;
 
-                if (GetPixels(image) != (PixelPacket *) NULL)
-                  {
-                    AllocateNextImage(image_info,image);
-                    if (image->next == (Image *) NULL)
-                      {
-                         DestroyImageList(image);
-                         MngInfoFreeStruct(mng_info,&have_mng_structure);
-                         ThrowReaderException((ExceptionType)
-                            ResourceLimitWarning,
-                           "Memory allocation failed while magnifying",image)
-                      }
-                   }
+                clone_image=CloneImage(image,0,0,True,&image->exception);
 
-                large_image=image->next;
-                *large_image->blob=(*image->blob);
+                large_image=image;
+                image=clone_image;
+
                 large_image->columns=magnified_width;
                 large_image->rows=magnified_height;
 
@@ -3786,14 +3767,11 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 LiberateMemory((void **) &next);
 
                 length=image->columns;
-                large_image->previous=image->previous;
-                if (image->previous)
-                   image->previous->next=large_image;
-                image->orphan=True;
-                image->file=(FILE *) NULL;
-                image->blob->mapped=False;
-                DestroyImage(image);
+
+                clone_image->orphan=True;
+                DestroyImage(clone_image);
                 image=large_image;
+
                 mng_info->image=image;
 
                 /* magnify the columns */
@@ -3921,7 +3899,9 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     image->rows=p->rows;
                     p->orphan=True;
                     p->file=(FILE *) NULL;
-                    p->blob->mapped=False;
+                    p->exempt=True;
+                    p->fifo=
+                      (int (*)(const Image *,const void *,const size_t)) NULL;
                     DestroyImage(p);
                     image->page.width=image->columns;
                     image->page.height=image->rows;
@@ -4045,7 +4025,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               return((Image *) NULL);
             }
           image=image->next;
-          *image->next->blob=(*image->blob);
         }
       image->columns=mng_width;
       image->rows=mng_height;
@@ -4138,7 +4117,9 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                next->previous->next=next_image;
              next->orphan=True;
              next->file=(FILE *) NULL;
-             next->blob->mapped=False;
+             next->exempt=True;
+             next->fifo=
+                  (int (*)(const Image *,const void *,const size_t)) NULL;
              DestroyImage(next);
            }
       }
@@ -5140,10 +5121,8 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           (void) printf("PNG write has failed.\n");
 #endif
         png_destroy_write_struct(&ping,&ping_info);
-        if (scanlines != (unsigned char **) NULL)
-          LiberateMemory((void **) &scanlines);
-        if (png_pixels != (unsigned char *) NULL)
-          LiberateMemory((void **) &png_pixels);
+        LiberateMemory((void **) &scanlines);
+        LiberateMemory((void **) &png_pixels);
         CloseBlob(image);
         return(False);
       }
