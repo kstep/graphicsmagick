@@ -701,7 +701,6 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
   (void) remove(filename);
   FormatString(filename,"%.1024s.log",basename);
   (void) remove(filename);
-  }
   if (coalesce_image != image)
     DestroyImage(coalesce_image);
   if (logging)
