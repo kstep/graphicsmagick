@@ -2607,9 +2607,6 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
-  ImageInfo
-    *clone_info;
-
   long
     n;
 
@@ -2688,15 +2685,16 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   xmlCleanupParser();
   (void) fclose(file);
   CloseBlob(image);
-  image->columns=svg_info.width;
-  image->rows=svg_info.height;
+  DestroyImage(image);
+  image=(Image *) NULL;
   if (!image_info->ping && (exception->severity == UndefinedException))
     {
+      ImageInfo
+        *clone_info;
+
       /*
         Draw image.
       */
-      DestroyImage(image);
-      image=(Image *) NULL;
       clone_info=CloneImageInfo(image_info);
       clone_info->blob=(void *) NULL;
       clone_info->length=0;
@@ -2708,22 +2706,24 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image=ReadImage(clone_info,exception);
       DestroyImageInfo(clone_info);
       if (image != (Image *) NULL)
-        {
-          (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
-          if (svg_info.comment != (char *) NULL)
-            (void) SetImageAttribute(image,"comment",svg_info.comment);
-          if (svg_info.title != (char *) NULL)
-            (void) SetImageAttribute(image,"title",svg_info.title);
-        }
+        (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
     }
   /*
     Free resources.
   */
-  (void) remove(filename);
   if (svg_info.title != (char *) NULL)
-    LiberateMemory((void **) &svg_info.title);
+    {
+      if (image != (Image *) NULL)
+       (void) SetImageAttribute(image,"title",svg_info.title);
+      LiberateMemory((void **) &svg_info.title);
+    }
   if (svg_info.comment != (char *) NULL)
-    LiberateMemory((void **) &svg_info.comment);
+    {
+      if (image != (Image *) NULL)
+        (void) SetImageAttribute(image,"comment",svg_info.comment);
+      LiberateMemory((void **) &svg_info.comment);
+    }
+  (void) remove(filename);
   return(image);
 }
 #else
