@@ -89,18 +89,49 @@ typedef struct _ImWmfFont
   char*    fontspec;
 } ImWmfFont;
 
+/*
+  Windows for Workgroups Fonts:
+
+    Filename       Size    Date     Time     1.44 MB   1.2 MB
+    ---------------------------------------------------------
+    ARIAL.TTF      52532  10-01-92   3.11a       6       6
+    ARIALBD.TTF    51841  10-01-92   3.11a       7       7
+    ARIALBI.TTF    57729  10-01-92   3.11a       7       6
+    ARIALI.TTF     47643  10-01-92   3.11a       7       7
+    COUR.TTF       53733  10-01-92   3.11a       7       6
+    COURBD.TTF     56871  10-01-92   3.11a       7       6
+    COURBI.TTF     64330  10-01-92   3.11a       7       6
+    COURI.TTF      60757  10-01-92   3.11a       7       6
+    TIMES.TTF      69074  10-01-92   3.11a       6       6
+    TIMESBD.TTF    63489  10-01-92   3.11a       7       6
+    TIMESBI.TTF    60539  10-01-92   3.11a       7       6
+    TIMESI.TTF     61880  10-01-92   3.11a       7       6
+    SYMBOL.TTF     50450  10-01-92   3.11a       6       6
+    WINGDING.TTF   50450  10-01-92   3.11a       7       6
+
+  Libwmf's text.wmf uses the fonts:
+    Arial
+    Bookman Old Style
+    Comic Sans MS
+    Courier
+    Courier New
+    Garamond
+    Impact
+    MS Sans Serif
+    MS Serif
+    Modern
+    Small Fonts
+    Symbol
+    Tahoma
+    Times New Roman
+    Times New Roman
+    Verdana
+    Wingdings
+
+ */
 static const ImWmfFont FontList [] =
 {
-  { (char *) "Arial Rounded MT",  (char *) "Arial Rounded MT Bold", (char *) "arlrdbd.ttf" },
-  { (char *) "Arial Special G1",  (char *) "Arial Special G1", (char *) "msgeoar1.ttf" },
-  { (char *) "Arial Special G1",  (char *) "Arial Special G1 Bold", (char *) "msgeoab1.ttf" },
-  { (char *) "Arial Special G1",  (char *) "Arial Special G1 Bold Italic", (char *) "msgeoax1.ttf" },
-  { (char *) "Arial Special G1",  (char *) "Arial Special G1 Italic", (char *) "msgeoai1.ttf" },
-  { (char *) "Arial Special G2",  (char *) "Arial Special G2 Bold", (char *) "msgeoab2.ttf" },
-  { (char *) "Arial Special G2",  (char *) "Arial Special G2 Bold Italic", (char *) "msgeoax2.ttf" },
-  { (char *) "Arial Special G2",  (char *) "Arial Special G2 Italic", (char *) "msgeoai2.ttf" },
   { (char *) "Arial",  (char *) "Arial", (char *) "arial.ttf" },
-  { (char *) "Arial",  (char *) "Arial Black", (char *) "ariblk.ttf" },
   { (char *) "Arial",  (char *) "Arial Bold", (char *) "arialbd.ttf" },
   { (char *) "Arial",  (char *) "Arial Bold Italic", (char *) "arialbi.ttf" },
   { (char *) "Arial",  (char *) "Arial Italic", (char *) "ariali.ttf" },
@@ -122,28 +153,28 @@ static const ImWmfFont FontList [] =
   { (char *) "Garamond",  (char *) "Garamond", (char *) "gara.ttf" },
   { (char *) "Garamond",  (char *) "Garamond Bold", (char *) "garabd.ttf" },
   { (char *) "Garamond",  (char *) "Garamond Italic", (char *) "garait.ttf" },
-  { (char *) "Gill Sans MT",  (char *) "Gill Sans MT Ext Condensed Bold", (char *) "glsnecb.ttf" },
+/*   { (char *) "Gill Sans MT",  (char *) "Gill Sans MT Ext Condensed Bold", (char *) "glsnecb.ttf" }, */
   { (char *) "Impact",  (char *) "Impact", (char *) "impact.ttf" },
-  { (char *) "Lucida Blackletter",  (char *) "Lucida Blackletter", (char *) "lblack.ttf" },
-  { (char *) "Lucida Bright",  (char *) "Lucida Bright", (char *) "lbrite.ttf" },
-  { (char *) "Lucida Bright",  (char *) "Lucida Bright Demibold", (char *) "lbrited.ttf" },
-  { (char *) "Lucida Bright",  (char *) "Lucida Bright Demibold Italic", (char *) "lbritedi.ttf" },
-  { (char *) "Lucida Bright",  (char *) "Lucida Bright Italic", (char *) "lbritei.ttf" },
-  { (char *) "Lucida Caligraphy",  (char *) "Lucida Caligraphy Italic", (char *) "lcalig.ttf" },
-  { (char *) "Lucida Console",  (char *) "Lucida Console", (char *) "lucon.ttf" },
-  { (char *) "Lucida Fax",  (char *) "Lucida Fax Demibold", (char *) "lfaxd.ttf" },
-  { (char *) "Lucida Fax",  (char *) "Lucida Fax Demibold Italic", (char *) "lfaxdi.ttf" },
-  { (char *) "Lucida Fax",  (char *) "Lucida Fax Italic", (char *) "lfaxi.ttf" },
-  { (char *) "Lucida Fax",  (char *) "Lucida Fax Regular", (char *) "lfax.ttf" },
-  { (char *) "Lucida Handwriting",  (char *) "Lucida Handwriting Italic", (char *) "lhandw.ttf" },
-  { (char *) "Lucida Sans Typewriter",  (char *) "Lucida Sans Typewriter Bold", (char *) "ltypeb.ttf" },
-  { (char *) "Lucida Sans Typewriter",  (char *) "Lucida Sans Typewriter Bold Oblique", (char *) "ltypebo.ttf" },
-  { (char *) "Lucida Sans Typewriter",  (char *) "Lucida Sans Typewriter Oblique", (char *) "ltypeo.ttf" },
-  { (char *) "Lucida Sans Typewriter",  (char *) "Lucida Sans Typewriter Regular", (char *) "ltype.ttf" },
-  { (char *) "Lucida Sans",  (char *) "Lucida Sans Demibold Italic", (char *) "lsansdi.ttf" },
-  { (char *) "Lucida Sans",  (char *) "Lucida Sans Demibold Roman", (char *) "lsansd.ttf" },
-  { (char *) "Lucida Sans",  (char *) "Lucida Sans Demibold Italic", (char *) "lsansdi.ttf" },
-  { (char *) "Lucida Sans",  (char *) "Lucida Sans Regular", (char *) "lsans.ttf" },
+/*   { (char *) "Lucida Blackletter",  (char *) "Lucida Blackletter", (char *) "lblack.ttf" }, */
+/*   { (char *) "Lucida Bright",  (char *) "Lucida Bright", (char *) "lbrite.ttf" }, */
+/*   { (char *) "Lucida Bright",  (char *) "Lucida Bright Demibold", (char *) "lbrited.ttf" }, */
+/*   { (char *) "Lucida Bright",  (char *) "Lucida Bright Demibold Italic", (char *) "lbritedi.ttf" }, */
+/*   { (char *) "Lucida Bright",  (char *) "Lucida Bright Italic", (char *) "lbritei.ttf" }, */
+/*   { (char *) "Lucida Caligraphy",  (char *) "Lucida Caligraphy Italic", (char *) "lcalig.ttf" }, */
+/*   { (char *) "Lucida Console",  (char *) "Lucida Console", (char *) "lucon.ttf" }, */
+/*   { (char *) "Lucida Fax",  (char *) "Lucida Fax Demibold", (char *) "lfaxd.ttf" }, */
+/*   { (char *) "Lucida Fax",  (char *) "Lucida Fax Demibold Italic", (char *) "lfaxdi.ttf" }, */
+/*   { (char *) "Lucida Fax",  (char *) "Lucida Fax Italic", (char *) "lfaxi.ttf" }, */
+/*   { (char *) "Lucida Fax",  (char *) "Lucida Fax Regular", (char *) "lfax.ttf" }, */
+/*   { (char *) "Lucida Handwriting",  (char *) "Lucida Handwriting Italic", (char *) "lhandw.ttf" }, */
+/*   { (char *) "Lucida Sans Typewriter",  (char *) "Lucida Sans Typewriter Bold", (char *) "ltypeb.ttf" }, */
+/*   { (char *) "Lucida Sans Typewriter",  (char *) "Lucida Sans Typewriter Bold Oblique", (char *) "ltypebo.ttf" }, */
+/*   { (char *) "Lucida Sans Typewriter",  (char *) "Lucida Sans Typewriter Oblique", (char *) "ltypeo.ttf" }, */
+/*   { (char *) "Lucida Sans Typewriter",  (char *) "Lucida Sans Typewriter Regular", (char *) "ltype.ttf" }, */
+/*   { (char *) "Lucida Sans",  (char *) "Lucida Sans Demibold Italic", (char *) "lsansdi.ttf" }, */
+/*   { (char *) "Lucida Sans",  (char *) "Lucida Sans Demibold Roman", (char *) "lsansd.ttf" }, */
+/*   { (char *) "Lucida Sans",  (char *) "Lucida Sans Demibold Italic", (char *) "lsansdi.ttf" }, */
+/*   { (char *) "Lucida Sans",  (char *) "Lucida Sans Regular", (char *) "lsans.ttf" }, */
   { (char *) "MS Sans Serif",  (char *) "MS Sans Serif", (char *) "sseriff.ttf" },
   { (char *) "MS Serif",  (char *) "MS Serif", (char *) "seriff.ttf" },
   { (char *) "Modern",  (char *) "Modern", (char *) "modern.ttf" },
@@ -163,8 +194,8 @@ static const ImWmfFont FontList [] =
   { (char *) "Verdana",  (char *) "Verdana Italic", (char *) "verdanai.ttf" },
   { (char *) "Verdana",  (char *) "Verdana", (char *) "verdana.ttf" },
   { (char *) "WingDings",  (char *) "WingDings", (char *) "wingding.ttf" },
-  { (char *) "WingDings",  (char *) "Wingdings 2", (char *) "wingdng2.ttf" },
-  { (char *) "WingDings",  (char *) "Wingdings 3", (char *) "wingdng3.ttf" },
+/*   { (char *) "WingDings",  (char *) "Wingdings 2", (char *) "wingdng2.ttf" }, */
+/*   { (char *) "WingDings",  (char *) "Wingdings 3", (char *) "wingdng3.ttf" }, */
   { (char *) NULL,  (char *) NULL, (char *) NULL }
 };
 
@@ -1052,9 +1083,12 @@ static void WmfDrawText(CSTRUCT *cstruct, char *str, RECT *arect,
       if(candidate!=NULL)
         strcpy(fontspec,candidate);
     }
+  /* Last resort */
+  if( *fontspec == '\0' )
+    strcpy(fontspec,"arial.ttf");
 
 
-/*   printf("facename=\"%s\", fontspec=\"%s\"\n", facename, fontspec); */
+  printf("facename=\"%s\", fontspec=\"%s\"\n", facename, fontspec);
   sprintf(buff, "font %s\n", fontspec);
   ExtendMVG(cstruct,buff);
 

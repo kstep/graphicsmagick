@@ -84,6 +84,10 @@ namespace Magick
     void            fillColor ( const Color &fillColor_ );
     Color           fillColor ( void ) const;
 
+    // Rule to use when filling drawn objects
+    void            fillRule ( const FillRule &fillRule_ );
+    FillRule        fillRule ( void ) const;
+
     // Font name
     void            font ( const std::string &font_ );
     std::string     font ( void ) const;

@@ -102,18 +102,21 @@ else
 XWD=
 endif
 
-CHECK_FORMATS = \
+CHECK_BLOB_FORMATS = \
 	AVS \
 	BMP \
+	BMP24 \
 	CMYK \
 	DIB \
+	EPT \
 	FAX \
+	G3 \
 	FITS \
 	$(FPX) \
 	GIF \
+	GIF87 \
 	GRAY \
 	$(HDF) \
-	ICB \
 	$(JBIG) \
 	$(JPEG) \
 	MIFF \
@@ -121,12 +124,15 @@ CHECK_FORMATS = \
 	MONO \
 	MTV \
 	P7 \
+	MPC \
+	PAL \
 	PBM \
 	PCD \
 	PCDS \
 	PCX \
 	PGM \
 	PICT \
+	PICT24 \
 	$(PNG) \
 	PNM \
 	PPM \
@@ -149,9 +155,64 @@ CHECK_FORMATS = \
 	$(XWD) \
 	YUV
 
+CHECK_FILE_FORMATS = \
+	AVS \
+	BMP \
+	CMYK \
+	DIB \
+	EPDF \
+	EPSF \
+	EPSI \
+	EPI \
+	EPS \
+	EPT \
+	FAX \
+	FITS \
+	$(FPX) \
+	GIF \
+	GRAY \
+	$(HDF) \
+	ICB \
+	$(JBIG) \
+	$(JPEG) \
+	MIFF \
+	$(MNG) \
+	MONO \
+	MTV \
+	PAL \
+	P7 \
+	PBM \
+	PCD \
+	PCDS \
+	PCX \
+	PGM \
+	PICT \
+	$(PNG) \
+	PNM \
+	PPM \
+	PS \
+	PSD \
+	$(PTIF) \
+	RAS \
+	RGB \
+	RGBA \
+	SGI \
+	SUN \
+	TGA \
+	$(TIFF) \
+	UYVY \
+	VDA \
+	VICAR \
+	VIFF \
+	VST \
+	XBM \
+	XPM \
+	$(XWD) \
+	YUV
+
 check-rwblob:
 	status=0; \
-	for format in $(CHECK_FORMATS) ; \
+	for format in $(CHECK_BLOB_FORMATS) ; \
 	do \
 	  for file in $(CHECK_FILES) ; \
 	  do \
@@ -168,7 +229,7 @@ check-rwblob:
 
 check-rwfile:
 	status=0; \
-	for format in $(CHECK_FORMATS) ; \
+	for format in $(CHECK_FILE_FORMATS) ; \
 	do \
 	  for file in $(CHECK_FILES) ; \
 	  do \

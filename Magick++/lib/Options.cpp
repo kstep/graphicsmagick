@@ -179,6 +179,16 @@ Magick::Color Magick::Options::fillColor ( void ) const
   return _drawInfo->fill;
 }
 
+// Rule to use when filling drawn objects
+void Magick::Options::fillRule ( const Magick::FillRule &fillRule_ )
+{
+  _drawInfo->fill_rule = fillRule_;
+}
+Magick::FillRule Magick::Options::fillRule ( void ) const
+{
+  return _drawInfo->fill_rule;
+}
+
 void Magick::Options::font ( const std::string &font_ )
 {
   if ( font_.length() == 0 )

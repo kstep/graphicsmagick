@@ -240,11 +240,71 @@ CHECK_FILES = \
 @HasX11_TRUE@XWD = @HasX11_TRUE@XWD
 @HasX11_FALSE@XWD = 
 
-CHECK_FORMATS = \
+CHECK_BLOB_FORMATS = \
+	AVS \
+	BMP \
+	BMP24 \
+	CMYK \
+	DIB \
+	EPT \
+	FAX \
+	G3 \
+	FITS \
+	$(FPX) \
+	GIF \
+	GIF87 \
+	GRAY \
+	$(HDF) \
+	$(JBIG) \
+	$(JPEG) \
+	MIFF \
+	$(MNG) \
+	MONO \
+	MTV \
+	P7 \
+	MPC \
+	PAL \
+	PBM \
+	PCD \
+	PCDS \
+	PCX \
+	PGM \
+	PICT \
+	PICT24 \
+	$(PNG) \
+	PNM \
+	PPM \
+	PSD \
+	$(PTIF) \
+	RAS \
+	RGB \
+	RGBA \
+	SGI \
+	SUN \
+	TGA \
+	$(TIFF) \
+	UYVY \
+	VDA \
+	VICAR \
+	VIFF \
+	VST \
+	XBM \
+	XPM \
+	$(XWD) \
+	YUV
+
+
+CHECK_FILE_FORMATS = \
 	AVS \
 	BMP \
 	CMYK \
 	DIB \
+	EPDF \
+	EPSF \
+	EPSI \
+	EPI \
+	EPS \
+	EPT \
 	FAX \
 	FITS \
 	$(FPX) \
@@ -258,6 +318,7 @@ CHECK_FORMATS = \
 	$(MNG) \
 	MONO \
 	MTV \
+	PAL \
 	P7 \
 	PBM \
 	PCD \
@@ -268,6 +329,7 @@ CHECK_FORMATS = \
 	$(PNG) \
 	PNM \
 	PPM \
+	PS \
 	PSD \
 	$(PTIF) \
 	RAS \
@@ -540,7 +602,7 @@ clean-local:
 
 check-rwblob:
 	status=0; \
-	for format in $(CHECK_FORMATS) ; \
+	for format in $(CHECK_BLOB_FORMATS) ; \
 	do \
 	  for file in $(CHECK_FILES) ; \
 	  do \
@@ -556,7 +618,7 @@ check-rwblob:
 
 check-rwfile:
 	status=0; \
-	for format in $(CHECK_FORMATS) ; \
+	for format in $(CHECK_FILE_FORMATS) ; \
 	do \
 	  for file in $(CHECK_FILES) ; \
 	  do \

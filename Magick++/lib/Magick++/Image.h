@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001
+// Copyright Bob Friesenhahn, 1999, 2000
 //
 // Definition of Image, the representation of a single image in Magick++
 //
@@ -624,6 +624,10 @@ namespace Magick
     // Color to use when filling drawn objects
     void            fillColor ( const Color &fillColor_ );
     Color           fillColor ( void ) const;
+
+    // Rule to use when filling drawn objects
+    void            fillRule ( const FillRule &fillRule_ );
+    FillRule        fillRule ( void ) const;
 
     // Filter to use when resizing image
     void            filterType ( FilterTypes filterType_ );

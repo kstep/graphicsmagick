@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001
+// Copyright Bob Friesenhahn, 1999, 2000,2001
 //
 // Implementation of Image
 //
@@ -2058,6 +2058,17 @@ void Magick::Image::fillColor ( const Magick::Color &fillColor_ )
 Magick::Color Magick::Image::fillColor ( void ) const
 {
   return constOptions()->fillColor();
+}
+
+// Rule to use when filling drawn objects
+void Magick::Image::fillRule ( const Magick::FillRule &fillRule_ )
+{
+  modifyImage();
+  options()->fillRule(fillRule_);
+}
+Magick::FillRule Magick::Image::fillRule ( void ) const
+{
+  return constOptions()->fillRule();
 }
 
 void Magick::Image::filterType ( Magick::FilterTypes filterType_ )
