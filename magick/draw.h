@@ -4,6 +4,12 @@
   For internal use only!  Subject to change!
 
 */
+#ifndef _MAGICK_DRAW_H
+#define _MAGICK_DRAW_H
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
 
 typedef struct _MgkDrawContext *MgkDrawContext;
 
@@ -164,3 +170,9 @@ extern MagickExport void
   MgkDrawText(MgkDrawContext context,
               const double x, const double y,
               const char *text);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
+
+#endif
