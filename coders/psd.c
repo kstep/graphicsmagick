@@ -475,6 +475,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ThrowReaderException(CorruptImageWarning,"Not a PSD image file",image);
       image->iptc_profile.info=data;
       image->iptc_profile.length=length;
+      length=ReadBlobMSBLong(image);
     }
   if (image_info->ping)
     {
