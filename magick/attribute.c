@@ -133,7 +133,7 @@ MagickExport void DestroyImageAttributes(Image *image)
 %
 */
 
-static int GenerateIPTCAttribute(Image *image,const char *key)
+static unsigned int GenerateIPTCAttribute(Image *image,const char *key)
 {
   char
     *attribute;
