@@ -219,7 +219,7 @@ UNIX/Cygwin COMPILATION
       shared libraries.
 
     o --with-modules: image format coders are built as loadable modules
-      which are installed in [prefix]/lib/ImageMagick/modules/coders.
+      which are installed in [prefix]/lib/ImageMagick/module/coder.
       Support for modules allows the formats supported by ImageMagick
       to be extended by simply adding additional modules to the module
       search path.  The modules option is only available in conjunction
