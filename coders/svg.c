@@ -122,6 +122,8 @@ typedef struct _SVGInfo
     height;
 
   char
+    *opage,
+    *osize,
     *title,
     *description,
     *comment;
@@ -644,6 +646,7 @@ static void SVGStartDocument(void *context)
   svg_info->graphic_context[0].linewidth=1.0;
   svg_info->graphic_context[0].pointsize=12.0;
   svg_info->graphic_context[0].opacity=100.0;
+#ifdef USETHIS
   for (i=0; i < 6; i++)
   {
     svg_info->graphic_context[0].affine[i]=0.0;
@@ -652,6 +655,16 @@ static void SVGStartDocument(void *context)
     if (i == 3)
       svg_info->graphic_context[0].affine[i]=svg_info->y_resolution/72.0;
   }
+#else
+  for (i=0; i < 6; i++)
+  {
+    svg_info->graphic_context[0].affine[i]=0.0;
+    if (i == 0)
+      svg_info->graphic_context[0].affine[i]=1.0;
+    if (i == 3)
+      svg_info->graphic_context[0].affine[i]=1.0;
+  }
+#endif
   GetExceptionInfo(svg_info->exception);
   svg_info->document=xmlNewDoc(svg_info->parser->version);
 }
@@ -1073,20 +1086,87 @@ static void SVGStartElement(void *context,const xmlChar *name,
     (void) fprintf(stdout,")\n");
   if (LocaleCompare((char *) name,"svg") == 0)
     {
+      int
+        sizeset;
+
+      sizeset=0;
       if (attributes != (const xmlChar **) NULL)
         for (i=0; (attributes[i] != (const xmlChar *) NULL); i+=2)
         {
           keyword=(char *) attributes[i];
           value=(char *) attributes[i+1];
           if (LocaleCompare(keyword,"height") == 0)
-            svg_info->height=(int) svg_info->page.height;
+            {
+              svg_info->height=(int) svg_info->page.height;
+              sizeset|=1;
+            }
           if (LocaleCompare(keyword,"width") == 0)
-            svg_info->width=(int) svg_info->page.width;
+            {
+              svg_info->width=(int) svg_info->page.width;
+              sizeset|=2;
+            }
           if (LocaleCompare(keyword,"viewBox") == 0)
             {
               svg_info->height=(int) svg_info->page.height;
               svg_info->width=(int) svg_info->page.width;
+              sizeset|=4;
             }
+        }
+      if (sizeset > 1)
+        {
+          if (svg_info->osize != (char *) NULL)
+              {
+                int
+                  h,
+                  w,
+                  x,
+                  y;
+
+                unsigned int
+                  flags;
+
+                x=y=0;
+                w=svg_info->width;
+                h=svg_info->height;
+                flags=ParseImageGeometry(svg_info->osize,&x,&y,&w,&h);
+                q->affine[0]=(double)w/(double)svg_info->width;
+                q->affine[3]=(double)h/(double)svg_info->height;
+                svg_info->width=w;
+                svg_info->height=h;
+              }
+            if (svg_info->opage != (char *) NULL)
+              {
+                char
+                  *geometry,
+                  *p;
+
+                int
+                  h,
+                  w,
+                  x,
+                  y;
+
+                unsigned int
+                  flags;
+
+                x=y=0;
+                w=svg_info->width;
+                h=svg_info->height;
+                geometry=PostscriptGeometry(svg_info->opage);
+                p=strchr(geometry,'>');
+                if (p)
+                  *p='\0';
+                flags=ParseImageGeometry(geometry,&x,&y,&w,&h);
+                DestroyPostscriptGeometry(geometry);
+                if (svg_info->x_resolution != 0.0)
+                  w=(unsigned int)(((w*svg_info->x_resolution)/72.0)+0.5);
+                if (svg_info->y_resolution != 0.0)
+                  h=(unsigned int)(((h*svg_info->y_resolution)/72.0)+0.5);
+                q->affine[0]=(double)w/(double)svg_info->width;
+                q->affine[3]=(double)h/(double)svg_info->height;
+                svg_info->width=w;
+                svg_info->height=h;
+              }
         }
     }
 }
@@ -1601,6 +1681,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Open draw file.
   */
   TemporaryFilename(filename);
+  /* FormatString(filename,"C:\\Temp\\%s.mvg",image_info->filename); */
   file=fopen(filename,"w");
   if (file == (FILE *) NULL)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
@@ -1615,6 +1696,12 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   svg_info.y_resolution=image->y_resolution == 0.0 ? 72.0 : image->y_resolution;
   svg_info.width=image->columns;
   svg_info.height=image->rows;
+  svg_info.osize=(char *) NULL;
+  if (image_info->size != (char *)NULL)
+    CloneString(&svg_info.osize,image_info->size);
+  svg_info.opage=(char *) NULL;
+  if (image_info->page != (char *)NULL)
+    CloneString(&svg_info.opage,image_info->page);
   xmlSubstituteEntitiesDefault(1);
   SAXHandler=(&SAXHandlerStruct);
   n=ReadBlob(image,4,buffer);
@@ -1635,13 +1722,11 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Draw image.
   */
   clone_info=CloneImageInfo(image_info);
-  FormatString(geometry,"%dx%d",
-    (int) (svg_info.x_resolution*svg_info.width/72.0),
-    (int) (svg_info.y_resolution*svg_info.height/72.0));
+  FormatString(geometry,"%dx%d",svg_info.width,svg_info.height);
   CloneString(&clone_info->size,geometry);
   FormatString(clone_info->filename,"mvg:%.1024s",filename);
   image=ReadImage(clone_info,exception);
-  (void) remove(filename);
+  /* (void) remove(filename); */
   DestroyImageInfo(clone_info);
   if (image != (Image *) NULL)
     {
