@@ -1409,6 +1409,67 @@ Export unsigned int IsGrayImage(Image *image)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
+%     I s M a t t e I m a g e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsMatteImage returns True if the image has one or more pixels that
+%  are transparent otherwise False is returned.
+%  to PseudoClass.
+%
+%  The format of the IsMatteImage method is:
+%
+%      unsigned int IsMatteImage(Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method IsMatteImage returns True if the image has one or more
+%      pixels that are transparent otherwise False is returned.
+%
+%    o image: The address of a structure of type Image;  returned from
+%      ReadImage.
+%
+%
+*/
+Export unsigned int IsMatteImage(Image *image)
+{
+  int
+    y;
+
+  register int
+    x;
+
+  register PixelPacket
+    *p;
+
+  /*
+    Determine if image is grayscale.
+  */
+  assert(image != (Image *) NULL);
+  if (!image->matte)
+    return(False);
+  for (y=0; y < (int) image->rows; y++)
+  {
+    p=GetPixelCache(image,0,y,image->columns,1);
+    if (p == (PixelPacket *) NULL)
+      return(False);
+    for (x=0; x < (int) image->columns; x++)
+    {
+      if (p->opacity != Opaque)
+        return(True);
+      p++;
+    }
+  }
+  image->matte=False;
+  return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
 %   I s M o n o c h r o m e I m a g e                                         %
 %                                                                             %
 %                                                                             %

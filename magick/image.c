@@ -1525,13 +1525,9 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
     if (!SyncPixelCache(image))
       break;
   }
-  if (compose == BlendCompositeOp)
-    image->matte=False;
   if (compose == DisplaceCompositeOp)
-    {
-      image->matte=False;
-      DestroyImage(composite_image);
-    }
+    DestroyImage(composite_image);
+  (void) IsMatteImage(image);
 }
 
 /*
@@ -3009,7 +3005,7 @@ Export ImageType GetImageType(Image *image)
     return(PaletteMatteType);
   if (IsPseudoClass(image))
     return(PaletteType);
-  if (image->matte)
+  if (IsMatteImage(image))
     return(TrueColorMatteType);
   return(TrueColorType);
 }

@@ -716,6 +716,7 @@ extern Export unsigned int
   IsGIF(const unsigned char *,const unsigned int),
   IsGeometry(const char *),
   IsGrayImage(Image *),
+  IsMatteImage(Image *),
   IsHDF(const unsigned char *,const unsigned int),
   IsHTML(const unsigned char *,const unsigned int),
   IsIPTC(const unsigned char *,const unsigned int),
