@@ -48,7 +48,7 @@ enum {DISABLED, UTILITY, LIBRARY, STATICLIB, MODULE, THIRDPARTY};
 
 BOOL useX11Stubs = TRUE;
 BOOL decorateFilenames = FALSE;
-BOOL optionalFiles = TRUE;
+BOOL optionalFiles = FALSE;
 CString release_loc;
 CString debug_loc;
 CString bin_loc;
