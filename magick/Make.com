@@ -22,7 +22,7 @@ $write sys$output "Making Magick..."
 $call Make PreRvIcccm.c
 $call Make animate.c
 $call Make annotate.c
-$call Make attributes.c
+$call Make attribute.c
 $call Make blob.c
 $call Make cache.c
 $call Make cache_view.c
@@ -30,19 +30,19 @@ $call Make colors.c
 $call Make compress.c
 $call Make constitute.c
 $call Make decorate.c
-$call Make delegates.c
+$call Make delegate.c
 $call Make display.c
 $call Make draw.c
-$call Make effects.c
+$call Make effect.c
 $call Make enhance.c
 $call Make error.c
-$call Make gems.c
+$call Make gem.c
 $call Make image.c
 $call Make semaphore.c
 $call Make magic.c
 $call Make magick.c
 $call Make memory.c
-$call Make modules.c
+$call Make module.c
 $call Make monitor.c
 $call Make montage.c
 $call Make quantize.c
@@ -56,7 +56,7 @@ $call Make type.c
 $call Make utility.c
 $call Make vms.c
 $call Make widget.c
-$call Make xwindows.c
+$call Make xwindow.c
 $call Make zoom.c
 $library/create libMagick.olb PreRvIcccm,animate,annotate,attributes,blob, -
   cache,cache_view,colors,compress,constitute,decorate,delegates,display,draw, -

@@ -256,7 +256,7 @@ EXTRA_DIST = $(ALLMANPAGES) color.mgk magic.mgk Magick-config.in \
 
 
 # Where module are installed
-pkgdir = $(libdir)/ImageMagick/module/coders
+pkgdir = $(libdir)/ImageMagick/modules/coders
 
 # Architecture-dependent data files installed with module
 pkg_DATA = 
