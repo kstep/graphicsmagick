@@ -56,6 +56,8 @@
 2003-04-27  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/magic.mgk: Removed risky entry for PICT which has been
+        demonstrated to lead to a false match in the real-world.
   <LI> coders/pict.c (ReadPICTImage): Ensure that PICT decoder don't
         loop forever with an EOF condition if none of the PICT op-codes
         encountered result in a condition which terminates the input loop.
