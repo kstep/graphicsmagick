@@ -529,7 +529,63 @@ MagickExport unsigned int CheckFileAccessability(const char *filename,
     }
   return(accessible);
 }
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   C h o p P a t h C o m p o n e n t s                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ChopPathComponents chops the path by the specified number of components.
+%
+%  The format of the ChopPathComponents function is:
+%
+%      ChopPathComponents(char *path,const unsigned long number_components,
+%        const unsigned int debug)
+%
+%  A description of each parameter follows:
+%
+%    o path: Specifies a pointer to a character array that contains the
+%      file path.
+%
+%    o numebr_components: The number of directory components to truncate.
+%
+%    o debug: display copious debugging information.
+%
+*/
+MagickExport void ChopPathComponents(char *path,
+  const unsigned long number_components,const unsigned int debug)
+{
+  register char
+    *p;
 
+  long
+    count;
+
+  size_t
+    length;
+
+  count=0;
+  length=strlen(path);
+  p=path+length;
+  if (debug)
+    (void) fprintf(stdout,"original path  \"%s\"\n", path);
+  if (*p == *DirectorySeparator)
+    *p='\0';
+  for (count=0; (count < (long) number_components) && (p > path); p--)
+    if (*p == *DirectorySeparator)
+      {
+        *p='\0';
+        count++;
+      }
+  if (debug)
+    (void) fprintf(stdout,"chopped path \"%s\"\n", path);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1078,7 +1134,7 @@ MagickExport char *GetConfigurePath(const char *filename,
         prefix[MaxTextExtent];
 
       strcpy(prefix,SetClientPath((char *) NULL));
-      TruncatePathElements(prefix,1,debug);
+      ChopPathComponents(prefix,1,debug);
       FormatString(path,"%.1024s/lib/ImageMagick/%.1024s",prefix,filename);
 #else
       FormatString(path,"%.1024s%s%.1024s",SetClientPath((char *) NULL),
@@ -4185,62 +4241,4 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
   if (text != (char *) formatted_text)
     LiberateMemory((void **) &text);
   return(translated_text);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   T r u n c a t e P a t h E l e m e n t s                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  TruncatePathElements truncates the path by the specified number of
-%  directory elements.
-%
-%  The format of the TruncatePathElements function is:
-%
-%      TruncatePathElements(char *path,
-%        const unsigned long number_elements,const unsigned int debug)
-%
-%  A description of each parameter follows:
-%
-%    o path: Specifies a pointer to a character array that contains the
-%      file path.
-%
-%    o numebr_elements: The number of directory elements to truncate.
-%
-%    o debug: display copious debugging information.
-%
-*/
-MagickExport void TruncatePathElements(char *path,
-  const unsigned long number_elements,const unsigned int debug)
-{
-  register char
-    *p;
-
-  size_t
-    length;
-
-  unsigned long
-    count;
-
-  count=0;
-  length=strlen(path);
-  p=path+length;
-  if (debug)
-    (void) fprintf(stdout,"original path  \"%s\"\n", path);
-  if (*p == *DirectorySeparator)
-    *p='\0';
-  for (count=0; (count < number_elements) && (p > path); p--)
-    if (*p == *DirectorySeparator)
-      {
-        *p='\0';
-        count++;
-      }
-  if (debug)
-    (void) fprintf(stdout,"truncated path \"%s\"\n", path);
 }
