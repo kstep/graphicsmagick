@@ -4347,12 +4347,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     save_image_depth,
     ticks_per_second=0;
 
-#if 0
-    /* doesn't work properly with grayscale images. */
     optimize=image_info->type==OptimizeType;
-#else
-    optimize=True;
-#endif
   /*
     Open image file.
   */
@@ -5399,7 +5394,8 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     rowbytes=image->columns;
     if (image->depth == 8)
       {
-        if (ImageIsGray(image))
+        if ((optimize || image->storage_class==PseudoClass) &&
+            ImageIsGray(image))
           rowbytes*=(image->matte ? 2 : 1);
         else
           {
@@ -5410,7 +5406,8 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     else
       if (image->depth == 16)
         {
-          if (ImageIsGray(image))
+          if ((optimize || image->storage_class==PseudoClass) &&
+              ImageIsGray(image))
             rowbytes*=(image->matte ? 4 : 2);
           else
             rowbytes*=(image->matte ? 8 : 6);
@@ -5428,7 +5425,9 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     */
     for (i=0; i < (long) image->rows; i++)
       scanlines[i]=png_pixels+(rowbytes*i);
-    if (!image->matte && ImageIsMonochrome(image))
+    if ((optimize || image->storage_class==PseudoClass ||
+        image_info->type == BilevelType) &&
+        !image->matte && ImageIsMonochrome(image))
       {
         /*
           Convert PseudoClass image to a PNG monochrome image.
@@ -5449,8 +5448,8 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       }
     else
       {
-      if ((!image->matte || (ping_info->bit_depth >= QuantumDepth))
-          && ImageIsGray(image))
+      if ((!image->matte || (ping_info->bit_depth >= QuantumDepth)) &&
+          (optimize || image->storage_class==PseudoClass) && ImageIsGray(image))
         {
           for (y=0; y < (long) image->rows; y++)
           {
