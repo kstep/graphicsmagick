@@ -357,6 +357,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           for (x=0; x < (long) image->columns; x++)
           {
             index=!PNMInteger(image,2);
+            if (EOFBlob(image))
+               break;
             VerifyColormapIndex(image,index);
             indexes[x]=index;
             *q++=image->colormap[index];
@@ -367,7 +369,12 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (QuantumTick(y,image->rows))
               if (!MagickMonitor(LoadImageText,y,image->rows,exception))
                 break;
+          if (EOFBlob(image))
+             break;
         }
+        if (EOFBlob(image))
+          ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
+            image->filename);
         break;
       }
       case '2':
@@ -387,6 +394,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           for (x=0; x < (long) image->columns; x++)
           {
             intensity=PNMInteger(image,10);
+            if (EOFBlob(image))
+               break;
             if (scale != (unsigned long *) NULL)
               intensity=scale[intensity];
             index=intensity;
@@ -394,6 +403,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             indexes[x]=index;
             *q++=image->colormap[index];
           }
+          if (EOFBlob(image))
+             break;
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -401,6 +412,9 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (!MagickMonitor(LoadImageText,y,image->rows,exception))
                 break;
         }
+        if (EOFBlob(image))
+          ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
+            image->filename);
         break;
       }
       case '3':
@@ -418,6 +432,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             pixel.red=PNMInteger(image,10);
             pixel.green=PNMInteger(image,10);
             pixel.blue=PNMInteger(image,10);
+            if (EOFBlob(image))
+               break;
             if (scale != (unsigned long *) NULL)
               {
                 pixel.red=scale[pixel.red];
@@ -429,6 +445,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             q->blue=(Quantum) pixel.blue;
             q++;
           }
+          if (EOFBlob(image))
+             break;
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -436,6 +454,9 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (!MagickMonitor(LoadImageText,y,image->rows,exception))
                 break;
         }
+        if (EOFBlob(image))
+          ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
+            image->filename);
         break;
       }
       case '4':
@@ -459,6 +480,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             if (bit == 0)
               byte=ReadBlobByte(image);
+            if (EOFBlob(image))
+               break;
             index=(byte & 0x80) ? 0x00 : 0x01;
             indexes[x]=index;
             *q++=image->colormap[index];
@@ -467,6 +490,8 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               bit=0;
             byte<<=1;
           }
+          if (EOFBlob(image))
+            break;
           if (!SyncImagePixels(image))
             break;
           if (image->previous == (Image *) NULL)
@@ -515,13 +540,19 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               *q++=image->colormap[index];
             }
           else
-            for (x=0; x < (long) image->columns; x++)
             {
-              index=(*p << 8) | *(p+1);
-              p+=2;
-              VerifyColormapIndex(image,index);
-              indexes[x]=index;
-              *q++=image->colormap[index];
+              for (x=0; x < (long) image->columns; x++)
+              {
+                index=(*p << 8) | *(p+1);
+                p+=2;
+                VerifyColormapIndex(image,index);
+                if (EOFBlob(image))
+                  break;
+                indexes[x]=index;
+                *q++=image->colormap[index];
+              }
+              if (EOFBlob(image))
+                break;
             }
           if (!SyncImagePixels(image))
             break;
