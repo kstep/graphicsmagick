@@ -4,6 +4,33 @@
 </HEAD>
 <BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#0000EE" VLINK="#551A8B" ALINK="#FF0000">
 <p>
+2003-06-06  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Geometry.cpp (string): Throw an exception if a string is
+        requested from an invalid geometry object.
+
+</UL>
+<p>
+2003-06-05  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Geometry.cpp (operator =): If GetGeometry returns NoValue,
+        then assign an invalid geometry object to cause an exception if
+        the geometry is then used.
+
+</UL>
+<p>
+2003-06-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/Exception.h (ErrorModule): Added class to handle
+        module errors.<BR>
+  <LI> lib/Magick++/Exception.h (WarningModule) Added class to handle
+        module warnings.
+
+</UL>
+<p>
 2003-05-30  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

@@ -28017,7 +28017,7 @@ _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
-
+#undef inline
 int f(int  x){return 1;}
 int f(char x){return 1;}
 int f(bool x){return 1;}
@@ -28092,7 +28092,11 @@ cat >>conftest.$ac_ext <<_ACEOF
 int
 main ()
 {
-int x = 0;const int& y = x;int& z = const_cast<int&>(y);return z;
+#undef inline
+int x = 0;
+const int& y = x;
+int& z = const_cast<int&>(y);
+return z;
   ;
   return 0;
 }
@@ -28155,7 +28159,7 @@ _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
-
+#undef inline
 template<class T = double, int N = 10> class A {public: int f() {return 0;}};
 
 int
@@ -28229,6 +28233,7 @@ cat >>conftest.$ac_ext <<_ACEOF
 int
 main ()
 {
+#undef inline
 try { throw  1; } catch (int i) { return i; }
   ;
   return 0;
@@ -28292,10 +28297,12 @@ _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
+#undef inline
 namespace Outer { namespace Inner { int i = 0; }}
 int
 main ()
 {
+#undef inline
 using namespace Outer::Inner; return i;
   ;
   return 0;
@@ -28359,6 +28366,7 @@ _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
+#undef inline
 class A{public:explicit A(double){}};
 int
 main ()
@@ -28427,6 +28435,7 @@ _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
+#undef inline
 #include <iostream>
 #include <map>
 #include <iomanip>
@@ -28574,6 +28583,7 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 
+#undef inline
 class A { mutable int i;
           public:
           int f (int n) const { i = n; return i; }
@@ -28649,7 +28659,7 @@ cat >>conftest.$ac_ext <<_ACEOF
 int
 main ()
 {
-
+#undef inline
   int z = 0;
   for (int i = 0; i < 10; ++i)
     z = z + i;
@@ -28718,6 +28728,7 @@ _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
+#undef inline
 #include <typeinfo>
 class Base { public : Base () {} virtual void f () = 0; };
 class Derived : public Base { public : Derived () {} virtual void f () {} };
@@ -28789,6 +28800,7 @@ _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
+#undef inline
 template<class T> class A {public:A(){}};
 template<class T> void f(const A<T>& ){}
 int

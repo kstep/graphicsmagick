@@ -1801,12 +1801,18 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       case FaxCompression:
       {
         SetImageType(image,BilevelType);
+        if (logging)
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "Set image type to BilevelType and using CCITTFAX3 compression");
         compress_tag=COMPRESSION_CCITTFAX3;
         break;
       }
       case Group4Compression:
       {
         SetImageType(image,BilevelType);
+        if (logging)
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "Set image type to BilevelType and using CCITTFAX4 compression");
         compress_tag=COMPRESSION_CCITTFAX4;
         break;
       }
@@ -1817,6 +1823,9 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         compress_tag=COMPRESSION_JPEG;
         image->storage_class=DirectClass;
         image->depth=8;
+        if (logging)
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "Set image type to DirectClass and using JPEG compression");
         break;
       }
 #endif
@@ -1824,29 +1833,47 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       case LZWCompression:
       {
         compress_tag=COMPRESSION_LZW;
+        if (logging)
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "Using LZW compression");
         break;
       }
 #endif
       case RLECompression:
       {
         compress_tag=COMPRESSION_PACKBITS;
+        if (logging)
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "Using PACKBITS compression");
         break;
       }
 #ifdef ZIP_SUPPORT
       case ZipCompression:
       {
         compress_tag=COMPRESSION_ADOBE_DEFLATE;
+        if (logging)
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "Using ZIP deflate compression");
         break;
       }
 #endif
       default:
       {
         compress_tag=COMPRESSION_NONE;
+        if (logging)
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "Using no compression");
         break;
       }
     }
     if (image->depth > 8)
-      (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,16);
+      {
+        (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,16);
+        if (logging)
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "Using 16 bits per sample");
+      }
+
     if (((image_info->colorspace == UndefinedColorspace) &&
          (image->colorspace == CMYKColorspace)) ||
          (image_info->colorspace == CMYKColorspace))
@@ -1854,6 +1881,9 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         photometric=PHOTOMETRIC_SEPARATED;
         (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,4);
         (void) TIFFSetField(tiff,TIFFTAG_INKSET,INKSET_CMYK);
+        if (logging)
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "Using PHOTOMETRIC_SEPARATED, 4 samples per pixel, INKSET_CMYK");
       }
     else
       {
@@ -1863,6 +1893,9 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         TransformColorspace(image,RGBColorspace);
         photometric=PHOTOMETRIC_RGB;
         (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,3);
+        if (logging)
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+             "Using PHOTOMETRIC_RGB, 3 samples per pixel");
         if (image_info->type != TrueColorType)
           {
             if ((image_info->type != PaletteType) &&
@@ -1870,12 +1903,18 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
               {
                 (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,1);
                 photometric=PHOTOMETRIC_MINISBLACK;
+                if (logging)
+                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                    "Using PHOTOMETRIC_MINISBLACK, 1 sample per pixel");
                 if ((image->storage_class == PseudoClass) &&
                     IsMonochromeImage(image,&image->exception))
                   {
                     (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,1);
                     photometric=PHOTOMETRIC_MINISWHITE;
                     compress_tag=COMPRESSION_CCITTFAX4;
+                    if (logging)
+                      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                        "Using PHOTOMETRIC_MINISWHITE, 1 sample per pixel, CCITTFAX4 compression");
                   }
               }
             else
@@ -1885,9 +1924,20 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                     Colormapped TIFF raster.
                   */
                   (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,1);
+                  if (logging)
+                    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                          "Using 1 sample per pixel");
                   if (image->colors <= 256)
-                    (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,8);
+                    {
+                      (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,8);
+                      if (logging)
+                        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                          "Using 8 bits per sample");
+                    }
                   photometric=PHOTOMETRIC_PALETTE;
+                  if (logging)
+                    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                       "Using PHOTOMETRIC_PALETTE");
                 }
           }
       }
@@ -1902,7 +1952,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           TIFF has a matte channel.
         */
         extra_samples=1;
-        //sample_info[0]=EXTRASAMPLE_UNASSALPHA;
+        /* sample_info[0]=EXTRASAMPLE_UNASSALPHA; */
         sample_info[0]=EXTRASAMPLE_ASSOCALPHA;
         (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_SAMPLESPERPIXEL,
           &samples_per_pixel);
@@ -1938,17 +1988,29 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     {
       case LSBEndian:
         (void) TIFFSetField(tiff,TIFFTAG_FILLORDER,FILLORDER_LSB2MSB);
+        if (logging)
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+             "Using TIFFTAG_FILLORDER FILLORDER_LSB2MSB");
         break;
       case MSBEndian:
         (void) TIFFSetField(tiff,TIFFTAG_FILLORDER,FILLORDER_MSB2LSB);
+        if (logging)
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+             "Using TIFFTAG_FILLORDER FILLORDER_MSB2LSB");
         break;
       default:
       case UndefinedEndian:
       {
 #if defined(HOST_BIGENDIAN)
         (void) TIFFSetField(tiff,TIFFTAG_FILLORDER,FILLORDER_MSB2LSB);
+        if (logging)
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+             "Using TIFFTAG_FILLORDER FILLORDER_MSB2LSB");
 #else
         (void) TIFFSetField(tiff,TIFFTAG_FILLORDER,FILLORDER_LSB2MSB);
+        if (logging)
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+             "Using TIFFTAG_FILLORDER FILLORDER_LSB2MSB");
 #endif
         break;
       }

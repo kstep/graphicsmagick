@@ -1,3 +1,9 @@
+2003-06-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* acinclude.m4: Add '#undef inline' in front of C++ tests.
+	* coders/x.c (RegisterXImage): Only register the X coder if HasX11
+	is defined.
+
 2003-06-07  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* magick/image.c (GetImageGeometry) Y was a function of width

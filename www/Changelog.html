@@ -56,6 +56,23 @@
 2003-06-06  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> coders/x.c (RegisterXImage): Only register the X coder if HasX11
+        is defined.
+
+</UL>
+<p>
+2003-06-07  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
+
+<UL>
+  <LI> magick/image.c (GetImageGeometry) Y was a function of width
+        instead of height when processing EastGravity or WestGravity
+        (bug report from Cristy).
+
+</UL>
+<p>
+2003-06-06  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
   <LI> magick/utility.c (LocaleNCompare): Documented that comparison is
         case-insensitive.<BR>
         (LocaleCompare): Documented that comparison is case-insensitive.
