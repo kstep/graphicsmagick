@@ -28,12 +28,12 @@ typedef struct _ResourceInfo
   Method declarations.
 */
 extern MagickExport ResourceInfo
-  GetResourceLimits(const ResourceLimits *);
+  GetResourceLimits(const ResourceInfo *);
 
 extern MagickExport void
-  AcquireResources(const ResourceType,const off_t)
-  LiberateResources(const ResourceType,const off_t)
-  SetResourceLimits(const ResourceLimits *);
+  AcquireResources(const ResourceType,const off_t),
+  LiberateResources(const ResourceType,const off_t),
+  SetResourceLimits(const ResourceInfo *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
