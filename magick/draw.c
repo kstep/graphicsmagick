@@ -1135,8 +1135,8 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
           (void) QueryColorDatabase("red",&clone_info->stroke);
         else
           (void) QueryColorDatabase("green",&clone_info->stroke);
-        start.x=floor(polygon_info->edges[i].bounds.x1-mid-0.5);
-        start.y=floor(polygon_info->edges[i].bounds.y1-mid-0.5);
+        start.x=floor(polygon_info->edges[i].bounds.x1-mid+0.5);
+        start.y=floor(polygon_info->edges[i].bounds.y1-mid+0.5);
         end.x=ceil(polygon_info->edges[i].bounds.x2+mid-0.5);
         end.y=ceil(polygon_info->edges[i].bounds.y2+mid-0.5);
         primitive_info[0].primitive=RectanglePrimitive;
@@ -1148,8 +1148,8 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
       }
     }
   (void) QueryColorDatabase("blue",&clone_info->stroke);
-  start.x=floor(bounds.x1-mid-0.5);
-  start.y=floor(bounds.y1-mid-0.5);
+  start.x=floor(bounds.x1-mid+0.5);
+  start.y=floor(bounds.y1-mid+0.5);
   end.x=ceil(bounds.x2+mid-0.5);
   end.y=ceil(bounds.y2+mid-0.5);
   primitive_info[0].primitive=RectanglePrimitive;
@@ -3105,13 +3105,13 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
       /*
         Draw point.
       */
-      for (y=(long) ceil(bounds.y1-0.5); y <= (long) floor(bounds.y2-0.5); y++)
+      for (y=(long) ceil(bounds.y1-0.5); y <= (long) floor(bounds.y2+0.5); y++)
       {
         x=(long) ceil(bounds.x1-0.5);
-        q=GetImagePixels(image,x,y,(long) floor(bounds.x2-0.5)-x+1,1);
+        q=GetImagePixels(image,x,y,(long) floor(bounds.x2+0.5)-x+1,1);
         if (q == (PixelPacket *) NULL)
           break;
-        for ( ; x <= (long) floor(bounds.x2-0.5); x++)
+        for ( ; x <= (long) floor(bounds.x2+0.5); x++)
         {
           if ((x == (long) ceil(primitive_info->point.x-0.5)) &&
               (y == (long) ceil(primitive_info->point.y-0.5)))
@@ -3129,13 +3129,13 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
   /*
     Draw polygon or line.
   */
-  for (y=(long) ceil(bounds.y1-0.5); y <= (long) floor(bounds.y2-0.5); y++)
+  for (y=(long) ceil(bounds.y1-0.5); y <= (long) floor(bounds.y2+0.5); y++)
   {
     x=(long) ceil(bounds.x1-0.5);
-    q=GetImagePixels(image,x,y,(long) floor(bounds.x2-0.5)-x+1,1);
+    q=GetImagePixels(image,x,y,(long) floor(bounds.x2+0.5)-x+1,1);
     if (q == (PixelPacket *) NULL)
       break;
-    for ( ; x <= (long) floor(bounds.x2-0.5); x++)
+    for ( ; x <= (long) floor(bounds.x2+0.5); x++)
     {
       /*
         Fill and/or stroke.
