@@ -56,6 +56,15 @@
 2003-05-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/nt_base.c (lt_dlerror): Defining lt_dlerror to be
+        NTGetLastError was not a correct implementation since the
+        interface is defined to return a const pointer to a string, but
+        NTGetLastError returns an allocated string, causing a memory leak
+        if NTGetLastError is used in the place of lt_dlerror.  A new
+        lt_dlerror function is added to fix this.
+        (lt_dlsetsearchpath): lt_dlsetsearchpath should return and int
+        and accept a const char *.<BR>
+        (lt_dlsym): lt_dlsym is supposed to take a const char *.
   <LI> magick/nt_base.h: lt_dlclose should return an 'int'.
   <LI> magick/nt_base.c (lt_dlclose): Return status from lt_dlclose.
   <LI> magick/module.c (lt_dlclose): lt_dlclose is supposed to return

@@ -490,6 +490,44 @@ int lt_dlclose(void *handle)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   l t _ d l e r r o r                                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%   Method lt_dlerror returns a pointer to a string describing the last error
+%   associated with a lt_dl* function. Note that this function is not thread
+%   safe so it should only be used under the protection of a lock.
+%
+%  The format of the lt_dlerror method is:
+%
+%      const char * lt_dlerror(void)
+%
+%  A description of each parameter follows:
+%
+*/
+const char *lt_dlerror(void)
+{
+  static char
+    last_error[MaxTextExtent];
+
+  char
+    *error;
+
+  last_error[0]='\0';
+  error=NTGetLastError();
+  if (error)
+    strncpy(last_error,error,MaxTextExtent-1);
+  LiberateMemory((void **) &error);
+  return (last_error);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   l t _ d l e x i t                                                         %
 %                                                                             %
 %                                                                             %
@@ -547,7 +585,7 @@ int lt_dlinit(void)
 %
 %  The format of the lt_dlopen method is:
 %
-%      void *lt_dlopen(char *filename)
+%      void *lt_dlopen(const char *filename)
 %
 %  A description of each parameter follows:
 %
@@ -555,7 +593,7 @@ int lt_dlinit(void)
 %            is to be loaded.
 %
 */
-void *lt_dlopen(char *filename)
+void *lt_dlopen(const char *filename)
 {
 #define MaxPathElements  31
 
@@ -626,7 +664,7 @@ void *lt_dlopen(char *filename)
 %
 %  The format of the lt_dlsetsearchpath method is:
 %
-%      long lt_dlsetsearchpath(char *path)
+%      int lt_dlsetsearchpath(char *path)
 %
 %  A description of each parameter follows:
 %
@@ -634,7 +672,7 @@ void *lt_dlopen(char *filename)
 %            for DLL's that can be dynamically loaded.
 %
 */
-void lt_dlsetsearchpath(char *path)
+int lt_dlsetsearchpath(const char *path)
 {
   if (lt_slsearchpath)
     {
@@ -643,6 +681,7 @@ void lt_dlsetsearchpath(char *path)
     }
   if (path != (char *) NULL)
     lt_slsearchpath=AllocateString(path);
+  return (0);
 }
 
 /*
@@ -661,7 +700,7 @@ void lt_dlsetsearchpath(char *path)
 %
 %  The format of the lt_dlsym method is:
 %
-%      void *lt_dlsym(void *handle,char *name)
+%      void *lt_dlsym(void *handle,const char *name)
 %
 %  A description of each parameter follows:
 %
@@ -670,7 +709,7 @@ void lt_dlsetsearchpath(char *path)
 %    o name: Specifies the procedure entry point to be returned.
 %
 */
-void *lt_dlsym(void *h,char *s)
+void *lt_dlsym(void *h,const char *s)
 {
   LPFNDLLFUNC1
     lpfnDllFunc1;
