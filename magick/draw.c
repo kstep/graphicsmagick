@@ -5050,6 +5050,7 @@ static unsigned int TracePath(PrimitiveInfo *primitive_info,const char *path)
     if (z_count > 1)
       q->method=FillToBorderMethod;
   }
+  q=primitive_info;
   return(number_coordinates);
 }
 
