@@ -316,7 +316,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
       */
       FormatString(buffer,"\033*r%lus%luT",image->columns,image->rows);
       (void) WriteBlobString(image,buffer);
-      FormatString(buffer,"\033*t%uh%uV",width,height);
+      FormatString(buffer,"\033*t%luh%luV",width,height);
       (void) WriteBlobString(image,buffer);
       (void) WriteBlobString(image,"\033*v6W");
       (void) WriteBlobByte(image,'\000');  /* color model */
@@ -420,8 +420,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
           (void) WriteBlobByte(image,byte << (8-bit));
         if (y < (long) monochrome_image->rows)
           {
-            FormatString(buffer,"\033*b%uW",
-              (monochrome_image->columns+7)/8);
+            FormatString(buffer,"\033*b%luW",(monochrome_image->columns+7)/8);
             (void) WriteBlobString(image,buffer);
           }
         if (QuantumTick(y,monochrome_image->rows))
