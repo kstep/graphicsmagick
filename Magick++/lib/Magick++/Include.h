@@ -14,6 +14,8 @@
 # else
 #  include "magick_config.h"
 # endif
+# undef inline // Remove possible definition from config.h
+# undef class
 #endif
 
 // Forward declarations for iostream classes

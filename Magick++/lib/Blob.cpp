@@ -9,6 +9,7 @@
 
 #include <string.h>
 
+#include "Magick++/Include.h"
 #include "Magick++/Thread.h"
 #include "Magick++/Blob.h"
 
