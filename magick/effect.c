@@ -2932,8 +2932,8 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
 %
 %  Use SteganoImage() to hide a digital watermark within the image.  
 %  Recover the hidden watermark later to prove that the authenticity of
-%  an image.  texttt{Offset} defines the start position within the image
-%  to hide the watermark.
+%  an image.  Offset defines the start position within the image to hide
+%  the watermark.
 %
 %  The format of the SteganoImage method is:
 %

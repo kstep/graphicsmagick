@@ -424,7 +424,7 @@ Limit the plasma recursion depth.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="reducenoiseimage">ReduceNoiseImage</A></H2>
-<blockquote>ReduceNoiseImage() smooths the contours of an image while still preserving edge information. The algorithm works by replacing each pixel with its neighbor closest in value. A neighbor is defined by \texttt{radius}. Use a radius of 0 and ReduceNoise ( ) selects a suitable radius for you. </blockquote><P>The format of the ReduceNoiseImage method is:</P>
+<blockquote>ReduceNoiseImage() smooths the contours of an image while still preserving edge information. The algorithm works by replacing each pixel with its neighbor closest in value. A neighbor is defined by radius. Use a radius of 0 and ReduceNoise ( ) selects a suitable radius for you. </blockquote><P>The format of the ReduceNoiseImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *ReduceNoiseImage ( const <A HREF="types/Image.html">Image</A> *image, const double radius, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
@@ -519,7 +519,7 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="steganoimage">SteganoImage</A></H2>
-<blockquote>Use SteganoImage() to hide a digital watermark within the image. Recover the hidden watermark later to prove that the authenticity of an image. texttt{Offset} defines the start position within the image to hide the watermark. </blockquote><P>The format of the SteganoImage method is:</P>
+<blockquote>Use SteganoImage() to hide a digital watermark within the image. Recover the hidden watermark later to prove that the authenticity of an image. Offset defines the start position within the image to hide the watermark. </blockquote><P>The format of the SteganoImage method is:</P>
 <blockquote><A HREF="types/Image.html">Image</A> *SteganoImage ( const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/Image.html">Image</A> *watermark, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
