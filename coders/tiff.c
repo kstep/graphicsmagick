@@ -823,8 +823,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           &sample_info);
         image->matte=
           ((extra_samples == 1) && (sample_info[0] == EXTRASAMPLE_ASSOCALPHA));
-        pixels=(uint32 *) AcquireMemory((4*image->columns*image->rows+
-          2*image->columns)*sizeof(uint32));
+        pixels=(uint32 *) AcquireMemory((image->columns*image->rows+
+          6*image->columns)*sizeof(uint32));
         if (pixels == (uint32 *) NULL)
           {
             TIFFClose(tiff);
