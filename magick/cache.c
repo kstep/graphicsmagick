@@ -983,12 +983,14 @@ MagickExport unsigned int OpenCache(Cache cache,const ClassType storage_class,
       if (cache_info->file == -1)
         return(False);
     }
+#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
+  if (ftruncate(cache_info->file,length) == -1)
+    return(False);
+else
   if (lseek(cache_info->file,length,SEEK_SET) == -1)
     return(False);
   if (write(cache_info->file,&null,sizeof(null)) == -1)
     return(False);
-#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
-  (void) ftruncate(cache_info->file,length);
 #endif
   cache_info->storage_class=storage_class;
   if (cache_info->type != DiskCache)
@@ -1008,6 +1010,7 @@ MagickExport unsigned int OpenCache(Cache cache,const ClassType storage_class,
           if (cache_info->storage_class == PseudoClass)
             cache_info->indexes=(IndexPacket *)
               (cache_info->pixels+number_pixels);
+          CloseCache(cache);
         }
     }
   return(True);
