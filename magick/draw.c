@@ -132,9 +132,12 @@ typedef struct _PathInfo
 /*
   Forward declarations.
 */
+static PrimitiveInfo
+  *TraceRoundLinecap(const PrimitiveInfo *),
+  *TraceStrokePolygon(const DrawInfo *,const PrimitiveInfo *);
+
 static unsigned int
   DrawPrimitive(Image *,const DrawInfo *,const PrimitiveInfo *),
-  DrawRoundLinecap(Image *,const DrawInfo *,const PrimitiveInfo *),
   DrawStrokePolygon(Image *,const DrawInfo *,const PrimitiveInfo *),
   TracePath(PrimitiveInfo *,const char *);
 
@@ -3428,12 +3431,6 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
           status=DrawPolygonPrimitive(image,clone_info,primitive_info);
           DestroyDrawInfo(clone_info);
           status|=DrawStrokePolygon(image,draw_info,primitive_info);
-          if ((draw_info->linecap == RoundCap) && !closed_path)
-            {
-              status|=DrawRoundLinecap(image,draw_info,primitive_info);
-              for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++);
-              status|=DrawRoundLinecap(image,draw_info,primitive_info+i-1);
-            }
           break;
         }
       DrawPolygonPrimitive(image,draw_info,primitive_info);
@@ -3442,58 +3439,6 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
   }
   if (draw_info->debug)
     (void) fprintf(stdout,"  end draw-primitive (%.2fu)\n",GetUserTime(&timer));
-  return(status);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   D r a w R o u n d L i n e c a p                                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method DrawRoundLinecap draws a round linecap on a stroked polygon.
-%
-%  The format of the DrawRoundLinecap method is:
-%
-%      unsigned int DrawRoundLinecap(Image *image,const DrawInfo *draw_info,
-%        const PrimitiveInfo *primitive_info)
-%
-%  A description of each parameter follows:
-%
-%    o image: The image.
-%
-%    o draw_info: The draw info.
-%
-%    o primitive_info: Specifies a pointer to a PrimitiveInfo structure.
-%
-%
-*/
-static unsigned int DrawRoundLinecap(Image *image,const DrawInfo *draw_info,
-  const PrimitiveInfo *primitive_info)
-{
-  PrimitiveInfo
-    linecap[5];
-
-  register int
-    i;
-
-  unsigned int
-    status;
-
-  for (i=0; i < 4; i++)
-    linecap[i]=(*primitive_info);
-  linecap[0].coordinates=4;
-  linecap[1].point.x+=10.0*MagickEpsilon;
-  linecap[2].point.x+=10.0*MagickEpsilon;
-  linecap[2].point.y+=10.0*MagickEpsilon;
-  linecap[3].point.y+=10.0*MagickEpsilon;
-  linecap[4].primitive=UndefinedPrimitive;
-  status=DrawPolygonPrimitive(image,draw_info,linecap);
   return(status);
 }
 
@@ -3529,429 +3474,22 @@ static unsigned int DrawRoundLinecap(Image *image,const DrawInfo *draw_info,
 static unsigned int DrawStrokePolygon(Image *image,const DrawInfo *draw_info,
   const PrimitiveInfo *primitive_info)
 {
-  typedef struct _LineSegment
-  {
-    double
-      p,
-      q;
-  } LineSegment;
-
-  double
-    delta_theta,
-    dot_product,
-    mid,
-    miterlimit;
-
   DrawInfo
     *clone_info;
 
-  int
-    arc_segments,
-    closed_path,
-    j,
-    max_strokes,
-    n,
-    p,
-    q;
-
-  LineSegment
-    dx,
-    dy,
-    inverse_slope,
-    slope,
-    theta;
-
-  PointInfo
-    box_p[5],
-    box_q[5],
-    center,
-    offset,
-    *path_p,
-    *path_q;
-
   PrimitiveInfo
-    *stroke_polygon,
-    *polygon_primitive;
+    *stroke_polygon;
 
-  register int
-    i;
+  register const PrimitiveInfo
+    *p,
+    *q;
 
   TimerInfo
     timer;
 
   unsigned int
-    number_vertices,
     status;
 
-  /*
-    Clone the polygon primitive.
-  */
-  if (draw_info->debug)
-    {
-      GetTimerInfo(&timer);
-      (void) fprintf(stdout,"    begin draw-stroke-polygon\n");
-    }
-  for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++);
-  closed_path=(primitive_info[i-1].point.x == primitive_info[0].point.x) &&
-    (primitive_info[i-1].point.y == primitive_info[0].point.y);
-  number_vertices=i;
-  polygon_primitive=(PrimitiveInfo *)
-    AcquireMemory((number_vertices+2)*sizeof(PrimitiveInfo));
-  if (polygon_primitive == (PrimitiveInfo *) NULL)
-    ThrowBinaryException(ResourceLimitWarning,"Unable to draw stroke polygon",
-      image->filename);
-  memcpy(polygon_primitive,primitive_info,number_vertices*
-    sizeof(PrimitiveInfo));
-  if ((draw_info->linejoin == RoundJoin) ||
-      ((draw_info->linejoin == MiterJoin) && closed_path))
-    {
-      polygon_primitive[number_vertices]=primitive_info[1];
-      number_vertices++;
-    }
-  polygon_primitive[number_vertices].primitive=UndefinedPrimitive;
-  /*
-    Compute the slope for the first line segment, p.
-  */
-  for (n=1; n < (int) number_vertices; n++)
-  {
-    dx.p=polygon_primitive[n].point.x-polygon_primitive[0].point.x;
-    dy.p=polygon_primitive[n].point.y-polygon_primitive[0].point.y;
-    if ((fabs(dx.p) >= MagickEpsilon) || (fabs(dy.p) >= MagickEpsilon))
-      break;
-  }
-  slope.p=0.0;
-  inverse_slope.p=0.0;
-  if (fabs(dx.p) <= MagickEpsilon)
-    {
-      if (dx.p >= 0.0)
-        slope.p=dy.p < 0.0 ? -1.0/MagickEpsilon : 1.0/MagickEpsilon;
-      else
-        slope.p=dy.p < 0.0 ? 1.0/MagickEpsilon : -1.0/MagickEpsilon;
-    }
-  else
-    if (fabs(dy.p) <= MagickEpsilon)
-      {
-        if (dy.p >= 0.0)
-          inverse_slope.p=dx.p < 0.0 ? -1.0/MagickEpsilon : 1.0/MagickEpsilon;
-        else
-          inverse_slope.p=dx.p < 0.0 ? 1.0/MagickEpsilon : -1.0/MagickEpsilon;
-      }
-    else
-      {
-        slope.p=dy.p/dx.p;
-        inverse_slope.p=(-1.0/slope.p);
-      }
-  max_strokes=2*number_vertices+1;
-  path_p=(PointInfo *) AcquireMemory(max_strokes*sizeof(PointInfo));
-  path_q=(PointInfo *) AcquireMemory(max_strokes*sizeof(PointInfo));
-  if ((path_p == (PointInfo *) NULL) || (path_q == (PointInfo *) NULL))
-    ThrowBinaryException(ResourceLimitWarning,"Unable to draw stroke polygon",
-      image->filename);
-  mid=ExpandAffine(&draw_info->affine)*draw_info->stroke_width/2.0;
-  miterlimit=draw_info->miterlimit*draw_info->miterlimit*mid*mid;
-  if ((draw_info->linecap == SquareCap) && !closed_path)
-    TraceSquareLinecap(polygon_primitive,number_vertices,mid);
-  offset.x=sqrt(mid*mid/(inverse_slope.p*inverse_slope.p+1.0));
-  offset.y=offset.x*inverse_slope.p;
-  if ((dy.p*offset.x-dx.p*offset.y) > 0.0)
-    {
-      box_p[0].x=polygon_primitive[0].point.x-offset.x;
-      box_p[0].y=polygon_primitive[0].point.y-offset.x*inverse_slope.p;
-      box_p[1].x=polygon_primitive[n].point.x-offset.x;
-      box_p[1].y=polygon_primitive[n].point.y-offset.x*inverse_slope.p;
-      box_q[0].x=polygon_primitive[0].point.x+offset.x;
-      box_q[0].y=polygon_primitive[0].point.y+offset.x*inverse_slope.p;
-      box_q[1].x=polygon_primitive[n].point.x+offset.x;
-      box_q[1].y=polygon_primitive[n].point.y+offset.x*inverse_slope.p;
-    }
-  else
-    {
-      box_p[0].x=polygon_primitive[0].point.x+offset.x;
-      box_p[0].y=polygon_primitive[0].point.y+offset.y;
-      box_p[1].x=polygon_primitive[n].point.x+offset.x;
-      box_p[1].y=polygon_primitive[n].point.y+offset.y;
-      box_q[0].x=polygon_primitive[0].point.x-offset.x;
-      box_q[0].y=polygon_primitive[0].point.y-offset.y;
-      box_q[1].x=polygon_primitive[n].point.x-offset.x;
-      box_q[1].y=polygon_primitive[n].point.y-offset.y;
-    }
-  /*
-    Create strokes for the line join attribute: bevel, miter, round.
-  */
-  p=0;
-  q=0;
-  path_q[p++]=box_q[0];
-  path_p[q++]=box_p[0];
-  for (i=n+1; i < (int) number_vertices; i++)
-  {
-    /*
-      Compute the slope for this line segment, q.
-    */
-    dx.q=polygon_primitive[i].point.x-polygon_primitive[n].point.x;
-    dy.q=polygon_primitive[i].point.y-polygon_primitive[n].point.y;
-    dot_product=dx.q*dx.q+dy.q*dy.q;
-    if (dot_product < 0.25)
-      continue;
-    slope.q=0.0;
-    inverse_slope.q=0.0;
-    if (fabs(dx.q) < MagickEpsilon)
-      {
-        if (dx.q >= 0.0)
-          slope.q=dy.q < 0.0 ? -1.0/MagickEpsilon : 1.0/MagickEpsilon;
-        else
-          slope.q=dy.q < 0.0 ? 1.0/MagickEpsilon : -1.0/MagickEpsilon;
-      }
-    else
-      if (fabs(dy.q) <= MagickEpsilon)
-        {
-          if (dy.q >= 0.0)
-            inverse_slope.q=dx.q < 0.0 ? -1.0/MagickEpsilon : 1.0/MagickEpsilon;
-          else
-            inverse_slope.q=dx.q < 0.0 ? 1.0/MagickEpsilon : -1.0/MagickEpsilon;
-        }
-      else
-        {
-          slope.q=dy.q/dx.q;
-          inverse_slope.q=(-1.0/slope.q);
-        }
-    offset.x=sqrt(mid*mid/(inverse_slope.q*inverse_slope.q+1.0));
-    offset.y=offset.x*inverse_slope.q;
-    dot_product=dy.q*offset.x-dx.q*offset.y;
-    if (dot_product > 0.0)
-      {
-        box_p[2].x=polygon_primitive[n].point.x-offset.x;
-        box_p[2].y=polygon_primitive[n].point.y-offset.y;
-        box_p[3].x=polygon_primitive[i].point.x-offset.x;
-        box_p[3].y=polygon_primitive[i].point.y-offset.y;
-        box_q[2].x=polygon_primitive[n].point.x+offset.x;
-        box_q[2].y=polygon_primitive[n].point.y+offset.y;
-        box_q[3].x=polygon_primitive[i].point.x+offset.x;
-        box_q[3].y=polygon_primitive[i].point.y+offset.y;
-      }
-    else
-      {
-        box_p[2].x=polygon_primitive[n].point.x+offset.x;
-        box_p[2].y=polygon_primitive[n].point.y+offset.y;
-        box_p[3].x=polygon_primitive[i].point.x+offset.x;
-        box_p[3].y=polygon_primitive[i].point.y+offset.y;
-        box_q[2].x=polygon_primitive[n].point.x-offset.x;
-        box_q[2].y=polygon_primitive[n].point.y-offset.y;
-        box_q[3].x=polygon_primitive[i].point.x-offset.x;
-        box_q[3].y=polygon_primitive[i].point.y-offset.y;
-      }
-    if (fabs(slope.p-slope.q) <= MagickEpsilon)
-      {
-        box_p[4]=box_p[1];
-        box_q[4]=box_q[1];
-      }
-    else
-      {
-        box_p[4].x=(slope.p*box_p[0].x-box_p[0].y-slope.q*box_p[3].x+
-          box_p[3].y)/(slope.p-slope.q);
-        box_p[4].y=slope.p*(box_p[4].x-box_p[0].x)+box_p[0].y;
-        box_q[4].x=(slope.p*box_q[0].x-box_q[0].y-slope.q*box_q[3].x+
-          box_q[3].y)/(slope.p-slope.q);
-        box_q[4].y=slope.p*(box_q[4].x-box_q[0].x)+box_q[0].y;
-      }
-    if (q >= (int) (max_strokes-6*BezierQuantum-360))
-      {
-         max_strokes+=6*BezierQuantum+360;
-         ReacquireMemory((void **) &path_p,max_strokes*sizeof(PointInfo));
-         ReacquireMemory((void **) &path_q,max_strokes*sizeof(PointInfo));
-         if ((path_p == (PointInfo *) NULL) || (path_q == (PointInfo *) NULL))
-           ThrowBinaryException(ResourceLimitWarning,
-             "Unable to draw stroke polygon",image->filename);
-      }
-    dot_product=dx.q*dy.p-dx.p*dy.q;
-    if (dot_product <= 0.0)
-      switch (draw_info->linejoin)
-      {
-        case BevelJoin:
-        {
-          path_q[q++]=box_q[1];
-          path_q[q++]=box_q[2];
-          dot_product=(box_q[4].x-box_p[4].x)*(box_q[4].x-box_p[4].x)+
-            (box_q[4].y-box_p[4].y)*(box_q[4].y-box_p[4].y);
-          if (dot_product <= miterlimit)
-            path_p[p++]=box_p[4];
-          else
-            {
-              path_p[p++]=box_p[1];
-              path_p[p++]=box_p[2];
-            }
-          break;
-        }
-        case MiterJoin:
-        {
-          dot_product=(box_q[4].x-box_p[4].x)*(box_q[4].x-box_p[4].x)+
-            (box_q[4].y-box_p[4].y)*(box_q[4].y-box_p[4].y);
-          if (dot_product > miterlimit)
-            {
-              path_q[q++]=box_q[1];
-              path_q[q++]=box_q[2];
-              path_p[p++]=box_p[1];
-              path_p[p++]=box_p[2];
-           }
-         else
-           {
-             path_q[q++]=box_q[4];
-             path_p[p++]=box_p[4];
-           }
-          break;
-        }
-        case RoundJoin:
-        {
-          dot_product=(box_q[4].x-box_p[4].x)*(box_q[4].x-box_p[4].x)+
-            (box_q[4].y-box_p[4].y)*(box_q[4].y-box_p[4].y);
-          if (dot_product <= miterlimit)
-            path_p[p++]=box_p[4];
-          else
-            {
-              path_p[p++]=box_p[1];
-              path_p[p++]=box_p[2];
-            }
-          center=polygon_primitive[n].point;
-          theta.p=atan2(box_q[1].y-center.y,box_q[1].x-center.x);
-          theta.q=atan2(box_q[2].y-center.y,box_q[2].x-center.x);
-          if (theta.q < theta.p)
-            theta.q+=2.0*MagickPI;
-          arc_segments=(int) ceil((theta.q-theta.p)/(2.0*sqrt(1.0/mid)));
-          path_q[q].x=box_q[1].x;
-          path_q[q].y=box_q[1].y;
-          q++;
-          for (j=1; j < arc_segments; j++)
-          {
-            delta_theta=j*(theta.q-theta.p)/arc_segments;
-            path_q[q].x=center.x+mid*cos(theta.p+delta_theta);
-            path_q[q].y=center.y+mid*sin(theta.p+delta_theta);
-            q++;
-          }
-          path_q[q++]=box_q[2];
-          break;
-        }
-        default:
-          break;
-      }
-    else
-      switch (draw_info->linejoin)
-      {
-        case BevelJoin:
-        {
-          path_p[p++]=box_p[1];
-          path_p[p++]=box_p[2];
-          dot_product=(box_q[4].x-box_p[4].x)*(box_q[4].x-box_p[4].x)+
-            (box_q[4].y-box_p[4].y)*(box_q[4].y-box_p[4].y);
-          if (dot_product <= miterlimit)
-            path_q[q++]=box_q[4];
-          else
-            {
-              path_q[q++]=box_q[1];
-              path_q[q++]=box_q[2];
-            }
-          break;
-        }
-        case MiterJoin:
-        {
-          dot_product=(box_q[4].x-box_p[4].x)*(box_q[4].x-box_p[4].x)+
-            (box_q[4].y-box_p[4].y)*(box_q[4].y-box_p[4].y);
-          if (dot_product <= miterlimit)
-            {
-              path_q[q++]=box_q[4];
-              path_p[p++]=box_p[4];
-            }
-          else
-            {
-              path_q[q++]=box_q[1];
-              path_q[q++]=box_q[2];
-              path_p[p++]=box_p[1];
-              path_p[p++]=box_p[2];
-            }
-          break;
-        }
-        case RoundJoin:
-        {
-          dot_product=(box_q[4].x-box_p[4].x)*(box_q[4].x-box_p[4].x)+
-            (box_q[4].y-box_p[4].y)*(box_q[4].y-box_p[4].y);
-          if (dot_product <= miterlimit)
-            path_q[q++]=box_q[4];
-          else
-            {
-              path_q[q++]=box_q[1];
-              path_q[q++]=box_q[2];
-            }
-          center=polygon_primitive[n].point;
-          theta.p=atan2(box_p[1].y-center.y,box_p[1].x-center.x);
-          theta.q=atan2(box_p[2].y-center.y,box_p[2].x-center.x);
-          if (theta.p < theta.q)
-            theta.p+=2.0*MagickPI;
-          arc_segments=(int) ceil((theta.p-theta.q)/(2.0*sqrt(1.0/mid)));
-          path_p[p++]=box_p[1];
-          for (j=1; j < arc_segments; j++)
-          {
-            delta_theta=j*(theta.q-theta.p)/arc_segments;
-            path_p[p].x=center.x+mid*cos(theta.p+delta_theta);
-            path_p[p].y=center.y+mid*sin(theta.p+delta_theta);
-            p++;
-          }
-          path_p[p++]=box_p[2];
-          break;
-        }
-        default:
-          break;
-      }
-    slope.p=slope.q;
-    inverse_slope.p=inverse_slope.q;
-    box_p[0]=box_p[2];
-    box_p[1]=box_p[3];
-    box_q[0]=box_q[2];
-    box_q[1]=box_q[3];
-    dx.p=dx.q;
-    dy.p=dy.q;
-    n=i;
-  }
-  path_p[p++]=box_p[1];
-  path_q[q++]=box_q[1];
-  /*
-    Trace stroked polygon.
-  */
-  stroke_polygon=(PrimitiveInfo *)
-    AcquireMemory((p+q+2*closed_path+2)*sizeof(PrimitiveInfo));
-  if (stroke_polygon == (PrimitiveInfo *) NULL)
-    MagickError(ResourceLimitWarning,"Unable to draw image",
-      "Memory allocation failed");
-  for (i=0; i < p; i++)
-  {
-    stroke_polygon[i]=polygon_primitive[0];
-    stroke_polygon[i].point=path_p[i];
-    stroke_polygon[i].coordinates=1;
-  }
-  if (closed_path)
-    {
-      stroke_polygon[i]=polygon_primitive[0];
-      stroke_polygon[i].point=stroke_polygon[0].point;
-      stroke_polygon[i].coordinates=1;
-      i++;
-    }
-  for ( ; i < (p+q+closed_path); i++)
-  {
-    stroke_polygon[i]=polygon_primitive[0];
-    stroke_polygon[i].point=path_q[p+q+closed_path-(i+1)];
-    stroke_polygon[i].coordinates=1;
-  }
-  if (closed_path)
-    {
-      stroke_polygon[i]=polygon_primitive[0];
-      stroke_polygon[i].point=stroke_polygon[p+closed_path].point;
-      stroke_polygon[i].coordinates=1;
-      i++;
-    }
-  stroke_polygon[i].coordinates=1;
-  stroke_polygon[i]=polygon_primitive[0];
-  stroke_polygon[i].point=stroke_polygon[0].point;
-  stroke_polygon[i+1].primitive=UndefinedPrimitive;
-  stroke_polygon[0].coordinates=p+q+2*closed_path+1;
-  LiberateMemory((void **) &path_p);
-  LiberateMemory((void **) &path_q);
   /*
     Draw stroked polygon.
   */
@@ -3959,13 +3497,43 @@ static unsigned int DrawStrokePolygon(Image *image,const DrawInfo *draw_info,
   clone_info->fill=draw_info->stroke;
   clone_info->stroke.opacity=TransparentOpacity;
   clone_info->fill_rule=NonZeroRule;
-  status=DrawPolygonPrimitive(image,clone_info,stroke_polygon);
-  LiberateMemory((void **) &stroke_polygon);
+  status=True;
+  p=primitive_info;
+  for (p=primitive_info; p->primitive != UndefinedPrimitive; p+=p->coordinates)
+  {
+    if (draw_info->debug)
+      {
+        GetTimerInfo(&timer);
+        (void) fprintf(stdout,"    begin draw-stroke-polygon\n");
+      }
+    stroke_polygon=TraceStrokePolygon(draw_info,p);
+    if (stroke_polygon == (PrimitiveInfo *) NULL)
+      ThrowBinaryException(ResourceLimitWarning,"Unable to draw stroke polygon",
+        image->filename);
+    status|=DrawPolygonPrimitive(image,clone_info,stroke_polygon);
+    LiberateMemory((void **) &stroke_polygon);
+    if (draw_info->debug)
+      (void) fprintf(stdout,"    end draw-stroke-polygon (%.2fu)\n",
+        GetUserTime(&timer));
+    if (draw_info->linecap != RoundCap)
+      continue;
+    q=p+p->coordinates-1;
+    if ((q->point.x == p->point.x) && (q->point.y == p->point.y))
+      continue;
+    stroke_polygon=TraceRoundLinecap(p);
+    if (stroke_polygon == (PrimitiveInfo *) NULL)
+      ThrowBinaryException(ResourceLimitWarning,"Unable to draw stroke polygon",
+        image->filename);
+    status|=DrawPolygonPrimitive(image,draw_info,stroke_polygon);
+    LiberateMemory((void **) &stroke_polygon);
+    stroke_polygon=TraceRoundLinecap(q);
+    if (stroke_polygon == (PrimitiveInfo *) NULL)
+      ThrowBinaryException(ResourceLimitWarning,"Unable to draw stroke polygon",
+        image->filename);
+    status|=DrawPolygonPrimitive(image,draw_info,stroke_polygon);
+    LiberateMemory((void **) &stroke_polygon);
+  }
   DestroyDrawInfo(clone_info);
-  LiberateMemory((void **) &polygon_primitive);
-  if (draw_info->debug)
-    (void) fprintf(stdout,"    end draw-stroke-polygon (%.2fu)\n",
-      GetUserTime(&timer));
   return(status);
 }
 
@@ -5071,6 +4639,443 @@ static void TraceSquareLinecap(PrimitiveInfo *primitive_info,
     dx*(distance+offset)/distance;
   primitive_info[number_vertices-1].point.y=primitive_info[i].point.y+
     dy*(distance+offset)/distance;
+}
+
+static PrimitiveInfo *TraceRoundLinecap(const PrimitiveInfo *primitive_info)
+{
+  PrimitiveInfo
+    *linecap;
+
+  register int
+    i;
+
+  linecap=(PrimitiveInfo *) AcquireMemory(5*sizeof(PrimitiveInfo));
+  if (linecap == (PrimitiveInfo *) NULL)
+    return((PrimitiveInfo *) NULL);
+  for (i=0; i < 4; i++)
+    linecap[i]=(*primitive_info);
+  linecap[0].coordinates=4;
+  linecap[1].point.x+=10.0*MagickEpsilon;
+  linecap[2].point.x+=10.0*MagickEpsilon;
+  linecap[2].point.y+=10.0*MagickEpsilon;
+  linecap[3].point.y+=10.0*MagickEpsilon;
+  linecap[4].primitive=UndefinedPrimitive;
+  return(linecap);
+}
+
+static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
+  const PrimitiveInfo *primitive_info)
+{
+  typedef struct _LineSegment
+  {
+    double
+      p,
+      q;
+  } LineSegment;
+
+  double
+    delta_theta,
+    dot_product,
+    mid,
+    miterlimit;
+
+  int
+    arc_segments,
+    closed_path,
+    j,
+    max_strokes,
+    n,
+    p,
+    q;
+
+  LineSegment
+    dx,
+    dy,
+    inverse_slope,
+    slope,
+    theta;
+
+  PointInfo
+    box_p[5],
+    box_q[5],
+    center,
+    offset,
+    *path_p,
+    *path_q;
+
+  PrimitiveInfo
+    *stroke_polygon,
+    *polygon_primitive;
+
+  register int
+    i;
+
+  unsigned int
+    number_coordinates;
+
+  /*
+    Clone the polygon primitive.
+  */
+  number_coordinates=primitive_info->coordinates;
+  polygon_primitive=(PrimitiveInfo *)
+    AcquireMemory((number_coordinates+2)*sizeof(PrimitiveInfo));
+  if (polygon_primitive == (PrimitiveInfo *) NULL)
+    return((PrimitiveInfo *) NULL);
+  memcpy(polygon_primitive,primitive_info,number_coordinates*
+    sizeof(PrimitiveInfo));
+  closed_path=
+    (primitive_info[number_coordinates-1].point.x == primitive_info[0].point.x) &&
+    (primitive_info[number_coordinates-1].point.y == primitive_info[0].point.y);
+  if ((draw_info->linejoin == RoundJoin) ||
+      ((draw_info->linejoin == MiterJoin) && closed_path))
+    {
+      polygon_primitive[number_coordinates]=primitive_info[1];
+      number_coordinates++;
+    }
+  polygon_primitive[number_coordinates].primitive=UndefinedPrimitive;
+  /*
+    Compute the slope for the first line segment, p.
+  */
+  for (n=1; n < (int) number_coordinates; n++)
+  {
+    dx.p=polygon_primitive[n].point.x-polygon_primitive[0].point.x;
+    dy.p=polygon_primitive[n].point.y-polygon_primitive[0].point.y;
+    if ((fabs(dx.p) >= MagickEpsilon) || (fabs(dy.p) >= MagickEpsilon))
+      break;
+  }
+  slope.p=0.0;
+  inverse_slope.p=0.0;
+  if (fabs(dx.p) <= MagickEpsilon)
+    {
+      if (dx.p >= 0.0)
+        slope.p=dy.p < 0.0 ? -1.0/MagickEpsilon : 1.0/MagickEpsilon;
+      else
+        slope.p=dy.p < 0.0 ? 1.0/MagickEpsilon : -1.0/MagickEpsilon;
+    }
+  else
+    if (fabs(dy.p) <= MagickEpsilon)
+      {
+        if (dy.p >= 0.0)
+          inverse_slope.p=dx.p < 0.0 ? -1.0/MagickEpsilon : 1.0/MagickEpsilon;
+        else
+          inverse_slope.p=dx.p < 0.0 ? 1.0/MagickEpsilon : -1.0/MagickEpsilon;
+      }
+    else
+      {
+        slope.p=dy.p/dx.p;
+        inverse_slope.p=(-1.0/slope.p);
+      }
+  max_strokes=2*number_coordinates+1;
+  path_p=(PointInfo *) AcquireMemory(max_strokes*sizeof(PointInfo));
+  path_q=(PointInfo *) AcquireMemory(max_strokes*sizeof(PointInfo));
+  if ((path_p == (PointInfo *) NULL) || (path_q == (PointInfo *) NULL))
+    return((PrimitiveInfo *) NULL);
+  mid=ExpandAffine(&draw_info->affine)*draw_info->stroke_width/2.0;
+  miterlimit=draw_info->miterlimit*draw_info->miterlimit*mid*mid;
+  if ((draw_info->linecap == SquareCap) && !closed_path)
+    TraceSquareLinecap(polygon_primitive,number_coordinates,mid);
+  offset.x=sqrt(mid*mid/(inverse_slope.p*inverse_slope.p+1.0));
+  offset.y=offset.x*inverse_slope.p;
+  if (((dy.p*offset.x)-(dx.p*offset.y)) > 0.0)
+    {
+      box_p[0].x=polygon_primitive[0].point.x-offset.x;
+      box_p[0].y=polygon_primitive[0].point.y-offset.x*inverse_slope.p;
+      box_p[1].x=polygon_primitive[n].point.x-offset.x;
+      box_p[1].y=polygon_primitive[n].point.y-offset.x*inverse_slope.p;
+      box_q[0].x=polygon_primitive[0].point.x+offset.x;
+      box_q[0].y=polygon_primitive[0].point.y+offset.x*inverse_slope.p;
+      box_q[1].x=polygon_primitive[n].point.x+offset.x;
+      box_q[1].y=polygon_primitive[n].point.y+offset.x*inverse_slope.p;
+    }
+  else
+    {
+      box_p[0].x=polygon_primitive[0].point.x+offset.x;
+      box_p[0].y=polygon_primitive[0].point.y+offset.y;
+      box_p[1].x=polygon_primitive[n].point.x+offset.x;
+      box_p[1].y=polygon_primitive[n].point.y+offset.y;
+      box_q[0].x=polygon_primitive[0].point.x-offset.x;
+      box_q[0].y=polygon_primitive[0].point.y-offset.y;
+      box_q[1].x=polygon_primitive[n].point.x-offset.x;
+      box_q[1].y=polygon_primitive[n].point.y-offset.y;
+    }
+  /*
+    Create strokes for the line join attribute: bevel, miter, round.
+  */
+  p=0;
+  q=0;
+  path_q[p++]=box_q[0];
+  path_p[q++]=box_p[0];
+  for (i=n+1; i < (int) number_coordinates; i++)
+  {
+    /*
+      Compute the slope for this line segment, q.
+    */
+    dx.q=polygon_primitive[i].point.x-polygon_primitive[n].point.x;
+    dy.q=polygon_primitive[i].point.y-polygon_primitive[n].point.y;
+    dot_product=dx.q*dx.q+dy.q*dy.q;
+    if (dot_product < 0.25)
+      continue;
+    slope.q=0.0;
+    inverse_slope.q=0.0;
+    if (fabs(dx.q) < MagickEpsilon)
+      {
+        if (dx.q >= 0.0)
+          slope.q=dy.q < 0.0 ? -1.0/MagickEpsilon : 1.0/MagickEpsilon;
+        else
+          slope.q=dy.q < 0.0 ? 1.0/MagickEpsilon : -1.0/MagickEpsilon;
+      }
+    else
+      if (fabs(dy.q) <= MagickEpsilon)
+        {
+          if (dy.q >= 0.0)
+            inverse_slope.q=dx.q < 0.0 ? -1.0/MagickEpsilon : 1.0/MagickEpsilon;
+          else
+            inverse_slope.q=dx.q < 0.0 ? 1.0/MagickEpsilon : -1.0/MagickEpsilon;
+        }
+      else
+        {
+          slope.q=dy.q/dx.q;
+          inverse_slope.q=(-1.0/slope.q);
+        }
+    offset.x=sqrt(mid*mid/(inverse_slope.q*inverse_slope.q+1.0));
+    offset.y=offset.x*inverse_slope.q;
+    dot_product=dy.q*offset.x-dx.q*offset.y;
+    if (dot_product > 0.0)
+      {
+        box_p[2].x=polygon_primitive[n].point.x-offset.x;
+        box_p[2].y=polygon_primitive[n].point.y-offset.y;
+        box_p[3].x=polygon_primitive[i].point.x-offset.x;
+        box_p[3].y=polygon_primitive[i].point.y-offset.y;
+        box_q[2].x=polygon_primitive[n].point.x+offset.x;
+        box_q[2].y=polygon_primitive[n].point.y+offset.y;
+        box_q[3].x=polygon_primitive[i].point.x+offset.x;
+        box_q[3].y=polygon_primitive[i].point.y+offset.y;
+      }
+    else
+      {
+        box_p[2].x=polygon_primitive[n].point.x+offset.x;
+        box_p[2].y=polygon_primitive[n].point.y+offset.y;
+        box_p[3].x=polygon_primitive[i].point.x+offset.x;
+        box_p[3].y=polygon_primitive[i].point.y+offset.y;
+        box_q[2].x=polygon_primitive[n].point.x-offset.x;
+        box_q[2].y=polygon_primitive[n].point.y-offset.y;
+        box_q[3].x=polygon_primitive[i].point.x-offset.x;
+        box_q[3].y=polygon_primitive[i].point.y-offset.y;
+      }
+    if (fabs(slope.p-slope.q) <= MagickEpsilon)
+      {
+        box_p[4]=box_p[1];
+        box_q[4]=box_q[1];
+      }
+    else
+      {
+        box_p[4].x=(slope.p*box_p[0].x-box_p[0].y-slope.q*box_p[3].x+box_p[3].y)/
+          (slope.p-slope.q);
+        box_p[4].y=slope.p*(box_p[4].x-box_p[0].x)+box_p[0].y;
+        box_q[4].x=(slope.p*box_q[0].x-box_q[0].y-slope.q*box_q[3].x+box_q[3].y)/
+          (slope.p-slope.q);
+        box_q[4].y=slope.p*(box_q[4].x-box_q[0].x)+box_q[0].y;
+      }
+    if (q >= (int) (max_strokes-6*BezierQuantum-360))
+      {
+         max_strokes+=6*BezierQuantum+360;
+         ReacquireMemory((void **) &path_p,max_strokes*sizeof(PointInfo));
+         ReacquireMemory((void **) &path_q,max_strokes*sizeof(PointInfo));
+         if ((path_p == (PointInfo *) NULL) || (path_q == (PointInfo *) NULL))
+           return((PrimitiveInfo *) NULL);
+      }
+    dot_product=dx.q*dy.p-dx.p*dy.q;
+    if (dot_product <= 0.0)
+      switch (draw_info->linejoin)
+      {
+        case BevelJoin:
+        {
+          path_q[q++]=box_q[1];
+          path_q[q++]=box_q[2];
+          dot_product=(box_q[4].x-box_p[4].x)*(box_q[4].x-box_p[4].x)+
+            (box_q[4].y-box_p[4].y)*(box_q[4].y-box_p[4].y);
+          if (dot_product <= miterlimit)
+            path_p[p++]=box_p[4];
+          else
+            {
+              path_p[p++]=box_p[1];
+              path_p[p++]=box_p[2];
+            }
+          break;
+        }
+        case MiterJoin:
+        {
+          dot_product=(box_q[4].x-box_p[4].x)*(box_q[4].x-box_p[4].x)+
+            (box_q[4].y-box_p[4].y)*(box_q[4].y-box_p[4].y);
+          if (dot_product > miterlimit)
+            {
+              path_q[q++]=box_q[1];
+              path_q[q++]=box_q[2];
+              path_p[p++]=box_p[1];
+              path_p[p++]=box_p[2];
+           }
+         else
+           {
+             path_q[q++]=box_q[4];
+             path_p[p++]=box_p[4];
+           }
+          break;
+        }
+        case RoundJoin:
+        {
+          dot_product=(box_q[4].x-box_p[4].x)*(box_q[4].x-box_p[4].x)+
+            (box_q[4].y-box_p[4].y)*(box_q[4].y-box_p[4].y);
+          if (dot_product <= miterlimit)
+            path_p[p++]=box_p[4];
+          else
+            {
+              path_p[p++]=box_p[1];
+              path_p[p++]=box_p[2];
+            }
+          center=polygon_primitive[n].point;
+          theta.p=atan2(box_q[1].y-center.y,box_q[1].x-center.x);
+          theta.q=atan2(box_q[2].y-center.y,box_q[2].x-center.x);
+          if (theta.q < theta.p)
+            theta.q+=2.0*MagickPI;
+          arc_segments=(int) ceil((theta.q-theta.p)/(2.0*sqrt(1.0/mid)));
+          path_q[q].x=box_q[1].x;
+          path_q[q].y=box_q[1].y;
+          q++;
+          for (j=1; j < arc_segments; j++)
+          {
+            delta_theta=j*(theta.q-theta.p)/arc_segments;
+            path_q[q].x=center.x+mid*cos(theta.p+delta_theta);
+            path_q[q].y=center.y+mid*sin(theta.p+delta_theta);
+            q++;
+          }
+          path_q[q++]=box_q[2];
+          break;
+        }
+        default:
+          break;
+      }
+    else
+      switch (draw_info->linejoin)
+      {
+        case BevelJoin:
+        {
+          path_p[p++]=box_p[1];
+          path_p[p++]=box_p[2];
+          dot_product=(box_q[4].x-box_p[4].x)*(box_q[4].x-box_p[4].x)+
+            (box_q[4].y-box_p[4].y)*(box_q[4].y-box_p[4].y);
+          if (dot_product <= miterlimit)
+            path_q[q++]=box_q[4];
+          else
+            {
+              path_q[q++]=box_q[1];
+              path_q[q++]=box_q[2];
+            }
+          break;
+        }
+        case MiterJoin:
+        {
+          dot_product=(box_q[4].x-box_p[4].x)*(box_q[4].x-box_p[4].x)+
+            (box_q[4].y-box_p[4].y)*(box_q[4].y-box_p[4].y);
+          if (dot_product <= miterlimit)
+            {
+              path_q[q++]=box_q[4];
+              path_p[p++]=box_p[4];
+            }
+          else
+            {
+              path_q[q++]=box_q[1];
+              path_q[q++]=box_q[2];
+              path_p[p++]=box_p[1];
+              path_p[p++]=box_p[2];
+            }
+          break;
+        }
+        case RoundJoin:
+        {
+          dot_product=(box_q[4].x-box_p[4].x)*(box_q[4].x-box_p[4].x)+
+            (box_q[4].y-box_p[4].y)*(box_q[4].y-box_p[4].y);
+          if (dot_product <= miterlimit)
+            path_q[q++]=box_q[4];
+          else
+            {
+              path_q[q++]=box_q[1];
+              path_q[q++]=box_q[2];
+            }
+          center=polygon_primitive[n].point;
+          theta.p=atan2(box_p[1].y-center.y,box_p[1].x-center.x);
+          theta.q=atan2(box_p[2].y-center.y,box_p[2].x-center.x);
+          if (theta.p < theta.q)
+            theta.p+=2.0*MagickPI;
+          arc_segments=(int) ceil((theta.p-theta.q)/(2.0*sqrt(1.0/mid)));
+          path_p[p++]=box_p[1];
+          for (j=1; j < arc_segments; j++)
+          {
+            delta_theta=j*(theta.q-theta.p)/arc_segments;
+            path_p[p].x=center.x+mid*cos(theta.p+delta_theta);
+            path_p[p].y=center.y+mid*sin(theta.p+delta_theta);
+            p++;
+          }
+          path_p[p++]=box_p[2];
+          break;
+        }
+        default:
+          break;
+      }
+    slope.p=slope.q;
+    inverse_slope.p=inverse_slope.q;
+    box_p[0]=box_p[2];
+    box_p[1]=box_p[3];
+    box_q[0]=box_q[2];
+    box_q[1]=box_q[3];
+    dx.p=dx.q;
+    dy.p=dy.q;
+    n=i;
+  }
+  path_p[p++]=box_p[1];
+  path_q[q++]=box_q[1];
+  /*
+    Trace stroked polygon.
+  */
+  stroke_polygon=(PrimitiveInfo *)
+    AcquireMemory((p+q+2*closed_path+2)*sizeof(PrimitiveInfo));
+  if (stroke_polygon == (PrimitiveInfo *) NULL)
+    MagickError(ResourceLimitWarning,"Unable to draw image",
+      "Memory allocation failed");
+  for (i=0; i < p; i++)
+  {
+    stroke_polygon[i]=polygon_primitive[0];
+    stroke_polygon[i].point=path_p[i];
+    stroke_polygon[i].coordinates=1;
+  }
+  if (closed_path)
+    {
+      stroke_polygon[i]=polygon_primitive[0];
+      stroke_polygon[i].point=stroke_polygon[0].point;
+      stroke_polygon[i].coordinates=1;
+      i++;
+    }
+  for ( ; i < (p+q+closed_path); i++)
+  {
+    stroke_polygon[i]=polygon_primitive[0];
+    stroke_polygon[i].point=path_q[p+q+closed_path-(i+1)];
+    stroke_polygon[i].coordinates=1;
+  }
+  if (closed_path)
+    {
+      stroke_polygon[i]=polygon_primitive[0];
+      stroke_polygon[i].point=stroke_polygon[p+closed_path].point;
+      stroke_polygon[i].coordinates=1;
+      i++;
+    }
+  stroke_polygon[i].coordinates=1;
+  stroke_polygon[i]=polygon_primitive[0];
+  stroke_polygon[i].point=stroke_polygon[0].point;
+  stroke_polygon[i+1].primitive=UndefinedPrimitive;
+  stroke_polygon[0].coordinates=p+q+2*closed_path+1;
+  LiberateMemory((void **) &path_p);
+  LiberateMemory((void **) &path_q);
+  LiberateMemory((void **) &polygon_primitive);
+  return(stroke_polygon);
 }
 
 /*
