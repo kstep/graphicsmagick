@@ -27,7 +27,7 @@
 <abs>average a set of images</abs>
 </utils>
 <utils apps=animate,display>
-<lopt>-backdrop <color></opt>
+<lopt>-backdrop</opt>
 <abs>display the image centered on a backdrop.</abs>
 </utils>
 <utils apps=animate,composite,convert,display,mogrify,montage>

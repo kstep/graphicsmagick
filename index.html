@@ -6,7 +6,7 @@
 	<META NAME="GENERATOR" CONTENT="StarOffice 7  (Solaris Sparc)">
 	<META NAME="CREATED" CONTENT="20020718;11000900">
 	<META NAME="CHANGEDBY" CONTENT="Robert Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20031206;16325100">
+	<META NAME="CHANGED" CONTENT="20040226;19400100">
 	<META NAME="DESCRIPTION" CONTENT="GraphicsMagick is a robust collection of tools and libraries to read, write, and manipulate an image in any of the more popular image formats including GIF, JPEG, PNG, PDF, and Photo CD.  With GraphicsMagick you can create GIFs dynamically making it suitable for Web applications.  You can also resize, rotate, sharpen, color reduce, or add special effects to an image and save your completed work in the same or differing image format.">
 	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, Image Magick, Image Magic, PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic, WebMagick, Web Magic, visualization, image processing, software development, simulation, image, software, AniMagick, Animagic,  Magick++">
 	<STYLE>
@@ -28,7 +28,7 @@
 		<COL WIDTH=48*>
 		<TR>
 			<TD WIDTH=81%>
-				<P ALIGN=LEFT>[<A HREF="./">Home</A>] [<A HREF="www/mission.html">Mission
+				<P ALIGN=LEFT>[<A HREF="../GraphicsMagick">Home</A>] [<A HREF="www/mission.html">Mission
 				Statement</A>] [<A HREF="www/development.html">Development
 				Process</A>] [<A HREF="www/contribute.html">Contribute</A>]
 				[<A HREF="www/download.html">Download</A>] [<A HREF="www/install.html">Installation</A>]
@@ -46,11 +46,10 @@
 		</TR>
 		<TR>
 			<TD WIDTH=81%>
-				<DIV ALIGN=CENTER>
-					<P><FONT SIZE=4><I>Search GraphicsMagick site <INPUT TYPE=TEXT NAME="q" SIZE=25 MAXLENGTH=255>
-					<INPUT TYPE=SUBMIT NAME="sa" VALUE="Search"> </I></FONT>
-					</P>
-				</DIV>
+				<P ALIGN=CENTER><FONT SIZE=4><I>Search GraphicsMagick site <INPUT TYPE=TEXT NAME="q" SIZE=25 MAXLENGTH=255 STYLE="width: 2.65in; height: 0.28in">
+				<INPUT TYPE=SUBMIT NAME="sa" VALUE="Search" STYLE="width: 0.58in; height: 0.27in">
+				</I></FONT>
+				</P>
 			</TD>
 		</TR>
 	</TABLE>
@@ -64,7 +63,8 @@
 			Stable Release:</SPAN></I></FONT></P>
 		</TD>
 		<TD WIDTH=71%>
-			<P><A HREF="http://sourceforge.net/project/showfiles.php?group_id=73485"><SPAN STYLE="background: transparent"><I><FONT SIZE=3>1.0.4</FONT></I></SPAN></A></P>
+			<P><A HREF="http://sourceforge.net/project/showfiles.php?group_id=73485"><SPAN STYLE="background: transparent"><I><FONT SIZE=3>1.0.5</FONT></I></SPAN></A><I><FONT SIZE=3>
+			(Released November 26, 2004)</FONT></I></P>
 		</TD>
 	</TR>
 	<TR VALIGN=TOP>
@@ -84,15 +84,15 @@
 and libraries which support reading, writing, and manipulating an
 image in over 88 major formats including popular formats like TIFF,
 JPEG, JPEG-2000, PNG, PDF, PhotoCD, SVG, and GIF. <I>GraphicsMagick</I>
-supports creating new images on the fly, making <I>it </I>suitable
-for building dynamic Web applications. GraphicsMagick may be used to
-resize, rotate, sharpen, color reduce, or add special effects to an
-image and save the result in the same or differing image format.
-Image processing operations are available from the command line, as
-well as through C, C++, Perl, Java, or Windows COM programming
-interfaces. Extensions are available from third-parties to support
-<A HREF="www/programming.html">programming</A> in Borland's Delphi,
-Java, PHP, Python, Scheme, and Ruby.</FONT></P>
+supports creating new images on the fly, making<I> </I><SPAN STYLE="font-style: normal">it
+su</SPAN>itable for building dynamic Web applications. GraphicsMagick
+may be used to resize, rotate, sharpen, color reduce, or add special
+effects to an image and save the result in the same or differing
+image format. Image processing operations are available from the
+command line, as well as through C, C++, Perl, Java, or Windows COM
+programming interfaces. Extensions are available from third-parties
+to support <A HREF="www/programming.html">programming</A> in
+Borland's Delphi, Java, PHP, Python, Scheme, and Ruby.</FONT></P>
 <P><FONT SIZE=3><I><SPAN STYLE="background: transparent">Gr</SPAN>aphicsMagick</I>
 is </FONT><A HREF="www/Copyright.html"><FONT SIZE=3>copyrighted</FONT></A>
 <FONT SIZE=3>by the GraphicsMagick Group. GraphicsMagick is
@@ -205,8 +205,10 @@ under almost every general purpose operating system that runs on
 32-bit or 64-bit CPUs. <I>GraphicsMagick</I> is available for
 virtually any Unix or Unix-like system, including Linux. It also runs
 under </FONT><A HREF="www/windows.html"><FONT SIZE=3>Windows</FONT></A>
-<FONT SIZE=3>'98 and later ('98, ME, NT 4.0, 2000, and XP), Macintosh
-(MacOS 9 and 10), VMS, and OS/2.</FONT></P>
+<FONT SIZE=3>'98 and later ('98, ME, NT 4.0, 2000, and XP), and
+MacOS-X. Ports exists for MacOS 9 and VMS but the ports lack a
+maintainer and have not been tested for quite a while (please
+volunteer!).</FONT></P>
 <TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
 	<TR>
 		<TD BGCOLOR="#52799e">
@@ -225,7 +227,7 @@ project: </FONT>
 		<COL WIDTH=180*>
 		<TR>
 			<TD WIDTH=30% BGCOLOR="#ffffff">
-				<P ALIGN=CENTER><FONT COLOR="#0085c0"><A HREF="http://www.corbis.com/"><FONT COLOR="#0085c0"><IMG SRC="images/corbis.png" NAME="Graphic37" ALT="Corbis" ALIGN=BOTTOM WIDTH=145 HEIGHT=39 BORDER=1></FONT></A></FONT></P>
+				<P ALIGN=CENTER STYLE="color: #0085c0"><FONT COLOR="#0085c0"><A HREF="http://www.corbis.com/"><FONT COLOR="#0085c0"><IMG SRC="images/corbis.png" NAME="Graphic37" ALT="Corbis" ALIGN=BOTTOM WIDTH=145 HEIGHT=39 BORDER=1></FONT></A></FONT></P>
 			</TD>
 			<TD WIDTH=70% BGCOLOR="#ffffff">
 				<P><FONT SIZE=3>Discover the perfect image. Stock photography and

@@ -1193,10 +1193,11 @@ MagickExport unsigned int AnimateImageCommand(ImageInfo *image_info,
           XAnimateImages(display,&resource_info,argv,argc,image_list);
       }
     }
-  DestroyImageInfo(image_info);
-  DestroyQuantizeInfo(quantize_info);
   DestroyImageList(image_list);
   LiberateArgumentList(argc,argv);
+  XDestroyResourceInfo(&resource_info);
+  XDestroyX11Resources();
+  (void) XCloseDisplay(display);
   return(status);
 #else
   MagickFatalError(MissingDelegateError,XWindowLibraryIsNotAvailable,
@@ -5115,7 +5116,8 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
   image_number=0;
   last_image=0;
   last_scene=0;
-  image_marker=MagickAllocateMemory(unsigned int *,(argc+1)*sizeof(unsigned int));
+  image_marker=
+    MagickAllocateMemory(unsigned int *,(argc+1)*sizeof(unsigned int));
   if (image_marker == (unsigned int *) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
       UnableToDisplayImage);
@@ -6422,15 +6424,16 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
       XSync(display,False);
     } 
   if (resource_database != (XrmDatabase) NULL)
-    XrmDestroyDatabase(resource_database);
+    {
+      XrmDestroyDatabase(resource_database);
+      resource_database=(XrmDatabase) NULL;
+    }
 
-  /*
-    ImageInfo is destroyed here since the input parameter is overwritten.
-  */
-  DestroyImageInfo(image_info);
-  DestroyQuantizeInfo(quantize_info);
   MagickFreeMemory(image_marker);
   LiberateArgumentList(argc,argv);
+  XDestroyResourceInfo(&resource_info);
+  XDestroyX11Resources();
+  (void) XCloseDisplay(display);
   return(status);
 #else
   MagickFatalError(MissingDelegateError,XWindowLibraryIsNotAvailable,
@@ -13237,7 +13240,8 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
                 if (LocaleCompare("Zip",option) == 0)
                   image_info->compression=ZipCompression;
                 if (image_info->compression == UndefinedCompression)
-                  MagickFatalError(OptionFatalError,UnrecognizedImageCompressionType,option);
+                  MagickFatalError(OptionFatalError,
+                                   UnrecognizedImageCompressionType,option);
               }
             break;
           }
@@ -13495,7 +13499,8 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
                     if (LocaleCompare("memory",type) == 0)
                       SetMagickResourceLimit(MemoryResource,atol(argv[i]));
                     else
-                      MagickFatalError(OptionFatalError,UnrecognizedResourceType,type);
+                      MagickFatalError(OptionFatalError,UnrecognizedResourceType,
+                                       type);
               }
             break;
           }
@@ -13808,10 +13813,12 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
   status&=MogrifyImages(image_info,argc-1,argv,&image);
   (void) CatchImageException(image);
   status&=WriteImages(image_info,image,filename,&image->exception);
-  DestroyImageInfo(image_info);
-  DestroyQuantizeInfo(quantize_info);
+
   DestroyImageList(image);
   LiberateArgumentList(argc,argv);
+  XDestroyResourceInfo(&resource_info);
+  XDestroyX11Resources();
+  (void) XCloseDisplay(display);
   return(!status);
 #else
   MagickFatalError(MissingDelegateError,XWindowLibraryIsNotAvailable,
@@ -14031,59 +14038,64 @@ static unsigned int VersionCommand(ImageInfo *image_info,
 %
 */
 static unsigned int RegisterCommand(ImageInfo *image_info,
-  int argc,char **argv,char **metadata,ExceptionInfo *exception)
+                                    int argc,
+                                    char **argv,
+                                    char **metadata,
+                                    ExceptionInfo *exception)
 {
-	char
+  char
     *szRegPath = 
-		  "SYSTEM\\CurrentControlSet\\Services\\Eventlog\\Application\\";
+    "SYSTEM\\CurrentControlSet\\Services\\Eventlog\\Application\\";
 
-	char
+  char
     szKey[_MAX_PATH*2];
 
-	DWORD
+  DWORD
     dwResult = 0;
 
-	HKEY
+  HKEY
     hKey = NULL;
 
   LONG
     lRet;
 
-	memset(szKey, 0, _MAX_PATH*2*sizeof(char));
-	strcpy(szKey, szRegPath);
-	strcat(szKey, "GraphicsMagick");
+  memset(szKey, 0, _MAX_PATH*2*sizeof(char));
+  strcpy(szKey, szRegPath);
+  strcat(szKey, "GraphicsMagick");
 
-	/* open the registry event source key */
+  /* open the registry event source key */
   lRet = RegCreateKeyEx(HKEY_LOCAL_MACHINE, szKey, 0, NULL,
-    REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hKey, &dwResult);
-	if (lRet == ERROR_SUCCESS)
-	{
-		char
-      szPathName[MaxTextExtent];
+                        REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL,
+                        &hKey, &dwResult);
+  if (lRet == ERROR_SUCCESS)
+    {
+      char
+        szPathName[MaxTextExtent];
 
-    DWORD
-      dwSupportedTypes;
+      DWORD
+        dwSupportedTypes;
 
-    /* set a pointer to thsi appliation as the source for our messages */
-		memset(szPathName, 0, MaxTextExtent*sizeof(char));
-    FormatString(szPathName,"%.1024s%s%.1024s",
-      GetClientPath(),DirectorySeparator,GetClientName());
-		RegSetValueEx(hKey, "EventMessageFile", 0, REG_SZ,
-			(const BYTE *) szPathName, (strlen(szPathName) + 1)*sizeof(char));
-    (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
-      "Registered path to messages as: %s",szPathName);
+      /* set a pointer to thsi appliation as the source for our messages */
+      memset(szPathName, 0, MaxTextExtent*sizeof(char));
+      FormatString(szPathName,"%.1024s%s%.1024s",
+                   GetClientPath(),DirectorySeparator,GetClientName());
+      RegSetValueEx(hKey, "EventMessageFile", 0, REG_SZ,
+                    (const BYTE *) szPathName,
+                    (strlen(szPathName) + 1)*sizeof(char));
+      (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+                            "Registered path to messages as: %s",szPathName);
 
-		/* supports all types of messages */
-		dwSupportedTypes = EVENTLOG_ERROR_TYPE | EVENTLOG_WARNING_TYPE |
-								 EVENTLOG_INFORMATION_TYPE | EVENTLOG_AUDIT_SUCCESS |
-								 EVENTLOG_AUDIT_FAILURE;
-		RegSetValueEx(hKey, "TypesSupported", 0, REG_DWORD,
-			(const BYTE *) &dwSupportedTypes, sizeof(DWORD));
+      /* supports all types of messages */
+      dwSupportedTypes = EVENTLOG_ERROR_TYPE | EVENTLOG_WARNING_TYPE |
+        EVENTLOG_INFORMATION_TYPE | EVENTLOG_AUDIT_SUCCESS |
+        EVENTLOG_AUDIT_FAILURE;
+      RegSetValueEx(hKey, "TypesSupported", 0, REG_DWORD,
+                    (const BYTE *) &dwSupportedTypes, sizeof(DWORD));
 
-		RegCloseKey(hKey);
-		return TRUE;
-	}
+      RegCloseKey(hKey);
+      return TRUE;
+    }
 
-	return FALSE;
+  return FALSE;
 }
 #endif

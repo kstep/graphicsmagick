@@ -1,3 +1,14 @@
+2004-02-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.c (DisplayImages): Changes to fix memory leaks in
+	X11 commands had bugs which seriously broke DisplayImages.  Now
+	DisplayImages works properly again.
+	* magick/xwindow.c (XDestroyResourceInfo): New function to destroy
+	XResourceInfo.
+	* coders/x.c (WriteXImage): Implement based on DisplayImages().
+	(RegisterXImage): Always register X coder, but with read/write
+	support disabled if X11 not available.
+
 2004-02-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c (ImportImageCommand): Eliminate memory leaks.

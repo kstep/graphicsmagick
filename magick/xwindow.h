@@ -572,6 +572,7 @@ extern MagickExport void
   XConfigureImageColormap(Display *,XResourceInfo *,XWindows *,Image *),
   XConstrainWindowPosition(Display *,XWindowInfo *),
   XDelay(Display *,const unsigned long),
+  XDestroyResourceInfo(XResourceInfo *resource_info),
   XDestroyX11Resources(void),
   XDestroyXWindows(XWindows *windows),
   XDestroyXWindowInfo(Display *display,XWindowInfo *window),

@@ -53,6 +53,20 @@
 </tr>
 </table>
 <p>
+2004-02-28  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/image.c (DisplayImages): Changes to fix memory leaks in
+        X11 commands had bugs which seriously broke DisplayImages.  Now
+        DisplayImages works properly again.
+  <LI> magick/xwindow.c (XDestroyResourceInfo): New function to destroy
+        XResourceInfo.<BR>
+  <LI> coders/x.c (WriteXImage): Implement based on DisplayImages().
+        (RegisterXImage): Always register X coder, but with read/write
+        support disabled if X11 not available.
+
+</UL>
+<p>
 2004-02-26  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

@@ -176,7 +176,6 @@ MagickExport void XDestroyX11Resources(void)
   if (windows != (XWindows *) NULL)
     {
       XDestroyXWindows(windows);
-      XCloseDisplay(windows->display);
       (void) XSetWindows((XWindows *) NULL);  
     }
 }
@@ -204,10 +203,8 @@ MagickExport void XDestroyX11Resources(void)
 */
 MagickExport void XDestroyXWindows(XWindows *windows)
 {
-
-  if (windows == (XWindows *) NULL)
+  if (windows == (XWindows *) NULL || (windows->display == (Display *) NULL))
     return;
-
   MagickFreeMemory(windows->icon_resources);
 
   if (windows->icon_pixel)
@@ -287,6 +284,7 @@ MagickExport void XDestroyXWindows(XWindows *windows)
   XDestroyXWindowInfo(windows->display,&windows->widget);
   XDestroyXWindowInfo(windows->display,&windows->popup);
   XDestroyXWindowInfo(windows->display,&windows->group_leader);
+  windows->display=(Display *) NULL;
 }
 
 /*
@@ -1732,6 +1730,42 @@ MagickExport void XDelay(Display *display,const unsigned long milliseconds)
 #else
 # error "Time delay method not defined."
 #endif
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   X D e s t r o y R e s o u r c e I n f o                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  XDestroyResourceInfo() frees memory associated with the XResourceInfo
+%  structure.
+%
+%  The format of the XDestroyResourceInfo method is:
+%
+%      void XDestroyResourceInfo(XResourceInfo *resource_info)
+%
+%  A description of each parameter follows:
+%
+%    o resource_info: Specifies a pointer to a X11 XResourceInfo structure.
+%
+%
+*/
+MagickExport void XDestroyResourceInfo(XResourceInfo *resource_info)
+{
+  MagickFreeMemory(resource_info->image_geometry);
+  if (resource_info->image_info != (ImageInfo *) NULL)
+    DestroyImageInfo(resource_info->image_info);
+  if (resource_info->quantize_info != (QuantizeInfo *) NULL)
+    DestroyQuantizeInfo(resource_info->quantize_info);
+  MagickFreeMemory(resource_info->client_name);
+  MagickFreeMemory(resource_info->name);
+  memset((void *) resource_info,0,sizeof(XResourceInfo));
 }
 
 /*
@@ -3345,7 +3379,7 @@ MagickExport void XGetResourceInfo(XrmDatabase database,char *client_name,
   resource_info->image_info=CloneImageInfo((ImageInfo *) NULL);
   resource_info->quantize_info=CloneQuantizeInfo((QuantizeInfo *) NULL);
   resource_info->close_server=True;
-  resource_info->client_name=client_name;
+  resource_info->client_name=AllocateString(client_name);
   resource_value=XGetResourceClass(database,client_name,(char *) "backdrop",
     (char *) "False");
   resource_info->backdrop=IsTrue(resource_value);
