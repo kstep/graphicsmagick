@@ -133,7 +133,7 @@ testFilter('input.miff', 'Minify',
 ++$test;
 testFilter('input.miff', 'Modulate',
   q/60/,
-  '9f6e4d0ecb962edbc7b845d6864974eb',
+  '65f8486a7df15abe362e4252b7294e6a',
   '0d2061b8a5221a7afcf2914107b9a9d9');
 
 ++$test;

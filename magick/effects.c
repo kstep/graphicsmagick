@@ -1132,8 +1132,8 @@ Export Image *ImplodeImage(Image *image,const double factor)
   */
   x_scale=1.0;
   y_scale=1.0;
-  x_center=(double) image->columns/2.0;
-  y_center=(double) image->rows/2.0;
+  x_center=(double) 0.5*image->columns;
+  y_center=(double) 0.5*image->rows;
   radius=x_center;
   if (image->columns > image->rows)
     y_scale=(double) image->columns/image->rows;
@@ -1174,7 +1174,8 @@ Export Image *ImplodeImage(Image *image,const double factor)
           */
           factor=1.0;
           if (distance > 0.0)
-            factor=pow(sin(0.5*M_PI*sqrt(distance)/radius),-amount);
+            factor=
+              pow(sin(0.5000000000000001*M_PI*sqrt(distance)/radius),-amount);
           *q=InterpolateColor(image,factor*x_distance/x_scale+x_center,
             factor*y_distance/y_scale+y_center);
         }

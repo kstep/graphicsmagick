@@ -88,6 +88,7 @@ Export void Contrast(const int sign,Quantum *red,Quantum *green,Quantum *blue)
     brightness,
     hue,
     saturation,
+    scale,
     theta;
 
   /*
@@ -98,7 +99,8 @@ Export void Contrast(const int sign,Quantum *red,Quantum *green,Quantum *blue)
   assert(blue != (Quantum *) NULL);
   TransformHSL(*red,*green,*blue,&hue,&saturation,&brightness);
   theta=(brightness-0.5)*M_PI;
-  brightness+=0.5*(((0.5*((sin(theta)+1.0)))-brightness)*sign);
+  scale=0.5000000000000001;
+  brightness+=scale*(((scale*((sin(theta)+1.0)))-brightness)*sign);
   if (brightness > 1.0)
     brightness=1.0;
   else
@@ -573,7 +575,8 @@ Export void Modulate(double percent_hue,double percent_saturation,
   double
     brightness,
     hue,
-    saturation;
+    saturation,
+    scale;
 
   /*
     Increase or decrease color brightness, saturation, or hue.
@@ -582,13 +585,14 @@ Export void Modulate(double percent_hue,double percent_saturation,
   assert(green != (Quantum *) NULL);
   assert(blue != (Quantum *) NULL);
   TransformHSL(*red,*green,*blue,&hue,&saturation,&brightness);
-  brightness+=percent_brightness/100.0;
+  scale=0.0100000000000001;
+  brightness+=scale*percent_brightness;
   if (brightness < 0.0)
     brightness=0.0;
   else
     if (brightness > 1.0)
       brightness=1.0;
-  saturation+=percent_saturation/100.0;
+  saturation+=scale*percent_saturation;
   if (saturation < 0.0)
     saturation=0.0;
   else
@@ -596,7 +600,7 @@ Export void Modulate(double percent_hue,double percent_saturation,
       saturation=1.0;
   if (hue != -1.0)
     {
-      hue+=percent_hue/100.0;
+      hue+=scale*percent_hue;
       if (hue < 0.0)
         hue+=1.0;
       else
