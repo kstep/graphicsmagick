@@ -11,33 +11,6 @@ extern "C" {
 /*
   Typedef declarations.
 */
-typedef struct _EdgeInfo
-{
-  SegmentInfo
-    bounds;
-
-  double
-    scanline;
-
-  PointInfo
-    *points;
-
-  int
-    number_points,
-    direction,
-    ghostline,
-    highwater;
-} EdgeInfo;
-
-typedef struct _PolygonInfo
-{
-  EdgeInfo
-    *edges;
-
-  int
-    number_edges;
-} PolygonInfo;
-
 typedef struct _DrawInfo
 {
   char
