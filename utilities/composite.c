@@ -246,7 +246,7 @@ int main(int argc,char **argv)
     {
       doexit=True;
       ReadCommandlLine(argc,&argv);
-      if (LocaleCompare("composite",argv[0]) == 0)
+      if (LocaleNCompare("composite",argv[0],9) == 0)
         MagickIncarnate(GetExecutionPath(argv[0]));
       else
         MagickIncarnate(*argv);
