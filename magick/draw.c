@@ -3152,7 +3152,7 @@ static void PrintPrimitiveInfo(const PrimitiveInfo *primitive_info)
       continue;
     if ((fabs(p.x-point.x) > MagickEpsilon) ||
         (fabs(p.y-point.y) > MagickEpsilon))
-      (void) fprintf(stdout,"    end q (%d)\n",coordinates);
+      (void) fprintf(stdout,"    end last (%d)\n",coordinates);
     else
       (void) fprintf(stdout,"    end open (%d)\n",coordinates);
   }
