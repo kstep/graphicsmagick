@@ -87,7 +87,6 @@
 %    -stereo             combine two image to create a stereo anaglyph
 %    -tile               repeat composite operation across image
 %    -treedepth value    depth of the color tree
-%    -trim               trim image edges
 %    -type type          image type
 %    -units type         PixelsPerInch, PixelsPerCentimeter, or Undefined
 %    -unsharp geometry   sharpen the image
@@ -206,6 +205,8 @@ static unsigned int CompositeImageList(ImageInfo *image_info,Image **image,
           assert(mask_image != (Image *) NULL);
           assert(mask_image->signature == MagickSignature);
           SetImageType(composite_image,TrueColorMatteType);
+          if (!composite_image->matte)
+            SetImageOpacity(composite_image,OpaqueOpacity);
           status=CompositeImage(composite_image,CopyOpacityCompositeOp,
             mask_image,0,0);
           if (status == False)
@@ -219,7 +220,8 @@ static unsigned int CompositeImageList(ImageInfo *image_info,Image **image,
           /*
             Create mattes for dissolve.
           */
-          SetImageType(composite_image,TrueColorMatteType);
+          if (!composite_image->matte)
+            SetImageOpacity(composite_image,OpaqueOpacity);
           for (y=0; y < (long) composite_image->rows; y++)
           {
             q=GetImagePixels(composite_image,0,y,composite_image->columns,1);
@@ -290,6 +292,9 @@ static unsigned int CompositeImageList(ImageInfo *image_info,Image **image,
             }
           else
             {
+              char
+                absolute_geometry[MaxTextExtent];
+
               int
                 flags;
 
@@ -300,7 +305,8 @@ static unsigned int CompositeImageList(ImageInfo *image_info,Image **image,
                 Digitally composite image.
               */
               SetGeometry(*image,&geometry);
-              flags=ParseImageGeometry(option_info->geometry,&geometry.x,
+              FormatString(absolute_geometry,"%.1024s!",option_info->geometry);
+              flags=ParseImageGeometry(absolute_geometry,&geometry.x,
                 &geometry.y,&geometry.width,&geometry.height);
               if ((flags & WidthValue) == 0)
                 geometry.width-=2*geometry.x > (long) geometry.width ?
@@ -311,22 +317,26 @@ static unsigned int CompositeImageList(ImageInfo *image_info,Image **image,
               switch (option_info->gravity)
               {
                 case NorthWestGravity:
+                {
+                  geometry.y-=composite_image->rows;
                   break;
+                }
                 case NorthGravity:
                 {
                   geometry.x+=(long)
                     (geometry.width/2-composite_image->columns/2);
+                  geometry.y-=composite_image->rows;
                   break;
                 }
                 case NorthEastGravity:
                 {
                   geometry.x+=geometry.width-composite_image->columns;
+                  geometry.y-=composite_image->rows;
                   break;
                 }
                 case WestGravity:
                 {
-                  geometry.y+=(long)
-                    (geometry.height/2-composite_image->rows/2);
+                  geometry.y+=(long) (geometry.width/2-composite_image->rows/2);
                   break;
                 }
                 case ForgetGravity:
@@ -336,33 +346,31 @@ static unsigned int CompositeImageList(ImageInfo *image_info,Image **image,
                 {
                   geometry.x+=(long)
                     (geometry.width/2-composite_image->columns/2);
-                  geometry.y+=(long)
-                    (geometry.height/2-composite_image->rows/2);
+                  geometry.y+=(long) (geometry.width/2-composite_image->rows/2);
                   break;
                 }
                 case EastGravity:
                 {
                   geometry.x+=(long) geometry.width-composite_image->columns;
-                  geometry.y+=(long)
-                    (geometry.height/2-composite_image->rows/2);
+                  geometry.y+=(long) (geometry.width/2-composite_image->rows/2);
                   break;
                 }
                 case SouthWestGravity:
                 {
-                  geometry.y+=geometry.height-composite_image->rows;
+                  geometry.y+=geometry.height;
                   break;
                 }
                 case SouthGravity:
                 {
                   geometry.x+=(long)
                     (geometry.width/2-composite_image->columns/2);
-                  geometry.y+=geometry.height-composite_image->rows;
+                  geometry.y+=geometry.height;
                   break;
                 }
                 case SouthEastGravity:
                 {
                   geometry.x+=geometry.width-composite_image->columns;
-                  geometry.y+=geometry.height-composite_image->rows;
+                  geometry.y+=geometry.height;
                   break;
                 }
               }
@@ -451,7 +459,6 @@ static void CompositeUsage(void)
       "-stereo             combine two image to create a stereo anaglyph",
       "-tile               repeat composite operation across image",
       "-treedepth value    depth of the color tree",
-      "-trim               trim image edges",
       "-type type          image type",
       "-units type         PixelsPerInch, PixelsPerCentimeter, or Undefined",
       "-unsharp geometry   sharpen the image",
@@ -500,7 +507,7 @@ static void CompositeUsage(void)
 %
 %
 */
-unsigned int CompositeUtility(int argc,char **argv)
+MagickExport unsigned int CompositeUtility(int argc,char **argv)
 {
 #define NotInitialized  (unsigned int) (~0)
 
@@ -799,7 +806,7 @@ unsigned int CompositeUtility(int argc,char **argv)
             }
           if (LocaleCompare("copy",option+1) == 0)
             {
-              if ((*option == '-') || (*option == '+'))
+              if (*option == '-')
                 {
                   Image
                     *clone_image;
@@ -831,13 +838,7 @@ unsigned int CompositeUtility(int argc,char **argv)
                       DestroyImages(mask_image);
                       mask_image=(Image *) NULL;
                     }
-                  if (*option == '-')
-                    DestroyImageList(clone_image);
-                  else
-                    {
-                      DestroyImageList(image);
-                      image=clone_image;
-                    }
+                  DestroyImages(clone_image);
                   DestroyImageInfo(clone_info);
                   j=i+1;
                 }
@@ -1127,7 +1128,7 @@ unsigned int CompositeUtility(int argc,char **argv)
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing page geometry",option);
-                  image_info->page=GetPageGeometry(argv[i]);
+                  image_info->page=PostscriptGeometry(argv[i]);
                 }
               break;
             }
@@ -1229,13 +1230,6 @@ unsigned int CompositeUtility(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleCompare("sharpen",option+1) == 0)
-            {
-              i++;
-              if ((i == argc) || !sscanf(argv[i],"%ld",&x))
-                MagickError(OptionError,"Missing geometry",option);
-              break;
-            }
           if (LocaleCompare("size",option+1) == 0)
             {
               (void) CloneString(&image_info->size,(char *) NULL);
@@ -1285,8 +1279,6 @@ unsigned int CompositeUtility(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleCompare("trim",option+1) == 0)
-            break;
           if (LocaleCompare("type",option+1) == 0)
             {
               image_info->type=UndefinedType;
