@@ -836,7 +836,7 @@ static void Histogram(const Image *image,CubeInfo *cube_info,
         (void) fprintf(file,"%10lu: (%5d,%5d,%5d)  ",p->count,
           p->pixel.red,p->pixel.green,p->pixel.blue);
         (void) fprintf(file,"  ");
-        (void) QueryColorname(image,&p->pixel,AllCompliance,name,exception);
+        (void) QueryColorname(image,&p->pixel,SVGCompliance,name,exception);
         (void) fprintf(file,"%.1024s",name);
         (void) fprintf(file,"\n");
         p++;
@@ -1260,13 +1260,12 @@ MagickExport unsigned int ListColorInfo(FILE *file,ExceptionInfo *exception)
     else
       (void) fprintf(file,"%5d,%5d,%5d,%5d ",p->color.red,p->color.green,
         p->color.blue,p->color.opacity);
-    if (p->compliance == AllCompliance)
-      (void) fprintf(file,"SVG, X11");
-    else
-      if (p->compliance == X11Compliance)
-        (void) fprintf(file,"X11");
-      else
-        (void) fprintf(file,"SVG");
+    if (p->compliance == SVGCompliance)
+      (void) fprintf(file,"SVG ");
+    if (p->compliance == X11Compliance)
+      (void) fprintf(file,"X11 ");
+    if (p->compliance == XPMCompliance)
+      (void) fprintf(file,"XPM ");
     (void) fprintf(file,"\n");
   }
   (void) fflush(file);
@@ -1507,7 +1506,8 @@ MagickExport unsigned int QueryColorname(const Image *image,
     {
       for (p=color_list; p != (const ColorInfo *) NULL; p=p->next)
       {
-        if ((p->compliance != AllCompliance) && (p->compliance != compliance))
+        if ((p->compliance != UndefinedCompliance) &&
+            (p->compliance != compliance))
           continue;
         if ((p->color.red != color->red) ||
             (p->color.green != color->green) ||
@@ -1684,13 +1684,12 @@ static unsigned int ReadConfigurationFile(const char *basename,
       {
         if (LocaleCompare((char *) keyword,"compliance") == 0)
           {
-            if (GlobExpression(token,"*SVG*") && GlobExpression(token,"*X11*"))
-              color_list->compliance=AllCompliance;
-            else
-              if (GlobExpression(token,"SVG"))
-                color_list->compliance=SVGCompliance;
-              else
-                color_list->compliance=X11Compliance;
+            if (GlobExpression(token,"*SVG*")
+              color_list->compliance=SVGCompliance;
+            if (GlobExpression(token,"*X11*")
+              color_list->compliance=X11Compliance;
+            if (GlobExpression(token,"*XPM*")
+              color_list->compliance=XPMCompliance;
             break;
           }
         break;

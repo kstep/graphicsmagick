@@ -698,7 +698,7 @@ static unsigned int WritePICONImage(const ImageInfo *image_info,Image *image)
       Define XPM color.
     */
     picon->colormap[i].opacity=OpaqueOpacity;
-    (void) QueryColorname(picon,picon->colormap+i,X11Compliance,name,
+    (void) QueryColorname(picon,picon->colormap+i,XPMCompliance,name,
       &picon->exception);
     if (transparent)
       {
@@ -917,7 +917,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
       Define XPM color.
     */
     image->colormap[i].opacity=OpaqueOpacity;
-    (void) QueryColorname(image,image->colormap+i,X11Compliance,name,
+    (void) QueryColorname(image,image->colormap+i,XPMCompliance,name,
       &image->exception);
     if (transparent)
       {
