@@ -1638,6 +1638,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
   graphic_context[n]=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   token=AllocateString(primitive);
   (void) QueryColorDatabase("black",&start_color);
+  SetImageType(image,TrueColorType);
   status=True;
   for (q=primitive; *q != '\0'; )
   {
@@ -3900,7 +3901,6 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
       DrawInfo
         *clone_info;
 
-      SetImageType(image,TrueColorType);
       if (draw_info->debug)
         PrintPrimitiveInfo(primitive_info);
       scale=ExpandAffine(&draw_info->affine);
