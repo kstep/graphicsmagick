@@ -4,6 +4,7 @@ Magick++ release number increments even if there are no changes associated
 with Magick++ itself.
 
 (5.3.7)
+  * No changes.
 
 (5.3.6)
   * Adjusted parameters to 'edge' and 'medianFilter' to match

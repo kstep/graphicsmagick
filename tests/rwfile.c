@@ -141,6 +141,7 @@ int main ( int argc, char **argv )
   if ( !strcmp( "JPEG", format ) ||
        !strcmp( "JPG", format ) ||
        !strcmp( "JPG24", format ) ||
+       !strcmp( "JP2", format ) ||
        !strcmp( "PAL", format ) ||
        !strcmp( "PCD", format ) ||
        !strcmp( "PCDS", format ) ||

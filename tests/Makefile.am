@@ -80,6 +80,12 @@ else
 JPEG=
 endif
 
+if HasJP2
+JP2=JP2
+else
+JP2=
+endif
+
 if HasPNG
 MNG=MNG
 PNG=PNG
@@ -118,6 +124,7 @@ CHECK_BLOB_FORMATS = \
 	$(HDF) \
 	$(JBIG) \
 	$(JPEG) \
+	$(JP2) \
 	MIFF \
 	$(MNG) \
 	MONO \
@@ -171,6 +178,7 @@ CHECK_FILE_FORMATS = \
 	ICB \
 	$(JBIG) \
 	$(JPEG) \
+	$(JP2) \
 	MIFF \
 	$(MNG) \
 	MONO \
