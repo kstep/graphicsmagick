@@ -4748,7 +4748,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
                 (void) ProfileImage(*image,"IPTC",profile->iptc_profile.info,
                   profile->iptc_profile.length,False);
                 profile->iptc_profile.info=(unsigned char *) NULL,
-                profile->iptc_profile.length = 0;
+                profile->iptc_profile.length=0;
               }
             if (profile->color_profile.length != 0)
               {
