@@ -125,6 +125,9 @@ MagickExport Image *ConstituteImage(const unsigned long width,
   PixelPacket
     *q;
 
+  register IndexPacket
+    *indexes;
+
   register long
     i,
     x;
@@ -192,6 +195,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
         q=SetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
+        indexes=GetIndexes(image);
         for (x=0; x < (long) image->columns; x++)
         {
           for (i=0; i < (long) strlen(map); i++)
@@ -232,9 +236,10 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               }
               case 'I':
               {
-                q->red=ScaleCharToQuantum(*p++);
-                q->green=q->red;
-                q->blue=q->red;
+                indexes[x]=ScaleCharToQuantum(*p++);
+                q->red=image->colormap[indexes[x]].red;
+                q->green=image->colormap[indexes[x]].green;
+                q->blue=image->colormap[indexes[x]].blue;
                 break;
               }
               default:
@@ -262,6 +267,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
         q=SetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
+        indexes=GetIndexes(image);
         for (x=0; x < (long) image->columns; x++)
         {
           for (i=0; i < (long) strlen(map); i++)
@@ -302,9 +308,10 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               }
               case 'I':
               {
-                q->red=ScaleShortToQuantum(*p++);
-                q->green=q->red;
-                q->blue=q->red;
+                indexes[x]=ScaleShortToQuantum(*p++);
+                q->red=image->colormap[indexes[x]].red;
+                q->green=image->colormap[indexes[x]].green;
+                q->blue=image->colormap[indexes[x]].blue;
                 break;
               }
               default:
@@ -332,6 +339,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
         q=SetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
+        indexes=GetIndexes(image);
         for (x=0; x < (long) image->columns; x++)
         {
           for (i=0; i < (long) strlen(map); i++)
@@ -372,9 +380,10 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               }
               case 'I':
               {
-                q->red=ScaleLongToQuantum(*p++);
-                q->green=q->red;
-                q->blue=q->red;
+                indexes[x]=ScaleLongToQuantum(*p++);
+                q->red=image->colormap[indexes[x]].red;
+                q->green=image->colormap[indexes[x]].green;
+                q->blue=image->colormap[indexes[x]].blue;
                 break;
               }
               default:
@@ -402,6 +411,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
         q=SetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
+        indexes=GetIndexes(image);
         for (x=0; x < (long) image->columns; x++)
         {
           for (i=0; i < (long) strlen(map); i++)
@@ -442,9 +452,10 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               }
               case 'I':
               {
-                q->red=ScaleLongToQuantum(*p++);
-                q->green=q->red;
-                q->blue=q->red;
+                indexes[x]=ScaleLongToQuantum(*p++);
+                q->red=image->colormap[indexes[x]].red;
+                q->green=image->colormap[indexes[x]].green;
+                q->blue=image->colormap[indexes[x]].blue;
                 break;
               }
               default:
@@ -472,6 +483,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
         q=SetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
+        indexes=GetIndexes(image);
         for (x=0; x < (long) image->columns; x++)
         {
           for (i=0; i < (long) strlen(map); i++)
@@ -512,9 +524,10 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               }
               case 'I':
               {
-                q->red=(Quantum) ((float) MaxRGB*(*p++));
-                q->green=q->red;
-                q->blue=q->red;
+                indexes[x]=(Quantum) ((float) MaxRGB*(*p++));
+                q->red=image->colormap[indexes[x]].red;
+                q->green=image->colormap[indexes[x]].green;
+                q->blue=image->colormap[indexes[x]].blue;
                 break;
               }
               default:
@@ -542,6 +555,7 @@ MagickExport Image *ConstituteImage(const unsigned long width,
         q=SetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
+        indexes=GetIndexes(image);
         for (x=0; x < (long) image->columns; x++)
         {
           for (i=0; i < (long) strlen(map); i++)
@@ -582,9 +596,10 @@ MagickExport Image *ConstituteImage(const unsigned long width,
               }
               case 'I':
               {
-                q->red=(Quantum) ((double) MaxRGB*(*p++));
-                q->green=q->red;
-                q->blue=q->red;
+                indexes[x]=(Quantum) ((double) MaxRGB*(*p++));
+                q->red=image->colormap[indexes[x]].red;
+                q->green=image->colormap[indexes[x]].green;
+                q->blue=image->colormap[indexes[x]].blue;
                 break;
               }
               default:
