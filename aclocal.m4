@@ -530,32 +530,6 @@ Check your system clock])
 fi
 AC_MSG_RESULT(yes)])
 
-# Like AC_CONFIG_HEADER, but automatically create stamp file. -*- Autoconf -*-
-
-# Copyright 1996, 1997, 2000, 2001 Free Software Foundation, Inc.
-
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2, or (at your option)
-# any later version.
-
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-# 02111-1307, USA.
-
-AC_PREREQ([2.52])
-
-# serial 6
-
-# AM_CONFIG_HEADER is obsolete.  It has been replaced by AC_CONFIG_HEADERS.
-AU_DEFUN([AM_CONFIG_HEADER], [AC_CONFIG_HEADERS($@)])
-
 # Do all the work for Automake.                            -*- Autoconf -*-
 
 # This macro actually does too much some checks are only needed if
@@ -1864,14 +1838,11 @@ AC_CACHE_VAL([lt_cv_sys_max_cmd_len], [dnl
     lt_cv_sys_max_cmd_len=-1;
     ;;
 
-  cygwin* | mingw*)
-    # On Win9x/ME, this test blows up -- it succeeds, but takes
-    # about 5 minutes as the teststring grows exponentially.
-    # Worse, since 9x/ME are not pre-emptively multitasking,
-    # you end up with a "frozen" computer, even though with patience
-    # the test eventually succeeds (with a max line length of 256k).
-    # Instead, let's just punt: use the minimum linelength reported by
-    # all of the supported platforms: 8192 (on NT/2K/XP).
+  
+  mingw*)
+    # On msys 1.0 and win98, the maximum length was something like
+    # 200,000 and took around 45 minutes to get there... ouch!
+    # libtool calculates a length of 8192 for NT-based systems (including XP)
     lt_cv_sys_max_cmd_len=8192;
     ;;
 
@@ -2118,7 +2089,7 @@ AC_CACHE_CHECK([if $compiler supports -c -o file.$ac_objext],
 		   FFLAGS="$FFLAGS -o out/conftest2.$ac_objext"],
 	  [$1],[GCJ],[save_GCJFLAGS="$CFLAGS"
 		   CFLAGS="$GCJFLAGS -o out/conftest2.$ac_objext"])
-   printf "$lt_simple_compile_test_code" > conftest.$ac_ext
+   echo "$lt_simple_compile_test_code" > conftest.$ac_ext
 
    # According to Tom Tromey, Ian Lance Taylor reported there are C compilers
    # that will create temporary files in the current directory regardless of
@@ -2376,14 +2347,13 @@ cygwin* | mingw* | pw32*)
   need_lib_prefix=no
 
   case $GCC,$host_os in
-  yes,cygwin* | yes,mingw* | yes,pw32*)
+  yes,cygwin* | yes,mingw*)
     library_names_spec='$libname.dll.a'
     # DLL is installed to $(libdir)/../bin by postinstall_cmds
-    postinstall_cmds='base_file=`basename \${file}`~
-      dlpath=`$SHELL 2>&1 -c '\''. $dir/'\''\${base_file}'\''i;echo \$dlname'\''`~
+    postinstall_cmds='dlpath=`$SHELL 2>&1 -c '\''. $dir/${file}i;echo \$dlname'\''`~
       dldir=$destdir/`dirname \$dlpath`~
       test -d \$dldir || mkdir -p \$dldir~
-      $install_prog $dir/$dlname \$dldir/$dlname'
+      $install_prog .libs/$dlname \$dldir/$dlname'
     postuninstall_cmds='dldll=`$SHELL 2>&1 -c '\''. $file; echo \$dlname'\''`~
       dlpath=$dir/\$dldll~
        $rm \$dlpath'
@@ -2411,13 +2381,12 @@ cygwin* | mingw* | pw32*)
         sys_lib_search_path_spec=`echo "$sys_lib_search_path_spec" | sed  -e "s/$PATH_SEPARATOR/ /g"`
       fi
       ;;
-    pw32*)
-      # pw32 DLLs use 'pw' prefix rather than 'lib'
-      library_names_spec='`echo ${libname} | sed -e 's/^lib/pw/'``echo ${release} | sed -e 's/[.]/-/g'`${versuffix}.dll'
-      ;;
     esac
     ;;
 
+  yes,pw32*)
+    library_names_spec='`echo ${libname} | sed -e 's/^lib/pw/'``echo ${release} | sed -e 's/[.]/-/g'`${versuffix}.dll'
+    ;;
   *)
     library_names_spec='${libname}`echo ${release} | sed -e 's/[[.]]/-/g'`${versuffix}.dll $libname.lib'
     ;;
@@ -3191,9 +3160,8 @@ bsdi4*)
   ;;
 
 cygwin* | mingw* | pw32*)
-  # win32_libid is a shell function defined in ltmain.sh
-  lt_cv_deplibs_check_method='file_magic ^x86 archive import|^x86 DLL'
-  lt_cv_file_magic_cmd='win32_libid'
+  lt_cv_deplibs_check_method='file_magic file format pei*-i386(.*architecture: i386)?'
+  lt_cv_file_magic_cmd='$OBJDUMP -f'
   ;;
 
 darwin* | rhapsody*)
@@ -3776,12 +3744,10 @@ case $host_os in
       # need to do runtime linking.
       case $host_os in aix4.[[23]]|aix4.[[23]].*|aix5*)
 	for ld_flag in $LDFLAGS; do
-	  case $ld_flag in
-	  *-brtl*)
+	  if (test $ld_flag = "-brtl" || test $ld_flag = "-Wl,-brtl"); then
 	    aix_use_runtimelinking=yes
 	    break
-	    ;;
-	  esac
+	  fi
 	done
       esac
 
@@ -3881,7 +3847,7 @@ case $host_os in
     esac
     ;;
 
-  cygwin* )
+  cygwin*)
     # _LT_AC_TAGVAR(hardcode_libdir_flag_spec, $1) is actually meaningless,
     # as there is no search path for DLLs.
     _LT_AC_TAGVAR(hardcode_libdir_flag_spec, $1)='-L$libdir'
@@ -3895,7 +3861,7 @@ case $host_os in
     fi
 	;;
 
-  mingw* | pw32* )
+  mingw* )
     _LT_AC_TAGVAR(hardcode_libdir_flag_spec, $1)='-L$libdir'
     _LT_AC_TAGVAR(always_export_symbols, $1)=no
 
@@ -3905,6 +3871,12 @@ case $host_os in
     else
       _LT_AC_TAGVAR(ld_shlibs, $1)=no
     fi
+	;;
+
+
+  pw32* )
+     # FIXME: insert proper C++ library support
+    _LT_AC_TAGVAR(ld_shlibs, $1)=no
 	;;
 
   dgux*)
@@ -5115,6 +5087,18 @@ if test "X${COLLECT_NAMES+set}" != Xset; then
 fi
 EOF
     ;;
+
+  cygwin* | mingw* | pw32* | os2*)
+    cat <<'EOF' >> "$cfgfile"
+    # This is a source program that is used to create dlls on Windows
+    # Don't remove nor modify the starting and closing comments
+    _LT_AC_FILE_LTDLL_C
+    # This is a source program that is used to create import libraries
+    # on Windows for dlls which lack them. Don't remove nor modify the
+    # starting and closing comments
+    _LT_AC_FILE_IMPGEN_C
+EOF
+    ;;
   esac
 
   # We use sed instead of cat because bash on DJGPP gets confused if
@@ -5370,7 +5354,7 @@ AC_MSG_CHECKING([for $compiler option to produce PIC])
     beos* | cygwin* | irix5* | irix6* | nonstopux* | osf3* | osf4* | osf5*)
       # PIC is the default for these OSes.
       ;;
-    mingw* | os2* | pw32*)
+    mingw* | os2*)
       # This hack is so that the source file can tell whether it is being
       # built for inclusion in a dll (and should export symbols for example).
       _LT_AC_TAGVAR(lt_prog_compiler_pic, $1)='-DDLL_EXPORT'
@@ -5877,7 +5861,7 @@ EOF
       fi
       ;;
 
-    cygwin* | mingw* | pw32*)
+    cygwin* | mingw*)
       # _LT_AC_TAGVAR(hardcode_libdir_flag_spec, $1) is actually meaningless,
       # as there is no search path for DLLs.
       _LT_AC_TAGVAR(hardcode_libdir_flag_spec, $1)='-L$libdir'
@@ -5889,6 +5873,79 @@ EOF
       else
 	ld_shlibs=no
       fi
+      ;;
+
+    # This pw32 section is mostly antique stuff preserved from Cygwin/MinGW.
+    pw32*)
+      # _LT_AC_TAGVAR(hardcode_libdir_flag_spec, $1) is actually meaningless, as there is
+      # no search path for DLLs.
+      _LT_AC_TAGVAR(hardcode_libdir_flag_spec, $1)='-L$libdir'
+      _LT_AC_TAGVAR(allow_undefined_flag, $1)=unsupported
+      _LT_AC_TAGVAR(always_export_symbols, $1)=yes
+
+      extract_expsyms_cmds='test -f $output_objdir/impgen.c || \
+	sed -e "/^# \/\* impgen\.c starts here \*\//,/^# \/\* impgen.c ends here \*\// { s/^# //;s/^# *$//; p; }" -e d < $''0 > $output_objdir/impgen.c~
+	test -f $output_objdir/impgen.exe || (cd $output_objdir && \
+	if test "x$HOST_CC" != "x" ; then $HOST_CC -o impgen impgen.c ; \
+	else $CC -o impgen impgen.c ; fi)~
+	$output_objdir/impgen $dir/$soroot > $output_objdir/$soname-def'
+
+      _LT_AC_TAGVAR(old_archive_from_expsyms_cmds, $1)='$DLLTOOL --as=$AS --dllname $soname --def $output_objdir/$soname-def --output-lib $output_objdir/$newlib'
+
+      # FIXME: what about values for MSVC?
+      dll_entry=__cygwin_dll_entry@12
+      case $host_os in
+      mingw*)
+	# mingw values
+	dll_entry=_DllMainCRTStartup@12
+	;;
+      esac
+
+      dll_exclude_symbols=DllMain@12,_cygwin_dll_entry@12,_cygwin_noncygwin_dll_entry@12,DllMainCRTStartup@12,DllEntryPoint@12
+
+      # recent cygwin and mingw systems supply a stub DllMain which the user
+      # can override, but on older systems we have to supply one (in ltdll.c)
+      if test "x$lt_cv_need_dllmain" = "xyes"; then
+	ltdll_obj='$output_objdir/$soname-ltdll.'"$ac_objext "
+	ltdll_cmds='test -f $output_objdir/$soname-ltdll.c || sed -e "/^# \/\* ltdll\.c starts here \*\//,/^# \/\* ltdll.c ends here \*\// { s/^# //; p; }" -e d < $''0 > $output_objdir/$soname-ltdll.c~
+  	test -f $output_objdir/$soname-ltdll.$ac_objext || (cd $output_objdir && $CC -c $soname-ltdll.c)~'
+      else
+	ltdll_obj=
+	ltdll_cmds=
+      fi
+
+      # Extract the symbol export list from an `--export-all' def file,
+      # then regenerate the def file from the symbol export list, so that
+      # the compiled dll only exports the symbol export list.
+      # Be careful not to strip the DATA tag left by newer dlltools.
+      _LT_AC_TAGVAR(export_symbols_cmds, $1)="$ltdll_cmds"'
+	$DLLTOOL --export-all --exclude-symbols '$dll_exclude_symbols' --output-def $output_objdir/$soname-def '$ltdll_obj'$libobjs $convenience~
+	sed -e "1,/EXPORTS/d" -e "s/ @ [[0-9]]*//" -e "s/ *;.*$//" < $output_objdir/$soname-def > $export_symbols'
+
+      # If the export-symbols file already is a .def file (1st line
+      # is EXPORTS), use it as is.
+      # If DATA tags from a recent dlltool are present, honour them!
+      _LT_AC_TAGVAR(archive_expsym_cmds, $1)='if test "x`sed 1q $export_symbols`" = xEXPORTS; then
+	  cp $export_symbols $output_objdir/$soname-def;
+	else
+	  echo EXPORTS > $output_objdir/$soname-def;
+	  _lt_hint=1;
+	  cat $export_symbols | while read symbol; do
+	   set dummy \$symbol;
+	   case \[$]# in
+	     2) echo "   \[$]2 @ \$_lt_hint ; " >> $output_objdir/$soname-def;;
+	     4) echo "   \[$]2 \[$]3 \[$]4 ; " >> $output_objdir/$soname-def; _lt_hint=`expr \$_lt_hint - 1`;;
+	     *) echo "   \[$]2 @ \$_lt_hint \[$]3 ; " >> $output_objdir/$soname-def;;
+	   esac;
+	   _lt_hint=`expr 1 + \$_lt_hint`;
+	  done;
+	fi~
+	'"$ltdll_cmds"'
+	$CC -Wl,--base-file,$output_objdir/$soname-base '$lt_cv_cc_dll_switch' -Wl,-e,'$dll_entry' -o $output_objdir/$soname '$ltdll_obj'$libobjs $deplibs $compiler_flags~
+	$DLLTOOL --as=$AS --dllname $soname --exclude-symbols '$dll_exclude_symbols' --def $output_objdir/$soname-def --base-file $output_objdir/$soname-base --output-exp $output_objdir/$soname-exp~
+	$CC -Wl,--base-file,$output_objdir/$soname-base $output_objdir/$soname-exp '$lt_cv_cc_dll_switch' -Wl,-e,'$dll_entry' -o $output_objdir/$soname '$ltdll_obj'$libobjs $deplibs $compiler_flags~
+	$DLLTOOL --as=$AS --dllname $soname --exclude-symbols '$dll_exclude_symbols' --def $output_objdir/$soname-def --base-file $output_objdir/$soname-base --output-exp $output_objdir/$soname-exp --output-lib $output_objdir/$libname.dll.a~
+	$CC $output_objdir/$soname-exp '$lt_cv_cc_dll_switch' -Wl,-e,'$dll_entry' -o $output_objdir/$soname '$ltdll_obj'$libobjs $deplibs $compiler_flags'
       ;;
 
     netbsd*)
@@ -6531,6 +6588,146 @@ AC_DEFUN([_LT_AC_FILE_LTDLL_C], [
 ])# _LT_AC_FILE_LTDLL_C
 
 
+# _LT_AC_FILE_IMPGEN_C
+# --------------------
+# Be careful that the start marker always follows a newline.
+AC_DEFUN([_LT_AC_FILE_IMPGEN_C], [
+# /* impgen.c starts here */
+# /*   Copyright (C) 1999, 2000, 2001 Free Software Foundation, Inc.
+#
+#  This file is part of GNU libtool.
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+#  */
+#
+# #include <stdio.h>		/* for printf() */
+# #include <unistd.h>		/* for open(), lseek(), read() */
+# #include <fcntl.h>		/* for O_RDONLY, O_BINARY */
+# #include <string.h>		/* for strdup() */
+#
+# /* O_BINARY isn't required (or even defined sometimes) under Unix */
+# #ifndef O_BINARY
+# #define O_BINARY 0
+# #endif
+#
+# static unsigned int
+# pe_get16 (fd, offset)
+#      int fd;
+#      int offset;
+# {
+#   unsigned char b[2];
+#   lseek (fd, offset, SEEK_SET);
+#   read (fd, b, 2);
+#   return b[0] + (b[1]<<8);
+# }
+#
+# static unsigned int
+# pe_get32 (fd, offset)
+#     int fd;
+#     int offset;
+# {
+#   unsigned char b[4];
+#   lseek (fd, offset, SEEK_SET);
+#   read (fd, b, 4);
+#   return b[0] + (b[1]<<8) + (b[2]<<16) + (b[3]<<24);
+# }
+#
+# static unsigned int
+# pe_as32 (ptr)
+#      void *ptr;
+# {
+#   unsigned char *b = ptr;
+#   return b[0] + (b[1]<<8) + (b[2]<<16) + (b[3]<<24);
+# }
+#
+# int
+# main (argc, argv)
+#     int argc;
+#     char *argv[];
+# {
+#     int dll;
+#     unsigned long pe_header_offset, opthdr_ofs, num_entries, i;
+#     unsigned long export_rva, export_size, nsections, secptr, expptr;
+#     unsigned long name_rvas, nexp;
+#     unsigned char *expdata, *erva;
+#     char *filename, *dll_name;
+#
+#     filename = argv[1];
+#
+#     dll = open(filename, O_RDONLY|O_BINARY);
+#     if (dll < 1)
+# 	return 1;
+#
+#     dll_name = filename;
+#
+#     for (i=0; filename[i]; i++)
+# 	if (filename[i] == '/' || filename[i] == '\\'  || filename[i] == ':')
+# 	    dll_name = filename + i +1;
+#
+#     pe_header_offset = pe_get32 (dll, 0x3c);
+#     opthdr_ofs = pe_header_offset + 4 + 20;
+#     num_entries = pe_get32 (dll, opthdr_ofs + 92);
+#
+#     if (num_entries < 1) /* no exports */
+# 	return 1;
+#
+#     export_rva = pe_get32 (dll, opthdr_ofs + 96);
+#     export_size = pe_get32 (dll, opthdr_ofs + 100);
+#     nsections = pe_get16 (dll, pe_header_offset + 4 +2);
+#     secptr = (pe_header_offset + 4 + 20 +
+# 	      pe_get16 (dll, pe_header_offset + 4 + 16));
+#
+#     expptr = 0;
+#     for (i = 0; i < nsections; i++)
+#     {
+# 	char sname[8];
+# 	unsigned long secptr1 = secptr + 40 * i;
+# 	unsigned long vaddr = pe_get32 (dll, secptr1 + 12);
+# 	unsigned long vsize = pe_get32 (dll, secptr1 + 16);
+# 	unsigned long fptr = pe_get32 (dll, secptr1 + 20);
+# 	lseek(dll, secptr1, SEEK_SET);
+# 	read(dll, sname, 8);
+# 	if (vaddr <= export_rva && vaddr+vsize > export_rva)
+# 	{
+# 	    expptr = fptr + (export_rva - vaddr);
+# 	    if (export_rva + export_size > vaddr + vsize)
+# 		export_size = vsize - (export_rva - vaddr);
+# 	    break;
+# 	}
+#     }
+#
+#     expdata = (unsigned char*)malloc(export_size);
+#     lseek (dll, expptr, SEEK_SET);
+#     read (dll, expdata, export_size);
+#     erva = expdata - export_rva;
+#
+#     nexp = pe_as32 (expdata+24);
+#     name_rvas = pe_as32 (expdata+32);
+#
+#     printf ("EXPORTS\n");
+#     for (i = 0; i<nexp; i++)
+#     {
+# 	unsigned long name_rva = pe_as32 (erva+name_rvas+i*4);
+# 	printf ("\t%s @ %ld ;\n", erva+name_rva, 1+ i);
+#     }
+#
+#     return 0;
+# }
+# /* impgen.c ends here */
+])# _LT_AC_FILE_IMPGEN_C
+
 # _LT_AC_TAGVAR(VARNAME, [TAGNAME])
 # ---------------------------------
 AC_DEFUN([_LT_AC_TAGVAR], [ifelse([$2], [], [$1], [$1_$2])])
@@ -6596,7 +6793,7 @@ for lt_ac_sed in $lt_ac_sed_list /usr/xpg4/bin/sed; do
   # Check for GNU sed and select it if it is found.
   if "$lt_ac_sed" --version 2>&1 < /dev/null | grep 'GNU' > /dev/null; then
     lt_cv_path_SED=$lt_ac_sed
-    break
+    break;
   fi
   while true; do
     cat conftest.in conftest.in >conftest.tmp
@@ -6843,7 +7040,7 @@ if test -n "$libltdl_cv_sys_search_path"; then
     if test -z "$sys_search_path"; then
       sys_search_path="$dir"
     else
-      sys_search_path="$sys_search_path$PATH_SEPARATOR$dir"
+      sys_search_path="$sys_search_path$ac_path_separator$dir"
     fi
   done
   AC_DEFINE_UNQUOTED(LTDL_SYSSEARCHPATH, "$sys_search_path",
