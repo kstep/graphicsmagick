@@ -575,7 +575,7 @@ Export double NTUserTime(void)
   OsVersionInfo.dwOSVersionInfoSize=sizeof(OSVERSIONINFO);
   GetVersionEx(&OsVersionInfo);
   if (OsVersionInfo.dwPlatformId != VER_PLATFORM_WIN32_NT)
-    return(ElapsedTime());
+    return(NTElapsedTime());
   status=GetProcessTimes(GetCurrentProcess(),&create_time,&exit_time,
     &kernel_time.filetime,&user_time.filetime);
   if (status != TRUE)
