@@ -816,7 +816,7 @@ MagickExport double Permutate(const long n,const long k)
 %
 */
 
-MagickExport inline PixelPacket AlphaComposite(const PixelPacket *p,
+MagickExport PixelPacket AlphaComposite(const PixelPacket *p,
   const unsigned long alpha,const PixelPacket *q,const unsigned long beta)
 {
   double
@@ -839,7 +839,7 @@ MagickExport inline PixelPacket AlphaComposite(const PixelPacket *p,
   return(composite);
 }
 
-MagickExport inline unsigned int ColorMatch(const PixelPacket *color,
+MagickExport unsigned int ColorMatch(const PixelPacket *color,
   const PixelPacket *target,const double distance)
 {
   if ((distance == 0.0) && (color->red == target->red) &&
@@ -855,7 +855,7 @@ MagickExport inline unsigned int ColorMatch(const PixelPacket *color,
   return(False);
 }
 
-MagickExport inline Quantum Downscale(const unsigned long quantum)
+MagickExport Quantum Downscale(const unsigned long quantum)
 {
 #if QuantumDepth == 8
   return((Quantum) quantum);
@@ -864,12 +864,12 @@ MagickExport inline Quantum Downscale(const unsigned long quantum)
 #endif
 }
 
-MagickExport inline Quantum Intensity(const PixelPacket *pixel)
+MagickExport Quantum Intensity(const PixelPacket *pixel)
 {
   return((9798L*pixel->red+19235L*pixel->green+3735L*pixel->blue)/32768L);
 }
 
-MagickExport inline Quantum Upscale(const unsigned long quantum)
+MagickExport Quantum Upscale(const unsigned long quantum)
 {
 #if QuantumDepth == 8
   return((Quantum) quantum);
@@ -878,7 +878,7 @@ MagickExport inline Quantum Upscale(const unsigned long quantum)
 #endif
 }
 
-MagickExport inline unsigned short XDownscale(const unsigned long quantum)
+MagickExport unsigned short XDownscale(const unsigned long quantum)
 {
 #if QuantumDepth == 8
   return((unsigned short) (quantum/257L));
@@ -887,7 +887,7 @@ MagickExport inline unsigned short XDownscale(const unsigned long quantum)
 #endif
 }
 
-MagickExport inline unsigned short XUpscale(const unsigned long quantum)
+MagickExport unsigned short XUpscale(const unsigned long quantum)
 {
 #if QuantumDepth == 8
   return((unsigned short) (257L*quantum));

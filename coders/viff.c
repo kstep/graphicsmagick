@@ -459,16 +459,18 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
           }
           if (i < (long) image->colors)
             {
-              image->colormap[i].red=Upscale(value);
-              image->colormap[i].green=Upscale(value);
-              image->colormap[i].blue=Upscale(value);
+              image->colormap[i].red=Upscale((unsigned long) value);
+              image->colormap[i].green=Upscale((unsigned long) value);
+              image->colormap[i].blue=Upscale((unsigned long) value);
             }
           else
             if (i < (long) (2*image->colors))
-              image->colormap[i % image->colors].green=Upscale(value);
+              image->colormap[i % image->colors].green=
+                Upscale((unsigned long) value);
             else
               if (i < (long) (3*image->colors))
-                image->colormap[i % image->colors].blue=Upscale(value);
+                image->colormap[i % image->colors].blue=
+                  Upscale((unsigned long) value);
         }
         LiberateMemory((void **) &viff_colormap);
         break;

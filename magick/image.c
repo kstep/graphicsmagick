@@ -6760,14 +6760,14 @@ MagickExport unsigned int TransformRGBImage(Image *image,
                 blue+0.5;
               if (colorspace == sRGBColorspace)
                 {
-                  q->red=Upscale(sRGBMap[Downscale(red)]);
-                  q->green=Upscale(sRGBMap[Downscale(green)]);
-                  q->blue=Upscale(sRGBMap[Downscale(blue)]);
+                  q->red=Upscale(sRGBMap[Downscale((unsigned long) red)]);
+                  q->green=Upscale(sRGBMap[Downscale((unsigned long) green)]);
+                  q->blue=Upscale(sRGBMap[Downscale((unsigned long) blue)]);
                   break;
                 }
-              q->red=Upscale(YCCMap[Downscale(red)]);
-              q->green=Upscale(YCCMap[Downscale(green)]);
-              q->blue=Upscale(YCCMap[Downscale(blue)]);
+              q->red=Upscale(YCCMap[Downscale((unsigned long) red)]);
+              q->green=Upscale(YCCMap[Downscale((unsigned long) green)]);
+              q->blue=Upscale(YCCMap[Downscale((unsigned long) blue)]);
               break;
             }
             default:
@@ -6818,14 +6818,20 @@ MagickExport unsigned int TransformRGBImage(Image *image,
               blue+0.5;
             if (colorspace == sRGBColorspace)
               {
-                image->colormap[i].red=Upscale(sRGBMap[Downscale(red)]);
-                image->colormap[i].green=Upscale(sRGBMap[Downscale(green)]);
-                image->colormap[i].blue=Upscale(sRGBMap[Downscale(blue)]);
+                image->colormap[i].red=
+                  Upscale(sRGBMap[Downscale((unsigned long) red)]);
+                image->colormap[i].green=
+                  Upscale(sRGBMap[Downscale((unsigned long) green)]);
+                image->colormap[i].blue=
+                  Upscale(sRGBMap[Downscale((unsigned long) blue)]);
                 break;
               }
-            image->colormap[i].red=Upscale(YCCMap[Downscale(red)]);
-            image->colormap[i].green=Upscale(YCCMap[Downscale(green)]);
-            image->colormap[i].blue=Upscale(YCCMap[Downscale(blue)]);
+            image->colormap[i].red=
+              Upscale(YCCMap[Downscale((unsigned long) red)]);
+            image->colormap[i].green=
+              Upscale(YCCMap[Downscale((unsigned long) green)]);
+            image->colormap[i].blue=
+              Upscale(YCCMap[Downscale((unsigned long) blue)]);
             break;
           }
           default:

@@ -142,9 +142,9 @@ register PixelPacket *q;
    for (x=0; x < (long) image->columns; x++)
           {
 	  f=(double)MaxRGB* (*p-Min)/(Max-Min);
-          q->red=(Quantum) XDownscale(f);
-          q->green=(Quantum) XDownscale(f);
-          q->blue=(Quantum) XDownscale(f);
+          q->red=(Quantum) XDownscale((unsigned long) f);
+          q->green=(Quantum) XDownscale((unsigned long) f);
+          q->blue=(Quantum) XDownscale((unsigned long) f);
           p++;
           q++;
           }
