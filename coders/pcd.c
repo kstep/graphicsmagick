@@ -215,10 +215,9 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
     Search for Sync byte.
   */
   for (i=0; i < 1; i++)
-  {
     PCDGetBits(16);
+  for (i=0; i < 1; i++)
     PCDGetBits(16);
-  }
   while ((sum & 0x00fff000) != 0x00fff000)
     PCDGetBits(8);
   while (!IsSync)
