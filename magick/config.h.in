@@ -1,4 +1,4 @@
-/* magick/config.h.in.  Generated automatically from configure.in by autoheader.  */
+/* magick/config.h.in.  Generated automatically from configure.ac by autoheader.  */
 
 /* Define to empty if the keyword does not work.  */
 #undef const
@@ -533,7 +533,7 @@
 /* Directory where architecture-independent files live. */
 #undef MagickSharePath
 
-/* Pixel cache threshold (default 2047MB) */
+/* Pixel cache threshold (defaults to available memory) */
 #undef PixelCacheThreshold
 
 /* Number of bits in a pixel Quantum (8 or 16) */

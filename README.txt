@@ -146,7 +146,7 @@ UNIX/Cygwin COMPILATION
 
   Optional Packages:
    --with-modules          enable support for dynamically loadable modules
-   --with-cache            set pixel cache threshhold (default 2047MB)
+   --with-cache            set pixel cache threshhold (defaults to malloc limit)
    --without-threads       disable threads support
    --without-frozenpaths   disable frozen delegate paths
    --without-magick-plus-plus disable build/install of Magick++

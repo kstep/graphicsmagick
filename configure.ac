@@ -182,11 +182,15 @@ test "$with_16_bit_pixel" = 'no' && QuantumDepth=8
 AC_DEFINE_UNQUOTED(QuantumDepth,$QuantumDepth,[Number of bits in a pixel Quantum (8 or 16)])
 
 # Set pixel cache threshold
+with_cache=''
 AC_ARG_WITH(cache,
-	      [  --with-cache            set pixel cache threshhold (default 2047MB)],
+	      [  --with-cache            set pixel cache threshhold (defaults to available memory)],
 	      [with_cache=$withval],
-	      [with_cache=2047])
-AC_DEFINE_UNQUOTED(PixelCacheThreshold,$with_cache,[Pixel cache threshold (default 2047MB)])
+	      [with_cache=''])
+if test "$with_cache" != ''
+then
+  AC_DEFINE_UNQUOTED(PixelCacheThreshold,$with_cache,[Pixel cache threshold (defaults to available memory)])
+fi
 
 # Enable support for threads
 AC_ARG_WITH(threads,
