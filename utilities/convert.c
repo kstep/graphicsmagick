@@ -64,7 +64,7 @@
 %    -bordercolor color   border color
 %    -box color           color for annotation bounding box
 %    -cache threshold     number of megabytes available to the pixel cache
-%    -channel type        extract a particular color chanell from image
+%    -channel type        extract a particular color channel from image
 %    -charcoal radius     simulate a charcoal drawing
 %    -coalesce            merge a sequence of images
 %    -colorize value      colorize the image with the fill color
@@ -473,7 +473,7 @@ static void Usage(void)
       "-bordercolor color   border color",
       "-box color           color for annotation bounding box",
       "-cache threshold     megabytes of memory available to the pixel cache",
-      "-channel type        extract a particular color chanell from image",
+      "-channel type        extract a particular color channel from image",
       "-charcoal radius     simulate a charcoal drawing",
       "-coalesce            merge a sequence of images",
       "-colorize value      colorize the image with the fill color",

@@ -480,9 +480,12 @@ MagickExport Image *ReadStream(const ImageInfo *image_info,
   clone_info->fifo=fifo;
   image=ReadImage(clone_info,exception);
   DestroyImageInfo(clone_info);
-  ResetPixelCacheMethods();
   for (p=image; p != (Image *) NULL; p=p->next)
+  {
+    DestroyPixelStream(p);
     GetCacheInfo(&p->cache);
+  }
+  ResetPixelCacheMethods();
   return(image);
 }
 

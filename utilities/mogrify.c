@@ -63,7 +63,7 @@
 %    -bordercolor color   border color
 %    -box color           color for annotation bounding box
 %    -cache threshold     megabytes of memory available to the pixel cache
-%    -channel type        extract a particular color chanell from image
+%    -channel type        extract a particular color channel from image
 %    -charcoal radius     simulate a charcoal drawing
 %    -colorize value      colorize the image with the fill color
 %    -colors value        preferred number of colors in the image
@@ -193,7 +193,7 @@ static void Usage(void)
       "-bordercolor color   border color",
       "-box color           color for annotation bounding box",
       "-cache threshold     megabytes of memory available to the pixel cache",
-      "-channel type        extract a particular color chanell from image",
+      "-channel type        extract a particular color channel from image",
       "-charcoal radius     simulate a charcoal drawing",
       "-colorize value      colorize the image with the fill color",
       "-colors value        preferred number of colors in the image",
