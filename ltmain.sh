@@ -55,8 +55,8 @@ modename="$progname"
 # Constants.
 PROGRAM=ltmain.sh
 PACKAGE=libtool
-VERSION=1.5a
-TIMESTAMP=" (1.1242 2003/07/14 22:51:58)"
+VERSION=1.5.0a
+TIMESTAMP=" (1.1220.2.25 2003/08/01 19:08:35)"
 
 default_mode=
 help="Try \`$progname --help' for more information."
@@ -5109,6 +5109,25 @@ fi\
 		exit 1
 	      fi
 	      newdlprefiles="$newdlprefiles $libdir/$name"
+	    done
+	    dlprefiles="$newdlprefiles"
+	  else
+	    newdlfiles=
+	    for lib in $dlfiles; do
+	      case $lib in 
+		[\\/]* | [A-Za-z]:[\\/]*) abs="$lib" ;;
+		*) abs=`pwd`"/$lib" ;;
+	      esac
+	      newdlfiles="$newdlfiles $abs"
+	    done
+	    dlfiles="$newdlfiles"
+	    newdlprefiles=
+	    for lib in $dlprefiles; do
+	      case $lib in 
+		[\\/]* | [A-Za-z]:[\\/]*) abs="$lib" ;;
+		*) abs=`pwd`"/$lib" ;;
+	      esac
+	      newdlprefiles="$newdlprefiles $abs"
 	    done
 	    dlprefiles="$newdlprefiles"
 	  fi

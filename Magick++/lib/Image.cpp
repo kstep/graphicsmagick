@@ -2542,6 +2542,15 @@ std::string Magick::Image::magick ( void ) const
 void Magick::Image::matte ( const bool matteFlag_ )
 {
   modifyImage();
+
+  // If matte channel is requested, but image doesn't already have a
+  // matte channel, then create an opaque matte channel.  Likewise, if
+  // the image already has a matte channel but a matte channel is not
+  // desired, then set the matte channel to opaque.
+  if ((matteFlag_ && !constImage()->matte) ||
+      (constImage()->matte && !matteFlag_))
+    SetImageOpacity(image(),OpaqueOpacity);
+
   image()->matte = matteFlag_;
 }
 bool Magick::Image::matte ( void ) const

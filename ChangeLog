@@ -1,3 +1,12 @@
+2003-08-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Only configure C and C++ libtool tags.
+	* PerlMagick/t/reference/composite/*.miff: Added some composition
+	test reference images.  These reference images will serve as
+	placeholders until better composition tests can be figured out.
+	It is not clear from the documentation what some of the
+	composition operators are supposed to do.
+
 2003-08-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* README.txt: Add documentation regarding using TRIO.
