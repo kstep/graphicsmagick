@@ -88,6 +88,10 @@
 /*
   Include declarations.
 */
+#if defined(COMBINE_MAIN)
+static int combine_main(int argc,char **argv,
+  const char *header_data,const int header_length)
+#else
 #include "magick/magick.h"
 #include "magick/defines.h"
 
@@ -177,6 +181,7 @@ static void Usage(const char *client_name)
 %
 */
 int main(int argc,char **argv)
+#endif
 {
 #define NotInitialized  (unsigned int) (~0)
 
@@ -225,8 +230,10 @@ int main(int argc,char **argv)
   /*
     Initialize command line arguments.
   */
+#if !defined(COMBINE_MAIN)
   ReadCommandlLine(argc,&argv);
   MagickIncarnate(*argv);
+#endif
   client_name=SetClientName((char *) NULL);
   status=ExpandFilenames(&argc,&argv);
   if (status == False)
@@ -986,6 +993,10 @@ int main(int argc,char **argv)
   */
   (void) strcpy(combined_image->filename,write_filename);
   SetImageInfo(image_info,True);
+#if defined(COMBINE_MAIN)
+    if (header_data != (char *) NULL)
+      fwrite((char *) header_data,1,header_length,stdout);
+#endif
   status=WriteImage(image_info,combined_image);
   if (status == False)
     CatchImageException(combined_image);
@@ -993,7 +1004,11 @@ int main(int argc,char **argv)
     DescribeImage(combined_image,stderr,False);
   DestroyImages(combined_image);
   DestroyImageInfo(image_info);
+#if !defined(COMBINE_MAIN)
   FreeMemory((void **) &argv);
   Exit(0);
   return(False);
+#else
+  return(True);
+#endif
 }
