@@ -90,9 +90,9 @@
 %
 %
 */
-#if defined(HasWINGDI32)
 static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
+#if defined(HasWINGDI32)
   Image
     *image;
 
@@ -211,8 +211,8 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,ExceptionInfo *exce
 
   CloseBlob(image);
   return(image);
-}
 #endif /* HasWINGDI32 */
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -243,9 +243,9 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,ExceptionInfo *exce
 %
 %
 */
-#if defined(HasWINGDI32)
 static unsigned int WriteCLIPBOARDImage(const ImageInfo *image_info,Image *image)
 {
+#if defined(HasWINGDI32)
   /*
     Allocate memory for pixels.
   */
@@ -321,8 +321,8 @@ static unsigned int WriteCLIPBOARDImage(const ImageInfo *image_info,Image *image
   }
 
   return(False);
-}
 #endif /* HasWINGDI32 */
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
