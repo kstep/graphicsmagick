@@ -568,9 +568,12 @@ int main(int argc,char **argv)
     option=argv[i];
     if ((strlen(option) < 2) || ((*option != '-') && (*option != '+')))
       {
+        int
+          k;
         /*
           Read input images.
         */
+        k=j;
         j=i+1; /* track option after the input image */
         filename=argv[i];
         (void) strncpy(image_info->filename,filename,MaxTextExtent-1);
@@ -580,6 +583,11 @@ int main(int argc,char **argv)
             if (exception.severity != UndefinedException)
               MagickWarning(exception.severity,exception.reason,
                 exception.description);
+            if (composite_image == (Image *) NULL)
+              continue;
+            (void) CloneString(&option_info.geometry,(char *) NULL);
+            status=MogrifyImages(image_info,i-k,argv+k,&composite_image);
+            CatchImageException(composite_image);
             continue;
           }
         if (mask_image != (Image *) NULL)
@@ -592,8 +600,8 @@ int main(int argc,char **argv)
                 exception.description);
             if (image == (Image *) NULL)
               continue;
-            /* allow users to apply features to the main input image */
-            status=MogrifyImages(image_info,i,argv,&image);
+            (void) CloneString(&option_info.geometry,(char *) NULL);
+            status=MogrifyImages(image_info,i-k,argv+k,&image);
             CatchImageException(image);
             continue;
           }
@@ -604,6 +612,11 @@ int main(int argc,char **argv)
         if (exception.severity != UndefinedException)
           MagickWarning(exception.severity,exception.reason,
             exception.description);
+        if (mask_image == (Image *) NULL)
+          continue;
+        (void) CloneString(&option_info.geometry,(char *) NULL);
+        status=MogrifyImages(image_info,i-k,argv+k,&mask_image);
+        CatchImageException(mask_image);
       }
     else
       switch(*(option+1))
@@ -935,15 +948,13 @@ int main(int argc,char **argv)
         {
           if (LocaleCompare("geometry",option+1) == 0)
             {
-              if (composite_image == (Image *) NULL)
-                (void) CloneString(&option_info.geometry,(char *) NULL);
+              (void) CloneString(&option_info.geometry,(char *) NULL);
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !IsGeometry(argv[i]))
                     MagickError(OptionError,"Missing geometry",option);
-                  if (composite_image == (Image *) NULL)
-                    (void) CloneString(&option_info.geometry,argv[i]);
+                  (void) CloneString(&option_info.geometry,argv[i]);
                 }
               break;
             }
