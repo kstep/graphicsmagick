@@ -198,10 +198,6 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   allocate_image->magick_rows=0;
   allocate_image->restart_animation_here=False;
   allocate_image->taint=False;
-  allocate_image->bounds.x1=0.0;
-  allocate_image->bounds.y1=0.0;
-  allocate_image->bounds.x2=0.0;
-  allocate_image->bounds.y2=0.0;
   allocate_image->ascii85.offset=0;
   allocate_image->ascii85.line_break=0;
   GetExceptionInfo(&allocate_image->exception);

@@ -121,6 +121,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *p;
 
   unsigned int
+    height,
     status;
 
   /*
@@ -197,11 +198,13 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     FormatString(geometry,"%+d%+d",page.x,page.y+offset);
     (void) CloneString(&annotate_info->geometry,geometry);
     AnnotateImage(image,annotate_info);
-    offset+=annotate_info->bounds.height;
+    height=annotate_info->pointsize*
+      AbsoluteValue(Max(annotate_info->affine[0],annotate_info->affine[1]));
+    offset+=height;
     if (image->previous == (Image *) NULL)
       if (QuantumTick(page.y+offset,image->rows))
         ProgressMonitor(LoadImageText,page.y+offset,image->rows);
-    if (((2*page.y)+offset+annotate_info->bounds.height) < image->rows)
+    if (((2*page.y)+offset+height) < image->rows)
       continue;
     /*
       Page is full-- allocate next image structure.

@@ -4186,16 +4186,20 @@ Mogrify(ref,...)
           AnnotateInfo
             *annotate_info;
 
+          ImageInfo
+            *image_info;
+
+          image_info=CloneImageInfo(info->image_info);
           if (attribute_flag[1])
-            (void) CloneString(&info->image_info->font,
+            (void) CloneString(&image_info->font,
               argument_list[1].string_reference);
           if (attribute_flag[2])
-            info->image_info->pointsize=argument_list[2].double_reference;
+            image_info->pointsize=argument_list[2].double_reference;
           if (attribute_flag[3])
-            (void) CloneString(&info->image_info->density,
+            (void) CloneString(&image_info->density,
               argument_list[3].string_reference);
           if (attribute_flag[8])
-            (void) CloneString(&info->image_info->server_name,
+            (void) CloneString(&image_info->server_name,
               argument_list[8].string_reference);
           for (j=12; j < 17; j++)
           {
@@ -4205,7 +4209,7 @@ Mogrify(ref,...)
             angle=argument_list[j].double_reference;
             for (k=0; k < 6; k++)
             {
-              current[k]=info->image_info->affine[k];
+              current[k]=image_info->affine[k];
               affine[k]=0.0;
             }
             affine[0]=1.0;
@@ -4268,21 +4272,16 @@ Mogrify(ref,...)
                 break;
               }
             }
-            info->image_info->affine[0]=
-              current[0]*affine[0]+current[2]*affine[1];
-            info->image_info->affine[1]=
-              current[1]*affine[0]+current[3]*affine[1];
-            info->image_info->affine[2]=
-              current[0]*affine[2]+current[2]*affine[3];
-            info->image_info->affine[3]=
-              current[1]*affine[2]+current[3]*affine[3];
-            info->image_info->affine[4]=
+            image_info->affine[0]=current[0]*affine[0]+current[2]*affine[1];
+            image_info->affine[1]=current[1]*affine[0]+current[3]*affine[1];
+            image_info->affine[2]=current[0]*affine[2]+current[2]*affine[3];
+            image_info->affine[3]=current[1]*affine[2]+current[3]*affine[3];
+            image_info->affine[4]=
               current[0]*affine[4]+current[2]*affine[5]+current[4];
-            info->image_info->affine[5]=
+            image_info->affine[5]=
               current[1]*affine[4]+current[3]*affine[5]+current[5];
           }
-          annotate_info=
-            CloneAnnotateInfo(info->image_info,(AnnotateInfo *) NULL);
+          annotate_info=CloneAnnotateInfo(image_info,(AnnotateInfo *) NULL);
           if (attribute_flag[0])
             (void) CloneString(&annotate_info->text,
               argument_list[0].string_reference);
@@ -4316,6 +4315,7 @@ Mogrify(ref,...)
               &annotate_info->fill);
           AnnotateImage(image,annotate_info);
           DestroyAnnotateInfo(annotate_info);
+          DestroyImageInfo(image_info);
           break;
         }
         case 34:  /* ColorFloodfill */
@@ -4509,12 +4509,16 @@ Mogrify(ref,...)
           DrawInfo
             *draw_info;
 
+          ImageInfo
+            *image_info;
+
+          image_info=CloneImageInfo(info->image_info);
           if (attribute_flag[6])
-            (void) CloneString(&info->image_info->server_name,
+            (void) CloneString(&image_info->server_name,
               argument_list[6].string_reference);
           if (attribute_flag[7])
             (void) QueryColorDatabase(argument_list[7].string_reference,
-              &info->image_info->border_color);
+              &image_info->border_color);
           for (j=10; j < 15; j++)
           {
             if (!attribute_flag[j])
@@ -4523,7 +4527,7 @@ Mogrify(ref,...)
             angle=argument_list[j].double_reference;
             for (k=0; k < 6; k++)
             {
-              current[k]=info->image_info->affine[k];
+              current[k]=image_info->affine[k];
               affine[k]=(k == 0) || (k == 3) ? 1.0 : 0.0;
             }
             switch (j)
@@ -4584,20 +4588,16 @@ Mogrify(ref,...)
                 break;
               }
             }
-            info->image_info->affine[0]=
-              current[0]*affine[0]+current[2]*affine[1];
-            info->image_info->affine[1]=
-              current[1]*affine[0]+current[3]*affine[1];
-            info->image_info->affine[2]=
-              current[0]*affine[2]+current[2]*affine[3];
-            info->image_info->affine[3]=
-              current[1]*affine[2]+current[3]*affine[3];
-            info->image_info->affine[4]=
+            image_info->affine[0]=current[0]*affine[0]+current[2]*affine[1];
+            image_info->affine[1]=current[1]*affine[0]+current[3]*affine[1];
+            image_info->affine[2]=current[0]*affine[2]+current[2]*affine[3];
+            image_info->affine[3]=current[1]*affine[2]+current[3]*affine[3];
+            image_info->affine[4]=
               current[0]*affine[4]+current[2]*affine[5]+current[4];
-            info->image_info->affine[5]=
+            image_info->affine[5]=
               current[1]*affine[4]+current[3]*affine[5]+current[5];
           }
-          draw_info=CloneDrawInfo(info->image_info,(DrawInfo *) NULL);
+          draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
           (void) CloneString(&draw_info->primitive,"Point");
           if (attribute_flag[0] && (argument_list[0].int_reference > 0))
             (void) CloneString(&draw_info->primitive,
@@ -4628,6 +4628,7 @@ Mogrify(ref,...)
               argument_list[15].image_reference->rows,True,&exception);
           DrawImage(image,draw_info);
           DestroyDrawInfo(draw_info);
+          DestroyImageInfo(image_info);
           break;
         }
         case 39:  /* Equalize */

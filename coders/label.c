@@ -264,7 +264,7 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
     label[MaxTextExtent];
 
   FT_BBox
-    bounds;
+    bounding_box;
 
   FT_Bitmap
     *glyph;
@@ -305,6 +305,9 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
 
   register PixelPacket
     *q;
+
+  SegmentInfo
+    bounds;
 
   TGlyph
     *glyphs;
@@ -407,10 +410,10 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
   */
   origin.x=0;
   origin.y=0;
-  image->bounds.x1=32000;
-  image->bounds.x2=(-32000);
-  image->bounds.y1=32000;
-  image->bounds.y2=(-32000);
+  bounds.x1=32000;
+  bounds.x2=(-32000);
+  bounds.y1=32000;
+  bounds.y2=(-32000);
   affine.xx=65536.0*image_info->affine[0];
   affine.yx=(-65536.0*image_info->affine[1]);
   affine.xy=(-65536.0*image_info->affine[2]);
@@ -433,24 +436,30 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
     bitmap_origin=origin;
     FT_Vector_Transform(&bitmap_origin,&affine);
     (void) FT_Glyph_Transform(glyphs[i].image,&affine,&bitmap_origin);
-    FT_Glyph_Get_CBox(glyphs[i].image,ft_glyph_bbox_pixels,&bounds);
+    FT_Glyph_Get_CBox(glyphs[i].image,ft_glyph_bbox_pixels,&bounding_box);
     status=FT_Glyph_To_Bitmap(&glyphs[i].image,
       image_info->antialias ? ft_render_mode_normal : ft_render_mode_mono,
       False,False);
     if (status)
       continue;
-    if (bounds.xMin < image->bounds.x1)
-      image->bounds.x1=bounds.xMin;
-    if (bounds.xMax > image->bounds.x2)
-      image->bounds.x2=bounds.xMax;
-    if (bounds.yMin < image->bounds.y1)
-      image->bounds.y1=bounds.yMin;
-    if (bounds.yMax > image->bounds.y2)
-      image->bounds.y2=bounds.yMax;
+    if (bounding_box.xMin < bounds.x1)
+      bounds.x1=bounding_box.xMin;
+    if (bounding_box.xMax > bounds.x2)
+      bounds.x2=bounding_box.xMax;
+    if (bounding_box.yMin < bounds.y1)
+      bounds.y1=bounding_box.yMin;
+    if (bounding_box.yMax > bounds.y2)
+      bounds.y2=bounding_box.yMax;
     origin.x+=face->glyph->advance.x;
   }
-  image->columns=image->bounds.x2-image->bounds.x1+1.0;
-  image->rows=image->bounds.y2-image->bounds.y1+1.0;
+  image->columns=bounds.x2-bounds.x1+1.0;
+  image->rows=bounds.y2-bounds.y1+1.0;
+  if ((image_info->affine[0] != 0.0) && (image_info->affine[1] != 0.0) &&
+      (image_info->affine[2] != 0.0) && (image_info->affine[4] != 0.0))
+    {
+      image->columns+=3.0;
+      image->rows+=3.0;
+    }
   SetImage(image,TransparentOpacity);
   if (face->family_name != (char *) NULL)
     {
@@ -473,8 +482,8 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
     glyph=(&bitmap->bitmap);
     if ((glyph->width == 0) || (glyph->rows == 0))
       continue;
-    x=bitmap->left-image->bounds.x1+0.5;
-    y=image->rows-bitmap->top+image->bounds.y1+0.5;
+    x=bitmap->left-bounds.x1+0.5;
+    y=image->rows-bitmap->top+bounds.y1+0.5;
     q=GetImagePixels(image,x,y,glyph->width,glyph->rows);
     if (q == (PixelPacket *) NULL)
       continue;
@@ -828,11 +837,6 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
             }
         }
     }
-  image->bounds.x2=Max(image->columns,image->rows);
-  image->bounds.y2=image_info->affine[0]*image_info->pointsize;
-  image->bounds.y2-=image->bounds.y2/3.0;
-  image->bounds.x1=0.0;
-  image->bounds.y1=(double) image->rows/-4.0;
   /*
     Free TrueType resources.
   */
@@ -1016,11 +1020,6 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
     if (!SyncImagePixels(image))
       break;
   }
-  image->bounds.x2=Max(image->columns,image->rows);
-  image->bounds.y2=image_info->affine[0]*image_info->pointsize;
-  image->bounds.y2-=image->bounds.y2/3.0;
-  image->bounds.x1=0.0;
-  image->bounds.y1=(double) image->rows/-4.0;
   return(image);
 }
 
@@ -1232,11 +1231,6 @@ static Image *RenderX11(const ImageInfo *image_info,const char *text,
             }
         }
     }
-  image->bounds.x2=Max(image->columns,image->rows);
-  image->bounds.y2=image_info->affine[0]*image_info->pointsize;
-  image->bounds.y2-=image->bounds.y2/3.0;
-  image->bounds.x1=0.0;
-  image->bounds.y1=(double) image->rows/-4.0;
   return(image);
 #else
   Image
@@ -1271,7 +1265,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
         c;
 
       char
-        *s,
+        *p,
         *q;
 
       unsigned int
@@ -1289,28 +1283,28 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
           return((Image *) NULL);
         }
       length=MaxTextExtent;
-      s=(char *) AcquireMemory(length);
-      q=s;
-      while (s != (char *) NULL)
+      p=(char *) AcquireMemory(length);
+      q=p;
+      while (p != (char *) NULL)
       {
         c=fgetc(file);
         if (c == EOF)
           break;
         if ((c == '\n') || (c == '\r') || (c == '\t'))
           continue;
-        if ((q-s+1) >= (int) length)
+        if ((q-p+1) >= (int) length)
           {
             *q='\0';
             length<<=1;
-            ReacquireMemory((void **) &s,length);
-            if (s == (char *) NULL)
+            ReacquireMemory((void **) &p,length);
+            if (p == (char *) NULL)
               break;
-            q=s+Extent(s);
+            q=p+Extent(p);
           }
         *q++=c;
       }
       (void) fclose(file);
-      if (s == (char *) NULL)
+      if (p == (char *) NULL)
         {
           ThrowException(exception,FileOpenWarning,
             "Unable to read label data from file","Memory allocation failed");
@@ -1318,7 +1312,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
           return((Image *) NULL);
         }
       *q='\0';
-      label=s;
+      label=p;
     }
   if (image_info->font == (char *) NULL)
     image=RenderPostscript(image_info,label,exception);

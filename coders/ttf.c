@@ -93,11 +93,11 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *annotate_info;
 
   char
-    font[MaxTextExtent],
     geometry[MaxTextExtent],
     text[MaxTextExtent];
 
   Image
+    *annotate_image,
     *image;
 
   int
@@ -125,6 +125,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   magick=MSBFirstReadLong(image);
   if ((magick != 256) && (magick != 65536))
     ThrowReaderException(CorruptImageWarning,"Not a TTF font file",image);
+  DestroyImage(image);
   /*
     Start with a white canvas.
   */
@@ -132,14 +133,19 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   clone_info=CloneImageInfo(image_info);
   if (clone_info == (ImageInfo *) NULL)
     return((Image *) NULL);
-  (void) CloneString(&clone_info->size,"800x480");
-  *font='\0';
-  (void) CloneString(&clone_info->font,font);
-  clone_info->pointsize=18;
+  (void) CloneString(&clone_info->font,"");
   FormatString(clone_info->font,"@%.1024s",image_info->filename);
   annotate_info=CloneAnnotateInfo(clone_info,(AnnotateInfo *) NULL);
-  image->columns=annotate_info->bounds.width;
-  image->rows=annotate_info->bounds.height;
+  (void) CloneString(&clone_info->size,"800x480");
+  (void) strcpy(clone_info->filename,"xc:white");
+  image=ReadImage(clone_info,exception);
+  image->class=DirectClass;
+  if (image == (Image *) NULL)
+    {
+      DestroyAnnotateInfo(annotate_info);
+      return((Image *) NULL);
+    }
+  (void) strcpy(image->filename,image_info->filename);
   if (image_info->ping)
     {
       DestroyAnnotateInfo(annotate_info);
@@ -147,29 +153,28 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       CloseBlob(image);
       return(image);
     }
-  DestroyImage(image);
-  (void) strcpy(clone_info->filename,"xc:white");
-  image=ReadImage(clone_info,exception);
-  DestroyImageInfo(clone_info);
-  if (image == (Image *) NULL)
-    {
-      DestroyAnnotateInfo(annotate_info);
-      return((Image *) NULL);
-    }
-  (void) strcpy(image->filename,image_info->filename);
-  if (annotate_info->font_name != (char *) NULL)
-    (void) SetImageAttribute(image,"Label",annotate_info->font_name);
+  clone_info->pointsize=18;
   /*
     Annotate canvas with text rendered with font at different point sizes.
   */
   y=30;
-  if (annotate_info->font_name != (char *) NULL)
+  FormatString(clone_info->filename,"label:white");
+  annotate_image=ReadImage(clone_info,exception);
+  DestroyImageInfo(clone_info);
+  if (annotate_image != (Image *) NULL)
     {
+      ImageAttribute
+        *attribute;
+
       annotate_info->pointsize=30;
       FormatString(geometry,"+10%+d",y);
       (void) CloneString(&annotate_info->geometry,geometry);
-      (void) CloneString(&annotate_info->text,annotate_info->font_name);
+      (void) CloneString(&annotate_info->text,"Unknown family");
+      attribute=GetImageAttribute(annotate_image,"Label");
+      if (attribute != (ImageAttribute *) NULL)
+        (void) CloneString(&annotate_info->text,attribute->value);
       AnnotateImage(image,annotate_info);
+      DestroyImage(annotate_image);
       y+=42;
     }
   annotate_info->pointsize=18;

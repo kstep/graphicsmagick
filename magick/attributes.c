@@ -109,7 +109,7 @@ MagickExport void DestroyImageAttributes(Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t I m a g e A t t r i b u t e s                                       %
+%   G e t I m a g e A t t r i b u t e                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -453,7 +453,7 @@ ImageAttribute *GetImageInfoAttribute(const ImageInfo *image_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S e t I m a g e A t t r i b u t e s                                       %
+%   S e t I m a g e A t t r i b u t e                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -594,7 +594,7 @@ void StoreImageAttribute(Image *image,char *text)
   char
     breaker,
     *key,
-    quoted,
+    quote,
     *token,
     *value;
 
@@ -617,7 +617,7 @@ void StoreImageAttribute(Image *image,char *text)
   for ( ; ; )
   {
     status=Tokenizer(&token_info,0,token,length,text,"","=","\'",0,&breaker,
-      &next,&quoted);
+      &next,&quote);
     if (status != False)
       break;
     switch (state)

@@ -123,12 +123,6 @@ typedef struct _AnnotateInfo
   DecorationType
     decorate;
 
-  char
-    *font_name;
-
-  RectangleInfo
-    bounds;
-
   unsigned int
     signature;
 } AnnotateInfo;
@@ -435,9 +429,6 @@ typedef struct _Image
   int
     restart_animation_here,
     taint;
-
-  SegmentInfo
-    bounds;
 
   TimerInfo
     timer;
