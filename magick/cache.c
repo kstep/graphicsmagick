@@ -312,7 +312,7 @@ unsigned int ReadPixelCache(Image *image,const QuantumTypes quantum,
         {
           for (x=0; x < (int) image->columns; x++)
           {
-            index=UpScale(*p++);
+            index=(*p++);
             image->indexes[x]=index;
             *q++=image->colormap[index];
           }
@@ -333,10 +333,10 @@ unsigned int ReadPixelCache(Image *image,const QuantumTypes quantum,
         {
           for (x=0; x < (int) image->columns; x++)
           {
-            index=UpScale(*p++);
+            index=(*p++);
             image->indexes[x]=index;
             *q=image->colormap[index];
-            q->opacity=UpScale(*p++);
+            q->opacity=(*p++);
             q++;
           }
           break;

@@ -191,12 +191,19 @@ Export char *BaseFilename(const char *name)
     *p;
 
   static char
-    basename[MaxTextExtent];
+    *basename = (char *) NULL;
 
   /*
     Get basename of client.
   */
   assert(name != (char *) NULL);
+  if (basename == (char *) NULL)
+    {
+      basename=(char *) malloc(MaxTextExtent*sizeof(char *));
+      if (basename == (char *) NULL)
+        MagickError(ResourceLimitError,"Unable to get base filename",
+          "Memory allocation failed");
+    }
   (void) strcpy(basename,name);
   p=basename+(Extent(basename)-1);
   while (p > basename)

@@ -152,9 +152,9 @@ Export Image *ReadGRAYImage(const ImageInfo *image_info)
       ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
     for (i=0; i < (int) image->colors; i++)
     {
-      image->colormap[i].red=(Quantum) i;
-      image->colormap[i].green=(Quantum) i;
-      image->colormap[i].blue=(Quantum) i;
+      image->colormap[i].red=UpScale(i);
+      image->colormap[i].green=UpScale(i);
+      image->colormap[i].blue=UpScale(i);
     }
     /*
       Convert raster image to pixel packets.
