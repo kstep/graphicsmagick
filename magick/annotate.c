@@ -1196,7 +1196,6 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
   affine.xy=(FT_Fixed) (-65536.0*draw_info->affine.ry);
   affine.yy=(FT_Fixed) (65536.0*draw_info->affine.sy);
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
-  IdentityAffine(&clone_info->affine);
   (void) QueryColorDatabase("#000000ff",&clone_info->fill);
   (void) CloneString(&clone_info->primitive,"path '");
   for (i=0; i < (long) length; i++)
@@ -1316,8 +1315,8 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
         /*
           Draw text stroke.
         */
-        if (draw_info->stroke_pattern != (Image *) NULL)
-          IdentityAffine(&clone_info->affine);
+        clone_info->affine.tx=0.0;
+        clone_info->affine.ty=0.0;
         (void) ConcatenateString(&clone_info->primitive,"'");
         (void) DrawImage(image,clone_info);
       }
