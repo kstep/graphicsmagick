@@ -763,6 +763,10 @@ namespace Magick
     // color reduced.
     double          normalizedMeanError ( void ) const;
 
+    // Preferred size and location of an image canvas.
+    void            page ( const Geometry &pageSize_ );
+    Geometry        page ( void ) const;
+
     // Pen color (deprecated, don't use any more)
     void            penColor ( const Color &penColor_ );
     Color           penColor ( void  ) const;
@@ -776,9 +780,11 @@ namespace Magick
 				 const Color &color_ );
     Color           pixelColor ( const unsigned int x_, const unsigned int y_ ) const;
 
-    // Preferred size and location of an image canvas.
-    void            page ( const Geometry &pageSize_ );
-    Geometry        page ( void ) const;
+    // Add or remove a named profile to/from the image
+    void            profile( const std::string name_, const Blob &colorProfile_ );
+
+    // Retrieve a named profile from the image.
+    Blob            profile( const std::string name_ ) const;
 
     // JPEG/MIFF/PNG compression level (default 75).
     void            quality ( const unsigned int quality_ );

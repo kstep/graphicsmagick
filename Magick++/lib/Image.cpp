@@ -2647,6 +2647,44 @@ Magick::Geometry Magick::Image::page ( void ) const
                    constImage()->page.y < 0 ? true : false);
 }
 
+// Add a named profile to an an image or remove a named profile by passing an
+// empty Blob (use default Blob constructor).
+// Valid names are:
+// "*", "8BIM", "ICM", "IPTC", or a generic profile name.
+void Magick::Image::profile( const std::string name_, const Magick::Blob &profile_ )
+{
+  modifyImage();
+  int result = ProfileImage( image(), name_.c_str(),
+                             (unsigned char *)profile_.data(),
+                             profile_.length(), true);
+
+  if( !result )
+    throwImageException();
+}
+
+// Retrieve a named profile from the image.
+// Valid names are:
+// "8BIM", "8BIMTEXT", "APP1", "APP1JPEG", "ICC", "ICM", & "IPTC" or an existing
+// generic profile name.
+Magick::Blob Magick::Image::profile( const std::string name_ ) const
+{
+  const MagickLib::Image* image = constImage();
+
+  for (long i=0; i < (long) image->generic_profiles; i++)
+    {
+      if (!GlobExpression(image->generic_profile[i].name,name_.c_str()))
+        continue;      
+      
+      return Blob( (void*)image->generic_profile[i].info,
+                   image->generic_profile[i].length );
+    }
+  
+  Blob blob;
+  Image temp_image = *this;
+  temp_image.write( &blob, name_ );
+  return blob;
+}
+
 void Magick::Image::quality ( const unsigned int quality_ )
 {
   modifyImage();

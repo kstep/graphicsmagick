@@ -1,3 +1,8 @@
+2002-07-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (profile): Added method to store, delete, or
+ 	retrieve named application profiles.
+
 2002-07-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (type): Set the ImageInfo type attribute when

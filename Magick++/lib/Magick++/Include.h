@@ -520,6 +520,7 @@ namespace Magick
   using MagickLib::GetPixels;
   using MagickLib::GetQuantizeInfo;
   using MagickLib::GetTypeMetrics;
+  using MagickLib::GlobExpression;
   using MagickLib::GreaterValue;
   using MagickLib::HSLTransform;
   using MagickLib::HeightValue;
@@ -559,6 +560,7 @@ namespace Magick
   using MagickLib::PingImage;
   using MagickLib::PointInfo;
   using MagickLib::PopImagePixels;
+  using MagickLib::ProfileImage;
   using MagickLib::ProfileInfo;
   using MagickLib::PushImagePixels;
   using MagickLib::QuantizationError;

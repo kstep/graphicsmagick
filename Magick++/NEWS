@@ -3,6 +3,8 @@ This file records noteworthy changes in Magick++.
 (5.4.8)
   * The image type() method now also specifies the output image type
     to use while writing.
+  * Added a profile() method to Image to support adding, removing,
+    and retrieving named embedded application profiles.
 
 (5.4.7)
   * No changes to report.
