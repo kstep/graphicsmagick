@@ -186,8 +186,7 @@ static void CloseCache(Cache cache)
 */
 MagickExport void CloseImagePixels(Image *image)
 {
-  if (close_pixel_handler != (ClosePixelHandler) NULL)
-    (close_pixel_handler)(image);
+  (close_pixel_handler)(image);
 }
 
 /*
@@ -491,8 +490,7 @@ MagickExport void DestroyCacheNexus(Cache cache,const unsigned int id)
 */
 MagickExport void DestroyImagePixels(Image *image)
 {
-  if (destroy_pixel_handler != (DestroyPixelHandler) NULL)
-    (*destroy_pixel_handler)(image);
+  (*destroy_pixel_handler)(image);
 }
 
 /*
@@ -761,9 +759,7 @@ MagickExport unsigned int GetCacheNexus(Cache cache)
 MagickExport PixelPacket *GetImagePixels(Image *image,const int x,const int y,
   const unsigned int columns,const unsigned int rows)
 {
-  if (get_pixel_handler != (GetPixelHandler) NULL)
-    return((*get_pixel_handler)(image,x,y,columns,rows));
-  return((PixelPacket *) NULL);
+  return((*get_pixel_handler)(image,x,y,columns,rows));
 }
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -794,9 +790,7 @@ MagickExport PixelPacket *GetImagePixels(Image *image,const int x,const int y,
 */
 MagickExport IndexPacket *GetIndexes(const Image *image)
 {
-  if (get_indexes_from_handler != (GetIndexesFromHandler) NULL)
-    return((*get_indexes_from_handler)(image));
-  return((IndexPacket *) NULL);
+  return((*get_indexes_from_handler)(image));
 }
 
 /*
@@ -959,9 +953,7 @@ MagickExport PixelPacket *GetNexusPixels(const Cache cache,
 */
 MagickExport PixelPacket GetOnePixel(Image *image,const int x,const int y)
 {
-  if (get_one_pixel_from_handler != (GetOnePixelFromHandler) NULL)
-    return((*get_one_pixel_from_handler)(image,x,y));
-  return(image->background_color);
+  return((*get_one_pixel_from_handler)(image,x,y));
 }
 
 /*
@@ -1035,9 +1027,7 @@ static PixelPacket GetOnePixelFromCache(Image *image,const int x,const int y)
 */
 MagickExport PixelPacket *GetPixels(const Image *image)
 {
-  if (get_pixels_from_handler != (GetPixelsFromHandler) NULL)
-    return((*get_pixels_from_handler)(image));
-  return((PixelPacket *) NULL);
+  return((*get_pixels_from_handler)(image));
 }
 
 /*
@@ -1786,9 +1776,7 @@ MagickExport PixelPacket *SetCacheNexus(Image *image,const unsigned int id,
 MagickExport PixelPacket *SetImagePixels(Image *image,const int x,const int y,
   const unsigned int columns,const unsigned int rows)
 {
-  if (set_pixel_handler != (SetPixelHandler) NULL)
-    return((*set_pixel_handler)(image,x,y,columns,rows));
-  return((PixelPacket *) NULL);
+  return((*set_pixel_handler)(image,x,y,columns,rows));
 }
 
 /*
@@ -1907,8 +1895,16 @@ MagickExport void SetPixelCacheMethods(GetPixelHandler get_pixel,
   DestroyPixelHandler destroy_pixel)
 {
   /*
-    Reset image pixel methods.
+    Set image pixel methods.
   */
+  assert(get_pixel != (GetPixelHandler) NULL);
+  assert(set_pixel != (SetPixelHandler) NULL);
+  assert(sync_pixel != (SyncPixelHandler) NULL);
+  assert(get_pixels_from != (GetPixelsFromHandler) NULL);
+  assert(get_indexes_from != (GetIndexesFromHandler) NULL);
+  assert(get_one_pixel_from != (GetOnePixelFromHandler) NULL);
+  assert(close_pixel != (ClosePixelHandler) NULL);
+  assert(destroy_pixel != (DestroyPixelHandler) NULL);
   close_pixel_handler=close_pixel;
   destroy_pixel_handler=destroy_pixel;
   get_pixel_handler=get_pixel;
@@ -1949,9 +1945,7 @@ MagickExport void SetPixelCacheMethods(GetPixelHandler get_pixel,
 */
 MagickExport unsigned int SyncImagePixels(Image *image)
 {
-  if (sync_pixel_handler != (SyncPixelHandler) NULL)
-    return((*sync_pixel_handler)(image));
-  return(False);
+  return((*sync_pixel_handler)(image));
 }
 
 /*
