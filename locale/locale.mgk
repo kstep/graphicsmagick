@@ -89,5 +89,4 @@
 <!-- */ -->
 <localemap>
   <include locale="C" file="C.mgk" />
-  <include locale="en_US" file="en_US.mgk" />
 </localemap>
