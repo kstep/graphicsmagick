@@ -20,6 +20,7 @@ typedef struct _MagickInfo
   const char
     *name,
     *description,
+    *note,
     *version,
     *module;
 
