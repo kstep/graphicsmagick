@@ -985,9 +985,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
           }
       if (command != (char *) NULL)
         {
-          if (*type != 'r')
-            FormatString(filename,"|%.1024s",command);
-          else
+          if (*type == 'r')
             {
               FILE
                 *file;
@@ -998,13 +996,13 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
               /*
                 Determine if we really are a compressed file.
               */
-              file=(FILE *) popen(filename,"r");
+              file=(FILE *) popen(command,"r");
               if (file != (FILE *) NULL)
                 {
                   c=fgetc(file);
                   if (c >= 0)
                     FormatString(filename,"|%.1024s",command);
-                  (void) pclose(image->file);
+                  (void) pclose(file);
                 }
             }
           LiberateMemory((void **) &command);
