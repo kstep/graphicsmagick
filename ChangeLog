@@ -1,3 +1,7 @@
+2004-08-07  David R. Linn  <drl@vuse.vanderbilt.edu>
+
+	* www/formats.html: Titles for JNG and MNG were reversed.
+
 2004-08-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/widget.c (XCommandWidget): Replace ImageMagick logo in
