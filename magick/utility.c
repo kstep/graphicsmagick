@@ -2664,7 +2664,7 @@ Export char *TranslateText(const ImageInfo *image_info,const Image *image,
       }
       case 'n':
       {
-        FormatString(q,"%u",local_info->subrange);
+        FormatString(q,"%u",GetNumberScenes(image));
         q=translated_text+Extent(translated_text);
         break;
       }
