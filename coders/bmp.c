@@ -56,16 +56,16 @@
 #include "magick.h"
 #include "define.h"
 
-#if !defined(WIN32)
 /*
   Macro definitions (from Windows wingdi.h).
 */
+#define BI_JPEG  4
+#define BI_PNG  5
+#if !defined(WIN32)
 #define BI_RGB  0
 #define BI_RLE8  1
 #define BI_RLE4  2
 #define BI_BITFIELDS  3
-#define BI_JPEG  4
-#define BI_PNG  5
 
 #define LCS_CALIBRATED_RBG  0
 #define LCS_sRGB  1
