@@ -198,85 +198,6 @@ Export ImageAttribute *GetImageAttribute(const Image *image,const char *key)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S t o r e I m a g e A t t r i b u t e,                                    %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method StoreImageAttribute is used to store an image attribute from a
-%  text string with the syntax: NAME=VALUE.
-%
-%  The format of the StoreImageAttribute method is:
-%
-%      StoreImageAttribute(Image *image,char *text)
-%
-%  A description of each parameter follows:
-%
-%    o image: The address of a structure of type Image.
-%
-%    o text: The text string that is parsed and used to determine the name
-%            and value of the new attribute.
-%
-%
-*/
-void StoreImageAttribute(Image *image,char *s)
-{
-  char
-    brkused,
-    *key,
-    quoted,
-    *token,
-    *value;
-
-  int
-    state,
-    next;
-
-  int
-    inputlen = MaxTextExtent;
-
-  _tstate
-    ts;
-
-  token = (char *)NULL;
-  next=0;
-  state=0;
-
-  token = (char *) AllocateMemory(inputlen);     
-  if (token == (char *) NULL)
-    MagickError(ResourceLimitError,"Unable to parse attribute",
-      "Memory allocation failed");
-  while(Tokenizer(&ts, 0, token, inputlen, s, "", "=", "\'", 0,
-    &brkused,&next,&quoted)==0)
-  {
-    switch(state)
-    {
-    case 0:
-      key=AllocateString(token);
-      break;
-    case 1:
-      value=AllocateString(token);
-      break;
-    }
-    state++;
-  }
-  if (state>1 && (key != (char *)NULL) && (value != (char *)NULL))
-    SetImageAttribute(image,(const char *)key,(const char *)value);
-  if (token != (char *) NULL)
-    FreeMemory((void **) &token);
-  if (key != (char *) NULL)
-    FreeMemory((void **) &key);
-  if (value != (char *) NULL)
-    FreeMemory((void **) &value);
-  return;
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   S e t I m a g e A t t r i b u t e s                                       %
 %                                                                             %
 %                                                                             %
@@ -381,4 +302,86 @@ Export unsigned int SetImageAttribute(Image *image,const char *key,
   attribute->previous=p;
   p->next=attribute;
   return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S t o r e I m a g e A t t r i b u t e,                                    %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method StoreImageAttribute is used to store an image attribute from a
+%  text string with the syntax: NAME=VALUE.
+%
+%  The format of the StoreImageAttribute method is:
+%
+%      StoreImageAttribute(Image *image,char *text)
+%
+%  A description of each parameter follows:
+%
+%    o image: The address of a structure of type Image.
+%
+%    o text: The text string that is parsed and used to determine the name
+%      and value of the new attribute.
+%
+%
+*/
+void StoreImageAttribute(Image *image,char *text)
+{
+  char
+    brkused,
+    *key,
+    quoted,
+    *token,
+    *value;
+
+  int
+    state,
+    next;
+
+  int
+    inputlen = MaxTextExtent;
+
+  TokenInfo
+    token_info;
+
+  token=(char *) NULL;
+  next=0;
+  state=0;
+  token=(char *) AllocateMemory(inputlen);
+  if (token == (char *) NULL)
+    MagickError(ResourceLimitError,"Unable to parse attribute",
+      "Memory allocation failed");
+  while (Tokenizer(&token_info,0,token,inputlen,text,"","=","\'",0,&brkused,
+    &next,&quoted) == 0)
+  {
+    switch(state)
+    {
+      case 0:
+      {
+        key=AllocateString(token);
+        break;
+      }
+      case 1:
+      {
+        value=AllocateString(token);
+        break;
+      }
+    }
+    state++;
+  }
+  if ((state > 1) && (key != (char *)NULL) && (value != (char *)NULL))
+    SetImageAttribute(image,(const char *) key,(const char *) value);
+  if (token != (char *) NULL)
+    FreeMemory((void **) &token);
+  if (key != (char *) NULL)
+    FreeMemory((void **) &key);
+  if (value != (char *) NULL)
+    FreeMemory((void **) &value);
+  return;
 }
