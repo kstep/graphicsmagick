@@ -4850,8 +4850,8 @@ MagickExport void TraceBezier(PrimitiveInfo *primitive_info,
   LiberateMemory((void **) &coefficients);
 }
 
-MagickExport void TraceCircle(PrimitiveInfo *primitive_info,const PointInfo start,
-  const PointInfo end)
+MagickExport void TraceCircle(PrimitiveInfo *primitive_info,
+  const PointInfo start, const PointInfo end)
 {
   double
     alpha,
@@ -4938,7 +4938,8 @@ MagickExport void TraceLine(PrimitiveInfo *primitive_info,const PointInfo start,
   primitive_info->coordinates=2;
 }
 
-MagickExport unsigned long TracePath(PrimitiveInfo *primitive_info,const char *path)
+MagickExport unsigned long TracePath(PrimitiveInfo *primitive_info,
+  const char *path)
 {
   char
     *p,
@@ -5278,14 +5279,15 @@ MagickExport unsigned long TracePath(PrimitiveInfo *primitive_info,const char *p
   return(number_coordinates);
 }
 
-MagickExport void TracePoint(PrimitiveInfo *primitive_info,const PointInfo point)
+MagickExport void TracePoint(PrimitiveInfo *primitive_info,
+  const PointInfo point)
 {
   primitive_info->coordinates=1;
   primitive_info->point=point;
 }
 
-MagickExport void TraceRectangle(PrimitiveInfo *primitive_info,const PointInfo start,
-  const PointInfo end)
+MagickExport void TraceRectangle(PrimitiveInfo *primitive_info,
+  const PointInfo start,const PointInfo end)
 {
   PointInfo
     point;
