@@ -1,22 +1,34 @@
 @echo off
 set srcdir=..\..\..\Magick++\tests
+set bindir=..\..\bin\
+set PATH=%bindir%;%PATH%
+
 echo appendImages ...
-..\..\bin\appendImages
+appendImages
+
 echo attributes ...
-..\..\bin\attributes
+attributes
+
 echo averageImages ...
-..\..\bin\averageImages
+averageImages
+
 echo coaleseImages ...
-..\..\bin\coalesceImages
+coalesceImages
+
 echo coderInfo ...
-..\..\bin\coderInfo
+coderInfo
+
 echo color ...
-..\..\bin\color
+color
+
 echo montageImages ...
-..\..\bin\montageImages
+montageImages
+
 echo morphImages ...
-..\..\bin\morphImages
+morphImages
+
 echo readWriteBlob ...
-..\..\bin\readWriteBlob
+readWriteBlob
+
 echo readWriteImages ...
-..\..\bin\readWriteImages
+readWriteImages
