@@ -427,9 +427,9 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
           y_resolution=x_resolution;
       }
     x_scale=(width*dx_resolution)/x_resolution;
-    width=(unsigned int) ceil(x_scale+0.5);
+    width=(unsigned int) ceil(x_scale-0.5);
     y_scale=(height*dy_resolution)/y_resolution;
-    height=(unsigned int) ceil(y_scale+0.5);
+    height=(unsigned int) ceil(y_scale-0.5);
     if (page == 1)
       {
         /*
@@ -457,7 +457,8 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
           (void) strcpy(buffer,"%%BoundingBox: (atend)\n");
         else
           FormatString(buffer,"%%%%BoundingBox: %g %g %g %g\n",
-            floor(bounds.x1),floor(bounds.y1),ceil(bounds.x2),ceil(bounds.y2));
+            floor(bounds.x1+0.5),floor(bounds.y1+0.5),ceil(bounds.x2-0.5),
+            ceil(bounds.y2-0.5));
         (void) WriteBlobString(image,buffer);
         attribute=GetImageAttribute(image,"Label");
         if (attribute != (ImageAttribute *) NULL)
@@ -879,8 +880,8 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
   (void) WriteBlobString(image,"%%Trailer\n");
   if (page > 1)
     {
-      FormatString(buffer,"%%%%BoundingBox: %g %g %g %g\n",
-        floor(bounds.x1),floor(bounds.y1),ceil(bounds.x2),ceil(bounds.y2));
+      FormatString(buffer,"%%%%BoundingBox: %g %g %g %g\n",floor(bounds.x1+0.5),
+        floor(bounds.y1+0.5),ceil(bounds.x2-0.5),ceil(bounds.y2-0.5));
       (void) WriteBlobString(image,buffer);
     }
   (void) WriteBlobString(image,"%%EOF\n");

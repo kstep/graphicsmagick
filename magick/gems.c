@@ -612,7 +612,7 @@ MagickExport int GetOptimalKernelWidth1D(const double radius,const double sigma)
     u;
 
   if (radius > 0.0)
-    return((int) (2.0*ceil(radius)+1.0));
+    return((int) (2.0*ceil(radius-0.5)+1.0));
   for (width=5; ;)
   {
     normalize=0.0;
@@ -641,7 +641,7 @@ MagickExport int GetOptimalKernelWidth2D(const double radius,const double sigma)
     v;
 
   if (radius > 0.0)
-    return((int) (2.0*ceil(radius)+1.0));
+    return((int) (2.0*ceil(radius-0.5)+1.0));
   for (width=5; ;)
   {
     normalize=0.0;
@@ -720,8 +720,8 @@ MagickExport void HSLTransform(const double hue,const double saturation,
       return;
     }
   y=2.0*luminosity-v;
-  x=y+(v-y)*(6.0*hue-floor(6.0*hue));
-  z=v-(v-y)*(6.0*hue-floor(6.0*hue));
+  x=y+(v-y)*(6.0*hue-floor(6.0*hue-0.5));
+  z=v-(v-y)*(6.0*hue-floor(6.0*hue-0.5));
   switch ((int) (6.0*hue))
   {
     case 0: r=v; g=x; b=y; break;
@@ -967,8 +967,8 @@ MagickExport PixelPacket InterpolateColor(Image *image,const double x_offset,
   s=image->background_color;
   if (((x+1.0) < image->columns) && ((y+1.0) < image->rows))
     s=GetOnePixel(image,(int) (x+1.0),(int) (y+1.0));
-  x-=floor(x);
-  y-=floor(y);
+  x-=floor(x-0.5);
+  y-=floor(y-0.5);
   alpha=1.0-x;
   beta=1.0-y;
   color.red=(Quantum)

@@ -1128,28 +1128,28 @@ static void DrawBoundingRectangles(const DrawInfo *draw_info,
         if (polygon_info->edges[i].bounds.y2 > bounds.y2)
           bounds.y2=polygon_info->edges[i].bounds.y2;
       }
-      bounds.x1-=(mid-0.5);
+      bounds.x1-=mid;
       if (bounds.x1 < 0.0)
         bounds.x1=0.0;
-      bounds.y1-=(mid-0.5);
+      bounds.y1-=mid;
       if (bounds.y1 < 0.0)
         bounds.y1=0.0;
-      bounds.x2+=(mid-0.5);
+      bounds.x2+=mid;
       if (bounds.x2 >= image->columns)
-        bounds.x2=image->columns-1.0;
-      bounds.y2+=(mid-0.5);
+        bounds.x2=image->columns;
+      bounds.y2+=mid;
       if (bounds.y2 >= image->rows)
-        bounds.y2=image->rows-1.0;
+        bounds.y2=image->rows;
       for (i=0; i < polygon_info->number_edges; i++)
       {
         if (polygon_info->edges[i].direction)
           QueryColorDatabase("red",&clone_info->stroke);
         else
           QueryColorDatabase("green",&clone_info->stroke);
-        start.x=floor(polygon_info->edges[i].bounds.x1-mid);
-        start.y=floor(polygon_info->edges[i].bounds.y1-mid);
-        end.x=ceil(polygon_info->edges[i].bounds.x2+mid);
-        end.y=ceil(polygon_info->edges[i].bounds.y2+mid);
+        start.x=floor(polygon_info->edges[i].bounds.x1-mid+0.5);
+        start.y=floor(polygon_info->edges[i].bounds.y1-mid+0.5);
+        end.x=ceil(polygon_info->edges[i].bounds.x2+mid-0.5);
+        end.y=ceil(polygon_info->edges[i].bounds.y2+mid-0.5);
         primitive_info[0].primitive=RectanglePrimitive;
         TraceRectangle(primitive_info,start,end);
         primitive_info[0].method=ReplaceMethod;
@@ -1159,10 +1159,10 @@ static void DrawBoundingRectangles(const DrawInfo *draw_info,
       }
     }
   QueryColorDatabase("blue",&clone_info->stroke);
-  start.x=floor(bounds.x1-mid);
-  start.y=floor(bounds.y1-mid);
-  end.x=ceil(bounds.x2+mid);
-  end.y=ceil(bounds.y2+mid);
+  start.x=floor(bounds.x1-mid+0.5);
+  start.y=floor(bounds.y1-mid+0.5);
+  end.x=ceil(bounds.x2+mid-0.5);
+  end.y=ceil(bounds.y2+mid-0.5);
   primitive_info[0].primitive=RectanglePrimitive;
   TraceRectangle(primitive_info,start,end);
   primitive_info[0].method=ReplaceMethod;
@@ -2657,10 +2657,10 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
   bounds.y2+=(mid+1.0);
   if (bounds.y2 >= image->rows)
     bounds.y2=image->rows-1.0;
-  for (y=(int) ceil(bounds.y1-0.5); y <= (int) floor(bounds.y2-0.5); y++)
+  for (y=(int) ceil(bounds.y1-0.5); y <= (int) floor(bounds.y2+0.5); y++)
   {
     x=(int) ceil(bounds.x1-0.5);
-    q=GetImagePixels(image,x,y,(int) floor(bounds.x2-0.5)-x+1,1);
+    q=GetImagePixels(image,x,y,(int) floor(bounds.x2+0.5)-x+1,1);
     if (q == (PixelPacket *) NULL)
       break;
     switch (primitive_info->coordinates)
@@ -2672,7 +2672,7 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
         /*
           Point.
         */
-        for ( ; x <= (int) floor(bounds.x2-0.5); x++)
+        for ( ; x <= (int) floor(bounds.x2+0.5); x++)
         {
           if ((x == (int) ceil(primitive_info->point.x-0.5)) &&
               (y == (int) ceil(primitive_info->point.y-0.5)))
@@ -2685,7 +2685,7 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
         /*
           Polygon or line.
         */
-        for ( ; x <= (int) floor(bounds.x2-0.5); x++)
+        for ( ; x <= (int) floor(bounds.x2+0.5); x++)
         {
           fill_opacity=0.0;
           stroke_opacity=0.0;
@@ -3648,7 +3648,7 @@ static void DrawStrokePolygon(const DrawInfo *draw_info,
           theta.q=atan2(left_points[2].y-center.y,left_points[2].x-center.x);
           if (theta.q < theta.p)
             theta.q+=2.0*MagickPI;
-          arc_segments=ceil((theta.q-theta.p)/(2.0*sqrt(1.0/mid))-0.5);
+          arc_segments=ceil(((theta.q-theta.p)/(2.0*sqrt(1.0/mid)))-0.5);
           left_strokes[l].x=left_points[1].x;
           left_strokes[l].y=left_points[1].y;
           l++;
@@ -3752,7 +3752,7 @@ static void DrawStrokePolygon(const DrawInfo *draw_info,
           theta.q=atan2(right_points[2].y-center.y,right_points[2].x-center.x);
           if (theta.p < theta.q)
             theta.p+=2.0*MagickPI;
-          arc_segments=ceil((theta.p-theta.q)/(2.0*sqrt(1.0/mid))-0.5);
+          arc_segments=ceil(((theta.p-theta.q)/(2.0*sqrt(1.0/mid)))-0.5);
           right_strokes[r].x=right_points[1].x;
           right_strokes[r].y=right_points[1].y;
           r++;
@@ -4277,7 +4277,7 @@ static void TraceArc(PrimitiveInfo *primitive_info,const PointInfo start,
   else
     if ((theta > 0.0) && !sweep)
       theta-=2.0*MagickPI;
-  arc_segments=ceil(fabs(theta/(0.5*MagickPI+MagickEpsilon))-0.5);
+  arc_segments=ceil((fabs(theta/(0.5*MagickPI+MagickEpsilon)))-0.5);
   p=primitive_info;
   for (i=0; i < arc_segments; i++)
   {

@@ -324,7 +324,7 @@ static void XShearImage(Image *image,const double degrees,
         displacement*=(-1.0);
         direction=LEFT;
       }
-    step=(int) floor(displacement);
+    step=(int) floor(displacement-0.5);
     alpha=MaxRGB*(displacement-step);
     if (alpha == 0.0)
       {
@@ -584,7 +584,7 @@ static void YShearImage(Image *image,const double degrees,
         displacement*=(-1.0);
         direction=UP;
       }
-    step=(int) floor(displacement);
+    step=(int) floor(displacement-0.5);
     alpha=MaxRGB*(displacement-step);
     if (alpha == 0.0)
       {
@@ -862,9 +862,9 @@ MagickExport Image *RotateImage(Image *image,const double degrees,
       width=image->rows;
       height=image->columns;
     }
-  y_width=(unsigned int) (width+ceil(height*fabs(shear.x)));
-  x_offset=(int) (width+2.0*ceil(height*fabs(shear.y))-width);
-  y_offset=(int) (height+ceil(y_width*fabs(shear.y))-height);
+  y_width=(unsigned int) (width+ceil(height*fabs(shear.x)-0.5));
+  x_offset=(int) (width+2.0*ceil(height*fabs(shear.y)-0.5)-width);
+  y_offset=(int) (height+ceil(y_width*fabs(shear.y)-0.5)-height);
   /*
     Surround image with a border.
   */
@@ -979,10 +979,10 @@ MagickExport Image *ShearImage(Image *image,const double x_shear,
   /*
     Compute image size.
   */
-  y_width=(unsigned int) (image->columns+ceil(image->rows*fabs(shear.x)));
+  y_width=(unsigned int) (image->columns+ceil(image->rows*fabs(shear.x)-0.5));
   x_offset=(int)
-    (image->columns+ceil(2*image->rows*fabs(shear.y))-image->columns);
-  y_offset=(int) (image->rows+ceil(y_width*fabs(shear.y))-image->rows);
+    (image->columns+ceil(2.0*image->rows*fabs(shear.y)-0.5)-image->columns);
+  y_offset=(int) (image->rows+ceil(y_width*fabs(shear.y)-0.5)-image->rows);
   /*
     Surround image with border.
   */

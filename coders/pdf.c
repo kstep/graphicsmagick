@@ -283,8 +283,8 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) ParseImageGeometry(image_info->page,&page.x,&page.y,
       &page.width,&page.height);
   FormatString(geometry,"%ux%u",
-    (unsigned int) ceil(page.width*image->x_resolution/dx_resolution),
-    (unsigned int) ceil(page.height*image->y_resolution/dy_resolution));
+    (unsigned int) ceil(page.width*image->x_resolution/dx_resolution-0.5),
+    (unsigned int) ceil(page.height*image->y_resolution/dy_resolution-0.5));
   if (ferror(file))
     {
       (void) fclose(file);
