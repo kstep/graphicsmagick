@@ -1359,11 +1359,11 @@ MagickExport void DescribeImage(Image *image,FILE *file,
           if (image->total_colors != 0)
             {
               if ((image->total_colors/1024) >= 1024)
-                (void) fprintf(file,"%gmc ",
+                (void) fprintf(file,"%.1gmc ",
                   (double) image->total_colors/1024.0/1024.0);
               else
                 if (image->total_colors >= 1024)
-                  (void) fprintf(file,"%lukc ",
+                  (void) fprintf(file,"%.1gkc ",
                     (double) image->total_colors/1024.0);
                 else
                   (void) fprintf(file,"%luc ",image->total_colors);
@@ -1385,11 +1385,11 @@ MagickExport void DescribeImage(Image *image,FILE *file,
       if (GetBlobSize(image) != 0)
         {
           if ((GetBlobSize(image)/1024) >= 1024)
-            (void) fprintf(file,"%gmb ",
+            (void) fprintf(file,"%.1gmb ",
               (double) GetBlobSize(image)/1024.0/1024.0);
           else
             if (GetBlobSize(image) >= 1024)
-              (void) fprintf(file,"%lukb ",(double) GetBlobSize(image)/1024.0);
+              (void) fprintf(file,"%.1gkb ",(double) GetBlobSize(image)/1024.0);
             else
               (void) fprintf(file,"%lub ",(unsigned long) GetBlobSize(image));
         }
@@ -1695,11 +1695,11 @@ MagickExport void DescribeImage(Image *image,FILE *file,
             (void) fprintf(file,"\n");
     }
   if ((GetBlobSize(image)/1024) >= 1024)
-    (void) fprintf(file,"  Filesize: %gmb\n",
+    (void) fprintf(file,"  Filesize: %.1gmb\n",
       (double) GetBlobSize(image)/1024.0/1024.0);
   else
     if (GetBlobSize(image) >= 1024)
-      (void) fprintf(file,"  Filesize: %gkb\n",
+      (void) fprintf(file,"  Filesize: %.1gkb\n",
         (double) GetBlobSize(image)/1024.0);
     else
       (void) fprintf(file,"  Filesize: %lub\n",(unsigned long)
@@ -1727,7 +1727,9 @@ MagickExport void DescribeImage(Image *image,FILE *file,
   if ((image->page.width != 0) && (image->page.height != 0))
     (void) fprintf(file,"  Page geometry: %lux%lu%+ld%+ld\n",image->page.width,
       image->page.height,image->page.x,image->page.y);
-  void) fprintf(file,"  Dispose: ");
+  if (image->dispose != 0)
+    (void) fprintf(file,"  Dispose Method: %lu\n",image->dispose);
+  (void) fprintf(file,"  Dispose: ");
   switch (image->dispose)
   {
     case UndefinedDispose: (void) fprintf(file,"Undefined\n"); break;
