@@ -1583,7 +1583,7 @@ AC_OUTPUT(Makefile delegates/delegates.mgk delegates/Makefile magick/Makefile \
   Magick++/demo/Makefile Magick++/tests/Makefile \
   PerlMagick/Makefile.PL)
 
-if test ! -f /usr/local/share/fonts/fontmap; then
+if test -f /usr/local/share/fonts/fontmap; then
   cp -f /usr/local/share/fonts/fontmap magick/fonts.mgk
 fi
 
