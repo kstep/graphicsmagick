@@ -587,6 +587,7 @@ MagickExport void Hull(const long x_offset,const long y_offset,
   const int polarity)
 {
   long
+    v,
     y;
 
   register long
@@ -597,9 +598,6 @@ MagickExport void Hull(const long x_offset,const long y_offset,
     *q,
     *r,
     *s;
-
-  unsigned long
-    v;
 
   assert(f != (Quantum *) NULL);
   assert(g != (Quantum *) NULL);
@@ -617,7 +615,7 @@ MagickExport void Hull(const long x_offset,const long y_offset,
         v=(*p);
         if (*r > v)
           v+=Upscale(1);
-        *q=v;
+        *q=(Quantum) Min(v,MaxRGB);
         p++;
         q++;
         r++;
@@ -626,9 +624,9 @@ MagickExport void Hull(const long x_offset,const long y_offset,
       for (x=0; x < (long) columns; x++)
       {
         v=(*p);
-        if (v > (unsigned long) (*r+Upscale(1)))
+        if (v > (long) (*r+Upscale(1)))
           v-=Upscale(1);
-        *q=v;
+        *q=(Quantum) Max(v,0);
         p++;
         q++;
         r++;
@@ -651,9 +649,9 @@ MagickExport void Hull(const long x_offset,const long y_offset,
       for (x=0; x < (long) columns; x++)
       {
         v=(*q);
-        if (((unsigned long) (*s+Upscale(1)) > v) && (*r > v))
+        if (((long) (*s+Upscale(1)) > v) && (*r > v))
           v+=Upscale(1);
-        *p=v;
+        *p=(Quantum) Min(v,MaxRGB);
         p++;
         q++;
         r++;
@@ -663,9 +661,9 @@ MagickExport void Hull(const long x_offset,const long y_offset,
       for (x=0; x < (long) columns; x++)
       {
         v=(*q);
-        if (((unsigned long) (*s+Upscale(1)) < v) && (*r < v))
+        if (((long) (*s+Upscale(1)) < v) && (*r < v))
           v-=Upscale(1);
-        *p=v;
+        *p=(Quantum) Max(v,0);
         p++;
         q++;
         r++;
