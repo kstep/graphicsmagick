@@ -3584,6 +3584,7 @@ echo "$as_me:$LINENO: result: $lt_cv_deplibs_check_method" >&5
 echo "${ECHO_T}$lt_cv_deplibs_check_method" >&6
 file_magic_cmd=$lt_cv_file_magic_cmd
 deplibs_check_method=$lt_cv_deplibs_check_method
+deplibs_check_method=pass_all
 test -z "$deplibs_check_method" && deplibs_check_method=unknown
 
 
@@ -14510,7 +14511,7 @@ fi
 
 # Enable build using delegate libraries built in subdirectories rather than installed
 # delegate libraries (bzlib fpx hdf jasper jbig jpeg lcms mpeg2 png tiff ttf wmf xml zlib)
-# Check whether --enable-delegate_build or --disable-delegate_build was given.
+# Check whether --enable-delegate-build or --disable-delegate-build was given.
 if test "${enable_delegate_build+set}" = set; then
   enableval="$enable_delegate_build"
   with_delegate_build=$enableval

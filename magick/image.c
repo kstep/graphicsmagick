@@ -129,18 +129,18 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   allocate_image->colorspace=RGBColorspace;
   allocate_image->compose=OverCompositeOp;
   allocate_image->blur=1.0;
-  allocate_image->reference_count=1;
   GetExceptionInfo(&allocate_image->exception);
-  GetTimerInfo(&allocate_image->timer);
-  GetCacheInfo(&allocate_image->cache);
-  allocate_image->blob=CloneBlobInfo((BlobInfo *) NULL);
-  allocate_image->signature=MagickSignature;
   (void) QueryColorDatabase(BackgroundColor,&allocate_image->background_color,
     &allocate_image->exception);
   (void) QueryColorDatabase(BorderColor,&allocate_image->border_color,
     &allocate_image->exception);
   (void) QueryColorDatabase(MatteColor,&allocate_image->matte_color,
     &allocate_image->exception);
+  GetTimerInfo(&allocate_image->timer);
+  GetCacheInfo(&allocate_image->cache);
+  allocate_image->blob=CloneBlobInfo((BlobInfo *) NULL);
+  allocate_image->reference_count=1;
+  allocate_image->signature=MagickSignature;
   if (image_info == (ImageInfo *) NULL)
     return(allocate_image);
   /*
