@@ -129,12 +129,12 @@ namespace Magick
   public:
     annotateImage ( const std::string &text_,
 		    const Geometry &location_,
-		    unsigned int gravity_ = NorthWestGravity )
+		    GravityType gravity_ = NorthWestGravity )
       : _text( text_ ),
 	_location( location_ ),
 	_gravity( gravity_ ) { }
     annotateImage ( const std::string &text_,
-		    unsigned int gravity_ = NorthWestGravity )
+		    GravityType gravity_ = NorthWestGravity )
       : _text( text_ ),
 	_location( ),
 	_gravity( gravity_ ) { }
@@ -149,7 +149,7 @@ namespace Magick
   private:
     const std::string   _text;
     const Geometry      _location;
-    const unsigned int  _gravity;
+    const GravityType   _gravity;
   };
 
   // Blur image with specified blur factor
@@ -1137,6 +1137,21 @@ namespace Magick
   private:
     const Geometry _imageGeometry;
     const Geometry _cropGeometry;
+  };
+
+  // Convert the image colorspace representation
+  class transformColorSpaceImage : public std::unary_function<Image&,void>
+  {
+  public:
+    transformColorSpaceImage( ColorspaceType colorSpace_ )
+      : _colorSpace( colorSpace_ ) { }
+
+    void operator()( Image &image_ )
+      {
+	image_.transformColorSpace( _colorSpace );
+      }
+  private:
+    const ColorspaceType _colorSpace;
   };
 
   // Set image color to transparent

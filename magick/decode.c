@@ -12357,12 +12357,6 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
         size=MSBFirstReadLong(image->file);
         for (j=0; j < size; j++)
           (void) fgetc(image->file);
-      }
-      /*
-        Read pixel data for each layer.
-      */
-      for (i=0; i < number_layers; i++)
-      {
         /*
           Allocate layered image.
         */
@@ -12409,9 +12403,12 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
               image);
           }
         SetImage(layer_info[i].image);
-        /*
-          Convert pixels to Runlength encoded packets.
-        */
+      }
+      /*
+        Read pixel data for each layer.
+      */
+      for (i=0; i < number_layers; i++)
+      {
         for (j=0; j < (int) layer_info[i].channels; j++)
         {
           compression=MSBFirstReadShort(layer_info[i].image->file);
@@ -12462,7 +12459,6 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
         }
         if (layer_info[i].image->class == PseudoClass)
           SyncImage(layer_info[i].image);
-        CondenseImage(layer_info[i].image);
         if (layer_info[i].opacity != Opaque)
           {
             /*
@@ -12547,8 +12543,9 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
     /*
       Composite layer onto image.
     */
-    CompositeImage(image,OverCompositeOp,layer_info[i].image,
-      layer_info[i].x,layer_info[i].y);
+    if ((layer_info[i].width != 0) && (layer_info[i].height != 0))
+      CompositeImage(image,OverCompositeOp,layer_info[i].image,
+        layer_info[i].x,layer_info[i].y);
     layer_info[i].image->colormap=(ColorPacket *) NULL;
     DestroyImage(layer_info[i].image);
   }

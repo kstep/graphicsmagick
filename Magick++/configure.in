@@ -9,8 +9,16 @@ dnl Written by Bob Friesenhahn, bfriesen@simple.dallas.tx.us
 AC_INIT(lib/Magick++.h)
 AC_CANONICAL_SYSTEM
 
-AM_INIT_AUTOMAKE(Magick++, 0.8.1, ' ')
-TESTED_MAGICK_VERSION="4.2.3"
+AM_INIT_AUTOMAKE(Magick++, 0.8.2, ' ')
+TESTED_MAGICK_VERSION="4.2.5"
+
+MAJOR_VERSION=0
+MINOR_VERSION=8
+MICRO_VERSION=2
+echo "configuring Magick++ $MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION"
+AC_SUBST(MAJOR_VERSION)dnl
+AC_SUBST(MINOR_VERSION)dnl
+AC_SUBST(MICRO_VERSION)dnl
 
 # Check for ImageMagick release and warn if not what we expect
 AC_MSG_CHECKING(ImageMagick version)
@@ -37,6 +45,11 @@ AC_LANG_CPLUSPLUS
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_RANLIB
+
+# Configure libtool
+AM_ENABLE_SHARED(no)
+AM_ENABLE_STATIC(yes)
+AM_PROG_LIBTOOL
 
 # Add configure option --enable-maintainer-mode which enables dependency
 # checking and generation useful to package maintainers.  This is made an

@@ -69,12 +69,21 @@ host_alias = @host_alias@
 host_triplet = @host@
 target_alias = @target_alias@
 target_triplet = @target@
+AS = @AS@
 CC = @CC@
 CPP = @CPP@
 CXX = @CXX@
+DLLTOOL = @DLLTOOL@
+LD = @LD@
+LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
+MAJOR_VERSION = @MAJOR_VERSION@
 MAKEINFO = @MAKEINFO@
+MICRO_VERSION = @MICRO_VERSION@
+MINOR_VERSION = @MINOR_VERSION@
+NM = @NM@
+OBJDUMP = @OBJDUMP@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
@@ -88,7 +97,7 @@ INCLUDES = -I../lib
 #
 check_PROGRAMS = color attributes manipulate
 
-LDADD = ../lib/libMagick++.a
+LDADD = ../lib/libMagick++.la
 
 attributes_SOURCES = attributes.cpp
 
@@ -107,20 +116,21 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 color_OBJECTS =  color.o
 color_LDADD = $(LDADD)
-color_DEPENDENCIES =  ../lib/libMagick++.a
+color_DEPENDENCIES =  ../lib/libMagick++.la
 color_LDFLAGS = 
 attributes_OBJECTS =  attributes.o
 attributes_LDADD = $(LDADD)
-attributes_DEPENDENCIES =  ../lib/libMagick++.a
+attributes_DEPENDENCIES =  ../lib/libMagick++.la
 attributes_LDFLAGS = 
 manipulate_OBJECTS =  manipulate.o
 manipulate_LDADD = $(LDADD)
-manipulate_DEPENDENCIES =  ../lib/libMagick++.a
+manipulate_DEPENDENCIES =  ../lib/libMagick++.la
 manipulate_LDFLAGS = 
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
+LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
-CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(LDFLAGS) -o $@
+CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(LDFLAGS) -o $@
 DIST_COMMON =  Makefile.am Makefile.in
 
 
@@ -133,7 +143,7 @@ OBJECTS = $(color_OBJECTS) $(attributes_OBJECTS) $(manipulate_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .cpp .o .s
+.SUFFIXES: .S .c .cpp .lo .o .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps tests/Makefile
 
@@ -170,6 +180,25 @@ distclean-compile:
 
 maintainer-clean-compile:
 
+.c.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.s.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.S.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+mostlyclean-libtool:
+	-rm -f *.lo
+
+clean-libtool:
+	-rm -rf .libs _libs
+
+distclean-libtool:
+
+maintainer-clean-libtool:
+
 color: $(color_OBJECTS) $(color_DEPENDENCIES)
 	@rm -f color
 	$(CXXLINK) $(color_LDFLAGS) $(color_OBJECTS) $(color_LDADD) $(LIBS)
@@ -183,6 +212,8 @@ manipulate: $(manipulate_OBJECTS) $(manipulate_DEPENDENCIES)
 	$(CXXLINK) $(manipulate_LDFLAGS) $(manipulate_OBJECTS) $(manipulate_LDADD) $(LIBS)
 .cpp.o:
 	$(CXXCOMPILE) -c $<
+.cpp.lo:
+	$(LTCXXCOMPILE) -c $<
 
 tags: TAGS
 
@@ -229,32 +260,19 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 attributes.o: attributes.cpp ../lib/Magick++.h ../lib/MagickImage.h \
-	../lib/MagickColor.h ../lib/MagickInclude.h \
+	../lib/MagickBlob.h ../lib/MagickColor.h ../lib/MagickInclude.h \
 	../lib/MagickDrawable.h ../lib/MagickGeometry.h \
 	../lib/MagickException.h ../lib/MagickOptions.h \
 	../lib/MagickLastError.h ../lib/MagickSTL.h \
 	../lib/MagickMontage.h ../lib/MagickFunctions.h
 color.o: color.cpp ../lib/Magick++.h ../lib/MagickImage.h \
-	../lib/MagickColor.h ../lib/MagickInclude.h \
+	../lib/MagickBlob.h ../lib/MagickColor.h ../lib/MagickInclude.h \
 	../lib/MagickDrawable.h ../lib/MagickGeometry.h \
 	../lib/MagickException.h ../lib/MagickOptions.h \
 	../lib/MagickLastError.h ../lib/MagickSTL.h \
 	../lib/MagickMontage.h ../lib/MagickFunctions.h
 manipulate.o: manipulate.cpp ../lib/Magick++.h ../lib/MagickImage.h \
-	../lib/MagickColor.h ../lib/MagickInclude.h \
-	../lib/MagickDrawable.h ../lib/MagickGeometry.h \
-	../lib/MagickException.h ../lib/MagickOptions.h \
-	../lib/MagickLastError.h ../lib/MagickSTL.h \
-	../lib/MagickMontage.h ../lib/MagickFunctions.h
-testAttributes.o: testAttributes.cpp ../lib/Magick++.h \
-	../lib/MagickImage.h ../lib/MagickColor.h \
-	../lib/MagickInclude.h ../lib/MagickDrawable.h \
-	../lib/MagickGeometry.h ../lib/MagickException.h \
-	../lib/MagickOptions.h ../lib/MagickLastError.h \
-	../lib/MagickSTL.h ../lib/MagickMontage.h \
-	../lib/MagickFunctions.h
-testmagick.o: testmagick.cpp ../lib/Magick++.h ../lib/MagickImage.h \
-	../lib/MagickColor.h ../lib/MagickInclude.h \
+	../lib/MagickBlob.h ../lib/MagickColor.h ../lib/MagickInclude.h \
 	../lib/MagickDrawable.h ../lib/MagickGeometry.h \
 	../lib/MagickException.h ../lib/MagickOptions.h \
 	../lib/MagickLastError.h ../lib/MagickSTL.h \
@@ -297,23 +315,27 @@ distclean-generic:
 
 maintainer-clean-generic:
 mostlyclean-am:  mostlyclean-checkPROGRAMS mostlyclean-compile \
-		mostlyclean-tags mostlyclean-generic
+		mostlyclean-libtool mostlyclean-tags \
+		mostlyclean-generic
 
 mostlyclean: mostlyclean-am
 
-clean-am:  clean-checkPROGRAMS clean-compile clean-tags clean-generic \
-		mostlyclean-am
+clean-am:  clean-checkPROGRAMS clean-compile clean-libtool clean-tags \
+		clean-generic mostlyclean-am
 
 clean: clean-am
 
-distclean-am:  distclean-checkPROGRAMS distclean-compile distclean-tags \
-		distclean-generic clean-am
+distclean-am:  distclean-checkPROGRAMS distclean-compile \
+		distclean-libtool distclean-tags distclean-generic \
+		clean-am
+	-rm -f libtool
 
 distclean: distclean-am
 
 maintainer-clean-am:  maintainer-clean-checkPROGRAMS \
-		maintainer-clean-compile maintainer-clean-tags \
-		maintainer-clean-generic distclean-am
+		maintainer-clean-compile maintainer-clean-libtool \
+		maintainer-clean-tags maintainer-clean-generic \
+		distclean-am
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
@@ -321,13 +343,15 @@ maintainer-clean: maintainer-clean-am
 
 .PHONY: mostlyclean-checkPROGRAMS distclean-checkPROGRAMS \
 clean-checkPROGRAMS maintainer-clean-checkPROGRAMS mostlyclean-compile \
-distclean-compile clean-compile maintainer-clean-compile tags \
-mostlyclean-tags distclean-tags clean-tags maintainer-clean-tags \
-distdir info-am info dvi-am dvi check check-am installcheck-am \
-installcheck install-exec-am install-exec install-data-am install-data \
-install-am install uninstall-am uninstall all-redirect all-am all \
-installdirs mostlyclean-generic distclean-generic clean-generic \
-maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+distclean-compile clean-compile maintainer-clean-compile \
+mostlyclean-libtool distclean-libtool clean-libtool \
+maintainer-clean-libtool tags mostlyclean-tags distclean-tags \
+clean-tags maintainer-clean-tags distdir info-am info dvi-am dvi check \
+check-am installcheck-am installcheck install-exec-am install-exec \
+install-data-am install-data install-am install uninstall-am uninstall \
+all-redirect all-am all installdirs mostlyclean-generic \
+distclean-generic clean-generic maintainer-clean-generic clean \
+mostlyclean distclean maintainer-clean
 
 
 check:

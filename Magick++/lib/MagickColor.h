@@ -28,6 +28,10 @@ namespace Magick
   int operator <= ( const Magick::Color& left_, const Magick::Color& right_ );
 
   // Base color class stores RGB components scaled to fit Quantum
+  //
+  // Please note that this base class is subject to change so if you
+  // want to be totally safe, don't rely on it.
+  //
   class Color
   {
     friend class MagickImage;

@@ -115,10 +115,25 @@ void Magick::Image::addNoise( NoiseType noiseType_ )
 					   (MagickLib::NoiseType)noiseType_ ) );
 }
 
-// Annotate image
+// Annotate image with text
+// Text & location
+void Magick::Image::annotate ( const std::string &text_,
+			       const Geometry &location_ )
+{
+  annotate ( text_, location_,  NorthWestGravity, (double)0 );
+}
+// Text, location, & gravity
 void Magick::Image::annotate ( const std::string &text_,
 			       const Geometry &location_,
-			       unsigned int gravity_ )
+			       GravityType gravity_ )
+{
+  annotate ( text_, location_, gravity_, (double)0 );
+}
+// Text, location, degrees, gravity
+void Magick::Image::annotate ( const std::string &text_,
+			       const Geometry &location_,
+			       GravityType gravity_,
+			       double degrees_ )
 {
   modifyImage();
 
@@ -137,14 +152,17 @@ void Magick::Image::annotate ( const std::string &text_,
   }
 
   annotateInfo.gravity = gravity_;
+  annotateInfo.degrees = degrees_;
 
   MagickLib::AnnotateImage( _imgRef->image(), &annotateInfo );
   MagickLib::DestroyAnnotateInfo( &annotateInfo );
 
   throwMagickError();
 }
+
+// Text & gravity
 void Magick::Image::annotate ( const std::string &text_,
-			       unsigned int gravity_ )
+			       GravityType gravity_ )
 {
   modifyImage();
 
@@ -233,14 +251,6 @@ void Magick::Image::colorize ( const Color &opaqueColor_,
   modifyImage();
   MagickLib::ColorizeImage ( _imgRef->image(), opaque_str.c_str(),
 			     pen_str.c_str() );
-  throwMagickError();
-}
-
-// Comment
-void Magick::Image::comment ( const std::string &comment_ )
-{
-  modifyImage();
-  MagickLib::CommentImage( _imgRef->image(), comment_.c_str() );
   throwMagickError();
 }
 
@@ -365,9 +375,9 @@ void Magick::Image::draw ( const Drawable &drawable_ )
 }
 
 // Draw on image using a drawable list
-void Magick::Image::draw ( const std::list<Drawable> &drawable_ )
+void Magick::Image::draw ( const std::list<Magick::Drawable> &drawable_ )
 {
-  std::list<Drawable>::const_iterator p = drawable_.begin();
+  std::list<Magick::Drawable>::const_iterator p = drawable_.begin();
   std::string primitives;
 
   while ( p != drawable_.end() )
@@ -703,6 +713,16 @@ void Magick::Image::opaque ( const Color &opaqueColor_,
   throwMagickError();
 }
 
+// Ping is similar to read except only enough of the image is read to
+// determine the image columns, rows, and filesize.  Access the
+// columns(), rows(), and fileSize() attributes after invoking ping.
+// The image data is not valid after calling ping.
+void Magick::Image::ping ( const std::string &imageSpec_ )
+{
+  _imgRef->options()->fileName( imageSpec_ );
+  replaceImage( MagickLib::PingImage( _imgRef->options()->imageInfo() ));
+}
+
 // Quantize colors in image using current quantization settings
 void Magick::Image::quantize ( bool measureError_  )
 {
@@ -919,6 +939,64 @@ void Magick::Image::transform ( const Geometry &imageGeometry_,
   throwMagickError();
 }
 
+void Magick::Image::transformColorSpace( ColorspaceType colorSpace_ )
+{
+  MagickLib::Image* image = _imgRef->image();
+  
+  // Nothing to do?
+  if ( image->colorspace == colorSpace_ )
+    return;
+
+  modifyImage();
+
+  if ( image->colorspace == RGBColorspace ||
+       image->colorspace == TransparentColorspace ||
+       image->colorspace == GRAYColorspace )
+    {
+      // Convert the image to an alternate colorspace representation
+      // In:			Out:
+      // RGBColorspace		RGBColorspace (no conversion)
+      // TransparentColorspace	TransparentColorspace (no conversion)
+      // GRAYColorspace		GRAYColorspace (no conversion if really Gray)
+      // RGBColorspace		CMYKColorspace
+      // RGBColorspace		GRAYColorspace
+      // RGBColorspace		OHTAColorspace
+      // RGBColorspace		sRGBColorspace
+      // RGBColorspace		XYZColorspace
+      // RGBColorspace		YCbCrColorspace
+      // RGBColorspace		YCCColorspace
+      // RGBColorspace		YIQColorspace
+      // RGBColorspace		YPbPrColorspace
+      // RGBColorspace		YUVColorspace
+      MagickLib::RGBTransformImage( _imgRef->image(), colorSpace_ );
+      throwMagickError();
+      return;
+    }
+
+  if ( colorSpace_ == RGBColorspace ||
+       colorSpace_ == TransparentColorspace ||
+       colorSpace_ == GRAYColorspace )
+    {
+      // Convert the image from an alternate colorspace representation
+      // In:				Out:
+      // CMYKColorspace		RGBColorspace
+      // RGBColorspace		RGBColorspace (no conversion)
+      // GRAYColorspace		GRAYColorspace (no conversion)
+      // TransparentColorspace	TransparentColorspace (no conversion)
+      // OHTAColorspace		RGBColorspace
+      // sRGBColorspace		RGBColorspace
+      // XYZColorspace		RGBColorspace
+      // YCbCrColorspace		RGBColorspace
+      // YCCColorspace		RGBColorspace
+      // YIQColorspace		RGBColorspace
+      // YPbPrColorspace		RGBColorspace
+      // YUVColorspace		RGBColorspace
+      MagickLib::TransformRGBImage( _imgRef->image(), colorSpace_ );
+      throwMagickError();
+      return;
+    }
+}
+
 // Add matte image to image, setting pixels matching color to transparent
 void Magick::Image::transparent ( const Color &color_ )
 {
@@ -941,6 +1019,17 @@ void Magick::Image::trim ( void )
   // width=0, height=0 trims edges
   Geometry cropInfo(0,0);
   crop ( cropInfo );
+}
+
+// Un-condense image (Uncompresses runlength-encoded pixels packets to
+// a rectangular array of pixels)
+void Magick::Image::uncondense ( void )
+{
+  modifyImage();
+
+  MagickLib::UncondenseImage( _imgRef->image() );
+
+  throwMagickError();
 }
 
 // Map image pixels to a sine wave
@@ -1286,6 +1375,27 @@ unsigned int Magick::Image::columns ( void ) const
   return _imgRef->image()->columns;
 }
 
+// Comment
+void Magick::Image::comment ( const std::string &comment_ )
+{
+  modifyImage();
+  MagickLib::Image * image = _imgRef->image();
+
+  if ( image->comments )
+    {
+      MagickLib::FreeMemory( image->comments );
+      image->comments = 0;
+    }
+
+  if ( comment_.length() > 0 )
+    {
+      image->comments=MagickLib::TranslateText((ImageInfo *) NULL,
+					       image,
+					       comment_.c_str());
+    }
+
+  throwMagickError();
+}
 std::string Magick::Image::comment ( void ) const
 {
   MagickLib::Image * image = _imgRef->image();
@@ -1469,36 +1579,33 @@ unsigned int Magick::Image::gifDisposeMethod ( void ) const
 }
 
 // ICC color profile (BLOB)
-// FIXME: should this really be string?  What about NULL?
-// void Magick::Image::iccColorProfile( const std::string colorProfile_ )
-// {
-//   MagickLib::ProfileInfo * color_profile = &(_imgRef->image()->color_profile);
-//   if ( color_profile->info )
-//     {
-//       MagickLib::FreeMemory( color_profile->info );
-//       color_profile->info = 0;
-//       color_profile->length = 0;
-//     }
+void Magick::Image::iccColorProfile( const Magick::Blob &colorProfile_ )
+{
+  MagickLib::ProfileInfo * color_profile = &(_imgRef->image()->color_profile);
+  if ( color_profile->info )
+    {
+      MagickLib::FreeMemory( color_profile->info );
+      color_profile->info = 0;
+    }
+  color_profile->length = 0;
 
-//   if ( colorProfile_.length() != 0 )
-//     {
-//       color_profile->info = (unsigned char*)MagickLib::AllocateMemory( colorProfile_.length() );
-//       color_profile->length = colorProfile_.copy( (char*)color_profile->info,
-// 						  colorProfile_.length() );
-//     }
-// }
-// std::string Magick::Image::iccColorProfile( void ) const
-// {
-//   MagickLib::ProfileInfo * color_profile = &(_imgRef->image()->color_profile);
-//   if ( color_profile->info )
-//     {
-//       std::string value;
-//       value.assign( (char*)color_profile->info, 
-// 		    color_profile->length );
-//       return value;
-//     }
-//   return string();
-// }
+  if ( colorProfile_.data() != 0 )
+    {
+      color_profile->info =
+	static_cast<unsigned char*>(MagickLib::AllocateMemory(colorProfile_.length()));
+
+      if ( color_profile->info == 0 )
+	throw std::bad_alloc();
+
+      memcpy( color_profile->info, colorProfile_.data(), colorProfile_.length());
+      color_profile->length = colorProfile_.length();
+    }
+}
+Magick::Blob Magick::Image::iccColorProfile( void ) const
+{
+  MagickLib::ProfileInfo * color_profile = &(_imgRef->image()->color_profile);
+  return Blob( color_profile->info, color_profile->length );
+}
 
 void Magick::Image::interlaceType ( Magick::InterlaceType interlace_ )
 {
@@ -1516,8 +1623,34 @@ Magick::InterlaceType Magick::Image::interlaceType ( void ) const
 }
 
 // IPTC profile (BLOB)
-// void Magick::Image::iptcProfile( const std::string iptcProfile_ );
-// string Magick::Image::iptcProfile( void ) const;
+void Magick::Image::iptcProfile( const Magick::Blob &iptcProfile_ )
+{
+  MagickLib::ProfileInfo * iptc_profile = &(_imgRef->image()->iptc_profile);
+  if ( iptc_profile->info )
+    {
+      MagickLib::FreeMemory( iptc_profile->info );
+      iptc_profile->info = 0;
+    }
+  iptc_profile->length = 0;
+
+  if ( iptcProfile_.data() != 0 )
+    {
+      iptc_profile->info =
+	static_cast<unsigned char*>(MagickLib::AllocateMemory(iptcProfile_.length()));
+
+      if ( iptc_profile->info == 0 )
+	throw std::bad_alloc();
+
+      memcpy( iptc_profile->info, iptcProfile_.data(), iptcProfile_.length());
+
+      iptc_profile->length = iptcProfile_.length();
+    }
+}
+Magick::Blob Magick::Image::iptcProfile( void ) const
+{
+  MagickLib::ProfileInfo * iptc_profile = &(_imgRef->image()->iptc_profile);
+  return Blob( iptc_profile->info, iptc_profile->length );
+}
 
 // Does object contain valid image?
 void Magick::Image::isValid ( bool isValid_ )

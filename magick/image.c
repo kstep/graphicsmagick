@@ -2719,6 +2719,8 @@ Export void CondenseImage(Image *image)
     *q;
 
   assert(image != (Image *) NULL);
+  if ((image->columns == 0) || (image->rows == 0))
+    return;
   if (image->pixels == (RunlengthPacket *) NULL)
     return;
   /*

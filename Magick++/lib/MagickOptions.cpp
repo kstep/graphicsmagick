@@ -37,7 +37,6 @@ Magick::Options::Options( const Magick::Options& options_ )
   // Copy pen texture
   if ( options_._penTexture )
     {
-      
       _penTexture = MagickLib::CloneImage( options_._penTexture,
 					   options_._penTexture->columns,
 					   options_._penTexture->rows,

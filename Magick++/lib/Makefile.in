@@ -69,45 +69,56 @@ host_alias = @host_alias@
 host_triplet = @host@
 target_alias = @target_alias@
 target_triplet = @target@
+AS = @AS@
 CC = @CC@
 CPP = @CPP@
 CXX = @CXX@
+DLLTOOL = @DLLTOOL@
+LD = @LD@
+LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
+NM = @NM@
+OBJDUMP = @OBJDUMP@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
 
 AUTOMAKE_OPTIONS = 1.2
 
-lib_LIBRARIES = libMagick++.a
+lib_LTLIBRARIES = libMagick++.la
+MAJOR_VERSION = @MAJOR_VERSION@
+MINOR_VERSION = @MINOR_VERSION@
+MICRO_VERSION = @MICRO_VERSION@
 
-libMagick___a_SOURCES = MagickColor.cpp MagickDrawable.cpp 	MagickException.cpp MagickFunctions.cpp MagickGeometry.cpp 	MagickImage.cpp MagickLastError.cpp MagickMontage.cpp 	MagickOptions.cpp
+libMagick___la_SOURCES = MagickBlob.cpp MagickColor.cpp MagickDrawable.cpp 	MagickException.cpp MagickFunctions.cpp MagickGeometry.cpp 	MagickImage.cpp MagickLastError.cpp MagickMontage.cpp 	MagickOptions.cpp
 
 
-include_HEADERS = Magick++.h MagickColor.h MagickDrawable.h MagickException.h 	MagickFunctions.h MagickGeometry.h MagickImage.h MagickInclude.h 	MagickLastError.h MagickMontage.h MagickOptions.h MagickSTL.h
+libMagick___la_LDFLAGS = -version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VERSION):0
+
+include_HEADERS = Magick++.h MagickBlob.h MagickColor.h MagickDrawable.h 	MagickException.h MagickFunctions.h MagickGeometry.h MagickImage.h 	MagickInclude.h MagickLastError.h MagickMontage.h MagickOptions.h 	MagickSTL.h
 
 
 EXTRA_DIST = Magick++.dsp
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_CLEAN_FILES = 
-LIBRARIES =  $(lib_LIBRARIES)
+LTLIBRARIES =  $(lib_LTLIBRARIES)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) 
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-libMagick___a_LIBADD = 
-libMagick___a_OBJECTS =  MagickColor.o MagickDrawable.o \
-MagickException.o MagickFunctions.o MagickGeometry.o MagickImage.o \
-MagickLastError.o MagickMontage.o MagickOptions.o
-AR = ar
+libMagick___la_LIBADD = 
+libMagick___la_OBJECTS =  MagickBlob.lo MagickColor.lo MagickDrawable.lo \
+MagickException.lo MagickFunctions.lo MagickGeometry.lo MagickImage.lo \
+MagickLastError.lo MagickMontage.lo MagickOptions.lo
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
+LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
-CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(LDFLAGS) -o $@
+CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(LDFLAGS) -o $@
 HEADERS =  $(include_HEADERS)
 
 DIST_COMMON =  Makefile.am Makefile.in
@@ -117,12 +128,12 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-SOURCES = $(libMagick___a_SOURCES)
-OBJECTS = $(libMagick___a_OBJECTS)
+SOURCES = $(libMagick___la_SOURCES)
+OBJECTS = $(libMagick___la_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .cpp .o .s
+.SUFFIXES: .S .c .cpp .lo .o .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps lib/Makefile
 
@@ -131,36 +142,29 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 
-mostlyclean-libLIBRARIES:
+mostlyclean-libLTLIBRARIES:
 
-clean-libLIBRARIES:
-	-test -z "$(lib_LIBRARIES)" || rm -f $(lib_LIBRARIES)
+clean-libLTLIBRARIES:
+	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
 
-distclean-libLIBRARIES:
+distclean-libLTLIBRARIES:
 
-maintainer-clean-libLIBRARIES:
+maintainer-clean-libLTLIBRARIES:
 
-install-libLIBRARIES: $(lib_LIBRARIES)
+install-libLTLIBRARIES: $(lib_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(libdir)
-	@list='$(lib_LIBRARIES)'; for p in $$list; do \
+	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
 	  if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p; \
-	  else :; fi; \
-	done
-	@$(POST_INSTALL)
-	@list='$(lib_LIBRARIES)'; for p in $$list; do \
-	  if test -f $$p; then \
-	    echo " $(RANLIB) $(DESTDIR)$(libdir)/$$p"; \
-	    $(RANLIB) $(DESTDIR)$(libdir)/$$p; \
+	    echo "$(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(libdir)/$$p"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(libdir)/$$p; \
 	  else :; fi; \
 	done
 
-uninstall-libLIBRARIES:
+uninstall-libLTLIBRARIES:
 	@$(NORMAL_UNINSTALL)
-	list='$(lib_LIBRARIES)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(libdir)/$$p; \
+	list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p; \
 	done
 
 .c.o:
@@ -182,12 +186,31 @@ distclean-compile:
 
 maintainer-clean-compile:
 
-libMagick++.a: $(libMagick___a_OBJECTS) $(libMagick___a_DEPENDENCIES)
-	-rm -f libMagick++.a
-	$(AR) cru libMagick++.a $(libMagick___a_OBJECTS) $(libMagick___a_LIBADD)
-	$(RANLIB) libMagick++.a
+.c.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.s.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.S.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+mostlyclean-libtool:
+	-rm -f *.lo
+
+clean-libtool:
+	-rm -rf .libs _libs
+
+distclean-libtool:
+
+maintainer-clean-libtool:
+
+libMagick++.la: $(libMagick___la_OBJECTS) $(libMagick___la_DEPENDENCIES)
+	$(CXXLINK) -rpath $(libdir) $(libMagick___la_LDFLAGS) $(libMagick___la_OBJECTS) $(libMagick___la_LIBADD) $(LIBS)
 .cpp.o:
 	$(CXXCOMPILE) -c $<
+.cpp.lo:
+	$(LTCXXCOMPILE) -c $<
 
 install-includeHEADERS: $(include_HEADERS)
 	@$(NORMAL_INSTALL)
@@ -248,24 +271,29 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-MagickColor.o: MagickColor.cpp MagickColor.h MagickInclude.h \
-	MagickFunctions.h
-MagickDrawable.o: MagickDrawable.cpp MagickDrawable.h MagickColor.h \
-	MagickInclude.h MagickGeometry.h
-MagickException.o: MagickException.cpp MagickException.h
-MagickFunctions.o: MagickFunctions.cpp MagickFunctions.h MagickInclude.h
-MagickGeometry.o: MagickGeometry.cpp MagickGeometry.h MagickFunctions.h \
-	MagickInclude.h
-MagickImage.o: MagickImage.cpp MagickImage.h MagickColor.h \
-	MagickInclude.h MagickDrawable.h MagickGeometry.h \
-	MagickException.h MagickOptions.h MagickLastError.h \
-	MagickFunctions.h
-MagickLastError.o: MagickLastError.cpp MagickInclude.h MagickLastError.h \
+MagickBlob.lo MagickBlob.o : MagickBlob.cpp MagickBlob.h MagickInclude.h
+MagickColor.lo MagickColor.o : MagickColor.cpp MagickColor.h \
+	MagickInclude.h MagickFunctions.h
+MagickDrawable.lo MagickDrawable.o : MagickDrawable.cpp MagickDrawable.h \
+	MagickColor.h MagickInclude.h MagickGeometry.h
+MagickException.lo MagickException.o : MagickException.cpp \
 	MagickException.h
-MagickMontage.o: MagickMontage.cpp MagickMontage.h MagickColor.h \
-	MagickInclude.h MagickGeometry.h MagickFunctions.h
-MagickOptions.o: MagickOptions.cpp MagickOptions.h MagickColor.h \
-	MagickInclude.h MagickGeometry.h MagickFunctions.h
+MagickFunctions.lo MagickFunctions.o : MagickFunctions.cpp \
+	MagickFunctions.h MagickInclude.h
+MagickGeometry.lo MagickGeometry.o : MagickGeometry.cpp MagickGeometry.h \
+	MagickFunctions.h MagickInclude.h
+MagickImage.lo MagickImage.o : MagickImage.cpp MagickImage.h \
+	MagickBlob.h MagickColor.h MagickInclude.h MagickDrawable.h \
+	MagickGeometry.h MagickException.h MagickOptions.h \
+	MagickLastError.h MagickFunctions.h
+MagickLastError.lo MagickLastError.o : MagickLastError.cpp \
+	MagickInclude.h MagickLastError.h MagickException.h
+MagickMontage.lo MagickMontage.o : MagickMontage.cpp MagickMontage.h \
+	MagickColor.h MagickInclude.h MagickGeometry.h \
+	MagickFunctions.h
+MagickOptions.lo MagickOptions.o : MagickOptions.cpp MagickOptions.h \
+	MagickColor.h MagickInclude.h MagickGeometry.h \
+	MagickFunctions.h
 
 info-am:
 info: info-am
@@ -275,7 +303,7 @@ check-am: all-am
 check: check-am
 installcheck-am:
 installcheck: installcheck-am
-install-exec-am: install-libLIBRARIES
+install-exec-am: install-libLTLIBRARIES
 install-exec: install-exec-am
 
 install-data-am: install-includeHEADERS
@@ -284,9 +312,9 @@ install-data: install-data-am
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am: uninstall-libLIBRARIES uninstall-includeHEADERS
+uninstall-am: uninstall-libLTLIBRARIES uninstall-includeHEADERS
 uninstall: uninstall-am
-all-am: Makefile $(LIBRARIES) $(HEADERS)
+all-am: Makefile $(LTLIBRARIES) $(HEADERS)
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
@@ -303,33 +331,39 @@ distclean-generic:
 	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
 
 maintainer-clean-generic:
-mostlyclean-am:  mostlyclean-libLIBRARIES mostlyclean-compile \
-		mostlyclean-tags mostlyclean-generic
+mostlyclean-am:  mostlyclean-libLTLIBRARIES mostlyclean-compile \
+		mostlyclean-libtool mostlyclean-tags \
+		mostlyclean-generic
 
 mostlyclean: mostlyclean-am
 
-clean-am:  clean-libLIBRARIES clean-compile clean-tags clean-generic \
-		mostlyclean-am
+clean-am:  clean-libLTLIBRARIES clean-compile clean-libtool clean-tags \
+		clean-generic mostlyclean-am
 
 clean: clean-am
 
-distclean-am:  distclean-libLIBRARIES distclean-compile distclean-tags \
-		distclean-generic clean-am
+distclean-am:  distclean-libLTLIBRARIES distclean-compile \
+		distclean-libtool distclean-tags distclean-generic \
+		clean-am
+	-rm -f libtool
 
 distclean: distclean-am
 
-maintainer-clean-am:  maintainer-clean-libLIBRARIES \
-		maintainer-clean-compile maintainer-clean-tags \
-		maintainer-clean-generic distclean-am
+maintainer-clean-am:  maintainer-clean-libLTLIBRARIES \
+		maintainer-clean-compile maintainer-clean-libtool \
+		maintainer-clean-tags maintainer-clean-generic \
+		distclean-am
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
 maintainer-clean: maintainer-clean-am
 
-.PHONY: mostlyclean-libLIBRARIES distclean-libLIBRARIES \
-clean-libLIBRARIES maintainer-clean-libLIBRARIES uninstall-libLIBRARIES \
-install-libLIBRARIES mostlyclean-compile distclean-compile \
-clean-compile maintainer-clean-compile uninstall-includeHEADERS \
+.PHONY: mostlyclean-libLTLIBRARIES distclean-libLTLIBRARIES \
+clean-libLTLIBRARIES maintainer-clean-libLTLIBRARIES \
+uninstall-libLTLIBRARIES install-libLTLIBRARIES mostlyclean-compile \
+distclean-compile clean-compile maintainer-clean-compile \
+mostlyclean-libtool distclean-libtool clean-libtool \
+maintainer-clean-libtool uninstall-includeHEADERS \
 install-includeHEADERS tags mostlyclean-tags distclean-tags clean-tags \
 maintainer-clean-tags distdir info-am info dvi-am dvi check check-am \
 installcheck-am installcheck install-exec-am install-exec \

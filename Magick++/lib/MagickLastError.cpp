@@ -74,16 +74,6 @@ Magick::LastError* Magick::LastError::instance ( void )
   return _instance;
 }
 
-// Test to see if object contains error
-void Magick::LastError::isError( bool isError_ )
-{
-  _isError = isError_;
-}
-bool Magick::LastError::isError( void ) const
-{
-  return _isError;
-}
-
 // Clear out existing error info
 void Magick::LastError::clear ( void )
 {
@@ -92,46 +82,6 @@ void Magick::LastError::clear ( void )
   _syserror  = 0;
   _message.erase();
   _qualifier.erase();
-}
-
-// Error code
-void Magick::LastError::error ( int error_ )
-{
-  _error = error_;
-}
-int Magick::LastError::error ( void ) const
-{
-  return _error;
-}
-
-void Magick::LastError::syserror ( int syserror_ )
-{
-  _syserror = syserror_;
-}
-int Magick::LastError::syserror ( void ) const
-{
-  return _syserror;
-}
-  
-
-// Error message
-void Magick::LastError::message ( std::string message_ )
-{
-  _message = message_;
-}
-std::string Magick::LastError::message ( void ) const
-{
-  return _message;
-}
-
-// Error qualifier
-void  Magick::LastError::qualifier ( std::string qualifier_ )
-{
-  _qualifier = qualifier_;
-}
-std::string Magick::LastError::qualifier ( void ) const
-{
-  return _qualifier;
 }
 
 // Throw exception corresponding to error (if any)

@@ -13,6 +13,7 @@
 #include <cstdio>
 #include <list>
 
+#include <MagickBlob.h>
 #include <MagickColor.h>
 #include <MagickDrawable.h>
 #include <MagickException.h>
@@ -75,10 +76,16 @@ namespace Magick
     
     // Annotate image (draw text on image)
     void            annotate ( const std::string &text_,
-			       const Geometry &location_,
-			       unsigned int gravity_ = NorthWestGravity );
+			       const Geometry &location_ );
     void            annotate ( const std::string &text_,
-			       unsigned int gravity_ = NorthWestGravity);
+			       const Geometry &location_,
+			       GravityType gravity_ );
+    void            annotate ( const std::string &text_,
+			       const Geometry &location_,
+			       GravityType gravity_,
+			       double degrees_ );
+    void            annotate ( const std::string &text_,
+			       GravityType gravity_ = NorthWestGravity);
     
     // Blur image with specified blur factor
     void            blur ( double factor_ );
@@ -131,7 +138,7 @@ namespace Magick
     void            draw ( const Drawable &drawable_ );
 
     // Draw on image using a drawable list
-    void            draw ( const std::list<Drawable> &drawable_ );
+    void            draw ( const std::list<Magick::Drawable> &drawable_ );
     
     // Edge image (hilight edges in image)
     void            edge ( double factor_ );
@@ -241,6 +248,12 @@ namespace Magick
     // Change color of opaque pixel to specified pen color.
     void            opaque ( const Color &opaqueColor_,
 			     const Color &penColor_ );
+
+    // Ping is similar to read except only enough of the image is read
+    // to determine the image columns, rows, and filesize.  Access the
+    // columns(), rows(), and fileSize() attributes after invoking
+    // ping.  The image data is not valid after calling ping.
+    void            ping ( const std::string &imageSpec_ );
     
     // Quantize image (reduce number of colors)
     void            quantize ( bool measureError_ = false );
@@ -326,12 +339,19 @@ namespace Magick
     void            transform ( const Geometry &imageGeometry_ );
     void            transform ( const Geometry &imageGeometry_,
 				const Geometry &cropGeometry_  );
-    
+
+    // Convert the image colorspace representation
+    void            transformColorSpace( ColorspaceType colorSpace_ );
+
     // Add matte image to image, setting pixels matching color to transparent
     void            transparent ( const Color &color_ );
     
     // Trim edges that are the background color from the image
     void            trim ( void );
+
+    // Un-condense image (Uncompresses runlength-encoded pixels
+    // packets to a rectangular array of pixels)
+    void            uncondense ( void );
     
     // Map image pixels to a sine wave
     void            wave ( double amplitude_ = 25.0, double wavelength_ = 150.0 );
@@ -470,18 +490,16 @@ namespace Magick
     unsigned int    gifDisposeMethod ( void ) const;
 
     // ICC color profile (BLOB)
-    // FIXME: Implement
-//     void            iccColorProfile( const std::string colorProfile_ );
-//     string          iccColorProfile( void ) const;
+    void            iccColorProfile( const Blob &colorProfile_ );
+    Blob            iccColorProfile( void ) const;
 
     // Type of interlacing to use
     void            interlaceType ( InterlaceType interlace_ );
     InterlaceType   interlaceType ( void ) const;
 
     // IPTC profile (BLOB)
-    // FIXME: Implement
-//     void            iptcProfile( const std::string iptcProfile_ );
-//     std::string     iptcProfile( void ) const;
+    void            iptcProfile( const Blob& iptcProfile_ );
+    Blob            iptcProfile( void ) const;
 
     // Does object contain valid image?
     void            isValid ( bool isValid_ );

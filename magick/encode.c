@@ -12035,11 +12035,14 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       if ((image_info->interlace == PlaneInterlace) ||
           (image_info->interlace == PartitionInterlace))
         TIFFSetField(tiff,TIFFTAG_PLANARCONFIG,PLANARCONFIG_SEPARATE);
-    if (compress_tag != COMPRESSION_JPEG)
-      TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,TIFFDefaultStripSize(tiff,-1));
-    else
+    if (compress_tag == COMPRESSION_JPEG)
       TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,TIFFDefaultStripSize(tiff,-1)+
         (8-(TIFFDefaultStripSize(tiff,-1) % 8)));
+    else
+      if (compress_tag == COMPRESSION_CCITTFAX4)
+        TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,image->rows);
+      else
+        TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,TIFFDefaultStripSize(tiff,-1));
     if ((image->x_resolution != 0) && (image->y_resolution != 0))
       {
         unsigned short

@@ -130,7 +130,7 @@ namespace Magick
     // Pen texture image.
     void            penTexture ( const MagickLib::Image *penTexture_ );
     const MagickLib::Image* penTexture ( void  ) const;
-    
+
     void            psPageSize ( const Geometry &pageSize_ );
     Geometry        psPageSize ( void ) const;
     

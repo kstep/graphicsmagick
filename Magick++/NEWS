@@ -1,3 +1,12 @@
+(0.8.2)
+  * Uses libtool 1.3 to build library under Unix and Cygwin (static lib only).
+  * Added Blob class to support supplying formatted binary data to methods.
+  * Added support for setting ICC and IPTC profiles from a binary BLOB.
+  * Added support for transformations of image data to/from alternate
+    colorspace (e.g. CYMK).
+  * Added support for 'pinging' an image (get image dimensions/size quickly).
+  * Added 'uncondense' method to de-compress in-memory image data.
+  * Added support for annotation using rotated text.
 (0.8.1)
   * Added support for setting alpha in Magick::Color
   * Set/get color alpha in Magick::Image::pixelColor() for DirectClass images.

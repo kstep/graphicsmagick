@@ -155,6 +155,40 @@ namespace Magick
   using MagickLib::FloodfillMethod;
   using MagickLib::FillToBorderMethod;
   using MagickLib::ResetMethod;
+
+
+  // Preview types
+  // Not currently actually used by Magick++
+  using MagickLib::UndefinedPreview;
+  using MagickLib::RotatePreview;
+  using MagickLib::ShearPreview;
+  using MagickLib::RollPreview;
+  using MagickLib::HuePreview;
+  using MagickLib::SaturationPreview;
+  using MagickLib::BrightnessPreview;
+  using MagickLib::GammaPreview;
+  using MagickLib::SpiffPreview;
+  using MagickLib::DullPreview;
+  using MagickLib::GrayscalePreview;
+  using MagickLib::QuantizePreview;
+  using MagickLib::DespecklePreview;
+  using MagickLib::ReduceNoisePreview;
+  using MagickLib::AddNoisePreview;
+  using MagickLib::SharpenPreview;
+  using MagickLib::BlurPreview;
+  using MagickLib::ThresholdPreview;
+  using MagickLib::EdgeDetectPreview;
+  using MagickLib::SpreadPreview;
+  using MagickLib::ShadePreview;
+  using MagickLib::RaisePreview;
+  using MagickLib::SegmentPreview;
+  using MagickLib::SolarizePreview;
+  using MagickLib::SwirlPreview;
+  using MagickLib::ImplodePreview;
+  using MagickLib::WavePreview;
+  using MagickLib::OilPaintPreview;
+  using MagickLib::CharcoalDrawingPreview;
+  using MagickLib::JPEGPreview;
   
   // Rendering intents
   using MagickLib::RenderingIntent;
@@ -170,21 +204,33 @@ namespace Magick
   using MagickLib::PixelsPerInchResolution;
   using MagickLib::PixelsPerCentimeterResolution;
 
-//   // Bit gravity
-//   enum GravityType
-//   {
-//     ForgetGravity,
-//     NorthWestGravity,
-//     NorthGravity,
-//     NorthEastGravity,
-//     WestGravity,
-//     CenterGravity,
-//     EastGravity,
-//     SouthWestGravity,
-//     SouthGravity,
-//     SouthEastGravity,
-//     StaticGravity
-//   };
+  // Bit gravity
+  // The enumeration values are safely defined by the X11 protocol.
+  enum GravityType
+  {
+#undef ForgetGravity
+    ForgetGravity,	//  0
+#undef NorthWestGravity
+    NorthWestGravity,	//  1
+#undef NorthGravity
+    NorthGravity,	//  2
+#undef NorthEastGravity
+    NorthEastGravity,	//  3
+#undef WestGravity
+    WestGravity,	//  4
+#undef CenterGravity
+    CenterGravity,	//  5
+#undef EastGravity
+    EastGravity,	//  6
+#undef SouthWestGravity
+    SouthWestGravity,	//  7
+#undef SouthGravity
+    SouthGravity,	//  8
+#undef SouthEastGravity
+    SouthEastGravity,	//  9
+#undef StaticGravity
+    StaticGravity	// 10
+  };
 
 }
 

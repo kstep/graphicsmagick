@@ -9,7 +9,7 @@ INCLUDES = -I../lib
 
 noinst_PROGRAMS = button demo flip shapes
 
-LDADD = ../lib/libMagick++.a
+LDADD = ../lib/libMagick++.la
 
 button_SOURCES = button.cpp
 demo_SOURCES = demo.cpp

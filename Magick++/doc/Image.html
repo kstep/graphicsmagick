@@ -141,28 +141,43 @@ are shown in the following table:</tt>
 <center><a NAME="addNoise"></a><font size=-1>addNoise</font></center>
 </td>
 
-<td><font size=-1><a href="Enumerations.html#NoiseType">NoiseType</a>
-noiseType_</font></td>
+<td><font size=-1><a href="Enumerations.html#NoiseType">NoiseType</a> noiseType_</font></td>
 
 <td><font size=-1>Add noise to image with specified noise type.</font></td>
 </tr>
 
 <tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>
+<td ROWSPAN="4" NOSAVE>
 <center><a NAME="annotate"></a><font size=-1>annotate</font></center>
 </td>
 
+<td><font size=-1>const std::string &amp;text_, const <a href="Geometry.html">Geometry</a>
+&amp;location_</font></td>
+
+<td><font size=-1>Annotate image (render text on image) at specified location.</font></td>
+</tr>
+
+<tr>
 <td><font size=-1>string text_, const <a href="Geometry.html">Geometry</a>
-&amp;location_, <a href="Enumerations.html#GravityType">unsigned
-int</a> gravity_ = NorthWestGravity</font></td>
+&amp;location_, <a href="Enumerations.html#GravityType">GravityType</a>
+gravity_</font></td>
 
 <td><font size=-1>Annotate image (render text on image) at specified location
 and influenced by gravity.</font></td>
 </tr>
 
 <tr>
-<td><font size=-1>const std::string &amp;text_, <a href="Enumerations.html#GravityType">unsigned
-int</a> gravity_ = NorthWestGravity</font></td>
+<td><font size=-1>const std::string &amp;text_, const <a href="Geometry.html">Geometry</a>
+&amp;location_, <a href="Enumerations.html#GravityType">GravityType</a>
+gravity_, double degrees_,&nbsp;</font></td>
+
+<td><font size=-1>Annotate image (render text on image) starting at specified
+location, influenced by gravity, and rendered at specified rotation angle.</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>const std::string &amp;text_, <a href="Enumerations.html#GravityType">GravityType</a>
+gravity_ = NorthWestGravity</font></td>
 
 <td><font size=-1>Annotate image (render text on image) at location implied
 by gravity.</font></td>
@@ -528,8 +543,7 @@ use this&nbsp; option to specify a header string to print above the image.</font
 <center><a NAME="layer"></a><font size=-1>layer</font></center>
 </td>
 
-<td><font size=-1><a href="Enumerations.html#LayerType">LayerType</a>
-layer_</font></td>
+<td><font size=-1><a href="Enumerations.html#LayerType">LayerType</a> layer_</font></td>
 
 <td><font size=-1>Extract layer from image. Use this option to extract
 a particular layer from&nbsp; the image.&nbsp; <i>MatteLayer</i>,&nbsp;
@@ -638,6 +652,20 @@ const <a href="Color.html">Color</a> &amp;penColor_</font></td>
 
 <td><font size=-1>Change color of pixels matching opaqueColor_ to specified
 penColor_.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="ping"></a><font size=-1>ping</font></center>
+</td>
+
+<td><font size=-1>const std::string &amp;imageSpec_</font></td>
+
+<td><font size=-1>Ping is similar to read except only enough of the image
+is read to determine the image columns, rows, and filesize.&nbsp; The <a href="#columns">columns</a></font>,
+<font size=-1><a href="#rows">rows</a>,
+and <a href="#fileSize">fileSize</a> attributes are valid after invoking
+ping.&nbsp; The image data is not valid after calling ping.</font></td>
 </tr>
 
 <tr NOSAVE>
@@ -892,6 +920,16 @@ crop geometries. Crop geometry is optional.</font></td>
 <tr>
 <td><font size=-1>const <a href="Geometry.html">Geometry</a> &amp;imageGeometry_,
 const <a href="Geometry.html">Geometry</a> &amp;cropGeometry_&nbsp;</font></td>
+</tr>
+
+<tr>
+<td><a NAME="transformColorSpace"></a><font size=-1>transform-</font>
+<br><font size=-1>ColorSpace</font></td>
+
+<td><font size=-1><a href="Enumerations.html#ColorspaceType">ColorspaceType</a>
+colorSpace_</font></td>
+
+<td><font size=-1>Transform the image representation to a different colorspace.</font></td>
 </tr>
 
 <tr>
@@ -1580,6 +1618,25 @@ when creating a GIF animation.</font></td>
 
 <tr>
 <td>
+<center><a NAME="iccColorProfile"></a>i<font size=-1>ccColorProfile</font></center>
+</td>
+
+<td><font size=-1>Image</font></td>
+
+<td><font size=-1>Blob</font></td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1>const Blob &amp;colorProfile_</font></td>
+
+<td><font size=-1>ICC color profile. Supplied via a Blob since Magick++/
+and ImageMagick do not currently support formating this data structure
+directly.&nbsp; Specifications are available from the <a href="http://www.color.org/">International
+Color Consortium</a> for the format of ICC color profiles.</font></td>
+</tr>
+
+<tr>
+<td>
 <center><a NAME="interlaceType"></a><font size=-1>interlace-</font>
 <br><font size=-1>Type</font></center>
 </td>
@@ -1603,6 +1660,25 @@ is like <i>PlaneInterlace</i> except the&nbsp; different planes&nbsp; are
 saved&nbsp; to individual files (e.g.&nbsp; image.R, image.G, and image.B).
 Use <i>LineInterlace</i> or <i>PlaneInterlace</i> to create an interlaced
 GIF or progressive JPEG image.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="iptcProfile"></a><font size=-1>iptcProfile</font></center>
+</td>
+
+<td><font size=-1>Image</font></td>
+
+<td><font size=-1>Blob</font></td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1>const Blob&amp; iptcProfile_</font></td>
+
+<td><font size=-1>IPTC profile. Supplied via a Blob since Magick++ and
+ImageMagick do not currently&nbsp; support formating this data structure
+directly. Specifications are available from the <a href="http://www.iptc.org/iptc/">International
+Press Telecommunications Council</a> for IPTC profiles.</font></td>
 </tr>
 
 <tr>

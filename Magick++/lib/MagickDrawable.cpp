@@ -16,42 +16,6 @@ using namespace std;
 
 #include <MagickDrawable.h>
 
-Magick::Coordinate::Coordinate ( void )
-  : _x(0),
-    _y(0)
-{
-}
-
-Magick::Coordinate::Coordinate ( double x_, double y_ )
-  : _x(x_),
-    _y(y_)
-{
-}
-
-Magick::Coordinate::~Coordinate ()
-{
-  // Nothing to do
-}
-
-void Magick::Coordinate::x ( double x_ )
-{
-  _x = x_;
-}
-
-double Magick::Coordinate::x ( void ) const
-{
-  return _x;
-}
-
-void Magick::Coordinate::y ( double y_ )
-{
-  _y = y_;
-}
-
-double Magick::Coordinate::y ( void ) const
-{
-  return _y;
-}
 
 std::ostream& Magick::operator<<( std::ostream& stream_, const Magick::Coordinate& coordinate_)
 {
@@ -63,36 +27,12 @@ std::ostream& Magick::operator<<( std::ostream& stream_, const Magick::Coordinat
 // Drawable implementation
 //
 
-// Constructor
-Magick::Drawable::Drawable( void )
-  : _primitive()
-{
-  // All components are self-initializing
-}
-
-// Destructor
-Magick::Drawable::~Drawable( void )
-{
-  // Nothing to do
-}
-
-// Completed draw primitive (for ImageMagick)
-std::string Magick::Drawable::primitive ( void ) const
-{
-  // cout << _primitive << endl;
-  return _primitive;
-}
 
 //
 // Drawable Objects
 //
 
 // Point
-void Magick::Drawable::point ( double x_,
-			       double y_ )
-{
-  point( Coordinate( x_, y_ ) );
-}
 void Magick::Drawable::point ( Magick::Coordinate coordinate_ )
 {
   char buffer[MaxTextExtent + 1];
@@ -102,13 +42,6 @@ void Magick::Drawable::point ( Magick::Coordinate coordinate_ )
 }
 
 // Line
-void Magick::Drawable::line ( double startX_,
-			      double startY_,
-			      double endX_,
-			      double endY_ )
-{
-  line( Coordinate( startX_, startY_ ), Coordinate( endX_, endY_ ) );
-}
 void Magick::Drawable::line ( Magick::Coordinate startCoordinate_,
 			      Magick::Coordinate endCoordinate_ )
 {
@@ -119,14 +52,6 @@ void Magick::Drawable::line ( Magick::Coordinate startCoordinate_,
 }
 
 // Rectangle
-void Magick::Drawable::rectangle ( double upperLeftX_,
-				   double upperLeftY_,
-				   double lowerRightX_,
-				   double lowerRightY )
-{
-  rectangle( Coordinate( upperLeftX_, upperLeftY_ ),
-	     Coordinate( lowerRightX_, lowerRightY ) );
-}
 void Magick::Drawable::rectangle ( Magick::Coordinate upperLeftCoordinate_,
 				   Magick::Coordinate lowerRightCoordinate_ )
 {
@@ -136,16 +61,7 @@ void Magick::Drawable::rectangle ( Magick::Coordinate upperLeftCoordinate_,
   _primitive.assign( buffer );
 }
 
-
-  // Filled Rectangle
-void Magick::Drawable::fillRectangle ( double upperLeftX_,
-				       double upperLeftY_,
-				       double lowerRightX_,
-				       double lowerRightY )
-{
-  fillRectangle( Coordinate( upperLeftX_, upperLeftY_ ),
-		 Coordinate( lowerRightX_, lowerRightY ) );
-}
+// Filled Rectangle
 void Magick::Drawable::fillRectangle ( Magick::Coordinate upperLeftCoordinate_,
 				       Magick::Coordinate lowerRightCoordinate_ )
 {
@@ -156,12 +72,6 @@ void Magick::Drawable::fillRectangle ( Magick::Coordinate upperLeftCoordinate_,
 }
 
 // Circle
-void Magick::Drawable::circle ( double originX_, double originY_,
-				double perimX_, double perimY_ )
-{
-  circle( Coordinate( originX_, originY_ ),
-	  Coordinate( perimX_, perimY_ ) );
-}
 void Magick::Drawable::circle ( Magick::Coordinate originCoordinate_,
 				Magick::Coordinate perimCoordinate_ )
 {
@@ -172,12 +82,6 @@ void Magick::Drawable::circle ( Magick::Coordinate originCoordinate_,
 }
 
 // Filled Circle
-void Magick::Drawable::fillCircle ( double originX_, double originY_,
-				    double perimX_, double perimY_ )
-{
-  fillCircle( Coordinate( originX_, originY_ ),
-	      Coordinate( perimX_, perimY_ ) );
-}
 void Magick::Drawable::fillCircle ( Magick::Coordinate originCoordinate_,
 				    Magick::Coordinate perimCoordinate_ )
 {
@@ -188,14 +92,6 @@ void Magick::Drawable::fillCircle ( Magick::Coordinate originCoordinate_,
 }
 
 // Ellipse
-void Magick::Drawable::ellipse ( double originX_, double originY_, 
-				 double width_, double height_,
-				 double arcStart_, double arcEnd_ )
-{
-  ellipse( Coordinate( originX_, originY_ ),
-	   width_, height_,
-	   arcStart_, arcEnd_ );
-}
 void Magick::Drawable::ellipse( Magick::Coordinate originCoordinate_, 
 				double width_, double height_,
 				double arcStart_, double arcEnd_ )
@@ -210,17 +106,6 @@ void Magick::Drawable::ellipse( Magick::Coordinate originCoordinate_,
 }
 
 // Filled Ellipse
-void Magick::Drawable::fillEllipse ( double originX_,
-				     double originY_, 
-				     double width_,
-				     double height_,
-				     double arcStart_,
-				     double arcEnd_ )
-{
-  fillEllipse( Coordinate( originX_, originY_ ),
-	       width_, height_,
-	       arcStart_, arcEnd_ );
-}
 void Magick::Drawable::fillEllipse( Magick::Coordinate originCoordinate_, 
 				    double width_, double height_,
 				    double arcStart_, double arcEnd_ )
@@ -235,14 +120,14 @@ void Magick::Drawable::fillEllipse( Magick::Coordinate originCoordinate_,
 }
 
 // Polygon (Coordinate list must contain at least three members)
-void Magick::Drawable::polygon ( const std::list<Coordinate> &coordinates_ )
+void Magick::Drawable::polygon ( const std::list<Magick::Coordinate> &coordinates_ )
 {
   char buffer[MaxTextExtent + 1];
   ostrstream buffstr( buffer, sizeof(buffer));
 
   buffstr << "polygon";
 
-  list<Coordinate>::const_iterator p = coordinates_.begin();
+  list<Magick::Coordinate>::const_iterator p = coordinates_.begin();
 
   while ( p != coordinates_.end() )
     {
@@ -256,14 +141,14 @@ void Magick::Drawable::polygon ( const std::list<Coordinate> &coordinates_ )
 }
 
 // Filled Polygon (Coordinate list must contain at least three members)
-void Magick::Drawable::fillPolygon ( const std::list<Coordinate> &coordinates_ )
+void Magick::Drawable::fillPolygon ( const std::list<Magick::Coordinate> &coordinates_ )
 {
   char buffer[MaxTextExtent + 1];
   ostrstream buffstr( buffer, sizeof(buffer));
 
   buffstr << "fillPolygon";
 
-  std::list<Coordinate>::const_iterator p = coordinates_.begin();
+  std::list<Magick::Coordinate>::const_iterator p = coordinates_.begin();
 
   while ( p != coordinates_.end() )
     {
@@ -277,11 +162,6 @@ void Magick::Drawable::fillPolygon ( const std::list<Coordinate> &coordinates_ )
 }
 
 // Colorize at point using PaintMethod
-void Magick::Drawable::color ( double x_, double y_,
-			       Magick::PaintMethod paintMethod_ )
-{
-  color( Coordinate( x_, y_ ), paintMethod_ );
-}
 void Magick::Drawable::color( Magick::Coordinate coordinate_,
 			      Magick::PaintMethod paintMethod_ )
 {
@@ -318,11 +198,6 @@ void Magick::Drawable::color( Magick::Coordinate coordinate_,
 }
 
 // Change pixel matte value to transparent using PaintMethod
-void Magick::Drawable::matte ( double x_, double y_,
-			       Magick::PaintMethod paintMethod_ )
-{
-  matte( Coordinate( x_, y_ ), paintMethod_ );
-}
 void Magick::Drawable::matte( Magick::Coordinate coordinate_,
 			      Magick::PaintMethod paintMethod_ )
 {
@@ -359,12 +234,6 @@ void Magick::Drawable::matte( Magick::Coordinate coordinate_,
 }
 
 // Draw text at point
-void Magick::Drawable::text ( double x_, double y_, std::string text_ )
-{
-  text( Coordinate( x_, y_), text_ );
-}
-
-
 void Magick::Drawable::text ( Magick::Coordinate coordinate_,
 			      std::string text_ )
 {
@@ -375,11 +244,6 @@ void Magick::Drawable::text ( Magick::Coordinate coordinate_,
 }
 
 // Draw image at point
-void Magick::Drawable::image ( double x_, double y_,
-			       const std::string &image_ )
-{
-  image( Coordinate( x_, y_), image_ );
-}
 void Magick::Drawable::image ( Magick::Coordinate coordinate_,
 			       const std::string &image_ )
 {

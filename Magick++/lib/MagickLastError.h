@@ -76,4 +76,60 @@ namespace Magick
     static LastError* _instance;
   };
 } // namespace Magick
+
+//
+// Inlines
+//
+
+// Test to see if object contains error
+inline void Magick::LastError::isError( bool isError_ )
+{
+  _isError = isError_;
+}
+inline bool Magick::LastError::isError( void ) const
+{
+  return _isError;
+}
+
+// Error code
+inline void Magick::LastError::error ( int error_ )
+{
+  _error = error_;
+}
+inline int Magick::LastError::error ( void ) const
+{
+  return _error;
+}
+
+inline void Magick::LastError::syserror ( int syserror_ )
+{
+  _syserror = syserror_;
+}
+inline int Magick::LastError::syserror ( void ) const
+{
+  return _syserror;
+}
+  
+
+// Error message
+inline void Magick::LastError::message ( std::string message_ )
+{
+  _message = message_;
+}
+inline std::string Magick::LastError::message ( void ) const
+{
+  return _message;
+}
+
+// Error qualifier
+inline void  Magick::LastError::qualifier ( std::string qualifier_ )
+{
+  _qualifier = qualifier_;
+}
+inline std::string Magick::LastError::qualifier ( void ) const
+{
+  return _qualifier;
+}
+
+
 #endif // LastError_header

@@ -1,3 +1,57 @@
+1999-05-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/MagickBlob.cpp (Blob): Support default constructor for Blob.
+
+1999-05-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/MagickSTL.h (transformColorSpaceImage): New unary function object
+ 	to invoke transformColorSpace on STL container object.
+
+	* lib/MagickImage.cpp (transformColorSpace): New method to
+ 	transform the image data to a new colorspace.
+
+1999-05-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/MagickImage.cpp (ping): Re-implemented to match (requested)
+ 	API change in ImageMagick 4.2.5. Method signature has changed to
+ 	be like 'read'.
+	(annotate): Added two new overloaded methods for text annotation
+ 	in order to support the new rotated text capability in ImageMagick
+ 	4.2.5.  To accomplish this, the default for gravity had to be
+ 	removed from several methods. This may impact existing code.
+  	Still not sure if this is the best set of method signatures.
+
+1999-05-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/MagickImage.cpp (ping): New method to obtain image size in
+ 	bytes and geometry without the overhead of reading the complete
+ 	image.
+	(uncondense): New method to uncompress run-length encoded pixels
+ 	into a simple array to make them easy to operate on.
+
+1999-05-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/MagickImage.cpp (comment): Passing an empty string as the
+ 	comment results in no comment at all rather than a comment with no
+ 	data.
+
+1999-05-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/MagickImage.cpp (iccColorProfile): Implemented method to set
+ 	ICC color profile from opaque object in memory (must be formatted
+ 	outside of Magick++).
+	(iptcProfile): Implemented method to set IPTC profile from opaque
+ 	object in memory (must be formatted outside of Magick++).
+
+	* lib/MagickBlob.cpp: New class to support managing user-supplied
+ 	opaque Binary Large OBjects (BLOBS) in the API. Reference counted
+ 	to improve semantics and to possibly reduce memory consumption.
+
+1999-05-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Makefile.am (libMagick): Updated to use libtool 1.3 so that
+ 	shared library can be built.
+
 1999-04-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/MagickImage.cpp (montageGeometry): Return Magick::Geometry

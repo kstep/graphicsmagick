@@ -12,7 +12,7 @@ INCLUDES = -I../lib
 #
 check_PROGRAMS = color attributes manipulate
 
-LDADD = ../lib/libMagick++.a
+LDADD = ../lib/libMagick++.la
 
 attributes_SOURCES = attributes.cpp
 

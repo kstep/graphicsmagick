@@ -32,11 +32,11 @@ namespace Magick
   public:
     
     Geometry ( unsigned int width_,
-		     unsigned int height_,
-		     unsigned int xOff_ = 0,
-		     unsigned int yOff_ = 0,
-		     bool xNegative_ = false,
-		     bool yNegative_ = false );
+	       unsigned int height_,
+	       unsigned int xOff_ = 0,
+	       unsigned int yOff_ = 0,
+	       bool xNegative_ = false,
+	       bool yNegative_ = false );
     Geometry ( const std::string geometry_ );
     Geometry ( const char * geometry_ );
     Geometry ( );
