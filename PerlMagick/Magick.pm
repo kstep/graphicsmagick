@@ -26,7 +26,7 @@ require AutoLoader;
       CacheError StreamError Success Transparent Opaque MaxRGB
     );
 
-$VERSION = '5.33';
+$VERSION = '5.34';
 
 sub AUTOLOAD {
     # This AUTOLOAD is used to 'autoload' constants from the constant()
