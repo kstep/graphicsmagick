@@ -563,18 +563,13 @@ Display
           }
         if (LocaleCompare("coder-options",option+1) == 0)
           {
+            i++;
+            if (i == argc)
+              MagickFatalError(OptionFatalError,MissingArgument,option);
             if (*option == '+')
-              {
-                if (image_info->coder_options)
-                  MagickMapClearMap(image_info->coder_options);
-              }
+              RemoveCoderOptions(image_info,argv[i]);
             else
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingArgument,option);
-                AddCoderOptions(image_info,argv[i],exception);
-              }
+              AddCoderOptions(image_info,argv[i],exception);
             break;
           }
         if (LocaleCompare("colormap",option+1) == 0)
@@ -1599,19 +1594,14 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("coder-options",option+1) == 0)
           {
+            i++;
+            if (i == argc)
+              ThrowCompositeException(OptionError,MissingArgument,
+                option);
             if (*option == '+')
-              {
-                if (image_info->coder_options)
-                  MagickMapClearMap(image_info->coder_options);
-              }
+              RemoveCoderOptions(image_info,argv[i]);
             else
-              {
-                i++;
-                if (i == argc)
-                  ThrowCompositeException(OptionError,MissingArgument,
-                    option);
-                AddCoderOptions(image_info,argv[i],exception);
-              }
+              AddCoderOptions(image_info,argv[i],exception);
             break;
           }
         if (LocaleCompare("colors",option+1) == 0)
@@ -3008,18 +2998,13 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
           break;
         if (LocaleCompare("coder-options",option+1) == 0)
           {
+            i++;
+            if (i == argc)
+              ThrowConvertException(OptionError,MissingArgument,option);
             if (*option == '+')
-              {
-                if (image_info->coder_options)
-                  MagickMapClearMap(image_info->coder_options);
-              }
+              RemoveCoderOptions(image_info,argv[i]);
             else
-              {
-                i++;
-                if (i == argc)
-                  ThrowConvertException(OptionError,MissingArgument,option);
-                AddCoderOptions(image_info,argv[i],exception);
-              }
+              AddCoderOptions(image_info,argv[i],exception);
             break;
           }
         if (LocaleCompare("colorize",option+1) == 0)
@@ -5501,18 +5486,13 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("coder-options",option+1) == 0)
           {
+            i++;
+            if (i == argc)
+              MagickFatalError(OptionFatalError,MissingArgument,option);
             if (*option == '+')
-              {
-                if (image_info->coder_options)
-                  MagickMapClearMap(image_info->coder_options);
-              }
+              RemoveCoderOptions(image_info,argv[i]);
             else
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingArgument,option);
-                AddCoderOptions(image_info,argv[i],exception);
-              }
+              AddCoderOptions(image_info,argv[i],exception);
             break;
           }
         if (LocaleCompare("colormap",option+1) == 0)
@@ -6740,18 +6720,13 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("coder-options",option+1) == 0)
           {
+            i++;
+            if (i == argc)
+              ThrowIdentifyException(OptionError,MissingArgument,option);
             if (*option == '+')
-              {
-                if (image_info->coder_options)
-                  MagickMapClearMap(image_info->coder_options);
-              }
+              RemoveCoderOptions(image_info,argv[i]);
             else
-              {
-                i++;
-                if (i == argc)
-                  ThrowIdentifyException(OptionError,MissingArgument,option);
-                AddCoderOptions(image_info,argv[i],exception);
-              }
+              AddCoderOptions(image_info,argv[i],exception);
             break;
           }
         ThrowIdentifyException(OptionError,UnrecognizedOption,option)
@@ -7428,16 +7403,11 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           }
         if (LocaleCompare("coder-options",option+1) == 0)
           {
+            i++;
             if (*option == '+')
-              {
-                if (image_info->coder_options)
-                  MagickMapClearMap(clone_info->coder_options);
-              }
+              RemoveCoderOptions(clone_info,argv[i]);
             else
-              {
-                i++;
-                AddCoderOptions(clone_info,argv[i],&(*image)->exception);
-              }
+              AddCoderOptions(clone_info,argv[i],&(*image)->exception);
             break;
           }
         if (LocaleCompare("colorize",option+1) == 0)
@@ -9880,18 +9850,13 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("coder-options",option+1) == 0)
           {
+            i++;
+            if (i == argc)
+              ThrowMogrifyException(OptionError,MissingArgument,option);
             if (*option == '+')
-              {
-                if (image_info->coder_options)
-                  MagickMapClearMap(image_info->coder_options);
-              }
+              RemoveCoderOptions(image_info,argv[i]);
             else
-              {
-                i++;
-                if (i == argc)
-                  ThrowMogrifyException(OptionError,MissingArgument,option);
-                AddCoderOptions(image_info,argv[i],exception);
-              }
+              AddCoderOptions(image_info,argv[i],exception);
             break;
           }
         if (LocaleCompare("colorize",option+1) == 0)
@@ -11761,18 +11726,13 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("coder-options",option+1) == 0)
           {
+            i++;
+            if (i == argc)
+              ThrowMontageException(OptionError,MissingArgument,option);
             if (*option == '+')
-              {
-                if (image_info->coder_options)
-                  MagickMapClearMap(image_info->coder_options);
-              }
+              RemoveCoderOptions(image_info,argv[i]);
             else
-              {
-                i++;
-                if (i == argc)
-                  ThrowMontageException(OptionError,MissingArgument,option);
-                AddCoderOptions(image_info,argv[i],exception);
-              }
+              AddCoderOptions(image_info,argv[i],exception);
             break;
           }
         if (LocaleCompare("colors",option+1) == 0)
@@ -13170,18 +13130,13 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("coder-options",option+1) == 0)
           {
+            i++;
+            if (i == argc)
+              MagickFatalError(OptionFatalError,MissingArgument,option);
             if (*option == '+')
-              {
-                if (image_info->coder_options)
-                  MagickMapClearMap(image_info->coder_options);
-              }
+              RemoveCoderOptions(image_info,argv[i]);
             else
-              {
-                i++;
-                if (i == argc)
-                  MagickFatalError(OptionFatalError,MissingArgument,option);
-                AddCoderOptions(image_info,argv[i],exception);
-              }
+              AddCoderOptions(image_info,argv[i],exception);
             break;
           }
         if (LocaleCompare("colors",option+1) == 0)

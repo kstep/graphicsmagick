@@ -1,3 +1,16 @@
+2003-10-03  Lars Ruben Skyum  <lars.skyum@stibo.com>
+
+	* magick/command.c: Updated +coder-options option to not clear the
+	entire map of coder options, but accept a list of names to remove
+	from the map. Use option argument "*" to clear the entire map of
+	coder options.
+	* magick/image.c, magick/image.h: Added function
+	RemoveCoderOptions. Added cast of signed char to unsigned char and
+	int in calls to isspace and isprint.
+	* magcik/utility.c: Added cast of signed char to unsigned char and
+	int in calls to isspace and isprint. Added special handling of
+	+coder-options option in ExpandFilenames function.
+
 2003-10-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* PerlMagick/t/reference/read/input_tim.miff: The TIM read results

@@ -283,7 +283,7 @@ MagickExport unsigned char *Base64Decode(const char *source,size_t *length)
   state=0;
   for (p=source; *p != '\0'; p++)
   {
-    if (isspace((int) *p))
+    if (isspace((int)(unsigned char) *p))
       continue;
     if (*p == '=')
       break;
@@ -351,7 +351,7 @@ MagickExport unsigned char *Base64Decode(const char *source,size_t *length)
         case 2:
         {
           for ( ; *p != '\0'; p++)
-            if (!isspace((int) *p))
+            if (!isspace((int)(unsigned char)*p))
               break;
           if (*p != '=')
             {
@@ -363,7 +363,7 @@ MagickExport unsigned char *Base64Decode(const char *source,size_t *length)
         case 3:
         {
           for ( ; *p != '\0'; p++)
-            if (!isspace((int) *p))
+            if (!isspace((int)(unsigned char) *p))
               {
                 MagickFreeMemory(decode);
                 return((unsigned char *) NULL);
@@ -877,10 +877,12 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
       continue;
 
     /*
-      Skip the argument to +profile since it can be a glob
-      specification, and we don't want it interpreted as a file.
+      Skip the argument to +profile and +coder-options since it
+      can be a glob specification, and we don't want it interpreted
+      as a file.
     */
-    if (LocaleNCompare("+profile",option,8) == 0)
+    if ((LocaleNCompare("+profile",option,8) == 0) ||
+        (LocaleNCompare("+coder-options",option,14) == 0))
       {
         i++;
         if (i == *argc)
@@ -1353,7 +1355,7 @@ MagickExport int GetGeometry(const char *image_geometry,long *x,long *y,
 
   for (c=image_geometry; *c != 0 ; c++)
     {
-      if (isspace((int) (*c)))
+      if (isspace((int)(unsigned char) (*c)))
         {
           continue;
         }
@@ -1418,7 +1420,7 @@ MagickExport int GetGeometry(const char *image_geometry,long *x,long *y,
     Parse width/height/x/y.
   */
   p=geometry;
-  while (isspace((int) *p))
+  while (isspace((int)(unsigned char) *p))
     p++;
   if (*p == '\0')
     return(flags);
@@ -2024,7 +2026,7 @@ MagickExport void GetToken(const char *start,char **end,char *token)
 
   if (*p != '\0')
   {
-    while (isspace((int) (*p)) && (*p != '\0'))
+    while (isspace((int)(unsigned char) (*p)) && (*p != '\0'))
       p++;
     switch (*p)
     {
@@ -2074,7 +2076,7 @@ MagickExport void GetToken(const char *start,char **end,char *token)
           }
         for ( ; *p != '\0'; p++)
         {
-          if ((isspace((int) *p) || (*p == '=')) && (*(p-1) != '\\'))
+          if ((isspace((int)(unsigned char) *p) || (*p == '=')) && (*(p-1) != '\\'))
             break;
           token[i++]=(*p);
           if (*p == '(')
@@ -3236,14 +3238,14 @@ MagickExport char **StringToArgv(const char *text,int *argc)
   */
   for (p=(char *) text; *p != '\0'; )
   {
-    while (isspace((int) (*p)))
+    while (isspace((int)(unsigned char) (*p)))
       p++;
     (*argc)++;
     if (*p == '"')
       for (p++; (*p != '"') && (*p != '\0'); p++);
     if (*p == '\'')
       for (p++; (*p != '\'') && (*p != '\0'); p++);
-    while (!isspace((int) (*p)) && (*p != '\0'))
+    while (!isspace((int)(unsigned char) (*p)) && (*p != '\0'))
       p++;
   }
   (*argc)++;
@@ -3261,7 +3263,7 @@ MagickExport char **StringToArgv(const char *text,int *argc)
   p=(char *) text;
   for (i=1; i < *argc; i++)
   {
-    while (isspace((int) (*p)))
+    while (isspace((int)(unsigned char) (*p)))
       p++;
     q=p;
     if (*q == '"')
@@ -3276,7 +3278,7 @@ MagickExport char **StringToArgv(const char *text,int *argc)
           q++;
         }
       else
-        while (!isspace((int) (*q)) && (*q != '\0'))
+        while (!isspace((int)(unsigned char) (*q)) && (*q != '\0'))
           q++;
     argv[i]=MagickAllocateMemory(char *,q-p+MaxTextExtent);
     if (argv[i] == (char *) NULL)
@@ -3290,7 +3292,7 @@ MagickExport char **StringToArgv(const char *text,int *argc)
     (void) strncpy(argv[i],p,q-p);
     argv[i][q-p]='\0';
     p=q;
-    while (!isspace((int) (*p)) && (*p != '\0'))
+    while (!isspace((int)(unsigned char) (*p)) && (*p != '\0'))
       p++;
   }
   argv[i]=(char *) NULL;
@@ -3389,7 +3391,7 @@ MagickExport char **StringToList(const char *text)
   if (text == (char *) NULL)
     return((char **) NULL);
   for (p=text; *p != '\0'; p++)
-    if (((unsigned char) *p < 32) && !isspace((int) (*p)))
+    if (((unsigned char) *p < 32) && !isspace((int)(unsigned char) (*p)))
       break;
   if (*p == '\0')
     {
@@ -3464,7 +3466,7 @@ MagickExport char **StringToList(const char *text)
         *q++=' ';
         for (j=1; j <= (long) Min(strlen(p),0x14); j++)
         {
-          if (isprint((int) (*p)))
+          if (isprint((int)(unsigned char)(*p)))
             *q++=(*p);
           else
             *q++='-';
@@ -3513,12 +3515,12 @@ MagickExport void Strip(char *message)
   if (strlen(message) == 1)
     return;
   p=message;
-  while (isspace((int) (*p)))
+  while (isspace((int)(unsigned char) (*p)))
     p++;
   if ((*p == '\'') || (*p == '"'))
     p++;
   q=message+strlen(message)-1;
-  while (isspace((int) (*q)) && (q > p))
+  while (isspace((int)(unsigned char) (*q)) && (q > p))
     q--;
   if (q > p)
     if ((*q == '\'') || (*q == '"'))

@@ -99,7 +99,7 @@ const unsigned long
 %  map of coder options in ImageInfo. Coder options may be used by coders/decoders
 %  that read and write images.
 %
-%  The format of the SetImage method is:
+%  The format of the AddCoderOptions method is:
 %
 %      void AddCoderOptions(ImageInfo *image_info,const char *options)
 %
@@ -3847,6 +3847,88 @@ MagickExport Image *ReferenceImage(Image *image)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
+%   R e m o v e C o d e r O p t i o n s                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  RemoveCoderOptions() removes options from the current map of coder options
+%  in ImageInfo. Coder options may be used by coders/decoders that read and
+%  write images. RemoveCoderOptions() returns true only if the specified keys
+%  are present in the map and are actually removed.
+%
+%  The format of the RemoveCoderOptions method is:
+%
+%      void RemoveCoderOptions(ImageInfo *image_info,const char *options)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: The image info.
+%
+%    o options: List of keys to remove from the coder options map. The
+%      format of the string is "key1,key2,...". A special key, *, removes
+%      all the key/value pairs in the coder options map. This key always
+%      succeeds.
+%
+%    o exception: Errors result in updates to this structure.
+%
+*/
+MagickExport unsigned int
+RemoveCoderOptions(const ImageInfo *image_info,const char *options)
+{
+  char
+    key[MaxTextExtent];
+
+  unsigned int
+    status;
+
+  int
+    i,
+    j;
+
+  size_t
+    length;
+
+  if (image_info->coder_options == 0)
+    return(False);
+
+  status=True;
+
+  /*
+    TODO: update to accept GlobExpression as argument names list.
+    That would require the iterator to know we're manipulating
+    the map, or a remove method on the map iterator itself.
+    Until then we accept a simple "*" to mean clear the whole map.
+  */
+  length=strlen(options);
+  i=0;
+  while (i < length)
+  {
+    for (j=0; (i < length) && (options[i] != ','); i++,j++)
+      key[j]=options[i];
+    key[j]='\0';
+    i++;
+    if (strlen(key) > 0)
+      {
+        if ((key[0] == '*') && (key[1] == '\0'))
+          MagickMapClearMap(image_info->coder_options);
+        else
+          status &= MagickMapRemoveEntry(image_info->coder_options,key);
+      }
+    else
+      {
+        status=False;
+        break;
+      }
+  }
+  return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
 %                                                                             %
 +     R G B T r a n s f o r m I m a g e                                       %
 %                                                                             %
@@ -5146,11 +5228,11 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
       p=image_info->tile;
       for (q=p; *q != '\0'; p++)
       {
-        while (isspace((int) *p) || (*p == ','))
+        while (isspace((int)(unsigned char) *p) || (*p == ','))
           p++;
         first=strtol(p,&q,10);
         last=first;
-        while (isspace((int) *q))
+        while (isspace((int)(unsigned char) *q))
           q++;
         if (*q == '-')
           last=strtol(q+1,&q,10);

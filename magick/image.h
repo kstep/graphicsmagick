@@ -969,6 +969,7 @@ extern MagickExport unsigned int
   IsTaintImage(const Image *),
   IsSubimage(const char *,const unsigned int),
   PlasmaImage(Image *,const SegmentInfo *,unsigned long,unsigned long),
+  RemoveCoderOptions(const ImageInfo *image_info,const char *options),
   RGBTransformImage(Image *,const ColorspaceType),
   SetImageChannelDepth(Image *image,
     const ChannelType channel, const unsigned int depth),
