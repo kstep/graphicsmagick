@@ -493,8 +493,7 @@ Magick::DrawableCompositeImage::DrawableCompositeImage ( const Magick::DrawableC
      _y(original_._y),
      _width(original_._width),
      _height(original_._height),
-     _image(new Image(*original_._image)),
-     _magick(original_._magick)
+     _image(new Image(*original_._image))
 {
 }
 // Assignment operator
@@ -510,7 +509,6 @@ Magick::DrawableCompositeImage& Magick::DrawableCompositeImage::operator= (const
       _height = original_._height;
       delete _image;
       _image = new Image(*original_._image);
-      _magick = original_._magick;
     }
   return *this;
 }
@@ -533,6 +531,17 @@ Magick::Image Magick::DrawableCompositeImage::image( void ) const
 {
   return *_image;
 }
+
+// Specify image format used to output Base64 inlined image data.
+void Magick::DrawableCompositeImage::magick( std::string magick_ )
+{
+  _image->magick( magick_ );
+}
+std::string Magick::DrawableCompositeImage::magick( void )
+{
+  return _image->magick();
+}
+
 void Magick::DrawableCompositeImage::print (std::ostream& stream_) const
 {
   stream_ << "image ";
@@ -540,59 +549,59 @@ void Magick::DrawableCompositeImage::print (std::ostream& stream_) const
   switch ( _composition )
     {
     case OverCompositeOp:
-      stream_ << "Over ";
+      stream_ << "over ";
       break;
     case InCompositeOp:
-      stream_ << "In ";
+      stream_ << "in ";
       break;
     case OutCompositeOp:
-      stream_ << "Out ";
+      stream_ << "out ";
       break;
     case AtopCompositeOp:
-      stream_ << "Atop ";
+      stream_ << "atop ";
       break;
     case XorCompositeOp:
-      stream_ << "Xor ";
+      stream_ << "xor ";
       break;
     case PlusCompositeOp:
-      stream_ << "Plus ";
+      stream_ << "plus ";
       break;
     case MinusCompositeOp:
-      stream_ << "Minus ";
+      stream_ << "minus ";
       break;
     case AddCompositeOp:
-      stream_ << "Add ";
+      stream_ << "add ";
       break;
     case SubtractCompositeOp:
-      stream_ << "Subtract ";
+      stream_ << "subtract ";
       break;
     case DifferenceCompositeOp:
-      stream_ << "Difference ";
+      stream_ << "difference ";
       break;
     case MultiplyCompositeOp:
-      stream_ << "Multiply ";
+      stream_ << "multiply ";
       break;
     case BumpmapCompositeOp:
-      stream_ << "Bumpmap ";
+      stream_ << "bumpmap ";
       break;
     case CopyCompositeOp:
-      stream_ << "Copy ";
+      stream_ << "copy ";
       break;
     case CopyRedCompositeOp:
-      stream_ << "CopyRed ";
+      stream_ << "copyred ";
       break;
     case CopyGreenCompositeOp:
-      stream_ << "CopyGreen ";
+      stream_ << "copygreen ";
       break;
     case CopyBlueCompositeOp:
-      stream_ << "CopyBlue ";
+      stream_ << "copyblue ";
       break;
     case CopyOpacityCompositeOp:
-      stream_ << "CopyOpacity ";
+      stream_ << "copyopacity ";
       break;
     default:
       {
-        stream_ << "Copy ";
+        stream_ << "copy ";
       }
     }
 
@@ -600,24 +609,40 @@ void Magick::DrawableCompositeImage::print (std::ostream& stream_) const
           << " "
           << Magick::Coordinate( _width, _height)
           << " '";
-
-  if( _magick.length() == 0 )
+  
+  // Pass as Base64-encoded inline image using a data URL
+  // (see RFC 2397).  The URL format follows the form:
+  // data:[<mediatype>][;base64],<data>
+  Blob blob;
+  _image->write(&blob);
+  
+  char *media_type = MagickToMime((_image->magick()).c_str());
+  
+  char *base64 =
+    Base64Encode(static_cast<const unsigned char*>(blob.data()), blob.length());
+  
+  stream_ << "data:" << media_type << ";base64," << endl;
+  
+  unsigned int width = 0;
+  for( char *p = base64; *p ; p++ )
     {
-      // Pass via mpri reference id
-      stream_ << "mpri:" << _image->registerId();
+      if( width == 0 )
+        stream_ << " ";
+      
+      stream_ << *p;
+      
+      width++;
+      
+      if( width > 76 )
+        {
+          stream_ << endl;
+          width = 0;
+        }
     }
-  else
-    {
-      // Pass as Base64-encoded inline image using a data URL
-      // (see RFC 2397).  The URL format follows the form:
-      // data:[<mediatype>][;base64],<data>
-      Blob blob;
-      _image->write(&blob,_magick);
+  
+  LiberateMemory(reinterpret_cast<void **>(&media_type));
+  LiberateMemory(reinterpret_cast<void **>(&base64));
 
-      char *media_type = MagickToMime(_magick.c_str());
-      stream_ << "data:" << media_type << ";base64," << blob.base64();
-      LiberateMemory(reinterpret_cast<void **>(&media_type));
-    }
   stream_ << "'";
 }
 

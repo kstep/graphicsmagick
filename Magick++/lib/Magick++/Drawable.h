@@ -648,16 +648,9 @@ namespace Magick
     void image( const Image &image_ );
     Magick::Image image( void ) const;
 
-    // Non-empty magick string causes the image to be Base64 inlined
-    // in the specified format.
-    void magick( std::string magick_ )
-      {
-        _magick = magick_;
-      }
-    std::string magick( void )
-      {
-        return _magick;
-      }
+    // Specify image format used to output Base64 inlined image data.
+    void magick( std::string magick_ );
+    std::string magick( void );
 
   private:
     CompositeOperator  _composition;
@@ -666,7 +659,6 @@ namespace Magick
     double             _width;
     double             _height;
     Image*             _image;
-    std::string        _magick;
   };
 
   // Decoration (text decoration)

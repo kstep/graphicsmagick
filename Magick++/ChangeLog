@@ -1,3 +1,8 @@
+2002-04-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Drawable.cpp (DrawableCompositeImage): Always output
+ 	composite images as inlined Base64.
+
 2002-04-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Drawable.cpp (DrawableCompositeImage): If magick attribute
