@@ -517,10 +517,10 @@ typedef struct
 	}WPGRecord;
 typedef struct
 	{
-	BYTE	Class;
-	BYTE    RecType;
-	DWORD   Extension;
-	DWORD   RecordLength;
+	unsigned char	Class;
+	unsigned char    RecType;
+	unsigned long   Extension;
+	unsigned long   RecordLength;
 	}WPG2Record;
 typedef struct
 	{
