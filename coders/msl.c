@@ -4221,10 +4221,10 @@ static Image *ReadMSLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (msl_info.group_info == (MSLGroupInfo *) NULL))
     MagickError(ResourceLimitError,"Unable to interpret MSL image",
       "Memory allocation failed");
-  msl_info.image_info[0]=CloneImageInfo(image_info);
-  msl_info.draw_info[0]=CloneDrawInfo(image_info,(DrawInfo *) NULL);
-  msl_info.attributes[0]=image_info->attributes;
-  msl_info.image[0]=image;
+  *msl_info.image_info=CloneImageInfo(image_info);
+  *msl_info.draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
+  *msl_info.attributes=image_info->attributes;
+  *msl_info.image=image;
   msl_info.group_info[0].numImages=0;
   (void) xmlSubstituteEntitiesDefault(1);
   SAXHandler=(&SAXModules);
