@@ -3177,7 +3177,7 @@ Get(ref,...)
           if (LocaleCompare(attribute,"id") == 0)
             {
               if (image)
-                s=newSViv(SetMagickRegistry(ImageRegistryType,image,0));
+                s=newSViv(SetMagickRegistry(ImageRegistryType,image,0,&image->exception));
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }

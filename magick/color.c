@@ -1093,7 +1093,7 @@ MagickExport unsigned int IsPaletteImage(const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ListColorInfo() lists color names to the specified file.  Color names 
+%  ListColorInfo() lists color names to the specified file.  Color names
 %  are a convenience.  Rather than defining a color by its red, green, and
 %  blue intensities just use a color name such as white, blue, or yellow.
 %
@@ -1292,21 +1292,36 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
     }
   if (LocaleNCompare(name,"rgb(",4) == 0)
     {
-      (void) sscanf(name,"%*[^(](%d%*[ ,]%d%*[ ,]%d",&red,&green,&blue);
-      color->red=(Quantum) UpScale(red);
-      color->green=(Quantum) UpScale(green);
-      color->blue=(Quantum) UpScale(blue);
+      double
+        blue,
+        green,
+        red,
+        scale;
+
+      scale=strchr(name,'%') == (char *) NULL ? 1.0 : DownScale(MaxRGB)/100.0;
+      (void) sscanf(name,"%*[^(](%lf%*[%,]%lf%*[%,]%lf",&red,&green,&blue);
+      color->red=(Quantum) UpScale((int) (scale*red+0.5));
+      color->green=(Quantum) UpScale((int) (scale*green+0.5));
+      color->blue=(Quantum) UpScale((int) (scale*blue+0.5));
       color->opacity=OpaqueOpacity;
       return(True);
     }
   if (LocaleNCompare(name,"rgba(",5) == 0)
     {
-      (void) sscanf(name,"%*[^(](%d%*[ ,]%d%*[ ,]%d%*[ ,]%d",&red,&green,
+      double
+        blue,
+        green,
+        opacity,
+        red,
+        scale;
+
+      scale=strchr(name,'%') == (char *) NULL ? 1.0 : DownScale(MaxRGB)/100.0;
+      (void) sscanf(name,"%*[^(](%lf%*[%,]%lf%*[%,]%lf%*[%,]%lf",&red,&green,
         &blue,&opacity);
-      color->red=(Quantum) UpScale(red);
-      color->green=(Quantum) UpScale(green);
-      color->blue=(Quantum) UpScale(blue);
-      color->opacity=(Quantum) opacity;
+      color->red=(Quantum) UpScale((int) (scale*red+0.5));
+      color->green=(Quantum) UpScale((int) (scale*green+0.5));
+      color->blue=(Quantum) UpScale((int) (scale*blue+0.5));
+      color->opacity=(Quantum) UpScale((int) (scale*opacity+0.5));
       return(True);
     }
   GetExceptionInfo(&exception);

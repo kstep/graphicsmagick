@@ -260,8 +260,8 @@ MagickExport const void *GetMagickRegistry(const long id,RegistryType *type,
 %
 %  The format of the SetMagickRegistry method is:
 %
-%      long SetMagickRegistry(const void *blob,const size_t length,
-%        ExceptionInfo *exception)
+%      long SetMagickRegistry(const RegistryType type,const void *blob,
+%        const size_t length,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
