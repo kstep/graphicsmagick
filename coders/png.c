@@ -19,7 +19,7 @@
 %                               November 1997                                 %
 %                                                                             %
 %                                                                             %
-%  Copyright (C) 2002 ImageMagick Studio, a non-profit organization dedicated %
+%  Copyright (C) 2003 ImageMagick Studio, a non-profit organization dedicated %
 %  to making software imaging solutions freely available.                     %
 %                                                                             %
 %  Permission is hereby granted, free of charge, to any person obtaining a    %
@@ -67,6 +67,7 @@
 #include "magick.h"
 #include "monitor.h"
 #include "quantize.h"
+#include "static.h"
 #include "utility.h"
 #if defined(HasPNG)
 #include "png.h"
@@ -854,6 +855,44 @@ static unsigned int IsMNG(const unsigned char *magick,const size_t length)
   if (length < 8)
     return(False);
   if (memcmp(magick,"\212MNG\r\n\032\n",8) == 0)
+    return(True);
+  return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   I s J N G                                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsJNG returns True if the image format type, identified by the
+%  magick string, is JNG.
+%
+%  The format of the IsJNG method is:
+%
+%      unsigned int IsJNG(const unsigned char *magick,const size_t length)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method IsJNG returns True if the image format type is JNG.
+%
+%    o magick: This string is generally the first few bytes of an image file
+%      or blob.
+%
+%    o length: Specifies the length of the magick string.
+%
+%
+*/
+static unsigned int IsJNG(const unsigned char *magick,const size_t length)
+{
+  if (length < 8)
+    return(False);
+  if (memcmp(magick,"\213JNG\r\n\032\n",8) == 0)
     return(True);
   return(False);
 }
@@ -5310,7 +5349,9 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #endif
   while (image->previous != (Image *) NULL)
     image=image->previous;
+#if 0  /* To do: find out why this causes a crash */
   CloseBlob(image);
+#endif
   MngInfoFreeStruct(mng_info,&have_mng_structure);
   have_mng_structure=False;
   if (logging)
@@ -5448,7 +5489,7 @@ ModuleExport void RegisterPNGImage(void)
   entry->decoder=(DecoderHandler) ReadJNGImage;
   entry->encoder=(EncoderHandler) WriteJNGImage;
 #endif
-  entry->magick=(MagickHandler) IsPNG;
+  entry->magick=(MagickHandler) IsJNG;
   entry->adjoin=False;
   entry->thread_support=True;
   entry->description=AcquireString("JPEG Network Graphics");
@@ -7133,9 +7174,9 @@ static unsigned int WriteOneJNGImage(MngInfo *mng_info,
       num_bytes;
 
     if (jng_color_type == 8 || jng_color_type == 12)
-      num_bytes=6;
+      num_bytes=6L;
     else
-      num_bytes=10;
+      num_bytes=10L;
     (void) WriteBlobMSBULong(image,num_bytes-4L);
     PNGType(chunk,mng_bKGD);
     LogPNGChunk(logging,mng_bKGD,num_bytes-4L);
