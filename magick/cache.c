@@ -1901,7 +1901,8 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   if ((image->columns == 0) || (image->rows == 0))
     ThrowBinaryException(ResourceLimitError,"No pixels defined in cache",
       image->filename);
-  if (cache_threshold.minimum == ~0)
+  if ((GetCacheThreshold(0).minimum == ~0) &&
+      (GetCacheThreshold(0).maximum == ~0))
     {
       char
         *threshold;
@@ -1915,19 +1916,14 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
       threshold=getenv("MAGICK_CACHE_THRESHOLD");
       if (threshold != (char *) NULL)
         {
-          int
-            count;
-
-          double
+          unsigned long
             maximum,
             minimum;
 
-          minimum=0.0;
-          maximum=0.0;
-          count=sscanf(threshold,"%lfx%lf",&minimum,&maximum);
-          if (count == 1)
-            maximum=minimum;
-          SetCacheThreshold((size_t) minimum,(size_t) maximum);
+          minimum=(~0);
+          maximum=(~0);
+          (void) sscanf(threshold,"%lux%lu",&minimum,&maximum);
+          SetCacheThreshold(minimum,maximum);
         }
     }
   cache_info=(CacheInfo *) image->cache;
@@ -1985,7 +1981,8 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   if (cache_info->length == (size_t) cache_info->length)
     if ((cache_info->type == MemoryCache) ||
         ((cache_info->type == UndefinedCache) &&
-         (cache_info->length <= GetCacheThreshold(0).minimum)))
+         ((GetCacheThreshold(0).minimum != ~0) ||
+          (cache_info->length <= GetCacheThreshold(0).minimum))))
       {
         if (cache_info->storage_class == UndefinedClass)
           pixels=(PixelPacket *) AcquireMemory(cache_info->length);
@@ -2020,7 +2017,8 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   /*
     Create pixel cache on disk.
   */
-  if (cache_info->length > GetCacheThreshold(0).maximum)
+  if ((GetCacheThreshold(0).maximum != ~0) &&
+      (cache_info->length > GetCacheThreshold(0).maximum))
     ThrowBinaryException(ResourceLimitError,"Cache resources exhausted",
       image->filename);
   if (*cache_info->cache_filename == '\0')
