@@ -86,7 +86,7 @@ bmp<=win
 	mspaint "%i".
 
 browse=>
-	cmd /C start http://www.simplesystems.org/ImageMagick/ &
+	cmd /C start http://www.imagemagick.org/ImageMagick/ &
 
 bzip=>
 	|bzip2 -cd "%i"
@@ -105,11 +105,11 @@ edit=>
 	notepad "%o"
 
 eps<=>pdf
-	gswin32c -dMaxBitmap=300000000 -sDEVICE=pdfwrite -q -dNOPAUSE -dSAFER \
+	gswin32c -q -dBATCH -dMaxBitmap=30000000 -dNOPAUSE -dSAFER -sDEVICE=pdfwrite \
 	  -sOutputFile=%o -- "%i" -c quit
 
 eps<=>ps
-	gswin32c -dMaxBitmap=300000000 -sDEVICE=pswrite -q -dNOPAUSE -dSAFER \
+	gswin32c -q -dBATCH -dMaxBitmap=30000000 -dNOPAUSE -dSAFER -sDEVICE=pswrite \
 	  -sOutputFile=%o -- "%i" -c quit
 
 fig=>
@@ -122,13 +122,13 @@ gplt=>
 	gnuplot %u
 
 gs-color=>
-	gswin32c -dMaxBitmap=300000000 -sDEVICE=pnmraw -q -dNOPAUSE -dSAFER \
-	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g"%s" -r"%s" %s \
+	gswin32c -q -dBATCH -dMaxBitmap=30000000 -dNOPAUSE -dSAFER -sDEVICE=pnmraw \
+	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s \
 	  -sOutputFile=%s -- "%s" -c quit
 
 gs-mono=>
-	gswin32c -dMaxBitmap=300000000 -sDEVICE=pbmraw -q -dNOPAUSE -dSAFER \
-	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g"%s" -r"%s" %s \
+	gswin32c -q -dBATCH -dMaxBitmap=30000000 -dNOPAUSE -dSAFER -sDEVICE=pbmraw \
+	  -dTextAlphaBits=%u -dGraphicsAlphaBits=%u -g%s -r%s %s \
 	  -sOutputFile=%s -- "%s" -c quit
 
 hpgl=>
@@ -141,22 +141,22 @@ html=>
 	html2ps -o "%o" "%i"
 
 mpg=>
-	mpeg2decode -q -b "%i" -f -r -o3 "%o"%%05d
+	mpeg2decode -q -b "%i" -f -r -o3 "%o%%05d"
 	convert -concatenate "%o*.ppm" "%o"
 
 m2v=>
-	mpeg2decode -q -b "%i" -f -r -o3 "%o"%%05d
+	mpeg2decode -q -b "%i" -f -r -o3 "%o%%05d"
 	convert -concatenate "%o*.ppm" "%o"
 
 pcl<=print
 	print "%i"
 
 pdf<=>eps
-	gswin32c -dMaxBitmap=300000000 -sDEVICE=epswrite -q -dNOPAUSE -dSAFER \
+	gswin32c -q -dBATCH -dMaxBitmap=30000000 -dNOPAUSE -dSAFER -sDEVICE=epswrite \
 	  -sOutputFile=%o -- "%i" -c quit
 
 pdf<=>ps
-	gswin32c -dMaxBitmap=300000000 -sDEVICE=pswrite -q -dNOPAUSE -dSAFER \
+	gswin32c -q -dBATCH -dMaxBitmap=30000000 -dNOPAUSE -dSAFER -sDEVICE=pswrite \
 	  -sOutputFile=%o -- "%i" -c quit
 
 pgp=>
@@ -167,11 +167,11 @@ pov=>
 	convert -concatenate "%o*.png" "%o"
 
 ps<=>eps
-	gswin32c -dMaxBitmap=300000000 -sDEVICE=epswrite -q -dNOPAUSE -dSAFER \
+	gswin32c -q -dBATCH -dMaxBitmap=30000000 -dNOPAUSE -dSAFER -sDEVICE=epswrite \
 	  -sOutputFile=%o -- "%i" -c quit
 
 ps<=>pdf
-	gswin32c -dMaxBitmap=300000000 -sDEVICE=pdfwrite -q -dNOPAUSE -dSAFER \
+	gswin32c -q -dBATCH -dMaxBitmap=30000000 -dNOPAUSE -dSAFER -sDEVICE=pdfwrite \
 	  -sOutputFile=%o -- "%i" -c quit
 
 rad=>
