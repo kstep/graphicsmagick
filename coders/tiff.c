@@ -1257,19 +1257,6 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     TIFFSetField(tiff,TIFFTAG_IMAGEWIDTH,(uint32) image->columns);
     TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,8);
     compress_tag=COMPRESSION_NONE;
-    if ((image_info->compression == FaxCompression) ||
-        (image_info->compression == Group4Compression))
-      if (!IsMonochromeImage(image))
-        {
-          QuantizeInfo
-            quantize_info;
-
-          GetQuantizeInfo(&quantize_info);
-          quantize_info.number_colors=2;
-          quantize_info.dither=image_info->dither;
-          quantize_info.colorspace=GRAYColorspace;
-          (void) QuantizeImage(&quantize_info,image);
-        }
     switch (image->compression)
     {
       case FaxCompression:
@@ -1297,6 +1284,19 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       case ZipCompression: compress_tag=COMPRESSION_ADOBE_DEFLATE; break;
       default: compress_tag=COMPRESSION_NONE; break;
     }
+    if ((image_info->compression == FaxCompression) ||
+        (image_info->compression == Group4Compression))
+      if (!IsMonochromeImage(image))
+        {
+          QuantizeInfo
+            quantize_info;
+
+          GetQuantizeInfo(&quantize_info);
+          quantize_info.number_colors=2;
+          quantize_info.dither=image_info->dither;
+          quantize_info.colorspace=GRAYColorspace;
+          (void) QuantizeImage(&quantize_info,image);
+        }
     if (((image_info->colorspace == UndefinedColorspace) &&
          (image->colorspace == CMYKColorspace)) ||
          (image_info->colorspace == CMYKColorspace))
