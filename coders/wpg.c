@@ -277,7 +277,7 @@ register IndexPacket *indexes;
        }
 }
 
-#define InsertByte(b) {BImgBuff[x]=b;x++;if((long) x>=ldblk) {InsertRow(BImgBuff,y,image);x=0;y++;}}
+#define InsertByte(b) {BImgBuff[x]=b;x++;if((long) x>=ldblk) {InsertRow(BImgBuff,(long) y,image);x=0;y++;}}
 static int UnpackWPGRaster(Image *image)
 {
 int x,y,i;
@@ -289,7 +289,7 @@ long ldblk;
  x=0;
  y=0;
 
- ldblk=((long)image->depth*image->columns+7)/8;
+ ldblk=(long) ((image->depth*image->columns+7)/8);
  BImgBuff=(unsigned char *) malloc(ldblk);
  if(BImgBuff==NULL) return(-2);
 
@@ -350,7 +350,7 @@ long ldblk;
  return(0);
 }
 
-#define InsertRByte(b) {BImgBuff[x]=b;x++;if((long)x>=ldblk) {InsertRow(BImgBuff,image->rows-y-1,image);x=0;y++;}}
+#define InsertRByte(b) {BImgBuff[x]=b;x++;if((long)x>=ldblk) {InsertRow(BImgBuff,(long) (image->rows-y-1),image);x=0;y++;}}
 static int UnpackWPG2Raster(Image *image)
 {
 int x,y,i;
@@ -363,7 +363,7 @@ char SampleSize=1;
 
  x=0;
  y=0;
- ldblk=((long)image->depth*image->columns+7)/8;
+ ldblk=(long) ((image->depth*image->columns+7)/8);
  BImgBuff=(unsigned char *) malloc(ldblk);
  if(BImgBuff==NULL) return(-2);
 
@@ -809,7 +809,7 @@ DecompressionFailed: ThrowReaderException(ResourceLimitWarning,"Cannot decompres
 		{
 		case 0:		/*Uncompressed raster*/
 		   {
-		   ldblk=((long)image->depth*image->columns+7)/8;
+		   ldblk=(long) ((image->depth*image->columns+7)/8);
 		   if( (BImgBuff=(unsigned char *) malloc(ldblk))==NULL) goto NoMemory;
 
 		   for(i=0;i<(long) image->rows;i++)
@@ -839,7 +839,7 @@ DecompressionFailed: ThrowReaderException(ResourceLimitWarning,"Cannot decompres
 	     if(Rec2.RecordLength>0x12)
 		      image=ExtractPostscript(image,image_info,
 		               TellBlob(image)+0x12,   /*skip PS header in the wpg2*/
-			       Rec2.RecordLength-0x12);
+			       (long) (Rec2.RecordLength-0x12));
 	     break;
 	     
 /*	 default:printf("Record type %d; size %ld; offset %lX\n",Rec2.RecType,Rec2.RecordLength,(unsigned long) Header.DataOffset-Rec2.RecordLength); */     
