@@ -1,5 +1,11 @@
 This file records noteworthy changes in Magick++
 
+(5.2.7)
+  * Released with ImageMagick 5.2.7
+  * Added convolve and unsharpmask methods to Image.
+  * Added deconstructImages and mosaicImages template functions.
+  * Fixed handling of geometry parameter to annotate method.
+
 (5.2.6)
   * Released with ImageMagick 5.2.6.
   * Added support for a SVG-style dash array and dash offset

@@ -669,12 +669,12 @@ namespace Magick
   {
   public:
     DrawableEllipse ( double originX_, double originY_, 
-                      double width_, double height_,
+                      double radiusX_, double radiusY_,
                       double arcStart_, double arcEnd_ )
       : _originX(originX_),
         _originY(originY_),
-        _width(width_),
-        _height(height_),
+        _radiusX(radiusX_),
+        _radiusY(radiusY_),
         _arcStart(arcStart_),
         _arcEnd(arcEnd_)
       { }
@@ -707,22 +707,22 @@ namespace Magick
         return _originY;
       }
 
-    void width( double width_ )
+    void radiusX( double radiusX_ )
       {
-        _width = width_;
+        _radiusX = radiusX_;
       }
-    double width( void ) const
+    double radiusX( void ) const
       {
-        return _width;
+        return _radiusX;
       }
 
-    void height( double height_ )
+    void radiusY( double radiusY_ )
       {
-        _height = height_;
+        _radiusY = radiusY_;
       }
-    double height( void ) const
+    double radiusY( void ) const
       {
-        return _height;
+        return _radiusY;
       }
 
     void arcStart( double arcStart_ )
@@ -746,8 +746,8 @@ namespace Magick
   private:
     double _originX;
     double _originY; 
-    double _width;
-    double _height;
+    double _radiusX;
+    double _radiusY;
     double _arcStart;
     double _arcEnd;
   };

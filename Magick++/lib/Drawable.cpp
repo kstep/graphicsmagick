@@ -199,7 +199,7 @@ void Magick::DrawableEllipse::print (std::ostream& stream_) const
 {
   stream_ << "ellipse "
           << Magick::Coordinate(_originX,_originY)
-	  << " " << _width << "," << _height
+	  << " " << _radiusX << "," << _radiusY
 	  << " " << _arcStart << "," << _arcEnd;
 }
 
