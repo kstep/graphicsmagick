@@ -61,10 +61,10 @@ namespace Magick
     Image ( const Blob &blob_, const Geometry &size_ );
 
     // Construct Image of specified size and depth from in-memory BLOB
-    Image ( const Blob &blob_, const Geometry &size, unsigned short depth );
+    Image ( const Blob &blob_, const Geometry &size, unsigned int depth );
 
     // Construct Image of specified size, depth, and format from in-memory BLOB
-    Image ( const Blob &blob_, const Geometry &size, unsigned short depth_,
+    Image ( const Blob &blob_, const Geometry &size, unsigned int depth_,
 	    const std::string &magick_ );
     // Construct Image of specified size, and format from in-memory BLOB
     Image ( const Blob &blob_, const Geometry &size, const std::string &magick_ );
@@ -302,12 +302,12 @@ namespace Magick
     // Read image of specified size and depth from in-memory BLOB
     void            read ( const Blob        &blob_,
 			   const Geometry    &size_,
-			   unsigned short    depth_ );
+			   unsigned int      depth_ );
 
     // Read image of specified size, depth, and format from in-memory BLOB
     void            read ( const Blob        &blob_,
 			   const Geometry    &size_,
-			   unsigned short    depth_,
+			   unsigned int      depth_,
 			   const std::string &magick_ );
 
     // Read Image of specified size, and format from in-memory BLOB
@@ -393,18 +393,13 @@ namespace Magick
     // Write image to a file
     void            write ( const std::string &imageSpec_ );
 
-    // Write image to in-memory BLOB.  A length estimate may be specified to
-    // avoid overhead associated with reallocation of memory if the output
-    // size can be estimated in advance.
+    // Write image to in-memory BLOB, with optional format and adjoin parameters.
+    void            write ( Blob *blob_ );
     void            write ( Blob *blob_,
-			    size_t lengthEstimate_ = 1664 );
-//    void            write ( Blob *blob_,
-//			              const std::string &magick_,
-//			              size_t lengthEstimate_ = 1664 );
-//    void            write ( Blob *blob_,
-//			    const std::string &magick_,
-//			    unsigned short depth_,
-//			    size_t lengthEstimate_ = 1664 );
+			    const std::string &magick_ );
+    void            write ( Blob *blob_,
+			    const std::string &magick_,
+			    unsigned int depth_ );
     
     // Zoom image to specified size.
     void            zoom ( const Geometry &geometry_ );

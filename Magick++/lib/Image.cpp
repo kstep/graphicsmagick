@@ -108,7 +108,7 @@ Magick::Image::Image ( const Blob &blob_,
 // Construct Image of specified size and depth from in-memory BLOB
 Magick::Image::Image ( const Blob &blob_,
 		       const Geometry &size_,
-		       unsigned short depth_ )
+		       unsigned int depth_ )
   : _imgRef(new ImageRef),
     _lastError(LastError::instance())
 {
@@ -119,7 +119,7 @@ Magick::Image::Image ( const Blob &blob_,
 // Construct Image of specified size, depth, and format from in-memory BLOB
 Magick::Image::Image ( const Blob &blob_,
 		       const Geometry &size_,
-		       unsigned short depth_,
+		       unsigned int depth_,
 		       const std::string &magick_ )
   : _imgRef(new ImageRef),
     _lastError(LastError::instance())
@@ -936,7 +936,7 @@ void  Magick::Image::read ( const Blob &blob_,
 // Read image of specified size and depth from in-memory BLOB
 void Magick::Image::read ( const Blob &blob_,
 			   const Geometry &size_,
-			   unsigned short depth_ )
+			   unsigned int depth_ )
 {
   // Set image size
   size( size_ );
@@ -949,7 +949,7 @@ void Magick::Image::read ( const Blob &blob_,
 // Read image of specified size, depth, and format from in-memory BLOB
 void Magick::Image::read ( const Blob &blob_,
 			   const Geometry &size_,
-			   unsigned short depth_,
+			   unsigned int depth_,
 			   const std::string &magick_ )
 {
   // Set image size
@@ -1181,23 +1181,20 @@ void Magick::Image::write( const std::string &imageSpec_ )
 }
 
 // Write image to in-memory BLOB
-void Magick::Image::write ( Blob *blob_,
-			    size_t lengthEstimate_ )
+void Magick::Image::write ( Blob *blob_ )
 {
-  size_t length = lengthEstimate_;
+  size_t length = 2048; // Efficient size for small images
   void* data = MagickLib::ImageToBlob( imageInfo(),
 				       image(),
 				       &length );
   blob_->updateNoCopy( data, length );
   throwMagickError();
 }
-#if 0
 void Magick::Image::write ( Blob *blob_,
-			    const std::string &magick_,
-			    size_t lengthEstimate_ = 1664 )
+			    const std::string &magick_ )
 {
   magick(magick_);
-  size_t length = lengthEstimate_;
+  size_t length = 2048; // Efficient size for small images
   void* data = MagickLib::ImageToBlob( imageInfo(),
 				       image(),
 				       &length );
@@ -1206,19 +1203,18 @@ void Magick::Image::write ( Blob *blob_,
 }
 void Magick::Image::write ( Blob *blob_,
 			    const std::string &magick_,
-			    unsigned short depth_,
-			    size_t lengthEstimate_ = 1664 )
+			    unsigned int depth_ )
 {
   magick(magick_);
   depth(depth_);
-  size_t length = lengthEstimate_;
+  size_t length = 2048; // Efficient size for small images
   void* data = MagickLib::ImageToBlob( imageInfo(),
 				       image(),
 				       &length );
   blob_->updateNoCopy( data, length );
   throwMagickError();
 }
-#endif
+
 
 // Zoom image
 void Magick::Image::zoom( const Geometry &geometry_ )
@@ -1682,7 +1678,7 @@ void Magick::Image::depth ( unsigned int depth_ )
 unsigned int Magick::Image::depth ( void ) const
 {
   return constImage()->depth;
-  return constOptions()->depth( );
+  //  return constOptions()->depth( );
 }
 
 std::string Magick::Image::directory ( void ) const
@@ -2236,10 +2232,13 @@ void Magick::Image::size ( const Geometry &geometry_ )
 {
   modifyImage();
   options()->size( geometry_ );
+  image()->rows = geometry_.height();
+  image()->columns = geometry_.width();
 }
 Magick::Geometry Magick::Image::size ( void ) const
 {
-  return constOptions()->size( );
+  return Magick::Geometry( constImage()->columns, constImage()->rows );
+  //  return constOptions()->size( );
 }
 
 void Magick::Image::subImage ( unsigned int subImage_ )

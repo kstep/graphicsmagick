@@ -234,12 +234,12 @@ format must be specified.</font></td>
 
 <tr>
 <td><font size=-1>const Blob &amp;blob_, const Geometry &amp;size, unsigned
-short depth</font></td>
+int depth</font></td>
 </tr>
 
 <tr>
 <td><font size=-1>const Blob &amp;blob_, const Geometry &amp;size, unsigned
-short depth_, const string &amp;magick_</font></td>
+int depth_, const string &amp;magick_</font></td>
 </tr>
 
 <tr>
@@ -882,7 +882,7 @@ When a format can't be automatically detected, the format must be specified.</fo
 <tr>
 <td><font size=-1>const <a href="Blob.html">Blob</a> &amp;blob_, const
 <a href="Geometry.html">Geometry</a>
-&amp;size_, unsigned short depth_</font></td>
+&amp;size_, unsigned int depth_</font></td>
 </tr>
 
 <tr>
@@ -1149,16 +1149,12 @@ be quantized to fewer colors. Use a copy of the original if this is a problem.</
 </tr>
 
 <tr NOSAVE>
-<td><font size=-1><a href="Blob.html">Blob</a> *blob_, size_t lengthEstimate_
-= 1664</font></td>
+<td><font size=-1><a href="Blob.html">Blob</a> *blob_</font></td>
 
 <td ROWSPAN="3" NOSAVE><font size=-1>Write image to a in-memory <a href="Blob.html">BLOB</a>
 stored in <i>blob_</i>. The <i>magick</i>_ parameter specifies the image
 format to write (defaults to <a href="#magick">magick</a> ). The depth_
-parameter species the image depth (defaults to <a href="#depth">depth</a>).
-The optional parameter
-<i>lengthEstimate_</i> may be specified in order
-to improve performance by avoiding excessive memory reallocations.</font>
+parameter species the image depth (defaults to <a href="#depth">depth</a>).</font>
 <br><font size=-1><b><font color="#FF0000">Caution: </font></b>if an image
 format is selected which is capable of supporting fewer colors than the
 original image or quantization has been requested, the original image will
@@ -1166,13 +1162,12 @@ be quantized to fewer colors. Use a copy of the original if this is a problem.</
 </tr>
 
 <tr>
-<td><font size=-1><a href="Blob.html">Blob</a> *blob_, std::string &amp;magick_,
-size_t lengthEstimate_ = 1664</font></td>
+<td><font size=-1><a href="Blob.html">Blob</a> *blob_, std::string &amp;magick_</font></td>
 </tr>
 
 <tr>
 <td><font size=-1><a href="Blob.html">Blob</a> *blob_, std::string &amp;magick_,
-unsigned short depth_, size_t lengthEstimate_ = 1664</font></td>
+unsigned int depth_</font></td>
 </tr>
 
 <tr>

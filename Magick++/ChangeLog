@@ -1,3 +1,16 @@
+2000-01-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (size): Bug-fix. Set image columns and rows as
+ 	well as image options columns and rows.
+
+	* lib/Image.cpp :Depth parameters are now all unsigned in for consistency.
+
+	* lib/Image.cpp (write): Parameters for writing Blobs re-arranged
+ 	again to hopefully be more sensible.
+
+	* lib/Magick++/STL.h: Bug-fix. Re-number scenes from zero when linking
+ 	image range in container into a list. This provides expected results.
+
 1999-12-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp

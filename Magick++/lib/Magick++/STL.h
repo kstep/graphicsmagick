@@ -2294,7 +2294,7 @@ namespace Magick
 		   InputIterator last_ ) {
 
     MagickLib::Image* previous = (MagickLib::Image*) NULL;
-
+    int scene = 0;
     for ( InputIterator iter = first_; iter != last_; iter++ )
       {
 	// Unless we reduce the reference count to one, the same image
@@ -2310,6 +2310,9 @@ namespace Magick
 
 	if ( previous != (MagickLib::Image*) NULL)
 	  previous->next = current;
+
+	current->scene=scene;
+	scene++;
 
 	previous = current;
       }

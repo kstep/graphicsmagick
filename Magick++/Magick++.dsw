@@ -75,6 +75,18 @@ Package=<4>
 
 ###############################################################################
 
+Project: "manipulate"=".\tests\manipulate.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "shapes"=".\demo\shapes.dsp" - Package Owner=<4>
 
 Package=<5>

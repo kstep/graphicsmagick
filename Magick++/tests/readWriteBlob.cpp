@@ -133,7 +133,7 @@ int main( int /*argc*/, char ** /*argv*/)
       {
 	Image image("test_image.miff");
 	image.magick("MIFF");
-	image.write( &blob, 40000 );
+	image.write( &blob );
 	signature = image.signature();
       }
       {

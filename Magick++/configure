@@ -535,8 +535,8 @@ fi
 
 
 
-MAGICK_RELEASE="0.9.1"		# Magick++ release
-TESTED_MAGICK_VERSION="5.1.0"	# Last tested ImageMagick release
+MAGICK_RELEASE="0.9.2"		# Magick++ release
+TESTED_MAGICK_VERSION="5.1.1"	# Last tested ImageMagick release
 
 INTERFACE_CURRENT=0
 INTERFACE_REVISION=0
