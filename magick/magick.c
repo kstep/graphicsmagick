@@ -818,21 +818,25 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
 #endif
   if ((*p == ':') && ((p-image_info->filename) < (int) sizeof(magic)))
     {
+      char
+        format[MaxTextExtent];
+
       /*
         User specified image format.
       */
-      (void) strncpy(magic,image_info->filename,p-image_info->filename);
-      magic[p-image_info->filename]='\0';
-      if (LocaleCompare(magic,"GRADATION") == 0)
-        (void) strcpy(magic,"GRADIENT");
-      LocaleUpper(magic);
-      if (!IsMagickConflict(magic))
+      (void) strncpy(format,image_info->filename,p-image_info->filename);
+      format[p-image_info->filename]='\0';
+      if (LocaleCompare(format,"GRADATION") == 0)
+        (void) strcpy(format,"GRADIENT");
+      LocaleUpper(format);
+      if (!IsMagickConflict(format))
         {
           /*
             Strip off image format prefix.
           */
           p++;
           (void) strcpy(image_info->filename,p);
+          (void) strcpy(magic,format);
           if (LocaleCompare(magic,"IMPLICIT") != 0)
             {
               (void) strcpy(image_info->magick,magic);
