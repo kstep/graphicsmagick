@@ -895,7 +895,7 @@ static unsigned int ReadConfigureFile(const char *basename,
                     if ((BinPath[0] != 0) &&
                         (BinPath[strlen(BinPath)-1] != *DirectorySeparator))
                       strcat(BinPath,DirectorySeparator);
-printf("BinPath=%s\n",BinPath);
+
                     /* Substitute @GMDelegate@ with path to gm.exe */
                     strcpy(path,BinPath);
                     strcat(path,"gm.exe");
