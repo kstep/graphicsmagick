@@ -102,6 +102,9 @@ static Image *ReadREGISTRYImage(const ImageInfo *image_info,
   RegistryType
     type;
 
+  size_t
+    length;
+ 
   void
     *blob;
  
@@ -110,7 +113,7 @@ static Image *ReadREGISTRYImage(const ImageInfo *image_info,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   id=strtol(image->filename,&p,0);
-  image=(Image *) GetMagickRegistry(id,&type);
+  image=(Image *) GetMagickRegistry(id,&type,&length);
   if ((image == (Image *) NULL) || (type != ImageRegistryType))
     ThrowReaderException(RegistryWarning,"Image not found in registry",image);
   return(CloneImage(image,0,0,True,exception));
