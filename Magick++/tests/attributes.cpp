@@ -693,11 +693,12 @@ int main( int /*argc*/, char ** argv)
     // font
     //
     // Test default
-    if ( image.font().length() != 0 )
+    if ( image.font().length() != 13 )
       {
 	++failures;
 	cout << "Line: " << __LINE__
-             << ", font does not have default length of zero as expected"
+             << ", font has default length " << image.font().length()
+             << " rather than 13 as expected"
              << endl;
       }
 
@@ -708,7 +709,7 @@ int main( int /*argc*/, char ** argv)
 	++failures;
 	cout << "Line: " << __LINE__ << ", font set/get failed" << endl;
       }
-    // Test set to default
+    // Test set to null font
     image.font( string() );
     if ( image.font().length() != 0 )
       {

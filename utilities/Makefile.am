@@ -50,7 +50,12 @@ else
 X11PROGRAMS =
 MANPAGES = $(STDMANPAGES)
 endif
-bin_PROGRAMS = cgimagick combine convert identify iptcutil mogrify montage $(X11PROGRAMS)
+
+# Programs installed under prefix/bin
+bin_PROGRAMS = combine convert identify mogrify montage $(X11PROGRAMS)
+
+# Programs built but not installed
+noinst_PROGRAMS = cgimagick iptcutil
 
 # Libtool libraries, dependencies, and linker flags used by most executables
 if WITH_MODULES
