@@ -733,7 +733,7 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
     for (u=(-width/2); u <= (width/2); u++)
     {
       kernel[i]=((u < 0) || (v < 0) ? -8.0 : 8.0)*
-        exp(-((double) u*u+v*v)/(2.0*sigma*sigma));
+        exp(-((double) u*u+v*v)/(sigma*sigma));
       if (u == j)
         kernel[i]=v == j ? 1.0 : 0.0;
       i++;
@@ -967,7 +967,7 @@ MagickExport Image *GaussianBlurImage(const Image *image,const double radius,
   {
     for (u=(-width/2); u <= (width/2); u++)
     {
-      kernel[i]=exp(-((double) u*u+v*v)/(2.0*sigma*sigma));
+      kernel[i]=exp(-((double) u*u+v*v)/(sigma*sigma));
       i++;
     }
   }
@@ -1882,7 +1882,7 @@ MagickExport Image *SharpenImage(const Image *image,const double radius,
   {
     for (u=(-width/2); u <= (width/2); u++)
     {
-      kernel[i]=exp(-((double) u*u+v*v)/(2.0*sigma*sigma));
+      kernel[i]=exp(-((double) u*u+v*v)/(sigma*sigma));
       normalize+=kernel[i];
       i++;
     }
@@ -2015,9 +2015,15 @@ MagickExport unsigned int ThresholdImage(Image *image,const char *threshold)
   DoublePixelPacket
     pixel;
 
+  IndexPacket
+    index;
+
   long
     count,
     y;
+
+  register IndexPacket
+    *indexes;
 
   register long
     x;
@@ -2037,29 +2043,44 @@ MagickExport unsigned int ThresholdImage(Image *image,const char *threshold)
   pixel.green=100.0;
   pixel.blue=100.0;
   pixel.opacity=100.0;
-  count=sscanf(threshold,"%lf%*[/,]%lf%*[/,]%lf%*[/,]%lf",
+  count=sscanf(threshold,"%lf%*[/,\%]%lf%*[/,\%]%lf%*[/,\%]%lf[\%]",
     &pixel.red,&pixel.green,&pixel.blue,&pixel.opacity);
   if (count == 1)
+    if (!AllocateImageColormap(image,2))
+      ThrowBinaryException(ResourceLimitError,"Unable to threshold image",
+        "Memory allocation failed");
+  if (strchr(threshold,'%') != (char *) NULL)
     {
-      if (pixel.red == 0.0)
-        return(True);
-      pixel.green=pixel.red;
-      pixel.blue=pixel.red;
-      pixel.opacity=pixel.red;
+      pixel.red*=MaxRGB/100.0;
+      pixel.green*=MaxRGB/100.0;
+      pixel.blue*=MaxRGB/100.0;
+      pixel.opacity*=MaxRGB/100.0;
     }
   for (y=0; y < (long) image->rows; y++)
   {
     q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (long) image->columns; x++)
-    {
-      q->red=q->red < pixel.red ? 0 : MaxRGB;
-      q->green=q->green < pixel.green ? 0 : MaxRGB;
-      q->blue=q->blue < pixel.blue ? 0 : MaxRGB;
-      q->opacity=q->opacity < pixel.opacity ? 0 : MaxRGB;
-      q++;
-    }
+    indexes=GetIndexes(image);
+    if (count == 1)
+      for (x=0; x < (long) image->columns; x++)
+      {
+        index=PixelIntensityToQuantum(q) < pixel.red ? 0 : 1;
+        indexes[x]=index;
+        q->red=image->colormap[index].red;
+        q->green=image->colormap[index].green;
+        q->blue=image->colormap[index].blue;
+        q++;
+      }
+    else
+      for (x=0; x < (long) image->columns; x++)
+      {
+        q->red=q->red < pixel.red ? 0 : MaxRGB;
+        q->green=q->green < pixel.green ? 0 : MaxRGB;
+        q->blue=q->blue < pixel.blue ? 0 : MaxRGB;
+        q->opacity=q->opacity < pixel.opacity ? 0 : MaxRGB;
+        q++;
+      }
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
