@@ -5195,17 +5195,20 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
   XrmDatabase
     resource_database;
 
-  if (argc < 2 || ((argc < 3) && (LocaleCompare("-help",argv[1]) == 0 ||
-      LocaleCompare("-?",argv[1]) == 0)))
+  if (argc < 3)
     {
-      DisplayUsage();
-      ThrowException(exception,OptionError,UsageError,NULL);
-      return False;
-    }
-  if (LocaleCompare("-version",argv[1]) == 0)
-    {
-      (void) VersionCommand(image_info,argc,argv,metadata,exception);
-      return False;
+      if ((LocaleCompare("-help",argv[1]) == 0) ||
+          (LocaleCompare("-?",argv[1]) == 0))
+        {
+          DisplayUsage();
+          ThrowException(exception,OptionError,UsageError,NULL);
+          return False;
+        }
+      else if (LocaleCompare("-version",argv[1]) == 0)
+        {
+          (void) VersionCommand(image_info,argc,argv,metadata,exception);
+          return False;
+        }
     }
 
   /*
@@ -5963,13 +5966,13 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("geometry",option+1) == 0)
           {
-            resource_info.image_geometry=(char *) NULL;
+            MagickFreeMemory(resource_info.image_geometry);
             if (*option == '-')
               {
                 i++;
                 if ((i == argc) || !IsGeometry(argv[i]))
                   MagickFatalError(OptionFatalError,MissingArgument,option);
-                resource_info.image_geometry=argv[i];
+                resource_info.image_geometry=AcquireString(argv[i]);
               }
             break;
           }
@@ -6525,8 +6528,8 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
     }
 
   MagickFreeMemory(image_marker);
-  LiberateArgumentList(argc,argv);
   XDestroyResourceInfo(&resource_info);
+  LiberateArgumentList(argc,argv);
   XDestroyX11Resources();
   (void) XCloseDisplay(display);
   return(status);
@@ -7127,8 +7130,7 @@ static void LiberateArgumentList(const int argc,char **argv)
     i;
 
   for (i=0; i< argc; i++)
-    if (argv[i])
-      MagickFreeMemory(argv[i]);
+    MagickFreeMemory(argv[i]);
   MagickFreeMemory(argv);
 }
 

@@ -53,6 +53,16 @@
 </tr>
 </table>
 <p>
+2004-04-11  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/command.c (DisplayImageCommand): Eliminate double-free
+        of resource_info-&gt;image_geometry.
+        (DisplayImageCommand): 'display' was improperly requiring at least
+        one argument (bug was added yesterday).
+
+</UL>
+<p>
 2004-04-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
