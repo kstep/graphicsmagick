@@ -4624,7 +4624,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
 
             if (*option == '+')
               {
-                SetImageVirtualPixelMethod(image,UndefinedVirtualPixelMethod);
+                SetImageVirtualPixelMethod(*image,UndefinedVirtualPixelMethod);
                 continue;
               }
             option=argv[++i];
@@ -4637,7 +4637,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               virtual_pixel_method=MirrorVirtualPixelMethod;
             if (LocaleCompare("Tile",option) == 0)
               virtual_pixel_method=TileVirtualPixelMethod;
-            SetImageVirtualPixelMethod(image,virtual_pixel_method);
+            SetImageVirtualPixelMethod(*image,virtual_pixel_method);
             continue;
           }
         break;
