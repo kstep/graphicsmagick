@@ -575,14 +575,6 @@ int main(int argc,char **argv)
               }
             continue;
           }
-        if (image_number > 0)
-          if ((i == (argc-1)) || (argc == 1))
-            if (!(state & ExitState))
-              if (resource_info.window_id == (char *) NULL)
-                {
-                  i=0;
-                  image_number=0;
-                }
         continue;
       }
     j=k+1;
