@@ -59,8 +59,8 @@
 /*
   X defines.
 */
-#define XGamma(color) \
-  ((Quantum) ((pow((double) (color)/MaxRGB,1.0/xgamma)*MaxRGB)+0.5))
+#define XGamma(color) ((Quantum) (xgamma == 1.0 ? (color) : \
+  ((pow((double) (color)/MaxRGB,1.0/xgamma)*MaxRGB)+0.5)))
 #define XGammaPixel(map,color,dx)  (unsigned long) (map->base_pixel+ \
   ((XGamma((color)->red)*map->red_max+(1L << (dx-1L)))/((1L << dx)-1L))* \
     map->red_mult+ \
