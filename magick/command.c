@@ -1444,8 +1444,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowCompositeException(OptionError,"Missing password",
-                    option);
+                  ThrowConvertException(OptionError,"Missing password",option);
                 (void) CloneString(&image_info->authenticate,argv[i]);
               }
             break;
@@ -3425,8 +3424,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowCompositeException(OptionError,"Missing password",
-                    option);
+                  ThrowMogrifyException(OptionError,"Missing password",option);
                 (void) CloneString(&image_info->authenticate,argv[i]);
               }
             break;
@@ -4962,8 +4960,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowCompositeException(OptionError,"Missing password",
-                    option);
+                  ThrowMontageException(OptionError,"Missing password",option);
                 (void) CloneString(&image_info->authenticate,argv[i]);
               }
             break;
