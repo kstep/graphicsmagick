@@ -465,8 +465,6 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
                     q->green*color.opacity)/MaxRGB);
                   q->blue=((unsigned long) (color.blue*(MaxRGB-color.opacity)+
                     q->blue*color.opacity)/MaxRGB);
-                  q->opacity=((unsigned long) (color.opacity*(MaxRGB-
-                    color.opacity)+q->opacity*color.opacity)/MaxRGB);
                 }
             }
           q++;
@@ -2725,8 +2723,6 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
                     (MaxRGB-fill_opacity)+q->green*fill_opacity)/MaxRGB);
                   q->blue=((unsigned long) (fill_color.blue*
                     (MaxRGB-fill_opacity)+q->blue*fill_opacity)/MaxRGB);
-                  q->opacity=((unsigned long) (fill_color.opacity*
-                    (MaxRGB-fill_opacity)+q->opacity*fill_opacity)/MaxRGB);
                 }
             }
           if ((stroke_opacity == 0.0) ||
@@ -2745,8 +2741,6 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
             (MaxRGB-stroke_opacity)+q->green*stroke_opacity)/MaxRGB);
           q->blue=((unsigned long) (stroke_color.blue*
             (MaxRGB-stroke_opacity)+q->blue*stroke_opacity)/MaxRGB);
-          q->opacity=((unsigned long) (stroke_color.opacity*(MaxRGB-
-            stroke_opacity)+q->opacity*stroke_opacity)/MaxRGB);
           q++;
         }
         break;
