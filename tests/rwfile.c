@@ -23,86 +23,6 @@
 #include <time.h>
 #include <magick/api.h>
 
-static float CompareImage( int fuzz, Image *original, Image *final );
-
-static float CompareImage( int fuzz, Image *original, Image *final )
-{
-  int
-    x,
-    y,
-    factor,
-    diff;
-
-  PixelPacket
-    *orig_p,
-    *final_p;
-
-  ViewInfo
-    *orig_view,
-    *final_view;
-
-  factor = ( MaxRGB * fuzz ) / 100;
-
-  if ( ( original->rows      != final->rows      ) ||
-       ( original->columns   != final->columns   ) ||
-       ( original->depth     != final->depth     ) ||
-       ( original->interlace != final->interlace ) ||
-       ( original->matte     != final->matte     ) )
-    return 1;
-
-  if ( original->class != DirectClass )
-    {
-      SyncImage( original );
-      original->class = DirectClass;
-    }
-
-  if ( final->class != DirectClass )
-    {
-      SyncImage( original );
-      final->class = DirectClass;
-    }
-
-  orig_view=OpenCacheView(original);
-  final_view=OpenCacheView(final);
-  for ( y = 0; y < (int) original->rows; y++ )
-    {
-      /* Get row from original */
-      if (!(orig_p= GetCacheView(orig_view,0,y,original->columns,1)))
-	return 1;
-      /* Get row from final */
-      if (!(final_p= GetCacheView(final_view,0,y,final->columns,1)))
-	return 1;
-      /* Compare pixels in row */
-      for ( x = 0; x < (int) original->columns; x++ )
-	{
-	  if ( ( ( diff = labs((long)orig_p->red     - (long)final_p->red   ) )  > factor ) ||
-	       ( ( diff = labs((long)orig_p->green   - (long)final_p->green ) )  > factor ) ||
-	       ( ( diff = labs((long)orig_p->blue    - (long)final_p->blue  ) )  > factor ) )
-	    {
-	      CloseCacheView(orig_view);
-	      CloseCacheView(final_view);
-	      return ((float)diff/MaxRGB*100);
-	    }
-	  if ( original->matte )
-	    {
-	      if ( ( diff = labs((long)orig_p->opacity - (long)final_p->opacity) ) > factor )
-		{
-		  CloseCacheView(orig_view);
-		  CloseCacheView(final_view);
-		  return ((float)diff/MaxRGB*100);
-		}
-	    }
-	}
-
-      orig_p++;
-      final_p++;
-    }
-  CloseCacheView(orig_view);
-  CloseCacheView(final_view);
-
-  return 0;
-}
-
 int main ( int argc, char **argv )
 {
   Image *original = (Image *)NULL;
@@ -112,7 +32,7 @@ int main ( int argc, char **argv )
   char *size = NULL;
   int rows, columns = 0;
   char filename[80];
-  int fuzz_factor = 0;
+  double fuzz_factor = 0;
   float diff = 0;
   ImageInfo imageInfo;
   ExceptionInfo exception;
@@ -160,6 +80,7 @@ int main ( int argc, char **argv )
    */
   strcpy( original->magick, format );
   strcpy( original->filename, filename );
+  imageInfo.depth=GetImageDepth(original);
   original->delay = 10;
   WriteImage ( &imageInfo, original );
   DestroyImage( original );
@@ -209,41 +130,22 @@ int main ( int argc, char **argv )
    * Check final output
    */
 
-  if ( !strcmp( "EPT", format ) )
-       fuzz_factor = 1;
-
   if ( !strcmp( "JPEG", format ) ||
        !strcmp( "JPG", format ) ||
-       !strcmp( "JPEG24", format ) )
-    fuzz_factor = 5;
+       !strcmp( "JPG24", format ) ||
+       !strcmp( "PAL", format ) ||
+       !strcmp( "PCD", format ) ||
+       !strcmp( "PCDS", format ) ||
+       !strcmp( "UYVY", format ) ||
+       !strcmp( "YUV", format ) )
+    fuzz_factor = 0.008;
 
-  if ( !strcmp( "P7", format ) )
-       fuzz_factor = 16;
-
-  if ( !strcmp( "PAL", format ) )
-    fuzz_factor = 1;
-
-  if ( !strcmp( "PS", format ) )
-       fuzz_factor = 1;
-
-  if ( !strcmp( "PCD", format ) )
-    fuzz_factor = 8;
-
-  if ( !strcmp( "PCDS", format ) )
-    fuzz_factor = 12;
-
-  if ( !strcmp( "PAL", format ) )
-    fuzz_factor = 1;
-
-  if ( !strcmp( "UYVY", format ) )
-    fuzz_factor = 1;
-
-  if ( !strcmp( "YUV", format ) )
-    fuzz_factor = 3;
-
-  if ( (diff = CompareImage( fuzz_factor, original, final )) )
+  if ( !IsImagesEqual(original, final ) &&
+       (original->normalized_mean_error > fuzz_factor) )
     {
-      printf( "R/W file check for format \"%s\" failed: (%2.1f%% component difference)\n", format, diff );
+      printf( "R/W file check for format \"%s\" failed: %u/%.6f/%.6fe\n",
+        format,original->mean_error_per_pixel,original->normalized_mean_error,
+        original->normalized_maximum_error);
       fflush(stdout);
     }
 

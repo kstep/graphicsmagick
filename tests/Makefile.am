@@ -124,7 +124,6 @@ CHECK_BLOB_FORMATS = \
 	MONO \
 	MTV \
 	P7 \
-	MPC \
 	PAL \
 	PBM \
 	PCD \
