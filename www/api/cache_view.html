@@ -42,11 +42,11 @@
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
 <P>void  <STRONG>CloseCacheView</STRONG>( ViewInfo *view );</P>
-<P>PixelPacket * <STRONG>GetCacheView</STRONG>( ViewInfo *view, const int x, const int y, const unsigned int columns, const unsigned int rows );</P>
+<P>PixelPacket * <STRONG>GetCacheView</STRONG>( ViewInfo *view, const long x, const long y, const unsigned long columns, const unsigned long rows );</P>
 <P>IndexPacket * <STRONG>GetCacheViewIndexes</STRONG>( const ViewInfo *view );</P>
 <P>PixelPacket * <STRONG>GetCacheViewPixels</STRONG>( const ViewInfo *view );</P>
 <P>ViewInfo * <STRONG>OpenCacheView</STRONG>( Image *image );</P>
-<P>PixelPacket * <STRONG>SetCacheView</STRONG>( ViewInfo *view, const int x, const int y, const unsigned int columns, const unsigned int rows );</P>
+<P>PixelPacket * <STRONG>SetCacheView</STRONG>( ViewInfo *view, const long x, const long y, const unsigned long columns, const unsigned long rows );</P>
 <P>unsigned int  <STRONG>SyncCacheView</STRONG>( ViewInfo *view );</P>
 <P>
 <HR>
@@ -70,7 +70,7 @@ The address of a structure of type ViewInfo.
 <FONT SIZE=-1>A</FONT> pointer to the pixels is returned if the pixels are transferred, otherwise a 
 <FONT SIZE=-1>NULL</FONT> is returned.</P>
 <P>The format of the GetCacheView method is:</P>
-<blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *GetCacheView ( <A HREF="types/ViewInfo.html">ViewInfo</A> *view, const int x, const int y, const unsigned int columns, const unsigned int rows ); </blockquote><P>
+<blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *GetCacheView ( <A HREF="types/ViewInfo.html">ViewInfo</A> *view, const long x, const long y, const unsigned long columns, const unsigned long rows ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_pixels%3A">pixels:</A></STRONG><BR>
@@ -132,7 +132,7 @@ The image.
 <FONT SIZE=-1>A</FONT> pointer to the pixels is returned if the pixels are transferred, otherwise a 
 <FONT SIZE=-1>NULL</FONT> is returned.</P>
 <P>The format of the SetCacheView method is:</P>
-<blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *SetCacheView ( <A HREF="types/ViewInfo.html">ViewInfo</A> *view, const int x, const int y, const unsigned int columns, const unsigned int rows ); </blockquote><P>
+<blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *SetCacheView ( <A HREF="types/ViewInfo.html">ViewInfo</A> *view, const long x, const long y, const unsigned long columns, const unsigned long rows ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>pixels:</STRONG><BR>

@@ -49,7 +49,7 @@
 <P>indexes: Method  <STRONG>GetIndexes</STRONG>( )returns the indexes associated with the last call to SetImagePixels( )or GetImagePixels( ).;</P>
 <P>pixels: Method  <STRONG>GetOnePixel</STRONG>( )returns a pixel at the specified( x, y );</P>
 <P>pixels: Method  <STRONG>GetPixels</STRONG>( )returns the pixels associated with the last call to SetImagePixels( )or GetImagePixels( ).;</P>
-<P>PixelPacket * <STRONG>SetImagePixels</STRONG>( Image *image, const int x, const int y, const unsigned int columns, const unsigned int rows );</P>
+<P>PixelPacket * <STRONG>SetImagePixels</STRONG>( Image *image, const long x, const long y, const unsigned long columns, const unsigned long rows );</P>
 <P>status: Method  <STRONG>SyncImagePixels</STRONG>( )returns True if the image pixels are transferred to the in-memory or disk cache otherwise False.;</P>
 <P>
 <HR>
@@ -76,7 +76,7 @@ The image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getimagepixels">GetImagePixels</A></H2>
-<blockquote>Method GetImagePixels ( ) gets pixels from the in-memory or disk pixel cacheas defined by the geometry parameters. A pointer to the pixels is returnedif the pixels are transferred, otherwise a NULL is returned.; </blockquote><blockquote>The format of the GetImagePixels ( ) method is:; </blockquote><blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *GetImagePixels ( <A HREF="types/Image.html">Image</A> *image, const int x, const int y, const unsigned int columns, const unsigned int rows ); </blockquote><P>
+<blockquote>Method GetImagePixels ( ) gets pixels from the in-memory or disk pixel cacheas defined by the geometry parameters. A pointer to the pixels is returnedif the pixels are transferred, otherwise a NULL is returned.; </blockquote><blockquote>The format of the GetImagePixels ( ) method is:; </blockquote><blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *GetImagePixels ( <A HREF="types/Image.html">Image</A> *image, const long x, const long y, const unsigned long columns, const unsigned long rows ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <blockquote>status: Method GetImagePixels ( ) returns a pointer to the pixels if they are transferred, otherwise a NULL is returned.; </blockquote><DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
@@ -98,7 +98,7 @@ The image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="getonepixel">GetOnePixel</A></H2>
-<blockquote>Method GetOnePixel ( ) returns a single pixel at the specified ( x, y ) location.The image background color is returned if an error occurs.; </blockquote><blockquote>The format of the GetOnePixel ( ) method is:; </blockquote><blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *GetOnePixel ( const <A HREF="types/Image.html">Image</A> image, const int x, const int y ); </blockquote><P>
+<blockquote>Method GetOnePixel ( ) returns a single pixel at the specified ( x, y ) location.The image background color is returned if an error occurs.; </blockquote><blockquote>The format of the GetOnePixel ( ) method is:; </blockquote><blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *GetOnePixel ( const <A HREF="types/Image.html">Image</A> image, const long x, const long y ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <blockquote>pixels: Method GetOnePixel ( ) returns a pixel at the specified ( x, y ); </blockquote><PRE>
     location.
@@ -123,7 +123,7 @@ The image.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="setimagepixels">SetImagePixels</A></H2>
-<blockquote>Method SetImagePixels ( ) allocates an area to store image pixels as definedby the region rectangle and returns a pointer to the area. This area issubsequently transferred from the pixel cache with SyncImagePixels ( ) . Apointer to the pixels is returned if the pixels are transferred, otherwisea NULL is returned.; </blockquote><blockquote>The format of the SetImagePixels ( ) method is:; </blockquote><blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *SetImagePixels ( <A HREF="types/Image.html">Image</A> *image, const int x, const int y, const unsigned int columns, const unsigned int rows ); </blockquote><P>
+<blockquote>Method SetImagePixels ( ) allocates an area to store image pixels as definedby the region rectangle and returns a pointer to the area. This area issubsequently transferred from the pixel cache with SyncImagePixels ( ) . Apointer to the pixels is returned if the pixels are transferred, otherwisea NULL is returned.; </blockquote><blockquote>The format of the SetImagePixels ( ) method is:; </blockquote><blockquote><A HREF="types/PixelPacket.html">PixelPacket</A> *SetImagePixels ( <A HREF="types/Image.html">Image</A> *image, const long x, const long y, const unsigned long columns, const unsigned long rows ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_pixels%3A">pixels:</A></STRONG><BR>

@@ -55,7 +55,7 @@
 <P>Image * <STRONG>FlopImage</STRONG>( Image *image, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>MosaicImages</STRONG>( const Image *image, ExceptionInfo *exception );</P>
 <P>unsigned int  <STRONG>ProfileImage</STRONG>( Image *image, const char *profile_name, const char *filename );</P>
-<P>Image * <STRONG>RollImage</STRONG>( Image *image, const int x_offset, const int y_offset, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>RollImage</STRONG>( Image *image, const long x_offset, const long y_offset, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>ShaveImage</STRONG>( Image *image, const RectangleInfo *shave_info, ExceptionInfo *exception );</P>
 <P>void  <STRONG>TransformImage</STRONG>( Image ** image, const char *crop_geometry, const char *image_geometry );</P>
 <P>
@@ -215,7 +215,7 @@ Filename of the
 <P>
 <H2><A NAME="rollimage">RollImage</A></H2>
 <blockquote>RollImage ( ) offsets an image as defined by x and y. If a NULL image isreturned, check exception to determine the reason why the operation failed.; </blockquote><P>The format of the RollImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *RollImage ( <A HREF="types/Image.html">Image</A> *image, const int x_offset, const int y_offset, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *RollImage ( <A HREF="types/Image.html">Image</A> *image, const long x_offset, const long y_offset, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>

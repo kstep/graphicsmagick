@@ -177,8 +177,8 @@ static void CloseCache(Cache cache)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method CloseImagePixels() closes the pixel cache.  Use this method to prevent
-%  too many file descriptors from being allocated when reading an image
+%  Method CloseImagePixels() closes the pixel cache.  Use this method to
+%  prevent too many file descriptors from being allocated when reading an image
 %  sequence.  File descriptors are only used for a disk-based cache.  This is
 %  essentially a no-op for a memory-based cache.
 %

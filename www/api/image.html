@@ -73,9 +73,9 @@
 <P>Image * <STRONG>AppendImages</STRONG>( Image *image, const unsigned int stack, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>AverageImages</STRONG>( const Image *image, ExceptionInfo *exception );</P>
 <P>unsigned int  <STRONG>ChannelImage</STRONG>( Image *image, const ChannelType channel );</P>
-<P>Image * <STRONG>CloneImage</STRONG>( Image *image, const unsigned int columns, const unsigned int rows, const unsigned int orphan, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>CloneImage</STRONG>( Image *image, const unsigned long columns, const unsigned long rows, const unsigned int orphan, ExceptionInfo *exception );</P>
 <P>ImageInfo * <STRONG>CloneImageInfo</STRONG>( const ImageInfo *image_info );</P>
-<P>unsigned int  <STRONG>CompositeImage</STRONG>( Image *image, const CompositeOperator compose, Image *composite_image, const int x_offset, const int y_offset );</P>
+<P>unsigned int  <STRONG>CompositeImage</STRONG>( Image *image, const CompositeOperator compose, Image *composite_image, const long x_offset, const long y_offset );</P>
 <P><STRONG>CycleColormapImage</STRONG>( Image *image, const int amount );</P>
 <P>void  <STRONG>DescribeImage</STRONG>( Image *image, 
 <FONT SIZE=-1>FILE</FONT> *file, const unsigned int verbose );</P>
@@ -90,7 +90,7 @@
 <P>unsigned int  <STRONG>GetNumberScenes</STRONG>( const Image *image );</P>
 <P>unsigned int  <STRONG>IsImageTainted</STRONG>( const Image *image );</P>
 <P>unsigned int  <STRONG>IsImagesEqual</STRONG>( Image *image, Image *reference );</P>
-<P>Image **  <STRONG>ListToGroupImage</STRONG>( Image *image, unsigned int *number_images );</P>
+<P>Image **  <STRONG>ListToGroupImage</STRONG>( Image *image, unsigned long *number_images );</P>
 <P>Image * <STRONG>ModifyImage</STRONG>( Image *image, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>ReferenceImage</STRONG>( Image *image );</P>
 <P>void  <STRONG>SetImage</STRONG>( Image *image, const Quantum opacity );</P>
@@ -212,7 +212,7 @@ The image.
 <P>
 <H2><A NAME="cloneimage">CloneImage</A></H2>
 <blockquote>CloneImage ( ) copies an image and returns the copy as a new image object.If the specified columns and rows is 0, an exact copy of the image isreturned, otherwise the pixel data is undefined and must be initializedwith the SetImagePixels ( ) and SyncImagePixels ( ) methods. A NULL imageis returned if the image cannot be cloned; check exception for the reasonwhy.; </blockquote><P>The format of the CloneImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *CloneImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int columns, const unsigned int rows, const unsigned int orphan, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *CloneImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned long columns, const unsigned long rows, const unsigned int orphan, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
@@ -249,7 +249,7 @@ The image info.
 <P>
 <H2><A NAME="compositeimage">CompositeImage</A></H2>
 <blockquote>CompositeImage ( ) returns the second image composited onto the first at thespecified offsets.; </blockquote><P>The format of the CompositeImage method is:</P>
-<blockquote>unsigned int CompositeImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Enumerations.html#CompositeOperator">CompositeOperator</A> compose, <A HREF="types/Image.html">Image</A> *composite_image, const int x_offset, const int y_offset ); </blockquote><P>
+<blockquote>unsigned int CompositeImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Enumerations.html#CompositeOperator">CompositeOperator</A> compose, <A HREF="types/Image.html">Image</A> *composite_image, const long x_offset, const long y_offset ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
@@ -455,7 +455,7 @@ The image.
 <P>
 <H2><A NAME="listtogroupimage">ListToGroupImage</A></H2>
 <blockquote>ListToGroupImage ( ) is a convenience method that converts a linked list ofimages to a sequential array. For example, ; </blockquote><blockquote>images = ListToGroupImage ( image_list, &n ); for ( i=0; i < n; i++ ) puts ( images[i]->filename ) ;; </blockquote><P>The format of the ListToGroupImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> **ListToGroupImage ( <A HREF="types/Image.html">Image</A> *image, unsigned int *number_images ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> **ListToGroupImage ( <A HREF="types/Image.html">Image</A> *image, unsigned long *number_images ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>

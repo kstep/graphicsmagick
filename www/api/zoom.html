@@ -41,9 +41,9 @@
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
 <P>Image * <STRONG>MagnifyImage</STRONG>( image, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>MinifyImage</STRONG>( Image *image, ExceptionInfo *exception );</P>
-<P>Image * <STRONG>ResizeImage</STRONG>( Image *image, const unsigned int columns, const unsigned int rows, const FilterType filter, const double blur, ExceptionInfo *exception );</P>
-<P>Image * <STRONG>SampleImage</STRONG>( Image *image, const unsigned int columns, const unsigned int rows, ExceptionInfo *exception );</P>
-<P>Image * <STRONG>ScaleImage</STRONG>( Image *image, const unsigned int columns, const unsigned int rows, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>ResizeImage</STRONG>( Image *image, const unsigned long columns, const unsigned long rows, const FilterType filter, const double blur, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>SampleImage</STRONG>( Image *image, const unsigned long columns, const unsigned long rows, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>ScaleImage</STRONG>( Image *image, const unsigned long columns, const unsigned long rows, ExceptionInfo *exception );</P>
 <P>
 <HR>
 <H1><A NAME="function descriptions">
@@ -88,7 +88,7 @@ Return any errors or warnings in this structure.
 <P>If a 
 <FONT SIZE=-1>NULL</FONT> image is returned, check exception to determine why the image failed to scale.</P>
 <P>The format of the ResizeImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *ResizeImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int columns, const unsigned int rows, const <A HREF="types/Enumerations.html#FilterType">FilterType</A> filter, const double blur, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *ResizeImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned long columns, const unsigned long rows, const <A HREF="types/Enumerations.html#FilterType">FilterType</A> filter, const double blur, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
@@ -118,7 +118,7 @@ Return any errors or warnings in this structure.
 <P>
 <H2><A NAME="sampleimage">SampleImage</A></H2>
 <blockquote>SampleImage ( ) scales an image to the desired dimensions with pixelsampling. Unlike other scaling methods, this method does not introduceany additional color into the scaled image. If a NULL image isreturned, check exception to determine why the image failed to scale.; </blockquote><P>The format of the SampleImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *SampleImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int columns, const unsigned int rows, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *SampleImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned long columns, const unsigned long rows, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
@@ -140,7 +140,7 @@ Return any errors or warnings in this structure.
 <P>
 <H2><A NAME="scaleimage">ScaleImage</A></H2>
 <blockquote>ScaleImage ( ) changes the size of an image to the given dimensions. Ifa NULL image is returned, check exception to determine why the image failedto scale.; </blockquote><P>The format of the ScaleImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *ScaleImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int columns, const unsigned int rows, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *ScaleImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned long columns, const unsigned long rows, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>

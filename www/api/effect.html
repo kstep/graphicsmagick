@@ -77,7 +77,7 @@
 <P>Image * <STRONG>MotionBlurImage</STRONG>( Image *image, const double radius, const double sigma, const double amount, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>OilPaintImage</STRONG>( Image *image, const double radius, ExceptionInfo *exception );</P>
 <P>unsigned int  <STRONG>PlasmaImage</STRONG>( Image *image, const SegmentInfo *segment, int attenuate, int depth );</P>
-<P>Image * <STRONG>ReduceNoiseImage</STRONG>( Image *image, const double, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>ReduceNoiseImage</STRONG>( Image *image, const double radius, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>ShadeImage</STRONG>( Image *image, const unsigned int color_shading, double azimuth, double elevation, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>SharpenImage</STRONG>( Image *image, const double radius, const double sigma, ExceptionInfo *exception );</P>
 <P>void  <STRONG>SolarizeImage</STRONG>( Image *image, const double threshold );</P>
@@ -508,7 +508,7 @@ this integer values define the plasma recursion depth.
 <P>The principal function of noise peak elimination filter is to smooth the objects within an image without losing edge information and without creating undesired structures.  The central idea of the algorithm is to replace a pixel with its next neighbor in value within a window, if this pixel has been found to be noise.  
 <FONT SIZE=-1>A</FONT> pixel is defined as noise if and only if this pixel is a maximum or minimum within the window.</P>
 <P>The format of the ReduceNoiseImage method is:</P>
-<blockquote><A HREF="types/Image.html">Image</A> *ReduceNoiseImage ( <A HREF="types/Image.html">Image</A> *image, const double, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote><A HREF="types/Image.html">Image</A> *ReduceNoiseImage ( <A HREF="types/Image.html">Image</A> *image, const double radius, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>noise_image:</STRONG><BR>

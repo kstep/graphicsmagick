@@ -43,11 +43,11 @@
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
 <P>DrawInfo * <STRONG>CloneDrawInfo</STRONG>( const ImageInfo *image_info, const DrawInfo *draw_info );</P>
-<P>unsigned int  <STRONG>ColorFloodfillImage</STRONG>( Image *image, const DrawInfo *draw_info, const PixelPacket target, const int x_offset, const int y_offset, const PaintMethod method );</P>
+<P>unsigned int  <STRONG>ColorFloodfillImage</STRONG>( Image *image, const DrawInfo *draw_info, const PixelPacket target, const long x_offset, const long y_offset, const PaintMethod method );</P>
 <P>void  <STRONG>DestroyDrawInfo</STRONG>( DrawInfo *draw_info );</P>
 <P>unsigned int  <STRONG>DrawClipPath</STRONG>( Image *image, DrawInfo *draw_info );</P>
 <P>unsigned int  <STRONG>DrawImage</STRONG>( Image *image, DrawInfo *draw_info );</P>
-<P>unsigned int  <STRONG>MatteFloodfillImage</STRONG>( Image *image, const PixelPacket target, const unsigned int opacity, const int x_offset, const int y_offset, const PaintMethod method );</P>
+<P>unsigned int  <STRONG>MatteFloodfillImage</STRONG>( Image *image, const PixelPacket target, const unsigned int opacity, const long x_offset, const long y_offset, const PaintMethod method );</P>
 <P>unsigned int  <STRONG>OpaqueImage</STRONG>( Image *image, const PixelPacket target, const PixelPacket fill );</P>
 <P>unsigned int  <STRONG>TransparentImage</STRONG>( Image *image, const PixelPacket target, const unsigned int opacity );</P>
 <P>
@@ -74,7 +74,7 @@ The draw info.
 <P><CODE>ColorFloodfill()</CODE> changes the color value of any pixel that matches target and is an immediate neighbor.  If the method is FillToBorderMethod is specified, the color value is changed for any neighbor pixel that does not match the bordercolor member of image.</P>
 <P>By default target must match a particular pixel color exactly.  However, in many cases two colors may differ by a small amount.  The fuzz member of image defines how much tolerance is acceptable to consider two colors as the same.  For example, set fuzz to 10 and the color red at intensities of 100 and 102 respectively are now interpreted as the same color for the purposes of the floodfill.</P>
 <P>The format of the ColorFloodfillImage method is:</P>
-<blockquote>unsigned int ColorFloodfillImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/DrawInfo.html">DrawInfo</A> *draw_info, const <A HREF="types/PixelPacket.html">PixelPacket</A> target, const int x_offset, const int y_offset, const <A HREF="types/Enumerations.html#PaintMethod">PaintMethod</A> method ); </blockquote><P>
+<blockquote>unsigned int ColorFloodfillImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/DrawInfo.html">DrawInfo</A> *draw_info, const <A HREF="types/PixelPacket.html">PixelPacket</A> target, const long x_offset, const long y_offset, const <A HREF="types/Enumerations.html#PaintMethod">PaintMethod</A> method ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
@@ -141,7 +141,7 @@ The draw info.
 <P><CODE>MatteFloodfill()</CODE> changes the transparency value of any pixel that matches target and is an immediate neighbor.  If the method is FillToBorderMethod is specified, the transparency value is changed for any neighbor pixel that does not match the bordercolor member of image.</P>
 <P>By default target must match a particular pixel transparency exactly.  However, in many cases two transparency values may differ by a small amount.  The fuzz member of image defines how much tolerance is acceptable to consider two transparency values as the same.  For example, set fuzz to 10 and the opacity values of 100 and 102 respectively are now interpreted as the same value for the purposes of the floodfill.</P>
 <P>The format of the MatteFloodfillImage method is:</P>
-<blockquote>unsigned int MatteFloodfillImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/PixelPacket.html">PixelPacket</A> target, const unsigned int opacity, const int x_offset, const int y_offset, const <A HREF="types/Enumerations.html#PaintMethod">PaintMethod</A> method ); </blockquote><P>
+<blockquote>unsigned int MatteFloodfillImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/PixelPacket.html">PixelPacket</A> target, const unsigned int opacity, const long x_offset, const long y_offset, const <A HREF="types/Enumerations.html#PaintMethod">PaintMethod</A> method ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DL>
 <p><dt><STRONG>image:</STRONG><BR>
