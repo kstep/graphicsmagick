@@ -61,7 +61,7 @@
 */
 #include "magick/studio.h"
 #include "magick/error.h"
-#include "magick/pixel_wand.h"
+#include "wand/pixel_wand.h"
 #include "magick/utility.h"
 #include "wand/magick_compat.h"
 
