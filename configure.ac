@@ -92,6 +92,9 @@ AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 AC_PROG_LN_S
 
+# check for system services
+C_SYS_LONG_FILE_NAMES
+
 #
 # Tests for Windows
 #
@@ -580,6 +583,7 @@ AC_C_INLINE
 AC_C_LONG_DOUBLE
 AC_C_BIGENDIAN
 
+AC_TYPE_SIGNAL
 AC_TYPE_MODE_T
 AC_TYPE_OFF_T
 AC_TYPE_PID_T
@@ -591,10 +595,16 @@ AC_CHECK_SIZEOF(long long,0)
 #
 # Check for functions
 #
+AC_FUNC_FSEEKO
+AC_FUNC_MALLOC
+AC_FUNC_REALLOC
 AC_FUNC_MEMCMP
 AC_TYPE_SIGNAL
+AC_FUNC_STAT
 AC_FUNC_VPRINTF
 AC_FUNC_MMAP
+AC_FUNC_STRTOD
+AC_FUNC_STRCOLL
 AC_CHECK_FUNCS(closedir getcwd getexecname gettimeofday mkdir mkstemp \
   opendir poll readdir select snprintf strchr strerror strtol sysconf \
   tempnam vsnprintf)
