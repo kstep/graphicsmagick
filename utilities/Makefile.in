@@ -214,12 +214,13 @@ ALLMANPAGES = $(STDMANPAGES) $(X11MANPAGES)
 @HasX11_FALSE@X11PROGRAMS = 
 @HasX11_TRUE@MANPAGES = @HasX11_TRUE@$(ALLMANPAGES)
 @HasX11_FALSE@MANPAGES = @HasX11_FALSE@$(STDMANPAGES)
-bin_PROGRAMS = combine convert identify mogrify montage $(X11PROGRAMS)
+bin_PROGRAMS = combine convert identify iptcutil mogrify montage $(X11PROGRAMS)
 
 # Per-executable sources
 display_SOURCES = display.c
 animate_SOURCES = animate.c
 import_SOURCES = import.c
+iptcutil_SOURCES = iptcutil.c
 montage_SOURCES = montage.c
 convert_SOURCES = convert.c
 mogrify_SOURCES = mogrify.c
@@ -240,10 +241,12 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../magick/config.h
 CONFIG_CLEAN_FILES = 
 @HasX11_FALSE@bin_PROGRAMS =  combine$(EXEEXT) convert$(EXEEXT) \
-@HasX11_FALSE@identify$(EXEEXT) mogrify$(EXEEXT) montage$(EXEEXT)
+@HasX11_FALSE@identify$(EXEEXT) iptcutil$(EXEEXT) mogrify$(EXEEXT) \
+@HasX11_FALSE@montage$(EXEEXT)
 @HasX11_TRUE@bin_PROGRAMS =  combine$(EXEEXT) convert$(EXEEXT) \
-@HasX11_TRUE@identify$(EXEEXT) mogrify$(EXEEXT) montage$(EXEEXT) \
-@HasX11_TRUE@animate$(EXEEXT) display$(EXEEXT) import$(EXEEXT)
+@HasX11_TRUE@identify$(EXEEXT) iptcutil$(EXEEXT) mogrify$(EXEEXT) \
+@HasX11_TRUE@montage$(EXEEXT) animate$(EXEEXT) display$(EXEEXT) \
+@HasX11_TRUE@import$(EXEEXT)
 PROGRAMS =  $(bin_PROGRAMS)
 
 
@@ -295,6 +298,13 @@ import_LDADD = $(LDADD)
 @WITH_MODULES_TRUE@import_DEPENDENCIES =  ../magick/libMagick.la \
 @WITH_MODULES_TRUE@$(top_builddir)/ltdl/libltdlc.la
 import_LDFLAGS = 
+am_iptcutil_OBJECTS =  iptcutil.$(OBJEXT)
+iptcutil_OBJECTS =  $(am_iptcutil_OBJECTS)
+iptcutil_LDADD = $(LDADD)
+@WITH_MODULES_FALSE@iptcutil_DEPENDENCIES =  ../magick/libMagick.la
+@WITH_MODULES_TRUE@iptcutil_DEPENDENCIES =  ../magick/libMagick.la \
+@WITH_MODULES_TRUE@$(top_builddir)/ltdl/libltdlc.la
+iptcutil_LDFLAGS = 
 am_mogrify_OBJECTS =  mogrify.$(OBJEXT)
 mogrify_OBJECTS =  $(am_mogrify_OBJECTS)
 mogrify_LDADD = $(LDADD)
@@ -316,7 +326,7 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 DIST_SOURCES =  $(animate_SOURCES) $(combine_SOURCES) $(convert_SOURCES) \
 $(display_SOURCES) $(identify_SOURCES) $(import_SOURCES) \
-$(mogrify_SOURCES) $(montage_SOURCES)
+$(iptcutil_SOURCES) $(mogrify_SOURCES) $(montage_SOURCES)
 man1dir = $(mandir)/man1
 man4dir = $(mandir)/man4
 man5dir = $(mandir)/man5
@@ -326,15 +336,16 @@ NROFF = nroff
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 DEP_FILES =  @AMDEP@ $(DEPDIR)/animate.Po $(DEPDIR)/combine.Po \
 $(DEPDIR)/convert.Po $(DEPDIR)/display.Po $(DEPDIR)/identify.Po \
-$(DEPDIR)/import.Po $(DEPDIR)/mogrify.Po $(DEPDIR)/montage.Po
+$(DEPDIR)/import.Po $(DEPDIR)/iptcutil.Po $(DEPDIR)/mogrify.Po \
+$(DEPDIR)/montage.Po
 DIST_COMMON =  Makefile.am Makefile.in
 
 
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 
 GZIP_ENV = --best
-SOURCES = $(animate_SOURCES) $(combine_SOURCES) $(convert_SOURCES) $(display_SOURCES) $(identify_SOURCES) $(import_SOURCES) $(mogrify_SOURCES) $(montage_SOURCES)
-OBJECTS = $(am_animate_OBJECTS) $(am_combine_OBJECTS) $(am_convert_OBJECTS) $(am_display_OBJECTS) $(am_identify_OBJECTS) $(am_import_OBJECTS) $(am_mogrify_OBJECTS) $(am_montage_OBJECTS)
+SOURCES = $(animate_SOURCES) $(combine_SOURCES) $(convert_SOURCES) $(display_SOURCES) $(identify_SOURCES) $(import_SOURCES) $(iptcutil_SOURCES) $(mogrify_SOURCES) $(montage_SOURCES)
+OBJECTS = $(am_animate_OBJECTS) $(am_combine_OBJECTS) $(am_convert_OBJECTS) $(am_display_OBJECTS) $(am_identify_OBJECTS) $(am_import_OBJECTS) $(am_iptcutil_OBJECTS) $(am_mogrify_OBJECTS) $(am_montage_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -419,6 +430,10 @@ identify$(EXEEXT): $(identify_OBJECTS) $(identify_DEPENDENCIES)
 import$(EXEEXT): $(import_OBJECTS) $(import_DEPENDENCIES)
 	@rm -f import$(EXEEXT)
 	$(LINK) $(import_LDFLAGS) $(import_OBJECTS) $(import_LDADD) $(LIBS)
+
+iptcutil$(EXEEXT): $(iptcutil_OBJECTS) $(iptcutil_DEPENDENCIES)
+	@rm -f iptcutil$(EXEEXT)
+	$(LINK) $(iptcutil_LDFLAGS) $(iptcutil_OBJECTS) $(iptcutil_LDADD) $(LIBS)
 
 mogrify$(EXEEXT): $(mogrify_OBJECTS) $(mogrify_DEPENDENCIES)
 	@rm -f mogrify$(EXEEXT)
@@ -578,6 +593,7 @@ maintainer-clean-tags:
 @AMDEP@include $(DEPDIR)/display.Po
 @AMDEP@include $(DEPDIR)/identify.Po
 @AMDEP@include $(DEPDIR)/import.Po
+@AMDEP@include $(DEPDIR)/iptcutil.Po
 @AMDEP@include $(DEPDIR)/mogrify.Po
 @AMDEP@include $(DEPDIR)/montage.Po
 

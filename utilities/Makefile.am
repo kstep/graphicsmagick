@@ -50,12 +50,13 @@ else
 X11PROGRAMS =
 MANPAGES = $(STDMANPAGES)
 endif
-bin_PROGRAMS = combine convert identify mogrify montage $(X11PROGRAMS)
+bin_PROGRAMS = combine convert identify iptcutil mogrify montage $(X11PROGRAMS)
 
 # Per-executable sources
 display_SOURCES  = display.c
 animate_SOURCES  = animate.c
 import_SOURCES   = import.c
+iptcutil_SOURCES = iptcutil.c
 montage_SOURCES  = montage.c
 convert_SOURCES  = convert.c
 mogrify_SOURCES  = mogrify.c
