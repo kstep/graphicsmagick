@@ -532,7 +532,8 @@ static int magickCmd(
             }
     	    Tcl_SetObjResult(interp, listPtr);
         }
-	MagickRelinquishMemory(fonts); /* Free TclMagick resource */
+	if (fonts != NULL)
+	    MagickRelinquishMemory(fonts); /* Free TclMagick resource */
 
         break;
     }
@@ -3817,7 +3818,8 @@ static int wandObjCmd(
                 }
     	        Tcl_SetObjResult(interp, listPtr);
             }
-	    MagickRelinquishMemory(factors); /* Free TclMagick resource */
+	    if (factors != NULL)
+		MagickRelinquishMemory(factors); /* Free TclMagick resource */
 	}
 	break;
     }
@@ -4490,7 +4492,8 @@ static int wandObjCmd(
             }
     	    Tcl_SetObjResult(interp, listPtr);
         }
-	MagickRelinquishMemory(metrics); /* Free TclMagick resource */
+	if (metrics != NULL)
+	    MagickRelinquishMemory(metrics); /* Free TclMagick resource */
 
         break;
     }

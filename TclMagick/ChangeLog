@@ -1,7 +1,12 @@
 2004-12-16  David N. Welton  <davidw@dedasys.com>
 
+	* generic/Makefile.am (libTkMagick_la_CPPFLAGS): Added
+	TK_XINCLUDES.  Thanks to George Staplin for reporting the problem.
+
 	* generic/TclMagick.c (magickCmd): Only free the memory if
 	necessary.  Thanks to David Zolli for reporting the problem.
+
+	* generic/TclMagick.c: Fixed a few more, similar free'ing errors.
 
 2004-11-06  David N. Welton  <davidw@dedasys.com>
 

@@ -15,5 +15,5 @@ libTclMagick_la_CPPFLAGS = @TCL_INCLUDES@ @GM_CPPFLAGS@
 
 libTkMagick_la_LDFLAGS = @GM_LDFLAGS@ -no-undefined -module
 libTkMagick_la_LIBADD = @TCL_LIBS@ @TK_LIBS@ @GM_LIBS@
-libTkMagick_la_CPPFLAGS = @TCL_INCLUDES@ @GM_CPPFLAGS@ @TK_INCLUDES@
+libTkMagick_la_CPPFLAGS = @TCL_INCLUDES@ @GM_CPPFLAGS@ @TK_INCLUDES@ @TK_XINCLUDES@
 
