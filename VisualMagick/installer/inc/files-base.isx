@@ -1,0 +1,23 @@
+#ifdef COPYRIGHT
+;
+; Copyright (C) 2003 GraphicsMagick Group
+;
+; This program is covered by multiple licenses, which are described in
+; Copyright.txt. You should have received a copy of Copyright.txt with this
+; package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
+;
+#endif
+
+; Executables
+Source: "..\bin\imdisplay.exe"; DestDir: "{app}"; DestName: "gmdisplay.exe"; Flags: ignoreversion
+Source: "..\bin\gm.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\bin\hp2xx.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\bin\mpeg2dec.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\bin\mpeg2enc.exe"; DestDir: "{app}"; Flags: ignoreversion
+
+; Path Tool
+Source: "..\..\contrib\win32\PathTool\PathTool.exe"; DestDir: "{app}\uninstall"; Flags: ignoreversion
+Source: "..\..\contrib\win32\PathTool\PathTool.pdf"; DestDir: "{app}\uninstall"; Flags: ignoreversion
+
+; Icon file
+Source: "..\..\magick\ImageMagick.ico"; DestDir: "{app}"; Flags: ignoreversion

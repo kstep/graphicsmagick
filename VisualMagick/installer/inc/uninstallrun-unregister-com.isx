@@ -1,0 +1,12 @@
+#ifdef COPYRIGHT
+;
+; Copyright (C) 2003 GraphicsMagick Group
+;
+; This program is covered by multiple licenses, which are described in
+; Copyright.txt. You should have received a copy of Copyright.txt with this
+; package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
+;
+#endif
+
+; Add /s to regsvr32 for silent operation
+Filename: "regsvr32"; Parameters: "/u /s""{app}\ImageMagickObject\ImageMagickObject.dll"""; StatusMsg: "Unregistering ImageMagickObject DLL..."; Tasks: install_Magick_DLL

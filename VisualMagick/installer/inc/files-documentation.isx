@@ -1,0 +1,28 @@
+#ifdef COPYRIGHT
+;
+; Copyright (C) 2003 GraphicsMagick Group
+;
+; This program is covered by multiple licenses, which are described in
+; Copyright.txt. You should have received a copy of Copyright.txt with this
+; package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
+;
+#endif
+
+; Release documentation files
+Source: "..\..\ChangeLog"; DestDir: "{app}"; Flags: ignoreversion; DestName: "ChangeLog.txt"
+Source: "..\..\Copyright.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\..\QuickStart.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\..\README.txt"; DestDir: "{app}"; Flags: ignoreversion
+; Web pages
+Source: "..\..\index.html"; DestDir: "{app}"; Flags: ignoreversion isreadme
+Source: "..\..\images\*.jpg"; DestDir: "{app}\images"; Flags: ignoreversion
+Source: "..\..\images\*.png"; DestDir: "{app}\images"; Flags: ignoreversion
+Source: "..\..\www\*.c"; DestDir: "{app}\www"; Flags: ignoreversion
+Source: "..\..\www\*.css"; DestDir: "{app}\www"; Flags: ignoreversion
+Source: "..\..\www\*.html"; DestDir: "{app}\www"; Flags: ignoreversion
+Source: "..\..\www\Magick++\*.html"; DestDir: "{app}\www\Magick++"; Flags: ignoreversion
+Source: "..\..\www\Magick++\*.jpg"; DestDir: "{app}\www\Magick++"; Flags: ignoreversion
+Source: "..\..\www\Magick++\*.png"; DestDir: "{app}\www\Magick++"; Flags: ignoreversion
+Source: "..\..\www\Magick++\COPYING"; DestDir: "{app}\www\Magick++"; Flags: ignoreversion; DestName: "COPYING.txt"
+Source: "..\..\www\Magick++\README.txt"; DestDir: "{app}\www\Magick++"; Flags: ignoreversion
+Source: "..\..\www\api\*.html"; DestDir: "{app}\www\api"; Flags: ignoreversion

@@ -1,0 +1,15 @@
+#ifdef COPYRIGHT
+;
+; Copyright (C) 2003 GraphicsMagick Group
+;
+; This program is covered by multiple licenses, which are described in
+; Copyright.txt. You should have received a copy of Copyright.txt with this
+; package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
+;
+#endif
+
+; PerlMagick Perl module
+Source: "..\..\PerlMagick\Graphics-Magick.ppd"; DestDir: "{app}\PerlMagick"; Flags: ignoreversion
+Source: "..\..\PerlMagick\Graphics-Magick.tar.gz"; DestDir: "{app}\PerlMagick\x86"; Flags: ignoreversion
+Source: "..\..\PerlMagick\demo\*"; DestDir: "{app}\PerlMagick\demo"; Flags: ignoreversion
+Source: "PerlMagick-PPM.txt"; DestDir: "{app}\PerlMagick"; Flags: ignoreversion; DestName: "README.txt"

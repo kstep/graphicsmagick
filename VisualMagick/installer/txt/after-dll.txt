@@ -13,7 +13,7 @@ is still very much under development.
 
 For your convenience, the full content of the GraphicsMagick web site has been
 installed on your computer. This is available from the Windows start menu via
-"GraphicsMagick 1.0.0" -> "GraphicsMagick Web Pages".
+"GraphicsMagick 1.0" -> "GraphicsMagick Web Pages".
 
 For C and C++ developers who would like to be able to use the DLLs provided
 with this package, link libraries and header files are provide in the 'lib'

@@ -32,6 +32,7 @@
 	encountered result in a condition which terminates the input loop.
 	If EOF is dectected while in the input loop a "corrupt image"
 	"unexpected end of file" error is reported.
+	* VisualMagick/installer: Updated installer.
 
 2003-04-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
