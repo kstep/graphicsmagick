@@ -187,8 +187,7 @@ typedef struct _ConvertOptions
     append;
 
   long
-    morph,
-    scene;
+    morph;
 
   unsigned int
     average,
@@ -302,9 +301,6 @@ static unsigned int ConvertImageList(ImageInfo *image_info,Image **image,
   ConvertOptions *option_info,const int argc,char **argv,
   ExceptionInfo *exception)
 {
-  long
-    scene;
-
   register Image
     *p;
 
@@ -318,7 +314,6 @@ static unsigned int ConvertImageList(ImageInfo *image_info,Image **image,
   assert(exception != (ExceptionInfo *) NULL);
   if (argc < 2)
     return(False);
-  scene=option_info->scene;
   while ((*image)->previous != (Image *) NULL)
     (*image)=(*image)->previous;
   status=MogrifyImages(image_info,argc-1,argv,image);
@@ -435,10 +430,7 @@ static unsigned int ConvertImageList(ImageInfo *image_info,Image **image,
   */
   (void) strncpy(image_info->filename,argv[argc-1],MaxTextExtent-1);
   for (p=(*image); p != (Image *) NULL; p=p->next)
-  {
     (void) strncpy(p->filename,argv[argc-1],MaxTextExtent-1);
-    p->scene=scene++;
-  }
   (void) SetImageInfo(image_info,True,exception);
   for (p=(*image); p != (Image *) NULL; p=p->next)
   {
@@ -1922,14 +1914,12 @@ static unsigned int ConvertUtility(int argc,char **argv)
             }
           if (LocaleCompare("scene",option+1) == 0)
             {
-              option_info.scene=0;
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing scene number",option);
                 }
-              option_info.scene=atol(argv[i]);
               break;
             }
           if (LocaleCompare("seed",option+1) == 0)

@@ -364,7 +364,6 @@ static unsigned int MogrifyUtility(int argc,char **argv)
     *image;
 
   long
-    scene,
     x;
 
   register Image
@@ -385,7 +384,6 @@ static unsigned int MogrifyUtility(int argc,char **argv)
   global_colormap=False;
   image=(Image *) NULL;
   image_info=CloneImageInfo((ImageInfo *) NULL);
-  scene=0;
   status=True;
   /*
     Parse command line.
@@ -1393,13 +1391,11 @@ static unsigned int MogrifyUtility(int argc,char **argv)
             }
           if (LocaleCompare("scene",option+1) == 0)
             {
-              scene=0;
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing scene number",option);
-                  scene=atol(argv[i]);
                 }
               break;
             }
@@ -1697,8 +1693,6 @@ static unsigned int MogrifyUtility(int argc,char **argv)
         status&=image != (Image *) NULL;
         if (image == (Image *) NULL)
           continue;
-        if (scene != 0)
-          image->scene=scene;
         if (format != (char *) NULL)
           {
             register char
@@ -1747,10 +1741,7 @@ static unsigned int MogrifyUtility(int argc,char **argv)
                 }
             }
         for (p=image; p != (Image *) NULL; p=p->next)
-        {
           (void) strncpy(p->filename,image->filename,MaxTextExtent-1);
-          p->scene=scene++;
-        }
         (void) SetImageInfo(image_info,True,&image->exception);
         for (p=image; p != (Image *) NULL; p=p->next)
         {
@@ -1759,8 +1750,6 @@ static unsigned int MogrifyUtility(int argc,char **argv)
           if (image_info->adjoin)
             break;
         }
-        for (p=image; p != (Image *) NULL; p=p->next)
-          scene--;
         if (image_info->verbose)
           DescribeImage(image,stderr,False);
         if ((format == (char *) NULL) && (status != False))
