@@ -121,6 +121,8 @@ TESTS_X11_XFAIL_TESTS = \
 	tests/rwfile_XWD_truecolor.sh
 endif
 
+# These tests do not currently actually fail so they are not included
+# in TESTS_XFAIL_TESTS
 if !HasBZLIB
 TESTS_BZIP_XFAIL_TESTS = \
 	tests/rwfile_MIFF_bilevel_bzip.sh \
@@ -132,6 +134,8 @@ endif
 if !HasLZW
 endif
 
+# These tests do not currently actually fail so they are not included
+# in TESTS_XFAIL_TESTS
 if !HasZLIB
 TESTS_ZIP_XFAIL_TESTS = \
 	tests/rwfile_MIFF_bilevel_zip.sh \
@@ -145,15 +149,13 @@ TESTS_XFAIL_TESTS = \
 	tests/rwblob_PTIF_gray.sh \
 	tests/rwblob_PTIF_pallette.sh \
 	tests/rwblob_PTIF_truecolor.sh \
-	$(TESTS_BZIP_XFAIL_TESTS) \
 	$(TESTS_FPX_XFAIL_TESTS) \
 	$(TESTS_JBIG_XFAIL_TESTS) \
 	$(TESTS_JP2_XFAIL_TESTS) \
 	$(TESTS_JPEG_XFAIL_TESTS) \
 	$(TESTS_PNG_XFAIL_TESTS) \
 	$(TESTS_TIFF_XFAIL_TESTS) \
-	$(TESTS_X11_XFAIL_TESTS) \
-	$(TESTS_ZIP_XFAIL_TESTS)
+	$(TESTS_X11_XFAIL_TESTS)
 
 TESTS_TESTS = \
 	tests/constitute_char_bgro.sh \
