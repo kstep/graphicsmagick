@@ -42,17 +42,21 @@
 #  define ModuleExport
 #endif
 
+#define MagickGlobal __declspec(thread)
+
 #pragma warning(disable : 4018)
 #pragma warning(disable : 4244)
 #pragma warning(disable : 4142)
 
 #else
-#define MagickExport  __declspec(dllexport)
-#define ModuleExport  __declspec(dllexport)
+# define MagickExport __declspec(dllexport)
+# define ModuleExport __declspec(dllexport)
+# define MagickGlobal
 #endif
 #else
 # define MagickExport
 # define ModuleExport
+# define MagickGlobal
 #endif
 
 #define MaxTextExtent  1664
