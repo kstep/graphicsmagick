@@ -1045,10 +1045,6 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
         encoding_type=ft_encoding_big5;
       if (LocaleCompare(encoding,"GB2312") == 0)
         encoding_type=ft_encoding_gb2312;
-#if !defined(__VMS)
-      if (LocaleCompare(encoding,"Latin 2") == 0)
-       encoding_type=ft_encoding_latin_2;
-#endif
       if (LocaleCompare(encoding,"None") == 0)
         encoding_type=ft_encoding_none;
       if (LocaleCompare(encoding,"SJIScode") == 0)
