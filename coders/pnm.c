@@ -924,7 +924,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a PGM image.
         */
-        FormatString(buffer,"%lu\n",
+        FormatString(buffer,"%u\n",
           image->depth > 8 ? MaxRGB : ScaleQuantum(MaxRGB));
         (void) WriteBlobString(image,buffer);
         i=0;
@@ -960,7 +960,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a PNM image.
         */
-        FormatString(buffer,"%lu\n",
+        FormatString(buffer,"%u\n",
           image->depth > 8 ? MaxRGB : ScaleQuantum(MaxRGB));
         (void) WriteBlobString(image,buffer);
         i=0;
