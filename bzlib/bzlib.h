@@ -130,33 +130,33 @@ typedef
 
 /*-- Core (low-level) library functions --*/
 
-BZ_EXTERN int BZ_API(bzCompressInit) ( 
+BZ_EXTERN int BZ_API(BZ2_bzCompressInit) ( 
       bz_stream* strm, 
       int        blockSize100k, 
       int        verbosity, 
       int        workFactor 
    );
 
-BZ_EXTERN int BZ_API(bzCompress) ( 
+BZ_EXTERN int BZ_API(BZ2_bzCompress) ( 
       bz_stream* strm, 
       int action 
    );
 
-BZ_EXTERN int BZ_API(bzCompressEnd) ( 
+BZ_EXTERN int BZ_API(BZ2_bzCompressEnd) ( 
       bz_stream* strm 
    );
 
-BZ_EXTERN int BZ_API(bzDecompressInit) ( 
+BZ_EXTERN int BZ_API(BZ2_bzDecompressInit) ( 
       bz_stream *strm, 
       int       verbosity, 
       int       small
    );
 
-BZ_EXTERN int BZ_API(bzDecompress) ( 
+BZ_EXTERN int BZ_API(BZ2_bzDecompress) ( 
       bz_stream* strm 
    );
 
-BZ_EXTERN int BZ_API(bzDecompressEnd) ( 
+BZ_EXTERN int BZ_API(BZ2_bzDecompressEnd) ( 
       bz_stream *strm 
    );
 

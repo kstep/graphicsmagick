@@ -66,10 +66,10 @@
    0.9.0a/b -- no changes in this file.
 
    0.9.0c
-      * made zero-length BZ_FLUSH work correctly in bzCompress().
+      * made zero-length BZ_FLUSH work correctly in BZ2_bzCompress().
       * fixed bzWrite/bzRead to ignore zero-length requests.
       * fixed bzread to correctly handle read requests after EOF.
-      * wrong parameter order in call to bzDecompressInit in
+      * wrong parameter order in call to BZ2_bzDecompressInit in
         bzBuffToBuffDecompress.  Fixed.
 --*/
 
@@ -149,7 +149,7 @@ Bool isempty_RL ( EState* s )
 
 
 /*---------------------------------------------------*/
-int BZ_API(bzCompressInit) 
+int BZ_API(BZ2_bzCompressInit) 
                     ( bz_stream* strm, 
                      int        blockSize100k,
                      int        verbosity,
@@ -402,7 +402,7 @@ Bool handle_compress ( bz_stream* strm )
 
 
 /*---------------------------------------------------*/
-int BZ_API(bzCompress) ( bz_stream *strm, int action )
+int BZ_API(BZ2_bzCompress) ( bz_stream *strm, int action )
 {
    Bool progress;
    EState* s;
@@ -461,7 +461,7 @@ int BZ_API(bzCompress) ( bz_stream *strm, int action )
 
 
 /*---------------------------------------------------*/
-int BZ_API(bzCompressEnd)  ( bz_stream *strm )
+int BZ_API(BZ2_bzCompressEnd)  ( bz_stream *strm )
 {
    EState* s;
    if (strm == NULL) return BZ_PARAM_ERROR;
@@ -485,7 +485,7 @@ int BZ_API(bzCompressEnd)  ( bz_stream *strm )
 /*---------------------------------------------------*/
 
 /*---------------------------------------------------*/
-int BZ_API(bzDecompressInit) 
+int BZ_API(BZ2_bzDecompressInit) 
                      ( bz_stream* strm, 
                        int        verbosity,
                        int        small )
@@ -768,7 +768,7 @@ void unRLE_obuf_to_output_SMALL ( DState* s )
 
 
 /*---------------------------------------------------*/
-int BZ_API(bzDecompress) ( bz_stream *strm )
+int BZ_API(BZ2_bzDecompress) ( bz_stream *strm )
 {
    DState* s;
    if (strm == NULL) return BZ_PARAM_ERROR;
@@ -820,7 +820,7 @@ int BZ_API(bzDecompress) ( bz_stream *strm )
 
 
 /*---------------------------------------------------*/
-int BZ_API(bzDecompressEnd)  ( bz_stream *strm )
+int BZ_API(BZ2_bzDecompressEnd)  ( bz_stream *strm )
 {
    DState* s;
    if (strm == NULL) return BZ_PARAM_ERROR;
@@ -909,7 +909,7 @@ BZFILE* BZ_API(bzWriteOpen)
    bzf->strm.opaque   = NULL;
 
    if (workFactor == 0) workFactor = 30;
-   ret = bzCompressInit ( &(bzf->strm), blockSize100k, 
+   ret = BZ2_bzCompressInit ( &(bzf->strm), blockSize100k, 
                           verbosity, workFactor );
    if (ret != BZ_OK)
       { BZ_SETERR(ret); free(bzf); return NULL; };
@@ -948,7 +948,7 @@ void BZ_API(bzWrite)
    while (True) {
       bzf->strm.avail_out = BZ_MAX_UNUSED;
       bzf->strm.next_out = bzf->buf;
-      ret = bzCompress ( &(bzf->strm), BZ_RUN );
+      ret = BZ2_bzCompress ( &(bzf->strm), BZ_RUN );
       if (ret != BZ_RUN_OK)
          { BZ_SETERR(ret); return; };
 
@@ -991,7 +991,7 @@ void BZ_API(bzWriteClose)
       while (True) {
          bzf->strm.avail_out = BZ_MAX_UNUSED;
          bzf->strm.next_out = bzf->buf;
-         ret = bzCompress ( &(bzf->strm), BZ_FINISH );
+         ret = BZ2_bzCompress ( &(bzf->strm), BZ_FINISH );
          if (ret != BZ_FINISH_OK && ret != BZ_STREAM_END)
             { BZ_SETERR(ret); return; };
 
@@ -1017,7 +1017,7 @@ void BZ_API(bzWriteClose)
    if (nbytes_out != NULL) *nbytes_out = bzf->strm.total_out;
 
    BZ_SETERR(BZ_OK);
-   bzCompressEnd ( &(bzf->strm) );
+   BZ2_bzCompressEnd ( &(bzf->strm) );
    free ( bzf );
 }
 
@@ -1066,7 +1066,7 @@ BZFILE* BZ_API(bzReadOpen)
       nUnused--;
    }
 
-   ret = bzDecompressInit ( &(bzf->strm), verbosity, small );
+   ret = BZ2_bzDecompressInit ( &(bzf->strm), verbosity, small );
    if (ret != BZ_OK)
       { BZ_SETERR(ret); free(bzf); return NULL; };
 
@@ -1091,7 +1091,7 @@ void BZ_API(bzReadClose) ( int *bzerror, BZFILE *b )
       { BZ_SETERR(BZ_SEQUENCE_ERROR); return; };
 
    if (bzf->initialisedOk)
-      (void)bzDecompressEnd ( &(bzf->strm) );
+      (void)BZ2_bzDecompressEnd ( &(bzf->strm) );
    free ( bzf );
 }
 
@@ -1135,7 +1135,7 @@ int BZ_API(bzRead)
          bzf->strm.next_in = bzf->buf;
       }
 
-      ret = bzDecompress ( &(bzf->strm) );
+      ret = BZ2_bzDecompress ( &(bzf->strm) );
 
       if (ret != BZ_OK && ret != BZ_STREAM_END)
          { BZ_SETERR(ret); return 0; };
@@ -1206,7 +1206,7 @@ int BZ_API(bzBuffToBuffCompress)
    strm.bzalloc = NULL;
    strm.bzfree = NULL;
    strm.opaque = NULL;
-   ret = bzCompressInit ( &strm, blockSize100k, 
+   ret = BZ2_bzCompressInit ( &strm, blockSize100k, 
                           verbosity, workFactor );
    if (ret != BZ_OK) return ret;
 
@@ -1215,21 +1215,21 @@ int BZ_API(bzBuffToBuffCompress)
    strm.avail_in = sourceLen;
    strm.avail_out = *destLen;
 
-   ret = bzCompress ( &strm, BZ_FINISH );
+   ret = BZ2_bzCompress ( &strm, BZ_FINISH );
    if (ret == BZ_FINISH_OK) goto output_overflow;
    if (ret != BZ_STREAM_END) goto errhandler;
 
    /* normal termination */
    *destLen -= strm.avail_out;   
-   bzCompressEnd ( &strm );
+   BZ2_bzCompressEnd ( &strm );
    return BZ_OK;
 
    output_overflow:
-   bzCompressEnd ( &strm );
+   BZ2_bzCompressEnd ( &strm );
    return BZ_OUTBUFF_FULL;
 
    errhandler:
-   bzCompressEnd ( &strm );
+   BZ2_bzCompressEnd ( &strm );
    return ret;
 }
 
@@ -1255,7 +1255,7 @@ int BZ_API(bzBuffToBuffDecompress)
    strm.bzalloc = NULL;
    strm.bzfree = NULL;
    strm.opaque = NULL;
-   ret = bzDecompressInit ( &strm, verbosity, small );
+   ret = BZ2_bzDecompressInit ( &strm, verbosity, small );
    if (ret != BZ_OK) return ret;
 
    strm.next_in = source;
@@ -1263,26 +1263,26 @@ int BZ_API(bzBuffToBuffDecompress)
    strm.avail_in = sourceLen;
    strm.avail_out = *destLen;
 
-   ret = bzDecompress ( &strm );
+   ret = BZ2_bzDecompress ( &strm );
    if (ret == BZ_OK) goto output_overflow_or_eof;
    if (ret != BZ_STREAM_END) goto errhandler;
 
    /* normal termination */
    *destLen -= strm.avail_out;
-   bzDecompressEnd ( &strm );
+   BZ2_bzDecompressEnd ( &strm );
    return BZ_OK;
 
    output_overflow_or_eof:
    if (strm.avail_out > 0) {
-      bzDecompressEnd ( &strm );
+      BZ2_bzDecompressEnd ( &strm );
       return BZ_UNEXPECTED_EOF;
    } else {
-      bzDecompressEnd ( &strm );
+      BZ2_bzDecompressEnd ( &strm );
       return BZ_OUTBUFF_FULL;
    };      
 
    errhandler:
-   bzDecompressEnd ( &strm );
+   BZ2_bzDecompressEnd ( &strm );
    return ret; 
 }
 

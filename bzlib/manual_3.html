@@ -59,10 +59,10 @@ is therefore thread-safe.
 </P>
 <P>
 Six routines make up the low level interface: 
-<CODE>bzCompressInit</CODE>, <CODE>bzCompress</CODE>, and <BR> <CODE>bzCompressEnd</CODE>
+<CODE>BZ2_bzCompressInit</CODE>, <CODE>BZ2_bzCompress</CODE>, and <BR> <CODE>BZ2_bzCompressEnd</CODE>
 for compression,
-and a corresponding trio <CODE>bzDecompressInit</CODE>, <BR> <CODE>bzDecompress</CODE>
-and <CODE>bzDecompressEnd</CODE> for decompression.  
+and a corresponding trio <CODE>BZ2_bzDecompressInit</CODE>, <BR> <CODE>BZ2_bzDecompress</CODE>
+and <CODE>BZ2_bzDecompressEnd</CODE> for decompression.  
 The <CODE>*Init</CODE> functions allocate
 memory for compression/decompression and do other
 initialisations, whilst the <CODE>*End</CODE> functions close down operations
@@ -70,7 +70,7 @@ and release memory.
 
 </P>
 <P>
-The real work is done by <CODE>bzCompress</CODE> and <CODE>bzDecompress</CODE>.  
+The real work is done by <CODE>BZ2_bzCompress</CODE> and <CODE>BZ2_bzDecompress</CODE>.  
 These compress/decompress data from a user-supplied input buffer
 to a user-supplied output buffer.  These buffers can be any size;
 arbitrary quantities of data are handled by making repeated calls
@@ -190,7 +190,7 @@ The requested action was completed successfully.
 <DD>
 <DT><CODE>BZ_FINISH_OK</CODE>
 <DD>
-In <CODE>bzCompress</CODE>, the requested flush/finish/nothing-special action
+In <CODE>BZ2_bzCompress</CODE>, the requested flush/finish/nothing-special action
 was completed successfully.
 <DT><CODE>BZ_STREAM_END</CODE>
 <DD>
@@ -222,10 +222,10 @@ making.
 <DD>
 Returned when a request to allocate memory failed.  Note that the
 quantity of memory needed to decompress a stream cannot be determined
-until the stream's header has been read.  So <CODE>bzDecompress</CODE> and
+until the stream's header has been read.  So <CODE>BZ2_bzDecompress</CODE> and
 <CODE>bzRead</CODE> may return <CODE>BZ_MEM_ERROR</CODE> even though some of
 the compressed data has been read.  The same is not true for
-compression; once <CODE>bzCompressInit</CODE> or <CODE>bzWriteOpen</CODE> have
+compression; once <CODE>BZ2_bzCompressInit</CODE> or <CODE>bzWriteOpen</CODE> have
 successfully completed, <CODE>BZ_MEM_ERROR</CODE> cannot occur.
 <DT><CODE>BZ_DATA_ERROR</CODE>
 <DD>
@@ -264,7 +264,7 @@ will not fit into the output buffer provided.
 
 
 
-<H3><A NAME="SEC19" HREF="manual_toc.html#TOC19"><CODE>bzCompressInit</CODE></A></H3>
+<H3><A NAME="SEC19" HREF="manual_toc.html#TOC19"><CODE>BZ2_bzCompressInit</CODE></A></H3>
 
 <PRE>
 typedef 
@@ -285,7 +285,7 @@ typedef
    } 
    bz_stream;
 
-int bzCompressInit ( bz_stream *strm, 
+int BZ2_bzCompressInit ( bz_stream *strm, 
                      int blockSize100k, 
                      int verbosity,
                      int workFactor );
@@ -325,7 +325,7 @@ routines.
 
 </P>
 <P>
-Before calling <CODE>bzCompressInit</CODE>, fields <CODE>bzalloc</CODE>, 
+Before calling <CODE>BZ2_bzCompressInit</CODE>, fields <CODE>bzalloc</CODE>, 
 <CODE>bzfree</CODE> and <CODE>opaque</CODE> should
 be filled appropriately, as just described.  Upon return, the internal
 state will have been allocated and initialised, and <CODE>total_in</CODE> and 
@@ -406,29 +406,29 @@ Possible return values:
 Allowable next actions:
 
 <PRE>
-      <CODE>bzCompress</CODE> 
+      <CODE>BZ2_bzCompress</CODE> 
          if <CODE>BZ_OK</CODE> is returned
       no specific action needed in case of error
 </PRE>
 
 
 
-<H3><A NAME="SEC20" HREF="manual_toc.html#TOC20"><CODE>bzCompress</CODE></A></H3>
+<H3><A NAME="SEC20" HREF="manual_toc.html#TOC20"><CODE>BZ2_bzCompress</CODE></A></H3>
 
 <PRE>
-   int bzCompress ( bz_stream *strm, int action );
+   int BZ2_bzCompress ( bz_stream *strm, int action );
 </PRE>
 
 <P>
 Provides more input and/or output buffer space for the library.  The
-caller maintains input and output buffers, and calls <CODE>bzCompress</CODE> to
+caller maintains input and output buffers, and calls <CODE>BZ2_bzCompress</CODE> to
 transfer data between them.
 
 </P>
 <P>
-Before each call to <CODE>bzCompress</CODE>, <CODE>next_in</CODE> should point at
+Before each call to <CODE>BZ2_bzCompress</CODE>, <CODE>next_in</CODE> should point at
 the data to be compressed, and <CODE>avail_in</CODE> should indicate how many
-bytes the library may read.  <CODE>bzCompress</CODE> updates <CODE>next_in</CODE>,
+bytes the library may read.  <CODE>BZ2_bzCompress</CODE> updates <CODE>next_in</CODE>,
 <CODE>avail_in</CODE> and <CODE>total_in</CODE> to reflect the number of bytes it
 has read.
 
@@ -436,34 +436,34 @@ has read.
 <P>
 Similarly, <CODE>next_out</CODE> should point to a buffer in which the
 compressed data is to be placed, with <CODE>avail_out</CODE> indicating how
-much output space is available.  <CODE>bzCompress</CODE> updates
+much output space is available.  <CODE>BZ2_bzCompress</CODE> updates
 <CODE>next_out</CODE>, <CODE>avail_out</CODE> and <CODE>total_out</CODE> to reflect the
 number of bytes output.
 
 </P>
 <P>
 You may provide and remove as little or as much data as you like on each
-call of <CODE>bzCompress</CODE>.  In the limit, it is acceptable to supply and
+call of <CODE>BZ2_bzCompress</CODE>.  In the limit, it is acceptable to supply and
 remove data one byte at a time, although this would be terribly
 inefficient.  You should always ensure that at least one byte of output
 space is available at each call.
 
 </P>
 <P>
-A second purpose of <CODE>bzCompress</CODE> is to request a change of mode of the
+A second purpose of <CODE>BZ2_bzCompress</CODE> is to request a change of mode of the
 compressed stream.  
 
 </P>
 <P>
 Conceptually, a compressed stream can be in one of four states: IDLE,
 RUNNING, FLUSHING and FINISHING.  Before initialisation
-(<CODE>bzCompressInit</CODE>) and after termination (<CODE>bzCompressEnd</CODE>), a
+(<CODE>BZ2_bzCompressInit</CODE>) and after termination (<CODE>BZ2_bzCompressEnd</CODE>), a
 stream is regarded as IDLE.
 
 </P>
 <P>
-Upon initialisation (<CODE>bzCompressInit</CODE>), the stream is placed in the
-RUNNING state.  Subsequent calls to <CODE>bzCompress</CODE> should pass
+Upon initialisation (<CODE>BZ2_bzCompressInit</CODE>), the stream is placed in the
+RUNNING state.  Subsequent calls to <CODE>BZ2_bzCompress</CODE> should pass
 <CODE>BZ_RUN</CODE> as the requested action; other actions are illegal and
 will result in <CODE>BZ_SEQUENCE_ERROR</CODE>.
 
@@ -472,31 +472,31 @@ will result in <CODE>BZ_SEQUENCE_ERROR</CODE>.
 At some point, the calling program will have provided all the input data
 it wants to.  It will then want to finish up -- in effect, asking the
 library to process any data it might have buffered internally.  In this
-state, <CODE>bzCompress</CODE> will no longer attempt to read data from
+state, <CODE>BZ2_bzCompress</CODE> will no longer attempt to read data from
 <CODE>next_in</CODE>, but it will want to write data to <CODE>next_out</CODE>.
 Because the output buffer supplied by the user can be arbitrarily small,
 the finishing-up operation cannot necessarily be done with a single call
-of <CODE>bzCompress</CODE>.
+of <CODE>BZ2_bzCompress</CODE>.
 
 </P>
 <P>
 Instead, the calling program passes <CODE>BZ_FINISH</CODE> as an action to
-<CODE>bzCompress</CODE>.  This changes the stream's state to FINISHING.  Any
+<CODE>BZ2_bzCompress</CODE>.  This changes the stream's state to FINISHING.  Any
 remaining input (ie, <CODE>next_in[0 .. avail_in-1]</CODE>) is compressed and
-transferred to the output buffer.  To do this, <CODE>bzCompress</CODE> must be
+transferred to the output buffer.  To do this, <CODE>BZ2_bzCompress</CODE> must be
 called repeatedly until all the output has been consumed.  At that
-point, <CODE>bzCompress</CODE> returns <CODE>BZ_STREAM_END</CODE>, and the stream's
-state is set back to IDLE.  <CODE>bzCompressEnd</CODE> should then be
+point, <CODE>BZ2_bzCompress</CODE> returns <CODE>BZ_STREAM_END</CODE>, and the stream's
+state is set back to IDLE.  <CODE>BZ2_bzCompressEnd</CODE> should then be
 called.
 
 </P>
 <P>
 Just to make sure the calling program does not cheat, the library makes
 a note of <CODE>avail_in</CODE> at the time of the first call to
-<CODE>bzCompress</CODE> which has <CODE>BZ_FINISH</CODE> as an action (ie, at the
+<CODE>BZ2_bzCompress</CODE> which has <CODE>BZ_FINISH</CODE> as an action (ie, at the
 time the program has announced its intention to not supply any more
 input).  By comparing this value with that of <CODE>avail_in</CODE> over
-subsequent calls to <CODE>bzCompress</CODE>, the library can detect any
+subsequent calls to <CODE>BZ2_bzCompress</CODE>, the library can detect any
 attempts to slip in more data to compress.  Any calls for which this is
 detected will return <CODE>BZ_SEQUENCE_ERROR</CODE>.  This indicates a
 programming mistake which should be corrected.
@@ -504,13 +504,13 @@ programming mistake which should be corrected.
 </P>
 <P>
 Instead of asking to finish, the calling program may ask
-<CODE>bzCompress</CODE> to take all the remaining input, compress it and
+<CODE>BZ2_bzCompress</CODE> to take all the remaining input, compress it and
 terminate the current (Burrows-Wheeler) compression block.  This could
 be useful for error control purposes.  The mechanism is analogous to
-that for finishing: call <CODE>bzCompress</CODE> with an action of
+that for finishing: call <CODE>BZ2_bzCompress</CODE> with an action of
 <CODE>BZ_FLUSH</CODE>, remove output data, and persist with the
 <CODE>BZ_FLUSH</CODE> action until the value <CODE>BZ_RUN</CODE> is returned.  As
-with finishing, <CODE>bzCompress</CODE> detects any attempt to provide more
+with finishing, <CODE>BZ2_bzCompress</CODE> detects any attempt to provide more
 input data once the flush has begun.
 
 </P>
@@ -525,12 +525,12 @@ which shows which actions are allowable in each state, what action
 will be taken, what the next state is, and what the non-error return
 values are.  Note that you can't explicitly ask what state the
 stream is in, but nor do you need to -- it can be inferred from the
-values returned by <CODE>bzCompress</CODE>.
+values returned by <CODE>BZ2_bzCompress</CODE>.
 
 <PRE>
 IDLE/<CODE>any</CODE>           
-      Illegal.  IDLE state only exists after <CODE>bzCompressEnd</CODE> or
-      before <CODE>bzCompressInit</CODE>.
+      Illegal.  IDLE state only exists after <CODE>BZ2_bzCompressEnd</CODE> or
+      before <CODE>BZ2_bzCompressInit</CODE>.
       Return value = <CODE>BZ_SEQUENCE_ERROR</CODE>
 
 RUNNING/<CODE>BZ_RUN</CODE>     
@@ -582,29 +582,29 @@ That still looks complicated?  Well, fair enough.  The usual sequence
 of calls for compressing a load of data is:
 
 <UL>
-<LI>Get started with <CODE>bzCompressInit</CODE>.
+<LI>Get started with <CODE>BZ2_bzCompressInit</CODE>.
 
 <LI>Shovel data in and shlurp out its compressed form using zero or more
 
-calls of <CODE>bzCompress</CODE> with action = <CODE>BZ_RUN</CODE>.
+calls of <CODE>BZ2_bzCompress</CODE> with action = <CODE>BZ_RUN</CODE>.
 <LI>Finish up.
 
-Repeatedly call <CODE>bzCompress</CODE> with action = <CODE>BZ_FINISH</CODE>, 
+Repeatedly call <CODE>BZ2_bzCompress</CODE> with action = <CODE>BZ_FINISH</CODE>, 
 copying out the compressed output, until <CODE>BZ_STREAM_END</CODE> is returned.
-<LI>Close up and go home.  Call <CODE>bzCompressEnd</CODE>.
+<LI>Close up and go home.  Call <CODE>BZ2_bzCompressEnd</CODE>.
 
 </UL>
 
 <P>
 If the data you want to compress fits into your input buffer all
-at once, you can skip the calls of <CODE>bzCompress ( ..., BZ_RUN )</CODE> and 
-just do the <CODE>bzCompress ( ..., BZ_FINISH )</CODE> calls.
+at once, you can skip the calls of <CODE>BZ2_bzCompress ( ..., BZ_RUN )</CODE> and 
+just do the <CODE>BZ2_bzCompress ( ..., BZ_FINISH )</CODE> calls.
 
 </P>
 <P>
-All required memory is allocated by <CODE>bzCompressInit</CODE>.  The
+All required memory is allocated by <CODE>BZ2_bzCompressInit</CODE>.  The
 compression library can accept any data at all (obviously).  So you
-shouldn't get any error return values from the <CODE>bzCompress</CODE> calls.
+shouldn't get any error return values from the <CODE>BZ2_bzCompress</CODE> calls.
 If you do, they will be <CODE>BZ_SEQUENCE_ERROR</CODE>, and indicate a bug in
 your programming.
 
@@ -619,10 +619,10 @@ Trivial other possible return values:
 
 
 
-<H3><A NAME="SEC21" HREF="manual_toc.html#TOC21"><CODE>bzCompressEnd</CODE></A></H3>
+<H3><A NAME="SEC21" HREF="manual_toc.html#TOC21"><CODE>BZ2_bzCompressEnd</CODE></A></H3>
 
 <PRE>
-int bzCompressEnd ( bz_stream *strm );
+int BZ2_bzCompressEnd ( bz_stream *strm );
 </PRE>
 
 <P>
@@ -639,14 +639,14 @@ Possible return values:
 
 
 
-<H3><A NAME="SEC22" HREF="manual_toc.html#TOC22"><CODE>bzDecompressInit</CODE></A></H3>
+<H3><A NAME="SEC22" HREF="manual_toc.html#TOC22"><CODE>BZ2_bzDecompressInit</CODE></A></H3>
 
 <PRE>
-int bzDecompressInit ( bz_stream *strm, int verbosity, int small );
+int BZ2_bzDecompressInit ( bz_stream *strm, int verbosity, int small );
 </PRE>
 
 <P>
-Prepares for decompression.  As with <CODE>bzCompressInit</CODE>, a
+Prepares for decompression.  As with <CODE>BZ2_bzCompressInit</CODE>, a
 <CODE>bz_stream</CODE> record should be allocated and initialised before the
 call.  Fields <CODE>bzalloc</CODE>, <CODE>bzfree</CODE> and <CODE>opaque</CODE> should be
 set if a custom memory allocator is required, or made <CODE>NULL</CODE> for
@@ -656,7 +656,7 @@ state will have been initialised, and <CODE>total_in</CODE> and
 
 </P>
 <P>
-For the meaning of parameter <CODE>verbosity</CODE>, see <CODE>bzCompressInit</CODE>.
+For the meaning of parameter <CODE>verbosity</CODE>, see <CODE>BZ2_bzCompressInit</CODE>.
 
 </P>
 <P>
@@ -670,8 +670,8 @@ more information on memory management.
 <P>
 Note that the amount of memory needed to decompress
 a stream cannot be determined until the stream's header has been read,
-so even if <CODE>bzDecompressInit</CODE> succeeds, a subsequent
-<CODE>bzDecompress</CODE> could fail with <CODE>BZ_MEM_ERROR</CODE>.
+so even if <CODE>BZ2_bzDecompressInit</CODE> succeeds, a subsequent
+<CODE>BZ2_bzDecompress</CODE> could fail with <CODE>BZ_MEM_ERROR</CODE>.
 
 </P>
 <P>
@@ -689,7 +689,7 @@ Possible return values:
 Allowable next actions:
 
 <PRE>
-      <CODE>bzDecompress</CODE>
+      <CODE>BZ2_bzDecompress</CODE>
          if <CODE>BZ_OK</CODE> was returned
       no specific action required in case of error
 </PRE>
@@ -700,23 +700,23 @@ Allowable next actions:
 </P>
 
 
-<H3><A NAME="SEC23" HREF="manual_toc.html#TOC23"><CODE>bzDecompress</CODE></A></H3>
+<H3><A NAME="SEC23" HREF="manual_toc.html#TOC23"><CODE>BZ2_bzDecompress</CODE></A></H3>
 
 <PRE>
-int bzDecompress ( bz_stream *strm );
+int BZ2_bzDecompress ( bz_stream *strm );
 </PRE>
 
 <P>
 Provides more input and/out output buffer space for the library.  The
-caller maintains input and output buffers, and uses <CODE>bzDecompress</CODE>
+caller maintains input and output buffers, and uses <CODE>BZ2_bzDecompress</CODE>
 to transfer data between them.
 
 </P>
 <P>
-Before each call to <CODE>bzDecompress</CODE>, <CODE>next_in</CODE> 
+Before each call to <CODE>BZ2_bzDecompress</CODE>, <CODE>next_in</CODE> 
 should point at the compressed data,
 and <CODE>avail_in</CODE> should indicate how many bytes the library
-may read.  <CODE>bzDecompress</CODE> updates <CODE>next_in</CODE>, <CODE>avail_in</CODE> 
+may read.  <CODE>BZ2_bzDecompress</CODE> updates <CODE>next_in</CODE>, <CODE>avail_in</CODE> 
 and <CODE>total_in</CODE>
 to reflect the number of bytes it has read.
 
@@ -724,14 +724,14 @@ to reflect the number of bytes it has read.
 <P>
 Similarly, <CODE>next_out</CODE> should point to a buffer in which the uncompressed
 output is to be placed, with <CODE>avail_out</CODE> indicating how much output space
-is available.  <CODE>bzCompress</CODE> updates <CODE>next_out</CODE>,
+is available.  <CODE>BZ2_bzCompress</CODE> updates <CODE>next_out</CODE>,
 <CODE>avail_out</CODE> and <CODE>total_out</CODE> to reflect
 the number of bytes output.
 
 </P>
 <P>
 You may provide and remove as little or as much data as you like on
-each call of <CODE>bzDecompress</CODE>.  
+each call of <CODE>BZ2_bzDecompress</CODE>.  
 In the limit, it is acceptable to
 supply and remove data one byte at a time, although this would be
 terribly inefficient.  You should always ensure that at least one
@@ -739,23 +739,23 @@ byte of output space is available at each call.
 
 </P>
 <P>
-Use of <CODE>bzDecompress</CODE> is simpler than <CODE>bzCompress</CODE>.
+Use of <CODE>BZ2_bzDecompress</CODE> is simpler than <CODE>BZ2_bzCompress</CODE>.
 
 </P>
 <P>
 You should provide input and remove output as described above, and
-repeatedly call <CODE>bzDecompress</CODE> until <CODE>BZ_STREAM_END</CODE> is
+repeatedly call <CODE>BZ2_bzDecompress</CODE> until <CODE>BZ_STREAM_END</CODE> is
 returned.  Appearance of <CODE>BZ_STREAM_END</CODE> denotes that
-<CODE>bzDecompress</CODE> has detected the logical end of the compressed
-stream.  <CODE>bzDecompress</CODE> will not produce <CODE>BZ_STREAM_END</CODE> until
+<CODE>BZ2_bzDecompress</CODE> has detected the logical end of the compressed
+stream.  <CODE>BZ2_bzDecompress</CODE> will not produce <CODE>BZ_STREAM_END</CODE> until
 all output data has been placed into the output buffer, so once
 <CODE>BZ_STREAM_END</CODE> appears, you are guaranteed to have available all
-the decompressed output, and <CODE>bzDecompressEnd</CODE> can safely be
+the decompressed output, and <CODE>BZ2_bzDecompressEnd</CODE> can safely be
 called.
 
 </P>
 <P>
-If case of an error return value, you should call <CODE>bzDecompressEnd</CODE>
+If case of an error return value, you should call <CODE>BZ2_bzDecompressEnd</CODE>
 to clean up and release memory.
 
 </P>
@@ -783,18 +783,18 @@ Possible return values:
 Allowable next actions:
 
 <PRE>
-      <CODE>bzDecompress</CODE>
+      <CODE>BZ2_bzDecompress</CODE>
          if <CODE>BZ_OK</CODE> was returned
-      <CODE>bzDecompressEnd</CODE>
+      <CODE>BZ2_bzDecompressEnd</CODE>
          otherwise
 </PRE>
 
 
 
-<H3><A NAME="SEC24" HREF="manual_toc.html#TOC24"><CODE>bzDecompressEnd</CODE></A></H3>
+<H3><A NAME="SEC24" HREF="manual_toc.html#TOC24"><CODE>BZ2_bzDecompressEnd</CODE></A></H3>
 
 <PRE>
-int bzDecompressEnd ( bz_stream *strm );
+int BZ2_bzDecompressEnd ( bz_stream *strm );
 </PRE>
 
 <P>
@@ -900,7 +900,7 @@ respectively.
 </P>
 <P>
 For the meaning of parameters <CODE>small</CODE> and <CODE>verbosity</CODE>,
-see <CODE>bzDecompressInit</CODE>.
+see <CODE>BZ2_bzDecompressInit</CODE>.
 
 </P>
 <P>
@@ -1129,7 +1129,7 @@ indicator (<CODE>ferror(f)</CODE>)is not set.
 <P>
 For the meaning of parameters <CODE>blockSize100k</CODE>,
 <CODE>verbosity</CODE> and <CODE>workFactor</CODE>, see
-<BR> <CODE>bzCompressInit</CODE>.
+<BR> <CODE>BZ2_bzCompressInit</CODE>.
 
 </P>
 <P>
@@ -1408,7 +1408,7 @@ mechanism, use the low-level interface.
 </P>
 <P>
 For the meaning of parameters <CODE>blockSize100k</CODE>, <CODE>verbosity</CODE>
-and <CODE>workFactor</CODE>, <BR> see <CODE>bzCompressInit</CODE>.
+and <CODE>workFactor</CODE>, <BR> see <CODE>BZ2_bzCompressInit</CODE>.
 
 </P>
 <P>
@@ -1469,7 +1469,7 @@ the entirety of the stream into the output buffer.
 </P>
 <P>
 For the meaning of parameters <CODE>small</CODE> and <CODE>verbosity</CODE>,
-see <CODE>bzDecompressInit</CODE>.
+see <CODE>BZ2_bzDecompressInit</CODE>.
 
 </P>
 <P>
@@ -1586,8 +1586,8 @@ eight functions:
 
 </P>
 <P>
-<CODE>bzCompressInit</CODE>, <CODE>bzCompress</CODE>, <CODE>bzCompressEnd</CODE> <BR>
-<CODE>bzDecompressInit</CODE>, <CODE>bzDecompress</CODE>, <CODE>bzDecompressEnd</CODE> <BR>
+<CODE>BZ2_bzCompressInit</CODE>, <CODE>BZ2_bzCompress</CODE>, <CODE>BZ2_bzCompressEnd</CODE> <BR>
+<CODE>BZ2_bzDecompressInit</CODE>, <CODE>BZ2_bzDecompress</CODE>, <CODE>BZ2_bzDecompressEnd</CODE> <BR>
 <CODE>bzBuffToBuffCompress</CODE>, <CODE>bzBuffToBuffDecompress</CODE>
 
 </P>

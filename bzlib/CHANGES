@@ -32,10 +32,10 @@ bzip2.c, so the non-fixedness of them in previous versions has no
 effect on reliability of bzip2.c.
 
 In bzlib.c:
-   * made zero-length BZ_FLUSH work correctly in bzCompress().
+   * made zero-length BZ_FLUSH work correctly in BZ2_bzCompress().
    * fixed bzWrite/bzRead to ignore zero-length requests.
    * fixed bzread to correctly handle read requests after EOF.
-   * wrong parameter order in call to bzDecompressInit in
+   * wrong parameter order in call to BZ2_bzDecompressInit in
      bzBuffToBuffDecompress.  Fixed.
 
 In compress.c:

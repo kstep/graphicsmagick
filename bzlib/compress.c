@@ -188,7 +188,7 @@ void generateMTFValues ( EState* s )
       area starting at
          (UChar*) (&((UInt16)s->arr2)[s->nblock])
 
-      These storage aliases are set up in bzCompressInit(),
+      These storage aliases are set up in BZ2_bzCompressInit(),
       except for the last one, which is arranged in 
       compressBlock().
    */

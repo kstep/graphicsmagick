@@ -5469,17 +5469,17 @@ y(of)31 b Fi(stdio.h)p Fk(,)d(whic)m(h)h(ma)m(y)i(b)s(e)f(helpful)d
 g(part)g(of)h(the)f(library)e(has)i(no)h(global)e(v)-5
 b(ariables)29 b(and)h(is)g(therefore)g(thread-safe.)150
 2801 y(Six)f(routines)g(mak)m(e)j(up)d(the)i(lo)m(w)f(lev)m(el)g(in)m
-(terface:)41 b Fi(bzCompressInit)p Fk(,)27 b Fi(bzCompress)p
-Fk(,)h(and)150 2911 y Fi(bzCompressEnd)f Fk(for)j(compression,)g(and)f
-(a)i(corresp)s(onding)d(trio)i Fi(bzDecompressInit)p
-Fk(,)150 3021 y Fi(bzDecompress)41 b Fk(and)k Fi(bzDecompressEnd)40
+(terface:)41 b Fi(BZ2_bzCompressInit)p Fk(,)27 b Fi(BZ2_bzCompress)p
+Fk(,)h(and)150 2911 y Fi(BZ2_bzCompressEnd)f Fk(for)j(compression,)g(and)f
+(a)i(corresp)s(onding)d(trio)i Fi(BZ2_bzDecompressInit)p
+Fk(,)150 3021 y Fi(BZ2_bzDecompress)41 b Fk(and)k Fi(BZ2_bzDecompressEnd)40
 b Fk(for)45 b(decompression.)83 b(The)44 b Fi(*Init)f
 Fk(functions)g(allo)s(cate)150 3130 y(memory)31 b(for)g
 (compression/decompression)e(and)i(do)g(other)g(initialisations,)d
 (whilst)h(the)j Fi(*End)e Fk(func-)150 3240 y(tions)g(close)g(do)m(wn)g
 (op)s(erations)g(and)g(release)g(memory)-8 b(.)150 3397
-y(The)23 b(real)g(w)m(ork)h(is)f(done)g(b)m(y)g Fi(bzCompress)e
-Fk(and)i Fi(bzDecompress)p Fk(.)35 b(These)24 b(compress/decompress)f
+y(The)23 b(real)g(w)m(ork)h(is)f(done)g(b)m(y)g Fi(BZ2_bzCompress)e
+Fk(and)i Fi(BZ2_bzDecompress)p Fk(.)35 b(These)24 b(compress/decompress)f
 (data)150 3506 y(from)i(a)g(user-supplied)d(input)h(bu\013er)h(to)i(a)g
 (user-supplied)c(output)i(bu\013er.)38 b(These)25 b(bu\013ers)f(can)i
 (b)s(e)f(an)m(y)150 3616 y(size;)35 b(arbitrary)d(quan)m(tities)g(of)i
@@ -5582,7 +5582,7 @@ b(alue.)59 b(The)36 b(\014rst)g(\014v)m(e)g(actions)h(are)g(normal)f
 4219 y(situation.)150 4393 y Fi(BZ_OK)240 b Fk(The)30
 b(requested)g(action)h(w)m(as)g(completed)f(successfully)-8
 b(.)150 4538 y Fi(BZ_RUN_OK)150 4647 y(BZ_FLUSH_OK)150
-4757 y(BZ_FINISH_OK)630 4867 y Fk(In)21 b Fi(bzCompress)p
+4757 y(BZ_FINISH_OK)630 4867 y Fk(In)21 b Fi(BZ2_bzCompress)p
 Fk(,)f(the)h(requested)h(\015ush/\014nish/nothing-sp)s(ecial)16
 b(action)21 b(w)m(as)h(completed)630 4976 y(successfully)-8
 b(.)150 5121 y Fi(BZ_STREAM_END)630 5230 y Fk(Compression)38
@@ -5617,11 +5617,11 @@ b(with)e Fi(BZ_SEQUENCE_ERROR)p Fk(,)f(this)i(denotes)h(a)g(bug)f(in)g
 b(that)g(the)g(quan)m(tit)m(y)g(of)630 2123 y(memory)21
 b(needed)g(to)i(decompress)e(a)g(stream)h(cannot)g(b)s(e)f(determined)f
 (un)m(til)g(the)h(stream's)630 2233 y(header)j(has)g(b)s(een)f(read.)39
-b(So)24 b Fi(bzDecompress)d Fk(and)i Fi(bzRead)g Fk(ma)m(y)h(return)f
+b(So)24 b Fi(BZ2_bzDecompress)d Fk(and)i Fi(bzRead)g Fk(ma)m(y)h(return)f
 Fi(BZ_MEM_ERROR)630 2342 y Fk(ev)m(en)43 b(though)f(some)g(of)h(the)f
 (compressed)g(data)h(has)f(b)s(een)f(read.)76 b(The)42
 b(same)g(is)g(not)630 2452 y(true)32 b(for)g(compression;)g(once)h
-Fi(bzCompressInit)28 b Fk(or)k Fi(bzWriteOpen)d Fk(ha)m(v)m(e)k
+Fi(BZ2_bzCompressInit)28 b Fk(or)k Fi(bzWriteOpen)d Fk(ha)m(v)m(e)k
 (successfully)630 2561 y(completed,)e Fi(BZ_MEM_ERROR)c
 Fk(cannot)k(o)s(ccur.)150 2724 y Fi(BZ_DATA_ERROR)630
 2834 y Fk(Returned)h(when)g(a)h(data)g(in)m(tegrit)m(y)g(error)g(is)e
@@ -5658,14 +5658,14 @@ eop
 %%Page: 12 13
 12 12 bop 150 -116 a Fk(Chapter)30 b(3:)41 b(Programming)29
 b(with)g Fi(libbzip2)1881 b Fk(12)150 299 y Fe(3.3.1)63
-b Fd(bzCompressInit)390 486 y Fi(typedef)533 589 y(struct)46
+b Fd(BZ2_bzCompressInit)390 486 y Fi(typedef)533 589 y(struct)46
 b({)676 693 y(char)h(*next_in;)676 797 y(unsigned)f(int)h(avail_in;)676
 901 y(unsigned)f(int)h(total_in;)676 1108 y(char)g(*next_out;)676
 1212 y(unsigned)f(int)h(avail_out;)676 1316 y(unsigned)f(int)h
 (total_out;)676 1523 y(void)g(*state;)676 1731 y(void)g
 (*\(*bzalloc\)\(void)c(*,int,int\);)676 1835 y(void)k
 (\(*bzfree\)\(void)d(*,void)i(*\);)676 1939 y(void)h(*opaque;)533
-2042 y(})533 2146 y(bz_stream;)390 2354 y(int)g(bzCompressInit)d(\()j
+2042 y(})533 2146 y(bz_stream;)390 2354 y(int)g(BZ2_bzCompressInit)d(\()j
 (bz_stream)f(*strm,)1392 2457 y(int)h(blockSize100k,)1392
 2561 y(int)g(verbosity,)1392 2665 y(int)g(workFactor)e(\);)150
 2926 y Fk(Prepares)32 b(for)h(compression.)47 b(The)32
@@ -5693,7 +5693,7 @@ Fk(b)m(ytes)h(of)g(memory)-8 b(,)30 b(and)e Fi(bzfree)h(\()h(opaque,)f
 Fk(and)h Fi(opaque)e Fk(to)150 4006 y Fi(NULL)p Fk(,)e(and)h(the)h
 (library)d(will)f(then)k(use)f(the)g(standard)g Fi(malloc)p
 Fk(/)p Fi(free)e Fk(routines.)150 4163 y(Before)h(calling)e
-Fi(bzCompressInit)p Fk(,)e(\014elds)i Fi(bzalloc)p Fk(,)g
+Fi(BZ2_bzCompressInit)p Fk(,)e(\014elds)i Fi(bzalloc)p Fk(,)g
 Fi(bzfree)g Fk(and)h Fi(opaque)f Fk(should)f(b)s(e)i(\014lled)e(appro-)
 150 4273 y(priately)-8 b(,)40 b(as)e(just)g(describ)s(ed.)62
 b(Up)s(on)37 b(return,)j(the)e(in)m(ternal)f(state)j(will)35
@@ -5766,19 +5766,19 @@ Fi(workFactor)c(>)j Fk(250)572 3444 y Fi(BZ_MEM_ERROR)663
 3548 y Fk(if)f(not)i(enough)f(memory)g(is)f(a)m(v)-5
 b(ailable)572 3652 y Fi(BZ_OK)663 3755 y Fk(otherwise)150
 3912 y(Allo)m(w)m(able)30 b(next)g(actions:)572 4063
-y Fi(bzCompress)663 4167 y Fk(if)f Fi(BZ_OK)g Fk(is)g(returned)572
+y Fi(BZ2_bzCompress)663 4167 y Fk(if)f Fi(BZ_OK)g Fk(is)g(returned)572
 4271 y(no)h(sp)s(eci\014c)f(action)i(needed)f(in)f(case)i(of)g(error)
-150 4511 y Fe(3.3.2)63 b Fd(bzCompress)533 4698 y Fi(int)47
-b(bzCompress)e(\()j(bz_stream)d(*strm,)h(int)h(action)f(\);)150
+150 4511 y Fe(3.3.2)63 b Fd(BZ2_bzCompress)533 4698 y Fi(int)47
+b(BZ2_bzCompress)e(\()j(bz_stream)d(*strm,)h(int)h(action)f(\);)150
 4854 y Fk(Pro)m(vides)28 b(more)g(input)f(and/or)h(output)g(bu\013er)g
 (space)h(for)f(the)h(library)-8 b(.)38 b(The)28 b(caller)g(main)m
 (tains)f(input)150 4964 y(and)j(output)g(bu\013ers,)f(and)h(calls)g
-Fi(bzCompress)d Fk(to)k(transfer)f(data)h(b)s(et)m(w)m(een)g(them.)150
-5121 y(Before)k(eac)m(h)g(call)d(to)j Fi(bzCompress)p
+Fi(BZ2_bzCompress)d Fk(to)k(transfer)f(data)h(b)s(et)m(w)m(een)g(them.)150
+5121 y(Before)k(eac)m(h)g(call)d(to)j Fi(BZ2_bzCompress)p
 Fk(,)d Fi(next_in)g Fk(should)f(p)s(oin)m(t)i(at)h(the)g(data)h(to)f(b)
 s(e)f(compressed,)i(and)150 5230 y Fi(avail_in)42 b Fk(should)g
 (indicate)g(ho)m(w)i(man)m(y)g(b)m(ytes)h(the)f(library)d(ma)m(y)k
-(read.)81 b Fi(bzCompress)41 b Fk(up)s(dates)150 5340
+(read.)81 b Fi(BZ2_bzCompress)41 b Fk(up)s(dates)150 5340
 y Fi(next_in)p Fk(,)29 b Fi(avail_in)f Fk(and)i Fi(total_in)e
 Fk(to)j(re\015ect)g(the)f(n)m(um)m(b)s(er)f(of)i(b)m(ytes)g(it)f(has)g
 (read.)p eop
@@ -5788,29 +5788,29 @@ b(with)g Fi(libbzip2)1881 b Fk(14)150 299 y(Similarly)-8
 b(,)27 b Fi(next_out)h Fk(should)g(p)s(oin)m(t)h(to)i(a)f(bu\013er)f
 (in)g(whic)m(h)g(the)h(compressed)g(data)h(is)e(to)i(b)s(e)e(placed,)
 150 408 y(with)24 b Fi(avail_out)f Fk(indicating)g(ho)m(w)i(m)m(uc)m(h)
-h(output)f(space)h(is)e(a)m(v)-5 b(ailable.)38 b Fi(bzCompress)23
+h(output)f(space)h(is)e(a)m(v)-5 b(ailable.)38 b Fi(BZ2_bzCompress)23
 b Fk(up)s(dates)h Fi(next_)150 518 y(out)p Fk(,)30 b
 Fi(avail_out)e Fk(and)h Fi(total_out)f Fk(to)j(re\015ect)g(the)g(n)m
 (um)m(b)s(er)e(of)h(b)m(ytes)h(output.)150 675 y(Y)-8
 b(ou)23 b(ma)m(y)f(pro)m(vide)f(and)h(remo)m(v)m(e)h(as)g(little)e(or)h
 (as)g(m)m(uc)m(h)g(data)h(as)f(y)m(ou)g(lik)m(e)g(on)g(eac)m(h)h(call)e
-(of)h Fi(bzCompress)p Fk(.)150 784 y(In)33 b(the)g(limit,)f(it)h(is)f
+(of)h Fi(BZ2_bzCompress)p Fk(.)150 784 y(In)33 b(the)g(limit,)f(it)h(is)f
 (acceptable)i(to)g(supply)d(and)i(remo)m(v)m(e)h(data)g(one)g(b)m(yte)g
 (at)g(a)f(time,)h(although)f(this)150 894 y(w)m(ould)k(b)s(e)h
 (terribly)e(ine\016cien)m(t.)64 b(Y)-8 b(ou)39 b(should)d(alw)m(a)m(ys)
 j(ensure)f(that)h(at)g(least)f(one)h(b)m(yte)g(of)f(output)150
 1004 y(space)31 b(is)e(a)m(v)-5 b(ailable)30 b(at)h(eac)m(h)h(call.)150
-1160 y(A)d(second)g(purp)s(ose)e(of)i Fi(bzCompress)d
+1160 y(A)d(second)g(purp)s(ose)e(of)i Fi(BZ2_bzCompress)d
 Fk(is)i(to)h(request)g(a)g(c)m(hange)h(of)f(mo)s(de)g(of)g(the)g
 (compressed)f(stream.)150 1317 y(Conceptually)-8 b(,)56
 b(a)c(compressed)f(stream)h(can)g(b)s(e)f(in)f(one)i(of)g(four)f
 (states:)84 b(IDLE,)51 b(R)m(UNNING,)150 1427 y(FLUSHING)93
-b(and)f(FINISHING.)i(Before)f(initialisation)d(\()p Fi(bzCompressInit)p
+b(and)f(FINISHING.)i(Before)f(initialisation)d(\()p Fi(BZ2_bzCompressInit)p
 Fk(\))f(and)j(after)150 1537 y(termination)29 b(\()p
-Fi(bzCompressEnd)p Fk(\),)f(a)j(stream)f(is)g(regarded)g(as)h(IDLE.)150
-1693 y(Up)s(on)h(initialisation)d(\()p Fi(bzCompressInit)p
+Fi(BZ2_bzCompressEnd)p Fk(\),)f(a)j(stream)f(is)g(regarded)g(as)h(IDLE.)150
+1693 y(Up)s(on)h(initialisation)d(\()p Fi(BZ2_bzCompressInit)p
 Fk(\),)h(the)i(stream)h(is)f(placed)g(in)f(the)i(R)m(UNNING)h(state.)48
-b(Sub-)150 1803 y(sequen)m(t)31 b(calls)f(to)i Fi(bzCompress)c
+b(Sub-)150 1803 y(sequen)m(t)31 b(calls)f(to)i Fi(BZ2_bzCompress)c
 Fk(should)h(pass)h Fi(BZ_RUN)f Fk(as)i(the)g(requested)g(action;)g
 (other)h(actions)f(are)150 1913 y(illegal)e(and)g(will)f(result)h(in)g
 Fi(BZ_SEQUENCE_ERROR)p Fk(.)150 2069 y(A)m(t)38 b(some)f(p)s(oin)m(t,)h
@@ -5819,52 +5819,52 @@ i(input)e(data)j(it)e(w)m(an)m(ts)i(to.)61 b(It)150 2179
 y(will)28 b(then)h(w)m(an)m(t)i(to)g(\014nish)d(up)h({)i(in)d
 (e\013ect,)k(asking)e(the)g(library)e(to)j(pro)s(cess)f(an)m(y)g(data)h
 (it)f(migh)m(t)g(ha)m(v)m(e)150 2289 y(bu\013ered)38
-b(in)m(ternally)-8 b(.)67 b(In)39 b(this)g(state,)k Fi(bzCompress)37
+b(in)m(ternally)-8 b(.)67 b(In)39 b(this)g(state,)k Fi(BZ2_bzCompress)37
 b Fk(will)g(no)i(longer)h(attempt)g(to)h(read)e(data)h(from)150
 2398 y Fi(next_in)p Fk(,)33 b(but)g(it)h(will)d(w)m(an)m(t)k(to)g
 (write)e(data)h(to)h Fi(next_out)p Fk(.)49 b(Because)36
 b(the)e(output)f(bu\013er)g(supplied)150 2508 y(b)m(y)e(the)h(user)e
 (can)i(b)s(e)f(arbitrarily)d(small,)j(the)g(\014nishing-up)d(op)s
 (eration)i(cannot)i(necessarily)e(b)s(e)h(done)150 2617
-y(with)e(a)i(single)e(call)h(of)g Fi(bzCompress)p Fk(.)150
+y(with)e(a)i(single)e(call)h(of)g Fi(BZ2_bzCompress)p Fk(.)150
 2774 y(Instead,)j(the)g(calling)e(program)i(passes)f
-Fi(BZ_FINISH)e Fk(as)j(an)g(action)g(to)g Fi(bzCompress)p
+Fi(BZ_FINISH)e Fk(as)j(an)g(action)g(to)g Fi(BZ2_bzCompress)p
 Fk(.)45 b(This)31 b(c)m(hanges)150 2884 y(the)36 b(stream's)f(state)i
 (to)f(FINISHING.)g(An)m(y)f(remaining)f(input)f(\(ie,)k
 Fi(next_in[0)28 b(..)i(avail_in-1])p Fk(\))150 2993 y(is)e(compressed)g
 (and)h(transferred)e(to)j(the)f(output)f(bu\013er.)40
-b(T)-8 b(o)29 b(do)g(this,)f Fi(bzCompress)e Fk(m)m(ust)j(b)s(e)f
+b(T)-8 b(o)29 b(do)g(this,)f Fi(BZ2_bzCompress)e Fk(m)m(ust)j(b)s(e)f
 (called)150 3103 y(rep)s(eatedly)40 b(un)m(til)f(all)g(the)i(output)f
 (has)h(b)s(een)e(consumed.)71 b(A)m(t)42 b(that)f(p)s(oin)m(t,)h
-Fi(bzCompress)c Fk(returns)150 3212 y Fi(BZ_STREAM_END)p
+Fi(BZ2_bzCompress)c Fk(returns)150 3212 y Fi(BZ_STREAM_END)p
 Fk(,)33 b(and)i(the)g(stream's)h(state)g(is)e(set)i(bac)m(k)g(to)g
-(IDLE.)f Fi(bzCompressEnd)d Fk(should)h(then)150 3322
+(IDLE.)f Fi(BZ2_bzCompressEnd)d Fk(should)h(then)150 3322
 y(b)s(e)d(called.)150 3479 y(Just)25 b(to)i(mak)m(e)g(sure)e(the)i
 (calling)d(program)i(do)s(es)g(not)g(c)m(heat,)i(the)f(library)c(mak)m
 (es)k(a)f(note)h(of)f Fi(avail_in)150 3588 y Fk(at)f(the)g(time)g(of)f
-(the)h(\014rst)f(call)g(to)i Fi(bzCompress)21 b Fk(whic)m(h)j(has)g
+(the)h(\014rst)f(call)g(to)i Fi(BZ2_bzCompress)21 b Fk(whic)m(h)j(has)g
 Fi(BZ_FINISH)e Fk(as)j(an)g(action)g(\(ie,)h(at)f(the)g(time)150
 3698 y(the)h(program)g(has)g(announced)f(its)g(in)m(ten)m(tion)h(to)g
 (not)h(supply)c(an)m(y)k(more)f(input\).)37 b(By)27 b(comparing)e(this)
 150 3808 y(v)-5 b(alue)23 b(with)f(that)i(of)g Fi(avail_in)d
-Fk(o)m(v)m(er)k(subsequen)m(t)e(calls)g(to)h Fi(bzCompress)p
+Fk(o)m(v)m(er)k(subsequen)m(t)e(calls)g(to)h Fi(BZ2_bzCompress)p
 Fk(,)e(the)i(library)d(can)j(detect)h(an)m(y)150 3917
 y(attempts)32 b(to)g(slip)d(in)g(more)j(data)f(to)h(compress.)42
 b(An)m(y)32 b(calls)e(for)h(whic)m(h)e(this)h(is)g(detected)j(will)28
 b(return)150 4027 y Fi(BZ_SEQUENCE_ERROR)p Fk(.)36 b(This)29
 b(indicates)g(a)i(programming)e(mistak)m(e)i(whic)m(h)e(should)f(b)s(e)
 i(corrected.)150 4184 y(Instead)21 b(of)f(asking)h(to)g(\014nish,)g
-(the)g(calling)e(program)h(ma)m(y)i(ask)f Fi(bzCompress)c
+(the)g(calling)e(program)h(ma)m(y)i(ask)f Fi(BZ2_bzCompress)c
 Fk(to)22 b(tak)m(e)g(all)e(the)h(remaining)150 4293 y(input,)32
 b(compress)h(it)g(and)g(terminate)g(the)h(curren)m(t)f(\(Burro)m
 (ws-Wheeler\))g(compression)g(blo)s(c)m(k.)49 b(This)150
 4403 y(could)23 b(b)s(e)h(useful)f(for)h(error)g(con)m(trol)h(purp)s
 (oses.)37 b(The)24 b(mec)m(hanism)f(is)h(analogous)h(to)g(that)g(for)f
-(\014nishing:)150 4512 y(call)j Fi(bzCompress)e Fk(with)h(an)i(action)f
+(\014nishing:)150 4512 y(call)j Fi(BZ2_bzCompress)e Fk(with)h(an)i(action)f
 (of)h Fi(BZ_FLUSH)p Fk(,)e(remo)m(v)m(e)j(output)f(data,)h(and)e(p)s
 (ersist)f(with)g(the)i Fi(BZ_)150 4622 y(FLUSH)d Fk(action)i(un)m(til)d
 (the)j(v)-5 b(alue)26 b Fi(BZ_RUN)e Fk(is)i(returned.)38
-b(As)26 b(with)f(\014nishing,)f Fi(bzCompress)g Fk(detects)k(an)m(y)150
+b(As)26 b(with)f(\014nishing,)f Fi(BZ2_bzCompress)g Fk(detects)k(an)m(y)150
 4732 y(attempt)j(to)h(pro)m(vide)d(more)i(input)d(data)j(once)g(the)g
 (\015ush)d(has)j(b)s(egun.)150 4888 y(Once)f(the)h(\015ush)e(is)g
 (complete,)i(the)g(stream)f(returns)g(to)h(the)f(normal)g(R)m(UNNING)h
@@ -5880,9 +5880,9 @@ b(return)f(v)-5 b(alues)29 b(are.)41 b(Note)32 b(that)e(y)m(ou)h(can't)
 g(explicitly)d(ask)i(what)g(state)i(the)e(stream)h(is)e(in,)150
 408 y(but)h(nor)g(do)g(y)m(ou)h(need)f(to)h({)g(it)e(can)i(b)s(e)f
 (inferred)e(from)i(the)h(v)-5 b(alues)29 b(returned)h(b)m(y)g
-Fi(bzCompress)p Fk(.)390 559 y(IDLE/)p Fi(any)572 663
+Fi(BZ2_bzCompress)p Fk(.)390 559 y(IDLE/)p Fi(any)572 663
 y Fk(Illegal.)60 b(IDLE)30 b(state)i(only)d(exists)h(after)h
-Fi(bzCompressEnd)c Fk(or)572 767 y(b)s(efore)j Fi(bzCompressInit)p
+Fi(BZ2_bzCompressEnd)c Fk(or)572 767 y(b)s(efore)j Fi(BZ2_bzCompressInit)p
 Fk(.)572 871 y(Return)f(v)-5 b(alue)30 b(=)g Fi(BZ_SEQUENCE_ERROR)390
 1078 y Fk(R)m(UNNING/)p Fi(BZ_RUN)572 1182 y Fk(Compress)f(from)h
 Fi(next_in)f Fk(to)i Fi(next_out)d Fk(as)i(m)m(uc)m(h)h(as)f(p)s
@@ -5928,42 +5928,42 @@ b(with)g Fi(libbzip2)1881 b Fk(16)150 299 y(That)24 b(still)f(lo)s(oks)
 g(complicated?)39 b(W)-8 b(ell,)25 b(fair)f(enough.)38
 b(The)24 b(usual)f(sequence)i(of)f(calls)g(for)g(compressing)150
 408 y(a)31 b(load)f(of)g(data)h(is:)225 565 y Fh(\017)60
-b Fk(Get)31 b(started)g(with)e Fi(bzCompressInit)p Fk(.)225
+b Fk(Get)31 b(started)g(with)e Fi(BZ2_bzCompressInit)p Fk(.)225
 736 y Fh(\017)60 b Fk(Sho)m(v)m(el)54 b(data)i(in)d(and)h(shlurp)d(out)
 k(its)f(compressed)g(form)g(using)f(zero)i(or)g(more)f(calls)g(of)330
-846 y Fi(bzCompress)28 b Fk(with)h(action)h(=)g Fi(BZ_RUN)p
+846 y Fi(BZ2_bzCompress)28 b Fk(with)h(action)h(=)g Fi(BZ_RUN)p
 Fk(.)225 1017 y Fh(\017)60 b Fk(Finish)39 b(up.)71 b(Rep)s(eatedly)40
-b(call)g Fi(bzCompress)e Fk(with)i(action)h(=)g Fi(BZ_FINISH)p
+b(call)g Fi(BZ2_bzCompress)e Fk(with)i(action)h(=)g Fi(BZ_FINISH)p
 Fk(,)g(cop)m(ying)g(out)g(the)330 1126 y(compressed)30
 b(output,)g(un)m(til)f Fi(BZ_STREAM_END)e Fk(is)i(returned.)225
 1297 y Fh(\017)60 b Fk(Close)30 b(up)f(and)h(go)h(home.)41
-b(Call)29 b Fi(bzCompressEnd)p Fk(.)150 1515 y(If)23
+b(Call)29 b Fi(BZ2_bzCompressEnd)p Fk(.)150 1515 y(If)23
 b(the)h(data)h(y)m(ou)f(w)m(an)m(t)h(to)f(compress)g(\014ts)f(in)m(to)h
 (y)m(our)g(input)e(bu\013er)h(all)f(at)j(once,)h(y)m(ou)e(can)g(skip)f
-(the)h(calls)150 1625 y(of)31 b Fi(bzCompress)c(\()j(...,)f(BZ_RUN)g
-(\))h Fk(and)g(just)g(do)g(the)g Fi(bzCompress)e(\()i(...,)f(BZ_FINISH)
+(the)h(calls)150 1625 y(of)31 b Fi(BZ2_bzCompress)c(\()j(...,)f(BZ_RUN)g
+(\))h Fk(and)g(just)g(do)g(the)g Fi(BZ2_bzCompress)e(\()i(...,)f(BZ_FINISH)
 f(\))i Fk(calls.)150 1782 y(All)39 b(required)f(memory)i(is)g(allo)s
-(cated)g(b)m(y)g Fi(bzCompressInit)p Fk(.)67 b(The)39
+(cated)g(b)m(y)g Fi(BZ2_bzCompressInit)p Fk(.)67 b(The)39
 b(compression)g(library)f(can)j(ac-)150 1891 y(cept)e(an)m(y)h(data)f
 (at)h(all)e(\(ob)m(viously\).)65 b(So)39 b(y)m(ou)g(shouldn't)e(get)k
 (an)m(y)e(error)f(return)g(v)-5 b(alues)38 b(from)h(the)150
-2001 y Fi(bzCompress)29 b Fk(calls.)43 b(If)31 b(y)m(ou)h(do,)f(they)h
+2001 y Fi(BZ2_bzCompress)29 b Fk(calls.)43 b(If)31 b(y)m(ou)h(do,)f(they)h
 (will)d(b)s(e)i Fi(BZ_SEQUENCE_ERROR)p Fk(,)c(and)k(indicate)f(a)i(bug)
 f(in)f(y)m(our)150 2110 y(programming.)150 2267 y(T)-8
 b(rivial)28 b(other)j(p)s(ossible)d(return)h(v)-5 b(alues:)572
 2418 y Fi(BZ_PARAM_ERROR)663 2522 y Fk(if)29 b Fi(strm)g
 Fk(is)h Fi(NULL)p Fk(,)f(or)i Fi(strm->s)d Fk(is)h Fi(NULL)150
-2841 y Fe(3.3.3)63 b Fd(bzCompressEnd)390 3028 y Fi(int)47
-b(bzCompressEnd)d(\()k(bz_stream)d(*strm)h(\);)150 3185
+2841 y Fe(3.3.3)63 b Fd(BZ2_bzCompressEnd)390 3028 y Fi(int)47
+b(BZ2_bzCompressEnd)d(\()k(bz_stream)d(*strm)h(\);)150 3185
 y Fk(Releases)31 b(all)e(memory)h(asso)s(ciated)h(with)e(a)i
 (compression)e(stream.)150 3342 y(P)m(ossible)g(return)h(v)-5
 b(alues:)481 3493 y Fi(BZ_PARAM_ERROR)117 b Fk(if)30
 b Fi(strm)f Fk(is)g Fi(NULL)g Fk(or)i Fi(strm->s)d Fk(is)i
 Fi(NULL)481 3596 y(BZ_OK)120 b Fk(otherwise)150 3916
-y Fe(3.3.4)63 b Fd(bzDecompressInit)390 4102 y Fi(int)47
-b(bzDecompressInit)c(\()48 b(bz_stream)d(*strm,)h(int)h(verbosity,)e
+y Fe(3.3.4)63 b Fd(BZ2_bzDecompressInit)390 4102 y Fi(int)47
+b(BZ2_bzDecompressInit)c(\()48 b(bz_stream)d(*strm,)h(int)h(verbosity,)e
 (int)i(small)f(\);)150 4259 y Fk(Prepares)28 b(for)h(decompression.)39
-b(As)29 b(with)f Fi(bzCompressInit)p Fk(,)d(a)k Fi(bz_stream)e
+b(As)29 b(with)f Fi(BZ2_bzCompressInit)p Fk(,)d(a)k Fi(bz_stream)e
 Fk(record)h(should)f(b)s(e)h(allo-)150 4369 y(cated)i(and)f
 (initialised)d(b)s(efore)j(the)g(call.)40 b(Fields)28
 b Fi(bzalloc)p Fk(,)f Fi(bzfree)h Fk(and)h Fi(opaque)e
@@ -5974,7 +5974,7 @@ b(return,)h(the)g(in)m(ternal)f(state)i(will)c(ha)m(v)m(e)k(b)s(een)f
 (initialised,)d(and)i Fi(total_in)f Fk(and)h Fi(total_out)f
 Fk(will)150 4698 y(b)s(e)30 b(zero.)150 4854 y(F)-8 b(or)31
 b(the)g(meaning)e(of)i(parameter)g Fi(verbosity)p Fk(,)d(see)j
-Fi(bzCompressInit)p Fk(.)150 5011 y(If)e Fi(small)e Fk(is)h(nonzero,)i
+Fi(BZ2_bzCompressInit)p Fk(.)150 5011 y(If)e Fi(small)e Fk(is)h(nonzero,)i
 (the)f(library)e(will)f(use)j(an)g(alternativ)m(e)h(decompression)e
 (algorithm)g(whic)m(h)f(uses)150 5121 y(less)c(memory)g(but)g(at)h(the)
 g(cost)h(of)e(decompressing)g(more)g(slo)m(wly)g(\(roughly)f(sp)s
@@ -5988,62 +5988,62 @@ b(with)g Fi(libbzip2)1881 b Fk(17)150 299 y(Note)24 b(that)f(the)g
 (amoun)m(t)g(of)f(memory)h(needed)f(to)h(decompress)g(a)g(stream)f
 (cannot)i(b)s(e)d(determined)h(un)m(til)150 408 y(the)38
 b(stream's)g(header)f(has)g(b)s(een)g(read,)i(so)f(ev)m(en)g(if)f
-Fi(bzDecompressInit)c Fk(succeeds,)40 b(a)e(subsequen)m(t)150
-518 y Fi(bzDecompress)27 b Fk(could)i(fail)g(with)h Fi(BZ_MEM_ERROR)p
+Fi(BZ2_bzDecompressInit)c Fk(succeeds,)40 b(a)e(subsequen)m(t)150
+518 y Fi(BZ2_bzDecompress)27 b Fk(could)i(fail)g(with)h Fi(BZ_MEM_ERROR)p
 Fk(.)150 675 y(P)m(ossible)f(return)h(v)-5 b(alues:)572
 826 y Fi(BZ_PARAM_ERROR)663 930 y Fk(if)29 b Fi(\(small)46
 b(!=)h(0)h(&&)f(small)f(!=)h(1\))663 1033 y Fk(or)30
 b Fi(\(verbosity)45 b(<)j(0)f(||)g(verbosity)e(>)j(4\))572
 1137 y(BZ_MEM_ERROR)663 1241 y Fk(if)29 b(insu\016cien)m(t)g(memory)h
 (is)f(a)m(v)-5 b(ailable)150 1398 y(Allo)m(w)m(able)30
-b(next)g(actions:)572 1549 y Fi(bzDecompress)663 1653
+b(next)g(actions:)572 1549 y Fi(BZ2_bzDecompress)663 1653
 y Fk(if)f Fi(BZ_OK)g Fk(w)m(as)i(returned)572 1756 y(no)f(sp)s
 (eci\014c)f(action)i(required)e(in)g(case)i(of)g(error)150
-2006 y Fe(3.3.5)63 b Fd(bzDecompress)390 2192 y Fi(int)47
-b(bzDecompress)d(\()k(bz_stream)d(*strm)h(\);)150 2349
+2006 y Fe(3.3.5)63 b Fd(BZ2_bzDecompress)390 2192 y Fi(int)47
+b(BZ2_bzDecompress)d(\()k(bz_stream)d(*strm)h(\);)150 2349
 y Fk(Pro)m(vides)24 b(more)g(input)f(and/out)h(output)g(bu\013er)g
 (space)h(for)f(the)g(library)-8 b(.)37 b(The)24 b(caller)g(main)m
 (tains)f(input)150 2459 y(and)30 b(output)g(bu\013ers,)f(and)h(uses)g
-Fi(bzDecompress)d Fk(to)k(transfer)f(data)h(b)s(et)m(w)m(een)g(them.)
-150 2616 y(Before)46 b(eac)m(h)h(call)e(to)h Fi(bzDecompress)p
+Fi(BZ2_bzDecompress)d Fk(to)k(transfer)f(data)h(b)s(et)m(w)m(een)g(them.)
+150 2616 y(Before)46 b(eac)m(h)h(call)e(to)h Fi(BZ2_bzDecompress)p
 Fk(,)g Fi(next_in)d Fk(should)g(p)s(oin)m(t)i(at)h(the)f(compressed)g
 (data,)51 b(and)150 2725 y Fi(avail_in)34 b Fk(should)h(indicate)g(ho)m
 (w)i(man)m(y)g(b)m(ytes)g(the)f(library)e(ma)m(y)k(read.)59
-b Fi(bzDecompress)33 b Fk(up)s(dates)150 2835 y Fi(next_in)p
+b Fi(BZ2_bzDecompress)33 b Fk(up)s(dates)150 2835 y Fi(next_in)p
 Fk(,)c Fi(avail_in)f Fk(and)i Fi(total_in)e Fk(to)j(re\015ect)g(the)f
 (n)m(um)m(b)s(er)f(of)i(b)m(ytes)g(it)f(has)g(read.)150
 2992 y(Similarly)-8 b(,)37 b Fi(next_out)f Fk(should)g(p)s(oin)m(t)i
 (to)g(a)h(bu\013er)e(in)g(whic)m(h)g(the)i(uncompressed)e(output)g(is)h
 (to)h(b)s(e)150 3101 y(placed,)23 b(with)d Fi(avail_out)f
 Fk(indicating)g(ho)m(w)i(m)m(uc)m(h)h(output)f(space)h(is)e(a)m(v)-5
-b(ailable.)37 b Fi(bzCompress)19 b Fk(up)s(dates)150
+b(ailable.)37 b Fi(BZ2_bzCompress)19 b Fk(up)s(dates)150
 3211 y Fi(next_out)p Fk(,)28 b Fi(avail_out)g Fk(and)i
 Fi(total_out)e Fk(to)j(re\015ect)g(the)f(n)m(um)m(b)s(er)g(of)g(b)m
 (ytes)h(output.)150 3368 y(Y)-8 b(ou)53 b(ma)m(y)h(pro)m(vide)e(and)g
 (remo)m(v)m(e)j(as)e(little)e(or)i(as)h(m)m(uc)m(h)e(data)i(as)f(y)m
-(ou)g(lik)m(e)g(on)f(eac)m(h)j(call)d(of)150 3477 y Fi(bzDecompress)p
+(ou)g(lik)m(e)g(on)f(eac)m(h)j(call)d(of)150 3477 y Fi(BZ2_bzDecompress)p
 Fk(.)37 b(In)27 b(the)i(limit,)d(it)i(is)f(acceptable)j(to)f(supply)d
 (and)h(remo)m(v)m(e)j(data)f(one)f(b)m(yte)h(at)g(a)g(time,)150
 3587 y(although)f(this)f(w)m(ould)g(b)s(e)h(terribly)e(ine\016cien)m
 (t.)39 b(Y)-8 b(ou)29 b(should)e(alw)m(a)m(ys)h(ensure)g(that)h(at)g
 (least)g(one)f(b)m(yte)150 3697 y(of)j(output)f(space)g(is)g(a)m(v)-5
 b(ailable)30 b(at)h(eac)m(h)g(call.)150 3853 y(Use)g(of)f
-Fi(bzDecompress)d Fk(is)j(simpler)e(than)i Fi(bzCompress)p
+Fi(BZ2_bzDecompress)d Fk(is)j(simpler)e(than)i Fi(BZ2_bzCompress)p
 Fk(.)150 4010 y(Y)-8 b(ou)49 b(should)d(pro)m(vide)h(input)g(and)g
 (remo)m(v)m(e)j(output)e(as)g(describ)s(ed)e(ab)s(o)m(v)m(e,)54
-b(and)48 b(rep)s(eatedly)g(call)150 4120 y Fi(bzDecompress)35
+b(and)48 b(rep)s(eatedly)g(call)150 4120 y Fi(BZ2_bzDecompress)35
 b Fk(un)m(til)i Fi(BZ_STREAM_END)e Fk(is)j(returned.)64
 b(App)s(earance)39 b(of)g Fi(BZ_STREAM_END)c Fk(denotes)150
-4229 y(that)d Fi(bzDecompress)c Fk(has)k(detected)g(the)g(logical)f
-(end)g(of)h(the)f(compressed)h(stream.)44 b Fi(bzDecompress)150
+4229 y(that)d Fi(BZ2_bzDecompress)c Fk(has)k(detected)g(the)g(logical)f
+(end)g(of)h(the)f(compressed)h(stream.)44 b Fi(BZ2_bzDecompress)150
 4339 y Fk(will)18 b(not)k(pro)s(duce)e Fi(BZ_STREAM_END)d
 Fk(un)m(til)i(all)h(output)h(data)h(has)f(b)s(een)f(placed)h(in)m(to)g
 (the)g(output)g(bu\013er,)150 4449 y(so)27 b(once)h Fi(BZ_STREAM_END)23
 b Fk(app)s(ears,)k(y)m(ou)g(are)h(guaran)m(teed)f(to)h(ha)m(v)m(e)g(a)m
 (v)-5 b(ailable)26 b(all)g(the)h(decompressed)150 4558
-y(output,)j(and)g Fi(bzDecompressEnd)c Fk(can)31 b(safely)f(b)s(e)g
+y(output,)j(and)g Fi(BZ2_bzDecompressEnd)c Fk(can)31 b(safely)f(b)s(e)g
 (called.)150 4715 y(If)i(case)i(of)f(an)g(error)f(return)g(v)-5
-b(alue,)33 b(y)m(ou)h(should)c(call)j Fi(bzDecompressEnd)28
+b(alue,)33 b(y)m(ou)h(should)c(call)j Fi(BZ2_bzDecompressEnd)28
 b Fk(to)34 b(clean)f(up)e(and)i(release)150 4825 y(memory)-8
 b(.)150 4981 y(P)m(ossible)29 b(return)h(v)-5 b(alues:)572
 5132 y Fi(BZ_PARAM_ERROR)663 5236 y Fk(if)29 b Fi(strm)g
@@ -6062,10 +6062,10 @@ b(the)i(logical)e(end)h(of)h(the)f(data)h(stream)g(w)m(as)g(detected)g
 (and)f(all)663 1129 y(output)g(in)f(has)h(b)s(een)g(consumed,)f(eg)j
 Fi(s->avail_out)44 b(>)k(0)572 1233 y(BZ_OK)663 1337
 y Fk(otherwise)150 1493 y(Allo)m(w)m(able)30 b(next)g(actions:)572
-1645 y Fi(bzDecompress)663 1748 y Fk(if)f Fi(BZ_OK)g
-Fk(w)m(as)i(returned)572 1852 y Fi(bzDecompressEnd)663
-1956 y Fk(otherwise)150 2205 y Fe(3.3.6)63 b Fd(bzDecompressEnd)390
-2392 y Fi(int)47 b(bzDecompressEnd)d(\()j(bz_stream)e(*strm)i(\);)150
+1645 y Fi(BZ2_bzDecompress)663 1748 y Fk(if)f Fi(BZ_OK)g
+Fk(w)m(as)i(returned)572 1852 y Fi(BZ2_bzDecompressEnd)663
+1956 y Fk(otherwise)150 2205 y Fe(3.3.6)63 b Fd(BZ2_bzDecompressEnd)390
+2392 y Fi(int)47 b(BZ2_bzDecompressEnd)d(\()j(bz_stream)e(*strm)i(\);)150
 2548 y Fk(Releases)31 b(all)e(memory)h(asso)s(ciated)h(with)e(a)i
 (decompression)e(stream.)150 2705 y(P)m(ossible)g(return)h(v)-5
 b(alues:)572 2856 y Fi(BZ_PARAM_ERROR)663 2960 y Fk(if)29
@@ -6143,7 +6143,7 @@ b Fk(b)m(ytes)30 b(ma)m(y)g(b)s(e)f(supplied)d(lik)m(e)150
 (y)m(ou)h(should)e(pass)h Fi(NULL)g Fk(and)g Fi(0)g Fk(for)h
 Fi(unused)e Fk(and)h(n)p Fi(Unused)150 3050 y Fk(resp)s(ectiv)m(ely)-8
 b(.)150 3207 y(F)g(or)31 b(the)g(meaning)e(of)i(parameters)g
-Fi(small)e Fk(and)g Fi(verbosity)p Fk(,)f(see)j Fi(bzDecompressInit)p
+Fi(small)e Fk(and)g Fi(verbosity)p Fk(,)f(see)j Fi(BZ2_bzDecompressInit)p
 Fk(.)150 3364 y(The)k(amoun)m(t)g(of)g(memory)g(needed)g(to)g
 (decompress)g(a)h(\014le)e(cannot)h(b)s(e)g(determined)e(un)m(til)h
 (the)h(\014le's)150 3473 y(header)g(has)g(b)s(een)f(read.)55
@@ -6283,7 +6283,7 @@ b Fi(f)33 b Fk(should)e(refer)i(to)g(a)g(\014le)f(whic)m(h)g(has)h(b)s
 (the)i(error)f(indicator)f(\()p Fi(ferror\(f\))p Fk(\)is)f(not)i(set.)
 150 1704 y(F)-8 b(or)31 b(the)g(meaning)e(of)i(parameters)g
 Fi(blockSize100k)p Fk(,)c Fi(verbosity)g Fk(and)j Fi(workFactor)p
-Fk(,)e(see)150 1813 y Fi(bzCompressInit)p Fk(.)150 1970
+Fk(,)e(see)150 1813 y Fi(BZ2_bzCompressInit)p Fk(.)150 1970
 y(All)d(required)f(memory)i(is)f(allo)s(cated)i(at)g(this)e(stage,)j
 (so)f(if)e(the)h(call)g(completes)g(successfully)-8 b(,)26
 b Fi(BZ_MEM_)150 2080 y(ERROR)j Fk(cannot)i(b)s(e)f(signalled)e(b)m(y)i
@@ -6467,7 +6467,7 @@ Fi(bzip2)f Fk(format)i(data)g(stream.)40 b(There)27 b(is)f(no)i(mec)m
 (kind)e(of)h(mec)m(hanism,)150 894 y(use)30 b(the)h(lo)m(w-lev)m(el)f
 (in)m(terface.)150 1051 y(F)-8 b(or)31 b(the)g(meaning)e(of)i
 (parameters)g Fi(blockSize100k)p Fk(,)c Fi(verbosity)g
-Fk(and)j Fi(workFactor)p Fk(,)150 1160 y(see)h Fi(bzCompressInit)p
+Fk(and)j Fi(workFactor)p Fk(,)150 1160 y(see)h Fi(BZ2_bzCompressInit)p
 Fk(.)150 1317 y(T)-8 b(o)27 b(guaran)m(tee)h(that)e(the)h(compressed)f
 (data)h(will)d(\014t)i(in)f(its)g(bu\013er,)i(allo)s(cate)f(an)g
 (output)g(bu\013er)g(of)g(size)150 1427 y(1\045)31 b(larger)f(than)g
@@ -6505,7 +6505,7 @@ Fk(format)i(data)g(stream.)38 b Fi(bzBuffToBuffDecompress)150
 4917 y Fk(tries)30 b(to)h(decompress)f(the)h(en)m(tiret)m(y)g(of)f(the)
 h(stream)f(in)m(to)h(the)f(output)g(bu\013er.)150 5074
 y(F)-8 b(or)31 b(the)g(meaning)e(of)i(parameters)g Fi(small)e
-Fk(and)g Fi(verbosity)p Fk(,)f(see)j Fi(bzDecompressInit)p
+Fk(and)g Fi(verbosity)p Fk(,)f(see)j Fi(BZ2_bzDecompressInit)p
 Fk(.)150 5230 y(Because)j(the)f(compression)e(ratio)i(of)g(the)g
 (compressed)f(data)h(cannot)g(b)s(e)f(kno)m(wn)g(in)g(adv)-5
 b(ance,)34 b(there)150 5340 y(is)d(no)h(easy)g(w)m(a)m(y)h(to)f(guaran)
@@ -6584,9 +6584,9 @@ b(Y)-8 b(ou)30 b(can)f(do)g(this)g(con)m(v)m(enien)m(tly)g(b)m(y)g
 1683 y Fi(BZ_NO_STDIO)35 b Fk(de\014ned.)63 b(Doing)39
 b(this)e(giv)m(es)h(y)m(ou)h(a)f(library)e(con)m(taining)i(only)f(the)i
 (follo)m(wing)e(eigh)m(t)150 1793 y(functions:)150 1950
-y Fi(bzCompressInit)p Fk(,)27 b Fi(bzCompress)p Fk(,)h
-Fi(bzCompressEnd)150 2059 y(bzDecompressInit)p Fk(,)e
-Fi(bzDecompress)p Fk(,)h Fi(bzDecompressEnd)150 2169
+y Fi(BZ2_bzCompressInit)p Fk(,)27 b Fi(BZ2_bzCompress)p Fk(,)h
+Fi(BZ2_bzCompressEnd)150 2059 y(BZ2_bzDecompressInit)p Fk(,)e
+Fi(BZ2_bzDecompress)p Fk(,)h Fi(BZ2_bzDecompressEnd)150 2169
 y(bzBuffToBuffCompress)p Fk(,)e Fi(bzBuffToBuffDecompress)150
 2326 y Fk(When)30 b(compiled)f(lik)m(e)h(this,)f(all)g(functions)g
 (will)f(ignore)i Fi(verbosity)e Fk(settings.)150 2630
@@ -7122,21 +7122,21 @@ g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)48 b Fk(10)449
 2961 y(3.3)92 b(Lo)m(w-lev)m(el)31 b(in)m(terface)d Fb(.)15
 b(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)h(.)f(.)g
 (.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)
-g(.)57 b Fk(11)748 3071 y(3.3.1)93 b Fi(bzCompressInit)9
+g(.)57 b Fk(11)748 3071 y(3.3.1)93 b Fi(BZ2_bzCompressInit)9
 b Fb(.)h(.)15 b(.)g(.)g(.)g(.)g(.)g(.)h(.)f(.)g(.)g(.)g(.)g(.)g(.)g(.)g
 (.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)38
-b Fk(12)748 3181 y(3.3.2)93 b Fi(bzCompress)18 b Fb(.)12
+b Fk(12)748 3181 y(3.3.2)93 b Fi(BZ2_bzCompress)18 b Fb(.)12
 b(.)j(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g
 (.)g(.)g(.)g(.)g(.)g(.)g(.)h(.)f(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)47
-b Fk(13)748 3290 y(3.3.3)93 b Fi(bzCompressEnd)11 b Fb(.)g(.)k(.)g(.)g
+b Fk(13)748 3290 y(3.3.3)93 b Fi(BZ2_bzCompressEnd)11 b Fb(.)g(.)k(.)g(.)g
 (.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)h(.)f(.)
 g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)40 b Fk(16)748
-3400 y(3.3.4)93 b Fi(bzDecompressInit)21 b Fb(.)15 b(.)g(.)g(.)g(.)g(.)
+3400 y(3.3.4)93 b Fi(BZ2_bzDecompressInit)21 b Fb(.)15 b(.)g(.)g(.)g(.)g(.)
 g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g
-(.)g(.)g(.)g(.)g(.)55 b Fk(16)748 3509 y(3.3.5)93 b Fi(bzDecompress)13
+(.)g(.)g(.)g(.)g(.)55 b Fk(16)748 3509 y(3.3.5)93 b Fi(BZ2_bzDecompress)13
 b Fb(.)f(.)j(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)
 g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)43
-b Fk(17)748 3619 y(3.3.6)93 b Fi(bzDecompressEnd)23 b
+b Fk(17)748 3619 y(3.3.6)93 b Fi(BZ2_bzDecompressEnd)23 b
 Fb(.)15 b(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)h(.)f(.)g(.)g(.)g(.)g
 (.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)g(.)57
 b Fk(18)449 3729 y(3.4)92 b(High-lev)m(el)30 b(in)m(terface)16

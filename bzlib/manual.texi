@@ -498,16 +498,16 @@ The low-level part of the library has no global variables and
 is therefore thread-safe.
 
 Six routines make up the low level interface: 
-@code{bzCompressInit}, @code{bzCompress}, and @* @code{bzCompressEnd}
+@code{BZ2_bzCompressInit}, @code{BZ2_bzCompress}, and @* @code{BZ2_bzCompressEnd}
 for compression,
-and a corresponding trio @code{bzDecompressInit}, @* @code{bzDecompress}
-and @code{bzDecompressEnd} for decompression.  
+and a corresponding trio @code{BZ2_bzDecompressInit}, @* @code{BZ2_bzDecompress}
+and @code{BZ2_bzDecompressEnd} for decompression.  
 The @code{*Init} functions allocate
 memory for compression/decompression and do other
 initialisations, whilst the @code{*End} functions close down operations
 and release memory.
 
-The real work is done by @code{bzCompress} and @code{bzDecompress}.  
+The real work is done by @code{BZ2_bzCompress} and @code{BZ2_bzDecompress}.  
 These compress/decompress data from a user-supplied input buffer
 to a user-supplied output buffer.  These buffers can be any size;
 arbitrary quantities of data are handled by making repeated calls
@@ -598,7 +598,7 @@ The requested action was completed successfully.
 @item BZ_RUN_OK
 @itemx BZ_FLUSH_OK
 @itemx BZ_FINISH_OK
-In @code{bzCompress}, the requested flush/finish/nothing-special action
+In @code{BZ2_bzCompress}, the requested flush/finish/nothing-special action
 was completed successfully.
 @item BZ_STREAM_END
 Compression of data was completed, or the logical stream end was
@@ -624,10 +624,10 @@ making.
 @item BZ_MEM_ERROR
 Returned when a request to allocate memory failed.  Note that the
 quantity of memory needed to decompress a stream cannot be determined
-until the stream's header has been read.  So @code{bzDecompress} and
+until the stream's header has been read.  So @code{BZ2_bzDecompress} and
 @code{bzRead} may return @code{BZ_MEM_ERROR} even though some of
 the compressed data has been read.  The same is not true for
-compression; once @code{bzCompressInit} or @code{bzWriteOpen} have
+compression; once @code{BZ2_bzCompressInit} or @code{bzWriteOpen} have
 successfully completed, @code{BZ_MEM_ERROR} cannot occur.
 @item BZ_DATA_ERROR
 Returned when a data integrity error is detected during decompression.
@@ -659,7 +659,7 @@ will not fit into the output buffer provided.
 
 @section Low-level interface
 
-@subsection @code{bzCompressInit}
+@subsection @code{BZ2_bzCompressInit}
 @example
 typedef 
    struct @{
@@ -679,7 +679,7 @@ typedef
    @} 
    bz_stream;
 
-int bzCompressInit ( bz_stream *strm, 
+int BZ2_bzCompressInit ( bz_stream *strm, 
                      int blockSize100k, 
                      int verbosity,
                      int workFactor );
@@ -712,7 +712,7 @@ If you don't want to use a custom memory allocator, set @code{bzalloc},
 and the library will then use the standard @code{malloc}/@code{free}
 routines.
 
-Before calling @code{bzCompressInit}, fields @code{bzalloc}, 
+Before calling @code{BZ2_bzCompressInit}, fields @code{bzalloc}, 
 @code{bzfree} and @code{opaque} should
 be filled appropriately, as just described.  Upon return, the internal
 state will have been allocated and initialised, and @code{total_in} and 
@@ -773,86 +773,86 @@ Possible return values:
 @end display
 Allowable next actions:
 @display
-      @code{bzCompress} 
+      @code{BZ2_bzCompress} 
          if @code{BZ_OK} is returned
       no specific action needed in case of error
 @end display
 
-@subsection @code{bzCompress}
+@subsection @code{BZ2_bzCompress}
 @example
-   int bzCompress ( bz_stream *strm, int action );
+   int BZ2_bzCompress ( bz_stream *strm, int action );
 @end example
 Provides more input and/or output buffer space for the library.  The
-caller maintains input and output buffers, and calls @code{bzCompress} to
+caller maintains input and output buffers, and calls @code{BZ2_bzCompress} to
 transfer data between them.
 
-Before each call to @code{bzCompress}, @code{next_in} should point at
+Before each call to @code{BZ2_bzCompress}, @code{next_in} should point at
 the data to be compressed, and @code{avail_in} should indicate how many
-bytes the library may read.  @code{bzCompress} updates @code{next_in},
+bytes the library may read.  @code{BZ2_bzCompress} updates @code{next_in},
 @code{avail_in} and @code{total_in} to reflect the number of bytes it
 has read.
 
 Similarly, @code{next_out} should point to a buffer in which the
 compressed data is to be placed, with @code{avail_out} indicating how
-much output space is available.  @code{bzCompress} updates
+much output space is available.  @code{BZ2_bzCompress} updates
 @code{next_out}, @code{avail_out} and @code{total_out} to reflect the
 number of bytes output.
 
 You may provide and remove as little or as much data as you like on each
-call of @code{bzCompress}.  In the limit, it is acceptable to supply and
+call of @code{BZ2_bzCompress}.  In the limit, it is acceptable to supply and
 remove data one byte at a time, although this would be terribly
 inefficient.  You should always ensure that at least one byte of output
 space is available at each call.
 
-A second purpose of @code{bzCompress} is to request a change of mode of the
+A second purpose of @code{BZ2_bzCompress} is to request a change of mode of the
 compressed stream.  
 
 Conceptually, a compressed stream can be in one of four states: IDLE,
 RUNNING, FLUSHING and FINISHING.  Before initialisation
-(@code{bzCompressInit}) and after termination (@code{bzCompressEnd}), a
+(@code{BZ2_bzCompressInit}) and after termination (@code{BZ2_bzCompressEnd}), a
 stream is regarded as IDLE.
 
-Upon initialisation (@code{bzCompressInit}), the stream is placed in the
-RUNNING state.  Subsequent calls to @code{bzCompress} should pass
+Upon initialisation (@code{BZ2_bzCompressInit}), the stream is placed in the
+RUNNING state.  Subsequent calls to @code{BZ2_bzCompress} should pass
 @code{BZ_RUN} as the requested action; other actions are illegal and
 will result in @code{BZ_SEQUENCE_ERROR}.
 
 At some point, the calling program will have provided all the input data
 it wants to.  It will then want to finish up -- in effect, asking the
 library to process any data it might have buffered internally.  In this
-state, @code{bzCompress} will no longer attempt to read data from
+state, @code{BZ2_bzCompress} will no longer attempt to read data from
 @code{next_in}, but it will want to write data to @code{next_out}.
 Because the output buffer supplied by the user can be arbitrarily small,
 the finishing-up operation cannot necessarily be done with a single call
-of @code{bzCompress}.
+of @code{BZ2_bzCompress}.
 
 Instead, the calling program passes @code{BZ_FINISH} as an action to
-@code{bzCompress}.  This changes the stream's state to FINISHING.  Any
+@code{BZ2_bzCompress}.  This changes the stream's state to FINISHING.  Any
 remaining input (ie, @code{next_in[0 .. avail_in-1]}) is compressed and
-transferred to the output buffer.  To do this, @code{bzCompress} must be
+transferred to the output buffer.  To do this, @code{BZ2_bzCompress} must be
 called repeatedly until all the output has been consumed.  At that
-point, @code{bzCompress} returns @code{BZ_STREAM_END}, and the stream's
-state is set back to IDLE.  @code{bzCompressEnd} should then be
+point, @code{BZ2_bzCompress} returns @code{BZ_STREAM_END}, and the stream's
+state is set back to IDLE.  @code{BZ2_bzCompressEnd} should then be
 called.
 
 Just to make sure the calling program does not cheat, the library makes
 a note of @code{avail_in} at the time of the first call to
-@code{bzCompress} which has @code{BZ_FINISH} as an action (ie, at the
+@code{BZ2_bzCompress} which has @code{BZ_FINISH} as an action (ie, at the
 time the program has announced its intention to not supply any more
 input).  By comparing this value with that of @code{avail_in} over
-subsequent calls to @code{bzCompress}, the library can detect any
+subsequent calls to @code{BZ2_bzCompress}, the library can detect any
 attempts to slip in more data to compress.  Any calls for which this is
 detected will return @code{BZ_SEQUENCE_ERROR}.  This indicates a
 programming mistake which should be corrected.
 
 Instead of asking to finish, the calling program may ask
-@code{bzCompress} to take all the remaining input, compress it and
+@code{BZ2_bzCompress} to take all the remaining input, compress it and
 terminate the current (Burrows-Wheeler) compression block.  This could
 be useful for error control purposes.  The mechanism is analogous to
-that for finishing: call @code{bzCompress} with an action of
+that for finishing: call @code{BZ2_bzCompress} with an action of
 @code{BZ_FLUSH}, remove output data, and persist with the
 @code{BZ_FLUSH} action until the value @code{BZ_RUN} is returned.  As
-with finishing, @code{bzCompress} detects any attempt to provide more
+with finishing, @code{BZ2_bzCompress} detects any attempt to provide more
 input data once the flush has begun.
 
 Once the flush is complete, the stream returns to the normal RUNNING
@@ -863,11 +863,11 @@ which shows which actions are allowable in each state, what action
 will be taken, what the next state is, and what the non-error return
 values are.  Note that you can't explicitly ask what state the
 stream is in, but nor do you need to -- it can be inferred from the
-values returned by @code{bzCompress}.
+values returned by @code{BZ2_bzCompress}.
 @display
 IDLE/@code{any}           
-      Illegal.  IDLE state only exists after @code{bzCompressEnd} or
-      before @code{bzCompressInit}.
+      Illegal.  IDLE state only exists after @code{BZ2_bzCompressEnd} or
+      before @code{BZ2_bzCompressInit}.
       Return value = @code{BZ_SEQUENCE_ERROR}
 
 RUNNING/@code{BZ_RUN}     
@@ -917,21 +917,21 @@ FINISHING/other
 That still looks complicated?  Well, fair enough.  The usual sequence
 of calls for compressing a load of data is:
 @itemize @bullet
-@item Get started with @code{bzCompressInit}.
+@item Get started with @code{BZ2_bzCompressInit}.
 @item Shovel data in and shlurp out its compressed form using zero or more
-calls of @code{bzCompress} with action = @code{BZ_RUN}.
+calls of @code{BZ2_bzCompress} with action = @code{BZ_RUN}.
 @item Finish up.  
-Repeatedly call @code{bzCompress} with action = @code{BZ_FINISH}, 
+Repeatedly call @code{BZ2_bzCompress} with action = @code{BZ_FINISH}, 
 copying out the compressed output, until @code{BZ_STREAM_END} is returned.
-@item Close up and go home.  Call @code{bzCompressEnd}.
+@item Close up and go home.  Call @code{BZ2_bzCompressEnd}.
 @end itemize
 If the data you want to compress fits into your input buffer all
-at once, you can skip the calls of @code{bzCompress ( ..., BZ_RUN )} and 
-just do the @code{bzCompress ( ..., BZ_FINISH )} calls.
+at once, you can skip the calls of @code{BZ2_bzCompress ( ..., BZ_RUN )} and 
+just do the @code{BZ2_bzCompress ( ..., BZ_FINISH )} calls.
 
-All required memory is allocated by @code{bzCompressInit}.  The
+All required memory is allocated by @code{BZ2_bzCompressInit}.  The
 compression library can accept any data at all (obviously).  So you
-shouldn't get any error return values from the @code{bzCompress} calls.
+shouldn't get any error return values from the @code{BZ2_bzCompress} calls.
 If you do, they will be @code{BZ_SEQUENCE_ERROR}, and indicate a bug in
 your programming.
 
@@ -941,9 +941,9 @@ Trivial other possible return values:
          if @code{strm} is @code{NULL}, or @code{strm->s} is @code{NULL}
 @end display
 
-@subsection @code{bzCompressEnd}
+@subsection @code{BZ2_bzCompressEnd}
 @example
-int bzCompressEnd ( bz_stream *strm );
+int BZ2_bzCompressEnd ( bz_stream *strm );
 @end example
 Releases all memory associated with a compression stream.
 
@@ -954,11 +954,11 @@ Possible return values:
 @end display
 
 
-@subsection @code{bzDecompressInit}
+@subsection @code{BZ2_bzDecompressInit}
 @example
-int bzDecompressInit ( bz_stream *strm, int verbosity, int small );
+int BZ2_bzDecompressInit ( bz_stream *strm, int verbosity, int small );
 @end example
-Prepares for decompression.  As with @code{bzCompressInit}, a
+Prepares for decompression.  As with @code{BZ2_bzCompressInit}, a
 @code{bz_stream} record should be allocated and initialised before the
 call.  Fields @code{bzalloc}, @code{bzfree} and @code{opaque} should be
 set if a custom memory allocator is required, or made @code{NULL} for
@@ -966,7 +966,7 @@ the normal @code{malloc}/@code{free} routines.  Upon return, the internal
 state will have been initialised, and @code{total_in} and
 @code{total_out} will be zero.
 
-For the meaning of parameter @code{verbosity}, see @code{bzCompressInit}.
+For the meaning of parameter @code{verbosity}, see @code{BZ2_bzCompressInit}.
 
 If @code{small} is nonzero, the library will use an alternative
 decompression algorithm which uses less memory but at the cost of
@@ -976,8 +976,8 @@ more information on memory management.
 
 Note that the amount of memory needed to decompress
 a stream cannot be determined until the stream's header has been read,
-so even if @code{bzDecompressInit} succeeds, a subsequent
-@code{bzDecompress} could fail with @code{BZ_MEM_ERROR}.
+so even if @code{BZ2_bzDecompressInit} succeeds, a subsequent
+@code{BZ2_bzDecompress} could fail with @code{BZ_MEM_ERROR}.
 
 Possible return values:
 @display
@@ -990,54 +990,54 @@ Possible return values:
 
 Allowable next actions:
 @display
-      @code{bzDecompress}
+      @code{BZ2_bzDecompress}
          if @code{BZ_OK} was returned
       no specific action required in case of error
 @end display
 
  
 
-@subsection @code{bzDecompress}
+@subsection @code{BZ2_bzDecompress}
 @example
-int bzDecompress ( bz_stream *strm );
+int BZ2_bzDecompress ( bz_stream *strm );
 @end example
 Provides more input and/out output buffer space for the library.  The
-caller maintains input and output buffers, and uses @code{bzDecompress}
+caller maintains input and output buffers, and uses @code{BZ2_bzDecompress}
 to transfer data between them.
 
-Before each call to @code{bzDecompress}, @code{next_in} 
+Before each call to @code{BZ2_bzDecompress}, @code{next_in} 
 should point at the compressed data,
 and @code{avail_in} should indicate how many bytes the library
-may read.  @code{bzDecompress} updates @code{next_in}, @code{avail_in} 
+may read.  @code{BZ2_bzDecompress} updates @code{next_in}, @code{avail_in} 
 and @code{total_in}
 to reflect the number of bytes it has read.
 
 Similarly, @code{next_out} should point to a buffer in which the uncompressed
 output is to be placed, with @code{avail_out} indicating how much output space
-is available.  @code{bzCompress} updates @code{next_out},
+is available.  @code{BZ2_bzCompress} updates @code{next_out},
 @code{avail_out} and @code{total_out} to reflect
 the number of bytes output.
 
 You may provide and remove as little or as much data as you like on
-each call of @code{bzDecompress}.  
+each call of @code{BZ2_bzDecompress}.  
 In the limit, it is acceptable to
 supply and remove data one byte at a time, although this would be
 terribly inefficient.  You should always ensure that at least one
 byte of output space is available at each call.
 
-Use of @code{bzDecompress} is simpler than @code{bzCompress}.
+Use of @code{BZ2_bzDecompress} is simpler than @code{BZ2_bzCompress}.
 
 You should provide input and remove output as described above, and
-repeatedly call @code{bzDecompress} until @code{BZ_STREAM_END} is
+repeatedly call @code{BZ2_bzDecompress} until @code{BZ_STREAM_END} is
 returned.  Appearance of @code{BZ_STREAM_END} denotes that
-@code{bzDecompress} has detected the logical end of the compressed
-stream.  @code{bzDecompress} will not produce @code{BZ_STREAM_END} until
+@code{BZ2_bzDecompress} has detected the logical end of the compressed
+stream.  @code{BZ2_bzDecompress} will not produce @code{BZ_STREAM_END} until
 all output data has been placed into the output buffer, so once
 @code{BZ_STREAM_END} appears, you are guaranteed to have available all
-the decompressed output, and @code{bzDecompressEnd} can safely be
+the decompressed output, and @code{BZ2_bzDecompressEnd} can safely be
 called.
 
-If case of an error return value, you should call @code{bzDecompressEnd}
+If case of an error return value, you should call @code{BZ2_bzDecompressEnd}
 to clean up and release memory.
 
 Possible return values:
@@ -1059,16 +1059,16 @@ Possible return values:
 @end display
 Allowable next actions:
 @display
-      @code{bzDecompress}
+      @code{BZ2_bzDecompress}
          if @code{BZ_OK} was returned
-      @code{bzDecompressEnd}
+      @code{BZ2_bzDecompressEnd}
          otherwise
 @end display
 
 
-@subsection @code{bzDecompressEnd}
+@subsection @code{BZ2_bzDecompressEnd}
 @example
-int bzDecompressEnd ( bz_stream *strm );
+int BZ2_bzDecompressEnd ( bz_stream *strm );
 @end example
 Releases all memory associated with a decompression stream.
 
@@ -1152,7 +1152,7 @@ supplied like this.  If this facility is not required, you should pass
 respectively.
 
 For the meaning of parameters @code{small} and @code{verbosity},
-see @code{bzDecompressInit}.
+see @code{BZ2_bzDecompressInit}.
 
 The amount of memory needed to decompress a file cannot be determined
 until the file's header has been read.  So it is possible that
@@ -1333,7 +1333,7 @@ indicator (@code{ferror(f)})is not set.
 
 For the meaning of parameters @code{blockSize100k},
 @code{verbosity} and @code{workFactor}, see
-@* @code{bzCompressInit}.
+@* @code{BZ2_bzCompressInit}.
 
 All required memory is allocated at this stage, so if the call
 completes successfully, @code{BZ_MEM_ERROR} cannot be signalled by a
@@ -1563,7 +1563,7 @@ additional calls to provide extra input data.  If you want that kind of
 mechanism, use the low-level interface.
 
 For the meaning of parameters @code{blockSize100k}, @code{verbosity}
-and @code{workFactor}, @* see @code{bzCompressInit}.
+and @code{workFactor}, @* see @code{BZ2_bzCompressInit}.
 
 To guarantee that the compressed data will fit in its buffer, allocate
 an output buffer of size 1% larger than the uncompressed data, plus
@@ -1610,7 +1610,7 @@ data stream.  @code{bzBuffToBuffDecompress} tries to decompress
 the entirety of the stream into the output buffer.
 
 For the meaning of parameters @code{small} and @code{verbosity},
-see @code{bzDecompressInit}.
+see @code{BZ2_bzDecompressInit}.
 
 Because the compression ratio of the compressed data cannot be known in
 advance, there is no easy way to guarantee that the output buffer will
@@ -1695,8 +1695,8 @@ by compiling the library with preprocessor symbol @code{BZ_NO_STDIO}
 defined.  Doing this gives you a library containing only the following
 eight functions:
 
-@code{bzCompressInit}, @code{bzCompress}, @code{bzCompressEnd} @*
-@code{bzDecompressInit}, @code{bzDecompress}, @code{bzDecompressEnd} @*
+@code{BZ2_bzCompressInit}, @code{BZ2_bzCompress}, @code{BZ2_bzCompressEnd} @*
+@code{BZ2_bzDecompressInit}, @code{BZ2_bzDecompress}, @code{BZ2_bzDecompressEnd} @*
 @code{bzBuffToBuffCompress}, @code{bzBuffToBuffDecompress}
 
 When compiled like this, all functions will ignore @code{verbosity}
