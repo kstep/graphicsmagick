@@ -5797,7 +5797,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      (void) strcpy(modulate_factors,"0.0/0.0/");
+      (void) strcpy(modulate_factors,"100.0/100.0/");
       (void) strcat(modulate_factors,hue_percent);
       argv[1]=(char *) "-modulate";
       argv[2]=modulate_factors;
@@ -5826,7 +5826,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      (void) strcpy(modulate_factors,"0.0/");
+      (void) strcpy(modulate_factors,"100.0/");
       (void) strcat(modulate_factors,saturation_percent);
       argv[1]=(char *) "-modulate";
       argv[2]=modulate_factors;
