@@ -151,14 +151,14 @@ int main(int argc,char **argv)
   GetExceptionInfo(&exception);
   image_info=CloneImageInfo((ImageInfo *) NULL);
   image_info->attributes=AllocateImage(image_info);
-  /*
-    Interpret MSL script.
-  */
   for (i=1; i < argc; i++)
   {
     option=argv[i];
     if ((strlen(option) > 1) && ((*option == '-') || (*option == '+')))
       {
+        /*
+          Persist key/value pair.
+        */
         status=SetImageAttribute(image_info->attributes,option+1,(char *) NULL);
         status=SetImageAttribute(image_info->attributes,option+1,argv[i+1]);
         if (status == False)
@@ -166,6 +166,9 @@ int main(int argc,char **argv)
         i++;
         continue;
       }
+    /*
+      Interpret MSL script.
+    */
     status=SetImageAttribute(image_info->attributes,"filename",(char *) NULL);
     status=SetImageAttribute(image_info->attributes,"filename",argv[i]);
     if (status == False)
