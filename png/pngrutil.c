@@ -551,11 +551,17 @@ png_handle_cHRM(png_structp png_ptr, png_infop info_ptr, png_uint_32 length)
 
    png_crc_read(png_ptr, buf, 4);
    val = png_get_uint_32(buf);
-   white_x = (float)val / (float)100000.0;
+   if (val == (png_uint_32)0xffffffffL)
+      white_x = (float)0.312713; /* assume sRGB */
+   else
+      white_x = (float)val / (float)100000.0;
 
    png_crc_read(png_ptr, buf, 4);
    val = png_get_uint_32(buf);
-   white_y = (float)val / (float)100000.0;
+   if (val == (png_uint_32)0xffffffffL)
+      white_y = (float)0.329016; /* assume sRGB */
+   else
+      white_y = (float)val / (float)100000.0;
 
    if (white_x < 0 || white_x > 0.8 || white_y < 0 || white_y > 0.8 ||
        white_x + white_y > 1.0)
@@ -567,11 +573,17 @@ png_handle_cHRM(png_structp png_ptr, png_infop info_ptr, png_uint_32 length)
 
    png_crc_read(png_ptr, buf, 4);
    val = png_get_uint_32(buf);
-   red_x = (float)val / (float)100000.0;
+   if (val == (png_uint_32)0xffffffffL)
+      red_x = (float)0.64; /* assume sRGB */
+   else
+      red_x = (float)val / (float)100000.0;
 
    png_crc_read(png_ptr, buf, 4);
    val = png_get_uint_32(buf);
-   red_y = (float)val / (float)100000.0;
+   if (val == (png_uint_32)0xffffffffL)
+      red_y = (float)0.33; /* assume sRGB */
+   else
+      red_y = (float)val / (float)100000.0;
 
    if (red_x < 0 || red_x > 0.8 || red_y < 0 || red_y > 0.8 ||
        red_x + red_y > 1.0)
@@ -583,11 +595,17 @@ png_handle_cHRM(png_structp png_ptr, png_infop info_ptr, png_uint_32 length)
 
    png_crc_read(png_ptr, buf, 4);
    val = png_get_uint_32(buf);
-   green_x = (float)val / (float)100000.0;
+   if (val == (png_uint_32)0xffffffffL)
+      green_x = (float)0.3; /* assume sRGB */
+   else
+      green_x = (float)val / (float)100000.0;
 
    png_crc_read(png_ptr, buf, 4);
    val = png_get_uint_32(buf);
-   green_y = (float)val / (float)100000.0;
+   if (val == (png_uint_32)0xffffffffL)
+      green_y = (float)0.6; /* assume sRGB */
+   else
+      green_y = (float)val / (float)100000.0;
 
    if (green_x < 0 || green_x > 0.8 || green_y < 0 || green_y > 0.8 ||
        green_x + green_y > 1.0)
@@ -599,11 +617,17 @@ png_handle_cHRM(png_structp png_ptr, png_infop info_ptr, png_uint_32 length)
 
    png_crc_read(png_ptr, buf, 4);
    val = png_get_uint_32(buf);
-   blue_x = (float)val / (float)100000.0;
+   if (val == (png_uint_32)0xffffffffL)
+      blue_x = (float)0.15; /* assume sRGB */
+   else
+      blue_x = (float)val / (float)100000.0;
 
    png_crc_read(png_ptr, buf, 4);
    val = png_get_uint_32(buf);
-   blue_y = (float)val / (float)100000.0;
+   if (val == (png_uint_32)0xffffffffL)
+      blue_y = (float)0.06; /* assume sRGB */
+   else
+      blue_y = (float)val / (float)100000.0;
 
    if (blue_x < (float)0 || blue_x > (float)0.8 || blue_y < (float)0 ||
        blue_y > (float)0.8 || blue_x + blue_y > (float)1.0)
