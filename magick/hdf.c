@@ -413,8 +413,10 @@ Export unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
   unsigned char
     *hdf_pixels;
 
+  unsigned short
+    compression;
+
   unsigned int
-    compression,
     packet_size,
     scene;
 
