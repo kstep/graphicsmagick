@@ -553,7 +553,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
 */
 static unsigned int WriteCGMImage(const ImageInfo *image_info,Image *image)
 {
-  MagickWarning(MissingPluginWarning,"Cannot write CGM images",image->filename);
+  MagickWarning(MissingDelegateWarning,"Cannot write CGM images",image->filename);
   return(False);
 }
 
@@ -889,7 +889,7 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
 */
 static unsigned int WriteDICOMImage(const ImageInfo *image_info,Image *image)
 {
-  MagickWarning(MissingPluginWarning,"Cannot write DICOM images",
+  MagickWarning(MissingDelegateWarning,"Cannot write DICOM images",
     image->filename);
   return(False);
 }
@@ -1130,7 +1130,7 @@ static unsigned int WriteFAXImage(const ImageInfo *image_info,Image *image)
 */
 static unsigned int WriteFIGImage(const ImageInfo *image_info,Image *image)
 {
-  MagickWarning(MissingPluginWarning,"Cannot write FIG images",image->filename);
+  MagickWarning(MissingDelegateWarning,"Cannot write FIG images",image->filename);
   return(False);
 }
 
@@ -1570,7 +1570,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
       status=
         FPX_SetJPEGCompression(flashpix,(unsigned short) (image_info->quality));
       if (status != FPX_OK)
-        MagickWarning(PluginWarning,"Unable to set JPEG level",(char *) NULL);
+        MagickWarning(DelegateWarning,"Unable to set JPEG level",(char *) NULL);
     }
   /*
     Set image summary info.
@@ -1603,7 +1603,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
       if (summary_info.title.ptr != (unsigned char *) NULL)
         (void) strcpy((char *) summary_info.title.ptr,image->label);
       else
-        MagickWarning(PluginWarning,"Unable to set image title",(char *) NULL);
+        MagickWarning(DelegateWarning,"Unable to set image title",(char *) NULL);
     }
   if (image->comments != (char *) NULL)
     {
@@ -1617,12 +1617,12 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
       if (summary_info.comments.ptr != (unsigned char *) NULL)
         (void) strcpy((char *) summary_info.comments.ptr,image->comments);
       else
-        MagickWarning(PluginWarning,"Unable to set image comments",
+        MagickWarning(DelegateWarning,"Unable to set image comments",
           (char *) NULL);
     }
   status=FPX_SetSummaryInformation(flashpix,&summary_info);
   if (status != FPX_OK)
-    MagickWarning(PluginWarning,"Unable to set summary info",(char *) NULL);
+    MagickWarning(DelegateWarning,"Unable to set summary info",(char *) NULL);
   /*
     Allocate scanline.
   */
@@ -1780,41 +1780,41 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
         {
           status=FPX_SetImageAffineMatrix(flashpix,&affine);
           if (status != FPX_OK)
-            MagickWarning(PluginWarning,"Unable to set affine matrix",
+            MagickWarning(DelegateWarning,"Unable to set affine matrix",
               (char *) NULL);
         }
       if (aspect_ratio_valid)
         {
           status=FPX_SetImageResultAspectRatio(flashpix,&aspect_ratio);
           if (status != FPX_OK)
-            MagickWarning(PluginWarning,"Unable to set aspect ratio",
+            MagickWarning(DelegateWarning,"Unable to set aspect ratio",
               (char *) NULL);
         }
       if (color_twist_valid)
         {
           status=FPX_SetImageColorTwistMatrix(flashpix,&color_twist);
           if (status != FPX_OK)
-            MagickWarning(PluginWarning,"Unable to set color color twist",
+            MagickWarning(DelegateWarning,"Unable to set color color twist",
               (char *) NULL);
         }
       if (contrast_valid)
         {
           status=FPX_SetImageContrastAdjustment(flashpix,&contrast);
           if (status != FPX_OK)
-            MagickWarning(PluginWarning,"Unable to set contrast",(char *) NULL);
+            MagickWarning(DelegateWarning,"Unable to set contrast",(char *) NULL);
         }
       if (sharpen_valid)
         {
           status=FPX_SetImageFilteringValue(flashpix,&sharpen);
           if (status != FPX_OK)
-            MagickWarning(PluginWarning,"Unable to set filtering value",
+            MagickWarning(DelegateWarning,"Unable to set filtering value",
               (char *) NULL);
         }
       if (view_rect_valid)
         {
           status=FPX_SetImageROI(flashpix, &view_rect);
           if (status != FPX_OK)
-            MagickWarning(PluginWarning,"Unable to set region of interest",
+            MagickWarning(DelegateWarning,"Unable to set region of interest",
               (char *) NULL);
         }
     }
@@ -1851,7 +1851,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
 #else
 static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
 {
-  MagickWarning(MissingPluginWarning,"FPX library is not available",
+  MagickWarning(MissingDelegateWarning,"FPX library is not available",
     image->filename);
   return(False);
 }
@@ -2279,7 +2279,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
 static unsigned int WriteGRADATIONImage(const ImageInfo *image_info,
   Image *image)
 {
-  MagickWarning(MissingPluginWarning,"Cannot write GRADATION images",
+  MagickWarning(MissingDelegateWarning,"Cannot write GRADATION images",
     image->filename);
   return(False);
 }
@@ -2620,7 +2620,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
 #else
 static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
 {
-  MagickWarning(MissingPluginWarning,"HDF library is not available",
+  MagickWarning(MissingDelegateWarning,"HDF library is not available",
     image->filename);
   return(False);
 }
@@ -2865,7 +2865,7 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
 */
 static unsigned int WriteHPGLImage(const ImageInfo *image_info,Image *image)
 {
-  MagickWarning(MissingPluginWarning,"Cannot write HPGL images",
+  MagickWarning(MissingDelegateWarning,"Cannot write HPGL images",
     image->filename);
   return(False);
 }
@@ -3283,7 +3283,7 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
 #else
 static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
 {
-  MagickWarning(MissingPluginWarning,"JBIG library is not available",
+  MagickWarning(MissingDelegateWarning,"JBIG library is not available",
     image->filename);
   return(False);
 }
@@ -3366,12 +3366,12 @@ static void EmitMessage(j_common_ptr jpeg_info,int level)
   if (level < 0)
     {
       if (jpeg_error->num_warnings == 0 || jpeg_error->trace_level >= 3)
-        MagickWarning(PluginWarning,(char *) message,(char *) NULL);
+        MagickWarning(DelegateWarning,(char *) message,(char *) NULL);
       jpeg_error->num_warnings++;
     }
   else
     if (jpeg_error->trace_level >= level)
-      MagickWarning(PluginWarning,(char *) message,(char *) NULL);
+      MagickWarning(DelegateWarning,(char *) message,(char *) NULL);
 }
 
 static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
@@ -3643,7 +3643,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
 #else
 static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
 {
-  MagickWarning(MissingPluginWarning,"JPEG library is not available",
+  MagickWarning(MissingDelegateWarning,"JPEG library is not available",
     image->filename);
   return(False);
 }
@@ -3681,7 +3681,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
 */
 static unsigned int WriteICONImage(const ImageInfo *image_info,Image *image)
 {
-  MagickWarning(MissingPluginWarning,"Cannot write ICON images",
+  MagickWarning(MissingDelegateWarning,"Cannot write ICON images",
     image->filename);
   return(False);
 }
@@ -3717,7 +3717,7 @@ static unsigned int WriteICONImage(const ImageInfo *image_info,Image *image)
 */
 static unsigned int WriteLABELImage(const ImageInfo *image_info,Image *image)
 {
-  MagickWarning(MissingPluginWarning,"Cannot write LABEL images",
+  MagickWarning(MissingDelegateWarning,"Cannot write LABEL images",
     image->filename);
   return(False);
 }
@@ -4068,7 +4068,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         if (status)
           {
             FreeMemory((char *) compressed_pixels);
-            PrematureExit(PluginWarning,"Unable to compress image",image);
+            PrematureExit(DelegateWarning,"Unable to compress image",image);
           }
         else
           {
@@ -4170,7 +4170,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     if (image->label != (char *) NULL)
       (void) fprintf(image->file,"label=\"%s\"\n",image->label);
     if (image->comments != (char *) NULL)
-      (void) fprintf(image->file,"{\n%s\n}\n",image->comments);
+      (void) fprintf(image->file,"{%s}\n",image->comments);
     (void) fprintf(image->file,"\f\n:\n");
     if (image->montage != (char *) NULL)
       {
@@ -6828,7 +6828,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
 */
 static unsigned int WritePIXImage(const ImageInfo *image_info,Image *image)
 {
-  MagickWarning(MissingPluginWarning,"Cannot write PIX images",image->filename);
+  MagickWarning(MissingDelegateWarning,"Cannot write PIX images",image->filename);
   return(False);
 }
 
@@ -6864,7 +6864,7 @@ static unsigned int WritePIXImage(const ImageInfo *image_info,Image *image)
 static unsigned int WritePLASMAImage(const ImageInfo *image_info,
   Image *image)
 {
-  MagickWarning(MissingPluginWarning,"Cannot write PLASMA images",
+  MagickWarning(MissingDelegateWarning,"Cannot write PLASMA images",
     image->filename);
   return(False);
 }
@@ -6903,7 +6903,7 @@ static unsigned int WritePLASMAImage(const ImageInfo *image_info,
 
 static void PNGError(png_struct *ping,png_const_charp message)
 {
-  MagickWarning(PluginWarning,message,(char *) NULL);
+  MagickWarning(DelegateWarning,message,(char *) NULL);
   longjmp(ping->jmpbuf,1);
 }
 
@@ -6923,7 +6923,7 @@ static void PNGTextChunk(const ImageInfo *image_info,png_info *ping_info,
 
 static void PNGWarning(png_struct *ping,png_const_charp message)
 {
-  MagickWarning(PluginWarning,message,(char *) NULL);
+  MagickWarning(DelegateWarning,message,(char *) NULL);
 }
 
 static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
@@ -7396,7 +7396,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 #else
 static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 {
-  MagickWarning(MissingPluginWarning,"PNG library is not available",
+  MagickWarning(MissingDelegateWarning,"PNG library is not available",
     image->filename);
   return(False);
 }
@@ -9978,7 +9978,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
 static unsigned int WriteRADIANCEImage(const ImageInfo *image_info,
   Image *image)
 {
-  MagickWarning(MissingPluginWarning,"Cannot write RADIANCE images",
+  MagickWarning(MissingDelegateWarning,"Cannot write RADIANCE images",
     image->filename);
   return(False);
 }
@@ -10229,7 +10229,7 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
 */
 static unsigned int WriteRLAImage(const ImageInfo *image_info,Image *image)
 {
-  MagickWarning(MissingPluginWarning,"Cannot write RLA images",image->filename);
+  MagickWarning(MissingDelegateWarning,"Cannot write RLA images",image->filename);
   return(False);
 }
 
@@ -10340,7 +10340,7 @@ static unsigned int WriteRLEImage(const ImageInfo *image_info,Image *image)
 */
 static unsigned int WriteSCANImage(const ImageInfo *image_info,Image *image)
 {
-  MagickWarning(MissingPluginWarning,"Cannot write SCAN images",
+  MagickWarning(MissingDelegateWarning,"Cannot write SCAN images",
     image->filename);
   return(False);
 }
@@ -11321,7 +11321,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
 */
 static unsigned int WriteTEXTImage(const ImageInfo *image_info,Image *image)
 {
-  MagickWarning(MissingPluginWarning,"Cannot write TEXT images",
+  MagickWarning(MissingDelegateWarning,"Cannot write TEXT images",
     image->filename);
   return(False);
 }
@@ -11948,7 +11948,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
 #else
 static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
 {
-  MagickWarning(MissingPluginWarning,"TIFF library is not available",
+  MagickWarning(MissingDelegateWarning,"TIFF library is not available",
     image->filename);
   return(False);
 }
@@ -11985,7 +11985,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
 */
 static unsigned int WriteTILEImage(const ImageInfo *image_info,Image *image)
 {
-  MagickWarning(MissingPluginWarning,"Cannot write TILE images",
+  MagickWarning(MissingDelegateWarning,"Cannot write TILE images",
     image->filename);
   return(False);
 }
@@ -12021,7 +12021,7 @@ static unsigned int WriteTILEImage(const ImageInfo *image_info,Image *image)
 */
 static unsigned int WriteTIMImage(const ImageInfo *image_info,Image *image)
 {
-  MagickWarning(MissingPluginWarning,"Cannot write TIM images",image->filename);
+  MagickWarning(MissingDelegateWarning,"Cannot write TIM images",image->filename);
   return(False);
 }
 
@@ -13241,7 +13241,7 @@ static unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
 */
 static unsigned int WriteXCImage(const ImageInfo *image_info,Image *image)
 {
-  MagickWarning(MissingPluginWarning,"Cannot write XC images",image->filename);
+  MagickWarning(MissingDelegateWarning,"Cannot write XC images",image->filename);
   return(False);
 }
 
@@ -14187,7 +14187,7 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
         }
       if (strncmp(image_info->magick,"TTF",3) == 0)
         {
-          MagickWarning(MissingPluginWarning,"Cannot write TTF images",
+          MagickWarning(MissingDelegateWarning,"Cannot write TTF images",
             image->filename);
           status=False;
           break;

@@ -2028,7 +2028,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info)
 #else
 static Image *ReadDPSImage(const ImageInfo *image_info)
 {
-  MagickWarning(MissingPluginWarning,"Cannot read DPS images",
+  MagickWarning(MissingDelegateWarning,"Cannot read DPS images",
     image_info->filename);
   return((Image *) NULL);
 }
@@ -2701,7 +2701,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info)
   memory_limit=20000000;
   status=FPX_SetToolkitMemoryLimit(&memory_limit);
   if (status != FPX_OK)
-    PrematureExit(PluginWarning,"Unable to initialize FPX library",image);
+    PrematureExit(DelegateWarning,"Unable to initialize FPX library",image);
   tile_width=64;
   tile_height=64;
   flashpix=(FPXImageHandle *) NULL;
@@ -2738,7 +2738,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info)
       aspect_ratio=(float) width/height;
       status=FPX_GetImageResultAspectRatio(flashpix,&aspect_ratio);
       if (status != FPX_OK)
-        MagickWarning(PluginWarning,"Unable to read aspect ratio",
+        MagickWarning(DelegateWarning,"Unable to read aspect ratio",
           image_info->filename);
       if (width != (unsigned long) ((aspect_ratio*height)+0.5))
         Swap(width,height);
@@ -2759,7 +2759,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info)
         image->label=(char *) AllocateMemory((unsigned int)
           (summary_info.title.length+1)*sizeof(char));
         if (image->label == (char *) NULL)
-          MagickWarning(PluginWarning,"Memory allocation failed",
+          MagickWarning(DelegateWarning,"Memory allocation failed",
             image_info->filename);
         else
           {
@@ -2778,7 +2778,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info)
         image->comments=(char *) AllocateMemory((unsigned int)
           (summary_info.comments.length+1)*sizeof(char));
         if (image->comments == (char *) NULL)
-          MagickWarning(PluginWarning,"Memory allocation failed",
+          MagickWarning(DelegateWarning,"Memory allocation failed",
             image_info->filename);
         else
           {
@@ -2989,7 +2989,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info)
 #else
 static Image *ReadFPXImage(const ImageInfo *image_info)
 {
-  MagickWarning(MissingPluginWarning,"FPX library is not available",
+  MagickWarning(MissingDelegateWarning,"FPX library is not available",
     image_info->filename);
   return((Image *) NULL);
 }
@@ -3940,7 +3940,7 @@ static Image *ReadHDFImage(ImageInfo *image_info)
 #else
 static Image *ReadHDFImage(const ImageInfo *image_info)
 {
-  MagickWarning(MissingPluginWarning,"HDF library is not available",
+  MagickWarning(MissingDelegateWarning,"HDF library is not available",
     image_info->filename);
   return((Image *) NULL);
 }
@@ -4054,7 +4054,7 @@ static Image *ReadHPGLImage(const ImageInfo *image_info)
   (void) remove(image_info->filename);
   if (image == (Image *) NULL)
     {
-      MagickWarning(MissingPluginWarning,"HPGL delegation failed",
+      MagickWarning(MissingDelegateWarning,"HPGL delegation failed",
         image_info->filename);
       return((Image *) NULL);
     }
@@ -4124,7 +4124,7 @@ static Image *ReadHTMLImage(const ImageInfo *image_info)
   status=SystemCommand(command);
   if (status)
     {
-      MagickWarning(MissingPluginWarning,"HTML delegation failed",
+      MagickWarning(MissingDelegateWarning,"HTML delegation failed",
         image_info->filename);
       return((Image *) NULL);
     }
@@ -4132,7 +4132,7 @@ static Image *ReadHTMLImage(const ImageInfo *image_info)
   (void) remove(image_info->filename);
   if (image == (Image *) NULL)
     {
-      MagickWarning(MissingPluginWarning,"HTML delegation failed",
+      MagickWarning(MissingDelegateWarning,"HTML delegation failed",
         image_info->filename);
       return((Image *) NULL);
     }
@@ -4365,7 +4365,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info)
 #else
 static Image *ReadJBIGImage(const ImageInfo *image_info)
 {
-  MagickWarning(MissingPluginWarning,"JBIG library is not available",
+  MagickWarning(MissingDelegateWarning,"JBIG library is not available",
     image_info->filename);
   return((Image *) NULL);
 }
@@ -4531,12 +4531,12 @@ static void EmitMessage(j_common_ptr jpeg_info,int level)
   if (level < 0)
     {
       if ((jpeg_error->num_warnings == 0) || (jpeg_error->trace_level >= 3))
-        MagickWarning(PluginWarning,(char *) message,image->filename);
+        MagickWarning(DelegateWarning,(char *) message,image->filename);
       jpeg_error->num_warnings++;
     }
   else
     if (jpeg_error->trace_level >= level)
-      MagickWarning(PluginWarning,(char *) message,image->filename);
+      MagickWarning(DelegateWarning,(char *) message,image->filename);
 }
 
 static void ErrorExit(j_common_ptr jpeg_info)
@@ -4808,7 +4808,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info)
 #else
 static Image *ReadJPEGImage(const ImageInfo *image_info)
 {
-  MagickWarning(MissingPluginWarning,"JPEG library is not available",
+  MagickWarning(MissingDelegateWarning,"JPEG library is not available",
     image_info->filename);
   return((Image *) NULL);
 }
@@ -5482,10 +5482,10 @@ static Image *ReadLABELImage(const ImageInfo *image_info)
       */
       error=TT_Init_FreeType(&engine);
       if (error)
-        PrematureExit(PluginWarning,"Cannot initialize TTF engine",image);
+        PrematureExit(DelegateWarning,"Cannot initialize TTF engine",image);
       error=TT_Open_Face(engine,local_info.font+1,&face);
       if (error)
-        PrematureExit(PluginWarning,"Unable to open TTF font",image);
+        PrematureExit(DelegateWarning,"Unable to open TTF font",image);
       TT_Get_Face_Properties(face,&face_properties);
       GetFontInfo(face,&face_properties,image);
       error=TT_New_Instance(face,&instance);
@@ -5498,7 +5498,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info)
         image->x_resolution,(unsigned short) image->y_resolution);
       error|=TT_Set_Instance_CharSize(instance,local_info.pointsize*64);
       if (error)
-        PrematureExit(PluginWarning,"Cannot initialize TTF instance",image);
+        PrematureExit(DelegateWarning,"Cannot initialize TTF instance",image);
       for (code=0; (int) code < (int) face_properties.num_CharMaps; code++)
       {
         TT_Get_CharMap_ID(face,code,&platform,&encoding);
@@ -5519,12 +5519,12 @@ static Image *ReadLABELImage(const ImageInfo *image_info)
         }
       glyphs=(TT_Glyph *) AllocateMemory(MaxGlyphs*sizeof(TT_Glyph));
       if (glyphs == (TT_Glyph *) NULL)
-        PrematureExit(PluginWarning,"Memory allocation failed",image);
+        PrematureExit(DelegateWarning,"Memory allocation failed",image);
       for (i=0; i < MaxGlyphs; i++)
         glyphs[i].z=(TT_Glyph *) NULL;
       unicode=ConvertTextToUnicode(text,&length);
       if (unicode == (unsigned short *) NULL)
-        PrematureExit(PluginWarning,"Memory allocation failed",image);
+        PrematureExit(DelegateWarning,"Memory allocation failed",image);
       for (i=0; i < length; i++)
       {
         if (glyphs[(unsigned char) unicode[i]].z != (TT_Glyph *) NULL)
@@ -5541,7 +5541,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info)
         error|=TT_Load_Glyph(instance,glyphs[(unsigned char) unicode[i]],code,
           TTLOAD_SCALE_GLYPH | TTLOAD_HINT_GLYPH);
         if (error)
-          PrematureExit(PluginWarning,"Cannot initialize TTF glyph",image);
+          PrematureExit(DelegateWarning,"Cannot initialize TTF glyph",image);
       }
       TT_Get_Face_Properties(face,&face_properties);
       TT_Get_Instance_Metrics(instance,&instance_metrics);
@@ -5564,7 +5564,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info)
       canvas.size=canvas.rows*canvas.width;
       canvas.bitmap=(void *) AllocateMemory(canvas.size);
       if (!canvas.bitmap)
-        PrematureExit(PluginWarning,"Memory allocation failed",image);
+        PrematureExit(DelegateWarning,"Memory allocation failed",image);
       p=(unsigned char *) canvas.bitmap;
       for (i=0; i < canvas.size; i++)
         *p++=0;
@@ -5575,7 +5575,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info)
       character.size=character.rows*character.width;
       character.bitmap=(void *) AllocateMemory(character.size);
       if (!character.bitmap)
-        PrematureExit(PluginWarning,"Memory allocation failed",image);
+        PrematureExit(DelegateWarning,"Memory allocation failed",image);
       x=0;
       y=((int) -(face_properties.horizontal->Descender*instance_metrics.y_ppem)/
         (int) face_properties.header->Units_Per_EM);
@@ -5634,7 +5634,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info)
       CondenseImage(image);
       return(image);
 #else
-      MagickWarning(MissingPluginWarning,"FreeType library is not available",
+      MagickWarning(MissingDelegateWarning,"FreeType library is not available",
         (char *) NULL);
 #endif
     }
@@ -6574,7 +6574,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info)
         image->packets=(unsigned int) (max_packets/image->packet_size);
         FreeMemory((char *) compressed_pixels);
         if (status)
-          PrematureExit(PluginWarning,"Unable to uncompress image",image);
+          PrematureExit(DelegateWarning,"Unable to uncompress image",image);
       }
     if (image->compression == ZipCompression)
       {
@@ -6601,7 +6601,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info)
         image->packets=(unsigned int) (max_packets/image->packet_size);
         FreeMemory((char *) compressed_pixels);
         if (status)
-          PrematureExit(PluginWarning,"Unable to uncompress image",image);
+          PrematureExit(DelegateWarning,"Unable to uncompress image",image);
       }
     /*
       Unpack the packed image pixels into runlength-encoded pixel packets.
@@ -7567,7 +7567,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info)
 */
 static Image *ReadPCLImage(const ImageInfo *image_info)
 {
-  MagickWarning(MissingPluginWarning,"Cannot read PCL images",
+  MagickWarning(MissingDelegateWarning,"Cannot read PCL images",
     image_info->filename);
   return((Image *) NULL);
 }
@@ -9226,7 +9226,7 @@ static Image *ReadPLASMAImage(const ImageInfo *image_info)
 
 static void PNGError(png_struct *ping,png_const_charp message)
 {
-  MagickWarning(PluginWarning,message,(char *) NULL);
+  MagickWarning(DelegateWarning,message,(char *) NULL);
   longjmp(ping->jmpbuf,1);
 }
 
@@ -9256,7 +9256,7 @@ static void PNGTextChunk(png_info *ping_info,unsigned int i,char **value)
 
 static void PNGWarning(png_struct *ping,png_const_charp message)
 {
-  MagickWarning(PluginWarning,message,(char *) NULL);
+  MagickWarning(DelegateWarning,message,(char *) NULL);
 }
 
 static Image *ReadPNGImage(const ImageInfo *image_info)
@@ -9831,7 +9831,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info)
 #else
 static Image *ReadPNGImage(const ImageInfo *image_info)
 {
-  MagickWarning(MissingPluginWarning,"PNG library is not available",
+  MagickWarning(MissingDelegateWarning,"PNG library is not available",
     image_info->filename);
   return((Image *) NULL);
 }
@@ -13938,7 +13938,7 @@ static void TIFFWarningMessage(const char *module,const char *format,
     }
   (void) vsprintf(p,format,warning);
   (void) strcat(p,".");
-  MagickWarning(PluginWarning,message,(char *) NULL);
+  MagickWarning(DelegateWarning,message,(char *) NULL);
 }
 
 static Image *ReadTIFFImage(const ImageInfo *image_info)
@@ -14596,7 +14596,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info)
 #else
 static Image *ReadTIFFImage(const ImageInfo *image_info)
 {
-  MagickWarning(MissingPluginWarning,"TIFF library is not available",
+  MagickWarning(MissingDelegateWarning,"TIFF library is not available",
     image_info->filename);
   return((Image *) NULL);
 }
@@ -15091,7 +15091,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info)
 #else
 static Image *ReadTTFImage(const ImageInfo *image_info)
 {
-  MagickWarning(MissingPluginWarning,"Cannot read TTF images",
+  MagickWarning(MissingDelegateWarning,"Cannot read TTF images",
     image_info->filename);
   return((Image *) NULL);
 }
@@ -15128,7 +15128,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info)
 */
 static Image *ReadUILImage(const ImageInfo *image_info)
 {
-  MagickWarning(MissingPluginWarning,"Cannot read UIL images",
+  MagickWarning(MissingDelegateWarning,"Cannot read UIL images",
     image_info->filename);
   return((Image *) NULL);
 }

@@ -673,6 +673,11 @@ Image Manipulation Methods
   <td>name of texture to tile onto the image background</td>
 </tr>
 <tr>
+  <td>Threshold</td>
+  <td>threshold=&gt;<i>integer</i></td>
+  <td>threshold the image</td>
+</tr>
+<tr>
   <td>Transform</td>
   <td>crop=&gt;<i>geometry</i>, geometry=&gt;<i>geometry</i></td>
   <td>crop or resize an image with a fully-qualified geometry specification</td>
@@ -681,11 +686,6 @@ Image Manipulation Methods
   <td>Transparent</td>
   <td>color=&gt;<i>colorname</i></td>
   <td>make this color transparent within the image</td>
-</tr>
-<tr>
-  <td>Threshold</td>
-  <td>threshold=&gt;<i>integer</i></td>
-  <td>threshold the image</td>
 </tr>
 <tr>
   <td>Trim</td>
@@ -779,7 +779,7 @@ Image Attributes
   <td>image background color</td>
 </tr>
 <tr>
-  <td>blue-primary</td>
+  <td>blue_primary</td>
   <td><i>x-value</i>, <i>y-value</i></td>
   <td>chromaticity blue primary point (e.g. 0.15, 0.06)</td>
 </tr>
@@ -794,14 +794,14 @@ Image Attributes
   <td>color name (e.g. red) or hex value (e.g. #ccc) at position <i>i</i></td>
 </tr>
 <tr>
-  <td>colorspace</td>
-  <td>{RGB, Gray, Transparent, OHTA, XYZ, YCbCr, YCC, YIQ, YPbPr, YUV, CMYK}</td>
-  <td>type of colorspace</td>
-</tr>
-<tr>
   <td>colors</td>
   <td><i>integer<i></td>
   <td>preferred number of colors in the image</td>
+</tr>
+<tr>
+  <td>colorspace</td>
+  <td>{RGB, Gray, Transparent, OHTA, XYZ, YCbCr, YCC, YIQ, YPbPr, YUV, CMYK}</td>
+  <td>type of colorspace</td>
 </tr>
 <tr>
   <td>compress</td>
@@ -861,7 +861,7 @@ Image Attributes
   <td>set the image format</td>
 </tr>
 <tr>
-  <td>green-primary</td>
+  <td>green_primary</td>
   <td><i>x-value</i>, <i>y-value</i></td>
   <td>chromaticity green primary point (e.g. 0.3, 0.6)</td>
 </tr>
@@ -915,7 +915,7 @@ Image Attributes
 <tr>
   <td>pointsize</td>
   <td><i>integer<i></td>
-  <td>pointsize of the Postscript font</td>
+  <td>pointsize of the Postscript or TrueType font</td>
 </tr>
 <tr>
   <td>preview</td>
@@ -931,12 +931,12 @@ Image Attributes
   <td>JPEG/MIFF/PNG compression level</td>
 </tr>
 <tr>
-  <td>red-primary</td>
+  <td>red_primary</td>
   <td><i>x-value</i>, <i>y-value</i></td>
   <td>chromaticity red primary point (e.g. 0.64, 0.33)</td>
 </tr>
 <tr>
-  <td>rendering-intent</td>
+  <td>rendering_intent</td>
   <td>{Undefined, Saturation, Perceptual, Absolute, Relative}</td>
   <td>the type of rendering intent</td>
 </tr>
@@ -991,7 +991,7 @@ Image Attributes
   <td>print detailed information about the image</td>
 </tr>
 <tr>
-  <td>white-point</td>
+  <td>white_point</td>
   <td><i>x-value</i>, <i>y-value</i></td>
   <td>chromaticity white point (e.g. 0.3127, 0.329)</td>
 </tr>
@@ -1115,12 +1115,12 @@ Image Attributes
   <td>tile size and offset within an image montage</td>
 </tr>
 <tr>
-  <td>normalized_max</td>
+  <td>normalized-max</td>
   <td><i>double</i></td>
   <td>the normalized max error per pixel computed when an image is color reduced</td>
 </tr>
 <tr>
-  <td>normalized_mean</td>
+  <td>normalized-mean</td>
   <td><i>double</i></td>
   <td>the normalized mean error per pixel computed when an image is color reduced</td>
 </tr>
@@ -1150,7 +1150,7 @@ Image Attributes
   <td>any text associated with the image</td>
 </tr>
 <tr>
-  <td>total_colors</td>
+  <td>total-colors</td>
   <td><i>integer<i></td>
   <td>number of colors in the image</td>
 </tr>
@@ -1176,12 +1176,12 @@ Image Attributes
   <td>the number of columns or width of an image</td>
 </tr>
 <tr>
-  <td>x_resolution</td>
+  <td>x-resolution</td>
   <td><i>integer</i></td>
   <td>x resolution of the image</td>
 </tr>
 <tr>
-  <td>y_resolution</td>
+  <td>y-resolution</td>
   <td><i>integer</i></td>
   <td>y resolution of the image</td>
 </tr>
@@ -1223,7 +1223,7 @@ Montage Parameters
 </tr>
 <tr>
   <td>background</td>
-  <td><i>string</i></td>
+  <td><i>color</i></td>
   <td>X11 color name</td>
 </tr>
 <tr>
@@ -1287,7 +1287,7 @@ Montage Parameters
 <tr>
   <td>pointsize</td>
   <td><i>integer<i></td>
-  <td>pointsize of the Postscript font</td>
+  <td>pointsize of the Postscript or TrueType font</td>
 </tr>
 <tr>
   <td>shadow</td>
@@ -1502,14 +1502,14 @@ Error and Warning Codes
 </tr>
 <tr>
   <td>315</td>
-  <td>PluginWarning</td>
-  <td>an ImageMagick plug-in returned a warning</td>
+  <td>DelegateWarning</td>
+  <td>an ImageMagick <em>delegate</em> returned a warning</td>
 </tr>
 <tr>
   <td>320</td>
-  <td>MissingPluginWarning</td>
+  <td>MissingDelegateWarning</td>
   <td>the image type can not be read or written because the appropriate 
-      plug-in is missing</td>
+      <em>Delegate</em> is missing</td>
 </tr>
 <tr>
   <td>325</td>

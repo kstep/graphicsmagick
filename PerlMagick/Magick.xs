@@ -37,9 +37,12 @@ constant(char *name, int arg)
     errno = 0;
     switch (*name)
     {
+    case 'D':
+	if (strEQ(name, "DelegateWarning"))
+	    return DelegateWarning;
     case 'P':
 	if (strEQ(name, "PluginWarning"))
-	    return PluginWarning;
+	    return DelegateWarning;
 	break;
 
     case 'O':
@@ -67,8 +70,10 @@ constant(char *name, int arg)
 	break;
 
     case 'M':
+	if (strEQ(name, "MissingDelegateWarning"))
+	    return MissingDelegateWarning;
 	if (strEQ(name, "MissingPluginWarning"))
-	    return MissingPluginWarning;
+	    return MissingDelegateWarning;
 	break;
 
     case 'C':
@@ -573,7 +578,7 @@ SetAttribute(struct info *info, Image *image, char *attr, SV *sval)
 	    }
 	    return;
 	}
-	if (strEQcase(attr, "blue-p"))
+	if (strEQcase(attr, "blue_p"))
 	{
 	    for ( ; image; image = image->next)
 	    {
@@ -795,7 +800,7 @@ SetAttribute(struct info *info, Image *image, char *attr, SV *sval)
 	}
 	break;
     case 'G': case 'g':
-	if (strEQcase(attr, "green-p"))
+	if (strEQcase(attr, "green_p"))
 	{
 	    for ( ; image; image = image->next)
 	    {
@@ -983,7 +988,7 @@ SetAttribute(struct info *info, Image *image, char *attr, SV *sval)
 	}
 	break;
     case 'R': case 'r':
-	if (strEQcase(attr, "red-p"))
+	if (strEQcase(attr, "red_p"))
 	{
 	    for ( ; image; image = image->next)
 	    {
@@ -1090,7 +1095,7 @@ SetAttribute(struct info *info, Image *image, char *attr, SV *sval)
 	}
 	break;
     case 'W': case 'w':
-	if (strEQcase(attr, "white-p"))
+	if (strEQcase(attr, "white_p"))
 	{
 	    for ( ; image; image = image->next)
 	    {
@@ -3289,7 +3294,7 @@ Get(ref, ...)
 			if (image)
 			    s = newSViv(image->magick_columns);
 		    }
-		    else if (strEQcase(arg, "blue-p"))
+		    else if (strEQcase(arg, "blue_p"))
 		    {
 			if (!image)
 			    break;
@@ -3482,7 +3487,7 @@ Get(ref, ...)
 			if (image && image->geometry)
 			    s = newSVpv(image->geometry, 0);
 		    }
-		    else if (strEQcase(arg, "green-p"))
+		    else if (strEQcase(arg, "green_p"))
 		    {
 			if (!image)
 			    break;
@@ -3585,14 +3590,12 @@ Get(ref, ...)
 			else if (image)
 			    s = newSViv(image->colors);
 		    }
-		    else if (strEQcase(arg, "normalized_max") ||
-			     strEQcase(arg, "normalizedmax"))
+		    else if (strEQcase(arg, "normalized_max"))
 		    {
 			if (image)
 			    s = newSVnv(image->normalized_maximum_error);
 		    }
-		    else if (strEQcase(arg, "normalized_mean") ||
-			     strEQcase(arg, "normalizedmean"))
+		    else if (strEQcase(arg, "normalized_mean"))
 		    {
 			if (image)
 			    s = newSVnv(image->normalized_mean_error);
@@ -3687,7 +3690,7 @@ Get(ref, ...)
 			    SvIOK_on(s);
 			}
 		    }
-		    else if (strEQcase(arg, "red-p"))
+		    else if (strEQcase(arg, "red_p"))
 		    {
 			if (!image)
 			    break;
@@ -3819,7 +3822,7 @@ Get(ref, ...)
 		    }
 		    break;
 		case 'W': case 'w':
-		    if (strEQcase(arg, "white-p"))
+		    if (strEQcase(arg, "white_p"))
 		    {
 			if (!image)
 			    break;

@@ -574,7 +574,7 @@ typedef struct _Image
     rows,
     depth;
 
-  long
+  int
     offset;
 
   RectangleInfo

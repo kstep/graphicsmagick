@@ -22,6 +22,7 @@ sub MY::test
    #
    #  Feature   Formats Tested		Prerequisites
    #  =======   ======================	======================================
+   #   bzlib    BZip compression        BZip library
    #   cgm	CGM format		'ralcgm' program
    #   hdf	HDF format		HDF library
    #   jbig	JBIG format		JBIG library

@@ -32,7 +32,7 @@
 #define CGMCommand  CGMDecodeDelegate " -d ps %s %s %s"
 #if !defined(EditorDelegate)
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)
-#define EditorDelegate  "xterm"
+#define EditorDelegate  "xterm -e vi"
 #else
 #if defined(vms)
 #define EditorDelegate  "cre/term/wait edit/tpu"

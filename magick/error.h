@@ -21,8 +21,8 @@ typedef enum
   ResourceLimitWarning = 300,
   XServerWarning = 305,
   OptionWarning = 310,
-  PluginWarning = 315,
-  MissingPluginWarning = 320,
+  DelegateWarning = 315,
+  MissingDelegateWarning = 320,
   CorruptImageWarning = 325,
   FileOpenWarning = 330
 } WarningType;

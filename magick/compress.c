@@ -1746,7 +1746,7 @@ Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
 #else
 Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
 {
-  MagickWarning(MissingPluginWarning,"TIFF library is not available",
+  MagickWarning(MissingDelegateWarning,"TIFF library is not available",
     image_info->filename);
   return(False);
 }
@@ -1924,7 +1924,7 @@ Export unsigned int LZWEncodeImage(FILE *file,unsigned char *pixels,
 Export unsigned int LZWEncodeImage(FILE *file,unsigned char *pixels,
   const unsigned int number_pixels)
 {
-  MagickWarning(MissingPluginWarning,"LZW library is not available",
+  MagickWarning(MissingDelegateWarning,"LZW library is not available",
     (char *) NULL);
   return(False);
 }
@@ -3537,7 +3537,7 @@ Export unsigned int ZLIBEncodeImage(FILE *file,unsigned char *pixels,
       compressed_packets=stream.total_out;
     }
   if (status)
-    MagickWarning(PluginWarning,"Unable to Zip compress image",(char *) NULL);
+    MagickWarning(DelegateWarning,"Unable to Zip compress image",(char *) NULL);
   else
     {
       Ascii85Initialize();
@@ -3552,7 +3552,7 @@ Export unsigned int ZLIBEncodeImage(FILE *file,unsigned char *pixels,
 Export unsigned int ZLIBEncodeImage(FILE *file,unsigned char *pixels,
   const unsigned long number_pixels,const unsigned int quality)
 {
-  MagickWarning(MissingPluginWarning,"ZLIB library is not available",
+  MagickWarning(MissingDelegateWarning,"ZLIB library is not available",
     (char *) NULL);
   return(False);
 }
