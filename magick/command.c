@@ -7343,7 +7343,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               channel=BlackChannel;
             if (LocaleCompare("Matte",option) == 0)
               channel=MatteChannel;
-            TransformColorspace(*image,clone_info->colorspace);
+            if (clone_info->colorspace != UndefinedColorspace)
+              TransformColorspace(*image,clone_info->colorspace);
             (void) ChannelImage(*image,channel);
             continue;
           }

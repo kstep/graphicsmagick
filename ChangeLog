@@ -1,5 +1,13 @@
+2003-10-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (MogrifyImage): Only transform the colorspace
+	if it has been set (i.e. is not UndefinedColorspace).
+
 2003-10-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* PerlMagick/t/tiff/write.t: Added TIFF write tests for 4
+	bits-per-sample TIFF images, both with and without a transparency
+	channel.
 	* magick/image.c (DescribeImage): Added -verbose support for
 	displaying individual channel depths.
 
