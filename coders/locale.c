@@ -312,7 +312,8 @@ static Image *ReadLOCALEImage(const ImageInfo *image_info,ExceptionInfo *excepti
       LiberateMemory((void **) &blob);
       ThrowReaderException(CorruptImageError,"Not a LOCALE file",image);
     }
-  if (SetImageAttribute(image,"[LOCALE]",blob) == False)
+  (void) ReadConfigureFile(image,"[Locale]",0,&image->exception);
+  if (SetImageAttribute(image,"[Locale]",blob) == False)
     ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
   return(image);
 }
@@ -322,7 +323,7 @@ static Image *ReadLOCALEImage(const ImageInfo *image_info,ExceptionInfo *excepti
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e g i s t e r L O C A L E I m a g e                                           %
+%   R e g i s t e r L O C A L E I m a g e                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -420,7 +421,6 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,"Unable to open file",image);
-  (void) ReadConfigureFile(image,"[LOCALE]",0,&image->exception);
   (void) WriteBlobString(image,"Not implemented yet!\n");
   CloseBlob(image);
   return(False);

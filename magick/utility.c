@@ -643,7 +643,7 @@ MagickExport char *EscapeString(const char *source,const char escape)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   E x p a n d P a t h   n a m e                                               %
+%   E x p a n d F i l e n a m e                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
