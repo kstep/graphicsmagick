@@ -1494,8 +1494,8 @@ static void XSetTextColor(Display *display,const XWindowInfo *window_info,
       return;
     }
   foreground=(int)
-    XDownscale(Intensity(&window_info->pixel_info->foreground_color));
-  matte=(int) XDownscale(Intensity(&window_info->pixel_info->matte_color));
+    XDownscale(XIntensity(&window_info->pixel_info->foreground_color));
+  matte=(int) XDownscale(XIntensity(&window_info->pixel_info->matte_color));
   if (AbsoluteValue(foreground-matte) > (MaxRGB >> 3))
     (void) XSetForeground(display,window_info->widget_context,
       window_info->pixel_info->foreground_color.pixel);

@@ -588,7 +588,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
               colors;
 
             colors=image->colors;
-            for (i=0; i < image->colors; i++)
+            for (i=0; i < (long) image->colors; i++)
             {
               image->colormap[i].red=(Quantum) (MaxRGB-
                 ((unsigned long) (MaxRGB*i)/Max(image->colors-1,1)));
@@ -1092,7 +1092,7 @@ static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
 }
 #endif
 
-static int32 TIFFWritePixels(TIFF *tiff,tdata_t scanline,long row,
+static int32 TIFFWritePixels(TIFF *tiff,tdata_t scanline,unsigned long row,
   tsample_t sample,Image *image)
 {
   int32
@@ -1141,12 +1141,12 @@ static int32 TIFFWritePixels(TIFF *tiff,tdata_t scanline,long row,
     TIFFTileSize(tiff)/(image->tile_info.height*image->tile_info.width);
   number_tiles=
     (image->columns+image->tile_info.width-1)/image->tile_info.height;
-  for (i=0; i < number_tiles; i++)
+  for (i=0; i < (long) number_tiles; i++)
   {
     tile_width=(i == number_tiles-1) ?
       image->columns-(i*image->tile_info.width) : image->tile_info.width;
     for (j=0; j < ((row % image->tile_info.height)+1); j++)
-      for (k=0; k < tile_width; k++)
+      for (k=0; k < (long) tile_width; k++)
       {
         register unsigned char
           *p,
