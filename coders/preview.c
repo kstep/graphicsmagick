@@ -320,14 +320,14 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       {
         for (x=0; x < i; x++)
           commands[argc++]=(char *) "-contrast";
-        FormatString(label,"-contrast %d",i+1);
+        FormatString(label,"-contrast %ld",i+1);
         break;
       }
       case DullPreview:
       {
         for (x=0; x < i; x++)
           commands[argc++]=(char *) "+contrast";
-        FormatString(label,"+contrast %d",i+1);
+        FormatString(label,"+contrast %ld",i+1);
         break;
       }
       case GrayscalePreview:
@@ -353,7 +353,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       {
         for (x=0; x < i; x++)
           commands[argc++]=(char *) "-despeckle";
-        FormatString(label,"despeckle %d",i+1);
+        FormatString(label,"despeckle %ld",i+1);
         break;
       }
       case ReduceNoisePreview:
@@ -416,7 +416,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       }
       case SpreadPreview:
       {
-        FormatString(factor,"%d",i+1);
+        FormatString(factor,"%ld",i+1);
         FormatString(label,"spread %.1024s",factor);
         commands[argc++]=(char *) "-spread";
         commands[argc++]=factor;
@@ -449,7 +449,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       }
       case RaisePreview:
       {
-        FormatString(factor,"%dx%d",2*i+2,2*i+2);
+        FormatString(factor,"%ldx%ld",2*i+2,2*i+2);
         FormatString(label,"raise %.1024s",factor);
         commands[argc++]=(char *) "-raise";
         commands[argc++]=factor;
@@ -511,7 +511,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
           filename[MaxTextExtent];
 
         clone_info->quality=(unsigned int) (percentage+13.0);
-        FormatString(factor,"%u",clone_info->quality);
+        FormatString(factor,"%lu",clone_info->quality);
         TemporaryFilename(filename);
         FormatString(preview_image->filename,"jpeg:%.1024s",filename);
         status=WriteImage(clone_info,preview_image);

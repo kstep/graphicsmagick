@@ -501,7 +501,8 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
             if (!image_info->adjoin)
               (void) strcpy(buffer,"%%Pages: 1\n");
             else
-              FormatString(buffer,"%%%%Pages: %lu\n",GetImageListSize(image));
+              FormatString(buffer,"%%%%Pages: %lu\n",(unsigned long)
+                GetImageListSize(image));
             (void) WriteBlobString(image,buffer);
           }
         (void) WriteBlobString(image,"%%EndComments\n");
@@ -697,7 +698,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"  /BitsPerComponent 8 def\n");
     (void) WriteBlobString(image,"  /MultipleDataSources false def\n");
-    FormatString(buffer,"  /ImageMatrix [ %ld 0 0 %ld neg 0 %d ] def\n",
+    FormatString(buffer,"  /ImageMatrix [ %ld 0 0 %ld neg 0 %ld ] def\n",
       image->columns,image->rows,image->rows);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"  /Decode [ 0 1 ] def\n");

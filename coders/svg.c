@@ -3564,7 +3564,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             (void) strncpy(color,token,MaxTextExtent-1);
             GetToken(q,&q,token);
             FormatString(message,
-              "  <stop offset=\"%s%\" stop-color=\"%s\" />\n",token,color);
+              "  <stop offset=\"%s\" stop-color=\"%s\" />\n",token,color);
             (void) WriteBlobString(image,message);
             break;
           }
@@ -3611,7 +3611,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
         if (LocaleCompare("stroke-dashoffset",keyword) == 0)
           {
             GetToken(q,&q,token);
-            FormatString(message,"stroke-dashoffset:%.1024;",token);
+            FormatString(message,"stroke-dashoffset:%.1024s;",token);
             (void) WriteBlobString(image,message);
             break;
           }

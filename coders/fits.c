@@ -727,7 +727,7 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
     fits_info[i]=' ';
   (void) strcpy(buffer,"SIMPLE  =                    T");
   (void) strncpy(fits_info+0,buffer,strlen(buffer));
-  FormatString(buffer,"BITPIX  =                    %d",image->depth);
+  FormatString(buffer,"BITPIX  =                    %ld",image->depth);
   (void) strncpy(fits_info+80,buffer,strlen(buffer));
   (void) strcpy(buffer,"NAXIS   =                    2");
   (void) strncpy(fits_info+160,buffer,strlen(buffer));
@@ -735,9 +735,9 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
   (void) strncpy(fits_info+240,buffer,strlen(buffer));
   FormatString(buffer,"NAXIS2  =           %10lu",image->rows);
   (void) strncpy(fits_info+320,buffer,strlen(buffer));
-  FormatString(buffer,"DATAMIN =           %10lu",0);
+  FormatString(buffer,"DATAMIN =           %10u",0);
   (void) strncpy(fits_info+400,buffer,strlen(buffer));
-  FormatString(buffer,"DATAMAX =           %10lu",(1 << image->depth)-1);
+  FormatString(buffer,"DATAMAX =           %10u",(1 << image->depth)-1);
   (void) strncpy(fits_info+480,buffer,strlen(buffer));
   (void) strcpy(buffer,"HISTORY Created by ImageMagick.");
   (void) strncpy(fits_info+560,buffer,strlen(buffer));

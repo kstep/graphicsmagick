@@ -522,13 +522,11 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
   unsigned char
     *pixels;
 
-  unsigned int
+  unsigned long
+    number_pixels,
     page,
     scene,
     text_size;
-
-  unsigned long
-    number_pixels;
 
   /*
     Open output image file.
@@ -666,7 +664,8 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
             if (!image_info->adjoin)
               (void) strcpy(buffer,"%%Pages: 1\n");
             else
-              FormatString(buffer,"%%%%Pages: %lu\n",GetImageListSize(image));
+              FormatString(buffer,"%%%%Pages: %lu\n",(unsigned long)
+                GetImageListSize(image));
             (void) WriteBlobString(image,buffer);
           }
         (void) WriteBlobString(image,"%%EndComments\n");
@@ -1030,7 +1029,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
           (void) WriteBlobString(image,buffer);
           for (i=0; i < (long) image->colors; i++)
           {
-            FormatString(buffer,"%02lx%02lx%02lx\n",
+            FormatString(buffer,"%02x%02x%02x\n",
               Downscale(image->colormap[i].red),
               Downscale(image->colormap[i].green),
               Downscale(image->colormap[i].blue));

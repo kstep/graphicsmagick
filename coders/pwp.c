@@ -213,7 +213,7 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) SetMonitorHandler(handler);
     if (next_image == (Image *) NULL)
       break;
-    FormatString(next_image->filename,"slide_%02d.sfw",next_image->scene);
+    FormatString(next_image->filename,"slide_%02ld.sfw",next_image->scene);
     if (image == (Image *) NULL)
       image=next_image;
     else

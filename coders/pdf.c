@@ -985,18 +985,18 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     FormatString(buffer,"/Parent %lu 0 R\n",pages_id);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"/Resources <<\n");
-    FormatString(buffer,"/Font << /F%lu %u 0 R >>\n",image->scene,
+    FormatString(buffer,"/Font << /F%lu %lu 0 R >>\n",image->scene,
       object+4);
     (void) WriteBlobString(image,buffer);
-    FormatString(buffer,"/XObject << /Im%lu %u 0 R >>\n",image->scene,
+    FormatString(buffer,"/XObject << /Im%lu %lu 0 R >>\n",image->scene,
       object+5);
     (void) WriteBlobString(image,buffer);
     FormatString(buffer,"/ProcSet %lu 0 R >>\n",object+3);
     (void) WriteBlobString(image,buffer);
-    FormatString(buffer,"/MediaBox [0 0 %ld %d]\n",
+    FormatString(buffer,"/MediaBox [0 0 %ld %ld]\n",
       media_info.width,media_info.height);
     (void) WriteBlobString(image,buffer);
-    FormatString(buffer,"/CropBox [%ld %ld %ld %d]\n",geometry.x,geometry.y,
+    FormatString(buffer,"/CropBox [%ld %ld %ld %ld]\n",geometry.x,geometry.y,
       geometry.x+geometry.width,geometry.y+geometry.height);
     (void) WriteBlobString(image,buffer);
     FormatString(buffer,"/Contents %lu 0 R\n",object+1);

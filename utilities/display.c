@@ -417,7 +417,7 @@ int main(int argc,char **argv)
               */
               FormatString(filename,image_info->filename,scene);
               if (LocaleCompare(filename,image_info->filename) == 0)
-                FormatString(filename,"%.1024s.%u",image_info->filename,scene);
+                FormatString(filename,"%.1024s.%lu",image_info->filename,scene);
               (void) strncpy(image_info->filename,filename,MaxTextExtent-1);
             }
           (void) strcpy(image_info->magick,"MIFF");

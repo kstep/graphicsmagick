@@ -1733,7 +1733,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if ((mng_width > 65535) || (mng_height > 65535))
               ThrowException(&image->exception,(ExceptionType) DelegateError,
                 "image dimensions are too large.",image->filename);
-            FormatString(page_geometry,"%lux%lu%+0+0",mng_width,mng_height);
+            FormatString(page_geometry,"%lux%lu+0+0",mng_width,mng_height);
             frame.left=0;
             frame.right=(long) mng_width;
             frame.top=0;

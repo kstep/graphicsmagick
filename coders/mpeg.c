@@ -175,7 +175,7 @@ static Image *ReadMPEGImage(const ImageInfo *image_info,
   image=(Image *) NULL;
   for (i=(long) clone_info->subimage; ; i++)
   {
-    FormatString(clone_info->filename,"%.1024s%d.ppm",clone_info->unique,i);
+    FormatString(clone_info->filename,"%.1024s%ld.ppm",clone_info->unique,i);
     if (!IsAccessible(clone_info->filename))
       break;
     next_image=ReadImage(clone_info,exception);
@@ -205,7 +205,7 @@ static Image *ReadMPEGImage(const ImageInfo *image_info,
   */
   for (i=0; ; i++)
   {
-    FormatString(clone_info->filename,"%.1024s%d.ppm",clone_info->unique,i);
+    FormatString(clone_info->filename,"%.1024s%ld.ppm",clone_info->unique,i);
     if (!IsAccessible(clone_info->filename))
       break;
     (void) remove(clone_info->filename);

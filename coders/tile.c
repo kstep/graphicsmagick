@@ -89,7 +89,6 @@ static Image *ReadTILEImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   Image
-    *clone_image,
     *image,
     *tile_image;
 

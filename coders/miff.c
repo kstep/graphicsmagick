@@ -1412,12 +1412,14 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
       }
     if (image->color_profile.length != 0)
       {
-        FormatString(buffer,"profile-icc=%lu\n",image->color_profile.length);
+        FormatString(buffer,"profile-icc=%lu\n",(unsigned long)
+          image->color_profile.length);
         (void) WriteBlobString(image,buffer);
       }
     if (image->iptc_profile.length != 0)
       {
-        FormatString(buffer,"profile-iptc=%lu\n",image->iptc_profile.length);
+        FormatString(buffer,"profile-iptc=%lu\n",(unsigned long)
+          image->iptc_profile.length);
         (void) WriteBlobString(image,buffer);
       }
     if (image->generic_profiles != 0)
@@ -1429,7 +1431,8 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         {
           FormatString(buffer,"profile-%.1024s=%lu\n",
             image->generic_profile[i].name == (char *) NULL ? "generic" :
-            image->generic_profile[i].name,image->generic_profile[i].length);
+            image->generic_profile[i].name,(unsigned long)
+            image->generic_profile[i].length);
           (void) WriteBlobString(image,buffer);
         }
       }

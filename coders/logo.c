@@ -5532,7 +5532,8 @@ static unsigned int WriteLOGOImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobString(image,"/*\n");
   (void) WriteBlobString(image,"  Logo image declaration.\n");
   (void) WriteBlobString(image,"*/\n");
-  FormatString(buffer,"#define LogoImageExtent  %lu\n\n",length);
+  FormatString(buffer,"#define LogoImageExtent  %lu\n\n",
+    (unsigned long) length);
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"static unsigned char\n");
   (void) WriteBlobString(image,"  LogoImage[]=\n");

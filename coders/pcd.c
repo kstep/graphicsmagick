@@ -571,8 +571,8 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for (j=1; j <= (long) number_images; j++)
       {
         handler=SetMonitorHandler((MonitorHandler) NULL);
-        FormatString(image->filename,"images/img%04d.pcd",j);
-        FormatString(image->magick_filename,"images/img%04d.pcd",j);
+        FormatString(image->filename,"images/img%04ld.pcd",j);
+        FormatString(image->magick_filename,"images/img%04ld.pcd",j);
         image->scene=j;
         image->columns=width;
         image->rows=height;
