@@ -793,8 +793,9 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
   /*
     Write finite-state-machine.
   */
-  for (i=0; i < count; i++)
-		LogMagickEvent(LocaleEvent,"%.1024s",locale[i]);
+  if (IsEventLogging())
+    for (i=0; i < count; i++)
+  		LogMagickEvent(LocaleEvent,"%.1024s",locale[i]);
   locales=(struct locale_str *) NULL;
   accumulate((const char **) locale,count,&locales);
   WriteBlobString(image,prologue);
