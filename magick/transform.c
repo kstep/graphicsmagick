@@ -953,6 +953,15 @@ MagickExport unsigned int ProfileImage(Image *image,const ProfileType type,
       profile->iptc_profile.length=0;
       profile->iptc_profile.info=(unsigned char *) NULL;
     }
+  if (LocaleCompare("8bim",profile->magick) == 0)
+    {
+      if (image->iptc_profile.length != 0)
+        FreeMemory((void **) &image->iptc_profile.info);
+      image->iptc_profile.length=profile->iptc_profile.length;
+      image->iptc_profile.info=profile->iptc_profile.info;
+      profile->iptc_profile.length=0;
+      profile->iptc_profile.info=(unsigned char *) NULL;
+    }
   if (LocaleCompare("icm",profile->magick) == 0)
     {
       if (image->color_profile.length != 0)

@@ -3994,6 +3994,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               ProfileImage(*image,ICMProfile,(const char *) NULL);
             if (LocaleCompare("iptc",option) == 0)
               ProfileImage(*image,IPTCProfile,(const char *) NULL);
+            if (LocaleCompare("8bim",option) == 0)
+              ProfileImage(*image,IPTCProfile,(const char *) NULL);
             continue;
           }
         /*
