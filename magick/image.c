@@ -2699,7 +2699,7 @@ MagickExport unsigned int IsImagesEqual(Image *image,const Image *reference)
         pixel.opacity=p->opacity-(double) q->opacity;
       else
         for (count=1; (x+count) < (long) image->columns; count++)
-          if (!ColorMatch(p,p+count))
+          if (!ColorMatch(p,p+count) || !ColorMatch(q,q+count))
             break;
       distance=count*pixel.red*pixel.red+count*pixel.green*pixel.green+
         count*pixel.blue*pixel.blue+pixel.opacity*pixel.opacity;
