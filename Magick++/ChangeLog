@@ -1,3 +1,11 @@
+2004-06-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/Include.h: Disable unavoidable warnings under
+	Visual C++ when instantiating STL templates within DLL
+	code. Consensus from postings on the net is that as long as the
+	same C++ compiler is used throughout, these warnings are of no
+	concern.
+
 2004-05-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/STL.h (coderInfoList): Make error reporting a bit
