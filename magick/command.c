@@ -8458,7 +8458,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             char
               resample_density[MaxTextExtent];
 
-            long
+            unsigned long
               x_resolution,
               y_resolution;
 
@@ -8479,7 +8479,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             flags=GetGeometry(argv[++i],&x,&y,&x_resolution,&y_resolution);
             if (!(flags & HeightValue))
               y_resolution=x_resolution;
-            FormatString(resample_density,"%ldx%ld",x_resolution,y_resolution);
+            FormatString(resample_density,"%lux%lu",x_resolution,y_resolution);
             if ((*image)->x_resolution == 0)
               (*image)->x_resolution=72.0;
             if ((*image)->y_resolution == 0)
