@@ -555,11 +555,11 @@ sub testReadWrite {
           print "     Expected: $ref_signature\n";
           print "     Depth:    $depth\n";
           print "not ok $test\n";
-          #$image->Display();
+          $image->Display();
         } else {
           print "ok $test\n";
           ($file = $outfile) =~ s/.*://g;
-          unlink "$file";
+          #unlink "$file";
         }
       }
     }
