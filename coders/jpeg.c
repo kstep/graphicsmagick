@@ -430,6 +430,7 @@ static boolean ReadIPTCProfile(j_decompress_ptr jpeg_info)
   if (length <= 0)
     return(True);
   tag_length=0;
+  *tag='\0';
   image=(Image *) jpeg_info->client_data;
   if (image->iptc_profile.length == 0)
     {
