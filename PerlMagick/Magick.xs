@@ -4800,7 +4800,7 @@ Mogrify(ref,...)
           if (attribute_flag[5])
             image->gravity=(GravityType) argument_list[5].int_reference;
           if (attribute_flag[2])
-            flags=GetGeometry(argument_list[5].string_reference,&geometry.x,
+            flags=GetGeometry(argument_list[2].string_reference,&geometry.x,
               &geometry.y,&geometry.width,&geometry.height);
           /*
             Composite image.
