@@ -218,6 +218,9 @@ namespace Magick
     // Equalize image (histogram equalization)
     void            equalize ( void );
 
+    // Erase image to current "background color"
+    void            erase ( void );
+    
     // Flip image (reflect each scanline in the vertical direction)
     void            flip ( void );
 
@@ -762,7 +765,11 @@ namespace Magick
     void            size ( const Geometry &geometry_ );
     Geometry        size ( void ) const;
 
-    // Color to use when drawing object outlines
+     // enabled/disable stroke anti-aliasing
+    void            strokeAntiAlias( bool flag_ );
+    bool            strokeAntiAlias( void ) const;
+
+	// Color to use when drawing object outlines
     void            strokeColor ( const Color &strokeColor_ );
     Color           strokeColor ( void ) const;
 

@@ -146,6 +146,10 @@ namespace Magick
     void            size ( const Geometry &geometry_ );
     Geometry        size ( void ) const;
 
+    // enabled/disable stroke anti-aliasing
+    void            strokeAntiAlias( bool flag_ );
+    bool            strokeAntiAlias( void ) const ;
+
     // Color to use when drawing object outlines
     void            strokeColor ( const Color &strokeColor_ );
     Color           strokeColor ( void ) const;
@@ -386,6 +390,15 @@ inline void Magick::Options::quality ( unsigned int quality_ )
 inline unsigned int Magick::Options::quality ( void ) const
 {
   return _imageInfo->quality;
+}
+
+inline void Magick::Options::strokeAntiAlias( bool flag_ )
+{
+  _drawInfo->stroke_antialias = flag_;
+}
+inline bool Magick::Options::strokeAntiAlias( void ) const
+{
+  return _drawInfo->stroke_antialias;
 }
 
 // Specify the shape to be used at the end of open subpaths when they

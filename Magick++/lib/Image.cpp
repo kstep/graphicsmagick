@@ -666,6 +666,14 @@ void Magick::Image::equalize ( void )
   throwImageException();
 }
 
+// Erase image to current "background color"
+void Magick::Image::erase ( void )
+{
+  modifyImage();
+  MagickLib::SetImage( image(), OpaqueOpacity );
+  throwImageException();
+}
+
 // Flip image (reflect each scanline in the vertical direction)
 void Magick::Image::flip ( void )
 {
@@ -2546,6 +2554,17 @@ Magick::Geometry Magick::Image::size ( void ) const
 {
   return Magick::Geometry( constImage()->columns, constImage()->rows );
   //  return constOptions()->size( );
+}
+
+// enabled/disable stroke anti-aliasing
+void Magick::Image::strokeAntiAlias ( bool flag_ )
+{
+  modifyImage();
+  options()->strokeAntiAlias(flag_);
+}
+bool Magick::Image::strokeAntiAlias ( void ) const
+{
+  return constOptions()->strokeAntiAlias();
 }
 
 // Color to use when drawing object outlines

@@ -122,6 +122,7 @@ Magick::Color Magick::Options::boxColor ( void ) const
 void Magick::Options::strokeDashArray ( const unsigned int* strokeDashArray_ )
 {
   LiberateMemory(reinterpret_cast<void**>(&_drawInfo->dash_pattern));
+	_drawInfo->dash_pattern = NULL;
 
   if(strokeDashArray_)
     {
