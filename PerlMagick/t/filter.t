@@ -47,7 +47,7 @@ testFilter('input.miff', 'Colorize',
 testFilter('input.miff', 'Contrast',
   q/1/,
   '5dfad29a83f2adc433c316d5dabaebf1ba1aac81f0895e2a15deb5d7d50cd81a',
-  '770788157ae3d5589f0774bf4321c67990688bd9d4a5ce7969e42c31ecfad8f4');
+  'f780476c04c823dc288b7cda85e8cd26bb97353323978b11ff7081a96209d1f2');
 
 ++$test;
 testFilter('input.miff', 'Convolve',
@@ -134,7 +134,7 @@ testFilter('input.miff', 'Minify',
 testFilter('input.miff', 'Modulate',
   q/60/,
   '4a9c88f7ffaa8937920235af65d4b7d38d70d72315e4868a9068c3b1d0cbb308',
-  '5d2a14f4ebece1c43e185ee9cefc05f6942f830d1a62b1a70de982da9627eda5');
+  '5ada8ae04ca6e3b36b4113b9e053ee3502ec78ddde3a459bc9b56efe85452c9e');
 
 ++$test;
 testFilter('input.miff', 'Negate',
