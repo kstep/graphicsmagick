@@ -1246,11 +1246,11 @@ static void SVGEndElement(void *context,const xmlChar *name)
   if (LocaleCompare((char *) name,"text") == 0)
     {
       Strip(svg_info->text);
-      if (strchr(svg_info->text,'"') == 0)
-        (void) fprintf(svg_info->file,"text %g,%g '%s'\n",svg_info->page.x,
+      if (strchr(svg_info->text,'\'') != (char *) NULL)
+        (void) fprintf(svg_info->file,"text %g,%g \"%s\"\n",svg_info->page.x,
           svg_info->page.y,svg_info->text);
       else
-        (void) fprintf(svg_info->file,"text %g,%g \"%s\"\n",svg_info->page.x,
+        (void) fprintf(svg_info->file,"text %g,%g '%s'\n",svg_info->page.x,
           svg_info->page.y,svg_info->text);
       *svg_info->text='\0';
       return;
