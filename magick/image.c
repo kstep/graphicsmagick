@@ -868,13 +868,13 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   /*
     Clone the image.
   */
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
+  if (image == (Image *) NULL)
+	  return(AllocateImage((ImageInfo *) NULL));
   clone_image=(Image *) AcquireMemory(sizeof(Image));
   if (clone_image == (Image *) NULL)
-    MagickError(ResourceLimitError,"Unable to clone image",
+    MagickError(ResourceLimitError,"Unable to allocate image",
       "Memory allocation failed");
   *clone_image=(*image);
   clone_image->reference_count=1;

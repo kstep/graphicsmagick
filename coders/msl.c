@@ -4223,16 +4223,14 @@ static Image *ReadMSLImage(const ImageInfo *image_info,ExceptionInfo *exception)
       "Memory allocation failed");
   *msl_info.image_info=CloneImageInfo(image_info);
   *msl_info.draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
-  *msl_info.attributes=image_info->attributes;
-  if (*msl_info.attributes == (Image *) NULL)
-    *msl_info.attributes=AllocateImage(image_info);
+  *msl_info.attributes=CloneImage(image_info->attributes,0,0,True,exception);
   *msl_info.image=image;
   msl_info.group_info[0].numImages=0;
   (void) xmlSubstituteEntitiesDefault(1);
   SAXHandler=(&SAXModules);
   msl_info.parser=xmlCreatePushParserCtxt(SAXHandler,&msl_info,(char *) NULL,0,
     image->filename);
-  while (ReadBlobString(msl_info.image[0],message) != (char *) NULL)
+  while (ReadBlobString(image,message) != (char *) NULL)
   {
     n=(long) strlen(message);
     if (n == 0)
@@ -4250,7 +4248,7 @@ static Image *ReadMSLImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) fprintf(stdout,"end SAX\n");
   xmlCleanupParser();
   LiberateMemory((void **) &msl_info.group_info);
-  return(*msl_info.image);
+  return(image);
 }
 #else
 static Image *ReadMSLImage(const ImageInfo *image_info,ExceptionInfo *exception)
