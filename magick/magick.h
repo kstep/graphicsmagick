@@ -39,6 +39,9 @@ extern "C" {
 #if !defined(vms) && !defined(macintosh)
 #  include <sys/types.h>
 #  include <sys/stat.h>
+#else
+#  include <types.h>
+#  include <stat.h>
 #endif
 
 #if !defined(macintosh)
@@ -60,8 +63,6 @@ extern "C" {
 #  include <sys/poll.h>
 #endif
 #else
-#  include <types.h>
-#  include <stat.h>
 #if defined(macintosh)
 #  include <SIOUX.h>
 #  include <console.h>
