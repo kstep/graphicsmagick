@@ -2,6 +2,8 @@
 Items large and small which remain to be worked on.
 --------------------------------------------------------------------
 
+* Add support for SetImageClipMask();
+
 * Come up with a way to allow the user to iterate through a list
   of the supported image formats.
 
@@ -43,15 +45,13 @@ Items large and small which remain to be worked on.
 * Provide interface to obtain font metrics for fonts handled by
   FreeType.  Would use the GetFontMetrics() API.
 
-* Add support for new drawing primitives (some are not yet implemented):
+* Add support for new drawing primitives:
   - clip-path %s  (%s is the name of the clip path
   - pop clip-path
   - push clip-path-%s  (%s is the name of the clip path)
   - viewbox (e.g. "viewbox 0 0 640 480")
 
-* Support manipulating IPTC profiles directly. Bill Radcliffe
-  <BillR@corbis.com> has agreed to write a container class to support
-  this.
+* Support manipulating IPTC profiles directly.
 
 Items which will require the aid of volunteers.  Volunteers?
 --------------------------------------------------------------------
