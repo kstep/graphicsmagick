@@ -4,7 +4,7 @@
 #
 # Contributed by Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
 #
-BEGIN { $| = 1; $test=1, print "1..42\n"; }
+BEGIN { $| = 1; $test=1, print "1..43\n"; }
 END {print "not ok 1\n" unless $loaded;}
 use Image::Magick;
 $loaded=1;
@@ -12,8 +12,6 @@ $loaded=1;
 require 't/subroutines.pl';
 
 chdir 't' || die 'Cd failed';
-
-
 
 testFilterSignature('input.miff', 'Blur',
   q/0.0x1.0/,
