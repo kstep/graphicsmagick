@@ -6844,51 +6844,6 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
     }
   ping_info->interlace_type=image_info->interlace != NoInterlace;
 
-  if ((int) image->dispose >= 3)
-     mng_info->framing_mode=3;
-
-  if (mng_info->need_fram && mng_info->adjoin && ((image->delay !=
-      mng_info->delay) || (mng_info->framing_mode !=
-      mng_info->old_framing_mode)))
-    {
-      unsigned char
-        chunk[16];
-
-      if (image->delay == mng_info->delay)
-        {
-          /*
-            Write a MNG FRAM chunk with the new framing mode.
-          */
-          (void) WriteBlobMSBULong(image,1L);  /* data length=1 */
-          PNGType(chunk,mng_FRAM);
-          LogPNGChunk(logging,mng_FRAM,1L);
-          chunk[4]=(unsigned char) mng_info->framing_mode;
-          (void) WriteBlob(image,5,(char *) chunk);
-          (void) WriteBlobMSBULong(image,crc32(0,chunk,5));
-        }
-      else
-        {
-          /*
-            Write a MNG FRAM chunk with the delay.
-          */
-          (void) WriteBlobMSBULong(image,10L);  /* data length=10 */
-          PNGType(chunk,mng_FRAM);
-          LogPNGChunk(logging,mng_FRAM,10L);
-          chunk[4]=(unsigned char) mng_info->framing_mode;
-          chunk[5]=0;  /* frame name separator (no name) */
-          chunk[6]=2;  /* flag for changing default delay */
-          chunk[7]=0;  /* flag for changing frame timeout */
-          chunk[8]=0;  /* flag for changing frame clipping */
-          chunk[9]=0;  /* flag for changing frame sync_id */
-          PNGLong(chunk+10,(png_uint_32)
-            ((mng_info->ticks_per_second*image->delay)/100));
-          (void) WriteBlob(image,14,(char *) chunk);
-          (void) WriteBlobMSBULong(image,crc32(0,chunk,14));
-          mng_info->delay=(long) image->delay;
-        }
-      mng_info->old_framing_mode=mng_info->framing_mode;
-    }
-
   if (mng_info->write_mng)
     png_set_sig_bytes(ping,8);
 
@@ -7300,7 +7255,7 @@ static unsigned int WriteOneJNGImage(MngInfo *mng_info,
   transparent=image_info->type==GrayscaleMatteType ||
      image_info->type==TrueColorMatteType;
   jng_color_type=10;
-  jng_alpha_sample_depth=8;
+  jng_alpha_sample_depth=0;
   jng_quality=image_info->quality;
   jng_alpha_compression_method=0;
 
@@ -7513,7 +7468,7 @@ static unsigned int WriteOneJNGImage(MngInfo *mng_info,
           (void) WriteBlob(image,8,(char *) chunk);
           (void) WriteBlobMSBULong(image,crc32(0,chunk,8));
         }
-      if (image->chromaticity.red_primary.x != 0.0)
+      if (!mng_info->equal_chrms && image->chromaticity.red_primary.x != 0.0)
         {
           PrimaryInfo
             primary;
@@ -7540,7 +7495,7 @@ static unsigned int WriteOneJNGImage(MngInfo *mng_info,
           (void) WriteBlobMSBULong(image,crc32(0,chunk,36));
         }
     }
-  if (image->x_resolution && image->y_resolution)
+  if (image->x_resolution && image->y_resolution && !mng_info->equal_physs)
     {
       /*
          Write JNG pHYs chunk
@@ -7821,6 +7776,7 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
 
   volatile unsigned int
     scene,
+    write_jng,
     write_mng;
 
   unsigned long
@@ -7863,6 +7819,21 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
   mng_info->write_png8=LocaleCompare(image_info->magick,"PNG8") == 0;
   mng_info->write_png24=LocaleCompare(image_info->magick,"PNG24") == 0;
   mng_info->write_png32=LocaleCompare(image_info->magick,"PNG32") == 0;
+
+  write_jng=False;
+  if (image_info->compression==JPEGCompression)
+    write_jng=True;
+  else
+  {
+    Image
+      *p;
+
+    for (p=image; p != (Image *) NULL; p=p->next)
+    {
+      if (p->compression==JPEGCompression)
+        write_jng=True;
+    }
+  }
 
   mng_info->adjoin=image_info->adjoin && (image->next != (Image *) NULL) &&
     write_mng;
@@ -8045,7 +8016,7 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
         if (next_image->iterations)
           need_iterations=True;
         final_delay=next_image->delay;
-        if (final_delay != initial_delay)
+        if (final_delay != initial_delay || final_delay > 100)
           mng_info->need_fram=1;
 #if defined(PNG_WRITE_EMPTY_PLTE_SUPPORTED) || \
     defined(PNG_MNG_FEATURES_SUPPORTED)
@@ -8173,19 +8144,39 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
      PNGLong(chunk+16,0L);  /* layer count=unknown */
      PNGLong(chunk+20,0L);  /* frame count=unknown */
      PNGLong(chunk+24,0L);  /* play time=unknown   */
-     if (need_matte)
+     if (write_jng)
        {
-         if (need_defi || mng_info->need_fram || use_global_plte)
-           PNGLong(chunk+28,11L);    /* simplicity=LC */
+         if (need_matte)
+           {
+             if (need_defi || mng_info->need_fram || use_global_plte)
+               PNGLong(chunk+28,27L);    /* simplicity=LC+JNG */
+             else
+               PNGLong(chunk+28,25L);    /* simplicity=VLC+JNG */
+           }
          else
-           PNGLong(chunk+28,9L);    /* simplicity=VLC */
+           {
+             if (need_defi || mng_info->need_fram || use_global_plte)
+               PNGLong(chunk+28,19L);    /* simplicity=LC+JNG, no transparency */
+             else
+               PNGLong(chunk+28,17L);    /* simplicity=VLC+JNG, no transparency */
+           }
        }
      else
        {
-         if (need_defi || mng_info->need_fram || use_global_plte)
-           PNGLong(chunk+28,3L);    /* simplicity=LC, no transparency */
+         if (need_matte)
+           {
+             if (need_defi || mng_info->need_fram || use_global_plte)
+               PNGLong(chunk+28,11L);    /* simplicity=LC */
+             else
+               PNGLong(chunk+28,9L);    /* simplicity=VLC */
+           }
          else
-           PNGLong(chunk+28,1L);    /* simplicity=VLC, no transparency */
+           {
+             if (need_defi || mng_info->need_fram || use_global_plte)
+               PNGLong(chunk+28,3L);    /* simplicity=LC, no transparency */
+             else
+               PNGLong(chunk+28,1L);    /* simplicity=VLC, no transparency */
+           }
        }
      (void) WriteBlob(image,32,(char *) chunk);
      (void) WriteBlobMSBULong(image,crc32(0,chunk,32));
@@ -8461,6 +8452,52 @@ static unsigned int WriteMNGImage(const ImageInfo *image_info,Image *image)
     }
 
    mng_info->write_mng=write_mng;
+
+   if ((int) image->dispose >= 3)
+     mng_info->framing_mode=3;
+
+   if (mng_info->need_fram && mng_info->adjoin && ((image->delay !=
+      mng_info->delay) || (mng_info->framing_mode !=
+      mng_info->old_framing_mode)))
+     {
+       unsigned char
+         chunk[16];
+
+       if (image->delay == mng_info->delay)
+         {
+           /*
+             Write a MNG FRAM chunk with the new framing mode.
+           */
+           (void) WriteBlobMSBULong(image,1L);  /* data length=1 */
+           PNGType(chunk,mng_FRAM);
+           LogPNGChunk(logging,mng_FRAM,1L);
+           chunk[4]=(unsigned char) mng_info->framing_mode;
+           (void) WriteBlob(image,5,(char *) chunk);
+           (void) WriteBlobMSBULong(image,crc32(0,chunk,5));
+         }
+       else
+         {
+           /*
+             Write a MNG FRAM chunk with the delay.
+           */
+           (void) WriteBlobMSBULong(image,10L);  /* data length=10 */
+           PNGType(chunk,mng_FRAM);
+           LogPNGChunk(logging,mng_FRAM,10L);
+           chunk[4]=(unsigned char) mng_info->framing_mode;
+           chunk[5]=0;  /* frame name separator (no name) */
+           chunk[6]=2;  /* flag for changing default delay */
+           chunk[7]=0;  /* flag for changing frame timeout */
+           chunk[8]=0;  /* flag for changing frame clipping */
+           chunk[9]=0;  /* flag for changing frame sync_id */
+           PNGLong(chunk+10,(png_uint_32)
+             ((mng_info->ticks_per_second*image->delay)/100));
+           (void) WriteBlob(image,14,(char *) chunk);
+           (void) WriteBlobMSBULong(image,crc32(0,chunk,14));
+           mng_info->delay=(long) image->delay;
+         }
+       mng_info->old_framing_mode=mng_info->framing_mode;
+     }
+
    if (image->compression == JPEGCompression)
      {
        if (logging)
