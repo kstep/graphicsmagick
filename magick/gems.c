@@ -271,24 +271,28 @@ MagickExport Quantum GenerateNoise(const Quantum pixel,
 MagickExport int GetOptimalKernelWidth1D(const double radius,const double sigma)
 {
   double
+    denom,
     normalize,
     value;
 
-  register int
+  int
     u,
     width;
 
   if (radius > 0.0)
     return((int) (2.0*ceil(radius)+1.0));
-  for (width=3; ;)
+  for (width=5; ;)
   {
     normalize=0.0;
+    denom=2.0*sigma*sigma;
     for (u=(-width/2); u <= (width/2); u++)
-      normalize+=exp((double) -(u*u)/(sigma*sigma));
-    value=exp((double) (-width*width/4)/(sigma*sigma))/normalize;
-    if ((int) (value*MaxRGB) <= 0)
+      normalize+=exp((double) -(u*u)/denom);
+    u=width/2;
+    value=exp((double) -(u*u)/denom)/normalize;
+    if ((int)(value*MaxRGB) > 0)
+      width+=2;
+    else
       break;
-    width+=2;
   }
   return(width-2);
 }
@@ -299,14 +303,14 @@ MagickExport int GetOptimalKernelWidth2D(const double radius,const double sigma)
     normalize,
     value;
 
-  register int
+  int
     u,
     v,
     width;
 
   if (radius > 0.0)
     return((int) (2.0*ceil(radius)+1.0));
-  for (width=3; ;)
+  for (width=5; ;)
   {
     normalize=0.0;
     for (v=(-width/2); v <= (width/2); v++)
@@ -314,35 +318,19 @@ MagickExport int GetOptimalKernelWidth2D(const double radius,const double sigma)
       for (u=(-width/2); u <= (width/2); u++)
         normalize+=exp((double) -(u*u+v*v)/(sigma*sigma));
     }
-    value=exp((double) (-width*width/4)/(sigma*sigma))/normalize;
-    if ((int) (value*MaxRGB) <= 0)
+    v=width/2;
+    value=exp((double) -(v*v)/(sigma*sigma))/normalize;
+    if ((int)(value*MaxRGB) > 0)
+      width+=2;
+    else
       break;
-    width+=2;
   }
   return(width-2);
 }
 
 MagickExport int GetOptimalKernelWidth(const double radius,const double sigma)
 {
-  double
-    normalize,
-    value;
-
-  register int
-    width;
-
-  if (radius > 0.0)
-    return((int) (2.0*ceil(radius)+1.0));
-  normalize=0.0;
-  for (width=0; ; width++)
-  {
-    value=exp((double) (-width*width)/(sigma*sigma));
-    normalize+=value;
-    if ((value/normalize) < (1.0/MaxRGB))
-      break;
-  }
-  width--;
-  return(2*width+1);
+  return GetOptimalKernelWidth1D(radius,sigma);
 }
 
 /*

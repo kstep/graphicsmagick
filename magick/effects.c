@@ -225,6 +225,72 @@ MagickExport Image *AddNoiseImage(Image *image,const NoiseType noise_type,
 %
 %
 */
+/* generates a 1-D convolution matrix to be used for each pass of 
+ * a two-pass gaussian blur. Returns the length of the matrix.
+ */
+#define KERNEL_RES 3
+int GenConvolveMatrix(int matrix_length,double std_dev, double **cmatrix_p)
+{
+	int
+    i,
+    k,
+    bias,
+    half,
+    matrix_length_hr;
+
+	double
+    *cmatrix,
+    sum,
+    denom;
+
+	if (matrix_length <= 0)
+    matrix_length = 3;
+
+	*cmatrix_p = (double*)(AcquireMemory(matrix_length * sizeof(double)));
+  if ((*cmatrix_p) == (double*) NULL)
+    return 0;
+	cmatrix = *cmatrix_p;
+
+  /* we calculate the kernel at higher resolution then needed and then
+   * average the results down as a form of numerical integration to get
+   * the best accuracy
+   */
+  for (i=0; i<matrix_length; i++)
+    cmatrix[i]=0.0;
+
+  matrix_length_hr = matrix_length * KERNEL_RES;
+  half = KERNEL_RES/2;
+  bias = matrix_length_hr/2;
+  denom = KERNEL_RES;
+  denom = denom * denom * std_dev * std_dev * 2.0;
+  for (i=-bias; i<=bias; i++)
+  {
+    k=i+bias;
+    cmatrix[k/KERNEL_RES]+=exp((double) -(i*i)/denom);
+  }
+	/* normalize the distribution by scaling the total sum to one */
+	sum=0;
+	for (i=0; i<matrix_length; i++)
+    sum += cmatrix[i];
+	for (i=0; i<matrix_length; i++)
+    cmatrix[i] = cmatrix[i] / sum;
+	return matrix_length;
+}
+
+#ifdef _DEBUG
+void PrintConvolveMatrix(int matrix_length,double std_dev,double *cmatrix)
+{
+	int
+    i;
+
+  printf("length %d, stddev: %f\n",matrix_length,std_dev);
+	for (i=0; i<matrix_length; i++)
+    printf("%d) %.4f\n",i,cmatrix[i]);
+  printf("\n");
+}
+#endif
+
+#ifdef PREVIOUS_ALGORITHM
 MagickExport Image *BlurImage(Image *image,const double radius,
   const double sigma,ExceptionInfo *exception)
 {
@@ -232,9 +298,10 @@ MagickExport Image *BlurImage(Image *image,const double radius,
 
   double
     blue,
+    *cmatrix,
     green,
     *kernel,
-    normalize,
+    *prev_cmatrix,
     red;
 
   Image
@@ -260,8 +327,7 @@ MagickExport Image *BlurImage(Image *image,const double radius,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  width=GetOptimalKernelWidth1D(radius,sigma);
-  width=(width-1)/2; /* we only really want the radius */
+  width=(int) (2.0*ceil(radius)+1.0);
   if ((image->columns < width) || (image->rows < width))
     ThrowImageException(OptionWarning,"Unable to blur image",
       "image is smaller than radius");
@@ -269,28 +335,38 @@ MagickExport Image *BlurImage(Image *image,const double radius,
   if (blur_image == (Image *) NULL)
     return((Image *) NULL);
   blur_image->storage_class=DirectClass;
-  /*
-    Build convolution kernel.
-  */
-  kernel=(double *) AcquireMemory((width+1)*sizeof(double));
-  scanline=(PixelPacket *) AcquireMemory((width+1)*sizeof(PixelPacket));
-  if ((kernel == (double *) NULL) || (scanline == (PixelPacket *) NULL))
+
+  prev_cmatrix=cmatrix=NULL;
+  width=GenConvolveMatrix(width, sigma, &cmatrix);
+#ifdef _DEBUG
+	PrintConvolveMatrix(width, sigma, cmatrix);
+#endif
+  while ((int)(cmatrix[0]*MaxRGB) > 0)
+  {
+    if (prev_cmatrix != (double *)NULL)
+      LiberateMemory((void **) &prev_cmatrix);
+    prev_cmatrix=cmatrix;
+    cmatrix=NULL;
+    width+=2;
+    width=GenConvolveMatrix(width, sigma, &cmatrix);
+#ifdef _DEBUG
+	  PrintConvolveMatrix(width, sigma, cmatrix);
+#endif
+  }
+  if (prev_cmatrix != (double *)NULL)
+    {
+      LiberateMemory((void **) &cmatrix);
+      width-=2;
+      cmatrix=prev_cmatrix;
+    }
+
+  kernel=&cmatrix[width/2];
+  width=(width-1)/2; /* we only really want the radius */
+  scanline=(PixelPacket *) AcquireMemory(width*sizeof(PixelPacket));
+  if (scanline == (PixelPacket *) NULL)
     ThrowImageException(ResourceLimitWarning,"Unable to blur image",
       "Memory allocation failed");
-  for (i=0; i < (width+1); i++)
-    kernel[i]=exp((double) (-i*i)/(sigma*sigma));
-  if ((radius > 0.0) && ((2.0*radius+1.0) < width))
-    kernel[width]*=((2.0*radius+1.0)-width+1.0);
-  normalize=0.0;
-  /* normalize the center and 1st half of the kernel */
-  for (i=0; i < (width+1); i++)
-    normalize+=kernel[i];
-  /* normalize the second half and avoid the center */
-  for (i=1; i < (width+1); i++)
-    normalize+=kernel[i];
-  /* actually nromalize the kernel to add up to 1.0 */
-  for (i=0; i < (width+1); i++)
-    kernel[i]/=normalize;
+
   /*
     Blur each row.
   */
@@ -404,8 +480,218 @@ MagickExport Image *BlurImage(Image *image,const double radius,
   /*
     Free resources.
   */
-  LiberateMemory((void **) &kernel);
+  LiberateMemory((void **) &cmatrix);
   LiberateMemory((void **) &scanline);
+  return(blur_image);
+}
+#endif
+
+void BlurOneScanline(double *cmatrix,int cmatrix_length,
+  PixelPacket *cur_col, PixelPacket *dest_col, int cols)
+{
+	double
+    rsum,
+    gsum,
+    bsum,
+    scale1,
+    scale2;
+
+	int
+    bytes,
+    cmatrix_middle,
+    j,
+    k,
+    col;
+
+  bytes=sizeof(PixelPacket)-1;
+  cmatrix_middle = cmatrix_length/2;
+	/* this first block is only used for very small images, so speed isn't a
+	 * huge concern.
+	 */
+	if (cmatrix_length > cols)
+  {
+		for (col = 0; col < cols ; col++)
+    {
+			scale1=0;
+			/* find the scale factor */
+			for (j = 0; j < cols ; j++)
+      {
+				/* if the index is in bounds, add it to the scale counter */
+				if ((j + cmatrix_middle - col >= 0) &&
+				    (j + cmatrix_middle - col < cmatrix_length))
+					scale1 += cmatrix[j + cmatrix_middle - col];
+			}
+			rsum = gsum = bsum = 0.0;
+			for (j = 0; j < cols; j++)
+      {
+				if ( (j >= col - cmatrix_middle) && (j <= col + cmatrix_middle) )
+        {
+          scale2=cmatrix[j];
+					rsum += cur_col[j].red * scale2;
+					gsum += cur_col[j].green * scale2;
+					bsum += cur_col[j].blue * scale2;
+        }
+			}
+			dest_col[col].red = (Quantum)((rsum + 0.5)/scale1);
+			dest_col[col].green = (Quantum)((gsum + 0.5)/scale1);
+			dest_col[col].blue = (Quantum)((bsum + 0.5)/scale1);
+		}
+	}
+  else
+  {
+		/* for the edge condition, we only use available info and scale to one */
+		for (col = 0; col < cmatrix_middle; col++)
+    {
+			/* find scale factor */
+			scale1=0;
+			for (j = cmatrix_middle - col; j<cmatrix_length; j++)
+				scale1+=cmatrix[j];
+			rsum = gsum = bsum = 0.0;
+			for (j = cmatrix_middle - col; j<cmatrix_length; j++)
+      {
+        scale2=cmatrix[j];
+        k=col+j-cmatrix_middle;
+        rsum+=cur_col[k].red * scale2;
+        gsum+=cur_col[k].green * scale2;
+        bsum+=cur_col[k].blue * scale2;
+			}
+			dest_col[col].red=(Quantum)((rsum + 0.5)/scale1);
+			dest_col[col].green=(Quantum)((gsum + 0.5)/scale1);
+			dest_col[col].blue=(Quantum)((bsum + 0.5)/scale1);
+		}
+		/* go through each and every pixel in each col */
+		for ( ; col < cols-cmatrix_length/2; col++)
+    {
+			rsum = gsum = bsum = 0.0;
+			for (j = 0; j<cmatrix_length; j++)
+      {
+        scale2=cmatrix[j];
+        k=col+j-cmatrix_middle;
+        rsum+=cur_col[k].red * scale2;
+        gsum+=cur_col[k].green * scale2;
+        bsum+=cur_col[k].blue * scale2;
+			}
+			dest_col[col].red=(Quantum)(rsum + 0.5);
+			dest_col[col].green=(Quantum)(gsum + 0.5);
+			dest_col[col].blue=(Quantum)(bsum + 0.5);
+		}
+		/* for the edge condition only use available info, and scale to one */
+		for ( ; col < cols; col++)
+    {
+			/* find scale factor */
+			scale1=0;
+			for (j = 0; j< cols-col + cmatrix_middle; j++)
+				scale1 += cmatrix[j];
+			rsum = gsum = bsum = 0.0;
+			for (j = 0; j<cols-col + cmatrix_middle; j++)
+      {
+        scale2=cmatrix[j];
+        k=col+j-cmatrix_middle;
+        rsum+=cur_col[k].red * scale2;
+        gsum+=cur_col[k].green * scale2;
+        bsum+=cur_col[k].blue * scale2;
+			}
+			dest_col[col].red=(Quantum)((rsum + 0.5)/scale1);
+			dest_col[col].green=(Quantum)((gsum + 0.5)/scale1);
+			dest_col[col].blue=(Quantum)((bsum + 0.5)/scale1);
+		}
+	}
+}
+
+MagickExport Image *BlurImage(Image *image,const double radius,
+  const double sigma,ExceptionInfo *exception)
+{
+#define BlurImageText  "  Blur image...  "
+
+  Image
+    *blur_image;
+
+	double
+    *cmatrix,
+    *prev_cmatrix;
+
+  PixelPacket
+    *cur_col,
+    *p,
+    *q;
+
+  int
+    col,
+    cmatrix_length,
+    row;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  cmatrix_length=(int) (2.0*ceil(radius)+1.0);
+  /* bump columns and rows to fool CloneImage into not copying the image */
+  blur_image=CloneImage(image,image->columns+1,image->rows+1,False,exception);
+  blur_image->rows--;
+  blur_image->columns--;
+  if (blur_image == (Image *) NULL)
+    return((Image *) NULL);
+  blur_image->storage_class=DirectClass;
+
+	/* generate convolution matrix for the requested std deviation */
+  prev_cmatrix=cmatrix=NULL;
+  cmatrix_length=GenConvolveMatrix(cmatrix_length, sigma, &cmatrix);
+  while ((int)(cmatrix[0]*MaxRGB) > 0)
+  {
+    if (prev_cmatrix != (double *)NULL)
+      LiberateMemory((void **) &prev_cmatrix);
+    prev_cmatrix=cmatrix;
+    cmatrix=NULL;
+    cmatrix_length+=2;
+    cmatrix_length=GenConvolveMatrix(cmatrix_length, sigma, &cmatrix);
+  }
+  if (prev_cmatrix != (double *)NULL)
+    {
+      LiberateMemory((void **) &cmatrix);
+      cmatrix_length-=2;
+      cmatrix=prev_cmatrix;
+    }
+
+  if (cmatrix_length < 3)
+    ThrowImageException(OptionWarning,"Unable to blur image",
+      "calculated blur radius is too small");
+
+	/* blur the rows */
+	for (row = 0; row < image->rows; row++)
+  {
+    p=GetImagePixels(image,0,row,image->columns,1);
+    q=GetImagePixels(blur_image,0,row,image->columns,1);
+    if (p != (PixelPacket *) NULL && q != (PixelPacket *) NULL)
+      BlurOneScanline(cmatrix, cmatrix_length, p, q, image->columns);
+    if (!SyncImagePixels(blur_image))
+      break;
+    if (QuantumTick(row,blur_image->rows+blur_image->columns))
+      MagickMonitor(BlurImageText,row,blur_image->rows+
+        blur_image->columns);
+	}
+
+	/* allocate column buffers */
+	cur_col = (PixelPacket *) AcquireMemory((image->rows)*sizeof(PixelPacket));
+  if (cur_col == (PixelPacket *) NULL)
+    return (Image *) NULL;
+
+	/* blur the cols */
+	for (col = 0; col < image->columns; col++)
+  {
+    p=GetImagePixels(blur_image,col,0,1,image->rows);
+    memcpy(cur_col,p,(image->rows)*sizeof(PixelPacket));
+    if (p != (PixelPacket *) NULL)
+      BlurOneScanline(cmatrix, cmatrix_length, cur_col, p, image->rows);
+    if (!SyncImagePixels(blur_image))
+      break;
+    if (QuantumTick(col,blur_image->rows+blur_image->columns))
+      MagickMonitor(BlurImageText,col,blur_image->rows+
+        blur_image->columns);
+	}
+
+	/* free the memory we took */
+  LiberateMemory((void **) &cur_col);
+  LiberateMemory((void **) &cmatrix);
   return(blur_image);
 }
 
@@ -1245,8 +1531,7 @@ MagickExport Image *GaussianBlurImage(Image *image,const double radius,
   const double sigma,ExceptionInfo *exception)
 {
   double
-    *kernel,
-    normalize;
+    *kernel;
 
   Image
     *blur_image;
@@ -1272,13 +1557,11 @@ MagickExport Image *GaussianBlurImage(Image *image,const double radius,
     ThrowImageException(ResourceLimitWarning,"Unable to Gaussian blur image",
       "Memory allocation failed");
   i=0;
-  normalize=0.0;
   for (v=(-width/2); v <= (width/2); v++)
   {
     for (u=(-width/2); u <= (width/2); u++)
     {
       kernel[i]=exp((double) -(u*u+v*v)/(sigma*sigma));
-      normalize+=kernel[i];
       i++;
     }
   }
