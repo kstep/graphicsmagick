@@ -332,20 +332,23 @@ MagickExport const CoderInfo *GetCoderInfo(const char *tag,
   for (p=coder_list; p != (CoderInfo *) NULL; p=p->next)
     if (LocaleCompare(p->tag,tag) == 0)
       break;
-  if ((p != (CoderInfo *) NULL) && (p != coder_list))
-    {
-      /*
-        Self-adjusting list.
-      */
-      if (p->previous != (CoderInfo *) NULL)
-        p->previous->next=p->next;
-      if (p->next != (CoderInfo *) NULL)
-        p->next->previous=p->previous;
-      p->previous=(CoderInfo *) NULL;
-      p->next=coder_list;
-      coder_list->previous=p;
-      coder_list=p;
-    }
+  if (p == (CoderInfo *) NULL)
+    ThrowException(exception,OptionWarning,"Unrecognized module",tag);
+  else
+    if (p != coder_list)
+      {
+        /*
+          Self-adjusting list.
+        */
+        if (p->previous != (CoderInfo *) NULL)
+          p->previous->next=p->next;
+        if (p->next != (CoderInfo *) NULL)
+          p->next->previous=p->previous;
+        p->previous=(CoderInfo *) NULL;
+        p->next=coder_list;
+        coder_list->previous=p;
+        coder_list=p;
+      }
   return(p);
 }
 

@@ -414,20 +414,23 @@ MagickExport const MagickInfo *GetMagickInfo(const char *name,
         if (LocaleCompare(p->name,name) == 0)
           break;
     }
-  if ((p != (MagickInfo *) NULL) && (p != magick_list))
-    {
-      /*
-        Self-adjusting list.
-      */
-      if (p->previous != (MagickInfo *) NULL)
-        p->previous->next=p->next;
-      if (p->next != (MagickInfo *) NULL)
-        p->next->previous=p->previous;
-      p->previous=(MagickInfo *) NULL;
-      p->next=magick_list;
-      magick_list->previous=p;
-      magick_list=p;
-    }
+  if (p == (MagickInfo *) NULL)
+    ThrowException(exception,OptionWarning,"Unrecognized type name",name);
+  else
+    if (p != magick_list)
+      {
+        /*
+          Self-adjusting list.
+        */
+        if (p->previous != (MagickInfo *) NULL)
+          p->previous->next=p->next;
+        if (p->next != (MagickInfo *) NULL)
+          p->next->previous=p->previous;
+        p->previous=(MagickInfo *) NULL;
+        p->next=magick_list;
+        magick_list->previous=p;
+        magick_list=p;
+      }
   LiberateSemaphoreInfo(&magick_semaphore);
   return(p);
 }

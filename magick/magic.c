@@ -182,20 +182,23 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
   for (p=magic_list; p != (MagicInfo *) NULL; p=p->next)
     if (memcmp(magic+p->offset,p->magic,p->length) == 0)
       break;
-  if ((p != (MagicInfo *) NULL) && (p != magic_list))
-    {
-      /*
-        Self-adjusting list.
-      */
-      if (p->previous != (MagicInfo *) NULL)
-        p->previous->next=p->next;
-      if (p->next != (MagicInfo *) NULL)
-        p->next->previous=p->previous;
-      p->previous=(MagicInfo *) NULL;
-      p->next=magic_list;
-      magic_list->previous=p;
-      magic_list=p;
-    }
+  if (p == (MagicInfo *) NULL)
+    ThrowException(exception,OptionWarning,"Unrecognized magic",magic);
+  else
+    if (p != magic_list)
+      {
+        /*
+          Self-adjusting list.
+        */
+        if (p->previous != (MagicInfo *) NULL)
+          p->previous->next=p->next;
+        if (p->next != (MagicInfo *) NULL)
+          p->next->previous=p->previous;
+        p->previous=(MagicInfo *) NULL;
+        p->next=magic_list;
+        magic_list->previous=p;
+        magic_list=p;
+      }
   LiberateSemaphoreInfo(&magic_semaphore);
   return(p);
 }

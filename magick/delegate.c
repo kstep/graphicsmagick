@@ -292,20 +292,24 @@ MagickExport const DelegateInfo *GetDelegateInfo(const char *decode,
       if (LocaleCompare(encode,"*") == 0)
         break;
   }
-  if ((p != (DelegateInfo *) NULL) && (p != delegate_list))
-    {
-      /*
-        Self-adjusting list.
-      */
-      if (p->previous != (DelegateInfo *) NULL)
-        p->previous->next=p->next;
-      if (p->next != (DelegateInfo *) NULL)
-        p->next->previous=p->previous;
-      p->previous=(DelegateInfo *) NULL;
-      p->next=delegate_list;
-      delegate_list->previous=p;
-      delegate_list=p;
-    }
+  if (p == (DelegateInfo *) NULL)
+    ThrowException(exception,OptionWarning,"Unrecognized delegate",
+      decode != (const char *) NULL ? decode : encode);
+  else
+    if (p != delegate_list)
+      {
+        /*
+          Self-adjusting list.
+        */
+        if (p->previous != (DelegateInfo *) NULL)
+          p->previous->next=p->next;
+        if (p->next != (DelegateInfo *) NULL)
+          p->next->previous=p->previous;
+        p->previous=(DelegateInfo *) NULL;
+        p->next=delegate_list;
+        delegate_list->previous=p;
+        delegate_list=p;
+      }
   LiberateSemaphoreInfo(&delegate_semaphore);
   return(p);
 }
