@@ -37,11 +37,11 @@ extern Export DelegateInfo
 
 extern Export unsigned int
   GetDelegateInfo(const char *,const char *,DelegateInfo *),
-  InvokeDelegate(const ImageInfo *,Image *,const char *,const char *);
+  InvokeDelegate(const ImageInfo *,Image *,const char *,const char *),
+  ListDelegateInfo(FILE *);
 
 extern Export void
-  DestroyDelegateInfo(void),
-  ListDelegateInfo(FILE *);
+  DestroyDelegateInfo(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

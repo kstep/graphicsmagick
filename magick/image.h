@@ -668,6 +668,7 @@ extern Export MagickInfo
 
 extern Export unsigned int
   AnimateImages(const ImageInfo *image_info,Image *image),
+  AnnotateImage(Image *,const AnnotateInfo *),
   ColorFloodfillImage(Image *,const PixelPacket *,Image *,const int x,
     const int y,const PaintMethod),
   CompositeImage(Image *,const CompositeOperator,Image *,const int,const int),
@@ -708,7 +709,6 @@ extern Export unsigned int
 
 extern Export void
   AllocateNextImage(const ImageInfo *,Image *),
-  AnnotateImage(Image *,const AnnotateInfo *),
   CompressColormap(Image *),
   CycleColormapImage(Image *,const int),
   DescribeImage(Image *,FILE *,const unsigned int),
