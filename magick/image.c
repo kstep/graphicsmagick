@@ -2894,6 +2894,33 @@ MagickExport unsigned long GetImageDepth(const Image *image,
   assert(image->signature == MagickSignature);
   if (QuantumDepth == 8)
     return(QuantumDepth);
+  if (QuantumDepth == 32)
+    {
+      for (y=0; y < (long) image->rows; y++)
+      {
+        p=AcquireImagePixels(image,0,y,image->columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
+          break;
+        for (x=0; x < (long) image->columns; x++)
+        {
+          if (p->red != ScaleShortToQuantum(ScaleQuantumToShort(p->red)))
+            break;
+          if (p->green != ScaleShortToQuantum(ScaleQuantumToShort(p->green)))
+            break;
+          if (p->blue != ScaleShortToQuantum(ScaleQuantumToShort(p->blue)))
+            break;
+          if (image->matte)
+            if (p->opacity !=
+                ScaleShortToQuantum(ScaleQuantumToShort(p->opacity)))
+              break;
+          p++;
+        }
+        if (x < (long) image->columns)
+          break;
+      }
+      if (y < (long) image->rows)
+        return(QuantumDepth);
+    }
   for (y=0; y < (long) image->rows; y++)
   {
     p=AcquireImagePixels(image,0,y,image->columns,1,exception);
@@ -6352,7 +6379,43 @@ MagickExport unsigned int SetImageDepth(Image *image,const unsigned long depth)
       image->depth=8;
       return(True);
     }
-  image->depth=16;
+  if (depth <= 16)
+    {
+      for (y=0; y < (long) image->rows; y++)
+      {
+        q=GetImagePixels(image,0,y,image->columns,1);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (long) image->columns; x++)
+        {
+          q->red=ScaleShortToQuantum(ScaleQuantumToShort(q->red));
+          q->green=ScaleShortToQuantum(ScaleQuantumToShort(q->green));
+          q->blue=ScaleShortToQuantum(ScaleQuantumToShort(q->blue));
+          q->opacity=ScaleShortToQuantum(ScaleQuantumToShort(q->opacity));
+          q++;
+        }
+        if (!SyncImagePixels(image))
+          break;
+      }
+      if (image->storage_class == PseudoClass)
+        {
+          register long
+            i;
+
+          q=image->colormap;
+          for (i=0; i < (long) image->colors; i++)
+          {
+            q->red=ScaleShortToQuantum(ScaleQuantumToShort(q->red));
+            q->green=ScaleShortToQuantum(ScaleQuantumToShort(q->green));
+            q->blue=ScaleShortToQuantum(ScaleQuantumToShort(q->blue));
+            q->opacity=ScaleShortToQuantum(ScaleQuantumToShort(q->opacity));
+            q++;
+          }
+        }
+      image->depth=16;
+      return(True);
+    }
+  image->depth=32;
   return(True);
 }
 

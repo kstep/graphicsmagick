@@ -18,6 +18,7 @@ extern "C" {
   Color quantum is [0..255].
 */
 #define ScaleCharToQuantum(value)  (1UL*(value))
+#define ScaleIntToQuantum(value)  ((value)/16843009UL)
 #define ScaleQuantumToChar(quantum)  ((quantum)/1UL)
 #define ScaleQuantumToInt(quantum) (16843009UL*(quantum))
 #define ScaleQuantumToShort(quantum)  (257UL*(quantum))
@@ -29,6 +30,7 @@ typedef unsigned char Quantum;
   Color quantum is [0..65535].
 */
 #define ScaleCharToQuantum(value)  (257UL*(value))
+#define ScaleIntToQuantum(value)  ((value)/65537UL)
 #define ScaleQuantumToChar(quantum)  ((quantum)/257UL)
 #define ScaleQuantumToInt(quantum) (65537UL*(quantum))
 #define ScaleQuantumToShort(quantum)  (1UL*(quantum))
@@ -40,6 +42,7 @@ typedef unsigned short Quantum;
   Experimental: Color quantum is [0..4294967295].
 */
 #define ScaleCharToQuantum(value)  (16843009UL*(value))
+#define ScaleIntToQuantum(value)  ((value)/1UL)
 #define ScaleQuantumToChar(quantum)  ((quantum)/16843009UL)
 #define ScaleQuantumToInt(quantum)  (1UL*(quantum))
 #define ScaleQuantumToShort(quantum)  ((quantum)/65537UL)
