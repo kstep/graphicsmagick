@@ -336,7 +336,8 @@ static unsigned int WriteMPEGParameterFiles(const ImageInfo *image_info,
     *parameter_file;
 
   int
-    quant;
+    quant,
+    vertical_factor;
 
   register Image
     *p;
@@ -437,7 +438,7 @@ static unsigned int WriteMPEGParameterFiles(const ImageInfo *image_info,
   (void) fprintf(file,"%lu\n",count); /* number of frames */
   (void) fprintf(file,"0\n");  /* number of first frame */
   (void) fprintf(file,"00:00:00:00\n");  /* timecode of first frame */
-  mpeg=LocaleCompare(image->magick,"M2V") != 0;
+  mpeg=LocaleCompare(image_info->magick,"M2V") != 0;
   if (image_info->quality > 98)
     (void) fprintf(file,"1\n");
   else
@@ -459,7 +460,39 @@ static unsigned int WriteMPEGParameterFiles(const ImageInfo *image_info,
   (void) fprintf(file,"%d\n",mpeg ? 4 : 1);  /* profile ID */
   (void) fprintf(file,"%d\n",mpeg ? 8 : 4);  /* level ID */
   (void) fprintf(file,"%d\n",mpeg ? 1 : 0);  /* progressive sequence */
-  (void) fprintf(file,"1\n");  /* chrome format */
+  vertical_factor=2;
+  if (image_info->sampling_factor != (char *) NULL)
+    {
+    long
+      factors;
+
+    int
+      horizontal_factor;
+
+    horizontal_factor=2;
+    factors=sscanf(image_info->sampling_factor,"%ldx%ld",&horizontal_factor,
+      &vertical_factor);
+    if (factors != 2)
+      vertical_factor=horizontal_factor;
+    if (mpeg)
+      {
+        if ((horizontal_factor != 2) || (vertical_factor != 2))
+          {
+            fclose(file);
+            return(False);
+          }
+      }
+    else
+      {
+        if ((horizontal_factor != 2) || ((vertical_factor != 1) &&
+            (vertical_factor != 2)))
+          {
+            fclose(file);
+            return(False);
+          }
+      }
+    }
+  (void) fprintf(file,"%d\n",vertical_factor==2 ? 1 : 2); /* chroma format */
   (void) fprintf(file,"%d\n",mpeg ? 1 : 2);  /* video format */
   (void) fprintf(file,"5\n");  /* color primaries */
   (void) fprintf(file,"5\n");  /* transfer characteristics */
@@ -566,14 +599,25 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
   clone_info=CloneImageInfo(image_info);
   (void) strncpy(clone_info->unique,basename,MaxTextExtent-1);
   status=WriteMPEGParameterFiles(clone_info,coalesce_image);
+
   if (status == False)
     {
       if (coalesce_image != image)
         DestroyImage(coalesce_image);
+      (void) remove(basename);
+      if (image_info->quality != DefaultCompressionQuality)
+        {
+          FormatString(filename,"%.1024s.iqm",basename);
+          (void) remove(filename);
+          FormatString(filename,"%.1024s.niq",basename);
+          (void) remove(filename);
+        }
       ThrowWriterException(DelegateWarning,"Unable to write MPEG parameters",
         image)
     }
+
   count=0;
+  clone_info->interlace=PlaneInterlace;
   for (p=coalesce_image; p != (Image *) NULL; p=p->next)
   {
     blob=(char *) NULL;
