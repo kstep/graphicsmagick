@@ -4529,7 +4529,8 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   volatile unsigned int
     adjoin,
     optimize,
-    scene;
+    scene,
+    write_mng;
 
   unsigned long
     final_delay=0,
@@ -4558,6 +4559,10 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     ThrowWriterException((ExceptionType) FileOpenWarning,
       "Unable to open file",image);
 
+  write_mng=LocaleCompare(image_info->magick,"MNG") == 0;
+
+  adjoin=image_info->adjoin && (image->next != (Image *) NULL) && write_mng;
+
   optimize=(image_info->type == OptimizeType || image_info->type ==
     UndefinedType);
 
@@ -4573,7 +4578,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     {
       if(p->taint && p->storage_class == PseudoClass)
          SyncImage(p);
-      if (!image_info->adjoin)
+      if (!adjoin)
         break;
     }
   }
@@ -4602,7 +4607,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                     SetImageType(p,PaletteType);
               }
           }
-        if (!image_info->adjoin)
+        if (!adjoin)
           break;
       }
     }
@@ -4627,7 +4632,16 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   framing_mode=1;
   old_framing_mode=1;
 
-  adjoin=image_info->adjoin && (image->next != (Image *) NULL);
+  if (write_mng)
+      if (image_info->page != (char *) NULL)
+        {
+          /*
+            Determine image bounding box.
+          */
+          SetGeometry(image,&page);
+          (void) GetMagickGeometry(image_info->page,&page.x,&page.y,
+            &page.width,&page.height);
+        }
   if (adjoin)
     {
       unsigned int
@@ -4638,17 +4652,9 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         green,
         blue;
 
-      /*
-        Determine image bounding box.
-      */
       need_geom=True;
       if (image_info->page != (char *) NULL)
-        {
-          SetGeometry(image,&page);
-          (void) GetMagickGeometry(image_info->page,&page.x,&page.y,
-            &page.width,&page.height);
-          need_geom=False;
-        }
+         need_geom=False;
       /*
         Check all the scenes.
       */
@@ -4946,7 +4952,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
        Write MNG BACK chunk and global bKGD chunk, if the image is transparent
        or does not cover the entire frame.
      */
-     if (adjoin && (image->matte || image->page.x > 0 || image->page.y > 0 ||
+     if (write_mng && (image->matte || image->page.x > 0 || image->page.y > 0 ||
          (image->page.width && (image->page.width+image->page.x < page.width))
          || (image->page.height && (image->page.height+image->page.y
          < page.height))))
@@ -5006,8 +5012,10 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     png_colorp
        palette;
 
+    volatile int
+       IsPalette;
+
     int
-       IsPalette,
        not_valid;
 
     IsPalette=image->storage_class==PseudoClass && image->colors <= 256;
@@ -5133,11 +5141,11 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       Prepare PNG for writing.
     */
 #if defined(PNG_MNG_FEATURES_SUPPORTED)
-    if (adjoin)
+    if (write_mng)
        png_permit_mng_features(ping,PNG_ALL_MNG_FEATURES);
 #else
 # ifdef PNG_WRITE_EMPTY_PLTE_SUPPORTED
-    if (adjoin)
+    if (write_mng)
        png_permit_empty_plte(ping,True);
 # endif
 #endif
@@ -5146,7 +5154,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     save_image_depth=image->depth;
     ping_info->bit_depth=(png_byte) save_image_depth;
     if ((image->x_resolution != 0) && (image->y_resolution != 0) &&
-        (!adjoin || !equal_physs))
+        (!write_mng || !equal_physs))
       {
         int
           unit_type;
@@ -5546,7 +5554,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
        png_set_compression_strategy(ping, Z_HUFFMAN_ONLY);
 #if defined(PNG_MNG_FEATURES_SUPPORTED) && defined(PNG_INTRAPIXEL_DIFFERENCING)
     /* This became available in libpng-1.0.9.  Output must be a MNG. */
-    if (adjoin && ((image_info->quality % 10) == 7))
+    if (write_mng && ((image_info->quality % 10) == 7))
     {
       ping_info->filter_type=PNG_INTRAPIXEL_DIFFERENCING;
     }
@@ -5617,7 +5625,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         png_set_gAMA(ping,ping_info,0.45455);
       }
     not_valid=(!ping_info->valid);
-    if ((!adjoin) || not_valid & PNG_INFO_sRGB)
+    if ((!write_mng) || not_valid & PNG_INFO_sRGB)
 #endif
       {
         if (!have_write_global_gama && (image->gamma != 0.0))
@@ -5683,7 +5691,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         old_framing_mode=framing_mode;
       }
 
-    if (adjoin)
+    if (write_mng)
       png_set_sig_bytes(ping,8);
 
     png_write_info(ping,ping_info);
@@ -5966,7 +5974,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     image=GetNextImage(image);
     MagickMonitor(SaveImagesText,scene++,GetImageListSize(image));
   } while (adjoin);
-  if (adjoin)
+  if (write_mng)
     {
       while (image->previous != (Image *) NULL)
         image=image->previous;
