@@ -396,7 +396,8 @@ MagickExport void HSLTransform(const double hue,const double saturation,
   assert(blue != (Quantum *) NULL);
   if (saturation == 0.0)
     {
-      *red=*green=*blue=(Quantum) (MaxRGB*luminosity+0.5);
+      double l = MaxRGB*luminosity;
+      *red=*green=*blue= RoundToQuantum(l);
     }
   else
     {
@@ -419,13 +420,14 @@ MagickExport void HSLTransform(const double hue,const double saturation,
         (luminosity+saturation-luminosity*saturation);
 
       hue_times_six=6.0*hue;
-      sextant=(int)hue_times_six;
+      sextant=(int) hue_times_six;
       hue_fract=hue_times_six-(double) sextant;
 
       y=luminosity+luminosity-v;
       vsf=(v-y)*hue_fract;
       x=y+vsf;
       z=v-vsf;
+      
       switch (sextant)
         {
         case 0: r=v; g=x; b=y; break;
@@ -436,9 +438,12 @@ MagickExport void HSLTransform(const double hue,const double saturation,
         case 5: r=v; g=y; b=z; break;
         default: r=v; g=x; b=y; break;
         }
-      *red=(Quantum) (MaxRGB*r+0.5);
-      *green=(Quantum) (MaxRGB*g+0.5);
-      *blue=(Quantum) (MaxRGB*b+0.5);
+      r *= MaxRGB;
+      *red=RoundToQuantum(r);
+      g *= MaxRGB;
+      *green=RoundToQuantum(g);
+      b *= MaxRGB;
+      *blue=RoundToQuantum(b);
     }
 }
 
@@ -760,7 +765,11 @@ MagickExport PixelPacket InterpolateColor(const Image *image,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method Modulate modulates the hue, saturation, and brightness of an
-%  image.
+%  image. Brightness and saturation are expressed as a ratio of the
+%  existing value. Hue is expressed as a ratio of rotation from the current
+%  position in that 1.0 results in the existing position, 0.5 results in a
+%  counter-clockwise rotation of 90 degrees, 1.5 results in a clockwise
+%  rotation of 90 degrees, and 0 and 2.0 obtain a 180 degree rotation.
 %
 %  The format of the Modulate method is:
 %
@@ -799,9 +808,12 @@ MagickExport void Modulate(const double percent_hue,
   saturation*=(0.01+MagickEpsilon)*percent_saturation;
   if (saturation > 1.0)
     saturation=1.0;
-  hue*=(0.01+MagickEpsilon)*percent_hue;
-  if (hue > 1.0)
-    hue-=1.0;
+
+  hue += (percent_hue/200.0 - 0.5);
+  while (hue < 0.0)
+    hue += 1.0;
+  while (hue > 1.0)
+    hue -= 1.0;
   HSLTransform(hue,saturation,brightness,red,green,blue);
 }
 

@@ -850,7 +850,11 @@ the image. Copies   the underlying image to a new image if necessary.</font></td
       <td><font size="-1">double brightness_, double saturation_,
 double hue_</font></td>
       <td><font size="-1">Modulate percent hue, saturation, and
-brightness of  an image</font></td>
+brightness of  an image. Modulation of saturation and brightness is as a
+ratio of the current value (1.0 for no change). Modulation of hue is an
+absolute rotation of -180 degrees to +180 degrees from the current
+position corresponding to an argument range of 0 to 2.0 (1.0 for no
+change).</font></td>
     </tr>
     <tr>
       <td>
@@ -1567,13 +1571,13 @@ channel_, const unsigned int depth_<br>
       <td style="vertical-align: middle;"><small>Channel modulus depth.
 The channel modulus depth represents the minimum number of bits required
 to support the channel without loss. Setting the channel's modulus depth
-modifies the channel (i.e. discards resolution) if the requested
-modulus depth is less than the current modulus depth, otherwise the
-channel is not altered. There is no attribute associated with the
-modulus depth so the current modulus depth is obtained by inspecting the
-pixels. As a result, the depth returned may be less than the most
-recently set channel depth. Subsequent image processing may result in
-increasing the channel depth.<br>
+modifies the channel (i.e. discards resolution) if the requested modulus
+depth is less than the current modulus depth, otherwise the channel is
+not altered. There is no attribute associated with the modulus depth so
+the current modulus depth is obtained by inspecting the pixels. As a
+result, the depth returned may be less than the most recently set
+channel depth. Subsequent image processing may result in increasing the
+channel depth.<br>
       </small></td>
     </tr>
     <tr>
@@ -1728,8 +1732,8 @@ for the case  of CMY(K).</font></td>
       <td><small><font size="-1"><small><a
  href="Enumerations.html#CompositeOperator">CompositeOperator</a>
 compose_</small></font></small></td>
-      <td><font size="-1">Composition operator to be used when composition is implicitly used
-(such as for image flattening).</font></td>
+      <td><font size="-1">Composition operator to be used when
+composition is implicitly used (such as for image flattening).</font></td>
     </tr>
     <tr>
       <td>

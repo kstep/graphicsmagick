@@ -21,6 +21,18 @@
 </tr>
 </table>
 <p>
+2004-12-19  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/gem.c (Modulate): Hue argument now represents a rotation
+        from -180 degrees to +180 degrees expressed as an argument of 0 to
+        2.0 (1.0 for no change). Note that this change also effects the
+        -modulate argument and the Magick++ modulate method(). This change
+        is made because the previous hue adjustment strategy only
+        succeeded in corrupting the image.
+
+</UL>
+<p>
 2004-12-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
