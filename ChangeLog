@@ -6,6 +6,12 @@
 2003-01-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* coders/delegates.mgk.in: Fix cgm entry.  How did it become so
 	terribly broken?
+	* coders/dps.c: Adding logging support.
+	* PerlMagick/t/read.t: Changed file read tests to use image
+	compares with a reference image rather than comparing with a
+	signature.
+	* PerlMagick/t/wmf/read.t: Ditto.
+	magick/shear.c: Fixed documentation for RotateImage.
 
 2002-01-08  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 	* magick/magick.c, magick/magick.h: Add "note" member of magick_info.

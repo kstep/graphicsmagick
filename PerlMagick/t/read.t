@@ -14,45 +14,36 @@ require 't/subroutines.pl';
 
 chdir 't' || die 'Cd failed';
 
-
 print("AVS X image file ...\n");
-testRead( 'input.avs',
-  '8b19185a62241bd7b79ecf3f619711f4ebbedd73eaeca0366f05778762b6614f');
+testReadCompare('input.avs', 'reference/read/input_avs.miff', q//, 0, 0);
 
 print("Microsoft Windows bitmap image file ...\n");
 ++$test;
-testRead( 'input.bmp',
-  '5083e062c7e4d3d462944bc1e89c4f491bf1f0241352e0a93988c8854c261fdb');
+testReadCompare('input.bmp', 'reference/read/input_bmp.miff', q//, 0, 0);
 
 print("Microsoft Windows 24-bit bitmap image file ...\n");
 ++$test;
-testRead( 'input.bmp24',
-  '8b19185a62241bd7b79ecf3f619711f4ebbedd73eaeca0366f05778762b6614f');
+testReadCompare('input.bmp24', 'reference/read/input_bmp24.miff', q//, 0, 0);
 
 print("ZSoft IBM PC multi-page Paintbrush file ...\n");
 ++$test;
-testRead( 'input.dcx',
-  '8b19185a62241bd7b79ecf3f619711f4ebbedd73eaeca0366f05778762b6614f');
+testReadCompare('input.dcx', 'reference/read/input_dcx.miff', q//, 0, 0);
 
 print("Microsoft Windows bitmap image file ...\n");
 ++$test;
-testRead( 'input.dib',
-  '8b19185a62241bd7b79ecf3f619711f4ebbedd73eaeca0366f05778762b6614f');
+testReadCompare('input.dib', 'reference/read/input_dib.miff', q//, 0, 0);
 
 print("Flexible Image Transport System ...\n");
 ++$test;
-testRead( 'input.fits',
-  '0e54b24352da9f7d0966c9b882988b9124b6b7fd7493ff266f4c03382b94a42a' );
+testReadCompare('input.fits', 'reference/read/input_fits.miff', q//, 0, 0);
 
 print("CompuServe graphics interchange format ...\n");
 ++$test;
-testRead( 'input.gif',
-  'f84cb6b5817ea2f6f313c2bdd90c94af0d0e7fb144528994050b355f8d5e6a94');
+testReadCompare('input.gif', 'reference/read/input_gif.miff', q//, 0, 0);
 
 print("CompuServe graphics interchange format (1987) ...\n");
 ++$test;
-testRead( 'input.gif87',
-  'f84cb6b5817ea2f6f313c2bdd90c94af0d0e7fb144528994050b355f8d5e6a94');
+testReadCompare('input.gif87', 'reference/read/input_gif87.miff', q//, 0, 0);
 
 print("Gradient (gradual passing from one shade to another) ...\n");
 ++$test;
@@ -61,23 +52,19 @@ testReadCompare('gradient:red-blue', 'reference/read/gradient.miff',
 
 print("GRANITE (granite texture) ...\n");
 ++$test;
-testRead( 'granite:',
-  '6e7317a9cb3abb1fe090d2d43c7645be455b6116ef8e93ca193d1df421447602');
+testReadCompare('granite:', 'reference/read/granite.miff', q/size=>"70x46"/, 0, 0);
 
 print("Microsoft icon ...\n");
 ++$test;
-testRead( 'input.ico',
-  'a8b1aae465606b8273caf1035f95b7c1262bcb1f72fcb73bfe2d3640ff6b45ef' );
+testReadCompare('input.ico', 'reference/read/input_ico.miff', q//, 0, 0);
 
 print("Magick image file format ...\n");
 ++$test;
-testRead( 'input.miff',
-  '8b19185a62241bd7b79ecf3f619711f4ebbedd73eaeca0366f05778762b6614f');
+testReadCompare('input.miff', 'reference/read/input_miff.miff', q//, 0, 0);
 
 print("MTV Raytracing image format ...\n");
 ++$test;
-testRead( 'input.mtv',
-  '8b19185a62241bd7b79ecf3f619711f4ebbedd73eaeca0366f05778762b6614f');
+testReadCompare('input.mtv', 'reference/read/input_mtv.miff', q//, 0, 0);
 
 print("Xv's visual schnauzer format. ...\n");
 ++$test;
@@ -86,173 +73,133 @@ testReadCompare('input_p7.p7', 'reference/read/input_p7.miff', q//,
 
 print("NULL (white image) ...\n");
 ++$test;
-testRead( 'NULL:white', '3c907c7fc6edfcf15767c67e22c25cf9f907ba8ee59811aaae79dafd7c8ff198',
-  'b57ca51881682b98a084a42beb8325895fdbc90d6f874ad8cdea7858d4907845');
+testReadCompare('NULL:white', 'reference/read/input_null_white.miff', q/size=>"70x46"/, 0, 0);
 
 print("NULL (black image) ...\n");
 ++$test;
-testRead( 'NULL:black',
-  '8851aa72e74300d3a50cb246c69d03a7d6c7cc53be91d894e232053f1b859513');
+testReadCompare('NULL:black', 'reference/read/input_null_black.miff', q/size=>"70x46"/, 0, 0);
 
 print("NULL (DarkOrange image) ...\n");
 ++$test;
-testRead( 'NULL:DarkOrange',
-  '295732fb13da5439fa0f08fc1d1a27d9a24f28c6f5c86d6dfb07ac73bd4d10cd');
+testReadCompare('NULL:DarkOrange', 'reference/read/input_null_DarkOrange.miff', q/size=>"70x46"/, 0, 0);
 
 print("Portable bitmap format (black and white), ASCII format ...\n");
 ++$test;
-testRead( 'input_p1.pbm',
-  '2b48bcf7d93cc31a8deb3026d872f1bb0a300b0f4e177423e5301adc638179e4');
+testReadCompare('input_p1.pbm', 'reference/read/input_pbm_p1.miff', q//, 0, 0);
 
 print("Portable bitmap format (black and white), binary format ...\n");
 ++$test;
-testRead( 'input_p4.pbm',
-  '2b48bcf7d93cc31a8deb3026d872f1bb0a300b0f4e177423e5301adc638179e4');
+testReadCompare('input_p4.pbm', 'reference/read/input_pbm_p4.miff', q//, 0, 0);
 
 print("ZSoft IBM PC Paintbrush file ...\n");
 ++$test;
-testRead( 'input.pcx',
-  '8b19185a62241bd7b79ecf3f619711f4ebbedd73eaeca0366f05778762b6614f');
+testReadCompare('input.pcx', 'reference/read/input_pcx.miff', q//, 0, 0);
 
 print("Portable graymap format (gray scale), ASCII format ...\n");
 ++$test;
-testRead( 'input_p2.pgm',
-  '04c5604964838e47aba7a355efee266a4d0f1b90f672ff56863440e5e5a29761');
+testReadCompare('input_p2.pgm', 'reference/read/input_pgm_p2.miff', q//, 0, 0);
 
 print("Portable graymap format (gray scale), binary format ...\n");
 ++$test;
-testRead( 'input_p5.pgm',
-  '04c5604964838e47aba7a355efee266a4d0f1b90f672ff56863440e5e5a29761');
+testReadCompare('input_p5.pgm', 'reference/read/input_pgm_p5.miff', q//, 0, 0);
 
 print("Apple Macintosh QuickDraw/PICT file ...\n");
 ++$test;
-testRead( 'input.pict',
-  '8b19185a62241bd7b79ecf3f619711f4ebbedd73eaeca0366f05778762b6614f');
+testReadCompare('input.pict', 'reference/read/input_pict.miff', q//, 0, 0);
 
 print("Alias/Wavefront RLE image format ...\n");
 ++$test;
-testRead( 'input.rle',
-  '8b19185a62241bd7b79ecf3f619711f4ebbedd73eaeca0366f05778762b6614f');
+testReadCompare('input.rle', 'reference/read/input_rle.miff', q//, 0, 0);
 
 print("Portable pixmap format (color), ASCII format ...\n");
 ++$test;
-testRead( 'input_p3.ppm',
-  '8b19185a62241bd7b79ecf3f619711f4ebbedd73eaeca0366f05778762b6614f');
+testReadCompare('input_p3.ppm', 'reference/read/input_ppm_p3.miff', q//, 0, 0);
 
 print("Portable pixmap format (color), binary format ...\n");
 ++$test;
-testRead( 'input_p6.ppm',
-  '8b19185a62241bd7b79ecf3f619711f4ebbedd73eaeca0366f05778762b6614f');
+testReadCompare('input_p6.ppm', 'reference/read/input_ppm_p6.miff', q//, 0, 0);
 
 print("Adobe Photoshop bitmap file ...\n");
 ++$test;
-testRead( 'input.psd',
-  '8b19185a62241bd7b79ecf3f619711f4ebbedd73eaeca0366f05778762b6614f');
+testReadCompare('input.psd', 'reference/read/input_psd.miff', q//, 0, 0);
 
 print("Irix RGB image file ...\n");
 ++$test;
-testRead( 'input.sgi',
-  '8b19185a62241bd7b79ecf3f619711f4ebbedd73eaeca0366f05778762b6614f');
+testReadCompare('input.sgi', 'reference/read/input_sgi.miff', q//, 0, 0);
 
 print("SUN 1-bit Rasterfile ...\n");
 ++$test;
-testRead( 'input.im1',
-  '615fa1d8bae486118b3733c1dba4e2a225fc1f4f8ff9441bcb7c3293753e4da1');
+testReadCompare('input.im1', 'reference/read/input_im1.miff', q//, 0, 0);
 
 print("SUN 8-bit Rasterfile ...\n");
 ++$test;
-testRead( 'input.im8',
-  'f84cb6b5817ea2f6f313c2bdd90c94af0d0e7fb144528994050b355f8d5e6a94');
+testReadCompare('input.im8', 'reference/read/input_im8.miff', q//, 0, 0);
 
 print("SUN TrueColor Rasterfile ...\n");
 ++$test;
-testRead( 'sun:input.im24',
-  '8b19185a62241bd7b79ecf3f619711f4ebbedd73eaeca0366f05778762b6614f');
+testReadCompare('sun:input.im24', 'reference/read/input_im24.miff', q//, 0, 0);
 
 print("Truevision Targa image file ...\n");
 ++$test;
-testRead( 'input.tga',
-  '8b19185a62241bd7b79ecf3f619711f4ebbedd73eaeca0366f05778762b6614f');
+testReadCompare('input.tga', 'reference/read/input_tga.miff', q//, 0, 0);
 
 print("PSX TIM file ...\n");
 ++$test;
-testRead( 'input.tim',
-  '403a78aa326ce7fae09e350bc36344b3263e9aede1a16bb8ea6e9b923b27b374');
+testReadCompare('input.tim', 'reference/read/input_tim.miff', q//, 0, 0);
 
 print("Khoros Visualization image file ...\n");
 ++$test;
-testRead( 'input.viff',
-  '9c01e510e4aa7c369895db51389ae917a0d4f9004ffb4edf81e5e2302cab98a3');
+testReadCompare('input.viff', 'reference/read/input_viff.miff', q//, 0, 0);
 
 print("WBMP (Wireless Bitmap (level 0) image) ...\n");
 ++$test;
-testRead( 'input.wbmp',
-  'ccde39dba836a36bbc076e7e6f20f06b034dab0eb2613b350b17c2759533b2ca');
+testReadCompare('input.wbmp', 'reference/read/input_wbmp.miff', q//, 0, 0);
 
 print("X Windows system bitmap (black and white only) ...\n");
 ++$test;
-testRead( 'input.xbm',
-  '86cf46ab9d620aa85eba722d777cc97e30df51916b2380df3cbc2685614d1222');
+testReadCompare('input.xbm', 'reference/read/input_xbm.miff', q//, 0, 0);
 
 print("XC: Constant image of X server color ...\n");
 ++$test;
-testRead( 'xc:black',
-  '8851aa72e74300d3a50cb246c69d03a7d6c7cc53be91d894e232053f1b859513');
+testReadCompare('xc:black', 'reference/read/input_xc_black.miff', q/size=>"70x46",, depth=>8/, 0, 0);
 
 print("X Windows system pixmap file (color) ...\n");
 ++$test;
-testRead( 'input.xpm',
-  'f84cb6b5817ea2f6f313c2bdd90c94af0d0e7fb144528994050b355f8d5e6a94');
+testReadCompare('input.xpm', 'reference/read/input_xpm.miff', q//, 0, 0);
 
 print("X Windows system window dump file (color) ...\n");
 ++$test;
-testRead( 'input.xwd',
-  '8b19185a62241bd7b79ecf3f619711f4ebbedd73eaeca0366f05778762b6614f');
+testReadCompare('input.xwd', 'reference/read/input_xwd.miff', q//, 0, 0);
 
 print("TILE (Tile image with a texture) ...\n");
 # This is an internal generated format
 # We will tile using the default image and a MIFF file
 #
 ++$test;
-testReadSized( 'TILE:input.miff',
-  '140x92',
-  8,
-  'e1384a6f9f75d4a86f6291c47171a9039972718d9e5092294746cca57fd7b02e');
-
+testReadCompare('TILE:input.miff', 'reference/read/input_tile.miff',
+                q/size=>"140x92", depth=>8/, 0, 0);
 
 print("CMYK format ...\n");
 ++$test;
-testReadSized( 'input_70x46.cmyk',
-   '70x46',
-   8,
-   '1a1b99a35b962941e2a1cfc01e34907539f6d6ddc4a8df09fc024ef58e16d4e2');
+testReadCompare('input_70x46.cmyk', 'reference/read/input_cmyk.miff',
+                q/size=>"70x46", depth=>8/, 0, 0);
 
 print("GRAY format ...\n");
 ++$test;
-testReadSized( 'input_70x46.gray',
-   '70x46',
-   8,
-   '0e54b24352da9f7d0966c9b882988b9124b6b7fd7493ff266f4c03382b94a42a' );
+testReadCompare('input_70x46.gray', 'reference/read/input_gray.miff',
+                q/size=>"70x46", depth=>8/, 0, 0);
 
 print("RGB format ...\n");
 ++$test;
-testReadSized( 'input_70x46.rgb',
-   '70x46',
-   8,
-   '8b19185a62241bd7b79ecf3f619711f4ebbedd73eaeca0366f05778762b6614f' );
+testReadCompare('input_70x46.rgb', 'reference/read/input_rgb.miff',
+                q/size=>"70x46", depth=>8/, 0, 0);
 
 print("RGBA format ...\n");
 ++$test;
-testReadSized( 'input_70x46.rgba',
-   '70x46',
-   8,
-   '8b19185a62241bd7b79ecf3f619711f4ebbedd73eaeca0366f05778762b6614f' );
-
+testReadCompare('input_70x46.rgba', 'reference/read/input_rgba.miff',
+                q/size=>"70x46", depth=>8/, 0, 0);
 
 print("UYVY format ...\n");
 ++$test;
-testReadSized( 'input_70x46.uyvy',
-   '70x46',
-   0,
-   '3bf4b948403438b4dd8586a08555557e3bc07a9cd13003fd558a41f64a38315e',
-   '0fc7db8c303f509c52f7a3753c2f61ae6b5c8eee0698895e9c7a484ef0bfb5a7' );
+testReadCompare('input_70x46.uyvy', 'reference/read/input_uyvy.miff',
+                q/size=>"70x46", depth=>8/, 2.8e-05, 5.2e-05);

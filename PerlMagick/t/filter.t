@@ -127,17 +127,13 @@ testFilterCompare('input.miff', "fuzz=>$fuzz", 'reference/filter/Opaque.miff', '
   q/color=>"#e23834", fill=>"green"/, 0, 0);
 
 ++$test;
-if ( $QuantumDepth < 32 ) {
-  testFilterCompare('input.miff', q//, 'reference/filter/Quantize.miff', 'Quantize',
-                    q/colors=>128/, 0.0007, 0.025);
-} else {
-  print("Quantize test skipped since it takes too long ...\n");
-  print("ok $test\n");
-}
+testFilterCompare('input.miff', q//, 'reference/filter/Quantize.miff', 'Quantize',
+                  q/colors=>128/, 0.002, 0.025);
 
 ++$test;
 testFilterCompare('input.miff', q//, 'reference/filter/Raise.miff', 'Raise',
   q/geometry=>"10x10"/, 1.6e-06, 1.6e-05);
+# Q:32   mean-error=0.000608108204635624, maximum-error=0.0117954632778599
 
 ++$test;
 testFilterCompare('input.miff', q//, 'reference/filter/Resize.miff', 'Resize',

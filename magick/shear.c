@@ -883,7 +883,7 @@ static void YShearImage(Image *image,const double degrees,
 %  while negative angles rotate clockwise.  Rotated images are usually larger
 %  than the originals and have 'empty' triangular corners.  X axis.  Empty
 %  triangles left over from shearing the image are filled with the color
-%  defined by the pixel at location (0,0).  RotateImage allocates the memory
+%  specified by the image background_color.  RotateImage allocates the memory
 %  necessary for the new Image structure and returns a pointer to the new
 %  image.
 %

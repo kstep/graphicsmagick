@@ -166,7 +166,7 @@ sub testReadCompare {
       goto COMPARE_RUNTIME_ERROR;
     }
 
-#  if ("$srcimage_name" eq "gradient:red-blue") {
+#  if ("$srcimage_name" eq "input_70x46.uyvy") {
 #    $srcimage->write(filename=>"$refimage_name", compression=>'None');
 #  }
 
@@ -215,6 +215,7 @@ sub testReadCompare {
        ($normalized_maximum_error > $normalized_maximum_error_max) )
     {
       print("mean-error=$normalized_mean_error, maximum-error=$normalized_maximum_error\n");
+      #$srcimage->Display();
       print "not ok $test\n";
       return 1
     }
@@ -963,6 +964,7 @@ sub testFilterCompare {
     {
       print("  mean-error=$normalized_mean_error, maximum-error=$normalized_maximum_error\n");
       print "not ok $test\n";
+      #$srcimage->Display();
       return 1
     }
 

@@ -55,6 +55,7 @@
 #include "studio.h"
 #include "blob.h"
 #include "cache.h"
+#include "log.h"
 #include "magick.h"
 #include "monitor.h"
 #include "utility.h"
@@ -154,6 +155,8 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   XVisualInfo
     *visual_info;
 
+  LogMagickEvent(CoderEvent,GetMagickModule(),"enter ReadDPSImage()");
+
   /*
     Open X server connection.
   */
@@ -163,7 +166,11 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   assert(exception->signature == MagickSignature);
   display=XOpenDisplay(image_info->server_name);
   if (display == (Display *) NULL)
-    return((Image *) NULL);
+    {
+      LogMagickEvent(CoderEvent,GetMagickModule(),"failed to open X11 display!");
+      LogMagickEvent(CoderEvent,GetMagickModule(),"leaving ReadDPSImage()");
+      return((Image *) NULL);
+    }
   /*
     Set our forgiving error handler.
   */
@@ -174,7 +181,11 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    return((Image *) NULL);
+    {
+      LogMagickEvent(CoderEvent,GetMagickModule(),"failed to blob!");
+      LogMagickEvent(CoderEvent,GetMagickModule(),"leaving ReadDPSImage()");
+      return((Image *) NULL);
+    }
   /*
     Get user defaults from X resource database.
   */
@@ -204,6 +215,8 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       DestroyImage(image);
       XFreeResources(display,visual_info,map_info,(XPixelInfo *) NULL,
         (XFontStruct *) NULL,&resource_info,(XWindowInfo *) NULL);
+      LogMagickEvent(CoderEvent,GetMagickModule(),"failed to initialize visual info!");
+      LogMagickEvent(CoderEvent,GetMagickModule(),"leaving ReadDPSImage()");
       return((Image *) NULL);
     }
   /*
@@ -220,6 +233,8 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       DestroyImage(image);
       XFreeResources(display,visual_info,map_info,(XPixelInfo *) NULL,
         (XFontStruct *) NULL,&resource_info,(XWindowInfo *) NULL);
+      LogMagickEvent(CoderEvent,GetMagickModule(),"failed to create pixmap for image!");
+      LogMagickEvent(CoderEvent,GetMagickModule(),"leaving ReadDPSImage()");
       return((Image *) NULL);
     }
   /*
@@ -233,6 +248,8 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       DestroyImage(image);
       XFreeResources(display,visual_info,map_info,(XPixelInfo *) NULL,
         (XFontStruct *) NULL,&resource_info,(XWindowInfo *) NULL);
+      LogMagickEvent(CoderEvent,GetMagickModule(),"failed to rasterize EPS into pixmap!");
+      LogMagickEvent(CoderEvent,GetMagickModule(),"leaving ReadDPSImage()");
       return((Image *) NULL);
     }
   /*
@@ -246,6 +263,8 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       DestroyImage(image);
       XFreeResources(display,visual_info,map_info,(XPixelInfo *) NULL,
         (XFontStruct *) NULL,&resource_info,(XWindowInfo *) NULL);
+      LogMagickEvent(CoderEvent,GetMagickModule(),"failed initialize DPS X image!");
+      LogMagickEvent(CoderEvent,GetMagickModule(),"leaving ReadDPSImage()");
       return((Image *) NULL);
     }
   /*
@@ -258,6 +277,8 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       XDestroyImage(dps_image);
       XFreeResources(display,visual_info,map_info,(XPixelInfo *) NULL,
         (XFontStruct *) NULL,&resource_info,(XWindowInfo *) NULL);
+      LogMagickEvent(CoderEvent,GetMagickModule(),"failed allocate memory for colormap!");
+      LogMagickEvent(CoderEvent,GetMagickModule(),"leaving ReadDPSImage()");
       return((Image *) NULL);
     }
   if ((visual_info->storage_class != DirectColor) &&
@@ -314,6 +335,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image_info->ping)
     {
       CloseBlob(image);
+      LogMagickEvent(CoderEvent,GetMagickModule(),"leaving ReadDPSImage()");
       return(image);
     }
   switch (image->storage_class)
@@ -421,6 +443,8 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
           XDestroyImage(dps_image);
           XFreeResources(display,visual_info,map_info,(XPixelInfo *) NULL,
             (XFontStruct *) NULL,&resource_info,(XWindowInfo *) NULL);
+          LogMagickEvent(CoderEvent,GetMagickModule(),"failed allocate image colormap!");
+          LogMagickEvent(CoderEvent,GetMagickModule(),"leaving ReadDPSImage()");
           return((Image *) NULL);
         }
       for (i=0; i < (long) image->colors; i++)
@@ -503,6 +527,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   XFreeResources(display,visual_info,map_info,(XPixelInfo *) NULL,
     (XFontStruct *) NULL,&resource_info,(XWindowInfo *) NULL);
   CloseBlob(image);
+  LogMagickEvent(CoderEvent,GetMagickModule(),"leaving ReadDPSImage()");
   return(image);
 }
 #else
