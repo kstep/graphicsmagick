@@ -113,6 +113,7 @@
 %    -size geometry     width and height of image
 %    -texture filename  name of texture to tile onto the image background
 %    -treedepth value   depth of the color tree
+%    -trim              trim image edges
 %    -update seconds    detect when image file is modified and redisplay
 %    -verbose           print detailed information about the image
 %    -visual type       display image using this visual type
@@ -229,6 +230,7 @@ static void DisplayUsage(void)
       "-size geometry     width and height of image",
       "-texture filename  name of texture to tile onto the image background",
       "-treedepth value   depth of the color tree",
+      "-trim              trim image edges",
       "-update seconds    detect when image file is modified and redisplay",
       "-verbose           print detailed information about the image",
       "-visual type       display image using this visual type",
@@ -1211,6 +1213,8 @@ int main(int argc,char **argv)
                 }
               break;
             }
+          if (LocaleCompare("trim",option+1) == 0)
+            break;
           MagickError(OptionError,"Unrecognized option",option);
           break;
         }

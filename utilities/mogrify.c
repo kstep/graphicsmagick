@@ -144,6 +144,7 @@
 %    -tile filename       tile image when filling a graphic primitive
 %    -transparent color   make this color transparent within the image
 %    -treedepth value     depth of the color tree
+%    -trim                trim image edges
 %    -type type           image type
 %    -units type          PixelsPerInch, PixelsPerCentimeter, or Undefined
 %    -unsharp geometry    sharpen the image
@@ -280,6 +281,7 @@ static void MogrifyUsage(void)
       "-tile filename       tile image when filling a graphic primitive",
       "-transparent color   make this color transparent within the image",
       "-treedepth value     depth of the color tree",
+      "-trim                trim image edges",
       "-type type           image type",
       "-units type          PixelsPerInch, PixelsPerCentimeter, or Undefined",
       "-unsharp geometry    sharpen the image",
@@ -1571,6 +1573,8 @@ static unsigned int MogrifyUtility(int argc,char **argv)
                 }
               break;
             }
+          if (LocaleCompare("trim",option+1) == 0)
+            break;
           if (LocaleCompare("type",option+1) == 0)
             {
               image_info->type=UndefinedType;

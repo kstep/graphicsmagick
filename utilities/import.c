@@ -93,6 +93,7 @@
 %    -silent             operate silently, i.e. don't ring any bells
 %    -transparent color  make this color transparent within the image
 %    -treedepth value    depth of the color tree
+%    -trim               trim image edges
 %    -type type          image type
 %    -verbose            print detailed information about the image
 %    -window id          select window with this id or name
@@ -173,6 +174,7 @@ static void ImportUsage(void)
       "-silent             operate silently, i.e. don't ring any bells ",
       "-transparent color  make this color transparent within the image",
       "-treedepth value    depth of the color tree",
+      "-trim               trim image edges",
       "-type type          image type",
       "-verbose            print detailed information about the image",
       "-window id          select window with this id or name",
@@ -846,6 +848,8 @@ int main(int argc,char **argv)
                 }
               break;
             }
+          if (LocaleCompare("trim",option+1) == 0)
+            break;
           if (LocaleCompare("type",option+1) == 0)
             {
               image_info->type=UndefinedType;

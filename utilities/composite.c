@@ -87,6 +87,7 @@
 %    -stereo             combine two image to create a stereo anaglyph
 %    -tile               repeat composite operation across image
 %    -treedepth value    depth of the color tree
+%    -trim               trim image edges
 %    -type type          image type
 %    -units type         PixelsPerInch, PixelsPerCentimeter, or Undefined
 %    -unsharp geometry   sharpen the image
@@ -452,6 +453,7 @@ static void CompositeUsage(void)
       "-stereo             combine two image to create a stereo anaglyph",
       "-tile               repeat composite operation across image",
       "-treedepth value    depth of the color tree",
+      "-trim               trim image edges",
       "-type type          image type",
       "-units type         PixelsPerInch, PixelsPerCentimeter, or Undefined",
       "-unsharp geometry   sharpen the image",
@@ -1272,6 +1274,8 @@ MagickExport unsigned int CompositeUtility(int argc,char **argv)
                 }
               break;
             }
+          if (LocaleCompare("trim",option+1) == 0)
+            break;
           if (LocaleCompare("type",option+1) == 0)
             {
               image_info->type=UndefinedType;

@@ -4831,6 +4831,11 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             quantize_info.tree_depth=atoi(argv[++i]);
             continue;
           }
+        if (LocaleCompare("-trim",option) == 0)
+          {
+            TransformImage(image,"0x0",(char *) NULL);
+            continue;
+          }
         if (LocaleCompare("-type",option) == 0)
           {
             ImageType

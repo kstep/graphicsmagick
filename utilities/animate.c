@@ -90,6 +90,7 @@
 %    -scene value         image scene number
 %    -size geometry       width and height of image
 %    -treedepth value     depth of the color tree
+%    -trim                trim image edges
 %    -verbose             print detailed information about the image
 %    -visual type         display image using this visual type
 %    -window id           display image to background of this window
@@ -177,6 +178,7 @@ static void AnimateUsage(void)
       "-scene value         image scene number",
       "-size geometry       width and height of image",
       "-treedepth value     depth of the color tree",
+      "-trim                trim image edges",
       "-verbose             print detailed information about the image",
       "-visual type         display image using this visual type",
       "-window id           display image to background of this window",
@@ -885,6 +887,8 @@ int main(int argc,char **argv)
                 }
               break;
             }
+          if (LocaleCompare("trim",option+1) == 0)
+            break;
           MagickError(OptionError,"Unrecognized option",option);
           break;
         }

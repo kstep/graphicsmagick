@@ -1,4 +1,5 @@
 2002-01-24  Cristy  <cristy@mystic.es.dupont.com>
+  * Use -trim to trim the edges of an image.
   * Palm pixmap supported contributed by Christopher R. Hawks.
   * Added -mask to the convert/mogrify programs to add clips masks to
     an image.

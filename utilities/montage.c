@@ -130,6 +130,7 @@
 %    -tile geometry      number of tiles per row and column
 %    -transparent color  make this color transparent within the image
 %    -treedepth value    depth of the color tree
+%    -trim               trim image edges
 %    -type type          image type
 %    -verbose            print detailed information about the image
 %
@@ -220,6 +221,7 @@ static void MontageUsage(void)
       "-tile geometry      number of tiles per row and column",
       "-transparent color  make this color transparent within the image",
       "-treedepth value    depth of the color tree",
+      "-trim               trim image edges",
       "-type type          image type",
       "-verbose            print detailed information about the image",
       (char *) NULL
@@ -1145,6 +1147,8 @@ static unsigned int MontageUtility(int argc,char **argv)
                 }
               break;
             }
+          if (LocaleCompare("trim",option+1) == 0)
+            break;
           if (LocaleCompare("type",option+1) == 0)
             {
               image_info->type=UndefinedType;
