@@ -60,9 +60,6 @@
 */
 static unsigned int
   WriteGRAYImage(const ImageInfo *,Image *);
-
-MagickExport void
-  UnregisterGRAYImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

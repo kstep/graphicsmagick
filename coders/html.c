@@ -60,9 +60,6 @@
 */
 static unsigned int
   WriteHTMLImage(const ImageInfo *,Image *);
-
-MagickExport void
-  UnregisterHTMLImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

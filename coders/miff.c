@@ -66,9 +66,6 @@
 */
 static unsigned int
   WriteMIFFImage(const ImageInfo *,Image *);
-
-MagickExport void
-  UnregisterMIFFImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

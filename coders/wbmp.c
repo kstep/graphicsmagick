@@ -59,9 +59,6 @@
 */
 static unsigned int
   WriteWBMPImage(const ImageInfo *,Image *);
-
-MagickExport void
-  UnregisterWBMPImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -57,9 +57,6 @@
 static unsigned int
   WriteWPGImage(const ImageInfo *,Image *);
 
-MagickExport void
-  UnregisterWPGImage(void);
-
 #define DWORD unsigned long
 #define WORD  unsigned
 #define BYTE  unsigned char

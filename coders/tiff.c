@@ -66,9 +66,6 @@ static Image
 */
 static unsigned int
   WriteTIFFImage(const ImageInfo *,Image *);
-
-MagickExport void
-  UnregisterTIFFImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

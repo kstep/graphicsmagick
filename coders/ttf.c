@@ -55,12 +55,6 @@
 #include "magick.h"
 #include "defines.h"
 
-/*
-  Forward declarations.
-*/
-MagickExport void
-  UnregisterTTFImage(void);
-
 #if defined(HasTTF)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

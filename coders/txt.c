@@ -60,9 +60,6 @@
 */
 static unsigned int
   WriteTXTImage(const ImageInfo *,Image *);
-
-MagickExport void
-  UnregisterTXTImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -53,12 +53,6 @@
 #include "defines.h"
 
 /*
-  Forward declarations.
-*/
-MagickExport void
-  UnregisterMVGImage(void);
-
-/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %

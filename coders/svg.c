@@ -155,12 +155,6 @@ typedef struct _SVGInfo
 #endif
 
 /*
-  Forward declarations.
-*/
-MagickExport void
-  UnregisterSVGImage(void);
-
-/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %

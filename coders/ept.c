@@ -60,9 +60,6 @@
 */
 static unsigned int
   WriteEPTImage(const ImageInfo *,Image *);
-
-MagickExport void
-  UnregisterEPTImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

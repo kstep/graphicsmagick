@@ -60,9 +60,6 @@
 */
 static unsigned int
   WriteTGAImage(const ImageInfo *,Image *);
-
-MagickExport void
-  UnregisterTGAImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -60,9 +60,6 @@
 */
 static unsigned int
   WriteXBMImage(const ImageInfo *,Image *);
-
-MagickExport void
-  UnregisterXBMImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -66,9 +66,6 @@ const char
 */
 static unsigned int
   WritePreviewImage(const ImageInfo *,Image *);
-
-MagickExport void
-  UnregisterPreviewImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

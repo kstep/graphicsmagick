@@ -3792,9 +3792,6 @@ static const unsigned char
 */
 static unsigned int
   WriteLOGOImage(const ImageInfo *,Image *);
-
-MagickExport void
-  UnregisterLOGOImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

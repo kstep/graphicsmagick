@@ -60,9 +60,6 @@
 */
 static unsigned int
   WriteMTVImage(const ImageInfo *,Image *);
-
-MagickExport void
-  UnregisterMTVImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

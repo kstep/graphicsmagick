@@ -60,9 +60,6 @@
 */
 static unsigned int
   WriteMATTEImage(const ImageInfo *,Image *);
-
-MagickExport void
-  UnregisterMATTEImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

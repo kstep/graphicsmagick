@@ -60,9 +60,6 @@
 */
 static unsigned int
   WriteSUNImage(const ImageInfo *,Image *);
-
-MagickExport void
-  UnregisterSUNImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

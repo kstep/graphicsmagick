@@ -61,9 +61,6 @@
 */
 static unsigned int
   WriteXPMImage(const ImageInfo *,Image *);
-
-MagickExport void
-  UnregisterXPMImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -60,9 +60,6 @@
 */
 static unsigned int
   WriteCMYKImage(const ImageInfo *,Image *);
-
-MagickExport void
-  UnregisterCMYKImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

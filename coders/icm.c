@@ -60,9 +60,6 @@
 */
 static unsigned int
   WriteICMImage(const ImageInfo *,Image *);
-
-MagickExport void
-  UnregisterICMImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

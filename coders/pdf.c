@@ -65,9 +65,6 @@
 */
 static unsigned int
   WritePDFImage(const ImageInfo *,Image *);
-
-MagickExport void
-  UnregisterPDFImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

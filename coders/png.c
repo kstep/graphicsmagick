@@ -312,9 +312,6 @@ typedef struct _MngInfo
 */
 static unsigned int
   WritePNGImage(const ImageInfo *,Image *);
-
-MagickExport void
-  UnregisterPNGImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -60,9 +60,6 @@
 */
 static unsigned int
   WriteXWDImage(const ImageInfo *,Image *);
-
-MagickExport void
-  UnregisterXWDImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -117,12 +117,6 @@ typedef struct _StreamInfo
 } StreamInfo;
 
 /*
-  Forward declarations.
-*/
-MagickExport void
-  UnregisterAVIImage(void);
-
-/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %

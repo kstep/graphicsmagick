@@ -107,9 +107,6 @@ typedef struct _BMPInfo
 */
 static unsigned int
   WriteBMPImage(const ImageInfo *,Image *);
-
-MagickExport void
-  UnregisterBMPImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

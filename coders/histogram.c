@@ -60,9 +60,6 @@
 */
 static unsigned int
   WriteHISTOGRAMImage(const ImageInfo *,Image *);
-
-MagickExport void
-  UnregisterHISTOGRAMImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

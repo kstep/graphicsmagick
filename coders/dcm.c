@@ -2596,12 +2596,6 @@ static const DicomInfo
   };
 
 /*
-  Forward declarations.
-*/
-MagickExport void
-  UnregisterDCMImage(void);
-
-/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %

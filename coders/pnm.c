@@ -60,9 +60,6 @@
 */
 static unsigned int
   WritePNMImage(const ImageInfo *,Image *);
-
-MagickExport void
-  UnregisterPNMImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

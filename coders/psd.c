@@ -60,9 +60,6 @@
 */
 static unsigned int
   WritePSDImage(const ImageInfo *,Image *);
-
-MagickExport void
-  UnregisterPSDImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

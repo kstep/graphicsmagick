@@ -65,9 +65,6 @@
 */
 static unsigned int
   WritePS3Image(const ImageInfo *,Image *);
-
-MagickExport void
-  UnregisterPS3Image(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

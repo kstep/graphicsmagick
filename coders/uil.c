@@ -60,9 +60,6 @@
 */
 static unsigned int
   WriteUILImage(const ImageInfo *,Image *);
-
-MagickExport void
-  UnregisterUILImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

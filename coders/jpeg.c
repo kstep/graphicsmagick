@@ -64,9 +64,6 @@
 */
 static unsigned int
   WriteJPEGImage(const ImageInfo *,Image *);
-
-MagickExport void
-  UnregisterJPEGImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

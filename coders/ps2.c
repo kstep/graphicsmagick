@@ -65,9 +65,6 @@
 */
 static unsigned int
   WritePS2Image(const ImageInfo *,Image *);
-
-MagickExport void
-  UnregisterPS2Image(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

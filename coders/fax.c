@@ -60,9 +60,6 @@
 */
 static unsigned int
   WriteFAXImage(const ImageInfo *,Image *);
-
-MagickExport void
-  UnregisterFAXImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

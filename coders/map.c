@@ -60,9 +60,6 @@
 */
 static unsigned int
   WriteMAPImage(const ImageInfo *,Image *);
-
-MagickExport void
-  UnregisterMAPImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

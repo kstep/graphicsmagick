@@ -58,12 +58,6 @@
 #include "xwindows.h"
 
 /*
-  Forward declarations.
-*/
-MagickExport void
-  UnregisterDPSImage(void);
-
-/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %

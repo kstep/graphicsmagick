@@ -61,9 +61,6 @@
 */
 static unsigned int
   WriteCACHEImage(const ImageInfo *,Image *);
-
-MagickExport void
-  UnregisterCACHEImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

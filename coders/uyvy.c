@@ -60,9 +60,6 @@
 */
 static unsigned int
   WriteUYVYImage(const ImageInfo *,Image *);
-
-MagickExport void
-  UnregisterUYVYImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

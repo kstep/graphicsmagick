@@ -56,12 +56,6 @@
 #include "defines.h"
 
 /*
-  Forward declarations.
-*/
-MagickExport void
-  UnregisterPLASMAImage(void);
-
-/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %

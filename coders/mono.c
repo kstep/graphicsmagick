@@ -60,9 +60,6 @@
 */
 static unsigned int
   WriteMONOImage(const ImageInfo *,Image *);
-
-MagickExport void
-  UnregisterMONOImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -60,9 +60,6 @@
 */
 static unsigned int
   WriteHDFImage(const ImageInfo *,Image *);
-
-MagickExport void
-  UnregisterHDFImage(void);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
