@@ -1,3 +1,10 @@
+2003-06-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* GraphicsMagick 1.0.2 released.
+	* libxml/libxml2.def: Since VisualMagick configure is not fixed
+	yet, add "LIBRARY CORE_RL_libxml_.dll" to the top of the file to
+	at least cover the release build case.
+
 2003-06-07  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* magick/image.c (GetImageGeometry) Y was a function of width

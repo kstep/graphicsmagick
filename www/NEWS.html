@@ -68,9 +68,16 @@ Major changes associated with GraphicsMagick 1.0.2 (Pending)
   <LI> Fixed PerlMagick Shade 'elevation' argument.
   <LI> Fixed EPT writing.
   <LI> PNG, MNG, and JNG writer fixes.
+  <LI> PSD reader fix for color indexed images.
   <LI> Fixed an error handling path in mogrify command.
   <LI> Added missing module mappings for a number of coders.
   <LI> Fixed problem with libxml/libxml2.def &amp; Visual C++ 6.0.
+  <LI> GetImageGeometry was incorrectly handling EastGravity and
+    WestGravity.<BR>
+  <LI> Log event option processing is now handled consistently.
+  <LI> GetGeometry now performs some validation of geometry argument.
+  <LI> Magick++ throws an exception if GetGeometry rejects the geometry
+    argument.
 
 </UL>
 <p>

@@ -1,3 +1,4 @@
+LIBRARY CORE_RL_libxml_.dll
 EXPORTS
 	UTF8ToHtml
 	UTF8Toisolat1
