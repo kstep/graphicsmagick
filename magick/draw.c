@@ -81,26 +81,24 @@ typedef struct _EdgeInfo
   SegmentInfo
     bounds;
 
-  int
-    number_points;
+  double
+    scanline;
 
   PointInfo
     *points;
 
   int
+    number_points,
     direction,
-    visibility,
+    ghost,
     highwater;
-
-  double
-    scanline;
 } EdgeInfo;
 
 typedef enum
 {
   MoveToCode,
   OpenCode,
-  HiddenCode,
+  GhostCode,
   LineToCode,
   EndCode
 } PathInfoCode;
@@ -116,11 +114,11 @@ typedef struct _PathInfo
 
 typedef struct _PolygonInfo
 {
-  int
-    number_edges;
-
   EdgeInfo
     *edges;
+
+  int
+    number_edges;
 } PolygonInfo;
 
 /*
@@ -1592,6 +1590,366 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 %
 */
 
+static int DestroyEdge(PolygonInfo *polygon_info,const int edge)
+{
+  register int
+    i;
+
+  if (edge >= polygon_info->number_edges)
+    return(polygon_info->number_edges);
+  LiberateMemory((void **) &polygon_info->edges[edge].points);
+  for (i=edge; i < polygon_info->number_edges; i++)
+    polygon_info->edges[i]=polygon_info->edges[i+1];
+  polygon_info->number_edges--;
+  return(polygon_info->number_edges);
+}
+
+static inline double DistanceToLine(const PointInfo *p,const double x,
+  const double y)
+{
+  double
+    alpha,
+    beta,
+    dot_product;
+
+  register const PointInfo
+    *q;
+
+  register double
+    dx,
+    dy;
+
+  /*
+    Determine distance between a point and a specific edge.
+  */
+  q=p+1;
+  dx=q->x-p->x,
+  dy=q->y-p->y;
+  dot_product=dx*(x-p->x)+dy*(y-p->y);
+  if (dot_product < 0.0)
+    {
+      dx=x-p->x;
+      dy=y-p->y;
+      return(dx*dx+dy*dy);
+    }
+  alpha=dx*dx+dy*dy;
+  if (dot_product > alpha)
+    {
+      dx=x-q->x;
+      dy=y-q->y;
+      return(dx*dx+dy*dy);
+    }
+  beta=dx*(y-p->y)-dy*(x-p->x);
+  return(beta*beta/alpha+MagickEpsilon);
+}
+
+static inline int GetWindingNumber(const PolygonInfo *polygon_info,
+  const double x,const double y)
+{
+  int
+    j,
+    winding_number;
+
+  register double
+    dx,
+    dy;
+
+  register int
+    i;
+
+  register PointInfo
+    *p,
+    *q;
+
+  winding_number=0;
+  for (i=0; i < polygon_info->number_edges; i++)
+  {
+    if (polygon_info->edges[i].bounds.y1 > y)
+      break;
+    if (polygon_info->edges[i].bounds.y2 <= y)
+      continue;
+    if (polygon_info->edges[i].bounds.x2 < x)
+      {
+        winding_number+=polygon_info->edges[i].direction ? 1 : -1;
+        continue;
+      }
+    if (polygon_info->edges[i].bounds.x1 > x)
+      continue;
+    j=1;
+    if (polygon_info->edges[i].highwater > 0)
+      j=polygon_info->edges[i].highwater;
+    for ( ; j < polygon_info->edges[i].number_points; j++)
+      if (polygon_info->edges[i].points[j].y > y)
+        break;
+    p=polygon_info->edges[i].points+j-1;
+    q=p+1;
+    dx=q->x-p->x;
+    dy=q->y-p->y;
+    if ((dy*(x-p->x)) <= (dx*(y-p->y)))
+      continue;
+    winding_number+=polygon_info->edges[i].direction ? 1 : -1;
+  }
+  return(winding_number);
+}
+
+static void ReversePoints(PointInfo *points,const int number_points)
+{
+  PointInfo
+    point;
+
+  register int
+    i;
+
+  for (i=0; i < (number_points >> 1); i++)
+  {
+    point=points[i];
+    points[i]=points[number_points-(i+1)];
+    points[number_points-(i+1)]=point;
+  }
+}
+
+static void DrawPolygonPrimitive(const DrawInfo *draw_info,
+  const PrimitiveInfo *primitive_info,PolygonInfo *polygon_info,Image *image)
+{
+  double
+    alpha,
+    beta,
+    distance,
+    gamma,
+    fill_opacity,
+    mid,
+    stroke_opacity,
+    subpath_opacity;
+
+  int
+    fill,
+    j,
+    winding_number,
+    y;
+
+  PixelPacket
+    fill_color,
+    stroke_color;
+
+  register EdgeInfo
+    *p;
+
+  register int
+    i,
+    x;
+
+  register PixelPacket
+    *q;
+
+  SegmentInfo
+    bounds;
+
+  /*
+    Compute bounding box.
+  */
+  assert(primitive_info != (PrimitiveInfo *) NULL);
+  assert(draw_info != (DrawInfo *) NULL);
+  assert(draw_info->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  alpha=1.0/MaxRGB;
+  fill=(primitive_info->method == FillToBorderMethod) ||
+    (primitive_info->method == FloodfillMethod);
+  fill_color=draw_info->fill;
+  mid=draw_info->linewidth/2.0;
+  stroke_color=draw_info->stroke;
+  bounds=polygon_info->edges[0].bounds;
+  for (i=1; i < polygon_info->number_edges; i++)
+  {
+    p=polygon_info->edges+i;
+    if (p->bounds.x1 < bounds.x1)
+      bounds.x1=p->bounds.x1;
+    if (p->bounds.y1 < bounds.y1)
+      bounds.y1=p->bounds.y1;
+    if (p->bounds.x2 > bounds.x2)
+      bounds.x2=p->bounds.x2;
+    if (p->bounds.y2 > bounds.y2)
+      bounds.y2=p->bounds.y2;
+  }
+  bounds.x1-=(mid+1.0);
+  if (bounds.x1 < 0.0)
+    bounds.x1=0.0;
+  bounds.y1-=(mid+1.0);
+  if (bounds.y1 < 0.0)
+    bounds.y1=0.0;
+  bounds.x2+=(mid+1.0);
+  if (bounds.x2 >= image->columns)
+    bounds.x2=image->columns-1.0;
+  bounds.y2+=(mid+1.0);
+  if (bounds.y2 >= image->rows)
+    bounds.y2=image->rows-1.0;
+  for (y=(int) ceil(bounds.y1-0.5); y <= (int) floor(bounds.y2-0.5); y++)
+  {
+    x=(int) ceil(bounds.x1-0.5);
+    q=GetImagePixels(image,x,y,(int) floor(bounds.x2-0.5)-x+1,1);
+    if (q == (PixelPacket *) NULL)
+      break;
+    for ( ; x <= (int) floor(bounds.x2-0.5); x++)
+    {
+      /*
+        Compute the stroke and fill opacity values.
+      */
+      fill_opacity=0.0;
+      stroke_opacity=0.0;
+      subpath_opacity=0.0;
+      if (primitive_info->coordinates <= 1)
+        {
+          if ((x == (int) ceil(primitive_info->point.x-0.5)) &&
+              (y == (int) ceil(primitive_info->point.y-0.5)))
+            stroke_opacity=1.0;
+        }
+      else
+        {
+          winding_number=fill ? GetWindingNumber(polygon_info,x,y) : 0;
+          for (i=0; i < polygon_info->number_edges; i++)
+          {
+            p=polygon_info->edges+i;
+            if ((p->bounds.y1-mid-0.5) > y)
+              break;
+            if ((p->bounds.y2+mid+0.5) < y)
+              {
+                (void) DestroyEdge(polygon_info,i);
+                continue;
+              }
+            if (x > (p->bounds.x2+mid+0.5))
+              continue;
+            if (x < (p->bounds.x1-mid-0.5))
+              continue;
+            j=p->highwater > 0 ? p->highwater : 1;
+            for ( ; j < p->number_points; j++)
+            {
+              if ((p->points[j-1].y-mid-0.5) > y)
+                break;
+              if ((p->points[j].y+mid+0.5) <= y)
+                continue;
+              if (p->scanline != y)
+                {
+                  p->scanline=y;
+                  p->highwater=j;
+                }
+              distance=DistanceToLine(p->points+j-1,x,y);
+              gamma=0.0;
+              if (!p->ghost)
+                {
+                  beta=mid+0.5;
+                  if ((stroke_opacity < 1.0) && (distance <= (beta*beta)))
+                    {
+                      beta=mid-0.5;
+                      if (distance <= (beta*beta))
+                        stroke_opacity=1.0;
+                      else
+                        {
+                          gamma=sqrt(distance);
+                          beta=gamma-mid-0.5;
+                          stroke_opacity=Max(stroke_opacity,beta*beta);
+                        }
+                    }
+                }
+              if (!fill || (distance > 1.0) || (subpath_opacity >= 1.0))
+                continue;
+              if (distance <= 0.0)
+                {
+                  subpath_opacity=1.0;
+                  continue;
+                }
+              if (distance > 1.0)
+                continue;
+              if (gamma == 0.0)
+                gamma=sqrt(distance);
+              beta=gamma-1.0;
+              subpath_opacity=Max(subpath_opacity,beta*beta);
+            }
+          }
+          if (fill)
+            {
+              if (subpath_opacity > 0.0)
+                fill_opacity=subpath_opacity;
+              if (draw_info->fill_rule != NonZeroRule)
+                {
+                  if (AbsoluteValue(winding_number) & 0x01)
+                    fill_opacity=1.0;
+                }
+              else
+                if (AbsoluteValue(winding_number) > 0)
+                  fill_opacity=1.0;
+            }
+        }
+      if (draw_info->tile != (Image *) NULL)
+        fill_color=GetOnePixel(draw_info->tile,x % draw_info->tile->columns,
+          y % draw_info->tile->rows);
+      if ((fill_opacity != 0.0) && (fill_color.opacity != TransparentOpacity))
+        {
+          /*
+            Fill.
+          */
+          fill_opacity=MaxRGB-fill_opacity*(MaxRGB-fill_color.opacity);
+          q->red=(Quantum) (alpha*(fill_color.red*(MaxRGB-fill_opacity)+
+            q->red*fill_opacity));
+          q->green=(Quantum) (alpha*(fill_color.green*(MaxRGB-fill_opacity)+
+            q->green*fill_opacity));
+          q->blue=(Quantum) (alpha*(fill_color.blue*(MaxRGB-fill_opacity)+
+            q->blue*fill_opacity));
+          q->opacity=(Quantum) (alpha*(fill_color.opacity*(MaxRGB-fill_opacity)+
+            q->opacity*fill_opacity));
+        }
+      if ((stroke_opacity != 0.0) &&
+          (stroke_color.opacity != TransparentOpacity))
+        {
+          /*
+            Stroke.
+          */
+          stroke_opacity=MaxRGB-stroke_opacity*(MaxRGB-stroke_color.opacity);
+          q->red=(Quantum) (alpha*(stroke_color.red*(MaxRGB-stroke_opacity)+
+            q->red*stroke_opacity));
+          q->green=(Quantum) (alpha*(stroke_color.green*(MaxRGB-stroke_opacity)+
+            q->green*stroke_opacity));
+          q->blue=(Quantum) (alpha*(stroke_color.blue*(MaxRGB-stroke_opacity)+
+            q->blue*stroke_opacity));
+          q->opacity=(Quantum) (alpha*(stroke_color.opacity*(MaxRGB-
+            stroke_opacity)+q->opacity*stroke_opacity));
+        }
+      q++;
+    }
+    if (!SyncImagePixels(image))
+      break;
+  }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D r a w P r i m i t i v e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method DrawPrimitive draws a primitive (line, rectangle, ellipse) on the
+%  image.
+%
+%  The format of the DrawPrimitive method is:
+%
+%      void DrawPrimitive(const DrawInfo *draw_info,
+%        PrimitiveInfo *primitive_info,Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o draw_info: The address of a DrawInfo structure.
+%
+%    o primitive_info: Specifies a pointer to a PrimitiveInfo structure.
+%
+%    o image: The address of a structure of type Image.
+%
+%
+*/
+
 static int CompareEdges(const void *x,const void *y)
 {
   register const EdgeInfo
@@ -1622,7 +1980,7 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info)
   int
     direction,
     edge,
-    visibility,
+    ghost,
     next_direction,
     number_edges,
     number_points;
@@ -1653,7 +2011,7 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info)
     return((PolygonInfo *) NULL);
   direction=0;
   edge=0;
-  visibility=False;
+  ghost=False;
   n=0;
   number_points=0;
   points=(PointInfo *) NULL;
@@ -1662,7 +2020,7 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info)
   for (i=0; path_info[i].code != EndCode; i++)
   {
     if ((path_info[i].code == MoveToCode) || (path_info[i].code == OpenCode) ||
-        (path_info[i].code == HiddenCode))
+        (path_info[i].code == GhostCode))
       {
         /*
           Move to.
@@ -1680,7 +2038,7 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info)
             polygon_info->edges[edge].number_points=n;
             polygon_info->edges[edge].scanline=(-1.0);
             polygon_info->edges[edge].highwater=0;
-            polygon_info->edges[edge].visibility=visibility;
+            polygon_info->edges[edge].ghost=ghost;
             polygon_info->edges[edge].direction=direction > 0;
             if (direction < 0)
               ReversePoints(points,n);
@@ -1689,7 +2047,7 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info)
             polygon_info->edges[edge].bounds.y1=points[0].y;
             polygon_info->edges[edge].bounds.y2=points[n-1].y;
             points=(PointInfo *) NULL;
-            visibility=False;
+            ghost=False;
             edge++;
           }
         if (points == (PointInfo *) NULL)
@@ -1699,7 +2057,7 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info)
             if (points == (PointInfo *) NULL)
               return((PolygonInfo *) NULL);
           }
-        visibility=path_info[i].code == HiddenCode;
+        ghost=path_info[i].code == GhostCode;
         point=path_info[i].point;
         points[0]=point;
         bounds.x1=point.x;
@@ -1731,7 +2089,7 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info)
         polygon_info->edges[edge].number_points=n;
         polygon_info->edges[edge].scanline=(-1.0);
         polygon_info->edges[edge].highwater=0;
-        polygon_info->edges[edge].visibility=visibility;
+        polygon_info->edges[edge].ghost=ghost;
         polygon_info->edges[edge].direction=direction > 0;
         if (direction < 0)
           ReversePoints(points,n);
@@ -1744,7 +2102,7 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info)
         if (points == (PointInfo *) NULL)
           return((PolygonInfo *) NULL);
         n=1;
-        visibility=False;
+        ghost=False;
         points[0]=point;
         bounds.x1=point.x;
         bounds.x2=point.x;
@@ -1785,7 +2143,7 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info)
           polygon_info->edges[edge].number_points=n;
           polygon_info->edges[edge].scanline=(-1.0);
           polygon_info->edges[edge].highwater=0;
-          polygon_info->edges[edge].visibility=visibility;
+          polygon_info->edges[edge].ghost=ghost;
           polygon_info->edges[edge].direction=direction > 0;
           if (direction < 0)
             ReversePoints(points,n);
@@ -1793,7 +2151,7 @@ static PolygonInfo *ConvertPathToPolygon(const PathInfo *path_info)
           polygon_info->edges[edge].bounds=bounds;
           polygon_info->edges[edge].bounds.y1=points[0].y;
           polygon_info->edges[edge].bounds.y2=points[n-1].y;
-          visibility=False;
+          ghost=False;
           edge++;
         }
     }
@@ -1884,7 +2242,7 @@ static PathInfo *ConvertPrimitiveToPath(const PrimitiveInfo *primitive_info)
       Mark the first point as open if it does not match the last.
     */
     path_info[start].code=OpenCode;
-    path_info[n].code=HiddenCode;
+    path_info[n].code=GhostCode;
     path_info[n].point=point;
     n++;
     path_info[n].code=LineToCode;
@@ -1897,20 +2255,6 @@ static PathInfo *ConvertPrimitiveToPath(const PrimitiveInfo *primitive_info)
   return(path_info);
 }
 
-static int DestroyEdge(PolygonInfo *polygon_info,const int edge)
-{
-  register int
-    i;
-
-  if (edge >= polygon_info->number_edges)
-    return(polygon_info->number_edges);
-  LiberateMemory((void **) &polygon_info->edges[edge].points);
-  for (i=edge; i < polygon_info->number_edges; i++)
-    polygon_info->edges[i]=polygon_info->edges[i+1];
-  polygon_info->number_edges--;
-  return(polygon_info->number_edges);
-}
-
 static void DestroyPolygonInfo(PolygonInfo *polygon_info)
 {
   register int
@@ -1920,45 +2264,6 @@ static void DestroyPolygonInfo(PolygonInfo *polygon_info)
     LiberateMemory((void **) &polygon_info->edges[i].points);
   LiberateMemory((void **) &polygon_info->edges);
   LiberateMemory((void **) &polygon_info);
-}
-
-static inline double DistanceToLine(const PointInfo *p,const double x,
-  const double y)
-{
-  double
-    alpha,
-    beta,
-    dot_product;
-
-  register const PointInfo
-    *q;
-
-  register double
-    dx,
-    dy;
-
-  /*
-    Determine distance between a point and a specific edge.
-  */
-  q=p+1;
-  dx=q->x-p->x,
-  dy=q->y-p->y;
-  dot_product=dx*(x-p->x)+dy*(y-p->y);
-  if (dot_product < 0.0)
-    {
-      dx=x-p->x;
-      dy=y-p->y;
-      return(dx*dx+dy*dy);
-    }
-  alpha=dx*dx+dy*dy;
-  if (dot_product > alpha)
-    {
-      dx=x-q->x;
-      dy=y-q->y;
-      return(dx*dx+dy*dy);
-    }
-  beta=dx*(y-p->y)-dy*(x-p->x);
-  return(beta*beta/alpha+MagickEpsilon);
 }
 
 static void DrawBoundingRectangles(Image *image,const PolygonInfo *polygon_info)
@@ -2046,55 +2351,6 @@ static void DrawBoundingRectangles(Image *image,const PolygonInfo *polygon_info)
   DestroyDrawInfo(draw_info);
 }
 
-static inline int GetWindingNumber(const PolygonInfo *polygon_info,
-  const double x,const double y)
-{
-  int
-    j,
-    winding_number;
-
-  register double
-    dx,
-    dy;
-
-  register int
-    i;
-
-  register PointInfo
-    *p,
-    *q;
-
-  winding_number=0;
-  for (i=0; i < polygon_info->number_edges; i++)
-  {
-    if (polygon_info->edges[i].bounds.y1 > y)
-      break;
-    if (polygon_info->edges[i].bounds.y2 <= y)
-      continue;
-    if (polygon_info->edges[i].bounds.x2 < x)
-      {
-        winding_number+=polygon_info->edges[i].direction ? 1 : -1;
-        continue;
-      }
-    if (polygon_info->edges[i].bounds.x1 > x)
-      continue;
-    j=1;
-    if (polygon_info->edges[i].highwater > 0)
-      j=polygon_info->edges[i].highwater;
-    for ( ; j < polygon_info->edges[i].number_points; j++)
-      if (polygon_info->edges[i].points[j].y > y)
-        break;
-    p=polygon_info->edges[i].points+j-1;
-    q=p+1;
-    dx=q->x-p->x;
-    dy=q->y-p->y;
-    if ((dy*(x-p->x)) <= (dx*(y-p->y)))
-      continue;
-    winding_number+=polygon_info->edges[i].direction ? 1 : -1;
-  }
-  return(winding_number);
-}
-
 static void PrintPathInfo(const PathInfo *path_info)
 {
   register const PathInfo
@@ -2103,7 +2359,7 @@ static void PrintPathInfo(const PathInfo *path_info)
   (void) fprintf(stdout,"  begin vector-path\n");
   for (p=path_info; p->code != EndCode; p++)
     (void) fprintf(stdout,"    %g,%g %s\n",p->point.x,p->point.y,
-      p->code == HiddenCode ? "moveto visibility" :
+      p->code == GhostCode ? "moveto ghost" :
       p->code == OpenCode ? "moveto open" : p->code == MoveToCode ? "moveto" :
       p->code == LineToCode ? "lineto" : "?");
   (void) fprintf(stdout,"  end vector-path\n");
@@ -2123,8 +2379,8 @@ static void PrintPolygonInfo(const PolygonInfo *polygon_info)
   for (i=0; i < polygon_info->number_edges; i++)
   {
     (void) fprintf(stdout,"    edge %d:\n      direction: %s\n      "
-      "visibility: %s\n      bounds: %g,%g - %g,%g\n",i,
-      p->direction ? "down" : "up",p->visibility ? "transparent" : "opaque",
+      "ghost: %s\n      bounds: %g,%g - %g,%g\n",i,
+      p->direction ? "down" : "up",p->ghost ? "transparent" : "opaque",
       p->bounds.x1,p->bounds.y1,p->bounds.x2,p->bounds.y2);
     for (j=0; j < p->number_points; j++)
       (void) fprintf(stdout,"        %g,%g\n",p->points[j].x,p->points[j].y);
@@ -2225,266 +2481,6 @@ static void PrintPrimitiveInfo(const PrimitiveInfo *primitive_info)
   }
 }
 
-static void ReversePoints(PointInfo *points,const int number_points)
-{
-  PointInfo
-    point;
-
-  register int
-    i;
-
-  for (i=0; i < (number_points >> 1); i++)
-  {
-    point=points[i];
-    points[i]=points[number_points-(i+1)];
-    points[number_points-(i+1)]=point;
-  }
-}
-
-static void DrawPolygonPrimitive(const DrawInfo *draw_info,
-  const PrimitiveInfo *primitive_info,PolygonInfo *polygon_info,Image *image)
-{
-  double
-    alpha,
-    beta,
-    distance,
-    fill_opacity,
-    mid,
-    stroke_opacity,
-    subpath_opacity;
-
-  int
-    fill,
-    j,
-    winding_number,
-    y;
-
-  PixelPacket
-    color;
-
-  register EdgeInfo
-    *p;
-
-  register int
-    i,
-    x;
-
-  register PixelPacket
-    *q;
-
-  SegmentInfo
-    bounds;
-
-  /*
-    Compute bounding box.
-  */
-  assert(primitive_info != (PrimitiveInfo *) NULL);
-  assert(draw_info != (DrawInfo *) NULL);
-  assert(draw_info->signature == MagickSignature);
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  bounds=polygon_info->edges[0].bounds;
-  mid=draw_info->linewidth/2.0;
-  for (i=1; i < polygon_info->number_edges; i++)
-  {
-    p=polygon_info->edges+i;
-    if (p->bounds.x1 < bounds.x1)
-      bounds.x1=p->bounds.x1;
-    if (p->bounds.y1 < bounds.y1)
-      bounds.y1=p->bounds.y1;
-    if (p->bounds.x2 > bounds.x2)
-      bounds.x2=p->bounds.x2;
-    if (p->bounds.y2 > bounds.y2)
-      bounds.y2=p->bounds.y2;
-  }
-  bounds.x1-=(mid+1.0);
-  if (bounds.x1 < 0.0)
-    bounds.x1=0.0;
-  bounds.y1-=(mid+1.0);
-  if (bounds.y1 < 0.0)
-    bounds.y1=0.0;
-  bounds.x2+=(mid+1.0);
-  if (bounds.x2 >= image->columns)
-    bounds.x2=image->columns-1.0;
-  bounds.y2+=(mid+1.0);
-  if (bounds.y2 >= image->rows)
-    bounds.y2=image->rows-1.0;
-  fill=(primitive_info->method == FillToBorderMethod) ||
-    (primitive_info->method == FloodfillMethod);
-  for (y=(int) ceil(bounds.y1-0.5); y <= (int) floor(bounds.y2-0.5); y++)
-  {
-    x=(int) ceil(bounds.x1-0.5);
-    q=GetImagePixels(image,x,y,(int) floor(bounds.x2-0.5)-x+1,1);
-    if (q == (PixelPacket *) NULL)
-      break;
-    for ( ; x <= (int) floor(bounds.x2-0.5); x++)
-    {
-      /*
-        Compute the stroke and fill opacity values.
-      */
-      fill_opacity=0.0;
-      stroke_opacity=0.0;
-      subpath_opacity=0.0;
-      switch (primitive_info->coordinates)
-      {
-        case 0:
-          break;
-        case 1:
-        {
-          if ((x == (int) ceil(primitive_info->point.x-0.5)) &&
-              (y == (int) ceil(primitive_info->point.y-0.5)))
-            stroke_opacity=1.0;
-          break;
-        }
-        default:
-        {
-          winding_number=fill ? GetWindingNumber(polygon_info,x,y) : 0;
-          for (i=0; i < polygon_info->number_edges; i++)
-          {
-            p=polygon_info->edges+i;
-            if ((p->bounds.y1-mid-0.5) > y)
-              break;
-            if ((p->bounds.y2+mid+0.5) < y)
-              {
-                (void) DestroyEdge(polygon_info,i);
-                continue;
-              }
-            if (x > (p->bounds.x2+mid+0.5))
-              continue;
-            if (x < (p->bounds.x1-mid-0.5))
-              continue;
-            j=p->highwater > 0 ? p->highwater : 1;
-            for ( ; j < p->number_points; j++)
-            {
-              if ((p->points[j-1].y-mid-0.5) > y)
-                break;
-              if ((p->points[j].y+mid+0.5) <= y)
-                continue;
-              if (p->scanline != y)
-                {
-                  p->scanline=y;
-                  p->highwater=j;
-                }
-              distance=DistanceToLine(p->points+j-1,x,y);
-              beta=0.0;
-              if (!p->visibility)
-                {
-                  alpha=mid+0.5;
-                  if ((stroke_opacity < 1.0) && (distance <= (alpha*alpha)))
-                    {
-                      alpha=mid-0.5;
-                      if (distance <= (alpha*alpha))
-                        stroke_opacity=1.0;
-                      else
-                        {
-                          beta=sqrt(distance);
-                          alpha=beta-mid-0.5;
-                          stroke_opacity=Max(stroke_opacity,alpha*alpha);
-                        }
-                    }
-                }
-              if (!fill || (distance > 1.0) || (subpath_opacity >= 1.0))
-                continue;
-              if (distance <= 0.0)
-                {
-                  subpath_opacity=1.0;
-                  continue;
-                }
-              if (distance > 1.0)
-                continue;
-              if (beta == 0.0)
-                beta=sqrt(distance);
-              alpha=beta-1.0;
-              subpath_opacity=Max(subpath_opacity,alpha*alpha);
-            }
-          }
-          if (!fill)
-            break;
-          if (subpath_opacity > 0.0)
-            fill_opacity=subpath_opacity;
-          if (draw_info->fill_rule == NonZeroRule)
-            {
-              if (AbsoluteValue(winding_number) > 0)
-                fill_opacity=1.0;
-              break;
-            }
-          if (AbsoluteValue(winding_number) & 0x01)
-            fill_opacity=1.0;
-          break;
-        }
-      }
-      alpha=1.0/MaxRGB;
-      color=draw_info->fill;
-      if (draw_info->tile != (Image *) NULL)
-        color=GetOnePixel(draw_info->tile,x % draw_info->tile->columns,
-          y % draw_info->tile->rows);
-      if ((fill_opacity != 0.0) && (color.opacity != TransparentOpacity))
-        {
-          /*
-            Fill.
-          */
-          fill_opacity=MaxRGB-fill_opacity*(MaxRGB-color.opacity);
-          q->red=(Quantum) (alpha*(color.red*(MaxRGB-fill_opacity)+
-            q->red*fill_opacity));
-          q->green=(Quantum) (alpha*(color.green*(MaxRGB-fill_opacity)+
-            q->green*fill_opacity));
-          q->blue=(Quantum) (alpha*(color.blue*(MaxRGB-fill_opacity)+
-            q->blue*fill_opacity));
-          q->opacity=(Quantum) (alpha*(color.opacity*(MaxRGB-fill_opacity)+
-            q->opacity*fill_opacity));
-        }
-      color=draw_info->stroke;
-      if ((stroke_opacity != 0.0) && (color.opacity != TransparentOpacity))
-        {
-          /*
-            Stroke.
-          */
-          stroke_opacity=MaxRGB-stroke_opacity*(MaxRGB-color.opacity);
-          q->red=(Quantum) (alpha*(color.red*(MaxRGB-stroke_opacity)+
-            q->red*stroke_opacity));
-          q->green=(Quantum) (alpha*(color.green*(MaxRGB-stroke_opacity)+
-            q->green*stroke_opacity));
-          q->blue=(Quantum) (alpha*(color.blue*(MaxRGB-stroke_opacity)+
-            q->blue*stroke_opacity));
-          q->opacity=(Quantum) (alpha*(stroke_opacity*(MaxRGB-stroke_opacity)+
-            q->opacity*stroke_opacity));
-        }
-      q++;
-    }
-    if (!SyncImagePixels(image))
-      break;
-  }
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   D r a w P r i m i t i v e                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method DrawPrimitive draws a primitive (line, rectangle, ellipse) on the
-%  image.
-%
-%  The format of the DrawPrimitive method is:
-%
-%      void DrawPrimitive(const DrawInfo *draw_info,
-%        PrimitiveInfo *primitive_info,Image *image)
-%
-%  A description of each parameter follows:
-%
-%    o draw_info: The address of a DrawInfo structure.
-%
-%    o primitive_info: Specifies a pointer to a PrimitiveInfo structure.
-%
-%    o image: The address of a structure of type Image.
-%
-%
-*/
 static void DrawPrimitive(const DrawInfo *draw_info,
   PrimitiveInfo *primitive_info,Image *image)
 {
@@ -2726,8 +2722,7 @@ static void DrawPrimitive(const DrawInfo *draw_info,
 
               theta=(180.0/M_PI)*
                 atan2(draw_info->affine.rx,draw_info->affine.sx);
-              rotate_image=
-                RotateImage(composite_image,theta,&image->exception);
+              rotate_image=RotateImage(composite_image,theta,&image->exception);
               if (rotate_image != (Image *) NULL)
                 {
                   DestroyImage(composite_image);
