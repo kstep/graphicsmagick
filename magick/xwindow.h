@@ -79,6 +79,7 @@ extern "C" {
 #define MaxNumberPens  11
 #define MaxNumberFonts  11
 #define MaxIconSize  96
+#define MaxXWindows  10
 
 /*
   Enumeration declarations.
@@ -469,7 +470,7 @@ typedef struct _XWindowInfo
     *image;
 
   unsigned int
-    destroy;
+    destroy;    /* If True, then destroy image */
 } XWindowInfo;
 
 typedef struct _XWindows
@@ -571,6 +572,9 @@ extern MagickExport void
   XConfigureImageColormap(Display *,XResourceInfo *,XWindows *,Image *),
   XConstrainWindowPosition(Display *,XWindowInfo *),
   XDelay(Display *,const unsigned long),
+  XDestroyX11Resources(void),
+  XDestroyXWindows(XWindows *windows),
+  XDestroyXWindowInfo(Display *display,XWindowInfo *window),
   XDestroyWindowColors(Display *,Window),
   XDisplayImageInfo(Display *,const XResourceInfo *,XWindows *,Image *,Image *),
   XFreeResources(Display *,XVisualInfo *,XStandardColormap *,XPixelInfo *,

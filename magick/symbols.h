@@ -144,6 +144,8 @@
 #define DestroySemaphoreInfo GmDestroySemaphoreInfo
 #define DestroyTemporaryFiles GmDestroyTemporaryFiles
 #define DestroyTypeInfo GmDestroyTypeInfo
+#define XDestroyX11Resources GmXDestroyX11Resources
+#define XDestroyXWindows GmXDestroyXWindows
 #define DetachBlob GmDetachBlob
 #define DispatchImage GmDispatchImage
 #define DisplayImageCommand GmDisplayImageCommand

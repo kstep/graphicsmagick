@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# Copyright (C) 2003 GraphicsMagick Group
+# Copyright (C) 2003, 2004 GraphicsMagick Group
 # Copyright (C) 2002 ImageMagick Studio
 # Copyright (C) 1999 E. I. du Pont de Nemours and Company
 #
@@ -153,6 +153,8 @@ GSPDFDevice = @GSPDFDevice@
 GSPSDevice = @GSPSDevice@
 GSVersion = @GSVersion@
 GnuplotDecodeDelegate = @GnuplotDecodeDelegate@
+HAS_RPM_FALSE = @HAS_RPM_FALSE@
+HAS_RPM_TRUE = @HAS_RPM_TRUE@
 HPGLDecodeDelegate = @HPGLDecodeDelegate@
 HTMLDecodeDelegate = @HTMLDecodeDelegate@
 HasBZLIB_FALSE = @HasBZLIB_FALSE@
@@ -294,6 +296,7 @@ OBJEXT = @OBJEXT@
 OLDINCLUDE_DIR = @OLDINCLUDE_DIR@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
+PACKAGE_CHANGE_DATE = @PACKAGE_CHANGE_DATE@
 PACKAGE_NAME = @PACKAGE_NAME@
 PACKAGE_RELEASE_DATE = @PACKAGE_RELEASE_DATE@
 PACKAGE_STRING = @PACKAGE_STRING@
@@ -318,6 +321,7 @@ RADDecodeDelegate = @RADDecodeDelegate@
 RANLIB = @RANLIB@
 RLEEncodeDelegate = @RLEEncodeDelegate@
 RMDelegate = @RMDelegate@
+RPM = @RPM@
 SBIN_DIR = @SBIN_DIR@
 SCANDecodeDelegate = @SCANDecodeDelegate@
 SED = @SED@
@@ -411,7 +415,7 @@ windows_font_dir = @windows_font_dir@
 xml2_config = @xml2_config@
 
 # Don't require all the GNU mandated files
-AUTOMAKE_OPTIONS = 1.8 dist-zip dist-bzip2 foreign
+AUTOMAKE_OPTIONS = 1.8.2 dist-zip dist-bzip2 foreign
 
 # Subdirectories to build
 @WITH_MAGICK_PLUS_PLUS_TRUE@MAGICK_PLUS_PLUS = Magick++
@@ -456,6 +460,21 @@ DOCDIRS = images www www/api www/Magick++
 @WITH_PERL_TRUE@	$(top_srcdir)/www/INSTALL-windows.html \
 @WITH_PERL_TRUE@	$(top_srcdir)/www/NEWS.html \
 @WITH_PERL_TRUE@	$(top_srcdir)/www/README.html
+
+
+#
+# RPM build support
+#
+@HAS_RPM_TRUE@DIST_ARCHIVE_SRPM = $(distdir)-1.src.rpm
+@HAS_RPM_TRUE@RPMDIR = redhat
+@HAS_RPM_TRUE@RPMARCH = i386
+@HAS_RPM_FALSE@DIST_ARCHIVE_RPM = 
+@HAS_RPM_TRUE@DIST_ARCHIVE_RPM = \
+@HAS_RPM_TRUE@	$(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-1.$(RPMARCH).rpm \
+@HAS_RPM_TRUE@	$(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-c++-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-1.$(RPMARCH).rpm \
+@HAS_RPM_TRUE@	$(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-c++-devel-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-1.$(RPMARCH).rpm \
+@HAS_RPM_TRUE@	$(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-devel-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-1.$(RPMARCH).rpm \
+@HAS_RPM_TRUE@	$(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-perl-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-1.$(RPMARCH).rpm
 
 all: all-recursive
 
@@ -1064,6 +1083,33 @@ $(top_srcdir)/www/README.html: $(top_srcdir)/README.txt
 
 format_c_api_docs:
 	@PERL@ $(top_srcdir)/scripts/format_c_api_docs -format html --srcdir $(top_srcdir)/magick --outdir $(top_srcdir)/www/api
+@HAS_RPM_TRUE@PHONY: srpm
+@HAS_RPM_TRUE@$(DIST_ARCHIVE_SRPM) srpm: $(distdir).tar.bz2
+@HAS_RPM_TRUE@	rm -f $(DIST_ARCHIVE_SRPM)
+@HAS_RPM_TRUE@	$(RPM) --define="_sourcedir `pwd`" --define="_srcrpmdir `pwd`" --nodeps -bs GraphicsMagick.spec
+@HAS_RPM_TRUE@	@echo ==============================================================
+@HAS_RPM_TRUE@	@echo $(DIST_ARCHIVE_SRPM) is ready for distribution.
+@HAS_RPM_TRUE@	@echo ==============================================================
+
+@HAS_RPM_TRUE@PHONY: rpm
+@HAS_RPM_TRUE@rpm:
+@HAS_RPM_TRUE@	rm -rf $(RPMDIR)
+@HAS_RPM_TRUE@	mkdir $(RPMDIR)
+@HAS_RPM_TRUE@	mkdir $(RPMDIR)/BUILD
+@HAS_RPM_TRUE@	mkdir $(RPMDIR)/RPMS
+@HAS_RPM_TRUE@	$(MAKE) distcheck
+@HAS_RPM_TRUE@	$(RPM) --define="_sourcedir `pwd`" --define="_rpmdir `pwd`/$(RPMDIR)/RPMS" --define="_builddir `pwd`/$(RPMDIR)/BUILD" --nodeps -bb GraphicsMagick.spec
+@HAS_RPM_TRUE@	rm -rf rpmbuild
+@HAS_RPM_TRUE@	@echo ==============================================================
+@HAS_RPM_TRUE@	@echo $(DIST_ARCHIVE_RPM) is ready for distribution.
+@HAS_RPM_TRUE@	@echo ==============================================================
+
+#
+# Build a validated snapshot release and move to the snapshots directory.
+#
+snapshot: distcheck
+	$(MAKE) $(DIST_ARCHIVE_SRPM)
+	mv $(DIST_ARCHIVES) $(DIST_ARCHIVE_SRPM) /ftp/pub/GraphicsMagick/snapshots/
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

@@ -1,4 +1,4 @@
-# Copyright (C) 2003 GraphicsMagick Group
+# Copyright (C) 2003, 2004 GraphicsMagick Group
 # Copyright (C) 2002 ImageMagick Studio
 # Copyright (C) 1999 E. I. du Pont de Nemours and Company
 #
@@ -11,7 +11,7 @@
 #
 
 # Don't require all the GNU mandated files
-AUTOMAKE_OPTIONS = 1.8 dist-zip dist-bzip2 foreign
+AUTOMAKE_OPTIONS = 1.8.2 dist-zip dist-bzip2 foreign
 
 PACKAGE_NAME = @PACKAGE_NAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
@@ -230,6 +230,7 @@ LIBTOOL_DEPS = @LIBTOOL_DEPS@
 libtool: $(LIBTOOL_DEPS)
 	$(SHELL) ./config.status --recheck
 
+
 # Build HTML version of AUTHORS
 $(top_srcdir)/www/AUTHORS.html: $(top_srcdir)/AUTHORS
 	@PERL@ $(top_srcdir)/scripts/txt2html -p 4 -pb 1 -t $(PACKAGE_NAME)' Authors' < $(top_srcdir)/AUTHORS > $(top_srcdir)/www/AUTHORS.html
@@ -264,3 +265,51 @@ $(top_srcdir)/www/README.html: $(top_srcdir)/README.txt
 
 format_c_api_docs:
 	@PERL@ $(top_srcdir)/scripts/format_c_api_docs -format html --srcdir $(top_srcdir)/magick --outdir $(top_srcdir)/www/api
+
+#
+# RPM build support
+#
+if HAS_RPM
+
+DIST_ARCHIVE_SRPM=$(distdir)-1.src.rpm
+PHONY: srpm
+$(DIST_ARCHIVE_SRPM) srpm: $(distdir).tar.bz2
+	rm -f $(DIST_ARCHIVE_SRPM)
+	$(RPM) --define="_sourcedir `pwd`" --define="_srcrpmdir `pwd`" --nodeps -bs GraphicsMagick.spec
+	@echo ==============================================================
+	@echo $(DIST_ARCHIVE_SRPM) is ready for distribution.
+	@echo ==============================================================
+
+RPMDIR=redhat
+RPMARCH=i386
+
+DIST_ARCHIVE_RPM= \
+	$(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-1.$(RPMARCH).rpm \
+	$(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-c++-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-1.$(RPMARCH).rpm \
+	$(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-c++-devel-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-1.$(RPMARCH).rpm \
+	$(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-devel-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-1.$(RPMARCH).rpm \
+	$(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-perl-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-1.$(RPMARCH).rpm
+
+PHONY: rpm
+rpm:
+	rm -rf $(RPMDIR)
+	mkdir $(RPMDIR)
+	mkdir $(RPMDIR)/BUILD
+	mkdir $(RPMDIR)/RPMS
+	$(MAKE) distcheck
+	$(RPM) --define="_sourcedir `pwd`" --define="_rpmdir `pwd`/$(RPMDIR)/RPMS" --define="_builddir `pwd`/$(RPMDIR)/BUILD" --nodeps -bb GraphicsMagick.spec
+	rm -rf rpmbuild
+	@echo ==============================================================
+	@echo $(DIST_ARCHIVE_RPM) is ready for distribution.
+	@echo ==============================================================
+
+else
+DIST_ARCHIVE_RPM=
+endif # HAS_RPM
+
+#
+# Build a validated snapshot release and move to the snapshots directory.
+#
+snapshot: distcheck
+	$(MAKE) $(DIST_ARCHIVE_SRPM)
+	mv $(DIST_ARCHIVES) $(DIST_ARCHIVE_SRPM) /ftp/pub/GraphicsMagick/snapshots/

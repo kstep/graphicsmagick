@@ -2615,7 +2615,7 @@ void Magick::Image::interlaceType ( const Magick::InterlaceType interlace_ )
 }
 Magick::InterlaceType Magick::Image::interlaceType ( void ) const
 {
-  return constOptions()->interlaceType ( );
+  return constImage()->interlace;
 }
 
 // IPTC profile (BLOB)

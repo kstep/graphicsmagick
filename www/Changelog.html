@@ -53,6 +53,26 @@
 </tr>
 </table>
 <p>
+2004-02-25  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/display.c (XDisplayImage): Display was leaking memory
+        like a sieve.  Now it doesn't.<BR>
+  <LI> magick/memory.c (CloneMemory): Computation for when it is safe
+        to use memcpy() was incorrect.  Use memmove() rather than
+        backwards-copy loop.<BR>
+  <LI> Makefile.am ($(DIST_ARCHIVE_SRPM)): Added rules to build a
+        source RPM.<BR>
+  <LI> configure.ac: Search for 'buildrpm' or 'rpm' programs in order to
+        support creating RPM packages on a system which has RPM installed.
+  <LI> version.sh (PACKAGE_VERSION): Changed snapshot release naming so
+        that there is only one dash in the name and the snapshot date is
+        prefixed with '0' to assure proper directory sorting.  This allows
+        snapshot naming to be acceptable to RPM.  The snapshot package
+        name is now similar to GraphicsMagick-1.1.020040218.tar.bz2
+
+</UL>
+<p>
 2004-02-16  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

@@ -36,6 +36,7 @@ AC_SUBST(MAGICK_WAND_LIBRARY_AGE)
 AC_SUBST(PACKAGE_NAME)dnl
 AC_SUBST(PACKAGE_VERSION)dnl
 AC_SUBST(PACKAGE_VERSION_ADDENDUM)dnl
+AC_SUBST(PACKAGE_CHANGE_DATE)dnl
 AC_SUBST(PACKAGE_RELEASE_DATE)dnl
 
 # Definition used to define MagickLibVersion in version.h
@@ -2345,6 +2346,14 @@ AC_SUBST(TXTDelegate)
 AC_SUBST(WMFDecodeDelegate)
 AC_SUBST(WWWDecodeDelegate)
 AC_SUBST(ZipDelegate)
+
+#
+# RedHat RPM support
+#
+RPM=''
+AC_CHECK_PROGS(RPM,rpmbuild rpm)
+AC_SUBST(RPM)
+AM_CONDITIONAL(HAS_RPM, test "x$RPM" != "x" )
 
 #
 # Ghostscript related configuration.

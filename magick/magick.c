@@ -56,6 +56,9 @@
 #include "magick/tempfile.h"
 #include "magick/utility.h"
 #include "magick/version.h"
+#if defined(HasX11)
+#include "magick/xwindow.h"
+#endif
 /* watch out here - this include code for simple spinlock semaphore */
 #include "magick/spinlock.h"
 
@@ -98,10 +101,12 @@ static MagickInitializationState MagickInitialized = InitDefault;
 */
 MagickExport void DestroyMagick(void)
 {
-
   if (MagickInitialized == InitUninitialized)
     return;
 
+#if defined(HasX11)
+  XDestroyX11Resources();
+#endif
   DestroyColorInfo();
   DestroyDelegateInfo();
   DestroyTypeInfo();

@@ -276,7 +276,7 @@ MagickExport unsigned int AnimateImageCommand(ImageInfo *image_info,
   const char
     *client_name;
 
-Display
+  Display
     *display;
 
   Image
@@ -1193,6 +1193,7 @@ Display
           XAnimateImages(display,&resource_info,argv,argc,image_list);
       }
     }
+  XCloseDisplay(display);
   DestroyImageList(image_list);
   LiberateArgumentList(argc,argv);
   return(status);
@@ -5354,6 +5355,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
             Free image resources.
           */
           DestroyImageList(image);
+          image=(Image *) NULL;
           if (!(state & FormerImageState))
             {
               last_image=image_number;
@@ -5684,13 +5686,13 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
           break;
         if (LocaleCompare("display",option+1) == 0)
           {
-            (void) CloneString(&image_info->server_name,(char *) NULL);
             if (*option == '-')
               {
                 i++;
                 if (i == argc)
                   MagickFatalError(OptionFatalError,MissingArgument,option);
-                image_info->server_name=argv[i];
+                
+                (void) CloneString(&image_info->server_name,argv[i]);
               }
             break;
           }
@@ -6417,7 +6419,16 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
     {
       XRetainWindowColors(display,XRootWindow(display,XDefaultScreen(display)));
       XSync(display,False);
-    }
+    } 
+  if (resource_database != (XrmDatabase) NULL)
+    XrmDestroyDatabase(resource_database);
+
+  /*
+    ImageInfo is destroyed here since the input parameter is overwritten.
+  */
+  DestroyImageInfo(image_info);
+  DestroyQuantizeInfo(quantize_info);
+  MagickFreeMemory(image_marker);
   LiberateArgumentList(argc,argv);
   return(status);
 #else

@@ -7,24 +7,31 @@
 # Package base name
 PACKAGE_NAME='GraphicsMagick'
 #
-# Package version.  This is is the numeric version suffix applied to
-# PACKAGE_NAME (e.g. "1.0").
+# Package base version.  This is is the numeric version suffix applied to
+# PACKAGE_NAME (e.g. "1.1").
 PACKAGE_VERSION='1.1'
 
 #
 # Formal Package release date
+# Set to string "unreleased" if package is not a formal release.
 #PACKAGE_RELEASE_DATE="05/05/03"
 PACKAGE_RELEASE_DATE="unreleased"
 
 #
-# Package version addendum.  This is an arbitrary suffix (if any)
-# appended to the package version. (e.g. "beta1")
-# Extract the most recent update date from the ChangeLog
-CHANGE_DATE=`awk '/^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]/ { print substr($1,1,4) substr($1,6,2) substr($1,9,2); exit; }' ${srcdir}/ChangeLog`
-PACKAGE_VERSION_ADDENDUM="-${CHANGE_DATE}"
+# Date of last ChangeLog update
+#
+PACKAGE_CHANGE_DATE=`awk '/^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]/ { print substr($1,1,4) substr($1,6,2) substr($1,9,2); exit; }' ${srcdir}/ChangeLog`
 
-# To hardcode the version addendum, uncomment the following line
-#PACKAGE_VERSION_ADDENDUM=''
+#
+# Package version addendum.  This is a suffix (if any) appended to the
+# package base version.  Formal releases do not have a suffix applied.
+#
+if test "$PACKAGE_RELEASE_DATE" = "unreleased"
+then
+  PACKAGE_VERSION_ADDENDUM=".0${PACKAGE_CHANGE_DATE}"
+else
+  PACKAGE_VERSION_ADDENDUM=''
+fi
 
 #
 # Libtool library revision control info

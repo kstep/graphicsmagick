@@ -157,6 +157,8 @@ GSPDFDevice = @GSPDFDevice@
 GSPSDevice = @GSPSDevice@
 GSVersion = @GSVersion@
 GnuplotDecodeDelegate = @GnuplotDecodeDelegate@
+HAS_RPM_FALSE = @HAS_RPM_FALSE@
+HAS_RPM_TRUE = @HAS_RPM_TRUE@
 HPGLDecodeDelegate = @HPGLDecodeDelegate@
 HTMLDecodeDelegate = @HTMLDecodeDelegate@
 HasBZLIB_FALSE = @HasBZLIB_FALSE@
@@ -296,6 +298,7 @@ OBJEXT = @OBJEXT@
 OLDINCLUDE_DIR = @OLDINCLUDE_DIR@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
+PACKAGE_CHANGE_DATE = @PACKAGE_CHANGE_DATE@
 PACKAGE_NAME = @PACKAGE_NAME@
 PACKAGE_RELEASE_DATE = @PACKAGE_RELEASE_DATE@
 PACKAGE_STRING = @PACKAGE_STRING@
@@ -320,6 +323,7 @@ RADDecodeDelegate = @RADDecodeDelegate@
 RANLIB = @RANLIB@
 RLEEncodeDelegate = @RLEEncodeDelegate@
 RMDelegate = @RMDelegate@
+RPM = @RPM@
 SBIN_DIR = @SBIN_DIR@
 SCANDecodeDelegate = @SCANDecodeDelegate@
 SED = @SED@
@@ -457,9 +461,9 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__confi
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  Magick++/lib/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  Magick++/lib/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign  Magick++/lib/Makefile
+	  $(AUTOMAKE) --gnu  Magick++/lib/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \

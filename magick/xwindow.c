@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003, 2004 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -116,6 +116,267 @@ static void
 
 static Window
   XSelectWindow(Display *,RectangleInfo *);
+
+#if defined(HasSharedMemory)
+/*
+  System V shared memory wrappers to aid in diagnostics.
+*/
+static void *GmShmAt(int shmid, void *shmaddr, int shmflg)
+{
+  void *
+    address;
+
+  address=shmat(shmid,shmaddr,shmflg);
+  (void) LogMagickEvent(X11Event,GetMagickModule(),
+     "shm attach to id %d at address %p", shmid, address);
+  return (address);
+}
+static int GmShmCtl(int shmid, int cmd, struct shmid_ds *buf)
+{
+  (void) LogMagickEvent(X11Event,GetMagickModule(),"shm control id=%d cmd=%s",
+                        shmid, ((cmd == IPC_STAT) ? "IPC_STAT" : 
+                                (cmd == IPC_SET) ? "IPC_SET" :
+                                (cmd == IPC_RMID) ? "IPC_RMID" : "Unknown"));
+  return shmctl(shmid, cmd, buf);
+}
+static int GmShmDt(void *shmaddr)
+{
+  (void) LogMagickEvent(X11Event,GetMagickModule(),"shm detatch at address %p",
+                        shmaddr);
+  return shmdt(shmaddr);
+}
+#endif
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   X D e s t r o y X 1 1 R e s o u r c e s                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  XDestroyX11Resources() destroys all remaining allocations related to X11,
+%  and closes the X11 display. It is intended to be invoked by
+%  DestroyMagick().
+%
+%  The format of the XDestroyX11Resources method is:
+%
+%      void XDestroyX11Resources(void)
+%
+%  A description of each parameter follows:
+%
+%
+*/
+MagickExport void XDestroyX11Resources(void)
+{
+  XWindows *windows = XSetWindows((XWindows *) ~0);
+  if (windows != (XWindows *) NULL)
+    {
+      XDestroyXWindows(windows);
+      XCloseDisplay(windows->display);
+      (void) XSetWindows((XWindows *) NULL);  
+    }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   X D e s t r o y X W i n d o w s                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  XDestroyXWindows() destroys existing allocations in an XWindows structure.
+%
+%  The format of the XDestroyXWindows method is:
+%
+%      void XDestroyXWindows(XWindows *windows)
+%
+%  A description of each parameter follows:
+%
+%
+*/
+MagickExport void XDestroyXWindows(XWindows *windows)
+{
+
+  if (windows == (XWindows *) NULL)
+    return;
+  MagickFreeMemory(windows->icon_resources);
+  if (windows->icon_pixel)
+    {
+      MagickFreeMemory(windows->icon_pixel->pixels);
+      if (windows->icon_pixel->annotate_context != (GC) NULL)
+        XFreeGC(windows->display,windows->icon_pixel->annotate_context); /* Allocated by XCreateGC */
+      if (windows->icon_pixel->widget_context != (GC) NULL)
+        XFreeGC(windows->display,windows->icon_pixel->widget_context); /* Allocated by XCreateGC */
+      if (windows->icon_pixel->highlight_context != (GC) NULL)
+        XFreeGC(windows->display,windows->icon_pixel->highlight_context); /* Allocated by XCreateGC */
+      MagickFreeMemory(windows->icon_pixel);
+    }
+  if (windows->pixel_info)
+    {
+      MagickFreeMemory(windows->pixel_info->pixels);
+      if (windows->pixel_info->annotate_context != (GC) NULL)
+        XFreeGC(windows->display,windows->pixel_info->annotate_context); /* Allocated by XCreateGC */
+      if (windows->pixel_info->widget_context != (GC) NULL)
+        XFreeGC(windows->display,windows->pixel_info->widget_context); /* Allocated by XCreateGC */
+      if (windows->pixel_info->highlight_context != (GC) NULL)
+        XFreeGC(windows->display,windows->pixel_info->highlight_context); /* Allocated by XCreateGC */
+      MagickFreeMemory(windows->pixel_info);
+    }
+  if (windows->font_info != (XFontStruct *) NULL)
+    {
+      XFreeFont(windows->display,windows->font_info); /* Allocated by XLoadQueryFont */
+      windows->font_info=(XFontStruct *) NULL;
+    }
+
+  if (windows->class_hints != (XClassHint *) NULL)
+    {
+      XFree(windows->class_hints); /* Allocated by XAllocClassHint */
+      windows->class_hints=(XClassHint *) NULL;
+    }
+
+  if (windows->manager_hints != (XWMHints *) NULL)
+    {
+      XFree(windows->manager_hints); /* Allocated by XAllocWMHints */
+      windows->manager_hints=(XWMHints *) NULL;
+    }
+
+  if (windows->map_info != (XStandardColormap *) NULL)
+    {
+      XFree(windows->map_info); /* Allocated by XAllocStandardColormap */
+      windows->map_info=(XStandardColormap *) NULL;
+    }
+  if(windows->icon_map != (XStandardColormap *) NULL)
+    {
+      XFree(windows->icon_map); /* Allocated by XAllocStandardColormap */
+      windows->icon_map=(XStandardColormap *) NULL;
+    }
+  if (windows->visual_info != (XVisualInfo *) NULL)
+    {
+      XFree(windows->visual_info); /* Allocated by XGetVisualInfo */
+      windows->visual_info=(XVisualInfo *) NULL;
+    }
+  if (windows->icon_visual != (XVisualInfo *) NULL)
+    {
+      XFree(windows->icon_visual); /* Allocated by XGetVisualInfo */
+      windows->icon_visual=(XVisualInfo *) NULL;
+    }
+  XDestroyXWindowInfo(windows->display,&windows->context);
+  XDestroyXWindowInfo(windows->display,&windows->backdrop);
+  XDestroyXWindowInfo(windows->display,&windows->icon);
+  XDestroyXWindowInfo(windows->display,&windows->image);
+  XDestroyXWindowInfo(windows->display,&windows->info);
+  XDestroyXWindowInfo(windows->display,&windows->magnify);
+  XDestroyXWindowInfo(windows->display,&windows->pan);
+  XDestroyXWindowInfo(windows->display,&windows->command);
+  XDestroyXWindowInfo(windows->display,&windows->widget);
+  XDestroyXWindowInfo(windows->display,&windows->popup);
+  XDestroyXWindowInfo(windows->display,&windows->group_leader);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   XD e s t r o y X W i n d o w I n f o                                      %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  XDestroyXWindowInfo() destroys existing allocations in an XWindowInfo
+%  structure. The XWindowInfo structure itself is not freed.
+%
+%  The format of the XDestroyXWindowInfo method is:
+%
+%      void XDestroyXWindowInfo(Display *display,XWindowInfo *window)
+%
+%  A description of each parameter follows:
+%
+%    o display: Pointer to an X11 Display structure
+%
+%    o window: Pointer to XWindowInfo structure to destroy.
+*/
+MagickExport void XDestroyXWindowInfo(Display *display,XWindowInfo *window)
+{
+  if (window->mapped != False)
+    {
+      (void) XWithdrawWindow(display,window->id,
+                             window->screen);
+      (void) XSync(display,False);
+      window->mapped=False;
+    }
+  MagickFreeMemory(window->name);
+  MagickFreeMemory(window->icon_name);
+  if (window->highlight_stipple != (Pixmap) NULL)
+    {
+      (void) XFreePixmap(display,window->highlight_stipple);
+      window->highlight_stipple=(Pixmap) NULL;
+    }
+  if (window->shadow_stipple != (Pixmap) NULL)
+    {
+      (void) XFreePixmap(display,window->shadow_stipple);
+      window->shadow_stipple=(Pixmap) NULL;
+    }
+  if (window->ximage != (XImage *) NULL)
+    {
+      XDestroyImage(window->ximage);
+      window->ximage=(XImage *) NULL;
+    }
+  if (window->matte_image != (XImage *) NULL)
+    {
+      /* MagickFreeMemory(window->matte_image->data); ???? */
+      XDestroyImage(window->matte_image);
+      window->matte_image=(XImage *) NULL;
+    }
+  if (window->pixmap != (Pixmap) NULL)
+    {
+      (void) XFreePixmap(display,window->pixmap);
+      window->pixmap=(Pixmap) NULL;
+    }
+  if (window->id != (Window) NULL)
+    {
+      (void) XDestroyWindow(display,window->id);
+      window->id=(Window) NULL;
+    }
+  if (window->destroy)
+    {
+      if (window->image != (Image *) NULL)
+        {
+          DestroyImage(window->image);
+          window->image=(Image *) NULL;
+        }
+    }
+  if (window->segment_info != (void *) NULL)
+    {
+#if defined(HasSharedMemory)
+      XShmSegmentInfo
+        *segment_info;
+          
+      segment_info=(XShmSegmentInfo *) window->segment_info;
+      if (segment_info != (XShmSegmentInfo *) NULL)
+        {
+          if (segment_info[0].shmid >= 0)
+            {
+              if (segment_info[0].shmaddr != NULL)
+                (void) GmShmDt(segment_info[0].shmaddr);
+              (void) GmShmCtl(segment_info[0].shmid,IPC_RMID,0);
+              segment_info[0].shmaddr=NULL;
+              segment_info[0].shmid=(-1);
+            }
+        }
+#endif
+      MagickFreeMemory(window->segment_info);
+    }
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -323,6 +584,7 @@ MagickExport unsigned int XAnnotateImage(Display *display,
       break;
   }
   XDestroyImage(annotate_ximage);
+  annotate_ximage=(XImage *) NULL;
   /*
     Determine annotate geometry.
   */
@@ -850,15 +1112,15 @@ MagickExport void XBestPixel(Display *display,const Colormap colormap,
 %
 %
 */
-MagickExport XVisualInfo *XBestVisualInfo(Display *display,
-  XStandardColormap *map_info,XResourceInfo *resource_info)
-{
 #define MaxStandardColormaps  7
 #define XVisualColormapSize(visual_info) Min( (int) (\
   (visual_info->storage_class == TrueColor) || (visual_info->storage_class == DirectColor) ? \
    visual_info->red_mask | visual_info->green_mask | visual_info->blue_mask : \
    visual_info->colormap_size),1 << visual_info->depth)
 
+MagickExport XVisualInfo *XBestVisualInfo(Display *display,
+  XStandardColormap *map_info,XResourceInfo *resource_info)
+{
   char
     *map_type,
     *visual_type;
@@ -2085,6 +2347,7 @@ MagickExport unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
       break;
   }
   XDestroyImage(draw_ximage);
+  draw_ximage=(XImage *) NULL;
   /*
     Determine draw geometry.
   */
@@ -2312,7 +2575,10 @@ MagickExport void XFreeResources(Display *display,XVisualInfo *visual_info,
         Free X image.
       */
       if (window_info->ximage != (XImage *) NULL)
-        XDestroyImage(window_info->ximage);
+        {
+          XDestroyImage(window_info->ximage);
+          window_info->ximage=(XImage *) NULL;
+        }
       if (window_info->id != (Window) NULL)
         {
           /*
@@ -3511,6 +3777,7 @@ MagickExport unsigned int XGetWindowColor(Display *display,XWindows *windows,
     return(False);
   color.pixel=XGetPixel(ximage,0,0);
   XDestroyImage(ximage);
+  ximage=(XImage *) NULL;
   /*
     Match color against the color database.
   */
@@ -3853,6 +4120,7 @@ static Image *XGetWindowImage(Display *display,const Window window,
                 if (colors == (XColor *) NULL)
                   {
                     XDestroyImage(ximage);
+                    ximage=(XImage *) NULL;
                     return((Image *) NULL);
                   }
                 if ((window_info[id].visual->storage_class != DirectColor) &&
@@ -3921,6 +4189,7 @@ static Image *XGetWindowImage(Display *display,const Window window,
         if (composite_image == (Image *) NULL)
           {
             XDestroyImage(ximage);
+            ximage=(XImage *) NULL;
             return((Image *) NULL);
           }
         /*
@@ -4028,6 +4297,7 @@ static Image *XGetWindowImage(Display *display,const Window window,
             if (!AllocateImageColormap(composite_image,number_colors))
               {
                 XDestroyImage(ximage);
+                ximage=(XImage *) NULL;
                 DestroyImage(composite_image);
                 return((Image *) NULL);
               }
@@ -4062,6 +4332,7 @@ static Image *XGetWindowImage(Display *display,const Window window,
           }
         }
         XDestroyImage(ximage);
+        ximage=(XImage *) NULL;
         if (image == (Image *) NULL)
           {
             image=composite_image;
@@ -4180,16 +4451,19 @@ MagickExport void XGetWindowInfo(Display *display,XVisualInfo *visual_info,
       window->mapped=False;
       window->stasis=False;
       window->shared_memory=True;
-      window->segment_info=0;
+      /* window->segment_info=0; */
 #if defined(HasSharedMemory)
       {
         XShmSegmentInfo
           *segment_info;
-        
-        window->segment_info=MagickAllocateMemory(void *,2*sizeof(XShmSegmentInfo));
+
+        if (window->segment_info == (void *) NULL)
+          window->segment_info=MagickAllocateMemory(void *,2*sizeof(XShmSegmentInfo));
         segment_info=(XShmSegmentInfo *) window->segment_info;
         segment_info[0].shmid=(-1);
+        segment_info[0].shmaddr=NULL;
         segment_info[1].shmid=(-1);
+        segment_info[1].shmaddr=NULL;
       }
 #endif
     }
@@ -4207,9 +4481,9 @@ MagickExport void XGetWindowInfo(Display *display,XVisualInfo *visual_info,
   window->font_info=font_info;
   window->cursor=XCreateFontCursor(display,XC_left_ptr);
   window->busy_cursor=XCreateFontCursor(display,XC_watch);
-  window->name=(char *) "\0";
+  (void) CloneString(&window->name,(char *) NULL);
   window->geometry=(char *) NULL;
-  window->icon_name=(char *) "\0";
+  (void) CloneString(&window->icon_name,(char *) NULL);
   window->icon_geometry=resource_info->icon_geometry;
   window->crop_geometry=(char *) NULL;
   window->flags=PSize;
@@ -4777,13 +5051,16 @@ MagickExport XWindows *XInitializeWindows(Display *display,
       MagickMsg(XServerFatalError,UnableToCreateStandardColormap));
   windows->map_info->colormap=(Colormap) NULL;
   windows->icon_map->colormap=(Colormap) NULL;
+  memset((void *) windows->pixel_info, 0, sizeof(XPixelInfo));
   windows->pixel_info->pixels=(unsigned long *) NULL;
   windows->pixel_info->annotate_context=(GC) NULL;
   windows->pixel_info->highlight_context=(GC) NULL;
   windows->pixel_info->widget_context=(GC) NULL;
   windows->font_info=(XFontStruct *) NULL;
+  memset((void *) windows->icon_pixel, 0, sizeof(XPixelInfo));
   windows->icon_pixel->annotate_context=(GC) NULL;
   windows->icon_pixel->pixels=(unsigned long *) NULL;
+  windows->icon_pixel->highlight_context=(GC) NULL;
   /*
     Allocate visual.
   */
@@ -5010,7 +5287,7 @@ MagickExport unsigned int XMakeImage(Display *display,
   (void) XDefineCursor(display,window->id,window->busy_cursor);
   (void) XFlush(display);
   depth=window->depth;
-  if (window->destroy)
+  if (window->destroy && window->image)
     DestroyImage(window->image);
   window->image=image;
   window->destroy=False;
@@ -5074,19 +5351,49 @@ MagickExport unsigned int XMakeImage(Display *display,
   ximage=(XImage *) NULL;
   format=(depth == 1) ? XYBitmap : ZPixmap;
 #if defined(HasSharedMemory)
+  window->shared_memory&=XShmQueryExtension(display);
   if (window->shared_memory)
     {
       XShmSegmentInfo
         *segment_info;
 
       segment_info=(XShmSegmentInfo *) window->segment_info;
+      segment_info[1].shmid=(-1);
+      segment_info[1].shmaddr=NULL;
       ximage=XShmCreateImage(display,window->visual,depth,format,(char *) NULL,
         &segment_info[1],width,height);
-      segment_info[1].shmid=shmget(IPC_PRIVATE,(size_t)
-        (ximage->bytes_per_line*ximage->height),IPC_CREAT | 0777);
-      window->shared_memory&=segment_info[1].shmid >= 0;
+      window->shared_memory&=(ximage != (XImage *) NULL);
+
       if (window->shared_memory)
-        segment_info[1].shmaddr=(char *) shmat(segment_info[1].shmid,0,0);
+        segment_info[1].shmid=shmget(IPC_PRIVATE,(size_t)
+          (ximage->bytes_per_line*ximage->height),IPC_CREAT | 0777);
+      window->shared_memory&=(segment_info[1].shmid >= 0);
+
+      if (window->shared_memory)
+        segment_info[1].shmaddr=(char *) GmShmAt(segment_info[1].shmid,0,0);
+      window->shared_memory&=(segment_info[1].shmaddr != NULL);
+
+      if (!window->shared_memory)
+        {
+          /*
+            Clean up if there is an error.
+          */
+          if (ximage != (XImage *) NULL)
+            XDestroyImage(ximage);
+          ximage=(XImage *) NULL;
+
+          if (segment_info[1].shmaddr)
+            {
+              (void) GmShmDt(segment_info[1].shmaddr);
+              segment_info[1].shmaddr=NULL;
+            }
+
+          if (segment_info[1].shmid >= 0)
+            {
+              (void) GmShmCtl(segment_info[1].shmid,IPC_RMID,0);
+              segment_info[1].shmid=(-1);
+            }
+        }
     }
 #endif
   /*
@@ -5098,25 +5405,44 @@ MagickExport unsigned int XMakeImage(Display *display,
       XShmSegmentInfo
         *segment_info;
 
+      Status
+        shm_attached;
+
       (void) XSync(display,False);
       xerror_alert=False;
       segment_info=(XShmSegmentInfo *) window->segment_info;
       ximage->data=segment_info[1].shmaddr;
       segment_info[1].readOnly=False;
-      (void) XShmAttach(display,&segment_info[1]);
-      (void) XSync(display,False);
-      if (xerror_alert)
+      shm_attached=XShmAttach(display,&segment_info[1]);
+      if (shm_attached)
+        (void) XSync(display,False);
+      if (!shm_attached || xerror_alert)
         {
           window->shared_memory=False;
-          (void) shmdt(segment_info[1].shmaddr);
-          (void) shmctl(segment_info[1].shmid,IPC_RMID,0);
-          segment_info[1].shmid=(-1);
+          if (shm_attached)
+            XShmDetach(display,&segment_info[1]);
+          if (ximage != (XImage *) NULL)
+            {
+              ximage->data=NULL;
+              XDestroyImage(ximage);
+              ximage=(XImage *) NULL;
+            }
+          if (segment_info[1].shmid >= 0)
+            {
+              if (segment_info[1].shmaddr != NULL)
+                (void) GmShmDt(segment_info[1].shmaddr);
+              (void) GmShmCtl(segment_info[1].shmid,IPC_RMID,0);
+              segment_info[1].shmaddr=NULL;
+              segment_info[1].shmid=(-1);
+            }
         }
     }
 #endif
   if (!window->shared_memory)
-    ximage=XCreateImage(display,window->visual,depth,format,0,(char *) NULL,
-      width,height,XBitmapPad(display),0);
+    {
+      ximage=XCreateImage(display,window->visual,depth,format,0,(char *) NULL,
+        width,height,XBitmapPad(display),0);
+    }
   if (ximage == (XImage *) NULL)
     {
       /*
@@ -5162,6 +5488,7 @@ MagickExport unsigned int XMakeImage(Display *display,
         Unable to allocate pixel data.
       */
       XDestroyImage(ximage);
+      ximage=(XImage *) NULL;
       (void) XDefineCursor(display,window->id,window->cursor);
       return(False);
     }
@@ -5183,8 +5510,10 @@ MagickExport unsigned int XMakeImage(Display *display,
               (void) XSync(display,False);
               (void) XShmDetach(display,&segment_info[0]);
               (void) XSync(display,False);
-              (void) shmdt(segment_info[0].shmaddr);
-              (void) shmctl(segment_info[0].shmid,IPC_RMID,0);
+              if (segment_info[0].shmaddr != NULL)
+                (void) GmShmDt(segment_info[0].shmaddr);
+              (void) GmShmCtl(segment_info[0].shmid,IPC_RMID,0);
+              segment_info[0].shmaddr=NULL;
               segment_info[0].shmid=(-1);
               window->ximage->data=(char *) NULL;
             }
@@ -5192,6 +5521,7 @@ MagickExport unsigned int XMakeImage(Display *display,
 #endif
       MagickFreeMemory(window->ximage->data);
       XDestroyImage(window->ximage);
+      window->ximage=(XImage *) NULL;
     }
 #if defined(HasSharedMemory)
   if (window->segment_info != (XShmSegmentInfo *) NULL)
@@ -5243,6 +5573,7 @@ MagickExport unsigned int XMakeImage(Display *display,
       */
       MagickFreeMemory(window->matte_image->data);
       XDestroyImage(window->matte_image);
+      window->matte_image=(XImage *) NULL;
     }
   window->matte_image=matte_image;
   if (window->matte_pixmap != (Pixmap) NULL)
@@ -7792,10 +8123,18 @@ MagickExport void XMakeWindow(Display *display,Window parent,char **argv,
     }
   XSetWMProperties(display,window_info->id,&window_name,&icon_name,argv,argc,
     size_hints,manager_hints,class_hint);
-  if (window_name.nitems != 0)
-    (void) XFree((void *) window_name.value);
-  if (icon_name.nitems != 0)
-    (void) XFree((void *) icon_name.value);
+  if (window_name.value != NULL)
+    {
+      (void) XFree((void *) window_name.value);
+      window_name.value = NULL;
+      window_name.nitems=0;
+    }
+  if (icon_name.value != NULL)
+    {
+      (void) XFree((void *) icon_name.value);
+      icon_name.value = NULL;
+      icon_name.nitems=0;
+    }
   atom_list[0]=XInternAtom(display,"WM_DELETE_WINDOW",False);
   atom_list[1]=XInternAtom(display,"WM_TAKE_FOCUS",False);
   (void) XSetWMProtocols(display,window_info->id,atom_list,2);
@@ -7804,8 +8143,8 @@ MagickExport void XMakeWindow(Display *display,Window parent,char **argv,
     {
 #if defined(HasShape)
       int
-        error_base,
-        event_base;
+        error_base=0,
+        event_base=0;
 
       /*
         Can we apply a non-rectangular shaping mask?
@@ -8450,31 +8789,6 @@ extern "C" {
 
 MagickExport void XSignalHandler(int status)
 {
-  XWindows
-    *windows;
-
-  windows=XSetWindows((XWindows *) ~0);
-  if (windows == (XWindows *) NULL)
-    return;
-#if defined(HasSharedMemory)
-  {
-    XShmSegmentInfo
-      *segment_info;
-
-    segment_info=(XShmSegmentInfo *) windows->image.segment_info;
-    if (segment_info && segment_info[0].shmid >= 0)
-      {
-        (void) shmdt(segment_info[0].shmaddr);
-        (void) shmctl(segment_info[0].shmid,IPC_RMID,0);
-      }
-    segment_info=(XShmSegmentInfo *) windows->magnify.segment_info;
-    if (segment_info && segment_info[0].shmid >= 0)
-      {
-        (void) shmdt(segment_info[0].shmaddr);
-        (void) shmctl(segment_info[0].shmid,IPC_RMID,0);
-      }
-  }
-#endif /* defined(HasSharedMemory) */
   DestroyMagick();
   Exit(status);
 }
@@ -8572,7 +8886,10 @@ MagickExport XWindows *XSetWindows(XWindows *windows_info)
     *windows = (XWindows *) NULL;
 
   if (windows_info != (XWindows *) ~0)
-    windows=windows_info;
+    {
+      MagickFreeMemory(windows);
+      windows=windows_info;
+    }
   return(windows);
 }
 /*

@@ -1,3 +1,8 @@
+2004-02-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (interlaceType): Retrieve interlace setting from
+	Image rather than ImageInfo.
+
 2004-02-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (Image): Delete the allocated image reference
