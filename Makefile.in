@@ -203,8 +203,11 @@ install_sh = @install_sh@
 
 
 AUTOMAKE_OPTIONS = 1.4 foreign # no-dependencies
-@WITH_MODULES_TRUE@SUBDIRS = @WITH_MODULES_TRUE@delegates ltdl magick coders utilities tests
-@WITH_MODULES_FALSE@SUBDIRS = @WITH_MODULES_FALSE@delegates ltdl coders magick utilities tests
+
+# Subdirectories to build
+@WITH_MAGICK_PLUS_PLUS_TRUE@MAGICK_PLUS_PLUS = @WITH_MAGICK_PLUS_PLUS_TRUE@Magick++
+@WITH_MODULES_TRUE@SUBDIRS = @WITH_MODULES_TRUE@delegates ltdl magick coders utilities tests $(MAGICK_PLUS_PLUS)
+@WITH_MODULES_FALSE@SUBDIRS = @WITH_MODULES_FALSE@delegates ltdl coders magick utilities tests $(MAGICK_PLUS_PLUS)
 
 # Additional files to distribute
 EXTRA_DIST = Manifest.ps ImageMagick.html Magickshr.opt Make.com README.txt \
@@ -225,15 +228,15 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ./magick/config.h
 CONFIG_CLEAN_FILES = 
 DIST_SOURCES = 
-DIST_COMMON =  Makefile.am Makefile.in acconfig.h aclocal.m4 \
-config.guess config.sub configure configure.in depcomp install-sh \
-ltconfig ltmain.sh missing mkinstalldirs
+DIST_COMMON =  Makefile.am Makefile.in acconfig.h acinclude.m4 \
+aclocal.m4 config.guess config.sub configure configure.in depcomp \
+install-sh ltconfig ltmain.sh missing mkinstalldirs
 
 
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 
 GZIP_ENV = --best
-DIST_SUBDIRS =  delegates ltdl magick coders utilities tests
+DIST_SUBDIRS =  delegates ltdl magick coders utilities tests Magick++
 all: all-redirect
 .SUFFIXES:
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
@@ -243,7 +246,7 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
-$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ configure.in 
+$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ configure.in  acinclude.m4
 	cd $(srcdir) && $(ACLOCAL)
 
 config.status: $(srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)

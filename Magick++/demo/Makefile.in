@@ -35,7 +35,7 @@ pkgdatadir = $(datadir)/@PACKAGE@
 pkglibdir = $(libdir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
 
-top_builddir = ..
+top_builddir = ../..
 
 ACLOCAL = @ACLOCAL@
 AUTOCONF = @AUTOCONF@
@@ -57,50 +57,127 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 
 @SET_MAKE@
+build_alias = @build_alias@
+build_triplet = @build@
 host_alias = @host_alias@
 host_triplet = @host@
+target_alias = @target_alias@
+target_triplet = @target@
 AMDEP = @AMDEP@
 AMTAR = @AMTAR@
 AS = @AS@
 AWK = @AWK@
+BZIPDelegate = @BZIPDelegate@
+BrowseDelegate = @BrowseDelegate@
 CC = @CC@
+CGMDecodeDelegate = @CGMDecodeDelegate@
 CPP = @CPP@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
+CatDelegate = @CatDelegate@
+ConvertDelegate = @ConvertDelegate@
+DELEGATES = @DELEGATES@
 DEPDIR = @DEPDIR@
+DLLDFLAGS = @DLLDFLAGS@
 DLLTOOL = @DLLTOOL@
+DOTDecodeDelegate = @DOTDecodeDelegate@
+DVIDecodeDelegate = @DVIDecodeDelegate@
 EXEEXT = @EXEEXT@
+EchoDelegate = @EchoDelegate@
+EditorDelegate = @EditorDelegate@
+FIGDecodeDelegate = @FIGDecodeDelegate@
 GCJ = @GCJ@
 GCJFLAGS = @GCJFLAGS@
+GSColorDevice = @GSColorDevice@
+GSEPSDevice = @GSEPSDevice@
+GSMonoDevice = @GSMonoDevice@
+GSPDFDevice = @GSPDFDevice@
+GSPSDevice = @GSPSDevice@
+GnuplotDecodeDelegate = @GnuplotDecodeDelegate@
+HPGLDecodeDelegate = @HPGLDecodeDelegate@
+HTMLDecodeDelegate = @HTMLDecodeDelegate@
+ILBMDecodeDelegate = @ILBMDecodeDelegate@
+ILBMEncodeDelegate = @ILBMEncodeDelegate@
+INCLTDL = @INCLTDL@
+LD = @LD@
+LIBLTDL = @LIBLTDL@
 LIBTOOL = @LIBTOOL@
+LIB_BZLIB = @LIB_BZLIB@
+LIB_DL = @LIB_DL@
+LIB_DPS = @LIB_DPS@
+LIB_FPX = @LIB_FPX@
+LIB_HDF = @LIB_HDF@
+LIB_JBIG = @LIB_JBIG@
+LIB_JPEG = @LIB_JPEG@
+LIB_LCMS = @LIB_LCMS@
+LIB_LF = @LIB_LF@
+LIB_MATH = @LIB_MATH@
+LIB_PNG = @LIB_PNG@
+LIB_SFIO = @LIB_SFIO@
+LIB_THREAD = @LIB_THREAD@
+LIB_TIFF = @LIB_TIFF@
+LIB_TTF = @LIB_TTF@
+LIB_X11 = @LIB_X11@
+LIB_XEXT = @LIB_XEXT@
+LIB_XML = @LIB_XML@
+LIB_XT = @LIB_XT@
+LIB_ZLIB = @LIB_ZLIB@
 LN_S = @LN_S@
+LPDelegate = @LPDelegate@
+LPRDelegate = @LPRDelegate@
+LZWDecodeDelegate = @LZWDecodeDelegate@
+LZWEncodeDelegate = @LZWEncodeDelegate@
+LaunchDelegate = @LaunchDelegate@
+MAGICKLIB = @MAGICKLIB@
 MAINT = @MAINT@
 MAJOR_VERSION = @MAJOR_VERSION@
 MAKEINFO = @MAKEINFO@
+MANDelegate = @MANDelegate@
 MICRO_VERSION = @MICRO_VERSION@
 MINOR_VERSION = @MINOR_VERSION@
+MPEGDecodeDelegate = @MPEGDecodeDelegate@
+MPEGEncodeDelegate = @MPEGEncodeDelegate@
+MVDelegate = @MVDelegate@
+MogrifyDelegate = @MogrifyDelegate@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
+PERL = @PERL@
+PERL_MAKE_OPTIONS = @PERL_MAKE_OPTIONS@
+PGPDecodeDelegate = @PGPDecodeDelegate@
+POVDelegate = @POVDelegate@
+PSDelegate = @PSDelegate@
+PrintDelegate = @PrintDelegate@
+RADDecodeDelegate = @RADDecodeDelegate@
 RANLIB = @RANLIB@
+RLEEncodeDelegate = @RLEEncodeDelegate@
+RMDelegate = @RMDelegate@
+SCANDecodeDelegate = @SCANDecodeDelegate@
 STRIP = @STRIP@
+ShowImageDelegate = @ShowImageDelegate@
+TXTDelegate = @TXTDelegate@
 VERSION = @VERSION@
+WMFDecodeDelegate = @WMFDecodeDelegate@
+WWWDecodeDelegate = @WWWDecodeDelegate@
+XCFDecodeDelegate = @XCFDecodeDelegate@
+X_CFLAGS = @X_CFLAGS@
+ZipDelegate = @ZipDelegate@
 install_sh = @install_sh@
 
 #
 # Makefile for Magick++ demo programs
 #
-# Copyright Bob Friesenhahn, 1999
+# Copyright Bob Friesenhahn, 1999, 2000
 #
 
 
-AUTOMAKE_OPTIONS = 1.2
+AUTOMAKE_OPTIONS = 1.4
 
-INCLUDES = -I../lib
+INCLUDES = -I$(srcdir)/../lib -I../.. -I$(top_srcdir)
 
 noinst_PROGRAMS = button demo detrans flip shapes
 
-LDADD = ../lib/libMagick++.la
+LDADD = ../lib/libMagick++.la ../../magick/libMagick.la
 
 button_SOURCES = button.cpp
 demo_SOURCES = demo.cpp
@@ -111,42 +188,46 @@ shapes_SOURCES = shapes.cpp
 EXTRA_DIST = Generic.ttf model.miff smile.miff smile_anim.miff tile.miff
 
 CLEANFILES = button.miff demo.miff flip_out.miff shapes.miff
-subdir = demo
+subdir = Magick++/demo
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+CONFIG_HEADER = ../../magick/config.h
 CONFIG_CLEAN_FILES = 
 noinst_PROGRAMS =  button$(EXEEXT) demo$(EXEEXT) detrans$(EXEEXT) \
 flip$(EXEEXT) shapes$(EXEEXT)
 PROGRAMS =  $(noinst_PROGRAMS)
 
 
-DEFS = @DEFS@ -I. -I$(srcdir)
+DEFS = @DEFS@ -I. -I$(srcdir) -I../../magick
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
+X_LIBS = @X_LIBS@
+X_EXTRA_LIBS = @X_EXTRA_LIBS@
+X_PRE_LIBS = @X_PRE_LIBS@
 am_button_OBJECTS =  button.$(OBJEXT)
 button_OBJECTS =  $(am_button_OBJECTS)
 button_LDADD = $(LDADD)
-button_DEPENDENCIES =  ../lib/libMagick++.la
+button_DEPENDENCIES =  ../lib/libMagick++.la ../../magick/libMagick.la
 button_LDFLAGS = 
 am_demo_OBJECTS =  demo.$(OBJEXT)
 demo_OBJECTS =  $(am_demo_OBJECTS)
 demo_LDADD = $(LDADD)
-demo_DEPENDENCIES =  ../lib/libMagick++.la
+demo_DEPENDENCIES =  ../lib/libMagick++.la ../../magick/libMagick.la
 demo_LDFLAGS = 
 am_detrans_OBJECTS =  detrans.$(OBJEXT)
 detrans_OBJECTS =  $(am_detrans_OBJECTS)
 detrans_LDADD = $(LDADD)
-detrans_DEPENDENCIES =  ../lib/libMagick++.la
+detrans_DEPENDENCIES =  ../lib/libMagick++.la ../../magick/libMagick.la
 detrans_LDFLAGS = 
 am_flip_OBJECTS =  flip.$(OBJEXT)
 flip_OBJECTS =  $(am_flip_OBJECTS)
 flip_LDADD = $(LDADD)
-flip_DEPENDENCIES =  ../lib/libMagick++.la
+flip_DEPENDENCIES =  ../lib/libMagick++.la ../../magick/libMagick.la
 flip_LDFLAGS = 
 am_shapes_OBJECTS =  shapes.$(OBJEXT)
 shapes_OBJECTS =  $(am_shapes_OBJECTS)
 shapes_LDADD = $(LDADD)
-shapes_DEPENDENCIES =  ../lib/libMagick++.la
+shapes_DEPENDENCIES =  ../lib/libMagick++.la ../../magick/libMagick.la
 shapes_LDFLAGS = 
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -171,7 +252,7 @@ all: all-redirect
 .SUFFIXES:
 .SUFFIXES: .c .cpp .lo .o .obj
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
-	cd $(top_srcdir) && $(AUTOMAKE) --gnu demo/Makefile
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu Magick++/demo/Makefile
 
 Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \
@@ -390,10 +471,10 @@ maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
 check:
-	./button
-	./demo
-	./flip
-	./shapes
+	env srcdir=$(srcdir) ./button
+	env srcdir=$(srcdir) ./demo
+	env srcdir=$(srcdir) ./flip
+	env srcdir=$(srcdir) ./shapes
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -5,7 +5,6 @@ dnl define HAVE_BOOL. Note that a typedef is not a separate
 dnl type since you cannot overload a function such that it accepts either
 dnl the basic type or the typedef.
 dnl
-dnl @version $Id$
 dnl @author Luc Maisonobe
 dnl
 AC_DEFUN([AC_CXX_BOOL],
@@ -31,7 +30,6 @@ dnl @synopsis AC_CXX_CONST_CAST
 dnl
 dnl If the compiler supports const_cast<>, define HAVE_CONST_CAST.
 dnl
-dnl @version $Id$
 dnl @author Luc Maisonobe
 dnl
 AC_DEFUN([AC_CXX_CONST_CAST],
@@ -54,7 +52,6 @@ dnl
 dnl If the compiler supports default template parameters,
 dnl define HAVE_DEFAULT_TEMPLATE_PARAMETERS.
 dnl
-dnl @version $Id$
 dnl @author Luc Maisonobe
 dnl
 AC_DEFUN([AC_CXX_DEFAULT_TEMPLATE_PARAMETERS],
@@ -80,7 +77,6 @@ dnl
 dnl If the C++ compiler supports exceptions handling (try,
 dnl throw and catch), define HAVE_EXCEPTIONS.
 dnl
-dnl @version $Id$
 dnl @author Luc Maisonobe
 dnl
 AC_DEFUN([AC_CXX_EXCEPTIONS],
@@ -103,7 +99,6 @@ dnl If the compiler can be asked to prevent using implicitly one argument
 dnl constructors as converting constructors with the explicit
 dnl keyword, define HAVE_EXPLICIT.
 dnl
-dnl @version $Id$
 dnl @author Luc Maisonobe
 dnl
 AC_DEFUN([AC_CXX_EXPLICIT],
@@ -127,7 +122,6 @@ dnl
 dnl If the compiler supports ISO C++ standard library (i.e., can include the
 dnl files iostream, map, iomanip and cmath}), define HAVE_STD.
 dnl
-dnl @version $Id$
 dnl @author Luc Maisonobe
 dnl
 AC_DEFUN([AC_CXX_HAVE_STD],
@@ -156,7 +150,6 @@ dnl @synopsis AC_CXX_HAVE_STL
 dnl
 dnl If the compiler supports the Standard Template Library, define HAVE_STL.
 dnl
-dnl @version $Id$
 dnl @author Luc Maisonobe
 dnl
 AC_DEFUN([AC_CXX_HAVE_STL],
@@ -184,7 +177,6 @@ dnl
 dnl If the compiler supports member templates outside the class declaration,
 dnl define HAVE_MEMBER_TEMPLATES_OUTSIDE_CLASS.
 dnl
-dnl @version $Id$
 dnl @author Luc Maisonobe
 dnl
 AC_DEFUN([AC_CXX_MEMBER_TEMPLATES_OUTSIDE_CLASS],
@@ -216,7 +208,6 @@ dnl If the compiler allows modifying class data members flagged with
 dnl the mutable keyword even in const objects (for example in the
 dnl body of a const member function), define HAVE_MUTABLE.
 dnl
-dnl @version $Id$
 dnl @author Luc Maisonobe
 dnl
 AC_DEFUN([AC_CXX_MUTABLE],
@@ -245,7 +236,6 @@ dnl
 dnl If the compiler can prevent names clashes using namespaces, define
 dnl HAVE_NAMESPACES.
 dnl
-dnl @version $Id$
 dnl @author Luc Maisonobe
 dnl
 AC_DEFUN([AC_CXX_NAMESPACES],
@@ -270,7 +260,6 @@ dnl If the compiler accepts the new for scoping rules (the scope of a
 dnl variable declared inside the parentheses is restricted to the
 dnl for-body), define HAVE_NEW_FOR_SCOPING.
 dnl
-dnl @version $Id$
 dnl @author Luc Maisonobe
 dnl
 AC_DEFUN([AC_CXX_NEW_FOR_SCOPING],
@@ -297,7 +286,6 @@ dnl @synopsis AC_CXX_STATIC_CAST
 dnl
 dnl If the compiler supports static_cast<>, define HAVE_STATIC_CAST.
 dnl
-dnl @version $Id$
 dnl @author Luc Maisonobe
 dnl
 AC_DEFUN([AC_CXX_STATIC_CAST],
@@ -324,7 +312,6 @@ dnl @synopsis AC_CXX_TEMPLATES
 dnl
 dnl If the compiler supports basic templates, define HAVE_TEMPLATES.
 dnl
-dnl @version $Id$
 dnl @author Luc Maisonobe
 dnl
 AC_DEFUN([AC_CXX_TEMPLATES],

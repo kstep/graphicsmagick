@@ -7,6 +7,8 @@ AUTOMAKE_OPTIONS = 1.4
 
 SUBDIRS = Magick++
 
+INCLUDES = -I../.. -I$(top_srcdir)
+
 lib_LTLIBRARIES    = libMagick++.la
 MAJOR_VERSION      = @MAJOR_VERSION@
 MINOR_VERSION      = @MINOR_VERSION@
