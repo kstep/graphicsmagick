@@ -405,16 +405,19 @@ MagickExport unsigned char *Base64Decode(const char *source,size_t *length)
 %
 %  The format of the Base64Encode method is:
 %
-%      char *Base64Encode(const unsigned char *source,const size_t length)
+%      char *Base64Encode(const unsigned char *blob,const size_t blob_length,size_t *encoded_length )
 %
 %  A description of each parameter follows:
 %
-%    o source:  A pointer to binary data to encode.
+%    o blob:           A pointer to binary data to encode.
 %
-%    o length: The number of bytes to encode.
+%    o blob_length:    The number of bytes to encode.
+%
+%    o encoded_length: The number of bytes encoded.
 %
 */
-MagickExport char *Base64Encode(const unsigned char *source,const size_t length)
+MagickExport char *Base64Encode(const unsigned char *blob,const size_t blob_length,
+                                size_t *encoded_length)
 {
   char
     *encode;
@@ -428,19 +431,20 @@ MagickExport char *Base64Encode(const unsigned char *source,const size_t length)
   size_t
     remainder;
 
-  assert(source != (unsigned char *) NULL);
-  encode=(char *) AcquireMemory(4*length/3+4);
+  assert(blob != (unsigned char *) NULL);
+  *encoded_length=0;
+  encode=(char *) AcquireMemory(4*blob_length/3+4);
   if (encode == (char *) NULL)
     return((char *) NULL);
   i=0;
-  for (p=source; p < (source+length-2); p+=3)
+  for (p=blob; p < (blob+blob_length-2); p+=3)
   {
     encode[i++]=Base64[*p >> 2];
     encode[i++]=Base64[((*p & 0x03) << 4)+(*(p+1) >> 4)];
     encode[i++]=Base64[((*(p+1) & 0x0f) << 2)+(*(p+2) >> 6)];
     encode[i++]=Base64[*(p+2) & 0x3f];
   }
-  remainder=length % 3;
+  remainder=blob_length % 3;
   if (remainder != 0)
     {
       int
@@ -462,6 +466,7 @@ MagickExport char *Base64Encode(const unsigned char *source,const size_t length)
       encode[i++]='=';
     }
   encode[i++]='\0';
+  *encoded_length=i;
   return(encode);
 }
 

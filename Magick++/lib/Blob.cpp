@@ -95,18 +95,19 @@ void Magick::Blob::base64 ( const std::string base64_ )
 // Return Base64-encoded string representation.
 std::string Magick::Blob::base64 ( void )
 {
-  char *encoded =
-    Base64Encode(static_cast<const unsigned char*>(data()), length());
+  size_t encoded_length = 0;
 
-  std::string result;
+  char *encoded =
+    Base64Encode(static_cast<const unsigned char*>(data()), length(), &encoded_length);
 
   if(encoded)
     {
-      result = std::string(encoded);
+      std::string result(encoded,encoded_length);
       LiberateMemory(reinterpret_cast<void **>(&encoded));
+      return result;
     }
 
-  return result;
+  return std::string();
 }
 
 // Update object contents, making a copy of the supplied data.

@@ -1,4 +1,9 @@
 2002-05-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+  * (utility.c) Modified Base64Encode so that it returns the number of
+    characters encoded. This avoids having to invoke strlen on possibly
+    megabytes of data.
+
+2002-05-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
   * (wmf.c) Fix compilation error with Sun Workshop compiler.
 
 2002-05-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
