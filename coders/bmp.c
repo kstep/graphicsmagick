@@ -707,21 +707,21 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         "Corrupt BMP header: Negative or zero width",image);
     if (bmp_info.height == 0)
       ThrowReaderException(CorruptImageWarning,
-        "Corrupt BMP header: Zero Height",image);
+        "Corrupt BMP header: zero height",image);
     if ((bmp_info.height < 0) && (bmp_info.compression !=0))
       ThrowReaderException(CorruptImageWarning,
         "Corrupt BMP header: Negative height with compression not valid",image);
     if (bmp_info.planes != 1)
       ThrowReaderException(CorruptImageWarning,
-        "Corrupt BMP header: Static Planes value not equal 1",image);
+        "Corrupt BMP header: Static planes value not equal 1",image);
     if ((bmp_info.bits_per_pixel != 1) && (bmp_info.bits_per_pixel != 4) &&
         (bmp_info.bits_per_pixel != 8) && (bmp_info.bits_per_pixel != 16) &&
         (bmp_info.bits_per_pixel != 24) && (bmp_info.bits_per_pixel != 32))
       ThrowReaderException(CorruptImageWarning,
-        "Corrupt BMP header: Invalid Bits per Pixel",image);
-    if (bmp_info.number_colors > 1<<bmp_info.number_colors)
+        "Corrupt BMP header: Invalid bits per pixel",image);
+    if (bmp_info.number_colors > (1 << bmp_info.bits_per_pixel))
       ThrowReaderException(CorruptImageWarning,
-        "Corrupt BMP header: Invalid Number of Colors",image);
+        "Corrupt BMP header: Invalid number of colors",image);
     if (bmp_info.compression > 3)
      ThrowReaderException(CorruptImageWarning,
       "Corrupt BMP header: Invalid Compression",image);
