@@ -875,7 +875,9 @@ static void WmfDrawText(CSTRUCT *cstruct, char *str, RECT *arect,
     rotate,
     strikeout,
     textalign,
-    underline;
+    underline,
+    fontoffset,
+    y_resolution;
 
   
   pointsize = ScaleY(cstruct->dc->font->lfHeight,cstruct);
@@ -885,6 +887,10 @@ static void WmfDrawText(CSTRUCT *cstruct, char *str, RECT *arect,
   strikeout = cstruct->dc->font->lfStrikeOut;
   rotate = cstruct->dc->font->lfEscapement;
   angle = (double)(-cstruct->dc->font->lfEscapement)/10.0 * PI / 180;
+
+  y_resolution=72;
+  if(IMG_PTR->y_resolution > 0)
+    y_resolution=IMG_PTR->y_resolution;
 
   ExtendMVG(cstruct, "push graphic-context\n");
 
@@ -917,6 +923,7 @@ static void WmfDrawText(CSTRUCT *cstruct, char *str, RECT *arect,
 
   /* Compute gravity */
   *gravity='\0';
+  fontoffset=(pointsize*y_resolution)/72;
   if(textalign & TA_TOP)
     {
       if(textalign & TA_LEFT)
@@ -951,11 +958,12 @@ static void WmfDrawText(CSTRUCT *cstruct, char *str, RECT *arect,
     }
 
   /* Set point size */
+  printf("pointsize=%i\n", pointsize);
   sprintf(buff, "font-size %i\n", pointsize);
   ExtendMVG(cstruct, buff);
 
   /* Translate coordinates so target is 0,0 */
-  sprintf(buff, "translate %i,%i\n",x,y);
+  sprintf(buff, "translate %i,%i\n",x,y+fontoffset);
   ExtendMVG(cstruct, buff);
 
   /* Rotation */
