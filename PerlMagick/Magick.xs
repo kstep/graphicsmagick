@@ -6299,7 +6299,7 @@ QueryFontMetrics(ref,...)
     if (status != False)
       {
         FormatString(message,"%g,%g,%g,%g,%g",bounds.x1,bounds.y1,bounds.x2,
-          bounds.y2,AffineExpansion(&annotate->affine)*
+          bounds.y2,AffineExpansion(&annotate_info->affine)*
           annotate_info->pointsize);
         s=sv_2mortal(newSVpv(message,0));
         PUSHs(s);
