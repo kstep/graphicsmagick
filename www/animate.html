@@ -1150,9 +1150,9 @@ specify a subimage with a geometry
 Single images are read with the filename you specify. Alternatively, you
 can animate an image sequence with a single filename. Define the range
 of the image sequence with <strong>-scene</strong>. Each image in the range is read
-with the filename followed by a period (<strong>.</strong>) and the scene number.
-You can change this behavior by embedding a <strong>printf</strong> format specification
-in the file name. For example,
+with the filename followed by a period (<strong>.</strong>) and the scene number.  You
+can change this behavior by embedding a <strong>%0Nd, %0No, or %0Nx printf</strong>
+format specification in the file name. For example,
 <br>&nbsp;<br>
 <pre>
     animate -scene 0-9 image%02d.miff

@@ -1821,9 +1821,9 @@ image.rgb[320x256+50+50]</tt>).
 Single images are read with the filename you specify. Alternatively,
 you can display an image sequence with a single filename. Define the range
 of the image sequence with -scene. Each image in the range is read with
-the filename followed by a period (<tt>.</tt>) and the scene number. You
-can change this behavior by embedding a <tt>printf</tt> format specification
-in the file name. For example,
+the filename followed by a period (<strong>.</strong>) and the scene number.  You
+can change this behavior by embedding a <strong>%0Nd, %0No, or %0Nx printf</strong>
+format specification in the file name. For example,
 <pre>
     -scene 0-9 image%02d.miff
 </pre>

@@ -283,8 +283,16 @@ For example, <pre>&nbsp;&nbsp;&nbsp; $image-&gt;Write(filename=&gt;'image.png', 
 or to method Write() to write to standard out: <pre>&nbsp;&nbsp;&nbsp; binmode STDOUT;<br>&nbsp;&nbsp;&nbsp; $image-&gt;Write('png:-');</pre>
  To read an image in the GIF format from a PERL filehandle, use: <pre>&nbsp;&nbsp;&nbsp; $image = Image::Magick-&gt;new;<br>&nbsp;&nbsp;&nbsp; open(IMAGE, 'image.gif');<br>&nbsp;&nbsp;&nbsp; $image-&gt;Read(file=&gt;IMAGE);<br>&nbsp;&nbsp;&nbsp; close(IMAGE);</pre>
  To write an image in the PNG format to a PERL filehandle, use: <pre>&nbsp;&nbsp;&nbsp; $filename = "image.png";<br>&nbsp;&nbsp;&nbsp; open(IMAGE, "&gt;$filename");<br>&nbsp;&nbsp;&nbsp; $image-&gt;Write(file=&gt;IMAGE, filename=&gt;$filename);<br>&nbsp;&nbsp;&nbsp; close(IMAGE);</pre>
- The <tt>%</tt> character is always interpreted in output filenames. To get
-a <tt>%</tt> character in the filename, use <tt>%%</tt>. </p>
+If <tt>%0Nd, %0No, or %0Nx</tt> appears in the filename, it is interpreted
+as a printf format specification and the specification is replaced with the
+specified decimal, octal, or hexadecimal encoding of the scene number. For
+example,</p>
+<pre>
+    image%03d.miff
+</pre>
+<p>
+converts files image000.miff, image001.miff, etc.
+</p>
                     <p>You can optionally add <i>Image</i> to any method
 name. For example, ReadImage() is an alias for method Read().</p>
                     </dl>
@@ -386,8 +394,8 @@ integer</i>, x=&gt;<i>integer</i>, y=&gt;<i>integer</i></td>
   <tr>
  <td>ColorFloodfill</td>
   <td>geometry=&gt;<i>geometry</i>, x=&gt;<i>integer</i>, y=&gt;<i>integer</i>
-, fill=<i><a href="color.html">color name</a></i>, bordercolor=<i>
-  <a href="color.html">color name</a></i>, fuzz=&gt;<i>double</i></td>
+, fill=<i><a href="color.html">color name</a></i>, bordercolor=<i><a href="color.html">
+color name</a></i></td>
   <td>changes the color value of any pixel that matches the color of the target
 pixel and is a neighbor. If you specify a border color, the color value is
 changed for any neighbor pixel that is not that color.</td>
@@ -550,8 +558,7 @@ color name</a></i></td>
   <tr>
  <td>MatteFloodfill</td>
   <td>geometry=&gt;<i>geometry</i>, x=&gt;<i>integer</i>, y=&gt;<i>integer</i>
-, matte=<i>integer</i>, bordercolor=<i><a href="color.html">color name</a></i>
-  fuzz=&gt;<i>double</i></td>
+, matte=<i>integer</i>, bordercolor=<i><a href="color.html">color name</a></i></td>
   <td>changes the matte value of any pixel that matches the color of the target
 pixel and is a neighbor. If you specify a border color, the matte value is
 changed for any neighbor pixel that is not that color.</td>
@@ -604,7 +611,7 @@ yellow becomes blue, etc.)</td>
   <tr>
  <td>Opaque</td>
   <td>color=&gt;<i><a href="color.html">color name</a></i>, fill=&gt;<i><a href="color.html">
-color name</a></i>, fuzz=&gt;<i>double</i></td>
+color name</a></i></td>
   <td>change this color to the fill color within the image</td>
  </tr>
   <tr>
@@ -742,12 +749,12 @@ of a left and right image of a stereo pair</td>
  </tr>
   <tr>
  <td>Transparent</td>
-  <td>color=&gt;<i><a href="color.html">color name</a></i>, fuzz=&gt;<i>double</i></td>
+  <td>color=&gt;<i><a href="color.html">color name</a></i></td>
   <td>make this color transparent within the image</td>
  </tr>
   <tr>
  <td>Trim</td>
-  <td>fuzz=&gt;<i>double</i>
+  <td><br>
                               </td>
   <td>remove edges that are the background color from the image</td>
  </tr>

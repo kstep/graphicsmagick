@@ -1252,9 +1252,10 @@ specify a subimage with a geometry (e.g. -size
 
 Single images are written with the filename you specify. However, multi-part
 images (i.e. a multi-page PostScript document with \fB+adjoin\fP specified)
-are written with the filename followed by a period (\fB.\fP) and the scene
-number. You can change this behavior by embedding a \fBprintf\fP format
-specification in the file name. For example,
+are written
+with the filename followed by a period (\fB.\fP) and the scene number.  You
+can change this behavior by embedding a \fB%0Nd, %0No, or %0Nx printf\fP
+format specification in the file name. For example,
 
     image%02d.miff
 
