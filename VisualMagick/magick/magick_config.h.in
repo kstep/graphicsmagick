@@ -13,6 +13,7 @@
 #define HasFPX
 #define HasJP2
 #define HAVE_MMAP
+#define HAVE_IOSFWD 1
 #define HasXML
 #define HAVE_LIBXML_XMLERROR_H
 #define HAVE_FREETYPE_FREETYPE_H
