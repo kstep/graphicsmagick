@@ -2385,7 +2385,13 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
         ((delegate_info == (const DelegateInfo *) NULL) ||
          (delegate_info->decode == NULL)))
       {
-        if (module_exception.severity != UndefinedException)
+        /*
+          Module loader ConfigureError errors are intentionally
+          ignored here in order to provide the user with familiar "no
+          delegate" error messages.  This may be re-considered later.
+        */
+        if ((module_exception.severity != UndefinedException) &&
+            (module_exception.severity != ConfigureError))
           CopyException(exception,&module_exception);
         else if (delegate_exception.severity != UndefinedException)
           CopyException(exception,&delegate_exception);
@@ -2396,11 +2402,13 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
             */
             if (clone_info->filename[0] == 0)
               {
+                errno=0;
                 ThrowException(exception,MissingDelegateError,
                                NoDecodeDelegateForThisImageFormat,clone_info->magick);
               }
             else if (IsAccessibleAndNotEmpty(clone_info->filename))
               {
+                errno=0;
                 ThrowException(exception,MissingDelegateError,
                                NoDecodeDelegateForThisImageFormat,clone_info->filename);
               }

@@ -56,6 +56,13 @@
 2004-03-28  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/constitute.c (ReadImage): Ignore errors of type
+        ConfigureError when loading modules so that error report can still
+        report the familiar "No delegate for this image format" message
+        while still being able to report problems with loading a module if
+        it was found.  This is a compromise which reports useless messages
+        when the modules are not found at all, but I can't think of a way
+        around it.<BR>
   <LI> magick/nt_base.c (NTSystemComman): Adjust
         MsgWaitForMultipleObjects() arguments to wait for object to be
         signaled only (FALSE) rather wait for object to be signaled as
