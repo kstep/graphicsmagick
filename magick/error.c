@@ -535,13 +535,13 @@ MagickExport void SetExceptionInfo(ExceptionInfo *exception,
 %
 %
 */
-MagickExport FatalErrorHandler SetFatalErrorHandler(ErrorHandler handler)
+MagickExport FatalErrorHandler SetFatalErrorHandler(FatalErrorHandler handler)
 {
   FatalErrorHandler
     previous_handler;
 
-  previous_handler=error_handler;
-  error_handler=handler;
+  previous_handler=fatal_error_handler;
+  fatal_error_handler=handler;
   return(previous_handler);
 }
 
