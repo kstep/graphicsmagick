@@ -669,12 +669,13 @@ MagickExport unsigned int LogMagickEvent(const LogEventType type,
       case 'b':
       {
         register const char
-          *b;
-        
-        for (b=module+strlen(module); b > module; b--)
-          if (*b == *DirectorySeparator)
+          *p;
+
+        for (p=module+strlen(module); p > module; p--)
+          if (*p == *DirectorySeparator)
             break;
-        (void) fprintf(stdout,"%.1024s",++b);
+        p++;
+        (void) fprintf(stdout,"%.1024s",p);
         break;
       }
       case 'd':
