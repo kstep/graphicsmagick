@@ -149,8 +149,10 @@ extern MagickExport void
   DrawSetScale(DrawContext context, const double x, const double y),
   DrawSetSkewX(DrawContext context, const double degrees),
   DrawSetSkewY(DrawContext context, const double degrees),
-//   DrawSetStopColor(DrawContext context, const PixelPacket * color,
-//                    const double offset),
+  /*
+   DrawSetStopColor(DrawContext context, const PixelPacket * color,
+                    const double offset),
+  */
   DrawSetStrokeAntialias(DrawContext context, const unsigned int true_false),
   DrawSetStrokeColor(DrawContext context, const PixelPacket * stroke_color),
   DrawSetStrokeColorString(DrawContext context, const char* stroke_color),
