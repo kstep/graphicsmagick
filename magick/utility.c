@@ -1468,6 +1468,12 @@ MagickExport void GetPathComponent(const char *path,PathType type,
 %
 %
 */
+
+MagickExport char *AllocateString(const char *source)
+{
+  return(GetString(source));
+}
+
 MagickExport char *GetString(const char *source)
 {
   char
