@@ -7317,7 +7317,7 @@ Export void TransparentImage(Image *image,const char *color)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n c o m p r e s s I m a g e                                             %
+%   U n c o n d e n s e I m a g e                                             %
 %                                                                             %
 %                                                                             %
 %                                                                             %

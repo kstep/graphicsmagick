@@ -255,6 +255,9 @@ static unsigned int EncodeImage(const unsigned char *pixels,
   register unsigned char
     *q;
 
+  unsigned int
+    bytes_per_line;
+
   /*
     Runlength encode pixels.
   */
@@ -263,14 +266,15 @@ static unsigned int EncodeImage(const unsigned char *pixels,
   p=pixels;
   q=compressed_pixels;
   i=0;
+  bytes_per_line=number_columns+(number_columns % 2 ? 1 : 0);
   for (y=0; y < (int) number_rows; y++)
   {
-    for (x=0; x < (int) number_columns; x+=i)
+    for (x=0; x < (int) bytes_per_line; x+=i)
     {
       /*
         Determine runlength.
       */
-      for (i=1; ((x+i) < (int) number_columns); i++)
+      for (i=1; ((x+i) < (int) bytes_per_line); i++)
         if ((*(p+i) != *p) || (i == 255))
           break;
       *q++=(unsigned char) i;
