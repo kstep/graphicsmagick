@@ -65,7 +65,7 @@
 */
 #define BezierQuantum  200
 #define FuzzyOpacityMatch(color,target,fuzz) \
-  (((color)->opacity == (target)->opacity) &&
+  (((color)->opacity == (target)->opacity) && \
    FuzzyColorMatch(color,target,fuzz))
 #define MaxStacksize  (1 << 15)
 #define Push(up,left,right,delta) \
