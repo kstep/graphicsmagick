@@ -771,7 +771,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       while ((isspace((int) (*p)) || (*p == ',')) && (*p != '\0'))
         p++;
       i++;
-      if (i < (int) (number_points-Max(BezierQuantum*x,360)-1))
+      if (i < (int) (number_points-Max(BezierQuantum*BezierQuantum*x,360)-1))
         continue;
       number_points<<=1;
       primitive_info=(PrimitiveInfo *) ReallocateMemory(primitive_info,
@@ -934,9 +934,9 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         if (*p != '\0')
           p++;
         *p++='\0';
-        if (i < (int) (number_points-BezierQuantum*Extent(path)-1))
+        if (i < (number_points-BezierQuantum*BezierQuantum*Extent(path)-1))
           {
-            number_points+=BezierQuantum*Extent(path);
+            number_points+=BezierQuantum*BezierQuantum*Extent(path);
             primitive_info=(PrimitiveInfo *) ReallocateMemory(primitive_info,
               number_points*sizeof(PrimitiveInfo));
             if (primitive_info == (PrimitiveInfo *) NULL)

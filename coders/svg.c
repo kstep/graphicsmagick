@@ -101,6 +101,9 @@ typedef struct _SVGInfo
     width,
     height;
 
+  char
+    *comment;
+
   int
     n;
 
@@ -432,7 +435,8 @@ static void SVGEntityDeclaration(void *context,const xmlChar *name,int type,
   svg_info=(SVGInfo *) context;
   if (svg_info->verbose)
     (void) fprintf(stdout,"SAX.entityDecl(%s, %d, %s, %s, %s)\n",name,type,
-      public_id,system_id,content);
+      public_id ? (char *) public_id : "none",
+      system_id ? (char *) system_id : "none",content);
 }
 
 void SVGAttributeDeclaration(void *context,const xmlChar *element,
@@ -477,7 +481,8 @@ static void SVGNotationDeclaration(void *context,const xmlChar *name,
   svg_info=(SVGInfo *) context;
   if (svg_info->verbose)
     (void) fprintf(stdout,"SAX.notationDecl(%s, %s, %s)\n",(char *) name,
-      (char *) public_id,(char *) system_id);
+      public_id ? (char *) public_id : "none",
+      system_id ? (char *) system_id : "none");
 }
 
 static void SVGUnparsedEntityDeclaration(void *context,const xmlChar *name,
@@ -492,7 +497,8 @@ static void SVGUnparsedEntityDeclaration(void *context,const xmlChar *name,
   svg_info=(SVGInfo *) context;
   if (svg_info->verbose)
     (void) fprintf(stdout,"SAX.unparsedEntityDecl(%s, %s, %s, %s)\n",
-      (char *) name,(char *) public_id,(char *) system_id,(char *) notation);
+      (char *) name,public_id ? (char *) public_id : "none",
+      system_id ? (char *) system_id : "none",(char *) notation);
 }
 
 static void SVGSetDocumentLocator(void *context,xmlSAXLocatorPtr location)
@@ -646,7 +652,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
           tokens=StringToTokens(value,&number_tokens);
           for (j=0; j < (number_tokens-1); j++)
           {
-            if (LocaleCompare(tokens[j],"fill:") == 0)
+            if ((LocaleCompare(tokens[j],"fill") == 0) ||
+                (LocaleCompare(tokens[j],"fillcolor") == 0))
               {
                 (void) CloneString(&value,tokens[++j]);
                 (void) CloneString(&svg_info->graphic_context[n].fill,value);
@@ -885,10 +892,16 @@ static void SVGEndElement(void *context, const xmlChar *name)
     svg_info->graphic_context[n].pointsize);
   (void) fprintf(svg_info->file,"opacity %g\n",
     svg_info->graphic_context[n].opacity);
-  (void) fprintf(svg_info->file,"fill %s\n",
-    svg_info->graphic_context[n].fill);
-  (void) fprintf(svg_info->file,"stroke %s\n",
-    svg_info->graphic_context[n].stroke);
+  if ((LocaleCompare(svg_info->graphic_context[n].fill,"none") == 0) &&
+      (LocaleCompare(svg_info->graphic_context[n].stroke,"none") == 0))
+    (void) fprintf(svg_info->file,"fill black\n");
+  else
+    {
+      (void) fprintf(svg_info->file,"fill %s\n",
+        svg_info->graphic_context[n].fill);
+      (void) fprintf(svg_info->file,"stroke %s\n",
+        svg_info->graphic_context[n].stroke);
+    }
   (void) fprintf(svg_info->file,"angle %f\n",
     svg_info->graphic_context[n].angle);
   (void) fprintf(svg_info->file,"transform ");
@@ -1067,56 +1080,71 @@ static void SVGComment(void *context,const xmlChar *value)
   svg_info=(SVGInfo *) context;
   if (svg_info->verbose)
     (void) fprintf(stdout,"SAX.comment(%s)\n",value);
+  CloneString(&svg_info->comment,(char *) value);
 }
 
-static void SVGWarning(void *context,const char *message,...)
+static void SVGWarning(void *context,const char *format,...)
 {
+  char
+    message[MaxTextExtent];
+
   SVGInfo
     *svg_info;
 
   va_list
-    arguments;
+    operands;
 
   /**
     Display and format a warning messages, gives file, line, position and
     extra parameters.
   */
-  va_start(arguments,message);
+  va_start(operands,message);
   svg_info=(SVGInfo *) context;
   if (svg_info->verbose)
     {
       (void) fprintf(stdout,"SAX.warning: ");
-      vfprintf(stdout,message,arguments);
+      vfprintf(stdout,format,operands);
     }
   svg_info->exception.severity=DelegateWarning;
+#if !defined(HAVE_VSNPRINTF)
+  (void) vsprintf(message,format,operands);
+#else
+  (void) vsnprintf(message,MaxTextExtent,format,operands);
+#endif
   CloneString(&svg_info->exception.message,message);
-  CloneString(&svg_info->exception.qualifier,arguments);
-  va_end(arguments);
+  va_end(operands);
 }
 
-static void SVGError(void *context,const char *message,...)
+static void SVGError(void *context,const char *format,...)
 {
+  char
+    message[MaxTextExtent];
+
   SVGInfo
     *svg_info;
 
   va_list
-    arguments;
+    operands;
 
   /*
-    Display and format a error messages, gives file, line, position and
+    Display and format a error formats, gives file, line, position and
     extra parameters.
   */
-  va_start(arguments,message);
+  va_start(operands,format);
   svg_info=(SVGInfo *) context;
   if (svg_info->verbose)
     {
       (void) fprintf(stdout,"SAX.error: ");
-      vfprintf(stdout,message,arguments);
+      vfprintf(stdout,format,operands);
     }
   svg_info->exception.severity=DelegateError;
+#if !defined(HAVE_VSNPRINTF)
+  (void) vsprintf(message,format,operands);
+#else
+  (void) vsnprintf(message,MaxTextExtent,format,operands);
+#endif
   CloneString(&svg_info->exception.message,message);
-  CloneString(&svg_info->exception.qualifier,arguments);
-  va_end(arguments);
+  va_end(operands);
 }
 
 static void SVGFatalError(void *context,const char *message,...)
@@ -1125,17 +1153,17 @@ static void SVGFatalError(void *context,const char *message,...)
     *svg_info;
 
   va_list
-    arguments;
+    operands;
 
   /**
     Display and format a fatalError messages, gives file, line, position and
     extra parameters.
   */
   svg_info=(SVGInfo *) context;
-  va_start(arguments,message);
+  va_start(operands,message);
   (void) fprintf(stdout,"SAX.fatalError: ");
-  vfprintf(stdout,message,arguments);
-  va_end(arguments);
+  vfprintf(stdout,message,operands);
+  va_end(operands);
 }
 
 static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
@@ -1252,20 +1280,6 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   n=xmlParseChunk(context,buffer,0,1);
   xmlFreeParserCtxt(context);
   (void) fclose(file);
-  for (i=0; i <= svg_info.n; i++)
-  {
-    FreeMemory((void **) &svg_info.graphic_context[i].fill);
-    FreeMemory((void **) &svg_info.graphic_context[i].stroke);
-  }
-  if (svg_info.text != (char *) NULL)
-    FreeMemory((void **) &svg_info.text);
-  if (svg_info.vertices != (char *) NULL)
-    FreeMemory((void **) &svg_info.vertices);
-  if (svg_info.url != (char *) NULL)
-    FreeMemory((void **) &svg_info.url);
-  if (n != 0)
-    ThrowReaderException(svg_info.exception.severity,
-      svg_info.exception.message,image);
   CloseBlob(image);
   DestroyImage(image);
   /*
@@ -1278,7 +1292,31 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=ReadImage(clone_info,exception);
   (void) remove(filename);
   DestroyImageInfo(clone_info);
-  (void) strcpy(image->filename,image_info->filename);
+  if (image != (Image *) NULL)
+    {
+      (void) strcpy(image->filename,image_info->filename);
+      if (svg_info.comment != (char *) NULL)
+        (void) SetImageAttribute(image,"Comment",svg_info.comment);
+    }
+  /*
+    Free resources.
+  */
+  for (i=0; i <= svg_info.n; i++)
+  {
+    FreeMemory((void **) &svg_info.graphic_context[i].fill);
+    FreeMemory((void **) &svg_info.graphic_context[i].stroke);
+  }
+  if (svg_info.comment != (char *) NULL)
+    FreeMemory((void **) &svg_info.comment);
+  if (svg_info.text != (char *) NULL)
+    FreeMemory((void **) &svg_info.text);
+  if (svg_info.vertices != (char *) NULL)
+    FreeMemory((void **) &svg_info.vertices);
+  if (svg_info.url != (char *) NULL)
+    FreeMemory((void **) &svg_info.url);
+  if (n != 0)
+    ThrowReaderException(svg_info.exception.severity,
+      svg_info.exception.message,image);
   return(image);
 }
 #else
