@@ -2696,7 +2696,8 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
           }
         if (LocaleCompare("angle",keyword) == 0)
           {
-            (void) strtod(q,&q);
+            FormatString(buffer,"rotate(%g) ",strtod(q,&q));
+            WriteBlobString(image,buffer);
             break;
           }
         if (LocaleCompare("arc",keyword) == 0)
@@ -2730,6 +2731,8 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
               for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
                 value[x]=(*q++);
             value[x]='\0';
+            FormatString(buffer,"clip-path:%s;",value);
+            WriteBlobString(image,buffer);
             break;
           }
         if (LocaleCompare("circle",keyword) == 0)
@@ -2753,6 +2756,8 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
               value[x]=(*q++);
             value[x]='\0';
+            FormatString(buffer,"decorate:%s;",value);
+            WriteBlobString(image,buffer);
             break;
           }
         status=False;
@@ -2790,11 +2795,14 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
               value[x]=(*q++);
             value[x]='\0';
+            FormatString(buffer,"fill-rule:%s;",value);
+            WriteBlobString(image,buffer);
             break;
           }
         if (LocaleCompare("fill-opacity",keyword) == 0)
           {
-            strtod(q,&q);
+            FormatString(buffer,"fill-opacity:%g;",strtod(q,&q)/100.0);
+            WriteBlobString(image,buffer);
             break;
           }
         if (LocaleCompare("font",keyword) == 0)
@@ -2869,7 +2877,8 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
       {
         if (LocaleCompare("opacity",keyword) == 0)
           {
-            strtod(q,&q);
+            FormatString(buffer,"opacity(%g) ",strtod(q,&q));
+            WriteBlobString(image,buffer);
             break;
           }
         status=False;
@@ -2957,11 +2966,8 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
           }
         if (LocaleCompare("rotate",keyword) == 0)
           {
-            angle=strtod(q,&q);
-            affine.sx=cos(DegreesToRadians(fmod(angle,360.0)));
-            affine.rx=sin(DegreesToRadians(fmod(angle,360.0)));
-            affine.ry=(-sin(DegreesToRadians(fmod(angle,360.0))));
-            affine.sy=cos(DegreesToRadians(fmod(angle,360.0)));
+            FormatString(buffer,"rotate(%g) ",strtod(q,&q));
+            WriteBlobString(image,buffer);
             break;
           }
         status=False;
@@ -2976,18 +2982,20 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             if (*q == ',')
               q++;
             affine.sy=strtod(q,&q);
+            FormatString(buffer,"scale(%g,%g) ",affine.sx,affine.sy);
+            WriteBlobString(image,buffer);
             break;
           }
         if (LocaleCompare("skewX",keyword) == 0)
           {
-            angle=strtod(q,&q);
-            affine.ry=tan(DegreesToRadians(fmod(angle,360.0)));
+            FormatString(buffer,"skewX(%g) ",strtod(q,&q));
+            WriteBlobString(image,buffer);
             break;
           }
         if (LocaleCompare("skewY",keyword) == 0)
           {
-            angle=strtod(q,&q);
-            affine.rx=tan(DegreesToRadians(fmod(angle,360.0)));
+            FormatString(buffer,"skewY(%g) ",strtod(q,&q));
+            WriteBlobString(image,buffer);
             break;
           }
         if (LocaleCompare("stroke",keyword) == 0)
@@ -3005,33 +3013,34 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
           }
         if (LocaleCompare("stroke-antialias",keyword) == 0)
           {
-            strtod(q,&q);
+            FormatString(buffer,"stroke-antialias:%g;",strtod(q,&q));
+            WriteBlobString(image,buffer);
             break;
           }
         if (LocaleCompare("stroke-dasharray",keyword) == 0)
           {
             if (IsGeometry(q))
               {
-                char
-                  *r;
-
-                r=q;
-                for (x=0; IsGeometry(r); x++)
-                  (void) strtod(r,&r);
+                WriteBlobString(image,"stroke-dasharray:");
                 for (x=0; IsGeometry(q); x++)
-                  strtod(q,&q);
+                {
+                  FormatString(buffer,"%g ",strtod(q,&q));
+                  WriteBlobString(image,buffer);
+                }
+                WriteBlobString(image,";");
                 break;
               }
             for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
               value[x]=(*q++);
             value[x]='\0';
-            if (LocaleCompare(value,"none") != 0)
-              break;
+            FormatString(buffer,"stroke-dasharray:%s;",value);
+            WriteBlobString(image,buffer);
             break;
           }
         if (LocaleCompare("stroke-dashoffset",keyword) == 0)
           {
-            strtod(q,&q);
+            FormatString(buffer,"stroke-dashoffset:%g;",strtod(q,&q));
+            WriteBlobString(image,buffer);
             break;
           }
         if (LocaleCompare("stroke-linecap",keyword) == 0)
@@ -3039,6 +3048,8 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
               value[x]=(*q++);
             value[x]='\0';
+            FormatString(buffer,"stroke-linecap:%s;",value);
+            WriteBlobString(image,buffer);
             break;
           }
         if (LocaleCompare("stroke-linejoin",keyword) == 0)
@@ -3046,16 +3057,20 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
               value[x]=(*q++);
             value[x]='\0';
+            FormatString(buffer,"stroke-linejoin:%s;",value);
+            WriteBlobString(image,buffer);
             break;
           }
         if (LocaleCompare("stroke-miterlimit",keyword) == 0)
           {
-            strtod(q,&q);
+            FormatString(buffer,"stroke-miterlimit:%g;",strtod(q,&q));
+            WriteBlobString(image,buffer);
             break;
           }
         if (LocaleCompare("stroke-opacity",keyword) == 0)
           {
-            strtod(q,&q);
+            FormatString(buffer,"stroke-opacity:%g;",strtod(q,&q)/100.0);
+            WriteBlobString(image,buffer);
             break;
           }
         if (LocaleCompare("stroke-width",keyword) == 0)
@@ -3077,7 +3092,8 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
           }
         if (LocaleCompare("text-antialias",keyword) == 0)
           {
-            strtod(q,&q);
+            FormatString(buffer,"text-antialias:%g;",strtod(q,&q));
+            WriteBlobString(image,buffer);
             break;
           }
         if (LocaleCompare("translate",keyword) == 0)
@@ -3086,6 +3102,8 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             if (*q == ',')
               q++;
             affine.ty=strtod(q,&q);
+            FormatString(buffer,"translate(%g,%g) ",affine.tx,affine.ty);
+            WriteBlobString(image,buffer);
             break;
           }
         status=False;
