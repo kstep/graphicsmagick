@@ -8,7 +8,7 @@
   <delegate decode="dot" command='@DOTDecodeDelegate@ -Tps "%i" -o "%o"' />
   <delegate decode="dvi" command='@DVIDecodeDelegate@ -q -o "%o" "%i"' />
   <delegate decode="edit" stealth="True" command='@EditorDelegate@ -title "Edit Image Comment" -e vi "%o"' />
-  <delegate decode="emf" command='@WMFDecodeDelegate@ "%i" "%o"' />
+  <delegate decode="emf" command='@WMFDecodeDelegate@ -o "%o" "%i"' />
   <delegate decode="eps" encode="pdf" mode="bi" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=@GSPDFDevice@ -sOutputFile=%o -- "%i" -c quit' />
   <delegate decode="eps" encode="ps" mode="bi" command='@PSDelegate@ -q -dBATCH -dMaxBitmap=300000000 -dNOPAUSE -dSAFER -sDEVICE=@GSPSDevice@ -sOutputFile=%o -- "%i" -c quit' />
   <delegate decode="fig" command='@FIGDecodeDelegate@ -L ps "%i" "%o"' />

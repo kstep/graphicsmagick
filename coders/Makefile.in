@@ -212,7 +212,7 @@ AUTOMAKE_OPTIONS = 1.4 foreign
 
 INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/magick
 
-MAGICK_CODER_SRCS = art.c avi.c avs.c 8bim.c bmp.c cmyk.c cut.c dcm.c dps.c \
+MAGICK_CODER_SRCS = 8bim.c app1.c art.c avi.c avs.c bmp.c cmyk.c cut.c dcm.c dps.c \
   dpx.c ept.c fax.c fits.c fpx.c gif.c gradient.c gray.c hdf.c histogram.c  \
   html.c icm.c icon.c iptc.c jbig.c jpeg.c jp2.c label.c logo.c map.c mat.c \
   matte.c miff.c mono.c mpc.c mpeg.c mtv.c mvg.c null.c pcd.c pcl.c pcx.c \
@@ -241,7 +241,7 @@ noinst_HEADERS =
 @WITH_MODULES_TRUE@pkgdata_DATA = 
 
 # Modules which are to be built
-@WITH_MODULES_TRUE@pkg_LTLIBRARIES = 8bim.la art.la avi.la avs.la bmp.la cmyk.la cut.la \
+@WITH_MODULES_TRUE@pkg_LTLIBRARIES = 8bim.la app1.la art.la avi.la avs.la bmp.la cmyk.la cut.la \
 @WITH_MODULES_TRUE@  dcm.la dps.la dpx.la ept.la fax.la fpx.la fits.la gif.la gray.la gradient.la \
 @WITH_MODULES_TRUE@  hdf.la histogram.la html.la icm.la icon.la iptc.la jbig.la jpeg.la jp2.la \
 @WITH_MODULES_TRUE@  label.la logo.la map.la mat.la matte.la miff.la mono.la mpc.la mpeg.la \
@@ -272,6 +272,11 @@ avs_la_LIBADD = ../magick/libMagick.la
 8bim_la_SOURCES = 8bim.c
 8bim_la_LDFLAGS = -no-undefined -module -avoid-version
 8bim_la_LIBADD = ../magick/libMagick.la
+
+# BIM module
+app1_la_SOURCES = app1.c
+app1_la_LDFLAGS = -no-undefined -module -avoid-version
+app1_la_LIBADD = ../magick/libMagick.la
 
 # BMP module
 bmp_la_SOURCES = bmp.c
@@ -680,6 +685,9 @@ CONFIG_HEADER = $(top_builddir)/magick/magick_config.h
 CONFIG_CLEAN_FILES = delegates.mgk type.mgk
 LTLIBRARIES = $(noinst_LTLIBRARIES) $(pkg_LTLIBRARIES)
 
+app1_la_DEPENDENCIES = ../magick/libMagick.la
+am_app1_la_OBJECTS = app1.lo
+app1_la_OBJECTS = $(am_app1_la_OBJECTS)
 8bim_la_DEPENDENCIES = ../magick/libMagick.la
 am_8bim_la_OBJECTS = 8bim.lo
 8bim_la_OBJECTS = $(am_8bim_la_OBJECTS)
@@ -765,7 +773,7 @@ libCoders_la_LDFLAGS =
 libCoders_la_LIBADD =
 @WITH_MODULES_TRUE@am_libCoders_la_OBJECTS =
 @WITH_MODULES_FALSE@am_libCoders_la_OBJECTS = art.lo avi.lo avs.lo \
-@WITH_MODULES_FALSE@	8bim.lo bmp.lo cmyk.lo cut.lo dcm.lo dps.lo \
+@WITH_MODULES_FALSE@	app1.lo 8bim.lo bmp.lo cmyk.lo cut.lo dcm.lo dps.lo \
 @WITH_MODULES_FALSE@	dpx.lo ept.lo fax.lo fits.lo fpx.lo gif.lo \
 @WITH_MODULES_FALSE@	gradient.lo gray.lo hdf.lo histogram.lo \
 @WITH_MODULES_FALSE@	html.lo icm.lo icon.lo iptc.lo jbig.lo \
@@ -958,7 +966,7 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
-@AMDEP_TRUE@DEP_FILES = $(DEPDIR)/8bim.Plo $(DEPDIR)/art.Plo \
+@AMDEP_TRUE@DEP_FILES = $(DEPDIR)/8bim.Plo $(DEPDIR)/app1.Plo $(DEPDIR)/art.Plo \
 @AMDEP_TRUE@	$(DEPDIR)/avi.Plo $(DEPDIR)/avs.Plo \
 @AMDEP_TRUE@	$(DEPDIR)/bmp.Plo $(DEPDIR)/cmyk.Plo \
 @AMDEP_TRUE@	$(DEPDIR)/cut.Plo $(DEPDIR)/dcm.Plo \
@@ -1008,7 +1016,7 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 CFLAGS = @CFLAGS@
-DIST_SOURCES = $(8bim_la_SOURCES) $(art_la_SOURCES) $(avi_la_SOURCES) \
+DIST_SOURCES = $(8bim_la_SOURCES) $(app1_la_SOURCES) $(art_la_SOURCES) $(avi_la_SOURCES) \
 	$(avs_la_SOURCES) $(bmp_la_SOURCES) $(cmyk_la_SOURCES) \
 	$(cut_la_SOURCES) $(dcm_la_SOURCES) $(dps_la_SOURCES) \
 	$(dpx_la_SOURCES) $(ept_la_SOURCES) $(fax_la_SOURCES) \
@@ -1043,7 +1051,7 @@ HEADERS = $(noinst_HEADERS)
 
 DIST_COMMON = $(noinst_HEADERS) Makefile.am Makefile.in \
 	delegates.mgk.in type.mgk.in
-SOURCES = $(8bim_la_SOURCES) $(art_la_SOURCES) $(avi_la_SOURCES) $(avs_la_SOURCES) $(bmp_la_SOURCES) $(cmyk_la_SOURCES) $(cut_la_SOURCES) $(dcm_la_SOURCES) $(dps_la_SOURCES) $(dpx_la_SOURCES) $(ept_la_SOURCES) $(fax_la_SOURCES) $(fits_la_SOURCES) $(fpx_la_SOURCES) $(gif_la_SOURCES) $(gradient_la_SOURCES) $(gray_la_SOURCES) $(hdf_la_SOURCES) $(histogram_la_SOURCES) $(html_la_SOURCES) $(icm_la_SOURCES) $(icon_la_SOURCES) $(iptc_la_SOURCES) $(jbig_la_SOURCES) $(jp2_la_SOURCES) $(jpeg_la_SOURCES) $(label_la_SOURCES) $(libCoders_la_SOURCES) $(logo_la_SOURCES) $(map_la_SOURCES) $(mat_la_SOURCES) $(matte_la_SOURCES) $(miff_la_SOURCES) $(mono_la_SOURCES) $(mpc_la_SOURCES) $(mpeg_la_SOURCES) $(mtv_la_SOURCES) $(mvg_la_SOURCES) $(null_la_SOURCES) $(pcd_la_SOURCES) $(pcl_la_SOURCES) $(pcx_la_SOURCES) $(pdb_la_SOURCES) $(pdf_la_SOURCES) $(pict_la_SOURCES) $(pix_la_SOURCES) $(plasma_la_SOURCES) $(png_la_SOURCES) $(pnm_la_SOURCES) $(preview_la_SOURCES) $(ps_la_SOURCES) $(ps2_la_SOURCES) $(ps3_la_SOURCES) $(psd_la_SOURCES) $(pwp_la_SOURCES) $(rgb_la_SOURCES) $(rla_la_SOURCES) $(rle_la_SOURCES) $(sct_la_SOURCES) $(sfw_la_SOURCES) $(sgi_la_SOURCES) $(stegano_la_SOURCES) $(sun_la_SOURCES) $(svg_la_SOURCES) $(tga_la_SOURCES) $(tiff_la_SOURCES) $(tile_la_SOURCES) $(tim_la_SOURCES) $(ttf_la_SOURCES) $(txt_la_SOURCES) $(uil_la_SOURCES) $(url_la_SOURCES) $(uyvy_la_SOURCES) $(vicar_la_SOURCES) $(vid_la_SOURCES) $(viff_la_SOURCES) $(wbmp_la_SOURCES) $(wmf_la_SOURCES) $(wpg_la_SOURCES) $(x_la_SOURCES) $(xbm_la_SOURCES) $(xc_la_SOURCES) $(xpm_la_SOURCES) $(xwd_la_SOURCES) $(yuv_la_SOURCES)
+SOURCES = $(8bim_la_SOURCES) $(app1_la_SOURCES) $(art_la_SOURCES) $(avi_la_SOURCES) $(avs_la_SOURCES) $(bmp_la_SOURCES) $(cmyk_la_SOURCES) $(cut_la_SOURCES) $(dcm_la_SOURCES) $(dps_la_SOURCES) $(dpx_la_SOURCES) $(ept_la_SOURCES) $(fax_la_SOURCES) $(fits_la_SOURCES) $(fpx_la_SOURCES) $(gif_la_SOURCES) $(gradient_la_SOURCES) $(gray_la_SOURCES) $(hdf_la_SOURCES) $(histogram_la_SOURCES) $(html_la_SOURCES) $(icm_la_SOURCES) $(icon_la_SOURCES) $(iptc_la_SOURCES) $(jbig_la_SOURCES) $(jp2_la_SOURCES) $(jpeg_la_SOURCES) $(label_la_SOURCES) $(libCoders_la_SOURCES) $(logo_la_SOURCES) $(map_la_SOURCES) $(mat_la_SOURCES) $(matte_la_SOURCES) $(miff_la_SOURCES) $(mono_la_SOURCES) $(mpc_la_SOURCES) $(mpeg_la_SOURCES) $(mtv_la_SOURCES) $(mvg_la_SOURCES) $(null_la_SOURCES) $(pcd_la_SOURCES) $(pcl_la_SOURCES) $(pcx_la_SOURCES) $(pdb_la_SOURCES) $(pdf_la_SOURCES) $(pict_la_SOURCES) $(pix_la_SOURCES) $(plasma_la_SOURCES) $(png_la_SOURCES) $(pnm_la_SOURCES) $(preview_la_SOURCES) $(ps_la_SOURCES) $(ps2_la_SOURCES) $(ps3_la_SOURCES) $(psd_la_SOURCES) $(pwp_la_SOURCES) $(rgb_la_SOURCES) $(rla_la_SOURCES) $(rle_la_SOURCES) $(sct_la_SOURCES) $(sfw_la_SOURCES) $(sgi_la_SOURCES) $(stegano_la_SOURCES) $(sun_la_SOURCES) $(svg_la_SOURCES) $(tga_la_SOURCES) $(tiff_la_SOURCES) $(tile_la_SOURCES) $(tim_la_SOURCES) $(ttf_la_SOURCES) $(txt_la_SOURCES) $(uil_la_SOURCES) $(url_la_SOURCES) $(uyvy_la_SOURCES) $(vicar_la_SOURCES) $(vid_la_SOURCES) $(viff_la_SOURCES) $(wbmp_la_SOURCES) $(wmf_la_SOURCES) $(wpg_la_SOURCES) $(x_la_SOURCES) $(xbm_la_SOURCES) $(xc_la_SOURCES) $(xpm_la_SOURCES) $(xwd_la_SOURCES) $(yuv_la_SOURCES)
 
 all: all-am
 
@@ -1091,6 +1099,8 @@ uninstall-pkgLTLIBRARIES:
 
 clean-pkgLTLIBRARIES:
 	-test -z "$(pkg_LTLIBRARIES)" || rm -f $(pkg_LTLIBRARIES)
+app1.la: $(app1_la_OBJECTS) $(app1_la_DEPENDENCIES) 
+	$(LINK) -rpath $(pkgdir) $(app1_la_LDFLAGS) $(app1_la_OBJECTS) $(app1_la_LIBADD) $(LIBS)
 8bim.la: $(8bim_la_OBJECTS) $(8bim_la_DEPENDENCIES) 
 	$(LINK) -rpath $(pkgdir) $(8bim_la_LDFLAGS) $(8bim_la_OBJECTS) $(8bim_la_LIBADD) $(LIBS)
 art.la: $(art_la_OBJECTS) $(art_la_DEPENDENCIES) 
@@ -1269,6 +1279,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/8bim.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/app1.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/art.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/avi.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/avs.Plo@am__quote@
