@@ -561,9 +561,10 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 "Unable to draw primitive",image);
           }
         FreeMemory((void *) &command);
-        CloneString(&primitive,"none");
-        CloneString(&graphic_context[0].fill,"none");
-        CloneString(&graphic_context[0].stroke,"none");
+        (void) CloneString(&primitive,"none");
+        (void) CloneString(&vertices," ");
+        (void) CloneString(&graphic_context[0].fill,"none");
+        (void) CloneString(&graphic_context[0].stroke,"none");
         graphic_context[0].opacity=100.0;
         graphic_context[0].linewidth=1;
         graphic_context[0].pointsize=12;
@@ -656,7 +657,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (Latin1Compare(tokens[i],"fill-opacity:") == 0)
             {
               (void) sscanf(tokens[++i],"%lf",&graphic_context[n].opacity);
-              if (strchr(tokens[i],"%") == (char *) NULL)
+              if (strchr(tokens[i],'%') == (char *) NULL)
                 graphic_context[n].opacity*=100.0;
             }
           if (Latin1Compare(tokens[i],"font-size:") == 0)
@@ -762,28 +763,4 @@ Export void RegisterSVGImage(void)
   entry->decoder=ReadSVGImage;
   entry->description=AllocateString("Scalable Vector Gaphics");
   RegisterMagickInfo(entry);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   U n r e g i s t e r S V G I m a g e                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method UnregisterSVGImage removes format registrations made by the
-%  SVG module from the list of supported formats.
-%
-%  The format of the UnregisterSVGImage method is:
-%
-%      UnregisterSVGImage(void)
-%
-*/
-Export void UnregisterSVGImage(void)
-{
-  UnregisterMagickInfo("SVG");
 }
