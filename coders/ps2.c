@@ -639,7 +639,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
           (void) strcpy(buffer,"%!PS-Adobe-3.0 EPSF-3.0\n");
         (void) WriteBlobString(image,buffer);
         (void) WriteBlobString(image,"%%Creator: (ImageMagick)\n");
-        FormatString(buffer,"%%Title: (%.1024s)\n",image->filename);
+        FormatString(buffer,"%%%%Title: (%.1024s)\n",image->filename);
         (void) WriteBlobString(image,buffer);
         timer=time((time_t *) NULL);
         (void) localtime(&timer);
