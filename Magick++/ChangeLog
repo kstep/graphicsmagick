@@ -1,3 +1,12 @@
+2003-05-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (InitializeMagick): InitializeMagick is
+	now a C++ function rather than a namespace inclusion.
+	An atexit() handler is registered to invoke DestroyMagick
+	when the program exits. Relying on static deconstruction
+	to invoke DestroyMagick proved to be unreliable due to
+	translation unit destruction uncertainty.
+
 2003-04-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (Image::Image (MagickLib::Image* image_)):

@@ -1128,6 +1128,9 @@ const char *GetLocaleMessage(const char *tag)
                   return tag;
 
                 case 'f':  case 'F':
+                  if (p - tp == 19 && !LocaleNCompare(tp, "FailedToCloseModule", 19))
+                    return *np ? tag : "Failed to close module";
+                  else
                   if (p - tp == 18 && !LocaleNCompare(tp, "FailedToFindSymbol", 18))
                     return *np ? tag : "Failed to find symbol";
                   else

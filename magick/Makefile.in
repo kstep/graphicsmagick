@@ -446,6 +446,7 @@ pkginclude_HEADERS = \
 noinst_HEADERS = \
 	animate.h \
 	display.h \
+	integral_types.h \
 	mac.h \
 	nt_base.h \
 	nt_feature.h \

@@ -26,6 +26,8 @@ MagickDLLDeclExtern const std::string Magick::borderGeometryDefault = "6x6+0+0";
 MagickDLLDeclExtern const std::string Magick::frameGeometryDefault  = "25x25+6+6";
 MagickDLLDeclExtern const std::string Magick::raiseGeometryDefault  = "6x6+0+0";
 
+static bool magick_initialized=false;
+
 //
 // Explicit template instantiations
 //
@@ -3443,6 +3445,36 @@ void Magick::Image::unregisterId( void )
 }
 
 //
+// Create a local wrapper around DestroyMagick
+//
+namespace Magick
+{
+  extern "C" {
+    void MagickPlusPlusDestroyMagick(void);
+  }
+}
+
+void Magick::MagickPlusPlusDestroyMagick(void)
+{
+  if (magick_initialized)
+    {
+      magick_initialized=false;
+      MagickLib::DestroyMagick();
+    }
+}
+
+// C library initialization routine
+void Magick::InitializeMagick(const char *path_)
+{
+  MagickLib::InitializeMagick(path_);
+  if (!magick_initialized)
+    {
+      magick_initialized=true;
+      atexit(MagickPlusPlusDestroyMagick);
+    }
+}
+
+//
 // Cleanup class to ensure that ImageMagick singletons are destroyed
 // so as to avoid any resemblence to a memory leak (which seems to
 // confuse users)
@@ -3464,10 +3496,10 @@ namespace Magick
 
 Magick::MagickCleanUp::MagickCleanUp ( void )
 {
-  // InitializeMagick(NULL);
+  // Don't even think about invoking InitializeMagick here!
 }
 
 Magick::MagickCleanUp::~MagickCleanUp ( void )
 {
-  DestroyMagick();
+  MagickPlusPlusDestroyMagick();
 }

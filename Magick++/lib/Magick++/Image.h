@@ -44,6 +44,9 @@ namespace Magick
   int MagickDLLDecl operator <= ( const Magick::Image& left_,
                                   const Magick::Image& right_ );
 
+  // C library initialization routine
+  void InitializeMagick(const char *path_);
+
   //
   // Image is the representation of an image.  In reality, it actually
   // a handle object which contains a pointer to a shared reference

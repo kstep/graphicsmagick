@@ -745,6 +745,9 @@
       <Message name="FailedToFindSymbol">
         Failed to find symbol
       </Message>
+      <Message name="FailedToCloseModule">
+        Failed to close module
+      </Message>
       <Message name="UnableToLoadModule">
         Unable to load module
       </Message>

@@ -18,4 +18,3 @@ void Magick::CloneString( char **destination_, const std::string &source_ )
 {
   MagickLib::CloneString( destination_, source_.c_str() );
 }
-

@@ -1,3 +1,24 @@
+2003-05-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* VisualMagick/tests/run_constitute.bat: Add batch script to
+	run constitute tests.
+	* magick/module.c: Added a ltdl_initialized static flag to track
+	if libltdl has been initialized by lt_dlinit().
+	(TagToFunctionName): Use a stack buffer for the string rather than
+	allocating heap data.
+	(UnregisterModule): Report errors via exception info as the
+	interface suggests.
+	(UnloadModule): Report errors via exception info as the interface
+	suggests.
+	(DestroyModuleInfo): Only invoke lt_dlexit() if lt_dlinit() has
+	previously been invoked.
+	* locale/C.mgk: Added FailedToCloseModule module error.
+	* magick/module.c (UnloadModule): Report exception via exception
+	parameter rather than simply printing out an error message and
+	exiting.
+	* magick/Makefile.am (noinst_HEADERS): integral_types.h had to be
+	listed *somewhere* in order to make it into the distribution.
+
 2003-05-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* Makefile.am (magick-version): Perform version.isx substitutions
