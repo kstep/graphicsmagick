@@ -3115,7 +3115,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) SetImageAttribute(image,text[i].key,value);
         LiberateMemory((void **) &value);
       }
- #ifdef MNG_OBJECT_BUFFERS
+#ifdef MNG_OBJECT_BUFFERS
     /*
       Store the object if necessary.
     */
