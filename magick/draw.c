@@ -1545,7 +1545,7 @@ static void DrawPrimitive(Image *image,const DrawInfo *draw_info,
                 q->green*fill_opacity));
               q->blue=(Quantum) (alpha*(color.blue*(MaxRGB-fill_opacity)+
                 q->blue*fill_opacity));
-              q->opacity=(Quantum) (alpha*(fill_opacity*(MaxRGB-fill_opacity)+
+              q->opacity=(Quantum) (alpha*(color.opacity*(MaxRGB-fill_opacity)+
                 q->opacity*fill_opacity));
             }
           color=draw_info->stroke;
@@ -1967,7 +1967,7 @@ static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
           if (*p == ',')
             p++;
           point.x=attribute == 'L' ? x : point.x+x;
-          point.y=attribute == 'L' ? y : point.y+y;
+          point.y=attribute == 'L' ? y : point.y+y-1;
           GeneratePoint(q,point);
           q+=q->coordinates;
         } while (IsGeometry(p));
@@ -2097,7 +2097,7 @@ static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
       case 'V':
       {
         y=strtod(p,&p);
-        point.y=attribute == 'V' ? y : point.y+y;
+        point.y=attribute == 'V' ? y : point.y+y-1;
         GeneratePoint(q,point);
         q+=q->coordinates;
         break;
