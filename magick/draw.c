@@ -564,7 +564,9 @@ static void AdjustAffine(DrawContext context, const AffineMatrix *affine)
 %
 %  The format of the DrawAnnotation method is:
 %
-%      Image *DrawAnnotation(blah blah)
+%      void DrawAnnotation(DrawContext context,
+%                          const double x, const double y,
+%                          const unsigned char *text)
 %
 %  A description of each parameter follows:
 %
@@ -604,9 +606,9 @@ MagickExport void DrawAnnotation(DrawContext context,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DrawSetAffine() adjusts current affine transformation matrix with specified
-%  affine transformation matrix. Note that the current affine transform is
-%  adjusted rather than replaced.
+%  DrawSetAffine() adjusts the current affine transformation matrix with
+%  the specified affine transformation matrix. Note that the current affine
+%  transform is adjusted rather than replaced.
 %
 %  The format of the DrawSetAffine method is:
 %
@@ -2831,7 +2833,6 @@ MagickExport void DrawPathEllipticArcAbsolute(DrawContext context,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DrawPathEllipticArcRelative() blah blah
 %  DrawPathEllipticArcRelative() draws an elliptical arc from the current
 %  point to (x, y) using relative coordinates. The size and orientation
 %  of the ellipse are defined by two radii (rx, ry) and an
@@ -3659,7 +3660,7 @@ MagickExport void DrawPushClipPath(DrawContext context,
 %
 %  A description of each parameter follows:
 %
-%    o blah: blah blah
+%    o context: drawing context
 %
 */
 MagickExport void DrawPushDefs(DrawContext context)
@@ -4096,7 +4097,7 @@ MagickExport void DrawSetSkewY(DrawContext context, const double degrees)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DrawSetStopColor() blah blah
+%  DrawSetStopColor() sets the stop color and offset for gradients
 %
 %  The format of the DrawSetStopColor method is:
 %
@@ -4106,7 +4107,11 @@ MagickExport void DrawSetSkewY(DrawContext context, const double degrees)
 %
 %  A description of each parameter follows:
 %
-%    o blah: blah blah
+%    o context: drawing context
+%
+%    o stop_color:
+%
+%    o offset:
 %
 */
 /* This is gradient stuff so it shouldn't be supported yet */
