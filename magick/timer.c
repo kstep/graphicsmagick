@@ -65,6 +65,9 @@
 #if defined(WIN32)
 #include "nt.h"
 #endif
+#if !defined(CLK_TCK)
+#define CLK_TCK  _sysconf(_SC_CLK_TCK)
+#endif
 
 /*
   Forward declarations.
