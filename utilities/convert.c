@@ -292,6 +292,7 @@ static void ConcatenateImages(int argc,char **argv)
 %
 %    o exception: Return any errors or warnings in this structure.
 %
+%
 */
 static unsigned int ConvertImages(ImageInfo *image_info,Image **image,
   OptionInfo *option_info,const int argc,char **argv,ExceptionInfo *exception)
@@ -315,7 +316,7 @@ static unsigned int ConvertImages(ImageInfo *image_info,Image **image,
   scene=option_info->scene;
   while ((*image)->previous != (Image *) NULL)
     (*image)=(*image)->previous;
-  status=!MogrifyImages(image_info,argc-1,argv,image);
+  status=MogrifyImages(image_info,argc-1,argv,image);
   (void) CatchImageException(*image);
   if (option_info->append != 0)
     {
