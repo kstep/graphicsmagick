@@ -702,7 +702,7 @@ MagickExport off_t GetBlobSize(const Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetConfigureBlob() returns a configure file as a blob.
+%  GetConfigureBlob() returns the specified configure file as a blob.
 %
 %  The format of the GetConfigureBlob method is:
 %
@@ -710,8 +710,7 @@ MagickExport off_t GetBlobSize(const Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o filename: A character string representing the desired configuration
-%      file.
+%    o filename: The configure file name.
 %
 %    o path: return the full path information of the configure file.
 %
@@ -770,6 +769,8 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
     debug;
 
   assert(filename != (const char *) NULL);
+  assert(path != (char *) NULL);
+  assert(length != (size_t *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
   debug=getenv("MAGICK_DEBUG") != (char *) NULL;
   (void) strncpy(path,filename,MaxTextExtent-1);
@@ -777,13 +778,13 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
     (void) fprintf(stdout,"Searching for configure file \"%s\" ...\n",filename);
 #if defined(UseInstalledImageMagick)
 #  if defined(WIN32)
-  /*
-    Locate file via registry key.
-  */
   {
     char
       *key_value;
 
+    /*
+      Locate file via registry key.
+    */
     key_value=NTRegistryKeyLookup("ConfigurePath");
     if (key_value != (char *) NULL)
       {
@@ -895,7 +896,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetFontBlob() returns a font file as a blob.
+%  GetFontBlob() returns the specified font file as a blob.
 %
 %  The format of the GetFontBlob method is:
 %
@@ -903,8 +904,7 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
 %
 %  A description of each parameter follows:
 %
-%    o filename: A character string representing the desired configuration
-%      file.
+%    o filename: The font file name.
 %
 %    o path: return the full path information of the font file.
 %
@@ -922,6 +922,8 @@ MagickExport void *GetFontBlob(const char *filename,char *path,
     debug;
 
   assert(filename != (const char *) NULL);
+  assert(path != (char *) NULL);
+  assert(length != (size_t *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
   debug=getenv("MAGICK_DEBUG") != (char *) NULL;
   (void) strncpy(path,filename,MaxTextExtent-1);
@@ -929,13 +931,13 @@ MagickExport void *GetFontBlob(const char *filename,char *path,
     (void) fprintf(stdout,"Searching for configure file \"%s\" ...\n",filename);
 #if defined(UseInstalledImageMagick)
 #  if defined(WIN32)
-  /*
-    Locate file via registry key.
-  */
   {
     char
       *key_value;
 
+    /*
+      Locate file via registry key.
+    */
     key_value=NTRegistryKeyLookup("FontPath");
     if (key_value != (char *) NULL)
       {
@@ -991,13 +993,8 @@ MagickExport void *GetFontBlob(const char *filename,char *path,
   */
   if (getenv("MAGIC_FONT_PATH") != (char *) NULL)
     {
-#if defined(POSIX)
-      FormatString(path,"%.1024s/lib/ImageMagick/%.1024s",
-        getenv("MAGIC_FONT_PATH"),filename);
-#else
       FormatString(path,"%.1024s%s%.1024s",getenv("MAGICK_FONT_PATH"),
         DirectorySeparator,filename);
-#endif
       if (CheckFileAccessability(path,debug))
         return(FileToBlob(path,length,exception));
     }
@@ -1037,7 +1034,7 @@ MagickExport void *GetFontBlob(const char *filename,char *path,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetModuleBlob() returns a module file as a blob.
+%  GetModuleBlob() returns the specified module file as a blob.
 %
 %  The format of the GetModuleBlob method is:
 %
@@ -1045,8 +1042,7 @@ MagickExport void *GetFontBlob(const char *filename,char *path,
 %
 %  A description of each parameter follows:
 %
-%    o filename: A character string representing the desired module
-%      file.
+%    o filename: The module file name.
 %
 %    o path: return the full path information of the module file.
 %
@@ -1064,6 +1060,8 @@ MagickExport void *GetModuleBlob(const char *filename,char *path,size_t *length,
     debug;
 
   assert(filename != (const char *) NULL);
+  assert(path != (char *) NULL);
+  assert(length != (size_t *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
   debug=getenv("MAGICK_DEBUG") != (char *) NULL;
   (void) strncpy(path,filename,MaxTextExtent-1);
@@ -1071,13 +1069,13 @@ MagickExport void *GetModuleBlob(const char *filename,char *path,size_t *length,
     (void) fprintf(stdout,"Searching for module file \"%s\" ...\n", filename);
 #if defined(UseInstalledImageMagick)
 #  if defined(WIN32)
-  /*
-    Locate path via registry key.
-  */
   {
     char
       *key_value;
 
+    /*
+      Locate path via registry key.
+    */
     key_value=NTRegistryKeyLookup("ModulesPath");
     if (key_value != (char *) NULL)
       {
