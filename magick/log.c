@@ -93,13 +93,13 @@ typedef struct _LogInfo
 static char
   *MagickLog =
     "<?xml version=\"1.0\"?>"
-    "<magickmap>"
+    "<magicklog>"
     "  <log events=\"None\" />"
     "  <log output=\"stdout\" />"
     "  <log filename=\"Magick-%d.log\" />"
     "  <log generations=\"3\" />"
     "  <log limit=\"2000\" />"
-    "</magickmap>";
+    "</magicklog>";
 
 /*
   Static declarations.
