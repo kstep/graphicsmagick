@@ -72,7 +72,7 @@ typedef struct _ResourceInfo
   Global declarations.
 */
 static ResourceInfo
-  resource_info = { ~0, ~0, ~0, ~0};
+  resource_info = { ~0, ~0, ~0};
 
 static SemaphoreInfo
   *resource_semaphore = (SemaphoreInfo *) NULL;
@@ -175,17 +175,18 @@ MagickExport void DestroyMagickResources(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t M a g i c k R e s o u r c e s                                       %
+%   G e t M a g i c k R e s o u r c e U s a g e                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetMagickResources() returns the available size of the specified resource.
+%  GetMagickResourceUsages() returns the available size of the specified
+%  resource.
 %
-%  The format of the GetMagickResources() method is:
+%  The format of the GetMagickResourceUsage() method is:
 %
-%      ResourceInfo GetMagickResources(const ResourceType type)
+%      ResourceInfo GetMagickResourceUsage(const ResourceType type)
 %
 %  A description of each parameter follows:
 %
@@ -194,7 +195,7 @@ MagickExport void DestroyMagickResources(void)
 %
 %
 */
-MagickExport off_t GetMagickResources(const ResourceType type)
+MagickExport off_t GetMagickResourceUsage(const ResourceType type)
 {
   off_t
     size;
