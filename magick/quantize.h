@@ -54,7 +54,7 @@ extern MagickExport unsigned int
     const double);
 
 extern MagickExport void
-  CompressColormap(Image *),
+  CompressImageColormap(Image *),
   DestroyQuantizeInfo(QuantizeInfo *),
   GetQuantizeInfo(QuantizeInfo *);
 
