@@ -252,6 +252,7 @@ static void *lt_dlsym(void *handle,char *symbol)
 MagickExport unsigned int ExecuteModuleProcess(const char *tag,Image *image,
   const int argc,char **argv)
 {
+#if defined(HasMODULES)
   char
     *module_name;
 
@@ -286,6 +287,9 @@ MagickExport unsigned int ExecuteModuleProcess(const char *tag,Image *image,
   (void) lt_dlclose(handle);
   LiberateMemory((void **) &module_name);
   return(status);
+#else
+  return ExecuteStaticModuleProcess(tag,image,argc,argv);
+#endif
 }
 
 /*

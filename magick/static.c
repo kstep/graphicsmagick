@@ -91,3 +91,10 @@ void OpenStaticModules(void)
   RegisterYUVImage();
 #endif
 }
+
+unsigned int ExecuteStaticModuleProcess(const char *tag,
+    Image *image,const int argc,char **argv)
+{
+  return(False);
+}
+

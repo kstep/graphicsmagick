@@ -54,6 +54,9 @@ extern MagickExport unsigned int
   OpenModule(const char *,ExceptionInfo *),
   OpenModules(ExceptionInfo *);
 
+extern unsigned int
+  ExecuteStaticModuleProcess(const char *,Image *,const int,char **);
+
 extern MagickExport void
   DestroyModuleInfo(void);
 
