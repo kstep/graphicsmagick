@@ -1284,12 +1284,12 @@ MagickExport Image *EnhanceImage(Image *image,ExceptionInfo *exception)
       q->green=(Quantum) ((total_green+(total_weight/2)-1)/total_weight);
       q->blue=(Quantum) ((total_blue+(total_weight/2)-1)/total_weight);
       q->opacity=(p+2*image->columns)->opacity;
+      p++;
       q++;
     }
     p++;
-    *q++=(*p);
-    p++;
-    *q++=(*p);
+    *q++=(*p++);
+    *q++=(*p++);
     if (!SyncImagePixels(enhance_image))
       break;
     if (QuantumTick(y,image->rows))

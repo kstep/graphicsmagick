@@ -702,8 +702,11 @@ MagickExport ModuleInfo *RegisterModuleInfo(ModuleInfo *entry)
     }
   entry->signature=MagickSignature;
   entry->previous=p;
-  entry->next=p->next;
-  p->next=entry;
+  if (p != (ModuleInfo *) NULL)
+    {
+      entry->next=p->next;
+      p->next=entry;
+    }
   return(entry);
 }
 
