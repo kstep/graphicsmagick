@@ -205,7 +205,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image->previous == (Image *) NULL)
       if (QuantumTick(page.y+offset,image->rows))
         MagickMonitor(LoadImageText,page.y+offset,image->rows);
-    if (((2*page.y)+offset+height) < (long) image->rows)
+    if (((2*page.y)+offset+height) < image->rows)
       continue;
     /*
       Page is full-- allocate next image structure.

@@ -134,7 +134,7 @@ typedef struct _SVGInfo
   PointInfo
     radius;
 
-  long
+  double
     offset;
 
   char
@@ -2048,7 +2048,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
     {
       if (LocaleCompare((char *) name,"stop") == 0)
         {
-          (void) fprintf(svg_info->file,"stop-color %s %lu\n",
+          (void) fprintf(svg_info->file,"stop-color %s %g\n",
             svg_info->stop_color,svg_info->offset);
           break;
         }
