@@ -1110,8 +1110,9 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
           }
           case 0xa1:
           {
-            char
-              *comment;
+            unsigned char
+              *comment,
+              kind[4];
 
             /*
               Comment.
@@ -1120,13 +1121,35 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             length=ReadBlobMSBShort(image);
             if (length == 0)
               break;
-            comment=(char *) AcquireMemory(length+1);
-            if (comment == (char *) NULL)
+            for (i=0; i < 4; i++)
+              kind[i]=ReadBlobByte(image);
+            length-=4;
+            comment=(unsigned char *) AcquireMemory(length+1);
+            if (comment == (unsigned char *) NULL)
               break;
             for (i=0; i < length; i++)
               comment[i]=ReadBlobByte(image);
             comment[i]='\0';
-            (void) SetImageAttribute(image,"Comment",comment);
+            if (memcmp(kind,"\000\000\000\000",4) == 0)
+              {
+                image->color_profile.info=(unsigned char *)
+                  AcquireMemory(length);
+                if (image->color_profile.info == (unsigned char *) NULL)
+                  ThrowReaderException(ResourceLimitWarning,
+                    "Memory allocation failed",image);
+                image->color_profile.length=length;
+                memcpy(image->color_profile.info,comment,length);
+              }
+            if (LocaleNCompare((char *) kind,"8BIM",4) == 0)
+              {
+                image->iptc_profile.info=(unsigned char *)
+                  AcquireMemory(length);
+                if (image->iptc_profile.info == (unsigned char *) NULL)
+                  ThrowReaderException(ResourceLimitWarning,
+                    "Memory allocation failed",image);
+                image->iptc_profile.length=length;
+                memcpy(image->iptc_profile.info,comment,length);
+              }
             LiberateMemory((void **) &comment);
             break;
           }
@@ -1506,12 +1529,51 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
         return(False);
       WriteBlobMSBShort(image,PictJPEGOp);
       WriteBlobMSBLong(image,length+154);
-      WriteBlobMSBShort(image,frame_rectangle.top);
-      WriteBlobMSBShort(image,frame_rectangle.left);
-      WriteBlobMSBShort(image,frame_rectangle.right);
-      WriteBlobMSBShort(image,frame_rectangle.bottom);
-      for (i=0; i < 146; i++)
-        (void) WriteBlobByte(image,'\0');
+      WriteBlobMSBShort(image,0x0000);
+      WriteBlobMSBLong(image,0x00010000L);
+      WriteBlobMSBLong(image,0x00000000L);
+      WriteBlobMSBLong(image,0x00000000L);
+      WriteBlobMSBLong(image,0x00000000L);
+      WriteBlobMSBLong(image,0x00010000L);
+      WriteBlobMSBLong(image,0x00000000L);
+      WriteBlobMSBLong(image,0x00000000L);
+      WriteBlobMSBLong(image,0x00000000L);
+      WriteBlobMSBLong(image,0x40000000L);
+      WriteBlobMSBLong(image,0x00000000L);
+      WriteBlobMSBLong(image,0x00000000L);
+      WriteBlobMSBLong(image,0x00000000L);
+      WriteBlobMSBLong(image,0x00400000L);
+      WriteBlobMSBShort(image,0x0000);
+      WriteBlobMSBShort(image,image->rows);
+      WriteBlobMSBShort(image,image->columns);
+      WriteBlobMSBShort(image,0x0000);
+      WriteBlobMSBShort(image,768);
+      WriteBlobMSBShort(image,0x0000);
+      WriteBlobMSBLong(image,0x00000000L);
+      WriteBlobMSBLong(image,0x00566A70L);
+      WriteBlobMSBLong(image,0x65670000L);
+      WriteBlobMSBLong(image,0x00000000L);
+      WriteBlobMSBLong(image,0x00000001L);
+      WriteBlobMSBLong(image,0x00016170L);
+      WriteBlobMSBLong(image,0x706C0000L);
+      WriteBlobMSBLong(image,0x00000000L);
+      WriteBlobMSBShort(image,768);
+      WriteBlobMSBShort(image,image->columns);
+      WriteBlobMSBShort(image,image->rows);
+      WriteBlobMSBShort(image,image->x_resolution);
+      WriteBlobMSBShort(image,0x0000);
+      WriteBlobMSBShort(image,image->y_resolution);
+      WriteBlobMSBLong(image,0x40000000L);
+      WriteBlobMSBLong(image,0x3EAB0001L);
+      WriteBlobMSBLong(image,0x0B466F74L);
+      WriteBlobMSBLong(image,0x6F202D20L);
+      WriteBlobMSBLong(image,0x4A504547L);
+      WriteBlobMSBLong(image,0x00000000L);
+      WriteBlobMSBLong(image,0x00000000L);
+      WriteBlobMSBLong(image,0x00000000L);
+      WriteBlobMSBLong(image,0x00000000L);
+      WriteBlobMSBLong(image,0x00000000L);
+      WriteBlobMSBLong(image,0x0018FFFFL);
       WriteBlob(image,length,blob);
       WriteBlobMSBShort(image,PictEndOfPictureOp);
       LiberateMemory((void **) &blob);

@@ -1710,7 +1710,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
         image->chromaticity.white_point.x,image->chromaticity.white_point.y);
     }
   if (image->color_profile.length != 0)
-    (void) fprintf(file,"  Profile-icc: %u bytes\n",
+    (void) fprintf(file,"  Profile-color: %u bytes\n",
       image->color_profile.length);
   if (image->iptc_profile.length != 0)
     {
