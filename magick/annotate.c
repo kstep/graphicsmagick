@@ -312,7 +312,6 @@ Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
         break;
       }
     }
-    image->class=DirectClass;
     CompositeImage(image,AnnotateCompositeOp,annotate_image,
       local_info->bounds.x,local_info->bounds.y);
     DestroyImage(annotate_image);

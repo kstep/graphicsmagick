@@ -1021,12 +1021,12 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
     opacity,
     red;
 
+  PixelPacket
+    color;
+
   Quantum
     midpoint,
     shade;
-
-  PixelPacket
-    color;
 
   register int
     x;
@@ -1219,12 +1219,9 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
       /*
         Initialize image matte data.
       */
+      image->class=DirectClass;
       if (!image->matte)
-        {
-          image->class=DirectClass;
-          if (compose != AnnotateCompositeOp)
-            MatteImage(image,Opaque);
-        }
+        MatteImage(image,Opaque);
       if (!composite_image->matte)
         {
           (void) IsMonochromeImage(composite_image);
