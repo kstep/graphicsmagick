@@ -112,7 +112,8 @@ typedef enum
   ColorizeCompositeOp,
   LuminizeCompositeOp,
   ScreenCompositeOp,
-  OverlayCompositeOp
+  OverlayCompositeOp,
+  CopyOpacityCompositeOp
 } CompositeOperator;
 
 typedef enum

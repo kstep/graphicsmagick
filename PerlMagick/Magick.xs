@@ -172,7 +172,9 @@ static char
     "Undefined", "Over", "In", "Out", "Atop", "Xor", "Plus", "Minus",
     "Add", "Subtract", "Difference", "Multiply", "Bumpmap", "Copy",
     "CopyRed", "CopyGreen", "CopyBlue", "CopyOpacity", "Clear", "Dissolve",
-    "Displace", "Modulate", "Threshold", (char *) NULL
+    "Displace", "Modulate", "Threshold", "No", "Darken", "Lighten",
+    "Hue", "Saturate", "Colorize", "Luminize", "Screen", "Overlay",
+    "ReplaceMatte", (char *) NULL
   },
   *CompressionTypes[] =
   {
