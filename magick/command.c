@@ -104,6 +104,7 @@ typedef struct _CommandInfo
   const char           *description;
   CommandVectorHandler  command_vector;
   UsageVectorHandler    usage_vector;
+  int                   pass_metadata;
 } CommandInfo;
 
 static void
@@ -120,32 +121,32 @@ const static CommandInfo commands[] =
   {
 #if defined(HasX11)
     { "animate", "animate a sequence of images",
-      AnimateImageCommand, AnimateUsage },
+      AnimateImageCommand, AnimateUsage, 0 },
 #endif
     { "composite", "composite images together",
-      CompositeImageCommand, CompositeUsage },
+      CompositeImageCommand, CompositeUsage, 0 },
     { "conjure", "execute a Magick Scripting Language (MSL) XML script",
-      ConjureImageCommand, ConjureUsage },
+      ConjureImageCommand, ConjureUsage, 0 },
     { "convert", "convert an image or sequence of images",
-      ConvertImageCommand, ConvertUsage },
+      ConvertImageCommand, ConvertUsage, 0 },
 #if defined(HasX11)
     { "display", "display an image on a workstation running X",
-      DisplayImageCommand, DisplayUsage },
+      DisplayImageCommand, DisplayUsage, 0 },
 #endif
     { "help", "obtain usage message for named command",
       HelpCommand, GMUsage },
     { "identify", "describe an image or image sequence",
-      IdentifyImageCommand, IdentifyUsage },
+      IdentifyImageCommand, IdentifyUsage, 1 },
 #if defined(HasX11)
     { "import", "capture an application or X server screen",
-      ImportImageCommand, ImportUsage },
+      ImportImageCommand, ImportUsage, 0 },
 #endif
     { "mogrify", "transform an image or sequence of images",
-      MogrifyImageCommand, MogrifyUsage },
+      MogrifyImageCommand, MogrifyUsage, 0 },
     { "montage", "create a composite image (in a grid) from separate images",
-      MontageImageCommand, MontageUsage },
+      MontageImageCommand, MontageUsage, 0 },
     { "version", "obtain release version",
-      VersionCommand, 0 },
+      VersionCommand, 0, 0 },
     { 0, 0, 0}
   };
 
@@ -6977,8 +6978,8 @@ MagickExport unsigned int MagickCommand(ImageInfo *image_info,
                        commands[i].command);
 
           SetClientName(client_name);
-          return(commands[i].command_vector)(image_info,argc,argv,metadata,
-                                             exception);
+          return(commands[i].command_vector)(image_info,argc,argv,
+            commands[i].pass_metadata ? metadata : (char **) NULL,exception);
         }
     }
   return status;
