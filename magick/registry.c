@@ -1,4 +1,4 @@
-/*
+status
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -101,9 +101,9 @@ MagickExport unsigned int DeleteMagickRegistry(const long id)
     *p;
 
   unsigned int
-    delete;
+    status;
 
-  delete=False;
+  status=False;
   AcquireSemaphoreInfo(&registry_semaphore);
   for (p=registry_list; p != (RegistryInfo *) NULL; p=p->next)
   {
@@ -131,12 +131,12 @@ MagickExport unsigned int DeleteMagickRegistry(const long id)
           registry_info->next->previous=registry_info->previous;
         LiberateMemory((void **) &registry_info);
         registry_info=(RegistryInfo *) NULL;
-        delete=True;
+        status=True;
         break;
       }
   }
   LiberateSemaphoreInfo(&registry_semaphore);
-  return(delete);
+  return(status);
 }
 
 /*
