@@ -287,9 +287,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Verify PCX identifier.
     */
     pcx_info.version=ReadBlobByte(image);
-    if ((status == False) || (pcx_info.identifier != 0x0a) ||
-        ((pcx_info.version != 2) && (pcx_info.version != 3) &&
-         (pcx_info.version != 5)))
+    if ((status == False) || (pcx_info.identifier != 0x0a))
       ThrowReaderException(CorruptImageWarning,"Not a PCX image file",image);
     pcx_info.encoding=ReadBlobByte(image);
     pcx_info.bits_per_pixel=ReadBlobByte(image);
@@ -323,7 +321,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (!AllocateImageColormap(image,image->colors))
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
         image);
-    if (pcx_info.planes != 1)
+    if ((pcx_info.bits_per_pixel >= 8) && (pcx_info.planes != 1))
       image->storage_class=DirectClass;
     if (image_info->ping)
       {
