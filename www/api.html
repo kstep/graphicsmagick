@@ -164,13 +164,13 @@ format.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (void) strcpy(image_info->filename,"image.jpg");
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; image=ReadImage(image_info,&amp;exception);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (image == (Image *) NULL)
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MagickError(exception.severity,exception.message,exception.qualifier);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MagickError(exception.severity,exception.reason,exception.description);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /*
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Turn the image into a thumbnail.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; */
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; zoom_image=ZoomImage(image,106,80,&amp;exception);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (zoom_image == (Image *) NULL)
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MagickError(exception.severity,exception.message,exception.qualifier);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MagickError(exception.severity,exception.reason,exception.description);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DestroyImage(image);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; image=zoom_image;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /*
