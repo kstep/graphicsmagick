@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000,2001
+// Copyright Bob Friesenhahn, 1999, 2000, 2001
 //
 // Implementation of Image
 //
@@ -753,6 +753,9 @@ void Magick::Image::floodFillTexture( unsigned int x_, unsigned int y_,
                           y_, // const int y_offset
                           FloodfillMethod // const PaintMethod method
       );
+
+  // Reset to no texture
+  options()->penTexture(0);
   throwImageException();
 }
 void Magick::Image::floodFillTexture( const Magick::Geometry &point_,
@@ -781,6 +784,9 @@ void Magick::Image::floodFillTexture( unsigned int x_, unsigned int y_,
                         y_, // const int y_offset
                         FillToBorderMethod // const PaintMethod method
                         );
+
+  // Reset to no texture
+  options()->penTexture(0);
   throwImageException();
 }
 void  Magick::Image::floodFillTexture( const Magick::Geometry &point_,

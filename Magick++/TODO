@@ -2,6 +2,8 @@
 Items large and small which remain to be worked on.
 --------------------------------------------------------------------
 
+* Fix floodFillTexture() so that it preserves the current texture.
+
 * Fix documentation for drawing rounded rectangle.  Parameters
   represent corners, not center.
 
