@@ -3568,8 +3568,9 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
       }
     if (Latin1Compare("-font",option) == 0)
       {
-        (void) CloneString(&clone_info->font,argv[++i]);
-        (void) CloneString(&draw_info->font,argv[++i]);
+        i++;
+        (void) CloneString(&clone_info->font,argv[i]);
+        (void) CloneString(&draw_info->font,argv[i]);
         continue;
       }
     if (LatinNCompare("gamma",option+1,3) == 0)
