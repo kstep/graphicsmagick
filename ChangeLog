@@ -1,5 +1,7 @@
 2004-02-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* wand/magick_wand.c (MagickRemoveImageProfile): Use C comments in
+	C files.
 	* magick/constitute.c (MapQuantumType): Fix spurious comma in
 	enum definition.
 	* magick/blob.c (GetBlobStreamHandler): Apparently return type can

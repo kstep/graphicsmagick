@@ -6320,18 +6320,24 @@ WandExport unsigned char *MagickRemoveImageProfile(MagickWand *wand,
   if (wand->images == (Image *) NULL)
     ThrowWandException(WandError,WandContainsNoImages,wand->id);
   *length=0;
-  // Obtain pointer to existing image profile
+  /*
+    Obtain pointer to existing image profile
+  */
   profile=GetImageProfile(wand->image,name,&profile_length);
   if (!profile || !profile_length)
     return 0;
-  // Clone profile
+  /*
+    Clone profile
+  */
   *length=profile_length;
   cloned_profile=MagickAllocateMemory(unsigned char *,profile_length);
   if (!cloned_profile)
     return 0;
   memcpy(cloned_profile,profile,profile_length);
   profile=0;
-  // Remove image profile
+  /*
+    Remove image profile
+  */
   DeleteImageProfile(wand->image,name);
   return cloned_profile;
 }
