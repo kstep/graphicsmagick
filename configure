@@ -6597,9 +6597,9 @@ fi
       fi
     fi
 
+    OLD_CPPFLAGS="$CPPFLAGS"
     if test "$LIB_TTF" != ''
     then
-      OLD_CPPFLAGS="$CPPFLAGS"
       CPPFLAGS=`freetype-config --cflags`" $CPPFLAGS"
     fi
 

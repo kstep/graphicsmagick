@@ -834,9 +834,9 @@ dnl First see if there is a library
     fi
 
 dnl Next see what magic is required for the headers
+    OLD_CPPFLAGS="$CPPFLAGS"
     if test "$LIB_TTF" != ''
     then
-      OLD_CPPFLAGS="$CPPFLAGS"
       CPPFLAGS=`freetype-config --cflags`" $CPPFLAGS"
     fi
 
