@@ -242,7 +242,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if ((*p == '}') && (*(p+1) == ';'))
         break;
       p+=strlen(p);
-      if ((p-xpm_buffer+MaxTextExtent+1) < (int) length)
+      if ((p-xpm_buffer+MaxTextExtent+1) < (long) length)
         continue;
       length<<=1;
       ReacquireMemory((void **) &xpm_buffer,length);
@@ -640,11 +640,11 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
     *q;
 
   unsigned int
-    characters_per_pixel,
     status,
     transparent;
 
   unsigned long
+    characters_per_pixel,
     colors;
 
   /*
@@ -755,7 +755,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
     */
     k=i % MaxCixels;
     symbol[0]=Cixel[k];
-    for (j=1; j < (int) characters_per_pixel; j++)
+    for (j=1; j < (long) characters_per_pixel; j++)
     {
       k=((i-k)/MaxCixels) % MaxCixels;
       symbol[j]=Cixel[k];
@@ -779,7 +779,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
     {
       k=indexes[x] % MaxCixels;
       symbol[0]=Cixel[k];
-      for (j=1; j < (int) characters_per_pixel; j++)
+      for (j=1; j < (long) characters_per_pixel; j++)
       {
         k=(((int) indexes[x]-k)/MaxCixels) % MaxCixels;
         symbol[j]=Cixel[k];

@@ -91,6 +91,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   char
+    *caption,
     geometry[MaxTextExtent];
 
   DrawInfo
@@ -99,6 +100,13 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   Image
     *image;
 
+  register char
+    *p,
+    *q;
+
+  register int
+	  i;
+
   TypeMetric
     metrics;
 
@@ -106,8 +114,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
     status;
 
   unsigned long
-    height,
-    width;
+    length;
 
   /*
     Initialize Image structure.
@@ -117,51 +124,64 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
-  draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
-  draw_info->text=AllocateString(image_info->filename);
-  if ((image->columns != 0) || (image->rows != 0))
-    {
-      /*
-        Fit label to canvas size.
-      */
-      for ( ; GetTypeMetrics(image,draw_info,&metrics); draw_info->pointsize*=2)
-      {
-        width=(unsigned long) floor(metrics.width+metrics.max_advance+0.5);
-        height=(unsigned long) floor(metrics.height+0.5);
-        if (((image->columns != 0) && (width >= image->columns)) ||
-            ((image->rows != 0) && (height >= image->rows)))
-          break;
-      }
-      for ( ; GetTypeMetrics(image,draw_info,&metrics); draw_info->pointsize--)
-      {
-        width=(unsigned long) floor(metrics.width+metrics.max_advance+0.5);
-        height=(unsigned long) floor(metrics.height+0.5);
-        if ((image->columns != 0) && (width <= image->columns) &&
-           ((image->rows == 0) || (height <= image->rows)))
-          break;
-        if ((image->rows != 0) && (height <= image->rows) &&
-           ((image->columns == 0) || (width <= image->columns)))
-          break;
-        if (draw_info->pointsize < 2.0)
-          break;
-      }
-    }
-  status=GetTypeMetrics(image,draw_info,&metrics);
-  if (status == False)
-    ThrowReaderException(DelegateWarning,"Unable to get type metrics",image);
-  FormatString(geometry,"+%g+%g",0.5*metrics.max_advance,metrics.ascent);
   if (image->columns == 0)
-    image->columns=(unsigned long) floor(metrics.width+metrics.max_advance+0.5);
-  if (image->rows == 0)
+    ThrowReaderException(OptionWarning,"Must specify image size",image);
+  status=OpenBlob(image_info,image,ReadBinaryType,exception);
+  if (status == False)
+    ThrowReaderException(FileOpenWarning,"Unable to open file",image);
+  /*
+    Read caption.
+  */
+  length=MaxTextExtent;
+  caption=(char *) AcquireMemory(length);
+  p=caption;
+  if (caption != (char *) NULL)
+    while (ReadBlobString(image,p) != (char *) NULL)
     {
-      image->rows=(unsigned long) floor(metrics.height+0.5);
-      FormatString(geometry,"+%g+%g",image->columns/2.0-metrics.width/2.0,
-        metrics.ascent);
+      p+=strlen(p);
+      if ((p-caption+MaxTextExtent+1) < (long) length)
+        continue;
+      length<<=1;
+      ReacquireMemory((void **) &caption,length);
+      if (caption == (char *) NULL)
+        break;
+      p=caption+strlen(caption);
     }
-  draw_info->geometry=AllocateString(geometry);
+  if (caption == (char *) NULL)
+    ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+  /*
+    Format caption.
+  */
+  draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
+  draw_info->text=AllocateString(caption);
+  p=caption;
+  q=draw_info->text;
+  for (i=0; *p != '\0'; p++)
+  {
+    *q++=(*p);
+    *q='\0';
+    status=GetTypeMetrics(image,draw_info,&metrics);
+    if (status == False)
+      ThrowReaderException(DelegateWarning,"Unable to get type metrics",image);
+    if ((metrics.width+metrics.max_advance) < image->columns)
+      continue;
+    for (p--; !isspace(*p) && (p > caption); p--);
+    *p++='\n';
+    q=draw_info->text;
+    i++;
+  }
+  if (image->rows == 0)
+    image->rows=(i+1)*metrics.height;
+  /*
+    Draw caption.
+  */
   SetImage(image,OpaqueOpacity);
+  FormatString(geometry,"+%g+%g",0.5*metrics.max_advance,metrics.ascent);
+  draw_info->geometry=AllocateString(geometry);
+  (void) strcpy(draw_info->text,caption);
   (void) AnnotateImage(image,draw_info);
   DestroyDrawInfo(draw_info);
+  LiberateMemory((void **) &caption);
   return(image);
 }
 
