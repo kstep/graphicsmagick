@@ -3185,6 +3185,13 @@ Get(ref,...)
         case 'I':
         case 'i':
         {
+          if (LocaleCompare(attribute,"icm") == 0)
+            {
+              if (image)
+                s=newSVpv(image->color_profile,0);
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
+            }
           if (LocaleCompare(attribute,"id") == 0)
             {
               if (image)
@@ -3216,6 +3223,13 @@ Get(ref,...)
               indexes=GetIndexes(image);
               FormatString(name,"%u",*indexes);
               s=newSVpv(name,0);
+              PUSHs(s ? sv_2mortal(s) : &sv_undef);
+              continue;
+            }
+          if (LocaleCompare(attribute,"iptc") == 0)
+            {
+              if (image)
+                s=newSVpv(image->iptc_profile,0);
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
