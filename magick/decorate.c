@@ -389,7 +389,7 @@ Export Image *FrameImage(Image *image,const FrameInfo *frame_info)
 %
 %  The format of the RaiseImage method is:
 %
-%      void RaiseImage(Image *image,const RectangleInfo *raise_info,
+%      unsigned int RaiseImage(Image *image,const RectangleInfo *raise_info,
 %        const int raised)
 %
 %  A description of each parameter follows:
@@ -404,7 +404,7 @@ Export Image *FrameImage(Image *image,const FrameInfo *frame_info)
 %
 %
 */
-Export void RaiseImage(Image *image,const RectangleInfo *raise_info,
+Export unsigned int RaiseImage(Image *image,const RectangleInfo *raise_info,
   const int raised)
 {
 #define AccentuateFactor  UpScale(135)
@@ -558,5 +558,5 @@ Export void RaiseImage(Image *image,const RectangleInfo *raise_info,
     if (QuantumTick(i,image->rows))
       ProgressMonitor(RaiseImageText,i,image->rows);
   }
-  return;
+  return(True);
 }
