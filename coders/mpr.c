@@ -192,7 +192,7 @@ ModuleExport void RegisterMPRImage(void)
 ModuleExport void UnregisterMPRImage(void)
 {
   (void) UnregisterMagickInfo("MPR");
-  (void) UnregisterMagickInfo("REGISTRY");
+  (void) UnregisterMagickInfo("MPRI");
 }
 
 /*
