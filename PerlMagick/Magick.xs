@@ -3019,7 +3019,7 @@ Get(ref,...)
             {
               if (info)
                 {
-                  (void) QueryColorName(&info->image_info->pen,color);
+                  (void) QueryColorName(&info->image_info->fill,color);
                   s=newSVpv(color,0);
                 }
               break;
