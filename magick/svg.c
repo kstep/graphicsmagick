@@ -55,23 +55,6 @@
 #include "magick.h"
 #include "defines.h"
 
-/*
-  Typedef declarations.
-*/
-typedef struct _GraphicContext
-{
-  char
-    *fill,
-    *stroke;
-
-  unsigned int
-    antialias;
-
-  double
-    linewidth,
-    pointsize,
-    opacity;
-} GraphicContext;
 
 /*
   Forward declarations.
@@ -296,14 +279,17 @@ Export char **StringToTokens(const char *text,int *number_tokens)
   return(tokens);
 }
 
-static void TraversePath(FILE *file,GraphicContext *graphic_context,
-  const char *path)
+static void TraversePath(FILE *file,const char *path)
 {
-  char
-    primitive[MaxTextExtent];
+  double
+    x,
+    y;
 
   int
     n;
+
+  PointInfo
+    start;
 
   register const char
     *p;
@@ -319,20 +305,133 @@ static void TraversePath(FILE *file,GraphicContext *graphic_context,
   {
     while (isspace(*p))
       p++;
-    *primitive='\0';
+    n=0;
     switch (*p)
     {
+      case 'A':
+      {
+        (void) sscanf(p+1,"%lf%lf%lf%lf%lf%lf%n",&segment.x1,&segment.y1,
+          segment.x2,segment.y2,x,y,&n);
+        if (n == 0)
+          (void) sscanf(p+1,"%lf,%lf%lf,%lf%lf,%lf%n",&segment.x1,&segment.y1,
+            segment.x2,segment.y2,x,y,&n);
+        p+=n;
+        (void) fprintf(file,"ellipse %g,%g %g,%g %g,%g\n",segment.x1,segment.y1,
+          segment.x2,segment.y2,x,y);
+        break;
+      }
+      case 'C':
+      {
+        (void) sscanf(p+1,"%lf%lf%lf%lf%lf%lf%n",&segment.x1,&segment.y1,
+          segment.x2,segment.y2,x,y,&n);
+        if (n == 0)
+          (void) sscanf(p+1,"%lf,%lf%lf,%lf%lf,%lf%n",&segment.x1,&segment.y1,
+            segment.x2,segment.y2,x,y,&n);
+        p+=n;
+        (void) fprintf(file,"bezier %g,%g %g,%g %g,%g\n",segment.x1,segment.y1,
+          segment.x2,segment.y2,x,y);
+        break;
+      }
+      case 'h':
+      {
+        (void) sscanf(p+1,"%lf%n",&x,&n);
+        p+=n;
+        segment.x2+=x;
+        (void) fprintf(file,"line %g,%g %g,%g\n",segment.x1,segment.y1,
+          segment.x2,segment.y2);
+        break;
+      }
+      case 'H':
+      {
+        (void) sscanf(p+1,"%lf%n",&segment.x2,&n);
+        p+=n;
+        (void) fprintf(file,"line %g,%g %g,%g\n",segment.x1,segment.y1,
+          segment.x2,segment.y2);
+        break;
+      }
+      case 'l':
+      {
+        (void) sscanf(p+1,"%lf%lf%n",&x,&y,&n);
+        if (n == 0)
+          (void) sscanf(p+1,"%lf,%lf%n",&x,&y,&n);
+        p+=n;
+        segment.x2+=x;
+        segment.y2+=y;
+        (void) fprintf(file,"line %g,%g %g,%g\n",segment.x1,segment.y1,
+          segment.x2,segment.y2);
+        break;
+      }
       case 'L':
       {
         (void) sscanf(p+1,"%lf%lf%n",&segment.x2,&segment.y2,&n);
-        p+=n+1;
-        FormatString(primitive,"line %g,%g %g,%g",segment.x1,segment.y1,
+        if (n == 0)
+          (void) sscanf(p+1,"%lf,%lf%n",&segment.x2,&segment.y2,&n);
+        p+=n;
+        (void) fprintf(file,"line %g,%g %g,%g\n",segment.x1,segment.y1,
           segment.x2,segment.y2);
+        break;
       }
       case 'M':
       {
         (void) sscanf(p+1,"%lf%lf%n",&segment.x1,&segment.y1,&n);
-        p+=n+1;
+        if (n == 0)
+          (void) sscanf(p+1,"%lf,%lf%n",&segment.x1,&segment.y1,&n);
+        p+=n;
+        segment.x2=segment.x1;
+        segment.y2=segment.y1;
+        start.x=segment.x1;
+        start.y=segment.y1;
+        break;
+      }
+      case 'S':
+      {
+        (void) sscanf(p+1,"%lf%lf%lf%lf%lf%lf%n",&segment.x1,&segment.y1,
+          segment.x2,segment.y2,x,y,&n);
+        if (n == 0)
+          (void) sscanf(p+1,"%lf,%lf%lf,%lf%lf,%lf%n",&segment.x1,&segment.y1,
+            segment.x2,segment.y2,x,y,&n);
+        p+=n;
+        (void) fprintf(file,"bezier %g,%g %g,%g %g,%g\n",segment.x1,segment.y1,
+          segment.x2,segment.y2,x,y);
+        break;
+      }
+      case 'T':
+      {
+        (void) sscanf(p+1,"%lf%lf%lf%lf%lf%lf%n",&segment.x1,&segment.y1,
+          segment.x2,segment.y2,x,y,&n);
+        if (n == 0)
+          (void) sscanf(p+1,"%lf,%lf%lf,%lf%lf.%lf%n",&segment.x1,&segment.y1,
+            segment.x2,segment.y2,x,y,&n);
+        p+=n;
+        (void) fprintf(file,"bezier %g,%g %g,%g %g,%g\n",segment.x1,segment.y1,
+          segment.x2,segment.y2,x,y);
+        break;
+      }
+      case 'v':
+      {
+        (void) sscanf(p+1,"%lf%n",&y,&n);
+        p+=n;
+        segment.y2+=y;
+        (void) fprintf(file,"line %g,%g %g,%g\n",segment.x1,segment.y1,
+          segment.x2,segment.y2);
+        break;
+      }
+      case 'V':
+      {
+        (void) sscanf(p+1,"%lf%n",&segment.y2,&n);
+        p+=n;
+        (void) fprintf(file,"line %g,%g %g,%g\n",segment.x1,segment.y1,
+          segment.x2,segment.y2);
+        break;
+      }
+      case 'z':
+      case 'Z':
+      {
+        segment.x1=start.x;
+        segment.y1=start.y;
+        (void) fprintf(file,"line %g,%g %g,%g\n",segment.x1,segment.y1,
+          segment.x2,segment.y2);
+        break;
       }
       default:
       {
@@ -340,10 +439,8 @@ static void TraversePath(FILE *file,GraphicContext *graphic_context,
         break;
       }
     }
-    if (*primitive != '\0')
-      {
-        puts(primitive);
-      }
+    segment.x1=segment.x2;
+    segment.y1=segment.y2;
     p++;
   }
 }
@@ -375,6 +472,21 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       minor,
       angle;
   } ElementInfo;
+
+  typedef struct _GraphicContext
+  {
+    char
+      *fill,
+      *stroke;
+
+    unsigned int
+      antialias;
+
+    double
+      linewidth,
+      pointsize,
+      opacity;
+  } GraphicContext;
 
   char
     filename[MaxTextExtent],
@@ -503,6 +615,8 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) CloneString(&keyword,token);
         continue;
       }
+    if (Latin1Compare(token,"=") == 0)
+      (void) GetToken(image,&value,&c,exception);
     if (((Latin1Compare(keyword,">") == 0) ||
          (Latin1Compare(keyword,"text>") == 0)) &&
         (Latin1Compare(primitive,"none") != 0))
@@ -616,10 +730,26 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) CloneString(&keyword,token);
         continue;
       }
+    if (Latin1Compare(keyword,"d") == 0)
+      {
+        (void) fprintf(file,"antialias %d\n",
+          graphic_context[n].antialias ? 1 : 0);
+        (void) fprintf(file,"linewidth %g\n",graphic_context[n].linewidth);
+        (void) fprintf(file,"pointsize %g\n",graphic_context[n].pointsize);
+        (void) fprintf(file,"translate %g,%g\n",translate.x,translate.y);
+        (void) fprintf(file,"rotate %g\n",element.angle);
+        (void) fprintf(file,"opacity %g\n",graphic_context[n].opacity);
+        if (Latin1Compare(graphic_context[n].fill,"none") != 0)
+          (void) fprintf(file,"pen %s\n",graphic_context[n].fill);
+        if (Latin1Compare(graphic_context[n].stroke,"none") != 0)
+          (void) fprintf(file,"pen %s\n",graphic_context[n].stroke);
+        (void) fprintf(file,"fill 0\n");
+        TraversePath(file,value);
+        (void) CloneString(&keyword,token);
+        continue;
+      }
     if (Latin1Compare(keyword,">") == 0)
       CloneString(&primitive,"none");
-    if (Latin1Compare(token,"=") == 0)
-      (void) GetToken(image,&value,&c,exception);
     if (Latin1Compare(keyword,"angle") == 0)
       (void) sscanf(value,"%lf",&element.angle);
     if (Latin1Compare(keyword,"circle") == 0)
@@ -634,8 +764,6 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) sscanf(value,"%lf",&element.cy);
         element.cy*=UnitOfMeasure(value);
       }
-    if (Latin1Compare(keyword,"d") == 0)
-      TraversePath(file,graphic_context+n,value);
     if (Latin1Compare(keyword,"ellipse") == 0)
       CloneString(&primitive,"ellipse");
     if (Latin1Compare(keyword,"g") == 0)
