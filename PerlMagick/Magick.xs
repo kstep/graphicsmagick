@@ -2652,6 +2652,8 @@ Get(ref,...)
             }
           if (strEQcase(attribute,"depth"))
             {
+              if (info)
+                s=newSViv(info->image_info->depth);
               if (image)
                 s=newSViv(image->depth);
               break;
