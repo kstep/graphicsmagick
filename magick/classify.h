@@ -263,6 +263,8 @@ typedef enum
   LinePrimitive,
   RectanglePrimitive,
   FillRectanglePrimitive,
+  RoundRectanglePrimitive,
+  FillRoundRectanglePrimitive,
   CirclePrimitive,
   FillCirclePrimitive,
   EllipsePrimitive,
