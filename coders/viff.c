@@ -891,6 +891,9 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
   register unsigned char
     *q;
 
+  size_t
+    number_pixels;
+
   unsigned char
     buffer[8],
     *viff_pixels;
