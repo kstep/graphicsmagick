@@ -685,7 +685,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,buffer);
     if (image->colorspace != CMYKColorspace)
       (void) WriteBlobString(image,"  /Decode [ 0 1 0 1 0 1 ] def\n");
-		else
+    else
       (void) WriteBlobString(image,"  /Decode [ 1 0 1 0 1 0 1 0 ] def\n");
     (void) WriteBlobString(image,"end\n");
     (void) WriteBlobByte(image,'\n');

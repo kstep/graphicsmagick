@@ -571,7 +571,7 @@ MagickExport char **GetColorList(const char *pattern,int *number_colors)
 */
 MagickExport void GetColorTuple(const PixelPacket *color,
   const unsigned int depth,const unsigned int matte,const unsigned int hex,
-	char *tuple)
+  char *tuple)
 {
   assert(color != (const PixelPacket *) NULL);
   assert(tuple != (char *) NULL);
@@ -900,7 +900,7 @@ static void Histogram(const Image *image,CubeInfo *cube_info,
       for (i=0; i < (long) node_info->number_unique; i++)
       {
         (void) fprintf(file,"%10lu: (%5u,%5u,%5u)  ",p->count,
-					p->pixel.red,p->pixel.green,p->pixel.blue);
+          p->pixel.red,p->pixel.green,p->pixel.blue);
         (void) fprintf(file,"  ");
         (void) QueryColorname(image,&p->pixel,SVGCompliance,name,exception);
         (void) fprintf(file,"%.1024s",name);

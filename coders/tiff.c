@@ -1581,22 +1581,22 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         break;
       }
       case COMPRESSION_ADOBE_DEFLATE:
-			{
+      {
         (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,image->rows);
         (void) TIFFSetField(tiff,TIFFTAG_PREDICTOR,2);
         (void) TIFFSetField(tiff,TIFFTAG_ZIPQUALITY,9);
         break;
-			}
+      }
       case COMPRESSION_CCITTFAX4:
-			{
+      {
         (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,image->rows);
         break;
-			}
+      }
       default:
-			{
+      {
         (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,strip_size);
         break;
-			}
+      }
     }
     if ((image->x_resolution != 0) && (image->y_resolution != 0))
       {

@@ -933,12 +933,12 @@ static int NTGhostscriptEnumerateVersions(int *pver)
 
   if (n >= pver[0]) {
     pver[0] = n;
-    return FALSE;	/* too small */
+    return FALSE;  /* too small */
   }
 
   if (n == 0) {
     pver[0] = 0;
-    return FALSE;	/* not installed */
+    return FALSE;  /* not installed */
   }
   pver[0] = n;
   return TRUE;
@@ -972,20 +972,20 @@ static int  NTGetRegistryValue(HKEY hkeyroot, const char *key, const char *name,
     keytype = REG_SZ;
     cbData = *plen;
     if (bptr == (BYTE *)NULL)
-      bptr = &b;	/* Registry API won't return ERROR_MORE_DATA */
+      bptr = &b;  /* Registry API won't return ERROR_MORE_DATA */
     /* if ptr is NULL */
     rc = RegQueryValueExA(hkey, (char *)name, 0, &keytype, bptr, &cbData);
     RegCloseKey(hkey);
     if (rc == ERROR_SUCCESS) {
       *plen = cbData;
-      return 0;	/* found environment variable and copied it */
+      return 0;  /* found environment variable and copied it */
     } else if (rc == ERROR_MORE_DATA) {
       /* buffer wasn't large enough */
       *plen = cbData;
       return -1;
     }
   }
-  return 1;	/* not found */
+  return 1;  /* not found */
 }
 
 static int NTGhostscriptGetProductString(int gs_revision, const char *name, 
@@ -1023,13 +1023,13 @@ static int NTGhostscriptGetProductString(int gs_revision, const char *name,
   length = len;
   code = NTGetRegistryValue(HKEY_CURRENT_USER, key, name, ptr, &length);
   if ( code == 0 )
-    return TRUE;	/* found it */
+    return TRUE;  /* found it */
 
   length = len;
   code = NTGetRegistryValue(HKEY_LOCAL_MACHINE, key, name, ptr, &length);
 
   if ( code == 0 )
-    return TRUE;	/* found it */
+    return TRUE;  /* found it */
 
   return FALSE;
 }

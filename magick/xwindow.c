@@ -6820,7 +6820,8 @@ MagickExport void XMakeMagnifyImage(Display *display,XWindows *windows)
     Show center pixel color.
   */
   color=GetOnePixel(windows->image.image,windows->magnify.x,windows->magnify.y);
-  GetColorTuple(windows->image.image,&color,False,tuple);
+  GetColorTuple(&color,windows->image.image->depth,windows->image.image->matte,
+    False,tuple);
   FormatString(text," %+d%+d  %.1024s ",windows->magnify.x,windows->magnify.y,
     tuple);
   height=windows->magnify.font_info->ascent+windows->magnify.font_info->descent;

@@ -320,7 +320,7 @@ static long parse8BIM(Image *ifile, Image *ofile)
   recnum = 0;
   line = (char *) AcquireMemory(inputlen);
   name = token = (char *)NULL;
-	savedpos = 0;
+  savedpos = 0;
   while(super_fgets(&line,&inputlen,ifile)!=NULL)
   {
     state=0;

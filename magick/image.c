@@ -2151,9 +2151,9 @@ MagickExport void DescribeImage(Image *image,FILE *file,
       }
       if ((x < (long) image->columns) || (y < (long) image->rows))
         {
-          GetColorTuple(image,p,False,tuple);
+          GetColorTuple(p,image->depth,image->matte,False,tuple);
           (void) fprintf(file,"  Opacity: %.1024s\t",tuple);
-          GetColorTuple(image,p,True,tuple);
+          GetColorTuple(p,image->depth,image->matte,True,tuple);
           (void) fprintf(file,"  %.1024s\n",tuple);
         }
     }
@@ -2187,7 +2187,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
         char
           tuple[MaxTextExtent];
 
-        GetColorTuple(image,p,False,tuple);
+        GetColorTuple(p,image->depth,image->matte,False,tuple);
         (void) fprintf(file,"    %lu: %.1024s",i,tuple);
         (void) fprintf(file,"\t");
         (void) QueryColorname(image,p,SVGCompliance,name,&image->exception);

@@ -695,7 +695,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         layer_info[i].flags=ReadBlobByte(image);
         layer_info[i].visible=!(layer_info[i].flags & 0x02);
         (void) ReadBlobByte(image);  /* filler */
-  	combinedlength = 0;
+    combinedlength = 0;
         size=ReadBlobMSBLong(image);
         if (size != 0)
           {
@@ -735,12 +735,12 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
             length=ReadBlobByte(image);
             if (length != 0)
-  		{
-  			/* layer name */
+      {
+        /* layer name */
                 for (j=0; j < (long) (length); j++)
                   layer_info[i].name[j] = ReadBlobByte(image);
-  			layer_info[i].name[j] = 0;	/* zero term */
-  		}
+        layer_info[i].name[j] = 0;  /* zero term */
+      }
             combinedlength += length + 1;  /* +1 for length */
 
            /*
@@ -774,13 +774,13 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             layer_info[i].image->matte=True;
 
         /* set up some hidden attributes for folks that need them */
-  	sprintf( s, "%ld", layer_info[i].page.x );
-  	(void) SetImageAttribute(layer_info[i].image,"[layer-xpos]",s);
-  	sprintf( s, "%ld", layer_info[i].page.y );
-  	(void) SetImageAttribute(layer_info[i].image,"[layer-ypos]",s);
-  	sprintf( s, "%d", layer_info[i].opacity );
-  	(void) SetImageAttribute(layer_info[i].image,"[layer-opacity]",s);
-  	(void) SetImageAttribute(layer_info[i].image,"[layer-name]", (char *) layer_info[i].name);
+    sprintf( s, "%ld", layer_info[i].page.x );
+    (void) SetImageAttribute(layer_info[i].image,"[layer-xpos]",s);
+    sprintf( s, "%ld", layer_info[i].page.y );
+    (void) SetImageAttribute(layer_info[i].image,"[layer-ypos]",s);
+    sprintf( s, "%d", layer_info[i].opacity );
+    (void) SetImageAttribute(layer_info[i].image,"[layer-opacity]",s);
+    (void) SetImageAttribute(layer_info[i].image,"[layer-name]", (char *) layer_info[i].name);
       }
       /*
         Read pixel data for each layer.
