@@ -95,6 +95,289 @@
 #include "magick/define.h"
 
 /*
+  Typedef declarations.
+*/
+typedef struct _CompositeOptionInfo
+{
+  char
+    *displace_geometry,
+    *geometry,
+    *unsharp_geometry,
+    *watermark_geometry;
+
+  CompositeOperator
+    compose;
+
+  double
+    dissolve;
+
+  int
+    gravity;
+
+  long
+    stegano;
+
+  unsigned int
+    stereo,
+    tile;
+} CompositeOptionInfo;
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   C o m p o s i t e I m a g e s                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method CompositeImages performs all the steps needed to take the images that
+%  have been read and send them to an output file.
+%
+%  The format of the CompositeImages method is:
+%
+%      unsigned int CompositeImages(const ImageInfo *image_info,const int argc,
+%        char **argv,Image **image,CompositeOptionInfo *option_info,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image_info: The image info..
+%
+%    o argc: Specifies a pointer to an integer describing the number of
+%      elements in the argument vector.
+%
+%    o argv: Specifies a pointer to a text array containing the command line
+%      arguments.
+%
+%    o images: The image; returned from ReadImage.
+%
+%    o option_info: A pointer to a structure containing a set of flags that
+%      control how the images are written.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+static unsigned int CompositeImages(ImageInfo *image_info,const int argc,
+  char **argv,Image **image,Image *composite_image,Image *mask_image,
+  CompositeOptionInfo *option_info,ExceptionInfo *exception)
+{
+  long
+    x,
+    y;
+
+  register Image
+    *p;
+
+  unsigned int
+    matte,
+    status;
+
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(image != (Image **) NULL);
+  assert((*image)->signature == MagickSignature);
+  assert(composite_image != (Image *) NULL);
+  assert(composite_image->signature == MagickSignature);
+  if (mask_image != (Image *) NULL)
+    {
+      assert(mask_image != (Image *) NULL);
+      assert(mask_image->signature == MagickSignature);
+    }
+  if (argc < 2)
+    return(False);
+  while ((*image)->previous != (Image *) NULL)
+    (*image)=(*image)->previous;
+  status=MogrifyImages(image_info,argc-1,argv,image);
+  CatchImageException(*image);
+  if (mask_image != (Image *) NULL)
+    {
+      SetImageType(composite_image,TrueColorMatteType);
+      if (!composite_image->matte)
+        SetImageOpacity(composite_image,OpaqueOpacity);;
+      status=CompositeImage(composite_image,CopyOpacityCompositeOp,
+        mask_image,0,0);
+      if (status == False)
+        CatchImageException(composite_image);
+      DestroyImage(mask_image);
+    }
+    //SetImageClipMask(*image,mask_image);
+  if (option_info->compose == DissolveCompositeOp)
+    {
+      register PixelPacket
+        *q;
+
+      /*
+        Create mattes for dissolve.
+      */
+      for (y=0; y < (long) composite_image->rows; y++)
+      {
+        q=GetImagePixels(composite_image,0,y,composite_image->columns,1);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (long) composite_image->columns; x++)
+        {
+          if (composite_image->matte)
+            q->opacity=(Quantum) (((MaxRGB-q->opacity)*option_info->dissolve)/100);
+          else
+            q->opacity=(Quantum) ((MaxRGB*option_info->dissolve)/100);
+          q++;
+        }
+        if (!SyncImagePixels(composite_image))
+          break;
+      }
+      SetImageType(composite_image,TrueColorMatteType);
+    }
+  if (option_info->compose == DisplaceCompositeOp)
+    (void) CloneString(&composite_image->geometry,option_info->displace_geometry);
+  if (option_info->compose == ModulateCompositeOp)
+    (void) CloneString(&composite_image->geometry,option_info->watermark_geometry);
+  if (option_info->compose == ThresholdCompositeOp)
+    (void) CloneString(&composite_image->geometry,option_info->unsharp_geometry);
+  /*
+    Composite image.
+  */
+  matte=(*image)->matte;
+  if (option_info->stegano != 0)
+    {
+      Image
+        *stego_image;
+
+      (*image)->offset=option_info->stegano-1;
+      stego_image=SteganoImage(*image,composite_image,exception);
+      if (stego_image != (Image *) NULL)
+        {
+          DestroyImages(*image);
+          *image=stego_image;
+        }
+    }
+  else
+    if (option_info->stereo)
+      {
+        Image
+          *stereo_image;
+
+        stereo_image=StereoImage(*image,composite_image,exception);
+        if (stereo_image != (Image *) NULL)
+          {
+            DestroyImages(*image);
+            *image=stereo_image;
+          }
+      }
+    else
+      if (option_info->tile)
+        {
+          /*
+            Tile the composite image.
+          */
+          for (y=0; y < (long) (*image)->rows; y+=composite_image->rows)
+            for (x=0; x < (long) (*image)->columns; x+=composite_image->columns)
+            {
+              status=CompositeImage(*image,option_info->compose,composite_image,x,y);
+              CatchImageException(*image);
+            }
+        }
+      else
+        {
+          int
+            flags;
+
+          unsigned long
+            height,
+            width;
+
+          /*
+            Digitally composite image.
+          */
+          width=(*image)->columns;
+          height=(*image)->rows;
+          x=0;
+          y=0;
+          flags=ParseGeometry(option_info->geometry,&x,&y,&width,&height);
+          if ((flags & XNegative) != 0)
+            x+=(*image)->columns;
+          if ((flags & WidthValue) == 0)
+            width-=2*x > (long) width ? width : 2*x;
+          if ((flags & YNegative) != 0)
+            y+=(*image)->rows;
+          if ((flags & HeightValue) == 0)
+            height-=2*y > (long) height ? height : 2*y;
+          switch (option_info->gravity)
+          {
+            case NorthWestGravity:
+              break;
+            case NorthGravity:
+            {
+              x+=(int) (0.5*width-composite_image->columns/2);
+              break;
+            }
+            case NorthEastGravity:
+            {
+              x+=width-composite_image->columns;
+              break;
+            }
+            case WestGravity:
+            {
+              y+=(int) (0.5*height-composite_image->rows/2);
+              break;
+            }
+            case ForgetGravity:
+            case StaticGravity:
+            case CenterGravity:
+            default:
+            {
+              x+=(int) (0.5*width-composite_image->columns/2);
+              y+=(int) (0.5*height-composite_image->rows/2);
+              break;
+            }
+            case EastGravity:
+            {
+              x+=width-composite_image->columns;
+              y+=(int) (0.5*height-composite_image->rows/2);
+              break;
+            }
+            case SouthWestGravity:
+            {
+              y+=height-composite_image->rows;
+              break;
+            }
+            case SouthGravity:
+            {
+              x+=(int) (0.5*width-composite_image->columns/2);
+              y+=height-composite_image->rows;
+              break;
+            }
+            case SouthEastGravity:
+            {
+              x+=width-composite_image->columns;
+              y+=height-composite_image->rows;
+              break;
+            }
+          }
+          status=CompositeImage(*image,option_info->compose,composite_image,x,y);
+          CatchImageException(*image);
+        }
+  (*image)->matte=matte;
+  /*
+    Write combined images.
+  */
+  (void) strncpy(image_info->filename,argv[argc-1],MaxTextExtent-1);
+  for (p=(*image); p != (Image *) NULL; p=p->next)
+    (void) strncpy(p->filename,argv[argc-1],MaxTextExtent-1);
+  (void) SetImageInfo(image_info,True,&(*image)->exception);
+  for (p=(*image); p != (Image *) NULL; p=p->next)
+  {
+    status=WriteImage(image_info,p);
+    CatchImageException(p);
+  }
+  if (image_info->verbose)
+    DescribeImage(*image,stderr,False);
+  return(status);
+}
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -188,26 +471,17 @@ int main(int argc,char **argv)
 #define NotInitialized  (unsigned int) (~0)
 
   char
-    *displace_geometry,
     *filename,
-    *geometry,
     *option,
-    *unsharp_geometry,
-    *watermark_geometry,
     *write_filename;
 
-  CompositeOperator
-    compose;
-
   double
-    dissolve,
     sans;
 
   ExceptionInfo
     exception;
 
   Image
-    *combine_image,
     *composite_image,
     *image,
     *mask_image;
@@ -216,22 +490,19 @@ int main(int argc,char **argv)
     *image_info;
 
   int
-    gravity,
     j;
 
   long
-    stegano,
-    x,
-    y;
+    x;
+
+  CompositeOptionInfo
+    option_info;
 
   register int
     i;
 
   unsigned int
-    matte,
-    status,
-    stereo,
-    tile;
+    status;
 
   /*
     Initialize command line arguments.
@@ -258,23 +529,24 @@ int main(int argc,char **argv)
   /*
     Set default.
   */
-  dissolve=0.0;
-  compose=CopyCompositeOp;
+  memset(&option_info,0,sizeof(CompositeOptionInfo));
+  option_info.dissolve=0.0;
+  option_info.compose=CopyCompositeOp;
   composite_image=(Image *) NULL;
-  displace_geometry=(char *) NULL;
+  option_info.displace_geometry=(char *) NULL;
   GetExceptionInfo(&exception);
-  geometry=(char *) NULL;
-  gravity=NorthWestGravity;
+  option_info.geometry=(char *) NULL;
+  option_info.gravity=NorthWestGravity;
   image=(Image *) NULL;
   image_info=CloneImageInfo((ImageInfo *) NULL);
   (void) strncpy(image_info->filename,argv[argc-1],MaxTextExtent-1);
   (void) SetImageInfo(image_info,True,&exception);
   mask_image=(Image *) NULL;
-  stegano=0;
-  stereo=False;
-  tile=False;
-  watermark_geometry=(char *) NULL;
-  unsharp_geometry=(char *) NULL;
+  option_info.stegano=0;
+  option_info.stereo=False;
+  option_info.tile=False;
+  option_info.watermark_geometry=(char *) NULL;
+  option_info.unsharp_geometry=(char *) NULL;
   write_filename=argv[argc-1];
   /*
     Check command syntax.
@@ -289,7 +561,7 @@ int main(int argc,char **argv)
         /*
           Read input images.
         */
-        j=i;
+        j=i+1; /* track option after the input image */
         filename=argv[i];
         (void) strncpy(image_info->filename,filename,MaxTextExtent-1);
         if (composite_image == (Image *) NULL)
@@ -413,51 +685,51 @@ int main(int argc,char **argv)
             }
           if (LocaleCompare("compose",option+1) == 0)
             {
-              compose=CopyCompositeOp;
+              option_info.compose=CopyCompositeOp;
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing type",option);
                   option=argv[i];
-                  compose=UndefinedCompositeOp;
+                  option_info.compose=UndefinedCompositeOp;
                   if (LocaleCompare("Over",option) == 0)
-                    compose=OverCompositeOp;
+                    option_info.compose=OverCompositeOp;
                   if (LocaleCompare("In",option) == 0)
-                    compose=InCompositeOp;
+                    option_info.compose=InCompositeOp;
                   if (LocaleCompare("Out",option) == 0)
-                    compose=OutCompositeOp;
+                    option_info.compose=OutCompositeOp;
                   if (LocaleCompare("Atop",option) == 0)
-                    compose=AtopCompositeOp;
+                    option_info.compose=AtopCompositeOp;
                   if (LocaleCompare("Xor",option) == 0)
-                    compose=XorCompositeOp;
+                    option_info.compose=XorCompositeOp;
                   if (LocaleCompare("Plus",option) == 0)
-                    compose=PlusCompositeOp;
+                    option_info.compose=PlusCompositeOp;
                   if (LocaleCompare("Minus",option) == 0)
-                    compose=MinusCompositeOp;
+                    option_info.compose=MinusCompositeOp;
                   if (LocaleCompare("Add",option) == 0)
-                    compose=AddCompositeOp;
+                    option_info.compose=AddCompositeOp;
                   if (LocaleCompare("Subtract",option) == 0)
-                    compose=SubtractCompositeOp;
+                    option_info.compose=SubtractCompositeOp;
                   if (LocaleCompare("Difference",option) == 0)
-                    compose=DifferenceCompositeOp;
+                    option_info.compose=DifferenceCompositeOp;
                   if (LocaleCompare("Multiply",option) == 0)
-                    compose=MultiplyCompositeOp;
+                    option_info.compose=MultiplyCompositeOp;
                   if (LocaleCompare("Bumpmap",option) == 0)
-                    compose=BumpmapCompositeOp;
+                    option_info.compose=BumpmapCompositeOp;
                   if (LocaleCompare("Copy",option) == 0)
-                    compose=CopyCompositeOp;
+                    option_info.compose=CopyCompositeOp;
                   if (LocaleCompare("CopyRed",option) == 0)
-                    compose=CopyRedCompositeOp;
+                    option_info.compose=CopyRedCompositeOp;
                   if (LocaleCompare("CopyGreen",option) == 0)
-                    compose=CopyGreenCompositeOp;
+                    option_info.compose=CopyGreenCompositeOp;
                   if (LocaleCompare("CopyBlue",option) == 0)
-                    compose=CopyBlueCompositeOp;
+                    option_info.compose=CopyBlueCompositeOp;
                   if (LocaleCompare("CopyOpacity",option) == 0)
-                    compose=CopyOpacityCompositeOp;
+                    option_info.compose=CopyOpacityCompositeOp;
                   if (LocaleCompare("Clear",option) == 0)
-                    compose=ClearCompositeOp;
-                  if (compose == UndefinedCompositeOp)
+                    option_info.compose=ClearCompositeOp;
+                  if (option_info.compose == UndefinedCompositeOp)
                     MagickError(OptionError,"Invalid compose type",option);
                 }
               break;
@@ -526,14 +798,14 @@ int main(int argc,char **argv)
             }
           if (LocaleCompare("displace",option+1) == 0)
             {
-              (void) CloneString(&displace_geometry,(char *) NULL);
+              (void) CloneString(&(option_info.displace_geometry),(char *) NULL);
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
                     MagickError(OptionError,"Missing geometry",option);
-                  (void) CloneString(&displace_geometry,argv[i]);
-                  compose=DisplaceCompositeOp;
+                  (void) CloneString(&(option_info.displace_geometry),argv[i]);
+                  option_info.compose=DisplaceCompositeOp;
                 }
               break;
             }
@@ -561,14 +833,14 @@ int main(int argc,char **argv)
             }
           if (LocaleCompare("dissolve",option+1) == 0)
             {
-              dissolve=0.0;
+              option_info.dissolve=0.0;
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing value",option);
-                  dissolve=atof(argv[i]);
-                  compose=DissolveCompositeOp;
+                  option_info.dissolve=atof(argv[i]);
+                  option_info.compose=DissolveCompositeOp;
                 }
               break;
             }
@@ -596,19 +868,19 @@ int main(int argc,char **argv)
         {
           if (LocaleCompare("geometry",option+1) == 0)
             {
-              (void) CloneString(&geometry,(char *) NULL);
+              (void) CloneString(&(option_info.geometry),(char *) NULL);
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !IsGeometry(argv[i]))
                     MagickError(OptionError,"Missing geometry",option);
-                  (void) CloneString(&geometry,argv[i]);
+                  (void) CloneString(&(option_info.geometry),argv[i]);
                 }
               break;
             }
           if (LocaleCompare("gravity",option+1) == 0)
             {
-              gravity=ForgetGravity;
+              option_info.gravity=ForgetGravity;
               if (*option == '-')
                 {
                   i++;
@@ -616,26 +888,26 @@ int main(int argc,char **argv)
                     MagickError(OptionError,"Missing type",option);
                   option=argv[i];
                   if (LocaleCompare("Forget",option) == 0)
-                    gravity=ForgetGravity;
+                    option_info.gravity=ForgetGravity;
                   if (LocaleCompare("NorthWest",option) == 0)
-                    gravity=NorthWestGravity;
+                    option_info.gravity=NorthWestGravity;
                   if (LocaleCompare("North",option) == 0)
-                    gravity=NorthGravity;
+                    option_info.gravity=NorthGravity;
                   if (LocaleCompare("NorthEast",option) == 0)
-                    gravity=NorthEastGravity;
+                    option_info.gravity=NorthEastGravity;
                   if (LocaleCompare("West",option) == 0)
-                    gravity=WestGravity;
+                    option_info.gravity=WestGravity;
                   if (LocaleCompare("Center",option) == 0)
-                    gravity=CenterGravity;
+                    option_info.gravity=CenterGravity;
                   if (LocaleCompare("East",option) == 0)
-                    gravity=EastGravity;
+                    option_info.gravity=EastGravity;
                   if (LocaleCompare("SouthWest",option) == 0)
-                    gravity=SouthWestGravity;
+                    option_info.gravity=SouthWestGravity;
                   if (LocaleCompare("South",option) == 0)
-                    gravity=SouthGravity;
+                    option_info.gravity=SouthGravity;
                   if (LocaleCompare("SouthEast",option) == 0)
-                    gravity=SouthEastGravity;
-                  if (gravity == ForgetGravity)
+                    option_info.gravity=SouthEastGravity;
+                  if (option_info.gravity == ForgetGravity)
                     MagickError(OptionError,"Invalid gravity type",option);
                 }
               break;
@@ -786,21 +1058,74 @@ int main(int argc,char **argv)
                 }
               break;
             }
+          if (LocaleCompare("stack",option+1) == 0)
+            {
+              if (LocaleCompare("stackdrop",option+1) == 0)
+                {
+                  if (*option == '-')
+                    {
+                      Image
+                        *clone_image;
+
+                      ImageInfo
+                        *clone_info;
+
+                      i++;
+                      if (i == argc)
+                        MagickError(OptionError,"Missing output filename",
+                          option);
+                      if (image == (Image *) NULL)
+                        MagickError(OptionError,"Missing source image",
+                          (char *) NULL);
+                      clone_info=CloneImageInfo(image_info);
+                      clone_image=CloneImage(image,0,0,False,
+                        &(image->exception));
+                      if (clone_image == (Image *) NULL)
+                        MagickError(OptionError,"Missing an image file name",
+                          (char *) NULL);
+                      status=CompositeImages(clone_info,i-j+2,argv+j-1,
+                        &clone_image,composite_image,mask_image,
+                          &option_info,&exception);
+                      DestroyImages(clone_image);
+                      DestroyImageInfo(clone_info);
+                      j=i+1;
+                    }
+                }
+              else
+                if (LocaleCompare("stackreplace",option+1) == 0)
+                  {
+                    if (*option == '-')
+                      {
+                        i++;
+                        if (i == argc)
+                          MagickError(OptionError,"Missing output filename",
+                            option);
+                        if (image == (Image *) NULL)
+                          MagickError(OptionError,"Missing source image",
+                            (char *) NULL);
+                        status=CompositeImages(image_info,i-j+2,argv+j-1,
+                          &image,composite_image,mask_image,
+                            &option_info,&exception);
+                        j=i+1;
+                      }
+                  }
+              break;
+            }
           if (LocaleCompare("stegano",option+1) == 0)
             {
-              stegano=0;
+              option_info.stegano=0;
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing offset",option);
-                  stegano=atol(argv[i])+1;
+                  option_info.stegano=atol(argv[i])+1;
                 }
               break;
             }
           if (LocaleCompare("stereo",option+1) == 0)
             {
-              stereo=(*option == '-');
+              option_info.stereo=(*option == '-');
               break;
             }
           MagickError(OptionError,"Unrecognized option",option);
@@ -810,7 +1135,7 @@ int main(int argc,char **argv)
         {
           if (LocaleCompare("tile",option+1) == 0)
             {
-              tile=(*option == '-');
+              option_info.tile=(*option == '-');
               break;
             }
           if (LocaleCompare("treedepth",option+1) == 0)
@@ -864,14 +1189,14 @@ int main(int argc,char **argv)
         {
           if (LocaleCompare("unsharp",option+1) == 0)
             {
-              (void) CloneString(&unsharp_geometry,(char *) NULL);
+              (void) CloneString(&(option_info.unsharp_geometry),(char *) NULL);
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
                     MagickError(OptionError,"Missing geometry",option);
-                  (void) CloneString(&unsharp_geometry,argv[i]);
-                  compose=ThresholdCompositeOp;
+                  (void) CloneString(&(option_info.unsharp_geometry),argv[i]);
+                  option_info.compose=ThresholdCompositeOp;
                 }
               break;
             }
@@ -892,14 +1217,14 @@ int main(int argc,char **argv)
         {
           if (LocaleCompare("watermark",option+1) == 0)
             {
-              (void) CloneString(&watermark_geometry,(char *) NULL);
+              (void) CloneString(&(option_info.watermark_geometry),(char *) NULL);
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
                     MagickError(OptionError,"Missing geometry",option);
-                  (void) CloneString(&watermark_geometry,argv[i]);
-                  compose=ModulateCompositeOp;
+                  (void) CloneString(&(option_info.watermark_geometry),argv[i]);
+                  option_info.compose=ModulateCompositeOp;
                 }
               break;
             }
@@ -921,164 +1246,9 @@ int main(int argc,char **argv)
   if ((i != (argc-1)) || (image == (Image *) NULL) ||
       (composite_image == (Image *) NULL))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
-  status=MogrifyImages(image_info,argc-j-1,argv+j,&image);
-  CatchImageException(image);
-  if (mask_image != (Image *) NULL)
-    SetImageClipMask(image,mask_image);
-  if (compose == DissolveCompositeOp)
-    {
-      register PixelPacket
-        *q;
-
-      /*
-        Create mattes for dissolve.
-      */
-      for (y=0; y < (long) composite_image->rows; y++)
-      {
-        q=GetImagePixels(composite_image,0,y,composite_image->columns,1);
-        if (q == (PixelPacket *) NULL)
-          break;
-        for (x=0; x < (long) composite_image->columns; x++)
-        {
-          if (composite_image->matte)
-            q->opacity=(Quantum) (((MaxRGB-q->opacity)*dissolve)/100);
-          else
-            q->opacity=(Quantum) ((MaxRGB*dissolve)/100);
-          q++;
-        }
-        if (!SyncImagePixels(composite_image))
-          break;
-      }
-      SetImageType(composite_image,TrueColorMatteType);
-    }
-  if (compose == DisplaceCompositeOp)
-    (void) CloneString(&composite_image->geometry,displace_geometry);
-  if (compose == ModulateCompositeOp)
-    (void) CloneString(&composite_image->geometry,watermark_geometry);
-  if (compose == ThresholdCompositeOp)
-    (void) CloneString(&composite_image->geometry,unsharp_geometry);
-  /*
-    Combine image.
-  */
-  matte=image->matte;
-  if (stegano != 0)
-    {
-      image->offset=stegano-1;
-      combine_image=SteganoImage(image,composite_image,&exception);
-    }
-  else
-    if (stereo)
-      combine_image=StereoImage(image,composite_image,&exception);
-    else
-      if (tile)
-        {
-          /*
-            Tile the composite image.
-          */
-          for (y=0; y < (long) image->rows; y+=composite_image->rows)
-            for (x=0; x < (long) image->columns; x+=composite_image->columns)
-            {
-              status=CompositeImage(image,compose,composite_image,x,y);
-              CatchImageException(image);
-            }
-          combine_image=image;
-        }
-      else
-        {
-          int
-            flags;
-
-          unsigned long
-            height,
-            width;
-
-          /*
-            Digitally composite image.
-          */
-          width=image->columns;
-          height=image->rows;
-          x=0;
-          y=0;
-          flags=ParseGeometry(geometry,&x,&y,&width,&height);
-          if ((flags & XNegative) != 0)
-            x+=image->columns;
-          if ((flags & WidthValue) == 0)
-            width-=2*x > (long) width ? width : 2*x;
-          if ((flags & YNegative) != 0)
-            y+=image->rows;
-          if ((flags & HeightValue) == 0)
-            height-=2*y > (long) height ? height : 2*y;
-          switch (gravity)
-          {
-            case NorthWestGravity:
-              break;
-            case NorthGravity:
-            {
-              x+=(int) (0.5*width-composite_image->columns/2);
-              break;
-            }
-            case NorthEastGravity:
-            {
-              x+=width-composite_image->columns;
-              break;
-            }
-            case WestGravity:
-            {
-              y+=(int) (0.5*height-composite_image->rows/2);
-              break;
-            }
-            case ForgetGravity:
-            case StaticGravity:
-            case CenterGravity:
-            default:
-            {
-              x+=(int) (0.5*width-composite_image->columns/2);
-              y+=(int) (0.5*height-composite_image->rows/2);
-              break;
-            }
-            case EastGravity:
-            {
-              x+=width-composite_image->columns;
-              y+=(int) (0.5*height-composite_image->rows/2);
-              break;
-            }
-            case SouthWestGravity:
-            {
-              y+=height-composite_image->rows;
-              break;
-            }
-            case SouthGravity:
-            {
-              x+=(int) (0.5*width-composite_image->columns/2);
-              y+=height-composite_image->rows;
-              break;
-            }
-            case SouthEastGravity:
-            {
-              x+=width-composite_image->columns;
-              y+=height-composite_image->rows;
-              break;
-            }
-          }
-          status=CompositeImage(image,compose,composite_image,x,y);
-          CatchImageException(image);
-          combine_image=image;
-        }
-  if (combine_image == (Image *) NULL)
-    MagickError(OptionError,"Missing an image file name",(char *) NULL);
-  combine_image->matte=matte;
-  /*
-    Write image.
-  */
-  (void) strncpy(combine_image->filename,write_filename,MaxTextExtent-1);
-  (void) SetImageInfo(image_info,True,&combine_image->exception);
-  status=WriteImage(image_info,combine_image);
-  CatchImageException(combine_image);
-  if (image_info->verbose)
-    DescribeImage(combine_image,stderr,False);
-  DestroyImages(combine_image);
+  status=CompositeImages(image_info,argc-j+1,argv+j-1,&image,
+    composite_image,mask_image,&option_info,&exception);
+  DestroyImages(image);
   DestroyImageInfo(image_info);
   if (LocaleCompare("-composite",argv[0]) == 0)
     return(True);
