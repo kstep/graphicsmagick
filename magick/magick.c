@@ -315,6 +315,15 @@ MagickExport const MagickInfo *GetMagickInfo(const char *name,
 %
 %
 */
+/*
+  Signal handler to ensure that DestroyMagick is invoked in case the
+  user aborts the program.
+*/
+static void MagickSignalHandler(int status)
+{
+  DestroyMagick();
+  Exit(status);
+}
 MagickExport void InitializeMagick(const char *path)
 {
   char
@@ -435,7 +444,7 @@ MagickExport void InitializeMagick(const char *path)
     }
 #if defined(WIN32)
     InitializeTracingCriticalSection();
-#if defined(_DEBUG)
+# if defined(_DEBUG)
     /* if (IsEventLogging()) */
       {
         int
@@ -448,8 +457,46 @@ MagickExport void InitializeMagick(const char *path)
         // debug=_CrtSetDbgFlag(debug);
         // _ASSERTE(_CrtCheckMemory());
       }
+# endif /* defined(_DEBUG) */
+#endif /* defined(WIN32) */
+
+  /*
+    Establish signal handlers for common signals
+  */
+
+  /* hangup */
+#if defined(SIGHUP)
+  (void) signal(SIGHUP,MagickSignalHandler);
 #endif
+  /* interrupt (rubout) */
+#if defined(SIGINT)
+  (void) signal(SIGINT,MagickSignalHandler);
 #endif
+  /* quit (ASCII FS) */
+#if defined(SIGQUIT)
+  (void) signal(SIGQUIT,MagickSignalHandler);
+#endif
+  /* software-triggered abort */
+#if defined(SIGABRT)
+  (void) signal(SIGABRT,MagickSignalHandler);
+#endif
+  /* floating point exception */
+#if defined(SIGFPE)
+  (void) signal(SIGFPE,MagickSignalHandler);
+#endif
+  /* software termination signal from kill */
+#if defined(SIGTERM)
+  (void) signal(SIGTERM,MagickSignalHandler);
+#endif
+  /* exceeded cpu limit */
+#if defined(SIGXCPU)
+  (void) signal(SIGXCPU,MagickSignalHandler);
+#endif
+  /* exceeded file size limit */
+#if defined(SIGXFSZ)
+  (void) signal(SIGXFSZ,MagickSignalHandler);
+#endif
+
 }
 
 /*

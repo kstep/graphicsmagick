@@ -56,6 +56,18 @@
 2003-04-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/magick.c (InitializeMagick): Decided to
+        move clean-up signal-handler registration from gm.c
+        to magick.c in order to ensure that resources are
+        cleaned up for all library users. This means that
+        if a user program wants to do something special for
+        signals registered to be caught by InitializeMagick
+<STRONG>(SIGHUP, SIGINT, SIGQUIT, SIGABRT, SIGTERM, SIGXCPU,</STRONG>
+        &amp; SIGXFSZ) then the user program should register its
+        own signal handlers after invoking InitializeMagick.
+        The user is then responsible for making sure that
+        DestroyMagick is invoked if an unexpected signal is
+        caught.<BR>
   <LI> tests/Makefile.am (check-constitute): Added
         constitute tests.<BR>
   <LI> magick/constitute.c: New test program to ensure
