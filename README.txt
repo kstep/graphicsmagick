@@ -152,7 +152,7 @@ UNIX/Cygwin COMPILATION
    --without-magick-plus-plus disable build/install of Magick++
    --without-perl          disable build/install of PerlMagick
         or
-   --with-perl=PERL        use specified Perl binary to configure PerlMagick
+   --with-perl=PERL        use specified PERL binary to configure PerlMagick
    --with-perl-options=OPTIONS  options to pass on command-line when
                            generating PerlMagick's Makefile from Makefile.PL
    --without-bzlib         disable BZLIB support
@@ -208,6 +208,16 @@ UNIX/Cygwin COMPILATION
       you must compile all shared library source with the same flag
       (for gcc use -fPIC rather than -fpic).  Accomplishing this
       often requires hand-editing Makefiles.
+
+      If --enable-shared is not specified, a new PERL interpreter
+      (PerlMagick) is built which is statically linked against the
+      PerlMagick extension. This new interpreter is installed alongside
+      your existing PERL interpreter. If --enable-shared is specified,
+      the PerlMagick extension is built as a dynamically loadable object
+      which is loaded into your current PERL interpreter at run-time.
+      Use of dynamically-loaded extensions is preferable over statically
+      linked extensions so --enable-shared should be specified if
+      possible.
 
     o --disable-static: static archive libraries (with extension .a)
       are not built.  If you are building shared libraries, there is
@@ -283,21 +293,20 @@ UNIX/Cygwin COMPILATION
       library.
 
     o --without-perl: By default, PerlMagick is conveniently compiled
-      and installed in one step. When --without-perl is specified, you
-      must first install ImageMagick, change to the PerlMagick
-      subdirectory, build, and finally install PerlMagick. Note,
-      PerlMagick is configured even if --without-perl is specified. If
-      --enable-shared is not specified, a new PERL interpreter
-      (PerlMagick) is built which is statically linked against the
-      PerlMagick extension. This new interpreter is installed alongside
-      your existing PERL interpreter. If --enable-shared is specified,
-      the PerlMagick extension is built as a dynamically loadable
-      object which is loaded into your current PERL interpreter at
-      run-time. Use of dynamically-loaded extensions is preferable over
-      statically linked extensions so --enable-shared should be
-      specified if possible. If the argument --with-perl=/path/to/perl
-      is supplied, then /path/to/perl will be taken as the PERL
-      interpreter to use.
+      and installed as part of ImageMagick's normal "configure", "make",
+      "make install" process.. When --without-perl is specified, you must
+      first install ImageMagick, change to the PerlMagick subdirectory,
+      build, and finally install PerlMagick. Note, PerlMagick is configured
+      even if --without-perl is specified. If the argument
+      --with-perl=/path/to/perl is supplied, then /path/to/perl will be
+      taken as the PERL interpreter to use. This is important in case
+      the 'perl' executable in your PATH is not PERL5, or is not the
+      PERL you want to use.
+
+    o --with-perl-options: The PerlMagick module is normally installed into
+      PERL's directory tree. If you want PerlMagick to install elsewhere,
+      then provide a PREFIX option to the PerlMagick configuration step via
+      "--with-perl-options=PREFIX=/some/place"
 
     o --without-x: By default, ImageMagick will use X11 libraries if
       they are available. When --without-x is specified, use of X11 is
