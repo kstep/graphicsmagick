@@ -716,7 +716,7 @@ void CConfigureApp::process_library(ofstream &dsw,
   //add_includes(includes_list, extra, levels-2);
   extra = "..\\lcms\\src";
   add_includes(includes_list, extra, levels-2);
-  extra = "..\\lcms\\source";
+  extra = "..\\lcms\\include";
   add_includes(includes_list, extra, levels-2);
   extra = "..\\ttf\\include";
   add_includes(includes_list, extra, levels-2);
