@@ -940,8 +940,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image->colormap[i].green=UpScale(*p++);
           image->colormap[i].blue=UpScale(*p++);
         }
-        image->background_color=
-          image->colormap[Min(background,image->colors-1)];
+        image->background_color=image->colormap[Min(background,image->colors-1)];
       }
     else
       {
