@@ -192,7 +192,8 @@ MagickExport void GetMontageInfo(const ImageInfo *image_info,
   montage_info->geometry=AllocateString(DefaultTileGeometry);
   montage_info->gravity=CenterGravity;
   montage_info->tile=AllocateString("6x4");
-  montage_info->font=AllocateString(image_info->font);
+  if (image_info->font != (char *) NULL)
+    montage_info->font=AllocateString(image_info->font);
   montage_info->pointsize=image_info->pointsize;
   montage_info->fill=image_info->pen;
   (void) QueryColorDatabase("#000000ff",&montage_info->stroke);
@@ -308,6 +309,9 @@ MagickExport Image *MontageImages(const Image *images,
   size_t
     number_images;
 
+  TypeMetric
+    metrics;
+
   unsigned int
     concatenate;
 
@@ -315,7 +319,6 @@ MagickExport Image *MontageImages(const Image *images,
     bevel_width,
     border_width,
     count,
-    font_height,
     height,
     images_per_page,
     max_height,
@@ -447,13 +450,14 @@ MagickExport Image *MontageImages(const Image *images,
   image_info->background_color=montage_info->background_color;
   image_info->border_color=montage_info->border_color;
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
-  (void) CloneString(&draw_info->font,montage_info->font);
+  if (montage_info->font != (char *) NULL)
+    (void) CloneString(&draw_info->font,montage_info->font);
   draw_info->pointsize=montage_info->pointsize;
   draw_info->gravity=CenterGravity;
   draw_info->stroke=montage_info->stroke;
   draw_info->fill=montage_info->fill;
-  font_height=(unsigned long)
-    (ExpandAffine(&draw_info->affine)*draw_info->pointsize);
+  draw_info->text=AllocateString("");
+  GetTypeMetrics(image_list[0],draw_info,&metrics);
   texture=(Image *) NULL;
   if (montage_info->texture != (char *) NULL)
     {
@@ -467,7 +471,7 @@ MagickExport Image *MontageImages(const Image *images,
   title=TranslateText(image_info,image_list[0],montage_info->title);
   title_offset=0;
   if (montage_info->title != (char *) NULL)
-    title_offset=2*font_height*MultilineCensus(title)+2*tile_info.y;
+    title_offset=2*metrics.height*MultilineCensus(title)+2*tile_info.y;
   number_lines=0;
   for (i=0; i < (long) number_images; i++)
   {
@@ -509,7 +513,7 @@ MagickExport Image *MontageImages(const Image *images,
         {
           x_offset=0;
           height=concatenate ? max_height : tile_info.height;
-          y_offset+=height+(tile_info.y+border_width)*2+(font_height+4)*
+          y_offset+=height+(tile_info.y+border_width)*2+(metrics.height+4)*
             number_lines+(montage_info->shadow ? 4 : 0)+(concatenate ? 0 : 2);
           if (y_offset > (long) bounds.height)
             bounds.height=y_offset;
@@ -540,7 +544,7 @@ MagickExport Image *MontageImages(const Image *images,
     y_offset=(long) title_offset;
     FormatString(montage->montage,"%ldx%ld%+ld%+ld",
       (long) (tile_info.width+(tile_info.x+border_width)*2),
-      (long) (tile_info.height+(tile_info.y+border_width)*2+(font_height+4)*
+      (long) (tile_info.height+(tile_info.y+border_width)*2+(metrics.height+4)*
       number_lines+(montage_info->shadow ? 4 : 0)),x_offset,y_offset);
     *montage->directory='\0';
     for (tile=0; tile < tiles_per_page; tile++)
@@ -561,7 +565,8 @@ MagickExport Image *MontageImages(const Image *images,
           Annotate composite image with title.
         */
         FormatString(geometry,"%lux%lu%+ld%+ld",montage->columns,
-          font_height << 1,0,font_height+tile_info.y+4);
+          (unsigned long) (2*metrics.height),0,(long) (metrics.height+
+          tile_info.y+4+metrics.ascent));
         (void) CloneString(&draw_info->geometry,geometry);
         (void) CloneString(&draw_info->text,title);
         (void) AnnotateImage(montage,draw_info);
@@ -637,7 +642,8 @@ MagickExport Image *MontageImages(const Image *images,
           tile_info.height=height+2*frame_info.height;
           attribute=GetImageAttribute(image,"label");
           if (attribute != (const ImageAttribute *) NULL)
-            tile_info.height+=(font_height+4)*MultilineCensus(attribute->value);
+            tile_info.height+=(metrics.height+4)*
+              MultilineCensus(attribute->value);
           frame_image=FrameImage(image,&tile_info,exception);
           if (frame_image != (Image *) NULL)
             {
@@ -701,11 +707,12 @@ MagickExport Image *MontageImages(const Image *images,
               /*
                 Annotate composite tile with label.
               */
-              FormatString(geometry,"%lux%lu%+ld%+ld",(montage_info->frame ?
-                image->columns : width)-2*border_width,font_height,(long)
-                (x_offset+border_width),(long) (montage_info->frame ? y_offset+
-                height+2*border_width-bevel_width-2 : y_offset+tile_info.height+
-                2*border_width+(montage_info->shadow ? 4 : 0)));
+              FormatString(geometry,"%lux%lu%+ld%+ld",
+                (montage_info->frame ? image->columns : width)-2*border_width,
+                (unsigned long) metrics.height,(long) (x_offset+border_width),
+                (long) ((montage_info->frame ? y_offset+height+2*border_width-
+                bevel_width-2 : y_offset+tile_info.height+2*border_width+
+                (montage_info->shadow ? 4 : 0))+metrics.ascent));
               (void) CloneString(&draw_info->geometry,geometry);
               (void) CloneString(&draw_info->text,attribute->value);
               (void) AnnotateImage(montage,draw_info);
@@ -715,7 +722,7 @@ MagickExport Image *MontageImages(const Image *images,
       if (((tile+1) == tiles_per_page) || (((tile+1) % tiles_per_row) == 0))
         {
           x_offset=tile_info.x;
-          y_offset+=height+(tile_info.y+border_width)*2+(font_height+4)*
+          y_offset+=height+(tile_info.y+border_width)*2+(metrics.height+4)*
             number_lines+(montage_info->shadow ? 4 : 0);
           max_height=0;
         }

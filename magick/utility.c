@@ -1152,7 +1152,7 @@ MagickExport void GetPathComponent(const char *path,PathType type,
     case TailPath:
     {
       if (IsBasenameSeparator(*p))
-        (void) strncpy(component,p+1,MaxTextExtent-1);
+        (void) strncpy(component,path+(p-component)+1,MaxTextExtent-1);
       break;
     }
     case BasePath:
