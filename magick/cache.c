@@ -3,11 +3,11 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                     SSSSS  TTTTT   AAA   SSSSS  H   H                       %
-%                     SS       T    A   A  SS     H   H                       %
-%                      SSS     T    AAAAA   SSS   HHHHH                       %
-%                        SS    T    A   A     SS  H   H                       %
-%                     SSSSS    T    A   A  SSSSS  H   H                       %
+%                      CCCC   AAA    CCCC  H   H  EEEEE                       %
+%                     C      A   A  C      H   H  E                           %
+%                     C      AAAAA  C      HHHHH  EEE                         %
+%                     C      A   A  C      H   H  E                           %
+%                      CCCC  A   A   CCCC  H   H  EEEEE                       %
 %                                                                             %
 %                                                                             %
 %                      ImageMagick Pixel Cache Methods                        %

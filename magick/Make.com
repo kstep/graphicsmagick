@@ -46,7 +46,7 @@ $call Make quantize.c
 $call Make segment.c
 $call Make shear.c
 $call Make signature.c
-$call Make stash.c
+$call Make cache.c
 $call Make stream.c
 $call Make timer.c
 $call Make transform.c
@@ -58,7 +58,7 @@ $call Make zoom.c
 $library/create libMagick.olb PreRvIcccm,animate,annotate,attributes,blob, -
   cache_view,colors,compress,constitute,decorate,delegates,display,draw, -
   effects,enhance,error,gems,image,magic,magick,memory,modules, -
-  monitor,montage,quantize,segment,shear,signature,stash, -
+  monitor,montage,quantize,segment,shear,signature,cache, -
   stream,timer,transform,utility,vms,widget,xwindows,zoom
 $exit
 $
