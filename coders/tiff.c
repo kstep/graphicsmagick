@@ -1254,8 +1254,6 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   if ((image->file == stdout) || image->pipet ||
       (image->blob.data != (unsigned char *) NULL))
     TemporaryFilename(filename);
-  else
-    CloseBlob(image);
   tiff=TIFFOpen(filename,WriteBinaryType);
   if (tiff == (TIFF *) NULL)
     return(False);
@@ -1755,8 +1753,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobByte(image,c);
       (void) fclose(file);
       (void) remove(filename);
-      CloseBlob(image);
     }
+  CloseBlob(image);
   return(True);
 }
 #else

@@ -463,8 +463,6 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   if ((image->file == stdout) || image->pipet ||
       (image->blob.data != (unsigned char *) NULL))
     TemporaryFilename(filename);
-  else
-    CloseBlob(image);
   /*
     Intialize JPEG 2000 API.
   */
@@ -535,7 +533,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   LocaleLower(magick);
   format=jas_image_strtofmt(magick);
   FormatString(options,"rate=%lf",(double) image_info->quality/100.0);
-  status=jas_image_encode(jp2_image,jp2_stream,format,0);
+  status=jas_image_encode(jp2_image,jp2_stream,format,options);
   if (status)
     ThrowWriterException(FileOpenWarning,"Unable to encode image file",image);
   (void) jas_stream_close(jp2_stream);
@@ -559,8 +557,8 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
         (void) WriteBlobByte(image,c);
       (void) fclose(file);
       (void) remove(filename);
-      CloseBlob(image);
     }
+  CloseBlob(image);
   return(True);
 }
 
