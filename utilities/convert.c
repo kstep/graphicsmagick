@@ -437,7 +437,7 @@ static unsigned int ConvertImages(ImageInfo *image_info,Image **image,
   (void) SetImageInfo(image_info,True,exception);
   for (p=(*image); p != (Image *) NULL; p=p->next)
   {
-    status|=WriteImage(image_info,p);
+    status&=WriteImage(image_info,p);
     (void) CatchImageException(p);
     if (image_info->adjoin)
       break;
