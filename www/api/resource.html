@@ -35,9 +35,9 @@
 </p>
 <hr />
 <h1><a name="synopsis">SYNOPSIS</a></h1>
-<p>unsigned int  <strong>AcquireMagickResource</strong>( const ResourceType type, const off_t size );</p>
+<p>unsigned int  <strong>AcquireMagickResource</strong>( const ResourceType type, const ExtendedSignedIntegralType size );</p>
 <p>unsigned long  <strong>GetMagickResource</strong>( const ResourceType type );</p>
-<p>void  <strong>LiberateMagickResource</strong>( const ResourceType type, const off_t size );</p>
+<p>void  <strong>LiberateMagickResource</strong>( const ResourceType type, const ExtendedSignedIntegralType size );</p>
 <p>void  <strong>SetMagickResourceLimit</strong>( const ResourceType type, const unsigned long limit );</p>
 <p>
 </p>
@@ -46,7 +46,7 @@
 <p>
 </p>
 <h2><a name="acquiremagickresource">AcquireMagickResource</a></h2>
-<blockquote>AcquireMagickResource() acquires resources of the specified type. True is returned if the specified resource is available otherwise False. </blockquote><blockquote>The format of the AcquireMagickResource() method is: </blockquote><blockquote>unsigned int AcquireMagickResource ( const ResourceType type, const off_t size ); </blockquote><p>A description of each parameter follows:</p>
+<blockquote>AcquireMagickResource() acquires resources of the specified type. True is returned if the specified resource is available otherwise False. </blockquote><blockquote>The format of the AcquireMagickResource() method is: </blockquote><blockquote>unsigned int AcquireMagickResource ( const ResourceType type, const ExtendedSignedIntegralType size ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong><a name="item_o_type%3a">o type:</a></strong><br />
 </dt>
@@ -74,7 +74,7 @@ The type of resource.
 <p>
 </p>
 <h2><a name="liberatemagickresource">LiberateMagickResource</a></h2>
-<blockquote>LiberateMagickResource() liberates resources of the specified type. </blockquote><blockquote>The format of the LiberateMagickResource() method is: </blockquote><blockquote>void LiberateMagickResource ( const ResourceType type, const off_t size ); </blockquote><p>A description of each parameter follows:</p>
+<blockquote>LiberateMagickResource() liberates resources of the specified type. </blockquote><blockquote>The format of the LiberateMagickResource() method is: </blockquote><blockquote>void LiberateMagickResource ( const ResourceType type, const ExtendedSignedIntegralType size ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong>o type:</strong><br />
 </dt>

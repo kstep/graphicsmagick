@@ -183,8 +183,8 @@ static const PixelPacket *AcquirePixelStream(const Image *image,const long x,
   const long y,const unsigned long columns,const unsigned long rows,
   ExceptionInfo *exception)
 {
-  ExtendedSignedIntegralType
-    offset;
+  size_t
+    length;
 
   StreamInfo
     *stream_info;
@@ -215,19 +215,19 @@ static const PixelPacket *AcquirePixelStream(const Image *image,const long x,
     Pixels are stored in a temporary buffer until they are synced to the cache.
   */
   number_pixels=columns*rows;
-  offset=number_pixels*sizeof(PixelPacket);
+  length=number_pixels*sizeof(PixelPacket);
   if ((image->storage_class == PseudoClass) ||
       (image->colorspace == CMYKColorspace))
-    offset+=number_pixels*sizeof(IndexPacket);
+    length+=number_pixels*sizeof(IndexPacket);
   if (stream_info->pixels == (PixelPacket *) NULL)
-    stream_info->pixels=(PixelPacket *) AcquireMemory(offset);
+    stream_info->pixels=(PixelPacket *) AcquireMemory(length);
   else
-    if (offset != stream_info->length)
-      ReacquireMemory((void **) &stream_info->pixels,offset);
+    if (length != stream_info->length)
+      ReacquireMemory((void **) &stream_info->pixels,length);
   if (stream_info->pixels == (void *) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
       "unable to allocate cache info");
-  stream_info->length=offset;
+  stream_info->length=length;
   stream_info->indexes=(IndexPacket *) NULL;
   if ((image->storage_class == PseudoClass) ||
       (image->colorspace == CMYKColorspace))
@@ -542,8 +542,8 @@ MagickExport Image *ReadStream(const ImageInfo *image_info,StreamHandler stream,
 static PixelPacket *SetPixelStream(Image *image,const long x,const long y,
   const unsigned long columns,const unsigned long rows)
 {
-  ExtendedSignedIntegralType
-    offset;
+  size_t
+    length;
 
   StreamInfo
     *stream_info;
@@ -588,20 +588,20 @@ static PixelPacket *SetPixelStream(Image *image,const long x,const long y,
   stream_info->columns=columns;
   stream_info->rows=rows;
   number_pixels=columns*rows;
-  offset=number_pixels*sizeof(PixelPacket);
+  length=number_pixels*sizeof(PixelPacket);
   if ((image->storage_class == PseudoClass) ||
       (image->colorspace == CMYKColorspace))
-    offset+=number_pixels*sizeof(IndexPacket);
+    length+=number_pixels*sizeof(IndexPacket);
   if (stream_info->pixels == (PixelPacket *) NULL)
     {
-      stream_info->pixels=(PixelPacket *) AcquireMemory(offset);
-      stream_info->length=offset;
+      stream_info->pixels=(PixelPacket *) AcquireMemory(length);
+      stream_info->length=length;
     }
   else
-    if (stream_info->length < offset)
+    if (stream_info->length < length)
       {
-        ReacquireMemory((void **) &stream_info->pixels,offset);
-        stream_info->length=offset;
+        ReacquireMemory((void **) &stream_info->pixels,length);
+        stream_info->length=length;
       }
   if (stream_info->pixels == (void *) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",

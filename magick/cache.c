@@ -2611,6 +2611,9 @@ static PixelPacket *SetNexus(const Image *image,const RectangleInfo *region,
   register NexusInfo
     *nexus_info;
 
+  size_t
+    length;
+
   unsigned long
     number_pixels;
 
@@ -2653,20 +2656,20 @@ static PixelPacket *SetNexus(const Image *image,const RectangleInfo *region,
     Pixels are stored in a staging area until they are synced to the cache.
   */
   number_pixels=Max(nexus_info->columns*nexus_info->rows,cache_info->columns);
-  offset=number_pixels*sizeof(PixelPacket);
+  length=number_pixels*sizeof(PixelPacket);
   if ((cache_info->storage_class == PseudoClass) ||
       (cache_info->colorspace == CMYKColorspace))
-    offset+=number_pixels*sizeof(IndexPacket);
+    length+=number_pixels*sizeof(IndexPacket);
   if (nexus_info->staging == (PixelPacket *) NULL)
     {
-      nexus_info->staging=(PixelPacket *) AcquireMemory(offset);
-      nexus_info->length=offset;
+      nexus_info->staging=(PixelPacket *) AcquireMemory(length);
+      nexus_info->length=length;
     }
   else
-    if (nexus_info->length < offset)
+    if (nexus_info->length < length)
       {
-        ReacquireMemory((void **) &nexus_info->staging,offset);
-        nexus_info->length=offset;
+        ReacquireMemory((void **) &nexus_info->staging,length);
+        nexus_info->length=length;
       }
   if (nexus_info->staging == (PixelPacket *) NULL)
     MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",

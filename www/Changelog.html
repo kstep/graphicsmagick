@@ -10,9 +10,6 @@
 <link rev="made" href="mailto:magick@wizards.dupont.com">
 </head>
 <body text="#000000" bgcolor="#FFFFFF" link="#1F00FF" vlink="#9900DD" alink="#FF0000">
-<A HREF="http://promote.pair.com/direct.pl?imagemagick.org">
-  <IMG SRC="../images/promote.png" ALIGN=RIGHT WIDTH=120
-    HEIGHT=60 BORDER=0></A>
 
 <center><img SRC="../images/magick_small.png" width=129 height=133></center>
 <p>
@@ -26,7 +23,72 @@ ImageMagick Changes</font></font></font></b></td>
 <dl>
 <dd>
 <pre>
-2002-10--1  Bob Friesenhahn &lt;bfriesen@simple.dallas.tx.us&gt;
+2002-10-27  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+  * coders/vid.c: Modified to be 10X faster for large images and to take
+    advantage of JPEG size optimizations.
+
+2002-10-27  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+  * magick/xwindow.c: Optimize loading of TrueColor images with
+    gamma = 1.0.
+
+2002-10-27  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+  * coders/wmf.c: Added logging facilities.
+
+2002-10-27  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+  * display.c: removed unnecessary SignatureImage() calls which
+    dramatically slowed down loading images and quiting the program.
+  * xwindow.c: optimized image size reduction for the case where the
+    target size is a small fraction of the original size. This makes
+    creation of display's panner and thumbnail images tremendously faster,
+    with no noticeable degradation of thumbnail quality.
+
+2002-10-21  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+  * Added Windows95 define to VisualMagick magick_config.h to
+    disable use of features not available under Windows '95
+
+2002-10-21  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
+  * Added large file pixel cache support for Windows NT.
+
+2002-10-21  Leonard Rosenthol &lt;leonardr@lazerware.com&gt;
+  * PDF coder no longer uses ASCII85 encoding with TIFF for MUCH smaller
+    files!
+  * Cleaned up a few other things in PDF coder.
+
+2002-10-19  Bob Friesenhahn &lt;bfriesen@simple.dallas.tx.us&gt;
+  * Updated to Automake 1.7.1.
+
+2002-10-18  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
+  * PingBlob() improperly set the length memory of BlobInfo to zero.
+  * Fixed Ping() memory leak in PerlMagick.
+  * Fixed -map problem in convert/mogrify utilities.
+  * Fixed -remote problem with display utility (returns correct error
+    status).
+
+2002-10-16  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
+  * -border with a single value now produces correct results
+    (e.g. -border 10).
+  * Added -lat to convert/mogrify (local adaptive thresholding).
+
+2002-10-15  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
+  * Set locale type LC_NUMERIC to "C".
+  * Bug fix for PS2 encoder.
+  * Added PS-Adobe preamble to PS3 encoder.
+
+2002-10-14  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
+  * ImageMagick 5.5.1 released.
+
+2002-10-12  Bob Friesenhahn &lt;bfriesen@simple.dallas.tx.us&gt;
+  * Use ImageMagick release number to allow multiple ImageMagick releases
+    to co-exist without interference on the same machine.
+
+2002-10-09  Bob Friesenhahn &lt;bfriesen@simple.dallas.tx.us&gt;
+  * Decided that DrawGet functions should return by value.
+
+2002-10-06  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
+  * Added detailed logging to BMP, PNG, and JPEG codecs, including JPEG
+    quality estimate.
+
+2002-10-01  Bob Friesenhahn &lt;bfriesen@simple.dallas.tx.us&gt;
   * Added draw.h "DrawGet" equivalents to most of the "DrawSet" functions.
   * Added an array size argument to DrawSetDashPattern and got rid of
     the zero-termination garbage.
@@ -162,7 +224,7 @@ ImageMagick Changes</font></font></font></b></td>
     (previously it operated on one scanline at a time).
   * Deprecated Down/Upscale defines.  Replaced them with Scale*ToQuantum()
     and ScaleQuantumTo*() methods.
-    
+
 2002-08-02  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
   * Changed configure argument --disable-16bit-pixel to
     --with-quantum-depth in order to make its usage more straightforward
