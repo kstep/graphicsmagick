@@ -5143,7 +5143,6 @@ MagickExport unsigned int XMakeImage(Display *display,
         &window->segment_info[1],width,height);
       window->segment_info[1].shmid=shmget(IPC_PRIVATE,(int)
         (ximage->bytes_per_line*ximage->height),IPC_CREAT | 0777);
-printf("%x: %d\n",window->segment_info[1].shmid,ximage->bytes_per_line*ximage->height);
       window->shared_memory=window->segment_info[1].shmid >= 0;
       if (window->shared_memory)
         window->segment_info[1].shmaddr=(char *)
