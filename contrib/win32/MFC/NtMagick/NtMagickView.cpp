@@ -236,8 +236,9 @@ void CNtMagickView::DoDisplayImage()
       pDC->FillSolidRect(rectClient,pDC->GetBkColor());
 
       // Set up the Windows bitmap header
-      BITMAPINFOHEADER bmi;
-      bmi.biSize = sizeof(BITMAPINFOHEADER);
+      BITMAPINFO bmi;
+      memset(&bmi, 0, sizeof(BITMAPINFO));
+      bmi.biSize = sizeof(BITMAPINFO);
       bmi.biWidth = m_pImage->columns();
       bmi.biHeight = (-1)*m_pImage->rows();
       bmi.biPlanes = 1;
@@ -277,7 +278,7 @@ void CNtMagickView::DoDisplayImage()
          m_pImage->columns(),	// width of source rectangle 
          m_pImage->rows(),	// height of source rectangle 
          pPixels,		// address of bitmap bits
-         (BITMAPINFO *)&bmi,	// address of bitmap data 
+         &bmi,			// address of bitmap data 
          DIB_RGB_COLORS,	// usage 
          SRCCOPY		// raster operation code
          );
