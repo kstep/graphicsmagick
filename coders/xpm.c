@@ -645,6 +645,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
 
   char
     buffer[MaxTextExtent],
+    basename[MaxTextExtent],
     name[MaxTextExtent],
     symbol[MaxTextExtent];
 
@@ -754,7 +755,9 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
     XPM header.
   */
   (void) WriteBlobString(image,"/* XPM */\n");
-  (void) WriteBlobString(image,"static char *magick[] = {\n");
+  GetPathComponent(image->filename,BasePath,basename);
+  (void) FormatString(buffer,"static char *%.1024s[] = {\n",basename);
+  (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"/* columns rows colors chars-per-pixel */\n");
   FormatString(buffer,"\"%lu %lu %lu %d\",\n",image->columns,
     image->rows,colors,characters_per_pixel);
