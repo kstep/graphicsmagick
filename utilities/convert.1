@@ -479,6 +479,9 @@ For example, if you type the following command:
     convert -clip -negate cockatoo.tif negated_cockatoo.tif
 
 only the pixels within the clipping path are negated.
+
+The \fB-clip\fP feature requires the XML library.  If the XML library
+is not present, the option is ignored.
 .TP
 .B "-coalesce"
 \fRmerge a sequence of images
@@ -812,6 +815,9 @@ Choices are: \fINone\fP, \fIBZip\fP, \fIFax\fP,
 Specify \fB+compress\fP to store the binary image in an uncompressed format.
 The default is the compression type of the specified image file.
 
+
+If LZW compression has not been enabled, the image data will be written
+in an uncompressed LZW format that can be read by LZW decoders.
 .TP
 .B "-contrast"
 \fRenhance or reduce the image contrast
@@ -820,6 +826,16 @@ This option enhances the intensity differences between the lighter and
 darker elements of the image. Use \fB-contrast\fP to enhance
 the image
 or \fB+contrast\fP to reduce the image contrast.
+
+.TP
+.B "-copy \fIfilename"\fP
+\fRcopy a previously read image
+
+After some options have been processed, a previously processed input image
+can be reread with the \fB-copy\fP option.  This can allow ImageMagick to
+skip the decoding process, if it happens to have stored a copy of the original
+decoded image.  If there is no stored copy, the \fB-copy\fP option is
+ignored and the file is read and decoded in the normal manner.
 
 .TP
 .B "-crop \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}"\fP
@@ -1618,6 +1634,19 @@ Use \fB-raise\fP to create a raised effect, otherwise use \fB+raise\fP.
 .B "-region \fI<width>x<height>{+-}<x offset>{+-}<y offset>"\fP
 \fRapply options to a portion of the image
 .TP
+.B "-replace \fIfilename"\fP
+\fRreplace an image
+
+The image will be written out, and then processing will continue with the
+same image in its current state if there are additional options.  To
+restart from its original state, use the \fB-copy\fP option.
+.TP
+.B "-resize \fI<width>x<height>{+-}<x offset>{+-}<y offset>{%}{@}{!}{<}{>}"\fP
+\fRresize and locate an image
+
+This is an alias for the \fB-geometry\fP option and it behaves in the
+same manner.
+.TP
 .B "-roll \fI{+-}<x offset>{+-}<y offset>"\fP
 \fRroll an image vertically or horizontally
 
@@ -1764,18 +1793,6 @@ photographic film to light during the development process.
 
 \fIAmount\fP defines the size of the neighborhood around each pixel to
 choose a candidate pixel to swap.
-
-.TP
-.B "-stackdrop \fIfile"\fP
-\fRstack some images in "drop" mode
-
-This feature is untested.
-
-.TP
-.B "-stackreplace \fIfile"\fP
-\fRstack some images in "replace" mode
-
-This feature is untested.
 
 .TP
 .B "-stroke \fIcolor"\fP

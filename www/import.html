@@ -411,10 +411,10 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>depth of the image</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-This is the number of bits in a pixel. The only acceptable
-values are 8 or 16.  Use this option to specify the depth of raw images whose
-depth is unknown such as GRAY, RGB, or CMYK, or to change the depth of any
-image after it has been read.
+This is the number of bits in a color sample within a pixel. The only
+acceptable values are 8 or 16.  Use this option to specify the depth of
+raw images whose depth is unknown such as GRAY, RGB, or CMYK, or to change
+the depth of any image after it has been read.
 </font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
@@ -540,13 +540,6 @@ to 640x480.
 </font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 There are 72 pixels per inch in PostScript coordinates.
-</font></td></tr></table>
-<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
-When used as a <strong>montage</strong> option, <strong>-geometry</strong> gives the image
-size and border size
-for each tile; default is 256x256+0+0.  In <strong>composite</strong>, <strong>-geometry</strong>
-gives the dimensions of the composite image and its location with respect
-to the main image.
 </font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
@@ -804,6 +797,20 @@ adaptive filtering.
 For further information, see the <a href="http://www.w3.org/pub/WWW/TR">PNG</a>
 specification.
 </font></td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    <a name="-resize">-resize</a> <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+-</i>}<i>&lt;x offset&gt;</i>{<i>+-</i>}<i>&lt;y offset&gt;</i>{<i>%</i>}<i></i>{<i>@</i>}<i></i>{<i>!</i>}<i></i>{<i>&lt;</i>}<i></i>{<i>&gt;</i>}<i></i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>resize and locate an image</td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+This is an alias for the <strong>-geometry</strong> option and it behaves in the
+same manner.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
