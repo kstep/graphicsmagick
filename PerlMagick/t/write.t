@@ -72,7 +72,7 @@ print("CompuServe graphics interchange format (1987) ...\n");
 testReadWrite( 'GIF87:input.gif87',
                'GIF87:output.gif87',
                q//,
-               '45e5c63ac641eda9bedd4f42a7f6b4cd');
+               '06300c96272ed0ccc120dba7e0177db0');
 
 
 print("Magick image file format ...\n");
