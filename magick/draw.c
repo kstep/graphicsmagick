@@ -1784,12 +1784,12 @@ MagickExport void DrawSetStrokeDashArray(DrawContext context,
   assert(context->signature == MagickSignature);
 
   p = dasharray;
-  if(p != (const double *) NULL)
+  if( p != (const double *) NULL )
     while( *p++ != 0)
       n_new++;
 
   q = context->graphic_context[context->index]->dash_pattern;
-  if(q != (const double *) NULL)
+  if( q != (const double *) NULL )
     while( *q++ != 0)
       n_old++;
 
@@ -1807,7 +1807,7 @@ MagickExport void DrawSetStrokeDashArray(DrawContext context,
       p = dasharray;
       q = context->graphic_context[context->index]->dash_pattern;
       while( *p && *q )
-        if(*p != *q)
+        if( *p != *q )
           {
             updated = True;
             break;
@@ -1832,7 +1832,7 @@ MagickExport void DrawSetStrokeDashArray(DrawContext context,
             {
               q=context->graphic_context[context->index]->dash_pattern;
               p=dasharray;
-              while(*p)
+              while( *p )
                 *q++=*p++;
               *q=0;
             }
