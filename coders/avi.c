@@ -441,7 +441,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(ResourceLimitWarning,
             "Memory allocation failed",image);
         if (number_colors != 0)
-          (void) CloneMemory(image->colormap,colormap,
+          (void) memcpy(image->colormap,colormap,
             number_colors*sizeof(PixelPacket));
         if (image_info->ping && (image_info->subrange != 0))
           if (image->scene >= (image_info->subimage+image_info->subrange-1))

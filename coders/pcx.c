@@ -539,7 +539,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
             case 8:
             {
-              (void) CloneMemory(r,p,image->columns);
+              (void) memcpy(r,p,image->columns);
               break;
             }
             default:

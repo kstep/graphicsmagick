@@ -2764,7 +2764,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               }
             else
               {
-                 (void) CloneMemory(image->color_profile.info,
+                 (void) memcpy(image->color_profile.info,
                     (unsigned char *) info,length);
                  image->color_profile.name=GetString("icm");
                  /* Note that the PNG iCCP profile name gets lost. */
@@ -3693,7 +3693,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                        "Memory allocation failed while magnifying",image)
                   }
                 n=GetImagePixels(image,0,0,image->columns,1);
-                (void) CloneMemory(next,n,length);
+                (void) memcpy(next,n,length);
                 for (y=0; y < (long) image->rows; y++)
                 {
                   if (y == 0)
@@ -3712,7 +3712,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   if (y < (long) image->rows-1)
                     {
                       n=GetImagePixels(image,0,y+1,image->columns,1);
-                      (void) CloneMemory(next,n,length);
+                      (void) memcpy(next,n,length);
                     }
                   for (i=0; i<m; i++, yy++)
                   {
@@ -4375,7 +4375,7 @@ static void PNGShort(png_bytep p,png_uint_16 value)
 
 static void PNGType(png_bytep p,png_bytep type)
 {
-  (void) CloneMemory(p,type,4*sizeof(png_byte));
+  (void) memcpy(p,type,4*sizeof(png_byte));
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)

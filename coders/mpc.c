@@ -1287,12 +1287,12 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
       q=SetImagePixels(clone_image,0,y,clone_image->columns,1);
       if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
         break;
-      (void) CloneMemory(q,p,image->columns*sizeof(PixelPacket));
+      (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
       clone_indexes=GetIndexes(clone_image);
       indexes=GetIndexes(image);
       if ((clone_indexes != (IndexPacket *) NULL) &&
           (indexes != (IndexPacket *) NULL))
-        (void) CloneMemory(clone_indexes,indexes,
+        (void) memcpy(clone_indexes,indexes,
           image->columns*sizeof(IndexPacket));
       if (!SyncImagePixels(clone_image))
         break;

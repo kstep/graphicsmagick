@@ -2844,7 +2844,7 @@ MagickExport void Strip(char *data)
       q--;
   count=q-p+1;
   q=data;
-  (void) CloneMemory(q,p,count);
+  (void) memcpy(q,p,count);
   *(q+count)='\0';
 }
 

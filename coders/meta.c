@@ -279,7 +279,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
       if (data == (unsigned char *) NULL)
         ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
           image);
-      (void) CloneMemory(data,"8BIM\04\04\0\0\0\0\0\0",tag_length);
+      (void) memcpy(data,"8BIM\04\04\0\0\0\0\0\0",tag_length);
       q=data;
       q+=tag_length;
       for ( ; ; )

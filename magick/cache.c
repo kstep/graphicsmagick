@@ -294,13 +294,13 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
       p=AcquireCacheNexus(image,x+u,y+v,span,1,image_nexus,exception);
       if (p == (const PixelPacket *) NULL)
         break;
-      (void) CloneMemory(q,p,span*sizeof(PixelPacket));
+      (void) memcpy(q,p,span*sizeof(PixelPacket));
       q+=span;
       nexus_indexes=GetNexusIndexes(image->cache,image_nexus);
       if ((nexus_indexes != (IndexPacket *) NULL) &&
           (indexes != (IndexPacket *) NULL))
         {
-          (void) CloneMemory(indexes,nexus_indexes,span*sizeof(IndexPacket));
+          (void) memcpy(indexes,nexus_indexes,span*sizeof(IndexPacket));
           indexes+=span;
         }
     }
@@ -1552,12 +1552,12 @@ static unsigned int ModifyCache(Image *image)
     q=SetImagePixels(image,0,y,image->columns,1);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    (void) CloneMemory(q,p,clone_image->columns*sizeof(PixelPacket));
+    (void) memcpy(q,p,clone_image->columns*sizeof(PixelPacket));
     clone_indexes=GetIndexes(clone_image);
     indexes=GetIndexes(image);
     if ((clone_indexes != (IndexPacket *) NULL) &&
         (indexes != (IndexPacket *) NULL))
-      (void) CloneMemory(indexes,clone_indexes,
+      (void) memcpy(indexes,clone_indexes,
         image->columns*sizeof(IndexPacket));
     if (!SyncImagePixels(image))
       break;
@@ -1839,7 +1839,7 @@ static unsigned int ReadCacheIndexes(const Cache cache,
       */
       for (y=0; y < (long) nexus_info->rows; y++)
       {
-        (void) CloneMemory(indexes,cache_info->indexes+offset,
+        (void) memcpy(indexes,cache_info->indexes+offset,
           nexus_info->columns*sizeof(IndexPacket));
         indexes+=nexus_info->columns;
         offset+=cache_info->columns;
@@ -1934,7 +1934,7 @@ static unsigned int ReadCachePixels(const Cache cache,const unsigned long nexus)
       */
       for (y=0; y < (long) nexus_info->rows; y++)
       {
-        (void) CloneMemory(pixels,cache_info->pixels+offset,
+        (void) memcpy(pixels,cache_info->pixels+offset,
           nexus_info->columns*sizeof(PixelPacket));
         pixels+=nexus_info->columns;
         offset+=cache_info->columns;
@@ -2624,7 +2624,7 @@ static unsigned int WriteCacheIndexes(Cache cache,const unsigned long nexus)
       */
       for (y=0; y < (long) nexus_info->rows; y++)
       {
-        (void) CloneMemory(cache_info->indexes+offset,indexes,
+        (void) memcpy(cache_info->indexes+offset,indexes,
           nexus_info->columns*sizeof(IndexPacket));
         indexes+=nexus_info->columns;
         offset+=cache_info->columns;
@@ -2719,7 +2719,7 @@ static unsigned int WriteCachePixels(Cache cache,const unsigned long nexus)
       */
       for (y=0; y < (long) nexus_info->rows; y++)
       {
-        (void) CloneMemory(cache_info->pixels+offset,pixels,
+        (void) memcpy(cache_info->pixels+offset,pixels,
           nexus_info->columns*sizeof(PixelPacket));
         pixels+=nexus_info->columns;
         offset+=cache_info->columns;
