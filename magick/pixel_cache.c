@@ -82,8 +82,8 @@
 %
 %  A description of each parameter follows:
 %
-%    o indexes: Method GetIndexes returns the indexes associated with the
-%      last call to the SetPixelCache() or GetPixelCache() methods.
+%    o indexes: Method GetIndexes returns the colormap indexes associated with
+%      the last call to the SetPixelCache() or GetPixelCache() methods.
 %
 %    o image: The address of a structure of type Image.
 %
@@ -130,6 +130,9 @@ Export IndexPacket *GetIndexes(const Image *image)
 Export PixelPacket *GetPixelCache(Image *image,const int x,const int y,
   const unsigned int columns,const unsigned int rows)
 {
+  PixelPacket
+    *pixels;
+
   unsigned int
     status;
 
@@ -137,7 +140,8 @@ Export PixelPacket *GetPixelCache(Image *image,const int x,const int y,
     Transfer pixels from the cache.
   */
   assert(image != (Image *) NULL);
-  if (SetPixelCache(image,x,y,columns,rows) == (PixelPacket *) NULL)
+  pixels=SetPixelCache(image,x,y,columns,rows);
+  if (pixels == (PixelPacket *) NULL)
     return((PixelPacket *) NULL);
   status=ReadCachePixels(image->cache,0);
   if (image->class == PseudoClass)
@@ -148,7 +152,7 @@ Export PixelPacket *GetPixelCache(Image *image,const int x,const int y,
         "Unable to read pixels from cache",image->filename);
       return((PixelPacket *) NULL);
     }
-  return(GetPixels(image));
+  return(pixels);
 }
 
 /*
@@ -217,8 +221,8 @@ Export PixelPacket *GetPixels(const Image *image)
 %    o source:  The pixel components are transferred from this buffer.
 %
 */
-unsigned int ReadPixelCache(const Image *image,const QuantumTypes quantum,
-  const unsigned char *source)
+Export unsigned int ReadPixelCache(const Image *image,
+  const QuantumTypes quantum,const unsigned char *source)
 {
   IndexPacket
     index;
@@ -238,8 +242,8 @@ unsigned int ReadPixelCache(const Image *image,const QuantumTypes quantum,
   assert(image != (Image *) NULL);
   assert(source != (const unsigned char *) NULL);
   p=source;
-  q=GetPixels(image);
-  indexes=GetIndexes(image);
+  q=GetVistaPixels(image->cache,0);
+  indexes=GetVistaIndexes(image->cache,0);
   switch (quantum)
   {
     case IndexQuantum:
@@ -499,7 +503,7 @@ unsigned int ReadPixelCache(const Image *image,const QuantumTypes quantum,
 %
 %  A description of each parameter follows:
 %
-%    o status: Method SetPixelCache returns a pointer to the pixels is
+%    o pixels: Method SetPixelCache returns a pointer to the pixels is
 %      returned if the pixels are transferred, otherwise a NULL is returned.
 %
 %    o image: The address of a structure of type Image.
@@ -529,22 +533,25 @@ Export PixelPacket *SetPixelCache(Image *image,const int x,const int y,
         "image does not contain the cache geometry");
       return((PixelPacket *) NULL);
     }
-  /*
-    Allocate pixel cache.
-  */
-  status=AllocateCache(image->cache,image->class,image->columns,image->rows);
-  if (status == False)
+  if ((image->cache == (Cache) NULL) ||
+      (image->class != GetCacheClassType(image->cache)))
     {
-      ThrowException(&image->exception,CacheWarning,
-        "Unable to allocate pixel cache",image->filename);
-      return((PixelPacket *) NULL);
+      /*
+        Allocate pixel cache.
+      */
+      status=OpenCache(image->cache,image->class,image->columns,image->rows);
+      if (status == False)
+        {
+          ThrowException(&image->exception,CacheWarning,
+            "Unable to allocate pixel cache",image->filename);
+          return((PixelPacket *) NULL);
+        }
     }
   region.x=x;
   region.y=y;
   region.width=columns;
   region.height=rows;
-  SetCacheVista(image->cache,0,&region);
-  return(GetPixels(image));
+  return(SetCacheVista(image->cache,0,&region));
 }
 
 /*
@@ -630,8 +637,8 @@ Export unsigned int SyncPixelCache(Image *image)
 %
 %
 */
-unsigned int WritePixelCache(const Image *image,const QuantumTypes quantum,
-  unsigned char *destination)
+Export unsigned int WritePixelCache(const Image *image,
+  const QuantumTypes quantum,unsigned char *destination)
 {
   register IndexPacket
     *indexes;
@@ -647,8 +654,8 @@ unsigned int WritePixelCache(const Image *image,const QuantumTypes quantum,
 
   assert(image != (Image *) NULL);
   assert(destination != (unsigned char *) NULL);
-  p=GetPixels(image);
-  indexes=GetIndexes(image);
+  p=GetVistaPixels(image->cache,0);
+  indexes=GetVistaIndexes(image->cache,0);
   q=destination;
   switch (quantum)
   {

@@ -129,179 +129,6 @@ static off_t
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   A l l o c a t e C a c h e                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method AllocateCache allocates the pixel cache.  This includes defining
-%  the cache dimensions, allocating space for the image pixels and optionally
-%  the colormap indexes, and memory mapping the cache if it is disk based.
-%  The cache vista array is initialized as well.
-%
-%  The format of the AllocateCache method is:
-%
-%      unsigned int AllocateCache(Cache cache,const ClassType class_type,
-%        const unsigned int columns,const unsigned int rows)
-%
-%  A description of each parameter follows:
-%
-%    o status: Method AllocateCache returns True if the pixel cache is
-%      initialized successfully otherwise False.
-%
-%    o cache: Specifies a pointer to a Cache structure.
-%
-%    o class_type: DirectClass or PseudoClass.
-%
-%    o columns: This unsigned integer defines the number of columns in the
-%      pixel cache.
-%
-%    o rows: This unsigned integer defines the number of rows in the pixel
-%      cache.
-%
-%
-*/
-Export unsigned int AllocateCache(Cache cache,const ClassType class_type,
-  const unsigned int columns,const unsigned int rows)
-{
-  CacheInfo
-    *cache_info;
-
-  char
-    null = 0;
-
-  off_t
-    length;
-
-  void
-    *allocation;
-
-  assert(cache != (Cache) NULL);
-  cache_info=(CacheInfo *) cache;
-  if ((cache_info->class != UndefinedClass) &&
-      (class_type == cache_info->class))
-    return(True);
-  length=cache_info->number_pixels*sizeof(PixelPacket);
-  if (cache_info->class == PseudoClass)
-    length+=cache_info->number_pixels*sizeof(IndexPacket);
-  cache_info->rows=rows;
-  cache_info->columns=columns;
-  cache_info->number_pixels=columns*rows;
-  if (cache_info->class != UndefinedClass)
-    {
-      /*
-        Free memory-based cache resources.
-      */
-      if (cache_info->type == MemoryCache)
-        (void) GetCacheMemory(length);
-      if (cache_info->type == MemoryMappedCache)
-        (void) UnmapBlob(cache_info->pixels,length);
-    }
-  else
-    {
-      register int
-        id;
-
-      /*
-        Allocate cache vistas.
-      */
-      id=0;
-      cache_info->vista=(VistaInfo *)
-        AllocateMemory((cache_info->rows+1)*sizeof(VistaInfo));
-      if (cache_info->vista == (VistaInfo *) NULL)
-        MagickError(ResourceLimitError,"Memory allocation failed",
-          "unable to allocate cache vistas");
-      for (id=0; id <= cache_info->rows; id++)
-      {
-        cache_info->vista[id].available=True;
-        cache_info->vista[id].columns=0;
-        cache_info->vista[id].rows=0;
-        cache_info->vista[id].x=0;
-        cache_info->vista[id].y=0;
-        cache_info->vista[id].length=0;
-        cache_info->vista[id].stash=(void *) NULL;
-        cache_info->vista[id].pixels=(PixelPacket *) NULL;
-        cache_info->vista[id].indexes=(IndexPacket *) NULL;
-      }
-      cache_info->vista[0].available=False;
-    }
-  length=cache_info->number_pixels*sizeof(PixelPacket);
-  if (class_type == PseudoClass)
-    length+=cache_info->number_pixels*sizeof(IndexPacket);
-  if ((cache_info->type == MemoryCache) ||
-      ((cache_info->type == UndefinedCache) && (length <= GetCacheMemory(0))))
-    {
-      if (cache_info->class == UndefinedClass)
-        allocation=AllocateMemory(length);
-      else
-        {
-          allocation=ReallocateMemory(cache_info->pixels,length);
-          if (allocation == (void *) NULL)
-            return(False);
-        }
-      if (allocation != (void *) NULL)
-        {
-          /*
-            Create in-memory pixel cache.
-          */
-          (void) GetCacheMemory(-length);
-          cache_info->class=class_type;
-          cache_info->type=MemoryCache;
-          cache_info->pixels=(PixelPacket *) allocation;
-          if (cache_info->class == PseudoClass)
-            cache_info->indexes=(IndexPacket *)
-              (cache_info->pixels+cache_info->number_pixels);
-          return(True);
-        }
-    }
-  /*
-    Create pixel cache on disk.
-  */
-  if (cache_info->class == UndefinedClass)
-    TemporaryFilename(cache_info->filename);
-  if (cache_info->file == -1)
-    {
-      cache_info->file=
-        open(cache_info->filename,O_RDWR | O_CREAT | O_BINARY,0777);
-      if (cache_info->file == -1)
-        return(False);
-    }
-  if (lseek(cache_info->file,length,SEEK_SET) == -1)
-    return(False);
-  if (write(cache_info->file,&null,sizeof(null)) == -1)
-    return(False);
-#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
-  (void) ftruncate(cache_info->file,length);
-#endif
-  cache_info->class=class_type;
-  if (cache_info->type != DiskCache)
-    {
-      size_t
-        offset;
-
-      cache_info->type=DiskCache;
-      allocation=MapBlob(cache_info->file,IOMode,&offset);
-      if (allocation != (void *) NULL)
-        {
-          /*
-            Create memory-mapped pixel cache.
-          */
-          cache_info->type=MemoryMappedCache;
-          cache_info->pixels=(PixelPacket *) allocation;
-          if (cache_info->class == PseudoClass)
-            cache_info->indexes=(IndexPacket *)
-              (cache_info->pixels+cache_info->number_pixels);
-        }
-    }
-  return(True);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   C l o s e C a c h e                                                       %
 %                                                                             %
 %                                                                             %
@@ -397,11 +224,10 @@ Export void DestroyCacheInfo(Cache cache)
     default:
       break;
   }
-  if (cache_info->vista != (VistaInfo *) NULL)
+  if (cache_info->type != UndefinedCache)
     {
       for (id=0; id <= cache_info->rows; id++)
-        if (cache_info->vista[id].stash != (void *) NULL)
-          FreeMemory(cache_info->vista[id].stash);
+        DestroyCacheVista(cache,id);
       FreeMemory(cache_info->vista);
     }
   FreeMemory(cache_info);
@@ -483,45 +309,6 @@ Export ClassType GetCacheClassType(const Cache cache)
   assert(cache != (Cache) NULL);
   cache_info=(CacheInfo *) cache;
   return(cache_info->class);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t C a c h e I n d e x e s                                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method GetCacheIndexes returns the address of the cache colormap indexes.
-%
-%  The format of the GetCacheIndexes method is:
-%
-%      void *GetCacheIndexes(const Cache cache,const unsigned int x,
-%        const unsigned int y)
-%
-%  A description of each parameter follows:
-%
-%    o cache: Specifies a pointer to a Cache structure.
-%
-%    o x,y: This unsigned integer defines the offset into the pixel buffer.
-%
-%
-*/
-Export IndexPacket *GetCacheIndexes(const Cache cache,const unsigned int x,
-  const unsigned int y)
-{
-  CacheInfo
-    *cache_info;
-
-  assert(cache != (Cache) NULL);
-  cache_info=(CacheInfo *) cache;
-  if ((cache_info->class != PseudoClass) || (cache_info->type == DiskCache))
-    return((IndexPacket *) NULL);
-  return(cache_info->indexes+(y*cache_info->columns+x));
 }
 
 /*
@@ -613,45 +400,6 @@ Export off_t GetCacheMemory(const off_t memory)
   free_memory+=memory;
 #endif
   return(free_memory);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t C a c h e P i x e l s                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method GetCachePixels returns the address of the cache pixel buffer.
-%
-%  The format of the GetCachePixels method is:
-%
-%      void *GetCachePixels(const Cache cache,const unsigned int x,
-%        const unsigned int y)
-%
-%  A description of each parameter follows:
-%
-%    o cache: Specifies a pointer to a Cache structure.
-%
-%    o x,y: This unsigned integer defines the offset into the pixel buffer.
-%
-%
-*/
-Export PixelPacket *GetCachePixels(const Cache cache,const unsigned int x,
-  const unsigned int y)
-{
-  CacheInfo
-    *cache_info;
-
-  assert(cache != (Cache) NULL);
-  cache_info=(CacheInfo *) cache;
-  if (cache_info->type == DiskCache)
-    return((PixelPacket *) NULL);
-  return(cache_info->pixels+(y*cache_info->columns+x));
 }
 
 /*
@@ -853,6 +601,176 @@ Export PixelPacket *GetVistaPixels(const Cache cache,const unsigned int id)
     return((PixelPacket *) NULL);
   vista=cache_info->vista+id;
   return(vista->pixels);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   O p e n C a c h e                                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method OpenCache allocates the pixel cache.  This includes defining
+%  the cache dimensions, allocating space for the image pixels and optionally
+%  the colormap indexes, and memory mapping the cache if it is disk based.
+%  The cache vista array is initialized as well.
+%
+%  The format of the OpenCache method is:
+%
+%      unsigned int OpenCache(Cache cache,const ClassType class_type,
+%        const unsigned int columns,const unsigned int rows)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method OpenCache returns True if the pixel cache is
+%      initialized successfully otherwise False.
+%
+%    o cache: Specifies a pointer to a Cache structure.
+%
+%    o class_type: DirectClass or PseudoClass.
+%
+%    o columns: This unsigned integer defines the number of columns in the
+%      pixel cache.
+%
+%    o rows: This unsigned integer defines the number of rows in the pixel
+%      cache.
+%
+%
+*/
+Export unsigned int OpenCache(Cache cache,const ClassType class_type,
+  const unsigned int columns,const unsigned int rows)
+{
+  CacheInfo
+    *cache_info;
+
+  char
+    null = 0;
+
+  off_t
+    length;
+
+  void
+    *allocation;
+
+  assert(cache != (Cache) NULL);
+  cache_info=(CacheInfo *) cache;
+  length=cache_info->number_pixels*sizeof(PixelPacket);
+  if (cache_info->class == PseudoClass)
+    length+=cache_info->number_pixels*sizeof(IndexPacket);
+  cache_info->rows=rows;
+  cache_info->columns=columns;
+  cache_info->number_pixels=columns*rows;
+  if (cache_info->class != UndefinedClass)
+    {
+      /*
+        Free memory-based cache resources.
+      */
+      if (cache_info->type == MemoryCache)
+        (void) GetCacheMemory(length);
+      if (cache_info->type == MemoryMappedCache)
+        (void) UnmapBlob(cache_info->pixels,length);
+    }
+  else
+    {
+      register int
+        id;
+
+      /*
+        Allocate cache vistas.
+      */
+      id=0;
+      cache_info->vista=(VistaInfo *)
+        AllocateMemory((cache_info->rows+1)*sizeof(VistaInfo));
+      if (cache_info->vista == (VistaInfo *) NULL)
+        MagickError(ResourceLimitError,"Memory allocation failed",
+          "unable to allocate cache vistas");
+      for (id=0; id <= cache_info->rows; id++)
+      {
+        cache_info->vista[id].available=True;
+        cache_info->vista[id].columns=0;
+        cache_info->vista[id].rows=0;
+        cache_info->vista[id].x=0;
+        cache_info->vista[id].y=0;
+        cache_info->vista[id].length=0;
+        cache_info->vista[id].stash=(void *) NULL;
+        cache_info->vista[id].pixels=(PixelPacket *) NULL;
+        cache_info->vista[id].indexes=(IndexPacket *) NULL;
+      }
+      cache_info->vista[0].available=False;
+    }
+  length=cache_info->number_pixels*sizeof(PixelPacket);
+  if (class_type == PseudoClass)
+    length+=cache_info->number_pixels*sizeof(IndexPacket);
+  if ((cache_info->type == MemoryCache) ||
+      ((cache_info->type == UndefinedCache) && (length <= GetCacheMemory(0))))
+    {
+      if (cache_info->class == UndefinedClass)
+        allocation=AllocateMemory(length);
+      else
+        {
+          allocation=ReallocateMemory(cache_info->pixels,length);
+          if (allocation == (void *) NULL)
+            return(False);
+        }
+      if (allocation != (void *) NULL)
+        {
+          /*
+            Create in-memory pixel cache.
+          */
+          (void) GetCacheMemory(-length);
+          cache_info->class=class_type;
+          cache_info->type=MemoryCache;
+          cache_info->pixels=(PixelPacket *) allocation;
+          if (cache_info->class == PseudoClass)
+            cache_info->indexes=(IndexPacket *)
+              (cache_info->pixels+cache_info->number_pixels);
+          return(True);
+        }
+    }
+  /*
+    Create pixel cache on disk.
+  */
+  if (cache_info->class == UndefinedClass)
+    TemporaryFilename(cache_info->filename);
+  if (cache_info->file == -1)
+    {
+      cache_info->file=
+        open(cache_info->filename,O_RDWR | O_CREAT | O_BINARY,0777);
+      if (cache_info->file == -1)
+        return(False);
+    }
+  if (lseek(cache_info->file,length,SEEK_SET) == -1)
+    return(False);
+  if (write(cache_info->file,&null,sizeof(null)) == -1)
+    return(False);
+#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
+  (void) ftruncate(cache_info->file,length);
+#endif
+  cache_info->class=class_type;
+  if (cache_info->type != DiskCache)
+    {
+      size_t
+        offset;
+
+      cache_info->type=DiskCache;
+      allocation=MapBlob(cache_info->file,IOMode,&offset);
+      if (allocation != (void *) NULL)
+        {
+          /*
+            Create memory-mapped pixel cache.
+          */
+          cache_info->type=MemoryMappedCache;
+          cache_info->pixels=(PixelPacket *) allocation;
+          if (cache_info->class == PseudoClass)
+            cache_info->indexes=(IndexPacket *)
+              (cache_info->pixels+cache_info->number_pixels);
+        }
+    }
+  return(True);
 }
 
 /*
@@ -1130,18 +1048,24 @@ Export void SetCacheType(Cache cache,const CacheType type)
 %
 %  The format of the SetCacheVista method is:
 %
-%      void SetCacheVista(Cache cache,const RectangleInfo *region)
+%      PixelPacket SetCacheVista(Cache cache,const unsigned int id,
+%        const RectangleInfo *region)
 %
 %  A description of each parameter follows:
 %
+%    o pixels: Method SetCacheVista returns a pointer to the pixels associated
+%      with the specified cache vista.
+%
 %    o cache: Specifies a pointer to a Cache structure.
+%
+%    o id: specifies which cache vista to set. 
 %
 %    o region: A pointer to the RectangleInfo structure that defines the
 %      region of this particular cache vista.
 %
 %
 */
-Export void SetCacheVista(Cache cache,const unsigned int id,
+Export PixelPacket *SetCacheVista(Cache cache,const unsigned int id,
   const RectangleInfo *region)
 {
   CacheInfo
@@ -1163,18 +1087,21 @@ Export void SetCacheVista(Cache cache,const unsigned int id,
   vista->rows=region->height;
   vista->x=region->x;
   vista->y=region->y;
-  if ((((vista->x+vista->columns) <= cache_info->columns) &&
-      (vista->rows == 1)) || ((vista->x == 0) &&
-      ((vista->columns % cache_info->columns) == 0)))
-    {
-      /*
-        Pixels are accessed directly from memory.
-      */
-      vista->pixels=GetCachePixels(cache,vista->x,vista->y);
-      vista->indexes=GetCacheIndexes(cache,vista->x,vista->y);
-      if (vista->pixels != (PixelPacket *) NULL)
-        return;
-    }
+  if (cache_info->type != DiskCache)
+    if ((((vista->x+vista->columns) <= cache_info->columns) &&
+        (vista->rows == 1)) || ((vista->x == 0) &&
+        ((vista->columns % cache_info->columns) == 0)))
+      {
+        /*
+          Pixels are accessed directly from memory.
+        */
+        vista->pixels=cache_info->pixels+vista->y*cache_info->columns+vista->x;
+        vista->indexes=(IndexPacket *) NULL;
+        if (cache_info->class == PseudoClass)
+          vista->indexes=
+            cache_info->indexes+vista->y*cache_info->columns+vista->x;
+        return(vista->pixels);
+      }
   /*
     Pixels are stored in a temporary buffer until they are synced to the cache.
   */
@@ -1185,11 +1112,12 @@ Export void SetCacheVista(Cache cache,const unsigned int id,
   if (vista->stash == (void *) NULL)
     vista->stash=AllocateMemory(length);
   else
-    if (vista->length < length)
-       vista->stash=ReallocateMemory(vista->stash,length);
+    if (vista->length != length)
+      vista->stash=ReallocateMemory(vista->stash,length);
   vista->length=length;
   vista->pixels=(PixelPacket *) vista->stash;
   vista->indexes=(IndexPacket *) (vista->pixels+vista->columns*vista->rows);
+  return(vista->pixels);
 }
 
 /*

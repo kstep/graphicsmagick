@@ -22,7 +22,6 @@ extern Export ClassType
   GetCacheClassType(const Cache);
 
 extern Export IndexPacket
-  *GetCacheIndexes(Cache,const unsigned int,const unsigned int),
   *GetVistaIndexes(const Cache,const unsigned int);
 
 extern Export off_t
@@ -30,12 +29,12 @@ extern Export off_t
   GetCacheThreshold(void);
 
 extern Export PixelPacket
-  *GetCachePixels(const Cache,const unsigned int,const unsigned int),
-  *GetVistaPixels(const Cache,const unsigned int);
+  *GetVistaPixels(const Cache,const unsigned int),
+  *SetCacheVista(Cache,const unsigned int,const RectangleInfo *);
 
 extern Export unsigned int
-  AllocateCache(Cache,const ClassType,const unsigned int,const unsigned int),
   GetCacheVista(Cache),
+  OpenCache(Cache,const ClassType,const unsigned int,const unsigned int),
   ReadCachePixels(Cache,const unsigned int),
   ReadCacheIndexes(Cache,const unsigned int),
   WriteCachePixels(Cache,const unsigned int),
@@ -47,8 +46,7 @@ extern Export void
   DestroyCacheVista(Cache,const unsigned int),
   GetCacheInfo(Cache *),
   SetCacheThreshold(const off_t),
-  SetCacheType(Cache,const CacheType),
-  SetCacheVista(Cache,const unsigned int,const RectangleInfo *);
+  SetCacheType(Cache,const CacheType);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -18,9 +18,8 @@
 %                       ImageMagick Cache View Methods                        %
 %                                                                             %
 %                              Software Design                                %
-%                             William Radcliffe                               %
 %                                John Cristy                                  %
-%                               November 1999                                 %
+%                               February 2000                                 %
 %                                                                             %
 %                                                                             %
 %  Copyright (C) 2000 ImageMagick Studio, a non-profit organization dedicated %
@@ -72,7 +71,8 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method CloseCacheView closes a view associated with the pixel cache.
+%  Method CloseCacheView closes the specified view returned by a previous
+%  call to OpenCacheView().
 %
 %  The format of the CloseCacheView method is:
 %
@@ -116,8 +116,8 @@ Export void CloseCacheView(ViewInfo *view)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method GetCacheView returns a pointer to the pixels is
-%      returned if the pixels are transferred, otherwise a NULL is returned.
+%    o pixels: Method GetCacheView returns a null pointer if an error
+%      occurs, otherwise a pointer to the view pixels.
 %
 %    o view: The address of a structure of type ViewInfo.
 %
@@ -132,14 +132,18 @@ Export PixelPacket *GetCacheView(ViewInfo *view,const int x,const int y,
   Image
     *image;
 
+  PixelPacket
+    *pixels;
+
   unsigned int
     status;
 
   /*
-    Transfer pixels from the cache.
+    Read pixels from the cache.
   */
   assert(view != (ViewInfo *) NULL);
-  if (SetCacheView(view,x,y,columns,rows) == (PixelPacket *) NULL)
+  pixels=SetCacheView(view,x,y,columns,rows);
+  if (pixels == (PixelPacket *) NULL)
     return((PixelPacket *) NULL);
   image=view->image;
   status=ReadCachePixels(image->cache,view->id);
@@ -151,7 +155,7 @@ Export PixelPacket *GetCacheView(ViewInfo *view,const int x,const int y,
         "Unable to read pixels from cache",image->filename);
       return((PixelPacket *) NULL);
     }
-  return(GetCacheViewPixels(view));
+  return(pixels);
 }
 
 /*
@@ -166,7 +170,7 @@ Export PixelPacket *GetCacheView(ViewInfo *view,const int x,const int y,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method GetCacheViewIndexes returns the colormap indexes associated with the
-%  last call to the OpenCacheView().
+%  specified view.
 %
 %  The format of the GetCacheViewIndexes method is:
 %
@@ -174,8 +178,8 @@ Export PixelPacket *GetCacheView(ViewInfo *view,const int x,const int y,
 %
 %  A description of each parameter follows:
 %
-%    o indexes: Method GetCacheViewIndexes returns the indexes associated
-%      the last call to the OpenCacheView().
+%    o indexes: Method GetCacheViewIndexes returns the colormap indexes
+%      associated with the specified view.
 %
 %    o view: The address of a structure of type ViewInfo.
 %
@@ -183,8 +187,12 @@ Export PixelPacket *GetCacheView(ViewInfo *view,const int x,const int y,
 */
 Export IndexPacket *GetCacheViewIndexes(const ViewInfo *view)
 {
+  Image
+    *image;
+
   assert(view != (ViewInfo *) NULL);
-  return(GetVistaIndexes(view->image->cache,view->id));
+  image=view->image;
+  return(GetVistaIndexes(image->cache,view->id));
 }
 
 /*
@@ -192,14 +200,14 @@ Export IndexPacket *GetCacheViewIndexes(const ViewInfo *view)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t P i x e l s                                                         %
+%   G e t C a c h e V i e w P i x e l s                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetCacheViewPixels returns the pixels associated with the last call
-%  to the OpenCacheView().
+%  Method GetCacheViewPixels returns the pixels associated with the specified
+%  specified view.
 %
 %  The format of the GetCacheViewPixels method is:
 %
@@ -208,7 +216,7 @@ Export IndexPacket *GetCacheViewIndexes(const ViewInfo *view)
 %  A description of each parameter follows:
 %
 %    o pixels: Method GetCacheViewPixels returns the pixels associated with
-%      the last call to the OpenCacheView().
+%      the specified view.
 %
 %    o view: The address of a structure of type ViewInfo.
 %
@@ -216,8 +224,12 @@ Export IndexPacket *GetCacheViewIndexes(const ViewInfo *view)
 */
 Export PixelPacket *GetCacheViewPixels(const ViewInfo *view)
 {
+  Image
+    *image;
+
   assert(view != (ViewInfo *) NULL);
-  return(GetVistaPixels(view->image->cache,view->id));
+  image=view->image;
+  return(GetVistaPixels(image->cache,view->id));
 }
 
 /*
@@ -231,7 +243,7 @@ Export PixelPacket *GetCacheViewPixels(const ViewInfo *view)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method OpenCacheView opens a view associated with the pixel cache.
+%  Method OpenCacheView opens a view into the pixel cache.
 %
 %  The format of the OpenCacheView method is:
 %
@@ -251,16 +263,20 @@ Export ViewInfo *OpenCacheView(Image *image)
   ViewInfo
     *view;
 
-  /*
-    Allocate pixel cache.
-  */
   assert(image != (Image *) NULL);
-  status=AllocateCache(image->cache,image->class,image->columns,image->rows);
-  if (status == False)
+  if ((image->cache == (Cache) NULL) ||
+      (image->class != GetCacheClassType(image->cache)))
     {
-      ThrowException(&image->exception,CacheWarning,
-        "Unable to allocate pixel cache",image->filename);
-      return((ViewInfo *) NULL);
+      /*
+        Allocate pixel cache.
+      */
+      status=OpenCache(image->cache,image->class,image->columns,image->rows);
+      if (status == False)
+        {
+          ThrowException(&image->exception,CacheWarning,
+            "Unable to allocate pixel cache",image->filename);
+          return((ViewInfo *) NULL);
+        }
     }
   view=(ViewInfo *) AllocateMemory(sizeof(ViewInfo));
   if (view == (ViewInfo *) NULL)
@@ -298,8 +314,8 @@ Export ViewInfo *OpenCacheView(Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method SetCacheView returns a pointer to the pixels is
-%      returned if the pixels are transferred, otherwise a NULL is returned.
+%    o pixels: Method SetCacheView returns a null pointer if an error
+%      occurs, otherwise a pointer to the view pixels.
 %
 %    o view: The address of a structure of type ViewInfo.
 %
@@ -339,8 +355,7 @@ Export PixelPacket *SetCacheView(ViewInfo *view,const int x,const int y,
   region.y=y;
   region.width=columns;
   region.height=rows;
-  SetCacheVista(image->cache,view->id,&region);
-  return(GetVistaPixels(image->cache,view->id));
+  return(SetCacheVista(image->cache,view->id,&region));
 }
 
 /*
@@ -354,9 +369,8 @@ Export PixelPacket *SetCacheView(ViewInfo *view,const int x,const int y,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SyncCacheView gets pixels from the in-memory or disk pixel cache as
-%  defined by the geometry parameters.   A pointer to the pixels is returned if
-%  the pixels are transferred, otherwise a NULL is returned.
+%  Method SyncCacheView saves the view pixels to the in-memory or disk cache.
+%  The method returns True if the pixel region is synced, otherwise False.
 %
 %  The format of the SyncCacheView method is:
 %
@@ -364,8 +378,8 @@ Export PixelPacket *SetCacheView(ViewInfo *view,const int x,const int y,
 %
 %  A description of each parameter follows:
 %
-%    o status: Method SyncCacheView returns a pointer to the pixels is
-%      returned if the pixels are transferred, otherwise a NULL is returned.
+%    o status: Method SyncCacheView returns True if the view pixels are
+%      transferred to the in-memory or disk cache otherwise False.
 %
 %    o view: The address of a structure of type ViewInfo.
 %
