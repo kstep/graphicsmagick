@@ -258,6 +258,7 @@ MagickExport Image *MontageImages(const Image *images,
 #define TileImageText  "  Create image tiles...  "
 
   char
+    tile_geometry[MaxTextExtent],
     *title;
 
   const ImageAttribute
@@ -275,6 +276,7 @@ MagickExport Image *MontageImages(const Image *images,
     **master_list,
     *montage,
     *texture,
+    *tile_image,
     *zoom_image;
 
   ImageInfo
@@ -478,6 +480,8 @@ MagickExport Image *MontageImages(const Image *images,
   /*
     Allocate next structure.
   */
+  tile_image=AllocateImage(NULL);
+  tile_image->gravity=montage_info->gravity;
   montage=AllocateImage(image_info);
   montage->scene=1;
   images_per_page=(number_images-1)/(tiles_per_row*tiles_per_column)+1;
@@ -609,66 +613,12 @@ MagickExport Image *MontageImages(const Image *images,
       /*
         Gravitate as specified by the tile gravity.
       */
-      switch (montage_info->gravity)
-      {
-        case NorthWestGravity:
-        {
-          x=0;
-          y=0;
-          break;
-        }
-        case NorthGravity:
-        {
-          x=(long) ((width+2*border_width)-(long) image->columns)/2;
-          y=0;
-          break;
-        }
-        case NorthEastGravity:
-        {
-          x=(long) (width+2*border_width)-(long) image->columns;
-          y=0;
-          break;
-        }
-        case WestGravity:
-        {
-          x=0;
-          y=(long) (((height+2*border_width)-(long) image->rows)/2);
-          break;
-        }
-        case ForgetGravity:
-        case StaticGravity:
-        case CenterGravity:
-        default:
-        {
-          x=(long) (((width+2*border_width)-(long) image->columns)/2);
-          y=(long) (((height+2*border_width)-(long) image->rows)/2);
-          break;
-        }
-        case EastGravity:
-        {
-          x=(long) ((width+2*border_width)-(long) image->columns);
-          y=(long) (((height+2*border_width)-(long) image->rows)/2);
-          break;
-        }
-        case SouthWestGravity:
-        {
-          x=0;
-          y=(long) (height+2*border_width)-(long) image->rows;
-          break;
-        }
-        case SouthGravity:
-        {
-          x=(long) ((width+2*border_width)-(long) image->columns)/2;
-          y=(long) (height+2*border_width)-(long) image->rows;
-          break;
-        }
-        case SouthEastGravity:
-        {
-          x=(long) (width+2*border_width)-(long) image->columns;
-          y=(long) (height+2*border_width)-(long) image->rows;
-          break;
-        }
-      }
+      tile_image->columns=width;
+      tile_image->rows=height;
+      FormatString(tile_geometry,"%dx%d+0+0",image->columns,image->rows);
+      flags=GetImageGeometry(tile_image,tile_geometry,False,&geometry);
+      x=geometry.x+border_width;
+      y=geometry.y+border_width;
       if ((montage_info->frame != (char *) NULL) && (bevel_width != 0))
         {
           FrameInfo
@@ -789,6 +739,7 @@ MagickExport Image *MontageImages(const Image *images,
         number_images-=tiles_per_page;
       }
   }
+  DestroyImage(tile_image);
   if (texture != (Image *) NULL)
     LiberateMemory((void **) &texture);
   for (i=0; i < (long) number_images; i++)
