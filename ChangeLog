@@ -1,4 +1,9 @@
-2005-03-10 Glenn Randers-Pehrson <glennrp@glennrp.com>
+2005-03-29 Glenn Randers-Pehrson <glennrp@glennrp.com>
+
+	* coders/sgi.c (ReadSGIImage): Throw a "Corrupt Image" exception
+	if EOF is encountered while reading scanlines.
+
+2005-03-28 Glenn Randers-Pehrson <glennrp@glennrp.com>
 
 	* coders/jpeg.c (ReadJPEGImage): Throw a "Corrupt Image" exception
 	if EOF is encountered while reading scanlines.
