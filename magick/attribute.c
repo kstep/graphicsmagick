@@ -117,7 +117,7 @@ MagickExport void DestroyImageAttributes(Image *image)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method GetImageAttribute searches the list of image attributes and returns
-%  a pointer to attribute if it exists otherwise NULL.
+%  a pointer to the attribute if it exists otherwise NULL.
 %
 %  The format of the GetImageAttribute method is:
 %
@@ -245,7 +245,7 @@ static int ReadMSBShort(char **p,unsigned int *length)
   return(value);
 }
 
-static char *GenerateClippingPath(char *blob,unsigned int length,
+static char *TraceClippingPath(char *blob,unsigned int length,
   unsigned int columns,unsigned int rows)
 {
   char
@@ -255,7 +255,7 @@ static char *GenerateClippingPath(char *blob,unsigned int length,
   int
     count,
     selector;
-  
+
   long
     x,
     y;
@@ -300,7 +300,7 @@ static char *GenerateClippingPath(char *blob,unsigned int length,
     while (length > 0)
     {
       selector=ReadMSBShort(&blob,&length);
-      if ((selector != 0) && (selector != 3))
+      if (selector > 8)
         break;
       count=ReadMSBShort(&blob,&length);
       blob+=22;
@@ -316,8 +316,8 @@ static char *GenerateClippingPath(char *blob,unsigned int length,
             {
               y=ReadMSBLong(&blob,&length);
               x=ReadMSBLong(&blob,&length);
-              point[i].y=((double) y*(double) rows)/16777216.0;
-              point[i].x=((double) x*(double) columns)/16777216.0;
+              point[i].y=(double) y*rows/16777216.0;
+              point[i].x=(double) x*columns/16777216.0;
             }
             if (status)
               {
@@ -341,9 +341,12 @@ static char *GenerateClippingPath(char *blob,unsigned int length,
           count--;
         }
       }
-      FormatString(message,"C %.1f,%.1f %.1f,%.1f %.1f,%.1f Z\n",last[2].x,
-        last[2].y,first[0].x,first[0].y,first[1].x,first[1].y);
-      ConcatenateString(&path,message);
+      if (!status)
+        {
+          FormatString(message,"C %.1f,%.1f %.1f,%.1f %.1f,%.1f Z\n",last[2].x,
+            last[2].y,first[0].x,first[0].y,first[1].x,first[1].y);
+          ConcatenateString(&path,message);
+        }
     }
     FormatString(message,"\"/>\n");
     ConcatenateString(&path,message);
@@ -433,8 +436,7 @@ static int Generate8BIMAttribute(Image *image,const char *key)
             char
               *path;
 
-            path=GenerateClippingPath(attribute,count,image->columns,
-              image->rows);
+            path=TraceClippingPath(attribute,count,image->columns,image->rows);
             SetImageAttribute(image,key,(const char *) path);
             LiberateMemory((void **) &path);
           }
@@ -469,6 +471,38 @@ MagickExport ImageAttribute *GetImageAttribute(const Image *image,
         return(GetImageAttribute(image,key));
     }
   return(p);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t I m a g e C l i p p i n g P a t h A t t r i b u t e                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetImageClippingPathAttribute searches the list of image attributes
+%  and returns a pointer to a clipping path if it exists otherwise NULL.
+%
+%  The format of the GetImageClippingPathAttribute method is:
+%
+%      ImageAttribute *GetImageClippingPathAttribute(const Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o attribute:  Method GetImageClippingPathAttribute returns the clipping
+%      path if it exists otherwise NULL.
+%
+%    o image: The image.
+%
+%
+*/
+MagickExport ImageAttribute *GetImageClippingPathAttribute(const Image *image)
+{
+  return GetImageAttribute(image,"8BIM:1999,2998");
 }
 
 /*
