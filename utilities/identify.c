@@ -166,6 +166,21 @@ int main(int argc,char **argv)
   ReadCommandlLine(argc,&argv);
   MagickIncarnate(*argv);
   client_name=SetClientName((char *) NULL);
+  /* get -format arg out of the list - it drives ExpandFilenames  nuts */
+  format=(char *) NULL;
+  for (i=1; i < argc; i++)
+  {
+    option=argv[i];
+    if (LocaleNCompare("-format",argv[i],2) == 0)
+      {
+        i++;
+        if (i == argc)
+          MagickError(OptionError,"Missing format string",option);
+        CloneString(&format,argv[i]);
+        argv[i]="";
+        break;
+      }
+  }
   status=ExpandFilenames(&argc,&argv);
   if (status == False)
     MagickError(ResourceLimitError,"Memory allocation failed",(char *) NULL);
@@ -178,7 +193,6 @@ int main(int argc,char **argv)
   GetExceptionInfo(&exception);
   image_info=CloneImageInfo((ImageInfo *) NULL);
   number_images=0;
-  format=(char *) NULL;
   /*
     Identify an image.
   */
@@ -197,7 +211,6 @@ int main(int argc,char **argv)
                     i++;
                     if (i == argc)
                       MagickError(OptionError,"Missing format string",option);
-                    CloneString(&format,argv[i]);
                   }
                 break;
               }

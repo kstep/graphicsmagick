@@ -109,6 +109,255 @@ MagickExport void DestroyImageAttributes(Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t A l t A t t r i b u t e                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetAltAttribute returns a "fake" attribute based on data in the
+%  image info or image structures.
+%
+%  The format of the GetAltAttribute method is:
+%
+%      ImageAttribute *GetImageAttribute(const Image *image,const char *key)
+%
+%  A description of each parameter follows:
+%
+%    o attribute:  Method GetAltAttribute returns the attribute if it
+%      exists otherwise NULL.
+%
+%    o image_info: The address of a structure of type ImageInfo.
+%
+%    o image: The address of a structure of type Image.
+%
+%    o key:  These character strings are the name of an image attribute to
+%      return.
+%
+*/
+ImageAttribute *GetAltAttribute(const ImageInfo *image_info,
+  Image *image,const char *key)
+{
+  char
+    attribute[MaxTextExtent],
+    directory[MaxTextExtent],
+    *extension,
+    *filename;
+
+  attribute[0]='\0';
+  if (Extent(image->magick_filename) > 0)
+    {
+      (void) strcpy(directory,image->magick_filename);
+      extension=directory+Extent(directory);
+      filename=extension;
+      while ((filename > directory) && !IsBasenameSeparator(*(filename-1)))
+      {
+        if (*filename == '.')
+          if (*extension == '\0')
+            extension=filename+1;
+        filename--;
+      }
+    }
+  else
+    {
+      directory[0]='\0';
+      filename=extension=filename=directory;
+    }
+  switch(*(key))
+  {
+    case 'b':
+    {
+      if (LocaleNCompare("base",key,2) == 0)
+        {
+          *(extension-1)='\0';
+          (void) strcpy(attribute,filename);
+          break;
+        }
+      break;
+    }
+    case 'd':
+    {
+      if (LocaleNCompare("depth",key,2) == 0)
+        {
+          FormatString(attribute,"%u",image->depth);
+          break;
+        }
+      if (LocaleNCompare("directory",key,2) == 0)
+        {
+          *filename='\0';
+          (void) strcpy(attribute,directory);
+          break;
+        }
+      break;
+    }
+    case 'e':
+    {
+      if (LocaleNCompare("extension",key,2) == 0)
+        {
+          (void) strcpy(attribute,extension);
+          break;
+        }
+      break;
+    }
+    case 'g':
+    {
+      if (LocaleNCompare("group",key,2) == 0)
+        {
+          FormatString(attribute,"0x%lx",image_info->group);
+          break;
+        }
+      break;
+    }
+    case 'h':
+    {
+      if (LocaleNCompare("height",key,2) == 0)
+        {
+          FormatString(attribute,"%u",image->magick_rows ? image->magick_rows : 256);
+          break;
+        }
+      break;
+    }
+    case 'i':
+    {
+      if (LocaleNCompare("input",key,2) == 0)
+        {
+          (void) strcpy(attribute,image->filename);
+          break;
+        }
+      break;
+    }
+    case 'm':
+    {
+      if (LocaleNCompare("magick",key,2) == 0)
+        {
+          (void) strcpy(attribute,image->magick);
+          break;
+        }
+      break;
+    }
+    case 'n':
+    {
+      if (LocaleNCompare("name",key,2) == 0)
+        {
+          (void) strcpy(attribute,filename);
+          break;
+        }
+     break;
+    }
+    case 's':
+    {
+      if (LocaleNCompare("size",key,2) == 0)
+        {
+          if (image->filesize >= (1 << 24))
+            FormatString(attribute,"%ldmb",image->filesize/1024/1024);
+          else
+            if (image->filesize >= (1 << 14))
+              FormatString(attribute,"%ldkb",image->filesize/1024);
+            else
+              FormatString(attribute,"%ldb",image->filesize);
+          break;
+        }
+      if (LocaleNCompare("scene",key,2) == 0)
+        {
+          FormatString(attribute,"%u",image->scene);
+          if (image_info->subrange != 0)
+            FormatString(attribute,"%u",image_info->subimage);
+          break;
+        }
+      if (LocaleNCompare("scenes",key,6) == 0)
+        {
+          FormatString(attribute,"%u",GetNumberScenes(image));
+          break;
+        }
+       break;
+    }
+    case 'o':
+    {
+      if (LocaleNCompare("output",key,2) == 0)
+        {
+          (void) strcpy(attribute,image_info->filename);
+          break;
+        }
+     break;
+    }
+    case 'p':
+    {
+      if (LocaleNCompare("page",key,2) == 0)
+        {
+          register const Image
+            *p;
+
+          unsigned int
+            page;
+
+          p=image;
+          for (page=1; p->previous != (Image *) NULL; page++)
+            p=p->previous;
+          FormatString(attribute,"%u",page);
+          break;
+        }
+      break;
+    }
+    case 'u':
+    {
+      if (LocaleNCompare("unique",key,2) == 0)
+        {
+          (void) strcpy(attribute,image_info->unique);
+          break;
+        }
+      break;
+    }
+    case 'w':
+    {
+      if (LocaleNCompare("width",key,2) == 0)
+        {
+          FormatString(attribute,"%u",
+            image->magick_columns ? image->magick_columns : 256);
+          break;
+        }
+      break;
+    }
+    case 'x':
+    {
+      if (LocaleNCompare("xresolution",key,2) == 0)
+        {
+          FormatString(attribute,"%u",(unsigned int) image->x_resolution);
+          break;
+        }
+      break;
+    }
+    case 'y':
+    {
+      if (LocaleNCompare("yresolution",key,2) == 0)
+        {
+          FormatString(attribute,"%u",(unsigned int) image->y_resolution);
+          break;
+        }
+      break;
+    }
+    case 'z':
+    {
+      if (LocaleNCompare("zero",key,2) == 0)
+        {
+          (void) strcpy(attribute,image_info->zero);
+          break;
+        }
+      break;
+    }
+  }
+  if (Extent(image->magick_filename) > 0)
+    {
+      SetImageAttribute(image,key,(const char *) attribute);
+      return(GetImageAttribute(image,key));
+    }
+  return (ImageAttribute *) NULL;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t I m a g e A t t r i b u t e s                                       %
 %                                                                             %
 %                                                                             %
@@ -134,7 +383,7 @@ MagickExport void DestroyImageAttributes(Image *image)
 %
 %
 */
-static void GetIPTCAttribute(Image *image,const char *key)
+static void GenerateIPTCAttribute(Image *image,const char *key)
 {
   char
     *attribute;
@@ -190,7 +439,7 @@ MagickExport ImageAttribute *GetImageAttribute(const Image *image,
       return(p);
   if (LocaleNCompare("IPTC:",key,5) == 0)
     {
-      GetIPTCAttribute((Image *) image,key);
+      GenerateIPTCAttribute((Image *) image, key);
       return(GetImageAttribute(image,key));
     }
   return(p);

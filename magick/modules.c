@@ -355,7 +355,9 @@ MagickExport void InitializeModules(void)
   if (module_path == (char **) NULL)
     MagickError(ResourceLimitError,"Unable to allocate module path",
       "Memory allocation failed");
+#if defined(CoderModuleDirectory)
   module_path[i++]=AllocateString(CoderModuleDirectory);
+#endif
   module_path[i++]=AllocateString(SetClientPath((char *) NULL));
   FormatString(filename,"%s%s.magick",getenv("HOME") ? getenv("HOME") : "",
     DirectorySeparator);
