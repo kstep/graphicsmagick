@@ -257,8 +257,6 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
   *clone_info=(*draw_info);
   if (draw_info->primitive != (char *) NULL)
     clone_info->primitive=AllocateString(draw_info->primitive);
-  if (draw_info->text != (char *) NULL)
-    clone_info->text=AllocateString(draw_info->text);
   if (draw_info->geometry != (char *) NULL)
     clone_info->geometry=AllocateString(draw_info->geometry);
   if (draw_info->fill_pattern != (Image *) NULL)
@@ -274,6 +272,8 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
   if (draw_info->stroke_pattern != (Image *) NULL)
     clone_info->stroke_pattern=CloneImage(draw_info->stroke_pattern,0,0,True,
       &draw_info->stroke_pattern->exception);
+  if (draw_info->text != (char *) NULL)
+    clone_info->text=AllocateString(draw_info->text);
   if (draw_info->font != (char *) NULL)
     clone_info->font=AllocateString(draw_info->font);
   if (draw_info->family != (char *) NULL)
