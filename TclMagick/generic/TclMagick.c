@@ -1645,7 +1645,7 @@ static int wandObjCmd(
 	if( (stat = Tcl_ListObjGetElements(interp, objv[3], &listLen, &listPtr)) != TCL_OK) {
 	    return stat;
 	}
-	if( listLen != order * order ) {
+	if( (unsigned long)listLen != order * order ) {
 	    Tcl_AppendResult(interp, "ConvolveImage: Invalid kernelList length, should be = (order x order)", NULL);
 	    return TCL_ERROR;
 	}
@@ -3011,8 +3011,7 @@ static int wandObjCmd(
 	static size_t storSize[] = {
 	    sizeof(char), sizeof(short), sizeof(int), sizeof(long), sizeof(float), sizeof(double)
 	};
-	unsigned int size;
-	unsigned long cols, rows;
+	unsigned long cols, rows, size;
 	long x0, y0;
 	int  storIdx, len;
 	char *map;
@@ -3072,7 +3071,7 @@ static int wandObjCmd(
 	    ckfree(pixels);
 	} else {
 	    pixels = Tcl_GetByteArrayFromObj( objv[8], &len);
-	    if( len < size ) {
+	    if( (unsigned long)len < size ) {
 		Tcl_AppendResult(interp, "TclMagick: not enough data bytes", NULL);
 		return TCL_ERROR;
 	    }
@@ -6090,8 +6089,7 @@ static int drawObjCmd(
     case TM_PPOLYLINE:  /* Polyline x y x y ... */
     {
 	PointInfo *coordinates;
-	int       i;
-	unsigned long num;
+	unsigned long i, num;
 
 	if( (objc-2) % 2 != 0 ) {
 	    Tcl_WrongNumArgs(interp, 2, objv, "x y x y ...");

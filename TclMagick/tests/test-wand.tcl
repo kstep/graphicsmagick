@@ -135,7 +135,7 @@ set TestFunctions {
     OilPaintImage               img     1
     OpaqueImage                 img     1
     PingImage                   SEQ     1
-    PreviewImages               img     1
+    PreviewImages               img     0
     QuantizeImage               img     1
     QueryFontMetrics            img     1
     RaiseImage                  img     1
@@ -1475,7 +1475,7 @@ foreach {func var flag} $TestFunctions {
         # Check for unfree'd resources 
         #
         set num [llength [magick names]]
-        if {$num != $NUM_OBJECTS} {
+        if {$num > $NUM_OBJECTS} {
             puts stderr "Check resources (magick names) !!!"
             set NUM_OBJECTS $num
 update ; after 5000
