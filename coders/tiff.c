@@ -269,7 +269,7 @@ static unsigned int TIFFWarnings(const char *module,const char *format,
 
   (void) vsprintf(message,format,warning);
   (void) strcat(message,".");
-  ThrowException(tiff_exception,DelegateError,message,module);
+  ThrowException(tiff_exception,DelegateWarning,message,module);
   return(True);
 }
 
