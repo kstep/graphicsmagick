@@ -616,6 +616,7 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
       {
         if (LocaleCompare("debug",option+1) == 0)
           {
+            (void) SetLogEventMask("None");
             if (*option == '-')
               {
                 i++;
@@ -1854,6 +1855,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
           break;
         if (LocaleCompare("debug",option+1) == 0)
           {
+            (void) SetLogEventMask("None");
             if (*option == '-')
               {
                 i++;
@@ -3351,6 +3353,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
       {
         if (LocaleCompare("debug",option+1) == 0)
           {
+            (void) SetLogEventMask("None");
             if (*option == '-')
               {
                 i++;
@@ -3982,6 +3985,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
       {
         if (LocaleCompare("debug",option+1) == 0)
           {
+            (void) SetLogEventMask("None");
             if (*option == '-')
               {
                 i++;
@@ -5607,6 +5611,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
       {
         if (LocaleCompare("debug",option+1) == 0)
           {
+            (void) SetLogEventMask("None");
             if (*option == '-')
               {
                 i++;

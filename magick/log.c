@@ -767,7 +767,7 @@ static unsigned int ReadConfigureFile(const char *basename,
         if (LocaleCompare((char *) keyword,"events") == 0)
           {
             if (GlobExpression(token,"*[Aa]ll*"))
-              log_info->events|=AllEvents;
+              log_info->events=AllEvents;
             if (GlobExpression(token,"*[Aa]nnotate*"))
               log_info->events|=AnnotateEvent;
             if (GlobExpression(token,"*[Bb]lob*"))
@@ -779,7 +779,7 @@ static unsigned int ReadConfigureFile(const char *basename,
             if (GlobExpression(token,"*[Ll]ocale*"))
               log_info->events|=LocaleEvent;
             if (GlobExpression(token,"*[Nn]one*"))
-              log_info->events|=NoEvents;
+              log_info->events=NoEvents;
             if (GlobExpression(token,"*[Rr]ender*"))
               log_info->events|=RenderEvent;
             break;
@@ -895,7 +895,7 @@ MagickExport unsigned long SetLogEventMask(const char *events)
       return(log_info->events);
     }
   if (GlobExpression(events,"*[Aa]ll*"))
-    log_info->events|=AllEvents;
+    log_info->events=AllEvents;
   if (GlobExpression(events,"*[Aa]nnotate*"))
     log_info->events|=AnnotateEvent;
   if (GlobExpression(events,"*[Bb]lob*"))
@@ -908,6 +908,8 @@ MagickExport unsigned long SetLogEventMask(const char *events)
     log_info->events|=ConfigureEvent;
   if (GlobExpression(events,"*[Ll]ocale*"))
     log_info->events|=LocaleEvent;
+  if (GlobExpression(events,"*[Nn]one*"))
+    log_info->events=NoEvents;
   if (GlobExpression(events,"*[Rr]ender*"))
     log_info->events|=RenderEvent;
   if (GlobExpression(events,"*[X]11*"))

@@ -509,6 +509,7 @@ int main(int argc,char **argv)
       {
         if (LocaleCompare("debug",option+1) == 0)
           {
+            (void) SetLogEventMask("None");
             if (*option == '-')
               {
                 i++;
