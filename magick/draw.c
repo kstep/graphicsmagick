@@ -3972,8 +3972,8 @@ static unsigned int DrawStrokePolygon(Image *image,const DrawInfo *draw_info,
   DestroyDrawInfo(clone_info);
   if ((draw_info->linecap == RoundCap) && !closed_path)
     {
-      DrawRoundLinecap(image,clone_info,&polygon_primitive[0]);
-      DrawRoundLinecap(image,clone_info,&polygon_primitive[number_vertices-1]);
+      DrawRoundLinecap(image,draw_info,&polygon_primitive[0]);
+      DrawRoundLinecap(image,draw_info,&polygon_primitive[number_vertices-1]);
     }
   LiberateMemory((void **) &polygon_primitive);
   if (draw_info->debug)
