@@ -186,7 +186,7 @@ print("CMYK format ...\n");
 ++$test;
 testReadSized( 'input_70x46.cmyk', '70x46',
                                             'a69ea409ec1962729ed7b5c6985619b6',
-                                            'undetermined, platform dependent');
+                                            '840c11bcfa1e39cb97589813dc139c28');
 
 print("GRAY format ...\n");
 ++$test;
