@@ -160,7 +160,7 @@ extern MagickExport const GhostscriptVectors
 
 #if !defined(XS_VERSION)
 extern MagickExport DIR
-  *opendir(char *);
+  *opendir(const char *);
 
 extern MagickExport double
   NTElapsedTime(void),
@@ -193,8 +193,10 @@ extern MagickExport unsigned char
 extern MagickExport unsigned int
   NTGetExecutionPath(char *);
 
+extern MagickExport int
+  closedir(DIR *);
+
 extern MagickExport void
-  closedir(DIR *),
   *mmap(char *address,size_t length,int protection,int access,int file,
     magick_off_t offset),
   NTErrorHandler(const ExceptionType,const char *,const char *),

@@ -628,7 +628,7 @@ static MagickPassFail GetModuleListForDirectory
   char
     module_tag[MaxTextExtent];
 
-  const DIR
+  DIR
     *directory;
 
   register long

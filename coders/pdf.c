@@ -1010,7 +1010,11 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,buffer);
     switch (compression)
     {
-      case NoCompression: FormatString(buffer,CFormat,"ASCII85Decode"); break;
+      case NoCompression:
+        {
+          FormatString(buffer,CFormat,"ASCII85Decode");
+          break;
+        }
       case JPEGCompression: 
       {
         FormatString(buffer,CFormat,"DCTDecode"); 
@@ -1020,8 +1024,16 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         (void) strcpy(buffer,"/Decode [1 0 1 0 1 0 1 0]\n");
         break;
       }
-      case LZWCompression: FormatString(buffer,CFormat,"LZWDecode"); break;
-      case ZipCompression: FormatString(buffer,CFormat,"FlateDecode"); break;
+      case LZWCompression:
+        {
+          FormatString(buffer,CFormat,"LZWDecode");
+          break;
+        }
+      case ZipCompression:
+        {
+          FormatString(buffer,CFormat,"FlateDecode");
+          break;
+        }
       case FaxCompression:
       {
         (void) strcpy(buffer,"/Filter [ /CCITTFaxDecode ]\n");
@@ -1031,7 +1043,11 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
           CCITTParam,image->columns,image->rows);
         break;
       }
-      default: FormatString(buffer,CFormat,"RunLengthDecode"); break;
+      default:
+        {
+          FormatString(buffer,CFormat,"RunLengthDecode");
+          break;
+        }
     }
     (void) WriteBlobString(image,buffer);
     FormatString(buffer,"/Width %lu\n",image->columns);
@@ -1124,9 +1140,11 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                       break;
                   }
             }
+#if defined(HasZLIB)
             if (compression == ZipCompression)
               status=ZLIBEncodeImage(image,length,image_info->quality,pixels);
             else
+#endif /* defined(HasZLIB) */
               if (compression == LZWCompression)
                 status=LZWEncodeImage(image,length,pixels);
               else
@@ -1247,9 +1265,11 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                       break;
                   }
             }
+#if defined(HasZLIB)
             if (compression == ZipCompression)
               status=ZLIBEncodeImage(image,length,image_info->quality,pixels);
             else
+#endif /* defined(HasZLIB) */
               if (compression == LZWCompression)
                 status=LZWEncodeImage(image,length,pixels);
               else
@@ -1342,9 +1362,11 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                         break;
                     }
               }
+#if defined(HasZLIB)
               if (compression == ZipCompression)
                 status=ZLIBEncodeImage(image,length,image_info->quality,pixels);
               else
+#endif /* defined(HasZLIB) */
                 if (compression == LZWCompression)
                   status=LZWEncodeImage(image,length,pixels);
                 else
@@ -1436,7 +1458,11 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,"<<\n");
     switch (compression)
     {
-      case NoCompression: FormatString(buffer,CFormat,"ASCII85Decode"); break;
+      case NoCompression:
+        {
+          FormatString(buffer,CFormat,"ASCII85Decode");
+          break;
+        }
       case JPEGCompression:
       {
         FormatString(buffer,CFormat,"DCTDecode"); 
@@ -1446,8 +1472,18 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         (void) strcpy(buffer,"/Decode [1 0 1 0 1 0 1 0]\n");
         break;
       }
-      case LZWCompression: FormatString(buffer,CFormat,"LZWDecode"); break;
-      case ZipCompression: FormatString(buffer,CFormat,"FlateDecode"); break;
+      case LZWCompression:
+        {
+          FormatString(buffer,CFormat,"LZWDecode");
+          break;
+        }
+#if defined(HasZLIB)
+      case ZipCompression:
+        {
+          FormatString(buffer,CFormat,"FlateDecode");
+          break;
+        }
+#endif /* defined(HasZLIB) */
       case FaxCompression:
       {
         (void) strcpy(buffer,"/Filter [ /CCITTFaxDecode ]\n");
@@ -1541,9 +1577,11 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 p++;
               }
             }
+#if defined(HasZLIB)
             if (compression == ZipCompression)
               status=ZLIBEncodeImage(image,length,image_info->quality,pixels);
             else
+#endif /* defined(HasZLIB) */
               if (compression == LZWCompression)
                 status=LZWEncodeImage(image,length,pixels);
               else
@@ -1649,9 +1687,11 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 p++;
               }
             }
+#if defined(HasZLIB)
             if (compression == ZipCompression)
               status=ZLIBEncodeImage(image,length,image_info->quality,pixels);
             else
+#endif /* defined(HasZLIB) */
               if (compression == LZWCompression)
                 status=LZWEncodeImage(image,length,pixels);
               else
@@ -1731,9 +1771,11 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 for (x=0; x < (long) tile_image->columns; x++)
                   *q++=indexes[x];
               }
+#if defined(HasZLIB)
               if (compression == ZipCompression)
                 status=ZLIBEncodeImage(image,length,image_info->quality,pixels);
               else
+#endif /* defined(HasZLIB) */
                 if (compression == LZWCompression)
                   status=LZWEncodeImage(image,length,pixels);
                 else
@@ -1780,21 +1822,16 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     FormatString(buffer,"%lu\n",(unsigned long) offset);
     (void) WriteBlobString(image,buffer);
     (void) WriteBlobString(image,"endobj\n");
-    if ((image->storage_class == DirectClass) || (image->colors > 256) ||
-        (compression == FaxCompression))
+    /*
+      Write Colormap object.
+    */
+    xref[object++]=TellBlob(image);
+    FormatString(buffer,"%lu 0 obj\n",object);
+    (void) WriteBlobString(image,buffer);
+    (void) WriteBlobString(image,"<<\n");
+    if ((image->storage_class != DirectClass) && (image->colors <= 256) &&
+        (compression != FaxCompression))
       {
-        xref[object++]=0;
-        xref[object++]=0;
-      }
-    else
-      {
-        /*
-          Write Colormap object.
-        */
-        xref[object++]=TellBlob(image);
-        FormatString(buffer,"%lu 0 obj\n",object);
-        (void) WriteBlobString(image,buffer);
-        (void) WriteBlobString(image,"<<\n");
         if (compression == NoCompression)
           (void) WriteBlobString(image,"/Filter [ /ASCII85Decode ]\n");
         FormatString(buffer,"/Length %lu 0 R\n",object+1);
@@ -1805,36 +1842,36 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         if (compression == NoCompression)
           Ascii85Initialize(image);
         for (i=0; i < (long) image->colors; i++)
-        {
-          if (compression == NoCompression)
-            {
-              Ascii85Encode(image,ScaleQuantumToChar(image->colormap[i].red));
-              Ascii85Encode(image,ScaleQuantumToChar(image->colormap[i].green));
-              Ascii85Encode(image,ScaleQuantumToChar(image->colormap[i].blue));
-              continue;
-            }
-          (void) WriteBlobByte(image,
-            ScaleQuantumToChar(image->colormap[i].red));
-          (void) WriteBlobByte(image,
-            ScaleQuantumToChar(image->colormap[i].green));
-          (void) WriteBlobByte(image,
-            ScaleQuantumToChar(image->colormap[i].blue));
-        }
+          {
+            if (compression == NoCompression)
+              {
+                Ascii85Encode(image,ScaleQuantumToChar(image->colormap[i].red));
+                Ascii85Encode(image,ScaleQuantumToChar(image->colormap[i].green));
+                Ascii85Encode(image,ScaleQuantumToChar(image->colormap[i].blue));
+                continue;
+              }
+            (void) WriteBlobByte(image,
+                                 ScaleQuantumToChar(image->colormap[i].red));
+            (void) WriteBlobByte(image,
+                                 ScaleQuantumToChar(image->colormap[i].green));
+            (void) WriteBlobByte(image,
+                                 ScaleQuantumToChar(image->colormap[i].blue));
+          }
         if (compression == NoCompression)
           Ascii85Flush(image);
-        offset=TellBlob(image)-offset;
-        (void) WriteBlobString(image,"\nendstream\n");
-        (void) WriteBlobString(image,"endobj\n");
-        /*
-          Write Length object.
-        */
-        xref[object++]=TellBlob(image);
-        FormatString(buffer,"%lu 0 obj\n",object);
-        (void) WriteBlobString(image,buffer);
-        FormatString(buffer,"%lu\n",(unsigned long) offset);
-        (void) WriteBlobString(image,buffer);
-        (void) WriteBlobString(image,"endobj\n");
       }
+    offset=TellBlob(image)-offset;
+    (void) WriteBlobString(image,"\nendstream\n");
+    (void) WriteBlobString(image,"endobj\n");
+    /*
+      Write Length object.
+    */
+    xref[object++]=TellBlob(image);
+    FormatString(buffer,"%lu 0 obj\n",object);
+    (void) WriteBlobString(image,buffer);
+    FormatString(buffer,"%lu\n",(unsigned long) offset);
+    (void) WriteBlobString(image,buffer);
+    (void) WriteBlobString(image,"endobj\n");
     if (image->next == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);

@@ -1,3 +1,12 @@
+2005-03-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/pdf.c (WritePDFImage): Eliminate cause of annoying
+	warning when PDFs are read by Ghostscript 8.5.
+	* magick/module.c: Working DIR * should not be const.
+	* magick/nt_base.c (closedir): Fix function definition so it
+	matches POSIX standard.
+	(opendir): Fix function definition so it matches POSIX standard.
+
 2005-03-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/image.c (SetImageType):  Bilevel image is not required to

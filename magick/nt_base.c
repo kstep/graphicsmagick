@@ -83,7 +83,7 @@ extern "C" BOOL WINAPI
 %
 %  The format of the closedir method is:
 %
-%      void closedir(DIR *entry)
+%      int closedir(DIR *entry)
 %
 %  A description of each parameter follows:
 %
@@ -91,11 +91,12 @@ extern "C" BOOL WINAPI
 %
 %
 */
-MagickExport void closedir(DIR *entry)
+MagickExport int closedir(DIR *entry)
 {
   assert(entry != (DIR *) NULL);
   FindClose(entry->hSearch);
   MagickFreeMemory(entry);
+  return 0;
 }
 
 /*
@@ -1947,7 +1948,7 @@ MagickExport void NTWarningHandler(const ExceptionType warning,
 %
 %  The format of the opendir method is:
 %
-%      DIR *opendir(char *path)
+%      DIR *opendir(const char *path)
 %
 %  A description of each parameter follows:
 %
@@ -1955,7 +1956,7 @@ MagickExport void NTWarningHandler(const ExceptionType warning,
 %
 %
 */
-MagickExport DIR *opendir(char *path)
+MagickExport DIR *opendir(const char *path)
 {
   char
     file_specification[MaxTextExtent];
