@@ -726,7 +726,7 @@ MagickExport Image *EmbossImage(const Image *image,const double radius,
   {
     for (u=(-width/2); u <= (width/2); u++)
     {
-      kernel[i]=(u < 0 || v < 0 ? -8.0 : 8.0)*
+      kernel[i]=((u < 0) || (v < 0) ? -8.0 : 8.0)*
         exp(-((double) u*u+v*v)/(sigma*sigma));
       if (u == j)
         kernel[i]=0.0;
