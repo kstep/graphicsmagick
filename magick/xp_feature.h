@@ -33,7 +33,7 @@ extern MagickExport unsigned int
   XPIsMagickConflict(const char *);
 
 extern MagickExport TypeInfo
-  * NTGetTypeList( void );
+  * XPGetTypeList( void );
 
 #endif /* !XS_VERSION */
 

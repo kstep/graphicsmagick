@@ -105,14 +105,14 @@ MagickExport unsigned int XPIsMagickConflict(const char *magick)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method NTGetTypeList returns a TypeInfo list corresponding to installed
+%  Method XPGetTypeList returns a TypeInfo list corresponding to installed
 %  Windows TrueType fonts. The user is responsible for destroying the
 %  returned list once it is no longer needed. NULL is returned if a fatal
 %  error is encountered.
 %
-%  The format of the NTGetTypeList method is:
+%  The format of the XPGetTypeList method is:
 %
-%      TypeInfo* NTGetTypeList( void )
+%      TypeInfo* XPGetTypeList( void )
 %
 %  A description of each parameter follows:
 %
@@ -129,7 +129,7 @@ static int TypeInfoCompare(const void *x,const void *y)
   info_2=(TypeInfo **) y;
   return( strcmp((*info_1)->name, (*info_2)->name) );
 }
-MagickExport TypeInfo* NTGetTypeList( void )
+MagickExport TypeInfo* XPGetTypeList( void )
 {
   TypeInfo
     *type_list;

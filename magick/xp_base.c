@@ -774,15 +774,15 @@ MagickExport void NTErrorHandler(const ExceptionType error,const char *reason,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method NTGetExecutionPath returns the execution path of a program.
+%  Method XPGetExecutionPath returns the execution path of a program.
 %
 %  The format of the GetExecutionPath method is:
 %
-%      unsigned int NTGetExecutionPath(char *path)
+%      unsigned int XPGetExecutionPath(char *path)
 %
 %
 */
-MagickExport unsigned int NTGetExecutionPath(char *path)
+MagickExport unsigned int XPGetExecutionPath(char *path)
 {
   GetModuleFileName(0,path,MaxTextExtent);
   return(True);
@@ -1553,12 +1553,12 @@ MagickExport unsigned char *XPResourceToBlob(const char *id)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%   Method NTSystemCommand executes the specified command and waits until it
+%   Method XPSystemComman executes the specified command and waits until it
 %   terminates.  The returned value is the exit status of the command.
 %
-%  The format of the NTSystemCommand method is:
+%  The format of the XPSystemComman method is:
 %
-%      int NTSystemCommand(const char *command)
+%      int XPSystemComman(const char *command)
 %
 %  A description of each parameter follows:
 %
@@ -1566,7 +1566,7 @@ MagickExport unsigned char *XPResourceToBlob(const char *id)
 %
 %
 */
-MagickExport int NTSystemCommand(const char *command)
+MagickExport int XPSystemComman(const char *command)
 {
   char
     local_command[MaxTextExtent];

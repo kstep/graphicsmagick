@@ -86,7 +86,7 @@ extern MagickExport int
   XPGhostscriptFonts(char *path, int path_length),
   NTGhostscriptLoadDLL(void),
   XPGhostscriptUnLoadDLL(void),
-  NTSystemCommand(const char *);
+  XPSystemComman(const char *);
 
 extern MagickExport const GhostscriptVectors
   *NTGhostscriptDLLVectors( void );
@@ -116,7 +116,7 @@ extern MagickExport unsigned char
   *XPResourceToBlob(const char *);
 
 extern MagickExport unsigned int
-  NTGetExecutionPath(char *);
+  XPGetExecutionPath(char *);
 
 extern MagickExport void
   closedir(DIR *),
