@@ -1,5 +1,6 @@
 2003-06-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* lib/Magick++/Include.h: Needed to import ThrowLoggedException.
 	* lib/Exception.cpp (throwException): Add originating source
 	module, source line, and function name (if available) to exception
 	report. This is useful in order to determine the exact conditions

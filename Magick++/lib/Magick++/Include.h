@@ -704,6 +704,7 @@ namespace Magick
   using MagickLib::TextureImage;
   using MagickLib::ThresholdImage;
   using MagickLib::ThrowException;
+  using MagickLib::ThrowLoggedException;
   using MagickLib::TransformHSL;
   using MagickLib::TransformImage;
   using MagickLib::TransformRGBImage;
