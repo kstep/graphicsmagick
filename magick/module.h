@@ -8,27 +8,12 @@
 extern "C" {
 #endif
 
-typedef struct _ModuleAlias
-{
-  char
-    *filename,
-    *name,
-    *alias;
-
-  unsigned int
-    stealth;
-
-  struct _ModuleAlias
-    *previous,
-    *next;
-} ModuleAlias;
-
-typedef struct _ModuleInfo
+typedef struct _CoderInfo
 {
   unsigned long
     signature;
   
-  struct _ModuleInfo
+  struct _CoderInfo
     *previous,
     *next;
   
@@ -40,6 +25,21 @@ typedef struct _ModuleInfo
   
   time_t
     load_time;
+} CoderInfo;
+
+typedef struct _ModuleInfo
+{
+  char
+    *filename,
+    *magick,
+    *name;
+
+  unsigned int
+    stealth;
+
+  struct _ModuleInfo
+    *previous,
+    *next;
 } ModuleInfo;
 
 /*
@@ -48,15 +48,15 @@ typedef struct _ModuleInfo
 extern MagickExport char
   *TagToModule(const char *);
 
-extern MagickExport const ModuleAlias
-  *GetModuleAlias(const char *,ExceptionInfo *);
+extern MagickExport const CoderInfo
+  *GetCoderInfo(const char *,ExceptionInfo *);
 
 extern MagickExport const ModuleInfo
   *GetModuleInfo(const char *,ExceptionInfo *);
 
 extern MagickExport unsigned int
   ExecuteModuleProcess(const char *,Image **,const int,char **),
-  ListModuleAliases(FILE *,ExceptionInfo *),
+  ListModuleInfo(FILE *,ExceptionInfo *),
   OpenModule(const char *,ExceptionInfo *),
   OpenModules(ExceptionInfo *);
 

@@ -105,23 +105,26 @@ static unsigned int
 */
 MagickExport void DestroyMagicInfo(void)
 {
+  MagicInfo
+    *magic_info;
+
   register MagicInfo
     *p;
 
   AcquireSemaphoreInfo(&magic_semaphore);
   for (p=magic_list; p != (MagicInfo *) NULL; )
   {
-    if (p->filename != (char *) NULL)
-      LiberateMemory((void **) &p->filename);
-    if (p->name != (char *) NULL)
-      LiberateMemory((void **) &p->name);
-    if (p->target != (char *) NULL)
-      LiberateMemory((void **) &p->target);
-    if (p->magic != (unsigned char *) NULL)
-      LiberateMemory((void **) &p->magic);
-    magic_list=p;
+    magic_info=p;
     p=p->next;
-    LiberateMemory((void **) &magic_list);
+    if (magic_info->filename != (char *) NULL)
+      LiberateMemory((void **) &magic_info->filename);
+    if (magic_info->name != (char *) NULL)
+      LiberateMemory((void **) &magic_info->name);
+    if (magic_info->target != (char *) NULL)
+      LiberateMemory((void **) &magic_info->target);
+    if (magic_info->magic != (unsigned char *) NULL)
+      LiberateMemory((void **) &magic_info->magic);
+    LiberateMemory((void **) &magic_info);
   }
   magic_list=(MagicInfo *) NULL;
   DestroySemaphoreInfo(&magic_semaphore);
@@ -217,10 +220,9 @@ MagickExport unsigned int ListMagicInfo(FILE *file,ExceptionInfo *exception)
 
   if (file == (const FILE *) NULL)
     file=stdout;
-  p=GetMagicInfo((unsigned char *) NULL,0,exception);
-  if (p == (MagicInfo *) NULL)
-    return(False);
-  for ( ; p != (MagicInfo *) NULL; p=p->next)
+  (void) GetMagicInfo((unsigned char *) NULL,0,exception);
+  AcquireSemaphoreInfo(&magic_semaphore);
+  for (p=magic_list; p != (MagicInfo *) NULL; p=p->next)
   {
     if (p->stealth)
       continue;
@@ -243,6 +245,7 @@ MagickExport unsigned int ListMagicInfo(FILE *file,ExceptionInfo *exception)
     (void) fprintf(file,"\n");
   }
   (void) fflush(file);
+  LiberateSemaphoreInfo(&magic_semaphore);
   return(True);
 }
 

@@ -67,16 +67,13 @@ typedef void *ModuleHandle;
 */
 #define ModuleFilename  "modules.mgk"
 #if !defined(WIN32)
-# if !defined(CoderModuleDirectory)
-#  define CoderModuleDirectory  ""
-# endif
-# define ModuleGlobExpression "*.la"
+#define ModuleGlobExpression "*.la"
 #else
-# if defined(_DEBUG)
-#  define ModuleGlobExpression "IM_MOD_DB_*.dll"
-# else
-#  define ModuleGlobExpression "IM_MOD_RL_*.dll"
-# endif
+#if defined(_DEBUG)
+#define ModuleGlobExpression "IM_MOD_DB_*.dll"
+#else
+#define ModuleGlobExpression "IM_MOD_RL_*.dll"
+#endif
 #endif
 
 /*
@@ -92,8 +89,8 @@ static char
 /*
   Global declarations.
 */
-static ModuleAlias
-  *module_aliases = (ModuleAlias *) NULL;
+static CoderInfo
+  *coder_list = (CoderInfo *) NULL;
 
 static ModuleInfo
   *module_list = (ModuleInfo *) NULL;
@@ -107,16 +104,14 @@ static SemaphoreInfo
 static char
   *TagToProcess(const char *);
 
-static int
-  UnloadDynamicModule(const char *),
-  UnregisterModuleInfo(const char *);
-
-static ModuleInfo
-  *RegisterModuleInfo(ModuleInfo *),
-  *SetModuleInfo(const char *);
+static CoderInfo
+  *RegisterModule(CoderInfo *),
+  *SetCoderInfo(const char *);
 
 static unsigned int
-  ReadConfigurationFile(const char *,ExceptionInfo *);
+  ReadConfigurationFile(const char *,ExceptionInfo *),
+  UnloadModule(const char *),
+  UnregisterModule(const char *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -129,8 +124,7 @@ static unsigned int
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method DestroyModuleInfo deallocates memory associated with the ModuleInfo
-%  list.
+%  DestroyModuleInfo() deallocates memory associated with the ModuleInfo list.
 %
 %  The format of the DestroyModuleInfo method is:
 %
@@ -139,49 +133,41 @@ static unsigned int
 */
 MagickExport void DestroyModuleInfo(void)
 {
+  CoderInfo
+    *coder_info;
+
   ModuleInfo
     *module_info;
 
-  register ModuleAlias
-    *q;
-
-  register ModuleInfo
+  register CoderInfo
     *p;
 
+  register ModuleInfo
+    *q;
+
   /*
-    Unload and unregister all loaded modules.
+    Free module & coder list.
   */
-  for (p=module_list; p != (ModuleInfo *) NULL; )
+  for (p=coder_list; p != (CoderInfo *) NULL; )
   {
-    module_info=p;
+    coder_info=p;
     p=p->next;
-    (void) UnloadDynamicModule(module_info->tag);
-    (void) UnregisterModuleInfo(module_info->tag);
+    (void) UnloadModule(coder_info->tag);
+    (void) UnregisterModule(coder_info->tag);
   }
-  /*
-    Free module list and aliases.
-  */
+  coder_list=(CoderInfo *) NULL;
   AcquireSemaphoreInfo(&module_semaphore);
-  for (q=module_aliases; q != (ModuleAlias *) NULL; )
+  for (q=module_list; q != (ModuleInfo *) NULL; )
   {
-    if (q->filename != (char *) NULL)
-      LiberateMemory((void **) &q->filename);
-    if (q->name != (char *) NULL)
-      LiberateMemory((void **) &q->name);
-    if (q->alias != (char *) NULL)
-      LiberateMemory((void **) &q->alias);
-    module_aliases=q;
+    module_info=q;
     q=q->next;
-    LiberateMemory((void **) &module_aliases);
-  }
-  module_aliases=(ModuleAlias *) NULL;
-  for (p=module_list; p != (ModuleInfo *) NULL; )
-  {
-    if (p->tag != (char *) NULL)
-      LiberateMemory((void **) &p->tag);
-    module_list=p;
-    p=p->next;
-    LiberateMemory((void **) &module_list);
+    if (module_info->filename != (char *) NULL)
+      LiberateMemory((void **) &module_info->filename);
+    if (module_info->magick != (char *) NULL)
+      LiberateMemory((void **) &module_info->magick);
+    if (module_info->name != (char *) NULL)
+      LiberateMemory((void **) &module_info->name);
+    LiberateMemory((void **) &module_info);
   }
   module_list=(ModuleInfo *) NULL;
   DestroySemaphoreInfo(&module_semaphore);
@@ -208,7 +194,7 @@ MagickExport void DestroyModuleInfo(void)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method ExecuteModuleProcess returns True if the dynamic module is
+%    o status: ExecuteModuleProcess() returns True if the dynamic module is
 %      loaded and returns successfully, otherwise False.
 %
 %    o tag: a character string that represents the name of the particular
@@ -302,85 +288,24 @@ MagickExport unsigned int ExecuteModuleProcess(const char *tag,Image **image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t M o d u l e A l i a s                                               %
+%   G e t C o d e r I n f o                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetModuleAlias returns a pointer to a ModuleAlias structure that
-%  matches the specified tag.  If tag is NULL, the head of the module alias
-%  list is returned. If no modules aliases are loaded, or the requested alias
-%  is not found, NULL is returned.
+%  GetCoderInfo() returns a pointer to a CoderInfo structure that matches the
+%  specified tag.  If tag is NULL, the head of the module list is returned. If
+%  no modules are loaded, or the requested module is not found, NULL is
+%  returned.
 %
-%  The format of the GetModuleAlias method is:
+%  The format of the GetCoderInfo method is:
 %
-%      const ModuleAlias *GetModuleAlias(const char *name,
-%        ExceptionAlias *exception)
+%      const CoderInfo *GetCoderInfo(const char *tag,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o module_alias: Method GetModuleAlias returns a pointer ModuleAlias
-%      structure that matches the specified tag.
-%
-%    o name: a character string that represents the module alias we are
-%      looking for.
-%
-%    o exception: Return any errors or warnings in this structure.
-%
-%
-*/
-MagickExport const ModuleAlias *GetModuleAlias(const char *name,
-  ExceptionInfo *exception)
-{
-  register const ModuleAlias
-    *p;
-
-  AcquireSemaphoreInfo(&module_semaphore);
-  if (module_aliases == (const ModuleAlias *) NULL)
-    {
-      /*
-        Read modules.
-      */
-      if (lt_dlinit() != 0)
-        MagickError(DelegateError,"unable to initialize module loader",
-          lt_dlerror());
-      OpenStaticModules();
-      (void) ReadConfigurationFile(ModuleFilename,exception);
-    }
-  LiberateSemaphoreInfo(&module_semaphore);
-  if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
-    return(module_aliases);
-  for (p=module_aliases; p != (ModuleAlias *) NULL; p=p->next)
-    if (LocaleCompare(p->name,name) == 0)
-      return(p);
-  return((const ModuleAlias *) NULL);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t M o d u l e I n f o                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method GetModuleInfo returns a pointer to a ModuleInfo structure that
-%  matches the specified tag.  If tag is NULL, the head of the module list
-%  is returned. If no modules are loaded, or the requested module is not
-%  found, NULL is returned.
-%
-%  The format of the GetModuleInfo method is:
-%
-%      const ModuleInfo *GetModuleInfo(const char *tag,
-%        ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o module_info: Method GetModuleInfo returns a pointer ModuleInfo
+%    o coder_list: Method GetCoderInfo returns a pointer CoderInfo
 %      structure that matches the specified tag.
 %
 %    o tag: a character string that represents the image format we are
@@ -390,20 +315,20 @@ MagickExport const ModuleAlias *GetModuleAlias(const char *name,
 %
 %
 */
-MagickExport const ModuleInfo *GetModuleInfo(const char *tag,
+MagickExport const CoderInfo *GetCoderInfo(const char *tag,
   ExceptionInfo *exception)
 {
-  register const ModuleInfo
+  register const CoderInfo
     *p;
 
   (void) GetMagicInfo((unsigned char *) NULL,0,exception);
-  (void) GetModuleAlias(tag,exception);
+  (void) GetModuleInfo(tag,exception);
   if ((tag == (const char *) NULL) || (LocaleCompare(tag,"*") == 0))
-    return(module_list);
-  for (p=module_list; p != (ModuleInfo *) NULL; p=p->next)
+    return(coder_list);
+  for (p=coder_list; p != (CoderInfo *) NULL; p=p->next)
     if (LocaleCompare(p->tag,tag) == 0)
       return(p);
-  return((ModuleInfo *) NULL);
+  return((CoderInfo *) NULL);
 }
 
 /*
@@ -417,8 +342,8 @@ MagickExport const ModuleInfo *GetModuleInfo(const char *tag,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetModuleList returns a list containing the names of modules which may
-%  be loaded.
+%  GetModuleList() returns a list containing the names of modules which may be
+%  loaded.
 %
 %  The format of the GetModuleList function is:
 %
@@ -426,8 +351,8 @@ MagickExport const ModuleInfo *GetModuleInfo(const char *tag,
 %
 %  A description of each parameter follows:
 %
-%    o modulelist: Method GetModuleList returns a list of available modules. If
-%      an error occurs a NULL list is returned.
+%    o module_list: Method GetModuleList returns a list of available modules.
+%      If an error occurs a NULL list is returned.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
@@ -442,13 +367,13 @@ static char **GetModuleList(ExceptionInfo *exception)
   DIR
     *directory;
 
-  register int
+  register long
     i;
 
   struct dirent
     *entry;
 
-  unsigned int
+  unsigned long
     max_entries;
 
   max_entries=255;
@@ -473,7 +398,7 @@ static char **GetModuleList(ExceptionInfo *exception)
         entry=readdir(directory);
         continue;
       }
-    if (i >= (int) max_entries)
+    if (i >= (long) max_entries)
       {
         max_entries<<=1;
         ReacquireMemory((void **) &modules,max_entries*sizeof(char *));
@@ -504,17 +429,77 @@ static char **GetModuleList(ExceptionInfo *exception)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  L i s t M o d u l e A l i a s e s                                          %
+%   G e t M o d u l e I n f o                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ListModuleAliases lists the module info to a file.
+%  GetModuleInfo() returns a pointer to a ModuleInfo structure that matches
+%  the specified tag.  If tag is NULL, the head of the module alias list is
+%  returned. If no modules magick are loaded, or the requested alias is not
+%  found, NULL is returned.
 %
-%  The format of the ListModuleAliases method is:
+%  The format of the GetModuleInfo method is:
 %
-%      unsigned int ListModuleAliases(FILE *file,ExceptionInfo *exception)
+%      const ModuleInfo *GetModuleInfo(const char *name,
+%        ExceptionMagick *exception)
+%
+%  A description of each parameter follows:
+%
+%    o module_info: GetModuleInfo() returns a pointer ModuleInfo structure
+%      that matches the specified tag.
+%
+%    o name: a character string that represents the module alias we are
+%      looking for.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport const ModuleInfo *GetModuleInfo(const char *name,
+  ExceptionInfo *exception)
+{
+  register const ModuleInfo
+    *p;
+
+  AcquireSemaphoreInfo(&module_semaphore);
+  if (module_list == (const ModuleInfo *) NULL)
+    {
+      /*
+        Read modules.
+      */
+      if (lt_dlinit() != 0)
+        MagickError(DelegateError,"unable to initialize module loader",
+          lt_dlerror());
+      OpenStaticModules();
+      (void) ReadConfigurationFile(ModuleFilename,exception);
+    }
+  LiberateSemaphoreInfo(&module_semaphore);
+  if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
+    return(module_list);
+  for (p=module_list; p != (ModuleInfo *) NULL; p=p->next)
+    if (LocaleCompare(p->name,name) == 0)
+      return(p);
+  return((const ModuleInfo *) NULL);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  L i s t M o d u l e I n f o                                                %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ListModuleInfo lists the module info to a file.
+%
+%  The format of the ListModuleInfo method is:
+%
+%      unsigned int ListModuleInfo(FILE *file,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -524,9 +509,9 @@ static char **GetModuleList(ExceptionInfo *exception)
 %
 %
 */
-MagickExport unsigned int ListModuleAliases(FILE *file,ExceptionInfo *exception)
+MagickExport unsigned int ListModuleInfo(FILE *file,ExceptionInfo *exception)
 {
-  register const ModuleAlias
+  register const ModuleInfo
     *p;
 
   register long
@@ -534,31 +519,31 @@ MagickExport unsigned int ListModuleAliases(FILE *file,ExceptionInfo *exception)
 
   if (file == (const FILE *) NULL)
     file=stdout;
-  p=GetModuleAlias("*",exception);
-  if (p == (ModuleAlias *) NULL)
-    return(False);
-  for ( ; p != (ModuleAlias *) NULL; p=p->next)
+  (void) GetModuleInfo("*",exception);
+  AcquireSemaphoreInfo(&module_semaphore);
+  for (p=module_list; p != (ModuleInfo *) NULL; p=p->next)
   {
     if (p->stealth)
       continue;
-    if ((p->previous == (ModuleAlias *) NULL) ||
+    if ((p->previous == (ModuleInfo *) NULL) ||
         (LocaleCompare(p->filename,p->previous->filename) != 0))
       {
-        if (p->previous != (ModuleAlias *) NULL)
+        if (p->previous != (ModuleInfo *) NULL)
           (void) fprintf(file,"\n");
         (void) fprintf(file,"Filename: %.1024s\n\n",p->filename);
-        (void) fprintf(file,"Name      Alias\n");
+        (void) fprintf(file,"Magick      Module\n");
         (void) fprintf(file,"-------------------------------------------------"
           "------------------------------\n");
       }
-    (void) fprintf(file,"%.1024s",p->name);
-    for (i=(long) strlen(p->name); i <= 9; i++)
+    (void) fprintf(file,"%.1024s",p->magick);
+    for (i=(long) strlen(p->magick); i <= 10; i++)
       (void) fprintf(file," ");
-    if (p->alias != (char *) NULL)
-      (void) fprintf(file,"%.1024s",p->alias);
+    if (p->name != (char *) NULL)
+      (void) fprintf(file,"%.1024s",p->name);
     (void) fprintf(file,"\n");
   }
   (void) fflush(file);
+  LiberateSemaphoreInfo(&module_semaphore);
   return(True);
 }
 
@@ -573,8 +558,8 @@ MagickExport unsigned int ListModuleAliases(FILE *file,ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ModuleToTag parser a file system module name into the basic name of
-%  the module.
+%  ModuleToTag() parser a file system module name into the basic name of the
+%  module.
 %
 %  The format of the ModuleToTag method is:
 %
@@ -614,8 +599,8 @@ static void ModuleToTag(const char *filename,const char *format,char *module)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method OpenModule loads a module, and invokes its registration method.
-%  It returns True on success, and False if there is an error.
+%  OpenModule() loads a module, and invokes its registration method.  It
+%  returns True on success, and False if there is an error.
 %
 %  The format of the OpenModule method is:
 %
@@ -642,13 +627,13 @@ MagickExport unsigned int OpenModule(const char *module,
     name[MaxTextExtent],
     *path;
 
+  CoderInfo
+    *coder_info;
+
   ModuleHandle
     handle;
 
-  ModuleInfo
-    *module_info;
-
-  register ModuleAlias
+  register ModuleInfo
     *p;
 
   void
@@ -659,15 +644,13 @@ MagickExport unsigned int OpenModule(const char *module,
   */
   assert(module != (const char *) NULL);
   (void) strncpy(module_name,module,MaxTextExtent-1);
-  if (module_aliases != (ModuleAlias *) NULL)
-    {
-      for (p=module_aliases; p != (ModuleAlias *) NULL; p=p->next)
-        if (LocaleCompare(p->alias,module) == 0)
-          {
-            (void) strncpy(module_name,p->name,MaxTextExtent-1);
-            break;
-          }
-    }
+  if (module_list != (ModuleInfo *) NULL)
+    for (p=module_list; p != (ModuleInfo *) NULL; p=p->next)
+      if (LocaleCompare(p->magick,module) == 0)
+        {
+          (void) strncpy(module_name,p->name,MaxTextExtent-1);
+          break;
+        }
   /*
     Load module file.
   */
@@ -690,15 +673,15 @@ MagickExport unsigned int OpenModule(const char *module,
   /*
     Add module to module list.
   */
-  module_info=SetModuleInfo(module_name);
-  if (module_info == (ModuleInfo*) NULL)
+  coder_info=SetCoderInfo(module_name);
+  if (coder_info == (CoderInfo*) NULL)
     {
       (void) lt_dlclose(handle);
       return(False);
     }
-  module_info->handle=handle;
-  (void) time(&module_info->load_time);
-  if (!RegisterModuleInfo(module_info))
+  coder_info->handle=handle;
+  (void) time(&coder_info->load_time);
+  if (!RegisterModule(coder_info))
     return(False);
   /*
     Locate and execute RegisterFORMATImage function
@@ -794,8 +777,8 @@ MagickExport unsigned int OpenModules(ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method ReadConfigurationFile returns True if at least one color
-%      is defined otherwise False.
+%    o status: ReadConfigurationFile() returns True if at least one color is
+%      defined otherwise False.
 %
 %    o basename:  The color configuration filename.
 %
@@ -865,37 +848,37 @@ static unsigned int ReadConfigurationFile(const char *basename,
           if (LocaleCompare(keyword,"file") == 0)
             {
               (void) ReadConfigurationFile(token,exception);
-              while (module_aliases->next != (ModuleAlias *) NULL)
-                module_aliases=module_aliases->next;
+              while (module_list->next != (ModuleInfo *) NULL)
+                module_list=module_list->next;
             }
         }
         continue;
       }
     if (LocaleCompare(keyword,"<module") == 0)
       {
-        ModuleAlias
-          *alias_info;
+        ModuleInfo
+          *module_info;
 
         /*
           Allocate memory for the font list.
         */
-        alias_info=(ModuleAlias *) AcquireMemory(sizeof(ModuleAlias));
-        if (alias_info == (ModuleAlias *) NULL)
-          MagickError(ResourceLimitError,"Unable to allocate module aliases",
+        module_info=(ModuleInfo *) AcquireMemory(sizeof(ModuleInfo));
+        if (module_info == (ModuleInfo *) NULL)
+          MagickError(ResourceLimitError,"Unable to allocate module magick",
             "Memory allocation failed");
-        (void) memset(alias_info,0,sizeof(ModuleAlias));
-        alias_info->filename=AllocateString(filename);
-        if (module_aliases == (ModuleAlias *) NULL)
+        (void) memset(module_info,0,sizeof(ModuleInfo));
+        module_info->filename=AllocateString(filename);
+        if (module_list == (ModuleInfo *) NULL)
           {
-            module_aliases=alias_info;
+            module_list=module_info;
             continue;
           }
-        module_aliases->next=alias_info;
-        alias_info->previous=module_aliases;
-        module_aliases=module_aliases->next;
+        module_list->next=module_info;
+        module_info->previous=module_list;
+        module_list=module_list->next;
         continue;
       }
-    if (module_aliases == (ModuleAlias *) NULL)
+    if (module_list == (ModuleInfo *) NULL)
       continue;
     GetToken(q,(char **) NULL,token);
     if (*token != '=')
@@ -904,12 +887,12 @@ static unsigned int ReadConfigurationFile(const char *basename,
     GetToken(q,&q,token);
     switch (*keyword) 
     {
-      case 'A':
-      case 'a':
+      case 'M':
+      case 'm':
       {
-        if (LocaleCompare((char *) keyword,"alias") == 0)
+        if (LocaleCompare((char *) keyword,"magick") == 0)
           {
-            module_aliases->alias=AllocateString(token);
+            module_list->magick=AllocateString(token);
             break;
           }
         break;
@@ -919,7 +902,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
       {
         if (LocaleCompare((char *) keyword,"name") == 0)
           {
-            module_aliases->name=AllocateString(token);
+            module_list->name=AllocateString(token);
             break;
           }
         break;
@@ -929,7 +912,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
       {
         if (LocaleCompare((char *) keyword,"stealth") == 0)
           {
-            module_aliases->stealth=LocaleCompare(token,"True") == 0;
+            module_list->stealth=LocaleCompare(token,"True") == 0;
             break;
           }
         break;
@@ -940,10 +923,10 @@ static unsigned int ReadConfigurationFile(const char *basename,
   }
   LiberateMemory((void **) &token);
   LiberateMemory((void **) &xml);
-  if (module_aliases == (ModuleAlias *) NULL)
+  if (module_list == (ModuleInfo *) NULL)
     return(False);
-  while (module_aliases->previous != (ModuleAlias *) NULL)
-    module_aliases=module_aliases->previous;
+  while (module_list->previous != (ModuleInfo *) NULL)
+    module_list=module_list->previous;
 #endif
   return(True);
 }
@@ -953,51 +936,51 @@ static unsigned int ReadConfigurationFile(const char *basename,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e g i s t e r M o d u l e I n f o                                       %
+%   R e g i s t e r M o d u l e                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method RegisterModuleInfo adds an entry to the module list.  It returns a
-%  pointer to the registered entry on success.
+%  RegisterModule() adds an entry to the module list.  It returns a pointer to
+%  the registered entry on success.
 %
-%  The format of the RegisterModuleInfo method is:
+%  The format of the RegisterModule method is:
 %
-%      ModuleInfo *RegisterModuleInfo(ModuleInfo *entry)
+%      CoderInfo *RegisterModule(CoderInfo *entry)
 %
 %  A description of each parameter follows:
 %
 %    o info: a pointer to the registered entry is returned.
 %
-%    o entry: a pointer to the ModuleInfo structure to register.
+%    o entry: a pointer to the CoderInfo structure to register.
 %
 */
-static ModuleInfo *RegisterModuleInfo(ModuleInfo *entry)
+static CoderInfo *RegisterModule(CoderInfo *entry)
 {
-  register ModuleInfo
+  register CoderInfo
     *p;
 
   /*
     Delete any existing tag.
   */
-  assert(entry != (ModuleInfo *) NULL);
+  assert(entry != (CoderInfo *) NULL);
   assert(entry->signature == MagickSignature);
-  (void) UnregisterModuleInfo(entry->tag);
-  entry->previous=(ModuleInfo *) NULL;
-  entry->next=(ModuleInfo *) NULL;
-  if (module_list == (ModuleInfo *) NULL)
+  (void) UnregisterModule(entry->tag);
+  entry->previous=(CoderInfo *) NULL;
+  entry->next=(CoderInfo *) NULL;
+  if (coder_list == (CoderInfo *) NULL)
     {
       /*
         Start module list.
       */
-      module_list=entry;
+      coder_list=entry;
       return(entry);
     }
   /*
     Tag is added in lexographic order.
   */
-  for (p=module_list; p->next != (ModuleInfo *) NULL; p=p->next)
+  for (p=coder_list; p->next != (CoderInfo *) NULL; p=p->next)
     if (LocaleCompare(p->tag,entry->tag) >= 0)
       break;
   if (LocaleCompare(p->tag,entry->tag) < 0)
@@ -1008,7 +991,7 @@ static ModuleInfo *RegisterModuleInfo(ModuleInfo *entry)
       entry->next=p->next;
       p->next=entry;
       entry->previous=p;
-      if (entry->next != (ModuleInfo *) NULL)
+      if (entry->next != (CoderInfo *) NULL)
         entry->next->previous=entry;
       return(entry);
     }
@@ -1018,10 +1001,10 @@ static ModuleInfo *RegisterModuleInfo(ModuleInfo *entry)
   entry->next=p;
   entry->previous=p->previous;
   p->previous=entry;
-  if (entry->previous != (ModuleInfo *) NULL)
+  if (entry->previous != (CoderInfo *) NULL)
     entry->previous->next=entry;
-  if (p == module_list)
-    module_list=entry;
+  if (p == coder_list)
+    coder_list=entry;
   return(entry);
 }
 
@@ -1030,40 +1013,40 @@ static ModuleInfo *RegisterModuleInfo(ModuleInfo *entry)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   S e t M o d u l e I n f o                                                 %
+%   S e t C o d e r I n f o                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method SetModuleInfo allocates a ModuleInfo structure and initializes the
-%  members to default values.
+%  SetCoderInfo() allocates a CoderInfo structure and initializes the members
+%  to default values.
 %
-%  The format of the SetModuleInfo method is:
+%  The format of the SetCoderInfo method is:
 %
-%      ModuleInfo *SetModuleInfo(const char *tag)
+%      CoderInfo *SetCoderInfo(const char *tag)
 %
 %  A description of each parameter follows:
 %
-%    o module_info: Method SetModuleInfo returns the allocated and initialized
-%      ModuleInfo structure.
+%    o coder_list: SetCoderInfo() returns the allocated and initialized
+%      CoderInfo structure.
 %
 %    o tag: a character string that represents the image format associated
-%      with the ModuleInfo structure.
+%      with the CoderInfo structure.
 %
 %
 */
-static ModuleInfo *SetModuleInfo(const char *tag)
+static CoderInfo *SetCoderInfo(const char *tag)
 {
-  ModuleInfo
+  CoderInfo
     *entry;
 
   assert(tag != (const char *) NULL);
-  entry=(ModuleInfo *) AcquireMemory(sizeof(ModuleInfo));
-  if (entry == (ModuleInfo *) NULL)
+  entry=(CoderInfo *) AcquireMemory(sizeof(CoderInfo));
+  if (entry == (CoderInfo *) NULL)
     MagickError(ResourceLimitError,"Unable to allocate module info",
       "Memory allocation failed");
-  (void) memset(entry,0,sizeof(ModuleInfo));
+  (void) memset(entry,0,sizeof(CoderInfo));
   entry->tag=AllocateString(tag);
   entry->signature=MagickSignature;
   return(entry);
@@ -1120,8 +1103,8 @@ static char *TagToProcess(const char *tag)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method TagToModule takes a module "name" and returnes a complete file
-%  system dynamic module name.
+%  TagToModule() takes a module "name" and returnes a complete file system
+%  dynamic module name.
 %
 %  The format of the TagToModule method is:
 %
@@ -1163,31 +1146,31 @@ MagickExport char *TagToModule(const char *tag)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n l o a d D y n a m i c M o d u l e                                     %
+%   U n l o a d M o d u l e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method UnloadDynamicModule unloads a module, and invokes its de-registration
-%  function. Returns True on success, and False if there is an error.
+%  UnloadModule() unloads a module, and invokes its de-registration method.
+%  Returns True on success, and False if there is an error.
 %
-%  The format of the UnloadDynamicModule method is:
+%  The format of the UnloadModule method is:
 %
-%      int UnloadDynamicModule(const char *module)
+%      unsigned int UnloadModule(const char *module)
 %
 %  A description of each parameter follows:
 %
 %    o module: a character string that indicates the module to unload.
 %
 */
-static int UnloadDynamicModule(const char *module)
+static unsigned int UnloadModule(const char *module)
 {
   char
     name[MaxTextExtent];
 
-  const ModuleInfo
-    *module_info;
+  const CoderInfo
+    *coder_info;
 
   ExceptionInfo
     exception;
@@ -1197,14 +1180,14 @@ static int UnloadDynamicModule(const char *module)
 
   assert(module != (const char *) NULL);
   GetExceptionInfo(&exception);
-  module_info=GetModuleInfo(module,&exception);
-  if (module_info == (const ModuleInfo *) NULL)
+  coder_info=GetCoderInfo(module,&exception);
+  if (coder_info == (const CoderInfo *) NULL)
     return(False);
   /*
     Locate and execute UnregisterFORMATImage function
   */
   ModuleToTag(module,"Unregister%sImage",name);
-  method=(void (*)(void)) lt_dlsym((ModuleHandle) module_info->handle,name);
+  method=(void (*)(void)) lt_dlsym((ModuleHandle) coder_info->handle,name);
   if (method == (void (*)(void)) NULL)
     MagickWarning(DelegateWarning,"failed to find symbol",lt_dlerror());
   else
@@ -1212,7 +1195,7 @@ static int UnloadDynamicModule(const char *module)
   /*
     Close and remove module from list.
   */
-  (void) lt_dlclose((ModuleHandle) module_info->handle);
+  (void) lt_dlclose((ModuleHandle) coder_info->handle);
   return(True);
 }
 
@@ -1221,55 +1204,57 @@ static int UnloadDynamicModule(const char *module)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r M o d u l e I n f o                                   %
+%   U n r e g i s t e r M o d u l e                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method UnregisterModuleInfo removes a tag from the module info list.  It
-%  returns False if the tag does not exist in the list otherwise True.
+%  UnregisterModule() removes a tag from the module info list.  It returns
+%  False if the tag does not exist in the list otherwise True.
 %
-%  The format of the UnregisterModuleInfo method is:
+%  The format of the UnregisterModule method is:
 %
-%      unsigned int UnregisterModuleInfo(const char *tag)
+%      unsigned int UnregisterModule(const char *tag)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method UnregisterModuleInfo returns False if the tag does not
+%    o status: Method UnregisterModule returns False if the tag does not
 %      exist in the list otherwise it returns True.
 %
 %    o tag: a character string that represents the image format we are
 %      looking for.
 %
 */
-static int UnregisterModuleInfo(const char *tag)
+static unsigned int UnregisterModule(const char *tag)
 {
-  ModuleInfo
-    *module_info;
+  CoderInfo
+    *coder_info;
 
-  register ModuleInfo
+  register CoderInfo
     *p;
 
   assert(tag != (const char *) NULL);
-  for (p=module_list; p != (ModuleInfo *) NULL; p=p->next)
+  AcquireSemaphoreInfo(&module_semaphore);
+  for (p=coder_list; p != (CoderInfo *) NULL; p=p->next)
   {
     if (LocaleCompare(p->tag,tag) != 0)
       continue;
     LiberateMemory((void **) &p->tag);
-    if (p->previous != (ModuleInfo *) NULL)
+    if (p->previous != (CoderInfo *) NULL)
       p->previous->next=p->next;
     else
       {
-        module_list=p->next;
-        if (p->next != (ModuleInfo *) NULL)
-          p->next->previous=(ModuleInfo *) NULL;
+        coder_list=p->next;
+        if (p->next != (CoderInfo *) NULL)
+          p->next->previous=(CoderInfo *) NULL;
       }
-    if (p->next != (ModuleInfo *) NULL)
+    if (p->next != (CoderInfo *) NULL)
       p->next->previous=p->previous;
-    module_info=p;
-    LiberateMemory((void **) &module_info);
-    return(True);
+    coder_info=p;
+    LiberateMemory((void **) &coder_info);
+    break;
   }
-  return(False);
+  LiberateSemaphoreInfo(&module_semaphore);
+  return(p != (CoderInfo *) NULL);
 }

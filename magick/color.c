@@ -179,19 +179,22 @@ static void
 */
 MagickExport void DestroyColorInfo(void)
 {
+  ColorInfo
+    *color_info;
+
   register ColorInfo
     *p;
 
   AcquireSemaphoreInfo(&color_semaphore);
   for (p=color_list; p != (const ColorInfo *) NULL; )
   {
-    if (p->filename != (char *) NULL)
-      LiberateMemory((void **) &p->filename);
-    if (p->name != (char *) NULL)
-      LiberateMemory((void **) &p->name);
-    color_list=p;
+    color_info=p;
     p=p->next;
-    LiberateMemory((void **) &color_list);
+    if (color_info->filename != (char *) NULL)
+      LiberateMemory((void **) &color_info->filename);
+    if (color_info->name != (char *) NULL)
+      LiberateMemory((void **) &color_info->name);
+    LiberateMemory((void **) &color_info);
   }
   color_list=(ColorInfo *) NULL;
   DestroySemaphoreInfo(&color_semaphore);
@@ -1151,10 +1154,9 @@ MagickExport unsigned int ListColorInfo(FILE *file,ExceptionInfo *exception)
 
   if (file == (const FILE *) NULL)
     file=stdout;
-  p=GetColorInfo("*",exception);
-  if (p == (const ColorInfo *) NULL)
-    return(False);
-  for ( ; p != (const ColorInfo *) NULL; p=p->next)
+  (void) GetColorInfo("*",exception);
+  AcquireSemaphoreInfo(&color_semaphore);
+  for (p=color_list; p != (const ColorInfo *) NULL; p=p->next)
   {
     if (p->stealth)
       continue;
@@ -1188,6 +1190,7 @@ MagickExport unsigned int ListColorInfo(FILE *file,ExceptionInfo *exception)
     (void) fprintf(file,"\n");
   }
   (void) fflush(file);
+  LiberateSemaphoreInfo(&color_semaphore);
   return(True);
 }
 

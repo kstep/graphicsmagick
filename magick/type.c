@@ -108,32 +108,35 @@ MagickExport void DestroyTypeInfo(void)
   register TypeInfo
     *p;
 
+  TypeInfo
+    *type_info;
+
   AcquireSemaphoreInfo(&type_semaphore);
   for (p=type_list; p != (TypeInfo *) NULL; )
   {
-    if (p->filename != (char *) NULL)
-      LiberateMemory((void **) &p->filename);
-    if (p->name != (char *) NULL)
-      LiberateMemory((void **) &p->name);
-    if (p->family != (char *) NULL)
-      LiberateMemory((void **) &p->family);
-    if (p->alias != (char *) NULL)
-      LiberateMemory((void **) &p->alias);
-    if (p->description != (char *) NULL)
-      LiberateMemory((void **) &p->description);
-    if (p->format != (char *) NULL)
-      LiberateMemory((void **) &p->format);
-    if (p->weight != (char *) NULL)
-      LiberateMemory((void **) &p->weight);
-    if (p->metrics != (char *) NULL)
-      LiberateMemory((void **) &p->metrics);
-    if (p->glyphs != (char *) NULL)
-      LiberateMemory((void **) &p->glyphs);
-    if (p->version != (char *) NULL)
-      LiberateMemory((void **) &p->version);
-    type_list=p;
+    type_info=p;
     p=p->next;
-    LiberateMemory((void **) &type_list);
+    if (type_info->filename != (char *) NULL)
+      LiberateMemory((void **) &type_info->filename);
+    if (type_info->name != (char *) NULL)
+      LiberateMemory((void **) &type_info->name);
+    if (type_info->family != (char *) NULL)
+      LiberateMemory((void **) &type_info->family);
+    if (type_info->alias != (char *) NULL)
+      LiberateMemory((void **) &type_info->alias);
+    if (type_info->description != (char *) NULL)
+      LiberateMemory((void **) &type_info->description);
+    if (type_info->format != (char *) NULL)
+      LiberateMemory((void **) &type_info->format);
+    if (type_info->weight != (char *) NULL)
+      LiberateMemory((void **) &type_info->weight);
+    if (type_info->metrics != (char *) NULL)
+      LiberateMemory((void **) &type_info->metrics);
+    if (type_info->glyphs != (char *) NULL)
+      LiberateMemory((void **) &type_info->glyphs);
+    if (type_info->version != (char *) NULL)
+      LiberateMemory((void **) &type_info->version);
+    LiberateMemory((void **) &type_info);
   }
   type_list=(TypeInfo *) NULL;
   DestroySemaphoreInfo(&type_semaphore);
@@ -224,10 +227,9 @@ MagickExport unsigned int ListTypeInfo(FILE *file,ExceptionInfo *exception)
 
   if (file == (FILE *) NULL)
     file=stdout;
-  p=GetTypeInfo("*",exception);
-  if (p == (const TypeInfo *) NULL)
-    return(False);
-  for ( ; p != (const TypeInfo *) NULL; p=p->next)
+  (void) GetTypeInfo("*",exception);
+  AcquireSemaphoreInfo(&type_semaphore);
+  for (p=type_list; p != (const TypeInfo *) NULL; p=p->next)
   {
     if (p->stealth)
       continue;
@@ -249,6 +251,7 @@ MagickExport unsigned int ListTypeInfo(FILE *file,ExceptionInfo *exception)
     (void) fprintf(file,"\n");
   }
   (void) fflush(file);
+  LiberateSemaphoreInfo(&type_semaphore);
   return(True);
 }
 

@@ -113,7 +113,7 @@ static unsigned int
 MagickExport void DestroyDelegateInfo(void)
 {
   DelegateInfo
-    *delegate;
+    *delegate_info;
 
   register DelegateInfo
     *p;
@@ -121,17 +121,17 @@ MagickExport void DestroyDelegateInfo(void)
   AcquireSemaphoreInfo(&delegate_semaphore);
   for (p=delegate_list; p != (DelegateInfo *) NULL; )
   {
-    if (p->filename != (char *) NULL)
-      LiberateMemory((void **) &p->filename);
-    if (p->decode != (char *) NULL)
-      LiberateMemory((void **) &p->decode);
-    if (p->encode != (char *) NULL)
-      LiberateMemory((void **) &p->encode);
-    if (p->commands != (char *) NULL)
-      LiberateMemory((void **) &p->commands);
-    delegate=p;
+    delegate_info=p;
     p=p->next;
-    LiberateMemory((void **) &delegate);
+    if (delegate_info->filename != (char *) NULL)
+      LiberateMemory((void **) &delegate_info->filename);
+    if (delegate_info->decode != (char *) NULL)
+      LiberateMemory((void **) &delegate_info->decode);
+    if (delegate_info->encode != (char *) NULL)
+      LiberateMemory((void **) &delegate_info->encode);
+    if (delegate_info->commands != (char *) NULL)
+      LiberateMemory((void **) &delegate_info->commands);
+    LiberateMemory((void **) &delegate_info);
   }
   delegate_list=(DelegateInfo *) NULL;
   DestroySemaphoreInfo(&delegate_semaphore);
@@ -489,10 +489,9 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
 
   if (file == (const FILE *) NULL)
     file=stdout;
-  p=GetDelegateInfo("*","*",exception);
-  if (p == (const DelegateInfo *) NULL)
-    return(False);
-  for ( ; p != (const DelegateInfo *) NULL; p=p->next)
+  (void) GetDelegateInfo("*","*",exception);
+  AcquireSemaphoreInfo(&delegate_semaphore);
+  for (p=delegate_list; p != (const DelegateInfo *) NULL; p=p->next)
   {
     if (p->stealth)
       continue;
@@ -521,6 +520,7 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
       LiberateMemory((void **) &commands[i]);
   }
   (void) fflush(file);
+  LiberateSemaphoreInfo(&delegate_semaphore);
   return(True);
 }
 

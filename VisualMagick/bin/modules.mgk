@@ -1,50 +1,67 @@
 <?xml version="1.0"?>
 <modulemap>
-  <module name="TTF" alias="AFM"/>
-  <module name="JBIG" alias="BIE"/>
-  <module name="PCX" alias="DCX"/>
-  <module name="BMP" alias="DIB"/>
-  <module name="PDF" alias="EPDF"/>
-  <module name="PS" alias="EPI"/>
-  <module name="PS" alias="EPS"/>
-  <module name="PS2" alias="EPS2"/>
-  <module name="PS" alias="EPSF"/>
-  <module name="PS" alias="EPSI"/>
-  <module name="URL" alias="FILE"/>
-  <module name="URL" alias="FTP"/>
-  <module name="FAX" alias="G3"/>
-  <module name="GIF" alias="GIF87"/>
-  <module name="LOGO" alias="GRANITE"/>
-  <module name="LOGO" alias="H"/>
-  <module name="HTML" alias="HTM"/>
-  <module name="URL" alias="HTTP"/>
-  <module name="TGA" alias="ICB"/>
-  <module name="ICON" alias="ICO"/>
-  <module name="MIFF" alias="IMPLICIT"/>
-  <module name="JBIG" alias="JBG"/>
-  <module name="JPEG" alias="JPG"/>
-  <module name="PNG" alias="MNG"/>
-  <module name="LOGO" alias="NETSCAPE"/>
-  <module name="PNM" alias="P7"/>
-  <module name="UYVY" alias="PAL"/>
-  <module name="PNM" alias="PBM"/>
-  <module name="PCD" alias="PCDS"/>
-  <module name="PICT" alias="PCT"/>
-  <module name="TTF" alias="PFB"/>
-  <module name="TTF" alias="PFM"/>
-  <module name="PNM" alias="PGM"/>
-  <module name="XPM" alias="PICON"/>
-  <module name="XPM" alias="PM"/>
-  <module name="PNM" alias="PPM"/>
-  <module name="PSD" alias="PSD"/>
-  <module name="TIFF" alias="PTIF"/>
-  <module name="SUN" alias="RAS"/>
-  <module name="RGB" alias="RGBA"/>
-  <module name="HTML" alias="SHTML"/>
-  <module name="TXT" alias="TEXT"/>
-  <module name="TIFF" alias="TIF"/>
-  <module name="TGA" alias="VDA"/>
-  <module name="TGA" alias="VST"/>
-  <module name="VIFF" alias="XV"/>
-  <module name="WMF" alias="WMFWIN32"/>
+  <module magick="8BIM" name="META" />
+  <module magick="AFM" name="TTF" />
+  <module magick="APP1" name="META" />
+  <module magick="B" name="GRAY" />
+  <module magick="BIE" name="JBIG" />
+  <module magick="C" name="GRAY" />
+  <module magick="DCX" name="PCX" />
+  <module magick="EMF" name="WMF" />
+  <module magick="EPDF" name="PDF" />
+  <module magick="EPI" name="PS" />
+  <module magick="EPS" name="PS" />
+  <module magick="EPS2" name="PS2" />
+  <module magick="EPSF" name="PS" />
+  <module magick="EPSI" name="PS" />
+  <module magick="FILE" name="URL" />
+  <module magick="FTP" name="URL" />
+  <module magick="G" name="GRAY" />
+  <module magick="G3" name="FAX" />
+  <module magick="GIF87" name="GIF" />
+  <module magick="GRANITE" name="LOGO" />
+  <module magick="H" name="LOGO" />
+  <module magick="H5" name="HDF" />
+  <module magick="HTM" name="HTML" />
+  <module magick="HTTP" name="URL" />
+  <module magick="ICB" name="TGA" />
+  <module magick="ICM" name="META" />
+  <module magick="ICO" name="ICON" />
+  <module magick="IMPLICIT" name="MIFF" />
+  <module magick="IPTC" name="META" />
+  <module magick="JBG" name="JBIG" />
+  <module magick="JPG" name="JPEG" />
+  <module magick="K" name="GRAY" />
+  <module magick="M" name="GRAY" />
+  <module magick="M2V" name="MPEG" />
+  <module magick="MNG" name="PNG" />
+  <module magick="MPG" name="MPEG" />
+  <module magick="MPRI" name="MPR" />
+  <module magick="NETSCAPE" name="LOGO" />
+  <module magick="O" name="GRAY" />
+  <module magick="P7" name="PNM" />
+  <module magick="PAL" name="UYVY" />
+  <module magick="PBM" name="PNM" />
+  <module magick="PCDS" name="PCD" />
+  <module magick="PCT" name="PICT" />
+  <module magick="PFA" name="TTF" />
+  <module magick="PFB" name="TTF" />
+  <module magick="PFM" name="TTF" />
+  <module magick="PGM" name="PNM" />
+  <module magick="PICON" name="XPM" />
+  <module magick="PM" name="XPM" />
+  <module magick="PPM" name="PNM" />
+  <module magick="PSD" name="PSD" />
+  <module magick="PTIF" name="TIFF" />
+  <module magick="R" name="GRAY" />
+  <module magick="RAS" name="SUN" />
+  <module magick="RGBA" name="RGB" />
+  <module magick="SHTML" name="HTML" />
+  <module magick="TEXT" name="TXT" />
+  <module magick="TIF" name="TIFF" />
+  <module magick="VDA" name="TGA" />
+  <module magick="VST" name="TGA" />
+  <module magick="WMFWIN32" name="WMF" />
+  <module magick="XV" name="VIFF" />
+  <module magick="Y" name="GRAY" />
 </modulemap>

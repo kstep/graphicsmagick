@@ -587,9 +587,7 @@ MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
 
   if (file == (FILE *) NULL)
     file=stdout;
-  p=GetMagickInfo("*",exception);
-  if (p == (const MagickInfo *) NULL)
-    return(False);
+  (void) GetMagickInfo("*",exception);
   GetExceptionInfo(&path_exception);
   module_file=TagToModule("MIFF");
   path=GetMagickConfigurePath(module_file,&path_exception);
@@ -604,7 +602,7 @@ MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
   (void) fprintf(file,"--------------------------------------------------------"
     "-----------------------\n");
   AcquireSemaphoreInfo(&magick_semaphore);
-  for ( ; p != (MagickInfo *) NULL; p=p->next)
+  for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
   {
     if (p->stealth)
       continue;
@@ -613,9 +611,9 @@ MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
       p->encoder ? 'w' : '-',p->encoder && p->adjoin ? '+' : '-',
       p->description ? p->description : "");
   }
-  LiberateSemaphoreInfo(&magick_semaphore);
   (void) fprintf(file,"\n* native blob support\n\n");
   (void) fflush(file);
+  LiberateSemaphoreInfo(&magick_semaphore);
   return(True);
 }
 
