@@ -1323,6 +1323,9 @@ MagickExport unsigned int OpenCache(Image *image)
   if ((image->storage_class == PseudoClass) ||
       (image->colorspace == CMYKColorspace))
     length+=number_pixels*sizeof(IndexPacket);
+  offset=length;
+  if (length != (off_t) offset)
+    cache_info->type=DiskCache;
   if ((cache_info->type == MemoryCache) ||
       ((cache_info->type == UndefinedCache) && (length <= GetCacheMemory(0))))
     {
