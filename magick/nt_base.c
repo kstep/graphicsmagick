@@ -1286,7 +1286,7 @@ static int NTGetLatestGhostscript( void )
 
   DWORD version = GetVersion();
   if ( ((HIWORD(version) & 0x8000)!=0) && ((HIWORD(version) & 0x4000)==0) )
-    return FALSE;  // win32s
+    return FALSE;  /* win32s */
 
   count = 1;
   NTGhostscriptEnumerateVersions(&count);

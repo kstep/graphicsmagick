@@ -1023,9 +1023,9 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
       
         /* BOGUS: we don't write these yet because we aren't
-        //      reading them properly yet :(
-        //image->x_resolution = xres;
-        //image->y_resolution = yres;
+          reading them properly yet :(
+            image->x_resolution = xres;
+            image->y_resolution = yres;
         */
       }
       break;

@@ -1,3 +1,9 @@
+2003-08-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/clipboard.c, coders/emf.c, coders/tiff.c, coders/wmf.c,
+	coders/xcf.c, coders/xtrn.c, magick/magick.c, magick/nt_base.c,
+	magick/resource.c: Use traditional C comments in C source files.
+
 2003-07-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* www/programming.html: Update Rmagick URL.

@@ -362,20 +362,20 @@ MagickExport void InitializeMagickResources(void)
 
 #if defined(WIN32)
   {
-    //MEMORYSTATUSEX
-    //  stat_ex;
+/*     MEMORYSTATUSEX */
+/*       stat_ex; */
 
     long
       total_physical_memory,
       total_virtual_memory;
 
-    //if (GlobalMemoryStatusEx(&stat_ex))
-    //{
-    //  total_physical_memory=(long)(stat_ex.ullTotalPhys/1048576);
-    //  total_virtual_memory=(long)(stat_ex.ullTotalVirtual/1048576);
-    //}
-    //else
-    //{
+/*     if (GlobalMemoryStatusEx(&stat_ex)) */
+/*     { */
+/*       total_physical_memory=(long)(stat_ex.ullTotalPhys/1048576); */
+/*       total_virtual_memory=(long)(stat_ex.ullTotalVirtual/1048576); */
+/*     } */
+/*     else */
+/*     { */
       MEMORYSTATUS
         stat;
 
