@@ -365,7 +365,9 @@ MagickExport ModuleInfo *GetModuleInfo(const char *tag,ExceptionInfo *exception)
 
   (void) GetMagicInfo((unsigned char *) NULL,0,exception);
   AcquireSemaphore(&module_semaphore);
-  if (module_list == (ModuleInfo *) NULL)
+  if (module_list != (ModuleInfo *) NULL)
+    LiberateSemaphore(&module_semaphore);
+  else
     {
       /*
         Initialize ltdl.
@@ -377,9 +379,9 @@ MagickExport ModuleInfo *GetModuleInfo(const char *tag,ExceptionInfo *exception)
         Read modules.
       */
       (void) ReadConfigurationFile("modules.mgk",exception);
+      LiberateSemaphore(&module_semaphore);
       atexit(DestroyModuleInfo);
     }
-  LiberateSemaphore(&module_semaphore);
   if ((tag == (const char *) NULL) || (LocaleCompare(tag,"*") == 0))
     return(module_list);
   for (p=module_list; p != (ModuleInfo *) NULL; p=p->next)
