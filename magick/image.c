@@ -3273,7 +3273,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
   const int argc,char **argv,Image **image)
 {
   char
-    *geometry,
     *option;
 
   DrawInfo
@@ -3329,7 +3328,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
   clone_info=CloneImageInfo(image_info);
   draw_info=CloneDrawInfo(clone_info,(DrawInfo *) NULL);
   GetQuantizeInfo(&quantize_info);
-  geometry=(char *) NULL;
   map_image=(Image *) NULL;
   quantize_info.number_colors=0;
   quantize_info.tree_depth=0;
@@ -3440,10 +3438,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Surround image with a border of solid color.
             */
-            border_info.width=0;
-            border_info.height=0;
-            border_info.x=0;
-            border_info.y=0;
+            (void) memset(&border_info,0,sizeof(RectangleInfo));
             flags=ParseGeometry(argv[++i],&border_info.x,&border_info.y,
               &border_info.width,&border_info.height);
             if ((flags & HeightValue) == 0)
@@ -3912,10 +3907,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Surround image with an ornamental border.
             */
-            frame_info.width=0;
-            frame_info.height=0;
-            frame_info.outer_bevel=0;
-            frame_info.inner_bevel=0;
+            (void) memset(&frame_info,0,sizeof(FrameInfo));
             flags=ParseGeometry(argv[++i],&frame_info.outer_bevel,
               &frame_info.inner_bevel,&frame_info.width,&frame_info.height);
             if ((flags & HeightValue) == 0)
@@ -3994,8 +3986,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             height=(*image)->rows;
             x=0;
             y=0;
-            (void) CloneString(&geometry,argv[++i]);
-            (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
+            (void) ParseImageGeometry(argv[++i],&x,&y,&width,&height);
             if ((width == (*image)->columns) && (height == (*image)->rows))
               break;
             resize_image=ZoomImage(*image,width,height,&(*image)->exception);
@@ -4336,10 +4327,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Surround image with a raise of solid color.
             */
-            raise_info.width=0;
-            raise_info.height=0;
-            raise_info.x=0;
-            raise_info.y=0;
+            (void) memset(&raise_info,0,sizeof(RectangleInfo));
             flags=ParseGeometry(argv[++i],&raise_info.x,&raise_info.y,
               &raise_info.width,&raise_info.height);
             if ((flags & HeightValue) == 0)
@@ -4357,9 +4345,9 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
                 /*
                   Composite region.
                 */
-                (void) CompositeImage(region_image,
-                  (*image)->matte ?  OverCompositeOp : CopyCompositeOp,*image,
-                  region_info.x,region_info.y);
+                (void) CompositeImage(region_image,(*image)->matte ?
+                  OverCompositeOp : CopyCompositeOp,*image,region_info.x,
+                  region_info.y);
                 DestroyImage(*image);
                 *image=region_image;
               }
@@ -4498,8 +4486,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             height=(*image)->rows;
             x=0;
             y=0;
-            (void) CloneString(&geometry,argv[++i]);
-            (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
+            (void) ParseImageGeometry(argv[++i],&x,&y,&width,&height);
             scale_image=ScaleImage(*image,width,height,&(*image)->exception);
             if (scale_image == (Image *) NULL)
               break;
@@ -4585,10 +4572,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Shave the image edges.
             */
-            shave_info.width=0;
-            shave_info.height=0;
-            shave_info.x=0;
-            shave_info.y=0;
+            (void) memset(&shave_info,0,sizeof(RectangleInfo));
             flags=ParseGeometry(argv[++i],&shave_info.x,&shave_info.y,
               &shave_info.width,&shave_info.height);
             if ((flags & HeightValue) == 0)
@@ -4883,8 +4867,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
   /*
     Free resources.
   */
-  if (geometry != (char *) NULL)
-    LiberateMemory((void **) &geometry);
   DestroyDrawInfo(draw_info);
   DestroyImageInfo(clone_info);
   return((*image)->exception.severity == UndefinedException);
