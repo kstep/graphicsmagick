@@ -393,7 +393,9 @@ static boolean ReadNewsProfile(j_decompress_ptr jpeg_info)
         (void) GetCharacter(jpeg_info);
       return(True);
     }
-  /* remove the version number */
+  /*
+    Remove the version number.
+  */
   for (i=0; i < 4; i++)
     (void) GetCharacter(jpeg_info);
   length-=4;
