@@ -6564,18 +6564,8 @@ Ping(ref,...)
     error_list=newSVpv("",0);
     ac=(items < 2) ? 1 : items-1;
     list=(char **) AcquireMemory((ac+1)*sizeof(*list));
-    if (!sv_isobject(ST(0)))
-      {
-        MagickError(OptionError,"Reference is not my type",PackageName);
-        goto ReturnIt;
-      }
     reference=SvRV(ST(0));
     hv=SvSTASH(reference);
-    if (SvTYPE(reference) != SVt_PVAV)
-      {
-        MagickError(OptionError,"Unable to read into a single image",NULL);
-        goto ReturnIt;
-      }
     av=(AV *) reference;
     info=GetPackageInfo((void *) av,(struct PackageInfo *) NULL);
     package_info=ClonePackageInfo(info);
