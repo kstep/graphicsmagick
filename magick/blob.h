@@ -16,7 +16,9 @@ extern MagickExport BlobInfo
   *CloneBlobInfo(const BlobInfo *);
 
 extern MagickExport char
-  *ReadBlobString(Image *,char *);
+  *ReadBlobString(Image *,char *),
+  *ReadBlobStringWithLongSize(Image *,char *),
+  *ReadBlobStringWithShortSize(Image *,char *);
 
 extern MagickExport Image
   *BlobToImage(const ImageInfo *,const void *,const size_t,ExceptionInfo *),
