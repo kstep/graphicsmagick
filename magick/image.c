@@ -443,8 +443,8 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   if (image->next == (Image *) NULL)
-    ThrowImageException(OptionWarning,"Unable to append image sequence",
-      "image sequence required");
+    ThrowImageException(OptionWarning,"Unable to append images",
+      "an image sequence is required");
   width=image->columns;
   height=image->rows;
   for (next=image->next; next != (Image *) NULL; next=next->next)
@@ -5052,9 +5052,6 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
   assert((*images)->signature == MagickSignature);
   if (argc <= 1)
     return(True);
-  number_images=GetImageListSize(*images);
-  if (number_images == 1)
-    return(MogrifyImage(image_info,argc,argv,images));
   scene=False;
   for (i=1; i < argc; i++)
   {
@@ -5069,6 +5066,7 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
   */
   status=True;
   mogrify_images=NewImageList();
+  number_images=GetImageListSize(*images);
   for (i=0; i < (long) number_images; i++)
   {
     image=ShiftImageList(images);
