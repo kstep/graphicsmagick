@@ -3691,7 +3691,7 @@ static void DrawStrokePolygon(const DrawInfo *draw_info,
           theta.q=atan2(left_points[2].y-center.y,left_points[2].x-center.x);
           if (theta.q < theta.p)
             theta.q+=2.0*MagickPI;
-          arc_segments=(int) ceil(((theta.q-theta.p)/(2.0*sqrt(1.0/mid)))-0.5);
+          arc_segments=(int) ceil((theta.q-theta.p)/(2.0*sqrt(1.0/mid)));
           left_strokes[l].x=left_points[1].x;
           left_strokes[l].y=left_points[1].y;
           l++;
@@ -3795,7 +3795,7 @@ static void DrawStrokePolygon(const DrawInfo *draw_info,
           theta.q=atan2(right_points[2].y-center.y,right_points[2].x-center.x);
           if (theta.p < theta.q)
             theta.p+=2.0*MagickPI;
-          arc_segments=(int) ceil(((theta.p-theta.q)/(2.0*sqrt(1.0/mid)))-0.5);
+          arc_segments=(int) ceil((theta.p-theta.q)/(2.0*sqrt(1.0/mid)));
           right_strokes[r].x=right_points[1].x;
           right_strokes[r].y=right_points[1].y;
           r++;
