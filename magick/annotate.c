@@ -1169,11 +1169,11 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
     (unsigned int) resolution.y);
   metrics->pixels_per_em.x=face->size->metrics.x_ppem;
   metrics->pixels_per_em.y=face->size->metrics.y_ppem;
-  metrics->ascent=(face->size->metrics.ascender+63)/64;
-  metrics->descent=(face->size->metrics.descender+63)/64;
+  metrics->ascent=(face->size->metrics.ascender+32)/64;
+  metrics->descent=(face->size->metrics.descender+32)/64;
   metrics->width=0;
-  metrics->height=(face->size->metrics.height+63)/64;
-  metrics->max_advance=(face->size->metrics.max_advance+63)/64;
+  metrics->height=(face->size->metrics.height+32)/64;
+  metrics->max_advance=(face->size->metrics.max_advance+32)/64;
   /*
     Convert to Unicode.
   */
@@ -1227,8 +1227,8 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
           /*
             Trace the glyph.
           */
-          clone_info->affine.tx=offset->x+(glyph.origin.x+63)/64;
-          clone_info->affine.ty=offset->y-(glyph.origin.y+63)/64;
+          clone_info->affine.tx=offset->x+(glyph.origin.x+32)/64;
+          clone_info->affine.ty=offset->y-(glyph.origin.y+32)/64;
           (void) FT_Outline_Decompose(&((FT_OutlineGlyph) glyph.image)->outline,
             &OutlineMethods,clone_info);
         }
@@ -1310,7 +1310,7 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
       FT_Done_Glyph(last_glyph.image);
     last_glyph=glyph;
   }
-  metrics->width=(metrics->width+63)/64;
+  metrics->width=(metrics->width+32)/64;
   if (render)
     if ((draw_info->stroke.opacity != TransparentOpacity) ||
         (draw_info->stroke_pattern != (Image *) NULL))
