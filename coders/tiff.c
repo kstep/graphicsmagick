@@ -1915,7 +1915,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       /*
         Bits per sample
       */
-      value=AccessCoderOption(image_info,"tiff","bits-per-sample");
+      value=AccessDefinition(image_info,"tiff","bits-per-sample");
       if (value)
         {
           old_value=bits_per_sample;
@@ -1940,7 +1940,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       /*
         Samples per pixel
       */
-      value=AccessCoderOption(image_info,"tiff","samples-per-pixel");
+      value=AccessDefinition(image_info,"tiff","samples-per-pixel");
       if (value)
         {
           old_value=samples_per_pixel;

@@ -882,7 +882,7 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
       as a file.
     */
     if ((LocaleNCompare("+profile",option,8) == 0) ||
-        (LocaleNCompare("+coder-options",option,14) == 0))
+        (LocaleNCompare("+define",option,14) == 0))
       {
         i++;
         if (i == *argc)

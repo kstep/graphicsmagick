@@ -1173,7 +1173,8 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     **labels;
 
   const char
-    **q;
+    **q,
+    *value;
 
   CompressionType
     compression;
@@ -1184,7 +1185,6 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
   double
     dx_resolution,
     dy_resolution,
-    unit_conversion,
     x_resolution,
     x_scale,
     y_resolution,
@@ -1301,7 +1301,6 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
       in image_info. Then resolution from the image. Last default PS
       resolution.
     */
-    unit_conversion=1.0;
     dx_resolution=72.0;
     dy_resolution=72.0;
     x_resolution=72.0;
@@ -1311,6 +1310,9 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
       y_resolution=x_resolution;
     if (image_info->density != (char *) NULL)
       {
+        double 
+          unit_conversion;
+
         unit_conversion=
           image_info->units == PixelsPerCentimeterResolution ? 2.54 : 1.0;
         count=sscanf(image_info->density,"%lfx%lf",&x_resolution,
@@ -1323,6 +1325,9 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
       }
     else
       {
+        double 
+          unit_conversion;
+
         unit_conversion=
           image->units == PixelsPerCentimeterResolution ? 2.54 : 1.0;
         if (image->x_resolution > 0.0)
@@ -1560,15 +1565,11 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
 
     /* Photoshop clipping path active? */
     if ((image->clip_mask != (Image *) NULL) &&
-      (LocaleNCompare("8BIM:",image->clip_mask->magick_filename,5) == 0))
-      {
-        (void) WriteBlobString(image,"true\n");
-      }
+        (LocaleNCompare("8BIM:",image->clip_mask->magick_filename,5) == 0))
+      (void) WriteBlobString(image,"true\n");
     else
-      {
-        (void) WriteBlobString(image,"false\n");
-      }
-    
+      (void) WriteBlobString(image,"false\n");
+  
     /* Compression seems to take precedence over anyting */
     if (compression == FaxCompression)
       SetImageType(image, BilevelType);
@@ -1587,22 +1588,11 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,image->matte ? "true\n" : "false\n");
 
     /* Render with imagemask operator? */
-    if (image_info->coder_options != 0)
-    {
-      const char
-        *value;
-
-      value=AccessCoderOption(image_info,"ps","image");
-      if ((value != 0) && (LocaleCompare(value,"imagemask") == 0) &&
-          IsMonochromeImage(image,&image->exception))
-        (void) WriteBlobString(image,"true\n");
-      else
-        (void) WriteBlobString(image,"false\n");
-    }
+    if (((value=AccessDefinition(image_info,"ps","imagemask")) != 0) &&
+        IsMonochromeImage(image,&image->exception))
+      (void) WriteBlobString(image,"true\n");
     else
-    {
-        (void) WriteBlobString(image,"false\n");
-    }
+      (void) WriteBlobString(image,"false\n");
 
     /*
       Output data in one of three ways:

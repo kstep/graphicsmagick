@@ -197,13 +197,12 @@ MagickExport void AnimateUsage(void)
     {
       "-authenticate value  decrypt image with this password",
       "-backdrop            display image centered on a backdrop",
-      "-coder-options values",
-      "                     Coder/decoder specific options",
       "-colormap type       Shared or Private",
       "-colors value        preferred number of colors in the image",
       "-colorspace type     alternate image colorspace",
       "-crop geometry       preferred size and location of the cropped image",
       "-debug events        display copious debugging information",
+      "-define values       Coder/decoder specific options",
       "-delay value         display the next image after pausing",
       "-density geometry    horizontal and vertical density of the image",
       "-depth value         image depth",
@@ -561,17 +560,6 @@ Display
               }
             break;
           }
-        if (LocaleCompare("coder-options",option+1) == 0)
-          {
-            i++;
-            if (i == argc)
-              MagickFatalError(OptionFatalError,MissingArgument,option);
-            if (*option == '+')
-              RemoveCoderOptions(image_info,argv[i]);
-            else
-              AddCoderOptions(image_info,argv[i],exception);
-            break;
-          }
         if (LocaleCompare("colormap",option+1) == 0)
           {
             resource_info.colormap=PrivateColormap;
@@ -678,6 +666,17 @@ Display
                     option);
                 (void) SetLogEventMask(argv[i]);
               }
+            break;
+          }
+        if (LocaleCompare("define",option+1) == 0)
+          {
+            i++;
+            if (i == argc)
+              MagickFatalError(OptionFatalError,MissingArgument,option);
+            if (*option == '+')
+              RemoveDefinitions(image_info,argv[i]);
+            else
+              AddDefinitions(image_info,argv[i],exception);
             break;
           }
         if (LocaleCompare("delay",option+1) == 0)
@@ -1592,18 +1591,6 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               }
             break;
           }
-        if (LocaleCompare("coder-options",option+1) == 0)
-          {
-            i++;
-            if (i == argc)
-              ThrowCompositeException(OptionError,MissingArgument,
-                option);
-            if (*option == '+')
-              RemoveCoderOptions(image_info,argv[i]);
-            else
-              AddCoderOptions(image_info,argv[i],exception);
-            break;
-          }
         if (LocaleCompare("colors",option+1) == 0)
           {
             if (*option == '-')
@@ -1769,6 +1756,18 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
                     option);
                 (void) SetLogEventMask(argv[i]);
               }
+            break;
+          }
+        if (LocaleCompare("define",option+1) == 0)
+          {
+            i++;
+            if (i == argc)
+              ThrowCompositeException(OptionError,MissingArgument,
+                option);
+            if (*option == '+')
+              RemoveDefinitions(image_info,argv[i]);
+            else
+              AddDefinitions(image_info,argv[i],exception);
             break;
           }
         if (LocaleCompare("density",option+1) == 0)
@@ -2548,14 +2547,13 @@ MagickExport void CompositeUsage(void)
       "-affine matrix       affine transform matrix",
       "-authenticate value  decrypt image with this password",
       "-blue-primary point  chomaticity blue primary point",
-      "-coder-options values",
-      "                     Coder/decoder specific options",
       "-colors value        preferred number of colors in the image",
       "-colorspace type     alternate image colorspace",
       "-comment string      annotate image with comment",
       "-compose operator    composite operator",
       "-compress type       image compression tyhpe",
       "-debug events        display copious debugging information",
+      "-define values       Coder/decoder specific options",
       "-density geometry    horizontal and vertical density of the image",
       "-depth value         image depth",
       "-displace geometry   shift image pixels defined by a displacement map",
@@ -2996,17 +2994,6 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
           }
         if (LocaleCompare("coalesce",option+1) == 0)
           break;
-        if (LocaleCompare("coder-options",option+1) == 0)
-          {
-            i++;
-            if (i == argc)
-              ThrowConvertException(OptionError,MissingArgument,option);
-            if (*option == '+')
-              RemoveCoderOptions(image_info,argv[i]);
-            else
-              AddCoderOptions(image_info,argv[i],exception);
-            break;
-          }
         if (LocaleCompare("colorize",option+1) == 0)
           {
             if (*option == '-')
@@ -3162,6 +3149,17 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
                   ThrowConvertException(OptionError,MissingArgument,option);
                 (void) SetLogEventMask(argv[i]);
               }
+            break;
+          }
+        if (LocaleCompare("define",option+1) == 0)
+          {
+            i++;
+            if (i == argc)
+              ThrowConvertException(OptionError,MissingArgument,option);
+            if (*option == '+')
+              RemoveDefinitions(image_info,argv[i]);
+            else
+              AddDefinitions(image_info,argv[i],exception);
             break;
           }
         if (LocaleCompare("delay",option+1) == 0)
@@ -4612,8 +4610,6 @@ MagickExport void ConvertUsage(void)
       "-clip                apply first clipping path if the image has one",
       "-clippath            apply named clipping path if the image has one",
       "-coalesce            merge a sequence of images",
-      "-coder-options values",
-      "                     Coder/decoder specific options",
       "-colorize value      colorize the image with the fill color",
       "-colors value        preferred number of colors in the image",
       "-colorspace type     alternate image colorspace",
@@ -4624,6 +4620,7 @@ MagickExport void ConvertUsage(void)
       "-cycle amount        cycle the image colormap",
       "-debug events        display copious debugging information",
       "-deconstruct         break down an image sequence into constituent parts",
+      "-define values       Coder/decoder specific options",
       "-delay value         display the next image after pausing",
       "-density geometry    horizontal and vertical density of the image",
       "-depth value         image depth",
@@ -4956,8 +4953,6 @@ MagickExport void DisplayUsage(void)
       "-authenticate value  decrypt image with this password",
       "-backdrop            display image centered on a backdrop",
       "-border geometry     surround image with a border of color",
-      "-coder-options values",
-      "                     Coder/decoder specific options",
       "-colormap type       Shared or Private",
       "-colors value        preferred number of colors in the image",
       "-colorspace type     alternate image colorspace",
@@ -4966,6 +4961,7 @@ MagickExport void DisplayUsage(void)
       "-contrast            enhance or reduce the image contrast",
       "-crop geometry       preferred size and location of the cropped image",
       "-debug events        display copious debugging information",
+      "-define values       Coder/decoder specific options",
       "-delay value         display the next image after pausing",
       "-density geometry    horizontal and vertical density of the image",
       "-depth value         image depth",
@@ -5484,17 +5480,6 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
               }
             break;
           }
-        if (LocaleCompare("coder-options",option+1) == 0)
-          {
-            i++;
-            if (i == argc)
-              MagickFatalError(OptionFatalError,MissingArgument,option);
-            if (*option == '+')
-              RemoveCoderOptions(image_info,argv[i]);
-            else
-              AddCoderOptions(image_info,argv[i],exception);
-            break;
-          }
         if (LocaleCompare("colormap",option+1) == 0)
           {
             resource_info.colormap=PrivateColormap;
@@ -5646,6 +5631,17 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
                   MagickFatalError(OptionFatalError,MissingArgument,option);
                 (void) SetLogEventMask(argv[i]);
               }
+            break;
+          }
+        if (LocaleCompare("define",option+1) == 0)
+          {
+            i++;
+            if (i == argc)
+              MagickFatalError(OptionFatalError,MissingArgument,option);
+            if (*option == '+')
+              RemoveDefinitions(image_info,argv[i]);
+            else
+              AddDefinitions(image_info,argv[i],exception);
             break;
           }
         if (LocaleCompare("delay",option+1) == 0)
@@ -6718,17 +6714,6 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
               }
             break;
           }
-        if (LocaleCompare("coder-options",option+1) == 0)
-          {
-            i++;
-            if (i == argc)
-              ThrowIdentifyException(OptionError,MissingArgument,option);
-            if (*option == '+')
-              RemoveCoderOptions(image_info,argv[i]);
-            else
-              AddCoderOptions(image_info,argv[i],exception);
-            break;
-          }
         ThrowIdentifyException(OptionError,UnrecognizedOption,option)
       }
       case 'd':
@@ -6743,6 +6728,17 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
                   ThrowIdentifyException(OptionError,MissingArgument,option);
                 (void) SetLogEventMask(argv[i]);
               }
+            break;
+          }
+        if (LocaleCompare("define",option+1) == 0)
+          {
+            i++;
+            if (i == argc)
+              ThrowIdentifyException(OptionError,MissingArgument,option);
+            if (*option == '+')
+              RemoveDefinitions(image_info,argv[i]);
+            else
+              AddDefinitions(image_info,argv[i],exception);
             break;
           }
         if (LocaleCompare("density",option+1) == 0)
@@ -6956,9 +6952,8 @@ MagickExport void IdentifyUsage(void)
     *options[]=
     {
       "-authenticate value  decrypt image with this password",
-      "-coder-options values",
-      "                     Coder/decoder specific options",
       "-debug events        display copious debugging information",
+      "-define values       Coder/decoder specific options",
       "-density geometry    horizontal and vertical density of the image",
       "-depth value         image depth",
       "-format \"string\"   output formatted image characteristics",
@@ -7403,15 +7398,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             (void) ClipPathImage(*image,argv[++i],*option == '-');
             continue;
           }
-        if (LocaleCompare("coder-options",option+1) == 0)
-          {
-            i++;
-            if (*option == '+')
-              RemoveCoderOptions(clone_info,argv[i]);
-            else
-              AddCoderOptions(clone_info,argv[i],&(*image)->exception);
-            break;
-          }
         if (LocaleCompare("colorize",option+1) == 0)
           {
             Image
@@ -7635,6 +7621,15 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       }
       case 'd':
       {
+        if (LocaleCompare("define",option+1) == 0)
+          {
+            i++;
+            if (*option == '+')
+              RemoveDefinitions(clone_info,argv[i]);
+            else
+              AddDefinitions(clone_info,argv[i],&(*image)->exception);
+            break;
+          }
         if (LocaleCompare("delay",option+1) == 0)
           {
             double
@@ -9850,17 +9845,6 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               }
             break;
           }
-        if (LocaleCompare("coder-options",option+1) == 0)
-          {
-            i++;
-            if (i == argc)
-              ThrowMogrifyException(OptionError,MissingArgument,option);
-            if (*option == '+')
-              RemoveCoderOptions(image_info,argv[i]);
-            else
-              AddCoderOptions(image_info,argv[i],exception);
-            break;
-          }
         if (LocaleCompare("colorize",option+1) == 0)
           {
             if (*option == '-')
@@ -10016,6 +10000,17 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
                   ThrowMogrifyException(OptionError,MissingArgument,option);
                 (void) SetLogEventMask(argv[i]);
               }
+            break;
+          }
+        if (LocaleCompare("define",option+1) == 0)
+          {
+            i++;
+            if (i == argc)
+              ThrowMogrifyException(OptionError,MissingArgument,option);
+            if (*option == '+')
+              RemoveDefinitions(image_info,argv[i]);
+            else
+              AddDefinitions(image_info,argv[i],exception);
             break;
           }
         if (LocaleCompare("delay",option+1) == 0)
@@ -11313,8 +11308,6 @@ MagickExport void MogrifyUsage(void)
       "-channel type        extract a particular color channel from image",
       "-charcoal radius     simulate a charcoal drawing",
       "-chop geometry       remove pixels from the image interior",
-      "-coder-options values",
-      "                     Coder/decoder specific options",
       "-colorize value      colorize the image with the fill color",
       "-colors value        preferred number of colors in the image",
       "-colorspace type     alternate image colorspace",
@@ -11324,6 +11317,7 @@ MagickExport void MogrifyUsage(void)
       "-crop geometry       preferred size and location of the cropped image",
       "-cycle amount        cycle the image colormap",
       "-debug events        display copious debugging information",
+      "-define values       Coder/decoder specific options",
       "-delay value         display the next image after pausing",
       "-density geometry    horizontal and vertical density of the image",
       "-depth value         image depth",
@@ -11726,17 +11720,6 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               }
             break;
           }
-        if (LocaleCompare("coder-options",option+1) == 0)
-          {
-            i++;
-            if (i == argc)
-              ThrowMontageException(OptionError,MissingArgument,option);
-            if (*option == '+')
-              RemoveCoderOptions(image_info,argv[i]);
-            else
-              AddCoderOptions(image_info,argv[i],exception);
-            break;
-          }
         if (LocaleCompare("colors",option+1) == 0)
           {
             quantize_info.number_colors=0;
@@ -11917,6 +11900,17 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
                   ThrowMontageException(OptionError,MissingArgument,option);
                 (void) SetLogEventMask(argv[i]);
               }
+            break;
+          }
+        if (LocaleCompare("define",option+1) == 0)
+          {
+            i++;
+            if (i == argc)
+              ThrowMontageException(OptionError,MissingArgument,option);
+            if (*option == '+')
+              RemoveDefinitions(image_info,argv[i]);
+            else
+              AddDefinitions(image_info,argv[i],exception);
             break;
           }
         if (LocaleCompare("density",option+1) == 0)
@@ -12786,8 +12780,6 @@ MagickExport void MontageUsage(void)
       "-authenticate value  decrypt image with this password",
       "-blue-primary point  chomaticity blue primary point",
       "-blur factor         apply a filter to blur the image",
-      "-coder-options values",
-      "                     Coder/decoder specific options",
       "-colors value        preferred number of colors in the image",
       "-colorspace type     alternate image colorsapce",
       "-comment string      annotate image with comment",
@@ -12795,6 +12787,7 @@ MagickExport void MontageUsage(void)
       "-compress type       image compression tyhpe",
       "-crop geometry       preferred size and location of the cropped image",
       "-debug events        display copious debugging information",
+      "-define values       Coder/decoder specific options",
       "-density geometry    horizontal and vertical density of the image",
       "-depth value         image depth",
       "-display server      query font from this X server",
@@ -13130,17 +13123,6 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
               }
             break;
           }
-        if (LocaleCompare("coder-options",option+1) == 0)
-          {
-            i++;
-            if (i == argc)
-              MagickFatalError(OptionFatalError,MissingArgument,option);
-            if (*option == '+')
-              RemoveCoderOptions(image_info,argv[i]);
-            else
-              AddCoderOptions(image_info,argv[i],exception);
-            break;
-          }
         if (LocaleCompare("colors",option+1) == 0)
           {
             quantize_info->number_colors=0;
@@ -13269,6 +13251,17 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
                   MagickFatalError(OptionFatalError,MissingArgument,option);
                 (void) SetLogEventMask(argv[i]);
               }
+            break;
+          }
+        if (LocaleCompare("define",option+1) == 0)
+          {
+            i++;
+            if (i == argc)
+              MagickFatalError(OptionFatalError,MissingArgument,option);
+            if (*option == '+')
+              RemoveDefinitions(image_info,argv[i]);
+            else
+              AddDefinitions(image_info,argv[i],exception);
             break;
           }
         if (LocaleCompare("delay",option+1) == 0)
@@ -13840,14 +13833,13 @@ MagickExport void ImportUsage(void)
     {
       "-adjoin              join images into a single multi-image file",
       "-border              include image borders in the output image",
-      "-coder-options values",
-      "                     Coder/decoder specific options",
       "-colors value        preferred number of colors in the image",
       "-colorspace type     alternate image colorspace",
       "-comment string      annotate image with comment",
       "-compress type       image compression type",
       "-crop geometry       preferred size and location of the cropped image",
       "-debug events        display copious debugging information",
+      "-define values       Coder/decoder specific options",
       "-delay value         display the next image after pausing",
       "-density geometry    horizontal and vertical density of the image",
       "-depth value         image depth",

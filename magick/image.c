@@ -89,18 +89,18 @@ const unsigned long
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%   A c c e s s C o d e r O p t i o n                                         %
+%   A c c e s s D e f i n i t i o n                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  AccessCoderOption() searches the coder options for an entry matching the
+%  AccessDefinition() searches the definitions for an entry matching the
 %  specified magick and key. NULL is returned if no matching entry is found.
 %
-%  The format of the AccessCoderOption method is:
+%  The format of the AccessDefinition method is:
 %
-%      const char *AccessCoderOption(const ImageInfo *image_info,
+%      const char *AccessDefinition(const ImageInfo *image_info,
 %                                    const char *magick, const char *key)
 %
 %  A description of each parameter follows:
@@ -112,7 +112,7 @@ const unsigned long
 %    o key: Key to search for.
 %
 */
-MagickExport const char *AccessCoderOption(const ImageInfo *image_info,
+MagickExport const char *AccessDefinition(const ImageInfo *image_info,
   const char *magick, const char *key)
 {
   const char
@@ -121,10 +121,10 @@ MagickExport const char *AccessCoderOption(const ImageInfo *image_info,
   char
     search_key[MaxTextExtent];
 
-  if (image_info->coder_options)
+  if (image_info->definitions)
     {
       sprintf(search_key, "%.60s:%.1024s", magick, key);
-      value=MagickMapAccessEntry(image_info->coder_options,search_key,0);
+      value=MagickMapAccessEntry(image_info->definitions,search_key,0);
     }
   return value;
 }
@@ -133,25 +133,25 @@ MagickExport const char *AccessCoderOption(const ImageInfo *image_info,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%   A d d C o d e r O p t i o n s                                             %
+%   A d d D e f i n i t i o n s                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  AddCoderOptions() adds options from a key/value based string to the current
-%  map of coder options in ImageInfo. Coder options may be used by coders/decoders
+%  AddDefinitions() adds definitions from a key/value based string to the current
+%  map of definitions in ImageInfo. Definitions may be used by coders/decoders
 %  that read and write images.
 %
-%  The format of the AddCoderOptions method is:
+%  The format of the AddDefinitions method is:
 %
-%      void AddCoderOptions(ImageInfo *image_info,const char *options)
+%      void AddDefinitions(ImageInfo *image_info,const char *options)
 %
 %  A description of each parameter follows:
 %
 %    o image_info: The image info.
 %
-%    o options: List of key/value pairs to put in the coder options map. The
+%    o options: List of key/value pairs to put in the definitions map. The
 %      format of the string is "key1[=[value1]],key2[=[value2]],...". A missing
 %      value argument (with or without the equal sign) inserts an empty, zero
 %      length string as value for a key.
@@ -160,7 +160,7 @@ MagickExport const char *AccessCoderOption(const ImageInfo *image_info,
 %
 */
 MagickExport unsigned int
-AddCoderOptions(ImageInfo *image_info,const char *options,
+AddDefinitions(ImageInfo *image_info,const char *definitions,
   ExceptionInfo *exception)
 {
   char
@@ -179,34 +179,33 @@ AddCoderOptions(ImageInfo *image_info,const char *options,
 
   status=True;
 
-  if (image_info->coder_options == 0)
-    image_info->coder_options=MagickMapAllocateMap(MagickMapCopyString,
+  if (image_info->definitions == 0)
+    image_info->definitions=MagickMapAllocateMap(MagickMapCopyString,
       MagickMapDeallocateString);
 
-  length=strlen(options);
+  length=strlen(definitions);
   i=0;
   while (i < length)
   {
     unsigned int
       has_value;
 
-    for (j=0; (i < length) && (options[i] != '=') && (options[i] != ','); i++,j++)
-      key[j]=options[i];
+    for (j=0; (i < length) && (definitions[i] != '=') && (definitions[i] != ','); i++,j++)
+      key[j]=definitions[i];
     key[j]='\0';
-    has_value=(i < length) && (options[i] == '='); /* Could be 0-length value */
+    has_value=(i < length) && (definitions[i] == '='); /* Could be 0-length value */
     i++;
 
     j=0;
     if (has_value)
       {
-        for (; (i < length) && (options[i] != ','); i++,j++)
-          value[j]=options[i];
+        for (; (i < length) && (definitions[i] != ','); i++,j++)
+          value[j]=definitions[i];
         i++;
       }
     value[j]='\0';
-    /* Accepts zero length values */
     if (strlen(key) > 0)
-      status &= MagickMapAddEntry(image_info->coder_options,key,value,0,exception);
+      status &= MagickMapAddEntry(image_info->definitions,key,value,0,exception);
     else
       {
         status=False;
@@ -1438,8 +1437,8 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
   if (image_info->attributes != (Image *) NULL)
     clone_info->attributes=CloneImage(image_info->attributes,0,0,True,
       &image_info->attributes->exception);
-  if (image_info->coder_options != (MagickMap) NULL)
-    clone_info->coder_options=MagickMapCloneMap(image_info->coder_options,0);
+  if (image_info->definitions != (MagickMap) NULL)
+    clone_info->definitions=MagickMapCloneMap(image_info->definitions,0);
   clone_info->client_data=image_info->client_data;
   clone_info->cache=image_info->cache;
   if (image_info->cache != (void *) NULL)
@@ -2359,8 +2358,8 @@ MagickExport void DestroyImageInfo(ImageInfo *image_info)
     DestroyImage(image_info->attributes);
   if (image_info->cache != (void *) NULL)
     DestroyCacheInfo(image_info->cache);
-  if (image_info->coder_options != (MagickMap) NULL)
-    MagickMapDeallocateMap(image_info->coder_options);
+  if (image_info->definitions != (MagickMap) NULL)
+    MagickMapDeallocateMap(image_info->definitions);
   memset((void *)image_info,0xbf,sizeof(ImageInfo));
   MagickFreeMemory(image_info);
 }
@@ -3931,35 +3930,35 @@ MagickExport Image *ReferenceImage(Image *image)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%   R e m o v e C o d e r O p t i o n s                                       %
+%   R e m o v e D e f i n i t i o n s                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  RemoveCoderOptions() removes options from the current map of coder options
-%  in ImageInfo. Coder options may be used by coders/decoders that read and
-%  write images. RemoveCoderOptions() returns true only if the specified keys
+%  RemoveDefinitions() removes definitions from the current map of definitions
+%  in ImageInfo. Definitions may be used by coders/decoders that read and
+%  write images. RemoveDefinitions() returns true only if the specified keys
 %  are present in the map and are actually removed.
 %
-%  The format of the RemoveCoderOptions method is:
+%  The format of the RemoveDefinitions method is:
 %
-%      void RemoveCoderOptions(ImageInfo *image_info,const char *options)
+%      void RemoveDefinitions(ImageInfo *image_info,const char *options)
 %
 %  A description of each parameter follows:
 %
 %    o image_info: The image info.
 %
-%    o options: List of keys to remove from the coder options map. The
+%    o keys: List of keys to remove from the definitions map. The
 %      format of the string is "key1,key2,...". A special key, *, removes
-%      all the key/value pairs in the coder options map. This key always
+%      all the key/value pairs in the definitions map. This key always
 %      succeeds.
 %
 %    o exception: Errors result in updates to this structure.
 %
 */
 MagickExport unsigned int
-RemoveCoderOptions(const ImageInfo *image_info,const char *options)
+RemoveDefinitions(const ImageInfo *image_info,const char *keys)
 {
   char
     key[MaxTextExtent];
@@ -3974,7 +3973,7 @@ RemoveCoderOptions(const ImageInfo *image_info,const char *options)
   size_t
     length;
 
-  if (image_info->coder_options == 0)
+  if (image_info->definitions == 0)
     return(False);
 
   status=True;
@@ -3982,23 +3981,23 @@ RemoveCoderOptions(const ImageInfo *image_info,const char *options)
   /*
     TODO: update to accept GlobExpression as argument names list.
     That would require the iterator to know we're manipulating
-    the map, or a remove method on the map iterator itself.
+    the map or a remove method on the map iterator itself.
     Until then we accept a simple "*" to mean clear the whole map.
   */
-  length=strlen(options);
+  length=strlen(keys);
   i=0;
   while (i < length)
   {
-    for (j=0; (i < length) && (options[i] != ','); i++,j++)
-      key[j]=options[i];
+    for (j=0; (i < length) && (keys[i] != ','); i++,j++)
+      key[j]=keys[i];
     key[j]='\0';
     i++;
     if (strlen(key) > 0)
       {
         if ((key[0] == '*') && (key[1] == '\0'))
-          MagickMapClearMap(image_info->coder_options);
+          MagickMapClearMap(image_info->definitions);
         else
-          status &= MagickMapRemoveEntry(image_info->coder_options,key);
+          status &= MagickMapRemoveEntry(image_info->definitions,key);
       }
     else
       {

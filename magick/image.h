@@ -873,9 +873,9 @@ typedef struct _ImageInfo
     *cache;                  /* Private. Used to pass image via open cache */
 
   void
-    *coder_options;          /* Private. Map of coder specific options passed by user
-                                Use AddCoderOptions, RemoveCoderOptions, & AccessCoderOption
-                                to access and manpulate this data. */
+    *definitions;            /* Private. Map of coder specific options passed by user.
+                                Use AddDefinitions, RemoveDefinitions, & AccessDefinition
+                                to access and manipulate this data. */
 
   Image
     *attributes;             /* Private. Image attribute list */
@@ -946,7 +946,7 @@ extern MagickExport ImageType
   GetImageType(const Image *,ExceptionInfo *);
 
 extern MagickExport const char
-  *AccessCoderOption(const ImageInfo *image_info,const char *magick,
+  *AccessDefinition(const ImageInfo *image_info,const char *magick,
    const char *key);
 
 extern MagickExport int
@@ -958,7 +958,7 @@ extern MagickExport RectangleInfo
   GetImageBoundingBox(const Image *,ExceptionInfo *exception);
 
 extern MagickExport unsigned int
-  AddCoderOptions(ImageInfo *image_info,const char *options,
+  AddDefinitions(ImageInfo *image_info,const char *options,
     ExceptionInfo *exception),
   AllocateImageColormap(Image *,const unsigned long),
   AnimateImages(const ImageInfo *image_info,Image *image),
@@ -975,7 +975,7 @@ extern MagickExport unsigned int
   IsTaintImage(const Image *),
   IsSubimage(const char *,const unsigned int),
   PlasmaImage(Image *,const SegmentInfo *,unsigned long,unsigned long),
-  RemoveCoderOptions(const ImageInfo *image_info,const char *options),
+  RemoveDefinitions(const ImageInfo *image_info,const char *options),
   RGBTransformImage(Image *,const ColorspaceType),
   SetImageChannelDepth(Image *image,
     const ChannelType channel, const unsigned int depth),

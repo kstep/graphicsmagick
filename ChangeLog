@@ -1,3 +1,11 @@
+2003-10-09  Lars Ruben Skyum  <lars.skyum@stibo.com>
+
+	* VisualMagick/bin/modules.mgk: added EPS3 mapping to PS3 module.
+	* coders/ps3.c, coders/tiff.c, magick/command.c, magick/image.c,
+	magick/image.h, magick/utility.c: Changed -coder-options option to
+	-define. Also renamed functions {Add,Remove,Access}CoderOption(s)
+	to {Add,Remove,Access}Definition(s).
+
 2003-10-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/cineon.c: Imported and adapted Cineon image format coder
@@ -32,7 +40,7 @@
 
 	* magick/attribute.c (TraceSVGClippingPath): optimized for speed
 	and precision in clipping mask generation by using lines to
-	connect Bezier curve control points where applicable.
+	connect Bezier curve anchor points where applicable.
 
 2003-10-07  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
