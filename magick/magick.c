@@ -241,6 +241,9 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
     *path,
     *search_path;
 
+  assert(filename != (const char *) NULL);
+  assert(exception != (ExceptionInfo *) NULL);
+
 #if defined(WIN32)
   {
     /*
@@ -285,8 +288,6 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
   /*
     Search current directory.
   */
-  assert(filename != (const char *) NULL);
-  assert(exception != (ExceptionInfo *) NULL);
   path=AllocateString(filename);
   if (IsAccessible(path))
     return(path);
