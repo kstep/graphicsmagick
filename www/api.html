@@ -5,7 +5,8 @@
 	<TITLE>C API: GraphicsMagick - Image Processing and Display Package</TITLE>
 	<META NAME="GENERATOR" CONTENT="StarOffice 6.0  (Solaris Sparc)">
 	<META NAME="CREATED" CONTENT="20030425;16380900">
-	<META NAME="CHANGED" CONTENT="16010101;0">
+	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
+	<META NAME="CHANGED" CONTENT="20030428;17080200">
 	<META NAME="DESCRIPTION" CONTENT="GraphicsMagick is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With GraphicsMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,    sharpen, color reduce, or add special effects to an image and save your    completed work in the same or  differing image format.">
 	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software     development, simulation, image, software, AniMagick, Animagic,    Magick++">
 	<STYLE>
@@ -29,9 +30,10 @@
 		<TR>
 			<TD WIDTH=81%>
 				<P ALIGN=LEFT>[<A HREF="../index.html">Home</A>] [<A HREF="mission.html">Mission
-				Statement</A>] [<A HREF="development.html">Development Process</A>] [<A HREF="contribute.html">Contribute</A>]
-				[<A HREF="download.html">Download</A>] [<A HREF="install.html">Installation</A>]
-				[<A HREF="cvs.html">CVS</A>] [<A HREF="http://sourceforge.net/mail/?group_id=73485">Mailing
+				Statement</A>] [<A HREF="development.html">Development Process</A>]
+				[<A HREF="contribute.html">Contribute</A>] [<A HREF="download.html">Download</A>]
+				[<A HREF="install.html">Installation</A>] [<A HREF="cvs.html">CVS</A>]
+				[<A HREF="http://sourceforge.net/mail/?group_id=73485">Mailing
 				Lists</A>] [<A HREF="FAQ.html">FAQ</A>] [<A HREF="formats.html">Formats</A>]
 				[<A HREF="NEWS.html">News</A> ] [<A HREF="Changelog.html">ChangeLog</A>]
 				[<A HREF="http://sourceforge.net/projects/graphicsmagick/">Report
@@ -53,216 +55,301 @@
 		</TR>
 	</TABLE>
 </FORM>
-<P><B>GraphicsMagick</B> has a number of functions that allow you to
-read, manipulate, write, or display an image. These functions are
-accessible through the various <A HREF="programming.html">tools</A>
-or the object-oriented Perl interface, <A HREF="perl.html">PerlMagick</A>.
+<P><FONT SIZE=3><FONT FACE="Albany"><I>GraphicsMagick</I> has a
+number of functions that allow you to read, manipulate, write, or
+display an image. These functions are accessible through the various
+</FONT></FONT><A HREF="programming.html"><FONT SIZE=3><FONT FACE="Albany">tools</FONT></FONT></A><FONT SIZE=3><FONT FACE="Albany">
+or the object-oriented Perl interface, </FONT></FONT><A HREF="perl.html"><FONT SIZE=3><FONT FACE="Albany">PerlMagick</FONT></FONT></A><FONT SIZE=3><FONT FACE="Albany">.
 However, you can also access the functions directly from your program
 through the Magick Application Programmer Interface. To invoke the
 functions, write your program in your favorite language while making
 calls to the Magick image functions and link with
-<TT>libGraphicsMagick.a</TT>, <TT>libGraphicsMagick.so</TT>, or
-<TT>Magick.dll</TT> depending on your system. 
+</FONT></FONT><TT><FONT SIZE=3><FONT FACE="Albany">libGraphicsMagick.a</FONT></FONT></TT><FONT SIZE=3><FONT FACE="Albany">,
+</FONT></FONT><TT><FONT SIZE=3><FONT FACE="Albany">libGraphicsMagick.so</FONT></FONT></TT><FONT SIZE=3><FONT FACE="Albany">,
+or </FONT></FONT><TT><FONT SIZE=3><FONT FACE="Albany">Magick.dll</FONT></FONT></TT><FONT SIZE=3><FONT FACE="Albany">
+depending on your system. </FONT></FONT>
 </P>
-<P>The API is divided into a number of categories: 
+<P STYLE="margin-bottom: 0.1in"><FONT FACE="Albany"><FONT SIZE=3>The
+API is divided into a number of categories: </FONT></FONT>
 </P>
 <DL>
-	<DD><IMG SRC="../images/ball.png" NAME="Graphic1" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/constitute.html">GraphicsMagick Methods to Constitute
-	an Image</A> 
+	<DD><IMG SRC="../images/ball.png" NAME="Graphic1" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT><A HREF="api/constitute.html"><FONT SIZE=3><FONT FACE="Albany">GraphicsMagick
+	Methods to Constitute an Image</FONT></FONT></A><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT>
 	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic3" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/composite.html">GraphicsMagick Methods to Composite an
-	Image</A> 
+	<IMG SRC="../images/ball.png" NAME="Graphic3" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT><A HREF="api/composite.html"><FONT SIZE=3><FONT FACE="Albany">GraphicsMagick
+	Methods to Composite an Image</FONT></FONT></A><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT>
 	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic4" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/image.html">GraphicsMagick Image Methods</A> 
+	<IMG SRC="../images/ball.png" NAME="Graphic4" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT><A HREF="api/image.html"><FONT SIZE=3><FONT FACE="Albany">GraphicsMagick
+	Image Methods</FONT></FONT></A><FONT SIZE=3><FONT FACE="Albany"> </FONT></FONT>
 	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic5" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/color.html">Methods to Count the Colors in an Image</A>
-		</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic6" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/quantize.html">Methods to Reduce the Number of Unique
-	Colors in an Image</A> 
+	<IMG SRC="../images/ball.png" NAME="Graphic5" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT><A HREF="api/color.html"><FONT SIZE=3><FONT FACE="Albany">Methods
+	to Count the Colors in an Image</FONT></FONT></A><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT>
 	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic7" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/segment.html">Methods to Segment an Image with
-	Thresholding Fuzzy c-Means</A> 
+	<IMG SRC="../images/ball.png" NAME="Graphic6" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT><A HREF="api/quantize.html"><FONT SIZE=3><FONT FACE="Albany">Methods
+	to Reduce the Number of Unique Colors in an Image</FONT></FONT></A><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT>
 	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic8" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/resize.html">Methods to Resize an Image</A> 
+	<IMG SRC="../images/ball.png" NAME="Graphic7" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT><A HREF="api/segment.html"><FONT SIZE=3><FONT FACE="Albany">Methods
+	to Segment an Image with Thresholding Fuzzy c-Means</FONT></FONT></A><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT>
 	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic9" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/transform.html">Methods to Transform an Image</A> 
+	<IMG SRC="../images/ball.png" NAME="Graphic8" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT><A HREF="api/resize.html"><FONT SIZE=3><FONT FACE="Albany">Methods
+	to Resize an Image</FONT></FONT></A><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT>
 	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic10" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/shear.html">Methods to Shear or Rotate an Image by an
-	Arbitrary Angle</A> 
+	<IMG SRC="../images/ball.png" NAME="Graphic9" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT><A HREF="api/transform.html"><FONT SIZE=3><FONT FACE="Albany">Methods
+	to Transform an Image</FONT></FONT></A><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT>
 	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic11" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/enhance.html">Methods to Enhance an Image</A> 
+	<IMG SRC="../images/ball.png" NAME="Graphic10" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT><A HREF="api/shear.html"><FONT SIZE=3><FONT FACE="Albany">Methods
+	to Shear or Rotate an Image by an Arbitrary Angle</FONT></FONT></A><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT>
 	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic12" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/effect.html">GraphicsMagick Image Effects Methods</A> 
+	<IMG SRC="../images/ball.png" NAME="Graphic11" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT><A HREF="api/enhance.html"><FONT SIZE=3><FONT FACE="Albany">Methods
+	to Enhance an Image</FONT></FONT></A><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT>
 	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic13" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/fx.html">GraphicsMagick Special Effects Methods</A> 
+	<IMG SRC="../images/ball.png" NAME="Graphic12" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT><A HREF="api/effect.html"><FONT SIZE=3><FONT FACE="Albany">GraphicsMagick
+	Image Effects Methods</FONT></FONT></A><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT>
 	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic14" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/decorate.html">GraphicsMagick Image Decoration Methods</A>
-		</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic15" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/attribute.html">Image Text Attributes Methods</A> 
+	<IMG SRC="../images/ball.png" NAME="Graphic13" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT><A HREF="api/fx.html"><FONT SIZE=3><FONT FACE="Albany">GraphicsMagick
+	Special Effects Methods</FONT></FONT></A><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT>
 	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic16" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/annotate.html">Methods to Annotate an Image</A> 
+	<IMG SRC="../images/ball.png" NAME="Graphic14" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT><A HREF="api/decorate.html"><FONT SIZE=3><FONT FACE="Albany">GraphicsMagick
+	Image Decoration Methods</FONT></FONT></A><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT>
 	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic17" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/paint.html">Methods to Paint on an Image</A> 
+	<IMG SRC="../images/ball.png" NAME="Graphic15" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT><A HREF="api/attribute.html"><FONT SIZE=3><FONT FACE="Albany">Image
+	Text Attributes Methods</FONT></FONT></A><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT>
 	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic18" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/render.html">Methods to Draw on an Image</A> 
+	<IMG SRC="../images/ball.png" NAME="Graphic16" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT><A HREF="api/annotate.html"><FONT SIZE=3><FONT FACE="Albany">Methods
+	to Annotate an Image</FONT></FONT></A><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT>
 	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic19" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/draw.html">Image Vector Drawing Methods </A>
+	<IMG SRC="../images/ball.png" NAME="Graphic17" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT><A HREF="api/paint.html"><FONT SIZE=3><FONT FACE="Albany">Methods
+	to Paint on an Image</FONT></FONT></A><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT>
 	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic20" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/montage.html">GraphicsMagick Methods to Create Image
-	Thumbnails</A> 
+	<IMG SRC="../images/ball.png" NAME="Graphic18" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT><A HREF="api/render.html"><FONT SIZE=3><FONT FACE="Albany">Methods
+	to Draw on an Image</FONT></FONT></A><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT>
 	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic21" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/display.html">Methods to Interactively Display and Edit
-	an Image</A> 
+	<IMG SRC="../images/ball.png" NAME="Graphic19" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT><A HREF="api/draw.html"><FONT SIZE=3><FONT FACE="Albany">Image
+	Vector Drawing Methods </FONT></FONT></A>
 	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic22" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/animate.html">Methods to Interactively Animate an Image
-	Sequence</A> 
+	<IMG SRC="../images/ball.png" NAME="Graphic20" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT><A HREF="api/montage.html"><FONT SIZE=3><FONT FACE="Albany">GraphicsMagick
+	Methods to Create Image Thumbnails</FONT></FONT></A><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT>
 	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic23" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/cache.html">Methods to Get or Set Image Pixels</A> 
+	<IMG SRC="../images/ball.png" NAME="Graphic21" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT><A HREF="api/display.html"><FONT SIZE=3><FONT FACE="Albany">Methods
+	to Interactively Display and Edit an Image</FONT></FONT></A><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT>
 	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic24" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/list.html">Working with Image Lists</A> 
+	<IMG SRC="../images/ball.png" NAME="Graphic22" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT><A HREF="api/animate.html"><FONT SIZE=3><FONT FACE="Albany">Methods
+	to Interactively Animate an Image Sequence</FONT></FONT></A><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT>
 	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic25" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/cache_view.html">GraphicsMagick Cache Views Methods</A>
-		</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic26" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/stream.html">Image Pixel FIFO</A> 
+	<IMG SRC="../images/ball.png" NAME="Graphic23" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT><A HREF="api/cache.html"><FONT SIZE=3><FONT FACE="Albany">Methods
+	to Get or Set Image Pixels</FONT></FONT></A><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT>
 	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic27" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/blob.html">Methods to Read or Write Binary Large
-	OBjects</A> 
+	<IMG SRC="../images/ball.png" NAME="Graphic24" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT><A HREF="api/list.html"><FONT SIZE=3><FONT FACE="Albany">Working
+	with Image Lists</FONT></FONT></A><FONT SIZE=3><FONT FACE="Albany"> </FONT></FONT>
 	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic28" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/magick.html">Methods to Read or List GraphicsMagick
-	Image formats</A> 
+	<IMG SRC="../images/ball.png" NAME="Graphic25" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT><A HREF="api/cache_view.html"><FONT SIZE=3><FONT FACE="Albany">GraphicsMagick
+	Cache Views Methods</FONT></FONT></A><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT>
 	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic29" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/signature.html">Methods to Compute a Message Digest for
-	an Image</A> 
+	<IMG SRC="../images/ball.png" NAME="Graphic26" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT><A HREF="api/stream.html"><FONT SIZE=3><FONT FACE="Albany">Image
+	Pixel FIFO</FONT></FONT></A><FONT SIZE=3><FONT FACE="Albany"> </FONT></FONT>
 	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic30" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/registry.html">GraphicsMagick Registry Methods</A> 
+	<IMG SRC="../images/ball.png" NAME="Graphic27" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT><A HREF="api/blob.html"><FONT SIZE=3><FONT FACE="Albany">Methods
+	to Read or Write Binary Large OBjects</FONT></FONT></A><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT>
 	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic31" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/error.html">GraphicsMagick Error Methods</A> 
+	<IMG SRC="../images/ball.png" NAME="Graphic28" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT><A HREF="api/magick.html"><FONT SIZE=3><FONT FACE="Albany">Methods
+	to Read or List GraphicsMagick Image formats</FONT></FONT></A><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT>
 	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic32" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/memory.html">GraphicsMagick Memory Allocation Methods</A>
-		</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic33" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/resource.html">GraphicsMagick Resource Consumption
-	Methods</A> 
+	<IMG SRC="../images/ball.png" NAME="Graphic29" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT><A HREF="api/signature.html"><FONT SIZE=3><FONT FACE="Albany">Methods
+	to Compute a Message Digest for an Image</FONT></FONT></A><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT>
 	</DD><DD>
-	<IMG SRC="../images/ball.png" NAME="Graphic34" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
-	<A HREF="api/monitor.html">GraphicsMagick Progress Monitor Methods</A>
-		</DD></DL>
+	<IMG SRC="../images/ball.png" NAME="Graphic30" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT><A HREF="api/registry.html"><FONT SIZE=3><FONT FACE="Albany">GraphicsMagick
+	Registry Methods</FONT></FONT></A><FONT SIZE=3><FONT FACE="Albany"> </FONT></FONT>
+	</DD><DD>
+	<IMG SRC="../images/ball.png" NAME="Graphic31" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT><A HREF="api/error.html"><FONT SIZE=3><FONT FACE="Albany">GraphicsMagick
+	Error Methods</FONT></FONT></A><FONT SIZE=3><FONT FACE="Albany"> </FONT></FONT>
+	</DD><DD>
+	<IMG SRC="../images/ball.png" NAME="Graphic32" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT><A HREF="api/memory.html"><FONT SIZE=3><FONT FACE="Albany">GraphicsMagick
+	Memory Allocation Methods</FONT></FONT></A><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT>
+	</DD><DD>
+	<IMG SRC="../images/ball.png" NAME="Graphic33" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT><A HREF="api/resource.html"><FONT SIZE=3><FONT FACE="Albany">GraphicsMagick
+	Resource Consumption Methods</FONT></FONT></A><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT>
+	</DD><DD STYLE="margin-bottom: 0.2in">
+	<IMG SRC="../images/ball.png" NAME="Graphic34" ALT="*" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT><A HREF="api/monitor.html"><FONT SIZE=3><FONT FACE="Albany">GraphicsMagick
+	Progress Monitor Methods</FONT></FONT></A><FONT SIZE=3><FONT FACE="Albany">
+	</FONT></FONT>
+	</DD></DL>
 <P>
-<BR><BR>
-</P>
-<P>Here is a sample program to get you started. To find out about all
-the functions that are available, read the source code. Each function
-is delineated with a full rows of percent signs with comments
-describing the parameters required for the function and what it does.
-For ease in finding a function, they are sorted in alphabetical
-order. Most of the image functions are found in <TT>image.c</TT> and
-<TT>effects.c</TT>. 
-</P>
-<P>Here is a full example of a program, <TT>demo.c</TT>, that reads a
-JPEG image, creates a thumbnail, and writes it to disk in the PNG
-image format. 
-</P>
-<PRE> #include &lt;stdio.h&gt;
- #include &lt;string.h&gt;
- #include &lt;time.h&gt;
- #include &lt;sys/types.h&gt;
- #include &lt;magick/api.h&gt;
+<FONT FACE="Albany"><FONT SIZE=3>Here is a sample program to get you
+started. To find out about all the functions that are available, read
+the source code. Each function is delineated with a full rows of
+percent signs with comments describing the parameters required for
+the function and what it does. For ease in finding a function, they
+are sorted in alphabetical order.</FONT></FONT></P>
+<P><FONT SIZE=3><FONT FACE="Albany">Here is a full example of a
+program, </FONT></FONT><TT><FONT SIZE=3><FONT FACE="Albany">demo.c</FONT></FONT></TT><FONT SIZE=3><FONT FACE="Albany">,
+which reads multiple input files (possibly animation files) specified
+on the command line, resizes the image frames to 106x80, and writes
+the resulting animation to disk.</FONT></FONT></P>
+<PRE>#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;time.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;magick/api.h&gt;
 
- int main(int argc,char **argv)
- {
- ExceptionInfo
- exception;
+int main(int argc,char **argv)
+{
+  ExceptionInfo
+    exception;
 
- Image
- *image,
- *images,
- *resize_image,
- *thumbnails;
+  Image
+    *image,
+    *images,
+    *resize_image,
+    *thumbnails;
 
- ImageInfo
- *image_info;
+  ImageInfo
+    *image_info;
 
- /*
- Initialize the image info structure and read an image.
- */
- InitializeMagick(*argv);
- GetExceptionInfo(&amp;exception);
- image_info=CloneImageInfo((ImageInfo *) NULL);
- (void) strcpy(image_info-&gt;filename,&quot;image.gif&quot;);
- images=ReadImage(image_info,&amp;exception);
- if (exception.severity != UndefinedException)
- CatchException(&amp;exception);
- if (images == (Image *) NULL)
- exit(1);
- /*
- Turn the images into a thumbnail sequence.
- */
- thumbnails=NewImageList();
- while ((image=RemoveFirstImageFromList(&image;s)) != (Image *) NULL)
- {
- resize_image=ResizeImage(image,106,80,Lanczos,1.0,&amp;exception);
- if (resize_image == (Image *) NULL)
- MagickError(exception.severity,exception.reason,exception.description);
- (void) AppendImageToList(&amp;thumbnails,resize_image,&amp;exception);
- DestroyImage(image);
- DestroyImage(resize_image);
- }
- /*
- Write the image as MIFF and destroy it.
- */
- (void) strcpy(thumbnails-&gt;filename,&quot;image.miff&quot;);
- WriteImage(image_info,thumbnails);
- DestroyImageList(thumbnails);
- DestroyImageInfo(image_info);
- DestroyExceptionInfo(&amp;exception);
- DestroyMagick();
- return(0);
- }</PRE><P>
-Now we need to compile. On Unix, the command would look something
-like this: 
+  int
+    i;
+
+  /*
+    Initialize the image info structure and read the list of files
+    provided by the user as a image sequence
+  */
+  InitializeMagick(*argv);
+  GetExceptionInfo(&amp;exception);
+  image_info=CloneImageInfo((ImageInfo *) NULL);
+  images=NewImageList();
+  for (i=1; i&lt; argc-1; i++)
+    {
+      (void) strcpy(image_info-&gt;filename,argv[i]);
+      printf(&quot;Reading %s ...&quot;, image_info-&gt;filename);
+      image=ReadImage(image_info,&amp;exception);
+      printf(&quot; %lu frames\n&quot;, GetImageListLength(image));
+      if (exception.severity != UndefinedException)
+        CatchException(&amp;exception);
+      if (image)
+        (void) AppendImageToList(&amp;images,image);
+    }
+
+  if (!images)
+    {
+      printf(&quot;Failed to read any images!\n&quot;);
+      exit(1);
+    }
+  /*
+    Create a thumbnail image sequence
+  */
+  thumbnails=NewImageList();
+  while ((image=RemoveFirstImageFromList(&amp;images)) != (Image *) NULL)
+    {
+      resize_image=ResizeImage(image,106,80,LanczosFilter,1.0,&amp;exception);
+      DestroyImage(image);
+      if (resize_image == (Image *) NULL)
+        {
+          CatchException(&amp;exception);
+          continue;
+        }
+      (void) AppendImageToList(&amp;thumbnails,resize_image);
+    }
+  /*
+    Write the thumbnail image sequence to file
+  */
+  if (thumbnails)
+    {
+      (void) strcpy(thumbnails-&gt;filename,argv[argc-1]);
+      printf(&quot;Writing %s ... %lu frames\n&quot;, thumbnails-&gt;filename,
+             GetImageListLength(thumbnails));
+      WriteImage(image_info,thumbnails);
+    }
+
+  /*
+    Release resources
+  */
+  DestroyImageList(thumbnails);
+  DestroyImageInfo(image_info);
+  DestroyExceptionInfo(&amp;exception);
+  DestroyMagick();
+  return(0);
+}
+</PRE><P STYLE="margin-bottom: 0.1in">
+<FONT FACE="Albany"><FONT SIZE=3>Now we need to compile. On Unix, the
+command would look something like this: </FONT></FONT>
 </P>
-<PRE> setenv LD_LIBRARY_PATH /usr/local/lib
- gcc `GraphicsMagick-config --cflags --cppflags` demo.c `GraphicsMagick-config --ldflags --libs`</PRE><P>
-Another example is <A HREF="smile.c">smile.c</A>. Compile and excute
-it to display a smiley face on your X server. 
+<PRE STYLE="margin-bottom: 0.2in">   gcc -o demo demo.c -O `GraphicsMagick-config --cppflags --ldflags --libs`</PRE><P>
+<FONT FACE="Albany"><FONT SIZE=3>As a usage example, with the input
+files in1.gif, in2.png, and in3.jpg, create the animation file
+out.miff:</FONT></FONT></P>
+<PRE STYLE="margin-bottom: 0.2in">   demo in1.gif in2.png in3.jpg out.miff</PRE><P>
+<FONT FACE="Albany"><FONT SIZE=3>The resulting animation may be
+played on an X11 display using '<FONT FACE="Cumberland">gm animate
+out.miff</FONT>'.</FONT></FONT></P>
+<P><FONT FACE="Albany"><FONT SIZE=3>The GraphicsMagick-config script
+reproduces the options which were used to compile the GraphicsMagick
+utilities. Using compatible options ensures that your program will
+compile and run.</FONT></FONT></P>
+<P STYLE="margin-bottom: 0.1in"><FONT SIZE=3><FONT FACE="Albany">Another
+example is </FONT></FONT><A HREF="smile.c"><FONT SIZE=3><FONT FACE="Albany">smile.c</FONT></FONT></A><FONT SIZE=3><FONT FACE="Albany">.
+Compile and execute it to display a smiley face on your X server. </FONT></FONT>
 </P>
-<P>For C++, use: 
-</P>
-<PRE STYLE="margin-bottom: 0.2in"> g++ `GraphicsMagick++-config --cxxflags --cppflags` demo.cpp `GraphicsMagick++-config --ldflags --libs`</PRE>
 <HR>
-<P><A HREF="../index.html"><IMG SRC="../images/home.png" NAME="Graphic36" ALT="GraphicsMagick Home Page" ALIGN=MIDDLE WIDTH=40 HEIGHT=40 BORDER=0></A><A HREF="mailto:webmaster@graphicsmagick.org"><IMG SRC="../images/mail.png" NAME="Graphic37" ALT="GraphicsMagick Home Page" ALIGN=MIDDLE WIDTH=40 HEIGHT=40 BORDER=0></A><FONT SIZE=1>
-Image manipulation software that works like magic.</FONT> 
+<P><A HREF="../index.html"><IMG SRC="../images/home.png" NAME="Graphic36" ALT="GraphicsMagick Home Page" ALIGN=MIDDLE WIDTH=40 HEIGHT=40 BORDER=0></A><A HREF="mailto:webmaster@graphicsmagick.org"><IMG SRC="../images/mail.png" NAME="Graphic37" ALT="GraphicsMagick Home Page" ALIGN=MIDDLE WIDTH=40 HEIGHT=40 BORDER=0></A><FONT SIZE=3><FONT FACE="Albany">
+Image manipulation software that works like magic. </FONT></FONT>
 </P>
 </BODY>
 </HTML>

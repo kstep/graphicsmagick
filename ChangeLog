@@ -1,5 +1,13 @@
 2003-04-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* www/api.html: The demo program on the ImageMagick API page is
+	usually intended to be an exercise for the reader.  It rarely
+	compiles or works.  Sure enough the demo code was not even close
+	to compiling, didn't run, and did something totally different than
+	described. This is not a good way to treat new users.  Now the
+	demo program compiles and runs, and its description is correct.
+	* www/magick.css, www/smile.c: Remove "Pair" advertisement which
+	was discovered appended at the end of these files.
 	* coders/jpeg.c (ReadJPEGImage): Check for failure of
 	AllocateImage.  Close blob prior to error return.
 	* configure.ac: Perform substitutions on magick/version.h
