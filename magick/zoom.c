@@ -1277,17 +1277,17 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
     blue,
     center,
     density,
+    end,
     green,
     opacity,
     red,
     scale_factor,
+    start,
     support;
 
   int
-    end,
     j,
     n,
-    start,
     y;
 
   register IndexPacket
@@ -1318,15 +1318,14 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
       support=0.5;
       scale_factor=1.0;
     }
-  support+=1.0e-7;
   for (x=0; x < (int) destination->columns; x++)
   {
     density=0.0;
     n=0;
     center=(double) x/x_factor;
-    start=(int) (center-support+0.5);
-    end=(int) (center+support+0.5);
-    for (i=Max(start,0); i < Min(end,(int) source->columns); i++)
+    start=center-support+0.5;
+    end=center+support+0.5;
+    for (i=Max(start,0); i < (int) Min(end,source->columns); i++)
     {
       contribution[n].pixel=i;
       contribution[n].weight=
@@ -1347,7 +1346,6 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
     destination_indexes=GetIndexes(destination);
     for (y=0; y < (int) destination->rows; y++)
     {
-      j=0;
       blue=0.0;
       green=0.0;
       red=0.0;
@@ -1386,18 +1384,18 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
     blue,
     center,
     density,
+    end,
     green,
     opacity,
     red,
     scale_factor,
+    start,
     support;
 
   int
-    end,
     j,
     n,
-    start,
-    y;
+    x;
 
   register IndexPacket
     *destination_indexes,
@@ -1405,7 +1403,7 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
 
   register int
     i,
-    x;
+    y;
 
   register PixelPacket
     *p,
@@ -1427,15 +1425,14 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
       support=0.5;
       scale_factor=1.0;
     }
-  support+=1.0e-7;
   for (y=0; y < (int) destination->rows; y++)
   {
     density=0.0;
     n=0;
     center=(double) y/y_factor;
-    start=(int) (center-support+0.5);
-    end=(int) (center+support+0.5);
-    for (i=Max(start,0); i < Min(end,(int) source->rows); i++)
+    start=center-support+0.5;
+    end=center+support+0.5;
+    for (i=Max(start,0); i < (int) Min(end,source->rows); i++)
     {
       contribution[n].pixel=i;
       contribution[n].weight=
@@ -1456,7 +1453,6 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
     destination_indexes=GetIndexes(destination);
     for (x=0; x < (int) destination->columns; x++)
     {
-      j=0;
       blue=0.0;
       green=0.0;
       red=0.0;
@@ -1554,8 +1550,8 @@ Export Image *ZoomImage(Image *image,const unsigned int columns,
   /*
     Allocate filter info list.
   */
-  x_factor=(double) zoom_image->columns/(double) image->columns;
-  y_factor=(double) zoom_image->rows/(double) image->rows;
+  x_factor=(double) zoom_image->columns/image->columns;
+  y_factor=(double) zoom_image->rows/image->rows;
   support=Max(filters[image->filter].support/x_factor,
     filters[image->filter].support/y_factor);
   if (support < filters[image->filter].support)
