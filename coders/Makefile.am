@@ -30,7 +30,7 @@
 # Don't require all the GNU mandated files
 AUTOMAKE_OPTIONS = 1.7 foreign
 
-INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/magick
+INCLUDES = -I$(top_builddir) -I$(top_srcdir) -I$(top_srcdir)/magick
 
 if HasWINGDI32
 MAGICK_GDI32_MODULES = clipboard.la emf.la
