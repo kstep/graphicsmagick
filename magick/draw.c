@@ -64,8 +64,8 @@
   Define declarations.
 */
 #define BezierQuantum  200
-#define MatteMatch(color,target,delta) \
-  (FuzzyColorMatch(color,target,delta) && \
+#define MatteMatch(color,target,fuzz) \
+  (FuzzyColorMatch(color,target,fuzz) && \
 	 ((color)->opacity == (target)->opacity))
 #define MaxStacksize  (1 << 15)
 #define Push(up,left,right,delta) \
