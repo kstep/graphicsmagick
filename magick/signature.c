@@ -542,6 +542,7 @@ MagickExport unsigned int SignatureImage(Image *image)
     *q++=hex[message_digest.digest[i] & 0xf];
   }
   *q='\0';
+  while (SetImageAttribute(image,"Signature",(char *) NULL) != False);
   (void) SetImageAttribute(image,"Signature",signature);
   LiberateMemory((void **) &signature);
   LiberateMemory((void **) &message);

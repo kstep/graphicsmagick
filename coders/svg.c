@@ -1847,6 +1847,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
             {
               (void) fprintf(svg_info->file,"text %g,%g \"%s\"\n",
                 svg_info->bounds.x,svg_info->bounds.y,svg_info->text);
+              (void) fprintf(svg_info->file,"pop graphic-context\n");
               break;
             }
           (void) fprintf(svg_info->file,"text %g,%g '%s'\n",svg_info->bounds.x,
@@ -2564,7 +2565,6 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   char
     buffer[MaxTextExtent],
     keyword[MaxTextExtent],
-    last_keyword[MaxTextExtent],
     *primitive,
     *q,
     value[MaxTextExtent];
@@ -2597,6 +2597,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
     x;
 
   unsigned int
+    active,
     length,
     status;
 
@@ -2618,7 +2619,6 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   if ((attribute == (ImageAttribute *) NULL) ||
       (attribute->value == (char *) NULL))
     ThrowWriterException(DelegateWarning,"no image vector graphics",image);
-  n=0;
   /*
     Allocate primitive info memory.
   */
@@ -2627,6 +2627,8 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
     AcquireMemory(number_points*sizeof(PrimitiveInfo));
   if (primitive_info == (PrimitiveInfo *) NULL)
     ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
+  active=False;
+  n=0;
   status=True;
   for (q=attribute->value; *q != '\0'; )
   {
@@ -2637,6 +2639,9 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
         /*
           Comment.
         */
+        if (active)
+          (void) WriteBlobString(image,"\">\n");
+        active=False;
         WriteBlobString(image,"<desc>");
         for (q++; (*q != '\n') && (*q != '\0'); q++)
           switch (*q)
@@ -2927,9 +2932,10 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             if (LocaleCompare("graphic-context",value) == 0)
               {
                 n++;
-                if (LocaleCompare(keyword,last_keyword) == 0)
+                if (active)
                   (void) WriteBlobString(image,"\">\n");
                 (void) WriteBlobString(image,"<g style=\"");
+                active=True;
               }
             break;
           }
@@ -3114,7 +3120,6 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
         break;
       }
     }
-    (void) strcpy(last_keyword,keyword);
     if (status == False)
       break;
     if (primitive_type == UndefinedPrimitive)
@@ -3164,7 +3169,9 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
     primitive_info[j].coordinates=x;
     primitive_info[j].method=FloodfillMethod;
     primitive_info[j].text=(char *) NULL;
-    WriteBlobString(image,"\">\n");
+    if (active)
+      (void) WriteBlobString(image,"\">\n");
+    active=False;
     switch (primitive_type)
     {
       case PointPrimitive:

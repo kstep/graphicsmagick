@@ -796,10 +796,6 @@ MagickExport unsigned int SetImageAttribute(Image *image,const char *key,
     }
   if (*value == '\0')
     return(False);
-  if (LocaleCompare(key,"Label") == 0)
-    while (SetImageAttribute(image,"Label",(char *) NULL) != False);
-  if (LocaleCompare(key,"Signature") == 0)
-    while (SetImageAttribute(image,"Signature",(char *) NULL) != False);
   attribute=(ImageAttribute *) AcquireMemory(sizeof(ImageAttribute));
   if (attribute == (ImageAttribute *) NULL)
     return(False);
