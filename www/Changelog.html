@@ -7,7 +7,7 @@
    <meta name="keywords" content="ImageMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software     development, simulation, image, software, AniMagick, Animagic,    Magick++">
    <meta name="GENERATOR" content="Mozilla/4.7 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
    <title>ImageMagick - Image Processing and Display Package</title>
-<link rev="made" href="mailto:magick.dupont.com">
+<link rev="made" href="mailto:magick@wizards.dupont.com">
 </head>
 <body text="#000000" bgcolor="#FFFFFF" link="#1F00FF" vlink="#9900DD" alink="#FF0000">
 
@@ -23,8 +23,16 @@ ImageMagick Changes</font></font></font></b></td>
 <dl>
 <dd>
 <pre>
+2002-01-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+	* coders/wmf.c (magick_brush): Fixed bug with setting
+	fill color.
+
+2002-01-03  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
+	* Postscript Level II is now DCS compliant.
+
 2001-12-28  Leonard Rosenthol  &lt;leonardr@lazerware.com&gt;
 	* Even more features and options were added to conjure
+	* Added CropBox support to PDF writer
 	
 2001-12-26  Leonard Rosenthol  &lt;leonardr@lazerware.com&gt;
 	* Conjure now supports having a list of files for the
@@ -40,9 +48,8 @@ ImageMagick Changes</font></font></font></b></td>
 	* Started a new scripting language utility, conjure.
 
 2001-12-20  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
-	* ImageMagick displays the search path in the event it
-	  cannot find a particular configuration file (thanks to
-	  billr@corbis.com)
+	* Display the search path in the event a utility cannot find a
+	  particular configuration file (thanks to billr@corbis.com)
 
 2001-12-14  Leonard Rosenthol  &lt;leonardr@lazerware.com&gt;
 	* Fixed some bugs in the new composite operators.

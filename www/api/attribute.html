@@ -24,7 +24,6 @@
 		<LI><A HREF="#getimageattribute">GetImageAttribute</A>
 		<LI><A HREF="#getimageclippingpathattribute">GetImageClippingPathAttribute</A>
 		<LI><A HREF="#setimageattribute">SetImageAttribute</A>
-		<LI><A HREF="#storeimageattribute">StoreImageAttribute</A>
 	</UL>
 
 </UL>
@@ -43,7 +42,6 @@
 <P>const ImageAttribute * <STRONG>GetImageAttribute</STRONG>( const Image *image, const char *key );</P>
 <P>const ImageAttribute * <STRONG>GetImageClippingPathAttribute</STRONG>( const Image *image );</P>
 <P>unsigned int  <STRONG>SetImageAttribute</STRONG>( Image *image, const char *key, const char *value );</P>
-<P><STRONG>StoreImageAttribute</STRONG>( Image *image, char *text );</P>
 <P>
 <HR>
 <H1><A NAME="function descriptions">
@@ -103,20 +101,6 @@ The image.
 <dd><p></p><dt><STRONG><A NAME="item_o_key%2Cvalue%3A">key,value:</A></STRONG><BR>
 <DD>
 These character strings are the name and value of an image attribute to replace or add to the list.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="storeimageattribute">StoreImageAttribute</A></H2>
-<blockquote>StoreImageAttribute() is used to store an image attribute from a text string with the syntax: NAME=VALUE. </blockquote><P>The format of the StoreImageAttribute method is:</P>
-<blockquote>StoreImageAttribute ( <A HREF="types/Image.html">Image</A> *image, char *text ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG>image:</STRONG><BR>
-<DD>
-The image.
-<P></P>
-<dd><p></p><dt><STRONG><A NAME="item_o_text%3A">text:</A></STRONG><BR>
-<DD>
-The text string that is parsed and used to determine the name and value of the new attribute.
 </DL></DL>
 
 </BODY>
