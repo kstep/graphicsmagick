@@ -958,7 +958,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 				  if(logging)
 					{
 					  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  adjustment layer type was %.4s instead of 8BIM", alsig);
-					  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"leave ReadPSDImage()");
+					  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
 					}
 				  ThrowReaderException(CorruptImageError,"NotAPSDImageFile",image);
 				}
