@@ -391,13 +391,13 @@ BEGIN
     IDR_MAINFRAME           "IMDisplay"
     IDR_IMJPEGTYPE          "\nImage\n\nJPEG files (*.jpg)\n.jpg;\nJPEG image\nJPEG image"
     IDR_IMPNGTYPE           "\nImage\n\nPNG files (*.png)\n.png;\nPNG image\nPNG image"
-    IDR_IMTIFFTYPE          "\nImage\n\nTIFF files (*.tiff,*.tif)\n.tif;*.tiff\nTIFF image\nTIFF image"
+    IDR_IMTIFFTYPE          "\nImage\n\nTIFF files (*.tif,*.tiff)\n.tif;.tiff\nTIFF image\nTIFF image"
     IDR_IMBMPTYPE           "\nImage\n\nBMP files (*.bmp)\n.bmp;\nBMP image\nBMP image"
-    IDR_IMWMFTYPE           "\nImage\n\nWMF files (*.wmf)\n.wmf;*.wmf\nWMF image\nWMF image"
-    IDR_IMMIFFTYPE          "\nImage\n\nMIFF files (*.miff,*.mif)\n.mif;*.miff\nMIFF image\nMIFF image"
-    IDR_IMSVGTYPE           "\nImage\n\nSVG files (*.svg)\n.svg;*.svg\nSVG image\nSVG image"
-    IDR_IMEPSTYPE           "\nImage\n\nEPS files (*.eps)\n.eps;*.eps\nEPS image\nEPS image"
-    IDR_IMGIFTYPE           "\nImage\n\nGIF files (*.gif)\n.gif;*.gif\nGIF image\nGIF image"
+    IDR_IMWMFTYPE           "\nImage\n\nWMF files (*.wmf)\n.wmf\nWMF image\nWMF image"
+    IDR_IMMIFFTYPE          "\nImage\n\nMIFF files (*.mif,*.miff)\n.mif;.miff\nMIFF image\nMIFF image"
+    IDR_IMSVGTYPE           "\nImage\n\nSVG files (*.svg)\n.svg\nSVG image\nSVG image"
+    IDR_IMEPSTYPE           "\nImage\n\nEPS files (*.eps)\n.eps\nEPS image\nEPS image"
+    IDR_IMGIFTYPE           "\nImage\n\nGIF files (*.gif)\n.gif\nGIF image\nGIF image"
 END
 
 STRINGTABLE 
