@@ -57,7 +57,7 @@ EXTRA_DIST = Copyright.txt TODO.txt ImageMagick.html Magickshr.opt Make.com \
 	lndir.sh ltcf-c.sh ltcf-cxx.sh ltcf-gcj.sh ltconfig
 
 # Non-Automake subdirectories to distribute
-DISTDIRS = contrib images scenes scripts www PerlMagick
+DISTDIRS = contrib guide images scenes scripts www PerlMagick
 dist-hook:
 	( \
 	  builddir=`pwd` ; \

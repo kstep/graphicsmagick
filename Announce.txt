@@ -1,4 +1,3 @@
-
 Subject: ImageMagick 5.3.3 - tools and libraries for image manipulation
 
 The ImageMagick Studio LLC development group is proud to announce the
