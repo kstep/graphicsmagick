@@ -20,7 +20,6 @@ The compiler must support the following recent C++ standard features:
    * string class (<string>)
    * exceptions (<exception>)
    * namespaces
-   * C++ versions of standard C headers (e.g. <cstring>)
    * Standard Template Library (STL) (e.g. <list>, <vector>)
 
 The author has personally verified that Magick++ compiles and runs using the
@@ -30,14 +29,14 @@ following compiler/platform combinations:
 
    Operating System      Architecture                 Compiler
  Solaris 2.6          SPARC              egcs 1.1.2
- Solaris 2.6          SPARC              gcc-2.95.2
+ Solaris 2.6, 2.7     SPARC              gcc-2.95.2
  FreeBSD 2.2.7        Intel Pentium II   egcs 1.1.2
  Windows NT 4.0 SP6a  Intel Pentium II   Visual C++ 6.0 Standard Edition
 
 User's of Magick++ have reported that the following configurations work with
 Magick++:
 
-                         Other Working Configurations
+                      Other Known Working Configurations
 
  Operating
   System  Architecture    Compiler   Reported By
@@ -53,13 +52,9 @@ Magick++:
                        SRPM)
 
  SGI IRIX MIPS         IRIX C++      Albert Chin-A-Young
-                       7.2.1.2m      <china@thewrittenword.com>
-
- SGI IRIX MIPS         IRIX C++      Albert Chin-A-Young
-                       7.2.1.3m      <china@thewrittenword.com>
-
- Mac OS                CodeWarrior
- 8.1?     PowerPC      Professional  Leonard Rosenthol <leonardr@digapp.com>
+                       7.3.1.1m      <china@thewrittenword.com>
+                       CodeWarrior
+ Mac OS 9 PowerPC      Professional  Leonard Rosenthol <leonardr@digapp.com>
                        Release 5
 
 Please let me know if you have successfully built and executed Magick++
@@ -85,45 +80,33 @@ currently named similar to 'libMagick++.a' and is installed under prefix/lib
 while the headers are installed with Magick++.h being installed in
 prefix/include and the remaining headers in prefix/include/Magick++.
 
-While it is currently possible to select building a shared Magick++ library
-(using the configure option --enable-shared), the resulting library may not
-be fully functional (exceptions and static constructors fail to work)
-because libtool does not yet arrange to invoke initializers when creating
-C++ shared libraries on most systems (reputed to work under Linux). A known
-workaround when using GNU C++ is to cd into the 'lib' subdirectory and
-execute an incantation similar to "c++ -shared -o .libs/libMagick++.so.0.0.0
-*.lo -L/usr/local/lib -L/usr/openwin/lib -lMagick -ljbig -ldf -ltiff -lttf
--ljpeg -lpng -ldpstk -ldps -lXext -lXt -lX11 -lsocket -lnsl -lbz2 -lz -lm
--lc". The exact incantation to use is derived from the one that libtool
-itself used. Obviously this is not for the faint of heart. If you plan to
-write many programs with Magick++, this effort may be worth it since it
-makes the executables *much* (typically 10X) smaller.
-
 To influence the options the configure script chooses, you may specify
-environment variables when running the script. For example, the command
+'make' option variables when running the configure script. For example, the
+command
 
 
-     CXX=CC CXXFLAGS=-O2 LIBS=-lposix ./configure
+     ./configure CXX=CC CXXFLAGS=-O2 LIBS=-lposix
 
 specifies additional options to the configure script.  The following table
 shows the available options.
 
              Environment Variables That Effect Configure
 
- Environment Variable                  Description
+     Make Option
+      Variable                         Description
 
          CXX         Name of C++ compiler (e.g. 'CC -Xa') to use
                      compiler 'CC -Xa'
-       CXXFLAGS      Compiler flags (e.g. '-g -O2') to compile with
+      CXXFLAGS       Compiler flags (e.g. '-g -O2') to compile with
 
-       CPPFLAGS      Include paths (-I/somedir) to look for header
+      CPPFLAGS       Include paths (-I/somedir) to look for header
                      files
                      Library paths (-L/somedir) to look for
-                     libraries. Systems that support the notion of
-       LDFLAGS       a library run-path may additionally require
+                     libraries. Systems that support the notion of a
+       LDFLAGS       library run-path may additionally require
                      -R/somedir or '-rpath /somedir' in order to
                      find shared libraries at run time.
-         LIBS        Extra libraries (-lsomelib) required to link
+        LIBS         Extra libraries (-lsomelib) required to link
 
 Installing Linux RPMs
 
@@ -141,54 +124,14 @@ under Linux.
 
 Visual C++
 
-Windows NT is supported by an ImageMagick source package known as
-VisualMagick.  The VisualMagick source package provides sources to
-ImageMagick, Magick++, add-on libraries (e.g. JPEG), and a ready-made Visual
-C++ build environment. The easiest way to build Magick++ for Windows NT is
-to use the copy of Magick++ provided with VisualMagick. However, the copy of
-Magick++ provided with VisualMagick may be replaced with a newer Magick++
-package if necessary.
-
-Obtain and extract the VisualMagick source package, making sure to preserver
-subdirectories.
-
-VisualMagick provides three ready-made build envionments:
-
-     VisualMagick (ImageMagick\VisualMagick\VisualMagick.dsw)
-        Builds Debug and Release versions based on DLLs
-     VisualMagickStatic
-     (ImageMagick\VisualMagick\VisualMagickStatic.dsw)
-        Builds Debug and Release versions based on static libraries
-     VisualMagickX11 (ImageMagick\VisualMagick\VisualMagickX11.dsw)
-        Builds Debug and Release versions based on DLLs, including X11
-     support
-
-These build environments are based on similarly named workspaces in the
-VisualMagick subdirectory.
-Open the desired workspace in Visual C++, select the menu named "Build", the
-menu entry "Batch Build", and then click on the "Rebuild All" button in
-order to build the complete VisualMagick package, including the Magick++
-library.
-
-Executables and DLLs are output to the directory
-ImageMagick\VisualMagick\bin. Linkable libraries are output to the directory
-ImageMagick\VisualMagick\lib.
-
-The VisualMagick build does not build the Magick++ demos or tests. These are
-built by seperate workspaces.
+Windows NT is supported by an ImageMagick source package for NT available in
+the 'nt' subdirectory of the ImageMagick ftp site (and mirrors).  The
+ImageMagick source package for NT provides sources to ImageMagick, Magick++,
+add-on libraries (e.g. JPEG), and a ready-made Visual C++ build environment.
+Please read the configuration and build instructions for the NT source
+package in order to build Magick++.
 
 Magick++ Demos
-
-In order to build the Magick++ demos, open the workspace
-ImageMagick\VisualMagick\Magick++Demos.dsw and do a Batch Build, using the
-same options as used for VisualMagick. The executables for the demos are
-output to the ImageMagick\VisualMagick\bin directory. The demos may be
-executed by running the batch script Magick++Demo.bat in the directory
-ImageMagick\VisualMagick, with output files written to the directory
-ImageMagick\Magick++\demo. An alternative way to run the demos is to add the
-directory ImageMagick\VisualMagick\bin (with actual path prefix) to your
-path, and then cd to the ImageMagick\Magick++\demo directory before running
-the demo (e.g. 'button').
 
 Available demos are:
 
@@ -204,17 +147,6 @@ Available demos are:
         program to demonstrate use of the drawing primitives
 
 Magick++ Tests
-
-In order to build the Magick++ tests, open the workspace
-ImageMagick\VisualMagick\Magick++Tests.dsw and do a Batch Build, using the
-same options as used  for VisualMagick.  The executables for the tests are
-output to the ImageMagick\VisualMagick\bin directory. The tests may be
-executed by running the batch script Magick++Tests.bat in the directory
-ImageMagick\VisualMagick, with output files written to the directory
-ImageMagick\Magick++\tests. An alternative way to run the tests is to add
-the directory ImageMagick\VisualMagick\bin (with actual path prefix) to your
-path, and then cd to the ImageMagick\Magick++\demo directory to run the test
-(e.g. 'appendImages').
 
 The available tests are:
 

@@ -2,7 +2,7 @@
 <html>
 <head>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <meta name="GENERATOR" content="Mozilla/4.7 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
+   <meta name="GENERATOR" content="Mozilla/4.72 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
    <meta name="Author" content="Bob Friesenhahn">
    <meta name="Description" content="C++ API for ImageMagick">
    <title>Installing Magick++</title>
@@ -72,7 +72,7 @@ the following compiler/platform combinations:
 </tr>
 
 <tr>
-<td><font size=-1>Solaris 2.6</font></td>
+<td><font size=-1>Solaris 2.6, 2.7</font></td>
 
 <td><font size=-1>SPARC</font></td>
 
@@ -281,45 +281,11 @@ Windows NT is supported by an ImageMagick source package for NT available
 in the 'nt' subdirectory of the ImageMagick ftp site (and mirrors).&nbsp;
 The ImageMagick source package for NT provides sources to ImageMagick,
 Magick++, add-on libraries (e.g. JPEG), and a ready-made Visual C++ build
-environment. The easiest way to build Magick++ for Windows NT is to use
-the copy of Magick++ provided with ImageMagick. However, the copy of Magick++
-provided with ImageMagick may be replaced with a newer Magick++ package
-if necessary.
-<p>Obtain and extract the ImageMagick source package for NT (e.g. ImageMagick-5.1.1.zip),
-making sure to preserver subdirectories.
-<p>ImageMagick for NT provides three ready-made build envionments which
-may be found in the <i>VisualMagick</i> subdirectory:
-<blockquote><i>VisualMagick</i> (<tt>ImageMagick\VisualMagick\VisualMagick.dsw</tt>)
-<br>&nbsp;&nbsp; Builds Debug and Release versions based on DLLs
-<br><i>VisualMagickStatic</i> (<tt>ImageMagick\VisualMagick\VisualMagickStatic.dsw</tt>)
-<br>&nbsp;&nbsp; Builds Debug and Release versions based on static libraries
-<br><i>VisualMagickX11</i> (<tt>ImageMagick\VisualMagick\VisualMagickX11.dsw</tt>)
-<br>&nbsp;&nbsp; Builds Debug and Release versions based on DLLs, including
-X11 support</blockquote>
-These build environments are based on similarly named workspaces in the
-VisualMagick subdirectory.
-<p>Open the desired workspace in Visual C++, select the menu named "Build",
-the menu entry "Batch Build", and then click on the "Rebuild All" button
-in order to build the complete ImageMagick package, including the Magick++
-library.
-<p>Executables and DLLs are output to the directory <i>ImageMagick\VisualMagick\bin.</i>
-Linkable libraries are output to the directory <i>ImageMagick\VisualMagick\lib</i>.
-<p>The ImageMagick build does not build the Magick++ demos or tests. These
-are built by seperate workspaces.
+environment. Please read the configuration and build instructions for the
+NT source package in order to build Magick++.
 <h5>
 Magick++ Demos</h5>
-In order to build the Magick++ demos, open the workspace <i>ImageMagick\VisualMagick\Magick++Demos.dsw
-</i>and
-do a Batch Build, using the same options as used for ImageMagick. The executables
-for the demos are output to the <i>ImageMagick\VisualMagick\bin</i> directory.
-The demos may be executed by running the batch script <i>Magick++Demo.bat
-</i>in
-the directory <i>ImageMagick\VisualMagick</i>, with output files written
-to the directory <i>ImageMagick\Magick++\demo</i>. An alternative way to
-run the demos is to add the directory <i>ImageMagick\VisualMagick\bin</i>
-(with actual path prefix) to your path, and then cd to the <i>ImageMagick\Magick++\demo</i>
-directory before running the demo (e.g. 'button').
-<p>Available demos are:
+Available demos are:
 <blockquote>button
 <br>&nbsp;&nbsp; program to create a simple rectangular button with an
 annotation
@@ -333,17 +299,7 @@ animation
 
 <h5>
 Magick++ Tests</h5>
-In order to build the Magick++ tests, open the workspace <i>ImageMagick\VisualMagick\Magick++Tests.dsw</i>
-and do a Batch Build, using the same options as used&nbsp; for ImageMagick.&nbsp;
-The executables for the tests are output to the <i>ImageMagick\VisualMagick\bin</i>
-directory. The tests may be executed by running the batch script <i>Magick++Tests.bat
-</i>in
-the directory <i>ImageMagick\VisualMagick</i>, with output files written
-to the directory <i>ImageMagick\Magick++\tests</i>. An alternative way
-to run the tests is to add the directory <i>ImageMagick\VisualMagick\bin</i>
-(with actual path prefix) to your path, and then cd to the <i>ImageMagick\Magick++\demo</i>
-directory to run the test (e.g. 'appendImages').
-<p>The available tests are:
+The available tests are:
 <blockquote>appendImages
 <br>&nbsp;&nbsp; test STL appendImages function
 <br>attributes

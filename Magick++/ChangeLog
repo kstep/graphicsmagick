@@ -1,3 +1,9 @@
+2000-07-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* test/*.cpp demo/*.cpp: Added call to MagickIncarnate() to set
+ 	ImageMagick install location for Windows.  Hopefully this hack can
+ 	be removed someday.
+
 2000-07-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (colorFuzz): Changed type to 'double' from

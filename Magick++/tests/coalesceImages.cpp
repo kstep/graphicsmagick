@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999
+// Copyright Bob Friesenhahn, 1999, 2000
 //
 // Test STL coalesceImages function
 //
@@ -16,8 +16,12 @@ using namespace std;
 
 using namespace Magick;
 
-int main( int /*argc*/, char ** /*argv*/)
+int main( int /*argc*/, char ** argv)
 {
+
+  // Initialize ImageMagick install location for Windows
+  MagickIncarnate(*argv);
+
   int failures=0;
 
   try {

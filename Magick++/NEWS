@@ -1,4 +1,8 @@
 This file records noteworthy changes.
+(0.9.5)
+  * Released with ImageMagick 5.2.2.
+(0.9.4)
+  * Released with ImageMagick 5.2.1.
 (0.9.3)
   * Bugfix to the Pixels GetIndexes() method.
   * Adapted to ImageMagick 5.2.1's revised matte channel interpretation.

@@ -13,8 +13,11 @@ using namespace std;
 
 using namespace Magick;
 
-int main( int /*argc*/, char ** /*argv*/)
+int main( int /*argc*/, char ** argv)
 {
+
+  // Initialize ImageMagick install location for Windows
+  MagickIncarnate(*argv);
 
   try {
 
@@ -63,8 +66,8 @@ int main( int /*argc*/, char ** /*argv*/)
 
     // Add some text
     button.penColor( textColor );
-    button.font( textFont );
     button.fontPointsize( textFontPointSize );
+    button.font( textFont );
     button.annotate( text, CenterGravity );
 
     // Add a decorative frame

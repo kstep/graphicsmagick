@@ -22,6 +22,9 @@ int main(int argc,char **argv)
       exit( 1 );
     }
 
+  // Initialize ImageMagick install location for Windows
+  MagickIncarnate(*argv);
+
   Color color;
   try {
     color = Color(argv[1]);

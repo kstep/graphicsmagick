@@ -14,8 +14,11 @@ using namespace std;
 
 using namespace Magick;
 
-int main( int /*argc*/, char ** /*argv*/)
+int main( int /*argc*/, char **argv)
 {
+
+  // Initialize ImageMagick install location for Windows
+  MagickIncarnate(*argv);
 
   int failures=0;
 
