@@ -103,7 +103,7 @@
 %    -intent type         Absolute, Perceptual, Relative, or Saturation
 %    -interlace type      None, Line, Plane, or Partition
 %    -label name          assign a label to an image
-%    -list type           Delegate, Format, Font, or Magic
+%    -list type           Color, Delegate, Format, Font, or Magic
 %    -loop iterations     add Netscape loop extension to your GIF animation
 %    -map filename        transform image colors to match this set of colors
 %    -matte               store matte channel if the image has one
@@ -302,7 +302,7 @@ static void Usage()
       "-intent type         Absolute, Perceptual, Relative, or Saturation",
       "-interlace type      None, Line, Plane, or Partition",
       "-label name          assign a label to an image",
-      "-list type           Delegate, Format, Font, or Magic",
+      "-list type           Color, Delegate, Format, Font, or Magic",
       "-loop iterations     add Netscape loop extension to your GIF animation",
       "-map filename        transform image colors to match this set of colors",
       "-matte               store matte channel if the image has one",
@@ -1169,19 +1169,22 @@ int main(int argc,char **argv)
                   if (i == argc)
                     MagickError(OptionError,"Missing list name",option);
                   option=argv[i];
-                  if (LocaleCompare("Delegate",option) == 0)
-                    (void) ListDelegateInfo((FILE *) NULL,&exception);
+                  if (LocaleCompare("Color",option) == 0)
+                    (void) ListColorInfo((FILE *) NULL,&exception);
                   else
-                    if (LocaleCompare("Font",option) == 0)
-                      (void) ListFontInfo((FILE *) NULL,&exception);
+                    if (LocaleCompare("Delegate",option) == 0)
+                      (void) ListDelegateInfo((FILE *) NULL,&exception);
                     else
-                      if (LocaleCompare("Format",option) == 0)
-                        (void) ListMagickInfo((FILE *) NULL,&exception);
+                      if (LocaleCompare("Font",option) == 0)
+                        (void) ListFontInfo((FILE *) NULL,&exception);
                       else
-                        if (LocaleCompare("Magic",option) == 0)
-                          (void) ListMagicInfo((FILE *) NULL,&exception);
+                        if (LocaleCompare("Format",option) == 0)
+                          (void) ListMagickInfo((FILE *) NULL,&exception);
                         else
-                          MagickError(OptionError,"Invalid list type",option);
+                          if (LocaleCompare("Magic",option) == 0)
+                            (void) ListMagicInfo((FILE *) NULL,&exception);
+                          else
+                            MagickError(OptionError,"Invalid list type",option);
                   if (exception.severity != UndefinedException)
                     MagickError(exception.severity,exception.reason,
                       exception.description);

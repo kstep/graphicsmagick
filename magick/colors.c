@@ -304,8 +304,14 @@ static void DestroyColorList(const NodeInfo *node_info)
 */
 MagickExport ColorInfo *GetColorInfo(const char *name,ExceptionInfo *exception)
 {
+  char
+    colorname[MaxTextExtent];
+
   register ColorInfo
     *p;
+
+  register unsigned char
+    *q;
 
   AcquireSemaphore(&color_semaphore);
   if (color_list == (ColorInfo *) NULL)
@@ -328,8 +334,16 @@ MagickExport ColorInfo *GetColorInfo(const char *name,ExceptionInfo *exception)
   /*
     Search for named color.
   */
+  FormatString(colorname,"%.1024s",name);
+  for (q=colorname; *q != '\0'; q++)
+  {
+    if (*q != ' ')
+      continue;
+    (void) strcpy(q,q+1);
+    q--;
+  }
   for (p=color_list; p != (ColorInfo *) NULL; p=p->next)
-    if (LocaleCompare(name,p->name) == 0)
+    if (LocaleCompare(colorname,p->name) == 0)
       break;
   return(p);
 }
