@@ -859,6 +859,7 @@ extern Export void
   RegisterSHTMLImage(void),
   RegisterSteganoImage(void),
   RegisterSUNImage(void),
+  RegisterSVGImage(void),
   RegisterTEXTImage(void),
   RegisterTGAImage(void),
   RegisterTIFImage(void),

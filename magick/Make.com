@@ -99,6 +99,7 @@ $call Make signature.c
 $call Make stegano.c
 $call Make stream.c
 $call Make sun.c
+$call Make svg.c
 $call Make tga.c
 $call Make tiff.c
 $call Make tile.c
@@ -133,7 +134,7 @@ $library/create libmagick.olb PreRvIcccm,animate,annotate,-
   logo,magick, map,matte,memory,miff,monitor,mono,montage,mtv,-
   pdb,pcd,pcl,pcx, pdf,pict,pix,pixel_cache,plasma,png,pnm,-
   preview,ps,ps2,ps3,psd,pwp,quantize,rgb,rla,rle,segment,-
-  sct,sfw,sgi,shear,signature,stegano,stream,sun,tga,tiff,-
+  sct,sfw,sgi,shear,signature,stegano,stream,sun,svg,tga,tiff,-
   tile,tim,timer,transform,ttf,txt,uil,utility,uyvy,vicar,-
   vid,viff,vms,widget,wbmp,x,xbm,xc,xpm,xwd,xwindows,yuv,-
   zoom,8bim

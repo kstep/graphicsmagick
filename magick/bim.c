@@ -119,7 +119,8 @@ static unsigned int Is8BIM(const unsigned char *magick,
 %
 %  The format of the Read8BIMImage method is:
 %
-%      Image *Read8BIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
+%      Image *Read8BIMImage(const ImageInfo *image_info,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -133,7 +134,8 @@ static unsigned int Is8BIM(const unsigned char *magick,
 %
 %
 */
-static Image *Read8BIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *Read8BIMImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
   Image
     *image;
@@ -160,7 +162,7 @@ static Image *Read8BIMImage(const ImageInfo *image_info,ExceptionInfo *exception
   */
   length=MaxTextExtent;
   image->iptc_profile.info=(unsigned char *) AllocateMemory(length+2);
-  for (q=image->iptc_profile.info; ; q++)
+  for (q=image->iptc_profile.info; image->iptc_profile.info; q++)
   {
     c=ReadByte(image);
     if (c == EOF)
@@ -177,9 +179,9 @@ static Image *Read8BIMImage(const ImageInfo *image_info,ExceptionInfo *exception
       }
     *q=c;
   }
-  image->iptc_profile.length=0;
-  if (image->iptc_profile.info != (unsigned char *) NULL)
-    image->iptc_profile.length=q-image->iptc_profile.info;
+  if (image->iptc_profile.info == (unsigned char *) NULL)
+    ThrowReaderException(FileOpenWarning,"Memory allocation failed",image);
+  image->iptc_profile.length=q-image->iptc_profile.info;
   CloseBlob(image);
   return(image);
 }

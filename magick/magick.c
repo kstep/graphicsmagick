@@ -276,6 +276,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       RegisterSGIImage();
       RegisterSteganoImage();
       RegisterSUNImage();
+      RegisterSVGImage();
       RegisterTGAImage();
       RegisterTIFFImage();
       RegisterTILEImage();

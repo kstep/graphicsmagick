@@ -64,7 +64,7 @@ SRCS = PreRvIcccm.c animate.c annotate.c attributes.c avs.c bim.c blob.c bmp.c \
   nt.c pcd.c pcl.c pcx.c pdb.c pdf.c pict.c pix.c pixel_cache.c plasma.c \
   png.c pnm.c preview.c ps.c ps2.c ps3.c psd.c pwp.c quantize.c rgb.c \
   rla.c rle.c sct.c segment.c sfw.c sgi.c shear.c signature.c stegano.c \
-  sun.c tga.c tiff.c tile.c tim.c timer.c transform.c ttf.c txt.c uil.c \
+  sun.c svg.c tga.c tiff.c tile.c tim.c timer.c transform.c ttf.c txt.c uil.c \
   utility.c uyvy.c vicar.c vid.c viff.c vms.c wbmp.c widget.c x.c xbm.c \
   xc.c xpm.c xwd.c xwindows.c yuv.c zoom.c
 
@@ -77,7 +77,7 @@ OBJS = PreRvIcccm.o animate.o annotate.o attributes.o avs.o bim.o blob.o bmp.o \
   nt.o pcd.o pcl.o pcx.o pdb.o pdf.o pict.o pix.o pixel_cache.o plasma.o \
   png.o pnm.o preview.o ps.o ps2.o ps3.o psd.o pwp.o quantize.o rgb.o \
   rla.o rle.o sct.o segment.o sfw.o sgi.o shear.o signature.o stegano.o \
-  sun.o tga.o tiff.o tile.o tim.o timer.o transform.o ttf.o txt.o uil.o \
+  sun.o svg.o tga.o tiff.o tile.o tim.o timer.o transform.o ttf.o txt.o uil.o \
   utility.o uyvy.o vicar.o vid.o viff.o vms.o wbmp.o widget.o x.o xbm.o \
   xc.o xpm.o xwd.o xwindows.o yuv.o zoom.o
 

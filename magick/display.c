@@ -6093,7 +6093,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         Query user for emboss order.
       */
       (void) XDialogWidget(display,windows,"Emboss",
-        "Enter the emboss order (e.g. 3, 5, 7):",order);
+        "Enter the emboss order (choose odd numbers from 3 to 31):",order);
       if (*order == '\0')
         break;
       /*
@@ -6120,7 +6120,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         Query user for noise order.
       */
       (void) XDialogWidget(display,windows,"Reduce Noise",
-        "Enter the noise order (e.g. 3, 5, 7):",order);
+        "Enter the noise order (choose odd numbers from 3 to 31):",order);
       if (*order == '\0')
         break;
       /*
@@ -6171,7 +6171,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         Query user for sharpen order.
       */
       (void) XDialogWidget(display,windows,"Sharpen",
-        "Enter the sharpen order (e.g. 3, 5, 7):",order);
+        "Enter the sharpen order (choose odd numbers from 3 to 31):",order);
       if (*order == '\0')
         break;
       /*
@@ -6198,7 +6198,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         Query user for blur order.
       */
       (void) XDialogWidget(display,windows,"Blur",
-        "Enter the blur order (e.g. 3, 5, 7):",order);
+        "Enter the blur order (choose odd numbers from 3 to 31):",order);
       if (*order == '\0')
         break;
       /*
@@ -6246,14 +6246,14 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     case EdgeDetectCommand:
     {
       static char
-        factor[MaxTextExtent] = "60.0";
+        order[MaxTextExtent] = "3";
 
       /*
         Query user for edge factor.
       */
       (void) XDialogWidget(display,windows,"Detect Edges",
-        "Enter the edge detect factor (0.0 - 99.9%):",factor);
-      if (*factor == '\0')
+        "Enter the edge detect factor (choose odd numbers from 3 to 31):",order);
+      if (*order == '\0')
         break;
       /*
         Detect edge in image.
@@ -6261,7 +6261,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
       argv[1]="-edge";
-      argv[2]=factor;
+      argv[2]=order;
       MogrifyImage(resource_info->image_info,3,argv,image);
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
@@ -6522,7 +6522,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         Query user for charcoal order.
       */
       (void) XDialogWidget(display,windows,"Charcoal Drawing",
-        "Enter the charcoal order (e.g. 3, 5, 7):",order);
+        "Enter the charcoal order (choose odd numbers from 3 to 31):",order);
       if (*order == '\0')
         break;
       /*

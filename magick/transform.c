@@ -276,6 +276,8 @@ Export Image *CoalesceImages(Image *image,ExceptionInfo *exception)
     CompositeImage(coalesce_image,next->matte ? OverCompositeOp :
       ReplaceCompositeOp,next,next->page.x,next->page.y);
     GetPageInfo(&coalesce_image->page);
+    CloseImagePixels(next);
+    CloseImagePixels(coalesce_image);
   }
   while (coalesce_image->previous != (Image *) NULL)
     coalesce_image=coalesce_image->previous;
@@ -644,6 +646,8 @@ Export Image *DeconstructImages(Image *image,ExceptionInfo *exception)
     }
     bounding_box[i].height=y-bounding_box[i].y+1;
     i++;
+    CloseImagePixels(next);
+    CloseImagePixels(next->previous);
   }
   /*
     Clone first next in sequence.
