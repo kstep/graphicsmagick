@@ -3,6 +3,33 @@
 /* Define if coders and filters are to be built as modules. */
 #undef BuildMagickModules
 
+/* C compiler used for compilation */
+#undef GM_BUILD_CC
+
+/* CFLAGS used for C compilation */
+#undef GM_BUILD_CFLAGS
+
+/* arguments passed to configure */
+#undef GM_BUILD_CONFIGURE_ARGS
+
+/* CPPFLAGS used for preprocessing */
+#undef GM_BUILD_CPPFLAGS
+
+/* C++ compiler used for compilation */
+#undef GM_BUILD_CXX
+
+/* CXXFLAGS used for C++ compilation */
+#undef GM_BUILD_CXXFLAGS
+
+/* Host identification triplet */
+#undef GM_BUILD_HOST
+
+/* LDFLAGS used for linking */
+#undef GM_BUILD_LDFLAGS
+
+/* LIBS used for linking */
+#undef GM_BUILD_LIBS
+
 /* Define if C compiler supports __func__ */
 #undef HAS___func__
 

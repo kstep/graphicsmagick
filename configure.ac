@@ -2310,6 +2310,19 @@ LDFLAGS=`echo $LDFLAGS | sed -e 's/  */ /g'`
 TESTED_LIBS=`echo $LIBS | sed -e 's/  */ /g'`
 MAGICK_DEP_LIBS=`echo $MAGICK_DEP_LIBS | sed -e 's/  */ /g'`
 #LIBS=`echo $LIBS | sed -e 's/  */ /g'`
+
+# Save configure/build parameters for later reference
+AC_DEFINE_UNQUOTED(GM_BUILD_CONFIGURE_ARGS,"$0 ${ac_configure_args}",[arguments passed to configure])
+AC_DEFINE_UNQUOTED(GM_BUILD_HOST,"${host}",[Host identification triplet])
+AC_DEFINE_UNQUOTED(GM_BUILD_CC,"${CC}",[C compiler used for compilation])
+AC_DEFINE_UNQUOTED(GM_BUILD_CXX,"${CXX}",[C++ compiler used for compilation])
+AC_DEFINE_UNQUOTED(GM_BUILD_CFLAGS,"${CFLAGS}",[CFLAGS used for C compilation])
+AC_DEFINE_UNQUOTED(GM_BUILD_CPPFLAGS,"${CPPFLAGS}",[CPPFLAGS used for preprocessing])
+AC_DEFINE_UNQUOTED(GM_BUILD_CXXFLAGS,"${CXXFLAGS}",[CXXFLAGS used for C++ compilation])
+AC_DEFINE_UNQUOTED(GM_BUILD_LDFLAGS,"${LDFLAGS}",[LDFLAGS used for linking])
+AC_DEFINE_UNQUOTED(GM_BUILD_LIBS,"${MAGICK_DEP_LIBS}",[LIBS used for linking])
+
+# Intentionally over-ride LIBS so that libraries are supplied by makefiles instead.
 LIBS=""
 
 #AC_SUBST(CPPFLAGS)
@@ -2318,6 +2331,7 @@ AC_SUBST(X_CFLAGS)
 #AC_SUBST(X_PRE_LIBS)
 #AC_SUBST(X_LIBS)
 #AC_SUBST(X_EXTRA_LIBS)
+
 
 AC_OUTPUT( \
         Makefile \

@@ -1,3 +1,10 @@
+2003-06-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (VersionCommand): Add build information to
+	version output.
+	* configure.ac: Save configure/build parameters for later use in
+	version output.
+
 2003-06-04  William Radcliffe  <billr@corbis.com>
 
 	* coders/meta.c: Added some casts to make things compile better.

@@ -38693,6 +38693,55 @@ LDFLAGS=`echo $LDFLAGS | sed -e 's/  */ /g'`
 TESTED_LIBS=`echo $LIBS | sed -e 's/  */ /g'`
 MAGICK_DEP_LIBS=`echo $MAGICK_DEP_LIBS | sed -e 's/  */ /g'`
 #LIBS=`echo $LIBS | sed -e 's/  */ /g'`
+
+# Save configure/build parameters for later reference
+
+cat >>confdefs.h <<_ACEOF
+#define GM_BUILD_CONFIGURE_ARGS "$0 ${ac_configure_args}"
+_ACEOF
+
+
+cat >>confdefs.h <<_ACEOF
+#define GM_BUILD_HOST "${host}"
+_ACEOF
+
+
+cat >>confdefs.h <<_ACEOF
+#define GM_BUILD_CC "${CC}"
+_ACEOF
+
+
+cat >>confdefs.h <<_ACEOF
+#define GM_BUILD_CXX "${CXX}"
+_ACEOF
+
+
+cat >>confdefs.h <<_ACEOF
+#define GM_BUILD_CFLAGS "${CFLAGS}"
+_ACEOF
+
+
+cat >>confdefs.h <<_ACEOF
+#define GM_BUILD_CPPFLAGS "${CPPFLAGS}"
+_ACEOF
+
+
+cat >>confdefs.h <<_ACEOF
+#define GM_BUILD_CXXFLAGS "${CXXFLAGS}"
+_ACEOF
+
+
+cat >>confdefs.h <<_ACEOF
+#define GM_BUILD_LDFLAGS "${LDFLAGS}"
+_ACEOF
+
+
+cat >>confdefs.h <<_ACEOF
+#define GM_BUILD_LIBS "${MAGICK_DEP_LIBS}"
+_ACEOF
+
+
+# Intentionally over-ride LIBS so that libraries are supplied by makefiles instead.
 LIBS=""
 
 #AC_SUBST(CPPFLAGS)
@@ -38701,6 +38750,7 @@ LIBS=""
 #AC_SUBST(X_PRE_LIBS)
 #AC_SUBST(X_LIBS)
 #AC_SUBST(X_EXTRA_LIBS)
+
 
                                                                                                                                                                                                                                                           ac_config_files="$ac_config_files Makefile magick/Makefile coders/delegates.mgk coders/Makefile utilities/Makefile tests/Makefile coders/type-ghostscript.mgk coders/type-solaris.mgk coders/type-windows.mgk coders/type.mgk filters/Makefile ltdl/Makefile magick/GraphicsMagick-config magick/GraphicsMagick.pc magick/version.h Magick++/Makefile Magick++/bin/GraphicsMagick++-config Magick++/bin/Makefile Magick++/demo/Makefile Magick++/lib/GraphicsMagick++.pc Magick++/lib/Makefile Magick++/lib/Magick++/Makefile Magick++/tests/Makefile PerlMagick/Magick.pm PerlMagick/Makefile.PL"
 cat >confcache <<\_ACEOF

@@ -13784,8 +13784,46 @@ MagickExport void ImportUsage(void)
 static unsigned int VersionCommand(ImageInfo *image_info,
   int argc,char **argv,char **metadata,ExceptionInfo *exception)
 {
-  (void) fprintf(stdout,"Version: %.1024s\n",
-                 GetMagickVersion((unsigned long *) NULL));
+  (void) fprintf(stdout,"Version: %.1024s\n",GetMagickVersion(0));
   (void) fprintf(stdout,"Copyright: %.1024s\n",GetMagickCopyright());
+
+#if defined(GM_BUILD_HOST)
+  (void) fprintf(stdout,"Host type: %.1024s\n", GM_BUILD_HOST);
+#endif /* defined(GM_BUILD_HOST) */
+
+#if defined(GM_BUILD_CONFIGURE_ARGS)
+  (void) fprintf(stdout,"\nConfigured using the command:\n  %.1024s\n",
+                 GM_BUILD_CONFIGURE_ARGS);
+#endif /* defined(GM_BUILD_CONFIGURE_ARGS) */
+
+#if defined(GM_BUILD_CC)
+  (void) fprintf(stdout,"\nFinal Build Parameters:\n");
+  (void) fprintf(stdout,"  CC       = %.1024s\n", GM_BUILD_CC);
+#endif /* defined(GM_BUILD_CC) */
+
+#if defined(GM_BUILD_CFLAGS)
+  (void) fprintf(stdout,"  CFLAGS   = %.1024s\n", GM_BUILD_CFLAGS);
+#endif /* defined(GM_BUILD_CFLAGS) */
+
+#if defined(GM_BUILD_CPPFLAGS)
+  (void) fprintf(stdout,"  CPPFLAGS = %.1024s\n", GM_BUILD_CPPFLAGS);
+#endif /* defined(GM_BUILD_CPPFLAGS) */
+
+#if defined(GM_BUILD_CXX)
+  (void) fprintf(stdout,"  CXX      = %.1024s\n", GM_BUILD_CXX);
+#endif /* defined(GM_BUILD_CXX) */
+
+#if defined(GM_BUILD_CXXFLAGS)
+  (void) fprintf(stdout,"  CXXFLAGS = %.1024s\n", GM_BUILD_CXXFLAGS);
+#endif /* defined(GM_BUILD_CXXFLAGS) */
+
+#if defined(GM_BUILD_LDFLAGS)
+  (void) fprintf(stdout,"  LDFLAGS  = %.1024s\n", GM_BUILD_LDFLAGS);
+#endif /* defined(GM_BUILD_LDFLAGS) */
+
+#if defined(GM_BUILD_LIBS)
+  (void) fprintf(stdout,"  LIBS     = %.1024s\n", GM_BUILD_LIBS);
+#endif /* defined(GM_BUILD_LIBS) */
+
   return True;
 }
