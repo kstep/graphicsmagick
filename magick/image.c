@@ -4704,10 +4704,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Shave the image edges.
             */
-            flags=ParseGeometry(argv[++i],&geometry.x,&geometry.y,
+            flags=ParseImageGeometry(argv[++i],&geometry.x,&geometry.y,
               &geometry.width,&geometry.height);
-            if ((flags & HeightValue) == 0)
-              geometry.height=geometry.width;
             shave_image=ShaveImage(*image,&geometry,&(*image)->exception);
             if (shave_image == (Image *) NULL)
               break;

@@ -1347,8 +1347,9 @@ MagickExport Image *ShaveImage(const Image *image,
   RectangleInfo
     geometry;
 
-  geometry.width=image->columns-2*shave_info->width;
-  geometry.height=image->rows-2*shave_info->height;
+  SetGeometry(image,&geometry);
+  geometry.width-=shave_info->width;
+  geometry.height-=shave_info->height;
   geometry.x=(long) shave_info->width;
   geometry.y=(long) shave_info->height;
   return(CropImage(image,&geometry,exception));
@@ -1418,7 +1419,8 @@ MagickExport void TransformImage(Image **image,const char *crop_geometry,
       flags=ParseImageGeometry(crop_geometry,&geometry.x,&geometry.y,
         &geometry.width,&geometry.height);
       if ((geometry.width == 0) || (geometry.height == 0) ||
-          ((flags & XValue) != 0) || ((flags & YValue) != 0))
+          ((flags & XValue) != 0) || ((flags & YValue) != 0) ||
+          (flags & PercentValue))
         crop_image=CropImage(transform_image,&geometry,&(*image)->exception);
       else
         if ((transform_image->columns > geometry.width) ||
