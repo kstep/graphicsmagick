@@ -141,7 +141,7 @@ testFilter('input.miff', 'Modulate',
 
 ++$test;
 testFilter('input.miff', 'Negate',
-  q/0/,
+  q/False/,
   '7c1ca362ad2afc2eb11d61bc08e48026');
 
 ++$test;
