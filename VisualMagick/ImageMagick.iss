@@ -36,7 +36,7 @@
 AppName=ImageMagick
 ; When updating the version string, remember to also update the version in
 ; the [Registry] section
-AppVerName=ImageMagick 5.4.9 Q:16 Beta (August 14, 2002)
+AppVerName=ImageMagick 5.4.9 Q:16 Beta (August 17, 2002)
 AppVersion=5.4.9
 AppCopyright=Copyright (C) 2002 ImageMagick Studio LLC
 AppPublisher=ImageMagick Studio
@@ -833,12 +833,12 @@ Name: "{userdesktop}\ImageMagick Display"; Filename: "{app}\IMDisplay.exe"; Icon
 Filename: "{app}\uninstall\PathTool.exe"; Parameters: "-silent -a:""{app}"""; StatusMsg: "Updating environment variables..."; Tasks: update_path
 Filename: "ppm"; Parameters: "install Image-Magick.ppd"; WorkingDir: "{app}\PerlMagick"; StatusMsg: "Installing PerlMagick..."; Tasks: install_PerlMagick; Flags: shellexec
 ; Add /s to regsvr32 for silent operation
-Filename: "regsvr32"; Parameters: "/c ""{app}\ImageMagickObject.dll"""; StatusMsg: "Registering ImageMagickObject DLL..."; Tasks: install_Magick_DLL
+Filename: "regsvr32"; Parameters: "/c /s""{app}\ImageMagickObject.dll"""; StatusMsg: "Registering ImageMagickObject DLL..."; Tasks: install_Magick_DLL
 
 [UninstallRun]
 ; Add -debug to parameters to enable debugging
 Filename: "{app}\uninstall\PathTool.exe"; Parameters: "-silent -r:""{app}"""; StatusMsg: "Restoring environment variables..."; Tasks: update_path
 Filename: "ppm"; Parameters: "remove Image-Magick"; StatusMsg: "Uninstalling PerlMagick..."; Tasks: install_PerlMagick; Flags: shellexec
 ; Add /s to regsvr32 for silent operation
-Filename: "regsvr32"; Parameters: "/u ""{app}\ImageMagickObject.dll"""; StatusMsg: "Unregistering ImageMagickObject DLL..."; Tasks: install_Magick_DLL
+Filename: "regsvr32"; Parameters: "/u /s""{app}\ImageMagickObject.dll"""; StatusMsg: "Unregistering ImageMagickObject DLL..."; Tasks: install_Magick_DLL
 
