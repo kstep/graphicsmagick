@@ -799,6 +799,7 @@ MagickExport unsigned int OpenModules(ExceptionInfo *exception)
 static unsigned int ReadConfigurationFile(const char *basename,
   ExceptionInfo *exception)
 {
+#if defined(HasMODULES)
   char
     filename[MaxTextExtent],
     keyword[MaxTextExtent],
@@ -905,6 +906,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
     return(False);
   while (module_aliases->previous != (ModuleAlias *) NULL)
     module_aliases=module_aliases->previous;
+#endif
   return(True);
 }
 
