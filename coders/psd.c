@@ -795,40 +795,34 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
       for (i=0; i < 4; i++)
         (void) ReadBlobByte(image);
-    }
-  /*
-    Handle layers.
-  */
-  if (image_info->flatten)
-    {
-      long
-        j;
-
-      for (j=0; j < number_layers; j++)
-        if (layer_info[j].visible)
-          {
-            CompositeImage(image,OverCompositeOp,layer_info[j].image, 
-              layer_info[j].page.x,layer_info[j].page.y);
-            DestroyImage( layer_info[j].image );
-          }
-    }
-  else
-    {
-      for (i=0; i < number_layers; i++)
-      {
-        if (i > 0)
-          layer_info[i].image->previous=layer_info[i-1].image;
-        if (i < (number_layers-1))
-          layer_info[i].image->next=layer_info[i+1].image;
-        layer_info[i].image->page=layer_info[i].page;
-      }
-      image->next=layer_info[0].image;
-      layer_info[0].image->previous=image;
-    }
-  if (number_layers > 0)
-    {
-      LiberateMemory((void **) &layer_info);
-      return(image);
+      if (number_layers > 0)
+        {
+          if (image_info->flatten)
+            {
+              for (j=0; j < number_layers; j++)
+                if (layer_info[j].visible)
+                  {
+                    CompositeImage(image,OverCompositeOp,layer_info[j].image, 
+                      layer_info[j].page.x,layer_info[j].page.y);
+                    DestroyImage(layer_info[j].image);
+                  }
+            }
+          else
+            {
+              for (i=0; i < number_layers; i++)
+              {
+                if (i > 0)
+                  layer_info[i].image->previous=layer_info[i-1].image;
+                if (i < (number_layers-1))
+                  layer_info[i].image->next=layer_info[i+1].image;
+                layer_info[i].image->page=layer_info[i].page;
+              }
+              image->next=layer_info[0].image;
+              layer_info[0].image->previous=image;
+            }
+          LiberateMemory((void **) &layer_info);
+          return(image);
+        }
     }
   compression=ReadBlobMSBShort(image);
   if (compression == 1)
