@@ -3,6 +3,8 @@
 	* magick/command.c (MogrifyImage): When setting image units, also
 	adjust existing image x_resolution and y_resolution so that
 	existing image resolution is not trashed.
+	(MogrifyImage): When re-sampling an image, report an error if the
+	image does not contain a valid resolution.
 
 2004-06-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

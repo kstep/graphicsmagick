@@ -2579,19 +2579,28 @@ useful when saving the result to vector formats such as MVG or SVG.
 \fRResample image to specified horizontal and vertical resolution
 
 Resize the image so that its rendered size remains the same as the
-original at the specified target resolution. For example, if a 300 DPI
-image renders at 3 inches by 2 inches on a 300 DPI device, when the
-image has been resampled to 72 DPI, it will render at 3 inches by 2
-inches on a 72 DPI device. Note that only a small number of image
-formats (e.g. JPEG, PNG, and TIFF) are capable of storing the image
-resolution. For formats which do not support an image resolution, the
-original resolution of the image must be specified via \fB-density\fP
-on the command line prior to specifying the resample resolution.
+original at the specified target resolution. Either the current image
+resolution units or the previously set with \fB-units\fP are used to
+interpret the argument. For example, if a 300 DPI image renders at 3
+inches by 2 inches on a 300 DPI device, when the image has been resampled
+to 72 DPI, it will render at 3 inches by 2 inches on a 72 DPI device.
+Note that only a small number of image formats (e.g. JPEG, PNG, and TIFF)
+are capable of storing the image resolution. For formats which do not
+support an image resolution, the original resolution of the image must be
+specified via \fB-density\fP on the command line prior to specifying the
+resample resolution.
 
 Note that Photoshop stores and obtains image resolution from a
 proprietary embedded profile. If this profile exists in the image, then
 Photoshop will continue to treat the image using its former resolution,
 ignoring the image resolution specified in the standard file header.
+
+Some image formats (e.g. PNG) require use of metric or english units so
+even if the original image used a particular unit system, if it is saved
+to a different format prior to resampling, then it may be necessary to
+specify the desired resolution units using \fB-units\fP since the
+original units may have been lost. In other words, do not assume that the
+resolution units are restored if the image has been saved to a file.
 .TP
 .B "-resize \fI<width>x<height>{%}{@}{!}{<}{>}"\fP
 \fRresize an image
@@ -4676,9 +4685,6 @@ Options, above.
 .B "-process \fI<command>"\fP
 \fRprocess a sequence of images using a process module
 .TP
-.B "+progress"
-\fRdisable display progress monitor and busy cursor
-.TP
 .B "-profile \fI<filename>"\fP
 \fRadd ICM, IPTC, or generic profile  to image
 .TP
@@ -5100,6 +5106,9 @@ display image using this type.
 .TP
 .B "-page \fI<width>x<height>{+-}<x>{+-}<y>{%}{!}{<}{>}"\fP
 \fRsize and location of an image canvas
+.TP
+.B "+progress"
+\fRdisable progress monitor and busy cursor
 .TP
 .B "-quality \fI<value>"\fP
 \fRJPEG/MIFF/PNG compression level

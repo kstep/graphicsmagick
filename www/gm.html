@@ -3578,19 +3578,28 @@ width=15><b><font face="Helvetica, Arial"
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Resample image to specified horizontal and vertical resolution</td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Resize the image so that its rendered size remains the same as the
-original at the specified target resolution. For example, if a 300 DPI
-image renders at 3 inches by 2 inches on a 300 DPI device, when the
-image has been resampled to 72 DPI, it will render at 3 inches by 2
-inches on a 72 DPI device. Note that only a small number of image
-formats (e.g. JPEG, PNG, and TIFF) are capable of storing the image
-resolution. For formats which do not support an image resolution, the
-original resolution of the image must be specified via <strong>-density</strong>
-on the command line prior to specifying the resample resolution.</font></td></tr></table>
+original at the specified target resolution. Either the current image
+resolution units or the previously set with <strong>-units</strong> are used to
+interpret the argument. For example, if a 300 DPI image renders at 3
+inches by 2 inches on a 300 DPI device, when the image has been resampled
+to 72 DPI, it will render at 3 inches by 2 inches on a 72 DPI device.
+Note that only a small number of image formats (e.g. JPEG, PNG, and TIFF)
+are capable of storing the image resolution. For formats which do not
+support an image resolution, the original resolution of the image must be
+specified via <strong>-density</strong> on the command line prior to specifying the
+resample resolution.</font></td></tr></table>
 <table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
 Note that Photoshop stores and obtains image resolution from a
 proprietary embedded profile. If this profile exists in the image, then
 Photoshop will continue to treat the image using its former resolution,
 ignoring the image resolution specified in the standard file header.</font></td></tr></table>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+Some image formats (e.g. PNG) require use of metric or english units so
+even if the original image used a particular unit system, if it is saved
+to a different format prior to resampling, then it may be necessary to
+specify the desired resolution units using <strong>-units</strong> since the
+original units may have been lost. In other words, do not assume that the
+resolution units are restored if the image has been saved to a file.</font></td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -7679,17 +7688,6 @@ width=15><b><font face="Helvetica, Arial"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a href="GraphicsMagick.html#details+progress">+progress</a>
-</font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>disable display progress monitor and busy cursor</td></tr></table>
-<table BORDER=0 WIDTH="94%">
-<tr>
-<td width="3%"><br></td> 
-<td ALIGN=LEFT BGCOLOR="#9EBAC6">
-<img SRC="../images/right_triangle_option.png"
-ALT=">" BORDER=0 height=14
-width=15><b><font face="Helvetica, Arial"
-><font color="#FFFFFF"><font size="+1">
     <a href="GraphicsMagick.html#details-profile">-profile</a> <i>&lt;filename&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>add ICM, IPTC, or generic profile  to image</td></tr></table>
@@ -8915,6 +8913,17 @@ width=15><b><font face="Helvetica, Arial"
     <a href="GraphicsMagick.html#details-page">-page</a> <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+-</i>}<i>&lt;x&gt;</i>{<i>+-</i>}<i>&lt;y&gt;</i>{<i>%</i>}<i></i>{<i>!</i>}<i></i>{<i>&lt;</i>}<i></i>{<i>&gt;</i>}<i></i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>size and location of an image canvas</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    <a href="GraphicsMagick.html#details+progress">+progress</a>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>disable progress monitor and busy cursor</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 

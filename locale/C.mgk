@@ -586,6 +586,9 @@
       <Message name="ImageColorspaceDiffers">
         image colorspace differs
       </Message>
+      <Message name="ImageDoesNotContainResolution">
+        image does not contain resolution
+      </Message>
       <Message name="ImageOpacityDiffers">
         image opacity differs
       </Message>
