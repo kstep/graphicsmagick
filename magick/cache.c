@@ -507,7 +507,7 @@ unsigned int ReadPixelCache(Image *image,const QuantumTypes quantum,
 */
 
 static inline unsigned int MatchesLastRegionRequestSize(Image *image,
-  const size_t number_pixels)
+  const off_t number_pixels)
 {
   if ((image->cache_info.width*image->cache_info.height) < number_pixels)
     return(True);
@@ -517,7 +517,7 @@ static inline unsigned int MatchesLastRegionRequestSize(Image *image,
 Export PixelPacket *SetPixelCache(Image *image,const int x,const int y,
   const unsigned int columns,const unsigned int rows)
 {
-  size_t
+  off_t
     number_pixels;
 
   /*

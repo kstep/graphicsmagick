@@ -768,8 +768,16 @@ Export void *MapBlob(const char *filename,const MapMode mode,size_t *length)
   if (descriptor == -1)
     return((void *) NULL);
   if (fstat(descriptor,&status) == -1)
-    return((void *) NULL);
+    {
+      (void) close(descriptor);
+      return((void *) NULL);
+    }
   *length=status.st_size;
+  if (*length != status.st_size)
+    {
+      (void) close(descriptor);
+      return((void *) NULL);
+    }
   /*
     Map file.
   */

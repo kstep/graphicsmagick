@@ -546,7 +546,7 @@ extern PNG_EXPORT(png_free_ptr,png_IM_free)
   PNGARG((png_structp png_ptr,png_voidp ptr));
 png_voidp png_IM_malloc(png_structp png_ptr,png_uint_32 size)
 {
-  return((png_voidp) AllocateMemory((size_t)size));
+  return((png_voidp) AllocateMemory((size_t) size));
 }
 
 /*
@@ -555,7 +555,7 @@ png_voidp png_IM_malloc(png_structp png_ptr,png_uint_32 size)
 static png_free_ptr png_IM_free(png_structp png_ptr,png_voidp ptr)
 {
   FreeMemory(ptr);
-  return(png_free_ptr) NULL;
+  return((png_free_ptr) NULL);
 }
 #endif
 

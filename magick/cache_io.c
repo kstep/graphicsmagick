@@ -84,7 +84,7 @@ typedef struct _CacheInfo
     class;
 #endif
 
-  size_t
+  off_t
     number_pixels;
 
   unsigned int
@@ -169,7 +169,7 @@ Export void DestroyCacheInfo(CacheHandle cache_handle)
   CacheInfo
     *cache_info;
 
-  size_t
+  off_t
     length;
 
   assert(cache_handle != (CacheHandle) NULL);
@@ -409,15 +409,16 @@ Export unsigned int InitializePixelCache(CacheHandle cache_handle,
     status;
 
   off_t
+    length,
+    number_pixels,
     offset;
 
   size_t
-    length,
-    number_pixels;
+    sans;
 
   assert(cache_handle != (CacheHandle) NULL);
   cache_info=(CacheInfo *) cache_handle;
-  number_pixels=(size_t) columns*rows;
+  number_pixels=columns*rows;
   if (GetCacheClassType(cache_handle) == UndefinedClass)
     {
       length=number_pixels*sizeof(PixelPacket);
@@ -433,7 +434,7 @@ Export unsigned int InitializePixelCache(CacheHandle cache_handle,
           if (cache_info->pixels != (PixelPacket *) NULL)
             {
               SetCacheClassType(cache_handle,DirectClass);
-              offset=(off_t) number_pixels*sizeof(PixelPacket);
+              offset=number_pixels*sizeof(PixelPacket);
               (void) GetCacheMemory(-offset);
               if (type == PseudoClass)
                 {
@@ -442,7 +443,7 @@ Export unsigned int InitializePixelCache(CacheHandle cache_handle,
                   if (cache_info->indexes != (IndexPacket *) NULL)
                     {
                       SetCacheClassType(cache_handle,PseudoClass);
-                      offset=(off_t) number_pixels*sizeof(IndexPacket);
+                      offset=number_pixels*sizeof(IndexPacket);
                       (void) GetCacheMemory(-offset);
                     }
                 }
@@ -469,7 +470,7 @@ Export unsigned int InitializePixelCache(CacheHandle cache_handle,
                   (void) fclose(cache_info->file);
                   cache_info->file=(FILE *) NULL;
                   cache_info->pixels=(PixelPacket *)
-                    MapBlob(cache_info->filename,IOMode,&length);
+                    MapBlob(cache_info->filename,IOMode,&sans);
                   if (cache_info->pixels == (PixelPacket *) NULL)
                     {
                       if (type == PseudoClass)
@@ -508,7 +509,7 @@ Export unsigned int InitializePixelCache(CacheHandle cache_handle,
               if (cache_info->indexes != (IndexPacket *) NULL)
                 {
                   SetCacheClassType(cache_handle,PseudoClass);
-                  offset=(off_t) number_pixels*sizeof(IndexPacket);
+                  offset=number_pixels*sizeof(IndexPacket);
                   (void) GetCacheMemory(-offset);
                 }
             }
@@ -534,7 +535,7 @@ Export unsigned int InitializePixelCache(CacheHandle cache_handle,
                       if (cache_info->mapped)
                         (void) UnmapBlob(cache_info->pixels,offset);
                       cache_info->pixels=(PixelPacket *)
-                        MapBlob(cache_info->filename,IOMode,&length);
+                        MapBlob(cache_info->filename,IOMode,&sans);
                       cache_info->mapped=
                         cache_info->pixels != (PixelPacket *) NULL;
                       if (cache_info->mapped)
@@ -611,7 +612,7 @@ Export unsigned int ReadCacheIndexes(CacheHandle cache_handle,
 
   assert(cache_handle != (CacheHandle) NULL);
   cache_info=(CacheInfo *) cache_handle;
-  offset=(off_t) region_info->y*cache_info->columns+region_info->x;
+  offset=region_info->y*cache_info->columns+region_info->x;
   for (y=0; y < (int) region_info->height; y++)
   {
     if (cache_info->indexes != (IndexPacket *) NULL)
@@ -687,7 +688,7 @@ Export unsigned int ReadCachePixels(CacheHandle cache_handle,
 
   assert(cache_handle != (CacheHandle *) NULL);
   cache_info=(CacheInfo *) cache_handle;
-  offset=(off_t) region_info->y*cache_info->columns+region_info->x;
+  offset=region_info->y*cache_info->columns+region_info->x;
   for (y=0; y < (int) region_info->height; y++)
   {
     if (cache_info->pixels != (PixelPacket *) NULL)
@@ -763,7 +764,7 @@ Export void SetCacheClassType(CacheHandle cache_handle,ClassType type)
 %
 %  The format of the SetCacheThreshold method is:
 %
-%      void SetCacheThreshold(size_t threshold)
+%      void SetCacheThreshold(off_t threshold)
 %
 %  A description of each parameter follows:
 %
@@ -833,7 +834,7 @@ Export unsigned int WriteCacheIndexes(CacheHandle cache_handle,
 
   assert(cache_handle != (CacheHandle) NULL);
   cache_info=(CacheInfo *) cache_handle;
-  offset=(off_t) region_info->y*cache_info->columns+region_info->x;
+  offset=region_info->y*cache_info->columns+region_info->x;
   for (y=0; y < (int) region_info->height; y++)
   {
     if (cache_info->indexes != (IndexPacket *) NULL)
@@ -909,7 +910,7 @@ Export unsigned int WriteCachePixels(CacheHandle cache_handle,
 
   assert(cache_handle != (CacheHandle) NULL);
   cache_info=(CacheInfo *) cache_handle;
-  offset=(off_t) region_info->y*cache_info->columns+region_info->x;
+  offset=region_info->y*cache_info->columns+region_info->x;
   for (y=0; y < (int) region_info->height; y++)
   {
     if (cache_info->pixels != (PixelPacket *) NULL)
