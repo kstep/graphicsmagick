@@ -124,6 +124,7 @@ ECHO = @ECHO@
 EXEC_PREFIX_DIR = @EXEC_PREFIX_DIR@
 EchoDelegate = @EchoDelegate@
 EditorDelegate = @EditorDelegate@
+F77 = @F77@
 FIGDecodeDelegate = @FIGDecodeDelegate@
 GCJ = @GCJ@
 GCJFLAGS = @GCJFLAGS@
