@@ -202,6 +202,13 @@ AC_ARG_WITH(perl,
 	      [with_perl=$withval],
 	      [with_perl='yes'])
 
+# Options to pass when configuring PerlMagick
+AC_ARG_WITH(perl-options,
+[  --with-perl-options=[OPTIONS]  options to pass on command-line when
+                          generating PerlMagick's Makefile from Makefile.PL],
+[PERL_MAKE_OPTIONS=$withval])
+AC_SUBST(PERL_MAKE_OPTIONS)
+
 AM_CONDITIONAL(WITH_PERL, test "$with_perl" != 'no')
 with_perl_static='no'
 if test "$with_perl" != 'no' && test "$libtool_build_shared_libs" = 'no'
