@@ -1,0 +1,20 @@
+The `configure' script must be executed to build a Makefile for Unix.
+Use `configure --help' to obtain a list of configure options.
+
+Several options may need to be specified in order for `configure' to know which 
+Tcl installation should be used:
+
+  --with-tcl=path
+  --with-tclinclude=path
+
+In order to build a loadable module, you should specify '--enable-shared'.
+
+The following is an example configure command:
+
+  configure --enable-shared \
+    --with-tcl=/usr/local/lib/tcl8.4 \
+    --with-tclinclude=/usr/local/include/tcl8.4/generic
+
+Once the configure script has been executed successfully, you should
+do a `make'.  After a successfull build, su to root (if necessary)
+and do a `make install'.
