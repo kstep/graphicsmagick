@@ -286,7 +286,7 @@ MagickExport MagickInfo *GetMagickInfo(const char *name,
     *p;
 
 #if defined(HasMODULES)
-  if ((name != (const char *) NULL) ||  (LocaleCompare(name,"*") == 0))
+  if ((name != (const char *) NULL) && (LocaleCompare(name,"*") == 0))
     OpenModules(exception);
 #endif
   AcquireSemaphore(&magick_semaphore);
