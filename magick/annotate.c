@@ -407,7 +407,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
 %
 %  The format of the EncodeSJIS function is:
 %
-%      encoding=EncodeSJIS(text,count)
+%      encoding=EncodeSJIS(const char *text,size_t count)
 %
 %  A description of each parameter follows:
 %
@@ -505,7 +505,7 @@ static unsigned short *EncodeSJIS(const char *text,size_t *count)
 %
 %  The format of the EncodeText function is:
 %
-%      encoding=EncodeText(text,count)
+%      encoding=EncodeText(const char *text,size_t count)
 %
 %  A description of each parameter follows:
 %
@@ -561,7 +561,7 @@ static unsigned short *EncodeText(const char *text,size_t *count)
 %
 %  The format of the EncodeUnicode function is:
 %
-%      unicode=EncodeUnicode(text,count)
+%      unicode=EncodeUnicode(const unsigned char *text,size_t count)
 %
 %  A description of each parameter follows:
 %
@@ -1030,7 +1030,7 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
     }
   if (face->num_charmaps != 0)
     status=FT_Set_Charmap(face,face->charmaps[0]);
-  encoding_type=ft_encoding_none;
+  encoding_type=ft_encoding_unicode;
   if (encoding != (char *) NULL)
     {
       if (LocaleCompare(encoding,"AdobeCustom") == 0)
@@ -1055,11 +1055,11 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
         encoding_type=ft_encoding_unicode;
       if (LocaleCompare(encoding,"Wansung") == 0)
         encoding_type=ft_encoding_wansung;
-      status=FT_Select_Charmap(face,encoding_type);
-      if (status != 0)
-        ThrowBinaryException(DelegateError,"Unrecognized font encoding",
-          encoding);
     }
+  status=FT_Select_Charmap(face,encoding_type);
+  if (status != 0)
+    ThrowBinaryException(DelegateError,"Unrecognized font encoding",
+      encoding);
   /*
     Set text size.
   */
