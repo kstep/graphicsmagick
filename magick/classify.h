@@ -1,5 +1,5 @@
 /*
-  ImageMagick image and error storage_classs.
+  ImageMagick enumerations.
 */
 #ifndef _MAGICK_CLASSIFY_H
 #define _MAGICK_CLASSIFY_H
