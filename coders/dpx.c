@@ -3,11 +3,11 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                            DDDD   PPPP   SSSSS                              %
-%                            D   D  P   P  SS                                 %
-%                            D   D  PPPP    SSS                               %
-%                            D   D  P         SS                              %
-%                            DDDD   P      SSSSS                              %
+%                            DDDD   PPPP   X   X                              %
+%                            D   D  P   P   X X                               %
+%                            D   D  PPPP     X                                %
+%                            D   D  P       X X                               %
+%                            DDDD   P      X   X                              %
 %                                                                             %
 %                                                                             %
 %                    Read/Write ImageMagick Image Format.                     %
