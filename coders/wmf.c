@@ -160,6 +160,10 @@ struct _wmf_magick_t
   /* Clip path flag */
   unsigned int
     clipping;
+
+  /* Clip path ID */
+  unsigned long
+    clip_path_id;
 };
 
 #define WMF_MAGICK_GetData(Z) ((wmf_magick_t*)((Z)->device_data))
@@ -490,6 +494,7 @@ static void ipa_device_open(wmfAPI * API)
     (long *) AcquireMemory(ddata->max_temp_image_index * sizeof(long));
   ddata->pattern_id = 0;
   ddata->clipping = False;
+  ddata->clip_path_id = 0;
 
   ddata->mvg = 0;
   ddata->mvg_alloc = 0;
@@ -598,12 +603,14 @@ static void ipa_device_begin(wmfAPI * API)
           id = util_registry_add(API, image, &exception);
           if( id > -1 )
             {
-              util_append_mvg(API, "push pattern fill_%lu 0,0, %lu,%lu\n",
+              util_append_mvg(API, "push defs\n");
+              util_append_mvg(API, "push pattern brush_%lu 0,0, %lu,%lu\n",
                                 ddata->pattern_id, image->columns, image->rows);
               util_append_mvg(API, "image Copy 0,0 %lu,%lu 'mpri:%li'\n",
                                 image->columns, image->rows, id);
               util_append_mvg(API, "pop pattern\n");
-              util_append_mvg(API, "fill url(#fill_%lu)\n", ddata->pattern_id);
+              util_append_mvg(API, "pop defs\n");
+              util_append_mvg(API, "fill url(#brush_%lu)\n", ddata->pattern_id);
               ++ddata->pattern_id;
 
               util_append_mvg(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
@@ -994,14 +1001,12 @@ static void ipa_region_clip(wmfAPI *API, wmfPolyRectangle_t *poly_rect)
 
   if(poly_rect->count > 0)
     {
-      /* Push context for new clip paths */
-      util_append_mvg(API, "push graphic-context\n");
 
-      util_append_mvg(API, "push clip-path whatever\n");
+      /* Define clip path */
+      ddata->clip_path_id++;
+      util_append_mvg(API, "push defs\n");
+      util_append_mvg(API, "push clip-path clip_%lu\n", ddata->clip_path_id);
       util_append_mvg(API, "push graphic-context\n");
-      util_append_mvg(API, "fill black\n");
-      util_append_mvg(API, "stroke none\n");
-      util_append_mvg(API, "stroke-width 1\n");
       for (i = 0; i < poly_rect->count; i++)
         {
           util_append_mvg(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
@@ -1010,6 +1015,11 @@ static void ipa_region_clip(wmfAPI *API, wmfPolyRectangle_t *poly_rect)
         }
       util_append_mvg(API, "pop graphic-context\n");
       util_append_mvg(API, "pop clip-path\n");
+      util_append_mvg(API, "pop defs\n");
+
+      /* Push context for new clip paths */
+      util_append_mvg(API, "push graphic-context\n");
+      util_append_mvg(API, "clip-path url(#clip_%lu)\n", ddata->clip_path_id);
       ddata->clipping = True;
     }
 }
@@ -1442,7 +1452,8 @@ static void util_set_brush(wmfAPI * API, wmfDC * dc)
          specifies the hatch brush style. If WMF_DC_OPAQUE, then
          WMF_DC_BACKGROUND specifies hatch background color.  */
       {
-	util_append_mvg(API, "push pattern fill_%lu 0,0 8,8\n", ddata->pattern_id);
+        util_append_mvg(API, "push defs\n");
+	util_append_mvg(API, "push pattern brush_%lu 0,0 8,8\n", ddata->pattern_id);
 	util_append_mvg(API, "push graphic-context\n");
 
 	if (WMF_DC_OPAQUE(dc))
@@ -1503,7 +1514,8 @@ static void util_set_brush(wmfAPI * API, wmfDC * dc)
           }
 	util_append_mvg(API, "pop graphic-context\n");
 	util_append_mvg(API, "pop pattern\n");
-	util_append_mvg(API, "fill 'url(#fill_%lu)'\n", ddata->pattern_id);
+        util_append_mvg(API, "pop defs\n");
+	util_append_mvg(API, "fill 'url(#brush_%lu)'\n", ddata->pattern_id);
 	++ddata->pattern_id;
 	break;
       }
@@ -1594,12 +1606,14 @@ static void util_set_brush(wmfAPI * API, wmfDC * dc)
 
             if( *id > -1 )
               {
-                util_append_mvg(API, "push pattern fill_%lu 0,0, %u,%u\n",
+                util_append_mvg(API, "push defs\n");
+                util_append_mvg(API, "push pattern brush_%lu 0,0, %u,%u\n",
                                   ddata->pattern_id, brush_bmp->width, brush_bmp->height);
                 util_append_mvg(API, "image %s 0,0 %u,%u 'mpri:%li'\n",
                                   mode, brush_bmp->width, brush_bmp->height, *id);
                 util_append_mvg(API, "pop pattern\n");
-                util_append_mvg(API, "fill url(#fill_%lu)\n", ddata->pattern_id);
+                util_append_mvg(API, "pop defs\n");
+                util_append_mvg(API, "fill url(#brush_%lu)\n", ddata->pattern_id);
                 ++ddata->pattern_id;
               }
             else
