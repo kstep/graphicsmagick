@@ -140,9 +140,9 @@ typedef enum
   CorruptImageWarning = 325,
   FileOpenWarning = 330,
   BlobWarning = 335,
-  CacheWarning = 340,
-  StreamWarning = 345,
-  RegistryWarning = 350,
+  StreamWarning = 340,
+  CacheWarning = 345,
+  RegistryWarning = 390,
   ConfigurationWarning = 395,
   FatalException = 400,
   ResourceLimitError = 400,
@@ -153,9 +153,9 @@ typedef enum
   CorruptImageError = 425,
   FileOpenError = 430,
   BlobError = 435,
-  CacheError = 440,
-  StreamError = 445,
-  RegistryError = 450,
+  StreamError = 440,
+  CacheError = 445,
+  RegistryError = 490,
   ConfigurationError = 495
 } ExceptionType;
 
