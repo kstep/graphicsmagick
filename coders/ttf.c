@@ -135,6 +135,7 @@ static unsigned int IsTTF(const unsigned char *magick,const size_t length)
 %
 %
 */
+#if defined(HasTTF)
 static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
@@ -238,6 +239,7 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   CloseBlob(image);
   return(image);
 }
+#endif /* HasTTF */
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -275,7 +277,9 @@ ModuleExport void RegisterTTFImage(void)
   FormatString(version,"%d.%d",FREETYPE_MAJOR,FREETYPE_MINOR);
 #endif
   entry=SetMagickInfo("TTF");
+#if defined(HasTTF)
   entry->decoder=ReadTTFImage;
+#endif
   entry->magick=IsTTF;
   entry->adjoin=False;
   entry->description=AcquireString("TrueType font");
@@ -284,7 +288,9 @@ ModuleExport void RegisterTTFImage(void)
   entry->module=AcquireString("TTF");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PFA");
+#if defined(HasTTF)
   entry->decoder=ReadTTFImage;
+#endif
   entry->magick=IsPFA;
   entry->adjoin=False;
   entry->description=AcquireString("Postscript Type 1 font (ASCII)");
@@ -293,7 +299,9 @@ ModuleExport void RegisterTTFImage(void)
   entry->module=AcquireString("TTF");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PFB");
+#if defined(HasTTF)
   entry->decoder=ReadTTFImage;
+#endif
   entry->magick=IsPFA;
   entry->adjoin=False;
   entry->description=AcquireString("Postscript Type 1 font (binary)");
