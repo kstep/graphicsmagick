@@ -7586,22 +7586,22 @@ MagickExport unsigned int TransformRGBImage(Image *image,
             case sRGBColorspace:
             case YCCColorspace:
             {
-              red=(red < 0) ? 0 : (red > ScaleIntToQuantum(350)) ?
-                ScaleIntToQuantum(350) : red+0.5;
-              green=(green < 0) ? 0 : (green > ScaleIntToQuantum(350)) ?
-                ScaleIntToQuantum(350) : green+0.5;
-              blue=(blue < 0) ? 0 : (blue > ScaleIntToQuantum(350)) ?
-                ScaleIntToQuantum(350) : blue+0.5;
+              red=(red < 0) ? 0 : (red > ScaleToQuantum(350)) ?
+                ScaleToQuantum(350) : red+0.5;
+              green=(green < 0) ? 0 : (green > ScaleToQuantum(350)) ?
+                ScaleToQuantum(350) : green+0.5;
+              blue=(blue < 0) ? 0 : (blue > ScaleToQuantum(350)) ?
+                ScaleToQuantum(350) : blue+0.5;
               if (colorspace == sRGBColorspace)
                 {
-                  q->red=ScaleIntToQuantum(sRGBMap[ScaleQuantumToInt(red)]);
-                  q->green=ScaleIntToQuantum(sRGBMap[ScaleQuantumToInt(green)]);
-                  q->blue=ScaleIntToQuantum(sRGBMap[ScaleQuantumToInt(blue)]);
+                  q->red=ScaleToQuantum(sRGBMap[ScaleQuantum(red)]);
+                  q->green=ScaleToQuantum(sRGBMap[ScaleQuantum(green)]);
+                  q->blue=ScaleToQuantum(sRGBMap[ScaleQuantum(blue)]);
                   break;
                 }
-              q->red=ScaleIntToQuantum(YCCMap[ScaleQuantumToInt(red)]);
-              q->green=ScaleIntToQuantum(YCCMap[ScaleQuantumToInt(green)]);
-              q->blue=ScaleIntToQuantum(YCCMap[ScaleQuantumToInt(blue)]);
+              q->red=ScaleToQuantum(YCCMap[ScaleQuantum(red)]);
+              q->green=ScaleToQuantum(YCCMap[ScaleQuantum(green)]);
+              q->blue=ScaleToQuantum(YCCMap[ScaleQuantum(blue)]);
               break;
             }
             default:
@@ -7645,28 +7645,28 @@ MagickExport unsigned int TransformRGBImage(Image *image,
           case sRGBColorspace:
           case YCCColorspace:
           {
-            red=(red < 0) ? 0 : (red > ScaleIntToQuantum(350)) ?
-              ScaleIntToQuantum(350) : red+0.5;
-            green=(green < 0) ? 0 : (green > ScaleIntToQuantum(350)) ?
-              ScaleIntToQuantum(350) : green+0.5;
-            blue=(blue < 0) ? 0 : (blue > ScaleIntToQuantum(350)) ?
-              ScaleIntToQuantum(350) : blue+0.5;
+            red=(red < 0) ? 0 : (red > ScaleToQuantum(350)) ?
+              ScaleToQuantum(350) : red+0.5;
+            green=(green < 0) ? 0 : (green > ScaleToQuantum(350)) ?
+              ScaleToQuantum(350) : green+0.5;
+            blue=(blue < 0) ? 0 : (blue > ScaleToQuantum(350)) ?
+              ScaleToQuantum(350) : blue+0.5;
             if (colorspace == sRGBColorspace)
               {
                 image->colormap[i].red=
-                  ScaleIntToQuantum(sRGBMap[ScaleQuantumToInt(red)]);
+                  ScaleToQuantum(sRGBMap[ScaleQuantum(red)]);
                 image->colormap[i].green=
-                  ScaleIntToQuantum(sRGBMap[ScaleQuantumToInt(green)]);
+                  ScaleToQuantum(sRGBMap[ScaleQuantum(green)]);
                 image->colormap[i].blue=
-                  ScaleIntToQuantum(sRGBMap[ScaleQuantumToInt(blue)]);
+                  ScaleToQuantum(sRGBMap[ScaleQuantum(blue)]);
                 break;
               }
             image->colormap[i].red=
-              ScaleIntToQuantum(YCCMap[ScaleQuantumToInt(red)]);
+              ScaleToQuantum(YCCMap[ScaleQuantum(red)]);
             image->colormap[i].green=
-              ScaleIntToQuantum(YCCMap[ScaleQuantumToInt(green)]);
+              ScaleToQuantum(YCCMap[ScaleQuantum(green)]);
             image->colormap[i].blue=
-              ScaleIntToQuantum(YCCMap[ScaleQuantumToInt(blue)]);
+              ScaleToQuantum(YCCMap[ScaleQuantum(blue)]);
             break;
           }
           default:
