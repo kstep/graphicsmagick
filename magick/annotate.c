@@ -61,7 +61,7 @@
 #endif
 #if defined(HasTTF)
 #if defined(__MINGW32__)
-#  undef interface /* Remove interface define */
+#  undef interface  /* Remove interface define */
 #endif
 #include "freetype/freetype.h"
 #include "freetype/ftglyph.h"
