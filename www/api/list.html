@@ -48,7 +48,7 @@
 <hr />
 <h1><a name="synopsis">SYNOPSIS</a></h1>
 <p>Image * <strong>CloneImageList</strong>( const Image *images, ExceptionInfo *exception );</p>
-<p>unsigned int  <strong>DeleteImageList</strong>( Image *images, const Image *target );</p>
+<p>unsigned int  <strong>DeleteImageList</strong>( Image *images, Image *target );</p>
 <p>void  <strong>DestroyImageList</strong>( Image *image );</p>
 <p>Image * <strong>GetImageList</strong>( const Image *images, const Image *target, ExceptionInfo *exception );</p>
 <p>long  <strong>GetImageListIndex</strong>( const Image *images );</p>
@@ -89,7 +89,7 @@ Return any errors or warnings in this structure.
 </p>
 <h2><a name="deleteimagelist">DeleteImageList</a></h2>
 <blockquote>DeleteImageList() deletes an image from the list. </blockquote><p>The format of the DeleteImageList method is:</p>
-<blockquote>unsigned int DeleteImageList ( <A HREF="types/Image.html">Image</A> *images, const <A HREF="types/Image.html">Image</A> *target ); </blockquote><p>A description of each parameter follows:</p>
+<blockquote>unsigned int DeleteImageList ( <A HREF="types/Image.html">Image</A> *images, <A HREF="types/Image.html">Image</A> *target ); </blockquote><p>A description of each parameter follows:</p>
 <dl>
 <dt><strong>o images:</strong><br />
 </dt>

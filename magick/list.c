@@ -132,7 +132,7 @@ MagickExport Image *CloneImageList(const Image *images,ExceptionInfo *exception)
 %
 %  The format of the DeleteImageList method is:
 %
-%      unsigned int DeleteImageList(Image *images,const Image *target)
+%      unsigned int DeleteImageList(Image *images,Image *target)
 %
 %  A description of each parameter follows:
 %
@@ -142,7 +142,7 @@ MagickExport Image *CloneImageList(const Image *images,ExceptionInfo *exception)
 %
 %
 */
-MagickExport unsigned int DeleteImageList(Image *images,const Image *target)
+MagickExport unsigned int DeleteImageList(Image *images,Image *target)
 {
   if (images == (Image *) NULL)
     return(False);
@@ -409,7 +409,10 @@ MagickExport Image **ImageListToArray(const Image *images,
       return((Image **) NULL);
     }
   for (i=0; i < (long) GetImageListSize(images); i++)
-    group[i]=GetImageList(images,i,exception);
+	{
+    group[i]=CloneImage(images,0,0,True,exception);
+    images=images->next;
+  }
   return(group);
 }
 
@@ -641,7 +644,7 @@ MagickExport unsigned int SetImageList(Image **images,const Image *image,
   assert((*images)->signature == MagickSignature);
   for (next=(*images); next->previous != (Image *) NULL; next=next->previous);
   for ( ; next != (Image *) NULL; next=next->next)
-    if (images == target)
+    if (next == target)
       break;
   if (next == (Image *) NULL)
     return(False);
