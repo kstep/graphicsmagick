@@ -582,6 +582,12 @@ static double constant(char *name,int sans)
         return(DelegateWarning);
       break;
     }
+    case 'E':
+    {
+      if (strEQ(name,"ErrorException"))
+        return(ErrorException);
+      break;
+    }
     case 'F':
     {
       if (strEQ(name,"FatalErrorException"))
@@ -610,12 +616,6 @@ static double constant(char *name,int sans)
         return(OptionError);
       if (strEQ(name,"OptionWarning"))
         return(OptionWarning);
-      break;
-    }
-    case 'P':
-    {
-      if (strEQ(name,"PluginWarning"))
-        return(DelegateError);
       break;
     }
     case 'R':
@@ -648,6 +648,12 @@ static double constant(char *name,int sans)
         return(TypeError);
       if (strEQ(name,"TypeWarning"))
         return(TypeWarning);
+      break;
+    }
+    case 'W':
+    {
+      if (strEQ(name,"WarningException"))
+        return(WarningException);
       break;
     }
     case 'X':
