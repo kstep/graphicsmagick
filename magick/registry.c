@@ -226,6 +226,7 @@ MagickExport const void *GetMagickRegistry(const long id,RegistryType *type,
   register RegistryInfo
     *p;
 
+  registry_info=(RegistryInfo *) NULL;
   AcquireSemaphoreInfo(&registry_semaphore);
   for (p=registry_list; p != (RegistryInfo *) NULL; p=p->next)
     if (id == p->id)
