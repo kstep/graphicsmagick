@@ -91,10 +91,6 @@ static Image
 %
 %  A description of each parameter follows:
 %
-%    o image: ConstituteImage() returns a pointer to the image.  A null image
-%      is returned if there is a memory shortage or if the image cannot be
-%      read.
-%
 %    o width: width in pixels of the image.
 %
 %    o height: height in pixels of the image.
@@ -111,7 +107,7 @@ static Image
 %
 %    o pixels: This array of values contain the pixel components as defined by
 %      map and type.  You must preallocate this array where the expected
-%      length varies depending on the values of width, height, and type.
+%      length varies depending on the values of width, height, map, and type.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
@@ -653,9 +649,11 @@ MagickExport void DestroyConstitute(void)
 %
 %  DispatchImage() extracts pixel data from an image and returns it to you.
 %  The method returns False on success otherwise True if an error is
-%  encountered.  The data is returned as char, short int, int, float, or double
-%  in the order specified by map.  Suppose we want want to extract the first
-%  scanline of a 640x480 image as character data in red-green-blue order:
+%  encountered.  The data is returned as char, short int, int, long, float,
+%  or double in the order specified by map.
+%
+%  Suppose we want want to extract the first scanline of a 640x480 image as
+%  character data in red-green-blue order:
 %
 %      DispatchImage(image,0,0,640,1,"RGB",0,pixels,exception);
 %
@@ -680,11 +678,12 @@ MagickExport void DestroyConstitute(void)
 %
 %    o type: Define the data type of the pixels.  Float and double types are
 %      normalized to [0..1] otherwise [0..MaxRGB].  Choose from these types:
-%      CharPixel, ShortPixel, IntegerPixel, FloatPixel, or DoublePixel.
+%      CharPixel, ShortPixel, IntegerPixel, LongPixel, FloatPixel, or
+%      DoublePixel.
 %
 %    o pixels: This array of values contain the pixel components as defined by
 %      map and type.  You must preallocate this array where the expected
-%      length varies depending on the values of width, height, and type.
+%      length varies depending on the values of width, height, map, and type.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
@@ -945,6 +944,74 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
       }
       break;
     }
+    case LongPixel:
+    {
+      register unsigned long
+        *q;
+
+      q=(unsigned long *) pixels;
+      for (y=0; y < (long) rows; y++)
+      {
+        p=AcquireImagePixels(image,x_offset,y_offset+y,columns,1,exception);
+        if (p == (const PixelPacket *) NULL)
+          break;
+        indexes=GetIndexes(image);
+        for (x=0; x < (long) columns; x++)
+        {
+          for (i=0; i < (long) strlen(map); i++)
+          {
+            switch (map[i])
+            {
+              case 'r':
+              case 'R':
+              case 'c':
+              case 'C':
+              {
+                *q++=p->red;
+                break;
+              }
+              case 'g':
+              case 'G':
+              case 'm':
+              case 'M':
+              {
+                *q++=p->green;
+                break;
+              }
+              case 'b':
+              case 'B':
+              case 'y':
+              case 'Y':
+              {
+                *q++=p->blue;
+                break;
+              }
+              case 'a':
+              case 'A':
+              case 'k':
+              case 'K':
+              {
+                *q++=p->opacity;
+                break;
+              }
+              case 'i':
+              case 'I':
+              {
+                *q++=indexes[x];
+                break;
+              }
+              default:
+              {
+                ThrowException(exception,OptionWarning,"Invalid pixel map",map);
+                return(False);
+              }
+            }
+          }
+          p++;
+        }
+      }
+      break;
+    }
     case FloatPixel:
     {
       register float
@@ -1101,12 +1168,10 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  PingImage() is a convenience method that returns information about an
-%  image without having to read the image into memory.  It returns the
-%  width, height, file size in bytes, and the file format of the image.
-%
-%  PingImage() returns an Image on success and NULL if the image cannot be
-%  pinged.  The image does not contain any pixel data.
+%  PingImage() returns all the attributes of an image or image sequence
+%  except for the pixels.  It is much faster and consumes far less memory 
+%  than ReadImage().  On failure, a NULL image is returned and exception
+%  describes the reason for the failure.
 %
 %
 %  The format of the PingImage method is:
@@ -1926,7 +1991,8 @@ MagickExport unsigned int PushImagePixels(Image *image,
 %
 %  ReadImage() reads an image or image sequence from a file or file handle.
 %  The method returns a NULL if there is a memory shortage or if the image
-%  cannot be read.
+%  cannot be read.  On failure, a NULL image is returned and exception
+%  describes the reason for the failure.
 %
 %  The format of the ReadImage method is:
 %
@@ -2298,10 +2364,10 @@ static Image *ReadImages(const ImageInfo *image_info,ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Write() allows you to write a single or image or a sequence to a file or
-%  filehandle.  Write() returns a value other than 0 if the image is written.
-%  If 0 is returned, check the exception member of image to determine why the
-%  image failed to write.
+%  Use Write() to write an image or an image sequence to a file or 
+%  filehandle.  Write() returns 0 is there is a memory shortage or if the 
+%  image cannot be written.  Check the exception member of image to determine
+%  the cause for any failure.
 %
 %  The format of the WriteImage method is:
 %

@@ -287,9 +287,9 @@ MagickExport unsigned int AllocateImageColormap(Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Use AllocateNextImage() to initialize the next image in a sequence.  The
-%  next member of image points to the newly allocated image.  If there is a
-%  memory shortage, next is assigned NULL.
+%  Use AllocateNextImage() to initialize the next image in a sequence to
+%  default values.  The next member of image points to the newly allocated
+%  image.  If there is a memory shortage, next is assigned NULL.
 %
 %  The format of the AllocateNextImage method is:
 %
@@ -408,12 +408,12 @@ MagickExport unsigned int AnimateImages(const ImageInfo *image_info,Image *image
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  The Append() method takes a set of images and appends them to each
-%  other.  Each image in the set must have the equal width or equal height
-%  (or both).  Append() returns a single image where each image in the original
-%  set is side-by-side if all the heights are equal or stacked on top of
-%  each other if all widths are equal.   On failure, a NULL image is returned
-%  and exception describes the reason for the failure.
+%  The Append() method takes a set of images and appends them to each other.
+%  Each image in the set must have the same width or height (or both)
+%  (or both).  Append() returns a single image where each image in the
+%  original set is side-by-side if all the heights are the same or stacked
+%  on top of each other if all widths are the same.   On failure, a NULL
+%  image is returned and exception describes the reason for the failure.
 %
 %  The format of the AppendImage method is:
 %
@@ -559,10 +559,10 @@ MagickExport Image *AppendImages(const Image *image,const unsigned int stack,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  The AverageImages() method takes a set of images and averages them together.
-%  Each image in the set must have the same width and the same height.
-%  AverageImages() returns a single image with each corresponding pixel
-%  component of each image averaged.   On failure, a NULL image is returned and
+%  The Average() method takes a set of images and averages them together.
+%  Each image in the set must have the same width and height.  Average() 
+%  returns a single image with each corresponding pixel component of
+%  each image averaged.   On failure, a NULL image is returned and
 %  exception describes the reason for the failure.
 %
 %  The format of the AverageImage method is:
@@ -714,8 +714,8 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Extract a channel from the image.  A channel is a particular color component
-%  of each pixel in the image.
+%  Extract a channel from the image.  A channel is a particular color
+%  component of each pixel in the image.
 %
 %  The format of the ChannelImage method is:
 %
@@ -725,8 +725,8 @@ MagickExport Image *AverageImages(const Image *image,ExceptionInfo *exception)
 %
 %    o image: The image.
 %
-%    o channel: A value of type ChannelType that identifies which channel to
-%      extract: Red, Green, Blue, or Opacity.
+%    o channel: Identify which channel to extract: Red, Cyan, Green, Magenta,
+%    Blue, Yellow, or Opacity.
 %
 %
 */
