@@ -136,7 +136,6 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   (void) QueryColorDatabase(BackgroundColor,&allocate_image->background_color);
   (void) QueryColorDatabase(BorderColor,&allocate_image->border_color);
   (void) QueryColorDatabase(MatteColor,&allocate_image->matte_color);
-  GetPageInfo(&allocate_image->page);
   allocate_image->iterations=1;
   allocate_image->filter=LanczosFilter;
   allocate_image->blur=1.0;
@@ -2224,7 +2223,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method DestroyImage deallocates memory associated with an image.
+%  DestroyImage() deallocates memory associated with an image.
 %
 %  The format of the DestroyImage method is:
 %
@@ -2232,7 +2231,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
 %
 %  A description of each parameter follows:
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %
 */
@@ -2339,8 +2338,7 @@ MagickExport void DestroyImage(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method DestroyImageInfo deallocates memory associated with an ImageInfo
-%  structure.
+%  DestroyImageInfo() deallocates memory associated with an ImageInfo structure.
 %
 %  The format of the DestroyImageInfo method is:
 %
@@ -2348,7 +2346,7 @@ MagickExport void DestroyImage(Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
+%    o image_info: The image info.
 %
 %
 */
@@ -2386,8 +2384,8 @@ MagickExport void DestroyImageInfo(ImageInfo *image_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method DestroyImages deallocates memory associated with a linked list
-%  of images.
+%  DestroyImages() deallocates memory associated with all the images in a
+%  sequence.
 %
 %  The format of the DestroyImages method is:
 %
@@ -2395,7 +2393,7 @@ MagickExport void DestroyImageInfo(ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
-%    o image: The address of a structure of type Image.
+%    o image: The image sequence.
 %
 %
 */
@@ -2436,7 +2434,9 @@ MagickExport void DestroyImages(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method DisplayImages displays one or more images to an X window.
+% DisplayImages() displays an image sequence to any X window
+% screen.  It returns a value other than 0 if successful.  Check the
+% exception member of image to determine the reason for any failure.
 %
 %  The format of the AllocateNextImage method is:
 %
@@ -2444,12 +2444,9 @@ MagickExport void DestroyImages(Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method DisplayImages returns True if the images are displayed
-%      in an X window, otherwise False is returned.
+%    o image_info: The image info.
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %
 */
@@ -2516,7 +2513,7 @@ MagickExport unsigned int DisplayImages(const ImageInfo *image_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t I m a g e B o u n d i n g B o x                                     %
++   G e t I m a g e B o u n d i n g B o x                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -2626,7 +2623,11 @@ MagickExport RectangleInfo GetImageBoundingBox(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetImageDepth returns the depth of the image.
+%  GetImageDepth() returns the depth of the image, either 8 or 16 bits.  By
+%  default, pixels components are stored as 16-bit two byte unsigned short
+%  integers that range in value from 0 to 65535.  However, if all the pixels
+%  have lower-order bytes of zero, the image is considered to have a depth of
+%  8-bit.
 %
 %  The format of the GetImageDepth method is:
 %
@@ -2634,9 +2635,7 @@ MagickExport RectangleInfo GetImageBoundingBox(Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o depth: Method GetImageDepth returns the depth of the image.
-%
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %
 */
@@ -2691,7 +2690,7 @@ MagickExport unsigned int GetImageDepth(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetImageInfo initializes the ImageInfo structure.
+%  GetImageInfo() initializes the ImageInfo structure to default values.
 %
 %  The format of the GetImageInfo method is:
 %
@@ -2699,7 +2698,7 @@ MagickExport unsigned int GetImageDepth(Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
+%    o image_info: The image info.
 %
 %
 */
@@ -2740,7 +2739,12 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetImageType returns the type of image (e.g. bilevel, palette, etc).
+%  GetImageType() returns the type of image:
+%
+%        Bilevel        Grayscale       GrayscaleMatte
+%        Palette        PaletteMatte    TrueColor
+%        TrueColorMatte ColorSeparation ColorSeparationMatte
+%
 %
 %  The format of the GetImageType method is:
 %
@@ -2748,10 +2752,7 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
-%    o type: Method GetImageType returns a ImageType enum that specifies the
-%      type of the specified image (e.g. bilevel, palette, etc).
-%
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %
 */
@@ -2791,7 +2792,7 @@ MagickExport ImageType GetImageType(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetNextImage returns the next image in an image sequence.
+%  GetNextImage() returns the next image in an image sequence.
 %
 %  The format of the GetNextImage method is:
 %
@@ -2799,9 +2800,7 @@ MagickExport ImageType GetImageType(Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o next: Method GetNextImage returns the next image in an image sequence.
-%
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %
 */
@@ -2828,7 +2827,7 @@ MagickExport Image *GetNextImage(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetNumberScenes returns the number of scenes in an image sequence.
+%  Method GetNumberScenes returns the number of images in an image sequence.
 %
 %  The format of the GetNumberScenes method is:
 %
@@ -2836,10 +2835,7 @@ MagickExport Image *GetNextImage(Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o scenes:  Method GetNumberScenes returns the number of scenes in an
-%      image sequence.
-%
-%    o image: The address of a structure of type Image.
+%    o image: The image.
 %
 %
 */
@@ -2862,35 +2858,6 @@ MagickExport unsigned int GetNumberScenes(const Image *image)
   for (number_scenes=0; next != (Image *) NULL; number_scenes++)
     next=next->next;
   return(number_scenes);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t P a g e I n f o                                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method GetPageInfo initializes the image page structure.
-%
-%  The format of the GetPageInfo method is:
-%
-%      void GetPageInfo(RectangleInfo *page)
-%
-%  A description of each parameter follows:
-%
-%    o page: Specifies a pointer to a RectangleInfo structure.
-%
-%
-*/
-MagickExport void GetPageInfo(RectangleInfo *page)
-{
-  assert(page != (RectangleInfo *) NULL);
-  memset(page,0,sizeof(RectangleInfo));
 }
 
 /*
