@@ -598,7 +598,9 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
 
 static double Box(const double x)
 {
-  if (AbsoluteValue(x) <= 0.5)
+  if (x < -0.5)
+    return(0.0);
+  if (x < 0.5)
     return(1.0);
   return(0.0);
 }
@@ -1011,7 +1013,7 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
   static const FilterInfo
     filters[SincFilter+1] =
     {
-      { Box, 0.0 },
+      { Lanczos, 3.0 },
       { Box, 0.0 },
       { Box, 0.5 },
       { Triangle, 1.0 },
