@@ -13,6 +13,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <errno.h>
+#include <math.h>
 
 using namespace std;
 
@@ -223,10 +224,37 @@ void Magick::Image::annotate ( const std::string &text_,
   }
 
   annotateInfo->gravity = gravity_;
-  annotateInfo->degrees = degrees_;
+
+  AffineInfo oaffine = annotateInfo->affine;
+  if ( degrees_ != 0.0)
+    {
+        AffineInfo affine;
+        affine.sx=1.0;
+        affine.rx=0.0;
+        affine.ry=0.0;
+        affine.sy=1.0;
+        affine.tx=0.0;
+        affine.ty=0.0;
+
+        AffineInfo current = annotateInfo->affine;
+#define DegreesToRadians(x) ((x)*3.14159265358979323846/180.0)
+        affine.sx=cos(DegreesToRadians(fmod(degrees_,360.0)));
+        affine.rx=sin(DegreesToRadians(fmod(degrees_,360.0)));
+        affine.ry=(-sin(DegreesToRadians(fmod(degrees_,360.0))));
+        affine.sy=cos(DegreesToRadians(fmod(degrees_,360.0)));
+
+        annotateInfo->affine.sx=current.sx*affine.sx+current.ry*affine.rx;
+        annotateInfo->affine.rx=current.rx*affine.sx+current.sy*affine.rx;
+        annotateInfo->affine.ry=current.sx*affine.ry+current.ry*affine.sy;
+        annotateInfo->affine.sy=current.rx*affine.ry+current.sy*affine.sy;
+        annotateInfo->affine.tx=current.sx*affine.tx+current.ry*affine.ty
+          +current.tx;
+    }
 
   AnnotateImage( image(), annotateInfo );
 
+  // Restore original values
+  annotateInfo->affine = oaffine;
   annotateInfo->text = 0;
   annotateInfo->geometry = 0;
 
@@ -245,7 +273,6 @@ void Magick::Image::annotate ( const std::string &text_,
   annotateInfo->text = const_cast<char *>(text_.c_str());
 
   annotateInfo->gravity = gravity_;
-  annotateInfo->degrees = 0.0;
 
   AnnotateImage( image(), annotateInfo );
 
