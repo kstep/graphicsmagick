@@ -1089,7 +1089,7 @@ MagickExport struct dirent *readdir(DIR *entry)
 /*
   This method reads either an enhanced metafile, a regular 16bit Windows
   metafile, or an Aldus Placeable metafile and converts it into an enhanced
-  metafile.
+  metafile.  Width and height are returned in .01mm units.
 */
 static HENHMETAFILE ReadEnhMetaFile(const char *szFileName,long *width,
   long *height)
@@ -1259,7 +1259,6 @@ MagickExport Image *ReadWMFImage(const ImageInfo *image_info,
     *ppBits;
 
   image=AllocateImage(image_info);
-  /* NOTE: height and width are returned in .01mm units */
   hemf=ReadEnhMetaFile(image_info->filename,&width,&height);
   if (!hemf)
     ThrowReaderException(FatalException,"file is not a metafile",image);
@@ -1269,39 +1268,32 @@ MagickExport Image *ReadWMFImage(const ImageInfo *image_info,
         y_resolution = 72.0,
         x_resolution = 72.0;
 
-      if(image->y_resolution > 0)
+      if (image->y_resolution > 0)
         {
-          y_resolution = image->y_resolution;
+          y_resolution=image->y_resolution;
           if (image->units == PixelsPerCentimeterResolution)
-            y_resolution *= CENTIMETERS_INCH;
+            y_resolution*=CENTIMETERS_INCH;
         }
-
-      if(image->x_resolution > 0)
+      if (image->x_resolution > 0)
         {
-          x_resolution = image->x_resolution;
+          x_resolution=image->x_resolution;
           if (image->units == PixelsPerCentimeterResolution)
-            x_resolution *= CENTIMETERS_INCH;
+            x_resolution*=CENTIMETERS_INCH;
         }
-
-      image->rows=
-        ceil((height*CENTIMETERS_INCH)/1000*y_resolution);
-      image->columns=
-        ceil((width*CENTIMETERS_INCH)/1000*x_resolution);
+      image->rows=ceil((height*CENTIMETERS_INCH)/1000*y_resolution);
+      image->columns=ceil((width*CENTIMETERS_INCH)/1000*x_resolution);
     }
   if (image_info->size != (char *) NULL)
     {
-      int
-        x,
-        y;
+      long
+        x;
 
-      unsigned int
-        flags;
-
-      x=y=0;
+      x=0;
+      y=0;
       image->rows=height;
       image->columns=width;
-      flags=ParseImageGeometry(image_info->size,&x,&y,
-        &image->columns,&image->rows);
+      (void) ParseImageGeometry(image_info->size,&x,&y,&image->columns,
+        &image->rows);
     }
   if (image_info->page != (char *) NULL)
     {

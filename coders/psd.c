@@ -454,6 +454,9 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Initialize image.
   */
+  image->depth=psd_info.depth <= 8 ? 8 : QuantumDepth;
+  image->columns=psd_info.columns;
+  image->rows=psd_info.rows;
   SetImage(image,OpaqueOpacity);
   image->matte=psd_info.channels >= 4;
   if (psd_info.mode == CMYKMode)
@@ -461,9 +464,6 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->colorspace=CMYKColorspace;
       image->matte=psd_info.channels >= 5;
     }
-  image->columns=psd_info.columns;
-  image->rows=psd_info.rows;
-  image->depth=psd_info.depth <= 8 ? 8 : QuantumDepth;
   if ((psd_info.mode == BitmapMode) || (psd_info.mode == GrayscaleMode))
     {
       if (!AllocateImageColormap(image,256))
@@ -768,8 +768,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   if (number_layers > 0)
     {
-      DestroyImage(image);
-      image=layer_info[0].image;
+      image->next=layer_info[0].image;
+      layer_info[0].image->previous=image;
       LiberateMemory((void **) &layer_info);
       return(image);
     }
