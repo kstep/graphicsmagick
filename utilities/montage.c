@@ -93,7 +93,7 @@ static void MontageUsage(void)
       "-affine matrix       affine transform matrix",
       "-authenticate value  decrypt image with this password",
       "-blur factor         apply a filter to blur the image",
-      "-cache threshold     megabytes of memory available to the pixel cache",
+      "-cache geometry      min/max megabytes of memory of pixel cache memory",
       "-colors value        preferred number of colors in the image",
       "-colorspace type     alternate image colorsapce",
       "-comment string      annotate image with comment",

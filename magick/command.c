@@ -3214,7 +3214,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
                 count=sscanf(argv[i],"%lfx%lf",&minimum,&maximum);
                 if (count == 1)
                   maximum=minimum;
-                SetIdentifyThreshold((size_t) minimum,(size_t) maximum);
+                SetCacheThreshold((size_t) minimum,(size_t) maximum);
               }
             break;
           }

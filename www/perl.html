@@ -888,12 +888,17 @@ And here is a list of all the image attributes you can set:<br>
  </tr>
   <tr>
  <td>cache-threshold</td>
-  <td><i>integer</i></td>
+  <td><i>geometry</i></td>
   <td>Image pixels are stored in memory until your computers memory is
 consumed. Subsequent pixel operations are cached to disk. Operations
 to memory are significantly faster but if your computer does not have a
 sufficient amount of free memory you may want to set this threshold to
-a small megabyte value (e.g. 8). </td>
+a small megabyte value (e.g. 8). You can also set a maximum cache threshold.
+When this value is exceeded, an image will fail to read or write. For example,
+cache-threshold->100x500, means cache to disk when one or more images consume
+more than 100mb of memory or disk and stop processing all images once the
+500mb threshold is met.
+</td>
  </tr>
   <tr>
  <td>clip-mask</td>

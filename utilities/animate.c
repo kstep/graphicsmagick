@@ -111,7 +111,7 @@ static void AnimateUsage(void)
     {
       "-authenticate value  decrypt image with this password",
       "-backdrop            display image centered on a backdrop",
-      "-cache threshold     megabytes of memory available to the pixel cache",
+      "-cache geometry      min/max megabytes of memory of pixel cache memory",
       "-colormap type       Shared or Private",
       "-colors value        preferred number of colors in the image",
       "-colorspace type     alternate image colorspace",

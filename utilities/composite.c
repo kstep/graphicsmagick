@@ -89,7 +89,7 @@ static void CompositeUsage(void)
     {
       "-affine matrix       affine transform matrix",
       "-authenticate value  decrypt image with this password",
-      "-cache threshold     number of megabytes available to the pixel cache",
+      "-cache geometry      number of megabytes available to the pixel cache",
       "-colors value        preferred number of colors in the image",
       "-colorspace type     alternate image colorspace",
       "-comment string      annotate image with comment",
