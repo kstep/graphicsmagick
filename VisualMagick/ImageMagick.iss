@@ -36,22 +36,22 @@
 AppName=ImageMagick
 ; When updating the version string, remember to also update the version in
 ; the [Registry] section
-AppVerName=ImageMagick 5.4.8 Q:16 (August 10, 2002)
-AppVersion=5.4.8
+AppVerName=ImageMagick 5.4.9 Q:16 Beta (August 14, 2002)
+AppVersion=5.4.9
 AppCopyright=Copyright (C) 2002 ImageMagick Studio LLC
 AppPublisher=ImageMagick Studio
 AppPublisherURL=http://www.imagemagick.org/
 AppSupportURL=http://www.imagemagick.org/www/magick-list.html
 AppUpdatesURL=http://www.imagemagick.org/www/archives.html
-; Default install is under "C:\Program Files\ImageMagick-5.4.8-Q16":
-DefaultDirName={pf}\ImageMagick-5.4.8-Q16
-DefaultGroupName=ImageMagick 5.4.8
+; Default install is under "C:\Program Files\ImageMagick-5.4.9-Q16":
+DefaultDirName={pf}\ImageMagick-5.4.9-Q16
+DefaultGroupName=ImageMagick 5.4.9
 Compression=zip/9
 ChangesAssociations=1
 AllowRootDirectory=no
 UninstallDisplayIcon={app}\ImageMagick.ico
 OutputDir=bin
-OutputBaseFilename=ImageMagick-5.4.8-win2k
+OutputBaseFilename=ImageMagick-5.4.9-win2k
 ; uncomment the following line if you want your installation to run on NT 3.51 too.
 ; MinVersion=4,3.51
 
@@ -70,16 +70,16 @@ Name: install_Magick_DLL; Description: "Install ImageMagickObject OLE Control fo
 ; Record installation paths
 ;
 Root: HKLM; Subkey: "Software\ImageMagick"; ValueType: none; Flags: uninsdeletekeyifempty
-Root: HKLM; Subkey: "Software\ImageMagick\5.4.8"; ValueType: none; Flags: uninsdeletekeyifempty
-Root: HKLM; Subkey: "Software\ImageMagick\5.4.8\Q:16"; ValueType: none; Flags: uninsdeletekey
-Root: HKLM; Subkey: "Software\ImageMagick\5.4.8\Q:16"; ValueType: string; ValueName: "ApplicationDefaultsPath"; ValueData: "{app}\config"
-Root: HKLM; Subkey: "Software\ImageMagick\5.4.8\Q:16"; ValueType: string; ValueName: "BinPath"; ValueData: "{app}"
-Root: HKLM; Subkey: "Software\ImageMagick\5.4.8\Q:16"; ValueType: string; ValueName: "LibPath"; ValueData: "{app}"
-Root: HKLM; Subkey: "Software\ImageMagick\5.4.8\Q:16"; ValueType: string; ValueName: "ModulesPath"; ValueData: "{app}\modules"
-Root: HKLM; Subkey: "Software\ImageMagick\5.4.8\Q:16"; ValueType: string; ValueName: "SharePath"; ValueData: "{app}\config"
+Root: HKLM; Subkey: "Software\ImageMagick\5.4.9"; ValueType: none; Flags: uninsdeletekeyifempty
+Root: HKLM; Subkey: "Software\ImageMagick\5.4.9\Q:16"; ValueType: none; Flags: uninsdeletekey
+Root: HKLM; Subkey: "Software\ImageMagick\5.4.9\Q:16"; ValueType: string; ValueName: "ApplicationDefaultsPath"; ValueData: "{app}\config"
+Root: HKLM; Subkey: "Software\ImageMagick\5.4.9\Q:16"; ValueType: string; ValueName: "BinPath"; ValueData: "{app}"
+Root: HKLM; Subkey: "Software\ImageMagick\5.4.9\Q:16"; ValueType: string; ValueName: "LibPath"; ValueData: "{app}"
+Root: HKLM; Subkey: "Software\ImageMagick\5.4.9\Q:16"; ValueType: string; ValueName: "ModulesPath"; ValueData: "{app}\modules"
+Root: HKLM; Subkey: "Software\ImageMagick\5.4.9\Q:16"; ValueType: string; ValueName: "SharePath"; ValueData: "{app}\config"
 
 Root: HKLM; Subkey: "Software\ImageMagick\Current"; ValueType: none; Flags: uninsdeletekey
-Root: HKLM; Subkey: "Software\ImageMagick\Current"; ValueType: string; ValueName: "Version"; ValueData: "5.4.8"
+Root: HKLM; Subkey: "Software\ImageMagick\Current"; ValueType: string; ValueName: "Version"; ValueData: "5.4.9"
 Root: HKLM; Subkey: "Software\ImageMagick\Current"; ValueType: dword; ValueName: "QuantumDepth"; ValueData: 16
 Root: HKLM; Subkey: "Software\ImageMagick\Current"; ValueType: string; ValueName: "ApplicationDefaultsPath"; ValueData: "{app}\config"
 Root: HKLM; Subkey: "Software\ImageMagick\Current"; ValueType: string; ValueName: "BinPath"; ValueData: "{app}"
