@@ -522,10 +522,10 @@ typedef struct _ImageInfo
   char
     *view;
 
-  int
+  const int
 	  argc;
 
-  char
+  const char
 	  **argv;
 
   void
