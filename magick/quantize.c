@@ -1853,6 +1853,7 @@ MagickExport unsigned int QuantizationError(Image *image)
     index;
 
   int
+    count,
     y;
 
   register double
@@ -1891,17 +1892,20 @@ MagickExport unsigned int QuantizationError(Image *image)
     if (p == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (int) image->columns; x+=count)
     {
+      for (count=1; (x+count) < (int) image->columns; count++)
+        if (!ColorMatch(*p,*(p+count),0))
+          break;
       index=indexes[x];
       red=(double) (p->red-image->colormap[index].red);
       green=(double) (p->green-image->colormap[index].green);
       blue=(double) (p->blue-image->colormap[index].blue);
-      distance=red*red+green*green+blue*blue;
+      distance=count*red*red+count*green*green+count*blue*blue;
       total_error+=distance;
       if (distance > maximum_error_per_pixel)
         maximum_error_per_pixel=distance;
-      p++;
+      p+=count;
     }
   }
   /*
