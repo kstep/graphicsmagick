@@ -22819,8 +22819,8 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-# Extract the first word of "wmftopng", so it can be a program name with args.
-set dummy wmftopng; ac_word=$2
+# Extract the first word of "wmftomagick", so it can be a program name with args.
+set dummy wmftomagick; ac_word=$2
 echo "$as_me:22824: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_WMFDecodeDelegate+set}" = set; then
@@ -22843,7 +22843,7 @@ for ac_dir in $ac_dummy; do
 fi
 done
 
-  test -z "$ac_cv_path_WMFDecodeDelegate" && ac_cv_path_WMFDecodeDelegate="wmftopng"
+  test -z "$ac_cv_path_WMFDecodeDelegate" && ac_cv_path_WMFDecodeDelegate="wmftomagick"
   ;;
 esac
 fi
@@ -23030,7 +23030,7 @@ then
   SCANDecodeDelegate='scanimage'
   ShowImageDelegate='display'
   TXTDelegate='enscript'
-  WMFDecodeDelegate='wmftopng'
+  WMFDecodeDelegate='wmftomagick'
   WWWDecodeDelegate='wget'
   XCFDecodeDelegate='xcftopnm'
   ZipDelegate='gzip'
