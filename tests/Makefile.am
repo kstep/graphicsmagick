@@ -3,7 +3,7 @@
 #
 # Copyright Bob Friesenhahn, 1999
 #
-AUTOMAKE_OPTIONS = 1.2 
+AUTOMAKE_OPTIONS = 1.2 foreign
 
 INCLUDES = -I../magick
 

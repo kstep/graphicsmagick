@@ -284,3 +284,6 @@
 
 /* Define if you have the POSIX.4 clock_gettime function.  */
 #undef HAVE_CLOCK_GETTIME
+
+/* Pixel cache threshold (default 80MB)*/
+#undef PixelCacheThreshold

@@ -8,7 +8,9 @@
 extern "C" {
 #endif
 
+#if !defined(PixelCacheThreshold)
 #define PixelCacheThreshold  80  /* megabytes */
+#endif
 
 /*
   Exported interfaces.

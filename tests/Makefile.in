@@ -140,7 +140,7 @@ X_LIBS = @X_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
 ZipDelegate = @ZipDelegate@
 
-AUTOMAKE_OPTIONS = 1.2 
+AUTOMAKE_OPTIONS = 1.2 foreign
 
 INCLUDES = -I../magick
 
@@ -199,7 +199,7 @@ all: all-redirect
 .SUFFIXES:
 .SUFFIXES: .S .c .lo .o .obj .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
-	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps tests/Makefile
+	cd $(top_srcdir) && $(AUTOMAKE) --foreign --include-deps tests/Makefile
 
 Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \
