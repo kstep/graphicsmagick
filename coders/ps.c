@@ -296,8 +296,7 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Set Postscript render geometry.
     */
-    FormatString(translate_geometry,"%f %f translate\n",-bounds.x1,
-      -bounds.y1);
+    FormatString(translate_geometry,"%f %f translate\n",-bounds.x1,-bounds.y1);
     width=(unsigned int) (bounds.x2-bounds.x1);
     if ((float) ((int) bounds.x2) != bounds.x2)
       width++;
