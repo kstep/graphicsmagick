@@ -1940,7 +1940,7 @@ namespace Magick
 
   //////////////////////////////////////////////////////////
   //
-  // Implementation template declarations. Not for end-use.
+  // Implementation template definitions. Not for end-use.
   //
   //////////////////////////////////////////////////////////
 
@@ -1954,14 +1954,47 @@ namespace Magick
   // method in order to specify the entire container.
   template <class InputIterator>
   void linkImages( InputIterator first_,
-		   InputIterator last_ );
+		   InputIterator last_ ) {
+
+    MagickLib::Image* previous = 0;
+    int scene = 0;
+    for ( InputIterator iter = first_; iter != last_; ++iter )
+      {
+	// Unless we reduce the reference count to one, the same image
+	// structure may occur more than once in the container, causing
+	// the linked list to fail.
+	iter->modifyImage();
+
+	MagickLib::Image* current = iter->image();
+
+	current->previous = previous;
+	current->next     = 0;
+	current->orphan   = static_cast<int>(false); // In a list
+
+	if ( previous != 0)
+	  previous->next = current;
+
+	current->scene=scene;
+	++scene;
+
+	previous = current;
+      }
+  }
 
   // Remove links added by linkImages. This should be called after the
   // ImageMagick function call has completed to reset the image list
   // back to its pristine un-linked state.
   template <class InputIterator>
   void unlinkImages( InputIterator first_,
-		     InputIterator last_ );
+		     InputIterator last_ ) {
+    for( InputIterator iter = first_; iter != last_; ++iter )
+      {
+	MagickLib::Image* image = iter->image();
+	image->previous = 0;
+	image->next = 0;
+	image->orphan = static_cast<int>(true); // Stand-alone
+      }
+  }
 
   // Insert images in image list into existing container (appending to container)
   // The images should not be deleted since only the image ownership is passed.
@@ -1969,11 +2002,30 @@ namespace Magick
   template <class Container>
   void insertImages( Container *sequence_,
 		     MagickLib::Image* images_,
-		     Options &options_ );
+		     Options &options_ ) {
+    MagickLib::Image *image = images_;
+    if ( image )
+      {
+	do
+	  {
+	    MagickLib::Image* next_image = image->next;
+	    image->next = 0;
+	  
+	    if (next_image != 0)
+	      next_image->previous=0;
+	  
+	    sequence_->push_back( Magick::Image( image, &options_ ) );
+	  
+	    image=next_image;
+	  } while( image );
+      
+	return;
+      }
+  }
 
   ///////////////////////////////////////////////////////////////////
   //
-  // Template definitions
+  // Template definitions for documented API
   //
   ///////////////////////////////////////////////////////////////////
 
@@ -1989,6 +2041,8 @@ namespace Magick
     throwException( exceptionInfo );
   }
 
+  // Append images from list into single image in either horizontal or
+  // vertical direction.
   template <class InputIterator>
   void appendImages( Image *appendedImage_,
 		     InputIterator first_,
@@ -2036,6 +2090,36 @@ namespace Magick
     throwException( exceptionInfo );
   }
 
+  // Break down an image sequence into constituent parts.  This is
+  // useful for creating GIF or MNG animation sequences.
+  template <class InputIterator, class Container >
+  void deconstructImages( Container *deconstructedImages_,
+                          InputIterator first_,
+                          InputIterator last_ ) {
+    MagickLib::ExceptionInfo exceptionInfo;
+    MagickLib::GetExceptionInfo( &exceptionInfo );
+
+    // Build image list
+    linkImages( first_, last_ );
+    MagickLib::Image* images = MagickLib::DeconstructImages( first_->image(),
+                                                             &exceptionInfo);
+    // Unlink image list
+    unlinkImages( first_, last_ );
+
+    // Ensure container is empty
+    deconstructedImages_->clear();
+    Magick::Options options;
+
+    // Move images to container
+    insertImages( deconstructedImages_, images, options );
+
+    // Report any error
+    throwException( exceptionInfo );
+  }
+
+  //
+  // Display an image sequence
+  //
   template <class InputIterator>
   void displayImages( InputIterator first_,
 		      InputIterator last_ ) {
@@ -2203,6 +2287,22 @@ namespace Magick
     throwException( exceptionInfo );
   }
 
+  // Inlay a number of images to form a single coherent picture.
+  template <class InputIterator>
+  void mosaicImages( Image *mosaicImage_,
+		     InputIterator first_,
+		     InputIterator last_ ) {
+    MagickLib::ExceptionInfo exceptionInfo;
+    MagickLib::GetExceptionInfo( &exceptionInfo );
+    linkImages( first_, last_ );
+    MagickLib::Image* image = MagickLib::MosaicImages( first_->image(),
+						       stack_,
+						       &exceptionInfo ); 
+    unlinkImages( first_, last_ );
+    mosaicImage_->replaceImage( image );
+    throwException( exceptionInfo );
+  }
+
   // Quantize colors in images using current quantization settings
   // Set measureError_ to true in order to measure quantization error
   template <class InputIterator>
@@ -2328,70 +2428,7 @@ namespace Magick
     throwException( exceptionInfo );
   }
 
-  template <class InputIterator>
-  void linkImages( InputIterator first_,
-		   InputIterator last_ ) {
 
-    MagickLib::Image* previous = 0;
-    int scene = 0;
-    for ( InputIterator iter = first_; iter != last_; ++iter )
-      {
-	// Unless we reduce the reference count to one, the same image
-	// structure may occur more than once in the container, causing
-	// the linked list to fail.
-	iter->modifyImage();
-
-	MagickLib::Image* current = iter->image();
-
-	current->previous = previous;
-	current->next     = 0;
-	current->orphan   = static_cast<int>(false); // In a list
-
-	if ( previous != 0)
-	  previous->next = current;
-
-	current->scene=scene;
-	++scene;
-
-	previous = current;
-      }
-  }
-
-  template <class InputIterator>
-  void unlinkImages( InputIterator first_,
-		     InputIterator last_ ) {
-    for( InputIterator iter = first_; iter != last_; ++iter )
-      {
-	MagickLib::Image* image = iter->image();
-	image->previous = 0;
-	image->next = 0;
-	image->orphan = static_cast<int>(true); // Stand-alone
-      }
-  }
-
-  template <class Container>
-  void insertImages( Container *sequence_,
-		     MagickLib::Image* images_,
-		     Options &options_ ) {
-    MagickLib::Image *image = images_;
-    if ( image )
-      {
-	do
-	  {
-	    MagickLib::Image* next_image = image->next;
-	    image->next = 0;
-	  
-	    if (next_image != 0)
-	      next_image->previous=0;
-	  
-	    sequence_->push_back( Magick::Image( image, &options_ ) );
-	  
-	    image=next_image;
-	  } while( image );
-      
-	return;
-      }
-  }
 
 } // namespace Magick
 

@@ -1,3 +1,10 @@
+2000-12-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/STL.h (deconstructImages): New STL function for
+ 	deconstructing an image list to assist with creating an animation.
+	(mosaicImages): New STL function for inlaying an image list to
+ 	form a single coherent picture.
+
 2000-12-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp (convolve): New method to convolve image using

@@ -141,6 +141,20 @@ are modified in-place.</font></td>
 
 <tr>
 <td>
+<center><a NAME="deconstructImages"></a>d<font size=-1>econstructImages</font></center>
+</td>
+
+<td><font size=-1>Container *deconstructedImages_, InputIterator first_,
+InputIterator last_</font></td>
+
+<td><font size=-1>Break down an image sequence into constituent parts.&nbsp;
+This is useful for creating GIF or MNG animation sequences. The input sequence
+is specified by <i>first_</i> and <i>last_</i>, and the deconstruted images
+are returned via <i>deconstructedImages_</i>.</font></td>
+</tr>
+
+<tr>
+<td>
 <center><a NAME="displayImages"></a><font size=-1>displayImages</font></center>
 </td>
 
@@ -203,6 +217,19 @@ expands the number of image frames (output to the container <i>morphedImages_)</
 by adding the number of intervening frames specified by <i>frames_</i>
 such that the original frames morph (blend) into each other when played
 as an animation.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="mosaicImages"></a><font size=-1>mosaicImages</font></center>
+</td>
+
+<td><font size=-1>Image *mosaicImage_, InputIterator first_, InputIterator
+last_</font></td>
+
+<td><font size=-1>Inlay a number of images to form a single coherent picture.
+The <i>mosicImage_</i> argument is updated with a mosaic constructed from
+the image sequence represented by <i>first_</i> through <i>last_</i>.</font></td>
 </tr>
 
 <tr NOSAVE>
