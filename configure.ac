@@ -84,6 +84,7 @@ AC_SUBST(WinPathScript)
 
 # Check for programs
 AC_PROG_CC
+AC_PROG_CC_STDC
 AC_PROG_CPP
 AM_PROG_LD
 AC_SUBST(LD)
@@ -574,7 +575,9 @@ AC_CHECK_HEADERS(sys/select.h sys/time.h sys/stat.h sys/types.h math.h \
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
+AC_C_VOLATILE
 AC_C_INLINE
+AC_C_LONG_DOUBLE
 AC_C_BIGENDIAN
 
 AC_TYPE_MODE_T
