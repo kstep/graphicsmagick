@@ -217,6 +217,8 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
   if (draw_info->stroke_pattern != (Image *) NULL)
     clone_info->stroke_pattern=CloneImage(draw_info->stroke_pattern,0,0,True,
       &draw_info->stroke_pattern->exception);
+  if (draw_info->font != (char *) NULL)
+    clone_info->font=AllocateString(draw_info->font);
   if (draw_info->family != (char *) NULL)
     clone_info->family=AllocateString(draw_info->family);
   if (draw_info->style != (char *) NULL)
