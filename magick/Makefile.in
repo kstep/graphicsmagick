@@ -233,7 +233,7 @@ acconfig.h config.h.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 SOURCES = $(libMagick_la_SOURCES) $(EXTRA_libMagick_la_SOURCES)
 OBJECTS = $(libMagick_la_OBJECTS)

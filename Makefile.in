@@ -286,7 +286,7 @@ mkinstalldirs
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 SOURCES = $(combine_SOURCES) $(convert_SOURCES) $(identify_SOURCES) $(mogrify_SOURCES) $(montage_SOURCES) $(animate_SOURCES) $(display_SOURCES) $(import_SOURCES)
 OBJECTS = $(combine_OBJECTS) $(convert_OBJECTS) $(identify_OBJECTS) $(mogrify_OBJECTS) $(montage_OBJECTS) $(animate_OBJECTS) $(display_OBJECTS) $(import_OBJECTS)

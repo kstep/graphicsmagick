@@ -404,9 +404,6 @@ static unsigned int IsXWD(const unsigned char *magick,unsigned int length)
 
 Export MagickInfo *GetMagickInfo(const char *tag)
 {
-  register int
-    i;
-
   register MagickInfo
     *p;
 
@@ -658,9 +655,8 @@ Export MagickInfo *GetMagickInfo(const char *tag)
         (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
         False,True,"Alias/Wavefront image");
       (void) RegisterMagickInfo("RLE",ReadRLEImage,
-        (unsigned int (*)(const ImageInfo *,Image *)) NULL,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,False,"Utah Run length encoded image");
+        (unsigned int (*)(const ImageInfo *,Image *)) NULL,IsRLE,False,False,
+        "Utah Run length encoded image");
       (void) RegisterMagickInfo("SCT",ReadSCTImage,
         (unsigned int (*)(const ImageInfo *,Image *)) NULL,IsSCT,False,True,
         "Scitex HandShake");
@@ -789,9 +785,6 @@ Export MagickInfo *GetMagickInfo(const char *tag)
 */
 Export void ListMagickInfo(FILE *file)
 {
-  register int
-    i;
-
   register MagickInfo
     *p;
 
