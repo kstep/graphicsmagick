@@ -1937,6 +1937,7 @@ static Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
         annotate->box=AllocateString(draw_info->box);
         annotate->antialias=draw_info->antialias;
         annotate->pointsize=draw_info->pointsize;
+        annotate->degrees=draw_info->rotate;
         annotate->gravity=draw_info->gravity;
         annotate->text=AllocateString(p->text);
         annotate->geometry=AllocateString("                                  ");

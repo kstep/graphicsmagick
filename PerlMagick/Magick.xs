@@ -337,8 +337,9 @@ static struct
     { "CycleColormap", { {"amount", IntegerReference} } },
     { "Draw", { {"prim", PrimitiveTypes}, {"points", StringReference},
       {"meth", MethodTypes}, {"pen", StringReference},
-      {"linew", IntegerReference}, {"server", StringReference},
-      {"borderc", StringReference} } },
+      {"linew", DoubleReference}, {"server", StringReference},
+      {"borderc", StringReference}, {"x", DoubleReference},
+      {"y", DoubleReference}, {"rotate", DoubleReference} } },
     { "Equalize", },
     { "Gamma", { {"gamma", StringReference}, {"red", DoubleReference},
       {"green", DoubleReference}, {"blue", DoubleReference} } },
@@ -4347,7 +4348,13 @@ Mogrify(ref,...)
                 MethodTypes[argument_list[2].int_reference]);
             }
           if (attribute_flag[4])
-            draw_info->linewidth=argument_list[4].int_reference;
+            draw_info->linewidth=argument_list[4].double_reference;
+          if (attribute_flag[7])
+            draw_info->translate.x=argument_list[7].double_reference;
+          if (attribute_flag[8])
+            draw_info->translate.y=argument_list[8].double_reference;
+          if (attribute_flag[9])
+            draw_info->rotate=argument_list[9].double_reference;
           DrawImage(image,draw_info);
           DestroyDrawInfo(draw_info);
           break;
