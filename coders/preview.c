@@ -179,7 +179,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
 
   Image
     *clone_image,
-    *images[NumberTiles],
+		*images,
     *montage_image,
     *preview_image;
 
@@ -212,53 +212,48 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
     colors;
 
   /*
-    Scale the image to tile size.
+    Open output image file.
   */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
+  if (status == False)
+    ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+  CloseBlob(image);
   (void) TransformRGBImage(image,RGBColorspace);
+  clone_info=CloneImageInfo(image_info);
+  clone_info->quality=0;
+  colors=2;
+  commands[0]=SetClientName((char *) NULL);
+  degrees=0;
+  gamma=(-0.2f);
   SetGeometry(image,&geometry);
   (void) GetMagickGeometry(DefaultPreviewGeometry,&geometry.x,&geometry.y,
     &geometry.width,&geometry.height);
-  clone_image=CloneImage(image,0,0,True,&image->exception);
-  if (clone_image == (Image *) NULL)
-    return(False);
-  preview_image=ZoomImage(clone_image,geometry.width,geometry.height,
-    &image->exception);
-  DestroyImage(clone_image);
-  if (preview_image == (Image *) NULL)
-    return(False);
-  preview_image->exempt=True;
-  (void) SetImageAttribute(preview_image,"label",DefaultTileLabel);
-  /*
-    Apply enhancement at varying strengths.
-  */
-  clone_info=CloneImageInfo(image_info);
-  DetachBlob(clone_info->blob);
-  clone_info->quality=0;
-  degrees=0;
-  gamma=(-0.2f);
-  colors=2;
-  x=0;
-  y=0;
+  images=NewImageList();
   percentage=12.5;
   radius=0.0;
   sigma=1.0;
   threshold=0.0;
-  commands[0]=SetClientName((char *) NULL);
+  x=0;
+  y=0;
   for (i=0; i < NumberTiles; i++)
   {
-    images[i]=CloneImage(preview_image,0,0,True,&image->exception);
-    if (images[i] == (Image *) NULL)
-      {
-        for (x=0;  x < i; x++)
-          DestroyImage(images[x]);
-        return(False);
-      }
+    preview_image=ZoomImage(image,geometry.width,geometry.height,
+      &image->exception);
+    if (preview_image == (Image *) NULL)
+      break;
+    (void) SetImageAttribute(preview_image,"label",DefaultTileLabel);
     argc=1;
     if (i == (NumberTiles >> 1))
       {
         commands[argc++]=(char *) "-mattecolor";
         commands[argc++]=(char *) "#dfdfdf";
-        (void) MogrifyImage(clone_info,argc,commands,&images[i]);
+        (void) MogrifyImage(clone_info,argc,commands,&preview_image);
+        PushImageList(&images,preview_image,&image->exception);
+        DestroyImage(preview_image);
         continue;
       }
     handler=SetMonitorHandler((MonitorHandler) NULL);
@@ -316,6 +311,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
         break;
       }
       case GammaPreview:
+      default:
       {
         FormatString(factor,"%g",gamma+=0.4f);
         FormatString(label,"gamma %.1024s",factor);
@@ -380,7 +376,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
           case 3: (void) strcpy(factor,"impulse"); break;
           case 4: (void) strcpy(factor,"laplacian"); break;
           case 5: (void) strcpy(factor,"Poisson"); break;
-          default: (void) strcpy(images[i]->magick,"NULL"); break;
+          default: (void) strcpy(preview_image->magick,"NULL"); break;
         }
         x++;
         FormatString(label,"+noise %.1024s",factor);
@@ -512,13 +508,12 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
         break;
       }
       case JPEGPreview:
-      default:
       {
         clone_info->quality=(unsigned int) (percentage+13.0);
         FormatString(factor,"%u",clone_info->quality);
-        (void) strcpy(images[i]->filename,"jpeg:");
-        TemporaryFilename(images[i]->filename+5);
-        status=WriteImage(clone_info,images[i]);
+        (void) strcpy(preview_image->filename,"jpeg:");
+        TemporaryFilename(preview_image->filename+5);
+        status=WriteImage(clone_info,preview_image);
         if (status != False)
           {
             ExceptionInfo
@@ -527,26 +522,26 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
             Image
               *quality_image;
 
-            (void) strncpy(clone_info->filename,images[i]->filename,
+            (void) strncpy(clone_info->filename,preview_image->filename,
               MaxTextExtent-1);
             quality_image=ReadImage(clone_info,&error);
-            (void) remove(images[i]->filename);
+            (void) remove(preview_image->filename);
             if (quality_image != (Image *) NULL)
               {
-                DestroyImage(images[i]);
-                images[i]=quality_image;
+                DestroyImage(preview_image);
+                preview_image=quality_image;
               }
           }
-        if (GetBlobSize(images[i]) >= (1 << 24))
+        if (GetBlobSize(preview_image) >= (1 << 24))
           FormatString(label,"quality %.1024s\n%lumb ",factor,
-            (unsigned long) (GetBlobSize(images[i])/1024/1024));
+            (unsigned long) (GetBlobSize(preview_image)/1024/1024));
         else
-          if (GetBlobSize(images[i]) >= (1 << 16))
+          if (GetBlobSize(preview_image) >= (1 << 16))
             FormatString(label,"quality %.1024s\n%lukb ",factor,
-              (unsigned long) (GetBlobSize(images[i])/1024));
+              (unsigned long) (GetBlobSize(preview_image)/1024));
           else
             FormatString(label,"quality %.1024s\n%lub ",factor,
-              (unsigned long) GetBlobSize(images[i]));
+              (unsigned long) GetBlobSize(preview_image));
         break;
       }
     }
@@ -555,29 +550,27 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
     sigma+=0.25;
     commands[argc++]=(char *) "-label";
     commands[argc++]=label;
-    (void) MogrifyImage(clone_info,argc,commands,&images[i]);
+    (void) MogrifyImage(clone_info,argc,commands,&preview_image);
     (void) SetMonitorHandler(handler);
+    PushImageList(&images,preview_image,&image->exception);
+    DestroyImage(preview_image);
     MagickMonitor(PreviewImageText,i,NumberTiles);
   }
   DestroyImageInfo(clone_info);
-  DestroyImage(preview_image);
+  if (images == (Image *) NULL)
+		return(False);
   /*
     Create the PCD Overview image.
   */
-  for (i=1; i < NumberTiles; i++)
-  {
-    images[i]->previous=images[i-1];
-    images[i-1]->next=images[i];
-  }
   montage_info=CloneMontageInfo(image_info,(MontageInfo *) NULL);
   (void) strncpy(montage_info->filename,image->filename,MaxTextExtent-1);
   montage_info->shadow=True;
   (void) CloneString(&montage_info->tile,"3x3");
   (void) CloneString(&montage_info->geometry,DefaultPreviewGeometry);
   (void) CloneString(&montage_info->frame,DefaultTileFrame);
-  montage_image=MontageImages(*images,montage_info,&image->exception);
+  montage_image=MontageImages(images,montage_info,&image->exception);
   DestroyMontageInfo(montage_info);
-  DestroyImageList(*images);
+  DestroyImageList(images);
   if (montage_image == (Image *) NULL)
     ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
       image);
@@ -594,7 +587,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
           montage_image->directory=(char *) NULL;
         }
     }
-  (void) strcpy(montage_image->magick,"MIFF");
+  FormatString(montage_image->filename,"miff:%.1024s",image_info->filename);
   status=WriteImage(image_info,montage_image);
   DestroyImage(montage_image);
   return(status);

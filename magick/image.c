@@ -2858,7 +2858,6 @@ MagickExport void GetImageInfo(ImageInfo *image_info)
   (void) QueryColorDatabase(BorderColor,&image_info->border_color);
   (void) QueryColorDatabase(MatteColor,&image_info->matte_color);
   image_info->dither=True;
-  image_info->preview_type=JPEGPreview;
   image_info->signature=MagickSignature;
 }
 
