@@ -761,15 +761,15 @@ static void ClosestColor(CubeInfo *cube_info,const NodeInfo *node_info)
             Determine if this color is "closest".
           */
           color=cube_info->colormap+node_info->color_number;
-          red=(double) (color->red-cube_info->color.red);
+          red=(double) color->red-(double) cube_info->color.red;
           distance=red*red;
           if (distance < cube_info->distance)
             {
-              green=(double) (color->green-cube_info->color.green);
+              green=color->green-(double) cube_info->color.green;
               distance+=green*green;
               if (distance < cube_info->distance)
                 {
-                  blue=(double) (color->blue-cube_info->color.blue);
+                  blue=color->blue-(double) cube_info->color.blue;
                   distance+=blue*blue;
                   if (distance < cube_info->distance)
                     {
@@ -1001,11 +1001,11 @@ static unsigned int Dither(CubeInfo *cube_info,Image *image,
     green,
     red;
 
-  register IndexPacket
-    *indexes;
-
   register CubeInfo
     *p;
+
+  register IndexPacket
+    *indexes;
 
   register long
     i;
@@ -1092,9 +1092,9 @@ static unsigned int Dither(CubeInfo *cube_info,Image *image,
       */
       for (i=0; i < (ExceptionQueueLength-1); i++)
         p->error[i]=p->error[i+1];
-      p->error[i].red=(double) (red-image->colormap[index].red);
-      p->error[i].green=(double) (green-image->colormap[index].green);
-      p->error[i].blue=(double) (blue-image->colormap[index].blue);
+      p->error[i].red=(double) red-(double) image->colormap[index].red;
+      p->error[i].green=(double) green-(double) image->colormap[index].green;
+      p->error[i].blue=(double) blue-(double) image->colormap[index].blue;
     }
   switch (direction)
   {
@@ -1944,9 +1944,9 @@ MagickExport unsigned int QuantizationError(Image *image)
         if (!ColorMatch(p,p+count))
           break;
       index=indexes[x];
-      red=(double) (p->red-image->colormap[index].red);
-      green=(double) (p->green-image->colormap[index].green);
-      blue=(double) (p->blue-image->colormap[index].blue);
+      red=(double) p->red-(double) image->colormap[index].red;
+      green=(double) p->green-(double) image->colormap[index].green;
+      blue=(double) p->blue-(double) image->colormap[index].blue;
       distance=count*red*red+count*green*green+count*blue*blue;
       total_error+=distance;
       if (distance > maximum_error_per_pixel)

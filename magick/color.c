@@ -1506,9 +1506,9 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
       scale=strchr(name,'%') == (char *) NULL ? 1.0 :
         ScaleQuantumToChar(MaxRGB)/100.0;
       (void) sscanf(name,"%*[^(](%lf%*[%,]%lf%*[%,]%lf",&red,&green,&blue);
-      color->red=ScaleCharToQuantum((long) (scale*red+0.5));
-      color->green=ScaleCharToQuantum((long) (scale*green+0.5));
-      color->blue=ScaleCharToQuantum((long) (scale*blue+0.5));
+      color->red=ScaleCharToQuantum(scale*red+0.5);
+      color->green=ScaleCharToQuantum(scale*green+0.5);
+      color->blue=ScaleCharToQuantum(scale*blue+0.5);
       color->opacity=OpaqueOpacity;
       return(True);
     }
@@ -1525,10 +1525,10 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
         ScaleQuantumToChar(MaxRGB)/100.0;
       (void) sscanf(name,"%*[^(](%lf%*[%,]%lf%*[%,]%lf%*[%,]%lf",&red,&green,
         &blue,&opacity);
-      color->red=ScaleCharToQuantum((long) (scale*red+0.5));
-      color->green=ScaleCharToQuantum((long) (scale*green+0.5));
-      color->blue=ScaleCharToQuantum((long) (scale*blue+0.5));
-      color->opacity=ScaleCharToQuantum((long) (scale*opacity+0.5));
+      color->red=ScaleCharToQuantum(scale*red+0.5);
+      color->green=ScaleCharToQuantum(scale*green+0.5);
+      color->blue=ScaleCharToQuantum(scale*blue+0.5);
+      color->opacity=ScaleCharToQuantum(scale*opacity+0.5);
       return(True);
     }
   p=GetColorInfo(name,exception);
