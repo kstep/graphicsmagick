@@ -173,8 +173,8 @@ static SyncPixelHandler
 %
 */
 MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
-  const long x,const long y,const unsigned long columns,const unsigned long rows,
-  const unsigned long nexus,ExceptionInfo *exception)
+  const long x,const long y,const unsigned long columns,
+	const unsigned long rows,const unsigned long nexus,ExceptionInfo *exception)
 {
 #define Cx(x) ((x) < 0 ? 0 : (x) >= (long) cache_info->columns ? \
   (long) cache_info->columns-1 : (x))
@@ -1520,8 +1520,6 @@ static unsigned int ModifyCache(Image *image)
   register PixelPacket
     *q;
 
-  if (SyncCache(image) == False)
-    return(True);
   cache_info=(CacheInfo *) image->cache;
   AcquireSemaphoreInfo(&cache_info->semaphore);
   if (cache_info->reference_count <= 1)
@@ -2225,6 +2223,8 @@ MagickExport PixelPacket *SetCacheNexus(Image *image,const long x,const long y,
   assert(image->cache != (Cache) NULL);
   assert(image->signature == MagickSignature);
   if (ModifyCache(image) == False)
+    return((PixelPacket *) NULL);
+  if (SyncCache(image) == False)
     return((PixelPacket *) NULL);
   /*
     Validate pixel cache geometry.
