@@ -1,3 +1,8 @@
+2001-10-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/Color.h (scaleQuantumToDouble): Add polymorphic
+ 	version that accepts double to avoid downconversion error.
+
 2001-10-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/Color.h (scaleQuantumToDouble): Cast Quantum to

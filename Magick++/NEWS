@@ -3,8 +3,10 @@ Magick++ release numbering tracks ImageMagick release numbering so the
 Magick++ release number increments even if there are no changes associated
 with Magick++ itself.
 
-(5.3.9.1)
-  * Improvements to string parameter passing in Color.
+(5.4.0)
+  * Fixed bug when scaling from Quantum to double in derived Color classes.
+
+  * Pass all input parameter strings as 'const std::string &' in Color class.
 
 (5.3.9)
   * New class, CoderInfo, to return information for a specified image

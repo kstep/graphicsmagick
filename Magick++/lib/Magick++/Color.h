@@ -100,6 +100,11 @@ namespace Magick
       {
         return (static_cast<double>(quantum_)/MaxRGB);
       }
+    static double scaleQuantumToDouble( const double quantum_ )
+      {
+        return (quantum_/MaxRGB);
+      }
+
 
   protected:
 
