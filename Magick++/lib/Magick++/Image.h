@@ -776,7 +776,7 @@ namespace Magick
     void            strokeAntiAlias( bool flag_ );
     bool            strokeAntiAlias( void ) const;
 
-	// Color to use when drawing object outlines
+    // Color to use when drawing object outlines
     void            strokeColor ( const Color &strokeColor_ );
     Color           strokeColor ( void ) const;
 

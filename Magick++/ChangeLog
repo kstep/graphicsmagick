@@ -2,6 +2,9 @@
 
 	* lib/Magick++/STL.h (medianFilterImage): Changed argument from
  	unsigned int to const double.
+	(fillColorImage): New method. Still needs documentation
+	(strokeColorImage): New method. Still needs documentation
+	(isValidImage): New method. Still needs documentation
 
 	* lib/Magick++/Image.h (edge): Change argument from unsigned int to double.
 	(medianFilter): Changed argument from unsigned int to const double.

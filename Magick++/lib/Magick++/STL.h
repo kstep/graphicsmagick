@@ -402,6 +402,21 @@ namespace Magick
   private:
   };
 
+  // Color to use when filling drawn objects
+  class fillColorImage : public std::unary_function<Image&,void>
+  {
+  public:
+    fillColorImage( const Color &fillColor_ )
+      : _fillColor( fillColor_ ) { }
+
+    void operator()( Image &image_ )
+      {
+	image_.fillColor( _fillColor );
+      }
+  private:
+    const Color _fillColor;
+  };
+
   // Flip image (reflect each scanline in the vertical direction)
   class flipImage : public std::unary_function<Image&,void>
   {
@@ -625,6 +640,22 @@ namespace Magick
       }
   private:
     const double _factor;
+  };
+
+  // Set image validity. Valid images become empty (inValid) if
+  // argument is false.
+  class isValidImage : public std::unary_function<Image&,void>
+  {
+  public:
+    isValidImage( bool isValid_  )
+      : _isValid( isValid_ ) { }
+
+    void operator()( Image &image_ )
+      {
+	image_.isValid( _isValid );
+      }
+  private:
+    const bool _isValid;
   };
 
   // Label image
@@ -1094,6 +1125,21 @@ namespace Magick
       }
   private:
     const Image _rightImage;
+  };
+
+  // Color to use when drawing object outlines
+  class strokeColorImage : public std::unary_function<Image&,void>
+  {
+  public:
+    strokeColorImage( const Color &strokeColor_ )
+      : _strokeColor( strokeColor_ ) { }
+
+    void operator()( Image &image_ )
+      {
+	image_.strokeColor( _strokeColor );
+      }
+  private:
+    const Color _strokeColor;
   };
 
   // Swirl image (image pixels are rotated by degrees)
