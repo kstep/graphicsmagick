@@ -1327,7 +1327,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       }
       case JPEGCompression:
       {
-	compress_tag=COMPRESSION_JPEG;
+        compress_tag=COMPRESSION_JPEG;
         image->storage_class=DirectClass;
         image->depth=8;
         break;
@@ -1412,7 +1412,11 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     }
     TIFFSetField(tiff,TIFFTAG_PHOTOMETRIC,photometric);
     TIFFSetField(tiff,TIFFTAG_COMPRESSION,compress_tag);
+#if defined(HOST_BIGENDIAN)
     TIFFSetField(tiff,TIFFTAG_FILLORDER,FILLORDER_MSB2LSB);
+#else
+    TIFFSetField(tiff,TIFFTAG_FILLORDER,FILLORDER_LSB2MSB);
+#endif
     TIFFSetField(tiff,TIFFTAG_ORIENTATION,ORIENTATION_TOPLEFT);
     TIFFSetField(tiff,TIFFTAG_PLANARCONFIG,PLANARCONFIG_CONTIG);
     if (photometric == PHOTOMETRIC_RGB)
