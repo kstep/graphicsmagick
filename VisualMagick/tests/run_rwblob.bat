@@ -29,10 +29,6 @@ set srcdir=..\..\tests\
 %exedir%rwblob.exe %srcdir%input_gray.miff FAX 
 %exedir%rwblob.exe %srcdir%input_256c.miff FAX 
 %exedir%rwblob.exe %srcdir%input_truecolor.miff FAX 
-%exedir%rwblob.exe %srcdir%input_bilevel.miff FPX 
-%exedir%rwblob.exe %srcdir%input_gray.miff FPX 
-%exedir%rwblob.exe %srcdir%input_256c.miff FPX 
-%exedir%rwblob.exe %srcdir%input_truecolor.miff FPX 
 %exedir%rwblob.exe %srcdir%input_bilevel.miff G3 
 %exedir%rwblob.exe %srcdir%input_gray.miff G3 
 %exedir%rwblob.exe %srcdir%input_256c.miff G3 

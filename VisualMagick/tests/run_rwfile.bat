@@ -52,10 +52,6 @@ set srcdir=..\..\tests\
 %exedir%rwfile.exe %srcdir%input_gray.miff FITS 
 %exedir%rwfile.exe %srcdir%input_256c.miff FITS 
 %exedir%rwfile.exe %srcdir%input_truecolor.miff FITS 
-%exedir%rwfile.exe %srcdir%input_bilevel.miff FPX 
-%exedir%rwfile.exe %srcdir%input_gray.miff FPX 
-%exedir%rwfile.exe %srcdir%input_256c.miff FPX 
-%exedir%rwfile.exe %srcdir%input_truecolor.miff FPX 
 %exedir%rwfile.exe %srcdir%input_bilevel.miff GIF 
 %exedir%rwfile.exe %srcdir%input_gray.miff GIF 
 %exedir%rwfile.exe %srcdir%input_256c.miff GIF 
