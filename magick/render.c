@@ -4688,8 +4688,7 @@ MagickExport void TraceArc(PrimitiveInfo *primitive_info,const PointInfo start,
   p=primitive_info;
   for (i=0; i < (long) arc_segments; i++)
   {
-    beta=0.5*((alpha+(i+1)*theta/arc_segments)-
-      (alpha+i*theta/arc_segments));
+    beta=0.5*((alpha+(i+1)*theta/arc_segments)-(alpha+i*theta/arc_segments));
     gamma=(8.0/3.0)*sin(0.5*beta)*sin(0.5*beta)/sin(beta);
     points[0].x=center.x+cos((alpha+i*theta/arc_segments))-
       gamma*sin((alpha+i*theta/arc_segments));
