@@ -24,6 +24,7 @@ extern "C" {
 #define PROT_READWRITE  3
 #define MAP_SHARED  1
 #define MAP_PRIVATE  2
+#define F_OK 0
 #define R_OK 4
 #define W_OK 2
 #define RW_OK 6

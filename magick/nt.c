@@ -338,7 +338,10 @@ void *lt_dlopen(char *filename)
 
   handle=(void *) NULL;
   if (lt_slsearchpath == (char *) NULL)
-    return(handle);
+    {
+      handle=(void *) LoadLibrary(filename);
+      return(handle);
+    }
   p=lt_slsearchpath;
   index=0;
   while (index < MaxPathElements)
