@@ -2,6 +2,10 @@
 	* Updated PerlMagick tests for Emboss, Equalize, Gamma,
 	Normalize, OilPaint, and Gradient so that they pass at Q:8
 	under Windows.
+	* Updated PerlMagick tests for Emboss, and reading WMF, so that
+	they pass at Q:16 under Windows.
+	* VisualMagick\installer\ImageMagick-16.iss: Ported over from
+	ImageMagick-8.iss and verified.
 
 2002-12-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* Major smashing of ImageMagick to GraphicsMagick in .txt files
