@@ -5654,8 +5654,8 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
   while (isalnum((int) *p))
     p++;
 #if defined(vms)
-  if (*(p+1) == '[')
-    p++;
+  if (*(p+1) == ':')
+    p += 2; /* skip DECnet node spec */
 #endif
   if ((*p == ':') && ((p-image_info->filename) < (int) sizeof(magic)))
     {
@@ -5665,7 +5665,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
       (void) strncpy(magic,image_info->filename,p-image_info->filename);
       magic[p-image_info->filename]='\0';
       LocaleUpper(magic);
-#if defined(macintosh) || defined(WIN32)
+#if defined(macintosh) || defined(WIN32) || defined(vms)
       if (!ImageFormatConflict(magic))
 #endif
         {

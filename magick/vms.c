@@ -51,7 +51,7 @@
 %
 */
 
-#if defined(vms) && !defined(_AXP_)
+#if defined(vms)
 /*
   Include declarations.
 */
@@ -59,7 +59,7 @@
 #include "defines.h"
 #include "vms.h"
 
-#if !defined(__VMS_VER) || (__VMS_VER < 70000000)
+#if !defined(_AXP_) && (!defined(__VMS_VER) || (__VMS_VER < 70000000))
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -224,5 +224,66 @@ struct dirent *readdir(DIR *directory)
   directory->entry.d_namlen=strlen(directory->entry.d_name);
   return(&directory->entry);
 }
-#endif
-#endif
+#endif /* !defined(_AXP_) && (!defined(__VMS_VER) || (__VMS_VER < 70000000)) */
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   I m a g e F o r m a t C o n f l i c t                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ImageFormatConflict returns true if the image format conflicts with
+%  with a logical drive (.e.g. SYS$SCRATCH:).
+%
+%  Contributed by Forrest Cahoon (forrest@wiredaemons.com)
+%
+%  The format of the ImageFormatConflict method is:
+%
+%      status=ImageFormatConflict(magick)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method ImageFormatConflict returns true if the image format
+%      conflicts with a logical drive.
+%
+%    o magick: Specifies the image format.
+%
+%
+*/
+MagickExport int ImageFormatConflict(char *magick)
+{
+  int device_class;
+  struct dsc$descriptor_s device_desc;
+  ile3 item_list[2];
+  int VMSstatus;
+
+  assert(magick != (char *) NULL);
+
+  device_desc.dsc$w_length = strlen(magick);
+  device_desc.dsc$a_pointer = magick;
+  device_desc.dsc$b_class = DSC$K_CLASS_S;
+  device_desc.dsc$b_dtype = DSC$K_DTYPE_T;
+
+  item_list[0].ile3$w_length = sizeof(device_class);
+  item_list[0].ile3$w_code = DVI$_DEVCLASS;
+  item_list[0].ile3$ps_bufaddr = &device_class;
+  item_list[0].ile3$ps_retlen_addr = NULL;
+
+  memset(&item_list[1], 0, sizeof(item_list[1]));
+
+  VMSstatus = sys$getdviw(0, 0, &device_desc, &item_list, 0, 0, 0, 0);
+  
+  if ( (VMSstatus == SS$_NONLOCAL) || 
+       ((VMSstatus & 1) && (device_class & (DC$_DISK | DC$_TAPE))) )
+  {
+    return(True);
+  }
+  return(False);
+}
+
+#endif /* defined(vms) */

@@ -8,11 +8,24 @@
 extern "C" {
 #endif
 
-#include <lib$routines.h>
+#if defined(__DECC) || defined(__DECCXX)
+#  include <lib$routines.h>
+#  include <starlet.h>
+#endif
+
 #include <errno.h>
 #include <descrip.h>
 #include <rmsdef.h>
 #include <ctype.h> 
+
+#include <iledef.h>
+#if defined(__NEW_STARLET)
+#  define ile3 ILE3
+#endif
+#include <dvidef.h>
+#include <dcdef.h>
+#include <ssdef.h>
+
 #if defined(__VMS_VER) && (__VMS_VER >= 70000000)
 #include <dirent.h>
 #else
@@ -55,7 +68,10 @@ extern struct dirent
 
 extern void
   closedir(DIR *);
-#endif
+#endif /*  defined(__VMS_VER) && (__VMS_VER >= 70000000) */
+
+extern MagickExport int
+  ImageFormatConflict(char *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
