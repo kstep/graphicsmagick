@@ -152,6 +152,7 @@ MagickExport unsigned int BlobToFile(const char *filename,const void *blob,
         filename);
       return(False);
     }
+  count=0;
   for (i=0; i < length; i+=count)
   {
     count=write(file,(char *) blob+i,length-i);
@@ -588,6 +589,7 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
       register size_t
         i;
 
+      count=0;
       for (i=0; i < *length; i+=count)
       {
         count=read(file,blob+i,*length-i);
