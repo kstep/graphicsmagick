@@ -9,6 +9,7 @@
 
 #include <string>
 #include <iostream>
+#include <strstream>
 #include <string.h>
 #include <errno.h>
 #include <math.h>
@@ -273,20 +274,20 @@ void Magick::Image::annotate ( const std::string &text_,
   
   drawInfo->text = const_cast<char *>(text_.c_str());
 
+  ostrstream boundingArea;
   drawInfo->geometry = 0;
-  string boundingArea;
   if ( boundingArea_.isValid() ){
     if ( boundingArea_.width() == 0 || boundingArea_.height() == 0 )
       {
-        char buff[30];
-        FormatString(buff,"+%u+%u",boundingArea_.xOff(),boundingArea_.yOff());
-        boundingArea.assign(buff);
+        boundingArea << "+" << boundingArea_.xOff()
+                     << "+" << boundingArea_.yOff() << ends;
       }
     else
       {
-        boundingArea.assign(string(boundingArea_));
+        boundingArea << string(boundingArea_) << ends;
       }
-    drawInfo->geometry = const_cast<char*>(boundingArea.c_str());
+    drawInfo->geometry = boundingArea.str();
+    // cout << "Annotation geometry: \"" << drawInfo->geometry << "\"" << endl;
   }
 
   drawInfo->gravity = gravity_;
