@@ -364,11 +364,11 @@ int main(int argc,char **argv)
             *text;
 
           text=TranslateText((ImageInfo *) NULL,image,format);
-          if (text != (char *) NULL)
-            fputs(text,stdout);
-          else
+          if (text == (char *) NULL)
             ThrowBinaryException(ResourceLimitWarning,
               "Unable to format image data","Memory allocation failed");
+          (void) fputs(text,stdout);
+          (void) fputc('\n',stdout);
         }
     }
     DestroyImages(image);
