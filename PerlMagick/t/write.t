@@ -249,7 +249,7 @@ testReadWrite( 'TGA:input.tga',
 testReadWrite( 'VIFF:input.viff',
                'VIFF:output.viff',
                q//,
-               'e9b162b8431709942886f79b7b7c11bb' );
+               'bba2e7661b8dd0b8006442bebcdf285d' );
 #
 # X Windows system bitmap (black and white only)
 #

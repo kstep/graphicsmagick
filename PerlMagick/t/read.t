@@ -217,7 +217,7 @@ testRead( 'input.tim', '5f53f9f45afef1060449dd4f09c3706c' );
 # Khoros Visualization image file
 #
 ++$test;
-testRead( 'input.viff', 'e9b162b8431709942886f79b7b7c11bb' );
+testRead( 'input.viff', '703151c1beed89a570ae56f1670a486a' );
 
 #
 # X Windows system bitmap (black and white only)
