@@ -610,24 +610,23 @@ static inline double DistanceToLine(const PointInfo *point,const PointInfo *p,
 }
 
 static inline double PixelOnLine(const PointInfo *point,const PointInfo *p,
-  const PointInfo *q,const double mid,const double opacity)
+  const PointInfo *q,const double mid,const double opacity,double *distance)
 {
   register double
-    alpha,
-    distance;
+    alpha;
 
+  *distance=DistanceToLine(point,p,q);
   if ((mid == 0.0) || (opacity == 1.0))
     return(opacity);
   if ((p->x == q->x) && (p->y == q->y))
     return((point->x == p->x) && (point->y == p->y) ? 1.0 : opacity);
-  distance=DistanceToLine(point,p,q);
   alpha=mid-0.5;
-  if (distance <= (alpha*alpha))
+  if (*distance <= (alpha*alpha))
     return(1.0);
   alpha=mid+0.5;
-  if (distance <= (alpha*alpha))
+  if (*distance <= (alpha*alpha))
     {
-      alpha=sqrt(distance)-mid-0.5;
+      alpha=sqrt(*distance)-mid-0.5;
       return(Max(opacity,alpha*alpha));
     }
   return(opacity);
@@ -678,16 +677,13 @@ MagickExport double IntersectPrimitive(PrimitiveInfo *primitive_info,
   p=primitive_info;
   mid=draw_info->affine[0]*draw_info->linewidth/2.0;
   if (primitive_info->coordinates == 2)
-    return(PixelOnLine(point,&p->point,&(p+1)->point,mid,0.0));
+    return(PixelOnLine(point,&p->point,&(p+1)->point,mid,0.0,&distance));
   stroke_opacity=0.0;
   while (p->primitive != UndefinedPrimitive)
   {
     q=p+p->coordinates-1;
-    minimum_distance=DistanceToLine(point,&q->point,&p->point);
-    subpath_opacity=0.0;
-    if ((primitive_info->method == FillToBorderMethod) &&
-        (*fill_opacity != 0.0))
-      subpath_opacity=PixelOnLine(point,&q->point,&p->point,1.0,0.0);
+    subpath_opacity=
+      PixelOnLine(point,&p->point,&q->point,1.0,0.0,&minimum_distance);
     crossings=0;
     if ((point->y < q->point.y) != (point->y < p->point.y))
       {
@@ -699,17 +695,16 @@ MagickExport double IntersectPrimitive(PrimitiveInfo *primitive_info,
           if (crossing)
             crossings++;
       }
-    for (p++; (p <= q) && (stroke_opacity != 1.0); p++)
+    for (p++; (p <= q); p++)
     {
-      distance=DistanceToLine(point,&(p-1)->point,&p->point);
+      stroke_opacity=
+        PixelOnLine(point,&(p-1)->point,&p->point,mid,stroke_opacity,&distance);
       if (distance < minimum_distance)
         minimum_distance=distance;
-      stroke_opacity=PixelOnLine(point,&(p-1)->point,&p->point,mid,
-        stroke_opacity);
       if ((primitive_info->method == FillToBorderMethod) &&
           (*fill_opacity != 0.0) && (subpath_opacity != 1.0))
         subpath_opacity=PixelOnLine(point,&(p-1)->point,&p->point,1.0,
-          subpath_opacity);
+          subpath_opacity,&distance);
       if (point->y < (p-1)->point.y)
         {
           if (point->y < p->point.y)
@@ -733,9 +728,6 @@ MagickExport double IntersectPrimitive(PrimitiveInfo *primitive_info,
         if (crossing)
           crossings++;
     }
-    p=q+1;
-    if (stroke_opacity == 1.0)
-      continue;
     if ((primitive_info->method == FillToBorderMethod) &&
         (*fill_opacity != 0.0))
       if ((crossings & 0x01)|| (minimum_distance <= (0.5*0.5)))

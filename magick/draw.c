@@ -78,7 +78,7 @@ static unsigned int
   GeneratePath(PrimitiveInfo *,const char *);
 
 static void
-  DrawPrimitive(Image *,const DrawInfo *,SegmentInfo *,PrimitiveInfo *),
+  DrawPrimitive(Image *,const DrawInfo *,PrimitiveInfo *),
   GenerateArc(PrimitiveInfo *,const PointInfo,const PointInfo,const PointInfo,
     const double,const unsigned int,const unsigned int),
   GenerateBezier(PrimitiveInfo *),
@@ -497,8 +497,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 
   double
     alpha,
-    beta,
-    mid;
+    beta;
 
   DrawInfo
     *clone_info;
@@ -521,9 +520,6 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
   register int
     i,
     x;
-
-  SegmentInfo
-    bounds;
 
   unsigned int
     indirection,
@@ -765,10 +761,6 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     /*
       Parse the primitive attributes.
     */
-    bounds.x1=image->columns-1.0;
-    bounds.y1=image->rows-1.0;
-    bounds.x2=0.0;
-    bounds.y2=0.0;
     i=0;
     j=0;
     for (x=0; *p != '\0'; x++)
@@ -1038,14 +1030,6 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
                   primitive_info[j].method=ResetMethod;
                 else
                   primitive_type=UndefinedPrimitive;
-        if ((primitive_info[j].method == ReplaceMethod) ||
-            (primitive_info[j].method == ResetMethod))
-          {
-            bounds.x1=0.0;
-            bounds.y1=0.0;
-            bounds.x2=image->columns-1.0;
-            bounds.y2=image->rows-1.0;
-          }
         while (isspace((int) (*p)) && (*p != '\0'))
           p++;
         break;
@@ -1139,35 +1123,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       primitive_info[i].point.y=clone_info->affine[1]*point.x+
         clone_info->affine[3]*point.y+clone_info->affine[5];
     }
-    /*
-      Compute bounding box.
-    */
-    for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++)
-    {
-      point=primitive_info[i].point;
-      if (point.x < bounds.x1)
-        bounds.x1=point.x;
-      if (point.y < bounds.y1)
-        bounds.y1=point.y;
-      if (point.x > bounds.x2)
-        bounds.x2=point.x;
-      if (point.y > bounds.y2)
-        bounds.y2=point.y;
-    }
-    mid=clone_info->affine[0]*clone_info->linewidth/2.0+1.0;
-    bounds.x1-=mid;
-    if (bounds.x1 < 0.0)
-      bounds.x1=0.0;
-    bounds.y1-=mid;
-    if (bounds.y1 < 0.0)
-      bounds.y1=0.0;
-    bounds.x2+=mid;
-    if (bounds.x2 >= image->columns)
-      bounds.x2=image->columns-1.0;
-    bounds.y2+=mid;
-    if (bounds.y2 >= image->rows)
-      bounds.y2=image->rows-1.0;
-    DrawPrimitive(image,clone_info,&bounds,primitive_info);
+    DrawPrimitive(image,clone_info,primitive_info);
   }
   /*
     Free resources.
@@ -1201,7 +1157,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 %  The format of the DrawPrimitive method is:
 %
 %      void DrawPrimitive(Image *image,const DrawInfo *draw_info,
-%        SegmentInfo *bounds,PrimitiveInfo *primitive_info))
+%        PrimitiveInfo *primitive_info))
 %
 %  A description of each parameter follows:
 %
@@ -1209,18 +1165,14 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 %
 %    o draw_info: The address of a DrawInfo structure.
 %
-%    o bounds: Specifies a pointer to a SegmentInfo structure which defines
-%      the bounding box of the graphic primitive relative to the image.
-%
 %    o primitive_info: Specifies a pointer to a PrimitiveInfo structure.
 %
 %
 */
 static void DrawPrimitive(Image *image,const DrawInfo *draw_info,
-  SegmentInfo *bounds,PrimitiveInfo *primitive_info)
+  PrimitiveInfo *primitive_info)
 {
   int
-    n,
     y;
 
   register int
@@ -1510,6 +1462,7 @@ static void DrawPrimitive(Image *image,const DrawInfo *draw_info,
       double
         alpha,
         fill_opacity,
+	mid,
         stroke_opacity;
 
       int
@@ -1519,25 +1472,60 @@ static void DrawPrimitive(Image *image,const DrawInfo *draw_info,
         color;
 
       PointInfo
-        target;
+        point;
 
+      SegmentInfo
+        bounds;
+
+      /*
+        Compute bounding box.
+      */
+      bounds.x1=image->columns-1.0;
+      bounds.y1=image->rows-1.0;
+      bounds.x2=0.0;
+      bounds.y2=0.0;
+      for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++)
+      {
+        point=primitive_info[i].point;
+        if (point.x < bounds.x1)
+          bounds.x1=point.x;
+        if (point.y < bounds.y1)
+          bounds.y1=point.y;
+        if (point.x > bounds.x2)
+          bounds.x2=point.x;
+        if (point.y > bounds.y2)
+          bounds.y2=point.y;
+      }
+      mid=draw_info->affine[0]*draw_info->linewidth/2.0+1.0;
+      bounds.x1-=mid;
+      if (bounds.x1 < 0.0)
+        bounds.x1=0.0;
+      bounds.y1-=mid;
+      if (bounds.y1 < 0.0)
+        bounds.y1=0.0;
+      bounds.x2+=mid;
+      if (bounds.x2 >= image->columns)
+        bounds.x2=image->columns-1.0;
+      bounds.y2+=mid;
+      if (bounds.y2 >= image->rows)
+        bounds.y2=image->rows-1.0;
       alpha=1.0/MaxRGB;
-      for (y=(int) ceil(bounds->y1-0.5); y <= (int) floor(bounds->y2-0.5); y++)
+      for (y=(int) ceil(bounds.y1-0.5); y <= (int) floor(bounds.y2-0.5); y++)
       {
         /*
           Fill the primitive on the image.
         */
-        x=(int) ceil(bounds->x1-0.5);
-        n=(int) floor(bounds->x2-0.5)-x;
+        x=(int) ceil(bounds.x1-0.5);
+        n=(int) floor(bounds.x2-0.5)-x;
         q=GetImagePixels(image,x,y,n+1,1);
         if (q == (PixelPacket *) NULL)
           break;
-        target.y=y;
-        for ( ; x <= (int) floor(bounds->x2-0.5); x++)
+        point.y=y;
+        for ( ; x <= (int) floor(bounds.x2-0.5); x++)
         {
-          target.x=x;
+          point.x=x;
           stroke_opacity=IntersectPrimitive(primitive_info,draw_info,image,
-            &target,&fill_opacity);
+            &point,&fill_opacity);
           color=draw_info->fill;
           if (draw_info->tile != (Image *) NULL)
             color=GetOnePixel(draw_info->tile,x % draw_info->tile->columns,
