@@ -1,0 +1,39 @@
+
+Items large and small which remain to be worked on.
+--------------------------------------------------------------------
+
+Utilities
+
+  * Write documentation for the iptcutil and cgimagick utilities.
+
+Library
+
+  * Implement API support to compose and interpret IPTC records.
+
+  * Implement clipping mask support MVG and SVG.
+
+  * Implement gradient fills for MVG and SVG.
+
+  * Implement image filters for MVG and SVG.
+
+  * Support drawing using embedded (inline) images.
+
+  * Re-implement function of existing .mgk configuration files
+    in XML form.
+
+Coders
+
+  * Support reading and writing the CALS raster format (military
+    standard MIL-PRF-28002C).
+
+  * Support reading single-page Encapsulated Postscript, Postscript, and
+    Portable Document Format into native (MVG) vector form (ala pstoedit).
+
+  * Support writing vector EPS files.
+
+  * Support writing vector PDF files.
+
+  * Support writing vector and bitmap CGM files.
+
+  * Support reading and writing Windows Extended Metafont (EMF) files.
+
