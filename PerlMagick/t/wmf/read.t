@@ -20,6 +20,6 @@ testRead( 'wizard.wmf',
 ++$test;
 testRead( 'clock.wmf',
           '5a71ebef41ddcf702d1d2a63d6114acb9ccfd5e718215b705e0769f074fb4303',
-          '7477f68dfc34248c58ba19d9f5276ac5e520f62e6206f33c5638270be44e5c15' );
+          '9c2ccd635040e672c17b3e68efabf3b65ef3797bb23fbe94a471d31242d139e0' );
 
 
