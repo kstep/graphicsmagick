@@ -129,6 +129,8 @@ magick/image.h
 magick/list.c
 magick/list.h
 magick/locale.c
+magick/log.c
+magick/log.h
 magick/mac.c
 magick/mac.h
 magick/magic.c
@@ -142,10 +144,6 @@ magick/module.h
 magick/monitor.c
 magick/monitor.h
 magick/montage.c
-magick/ntbase.c
-magick/ntbase.h
-magick/ntfeature.c
-magick/ntfeature.h
 magick/PreRvIcccm.c
 magick/PreRvIcccm.h
 magick/quantize.c
@@ -169,11 +167,16 @@ magick/transform.c
 magick/type.c
 magick/utility.c
 magick/utility.h
+magick/version.c
 magick/version.h
 magick/vms.c
 magick/vms.h
 magick/widget.c
 magick/widget.h
+magick/xp_base.c
+magick/xp_base.h
+magick/xp_feature.c
+magick/xp_feature.h
 magick/xwindow.c
 magick/xwindow.h
 utilities/animate.c
