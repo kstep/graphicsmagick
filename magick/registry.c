@@ -60,14 +60,14 @@
 /*
   Global declarations.
 */
-static long
-  id = 0;
-
-static RegistryInfo
-  *registry_list = (RegistryInfo *) NULL;
-
 static SemaphoreInfo
   *registry_semaphore = (SemaphoreInfo *) NULL;
+
+static volatile long
+  id = 0;
+
+static volatile RegistryInfo
+  *registry_list = (RegistryInfo *) NULL;
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -96,11 +96,11 @@ static SemaphoreInfo
 */
 MagickExport unsigned int DeleteMagickRegistry(const long id)
 {
-  RegistryInfo
-    *registry_info;
-
-  register RegistryInfo
+  register volatile RegistryInfo
     *p;
+
+  volatile RegistryInfo
+    *registry_info;
 
   AcquireSemaphoreInfo(&registry_semaphore);
   for (p=registry_list; p != (RegistryInfo *) NULL; p=p->next)
@@ -161,11 +161,11 @@ MagickExport unsigned int DeleteMagickRegistry(const long id)
 */
 MagickExport void DestroyMagickRegistry(void)
 {
-  RegistryInfo
-    *registry_info;
-
-  register RegistryInfo
+  register volatile RegistryInfo
     *p;
+
+  volatile RegistryInfo
+    *registry_info;
 
   AcquireSemaphoreInfo(&registry_semaphore);
   for (p=registry_list; p != (RegistryInfo *) NULL; )
@@ -231,7 +231,7 @@ MagickExport Image *GetImageFromMagickRegistry(const char *name,long *id,
   Image
     *image;
 
-  register RegistryInfo
+  register volatile RegistryInfo
     *p;
 
   *id=(-1);
@@ -288,14 +288,14 @@ MagickExport Image *GetImageFromMagickRegistry(const char *name,long *id,
 MagickExport void *GetMagickRegistry(const long id,RegistryType *type,
   size_t *length,ExceptionInfo *exception)
 {
-  register RegistryInfo
+  register volatile RegistryInfo
     *p;
-
-  RegistryInfo
-    *registry_info;
 
   void
     *blob;
+
+  volatile RegistryInfo
+    *registry_info;
 
   blob=(void *) NULL;
   *type=UndefinedRegistryType;
@@ -468,7 +468,7 @@ MagickExport long SetMagickRegistry(const RegistryType type,const void *blob,
     registry_list=registry_info;
   else
     {
-      register RegistryInfo
+      register volatile RegistryInfo
         *p;
 
       for (p=registry_list; p->next != (RegistryInfo *) NULL; p=p->next);
