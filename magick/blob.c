@@ -1255,6 +1255,7 @@ Export unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
                     image->blob_info.length=0;
                     image->blob_info.data=(char *)
                       MapBlob(filename,ReadMode,&image->blob_info.length);
+                    image->filesize=image->blob_info.length;
                     image->blob_info.mapped=
                       image->blob_info.data != (void *) NULL;
                   }
@@ -1262,9 +1263,12 @@ Export unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
           }
         if (!image->blob_info.mapped)
           image->file=(FILE *) fopen(filename,type);
-        (void) SeekBlob(image,0L,SEEK_END);
-        image->filesize=TellBlob(image);
-        (void) SeekBlob(image,0L,SEEK_SET);
+	if (image->file != (FILE *) NULL)
+	  {
+            (void) SeekBlob(image,0L,SEEK_END);
+            image->filesize=TellBlob(image);
+            (void) SeekBlob(image,0L,SEEK_SET);
+	  }
       }
   image->status=False;
   if (*type == 'r')
