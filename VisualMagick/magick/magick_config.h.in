@@ -19,5 +19,5 @@
 #define QuantumDepth 16
 //#define HasLZW
 //#define HasAUTOTRACE
-//#define HasWMF
+#define HasWMF
 #endif
