@@ -3249,27 +3249,13 @@ void Magick::Image::modifyImage( void )
 
 //
 // Test for an ImageMagick reported error and throw exception if one
-// has been reported.
+// has been reported.  Secretly resets image->exception back to default
+// state even though this method is const.
 //
 void Magick::Image::throwImageException( void ) const
 {
-  if ( constImage()->exception.severity == UndefinedException )
-    return;
-
-  // Save ImageMagick exception
-  ExceptionInfo exception;
-  GetExceptionInfo( &exception );
-  ThrowException( &exception,
-                  constImage()->exception.severity,
-                  constImage()->exception.reason,
-                  constImage()->exception.description );
-
-  // Reset Image exception to defaults
-  DestroyExceptionInfo( const_cast<ExceptionInfo*>(&constImage()->exception) );
-  GetExceptionInfo( const_cast<ExceptionInfo*>(&constImage()->exception) );
-
-  // Throw C++ exception
-  throwException( exception );
+  // Throw C++ exception while resetting Image exception to default state
+  throwException( const_cast<MagickLib::Image*>(constImage())->exception );
 }
 
 // Register image with image registry or obtain registration id

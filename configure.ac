@@ -141,6 +141,12 @@ fi
 # option to avoid confusing end users.
 AM_MAINTAINER_MODE
 
+# Enable ccmalloc memory debugging support
+AC_ARG_ENABLE(ccmalloc,
+	      [  --enable-ccmalloc       enable 'ccmalloc' memory debug support (default disabled)],
+	      [with_ccmalloc=$enableval],
+	      [with_ccmalloc='no'])
+
 # Enable prof-based profiling support
 AC_ARG_ENABLE(prof,
 	      [  --enable-prof           enable 'prof' profiling support (default disabled)],
@@ -554,6 +560,32 @@ CFLAGS_INITIAL=$CFLAGS
 CPPFLAGS_INITIAL=$CPPFLAGS
 LDFLAGS_INITIAL=$LDFLAGS
 LIBS_INITIAL=$LIBS
+
+
+#
+# Add support for ccmalloc memory debugging library if requested
+#
+have_ccmalloc='no'
+LIB_CCMALLOC=''
+if test "$with_ccmalloc" = 'yes'
+then
+  AC_PATH_PROG(CCMALLOCDelegate,ccmalloc,)
+  if test -n "$CCMALLOCDelegate"
+  then
+    eval `grep PREFIX= $CCMALLOCDelegate | sed -e 's/PREFIX/CCMALLOC_PREFIX/'`
+    OLIBS="$LIBS"
+    # Assume that gcc is used with ccmalloc.
+    LIBS="$LIBS $CCMALLOC_PREFIX/lib/ccmalloc-gcc.o"
+    AC_CHECK_LIB(ccmalloc,ccmalloc_malloc,LIB_CCMALLOC='-lccmalloc -ldl',,-ldl)
+    if test -n "$LIB_CCMALLOC"
+    then
+      LIBS="$LIBS $LIB_CCMALLOC"
+      have_ccmalloc='yes'
+     else
+      LIBS="$OLIBS"
+    fi
+  fi
+fi
 
 #
 # Find math library

@@ -1012,6 +1012,7 @@ Optional Features:
   --enable-libtool-verbose enable verbose libtool output (default disabled)
   --enable-maintainer-mode enable make rules and dependencies not useful
                           (and sometimes confusing) to the casual installer
+  --enable-ccmalloc       enable 'ccmalloc' memory debug support (default disabled)
   --enable-prof           enable 'prof' profiling support (default disabled)
   --enable-gprof          enable 'gprof' profiling support (default disabled)
   --enable-gcov           enable 'gcov' profiling support (default disabled)
@@ -3686,7 +3687,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 3689 "configure"' > conftest.$ac_ext
+  echo '#line 3690 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -7592,7 +7593,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 7595 "configure"
+#line 7596 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -7690,7 +7691,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 7693 "configure"
+#line 7694 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -10837,7 +10838,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 10840 "configure"
+#line 10841 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -10935,7 +10936,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 10938 "configure"
+#line 10939 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -13597,7 +13598,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 13600 "configure"
+#line 13601 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -13695,7 +13696,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 13698 "configure"
+#line 13699 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -14746,6 +14747,15 @@ fi
 
 
 
+# Enable ccmalloc memory debugging support
+# Check whether --enable-ccmalloc or --disable-ccmalloc was given.
+if test "${enable_ccmalloc+set}" = set; then
+  enableval="$enable_ccmalloc"
+  with_ccmalloc=$enableval
+else
+  with_ccmalloc='no'
+fi;
+
 # Enable prof-based profiling support
 # Check whether --enable-prof or --disable-prof was given.
 if test "${enable_prof+set}" = set; then
@@ -15381,6 +15391,128 @@ CFLAGS_INITIAL=$CFLAGS
 CPPFLAGS_INITIAL=$CPPFLAGS
 LDFLAGS_INITIAL=$LDFLAGS
 LIBS_INITIAL=$LIBS
+
+
+#
+# Add support for ccmalloc memory debugging library if requested
+#
+have_ccmalloc='no'
+LIB_CCMALLOC=''
+if test "$with_ccmalloc" = 'yes'
+then
+  # Extract the first word of "ccmalloc", so it can be a program name with args.
+set dummy ccmalloc; ac_word=$2
+echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
+if test "${ac_cv_path_CCMALLOCDelegate+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  case $CCMALLOCDelegate in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_CCMALLOCDelegate="$CCMALLOCDelegate" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if $as_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_CCMALLOCDelegate="$as_dir/$ac_word$ac_exec_ext"
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+
+  ;;
+esac
+fi
+CCMALLOCDelegate=$ac_cv_path_CCMALLOCDelegate
+
+if test -n "$CCMALLOCDelegate"; then
+  echo "$as_me:$LINENO: result: $CCMALLOCDelegate" >&5
+echo "${ECHO_T}$CCMALLOCDelegate" >&6
+else
+  echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+fi
+
+  if test -n "$CCMALLOCDelegate"
+  then
+    eval `grep PREFIX= $CCMALLOCDelegate | sed -e 's/PREFIX/CCMALLOC_PREFIX/'`
+    OLIBS="$LIBS"
+    # Assume that gcc is used with ccmalloc.
+    LIBS="$LIBS $CCMALLOC_PREFIX/lib/ccmalloc-gcc.o"
+    echo "$as_me:$LINENO: checking for ccmalloc_malloc in -lccmalloc" >&5
+echo $ECHO_N "checking for ccmalloc_malloc in -lccmalloc... $ECHO_C" >&6
+if test "${ac_cv_lib_ccmalloc_ccmalloc_malloc+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lccmalloc -ldl $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+#include "confdefs.h"
+
+/* Override any gcc2 internal prototype to avoid an error.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+/* We use char because int might match the return type of a gcc2
+   builtin and then its argument prototype would still apply.  */
+char ccmalloc_malloc ();
+#ifdef F77_DUMMY_MAIN
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+#endif
+int
+main ()
+{
+ccmalloc_malloc ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_lib_ccmalloc_ccmalloc_malloc=yes
+else
+  echo "$as_me: failed program was:" >&5
+cat conftest.$ac_ext >&5
+ac_cv_lib_ccmalloc_ccmalloc_malloc=no
+fi
+rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+echo "$as_me:$LINENO: result: $ac_cv_lib_ccmalloc_ccmalloc_malloc" >&5
+echo "${ECHO_T}$ac_cv_lib_ccmalloc_ccmalloc_malloc" >&6
+if test $ac_cv_lib_ccmalloc_ccmalloc_malloc = yes; then
+  LIB_CCMALLOC='-lccmalloc -ldl'
+fi
+
+    if test -n "$LIB_CCMALLOC"
+    then
+      LIBS="$LIBS $LIB_CCMALLOC"
+      have_ccmalloc='yes'
+     else
+      LIBS="$OLIBS"
+    fi
+  fi
+fi
 
 #
 # Find math library
@@ -29984,6 +30116,7 @@ s,@INCLUDE_DIR@,$INCLUDE_DIR,;t t
 s,@OLDINCLUDE_DIR@,$OLDINCLUDE_DIR,;t t
 s,@INFO_DIR@,$INFO_DIR,;t t
 s,@MAN_DIR@,$MAN_DIR,;t t
+s,@CCMALLOCDelegate@,$CCMALLOCDelegate,;t t
 s,@LIB_MATH@,$LIB_MATH,;t t
 s,@LIB_THREAD@,$LIB_THREAD,;t t
 s,@HasZLIB_TRUE@,$HasZLIB_TRUE,;t t

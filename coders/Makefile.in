@@ -104,6 +104,7 @@ BIN_DIR = @BIN_DIR@
 BZIPDelegate = @BZIPDelegate@
 BrowseDelegate = @BrowseDelegate@
 CC = @CC@
+CCMALLOCDelegate = @CCMALLOCDelegate@
 CGMDecodeDelegate = @CGMDecodeDelegate@
 CPP = @CPP@
 CXX = @CXX@

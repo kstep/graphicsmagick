@@ -955,6 +955,7 @@ namespace Magick
 
     // Obtain image pixel indexes (valid for PseudoClass images)
     IndexPacket* getIndexes ( void ) const;
+
     // Obtain image pixel indexes (valid for PseudoClass images)
     const IndexPacket* getConstIndexes ( void ) const;
 

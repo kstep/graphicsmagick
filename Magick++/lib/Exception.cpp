@@ -185,7 +185,7 @@ void Magick::throwExceptionExplicit( const ExceptionType severity_,
   throwException( exception );
 }
 
-// Format and throw exception
+// Throw C++ exception, resetting exception argument to default state
 void Magick::throwException( ExceptionInfo &exception_ )
 {
   // Just return if there is no reported error
@@ -203,15 +203,9 @@ void Magick::throwException( ExceptionInfo &exception_ )
   if ( exception_.description != 0 )
     message += " (" + std::string(exception_.description) + ")";
 
-//   if ( error_ != OptionError && errno)
-//     {
-//       message += " [" + std::string(strerror(errno)) + "]";
-//       errno = 0;
-//     }
-
-  
   ExceptionType severity = exception_.severity;
   DestroyExceptionInfo( &exception_ );
+  GetExceptionInfo( &exception_ );
 
   switch ( severity )
     {
