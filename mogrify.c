@@ -1467,7 +1467,6 @@ int main(int argc,char **argv)
     }
   if (image == (Image *) NULL)
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
-  DestroyImages(image);
   DestroyDelegateInfo();
   DestroyMagickInfo();
   FreeMemory(argv);
