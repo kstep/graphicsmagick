@@ -4023,8 +4023,8 @@ png_write_raw_profile(const ImageInfo *image_info,png_struct *ping,
    description_length=strlen((const char *) profile_description);
    allocated_length= (png_uint_32) (length*2 + (length>>5) + 10
       + description_length);
-   text[0].text=png_malloc(ping,allocated_length);
-   text[0].key= png_malloc(ping, (png_uint_32) 80);
+   text[0].text=(png_textp) png_malloc(ping,allocated_length);
+   text[0].key=(png_textp) png_malloc(ping, (png_uint_32) 80);
    text[0].key[0]='\0';
    strcat(text[0].key, "Raw profile type ");
    strncat(text[0].key, (const char *) profile_type, 61);
