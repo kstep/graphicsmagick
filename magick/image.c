@@ -739,7 +739,7 @@ Export Image *AverageImages(Image *images)
 %
 %
 */
-Export Image *CloneImage(Image *image,const unsigned int columns,
+Export Image *CloneImage(const Image *image,const unsigned int columns,
   const unsigned int rows,const unsigned int orphan)
 {
   Image
