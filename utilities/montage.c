@@ -1004,16 +1004,6 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (LocaleNCompare("sharpen",option+1,5) == 0)
-            {
-              if (*option == '-')
-                {
-                  i++;
-                  if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
-                    MagickError(OptionError,"Missing factor",option);
-                }
-              break;
-            }
           if (LocaleNCompare("size",option+1,2) == 0)
             {
               image_info->size=(char *) NULL;
