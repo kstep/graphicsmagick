@@ -1010,13 +1010,10 @@ namespace Magick
   class antiAliasImage : public std::unary_function<Image&,void>
   {
   public:
-    antiAliasImage( bool flag_ )
-      : _flag( flag_ ) { }
+    antiAliasImage( const bool flag_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.antiAlias( _flag );
-      }
+    void operator()( Image &image_ );
+
   private:
     const bool _flag;
   };
@@ -1025,13 +1022,10 @@ namespace Magick
   class adjoinImage : public std::unary_function<Image&,void>
   {
   public:
-    adjoinImage( bool flag_ )
-      : _flag( flag_ ) { }
+    adjoinImage( const bool flag_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.adjoin( _flag );
-      }
+    void operator()( Image &image_ );
+
   private:
     const bool _flag;
   };
@@ -1041,13 +1035,10 @@ namespace Magick
   class animationDelayImage : public std::unary_function<Image&,void>
   {
   public:
-    animationDelayImage( unsigned int delay_ )
-      : _delay( delay_ ) { }
+    animationDelayImage( const unsigned int delay_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.animationDelay( _delay );
-      }
+    void operator()( Image &image_ );
+
   private:
     const unsigned int _delay;
   };
@@ -1057,13 +1048,10 @@ namespace Magick
   class animationIterationsImage : public std::unary_function<Image&,void>
   {
   public:
-    animationIterationsImage( unsigned int iterations_ )
-      : _iterations( iterations_ ) { }
+    animationIterationsImage( const unsigned int iterations_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.animationIterations( _iterations );
-      }
+    void operator()( Image &image_ );
+
   private:
     const unsigned int _iterations;
   };
@@ -1072,13 +1060,10 @@ namespace Magick
   class backgroundColorImage : public std::unary_function<Image&,void>
   {
   public:
-    backgroundColorImage( const Color &color_ )
-      : _color( color_ ) { }
+    backgroundColorImage( const Color &color_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.backgroundColor( _color );
-      }
+    void operator()( Image &image_ );
+
   private:
     const Color _color;
   };
@@ -1087,13 +1072,10 @@ namespace Magick
   class backgroundTextureImage : public std::unary_function<Image&,void>
   {
   public:
-    backgroundTextureImage( const std::string &backgroundTexture_ )
-      : _backgroundTexture( backgroundTexture_ ) { }
+    backgroundTextureImage( const std::string &backgroundTexture_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.backgroundTexture( _backgroundTexture );
-      }
+    void operator()( Image &image_ );
+
   private:
     const std::string _backgroundTexture;
   };
@@ -1102,13 +1084,10 @@ namespace Magick
   class borderColorImage : public std::unary_function<Image&,void>
   {
   public:
-    borderColorImage( const Color &color_ )
-      : _color( color_ ) { }
+    borderColorImage( const Color &color_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.borderColor( _color );
-      }
+    void operator()( Image &image_ );
+
   private:
     const Color _color;
   };
@@ -1117,13 +1096,10 @@ namespace Magick
   class boxColorImage : public std::unary_function<Image&,void>
   {
   public:
-    boxColorImage( const Color &boxColor_ )
-      : _boxColor( boxColor_ ) { }
+    boxColorImage( const Color &boxColor_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.boxColor( _boxColor );
-      }
+    void operator()( Image &image_ );
+
   private:
     const Color _boxColor;
   };
@@ -1132,14 +1108,10 @@ namespace Magick
   class chromaBluePrimaryImage : public std::unary_function<Image&,void>
   {
   public:
-    chromaBluePrimaryImage( const double x_, const double y_ )
-      : _x( x_ ),
-	_y( y_ ) { }
+    chromaBluePrimaryImage( const double x_, const double y_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.chromaBluePrimary( _x, _y );
-      }
+    void operator()( Image &image_ );
+
   private:
     const double _x;
     const double _y;
@@ -1149,14 +1121,10 @@ namespace Magick
   class chromaGreenPrimaryImage : public std::unary_function<Image&,void>
   {
   public:
-    chromaGreenPrimaryImage( const double x_, const double y_ )
-      : _x( x_ ),
-	_y( y_ ) { }
+    chromaGreenPrimaryImage( const double x_, const double y_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.chromaGreenPrimary( _x, _y );
-      }
+    void operator()( Image &image_ );
+
   private:
     const double _x;
     const double _y;
@@ -1166,14 +1134,10 @@ namespace Magick
   class chromaRedPrimaryImage : public std::unary_function<Image&,void>
   {
   public:
-    chromaRedPrimaryImage( const double x_, const double y_ )
-      : _x( x_ ),
-	_y( y_ ) { }
+    chromaRedPrimaryImage( const double x_, const double y_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.chromaRedPrimary( _x, _y );
-      }
+    void operator()( Image &image_ );
+
   private:
     const double _x;
     const double _y;
@@ -1183,14 +1147,10 @@ namespace Magick
   class chromaWhitePointImage : public std::unary_function<Image&,void>
   {
   public:
-    chromaWhitePointImage( const double x_, const double y_ )
-      : _x( x_ ),
-	_y( y_ ) { }
+    chromaWhitePointImage( const double x_, const double y_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.chromaWhitePoint( _x, _y );
-      }
+    void operator()( Image &image_ );
+
   private:
     const double _x;
     const double _y;
@@ -1200,13 +1160,10 @@ namespace Magick
   class colorFuzzImage : public std::unary_function<Image&,void>
   {
   public:
-    colorFuzzImage( double fuzz_ )
-      : _fuzz( fuzz_ ) { }
+    colorFuzzImage( const double fuzz_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.colorFuzz( _fuzz );
-      }
+    void operator()( Image &image_ );
+
   private:
     const double _fuzz;
   };
@@ -1215,14 +1172,10 @@ namespace Magick
   class colorMapImage : public std::unary_function<Image&,void>
   {
   public:
-    colorMapImage( unsigned int index_, const Color &color_ )
-      : _index( index_ ),
-	_color( color_ ) { }
+    colorMapImage( const unsigned int index_, const Color &color_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.colorMap( _index, _color );
-      }
+    void operator()( Image &image_ );
+
   private:
     const unsigned int _index;
     const Color        _color;
@@ -1232,13 +1185,10 @@ namespace Magick
   class compressTypeImage : public std::unary_function<Image&,void>
   {
   public:
-    compressTypeImage( CompressionType compressType_ )
-      : _compressType( compressType_ ) { }
+    compressTypeImage( const CompressionType compressType_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.compressType( _compressType );
-      }
+    void operator()( Image &image_ );
+
   private:
     const CompressionType _compressType;
   };
@@ -1247,13 +1197,10 @@ namespace Magick
   class densityImage : public std::unary_function<Image&,void>
   {
   public:
-    densityImage( const Geometry &geomery_ )
-      : _geomery( geomery_ ) { }
+    densityImage( const Geometry &geomery_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.density( _geomery );
-      }
+    void operator()( Image &image_ );
+
   private:
     const Geometry _geomery;
   };
@@ -1262,29 +1209,23 @@ namespace Magick
   class depthImage : public std::unary_function<Image&,void>
   {
   public:
-    depthImage( unsigned int depth_ )
-      : _depth( depth_ ) { }
+    depthImage( const unsigned int depth_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.depth( _depth );
-      }
+    void operator()( Image &image_ );
+
   private:
     const unsigned int _depth;
   };
 
-  // Endianness (little like Intel or big like SPARC) for image
+  // Endianness (LSBEndian like Intel or MSBEndian like SPARC) for image
   // formats which support endian-specific options.
   class endianImage : public std::unary_function<Image&,void>
   {
   public:
-    endianImage( EndianType endian_ )
-      : _endian( endian_ ) { }
+    endianImage( const EndianType endian_ );
 
-    void operator()( Image &image_ )
-      {
-        image_.endian( _endian );
-      }
+    void operator()( Image &image_ );
+
   private:
     const EndianType  _endian;
   };
@@ -1293,13 +1234,10 @@ namespace Magick
   class fileNameImage : public std::unary_function<Image&,void>
   {
   public:
-    fileNameImage( const std::string &fileName_ )
-      : _fileName( fileName_ ) { }
+    fileNameImage( const std::string &fileName_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.fileName( _fileName );
-      }
+    void operator()( Image &image_ );
+
   private:
     const std::string _fileName;
   };
@@ -1308,13 +1246,10 @@ namespace Magick
   class filterTypeImage : public std::unary_function<Image&,void>
   {
   public:
-    filterTypeImage( FilterTypes filterType_ )
-      : _filterType( filterType_ ) { }
+    filterTypeImage( const FilterTypes filterType_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.filterType( _filterType );
-      }
+    void operator()( Image &image_ );
+
   private:
     const FilterTypes _filterType;
   };
@@ -1323,13 +1258,10 @@ namespace Magick
   class fontImage : public std::unary_function<Image&,void>
   {
   public:
-    fontImage( const std::string &font_ )
-      : _font( font_ ) { }
+    fontImage( const std::string &font_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.font( _font );
-      }
+    void operator()( Image &image_ );
+
   private:
     const std::string _font;
   };
@@ -1338,13 +1270,10 @@ namespace Magick
   class fontPointsizeImage : public std::unary_function<Image&,void>
   {
   public:
-    fontPointsizeImage( unsigned int pointsize_ )
-      : _pointsize( pointsize_ ) { }
+    fontPointsizeImage( const unsigned int pointsize_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.fontPointsize( _pointsize );
-      }
+    void operator()( Image &image_ );
+
   private:
     const unsigned int _pointsize;
   };
@@ -1353,13 +1282,10 @@ namespace Magick
   class gifDisposeMethodImage : public std::unary_function<Image&,void>
   {
   public:
-    gifDisposeMethodImage( unsigned int disposeMethod_ )
-      : _disposeMethod( disposeMethod_ ) { }
+    gifDisposeMethodImage( const unsigned int disposeMethod_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.gifDisposeMethod( _disposeMethod );
-      }
+    void operator()( Image &image_ );
+
   private:
     const unsigned int _disposeMethod;
   };
@@ -1368,13 +1294,10 @@ namespace Magick
   class interlaceTypeImage : public std::unary_function<Image&,void>
   {
   public:
-    interlaceTypeImage( InterlaceType interlace_ )
-      : _interlace( interlace_ ) { }
+    interlaceTypeImage( const InterlaceType interlace_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.interlaceType( _interlace );
-      }
+    void operator()( Image &image_ );
+
   private:
     const InterlaceType _interlace;
   };
@@ -1383,13 +1306,10 @@ namespace Magick
   class lineWidthImage : public std::unary_function<Image&,void>
   {
   public:
-    lineWidthImage( double lineWidth_ )
-      : _lineWidth( lineWidth_ ) { }
+    lineWidthImage( const double lineWidth_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.lineWidth( _lineWidth );
-      }
+    void operator()( Image &image_ );
+
   private:
     const double _lineWidth;
   };
@@ -1398,13 +1318,10 @@ namespace Magick
   class magickImage : public std::unary_function<Image&,void>
   {
   public:
-    magickImage( const std::string &magick_ )
-      : _magick( magick_ ) { }
+    magickImage( const std::string &magick_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.magick( _magick );
-      }
+    void operator()( Image &image_ );
+
   private:
     const std::string _magick;
   };
@@ -1413,13 +1330,10 @@ namespace Magick
   class matteImage : public std::unary_function<Image&,void>
   {
   public:
-    matteImage( bool matteFlag_ )
-      : _matteFlag( matteFlag_ ) { }
+    matteImage( const bool matteFlag_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.matte( _matteFlag );
-      }
+    void operator()( Image &image_ );
+
   private:
     const bool _matteFlag;
   };
@@ -1428,28 +1342,22 @@ namespace Magick
   class matteColorImage : public std::unary_function<Image&,void>
   {
   public:
-    matteColorImage( const Color &matteColor_ )
-      : _matteColor( matteColor_ ) { }
+    matteColorImage( const Color &matteColor_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.matteColor( _matteColor );
-      }
+    void operator()( Image &image_ );
+
   private:
     const Color _matteColor;
   };
 
-  // Transform image to black and white
+  // Indicate that image is black and white
   class monochromeImage : public std::unary_function<Image&,void>
   {
   public:
-    monochromeImage( bool monochromeFlag_ )
-      : _monochromeFlag( monochromeFlag_ ) { }
+    monochromeImage( const bool monochromeFlag_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.monochrome( _monochromeFlag );
-      }
+    void operator()( Image &image_ );
+
   private:
     const bool _monochromeFlag;
   };
@@ -1458,13 +1366,10 @@ namespace Magick
   class penColorImage : public std::unary_function<Image&,void>
   {
   public:
-    penColorImage( const Color &penColor_ )
-      : _penColor( penColor_ ) { }
+    penColorImage( const Color &penColor_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.penColor( _penColor );
-      }
+    void operator()( Image &image_ );
+
   private:
     const Color _penColor;
   };
@@ -1473,13 +1378,10 @@ namespace Magick
   class penTextureImage : public std::unary_function<Image&,void>
   {
   public:
-    penTextureImage( const Image &penTexture_ )
-      : _penTexture( penTexture_ ) { }
+    penTextureImage( const Image &penTexture_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.penTexture( _penTexture );
-      }
+    void operator()( Image &image_ );
+
   private:
     const Image _penTexture;
   };
@@ -1488,16 +1390,12 @@ namespace Magick
   class pixelColorImage : public std::unary_function<Image&,void>
   {
   public:
-    pixelColorImage( unsigned int x_, unsigned int y_,
-		     const Color &color_)
-      : _x( x_ ),
-	_y( y_ ),
-	_color( color_ ) { }
+    pixelColorImage( const unsigned int x_,
+                     const unsigned int y_,
+		     const Color &color_);
 
-    void operator()( Image &image_ )
-      {
-	image_.pixelColor( _x, _y, _color );
-      }
+    void operator()( Image &image_ );
+
   private:
     const unsigned int _x;
     const unsigned int _y;
@@ -1508,13 +1406,10 @@ namespace Magick
   class pageImage : public std::unary_function<Image&,void>
   {
   public:
-    pageImage( const Geometry &pageSize_ )
-      : _pageSize( pageSize_ ) { }
+    pageImage( const Geometry &pageSize_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.page( _pageSize );
-      }
+    void operator()( Image &image_ );
+
   private:
     const Geometry _pageSize;
   };
@@ -1523,13 +1418,10 @@ namespace Magick
   class qualityImage : public std::unary_function<Image&,void>
   {
   public:
-    qualityImage( unsigned int quality_ )
-      : _quality( quality_ ) { }
+    qualityImage( const unsigned int quality_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.quality( _quality );
-      }
+    void operator()( Image &image_ );
+
   private:
     const unsigned int _quality;
   };
@@ -1538,13 +1430,10 @@ namespace Magick
   class quantizeColorsImage : public std::unary_function<Image&,void>
   {
   public:
-    quantizeColorsImage( unsigned int colors_ )
-      : _colors( colors_ ) { }
+    quantizeColorsImage( const unsigned int colors_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.quantizeColors( _colors );
-      }
+    void operator()( Image &image_ );
+
   private:
     const unsigned int _colors;
   };
@@ -1553,13 +1442,10 @@ namespace Magick
   class quantizeColorSpaceImage : public std::unary_function<Image&,void>
   {
   public:
-    quantizeColorSpaceImage( ColorspaceType colorSpace_ )
-      : _colorSpace( colorSpace_ ) { }
+    quantizeColorSpaceImage( const ColorspaceType colorSpace_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.quantizeColorSpace( _colorSpace );
-      }
+    void operator()( Image &image_ );
+
   private:
     const ColorspaceType _colorSpace;
   };
@@ -1568,13 +1454,10 @@ namespace Magick
   class quantizeDitherImage : public std::unary_function<Image&,void>
   {
   public:
-    quantizeDitherImage( bool ditherFlag_ )
-      : _ditherFlag( ditherFlag_ ) { }
+    quantizeDitherImage( const bool ditherFlag_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.quantizeDither( _ditherFlag );
-      }
+    void operator()( Image &image_ );
+
   private:
     const bool _ditherFlag;
   };
@@ -1583,13 +1466,10 @@ namespace Magick
   class quantizeTreeDepthImage : public std::unary_function<Image&,void>
   {
   public:
-    quantizeTreeDepthImage( unsigned int treeDepth_ )
-      : _treeDepth( treeDepth_ ) { }
+    quantizeTreeDepthImage( const unsigned int treeDepth_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.quantizeTreeDepth( _treeDepth );
-      }
+    void operator()( Image &image_ );
+
   private:
     const unsigned int _treeDepth;
   };
@@ -1598,13 +1478,10 @@ namespace Magick
   class renderingIntentImage : public std::unary_function<Image&,void>
   {
   public:
-    renderingIntentImage( RenderingIntent renderingIntent_ )
-      : _renderingIntent( renderingIntent_ ) { }
+    renderingIntentImage( const RenderingIntent renderingIntent_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.renderingIntent( _renderingIntent );
-      }
+    void operator()( Image &image_ );
+
   private:
     const RenderingIntent _renderingIntent;
   };
@@ -1613,13 +1490,10 @@ namespace Magick
   class resolutionUnitsImage : public std::unary_function<Image&,void>
   {
   public:
-    resolutionUnitsImage( ResolutionType resolutionUnits_ )
-      : _resolutionUnits( resolutionUnits_ ) { }
+    resolutionUnitsImage( const ResolutionType resolutionUnits_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.resolutionUnits( _resolutionUnits );
-      }
+    void operator()( Image &image_ );
+
   private:
     const ResolutionType _resolutionUnits;
   };
@@ -1628,13 +1502,10 @@ namespace Magick
   class sceneImage : public std::unary_function<Image&,void>
   {
   public:
-    sceneImage( unsigned int scene_ )
-      : _scene( scene_ ) { }
+    sceneImage( const unsigned int scene_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.scene( _scene );
-      }
+    void operator()( Image &image_ );
+
   private:
     const unsigned int _scene;
   };
@@ -1643,13 +1514,10 @@ namespace Magick
   class sizeImage : public std::unary_function<Image&,void>
   {
   public:
-    sizeImage( const Geometry &geometry_ )
-      : _geometry( geometry_ ) { }
+    sizeImage( const Geometry &geometry_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.size( _geometry );
-      }
+    void operator()( Image &image_ );
+
   private:
     const Geometry _geometry;
   };
@@ -1658,13 +1526,10 @@ namespace Magick
   class subImageImage : public std::unary_function<Image&,void>
   {
   public:
-    subImageImage( unsigned int subImage_ )
-      : _subImage( subImage_ ) { }
+    subImageImage( const unsigned int subImage_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.subImage( _subImage );
-      }
+    void operator()( Image &image_ );
+
   private:
     const unsigned int _subImage;
   };
@@ -1673,13 +1538,10 @@ namespace Magick
   class subRangeImage : public std::unary_function<Image&,void>
   {
   public:
-    subRangeImage( unsigned int subRange_ )
-      : _subRange( subRange_ ) { }
+    subRangeImage( const unsigned int subRange_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.subRange( _subRange );
-      }
+    void operator()( Image &image_ );
+
   private:
     const unsigned int _subRange;
   };
@@ -1688,13 +1550,10 @@ namespace Magick
   class tileNameImage : public std::unary_function<Image&,void>
   {
   public:
-    tileNameImage( const std::string &tileName_ )
-      : _tileName( tileName_ ) { }
+    tileNameImage( const std::string &tileName_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.tileName( _tileName );
-      }
+    void operator()( Image &image_ );
+
   private:
     const std::string _tileName;
   };
@@ -1703,13 +1562,10 @@ namespace Magick
   class typeImage : public std::unary_function<Image&,void>
   {
   public:
-    typeImage( Magick::ImageType type_ )
-      : _type( type_ ) { }
+    typeImage( const ImageType type_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.type( _type );
-      }
+    void operator()( Image &image_ );
+
   private:
     const Magick::ImageType _type;
   };
@@ -1719,13 +1575,10 @@ namespace Magick
   class verboseImage : public std::unary_function<Image&,void>
   {
   public:
-    verboseImage( const bool verbose_ )
-      : _verbose( verbose_ ) { }
+    verboseImage( const bool verbose_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.verbose( _verbose );
-      }
+    void operator()( Image &image_ );
+
   private:
     const bool _verbose;
   };
@@ -1734,13 +1587,10 @@ namespace Magick
   class viewImage : public std::unary_function<Image&,void>
   {
   public:
-    viewImage( const std::string &view_ )
-      : _view( view_ ) { }
+    viewImage( const std::string &view_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.view( _view );
-      }
+    void operator()( Image &image_ );
+
   private:
     const std::string _view;
   };
@@ -1750,13 +1600,10 @@ namespace Magick
   class x11DisplayImage : public std::unary_function<Image&,void>
   {
   public:
-    x11DisplayImage( const std::string &display_ )
-      : _display( display_ ) { }
+    x11DisplayImage( const std::string &display_ );
 
-    void operator()( Image &image_ )
-      {
-	image_.x11Display( _display );
-      }
+    void operator()( Image &image_ );
+
   private:
     const std::string _display;
   };

@@ -930,3 +930,511 @@ void Magick::zoomImage::operator()( Magick::Image &image_ )
 {
   image_.zoom( _geometry );
 }
+
+//
+// Function object image attribute accessors
+//
+
+// Anti-alias Postscript and TrueType fonts (default true)
+Magick::antiAliasImage::antiAliasImage( const bool flag_ )
+  : _flag( flag_ )
+{
+}
+void Magick::antiAliasImage::operator()( Magick::Image &image_ )
+{
+  image_.antiAlias( _flag );
+}
+
+// Join images into a single multi-image file
+Magick::adjoinImage::adjoinImage( const bool flag_ )
+  : _flag( flag_ )
+{
+}
+void Magick::adjoinImage::operator()( Magick::Image &image_ )
+{
+  image_.adjoin( _flag );
+}
+
+// Time in 1/100ths of a second which must expire before displaying
+// the next image in an animated sequence.
+Magick::animationDelayImage::animationDelayImage( const unsigned int delay_ )
+  : _delay( delay_ )
+{
+}
+void Magick::animationDelayImage::operator()( Magick::Image &image_ )
+{
+  image_.animationDelay( _delay );
+}
+
+// Number of iterations to loop an animation (e.g. Netscape loop
+// extension) for.
+Magick::animationIterationsImage::animationIterationsImage( const unsigned int iterations_ )
+  : _iterations( iterations_ )
+{
+}
+void Magick::animationIterationsImage::operator()( Magick::Image &image_ )
+{
+  image_.animationIterations( _iterations );
+}
+
+// Image background color
+Magick::backgroundColorImage::backgroundColorImage( const Magick::Color &color_ )
+  : _color( color_ )
+{
+}
+void Magick::backgroundColorImage::operator()( Magick::Image &image_ )
+{
+  image_.backgroundColor( _color );
+}
+
+// Name of texture image to tile onto the image background
+Magick::backgroundTextureImage::backgroundTextureImage( const std::string &backgroundTexture_ )
+  : _backgroundTexture( backgroundTexture_ )
+{
+}
+void Magick::backgroundTextureImage::operator()( Magick::Image &image_ )
+{
+  image_.backgroundTexture( _backgroundTexture );
+}
+
+// Image border color
+Magick::borderColorImage::borderColorImage( const Magick::Color &color_ )
+  : _color( color_ )
+{
+}
+void Magick::borderColorImage::operator()( Magick::Image &image_ )
+{
+  image_.borderColor( _color );
+}
+
+// Text bounding-box base color (default none)
+Magick::boxColorImage::boxColorImage( const Magick::Color &boxColor_ )
+  : _boxColor( boxColor_ ) { }
+
+void Magick::boxColorImage::operator()( Magick::Image &image_ )
+{
+  image_.boxColor( _boxColor );
+}
+
+// Chromaticity blue primary point (e.g. x=0.15, y=0.06)
+Magick::chromaBluePrimaryImage::chromaBluePrimaryImage( const double x_,
+                                                        const double y_ )
+  : _x( x_ ),
+    _y( y_ )
+{
+}
+void Magick::chromaBluePrimaryImage::operator()( Magick::Image &image_ )
+{
+  image_.chromaBluePrimary( _x, _y );
+}
+
+// Chromaticity green primary point (e.g. x=0.3, y=0.6)
+Magick::chromaGreenPrimaryImage::chromaGreenPrimaryImage( const double x_,
+                                                          const double y_ )
+  : _x( x_ ),
+    _y( y_ )
+{
+}
+void Magick::chromaGreenPrimaryImage::operator()( Magick::Image &image_ )
+{
+  image_.chromaGreenPrimary( _x, _y );
+}
+
+// Chromaticity red primary point (e.g. x=0.64, y=0.33)
+Magick::chromaRedPrimaryImage::chromaRedPrimaryImage( const double x_,
+                                                      const double y_ )
+  : _x( x_ ),
+    _y( y_ )
+{
+}
+void Magick::chromaRedPrimaryImage::operator()( Magick::Image &image_ )
+{
+  image_.chromaRedPrimary( _x, _y );
+}
+
+// Chromaticity white point (e.g. x=0.3127, y=0.329)
+Magick::chromaWhitePointImage::chromaWhitePointImage( const double x_,
+                                                      const double y_ )
+  : _x( x_ ),
+    _y( y_ )
+{
+}
+void Magick::chromaWhitePointImage::operator()( Magick::Image &image_ )
+{
+  image_.chromaWhitePoint( _x, _y );
+}
+
+// Colors within this distance are considered equal
+Magick::colorFuzzImage::colorFuzzImage( const double fuzz_ )
+  : _fuzz( fuzz_ )
+{
+}
+void Magick::colorFuzzImage::operator()( Magick::Image &image_ )
+{
+  image_.colorFuzz( _fuzz );
+}
+
+// Color at colormap position index_
+Magick::colorMapImage::colorMapImage( const unsigned int index_,
+                                      const Color &color_ )
+  : _index( index_ ),
+    _color( color_ )
+{
+}
+void Magick::colorMapImage::operator()( Magick::Image &image_ )
+{
+  image_.colorMap( _index, _color );
+}
+
+// Compression type
+Magick::compressTypeImage::compressTypeImage( const CompressionType compressType_ )
+  : _compressType( compressType_ )
+{
+}
+void Magick::compressTypeImage::operator()( Magick::Image &image_ )
+{
+  image_.compressType( _compressType );
+}
+
+// Vertical and horizontal resolution in pixels of the image
+Magick::densityImage::densityImage( const Geometry &geomery_ )
+  : _geomery( geomery_ )
+{
+}
+void Magick::densityImage::operator()( Magick::Image &image_ )
+{
+  image_.density( _geomery );
+}
+
+// Image depth (bits allocated to red/green/blue components)
+Magick::depthImage::depthImage( const unsigned int depth_ )
+  : _depth( depth_ )
+{
+}
+void Magick::depthImage::operator()( Magick::Image &image_ )
+{
+  image_.depth( _depth );
+}
+
+// Endianness (LSBEndian like Intel or MSBEndian like SPARC) for image
+// formats which support endian-specific options.
+Magick::endianImage::endianImage( const Magick::EndianType endian_ )
+  : _endian( endian_ )
+{
+}
+void Magick::endianImage::operator()( Magick::Image &image_ )
+{
+  image_.endian( _endian );
+}
+
+// Image file name
+Magick::fileNameImage::fileNameImage( const std::string &fileName_ )
+  : _fileName( fileName_ )
+{
+}
+void Magick::fileNameImage::operator()( Magick::Image &image_ )
+{
+  image_.fileName( _fileName );
+}
+
+// Filter to use when resizing image
+Magick::filterTypeImage::filterTypeImage( const FilterTypes filterType_ )
+  : _filterType( filterType_ )
+{
+}
+void Magick::filterTypeImage::operator()( Magick::Image &image_ )
+{
+  image_.filterType( _filterType );
+}
+
+// Text rendering font
+Magick::fontImage::fontImage( const std::string &font_ )
+  : _font( font_ )
+{
+}
+void Magick::fontImage::operator()( Magick::Image &image_ )
+{
+  image_.font( _font );
+}
+
+// Font point size
+Magick::fontPointsizeImage::fontPointsizeImage( const unsigned int pointsize_ )
+  : _pointsize( pointsize_ )
+{
+}
+void Magick::fontPointsizeImage::operator()( Magick::Image &image_ )
+{
+  image_.fontPointsize( _pointsize );
+}
+
+// GIF disposal method
+Magick::gifDisposeMethodImage::gifDisposeMethodImage( const unsigned int disposeMethod_ )
+  : _disposeMethod( disposeMethod_ )
+{
+}
+void Magick::gifDisposeMethodImage::operator()( Magick::Image &image_ )
+{
+  image_.gifDisposeMethod( _disposeMethod );
+}
+
+// Type of interlacing to use
+Magick::interlaceTypeImage::interlaceTypeImage( const InterlaceType interlace_ )
+  : _interlace( interlace_ )
+{
+}
+void Magick::interlaceTypeImage::operator()( Magick::Image &image_ )
+{
+  image_.interlaceType( _interlace );
+}
+
+// Linewidth for drawing vector objects (default one)
+Magick::lineWidthImage::lineWidthImage( const double lineWidth_ )
+  : _lineWidth( lineWidth_ )
+{
+}
+void Magick::lineWidthImage::operator()( Magick::Image &image_ )
+{
+  image_.lineWidth( _lineWidth );
+}
+
+// File type magick identifier (.e.g "GIF")
+Magick::magickImage::magickImage( const std::string &magick_ )
+  : _magick( magick_ )
+{
+}
+void Magick::magickImage::operator()( Magick::Image &image_ )
+{
+  image_.magick( _magick );
+}
+
+// Image supports transparent color
+Magick::matteImage::matteImage( const bool matteFlag_ )
+  : _matteFlag( matteFlag_ )
+{
+}
+void Magick::matteImage::operator()( Magick::Image &image_ )
+{
+  image_.matte( _matteFlag );
+}
+
+// Transparent color
+Magick::matteColorImage::matteColorImage( const Color &matteColor_ )
+  : _matteColor( matteColor_ )
+{
+}
+void Magick::matteColorImage::operator()( Magick::Image &image_ )
+{
+  image_.matteColor( _matteColor );
+}
+
+// Indicate that image is black and white
+Magick::monochromeImage::monochromeImage( const bool monochromeFlag_ )
+  : _monochromeFlag( monochromeFlag_ )
+{
+}
+void Magick::monochromeImage::operator()( Magick::Image &image_ )
+{
+  image_.monochrome( _monochromeFlag );
+}
+
+// Pen color
+Magick::penColorImage::penColorImage( const Color &penColor_ )
+  : _penColor( penColor_ )
+{
+}
+void Magick::penColorImage::operator()( Magick::Image &image_ )
+{
+  image_.penColor( _penColor );
+}
+
+// Pen texture image.
+Magick::penTextureImage::penTextureImage( const Image &penTexture_ )
+  : _penTexture( penTexture_ )
+{
+}
+void Magick::penTextureImage::operator()( Magick::Image &image_ )
+{
+  image_.penTexture( _penTexture );
+}
+
+// Set pixel color at location x & y.
+Magick::pixelColorImage::pixelColorImage( const unsigned int x_,
+                                          const unsigned int y_,
+                                          const Color &color_)
+  : _x( x_ ),
+    _y( y_ ),
+    _color( color_ ) { }
+
+void Magick::pixelColorImage::operator()( Magick::Image &image_ )
+{
+  image_.pixelColor( _x, _y, _color );
+}
+
+// Postscript page size.
+Magick::pageImage::pageImage( const Geometry &pageSize_ )
+  : _pageSize( pageSize_ )
+{
+}
+void Magick::pageImage::operator()( Magick::Image &image_ )
+{
+  image_.page( _pageSize );
+}
+
+// JPEG/MIFF/PNG compression level (default 75).
+Magick::qualityImage::qualityImage( const unsigned int quality_ )
+  : _quality( quality_ )
+{
+}
+void Magick::qualityImage::operator()( Magick::Image &image_ )
+{
+  image_.quality( _quality );
+}
+
+// Maximum number of colors to quantize to
+Magick::quantizeColorsImage::quantizeColorsImage( const unsigned int colors_ )
+  : _colors( colors_ )
+{
+}
+void Magick::quantizeColorsImage::operator()( Magick::Image &image_ )
+{
+  image_.quantizeColors( _colors );
+}
+
+// Colorspace to quantize in.
+Magick::quantizeColorSpaceImage::quantizeColorSpaceImage( const ColorspaceType colorSpace_ )
+  : _colorSpace( colorSpace_ )
+{
+}
+void Magick::quantizeColorSpaceImage::operator()( Magick::Image &image_ )
+{
+  image_.quantizeColorSpace( _colorSpace );
+}
+
+// Dither image during quantization (default true).
+Magick::quantizeDitherImage::quantizeDitherImage( const bool ditherFlag_ )
+  : _ditherFlag( ditherFlag_ ) 
+{
+}
+void Magick::quantizeDitherImage::operator()( Magick::Image &image_ )
+{
+  image_.quantizeDither( _ditherFlag );
+}
+
+// Quantization tree-depth
+Magick::quantizeTreeDepthImage::quantizeTreeDepthImage( const unsigned int treeDepth_ )
+  : _treeDepth( treeDepth_ ) { }
+
+void Magick::quantizeTreeDepthImage::operator()( Magick::Image &image_ )
+{
+  image_.quantizeTreeDepth( _treeDepth );
+}
+
+// The type of rendering intent
+Magick::renderingIntentImage::renderingIntentImage( const Magick::RenderingIntent renderingIntent_ )
+  : _renderingIntent( renderingIntent_ )
+{
+}
+void Magick::renderingIntentImage::operator()( Magick::Image &image_ )
+{
+  image_.renderingIntent( _renderingIntent );
+}
+
+// Units of image resolution
+Magick::resolutionUnitsImage::resolutionUnitsImage( const Magick::ResolutionType resolutionUnits_ )
+  : _resolutionUnits( resolutionUnits_ )
+{
+}
+void Magick::resolutionUnitsImage::operator()( Magick::Image &image_ )
+{
+  image_.resolutionUnits( _resolutionUnits );
+}
+
+// Image scene number
+Magick::sceneImage::sceneImage( const unsigned int scene_ )
+  : _scene( scene_ )
+{
+}
+void Magick::sceneImage::operator()( Magick::Image &image_ )
+{
+  image_.scene( _scene );
+}
+
+// Width and height of a raw image
+Magick::sizeImage::sizeImage( const Magick::Geometry &geometry_ )
+  : _geometry( geometry_ )
+{
+}
+void Magick::sizeImage::operator()( Magick::Image &image_ )
+{
+  image_.size( _geometry );
+}
+
+// Subimage of an image sequence
+Magick::subImageImage::subImageImage( const unsigned int subImage_ )
+  : _subImage( subImage_ )
+{
+}
+void Magick::subImageImage::operator()( Magick::Image &image_ )
+{
+  image_.subImage( _subImage );
+}
+
+// Number of images relative to the base image
+Magick::subRangeImage::subRangeImage( const unsigned int subRange_ )
+  : _subRange( subRange_ )
+{
+}
+void Magick::subRangeImage::operator()( Magick::Image &image_ )
+{
+  image_.subRange( _subRange );
+}
+
+// Tile name
+Magick::tileNameImage::tileNameImage( const std::string &tileName_ )
+  : _tileName( tileName_ )
+{
+}
+void Magick::tileNameImage::operator()( Magick::Image &image_ )
+{
+  image_.tileName( _tileName );
+}
+
+// Image storage type
+Magick::typeImage::typeImage( const Magick::ImageType type_ )
+  : _type( type_ )
+{
+}
+void Magick::typeImage::operator()( Magick::Image &image_ )
+{
+  image_.type( _type );
+}
+
+// Print detailed information about the image
+Magick::verboseImage::verboseImage( const bool verbose_ )
+  : _verbose( verbose_ )
+{
+}
+void Magick::verboseImage::operator()( Magick::Image &image_ )
+{
+  image_.verbose( _verbose );
+}
+
+// FlashPix viewing parameters
+Magick::viewImage::viewImage( const std::string &view_ )
+  : _view( view_ ) { }
+
+void Magick::viewImage::operator()( Magick::Image &image_ )
+{
+  image_.view( _view );
+}
+
+// X11 display to display to, obtain fonts from, or to capture image
+// from
+Magick::x11DisplayImage::x11DisplayImage( const std::string &display_ )
+  : _display( display_ )
+{
+}
+void Magick::x11DisplayImage::operator()( Magick::Image &image_ )
+{
+  image_.x11Display( _display );
+}
