@@ -5500,7 +5500,7 @@ Mogrify(ref,...)
           if (first)
             {
               if (!attribute_flag[1])
-                argument_list[1].double_reference=0.0
+                argument_list[1].double_reference=0.0;
               if (!attribute_flag[2])
                 argument_list[2].double_reference=1.0;
               if (!attribute_flag[3])
