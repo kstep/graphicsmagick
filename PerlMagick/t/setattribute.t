@@ -4,7 +4,7 @@
 #
 # Contributed by Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
 #
-BEGIN { $| = 1; $test=1, print "1..74)\n"; }
+BEGIN { $| = 1; $test=1, print "1..71)\n"; }
 END {print "not ok 1\n" unless $loaded;}
 use Image::Magick;
 $loaded=1;
@@ -27,20 +27,6 @@ testSetAttribute('input.miff','antialias','True');
 
 ++$test;
 testSetAttribute('input.miff','antialias','False');
-
-++$test;
-if ($depth eq 16) {
-   testSetAttribute('input.miff','background','#808070706060');
-} else {
-   testSetAttribute('input.miff','background','#807060');
-}
-
-++$test;
-if ($depth eq 16) {
-   testSetAttribute('input.miff','bordercolor','#808070706060');
-} else {
-   testSetAttribute('input.miff','bordercolor','#807060');
-}
 
 ++$test;
 testSetAttribute('input.miff','compress','None');
@@ -110,13 +96,6 @@ testSetAttribute('input.miff','loop',100);
 
 ++$test;
 testSetAttribute('input.miff','magick','TIFF');
-
-++$test;
-if ($depth eq 16) {
-   testSetAttribute('input.miff','mattecolor','#808070706060');
-} else {
-   testSetAttribute('input.miff','mattecolor','#807060');
-}
 
 ++$test;
 testSetAttribute('input.miff','monochrome','True');

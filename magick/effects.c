@@ -2912,7 +2912,7 @@ MagickExport Image *SteganoImage(Image *image,Image *watermark,
     return((Image *) NULL);
   if (stegano_image->storage_class == PseudoClass)
     {
-      if (stegano_image->colors > ((MaxRGB+1) >> 1))
+      if (stegano_image->colors > (DownScale(MaxRGB+1) >> 1))
         stegano_image->storage_class=DirectClass;
       else
         {
@@ -2920,7 +2920,7 @@ MagickExport Image *SteganoImage(Image *image,Image *watermark,
             Shift colormap to make room for information hiding.
           */
           stegano_image->colors<<=1;
-          ReacquireMemory((void **) stegano_image->colormap,
+          ReacquireMemory((void **) &stegano_image->colormap,
             stegano_image->colors*sizeof(PixelPacket));
           if (stegano_image->colormap == (PixelPacket *) NULL)
             {

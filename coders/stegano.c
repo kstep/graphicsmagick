@@ -153,7 +153,7 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
   if (clone_image == (Image *) NULL)
     return((Image *) NULL);
   image=clone_image;
-  if (!AllocateImageColormap(image,1 << QuantumDepth))
+  if (!AllocateImageColormap(image,8))
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   SetImage(image,OpaqueOpacity);
   /*
@@ -161,7 +161,7 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
   */
   i=image->offset;
   j=0;
-  shift=image->depth-1;
+  shift=QuantumDepth-1;
   for (y=0; y < (int) stegano_image->rows; y++)
   {
     for (x=0; x < (int) stegano_image->columns; x++)

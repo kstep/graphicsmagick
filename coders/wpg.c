@@ -699,7 +699,7 @@ NoMemory:		ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
 		 else {
 		      if(image->depth<24)
 			if( image->colors<(1<<image->depth) && image->depth!=24 )
-			    ReacquireMemory((void **)&image->colormap,(1<<image->depth)*sizeof(PixelPacket));
+			    ReacquireMemory((void **) &image->colormap,(1<<image->depth)*sizeof(PixelPacket));
 		      }
 		      
 		 if(image->depth==1)
@@ -796,7 +796,7 @@ DecompressionFailed: ThrowReaderException(ResourceLimitWarning,"Cannot decompres
 	     else {
 		  if(image->depth<24)
 		    if( image->colors<(1<<image->depth) && image->depth!=24 )
-			 ReacquireMemory((void **)&image->colormap,(1<<image->depth)*sizeof(PixelPacket));
+			 ReacquireMemory((void **) &image->colormap,(1<<image->depth)*sizeof(PixelPacket));
 		  }
 
 

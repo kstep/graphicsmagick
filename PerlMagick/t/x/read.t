@@ -25,7 +25,7 @@ $SAVEDPATH=$ENV{'PATH'};
 $ENV{'PATH'}='';
 
 $image=Image::Magick->new;
-$x=$image->Set(font=>"$font", fill=>'#0000FF', dither=>'False');
+$x=$image->Set(font=>"$font", pen=>'#0000FF', dither=>'False');
 if( "$x" ) {
   print "$x\n";
   print "not ok $test\n";

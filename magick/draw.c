@@ -3840,7 +3840,7 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   draw_info->gravity=NorthWestGravity;
   draw_info->opacity=OpaqueOpacity;
   draw_info->fill=clone_info->pen;
-  draw_info->stroke=clone_info->pen;
+  (void) QueryColorDatabase("none",&draw_info->stroke);
   draw_info->stroke_antialias=clone_info->antialias;
   draw_info->stroke_width=1.0;
   draw_info->fill_rule=EvenOddRule;
