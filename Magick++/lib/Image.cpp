@@ -1847,6 +1847,21 @@ Magick::Color Magick::Image::borderColor ( void ) const
   return constOptions()->borderColor( );
 }
 
+// Return smallest bounding box enclosing non-border pixels. The
+// current fuzz value is used when discriminating between pixels.
+// This is the crop bounding box used by crop(Geometry(0,0));
+Magick::Geometry Magick::Image::boundingBox ( void ) const
+{
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  RectangleInfo bbox = GetImageBoundingBox( constImage(), &exceptionInfo);
+  throwException( exceptionInfo );
+  return Geometry( static_cast<unsigned int>(bbox.width),
+                   static_cast<unsigned int>(bbox.height),
+                   static_cast<unsigned int>(bbox.x),
+                   static_cast<unsigned int>(bbox.y) );
+}
+
 // Text bounding-box base color
 void Magick::Image::boxColor ( const Color &boxColor_ )
 {

@@ -393,6 +393,7 @@ namespace Magick
   using MagickLib::GetGeometry;
   using MagickLib::GetImageAttribute;
   using MagickLib::GetImageAttribute;
+  using MagickLib::GetImageBoundingBox;
   using MagickLib::GetImageDepth;
   using MagickLib::GetImageInfo;
   using MagickLib::GetImagePixels;

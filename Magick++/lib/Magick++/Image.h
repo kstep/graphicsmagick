@@ -560,6 +560,11 @@ namespace Magick
     // Image border color
     void            borderColor ( const Color &color_ );
     Color           borderColor ( void ) const;
+
+    // Return smallest bounding box enclosing non-border pixels. The
+    // current fuzz value is used when discriminating between pixels.
+    // This is the crop bounding box used by crop(Geometry(0,0));
+    Geometry        boundingBox ( void ) const;
     
     // Text bounding-box base color (default none)
     void            boxColor ( const Color &boxColor_ );
