@@ -1429,13 +1429,15 @@ MagickExport PixelPacket *GetCacheNexus(Image *image,const long x,const long y,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  GetImagePixels() obtains a pixel region for read/write access. If the
-%  region is successfully accessed, a pointer to it is returned, otherwise
-%  NULL is returned. The returned pointer may point to a temporary working
-%  copy of the pixels or it may point to the original pixels in memory.
-%  Performance is maximized if the selected area is part of one row, or one
-%  or more full rows, since then there is opportunity to access the pixels
-%  in-place (without a copy) if the image is in RAM, or in a memory-mapped
-%  file. The returned pointer should *never* be deallocated by the user.
+%  region is successfully accessed, a pointer to a PixelPacket array
+%  representing the region is returned, otherwise NULL is returned.
+%
+%  The returned pointer may point to a temporary working copy of the pixels
+%  or it may point to the original pixels in memory. Performance is maximized
+%  if the selected area is part of one row, or one or more full rows, since
+%  then there is opportunity to access the pixels in-place (without a copy)
+%  if the image is in RAM, or in a memory-mapped file. The returned pointer
+%  should *never* be deallocated by the user.
 %
 %  Pixels accessed via the returned pointer represent a simple array of type
 %  PixelPacket. If the image storage class is PsudeoClass, call GetIndexes()
@@ -2876,13 +2878,24 @@ MagickExport PixelPacket *SetCacheNexus(Image *image,const long x,const long y,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SetImagePixels() initializes a pixel region for write-only access. If the
-%  region is successfully intialized a pointer to it is returned, otherwise
-%  NULL is returned. The returned pointer may point to a temporary working
-%  buffer for the pixels or it may point to the final location of the pixels
-%  in memory. Performance is maximized if the selected area is part of one
-%  row, or one or more full rows, since then there is opportunity to access
-%  the pixels in-place (without a copy) if the image is in RAM, or in a
+%  SetImagePixels() initializes a pixel region for write-only access.
+%  If the region is successfully intialized a pointer to a PixelPacket
+%  array representing the region is returned, otherwise NULL is returned.
+%  The returned pointer may point to a temporary working buffer for the
+%  pixels or it may point to the final location of the pixels in memory.
+%
+%  Write-only access means that any existing pixel values corresponding to
+%  the region are ignored.  This is useful while the initial image is being
+%  created from scratch, or if the existing pixel values are to be
+%  completely replaced without need to refer to their pre-existing values.
+%  The application is free to read and write the pixel buffer returned by
+%  SetImagePixels() any way it pleases. SetImagePixels() does not initialize
+%  the pixel array values. Initializing pixel array values is the
+%  application's responsibility.
+%
+%  Performance is maximized if the selected area is part of one row, or
+%  one or more full rows, since then there is opportunity to access the
+%  pixels in-place (without a copy) if the image is in RAM, or in a
 %  memory-mapped file. The returned pointer should *never* be deallocated
 %  by the user.
 %
@@ -3315,7 +3328,7 @@ MagickExport unsigned int SyncCacheNexus(Image *image,const unsigned long nexus)
 %
 %  The format of the SyncImagePixels() method is:
 %
-%      unsigned int SyncImagePixels(Image *image)
+%      MagickPassFail SyncImagePixels(Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -3324,9 +3337,8 @@ MagickExport unsigned int SyncCacheNexus(Image *image,const unsigned long nexus)
 %
 %    o image: The image.
 %
-%
 */
-MagickExport unsigned int SyncImagePixels(Image *image)
+MagickExport MagickPassFail SyncImagePixels(Image *image)
 {
   CacheInfo
     *cache_info;
@@ -3337,7 +3349,7 @@ MagickExport unsigned int SyncImagePixels(Image *image)
   cache_info=(CacheInfo *) image->cache;
   assert(cache_info->signature == MagickSignature);
   if (cache_info->methods.sync_pixel_handler == (SyncPixelHandler) NULL)
-    return(False);
+    return(MagickFail);
   return(cache_info->methods.sync_pixel_handler(image));
 }
 
