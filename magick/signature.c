@@ -460,15 +460,14 @@ Export void SignatureImage(Image *image)
     hex[] = "0123456789abcdef";
 
   int
-    i;
+    x;
 
   MessageDigest
     message_digest;
 
   register int
-    runlength,
-    x,
-    y;
+    i,
+    j;
 
   register RunlengthPacket
     *p;
@@ -504,27 +503,27 @@ Export void SignatureImage(Image *image)
     Compute image digital signature.
   */
   InitializeMessageDigest(&message_digest);
+  x=0;
   p=image->pixels;
-  runlength=p->length+1;
-  for (y=0; y < image->rows; y++)
+  q=message;
+  for (i=0; i < image->packets; i++)
   {
-    q=message;
-    for (x=0; x < image->columns; x++)
+    for (j=0; j <= ((int) p->length); j++)
     {
-      if (runlength != 0)
-        runlength--;
-      else
-        {
-          p++;
-          runlength=p->length;
-        }
       WriteQuantum(p->red,q);
       WriteQuantum(p->green,q);
       WriteQuantum(p->blue,q);
       if (image->matte)
         WriteQuantum(p->index,q);
+      x++;
+      if (x == image->columns)
+        {
+          UpdateMessageDigest(&message_digest,message,q-message);
+          q=message;
+          x=0;
+        }
     }
-    UpdateMessageDigest(&message_digest,message,q-message);
+    p++;
   }
   FreeMemory((char *) message);
   /*

@@ -104,10 +104,13 @@
 */
 unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
 {
-  register int
-    runlength,
+  int
     x,
     y;
+
+  register int
+    i,
+    j;
 
   register RunlengthPacket
     *p;
@@ -134,44 +137,45 @@ unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
   do
   {
     /*
+      Write AVS header.
+    */
+    MSBFirstWriteLong(image->columns,image->file);
+    MSBFirstWriteLong(image->rows,image->file);
+    /*
       Allocate memory for pixels.
     */
     pixels=(unsigned char *)
       AllocateMemory(image->columns*sizeof(RunlengthPacket));
     if (pixels == (unsigned char *) NULL)
-      {
-        MagickWarning(ResourceLimitWarning,"Unable to write AVS image",
-          "Memory allocation failed");
-        return(False);
-      }
+      PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
     /*
-      Initialize raster file header.
+      Convert MIFF to AVS raster pixels.
     */
-    MSBFirstWriteLong(image->columns,image->file);
-    MSBFirstWriteLong(image->rows,image->file);
+    x=0;
+    y=0;
     p=image->pixels;
-    runlength=p->length+1;
-    for (y=0; y < image->rows; y++)
+    q=pixels;
+    for (i=0; i < image->packets; i++)
     {
-      q=pixels;
-      for (x=0; x < image->columns; x++)
+      for (j=0; j <= ((int) p->length); j++)
       {
-        if (runlength != 0)
-          runlength--;
-        else
-          {
-            p++;
-            runlength=p->length;
-          }
         *q++=DownScale(image->matte ? p->index : Opaque);
         *q++=DownScale(p->red);
         *q++=DownScale(p->green);
         *q++=DownScale(p->blue);
+        x++;
+        if (x == image->columns)
+          {
+            (void) fwrite((char *) pixels,1,q-pixels,image->file);
+            if (image->previous == (Image *) NULL)
+              if (QuantumTick(y,image->rows))
+                ProgressMonitor(SaveImageText,y,image->rows);
+            q=pixels;
+            x=0;
+            y++;
+          }
       }
-      (void) fwrite((char *) pixels,1,q-pixels,image->file);
-      if (image->previous == (Image *) NULL)
-        if (QuantumTick(y,image->rows))
-          ProgressMonitor(SaveImageText,y,image->rows);
+      p++;
     }
     FreeMemory((char *) pixels);
     if (image->next == (Image *) NULL)
@@ -385,6 +389,9 @@ unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
                 */
                 if (bit != 0)
                   *q++=byte << (8-bit);
+                if (image->previous == (Image *) NULL)
+                  if (QuantumTick(image->rows-y-1,image->rows))
+                    ProgressMonitor(SaveImageText,image->rows-y-1,image->rows);
                 bit=0;
                 byte=0;
                 x=0;
@@ -393,9 +400,6 @@ unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
              }
           }
           p++;
-          if (image->previous == (Image *) NULL)
-            if (QuantumTick(i,image->packets))
-              ProgressMonitor(SaveImageText,i,image->packets);
         }
         break;
       }
@@ -414,15 +418,15 @@ unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
             x++;
             if (x == image->columns)
               {
+                if (image->previous == (Image *) NULL)
+                  if (QuantumTick(image->rows-y-1,image->rows))
+                    ProgressMonitor(SaveImageText,image->rows-y-1,image->rows);
                 x=0;
                 y--;
                 q=bmp_pixels+y*bytes_per_line;
               }
           }
           p++;
-          if (image->previous == (Image *) NULL)
-            if (QuantumTick(i,image->packets))
-              ProgressMonitor(SaveImageText,i,image->packets);
         }
         break;
       }
@@ -446,15 +450,15 @@ unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
             x++;
             if (x == image->columns)
               {
+                if (image->previous == (Image *) NULL)
+                  if (QuantumTick(image->rows-y-1,image->rows))
+                    ProgressMonitor(SaveImageText,image->rows-y-1,image->rows);
                 x=0;
                 y--;
                 q=bmp_pixels+y*bytes_per_line;
               }
           }
           p++;
-          if (image->previous == (Image *) NULL)
-            if (QuantumTick(i,image->packets))
-              ProgressMonitor(SaveImageText,i,image->packets);
         }
         break;
       }
@@ -592,7 +596,9 @@ unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
     black,
     cyan,
     magenta,
-    yellow;
+    yellow,
+    x,
+    y;
 
   register int
     i,
@@ -634,10 +640,29 @@ unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
       case NoInterlace:
       default:
       {
+        register unsigned char
+          *q;
+
+        unsigned char
+          *pixels;
+
+        unsigned short
+          value;
+
+        /*
+          Allocate memory for pixels.
+        */
+        pixels=(unsigned char *)
+          AllocateMemory(image->columns*sizeof(RunlengthPacket));
+        if (pixels == (unsigned char *) NULL)
+          PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
         /*
           No interlacing:  CMYKCMYKCMYKCMYKCMYKCMYK...
         */
+        x=0;
+        y=0;
         p=image->pixels;
+        q=pixels;
         for (i=0; i < image->packets; i++)
         {
           cyan=MaxRGB-p->red;
@@ -650,16 +675,25 @@ unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
             black=yellow;
           for (j=0; j <= ((int) p->length); j++)
           {
-            WriteQuantumFile((unsigned int) (cyan-undercolor*black));
-            WriteQuantumFile((unsigned int) (magenta-undercolor*black));
-            WriteQuantumFile((unsigned int) (yellow-undercolor*black));
-            WriteQuantumFile((unsigned int) (black_generation*black));
+            WriteQuantum((unsigned int) (cyan-undercolor*black),q);
+            WriteQuantum((unsigned int) (magenta-undercolor*black),q);
+            WriteQuantum((unsigned int) (yellow-undercolor*black),q);
+            WriteQuantum((unsigned int) (black_generation*black),q);
+            x++;
+            if (x == image->columns)
+              {
+                (void) fwrite((char *) pixels,1,q-pixels,image->file);
+                if (image->previous == (Image *) NULL)
+                  if (QuantumTick(y,image->rows))
+                    ProgressMonitor(SaveImageText,y,image->rows);
+                q=pixels;
+                x=0;
+                y++;
+              }
           }
           p++;
-          if (image->previous == (Image *) NULL)
-            if (QuantumTick(i,image->packets))
-              ProgressMonitor(SaveImageText,i,image->packets);
         }
+        FreeMemory((char *) pixels);
         break;
       }
       case LineInterlace:
@@ -1083,16 +1117,19 @@ unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
     buffer[81],
     *fits_header;
 
-  int
-    y;
-
   register int
     i,
-    x;
+    x,
+    y;
 
   register RunlengthPacket
     *p;
 
+  register unsigned char
+    *q;
+
+  unsigned char
+    *pixels;
 
   if (!UncondenseImage(image))
     return(False);
@@ -1103,10 +1140,12 @@ unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
   if (image->file == (FILE *) NULL)
     PrematureExit(FileOpenWarning,"Unable to open file",image);
   /*
-    Allocate image header.
+    Allocate image memory.
   */
   fits_header=(char *) AllocateMemory(2880*sizeof(unsigned char));
-  if (fits_header == (char *) NULL)
+  pixels=(unsigned char *)
+    AllocateMemory(image->columns*sizeof(RunlengthPacket));
+  if ((fits_header == (char *) NULL) || (pixels == (unsigned char *) NULL))
     PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
   /*
     Initialize image header.
@@ -1135,14 +1174,17 @@ unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
   for (y=image->rows-1; y >= 0; y--)
   {
     p=image->pixels+(y*image->columns);
+    q=pixels;
     for (x=0; x < image->columns; x++)
     {
-      (void) fputc(DownScale(Intensity(*p)),image->file);
+      *q++=DownScale(Intensity(*p));
       p++;
     }
-    if (QuantumTick(y,image->rows))
+    (void) fwrite((char *) pixels,1,q-pixels,image->file);
+    if (QuantumTick(image->rows-y-1,image->rows))
       ProgressMonitor(SaveImageText,image->rows-y-1,image->rows);
   }
+  FreeMemory((char *) pixels);
   CloseImage(image);
   return(True);
 }
@@ -1394,12 +1436,12 @@ unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
     fpx_image;
 
   int
+    x,
     y;
 
   register int
     i,
-    j,
-    x;
+    j;
 
   register RunlengthPacket
     *p;
@@ -1408,7 +1450,7 @@ unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
     *q;
 
   unsigned char
-    *scanline;
+    *pixels;
 
   unsigned long
     memory_limit,
@@ -1539,11 +1581,11 @@ unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   if (status != FPX_OK)
     MagickWarning(DelegateWarning,"Unable to set summary info",(char *) NULL);
   /*
-    Allocate scanline.
+    Allocate pixels.
   */
-  scanline=(unsigned char *) AllocateMemory(colorspace.numberOfComponents*
+  pixels=(unsigned char *) AllocateMemory(colorspace.numberOfComponents*
     image->columns*sizeof(unsigned char));
-  if (scanline == (unsigned char *) NULL)
+  if (pixels == (unsigned char *) NULL)
     {
       (void) FPX_CloseImage(flashpix);
       FPX_ClearSystem();
@@ -1562,7 +1604,7 @@ unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
       fpx_info.numberOfComponents*sizeof(unsigned char);
     fpx_info.components[i].lineStride=
       image->columns*fpx_info.components[i].columnStride;
-    fpx_info.components[i].theData=scanline+i;
+    fpx_info.components[i].theData=pixels+i;
   }
   fpx_info.components[0].myColorType.myColor=
     fpx_info.numberOfComponents != 1 ? NIFRGB_R : MONOCHROME;
@@ -1572,10 +1614,10 @@ unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   /*
     Write image scanlines.
   */
-  p=image->pixels;
-  q=scanline;
   x=0;
   y=0;
+  p=image->pixels;
+  q=pixels;
   for (i=0; i < image->packets; i++)
   {
     for (j=0; j <= (int) p->length; j++)
@@ -1596,14 +1638,14 @@ unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
           status=FPX_WriteImageLine(flashpix,&fpx_info);
           if (status != FPX_OK)
             break;
-          q=scanline;
+          if (QuantumTick(y,image->rows))
+            ProgressMonitor(SaveImageText,y,image->rows);
+          q=pixels;
           x=0;
           y++;
         }
     }
     p++;
-    if (QuantumTick(i,image->packets))
-      ProgressMonitor(SaveImageText,i,image->packets);
   }
   if (image_info->view != (char *) NULL)
     {
@@ -1716,7 +1758,8 @@ unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
         {
           status=FPX_SetImageContrastAdjustment(flashpix,&contrast);
           if (status != FPX_OK)
-            MagickWarning(DelegateWarning,"Unable to set contrast",(char *) NULL);
+            MagickWarning(DelegateWarning,"Unable to set contrast",
+              (char *) NULL);
         }
       if (sharpen_valid)
         {
@@ -1735,7 +1778,7 @@ unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
     }
   (void) FPX_CloseImage(flashpix);
   FPX_ClearSystem();
-  FreeMemory((char *) scanline);
+  FreeMemory((char *) pixels);
   if (image->temporary)
     {
       FILE
@@ -2172,6 +2215,10 @@ unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
 */
 unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
 {
+  int
+    x,
+    y;
+
   register int
     i,
     j;
@@ -2179,8 +2226,17 @@ unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
   register RunlengthPacket
     *p;
 
+  register unsigned char
+    *q;
+
+  unsigned char
+    *pixels;
+
   unsigned int
     scene;
+
+  unsigned short
+    value;
 
   /*
     Open output image file.
@@ -2195,16 +2251,40 @@ unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
   scene=0;
   do
   {
+    /*
+      Allocate memory for pixels.
+    */
+    pixels=(unsigned char *)
+      AllocateMemory(image->columns*sizeof(RunlengthPacket));
+    if (pixels == (unsigned char *) NULL)
+      PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
+    /*
+      Convert MIFF to GRAY raster pixels.
+    */
+    x=0;
+    y=0;
     p=image->pixels;
+    q=pixels;
     for (i=0; i < image->packets; i++)
     {
       for (j=0; j <= ((int) p->length); j++)
-        WriteQuantumFile(Intensity(*p));
+      {
+  	WriteQuantum(Intensity(*p),q);
+        x++;
+        if (x == image->columns)
+          {
+            (void) fwrite((char *) pixels,1,q-pixels,image->file);
+            if (image->previous == (Image *) NULL)
+              if (QuantumTick(y,image->rows))
+                ProgressMonitor(SaveImageText,y,image->rows);
+            q=pixels;
+            x=0;
+            y++;
+          }
+      }
       p++;
-      if (image->previous == (Image *) NULL)
-        if (QuantumTick(i,image->packets))
-          ProgressMonitor(SaveImageText,i,image->packets);
     }
+    FreeMemory((char *) pixels);
     if (image->next == (Image *) NULL)
       break;
     image->next->file=image->file;
@@ -2810,7 +2890,8 @@ unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
       (void) fprintf(image->file,"<br><br>\n");
       (void) strcpy(filename,image->filename);
       AppendImageFormat("gif",filename);
-      (void) fprintf(image->file,"<img ismap usemap=#%.128s src=\"%.128s\" border=0>\n",
+      (void) fprintf(image->file,
+        "<img ismap usemap=#%.128s src=\"%.128s\" border=0>\n",
         mapname,filename);
       /*
         Determine the size and location of each image tile.
@@ -2974,7 +3055,9 @@ static void JBIGEncode(unsigned char  *start,size_t length,void *file)
 unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
 {
   int
-    sans_offset;
+    sans_offset,
+    x,
+    y;
 
   register int
     i,
@@ -2997,7 +3080,6 @@ unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
   unsigned int
     byte,
     scene,
-    x,
     x_resolution,
     y_resolution;
 
@@ -3042,6 +3124,7 @@ unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
     bit=0;
     byte=0;
     x=0;
+    y=0;
     p=image->pixels;
     q=pixels;
     for (i=0; i < image->packets; i++)
@@ -3066,15 +3149,15 @@ unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
             */
             if (bit != 0)
               *q++=byte << (8-bit);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(SaveImageText,y,image->rows);
             bit=0;
             byte=0;
             x=0;
+            y++;
          }
       }
       p++;
-      if (image->previous == (Image *) NULL)
-        if (QuantumTick(i,image->packets))
-          ProgressMonitor(SaveImageText,i,image->packets);
     }
     /*
       Initialize JBIG info structure.
@@ -3214,7 +3297,9 @@ unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     black,
     cyan,
     magenta,
-    yellow;
+    yellow,
+    x,
+    y;
 
   JSAMPLE
     *jpeg_pixels;
@@ -3224,8 +3309,7 @@ unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
 
   register int
     i,
-    j,
-    x;
+    j;
 
   register JSAMPLE
     *q;
@@ -3327,9 +3411,10 @@ unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   jpeg_pixels=(JSAMPLE *) AllocateMemory(packets*sizeof(JSAMPLE));
   if (jpeg_pixels == (JSAMPLE *) NULL)
     PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
+  x=0;
+  y=0;
   p=image->pixels;
   q=jpeg_pixels;
-  x=0;
   scanline[0]=(JSAMPROW) jpeg_pixels;
   if ((jpeg_info.data_precision > 8) && (QuantumDepth > 8))
     {
@@ -3343,13 +3428,14 @@ unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
             if (x == image->columns)
               {
                 (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
+                if (QuantumTick(y,image->rows))
+                  ProgressMonitor(SaveImageText,y,image->rows);
                 q=jpeg_pixels;
                 x=0;
+                y++;
               }
           }
           p++;
-          if (QuantumTick(i,image->packets))
-            ProgressMonitor(SaveImageText,i,image->packets);
         }
       else
         if (jpeg_info.in_color_space == JCS_RGB)
@@ -3364,8 +3450,11 @@ unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
               if (x == image->columns)
                 {
                   (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
+                  if (QuantumTick(y,image->rows))
+                    ProgressMonitor(SaveImageText,y,image->rows);
                   q=jpeg_pixels;
                   x=0;
+                  y++;
                 }
             }
             p++;
@@ -3396,14 +3485,14 @@ unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
               if (x == image->columns)
                 {
                   (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
+                  if (QuantumTick(y,image->rows))
+                    ProgressMonitor(SaveImageText,y,image->rows);
                   q=jpeg_pixels;
                   x=0;
+                  y++;
                 }
             }
             p++;
-            if (image->previous == (Image *) NULL)
-              if (QuantumTick(i,image->packets))
-                ProgressMonitor(SaveImageText,i,image->packets);
           }
     }
   else
@@ -3417,13 +3506,14 @@ unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
           if (x == image->columns)
             {
               (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
+              if (QuantumTick(y,image->rows))
+                ProgressMonitor(SaveImageText,y,image->rows);
               q=jpeg_pixels;
               x=0;
+              y++;
             }
         }
         p++;
-        if (QuantumTick(i,image->packets))
-          ProgressMonitor(SaveImageText,i,image->packets);
       }
     else
       if (jpeg_info.in_color_space == JCS_RGB)
@@ -3438,13 +3528,14 @@ unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
             if (x == image->columns)
               {
                 (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
+                if (QuantumTick(y,image->rows))
+                  ProgressMonitor(SaveImageText,y,image->rows);
                 q=jpeg_pixels;
                 x=0;
+                y++;
               }
           }
           p++;
-          if (QuantumTick(i,image->packets))
-            ProgressMonitor(SaveImageText,i,image->packets);
         }
       else
         for (i=0; i < image->packets; i++)
@@ -3470,14 +3561,14 @@ unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
             if (x == image->columns)
               {
                 (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
+                if (QuantumTick(y,image->rows))
+                  ProgressMonitor(SaveImageText,y,image->rows);
                 q=jpeg_pixels;
                 x=0;
+                y++;
               }
           }
           p++;
-          if (image->previous == (Image *) NULL)
-            if (QuantumTick(i,image->packets))
-              ProgressMonitor(SaveImageText,i,image->packets);
         }
   jpeg_finish_compress(&jpeg_info);
   /*
@@ -4214,7 +4305,8 @@ unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
 unsigned int WriteMONOImage(const ImageInfo *image_info,Image *image)
 {
   int
-    x;
+    x,
+    y;
 
   register unsigned char
     bit,
@@ -4255,6 +4347,7 @@ unsigned int WriteMONOImage(const ImageInfo *image_info,Image *image)
   bit=0;
   byte=0;
   x=0;
+  y=0;
   p=image->pixels;
   for (i=0; i < image->packets; i++)
   {
@@ -4278,14 +4371,15 @@ unsigned int WriteMONOImage(const ImageInfo *image_info,Image *image)
           */
           if (bit != 0)
             (void) fputc(byte >> (8-bit),image->file);
+          if (QuantumTick(y,image->rows))
+            ProgressMonitor(SaveImageText,y,image->rows);
           bit=0;
           byte=0;
           x=0;
+          y++;
        }
     }
     p++;
-    if (QuantumTick(i,image->packets))
-      ProgressMonitor(SaveImageText,i,image->packets);
   }
   CloseImage(image);
   return(True);
@@ -4323,10 +4417,13 @@ unsigned int WriteMONOImage(const ImageInfo *image_info,Image *image)
 */
 unsigned int WriteMTVImage(const ImageInfo *image_info,Image *image)
 {
-  register int
-    runlength,
+  int
     x,
     y;
+
+  register int
+    i,
+    j;
 
   register RunlengthPacket
     *p;
@@ -4358,37 +4455,35 @@ unsigned int WriteMTVImage(const ImageInfo *image_info,Image *image)
     pixels=(unsigned char *)
       AllocateMemory(image->columns*sizeof(RunlengthPacket));
     if (pixels == (unsigned char *) NULL)
-      {
-        MagickWarning(ResourceLimitWarning,"Unable to write MTV image",
-          "Memory allocation failed");
-        return(False);
-      }
+      PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
     /*
       Initialize raster file header.
     */
     (void) fprintf(image->file,"%u %u\n",image->columns,image->rows);
+    x=0;
+    y=0;
     p=image->pixels;
-    runlength=p->length+1;
-    for (y=0; y < image->rows; y++)
+    q=pixels;
+    for (i=0; i < image->packets; i++)
     {
-      q=pixels;
-      for (x=0; x < image->columns; x++)
+      for (j=0; j <= ((int) p->length); j++)
       {
-        if (runlength != 0)
-          runlength--;
-        else
-          {
-            p++;
-            runlength=p->length;
-          }
         *q++=DownScale(p->red);
         *q++=DownScale(p->green);
         *q++=DownScale(p->blue);
+        x++;
+        if (x == image->columns)
+          {
+            (void) fwrite((char *) pixels,1,q-pixels,image->file);
+            if (image->previous == (Image *) NULL)
+              if (QuantumTick(y,image->rows))
+                ProgressMonitor(SaveImageText,y,image->rows);
+            q=pixels;
+            x=0;
+            y++;
+          }
       }
-      (void) fwrite((char *) pixels,1,q-pixels,image->file);
-      if (image->previous == (Image *) NULL)
-        if (QuantumTick(y,image->rows))
-          ProgressMonitor(SaveImageText,y,image->rows);
+      p++;
     }
     FreeMemory((char *) pixels);
     if (image->next == (Image *) NULL)
@@ -4526,7 +4621,7 @@ unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
       (void) fputc(DownScale(q->blue),image->file);
       q++;
     }
-    if (QuantumTick(y,image->rows))
+    if (QuantumTick(y,tile_image->rows))
       ProgressMonitor(SaveImageText,y,tile_image->rows);
   }
   for (i=0; i < 0x800; i++)
@@ -4743,6 +4838,7 @@ unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
       (void) fprintf(image->file,"\033*b0M");  /* no compression */
       (void) fprintf(image->file,"\033*b%uW",3*image->columns);
       x=0;
+      y=0;
       p=image->pixels;
       for (i=0; i < image->packets; i++)
       {
@@ -4753,11 +4849,12 @@ unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
         if (x == image->columns)
           {
             (void) fprintf(image->file,"\033*b%uW",3*image->columns);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(SaveImageText,y,image->rows);
             x=0;
+            y++;
           }
         p++;
-        if (QuantumTick(i,image->packets))
-          ProgressMonitor(SaveImageText,i,image->packets);
       }
       (void) fprintf(image->file,"\033*rC");  /* end graphics */
     }
@@ -4834,6 +4931,8 @@ unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
               */
               if (bit != 0)
                 (void) fputc(byte  << (8-bit),image->file);
+              if (QuantumTick(y,monochrome_image->rows))
+                ProgressMonitor(SaveImageText,y,monochrome_image->rows);
               bit=0;
               byte=0;
               x=0;
@@ -4844,8 +4943,6 @@ unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
            }
         }
         p++;
-        if (QuantumTick(i,monochrome_image->packets))
-          ProgressMonitor(SaveImageText,i,monochrome_image->packets);
       }
       (void) fprintf(image->file,"\033*rB");  /* end graphics */
       if (image != monochrome_image)
@@ -5111,15 +5208,15 @@ unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
             x++;
             if (x == image->columns)
               {
+                if (image->previous == (Image *) NULL)
+                  if (QuantumTick(y,image->rows))
+                    ProgressMonitor(SaveImageText,y,image->rows);
                 x=0;
                 y++;
                 q=pcx_pixels+y*pcx_header.bytes_per_line;
               }
           }
           p++;
-          if (image->previous == (Image *) NULL)
-            if (QuantumTick(i,image->packets))
-              ProgressMonitor(SaveImageText,i,image->packets);
         }
       else
         {
@@ -5159,6 +5256,9 @@ unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
                   */
                   if (bit != 0)
                     *q++=byte << (8-bit);
+                  if (image->previous == (Image *) NULL)
+                    if (QuantumTick(y,image->rows))
+                      ProgressMonitor(SaveImageText,y,image->rows);
                   bit=0;
                   byte=0;
                   x=0;
@@ -5167,9 +5267,6 @@ unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
                 }
             }
             p++;
-            if (image->previous == (Image *) NULL)
-              if (QuantumTick(i,image->packets))
-                ProgressMonitor(SaveImageText,i,image->packets);
           }
         }
     /*
@@ -5750,6 +5847,9 @@ unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                       */
                       if (bit != 0)
                         Ascii85Encode(byte << (8-bit),image->file);
+                      if (image->previous == (Image *) NULL)
+                        if (QuantumTick(y,image->rows))
+                          ProgressMonitor(SaveImageText,y,image->rows);
                       bit=0;
                       byte=0;
                       x=0;
@@ -5757,9 +5857,6 @@ unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                    }
                 }
                 p++;
-                if (image->previous == (Image *) NULL)
-                  if (QuantumTick(i,image->packets))
-                    ProgressMonitor(SaveImageText,i,image->packets);
               }
               Ascii85Flush(image->file);
               break;
@@ -6046,6 +6143,9 @@ unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                       */
                       if (bit != 0)
                         *q++=byte << (8-bit);
+                      if (image->previous == (Image *) NULL)
+                        if (QuantumTick(y,tile_image->rows))
+                          ProgressMonitor(SaveImageText,y,tile_image->rows);
                       bit=0;
                       byte=0;
                       x=0;
@@ -6098,6 +6198,9 @@ unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                       */
                       if (bit != 0)
                         Ascii85Encode(byte << (8-bit),image->file);
+                      if (image->previous == (Image *) NULL)
+                        if (QuantumTick(y,tile_image->rows))
+                          ProgressMonitor(SaveImageText,y,tile_image->rows);
                       bit=0;
                       byte=0;
                       x=0;
@@ -6321,7 +6424,9 @@ unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
 #define PictVersion  0x11
 
   int
-    count;
+    count,
+    x,
+    y;
 
   PICTPixmap
     pixmap;
@@ -6336,8 +6441,7 @@ unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
 
   register int
     i,
-    j,
-    x;
+    j;
 
   register RunlengthPacket
     *p;
@@ -6523,6 +6627,7 @@ unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   */
   count=0;
   x=0;
+  y=0;
   p=image->pixels;
   if (image->class == PseudoClass)
     {
@@ -6539,13 +6644,14 @@ unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
           if (x == image->columns)
             {
               count+=PICTEncodeImage(image,scanline,packed_scanline);
+              if (QuantumTick(y,image->rows))
+                ProgressMonitor(SaveImageText,y,image->rows);
               index=scanline;
               x=0;
+              y++;
             }
         }
         p++;
-        if (QuantumTick(i,image->packets))
-          ProgressMonitor(SaveImageText,i,image->packets);
       }
     }
   else
@@ -6572,17 +6678,18 @@ unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
           x++;
           if (x == image->columns)
             {
+              if (QuantumTick(y,image->rows))
+                ProgressMonitor(SaveImageText,y,image->rows);
               red=scanline;
               green=scanline+image->columns;
               blue=scanline+2*image->columns;
               index=scanline+3*image->columns;
               count+=PICTEncodeImage(image,scanline,packed_scanline);
               x=0;
+              y++;
             }
         }
         p++;
-        if (QuantumTick(i,image->packets))
-          ProgressMonitor(SaveImageText,i,image->packets);
       }
     }
   if (count & 0x1)
@@ -6990,15 +7097,15 @@ unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             x++;
             if (x == image->columns)
               {
+                if (image->previous == (Image *) NULL)
+                  if (QuantumTick(y,image->rows))
+                    ProgressMonitor(SaveImageText,y,image->rows);
                 x=0;
                 y++;
                 q=scanlines[y];
               }
           }
           p++;
-          if (image->previous == (Image *) NULL)
-            if (QuantumTick(i,image->packets))
-              ProgressMonitor(SaveImageText,i,image->packets);
         }
       }
     else
@@ -7011,15 +7118,15 @@ unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             x++;
             if (x == image->columns)
               {
+                if (image->previous == (Image *) NULL)
+                  if (QuantumTick(y,image->rows))
+                    ProgressMonitor(SaveImageText,y,image->rows);
                 x=0;
                 y++;
                 q=scanlines[y];
               }
           }
           p++;
-          if (image->previous == (Image *) NULL)
-            if (QuantumTick(i,image->packets))
-              ProgressMonitor(SaveImageText,i,image->packets);
         }
       else
         if (!IsPseudoClass(image))
@@ -7038,6 +7145,9 @@ unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               x++;
               if (x == image->columns)
                 {
+                  if (image->previous == (Image *) NULL)
+                    if (QuantumTick(y,image->rows))
+                      ProgressMonitor(SaveImageText,y,image->rows);
                   x=0;
                   y++;
                   if (y < image->rows)
@@ -7045,9 +7155,6 @@ unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                 }
             }
             p++;
-            if (image->previous == (Image *) NULL)
-              if (QuantumTick(i,image->packets))
-                ProgressMonitor(SaveImageText,i,image->packets);
           }
         else
           for (i=0; i < image->packets; i++)
@@ -7058,6 +7165,9 @@ unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               x++;
               if (x == image->columns)
                 {
+                  if (image->previous == (Image *) NULL)
+                    if (QuantumTick(y,image->rows))
+                      ProgressMonitor(SaveImageText,y,image->rows);
                   x=0;
                   y++;
                   if (y < image->rows)
@@ -7065,9 +7175,6 @@ unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                 }
             }
             p++;
-            if (image->previous == (Image *) NULL)
-              if (QuantumTick(i,image->packets))
-                ProgressMonitor(SaveImageText,i,image->packets);
           }
     png_write_image(ping,scanlines);
     /*
@@ -7180,6 +7287,10 @@ unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
   char
     *magick;
 
+  int
+    x,
+    y;
+
   register int
     i,
     j;
@@ -7191,8 +7302,7 @@ unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
     format;
 
   unsigned int
-    scene,
-    x;
+    scene;
 
   unsigned short
     index;
@@ -7298,6 +7408,7 @@ unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
       Convert runlength encoded to PNM raster pixels.
     */
     x=0;
+    y=0;
     p=image->pixels;
     switch (format)
     {
@@ -7399,7 +7510,6 @@ unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
             Intensity(image->colormap[0]) > Intensity(image->colormap[1]);
         bit=0;
         byte=0;
-        x=0;
         for (i=0; i < image->packets; i++)
         {
           for (j=0; j <= ((int) p->length); j++)
@@ -7422,15 +7532,16 @@ unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
                 */
                 if (bit != 0)
                   (void) fputc(byte << (8-bit),image->file);
+                if (image->previous == (Image *) NULL)
+                  if (QuantumTick(y,image->rows))
+                    ProgressMonitor(SaveImageText,y,image->rows);
                 bit=0;
                 byte=0;
                 x=0;
+                y++;
              }
           }
           p++;
-          if (image->previous == (Image *) NULL)
-            if (QuantumTick(i,image->packets))
-              ProgressMonitor(SaveImageText,i,image->packets);
         }
         break;
       }
@@ -7454,11 +7565,6 @@ unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
       }
       case '6':
       {
-        register int
-          runlength,
-          x,
-          y;
-
         register unsigned char
           *q;
 
@@ -7474,37 +7580,32 @@ unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         pixels=(unsigned char *)
           AllocateMemory(image->columns*sizeof(RunlengthPacket));
         if (pixels == (unsigned char *) NULL)
-          {
-            MagickWarning(ResourceLimitWarning,"Unable to write pnm image",
-              "Memory allocation failed");
-            return(False);
-          }
+          PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
         /*
           Convert image to a PNM image.
         */
         (void) fprintf(image->file,"%u\n",DownScale(MaxRGB));
-        p=image->pixels;
-        runlength=p->length+1;
-        for (y=0; y < image->rows; y++)
+        q=pixels;
+        for (i=0; i < image->packets; i++)
         {
-          q=pixels;
-          for (x=0; x < image->columns; x++)
+          for (j=0; j <= ((int) p->length); j++)
           {
-            if (runlength != 0)
-              runlength--;
-            else
-              {
-                p++;
-                runlength=p->length;
-              }
             *q++=DownScale(p->red);
             *q++=DownScale(p->green);
             *q++=DownScale(p->blue);
+            x++;
+            if (x == image->columns)
+              {
+                (void) fwrite((char *) pixels,1,q-pixels,image->file);
+                if (image->previous == (Image *) NULL)
+                  if (QuantumTick(y,image->rows))
+                    ProgressMonitor(SaveImageText,y,image->rows);
+                q=pixels;
+                x=0;
+                y++;
+              }
           }
-          (void) fwrite((char *) pixels,1,q-pixels,image->file);
-          if (image->previous == (Image *) NULL)
-            if (QuantumTick(y,image->rows))
-              ProgressMonitor(SaveImageText,y,image->rows);
+          p++;
         }
         FreeMemory((char *) pixels);
         break;
@@ -7529,8 +7630,7 @@ unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           };
 
         int
-          value,
-          y;
+          value;
 
         Quantum
           pixel;
@@ -8812,6 +8912,9 @@ unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
             }
           else
             {
+              int
+                y;
+
               /*
                 Dump image as bitmap.
               */
@@ -8822,6 +8925,7 @@ unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               bit=0;
               byte=0;
               count=0;
+              y=0;
               for (i=0; i < image->packets; i++)
               {
                 for (j=0; j <= ((int) p->length); j++)
@@ -8859,15 +8963,16 @@ unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                               count=0;
                             };
                         };
+                      if (image->previous == (Image *) NULL)
+                        if (QuantumTick(y,image->rows))
+                          ProgressMonitor(SaveImageText,y,image->rows);
                       bit=0;
                       byte=0;
                       x=0;
+                      y++;
                     }
                   }
                 p++;
-                if (image->previous == (Image *) NULL)
-                  if (QuantumTick(i,image->packets))
-                    ProgressMonitor(SaveImageText,i,image->packets);
               }
             }
           if (count != 0)
@@ -9628,15 +9733,15 @@ unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                       */
                       if (bit != 0)
                         Ascii85Encode(byte << (8-bit),image->file);
+                      if (image->previous == (Image *) NULL)
+                        if (QuantumTick(y,image->rows))
+                          ProgressMonitor(SaveImageText,y,image->rows);
                       bit=0;
                       byte=0;
                       x=0;
                    }
                 }
                 p++;
-                if (image->previous == (Image *) NULL)
-                  if (QuantumTick(i,image->packets))
-                    ProgressMonitor(SaveImageText,i,image->packets);
               }
               Ascii85Flush(image->file);
               break;
@@ -9775,6 +9880,10 @@ unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
 */
 unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
 {
+  int
+    x,
+    y;
+
   register int
     i,
     j;
@@ -9806,33 +9915,56 @@ unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
       case NoInterlace:
       default:
       {
+        register unsigned char
+          *q;
+
+        unsigned char
+          *pixels;
+
+        unsigned short
+          value;
+
+        /*
+          Allocate memory for pixels.
+        */
+        pixels=(unsigned char *)
+          AllocateMemory(image->columns*sizeof(RunlengthPacket));
+        if (pixels == (unsigned char *) NULL)
+          PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
         /*
           No interlacing:  RGBRGBRGBRGBRGBRGB...
         */
+        x=0;
+        y=0;
         p=image->pixels;
+        q=pixels;
         for (i=0; i < image->packets; i++)
         {
           for (j=0; j <= ((int) p->length); j++)
           {
-            WriteQuantumFile(p->red);
-            WriteQuantumFile(p->green);
-            WriteQuantumFile(p->blue);
+            WriteQuantum(p->red,q);
+            WriteQuantum(p->green,q);
+            WriteQuantum(p->blue,q);
             if (Latin1Compare(image_info->magick,"RGBA") == 0)
-              WriteQuantumFile(image->matte ? p->index : Opaque);
+              WriteQuantum(image->matte ? p->index : Opaque,q);
+            x++;
+            if (x == image->columns)
+              {
+                (void) fwrite((char *) pixels,1,q-pixels,image->file);
+                if (image->previous == (Image *) NULL)
+                  if (QuantumTick(y,image->rows))
+                    ProgressMonitor(SaveImageText,y,image->rows);
+                q=pixels;
+                x=0;
+                y++;
+              }
           }
           p++;
-          if (image->previous == (Image *) NULL)
-            if (QuantumTick(i,image->packets))
-              ProgressMonitor(SaveImageText,i,image->packets);
         }
         break;
       }
       case LineInterlace:
       {
-        register int
-          x,
-          y;
-
         /*
           Line interlacing:  RRR...GGG...BBB...RRR...GGG...BBB...
         */
@@ -10156,6 +10288,9 @@ unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
         x++;
         if (x == image->columns)
           {
+            if (image->previous == (Image *) NULL)
+              if (QuantumTick(y,image->rows))
+                ProgressMonitor(SaveImageText,y,image->rows);
             y++;
             q=iris_pixels+((iris_header.rows-1)-y)*(iris_header.columns*4);
             x=0;
@@ -10188,7 +10323,6 @@ unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
             (void) fwrite(scanline,sizeof(unsigned char),iris_header.columns,
               image->file);
           }
-          ProgressMonitor(SaveImageText,z,iris_header.depth);
         }
         FreeMemory(scanline);
       }
@@ -10229,8 +10363,6 @@ unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
             offset+=length;
           }
           q+=(iris_header.columns*4);
-          if (QuantumTick(y,iris_header.rows))
-            ProgressMonitor(SaveImageText,y,iris_header.rows);
         }
         /*
           Write out line start and length tables and runlength-encoded pixels.
@@ -10311,10 +10443,13 @@ unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
       maplength;
   } SUNHeader;
 
+  int
+    x,
+    y;
+
   register int
     i,
-    j,
-    x;
+    j;
 
   register RunlengthPacket
     *p;
@@ -10390,12 +10525,9 @@ unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
     */
     p=image->pixels;
     x=0;
+    y=0;
     if (!IsPseudoClass(image) && !IsGrayImage(image))
       {
-        register int
-          runlength,
-          y;
-
         register unsigned char
           *q;
 
@@ -10411,40 +10543,35 @@ unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
         pixels=(unsigned char *)
           AllocateMemory(image->columns*sizeof(RunlengthPacket));
         if (pixels == (unsigned char *) NULL)
-          {
-            MagickWarning(ResourceLimitWarning,"Unable to write AVS image",
-              "Memory allocation failed");
-            return(False);
-          }
+          PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
         /*
           Convert DirectClass packet to SUN RGB pixel.
         */
-        p=image->pixels;
-        runlength=p->length+1;
-        for (y=0; y < image->rows; y++)
+        q=pixels;
+        for (i=0; i < image->packets; i++)
         {
-          q=pixels;
-          for (x=0; x < image->columns; x++)
+          for (j=0; j <= ((int) p->length); j++)
           {
-            if (runlength != 0)
-              runlength--;
-            else
-              {
-                p++;
-                runlength=p->length;
-              }
             if (image->matte)
               *q++=DownScale(p->index);
             *q++=DownScale(p->red);
             *q++=DownScale(p->green);
             *q++=DownScale(p->blue);
+            x++;
+            if (x == image->columns)
+              {
+                if ((image->columns % 2) != 0)
+                  WriteQuantum(0,q);  /* pad scanline */
+                (void) fwrite((char *) pixels,1,q-pixels,image->file);
+                if (image->previous == (Image *) NULL)
+                  if (QuantumTick(y,image->rows))
+                    ProgressMonitor(SaveImageText,y,image->rows);
+                q=pixels;
+                x=0;
+                y++;
+              }
           }
-          if ((image->columns % 2) != 0)
-            WriteQuantum(0,q);  /* pad scanline */
-          (void) fwrite((char *) pixels,1,q-pixels,image->file);
-          if (image->previous == (Image *) NULL)
-            if (QuantumTick(y,image->rows))
-              ProgressMonitor(SaveImageText,y,image->rows);
+          p++;
         }
         FreeMemory((char *) pixels);
       }
@@ -10490,15 +10617,15 @@ unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
                   if ((((image->columns/8)+
                       (image->columns % 8 ? 1 : 0)) % 2) != 0)
                     (void) fputc(0,image->file);  /* pad scanline */
+                  if (image->previous == (Image *) NULL)
+                    if (QuantumTick(y,image->rows))
+                      ProgressMonitor(SaveImageText,y,image->rows);
                   bit=0;
                   byte=0;
                   x=0;
                }
             }
             p++;
-            if (image->previous == (Image *) NULL)
-              if (QuantumTick(i,image->packets))
-                ProgressMonitor(SaveImageText,i,image->packets);
           }
         }
       else
@@ -10525,13 +10652,13 @@ unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
                 {
                   if ((image->columns % 2) != 0)
                     (void) fputc(0,image->file);  /* pad scanline */
+                  if (image->previous == (Image *) NULL)
+                    if (QuantumTick(y,image->rows))
+                      ProgressMonitor(SaveImageText,y,image->rows);
                   x=0;
                 }
             }
             p++;
-            if (image->previous == (Image *) NULL)
-              if (QuantumTick(i,image->packets))
-                ProgressMonitor(SaveImageText,i,image->packets);
           }
         }
     if (image->next == (Image *) NULL)
@@ -11236,15 +11363,15 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                   {
                     if (TIFFWriteScanline(tiff,(char *) scanline,y,0) < 0)
                       break;
+                    if (image->previous == (Image *) NULL)
+                      if (QuantumTick(y,image->rows))
+                        ProgressMonitor(SaveImageText,y,image->rows);
                     q=scanline;
                     x=0;
                     y++;
                   }
               }
               p++;
-              if (image->previous == (Image *) NULL)
-                if (QuantumTick(i,image->packets))
-                  ProgressMonitor(SaveImageText,i,image->packets);
             }
             break;
           }
@@ -11387,15 +11514,15 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
               {
                 if (TIFFWriteScanline(tiff,(char *) scanline,y,0) < 0)
                   break;
+                if (image->previous == (Image *) NULL)
+                  if (QuantumTick(y,image->rows))
+                    ProgressMonitor(SaveImageText,y,image->rows);
                 q=scanline;
                 x=0;
                 y++;
               }
           }
           p++;
-          if (image->previous == (Image *) NULL)
-            if (QuantumTick(i,image->packets))
-              ProgressMonitor(SaveImageText,i,image->packets);
         }
         break;
       }
@@ -11465,15 +11592,15 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                   {
                     if (TIFFWriteScanline(tiff,(char *) scanline,y,0) < 0)
                       break;
+                    if (image->previous == (Image *) NULL)
+                      if (QuantumTick(y,image->rows))
+                        ProgressMonitor(SaveImageText,y,image->rows);
                     q=scanline;
                     x=0;
                     y++;
                   }
               }
               p++;
-              if (image->previous == (Image *) NULL)
-                if (QuantumTick(i,image->packets))
-                  ProgressMonitor(SaveImageText,i,image->packets);
             }
             break;
           }
@@ -11518,6 +11645,9 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                   *q++=byte << (8-bit);
                 if (TIFFWriteScanline(tiff,(char *) scanline,y,0) < 0)
                   break;
+                if (image->previous == (Image *) NULL)
+                  if (QuantumTick(y,image->rows))
+                    ProgressMonitor(SaveImageText,y,image->rows);
                 q=scanline;
                 bit=0;
                 byte=0;
@@ -11526,9 +11656,6 @@ unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
              }
           }
           p++;
-          if (image->previous == (Image *) NULL)
-            if (QuantumTick(i,image->packets))
-              ProgressMonitor(SaveImageText,i,image->packets);
         }
         break;
       }
@@ -11797,7 +11924,8 @@ unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
       symbol[j]='\0';
       (void) fprintf(image->file,"%.128s",symbol);
     }
-    (void) fprintf(image->file,"\"%.128s\n",(y == (image->rows-1) ? ");" : ","));
+    (void) fprintf(image->file,"\"%.128s\n",
+      (y == (image->rows-1) ? ");" : ","));
     if (QuantumTick(y,image->rows))
       ProgressMonitor(SaveImageText,y,image->rows);
   }
@@ -11945,13 +12073,13 @@ unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
     label[16];
 
   int
-    label_size;
+    label_size,
+    x,
+    y;
 
   register int
     i,
-    runlength,
-    x,
-    y;
+    j;
 
   register RunlengthPacket
     *p;
@@ -11999,33 +12127,32 @@ unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
   pixels=(unsigned char *)
     AllocateMemory(image->columns*sizeof(RunlengthPacket));
   if (pixels == (unsigned char *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to write AVS image",
-        "Memory allocation failed");
-      return(False);
-    }
+    PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
   /*
     Write VICAR pixels.
   */
+  x=0;
+  y=0;
   p=image->pixels;
-  runlength=p->length+1;
-  for (y=0; y < image->rows; y++)
+  q=pixels;
+  for (i=0; i < image->packets; i++)
   {
-    q=pixels;
-    for (x=0; x < image->columns; x++)
+    for (j=0; j <= ((int) p->length); j++)
     {
-      if (runlength != 0)
-        runlength--;
-      else
-        {
-          p++;
-          runlength=p->length;
-        }
       *q++=DownScale(Intensity(*p));
+      x++;
+      if (x == image->columns)
+        {
+          (void) fwrite((char *) pixels,1,q-pixels,image->file);
+          if (image->previous == (Image *) NULL)
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(SaveImageText,y,image->rows);
+          q=pixels;
+          x=0;
+          y++;
+        }
     }
-    (void) fwrite((char *) pixels,1,q-pixels,image->file);
-    if (QuantumTick(y,image->rows))
-      ProgressMonitor(SaveImageText,y,image->rows);
+    p++;
   }
   FreeMemory((char *) pixels);
   CloseImage(image);
@@ -12330,13 +12457,14 @@ unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
       else
         if (image->colors == 2)
           {
+            int
+              x,
+              y;
+
             register unsigned char
               bit,
               byte,
               polarity;
-
-            register int
-              x;
 
             /*
               Convert PseudoClass image to a VIFF monochrome image.
@@ -12346,6 +12474,7 @@ unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
               polarity=
                 Intensity(image->colormap[0]) > Intensity(image->colormap[1]);
             x=0;
+            y=0;
             bit=0;
             byte=0;
             for (i=0; i < image->packets; i++)
@@ -12370,15 +12499,16 @@ unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
                     */
                     if (bit != 0)
                       *q++=byte >> (8-bit);
+                    if (image->previous == (Image *) NULL)
+                      if (QuantumTick(y,image->rows))
+                        ProgressMonitor(SaveImageText,y,image->rows);
                     bit=0;
                     byte=0;
                     x=0;
+                    y++;
                  }
               }
               p++;
-              if (image->previous == (Image *) NULL)
-                if (QuantumTick(i,image->packets))
-                  ProgressMonitor(SaveImageText,i,image->packets);
             }
           }
         else
@@ -12651,10 +12781,13 @@ unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
   char
     name[MaxTextExtent];
 
+  int
+    x,
+    y;
+
   register int
     i,
-    j,
-    x;
+    j;
 
   register char
     *q;
@@ -12711,6 +12844,7 @@ unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
   byte=0;
   count=0;
   x=0;
+  y=0;
   p=image->pixels;
   (void) fprintf(image->file," ");
   for (i=0; i < image->packets; i++)
@@ -12756,12 +12890,13 @@ unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
               bit=0;
               byte=0;
             };
+          if (QuantumTick(y,image->rows))
+            ProgressMonitor(SaveImageText,y,image->rows);
           x=0;
+          y++;
         }
     }
     p++;
-    if (QuantumTick(i,image->packets))
-      ProgressMonitor(SaveImageText,i,image->packets);
   }
   (void) fprintf(image->file,"};\n");
   CloseImage(image);
@@ -13164,11 +13299,13 @@ unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
 */
 unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
 {
-  register int
-    i,
-    runlength,
+  int
     x,
     y;
+
+  register int
+    i,
+    j;
 
   register RunlengthPacket
     *p;
@@ -13287,30 +13424,20 @@ unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
   pixels=(unsigned char *)
     AllocateMemory(image->columns*sizeof(RunlengthPacket));
   if (pixels == (unsigned char *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to write AVS image",
-        "Memory allocation failed");
-      return(False);
-    }
+    PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
   /*
     Convert MIFF to XWD raster pixels.
   */
   scanline_pad=(unsigned int)
     (bytes_per_line-((image->columns*bits_per_pixel) >> 3));
+  x=0;
+  y=0;
   p=image->pixels;
-  runlength=p->length+1;
-  for (y=0; y < image->rows; y++)
+  q=pixels;
+  for (i=0; i < image->packets; i++)
   {
-    q=pixels;
-    for (x=0; x < image->columns; x++)
+    for (j=0; j <= ((int) p->length); j++)
     {
-      if (runlength != 0)
-        runlength--;
-      else
-        {
-          p++;
-          runlength=p->length;
-        }
       if (image->class == PseudoClass)
         WriteQuantum(p->index,q)
       else
@@ -13319,12 +13446,21 @@ unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
           WriteQuantum(p->green,q);
           WriteQuantum(p->blue,q);
         }
+      x++;
+      if (x == image->columns)
+        {
+          for (x=0; x < scanline_pad; x++)
+            WriteQuantum(0,q);
+          (void) fwrite((char *) pixels,1,q-pixels,image->file);
+          if (image->previous == (Image *) NULL)
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(SaveImageText,y,image->rows);
+          q=pixels;
+          x=0;
+          y++;
+        }
     }
-    for (i=0; i < scanline_pad; i++)
-      WriteQuantum(0,q);
-    (void) fwrite((char *) pixels,1,q-pixels,image->file);
-    if (QuantumTick(y,image->rows))
-      ProgressMonitor(SaveImageText,y,image->rows);
+    p++;
   }
   FreeMemory((char *) pixels);
   CloseImage(image);
