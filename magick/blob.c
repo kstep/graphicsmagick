@@ -169,7 +169,8 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
         Native blob support for this image format.
       */
       AttachBlob(clone_info->blob,blob,length);
-      *clone_info->filename='\0';
+      (void) strncpy(clone_info->filename,image_info->filename,MaxTextExtent-1);
+      (void) strncpy(clone_info->magick,image_info->magick,MaxTextExtent-1);
       image=ReadImage(clone_info,exception);
       if (image != (Image *) NULL)
         DetachBlob(image->blob);
@@ -977,7 +978,11 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
   image->exempt=False;
   if (image_info->fifo !=
       (int (*)(const Image *,const void *,const size_t)) NULL)
-    image->fifo=image_info->fifo;  /* image stream */
+    {
+      image->fifo=image_info->fifo;  /* image stream */
+      if (*type == 'w')
+        return(True);
+    }
   (void) strncpy(filename,image->filename,MaxTextExtent-1);
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)
   if (*filename != '|')

@@ -7077,7 +7077,7 @@ MagickExport unsigned int TransformRGBImage(Image *image,
         {
           q->red=(Quantum)
             ((unsigned long) ((MaxRGB-q->red)*(MaxRGB-q->opacity))/MaxRGB);
-					q->green=(Quantum) ((unsigned long)
+          q->green=(Quantum) ((unsigned long)
             ((MaxRGB-q->green)*(MaxRGB-q->opacity))/MaxRGB);
           q->blue=(Quantum)
              ((unsigned long) ((MaxRGB-q->blue)*(MaxRGB-q->opacity))/MaxRGB);
