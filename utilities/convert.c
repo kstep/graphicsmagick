@@ -1583,7 +1583,7 @@ int main(int argc,char **argv)
                 MagickError(OptionError,"Missing geometry",option);
               break;
             }
-          if (LocaleCompare("shave",option+1,5) == 0)
+          if (LocaleCompare("shave",option+1) == 0)
             {
               if (*option == '-')
                 {

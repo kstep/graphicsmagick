@@ -281,7 +281,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
             {
               byte=ReadBlobByte(image);
               for (bit=0; bit < (int) (image->columns % 8); bit++)
-                indexes[x+bit]=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
+                indexes[x+bit]=((byte) & (0x80 >> bit) ? 0x01 : 0x00);
             }
           if (!SyncImagePixels(image))
             break;

@@ -4,7 +4,7 @@
 #
 # Contributed by Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
 #
-BEGIN { $| = 1; $test=1, print "1..43\n"; }
+BEGIN { $| = 1; $test=1, print "1..44\n"; }
 END {print "not ok 1\n" unless $loaded;}
 use Image::Magick;
 $loaded=1;
@@ -217,6 +217,11 @@ testFilter('input.miff', 'Sharpen',
   q/0.0x1.0/,
   '1e1d678e448d7b2aac7cd0cee6ff1eae',
   'b9614f4892a7839f1eb58c8f5f6a2978');
+
+++$test;
+testFilter('input.miff', 'Shave',
+  q/10x10/,
+  'bbfd2b631b1be2d6e954cfb8d550d438');
 
 ++$test;
 testFilter('input.miff', 'Shear',

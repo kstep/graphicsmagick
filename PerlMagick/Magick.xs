@@ -413,6 +413,8 @@ static struct
     { "MotionBlur", { {"geom", StringReference}, {"radius", DoubleReference},
       {"sigma", DoubleReference}, {"angle", DoubleReference} } },
     { "OrderedDither", },
+    { "Shave", { {"geom", StringReference}, {"width", IntegerReference},
+      {"height", IntegerReference} } },
   };
 
 /*
@@ -3867,6 +3869,8 @@ Mogrify(ref,...)
     MotionBlurImage    = 140
     OrderedDither      = 141
     OrderedDitherImage = 142
+    Shave              = 143
+    ShaveImage         = 144
     MogrifyRegion      = 666
   PPCODE:
   {
@@ -4083,7 +4087,8 @@ Mogrify(ref,...)
       image=next;
       rectangle_info.width=image->columns;
       rectangle_info.height=image->rows;
-      rectangle_info.x=rectangle_info.y=0;
+      rectangle_info.x=0;
+      rectangle_info.y=0;
       GetExceptionInfo(&exception);
       if ((region_info.width*region_info.height) != 0)
         {
@@ -4149,8 +4154,6 @@ Mogrify(ref,...)
         {
           if (first)
             {
-              rectangle_info.width=6;
-              rectangle_info.height=6;
               if (attribute_flag[0])
                 {
                   flags=ParseGeometry(argument_list[0].string_reference,
@@ -5177,7 +5180,6 @@ Mogrify(ref,...)
         {
           if (first)
             {
-              rectangle_info.height=rectangle_info.width=6;
               if (attribute_flag[0])
                 {
                   flags=ParseGeometry(argument_list[0].string_reference,
@@ -5463,6 +5465,26 @@ Mogrify(ref,...)
         case 71:  /* OrderedDither */
         {
           (void) OrderedDitherImage(image);
+          break;
+        }
+        case 72:  /* Shave */
+        {
+          if (first)
+            {
+              if (attribute_flag[0])
+                {
+                  flags=ParseGeometry(argument_list[0].string_reference,
+                    &rectangle_info.x,&rectangle_info.y,&rectangle_info.width,
+                    &rectangle_info.height);
+                  if (!(flags & HeightValue))
+                    rectangle_info.height=rectangle_info.width;
+                }
+              if (attribute_flag[1])
+                rectangle_info.width=argument_list[1].int_reference;
+              if (attribute_flag[2])
+                rectangle_info.height=argument_list[2].int_reference;
+            }
+          image=ShaveImage(image,&rectangle_info,&exception);
           break;
         }
       }
