@@ -1081,6 +1081,16 @@ static void SVGStartElement(void *context,const xmlChar *name,
               (void) CloneString(&svg_info->vertices,value);
               break;
             }
+          if (LocaleCompare(keyword,"dx") == 0)
+            {
+              svg_info->bounds.x+=GetUserSpaceCoordinateValue(svg_info,value);
+              break;
+            }
+          if (LocaleCompare(keyword,"dy") == 0)
+            {
+              svg_info->bounds.y+=GetUserSpaceCoordinateValue(svg_info,value);
+              break;
+            }
           break;
         }
         case 'F':
