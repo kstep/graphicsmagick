@@ -126,7 +126,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
         pixel=ReadBlobByte(image);
         for (count=(-count+1); count > 0; count--)
         {
-          q=SetImagePixels(image,x % image->columns,x/image->columns,1,1);
+          q=GetImagePixels(image,x % image->columns,x/image->columns,1,1);
           if (q == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
@@ -185,7 +185,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
     for (i=count; i > 0; i--)
     {
       pixel=ReadBlobByte(image);
-      q=SetImagePixels(image,x % image->columns,x/image->columns,1,1);
+      q=GetImagePixels(image,x % image->columns,x/image->columns,1,1);
       if (q == (PixelPacket *) NULL)
         break;
       indexes=GetIndexes(image);
@@ -421,6 +421,9 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   short int
     number_layers;
 
+  size_t
+    count;
+
   unsigned char
     *scanline;
 
@@ -441,10 +444,9 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read image header.
   */
-  status=ReadBlob(image,4,(char *) psd_info.signature);
+  count=ReadBlob(image,4,(char *) psd_info.signature);
   psd_info.version=ReadBlobMSBShort(image);
-  if ((status == False) ||
-      (LocaleNCompare(psd_info.signature,"8BPS",4) != 0) ||
+  if ((count == 0) || (LocaleNCompare(psd_info.signature,"8BPS",4) != 0) ||
       (psd_info.version != 1))
     ThrowReaderException(CorruptImageWarning,"Not a PSD image file",image);
   (void) ReadBlob(image,6,(char *) psd_info.reserved);
@@ -456,6 +458,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Initialize image.
   */
+  SetImage(image,TransparentOpacity);
   image->matte=psd_info.channels >= 4;
   if (psd_info.mode == CMYKMode)
     {
@@ -502,8 +505,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (data == (unsigned char *) NULL)
         ThrowReaderException(ResourceLimitWarning,
           "8BIM resource memory allocation failed",image);
-      status=ReadBlob(image,length,(char *) data);
-      if ((status == False) || (LocaleNCompare((char *) data,"8BIM",4) != 0))
+      count=ReadBlob(image,length,(char *) data);
+      if ((count == 0) || (LocaleNCompare((char *) data,"8BIM",4) != 0))
         ThrowReaderException(CorruptImageWarning,"Not a PSD image file",image);
       image->iptc_profile.info=data;
       image->iptc_profile.length=length;
@@ -543,10 +546,9 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           layer_info[i].channel_info[j].type=ReadBlobMSBShort(image);
           layer_info[i].channel_info[j].size=ReadBlobMSBLong(image);
         }
-        status=ReadBlob(image,4,(char *) type);
-        if ((status == False) || (LocaleNCompare(type,"8BIM",4) != 0))
-          ThrowReaderException(CorruptImageWarning,"Not a PSD image file",
-            image);
+        count=ReadBlob(image,4,(char *) type);
+        if ((count == 0) || (LocaleNCompare(type,"8BIM",4) != 0))
+          ThrowReaderException(CorruptImageWarning,"Not a PSD image file",image);
         (void) ReadBlob(image,4,(char *) layer_info[i].blendkey);
         layer_info[i].opacity=MaxRGB-UpScale(ReadBlobByte(image));
         layer_info[i].clipping=ReadBlobByte(image);
@@ -585,6 +587,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             ThrowReaderException(ResourceLimitWarning,
               "Memory allocation failed",image);
           }
+        SetImage(layer_info[i].image,TransparentOpacity);
         if (psd_info.mode == CMYKMode)
           layer_info[i].image->colorspace=CMYKColorspace;
         for (j=0; j < (int) layer_info[i].channels; j++)
@@ -644,7 +647,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
               "Memory allocation failed",image);
           for (y=0; y < (int) layer_info[i].image->rows; y++)
           {
-            q=SetImagePixels(layer_info[i].image,0,y,
+            q=GetImagePixels(layer_info[i].image,0,y,
               layer_info[i].image->columns,1);
             if (q == (PixelPacket *) NULL)
               break;
@@ -740,7 +743,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             */
             for (y=0; y < (int) layer_info[i].image->rows; y++)
             {
-              q=SetImagePixels(layer_info[i].image,0,y,
+              q=GetImagePixels(layer_info[i].image,0,y,
                 layer_info[i].image->columns,1);
               if (q == (PixelPacket *) NULL)
                 break;
@@ -795,8 +798,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (y=0; y < (int) image->rows; y++)
         {
           q=GetImagePixels(image,0,y,image->columns,1);
-          status=ReadBlob(image,packet_size*image->columns,(char *) scanline);
-          if ((status == False) || (q == (PixelPacket *) NULL))
+          count=ReadBlob(image,packet_size*image->columns,(char *) scanline);
+          if ((count == 0) || (q == (PixelPacket *) NULL))
             break;
           indexes=GetIndexes(image);
           for (x=0; x < (int) image->columns; x++)
@@ -852,6 +855,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
         }
       }
+      if (count == 0)
+        SetImage(image,TransparentOpacity);
       LiberateMemory((void **) &scanline);
     }
   if (image->colorspace == CMYKColorspace)
