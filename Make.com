@@ -201,7 +201,6 @@ $set def [-]
 $copy [.magick]magic.mgk sys$login:magic.mgk
 $copy [.magick]colors.mgk sys$login:colors.mgk
 $copy [.coders]delegates.mgk sys$login:delegates.mgk
-$!copy [.coders]fonts.mgk sys$login:fonts.mgk
 $copy [.coders]modules.mgk sys$login:modules.mgk
 $copy [.coders]type.mgk sys$login:type.mgk
 $type sys$input
