@@ -851,6 +851,7 @@ MagickExport unsigned long GetNumberColors(const Image *image,FILE *file,
   }
   if (file != (FILE *) NULL)
     {
+      (void) fprintf(file,"\n");
       Histogram(image,cube_info,cube_info->root,file,exception);
       (void) fflush(file);
     }
@@ -914,7 +915,6 @@ static void Histogram(const Image *image,CubeInfo *cube_info,
         i;
 
       p=node_info->list;
-      (void) fprintf(file,"\n");
       for (i=0; i < (long) node_info->number_unique; i++)
       {
         GetColorTuple(&p->pixel,image->depth,image->matte,False,tuple);
