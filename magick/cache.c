@@ -1977,7 +1977,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
       (cache_info->length == (size_t) cache_info->length))
     {
       pixels=(PixelPacket *)
-        MapBlob(file,mode,cache_info->offset,cache_info->length);
+        MapBlob(file,mode,cache_info->offset,(size_t) cache_info->length);
       if (pixels != (PixelPacket *) NULL)
         {
           /*
