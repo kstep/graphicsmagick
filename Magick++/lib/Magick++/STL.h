@@ -1794,28 +1794,35 @@ namespace Magick
         if ( magickInfo->stealth )
           continue;
 
-        CoderInfo coderInfo( magickInfo );
+        try {
+          CoderInfo coderInfo( magickInfo );
 
-        // Test isReadable_
-        if ( isReadable_ != CoderInfo::AnyMatch &&
-             (( coderInfo.isReadable() && isReadable_ != CoderInfo::TrueMatch ) ||
-              ( !coderInfo.isReadable() && isReadable_ != CoderInfo::FalseMatch )) )
-          continue;
+          // Test isReadable_
+          if ( isReadable_ != CoderInfo::AnyMatch &&
+               (( coderInfo.isReadable() && isReadable_ != CoderInfo::TrueMatch ) ||
+                ( !coderInfo.isReadable() && isReadable_ != CoderInfo::FalseMatch )) )
+            continue;
 
-        // Test isWritable_
-        if ( isWritable_ != CoderInfo::AnyMatch &&
-             (( coderInfo.isWritable() && isWritable_ != CoderInfo::TrueMatch ) ||
-              ( !coderInfo.isWritable() && isWritable_ != CoderInfo::FalseMatch )) )
-          continue;
+          // Test isWritable_
+          if ( isWritable_ != CoderInfo::AnyMatch &&
+               (( coderInfo.isWritable() && isWritable_ != CoderInfo::TrueMatch ) ||
+                ( !coderInfo.isWritable() && isWritable_ != CoderInfo::FalseMatch )) )
+            continue;
 
-        // Test isMultiFrame_
-        if ( isMultiFrame_ != CoderInfo::AnyMatch &&
-             (( coderInfo.isMultiFrame() && isMultiFrame_ != CoderInfo::TrueMatch ) ||
-              ( !coderInfo.isMultiFrame() && isMultiFrame_ != CoderInfo::FalseMatch )) )
-          continue;
+          // Test isMultiFrame_
+          if ( isMultiFrame_ != CoderInfo::AnyMatch &&
+               (( coderInfo.isMultiFrame() && isMultiFrame_ != CoderInfo::TrueMatch ) ||
+                ( !coderInfo.isMultiFrame() && isMultiFrame_ != CoderInfo::FalseMatch )) )
+            continue;
 
-        // Append matches to container
-        container_->push_back( coderInfo );
+          // Append matches to container
+          container_->push_back( coderInfo );
+        }
+        // Intentionally ignore missing delegate errors
+        catch ( Magick::ErrorMissingDelegate )
+          {
+            continue;
+          }
       }
   }
 

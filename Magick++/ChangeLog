@@ -1,3 +1,8 @@
+2002-10-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/STL.h (coderInfoList): Intentionally ignore missing
+ 	delegate exceptions.
+
 2002-09-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Options.cpp (textEncoding): Had forgotten to implement
