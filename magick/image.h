@@ -497,6 +497,7 @@ typedef struct _ImageInfo
     group;
 
   unsigned int
+    ping,
     verbose,
     debug;
 
