@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Target_Dir ""
 MTL=midl.exe
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
-# ADD CPP /nologo /W3 /GX /O2 /I "..\..\fpx\basics" /I "..\..\fpx\fpx" /I "..\..\fpx\jpeg" /I "..\..\fpx\ole" /I "..\..\fpx\ri_image" /I "..\..\fpx\macdeps" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "TOOLKIT" /D "_MBCS" /D "WIN32_LEAN_AND_MEAN" /D "DOS" /D "USE_OLE" /D NO_FW=0 /D LP_FW=1 /D XVT_FW=2 /D FRAMEWORK=NO_FW /D "TOOLKIT_FlashPix" /D "TOOLKIT_FLASHPIX" /D "USE_UNICODE" /D "_UNICODE" /YX /FD /c
+# ADD CPP /nologo /W3 /GX /O2 /I "..\..\fpx\basics" /I "..\..\fpx\fpx" /I "..\..\fpx\jpeg" /I "..\..\fpx\ole" /I "..\..\fpx\ri_image" /I "..\..\fpx\macdeps" /D "NDEBUG" /D "_LIB" /D "WIN32" /D "_WINDOWS" /D "TOOLKIT" /D "_MBCS" /D "WIN32_LEAN_AND_MEAN" /D "DOS" /D "USE_OLE" /D NO_FW=0 /D LP_FW=1 /D XVT_FW=2 /D FRAMEWORK=NO_FW /D "TOOLKIT_FlashPix" /D "TOOLKIT_FLASHPIX" /D "USE_UNICODE" /D "_UNICODE" /D "_VISUALC_" /D "_IMAGE_MAGICK_FPX_" /D "_FPXLIB_" /YX /FD /c
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -66,7 +66,7 @@ LIB32=link.exe -lib
 # PROP Target_Dir ""
 MTL=midl.exe
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
-# ADD CPP /nologo /W3 /Gm /GX /Zi /Od /I "..\..\fpx\basics" /I "..\..\fpx\fpx" /I "..\..\fpx\jpeg" /I "..\..\fpx\ole" /I "..\..\fpx\ri_image" /I "..\..\fpx\macdeps" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "TOOLKIT" /D "_MBCS" /D "WIN32_LEAN_AND_MEAN" /D "DOS" /D "USE_OLE" /D NO_FW=0 /D LP_FW=1 /D XVT_FW=2 /D FRAMEWORK=NO_FW /D "TOOLKIT_FlashPix" /D "TOOLKIT_FLASHPIX" /D "USE_UNICODE" /D "_UNICODE" /YX /FD /GZ /c
+# ADD CPP /nologo /W3 /Gm /GX /Zi /Od /I "..\..\fpx\basics" /I "..\..\fpx\fpx" /I "..\..\fpx\jpeg" /I "..\..\fpx\ole" /I "..\..\fpx\ri_image" /I "..\..\fpx\macdeps" /D "_DEBUG" /D "_LIB" /D "WIN32" /D "_WINDOWS" /D "TOOLKIT" /D "_MBCS" /D "WIN32_LEAN_AND_MEAN" /D "DOS" /D "USE_OLE" /D NO_FW=0 /D LP_FW=1 /D XVT_FW=2 /D FRAMEWORK=NO_FW /D "TOOLKIT_FlashPix" /D "TOOLKIT_FLASHPIX" /D "USE_UNICODE" /D "_UNICODE" /D "_VISUALC_" /D "_IMAGE_MAGICK_FPX_" /D "_FPXLIB_" /YX /FD /GZ /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
