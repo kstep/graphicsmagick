@@ -24,7 +24,6 @@
   <color name="bisque3" red="205" green="183" blue="158" compliance="X11" />
   <color name="bisque4" red="139" green="125" blue="107" compliance="X11" />
   <color name="black" red="0" green="0" blue="0" compliance="SVG, X11" />
-  <color name="blanched almond" red="255" green="235" blue="205" compliance="X11" />
   <color name="BlanchedAlmond" red="255" green="235" blue="205" compliance="SVG, X11" />
   <color name="blue violet" red="138" green="43" blue="226" compliance="X11" />
   <color name="blue" red="0" green="0" blue="255" compliance="SVG, X11" />
@@ -64,7 +63,6 @@
   <color name="coral2" red="238" green="106" blue="80" compliance="X11" />
   <color name="coral3" red="205" green="91" blue="69" compliance="X11" />
   <color name="coral4" red="139" green="62" blue="47" compliance="X11" />
-  <color name="cornflower blue" red="100" green="149" blue="237" compliance="X11" />
   <color name="CornflowerBlue" red="100" green="149" blue="237" compliance="SVG, X11" />
   <color name="cornsilk" red="255" green="248" blue="220" compliance="SVG, X11" />
   <color name="cornsilk1" red="255" green="248" blue="220" compliance="X11" />
@@ -77,24 +75,6 @@
   <color name="cyan2" red="0" green="238" blue="238" compliance="X11" />
   <color name="cyan3" red="0" green="205" blue="205" compliance="X11" />
   <color name="cyan4" red="0" green="139" blue="139" compliance="X11" />
-  <color name="dark blue" red="0" green="0" blue="139" compliance="X11" />
-  <color name="dark cyan" red="0" green="139" blue="139" compliance="X11" />
-  <color name="dark goldenrod" red="184" green="134" blue="11" compliance="X11" />
-  <color name="dark gray" red="169" green="169" blue="169" compliance="X11" />
-  <color name="dark green" red="0" green="100" blue="0" compliance="X11" />
-  <color name="dark grey" red="169" green="169" blue="169" compliance="X11" />
-  <color name="dark khaki" red="189" green="183" blue="107" compliance="X11" />
-  <color name="dark magenta" red="139" green="0" blue="139" compliance="X11" />
-  <color name="dark olive green" red="85" green="107" blue="47" compliance="X11" />
-  <color name="dark orange" red="255" green="140" blue="0" compliance="X11" />
-  <color name="dark orchid" red="153" green="50" blue="204" compliance="X11" />
-  <color name="dark red" red="139" green="0" blue="0" compliance="X11" />
-  <color name="dark salmon" red="233" green="150" blue="122" compliance="X11" />
-  <color name="dark sea green" red="143" green="188" blue="143" compliance="X11" />
-  <color name="dark slate blue" red="72" green="61" blue="139" compliance="X11" />
-  <color name="dark slate gray" red="47" green="79" blue="79" compliance="X11" />
-  <color name="dark slate grey" red="47" green="79" blue="79" compliance="X11" />
-  <color name="dark turquoise" red="0" green="206" blue="209" compliance="X11" />
   <color name="dark violet" red="148" green="0" blue="211" compliance="X11" />
   <color name="DarkBlue" red="0" green="0" blue="139" compliance="SVG, X11" />
   <color name="DarkCyan" red="0" green="139" blue="139" compliance="SVG, X11" />
@@ -139,8 +119,6 @@
   <color name="DarkSlateGrey" red="47" green="79" blue="79" compliance="SVG, X11" />
   <color name="DarkTurquoise" red="0" green="206" blue="209" compliance="SVG, X11" />
   <color name="DarkViolet" red="148" green="0" blue="211" compliance="SVG, X11" />
-  <color name="deep pink" red="255" green="20" blue="147" compliance="X11" />
-  <color name="deep sky blue" red="0" green="191" blue="255" compliance="X11" />
   <color name="DeepPink" red="255" green="20" blue="147" compliance="SVG, X11" />
   <color name="DeepPink1" red="255" green="20" blue="147" compliance="X11" />
   <color name="DeepPink2" red="238" green="18" blue="137" compliance="X11" />
@@ -151,10 +129,8 @@
   <color name="DeepSkyBlue2" red="0" green="178" blue="238" compliance="X11" />
   <color name="DeepSkyBlue3" red="0" green="154" blue="205" compliance="X11" />
   <color name="DeepSkyBlue4" red="0" green="104" blue="139" compliance="X11" />
-  <color name="dim grey" red="105" green="105" blue="105" compliance="SVG, X11" />
   <color name="DimGray" red="105" green="105" blue="105" compliance="SVG, X11" />
   <color name="DimGrey" red="105" green="105" blue="105" compliance="SVG, X11" />
-  <color name="dodger blue" red="30" green="144" blue="255" compliance="X11" />
   <color name="DodgerBlue" red="30" green="144" blue="255" compliance="SVG, X11" />
   <color name="DodgerBlue1" red="30" green="144" blue="255" compliance="X11" />
   <color name="DodgerBlue2" red="28" green="134" blue="238" compliance="X11" />
@@ -165,13 +141,11 @@
   <color name="firebrick2" red="238" green="44" blue="44" compliance="X11" />
   <color name="firebrick3" red="205" green="38" blue="38" compliance="X11" />
   <color name="firebrick4" red="139" green="26" blue="26" compliance="X11" />
-  <color name="floral white" red="255" green="250" blue="240" compliance="X11" />
   <color name="FloralWhite" red="255" green="250" blue="240" compliance="SVG, X11" />
   <color name="ForestGreen" red="34" green="139" blue="34" compliance="SVG, X11" />
   <color name="fractal" red="128" green="128" blue="128" compliance="SVG" />
   <color name="fuchsia" red="255" green="0" blue="255" compliance="SVG" />
   <color name="gainsboro" red="220" green="220" blue="220" compliance="SVG, X11" />
-  <color name="ghost white" red="248" green="248" blue="255" compliance="X11" />
   <color name="GhostWhite" red="248" green="248" blue="255" compliance="SVG, X11" />
   <color name="gold" red="255" green="215" blue="0 " compliance="X11" />
   <color name="gold1" red="255" green="215" blue="0" compliance="SVG, X11" />
@@ -399,13 +373,11 @@
   <color name="honeydew2" red="224" green="238" blue="224" compliance="X11" />
   <color name="honeydew3" red="193" green="205" blue="193" compliance="X11" />
   <color name="honeydew4" red="131" green="139" blue="131" compliance="X11" />
-  <color name="hot pink" red="255" green="105" blue="180" compliance="X11" />
   <color name="HotPink" red="255" green="105" blue="180" compliance="SVG, X11" />
   <color name="HotPink1" red="255" green="110" blue="180" compliance="X11" />
   <color name="HotPink2" red="238" green="106" blue="167" compliance="X11" />
   <color name="HotPink3" red="205" green="96" blue="144" compliance="X11" />
   <color name="HotPink4" red="139" green="58" blue="98" compliance="X11" />
-  <color name="indian red" red="205" green="92" blue="92" compliance="X11" />
   <color name="IndianRed" red="205" green="92" blue="92" compliance="SVG, X11" />
   <color name="IndianRed1" red="255" green="106" blue="106" compliance="X11" />
   <color name="IndianRed2" red="238" green="99" blue="99" compliance="X11" />
@@ -422,38 +394,18 @@
   <color name="khaki2" red="238" green="230" blue="133" compliance="X11" />
   <color name="khaki3" red="205" green="198" blue="115" compliance="X11" />
   <color name="khaki4" red="139" green="134" blue="78" compliance="X11" />
-  <color name="lavender blush" red="255" green="240" blue="245" compliance="X11" />
   <color name="lavender" red="230" green="230" blue="250" compliance="SVG, X11" />
   <color name="LavenderBlush" red="255" green="240" blue="245" compliance="SVG, X11" />
   <color name="LavenderBlush1" red="255" green="240" blue="245" compliance="X11" />
   <color name="LavenderBlush2" red="238" green="224" blue="229" compliance="X11" />
   <color name="LavenderBlush3" red="205" green="193" blue="197" compliance="X11" />
   <color name="LavenderBlush4" red="139" green="131" blue="134" compliance="X11" />
-  <color name="lawn green" red="124" green="252" blue="0" compliance="X11" />
   <color name="LawnGreen" red="124" green="252" blue="0" compliance="SVG, X11" />
-  <color name="lemon chiffon" red="255" green="250" blue="205" compliance="X11" />
   <color name="LemonChiffon" red="255" green="250" blue="205" compliance="SVG, X11" />
   <color name="LemonChiffon1" red="255" green="250" blue="205" compliance="X11" />
   <color name="LemonChiffon2" red="238" green="233" blue="191" compliance="X11" />
   <color name="LemonChiffon3" red="205" green="201" blue="165" compliance="X11" />
   <color name="LemonChiffon4" red="139" green="137" blue="112" compliance="X11" />
-  <color name="light blue" red="173" green="216" blue="230" compliance="X11" />
-  <color name="light coral" red="240" green="128" blue="128" compliance="X11" />
-  <color name="light cyan" red="224" green="255" blue="255" compliance="X11" />
-  <color name="light goldenrod yellow" red="250" green="250" blue="210" compliance="X11" />
-  <color name="light goldenrod" red="238" green="221" blue="130" compliance="X11" />
-  <color name="light gray" red="211" green="211" blue="211" compliance="X11" />
-  <color name="light green" red="144" green="238" blue="144" compliance="X11" />
-  <color name="light grey" red="211" green="211" blue="211" compliance="X11" />
-  <color name="light pink" red="255" green="182" blue="193" compliance="X11" />
-  <color name="light salmon" red="255" green="160" blue="122" compliance="X11" />
-  <color name="light sea green" red="32" green="178" blue="170" compliance="X11" />
-  <color name="light sky blue" red="135" green="206" blue="250" compliance="X11" />
-  <color name="light slate blue" red="132" green="112" blue="255" compliance="X11" />
-  <color name="light slate gray" red="119" green="136" blue="153" compliance="X11" />
-  <color name="light slate grey" red="119" green="136" blue="153" compliance="X11" />
-  <color name="light steel blue" red="176" green="196" blue="222" compliance="X11" />
-  <color name="light yellow" red="255" green="255" blue="224" compliance="X11" />
   <color name="LightBlue" red="173" green="216" blue="230" compliance="SVG, X11" />
   <color name="LightBlue1" red="191" green="239" blue="255" compliance="X11" />
   <color name="LightBlue2" red="178" green="223" blue="238" compliance="X11" />
@@ -503,7 +455,6 @@
   <color name="LightYellow2" red="238" green="238" blue="209" compliance="X11" />
   <color name="LightYellow3" red="205" green="205" blue="180" compliance="X11" />
   <color name="LightYellow4" red="139" green="139" blue="122" compliance="X11" />
-  <color name="lime green" red="50" green="205" blue="50" compliance="X11" />
   <color name="lime" red="0" green="255" blue="0" compliance="SVG" />
   <color name="LimeGreen" red="50" green="205" blue="50" compliance="SVG, X11" />
   <color name="linen" red="250" green="240" blue="230" compliance="SVG, X11" />
@@ -519,15 +470,6 @@
   <color name="maroon2" red="238" green="48" blue="167" compliance="X11" />
   <color name="maroon3" red="205" green="41" blue="144" compliance="X11" />
   <color name="maroon4" red="139" green="28" blue="98" compliance="X11" />
-  <color name="medium aquamarine" red="102" green="205" blue="170" compliance="X11" />
-  <color name="medium blue" red="0" green="0" blue="205" compliance="X11" />
-  <color name="medium orchid" red="186" green="85" blue="211" compliance="X11" />
-  <color name="medium purple" red="147" green="112" blue="219" compliance="X11" />
-  <color name="medium sea green" red="60" green="179" blue="113" compliance="X11" />
-  <color name="medium slate blue" red="123" green="104" blue="238" compliance="X11" />
-  <color name="medium spring green" red="0" green="250" blue="154" compliance="X11" />
-  <color name="medium turquoise" red="72" green="209" blue="204" compliance="X11" />
-  <color name="medium violet red" red="199" green="21" blue="133" compliance="X11" />
   <color name="MediumAquamarine" red="102" green="205" blue="170" compliance="SVG, X11" />
   <color name="MediumBlue" red="0" green="0" blue="205" compliance="SVG, X11" />
   <color name="MediumOrchid" red="186" green="85" blue="211" compliance="SVG, X11" />
@@ -545,37 +487,29 @@
   <color name="MediumSpringGreen" red="0" green="250" blue="154" compliance="SVG, X11" />
   <color name="MediumTurquoise" red="72" green="209" blue="204" compliance="SVG, X11" />
   <color name="MediumVioletRed" red="199" green="21" blue="133" compliance="SVG, X11" />
-  <color name="midnight blue" red="25" green="25" blue="112" compliance="X11" />
   <color name="MidnightBlue" red="25" green="25" blue="112" compliance="SVG, X11" />
-  <color name="mint cream" red="245" green="255" blue="250" compliance="X11" />
   <color name="MintCream" red="245" green="255" blue="250" compliance="SVG, X11" />
-  <color name="misty rose" red="255" green="228" blue="225" compliance="X11" />
   <color name="MistyRose" red="255" green="228" blue="225" compliance="SVG, X11" />
   <color name="MistyRose1" red="255" green="228" blue="225" compliance="X11" />
   <color name="MistyRose2" red="238" green="213" blue="210" compliance="X11" />
   <color name="MistyRose3" red="205" green="183" blue="181" compliance="X11" />
   <color name="MistyRose4" red="139" green="125" blue="123" compliance="X11" />
   <color name="moccasin" red="255" green="228" blue="181" compliance="SVG, X11" />
-  <color name="navajo white" red="255" green="222" blue="173" compliance="X11" />
   <color name="NavajoWhite" red="255" green="222" blue="173" compliance="SVG, X11" />
   <color name="NavajoWhite1" red="255" green="222" blue="173" compliance="X11" />
   <color name="NavajoWhite2" red="238" green="207" blue="161" compliance="X11" />
   <color name="NavajoWhite3" red="205" green="179" blue="139" compliance="X11" />
   <color name="NavajoWhite4" red="139" green="121" blue="94" compliance="X11" />
-  <color name="navy blue" red="0" green="0" blue="128" compliance="X11" />
   <color name="navy" red="0" green="0" blue="128" compliance="SVG, X11" />
   <color name="NavyBlue" red="0" green="0" blue="128" compliance="X11" />
   <color name="none" red="0" green="0" blue="0" opacity="255" compliance="SVG" />
-  <color name="old lace" red="253" green="245" blue="230" compliance="X11" />
   <color name="OldLace" red="253" green="245" blue="230" compliance="SVG, X11" />
-  <color name="olive drab" red="107" green="142" blue="35" compliance="X11" />
   <color name="olive" red="128" green="128" blue="0" compliance="SVG" />
   <color name="OliveDrab" red="107" green="142" blue="35" compliance="SVG, X11" />
   <color name="OliveDrab1" red="192" green="255" blue="62" compliance="X11" />
   <color name="OliveDrab2" red="179" green="238" blue="58" compliance="X11" />
   <color name="OliveDrab3" red="154" green="205" blue="50" compliance="X11" />
   <color name="OliveDrab4" red="105" green="139" blue="34" compliance="X11" />
-  <color name="orange red" red="255" green="69" blue="0" compliance="X11" />
   <color name="orange" red="255" green="165" blue="0" compliance="SVG, X11" />
   <color name="orange1" red="255" green="165" blue="0" compliance="X11" />
   <color name="orange2" red="238" green="154" blue="0" compliance="X11" />
@@ -591,10 +525,6 @@
   <color name="orchid2" red="238" green="122" blue="233" compliance="X11" />
   <color name="orchid3" red="205" green="105" blue="201" compliance="X11" />
   <color name="orchid4" red="139" green="71" blue="137" compliance="X11" />
-  <color name="pale goldenrod" red="238" green="232" blue="170" compliance="X11" />
-  <color name="pale green" red="152" green="251" blue="152" compliance="X11" />
-  <color name="pale turquoise" red="175" green="238" blue="238" compliance="X11" />
-  <color name="pale violet red" red="219" green="112" blue="147" compliance="X11" />
   <color name="PaleGoldenrod" red="238" green="232" blue="170" compliance="SVG, X11" />
   <color name="PaleGreen" red="152" green="251" blue="152" compliance="SVG, X11" />
   <color name="PaleGreen1" red="154" green="255" blue="154" compliance="X11" />
@@ -611,9 +541,7 @@
   <color name="PaleVioletRed2" red="238" green="121" blue="159" compliance="X11" />
   <color name="PaleVioletRed3" red="205" green="104" blue="137" compliance="X11" />
   <color name="PaleVioletRed4" red="139" green="71" blue="93" compliance="X11" />
-  <color name="papaya whip" red="255" green="239" blue="213" compliance="X11" />
   <color name="PapayaWhip" red="255" green="239" blue="213" compliance="SVG, X11" />
-  <color name="peach puff" red="255" green="218" blue="185" compliance="X11" />
   <color name="PeachPuff" red="255" green="218" blue="185" compliance="SVG, X11" />
   <color name="PeachPuff1" red="255" green="218" blue="185" compliance="X11" />
   <color name="PeachPuff2" red="238" green="203" blue="173" compliance="X11" />
@@ -630,7 +558,6 @@
   <color name="plum2" red="238" green="174" blue="238" compliance="X11" />
   <color name="plum3" red="205" green="150" blue="205" compliance="X11" />
   <color name="plum4" red="139" green="102" blue="139" compliance="X11" />
-  <color name="powder blue" red="176" green="224" blue="230" compliance="X11" />
   <color name="PowderBlue" red="176" green="224" blue="230" compliance="SVG, X11" />
   <color name="purple" red="128" green="0" blue="128" compliance="SVG" />
   <color name="purple" red="160" green="32" blue="240" compliance="X11" />
@@ -643,28 +570,23 @@
   <color name="red2" red="238" green="0" blue="0" compliance="X11" />
   <color name="red3" red="205" green="0" blue="0" compliance="X11" />
   <color name="red4" red="139" green="0" blue="0" compliance="X11" />
-  <color name="rosy brown" red="188" green="143" blue="143" compliance="X11" />
   <color name="RosyBrown" red="188" green="143" blue="143" compliance="SVG, X11" />
   <color name="RosyBrown1" red="255" green="193" blue="193" compliance="X11" />
   <color name="RosyBrown2" red="238" green="180" blue="180" compliance="X11" />
   <color name="RosyBrown3" red="205" green="155" blue="155" compliance="X11" />
   <color name="RosyBrown4" red="139" green="105" blue="105" compliance="X11" />
-  <color name="royal blue" red="65" green="105" blue="225" compliance="X11" />
   <color name="RoyalBlue" red="65" green="105" blue="225" compliance="SVG, X11" />
   <color name="RoyalBlue1" red="72" green="118" blue="255" compliance="X11" />
   <color name="RoyalBlue2" red="67" green="110" blue="238" compliance="X11" />
   <color name="RoyalBlue3" red="58" green="95" blue="205" compliance="X11" />
   <color name="RoyalBlue4" red="39" green="64" blue="139" compliance="X11" />
-  <color name="saddle brown" red="139" green="69" blue="19" compliance="X11" />
   <color name="SaddleBrown" red="139" green="69" blue="19" compliance="SVG, X11" />
   <color name="salmon" red="250" green="128" blue="114" compliance="SVG, X11" />
   <color name="salmon1" red="255" green="140" blue="105" compliance="X11" />
   <color name="salmon2" red="238" green="130" blue="98" compliance="X11" />
   <color name="salmon3" red="205" green="112" blue="84" compliance="X11" />
   <color name="salmon4" red="139" green="76" blue="57" compliance="X11" />
-  <color name="sandy brown" red="244" green="164" blue="96" compliance="X11" />
   <color name="SandyBrown" red="244" green="164" blue="96" compliance="SVG, X11" />
-  <color name="sea green" red="46" green="139" blue="87" compliance="X11" />
   <color name="SeaGreen" red="46" green="139" blue="87" compliance="SVG, X11" />
   <color name="SeaGreen1" red="84" green="255" blue="159" compliance="X11" />
   <color name="SeaGreen2" red="78" green="238" blue="148" compliance="X11" />
@@ -681,15 +603,11 @@
   <color name="sienna3" red="205" green="104" blue="57" compliance="X11" />
   <color name="sienna4" red="139" green="71" blue="38" compliance="X11" />
   <color name="silver" red="192" green="192" blue="192" compliance="SVG" />
-  <color name="sky blue" red="135" green="206" blue="235" compliance="X11" />
   <color name="SkyBlue" red="135" green="206" blue="235" compliance="SVG, X11" />
   <color name="SkyBlue1" red="135" green="206" blue="255" compliance="X11" />
   <color name="SkyBlue2" red="126" green="192" blue="238" compliance="X11" />
   <color name="SkyBlue3" red="108" green="166" blue="205" compliance="X11" />
   <color name="SkyBlue4" red="74" green="112" blue="139" compliance="X11" />
-  <color name="slate blue" red="106" green="90" blue="205" compliance="X11" />
-  <color name="slate gray" red="112" green="128" blue="144" compliance="X11" />
-  <color name="slate grey" red="112" green="128" blue="144" compliance="X11" />
   <color name="SlateBlue" red="106" green="90" blue="205" compliance="SVG, X11" />
   <color name="SlateBlue1" red="131" green="111" blue="255" compliance="X11" />
   <color name="SlateBlue2" red="122" green="103" blue="238" compliance="X11" />
@@ -706,13 +624,11 @@
   <color name="snow2" red="238" green="233" blue="233" compliance="X11" />
   <color name="snow3" red="205" green="201" blue="201" compliance="X11" />
   <color name="snow4" red="139" green="137" blue="137" compliance="X11" />
-  <color name="spring green" red="0" green="255" blue="127" compliance="X11" />
   <color name="SpringGreen" red="0" green="255" blue="127" compliance="SVG, X11" />
   <color name="SpringGreen1" red="0" green="255" blue="127" compliance="X11" />
   <color name="SpringGreen2" red="0" green="238" blue="118" compliance="X11" />
   <color name="SpringGreen3" red="0" green="205" blue="102" compliance="X11" />
   <color name="SpringGreen4" red="0" green="139" blue="69" compliance="X11" />
-  <color name="steel blue" red="70" green="130" blue="180" compliance="X11" />
   <color name="SteelBlue" red="70" green="130" blue="180" compliance="SVG, X11" />
   <color name="SteelBlue1" red="99" green="184" blue="255" compliance="X11" />
   <color name="SteelBlue2" red="92" green="172" blue="238" compliance="X11" />
@@ -739,7 +655,6 @@
   <color name="turquoise2" red="0" green="229" blue="238" compliance="X11" />
   <color name="turquoise3" red="0" green="197" blue="205" compliance="X11" />
   <color name="turquoise4" red="0" green="134" blue="139" compliance="X11" />
-  <color name="violet red" red="208" green="32" blue="144" compliance="X11" />
   <color name="violet" red="238" green="130" blue="238" compliance="SVG, X11" />
   <color name="VioletRed" red="208" green="32" blue="144" compliance="X11" />
   <color name="VioletRed1" red="255" green="62" blue="150" compliance="X11" />
@@ -751,10 +666,8 @@
   <color name="wheat2" red="238" green="216" blue="174" compliance="X11" />
   <color name="wheat3" red="205" green="186" blue="150" compliance="X11" />
   <color name="wheat4" red="139" green="126" blue="102" compliance="X11" />
-  <color name="white smoke" red="245" green="245" blue="245" compliance="X11" />
   <color name="white" red="255" green="255" blue="255" compliance="SVG, X11" />
   <color name="WhiteSmoke" red="245" green="245" blue="245" compliance="SVG, X11" />
-  <color name="yellow green" red="154" green="205" blue="50" compliance="X11" />
   <color name="yellow" red="255" green="255" blue="0" compliance="SVG, X11" />
   <color name="yellow1" red="255" green="255" blue="0" compliance="X11" />
   <color name="yellow2" red="238" green="238" blue="0" compliance="X11" />
