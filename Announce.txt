@@ -49,6 +49,9 @@ for details):
 
   o Utilities enhancements/changes:
 
+    - A display-like GUI for Windows is now available.  Look for it
+      in the source directory "contrib/win32/MFC/IMDisplay".
+
     - Abbreviated options are no longer supported.  This will impact
       any programs or scripts that used abbreviated options.
 
