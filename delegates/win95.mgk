@@ -57,7 +57,7 @@
 # ImageMagick looks for the delegate configurarion file in this order:
 # 
 #     c:\ImageMagick\delegates.mgk
-#     MAGICK_DELEGATE_PATH\delegates.mgk
+#     $MAGICK_HOME\delegates.mgk
 #     delegates.mgk
 # 
 # where MAGICK_DELEGATE_PATH is an environment variable.
@@ -80,13 +80,13 @@
 	|gzip -cf > %o
 
 bmp<=launch
-	c:/program files/accessories/mspaint %i.
+	mspaint %i.
 
 bmp<=win
-	c:/program files/accessories/mspaint %i.
+	mspaint %i.
 
 browse=>
-	cmd /C start http://www.wizards.dupont.com/cristy/ImageMagick.html &
+	cmd /C start http://www.simplesystems.org/mageMagick.html &
 
 bzip=>
 	|bzip2 -cd %i
