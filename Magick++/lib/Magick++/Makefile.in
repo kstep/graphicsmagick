@@ -35,7 +35,7 @@ pkgdatadir = $(datadir)/@PACKAGE@
 pkglibdir = $(libdir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
 
-top_builddir = ../../..
+top_builddir = ../..
 
 ACLOCAL = @ACLOCAL@
 AUTOCONF = @AUTOCONF@
@@ -57,111 +57,34 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 
 @SET_MAKE@
-build_alias = @build_alias@
-build_triplet = @build@
 host_alias = @host_alias@
 host_triplet = @host@
-target_alias = @target_alias@
-target_triplet = @target@
 AMDEP = @AMDEP@
 AMTAR = @AMTAR@
 AS = @AS@
 AWK = @AWK@
-BZIPDelegate = @BZIPDelegate@
-BrowseDelegate = @BrowseDelegate@
 CC = @CC@
-CGMDecodeDelegate = @CGMDecodeDelegate@
 CPP = @CPP@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
-CatDelegate = @CatDelegate@
-ConvertDelegate = @ConvertDelegate@
-DELEGATES = @DELEGATES@
 DEPDIR = @DEPDIR@
-DLLDFLAGS = @DLLDFLAGS@
 DLLTOOL = @DLLTOOL@
-DOTDecodeDelegate = @DOTDecodeDelegate@
-DVIDecodeDelegate = @DVIDecodeDelegate@
 EXEEXT = @EXEEXT@
-EchoDelegate = @EchoDelegate@
-EditorDelegate = @EditorDelegate@
-FIGDecodeDelegate = @FIGDecodeDelegate@
 GCJ = @GCJ@
 GCJFLAGS = @GCJFLAGS@
-GSColorDevice = @GSColorDevice@
-GSEPSDevice = @GSEPSDevice@
-GSMonoDevice = @GSMonoDevice@
-GSPDFDevice = @GSPDFDevice@
-GSPSDevice = @GSPSDevice@
-GnuplotDecodeDelegate = @GnuplotDecodeDelegate@
-HPGLDecodeDelegate = @HPGLDecodeDelegate@
-HTMLDecodeDelegate = @HTMLDecodeDelegate@
-ILBMDecodeDelegate = @ILBMDecodeDelegate@
-ILBMEncodeDelegate = @ILBMEncodeDelegate@
-INCLTDL = @INCLTDL@
-LD = @LD@
-LIBLTDL = @LIBLTDL@
 LIBTOOL = @LIBTOOL@
-LIB_BZLIB = @LIB_BZLIB@
-LIB_DL = @LIB_DL@
-LIB_DPS = @LIB_DPS@
-LIB_FPX = @LIB_FPX@
-LIB_HDF = @LIB_HDF@
-LIB_JBIG = @LIB_JBIG@
-LIB_JPEG = @LIB_JPEG@
-LIB_LCMS = @LIB_LCMS@
-LIB_LF = @LIB_LF@
-LIB_MATH = @LIB_MATH@
-LIB_PNG = @LIB_PNG@
-LIB_SFIO = @LIB_SFIO@
-LIB_THREAD = @LIB_THREAD@
-LIB_TIFF = @LIB_TIFF@
-LIB_TTF = @LIB_TTF@
-LIB_X11 = @LIB_X11@
-LIB_XEXT = @LIB_XEXT@
-LIB_XML = @LIB_XML@
-LIB_XT = @LIB_XT@
-LIB_ZLIB = @LIB_ZLIB@
 LN_S = @LN_S@
-LPDelegate = @LPDelegate@
-LPRDelegate = @LPRDelegate@
-LZWDecodeDelegate = @LZWDecodeDelegate@
-LZWEncodeDelegate = @LZWEncodeDelegate@
-LaunchDelegate = @LaunchDelegate@
-MAGICKLIB = @MAGICKLIB@
 MAINT = @MAINT@
 MAJOR_VERSION = @MAJOR_VERSION@
 MAKEINFO = @MAKEINFO@
-MANDelegate = @MANDelegate@
 MICRO_VERSION = @MICRO_VERSION@
 MINOR_VERSION = @MINOR_VERSION@
-MPEGDecodeDelegate = @MPEGDecodeDelegate@
-MPEGEncodeDelegate = @MPEGEncodeDelegate@
-MVDelegate = @MVDelegate@
-MogrifyDelegate = @MogrifyDelegate@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
-PERL = @PERL@
-PERL_MAKE_OPTIONS = @PERL_MAKE_OPTIONS@
-PGPDecodeDelegate = @PGPDecodeDelegate@
-POVDelegate = @POVDelegate@
-PSDelegate = @PSDelegate@
-PrintDelegate = @PrintDelegate@
-RADDecodeDelegate = @RADDecodeDelegate@
 RANLIB = @RANLIB@
-RLEEncodeDelegate = @RLEEncodeDelegate@
-RMDelegate = @RMDelegate@
-SCANDecodeDelegate = @SCANDecodeDelegate@
 STRIP = @STRIP@
-ShowImageDelegate = @ShowImageDelegate@
-TXTDelegate = @TXTDelegate@
 VERSION = @VERSION@
-WMFDecodeDelegate = @WMFDecodeDelegate@
-WWWDecodeDelegate = @WWWDecodeDelegate@
-XCFDecodeDelegate = @XCFDecodeDelegate@
-X_CFLAGS = @X_CFLAGS@
-ZipDelegate = @ZipDelegate@
 install_sh = @install_sh@
 
 #
@@ -178,9 +101,8 @@ pkginclude_HEADERS = Blob.h Color.h Drawable.h \
 	Include.h Montage.h Options.h \
 	Pixels.h Thread.h STL.h
 
-subdir = Magick++/lib/Magick++
+subdir = lib/Magick++
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
-CONFIG_HEADER = ../../../magick/config.h
 CONFIG_CLEAN_FILES = 
 DIST_SOURCES = 
 HEADERS =  $(pkginclude_HEADERS)
@@ -194,7 +116,7 @@ GZIP_ENV = --best
 all: all-redirect
 .SUFFIXES:
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
-	cd $(top_srcdir) && $(AUTOMAKE) --gnu Magick++/lib/Magick++/Makefile
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu lib/Magick++/Makefile
 
 Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \

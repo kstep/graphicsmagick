@@ -126,28 +126,27 @@ MagickExport int ImageFormatConflict(char *magick)
 
   int
     device_class,
-    VMSstatus;
+    status;
 
   struct dsc$descriptor_s
-    device_desc;
+    device;
 
   assert(magick != (char *) NULL);
-  device_desc.dsc$w_length=strlen(magick);
-  device_desc.dsc$a_pointer=magick;
-  device_desc.dsc$b_class=DSC$K_CLASS_S;
-  device_desc.dsc$b_dtype=DSC$K_DTYPE_T;
+  device.dsc$w_length=strlen(magick);
+  device.dsc$a_pointer=magick;
+  device.dsc$b_class=DSC$K_CLASS_S;
+  device.dsc$b_dtype=DSC$K_DTYPE_T;
   item_list[0].ile3$w_length=sizeof(device_class);
   item_list[0].ile3$w_code=DVI$_DEVCLASS;
   item_list[0].ile3$ps_bufaddr=&device_class;
   item_list[0].ile3$ps_retlen_addr=NULL;
   memset(&item_list[1],0,sizeof(item_list[1]));
-  VMSstatus = sys$getdviw(0,0,&device_desc,&item_list,0,0,0,0);
-  if ((VMSstatus == SS$_NONLOCAL) || 
-      ((VMSstatus & 0x01) && (device_class & (DC$_DISK | DC$_TAPE))))
+  status=sys$getdviw(0,0,&device,&item_list,0,0,0,0);
+  if ((status == SS$_NONLOCAL) || 
+      ((status & 0x01) && (device_class & (DC$_DISK | DC$_TAPE))))
     return(True);
   return(False);
 }
-#endif /* defined(vms) */
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -284,3 +283,4 @@ struct dirent *readdir(DIR *directory)
   return(&directory->entry);
 }
 #endif /* !defined(_AXP_) && (!defined(__VMS_VER) || (__VMS_VER < 70000000)) */
+#endif /* defined(vms) */

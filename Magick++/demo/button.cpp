@@ -19,10 +19,6 @@ int main( int /*argc*/, char ** argv)
   // Initialize ImageMagick install location for Windows
   MagickIncarnate(*argv);
 
-  string srcdir("");
-  if(getenv("srcdir") != (char*)NULL)
-    srcdir = getenv("srcdir") + string("/");
-
   try {
 
     //
@@ -47,7 +43,7 @@ int main( int /*argc*/, char ** argv)
     string textColor = "red";
 
     // Font to use for text
-    string textFont = string("@") + srcdir + "Generic.ttf";
+    string textFont = "@Generic.ttf";
 
     // Font point size
     int textFontPointSize = 16;

@@ -12,7 +12,7 @@
 #include <iomanip>
 #include <strstream>
 
-#include <cctype> // for isdigit
+#include <ctype.h> // for isdigit
 
 using namespace std;
 

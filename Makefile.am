@@ -37,14 +37,10 @@
 AUTOMAKE_OPTIONS = 1.4 foreign # no-dependencies
 
 # Subdirectories to build
-if WITH_MAGICK_PLUS_PLUS
-MAGICK_PLUS_PLUS=Magick++
-endif # WITH_MAGICK_PLUS_PLUS
-
 if WITH_MODULES
-SUBDIRS = delegates ltdl magick coders utilities tests $(MAGICK_PLUS_PLUS)
+SUBDIRS = delegates ltdl magick coders utilities tests
 else
-SUBDIRS = delegates ltdl coders magick utilities tests $(MAGICK_PLUS_PLUS)
+SUBDIRS = delegates ltdl coders magick utilities tests
 endif # WITH_MODULES
 
 # Additional files to distribute

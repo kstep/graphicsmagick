@@ -1,11 +1,11 @@
 #
 # Makefile for Magick++ tests
 #
-# Copyright Bob Friesenhahn, 1999, 2000
+# Copyright Bob Friesenhahn, 1999
 #
-AUTOMAKE_OPTIONS = 1.4
+AUTOMAKE_OPTIONS = 1.2 
 
-INCLUDES = -I$(srcdir)/../lib -I../.. -I$(top_srcdir)
+INCLUDES = -I../lib
 
 #
 # Execute 'make check' to compile and run a test program
@@ -13,7 +13,7 @@ INCLUDES = -I$(srcdir)/../lib -I../.. -I$(top_srcdir)
 check_PROGRAMS = color attributes appendImages averageImages coalesceImages \
 	montageImages morphImages readWriteImages readWriteBlob
 
-LDADD = ../lib/libMagick++.la ../../magick/libMagick.la
+LDADD = ../lib/libMagick++.la
 
 appendImages_SOURCES	= appendImages.cpp
 attributes_SOURCES	= attributes.cpp
@@ -31,13 +31,13 @@ EXTRA_DIST = \
 CLEANFILES = testmagick_anim_out.miff
 
 check:
-	env srcdir=$(srcdir) ./color
-	env srcdir=$(srcdir) ./attributes
-	env srcdir=$(srcdir) ./appendImages
-	env srcdir=$(srcdir) ./averageImages
-	env srcdir=$(srcdir) ./coalesceImages
-	env srcdir=$(srcdir) ./montageImages
-	env srcdir=$(srcdir) ./morphImages
-	env srcdir=$(srcdir) ./readWriteImages
-	env srcdir=$(srcdir) ./readWriteBlob
+	./color
+	./attributes
+	./appendImages
+	./averageImages
+	./coalesceImages
+	./montageImages
+	./morphImages
+	./readWriteImages
+	./readWriteBlob
 

@@ -15,7 +15,7 @@ chdir 't' || die 'Cd failed';
 
 testFilter('input.miff', 'Blur',
   q/0.0x1.5/,
-  '7b5e0779098aa3ab22d4272bbfab8e1e',
+  'ffaa23e7b744bc72f70cd4328174331b',
   '6046acf8622ed1bdf5628416cf26ea88');
 
 ++$test;

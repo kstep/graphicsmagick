@@ -24,10 +24,6 @@ int main( int /*argc*/, char ** argv)
 
   int failures=0;
 
-  string srcdir("");
-  if(getenv("srcdir") != (char*)NULL)
-    srcdir = getenv("srcdir") + string("/");
-
   try {
 
     //
@@ -35,7 +31,7 @@ int main( int /*argc*/, char ** argv)
     //
       
     list<Image> first;
-    readImages( &first, srcdir + "test_image_anim.miff" );
+    readImages( &first, "test_image_anim.miff" );
       
     if ( first.size() != 6 )
       {

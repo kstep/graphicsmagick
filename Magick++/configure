@@ -2313,8 +2313,7 @@ else
       # Check to see if the nm accepts a BSD-compat flag.
       # Adding the `sed 1q' prevents false positives on HP-UX, which says:
       #   nm: unknown option "B" ignored
-      # Tru64's nm complains that /dev/null is an invalid object file
-      if ($tmp_nm -B /dev/null 2>&1 | sed '1q'; exit 0) | egrep '(/dev/null||Invalid file or object type)' >/dev/null; then
+      if ($tmp_nm -B /dev/null 2>&1 | sed '1q'; exit 0) | egrep /dev/null >/dev/null; then
 	ac_cv_path_NM="$tmp_nm -B"
 	break
       elif ($tmp_nm -p /dev/null 2>&1 | sed '1q'; exit 0) | egrep /dev/null >/dev/null; then
@@ -2332,10 +2331,10 @@ fi
 fi
 
 NM="$ac_cv_path_NM"
-echo "configure:2134: result: $NM" >&5
+echo "configure:2133: result: $NM" >&5
 echo "$ECHO_T""$NM" >&6
 
-echo "configure:2136: checking how to recognise dependant libraries" >&5
+echo "configure:2135: checking how to recognise dependant libraries" >&5
 echo $ECHO_N "checking how to recognise dependant libraries... $ECHO_C" >&6
 if test "${lt_cv_deplibs_check_method+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -2378,9 +2377,7 @@ freebsd* )
   if echo __ELF__ | $CC -E - | grep __ELF__ > /dev/null; then
     case "$host_cpu" in
     i*86 )
-      # Not sure whether the presence of OpenBSD here was a mistake.
-      # Let's accept both of them until this is cleared up.
-            lt_cv_deplibs_check_method='file_magic (FreeBSD|OpenBSD)/i[3-9]86 (compact )?demand paged shared library'
+            lt_cv_deplibs_check_method=='file_magic OpenBSD/i[3-9]86 demand paged shared library'
             lt_cv_file_magic_cmd=/usr/bin/file
       lt_cv_file_magic_test_file=`echo /usr/lib/libc.so.*`
       ;;
@@ -2473,19 +2470,19 @@ sysv4 | sysv4.2uw2* | sysv4.3* | sysv5*)
 esac
 
 fi
-echo "configure:2259: result: $lt_cv_deplibs_check_method" >&5
+echo "configure:2256: result: $lt_cv_deplibs_check_method" >&5
 echo "$ECHO_T""$lt_cv_deplibs_check_method" >&6
 file_magic_cmd=$lt_cv_file_magic_cmd
 deplibs_check_method=$lt_cv_deplibs_check_method
 
-echo "configure:2263: checking for object suffix" >&5
+echo "configure:2260: checking for object suffix" >&5
 echo $ECHO_N "checking for object suffix... $ECHO_C" >&6
 if test "${ac_cv_objext+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   rm -f conftest*
 echo 'int i = 1;' >conftest.$ac_ext
-if { (eval echo configure:2270: \"$ac_compile\") >&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:2267: \"$ac_compile\") >&5; (eval $ac_compile) 2>&5; }; then
   for ac_file in conftest.*; do
     case $ac_file in
     *.c) ;;
@@ -2498,12 +2495,12 @@ fi
 rm -f conftest*
 fi
 
-echo "configure:2282: result: $ac_cv_objext" >&5
+echo "configure:2279: result: $ac_cv_objext" >&5
 echo "$ECHO_T""$ac_cv_objext" >&6
 OBJEXT=$ac_cv_objext
 ac_objext=$ac_cv_objext
 
-echo "configure:2286: checking for executable suffix" >&5
+echo "configure:2283: checking for executable suffix" >&5
 echo $ECHO_N "checking for executable suffix... $ECHO_C" >&6
 if test "${ac_cv_exeext+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -2514,7 +2511,7 @@ else
   rm -f conftest*
   echo 'int main () { return 0; }' >conftest.$ac_ext
   ac_cv_exeext=
-  if { (eval echo configure:2297: \"$ac_link\") >&5; (eval $ac_link) 2>&5; }; then
+  if { (eval echo configure:2294: \"$ac_link\") >&5; (eval $ac_link) 2>&5; }; then
     for ac_file in conftest.*; do
       case $ac_file in
       *.c | *.C | *.o | *.obj | *.xcoff) ;;
@@ -2531,7 +2528,7 @@ fi
 
 EXEEXT=""
 test x"${ac_cv_exeext}" != xno && EXEEXT=${ac_cv_exeext}
-echo "configure:2313: result: ${ac_cv_exeext}" >&5
+echo "configure:2310: result: ${ac_cv_exeext}" >&5
 echo "$ECHO_T""${ac_cv_exeext}" >&6
 ac_exeext=$EXEEXT
 
@@ -2548,7 +2545,7 @@ case "$deplibs_check_method" in
 file_magic*)
   if test "$file_magic_cmd" = '${MAGIC}'; then
 
-echo "configure:2326: checking for ${ac_tool_prefix}file" >&5
+echo "configure:2323: checking for ${ac_tool_prefix}file" >&5
 echo $ECHO_N "checking for ${ac_tool_prefix}file... $ECHO_C" >&6
 if test "${lt_cv_path_MAGIC+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -2603,16 +2600,16 @@ fi
 
 MAGIC="$lt_cv_path_MAGIC"
 if test -n "$MAGIC"; then
-  echo "configure:2378: result: $MAGIC" >&5
+  echo "configure:2375: result: $MAGIC" >&5
 echo "$ECHO_T""$MAGIC" >&6
 else
-  echo "configure:2381: result: no" >&5
+  echo "configure:2378: result: no" >&5
 echo "$ECHO_T""no" >&6
 fi
 
 if test -z "$lt_cv_path_MAGIC"; then
   if test -n "$ac_tool_prefix"; then
-    echo "configure:2386: checking for file" >&5
+    echo "configure:2383: checking for file" >&5
 echo $ECHO_N "checking for file... $ECHO_C" >&6
 if test "${lt_cv_path_MAGIC+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -2667,10 +2664,10 @@ fi
 
 MAGIC="$lt_cv_path_MAGIC"
 if test -n "$MAGIC"; then
-  echo "configure:2438: result: $MAGIC" >&5
+  echo "configure:2435: result: $MAGIC" >&5
 echo "$ECHO_T""$MAGIC" >&6
 else
-  echo "configure:2441: result: no" >&5
+  echo "configure:2438: result: no" >&5
 echo "$ECHO_T""no" >&6
 fi
 
@@ -2685,7 +2682,7 @@ esac
 
 # Extract the first word of "${ac_tool_prefix}ranlib", so it can be a program name with args.
 set dummy ${ac_tool_prefix}ranlib; ac_word=$2
-echo "configure:2453: checking for $ac_word" >&5
+echo "configure:2450: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_prog_RANLIB+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -2710,10 +2707,10 @@ fi
 fi
 RANLIB=$ac_cv_prog_RANLIB
 if test -n "$RANLIB"; then
-  echo "configure:2478: result: $RANLIB" >&5
+  echo "configure:2475: result: $RANLIB" >&5
 echo "$ECHO_T""$RANLIB" >&6
 else
-  echo "configure:2481: result: no" >&5
+  echo "configure:2478: result: no" >&5
 echo "$ECHO_T""no" >&6
 fi
 
@@ -2721,7 +2718,7 @@ if test -z "$ac_cv_prog_RANLIB"; then
   if test -n "$ac_tool_prefix"; then
     # Extract the first word of "ranlib", so it can be a program name with args.
 set dummy ranlib; ac_word=$2
-echo "configure:2488: checking for $ac_word" >&5
+echo "configure:2485: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_prog_RANLIB+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -2747,10 +2744,10 @@ fi
 fi
 RANLIB=$ac_cv_prog_RANLIB
 if test -n "$RANLIB"; then
-  echo "configure:2514: result: $RANLIB" >&5
+  echo "configure:2511: result: $RANLIB" >&5
 echo "$ECHO_T""$RANLIB" >&6
 else
-  echo "configure:2517: result: no" >&5
+  echo "configure:2514: result: no" >&5
 echo "$ECHO_T""no" >&6
 fi
 
@@ -2761,7 +2758,7 @@ fi
 
 # Extract the first word of "${ac_tool_prefix}strip", so it can be a program name with args.
 set dummy ${ac_tool_prefix}strip; ac_word=$2
-echo "configure:2526: checking for $ac_word" >&5
+echo "configure:2523: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_prog_STRIP+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -2786,10 +2783,10 @@ fi
 fi
 STRIP=$ac_cv_prog_STRIP
 if test -n "$STRIP"; then
-  echo "configure:2551: result: $STRIP" >&5
+  echo "configure:2548: result: $STRIP" >&5
 echo "$ECHO_T""$STRIP" >&6
 else
-  echo "configure:2554: result: no" >&5
+  echo "configure:2551: result: no" >&5
 echo "$ECHO_T""no" >&6
 fi
 
@@ -2797,7 +2794,7 @@ if test -z "$ac_cv_prog_STRIP"; then
   if test -n "$ac_tool_prefix"; then
     # Extract the first word of "strip", so it can be a program name with args.
 set dummy strip; ac_word=$2
-echo "configure:2561: checking for $ac_word" >&5
+echo "configure:2558: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_prog_STRIP+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -2823,10 +2820,10 @@ fi
 fi
 STRIP=$ac_cv_prog_STRIP
 if test -n "$STRIP"; then
-  echo "configure:2587: result: $STRIP" >&5
+  echo "configure:2584: result: $STRIP" >&5
 echo "$ECHO_T""$STRIP" >&6
 else
-  echo "configure:2590: result: no" >&5
+  echo "configure:2587: result: no" >&5
 echo "$ECHO_T""no" >&6
 fi
 
@@ -2866,8 +2863,8 @@ test x"$pic_mode" = xno && libtool_flags="$libtool_flags --prefer-non-pic"
 case "$host" in
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 2624 "configure"' > conftest.$ac_ext
-  if { (eval echo configure:2625: \"$ac_compile\") >&5; (eval $ac_compile) 2>&5; }; then
+  echo '#line 2621 "configure"' > conftest.$ac_ext
+  if { (eval echo configure:2622: \"$ac_compile\") >&5; (eval $ac_compile) 2>&5; }; then
     case "`/usr/bin/file conftest.o`" in
     *32-bit*)
       LD="${LD-ld} -32"
@@ -2887,7 +2884,7 @@ case "$host" in
   # On SCO OpenServer 5, we need -belf to get full-featured binaries.
   SAVE_CFLAGS="$CFLAGS"
   CFLAGS="$CFLAGS -belf"
-  echo "configure:2644: checking whether the C compiler needs -belf" >&5
+  echo "configure:2641: checking whether the C compiler needs -belf" >&5
 echo $ECHO_N "checking whether the C compiler needs -belf... $ECHO_C" >&6
 if test "${lt_cv_cc_needs_belf+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -2901,7 +2898,7 @@ ac_link='${CC-cc} -o conftest${ac_exeext} $CFLAGS $CPPFLAGS $LDFLAGS conftest.$a
 cross_compiling=$ac_cv_prog_cc_cross
 
      cat >conftest.$ac_ext <<EOF
-#line 2656 "configure"
+#line 2653 "configure"
 #include "confdefs.h"
 
 int
@@ -2912,7 +2909,7 @@ main ()
   return 0;
 }
 EOF
-if { (eval echo configure:2665: \"$ac_link\") >&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:2662: \"$ac_link\") >&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   lt_cv_cc_needs_belf=yes
 else
   echo "configure: failed program was:" >&5
@@ -2928,7 +2925,7 @@ ac_link='${CXX-g++} -o conftest${ac_exeext} $CXXFLAGS $CPPFLAGS $LDFLAGS conftes
 cross_compiling=$ac_cv_prog_cxx_cross
 
 fi
-echo "configure:2680: result: $lt_cv_cc_needs_belf" >&5
+echo "configure:2677: result: $lt_cv_cc_needs_belf" >&5
 echo "$ECHO_T""$lt_cv_cc_needs_belf" >&6
   if test x"$lt_cv_cc_needs_belf" != x"yes"; then
     # this is probably gcc 2.8.0, egcs 1.0 or newer; no need for -belf
@@ -3060,17 +3057,17 @@ exec 5>>./config.log
 #
 # Obtain ImageMagick compilation options from installed Magick-config script.
 #
-echo "configure:2800: checking pre-processor flags" >&5
+echo "configure:2797: checking pre-processor flags" >&5
 echo $ECHO_N "checking pre-processor flags... $ECHO_C" >&6
 # If -DHAVE_CONFIG_H is not specified, then QuantumLeap doesn't work.
 CPPFLAGS="$CPPFLAGS -DHAVE_CONFIG_H "`Magick-config --cppflags`
-echo "configure:2804: result: "$CPPFLAGS"" >&5
+echo "configure:2801: result: "$CPPFLAGS"" >&5
 echo "$ECHO_T"""$CPPFLAGS"" >&6
 
-echo "configure:2806: checking linker flags" >&5
+echo "configure:2803: checking linker flags" >&5
 echo $ECHO_N "checking linker flags... $ECHO_C" >&6
 LDFLAGS="$LDFLAGS "`Magick-config --ldflags`
-echo "configure:2809: result: "$LDFLAGS"" >&5
+echo "configure:2806: result: "$LDFLAGS"" >&5
 echo "$ECHO_T"""$LDFLAGS"" >&6
 
 #AC_MSG_CHECKING(libraries)
@@ -3081,7 +3078,7 @@ LIBS="$LIBS -lMagick"
 # Add configure option --enable-maintainer-mode which enables dependency
 # checking and generation useful to package maintainers.  This is made an
 # option to avoid confusing end users.
-echo "configure:2818: checking whether to enable maintainer-specific portions of Makefiles" >&5
+echo "configure:2815: checking whether to enable maintainer-specific portions of Makefiles" >&5
 echo $ECHO_N "checking whether to enable maintainer-specific portions of Makefiles... $ECHO_C" >&6
     # Check whether --enable-maintainer-mode or --disable-maintainer-mode was given.
 if test "${enable_maintainer_mode+set}" = set; then
@@ -3090,7 +3087,7 @@ if test "${enable_maintainer_mode+set}" = set; then
 else
   USE_MAINTAINER_MODE=no
 fi
-  echo "configure:2827: result: $USE_MAINTAINER_MODE" >&5
+  echo "configure:2824: result: $USE_MAINTAINER_MODE" >&5
 echo "$ECHO_T""$USE_MAINTAINER_MODE" >&6
 
 if test $USE_MAINTAINER_MODE = yes; then
@@ -3102,7 +3099,7 @@ else
 fi
   MAINT=$MAINTAINER_MODE_TRUE
 
-echo "configure:2837: checking host system type" >&5
+echo "configure:2834: checking host system type" >&5
 echo $ECHO_N "checking host system type... $ECHO_C" >&6
 if test "x$ac_cv_host" = "x" || (test "x$host" != "xNONE" && test "x$host" != "x$ac_cv_host_alias"); then
 
@@ -3130,7 +3127,7 @@ else
   echo $ECHO_N "(cached) $ECHO_C" >&6
 fi
 
-echo "configure:2861: result: $ac_cv_host" >&5
+echo "configure:2858: result: $ac_cv_host" >&5
 echo "$ECHO_T""$ac_cv_host" >&6
 
 host=$ac_cv_host

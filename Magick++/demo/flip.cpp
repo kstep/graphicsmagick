@@ -25,15 +25,11 @@ int main( int /*argc*/, char ** argv)
   // Initialize ImageMagick install location for Windows
   MagickIncarnate(*argv);
 
-  string srcdir("");
-  if(getenv("srcdir") != (char*)NULL)
-    srcdir = getenv("srcdir") + string("/");
-
   try {
 
     // Read images into STL list
     list<Image> imageList;
-    readImages( &imageList, srcdir + "smile_anim.miff" );
+    readImages( &imageList, "smile_anim.miff" );
 
     // cout << "Total scenes: " << imageList.size() << endl;
 
