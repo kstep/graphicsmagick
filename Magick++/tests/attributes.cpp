@@ -1101,11 +1101,11 @@ int main( int /*argc*/, char ** argv)
     // quantizeColors
     //
     // Test default
-    if ( image.quantizeColors() != 0 )
+    if ( image.quantizeColors() != 256 )
       {
 	++failures;
 	cout << "Line: " << __LINE__
-             << ", quantizeColors is not zero as expected" << endl;
+             << ", quantizeColors is not 256 as expected" << endl;
       }
 
     // Test set/get
