@@ -78,7 +78,7 @@ const char
   *SaveImagesText = "  Saving images...  ",
   *WriteBinaryType = "wb";
 
-const int
+const unsigned int
   DefaultCompressionQuality = 75;
 
 /*

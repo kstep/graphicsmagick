@@ -1711,7 +1711,7 @@ static unsigned int SyncPixelCache(Image *image)
             Apply clip mask.
           */
           r=nexus_info->pixels;
-          for (i=0; i < (nexus_info->columns*nexus_info->rows); i++)
+          for (i=0; i < (int) (nexus_info->columns*nexus_info->rows); i++)
           {
             if (q->opacity == TransparentOpacity)
               *r=(*p);

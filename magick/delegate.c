@@ -902,7 +902,7 @@ static unsigned int WriteMPEGParameterFiles(Image *image,
           q=Max((image_info->quality-DefaultCompressionQuality)*2.0,1.0);
           for (i=0; i < 64; i++)
           {
-            quant=Min(Max(q_matrix[i]/q,1.0),255);
+            quant=(int) Min(Max(q_matrix[i]/q,1.0),255.0);
             (void) fprintf(parameter_file," %d",quant);
             if ((i % 8) == 7)
               (void) fprintf(parameter_file,"\n");

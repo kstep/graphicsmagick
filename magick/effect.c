@@ -2269,8 +2269,8 @@ MagickExport unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
       */
       depth--;
       attenuate++;
-      x_mid=(segment->x1+segment->x2)/2;
-      y_mid=(segment->y1+segment->y2)/2;
+      x_mid=(int) (segment->x1+segment->x2)/2;
+      y_mid=(int) (segment->y1+segment->y2)/2;
       local_info=(*segment);
       local_info.x2=x_mid;
       local_info.y2=y_mid;
@@ -2288,8 +2288,8 @@ MagickExport unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
       local_info.y1=y_mid;
       return(PlasmaImage(image,&local_info,attenuate,depth));
     }
-  x_mid=(segment->x1+segment->x2)/2;
-  y_mid=(segment->y1+segment->y2)/2;
+  x_mid=(int) (segment->x1+segment->x2)/2;
+  y_mid=(int) (segment->y1+segment->y2)/2;
   if ((segment->x1 == x_mid) && (segment->x2 == x_mid) &&
       (segment->y1 == y_mid) && (segment->y2 == y_mid))
     return(False);

@@ -7986,7 +7986,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
       /*
         Unknown image format.
       */
-      text=FileToBlob(filename,&length,&exception);
+      text=(char *) FileToBlob(filename,&length,&exception);
       if (text == (char *) NULL)
         return((Image *) NULL);
       textlist=StringToList(text);

@@ -611,7 +611,7 @@ extern MagickExport const char
   *SaveImagesText,
   *WriteBinaryType;
 
-extern MagickExport const int
+extern MagickExport const unsigned int
   DefaultCompressionQuality;
 
 /*
