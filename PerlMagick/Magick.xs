@@ -206,8 +206,9 @@ static char
   },
   *ImageTypes[] =
   {
-    "Undefined", "Bilevel", "Grayscale", "Palette", "PaletteMatte", "TrueColor",
-    "TrueColorMatte", "ColorSeparation",  "ColorSeparationMatte", (char *) NULL
+    "Undefined", "Bilevel", "Grayscale", "GrayscaleMatte" "Palette",
+    "PaletteMatte", "TrueColor", "TrueColorMatte", "ColorSeparation",
+    "ColorSeparationMatte", (char *) NULL
   },
   *IntentTypes[] =
   {

@@ -175,7 +175,7 @@ static void Usage()
       "-treedepth value     depth of the color color tree",
       "-verbose             print detailed information about the image",
       "-visual type         display image using this visual type",
-      "-window id          display image to background of this window",
+      "-window id           display image to background of this window",
       (char *) NULL
     };
 

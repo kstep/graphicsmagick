@@ -210,6 +210,7 @@ typedef enum
   UndefinedType,
   BilevelType,
   GrayscaleType,
+  GrayscaleMatteType,
   PaletteType,
   PaletteMatteType,
   TrueColorType,

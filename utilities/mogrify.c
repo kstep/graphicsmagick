@@ -136,8 +136,7 @@
 %    -tile filename       tile image when filling a graphic primitive
 %    -transparent color   make this color transparent within the image
 %    -treedepth value     depth of the color color tree
-%    -type type           Bilevel, Gray, Palette, PaletteMatte, TrueColor,
-%                         TrueColorMatte, ColorSeparation, or ColorSeparationMatte
+%    -type type           image type
 %    -units type          PixelsPerInch, PixelsPerCentimeter, or Undefined
 %    -verbose             print detailed information about the image
 %    -view                FlashPix viewing transforms
@@ -267,8 +266,7 @@ static void Usage()
       "-tile filename       tile image when filling a graphic primitive",
       "-transparent color   make this color transparent within the image",
       "-treedepth value     depth of the color color tree",
-      "-type type           Bilevel, Gray, Palette, PaletteMatte, TrueColor, ",
-      "                     TrueColorMatte, ColorSeparation, or ColorSeparationMatte",
+      "-type type           image type",
       "-units type          PixelsPerInch, PixelsPerCentimeter, or Undefined",
       "-verbose             print detailed information about the image",
       "-view                FlashPix viewing transforms",
@@ -1435,6 +1433,8 @@ int main(int argc,char **argv)
                     image_type=BilevelType;
                   if (LocaleCompare("Grayscale",option) == 0)
                     image_type=GrayscaleType;
+                  if (LocaleCompare("GrayscaleMatte",option) == 0)
+                    image_type=GrayscaleMatteType;
                   if (LocaleCompare("Palette",option) == 0)
                     image_type=PaletteType;
                   if (LocaleCompare("PaletteMatte",option) == 0)

@@ -82,8 +82,7 @@
 %    -stereo             combine two image to create a stereo anaglyph
 %    -tile               repeat composite operation across image
 %    -treedepth value    depth of the color color tree
-%    -type type          Bilevel, Gray, Palette, PaletteMatte, TrueColor,
-%                        TrueColorMatte, ColorSeparation, ColorSeparationMatte
+%    -type type          image type
 %    -verbose            print detailed information about the image
 %
 %
@@ -152,8 +151,7 @@ static void Usage()
       "-stereo             combine two image to create a stereo anaglyph",
       "-tile               repeat composite operation across image",
       "-treedepth value    depth of the color color tree",
-      "-type type          Bilevel, Gray, Palette, PaletteMatte, TrueColor, ",
-      "                    TrueColorMatte, ColorSeparation, or ColorSeparationMatte",
+      "-type type          image type",
       "-verbose            print detailed information about the image",
       (char *) NULL
     };
@@ -841,6 +839,8 @@ int main(int argc,char **argv)
                     image_type=BilevelType;
                   if (LocaleCompare("Grayscale",option) == 0)
                     image_type=GrayscaleType;
+                  if (LocaleCompare("GrayscaleMatte",option) == 0)
+                    image_type=GrayscaleMatteType;
                   if (LocaleCompare("Palette",option) == 0)
                     image_type=PaletteType;
                   if (LocaleCompare("PaletteMatte",option) == 0)

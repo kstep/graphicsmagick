@@ -1552,6 +1552,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
       {
         case BilevelType: (void) fprintf(file,"Bilevel"); break;
         case GrayscaleType: (void) fprintf(file,"Grayscale"); break;
+        case GrayscaleMatteType: (void) fprintf(file,"GrayscaleMatte"); break;
         case PaletteType: (void) fprintf(file,"Palette"); break;
         case PaletteMatteType: (void) fprintf(file,"PaletteMatte"); break;
         case TrueColorType: (void) fprintf(file,"TrueColor"); break;
@@ -1605,6 +1606,8 @@ MagickExport void DescribeImage(Image *image,FILE *file,
   {
     case BilevelType: (void) fprintf(file,"bilevel"); break;
     case GrayscaleType: (void) fprintf(file,"grayscale"); break;
+    case GrayscaleMatteType:
+      (void) fprintf(file,"grayscale with transparency"); break;
     case PaletteType: (void) fprintf(file,"palette"); break;
     case PaletteMatteType:
       (void) fprintf(file,"palette with transparency"); break;
@@ -1617,7 +1620,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
     default: (void) fprintf(file,"undefined"); break;
   }
   (void) fprintf(file,"\n");
-  (void) fprintf(file,"  Depth: %u-depth\n",GetImageDepth(image));
+  (void) fprintf(file,"  Depth: %u-bits\n",GetImageDepth(image));
   x=0;
   p=(Image *) NULL;
   if (image->matte && (strcmp(image->magick,"GIF") != 0) || image->taint)
@@ -2556,6 +2559,8 @@ MagickExport ImageType GetImageType(Image *image)
       return(ColorSeparationMatteType);
   if (IsMonochromeImage(image))
     return(BilevelType);
+  if (IsGrayImage(image) && image->matte)
+    return(GrayscaleMatteType);
   if (IsGrayImage(image))
     return(GrayscaleType);
   if (IsPseudoClass(image) && image->matte)
@@ -4481,6 +4486,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
                   image_type=BilevelType;
                 if (LocaleCompare("Grayscale",option) == 0)
                   image_type=GrayscaleType;
+                if (LocaleCompare("GrayscaleMatte",option) == 0)
+                  image_type=GrayscaleMatteType;
                 if (LocaleCompare("Palette",option) == 0)
                   image_type=PaletteType;
                 if (LocaleCompare("PaletteMatte",option) == 0)
@@ -5959,6 +5966,18 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
       quantize_info.tree_depth=8;
       quantize_info.colorspace=GRAYColorspace;
       (void) QuantizeImage(&quantize_info,image);
+      break;
+    }
+    case GrayscaleMatteType:
+    {
+      GetQuantizeInfo(&quantize_info);
+      quantize_info.number_colors=2;
+      quantize_info.tree_depth=8;
+      quantize_info.colorspace=GRAYColorspace;
+      (void) QuantizeImage(&quantize_info,image);
+      if (!image->matte)
+        SetImageOpacity(image,OpaqueOpacity);
+      image->matte=True;
       break;
     }
     case PaletteType:
