@@ -714,6 +714,10 @@
 	the C library's setjmp() API is not thread safe.
 	* Fix use of image_info->blob.
 
+2002-11-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* Set up new CVS repository for GraphicsMagick based on current
+	ImageMagick 5.5.2 (pre-release) sources.
+
 2002-11-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* Flashpix library now uses C++ standard <new> and iostreams
 	rather than legacy new and iostreams.
