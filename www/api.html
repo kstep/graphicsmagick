@@ -194,8 +194,10 @@ format.
 &nbsp;&nbsp;&nbsp; }</pre>
 Now we need to compile. On Unix, the command would look something like
 this:
-<pre>&nbsp;&nbsp;&nbsp; setenv LD_LIBRARY_PATH /usr/local/lib</pre>
-<pre>&nbsp;&nbsp;&nbsp; gcc `Magick-config --cflags --cppflags` demo.c `Magick-config --ldflags --libs`</pre>
+<pre>
+&nbsp;&nbsp;&nbsp; setenv LD_LIBRARY_PATH /usr/local/lib
+&nbsp;&nbsp;&nbsp; gcc `Magick-config --cflags --cppflags` demo.c `Magick-config --ldflags --libs`
+</pre>
 Another example is <a href="smile.c">smile.c</a>. Compile and excute it
 to display a smiley face on your X server.
 <p>
