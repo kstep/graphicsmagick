@@ -735,8 +735,10 @@ Export int LoadDynamicModule(const char* module)
   */
   if( ( handle=lt_dlopen( module_file ) ) == 0)
     {
+#if 0
       printf("WARNING: failed to load module \"%s\": %s\n",
              module_file, lt_dlerror());
+#endif
       return False;
     }
 
