@@ -399,6 +399,9 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   LayerInfo
     *layer_info;
 
+  long
+    number_layers;
+
   PSDInfo
     psd_info;
 
@@ -418,7 +421,6 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     count,
     j,
     length,
-    number_layers,
     size;
 
   unsigned char
