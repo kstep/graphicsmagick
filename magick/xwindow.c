@@ -761,7 +761,7 @@ MagickExport void XBestPixel(Display *display,const Colormap colormap,
       (void) XQueryColors(display,colormap,colors,number_colors);
     }
   min_distance=3.0*(MaxRGB+1)*(MaxRGB+1);
-	j=0;
+  j=0;
   for (i=0; i < (int) number_colors; i++)
   {
     red=(double) (colors[i].red-color->red);
