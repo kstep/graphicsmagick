@@ -9,7 +9,7 @@
 // Specify size of PixelPacket color Quantums (8, 16, or 32)
 // A value of 8 uses half the memory than 16 and may run 30% faster,
 // but provides 256 times less color precision than a value of 16.
-#define QuantumDepth 16
+#define QuantumDepth 8
 
 // Define to build an ImageMagick which uses registry settings to
 // locate installed components.

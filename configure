@@ -1060,7 +1060,7 @@ Optional Packages:
   --with-tags[=TAGS]
                           include additional configurations [automatic]
   --with-modules          enable support for dynamically loadable modules
-  --with-quantum-depth    number of bits in a pixel quantum (default 16)
+  --with-quantum-depth    number of bits in a pixel quantum (default 8)
   --with-cache            set pixel cache threshhold in MB (default available memory)
   --without-threads       disable threads support
   --with-frozenpaths      enable frozen delegate paths
@@ -21092,7 +21092,7 @@ if test "${with_quantum_depth+set}" = set; then
   withval="$with_quantum_depth"
   with_quantum_depth=$withval
 else
-  with_quantum_depth=16
+  with_quantum_depth=8
 fi;
 
 case "${with_quantum_depth}" in

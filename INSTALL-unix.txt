@@ -111,7 +111,7 @@ UNIX/Cygwin/MinGW COMPILATION
    --enable-lzw            enable LZW support (default disabled)
 
   Optional Packages/Options:
-   --with-quantum-depth    number of bits in a pixel quantum (default 16)
+   --with-quantum-depth    number of bits in a pixel quantum (default 8)
    --with-modules          enable support for dynamically loadable modules
    --with-cache            set pixel cache threshhold (defaults to available memory)
    --without-threads       disable threads support
@@ -232,7 +232,7 @@ UNIX/Cygwin/MinGW COMPILATION
       green, blue, and alpha pixel components. For example,
       "--with-quantum-depth=8" builds GraphicsMagick using 8-bit quantums.
       Most computer display adaptors use 8-bit quantums. Currently
-      supported arguments are 8, 16, or 32. The default is 16. This
+      supported arguments are 8, 16, or 32. The default is 8. This
       option is the most important option in determining the overall
       run-time performance of GraphicsMagick.
 

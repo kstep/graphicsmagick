@@ -48,7 +48,8 @@ rwfile_SOURCES = rwfile.c
 
 drawtest_SOURCES = drawtest.c
 
-#EXTRA_DIST = 
+EXTRA_DIST = input_256c.miff input_bilevel.miff input_gray.miff \
+	input_truecolor.miff
 
 clean-local:
 	rm -f *out*.*
@@ -58,14 +59,6 @@ CHECK_FILES = \
 	'$(srcdir)/input_gray.miff'  \
 	'$(srcdir)/input_256c.miff' \
 	'$(srcdir)/input_truecolor.miff'
-
-CHECK_SIZED_FILES = \
-	"xc:white" \
-	"xc:black" \
-	"xc:\#bfbfbf" \
-	"xc:\#7FFF7FFF7FFF" \
-	"xc:\#800080008000" \
-	"xc:\#800180018001"
 
 if HasFPX
 FPX=FPX
@@ -177,11 +170,10 @@ TRUECOLOR_FORMATS = \
 	$(TIFF) \
 	$(XWD)
 
-
+# Blob formats to test that don't require that size be specified
 CHECK_BLOB_FORMATS = \
 	AVS \
 	BMP \
-	CMYK \
 	DIB \
 	DPX \
 	EPDF \
@@ -192,16 +184,13 @@ CHECK_BLOB_FORMATS = \
 	FITS \
 	GIF \
 	GIF87 \
-	GRAY \
 	$(JBIG) \
 	$(JPEG) \
 	$(JP2) \
 	MIFF \
 	$(MNG) \
-	MONO \
 	MTV \
 	P7 \
-	PAL \
 	PBM \
 	PCD \
 	PCDS \
@@ -214,13 +203,10 @@ CHECK_BLOB_FORMATS = \
 	PPM \
 	PSD \
 	RAS \
-	RGB \
-	RGBA \
 	SGI \
 	SUN \
 	TGA \
 	$(TIFF) \
-	UYVY \
 	VDA \
 	VICAR \
 	VIFF \
@@ -228,13 +214,12 @@ CHECK_BLOB_FORMATS = \
 	WBMP \
 	XBM \
 	XPM \
-	$(XWD) \
-	YUV
+	$(XWD)
 
+# File formats to test that don't require that size be specified
 CHECK_FILE_FORMATS = \
 	AVS \
 	BMP \
-	CMYK \
 	DIB \
 	DPX \
 	EPDF \
@@ -254,9 +239,7 @@ CHECK_FILE_FORMATS = \
 	$(JP2) \
 	MIFF \
 	$(MNG) \
-	MONO \
 	MTV \
-	PAL \
 	P7 \
 	PBM \
 	PCD \
@@ -271,13 +254,10 @@ CHECK_FILE_FORMATS = \
 	PS \
 	PSD \
 	RAS \
-	RGB \
-	RGBA \
 	SGI \
 	SUN \
 	TGA \
 	$(TIFF) \
-	UYVY \
 	VDA \
 	VICAR \
 	VIFF \
@@ -285,7 +265,28 @@ CHECK_FILE_FORMATS = \
 	WBMP \
 	XBM \
 	XPM \
-	$(XWD) \
+	$(XWD)
+
+# Blob formats to test where size must be specified
+CHECK_SIZED_BLOB_FORMATS = \
+	CMYK \
+	GRAY \
+	MONO \
+	PAL \
+	RGB \
+	RGBA \
+	UYVY \
+	YUV
+
+# File formats to test where size must be specified
+CHECK_SIZED_FILE_FORMATS = \
+	CMYK \
+	GRAY \
+	MONO \
+	PAL \
+	RGB \
+	RGBA \
+	UYVY \
 	YUV
 
 check-rwblob:
@@ -345,12 +346,12 @@ check-rwfile:
 check-rwblob-sized:
 	-@status=0 ; \
 	format='' ; \
-	for format in $(CHECK_BLOB_FORMATS) ; \
+	for format in $(CHECK_SIZED_BLOB_FORMATS) ; \
 	do \
 	  format_failed=0 ; \
-	  for file in $(CHECK_SIZED_FILES) ; \
+	  for file in $(CHECK_FILES) ; \
 	  do \
-	    if env MAGICK_MODULE_PATH=`pwd`/../coders/.libs ./rwblob -size 320x200 $$file $$format ; \
+	    if env MAGICK_MODULE_PATH=`pwd`/../coders/.libs ./rwblob -size 70x46 $$file $$format ; \
 	    then \
 	      : ; \
 	    else \
@@ -372,12 +373,12 @@ check-rwblob-sized:
 check-rwfile-sized:
 	-@status=0 ; \
 	format='' ; \
-	for format in $(CHECK_FILE_FORMATS) ; \
+	for format in $(CHECK_SIZED_FILE_FORMATS) ; \
 	do \
 	  format_failed=0 ; \
-	  for file in $(CHECK_SIZED_FILES) ; \
+	  for file in $(CHECK_FILES) ; \
 	  do \
-	    if env MAGICK_MODULE_PATH=`pwd`/../coders/.libs ./rwfile -size 320x200 $$file $$format ; \
+	    if env MAGICK_MODULE_PATH=`pwd`/../coders/.libs ./rwfile -size 70x46 $$file $$format ; \
 	    then \
 	      : ; \
 	    else \
@@ -401,4 +402,4 @@ check-drawtest:
 	-./drawtest drawtest_out.mvg
 	-./drawtest drawtest_out.svg
 
-check: check-drawtest check-rwfile check-rwfile-sized check-rwblob check-rwblob-sized
+check: check-drawtest check-rwfile check-rwblob check-rwblob-sized check-rwfile-sized 

@@ -325,9 +325,9 @@ AM_CONDITIONAL(HasLZW, test "$have_lzw" != 'no')
 
 # Number of bits in a Quantum
 AC_ARG_WITH(quantum-depth,
-	      [  --with-quantum-depth    number of bits in a pixel quantum (default 16)],
+	      [  --with-quantum-depth    number of bits in a pixel quantum (default 8)],
 	      [with_quantum_depth=$withval],
-	      [with_quantum_depth=16])
+	      [with_quantum_depth=8])
 
 case "${with_quantum_depth}" in
   8 ) ;;

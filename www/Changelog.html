@@ -13,6 +13,18 @@
 </tr>
 </table>
 <p>
+2003-02-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> INSTALL-unix.txt: Document that default quantum depth is now 8.
+  <LI> VisualMagick/magick/magick_config.h.in: Default quantum depth is now 8.
+  <LI> configure.ac: Default quantum depth is now 8.
+  <LI> tests/Makefile.am: Test format types that require a size
+        seperately since always specifying the size caused some formats
+        (e.g. PCD) to improperly fail.
+
+</UL>
+<p>
 2003-02-11  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

@@ -1,3 +1,12 @@
+2003-02-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* INSTALL-unix.txt: Document that default quantum depth is now 8.
+	* VisualMagick/magick/magick_config.h.in: Default quantum depth is now 8.
+	* configure.ac: Default quantum depth is now 8.
+	* tests/Makefile.am: Test format types that require a size
+	seperately since always specifying the size caused some formats
+	(e.g. PCD) to improperly fail.
+
 2003-02-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* www/NEWS.html: New HTML file for project news.
