@@ -64,10 +64,10 @@ man_MANS = $(MANPAGES)
 # Additional files to distribute
 EXTRA_DIST = $(MANPAGES) Magick.tmpl Manifest.ps ImageMagick.html Imakefile \
 	Magickshr.opt Make.com README.txt Copyright.txt FlashPix.txt \
-	acconfig.h QuickStart.txt
+	acconfig.h QuickStart.txt ImageMagick.pdf
 
 # Non-Automake subdirectories to distribute
-DISTDIRS = docs images scenes scripts www PerlMagick
+DISTDIRS = guide images scenes scripts www PerlMagick
 dist-hook:
 	( \
 	  builddir=`pwd` ; \

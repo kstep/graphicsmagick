@@ -551,6 +551,7 @@ Export Image *DespeckleImage(Image *image)
     Free memory.
   */
   FreeMemory((char *) buffer);
+  FreeMemory((char *) matte_channel);
   FreeMemory((char *) blue_channel);
   FreeMemory((char *) green_channel);
   FreeMemory((char *) red_channel);

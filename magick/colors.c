@@ -564,6 +564,7 @@ Export void NumberColors(Image *image,FILE *file)
   assert(image != (Image *) NULL);
   image->total_colors=0;
   color_cube.node_list=(Nodes *) NULL;
+  color_cube.progress=0;
   color_cube.colors=0;
   color_cube.free_nodes=0;
   color_cube.root=InitializeNode(&color_cube,0);

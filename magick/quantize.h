@@ -43,6 +43,9 @@ typedef struct _QuantizeInfo
 /*
   Quantization utilities methods.
 */
+extern Export QuantizeInfo
+  *CloneQuantizeInfo(const QuantizeInfo *);
+
 extern Export unsigned int
   MapImage(Image *,Image *,const unsigned int),
   MapImages(Image *,Image *,const unsigned int),

@@ -15187,6 +15187,7 @@ Image *ReadTTFImage(const ImageInfo *image_info)
     return((Image *) NULL);
   CloneString(&local_info->size,"800x520");
   CloneString(&local_info->pen,"black");
+  *font='\0';
   CloneString(&local_info->font,font);
   local_info->pointsize=18;
   FormatString(local_info->font,"@%.1024s",image_info->filename);

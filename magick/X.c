@@ -5201,6 +5201,8 @@ Export unsigned int XMakeImage(Display *display,
           (void) shmdt(window->segment_info[0].shmaddr);
           (void) shmctl(window->segment_info[0].shmid,IPC_RMID,0);
           window->segment_info[0].shmid=(-1);
+          if (window->ximage->data != (char *) NULL)
+            FreeMemory((char *) window->ximage->data);
           window->ximage->data=(char *) NULL;
         }
 #endif

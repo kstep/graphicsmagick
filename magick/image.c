@@ -7875,6 +7875,11 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
       (void) MapImage(*image,map_image,quantize_info.dither);
       DestroyImage(map_image);
     }
+  /*
+    Free resources.
+  */
+  if (geometry != (char *) NULL)
+    FreeMemory((char *) geometry);
 }
 
 /*
@@ -8905,12 +8910,12 @@ Export void NormalizeImage(Image *image)
 #define NormalizeImageText  "  Normalizing image...  "
 
   int
-    histogram[MaxRGB+1],
+    *histogram,
     threshold_intensity;
 
   Quantum
     gray_value,
-    normalize_map[MaxRGB+1];
+    *normalize_map;
 
   register int
     i,
@@ -8924,9 +8929,20 @@ Export void NormalizeImage(Image *image)
     low;
 
   /*
-    Form histogram.
+    Allocate histogram and normalize map.
   */
   assert(image != (Image *) NULL);
+  histogram=(int *) AllocateMemory((MaxRGB+1)*sizeof(int));
+  normalize_map=(Quantum *) AllocateMemory((MaxRGB+1)*sizeof(Quantum));
+  if ((histogram == (int *) NULL) || (normalize_map == (Quantum *) NULL))
+    {
+      MagickWarning(ResourceLimitWarning,"Unable to normalize image",
+        "Memory allocation failed");
+      return;
+    }
+  /*
+    Form histogram.
+  */
   for (i=0; i <= MaxRGB; i++)
     histogram[i]=0;
   p=image->pixels;
@@ -9026,6 +9042,8 @@ Export void NormalizeImage(Image *image)
       break;
     }
   }
+  FreeMemory((char *) normalize_map);
+  FreeMemory((char *) histogram);
 }
 
 /*

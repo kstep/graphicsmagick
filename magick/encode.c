@@ -3045,7 +3045,7 @@ unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
 %
 */
 
-static void JBIGEncode(unsigned char  *start,size_t length,void *file)
+static void JBIGEncode(unsigned char *start,size_t length,void *file)
 {
   (void) fwrite(start,length,1,(FILE *) file);
   return;
@@ -3078,9 +3078,7 @@ unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
 
   unsigned int
     byte,
-    scene,
-    x_resolution,
-    y_resolution;
+    scene;
 
   unsigned long
     number_packets;
@@ -3163,14 +3161,21 @@ unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
     */
     jbg_enc_init(&jbig_info,image->columns,image->rows,1,&pixels,
       (void (*)(unsigned char *,size_t,void *)) JBIGEncode,image->file);
-    x_resolution=640;
-    y_resolution=480;
-    (void) XParseGeometry(image_info->density,&sans_offset,&sans_offset,
-      &x_resolution,&y_resolution);
     if (image_info->subimage != 0)
       jbg_enc_layers(&jbig_info,image_info->subimage);
     else
-      jbg_enc_lrlmax(&jbig_info,x_resolution,y_resolution);
+      {
+        unsigned int
+          x_resolution,
+          y_resolution;
+
+        x_resolution=640;
+        y_resolution=480;
+        if (image_info->density != (char *) NULL)
+          (void) XParseGeometry(image_info->density,&sans_offset,&sans_offset,
+            &x_resolution,&y_resolution);
+        jbg_enc_lrlmax(&jbig_info,x_resolution,y_resolution);
+      }
     jbg_enc_lrange(&jbig_info,-1,-1);
     jbg_enc_options(&jbig_info,JBG_ILEAVE | JBG_SMID,JBG_TPDON | JBG_TPBON |
       JBG_DPON,-1,-1,-1);
@@ -7271,10 +7276,12 @@ unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     if (image->comments != (char *) NULL)
       PNGTextChunk(image_info,ping_info,"Comment",image->comments);
     png_write_end(ping,ping_info);
-    png_destroy_write_struct(&ping,&ping_info);
     /*
       Free PNG resources.
     */
+    if (ping_info->valid & PNG_INFO_PLTE)
+      FreeMemory((char *) ping_info->palette);
+    png_destroy_write_struct(&ping,&ping_info);
     FreeMemory((char *) scanlines);
     FreeMemory((char *) png_pixels);
     if (image->next == (Image *) NULL)
@@ -9991,6 +9998,7 @@ unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
           }
           p++;
         }
+        FreeMemory((char *) pixels);
         break;
       }
       case LineInterlace:
@@ -10940,7 +10948,7 @@ unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
                 for ( ; i < (int) flopped_image->packets; i++)
                 {
                   p--;
-                  if ((p->length != 0) || (runlength == 128))
+                  if ((runlength == 128) || (p->length != 0))
                     break;
                   *q++=DownScale(p->blue);
                   *q++=DownScale(p->green);
@@ -11020,7 +11028,7 @@ unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
                   for ( ; i < (int) flopped_image->packets; i++)
                   {
                     p--;
-                    if ((p->length != 0) || (runlength == 128))
+                    if ((runlength == 128) || (p->length != 0))
                       break;
                     *q++=p->index;
                     runlength++;
@@ -11072,7 +11080,7 @@ unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
                   for ( ; i < (int) flopped_image->packets; i++)
                   {
                     p--;
-                    if ((p->length != 0) || (runlength == 128))
+                    if ((runlength == 128) || (p->length != 0))
                       break;
                     *q++=p->index == polarity ? 0 : DownScale(MaxRGB);
                     runlength++;

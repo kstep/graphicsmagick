@@ -616,6 +616,51 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   C l o n e Q u a n t i z e I n f o                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method CloneQuantizeInfo makes a duplicate of the given quantize info, or if
+%  quantize info is NULL, a new one.
+%
+%  The format of the CloneQuantizeInfo routine is:
+%
+%      cloned_info=CloneQuantizeInfo(quantize_info)
+%
+%  A description of each parameter follows:
+%
+%    o cloned_info: Method CloneQuantizeInfo returns a duplicate of the given
+%      image info, or if image info is NULL a new one.
+%
+%    o quantize_info: a structure of type info.
+%
+%
+*/
+Export QuantizeInfo *CloneQuantizeInfo(const QuantizeInfo *quantize_info)
+{
+  QuantizeInfo
+    *cloned_info;
+
+  cloned_info=(QuantizeInfo *) AllocateMemory(sizeof(QuantizeInfo));
+  if (cloned_info == (QuantizeInfo *) NULL)
+    MagickError(ResourceLimitWarning,"Unable to clone image info",
+      "Memory allocation failed");
+  if (quantize_info == (QuantizeInfo *) NULL)
+    {
+      GetQuantizeInfo(cloned_info);
+      return(cloned_info);
+    }
+  *cloned_info=(*quantize_info);
+  return(cloned_info);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   C l o s e s t C o l o r                                                   %
 %                                                                             %
 %                                                                             %
@@ -1797,6 +1842,8 @@ static unsigned int OrderedDitherImage(Image *image)
   /*
     Initialize colormap.
   */
+  image->class=PseudoClass;
+  image->colors=2;
   colormap=(ColorPacket *) AllocateMemory(image->colors*sizeof(ColorPacket));
   if (colormap == (ColorPacket *) NULL)
     {
@@ -1807,8 +1854,6 @@ static unsigned int OrderedDitherImage(Image *image)
   if (image->colormap != (ColorPacket *) NULL)
     FreeMemory((char *) image->colormap);
   image->colormap=colormap;
-  image->colors=2;
-  image->class=PseudoClass;
   image->colormap[0].red=0;
   image->colormap[0].green=0;
   image->colormap[0].blue=0;
