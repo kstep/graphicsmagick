@@ -816,7 +816,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   colorspace.numberOfComponents=3;
   if (image->matte)
     colorspace.numberOfComponents=4;
-  if ((image->type != TrueColorType) &&
+  if ((image_info->type != TrueColorType) &&
       IsGrayImage(image,&image->exception))
     {
       colorspace.numberOfComponents=1;

@@ -561,7 +561,7 @@ static unsigned int WritePICONImage(const ImageInfo *image_info,Image *image)
   (void) GetMagickGeometry(PiconGeometry,&geometry.x,&geometry.y,
     &geometry.width,&geometry.height);
   picon=ZoomImage(image,geometry.width,geometry.height,&image->exception);
-  if ((image->storage_class == PseudoClass) &&
+  if ((image_info->type != TrueColorType) &&
       IsGrayImage(image,&image->exception))
     map=BlobToImage(image_info,Graymap,GraymapExtent,&image->exception);
   else

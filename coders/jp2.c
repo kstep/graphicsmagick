@@ -547,7 +547,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   if (jp2_stream == (jas_stream_t *) NULL)
     ThrowWriterException(FileOpenWarning,"Unable to manage JP2 stream",image);
   number_components=image->matte ? 4 : 3;
-  if ((image->storage_class == PseudoClass) &&
+  if ((image_info->type != TrueColorType) &&
       IsGrayImage(image,&image->exception))
     number_components=1;
   for (i=0; i < (long) number_components; i++)
