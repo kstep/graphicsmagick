@@ -206,6 +206,10 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   /*
     Allocate histogram image.
   */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   width=image->columns;
   height=image->rows;
   if (image_info->density != (char *) NULL)

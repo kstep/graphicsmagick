@@ -165,8 +165,6 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
   register unsigned char
     *q;
 
-  assert(image != (Image *) NULL);
-  assert(pixels != (unsigned char *) NULL);
   (void) memset(pixels,0,image->columns*image->rows);
   byte=0;
   x=0;
@@ -388,6 +386,10 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Open image file.
   */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)

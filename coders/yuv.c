@@ -130,6 +130,10 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Allocate image structure.
   */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(OptionWarning,"Must specify image size",image);
@@ -419,6 +423,10 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
     height,
     width;
 
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   if (image_info->interlace != PartitionInterlace)
     {
       /*

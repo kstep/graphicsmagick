@@ -747,11 +747,11 @@ MagickExport unsigned int ChannelImage(Image *image,const ChannelType channel)
   register PixelPacket
     *q;
 
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
   /*
     Channel DirectClass packets.
   */
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   SetImageType(image,TrueColorMatteType);
   for (y=0; y < (long) image->rows; y++)
   {

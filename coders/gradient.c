@@ -123,6 +123,10 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
   /*
     Initialize Image structure.
   */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
   (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
   if (image->columns == 0)

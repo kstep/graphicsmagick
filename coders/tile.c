@@ -106,6 +106,10 @@ static Image *ReadTILEImage(const ImageInfo *image_info,
   /*
     Initialize Image structure.
   */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(OptionWarning,"Must specify image size",image);

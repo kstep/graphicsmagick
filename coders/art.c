@@ -141,9 +141,14 @@ static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   unsigned char k;
   unsigned int status;
 
-  /*  Open image file. */
+  /*
+    Open image file.
+  */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
-
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);

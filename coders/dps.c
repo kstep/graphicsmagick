@@ -153,6 +153,10 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Open X server connection.
   */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   display=XOpenDisplay(image_info->server_name);
   if (display == (Display *) NULL)
     return((Image *) NULL);

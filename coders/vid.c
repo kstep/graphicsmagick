@@ -125,6 +125,10 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Expand the filename.
   */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
   list=(char **) AcquireMemory(sizeof(char *));
   if (list == (char **) NULL)

@@ -114,6 +114,10 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   /*
     Initialize Image structure.
   */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   (void) QueryColorDatabase("black",&draw_info->fill);

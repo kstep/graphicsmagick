@@ -117,6 +117,10 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     packet_size,
     status;
 
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(OptionWarning,"Must specify image size",image);
@@ -518,6 +522,10 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
   /*
     Allocate memory for pixels.
   */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   packet_size=image->depth > 8 ? 6 : 3;
   if (LocaleCompare(image_info->magick,"RGBA") == 0)
     packet_size=image->depth > 8 ? 8 : 4;

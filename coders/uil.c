@@ -194,6 +194,10 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);

@@ -146,6 +146,10 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Initialize Image structure.
   */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
   (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
   if ((image->columns == 0) || (image->rows == 0))
@@ -290,6 +294,10 @@ static unsigned int WriteMVGImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   attribute=GetImageAttribute(image,"[MVG]");
   if (attribute == (ImageAttribute *) NULL)
     ThrowWriterException(DelegateWarning,"no image vector graphics",image);

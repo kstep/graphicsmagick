@@ -409,6 +409,10 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     height,
     width;
 
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   if (image_info->monochrome)
     {
       delegate_info=GetDelegateInfo("gs-mono",(char *) NULL,exception);
@@ -788,6 +792,10 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);

@@ -266,6 +266,10 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     height,
     width;
 
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   if (image_info->monochrome)
     {
       delegate_info=GetDelegateInfo("gs-mono",(char *) NULL,exception);
@@ -559,6 +563,10 @@ static unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
   unsigned int
     status;
 
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   (void) strncpy(filename,image->filename,MaxTextExtent-1);
   (void) strncpy(ps_filename,image->magick_filename,MaxTextExtent-1);
   if (LocaleCompare(image_info->magick,"EPS") != 0)

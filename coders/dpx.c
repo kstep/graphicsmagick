@@ -170,6 +170,10 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Open image file.
   */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
@@ -369,6 +373,10 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);

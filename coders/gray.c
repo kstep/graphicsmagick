@@ -123,6 +123,10 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
   /*
     Open image file.
   */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(OptionWarning,"Must specify image size",image);
@@ -333,6 +337,14 @@ ModuleExport void RegisterGRAYImage(void)
 ModuleExport void UnregisterGRAYImage(void)
 {
   (void) UnregisterMagickInfo("GRAY");
+  (void) UnregisterMagickInfo("R");
+  (void) UnregisterMagickInfo("C");
+  (void) UnregisterMagickInfo("G");
+  (void) UnregisterMagickInfo("M");
+  (void) UnregisterMagickInfo("B");
+  (void) UnregisterMagickInfo("Y");
+  (void) UnregisterMagickInfo("O");
+  (void) UnregisterMagickInfo("K");
 }
 
 /*
@@ -384,6 +396,10 @@ static unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);

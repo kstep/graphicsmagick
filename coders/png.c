@@ -1453,6 +1453,10 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Open image file.
   */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
   mng_info=(MngInfo *) NULL;
   status=OpenBlob(image_info,image,ReadBinaryType,exception);
@@ -4378,14 +4382,18 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
          PNG_LIBPNG_VER_STRING);
 #endif
 
-    optimize=image_info->type==OptimizeType;
   /*
     Open image file.
   */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
     ThrowWriterException((ExceptionType) FileOpenWarning,
       "Unable to open file",image);
+  optimize=image_info->type == OptimizeType;
   use_global_plte=False;
   page.width=0;
   page.height=0;

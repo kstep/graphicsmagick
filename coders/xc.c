@@ -95,6 +95,10 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Initialize Image structure.
   */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
   if (image->columns == 0)
     image->columns=1;

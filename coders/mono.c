@@ -54,7 +54,7 @@
 */
 #include "magick.h"
 #include "define.h"
-
+
 /*
   Forward declarations.
 */
@@ -78,7 +78,8 @@ static unsigned int
 %
 %  The format of the ReadMONOImage method is:
 %
-%      Image *ReadMONOImage(const ImageInfo *image_info,ExceptionInfo *exception)
+%      Image *ReadMONOImage(const ImageInfo *image_info,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -123,6 +124,10 @@ static Image *ReadMONOImage(const ImageInfo *image_info,
   /*
     Open image file.
   */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
   if ((image->columns == 0) || (image->rows == 0))
     ThrowReaderException(OptionWarning,"Must specify image size",image);
@@ -290,6 +295,10 @@ static unsigned int WriteMONOImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
+  assert(image_info != (const ImageInfo *) NULL);
+  assert(image_info->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
