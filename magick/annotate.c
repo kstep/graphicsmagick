@@ -1337,11 +1337,11 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
     if ((glyph.id != 0) && (last_glyph.id != 0) && FT_HAS_KERNING(face))
       {
         FT_Vector
-          delta;
+          kerning;
 
         (void) FT_Get_Kerning(face,last_glyph.id,glyph.id,ft_kerning_default,
-          &delta);
-        origin.x+=delta.x;
+          &kerning);
+        origin.x+=kerning.x;
       }
     glyph.origin=origin;
     status=FT_Load_Glyph(face,glyph.id,FT_LOAD_DEFAULT);
