@@ -56,6 +56,7 @@
 #include "studio.h"
 #include "blob.h"
 #include "cache.h"
+#include "list.h"
 #include "log.h"
 #include "utility.h"
 #if defined(HasZLIB)
@@ -1934,7 +1935,8 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
         (void) UnmapBlob(cache_info->pixels,cache_info->length);
       (void) GetCacheThreshold(-cache_info->length);
     }
-  (void) strncpy(cache_info->filename,image->filename,MaxTextExtent-1);
+  FormatString(cache_info->filename,"%.1024s[%ld]",image->filename,
+    GetImageListIndex(image));
   cache_info->rows=image->rows;
   cache_info->columns=image->columns;
   number_pixels=cache_info->columns*cache_info->rows;
