@@ -9967,7 +9967,6 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
     ScaleShortToQuantum(windows->pixel_info->pen_colors[pen_id].green);
   (*image)->background_color.blue=
     ScaleShortToQuantum(windows->pixel_info->pen_colors[pen_id].blue);
-  (*image)->background_color.opacity=TransparentOpacity;
   rotate_image=RotateImage(*image,degrees,&(*image)->exception);
   XSetCursorState(display,windows,False);
   if (rotate_image == (Image *) NULL)
