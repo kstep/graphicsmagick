@@ -4758,7 +4758,7 @@ static PrimitiveInfo *TraceStrokePolygon(const DrawInfo *draw_info,
   path_p=(PointInfo *) AcquireMemory(max_strokes*sizeof(PointInfo));
   path_q=(PointInfo *) AcquireMemory(max_strokes*sizeof(PointInfo));
   polygon_primitive=(PrimitiveInfo *)
-    AcquireMemory((number_vertices+1)*sizeof(PrimitiveInfo));
+    AcquireMemory((number_vertices+2)*sizeof(PrimitiveInfo));
   if ((path_p == (PointInfo *) NULL) || (path_q == (PointInfo *) NULL) ||
       (polygon_primitive == (PrimitiveInfo *) NULL))
     return((PrimitiveInfo *) NULL);
