@@ -127,8 +127,14 @@ extern MagickExport void
 
 #if defined(MAGICK_IMPLEMENTATION)
 
+/*
+  Allocate memory
+*/
 #define MagickAllocateMemory(type,size) ((type) malloc(size))
 
+/*
+  Free memory and set pointer to NULL
+*/
 #define MagickFreeMemory(memory) \
 { \
     void *_magick_mp; \
@@ -140,6 +146,11 @@ extern MagickExport void
       } \
 }
 
+/*
+  Reallocate memory using provided pointer.  If pointer value is null,
+  then allocate new memory. If reallocation fails then free memory,
+  setting pointer to NULL.
+*/
 #define MagickReallocMemory(memory,size) \
 { \
     void *_magick_mp; \
@@ -153,6 +164,11 @@ extern MagickExport void
       } \
    memory=_magick_mp; \
 }
+
+/*
+  Force argument into range accepted by <ctype.h> functions.
+*/
+#define CTYPE_ARG(value) ((int) ((unsigned char) (value)))
 
 #endif /* defined(MAGICK_IMPLEMENTATION) */
 

@@ -1,5 +1,7 @@
 2003-08-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/image.c (SetImageChannelDepth): New function to transform
+	the specified channel so it fits the specified modulus depth.
 	* magick/blob.c (BlobToImage): Skip calling SetImageInfo() if
 	magick is already set.
 

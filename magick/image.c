@@ -4491,6 +4491,192 @@ MagickExport void SetImage(Image *image,const Quantum opacity)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   S e t I m a g e C h a n n e l D e p t h                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetImageChannelDepth() translates the pixel quantums in the specified
+%  channel so that if they are later divided to fit within the specified bit
+%  depth, that no additional information is lost (i.e. no remainder resulting
+%  from the division). Note that any subsequent image processing is likely
+%  to increase the effective depth of the image channels. A non-zero
+%  value is returned if the operation is successful. Check the exception
+%  member of image to determine the cause for any failure.
+%
+%  The format of the SetImageChannelDepth method is:
+%
+%      unsigned int GetImageChannelDepth(const Image *image,
+%                    const ChannelType channel,const unsigned int depth)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image to update.
+%
+%    o channel: Channel to modify.
+%
+%    o depth: Desired channel depth (range 1 to QuantumDepth)
+%
+%
+*/
+#define SET_CHANNEL_DEPTH(image,desired_depth,channel,parameter,status) \
+{ \
+  long \
+    y; \
+\
+  register long \
+    x; \
+\
+  register unsigned long \
+    scale; \
+\
+  register PixelPacket \
+    *q; \
+\
+  status=True; \
+\
+  scale=MaxRGB / (MaxRGB >> (QuantumDepth-desired_depth)); \
+  for (y=0; y < (long) image->rows; y++) \
+    { \
+      q=GetImagePixels(image,0,y,image->columns,1); \
+      if (q == (PixelPacket *) NULL) \
+        { \
+          status=False; \
+          break; \
+        } \
+      for (x=0; x < (long) image->columns; x++) \
+        { \
+          parameter=scale*((parameter)/scale); \
+          q++; \
+        } \
+      if (!SyncImagePixels(image)) \
+        { \
+          status=False; \
+          break; \
+        } \
+    } \
+  if (image->storage_class == PseudoClass) \
+    { \
+      register long \
+        i; \
+\
+      q=image->colormap; \
+      for (i=0; i < (long) image->colors; i++) \
+        { \
+          parameter=scale*((parameter)/scale); \
+          q++; \
+        } \
+    } \
+}
+
+MagickExport unsigned int SetImageChannelDepth(Image *image,
+  const ChannelType channel, const unsigned int depth)
+{
+  unsigned long
+    current_depth,
+    desired_depth;
+
+  unsigned int
+    is_grayscale,
+    status;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+
+  is_grayscale=image->is_grayscale;
+
+  desired_depth=depth;
+  if (desired_depth > QuantumDepth)
+    desired_depth=QuantumDepth;
+
+  current_depth=GetImageChannelDepth(image,channel,&image->exception);
+
+  if (current_depth > desired_depth)
+    {
+      switch (channel)
+        {
+        case RedChannel:
+        case CyanChannel:
+          {
+            SET_CHANNEL_DEPTH(image,desired_depth,channel,q->red,status);
+            break;
+          }
+        case GreenChannel:
+        case MagentaChannel:
+          {
+            SET_CHANNEL_DEPTH(image,desired_depth,channel,q->green,status);
+            break;
+          }
+        case BlueChannel:
+        case YellowChannel:
+          {
+            SET_CHANNEL_DEPTH(image,desired_depth,channel,q->blue,status);
+            break;
+          }
+        case OpacityChannel:
+          {
+            if (image->colorspace == CMYKColorspace)
+              {
+                long
+                  y;
+                
+                register IndexPacket
+                  *indexes;
+                
+                register long
+                  x;
+                
+                register PixelPacket
+                  *q;
+
+                register unsigned long
+                  scale;
+
+                scale=MaxRGB / (MaxRGB >> (QuantumDepth-desired_depth));
+                for (y=0; y < (long) image->rows; y++)
+                  {
+                    q=GetImagePixels(image,0,y,image->columns,1);
+                    if (q == (PixelPacket *) NULL)
+                      break;
+                    indexes=GetIndexes(image);
+                    for (x=(long) image->columns; x > 0; x--)
+                      {
+                        *indexes=scale*((*indexes)/scale);
+                        indexes++;
+                      }
+                    if (!SyncImagePixels(image))
+                      break;
+                  }
+              }
+            else
+              {
+                SET_CHANNEL_DEPTH(image,desired_depth,channel,q->opacity,status);
+              }
+            break;
+          }
+        case BlackChannel:
+        case MatteChannel:
+          {
+            SET_CHANNEL_DEPTH(image,desired_depth,channel,q->opacity,status);
+            break;
+          }
+        default:
+          {
+          }
+        }
+    }
+
+  image->is_grayscale=is_grayscale;
+
+  return depth;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   S e t I m a g e C l i p M a s k                                           %
 %                                                                             %
 %                                                                             %
@@ -4544,11 +4730,13 @@ MagickExport unsigned int SetImageClipMask(Image *image,Image *clip_mask)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SetImageDepth() sets the depth of the image, either 8 or 16.  Some image
-%  formats support both 8 and 16-bits per color component (e.g. PNG).  Use
-%  SetImageDepth() to specify your preference.  A value other than 0 is
-%  returned if the depth is set.  Check the exception member of image to
-%  determine the cause for any failure.
+%  SetImageDepth() translates the pixel quantums across all of the channels
+%  so that if they are later divided to fit within the specified bit
+%  depth, that no additional information is lost (i.e. no remainder will
+%  result from the division).  Note that any subsequent image processing is
+%  likely to increase the effective depth of the image channels. A non-zero
+%  value is returned if the operation is successful. Check the exception
+%  member of image to determine the cause for any failure.
 %
 %  The format of the SetImageDepth method is:
 %
@@ -4556,9 +4744,9 @@ MagickExport unsigned int SetImageClipMask(Image *image,Image *clip_mask)
 %
 %  A description of each parameter follows:
 %
-%    o image: The image.
+%    o image: The image to update.
 %
-%    o depth: The image depth.
+%    o depth: Desired image depth (range 1 to QuantumDepth)
 %
 %
 */
@@ -4587,7 +4775,7 @@ MagickExport unsigned int SetImageDepth(Image *image,const unsigned long depth)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   is_grayscale=image->is_grayscale;
-  status=False;
+  status=True;
 
   desired_depth=depth;
   if (desired_depth > QuantumDepth)
@@ -4597,14 +4785,16 @@ MagickExport unsigned int SetImageDepth(Image *image,const unsigned long depth)
 
   if (current_depth > desired_depth)
     {
-      status=True;
       scale=MaxRGB / (MaxRGB >> (QuantumDepth-desired_depth));
 
       for (y=0; y < (long) image->rows; y++)
         {
           q=GetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
-            break;
+            {
+              status=False;
+              break;
+            }
           for (x=0; x < (long) image->columns; x++)
             {
               q->red=scale*(q->red/scale);
@@ -4614,7 +4804,10 @@ MagickExport unsigned int SetImageDepth(Image *image,const unsigned long depth)
               q++;
             }
           if (!SyncImagePixels(image))
-            break;
+            {
+              status=False;
+              break;
+            }
         }
 
       /*

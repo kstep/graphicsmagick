@@ -4,6 +4,20 @@
 </HEAD>
 <BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#0000EE" VLINK="#551A8B" ALINK="#FF0000">
 <p>
+2003-08-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (depth): Method now only updates the
+        Image/ImageInfo depth member and retrieves the value of the Image
+        depth member.<BR>
+        (modulusDepth): New method to inspect the pixels for actual
+        modulus depth, or update/reduce the pixels to a specified modulus
+        depth.  The depth method was performing this function so any code
+        which depended on the depth method to compute or set the modulus
+        depth should be updated to use modulusDepth() instead.
+
+</UL>
+<p>
 2003-08-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
@@ -88,10 +102,9 @@
 <UL>
   <LI> lib/Magick++/STL.h (affineTransformImage): Add function object
         contributed by Vladimir Lukianov to apply an affine transform to
-        the image.  Still needs documentation!
+        the image.<BR>
   <LI> lib/Image.cpp (affineTransform): Added method contributed by
-        Vladimir Lukianov to apply an affine transform to the image. Still
-        needs documentation!
+        Vladimir Lukianov to apply an affine transform to the image.
 
 </UL>
 <p>
