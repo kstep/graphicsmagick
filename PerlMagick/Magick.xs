@@ -232,10 +232,6 @@ static char
     "Uniform", "Gaussian", "Multiplicative", "Impulse", "Laplacian",
     "Poisson", (char *) NULL
   },
-  *ProfileTypes[] =
-  {
-    "Undefined", "ICM", "IPTC", (char *) NULL
-  },
   *PreviewTypes[] =
   {
     "Undefined", "Rotate", "Shear", "Roll", "Hue", "Saturation",
@@ -988,9 +984,6 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
   PixelPacket
     *color,
     target_color;
-
-  register int
-    i;
 
   GetExceptionInfo(&exception);
   switch (*attribute)
@@ -3142,6 +3135,7 @@ Get(ref,...)
               MagickInfo
                 *magick_info;
 
+              magick_info=(MagickInfo *) NULL;
               if (info && (*info->image_info->magick != '\0'))
                 magick_info=(MagickInfo *)
                   GetMagickInfo(info->image_info->magick,&exception);
@@ -4057,7 +4051,7 @@ Mogrify(ref,...)
       }
     Zero(&argument_list,NumberOf(argument_list),union ArgumentList);
     Zero(&attribute_flag,NumberOf(attribute_flag),char);
-    for (i=base; (i < items) || (i == items) && (base == items); i+=2)
+    for (i=base; (i < items) || ((i == items) && (base == items)); i+=2)
     {
       int
         longest;
@@ -4802,6 +4796,7 @@ Mogrify(ref,...)
                   break;
               }
             }
+          rotate_image=(Image *) NULL;
           if (attribute_flag[8])
             {
                /*
@@ -5621,8 +5616,7 @@ Montage(ref,...)
       *av;
 
     char
-      *attribute,
-      *p;
+      *attribute;
 
     ExceptionInfo
       exception;
@@ -6134,9 +6128,6 @@ Mosaic(ref)
     AV
       *av;
 
-    char
-      *p;
-
     ExceptionInfo
       exception;
 
@@ -6460,8 +6451,7 @@ QueryFontMetrics(ref,...)
       *info;
 
     SV
-      *reference,  /* reference is the SV* of ref=SvIV(reference) */
-      *s;
+      *reference;  /* reference is the SV* of ref=SvIV(reference) */
 
     unsigned int
       status;

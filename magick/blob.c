@@ -216,6 +216,7 @@ MagickExport void CloseBlob(Image *image)
     }
   if (image->fifo != (int (*)(const Image *,const void *,const size_t)) NULL)
     {
+      (void) image->fifo(image,(const void *) NULL,0);
       image->fifo=(int (*)(const Image *,const void *,const size_t)) NULL;
       return;
     }
