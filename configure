@@ -3238,7 +3238,6 @@ if test "${GCC}" != "yes" ; then
       # aCC: HP ANSI C++ B3910B A.03.34
       CFLAGS="${CFLAGS} -Wp,-H30000"
       CXX="${CXX} -AA"
-      LDFLAGS="${LDFLAGS} -AA"
       ;;
   esac
 else
@@ -3587,7 +3586,6 @@ echo "$as_me:$LINENO: result: $lt_cv_deplibs_check_method" >&5
 echo "${ECHO_T}$lt_cv_deplibs_check_method" >&6
 file_magic_cmd=$lt_cv_file_magic_cmd
 deplibs_check_method=$lt_cv_deplibs_check_method
-deplibs_check_method=pass_all
 test -z "$deplibs_check_method" && deplibs_check_method=unknown
 
 
@@ -3630,7 +3628,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 3632 "configure"' > conftest.$ac_ext
+  echo '#line 3631 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -7498,7 +7496,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 7500 "configure"
+#line 7499 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -7596,7 +7594,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 7598 "configure"
+#line 7597 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -10699,7 +10697,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 10701 "configure"
+#line 10700 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -10797,7 +10795,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 10799 "configure"
+#line 10798 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -13420,7 +13418,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 13422 "configure"
+#line 13421 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -13518,7 +13516,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 13520 "configure"
+#line 13519 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H

@@ -55,7 +55,6 @@ if test "${GCC}" != "yes" ; then
       # aCC: HP ANSI C++ B3910B A.03.34
       CFLAGS="${CFLAGS} -Wp,-H30000"
       CXX="${CXX} -AA"
-      LDFLAGS="${LDFLAGS} -AA"
       ;;
   esac
 else
