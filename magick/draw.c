@@ -522,7 +522,7 @@ static void MvgAppendPointsCommand(DrawContext context, const char* command,
   size_t
     i;
 
-  (void) MvgPrintf(context, command);
+  (void) MvgPrintf(context, "%.1024s", command);
   for (i = num_coords, coordinate = coordinates; i; i--)
     {
       (void) MvgAutoWrapPrintf(context," %.4g,%.4g", coordinate->x, coordinate->y);

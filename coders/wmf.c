@@ -50,8 +50,12 @@
 #include "magick/transform.h"
 #include "magick/utility.h"
 #include "magick/version.h"
+
+#if 0
+/* Not sure where/why this definition appeared so it is out for the moment. */
 #if defined(WIN32)
 #define M_PI MagickPI
+#endif
 #endif
 
 #if defined(HasWMF) || defined(HasWMFlite)
@@ -563,7 +567,7 @@ static void ipa_bmp_read(wmfAPI * API, wmfBMP_Read_t * bmp_read) {
     }
 }
 
-static void ipa_bmp_free(wmfAPI * API, wmfBMP * bmp)
+static void ipa_bmp_free(wmfAPI * ARGUNUSED(API), wmfBMP * bmp)
 {
   DestroyImageList((Image*)bmp->data);
   bmp->data = (void*) 0;
@@ -1461,25 +1465,25 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
 
 }
 
-static void ipa_udata_init(wmfAPI * API, wmfUserData_t * userdata)
+static void ipa_udata_init(wmfAPI * ARGUNUSED(API), wmfUserData_t * ARGUNUSED(userdata))
 {
   /* wmf_magick_t* ddata = WMF_MAGICK_GetData (API); */
 
 }
 
-static void ipa_udata_copy(wmfAPI * API, wmfUserData_t * userdata)
+static void ipa_udata_copy(wmfAPI * ARGUNUSED(API), wmfUserData_t * ARGUNUSED(userdata))
 {
   /* wmf_magick_t* ddata = WMF_MAGICK_GetData (API); */
 
 }
 
-static void ipa_udata_set(wmfAPI * API, wmfUserData_t * userdata)
+static void ipa_udata_set(wmfAPI * ARGUNUSED(API), wmfUserData_t * ARGUNUSED(userdata))
 {
   /* wmf_magick_t* ddata = WMF_MAGICK_GetData (API); */
 
 }
 
-static void ipa_udata_free(wmfAPI * API, wmfUserData_t * userdata)
+static void ipa_udata_free(wmfAPI * ARGUNUSED(API), wmfUserData_t * ARGUNUSED(userdata))
 {
   /* wmf_magick_t* ddata = WMF_MAGICK_GetData (API); */
 
@@ -2087,16 +2091,16 @@ static wmfFontMap WMFFontMap[] = {
 
 /* Mapping between base name and Ghostscript family name */
 static wmfMapping SubFontMap[] = {
-  { "Arial",      "Helvetica" },
-  { "Courier",    "Courier"   },
-  { "Fixed",      "Courier"   },
-  { "Helvetica",  "Helvetica" },
-  { "Sans",       "Helvetica" },
-  { "Sym",        "Symbol"    },
-  { "Terminal",   "Courier"   },
-  { "Times",      "Times"     },
-  { "Wingdings",  "Symbol"    },
-  {  NULL,        NULL        }
+  { "Arial",      "Helvetica",	FT_ENCODING_NONE },
+  { "Courier",    "Courier",    FT_ENCODING_NONE },
+  { "Fixed",      "Courier",    FT_ENCODING_NONE },
+  { "Helvetica",  "Helvetica",  FT_ENCODING_NONE },
+  { "Sans",       "Helvetica",  FT_ENCODING_NONE },
+  { "Sym",        "Symbol",     FT_ENCODING_NONE },
+  { "Terminal",   "Courier",    FT_ENCODING_NONE },
+  { "Times",      "Times",      FT_ENCODING_NONE },
+  { "Wingdings",  "Symbol",     FT_ENCODING_NONE },
+  {  NULL,        NULL,         FT_ENCODING_NONE }
 };
 
 static void lite_font_map( wmfAPI* API, wmfFont* font)
@@ -2257,7 +2261,7 @@ static void lite_font_map( wmfAPI* API, wmfFont* font)
 }
 
 /* Initialize API font structures */
-static void lite_font_init( wmfAPI* API, wmfAPI_Options* options)
+static void lite_font_init( wmfAPI* API, wmfAPI_Options* ARGUNUSED(options))
 {
   wmfFontData
     *font_data;

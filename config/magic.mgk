@@ -87,5 +87,4 @@
   <magic name="XPM" offset="1" target="* XPM *" />
   <magic name="XWD" offset="4" target="\007\000\000" />
   <magic name="XWD" offset="5" target="\000\000\007" />
-  <magic name="MVG" offset="0" target="push graphic-context" />
 </magicmap>

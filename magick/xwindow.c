@@ -8317,7 +8317,7 @@ MagickExport void XMakeWindow(Display *display,Window parent,char **argv,
 */
 MagickExport unsigned int XMagickMonitor(const char *task,
   const magick_int64_t quantum,const magick_uint64_t span,
-  ExceptionInfo *exception)
+  ExceptionInfo *ARGUNUSED(exception))
 {
   XWindows
     *windows;
@@ -9152,8 +9152,8 @@ static char *XVisualClassName(const int visual_class)
 %
 %
 */
-MagickExport void XWarning(const ExceptionType warning,const char *reason,
-  const char *description)
+MagickExport void XWarning(const ExceptionType ARGUNUSED(warning),
+  const char *reason,const char *description)
 {
   char
     text[MaxTextExtent];

@@ -2170,7 +2170,7 @@ static void FormMultiPartFilename(Image *image, const ImageInfo *image_info)
 }
 
 MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
-  const BlobMode mode,ExceptionInfo *exception)
+  const BlobMode mode,ExceptionInfo *ARGUNUSED(exception))
 {
   char
     filename[MaxTextExtent],
@@ -2485,8 +2485,9 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
 extern "C" {
 #endif
 
-static unsigned int PingStream(const Image *image,const void *pixels,
-  const size_t columns)
+static unsigned int PingStream(const Image *ARGUNUSED(image),
+                               const void *ARGUNUSED(pixels),
+                               const size_t ARGUNUSED(columns))
 {
   return(True);
 }

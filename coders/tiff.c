@@ -373,7 +373,9 @@ static toff_t TIFFGetBlobSize(thandle_t image)
 }
 
 /* Unmap BLOB memory */
-static void TIFFUnmapBlob(thandle_t image,tdata_t base,toff_t size)
+static void TIFFUnmapBlob(thandle_t ARGUNUSED(image),
+                          tdata_t ARGUNUSED(base),
+                          toff_t ARGUNUSED(size))
 {
 /*   if (((Image *) image)->logging) */
 /*     (void) LogMagickEvent(CoderEvent,GetMagickModule(), */
@@ -1962,21 +1964,12 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
         {
           old_value=bits_per_sample;
           new_value=atoi(value);
-          if ((new_value > 0) && (new_value <= 32))
-            {
-              bits_per_sample=new_value;
-              if (logging)
-                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                  "User override (bits-per-sample): %u bits per sample (was %u)",
+          /* Clamp maximum bits per sample to 32 bits */
+          bits_per_sample=Min(new_value,sizeof(unsigned int)*8);
+          if (logging)
+            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+               "User override (bits-per-sample): %u bits per sample (was %u)",
                   (unsigned int) bits_per_sample, old_value);
-            }
-          else
-            {
-              if (logging)
-                (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                  "User override (bits-per-sample) IGNORED (value %u outside of range 1-32)",
-                  new_value);
-            }
         }
 
       /*

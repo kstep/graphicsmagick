@@ -92,6 +92,14 @@ extern "C" {
 #define pclose(stream)  _pclose(stream)
 
 /*
+  Visual C++ supports GlobalMemoryStatusEx but MinGW headers lack
+  support for it.
+*/
+#if !defined(__MINGW32__)
+#  define HAVE_GLOBALMEMORYSTATUSEX 1
+#endif
+
+/*
   Windows provides Unix-style access() via _access()
  */
 #define HAVE_ACCESS 1
@@ -145,7 +153,6 @@ extern MagickExport char
 
 extern MagickExport int
   Exit(int),
-  IsWindows95(),
   NTGhostscriptDLL(char *path, int path_length),
   NTGhostscriptEXE(char *path, int path_length),
   NTGhostscriptFonts(char *path, int path_length),
@@ -190,8 +197,12 @@ extern MagickExport const char
 extern MagickExport unsigned char
   *NTResourceToBlob(const char *);
 
-extern MagickExport unsigned int
-  NTGetExecutionPath(char *);
+extern MagickExport MagickPassFail
+  NTGetExecutionPath(char *path);
+
+extern MagickExport MagickBool
+  IsWindows95(),
+  NTKernelAPISupported(const char *name);
 
 extern MagickExport void
   closedir(DIR *),

@@ -73,7 +73,8 @@ static unsigned int
 %
 %
 */
-static Image *ReadXImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadXImage(const ImageInfo *image_info,
+                         ExceptionInfo *ARGUNUSED(exception))
 {
   XImportInfo
     ximage_info;

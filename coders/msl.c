@@ -387,7 +387,8 @@ static void MSLUnparsedEntityDeclaration(void *context,const xmlChar *name,
 
 }
 
-static void MSLSetDocumentLocator(void *context,xmlSAXLocatorPtr location)
+static void MSLSetDocumentLocator(void *ARGUNUSED(context),
+                                  xmlSAXLocatorPtr ARGUNUSED(location))
 {
 /*   MSLInfo */
 /*     *msl_info; */
@@ -423,7 +424,7 @@ static void MSLStartDocument(void *context)
   msl_info->document->standalone=parser->standalone;
 }
 
-static void MSLEndDocument(void *context)
+static void MSLEndDocument(void *ARGUNUSED(context))
 {
 /*   MSLInfo */
 /*     *msl_info; */
@@ -3683,7 +3684,7 @@ static void MSLEndElement(void *context,const xmlChar *name)
   }
 }
 
-static void MSLCharacters(void *context,const xmlChar *c,int length)
+static void MSLCharacters(void *ARGUNUSED(context),const xmlChar *c,int length)
 {
 /*   MSLInfo */
 /*     *msl_info; */
@@ -3715,7 +3716,7 @@ static void MSLReference(void *context,const xmlChar *name)
     (void) xmlAddChild(parser->node,xmlNewReference(msl_info->document,name));
 }
 
-static void MSLIgnorableWhitespace(void *context,const xmlChar *c,int length)
+static void MSLIgnorableWhitespace(void *ARGUNUSED(context),const xmlChar *c,int length)
 {
 /*   MSLInfo */
 /*     *msl_info; */
@@ -3727,7 +3728,7 @@ static void MSLIgnorableWhitespace(void *context,const xmlChar *c,int length)
 /*   msl_info=(MSLInfo *) context; */
 }
 
-static void MSLProcessingInstructions(void *context,const xmlChar *target,
+static void MSLProcessingInstructions(void *ARGUNUSED(context),const xmlChar *target,
   const xmlChar *data)
 {
 /*   MSLInfo */
@@ -3742,7 +3743,7 @@ static void MSLProcessingInstructions(void *context,const xmlChar *target,
 /*   msl_info=(MSLInfo *) context; */
 }
 
-static void MSLComment(void *context,const xmlChar *value)
+static void MSLComment(void *ARGUNUSED(context),const xmlChar *value)
 {
 /*   MSLInfo */
 /*     *msl_info; */

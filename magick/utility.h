@@ -56,6 +56,9 @@ typedef struct _TokenInfo
 #  define __attribute__(x) /*nothing*/
 #endif
 
+#undef ARGUNUSED
+#define ARGUNUSED(arg) arg __attribute__((unused))
+
 extern MagickExport char
   *AcquireString(const char *),
   *AllocateString(const char *),

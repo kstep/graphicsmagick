@@ -994,29 +994,6 @@ typedef struct _ImageInfo
 } ImageInfo;
 
 /*
-  Image const declarations.
-*/
-#if defined(MAGICK_IMPLEMENTATION)
-extern const char
-  *BackgroundColor,
-  *BorderColor,
-  *DefaultTileFrame,
-  *DefaultTileGeometry,
-  *DefaultTileLabel,
-  *ForegroundColor,
-  *MatteColor,
-  *LoadImageText,
-  *LoadImagesText,
-  *PSDensityGeometry,
-  *PSPageGeometry,
-  *SaveImageText,
-  *SaveImagesText;
-
-extern const unsigned long
-  DefaultCompressionQuality;
-#endif /* defined(MAGICK_IMPLEMENTATION) */
-
-/*
   Image utilities methods.
 */
 

@@ -80,7 +80,8 @@
 %                          generic profile name.
 %
 */
-MagickExport MagickPassFail DeleteImageProfile(Image *image,const char *name)
+MagickExport MagickPassFail
+DeleteImageProfile(Image *image,const char *name)
 {
   return(SetImageProfile(image,name,0,0));
 }
@@ -114,8 +115,8 @@ MagickExport MagickPassFail DeleteImageProfile(Image *image,const char *name)
 %    o length: Updated with profile length if profile is present.
 %
 */
-MagickExport const unsigned char *GetImageProfile(const Image* image,
-  const char *name, size_t *length)
+MagickExport const unsigned char *
+GetImageProfile(const Image* image, const char *name, size_t *length)
 {
   long
     i;
@@ -131,7 +132,9 @@ MagickExport const unsigned char *GetImageProfile(const Image* image,
   assert(length != (size_t *) NULL);
 
   /* ICC color profile ("ICM") */
-  if ((LocaleCompare("ICM",name) == 0) &&
+  if (((LocaleCompare("ICC",name) == 0) ||
+       (LocaleCompare("ICM",name) == 0))
+      &&
       (image->color_profile.info != 0))
     {
       profile=&image->color_profile;
@@ -206,7 +209,8 @@ MagickExport const unsigned char *GetImageProfile(const Image* image,
 */
 #if defined(HasLCMS)
 #if defined(LCMS_VERSION) && (LCMS_VERSION > 1010)
-static int lcmsReplacementErrorHandler(int ErrorCode, const char *ErrorText)
+static int
+lcmsReplacementErrorHandler(int ErrorCode, const char *ErrorText)
 {
   ExceptionType
     type;
@@ -229,8 +233,9 @@ static int lcmsReplacementErrorHandler(int ErrorCode, const char *ErrorText)
 #endif
 #endif
 
-MagickExport MagickPassFail ProfileImage(Image *image,const char *name,
-  const unsigned char *profile,const size_t length,unsigned int clone)
+MagickExport MagickPassFail
+ProfileImage(Image *image,const char *name,const unsigned char *profile,
+             const size_t length,unsigned int clone)
 {
   register long
     i,
@@ -791,8 +796,9 @@ MagickExport MagickPassFail ProfileImage(Image *image,const char *name,
 %    o length: The length of the profile.
 %
 */
-MagickExport MagickPassFail SetImageProfile(Image *image,const char *name,
-  const unsigned char *profile,const size_t length)
+MagickExport MagickPassFail
+SetImageProfile(Image *image,const char *name, const unsigned char *profile,
+                const size_t length)
 {
   long
     i;
@@ -807,8 +813,9 @@ MagickExport MagickPassFail SetImageProfile(Image *image,const char *name,
   assert(image->signature == MagickSignature);
   assert(name != NULL);
 
-  /* ICC color profile ("ICM") */
-  if (LocaleCompare("ICM",name) == 0)
+  /* ICC color profile ("ICC" or "ICM") */
+  if ((LocaleCompare("ICC",name) == 0) ||
+      (LocaleCompare("ICM",name) == 0))
     image_profile=&image->color_profile;
 
   /* IPTC profile ("8BIM" or "IPTC") */

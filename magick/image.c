@@ -57,6 +57,7 @@
 #include "magick/pixel_iterator.h"
 #include "magick/quantize.h"
 #include "magick/render.h"
+#include "magick/profile.h"
 #include "magick/semaphore.h"
 #include "magick/signature.h"
 #include "magick/tempfile.h"
@@ -892,8 +893,10 @@ MagickExport MagickPassFail ClipPathImage(Image *image,const char *pathname,
   ImageInfo
     *image_info;
 
+  unsigned long
+    intensity;
+
   long
-    intensity,
     y;
 
   register long
@@ -938,11 +941,11 @@ MagickExport MagickPassFail ClipPathImage(Image *image,const char *pathname,
     {
       intensity=PixelIntensityToQuantum(q);
       if (inside)
-        intensity=intensity == TransparentOpacity ? TransparentOpacity :
-          OpaqueOpacity;
+        intensity=(intensity == TransparentOpacity ? TransparentOpacity :
+          OpaqueOpacity);
       else
-        intensity=intensity == TransparentOpacity ? OpaqueOpacity :
-          TransparentOpacity;
+        intensity=(intensity == TransparentOpacity ? OpaqueOpacity :
+          TransparentOpacity);
       q->red=intensity;
       q->green=intensity;
       q->blue=intensity;
@@ -1427,6 +1430,12 @@ MagickExport MagickPassFail DescribeImage(Image *image,FILE *file,
   char
     color[MaxTextExtent],
     format[MaxTextExtent];
+
+  const unsigned char
+    *profile;
+
+  size_t
+    profile_length;
 
   const ImageAttribute
     *attribute;
@@ -1929,10 +1938,10 @@ MagickExport MagickPassFail DescribeImage(Image *image,FILE *file,
 #endif
       }
   }
-  if (image->color_profile.length != 0)
+  if((profile=GetImageProfile(image,"ICM",&profile_length)) != 0)
     (void) fprintf(file,"  Profile-color: %lu bytes\n",(unsigned long)
-      image->color_profile.length);
-  if (image->iptc_profile.length != 0)
+      profile_length);
+  if((profile=GetImageProfile(image,"IPTC",&profile_length)) != 0)
     {
       char
         *tag,
@@ -1945,17 +1954,17 @@ MagickExport MagickPassFail DescribeImage(Image *image,FILE *file,
         Describe IPTC data.
       */
       (void) fprintf(file,"  Profile-iptc: %lu bytes\n",(unsigned long)
-        image->iptc_profile.length);
-      for (i=0; i < (long) image->iptc_profile.length; )
+        profile_length);
+      for (i=0; i < (long) profile_length; )
       {
-        if (image->iptc_profile.info[i] != 0x1c)
+        if (profile[i] != 0x1c)
           {
             i++;
             continue;
           }
         i++;  /* skip file separator */
         i++;  /* skip record number */
-        switch (image->iptc_profile.info[i])
+        switch (profile[i])
         {
           case 5: tag=(char *) "Image Name"; break;
           case 7: tag=(char *) "Edit Status"; break;
@@ -2013,8 +2022,8 @@ MagickExport MagickPassFail DescribeImage(Image *image,FILE *file,
         }
         i++;
         (void) fprintf(file,"    %.1024s:\n",tag);
-        length=image->iptc_profile.info[i++] << 8;
-        length|=image->iptc_profile.info[i++];
+        length=profile[i++] << 8;
+        length|=profile[i++];
         text=MagickAllocateMemory(char *,length+1);
         if (text != (char *) NULL)
           {
@@ -2024,7 +2033,7 @@ MagickExport MagickPassFail DescribeImage(Image *image,FILE *file,
             register long
               j;
 
-            (void) strncpy(text,(char *) image->iptc_profile.info+i,length);
+            (void) strncpy(text,(char *) profile+i,length);
             text[length]='\0';
             textlist=StringToList(text);
             if (textlist != (char **) NULL)
@@ -2908,10 +2917,11 @@ typedef struct _StatisticsContext {
   ImageStatistics *statistics;
 } StatisticsContext;
 static MagickPassFail GetImageStatisticsMean(void *user_context,
-                                             const long x,const long y,
+                                             const long ARGUNUSED(x),
+                                             const long ARGUNUSED(y),
                                              const Image *image,
                                              const PixelPacket *pixel,
-                                             ExceptionInfo *exception)
+                                             ExceptionInfo *ARGUNUSED(exception))
 {
   StatisticsContext
     *context=(StatisticsContext *) user_context;
@@ -2957,10 +2967,11 @@ static MagickPassFail GetImageStatisticsMean(void *user_context,
 }
 #define Square(x)  ((x)*(x))
 static MagickPassFail GetImageStatisticsVariance(void *user_context,
-                                                 const long x,const long y,
+                                                 const long ARGUNUSED(x),
+                                                 const long ARGUNUSED(y),
                                                  const Image *image,
                                                  const PixelPacket *pixel,
-                                                 ExceptionInfo *exception)
+                                                 ExceptionInfo *ARGUNUSED(exception))
 {
   StatisticsContext
     *context=(StatisticsContext *) user_context;
@@ -3525,14 +3536,14 @@ typedef struct _PixelErrorStats {
 static MagickPassFail
 ComputePixelError(void *user_data,
                   const Image *first_image,
-                  const long first_x,
-                  const long first_y,
+                  const long ARGUNUSED(first_x),
+                  const long ARGUNUSED(first_y),
                   const PixelPacket *first_pixel,
-                  const Image *second_image,
-                  const long second_x,
-                  const long second_y,
+                  const Image *ARGUNUSED(second_image),
+                  const long ARGUNUSED(second_x),
+                  const long ARGUNUSED(second_y),
                   const PixelPacket *second_pixel,
-                  ExceptionInfo *exception)
+                  ExceptionInfo *ARGUNUSED(exception))
 {
   PixelErrorStats
     *stats = (PixelErrorStats *) user_data;
@@ -4076,8 +4087,12 @@ typedef struct _QuantumContext
 } QuantumContext;
 
 static MagickPassFail
-QuantumAdd(void *user_data,const long x,const long y,
-  const Image *const_image,PixelPacket *pixel,ExceptionInfo *exception)
+QuantumAdd(void *user_data,
+           const long ARGUNUSED(x),
+           const long ARGUNUSED(y),
+           const Image *const_image,
+           PixelPacket *pixel,
+           ExceptionInfo *ARGUNUSED(exception))
 {
   QuantumContext
     *context=(QuantumContext *) user_data;
@@ -4114,8 +4129,12 @@ QuantumAdd(void *user_data,const long x,const long y,
   return (MagickPass);
 }
 static MagickPassFail
-QuantumAnd(void *user_data,const long x,const long y,
-  const Image *const_image,PixelPacket *pixel,ExceptionInfo *exception)
+QuantumAnd(void *user_data,
+           const long ARGUNUSED(x),
+           const long ARGUNUSED(y),
+           const Image *const_image,
+           PixelPacket *pixel,
+           ExceptionInfo *ARGUNUSED(exception))
 {
   QuantumContext
     *context=(QuantumContext *) user_data;
@@ -4152,8 +4171,12 @@ QuantumAnd(void *user_data,const long x,const long y,
   return (MagickPass);
 }
 static MagickPassFail
-QuantumDivide(void *user_data,const long x,const long y,
-  const Image *const_image,PixelPacket *pixel,ExceptionInfo *exception)
+QuantumDivide(void *user_data,
+              const long ARGUNUSED(x),
+              const long ARGUNUSED(y),
+              const Image *const_image,
+              PixelPacket *pixel,
+              ExceptionInfo *ARGUNUSED(exception))
 {
   QuantumContext
     *context=(QuantumContext *) user_data;
@@ -4190,8 +4213,12 @@ QuantumDivide(void *user_data,const long x,const long y,
   return (MagickPass);
 }
 static MagickPassFail
-QuantumLShift(void *user_data,const long x,const long y,
-  const Image *const_image,PixelPacket *pixel,ExceptionInfo *exception)
+QuantumLShift(void *user_data,
+              const long ARGUNUSED(x),
+              const long ARGUNUSED(y),
+              const Image *const_image,
+              PixelPacket *pixel,
+              ExceptionInfo *ARGUNUSED(exception))
 {
   QuantumContext
     *context=(QuantumContext *) user_data;
@@ -4228,8 +4255,12 @@ QuantumLShift(void *user_data,const long x,const long y,
   return (MagickPass);
 }
 static MagickPassFail
-QuantumMultiply(void *user_data,const long x,const long y,
-  const Image *const_image,PixelPacket *pixel,ExceptionInfo *exception)
+QuantumMultiply(void *user_data,
+                const long ARGUNUSED(x),
+                const long ARGUNUSED(y),
+                const Image *const_image,
+                PixelPacket *pixel,
+                ExceptionInfo *ARGUNUSED(exception))
 {
   QuantumContext
     *context=(QuantumContext *) user_data;
@@ -4266,8 +4297,12 @@ QuantumMultiply(void *user_data,const long x,const long y,
   return (MagickPass);
 }
 static MagickPassFail
-QuantumOr(void *user_data,const long x,const long y,
-  const Image *const_image,PixelPacket *pixel,ExceptionInfo *exception)
+QuantumOr(void *user_data,
+          const long ARGUNUSED(x),
+          const long ARGUNUSED(y),
+          const Image *const_image,
+          PixelPacket *pixel,
+          ExceptionInfo *ARGUNUSED(exception))
 {
   QuantumContext
     *context=(QuantumContext *) user_data;
@@ -4304,8 +4339,12 @@ QuantumOr(void *user_data,const long x,const long y,
   return (MagickPass);
 }
 static MagickPassFail
-QuantumRShift(void *user_data,const long x,const long y,
-  const Image *const_image,PixelPacket *pixel,ExceptionInfo *exception)
+QuantumRShift(void *user_data,
+              const long ARGUNUSED(x),
+              const long ARGUNUSED(y),
+              const Image *const_image,
+              PixelPacket *pixel,
+              ExceptionInfo *ARGUNUSED(exception))
 {
   QuantumContext
     *context=(QuantumContext *) user_data;
@@ -4342,8 +4381,9 @@ QuantumRShift(void *user_data,const long x,const long y,
   return (MagickPass);
 }
 static MagickPassFail
-QuantumSubtract(void *user_data,const long x,const long y,
-  const Image *const_image,PixelPacket *pixel,ExceptionInfo *exception)
+QuantumSubtract(void *user_data,const long ARGUNUSED(x),
+  const long ARGUNUSED(y),const Image *const_image,PixelPacket *pixel,
+  ExceptionInfo *ARGUNUSED(exception))
 {
   QuantumContext
     *context=(QuantumContext *) user_data;
@@ -4380,8 +4420,8 @@ QuantumSubtract(void *user_data,const long x,const long y,
   return (MagickPass);
 }
 static MagickPassFail
-QuantumXor(void *user_data,const long x,const long y,
-  const Image *const_image,PixelPacket *pixel,ExceptionInfo *exception)
+QuantumXor(void *user_data,const long ARGUNUSED(x),const long ARGUNUSED(y),
+  const Image *const_image,PixelPacket *pixel,ExceptionInfo *ARGUNUSED(exception))
 {
   QuantumContext
     *context=(QuantumContext *) user_data;

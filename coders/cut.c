@@ -222,28 +222,39 @@ static void InsertRow(unsigned char *p,long y,Image *image)
     }
 }
 
-static int GetCutColors(Image *image)
+static unsigned int GetCutColors(Image *image)
 {
-  int MaxColor,x,y;
-  PixelPacket *q;
-  int ScaleCharToQuantum16;
+  int
+    x,
+    y;
 
-  /*This procedure computes number of colors in Grayed R[i]=G[i]=B[i] image*/
+  PixelPacket
+    *q;
+
+  Quantum
+    MaxColor,
+    ScaleCharToQuantum16;
+
+  /* Compute the number of colors in Grayed R[i]=G[i]=B[i] image */
   ScaleCharToQuantum16=ScaleCharToQuantum(16);
   MaxColor=0;
-  for (y=0; y < (long)image->rows; y++)  
+  for (y=0; y < (long)image->rows; y++)
     {
-      q=SetImagePixels(image,0,y,image->columns,1);  
-      for (x=0; x < (long)image->columns; x++)  
-        {       
-          if(MaxColor<q->red) MaxColor=q->red;
-          if(MaxColor>=ScaleCharToQuantum16) return(255);  
-          q++;  
-        }  
+      q=SetImagePixels(image,0,y,image->columns,1);
+      for (x=(long)image->columns; x > 0; x--)
+        {
+          if (MaxColor < q->red)
+            MaxColor=q->red;
+          if (MaxColor >= ScaleCharToQuantum16)
+            return(255);
+          q++;
+        }
     }
-  if(MaxColor<(int) ScaleCharToQuantum(2)) MaxColor=2;    
-  else if(MaxColor<(int) ScaleCharToQuantum(16)) MaxColor=16;    
-  return(MaxColor);
+  if (MaxColor < ScaleCharToQuantum(2))
+    MaxColor=2;
+  else if (MaxColor < ScaleCharToQuantum(16))
+    MaxColor=16;
+  return (MaxColor);
 }
 
 /*

@@ -396,8 +396,9 @@ static unsigned char *ExpandBuffer(unsigned char *pixels,
   return(scanline);
 }
 
-static unsigned char *DecodeImage(const ImageInfo *image_info,Image *blob,
-  Image *image,unsigned long bytes_per_line,const unsigned int bits_per_pixel)
+static unsigned char *DecodeImage(const ImageInfo *ARGUNUSED(image_info),
+  Image *blob,Image *image,unsigned long bytes_per_line,
+  const unsigned int bits_per_pixel)
 {
   long
     j,

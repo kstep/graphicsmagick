@@ -850,7 +850,7 @@ AC_CACHE_CHECK(for C compiler __func__ support, ac_cv_have_C__func__,
 changequote(<<, >>)dnl
 <<
 const char *func=__func__;
-return 0;
+return (func != 0 ? 0 : 1);
 >>,
 changequote([, ])dnl
 ac_cv_have_C__func__='yes',
@@ -1003,7 +1003,7 @@ then
   changequote(<<, >>)dnl
   <<
   const char *func=__func__;
-  return 0;
+  return (func != 0 ? 0 : 1);
   >>,
   changequote([, ])dnl
   ac_cv_have_CPP__func__='yes',

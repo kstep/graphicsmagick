@@ -446,6 +446,28 @@ extern int vsnprintf(char *s, size_t n, const char *format, va_list ap);
 # define pclose _pclose
 #endif
 
+
+/*
+  Image const declarations.
+*/
+extern MagickExport const char
+  *BackgroundColor,
+  *BorderColor,
+  *DefaultTileFrame,
+  *DefaultTileGeometry,
+  *DefaultTileLabel,
+  *ForegroundColor,
+  *LoadImageText,
+  *LoadImagesText,
+  *MatteColor,
+  *PSDensityGeometry,
+  *PSPageGeometry,
+  *SaveImageText,
+  *SaveImagesText;
+
+extern MagickExport const unsigned long
+  DefaultCompressionQuality;
+
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif

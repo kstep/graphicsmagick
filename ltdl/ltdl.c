@@ -1302,51 +1302,58 @@ sys_wll_open (loader_data, filename)
      lt_user_data loader_data;
      const char *filename;
 {
+  const static char *allowed_extensions[] =
+    {
+      ".dll",
+      ".exe",
+      NULL
+    };
+  
   lt_dlhandle	cur;
   lt_module	module	   = 0;
   const char   *errormsg   = 0;
-  char	       *searchname = 0;
-  char	       *ext;
-  char		self_name_buf[MAX_PATH];
+  char          load_path[MAX_PATH+2];
 
-  if (!filename)
+  load_path[0]='\0';
+  if (filename)
+    {
+      char *extension = strrchr (filename, '.');
+      if (extension)
+        {
+          int index;
+          for (index=0; allowed_extensions[index] != NULL; index++)
+            if (stricmp (extension, allowed_extensions[index]) == 0)
+              break;
+          
+          if (allowed_extensions[index] == NULL)
+            {
+              printf("Excluded \"%s\"\n",filename);
+              return module;
+            }
+        }
+#if __CYGWIN__
+      /* Convert from a Cygwin path to a native Windows path. */
+      cygwin_conv_to_full_win32_path (filename, load_path);
+#else
+      strncpy (load_path, filename, MAX_PATH);
+      load_path[MAX_PATH-1] = '\0';
+#endif
+      
+      if (!extension)
+        {
+          /* Append a `.' to stop Windows from adding an
+             implicit `.dll' extension. */
+          strcat(load_path,".");
+        }
+    }
+  else
     {
       /* Get the name of main module */
-      *self_name_buf = 0;
-      GetModuleFileName (NULL, self_name_buf, sizeof (self_name_buf));
-      filename = ext = self_name_buf;
-    }
-  else
-    {
-      ext = strrchr (filename, '.');
+      GetModuleFileName (NULL, load_path, sizeof (load_path));
     }
 
-  if (ext)
-    {
-      /* FILENAME already has an extension. */
-      searchname = lt_estrdup (filename);
-    }
-  else
-    {
-      /* Append a `.' to stop Windows from adding an
-	 implicit `.dll' extension. */
-      searchname = LT_EMALLOC (char, 2+ LT_STRLEN (filename));
-      if (searchname)
-	sprintf (searchname, "%s.", filename);
-    }
-  if (!searchname)
-    return 0;
-
-#if __CYGWIN__
-  {
-    char wpath[MAX_PATH];
-    cygwin_conv_to_full_win32_path(searchname, wpath);
-    module = LoadLibrary(wpath);
-  }
-#else
-  module = LoadLibrary (searchname);
-#endif
-  LT_DLFREE (searchname);
+  printf("Loading \"%s\" ...\n",filename);
+  module = LoadLibrary (load_path);
 
   /* libltdl expects this function to fail if it is unable
      to physically load the library.  Sadly, LoadLibrary

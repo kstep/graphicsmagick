@@ -90,21 +90,33 @@ static CRITICAL_SECTION
 static unsigned int
   active_semaphore = False;
 #else
-static int
+static LONG volatile
   semaphore_mutex = 0;
 /* Wait for spin lock */
-static void spinlock_wait (int *sl)
+static void spinlock_wait (LONG volatile *sl)
 {
-  while (InterlockedCompareExchange (sl, 1, 0) != 0)
+  /*
+    InterlockedCompareExchange performs an atomic comparison of the
+    specified 32-bit values and exchanges them, based on the outcome of
+    the comparison. Requires Windows XP, Windows 2000 Professional,
+    Windows NT Workstation 4.0, Windows Me, or Windows 98.
+   */
+
+  while (InterlockedCompareExchange (sl, 1L, 0L) != 0)
   {
     /* slight delay - just in case OS does not giveup CPU */
     Sleep (SPINLOCK_DELAY_MILLI_SECS);
   }
 }
 /* Release spin lock */
-static void spinlock_release (int *sl)
+static void spinlock_release (LONG volatile *sl)
 {
-  InterlockedExchange (sl, 0);
+  /*
+    InterlockedExchange atomically exchanges a pair of 32-bit
+    values. Requires Windows XP, Windows 2000 Professional, Windows NT
+    Workstation 3.5 and later, Windows Me, Windows 98, or Windows 95.
+  */
+  InterlockedExchange (sl, 0L);
 }
 #endif
 #endif

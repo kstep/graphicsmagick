@@ -40,6 +40,7 @@
 #include "magick/studio.h"
 #include "magick/attribute.h"
 #include "magick/blob.h"
+#include "magick/profile.h"
 #include "magick/render.h"
 #include "magick/tempfile.h"
 #include "magick/utility.h"
@@ -136,31 +137,37 @@ static unsigned int GenerateIPTCAttribute(Image *image,const char *key)
   size_t
     length;
 
-  if (image->iptc_profile.length == 0)
+  const unsigned char
+    *profile;
+
+  size_t
+    profile_length;
+
+  if((profile=GetImageProfile(image,"IPTC",&profile_length)) == 0)
     return(False);
   count=sscanf(key,"IPTC:%d:%d",&dataset,&record);
   if (count != 2)
     return(False);
-  for (i=0; i < (long) image->iptc_profile.length; i++)
+  for (i=0; i < (long) profile_length; i++)
   {
-    if (image->iptc_profile.info[i] != 0x1cU)
+    if (profile[i] != 0x1cU)
       continue;
-    if (image->iptc_profile.info[i+1] != dataset)
+    if (profile[i+1] != dataset)
       continue;
-    if (image->iptc_profile.info[i+2] != record)
+    if (profile[i+2] != record)
       continue;
-    length=image->iptc_profile.info[i+3] << 8;
-    length|=image->iptc_profile.info[i+4];
+    length=profile[i+3] << 8;
+    length|=profile[i+4];
     attribute=MagickAllocateMemory(char *,length+MaxTextExtent);
     if (attribute == (char *) NULL)
       continue;
-    (void) strncpy(attribute,(char *) image->iptc_profile.info+i+5,length);
+    (void) strncpy(attribute,(char *) profile+i+5,length);
     attribute[length]='\0';
     (void) SetImageAttribute(image,key,(const char *) attribute);
     MagickFreeMemory(attribute);
     break;
   }
-  return(i < (long) image->iptc_profile.length);
+  return(i < (long) profile_length);
 }
 
 static unsigned char ReadByte(unsigned char **p,size_t *length)
@@ -234,7 +241,7 @@ static int ReadMSBShort(unsigned char **p,size_t *length)
   a signed type
 */
 static char *TracePSClippingPath(unsigned char *blob,size_t length,
-  unsigned long columns,unsigned long rows)
+  unsigned long ARGUNUSED(columns),unsigned long ARGUNUSED(rows))
 {
   char
     *path,
@@ -669,7 +676,13 @@ static int Generate8BIMAttribute(Image *image,const char *key)
   unsigned long
     count;
 
-  if (image->iptc_profile.length == 0)
+  const unsigned char
+    *profile;
+
+  size_t
+    profile_length;
+
+  if((profile=GetImageProfile(image,"IPTC",&profile_length)) == 0)
     return(False);
 
   /*
@@ -691,8 +704,8 @@ static int Generate8BIMAttribute(Image *image,const char *key)
   resource=(char *) NULL;
 
   status=False;
-  length=image->iptc_profile.length;
-  info=image->iptc_profile.info;
+  length=profile_length;
+  info=profile;
 
   while ((length > 0) && (status == False))
   {

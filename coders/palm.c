@@ -361,10 +361,10 @@ static int FindColor(PixelPacket *pixel)
   register long
     i;
 
-  for (i=0; i < 256L; i++)
-    if (((unsigned long) (AbsoluteValue(pixel->red-PalmPalette[i][0])) < (QuantumDepth/8U)) &&
-        ((unsigned long) (AbsoluteValue(pixel->green-PalmPalette[i][1])) < (QuantumDepth/8U)) &&
-        ((unsigned long) (AbsoluteValue(pixel->blue-PalmPalette[i][2])) < (QuantumDepth/8U)))
+  for (i=0; i < 256; i++)
+    if (ScaleQuantumToChar(pixel->red) == PalmPalette[i][0] &&
+        ScaleQuantumToChar(pixel->green) == PalmPalette[i][1] &&
+        ScaleQuantumToChar(pixel->blue) == PalmPalette[i][2])
       return(i);
   return(-1);
 }

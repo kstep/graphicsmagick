@@ -134,27 +134,41 @@ MagickExport void RegisterStaticModules(void)
   RegisterBMPImage();
   RegisterCAPTIONImage();
   RegisterCINEONImage();
+#if defined(HasWINGDI32)
   RegisterCLIPBOARDImage();
+#endif
   RegisterCMYKImage();
   RegisterCUTImage();
   RegisterDCMImage();
   RegisterDIBImage();
   RegisterDPSImage();
   RegisterDPXImage();
+#if defined(HasWINGDI32)
   RegisterEMFImage();
+#endif
+#if defined(HasTIFF)
   RegisterEPTImage();
+#endif
   RegisterFAXImage();
   RegisterFITSImage();
+#if defined(HasFPX)
   RegisterFPXImage();
+#endif
   RegisterGIFImage();
   RegisterGRAYImage();
   RegisterGRADIENTImage();
   RegisterHISTOGRAMImage();
   RegisterHTMLImage();
   RegisterICONImage();
+#if defined(HasJBIG)
   RegisterJBIGImage();
+#endif
+#if defined(HasJPEG)
   RegisterJPEGImage();
+#endif
+#if defined(HasJP2)
   RegisterJP2Image();
+#endif
   RegisterLABELImage();
   RegisterLOCALEImage();
   RegisterLOGOImage();
@@ -199,7 +213,9 @@ MagickExport void RegisterStaticModules(void)
   RegisterSUNImage();
   RegisterSVGImage();
   RegisterTGAImage();
+#if defined(HasTIFF)
   RegisterTIFFImage();
+#endif
   RegisterTILEImage();
   RegisterTIMImage();
   RegisterTOPOLImage();
@@ -256,27 +272,41 @@ MagickExport void UnregisterStaticModules(void)
   UnregisterBMPImage();
   UnregisterCAPTIONImage();
   UnregisterCINEONImage();
+#if defined(HasWINGDI32)
   UnregisterCLIPBOARDImage();
+#endif
   UnregisterCMYKImage();
   UnregisterCUTImage();
   UnregisterDCMImage();
   UnregisterDIBImage();
   UnregisterDPSImage();
   UnregisterDPXImage();
+#if defined(HasWINGDI32)
   UnregisterEMFImage();
+#endif
+#if defined(HasTIFF)
   UnregisterEPTImage();
+#endif
   UnregisterFAXImage();
   UnregisterFITSImage();
+#if defined(HasFPX)
   UnregisterFPXImage();
+#endif
   UnregisterGIFImage();
   UnregisterGRAYImage();
   UnregisterGRADIENTImage();
   UnregisterHISTOGRAMImage();
   UnregisterHTMLImage();
   UnregisterICONImage();
+#if defined(HasJBIG)
   UnregisterJBIGImage();
+#endif
+#if defined(HasJPEG)
   UnregisterJPEGImage();
+#endif
+#if defined(HasJP2)
   UnregisterJP2Image();
+#endif
   UnregisterLABELImage();
   UnregisterLOCALEImage();
   UnregisterLOGOImage();
@@ -321,7 +351,9 @@ MagickExport void UnregisterStaticModules(void)
   UnregisterSUNImage();
   UnregisterSVGImage();
   UnregisterTGAImage();
+#if defined(HasTIFF)
   UnregisterTIFFImage();
+#endif
   UnregisterTILEImage();
   UnregisterTIMImage();
   UnregisterTOPOLImage();

@@ -325,7 +325,7 @@ MagickExport int ftruncate(int filedes, off_t length)
 %
 %
 */
-MagickExport int IsWindows95()
+MagickExport MagickBool IsWindows95()
 {
   OSVERSIONINFO
     version_info;
@@ -333,8 +333,8 @@ MagickExport int IsWindows95()
   version_info.dwOSVersionInfoSize=sizeof(version_info);
   if (GetVersionEx(&version_info) &&
       (version_info.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS))
-    return(1);
-  return(0);
+    return(MagickTrue);
+  return(MagickFalse);
 }
 
 #if !defined(HasLTDL)
@@ -495,38 +495,47 @@ void *lt_dlopen(const char *filename)
   void
     *handle;
 
-  handle=(void *) NULL;
+  UINT
+    errorMode;
+
+  // Set error mode so that dialog box is not displayed on error.
+  errorMode=SetErrorMode(SEM_FAILCRITICALERRORS|SEM_NOOPENFILEERRORBOX);
+
+  // Load library via name
   handle=(void *) LoadLibrary(filename);
 
-  if (handle != (void *) NULL)
-    return(handle);
+  // If library failed to load, but a search path is defined, then
+  // attempt to load library via search path.
+  if ((handle == (void *) NULL) && (lt_slsearchpath != NULL))
+    {
+      p=lt_slsearchpath;
+      index=0;
+      while (index < MaxPathElements)
+        {
+          q=strchr(p,DirectoryListSeparator);
+          if (q == (char *) NULL)
+            {
+              (void) strncpy(buffer,p,MaxTextExtent-strlen(buffer)-1);
+              (void) strcat(buffer,"\\");
+              (void) strncat(buffer,filename,MaxTextExtent-strlen(buffer)-1);
+              handle=(void *) LoadLibrary(buffer);
+              break;
+            }
+          i=q-p;
+          (void) strncpy(buffer,p,i);
+          buffer[i]='\0';
+          (void) strcat(buffer,"\\");
+          (void) strncat(buffer,filename,MaxTextExtent-strlen(buffer)-1);
+          handle=(void *) LoadLibrary(buffer);
+          if (handle)
+            break;
+          p=q+1;
+        }
+    }
 
-  if (lt_slsearchpath == (char *) NULL)
-    return handle;
+  // Restore original error handling mode.
+  SetErrorMode(errorMode);
 
-  p=lt_slsearchpath;
-  index=0;
-  while (index < MaxPathElements)
-  {
-    q=strchr(p,DirectoryListSeparator);
-    if (q == (char *) NULL)
-      {
-        (void) strncpy(buffer,p,MaxTextExtent-strlen(buffer)-1);
-        (void) strcat(buffer,"\\");
-        (void) strncat(buffer,filename,MaxTextExtent-strlen(buffer)-1);
-        handle=(void *) LoadLibrary(buffer);
-        break;
-      }
-    i=q-p;
-    (void) strncpy(buffer,p,i);
-    buffer[i]='\0';
-    (void) strcat(buffer,"\\");
-    (void) strncat(buffer,filename,MaxTextExtent-strlen(buffer)-1);
-    handle=(void *) LoadLibrary(buffer);
-    if (handle)
-      break;
-    p=q+1;
-  }
   return(handle);
 }
 
@@ -591,12 +600,12 @@ int lt_dlsetsearchpath(const char *path)
 %    o name: Specifies the procedure entry point to be returned.
 %
 */
-void *lt_dlsym(void *h,const char *s)
+void *lt_dlsym(void *handle,const char *name)
 {
   LPFNDLLFUNC1
     lpfnDllFunc1;
 
-  lpfnDllFunc1=(LPFNDLLFUNC1) GetProcAddress(h,s);
+  lpfnDllFunc1=(LPFNDLLFUNC1) GetProcAddress(handle,name);
   if (!lpfnDllFunc1)
     return((void *) NULL);
   return((void *) lpfnDllFunc1);
@@ -894,10 +903,10 @@ MagickExport void NTErrorHandler(const ExceptionType error,const char *reason,
 %
 %
 */
-MagickExport unsigned int NTGetExecutionPath(char *path)
+MagickExport MagickPassFail NTGetExecutionPath(char *path)
 {
   GetModuleFileName(0,path,MaxTextExtent);
-  return(True);
+  return(MagickPass);
 }
 
 /*
@@ -1529,6 +1538,60 @@ MagickExport int NTGhostscriptUnLoadDLL(void)
     }
 
   return False;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   N T K e r n e l A P I S u p p o r t e d                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method NTKernelAPISupported tests to see if an API symbol is defined in
+%  kernel32.dll. If it is defined, then presumably the interface can safely
+%  be used without crashing.
+%
+%  The format of the NTKernelAPISupported method is:
+%
+%      MagickBool NTKernelAPISupported(const char *name)
+%
+%  A description of each parameter follows:
+%
+%    o return: MagickTrue if the symbol is defined, otherwise MagickFalse.
+%
+%    o name: Symbol name.
+%
+*/
+MagickExport MagickBool NTKernelAPISupported(const char *name)
+{
+  HMODULE 
+    handle = 0;
+
+  MagickBool
+    status = MagickFalse;
+
+  // Presumably LoadLibrary is reference counted.
+  handle=LoadLibrary("kernel32.dll");
+  if (handle == NULL)
+    {
+      (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+                            "Failed to load \"kernel32.dll\" using LoadLibrary()");
+    }
+  else
+    {
+      // If we can resolve the symbol, then it is supported.
+      if (GetProcAddress(handle,name))
+        status = MagickTrue;
+
+      // FreeLibrary is reference counted.
+      FreeLibrary(handle);
+    }
+
+  return (status);
 }
 
 /*

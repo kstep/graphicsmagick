@@ -58,7 +58,7 @@
 */
 #define PRECISION "%.0f"
 ModuleExport unsigned int AnalyzeImage(Image **image,
-  const int argc,char **argv)
+  const int ARGUNUSED(argc),char **ARGUNUSED(argv))
 {
   double
     bsumX = 0.0,

@@ -199,7 +199,7 @@ static void
 #define SegmentImageText  "  Segmenting image...  "
 
 static MagickPassFail Classify(Image *image,short **extrema,
-  const double cluster_threshold,const double weighting_exponent,
+  const double cluster_threshold,const double ARGUNUSED(weighting_exponent),
   const unsigned int verbose)
 {
   typedef struct _Cluster

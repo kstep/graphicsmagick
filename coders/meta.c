@@ -37,6 +37,7 @@
 #include "magick/studio.h"
 #include "magick/blob.h"
 #include "magick/magick.h"
+#include "magick/profile.h"
 #include "magick/utility.h"
 
 /*
@@ -827,7 +828,7 @@ static int jpeg_skip_variable(Image *ifile, Image *ofile)
   return 0;
 }
 
-static int jpeg_skip_variable2(Image *ifile, Image *ofile)
+static int jpeg_skip_variable2(Image *ifile, Image *ARGUNUSED(ofile))
 {
   unsigned int  length;
   int c1,c2;
@@ -1027,7 +1028,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
   unsigned int
     status;
 
-  void
+  unsigned char
     *blob;
 
   /*
@@ -1084,37 +1085,18 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
             (void) WriteBlobByte(buff,c);
           }
         }
-      image->iptc_profile.info = GetBlobStreamData(buff);
-      image->iptc_profile.length=GetBlobSize(buff);
+
+      (void) SetImageProfile(image,"IPTC",GetBlobStreamData(buff),
+                             GetBlobSize(buff));
+      MagickFreeMemory(blob);
       DetachBlob(buff->blob);
       DestroyImage(buff);
     }
   if (LocaleNCompare(image_info->magick,"APP1",4) == 0)
     {
-      int
-        i;
       /*
         Read APP1 binary metadata.
       */
-      i=(long) image->generic_profiles;
-      if (image->generic_profile == (ProfileInfo *) NULL)
-        image->generic_profile=MagickAllocateMemory(ProfileInfo *,
-          sizeof(ProfileInfo));
-      else
-        MagickReallocMemory(image->generic_profile,
-          (i+1)*sizeof(ProfileInfo));
-      if (image->generic_profile == (ProfileInfo *) NULL)
-        {
-          image->generic_profiles=0;
-          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
-            image)
-        }
-      image->generic_profiles++;
-      image->generic_profile[i].name=AllocateString((char *) NULL);
-      image->generic_profile[i].length=0;
-      image->generic_profile[i].info=(unsigned char *) NULL;
-      FormatString(image->generic_profile[i].name,"APP%d",1);
-
       buff=AllocateImage((ImageInfo *) NULL);
       if (buff == (Image *) NULL)
         ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
@@ -1212,8 +1194,9 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
             }
 #endif
         }
-      image->generic_profile[i].info = GetBlobStreamData(buff);
-      image->generic_profile[i].length=GetBlobSize(buff);
+      (void) SetImageProfile(image,"APP1",GetBlobStreamData(buff),
+                             GetBlobSize(buff));
+      MagickFreeMemory(blob);
       DetachBlob(buff->blob);
       DestroyImage(buff);
     }
@@ -1238,9 +1221,11 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
           break;
         (void) WriteBlobByte(buff,c);
       }
-      image->color_profile.info = GetBlobStreamData(buff);
-      image->color_profile.length=GetBlobSize(buff);
+      (void) SetImageProfile(image,"IPTC",GetBlobStreamData(buff),
+                             GetBlobSize(buff));
+      MagickFreeMemory(blob);
       DetachBlob(buff->blob);
+
       DestroyImage(buff);
     }
   if (LocaleCompare(image_info->magick,"IPTC") == 0)
@@ -1277,17 +1262,17 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
             (void) WriteBlobByte(buff,c);
           }
         }
-      image->iptc_profile.info = GetBlobStreamData(buff);
-      image->iptc_profile.length=GetBlobSize(buff);
+
+      /* subtract off the length of the 8BIM stuff */
+      length=GetBlobSize(buff)-12;
+      blob[10]=length >> 8;
+      blob[11]=length & 0xff;
+
+      (void) SetImageProfile(image,"IPTC",GetBlobStreamData(buff),
+                             GetBlobSize(buff));
+      MagickFreeMemory(blob)
       DetachBlob(buff->blob);
       DestroyImage(buff);
-      if (image->iptc_profile.info != (unsigned char *) NULL)
-        {
-          /* subtract off the length of the 8BIM stuff */
-          length=image->iptc_profile.length-12;
-          image->iptc_profile.info[10]=length >> 8;
-          image->iptc_profile.info[11]=length & 0xff;
-        }
     }
   CloseBlob(image);
   return(image);
@@ -1500,7 +1485,7 @@ ModuleExport void UnregisterMETAImage(void)
 %
 */
 
-static long GetIPTCStream(unsigned char **info,unsigned long length)
+static long GetIPTCStream(const unsigned char *blob, size_t blob_length, size_t *offset)
 {
   long
     info_length;
@@ -1508,7 +1493,7 @@ static long GetIPTCStream(unsigned char **info,unsigned long length)
   register long
     i;
 
-  register unsigned char
+  register const unsigned char
     *p;
 
   unsigned char
@@ -1524,32 +1509,32 @@ static long GetIPTCStream(unsigned char **info,unsigned long length)
   /*
     Find the beginning of the IPTC info.
   */
-  p=(*info);
+  p=blob;
   tag_length=0;
 iptc_find:
   info_length=0;
   marker=False;
-  while (length != 0)
+  while (blob_length != 0)
   {
     c=(*p++);
-    length--;
-    if (length == 0)
+    blob_length--;
+    if (blob_length == 0)
       break;
     if (c == 0x1c)
       {
         p--;
-        *info=p; /* let the caller know were it is */
+        *offset=(unsigned long) (p-blob); /* let the caller know were it is */
         break;
       }
   }
   /*
     Determine the length of the IPTC info.
   */
-  while (length != 0)
+  while (blob_length != 0)
   {
     c=(*p++);
-    length--;
-    if (length == 0)
+    blob_length--;
+    if (blob_length == 0)
       break;
     if (c == 0x1c)
       marker=True;
@@ -1563,15 +1548,15 @@ iptc_find:
       Found the 0x1c tag; skip the dataset and record number tags.
     */
     c=(*p++); /* should be 2 */
-    length--;
-    if (length == 0)
+    blob_length--;
+    if (blob_length == 0)
       break;
     if ((info_length == 1) && (c != 2))
       goto iptc_find;
     info_length++;
     c=(*p++); /* should be 0 */
-    length--;
-    if (length == 0)
+    blob_length--;
+    if (blob_length == 0)
       break;
     if ((info_length == 2) && (c != 0))
       goto iptc_find;
@@ -1580,8 +1565,8 @@ iptc_find:
       Decode the length of the block that follows - long or short format.
     */
     c=(*p++);
-    length--;
-    if (length == 0)
+    blob_length--;
+    if (blob_length == 0)
       break;
     info_length++;
     if (c & (unsigned char) 0x80)
@@ -1589,8 +1574,8 @@ iptc_find:
         for (i=0; i < 4; i++)
         {
           buffer[i]=(*p++);
-          length--;
-          if (length == 0)
+          blob_length--;
+          if (blob_length == 0)
             break;
           info_length++;
         }
@@ -1601,17 +1586,17 @@ iptc_find:
       {
         tag_length=((long) c) << 8;
         c=(*p++);
-        length--;
-        if (length == 0)
+        blob_length--;
+        if (blob_length == 0)
           break;
         info_length++;
         tag_length|=(long) c;
       }
-    if (tag_length > length)
+    if (tag_length > blob_length)
       break;
     p+=tag_length;
-    length-=tag_length;
-    if (length == 0)
+    blob_length-=tag_length;
+    if (blob_length == 0)
       break;
     info_length+=tag_length;
   }
@@ -2083,6 +2068,12 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
   register long
     i;
 
+  const unsigned char
+    *profile;
+
+  size_t
+    profile_length;
+
   unsigned int
     status;
 
@@ -2098,30 +2089,29 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
       /*
         Write 8BIM image.
       */
-      if (image->iptc_profile.length == 0)
+      if((profile=GetImageProfile(image,"8BIM",&profile_length)) == 0)
         ThrowWriterException(CoderError,No8BIMDataIsAvailable,image);
       status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
       if (status == False)
         ThrowWriterException(FileOpenError,UnableToOpenFile,image);
-      (void) WriteBlob(image,image->iptc_profile.length,
-        (char *) image->iptc_profile.info);
+      (void) WriteBlob(image,profile_length,(void *) profile);
       CloseBlob(image);
       return(True);
     }
   if (LocaleCompare(image_info->magick,"IPTC") == 0)
     {
       size_t
+        iptc_offset,
         length;
 
-      unsigned char
+      const unsigned char
         *info;
 
-      if (image->iptc_profile.length == 0)
+      if((profile=GetImageProfile(image,"IPTC",&profile_length)) == 0)
         ThrowWriterException(CoderError,NoIPTCProfileAvailable,image);
       status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
-      info=image->iptc_profile.info;
-      length=image->iptc_profile.length;
-      length=GetIPTCStream(&info,length);
+      length=GetIPTCStream(profile,profile_length,&iptc_offset);
+      info=profile+iptc_offset;
       if (length == 0)
         {
           ThrowWriterException(CoderError,NoIPTCInfoWasFound,image);
@@ -2135,7 +2125,7 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
       Image
         *buff;
 
-      if (image->iptc_profile.length == 0)
+      if((profile=GetImageProfile(image,"8BIM",&profile_length)) == 0)
         ThrowWriterException(CoderError,No8BIMDataIsAvailable,image);
       status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
       if (status == False)
@@ -2145,7 +2135,7 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
         {
           ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
         }
-      AttachBlob(buff->blob,image->iptc_profile.info,image->iptc_profile.length);
+      AttachBlob(buff->blob,profile,profile_length);
       (void) format8BIM(buff,image);
       DetachBlob(buff->blob);
       DestroyImage(buff);
@@ -2162,16 +2152,16 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
         *buff;
 
       size_t
+        iptc_offset,
         length;
 
-      unsigned char
+      const unsigned char
         *info;
 
-      if (image->iptc_profile.length == 0)
+      if((profile=GetImageProfile(image,"IPTC",&profile_length)) == 0)
         ThrowWriterException(CoderError,NoIPTCProfileAvailable,image);
-      info=image->iptc_profile.info;
-      length=image->iptc_profile.length;
-      length=GetIPTCStream(&info,length);
+      length=GetIPTCStream(profile,profile_length,&iptc_offset);
+      info=profile+iptc_offset;
       if (length == 0)
         ThrowWriterException(CoderError,NoIPTCInfoWasFound,image);
       status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
@@ -2231,13 +2221,13 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
       /*
         Write ICM image.
       */
-      if (image->color_profile.length == 0)
+
+      if((profile=GetImageProfile(image,"ICM",&profile_length)) == 0)
         ThrowWriterException(CoderError,NoColorProfileAvailable,image);
       status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
       if (status == False)
         ThrowWriterException(FileOpenError,UnableToOpenFile,image);
-      (void) WriteBlob(image,image->color_profile.length,
-        (char *) image->color_profile.info);
+      (void) WriteBlob(image,profile_length,(void *) profile);
       CloseBlob(image);
       return(True);
     }

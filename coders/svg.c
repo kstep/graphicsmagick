@@ -600,7 +600,8 @@ static void SVGUnparsedEntityDeclaration(void *context,const xmlChar *name,
 
 }
 
-static void SVGSetDocumentLocator(void *context,xmlSAXLocatorPtr location)
+static void SVGSetDocumentLocator(void *ARGUNUSED(context),
+                                  xmlSAXLocatorPtr ARGUNUSED(location))
 {
 /*   SVGInfo */
 /*     *svg_info; */
@@ -2385,7 +2386,7 @@ static void SVGReference(void *context,const xmlChar *name)
     (void) xmlAddChild(parser->node,xmlNewReference(svg_info->document,name));
 }
 
-static void SVGIgnorableWhitespace(void *context,const xmlChar *c,int length)
+static void SVGIgnorableWhitespace(void *ARGUNUSED(context),const xmlChar *c,int length)
 {
 /*   SVGInfo */
 /*     *svg_info; */
@@ -2398,7 +2399,7 @@ static void SVGIgnorableWhitespace(void *context,const xmlChar *c,int length)
 /*   svg_info=(SVGInfo *) context; */
 }
 
-static void SVGProcessingInstructions(void *context,const xmlChar *target,
+static void SVGProcessingInstructions(void *ARGUNUSED(context),const xmlChar *target,
   const xmlChar *data)
 {
 /*   SVGInfo */

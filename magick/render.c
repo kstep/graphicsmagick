@@ -357,7 +357,7 @@ static void ReversePoints(PointInfo *points,const int number_points)
   }
 }
 
-static PolygonInfo *ConvertPathToPolygon(const DrawInfo *draw_info,
+static PolygonInfo *ConvertPathToPolygon(const DrawInfo *ARGUNUSED(draw_info),
   const PathInfo *path_info)
 {
   long
@@ -594,7 +594,7 @@ static void LogPathInfo(const PathInfo *path_info)
   (void) LogMagickEvent(RenderEvent,GetMagickModule(),"    end vector-path");
 }
 
-static PathInfo *ConvertPrimitiveToPath(const DrawInfo *draw_info,
+static PathInfo *ConvertPrimitiveToPath(const DrawInfo *ARGUNUSED(draw_info),
   const PrimitiveInfo *primitive_info)
 {
   long

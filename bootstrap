@@ -1,0 +1,9 @@
+#!/bin/sh
+#
+# Execute this script to update the build environment if the version of
+# Automake or Autoconf is changed.
+#
+aclocal
+autoheader
+autoconf
+automake

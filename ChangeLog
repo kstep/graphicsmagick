@@ -1,3 +1,24 @@
+2004-10-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/resource.c (InitializeMagickResources): Use
+	GlobalMemoryStatusEx if it is available.
+	* magick/nt_base.c (lt_dlopen): Handle errors while loading
+	modules rather than allow Windows to display a GUI dialog box.
+	(NTKernelAPISupported): New function to support testing to see if
+	a Windows kernel API is supported.
+	* magick/constitute.c (ExportImagePixelArea): Add special-case for
+	bilevel gray image in order to restore performance.
+	(ImportImagePixelArea): Add special-case for bilevel gray image in
+	order to restore performance.
+	* coders/jpeg.c (ReadJPEGImage): Fix GCC warning about variable
+	being clobbered by longjmp.
+	* Re-port build to MinGW. Modules build passes all tests.
+	* Skip build and install of modules if a key library is not available.
+	* Partial recode of metadata handling to use Get/Set profile
+	functions.  Big job!
+	* GCC warnings reduction.
+	* Remove MVG detection from magic.mgk due to security risk.
+
 2004-09-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/tiff.c (WriteTIFFImage): Properly detect and handle
@@ -14,7 +35,7 @@
 	* coders/mat.c,coders/topol.c (ReadBlobWordLSB,ReadBlobDoublesLSB):
 	Use better variable name than `I' for image.
 
-2004-09-07  Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
+2004-09-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/miff.c (WriteMIFFImage): Ensure that MIFF files are never
 	written with bogus compression values.

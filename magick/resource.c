@@ -109,67 +109,69 @@ static ResourceInfo
 MagickExport unsigned int AcquireMagickResource(const ResourceType type,
   const magick_int64_t size)
 {
-  char
-    message[MaxTextExtent];
-
   unsigned int
     status;
 
   status=True;
   AcquireSemaphoreInfo(&resource_semaphore);
   switch (type)
-  {
+    {
     case FileResource:
-    {
-      resource_info.file+=size;
-      if (resource_info.file_limit == ResourceInfinity)
+      {
+        resource_info.file+=size;
+        if (resource_info.file_limit == ResourceInfinity)
+          break;
+        status=resource_info.file <= resource_info.file_limit;
+        (void) LogMagickEvent(ResourceEvent,GetMagickModule(),
+                              "file +%lu/%lu/%lu",(unsigned long) size,
+                              (unsigned long) resource_info.file,
+                              resource_info.file_limit);
         break;
-      status=resource_info.file <= resource_info.file_limit;
-      FormatString(message,"file +%lu/%lu/%lu",(unsigned long) size,
-        (unsigned long) resource_info.file,resource_info.file_limit);
-      (void) LogMagickEvent(ResourceEvent,GetMagickModule(),message);
-      break;
-    }
+      }
     case MemoryResource:
-    {
-      resource_info.memory+=size;
-      if (resource_info.memory_limit == ResourceInfinity)
+      {
+        resource_info.memory+=size;
+        if (resource_info.memory_limit == ResourceInfinity)
+          break;
+        status=resource_info.memory <=
+          ResourceToMegabytes(resource_info.memory_limit);
+        (void) LogMagickEvent(ResourceEvent,GetMagickModule(),
+                              "memory +%lumb/%lumb/%lumb",
+                              MegabytesToResource(size),
+                              MegabytesToResource(resource_info.memory),
+                              resource_info.memory_limit);
         break;
-      status=resource_info.memory <=
-        ResourceToMegabytes(resource_info.memory_limit);
-      FormatString(message,"memory +%lumb/%lumb/%lumb",
-        MegabytesToResource(size),MegabytesToResource(resource_info.memory),
-        resource_info.memory_limit);
-      (void) LogMagickEvent(ResourceEvent,GetMagickModule(),message);
-      break;
-    }
+      }
     case MapResource:
-    {
-      resource_info.map+=size;
-      if (resource_info.map_limit == ResourceInfinity)
+      {
+        resource_info.map+=size;
+        if (resource_info.map_limit == ResourceInfinity)
+          break;
+        status=resource_info.disk <=
+          ResourceToMegabytes(resource_info.map_limit);
+        (void) LogMagickEvent(ResourceEvent,GetMagickModule(),
+                              "map +%lumb/%lumb/%lumb",MegabytesToResource(size),
+                              MegabytesToResource(resource_info.map),
+                              resource_info.map_limit);
         break;
-      status=resource_info.disk <=
-        ResourceToMegabytes(resource_info.map_limit);
-      FormatString(message,"map +%lumb/%lumb/%lumb",MegabytesToResource(size),
-        MegabytesToResource(resource_info.map),resource_info.map_limit);
-      (void) LogMagickEvent(ResourceEvent,GetMagickModule(),message);
-      break;
-    }
+      }
     case DiskResource:
-    {
-      resource_info.disk+=size;
-      if (resource_info.disk_limit == ResourceInfinity)
+      {
+        resource_info.disk+=size;
+        if (resource_info.disk_limit == ResourceInfinity)
+          break;
+        status=resource_info.disk <=
+          ResourceToMegabytes(resource_info.disk_limit);
+        (void) LogMagickEvent(ResourceEvent,GetMagickModule(),
+                              "disk +%lumb/%lugb/%lugb",
+                              MegabytesToResource(size),
+                              GigabytesToResource(resource_info.disk),
+                              resource_info.disk_limit/1024);
         break;
-      status=resource_info.disk <=
-        ResourceToMegabytes(resource_info.disk_limit);
-      FormatString(message,"disk +%lumb/%lugb/%lugb",MegabytesToResource(size),
-        GigabytesToResource(resource_info.disk),resource_info.disk_limit/1024);
-      (void) LogMagickEvent(ResourceEvent,GetMagickModule(),message);
-      break;
-    }
+      }
     default:
       break;
-  }
+    }
   LiberateSemaphoreInfo(&resource_semaphore);
   return(status);
 }
@@ -370,27 +372,45 @@ MagickExport void InitializeMagickResources(void)
 
 #if defined(WIN32)
   {
-/*     MEMORYSTATUSEX */
-/*       stat_ex; */
-
     long
-      total_physical_memory,
-      total_virtual_memory;
+      total_physical_memory=0,
+      total_virtual_memory=0;
 
-/*     if (GlobalMemoryStatusEx(&stat_ex)) */
-/*     { */
-/*       total_physical_memory=(long)(stat_ex.ullTotalPhys/1048576); */
-/*       total_virtual_memory=(long)(stat_ex.ullTotalVirtual/1048576); */
-/*     } */
-/*     else */
-/*     { */
+    /*
+      GlobalMemoryStatusEx is necessary to handle results for
+      large-memory (>4GB) machines (and to provide accurate results
+      for 2 to 4 GB of memory), but it is not available on older
+      versions of Windows.  Windows 32-bit applications are still
+      usually limited to addressing only 2 GB of memory even if the
+      system provides more (except for certain server versions of
+      Windows with applications linked with the /LARGEADDRESSAWARE
+      option). Test for API existence prior to using it.  MinGW
+      headers currently lack support for this API so compilation of
+      supportive code is made optional.
+    */
+#if defined(HAVE_GLOBALMEMORYSTATUSEX)
+    if (NTKernelAPISupported("GlobalMemoryStatusEx"))
+      {
+        MEMORYSTATUSEX
+          stat_ex;
+
+        if (GlobalMemoryStatusEx(&stat_ex))
+          {
+            total_physical_memory=(long)(stat_ex.ullTotalPhys/1048576UL);
+            total_virtual_memory=(long)(stat_ex.ullTotalVirtual/1048576UL);
+          }
+      }
+#endif
+
+    if (total_physical_memory == 0)
+    {
       MEMORYSTATUS
         stat;
 
       GlobalMemoryStatus(&stat);
       total_physical_memory=stat.dwTotalPhys/1048576;
       total_virtual_memory=stat.dwTotalVirtual/1048576;
-  /*  }*/
+    }
 
     if (total_virtual_memory > 3*total_physical_memory)
       max_memory=2*total_physical_memory;
@@ -464,48 +484,50 @@ MagickExport void InitializeMagickResources(void)
 MagickExport void LiberateMagickResource(const ResourceType type,
   const magick_int64_t size)
 {
-  char
-    message[MaxTextExtent];
-
   AcquireSemaphoreInfo(&resource_semaphore);
   switch (type)
-  {
+    {
     case FileResource:
-    {
-      resource_info.file-=size;
-      FormatString(message,"file -%lu/%lu/%lu",(unsigned long) size,
-        (unsigned long) resource_info.file,resource_info.file_limit);
-      (void) LogMagickEvent(ResourceEvent,GetMagickModule(),message);
-      break;
-    }
+      {
+        resource_info.file-=size;
+        (void) LogMagickEvent(ResourceEvent,GetMagickModule(),
+                              "file -%lu/%lu/%lu",(unsigned long) size,
+                              (unsigned long) resource_info.file,
+                              resource_info.file_limit);
+        break;
+      }
     case MemoryResource:
-    {
-      resource_info.memory-=size;
-      FormatString(message,"memory -%lumb/%lumb/%lumb",
-        MegabytesToResource(size),MegabytesToResource(resource_info.memory),
-        resource_info.memory_limit);
-      (void) LogMagickEvent(ResourceEvent,GetMagickModule(),message);
-      break;
-    }
+      {
+        resource_info.memory-=size;
+        (void) LogMagickEvent(ResourceEvent,GetMagickModule(),
+                              "memory -%lumb/%lumb/%lumb",
+                              MegabytesToResource(size),
+                              MegabytesToResource(resource_info.memory),
+                              resource_info.memory_limit);
+        break;
+      }
     case MapResource:
-    {
-      resource_info.map-=size;
-      FormatString(message,"map -%lumb/%lumb/%lumb",MegabytesToResource(size),
-        MegabytesToResource(resource_info.map),resource_info.map_limit);
-      (void) LogMagickEvent(ResourceEvent,GetMagickModule(),message);
-      break;
-    }
+      {
+        resource_info.map-=size;
+        (void) LogMagickEvent(ResourceEvent,GetMagickModule(),"map -%lumb/%lumb/%lumb",
+                              MegabytesToResource(size),
+                              MegabytesToResource(resource_info.map),
+                              resource_info.map_limit);
+        break;
+      }
     case DiskResource:
-    {
-      resource_info.disk-=size;
-      FormatString(message,"disk -%lumb/%lugb/%lugb",MegabytesToResource(size),
-        GigabytesToResource(resource_info.disk),resource_info.disk_limit/1024);
-      (void) LogMagickEvent(ResourceEvent,GetMagickModule(),message);
-      break;
-    }
+      {
+        resource_info.disk-=size;
+        (void) LogMagickEvent(ResourceEvent,GetMagickModule(),
+                              "disk -%lumb/%lugb/%lugb",
+                              MegabytesToResource(size),
+                              GigabytesToResource(resource_info.disk),
+                              resource_info.disk_limit/1024);
+        break;
+      }
     default:
       break;
-  }
+    }
   LiberateSemaphoreInfo(&resource_semaphore);
 }
 
@@ -535,7 +557,7 @@ MagickExport void LiberateMagickResource(const ResourceType type,
 %
 */
 MagickExport unsigned int ListMagickResourceInfo(FILE *file,
-  ExceptionInfo *exception)
+  ExceptionInfo *ARGUNUSED(exception))
 {
   if (file == (const FILE *) NULL)
     file=stdout;

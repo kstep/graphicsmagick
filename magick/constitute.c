@@ -1226,6 +1226,43 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                   }
               }
           }
+#if 1
+        else if (quantum_size == 1)
+          {
+            /*
+              Special "fast" support for bi-level gray.
+              Performs 50% thresholding for best appearance.
+            */
+            register int
+              bit = 8,
+              black=0,
+              white=1;
+
+            if (GrayInvertedQuantum == quantum_type)
+              {
+                black=1;
+                white=0;
+              }
+            
+            *q=0;
+            for (x = number_pixels ; x > 0 ; --x )
+              {
+                --bit;
+                if (image->is_grayscale)
+                  pixel=p->red;
+                else
+                  pixel=PixelIntensityToQuantum(p);
+                *q |= ((pixel > MaxRGB/2 ? white : black) << bit);
+                if (bit == 0)
+                  {
+                    bit=8;
+                    q++;
+                    *q=0;
+                  }
+                p++;
+              }
+          }
+#endif
         else
           {
             /*
@@ -1244,6 +1281,8 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                       pixel=p->red;
                     else
                       pixel=PixelIntensityToQuantum(p);
+                    if (GrayInvertedQuantum == quantum_type)
+                      pixel=MaxRGB-pixel;
                     BitStreamMSBWrite(&stream,quantum_size,pixel);
                     p++;
                   }
@@ -2427,6 +2466,27 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 *q++=image->colormap[index];
               }
           }
+        else if (quantum_size == 1)
+          {
+            /*
+              Special fast support for two colors.
+            */
+            register int
+              bit = 8;
+            
+            for (x = number_pixels ; x > 0 ; --x )
+              {
+                --bit;
+                index=(*p >> bit) & 0x01;
+                *indexes++=index;
+                *q++=image->colormap[index];
+                if (bit == 0)
+                  {
+                    bit=8;
+                    p++;
+                  }
+              }
+          }
         else
           {
             /*
@@ -2538,6 +2598,29 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     *q++=image->colormap[index];
                   }
               }
+          }
+        else if (quantum_size == 1)
+          {
+            /*
+              Special fast support for bi-level gray.
+            */
+            register int
+                bit = 8;
+
+              for (x = number_pixels ; x > 0 ; --x )
+                {
+                  --bit;
+                  index=(*p >> bit) & 0x01;
+                  if (GrayInvertedQuantum == quantum_type)
+                    index ^= 0x01;
+                  *indexes++=index;
+                  *q++=image->colormap[index];
+                  if (bit == 0)
+                    {
+                      bit=8;
+                      p++;
+                    }
+                }
           }
         else
           {
@@ -3473,8 +3556,8 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
 extern "C" {
 #endif
 
-static unsigned int PingStream(const Image *image,const void *pixels,
-  const size_t columns)
+static unsigned int PingStream(const Image *ARGUNUSED(image),
+  const void *ARGUNUSED(pixels),const size_t ARGUNUSED(columns))
 {
   return(True);
 }

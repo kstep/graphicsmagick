@@ -315,14 +315,14 @@ MagickExport void Ascii85Encode(Image *image,const unsigned long code)
 }
 
 MagickExport unsigned int Ascii85WriteByteHook(Image *image, 
-  const magick_uint8_t code, void *info)
+  const magick_uint8_t code, void *ARGUNUSED(info))
 {
   Ascii85Encode(image,(unsigned long)code);
   return(True);
 }
 
 MagickExport unsigned int BlobWriteByteHook(Image *image,
-  const magick_uint8_t code, void *info)
+  const magick_uint8_t code, void *ARGUNUSED(info))
 {
   return(WriteBlobByte(image,(unsigned long)code));
 }

@@ -471,7 +471,7 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
       DestroyImage(coalesce_image);
       ThrowWriterTemporaryFileException(basename);
     }
-  FormatString(coalesce_image->filename,basename);
+  FormatString(coalesce_image->filename,"%.1024s",basename);
   clone_info=CloneImageInfo(image_info);
   (void) strncpy(clone_info->unique,basename,MaxTextExtent-1);
   status=WriteMPEGParameterFiles(clone_info,coalesce_image);

@@ -143,7 +143,7 @@ static const CommandInfo commands[] =
       DisplayImageCommand, DisplayUsage, 0 },
 #endif
     { "help", "obtain usage message for named command",
-      HelpCommand, GMUsage },
+      HelpCommand, GMUsage, 0 },
     { "identify", "describe an image or image sequence",
       IdentifyImageCommand, IdentifyUsage, 1 },
 #if defined(HasX11)
@@ -160,7 +160,7 @@ static const CommandInfo commands[] =
     { "register", "register this application as the source of messages",
       RegisterCommand, 0, 0 },
 #endif
-    { 0, 0, 0}
+    { 0, 0, 0, 0, 0}
   };
 
 /*
@@ -6619,8 +6619,9 @@ static void GMUsage(void)
 %
 %
 */
-static unsigned int HelpCommand(ImageInfo *image_info,
-  int argc,char **argv,char **metadata,ExceptionInfo *exception)
+static unsigned int HelpCommand(ImageInfo *ARGUNUSED(image_info),
+  int argc,char **argv,char **ARGUNUSED(metadata),
+  ExceptionInfo *ARGUNUSED(exception))
 {
   if (argc > 1)
     {
@@ -8625,12 +8626,6 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           }
         if (LocaleCompare("profile",option+1) == 0)
           {
-            Image
-              *profile;
-
-            register long
-              j;
-
             void
               *client_data;
 
@@ -8643,42 +8638,53 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
                   (const unsigned char *) NULL,0,True);
                 continue;
               }
-            /*
-              Add a ICM, IPTC, or generic profile to the image.
-            */
-            client_data=clone_info->client_data;
-            clone_info->client_data=(void *) &(*image)->iptc_profile;
-            (void) strncpy(clone_info->filename,argv[++i],MaxTextExtent-1);
-            profile=ReadImage(clone_info,&(*image)->exception);
-            if (profile == (Image *) NULL)
-              continue;
-            if (profile->iptc_profile.length != 0)
-              {
-                (void) ProfileImage(*image,"IPTC",profile->iptc_profile.info,
-                  profile->iptc_profile.length,False);
-                profile->iptc_profile.info=(unsigned char *) NULL,
-                profile->iptc_profile.length=0;
-              }
-            if (profile->color_profile.length != 0)
-              {
-                (void) ProfileImage(*image,"ICM",profile->color_profile.info,
-                  profile->color_profile.length,False);
-                profile->color_profile.info=(unsigned char *) NULL;
-                profile->color_profile.length=0;
-              }
-            for (j=0; j < (long) profile->generic_profiles; j++)
+            else if (*option == '-')
             {
-              ProfileInfo
-                *generic;
+              /*
+                Add a ICM, IPTC, or generic profile to the image.
+              */
 
-              generic=profile->generic_profile+j;
-              (void) ProfileImage(*image,generic->name,generic->info,
-                generic->length,False);
-              generic->info=(unsigned char *) NULL;
-              generic->length=0;
+              Image
+                *profile_image;
+              
+              register long
+                j;
+
+              size_t
+                profile_length;
+              
+              const unsigned char *
+                profile;
+              
+              client_data=clone_info->client_data;
+              clone_info->client_data=(void *) &(*image)->iptc_profile;
+              (void) strncpy(clone_info->filename,argv[++i],MaxTextExtent-1);
+              profile_image=ReadImage(clone_info,&(*image)->exception);
+              if (profile_image == (Image *) NULL)
+                continue;
+
+              /* IPTC NewsPhoto Profile */
+              profile=GetImageProfile(profile_image,"IPTC",&profile_length);
+              if (profile)
+                (void) SetImageProfile(*image,"IPTC",profile,profile_length);
+
+              /* ICC ICM Profile */
+              profile=GetImageProfile(profile_image,"ICM",&profile_length);
+              if (profile)
+                (void) ProfileImage(*image,"ICM",profile,profile_length,True);
+
+              /* Generic Profiles */
+              for (j=0; j < (long) profile_image->generic_profiles; j++)
+                {
+                  ProfileInfo
+                    *generic;
+                  
+                  generic=profile_image->generic_profile+j;
+                  (void) SetImageProfile(*image,generic->name,generic->info,generic->length);
+                }
+              DestroyImage(profile_image);
+              clone_info->client_data=client_data;
             }
-            DestroyImage(profile);
-            clone_info->client_data=client_data;
             continue;
           }
         break;
@@ -14269,8 +14275,9 @@ MagickExport void ImportUsage(void)
 %
 %
 */
-static unsigned int VersionCommand(ImageInfo *image_info,
-  int argc,char **argv,char **metadata,ExceptionInfo *exception)
+static unsigned int VersionCommand(ImageInfo *ARGUNUSED(image_info),
+  int ARGUNUSED(argc),char **ARGUNUSED(argv),char **ARGUNUSED(metadata),
+  ExceptionInfo *ARGUNUSED(exception))
 {
   (void) fprintf(stdout,"Version: %.1024s\n",GetMagickVersion(0));
   (void) fprintf(stdout,"Copyright: %.1024s\n",GetMagickCopyright());

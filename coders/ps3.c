@@ -743,7 +743,7 @@ typedef struct WriteByteHookInfo_
     *image;
 } WriteByteHookInfo;
 
-static unsigned int MaskWriteByteHook(Image *mask_image,
+static unsigned int MaskWriteByteHook(Image *ARGUNUSED(mask_image),
   const magick_uint8_t code, void *info)
 {
   Ascii85Encode(((WriteByteHookInfo *)info)->image, (unsigned long)code);

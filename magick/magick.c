@@ -261,7 +261,7 @@ MagickExport const char *GetImageMagick(const unsigned char *magick,
 %
 */
 MagickExport const MagickInfo *GetMagickInfo(const char *name,
-  ExceptionInfo *exception)
+  ExceptionInfo *ARGUNUSED(exception))
 {
   register MagickInfo
     *p;
@@ -624,7 +624,7 @@ static unsigned int IsValidFilesystemPath(const char *path)
 /*
   Try and figure out the path and name of the client
  */
-MagickExport void InitializeMagickClientPathAndName(const char *path)
+MagickExport void InitializeMagickClientPathAndName(const char *ARGUNUSED(path))
 {
 #if !defined(UseInstalledMagick)
   const char

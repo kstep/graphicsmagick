@@ -10325,9 +10325,9 @@ static unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
       /*
         Request page geometry from user.
       */
-      FormatString(geometry,PSPageGeometry);
+      FormatString(geometry,"%.1024s",PSPageGeometry);
       if (LocaleCompare(image_info->magick,"PDF") == 0)
-        FormatString(geometry,PSPageGeometry);
+        FormatString(geometry,"%.1024s",PSPageGeometry);
       if (image_info->page != (char *) NULL)
         (void) strncpy(geometry,image_info->page,MaxTextExtent-1);
       XListBrowserWidget(display,windows,&windows->widget,PageSizes,"Select",
@@ -10393,7 +10393,7 @@ static unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
 extern "C" {
 #endif
 
-static int XPredicate(Display *display,XEvent *event,char *data)
+static int XPredicate(Display *ARGUNUSED(display),XEvent *event,char *data)
 {
   register XWindows
     *windows;

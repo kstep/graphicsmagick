@@ -43,6 +43,7 @@
 #include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"
+#include "magick/profile.h"
 #include "magick/transform.h"
 #include "magick/utility.h"
 
@@ -1441,6 +1442,12 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
     scene,
     type;
 
+  const unsigned char
+    *color_profile=0;
+
+  size_t
+    color_profile_length=0;
+
   /*
     Open output image file.
   */
@@ -1459,6 +1466,12 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
     if (LocaleCompare(image_info->magick,"BMP3") == 0)
       type=3;
   scene=0;
+
+  /*
+    Retrieve color profile from Image (if any)
+  */
+  color_profile=GetImageProfile(image,"ICM",&color_profile_length);
+
   do
   {
     /*
@@ -1515,7 +1528,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
     bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
     bmp_info.ba_offset=0;
     have_color_info=(int) ((image->rendering_intent != UndefinedIntent) ||
-      (image->color_profile.length != 0) || (image->gamma != 0.0));
+      (color_profile_length != 0) || (image->gamma != 0.0));
     if (type == 2)
       bmp_info.size=12;
     else
@@ -1532,7 +1545,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           bmp_info.size=108;
           extra_size=68;
           if ((image->rendering_intent != UndefinedIntent) ||
-              (image->color_profile.length != 0))
+              (color_profile_length != 0))
             {
               bmp_info.size=124;
               extra_size+=16;
@@ -1865,7 +1878,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobLSBLong(image,(long) bmp_info.gamma_scale.y*0xffff);
         (void) WriteBlobLSBLong(image,(long) bmp_info.gamma_scale.z*0xffff);
         if ((image->rendering_intent != UndefinedIntent) ||
-           (image->color_profile.length != 0))
+           (color_profile_length != 0))
           {
             long
               intent;
