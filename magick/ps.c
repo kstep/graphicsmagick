@@ -301,7 +301,7 @@ Export Image *ReadPSImage(const ImageInfo *image_info)
     /*
       Set Postscript render geometry.
     */
-    FormatString(translate_geometry,"%lf %lf translate\n",-bounding_box.x1,
+    FormatString(translate_geometry,"%f %f translate\n",-bounding_box.x1,
       -bounding_box.y1);
     width=(unsigned int) (bounding_box.x2-bounding_box.x1);
     if ((float) ((int) bounding_box.x2) != bounding_box.x2)
@@ -1024,7 +1024,7 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
       Output image data.
     */
     labels=StringToList(image->label);
-    (void) sprintf(buffer,"%d %d\n%g %g\n%lf\n",x,y,x_scale,y_scale,
+    (void) sprintf(buffer,"%d %d\n%g %g\n%f\n",x,y,x_scale,y_scale,
       image_info->pointsize);
     (void) WriteBlob(image,strlen(buffer),buffer);
     if (labels != (char **) NULL)

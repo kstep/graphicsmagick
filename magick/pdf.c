@@ -664,10 +664,10 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         {
           (void) strcpy(buffer,"BT\n");
           (void) WriteBlob(image,strlen(buffer),buffer);
-          (void) sprintf(buffer,"/F%u %lf Tf\n",image->scene,
+          (void) sprintf(buffer,"/F%u %f Tf\n",image->scene,
             image_info->pointsize);
           (void) WriteBlob(image,strlen(buffer),buffer);
-          (void) sprintf(buffer,"%d %lf Td\n",x,y+height+
+          (void) sprintf(buffer,"%d %f Td\n",x,y+height+
             i*image_info->pointsize+12);
           (void) WriteBlob(image,strlen(buffer),buffer);
           (void) sprintf(buffer,"(%.1024s) Tj\n",labels[i]);
