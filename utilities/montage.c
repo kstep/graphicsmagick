@@ -304,6 +304,7 @@ static unsigned int MontageUtility(int argc,char **argv)
           next_image->previous=p;
           p->next=next_image;
         }
+        continue;
       }
     switch (*(option+1))
     {
