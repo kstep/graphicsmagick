@@ -7324,8 +7324,8 @@ MagickExport void XMakeStandardColormap(Display *display,
             for (i=0; i < (long) image->colors; i++)
             {
               index=diversity[i].index;
-              color.red=ScaleQuantumToShort(
-                gamma_map[ScaleQuantumToShort(image->colormap[index].red)].red);
+              color.red=ScaleQuantumToShort(gamma_map[ScaleQuantumToShort(
+                image->colormap[index].red)].red);
               color.green=ScaleQuantumToShort(gamma_map[ScaleQuantumToShort(
                 image->colormap[index].green)].green);
               color.blue=ScaleQuantumToShort(gamma_map[ScaleQuantumToShort(
@@ -7370,8 +7370,8 @@ MagickExport void XMakeStandardColormap(Display *display,
             for (; i < (long) image->colors; i++)
             {
               index=diversity[i].index;
-              color.red=ScaleQuantumToShort(
-                gamma_map[ScaleQuantumToShort(image->colormap[index].red)].red);
+              color.red=ScaleQuantumToShort(gamma_map[ScaleQuantumToShort(
+                image->colormap[index].red)].red);
               color.green=ScaleQuantumToShort(gamma_map[ScaleQuantumToShort(
                 image->colormap[index].green)].green);
               color.blue=ScaleQuantumToShort(gamma_map[ScaleQuantumToShort(

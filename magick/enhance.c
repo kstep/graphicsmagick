@@ -256,16 +256,16 @@ MagickExport unsigned int EqualizeImage(Image *image)
   for (i=0; i <= ScaleQuantumToShort(MaxRGB); i++)
   {
     if (high.red != low.red)
-      equalize_map[i].red=(Quantum) ((((double) (map[i].red-low.red))*
-        ScaleQuantumToShort(MaxRGB))/(high.red-low.red));
+      equalize_map[i].red=(unsigned short) ((((double) (map[i].red-
+        low.red))*ScaleQuantumToShort(MaxRGB))/(high.red-low.red));
     if (high.green != low.green)
-      equalize_map[i].green=(Quantum) ((((double) (map[i].green-low.green))*
-        ScaleQuantumToShort(MaxRGB))/(high.green-low.green));
+      equalize_map[i].green=(unsigned short) ((((double) (map[i].green-
+        low.green))*ScaleQuantumToShort(MaxRGB))/(high.green-low.green));
     if (high.blue != low.blue)
-      equalize_map[i].blue=(Quantum) ((((double) (map[i].blue-low.blue))*
-        ScaleQuantumToShort(MaxRGB))/(high.blue-low.blue));
+      equalize_map[i].blue=(unsigned short) ((((double) (map[i].blue-
+        low.blue))*ScaleQuantumToShort(MaxRGB))/(high.blue-low.blue));
     if (high.opacity != low.opacity)
-      equalize_map[i].opacity=(Quantum) ((((double) (map[i].opacity-
+      equalize_map[i].opacity=(unsigned short) ((((double) (map[i].opacity-
         low.opacity))*ScaleQuantumToShort(MaxRGB))/(high.opacity-low.opacity));
   }
   LiberateMemory((void **) &histogram);
@@ -417,15 +417,15 @@ MagickExport unsigned int GammaImage(Image *image,const char *gamma)
   for (i=0; i <= ScaleQuantumToShort(MaxRGB); i++)
   {
     if (red_gamma != 0.0)
-      gamma_map[i].red=(unsigned long) ((pow((double) i/
+      gamma_map[i].red=(unsigned short) ((pow((double) i/
         ScaleQuantumToShort(MaxRGB),1.0/red_gamma)*
         ScaleQuantumToShort(MaxRGB))+0.5);
     if (green_gamma != 0.0)
-      gamma_map[i].green=(unsigned long) ((pow((double) i/
+      gamma_map[i].green=(unsigned short) ((pow((double) i/
         ScaleQuantumToShort(MaxRGB),1.0/green_gamma)*
         ScaleQuantumToShort(MaxRGB))+0.5);
     if (blue_gamma != 0.0)
-      gamma_map[i].blue=(unsigned long) ((pow((double) i/
+      gamma_map[i].blue=(unsigned short) ((pow((double) i/
         ScaleQuantumToShort(MaxRGB),1.0/blue_gamma)*
         ScaleQuantumToShort(MaxRGB))+0.5);
   }
