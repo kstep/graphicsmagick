@@ -1070,7 +1070,7 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
 %
 %  Method CloneImageList returns a duplicate of the specified image list.
 %
-%  The format of the PopImageList method is:
+%  The format of the CloneImageList method is:
 %
 %      Image *CloneImageList(const Image *images,ExceptionInfo *exception)
 %
@@ -5519,8 +5519,7 @@ MagickExport int ParseImageGeometry(const char *geometry,long *x,long *y,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method PopImageList returns the first image on the list and updates the
-%  image list pointer.
+%  Method PopImageList removes the first image in the list and returns it.
 %
 %  The format of the PopImageList method is:
 %
@@ -5562,7 +5561,7 @@ MagickExport Image *PopImageList(Image **images)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method PushImageList adds an image to the end of the image list.
+%  Method PushImageList adds the image to the end of the image list.
 %
 %  The format of the PushImageList method is:
 %
