@@ -5336,7 +5336,7 @@ Export void GetAnnotateInfo(const ImageInfo *image_info,
       (void) strcpy(annotate_info->image_info->filename,
         annotate_info->image_info->pen+1);
     else
-      (void) FormatString(annotate_info->image_info->filename,"xc:%s",
+      (void) FormatString(annotate_info->image_info->filename,"xc:%.1024s",
         annotate_info->image_info->pen);
   annotate_info->tile=ReadImage(annotate_info->image_info);
   if (annotate_info->image_info->font == (char *) NULL)

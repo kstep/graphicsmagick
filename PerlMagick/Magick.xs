@@ -2148,7 +2148,7 @@ Blob(ref,...)
           PUSHs(&sv_undef);
           continue;
         }
-      (void) strcpy(clone->filename,filename);
+      FormatString(clone->filename,"%.1024s:%.1024s",clone->magick,filename);
       clone->scene=scene++;
       if (!WriteImage(package_info->image_info,clone))
         {
@@ -2156,7 +2156,7 @@ Blob(ref,...)
           continue;
         }
       DestroyImage(clone);
-      image->file=fopen(filename,"rb");
+      image->file=fopen(filename,ReadBinaryType);
       if (image->file == (FILE *) NULL)
         {
           PUSHs(&sv_undef);
