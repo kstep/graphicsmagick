@@ -188,8 +188,8 @@ static char
   },
   *CompressionTypes[] =
   {
-    "Undefined", "None", "BZip", "Fax", "Group4", "JPEG", "LZW", "Runlength",
-    "Zip", (char *) NULL
+    "Undefined", "None", "BZip", "Fax", "Group4", "JPEG", "LosslessJPEG",
+    "LZW", "Runlength", "Zip", (char *) NULL
   },
   *FilterTypess[] =
   {
@@ -6113,6 +6113,9 @@ QueryFontMetrics(ref,...)
     double
       x,
       y;
+
+    Image
+      *image;
     
     register int
       i;
@@ -6134,8 +6137,14 @@ QueryFontMetrics(ref,...)
     error_list=newSVpv("",0);
     reference=SvRV(ST(0));
     av=(AV *) reference;
-    info=GetPackageInfo((void *) av,(struct PackageInfo *) NULL);
+    image=SetupList(reference,&info,(SV ***) NULL);
+    if (!image)
+      {
+        MagickWarning(OptionWarning,"No images to animate",NULL);
+        goto MethodException;
+      }
     annotate_info=CloneAnnotateInfo(info->image_info,(AnnotateInfo *) NULL);
+    CloneString(&annotate_info->text,"");
     current=annotate_info->affine;
     IdentityAffine(&affine);
     bounds.x1=0.0;
@@ -6280,7 +6289,7 @@ QueryFontMetrics(ref,...)
         annotate_info->geometry=AllocateString((char *) NULL);
         FormatString(annotate_info->geometry,"%f,%f",x,y);
       }
-    status=GetFontMetrics(annotate_info,&bounds);
+    status=GetFontMetrics(image,annotate_info,&bounds);
     if (status != False)
       {
         FormatString(message,"%g,%g,%g,%g,%g",bounds.x1,bounds.y1,bounds.x2,
@@ -6290,6 +6299,7 @@ QueryFontMetrics(ref,...)
         PUSHs(s);
       }
     DestroyAnnotateInfo(annotate_info);
+  MethodException:
     SvREFCNT_dec(error_list);
     error_list=NULL;
   }
