@@ -870,7 +870,7 @@ int main(int argc,char **argv)
   DestroyImages(image);
   DestroyDelegateInfo();
   DestroyMagickInfo();
-  FreeMemory((void *) &argv);
+  FreeMemory((void **) &argv);
   Exit(0);
 #endif
   return(False);

@@ -300,7 +300,7 @@ static short BottleneckTest(PicHandle picture,CodecType *codec,int *depth,
 Export void closedir(DIR *entry)
 {
   assert(entry != (DIR *) NULL);
-  FreeMemory((void *) &(void *) entry);
+  FreeMemory((void **) &(void *) entry);
 }
 
 /*

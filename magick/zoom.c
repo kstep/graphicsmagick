@@ -436,7 +436,7 @@ Export Image *MagnifyImage(Image *image,ExceptionInfo *exception)
   if (q != (PixelPacket *) NULL)
     memcpy(q,scanline,magnify_image->columns*sizeof(PixelPacket));
   (void) SyncImagePixels(magnify_image);
-  FreeMemory((void *) &scanline);
+  FreeMemory((void **) &scanline);
   return(magnify_image);
 }
 
@@ -626,10 +626,6 @@ Export Image *SampleImage(Image *image,const unsigned int columns,
     k,
     y;
 
-  register IndexPacket
-    *indexes,
-    *sample_indexes;
-
   register int
     x;
 
@@ -684,7 +680,6 @@ Export Image *SampleImage(Image *image,const unsigned int columns,
     q=SetImagePixels(sample_image,0,y,sample_image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    sample_indexes=GetIndexes(sample_image);
     if (j != y_offset[y])
       {
         /*
@@ -694,9 +689,6 @@ Export Image *SampleImage(Image *image,const unsigned int columns,
         p=GetImagePixels(image,0,j,image->columns,1);
         if (p == (PixelPacket *) NULL)
           break;
-        indexes=GetIndexes(image);
-        if (image->class == PseudoClass)
-          memcpy(index,indexes,image->columns*sizeof(IndexPacket));
         memcpy(pixels,p,image->columns*sizeof(PixelPacket));
       }
     /*
@@ -705,19 +697,35 @@ Export Image *SampleImage(Image *image,const unsigned int columns,
     for (x=0; x < (int) sample_image->columns; x++)
     {
       k=x_offset[x];
-      if (sample_image->class == PseudoClass)
-        sample_indexes[x]=index[k];
       *q++=pixels[k];
     }
+    if (sample_image->class == PseudoClass)
+      {
+        register IndexPacket
+          *indexes,
+          *sample_indexes;
+
+        /*
+          Sample colormap indexes.
+        */
+        indexes=GetIndexes(image);
+        memcpy(index,indexes,image->columns*sizeof(IndexPacket));
+        sample_indexes=GetIndexes(sample_image);
+        for (x=0; x < (int) sample_image->columns; x++)
+        {
+          k=x_offset[x];
+          sample_indexes[x]=index[k];
+        }
+      }
     if (!SyncImagePixels(sample_image))
       break;
     if (QuantumTick(y,sample_image->rows))
       ProgressMonitor(SampleImageText,y,sample_image->rows);
   }
-  FreeMemory((void *) &y_offset);
-  FreeMemory((void *) &x_offset);
-  FreeMemory((void *) &index);
-  FreeMemory((void *) &pixels);
+  FreeMemory((void **) &y_offset);
+  FreeMemory((void **) &x_offset);
+  FreeMemory((void **) &index);
+  FreeMemory((void **) &pixels);
   return(sample_image);
 }
 
@@ -1075,11 +1083,11 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
   /*
     Free allocated memory.
   */
-  FreeMemory((void *) &y_vector);
-  FreeMemory((void *) &scale_scanline);
+  FreeMemory((void **) &y_vector);
+  FreeMemory((void **) &scale_scanline);
   if (scale_image->rows != image->rows)
-    FreeMemory((void *) &scanline);
-  FreeMemory((void *) &x_vector);
+    FreeMemory((void **) &scanline);
+  FreeMemory((void **) &x_vector);
   return(scale_image);
 }
 
@@ -1290,10 +1298,6 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
     n,
     y;
 
-  register IndexPacket
-    *destination_indexes,
-    *source_indexes;
-
   register int
     i,
     x;
@@ -1343,8 +1347,6 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
     q=SetImagePixels(destination,x,0,1,destination->rows);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    source_indexes=GetIndexes(source);
-    destination_indexes=GetIndexes(destination);
     for (y=0; y < (int) destination->rows; y++)
     {
       blue=0.0;
@@ -1364,10 +1366,26 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
       q->green=(green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5;
       q->blue=(blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5;
       q->opacity=(opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5;
-      if (destination->class == PseudoClass)
-        destination_indexes[y]=source_indexes[j];
       q++;
     }
+    if (destination->class == PseudoClass)
+      {
+        register IndexPacket
+          *destination_indexes,
+          *source_indexes;
+
+        /*
+          Sample colormap indexes.
+        */
+        source_indexes=GetIndexes(source);
+        destination_indexes=GetIndexes(destination);
+        for (y=0; y < (int) destination->rows; y++)
+        {
+          j=y*(contribution[n-1].pixel-contribution[0].pixel+1)+
+            (contribution[n-1].pixel-contribution[0].pixel);
+          destination_indexes[y]=source_indexes[j];
+        }
+      }
     if (!SyncImagePixels(destination))
       break;
     if (QuantumTick(*quantum,span))
@@ -1397,10 +1415,6 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
     j,
     n,
     x;
-
-  register IndexPacket
-    *destination_indexes,
-    *source_indexes;
 
   register int
     i,
@@ -1451,8 +1465,6 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
     q=SetImagePixels(destination,0,y,destination->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    source_indexes=GetIndexes(source);
-    destination_indexes=GetIndexes(destination);
     for (x=0; x < (int) destination->columns; x++)
     {
       blue=0.0;
@@ -1471,10 +1483,25 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
       q->green=(green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5;
       q->blue=(blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5;
       q->opacity=(opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5;
-      if (destination->class == PseudoClass)
-        destination_indexes[x]=source_indexes[j];
       q++;
     }
+    if (destination->class == PseudoClass)
+      {
+        register IndexPacket
+          *destination_indexes,
+          *source_indexes;
+
+        /*
+          Sample colormap indexes.
+        */
+        source_indexes=GetIndexes(source);
+        destination_indexes=GetIndexes(destination);
+        for (x=0; x < (int) destination->columns; x++)
+        {
+          j=(contribution[n-1].pixel-contribution[0].pixel)*source->columns+x;
+          destination_indexes[x]=source_indexes[j];
+        }
+      }
     if (!SyncImagePixels(destination))
       break;
     if (QuantumTick(*quantum,span))
@@ -1590,7 +1617,7 @@ Export Image *ZoomImage(Image *image,const unsigned int columns,
   /*
     Free allocated memory.
   */
-  FreeMemory((void *) &contribution);
+  FreeMemory((void **) &contribution);
   DestroyImage(source_image);
   if (status == False)
     {

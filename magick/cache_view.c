@@ -92,7 +92,7 @@ Export void CloseCacheView(ViewInfo *view)
   assert(view != (ViewInfo *) NULL);
   image=view->image;
   DestroyCacheNexus(image->cache,view->id);
-  FreeMemory((void *) &view);
+  FreeMemory((void **) &view);
 }
 
 /*

@@ -357,7 +357,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,ExceptionInfo *exception
         ProgressMonitor(LoadImagesText,TellBlob(image),image->filesize);
       }
   } while (count > 0);
-  FreeMemory((void *) &scanline);
+  FreeMemory((void **) &scanline);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);
@@ -616,7 +616,7 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
     image=GetNextImage(image);
     ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
-  FreeMemory((void *) &pixels);
+  FreeMemory((void **) &pixels);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
       image=image->previous;

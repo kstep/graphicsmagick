@@ -754,9 +754,9 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
           (void) WriteBlob(image,strlen(buffer),buffer);
           (void) strcpy(buffer,"ET\n");
           (void) WriteBlob(image,strlen(buffer),buffer);
-          FreeMemory((void *) &labels[i]);
+          FreeMemory((void **) &labels[i]);
         }
-        FreeMemory((void *) &labels);
+        FreeMemory((void **) &labels);
       }
     FormatString(buffer,"%g 0 0 %g %d %d cm\n",x_scale,y_scale,x,y);
     (void) WriteBlob(image,strlen(buffer),buffer);
@@ -971,7 +971,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               status=LZWEncodeImage(image,number_packets,pixels);
             else
               status=PackbitsEncodeImage(image,number_packets,pixels);
-          FreeMemory((void *) &pixels);
+          FreeMemory((void **) &pixels);
           if (!status)
             {
               CloseBlob(image);
@@ -1129,7 +1129,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                   status=LZWEncodeImage(image,number_packets,pixels);
                 else
                   status=PackbitsEncodeImage(image,number_packets,pixels);
-              FreeMemory((void *) &pixels);
+              FreeMemory((void **) &pixels);
               if (!status)
                 {
                   CloseBlob(image);
@@ -1309,7 +1309,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               status=LZWEncodeImage(image,number_packets,pixels);
             else
               status=PackbitsEncodeImage(image,number_packets,pixels);
-          FreeMemory((void *) &pixels);
+          FreeMemory((void **) &pixels);
           if (!status)
             {
               CloseBlob(image);
@@ -1419,7 +1419,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                   status=LZWEncodeImage(image,number_packets,pixels);
                 else
                   status=PackbitsEncodeImage(image,number_packets,pixels);
-              FreeMemory((void *) &pixels);
+              FreeMemory((void **) &pixels);
               if (!status)
                 {
                   CloseBlob(image);
@@ -1511,7 +1511,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                   status=LZWEncodeImage(image,number_packets,pixels);
                 else
                   status=PackbitsEncodeImage(image,number_packets,pixels);
-              FreeMemory((void *) &pixels);
+              FreeMemory((void **) &pixels);
               if (!status)
                 {
                   CloseBlob(image);
@@ -1647,7 +1647,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlob(image,strlen(buffer),buffer);
   (void) strcpy(buffer,"%%EOF\n");
   (void) WriteBlob(image,strlen(buffer),buffer);
-  FreeMemory((void *) &xref);
+  FreeMemory((void **) &xref);
   CloseBlob(image);
   if (image->temporary)
     {

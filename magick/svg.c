@@ -712,7 +712,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (void) fprintf(file,"pen %s\n",graphic_context[n].stroke);
         (void) fprintf(file,"fill 0\n");
         (void) fprintf(file,"%s\n",command);
-        FreeMemory((void *) &command);
+        FreeMemory((void **) &command);
         (void) CloneString(&primitive,"none");
         (void) CloneString(&vertices," ");
         (void) CloneString(&graphic_context[0].fill,"none");
@@ -757,7 +757,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (void) fprintf(file,"pen %s\n",graphic_context[n].stroke);
         (void) fprintf(file,"fill 0\n");
         (void) fprintf(file,"polyline %s\n",path);
-        (void) FreeMemory((void *) &path);
+        (void) FreeMemory((void **) &path);
         (void) CloneString(&keyword,token);
         continue;
       }
@@ -869,9 +869,9 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
           if (Latin1Compare(tokens[i],"text-antialiasing:") == 0)
             graphic_context[n].antialias=Latin1Compare(tokens[++i],"true");
-          FreeMemory((void *) &tokens[i]);
+          FreeMemory((void **) &tokens[i]);
         }
-        FreeMemory((void *) &tokens);
+        FreeMemory((void **) &tokens);
       }
     if (Latin1Compare(keyword,"text") == 0)
       CloneString(&primitive,"text");
@@ -884,9 +884,9 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             (void) sscanf(tokens[++i]+1,"%lf %lf",&translate.x,&translate.y);
           if (Latin1Compare(tokens[i],"rotate") == 0)
             (void) sscanf(tokens[++i]+1,"%lf",&element.angle);
-          FreeMemory((void *) &tokens[i]);
+          FreeMemory((void **) &tokens[i]);
         }
-        FreeMemory((void *) &tokens);
+        FreeMemory((void **) &tokens);
       }
     if (Latin1Compare(keyword,"verts") == 0)
       (void) CloneString(&vertices,value);
@@ -931,16 +931,16 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   for (i=0; i < MaxContexts; i++)
   {
-    FreeMemory((void *) &graphic_context[i].fill);
-    FreeMemory((void *) &graphic_context[i].stroke);
+    FreeMemory((void **) &graphic_context[i].fill);
+    FreeMemory((void **) &graphic_context[i].stroke);
   }
-  FreeMemory((void *) &vertices);
-  FreeMemory((void *) &value);
-  FreeMemory((void *) &url);
-  FreeMemory((void *) &token);
-  FreeMemory((void *) &text);
-  FreeMemory((void *) &primitive);
-  FreeMemory((void *) &keyword);
+  FreeMemory((void **) &vertices);
+  FreeMemory((void **) &value);
+  FreeMemory((void **) &url);
+  FreeMemory((void **) &token);
+  FreeMemory((void **) &text);
+  FreeMemory((void **) &primitive);
+  FreeMemory((void **) &keyword);
   (void) fclose(file);
   CloseBlob(image);
   /*

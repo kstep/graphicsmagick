@@ -615,7 +615,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (bmp_header.size != 12)
             p++;
         }
-        FreeMemory((void *) &bmp_colormap);
+        FreeMemory((void **) &bmp_colormap);
       }
     while (TellBlob(image) < (int) (start_position+bmp_header.offset_bits))
       (void) ReadByte(image);
@@ -827,7 +827,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       default:
         ThrowReaderException(CorruptImageWarning,"Not a BMP image file",image);
     }
-    FreeMemory((void *) &pixels);
+    FreeMemory((void **) &pixels);
     if (bmp_header.height < 0)
       {
         Image
@@ -1219,7 +1219,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           bmp_data=(unsigned char *) AllocateMemory(packets);
           if (pixels == (unsigned char *) NULL)
             {
-              FreeMemory((void *) &pixels);
+              FreeMemory((void **) &pixels);
               ThrowWriterException(ResourceLimitWarning,
                 "Memory allocation failed",image);
             }
@@ -1227,7 +1227,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           bmp_header.image_size=
             EncodeImage(pixels,image->columns,image->rows,bmp_data);
           bmp_header.file_size+=bmp_header.image_size;
-          FreeMemory((void *) &pixels);
+          FreeMemory((void **) &pixels);
           pixels=bmp_data;
           bmp_header.compression=1;
         }
@@ -1280,10 +1280,10 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         }
         (void) WriteBlob(image,4*(1 << bmp_header.bit_count),
           (char *) bmp_colormap);
-        FreeMemory((void *) &bmp_colormap);
+        FreeMemory((void **) &bmp_colormap);
       }
     (void) WriteBlob(image,bmp_header.image_size,(char *) pixels);
-    FreeMemory((void *) &pixels);
+    FreeMemory((void **) &pixels);
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);

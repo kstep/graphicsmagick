@@ -152,7 +152,7 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) strcpy(clone_info->filename,filelist[i]);
     *clone_info->magick='\0';
     next_image=ReadImage(clone_info,exception);
-    FreeMemory((void *) &filelist[i]);
+    FreeMemory((void **) &filelist[i]);
     if (next_image != (Image *) NULL)
       {
         MogrifyImages(clone_info,5,commands,&next_image);
@@ -169,7 +169,7 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ProgressMonitor(LoadImageText,i,number_files);
   }
   DestroyImageInfo(clone_info);
-  FreeMemory((void *) &filelist);
+  FreeMemory((void **) &filelist);
   if (image == (Image *) NULL)
     ThrowReaderException(CorruptImageWarning,"unable to read VID image",image);
   while (image->previous != (Image *) NULL)
@@ -183,8 +183,8 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (montage_image == (Image *) NULL)
     ThrowReaderException(CorruptImageWarning,"unable to read VID image",image);
   DestroyImages(image);
-  FreeMemory((void *) &list[0]);
-  FreeMemory((void *) &list);
+  FreeMemory((void **) &list[0]);
+  FreeMemory((void **) &list);
   return(montage_image);
 }
 

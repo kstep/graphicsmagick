@@ -328,7 +328,7 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
     *p++=GetCharacter(jpeg_info);
   *p='\0';
   (void) SetImageAttribute(image,"Comment",comment);
-  FreeMemory((void *) &comment);
+  FreeMemory((void **) &comment);
   return(True);
 }
 
@@ -529,7 +529,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
         JPEG image is corrupt.
       */
       if (jpeg_pixels != (JSAMPLE *) NULL)
-        FreeMemory((void *) &jpeg_pixels);
+        FreeMemory((void **) &jpeg_pixels);
       jpeg_destroy_decompress(&jpeg_info);
       DestroyImage(image);
       return((Image *) NULL);
@@ -700,7 +700,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   */
   (void) jpeg_finish_decompress(&jpeg_info);
   jpeg_destroy_decompress(&jpeg_info);
-  FreeMemory((void *) &jpeg_pixels);
+  FreeMemory((void **) &jpeg_pixels);
   CloseBlob(image);
   return(image);
 }
@@ -922,7 +922,7 @@ static void WriteColorProfile(j_compress_ptr jpeg_info,Image *image)
     for (j=0; j < (int) length; j++)
       profile[j+14]=image->color_profile.info[i+j];
     jpeg_write_marker(jpeg_info,ICC_MARKER,profile,(unsigned int) length+14);
-    FreeMemory((void *) &profile);
+    FreeMemory((void **) &profile);
   }
 }
 
@@ -970,7 +970,7 @@ static void WriteNewsProfile(j_compress_ptr jpeg_info,Image *image)
       profile[length+taglen]=0;
     jpeg_write_marker(jpeg_info,IPTC_MARKER,profile,(unsigned int)
       length+roundup+taglen);
-    FreeMemory((void *) &profile);
+    FreeMemory((void **) &profile);
   }
 }
 
@@ -1241,7 +1241,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     Free memory.
   */
   jpeg_destroy_compress(&jpeg_info);
-  FreeMemory((void *) &jpeg_pixels);
+  FreeMemory((void **) &jpeg_pixels);
   CloseBlob(image);
   return(True);
 }

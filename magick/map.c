@@ -170,7 +170,7 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->colormap[i].blue=(*p++ << 8);
       image->colormap[i].blue|=(*p++);
     }
-  FreeMemory((void *) &colormap);
+  FreeMemory((void **) &colormap);
   /*
     Read image pixels.
   */
@@ -197,7 +197,7 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (!SyncImagePixels(image))
       break;
   }
-  FreeMemory((void *) &pixels);
+  FreeMemory((void **) &pixels);
   CloseBlob(image);
   return(image);
 }
@@ -372,7 +372,7 @@ static unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
       *q++=image->colormap[i].blue & 0xff;
     }
   (void) WriteBlob(image,packet_size*image->colors,(char *) colormap);
-  FreeMemory((void *) &colormap);
+  FreeMemory((void **) &colormap);
   /*
     Write image pixels to file.
   */
@@ -391,7 +391,7 @@ static unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
     }
     status=WriteBlob(image,q-pixels,(char *) pixels);
   }
-  FreeMemory((void *) &pixels);
+  FreeMemory((void **) &pixels);
   CloseBlob(image);
   return(status);
 }

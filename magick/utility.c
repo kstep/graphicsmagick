@@ -256,7 +256,7 @@ Export char *BaseFilename(const char *name)
 Export unsigned int CloneString(char **destination,const char *source)
 {
   assert(destination != (char **) NULL);
-  FreeMemory((void *) &*destination);
+  FreeMemory((void **) &*destination);
   if (source == (const char *) NULL)
     return(True);
   *destination=AllocateString(source);
@@ -413,7 +413,7 @@ Export unsigned short *ConvertTextToUnicode(const char *text,int *count)
         value=InterpretUnicode(p,4);
         if (value < 0)
           {
-            FreeMemory((void *) &unicode);
+            FreeMemory((void **) &unicode);
             return((unsigned short *) NULL);
           }
         *q=(unsigned short) value;
@@ -614,8 +614,8 @@ Export unsigned int ExpandFilenames(int *argc,char ***argv)
     if (j == number_files)
       {
         for (j=0; j < number_files; j++)
-          FreeMemory((void *) &filelist[j]);
-        FreeMemory((void *) &filelist);
+          FreeMemory((void **) &filelist[j]);
+        FreeMemory((void **) &filelist);
         continue;
       }
     /*
@@ -630,7 +630,7 @@ Export unsigned int ExpandFilenames(int *argc,char ***argv)
     {
       if (IsDirectory(filelist[j]))
         {
-          FreeMemory((void *) &filelist[j]);
+          FreeMemory((void **) &filelist[j]);
           continue;
         }
       expanded=True;
@@ -639,21 +639,21 @@ Export unsigned int ExpandFilenames(int *argc,char ***argv)
       if (vector[count] == (char *) NULL)
         {
           for ( ; j < number_files; j++)
-            FreeMemory((void *) &filelist[j]);
-          FreeMemory((void *) &filelist);
+            FreeMemory((void **) &filelist[j]);
+          FreeMemory((void **) &filelist);
           return(False);
         }
       FormatString(vector[count],"%.*s%.1024s",(int) (p-filename),filename,
         filelist[j]);
-      FreeMemory((void *) &filelist[j]);
+      FreeMemory((void **) &filelist[j]);
       count++;
     }
-    FreeMemory((void *) &filelist);
+    FreeMemory((void **) &filelist);
   }
   (void) chdir(home_directory);
   if (!expanded)
     {
-      FreeMemory((void *) &vector);
+      FreeMemory((void **) &vector);
       return(True);
     }
   *argc=count;
@@ -1898,7 +1898,7 @@ Export int ParseGeometry(const char *geometry,int *x,int *y,unsigned int *width,
 
 Export void DestroyPostscriptGeometry(char *geometry)
 {
-    FreeMemory((void *) &geometry);
+    FreeMemory((void **) &geometry);
 }
 
 Export char *PostscriptGeometry(const char *page)
@@ -2061,7 +2061,7 @@ Export char *SetClientName(const char *name)
       (void) strcpy(client_name,basename);
       (void) setlocale(LC_ALL,"");
       (void) setlocale(LC_NUMERIC,"C");
-      FreeMemory((void *) &basename);
+      FreeMemory((void **) &basename);
     }
   return(client_name);
 }
@@ -2444,7 +2444,7 @@ Export void TemporaryFilename(char *filename)
     if (name != (char *) NULL)
       {
         (void) strcpy(filename,name);
-        FreeMemory((void *) &name);
+        FreeMemory((void **) &name);
       }
   }
 #else
@@ -2801,6 +2801,6 @@ Export char *TranslateText(const ImageInfo *image_info,Image *image,
   *q='\0';
   DestroyImageInfo(clone_info);
   if (text != (char *) formatted_text)
-    FreeMemory((void *) &text);
+    FreeMemory((void **) &text);
   return(translated_text);
 }

@@ -464,7 +464,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
                 image->colormap[i % image->colors].blue=
                   UpScale((unsigned int) value);
         }
-        FreeMemory((void *) &viff_colormap);
+        FreeMemory((void **) &viff_colormap);
         break;
       }
       default:
@@ -696,7 +696,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
                 ProgressMonitor(LoadImageText,y,image->rows);
           }
         }
-    FreeMemory((void *) &viff_pixels);
+    FreeMemory((void **) &viff_pixels);
     if (image->class == PseudoClass)
       SyncImage(image);
     /*
@@ -1087,7 +1087,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
           for (i=0; i < (int) image->colors; i++)
             *q++=DownScale(image->colormap[i].blue);
           (void) WriteBlob(image,3*image->colors,(char *) viff_colormap);
-          FreeMemory((void *) &viff_colormap);
+          FreeMemory((void **) &viff_colormap);
           /*
             Convert PseudoClass packet to VIFF colormapped pixels.
           */
@@ -1173,7 +1173,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
             }
           }
     (void) WriteBlob(image,packets,(char *) viff_pixels);
-    FreeMemory((void *) &viff_pixels);
+    FreeMemory((void **) &viff_pixels);
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);

@@ -279,7 +279,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ProgressMonitor(LoadImagesText,TellBlob(image),image->filesize);
       }
   } while (count > 0);
-  FreeMemory((void *) &scanline);
+  FreeMemory((void **) &scanline);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);

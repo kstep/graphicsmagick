@@ -1790,7 +1790,7 @@ int main(int argc,char **argv)
   DestroyImageInfo(image_info);
   DestroyDelegateInfo();
   DestroyMagickInfo();
-  FreeMemory((void *) &argv);
+  FreeMemory((void **) &argv);
   Exit(0);
   return(False);
 }

@@ -620,7 +620,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (!SyncImagePixels(layer_info[i].image))
                   break;
               }
-              FreeMemory((void *) &scanline);
+              FreeMemory((void **) &scanline);
             }
         }
         image->file=layer_info[i].image->file;
@@ -753,7 +753,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
       if (image->matte && (number_layers != 0))
         MatteImage(image,Transparent);
-      FreeMemory((void *) &scanline);
+      FreeMemory((void **) &scanline);
     }
   if (image->colorspace == CMYKColorspace)
     {
@@ -1022,7 +1022,7 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
           (void) WriteBlob(image,packet_size*image->columns,pixels);
         }
     }
-  FreeMemory((void *) &pixels);
+  FreeMemory((void **) &pixels);
   CloseBlob(image);
   return(True);
 }

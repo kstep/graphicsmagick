@@ -855,14 +855,14 @@ static void DestroyCubeInfo(CubeInfo *cube_info)
   do
   {
     nodes=cube_info->node_queue->next;
-    FreeMemory((void *) &cube_info->node_queue);
+    FreeMemory((void **) &cube_info->node_queue);
     cube_info->node_queue=nodes;
   } while (cube_info->node_queue != (Nodes *) NULL);
   cube_info->squares-=MaxRGB;
-  FreeMemory((void *) &cube_info->squares);
+  FreeMemory((void **) &cube_info->squares);
   if (!cube_info->quantize_info->dither)
     return;
-  FreeMemory((void *) &cube_info->cache);
+  FreeMemory((void **) &cube_info->cache);
 }
 
 /*
@@ -892,7 +892,7 @@ static void DestroyCubeInfo(CubeInfo *cube_info)
 Export void DestroyQuantizeInfo(QuantizeInfo *quantize_info)
 {
   assert(quantize_info != (QuantizeInfo *) NULL);
-  FreeMemory((void *) &quantize_info);
+  FreeMemory((void **) &quantize_info);
 }
 
 /*
@@ -1687,7 +1687,7 @@ static unsigned int OrderedDitherImage(Image *image)
     ThrowBinaryException(ResourceLimitWarning,"Unable to dither image",
       "Memory allocation failed");
   if (image->colormap != (PixelPacket *) NULL)
-    FreeMemory((void *) &image->colormap);
+    FreeMemory((void **) &image->colormap);
   image->colormap=colormap;
   image->colormap[0].red=0;
   image->colormap[0].green=0;
@@ -1939,7 +1939,7 @@ Export unsigned int QuantizationError(Image *image)
   image->normalized_maximum_error=maximum_error_per_pixel/
     (3.0*(MaxRGB+1)*(MaxRGB+1));
   cube_info.squares-=MaxRGB;
-  FreeMemory((void *) &cube_info.squares);
+  FreeMemory((void **) &cube_info.squares);
   return(True);
 }
 

@@ -355,7 +355,7 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (QuantumTick(y,image->rows))
       ProgressMonitor(LoadImageText,y,image->rows);
   }
-  FreeMemory((void *) &data);
+  FreeMemory((void **) &data);
   SyncImage(image);
   CloseBlob(image);
   return(image);
@@ -586,6 +586,6 @@ static unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
   (void) strcpy(buffer,"};\n");
   (void) WriteBlob(image,strlen(buffer),buffer);
   CloseBlob(image);
-  FreeMemory((void *) &basename);
+  FreeMemory((void **) &basename);
   return(True);
 }

@@ -403,7 +403,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (image->colormap == (PixelPacket *) NULL)
         {
           DestroyImage(image);
-          FreeMemory((void *) &colors);
+          FreeMemory((void **) &colors);
           XDestroyImage(dps_image);
           XFreeResources(display,visual_info,map_info,(XPixelInfo *) NULL,
             (XFontStruct *) NULL,&resource_info,(XWindowInfo *) NULL);
@@ -434,7 +434,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     }
   }
-  FreeMemory((void *) &colors);
+  FreeMemory((void **) &colors);
   XDestroyImage(dps_image);
   if (image->class == PseudoClass)
     SyncImage(image);

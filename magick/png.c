@@ -144,7 +144,7 @@ Export unsigned int CompressColormapTransFirst(Image *image)
     AllocateMemory(image->colors*sizeof(unsigned short));
   if (opacity == (unsigned short *) NULL)
     {
-      FreeMemory((void *) &marker);
+      FreeMemory((void **) &marker);
       ThrowBinaryException(ResourceLimitWarning,"Unable to compress colormap",
         "Memory allocation failed");
     }
@@ -199,8 +199,8 @@ Export unsigned int CompressColormapTransFirst(Image *image)
       /*
         No duplicate or unused entries, and transparency-swap not needed
       */
-      FreeMemory((void *) &marker);
-      FreeMemory((void *) &opacity);
+      FreeMemory((void **) &marker);
+      FreeMemory((void **) &opacity);
       return(True);
     }
   /*
@@ -209,8 +209,8 @@ Export unsigned int CompressColormapTransFirst(Image *image)
   colormap=(PixelPacket *) AllocateMemory(image->colors*sizeof(PixelPacket));
   if (colormap == (PixelPacket *) NULL)
     {
-      FreeMemory((void *) &marker);
-      FreeMemory((void *) &opacity);
+      FreeMemory((void **) &marker);
+      FreeMemory((void **) &opacity);
       image->colors=number_colors;
       ThrowBinaryException(ResourceLimitWarning,"Unable to compress colormap",
         "Memory allocation failed");
@@ -221,9 +221,9 @@ Export unsigned int CompressColormapTransFirst(Image *image)
   map=(unsigned short *) AllocateMemory(number_colors*sizeof(unsigned short));
   if (map == (unsigned short *) NULL)
     {
-      FreeMemory((void *) &marker);
-      FreeMemory((void *) &opacity);
-      FreeMemory((void *) &colormap);
+      FreeMemory((void **) &marker);
+      FreeMemory((void **) &opacity);
+      FreeMemory((void **) &colormap);
       image->colors=number_colors;
       ThrowBinaryException(ResourceLimitWarning,"Unable to compress colormap",
         "Memory allocation failed");
@@ -259,7 +259,7 @@ Export unsigned int CompressColormapTransFirst(Image *image)
         index++;
       }
   }
-  FreeMemory((void *) &marker);
+  FreeMemory((void **) &marker);
   if (have_transparency && opacity[0] != Transparent)
     {
       /*
@@ -287,7 +287,7 @@ Export unsigned int CompressColormapTransFirst(Image *image)
           }
       }
    }
-  FreeMemory((void *) &opacity);
+  FreeMemory((void **) &opacity);
   /*
     Remap pixels.
   */
@@ -305,8 +305,8 @@ Export unsigned int CompressColormapTransFirst(Image *image)
     if (!SyncImagePixels(image))
       break;
   }
-  FreeMemory((void *) &map);
-  FreeMemory((void *) &image->colormap);
+  FreeMemory((void **) &map);
+  FreeMemory((void **) &image->colormap);
   image->colormap=colormap;
   return(True);
 }
@@ -648,7 +648,7 @@ static void MngInfoDiscardObject(MngInfo *mng_info,int i)
             {
               if (mng_info->ob[i]->image != (Image *) NULL)
                 DestroyImage(mng_info->ob[i]->image);
-              FreeMemory((void *) &mng_info->ob[i]);
+              FreeMemory((void **) &mng_info->ob[i]);
             }
         }
       mng_info->ob[i]=(MngInfoBuffer *) NULL;
@@ -676,10 +676,10 @@ static void MngInfoFreeStruct(MngInfo *mng_info,int *have_mng_structure)
       for (i=1; i < MNG_MAX_OBJECTS; i++)
         MngInfoDiscardObject(mng_info,i);
       if (mng_info->global_plte != (png_colorp) NULL)
-        FreeMemory((void *) &mng_info->global_plte);
+        FreeMemory((void **) &mng_info->global_plte);
       if (mng_info->global_sbit != (png_color_8p) NULL)
-        FreeMemory((void *) &mng_info->global_sbit);
-      FreeMemory((void *) &mng_info);
+        FreeMemory((void **) &mng_info->global_sbit);
+      FreeMemory((void **) &mng_info);
       *have_mng_structure=False;
     }
 }
@@ -801,7 +801,7 @@ png_voidp png_IM_malloc(png_structp png_ptr,png_uint_32 size)
 */
 static png_free_ptr png_IM_free(png_structp png_ptr,png_voidp ptr)
 {
-  FreeMemory((void *) &ptr);
+  FreeMemory((void **) &ptr);
   return((png_free_ptr) NULL);
 }
 #endif
@@ -1060,7 +1060,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (!png_memcmp(type,mng_IEND,4))
               skip_to_iend=False;
             if (length)
-              FreeMemory((void *) &chunk);
+              FreeMemory((void **) &chunk);
             continue;
           }
 
@@ -1120,7 +1120,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             clip=default_fb=previous_fb=frame;
             for (i=0; i < MNG_MAX_OBJECTS; i++)
               mng_info->object_clip[i]=frame;
-            FreeMemory((void *) &chunk);
+            FreeMemory((void **) &chunk);
             continue;
           }
 
@@ -1144,7 +1144,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   image->iterations=iterations;
                 term_chunk_found=True;
               }
-            FreeMemory((void *) &chunk);
+            FreeMemory((void **) &chunk);
             continue;
           }
         if (!png_memcmp(type,mng_DEFI,4))
@@ -1169,7 +1169,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (mng_info->exists[object_id])
               if (mng_info->frozen[object_id])
                 {
-                  FreeMemory((void *) &chunk);
+                  FreeMemory((void **) &chunk);
                   ThrowException(&image->exception,DelegateWarning,
                      "DEFI cannot redefine a frozen MNG object",(char *) NULL);
                   continue;
@@ -1196,7 +1196,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             */
             if (length>27)
               mng_info->object_clip[object_id]=mng_read_box(frame,0,&p[12]);
-            FreeMemory((void *) &chunk);
+            FreeMemory((void **) &chunk);
             continue;
           }
         if (!png_memcmp(type,mng_bKGD,4))
@@ -1212,7 +1212,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   (unsigned short) XDownScale((p[4]<<8) | p[5]);
                 have_global_bkgd=True;
               }
-            FreeMemory((void *) &chunk);
+            FreeMemory((void **) &chunk);
             continue;
           }
         if (!png_memcmp(type,mng_BACK,4))
@@ -1232,7 +1232,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               }
             if (length > 8)
               mng_background_object=(p[7] << 8) | p[8];
-            FreeMemory((void *) &chunk);
+            FreeMemory((void **) &chunk);
             continue;
           }
         if (!png_memcmp(type,mng_PLTE,4))
@@ -1268,7 +1268,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #endif
             else
               global_plte_length=0;
-            FreeMemory((void *) &chunk);
+            FreeMemory((void **) &chunk);
             continue;
           }
         if (!png_memcmp(type,mng_tRNS,4))
@@ -1287,7 +1287,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               mng_info->global_trns[i]=255;
 #endif
             global_trns_length=(int) length;
-            FreeMemory((void *) &chunk);
+            FreeMemory((void **) &chunk);
             continue;
           }
         if (!png_memcmp(type,mng_gAMA,4))
@@ -1300,7 +1300,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               }
             else
               have_global_gama=False;
-            FreeMemory((void *) &chunk);
+            FreeMemory((void **) &chunk);
             continue;
           }
 
@@ -1323,7 +1323,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               }
             else
               have_global_chrm=False;
-            FreeMemory((void *) &chunk);
+            FreeMemory((void **) &chunk);
             continue;
           }
         if (!png_memcmp(type,mng_sRGB,4))
@@ -1338,7 +1338,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               }
             else
               have_global_srgb=False;
-            FreeMemory((void *) &chunk);
+            FreeMemory((void **) &chunk);
             continue;
           }
         if (!png_memcmp(type,mng_FRAM,4))
@@ -1439,7 +1439,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (image_info->coalesce_frames)
                   MNGCoalesce(image);
               }
-            FreeMemory((void *) &chunk);
+            FreeMemory((void **) &chunk);
             continue;
           }
         if (!png_memcmp(type,mng_CLIP,4))
@@ -1464,7 +1464,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   mng_info->object_clip[i]=mng_read_box(box,p[4],&p[5]);
                 }
             }
-            FreeMemory((void *) &chunk);
+            FreeMemory((void **) &chunk);
             continue;
           }
         if (!png_memcmp(type,mng_SAVE,4))
@@ -1482,7 +1482,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #endif
                 }
             if (length > 0)
-              FreeMemory((void *) &chunk);
+              FreeMemory((void **) &chunk);
             continue;
           }
 
@@ -1511,7 +1511,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 }
               }
             if (length > 0)
-              FreeMemory((void *) &chunk);
+              FreeMemory((void **) &chunk);
             continue;
           }
         if (!png_memcmp(type,mng_MOVE,4))
@@ -1540,7 +1540,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   mng_info->y_off[i]=new_pair.b;
                 }
             }
-            FreeMemory((void *) &chunk);
+            FreeMemory((void **) &chunk);
             continue;
           }
 
@@ -1562,7 +1562,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 mng_info->loop_count[loop_level]=loop_iters;
               }
             mng_info->loop_iteration[loop_level]=0;
-            FreeMemory((void *) &chunk);
+            FreeMemory((void **) &chunk);
             continue;
           }
         if (!png_memcmp(type,mng_ENDL,4))
@@ -1607,7 +1607,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       }
                   }
               }
-            FreeMemory((void *) &chunk);
+            FreeMemory((void **) &chunk);
             continue;
           }
         if (!png_memcmp(type,mng_CLON,4))
@@ -1714,13 +1714,13 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             else
               basi_viewable=0;
 #endif
-            FreeMemory((void *) &chunk);
+            FreeMemory((void **) &chunk);
             continue;
           }
         if (png_memcmp(type,mng_IHDR,4))
           {
             if (length > 0)
-              FreeMemory((void *) &chunk);
+              FreeMemory((void **) &chunk);
             continue;
           }
         mng_info->exists[object_id]=True;
@@ -1730,7 +1730,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (!image_info->decode_all_MNG_objects)
               {
                 skip_to_iend=True;
-                FreeMemory((void *) &chunk);
+                FreeMemory((void **) &chunk);
                 continue;
               }
           }
@@ -1740,7 +1740,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         image_width=(unsigned int) mng_get_long(p);
         image_height=(unsigned int) mng_get_long(&p[4]);
-        FreeMemory((void *) &chunk);
+        FreeMemory((void **) &chunk);
         if (image_info->insert_backdrops && (framing_mode == 3) &&
             ((first_mng_object == 0) || ((clip.left == 0) && (clip.top == 0) &&
               (image_width == mng_width) && (image_height == mng_height))))
@@ -1892,9 +1892,9 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         png_destroy_read_struct(&ping,&ping_info,&end_info);
         if (scanlines != (unsigned char **) NULL)
-          FreeMemory((void *) &scanlines);
+          FreeMemory((void **) &scanlines);
         if (png_pixels != (unsigned char *) NULL)
-          FreeMemory((void *) &png_pixels);
+          FreeMemory((void **) &png_pixels);
         CloseBlob(image);
         if ((image->columns == 0) || (image->rows == 0))
           {
@@ -2397,7 +2397,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(LoadImageText,y,image->rows);
         }
-        FreeMemory((void *) &quantum_scanline);
+        FreeMemory((void **) &quantum_scanline);
       }
       if (image->class == PseudoClass)
         SyncImage(image);
@@ -2485,7 +2485,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (void) strncat(value,text[i].text,length);
           value[length]='\0';
           (void) SetImageAttribute(image,text[i].key,value);
-          FreeMemory((void *) &value);
+          FreeMemory((void **) &value);
         }
       }
 #ifdef MNG_OBJECT_BUFFERS
@@ -2576,8 +2576,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Free memory.
     */
     png_destroy_read_struct(&ping,&ping_info,&end_info);
-    FreeMemory((void *) &png_pixels);
-    FreeMemory((void *) &scanlines);
+    FreeMemory((void **) &png_pixels);
+    FreeMemory((void **) &scanlines);
     if (mng_type)
       {
         MngBox
@@ -3471,9 +3471,9 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         */
         png_destroy_write_struct(&ping,&ping_info);
         if (scanlines != (unsigned char **) NULL)
-          FreeMemory((void *) &scanlines);
+          FreeMemory((void **) &scanlines);
         if (png_pixels != (unsigned char *) NULL)
-          FreeMemory((void *) &png_pixels);
+          FreeMemory((void **) &png_pixels);
         CloseBlob(image);
         return(False);
       }
@@ -3738,7 +3738,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                 }
                 png_set_PLTE(ping, ping_info, palette, num_palette);
 #if (PNG_LIBPNG_VER >= 10100)
-                FreeMemory((void *) &palette);
+                FreeMemory((void **) &palette);
 #endif
               }
             ping_info->bit_depth=1;
@@ -4089,13 +4089,13 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     /* Prior to libpng version 1.1.0, the palette had to be free'ed manually. */
     if (ping_info->valid & PNG_INFO_PLTE)
       {
-        FreeMemory((void *) &ping_info->palette);
+        FreeMemory((void **) &ping_info->palette);
         ping_info->valid &= (~PNG_INFO_PLTE);
       }
 #endif
     png_destroy_write_struct(&ping,&ping_info);
-    FreeMemory((void *) &scanlines);
-    FreeMemory((void *) &png_pixels);
+    FreeMemory((void **) &scanlines);
+    FreeMemory((void **) &png_pixels);
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);

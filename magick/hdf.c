@@ -256,7 +256,7 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image->colormap[i].green=(Quantum) UpScale(i);
             image->colormap[i].blue=(Quantum) UpScale(i);
           }
-        FreeMemory((void *) &hdf_palette);
+        FreeMemory((void **) &hdf_palette);
         p=hdf_pixels;
         for (y=0; y < (int) image->rows; y++)
         {
@@ -317,7 +317,7 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             DFANgetlabel(image->filename,DFTAG_RIG,reference,label,length);
             (void) SetImageAttribute(image,"Label",label);
-            FreeMemory((void *) &label);
+            FreeMemory((void **) &label);
           }
       }
     length=DFANgetdesclen(image->filename,DFTAG_RIG,reference);
@@ -335,10 +335,10 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           {
             DFANgetdesc(image->filename,DFTAG_RIG,reference,comments,length);
             (void) SetImageAttribute(image,"Comment",comments);
-            FreeMemory((void *) &comments);
+            FreeMemory((void **) &comments);
           }
       }
-    FreeMemory((void *) &hdf_pixels);
+    FreeMemory((void **) &hdf_pixels);
     if (image->class == PseudoClass)
       SyncImage(image);
     /*
@@ -695,7 +695,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
               *q++=DownScale(image->colormap[i].blue);
             }
             (void) DFR8setpalette(hdf_palette);
-            FreeMemory((void *) &hdf_palette);
+            FreeMemory((void **) &hdf_palette);
             q=hdf_pixels;
             for (y=0; y < (int) image->rows; y++)
             {
@@ -729,7 +729,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
     if (attribute != (ImageAttribute *) NULL)
       (void) DFANputdesc(image->filename,DFTAG_RIG,reference,attribute->value,
         Extent(attribute->value)+1);
-    FreeMemory((void *) &hdf_pixels);
+    FreeMemory((void **) &hdf_pixels);
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);

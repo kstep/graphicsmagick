@@ -570,11 +570,11 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       /*
         Free image directory.
       */
-      FreeMemory((void *) &montage_image->montage);
+      FreeMemory((void **) &montage_image->montage);
       montage_image->montage=(char *) NULL;
       if (image->directory != (char *) NULL)
         {
-          FreeMemory((void *) &montage_image->directory);
+          FreeMemory((void **) &montage_image->directory);
           montage_image->directory=(char *) NULL;
         }
     }

@@ -325,7 +325,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,ExceptionInfo *exceptio
     if (QuantumTick(y,image->rows))
       ProgressMonitor(LoadImageText,y,image->rows);
   }
-  FreeMemory((void *) &vicar_pixels);
+  FreeMemory((void **) &vicar_pixels);
   CloseBlob(image);
   return(image);
 }
@@ -511,7 +511,7 @@ static unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
       if (QuantumTick(y,image->rows))
         ProgressMonitor(SaveImageText,y,image->rows);
   }
-  FreeMemory((void *) &pixels);
+  FreeMemory((void **) &pixels);
   CloseBlob(image);
   return(True);
 }

@@ -232,7 +232,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       *state&=(~AutoReverseAnimationState);
       basename=BaseFilename((*image)->filename);
       FormatString(windows->image.name,"ImageMagick: %.1024s",basename);
-      FreeMemory((void *) &basename);
+      FreeMemory((void **) &basename);
       if (resource_info->title != (char *) NULL)
         windows->image.name=
           TranslateText(resource_info->image_info,*image,resource_info->title);
@@ -1296,8 +1296,8 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
   */
   if (windows->image.id != (Window) NULL)
     {
-      FreeMemory((void *) &windows->image.name);
-      FreeMemory((void *) &windows->image.icon_name);
+      FreeMemory((void **) &windows->image.name);
+      FreeMemory((void **) &windows->image.icon_name);
     }
   XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->image);
@@ -1480,7 +1480,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
     Initialize Widget window.
   */
   if (windows->widget.id != (Window) NULL)
-    FreeMemory((void *) &windows->widget.name);
+    FreeMemory((void **) &windows->widget.name);
   XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->widget);
   FormatString(resource_name,"%.1024s.widget",resource_info->client_name);
@@ -1515,7 +1515,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
     Initialize popup window.
   */
   if (windows->popup.id != (Window) NULL)
-    FreeMemory((void *) &windows->popup.name);
+    FreeMemory((void **) &windows->popup.name);
   XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->popup);
   windows->popup.name=(char *) AllocateMemory(MaxTextExtent);
@@ -2381,9 +2381,9 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
       XFreePixmap(display,windows->image.matte_pixmaps[scene]);
     windows->image.matte_pixmaps[scene]=(Pixmap) NULL;
   }
-  FreeMemory((void *) &windows->image.pixmaps);
+  FreeMemory((void **) &windows->image.pixmaps);
   windows->image.pixmaps=(Pixmap *) NULL;
-  FreeMemory((void *) &windows->image.matte_pixmaps);
+  FreeMemory((void **) &windows->image.matte_pixmaps);
   windows->image.matte_pixmaps=(Pixmap *) NULL;
   if (loaded_image == (Image *) NULL)
     {
@@ -2433,13 +2433,13 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
       XFree((void *) visual_info);
       XFree((void *) icon_map);
       XFree((void *) map_info);
-      FreeMemory((void *) &windows->popup.name);
-      FreeMemory((void *) &windows->widget.name);
-      FreeMemory((void *) &windows->image.icon_name);
-      FreeMemory((void *) &windows->image.name);
-      FreeMemory((void *) &windows->icon_resources);
-      FreeMemory((void *) &windows->icon_pixel);
-      FreeMemory((void *) &windows->pixel_info);
+      FreeMemory((void **) &windows->popup.name);
+      FreeMemory((void **) &windows->widget.name);
+      FreeMemory((void **) &windows->image.icon_name);
+      FreeMemory((void **) &windows->image.name);
+      FreeMemory((void **) &windows->icon_resources);
+      FreeMemory((void **) &windows->icon_pixel);
+      FreeMemory((void **) &windows->pixel_info);
       (void) signal(SIGSEGV,SIG_DFL);
       (void) signal(SIGINT,SIG_DFL);
       (void) XSetWindows((XWindows *) NULL);

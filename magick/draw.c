@@ -416,7 +416,7 @@ Export unsigned int ColorFloodfillImage(Image *image,const PixelPacket target,
       break;
   }
   image->class=DirectClass;
-  FreeMemory((void *) &segment_stack);
+  FreeMemory((void **) &segment_stack);
   return(True);
 }
 
@@ -448,16 +448,16 @@ Export void DestroyDrawInfo(DrawInfo *draw_info)
 {
   assert(draw_info != (DrawInfo *) NULL);
   if (draw_info->primitive != (char *) NULL)
-    FreeMemory((void *) &draw_info->primitive);
+    FreeMemory((void **) &draw_info->primitive);
   if (draw_info->font != (char *) NULL)
-    FreeMemory((void *) &draw_info->font);
+    FreeMemory((void **) &draw_info->font);
   if (draw_info->pen != (char *) NULL)
-    FreeMemory((void *) &draw_info->pen);
+    FreeMemory((void **) &draw_info->pen);
   if (draw_info->box != (char *) NULL)
-    FreeMemory((void *) &draw_info->box);
+    FreeMemory((void **) &draw_info->box);
   if (draw_info->tile != (Image *) NULL)
     DestroyImage(draw_info->tile);
-  FreeMemory((void *) &draw_info);
+  FreeMemory((void **) &draw_info);
 }
 
 /*
@@ -605,8 +605,8 @@ static void GenerateBezier(PrimitiveInfo *primitive_info)
     p++;
   }
   primitive_info->coordinates=i;
-  FreeMemory((void *) &points);
-  FreeMemory((void *) &coefficients);
+  FreeMemory((void **) &points);
+  FreeMemory((void **) &coefficients);
 }
 
 static double GenerateCircle(PrimitiveInfo *primitive_info,PointInfo start,
@@ -915,7 +915,7 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
   if (primitive_info == (PrimitiveInfo *) NULL)
     {
       if (indirection)
-        FreeMemory((void *) &primitive);
+        FreeMemory((void **) &primitive);
       DestroyDrawInfo(clone_info);
       ThrowBinaryException(ResourceLimitWarning,"Unable to draw image",
         "Memory allocation failed");
@@ -1074,7 +1074,7 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       if (primitive_info != (PrimitiveInfo *) NULL)
         continue;
       if (indirection)
-        FreeMemory((void *) &primitive);
+        FreeMemory((void **) &primitive);
       DestroyDrawInfo(clone_info);
       ThrowBinaryException(ResourceLimitWarning,"Unable to draw image",
         "Memory allocation failed");
@@ -1465,9 +1465,9 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
   /*
     Free resources.
   */
-  FreeMemory((void *) &primitive_info);
+  FreeMemory((void **) &primitive_info);
   if (indirection)
-    FreeMemory((void *) &primitive);
+    FreeMemory((void **) &primitive);
   DestroyDrawInfo(clone_info);
   if (primitive_type == UndefinedPrimitive)
     ThrowBinaryException(OptionWarning,
@@ -2209,7 +2209,7 @@ Export unsigned int MatteFloodfillImage(Image *image,const PixelPacket target,
       start=x;
     } while (x <= x2);
   }
-  FreeMemory((void *) &segment_stack);
+  FreeMemory((void **) &segment_stack);
   return(True);
 }
 

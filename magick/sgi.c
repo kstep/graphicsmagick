@@ -293,7 +293,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
           }
         }
-        FreeMemory((void *) &scanline);
+        FreeMemory((void **) &scanline);
       }
     else
       {
@@ -378,9 +378,9 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               p+=(iris_header.columns*4);
             }
           }
-        FreeMemory((void *) &runlength);
-        FreeMemory((void *) &max_packets);
-        FreeMemory((void *) &offsets);
+        FreeMemory((void **) &runlength);
+        FreeMemory((void **) &max_packets);
+        FreeMemory((void **) &offsets);
       }
     /*
       Initialize image structure.
@@ -462,7 +462,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
         SyncImage(image);
       }
-    FreeMemory((void *) &iris_pixels);
+    FreeMemory((void **) &iris_pixels);
     /*
       Proceed to next image.
     */
@@ -782,7 +782,7 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
             (void) WriteBlob(image,iris_header.columns,(char *) scanline);
           }
         }
-        FreeMemory((void *) &scanline);
+        FreeMemory((void **) &scanline);
       }
     else
       {
@@ -834,11 +834,11 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
         /*
           Free memory.
         */
-        FreeMemory((void *) &runlength);
-        FreeMemory((void *) &packets);
-        FreeMemory((void *) &offsets);
+        FreeMemory((void **) &runlength);
+        FreeMemory((void **) &packets);
+        FreeMemory((void **) &offsets);
       }
-    FreeMemory((void *) &iris_pixels);
+    FreeMemory((void **) &iris_pixels);
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);

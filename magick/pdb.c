@@ -485,7 +485,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     default:
       ThrowReaderException(CorruptImageWarning,"Not a PDB image file",image);
   }
-  FreeMemory((void *) &pixels);
+  FreeMemory((void **) &pixels);
   if ((offset-TellBlob(image)) == 0)
     {
       char
@@ -527,7 +527,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
           image);
       (void) SetImageAttribute(image,"Comment",comment);
-      FreeMemory((void *) &comment);
+      FreeMemory((void **) &comment);
     }
   CloseBlob(image);
   return(image);

@@ -460,7 +460,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
       if (QuantumTick(y,image->rows))
         ProgressMonitor(LoadImageText,y,image->rows);
     }
-    FreeMemory((void *) &fits_pixels);
+    FreeMemory((void **) &fits_pixels);
     /*
       Proceed to next image.
     */
@@ -643,7 +643,7 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
   (void) strcpy(buffer,"END");
   (void) strncpy(fits_header+640,buffer,Extent(buffer));
   (void) WriteBlob(image,2880,(char *) fits_header);
-  FreeMemory((void *) &fits_header);
+  FreeMemory((void **) &fits_header);
   /*
     Convert image to fits scale PseudoColor class.
   */
@@ -657,7 +657,7 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
     if (QuantumTick(image->rows-y-1,image->rows))
       ProgressMonitor(SaveImageText,image->rows-y-1,image->rows);
   }
-  FreeMemory((void *) &pixels);
+  FreeMemory((void **) &pixels);
   CloseBlob(image);
   return(True);
 }

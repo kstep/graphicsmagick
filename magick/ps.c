@@ -1146,9 +1146,9 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
         {
           FormatString(buffer,"%.1024s \n",labels[i]);
           (void) WriteBlob(image,strlen(buffer),buffer);
-          FreeMemory((void *) &labels[i]);
+          FreeMemory((void **) &labels[i]);
         }
-        FreeMemory((void *) &labels);
+        FreeMemory((void **) &labels);
       }
     GetPixelPacket(&pixel);
     i=0;

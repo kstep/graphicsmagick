@@ -254,7 +254,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
     "\377\310\377\320",4);
   if (header == (unsigned char *) NULL)
     {
-      FreeMemory((void *) &buffer);
+      FreeMemory((void **) &buffer);
       ThrowReaderException(CorruptImageWarning,"Not a SFW image file",image);
     }
   TranslateSFWMarker(header);  /* translate soi and app tags */
@@ -276,7 +276,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   data=SFWScan(offset,buffer+image->filesize-1,(unsigned char *) "\377\311",2);
   if (data == (unsigned char *) NULL)
     {
-      FreeMemory((void *) &buffer);
+      FreeMemory((void **) &buffer);
       ThrowReaderException(CorruptImageWarning,"Not a SFW image file",image);
     }
   TranslateSFWMarker(data++);  /* translate eoi marker */
@@ -288,7 +288,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   file=fopen(clone_info->filename,WriteBinaryType);
   if (file == (FILE *) NULL)
     {
-      FreeMemory((void *) &buffer);
+      FreeMemory((void **) &buffer);
       DestroyImageInfo(clone_info);
       ThrowReaderException(FileOpenWarning,"Unable to write file",image);
     }
@@ -297,7 +297,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) fwrite(offset+1,data-offset,1,file);
   status=ferror(file);
   (void) fclose(file);
-  FreeMemory((void *) &buffer);
+  FreeMemory((void **) &buffer);
   if (status)
     {
       (void) remove(clone_info->filename);

@@ -265,7 +265,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
   AppendImageFormat("map",filename);
   basename=BaseFilename(filename);
   (void) strcpy(mapname,basename);
-  FreeMemory((void *) &basename);
+  FreeMemory((void **) &basename);
   (void) strcpy(image->filename,image_info->filename);
   (void) strcpy(filename,image->filename);
   clone_info=CloneImageInfo(image_info);
@@ -298,7 +298,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
         {
           basename=BaseFilename(filename);
           FormatString(buffer,"<title>%.1024s</title>\n",basename);
-          FreeMemory((void *) &basename);
+          FreeMemory((void **) &basename);
         }
       (void) WriteBlob(image,strlen(buffer),buffer);
       (void) strcpy(buffer,"</head>\n");

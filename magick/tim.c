@@ -199,7 +199,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image->colormap[i].green=UpScale(ScaleColor5to8((word >> 5) & 0x1f));
           image->colormap[i].red=UpScale(ScaleColor5to8(word & 0x1f));
         }
-        FreeMemory((void *) &tim_colormap);
+        FreeMemory((void **) &tim_colormap);
       }
     /*
       Read image data.
@@ -335,7 +335,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
     if (image->class == PseudoClass)
       SyncImage(image);
-    FreeMemory((void *) &tim_pixels);
+    FreeMemory((void **) &tim_pixels);
     /*
       Proceed to next image.
     */

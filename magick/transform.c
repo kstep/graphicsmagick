@@ -656,7 +656,7 @@ Export Image *DeconstructImages(Image *image,ExceptionInfo *exception)
   deconstruct_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (deconstruct_image == (Image *) NULL)
     {
-      FreeMemory((void *) &bounding_box);
+      FreeMemory((void **) &bounding_box);
       return((Image *) NULL);
     }
   /*
@@ -673,7 +673,7 @@ Export Image *DeconstructImages(Image *image,ExceptionInfo *exception)
     crop_next->previous=deconstruct_image;
     deconstruct_image=deconstruct_image->next;
   }
-  FreeMemory((void *) &bounding_box);
+  FreeMemory((void **) &bounding_box);
   while (deconstruct_image->previous != (Image *) NULL)
     deconstruct_image=deconstruct_image->previous;
   return(deconstruct_image);

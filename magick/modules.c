@@ -105,8 +105,8 @@ Export void DestroyModuleInfo()
     entry=p;
     p=p->next;
     if (entry->tag != (char *) NULL)
-      FreeMemory((void **) &entry->tag);
-    FreeMemory((void **) &entry);
+      FreeMemory((void ***) &entry->tag);
+    FreeMemory((void ***) &entry);
   }
   module_info_list=(ModuleInfo *) NULL;
 }
@@ -445,7 +445,7 @@ Export int LoadAllModules(void)
   /* Free list memory */
   for( i=0; module_list[i]; ++i)
     FreeMemory((void**)&module_list[i]);
-  FreeMemory((void **) &module_list);
+  FreeMemory((void ***) &module_list);
 
   return True;
 }
@@ -876,7 +876,7 @@ Export int UnregisterModuleInfo(const char *tag)
   {
     if (Latin1Compare(p->tag,tag) == 0)
       {
-	FreeMemory((void **) &p->tag);
+	FreeMemory((void ***) &p->tag);
         if (p->previous != (ModuleInfo *) NULL)
 	  /* Not first in list */
           p->previous->next=p->next;
@@ -890,7 +890,7 @@ Export int UnregisterModuleInfo(const char *tag)
         if (p->next != (ModuleInfo *) NULL)
           p->next->previous=p->previous;
         module_info=p;
-        FreeMemory((void **) &module_info);
+        FreeMemory((void ***) &module_info);
         return(True);
     }
   }

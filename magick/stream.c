@@ -161,8 +161,8 @@ static void DestroyPixelStream(Image *image)
   if (image->cache == (void *) NULL)
     return;
   stream_info=image->cache;
-  FreeMemory((void *) &stream_info->stash);
-  FreeMemory((void *) &stream_info);
+  FreeMemory((void **) &stream_info->stash);
+  FreeMemory((void **) &stream_info);
 }
 
 /*

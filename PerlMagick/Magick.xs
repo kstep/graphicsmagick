@@ -3364,7 +3364,7 @@ ImageToBlob(ref,...)
       if (blob != (char *) NULL)
         {
           PUSHs(sv_2mortal(newSVpv(blob,length)));
-          FreeMemory((void *) &blob);
+          FreeMemory((void **) &blob);
         }
       if (package_info->image_info->adjoin)
         break;

@@ -237,7 +237,7 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
               "Memory allocation failed",image);
           *p='\0';
           (void) SetImageAttribute(image,"Comment",comment);
-          FreeMemory((void *) &comment);
+          FreeMemory((void **) &comment);
           c=ReadByte(image);
         }
       else
@@ -419,7 +419,7 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
       while (isspace(c))
         c=ReadByte(image);
     }
-    FreeMemory((void *) &values);
+    FreeMemory((void **) &values);
     (void) ReadByte(image);
     /*
       Verify that required image information is defined.
@@ -533,7 +533,7 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
                 image->colormap[i].blue=(*p++ << 8);
                 image->colormap[i].blue|=(*p++);
               }
-            FreeMemory((void *) &colormap);
+            FreeMemory((void **) &colormap);
           }
       }
     /*
@@ -958,7 +958,7 @@ static unsigned int WriteCACHEImage(const ImageInfo *image_info,Image *image)
             *q++=image->colormap[i].blue  & 0xff;
           }
         (void) WriteBlob(image,packet_size*image->colors,colormap);
-        FreeMemory((void *) &colormap);
+        FreeMemory((void **) &colormap);
       }
     if (image->next == (Image *) NULL)
       break;

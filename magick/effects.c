@@ -208,7 +208,7 @@ Export Image *BlurImage(Image *image,const unsigned int order,
   }
   kernel[i/2]=13.0/order;
   blur_image=ConvolveImage(image,order,kernel,exception);
-  FreeMemory((void *) &kernel);
+  FreeMemory((void **) &kernel);
   return(blur_image);
 }
 
@@ -667,11 +667,11 @@ Export Image *DespeckleImage(Image *image,ExceptionInfo *exception)
   /*
     Free memory.
   */
-  FreeMemory((void *) &buffer);
-  FreeMemory((void *) &matte);
-  FreeMemory((void *) &blue);
-  FreeMemory((void *) &green);
-  FreeMemory((void *) &red);
+  FreeMemory((void **) &buffer);
+  FreeMemory((void **) &matte);
+  FreeMemory((void **) &blue);
+  FreeMemory((void **) &green);
+  FreeMemory((void **) &red);
   return(despeckle_image);
 }
 
@@ -730,7 +730,7 @@ Export Image *EdgeImage(Image *image,const unsigned int order,
     kernel[i]=(-1.0);
   kernel[i/2]=order*order-1.0;
   edge_image=ConvolveImage(image,order,kernel,exception);
-  FreeMemory((void *) &kernel);
+  FreeMemory((void **) &kernel);
   return(edge_image);
 }
 
@@ -806,7 +806,7 @@ Export Image *EmbossImage(Image *image,const unsigned int order,
   emboss_image=ConvolveImage(image,order,kernel,exception);
   if (emboss_image != (Image *) NULL)
     EqualizeImage(emboss_image);
-  FreeMemory((void *) &kernel);
+  FreeMemory((void **) &kernel);
   return(emboss_image);
 }
 
@@ -1229,8 +1229,8 @@ Export Image *GaussianBlurImage(Image *image,const double width,
   /*
     Free resources.
   */
-  FreeMemory((void *) &kernel);
-  FreeMemory((void *) &scanline);
+  FreeMemory((void **) &kernel);
+  FreeMemory((void **) &scanline);
   return(blur_image);
 }
 
@@ -1844,7 +1844,7 @@ Export Image *OilPaintImage(Image *image,const unsigned int radius,
     if (QuantumTick(y,image->rows))
       ProgressMonitor(OilPaintImageText,y,image->rows);
   }
-  FreeMemory((void *) &histogram);
+  FreeMemory((void **) &histogram);
   return(paint_image);
 }
 
@@ -2473,7 +2473,7 @@ Export Image *SharpenImage(Image *image,const unsigned int order,
   }
   kernel[i/2]=13.0/order;
   sharpen_image=ConvolveImage(image,order,kernel,exception);
-  FreeMemory((void *) &kernel);
+  FreeMemory((void **) &kernel);
   return(sharpen_image);
 }
 
@@ -3096,7 +3096,7 @@ Export unsigned int ThresholdImage(Image *image,const double threshold)
     ThrowBinaryException(ResourceLimitWarning,"Unable to threshold image",
       "Memory allocation failed");
   if (image->colormap != (PixelPacket *) NULL)
-    FreeMemory((void *) &image->colormap);
+    FreeMemory((void **) &image->colormap);
   image->class=PseudoClass;
   image->colors=2;
   image->colormap=colormap;
@@ -3221,6 +3221,6 @@ Export Image *WaveImage(Image *image,const double amplitude,
     if (QuantumTick(y,wave_image->rows))
       ProgressMonitor(WaveImageText,y,wave_image->rows);
   }
-  FreeMemory((void *) &sine_map);
+  FreeMemory((void **) &sine_map);
   return(wave_image);
 }

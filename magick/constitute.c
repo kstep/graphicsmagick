@@ -1825,7 +1825,7 @@ Export Image *ReadImages(const ImageInfo *image_info,ExceptionInfo *exception)
   *p='\0';
   Strip(command);
   images=StringToArgv(command,&number_images);
-  FreeMemory((void *) &command);
+  FreeMemory((void **) &command);
   /*
     Read the images into a linked list.
   */

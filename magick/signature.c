@@ -542,7 +542,7 @@ Export unsigned int SignatureImage(Image *image)
   }
   *q='\0';
   (void) SetImageAttribute(image,"Signature",signature);
-  FreeMemory((void *) &signature);
-  FreeMemory((void *) &message);
+  FreeMemory((void **) &signature);
+  FreeMemory((void **) &message);
   return(True);
 }

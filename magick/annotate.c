@@ -148,7 +148,7 @@ Export unsigned int AnnotateImage(Image *image,
         "Memory allocation failed");
     }
   textlist=StringToList(text);
-  FreeMemory((void *) &text);
+  FreeMemory((void **) &text);
   if (textlist == (char **) NULL)
     {
       DestroyAnnotateInfo(clone_info);
@@ -196,14 +196,14 @@ Export unsigned int AnnotateImage(Image *image,
   {
     if (*textlist[i] == '\0')
       {
-        FreeMemory((void *) &textlist[i]);
+        FreeMemory((void **) &textlist[i]);
         continue;
       }
     /*
       Convert text to image.
     */
     FormatString(label,"label:%.1024s",textlist[i]);
-    FreeMemory((void *) &textlist[i]);
+    FreeMemory((void **) &textlist[i]);
     image_info=CloneImageInfo((ImageInfo *) NULL);
     CloneString(&image_info->pen,annotate_info->pen);
     CloneString(&image_info->font,annotate_info->font);
@@ -214,8 +214,8 @@ Export unsigned int AnnotateImage(Image *image,
     if (annotate_image == (Image *) NULL)
       {
         for (i++ ; textlist[i] != (char *) NULL; i++)
-          FreeMemory((void *) &textlist[i]);
-        FreeMemory((void *) &textlist);
+          FreeMemory((void **) &textlist[i]);
+        FreeMemory((void **) &textlist);
         DestroyAnnotateInfo(clone_info);
         ThrowBinaryException(ResourceLimitWarning,"Unable to annotate image",
           "Memory allocation failed");
@@ -325,10 +325,10 @@ Export unsigned int AnnotateImage(Image *image,
   image->matte=matte;
   DestroyAnnotateInfo(clone_info);
   DestroyImageInfo(image_info);
-  FreeMemory((void *) &text);
+  FreeMemory((void **) &text);
   for ( ; textlist[i] != (char *) NULL; i++)
-    FreeMemory((void *) &textlist[i]);
-  FreeMemory((void *) &textlist);
+    FreeMemory((void **) &textlist[i]);
+  FreeMemory((void **) &textlist);
   return(True);
 }
 
@@ -421,18 +421,18 @@ Export void DestroyAnnotateInfo(AnnotateInfo *annotate_info)
 {
   assert(annotate_info != (AnnotateInfo *) NULL);
   if (annotate_info->geometry != (char *) NULL)
-    FreeMemory((void *) &annotate_info->geometry);
+    FreeMemory((void **) &annotate_info->geometry);
   if (annotate_info->text != (char *) NULL)
-    FreeMemory((void *) &annotate_info->text);
+    FreeMemory((void **) &annotate_info->text);
   if (annotate_info->font != (char *) NULL)
-    FreeMemory((void *) &annotate_info->font);
+    FreeMemory((void **) &annotate_info->font);
   if (annotate_info->pen != (char *) NULL)
-    FreeMemory((void *) &annotate_info->pen);
+    FreeMemory((void **) &annotate_info->pen);
   if (annotate_info->box != (char *) NULL)
-    FreeMemory((void *) &annotate_info->box);
+    FreeMemory((void **) &annotate_info->box);
   if (annotate_info->font_name != (char *) NULL)
-    FreeMemory((void *) &annotate_info->font_name);
-  FreeMemory((void *) &annotate_info);
+    FreeMemory((void **) &annotate_info->font_name);
+  FreeMemory((void **) &annotate_info);
 }
 
 /*

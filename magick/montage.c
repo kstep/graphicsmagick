@@ -145,20 +145,20 @@ Export void DestroyMontageInfo(MontageInfo *montage_info)
 {
   assert(montage_info != (MontageInfo *) NULL);
   if (montage_info->geometry != (char *) NULL)
-    FreeMemory((void *) &montage_info->geometry);
+    FreeMemory((void **) &montage_info->geometry);
   if (montage_info->tile != (char *) NULL)
-    FreeMemory((void *) &montage_info->tile);
+    FreeMemory((void **) &montage_info->tile);
   if (montage_info->title != (char *) NULL)
-    FreeMemory((void *) &montage_info->title);
+    FreeMemory((void **) &montage_info->title);
   if (montage_info->frame != (char *) NULL)
-    FreeMemory((void *) &montage_info->frame);
+    FreeMemory((void **) &montage_info->frame);
   if (montage_info->texture != (char *) NULL)
-    FreeMemory((void *) &montage_info->texture);
+    FreeMemory((void **) &montage_info->texture);
   if (montage_info->pen != (char *) NULL)
-    FreeMemory((void *) &montage_info->pen);
+    FreeMemory((void **) &montage_info->pen);
   if (montage_info->font != (char *) NULL)
-    FreeMemory((void *) &montage_info->font);
-  FreeMemory((void *) &montage_info);
+    FreeMemory((void **) &montage_info->font);
+  FreeMemory((void **) &montage_info);
 }
 
 /*
@@ -856,8 +856,8 @@ Export Image *MontageImages(Image *image,const MontageInfo *montage_info,
       }
   }
   if (texture != (Image *) NULL)
-    FreeMemory((void *) &texture);
-  FreeMemory((void *) &master_list);
+    FreeMemory((void **) &texture);
+  FreeMemory((void **) &master_list);
   DestroyAnnotateInfo(annotate_info);
   DestroyImageInfo(clone_info);
   while (montage_next->previous != (Image *) NULL)

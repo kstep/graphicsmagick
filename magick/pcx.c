@@ -321,9 +321,9 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     if (image_info->ping)
       {
-        FreeMemory((void *) &pcx_colormap);
+        FreeMemory((void **) &pcx_colormap);
         if (page_table != (unsigned long *) NULL)
-          FreeMemory((void *) &page_table);
+          FreeMemory((void **) &page_table);
         CloseBlob(image);
         return(image);
       }
@@ -421,7 +421,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   image->colormap[i].blue=UpScale(*p++);
                 }
             }
-          FreeMemory((void *) &pcx_colormap);
+          FreeMemory((void **) &pcx_colormap);
         }
     /*
       Convert PCX raster image to pixel packets.
@@ -573,8 +573,8 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
     if (image->class == PseudoClass)
       SyncImage(image);
-    FreeMemory((void *) &scanline);
-    FreeMemory((void *) &pcx_pixels);
+    FreeMemory((void **) &scanline);
+    FreeMemory((void **) &pcx_pixels);
     /*
       Proceed to next image.
     */
@@ -603,7 +603,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
   }
   if (page_table != (unsigned long *) NULL)
-    FreeMemory((void *) &page_table);
+    FreeMemory((void **) &page_table);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);
@@ -1023,8 +1023,8 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     }
     (void) WriteByte(image,pcx_header.colormap_signature);
     (void) WriteBlob(image,3*256,(char *) pcx_colormap);
-    FreeMemory((void *) &pcx_pixels);
-    FreeMemory((void *) &pcx_colormap);
+    FreeMemory((void **) &pcx_pixels);
+    FreeMemory((void **) &pcx_colormap);
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
@@ -1045,7 +1045,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
       LSBFirstWriteLong(image,0x3ADE68B1L);
       for (i=0; i <= (int) scene; i++)
         LSBFirstWriteLong(image,page_table[i]);
-      FreeMemory((void *) &page_table);
+      FreeMemory((void **) &page_table);
     }
   CloseBlob(image);
   return(True);

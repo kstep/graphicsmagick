@@ -163,6 +163,6 @@ Export void *ReallocateMemory(void *memory,const size_t size)
   if (size)
     new_memory=realloc(memory,size);
   if (new_memory == (void *) NULL)
-    FreeMemory((void *) &memory);
+    FreeMemory((void **) &memory);
   return(new_memory);
 }

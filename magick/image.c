@@ -624,7 +624,7 @@ Export Image *AverageImages(Image *image,ExceptionInfo *exception)
   average_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (average_image == (Image *) NULL)
     {
-      FreeMemory((void *) &sum);
+      FreeMemory((void **) &sum);
       return((Image *) NULL);
     }
   average_image->class=DirectClass;
@@ -675,7 +675,7 @@ Export Image *AverageImages(Image *image,ExceptionInfo *exception)
     if (QuantumTick(y,average_image->rows))
       ProgressMonitor(AverageImageText,y,average_image->rows);
   }
-  FreeMemory((void *) &sum);
+  FreeMemory((void **) &sum);
   return(average_image);
 }
 
@@ -1929,11 +1929,11 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
                 for (j=0; textlist[j] != (char *) NULL; j++)
                 {
                   (void) fprintf(file,"  %s\n",textlist[j]);
-                  FreeMemory((void *) &textlist[j]);
+                  FreeMemory((void **) &textlist[j]);
                 }
-                FreeMemory((void *) &textlist);
+                FreeMemory((void **) &textlist);
               }
-            FreeMemory((void *) &text);
+            FreeMemory((void **) &text);
           }
       }
     }
@@ -2138,24 +2138,24 @@ Export void DestroyImage(Image *image)
     Deallocate the image montage directory.
   */
   if (image->montage != (char *) NULL)
-    FreeMemory((void *) &image->montage);
+    FreeMemory((void **) &image->montage);
   if (image->directory != (char *) NULL)
-    FreeMemory((void *) &image->directory);
+    FreeMemory((void **) &image->directory);
   /*
     Deallocate the image colormap.
   */
   if (image->colormap != (PixelPacket *) NULL)
-    FreeMemory((void *) &image->colormap);
+    FreeMemory((void **) &image->colormap);
   /*
     Deallocate the image ICC profile.
   */
   if (image->color_profile.length > 0)
-    FreeMemory((void *) &image->color_profile.info);
+    FreeMemory((void **) &image->color_profile.info);
   /*
     Deallocate the image IPTC profile.
   */
   if (image->iptc_profile.length > 0)
-    FreeMemory((void *) &image->iptc_profile.info);
+    FreeMemory((void **) &image->iptc_profile.info);
   /*
     Deallocate the image text attributes.
   */
@@ -2183,7 +2183,7 @@ Export void DestroyImage(Image *image)
             image->next->previous=(Image *) NULL;
         }
     }
-  FreeMemory((void *) &image);
+  FreeMemory((void **) &image);
 }
 
 /*
@@ -2214,28 +2214,28 @@ Export void DestroyImageInfo(ImageInfo *image_info)
 {
   assert(image_info != (ImageInfo *) NULL);
   if (image_info->server_name != (char *) NULL)
-    FreeMemory((void *) &image_info->server_name);
+    FreeMemory((void **) &image_info->server_name);
   if (image_info->size != (char *) NULL)
-    FreeMemory((void *) &image_info->size);
+    FreeMemory((void **) &image_info->size);
   if (image_info->tile != (char *) NULL)
-    FreeMemory((void *) &image_info->tile);
+    FreeMemory((void **) &image_info->tile);
   if (image_info->page != (char *) NULL)
-    FreeMemory((void *) &image_info->page);
+    FreeMemory((void **) &image_info->page);
   if (image_info->density != (char *) NULL)
-    FreeMemory((void *) &image_info->density);
+    FreeMemory((void **) &image_info->density);
   if (image_info->dispose != (char *) NULL)
-    FreeMemory((void *) &image_info->dispose);
+    FreeMemory((void **) &image_info->dispose);
   if (image_info->delay != (char *) NULL)
-    FreeMemory((void *) &image_info->delay);
+    FreeMemory((void **) &image_info->delay);
   if (image_info->iterations != (char *) NULL)
-    FreeMemory((void *) &image_info->iterations);
+    FreeMemory((void **) &image_info->iterations);
   if (image_info->texture != (char *) NULL)
-    FreeMemory((void *) &image_info->texture);
+    FreeMemory((void **) &image_info->texture);
   if (image_info->font != (char *) NULL)
-    FreeMemory((void *) &image_info->font);
+    FreeMemory((void **) &image_info->font);
   if (image_info->view != (char *) NULL)
-    FreeMemory((void *) &image_info->view);
-  FreeMemory((void *) &image_info);
+    FreeMemory((void **) &image_info->view);
+  FreeMemory((void **) &image_info);
 }
 
 /*
@@ -3856,21 +3856,21 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
             if (Latin1Compare("icc",option) == 0)
               {
                 if ((*image)->color_profile.length != 0)
-                  FreeMemory((void *) &(*image)->color_profile.info);
+                  FreeMemory((void **) &(*image)->color_profile.info);
                 (*image)->color_profile.length=0;
                 (*image)->color_profile.info=(unsigned char *) NULL;
               }
             if (Latin1Compare("8bim",option) == 0)
               {
                 if ((*image)->iptc_profile.length != 0)
-                  FreeMemory((void *) &(*image)->iptc_profile.info);
+                  FreeMemory((void **) &(*image)->iptc_profile.info);
                 (*image)->iptc_profile.length=0;
                 (*image)->iptc_profile.info=(unsigned char *) NULL;
               }
             if (Latin1Compare("iptc",option) == 0)
               {
                 if ((*image)->iptc_profile.length != 0)
-                  FreeMemory((void *) &(*image)->iptc_profile.info);
+                  FreeMemory((void **) &(*image)->iptc_profile.info);
                 (*image)->iptc_profile.length=0;
                 (*image)->iptc_profile.info=(unsigned char *) NULL;
               }
@@ -3886,7 +3886,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         if (Latin1Compare("icc",profile->magick) == 0)
           {
             if ((*image)->color_profile.length != 0)
-              FreeMemory((void *) &(*image)->color_profile.info);
+              FreeMemory((void **) &(*image)->color_profile.info);
             (*image)->color_profile.length=profile->color_profile.length;
             (*image)->color_profile.info=profile->color_profile.info;
             profile->color_profile.length=0;
@@ -3895,7 +3895,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         if (Latin1Compare("8bim",profile->magick) == 0)
           {
             if ((*image)->iptc_profile.length != 0)
-              FreeMemory((void *) &(*image)->iptc_profile.info);
+              FreeMemory((void **) &(*image)->iptc_profile.info);
             (*image)->iptc_profile.length=profile->iptc_profile.length;
             (*image)->iptc_profile.info=profile->iptc_profile.info;
             profile->iptc_profile.length=0;
@@ -3904,7 +3904,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
         if (Latin1Compare("iptc",profile->magick) == 0)
           {
             if ((*image)->iptc_profile.length != 0)
-              FreeMemory((void *) &(*image)->iptc_profile.info);
+              FreeMemory((void **) &(*image)->iptc_profile.info);
             (*image)->iptc_profile.length=profile->iptc_profile.length;
             (*image)->iptc_profile.info=profile->iptc_profile.info;
             profile->iptc_profile.length=0;
@@ -4295,7 +4295,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
     Free resources.
   */
   if (geometry != (char *) NULL)
-    FreeMemory((void *) &geometry);
+    FreeMemory((void **) &geometry);
   DestroyDrawInfo(draw_info);
   DestroyImageInfo(clone_info);
   CloseImagePixels(*image);
@@ -5142,9 +5142,9 @@ Export unsigned int RGBTransformImage(Image *image,
   /*
     Free allocated memory.
   */
-  FreeMemory((void *) &z_map);
-  FreeMemory((void *) &y_map);
-  FreeMemory((void *) &x_map);
+  FreeMemory((void **) &z_map);
+  FreeMemory((void **) &y_map);
+  FreeMemory((void **) &x_map);
   return(True);
 }
 
@@ -5293,7 +5293,7 @@ Export unsigned int SetImageInfo(ImageInfo *image_info,
       *q='\0';
       p=q;
       (void) CloneString(&image_info->tile,tile);
-      FreeMemory((void *) &tile);
+      FreeMemory((void **) &tile);
       if (!IsSubimage(image_info->tile,True))
         break;
       /*
@@ -5307,7 +5307,7 @@ Export unsigned int SetImageInfo(ImageInfo *image_info,
         Swap(image_info->subimage,image_info->subrange);
       else
         {
-          FreeMemory((void *) &image_info->tile);
+          FreeMemory((void **) &image_info->tile);
           image_info->tile=(char *) NULL;
         }
       image_info->subrange-=image_info->subimage-1;
@@ -5575,7 +5575,7 @@ Export unsigned int SortColormapByIntensity(Image *image)
       *q++=image->colormap[index];
     }
   }
-  FreeMemory((void *) &pixels);
+  FreeMemory((void **) &pixels);
   return(True);
 }
 
@@ -6164,8 +6164,8 @@ Export unsigned int TransformRGBImage(Image *image,
   /*
     Free allocated memory.
   */
-  FreeMemory((void *) &blue_map);
-  FreeMemory((void *) &green_map);
-  FreeMemory((void *) &red_map);
+  FreeMemory((void **) &blue_map);
+  FreeMemory((void **) &green_map);
+  FreeMemory((void **) &red_map);
   return(True);
 }
