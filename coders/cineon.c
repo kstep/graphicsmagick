@@ -310,7 +310,7 @@ static Image *ReadCINEONImage(const ImageInfo *image_info,
                 q->green=ScaleShortToQuantum(BitStreamMSBRead(&bit_stream,10)*64);
                 q->blue=ScaleShortToQuantum(BitStreamMSBRead(&bit_stream,10)*64);
                 q->opacity=0U;
-                scanline += 4;
+                (unsigned char *) scanline += 4;
                 q++;
               }
             if (!SyncImagePixels(image))
