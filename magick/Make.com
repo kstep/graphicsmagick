@@ -1,7 +1,7 @@
 $!
 $! Make ImageMagick image utilities for VMS.
 $!
-$ copy config_vms.h config.h
+$ copy config_vms.h magick_config.h
 $
 $if (f$trnlnm("X11") .eqs. "") then define/nolog X11 decw$include:
 $compile_options="/nodebug/optimize"

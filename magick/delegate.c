@@ -378,7 +378,7 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
         /*
           Delegate requires a particular image format.
         */
-        magick=TranslateText(clone_info,image,decode != (char *) NULL ?
+        magick=TranslateText(image_info,image,decode != (char *) NULL ?
           delegate_info->encode : delegate_info->decode);
         if (magick == (char *) NULL)
           {
