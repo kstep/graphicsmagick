@@ -5877,7 +5877,8 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
   const unsigned int rectify,ExceptionInfo *exception)
 {
   char
-    magic[MaxTextExtent];
+    magic[MaxTextExtent],
+    *q;
 
   const char
     *r;
@@ -5889,8 +5890,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
     *image;
 
   register char
-    *p,
-    *q;
+    *p;
 
   unsigned char
     magick[2*MaxTextExtent];
@@ -5909,8 +5909,9 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
   if (*p == ']')
     for (q=p-1; q > image_info->filename; q--)
     {
-      char
-        *tile;
+      unsigned long
+        first,
+        last;
 
       /*
         Look for sub-image specification (e.g. img0001.pcd[4]).
@@ -5919,26 +5920,30 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
         continue;
       if (!IsFrame(q+1))
         break;
-      tile=(char *) AcquireMemory(p-q);
-      if (tile == (char *) NULL)
-        break;
-      (void) strncpy(tile,q+1,p-q-1);
-      tile[p-q-1]='\0';
+      (void) CloneString(&image_info->tile,q+1);
+      image_info->tile[p-q-1]='\0';
       *q='\0';
       p=q;
-      (void) CloneString(&image_info->tile,tile);
-      LiberateMemory((void **) &tile);
-      if (IsSubimage(image_info->tile,True))
-        break;
-      /*
-        Determine sub-image range.
-      */
       image_info->subimage=atol(image_info->tile);
-      image_info->subrange=atol(image_info->tile);
-      (void) sscanf(image_info->tile,"%lu-%lu",&image_info->subimage,
-        &image_info->subrange);
-      if (image_info->subrange < image_info->subimage)
-        Swap(image_info->subimage,image_info->subrange);
+      image_info->subrange=image_info->subimage;
+      for (p=image_info->tile; *p != '\0'; p++)
+      {
+        while (isspace(*p) || (*p == ','))
+          p++;
+        first=strtol(p,&q,10);
+        last=first;
+        while (isspace(*q))
+          q++;
+        if (*q == '-')
+          last=strtol(q+1,&q,10);
+        if (first > last)
+          Swap(first,last);
+        if (first < image_info->subimage)
+          image_info->subimage=first;
+        if (last > image_info->subrange)
+          image_info->subrange=last;
+        p=q;
+      }
       image_info->subrange-=image_info->subimage-1;
       break;
     }
