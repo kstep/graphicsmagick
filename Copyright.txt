@@ -1,8 +1,12 @@
 This file is part of the GraphicsMagick software distributed by the
 GraphicsMagick Group.
 
-The licences which components of this software fall under are as
-follows.
+[ Please note that the legal community considers 15 or more total lines
+of code or text (not necessarily contiguous) to be significant for the
+purposes of copyright. Repeated changes such as renaming a symbol has
+similar significance to changing one line of code. ]
+
+The licences which components of this software fall under are as follows.
 
 1)
   In November 2002, the GraphicsMagick Group created GraphicsMagick

@@ -37,9 +37,10 @@ Glenn Randers-Pehrson
 Leonard Rosenthol
 		Authored the 'conjure' utility and associated MSL
 		execution environment. Provided MacOS support. Authored
-		the CLIPBOARD, XCF, and PSD coders.  Postscript and PDF expertise.
-		Significant drawing enhancements including support for
-		dash patterns, linecap stroking, clipping masks and a mask image.
+		the CLIPBOARD, XCF, and PSD coders. Postscript and PDF
+		expertise. Significant drawing enhancements including
+		support for dash patterns, linecap stroking, clipping
+		masks and a mask image.
 
 Jaroslav Fojtik
 		Authored the CUT, ART, and MATLAB coder modules.
@@ -49,6 +50,14 @@ Christopher R. Hawks
 
 Francis J. Franklin
 		Ported the WMF coder to the libwmf 0.2 API.
+
+Mike Chiarappa
+		Created a Borland C++ Builder 6.0 build environment for
+		GraphicsMagick.
+
+Rick Mabry
+		Contributed code to support filling drawn objects using a
+		pattern image.
 
 Nathan Brown
 		Original author of the JP2 coder.
@@ -60,8 +69,9 @@ Markus Friedl
 		Original author of Base64 encode/decode sources.
 
 David Harr
-		Contributed (with Leonard Rosenthol) dash pattern, linecap stroking
-		algorithm, and minor rendering improvements.
+		Contributed (with Leonard Rosenthol) dash pattern,
+		linecap stroking algorithm, and minor rendering
+		improvements.
 
 Additional Acknowledgements
 ===========================

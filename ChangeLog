@@ -1,3 +1,16 @@
+2003-07-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/log.c (LogMagickEvent): Unlock semaphore before
+	returning.
+	* ltdl/ltdl.h: Updated to latest CVS version.
+	* ltdl/ltdl.c: Updated to latest CVS version.
+	* Libtool: Updated to use latest CVS libtool.
+
+2003-07-17  Mike Chiarappa  <mikechiarappa@libero.it>
+
+	* BCBMagick: Contributed initial Borland C++ Builder 6.0 build
+	environment.
+
 2003-07-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/color.c (GetColorInfoArray): Added a function to access
@@ -3855,3 +3868,10 @@
 	* The compression quality setting is now recognized when creating
 	MPEG images (contributed by Lawrence Livermore National Laboratory
 	(LLNL)).
+
+---------------------------------------------------------------------------
+Copyright (C) 2003 GraphicsMagick Group
+
+This program is covered by multiple licenses, which are described in
+Copyright.txt. You should have received a copy of Copyright.txt with this
+package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.

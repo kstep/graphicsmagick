@@ -680,7 +680,10 @@ MagickExport unsigned int LogMagickEvent(const LogEventType type,
             log_info->generation % log_info->generations);
           log_info->file=fopen(filename,"w");
           if (log_info->file == (FILE *) NULL)
-            return(False);
+            {
+              LiberateSemaphoreInfo(&log_semaphore);
+              return(False);
+            }
           log_info->generation++;
           (void) fprintf(log_info->file,"<?xml version=\"1.0\"?>\n");
           (void) fprintf(log_info->file,"<log>\n");
