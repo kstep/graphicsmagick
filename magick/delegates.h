@@ -8,7 +8,9 @@
   Delegate define definitions.
 */
 #if !defined(WIN32)
+#if !defined(DelegatePath)
 #define DelegatePath  "/usr/local/share"
+#endif
 #else
 #define DelegatePath  "c:"
 #endif

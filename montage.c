@@ -139,7 +139,6 @@
   Include declarations.
 */
 #include "magick.h"
-#include "version.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1182,7 +1181,7 @@ int main(int argc,char **argv)
     DescribeImage(montage_image,stderr,False);
   DestroyImage(montage_image);
   DestroyImageInfo(image_info);
-  DestroyDelegates();
+  DestroyDelegates;
   Exit(0);
   return(False);
 }

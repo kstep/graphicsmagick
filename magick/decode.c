@@ -307,7 +307,17 @@ static Image *ReadBMPImage(const ImageInfo *image_info)
     unsigned short
       red_mask,
       green_mask,
-      blue_mask;
+      blue_mask,
+      alpha_mask;
+
+    long
+      colorspace;
+
+    PointInfo
+      red_primary,
+      green_primary,
+      blue_primary,
+      gamma_scale;
   } BMPHeader;
 
   BMPHeader
@@ -404,6 +414,33 @@ static Image *ReadBMPImage(const ImageInfo *image_info)
         bmp_header.colors_important=LSBFirstReadLong(image->file);
         for (i=0; i < ((int) bmp_header.size-40); i++)
           (void) fgetc(image->file);
+        if ((bmp_header.bits_per_pixel == 16) ||
+            (bmp_header.bits_per_pixel == 32))
+          {
+            bmp_header.red_mask=LSBFirstReadShort(image->file);
+            bmp_header.green_mask=LSBFirstReadShort(image->file);
+            bmp_header.blue_mask=LSBFirstReadShort(image->file);
+            if (bmp_header.size > 40)
+              {
+                /*
+                  Read color management information.
+                */
+                bmp_header.alpha_mask=LSBFirstReadShort(image->file);
+                bmp_header.colorspace=LSBFirstReadLong(image->file);
+                bmp_header.red_primary.x=LSBFirstReadLong(image->file);
+                bmp_header.red_primary.y=LSBFirstReadLong(image->file);
+                bmp_header.red_primary.z=LSBFirstReadLong(image->file);
+                bmp_header.green_primary.x=LSBFirstReadLong(image->file);
+                bmp_header.green_primary.y=LSBFirstReadLong(image->file);
+                bmp_header.green_primary.z=LSBFirstReadLong(image->file);
+                bmp_header.blue_primary.x=LSBFirstReadLong(image->file);
+                bmp_header.blue_primary.y=LSBFirstReadLong(image->file);
+                bmp_header.blue_primary.z=LSBFirstReadLong(image->file);
+                bmp_header.gamma_scale.x=LSBFirstReadShort(image->file);
+                bmp_header.gamma_scale.y=LSBFirstReadShort(image->file);
+                bmp_header.gamma_scale.z=LSBFirstReadShort(image->file);
+              }
+          }
       }
     image->matte=bmp_header.bits_per_pixel == 32;
     image->columns=(unsigned int) bmp_header.width;
@@ -471,14 +508,6 @@ static Image *ReadBMPImage(const ImageInfo *image_info)
             FreeMemory((char *) bmp_colormap);
           }
       }
-    if (bmp_header.size == 40)
-      if ((bmp_header.bits_per_pixel == 16) ||
-          (bmp_header.bits_per_pixel == 32))
-        {
-          bmp_header.red_mask=LSBFirstReadShort(image->file);
-          bmp_header.green_mask=LSBFirstReadShort(image->file);
-          bmp_header.blue_mask=LSBFirstReadShort(image->file);
-        }
     while (ftell(image->file) < (start_position+bmp_header.offset_bits))
       (void) fgetc(image->file);
     /*
@@ -2543,7 +2572,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info)
       /*
         Copy standard input or pipe to temporary file.
       */
-      TemporaryFilename(image_info->filename);
+      TemporaryFilename((char *) image_info->filename);
       file=fopen(image_info->filename,WriteBinaryType);
       if (file == (FILE *) NULL)
         PrematureExit(FileOpenWarning,"Unable to write file",image);
@@ -13593,7 +13622,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info)
     if ((samples_per_pixel == 1) && !TIFFIsTiled(tiff))
       {
         image->class=PseudoClass;
-        image->colors=range+1;
+        image->colors=1 << bits_per_sample;
+        if (range <= image->colors)
+          image->colors=range+1;
         if (bits_per_sample > QuantumDepth)
           image->colors=MaxRGB+1;
       }
@@ -17376,10 +17407,7 @@ Export Image *ReadImage(ImageInfo *image_info)
       status=InvokeDelegate(image_info,image,image_info->magick,True);
       DestroyImages(image);
       if (status == False)
-        {
-          temporary=True;
-          image_info->affirm=False;
-        }
+        temporary=True;
       SetImageInfo(image_info,False);
     }
   /*

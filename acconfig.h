@@ -245,3 +245,6 @@
 
 /* Define location of the 'cat' program */
 #undef CatDelegate
+
+/* Define location of the 'Delegate' paths */
+#undef DelegatePath

@@ -1,0 +1,195 @@
+<HTML>
+<HEAD>
+<TITLE>NAME</TITLE>
+<LINK REV="made" HREF="mailto:cristy@mystic.es.dupont.com">
+</HEAD>
+
+<body background="../../images/background.gif">
+
+<!-- INDEX BEGIN -->
+
+<UL>
+
+	<LI><A HREF="#NAME">NAME</A>
+	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A>
+	<LI><A HREF="#FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A>
+	<UL>
+
+		<LI><A HREF="#GetDelegateInfo">GetDelegateInfo</A>
+		<LI><A HREF="#GetDelegateCommand">GetDelegateCommand</A>
+		<LI><A HREF="#InvokeDelegate">InvokeDelegate</A>
+		<LI><A HREF="#SetDelegateInfo">SetDelegateInfo</A>
+	</UL>
+
+</UL>
+<!-- INDEX END -->
+
+<HR>
+<P>
+<H1><A NAME="NAME">NAME</A></H1>
+<P>
+delegates - 
+
+<P>
+<HR>
+<H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
+<P>
+command=<STRONG>GetDelegateCommand</STRONG>(image_info,image,tag,decode)
+
+<P>
+status=<STRONG>GetDelegateInfo</STRONG>(tag,decode,delegate_info)
+
+<P>
+<STRONG>InvokeDelegate</STRONG>(image_info,image,tag,decode)
+
+<P>
+delegate_info=<STRONG>SetDelegateInfo</STRONG>(delegate_info)
+
+<P>
+<HR>
+<H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
+<P>
+<HR>
+<H2><A NAME="GetDelegateInfo">GetDelegateInfo</A></H2>
+<P>
+Method GetDelegateInfo returns any delegates associated with the specified
+tag. True is returned if a delegate is found, otherwise False.
+
+<P>
+The format of the GetDelegateInfo routine is:
+
+<P>
+<PRE>       status=GetDelegateInfo(tag,decode,delegate_info)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG><A NAME="item_o">status:</A></STRONG><DD>
+<P>
+Method GetDelegateInfo returns True if a delegate is found, otherwise
+False.
+
+<DT><STRONG>tag:</STRONG><DD>
+<P>
+Specifies the delegate we are searching for as a character string.
+
+<DT><STRONG>decode:</STRONG><DD>
+<P>
+An unsigned integer other than zero means to match decode tages in the
+delegate list otherwise encode tags.
+
+<DT><STRONG>delegate_info:</STRONG><DD>
+<P>
+A structure of type DelegateInfo. On return this structure contains the
+delegate information for the specified tag.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="GetDelegateCommand">GetDelegateCommand</A></H2>
+<P>
+Method GetDelegateCommand replaces any embedded formating characters with
+the appropriate image attribute and returns the resulting command.
+
+<P>
+The format of the GetDelegateCommand routine is:
+
+<P>
+<PRE>        command=GetDelegateCommand(image_info,image,tag,decode)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>command:</STRONG><DD>
+<P>
+Method GetDelegateCommand returns the command associated with specified
+delegate tag.
+
+<DT><STRONG>image_info:</STRONG><DD>
+<P>
+The address of a structure of type ImageInfo.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+<DT><STRONG>tag:</STRONG><DD>
+<P>
+Specifies the delegate we are searching for as a character string.
+
+<DT><STRONG>decode:</STRONG><DD>
+<P>
+An unsigned integer other than zero means to match decode tages in the
+delegate list otherwise encode tags.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="InvokeDelegate">InvokeDelegate</A></H2>
+<P>
+Method InvokeDelegate replaces any embedded formating characters with the
+appropriate image attribute and executes the resulting command. False is
+returned if the commands execute with success otherwise True.
+
+<P>
+The format of the InvokeDelegate routine is:
+
+<P>
+<PRE>        InvokeDelegate(image_info,image,tag,decode)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>image_info:</STRONG><DD>
+<P>
+The address of a structure of type ImageInfo.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+<DT><STRONG>tag:</STRONG><DD>
+<P>
+Specifies the delegate we are searching for as a character string.
+
+<DT><STRONG>decode:</STRONG><DD>
+<P>
+An unsigned integer other than zero means to match decode tages in the
+delegate list otherwise encode tags.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="SetDelegateInfo">SetDelegateInfo</A></H2>
+<P>
+Method SetDelegateInfo adds or replaces a delegate in the delegate list and
+returns the address of the first delegate. If the delegate is NULL, just
+the address of the first delegate is returned.
+
+<P>
+The format of the SetDelegateInfo routine is:
+
+<P>
+<PRE>       delegate_info=SetDelegateInfo(delegate_info)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>delegate_info:</STRONG><DD>
+<P>
+Method SetDelegateInfo returns the address of the first delegate in the
+delegates list.
+
+<DT><STRONG>delegate_info:</STRONG><DD>
+<P>
+A structure of type DelegateInfo. This information is added to the end of
+the delegates linked-list.
+
+</DL></DL>
+</BODY>
+
+</HTML>

@@ -8993,34 +8993,30 @@ Export void SetImageInfo(ImageInfo *image_info,unsigned int rectify)
   if (*(p+1) == '[')
     p++;
 #endif
-  if ((Latin1Compare(image_info->magick,"HTM") == 0) ||
-      (Latin1Compare(image_info->magick,"HTML") == 0))
-    image_info->affirm=True;
-  else
-    if ((*p == ':') && ((p-image_info->filename) < sizeof(magick)))
-      {
-        /*
-          User specified image format.
-        */
-        (void) strncpy(magick,image_info->filename,p-image_info->filename);
-        magick[p-image_info->filename]='\0';
-        Latin1Upper(magick);
+  if ((*p == ':') && ((p-image_info->filename) < sizeof(magick)))
+    {
+      /*
+        User specified image format.
+      */
+      (void) strncpy(magick,image_info->filename,p-image_info->filename);
+      magick[p-image_info->filename]='\0';
+      Latin1Upper(magick);
 #if defined(WIN32)
-        if (!ImageFormatConflict(magick))
+      if (!ImageFormatConflict(magick))
 #endif
-          {
-            /*
-              Strip off image format prefix.
-            */
-            p++;
-            (void) strcpy(image_info->filename,p);
-            if (Latin1Compare(magick,"IMPLICIT") != 0)
-              (void) strcpy(image_info->magick,magick);
-          }
-        if ((Latin1Compare(magick,"IMPLICIT") != 0) &&
-            (Latin1Compare(magick,"TMP") != 0))
-          image_info->affirm=True;
-      }
+        {
+          /*
+            Strip off image format prefix.
+          */
+          p++;
+          (void) strcpy(image_info->filename,p);
+          if (Latin1Compare(magick,"IMPLICIT") != 0)
+            (void) strcpy(image_info->magick,magick);
+        }
+      if ((Latin1Compare(magick,"IMPLICIT") != 0) &&
+          (Latin1Compare(magick,"TMP") != 0))
+        image_info->affirm=True;
+    }
   if (rectify)
     {
       char

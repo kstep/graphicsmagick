@@ -243,21 +243,31 @@ do
 done
 
 #
-# The following is extracted from AC_OUTPUT since we need its value earlier.
+# The following is extracted from AC_OUTPUT since we need the values of
+# prefix and exec_prefix earlier.
+# Reportedly fixed in autoconf 1.13 by the addition of AC_DEFINE_DIR
 #
 test "x$prefix" = xNONE && prefix=$ac_default_prefix
 # Let make expand exec_prefix.
 test "x$exec_prefix" = xNONE && exec_prefix='${prefix}'
 
-eval im_bindir=${exec_prefix}/bin
-echo "im_bindir=$im_bindir"
-eval im_libdir=${exec_prefix}/lib
-echo "im_libdir=$im_libdir"
-eval im_includedir=${prefix}/include
-echo "im_includedir=$im_includedir"
+# Evaluate shell variable equivalents to Makefile directory variables
+eval "eval BIN_DIR=$bindir"
+eval "eval SBIN_DIR=$sbindir"
+eval "eval LIBEXEC_DIR=$libexecdir"
+eval "eval DATA_DIR=$datadir"
+eval "eval SYSCONF_DIR=$sysconfdir"
+eval "eval SHAREDSTATE_DIR=$sharedstatedir"
+eval "eval LOCALSTATE_DIR=$localstatedir"
+eval "eval LIB_DIR=$libdir"
+eval "eval INCLUDE_DIR=$includedir"
+eval "eval OLDINCLUDE_DIR=$oldincludedir"
+eval "eval INFO_DIR=$infodir"
+eval "eval MAN_DIR=$mandir"
 
-LDFLAGS="$LDFLAGS -L$im_libdir"
-CPPFLAGS="$CPPFLAGS -I$im_includedir"
+
+LDFLAGS="$LDFLAGS -L$BIN_DIR"
+CPPFLAGS="$CPPFLAGS -I$INCLUDE_DIR"
 TRAILING_LIBS=''
 
 #
@@ -734,8 +744,12 @@ then
 fi
 
 #
-# Look for standard system programs
+# Configure Delegates
 #
+
+# Define directory where ImageMagick/delegates.h lives. (default /usr/local/share)
+eval DelegatePath="${DATA_DIR}"
+AC_DEFINE_UNQUOTED(DelegatePath,"$DelegatePath")
 
 #
 # Look for 'cat' program
@@ -1036,7 +1050,7 @@ AC_SUBST(HTMLDecodeDelegate)
 #
 # Configure convert program
 #
-ConvertDelegate=$im_bindir/convert
+ConvertDelegate=$BIN_DIR/convert
 have_convert='yes'
 AC_DEFINE_UNQUOTED(ConvertDelegate,"$ConvertDelegate")
 AC_SUBST(ConvertDelegate)
@@ -1044,7 +1058,7 @@ AC_SUBST(ConvertDelegate)
 #
 # Configure display program.
 #
-ShowImageDelegate=$im_bindir/display
+ShowImageDelegate=$BIN_DIR/display
 have_display='yes'
 AC_DEFINE_UNQUOTED(ShowImageDelegate,"$ShowImageDelegate")
 AC_SUBST(ShowImageDelegate)
@@ -1052,7 +1066,7 @@ AC_SUBST(ShowImageDelegate)
 #
 # Configure mogrify program.
 #
-MogrifyDelegate=$im_bindir/mogrify
+MogrifyDelegate=$BIN_DIR/mogrify
 have_mogrify='yes'
 AC_DEFINE_UNQUOTED(MogrifyDelegate,"$MogrifyDelegate")
 AC_SUBST(MogrifyDelegate)

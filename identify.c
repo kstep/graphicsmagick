@@ -65,7 +65,6 @@
   Include declarations.
 */
 #include "magick.h"
-#include "version.h"
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -260,7 +259,7 @@ int main(int argc,char **argv)
   if (number_images == 0)
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
   DestroyImageInfo(&image_info);
-  DestroyDelegates();
+  DestroyDelegates;
   Exit(0);
   return(False);
 }

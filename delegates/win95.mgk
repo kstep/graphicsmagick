@@ -79,8 +79,8 @@ bzip=>
 
 cgm=>
 	ralcgm -d ps %i %o %u
-	mv %o.ps %o
-	rm -f %u
+	move %o.ps %o
+	del %u
 
 compress=>
 	|uncompress -c %i
@@ -120,12 +120,12 @@ launch=>bmp
 mpg=>
 	mpeg2decode -q -b %i -f -r -o3 %o%%d
 	convert %o*.ppm %o
-	rm -f %o*.ppm
+	del %o*.ppm
 
 m2v=>
 	mpeg2decode -q -b %i -f -r -o3 %o%%d
 	convert %o*.ppm %o
-	rm -f %o*.ppm
+	del %o*.ppm
 
 pgp=>
 	pgpv -fq %i
@@ -151,11 +151,11 @@ shtml=>
 
 yuv<=m2v
 	mpeg2encode %u %o
-	rm -f %i*.yuv %u*
+	del %i*.yuv %u*
 
 yuv<=mpg
 	mpeg2encode %u %o
-	rm -f %i*.yuv %u*
+	del %i*.yuv %u*
 
 zip=>
 	|gzip -cdfq %i

@@ -45,6 +45,9 @@
 */
 #define MaxNumberFonts  11
 #define MaxNumberPens  11 
+#if !defined(RGBColorDatabase)
+#define RGBColorDatabase  "/usr/X11R6/lib/X11/rgb.txt"
+#endif
 #define SuspendTime  50
 #define XGammaPixel(map,gamma,color,dx)  (unsigned long) (map->base_pixel+ \
   ((gamma[(color)->red].red*map->red_max+(1 << (dx-1)))/((1 << dx)-1))* \

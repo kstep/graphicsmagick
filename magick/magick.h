@@ -145,9 +145,6 @@ extern "C" {
 #define Exit  exit
 #define PreferencesDefaults  "~/."
 #define ReadCommandlLine(argc,argv)
-#if !defined(RGBColorDatabase)
-#define RGBColorDatabase  "/usr/X11R6/lib/X11/rgb.txt"
-#endif
 #else
 #if defined(vms)
 #define ApplicationDefaults  "decw$system_defaults:"
@@ -163,7 +160,7 @@ extern "C" {
 #define ApplicationDefaults  "/usr/lib/X11/app-defaults/"
 #define EditorOptions ""
 #define PreferencesDefaults  "~/."
-#define ReadCommandlLine(argc,argv)  argc=ccommand(argv); puts(Version);
+#define ReadCommandlLine(argc,argv)  argc=ccommand(argv); puts(MagickVersion);
 #if !defined(RGBColorDatabase)
 #define RGBColorDatabase  "../xlib/lib/X11/rgb.txt"
 #endif

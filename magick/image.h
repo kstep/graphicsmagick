@@ -437,7 +437,8 @@ typedef struct _PointInfo
 {
   float
     x,
-    y;
+    y,
+    z;
 } PointInfo;
 
 typedef struct _PrimitiveInfo

@@ -5284,7 +5284,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     number_packets,
     *xref;
 
-  if (Latin1Compare(image->magick,"PS") == 0)
+  if ((Latin1Compare(image->magick,"EPS") == 0) ||
+      (Latin1Compare(image->magick,"PS") == 0))
     if (GetDelegateInfo("gs",False,&delegate_info) && !IsTainted(image))
       {
         char
@@ -8462,7 +8463,9 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
   XSegment
     bounding_box;
 
-  if (Latin1Compare(image->magick,"PDF") == 0)
+  if ((Latin1Compare(image->magick,"EPS") == 0) ||
+      (Latin1Compare(image->magick,"PDF") == 0) ||
+      (Latin1Compare(image->magick,"PS") == 0))
     if (GetDelegateInfo("gs",False,&delegate_info) && !IsTainted(image))
       {
         char

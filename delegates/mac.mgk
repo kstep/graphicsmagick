@@ -1,4 +1,4 @@
-# ImageMagick delegates for NT.  The format is as follows.  Each
+# ImageMagick delegates for Macintosh.  The format is as follows.  Each
 # delegate begins with a tag and/or format separated by a colon (=>).
 # This line must be followed by one or more commands preceded with a tab
 # (\t) character.  If a command exceeds the length of a line, use the
@@ -49,11 +49,12 @@
 # 
 # ImageMagick looks for the delegate configurarion file in this order:
 #
-#     c:\ImageMagick\delegates.mgk
-#     <current directory\delegates.mgk
+#     /usr/local/share/ImageMagick/delegates.mgk
+#     ~/.magick/delegates.mgk
+#     ./delegates.mgk
 #
-# Like entries in the later directory overrides the specification in the
-# system-wide delegates file.
+# Like entries in the later two directories overrides the specification
+# in the system-wide delegates file.
 # 
 
 <=bzip
@@ -63,30 +64,27 @@
 	|compress -c > %o
 
 <=gs
-	gswin32 -sDEVICE=%s -q -dNOPAUSE -dSAFER -sOutputFile="%s" -- "%s" -c quit
+	gs -sDEVICE=%s -q -dNOPAUSE -dSAFER -sOutputFile="%s" -- "%s" -c quit
 
 <=zip
 	|gzip -cf > %o
 
-bmp<=win
-	mspaint %i
-
 browse=>
-	cmd /C start http://www.wizards.dupont.com/cristy/ImageMagick.html &
+	netscape http://www.wizards.dupont.com/cristy/ImageMagick.html &
 
 bzip=>
 	|bzip2 -cd %i
 
 cgm=>
 	ralcgm -d ps %i %o %u
-	move %o.ps %o
-	del  %u
+	mv %o.ps %o
+	rm -f %u
 
 compress=>
 	|uncompress -c %i
 
 edit=>
-	notepad %i
+	xterm -title "Edit Image Comment" -e vi %i
 
 file=>
 	GET %m:%i > %o 2>&1
@@ -98,7 +96,7 @@ ftp=>
 	GET %m:%i > %o 2>&1
 
 gs=>
-	gswin32 -sDEVICE=%s -q -dNOPAUSE -dSAFER -dTextAlphaBits=%u \
+	gs -sDEVICE=%s -q -dNOPAUSE -dSAFER -dTextAlphaBits=%u \
 	  -dGraphicsAlphaBits=%u -g%s -r%s %s -sOutputFile="%s" -- \
 	  "%s" -c quit
 
@@ -115,23 +113,26 @@ http=>
 	GET %m:%i > %o 2>&1
 
 launch=>pnm
-	mspaint %i
+	gimp %i
 
 mpg=>
 	mpeg2decode -q -b %i -f -r -o3 %o%%d
 	convert %o*.ppm %o
-	del %o*.ppm
+	rm -f %o*.ppm
 
 m2v=>
 	mpeg2decode -q -b %i -f -r -o3 %o%%d
 	convert %o*.ppm %o
-	del %o*.ppm
+	rm -f %o*.ppm
 
 pgp=>
 	pgpv -fq %i
 
-print=>pcl
-	print %i
+pnm<=win
+	display %i
+
+print=>ps
+	lp -c -s %i
 
 rad=>
 	ra_ppm -g 1.0 %i %o
@@ -151,11 +152,11 @@ shtml=>
 
 yuv<=m2v
 	mpeg2encode %u %o
-	del %i*.yuv %u*
+	rm -f %i*.yuv %u*
 
 yuv<=mpg
 	mpeg2encode %u %o
-	del %i*.yuv %u*
+	rm -f %i*.yuv %u*
 
 zip=>
 	|gzip -cdfq %i
