@@ -402,6 +402,7 @@ int main ( int argc, char **argv )
   strncpy( canvas->filename, outfile, sizeof(image_info->filename)-1);
   WriteImage ( image_info, canvas );
 
+  DestroyExceptionInfo( &exception );
   DestroyImage( canvas );
   DestroyImageInfo( image_info );
   DestroyMagick();

@@ -1355,7 +1355,7 @@ MagickExport void DrawComposite(DrawContext context,
 
   if( media_type != NULL )
     {
-      size_t
+      int
         remaining;
 
       char
@@ -1364,7 +1364,7 @@ MagickExport void DrawComposite(DrawContext context,
       MvgPrintf(context, "image %s %.4g,%.4g %.4g,%.4g 'data:%s;base64,\n",
                 mode, x, y, width, height, media_type);
 
-      remaining = encoded_length;
+      remaining = (int)encoded_length;
       for( str = base64; remaining > 0; )
         {
           MvgPrintf(context,"%.76s", str);
