@@ -381,12 +381,40 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   compression=image->compression;
-#if !defined(HasLZW)
-  if (compression == LZWCompression)
-    compression=RunlengthEncodedCompression;
-#endif
   if (image_info->compression != UndefinedCompression)
     compression=image_info->compression;
+  switch (compression)
+  {
+#if !defined(HasJPEG)
+    case JPEGCompression:
+    {
+      compression=RunlengthEncodedCompression;
+      ThrowException(&image->exception,MissingDelegateWarning,
+        "JPEG compression is not available",image->filename);
+      break;
+    }
+#endif
+#if !defined(HasLZW)
+    case LZWCompression:
+    {
+      compression=RunlengthEncodedCompression;
+      ThrowException(&image->exception,MissingDelegateWarning,
+        "LZW compression is not available",image->filename);
+      break;
+    }
+#endif
+#if !defined(HasZLIB)
+    case ZipCompression:
+    {
+      compression=RunlengthEncodedCompression;
+      ThrowException(&image->exception,MissingDelegateWarning,
+        "ZLIB compression is not available",image->filename);
+      break;
+    }
+#endif
+    default:
+      break;
+  }
   page=1;
   scene=0;
   do

@@ -581,6 +581,38 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   compression=image->compression;
   if (image_info->compression != UndefinedCompression)
     compression=image_info->compression;
+  switch (compression)
+  {
+#if !defined(HasJPEG)
+    case JPEGCompression:
+    {
+      compression=RunlengthEncodedCompression;
+      ThrowException(&image->exception,MissingDelegateWarning,
+        "JPEG compression is not available",image->filename);
+      break;
+    }
+#endif
+#if !defined(HasLZW)
+    case LZWCompression:
+    {
+      compression=RunlengthEncodedCompression;
+      ThrowException(&image->exception,MissingDelegateWarning,
+        "LZW compression is not available",image->filename);
+      break;
+    }
+#endif
+#if !defined(HasZLIB)
+    case ZipCompression:
+    {
+      compression=RunlengthEncodedCompression;
+      ThrowException(&image->exception,MissingDelegateWarning,
+        "ZLIB compression is not available",image->filename);
+      break;
+    }
+#endif
+    default:
+      break;
+  }
   /*
     Allocate X ref memory.
   */
