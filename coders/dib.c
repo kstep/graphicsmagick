@@ -1024,6 +1024,9 @@ static unsigned int WriteDIBImage(const ImageInfo *image_info,Image *image)
          }
        if (bit != 0)
          *q++=byte << (8-bit);
+       /* initialize padding bytes */
+       for (; x < (long) bytes_per_line; x++)
+         *q++=0x00;
        if (image->previous == (Image *) NULL)
          if (QuantumTick(y,image->rows))
            if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
@@ -1048,6 +1051,9 @@ static unsigned int WriteDIBImage(const ImageInfo *image_info,Image *image)
           *q++=indexes[x];
           p++;
         }
+       /* initialize padding bytes */
+       for (; x < (long) bytes_per_line; x++)
+         *q++=0x00;
         if (image->previous == (Image *) NULL)
           if (QuantumTick(y,image->rows))
             if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
@@ -1076,10 +1082,17 @@ static unsigned int WriteDIBImage(const ImageInfo *image_info,Image *image)
             *q++=ScaleQuantumToChar(p->opacity);
           p++;
         }
+        /* initialize padding bytes */
+        if (dib_info.bits_per_pixel == 24)
+          {
+            /* initialize padding bytes */
+            for (x=3*image->columns; x < (long) bytes_per_line; x++)
+              *q++=0x00;
+          }
         if (image->previous == (Image *) NULL)
           if (QuantumTick(y,image->rows))
             if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
-              break;
+               break;
       }
       break;
     }
