@@ -1,3 +1,7 @@
+2002-12-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* magick/mac.c: Merged in fixes from ImageMagick version.
+	* magick/magick.mgk: Merged in fixes from ImageMagick version.
+
 2002-12-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* magick/image.c: Fix ChannelImage() so that it does not
 	destroy CMYK(A) channels by forcing RGB.

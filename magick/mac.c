@@ -204,9 +204,6 @@ static pascal void TextMethod(short byteCount,Ptr textBuf,Point numer,
 static short BottleneckTest(PicHandle picture,CodecType *codec,int *depth,
   short *colormap_id)
 {
-  CGrafPtr
-    port;
-
   CQDProcs
     bottlenecks;
 
@@ -244,11 +241,10 @@ static short BottleneckTest(PicHandle picture,CodecType *codec,int *depth,
   /*
     Install our custom bottlenecks to intercept any compressed images.
   */
-  GetPort(&port);
-  SetPortGrafProcs(port,(QDProcs *) &bottlenecks);
+  (*(qd.thePort)).grafProcs=(QDProcs *) &bottlenecks;
   DrawPicture(picture,&((**picture).picFrame));
   PaintRect(&rectangle);
-  SetPortGrafProcs(port,0L);
+  (*(qd.thePort)).grafProcs=0L;
   /*
     Initialize our return values.
   */
@@ -366,7 +362,8 @@ MagickExport void pascal FilenameToFSSpec(const char *filename,FSSpec *fsspec)
     name;
 
   assert(filename != (char *) NULL);
-  c2pstrcpy(name,filename);
+  (void) strncpy((char *) name,filename,254);
+  c2pstr((char *) name);
   FSMakeFSSpec(0,0,name,fsspec);
 }
 
@@ -460,8 +457,7 @@ MagickExport unsigned int MACIsMagickConflict(const char *magick)
     status=HGetVInfo(index,p,&volume,&free_bytes,&number_bytes);
     if (status)
       return(False);
-    p2cstrcpy((char *) p,p);
-    if (LocaleCompare((char *) p,magick) == 0)
+    if (LocaleCompare(p2cstr(p),magick) == 0)
       return(True);
   }
   return(False);
@@ -893,10 +889,8 @@ MagickExport DIR *opendir(const char *path)
   search_info.hFileInfo.ioNamePtr=0;
   if ((path != (char *) NULL) || (*path != '\0'))
     if ((path[0] != '.') || (path[1] != '\0'))
-      {
-        c2pstrcpy((StringPtr) pathname,path);
-        search_info.hFileInfo.ioNamePtr=(StringPtr) pathname;
-      }
+      search_info.hFileInfo.ioNamePtr=
+        c2pstr(strncpy(pathname,path,MaxTextExtent-1));
   search_info.hFileInfo.ioCompletion=0;
   search_info.hFileInfo.ioVRefNum=0;
   search_info.hFileInfo.ioFDirIndex=0;
@@ -1010,7 +1004,7 @@ MagickExport struct dirent *readdir(DIR *entry)
       return((struct dirent *) NULL);
     }
   entry->d_index++;
-  p2cstrcpy(dir_entry.d_name,search_info.hFileInfo.ioNamePtr);
+  (void) strncpy(dir_entry.d_name,p2cstr(search_info.hFileInfo.ioNamePtr),254);
   dir_entry.d_namlen=strlen(dir_entry.d_name);
   return(&dir_entry);
 }
@@ -1413,7 +1407,8 @@ MagickExport void SetApplicationType(const char *filename,const char *magick,
   (void) strncpy((char *) &filetype,magick,Min(strlen(magick),4));
   if (LocaleCompare(magick,"JPG") == 0)
     (void) strcpy((char *) &filetype,"JPEG");
-  c2pstrcpy(name,filename);
+  (void) strncpy((char *) name,filename,254);
+  c2pstr((char *) name);
   FSMakeFSSpec(0,0,name,&file_specification);
   FSpCreate(&file_specification,application,filetype,smSystemScript);
 }
