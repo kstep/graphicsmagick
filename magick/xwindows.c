@@ -3115,7 +3115,7 @@ MagickExport void XGetResourceInfo(XrmDatabase database,char *client_name,
     (char *) "False");
   resource_info->debug=IsTrue(resource_value);
   resource_value=XGetResourceClass(database,client_name,(char *) "delay",
-    (char *) "1");
+    (char *) "0");
   resource_info->delay=atoi(resource_value);
   resource_info->display_gamma=XGetResourceClass(database,client_name,
     (char *) "displayGamma",(char *) "2.2");
