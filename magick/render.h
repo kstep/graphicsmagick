@@ -88,6 +88,14 @@ typedef enum
 } PrimitiveType;
   
 typedef enum
+{ 
+  UndefinedSpread,
+  PadSpread,
+  ReflectSpead,
+  RepeatSpread
+} SpreadMethod;
+
+typedef enum
 {
   NormalStretch,
   UltraCondensedStretch,
@@ -117,10 +125,14 @@ typedef struct _GradientInfo
   PixelPacket
     color;
 
-  double
-    offset;
+  SegmentInfo
+    stop;
+
+  SpreadMethod
+    spread;
 
   unsigned long
+    length,
     signature;
 
   struct _GradientInfo
