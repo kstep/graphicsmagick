@@ -1212,6 +1212,23 @@ ModuleExport void RegisterBMPImage(void)
   entry->magick=IsBMP;
   entry->description=AcquireString("Microsoft Windows bitmap image");
   entry->module=AcquireString("BMP");
+  entry->adjoin=False;
+  (void) RegisterMagickInfo(entry);
+
+  entry=SetMagickInfo("BMP2");
+  entry->encoder=WriteBMPImage;
+  entry->magick=IsBMP;
+  entry->description=AcquireString("Microsoft Windows bitmap image v2");
+  entry->module=AcquireString("BMP2");
+  entry->adjoin=False;
+  (void) RegisterMagickInfo(entry);
+
+  entry=SetMagickInfo("BMP3");
+  entry->encoder=WriteBMPImage;
+  entry->magick=IsBMP;
+  entry->description=AcquireString("Microsoft Windows bitmap image v3");
+  entry->module=AcquireString("BMP3");
+  entry->adjoin=False;
   (void) RegisterMagickInfo(entry);
 }
 
@@ -1278,6 +1295,9 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
   long
     y;
 
+  int
+    bmp_type;
+
   register const PixelPacket
     *p;
 
@@ -1313,6 +1333,13 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,"Unable to open file",image);
+  if (LocaleCompare(image_info->magick,"BMP2") == 0)
+    bmp_type=2;
+  else if (LocaleCompare(image_info->magick,"BMP3") == 0)
+    bmp_type=3;
+  else
+    bmp_type=4;
+  
   scene=0;
   do
   {
@@ -1321,8 +1348,11 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
     */
     (void) TransformRGBImage(image,RGBColorspace);
     memset(&bmp_info,0,sizeof(BMPInfo));
-    bmp_info.file_size=14+40;
-    bmp_info.offset_bits=14+40;
+
+    bmp_info.file_size=14+12;
+    if (bmp_type > 2)
+        bmp_info.file_size+=28;
+    bmp_info.offset_bits=bmp_info.file_size;
     bmp_info.compression=BI_RGB;
     if (image->storage_class != DirectClass)
       {
@@ -1350,14 +1380,17 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           Full color BMP raster.
         */
         bmp_info.number_colors=0;
-        bmp_info.bits_per_pixel=image->matte ? 32 : 24;
-        bmp_info.compression=image->matte ? BI_BITFIELDS : BI_RGB;
+        bmp_info.bits_per_pixel=(bmp_type > 3 && image->matte) ? 32 : 24;
+        bmp_info.compression=(bmp_type > 3 && image->matte) ? BI_BITFIELDS :
+            BI_RGB;
       }
     bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
     bmp_info.ba_offset=0;
-    have_color_info=(int) (image->rendering_intent != UndefinedIntent) ||
-      (image->color_profile.length != 0) || (image->gamma != 0.0);
-    if (!image->matte && !have_color_info)
+    have_color_info=(int) ((image->rendering_intent != UndefinedIntent) ||
+      (image->color_profile.length != 0) || (image->gamma != 0.0));
+    if (bmp_type == 2)
+       bmp_info.size=12;
+    else if (bmp_type == 3 || (!image->matte && !have_color_info))
       bmp_info.size=40;
     else
       {
@@ -1495,7 +1528,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         break;
       }
     }
-    if (bmp_info.bits_per_pixel == 8)
+    if (bmp_type > 2 && bmp_info.bits_per_pixel == 8)
       if (image_info->compression != NoCompression)
         {
           size_t
@@ -1520,27 +1553,41 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           bmp_info.compression=BI_RLE8;
         }
     /*
-      Write BMP Version 3 for Windows 3.x 14-byte header.
+      Write BMP for Windows, all versions, 14-byte header.
     */
     (void) WriteBlob(image,2,"BM");
     (void) WriteBlobLSBLong(image,bmp_info.file_size);
-    (void) WriteBlobLSBLong(image,bmp_info.ba_offset);
+    (void) WriteBlobLSBLong(image,bmp_info.ba_offset);  /* always 0 */
     (void) WriteBlobLSBLong(image,bmp_info.offset_bits);
-    /*
-      Write 40-byte bitmap header.
-    */
-    (void) WriteBlobLSBLong(image,bmp_info.size);
-    (void) WriteBlobLSBLong(image,bmp_info.width);
-    (void) WriteBlobLSBLong(image,bmp_info.height);
-    (void) WriteBlobLSBShort(image,bmp_info.planes);
-    (void) WriteBlobLSBShort(image,bmp_info.bits_per_pixel);
-    (void) WriteBlobLSBLong(image,bmp_info.compression);
-    (void) WriteBlobLSBLong(image,bmp_info.image_size);
-    (void) WriteBlobLSBLong(image,bmp_info.x_pixels);
-    (void) WriteBlobLSBLong(image,bmp_info.y_pixels);
-    (void) WriteBlobLSBLong(image,bmp_info.number_colors);
-    (void) WriteBlobLSBLong(image,bmp_info.colors_important);
-    if (image->matte || have_color_info)
+    if (bmp_type == 2)
+      {
+        /*
+          Write 12-byte version 2 bitmap header.
+        */
+        (void) WriteBlobLSBLong(image,bmp_info.size);
+        (void) WriteBlobLSBShort(image,bmp_info.width);
+        (void) WriteBlobLSBShort(image,bmp_info.height);
+        (void) WriteBlobLSBShort(image,bmp_info.planes);
+        (void) WriteBlobLSBShort(image,bmp_info.bits_per_pixel);
+      }
+    else
+      {
+        /*
+          Write 40-byte version 3+ bitmap header.
+        */
+        (void) WriteBlobLSBLong(image,bmp_info.size);
+        (void) WriteBlobLSBLong(image,bmp_info.width);
+        (void) WriteBlobLSBLong(image,bmp_info.height);
+        (void) WriteBlobLSBShort(image,bmp_info.planes);
+        (void) WriteBlobLSBShort(image,bmp_info.bits_per_pixel);
+        (void) WriteBlobLSBLong(image,bmp_info.compression);
+        (void) WriteBlobLSBLong(image,bmp_info.image_size);
+        (void) WriteBlobLSBLong(image,bmp_info.x_pixels);
+        (void) WriteBlobLSBLong(image,bmp_info.y_pixels);
+        (void) WriteBlobLSBLong(image,bmp_info.number_colors);
+        (void) WriteBlobLSBLong(image,bmp_info.colors_important);
+      }
+    if (bmp_type > 3 && (image->matte || have_color_info))
       {
         /*
           Write the rest of the 108-byte BMP Version 4 header.
@@ -1571,45 +1618,45 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobLSBLong(image,(long) bmp_info.gamma_scale.x*0xffff);
         (void) WriteBlobLSBLong(image,(long) bmp_info.gamma_scale.y*0xffff);
         (void) WriteBlobLSBLong(image,(long) bmp_info.gamma_scale.z*0xffff);
-      }
-    if ((image->rendering_intent != UndefinedIntent) ||
-       (image->color_profile.length != 0))
-      {
-        long
-          intent;
+        if ((image->rendering_intent != UndefinedIntent) ||
+           (image->color_profile.length != 0))
+          {
+            long
+              intent;
 
-        switch ((int) image->rendering_intent)
-        {
-          case SaturationIntent:
-          {
-            intent=LCS_GM_BUSINESS;
-            break;
+            switch ((int) image->rendering_intent)
+            {
+              case SaturationIntent:
+              {
+                intent=LCS_GM_BUSINESS;
+                break;
+              }
+              case RelativeIntent:
+              {
+                intent=LCS_GM_GRAPHICS;
+                break;
+              }
+              case PerceptualIntent:
+              {
+                intent=LCS_GM_IMAGES;
+                break;
+              }
+              case AbsoluteIntent:
+              {
+                intent=LCS_GM_ABS_COLORIMETRIC;
+                break;
+              }
+              default:
+              {
+                intent=0;
+                break;
+              }
+            }
+            (void) WriteBlobLSBLong(image,intent);
+            (void) WriteBlobLSBLong(image,0x0);  /* dummy profile data */
+            (void) WriteBlobLSBLong(image,0x0);  /* dummy profile length */
+            (void) WriteBlobLSBLong(image,0x0);  /* reserved */
           }
-          case RelativeIntent:
-          {
-            intent=LCS_GM_GRAPHICS;
-            break;
-          }
-          case PerceptualIntent:
-          {
-            intent=LCS_GM_IMAGES;
-            break;
-          }
-          case AbsoluteIntent:
-          {
-            intent=LCS_GM_ABS_COLORIMETRIC;
-            break;
-          }
-          default:
-          {
-            intent=0;
-            break;
-          }
-        }
-        (void) WriteBlobLSBLong(image,intent);
-        (void) WriteBlobLSBLong(image,0x0f);  /* dummy profile data */
-        (void) WriteBlobLSBLong(image,0x0f);  /* dummy profile length */
-        (void) WriteBlobLSBLong(image,0x0f);  /* reserved */
       }
     if (image->storage_class == PseudoClass)
       {
