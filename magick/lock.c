@@ -3,7 +3,7 @@
 
 static pthread_t NULL_thread;
 
-MagickExport int RecursiveMutexInit(RecursiveMutexLock *lock)
+MagickExport int RecursiveMutexInit(RecursiveMutexLock_t *lock)
 {
   if(mutex_init(&lock->nesting_mutex) == -1)
     return -1;
@@ -16,7 +16,7 @@ MagickExport int RecursiveMutexInit(RecursiveMutexLock *lock)
       return 0;
     }
 }
-MagickExport int RecursiveMutexDestroy(RecursiveMutexLock *lock)
+MagickExport int RecursiveMutexDestroy(RecursiveMutexLock_t *lock)
 {
   if(pthread_mutex_destroy(&lock->nesting_mutex) == -1)
     return -1;
@@ -25,7 +25,7 @@ MagickExport int RecursiveMutexDestroy(RecursiveMutexLock *lock)
   else
     return 0;
 }
-MagickExport int RecursiveMutexLock(RecursiveMutexLock *lock)
+MagickExport int RecursiveMutexLock(RecursiveMutexLock_t *lock)
 {
   int result=0;
   int oerrno=0;
@@ -50,7 +50,7 @@ MagickExport int RecursiveMutexLock(RecursiveMutexLock *lock)
             pthread_cond_wait(&lock->lock_available,
                               &lock->nesting_mutex);
           /* At this point the nesting_mutex_ is held... */
-          lock->owner_id_=t_id;
+          lock->owner_id=t_id;
         }
       /* At this point, we can safely increment the nesting_level_ no
          matter how we got here! */
@@ -61,7 +61,7 @@ MagickExport int RecursiveMutexLock(RecursiveMutexLock *lock)
   errno=oerrno;
   return result;
 }
-MagickExport int RecursiveMutexTryLock(RecursiveMutexLock *lock)
+MagickExport int RecursiveMutexTryLock(RecursiveMutexLock_t *lock)
 {
   int result=0;
   int oerrno=0;
@@ -92,7 +92,7 @@ MagickExport int RecursiveMutexTryLock(RecursiveMutexLock *lock)
   pthread_mutex_unlock(&lock->nesting_mutex);
   errno=oerrno;
 }
-MagickExport int RecursiveMutexUnLock(RecursiveMutexLock *lock)
+MagickExport int RecursiveMutexUnLock(RecursiveMutexLock_t *lock)
 {
   int result=0;
   int oerrno=0;
@@ -102,8 +102,8 @@ MagickExport int RecursiveMutexUnLock(RecursiveMutexLock *lock)
     result=-1;
   else
     {
-      if(thread->nesting_level == 0
-         || pthread_equal(t_id,thread->owner_id) == 0)
+      if(lock->nesting_level == 0
+         || pthread_equal(t_id,lock->owner_id) == 0)
         {
           errno=EINVAL;
           result=-1;
@@ -128,23 +128,23 @@ MagickExport int RecursiveMutexUnLock(RecursiveMutexLock *lock)
   return result;
 }
 
-MagickExport int SimpleMutexInit(SimpleMutexLock *lock)
+MagickExport int SimpleMutexInit(SimpleMutexLock_t *lock)
 {
   pthread_mutex_init(lock,NULL);
 }
-MagickExport int SimpleMutexDestroy(SimpleMutexLock *lock)
+MagickExport int SimpleMutexDestroy(SimpleMutexLock_t *lock)
 {
   pthread_mutex_destroy(lock);
 }
-MagickExport int SimpleMutexLock(SimpleMutexLock *lock)
+MagickExport int SimpleMutexLock(SimpleMutexLock_t *lock)
 {
   pthread_mutex_lock(lock);
 }
-MagickExport int SimpleMutexTryLock(SimpleMutexLock *lock)
+MagickExport int SimpleMutexTryLock(SimpleMutexLock_t *lock)
 {
   pthread_mutex_trylock(lock);
 }
-MagickExport int SimpleMutexUnLock(SimpleMutexLock *lock)
+MagickExport int SimpleMutexUnLock(SimpleMutexLock_t *lock)
 {
   pthread_mutex_unlock(lock);
 }
