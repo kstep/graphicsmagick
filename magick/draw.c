@@ -3555,7 +3555,7 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
             target;
 
           color=draw_info->fill;
-          target=GetOnePixel(image,x,y);
+          target=AcquireOnePixel(image,x,y,&image->exception);
           pattern=draw_info->fill_pattern;
           for (y=0; y < (long) image->rows; y++)
           {
@@ -3593,7 +3593,7 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
             border_color,
             target;
 
-          target=GetOnePixel(image,x,y);
+          target=AcquireOnePixel(image,x,y,&image->exception);
           if (primitive_info->method == FillToBorderMethod)
             {
               border_color=draw_info->border_color;
@@ -3644,7 +3644,7 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
           PixelPacket
             target;
 
-          target=GetOnePixel(image,x,y);
+          target=AcquireOnePixel(image,x,y,&image->exception);
           (void) TransparentImage(image,target,TransparentOpacity);
           break;
         }
@@ -3655,7 +3655,7 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
             border_color,
             target;
 
-          target=GetOnePixel(image,x,y);
+          target=AcquireOnePixel(image,x,y,&image->exception);
           if (primitive_info->method == FillToBorderMethod)
             {
               border_color=draw_info->border_color;

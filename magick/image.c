@@ -4375,7 +4375,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             PixelPacket
               target;
 
-            target=GetOnePixel(*image,0,0);
+            target=AcquireOnePixel(*image,0,0,&(*image)->exception);
             (void) QueryColorDatabase(argv[++i],&target);
             (void) OpaqueImage(*image,target,draw_info->fill);
             continue;
@@ -4809,7 +4809,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             PixelPacket
               target;
 
-            target=GetOnePixel(*image,0,0);
+            target=AcquireOnePixel(*image,0,0,&(*image)->exception);
             (void) QueryColorDatabase(argv[++i],&target);
             (void) TransparentImage(*image,target,TransparentOpacity);
             continue;
