@@ -17,17 +17,17 @@ AVAILABILITY
   GraphicsMagick is currently under development.  It may be retrieved
   via CVS using the following procedure:
 
-  Use
+  To use CVS over SSH:
+
+    export CVS_RSH=ssh
+    export CVSROOT=":ext:anoncvs@cvs.graphicsmagick.org:/GraphicsMagick"
+
+  or to use CVS with its built-in (and insecure) pserver protocol:
 
     export CVSROOT=":pserver:anonymous@cvs.graphicsmagick.org:/GraphicsMagick"
 
-  or
-
-    setenv CVSROOT=":pserver:anonymous@cvs.graphicsmagick.org:/GraphicsMagick"
-
-  to set CVSROOT in the environment (depending on your shell), or prepend
+  to set CVSROOT in the environment (adjust for your shell), or prepend
   -d followed by the CVS root to every command. For example
-
 
     cvs -d ":pserver:anonymous@cvs ...
 
