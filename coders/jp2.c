@@ -283,34 +283,15 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) jas_image_readcmpt(jp2_image,i,0,y,image->columns,1,pixels[i]);
     for (x=0; x < (int) image->columns; x++)
     {
-      for (i=0; i < number_components; i++)
-        switch (i)
-        {
-          case 0:
-          {
-            q->red=UpScale(jas_matrix_getv(pixels[0],x));
-            q->green=q->red;
-            q->blue=q->red;
-            break;
-          }
-          case 1:
-          {
-            q->green=UpScale(jas_matrix_getv(pixels[1],x));
-            break;
-          }
-          case 2:
-          {
-            q->blue=UpScale(jas_matrix_getv(pixels[2],x));
-            break;
-          }
-          case 3:
-          {
-            q->opacity=UpScale(jas_matrix_getv(pixels[3],x));
-            break;
-          }
-          default:
-            break;
-        }
+      q->red=UpScale(jas_matrix_getv(pixels[0],x));
+      q->green=q->red;
+      q->blue=q->red;
+      if (number_components > 1)
+        q->green=UpScale(jas_matrix_getv(pixels[1],x));
+      if (number_components > 2)
+        q->blue=UpScale(jas_matrix_getv(pixels[2],x));
+      if (number_components > 3)
+        q->opacity=UpScale(jas_matrix_getv(pixels[3],x));
       q++;
     }
     if (!SyncImagePixels(image))
@@ -484,12 +465,12 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
     TemporaryFilename(filename);
   else
     CloseBlob(image);
-  TransformRGBImage(image,RGBColorspace);
   /*
     Intialize JPEG 2000 API.
   */
+  TransformRGBImage(image,RGBColorspace);
   jas_init();
-  jp2_stream=jas_stream_fopen(image->filename,WriteBinaryType);
+  jp2_stream=jas_stream_fopen(filename,WriteBinaryType);
   if (jp2_stream == (jas_stream_t *) NULL)
     return(False);
   number_components=image->matte ? 4 : 3;
@@ -518,6 +499,8 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
     pixels[i]=jas_matrix_create(1,image->columns);
     if (pixels[i] == (jas_matrix_t *) NULL)
       {
+        for (x=0; x < i; x++)
+          jas_matrix_destroy(pixels[x]);
         jas_image_destroy(jp2_image);
         ThrowWriterException(CorruptImageWarning,"Unable to allocate memory",
           image);
@@ -530,31 +513,13 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
       break;
     for (x=0; x < (int) image->columns; x++)
     {
-      for (i=0; i < number_components; i++)
-        switch (i)
+      jas_matrix_setv(pixels[0],x,DownScale(p->red));
+      if (number_components > 1)
         {
-          case 0:
-          {
-            jas_matrix_setv(pixels[0],x,DownScale(p->red));
-            break;
-          }
-          case 1:
-          {
-            jas_matrix_setv(pixels[1],x,DownScale(p->green));
-            break;
-          }
-          case 2:
-          {
-            jas_matrix_setv(pixels[2],x,DownScale(p->blue));
-            break;
-          }
-          case 3:
-          {
+          jas_matrix_setv(pixels[1],x,DownScale(p->green));
+          jas_matrix_setv(pixels[2],x,DownScale(p->blue));
+          if (number_components > 3)
             jas_matrix_setv(pixels[3],x,DownScale(p->opacity));
-            break;
-          }
-          default:
-            break;
         }
       p++;
     }
@@ -570,7 +535,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   LocaleLower(magick);
   format=jas_image_strtofmt(magick);
   FormatString(options,"rate=%lf",(double) image_info->quality/100.0);
-  status=jas_image_encode(jp2_image,jp2_stream,format,options);
+  status=jas_image_encode(jp2_image,jp2_stream,format,0);
   if (status)
     ThrowWriterException(FileOpenWarning,"Unable to encode image file",image);
   (void) jas_stream_close(jp2_stream);
