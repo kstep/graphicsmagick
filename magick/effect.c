@@ -1779,15 +1779,15 @@ MagickExport Image *ShadeImage(const Image *image,
         }
       if (!color_shading)
         {
-          q->red=(Quantum) shade;
-          q->green=(Quantum) shade;
-          q->blue=(Quantum) shade;
+          q->red=(Quantum) (shade+0.5);
+          q->green=(Quantum) (shade+0.5);
+          q->blue=(Quantum) (shade+0.5);
         }
       else
         {
-          q->red=(Quantum) ((shade*s1->red)/MaxRGB);
-          q->green=(Quantum) ((shade*s1->green)/MaxRGB);
-          q->blue=(Quantum) ((shade*s1->blue)/MaxRGB);
+          q->red=(Quantum) ((shade*s1->red)/MaxRGB+0.5);
+          q->green=(Quantum) ((shade*s1->green)/MaxRGB+0.5);
+          q->blue=(Quantum) ((shade*s1->blue)/MaxRGB+0.5);
         }
       q->opacity=s1->opacity;
       s0++;
