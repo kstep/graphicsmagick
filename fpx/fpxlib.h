@@ -104,6 +104,7 @@ typedef struct {
               CLSID         	  * ptr;
 } FPXClsIDArray;
 
+#if !defined(WIN32)
 #ifndef _FILETIME_
 #define _FILETIME_
 typedef struct FARSTRUCT tagFILETIME
@@ -111,6 +112,7 @@ typedef struct FARSTRUCT tagFILETIME
     unsigned long dwLowDateTime;
     unsigned long dwHighDateTime;
 } FILETIME;
+#endif
 #endif
 
 #ifndef TRUE
