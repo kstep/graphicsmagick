@@ -191,7 +191,7 @@ Export Image *BlurImage(Image *image,const unsigned int order,
   register int
     u,
     v;
-  
+
   assert(image != (Image *) NULL);
   kernel=(double *) AllocateMemory(order*order*sizeof(double));
   if (kernel == (double *) NULL)
@@ -758,7 +758,7 @@ Export Image *EmbossImage(Image *image,const unsigned int order,
   register int
     u,
     v;
-  
+
   assert(image != (Image *) NULL);
   kernel=(double *) AllocateMemory(order*order*sizeof(double));
   if (kernel == (double *) NULL)
@@ -770,7 +770,7 @@ Export Image *EmbossImage(Image *image,const unsigned int order,
   {
     for (u=(-(int) order/2); u <= ((int) order/2); u++)
     {
-      kernel[i]=(u < 0 || v < 0 ? -1 : 1)*exp(-(double) v*v-u*u);
+      kernel[i]=(int) ((u < 0 || v < 0 ? -8.0 : 8.0)*exp(-(double) v*v-u*u));
       if (u == j)
         kernel[i]=0.0;
       i++;
@@ -778,6 +778,8 @@ Export Image *EmbossImage(Image *image,const unsigned int order,
     j--;
   }
   emboss_image=ConvolveImage(image,order,kernel,exception);
+  if (emboss_image != (Image *) NULL)
+    EqualizeImage(emboss_image);
   FreeMemory((void *) &kernel);
   return(emboss_image);
 }
@@ -958,7 +960,7 @@ Export Image *EnhanceImage(Image *image,ExceptionInfo *exception)
 %  Method GaussianBlurImage creates a blurred copy of the input image.  We
 %  convolve the image with a gaussian operator of the given width and
 %  standard deviation (sigma).
-%  
+%
 %  Each output pixel is set to a value that is the weighted average of the
 %  input pixels in an area enclosing the pixel.  The width parameter
 %  determines how large the area is.  Each pixel in the area is weighted
@@ -969,7 +971,7 @@ Export Image *EnhanceImage(Image *image,ExceptionInfo *exception)
 %  controls how 'pointy' the curve is.  The pixels near the center of the
 %  curve (closer to the center of the area we are averaging) contribute
 %  more than the distant pixels.
-%  
+%
 %  In general, the width should be wide enough to include most of the
 %  total weight under the gaussian for the standard deviation you choose.
 %  As a guideline about 90% of the weight lies within two standard
@@ -982,18 +984,18 @@ Export Image *EnhanceImage(Image *image,ExceptionInfo *exception)
 %  convolution mask. Using non-integral widths will result in some pixels
 %  being considered 'partial' pixels, in which case their weight will be
 %  reduced proportionally.
-%  
+%
 %  Pixels for which the convolution mask does not completely fit on the
 %  image (e.g. pixels without a full set of neighbours) are averaged with
 %  those neighbours they do have. Thus pixels at the edge of images are
 %  typically less blurred.
-%  
+%
 %  Since a 2d gaussian is seperable, we perform Gaussian Blurring by
 %  convolving with two 1d gaussians, first in the x, then in the y
 %  direction. For an n by n image and gaussian width w this requires 2wn^2
 %  multiplications, while convolving with a 2d gaussian requres w^2n^2
 %  mults.
-%  
+%
 %  We are blur the image into a copy, and the original is left untouched.
 %  We must process the image in two passes, in each pass we change the
 %  pixel based on its neightbours, but we need the pixel's original value
@@ -1002,7 +1004,7 @@ Export Image *EnhanceImage(Image *image,ExceptionInfo *exception)
 %  imply that the original image have to stay around in ram. Instead we
 %  use a small (size=width) buffer to store the pixels we have
 %  overwritten.
-%  
+%
 %  BlurImage deals with boundary pixels by assuming the neighbours not in
 %  the image are zero (black) pixels. The function could be easily
 %  modified to pre-fill the buffer with the first width pixels from the
@@ -1103,7 +1105,7 @@ Export Image *GaussianBlurImage(Image *image,const double width,
     j=0;
     (void) memset(scanline,0,radius*sizeof(PixelPacket));
     for (x=0; x < (int) blur_image->columns; x++)
-    {    
+    {
       /*
         Convolve this pixel.
       */
@@ -1115,16 +1117,16 @@ Export Image *GaussianBlurImage(Image *image,const double width,
         k+=radius;
       for (i=1; i < (radius+1); i++)
       {
-	red+=kernel[i]*scanline[k].red;
-	green+=kernel[i]*scanline[k].green;
-	blue+=kernel[i]*scanline[k].blue;
+        red+=kernel[i]*scanline[k].red;
+        green+=kernel[i]*scanline[k].green;
+        blue+=kernel[i]*scanline[k].blue;
         k--;
         if (k < 0)
           k+=radius;
       }
       for (i=1; i < (radius+1); i++)
       {
-	if ((x+i) >= blur_image->columns)
+        if ((x+i) >= blur_image->columns)
           break;
         red+=kernel[i]*p[i].red;
         green+=kernel[i]*p[i].green;
@@ -1156,7 +1158,7 @@ Export Image *GaussianBlurImage(Image *image,const double width,
     j=0;
     (void) memset(scanline,0,radius*sizeof(PixelPacket));
     for (y=0; y < (int) blur_image->rows; y++)
-    {    
+    {
       /*
         Convolve this pixel.
       */
@@ -1168,16 +1170,16 @@ Export Image *GaussianBlurImage(Image *image,const double width,
         k+=radius;
       for (i=1; i < (radius+1); i++)
       {
-	red+=kernel[i]*scanline[k].red;
-	green+=kernel[i]*scanline[k].green;
-	blue+=kernel[i]*scanline[k].blue;
+        red+=kernel[i]*scanline[k].red;
+        green+=kernel[i]*scanline[k].green;
+        blue+=kernel[i]*scanline[k].blue;
         k--;
         if (k < 0)
           k+=radius;
       }
       for (i=1; i < (radius+1); i++)
       {
-	if ((y+i) >= blur_image->rows)
+        if ((y+i) >= blur_image->rows)
           break;
         red+=kernel[i]*p[i].red;
         green+=kernel[i]*p[i].green;
@@ -2428,7 +2430,7 @@ Export Image *SharpenImage(Image *image,const unsigned int order,
   register int
     u,
     v;
-  
+
   assert(image != (Image *) NULL);
   kernel=(double *) AllocateMemory(order*order*sizeof(double));
   if (kernel == (double *) NULL)

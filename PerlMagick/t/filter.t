@@ -73,7 +73,7 @@ testFilter('input.miff', 'Edge',
 ++$test;
 testFilter('input.miff', 'Emboss',
   q/3/,
-  'cf53137b4981534abcbdcf38faa01c25',
+  '195eb2be9c2373547f47b9a7a825a0f5',
   '9d45e8fce500ab54db41d2d48ebfe1a6');
 
 ++$test;
