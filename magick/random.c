@@ -220,10 +220,8 @@ MagickExport unsigned int GetRandomKey(unsigned char *key,const size_t length,
         exception);
       pid=getpid();
       DistillRandomEvent((const unsigned char *) &pid,sizeof(pid_t),exception);
-      DistillRandomEvent((const unsigned char *) roulette,sizeof(unsigned long),
-        exception);
-      DistillRandomEvent((const unsigned char *) reservior,
-        sizeof(SignatureInfo),exception);
+      DistillRandomEvent((const unsigned char *) *roulette,
+        sizeof(unsigned long *),exception);
     }
   n=length;
   while (n > 0)
