@@ -598,8 +598,7 @@ typedef struct _MagickInfo
     (*magick)(const unsigned char *,const unsigned int),
     adjoin,
     blob_support,
-    raw,
-    thread_safe;
+    raw;
 
   char
     *description,

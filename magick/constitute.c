@@ -1590,21 +1590,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
             DestroyImageInfo(clone_info);
             return((Image *) NULL);
           }
-        if (magick_info->thread_safe)
-          image=(magick_info->decoder)(clone_info,exception);
-        else
-          {
-#if defined(HasPTHREADS)
-            static pthread_mutex_t
-              write_mutex = PTHREAD_MUTEX_INITIALIZER;
-
-            pthread_mutex_lock(&write_mutex);
-#endif
-            image=(magick_info->decoder)(clone_info,exception);
-#if defined(HasPTHREADS)
-            pthread_mutex_unlock(&write_mutex);
-#endif
-          }
+        image=(magick_info->decoder)(clone_info,exception);
       }
   if (clone_info->temporary)
     {
@@ -1968,21 +1954,7 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
               (unsigned int (*)(const ImageInfo *,Image *)) NULL))
           ThrowBinaryException(MissingDelegateWarning,
             "no encode delegate for this image format",clone_info->magick);
-        if (magick_info->thread_safe)
-          status=(magick_info->encoder)(clone_info,image);
-        else
-          {
-#if defined(HasPTHREADS)
-            static pthread_mutex_t
-              write_mutex = PTHREAD_MUTEX_INITIALIZER;
-
-            pthread_mutex_lock(&write_mutex);
-#endif
-            status=(magick_info->encoder)(clone_info,image);
-#if defined(HasPTHREADS)
-            pthread_mutex_unlock(&write_mutex);
-#endif
-          }
+        status=(magick_info->encoder)(clone_info,image);
       }
     else
       {
