@@ -8,6 +8,7 @@
   <module magick="B" name="GRAY" />
   <module magick="BIE" name="JBIG" />
   <module magick="C" name="GRAY" />
+  <module magick="CUR" name="ICON" />
   <module magick="DCX" name="PCX" />
   <module magick="EMF" name="EMF" />
   <module magick="EPDF" name="PDF" />

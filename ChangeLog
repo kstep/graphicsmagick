@@ -1,5 +1,7 @@
 2003-05-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/icon.c (ReadIconImage): Add support for Windows
+	.CUR format based on advice from Jean Piquemal.
 	* magick/image.c (SetImageInfo): Added missing CloseBlob
 	in error path for failure to allocate temporary file.
 	* coders/pcx.c (ReadPCXImage): Added support for reading
