@@ -141,8 +141,8 @@ static void DisplayUsage(void)
       "-map type            display image using this Standard Colormap",
       "-matte               store matte channel if the image has one",
       "-monochrome          transform image to black and white",
-      "-negate              replace every pixel with its complementary color ",
-      "-noop                 do not apply options to image"
+      "-negate              replace every pixel with its complementary color",
+      "-noop                do not apply options to image",
       "-page geometry       size and location of an image canvas",
       "-quality value       JPEG/MIFF/PNG compression level",
       "-raise value         lighten/darken image edges to create a 3-D effect",

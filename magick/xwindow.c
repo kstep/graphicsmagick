@@ -493,20 +493,14 @@ MagickExport XFontStruct *XBestFont(Display *display,
   static const char
     *Fonts[]=
     {
-      "-*-helvetica-medium-r-*-*-12-*-*-*-*-*-iso8859-*",
-      "-adobe-helvetica-medium-r-*-*-14-*-*-*-*-*-iso8859-*",
-      "-*-helvetica-medium-r-*-*-14-*-*-*-*-*-iso8859-*",
-      "-*-lucida-medium-r-*-*-14-*-*-*-*-*-iso8859-*",
-      "9x15",
+      "-*-helvetica-medium-r-normal-*-14-*-*-*-*-*-*-*",
+      "variable",
       (char *) NULL
     },
     *TextFonts[]=
     {
-      "-adobe-courier-medium-r-*-*-12-*-*-*-*-*-iso8859-*",
-      "-adobe-courier-medium-r-*-*-14-*-*-*-*-*-iso8859-*",
-      "-*-courier-medium-r-*-*-14-*-*-*-*-*-iso8859-*",
-      "-*-fixed-medium-r-*-*-14-*-*-*-*-*-iso8859-*",
-      "9x15",
+      "-*-fixed-medium-r-normal-*-14-*-*-*-*-*-*-*",
+      "fixed",
       (char *) NULL
     };
 
