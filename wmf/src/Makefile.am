@@ -20,7 +20,13 @@ else
 LIBTRIO = 
 endif
 
-libwmf_la_LIBADD = api/libapi.la ipa/libipa.la extra/gd/libgd.la $(LIBTRIO)
+if LIBWMF_OPT_SYS_GD
+LIBGD = 
+else
+LIBGD = extra/gd/libgd.la
+endif
+
+libwmf_la_LIBADD = api/libapi.la ipa/libipa.la $(LIBGD) $(LIBTRIO)
 
 libwmf_la_LDFLAGS = \
 	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) \

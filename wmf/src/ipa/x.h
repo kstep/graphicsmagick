@@ -66,6 +66,7 @@ static void setdefaultstyle (wmfAPI*);
 /* device.h
  */
 static XPoint x_translate (wmfAPI*,wmfD_Coord);
+static XPoint x_translate_ft64 (wmfAPI*,wmfD_Coord,FT_Vector*);
 
 static float x_width (wmfAPI*,float);
 static float x_height (wmfAPI*,float);

@@ -83,7 +83,7 @@ wmf_error_t wmf_bbuf_input (wmfAPI* API,wmfRead fp_read,wmfSeek fp_seek,wmfTell 
  * @return Returns the library error state (\b wmf_E_None on success).
  *         Possible library error states of \b wmf_E_Glitch or \b wmf_E_BadFile.
  */
-wmf_error_t wmf_file_open (wmfAPI* API,char* file)
+wmf_error_t wmf_file_open (wmfAPI* API,const char* file)
 {	wmfBBufFileInfo* file_info = 0;
 
 	if (ERR (API)) return (API->err);

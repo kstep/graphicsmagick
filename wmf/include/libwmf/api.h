@@ -66,7 +66,7 @@ extern wmf_error_t wmf_bbuf_input (wmfAPI*,wmfRead,wmfSeek,wmfTell,void*);
 /**
  * Opens a file as the current metafile
  */
-extern wmf_error_t wmf_file_open (wmfAPI*,char*);
+extern wmf_error_t wmf_file_open (wmfAPI*,const char*);
 
 /**
  * Closes the file corresponding to the current metafile

@@ -231,6 +231,10 @@ void wmf_x_device_end (wmfAPI* API)
 /* translation & scaling functions
  */
 static XPoint x_translate (wmfAPI* API,wmfD_Coord d_pt)
+{	return (x_translate_ft64 (API,d_pt,0));
+}
+
+static XPoint x_translate_ft64 (wmfAPI* API,wmfD_Coord d_pt,FT_Vector* pen)
 {	wmf_x_t* ddata = WMF_X_GetData (API);
 
 	XPoint x_pt;
@@ -248,6 +252,11 @@ static XPoint x_translate (wmfAPI* API,wmfD_Coord d_pt)
 
 	x_pt.x = (short) floor (x);
 	x_pt.y = (short) floor (y);
+
+	if (pen)
+	{	pen->x = floor ((x - floor (x)) * 64);
+		pen->y = floor ((y - floor (y)) * 64);
+	}
 
 	return (x_pt);
 }

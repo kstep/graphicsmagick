@@ -75,6 +75,13 @@ typedef enum _wmf_page_t
 } wmf_page_t;
 
 /**
+ * \b wmf_image_t is the (enumeration) type used to indicate image type.
+ */
+typedef enum _wmf_image_t
+{	wmf_I_gd
+} wmf_image_t;
+
+/**
  * User redefinable function for input-stream access:
  * 
  * wmfRead: returns unsigned char cast to int, or EOF
@@ -148,6 +155,8 @@ typedef struct _wmfAPI_Options         wmfAPI_Options;
 typedef struct _wmfAPI                 wmfAPI;
 
 typedef struct _wmfStream              wmfStream;
+
+typedef struct _wmfImage               wmfImage;
 
 /* API Structure defs
  */
@@ -371,5 +380,17 @@ struct _wmfStream
 #ifdef __cplusplus
 }
 #endif
+
+/**
+ * Structure referencing an image
+ */
+struct _wmfImage
+{	wmf_image_t type;
+
+	U16 width;
+	U16 height;
+
+	void* data;
+};
 
 #endif /* ! LIBWMF_TYPES_H */

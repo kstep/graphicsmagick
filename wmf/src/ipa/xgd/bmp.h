@@ -1,4 +1,4 @@
-/* libwmf ("ipa/x/bmp.h"): library for wmf conversion
+/* libwmf ("ipa/xgd/bmp.h"): library for wmf conversion
    Copyright (C) 2000 - various; see CREDITS, ChangeLog, and sources
 
    The libwmf Library is free software; you can redistribute it and/or
@@ -17,17 +17,21 @@
    Boston, MA 02111-1307, USA.  */
 
 
-void wmf_x_rop_draw (wmfAPI* API,wmfROP_Draw_t* rop_draw)
-{	wmf_x_t* ddata = WMF_X_GetData (API);
+void wmf_gd_rop_draw (wmfAPI* API,wmfROP_Draw_t* rop_draw)
+{	wmf_gd_t* ddata = WMF_GD_GetData (API);
 
-	XPoint TL;
-	XPoint BR;
+	gd_t* gd = (gd_t*) ddata->gd_data;
 
-	WMF_DEBUG (API,"wmf_[x_]rop_draw");
+	gdPoint TL;
+	gdPoint BR;
+
+	int brushstyle;
+
+	WMF_DEBUG (API,"wmf_[gd_]rop_draw");
 
 	if (!TO_FILL (rop_draw)) return;
 
-	setbrushstyle (API,rop_draw->dc);
+	brushstyle = setbrushstyle (API,rop_draw->dc);
 
 	switch (rop_draw->ROP) /* Ternary raster operations */
 	{
@@ -58,31 +62,25 @@ void wmf_x_rop_draw (wmfAPI* API,wmfROP_Draw_t* rop_draw)
 	case DSTINVERT: /* dest = (NOT dest) */
 	break;
 	case BLACKNESS: /* dest = BLACK */
-		XSetForeground (ddata->display,ddata->gc,ddata->black);
+		brushstyle = gdImageColorResolve (gd->image,0,0,0);
 	break;
 	case WHITENESS: /* dest = WHITE */
-		XSetForeground (ddata->display,ddata->gc,ddata->white);
+		brushstyle = gdImageColorResolve (gd->image,255,255,255);
 	break;
 	default:
 	break;
 	}
 
-	TL = x_translate (API,rop_draw->TL);
-	BR = x_translate (API,rop_draw->BR);
+	TL = gd_translate (API,rop_draw->TL);
+	BR = gd_translate (API,rop_draw->BR);
 
-	BR.x -= TL.x;
-	BR.y -= TL.y;
-
-	if (ddata->window != None)
-	{	XFillRectangle (ddata->display,ddata->window,ddata->gc,TL.x,TL.y,BR.x,BR.y);
-	}
-	if (ddata->pixmap != None)
-	{	XFillRectangle (ddata->display,ddata->pixmap,ddata->gc,TL.x,TL.y,BR.x,BR.y);
-	}
+	gdImageFilledRectangle (gd->image,TL.x,TL.y,BR.x,BR.y,brushstyle);
 }
 
-void wmf_x_bmp_draw (wmfAPI* API,wmfBMP_Draw_t* bmp_draw)
-{	wmf_x_t* ddata = WMF_X_GetData (API);
+void wmf_gd_bmp_draw (wmfAPI* API,wmfBMP_Draw_t* bmp_draw)
+{	wmf_gd_t* ddata = WMF_GD_GetData (API);
+
+	gd_t* gd = (gd_t*) ddata->gd_data;
 
 	wmfRGB rgb;
 
@@ -100,16 +98,16 @@ void wmf_x_bmp_draw (wmfAPI* API,wmfBMP_Draw_t* bmp_draw)
 	unsigned int width;
 	unsigned int height;
 
-	XPoint pt;
+	int color;
 
-	WMF_DEBUG (API,"wmf_[x_]bmp_draw");
+	gdPoint pt;
 
-	setdefaultstyle (API);
+	WMF_DEBUG (API,"wmf_[gd_]bmp_draw");
 
-	pt = x_translate (API,bmp_draw->pt);
+	pt = gd_translate (API,bmp_draw->pt);
 
-	bmp_width  = x_width  (API,(float) ((double) bmp_draw->crop.w * bmp_draw->pixel_width ));
-	bmp_height = x_height (API,(float) ((double) bmp_draw->crop.h * bmp_draw->pixel_height));
+	bmp_width  = gd_width  (API,(float) ((double) bmp_draw->crop.w * bmp_draw->pixel_width ));
+	bmp_height = gd_height (API,(float) ((double) bmp_draw->crop.h * bmp_draw->pixel_height));
 
 	width  = (unsigned int) ceil (1.0 + bmp_width ); /* The 1.0 is a bit of a fudge factor... */
 	height = (unsigned int) ceil (1.0 + bmp_height); /* Works with test11.wmf, anyway.   [??] */
@@ -126,26 +124,21 @@ void wmf_x_bmp_draw (wmfAPI* API,wmfBMP_Draw_t* bmp_draw)
 
 			if (opacity < 0) break;
 
-			XSetForeground (ddata->display,ddata->gc,get_color (API,&rgb));
+			color = gdImageColorResolve (gd->image,rgb.r,rgb.g,rgb.b);
 
-			if (ddata->window != None)
-			{	XDrawPoint (ddata->display,ddata->window,ddata->gc,i+pt.x,(height-1-j)+pt.y);
-			}
-			if (ddata->pixmap != None)
-			{	XDrawPoint (ddata->display,ddata->pixmap,ddata->gc,i+pt.x,(height-1-j)+pt.y);
-			}
+			gdImageSetPixel (gd->image,i+pt.x,(height-1-j)+pt.y,color);
 		}
 	}
 }
 
-void wmf_x_bmp_read (wmfAPI* API,wmfBMP_Read_t* bmp_read)
-{	WMF_DEBUG (API,"wmf_[x_]bmp_read");
+void wmf_gd_bmp_read (wmfAPI* API,wmfBMP_Read_t* bmp_read)
+{	WMF_DEBUG (API,"wmf_[gd_]bmp_read");
 
 	wmf_ipa_bmp_read (API,bmp_read);
 }
 
-void wmf_x_bmp_free (wmfAPI* API,wmfBMP* bmp)
-{	WMF_DEBUG (API,"wmf_[x_]bmp_free");
+void wmf_gd_bmp_free (wmfAPI* API,wmfBMP* bmp)
+{	WMF_DEBUG (API,"wmf_[gd_]bmp_free");
 
 	wmf_ipa_bmp_free (API,bmp);
 }

@@ -1,15 +1,16 @@
 Summary: library and utilities for displaying and converting metafile images
 Name: libwmf
-Version: 0.2.1
+Version: 0.2.2
 Release: 1
 Copyright: LGPL
 Group: System Environment/Libraries
-Source: http://download.sourceforge.net/wvware/libwmf-%{version}.tar.gz
+Source: http://prdownloads.sourceforge.net/wvware/libwmf-%{version}.tar.gz
 URL: http://wvware.sourceforge.net/
 
 %description
 This is a library for interpreting metafile images and either displaying them
-using X or converting them to standard formats such as PNG, JPEG, PS, EPS,...
+using X or converting them to standard formats such as PNG, JPEG, PS, EPS and
+SVG(Z)...
 
 %package devel
 Summary: Development tools for programs to manipulate metafile images
@@ -26,7 +27,7 @@ should install libwmf-devel. You'll also need to install the libwmf package.
 
 %prep
 %setup
-./configure --prefix=/usr --without-expat --without-xml
+./configure --prefix=/usr
 
 %build
 make
@@ -43,8 +44,8 @@ make install
 /usr/bin/wmf2x
 /usr/bin/wmf2magick
 /usr/bin/libwmf-fontmap
-/usr/lib/libwmf-0.2.so.1.0.0
-/usr/lib/libwmf-0.2.so.1
+/usr/lib/libwmf-0.2.so.2.0.0
+/usr/lib/libwmf-0.2.so.2
 /usr/lib/libwmf.so
 /usr/lib/libwmf.la
 /usr/share/libwmf/fonts/n019003l.afm
@@ -313,4 +314,5 @@ make install
 /usr/include/libwmf/x.h
 /usr/include/libwmf/plot.h
 /usr/include/libwmf/magick.h
+/usr/include/libwmf/foreign.h
 /usr/lib/libwmf.a

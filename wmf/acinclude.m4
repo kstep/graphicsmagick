@@ -1,7 +1,7 @@
 dnl AC_CHECK_VERSION(version_number_of_package,reference_minimum_version_number)
 dnl sets ac_check_version_okay=yes if successful
 dnl 
-AC_DEFUN(AC_CHECK_VERSION,[
+AC_DEFUN([AC_CHECK_VERSION],[
 	current_version=$1
 
 	current_major_version=`echo $current_version | sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\1/'`
@@ -28,7 +28,7 @@ AC_DEFUN(AC_CHECK_VERSION,[
 		fi
 	fi
 ])
-AC_DEFUN(AC_LIBPLOT_LIBS,[
+AC_DEFUN([AC_LIBPLOT_LIBS],[
 	ac_can_link_libplot=no
 
 	LIBPLOT_LIBS="-lplot"

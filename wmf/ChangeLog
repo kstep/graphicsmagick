@@ -1,3 +1,17 @@
+	* add paranoid check for xmlChar**attributes==NULL
+	* add one of many missing consts (Bob Friesenhahn)
+	* add check for vsnprintf in libdb (David C Sterratt)
+	* add 'foreign' device layer for non-wmf stuff
+	* x,gd: better placement of text
+	* x,gd: beginnings of a ROP implementation
+	* change gd-layer source file names to 'xgd' root
+	* use X-layer style text drawing in gd-layer
+	* yet more config updates (fun, fun, fun!)
+	* update other config stuff to handle autoconf-2.52
+	* update config.sub/guess to libtool-1.4.1
+	* make building/inclusion of GD library optional (fjf)
+	* acinclude fix (Tomasz K³oczko)
+	* up the version number (fjf)
 v. 0.2.1
 	* radical IPA fontmap rewrite; GS Fontmap used now also (fjf)
 	* clean up GS fontmap parser (fjf)

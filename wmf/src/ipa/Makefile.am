@@ -17,7 +17,7 @@ INCLUDES = \
 
 noinst_LTLIBRARIES = libipa.la
 
-libipa_la_SOURCES = eps.c fig.c svg.c gd.c x.c ipa.c plot.c magick.c
+libipa_la_SOURCES = eps.c fig.c svg.c xgd.c x.c ipa.c plot.c magick.c foreign.c
 
 libipa_la_LDFLAGS = 
 
@@ -51,11 +51,12 @@ SVGHEADERS = \
 	svg.h
 
 GDHEADERS = \
-	gd/bmp.h \
-	gd/device.h \
-	gd/draw.h \
-	gd/region.h \
-	gd.h
+	xgd/bmp.h \
+	xgd/device.h \
+	xgd/draw.h \
+	xgd/font.h \
+	xgd/region.h \
+	xgd.h
 
 XHEADERS = \
 	x/bmp.h \

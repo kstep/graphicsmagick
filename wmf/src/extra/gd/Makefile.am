@@ -11,7 +11,13 @@ gddir = $(includedir)/libwmf/gd
 gd_HEADERS = gd.h gdcache.h gd_clip.h gd_io.h \
 	gdfontg.h gdfontl.h gdfontmb.h gdfonts.h gdfontt.h
 
-noinst_LTLIBRARIES = libgd.la
+if LIBWMF_OPT_SYS_GD
+LIBGD = 
+else
+LIBGD = libgd.la
+endif
+
+noinst_LTLIBRARIES = $(LIBGD)
 
 libgd_la_SOURCES = gd.c gd_gd.c gd_gd2.c gd_io.c gd_io_dp.c \
 		gd_io_file.c gd_ss.c gd_io_ss.c gd_png.c gd_jpeg.c gdxpm.c \
