@@ -336,9 +336,9 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
       ReaderExit(FileOpenWarning,"Unable to open file",image);
     for (i=0; i < (int) image->colors; i++)
     {
-      image->colormap[i].red=(Quantum) ((long) (MaxRGB*i)/(image->colors-1));
-      image->colormap[i].green=(Quantum) ((long) (MaxRGB*i)/(image->colors-1));
-      image->colormap[i].blue=(Quantum) ((long) (MaxRGB*i)/(image->colors-1));
+      image->colormap[i].red=((unsigned long) (MaxRGB*i)/(image->colors-1));
+      image->colormap[i].green=((unsigned long) (MaxRGB*i)/(image->colors-1));
+      image->colormap[i].blue=((unsigned long) (MaxRGB*i)/(image->colors-1));
     }
     /*
       Initialize image structure.
