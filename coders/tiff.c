@@ -1181,14 +1181,10 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   char
     filename[MaxTextExtent];
 
-  FILE
-    *file;
-
   ImageAttribute
     *attribute;
 
   int
-    c,
     y;
 
   register IndexPacket
@@ -1747,6 +1743,12 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   if ((image->file == stdout) || image->pipet ||
       (image->blob.data != (char *) NULL))
     {
+      FILE
+        *file;
+
+      int
+        c;
+
       /*
         Copy temporary file to image blob.
       */

@@ -1087,6 +1087,12 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   if ((image->file == stdout) || image->pipet ||
       (image->blob.data != (char *) NULL))
     {
+      FILE
+        *file;
+
+      int
+        c;
+
       /*
         Copy temporary file to image blob.
       */
