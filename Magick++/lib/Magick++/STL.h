@@ -2223,18 +2223,51 @@ namespace Magick
           continue;
 
         // Test isReadable_
-        if ( isReadable_ != AnyMatch && !magickInfo->decoder)
-          continue;
+        if ( isReadable_ != AnyMatch )
+          {
+            if (magickInfo->decoder)
+              {              
+                if(isReadable_ != TrueMatch)
+                  continue;
+              }
+            else
+              {
+                if(isReadable_ != FalseMatch)
+                  continue;
+              }
+          }
 
         // Test isWritable_
-        if ( isWritable_ != AnyMatch && !magickInfo->encoder)
-          continue;
+        if ( isWritable_ != AnyMatch )
+          {
+            if (magickInfo->encoder)
+              {              
+                if(isWritable_ != TrueMatch)
+                  continue;
+              }
+            else
+              {
+                if(isWritable_ != FalseMatch)
+                  continue;
+              }
+          }
 
         // Test isMultiFrame_
-        if ( isMultiFrame_ != AnyMatch && !magickInfo->adjoin)
-          continue;
+        if ( isMultiFrame_ != AnyMatch )
+          {
+            if (magickInfo->adjoin)
+              {              
+                if(isMultiFrame_ != TrueMatch)
+                  continue;
+              }
+            else
+              {
+                if(isMultiFrame_ != FalseMatch)
+                  continue;
+              }
+          }
 
-        // Append to container
+        // Append matches to container
         container_->push_back( CoderInfo( magickInfo ) );
       }
   }
