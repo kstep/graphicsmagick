@@ -115,6 +115,7 @@ static void MontageUsage(void)
       "-matte              store matte channel if the image has one",
       "-mode type          Frame, Unframe, or Concatenate",
       "-monochrome         transform image to black and white",
+      "-new                instantiate an image object",
       "-page geometry      size and location of an image canvas",
       "-pointsize value    pointsize of Postscript font",
       "-quality value      JPEG/MIFF/PNG compression level",
@@ -893,6 +894,13 @@ static unsigned int MontageUtility(int argc,char **argv)
               }
             break;
           }
+        MagickError(OptionError,"Unrecognized option",option);
+        break;
+      }
+      case 'n':
+      {
+        if (LocaleCompare("new",option+1) == 0)
+          break;
         MagickError(OptionError,"Unrecognized option",option);
         break;
       }

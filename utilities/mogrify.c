@@ -141,6 +141,7 @@ static void MogrifyUsage(void)
       "-modulate value      vary the brightness, saturation, and hue",
       "-monochrome          transform image to black and white",
       "-negate              replace every pixel with its complementary color ",
+      "-new                 instantiate an image object",
       "-noise radius        add or reduce noise in an image.",
       "-normalize           transform image to span the full range of colors",
       "-opaque color        change this color to the fill color",
@@ -1161,6 +1162,8 @@ static unsigned int MogrifyUtility(int argc,char **argv)
       case 'n':
       {
         if (LocaleCompare("negate",option+1) == 0)
+          break;
+        if (LocaleCompare("new",option+1) == 0)
           break;
        if (LocaleCompare("noise",option+1) == 0)
           {

@@ -123,6 +123,7 @@ static void AnimateUsage(void)
       "-matte               store matte channel if the image has one",
       "-map type            display image using this Standard Colormap",
       "-monochrome          transform image to black and white",
+      "-new                 instantiate an image object",
       "-pause               seconds to pause before reanimating",
       "-remote command      execute a command in an remote display process",
       "-rotate degrees      apply Paeth rotation to the image",
@@ -774,6 +775,9 @@ int main(int argc,char **argv)
               }
             break;
           }
+        if (LocaleCompare("new",option+1) == 0)
+          break;
+        MagickError(OptionError,"Unrecognized option",option);
         break;
       }
       case 'p':
