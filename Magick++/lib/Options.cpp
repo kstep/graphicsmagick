@@ -160,8 +160,8 @@ void Magick::Options::strokeDashArray ( const unsigned int* strokeDashArray_ )
       _drawInfo->dash_pattern =
         static_cast<unsigned int*>(AcquireMemory((x+1)*sizeof(unsigned int)));
       // Copy elements
-      std::memcpy(_drawInfo->dash_pattern,strokeDashArray_,
-                  (x+1)*sizeof(unsigned int));
+      memcpy(_drawInfo->dash_pattern,strokeDashArray_,
+             (x+1)*sizeof(unsigned int));
     }
 }
 const unsigned int* Magick::Options::strokeDashArray ( void ) const
