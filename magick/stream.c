@@ -564,5 +564,6 @@ MagickExport unsigned int WriteStream(ImageInfo *image_info,Image *image,
   assert(image->signature == MagickSignature);
   image_info->fifo=fifo;
   status=WriteImage(image_info,image);
+  (void) image->fifo(image,(const void *) NULL,0);
   return(status);
 }
