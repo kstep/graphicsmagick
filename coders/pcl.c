@@ -197,14 +197,13 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
 {
   char
     buffer[MaxTextExtent],
-    geometry[MaxTextExtent];
+    page_geometry[MaxTextExtent];
 
   const ImageAttribute
     *attribute;
 
   long
     sans_offset,
-    x,
     y;
 
   register const PixelPacket
@@ -213,7 +212,11 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
   register IndexPacket
     *indexes;
 
+  register long
+	  x;
+
   RectangleInfo
+	  geometry,
     media_info;
 
   unsigned int
@@ -222,9 +225,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
     text_size;
 
   unsigned long
-    density,
-    height,
-    width;
+    density;
 
   /*
     Open output image file.
@@ -251,22 +252,21 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
   if (attribute != (const ImageAttribute *) NULL)
     text_size=(unsigned int)
       (MultilineCensus(attribute->value)*image_info->pointsize+12);
-  width=image->columns;
-  height=image->rows;
-  x=0;
-  y=(long) text_size;
-  FormatString(geometry,"%lux%lu",image->columns,image->rows);
+  SetGeometry(image,&geometry);
+  geometry.y=(long) text_size;
+  FormatString(page_geometry,"%lux%lu",image->columns,image->rows);
   if (image_info->page != (char *) NULL)
-    (void) strncpy(geometry,image_info->page,MaxTextExtent-1);
+    (void) strncpy(page_geometry,image_info->page,MaxTextExtent-1);
   else
     if ((image->page.width != 0) && (image->page.height != 0))
-      (void) FormatString(geometry,"%lux%lu%+ld%+ld",image->page.width,
+      (void) FormatString(page_geometry,"%lux%lu%+ld%+ld",image->page.width,
         image->page.height,image->page.x,image->page.y);
     else
       if (LocaleCompare(image_info->magick,"PCL") == 0)
-        (void) strcpy(geometry,PSPageGeometry);
-  (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
-  (void) GetGeometry(geometry,&media_info.x,&media_info.y,
+        (void) strcpy(page_geometry,PSPageGeometry);
+  (void) ParseImageGeometry(page_geometry,&geometry.x,&geometry.y,
+	  &geometry.width,&geometry.height);
+  (void) GetGeometry(page_geometry,&media_info.x,&media_info.y,
     &media_info.width,&media_info.height);
   page_size=2;
   if ((media_info.width == 540) && (media_info.height == 720))
@@ -293,7 +293,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
       &density,&density);
   else
     (void) ParseGeometry("75x75",&sans_offset,&sans_offset,&density,&density);
-  FormatString(buffer,"\033*p%ldx%ldY",x,y);
+  FormatString(buffer,"\033*p%ldx%ldY",geometry.x,geometry.y);
   (void) WriteBlobString(image,buffer);
   attribute=GetImageAttribute(image,"label");
   if (attribute != (const ImageAttribute *) NULL)
@@ -311,8 +311,8 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
     }
   FormatString(buffer,"\033*t%luR",density);  /* graphic resolution */
   (void) WriteBlobString(image,buffer);
-  width=(density*width)/75;
-  height=(density*height)/75;
+  geometry.width=(density*geometry.width)/75;
+  geometry.height=(density*geometry.height)/75;
   if (!IsGrayImage(image,&image->exception))
     {
       /*
@@ -320,7 +320,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
       */
       FormatString(buffer,"\033*r%lus%luT",image->columns,image->rows);
       (void) WriteBlobString(image,buffer);
-      FormatString(buffer,"\033*t%luh%luV",width,height);
+      FormatString(buffer,"\033*t%luh%luV",geometry.width,geometry.height);
       (void) WriteBlobString(image,buffer);
       (void) WriteBlobString(image,"\033*v6W");
       (void) WriteBlobByte(image,'\000');  /* color model */
@@ -366,7 +366,8 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
         Write PCL monochrome image.
       */
       monochrome_image=image;
-      if ((width != image->columns) || (height != image->rows))
+      if ((geometry.width != image->columns) ||
+          (geometry.height != image->rows))
         {
           Image
             *clone_image;
@@ -378,8 +379,8 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
           if (clone_image == (Image *) NULL)
             ThrowWriterException(ResourceLimitWarning,"Unable to scale image",
               image);
-          monochrome_image=
-            ZoomImage(clone_image,width,height,&image->exception);
+          monochrome_image=ZoomImage(clone_image,geometry.width,geometry.height,
+            &image->exception);
           DestroyImage(clone_image);
           if (monochrome_image == (Image *) NULL)
             ThrowWriterException(ResourceLimitWarning,"Unable to scale image",
