@@ -419,13 +419,14 @@ static unsigned int ReadConfigurationFile(const char *filename)
                     case 'r': *q='\r'; break;
                     case 't': *q='\t'; break;
                     case 'v': *q='\v'; break;
-                    case 'a': *q='a'; break;
+                    case 'a': *q='\a'; break;
                     case '?': *q='\?'; break;
                     default: *q=(*p); break;
                   }
                   p++;
                   q++;
                   magic_list->length++;
+                  continue;
                 }
               *q++=(*p++);
               magic_list->length++;
