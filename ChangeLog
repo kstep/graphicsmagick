@@ -1,3 +1,8 @@
+2004-08-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/widget.c (XCommandWidget): Replace ImageMagick logo in
+	display command menu with GraphicsMagick logo.
+
 2004-08-05  Glenn Randers-Pehrson <glennrp@glennrp.com>
 
 	* coders/png.c: Fixes for CERT security alert TA04-217A described
