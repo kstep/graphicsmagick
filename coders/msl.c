@@ -553,6 +553,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
   /*
     Called when an opening tag has been processed.
   */
+  GetExceptionInfo(&exception);
   msl_info=(MSLInfo *) context;
   if (msl_info->debug)
     (void) fprintf(stdout,"  SAX.startElement(%.1024s",(char *) name);
