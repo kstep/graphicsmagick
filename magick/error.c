@@ -205,6 +205,8 @@ static void DefaultWarningHandler(const ExceptionType warning,
     message);
   if (qualifier != (char *) NULL)
     (void) fprintf(stderr," (%.1024s)",qualifier);
+  if ((warning != OptionWarning) && errno)
+    (void) fprintf(stderr," [%.1024s]",strerror(errno));
   (void) fprintf(stderr,".\n");
 }
 

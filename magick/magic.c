@@ -367,7 +367,7 @@ static int ReadMagicConfigurationFile(const char* path)
   return True;
 }
 /* Initialize magic_test_list */
-static void InitializeMagic(void)
+static unsigned int InitializeMagic(void)
 {
   char
     orig_path[MaxTextExtent],
@@ -384,7 +384,7 @@ static void InitializeMagic(void)
           strcat(path,"magic.mgk");
           chdir(orig_path);
           if(ReadMagicConfigurationFile(path) == True)
-            return;
+            return(True);
         }
     }
 
@@ -392,7 +392,10 @@ static void InitializeMagic(void)
   strcat(path,DirectorySeparator);
   strcat(path,"magic.mgk");
 
-  ReadMagicConfigurationFile(path);
+          if(ReadMagicConfigurationFile(path) == True)
+            return(True);
+  strcpy(path,"magic.mgk");
+          return(ReadMagicConfigurationFile(path));
 }
 Export unsigned int SetImageMagic(char* magic,
                                   const unsigned char *magick,
@@ -402,7 +405,8 @@ Export unsigned int SetImageMagic(char* magic,
     i;
 
   if(magic_test_list == (MagicTest**) NULL)
-    InitializeMagic();
+    if (InitializeMagic() == False)
+      return(False);
 
   if(magic_test_list == (MagicTest**) NULL)
     MagickError(FileOpenError,"Failed read file magic.mgk",NULL);

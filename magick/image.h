@@ -935,7 +935,7 @@ extern Export void
   UnregisterHTMImage(void),
   UnregisterHTMLImage(void),
   UnregisterICBImage(void),
-  UnregisterICCImage(void),
+  UnregisterICMImage(void),
   UnregisterICONImage(void),
   UnregisterIMPLICITImage(void),
   UnregisterIPTCImage(void),
