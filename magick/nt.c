@@ -832,8 +832,11 @@ Export DIR *opendir(char *path)
   (void) strcpy(file_specification,path);
   entry=(DIR *) AllocateMemory(sizeof(DIR));
   if (entry != (DIR *) NULL)
-    entry->hSearch=
-      FindFirstFile(file_specification,&entry->Win32FindData);
+    { 
+      entry->firsttime=TRUE;
+      entry->hSearch=
+        FindFirstFile(file_specification,&entry->Win32FindData);
+    }
   if (entry->hSearch == INVALID_HANDLE_VALUE)
     {
       (void) strcat(file_specification,"/*.*");
@@ -876,9 +879,15 @@ Export struct dirent *readdir(DIR *entry)
   static struct dirent
     file_info;
 
-  status=FindNextFile(entry->hSearch,&entry->Win32FindData);
-  if (status == 0)
+  if (entry == (DIR *) NULL)
     return((struct dirent *) NULL);
+  if (!entry->firsttime)
+    {
+      status=FindNextFile(entry->hSearch,&entry->Win32FindData);
+      if (status == 0)
+        return((struct dirent *) NULL);
+    }
+  entry->firsttime=FALSE;
   (void) strcpy(file_info.d_name,entry->Win32FindData.cFileName);
   file_info.d_namlen=strlen(file_info.d_name);
   return(&file_info);

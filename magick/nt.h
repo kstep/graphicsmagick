@@ -47,6 +47,9 @@ typedef struct _DIR
  
   WIN32_FIND_DATA
     Win32FindData;
+
+  BOOL
+    firsttime;
 } DIR;
 
 struct dirent
