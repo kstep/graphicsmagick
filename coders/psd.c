@@ -584,7 +584,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "return ReadPSDImage()");
     }
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,"UnableToOpenFile",image)
   }
 
   /*
@@ -599,7 +599,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  File signature was %.4s instead of '8BPS'", psd_info.signature );
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
         }
-    ThrowReaderException(CorruptImageError,"NotAPSDImageFile",image);
+    ThrowReaderException(CorruptImageError,"NotAPSDImageFile",image)
   }
   (void) ReadBlob(image,6,(char *) psd_info.reserved);
   psd_info.channels=ReadBlobMSBShort(image);
@@ -638,7 +638,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  allocation of ImageColorMap failed");
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
       }
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image)
     }
       image->matte=psd_info.channels >= 2;
     if(logging)
@@ -677,7 +677,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
         }
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
-              image);
+              image)
       }
           ReadBlob(image,length,data);
           LiberateMemory((void **) &data);
@@ -694,7 +694,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
         }
             ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
-              image);
+              image)
       }
           for (i=0; i < (long) image->colors; i++)
             image->colormap[i].red=ScaleCharToQuantum(ReadBlobByte(image));
@@ -725,7 +725,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  allocation of resources/IPTC failed");
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
       }
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image)
     }
       count=ReadBlob(image,length,(char *) data);
       if ((count == 0) || (LocaleNCompare((char *) data,"8BIM",4) != 0)) {
@@ -734,7 +734,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  image resources invalid");
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
       }
-        ThrowReaderException(CorruptImageError,"NotAPSDImageFile",image);
+        ThrowReaderException(CorruptImageError,"NotAPSDImageFile",image)
     }
       image->iptc_profile.info=data;
       image->iptc_profile.length=length;
@@ -795,7 +795,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  allocation of LayerInfo failed");
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
       }
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image)
     }
       (void) memset(layer_info,0,number_layers*sizeof(LayerInfo));
       for (i=0; i < number_layers; i++)
@@ -835,7 +835,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  layer type was %.4s instead of 8BIM", type);
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
       }
-          ThrowReaderException(CorruptImageError,"NotAPSDImageFile",image);
+          ThrowReaderException(CorruptImageError,"NotAPSDImageFile",image)
     }
         (void) ReadBlob(image,4,(char *) layer_info[i].blendkey);
         layer_info[i].opacity=(Quantum) (MaxRGB-ScaleCharToQuantum(ReadBlobByte(image)));
