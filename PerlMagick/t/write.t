@@ -89,11 +89,12 @@ testReadWrite( 'MTV:input.mtv',
 
 print("Xv's visual schnauzer format ...\n");
 ++$test;
-testReadWrite( 'P7:input_p7.p7',
-  'P7:output_p7.p7',
-  q//,
-  '7991d81cfd8e9674f652a41ef6364d8d55c1bbe49c3d9b8001a7d24a28f365e2',
-  '902f90fdc4e1813085040f2adf1f47c34ccc1b116f00f15fcc606545a62e0494' );
+#testReadWrite( 'P7:input_p7.p7',
+#  'P7:output_p7.p7',
+#  q//,
+#  '7991d81cfd8e9674f652a41ef6364d8d55c1bbe49c3d9b8001a7d24a28f365e2',
+#  '902f90fdc4e1813085040f2adf1f47c34ccc1b116f00f15fcc606545a62e0494' );
+testReadWriteCompare( 'input.miff', 'P7:output_p7.p7', 'P7:reference/write/output_p7.miff', q//, q/dither=>0/,0, 0, 0);
 
 print("Portable bitmap format (black and white), ASCII format ...\n");
 ++$test;
@@ -101,7 +102,6 @@ testReadWrite( 'PBM:input_p1.pbm',
   'PBM:output_p1.pbm',
   q/compression=>'None'/,
   '2b48bcf7d93cc31a8deb3026d872f1bb0a300b0f4e177423e5301adc638179e4');
-
 
 print("Portable bitmap format (black and white), binary format ...\n");
 ++$test;
