@@ -129,17 +129,18 @@ MagickExport Image *CloneImageList(const Image *images,ExceptionInfo *exception)
 %
 %  The format of the DeleteImageList method is:
 %
-%      unsigned int DeleteImageList(Image *images,const unsigned long n)
+%      unsigned int DeleteImageList(Image *images,const unsigned long offset)
 %
 %  A description of each parameter follows:
 %
 %    o images: The image list.
 %
-%    o n: The position within the list.
+%    o offset: The position within the list.
 %
 %
 */
-MagickExport unsigned int DeleteImageList(Image *images,const unsigned long n)
+MagickExport unsigned int DeleteImageList(Image *images,
+  const unsigned long offset)
 {
   Image
     *image;
@@ -153,7 +154,7 @@ MagickExport unsigned int DeleteImageList(Image *images,const unsigned long n)
   while (images->previous != (Image *) NULL)
     images=images->previous;
   for (i=0; images != (Image *) NULL; images=images->next)
-    if (i++ == n)
+    if (i++ == offset)
       break;
   if (images == (Image *) NULL)
     return(False);
@@ -227,21 +228,21 @@ MagickExport void DestroyImageList(Image *images)
 %
 %  The format of the GetImageList method is:
 %
-%      Image *GetImageList(const Image *images,const unsigned long n,
+%      Image *GetImageList(const Image *images,const unsigned long offset,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o images: The image list.
 %
-%    o n: The position within the list.
+%    o offset: The position within the list.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
 %
 %
 */
-MagickExport Image *GetImageList(const Image *images,const unsigned long n,
+MagickExport Image *GetImageList(const Image *images,const unsigned long offset,
   ExceptionInfo *exception)
 {
   register long
@@ -253,7 +254,7 @@ MagickExport Image *GetImageList(const Image *images,const unsigned long n,
   while (images->previous != (Image *) NULL)
     images=images->previous;
   for (i=0; images != (Image *) NULL; images=images->next)
-    if (i++ == n)
+    if (i++ == offset)
       break;
   if (images == (Image *) NULL)
     return((Image *) NULL);
@@ -587,7 +588,7 @@ MagickExport Image *ReverseImageList(const Image *images,
 %  The format of the SetImageList method is:
 %
 %      unsigned int SetImageList(Image *images,const Image *image,
-%        ExceptionInfo *exception)
+%        const unsigned long offset,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -595,12 +596,14 @@ MagickExport Image *ReverseImageList(const Image *images,
 %
 %    o image: The image.
 %
+%    o offset: The position within the list.
+%
 %    o exception: Return any errors or warnings in this structure.
 %
 %
 */
 MagickExport unsigned int SetImageList(Image **images,const Image *image,
-  const unsigned long n,ExceptionInfo *exception)
+  const unsigned long offset,ExceptionInfo *exception)
 {
   Image
     *next;
@@ -614,7 +617,7 @@ MagickExport unsigned int SetImageList(Image **images,const Image *image,
   assert(image->signature == MagickSignature);
   if ((*images) == (Image *) NULL)
     {
-      if (n > 0)
+      if (offset > 0)
         return(False);
       *images=CloneImageList(image,exception);
       return(*images != (Image *) NULL);
@@ -622,7 +625,7 @@ MagickExport unsigned int SetImageList(Image **images,const Image *image,
   assert((*images)->signature == MagickSignature);
   for (next=(*images); next->next != (Image *) NULL; next=next->next);
   for (i=0; next != (Image *) NULL; next=next->next)
-    if (i++ == n)
+    if (i++ == offset)
       break;
   if (next == (Image *) NULL)
     return(False);
@@ -673,6 +676,94 @@ MagickExport Image *ShiftImageList(Image **images)
     (*images)->previous=(Image *) NULL;
   image->next=(Image *) NULL;
   return(image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S p l i c e I m a g e L i s t                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SpliceImageList() removes the images designated by offset and length from
+%  the list and replaces them with the specified list.
+%
+%  The format of the SpliceImageList method is:
+%
+%      Image *SpliceImageList(Image *images,const unsigned long offset,
+%        const unsigned long length,const Image *splices,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o images: The image list.
+%
+%    o offset: The position within the list.
+%
+%    o offset: The length of the image list to remove.
+%
+%    o splice: Replace the removes image list with this list.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+%
+*/
+MagickExport Image *SpliceImageList(Image *images,const unsigned long offset,
+  const unsigned long length,const Image *splices,ExceptionInfo *exception)
+{
+  Image
+	  *splice;
+
+  register long
+    i;
+
+  register Image
+    *p,
+    *q;
+
+  if (images == (Image *) NULL)
+    return((Image *) NULL);
+  assert(images->signature == MagickSignature);
+  while (images->previous != (Image *) NULL)
+    images=images->previous;
+  for (i=0; images != (Image *) NULL; images=images->next)
+    if (i++ == offset)
+      break;
+  if (images == (Image *) NULL)
+    return((Image *) NULL);
+  p=images;
+  for (i=1; images != (Image *) NULL; images=images->next)
+    if (i++ == length)
+      break;
+  if (images == (Image *) NULL)
+    return((Image *) NULL);
+  splice=CloneImageList(splices,exception);
+	if (splice == (Image *) NULL)
+	  return((Image *) NULL);
+  q=images;
+  if (p->previous != (Image *) NULL)
+    {
+      p->previous->next=splice;
+      if (splice != (Image *) NULL)
+        splice->previous=p->previous;
+    }
+  p->previous=(Image *) NULL;
+  if (splice != (Image *) NULL)
+	  while (splice->next != (Image *) NULL)
+		  splice=splice->next;
+  if (q->next != (Image *) NULL)
+    {
+      q->next->previous=splice;
+      if (splice != (Image *) NULL)
+        splice->next=q->next;
+    }
+  q->next=(Image *) NULL;
+  return(p);
 }
 
 /*

@@ -16,7 +16,9 @@ extern MagickExport Image
   *NewImageList(void),
   *PopImageList(Image **),
   *ReverseImageList(const Image *,ExceptionInfo *),
-  *ShiftImageList(Image **);
+  *ShiftImageList(Image **),
+  *SpliceImageList(Image *,const unsigned long,const unsigned long,
+	  const Image *,ExceptionInfo *);
 
 extern MagickExport size_t
   GetImageListSize(const Image *);
