@@ -340,11 +340,14 @@ static unsigned int
 */
 static unsigned int CompressColormapTransFirst(Image *image)
 {
+#if 0  /* Doesn't always work, so disabled for now. */
   IndexPacket
     index;
 
   int
+    new_number_colors,
     number_colors,
+    remap_needed,
     j,
     y;
 
@@ -416,24 +419,24 @@ static unsigned int CompressColormapTransFirst(Image *image)
     if (marker[i])
       {
         for (j=i+1; j<number_colors; j++)
-          if (marker[j] && (opacity[i] == opacity[j]) &&
+          if ((opacity[i] == opacity[j]) &&
               (ColorMatch(image->colormap[i],image->colormap[j],0)))
             marker[j]=False;
        }
   /*
     Count colors that still remain.
   */
-  image->colors=0;
+  new_number_colors=0;
   have_transparency=False;
   for (i=0; i < number_colors; i++)
     if (marker[i])
       {
-        image->colors++;
+        new_number_colors++;
         if (opacity[i] != OpaqueOpacity)
           have_transparency=True;
       }
   if ((!have_transparency || (opacity[0] == TransparentOpacity)) &&
-      ((int) image->colors == number_colors))
+      (new_number_colors == number_colors))
     {
       /*
         No duplicate or unused entries, and transparency-swap not needed
@@ -480,11 +483,13 @@ static unsigned int CompressColormapTransFirst(Image *image)
   {
     if (marker[i])
       {
-        for (j=i+1; j < image->colors; j++)
+        for (j=i+1; j < number_colors; j++)
         {
-          if ((opacity[i] == opacity[j]) &&
+          if (marker[j] && (opacity[i] == opacity[j]) &&
               (ColorMatch(image->colormap[i],image->colormap[j],0)))
-            map[j]=map[i];
+            {
+               map[j]=map[i];
+            }
         }
       }
   }
@@ -504,7 +509,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
       /*
         Move the first transparent color to palette entry 0.
       */
-      for (i=1; i < image->colors; i++)
+      for (i=1; i < number_colors; i++)
       {
         if (opacity[i] == TransparentOpacity)
           {
@@ -517,36 +522,53 @@ static unsigned int CompressColormapTransFirst(Image *image)
             for (j=0; j < number_colors; j++)
             {
               if (map[j] == 0)
+                {
                 map[j]=(unsigned short) i;
+                }
               else
                 if (map[j] == i)
+                {
                   map[j]=0;
+                }
             }
             break;
           }
       }
    }
   LiberateMemory((void **) &opacity);
-  /*
-    Remap pixels.
-  */
-  for (y=0; y < (int) image->rows; y++)
+
+  remap_needed=False;
+  for (i=new_number_colors; i < number_colors; i++)
   {
-    p=GetImagePixels(image,0,y,image->columns,1);
-    if (p == (PixelPacket *) NULL)
-      break;
-    indexes=GetIndexes(image);
-    for (x=0; x < (int) image->columns; x++)
-    {
-      index=indexes[x];
-      indexes[x]=map[index];
-    }
-    if (!SyncImagePixels(image))
-      break;
+    if (marker[i])
+       remap_needed=True;
   }
+  if(remap_needed)
+    {
+      /*
+        Remap pixels.
+      */
+      printf("remapping.\n");
+      for (y=0; y < (int) image->rows; y++)
+      {
+        p=GetImagePixels(image,0,y,image->columns,1);
+        if (p == (PixelPacket *) NULL)
+          break;
+        indexes=GetIndexes(image);
+        for (x=0; x < (int) image->columns; x++)
+        {
+          index=indexes[x];
+          indexes[x]=(IndexPacket) map[index];
+        }
+        if (!SyncImagePixels(image))
+          break;
+      }
+      LiberateMemory((void **) &image->colormap);
+      image->colormap=colormap;
+    }
+  image->colors=new_number_colors;
   LiberateMemory((void **) &map);
-  LiberateMemory((void **) &image->colormap);
-  image->colormap=colormap;
+#endif
   return(True);
 }
 
@@ -1079,8 +1101,10 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image_found,
     have_mng_structure,
     object_id,
+#if 0
 #if (QuantumDepth == 8)
     reduction_warning,
+#endif
 #endif
     term_chunk_found,
     skip_to_iend,
@@ -1137,7 +1161,9 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   unsigned int
     framing_mode = 1,
     mandatory_back = 0,
+#if 0
     mng_background_object = 0,
+#endif
 #ifdef MNG_LEVEL
     mng_level,
 #endif
@@ -1163,8 +1189,10 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #ifdef MNG_LEVEL
   mng_level=MNG_LEVEL;
 #endif
+#if 0
 #if (QuantumDepth == 8)
   reduction_warning=False;
+#endif
 #endif
   /*
     Open image file.
@@ -1481,8 +1509,10 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 mng_background_color.blue=
                   (unsigned short) XDownScale((p[4]<<8) | p[5]);
               }
+#if 0
             if (length > 8)
               mng_background_object=(p[7] << 8) | p[8];
+#endif
             LiberateMemory((void **) &chunk);
             continue;
           }
