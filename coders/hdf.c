@@ -416,6 +416,7 @@ ModuleExport void RegisterHDFImage(void)
 {
   MagickInfo
     *entry;
+
 #if defined(HasHDF)
   entry=SetMagickInfo("HDF");
   entry->decoder=ReadHDFImage;
