@@ -45,6 +45,13 @@ testReadWrite( 'DCX:input.dcx',
   q//,
   'a5d122b2b7a0944d835243afd4a81815bbea5bc1ae6c3a6ba79301662b4474a1');
 
+print("Microsoft Windows 3.X DIB file ...\n");
+++$test;
+testReadWrite( 'DIB:input.dib',
+  'DIB:output.dib',
+  q//,
+  'a5d122b2b7a0944d835243afd4a81815bbea5bc1ae6c3a6ba79301662b4474a1');
+
 print("Flexible Image Transport System ...\n");
 ++$test;
 testReadWrite( 'FITS:input.fits',
