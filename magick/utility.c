@@ -3200,7 +3200,7 @@ MagickExport void TemporaryFilename(char *filename)
 #else
   (void) tmpnam(filename);
 #endif
-  AppendImageFormat("tmp",filename);
+  (void) strcat(filename,".tmp");
 }
 
 /*
