@@ -1240,10 +1240,10 @@ static unsigned int RenderFreetype(Image *image,const DrawInfo *draw_info,
                   opacity=((*p) < 127 ? OpaqueOpacity : TransparentOpacity);
                 fill_color=draw_info->fill;
                 if (pattern != (Image *) NULL)
-                  fill_color=AcquireOnePixel(pattern,(long) ((unsigned long)
-                    (point.x+x-pattern->tile_info.x) % pattern->columns),(long)
-                    ((unsigned long) (point.y+y-pattern->tile_info.y) %
-                    pattern->rows),&image->exception);
+                  fill_color=AcquireOnePixel(pattern,
+                    (long) (point.x+x-pattern->tile_info.x) % pattern->columns,
+                    (long) (point.y+y-pattern->tile_info.y) % pattern->rows,
+										&image->exception);
                 opacity=((MaxRGB-opacity)*(MaxRGB-fill_color.opacity))/MaxRGB;
                 if (!active)
                   q=GetImagePixels(image,(long) ceil(point.x+x-0.5),
@@ -1547,9 +1547,9 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
         for (x=0; x < (long) annotate_image->columns; x++)
         {
           if (pattern != (Image *) NULL)
-            fill_color=AcquireOnePixel(pattern,(long) ((unsigned long)
-              (x-pattern->tile_info.x) % pattern->columns),(long)
-              ((unsigned long) (y-pattern->tile_info.y) % pattern->rows),
+            fill_color=AcquireOnePixel(pattern,
+              (long) (x-pattern->tile_info.x) % pattern->columns,
+              (long) (y-pattern->tile_info.y) % pattern->rows,
               &image->exception);
           q->opacity=(Quantum) (MaxRGB-(((MaxRGB-(double)
             PixelIntensityToQuantum(q))*(MaxRGB-fill_color.opacity))/

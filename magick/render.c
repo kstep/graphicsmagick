@@ -1291,8 +1291,8 @@ MagickExport unsigned int DrawClipPath(Image *image,const DrawInfo *draw_info,
   (void) QueryColorDatabase("none",&image->clip_mask->background_color,
     &image->exception);
   SetImage(image->clip_mask,TransparentOpacity);
-  (void) LogMagickEvent(RenderEvent,GetMagickModule(),"\nbegin clip-path %.1024s",
-    draw_info->clip_path);
+  (void) LogMagickEvent(RenderEvent,GetMagickModule(),
+    "\nbegin clip-path %.1024s",draw_info->clip_path);
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   (void) CloneString(&clone_info->primitive,attribute->value);
   (void) QueryColorDatabase("white",&clone_info->fill,&image->exception);
@@ -3418,7 +3418,8 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
         if (!SyncImagePixels(image))
           break;
       }
-      (void) LogMagickEvent(RenderEvent,GetMagickModule(),"    end draw-polygon");
+      (void) LogMagickEvent(RenderEvent,GetMagickModule(),
+        "    end draw-polygon");
       return(True);
     }
   /*
@@ -3447,8 +3448,8 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
       pattern=draw_info->fill_pattern;
       if (pattern != (Image *) NULL)
         fill_color=AcquireOnePixel(pattern,
-          (long) ((unsigned long) (x-pattern->tile_info.x) % pattern->columns),
-          (long) ((unsigned long) (y-pattern->tile_info.y) % pattern->rows),
+          (long) (x-pattern->tile_info.x) % pattern->columns,
+          (long) (y-pattern->tile_info.y) % pattern->rows,
           &image->exception);
       fill_opacity=MaxRGB-fill_opacity*(MaxRGB-fill_color.opacity);
       if (fill_opacity != TransparentOpacity)
@@ -3457,9 +3458,8 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
       pattern=draw_info->stroke_pattern;
       if (pattern != (Image *) NULL)
         stroke_color=AcquireOnePixel(pattern,
-          (long) ((unsigned long) (x-pattern->tile_info.x) % pattern->columns),
-          (long) ((unsigned long) (y-pattern->tile_info.y) % pattern->rows),
-          &image->exception);
+          (long) (x-pattern->tile_info.x) % pattern->columns,
+          (long) (y-pattern->tile_info.y) % pattern->rows,&image->exception);
       stroke_opacity=MaxRGB-stroke_opacity*(MaxRGB-stroke_color.opacity);
       if (stroke_opacity != TransparentOpacity)
         *q=AlphaComposite(&stroke_color,stroke_opacity,q,
@@ -3554,14 +3554,14 @@ static void LogPrimitiveInfo(const PrimitiveInfo *primitive_info)
     }
     case TextPrimitive:
     {
-      (void) LogMagickEvent(RenderEvent,GetMagickModule(),"TextPrimitive %ld,%ld",
-        x,y);
+      (void) LogMagickEvent(RenderEvent,GetMagickModule(),
+        "TextPrimitive %ld,%ld",x,y);
       return;
     }
     case ImagePrimitive:
     {
-      (void) LogMagickEvent(RenderEvent,GetMagickModule(),"ImagePrimitive %ld,%ld",
-        x,y);
+      (void) LogMagickEvent(RenderEvent,GetMagickModule(),
+        "ImagePrimitive %ld,%ld",x,y);
       return;
     }
     default:
@@ -3576,8 +3576,8 @@ static void LogPrimitiveInfo(const PrimitiveInfo *primitive_info)
     if (coordinates <= 0)
       {
         coordinates=(long) primitive_info[i].coordinates;
-        (void) LogMagickEvent(RenderEvent,GetMagickModule(),"    begin open (%ld)",
-          coordinates);
+        (void) LogMagickEvent(RenderEvent,GetMagickModule(),
+          "    begin open (%ld)",coordinates);
         p=point;
       }
     point=primitive_info[i].point;
@@ -3680,9 +3680,9 @@ MagickExport unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
                 }
               if (pattern != (Image *) NULL)
                 {
-                  color=AcquireOnePixel(pattern,(long) ((unsigned long)
-                    (x-pattern->tile_info.x) % pattern->columns),(long)
-                    ((unsigned long) (y-pattern->tile_info.y) % pattern->rows),
+                  color=AcquireOnePixel(pattern,
+                    (long) (x-pattern->tile_info.x) % pattern->columns,
+                    (long) (y-pattern->tile_info.y) % pattern->rows,
                     &image->exception);
                   if (!pattern->matte)
                     color.opacity=OpaqueOpacity;
