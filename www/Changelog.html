@@ -53,11 +53,48 @@
 </tr>
 </table>
 <p>
+2003-10-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/tiff.c (ReadTIFFImage): Improved logging information.
+        (WriteTIFFImage): Changed the way the bilevel/grayscale logic
+        works.  Now bilevel images are treated similar to any other
+        grayscale image unless CCITT FAX3 or FAX4 compression is requested
+        (which selects the MINISWHITE photometric).  The default is now to
+        write uncompressed bilevel images with MINISBLACK photometric.
+  <LI> PerlMagick/t/composite.t: Use some reasonable error values.
+  <LI> magick/image.c (GetImageDepth): Added special cases for
+        colormapped images and monochrome images in order to improve
+        performance.
+
+</UL>
+<p>
+2003-10-09  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
+
+<UL>
+  <LI> NEWS: added info about color scaling, sampling-factor, and
+        changed a reference to "-coder-options" to "-define".
+
+</UL>
+<p>
+2003-10-09  Lars Ruben Skyum  &lt;lars.skyum@stibo.com&gt;
+
+<UL>
+  <LI> VisualMagick/bin/modules.mgk: added EPS3 mapping to PS3 module.
+  <LI> coders/ps3.c, coders/tiff.c, magick/command.c, magick/image.c,
+        magick/image.h, magick/utility.c: Changed -coder-options option to
+        -define. Also renamed functions {Add,Remove,Access}CoderOption(s)
+        to {Add,Remove,Access}Definition(s). Changed ps coder-specific
+        option ps:image=imagemask to just ps:imagemask.
+
+</UL>
+<p>
 2003-10-08  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
   <LI> coders/cineon.c: Imported and adapted Cineon image format coder
-        written by Kelly Bergougnoux with assistance from John Cristy.
+        written by Kelly Bergougnoux &lt;three3@users.sourceforge.net&gt; with
+        assistance from John Cristy.
 
 </UL>
 <p>
@@ -97,7 +134,7 @@
 <UL>
   <LI> magick/attribute.c (TraceSVGClippingPath): optimized for speed
         and precision in clipping mask generation by using lines to
-        connect Bezier curve control points where applicable.
+        connect Bezier curve anchor points where applicable.
 
 </UL>
 <p>
@@ -153,8 +190,8 @@
 2003-10-06  Lars Ruben Skyum  &lt;lars.skyum@stibo.com&gt;
 
 <UL>
-  <LI> magick/image.c (SetImageInfo): cleaned up parsing of sub-image
-        spcification (image.psd[0]). It would fail sometimes due to
+  <LI> magick/image.c (SetImageInfo): cleaned up parsing of subimage
+        specification (image.psd[0]). It would fail sometimes due to
         incorrect reuse of variables. It's a bit strange the code accepts
         more range syntax-variations than can be stored in ImageInfo.
 
@@ -212,7 +249,7 @@
   <LI> magick/image.c, magick/image.h: Added function
         RemoveCoderOptions. Added cast of signed char to unsigned char and
         int in calls to isspace and isprint.
-  <LI> magcik/utility.c: Added cast of signed char to unsigned char and
+  <LI> magick/utility.c: Added cast of signed char to unsigned char and
         int in calls to isspace and isprint. Added special handling of
         +coder-options option in ExpandFilenames function.
 
@@ -532,7 +569,7 @@
         old names, but at least they are shorter.
   <LI> magick/command.c: Linux's sscanf has the terrible bug that it
         improperly handles pulling out the first floating value from the
-        string "0x1".  Instead of retreiving the value 0 and returning 1,
+        string "0x1".  Instead of retrieving the value 0 and returning 1,
         it returns 0, probably because it rejects the string as a hex
         constant. As a result, all options which used sscanf to validate
         this input are now converted to use IsGeometry().

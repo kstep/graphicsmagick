@@ -2747,20 +2747,18 @@ MagickExport unsigned long GetImageDepth(const Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
 
-  for (y=0; y < (long) image->rows; y++)
+  if (image->is_monochrome)
+    return depth;
+
+  if ((image->storage_class == PseudoClass) && !(image->matte))
     {
-      p=AcquireImagePixels(image,0,y,image->columns,1,exception);
-      if (p == (const PixelPacket *) NULL)
-        break;
+      p=image->colormap;
       scale=MaxRGB / (MaxRGB >> (QuantumDepth-depth));
-      x=(long) image->columns;
-      while(x > 0)
+      for (x=image->colors ; x > 0; x--)
         {
           if ((p->red != scale*(p->red/scale)) ||
               (p->green != scale*(p->green/scale)) ||
-              (p->blue != scale*(p->blue/scale)) ||
-              (image->matte &&
-               (p->opacity != scale*((p->opacity/scale)))))
+              (p->blue != scale*(p->blue/scale)))
             {
               depth++;
               if (depth == QuantumDepth)
@@ -2769,10 +2767,40 @@ MagickExport unsigned long GetImageDepth(const Image *image,
               continue;
             }
           p++;
-          x--;
         }
-      if (depth == QuantumDepth)
-        break;
+    }
+  else
+    {
+      /*
+        Directclass
+      */
+      for (y=0; y < (long) image->rows; y++)
+        {
+          p=AcquireImagePixels(image,0,y,image->columns,1,exception);
+          if (p == (const PixelPacket *) NULL)
+            break;
+          scale=MaxRGB / (MaxRGB >> (QuantumDepth-depth));
+          x=(long) image->columns;
+          while(x > 0)
+            {
+              if ((p->red != scale*(p->red/scale)) ||
+                  (p->green != scale*(p->green/scale)) ||
+                  (p->blue != scale*(p->blue/scale)) ||
+                  (image->matte &&
+                   (p->opacity != scale*((p->opacity/scale)))))
+                {
+                  depth++;
+                  if (depth == QuantumDepth)
+                    break;
+                  scale=MaxRGB / (MaxRGB >> (QuantumDepth-depth));
+                  continue;
+                }
+              p++;
+              x--;
+            }
+          if (depth == QuantumDepth)
+            break;
+        }
     }
 
   return depth;

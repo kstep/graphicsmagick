@@ -86,6 +86,8 @@ Significant changes associated with GraphicsMagick 1.1 (Under development)
   <LI> Arc drawing is fixed.
   <LI> Command-line parsing bug under Linux due to Linux's sscanfs
     inability to parse strings like "0x1" as "%fx%f" is fixed.
+  <LI> Scaling of colors was slightly incorrect in BMP, AVI, DIB, and
+    TIM datastreams.
 
 </UL>
 <p>
@@ -103,11 +105,13 @@ Significant changes associated with GraphicsMagick 1.1 (Under development)
   <LI> Logging of thrown exceptions is now supported. Use '-debug
     exception'. This is useful to learn when and where errors are
     reported.<BR>
-  <LI> The -coder-options option is added in order to support supplying
+  <LI> The -define option is added in order to support supplying
     additional options to coders without needing to add additional
     command line options or structure members.
   <LI> The output of 'gm identify -verbose' now provides a nice dump
-    of EXIF data.
+    of EXIF data.<BR>
+  <LI> The -sampling-factor option now accepts as many HxV pairs as
+    there are JPEG components.  Omitted ones default to 1x1.
 
 </UL>
 <p>

@@ -146,6 +146,113 @@ static unsigned int IsTIFF(const unsigned char *magick,const size_t length)
 %
 */
 
+static const char *CompressionTagToString(unsigned int compress_tag)
+{
+  const char
+    *result = "Unknown";
+
+  switch (compress_tag)
+    {
+    case COMPRESSION_ADOBE_DEFLATE:
+      result="ZIP deflate (Adobe)";
+      break;
+#if defined(COMPRESSION_DEFLATE)
+    case COMPRESSION_DEFLATE:
+      result="ZIP deflate (Pixar)";
+      break;
+#endif
+    case COMPRESSION_CCITTFAX3:
+      result="CCITT Group 3 fax";
+      break;
+    case COMPRESSION_CCITTFAX4:
+      result="CCITT Group 4 fax";
+      break;
+    case COMPRESSION_CCITTRLE:
+      result="CCITT modified Huffman RLE";
+      break;
+    case COMPRESSION_CCITTRLEW:
+      result="CCITT modified Huffman RLE (Word aligned)";
+      break;
+#if defined(COMPRESSION_OJPEG)
+    case COMPRESSION_OJPEG:
+      result="JPEG DCT (Old)";
+      break;
+#endif
+    case COMPRESSION_JPEG:
+      result="JPEG DCT";
+      break;
+#if defined(COMPRESSION_JBIG)
+    case COMPRESSION_JBIG:
+      result="JBIG";
+      break;
+#endif
+    case COMPRESSION_LZW:
+      result="LZW";
+      break;
+#if defined(COMPRESSION_NEXT)
+    case COMPRESSION_NEXT:
+      result="NeXT 2-bit RLE";
+      break;
+#endif
+    case COMPRESSION_NONE:
+      result="not compressed";
+      break;
+    case COMPRESSION_PACKBITS:
+      result="Macintosh RLE (Packbits)";
+      break;
+#if defined(COMPRESSION_THUNDERSCAN)
+    case COMPRESSION_THUNDERSCAN:
+      result="ThunderScan RLE";
+      break;
+#endif
+  }
+  return result;
+}
+
+static const char *PhotometricTagToString(unsigned int photometric)
+{
+  const char
+    *result = "Unknown";
+  
+  switch (photometric)
+    {
+    case  PHOTOMETRIC_CIELAB:
+      result="CIELAB";
+      break;
+    case PHOTOMETRIC_LOGL:
+      result="CIE Log2(L)";
+      break;
+    case PHOTOMETRIC_LOGLUV:
+      result="LOGLUV";
+      break;
+#if defined(PHOTOMETRIC_MASK)
+    case PHOTOMETRIC_MASK:
+      result="MASK";
+      break;
+#endif
+    case PHOTOMETRIC_MINISBLACK:
+      result="MINISBLACK";
+      break;
+    case PHOTOMETRIC_MINISWHITE:
+      result="MINISWHITE";
+      break;
+    case PHOTOMETRIC_PALETTE:
+      result="PALETTE";
+      break;
+    case PHOTOMETRIC_RGB:
+      result="RGB";
+      break;
+    case PHOTOMETRIC_SEPARATED:
+      result="SEPARATED";
+      break;
+    case PHOTOMETRIC_YCBCR:
+      result="YCBCR";
+      break;
+    }
+
+  return result;
+}
+
 #if defined(ICC_SUPPORT)
 static unsigned int ReadColorProfile(char *text,long int length,Image *image)
 {
@@ -463,51 +570,10 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           "Min sample value: %u",min_sample_value);
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
           "Max sample value: %u",max_sample_value);
-        switch (photometric)
-        {
-          case PHOTOMETRIC_MINISBLACK:
-          {
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "Photometric: MINISBLACK");
-            break;
-          }
-          case PHOTOMETRIC_MINISWHITE:
-          {
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "Photometric: MINISBLACK");
-            break;
-          }
-          case PHOTOMETRIC_PALETTE:
-          {
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "Photometric: PALETTE");
-            break;
-          }
-          case PHOTOMETRIC_RGB:
-          {
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "Photometric: RGB");
-            break;
-          }
-          case PHOTOMETRIC_CIELAB:
-          {
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "Photometric: CIELAB");
-            break;
-          }
-          case PHOTOMETRIC_SEPARATED:
-          {
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "Photometric: SEPARATED");
-            break;
-          }
-          default:
-          {
-            (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-              "Photometric interpretation: %u",photometric);
-            break;
-          }
-        }
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+           "Photometric: %s", PhotometricTagToString(photometric));
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+           "Compression: %s", CompressionTagToString(compress_tag));
       }
     if (photometric == PHOTOMETRIC_CIELAB)
       {
@@ -579,7 +645,13 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
     }
     image->columns=width;
     image->rows=height;
-    image->depth=bits_per_sample <= 8 ? 8 : bits_per_sample;
+
+    if (photometric == PHOTOMETRIC_PALETTE)
+      /* Bits per sample has nothing to do with colormapped image
+         depth */
+      image->depth=8;
+    else
+      image->depth=bits_per_sample;  /* FIXME */
     if (logging)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Image depth: %lu",
         image->depth);
@@ -855,6 +927,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
                 break;
         }
         MagickFreeMemory(scanline);
+/*         image->depth=GetImageDepth(image,exception); */
         break;
       }
       case DirectClassScanLineMethod:
@@ -1504,65 +1577,6 @@ static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
 }
 #endif
 
-static const char *CompressionTagToString(unsigned int compress_tag)
-{
-  const char
-    *result = "Unknown";
-
-  switch (compress_tag)
-    {
-    case COMPRESSION_ADOBE_DEFLATE:
-      result="ZIP deflate";
-      break;
-    case COMPRESSION_CCITTFAX3:
-      result="CCITT FAX3";
-      break;
-    case COMPRESSION_CCITTFAX4:
-      result="CCITT FAX4";
-      break;
-    case COMPRESSION_JPEG:
-      result="JPEG";
-      break;
-    case COMPRESSION_LZW:
-      result="LZW";
-      break;
-    case COMPRESSION_NONE:
-      result="no";
-      break;
-    case COMPRESSION_PACKBITS:
-      result="PACKBITS";
-      break;
-  }
-  return result;
-}
-
-static const char *PhotometricTagToString(unsigned int photometric)
-{
-  const char
-    *result = "Unknown";
-
-  switch (photometric)
-    {
-    case PHOTOMETRIC_MINISBLACK:
-      result="MINISBLACK";
-      break;
-    case PHOTOMETRIC_MINISWHITE:
-      result="MINISWHITE";
-      break;
-    case PHOTOMETRIC_PALETTE:
-      result="PALETTE";
-      break;
-    case PHOTOMETRIC_RGB:
-      result="RGB";
-      break;
-    case PHOTOMETRIC_SEPARATED:
-      result="SEPARATED";
-      break;
-    }
-
-  return result;
-}
-
 static int32 TIFFWritePixels(TIFF *tiff,tdata_t scanline,unsigned long row,
   tsample_t sample,Image *image)
 {
@@ -1692,6 +1706,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     status;
 
   unsigned long
+    depth,
     scene,
     strip_size;
 
@@ -1732,18 +1747,20 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   scene=0;
   do
   {
+    /*
+      Initialize TIFF fields.
+    */
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_SAMPLESPERPIXEL,
                                  &samples_per_pixel);
     (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_BITSPERSAMPLE,
                                  &bits_per_sample);
-    /*
-      Initialize TIFF fields.
-    */
     if (LocaleCompare(image_info->magick,"PTIF") == 0)
       if (image->previous != (Image *) NULL)
         (void) TIFFSetField(tiff,TIFFTAG_SUBFILETYPE,FILETYPE_REDUCEDIMAGE);
     (void) TIFFSetField(tiff,TIFFTAG_IMAGELENGTH,(uint32) image->rows);
     (void) TIFFSetField(tiff,TIFFTAG_IMAGEWIDTH,(uint32) image->columns);
+
+    depth=image->depth;
     bits_per_sample=8;
     compress_tag=COMPRESSION_NONE;
     switch (image->compression)
@@ -1773,7 +1790,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       {
         compress_tag=COMPRESSION_JPEG;
         image->storage_class=DirectClass;
-        image->depth=8;
+        depth=8;
         if (logging)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "Set image type to DirectClass");
@@ -1805,7 +1822,34 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         break;
       }
     }
-    if (image->depth > 8)
+
+    switch (image_info->compression)
+    {
+      case NoCompression: compress_tag=COMPRESSION_NONE; break;
+#ifdef CCITT_SUPPORT
+      case FaxCompression: compress_tag=COMPRESSION_CCITTFAX3; break;
+      case Group4Compression: compress_tag=COMPRESSION_CCITTFAX4; break;
+#endif
+#ifdef JPEG_SUPPORT
+      case JPEGCompression: compress_tag=COMPRESSION_JPEG; break;
+#endif
+#ifdef HasLZW
+      case LZWCompression: compress_tag=COMPRESSION_LZW; break;
+#endif
+#ifdef PACKBITS_SUPPORT
+      case RLECompression:
+        compress_tag=COMPRESSION_PACKBITS; break;
+#endif
+#ifdef ZIP_SUPPORT
+      case ZipCompression: compress_tag=COMPRESSION_ADOBE_DEFLATE; break;
+#endif
+      default: break;
+    }
+    if (logging)
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+        "Using %s compression", CompressionTagToString(compress_tag));
+
+    if (depth > 8)
       {
         bits_per_sample=16;
       }
@@ -1814,6 +1858,9 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
          (image->colorspace == CMYKColorspace)) ||
          (image_info->colorspace == CMYKColorspace))
       {
+        /*
+          CMYK Image
+        */
         photometric=PHOTOMETRIC_SEPARATED;
         samples_per_pixel=4;
         (void) TIFFSetField(tiff,TIFFTAG_INKSET,INKSET_CMYK);
@@ -1824,75 +1871,67 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     else
       {
         /*
-          Full color TIFF raster.
+          RGB or Gray Image.
         */
         TransformColorspace(image,RGBColorspace);
         photometric=PHOTOMETRIC_RGB;
         samples_per_pixel=3;
         if ((image_info->type != TrueColorType) &&
-            (compress_tag != COMPRESSION_ADOBE_DEFLATE) &&
-            (compress_tag != COMPRESSION_JPEG) &&
-            (compress_tag != COMPRESSION_LZW))
+            (compress_tag != COMPRESSION_JPEG))
           {
             if ((image_info->type != PaletteType) &&
                 IsGrayImage(image,&image->exception))
               {
+                /*
+                  Grayscale Image
+                  
+                  Produce a compact gray image by testing the
+                  image pixels for depth and storing with a
+                  portable bits-per-sample value which is the best
+                  match for the depth.
+                */
+                photometric=PHOTOMETRIC_MINISBLACK;
                 samples_per_pixel=1;
+                depth=GetImageDepth(image,&image->exception);
 
-                if ((image->storage_class == PseudoClass) &&
-                    IsMonochromeImage(image,&image->exception))
+                if (depth == 1)
                   {
-                    /* Monochrome PseudoClass Image */
-                    bits_per_sample=1;
-                    photometric=PHOTOMETRIC_MINISWHITE;
-                    compress_tag=COMPRESSION_CCITTFAX4;
+                    if ((compress_tag == COMPRESSION_CCITTFAX3) ||
+                        (compress_tag == COMPRESSION_CCITTFAX4))
+                      photometric=PHOTOMETRIC_MINISWHITE;
                   }
-                else
-                  {
-                    /* Grayscale Image */
-                    unsigned long
-                      opacity_depth,
-                      depth;
 
-                    depth=GetImageDepth(image,&image->exception);
-                    opacity_depth=depth;
-                    if (image->matte)
-                      opacity_depth=GetImageChannelDepth(image,OpacityChannel,
-                        &image->exception);
-                    depth=Max(depth,opacity_depth);
-                    if (logging)
-                      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                        "Image depth %lu bits, %lu colormap entries",depth, image->colors);
-                    for (bits_per_sample=1; bits_per_sample < depth; )
-                      bits_per_sample*=2;
-                    photometric=PHOTOMETRIC_MINISBLACK;
-                  }
+                for (bits_per_sample=1; bits_per_sample < depth; )
+                  bits_per_sample*=2;
               }
             else
               if (image->storage_class == PseudoClass)
                 {
                   /*
-                    Colormapped TIFF raster.
+                    Colormapped Image.
                   */
-
+                  photometric=PHOTOMETRIC_PALETTE;
+                  samples_per_pixel=1;
                   bits_per_sample=1;
                   while ((1UL << bits_per_sample) < image->colors)
                     bits_per_sample*=2;
-                  samples_per_pixel=1;
-                  photometric=PHOTOMETRIC_PALETTE;
                 }
           }
       }
 
+    if (logging)
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+        "Image depth %lu bits",depth);
+
     if (image->matte)
       {
+        /*
+          Image has a matte channel.
+        */
         uint16
           extra_samples,
           sample_info[1];
 
-        /*
-          TIFF has a matte channel.
-        */
         samples_per_pixel += 1;
         extra_samples=1;
         /* sample_info[0]=EXTRASAMPLE_UNASSALPHA; */
@@ -1961,32 +2000,6 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         PhotometricTagToString(photometric),
         (unsigned int) samples_per_pixel,
         (unsigned int) bits_per_sample);
-
-    switch (image_info->compression)
-    {
-      case NoCompression: compress_tag=COMPRESSION_NONE; break;
-#ifdef CCITT_SUPPORT
-      case FaxCompression: compress_tag=COMPRESSION_CCITTFAX3; break;
-      case Group4Compression: compress_tag=COMPRESSION_CCITTFAX4; break;
-#endif
-#ifdef JPEG_SUPPORT
-      case JPEGCompression: compress_tag=COMPRESSION_JPEG; break;
-#endif
-#ifdef HasLZW
-      case LZWCompression: compress_tag=COMPRESSION_LZW; break;
-#endif
-#ifdef PACKBITS_SUPPORT
-      case RLECompression:
-        compress_tag=COMPRESSION_PACKBITS; break;
-#endif
-#ifdef ZIP_SUPPORT
-      case ZipCompression: compress_tag=COMPRESSION_ADOBE_DEFLATE; break;
-#endif
-      default: break;
-    }
-    if (logging)
-      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-        "Using %s compression", CompressionTagToString(compress_tag));
 
     (void) TIFFSetField(tiff,TIFFTAG_PHOTOMETRIC,photometric);
     (void) TIFFSetField(tiff,TIFFTAG_COMPRESSION,compress_tag);
@@ -2345,10 +2358,13 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                 /* Grayscale DirectClass */
                 for (x= image->columns; x > 0; --x)
                   {
-                    quantum=p->red/scale;
-                    if ((bits_per_sample == 1))
+                    if (photometric == PHOTOMETRIC_MINISWHITE)
                       /* PHOTOMETRIC_MINISWHITE */
-                      quantum ^= 0x01;
+                      quantum=(MaxRGB - p->red)/scale;
+                    else
+                      /* PHOTOMETRIC_MINISBLACK */
+                      quantum=p->red/scale;
+
                     BitStreamWrite(&bit_stream,bits_per_sample,quantum);
                     if (samples_per_pixel == 2)
                       /* with opacity sample */

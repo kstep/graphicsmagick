@@ -1,3 +1,16 @@
+2003-10-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (ReadTIFFImage): Improved logging information.
+	(WriteTIFFImage): Changed the way the bilevel/grayscale logic
+	works.  Now bilevel images are treated similar to any other
+	grayscale image unless CCITT FAX3 or FAX4 compression is requested
+	(which selects the MINISWHITE photometric).  The default is now to
+	write uncompressed bilevel images with MINISBLACK photometric.
+	* PerlMagick/t/composite.t: Use some reasonable error values.
+	* magick/image.c (GetImageDepth): Added special cases for
+	colormapped images and monochrome images in order to improve
+	performance.
+
 2003-10-09  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* NEWS: added info about color scaling, sampling-factor, and
@@ -15,7 +28,8 @@
 2003-10-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/cineon.c: Imported and adapted Cineon image format coder
-	written by Kelly Bergougnoux with assistance from John Cristy.
+	written by Kelly Bergougnoux <three3@users.sourceforge.net> with
+	assistance from John Cristy.
 
 2003-10-08  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
