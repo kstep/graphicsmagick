@@ -359,9 +359,6 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
     *box_image,
     *annotate_image;
 
-  ImageInfo
-    *local_info;
-
   int
     x,
     y;
@@ -381,9 +378,6 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
   assert(image != (Image *) NULL);
   assert(annotate_info != (AnnotateInfo *) NULL);
   if (!UncondenseImage(image))
-    return;
-  local_info=CloneImageInfo((ImageInfo *) NULL);
-  if (local_info == (ImageInfo *) NULL)
     return;
   /*
     Translate any embedded format characters (e.g. %f).
@@ -408,7 +402,6 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
     {
       MagickWarning(ResourceLimitWarning,"Unable to annotate image",
         "Memory allocation failed");
-      DestroyImageInfo(local_info);
       return;
     }
   width=image->columns;
@@ -436,12 +429,6 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
   /*
     Annotate image.
   */
-  CloneString(&local_info->server_name,annotate_info->server_name);
-  CloneString(&local_info->density,annotate_info->density);
-  local_info->pointsize=annotate_info->pointsize;
-  CloneString(&local_info->font,annotate_info->font);
-  CloneString(&local_info->pen,annotate_info->pen);
-  CloneString(&local_info->border_color,annotate_info->border_color);
   for (i=0; textlist[i] != (char *) NULL; i++)
   {
     if (*textlist[i] == '\0')
@@ -452,9 +439,9 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
     /*
       Convert text to image.
     */
-    FormatString(local_info->filename,"%.1024s",textlist[i]);
+    FormatString(annotate_info->image_info->filename,"%.1024s",textlist[i]);
     FreeMemory(textlist[i]);
-    annotate_image=ReadLABELImage(local_info);
+    annotate_image=ReadLABELImage(annotate_info->image_info);
     if (annotate_image == (Image *) NULL)
       {
         MagickWarning(ResourceLimitWarning,"Unable to annotate image",
@@ -462,7 +449,6 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
         for ( ; textlist[i] != (char *) NULL; i++)
           FreeMemory(textlist[i]);
         FreeMemory((char *) textlist);
-        DestroyImageInfo(local_info);
         break;
       }
     /*
@@ -534,16 +520,16 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
         break;
       }
     }
-    if (annotate_info->box != (char *) NULL)
+    if (annotate_info->image_info->box != (char *) NULL)
       {
         /*
           Surround text with a bounding box.
         */
-        (void) sprintf(local_info->filename,"xc:%.1024s",annotate_info->box);
-        (void) sprintf(size,"%ux%u",annotate_image->columns,
-          annotate_image->rows);
-        CloneString(&local_info->size,size);
-        box_image=ReadImage(local_info);
+        FormatString(annotate_info->image_info->filename,"xc:%.1024s",
+          annotate_info->image_info->box);
+        FormatString(size,"%ux%u",annotate_image->columns,annotate_image->rows);
+        CloneString(&annotate_info->image_info->size,size);
+        box_image=ReadImage(annotate_info->image_info);
         if (box_image != (Image *) NULL)
           {
             CompositeImage(image,ReplaceCompositeOp,box_image,
@@ -559,7 +545,6 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
   for ( ; textlist[i] != (char *) NULL; i++)
     FreeMemory(textlist[i]);
   FreeMemory((char *) textlist);
-  DestroyImageInfo(local_info);
 }
 
 /*
@@ -1382,7 +1367,7 @@ Export void ColorFloodfillImage(Image *image,const RunlengthPacket *target,
     /*
       Recolor neighboring pixels.
     */
-    pixel=image->pixels+(y*image->columns+x1);
+    pixel=PixelOffset(image,x1,y);
     for (x=x1; x >= 0 ; x--)
     {
       if (method == FloodfillMethod)
@@ -1413,7 +1398,7 @@ Export void ColorFloodfillImage(Image *image,const RunlengthPacket *target,
     {
       if (!skip)
         {
-          pixel=image->pixels+(y*image->columns+x);
+          pixel=PixelOffset(image,x,y);
           for ( ; x < (int) image->columns; x++)
           {
             if (method == FloodfillMethod)
@@ -1437,7 +1422,7 @@ Export void ColorFloodfillImage(Image *image,const RunlengthPacket *target,
             Push(y,x2+1,x-1,-offset);
         }
       skip=False;
-      pixel=image->pixels+(y*image->columns+x);
+      pixel=PixelOffset(image,x,y);
       for (x++; x <= x2; x++)
       {
         pixel++;
@@ -2642,11 +2627,8 @@ Export ImageInfo *CloneImageInfo(const ImageInfo *image_info)
 
   cloned_info=(ImageInfo *) AllocateMemory(sizeof(ImageInfo));
   if (cloned_info == (ImageInfo *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to clone image info",
-        "Memory allocation failed");
-      return((ImageInfo *) NULL);
-    }
+    MagickError(ResourceLimitWarning,"Unable to clone image info",
+      "Memory allocation failed");
   if (image_info == (ImageInfo *) NULL)
     {
       GetImageInfo(cloned_info);
@@ -3484,30 +3466,13 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
 Export void DestroyAnnotateInfo(AnnotateInfo *annotate_info)
 {
   assert(annotate_info != (AnnotateInfo *) NULL);
-  if (annotate_info->server_name != (char *) NULL)
-    FreeMemory((char *) annotate_info->server_name);
-  annotate_info->server_name=(char *) NULL;
-  if (annotate_info->density != (char *) NULL)
-    FreeMemory((char *) annotate_info->density);
-  annotate_info->density=(char *) NULL;
-  if (annotate_info->border_color != (char *) NULL)
-    FreeMemory((char *) annotate_info->border_color);
-  annotate_info->border_color=(char *) NULL;
-  if (annotate_info->font != (char *) NULL)
-    FreeMemory((char *) annotate_info->font);
-  annotate_info->font=(char *) NULL;
-  if (annotate_info->pen != (char *) NULL)
-    FreeMemory((char *) annotate_info->pen);
-  annotate_info->pen=(char *) NULL;
+  DestroyImageInfo(annotate_info->image_info);
   if (annotate_info->geometry != (char *) NULL)
     FreeMemory((char *) annotate_info->geometry);
   annotate_info->geometry=(char *) NULL;
   if (annotate_info->text != (char *) NULL)
     FreeMemory((char *) annotate_info->text);
   annotate_info->text=(char *) NULL;
-  if (annotate_info->box != (char *) NULL)
-    FreeMemory((char *) annotate_info->box);
-  annotate_info->box=(char *) NULL;
   if (annotate_info->primitive != (char *) NULL)
     FreeMemory((char *) annotate_info->primitive);
   annotate_info->primitive=(char *) NULL;
@@ -3862,7 +3827,8 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
     y;
 
   PointInfo
-    point;
+    point,
+    target;
 
   PrimitiveInfo
     *primitive_info;
@@ -3908,20 +3874,15 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
   if (!UncondenseImage(image))
     return;
   tile=(Image *) NULL;
-  if ((annotate_info->pen != (char *) NULL) && (*annotate_info->pen == '@'))
+  if ((annotate_info->image_info->pen != (char *) NULL) &&
+      (*annotate_info->image_info->pen == '@'))
     {
-      ImageInfo
-        *local_info;
-
       /*
         Read tiled pen.
       */
-      local_info=CloneImageInfo((ImageInfo *) NULL);
-      if (local_info == (ImageInfo *) NULL)
-        return;
-      (void) strcpy(local_info->filename,annotate_info->pen+1);
-      tile=ReadImage(local_info);
-      DestroyImageInfo(local_info);
+      (void) strcpy(annotate_info->image_info->filename,
+        annotate_info->image_info->pen+1);
+      tile=ReadImage(annotate_info->image_info);
       if (tile == (Image *) NULL)
         return;
       if (!UncondenseImage(tile))
@@ -4013,8 +3974,9 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
     Parse the primitive attributes.
   */
   (void) XQueryColorDatabase("black",&pen_color);
-  if ((annotate_info->pen == (char *) NULL) || (*annotate_info->pen != '@'))
-    (void) XQueryColorDatabase(annotate_info->pen,&pen_color);
+  if ((annotate_info->image_info->pen == (char *) NULL) ||
+      (*annotate_info->image_info->pen != '@'))
+    (void) XQueryColorDatabase(annotate_info->image_info->pen,&pen_color);
   primitive_type=UndefinedPrimitive;
   p=primitive;
   bounds.x1=image->columns-1;
@@ -4158,7 +4120,8 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
         */
         x=(int) (primitive_info[j+1].x-primitive_info[j].x);
         y=(int) (primitive_info[j+1].y-primitive_info[j].y);
-        radius=sqrt((double) (x*x+y*y))+annotate_info->linewidth/2.0+0.5;
+        radius=
+          sqrt((double) (x*x+y*y))+annotate_info->image_info->linewidth/2.0+0.5;
         point.x=Max(primitive_info[j].x-radius,0);
         point.y=Max(primitive_info[j].y-radius,0);
         if (point.x < bounds.x1)
@@ -4351,7 +4314,7 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
   /*
     Account for linewidth.
   */
-  mid=annotate_info->linewidth/2.0;
+  mid=annotate_info->image_info->linewidth/2.0;
   bounds.x1=Max(bounds.x1-mid,0);
   bounds.y1=Max(bounds.y1-mid,0);
   bounds.x2=Min(bounds.x2+ceil(mid),image->columns-1);
@@ -4368,15 +4331,16 @@ Export void DrawImage(Image *image,AnnotateInfo *annotate_info)
   image->class=DirectClass;
   for (y=(int) bounds.y1; y <= (int) bounds.y2; y++)
   {
-    q=image->pixels+y*image->columns+(int) bounds.x1;
+    target.y=y;
+    q=PixelOffset(image,bounds.x1,y);
     for (x=(int) bounds.x1; x <= (int) bounds.x2; x++)
     {
-      opacity=InsidePrimitive(primitive_info,annotate_info,x,y,image);
+      target.x=x;
+      opacity=InsidePrimitive(primitive_info,annotate_info,&target,image);
       if (opacity != Transparent)
         {
           if (tile != (Image *) NULL)
-            pixel=tile->pixels[(y % tile->rows)*
-              tile->columns+(x % tile->columns)];
+            pixel=(*PixelOffset(tile,x % tile->columns,y % tile->rows));
           q->red=(Quantum) ((long) (pixel.red*opacity+q->red*
             (Opaque-opacity))/Opaque);
           q->green=(Quantum) ((long) (pixel.green*opacity+q->green*
@@ -5201,34 +5165,23 @@ Export void GetAnnotateInfo(const ImageInfo *image_info,
 
   assert(image_info != (ImageInfo *) NULL);
   assert(annotate_info != (AnnotateInfo *) NULL);
-  annotate_info->server_name=AllocateString(image_info->server_name);
-  annotate_info->density=AllocateString(image_info->density);
-  annotate_info->pointsize=image_info->pointsize;
-  annotate_info->font=AllocateString(image_info->font);
-  annotate_info->font_name=(char *) NULL;
-  annotate_info->pen=AllocateString(image_info->pen);
-  annotate_info->border_color=AllocateString(image_info->border_color);
+  annotate_info->image_info=CloneImageInfo(image_info);
+  annotate_info->gravity=NorthWestGravity;
   annotate_info->geometry=(char *) NULL;
   annotate_info->text=(char *) NULL;
-  annotate_info->box=AllocateString(image_info->box);
   annotate_info->primitive=(char *) NULL;
-  annotate_info->linewidth=image_info->linewidth;
-  annotate_info->gravity=NorthWestGravity;
-  annotate_info->bounds.width=annotate_info->pointsize;
-  annotate_info->bounds.height=annotate_info->pointsize;
+  annotate_info->font_name=(char *) NULL;
+  annotate_info->bounds.width=annotate_info->image_info->pointsize;
+  annotate_info->bounds.height=annotate_info->image_info->pointsize;
   annotate_info->bounds.x=0;
   annotate_info->bounds.y=0;
-  if (annotate_info->font == (char *) NULL)
+  if (annotate_info->image_info->font == (char *) NULL)
     return;
   /*
     Get font bounds.
   */
-  local_info=CloneImageInfo(image_info);
-  if (local_info == (ImageInfo *) NULL)
-    return;
-  FormatString(local_info->filename,"%.1024s",Alphabet);
-  annotate_image=ReadLABELImage(local_info);
-  DestroyImageInfo(local_info);
+  FormatString(annotate_info->image_info->filename,"%.1024s",Alphabet);
+  annotate_image=ReadLABELImage(annotate_info->image_info);
   if (annotate_image == (Image *) NULL)
     return;
   if (annotate_image->label != (char *) NULL)
@@ -5287,6 +5240,7 @@ Export void GetImageInfo(ImageInfo *image_info)
   image_info->density=(char *) NULL;
   image_info->linewidth=1;
   image_info->adjoin=True;
+  image_info->alias=False;
   image_info->depth=QuantumDepth;
   image_info->dither=True;
   image_info->monochrome=False;
@@ -6140,7 +6094,7 @@ Export void MatteFloodfillImage(Image *image,const RunlengthPacket *target,
     /*
       Recolor neighboring pixels.
     */
-    pixel=image->pixels+(y*image->columns+x1);
+    pixel=PixelOffset(image,x1,y);
     for (x=x1; x >= 0 ; x--)
     {
       if (method == FloodfillMethod)
@@ -6167,7 +6121,7 @@ Export void MatteFloodfillImage(Image *image,const RunlengthPacket *target,
     {
       if (!skip)
         {
-          pixel=image->pixels+(y*image->columns+x);
+          pixel=PixelOffset(image,x,y);
           for ( ; x < (int) image->columns; x++)
           {
             if (method == FloodfillMethod)
@@ -6187,7 +6141,7 @@ Export void MatteFloodfillImage(Image *image,const RunlengthPacket *target,
             Push(y,x2+1,x-1,-offset);
         }
       skip=False;
-      pixel=image->pixels+(y*image->columns+x);
+      pixel=PixelOffset(image,x,y);
       for (x++; x <= x2 ; x++)
       {
         pixel++;
@@ -6635,10 +6589,8 @@ Export void ModulateImage(Image *image,const char *modulate)
 Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
   Image **image)
 {
-  AnnotateInfo
-    annotate_info;
-
   char
+    *geometry,
     *option;
 
   Image
@@ -6661,6 +6613,7 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
 
   unsigned int
     compress,
+    gravity,
     matte,
     height,
     width;
@@ -6673,9 +6626,10 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
   */
   assert(image_info != (ImageInfo *) NULL);
   assert(image != (Image **) NULL);
-  GetAnnotateInfo(image_info,&annotate_info);
   GetQuantizeInfo(&quantize_info);
   compress=(*image)->packets < (((*image)->columns*(*image)->rows*3) >> 2);
+  geometry=(char *) NULL;
+  gravity=ForgetGravity;
   map_image=(Image *) NULL;
   quantize_info.number_colors=0;
   quantize_info.tree_depth=0;
@@ -6707,19 +6661,9 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
     option=argv[i];
     if ((Extent(option) <= 1) || ((*option != '-') && (*option != '+')))
       continue;
-    if (strncmp("align",option+1,2) == 0)
+    if (strncmp("alias",option+1,3) == 0)
       {
-        annotate_info.gravity=WestGravity;
-        if (*option == '-')
-          {
-            option=argv[++i];
-            if (Latin1Compare("Left",option) == 0)
-              annotate_info.gravity=WestGravity;
-            if (Latin1Compare("Center",option) == 0)
-              annotate_info.gravity=CenterGravity;
-            if (Latin1Compare("Right",option) == 0)
-              annotate_info.gravity=EastGravity;
-          }
+        image_info->alias=(*option == '-');
         continue;
       }
     if (strncmp("-background",option,6) == 0)
@@ -6782,7 +6726,6 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
     if (strncmp("-bordercolor",option,8) == 0)
       {
         CloneString(&image_info->border_color,argv[++i]);
-        CloneString(&annotate_info.border_color,image_info->border_color);
         (void) XQueryColorDatabase(image_info->border_color,&target_color);
         (*image)->border_color.red=XDownScale(target_color.red);
         (*image)->border_color.green=XDownScale(target_color.green);
@@ -6792,7 +6735,6 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
     if (Latin1Compare("-box",option) == 0)
       {
         CloneString(&image_info->box,argv[++i]);
-        CloneString(&annotate_info.box,image_info->box);
         continue;
       }
     if (strncmp("-charcoal",option,3) == 0)
@@ -6904,7 +6846,6 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
           Set image density.
         */
         CloneString(&image_info->density,argv[++i]);
-        CloneString(&annotate_info.density,image_info->density);
         count=sscanf(image_info->density,"%lfx%lf",
           &(*image)->x_resolution,&(*image)->y_resolution);
         if (count != 2)
@@ -6929,7 +6870,6 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
     if (strncmp("-display",option,6) == 0)
       {
         CloneString(&image_info->server_name,argv[++i]);
-        CloneString(&annotate_info.server_name,image_info->server_name);
         continue;
       }
     if (strncmp("dither",option+1,3) == 0)
@@ -6940,8 +6880,20 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
       }
     if (strncmp("-draw",option,3) == 0)
       {
+        AnnotateInfo
+          annotate_info;
+
+        /*
+          Draw image.
+        */
+        GetAnnotateInfo(image_info,&annotate_info);
         CloneString(&annotate_info.primitive,argv[++i]);
+        if (geometry != (char *) NULL)
+          CloneString(&annotate_info.geometry,geometry);
+        if (gravity != ForgetGravity)
+          annotate_info.gravity=gravity;
         DrawImage(*image,&annotate_info);
+        DestroyAnnotateInfo(&annotate_info);
         continue;
       }
     if (strncmp("-edge",option,3) == 0)
@@ -6998,6 +6950,9 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
       }
     if (strncmp("-equalize",option,3) == 0)
       {
+        /*
+          Equalize image.
+        */
         EqualizeImage(*image);
         continue;
       }
@@ -7117,7 +7072,6 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
     if (Latin1Compare("-font",option) == 0)
       {
         CloneString(&image_info->font,argv[++i]);
-        CloneString(&annotate_info.font,image_info->font);
         continue;
       }
     if (strncmp("gamma",option+1,2) == 0)
@@ -7131,33 +7085,33 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
     if (strncmp("-geometry",option,4) == 0)
       {
         TransformImage(image,(char *) NULL,argv[++i]);
-        CloneString(&annotate_info.geometry,argv[i]);
+        CloneString(&geometry,argv[i]);
         continue;
       }
     if (strncmp("gravity",option+1,2) == 0)
       {
-        annotate_info.gravity=NorthWestGravity;
+        gravity=NorthWestGravity;
         if (*option == '-')
           {
             option=argv[++i];
             if (Latin1Compare("NorthWest",option) == 0)
-              annotate_info.gravity=NorthWestGravity;
+              gravity=NorthWestGravity;
             if (Latin1Compare("North",option) == 0)
-              annotate_info.gravity=NorthGravity;
+              gravity=NorthGravity;
             if (Latin1Compare("NorthEast",option) == 0)
-              annotate_info.gravity=NorthEastGravity;
+              gravity=NorthEastGravity;
             if (Latin1Compare("West",option) == 0)
-              annotate_info.gravity=WestGravity;
+              gravity=WestGravity;
             if (Latin1Compare("Center",option) == 0)
-              annotate_info.gravity=CenterGravity;
+              gravity=CenterGravity;
             if (Latin1Compare("East",option) == 0)
-              annotate_info.gravity=EastGravity;
+              gravity=EastGravity;
             if (Latin1Compare("SouthWest",option) == 0)
-              annotate_info.gravity=SouthWestGravity;
+              gravity=SouthWestGravity;
             if (Latin1Compare("South",option) == 0)
-              annotate_info.gravity=SouthGravity;
+              gravity=SouthGravity;
             if (Latin1Compare("SouthEast",option) == 0)
-              annotate_info.gravity=SouthEastGravity;
+              gravity=SouthEastGravity;
           }
         continue;
       }
@@ -7213,7 +7167,6 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
     if (strncmp("-linewidth",option,3) == 0)
       {
         image_info->linewidth=atoi(argv[++i]);
-        annotate_info.linewidth=image_info->linewidth;
         continue;
       }
     if (Latin1Compare("-map",option) == 0)
@@ -7332,12 +7285,11 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
     if (Latin1Compare("-pen",option) == 0)
       {
         CloneString(&image_info->pen,argv[++i]);
-        CloneString(&annotate_info.pen,image_info->pen);
         continue;
       }
     if (strncmp("pointsize",option+1,2) == 0)
       {
-        annotate_info.pointsize=atoi(argv[++i]);
+        image_info->pointsize=atoi(argv[++i]);
         continue;
       }
     if (strncmp("profile",option+1,4) == 0)
@@ -7767,7 +7719,6 @@ Export void MogrifyImage(ImageInfo *image_info,const int argc,char **argv,
       (void) MapImage(*image,map_image,quantize_info.dither);
       DestroyImage(map_image);
     }
-  DestroyAnnotateInfo(&annotate_info);
 }
 
 /*

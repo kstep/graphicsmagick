@@ -903,16 +903,27 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
     {
       if (strEQcase(attribute,"adjoin"))
         {
-          sp=SvPOK(sval) ? LookupStr(BooleanTypes,SvPV(sval,na)) :
-            SvIV(sval);
+          sp=SvPOK(sval) ? LookupStr(BooleanTypes,SvPV(sval,na)) : SvIV(sval);
           if (sp < 0)
             {
               MagickWarning(OptionWarning,"Invalid adjoin type",SvPV(sval,na));
               return;
             }
-         if (info)
-           info->image_info->adjoin=sp;
-         return;
+          if (info)
+            info->image_info->adjoin=sp;
+          return;
+        }
+      if (strEQcase(attribute,"alias"))
+        {
+          sp=SvPOK(sval) ? LookupStr(BooleanTypes,SvPV(sval,na)) : SvIV(sval);
+          if (sp < 0)
+            {
+              MagickWarning(OptionWarning,"Invalid alias type",SvPV(sval,na));
+              return;
+            }
+          if (info)
+            info->image_info->alias=sp;
+          return;
         }
       break;
     }
@@ -2550,6 +2561,12 @@ Get(ref,...)
                 s=newSViv(info->image_info->adjoin);
               break;
             }
+          if (strEQcase(attribute,"alias"))
+            {
+              if (info)
+                s=newSViv(info->image_info->alias);
+              break;
+            }
           break;
         }
         case 'B':
@@ -4051,6 +4068,9 @@ Mogrify(ref,...)
               if (attribute_flag[3])
                 CloneString(&package_info->image_info->density,
                   argument_list[3].string_reference);
+              if (attribute_flag[4])
+                CloneString(&package_info->image_info->box,
+                  argument_list[4].string_reference);
               if (attribute_flag[5])
                 CloneString(&package_info->image_info->pen,
                   argument_list[5].string_reference);
@@ -4061,9 +4081,6 @@ Mogrify(ref,...)
               if (attribute_flag[0])
                 CloneString(&annotate_info.text,
                   argument_list[0].string_reference);
-              if (attribute_flag[4])
-                CloneString(&annotate_info.box,
-                  argument_list[4].string_reference);
               if (attribute_flag[6])
                 CloneString(&annotate_info.geometry,
                   argument_list[6].string_reference);
@@ -4245,6 +4262,9 @@ Mogrify(ref,...)
               if (attribute_flag[3])
                 CloneString(&package_info->image_info->pen,
                   argument_list[3].string_reference);
+              if (attribute_flag[4])
+                package_info->image_info->linewidth=
+                  argument_list[4].int_reference;
               if (attribute_flag[5])
                 CloneString(&package_info->image_info->server_name,
                   argument_list[5].string_reference);
@@ -4252,8 +4272,6 @@ Mogrify(ref,...)
                 CloneString(&package_info->image_info->border_color,
                   argument_list[6].string_reference);
               GetAnnotateInfo(package_info->image_info,&annotate_info);
-              if (attribute_flag[4])
-                annotate_info.linewidth=argument_list[4].int_reference;
             }
           CloneString(&annotate_info.primitive,"Point");
           if (attribute_flag[0] && (argument_list[0].int_reference > 0))

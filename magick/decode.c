@@ -5859,6 +5859,8 @@ Image *ReadLABELImage(const ImageInfo *image_info)
         q->green=XDownScale(pen_color.green);
         q->blue=XDownScale(pen_color.blue);
         q->index=(int) (Opaque*Min(*p,4))/4;
+        if (local_info->alias && (*p > 1))
+          q->index=Opaque;
         if (q->index == Transparent)
           {
             q->red=(~q->red);
@@ -8342,7 +8344,6 @@ Image *ReadPDFImage(const ImageInfo *image_info)
     c;
 
   unsigned int
-    alias_bits,
     height,
     portrait,
     width;
@@ -8464,9 +8465,9 @@ Image *ReadPDFImage(const ImageInfo *image_info)
       image_info->subimage+1,image_info->subimage+image_info->subrange);
   (void) strcpy(filename,image_info->filename);
   TemporaryFilename((char *) image_info->filename);
-  alias_bits=image_info->dither && !image_info->monochrome ? 4 : 1;
-  FormatString(command,delegate_info.commands,alias_bits,alias_bits,geometry,
-    density,options,image_info->filename,postscript_filename);
+  FormatString(command,delegate_info.commands,image_info->alias ? 1 : 4,
+    image_info->alias ? 1 : 4,geometry,density,options,image_info->filename,
+    postscript_filename);
   ProgressMonitor(RenderPostscriptText,0,8);
   status=SystemCommand(image_info->verbose,command);
   ProgressMonitor(RenderPostscriptText,7,8);
@@ -9317,7 +9318,7 @@ Image *ReadPLASMAImage(const ImageInfo *image_info)
 #define PlasmaImageText  "  Applying image plasma...  "
 #define PlasmaPixel(x,y) \
 { \
-  p=PixelOffset(x,y); \
+  p=PixelOffset(image,x,y); \
   p->red=(Quantum) (rand() % (MaxRGB+1)); \
   p->green=(Quantum) (rand() % (MaxRGB+1)); \
   p->blue=(Quantum) (rand() % (MaxRGB+1)); \
@@ -10734,7 +10735,6 @@ Image *ReadPSImage(const ImageInfo *image_info)
     i;
 
   unsigned int
-    alias_bits,
     eps_level,
     height,
     level,
@@ -10888,9 +10888,9 @@ Image *ReadPSImage(const ImageInfo *image_info)
       image_info->subimage+1,image_info->subimage+image_info->subrange);
   (void) strcpy(filename,image_info->filename);
   TemporaryFilename((char *) image_info->filename);
-  alias_bits=image_info->dither && !image_info->monochrome ? 4 : 1;
-  FormatString(command,delegate_info.commands,alias_bits,alias_bits,geometry,
-    density,options,image_info->filename,postscript_filename);
+  FormatString(command,delegate_info.commands,image_info->alias ? 1 : 4,
+    image_info->alias ? 1 : 4,geometry,density,options,image_info->filename,
+    postscript_filename);
   ProgressMonitor(RenderPostscriptText,0,8);
   status=SystemCommand(image_info->verbose,command);
   if (!IsAccessible(image_info->filename))
@@ -15217,14 +15217,14 @@ Image *ReadTTFImage(const ImageInfo *image_info)
   y=10;
   if (annotate_info.font_name != (char *) NULL)
     {
-      annotate_info.pointsize=30;
+      annotate_info.image_info->pointsize=30;
       FormatString(geometry,"+10%+d",y);
       CloneString(&annotate_info.geometry,geometry);
       CloneString(&annotate_info.text,annotate_info.font_name);
       AnnotateImage(image,&annotate_info);
       y+=42;
     }
-  annotate_info.pointsize=18;
+  annotate_info.image_info->pointsize=18;
   FormatString(geometry,"+10%+d",y);
   CloneString(&annotate_info.geometry,geometry);
   CloneString(&annotate_info.text,"abcdefghijklmnopqrstuvwxyz");
@@ -15243,13 +15243,13 @@ Image *ReadTTFImage(const ImageInfo *image_info)
   for (i=12; i <= 72; i+=6)
   {
     y+=i+6;
-    annotate_info.pointsize=18;
+    annotate_info.image_info->pointsize=18;
     FormatString(geometry,"+10%+d",y);
     CloneString(&annotate_info.geometry,geometry);
     FormatString(text,"%d",i);
     CloneString(&annotate_info.text,text);
     AnnotateImage(image,&annotate_info);
-    annotate_info.pointsize=i;
+    annotate_info.image_info->pointsize=i;
     FormatString(geometry,"+40%+d",y);
     CloneString(&annotate_info.geometry,geometry);
     CloneString(&annotate_info.text,

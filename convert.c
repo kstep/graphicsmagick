@@ -55,6 +55,7 @@
 %
 %  Where options include:
 %    -adjoin              join images into a single multi-image file
+%    -alias               allow pixel aliasing
 %    -append              append an image sequence
 %    -average             average an image sequence
 %    -blur factor         apply a filter to blur the image
@@ -244,6 +245,7 @@ static void Usage(const char *client_name)
     *options[]=
     {
       "-adjoin              join images into a single multi-image file",
+      "-alias               allow pixel aliasing",
       "-append              append an image sequence",
       "-average             average an image sequence",
       "-blur factor         apply a filter to blur the image",
@@ -462,28 +464,9 @@ int main(int argc,char **argv)
               image_info.adjoin=(*option == '-');
               break;
             }
-          if (strncmp("align",option+1,2) == 0)
+          if (strncmp("alias",option+1,3) == 0)
             {
-              /*
-                Alignment is deprecated, use -gravity.
-              */
-              gravity=ForgetGravity;
-              if (*option == '-')
-                {
-                  i++;
-                  if (i == argc)
-                    MagickError(OptionError,"Missing type",option);
-                  option=argv[i];
-                  gravity=ForgetGravity;
-                  if (Latin1Compare("Left",option) == 0)
-                    gravity=WestGravity;
-                  if (Latin1Compare("Center",option) == 0)
-                    gravity=CenterGravity;
-                  if (Latin1Compare("Right",option) == 0)
-                    gravity=EastGravity;
-                  if (gravity == ForgetGravity)
-                    MagickError(OptionError,"Invalid gravity type",option);
-                }
+              image_info.alias=(*option == '-');
               break;
             }
           if (strncmp("append",option+1,2) == 0)

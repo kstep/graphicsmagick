@@ -455,7 +455,7 @@ Export void Hull(const int x_offset,const int y_offset,const int polarity,
 %
 %  The format of the InsidePrimitive routine is:
 %
-%      opacity=InsidePrimitive(primitive_info,annotate_info,x,y,image)
+%      opacity=InsidePrimitive(primitive_info,annotate_info,target,image)
 %
 %  A description of each parameter follows:
 %
@@ -466,41 +466,54 @@ Export void Hull(const int x_offset,const int y_offset,const int polarity,
 %
 %    o annotate_info: Specifies a pointer to a AnnotateInfo structure.
 %
-%    o x,y: Integers representing the (x,y) location in the image.
+%    o target: PointInfo representing the (x,y) location in the image.
 %
 %    o image: The address of a structure of type Image.
 %
 %
 */
 
-static double DistanceToSegment(double x,double y,const PrimitiveInfo *p,
-  const PrimitiveInfo *q)
+static double DistanceToSegment(const SegmentInfo *line_segment,
+  const PointInfo *target)
 {
   register double
-    dot,
+    alpha,
+    beta,
+    dot_product,
+    gamma,
     v;
 
-  dot=(x-p->x)*(q->x-p->x)+(y-p->y)*(q->y-p->y);
-  if (dot <= 0)
-    return(sqrt((x-p->x)*(x-p->x)+(y-p->y)*(y-p->y)));
-  v=(q->x-p->x)*(q->x-p->x)+(q->y-p->y)*(q->y-p->y);
-  if ((dot*dot/v) > v)
-    return(sqrt((x-q->x)*(x-q->x)+(y-q->y)*(y-q->y)));
-  return(sqrt((x-p->x)*(x-p->x)+(y-p->y)*(y-p->y)-dot*dot/v));
+  alpha=target->x-line_segment->x1;
+  beta=target->y-line_segment->y1;
+  dot_product=(target->x-line_segment->x1)*(line_segment->x2-line_segment->x1)+
+    (target->y-line_segment->y1)*(line_segment->y2-line_segment->y1);
+  if (dot_product <= 0)
+    return(sqrt(alpha*alpha+beta*beta));
+  v=(line_segment->x2-line_segment->x1)*(line_segment->x2-line_segment->x1)+
+    (line_segment->y2-line_segment->y1)*(line_segment->y2-line_segment->y1);
+  gamma=dot_product*dot_product/v;
+  if (gamma <= v)
+    return(sqrt(alpha*alpha+beta*beta-gamma));
+  alpha=target->x-line_segment->x2;
+  beta=target->y-line_segment->y2;
+  return(sqrt(alpha*alpha+beta*beta));
 }
 
-static Quantum InsideLinePrimitive(const PrimitiveInfo *p,
-  const PrimitiveInfo *q,const int x,const int y,const Quantum opacity,
-  const double mid)
+static Quantum InsideLinePrimitive(const SegmentInfo *line_segment,
+  const PointInfo *target,const Quantum opacity,const double mid)
 {
   register double
     distance;
 
   if ((mid == 0) || (opacity == Opaque))
     return(opacity);
-  if ((p->x == q->x) && (p->y == q->y))
-    return((x == p->x) && (y == p->y) ? Opaque : opacity);
-  distance=DistanceToSegment(x,y,p,q);
+  if ((line_segment->x1 == line_segment->x2) &&
+      (line_segment->y1 == line_segment->y2))
+    if ((target->x == line_segment->x1) && (target->y == line_segment->y1))
+      return(Opaque);
+    else
+      return(opacity);
+  distance=DistanceToSegment(line_segment,target);
   if (distance <= (mid-0.5))
     return(Opaque);
   if (distance <= (mid+0.5))
@@ -509,9 +522,11 @@ static Quantum InsideLinePrimitive(const PrimitiveInfo *p,
 }
 
 Export Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
-  AnnotateInfo *annotate_info,const int x,const int y,Image *image)
+  AnnotateInfo *annotate_info,const PointInfo *target,Image *image)
 {
   double
+    alpha,
+    beta,
     distance,
     mid,
     radius;
@@ -527,7 +542,10 @@ Export Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
     opacity;
 
   RunlengthPacket
-    target;
+    target_color;
+
+  SegmentInfo
+    line_segment;
 
   XColor
     border_color;
@@ -536,7 +554,7 @@ Export Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
   assert(annotate_info != (AnnotateInfo *) NULL);
   assert(image != (Image *) NULL);
   opacity=Transparent;
-  mid=annotate_info->linewidth/2.0;
+  mid=annotate_info->image_info->linewidth/2.0;
   p=primitive_info;
   while (p->primitive != UndefinedPrimitive)
   {
@@ -546,34 +564,38 @@ Export Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
       case PointPrimitive:
       default:
       {
-        if ((x == (int) (p->x+0.5)) && (y == (int) (p->y+0.5)))
+        if ((target->x == (int) (p->x+0.5)) && (target->y == (int) (p->y+0.5)))
           opacity=Opaque;
         break;
       }
       case LinePrimitive:
       {
-        opacity=InsideLinePrimitive(p,q,x,y,opacity,mid);
+        line_segment.x1=p->x;
+        line_segment.y1=p->y;
+        line_segment.x2=q->x;
+        line_segment.y2=q->y;
+        opacity=InsideLinePrimitive(&line_segment,target,opacity,mid);
         break;
       }
       case RectanglePrimitive:
       {
-        if (((x >= (int) (Min(p->x-mid,q->x+mid)+0.5)) &&
-             (x < (int) (Max(p->x-mid,q->x+mid)+0.5)) &&
-             (y >= (int) (Min(p->y-mid,q->y+mid)+0.5)) &&
-             (y < (int) (Max(p->y-mid,q->y+mid)+0.5))) &&
-           !((x >= (int) (Min(p->x+mid,q->x-mid)+0.5)) &&
-             (x < (int) (Max(p->x+mid,q->x-mid)+0.5)) &&
-             (y >= (int) (Min(p->y+mid,q->y-mid)+0.5)) &&
-             (y < (int) (Max(p->y+mid,q->y-mid)+0.5))))
+        if (((target->x >= (int) (Min(p->x-mid,q->x+mid)+0.5)) &&
+             (target->x < (int) (Max(p->x-mid,q->x+mid)+0.5)) &&
+             (target->y >= (int) (Min(p->y-mid,q->y+mid)+0.5)) &&
+             (target->y < (int) (Max(p->y-mid,q->y+mid)+0.5))) &&
+           !((target->x >= (int) (Min(p->x+mid,q->x-mid)+0.5)) &&
+             (target->x < (int) (Max(p->x+mid,q->x-mid)+0.5)) &&
+             (target->y >= (int) (Min(p->y+mid,q->y-mid)+0.5)) &&
+             (target->y < (int) (Max(p->y+mid,q->y-mid)+0.5))))
           opacity=Opaque;
         break;
       }
       case FillRectanglePrimitive:
       {
-        if ((x >= (int) (Min(p->x,q->x)+0.5)) &&
-            (x <= (int) (Max(p->x,q->x)+0.5)) &&
-            (y >= (int) (Min(p->y,q->y)+0.5)) &&
-            (y <= (int) (Max(p->y,q->y)+0.5)))
+        if ((target->x >= (int) (Min(p->x,q->x)+0.5)) &&
+            (target->x <= (int) (Max(p->x,q->x)+0.5)) &&
+            (target->y >= (int) (Min(p->y,q->y)+0.5)) &&
+            (target->y <= (int) (Max(p->y,q->y)+0.5)))
           opacity=Opaque;
         break;
       }
@@ -582,8 +604,10 @@ Export Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
         double
           center;
 
+        alpha=p->x-target->x;
+        beta=p->y-target->y;
+        distance=sqrt(alpha*alpha+beta*beta);
         radius=sqrt(((p->y-q->y)*(p->y-q->y))+((p->x-q->x)*(p->x-q->x)));
-        distance=sqrt(((p->y-y)*(p->y-y))+((p->x-x)*(p->x-x)));
         center=fabs(distance-radius);
         if (center < (mid+0.5))
           if (center <= (mid-0.5))
@@ -595,8 +619,10 @@ Export Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
       }
       case FillCirclePrimitive:
       {
+        alpha=p->x-target->x;
+        beta=p->y-target->y;
+        distance=sqrt(alpha*alpha+beta*beta);
         radius=sqrt(((p->y-q->y)*(p->y-q->y))+((p->x-q->x)*(p->x-q->x)));
-        distance=sqrt(((p->y-y)*(p->y-y))+((p->x-x)*(p->x-x)));
         if (distance <= (radius-1.0))
           opacity=Opaque;
         else
@@ -612,8 +638,14 @@ Export Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
 
         poly_opacity=Transparent;
         for ( ; (p < q) && (poly_opacity != Opaque); p++)
-          poly_opacity=InsideLinePrimitive(p,p+1,x,y,
-            (Quantum) Max(opacity,poly_opacity),mid);
+        {
+          line_segment.x1=p->x;
+          line_segment.y1=p->y;
+          line_segment.x2=(p+1)->x;
+          line_segment.y2=(p+1)->y;
+          poly_opacity=InsideLinePrimitive(&line_segment,target,(Quantum)
+            Max(opacity,poly_opacity),mid);
+        }
         opacity=Max(opacity,poly_opacity);
         break;
       }
@@ -635,40 +667,41 @@ Export Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
 
         r=p;
         crossings=0;
-        if ((q->y >= y) != (p->y >= y))
+        if ((target->y < q->y) != (target->y < p->y))
           {
-            crossing=q->x >= x;
-            if (crossing != (p->x >= x))
-              crossings+=(q->x-(q->y-y)*(p->x-q->x)/(p->y-q->y)) >= x;
+            crossing=target->x < q->x;
+            if (crossing != (target->x < p->x))
+              crossings+=target->x <
+                (q->x-(q->y-target->y)*(p->x-q->x)/(p->y-q->y));
             else
               if (crossing)
                 crossings++;
           }
         for (p++; p <= q; p++)
         {
-          if ((p-1)->y >= y)
+          if (target->y < (p-1)->y)
             {
-              while ((p <= q) && (p->y >= y))
+              while ((p <= q) && (target->y < p->y))
                 p++;
               if (p > q)
                 break;
-              crossing=(p-1)->x >= x;
-              if (crossing != (p->x >= x))
-                crossings+=((p-1)->x-((p-1)->y-y)*(p->x-(p-1)->x)/
-                  (p->y-(p-1)->y)) >= x;
+              crossing=target->x < (p-1)->x;
+              if (crossing != (target->x < p->x))
+                crossings+=target->x < ((p-1)->x-((p-1)->y-target->y)*
+                  (p->x-(p-1)->x)/(p->y-(p-1)->y));
               else
                 if (crossing)
                   crossings++;
               continue;
             }
-          while ((p <= q) && (p->y < y))
+          while ((p <= q) && (target->y >= p->y))
             p++;
           if (p > q)
             break;
-          crossing=(p-1)->x >= x;
-          if (crossing != (p->x >= x))
-            crossings+=
-              ((p-1)->x-((p-1)->y-y)*(p->x-(p-1)->x)/(p->y-(p-1)->y)) >= x;
+          crossing=target->x < (p-1)->x;
+          if (crossing != (target->x < p->x))
+            crossings+=target->x < ((p-1)->x-((p-1)->y-target->y)*
+              (p->x-(p-1)->x)/(p->y-(p-1)->y));
           else
             if (crossing)
               crossings++;
@@ -677,10 +710,18 @@ Export Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
           Now find distance to polygon.
         */
         p=r;
-        nearest_distance=DistanceToSegment(x,y,p,q);
+        line_segment.x1=p->x;
+        line_segment.y1=p->y;
+        line_segment.x2=q->x;
+        line_segment.y2=q->y;
+        nearest_distance=DistanceToSegment(&line_segment,target);
         for ( ; p < q; p++)
         {
-          distance=DistanceToSegment(x,y,p,p+1);
+          line_segment.x1=p->x;
+          line_segment.y1=p->y;
+          line_segment.x2=(p+1)->x;
+          line_segment.y2=(p+1)->y;
+          distance=DistanceToSegment(&line_segment,target);
           if (distance < nearest_distance)
             nearest_distance=distance;
         }
@@ -707,7 +748,8 @@ Export Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
           case PointMethod:
           default:
           {
-            if ((p->x != x) || (p->y != y))
+            if ((target->x != (int) (p->x+0.5)) &&
+                (target->y != (int) (p->y+0.5)))
               break;
             opacity=Opaque;
             break;
@@ -717,28 +759,33 @@ Export Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
             RunlengthPacket
               color;
 
-            if ((x == 0) && (y == 0))
-              target=image->pixels[(int) p->y*image->columns+(int) p->x];
-            color=image->pixels[y*image->columns+x];
-            if (ColorMatch(color,target,(int) image->fuzz))
+            static RunlengthPacket
+              target_color;
+
+            if ((target->x == 0) && (target->y == 0))
+              target_color=(*PixelOffset(image,p->x,p->y));
+            color=(*PixelOffset(image,target->x,target->y));
+            if (ColorMatch(color,target_color,(int) image->fuzz))
               opacity=Opaque;
             break;
           }
           case FloodfillMethod:
           case FillToBorderMethod:
           {
-            if ((p->x != x) || (p->y != y))
+            if ((target->x != (int) (p->x+0.5)) &&
+                (target->y != (int) (p->y+0.5)))
               break;
-            target=image->pixels[y*image->columns+x];
+            target_color=(*PixelOffset(image,target->x,target->y));
             if (p->method == FillToBorderMethod)
               {
-                (void) XQueryColorDatabase(annotate_info->border_color,
-                  &border_color);
-                target.red=XDownScale(border_color.red);
-                target.green=XDownScale(border_color.green);
-                target.blue=XDownScale(border_color.blue);
+                (void) XQueryColorDatabase(
+                  annotate_info->image_info->border_color,&border_color);
+                target_color.red=XDownScale(border_color.red);
+                target_color.green=XDownScale(border_color.green);
+                target_color.blue=XDownScale(border_color.blue);
               }
-            ColorFloodfillImage(image,&target,annotate_info->pen,x,y,p->method);
+            ColorFloodfillImage(image,&target_color,
+              annotate_info->image_info->pen,target->x,target->y,p->method);
             break;
           }
           case ResetMethod:
@@ -766,9 +813,10 @@ Export Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
           case PointMethod:
           default:
           {
-            if ((p->x != x) || (p->y != y))
+            if ((target->x != (int) (p->x+0.5)) &&
+                (target->y != (int) (p->y+0.5)))
               break;
-            image->pixels[y*image->columns+x].index=Transparent;
+            PixelOffset(image,target->x,target->y)->index=Transparent;
             break;
           }
           case ReplaceMethod:
@@ -777,35 +825,37 @@ Export Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
               color;
 
             static RunlengthPacket
-              target;
+              target_color;
 
-            if ((x == 0) && (y == 0))
-              target=image->pixels[(int) p->y*image->columns+(int) p->x];
-            color=image->pixels[y*image->columns+x];
-            if (ColorMatch(color,target,(int) image->fuzz))
-              image->pixels[y*image->columns+x].index=Transparent;
+            if ((target->x == 0) && (target->y == 0))
+              target_color=(*PixelOffset(image,p->x,p->y));
+            color=(*PixelOffset(image,target->x,target->y));
+            if (ColorMatch(color,target_color,image->fuzz))
+              PixelOffset(image,target->x,target->y)->index=Transparent;
             break;
           }
           case FloodfillMethod:
           case FillToBorderMethod:
           {
-            if ((p->x != x) || (p->y != y))
+            if ((target->x != (int) (p->x+0.5)) &&
+                (target->y != (int) (p->y+0.5)))
               break;
-            target=image->pixels[y*image->columns+x];
+            target_color=(*PixelOffset(image,target->x,target->y));
             if (p->method == FillToBorderMethod)
               {
-                (void) XQueryColorDatabase(annotate_info->border_color,
-                  &border_color);
-                target.red=XDownScale(border_color.red);
-                target.green=XDownScale(border_color.green);
-                target.blue=XDownScale(border_color.blue);
+                (void) XQueryColorDatabase(
+                  annotate_info->image_info->border_color,&border_color);
+                target_color.red=XDownScale(border_color.red);
+                target_color.green=XDownScale(border_color.green);
+                target_color.blue=XDownScale(border_color.blue);
               }
-            MatteFloodfillImage(image,&target,Transparent,x,y,p->method);
+            MatteFloodfillImage(image,&target_color,Transparent,target->x,
+              target->y,p->method);
             break;
           }
           case ResetMethod:
           {
-            image->pixels[y*image->columns+x].index=Opaque;
+            PixelOffset(image,target->x,target->y)->index=Opaque;
             break;
           }
         }
@@ -817,7 +867,7 @@ Export Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
         register char
           *r;
 
-        if ((x != (int) p->x) || (y != (int) p->y))
+        if ((target->x != (int) (p->x+0.5)) && (target->y != (int) (p->y+0.5)))
           break;
         if (p->text == (char *) NULL)
           break;

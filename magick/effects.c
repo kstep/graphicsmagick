@@ -1689,9 +1689,9 @@ Export unsigned int PlasmaImage(Image *image,SegmentInfo *segment_info,
       /*
         Left pixel.
       */
-      p=PixelOffset(segment_info->x1,segment_info->y1);
-      q=PixelOffset(segment_info->x1,segment_info->y2);
-      r=PixelOffset(segment_info->x1,y_mid);
+      p=PixelOffset(image,segment_info->x1,segment_info->y1);
+      q=PixelOffset(image,segment_info->x1,segment_info->y2);
+      r=PixelOffset(image,segment_info->x1,y_mid);
       r->red=PlasmaPixel((p->red+q->red)/2,plasma);
       r->green=PlasmaPixel((p->green+q->green)/2,plasma);
       r->blue=PlasmaPixel((p->blue+q->blue)/2,plasma);
@@ -1700,9 +1700,9 @@ Export unsigned int PlasmaImage(Image *image,SegmentInfo *segment_info,
           /*
             Right pixel.
           */
-          p=PixelOffset(segment_info->x2,segment_info->y1);
-          q=PixelOffset(segment_info->x2,segment_info->y2);
-          r=PixelOffset(segment_info->x2,y_mid);
+          p=PixelOffset(image,segment_info->x2,segment_info->y1);
+          q=PixelOffset(image,segment_info->x2,segment_info->y2);
+          r=PixelOffset(image,segment_info->x2,y_mid);
           r->red=PlasmaPixel((p->red+q->red)/2,plasma);
           r->green=PlasmaPixel((p->green+q->green)/2,plasma);
           r->blue=PlasmaPixel((p->blue+q->blue)/2,plasma);
@@ -1715,9 +1715,9 @@ Export unsigned int PlasmaImage(Image *image,SegmentInfo *segment_info,
           /*
             Bottom pixel.
           */
-          p=PixelOffset(segment_info->x1,segment_info->y2);
-          q=PixelOffset(segment_info->x2,segment_info->y2);
-          r=PixelOffset(x_mid,segment_info->y2);
+          p=PixelOffset(image,segment_info->x1,segment_info->y2);
+          q=PixelOffset(image,segment_info->x2,segment_info->y2);
+          r=PixelOffset(image,x_mid,segment_info->y2);
           r->red=PlasmaPixel((p->red+q->red)/2,plasma);
           r->green=PlasmaPixel((p->green+q->green)/2,plasma);
           r->blue=PlasmaPixel((p->blue+q->blue)/2,plasma);
@@ -1727,9 +1727,9 @@ Export unsigned int PlasmaImage(Image *image,SegmentInfo *segment_info,
           /*
             Top pixel.
           */
-          p=PixelOffset(segment_info->x1,segment_info->y1);
-          q=PixelOffset(segment_info->x2,segment_info->y1);
-          r=PixelOffset(x_mid,segment_info->y1);
+          p=PixelOffset(image,segment_info->x1,segment_info->y1);
+          q=PixelOffset(image,segment_info->x2,segment_info->y1);
+          r=PixelOffset(image,x_mid,segment_info->y1);
           r->red=PlasmaPixel((p->red+q->red)/2,plasma);
           r->green=PlasmaPixel((p->green+q->green)/2,plasma);
           r->blue=PlasmaPixel((p->blue+q->blue)/2,plasma);
@@ -1741,14 +1741,14 @@ Export unsigned int PlasmaImage(Image *image,SegmentInfo *segment_info,
       /*
         Middle pixel.
       */
-      p=PixelOffset(segment_info->x1,segment_info->y1);
-      q=PixelOffset(segment_info->x2,segment_info->y2);
-      r=PixelOffset(x_mid,y_mid);
+      p=PixelOffset(image,segment_info->x1,segment_info->y1);
+      q=PixelOffset(image,segment_info->x2,segment_info->y2);
+      r=PixelOffset(image,x_mid,y_mid);
       r->red=PlasmaPixel((p->red+q->red)/2,plasma);
       r->green=PlasmaPixel((p->green+q->green)/2,plasma);
       r->blue=PlasmaPixel((p->blue+q->blue)/2,plasma);
-      p=PixelOffset(segment_info->x1,segment_info->y2);
-      q=PixelOffset(segment_info->x2,segment_info->y1);
+      p=PixelOffset(image,segment_info->x1,segment_info->y2);
+      q=PixelOffset(image,segment_info->x2,segment_info->y1);
       r->red=PlasmaPixel((p->red+q->red)/2,plasma);
       r->green=PlasmaPixel((p->green+q->green)/2,plasma);
       r->blue=PlasmaPixel((p->blue+q->blue)/2,plasma);

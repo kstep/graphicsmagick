@@ -54,6 +54,7 @@
 %  Usage: mogrify [options ...] file [ [options ...] file ...]
 %
 %  Where options include:
+%    -alias               allow pixel aliasing
 %    -blur factor         apply a filter to blur the image
 %    -border geometry     surround image with a border of color
 %    -box color           color for annotation bounding box
@@ -175,6 +176,7 @@ static void Usage(const char *client_name)
   static const char
     *options[]=
     {
+      "-alias               allow pixel aliasing",
       "-blur factor         apply a filter to blur the image",
       "-border geometry     surround image with a border of color",
       "-box color           color for annotation bounding box",
@@ -348,28 +350,9 @@ int main(int argc,char **argv)
       {
         case 'a':
         {
-          if (strncmp("align",option+1,2) == 0)
+          if (strncmp("alias",option+1,3) == 0)
             {
-              /*
-                Alignment is deprecated, use -gravity.
-              */
-              gravity=ForgetGravity;
-              if (*option == '-')
-                {
-                  i++;
-                  if (i == argc)
-                    MagickError(OptionError,"Missing type",option);
-                  option=argv[i];
-                  gravity=ForgetGravity;
-                  if (Latin1Compare("Left",option) == 0)
-                    gravity=WestGravity;
-                  if (Latin1Compare("Center",option) == 0)
-                    gravity=CenterGravity;
-                  if (Latin1Compare("Right",option) == 0)
-                    gravity=EastGravity;
-                  if (gravity == ForgetGravity)
-                    MagickError(OptionError,"Invalid gravity type",option);
-                }
+              image_info.alias=(*option == '-');
               break;
             }
           MagickError(OptionError,"Unrecognized option",option);

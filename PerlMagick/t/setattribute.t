@@ -4,7 +4,7 @@
 #
 # Contributed by Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
 #
-BEGIN { $| = 1; $test=1, print "1..110)\n"; }
+BEGIN { $| = 1; $test=1, print "1..112)\n"; }
 END {print "not ok 1\n" unless $loaded;}
 use Image::Magick;
 $loaded=1;
@@ -14,8 +14,15 @@ require 't/subroutines.pl';
 chdir 't' || die 'Cd failed';
 
 testSetAttribute('input.miff','adjoin','True');
+
 ++$test;
 testSetAttribute('input.miff','adjoin','False');
+
+++$test;
+testSetAttribute('input.miff','alias','True');
+
+++$test;
+testSetAttribute('input.miff','alias','False');
 
 ++$test;
 testSetAttribute('input.miff','background','#807060');

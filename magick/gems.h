@@ -6,7 +6,7 @@ extern Export ColorPacket
 
 extern Export Quantum
   GenerateNoise(const Quantum,const NoiseType),
-  InsidePrimitive(PrimitiveInfo *,AnnotateInfo *,const int,const int,Image *);
+  InsidePrimitive(PrimitiveInfo *,AnnotateInfo *,const PointInfo *,Image *);
 
 extern Export void
   Contrast(const int,Quantum *,Quantum *,Quantum *),

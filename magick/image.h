@@ -13,13 +13,11 @@ extern "C" {
 */
 #define Alphabet  "`-=[]\\;',./~!@#$%^&*()_+{}|:\"<>?" \
   "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-#define ColorMatch(color,target,delta) \
-  ((((int) ((color).red)-delta) <= (int) ((target).red)) && \
-    ((int) ((target).red) <= ((int) ((color).red)+delta)) && \
-   (((int) ((color).green)-delta) <= (int) ((target).green)) && \
-    ((int) ((target).green) <= ((int) ((color).green)+delta)) && \
-   (((int) ((color).blue)-delta) <= (int) ((target).blue)) && \
-    ((int) ((target).blue) <= ((int) ((color).blue)+delta)))
+#define ColorMatch(color,target,distance) \
+  (((((color).red-(int) (target).red)*((color).red-(int) (target).red))+ \
+    (((color).green-(int) (target).green)*((color).green-(int) (target).green))+ \
+    (((color).blue-(int) (target).blue)*((color).blue-(int) (target).blue))) <= \
+    (distance*distance))
 #define DegreesToRadians(x) ((x)*M_PI/180.0)
 #define Intensity(color)  \
   ((unsigned int) ((color).red*77+(color).green*150+(color).blue*29) >> 8)
@@ -33,7 +31,8 @@ extern "C" {
 #define MaxStacksize  (1 << 15)
 #define MaxTextExtent  1664
 #define Opaque  MaxRGB
-#define PixelOffset(x,y) image->pixels+(((int) y)*image->columns+((int) x))
+#define PixelOffset(image,x,y) \
+  ((image)->pixels+(((int) (y))*(image)->columns+((int) (x))))
 #define Push(up,left,right,delta) \
   if ((p < (segment_stack+MaxStacksize)) && (((up)+(delta)) >= 0) && \
       (((up)+(delta)) < (int) image->rows)) \
@@ -422,6 +421,7 @@ typedef struct _ImageInfo
     linewidth,
     pointsize,
     adjoin,
+    alias,
     depth,
     dither,
     monochrome,
@@ -553,22 +553,15 @@ typedef struct _SegmentInfo
 
 typedef struct _AnnotateInfo
 {
-  char
-    *server_name,
-    *density,
-    *border_color,
-    *font,
-    *pen;
+  ImageInfo
+    *image_info;
 
   unsigned int
-    pointsize,
-    linewidth,
     gravity;
 
   char
     *geometry,
     *text,
-    *box,
     *primitive,
     *font_name;
 

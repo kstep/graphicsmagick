@@ -13229,7 +13229,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
         Query user if image has changed.
       */
       SignatureImage(displayed_image);
-      if (displayed_image->tainted)
+      if (!resource_info->immutable && displayed_image->tainted)
         {
           status=XConfirmWidget(display,windows,"Your image changed.",
             "Do you want to save it");
