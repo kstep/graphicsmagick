@@ -235,11 +235,15 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Initialize FPX toolkit.
   */
+  FPX_InitSystem();
   memory_limit=20000000;
   fpx_status=FPX_SetToolkitMemoryLimit(&memory_limit);
   if (fpx_status != FPX_OK)
-    ThrowReaderException(DelegateError,"Unable to initialize FPX library",
-      image);
+    {
+      FPX_ClearSystem();
+      ThrowReaderException(DelegateError,"Unable to initialize FPX library",
+        image);
+    }
   tile_width=64;
   tile_height=64;
   flashpix=(FPXImageHandle *) NULL;
