@@ -727,7 +727,7 @@ static double Triangle(double x)
 
 static unsigned int HorizontalFilter(Image *source,Image *destination,
   double x_factor,const FilterInfo *filter_info,const double blur,
-  ContributionInfo *contribution,const unsigned int span,unsigned int *quantum)
+  ContributionInfo *contribution,const size_t span,unsigned int *quantum)
 {
 #define ResizeImageText  "  Resize image...  "
 
@@ -863,7 +863,7 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
 
 static unsigned int VerticalFilter(Image *source,Image *destination,
   double y_factor,const FilterInfo *filter_info,const double blur,
-  ContributionInfo *contribution,const unsigned int span,unsigned int *quantum)
+  ContributionInfo *contribution,const size_t span,unsigned int *quantum)
 {
   double
     blue,
@@ -1034,9 +1034,11 @@ MagickExport Image *ResizeImage(Image *image,const unsigned int columns,
       { Sinc, 4.0 }
     };
 
+  size_t
+    span;
+
   unsigned int
     quantum,
-    span,
     status;
 
   /*

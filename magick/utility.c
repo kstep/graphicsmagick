@@ -287,8 +287,8 @@ MagickExport unsigned int ConcatenateString(char **destination,
 %      
 %
 */
-MagickExport unsigned int ExecutePostscriptInterpreter(const unsigned int
-  verbose,const char *command)
+MagickExport unsigned int ExecutePostscriptInterpreter(
+  const unsigned int verbose,const char *command)
 {
 #if defined(HasGS)
   char
@@ -964,7 +964,7 @@ MagickExport void GetToken(const char *start,char **end,char *token)
 %
 %  The format of the GlobExpression function is:
 %
-%      GlobExpression(expression,pattern)
+%      int GlobExpression(const char *expression,const char *pattern)
 %
 %  A description of each parameter follows:
 %
