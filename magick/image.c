@@ -1367,7 +1367,7 @@ MagickExport unsigned int CompositeImage(Image *image,
               q++;
               continue;
             }
-          x_displace=(horizontal_scale*(Intensity(p)-
+          x_displace=(horizontal_scale*(ScaleIntensityToQuantum(p)-
             (0.5*(MaxRGB+1))))/(0.5*(MaxRGB+1));
           y_displace=x_displace;
           if (composite_image->matte)
@@ -1634,13 +1634,13 @@ MagickExport unsigned int CompositeImage(Image *image,
         case BumpmapCompositeOp:
         {
           destination.red=(Quantum)
-            ((double) ((Intensity(&source)*destination.red)/MaxRGB));
+            ((double) ((ScaleIntensityToQuantum(&source)*destination.red)/MaxRGB));
           destination.green=(Quantum)
-            ((double) ((Intensity(&source)*destination.green)/MaxRGB));
+            ((double) ((ScaleIntensityToQuantum(&source)*destination.green)/MaxRGB));
           destination.blue=(Quantum)
-            ((double) ((Intensity(&source)*destination.blue)/MaxRGB));
+            ((double) ((ScaleIntensityToQuantum(&source)*destination.blue)/MaxRGB));
           destination.opacity=(Quantum)
-            ((double) (Intensity(&source)*destination.opacity/MaxRGB));
+            ((double) (ScaleIntensityToQuantum(&source)*destination.opacity/MaxRGB));
           break;
         }
         case CopyCompositeOp:
@@ -1668,7 +1668,7 @@ MagickExport unsigned int CompositeImage(Image *image,
         {
           if (!composite_image->matte)
             {
-              destination.opacity=Intensity(&source);
+              destination.opacity=ScaleIntensityToQuantum(&source);
               break;
             }
           destination.opacity=source.opacity;
@@ -1738,7 +1738,7 @@ MagickExport unsigned int CompositeImage(Image *image,
           long
             offset;
 
-          offset=(long) (Intensity(&source)-midpoint);
+          offset=(long) (ScaleIntensityToQuantum(&source)-midpoint);
           if (offset == 0)
             break;
           TransformHSL(destination.red,destination.green,destination.blue,
@@ -4599,7 +4599,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               for (x=0; x < (long) mask->columns; x++)
               {
                 if (!mask->matte)
-                  q->opacity=(Quantum) Intensity(q);
+                  q->opacity=(Quantum) ScaleIntensityToQuantum(q);
                 q->red=q->opacity;
                 q->green=q->opacity;
                 q->blue=q->opacity;
@@ -6966,12 +6966,12 @@ MagickExport void SetImageType(Image *image,const ImageType image_type)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  SortColormapByIntensity() sorts the colormap of a PseudoClass image by
+%  SortColormapByScaleIntensityToQuantum() sorts the colormap of a PseudoClass image by
 %  decreasing color intensity.
 %
 %  The format of the SortColormapByIntensity method is:
 %
-%      unsigned int SortColormapByIntensity(Image *image)
+%      unsigned int SortColormapByScaleIntensityToQuantum(Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -6992,14 +6992,14 @@ static int IntensityCompare(const void *x,const void *y)
 
   color_1=(PixelPacket *) x;
   color_2=(PixelPacket *) y;
-  return((int) (Intensity(color_2)-Intensity(color_1)));
+  return((int) (ScaleIntensityToQuantum(color_2)-ScaleIntensityToQuantum(color_1)));
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }
 #endif
 
-MagickExport unsigned int SortColormapByIntensity(Image *image)
+MagickExport unsigned int SortColormapByScaleIntensityToQuantum(Image *image)
 {
   IndexPacket
     index;
@@ -7215,6 +7215,33 @@ MagickExport void TextureImage(Image *image,const Image *texture)
 %
 %
 */
+
+static unsigned long ScaleQuantumToYCC(const unsigned long quantum)
+{
+#if (QuantumDepth == 8)
+  return(quantum);
+#elif (QuantumDepth == 16)
+  return(quantum/257UL);
+#elif (QuantumDepth == 32)
+  return(quantum/16843009UL);
+#else
+# error "Specified value of QuantumDepth is not supported"
+#endif
+}
+
+static unsigned long ScaleYCCToQuantum(const unsigned long value)
+{
+#if (QuantumDepth == 8)
+  return(value);
+#elif (QuantumDepth == 16)
+  return(257UL*value);
+#elif (QuantumDepth == 32)
+  return(16843009UL*value);
+#else
+# error "Specified value of QuantumDepth is not supported"
+#endif
+}
+
 MagickExport unsigned int TransformRGBImage(Image *image,
   const ColorspaceType colorspace)
 {
@@ -7586,28 +7613,22 @@ MagickExport unsigned int TransformRGBImage(Image *image,
             case sRGBColorspace:
             case YCCColorspace:
             {
-              red=(red < 0) ? 0 : (red > ScaleCharToQuantum(350)) ?
-                ScaleCharToQuantum(350) : red+0.5;
-              green=(green < 0) ? 0 : (green > ScaleCharToQuantum(350)) ?
-                ScaleCharToQuantum(350) : green+0.5;
-              blue=(blue < 0) ? 0 : (blue > ScaleCharToQuantum(350)) ?
-                ScaleCharToQuantum(350) : blue+0.5;
+              red=(red < 0) ? 0 : (red > ScaleYCCToQuantum(350)) ?
+                ScaleYCCToQuantum(350) : red+0.5;
+              green=(green < 0) ? 0 : (green > ScaleYCCToQuantum(350)) ?
+                ScaleYCCToQuantum(350) : green+0.5;
+              blue=(blue < 0) ? 0 : (blue > ScaleYCCToQuantum(350)) ?
+                ScaleYCCToQuantum(350) : blue+0.5;
               if (colorspace == sRGBColorspace)
                 {
-                  q->red=ScaleCharToQuantum(
-                    sRGBMap[(long) ScaleQuantumToChar(red)]);
-                  q->green=ScaleCharToQuantum(
-                    sRGBMap[(long) ScaleQuantumToChar(green)]);
-                  q->blue=ScaleCharToQuantum(
-                    sRGBMap[(long) ScaleQuantumToChar(blue)]);
+                  q->red=ScaleYCCToQuantum(sRGBMap[ScaleQuantumToYCC(red)]);
+                  q->green=ScaleYCCToQuantum(sRGBMap[ScaleQuantumToYCC(green)]);
+                  q->blue=ScaleYCCToQuantum(sRGBMap[ScaleQuantumToYCC(blue)]);
                   break;
                 }
-              q->red=
-                ScaleCharToQuantum(YCCMap[(long) ScaleQuantumToChar(red)]);
-              q->green=
-                ScaleCharToQuantum(YCCMap[(long) ScaleQuantumToChar(green)]);
-              q->blue=
-                ScaleCharToQuantum(YCCMap[(long) ScaleQuantumToChar(blue)]);
+              q->red=ScaleYCCToQuantum(YCCMap[ScaleQuantumToYCC(red)]);
+              q->green=ScaleYCCToQuantum(YCCMap[ScaleQuantumToYCC(green)]);
+              q->blue=ScaleYCCToQuantum(YCCMap[ScaleQuantumToYCC(blue)]);
               break;
             }
             default:
@@ -7651,28 +7672,28 @@ MagickExport unsigned int TransformRGBImage(Image *image,
           case sRGBColorspace:
           case YCCColorspace:
           {
-            red=(red < 0) ? 0 : (red > ScaleCharToQuantum(350)) ?
-              ScaleCharToQuantum(350) : red+0.5;
-            green=(green < 0) ? 0 : (green > ScaleCharToQuantum(350)) ?
-              ScaleCharToQuantum(350) : green+0.5;
-            blue=(blue < 0) ? 0 : (blue > ScaleCharToQuantum(350)) ?
-              ScaleCharToQuantum(350) : blue+0.5;
+            red=(red < 0) ? 0 : (red > ScaleYCCToQuantum(350)) ?
+              ScaleYCCToQuantum(350) : red+0.5;
+            green=(green < 0) ? 0 : (green > ScaleYCCToQuantum(350)) ?
+              ScaleYCCToQuantum(350) : green+0.5;
+            blue=(blue < 0) ? 0 : (blue > ScaleYCCToQuantum(350)) ?
+              ScaleYCCToQuantum(350) : blue+0.5;
             if (colorspace == sRGBColorspace)
               {
-                image->colormap[i].red=ScaleCharToQuantum(
-                  sRGBMap[ScaleQuantumToChar((unsigned long) red)]);
-                image->colormap[i].green=ScaleCharToQuantum(
-                  sRGBMap[ScaleQuantumToChar((unsigned long) green)]);
-                image->colormap[i].blue=ScaleCharToQuantum(
-                  sRGBMap[ScaleQuantumToChar((unsigned long) blue)]);
+                image->colormap[i].red=
+                  ScaleYCCToQuantum(sRGBMap[ScaleQuantumToYCC(red)]);
+                image->colormap[i].green=
+                  ScaleYCCToQuantum(sRGBMap[ScaleQuantumToYCC(green)]);
+                image->colormap[i].blue=
+                  ScaleYCCToQuantum(sRGBMap[ScaleQuantumToYCC(blue)]);
                 break;
               }
-            image->colormap[i].red=ScaleCharToQuantum(
-              YCCMap[ScaleQuantumToChar((unsigned long) red)]);
-            image->colormap[i].green=ScaleCharToQuantum(
-              YCCMap[ScaleQuantumToChar((unsigned long) green)]);
-            image->colormap[i].blue=ScaleCharToQuantum(
-              YCCMap[ScaleQuantumToChar((unsigned long) blue)]);
+            image->colormap[i].red=
+              ScaleYCCToQuantum(YCCMap[ScaleQuantumToYCC(red)]);
+            image->colormap[i].green=
+              ScaleYCCToQuantum(YCCMap[ScaleQuantumToYCC(green)]);
+            image->colormap[i].blue=
+              ScaleYCCToQuantum(YCCMap[ScaleQuantumToYCC(blue)]);
             break;
           }
           default:

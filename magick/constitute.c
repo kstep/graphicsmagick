@@ -779,7 +779,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
               case 'i':
               case 'I':
               {
-                *q++=ScaleQuantumToChar(Intensity(p));
+                *q++=ScaleQuantumToChar(ScaleIntensityToQuantum(p));
                 break;
               }
               default:
@@ -846,7 +846,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
               case 'i':
               case 'I':
               {
-                *q++=ScaleQuantumToShort(Intensity(p));
+                *q++=ScaleQuantumToShort(ScaleIntensityToQuantum(p));
                 break;
               }
               default:
@@ -913,7 +913,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
               case 'i':
               case 'I':
               {
-                *q++=ScaleQuantumToInt(Intensity(p));
+                *q++=ScaleQuantumToInt(ScaleIntensityToQuantum(p));
                 break;
               }
               default:
@@ -980,7 +980,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
               case 'i':
               case 'I':
               {
-                *q++=ScaleQuantumToInt(Intensity(p));
+                *q++=ScaleQuantumToInt(ScaleIntensityToQuantum(p));
                 break;
               }
               default:
@@ -1047,7 +1047,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
               case 'i':
               case 'I':
               {
-                *q++=(float) Intensity(p)/MaxRGB;
+                *q++=(float) ScaleIntensityToQuantum(p)/MaxRGB;
                 break;
               }
               default:
@@ -1114,7 +1114,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
               case 'i':
               case 'I':
               {
-                *q++=(double) Intensity(p)/MaxRGB;
+                *q++=(double) ScaleIntensityToQuantum(p)/MaxRGB;
                 break;
               }
               default:

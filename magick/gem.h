@@ -24,7 +24,20 @@ extern MagickExport PixelPacket
   InterpolateColor(const Image *,const double,const double,ExceptionInfo *);
 
 extern MagickExport Quantum
-  GenerateNoise(const Quantum,const NoiseType);
+  GenerateNoise(const Quantum,const NoiseType),
+  ScaleCharToQuantum(const unsigned char),
+  ScaleIntToQuantum(const unsigned itn),
+  ScaleIntensityToQuantum(const PixelPacket *),
+  ScaleShortToQuantum(const unsigned short);
+
+extern MagickExport unsigned char
+  ScaleQuantumToChar(const Quantum);
+
+extern MagickExport unsigned int
+  ScaleQuantumToInt(const Quantum);
+
+extern MagickExport unsigned short
+  ScaleQuantumToShort(const Quantum);
 
 extern MagickExport void
   Contrast(const int,Quantum *,Quantum *,Quantum *),

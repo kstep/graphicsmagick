@@ -585,7 +585,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
     for (x=0; x < (long) image->columns; x++)
     {
       if (number_components == 1)
-        jas_matrix_setv(pixels[0],x,(Quantum) ScaleQuantumToChar(Intensity(p)));
+        jas_matrix_setv(pixels[0],x,(Quantum) ScaleQuantumToChar(ScaleIntensityToQuantum(p)));
       else
         {
           jas_matrix_setv(pixels[0],x,(Quantum) ScaleQuantumToChar(p->red));

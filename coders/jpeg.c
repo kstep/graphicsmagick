@@ -1342,7 +1342,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
           q=jpeg_pixels;
           for (x=0; x < (long) image->columns; x++)
           {
-            *q++=(JSAMPLE) (Intensity(p)/16);
+            *q++=(JSAMPLE) (ScaleIntensityToQuantum(p)/16);
             p++;
           }
           (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
@@ -1402,7 +1402,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
         q=jpeg_pixels;
         for (x=0; x < (long) image->columns; x++)
         {
-          *q++=(JSAMPLE) ScaleQuantumToChar(Intensity(p));
+          *q++=(JSAMPLE) ScaleQuantumToChar(ScaleIntensityToQuantum(p));
           p++;
         }
         (void) jpeg_write_scanlines(&jpeg_info,scanline,1);

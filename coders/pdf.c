@@ -1205,7 +1205,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                *q++=ScaleQuantumToChar(Intensity(p));
+                *q++=ScaleQuantumToChar(ScaleIntensityToQuantum(p));
                 p++;
               }
               if (image->previous == (Image *) NULL)
@@ -1241,7 +1241,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                Ascii85Encode(image,ScaleQuantumToChar(Intensity(p)));
+                Ascii85Encode(image,ScaleQuantumToChar(ScaleIntensityToQuantum(p)));
                 p++;
               }
               if (image->previous == (Image *) NULL)
@@ -1600,7 +1600,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 break;
               for (x=0; x < (long) tile_image->columns; x++)
               {
-                *q++=ScaleQuantumToChar(Intensity(p));
+                *q++=ScaleQuantumToChar(ScaleIntensityToQuantum(p));
                 p++;
               }
             }
@@ -1633,7 +1633,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 break;
               for (x=0; x < (long) tile_image->columns; x++)
               {
-                Ascii85Encode(image,ScaleQuantumToChar(Intensity(p)));
+                Ascii85Encode(image,ScaleQuantumToChar(ScaleIntensityToQuantum(p)));
                 p++;
               }
             }

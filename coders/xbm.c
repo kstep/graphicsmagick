@@ -514,9 +514,9 @@ static unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
   if ((image->storage_class == DirectClass) ||
       !IsMonochromeImage(image,&image->exception))
     SetImageType(image,BilevelType);
-  polarity=Intensity(&image->colormap[0]) > (0.5*MaxRGB);
+  polarity=ScaleIntensityToQuantum(&image->colormap[0]) > (0.5*MaxRGB);
   if (image->colors == 2)
-    polarity=Intensity(&image->colormap[0]) > Intensity(&image->colormap[1]);
+    polarity=ScaleIntensityToQuantum(&image->colormap[0]) > ScaleIntensityToQuantum(&image->colormap[1]);
   bit=0;
   byte=0;
   count=0;
@@ -541,7 +541,7 @@ static unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
           /*
             Write a bitmap byte to the image file.
           */
-          FormatString(buffer,"0x%02x, ",(unsigned int) (byte & 0xff));
+          FormatString(buffer,"0x%02X, ",(unsigned int) (byte & 0xff));
           (void) WriteBlob(image,strlen(buffer),buffer);
           count++;
           if (count == 12)
@@ -561,7 +561,7 @@ static unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
           Write a bitmap byte to the image file.
         */
         byte>>=(8-bit);
-        FormatString(buffer,"0x%02x, ",(unsigned int) (byte & 0xff));
+        FormatString(buffer,"0x%02X, ",(unsigned int) (byte & 0xff));
         (void) WriteBlob(image,strlen(buffer),buffer);
         count++;
         if (count == 12)

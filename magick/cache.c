@@ -2228,7 +2228,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         {
           for (x=0; x < (long) number_pixels; x++)
           {
-            pixel=ScaleQuantumToChar(Intensity(p));
+            pixel=ScaleQuantumToChar(ScaleIntensityToQuantum(p));
             *q++=pixel;
             p++;
           }
@@ -2238,7 +2238,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         {
           for (x=0; x < (long) number_pixels; x++)
           {
-            pixel=ScaleQuantumToShort(Intensity(p));
+            pixel=ScaleQuantumToShort(ScaleIntensityToQuantum(p));
             *q++=pixel >> 8;
             *q++=pixel;
             p++;
@@ -2247,7 +2247,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         }
       for (x=0; x < (long) number_pixels; x++)
       {
-        pixel=ScaleQuantumToInt(Intensity(p));
+        pixel=ScaleQuantumToInt(ScaleIntensityToQuantum(p));
         *q++=pixel >> 24;
         *q++=pixel >> 16;
         *q++=pixel >> 8;
@@ -2262,7 +2262,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         {
           for (x=0; x < (long) number_pixels; x++)
           {
-            pixel=ScaleQuantumToChar(Intensity(p));
+            pixel=ScaleQuantumToChar(ScaleIntensityToQuantum(p));
             *q++=pixel;
             pixel=ScaleQuantumToChar(MaxRGB-p->opacity);
             *q++=pixel;
@@ -2274,7 +2274,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         {
           for (x=0; x < (long) number_pixels; x++)
           {
-            pixel=ScaleQuantumToShort(Intensity(p));
+            pixel=ScaleQuantumToShort(ScaleIntensityToQuantum(p));
             *q++=pixel >> 8;
             *q++=pixel;
             pixel=ScaleQuantumToShort(MaxRGB-p->opacity);
@@ -2286,7 +2286,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         }
       for (x=0; x < (long) number_pixels; x++)
       {
-        pixel=ScaleQuantumToInt(Intensity(p));
+        pixel=ScaleQuantumToInt(ScaleIntensityToQuantum(p));
         *q++=pixel >> 24;
         *q++=pixel >> 16;
         *q++=pixel >> 8;

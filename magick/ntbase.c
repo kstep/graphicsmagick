@@ -204,7 +204,7 @@ MagickExport void DebugString(char *format,...)
     {
       tracings_counter=0;
       (void) _snprintf(trace_name, MaxTextExtent-1,
-        "C:\\IM_%08x.log",tracings_sequence);
+        "C:\\IM_%08X.log",tracings_sequence);
       trace_file=fopen(trace_name,"wS");
     }
   if (trace_file != (FILE *) NULL)

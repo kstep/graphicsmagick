@@ -5541,7 +5541,7 @@ static unsigned int WriteLOGOImage(const ImageInfo *image_info,Image *image)
   p=(char *) blob;
   for (i=0; i < (long) length ; i++)
   {
-    FormatString(buffer,"0x%02x, ",*p & 0xff);
+    FormatString(buffer,"0x%02X, ",*p & 0xff);
     (void) WriteBlobString(image,buffer);
     if (((i+1) % 12) == 0)
       {

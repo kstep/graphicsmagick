@@ -2213,7 +2213,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
       {
         for (u=0; u < width; u++)
         {
-          k=Intensity(r+u);
+          k=ScaleIntensityToQuantum(r+u);
           histogram[k]++;
           if (histogram[k] > count)
             {
@@ -2706,10 +2706,10 @@ MagickExport Image *ShadeImage(const Image *image,
       /*
         Determine the surface normal and compute shading.
       */
-      normal.x=Intensity(s0-1)+Intensity(s1-1)+Intensity(s2-1)-
-        (long) Intensity(s0+1)-(long) Intensity(s1+1)-(long) Intensity(s2+1);
-      normal.y=Intensity(s2-1)+Intensity(s2)+Intensity(s2+1)-
-        (long) Intensity(s0-1)-(long) Intensity(s0)-(long) Intensity(s0+1);
+      normal.x=ScaleIntensityToQuantum(s0-1)+ScaleIntensityToQuantum(s1-1)+ScaleIntensityToQuantum(s2-1)-
+        (long) ScaleIntensityToQuantum(s0+1)-(long) ScaleIntensityToQuantum(s1+1)-(long) ScaleIntensityToQuantum(s2+1);
+      normal.y=ScaleIntensityToQuantum(s2-1)+ScaleIntensityToQuantum(s2)+ScaleIntensityToQuantum(s2+1)-
+        (long) ScaleIntensityToQuantum(s0-1)-(long) ScaleIntensityToQuantum(s0)-(long) ScaleIntensityToQuantum(s0+1);
       if ((normal.x == 0.0) && (normal.y == 0.0))
         shade=light.z;
       else
@@ -3104,17 +3104,17 @@ MagickExport Image *SteganoImage(const Image *image,const Image *watermark,
         {
           case 0:
           {
-            SetBit(q->red,j,GetBit(Intensity(&pixel),i));
+            SetBit(q->red,j,GetBit(ScaleIntensityToQuantum(&pixel),i));
             break;
           }
           case 1:
           {
-            SetBit(q->green,j,GetBit(Intensity(&pixel),i));
+            SetBit(q->green,j,GetBit(ScaleIntensityToQuantum(&pixel),i));
             break;
           }
           case 2:
           {
-            SetBit(q->blue,j,GetBit(Intensity(&pixel),i));
+            SetBit(q->blue,j,GetBit(ScaleIntensityToQuantum(&pixel),i));
             break;
           }
         }
@@ -3422,7 +3422,7 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
     indexes=GetIndexes(image);
     for (x=0; x < (long) image->columns; x++)
     {
-      index=Intensity(q) < threshold ? 0 : 1;
+      index=ScaleIntensityToQuantum(q) < threshold ? 0 : 1;
       indexes[x]=index;
       q->red=image->colormap[index].red;
       q->green=image->colormap[index].green;

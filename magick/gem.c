@@ -882,7 +882,7 @@ MagickExport double Permutate(const long n,const long k)
 %
 %  The format of the ScaleCharToQuantum() method is:
 %
-%      ScaleCharToQuantum(const unsigned long value)
+%      Quantum ScaleCharToQuantum(const unsigned char value)
 %
 %  A description of each parameter follows:
 %
@@ -892,7 +892,7 @@ MagickExport double Permutate(const long n,const long k)
 %
 %
 */
-MagickExport unsigned long ScaleCharToQuantum(const unsigned long value)
+MagickExport Quantum ScaleCharToQuantum(const unsigned char value)
 {
 #if (QuantumDepth == 8)
   return(value);
@@ -920,7 +920,7 @@ MagickExport unsigned long ScaleCharToQuantum(const unsigned long value)
 %
 %  The format of the ScaleIntToQuantum() method is:
 %
-%      ScaleIntToQuantum(const unsigned long value)
+%      Quantum ScaleIntToQuantum(const unsigned int value)
 %
 %  A description of each parameter follows:
 %
@@ -930,7 +930,7 @@ MagickExport unsigned long ScaleCharToQuantum(const unsigned long value)
 %
 %
 */
-MagickExport unsigned long ScaleIntToQuantum(const unsigned long value)
+MagickExport Quantum ScaleIntToQuantum(const unsigned int value)
 {
 #if (QuantumDepth == 8)
   return(value/16843009UL);
@@ -941,6 +941,37 @@ MagickExport unsigned long ScaleIntToQuantum(const unsigned long value)
 #else
 # error "Specified value of QuantumDepth is not supported"
 #endif
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S c a l e I n t e n s i t y T o Q u a n t u m                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ScaleIntensityToQuantum() scales an intensity value to the current quantum
+%  depth.
+%
+%  The format of the ScaleIntensityToQuantum() method is:
+%
+%      Quantum ScaleIntensityToQuantum(const PixelPacket *pixel)
+%
+%  A description of each parameter follows:
+%
+%    o value: ScaleIntensityToQuantum() returns the scaled quantum value.
+%
+%    o pixel: A pixel value.
+%
+%
+*/
+MagickExport Quantum ScaleIntensityToQuantum(const PixelPacket *pixel)
+{
+  return((Quantum) (0.299*pixel->red+0.587*pixel->green+0.114*pixel->blue));
 }
 
 /*
@@ -959,7 +990,7 @@ MagickExport unsigned long ScaleIntToQuantum(const unsigned long value)
 %
 %  The format of the ScaleQuantumToChar() method is:
 %
-%      ScaleQuantumToChar(const unsigned long quantum)
+%      unsigned char ScaleQuantumToChar(const Quantum quantum)
 %
 %  A description of each parameter follows:
 %
@@ -969,7 +1000,7 @@ MagickExport unsigned long ScaleIntToQuantum(const unsigned long value)
 %
 %
 */
-MagickExport unsigned long ScaleQuantumToChar(const unsigned long quantum)
+MagickExport unsigned char ScaleQuantumToChar(const Quantum quantum)
 {
 #if (QuantumDepth == 8)
   return(quantum);
@@ -998,17 +1029,17 @@ MagickExport unsigned long ScaleQuantumToChar(const unsigned long quantum)
 %
 %  The format of the ScaleQuantumToInt() method is:
 %
-%      ScaleQuantumToInt(const unsigned long quantum)
+%      unsigned int ScaleQuantumToInt(const Quantum quantum)
 %
 %  A description of each parameter follows:
 %
-%    o value: ScaleQuantumToInt() returns the scaled valuequantum .
+%    o value: ScaleQuantumToInt() returns the scaled value.
 %
 %    o quantum: scale this unsigned long value.
 %
 %
 */
-MagickExport unsigned long ScaleQuantumToInt(const unsigned long quantum)
+MagickExport unsigned int ScaleQuantumToInt(const Quantum quantum)
 {
 #if (QuantumDepth == 8)
   return(16843009UL*quantum);
@@ -1037,7 +1068,7 @@ MagickExport unsigned long ScaleQuantumToInt(const unsigned long quantum)
 %
 %  The format of the ScaleQuantumToShort() method is:
 %
-%      ScaleQuantumToShort(const unsigned long quantum)
+%      unsigned short ScaleQuantumToShort(const Quantum quantum)
 %
 %  A description of each parameter follows:
 %
@@ -1047,7 +1078,7 @@ MagickExport unsigned long ScaleQuantumToInt(const unsigned long quantum)
 %
 %
 */
-MagickExport unsigned long ScaleQuantumToShort(const unsigned long quantum)
+MagickExport unsigned short ScaleQuantumToShort(const Quantum quantum)
 {
 #if (QuantumDepth == 8)
   return(257UL*quantum);
@@ -1075,7 +1106,7 @@ MagickExport unsigned long ScaleQuantumToShort(const unsigned long quantum)
 %
 %  The format of the ScaleShortToQuantum() method is:
 %
-%      ScaleShortToQuantum(const unsigned long value)
+%      Quantum ScaleShortToQuantum(const unsigned short value)
 %
 %  A description of each parameter follows:
 %
@@ -1085,7 +1116,7 @@ MagickExport unsigned long ScaleQuantumToShort(const unsigned long quantum)
 %
 %
 */
-MagickExport unsigned long ScaleShortToQuantum(const unsigned long value)
+MagickExport Quantum ScaleShortToQuantum(const unsigned short value)
 {
 #if (QuantumDepth == 8)
   return(value/257UL);

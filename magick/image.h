@@ -16,8 +16,7 @@ extern "C" {
 #define ColorMatch(p,q) (((p)->red == (q)->red) && \
   ((p)->green == (q)->green) && ((p)->blue == (q)->blue))
 #define Downscale(quantum)  ScaleQuantumToChar(quantum)
-#define Intensity(color)  \
-  ((9798UL*(color)->red+19235UL*(color)->green+3735UL*(color)->blue)/32768UL)
+#define Intensity(color)  ScaleIntensityToQuantum(color)
 #define MaxColormapSize  65536UL
 #define MaxRGB  ((1UL << QuantumDepth)-1UL)
 #define OpaqueOpacity  0
@@ -667,14 +666,7 @@ extern MagickExport unsigned int
 
 extern MagickExport unsigned long
   GetImageDepth(const Image *,ExceptionInfo *),
-  GetNumberColors(const Image *,FILE *,ExceptionInfo *),
-  ScaleCharToQuantum(const unsigned long),
-  ScaleIntToQuantum(const unsigned long),
-  ScaleQuantumToChar(const unsigned long),
-  ScaleQuantumToInt(const unsigned long),
-  ScaleQuantumToShort(const unsigned long),
-  ScaleShortToQuantum(const unsigned long);
-
+  GetNumberColors(const Image *,FILE *,ExceptionInfo *);
 
 extern MagickExport void
   AllocateNextImage(const ImageInfo *,Image *),
