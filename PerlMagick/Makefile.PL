@@ -37,7 +37,7 @@ use Config;
 # Compute test specification
 my $delegate_tests='t/*.t';
 my $delegate;
-foreach $delegate (qw/ bzlib jp2 jpeg lcms mpeg png ps tiff ttf x xfig zlib/) {
+foreach $delegate (qw/ bzlib cgm fpx hpgl jbig jp2 jpeg lcms mpeg png ps rad tiff ttf wmf x xfig zlib/) {
   if( -d "t/$delegate" ) {
     $delegate_tests .= " t/$delegate/*.t";
   }
@@ -54,19 +54,19 @@ WriteMakefile
    'AUTHOR'    => 'ImageMagick Studio',
 
    # Set compiler flags other than INC and OPTIMIZE
-   # 'CCFLAGS'	=> '-g -O2 -Wall',
+   # 'CCFLAGS'	=> '-O2 -Wall',
 
    # Preprocessor defines
    'DEFINE'	=> '-DHAVE_CONFIG_H',     # e.g., '-DHAVE_SOMETHING' 
 
    # Header search specfication and preprocessor flags
-   'INC'	=> '-I../ -I.. -I/usr/include/freetype2 -D_REENTRANT -D_FILE_OFFSET_BITS=64 -I/usr/X11R6/include -I/usr/include/libxml2',
+   'INC'	=> '-I../ -I.. -I/usr/local/include/freetype2 -D_REENTRANT -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -I/usr/local/include/libxml2',
 
    # Install PerlMagick binary into ImageMagick bin directory
    'INSTALLBIN'	=> '/usr/local/bin',
 
    # Library specification
-   'LIBS'	=> ['-L/usr/X11R6/lib -L/usr/lib -L/usr/lib -L/home/cristy/ImageMagick/magick -lMagick -llcms -ltiff -lfreetype -ljasper -ljpeg -lpng -lXext -lSM -lICE -lX11 -lbz2 -lxml2 -lz -lpthread -lm'],
+   'LIBS'	=> ['-L/usr/local/lib -R/usr/local/lib -L/usr/local/lib -L/usr/local/lib -L/home/glennrp/CVS/ImageMagick/magick -lGraphicsMagick -ljbig -llcms -ltiff -lfreetype -ljasper -ljpeg -lgs -lpng -lfpx -lwmflite -lXext -lSM -lICE -lX11 -lsocket -lnsl -lbz2 -lxml2 -lz -lpthread -lm'],
 
    # Perl binary name (if a Perl binary is built)
    'MAP_TARGET'	=> 'PerlMagick',
