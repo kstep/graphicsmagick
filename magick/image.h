@@ -563,6 +563,7 @@ typedef struct _MagickInfo
 
   char
     *description,
+    *version,
     *module;
 
   ImageInfo

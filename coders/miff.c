@@ -1034,6 +1034,9 @@ ModuleExport void RegisterMIFFImage(void)
   entry->encoder=WriteMIFFImage;
   entry->magick=IsMIFF;
   entry->description=AllocateString("Magick image format");
+#if defined(MagickLibVersionText)
+  entry->version=AllocateString(MagickLibVersionText);
+#endif
   entry->module=AllocateString("MIFF");
   (void) RegisterMagickInfo(entry);
 }

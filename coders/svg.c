@@ -2738,6 +2738,9 @@ ModuleExport void RegisterSVGImage(void)
   entry->encoder=WriteSVGImage;
   entry->description=AllocateString("Scalable Vector Gaphics");
   entry->module=AllocateString("SVG");
+#if defined(LIBXML_DOTTED_VERSION)
+  entry->version=AllocateString("XML " LIBXML_DOTTED_VERSION);
+#endif
   (void) RegisterMagickInfo(entry);
 }
 

@@ -957,6 +957,10 @@ ModuleExport void RegisterTIFFImage(void)
   entry->encoder=WriteTIFFImage;
   entry->magick=IsTIFF;
   entry->description=AllocateString("Tagged Image File Format");
+#if defined(TIFF_VERSION)
+  entry->version=AllocateString((char *) NULL);
+  FormatString(entry->version,"%d",TIFF_VERSION);
+#endif
   entry->module=AllocateString("TIFF");
   (void) RegisterMagickInfo(entry);
 }

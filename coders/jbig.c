@@ -300,6 +300,9 @@ ModuleExport void RegisterJBIGImage(void)
   entry->encoder=WriteJBIGImage;
   entry->description=
     AllocateString("Joint Bi-level Image experts Group interchange format");
+#if defined(JBG_VERSION)
+  entry->version=AllocateString(JBG_VERSION);
+#endif
   entry->module=AllocateString("JBIG");
   (void) RegisterMagickInfo(entry);
 }

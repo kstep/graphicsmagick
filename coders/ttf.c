@@ -258,6 +258,10 @@ ModuleExport void RegisterTTFImage(void)
   entry->magick=IsTTF;
   entry->adjoin=False;
   entry->description=AllocateString("TrueType font");
+#if defined(FREETYPE_MAJOR) && defined(FREETYPE_MINOR)
+  entry->version=AllocateString((char *) NULL);
+  FormatString(entry->version,"%d.%d",FREETYPE_MAJOR,FREETYPE_MINOR);
+#endif
   entry->module=AllocateString("TTF");
   (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PFA");

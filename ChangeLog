@@ -4,6 +4,7 @@
 
 2002-03-01  Cristy  <cristy@mystic.es.dupont.com>
   * GetTypeInfoByFamily() null pointer fault (reported by Bob Friesenhahn).
+  * Added module version number (patch by Glenn Randers-Pehrson).
 
 2002-03-01  Glenn Randers-Pehrson  <randeg@alum.rpi.edu>
   * image->matte was not being set when reading GRAY-ALPHA PNG files.

@@ -622,10 +622,14 @@ MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
   {
     if (p->stealth)
       continue;
-    (void) fprintf(file,"%9s%c  %c%c%c  %s\n",p->name ? p->name : "",
+    (void) fprintf(file,"%9s%c  %c%c%c",p->name ? p->name : "",
       p->blob_support ? '*' : ' ',p->decoder ? 'r' : '-',
-      p->encoder ? 'w' : '-',p->encoder && p->adjoin ? '+' : '-',
-      p->description ? p->description : "");
+      p->encoder ? 'w' : '-',p->encoder && p->adjoin ? '+' : '-');
+    if (p->description != (char *) NULL)
+      (void) fprintf(file,"  %.1024s",p->description);
+    if (p->version != (char *) NULL)
+      (void) fprintf(file," (%.1024s)",p->version);
+    (void) fprintf(file,"\n");
   }
   (void) fprintf(file,"\n* native blob support\n\n");
   (void) fflush(file);
@@ -811,8 +815,12 @@ MagickExport unsigned int UnregisterMagickInfo(const char *name)
     else
       magick_list=p->next;
     LiberateMemory((void **) &p->name);
-    LiberateMemory((void **) &p->description);
-    LiberateMemory((void **) &p->module);
+    if (p->description != (char *) NULL)
+      LiberateMemory((void **) &p->description);
+    if (p->version != (char *) NULL)
+      LiberateMemory((void **) &p->version);
+    if (p->module != (char *) NULL)
+      LiberateMemory((void **) &p->module);
     LiberateMemory((void **) &p);
     status=True;
     break;

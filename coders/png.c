@@ -4150,6 +4150,10 @@ ModuleExport void RegisterPNGImage(void)
   entry->magick=IsPNG;
   entry->adjoin=False;
   entry->description=AllocateString("Portable Network Graphics");
+#if defined(PNG_LIBPNG_VER)
+  entry->version=AllocateString((char *) NULL);
+  FormatString(entry->version,"%d",PNG_LIBPNG_VER);
+#endif
   entry->module=AllocateString("PNG");
   (void) RegisterMagickInfo(entry);
 }
