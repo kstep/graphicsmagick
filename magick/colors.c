@@ -396,9 +396,6 @@ static const ColorlistInfo
 /*
   Forward declarations.
 */
-static NodeInfo
-  *InitializeNode(CubeInfo *,const unsigned int);
-
 static void
   Histogram(CubeInfo *,const NodeInfo *,FILE *);
 
@@ -486,6 +483,63 @@ static void DestroyList(const NodeInfo *node_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
++  G e t N o d e I n f o                                                      %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetNodeInfo allocates memory for a new node in the color cube tree
+%  and presets all fields to zero.
+%
+%  The format of the GetNodeInfo method is:
+%
+%      node_info=GetNodeInfo(color_cube,level)
+%
+%  A description of each parameter follows.
+%
+%    o color_cube: A pointer to the CubeInfo structure.
+%
+%    o level: Specifies the level in the storage_class the node resides.
+%
+%
+*/
+static NodeInfo *GetNodeInfo(CubeInfo *color_cube,const unsigned int level)
+{
+  register int
+    i;
+
+  NodeInfo
+    *node_info;
+
+  if (color_cube->free_nodes == 0)
+    {
+      Nodes
+        *nodes;
+
+      /*
+        Allocate a new nodes of nodes.
+      */
+      nodes=(Nodes *) AcquireMemory(sizeof(Nodes));
+      if (nodes == (Nodes *) NULL)
+        return((NodeInfo *) NULL);
+      nodes->next=color_cube->node_list;
+      color_cube->node_list=nodes;
+      color_cube->node_info=nodes->nodes;
+      color_cube->free_nodes=NodesInAList;
+    }
+  color_cube->free_nodes--;
+  node_info=color_cube->node_info++;
+  memset(node_info,0,sizeof(NodeInfo));
+  node_info->level=level;
+  return(node_info);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %  G e t N u m b e r C o l o r s                                              %
 %                                                                             %
 %                                                                             %
@@ -552,7 +606,7 @@ MagickExport unsigned long GetNumberColors(Image *image,FILE *file)
   color_cube.progress=0;
   color_cube.colors=0;
   color_cube.free_nodes=0;
-  color_cube.root=InitializeNode(&color_cube,0);
+  color_cube.root=GetNodeInfo(&color_cube,0);
   if (color_cube.root == (NodeInfo *) NULL)
     {
       ThrowException(&image->exception,ResourceLimitWarning,
@@ -579,7 +633,7 @@ MagickExport unsigned long GetNumberColors(Image *image,FILE *file)
            (((Quantum) DownScale(p->blue) >> index) & 0x01);
         if (node_info->child[id] == (NodeInfo *) NULL)
           {
-            node_info->child[id]=InitializeNode(&color_cube,level);
+            node_info->child[id]=GetNodeInfo(&color_cube,level);
             if (node_info->child[id] == (NodeInfo *) NULL)
               {
                 ThrowException(&image->exception,ResourceLimitWarning,
@@ -718,66 +772,6 @@ static void Histogram(CubeInfo *color_cube,const NodeInfo *node_info,FILE *file)
           color_cube->colors);
       color_cube->progress++;
     }
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+  I n i t i a l i z e N o d e                                                %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method InitializeNode allocates memory for a new node in the color cube
-%  tree and presets all fields to zero.
-%
-%  The format of the InitializeNode method is:
-%
-%      node_info=InitializeNode(color_cube,level)
-%
-%  A description of each parameter follows.
-%
-%    o color_cube: A pointer to the CubeInfo structure.
-%
-%    o level: Specifies the level in the storage_class the node resides.
-%
-%
-*/
-static NodeInfo *InitializeNode(CubeInfo *color_cube,const unsigned int level)
-{
-  register int
-    i;
-
-  NodeInfo
-    *node_info;
-
-  if (color_cube->free_nodes == 0)
-    {
-      Nodes
-        *nodes;
-
-      /*
-        Allocate a new nodes of nodes.
-      */
-      nodes=(Nodes *) AcquireMemory(sizeof(Nodes));
-      if (nodes == (Nodes *) NULL)
-        return((NodeInfo *) NULL);
-      nodes->next=color_cube->node_list;
-      color_cube->node_list=nodes;
-      color_cube->node_info=nodes->nodes;
-      color_cube->free_nodes=NodesInAList;
-    }
-  color_cube->free_nodes--;
-  node_info=color_cube->node_info++;
-  for (i=0; i < 8; i++)
-    node_info->child[i]=(NodeInfo *) NULL;
-  node_info->level=level;
-  node_info->number_unique=0;
-  node_info->list=(ColorPacket *) NULL;
-  return(node_info);
 }
 
 /*
@@ -1013,7 +1007,7 @@ MagickExport unsigned int IsPseudoClass(Image *image)
   color_cube.node_list=(Nodes *) NULL;
   color_cube.colors=0;
   color_cube.free_nodes=0;
-  color_cube.root=InitializeNode(&color_cube,0);
+  color_cube.root=GetNodeInfo(&color_cube,0);
   if (color_cube.root == (NodeInfo *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Unable to determine image class",
       "Memory allocation failed");
@@ -1036,7 +1030,7 @@ MagickExport unsigned int IsPseudoClass(Image *image)
            ((DownScale(p->blue) >> index) & 0x01);
         if (node_info->child[id] == (NodeInfo *) NULL)
           {
-            node_info->child[id]=InitializeNode(&color_cube,level);
+            node_info->child[id]=GetNodeInfo(&color_cube,level);
             if (node_info->child[id] == (NodeInfo *) NULL)
               ThrowBinaryException(ResourceLimitWarning,
                 "Unable to determine image class","Memory allocation failed");
