@@ -204,7 +204,7 @@ static unsigned int
 %
 */
 
-static double GetUserSpaceCoordinateValue(const SVGInfo *svg_info,
+static double GetUserSpaceCoordinateValue(const SVGInfo *svg_info,int type,
   const char *string)
 {
   char
@@ -212,43 +212,43 @@ static double GetUserSpaceCoordinateValue(const SVGInfo *svg_info,
     token[MaxTextExtent];
 
   double
-    scale,
     value;
 
-  register long
-    n;
-
   assert(string != (const char *) NULL);
-  n=svg_info->n;
   p=(char *) string;
   GetToken(p,&p,token);
   value=atof(token);
-  if (strchr(token,'%') != (char *) NULL)
+  GetToken(p,&p,token);
+  if (*token == '%')
     {
       double
-        scale;
-
-      scale=ExpandAffine(&svg_info->affine);
-      return(value*svg_info->width/svg_info->scale[n]/scale/100.0);
+        alpha,
+        beta;
+          
+      if (type > 0)
+        return(svg_info->view_box.width*value/100.0);
+      if (type < 0)
+        return(svg_info->view_box.height*value/100.0);
+      alpha=value-svg_info->view_box.width;
+      beta=value-svg_info->view_box.height;
+      return(sqrt(alpha*alpha+beta*beta)/sqrt(2.0)/100.0);
     }
-  GetToken(p,&p,token);
-  scale=ExpandAffine(&svg_info->affine);
   if (LocaleNCompare(token,"cm",2) == 0)
-    return(72.0*scale/2.54*value/svg_info->scale[n]);
+    return(72.0*svg_info->scale[0]/2.54*value);
   if (LocaleNCompare(token,"em",2) == 0)
-    return(svg_info->pointsize*scale*value/svg_info->scale[n]);
+    return(svg_info->pointsize*value);
   if (LocaleNCompare(token,"ex",2) == 0)
-    return(svg_info->pointsize*scale*value/svg_info->scale[n]/2.0);
+    return(svg_info->pointsize*value/2.0);
   if (LocaleNCompare(token,"in",2) == 0)
-    return(72.0*scale*value/svg_info->scale[n]);
+    return(72.0*svg_info->scale[0]*value);
   if (LocaleNCompare(token,"mm",2) == 0)
-    return(72.0*scale/25.4*value/svg_info->scale[n]);
+    return(72.0*svg_info->scale[0]/25.4*value);
   if (LocaleNCompare(token,"pc",2) == 0)
-    return(72.0*scale/6.0*value/svg_info->scale[n]);
+    return(72.0*svg_info->scale[0]/6.0*value);
   if (LocaleNCompare(token,"pt",2) == 0)
-    return(scale*value/svg_info->scale[n]);
+    return(svg_info->scale[0]*value);
   if (LocaleNCompare(token,"px",2) == 0)
-    return(value/svg_info->scale[n]);
+    return(value);
   return(value);
 }
 
@@ -719,12 +719,14 @@ static void SVGStartElement(void *context,const xmlChar *name,
         {
           if (LocaleCompare(keyword,"cx") == 0)
             {
-              svg_info->element.cx=GetUserSpaceCoordinateValue(svg_info,value);
+              svg_info->element.cx=
+                GetUserSpaceCoordinateValue(svg_info,1,value);
               break;
             }
           if (LocaleCompare(keyword,"cy") == 0)
             {
-              svg_info->element.cy=GetUserSpaceCoordinateValue(svg_info,value);
+              svg_info->element.cy=
+                GetUserSpaceCoordinateValue(svg_info,-1,value);
               break;
             }
           break;
@@ -735,13 +737,13 @@ static void SVGStartElement(void *context,const xmlChar *name,
           if (LocaleCompare(keyword,"fx") == 0)
             {
               svg_info->element.major=
-                GetUserSpaceCoordinateValue(svg_info,value);
+                GetUserSpaceCoordinateValue(svg_info,1,value);
               break;
             }
           if (LocaleCompare(keyword,"fy") == 0)
             {
               svg_info->element.minor=
-                GetUserSpaceCoordinateValue(svg_info,value);
+                GetUserSpaceCoordinateValue(svg_info,-1,value);
               break;
             }
           break;
@@ -752,7 +754,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
           if (LocaleCompare(keyword,"height") == 0)
             {
               svg_info->bounds.height=
-                GetUserSpaceCoordinateValue(svg_info,value);
+                GetUserSpaceCoordinateValue(svg_info,-1,value);
               break;
             }
           break;
@@ -773,7 +775,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
           if (LocaleCompare(keyword,"r") == 0)
             {
               svg_info->element.angle=
-                GetUserSpaceCoordinateValue(svg_info,value);
+                GetUserSpaceCoordinateValue(svg_info,0,value);
               break;
             }
           break;
@@ -784,7 +786,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
           if (LocaleCompare(keyword,"width") == 0)
             {
               svg_info->bounds.width=
-                GetUserSpaceCoordinateValue(svg_info,value);
+                GetUserSpaceCoordinateValue(svg_info,1,value);
               break;
             }
           break;
@@ -794,17 +796,19 @@ static void SVGStartElement(void *context,const xmlChar *name,
         {
           if (LocaleCompare(keyword,"x") == 0)
             {
-              svg_info->bounds.x=GetUserSpaceCoordinateValue(svg_info,value);
+              svg_info->bounds.x=GetUserSpaceCoordinateValue(svg_info,1,value);
               break;
             }
           if (LocaleCompare(keyword,"x1") == 0)
             {
-              svg_info->segment.x1=GetUserSpaceCoordinateValue(svg_info,value);
+              svg_info->segment.x1=
+                GetUserSpaceCoordinateValue(svg_info,1,value);
               break;
             }
           if (LocaleCompare(keyword,"x2") == 0)
             {
-              svg_info->segment.x2=GetUserSpaceCoordinateValue(svg_info,value);
+              svg_info->segment.x2=
+                GetUserSpaceCoordinateValue(svg_info,1,value);
               break;
             }
           break;
@@ -814,17 +818,19 @@ static void SVGStartElement(void *context,const xmlChar *name,
         {
           if (LocaleCompare(keyword,"y") == 0)
             {
-              svg_info->bounds.y=GetUserSpaceCoordinateValue(svg_info,value);
+              svg_info->bounds.y=GetUserSpaceCoordinateValue(svg_info,-1,value);
               break;
             }
           if (LocaleCompare(keyword,"y1") == 0)
             {
-              svg_info->segment.y1=GetUserSpaceCoordinateValue(svg_info,value);
+              svg_info->segment.y1=
+                GetUserSpaceCoordinateValue(svg_info,-1,value);
               break;
             }
           if (LocaleCompare(keyword,"y2") == 0)
             {
-              svg_info->segment.y2=GetUserSpaceCoordinateValue(svg_info,value);
+              svg_info->segment.y2=
+                GetUserSpaceCoordinateValue(svg_info,-1,value);
               break;
             }
           break;
@@ -1019,7 +1025,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
           if (LocaleCompare(keyword,"angle") == 0)
             {
               (void) fprintf(svg_info->file,"angle %g\n",
-                GetUserSpaceCoordinateValue(svg_info,value));
+                GetUserSpaceCoordinateValue(svg_info,0,value));
               break;
             }
           break;
@@ -1050,12 +1056,14 @@ static void SVGStartElement(void *context,const xmlChar *name,
             }
           if (LocaleCompare(keyword,"cx") == 0)
             {
-              svg_info->element.cx=GetUserSpaceCoordinateValue(svg_info,value);
+              svg_info->element.cx=
+                GetUserSpaceCoordinateValue(svg_info,1,value);
               break;
             }
           if (LocaleCompare(keyword,"cy") == 0)
             {
-              svg_info->element.cy=GetUserSpaceCoordinateValue(svg_info,value);
+              svg_info->element.cy=
+                GetUserSpaceCoordinateValue(svg_info,-1,value);
               break;
             }
           break;
@@ -1070,12 +1078,14 @@ static void SVGStartElement(void *context,const xmlChar *name,
             }
           if (LocaleCompare(keyword,"dx") == 0)
             {
-              svg_info->bounds.x+=GetUserSpaceCoordinateValue(svg_info,value);
+              svg_info->bounds.x+=
+                GetUserSpaceCoordinateValue(svg_info,1,value);
               break;
             }
           if (LocaleCompare(keyword,"dy") == 0)
             {
-              svg_info->bounds.y+=GetUserSpaceCoordinateValue(svg_info,value);
+              svg_info->bounds.y+=
+                GetUserSpaceCoordinateValue(svg_info,-1,value);
               break;
             }
           break;
@@ -1125,7 +1135,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
             }
           if (LocaleCompare(keyword,"font-size") == 0)
             {
-              svg_info->pointsize=GetUserSpaceCoordinateValue(svg_info,value);
+              svg_info->pointsize=
+                GetUserSpaceCoordinateValue(svg_info,0,value);
               (void) fprintf(svg_info->file,"font-size %g\n",
                 svg_info->pointsize);
               break;
@@ -1199,7 +1210,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                         double
                           angle;
 
-                        angle=GetUserSpaceCoordinateValue(svg_info,value);
+                        angle=GetUserSpaceCoordinateValue(svg_info,0,value);
                         affine.sx=cos(DegreesToRadians(fmod(angle,360.0)));
                         affine.rx=sin(DegreesToRadians(fmod(angle,360.0)));
                         affine.ry=(-sin(DegreesToRadians(fmod(angle,360.0))));
@@ -1216,10 +1227,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
                         for (p=(char *) value; *p != '\0'; p++)
                           if (isspace((int) (*p)) || (*p == ','))
                             break;
-                        affine.sx=GetUserSpaceCoordinateValue(svg_info,value);
+                        affine.sx=GetUserSpaceCoordinateValue(svg_info,1,value);
                         affine.sy=affine.sx;
                         if (*p != '\0')
-                          affine.sy=GetUserSpaceCoordinateValue(svg_info,p+1);
+                          affine.sy=
+                            GetUserSpaceCoordinateValue(svg_info,-1,p+1);
                         svg_info->scale[svg_info->n]=ExpandAffine(&affine);
                         break;
                       }
@@ -1227,7 +1239,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
                       {
                         affine.sx=svg_info->affine.sx;
                         affine.ry=tan(DegreesToRadians(fmod(
-                          GetUserSpaceCoordinateValue(svg_info,value),360.0)));
+                          GetUserSpaceCoordinateValue(svg_info,1,value),
+                          360.0)));
                         affine.sy=svg_info->affine.sy;
                         break;
                       }
@@ -1235,7 +1248,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                       {
                         affine.sx=svg_info->affine.sx;
                         affine.rx=tan(DegreesToRadians(fmod(
-                          GetUserSpaceCoordinateValue(svg_info,value),
+                          GetUserSpaceCoordinateValue(svg_info,-1,value),
                           360.0)));
                         affine.sy=svg_info->affine.sy;
                         break;
@@ -1250,10 +1263,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
                         for (p=(char *) value; *p != '\0'; p++)
                           if (isspace((int) (*p)) || (*p == ','))
                             break;
-                        affine.tx=GetUserSpaceCoordinateValue(svg_info,value);
+                        affine.tx=GetUserSpaceCoordinateValue(svg_info,1,value);
                         affine.ty=affine.tx;
                         if (*p != '\0')
-                          affine.ty=GetUserSpaceCoordinateValue(svg_info,p+1);
+                          affine.ty=
+                            GetUserSpaceCoordinateValue(svg_info,-1,p+1);
                         break;
                       }
                     break;
@@ -1292,7 +1306,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
           if (LocaleCompare(keyword,"height") == 0)
             {
               svg_info->bounds.height=
-                GetUserSpaceCoordinateValue(svg_info,value);
+                GetUserSpaceCoordinateValue(svg_info,-1,value);
               break;
             }
           if (LocaleCompare(keyword,"href") == 0)
@@ -1308,13 +1322,13 @@ static void SVGStartElement(void *context,const xmlChar *name,
           if (LocaleCompare(keyword,"major") == 0)
             {
               svg_info->element.major=
-                GetUserSpaceCoordinateValue(svg_info,value);
+                GetUserSpaceCoordinateValue(svg_info,1,value);
               break;
             }
           if (LocaleCompare(keyword,"minor") == 0)
             {
               svg_info->element.minor=
-                GetUserSpaceCoordinateValue(svg_info,value);
+                GetUserSpaceCoordinateValue(svg_info,-1,value);
               break;
             }
           break;
@@ -1324,7 +1338,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
         {
           if (LocaleCompare(keyword,"offset") == 0)
             {
-              svg_info->offset=GetUserSpaceCoordinateValue(svg_info,value);
+              svg_info->offset=GetUserSpaceCoordinateValue(svg_info,0,value);
               break;
             }
           if (LocaleCompare(keyword,"opacity") == 0)
@@ -1355,9 +1369,9 @@ static void SVGStartElement(void *context,const xmlChar *name,
           if (LocaleCompare(keyword,"r") == 0)
             {
               svg_info->element.major=
-                GetUserSpaceCoordinateValue(svg_info,value);
+                GetUserSpaceCoordinateValue(svg_info,1,value);
               svg_info->element.minor=
-                GetUserSpaceCoordinateValue(svg_info,value);
+                GetUserSpaceCoordinateValue(svg_info,-1,value);
               break;
             }
           if (LocaleCompare(keyword,"rotate") == 0)
@@ -1365,7 +1379,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
               double
                 angle;
 
-              angle=GetUserSpaceCoordinateValue(svg_info,value);
+              angle=GetUserSpaceCoordinateValue(svg_info,0,value);
               (void) fprintf(svg_info->file,"translate %g,%g\n",
                 svg_info->bounds.x,svg_info->bounds.y);
               svg_info->bounds.x=0;
@@ -1377,18 +1391,20 @@ static void SVGStartElement(void *context,const xmlChar *name,
             {
               if (LocaleCompare((char *) name,"ellipse") == 0)
                 svg_info->element.major=
-                  GetUserSpaceCoordinateValue(svg_info,value);
+                  GetUserSpaceCoordinateValue(svg_info,1,value);
               else
-                svg_info->radius.x=GetUserSpaceCoordinateValue(svg_info,value);
+                svg_info->radius.x=
+                  GetUserSpaceCoordinateValue(svg_info,1,value);
               break;
             }
           if (LocaleCompare(keyword,"ry") == 0)
             {
               if (LocaleCompare((char *) name,"ellipse") == 0)
                 svg_info->element.minor=
-                  GetUserSpaceCoordinateValue(svg_info,value);
+                  GetUserSpaceCoordinateValue(svg_info,-1,value);
               else
-                svg_info->radius.y=GetUserSpaceCoordinateValue(svg_info,value);
+                svg_info->radius.y=
+                  GetUserSpaceCoordinateValue(svg_info,-1,value);
               break;
             }
           break;
@@ -1450,7 +1466,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
           if (LocaleCompare(keyword,"stroke-width") == 0)
             {
               (void) fprintf(svg_info->file,"stroke-width %g\n",
-                GetUserSpaceCoordinateValue(svg_info,value));
+                GetUserSpaceCoordinateValue(svg_info,1,value));
               break;
             }
           if (LocaleCompare(keyword,"style") == 0)
@@ -1539,7 +1555,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                     if (LocaleCompare(keyword,"font-size") == 0)
                       {
                         svg_info->pointsize=
-                          GetUserSpaceCoordinateValue(svg_info,value);
+                          GetUserSpaceCoordinateValue(svg_info,0,value);
                         (void) fprintf(svg_info->file,"font-size %g\n",
                           svg_info->pointsize);
                         break;
@@ -1557,7 +1573,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                     if (LocaleCompare(keyword,"offset") == 0)
                       {
                         (void) fprintf(svg_info->file,"offset %g\n",
-                          GetUserSpaceCoordinateValue(svg_info,value));
+                          GetUserSpaceCoordinateValue(svg_info,1,value));
                         break;
                       }
                     if (LocaleCompare(keyword,"opacity") == 0)
@@ -1630,7 +1646,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                     if (LocaleCompare(keyword,"stroke-width") == 0)
                       {
                         (void) fprintf(svg_info->file,"stroke-width %g\n",
-                          GetUserSpaceCoordinateValue(svg_info,value));
+                          GetUserSpaceCoordinateValue(svg_info,1,value));
                         break;
                       }
                     break;
@@ -1766,7 +1782,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                         double
                           angle;
 
-                        angle=GetUserSpaceCoordinateValue(svg_info,value);
+                        angle=GetUserSpaceCoordinateValue(svg_info,0,value);
                         affine.sx=cos(DegreesToRadians(fmod(angle,360.0)));
                         affine.rx=sin(DegreesToRadians(fmod(angle,360.0)));
                         affine.ry=(-sin(DegreesToRadians(fmod(angle,360.0))));
@@ -1783,10 +1799,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
                         for (p=(char *) value; *p != '\0'; p++)
                           if (isspace((int) (*p)) || (*p == ','))
                             break;
-                        affine.sx=GetUserSpaceCoordinateValue(svg_info,value);
+                        affine.sx=GetUserSpaceCoordinateValue(svg_info,1,value);
                         affine.sy=affine.sx;
                         if (*p != '\0')
-                          affine.sy=GetUserSpaceCoordinateValue(svg_info,p+1);
+                          affine.sy=
+                            GetUserSpaceCoordinateValue(svg_info,-1,p+1);
                         svg_info->scale[svg_info->n]=ExpandAffine(&affine);
                         break;
                       }
@@ -1794,7 +1811,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
                       {
                         affine.sx=svg_info->affine.sx;
                         affine.ry=tan(DegreesToRadians(fmod(
-                          GetUserSpaceCoordinateValue(svg_info,value),360.0)));
+                          GetUserSpaceCoordinateValue(svg_info,1,value),
+                          360.0)));
                         affine.sy=svg_info->affine.sy;
                         break;
                       }
@@ -1802,7 +1820,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
                       {
                         affine.sx=svg_info->affine.sx;
                         affine.rx=tan(DegreesToRadians(fmod(
-                          GetUserSpaceCoordinateValue(svg_info,value),
+                          GetUserSpaceCoordinateValue(svg_info,-1,value),
                           360.0)));
                         affine.sy=svg_info->affine.sy;
                         break;
@@ -1817,10 +1835,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
                         for (p=(char *) value; *p != '\0'; p++)
                           if (isspace((int) (*p)) || (*p == ','))
                             break;
-                        affine.tx=GetUserSpaceCoordinateValue(svg_info,value);
+                        affine.tx=GetUserSpaceCoordinateValue(svg_info,1,value);
                         affine.ty=affine.tx;
                         if (*p != '\0')
-                          affine.ty=GetUserSpaceCoordinateValue(svg_info,p+1);
+                          affine.ty=
+                            GetUserSpaceCoordinateValue(svg_info,-1,p+1);
                         break;
                       }
                     break;
@@ -1886,7 +1905,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
           if (LocaleCompare(keyword,"width") == 0)
             {
               svg_info->bounds.width=
-                GetUserSpaceCoordinateValue(svg_info,value);
+                GetUserSpaceCoordinateValue(svg_info,1,value);
               break;
             }
           break;
@@ -1896,7 +1915,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
         {
           if (LocaleCompare(keyword,"x") == 0)
             {
-              svg_info->bounds.x=GetUserSpaceCoordinateValue(svg_info,value);
+              svg_info->bounds.x=GetUserSpaceCoordinateValue(svg_info,1,value);
               break;
             }
           if (LocaleCompare(keyword,"xlink:href") == 0)
@@ -1906,12 +1925,14 @@ static void SVGStartElement(void *context,const xmlChar *name,
             }
           if (LocaleCompare(keyword,"x1") == 0)
             {
-              svg_info->segment.x1=GetUserSpaceCoordinateValue(svg_info,value);
+              svg_info->segment.x1=
+                GetUserSpaceCoordinateValue(svg_info,1,value);
               break;
             }
           if (LocaleCompare(keyword,"x2") == 0)
             {
-              svg_info->segment.x2=GetUserSpaceCoordinateValue(svg_info,value);
+              svg_info->segment.x2=
+                GetUserSpaceCoordinateValue(svg_info,1,value);
               break;
             }
           break;
@@ -1921,17 +1942,19 @@ static void SVGStartElement(void *context,const xmlChar *name,
         {
           if (LocaleCompare(keyword,"y") == 0)
             {
-              svg_info->bounds.y=GetUserSpaceCoordinateValue(svg_info,value);
+              svg_info->bounds.y=GetUserSpaceCoordinateValue(svg_info,-1,value);
               break;
             }
           if (LocaleCompare(keyword,"y1") == 0)
             {
-              svg_info->segment.y1=GetUserSpaceCoordinateValue(svg_info,value);
+              svg_info->segment.y1=
+                GetUserSpaceCoordinateValue(svg_info,-1,value);
               break;
             }
           if (LocaleCompare(keyword,"y2") == 0)
             {
-              svg_info->segment.y2=GetUserSpaceCoordinateValue(svg_info,value);
+              svg_info->segment.y2=
+                GetUserSpaceCoordinateValue(svg_info,-1,value);
               break;
             }
           break;
@@ -2592,12 +2615,12 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   svg_info.scale=(double *) AcquireMemory(sizeof(double));
   if (svg_info.scale == (double *) NULL)
     ThrowReaderException(ResourceLimitError,"Memory allocation failed",image);
-  svg_info.scale[0]=1.0;
   IdentityAffine(&svg_info.affine);
   svg_info.affine.sx=
     image->x_resolution == 0.0 ? 1.0 : image->x_resolution/72.0;
   svg_info.affine.sy=
     image->y_resolution == 0.0 ? 1.0 : image->y_resolution/72.0;
+  svg_info.scale[0]=ExpandAffine(&svg_info.affine);
   svg_info.bounds.width=image->columns;
   svg_info.bounds.height=image->rows;
   if (image_info->size != (char *) NULL)
