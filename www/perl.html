@@ -269,9 +269,10 @@ Here we annotate an image with a Taipai TrueType font:
 <pre>&nbsp;&nbsp;&nbsp; $text = "\\0x17ef\\0x30ec\\0x25ec\\0x23ef\\0x17ec";
 &nbsp;&nbsp;&nbsp; $image->Annotate(font=>'@kai.ttf', pointsize=>40, pen=>'green', text=>$text);</pre>
 Other clever things you can do with <b>PerlMagick</b> objects include
-<pre>&nbsp;&nbsp;&nbsp; $i = $#$p"+1";&nbsp;&nbsp;&nbsp;&nbsp; # return the number of images associated with object p
+<pre>&nbsp;&nbsp;&nbsp; $i = $#$p"+1";&nbsp;&nbsp; # return the number of images associated with object p
 &nbsp;&nbsp;&nbsp; push(@$q, @$p);&nbsp; # push the images from object p onto object q
-&nbsp;&nbsp;&nbsp; undef @$p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # delete the images but not the object p</pre>
+&nbsp;&nbsp;&nbsp; undef @$p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # delete the images but not the object p
+&nbsp;&nbsp;&nbsp; p->Convolve([1, 2, 1, 2, 4, 2, 1, 2, 1]);&nbsp;&nbsp; # 3x3 Gaussian kernel</pre>
 </dl>
 <i><a href="#contents">Back to Contents</a></i>
 <br>&nbsp;
@@ -527,7 +528,9 @@ SouthWest, South, SouthEast}</i></td>
 
 <td>coefficients=><i>array of float values</i></td>
 
-<td>apply a general 2D decoupled filter to the image</td>
+<td>apply a convolution kernel to the image.  Given the kernel <i>order</i>,
+you would supply <i>order*order</i> float values (e.g. 3x3 implies 9 values).
+</td>
 </tr>
 
 <tr>

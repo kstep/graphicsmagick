@@ -4710,24 +4710,25 @@ Mogrify(ref,...)
             *av;
 
           float
-            *coefficients;
+            *kernel;
 
           register int
             j;
 
           unsigned int
-            number_coefficients;
+            order;
 
           if (!attribute_flag[0])
             break;
           av=(AV*) argument_list[0].array_reference;
-          number_coefficients=av_len(av)+1;
-          coefficients=(float *) safemalloc(number_coefficients*sizeof(float));
-          for (j=0; j < number_coefficients; j++)
-            coefficients[j]=(float) SvNV(*(av_fetch(av,j,0)));
-          image=
-            ConvolveImage(image,number_coefficients,coefficients,&exception);
-          safefree(coefficients);
+          order=sqrt(av_len(av)+1);
+          kernel=(float *) safemalloc(order*order*sizeof(float));
+          for (j=0; j < (av_len(av)+1); j++)
+            kernel[j]=(float) SvNV(*(av_fetch(av,j,0)));
+          for ( ; j < (order*order); j++)
+            kernel[j]=0.0;
+          image=ConvolveImage(image,order,kernel,&exception);
+          safefree(kernel);
           break;
         }
       }

@@ -922,8 +922,6 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         /*
           Bezier curves are just short segmented polys.
         */
-        primitive_info[j].primitive=PolygonPrimitive;
-        primitive_info[j].coordinates=BezierQuantum*control_points;
         i=j;
         for (l=0; l < (BezierQuantum*control_points); l++)
         {
@@ -936,9 +934,12 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             bounds.x2=pixel.x;
           if (pixel.y > bounds.y2)
             bounds.y2=pixel.y;
+          primitive_info[i].coordinates=0;
           primitive_info[i].pixel=pixel;
           i++;
         }
+        primitive_info[j].primitive=PolygonPrimitive;
+        primitive_info[j].coordinates=BezierQuantum*control_points;
         FreeMemory((void *) &points);
         break;
       }

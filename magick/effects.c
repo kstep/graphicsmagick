@@ -391,13 +391,14 @@ Export Image *ColorizeImage(Image *image,const char *opacity,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ConvolveImage applies a general image convolution of a 2d decoupled
-%  filter to an image and returns the results.
+%  Method ConvolveImage applies a general image convolution kernel to an
+%  image returns the results.  ConvolveImage allocates the memory necessary for
+%  the new Image structure and returns a pointer to the new image.
 %
 %  The format of the ConvolveImage method is:
 %
-%      Image *ConvolveImage(Image *image,const unsigned int number_coefficients,
-%        const float *coefficients,ExceptionInfo *exception)
+%      Image *ConvolveImage(Image *image,const unsigned int order,
+%        const float *kernel,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -408,20 +409,22 @@ Export Image *ColorizeImage(Image *image,const char *opacity,
 %    o image: The address of a structure of type Image;  returned from
 %      ReadImage.
 %
-%    o number_coefficients:  This unsigned integer reflects the number of
-%      coefficients in the filter.
+%    o order:  The number of columns and rows in the filter kernel.
 %
-%    o coefficients:  An array of floats representing the coefficients of a
-%      2d decoupled filter.
+%    o kernel:  An array of floats representing the convolution kernel.
 %
 %    o exception: return any errors or warnings in this structure.
 %
 %
 */
-Export Image *ConvolveImage(Image *image,const unsigned int number_coefficients,
-  const float *coefficients,ExceptionInfo *exception)
+Export Image *ConvolveImage(Image *image,const unsigned int order,
+  const float *kernel,ExceptionInfo *exception)
 {
-#define ConvolveImageText  "  Convoling image...  "
+#define ConvolveImageText  "  Convolving image...  "
+#define Cx(x) \
+  x >= image->columns ? x-image->columns+1 : x < 0 ? (x)+image->columns : x
+#define Cy(y) \
+  y >= image->rows ? y-image->rows+1 : y < 0 ? y+image->rows : y
 
   double
     blue,
@@ -431,29 +434,29 @@ Export Image *ConvolveImage(Image *image,const unsigned int number_coefficients,
     weight;
 
   Image
-    *convolve_image,
-    *stage_image;
+    *convolve_image;
 
   int
-    center,
     y;
 
+  PixelPacket
+    pixel;
+
+  register const float
+    *k;
+
   register int
-    i,
-    x;
+    x,
+    u,
+    v;
 
   register PixelPacket
-    *p,
     *q;
 
   /*
     Initialize convolved image attributes.
   */
   assert(image != (Image *) NULL);
-  stage_image=CloneImage(image,image->columns,image->rows,False,exception);
-  if (stage_image == (Image *) NULL)
-    return((Image *) NULL);
-  stage_image->class=DirectClass;
   convolve_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (convolve_image == (Image *) NULL)
     return((Image *) NULL);
@@ -461,29 +464,32 @@ Export Image *ConvolveImage(Image *image,const unsigned int number_coefficients,
   /*
     Convolve image.
   */
-  center=(number_coefficients-1)/2;
-  for (y=0; y < (int) image->rows; y++)
+  weight=0.0;
+  for (v=0; v < (order*order); v++)
+    weight+=kernel[v];
+  for (y=0; y < (int) convolve_image->rows; y++)
   {
-    p=GetImagePixels(image,0,y,image->columns,1);
-    q=SetImagePixels(stage_image,0,y,stage_image->columns,1);
-    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+    q=SetImagePixels(convolve_image,0,y,convolve_image->columns,1);
+    if (q == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (int) convolve_image->columns; x++)
     {
-      weight=0.0;
       red=0.0;
       green=0.0;
       blue=0.0;
       opacity=0.0;
-      for (i=0; i < number_coefficients; i++)
+      k=kernel;
+      for (v=(-(int) order/2); v <= (int) (order/2); v++)
       {
-        if (((x+i-center) < 0) || ((x+i-center) >= image->columns))
-          continue;
-        red+=coefficients[i]*(p+i-center)->red;
-        green+=coefficients[i]*(p+i-center)->green;
-        blue+=coefficients[i]*+(p+i-center)->blue;
-        opacity+=coefficients[i]*(p+i-center)->opacity;
-        weight+=coefficients[i];
+        for (u=(-(int) order/2); u <= (int) (order/2); u++)
+        {
+          pixel=GetOnePixel(image,Cx(x-u),Cy(y-v));
+          red+=(*k)*pixel.red;
+          green+=(*k)*pixel.green;
+          blue+=(*k)*pixel.blue;
+          opacity+=(*k)*pixel.opacity;
+          k++;
+        }
       }
       red/=weight;
       green/=weight;
@@ -493,7 +499,6 @@ Export Image *ConvolveImage(Image *image,const unsigned int number_coefficients,
       q->green=(green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5;
       q->blue=(blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5;
       q->opacity=(opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5;
-      p++;
       q++;
     }
     if (!SyncImagePixels(convolve_image))
@@ -501,46 +506,6 @@ Export Image *ConvolveImage(Image *image,const unsigned int number_coefficients,
     if (QuantumTick(y,convolve_image->rows))
       ProgressMonitor(ConvolveImageText,y,convolve_image->rows);
   }
-  for (x=0; x < (int) stage_image->columns; x++)
-  {
-    p=GetImagePixels(stage_image,x,0,1,stage_image->rows);
-    q=SetImagePixels(convolve_image,x,0,1,convolve_image->rows);
-    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-      break;
-    for (y=0; y < (int) stage_image->rows; y++)
-    {
-      weight=0.0;
-      red=0.0;
-      green=0.0;
-      blue=0.0;
-      opacity=0.0;
-      for (i=0; i < number_coefficients; i++)
-      {
-        if (((y+i-center) < 0) || ((y+i-center) >= image->rows))
-          continue;
-        red+=coefficients[i]*(p+i-center)->red;
-        green+=coefficients[i]*(p+i-center)->green;
-        blue+=coefficients[i]*+(p+i-center)->blue;
-        opacity+=coefficients[i]*(p+i-center)->opacity;
-        weight+=coefficients[i];
-      }
-      red/=weight;
-      green/=weight;
-      blue/=weight;
-      opacity/=weight;
-      q->red=(red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5;
-      q->green=(green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5;
-      q->blue=(blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5;
-      q->opacity=(opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5;
-      p++;
-      q++;
-    }
-    if (!SyncImagePixels(convolve_image))
-      break;
-    if (QuantumTick(y,convolve_image->rows))
-      ProgressMonitor(ConvolveImageText,y,convolve_image->rows);
-  }
-  DestroyImage(stage_image);
   return(convolve_image);
 }
 
@@ -1263,7 +1228,7 @@ Export Image *GaussianBlurImage(Image *image,const double width,
   double
     blue,
     green,
-    *mask,
+    *kernel,
     normalize,
     red;
 
@@ -1297,28 +1262,28 @@ Export Image *GaussianBlurImage(Image *image,const double width,
   if (width < 0.0)
     return(blur_image);
   /*
-    Build convolution mask.
+    Build convolution kernel.
   */
   radius=ceil(width);
-  mask=(double *) AllocateMemory((radius+1)*sizeof(double));
+  kernel=(double *) AllocateMemory((radius+1)*sizeof(double));
   scanline=(PixelPacket *) AllocateMemory(radius*sizeof(PixelPacket));
-  if ((mask == (double *) NULL) || (scanline == (PixelPacket *) NULL))
+  if ((kernel == (double *) NULL) || (scanline == (PixelPacket *) NULL))
     {
       DestroyImage(blur_image);
       ThrowImageException(ResourceLimitWarning,"Unable to gaussian blur image",
         "Memory allocation failed");
     }
   for (i=0; i < (radius+1); i++)
-    mask[i]=exp(-((double) i*i)/(2*sigma*sigma));
+    kernel[i]=exp(-((double) i*i)/(2*sigma*sigma));
   if (width < radius)
-    mask[radius]*=(width-(double) radius+1.0); /* adjust partial pixels */
+    kernel[radius]*=(width-(double) radius+1.0); /* adjust partial pixels */
   normalize=0.0;
   for (i=0; i < (radius+1); i++)
-    normalize+=mask[i];
+    normalize+=kernel[i];
   for (i=1; i < (radius+1); i++)
-    normalize+=mask[i];
+    normalize+=kernel[i];
   for (i=0; i < (radius+1); i++)
-    mask[i]/=normalize;
+    kernel[i]/=normalize;
   /*
     Blur each row.
   */
@@ -1334,17 +1299,17 @@ Export Image *GaussianBlurImage(Image *image,const double width,
       /*
         Convolve this pixel.
       */
-      red=mask[0]*p->red;
-      green=mask[0]*p->green;
-      blue=mask[0]*p->blue;
+      red=kernel[0]*p->red;
+      green=kernel[0]*p->green;
+      blue=kernel[0]*p->blue;
       k=j-1;
       if (k < 0)
         k+=radius;
       for (i=1; i < (radius+1); i++)
       {
-	red+=mask[i]*scanline[k].red;
-	green+=mask[i]*scanline[k].green;
-	blue+=mask[i]*scanline[k].blue;
+	red+=kernel[i]*scanline[k].red;
+	green+=kernel[i]*scanline[k].green;
+	blue+=kernel[i]*scanline[k].blue;
         k--;
         if (k < 0)
           k+=radius;
@@ -1353,9 +1318,9 @@ Export Image *GaussianBlurImage(Image *image,const double width,
       {
 	if ((x+i) >= blur_image->columns)
           break;
-        red+=mask[i]*p[i].red;
-        green+=mask[i]*p[i].green;
-        blue+=mask[i]*p[i].blue;
+        red+=kernel[i]*p[i].red;
+        green+=kernel[i]*p[i].green;
+        blue+=kernel[i]*p[i].blue;
       }
       scanline[j]=(*p);
       j++;
@@ -1387,17 +1352,17 @@ Export Image *GaussianBlurImage(Image *image,const double width,
       /*
         Convolve this pixel.
       */
-      red=mask[0]*p->red;
-      green=mask[0]*p->green;
-      blue=mask[0]*p->blue;
+      red=kernel[0]*p->red;
+      green=kernel[0]*p->green;
+      blue=kernel[0]*p->blue;
       k=j-1;
       if (k < 0)
         k+=radius;
       for (i=1; i < (radius+1); i++)
       {
-	red+=mask[i]*scanline[k].red;
-	green+=mask[i]*scanline[k].green;
-	blue+=mask[i]*scanline[k].blue;
+	red+=kernel[i]*scanline[k].red;
+	green+=kernel[i]*scanline[k].green;
+	blue+=kernel[i]*scanline[k].blue;
         k--;
         if (k < 0)
           k+=radius;
@@ -1406,9 +1371,9 @@ Export Image *GaussianBlurImage(Image *image,const double width,
       {
 	if ((y+i) >= blur_image->rows)
           break;
-        red+=mask[i]*p[i].red;
-        green+=mask[i]*p[i].green;
-        blue+=mask[i]*p[i].blue;
+        red+=kernel[i]*p[i].red;
+        green+=kernel[i]*p[i].green;
+        blue+=kernel[i]*p[i].blue;
       }
       scanline[j]=(*p);
       j++;
@@ -1428,7 +1393,7 @@ Export Image *GaussianBlurImage(Image *image,const double width,
   /*
     Free resources.
   */
-  FreeMemory((void *) &mask);
+  FreeMemory((void *) &kernel);
   FreeMemory((void *) &scanline);
   return(blur_image);
 }
