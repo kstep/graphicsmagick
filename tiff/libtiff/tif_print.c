@@ -72,7 +72,7 @@ TIFFPrintDirectory(TIFF* tif, FILE* fd, long flags)
 	uint16 i;
 	long l, n;
 
-	fprintf(fd, "TIFF Directory at offset 0x%lx\n", (long) tif->tif_diroff);
+	fprintf(fd, "TIFF Directory at offset 0x%lx\n", tif->tif_diroff);
 	td = &tif->tif_dir;
 	if (TIFFFieldSet(tif,FIELD_SUBFILETYPE)) {
 		fprintf(fd, "  Subfile Type:");
@@ -184,6 +184,12 @@ TIFFPrintDirectory(TIFF* tif, FILE* fd, long flags)
 			break;
 		case SAMPLEFORMAT_IEEEFP:
 			fprintf(fd, "IEEE floating point\n");
+			break;
+		case SAMPLEFORMAT_COMPLEXINT:
+			fprintf(fd, "complex signed integer\n");
+			break;
+		case SAMPLEFORMAT_COMPLEXIEEEFP:
+			fprintf(fd, "complex IEEE floating point\n");
 			break;
 		default:
 			fprintf(fd, "%u (0x%x)\n",

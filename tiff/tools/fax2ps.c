@@ -62,7 +62,7 @@ int	maxline = 512;		/* max output line of PostScript */
  * March 13-15, 1995.
  */
 static void
-printruns(unsigned char* buf, uint16* runs, uint16* erun, uint32 lastx)
+printruns(unsigned char* buf, uint32* runs, uint32* erun, uint32 lastx)
 {
     static struct {
 	char white, black;
@@ -356,7 +356,7 @@ main(int argc, char** argv)
     printf("%%%%CreationDate: %s", ctime(&t));
     printf("%%%%Origin: 0 0\n");
     printf("%%%%BoundingBox: 0 0 %u %u\n",
-	(int)(pageHeight*72), (int)(pageWidth*72));	/* XXX */
+	(int)(pageWidth*72), (int)(pageHeight*72));	/* XXX */
     printf("%%%%Pages: (atend)\n");
     printf("%%%%EndComments\n");
     printf("%%%%BeginProlog\n");

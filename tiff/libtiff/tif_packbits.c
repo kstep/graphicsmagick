@@ -188,16 +188,31 @@ PackBitsEncode(TIFF* tif, tidata_t buf, tsize_t cc, tsample_t s)
 static int
 PackBitsEncodeChunk(TIFF* tif, tidata_t bp, tsize_t cc, tsample_t s)
 {
-	tsize_t rowsize = (tsize_t) tif->tif_data;
+    tsize_t rowsize = (tsize_t) tif->tif_data;
 
-	assert(rowsize > 0);
-	while ((long)cc > 0) {
-		if (PackBitsEncode(tif, bp, rowsize, s) < 0)
-			return (-1);
-		bp += rowsize;
-		cc -= rowsize;
-	}
-	return (1);
+    assert(rowsize > 0);
+    
+#ifdef YCBCR_SUPPORT
+    /* 
+     * YCBCR data isn't really separable into rows, so we
+     * might as well encode the whole tile/strip as one chunk.
+     */
+    if( tif->tif_dir.td_photometric == PHOTOMETRIC_YCBCR )
+        rowsize = (tsize_t) tif->tif_data;
+#endif
+
+    while ((long)cc > 0) {
+        int	chunk = rowsize;
+        
+        if( cc < chunk )
+            chunk = cc;
+
+        if (PackBitsEncode(tif, bp, chunk, s) < 0)
+            return (-1);
+        bp += chunk;
+        cc -= chunk;
+    }
+    return (1);
 }
 
 static int
@@ -222,13 +237,28 @@ PackBitsDecode(TIFF* tif, tidata_t op, tsize_t occ, tsample_t s)
 		if (n < 0) {		/* replicate next byte -n+1 times */
 			if (n == -128)	/* nop */
 				continue;
-			n = -n + 1;
+                        n = -n + 1;
+                        if( occ < n )
+                        {
+                            TIFFWarning(tif->tif_name,
+                                        "PackBitsDecode: discarding %d bytes "
+                                        "to avoid buffer overrun",
+                                        n - occ);
+                        }
 			occ -= n;
 			b = *bp++, cc--;
 			while (n-- > 0)
 				*op++ = b;
 		} else {		/* copy next n+1 bytes literally */
-			_TIFFmemcpy(op, bp, ++n);
+			if (occ < n + 1)
+                        {
+                            TIFFWarning(tif->tif_name,
+                                        "PackBitsDecode: discarding %d bytes "
+                                        "to avoid buffer overrun",
+                                        n - occ + 1);
+                            n = occ - 1;
+                        }
+                        _TIFFmemcpy(op, bp, ++n);
 			op += n; occ -= n;
 			bp += n; cc -= n;
 		}
@@ -241,7 +271,6 @@ PackBitsDecode(TIFF* tif, tidata_t op, tsize_t occ, tsample_t s)
 		    (long) tif->tif_row);
 		return (0);
 	}
-	/* check for buffer overruns? */
 	return (1);
 }
 

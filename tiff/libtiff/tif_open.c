@@ -170,11 +170,12 @@ TIFFClientOpen(
 	 * a file is opened read-only.
 	 */
 	tif->tif_flags = FILLORDER_MSB2LSB;
-	if (m == O_RDONLY)
+	if (m == O_RDONLY )
+            tif->tif_flags |= TIFF_MAPPED;
+
 #ifdef STRIPCHOP_DEFAULT
-		tif->tif_flags |= TIFF_MAPPED|STRIPCHOP_DEFAULT;
-#else
-		tif->tif_flags |= TIFF_MAPPED;
+	if (m == O_RDONLY || m == O_RDWR)
+		tif->tif_flags |= STRIPCHOP_DEFAULT;
 #endif
 
 	{ union { int32 i; char c[4]; } u; u.i = 1; bigendian = u.c[0] == 0; }
@@ -348,6 +349,14 @@ TIFFClientOpen(
 	!TIFFMapFileContents(tif, (tdata_t*) &tif->tif_base, &tif->tif_size))
 			tif->tif_flags &= ~TIFF_MAPPED;
 		if (TIFFReadDirectory(tif)) {
+                        if( m != O_RDONLY 
+                          && tif->tif_dir.td_compression != COMPRESSION_NONE )
+                        {
+                            TIFFError( name, 
+                                       "Can't open a compressed TIFF file"
+                                       " with compression for update." );
+                            goto bad;
+                        }
 			tif->tif_rawcc = -1;
 			tif->tif_flags |= TIFF_BUFFERSETUP;
 			return (tif);

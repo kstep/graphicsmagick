@@ -63,6 +63,9 @@ install:
 	    true; \
 	fi
 
+install-private: install
+	@${ECHO} "= "libtiff; cd libtiff; ${MAKE} installPrivateHdrs
+
 clean:
 	@if [ "@PORT@" = yes ]; then \
 	    ${ECHO} "= "port; cd port; ${MAKE} clean; \
@@ -118,6 +121,7 @@ TIFFFILES=\
 	Makefile.in				\
 	README					\
 	VERSION					\
+	RELEASE-DATE				\
 	COPYRIGHT				\
 	TODO					\
 	test_pics.sh				\
@@ -127,6 +131,7 @@ TIFFFILES=\
 	libtiff/Makefile.in			\
 	    libtiff/Makefile.lcc		\
 	    libtiff/makefile.vc			\
+	    libtiff/libtiff.def			\
 	    libtiff/t4.h			\
 	    libtiff/tiff.h			\
 	    libtiff/tiffcomp.h			\
@@ -152,6 +157,7 @@ TIFFFILES=\
 	    libtiff/tif_dumpmode.c		\
 	    libtiff/tif_error.c			\
 	    libtiff/tif_fax3.c			\
+	    libtiff/fax3sm_winnt.c		\
 	    libtiff/tif_fax3.h			\
 	    libtiff/tif_flush.c			\
 	    libtiff/tif_getimage.c		\
@@ -453,9 +459,11 @@ CONTRIBFILES=\
 	    contrib/addtiffo/Makefile		\
 	    contrib/addtiffo/Makefile.vc	\
 	    contrib/addtiffo/addtiffo.c		\
-	    contrib/addtiffo/tif_overview.cpp	\
-	    contrib/addtiffo/rawblockedimage.cpp \
-	    contrib/addtiffo/rawblockedimage.h  \
+	    contrib/addtiffo/tif_overview.c	\
+	contrib/iptcutil/Makefile		\
+		contrib/iptcutil/iptcutil.c	\
+		contrib/iptcutil/test.iptc	\
+		contrib/iptcutil/test.txt	\
 	${NULL}
 
 DISTFILES=\
@@ -488,8 +496,6 @@ release:
 
 # stamp relevant files according to current alpha
 release.stamp:
-	VERSION=`echo @VERSION@ | tr "." "-"`; \
-	cvs tag -R Release-$$VERSION	;
 	date "+%m/%d/%Y" > RELEASE-DATE
 
 #diffs since last release
@@ -498,20 +504,18 @@ releasediff:
 	    cvs diff -D`cat RELEASE-DATE` ${SRCDIR}/$$i;				\
 	done
 
-# create release distribution archive
+# create release or beta distribution archive
 release.tar.zip:
-	VERSION="@VERSION@";						\
-	rm -f ../tiff-$$VERSION $$VERSION $$VERSION-tar;			\
-	ln -s ${SRCDIR} tiff-$$VERSION;					\
+	VERSIONREL="@VERSION@-@RELEASE@";				\
+	rm -f ../tiff-$$VERSIONREL $$VERSIONREL $$VERSIONREL-tar;			\
+	ln -s ${SRCDIR} tiff-$$VERSIONREL;					\
 	(for i in ${DISTFILES}; do					\
 	   echo $$i;							\
-	done) | sed "s;.*;tiff-$$VERSION/&;" >$$VERSION;		\
-	tar cvf $$VERSION-tar `cat $$VERSION`;				\
-	zip tiff-$$VERSION.zip `cat $$VERSION`; 				\
-	rm -f tiff-$$VERSION-tar.${ZIPSUF};				\
-	cat $$VERSION-tar | ${COMPRESS} >tiff-$$VERSION.tar.${ZIPSUF};	\
-	rm -f tiff-$$VERSION $$VERSION $$VERSION-tar;
-
+	done) | sed "s;.*;tiff-$$VERSIONREL/&;" >$$VERSIONREL;		\
+	tar cvf $$VERSIONREL-tar `cat $$VERSIONREL`;				\
+	zip ../tiff-$$VERSIONREL.zip `cat $$VERSIONREL`; 				\
+	cat $$VERSIONREL-tar | ${COMPRESS} >../tiff-$$VERSIONREL.tar.${ZIPSUF};	\
+	rm -f tiff-$$VERSIONREL $$VERSIONREL $$VERSIONREL-tar;
 #
 #	Simple rule to run test suite assuming that pics directory is 
 #	just below this one, and that .rpt files are available. 

@@ -143,6 +143,9 @@ TIFFVGetFieldDefaulted(TIFF* tif, ttag_t tag, va_list ap)
 	case TIFFTAG_DATATYPE:
 		*va_arg(ap, uint16 *) = td->td_sampleformat-1;
 		return (1);
+	case TIFFTAG_SAMPLEFORMAT:
+		*va_arg(ap, uint16 *) = td->td_sampleformat;
+                return(1);
 	case TIFFTAG_IMAGEDEPTH:
 		*va_arg(ap, uint32 *) = td->td_imagedepth;
 		return (1);

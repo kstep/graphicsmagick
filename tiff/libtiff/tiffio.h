@@ -31,15 +31,7 @@
  * TIFF I/O Library Definitions.
  */
 #include "tiff.h"
-
-/*
- * This define can be used in code that requires
- * compilation-related definitions specific to a
- * version or versions of the library.  Runtime
- * version checking should be done based on the
- * string returned by TIFFGetVersion.
- */
-#define	TIFFLIB_VERSION	19970127	/* January 27, 1997 */
+#include "tiffvers.h"
 
 /*
  * TIFF is defined as an incomplete type to hide the
@@ -63,7 +55,8 @@ typedef	struct tiff TIFF;
  * NB: tsize_t is int32 and not uint32 because some functions
  *     return -1.
  * NB: toff_t is not off_t for many reasons; TIFFs max out at
- *     32-bit file offsets being the most important
+ *     32-bit file offsets being the most important, and to ensure
+ *     that it is unsigned, rather than signed.
  */
 typedef	uint32 ttag_t;		/* directory tag */
 typedef	uint16 tdir_t;		/* directory index */
@@ -72,12 +65,27 @@ typedef	uint32 tstrip_t;	/* strip number */
 typedef uint32 ttile_t;		/* tile number */
 typedef	int32 tsize_t;		/* i/o size in bytes */
 typedef	void* tdata_t;		/* image data ref */
-typedef	int32 toff_t;		/* file offset */
+typedef	uint32 toff_t;		/* file offset */
 
 #if !defined(__WIN32__) && (defined(_WIN32) || defined(WIN32))
 #define __WIN32__
 #endif
+
+/*
+ * On windows you should define USE_WIN32_FILEIO if you are using tif_win32.c
+ * or AVOID_WIN32_FILEIO if you are using something else (like tif_unix.c).
+ *
+ * By default tif_win32.c is assumed on windows if not using the cygwin
+ * environment.
+ */
+
 #if defined(_WINDOWS) || defined(__WIN32__) || defined(_Windows)
+#  if !defined(__CYGWIN) && !defined(AVOID_WIN32_FILEIO) && !defined(USE_WIN32_FILIO)
+#    define USE_WIN32_FILEIO
+#  endif
+#endif
+
+#if defined(USE_WIN32_FILEIO)
 #include <windows.h>
 #ifdef __WIN32__
 DECLARE_HANDLE(thandle_t);	/* Win32 file handle */
@@ -251,6 +259,8 @@ extern	tstrip_t TIFFCurrentStrip(TIFF*);
 extern	ttile_t TIFFCurrentTile(TIFF*);
 extern	int TIFFReadBufferSetup(TIFF*, tdata_t, tsize_t);
 extern	int TIFFWriteBufferSetup(TIFF*, tdata_t, tsize_t);
+extern  int TIFFWriteCheck(TIFF*, int, const char *);
+extern  int TIFFCreateDirectory(TIFF*);
 extern	int TIFFLastDirectory(TIFF*);
 extern	int TIFFSetDirectory(TIFF*, tdir_t);
 extern	int TIFFSetSubDirectory(TIFF*, uint32);

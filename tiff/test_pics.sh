@@ -1,5 +1,4 @@
 #!/bin/sh
-
 #
 #	The -f force flag will force new logs to overwrite existing ones.
 #
