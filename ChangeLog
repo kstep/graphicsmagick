@@ -1,3 +1,7 @@
+2003-08-06  William Radcliffe  <billr@corbis.com>
+
+	* magick/command.c, magick/magick.c: Get rid compiler warnings.
+
 2003-08-05  William Radcliffe  <billr@corbis.com>
 
 	* magick/command.c, magick/gm.c: Application level changes to

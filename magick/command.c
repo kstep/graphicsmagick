@@ -264,12 +264,14 @@ MagickExport unsigned int AnimateImageCommand(ImageInfo *image_info,
 {
 #if defined(HasX11)
   char
-    *client_name,
     *option,
     *resource_value,
     *server_name;
 
-  Display
+  const char
+    *client_name;
+
+Display
     *display;
 
   double
@@ -377,7 +379,7 @@ MagickExport unsigned int AnimateImageCommand(ImageInfo *image_info,
   (void) XSetErrorHandler(XError);
   client_name=GetClientName();
   resource_database=XGetResourceDatabase(display,client_name);
-  XGetResourceInfo(resource_database,client_name,&resource_info);
+  XGetResourceInfo(resource_database,(char *) client_name,&resource_info);
   image_info=resource_info.image_info;
   quantize_info=resource_info.quantize_info;
   image_info->density=
@@ -4989,10 +4991,12 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
 {
 #if defined(HasX11)
   char
-    *client_name,
     *option,
     *resource_value,
     *server_name;
+
+  const char
+    *client_name;
 
   Display
     *display;
@@ -5106,7 +5110,7 @@ MagickExport unsigned int DisplayImageCommand(ImageInfo *image_info,
   (void) XSetErrorHandler(XError);
   client_name=GetClientName();
   resource_database=XGetResourceDatabase(display,client_name);
-  XGetResourceInfo(resource_database,client_name,&resource_info);
+  XGetResourceInfo(resource_database,(char *) client_name,&resource_info);
   image_info=resource_info.image_info;
   quantize_info=resource_info.quantize_info;
   image_info->density=
@@ -12779,12 +12783,14 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
 {
 #if defined(HasX11)
   char
-    *client_name,
     *filename,
     *option,
     *resource_value,
     *server_name,
     *target_window;
+
+  const char
+    *client_name;
 
   Display
     *display;
@@ -12873,7 +12879,7 @@ MagickExport unsigned int ImportImageCommand(ImageInfo *image_info,
   client_name=GetClientName();
   resource_database=XGetResourceDatabase(display,client_name);
   XGetImportInfo(&ximage_info);
-  XGetResourceInfo(resource_database,client_name,&resource_info);
+  XGetResourceInfo(resource_database,(char *) client_name,&resource_info);
   image_info=resource_info.image_info;
   quantize_info=resource_info.quantize_info;
   resource_value=
