@@ -56,6 +56,13 @@
 2003-12-26  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/composite.c: Fixed the composite operator list in the
+        CompositeImage documentation.<BR>
+  <LI> www/api/types.html: Corrected list of composition
+        operators. Sometime prior to the creation of GraphicsMagick, the
+        "Replace" composite operators were renamed to be "Copy" composite
+        operators.  Thanks to David Relson for bringing this problem to
+        our attention.<BR>
   <LI> PerlMagick/Magick.xs: Added "LAB" to colorspace types.
   <LI> magick/image.h (enum ColorSpace): Add LABColorspace enumeration.
   <LI> wand/magick_wand.h : Add some compatibility definitions to

@@ -97,7 +97,7 @@ SYNOPSIS</A></H2>
 <P>void  <STRONG>DestroyMagickInfo</STRONG>( void );</P>
 <P>const char * <STRONG>GetImageMagick</STRONG>( const unsigned char *magick, const size_t length );</P>
 <P>const MagickInfo * <STRONG>GetMagickInfo</STRONG>( const char *name, ExceptionInfo *exception );</P>
-<P>const MagickInfo **  <STRONG>GetMagickInfoArray</STRONG>( ExceptionInfo *exception );</P>
+<P>MagickInfo **  <STRONG>GetMagickInfoArray</STRONG>( ExceptionInfo *exception );</P>
 <P><STRONG>InitializeMagick</STRONG>( const char *path );</P>
 <P>unsigned int  <STRONG>IsMagickConflict</STRONG>( const char *magick );</P>
 <P>unsigned int  <STRONG>ListMagickInfo</STRONG>( 
@@ -149,8 +149,8 @@ Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
 <H3><A NAME="getmagickinfoarray">GetMagickInfoArray</A></H3>
-<blockquote>GetMagickInfoArray() returns a sorted null-terminated array of <A HREF="types.html#MagickInfo">MagickInfo</A> pointers corresponding to the available format registrations. If necessarly all modules are loaded in order to return a complete list. This function should be used to access the entire list rather than GetMagickInfo since the list returned by GetMagickInfo may be re-ordered every time it is invoked. </blockquote><P>The format of the GetMagickList method is:</P>
-<blockquote>const <A HREF="types.html#MagickInfo">MagickInfo</A> **GetMagickInfoArray ( <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote>GetMagickInfoArray() returns a sorted null-terminated array of <A HREF="types.html#MagickInfo">MagickInfo</A> pointers corresponding to the available format registrations. If necessarly all modules are loaded in order to return a complete list. This function should be used to access the entire list rather than GetMagickInfo since the list returned by GetMagickInfo may be re-ordered every time it is invoked. Once the returned array is no longer needed, the allocated array should be deallocated. Do not attempt to deallocate the <A HREF="types.html#MagickInfo">MagickInfo</A> structures based on pointers in the array! </blockquote><P>The format of the GetMagickList method is:</P>
+<blockquote><A HREF="types.html#MagickInfo">MagickInfo</A> **GetMagickInfoArray ( <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>exception:</STRONG><BR>

@@ -1,5 +1,7 @@
 2003-12-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/composite.c: Fixed the composite operator list in the
+	CompositeImage documentation.
 	* www/api/types.html: Corrected list of composition
 	operators. Sometime prior to the creation of GraphicsMagick, the
 	"Replace" composite operators were renamed to be "Copy" composite

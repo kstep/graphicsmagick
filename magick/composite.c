@@ -68,7 +68,8 @@
 %      operators: OverCompositeOp, InCompositeOp, OutCompositeOP,
 %      AtopCompositeOP, XorCompositeOP, PlusCompositeOP, MinusCompositeOP,
 %      AddCompositeOP, SubtractCompositeOP, DifferenceCompositeOP,
-%      BumpmapCompositeOP, CopyCompositeOP, DisplaceCompositeOP.
+%      BumpmapCompositeOP, CopyCompositeOP, CopyRedCompositeOP,
+%      CopyGreenCompositeOP, CopyBlueCompositeOP, CopyOpacityCompositeOP.
 %
 %    o composite_image: The composite image.
 %

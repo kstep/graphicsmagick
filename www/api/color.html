@@ -92,7 +92,7 @@ NAME</A></H2>
 <H2><A NAME="synopsis">
 SYNOPSIS</A></H2>
 <P>HistogramColorPacket * <STRONG>GetColorHistogram</STRONG>( const Image *, unsigned long *colors, ExceptionInfo *);</P>
-<P>const ColorInfo **  <STRONG>GetColorInfoArray</STRONG>( ExceptionInfo *exception );</P>
+<P>ColorInfo **  <STRONG>GetColorInfoArray</STRONG>( ExceptionInfo *exception );</P>
 <P>unsigned long  <STRONG>GetNumberColors</STRONG>( const Image *image, 
 FILE *file, ExceptionInfo *exception );</P>
 <P>unsigned int  <STRONG>IsGrayImage</STRONG>( const Image *image, ExceptionInfo *exception );</P>
@@ -110,8 +110,8 @@ FUNCTION
 DESCRIPTIONS</A></H2>
 <P>
 <H3><A NAME="getcolorinfoarray">GetColorInfoArray</A></H3>
-<blockquote>GetColorInfoArray() returns a sorted null-terminated array of ColorInfo pointers corresponding to the available color definitions. This function should be used to access the entire list rather than GetColorInfo since the list returned by GetColorInfo may be re-ordered every time it is invoked. GetColorList may be used if only a list of color names is desired. </blockquote><P>The format of the GetMagickList method is:</P>
-<blockquote>const ColorInfo **GetColorInfoArray ( <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote>GetColorInfoArray() returns a sorted null-terminated array of ColorInfo pointers corresponding to the available color definitions. This function should be used to access the entire list rather than GetColorInfo since the list returned by GetColorInfo may be re-ordered every time it is invoked. GetColorList may be used if only a list of color names is desired. The array should be deallocated by the user once it is no longer needed. Do not attempt to deallocate members of the array. </blockquote><P>The format of the GetMagickList method is:</P>
+<blockquote>ColorInfo **GetColorInfoArray ( <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
