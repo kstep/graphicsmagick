@@ -78,7 +78,7 @@ const char
 const char
   *BackgroundColor = "#bdbdbd",  /* gray */
   *BorderColor = "#bdbdbd",  /* gray */
-  *ForegroundColor = "#000",  /* black */
+  *ForegroundColor = "#000000",  /* black */
   *MatteColor = "#bdbdbd";  /* gray */
 
 /*
