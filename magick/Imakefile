@@ -40,7 +40,11 @@ OTHERLIBS= $(REQUIRED_LIBRARIES)
 #if (ProjectX > 5)
 #ifdef SunArchitecture
 SHLIBLDFLAGS= -G
+#ifdef HasGcc2
+PICFLAGS= -fPIC
+#else
 PICFLAGS= -K PIC
+#endif
 #endif
 REQUIREDLIBS= $(REQUIRED_LIBRARIES) $(LDPRELIB) -lXext -lX11
 #endif
