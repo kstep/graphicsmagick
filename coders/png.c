@@ -2163,22 +2163,6 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   if (png_pixels == (unsigned char *) NULL)
     ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
 
-  if (image_info->subrange != 0 && mng_info->scenes_found-1 <
-      (long) image_info->subimage)
-    {
-      png_destroy_read_struct(&ping,&ping_info,&end_info);
-      LiberateMemory((void **) &png_pixels);
-      image->colors=2;
-      SetImage(image,TransparentOpacity);
-#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
-      LiberateSemaphoreInfo(&png_semaphore);
-#endif
-      if (logging)
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-            "  exit ReadOnePNGImage().");
-      return (image);
-    }
-
   if (logging)
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "    Converting PNG pixels to pixel packets");
@@ -2496,6 +2480,22 @@ static Image *ReadOnePNGImage(MngInfo *mng_info,
   if (image->storage_class == PseudoClass)
     SyncImage(image);
   png_read_end(ping,ping_info);
+  if (image_info->subrange != 0 && mng_info->scenes_found-1 <
+      (long) image_info->subimage)
+    {
+      png_destroy_read_struct(&ping,&ping_info,&end_info);
+      LiberateMemory((void **) &png_pixels);
+      image->colors=2;
+      SetImage(image,TransparentOpacity);
+#if defined(PNG_SETJMP_NOT_THREAD_SAFE)
+      LiberateSemaphoreInfo(&png_semaphore);
+#endif
+      if (logging)
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+            "  exit ReadOnePNGImage().");
+      return (image);
+    }
+
   if (ping_info->valid & PNG_INFO_tRNS)
     {
       ClassType

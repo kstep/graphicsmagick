@@ -10,6 +10,8 @@
 
 	* Fixed bug with reading interlaced PNG images, introduced
 	yesterday.
+	* Fixed bug with skipping MNG subimages, also introduced
+	yesterday.
 
 2003-02-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
