@@ -383,7 +383,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
   compression=image->compression;
 #if !defined(HasLZW)
   if (compression == LZWCompression)
-    compression=ZipCompression;
+    compression=RunlengthEncodedCompression;
 #endif
   if (image_info->compression != UndefinedCompression)
     compression=image_info->compression;
@@ -515,7 +515,6 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
             case NoCompression: FormatString(buffer,*q,"ASCII85Decode"); break;
             case JPEGCompression: FormatString(buffer,*q,"DCTDecode"); break;
             case LZWCompression: FormatString(buffer,*q,"LZWDecode"); break;
-            case ZipCompression: FormatString(buffer,*q,"FlateDecode"); break;
             case FaxCompression: FormatString(buffer,*q,"ASCII85Decode"); break;
             default: FormatString(buffer,*q,"RunLengthDecode"); break;
           }
@@ -689,14 +688,10 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                 if (QuantumTick(y,image->rows))
                   MagickMonitor(SaveImageText,y,image->rows);
             }
-            if (compression == ZipCompression)
-              status=ZLIBEncodeImage(image,number_packets,image_info->quality,
-                pixels);
+            if (compression == LZWCompression)
+              status=LZWEncodeImage(image,number_packets,pixels);
             else
-              if (compression == LZWCompression)
-                status=LZWEncodeImage(image,number_packets,pixels);
-              else
-                status=PackbitsEncodeImage(image,number_packets,pixels);
+              status=PackbitsEncodeImage(image,number_packets,pixels);
             if (!status)
               {
                 CloseBlob(image);
@@ -798,14 +793,10 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                   if (QuantumTick(y,image->rows))
                     MagickMonitor(SaveImageText,y,image->rows);
               }
-              if (compression == ZipCompression)
-                status=ZLIBEncodeImage(image,number_packets,image_info->quality,
-                  pixels);
+              if (compression == LZWCompression)
+                status=LZWEncodeImage(image,number_packets,pixels);
               else
-                if (compression == LZWCompression)
-                  status=LZWEncodeImage(image,number_packets,pixels);
-                else
-                  status=PackbitsEncodeImage(image,number_packets,pixels);
+                status=PackbitsEncodeImage(image,number_packets,pixels);
               LiberateMemory((void **) &pixels);
               if (!status)
                 {

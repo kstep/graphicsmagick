@@ -94,6 +94,11 @@ ModuleExport void RegisterPS3Image(void)
   MagickInfo
     *entry;
 
+  entry=SetMagickInfo("EPS3");
+  entry->encoder=WritePS3Image;
+  entry->description=AllocateString("Adobe Level III Encapsulated PostScript");
+  entry->module=AllocateString("PS3");
+  RegisterMagickInfo(entry);
   entry=SetMagickInfo("PS3");
   entry->encoder=WritePS3Image;
   entry->description=AllocateString("Adobe Level III PostScript");
@@ -122,6 +127,7 @@ ModuleExport void RegisterPS3Image(void)
 */
 ModuleExport void UnregisterPS3Image(void)
 {
+  UnregisterMagickInfo("EPS3");
   UnregisterMagickInfo("PS3");
 }
 
@@ -266,7 +272,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
         (void) FormatString(geometry,"%ux%u%+d%+d",image->page.width,
           image->page.height,image->page.x,image->page.y);
       else
-        if (LocaleCompare(image_info->magick,"PDF") == 0)
+        if (LocaleCompare(image_info->magick,"PS3") == 0)
           (void) strcpy(geometry,PSPageGeometry);
     (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
     /*
@@ -294,7 +300,10 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
         /*
           Output Postscript header.
         */
-        (void) WriteBlobString(image,"%!PS-Adobe-3.0 Resource-ProcSet\n");
+        if (LocaleCompare(image_info->magick,"PS3") == 0)
+          (void) strcpy(buffer,"%!PS-Adobe-3.0 Resource-ProcSet\n");
+        else
+          (void) strcpy(buffer,"%!PS-Adobe-3.0 EPSF-3.0 Resource-ProcSet\n");
         (void) WriteBlobString(image,"%%Creator: (ImageMagick)\n");
         FormatString(buffer,"%%%%Title: (%.1024s)\n",image->filename);
         (void) WriteBlobString(image,buffer);
@@ -322,10 +331,18 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
               "%%%%DocumentNeededResources: font Helvetica\n");
           }
         (void) WriteBlobString(image,"%%LanguageLevel: 3\n");
-        (void) WriteBlobString(image,"%%Orientation: Portrait\n");
-        (void) WriteBlobString(image,"%%PageOrder: Ascend\n");
-        FormatString(buffer,"%%%%Pages: %u\n",GetNumberScenes(image));
-        (void) WriteBlobString(image,buffer);
+        if (LocaleCompare(image_info->magick,"PS3") != 0)
+          (void) WriteBlobString(image,"%%%%Pages: 0\n");
+        else
+          {
+            (void) WriteBlobString(image,"%%Orientation: Portrait\n");
+            (void) WriteBlobString(image,"%%PageOrder: Ascend\n");
+            if (!image_info->adjoin)
+              (void) strcpy(buffer,"%%Pages: 0\n");
+            else
+              FormatString(buffer,"%%%%Pages: %u\n",GetNumberScenes(image));
+            (void) WriteBlobString(image,buffer);
+          }
         (void) WriteBlobString(image,"%%EndComments\n");
       }
     FormatString(buffer,"%%%%Page:  1 %u\n",page++);
@@ -541,7 +558,8 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     (void) WriteBlobString(image,"MaskedImageDictionary image\n");
     (void) WriteBlobString(image,"grestore                    \n");
     (void) WriteBlobByte(image,'\n');
-    (void) WriteBlobString(image,"showpage\n");
+    if (LocaleCompare(image_info->magick,"PS3") == 0)
+      (void) WriteBlobString(image,"  showpage\n");
     (void) WriteBlobString(image,"%%EndData\n");
     if (image->next == (Image *) NULL)
       break;
