@@ -46,6 +46,11 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
+% Bill Radcliffe of Corbis (www.corbis.com) contributed the polygon
+% rendering code.  Parts of the fast rendering algorithm was inspired by
+% libart.  Digital Applications (www.digapp.com) contributed contributed
+% the dash pattern and linecap stroking algorithm.  It was written by
+% David Harr.
 %
 */
 
@@ -161,7 +166,7 @@ static void
 %
 %  A description of each parameter follows:
 %
-%    o cloned_info: Method CloneDrawInfo returns a duplicate of the given
+%    o clone_info: Method CloneDrawInfo returns a duplicate of the given
 %      annotate info, or if annotate info is NULL a new one.
 %
 %    o image_info: a structure of type ImageInfo.
@@ -174,44 +179,44 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
   const DrawInfo *draw_info)
 {
   DrawInfo
-    *cloned_info;
+    *clone_info;
 
-  cloned_info=(DrawInfo *) AcquireMemory(sizeof(DrawInfo));
-  if (cloned_info == (DrawInfo *) NULL)
+  clone_info=(DrawInfo *) AcquireMemory(sizeof(DrawInfo));
+  if (clone_info == (DrawInfo *) NULL)
     MagickError(ResourceLimitError,"Unable to clone draw info",
       "Memory allocation failed");
   if (draw_info == (DrawInfo *) NULL)
     {
-      GetDrawInfo(image_info,cloned_info);
-      return(cloned_info);
+      GetDrawInfo(image_info,clone_info);
+      return(clone_info);
     }
-  *cloned_info=(*draw_info);
+  *clone_info=(*draw_info);
   if (draw_info->primitive != (char *) NULL)
-    cloned_info->primitive=AllocateString(draw_info->primitive);
+    clone_info->primitive=AllocateString(draw_info->primitive);
   if (draw_info->dash_pattern != (unsigned int *) NULL)
     {
       register int
         x;
 
       for (x=0; draw_info->dash_pattern[x]; x++);
-      cloned_info->dash_pattern=(unsigned int *)
-        AcquireMemory(x*sizeof(unsigned int));
-      if (cloned_info->dash_pattern == (unsigned int *) NULL)
+      clone_info->dash_pattern=(unsigned int *)
+        AcquireMemory((x+1)*sizeof(unsigned int));
+      if (clone_info->dash_pattern == (unsigned int *) NULL)
         MagickError(ResourceLimitError,"Unable to clone dash pattern",
           "Memory allocation failed");
-      memcpy(cloned_info->dash_pattern,draw_info->dash_pattern,
-        x*sizeof(unsigned int));
+      memcpy(clone_info->dash_pattern,draw_info->dash_pattern,
+        (x+1)*sizeof(unsigned int));
     }
   if (draw_info->font != (char *) NULL)
-    cloned_info->font=AllocateString(draw_info->font);
+    clone_info->font=AllocateString(draw_info->font);
   if (draw_info->density != (char *) NULL)
-    cloned_info->density=AllocateString(draw_info->density);
+    clone_info->density=AllocateString(draw_info->density);
   if (draw_info->tile != (Image *) NULL)
-    cloned_info->tile=
+    clone_info->tile=
       CloneImage(draw_info->tile,0,0,True,&draw_info->tile->exception);
   if (draw_info->server_name != (char *) NULL)
-    cloned_info->server_name=AllocateString(draw_info->server_name);
-  return(cloned_info);
+    clone_info->server_name=AllocateString(draw_info->server_name);
+  return(clone_info);
 }
 
 /*
@@ -529,6 +534,8 @@ MagickExport void DestroyDrawInfo(DrawInfo *draw_info)
     DestroyImage(draw_info->tile);
   if (draw_info->dash_pattern != (unsigned *) NULL)
     LiberateMemory((void **) &draw_info->dash_pattern);
+  if (draw_info->server_name != (char *) NULL)
+    LiberateMemory((void **) &draw_info->server_name);
   LiberateMemory((void **) &draw_info);
 }
 
@@ -1067,8 +1074,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 
                 r=q;
                 for (x=0; IsGeometry(r); x++)
-                  graphic_context[n]->dash_pattern[x]=
-                    (unsigned int) strtod(r,&r);
+                  (void) strtod(r,&r);
                 graphic_context[n]->dash_pattern=(unsigned int *)
                   AcquireMemory((x+1)*sizeof(unsigned int));
                 if (graphic_context[n]->dash_pattern == (unsigned int *) NULL)
@@ -1592,9 +1598,6 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method DrawPolygonPrimitive draws a polygon on the image.
-%
-%  Bill Radcliffe contributed the polygon rendering code.  Parts of the fast
-%  rendering algorithm was inspired by libart.
 %
 %  The format of the DrawPolygonPrimitive method is:
 %
@@ -2412,6 +2415,775 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
   DestroyDrawInfo(clone_info);
 }
 
+static void DrawSquareCap(PrimitiveInfo *primitive_info, PointInfo *ends,
+                      int num_verts, double offset) {
+
+  double dx, dy, dist, ratio;
+  int cur_vert;
+  
+  ends->x = primitive_info[0].point.x;
+  ends->y = primitive_info[0].point.y;
+  ends++;
+  ends->x = primitive_info[num_verts-1].point.x;
+  ends->y = primitive_info[num_verts-1].point.y;
+  
+  cur_vert = 0;
+  do {
+    cur_vert++;
+    dx = primitive_info[0].point.x - primitive_info[cur_vert].point.x;
+    dy = primitive_info[0].point.y - primitive_info[cur_vert].point.y;
+  } while(fabs(dx)<MagickEpsilon && fabs(dy)<MagickEpsilon && cur_vert<num_verts-1);
+  if(fabs(dx)<MagickEpsilon && fabs(dy)<MagickEpsilon) {
+    return;
+  }
+  dist = sqrt(dx*dx + dy*dy);
+  ratio = (dist + offset) / dist;
+  dx *= ratio;
+  dy *= ratio;
+  primitive_info[0].point.x = primitive_info[cur_vert].point.x + dx;
+  primitive_info[0].point.y = primitive_info[cur_vert].point.y + dy;
+
+  cur_vert = num_verts-1;
+  do {
+    cur_vert--;
+    dx = primitive_info[num_verts-1].point.x - primitive_info[cur_vert].point.x;
+    dy = primitive_info[num_verts-1].point.y - primitive_info[cur_vert].point.y;
+  } while(fabs(dx)<MagickEpsilon && fabs(dy)<MagickEpsilon && cur_vert>0);
+  if(fabs(dx)<MagickEpsilon && fabs(dy)<MagickEpsilon) {
+    return;
+  }
+  dist = sqrt(dx*dx + dy*dy);
+  ratio = (dist + offset) / dist;
+  dx *= ratio;
+  dy *= ratio;
+  primitive_info[num_verts-1].point.x = primitive_info[cur_vert].point.x + dx;
+  primitive_info[num_verts-1].point.y = primitive_info[cur_vert].point.y + dy;
+}
+
+static void DrawRoundCap(DrawInfo *draw_info, PrimitiveInfo *primitive_info, Image *image) {
+  PrimitiveInfo p_i[5];
+
+  PathInfo *path_info;
+  
+  PolygonInfo *polygon_info;
+  long l1;
+  assert(primitive_info != (PrimitiveInfo *) NULL);
+  assert(draw_info != (DrawInfo *) NULL);
+  assert(draw_info->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  p_i[0] = *primitive_info;
+  p_i[1] = p_i[0];
+  p_i[2] = p_i[0];
+  p_i[3] = p_i[0];
+  p_i[0].coordinates = 4;
+  p_i[1].coordinates = 1;
+  p_i[2].coordinates = 1;
+  p_i[3].coordinates = 1;
+  p_i[4].primitive = UndefinedPrimitive;
+  p_i[1].point.x += 10.0 * MagickEpsilon;
+  p_i[2].point.x += 10.0 * MagickEpsilon;
+  p_i[2].point.y += 10.0 * MagickEpsilon;
+  p_i[3].point.y += 10.0 * MagickEpsilon;
+   path_info=ConvertPrimitiveToPath(p_i);
+  if (path_info == (PathInfo *) NULL)
+    return;
+  polygon_info=ConvertPathToPolygon(path_info);
+  LiberateMemory((void **) &path_info);
+  if (polygon_info == (PolygonInfo *) NULL)
+    return;
+  DrawPolygonPrimitive(draw_info,p_i,polygon_info,image);
+  DestroyPolygonInfo(polygon_info);
+}  
+
+static void StrokePolygon(DrawInfo *draw_info, PrimitiveInfo *primitive_info, Image *image) {
+  PointInfo *right, *left, ends[2];
+  
+  PrimitiveInfo *stroke, *my_pi;
+  
+  PathInfo *path_info;
+  
+  PolygonInfo *polygon_info;
+  
+  PixelPacket temp_fill,
+              temp_stroke;
+  
+  int    num_verts,
+         num_right,
+         num_left,
+         max_left,
+         max_right,
+         i,
+         last_vert,
+         closed;
+ 
+  double offset,
+         xoffset1,
+         xoffset2,
+         yoffset1,
+         yoffset2;
+  
+  double scxoffset1,
+         scyoffset1,
+         scxoffset2,
+         scyoffset2;
+ 
+  double inverse_slope1,
+         inverse_slope2,
+         slope1,
+         slope2,
+         miterlimit_2;
+
+  double X_prod,
+         dx1,
+         dy1,
+         dx2,
+         dy2;
+
+  double xleft[5];
+
+  double xright[5];
+
+  double yleft[5];
+
+  double yright[5];
+
+  double temp_linewidth;
+
+  double arc_delta,
+         theta1,
+         theta2;
+  int    num_arc_segs,
+         z,
+         xcenter,
+         ycenter;
+
+  FillRule temp_fill_rule;
+  
+  assert(primitive_info != (PrimitiveInfo *) NULL);
+  assert(draw_info != (DrawInfo *) NULL);
+  assert(draw_info->signature == MagickSignature);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  for (num_verts=0; primitive_info[num_verts].primitive != UndefinedPrimitive; num_verts++) {}
+  if(primitive_info[num_verts-1].point.x == primitive_info[0].point.x &&
+     primitive_info[num_verts-1].point.y == primitive_info[0].point.y) {
+    closed = 1;
+  } else {
+    closed = 0;
+  }
+
+  my_pi = (PrimitiveInfo *)AcquireMemory(sizeof(PrimitiveInfo) * (num_verts + 1));
+  if(my_pi == NULL) {
+    return;
+  }
+  for(i=0; i < num_verts; i++) {
+    my_pi[i] = primitive_info[i];
+  }
+  if(closed && draw_info->linejoin == MiterJoin) {
+    my_pi[num_verts] = primitive_info[1];
+    num_verts++;
+  } else {
+    my_pi[num_verts].primitive = UndefinedPrimitive;
+  }
+  num_left = 0;
+  max_left = num_verts * 2;
+  num_right = 0;
+  max_right = num_verts * 2;
+  right = (PointInfo*)AcquireMemory(sizeof(PointInfo)*max_right);
+
+  /* if AcquireMemory fails, return; */
+  if(!right) return;
+
+  left = (PointInfo*)AcquireMemory(sizeof(PointInfo)*max_left);
+
+  /* if AcquireMemory fails, return; */
+  if(!left) {LiberateMemory((void**)&right);return;}
+  
+  /* determine the line width */
+  offset = draw_info->linewidth/2.0;
+  miterlimit_2 = draw_info->miterlimit * draw_info->miterlimit
+                 * offset * offset;
+  
+  /* calculate the coord deltas for the first polygon segment */
+  last_vert = 1;
+  while(fabs(my_pi[last_vert].point.x - my_pi[0].point.x) < MagickEpsilon &&
+         fabs(my_pi[last_vert].point.y - my_pi[0].point.y) < MagickEpsilon &&
+         last_vert < num_verts) {
+    last_vert++;
+  }
+  dx1 = my_pi[last_vert].point.x - my_pi[0].point.x;
+  dy1 = my_pi[last_vert].point.y - my_pi[0].point.y;
+
+  /* use those to calculate the direction perpendicular to the polygon segment */
+  if(fabs(dx1) <= MagickEpsilon) {
+    /* for degenerate cases, prevent divide by 0 */
+    inverse_slope1 = 0;
+    if(dx1 >= 0.0) {
+      if(dy1 < 0) {
+        slope1 = -1000000.0;
+      } else {
+        slope1 = 1000000.0;
+      }
+    } else {
+      if(dy1 < 0) {
+        slope1 = 1000000.0;
+      } else {
+        slope1 = -1000000.0;
+      }
+    }    
+  } else if(fabs(dy1) <= MagickEpsilon) {
+    /* for degenerate cases, prevent divide by 0 */
+    slope1 = 0;
+    if(dy1 >= 0.0) {
+      if(dx1 < 0) {
+        inverse_slope1 = -1000000.0;
+      } else {
+        inverse_slope1 = 1000000.0;
+      }
+    } else {
+      if(dx1 < 0) {
+        inverse_slope1 = 1000000.0;
+      } else {
+        inverse_slope1 = -1000000.0;
+      }
+    }
+  } else {
+    slope1 = dy1/dx1;
+    inverse_slope1 = -(1.0/slope1);
+  }
+  
+  /* initialize the first points of the left and right polylines */
+  if(!closed && draw_info->linecap==SquareCap) {
+    DrawSquareCap(my_pi, &ends[0], num_verts, offset);
+  }
+  xoffset1 = sqrt(offset*offset/(1.0+(inverse_slope1*inverse_slope1)));
+  yoffset1 = xoffset1 * inverse_slope1;
+  if((xoffset1*dy1) - (dx1*yoffset1) > 0) {
+    xleft[0] = my_pi[0].point.x + xoffset1;
+    xleft[1] = my_pi[last_vert].point.x + xoffset1;
+    yleft[0] = my_pi[0].point.y + (xoffset1 * inverse_slope1);
+    yleft[1] = my_pi[last_vert].point.y + (xoffset1 * inverse_slope1);
+    xright[0] = my_pi[0].point.x - xoffset1;
+    xright[1] = my_pi[last_vert].point.x - xoffset1;
+    yright[0] = my_pi[0].point.y - (xoffset1 * inverse_slope1);
+    yright[1] = my_pi[last_vert].point.y - (xoffset1 * inverse_slope1);
+  } else {
+    xright[0] = my_pi[0].point.x + xoffset1;
+    xright[1] = my_pi[last_vert].point.x + xoffset1;
+    yright[0] = my_pi[0].point.y + yoffset1;
+    yright[1] = my_pi[last_vert].point.y + yoffset1;
+    xleft[0] = my_pi[0].point.x - xoffset1;
+    xleft[1] = my_pi[last_vert].point.x - xoffset1;
+    yleft[0] = my_pi[0].point.y - yoffset1;
+    yleft[1] = my_pi[last_vert].point.y - yoffset1;
+  }    
+  left[0].x = xleft[0];
+  left[0].y = yleft[0];
+  right[0].x = xright[0];
+  right[0].y = yright[0];
+  num_left++;
+  num_right++;
+  /* the left path consists of points displaced in a positive inverse */
+  /* slope direction, right path in the negative direction */
+  for(i = last_vert+1; i < num_verts; i++) {
+    /* calculate the coord deltas for the next polygon segment */
+    dx2 = my_pi[i].point.x - my_pi[last_vert].point.x;
+    dy2 = my_pi[i].point.y - my_pi[last_vert].point.y;
+    
+    /* use those to calculate the inverse slope for the next segment */
+    if(dx2*dx2 + dy2*dy2 < 0.25) {
+      continue;
+    } else if(fabs(dx2) < MagickEpsilon) {
+      inverse_slope2 = 0.0;
+      if(dx2 >= 0.0) {
+        if(dy2 < 0) {
+          slope2 = -1000000.0;
+        } else {
+          slope2 = 1000000.0;
+        }
+      } else {
+        if(dy2 < 0) {
+          slope2 = 1000000.0;
+        } else {
+          slope2 = -1000000.0;
+        }
+      }
+    } else if(fabs(dy2) <= MagickEpsilon) {
+      slope2 = 0.0;
+      if(dy2 >= 0.0) {
+        if(dx2 < 0) {
+          inverse_slope2 = -1000000.0;
+        } else {
+          inverse_slope2 = 1000000.0;
+        }
+      } else {
+         if(dx2 < 0) {
+          inverse_slope2 = 1000000.0;
+        } else {
+          inverse_slope2 = -1000000.0;
+        }
+     }
+    } else {
+      slope2 = dy2/dx2;
+      inverse_slope2 = -(1.0/slope2);
+    }
+    
+    xoffset2 = sqrt(offset*offset/(1.0+(inverse_slope2*inverse_slope2)));
+    yoffset2 = xoffset2 * inverse_slope2;
+    if((xoffset2*dy2) - (dx2*yoffset2) > 0) {
+      xleft[2] = my_pi[last_vert].point.x + xoffset2;
+      xleft[3] = my_pi[i].point.x + xoffset2;
+      yleft[2] = my_pi[last_vert].point.y + yoffset2;
+      yleft[3] = my_pi[i].point.y + yoffset2;
+      xright[2] = my_pi[last_vert].point.x - xoffset2;
+      xright[3] = my_pi[i].point.x - xoffset2;
+      yright[2] = my_pi[last_vert].point.y - yoffset2;
+      yright[3] = my_pi[i].point.y - yoffset2;
+    } else {
+      xright[2] = my_pi[last_vert].point.x + xoffset2;
+      xright[3] = my_pi[i].point.x + xoffset2;
+      yright[2] = my_pi[last_vert].point.y + yoffset2;
+      yright[3] = my_pi[i].point.y + yoffset2;
+      xleft[2] = my_pi[last_vert].point.x - xoffset2;
+      xleft[3] = my_pi[i].point.x - xoffset2;
+      yleft[2] = my_pi[last_vert].point.y - yoffset2;
+      yleft[3] = my_pi[i].point.y - yoffset2;
+    }
+    X_prod = (dx2 * dy1) - (dx1 * dy2);
+    if(fabs(slope1 - slope2) > MagickEpsilon) {
+      xright[4] = ((slope1 * xright[0]) - yright[0] -
+                         (slope2 * xright[3]) + yright[3]) / (slope1 - slope2);
+      yright[4] = slope1 * (xright[4] - xright[0]) + yright[0];
+      xleft[4] = ((slope1 * xleft[0]) - yleft[0] -
+                         (slope2 * xleft[3]) + yleft[3]) / (slope1 - slope2);
+      yleft[4] = slope1 * (xleft[4] - xleft[0]) + yleft[0];
+    } else {
+      xright[4] = xright[1];
+      xleft[4] = xleft[1];
+      yright[4] = yright[1];
+      yleft[4] = yleft[1];
+    }
+    
+    /* if this is negative, then the vector segment turns right, else,
+                                                      it turns left */
+    if(X_prod <= 0) {
+      if(draw_info->linejoin == BevelJoin) {
+        left[num_left].x = xleft[1];
+        left[num_left++].y = yleft[1];
+        left[num_left].x = xleft[2];
+        left[num_left++].y = yleft[2];
+        if(num_left + 3 > max_left) {
+          max_left += (max_left / 10 > 30 ? max_left / 10 : 30);
+          ReacquireMemory((void**)&left, max_left * sizeof(PointInfo));
+        }
+        if(((xleft[4]-xright[4])*(xleft[4]-xright[4]) + 
+          (yleft[4]-yright[4])*(yleft[4]-yright[4])) > miterlimit_2) {
+          right[num_right].x = xright[1];
+          right[num_right++].y = yright[1];
+          right[num_right].x = xright[2];
+          right[num_right++].y = yright[2];
+        } else {
+          right[num_right].x = xright[4];
+          right[num_right++].y = yright[4];
+        }          
+        if(num_right + 3 > max_right) {
+          max_right += (max_right / 10 > 30 ? max_right / 10 : 30);
+          ReacquireMemory((void**)&right, max_right * sizeof(PointInfo));
+        }
+      } else if (draw_info->linejoin == MiterJoin) {
+        if(((xleft[4]-xright[4])*(xleft[4]-xright[4]) + 
+          (yleft[4]-yright[4])*(yleft[4]-yright[4])) > miterlimit_2) {
+          left[num_left].x = xleft[1];
+          left[num_left++].y = yleft[1];
+          left[num_left].x = xleft[2];
+          left[num_left++].y = yleft[2];
+          if(num_left + 3 > max_left) {
+            max_left += (max_left / 10 > 30 ? max_left / 10 : 30);
+            ReacquireMemory((void**)&left, max_left * sizeof(PointInfo));
+          }
+          right[num_right].x = xright[1];
+          right[num_right++].y = yright[1];
+          right[num_right].x = xright[2];
+          right[num_right++].y = yright[2];
+          if(num_right + 3 > max_right) {
+            max_right += (max_right / 10 > 30 ? max_right / 10 : 30);
+            ReacquireMemory((void**)&right, max_right * sizeof(PointInfo));
+          }
+        } else {
+          left[num_left].x = xleft[4];
+          left[num_left++].y = yleft[4];
+          if(num_left + 3 > max_left) {
+            max_left += (max_left / 10 > 30 ? max_left / 10 : 30);
+            ReacquireMemory((void**)&left, max_left * sizeof(PointInfo));
+          }
+          right[num_right].x = xright[4];
+          right[num_right++].y = yright[4];
+          if(num_right + 3 > max_right) {
+            max_right += (max_right / 10 > 30 ? max_right / 10 : 30);
+            ReacquireMemory((void**)&right, max_right * sizeof(PointInfo));
+          }
+        }
+      } else if (draw_info->linejoin == RoundJoin) {
+        
+        if(((xleft[4]-xright[4])*(xleft[4]-xright[4]) + 
+          (yleft[4]-yright[4])*(yleft[4]-yright[4])) > miterlimit_2) {
+          right[num_right].x = xright[1];
+          right[num_right++].y = yright[1];
+          right[num_right].x = xright[2];
+          right[num_right++].y = yright[2];
+       } else {
+          right[num_right].x = xright[4];
+          right[num_right++].y = yright[4];
+        }          
+        if(num_right + 3 > max_right) {
+          max_right += (max_right / 10 > 30 ? max_right / 10 : 30);
+          ReacquireMemory((void**)&right, max_right * sizeof(PointInfo));
+        }
+        arc_delta = 2 * sqrt(1.0/offset);
+        xcenter = my_pi[last_vert].point.x;
+        ycenter = my_pi[last_vert].point.y;
+        theta1 = atan2(yleft[1]-ycenter, xleft[1]-xcenter);
+        theta2 = atan2(yleft[2]-ycenter, xleft[2]-xcenter);
+        if(theta2 < theta1)
+          theta2 += 2.0 * M_PI;
+        num_arc_segs = ceil((theta2-theta1)/arc_delta);
+        if(num_left + num_arc_segs >= max_left) {
+          max_left += (max_left / 10 > 30 ? max_left / 10 : 30);
+          max_left += num_arc_segs;
+          ReacquireMemory((void**)&left, max_left * sizeof(PointInfo));
+        }
+        left[num_left].x = xleft[1];
+        left[num_left++].y = yleft[1];
+        for(z=1; z<num_arc_segs; z++) {
+          double delta_theta;
+                    
+          delta_theta = ((theta2-theta1)*z)/num_arc_segs;
+          left[num_left].x = xcenter + 
+                       (cos(delta_theta + theta1) * offset);
+          left[num_left++].y = ycenter + 
+                       (sin(delta_theta + theta1) * offset);
+       }
+        left[num_left].x = xleft[2];
+        left[num_left++].y = yleft[2];
+      }
+    } else {
+      if(draw_info->linejoin == BevelJoin) {
+        right[num_right].x = xright[1];
+        right[num_right++].y = yright[1];
+        right[num_right].x = xright[2];
+        right[num_right++].y = yright[2];
+        if(num_right + 3 > max_right) {
+          max_right += (max_right / 10 > 30 ? max_right / 10 : 30);
+          ReacquireMemory((void**)&right, max_right * sizeof(PointInfo));
+        }
+        if(((xleft[4]-xright[4])*(xleft[4]-xright[4]) + 
+          (yleft[4]-yright[4])*(yleft[4]-yright[4])) > miterlimit_2) {
+          left[num_left].x = xleft[1];
+          left[num_left++].y = yleft[1];
+          left[num_left].x = xleft[2];
+          left[num_left++].y = yleft[2];
+        } else {
+          left[num_left].x = xleft[4];
+          left[num_left++].y = yleft[4];
+        }          
+        if(num_left + 3 > max_left) {
+          max_left += (max_left / 10 > 30 ? max_left / 10 : 30);
+          ReacquireMemory((void**)&left, max_left * sizeof(PointInfo));
+        }
+      } else if (draw_info->linejoin == MiterJoin) {
+        if(((xleft[4]-xright[4])*(xleft[4]-xright[4]) + 
+          (yleft[4]-yright[4])*(yleft[4]-yright[4])) > miterlimit_2) {
+          left[num_left].x = xleft[1];
+          left[num_left++].y = yleft[1];
+          left[num_left].x = xleft[2];
+          left[num_left++].y = yleft[2];
+          if(num_left + 3 > max_left) {
+            max_left += (max_left / 10 > 30 ? max_left / 10 : 30);
+            ReacquireMemory((void**)&left, max_left * sizeof(PointInfo));
+          }
+          right[num_right].x = xright[1];
+          right[num_right++].y = yright[1];
+          right[num_right].x = xright[2];
+          right[num_right++].y = yright[2];
+          if(num_right + 3 > max_right) {
+            max_right += (max_right / 10 > 30 ? max_right / 10 : 30);
+            ReacquireMemory((void**)&right, max_right * sizeof(PointInfo));
+          }
+        } else {
+          left[num_left].x = xleft[4];
+          left[num_left++].y = yleft[4];
+          if(num_left + 3 > max_left) {
+            max_left += (max_left / 10 > 30 ? max_left / 10 : 30);
+            ReacquireMemory((void**)&left, max_left * sizeof(PointInfo));
+          }
+          right[num_right].x = xright[4];
+          right[num_right++].y = yright[4];
+          if(num_right + 3 > max_right) {
+            max_right += (max_right / 10 > 30 ? max_right / 10 : 30);
+            ReacquireMemory((void**)&right, max_right * sizeof(PointInfo));
+          }
+        }
+      } else if (draw_info->linejoin == RoundJoin) {
+        double arc_delta,
+               theta1,
+               theta2;
+        int    num_arc_segs,
+               z,
+               xcenter,
+               ycenter;
+        
+        if(((xleft[4]-xright[4])*(xleft[4]-xright[4]) + 
+          (yleft[4]-yright[4])*(yleft[4]-yright[4])) > miterlimit_2) {
+          left[num_left].x = xleft[1];
+          left[num_left++].y = yleft[1];
+          left[num_left].x = xleft[2];
+          left[num_left++].y = yleft[2];
+        } else {
+          left[num_left].x = xleft[4];
+          left[num_left++].y = yleft[4];
+        }          
+        if(num_left + 3 > max_left) {
+          max_left += (max_left / 10 > 30 ? max_left / 10 : 30);
+          ReacquireMemory((void**)&left, max_left * sizeof(PointInfo));
+        }
+        arc_delta = 2 * sqrt(1.0/offset);
+        xcenter = my_pi[last_vert].point.x;
+        ycenter = my_pi[last_vert].point.y;
+        theta1 = atan2(yright[1]-ycenter, xright[1]-xcenter);
+        theta2 = atan2(yright[2]-ycenter, xright[2]-xcenter);
+        if(theta1 < theta2)
+          theta1 += 2.0 * M_PI;
+        num_arc_segs = ceil((theta1-theta2)/arc_delta);
+        if(num_right + num_arc_segs >= max_right) {
+          max_right += (max_right / 10 > 30 ? max_right / 10 : 30);
+          max_right += num_arc_segs;
+          ReacquireMemory((void**)&right, max_right * sizeof(PointInfo));
+        }
+        right[num_right].x = xright[1];
+        right[num_right++].y = yright[1];
+        xcenter = my_pi[last_vert].point.x;
+        ycenter = my_pi[last_vert].point.y;
+        for(z=1; z<num_arc_segs; z++) {
+          double delta_theta;
+                    
+          delta_theta = ((theta2-theta1)*z)/num_arc_segs;
+          right[num_right].x = xcenter + 
+                       (cos(delta_theta + theta1) * offset);
+          right[num_right++].y = ycenter + 
+                       (sin(delta_theta + theta1) * offset);
+        }
+        right[num_right].x = xright[2];
+        right[num_right++].y = yright[2];
+     
+      }
+    }
+    slope1 = slope2;
+    inverse_slope1 = inverse_slope2;
+    xoffset1 = xoffset2;
+    xleft[0] = xleft[2];
+    xleft[1] = xleft[3];
+    yleft[0] = yleft[2];
+    yleft[1] = yleft[3];
+    xright[0] = xright[2];
+    xright[1] = xright[3];
+    yright[0] = yright[2];
+    yright[1] = yright[3];
+    dx1 = dx2;
+    dy1 = dy2;
+    last_vert = i;
+  }
+  right[num_right].x = xright[1];
+  right[num_right++].y = yright[1];
+  left[num_left].x = xleft[1];
+  left[num_left++].y = yleft[1];
+  stroke = (PrimitiveInfo*)AcquireMemory((num_left+num_right+2*(closed+1))*sizeof(PrimitiveInfo));
+  if(!stroke) {return;}
+  for(i=0;i<num_right;i++) {
+    stroke[i].point.x = right[i].x;
+    stroke[i].point.y = right[i].y;
+    stroke[i].point.z = my_pi[0].point.z;
+    stroke[i].primitive = my_pi[0].primitive;
+    stroke[i].coordinates = 1;
+    stroke[i].method = my_pi[0].method;
+    stroke[i].text = NULL;
+  }
+  if(closed) {
+    stroke[i].point.x = stroke[0].point.x;
+    stroke[i].point.y = stroke[0].point.y;
+    stroke[i].point.z = my_pi[0].point.z;
+    stroke[i].primitive = my_pi[0].primitive;
+    stroke[i].coordinates = 1;
+    stroke[i].method = my_pi[0].method;
+    stroke[i++].text = NULL;
+  }
+  for(;i<num_right+num_left+closed;i++) {
+    stroke[i].point.x = left[num_left+num_right+closed-(i+1)].x;
+    stroke[i].point.y = left[num_left+num_right+closed-(i+1)].y;
+    stroke[i].point.z = my_pi[0].point.z;
+    stroke[i].primitive = my_pi[0].primitive;
+    stroke[i].coordinates = 1;
+    stroke[i].method = my_pi[0].method;
+    stroke[i].text = NULL;
+  }
+  if(closed) {
+    stroke[i].point.x = stroke[num_right+closed].point.x;
+    stroke[i].point.y = stroke[num_right+closed].point.y;
+    stroke[i].point.z = my_pi[0].point.z;
+    stroke[i].primitive = my_pi[0].primitive;
+    stroke[i].coordinates = 1;
+    stroke[i].method = my_pi[0].method;
+    stroke[i++].text = NULL;
+  }
+  stroke[i].point.x = stroke[0].point.x;
+  stroke[i].point.y = stroke[0].point.y;
+  stroke[i].point.z = my_pi[0].point.z;
+  stroke[i].primitive = my_pi[0].primitive;
+  stroke[i].coordinates = 1;
+  stroke[i].method = my_pi[0].method;
+  stroke[i++].text = NULL;
+  stroke[0].coordinates = num_left + num_right + 1 + (closed * 2);
+  stroke[i].primitive = UndefinedPrimitive;
+
+
+  LiberateMemory((void**)&left);
+  LiberateMemory((void**)&right);
+  path_info=ConvertPrimitiveToPath(stroke);
+  if (path_info == (PathInfo *) NULL)
+    return;
+  polygon_info=ConvertPathToPolygon(path_info);
+  LiberateMemory((void **) &path_info);
+  if (polygon_info == (PolygonInfo *) NULL)
+    return;
+  temp_linewidth = draw_info->linewidth;
+  temp_fill = draw_info->fill;
+  temp_stroke = draw_info->stroke;
+  temp_fill_rule = draw_info->fill_rule;
+  draw_info->fill = draw_info->stroke;
+  draw_info->stroke.opacity = TransparentOpacity;
+  draw_info->linewidth = 0.0;
+  draw_info->fill_rule = NonZeroRule;
+  DrawPolygonPrimitive(draw_info,stroke,polygon_info,image);
+  LiberateMemory((void **) &stroke);
+  draw_info->fill = temp_fill;
+  draw_info->stroke = temp_stroke;
+  draw_info->linewidth = temp_linewidth;
+  draw_info->fill_rule = temp_fill_rule;
+  DestroyPolygonInfo(polygon_info);
+  if (!closed && draw_info->linecap == RoundCap) {
+    DrawRoundCap(draw_info, &my_pi[0], image);
+    DrawRoundCap(draw_info, &my_pi[num_verts-1], image);
+  }
+  LiberateMemory((void **) &my_pi);
+}
+
+static void DashStrokePolygon(DrawInfo *draw_info, PrimitiveInfo *primitive_info, Image *image) {
+  PrimitiveInfo *dash_info;
+
+  double        dist,
+                curr_dist,
+                offset_dist;
+
+  double        dx,
+                dy,
+                pt_dist;
+
+  int           num_verts,
+                i,
+                pat_num=-1,
+                draw=1,
+                curr_dash_vert;
+  
+  unsigned int  *da;
+         
+  assert(draw_info->dash_pattern != (unsigned *) NULL);
+  for(num_verts=0; primitive_info[num_verts].primitive!=UndefinedPrimitive;num_verts++){}
+  dash_info = (PrimitiveInfo *)AcquireMemory(sizeof(PrimitiveInfo)*(2*num_verts+1));
+  if(draw_info->dash_offset > 0) {
+    offset_dist = (double) draw_info->dash_offset;
+  } else {
+    offset_dist = 0.0;
+  }
+  curr_dist = 0;
+  curr_dash_vert = 0;
+  da = draw_info->dash_pattern;
+  while(offset_dist > 0.0) {
+    if(pat_num==-1) {
+      pat_num = 0;
+    }
+    if(da[pat_num]==0) {
+      break;
+    }
+    if(offset_dist>da[pat_num]) {
+      offset_dist -= da[pat_num];
+      pat_num++;
+    } else if(offset_dist<da[pat_num]) {
+      curr_dist = da[pat_num] - offset_dist;
+      offset_dist = 0.0;
+      break;
+    } else {
+      offset_dist = 0.0;
+      curr_dist = da[pat_num];
+      pat_num++;
+    }
+  }
+  if(pat_num==-1) {
+    pat_num = 0;
+    curr_dist = da[pat_num];
+    dash_info[0] = primitive_info[0];
+    curr_dash_vert = 1;
+  }
+  for(i=1; i<num_verts; i++) {
+    double this_dist,
+           max_dist,
+           ddx,
+           ddy;
+    dx=primitive_info[i].point.x-primitive_info[i-1].point.x;
+    dy=primitive_info[i].point.y-primitive_info[i-1].point.y;
+    max_dist = sqrt(dx*dx + dy*dy);
+    this_dist = 0;
+    ddx = dx / max_dist;
+    ddy = dy / max_dist;
+    if(curr_dist==0) {
+      pat_num++;
+      if(da[pat_num]==0) {
+        pat_num=0;
+      }
+      curr_dist = da[pat_num];
+    }
+    while(max_dist >= this_dist+curr_dist) {
+      this_dist += curr_dist;
+      if(pat_num&1) {
+        dash_info[0] = primitive_info[0];
+        dash_info[0].point.x = primitive_info[i-1].point.x + ddx * this_dist;
+        dash_info[0].point.y = primitive_info[i-1].point.y + ddy * this_dist;
+        curr_dash_vert = 1;
+      } else {
+        dash_info[curr_dash_vert] = primitive_info[i-1];
+        dash_info[curr_dash_vert].point.x = primitive_info[i-1].point.x + ddx * this_dist;
+        dash_info[curr_dash_vert].point.y = primitive_info[i-1].point.y + ddy * this_dist;
+        dash_info[curr_dash_vert++].coordinates = 1;
+        dash_info[0].coordinates = curr_dash_vert;
+        dash_info[curr_dash_vert].primitive = UndefinedPrimitive;
+        StrokePolygon(draw_info, dash_info, image);
+      }
+      pat_num++;
+      if(da[pat_num] == 0) {
+        pat_num = 0;
+      }
+      curr_dist = da[pat_num];
+    }
+    curr_dist -= (max_dist-this_dist);
+    if(pat_num&1) {
+      continue;
+    } else {
+      dash_info[curr_dash_vert] = primitive_info[i];
+      dash_info[curr_dash_vert++].coordinates = 1;
+    }
+  }
+
+}
+
 static void PrintPathInfo(const PathInfo *path_info)
 {
   register const PathInfo
@@ -2803,30 +3575,75 @@ static void DrawPrimitive(const DrawInfo *draw_info,
     }
     default:
     {
+      DrawInfo
+        *clone_info;
+
+      int
+        linewidth,
+        closed,
+        num_verts;
+
       PathInfo
         *path_info;
 
       PolygonInfo
         *polygon_info;
 
-      if (draw_info->verbose)
+  clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
+      if (clone_info->verbose)
         PrintPrimitiveInfo(primitive_info);
       path_info=ConvertPrimitiveToPath(primitive_info);
       if (path_info == (PathInfo *) NULL)
         return;
-      if (draw_info->verbose)
+      if (clone_info->verbose)
         PrintPathInfo(path_info);
       polygon_info=ConvertPathToPolygon(path_info);
       LiberateMemory((void **) &path_info);
       if (polygon_info == (PolygonInfo *) NULL)
         return;
-      if (draw_info->verbose)
+      if (clone_info->verbose)
         PrintPolygonInfo(polygon_info);
-#if defined(DEBUG_BOUND_BOXES)
-      DrawBoundingRectangles(image,draw_info,polygon_info);
+#ifdef DEBUG_BOUND_BOXES
+      DrawBoundingRectangles(image,polygon_info);
 #endif
-      DrawPolygonPrimitive(draw_info,primitive_info,polygon_info,image);
+      linewidth = clone_info->linewidth;
+      for (num_verts=0; primitive_info[num_verts].primitive != UndefinedPrimitive; num_verts++) {}
+      if(primitive_info[num_verts-1].point.x == primitive_info[0].point.x &&
+         primitive_info[num_verts-1].point.y == primitive_info[0].point.y) {
+        closed = 1;
+      } else {
+        closed = 0;
+      }
+      if (clone_info->dash_pattern != (unsigned *)NULL &&
+          clone_info->linewidth > MagickEpsilon &&
+          clone_info->stroke.opacity != TransparentOpacity) {
+          PixelPacket temp_stroke;
+          temp_stroke = clone_info->stroke;
+          clone_info->linewidth = 0.0;
+          clone_info->stroke.opacity = TransparentOpacity;
+          DrawPolygonPrimitive(clone_info,primitive_info,polygon_info,image);
+          clone_info->linewidth = linewidth;
+          clone_info->stroke = temp_stroke;
+          DashStrokePolygon(clone_info,primitive_info,image);
+      } else if (linewidth > 2.0 && clone_info->stroke.opacity != TransparentOpacity) {
+        if(clone_info->linejoin==RoundJoin &&
+               (closed || clone_info->linecap==RoundCap)) {
+          DrawPolygonPrimitive(clone_info,primitive_info,polygon_info,image);
+        } else {
+          PixelPacket temp_stroke;
+          temp_stroke = clone_info->stroke;
+          clone_info->linewidth = 0.0;
+          clone_info->stroke.opacity = TransparentOpacity;
+          DrawPolygonPrimitive(clone_info,primitive_info,polygon_info,image);
+          clone_info->linewidth = linewidth;
+          clone_info->stroke = temp_stroke;
+          StrokePolygon(clone_info,primitive_info,image);
+        }
+      } else {
+        DrawPolygonPrimitive(clone_info,primitive_info,polygon_info,image);
+      }
       DestroyPolygonInfo(polygon_info);
+      DestroyDrawInfo(clone_info);
       break;
     }
   }
