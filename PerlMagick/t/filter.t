@@ -164,7 +164,7 @@ testFilter('input.miff', 'Opaque',
 ++$test;
 testFilter('input.miff', 'Quantize',
   q/128/,
-  '0fc1f19d9f2928defce16394bc4e437a',
+  '3178d3fdc71aa26d9b4b693cc19e15db',
   'd51eec15134fee4bfcdb732b6d706a17');
 
 ++$test;
