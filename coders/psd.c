@@ -856,8 +856,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
         }
       }
-      if ((image->colorspace != CMYKColorspace) && (count == 0))
-        SetImage(image,TransparentOpacity);
+      if (count == 0)
+        SetImageOpacity(image,TransparentOpacity);
       LiberateMemory((void **) &scanline);
     }
   if (image->colorspace == CMYKColorspace)
