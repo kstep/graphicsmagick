@@ -1,5 +1,30 @@
 <?xml version="1.0"?>
 <locale name="C">
+  <Blob>
+    <Error>
+      <Message name="UnableToCreateBlob">
+        Unable to create blob
+      </Message>
+      <Message name="UnableToOpenFile">
+        Unable to open file
+      </Message>
+      <Message name="UnableToReadBlob">
+        Unable to read blob
+      </Message>
+      <Message name="UnableToReadFile">
+        Unable to read file
+      </Message>
+      <Message name="UnableToWriteBlob">
+        Unable to write blob
+      </Message>
+      <Message name="UnrecognizedImageFormat">
+        Unrecognized image format
+      </Message>
+      <Message name="ZeroLengthBlobNotPermitted">
+        Zero-length blob not permitted
+      </Message>
+    </Error>
+  </Blob>
   <Cache>
     <Error>
       <Message name="PixelCacheIsNotOpen">

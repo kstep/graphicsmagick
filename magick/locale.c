@@ -116,6 +116,46 @@ const char *GetLocaleMessage(const char *tag)
     default:
       return tag;
 
+    case 'b':  case 'B':
+      if (p - tp == 4 && !LocaleNCompare(tp, "Blob", 4))
+        if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
+          return tag;
+        else
+          switch (*NEXT_FIELD)
+          {
+          default:
+            return tag;
+
+          case 'u':  case 'U':
+            if (p - tp == 18 && !LocaleNCompare(tp, "UnableToCreateBlob", 18))
+              return *np ? tag : "Unable to create blob";
+            else
+            if (p - tp == 16 && !LocaleNCompare(tp, "UnableToOpenFile", 16))
+              return *np ? tag : "Unable to open file";
+            else
+            if (p - tp == 16 && !LocaleNCompare(tp, "UnableToReadBlob", 16))
+              return *np ? tag : "Unable to read blob";
+            else
+            if (p - tp == 16 && !LocaleNCompare(tp, "UnableToReadFile", 16))
+              return *np ? tag : "Unable to read file";
+            else
+            if (p - tp == 17 && !LocaleNCompare(tp, "UnableToWriteBlob", 17))
+              return *np ? tag : "Unable to write blob";
+            else
+            if (p - tp == 23 && !LocaleNCompare(tp, "UnrecognizedImageFormat", 23))
+              return *np ? tag : "Unrecognized image format";
+            else
+              return tag;
+
+          case 'z':  case 'Z':
+            if (p - tp == 26 && !LocaleNCompare(tp, "ZeroLengthBlobNotPermitted", 26))
+              return *np ? tag : "Zero-length blob not permitted";
+            else
+              return tag;
+          }
+      else
+        return tag;
+
     case 'c':  case 'C':
       if (p - tp == 5 && !LocaleNCompare(tp, "Cache", 5))
         if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)

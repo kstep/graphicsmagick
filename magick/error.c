@@ -634,6 +634,11 @@ MagickExport void ThrowException(ExceptionInfo *exception,
   exception->severity=(ExceptionType) severity;
   switch (severity)
   {
+    case BlobError:
+    {
+      (void) strcpy(tag,"Blobe/Error/");
+      break;
+    }
     case CacheError:
     {
       (void) strcpy(tag,"Cache/Error/");
