@@ -1911,7 +1911,7 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
   /*
     Create pixel cache on disk.
   */
-  if ((GetMagickResource(DiskResource,0) != ResourceInfinity) &&
+  if ((GetMagickResource(DiskResource) != ResourceInfinity) &&
       ((cache_info->length/1024/1024) > GetMagickResource(DiskResource)))
     ThrowBinaryException(ResourceLimitError,"Cache resources exhausted",
       image->filename);
