@@ -46,11 +46,12 @@ infodir  = $(prefix)/info
 # For non-gcc compilers, simply set CFLAGS = -O (to start with)
 #
 CC       = gcc
-CFLAGS	= -O2 -m486 -I/usr/X11R6/include $(DEFINES) $(EX_DEFS) -Wall -pedantic -Wuninitialized -Wunused -Wreturn-type -Wmissing-prototypes -Wstrict-prototypes  
+CFLAGS	= -O2 -m486 $(DEFINES) $(EX_DEFS) -Wall  \
+	-fnative-struct -fno-rtti -fno-exceptions -mcpu=pentium -march=i386
 
 #CFLAGS   = +O1 -Aa -D_HPUX_SOURCE -DSYSV -I/usr/include/X11R5 -I/usr/include/X11R4 $(DEFINES)
 
-LFLAGS   = -L/usr/X11R6/lib            # only sometimes needed; see below for examples
+LFLAGS   = -s #-L/usr/X11R6/lib            # only sometimes needed; see below for examples
 CPPFLAGS = -I.            # only sometimes needed; see below for examples
 BINDCMD  =                # only needed for EMX and DJGPP DOS extenders
 
@@ -61,13 +62,19 @@ BINDCMD  =                # only needed for EMX and DJGPP DOS extenders
 # Define the target machine / OS by uncommenting the appropriate lines below.
 # Remember to comment-out the defaults (a) if they do not apply!
 #
+# MS-Windows previewer
+DEFINES   = -DUNIX -DEMF -D_NO_VCL -DNORINT
+PREVIEWER = no_prev
+#ALL_LIBS  = -lstdbin -lbinmode -lm -lpng -ltiff -ljpeg -lpdf -lz -lgdi32 -lcomdlg32
+ALL_LIBS  = -lm -lgdi32 -lcomdlg32
+
 # Generic UNIX + X11 previewer (default)
 # add -lpng -lz for PNG support
 # and/or -ltiff for TIFF
 #
-DEFINES   = -DUNIX -DHAS_UNIX_X11 
-PREVIEWER = to_x11
-ALL_LIBS  = -L/usr/lib/X11R6 -lpng -ltiff -ljpeg -lz -lX11 -lm     
+# DEFINES   = -DUNIX -DHAS_UNIX_X11 
+# PREVIEWER = to_x11
+# ALL_LIBS  = -L/usr/lib/X11R6 -lpng -ltiff -ljpeg -lz -lX11 -lm     
 #
 # Generic UNIX, no previewer
 #
@@ -179,29 +186,39 @@ EX_DEFS =
 #
 # Epson Esc/P2 support 
 #
-EX_SRC	 += to_escp2.c
-EX_OBJ	 += to_escp2.o
-EX_DEFS += -DEPSON
+#EX_SRC	 += to_escp2.c
+#EX_OBJ	 += to_escp2.o
+#EX_DEFS += -DEPSON
 #
 # Include PNG support:
-EX_SRC  += png.c to_png.c
-EX_OBJ  += png.o to_png.o
-EX_DEFS += -DPNG
+#EX_SRC  += png.c to_png.c
+#EX_OBJ  += png.o to_png.o
+#EX_DEFS += -DPNG
 #
 # Include TIFF support:
-EX_SRC  +=  to_tif.c
-EX_OBJ  += to_tif.o
-EX_DEFS += -DTIF
+#EX_SRC  +=  to_tif.c
+#EX_OBJ  += to_tif.o
+#EX_DEFS += -DTIF
 #
-EX_SRC  += to_jpg.c
-EX_OBJ  += to_jpg.o
-EX_DEFS += -DJPG
+#EX_SRC  += to_jpg.c
+#EX_OBJ  += to_jpg.o
+#EX_DEFS += -DJPG
 #
 # Include ATARI extras:
 # EX_SRC	+= to_pic.c to_pac.c
 # EX_OBJ	+= to_pic.o to_pac.o
 # EX_DEFS	+= -DPIC_PAC
 #
+ 
+# Include MS-Windows extras:
+EX_SRC	+= to_emf.c
+EX_OBJ	+= to_emf.o hp2xx-rc.o
+ 
+# Rule to make compiled resource (Windows)
+%-rc.o: %.rc
+	windres -i $< -o $@
+
+ 
 #############################################################################
 # No user-serviceable parts below!
 #############################################################################
@@ -224,7 +241,7 @@ OBJS	= clip.o fillpoly.o\
 	  to_vec.o to_pcx.o to_pcl.o  to_eps.o to_img.o to_pbm.o \
 	  to_rgip.o to_fig.o std_main.o $(PREVIEWER).o pendef.o lindef.o $(EX_OBJ)
 
-PROGRAM	= hp2xx
+PROGRAM	= hp2xx.exe
 
 $(PROGRAM): $(OBJS)
 	$(CC) $(LFLAGS) $(OBJS) $(ALL_LIBS) -o $(PROGRAM)
