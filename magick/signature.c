@@ -504,8 +504,8 @@ MagickExport unsigned int SignatureImage(Image *image)
           }
         else
           {
-            *q++=XUpScale(MaxRGB) >> 8;
-            *q++=XUpScale(MaxRGB) & 0xff;
+            *q++=XUpScale(OpaqueOpacity) >> 8;
+            *q++=XUpScale(OpaqueOpacity) & 0xff;
           }
       p++;
     }
