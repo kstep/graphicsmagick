@@ -96,6 +96,7 @@ static unsigned int
   IsNexusInCore(const Cache,const unsigned long),
   ReadCacheIndexes(const Cache,const unsigned long),
   ReadCachePixels(const Cache,const unsigned long),
+  SyncCache(Image *),
   SyncPixelCache(Image *),
   UncompressCache(Cache),
   WriteCacheInfo(Image *),
@@ -202,8 +203,8 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,const long 
   assert(image != (const Image *) NULL);
   assert(image->cache != (Cache) NULL);
   assert(image->signature == MagickSignature);
-  if ((image->storage_class != GetCacheClass(image->cache)) ||
-      (image->colorspace != GetCacheColorspace(image->cache)))
+  cache_info=(CacheInfo *) image->cache;
+  if (cache_info->type == UndefinedCache)
     {
       ThrowException(exception,CacheWarning,"Pixel cache is not open",
         image->filename);
@@ -212,7 +213,6 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,const long 
   /*
     Validate pixel cache geometry.
   */
-  cache_info=(CacheInfo *) image->cache;
   offset=y*cache_info->columns+x;
   if (offset < 0)
     return((PixelPacket *) NULL);
@@ -1589,6 +1589,8 @@ static unsigned int ModifyCache(Image *image)
     *q;
 
   cache_info=(CacheInfo *) image->cache;
+  if (cache_info->type == UndefinedCache)
+    return(True);
   AcquireSemaphoreInfo(&cache_info->semaphore);
   if (cache_info->reference_count <= 1)
     {
@@ -2461,7 +2463,7 @@ MagickExport void SetPixelCacheMethods(AcquirePixelHandler acquire_pixel,
 %
 %
 */
-MagickExport unsigned int SyncCache(Image *image)
+static unsigned int SyncCache(Image *image)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
