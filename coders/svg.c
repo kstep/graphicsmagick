@@ -1601,7 +1601,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
         {
           (void) fprintf(svg_info->file,"font %s",font_family);
           if ((font_weight != (char *) NULL) && (font_style != (char *) NULL))
-            (void) fprintf(svg_info->file,"-%s%s",font_weight,font_style);
+            (void) fprintf(svg_info->file,"-%s%s",font_weight,
+              font_style);
           else
             if (font_weight != (char *) NULL)
               (void) fprintf(svg_info->file,"-%s",font_weight);
