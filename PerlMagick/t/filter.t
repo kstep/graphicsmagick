@@ -4,7 +4,7 @@
 #
 # Contributed by Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
 #
-BEGIN { $| = 1; $test=1, print "1..42\n"; }
+BEGIN { $| = 1; $test=1, print "1..43\n"; }
 END {print "not ok 1\n" unless $loaded;}
 use Image::Magick;
 $loaded=1;
@@ -45,6 +45,12 @@ testFilter('input.miff', 'Colorize',
 testFilter('input.miff', 'Contrast',
   q/1/,
   'c2156d2134de57d98a03fe8ffdf0a3cd',
+  'e4d90d8d2af844650864c4e193acb270');
+
+++$test;
+testFilter('input.miff', 'Convolve',
+  [1, 2, 1, 2, 4, 2, 1, 2, 1],
+  'fa17249c3ad0b8553e4b724c0743a130',
   'e4d90d8d2af844650864c4e193acb270');
 
 ++$test;

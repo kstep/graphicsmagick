@@ -70,7 +70,7 @@ $example->Contrast();
 push(@$images,$example);
 $example=$model->Clone();
 $example->Label('Convolve');
-$example->Convolve([0.1, 0.2, 0.4, 0.2, 0.1]);
+$example->Convolve([1, 2, 1, 2, 4, 2, 1, 2, 1]);
 push(@$images,$example);
 $example=$model->Clone();
 $example->Label('Crop');
