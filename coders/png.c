@@ -6635,14 +6635,16 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
            (png_uint_32) image->color_profile.length);
     }
 #else
+    {
       if (logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "  Setting up text chunk with iCCP Profile");
-    png_write_raw_profile(image_info,ping,ping_info,
-      (unsigned char *) "icm",
-      (unsigned char *) "ICC Profile",
-      (unsigned char *) image->color_profile.info,
-      (png_uint_32) image->color_profile.length);
+      png_write_raw_profile(image_info,ping,ping_info,
+          (unsigned char *) "icm",
+          (unsigned char *) "ICC Profile",
+          (unsigned char *) image->color_profile.info,
+          (png_uint_32) image->color_profile.length);
+    }
 #endif
   if (image->iptc_profile.length != 0)
     {

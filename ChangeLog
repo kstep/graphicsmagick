@@ -1,3 +1,9 @@
+2002-01-28  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* Fixed bug in png.c, introduced in IM-5.5.1.  A pair of
+	{ } brackets were omitted when logging was added, which lets
+	old versions of libpng write a zero-length iCCP chunk.
+
 2003-01-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/effect.c (DespeckleImage): Put loops inside of case
