@@ -1,8 +1,8 @@
 $!
 $! Make ImageMagick X image utilities for VMS.
 $!
-$ on error continue
-$ deass magick
+$ on error then continue
+$ deassign magick
 $ set noon
 $
 $ option := 'p1'
