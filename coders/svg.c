@@ -116,7 +116,7 @@ typedef struct _SVGInfo
   SegmentInfo
     segment;
 
-  RectangleInfo
+  BoundingBox
     page;
 
   char
@@ -652,8 +652,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
           tokens=StringToTokens(value,&number_tokens);
           for (j=0; j < (number_tokens-1); j++)
           {
-            if ((LocaleCompare(tokens[j],"fill") == 0) ||
-                (LocaleCompare(tokens[j],"fillcolor") == 0))
+            if ((LocaleCompare(tokens[j],"fill:") == 0) ||
+                (LocaleCompare(tokens[j],"fillcolor:") == 0))
               {
                 (void) CloneString(&value,tokens[++j]);
                 (void) CloneString(&svg_info->graphic_context[n].fill,value);
@@ -788,7 +788,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
           continue;
         }
       if (LocaleCompare(keyword,"viewBox") == 0)
-        (void) sscanf(value,"%d %d %u %u",&svg_info->page.x,
+        (void) sscanf(value,"%lf %lf %lf %lf",&svg_info->page.x,
           &svg_info->page.y,&svg_info->page.width,&svg_info->page.height);
       if (LocaleCompare(keyword,"width") == 0)
         {
@@ -927,7 +927,7 @@ static void SVGEndElement(void *context, const xmlChar *name)
     }
   if (LocaleCompare((char *) name,"image") == 0)
     {
-      (void) fprintf(svg_info->file,"image %d,%d %s\n",
+      (void) fprintf(svg_info->file,"image %lf,%lf %s\n",
         svg_info->page.x,svg_info->page.y,svg_info->url);
       svg_info->n--;
       return;
@@ -961,11 +961,11 @@ static void SVGEndElement(void *context, const xmlChar *name)
   if (LocaleCompare((char *) name,"rect") == 0)
     {
       if (svg_info->element.major == 0.0)
-        (void) fprintf(svg_info->file,"rectangle %d,%d %d,%d\n",
+        (void) fprintf(svg_info->file,"rectangle %g,%g %g,%g\n",
           svg_info->page.x,svg_info->page.y,svg_info->page.x+
           svg_info->page.width,svg_info->page.y+svg_info->page.height);
       else
-        (void) fprintf(svg_info->file,"roundRectangle %g,%g %d,%d %g,%g\n",
+        (void) fprintf(svg_info->file,"roundRectangle %g,%g %g,%g %g,%g\n",
           svg_info->page.x+svg_info->page.width/2.0,svg_info->page.y+
           svg_info->page.height/2.0,svg_info->page.width,svg_info->page.height,
           svg_info->element.major/2.0,svg_info->element.minor/2.0);
@@ -974,7 +974,7 @@ static void SVGEndElement(void *context, const xmlChar *name)
     }
   if (LocaleCompare((char *) name,"text") == 0)
     {
-      (void) fprintf(svg_info->file,"text %d,%g '%s'\n",svg_info->page.x,
+      (void) fprintf(svg_info->file,"text %g,%g '%s'\n",svg_info->page.x,
         svg_info->page.y-svg_info->graphic_context[n].pointsize/2.0,
         svg_info->text);
       svg_info->n--;
@@ -1251,7 +1251,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   memset(&svg_info,0,sizeof(SVGInfo));
   svg_info.file=file;
   svg_info.verbose=image_info->verbose;
-  svg_info.exception=image->exception;
+  GetExceptionInfo(&svg_info.exception);
   svg_info.width=640;
   svg_info.height=480;
   svg_info.graphic_context=(GraphicContext *)
@@ -1295,6 +1295,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image != (Image *) NULL)
     {
       (void) strcpy(image->filename,image_info->filename);
+      *exception=svg_info.exception;
       if (svg_info.comment != (char *) NULL)
         (void) SetImageAttribute(image,"Comment",svg_info.comment);
     }
@@ -1314,9 +1315,6 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     FreeMemory((void **) &svg_info.vertices);
   if (svg_info.url != (char *) NULL)
     FreeMemory((void **) &svg_info.url);
-  if (n != 0)
-    ThrowReaderException(svg_info.exception.severity,
-      svg_info.exception.message,image);
   return(image);
 }
 #else

@@ -129,6 +129,15 @@ typedef struct _AnnotateInfo
     bounds;
 } AnnotateInfo;
 
+typedef struct _BoundingBox
+{
+  double
+    width,
+    height,
+    x,
+    y;
+} BoundingBox;
+
 typedef struct _BlobInfo
 {
   unsigned int

@@ -2015,7 +2015,7 @@ MagickExport unsigned int QueryColorDatabase(const char *target,
     }
   if (LocaleNCompare(target,"rgb",3) == 0)
     {
-      (void) sscanf(target,"%*[^(](%d,%d,%d",&red,&green,&blue);
+      (void) sscanf(target,"%*[^(](%d%*[ ,]%d%*[ ,]%d",&red,&green,&blue);
       color->red=UpScale(red);
       color->green=UpScale(green);
       color->blue=UpScale(blue);
