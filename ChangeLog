@@ -1,3 +1,8 @@
+2003-02-24  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* png.c: Added missing parentheses in typecast (cristy noticed
+	the bug that I introduced on 2/18).
+
 2003-02-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* Makefile.am: Add rules to produce www/README.html,

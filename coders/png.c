@@ -3213,7 +3213,7 @@ static Image *ReadOneJNGImage(MngInfo *mng_info,
       {
         if (length == 1)
           {
-            image->rendering_intent=(RenderingIntent) p[0]+1;
+            image->rendering_intent=(RenderingIntent) (p[0]+1);
             image->gamma=0.45455f;
             image->chromaticity.red_primary.x=0.6400f;
             image->chromaticity.red_primary.y=0.3300f;
@@ -4052,7 +4052,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             */
             if (length)
               {
-                mng_info->global_srgb_intent=(RenderingIntent) p[0]+1;
+                mng_info->global_srgb_intent=(RenderingIntent) (p[0]+1);
                 mng_info->have_global_srgb=True;
               }
             else
