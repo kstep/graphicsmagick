@@ -152,6 +152,9 @@ static char
   tracings_filepath[MaxTextExtent] =
     "C:\\";
 
+static TimerInfo
+  tracings_timer;
+
 FILE
   *trace_file = (FILE *) NULL;
 
@@ -163,6 +166,12 @@ MagickExport void DestroyTracingCriticalSection(void)
 
 MagickExport void InitializeTracingCriticalSection(void)
 {
+  char
+    *debug = getenv("MAGICK_DEBUG");
+
+  if (debug)
+    tracings_level |= atoi(debug);
+  GetTimerInfo(&tracings_timer);
   if (!critical_section_exists)
     InitializeCriticalSection(&critical_section);
   critical_section_exists=True;
@@ -180,7 +189,7 @@ static void LeaveTracingCriticalSection(void)
     LeaveCriticalSection(&critical_section);
 }
 
-MagickExport void DebugLevel(int level)
+MagickExport void DebugLevel(const int level)
 {
   if (critical_section_exists)
     {
@@ -218,8 +227,10 @@ MagickExport void DebugString(char *format,...)
   if (critical_section_exists)
     EnterTracingCriticalSection();
 
-  (void) _snprintf(string,MaxTextExtent-1,"%08d  ",(int) GetCurrentThreadId());
-  (void) _vsnprintf(&string[9],MaxTextExtent-10,format,operands);
+  (void) _snprintf(string,MaxTextExtent-1,"%08d - %010.1fu  ",
+    (int) GetCurrentThreadId(), GetElapsedTime(&tracings_timer));
+  (void) ContinueTimer(&tracings_timer);
+  (void) _vsnprintf(&string[24],MaxTextExtent-25,format,operands);
 
   if (tracings_level & IM_DEBUG_WIN32)
     OutputDebugString(string);

@@ -119,6 +119,8 @@ extern MagickExport unsigned char
 extern MagickExport void
   closedir(DIR *),
   DebugString(char *, ...),
+  DebugFilePath(const char *s),
+  DebugLevel(const int),
   DestroyTracingCriticalSection(void),
   InitializeTracingCriticalSection(void),
   *mmap(char *,size_t,int,int,int,off_t),
