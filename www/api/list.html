@@ -1,0 +1,238 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><HTML>
+<HEAD><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<TITLE>list - Working with Image Lists</TITLE>
+<link rel="StyleSheet" href="../magick.css" type="text/css">
+</HEAD>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0085c0" alink="#0085c0"  vlink="#800080">
+
+<A NAME="__index__"></A>
+<!-- INDEX BEGIN -->
+
+<UL>
+
+	<LI><A HREF="#name">
+<FONT SIZE=-1>NAME</FONT></A>
+	<LI><A HREF="#synopsis">
+<FONT SIZE=-1>SYNOPSIS</FONT></A>
+	<LI><A HREF="#function descriptions">
+<FONT SIZE=-1>FUNCTION</FONT> 
+<FONT SIZE=-1>DESCRIPTIONS</FONT></A>
+	<UL>
+
+		<LI><A HREF="#cloneimagelist">CloneImageList</A>
+		<LI><A HREF="#destroyimagelist">DestroyImageList</A>
+		<LI><A HREF="#getimagelist">GetImageList</A>
+		<LI><A HREF="#getimagelistsize">GetImageListSize</A>
+		<LI><A HREF="#getnextimage">GetNextImage</A>
+		<LI><A HREF="#imagelisttogroup">ImageListToGroup</A>
+		<LI><A HREF="#newimagelist">NewImageList</A>
+		<LI><A HREF="#popimagelist">PopImageList</A>
+		<LI><A HREF="#pushimagelist">PushImageList</A>
+		<LI><A HREF="#reverseimagelist">ReverseImageList</A>
+		<LI><A HREF="#setimagelist">SetImageList</A>
+		<LI><A HREF="#shiftimagelist">ShiftImageList</A>
+		<LI><A HREF="#unshiftimagelist">UnshiftImageList</A>
+	</UL>
+
+</UL>
+<!-- INDEX END -->
+
+<HR>
+<P>
+<H1><A NAME="name">
+<FONT SIZE=-1>NAME</FONT></A></H1>
+<P>list - Working with Image Lists</P>
+<P>
+<HR>
+<H1><A NAME="synopsis">
+<FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
+<P>Image * <STRONG>CloneImageList</STRONG>( const Image *images, ExceptionInfo *exception );</P>
+<P>void  <STRONG>DestroyImageList</STRONG>( Image *image );</P>
+<P>Image * <STRONG>GetImageList</STRONG>( const Image *images, const unsigned long n, ExceptionInfo *esception );</P>
+<P>size_t  <STRONG>GetImageListSize</STRONG>( const Image *images );</P>
+<P>Image * <STRONG>GetNextImage</STRONG>( Image *images );</P>
+<P>Image **  <STRONG>ImageListToGroup</STRONG>( const Image *images, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>NewImageList</STRONG>( void );</P>
+<P>Image * <STRONG>PopImageList</STRONG>( Image ** images );</P>
+<P>unsigned int  <STRONG>PushImageList</STRONG>( Image *images, const Image *image, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>ReverseImageList</STRONG>( const Image *images, ExceptionInfo *exception );</P>
+<P>unsigned int  <STRONG>SetImageList</STRONG>( Image *images, const Image *image, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>ShiftImageList</STRONG>( Image ** images );</P>
+<P>unsigned int  <STRONG>UnshiftImageList</STRONG>( Image *images, const Image *image, ExceptionInfo *exception );</P>
+<P>
+<HR>
+<H1><A NAME="function descriptions">
+<FONT SIZE=-1>FUNCTION</FONT> 
+<FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
+<P>
+<H2><A NAME="cloneimagelist">CloneImageList</A></H2>
+<blockquote>CloneImageList() returns a duplicate of the image list. </blockquote><P>The format of the CloneImageList method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *CloneImageList ( const <A HREF="types/Image.html">Image</A> *images, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG><A NAME="item_o_images%3A">images:</A></STRONG><BR>
+<DD>
+The image list.
+<P></P>
+<dd><p></p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
+<DD>
+Return any errors or warnings in this structure.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="destroyimagelist">DestroyImageList</A></H2>
+<blockquote>DestroyImageList() destroys an image list. </blockquote><P>The format of the DestroyImageList method is:</P>
+<blockquote>void DestroyImageList ( <A HREF="types/Image.html">Image</A> *image ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
+<DD>
+The image sequence.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="getimagelist">GetImageList</A></H2>
+<blockquote>GetImageList() returns an image at the specified position in the list. </blockquote><P>The format of the GetImageList method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *GetImageList ( const <A HREF="types/Image.html">Image</A> *images, const unsigned long n, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *esception ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>images:</STRONG><BR>
+<DD>
+The image list.
+<P></P>
+<dd><p></p><dt><STRONG><A NAME="item_o_n%3A">n:</A></STRONG><BR>
+<DD>
+The position within the list.
+<P></P>
+<dd><p></p><dt><STRONG>exception:</STRONG><BR>
+<DD>
+Return any errors or warnings in this structure.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="getimagelistsize">GetImageListSize</A></H2>
+<blockquote>GetImageListSize() returns the number of images in the list. </blockquote><P>The format of the GetImageListSize method is:</P>
+<blockquote>size_t GetImageListSize ( const <A HREF="types/Image.html">Image</A> *images ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>images:</STRONG><BR>
+<DD>
+The image list.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="getnextimage">GetNextImage</A></H2>
+<blockquote>GetNextImage() returns the next image in a list. </blockquote><P>The format of the GetNextImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *GetNextImage ( <A HREF="types/Image.html">Image</A> *images ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>images:</STRONG><BR>
+<DD>
+The image list.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="imagelisttogroup">ImageListToGroup</A></H2>
+<blockquote>ImageListToGroup() is a convenience method that converts an image list to a sequential array. For example, </blockquote><blockquote>group = ImageListToGroup ( images, exception ); for ( i = 0; i < n; i++ ) puts ( group[i]->filename ) ;; </blockquote><P>The format of the ImageListToGroup method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> **ImageListToGroup ( const <A HREF="types/Image.html">Image</A> *images, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The image list.
+<P></P>
+<dd><p></p><dt><STRONG>exception:</STRONG><BR>
+<DD>
+Return any errors or warnings in this structure.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="newimagelist">NewImageList</A></H2>
+<blockquote>NewImageList() creates an empty image list. </blockquote><P>The format of the NewImageList method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *NewImageList ( void ); </blockquote><P>
+<H2><A NAME="popimagelist">PopImageList</A></H2>
+<blockquote>PopImageList() removes the last image in the list. </blockquote><P>The format of the PopImageList method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *PopImageList ( <A HREF="types/Image.html">Image</A> **images ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>images:</STRONG><BR>
+<DD>
+The image list.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="pushimagelist">PushImageList</A></H2>
+<blockquote>PushImageList() add an image to the end of the list. </blockquote><P>The format of the PushImageList method is:</P>
+<blockquote>unsigned int PushImageList ( <A HREF="types/Image.html">Image</A> *images, const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>images:</STRONG><BR>
+<DD>
+The image list.
+<P></P>
+<dd><p></p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The image.
+<P></P>
+<dd><p></p><dt><STRONG>exception:</STRONG><BR>
+<DD>
+Return any errors or warnings in this structure.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="reverseimagelist">ReverseImageList</A></H2>
+<blockquote>ReverseImageList() reverses the image list. </blockquote><P>The format of the ReverseImageList method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *ReverseImageList ( const <A HREF="types/Image.html">Image</A> *images, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>images:</STRONG><BR>
+<DD>
+The image list.
+<P></P>
+<dd><p></p><dt><STRONG>exception:</STRONG><BR>
+<DD>
+Return any errors or warnings in this structure.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="setimagelist">SetImageList</A></H2>
+<blockquote>SetImageList() inserts an image into the list at the specified position. </blockquote><P>The format of the SetImageList method is:</P>
+<blockquote>unsigned int SetImageList ( <A HREF="types/Image.html">Image</A> *images, const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>images:</STRONG><BR>
+<DD>
+The image list.
+<P></P>
+<dd><p></p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The image.
+<P></P>
+<dd><p></p><dt><STRONG>exception:</STRONG><BR>
+<DD>
+Return any errors or warnings in this structure.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="shiftimagelist">ShiftImageList</A></H2>
+<blockquote>ShiftImageList() remove an image from the beginning of the list. </blockquote><P>The format of the ShiftImageList method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *ShiftImageList ( <A HREF="types/Image.html">Image</A> **images ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>images:</STRONG><BR>
+<DD>
+The image list.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="unshiftimagelist">UnshiftImageList</A></H2>
+<blockquote>UnshiftImageList() adds the image to the beginning of the list. </blockquote><P>The format of the UnshiftImageList method is:</P>
+<blockquote>unsigned int UnshiftImageList ( <A HREF="types/Image.html">Image</A> *images, const <A HREF="types/Image.html">Image</A> *image, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<dd><p></p><dt><STRONG>images:</STRONG><BR>
+<DD>
+The image list.
+<P></P>
+<dd><p></p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The image.
+<P></P>
+<dd><p></p><dt><STRONG>exception:</STRONG><BR>
+<DD>
+Return any errors or warnings in this structure.
+</DL></DL>
+
+</BODY>
+
+</HTML>
