@@ -339,7 +339,7 @@ MagickExport void InitializeModules(void)
   LiberateMemory((void **) &path);
   if (file == (FILE*) NULL)
     return;
-  while(!feof(file))
+  while (!feof(file))
   {
     if (fscanf(file,"%s %s",alias,module) != 2)
       continue;
@@ -576,7 +576,7 @@ MagickExport int OpenModule(const char *module)
   if (handle == (ModuleHandle) NULL)
     return(False);
   /*
-    Add module to module list
+    Add module to module list.
   */
   module_info=SetModuleInfo(module_name);
   if (module_info == (ModuleInfo*) NULL)
