@@ -1110,17 +1110,20 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
   (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
     "Searching for configure file \"%s\" ...",filename);
 #if defined(UseInstalledMagick)
-#if defined(MagickLibPath)
+# if defined(MagickLibPath)
   /*
     Search hard coded paths.
   */
   FormatString(path,"%.1024s%.1024s",MagickLibPath,filename);
   if (!IsAccessible(path))
-    ThrowException(exception,ConfigureError,"UnableToAccessConfigureFile",
-      path);
+    {
+      ThrowException(exception,ConfigureError,"UnableToAccessConfigureFile",
+                     path);
+      return 0;
+    }
   return(FileToBlob(path,length,exception));
-#endif /* defined(MagickLibPath) */
-#if defined(WIN32)
+# else /* defined(MagickLibPath) */
+#  if defined(WIN32)
   {
     char
       *key_value;
@@ -1129,17 +1132,28 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
       Locate file via registry key.
     */
     key_value=NTRegistryKeyLookup("ConfigurePath");
-    if (key_value != (char *) NULL)
+    if (key_value == (char *) NULL)
       {
-        FormatString(path,"%.1024s%s%.1024s",key_value,DirectorySeparator,
-          filename);
-        if (!IsAccessible(path))
-          ThrowException(exception,ConfigureError,
-            "UnableToAccessConfigureFile",path);
-        return(FileToBlob(path,length,exception));
+        ThrowException(exception,ConfigureError,"RegistryKeyLookupFailed",
+          "ConfigurePath");
+        return 0;
       }
+
+    FormatString(path,"%.1024s%s%.1024s",key_value,DirectorySeparator,
+                 filename);
+    if (!IsAccessible(path))
+      {
+        ThrowException(exception,ConfigureError,
+                       "UnableToAccessConfigureFile",path);
+        return 0;
+      }
+    return(FileToBlob(path,length,exception));
   }
-#endif /* defined(WIN32) */
+#  endif /* defined(WIN32) */
+# endif /* !defined(MagickLibPath) */
+# if !defined(MagickLibPath) && !defined(WIN32)
+#  error MagickLibPath or WIN32 must be defined when UseInstalledMagick is defined
+# endif
 #else /* !defined(UseInstalledMagick) */
   if (*SetClientPath((char *) NULL) != '\0')
     {

@@ -445,6 +445,12 @@ const char *GetLocaleMessage(const char *tag)
             else
               return tag;
 
+          case 'r':  case 'R':
+            if (p - tp == 23 && !LocaleNCompare(tp, "RegistryKeyLookupFailed", 23))
+              return *np ? tag : "Registry key lookup failed. Package is not properly installed on this machine.";
+            else
+              return tag;
+
           case 'u':  case 'U':
             if (p - tp == 27 && !LocaleNCompare(tp, "UnableToAccessConfigureFile", 27))
               return *np ? tag : "Unable to access configure file";

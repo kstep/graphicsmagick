@@ -207,16 +207,19 @@ static void *GetTypeBlob(const char *filename,char *path,size_t *length,
         return(FileToBlob(path,length,exception));
     }
 #if defined(UseInstalledMagick)
-#if defined(MagickLibPath)
+# if defined(MagickLibPath)
   /*
     Search hard coded paths.
   */
   FormatString(path,"%.1024s%.1024s",MagickLibPath,filename);
   if (!IsAccessible(path))
-    ThrowException(exception,ConfigureError,"UnableToAccessFontFile",path);
+    {
+      ThrowException(exception,ConfigureError,"UnableToAccessFontFile",path);
+      return 0;
+    }
   return(FileToBlob(path,length,exception));
-#endif
-#if defined(WIN32)
+# else
+#  if defined(WIN32)
   {
     char
       *key_value;
@@ -225,17 +228,26 @@ static void *GetTypeBlob(const char *filename,char *path,size_t *length,
       Locate file via registry key.
     */
     key_value=NTRegistryKeyLookup("ConfigurePath");
-    if (key_value != (char *) NULL)
+    if (!key_value)
       {
-        FormatString(path,"%.1024s%s%.1024s",key_value,DirectorySeparator,
-          filename);
-        if (!IsAccessible(path))
-          ThrowException(exception,ConfigureError,"UnableToAccessFontFile",
-            path);
-        return(FileToBlob(path,length,exception));
+        ThrowException(exception,ConfigureError,"RegistryKeyLookupFailed",
+          "ConfigurePath");
+        return 0;
       }
+
+    FormatString(path,"%.1024s%s%.1024s",key_value,DirectorySeparator,filename);
+    if (!IsAccessible(path))
+      {
+        ThrowException(exception,ConfigureError,"UnableToAccessFontFile",path);
+        return 0;
+      }
+    return(FileToBlob(path,length,exception));
   }
-#endif
+#  endif /* defined(WIN32) */
+# endif /* !defined(MagickLibPath) */
+# if !defined(MagickLibPath) && !defined(WIN32)
+#  error MagickLibPath or WIN32 must be defined when UseInstalledMagick is defined
+# endif
 #else
   if (*SetClientPath((char *) NULL) != '\0')
     {

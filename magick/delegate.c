@@ -914,7 +914,8 @@ static unsigned int ReadConfigureFile(const char *basename,
                     char
                       BinPath[MaxTextExtent],
                       path[MaxTextExtent];
-                
+
+                    BinPath[0]=0;
                     /* Substitute @PSDelegate@ with path to Ghostscript */
                     NTGhostscriptEXE(path,MaxTextExtent-1);
                     SubstituteString((char **) &delegate_list->commands,
@@ -930,9 +931,16 @@ static unsigned int ReadConfigureFile(const char *basename,
                     
                       /* Obtain installation path from registry */
                       key_value=NTRegistryKeyLookup("BinPath");
-                      if (key_value)
-                        strcpy(BinPath,key_value);
-                      LiberateMemory((void **) &key_value);
+                      if (!key_value)
+                        {
+                          ThrowException(exception,ConfigureError,
+                            "RegistryKeyLookupFailed","BinPath");
+                        }
+                      else
+                        {
+                          strcpy(BinPath,key_value);
+                          LiberateMemory((void **) &key_value);
+                        }
                     }
 #  endif /* defined(MagickBinPath) */
 # else

@@ -1,5 +1,20 @@
 2003-05-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* locale/C.mgk: Added a "RegistryKeyLookupFailed" error message.
+	* magick/type.c (GetTypeBlob): Report registry key lookup
+	failures. Also ensure correct return value when an error is
+	reported.
+	* magick/log.c (GetLogBlob): Report registry key lookup failures.
+	* magick/delegate.c (ReadConfigureFile): Report registry key
+	lookup failures.	
+	* magick/blob.c (GetConfigureBlob): Report registry key lookup
+	failures. Also ensure correct return value when an error is
+	reported.	
+	* magick/module.c (FindMagickModule): Report registry key lookup
+	failures. Also ensure correct return value when an error is
+	reported.
+	* magick/nt_base.c (NTRegistryKeyLookup): Simplify base key lookup
+	code, and improve coding style.	
 	* coders/logo.c, Copyright.txt, www/Copyright.html: Acknowledge
 	and respect the XFig copyright.
 

@@ -218,14 +218,14 @@ static void *GetLogBlob(const char *filename,char *path,size_t *length,
   assert(exception != (ExceptionInfo *) NULL);
   (void) strncpy(path,filename,MaxTextExtent-1);
 #if defined(UseInstalledMagick)
-#if defined(MagickLibPath)
+# if defined(MagickLibPath)
   /*
     Search hard coded paths.
   */
   FormatString(path,"%.1024s%.1024s",MagickLibPath,filename);
   return(LogToBlob(path,length,exception));
-#endif
-#if defined(WIN32)
+# else
+#  if defined(WIN32)
   {
     char
       *key_value;
@@ -234,14 +234,22 @@ static void *GetLogBlob(const char *filename,char *path,size_t *length,
       Locate file via registry key.
     */
     key_value=NTRegistryKeyLookup("ConfigurePath");
-    if (key_value != (char *) NULL)
+    if (!key_value)
       {
-        FormatString(path,"%.1024s%s%.1024s",key_value,DirectorySeparator,
-          filename);
-        return(LogToBlob(path,length,exception));
+        ThrowException(exception,ConfigureError,"RegistryKeyLookupFailed",
+          "ConfigurePath");
+        return 0;
       }
+
+    FormatString(path,"%.1024s%s%.1024s",key_value,DirectorySeparator,
+      filename);
+    return(LogToBlob(path,length,exception));
   }
-#endif
+#  endif /* defined(WIN32) */
+# endif /* !defined(MagickLibPath) */
+# if !defined(MagickLibPath) && !defined(WIN32)
+#  error MagickLibPath or WIN32 must be defined when UseInstalledMagick is defined
+# endif
 #else
   if (*SetClientPath((char *) NULL) != '\0')
     {

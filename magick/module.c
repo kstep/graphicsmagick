@@ -506,7 +506,35 @@ static unsigned int FindMagickModule(const char *filename,
   (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
     "Searching for module file \"%s\" ...",filename);
 #if defined(UseInstalledMagick)
-#if defined(WIN32)
+# if defined(MagickCoderModulesPath)
+  {
+    /*
+      Search hard coded paths.
+    */
+    char
+      *module_directory=NULL;
+
+    switch (module_type)
+      {
+      case MagickCoderModule:
+      default:
+        module_directory=MagickCoderModulesPath;
+        break;
+      case MagickFilterModule:
+        module_directory=MagickFilterModulesPath;
+        break;
+      }
+    
+    FormatString(path,"%.512s%.256s",module_directory,filename);
+    if (!IsAccessible(path))
+      {
+        ThrowException(exception,ConfigureError,"UnableToAccessModuleFile",path);
+        return (False);
+      }
+    return (True);
+  }
+# else
+#  if defined(WIN32)
   {
     /*
       Locate path via registry key.
@@ -527,42 +555,27 @@ static unsigned int FindMagickModule(const char *filename,
       }
 
     key_value=NTRegistryKeyLookup(key);
-    if (key_value != (char *) NULL)
+    if (key_value == (char *) NULL)
       {
-        FormatString(path,"%.512s%s%.256s",key_value,DirectorySeparator,
-          filename);
-        if (!IsAccessible(path))
-          ThrowException(exception,ConfigureError,"UnableToAccessModuleFile",
-            path);
-        return(True);
-      }
-  }
-#endif
-#if defined(MagickCoderModulesPath)
-  {
-    /*
-      Search hard coded paths.
-    */
-    char
-      *module_directory=NULL;
-
-    switch (module_type)
-      {
-      case MagickCoderModule:
-      default:
-        module_directory=MagickCoderModulesPath;
-        break;
-      case MagickFilterModule:
-        module_directory=MagickFilterModulesPath;
-        break;
+        ThrowException(exception,ConfigureError,"RegistryKeyLookupFailed",key);
+        return (False);
       }
 
-  FormatString(path,"%.512s%.256s",module_directory,filename);
-  if (!IsAccessible(path))
-    ThrowException(exception,ConfigureError,"UnableToAccessModuleFile",path);
-  return(True);
+    FormatString(path,"%.512s%s%.256s",key_value,DirectorySeparator,
+                 filename);
+    if (!IsAccessible(path))
+      {
+        ThrowException(exception,ConfigureError,"UnableToAccessModuleFile",
+                       path);
+        return (False);
+      }
+    return (True);
   }
-#endif
+#  endif /* defined(WIN32) */
+# endif /* !defined(MagickCoderModulesPath) */
+# if !defined(MagickCoderModulesPath) && !defined(WIN32)
+#  error MagickCoderModulesPath or WIN32 must be defined when UseInstalledMagick is defined
+# endif
 #else
   if (*SetClientPath((char *) NULL) != '\0')
     {

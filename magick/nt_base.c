@@ -1549,80 +1549,90 @@ MagickExport int NTGhostscriptUnLoadDLL(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method NTRegistryKeyLookup returns GraphicsMagick installation path settings
-%  stored in the Windows Registry. Path settings are specific to the installed
-%  GraphicsMagick version so that multiple Graphics Magick installations may
+%  Method NTRegistryKeyLookup returns package installation path settings
+%  stored in the Windows Registry. Path settings are specific to the
+%  installed package version so that multiple package installations may
 %  coexist.
 %
-%  Values are stored in the registry under a path path similar to
-%  "HKEY_LOCAL_MACHINE/SOFTWARE/GraphicsMagick/1.0.0/LibPath".
+%  Values are stored in the registry under a base path path similar to
+%  "HKEY_LOCAL_MACHINE/SOFTWARE\GraphicsMagick\1.0\Q:8". The provided subkey
+%  is appended to this base path to form the full key.
 %
 %  The format of the NTRegistryKeyLookup method is:
 %
-%      char *NTRegistryKeyLookup(const char *key)
+%      char *NTRegistryKeyLookup(const char *subkey)
 %
 %  A description of each parameter follows:
 %
+%    o return: Returns an allocated string containing the value of the key.
+%           This allocation should be freed by the user once it is no longer
+%           needed.
+%
 %    o key: Specifies a string that identifies the registry object.
-%           Currently supported keys include: "ApplicationDefaultsPath",
-%           "BinPath", "LibPath", "ModulesPath", and "SharePath".
+%           Currently supported sub-keys include: "BinPath", "ConfigurePath",
+%           "LibPath", "CoderModulesPath", "FilterModulesPath", "SharePath".
 %
 */
-MagickExport char *NTRegistryKeyLookup(const char *key)
+MagickExport char *NTRegistryKeyLookup(const char *subkey)
 {
   static HKEY
     reg_key = (HKEY) INVALID_HANDLE_VALUE;
 
-  char
-    *dst;
+  /*
+    Look-up base-key for first access only
+  */
+  if (reg_key == (HKEY) INVALID_HANDLE_VALUE)
+    {
+      char
+        package_key[MaxTextExtent];
 
-  DWORD
-    size,
-    type;
+      LONG
+        res;
+      
+      FormatString(package_key,"SOFTWARE\\%s\\%s\\Q:%d", MagickPackageName,
+                   MagickLibVersionText,QuantumDepth);
 
-  LONG
-    res;
+      res = RegOpenKeyExA (HKEY_LOCAL_MACHINE, package_key, 0, KEY_READ,
+                           &reg_key);
 
-  /* Can probably append MagickLibVersionText to string for efficiency */
-  if (reg_key == (HKEY) INVALID_HANDLE_VALUE) {
-    res = RegOpenKeyExA (HKEY_LOCAL_MACHINE, "SOFTWARE\\GraphicsMagick", 0, KEY_READ, &reg_key);
-
-    if (res == ERROR_SUCCESS)
-      res = RegOpenKeyExA (reg_key, MagickLibVersionText, 0, KEY_READ, &reg_key);
-
-    if (res == ERROR_SUCCESS)
-      {
-#if QuantumDepth == 8
-        res = RegOpenKeyExA (reg_key, "Q:8", 0, KEY_READ, &reg_key);
-#elif QuantumDepth == 16
-        res = RegOpenKeyExA (reg_key, "Q:16", 0, KEY_READ, &reg_key);
-#elif QuantumDepth == 32
-        res = RegOpenKeyExA (reg_key, "Q:32", 0, KEY_READ, &reg_key);
-#else
-# error "Specified value of QuantumDepth is not supported"
-#endif
-      }
-
-    if (res != ERROR_SUCCESS) {
-      reg_key = (HKEY) INVALID_HANDLE_VALUE;
-      return 0;
+      if (res != ERROR_SUCCESS)
+        {
+          reg_key = (HKEY) INVALID_HANDLE_VALUE;
+          return 0;
+        }
     }
+
+  /*
+    Look-up sub-key
+  */
+  {
+    char
+      *dest;
+    
+    DWORD
+      size,
+      type;
+
+    LONG
+      res;
+    
+    size = 32;
+    dest = (char *) AcquireMemory(size);
+    
+    res = RegQueryValueExA (reg_key, subkey, 0, &type, dest, &size);
+    if (res == ERROR_MORE_DATA && type == REG_SZ)
+      {
+        ReacquireMemory((void**) &dest,size);
+        res = RegQueryValueExA (reg_key, subkey, 0, &type, dest, &size);
+      }
+    
+    if (type != REG_SZ || res != ERROR_SUCCESS)
+      {
+        LiberateMemory((void**) &dest);
+      }
+    
+    return dest;
   }
-
-  size = 32;
-  dst = (char *) AcquireMemory(size);
-
-  res = RegQueryValueExA (reg_key, key, 0, &type, dst, &size);
-  if (res == ERROR_MORE_DATA && type == REG_SZ) {
-    ReacquireMemory((void**) &dst,size);
-    res = RegQueryValueExA (reg_key, key, 0, &type, dst, &size);
-  }
-
-  if (type != REG_SZ || res != ERROR_SUCCESS) {
-    LiberateMemory((void**) &dst);
-  }
-
-  return dst;
 }
 
 /*
