@@ -247,7 +247,12 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
   indexes=GetNexusIndexes(cache_info,nexus);
   image_nexus=GetNexus(cache_info);
   if (image_nexus == 0)
-    return((const PixelPacket *) NULL);
+    {
+      ThrowException(exception,CacheError,"Unable to get cache nexus",
+        image->filename);
+      return((const PixelPacket *) NULL);
+    }
+  region.x=x;
   cache_info->virtual_pixel=image->background_color;
   q=pixels;
   for (v=0; v < (long) rows; v++)
