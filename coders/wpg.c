@@ -278,7 +278,7 @@ register IndexPacket *indexes;
        }
 }
 
-#define InsertByte(b) {BImgBuff[x]=b;x++;if(x>=ldblk) {InsertRow(BImgBuff,y,image);x=0;y++;}}
+#define InsertByte(b) {BImgBuff[x]=b;x++;if((int)x>=ldblk) {InsertRow(BImgBuff,y,image);x=0;y++;}}
 static int UnpackWPGRaster(Image *image)
 {
 unsigned x,y,i;
@@ -294,7 +294,7 @@ long ldblk;
  BImgBuff=(unsigned char *) malloc(ldblk);
  if(BImgBuff==NULL) return(-2);
 
- while(y<image->rows)
+ while(y<(int) image->rows)
      {
      bbuf=ReadBlobByte(image);
 
@@ -368,7 +368,7 @@ char SampleSize=1;
  BImgBuff=(unsigned char *) malloc(ldblk);
  if(BImgBuff==NULL) return(-2);
 
- while(y<image->rows)
+ while(y<(int) image->rows)
      {
      bbuf=ReadBlobByte(image);
 
@@ -401,14 +401,14 @@ char SampleSize=1;
 
 	  if(bbuf & 0x80)
 		{	
-		for(i=0;i<SampleSize;i++)
+		for(i=0;i<(int) SampleSize;i++)
 			SampleBuffer[i]=ReadBlobByte(image);
 		for(i=0;i<=(unsigned)RunCount;i++)
 		    for(bbuf=0;bbuf<SampleSize;bbuf++)
 			InsertRByte(SampleBuffer[bbuf]);
 		}
 	   else {
-		for(i=0;i<SampleSize*((unsigned)RunCount+1);i++)
+		for(i=0;i<(int) SampleSize*((unsigned)RunCount+1);i++)
 			{
 			bbuf=ReadBlobByte(image);
 			InsertRByte(bbuf);
@@ -698,7 +698,7 @@ NoMemory:		ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
 		     }
 		 else {
 		      if(image->depth<24)
-			if( image->colors<(1<<image->depth) && image->depth!=24 )
+			if( (int) image->colors<(1<<image->depth) && image->depth!=24 )
 			    ReacquireMemory((void **) &image->colormap,(1<<image->depth)*sizeof(PixelPacket));
 		      }
 		      
@@ -795,7 +795,7 @@ DecompressionFailed: ThrowReaderException(ResourceLimitWarning,"Cannot decompres
 		     }
 	     else {
 		  if(image->depth<24)
-		    if( image->colors<(1<<image->depth) && image->depth!=24 )
+		    if( (int) image->colors<(1<<image->depth) && image->depth!=24 )
 			 ReacquireMemory((void **) &image->colormap,(1<<image->depth)*sizeof(PixelPacket));
 		  }
 
@@ -807,7 +807,7 @@ DecompressionFailed: ThrowReaderException(ResourceLimitWarning,"Cannot decompres
 		   ldblk=((long)image->depth*image->columns+7)/8;
 		   if( (BImgBuff=(unsigned char *) malloc(ldblk))==NULL) goto NoMemory;
 
-		   for(i=0;i<image->rows;i++)
+		   for(i=0;i<(int) image->rows;i++)
 		      {
 		      ReadBlob(image,ldblk,(char *)BImgBuff);
 		      InsertRow(BImgBuff,i,image);
