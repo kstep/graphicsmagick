@@ -558,12 +558,19 @@ MAGICK DELEGATES
       to import image from a scanner device.
 
     o ImageMagick requires Sam Leffler's TIFF software available
-      via anonymous FTP as
+      via anonymous FTP at
 
-	  http://www.libtiff.org/
+          ftp://ftp.remotesensing.org/pub/libtiff/
+
+      or via HTTP at
+
+          http://www.libtiff.org/
 
       to read the TIFF image format.  It in turn optionally requires
-      the JPEG and ZLIB libraries.
+      the JPEG and ZLIB libraries.  The TIFF library no longer includes
+      support for LZW compression due to patent issues.  If you need to
+      use LZW compression, support is available via a seperate
+      LZW compression kit (a patch) at the sites listed above.
 
     o ImageMagick requires libwmf 0.2.2 (a component of wvWare) available
       from
