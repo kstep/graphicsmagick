@@ -57,8 +57,6 @@
 
 /*
   Global declarations.
-static Image
-  *image;
 */
 
 /*
@@ -381,7 +379,6 @@ static unsigned int IsPNG(const unsigned char *magick,const unsigned int length)
     return(True);
   return(False);
 }
-
 
 #if defined(HasPNG)
 #include "png.h"

@@ -3132,18 +3132,19 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       continue;
     if (LocaleNCompare("-affine",option,4) == 0)
       {
+        char
+          *p;
+
         /*
           Draw affine matrix.
         */
-        i++;
-        (void) sscanf(argv[i],"%lf%lf%lf%lf%lf%lf",
-          &draw_info->affine[0],&draw_info->affine[1],
-          &draw_info->affine[2],&draw_info->affine[3],
-          &draw_info->affine[4],&draw_info->affine[5]);
-        (void) sscanf(argv[i],"%lf,%lf,%lf,%lf,%lf,%lf",
-          &draw_info->affine[0],&draw_info->affine[1],
-          &draw_info->affine[2],&draw_info->affine[3],
-          &draw_info->affine[4],&draw_info->affine[5]);
+        p=argv[++i];
+        for (x=0; x < 6; x++)
+        {
+          draw_info->affine[x]=strtod(p,&p);
+          if (*p ==',')
+            p++;
+        }
         continue;
       }
     if (LocaleNCompare("antialias",option+1,3) == 0)

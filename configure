@@ -4479,7 +4479,7 @@ else
   ac_R_nospace=no
 fi
 rm -f conftest*
-      if test $ac_R_nospace = yes; then
+      if test $ac_R_nospace = no; then
 	echo "configure:4083: result: no" >&5
 echo "$ECHO_T""no" >&6
 	X_LIBS="$X_LIBS -R$x_libraries"

@@ -165,6 +165,7 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag)
       RegisterCACHEImage();
       RegisterCMYKImage();
       RegisterDCMImage();
+      RegisterEPTImage();
       RegisterFAXImage();
       RegisterFITSImage();
       RegisterFPXImage();

@@ -509,6 +509,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 
   char
     keyword[MaxTextExtent],
+    *p,
     *primitive;
 
   double
@@ -537,9 +538,6 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
 
   PrimitiveType
     primitive_type;
-
-  register char
-    *p;
 
   register int
     i,
@@ -644,32 +642,24 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       break;
     while (isspace((int) (*p)) && (*p != '\0'))
       p++;
-    n=0;
     if (LocaleCompare("affine",keyword) == 0)
       {
-        n=0;
-        (void) sscanf(p,"%lf%lf%lf%lf%lf%lf%n",
-          &clone_info->affine[0],&clone_info->affine[1],
-          &clone_info->affine[2],&clone_info->affine[3],
-          &clone_info->affine[4],&clone_info->affine[5],&n);
-        if (n == 0)
-          (void) sscanf(p,"%lf,%lf,%lf,%lf,%lf,%lf%n",
-            &clone_info->affine[0],&clone_info->affine[1],
-            &clone_info->affine[2],&clone_info->affine[3],
-            &clone_info->affine[4],&clone_info->affine[5],&n);
-        p+=n;
+        for (n=0; n < 6; n++)
+        {
+          clone_info->affine[n]=strtod(p,&p);
+          if (*p == ',')
+            break;
+        }
         continue;
       }
     if (LocaleCompare("angle",keyword) == 0)
       {
-        (void) sscanf(p,"%lf%n",&clone_info->angle,&n);
-        p+=n;
+        clone_info->angle=strtod(p,&p);
         continue;
       }
     if (LocaleCompare("antialias",keyword) == 0)
       {
-        (void) sscanf(p,"%u%n",&clone_info->antialias,&n);
-        p+=n;
+        clone_info->antialias=strtod(p,&p);
         continue;
       }
     if (LocaleCompare("fill",keyword) == 0)
@@ -682,20 +672,17 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       }
     if (LocaleCompare("linewidth",keyword) == 0)
       {
-        (void) sscanf(p,"%lf%n",&clone_info->linewidth,&n);
-        p+=n;
+        clone_info->linewidth=strtod(p,&p);
         continue;
       }
     if (LocaleCompare("opacity",keyword) == 0)
       {
-        (void) sscanf(p,"%lf%n",&clone_info->opacity,&n);
-        p+=n;
+        clone_info->opacity=strtod(p,&p);
         continue;
       }
     if (LocaleCompare("pointsize",keyword) == 0)
       {
-        (void) sscanf(p,"%lf%n",&clone_info->pointsize,&n);
-        p+=n;
+        clone_info->pointsize=strtod(p,&p);
         continue;
       }
     if (LocaleCompare("stroke",keyword) == 0)
@@ -760,18 +747,12 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         p++;
       if (!IsGeometry(p))
         break;
-      pixel.x=0;
-      pixel.y=0;
-      n=0;
-      (void) sscanf(p,"%lf%lf%n",&pixel.x,&pixel.y,&n);
-      if (n == 0)
-        (void) sscanf(p,"%lf,%lf%n",&pixel.x,&pixel.y,&n);
-      if (n == 0)
-        {
-          primitive_type=UndefinedPrimitive;
-          break;
-        }
-      p+=n;
+      pixel.x=strtod(p,&p);
+      if (*p == ',')
+        p++;
+      pixel.y=strtod(p,&p);
+      if (*p == ',')
+        p++;
       primitive_info[i].primitive=primitive_type;
       primitive_info[i].coordinates=0;
       primitive_info[i].pixel=pixel;
@@ -1462,13 +1443,16 @@ static void GenerateLine(PrimitiveInfo *primitive_info,PointInfo start,
 
 static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
 {
+  char
+    *p;
+
   double
     reflect,
     x,
     y;
+
   int
-    attribute,
-    n;
+    attribute;
 
   PointInfo
     last,
@@ -1476,9 +1460,6 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
     point,
     reflected_pixels[4],
     start;
-
-  register const char
-    *p;
 
   register int
     i;
@@ -1488,14 +1469,14 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
 
   point.x=0;
   point.y=0;
-  p=path;
+  p=(char *) path;
   q=primitive_info;
   q->primitive=PolygonPrimitive;
   while (*p != '\0')
   {
     while (isspace((int) *p))
       p++;
-    attribute=(*p);
+    attribute=(*p++);
     q->primitive=primitive_info->primitive;
     switch (attribute)
     {
@@ -1513,15 +1494,25 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
         /*
           Compute arc points.
         */
-        n=0;
-        (void) sscanf(p+1,"%lf%lf%lf%lf%lf%lf%lf%n",
-          &arc.x,&arc.y,&rotate,&large_arc,&sweep,&x,&y,&n);
-        if (n == 0)
-          (void) sscanf(p+1,"%lf,%lf,%lf,%lf,%lf,%lf,%lf%n",
-            &arc.x,&arc.y,&rotate,&large_arc,&sweep,&x,&y,&n);
-        if (n == 0)
-          break;
-        p+=n;
+        arc.x=strtod(p,&p);
+        if (*p == ',')
+          p++;
+        arc.y=strtod(p,&p);
+        if (*p == ',')
+          p++;
+        rotate=strtod(p,&p);
+        if (*p == ',')
+          p++;
+        large_arc=strtod(p,&p);
+        if (*p == ',')
+          p++;
+        sweep=strtod(p,&p);
+        if (*p == ',')
+          p++;
+        x=strtod(p,&p);
+        if (*p == ',')
+          p++;
+        y=strtod(p,&p);
         last.x=attribute == 'A' ? x : point.x+x;
         last.y=attribute == 'A' ? y : point.y+y;
         GenerateArc(q,point,last,arc);
@@ -1534,25 +1525,20 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
         /*
           Compute bezier points.
         */
-        p++;
         pixels[0]=point;
         for (i=1; i < 4; i++)
         {
-          if ((*p == ',') || isspace((int) *p))
+          x=strtod(p,&p);
+          if (*p == ',')
             p++;
-          n=0;
-          (void) sscanf(p,"%lf%lf%n",&x,&y,&n);
-          if (n == 0)
-            (void) sscanf(p,"%lf,%lf%n",&x,&y,&n);
-          if (n == 0)
-            break;
-          p+=n;
+          y=strtod(p,&p);
+          if (*p == ',')
+            p++;
           last.x=attribute == 'C' ? x : point.x+x;
           last.y=attribute == 'C' ? y : point.y+y;
           pixels[i]=last;
         }
         point=last;
-        p--;
         for (i=0; i < 4; i++)
           (q+i)->pixel=pixels[i];
         q->coordinates=4;
@@ -1562,8 +1548,7 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
       }
       case 'H':
       {
-        (void) sscanf(p+1,"%lf%n",&x,&n);
-        p+=n;
+        x=strtod(p,&p);
         point.x=attribute == 'H' ? x: point.x+x;
         GeneratePoint(q,point);
         q+=q->coordinates;
@@ -1572,31 +1557,28 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
       case 'l':
       case 'L':
       {
-        for (n=0; ; n=0)
+        do
         {
-          (void) sscanf(p+1,"%lf%lf%n",&x,&y,&n);
-          if (n == 0)
-            (void) sscanf(p+1,"%lf,%lf%n",&x,&y,&n);
-          if (n == 0)
-            break;
-          p+=n;
+          x=strtod(p,&p);
+          if (*p == ',')
+            p++;
+          y=strtod(p,&p);
+          if (*p == ',')
+            p++;
           point.x=attribute == 'L' ? x : point.x+x;
           point.y=attribute == 'L' ? y : point.y+y;
           GeneratePoint(q,point);
           q+=q->coordinates;
-        }
+        } while (IsGeometry(p));
         break;
       }
       case 'M':
       case 'm':
       {
-        n=0;
-        (void) sscanf(p+1,"%lf%lf%n",&point.x,&point.y,&n);
-        if (n == 0)
-          (void) sscanf(p+1,"%lf,%lf%n",&point.x,&point.y,&n);
-        if (n == 0)
-          break;
-        p+=n;
+        point.x=strtod(p,&p);
+        if (*p == ',')
+          p++;
+        point.y=strtod(p,&p);
         GeneratePoint(q,point);
         q+=q->coordinates;
         start=point;
@@ -1608,25 +1590,20 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
         /*
           Compute bezier points.
         */
-        p++;
         pixels[0]=point;
         for (i=1; i < 3; i++)
         {
-          if ((*p == ',') || isspace((int) *p))
+          x=strtod(p,&p);
+          if (*p == ',')
             p++;
-          n=0;
-          (void) sscanf(p,"%lf%lf%n",&x,&y,&n);
-          if (n == 0)
-            (void) sscanf(p,"%lf,%lf%n",&x,&y,&n);
-          if (n == 0)
-            break;
-          p+=n;
+          y=strtod(p,&p);
+          if (*p == ',')
+            p++;
           last.x=attribute == 'Q' ? x : point.x+x;
           last.y=attribute == 'Q' ? y : point.y+y;
           pixels[i]=last;
         }
         point=last;
-        p--;
         for (i=0; i < 3; i++)
           (q+i)->pixel=pixels[i];
         q->coordinates=3;
@@ -1640,25 +1617,20 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
         /*
           Compute bezier points.
         */
-        p++;
         reflected_pixels[0]=pixels[3];
         for (i=2; i < 4; i++)
         {
-          if ((*p == ',') || isspace((int) *p))
+          x=strtod(p,&p);
+          if (*p == ',')
             p++;
-          n=0;
-          (void) sscanf(p,"%lf%lf%n",&x,&y,&n);
-          if (n == 0)
-            (void) sscanf(p,"%lf,%lf%n",&x,&y,&n);
-          if (n == 0)
-            break;
-          p+=n;
+          y=strtod(p,&p);
+          if (*p == ',')
+            p++;
           last.x=attribute == 'S' ? x : point.x+x;
           last.y=attribute == 'S' ? y : point.y+y;
           reflected_pixels[i]=last;
         }
         point=last;
-        p--;
         /*
           Reflect the x control pixel.
         */
@@ -1693,25 +1665,20 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
         /*
           Compute bezier points.
         */
-        p++;
         reflected_pixels[0]=pixels[2];
         for (i=2; i < 3; i++)
         {
-          if ((*p == ',') || isspace((int) *p))
+          x=strtod(p,&p);
+          if (*p == ',')
             p++;
-          n=0;
-          (void) sscanf(p,"%lf%lf%n",&x,&y,&n);
-          if (n == 0)
-            (void) sscanf(p,"%lf,%lf%n",&x,&y,&n);
-          if (n == 0)
-            break;
-          p+=n;
+          y=strtod(p,&p);
+          if (*p == ',')
+            p++;
           last.x=attribute == 'T' ? x : point.x+x;
           last.y=attribute == 'T' ? y : point.y+y;
           reflected_pixels[i]=last;
         }
         point=last;
-        p--;
         /*
           Reflect the x control pixel.
         */
@@ -1744,8 +1711,7 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
       case 'v':
       case 'V':
       {
-        (void) sscanf(p+1,"%lf%n",&y,&n);
-        p+=n;
+        y=strtod(p,&p);
         point.y=attribute == 'V' ? y : point.y+y;
         GeneratePoint(q,point);
         q+=q->coordinates;
@@ -1761,12 +1727,11 @@ static void GeneratePath(PrimitiveInfo *primitive_info,const char *path)
       }
       default:
       {
-        if (isalpha((int) *p))
-          (void) fprintf(stderr,"attribute not implemented: %c\n",*p);
+        if (isalpha((int) attribute))
+          (void) fprintf(stderr,"attribute not implemented: %c\n",attribute);
         break;
       }
     }
-    p++;
   }
   primitive_info->primitive=PolygonPrimitive;
   primitive_info->coordinates=q-primitive_info;

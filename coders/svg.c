@@ -545,6 +545,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
 {
   char
     *keyword,
+    *p,
     **tokens;
 
   const char
@@ -552,16 +553,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
 
   double
     affine[6],
-    angle,
-    current[6],
-    unit;
+    current[6];
 
   int
     n,
     number_tokens;
-
-  PointInfo
-    point;
 
   SVGInfo
     *svg_info;
@@ -600,19 +596,16 @@ static void SVGStartElement(void *context,const xmlChar *name,
         }
       if (LocaleCompare(keyword,"angle") == 0)
         {
-          (void) sscanf(value,"%lf",&angle);
-          svg_info->element.angle=angle;
+          svg_info->element.angle=atof(value);
         }
       if (LocaleCompare(keyword,"cx") == 0)
         {
-          (void) sscanf(value,"%lf",&unit);
-          svg_info->element.cx=unit*UnitOfMeasure(value);
+          svg_info->element.cx=atof(value)*UnitOfMeasure(value);
           continue;
         }
       if (LocaleCompare(keyword,"cy") == 0)
         {
-          (void) sscanf(value,"%lf",&unit);
-          svg_info->element.cy=unit*UnitOfMeasure(value);
+          svg_info->element.cy=atof(value)*UnitOfMeasure(value);
           continue;
         }
       if (LocaleCompare(keyword,"d") == 0)
@@ -622,8 +615,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
         }
       if (LocaleCompare(keyword,"height") == 0)
         {
-          (void) sscanf(value,"%lf",&unit);
-          svg_info->page.height=unit*UnitOfMeasure(value);
+          svg_info->page.height=atof(value)*UnitOfMeasure(value);
           continue;
         }
       if (LocaleCompare(keyword,"href") == 0)
@@ -633,14 +625,12 @@ static void SVGStartElement(void *context,const xmlChar *name,
         }
       if (LocaleCompare(keyword,"major") == 0)
         {
-          (void) sscanf(value,"%lf",&unit);
-          svg_info->element.major=unit*UnitOfMeasure(value);
+          svg_info->element.major=atof(value)*UnitOfMeasure(value);
           continue;
         }
       if (LocaleCompare(keyword,"minor") == 0)
         {
-          (void) sscanf(value,"%lf",&unit);
-          svg_info->element.minor=unit*UnitOfMeasure(value);
+          svg_info->element.minor=atof(value)*UnitOfMeasure(value);
           continue;
         }
       if (LocaleCompare(keyword,"points") == 0)
@@ -650,21 +640,18 @@ static void SVGStartElement(void *context,const xmlChar *name,
         }
       if (LocaleCompare(keyword,"r") == 0)
         {
-          (void) sscanf(value,"%lf",&unit);
-          svg_info->element.major=unit*UnitOfMeasure(value);
-          svg_info->element.minor=unit*UnitOfMeasure(value);
+          svg_info->element.major=atof(value)*UnitOfMeasure(value);
+          svg_info->element.minor=atof(value)*UnitOfMeasure(value);
           continue;
         }
       if (LocaleCompare(keyword,"rx") == 0)
         {
-          (void) sscanf(value,"%lf",&unit);
-          svg_info->element.major=unit*UnitOfMeasure(value);
+          svg_info->element.major=atof(value)*UnitOfMeasure(value);
           continue;
         }
       if (LocaleCompare(keyword,"ry") == 0)
         {
-          (void) sscanf(value,"%lf",&unit);
-          svg_info->element.minor=unit*UnitOfMeasure(value);
+          svg_info->element.minor=atof(value)*UnitOfMeasure(value);
           continue;
         }
       if (LocaleCompare(keyword,"style") == 0)
@@ -678,22 +665,19 @@ static void SVGStartElement(void *context,const xmlChar *name,
                 tokens[++j]);
             if (LocaleCompare(tokens[j],"fill-opacity:") == 0)
               {
-                (void) sscanf(tokens[++j],"%lf",
-                  &svg_info->graphic_context[n].opacity);
+                svg_info->graphic_context[n].opacity=atof(tokens[++j]);
                 if (strchr(tokens[j],'%') == (char *) NULL)
                   svg_info->graphic_context[n].opacity*=100.0;
               }
             if (LocaleCompare(tokens[j],"font-size:") == 0)
               {
-                (void) sscanf(tokens[++j],"%lf",
-                  &svg_info->graphic_context[n].pointsize);
+                svg_info->graphic_context[n].pointsize=atof(tokens[++j]);
                 svg_info->graphic_context[n].pointsize*=
                   UnitOfMeasure(tokens[j]);
               }
             if (LocaleCompare(tokens[j],"opacity:") == 0)
               {
-                (void) sscanf(tokens[++j],"%lf",
-                  &svg_info->graphic_context[n].opacity);
+                svg_info->graphic_context[n].opacity=atof(tokens[++j]);
                 if (strchr(tokens[j],'%') == (char *) NULL)
                   svg_info->graphic_context[n].opacity*=100.0;
               }
@@ -704,14 +688,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
               svg_info->graphic_context[n].antialias=
                 LocaleCompare(tokens[++j],"true");
             if (LocaleCompare(tokens[j],"stroke-opacity:") == 0)
-              (void) sscanf(tokens[++j],"%lf",
-                &svg_info->graphic_context[n].opacity);
+              svg_info->graphic_context[n].opacity=atof(tokens[++j]);
             if (LocaleCompare(tokens[j],"stroke-width:") == 0)
               {
-                (void) sscanf(tokens[++j],"%lf",
-                  &svg_info->graphic_context[n].linewidth);
-                svg_info->graphic_context[n].linewidth*=
-                  UnitOfMeasure(tokens[j]);
+                svg_info->graphic_context[n].linewidth=
+                  atof(tokens[++j])*UnitOfMeasure(tokens[j]);
               }
             if (LocaleCompare(tokens[j],"text-antialiasing:") == 0)
               svg_info->graphic_context[n].antialias=
@@ -733,16 +714,20 @@ static void SVGStartElement(void *context,const xmlChar *name,
             }
             if (LocaleCompare(tokens[j],"matrix") == 0)
               {
-                (void) sscanf(tokens[++j]+1,"%lf%lf%lf%lf%lf%lf",&affine[0],
-                  &affine[1],&affine[2],&affine[3],&affine[4],&affine[5],
-                  affine[6]);
-                (void) sscanf(tokens[j]+1,"%lf,%lf,%lf,%lf,%lf,%lf",&affine[0],
-                  &affine[1],&affine[2],&affine[3],&affine[4],&affine[5],
-                  &affine[6]);
+                p=tokens[++j]+1;
+                for (k=0; k < 6; k++)
+                {
+                  affine[k]=strtod(p,&p);
+                  if (*p ==',')
+                    p++;
+                }
               }
             if (LocaleCompare(tokens[j],"rotate") == 0)
               {
-                (void) sscanf(tokens[++j]+1,"%lf",&angle);
+                double
+                  angle;
+
+                angle=atof(tokens[++j]+1);
                 svg_info->graphic_context[n].angle=angle;
                 affine[0]=cos(DegreesToRadians(fmod(angle,360.0)));
                 affine[1]=sin(DegreesToRadians(fmod(angle,360.0)));
@@ -758,16 +743,16 @@ static void SVGStartElement(void *context,const xmlChar *name,
               }
             if (LocaleCompare(tokens[j],"skewX") == 0)
               {
-                (void) sscanf(tokens[++j]+1,"%lf",&angle);
                 affine[0]=1.0;
-                affine[2]=tan(DegreesToRadians(fmod(angle,360.0)));
+                affine[2]=
+                  tan(DegreesToRadians(fmod(atof(tokens[++j]+1),360.0)));
                 affine[3]=1.0;
               }
             if (LocaleCompare(tokens[j],"skewY") == 0)
               {
-                (void) sscanf(tokens[++j]+1,"%lf",&angle);
                 affine[0]=1.0;
-                affine[1]=tan(DegreesToRadians(fmod(angle,360.0)));
+                affine[1]=
+                  tan(DegreesToRadians(fmod(atof(tokens[++j]+1),360.0)));
                 affine[3]=1.0;
               }
             if (LocaleCompare(tokens[j],"translate") == 0)
@@ -802,18 +787,29 @@ static void SVGStartElement(void *context,const xmlChar *name,
           continue;
         }
       if (LocaleCompare(keyword,"viewBox") == 0)
-        (void) sscanf(value,"%lf %lf %lf %lf",&svg_info->page.x,
-          &svg_info->page.y,&svg_info->page.width,&svg_info->page.height);
+        {
+          p=(char *) value;
+          svg_info->page.x=strtod(p,&p);
+          if (*p == ',');
+            p++;
+          svg_info->page.y=strtod(p,&p);
+          if (*p == ',');
+            p++;
+          svg_info->page.width=strtod(p,&p);
+          if (*p == ',');
+            p++;
+          svg_info->page.height=strtod(p,&p);
+          if (*p == ',');
+            p++;
+        }
       if (LocaleCompare(keyword,"width") == 0)
         {
-          (void) sscanf(value,"%lf",&unit);
-          svg_info->page.width=unit*UnitOfMeasure(value);
+          svg_info->page.width=atof(value)*UnitOfMeasure(value);
           continue;
         }
       if (LocaleCompare(keyword,"x") == 0)
         {
-          (void) sscanf(value,"%lf",&unit);
-          svg_info->page.x=unit*UnitOfMeasure(value);
+          svg_info->page.x=atof(value)*UnitOfMeasure(value);
           continue;
         }
       if (LocaleCompare(keyword,"verts") == 0)
@@ -828,32 +824,27 @@ static void SVGStartElement(void *context,const xmlChar *name,
         }
       if (LocaleCompare(keyword,"x1") == 0)
         {
-          (void) sscanf(value,"%lf",&unit);
-          svg_info->segment.x1=unit*UnitOfMeasure(value);
+          svg_info->segment.x1=atof(value)*UnitOfMeasure(value);
           continue;
         }
       if (LocaleCompare(keyword,"x2") == 0)
         {
-          (void) sscanf(value,"%lf",&unit);
-          svg_info->segment.x2=unit*UnitOfMeasure(value);
+          svg_info->segment.x2=atof(value)*UnitOfMeasure(value);
           continue;
         }
       if (LocaleCompare(keyword,"y") == 0)
         {
-          (void) sscanf(value,"%lf",&unit);
-          svg_info->page.y=unit*UnitOfMeasure(value);
+          svg_info->page.y=atof(value)*UnitOfMeasure(value);
           continue;
         }
       if (LocaleCompare(keyword,"y1") == 0)
         {
-          (void) sscanf(value,"%lf",&unit);
-          svg_info->segment.y1=unit*UnitOfMeasure(value);
+          svg_info->segment.y1=atof(value)*UnitOfMeasure(value);
           continue;
         }
       if (LocaleCompare(keyword,"y2") == 0)
         {
-          (void) sscanf(value,"%lf",&unit);
-          svg_info->segment.y2=unit*UnitOfMeasure(value);
+          svg_info->segment.y2=atof(value)*UnitOfMeasure(value);
           continue;
         }
     }
@@ -945,7 +936,7 @@ static void SVGEndElement(void *context, const xmlChar *name)
     }
   if (LocaleCompare((char *) name,"image") == 0)
     {
-      (void) fprintf(svg_info->file,"image %lf,%lf %s\n",
+      (void) fprintf(svg_info->file,"image %f,%f %s\n",
         svg_info->page.x,svg_info->page.y,svg_info->url);
       svg_info->n--;
       return;

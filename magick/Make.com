@@ -37,6 +37,7 @@ $call Make enhance.c
 $call Make error.c
 $call Make gems.c
 $call Make image.c
+$call Make lock.c
 $call Make magic.c
 $call Make magick.c
 $call Make memory.c
@@ -57,7 +58,7 @@ $call Make xwindows.c
 $call Make zoom.c
 $library/create libMagick.olb PreRvIcccm,animate,annotate,attributes,blob, -
   cache,cache_view,colors,compress,constitute,decorate,delegates,display,draw, -
-  effects,enhance,error,gems,image,magic,magick,memory,modules, -
+  effects,enhance,error,gems,image,lock,magic,magick,memory,modules, -
   monitor,montage,quantize,segment,shear,signature,stream,timer, -
   transform,utility,vms,widget,xwindows,zoom
 $exit
