@@ -117,7 +117,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   image->rows=bounds.y2-bounds.y1+2.0;
   image->columns=bounds.x2-bounds.x1+2.0;
   SetImage(image,OpaqueOpacity);
-  (void) FormatString(geometry,"+1%+g",bounds.y2);
+  (void) FormatString(geometry,"+1%+d",(int) ceil(bounds.y2+0.5));
   annotate_info->geometry=AllocateString(geometry);
   (void) AnnotateImage(image,annotate_info);
   DestroyAnnotateInfo(annotate_info);
