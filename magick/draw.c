@@ -817,6 +817,17 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             (void) QueryColorDatabase(value,&graphic_context[n]->fill);
             break;
           }
+        if (LocaleCompare("fill-rule",keyword) == 0)
+          {
+            for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
+              value[x]=(*q++);
+            value[x]='\0';
+            if (LocaleCompare("evenodd",value) == 0)
+              graphic_context[n]->fill_rule=EvenOddRule;
+            if (LocaleCompare("nonzero",value) == 0)
+              graphic_context[n]->fill_rule=NonZeroRule;
+            break;
+          }
         if (LocaleCompare("fill-opacity",keyword) == 0)
           {
             graphic_context[n]->fill.opacity=MaxRGB*strtod(q,&q);
@@ -2382,12 +2393,14 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
             break;
           if (subpath_opacity > 0.0)
             fill_opacity=subpath_opacity;
-          if (winding_number < 0)
-            if ((-winding_number) & 0x01)
-              fill_opacity=1.0;
-          if (winding_number > 0)
-            if (winding_number & 0x01)
-              fill_opacity=1.0;
+          if (draw_info->fill_rule == NonZeroRule) 
+            {
+              if (AbsoluteValue(winding_number) > 0)
+                fill_opacity=1.0;
+              break;
+            }
+          if (AbsoluteValue(winding_number) & 0x01)
+            fill_opacity=1.0;
           break;
         }
       }
@@ -2790,6 +2803,7 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   draw_info->affine=image_info->affine;
   draw_info->gravity=NorthWestGravity;
   draw_info->fill=image_info->fill;
+  draw_info->fill_rule=EvenOddRule;
   draw_info->stroke=image_info->stroke;
   draw_info->stroke_antialias=image_info->antialias;
   draw_info->linewidth=1.0;

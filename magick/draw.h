@@ -28,6 +28,9 @@ typedef struct _DrawInfo
   PixelPacket
     fill;
 
+  FillRule
+    fill_rule;
+
   Image
     *tile;
 

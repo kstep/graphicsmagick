@@ -872,6 +872,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
                         (void) fprintf(svg_info->file,"fill %s\n",value);
                         break;
                       }
+                    if (LocaleCompare(keyword,"fill-rule") == 0)
+                      {
+                        (void) fprintf(svg_info->file,"fill-rule %s\n",value);
+                        break;
+                      }
                     if (LocaleCompare(keyword,"fill-opacity") == 0)
                       {
                         (void) fprintf(svg_info->file,"fill-opacity %g\n",
