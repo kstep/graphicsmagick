@@ -589,8 +589,7 @@ extern MagickExport char
 
 extern MagickExport const PixelPacket
   *AcquireImagePixels(const Image *,const long,const long,const unsigned long,
-    const unsigned long,ExceptionInfo *),
-  AcquireOnePixel(const Image *,const long,const long,ExceptionInfo *);
+    const unsigned long,ExceptionInfo *);
 
 extern MagickExport ColorInfo
   *GetColorInfo(const char *,ExceptionInfo *);
@@ -686,6 +685,7 @@ extern MagickExport MontageInfo
   *CloneMontageInfo(const ImageInfo *,const MontageInfo *);
 
 extern MagickExport PixelPacket
+  AcquireOnePixel(const Image *,const long,const long,ExceptionInfo *),
   *GetImagePixels(Image *,const long,const long,const unsigned long,
     const unsigned long),
   GetOnePixel(Image *,const long,const long),

@@ -72,7 +72,6 @@ static SemaphoreInfo
   Declare pixel cache interfaces.
 */
 static const PixelPacket
-  AcquireOnePixelFromCache(const Image *,const long,const long,ExceptionInfo *),
   *AcquirePixelCache(const Image *,const long,const long,const unsigned long,
     const unsigned long,ExceptionInfo *);
 
@@ -83,6 +82,7 @@ static off_t
   GetCacheMemory(const off_t);
 
 static PixelPacket
+  AcquireOnePixelFromCache(const Image *,const long,const long,ExceptionInfo *),
   GetOnePixelFromCache(Image *,const long,const long),
   *SetNexus(const Image *,const RectangleInfo *,const unsigned long),
   *GetPixelsFromCache(const Image *),
@@ -345,7 +345,7 @@ static const PixelPacket *AcquirePixelCache(const Image *image,const long x,
 %
 %  The format of the AcquireOnePixel() method is:
 %
-%      const PixelPacket *AcquireOnePixel(const Image image,const long x,
+%      PixelPacket *AcquireOnePixel(const Image image,const long x,
 %        const long y,ExceptionInfo exception)
 %
 %  A description of each parameter follows:
@@ -361,7 +361,7 @@ static const PixelPacket *AcquirePixelCache(const Image *image,const long x,
 %
 %
 */
-MagickExport const PixelPacket AcquireOnePixel(const Image *image,const long x,
+MagickExport PixelPacket AcquireOnePixel(const Image *image,const long x,
   const long y,ExceptionInfo *exception)
 {
   if (acquire_one_pixel_from_handler == (AcquireOnePixelFromHandler) NULL)

@@ -87,12 +87,12 @@ typedef struct _CacheInfo
 } CacheInfo;
 
 typedef const PixelPacket
-  (*AcquireOnePixelFromHandler)(const Image *,const long,const long,
-    ExceptionInfo *),
   *(*AcquirePixelHandler)(const Image *,const long,const long,
     const unsigned long,const unsigned long,ExceptionInfo *);
 
 typedef PixelPacket
+  (*AcquireOnePixelFromHandler)(const Image *,const long,const long,
+    ExceptionInfo *),
   (*GetOnePixelFromHandler)(Image *,const long,const long),
   *(*GetPixelHandler)(Image *,const long,const long,const unsigned long,
     const unsigned long),
