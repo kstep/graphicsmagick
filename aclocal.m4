@@ -692,17 +692,22 @@ if test "x$acx_pthread_ok" = xyes; then
         LIBS="$save_LIBS"
         CFLAGS="$save_CFLAGS"
 
-        # More AIX lossage: must compile with cc_r
-        case "$CC" in
-          *xlc | *xlc_r )
-           AC_CHECK_PROG(PTHREAD_CC, xlc_r, xlc_r, ${CC}) ;;
-          * )
-           AC_CHECK_PROG(PTHREAD_CC, cc_r, cc_r, ${CC}) ;;
-        esac
+        PTHREAD_CC="$CC"
         PTHREAD_CXX="$CXX"
-        case "$CXX" in
-          *xlC | *xlC_r )
-           AC_CHECK_PROG(PTHREAD_CXX, xlC_r, xlC_r, ${CXX}) ;;
+        # More AIX lossage: must compile with cc_r
+        case "${host_os}" in
+          aix* )
+            case "$CC" in
+             *xlc )
+               AC_CHECK_PROG(PTHREAD_CC, xlc_r, xlc_r, ${CC}) ;;
+             *cc )
+               AC_CHECK_PROG(PTHREAD_CC, cc_r, cc_r, ${CC}) ;;
+            esac
+            case "$CXX" in
+              *xlC )
+              AC_CHECK_PROG(PTHREAD_CXX, xlC_r, xlC_r, ${CXX}) ;;
+            esac
+            ;;
         esac
 else
         PTHREAD_CC="$CC"
