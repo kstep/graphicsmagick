@@ -128,33 +128,6 @@ The members of the MagickInfo structure are shown in the following table:
 </td>
 </tr>
 
-<tr NOSAVE>
-<td NOSAVE>tag</td>
-
-<td NOSAVE>const char *</td>
-
-<td>Magick string (e.g. "GIF") to call this format.</td>
-</tr>
-
-<tr NOSAVE>
-<td>decoder</td>
-
-<td NOSAVE><a href="Image.html">Image</a> *(*decoder)(const <a href="ImageInfo.html">ImageInfo</a>
-*)</td>
-
-<td>Function to decode image data and return ImageMagick Image.</td>
-</tr>
-
-<tr>
-<td>encoder</td>
-
-<td>unsigned int (*encoder)(const <a href="ImageInfo.html">ImageInfo</a>
-*, Image *)</td>
-
-<td>Function to encode image data with options passed via <a href="ImageInfo.html">ImageInfo</a>
-and image represented by <a href="Image.html">Image</a>.</td>
-</tr>
-
 <tr>
 <td>adjoin</td>
 
@@ -169,33 +142,7 @@ and image represented by <a href="Image.html">Image</a>.</td>
 <td>unsigned int</td>
 
 <td>Set to non-zero (True) if the encoder and decoder for this format supports
-operating arbitrary BLOBs (rather than only disk files).</td>
-</tr>
-
-<tr>
-<td>raw</td>
-
-<td>unsigned int</td>
-
-<td>Image format does not contain size (must be specified in ImageInfo).</td>
-</tr>
-
-<tr>
-<td>description</td>
-
-<td>char *</td>
-
-<td>Long form image format description (e.g. "CompuServe graphics interchange
-format").</td>
-</tr>
-
-<tr>
-<td>module</td>
-
-<td>char *</td>
-
-<td>Name of module (e.g. "GIF") which registered this format. Set to NULL
-if format is not registered by a module.</td>
+operating on arbitrary BLOBs (rather than only disk files).</td>
 </tr>
 
 <tr>
@@ -210,6 +157,59 @@ it can not be set via a <a href="/home/bfriesen/src/graphics/ImageMagick/www/api
 parameter.</td>
 </tr>
 
+<tr NOSAVE>
+<td>decoder</td>
+
+<td NOSAVE><a href="Image.html">Image</a> *(*decoder)(const <a href="ImageInfo.html">ImageInfo</a>
+*)</td>
+
+<td>Function to decode image data and return ImageMagick Image.</td>
+</tr>
+
+<tr>
+<td>description</td>
+
+<td>char *</td>
+
+<td>Long form image format description (e.g. "CompuServe graphics interchange
+format").</td>
+</tr>
+
+<tr>
+<td>encoder</td>
+
+<td>unsigned int (*encoder)(const <a href="ImageInfo.html">ImageInfo</a>
+*, Image *)</td>
+
+<td>Function to encode image data with options passed via <a href="ImageInfo.html">ImageInfo</a>
+and image represented by <a href="Image.html">Image</a>.</td>
+</tr>
+
+<tr>
+<td>module</td>
+
+<td>char *</td>
+
+<td>Name of module (e.g. "GIF") which registered this format. Set to NULL
+if format is not registered by a module.</td>
+</tr>
+
+<tr>
+<td>name</td>
+
+<td>const char *</td>
+
+<td>Magick string (e.g. "GIF") which identifies this format.</td>
+</tr>
+
+<tr>
+<td>next</td>
+
+<td>MagickInfo</td>
+
+<td>Next MagickInfo struct in linked-list. NULL if none.</td>
+</tr>
+
 <tr>
 <td>previous</td>
 
@@ -219,11 +219,11 @@ parameter.</td>
 </tr>
 
 <tr>
-<td>next</td>
+<td>raw</td>
 
-<td>MagickInfo</td>
+<td>unsigned int</td>
 
-<td>Next MagickInfo struct in linked-list. NULL if none.</td>
+<td>Image format does not contain size (must be specified in ImageInfo).</td>
 </tr>
 </table>
 
