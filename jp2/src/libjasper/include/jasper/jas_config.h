@@ -115,7 +115,7 @@
 #define JAS_CONFIG_H
 
 /* This identifies the version of JasPer. */
-#define	JAS_VERSION "1.700.1"
+#define	JAS_VERSION "1.700.2"
 
 /* The preprocessor symbol JAS_WIN_MSVC_BUILD should not be defined
   unless the JasPer software is being built under Microsoft Windows
@@ -151,7 +151,7 @@
 /* #undef X_DISPLAY_MISSING */
 
 #define JAS_CONFIGURE 1
-#define JAS_VERSION "1.700.1"
+#define JAS_VERSION "1.700.2"
 /* #undef DEBUG_MEMALLOC */
 /* #undef DEBUG_OVERFLOW */
 /* #undef ushort */
@@ -225,7 +225,7 @@
 #define PACKAGE "jasper"
 
 /* Version number of package */
-#define VERSION "1.700.1"
+#define VERSION "1.700.2"
 
 #else
 #include <jasper/jas_config2.h>
