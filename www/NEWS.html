@@ -2,7 +2,7 @@
   "http://www.w3.org/TR/html4/loose.dtd">
 <HTML>
 <HEAD>
-<TITLE>GraphicsMagick 1.0 News</TITLE>
+<TITLE>GraphicsMagick 1.1 News</TITLE>
 	<STYLE>
 	<!--
 		@page { size: 8.5in 11in }
@@ -49,11 +49,69 @@
 <table BORDER=0 WIDTH="100%" >
 <tr>
 <td BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" height=14 width=15>
-<b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">GraphicsMagick 1.0 News</font></font></font></b></td>
+<b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">GraphicsMagick 1.1 News</font></font></font></b></td>
 </tr>
 </table>
 <p>
-Major changes associated with GraphicsMagick 1.0 (as of April, 2003)
+Significant changes associated with GraphicsMagick 1.1 (Under development)
+
+<p>
+  Performance improvements:<BR>
+<UL>
+  <LI> Texture tiling is now 7X faster.
+
+</UL>
+<p>
+  Coder additions/improvments<BR>
+<UL>
+  <LI> The META coder supports wide characters for the IPTC and 8BIM
+    formats.<BR>
+  <LI> The XTRN coder now supports wide characters.
+  <LI> An "IMAGE" coder is provided which provides access to a large
+    number of images (derived from XFig) suitable for use as patterns,
+    or as test images.<BR>
+  <LI> The "PATTERN" coder now returns an image pattern tiled to size
+    (equivalent results to TILE:IMAGE:pattern). This is for ImageMagick
+    compatibility.<BR>
+  <LI> Reading and writting compressed SVG (SVGZ) is now supported.
+
+</UL>
+<p>
+  Code structure enhancements:<BR>
+<UL>
+  <LI> Error handling has been improved and validated through testing.
+    Some errors were being lost or unnecessarily ignored.
+  <LI> The memory allocator functions have been replaced with similar
+    macros in order to eliminate warnings with GCC 3.3, avoid
+    accidentally casting away const, and allow memory debuggers to
+    report memory allocations and frees against the correct functions.
+
+</UL>
+<p>
+  API enhancements:<BR>
+<UL>
+  <LI> The GetMagickInfoArray() function is added in order to provide a
+    safer alternative to GetMagickInfo() for user code which wants to
+    access the coder list.
+
+</UL>
+<p>
+  Windows-specific improvements<BR>
+<UL>
+  <LI> The executable search path is extended at run-time to include the
+    directory where the CORE DLLs reside in order to ensure that they
+    are found.<BR>
+  <LI> When building GraphicsMagick, the -t option to configure enables
+    building all of the coders into one library in order to save build
+    time and simplify linkage.<BR>
+  <LI> The XTRN coder now supports wide characters.
+  <LI> LCMS library updated to version 1.10.
+  <LI> GMDisplay displays a pattern behind transparent images.
+
+</UL>
+<p>
+<HR>
+Significant changes associated with GraphicsMagick 1.0 (Released in May, 2003)
 
 <p>
   GraphicsMagick support services:<BR>

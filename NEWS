@@ -1,4 +1,46 @@
-Major changes associated with GraphicsMagick 1.0 (as of April, 2003)
+Significant changes associated with GraphicsMagick 1.1 (Under development)
+
+  Performance improvements:
+    * Texture tiling is now 7X faster.
+
+  Coder additions/improvments
+    * The META coder supports wide characters for the IPTC and 8BIM
+    formats.
+    * The XTRN coder now supports wide characters.
+    * An "IMAGE" coder is provided which provides access to a large
+    number of images (derived from XFig) suitable for use as patterns,
+    or as test images.
+    * The "PATTERN" coder now returns an image pattern tiled to size
+    (equivalent results to TILE:IMAGE:pattern). This is for ImageMagick
+    compatibility.
+    * Reading and writting compressed SVG (SVGZ) is now supported.
+
+  Code structure enhancements:
+    * Error handling has been improved and validated through testing.
+    Some errors were being lost or unnecessarily ignored.
+    * The memory allocator functions have been replaced with similar
+    macros in order to eliminate warnings with GCC 3.3, avoid
+    accidentally casting away const, and allow memory debuggers to
+    report memory allocations and frees against the correct functions.
+
+  API enhancements:
+    * The GetMagickInfoArray() function is added in order to provide a
+    safer alternative to GetMagickInfo() for user code which wants to
+    access the coder list.
+
+  Windows-specific improvements
+    * The executable search path is extended at run-time to include the
+    directory where the CORE DLLs reside in order to ensure that they
+    are found.
+    * When building GraphicsMagick, the -t option to configure enables
+    building all of the coders into one library in order to save build
+    time and simplify linkage.
+    * The XTRN coder now supports wide characters.
+    * LCMS library updated to version 1.10.
+    * GMDisplay displays a pattern behind transparent images.
+
+---------------------------------------------------------------------------
+Significant changes associated with GraphicsMagick 1.0 (Released in May, 2003)
 
   GraphicsMagick support services:
     * Master web site at "http://www.GraphicsMagick.org/".

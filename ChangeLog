@@ -1,5 +1,6 @@
 2003-06-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* NEWS: Listed significant changes (thus far) in version 1.1.
 	* version.sh: Updated LIBRARY_CURRENT and LIBRARY_REVISION since
 	some command.c interfaces have changed, and a new interface has
 	been added. The only user of these interfaces should be 'gm' but
