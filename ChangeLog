@@ -1,3 +1,8 @@
+2003-01-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* Fixed bug in RGBTransformImage (thanks to Bill for
+	finding it) and finished optimizing XYZ table creation.
+	* magick/enhance.c: Optimized NegateImage().
+
 2003-01-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* Set some common API structures to 0xbf prior to deallocation
 	to make accidental continued use more obvious.

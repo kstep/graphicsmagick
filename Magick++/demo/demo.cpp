@@ -70,12 +70,12 @@ int main( int /*argc*/, char ** argv)
       //  2. apply label to image
       //  3. apply operation to image
       //  4. append image to container
-    
+
       cout << "  add noise" << endl;
       example.label( "Add Noise" );
       example.addNoise( LaplacianNoise );
       images.push_back( example );
-    
+
       cout << "  annotate ..." << endl;
       example = model;
       example.label( "Annotate" );
@@ -86,44 +86,44 @@ int main( int /*argc*/, char ** argv)
       example.fillColor( "gold" );
       example.annotate( "Magick++", "+0+20", NorthGravity );
       images.push_back( example );
-    
+
       cout << "  blur ..." << endl;
       example = model;
       example.label( "Blur" );
       example.blur( 0, 1.5 );
       images.push_back( example );
-    
+
       cout << "  border" << endl;
       example = model;
       example.label( "Border" );
       example.borderColor( "gold" );
       example.border( Geometry(6,6) );
       images.push_back( example );
-    
+
       cout << "  channel ..." << endl;
       example = model;
       example.label( "Channel" );
       example.channel( RedChannel );
       images.push_back( example );
-    
+
       cout << "  charcoal ..." << endl;
       example = model;
       example.label( "Charcoal" );
       example.charcoal( );
       images.push_back( example );
-    
+
       cout << "  composite ..." << endl;
       example = model;
       example.label( "Composite" );
       example.composite( smile, "+35+65", OverCompositeOp);
       images.push_back( example );
-    
+
       cout << "  contrast ..." << endl;
       example = model;
       example.label( "Contrast" );
       example.contrast( false );
       images.push_back( example );
-    
+
       cout << "  convolve ..." << endl;
       example = model;
       example.label( "Convolve" );
@@ -133,19 +133,19 @@ int main( int /*argc*/, char ** argv)
         example.convolve( 3, kernel );
       }
       images.push_back( example );
-    
+
       cout << "  crop ..." << endl;
       example = model;
       example.label( "Crop" );
       example.crop( "80x80+25+50" );
       images.push_back( example );
-    
+
       cout << "  despeckle ..." << endl;
       example = model;
       example.label( "Despeckle" );
       example.despeckle( );
       images.push_back( example );
-    
+
       cout << "  draw ..." << endl;
       example = model;
       example.label( "Draw" );
@@ -154,19 +154,19 @@ int main( int /*argc*/, char ** argv)
       example.strokeWidth( 2 );
       example.draw( DrawableCircle( 60,90, 60,120 ) );
       images.push_back( example );
-    
+
       cout << "  edge ..." << endl;
       example = model;
       example.label( "Detect Edges" );
       example.edge( );
       images.push_back( example );
-    
+
       cout << "  emboss ..." << endl;
       example = model;
       example.label( "Emboss" );
       example.emboss( );
       images.push_back( example );
-    
+
       cout << "  equalize ..." << endl;
       example = model;
       example.label( "Equalize" );
@@ -179,31 +179,31 @@ int main( int /*argc*/, char ** argv)
       example.backgroundColor( "#000000FF" );
       example.implode( -1 );
       images.push_back( example );
-    
+
       cout << "  flip ..." << endl;
       example = model;
       example.label( "Flip" );
       example.flip( );
       images.push_back( example );
-    
+
       cout << "  flop ..." << endl;
       example = model;
       example.label( "Flop" );
       example.flop();
       images.push_back( example );
-    
+
       cout << "  frame ..." << endl;
       example = model;
       example.label( "Frame" );
       example.frame( );
       images.push_back( example );
-    
+
       cout << "  gamma ..." << endl;
       example = model;
       example.label( "Gamma" );
       example.gamma( 1.6 );
       images.push_back( example );
-    
+
       cout << "  gaussian blur ..." << endl;
       example = model;
       example.label( "Gaussian Blur" );
@@ -229,19 +229,19 @@ int main( int /*argc*/, char ** argv)
       example.label( "Implode" );
       example.implode( 0.5 );
       images.push_back( example );
-    
+
       cout << "  median filter ..." << endl;
       example = model;
       example.label( "Median Filter" );
       example.medianFilter( );
       images.push_back( example );
-    
+
       cout << "  modulate ..." << endl;
       example = model;
       example.label( "Modulate" );
       example.modulate( 110, 110, 110 );
       images.push_back( example );
-    
+
       cout << "  monochrome ..." << endl;
       example = model;
       example.label( "Monochrome" );
@@ -312,7 +312,7 @@ int main( int /*argc*/, char ** argv)
       example.rotate( 45 );
       example.transparent( "black" );
       images.push_back( example );
-    
+
       cout << "  scale ..." << endl;
       example = model;
       example.label( "Scale" );

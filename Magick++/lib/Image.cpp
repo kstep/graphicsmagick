@@ -2072,25 +2072,19 @@ void Magick::Image::colorSpace( const ColorspaceType colorSpace_ )
 
   modifyImage();
 
-  if ( image()->colorspace == RGBColorspace ||
-       image()->colorspace == TransparentColorspace ||
-       image()->colorspace == GRAYColorspace )
+  if ( colorSpace_ != RGBColorspace &&
+       colorSpace_ != TransparentColorspace &&
+       colorSpace_ != GRAYColorspace )
     {
-      // Convert the image to an alternate colorspace representation
-      // In:			Out:
-      // RGBColorspace		RGBColorspace (no conversion)
-      // TransparentColorspace	TransparentColorspace (no conversion)
-      // GRAYColorspace		GRAYColorspace (no conversion if really Gray)
-      // RGBColorspace		CMYKColorspace
-      // RGBColorspace		GRAYColorspace
-      // RGBColorspace		OHTAColorspace
-      // RGBColorspace		sRGBColorspace
-      // RGBColorspace		XYZColorspace
-      // RGBColorspace		YCbCrColorspace
-      // RGBColorspace		YCCColorspace
-      // RGBColorspace		YIQColorspace
-      // RGBColorspace		YPbPrColorspace
-      // RGBColorspace		YUVColorspace
+      if (image()->colorspace != RGBColorspace &&
+          image()->colorspace != TransparentColorspace &&
+          image()->colorspace != GRAYColorspace)
+        {
+          /* Transform to RGB colorspace as intermediate step */
+          TransformRGBImage( image(), RGBColorspace );
+          throwImageException();
+        }
+      /* Transform to final non-RGB colorspace */
       RGBTransformImage( image(), colorSpace_ );
       throwImageException();
       return;
@@ -2100,20 +2094,7 @@ void Magick::Image::colorSpace( const ColorspaceType colorSpace_ )
        colorSpace_ == TransparentColorspace ||
        colorSpace_ == GRAYColorspace )
     {
-      // Convert the image from an alternate colorspace representation
-      // In:			Out:
-      // CMYKColorspace		RGBColorspace
-      // RGBColorspace          RGBColorspace (no conversion)
-      // GRAYColorspace         GRAYColorspace (no conversion)
-      // TransparentColorspace	TransparentColorspace (no conversion)
-      // OHTAColorspace		RGBColorspace
-      // sRGBColorspace		RGBColorspace
-      // XYZColorspace		RGBColorspace
-      // YCbCrColorspace	RGBColorspace
-      // YCCColorspace		RGBColorspace
-      // YIQColorspace		RGBColorspace
-      // YPbPrColorspace        RGBColorspace
-      // YUVColorspace		RGBColorspace
+      /* Transform to a RGB-type colorspace */
       TransformRGBImage( image(), colorSpace_ );
       throwImageException();
       return;

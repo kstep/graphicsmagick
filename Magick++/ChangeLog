@@ -1,3 +1,9 @@
+2003-01-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (colorSpace): Support colorspace transforms
+	other than to and from RGB by translating to RGB as an intermediate
+	step.
+
 2002-11-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Drawable.cpp: Added DrawablePushClipPath,

@@ -937,9 +937,6 @@ MagickExport unsigned int NegateImage(Image *image,const unsigned int grayscale)
   register PixelPacket
     *q;
 
-  register long
-    i;
-
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   switch (image->storage_class)
@@ -955,19 +952,35 @@ MagickExport unsigned int NegateImage(Image *image,const unsigned int grayscale)
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (long) image->columns; x++)
+
+        if (grayscale)
         {
-          if (grayscale)
-            if ((q->red != q->green) || (q->green != q->blue))
+          /* Process only the non-gray pixels */
+          for (x=(long) image->columns; x > 0; x--)
+            {
+              if ((q->red != q->green) || (q->green != q->blue))
               {
                 q++;
                 continue;
               }
-          q->red=(~q->red);
-          q->green=(~q->green);
-          q->blue=(~q->blue);
-          q++;
+              q->red=(~q->red);
+              q->green=(~q->green);
+              q->blue=(~q->blue);
+              q++;
+            }
         }
+        else
+        {
+          /* Process all pixels */
+          for (x=(long) image->columns; x > 0; x--)
+            {
+              q->red=(~q->red);
+              q->green=(~q->green);
+              q->blue=(~q->blue);
+              q++;
+            }
+        }
+
         if (!SyncImagePixels(image))
           break;
         if (QuantumTick(y,image->rows))
@@ -981,15 +994,31 @@ MagickExport unsigned int NegateImage(Image *image,const unsigned int grayscale)
       /*
         Negate PseudoClass packets.
       */
-      for (i=0; i < (long) image->colors; i++)
+      q=image->colormap;
+      if (grayscale)
       {
-        if (grayscale)
-          if ((image->colormap[i].red != image->colormap[i].green) ||
-              (image->colormap[i].green != image->colormap[i].blue))
-            continue;
-        image->colormap[i].red=(~image->colormap[i].red);
-        image->colormap[i].green=(~image->colormap[i].green);
-        image->colormap[i].blue=(~image->colormap[i].blue);
+        /* Process only the non-gray pixels */
+        for (x=(long) image->colors; x > 0; x--)
+          {
+            if ((q->red != q->green) ||
+                (q->green != q->blue))
+              continue;
+            q->red=(~q->red);
+            q->green=(~q->green);
+            q->blue=(~q->blue);
+            q++;
+          }
+      }
+      else
+      {
+        /* Process all pixels */
+        for (x=(long) image->colors; x > 0; x--)
+          {
+            q->red=(~q->red);
+            q->green=(~q->green);
+            q->blue=(~q->blue);
+            q++;
+          }
       }
       SyncImage(image);
       break;

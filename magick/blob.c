@@ -18,7 +18,7 @@
 %                                 July 1999                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright (C) 2002 ImageMagick Studio, a non-profit organization dedicated %
+%  Copyright (C) 2003 ImageMagick Studio, a non-profit organization dedicated %
 %  to making software imaging solutions freely available.                     %
 %                                                                             %
 %  Permission is hereby granted, free of charge, to any person obtaining a    %
@@ -172,7 +172,6 @@ MagickExport unsigned int BlobToFile(const char *filename,const void *blob,
       ThrowException(exception,BlobError,"UnableToWriteBlob",filename);
       return(False);
     }
-  count=0;
   for (i=0; i < length; i+=count)
   {
     count=write(file,(char *) blob+i,length-i);
@@ -180,7 +179,12 @@ MagickExport unsigned int BlobToFile(const char *filename,const void *blob,
       break;
   }
   (void) close(file);
-  return(i == length);
+  if (i < length)
+    {
+      ThrowException(exception,BlobError,"UnableToWriteBlob",filename);
+      return(False);
+    }
+  return(True);
 }
 
 /*
@@ -414,7 +418,6 @@ MagickExport void CloseBlob(Image *image)
   switch (image->blob->type)
   {
     case UndefinedStream:
-    case FifoStream:
       break;
     case FileStream:
     case StandardStream:
@@ -443,6 +446,7 @@ MagickExport void CloseBlob(Image *image)
 #endif
       break;
     }
+    case FifoStream:
     case BlobStream:
       break;
   }
@@ -692,7 +696,6 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
         i;
 
       (void) MagickSeek(file,0,SEEK_SET);
-      count=0;
       for (i=0; i < *length; i+=count)
       {
         count=read(file,blob+i,*length-i);
@@ -755,7 +758,8 @@ MagickExport void GetBlobInfo(BlobInfo *blob_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetBlobSize() returns the current length of the image file or blob.
+%  GetBlobSize() returns the current length of the image file or blob; zero is
+%  returned if the size cannot be determined.
 %
 %  The format of the GetBlobSize method is:
 %
@@ -1468,15 +1472,13 @@ MagickExport unsigned int ImageToFile(Image *image,const char *filename,
   buffer=(char *) AcquireMemory(MaxBufferSize);
   if (buffer == (char *) NULL)
     {
+      (void) close(file);
       ThrowException(exception,ResourceLimitError,"MemoryAllocationError",
         filename);
-      (void) close(file);
       return(False);
     }
-  i=0;
-  while ((length=ReadBlob(image,MaxBufferSize,buffer)) != 0)
+  for (i=0; (length=ReadBlob(image,MaxBufferSize,buffer)) > 0; )
   {
-    count=0;
     for (i=0; i < length; i+=count)
     {
       count=write(file,buffer+i,length-i);
@@ -1535,8 +1537,6 @@ MagickExport void *MapBlob(int file,const MapMode mode,off_t offset,
   */
   if (file == -1)
     return((void *) NULL);
-  if (!AcquireMagickResource(MapResource,length))
-    return((void *) NULL);
   switch (mode)
   {
     case ReadMode:
@@ -1558,10 +1558,7 @@ MagickExport void *MapBlob(int file,const MapMode mode,off_t offset,
     }
   }
   if (map == (void *) MAP_FAILED)
-    {
-      LiberateMagickResource(MapResource,length);
-      return((void *) NULL);
-    }
+    return((void *) NULL);
   return((void *) map);
 #else
   return((void *) NULL);
@@ -1711,6 +1708,8 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
   assert(image->signature == MagickSignature);
   if (image_info->blob != (void *) NULL)
     {
+      if (image_info->stream != (StreamHandler) NULL)
+        image->blob->stream=image_info->stream;
       AttachBlob(image->blob,image_info->blob,image_info->length);
       return(True);
     }
@@ -1722,6 +1721,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
     case ReadBinaryBlobMode: type=(char *) "rb"; break;
     case WriteBlobMode: type=(char *) "w"; break;
     case WriteBinaryBlobMode: type=(char *) "wb"; break;
+/*     case IOBinaryBlobMode: type=(char *) "w+b"; break; */
   }
   if (image_info->stream != (StreamHandler) NULL)
     {
@@ -1739,7 +1739,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
       image->blob->file=(*type == 'r') ? stdin : stdout;
 #if defined(WIN32)
       if (strchr(type,'b') != (char *) NULL)
-        _setmode(_fileno(image->blob->file),_O_BINARY);
+        setmode(_fileno(image->blob->file),_O_BINARY);
 #endif
       image->blob->type=StandardStream;
       image->blob->exempt=True;
@@ -2437,7 +2437,7 @@ MagickExport BlobInfo *ReferenceBlob(BlobInfo *blob)
 %
 */
 MagickExport ExtendedSignedIntegralType SeekBlob(Image *image,
-   const ExtendedSignedIntegralType offset,const int whence)
+  const ExtendedSignedIntegralType offset,const int whence)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -2674,8 +2674,8 @@ MagickExport ExtendedSignedIntegralType TellBlob(const Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method UnmapBlob deallocates the binary large object previously allocated
-%  with the MapBlob method.
+%  UnmapBlob() deallocates the binary large object previously allocated with
+%  the MapBlob method.
 %
 %  The format of the UnmapBlob method is:
 %
@@ -2699,7 +2699,6 @@ MagickExport unsigned int UnmapBlob(void *map,const size_t length)
     status;
 
   status=munmap(map,length);
-  LiberateMagickResource(MapResource,length);
   return(status == 0);
 #else
   return(False);
