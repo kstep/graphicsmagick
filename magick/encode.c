@@ -10867,8 +10867,11 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             {
               if (IsMonochromeImage(image))
                 photometric=PHOTOMETRIC_MINISWHITE;
-              if (compression != NoCompression)
-                compress_tag=COMPRESSION_CCITTFAX4;
+              if (image->compression != NoCompression)
+                if (image->compression == FaxCompression)
+                  compress_tag=COMPRESSION_CCITTFAX3;
+                else
+                  compress_tag=COMPRESSION_CCITTFAX4;
               TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,1);
             }
           else

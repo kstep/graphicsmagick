@@ -3260,10 +3260,13 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
         if (image->compression == JPEGCompression)
           (void) fprintf(file,"JPEG\n");
         else
-          if (image->compression == BZipCompression)
-            (void) fprintf(file,"BZip\n");
+          if (image->compression == FaxCompression)
+            (void) fprintf(file,"Fax\n");
           else
-            (void) fprintf(file,"None\n");
+            if (image->compression == BZipCompression)
+              (void) fprintf(file,"BZip\n");
+            else
+              (void) fprintf(file,"None\n");
   if (image->comments != (char *) NULL)
     {
       /*

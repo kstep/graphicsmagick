@@ -73,6 +73,9 @@
 <=compress
 	|@LZWEncodeDelegate@ -c > %o
 
+<=show
+	@ShowImageDelegate@ -immutable -window_group %g -title "%l of %f" tmp:%o &
+
 <=zip
 	|@ZipDelegate@ -cf > %o
 
@@ -143,9 +146,6 @@ html=>
 http=>
 	@WWWDecodeDelegate@ %m:%i > %o 2>&1
 
-launch=>pnm
-	@LaunchDelegate@ %i
-
 man=>
 	@MANDelegate@ -Tps %i > %o
 
@@ -168,15 +168,15 @@ pdf<=>ps
 pgp=>
 	@PGPDecodeDelegate@ -fq %i
 
+pnm<=launch
+	@LaunchDelegate@ %i
+
 pnm<=win
 	@ShowImageDelegate@ -immutable %i
 
 pov=>
 	@POVDelegate@ +i%i +o%o +fn%q +w%w +h%h +a -q9 -kfi%s -kff%n
 	@ConvertDelegate@ -concatenate %o*.png %o
-
-print=>ps
-	@LPDelegate@ -c -s %i
 
 ps<=>eps
 	@PSDelegate@ -sDEVICE=@GSEPSDevice@ -q -dNOPAUSE -dSAFER \
@@ -185,6 +185,9 @@ ps<=>eps
 ps<=>pdf
 	@PSDelegate@ -sDEVICE=@GSPDFDevice@ -q -dNOPAUSE -dSAFER \
 	  -sOutputFile="%o" -- "%i" -c quit
+
+ps<=print
+	@LPDelegate@ -c -s %i
 
 rad=>
 	@RADDecodeDelegate@ -g 1.0 %i %o
@@ -195,9 +198,6 @@ rgba<=rle
 
 scan=>
 	@SCANDecodeDelegate@  -d %i > %o
-
-show=>%m
-	@ShowImageDelegate@ -immutable -window_group %g -title "%l of %f" tmp:%i &
 
 shtml=>
 	@HTMLDecodeDelegate@ -o %o %i

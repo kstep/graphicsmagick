@@ -35,7 +35,6 @@ extern "C" {
 #include <string.h>
 #include <signal.h>
 #include <errno.h>
-#include <locale.h>
 #include <math.h>
 #include <assert.h>
 #if !defined(__OPENNT)

@@ -72,8 +72,14 @@
 <=compress
 	|compress -c > %o
 
+<=show
+	display -immutable -window_group %g -title "%l of %f" tmp:%o &
+
 <=zip
 	|gzip -cf > %o
+
+bmp<=launch
+	c:\Program Files\Accessories\mspaint %i
 
 browse=>
 	start http://www.wizards.dupont.com/cristy/ImageMagick.html &
@@ -139,9 +145,6 @@ html=>
 http=>
 	GET %m:%i > %o 2>&1
 
-launch=>bmp
-	c:\Program Files\Accessories\mspaint %i
-
 mpg=>
 	mpeg2decode -q -b %i -f -r -o3 %o%%05d
 	convert -concatenate %o*.ppm %o
@@ -168,7 +171,7 @@ pov=>
 	povray +i%i +o%o +fn%q +w%w +h%h +a -q9 -kfi%s -kff%n
 	convert -concatenate %o*.png %o
 
-print=>pcl
+pcl<=print
 	print %i
 
 ps<=>eps
@@ -188,9 +191,6 @@ rgba<=rle
 
 scan=>
 	scanimage  -d %i > %o
-
-show=>%m
-	display -immutable -window_group %g -title "%l of %f" tmp:%i &
 
 shtml=>
 	html2ps -o %o %i

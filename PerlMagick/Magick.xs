@@ -163,7 +163,7 @@ static char
   },
   *CompressionTypes[] =
   {
-    "Undefined", "None", "BZip", "JPEG", "LZW", "Runlength", "Zip",
+    "Undefined", "None", "BZip", "Fax", "JPEG", "LZW", "Runlength", "Zip",
     (char *) NULL
   },
   *FilterTypes[] =

@@ -92,7 +92,7 @@
 %    -colorspace type    alternate image colorspace
 %    -comment string     annotate image with comment
 %    -compose operator   composite operator
-%    -compress type      None, JPEG, LZW, RunlengthEncoded, or Zip
+%    -compress type      type of image compression
 %    -crop geometry      preferred size and location of the cropped image
 %    -density geometry   vertical and horizontal density of the image
 %    -display server     query fonts from this X server
@@ -175,7 +175,7 @@ static void Usage(const char *client_name)
       "-colorspace type    alternate image colorsapce",
       "-comment string     annotate image with comment",
       "-compose operator   composite operator",
-      "-compress type      None, JPEG, LZW, RunlengthEncoded, or Zip",
+      "-compress type      type of image compression",
       "-crop geometry      preferred size and location of the cropped image",
       "-density geometry   vertical and horizontal density of the image",
       "-display server     query font from this X server",
@@ -533,6 +533,8 @@ int main(int argc,char **argv)
                     image_info->compression=NoCompression;
                   if (Latin1Compare("BZip",option) == 0)
                     image_info->compression=BZipCompression;
+                  if (Latin1Compare("Fax",option) == 0)
+                    image_info->compression=FaxCompression;
                   if (Latin1Compare("JPEG",option) == 0)
                     image_info->compression=JPEGCompression;
                   if (Latin1Compare("LZW",option) == 0)

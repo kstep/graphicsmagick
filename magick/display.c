@@ -5237,7 +5237,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         Print image.
       */
       status=XPrintImage(display,resource_info,windows,*image);
-      if (status == False)
+      if (status != False)
         {
           XNoticeWidget(display,windows,"Unable to print X image:",
             (*image)->filename);
@@ -6582,8 +6582,9 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
+      (void) strcpy((*image)->magick,"LAUNCH");
       TemporaryFilename((*image)->filename);
-      status=InvokeDelegate(&image_info,*image,"launch",(char *) NULL);
+      status=WriteImage(&image_info,*image);
       if (status != False)
         XNoticeWidget(display,windows,"Unable to launch image editor",
           (char *) NULL);
@@ -6655,11 +6656,13 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XCheckRefreshWindows(display,windows);
       image_info.preview_type=(PreviewType) (i+1);
       image_info.group=windows->image.id;
-      TemporaryFilename((*image)->filename);
-      (void) strcpy((*image)->magick,"preview");
       LabelImage(*image,"Preview");
-      status=InvokeDelegate(&image_info,*image,"show",(char *) NULL);
-      if (status != False)
+      (void) strcpy((*image)->magick,"PREVIEW");
+      TemporaryFilename((*image)->filename);
+      status=WriteImage(&image_info,*image);
+      (void) strcpy((*image)->magick,"SHOW");
+      status=WriteImage(&image_info,*image);
+      if (status)
         XNoticeWidget(display,windows,"Unable to show image preview",
           (*image)->filename);
       XDelay(display,1500);
@@ -6674,11 +6677,13 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
       image_info.group=windows->image.id;
-      TemporaryFilename((*image)->filename);
-      (void) strcpy((*image)->magick,"histogram");
       LabelImage(*image,"Histogram");
-      status=InvokeDelegate(&image_info,*image,"show",(char *) NULL);
-      if (status != False)
+      (void) strcpy((*image)->magick,"HISTOGRAM");
+      TemporaryFilename((*image)->filename);
+      status=WriteImage(&image_info,*image);
+      (void) strcpy((*image)->magick,"SHOW");
+      status=WriteImage(&image_info,*image);
+      if (status)
         XNoticeWidget(display,windows,"Unable to show histogram",
           (*image)->filename);
       XDelay(display,1500);
@@ -6699,11 +6704,13 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
       image_info.group=windows->image.id;
-      TemporaryFilename((*image)->filename);
-      (void) strcpy((*image)->magick,"matte");
       LabelImage(*image,"Matte");
-      status=InvokeDelegate(&image_info,*image,"show",(char *) NULL);
-      if (status != False)
+      (void) strcpy((*image)->magick,"MATTE");
+      TemporaryFilename((*image)->filename);
+      status=WriteImage(&image_info,*image);
+      (void) strcpy((*image)->magick,"SHOW");
+      status=WriteImage(&image_info,*image);
+      if (status)
         XNoticeWidget(display,windows,"Unable to show histogram",
           (*image)->filename);
       XDelay(display,1500);
@@ -8388,8 +8395,8 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
 %
 %  A description of each parameter follows:
 %
-%    o status: Method XPrintImage return True if the image is
-%      printed.  False is returned is there is a memory shortage or if the
+%    o status: Method XPrintImage return False if the image is
+%      printed.  True is returned is there is a memory shortage or if the
 %      image fails to print.
 %
 %    o display: Specifies a connection to an X server; returned from
@@ -8429,7 +8436,7 @@ static unsigned int XPrintImage(Display *display,XResourceInfo *resource_info,
   XListBrowserWidget(display,windows,&windows->widget,PageSizes,"Select",
     "Select Postscript Page Geometry:",geometry);
   if (*geometry == '\0')
-    return(True);
+    return(False);
   image_info.page=PostscriptGeometry(geometry);
   /*
     Apply image transforms.
@@ -8440,7 +8447,7 @@ static unsigned int XPrintImage(Display *display,XResourceInfo *resource_info,
   print_image=CloneImage(image,image->columns,image->rows,True);
   image->orphan=False;
   if (print_image == (Image *) NULL)
-    return(False);
+    return(True);
   FormatString(geometry,"%dx%d!",windows->image.ximage->width,
     windows->image.ximage->height);
   TransformImage(&print_image,windows->image.crop_geometry,geometry);
@@ -8458,15 +8465,14 @@ static unsigned int XPrintImage(Display *display,XResourceInfo *resource_info,
   /*
     Print image.
   */
+  (void) strcpy(print_image->magick,"PRINT");
   TemporaryFilename(print_image->filename);
-  status=InvokeDelegate(&image_info,print_image,"print",(char *) NULL);
-  if (status == False)
-    XNoticeWidget(display,windows,"Unable to print image ",
-      print_image->filename);
+  status=WriteImage(&image_info,print_image);
+  DestroyImage(print_image);
+  XSetCursorState(display,windows,False);
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)
   (void) remove(print_image->filename);
 #endif
-  XSetCursorState(display,windows,False);
   return(status);
 }
 

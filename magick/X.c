@@ -1939,10 +1939,13 @@ Export void XDisplayImageInfo(Display *display,
         if (image->compression == JPEGCompression)
           (void) strcat(text,"JPEG\n");
         else
-          if (image->compression == BZipCompression)
-            (void) strcat(text,"BZip\n");
+          if (image->compression == FaxCompression)
+            (void) strcat(text,"Fax\n");
           else
-            (void) strcat(text,"None\n");
+            if (image->compression == BZipCompression)
+              (void) strcat(text,"BZip\n");
+            else
+              (void) strcat(text,"None\n");
   if (image->comments != (char *) NULL)
     {
       /*

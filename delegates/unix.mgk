@@ -73,6 +73,9 @@
 <=compress
 	|compress -c > %o
 
+<=show
+	display -immutable -window_group %g -title "%l of %f" tmp:%o &
+
 <=zip
 	|gzip -cf > %o
 
@@ -142,9 +145,6 @@ html=>
 http=>
 	GET %m:%i > %o 2>&1
 
-launch=>pnm
-	gimp %i
-
 mpg=>
 	mpeg2decode -q -b %i -f -r -o3 %o%%05d
 	convert -concatenate %o*.ppm %o
@@ -166,6 +166,9 @@ pdf<=>ps
 pgp=>
 	pgpv -fq %i
 
+pnm<=launch
+	gimp %i
+
 pnm<=win
 	display -immutable %i
 
@@ -174,9 +177,6 @@ pov=>
 	convert %o*.png %o
 	rm -f %o*.png
 
-print=>ps
-	lp -c -s %i
-
 ps<=>eps
 	gs -sDEVICE=epswrite -q -dNOPAUSE -dSAFER \
 	  -sOutputFile="%o" -- "%i" -c quit
@@ -184,6 +184,9 @@ ps<=>eps
 ps<=>pdf
 	gs -sDEVICE=pdfwrite -q -dNOPAUSE -dSAFER \
 	  -sOutputFile="%o" -- "%i" -c quit
+
+ps<=print
+	lp -c -s %i
 
 rad=>
 	ra_ppm -g 1.0 %i %o
@@ -194,9 +197,6 @@ rgba<=rle
 
 scan=>
 	scanimage  -d %i > %o
-
-show=>%m
-	display -immutable -window_group %g -title "%l of %f" tmp:%i &
 
 shtml=>
 	html2ps -o %o %i
