@@ -877,6 +877,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
     MagickError(ResourceLimitError,"Unable to allocate image",
       "Memory allocation failed");
   *clone_image=(*image);
+  clone_image->semaphore=(SemaphoreInfo *) NULL;
   clone_image->reference_count=1;
   clone_image->montage=(char *) NULL;
   clone_image->directory=(char *) NULL;
