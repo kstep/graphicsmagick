@@ -480,9 +480,9 @@ Export Image *CropImage(Image *image,const RectangleInfo *crop_info,
     indexes=GetIndexes(image);
     crop_indexes=GetIndexes(crop_image);
     if (image->class == PseudoClass)
-      (void) memcpy(crop_indexes,indexes,
+      memcpy(crop_indexes,indexes,
         crop_image->columns*sizeof(IndexPacket));
-    (void) memcpy(q,p,crop_image->columns*sizeof(PixelPacket));
+    memcpy(q,p,crop_image->columns*sizeof(PixelPacket));
     if (!SyncPixelCache(crop_image))
       break;
     if (QuantumTick(y,crop_image->rows))
@@ -755,7 +755,7 @@ Export Image *FlipImage(Image *image,ExceptionInfo *exception)
       q++;
     }
     if (flip_image->class == PseudoClass)
-      (void) memcpy(flip_indexes,indexes,
+      memcpy(flip_indexes,indexes,
         flip_image->columns*sizeof(IndexPacket));
     status=SyncPixelCache(flip_image);
     if (status == False)

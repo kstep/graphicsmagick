@@ -349,7 +349,7 @@ Export Image *MagnifyImage(Image *image,ExceptionInfo *exception)
     q=SetPixelCache(magnify_image,0,y,magnify_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
+    memcpy(q,p,image->columns*sizeof(PixelPacket));
     if (!SyncPixelCache(magnify_image))
       break;
   }
@@ -361,7 +361,7 @@ Export Image *MagnifyImage(Image *image,ExceptionInfo *exception)
     p=GetPixelCache(magnify_image,0,image->rows-1-y,magnify_image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
-    (void) memcpy(scanline,p,magnify_image->columns*sizeof(PixelPacket));
+    memcpy(scanline,p,magnify_image->columns*sizeof(PixelPacket));
     q=GetPixelCache(magnify_image,0,(image->rows-1-y) << 1,
       magnify_image->columns,1);
     if (q == (PixelPacket *) NULL)
@@ -431,10 +431,10 @@ Export Image *MagnifyImage(Image *image,ExceptionInfo *exception)
   }
   p=GetPixelCache(magnify_image,0,2*image->rows-2,magnify_image->columns,1);
   if (p != (PixelPacket *) NULL)
-    (void) memcpy(scanline,p,magnify_image->columns*sizeof(PixelPacket));
+    memcpy(scanline,p,magnify_image->columns*sizeof(PixelPacket));
   q=GetPixelCache(magnify_image,0,2*image->rows-1,magnify_image->columns,1);
   if (q != (PixelPacket *) NULL)
-    (void) memcpy(q,scanline,magnify_image->columns*sizeof(PixelPacket));
+    memcpy(q,scanline,magnify_image->columns*sizeof(PixelPacket));
   (void) SyncPixelCache(magnify_image);
   FreeMemory(scanline);
   return(magnify_image);
@@ -697,8 +697,8 @@ Export Image *SampleImage(Image *image,const unsigned int columns,
           break;
         indexes=GetIndexes(image);
         if (image->class == PseudoClass)
-          (void) memcpy(index,indexes,image->columns*sizeof(IndexPacket));
-        (void) memcpy(pixels,p,image->columns*sizeof(PixelPacket));
+          memcpy(index,indexes,image->columns*sizeof(IndexPacket));
+        memcpy(pixels,p,image->columns*sizeof(PixelPacket));
       }
     /*
       Sample each column.

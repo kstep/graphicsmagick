@@ -335,9 +335,9 @@ static unsigned int DecodeImage(Image *image,const int opacity,
             break;
           indexes=GetIndexes(image);
           interlace_indexes=GetIndexes(interlace_image);
-          (void) memcpy(indexes,interlace_indexes,
+          memcpy(indexes,interlace_indexes,
             image->columns*sizeof(IndexPacket));
-          (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
+          memcpy(q,p,image->columns*sizeof(PixelPacket));
           if (!SyncPixelCache(image))
             break;
           i++;
@@ -1390,9 +1390,9 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
               break;
             indexes=GetIndexes(image);
             interlace_indexes=GetIndexes(interlace_image);
-            (void) memcpy(interlace_indexes,indexes,
+            memcpy(interlace_indexes,indexes,
               image->columns*sizeof(IndexPacket));
-            (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
+            memcpy(q,p,image->columns*sizeof(PixelPacket));
             if (!SyncPixelCache(interlace_image))
               break;
             i++;

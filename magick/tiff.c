@@ -309,7 +309,7 @@ static unsigned int ReadColorProfile(char *text,long int length,Image *image)
     ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
       image->filename);
   image->color_profile.length=length;
-  (void) memcpy(image->color_profile.info,p,length);
+  memcpy(image->color_profile.info,p,length);
   return(True);
 }
 #endif
@@ -341,7 +341,7 @@ static unsigned int ReadNewsProfile(char *text,long int length,Image *image,
         ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
           image->filename);
       image->iptc_profile.length=length;
-      (void) memcpy(image->iptc_profile.info,p,length);
+      memcpy(image->iptc_profile.info,p,length);
       return(True);
     }
   /*
@@ -383,7 +383,7 @@ static unsigned int ReadNewsProfile(char *text,long int length,Image *image,
     ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
       image->filename);
   image->iptc_profile.length=length;
-  (void) memcpy(image->iptc_profile.info,p,length);
+  memcpy(image->iptc_profile.info,p,length);
   return(True);
 }
 #endif
@@ -1126,7 +1126,7 @@ static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
       profile=(unsigned char *) AllocateMemory(length+roundup);
       if ((length == 0) || (profile == (unsigned char *) NULL))
         return;
-      (void) memcpy((char *) profile,image->iptc_profile.info,length);
+      memcpy((char *) profile,image->iptc_profile.info,length);
       for (i=0; i < roundup; i++)
         profile[length + i] = 0;
       length=(image->iptc_profile.length+roundup)/4;
@@ -1144,7 +1144,7 @@ static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
   roundup=(length & 0x01); /* round up for Photoshop */
   profile=(unsigned char *) AllocateMemory(length+roundup+12);
   if ((length == 0) || (profile == (unsigned char *) NULL))
-    (void) memcpy((char *) profile,"8BIM\04\04\0\0",8);
+    memcpy((char *) profile,"8BIM\04\04\0\0",8);
   profile[8]=(length >> 24) & 0xff;
   profile[9]=(length >> 16) & 0xff;
   profile[10]=(length >> 8) & 0xff;
@@ -1162,7 +1162,7 @@ static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
   profile=(unsigned char *) AllocateMemory(length+roundup);
   if (profile == (unsigned char *) NULL)
     return;
-  (void) memcpy((char *) profile,image->iptc_profile.info,length);
+  memcpy((char *) profile,image->iptc_profile.info,length);
   if (roundup)
     profile[length+roundup]=0;
   TIFFSetField(tiff,type,(uint32) length+roundup,(void *) profile);
@@ -1204,7 +1204,7 @@ static int TIFFWritePixels(TIFF *tiff,tdata_t scanline,uint32 row,
     Fill scanlines to tile height.
   */
   i=(row % image->tile_info.height)*TIFFScanlineSize(tiff);
-  (void) memcpy((char *) scanlines+i,(char *) scanline,TIFFScanlineSize(tiff));
+  memcpy((char *) scanlines+i,(char *) scanline,TIFFScanlineSize(tiff));
   if (((row % image->tile_info.height) != (image->tile_info.height-1)) &&
       (row != image->rows-1))
     return(0);
@@ -1231,7 +1231,7 @@ static int TIFFWritePixels(TIFF *tiff,tdata_t scanline,uint32 row,
           bytes_per_pixel);
         q=tile_pixels+
           (j*(TIFFTileSize(tiff)/image->tile_info.height)+k*bytes_per_pixel);
-        (void) memcpy(q,p,bytes_per_pixel);
+        memcpy(q,p,bytes_per_pixel);
       }
       status=TIFFWriteTile(tiff,tile_pixels,i*image->tile_info.width,(row/
         image->tile_info.height)*image->tile_info.height,0,sample);

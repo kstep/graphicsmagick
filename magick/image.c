@@ -200,6 +200,8 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   allocated_image->previous=(Image *) NULL;
   allocated_image->list=(Image *) NULL;
   allocated_image->next=(Image *) NULL;
+  allocated_image->fifo=
+    (int (*)(void *,const void *,size_t,ExceptionInfo *)) NULL;
   if (image_info == (ImageInfo *) NULL)
     return(allocated_image);
   /*
@@ -754,7 +756,7 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
       if (clone_image->colormap == (PixelPacket *) NULL)
         ThrowImageException(ResourceLimitWarning,"Unable to clone image",
           "Memory allocation failed");
-      (void) memcpy(clone_image->colormap,image->colormap,length);
+      memcpy(clone_image->colormap,image->colormap,length);
     }
   if (image->color_profile.length > 0)
     {
@@ -766,7 +768,7 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
       if (clone_image->color_profile.info == (unsigned char *) NULL)
         ThrowImageException(ResourceLimitWarning,"Unable to clone image",
           "Memory allocation failed");
-      (void) memcpy(clone_image->color_profile.info,image->color_profile.info,
+      memcpy(clone_image->color_profile.info,image->color_profile.info,
         length);
     }
   if (image->iptc_profile.length > 0)
@@ -779,7 +781,7 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
       if (clone_image->iptc_profile.info == (unsigned char *) NULL)
         ThrowImageException(ResourceLimitWarning,"Unable to clone image",
           "Memory allocation failed");
-      (void) memcpy(clone_image->iptc_profile.info,image->iptc_profile.info,
+      memcpy(clone_image->iptc_profile.info,image->iptc_profile.info,
         length);
     }
   GetBlobInfo(&clone_image->blob);
@@ -812,11 +814,11 @@ Export Image *CloneImage(Image *image,const unsigned int columns,
         q=SetPixelCache(clone_image,0,y,clone_image->columns,1);
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
-        (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
+        memcpy(q,p,image->columns*sizeof(PixelPacket));
         indexes=GetIndexes(image);
         clone_indexes=GetIndexes(clone_image);
         if (image->class == PseudoClass)
-          (void) memcpy(clone_indexes,indexes,
+          memcpy(clone_indexes,indexes,
             image->columns*sizeof(IndexPacket));
         if (!SyncPixelCache(clone_image))
           break;
@@ -2869,7 +2871,6 @@ Export void GetImageInfo(ImageInfo *image_info)
   image_info->subimage=0;
   image_info->subrange=0;
   image_info->depth=QuantumDepth;
-  image_info->ping=False;
   image_info->size=(char *) NULL;
   image_info->tile=(char *) NULL;
   image_info->page=(char *) NULL;
@@ -2916,6 +2917,9 @@ Export void GetImageInfo(ImageInfo *image_info)
   image_info->preview_type=JPEGPreview;
   image_info->view=(char *) NULL;
   image_info->group=0L;
+  image_info->ping=False;
+  image_info->fifo=
+    (int (*)(void *,const void *,size_t,ExceptionInfo *)) NULL;
 }
 
 /*

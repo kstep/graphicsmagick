@@ -148,9 +148,9 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
         indexes=GetIndexes(image);
         rotate_indexes=GetIndexes(rotate_image);
         if (image->class == PseudoClass)
-          (void) memcpy(rotate_indexes,indexes,
+          memcpy(rotate_indexes,indexes,
             image->columns*sizeof(IndexPacket));
-        (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
+        memcpy(q,p,image->columns*sizeof(PixelPacket));
         if (!SyncPixelCache(rotate_image))
           break;
         if (QuantumTick(y,image->rows))
@@ -172,9 +172,9 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
         indexes=GetIndexes(image);
         rotate_indexes=GetIndexes(rotate_image);
         if (image->class == PseudoClass)
-          (void) memcpy(rotate_indexes,indexes,
+          memcpy(rotate_indexes,indexes,
             image->columns*sizeof(IndexPacket));
-        (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
+        memcpy(q,p,image->columns*sizeof(PixelPacket));
         if (!SyncPixelCache(rotate_image))
           break;
         if (QuantumTick(y,image->rows))
@@ -347,7 +347,7 @@ static void XShearImage(Image *image,const double degrees,
               break;
             p+=x_offset;
             q=p-step;
-            (void) memcpy(q,p,width*sizeof(PixelPacket));
+            memcpy(q,p,width*sizeof(PixelPacket));
             /*
               Set old row to border color.
             */
@@ -593,7 +593,7 @@ static void YShearImage(Image *image,const double degrees,
               break;
             p+=y_offset;
             q=p-step;
-            (void) memcpy(q,p,height*sizeof(PixelPacket));
+            memcpy(q,p,height*sizeof(PixelPacket));
             /*
               Set old column to border color.
             */

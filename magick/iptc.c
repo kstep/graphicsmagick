@@ -168,7 +168,7 @@ static Image *ReadIPTCImage(const ImageInfo *image_info,ExceptionInfo *exception
   data=(unsigned char *) AllocateMemory(length+2);
   if (data == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
-  (void) memcpy((char *) data,"8BIM\04\04\0\0\0\0\0\0",tag_length);
+  memcpy((char *) data,"8BIM\04\04\0\0\0\0\0\0",tag_length);
   q=data;
   q+=tag_length;
   while (1)

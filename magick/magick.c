@@ -377,7 +377,7 @@ Export void ListMagickInfo(FILE *file)
 %    o magick_info: Method RegisterMagickInfo returns a pointer MagickInfo
 %      structure that contains the specified tag info.
 %
-%    o entry: 
+%    o entry: A pointer to a structure of type MagickInfo.
 %
 */
 Export MagickInfo *RegisterMagickInfo(MagickInfo *entry)

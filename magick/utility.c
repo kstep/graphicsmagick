@@ -2236,7 +2236,7 @@ Export void Strip(char *data)
     q--;
   count=q-p+1;
   q=data;
-  (void) memcpy(q,p,count);
+  memcpy(q,p,count);
   *(q+count)='\0';
 }
 

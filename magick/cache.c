@@ -891,7 +891,7 @@ Export unsigned int ReadCacheIndexes(Cache cache,const unsigned int id)
         return(True);
       for (y=0; y < (int) nexus->rows; y++)
       {
-        (void) memcpy(indexes,cache_info->indexes+offset,
+        memcpy(indexes,cache_info->indexes+offset,
           nexus->columns*sizeof(IndexPacket));
         indexes+=nexus->columns;
         offset+=cache_info->columns;
@@ -985,7 +985,7 @@ Export unsigned int ReadCachePixels(Cache cache,const unsigned int id)
         return(True);
       for (y=0; y < (int) nexus->rows; y++)
       {
-        (void) memcpy(pixels,cache_info->pixels+offset,
+        memcpy(pixels,cache_info->pixels+offset,
           nexus->columns*sizeof(PixelPacket));
         pixels+=nexus->columns;
         offset+=cache_info->columns;
@@ -1238,7 +1238,7 @@ Export unsigned int WriteCacheIndexes(Cache cache,const unsigned int id)
         return(True);
       for (y=0; y < (int) nexus->rows; y++)
       {
-        (void) memcpy(cache_info->indexes+offset,indexes,
+        memcpy(cache_info->indexes+offset,indexes,
           nexus->columns*sizeof(IndexPacket));
         indexes+=nexus->columns;
         offset+=cache_info->columns;
@@ -1332,7 +1332,7 @@ Export unsigned int WriteCachePixels(Cache cache,const unsigned int id)
         return(True);
       for (y=0; y < (int) nexus->rows; y++)
       {
-        (void) memcpy(cache_info->pixels+offset,pixels,
+        emcpy(cache_info->pixels+offset,pixels,
           nexus->columns*sizeof(PixelPacket));
         pixels+=nexus->columns;
         offset+=cache_info->columns;

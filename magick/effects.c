@@ -1559,14 +1559,14 @@ Export Image *MedianFilterImage(Image *image,const unsigned int radius,
       for (i=0; i < (int) radius; i++)
       {
         s=p-(radius-i)*image->columns-i-1;
-        (void) memcpy(t,s,(2*i+1)*sizeof(PixelPacket));
+        memcpy(t,s,(2*i+1)*sizeof(PixelPacket));
         t+=2*i+1;
         s=p+(radius-i)*image->columns-i-1;
-        (void) memcpy(t,s,(2*i+1)*sizeof(PixelPacket));
+        memcpy(t,s,(2*i+1)*sizeof(PixelPacket));
         t+=2*i+1;
       }
       s=p-radius;
-      (void) memcpy(t,s,(radius+radius+1)*sizeof(PixelPacket));
+      memcpy(t,s,(radius+radius+1)*sizeof(PixelPacket));
       t+=radius+radius+1;
       qsort((void *) neighbors,t-neighbors,sizeof(PixelPacket),
         (int (*)(const void *, const void *)) MedianCompare);

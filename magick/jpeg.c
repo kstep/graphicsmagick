@@ -928,15 +928,15 @@ static void WriteNewsProfile(j_compress_ptr jpeg_info,Image *image)
     if (profile == (unsigned char *) NULL)
       break;
 #ifdef GET_ONLY_IPTC_DATA
-    (void) memcpy((char *) profile,"Photoshop 3.0 8BIM\04\04\0\0\0\0",24);
+    memcpy((char *) profile,"Photoshop 3.0 8BIM\04\04\0\0\0\0",24);
     profile[13]=0x00;
     profile[24]=length >> 8;
     profile[25]=length & 0xff;
 #else
-    (void) memcpy((char *) profile,"Photoshop 3.0 ",14);
+    memcpy((char *) profile,"Photoshop 3.0 ",14);
     profile[13]=0x00;
 #endif
-    (void) memcpy((char *) &(profile[taglen]),&(image->iptc_profile.info[i]),
+    memcpy((char *) &(profile[taglen]),&(image->iptc_profile.info[i]),
       length);
     if (roundup)
       profile[length+taglen]=0;

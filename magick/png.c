@@ -2892,7 +2892,7 @@ static void PNGShort(png_bytep p,png_uint_16 value)
 
 static void PNGType(png_bytep p,png_bytep type)
 {
-  (void) memcpy(p,type,4*sizeof(png_byte));
+  memcpy(p,type,4*sizeof(png_byte));
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)

@@ -1309,7 +1309,7 @@ Export size_t ReadBlob(Image *image,const size_t length,void *data)
       */
       count=Min(length,image->blob.length-image->blob.offset);
       if (count > 0)
-        (void) memcpy(data,image->blob.data+image->blob.offset,count);
+        memcpy(data,image->blob.data+image->blob.offset,count);
       image->blob.offset+=count;
       return(count);
     }
@@ -1733,7 +1733,7 @@ Export size_t WriteBlob(Image *image,const size_t length,const void *data)
           return(0);
         }
     }
-  (void) memcpy(image->blob.data+image->blob.offset,data,length);
+  memcpy(image->blob.data+image->blob.offset,data,length);
   image->blob.offset+=length;
   if (image->blob.offset > image->blob.length)
     image->blob.length=image->blob.offset;

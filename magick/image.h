@@ -206,8 +206,7 @@ typedef struct _ImageInfo
     adjoin,
     subimage,
     subrange,
-    depth,
-    ping;
+    depth;
 
   char
     *size,
@@ -290,6 +289,12 @@ typedef struct _ImageInfo
 
   long
     group;
+
+  unsigned int
+    ping;
+
+  int
+    (*fifo)(void *,const void *,size_t,ExceptionInfo *);
 } ImageInfo;
 
 typedef struct _MontageInfo
@@ -525,6 +530,9 @@ typedef struct _Image
   unsigned int
     orphan;
 
+  int
+    (*fifo)(void *,const void *,size_t,ExceptionInfo *);
+
   struct _Image
     *previous,
     *list,
@@ -729,6 +737,7 @@ extern Export void
   CycleColormapImage(Image *,const int),
   DescribeImage(Image *,FILE *,const unsigned int),
   DestroyAnnotateInfo(AnnotateInfo *),
+  DestroyDrawInfo(DrawInfo *),
   DestroyImage(Image *),
   DestroyImageInfo(ImageInfo *),
   DestroyImages(Image *),

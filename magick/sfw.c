@@ -259,7 +259,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   TranslateSFWMarker(header);  /* translate soi and app tags */
   TranslateSFWMarker(header+2);
-  (void) memcpy((char *) header+6,"JFIF\0\001\0",7);  /* JFIF magic */
+  memcpy((char *) header+6,"JFIF\0\001\0",7);  /* JFIF magic */
   /*
     Translate remaining markers.
   */
