@@ -1,4 +1,29 @@
-This file was last updated on November 13, 2004.
+This file was last updated on January 9, 2004.
+
+Significant changes associated with GraphicsMagick 1.1.5 (not yet released)
+
+  Incompatible changes:
+    o The interpretation of -modulate's (and similar C/C++/Perl API) hue
+    argument is altered since the previous definition did not work. Hue
+    argument now represents a rotation from -180 degrees to +180 degrees
+    expressed as an argument of 0 to 2.0 (1.0 for no change).
+
+  Bugs fixed:
+    o TrueColor 16-bits/sample RGB images were being written incorrectly
+    on little-endian CPUs.
+    o Ensure that data can not overwrite the stack in the Windows
+    readdir/opendir emulation functions.
+    o For BMP and DIB, properly handle oversized colormaps in order to
+    avoid heap corruption.
+    o Reading TIFFs with more than one strip was broken.
+    o Obscure error-path memory leak fix for GIF coder.
+    o Automatically discover Ghostscript fonts under latest Cygwin.
+
+  Improvements:
+    o Handle JP2 images in YCBCR colorspace. Retrieve color profiles from
+    JP2 images.
+    o LCMS in Windows package updated to version 1.14.
+
 
 Significant changes associated with GraphicsMagick 1.1.4 (released November 13, 2004)
 
