@@ -49,7 +49,7 @@
 %
 %  The conjure program syntax is:
 %
-%  Usage: conjure [options ...] script.msl
+%  Usage: conjure [options ...] script.msl [imagefiles...]
 %
 %
 */
@@ -2948,7 +2948,7 @@ static void Usage(void)
 
   (void) printf("Version: %.1024s\n",GetMagickVersion(&version));
   (void) printf("Copyright: %.1024s\n\n",MagickCopyright);
-  (void) printf("Usage: %.1024s [options ...] file [ files... ] msl_script_file\n",
+  (void) printf("Usage: %.1024s [options ...] msl_script_file [ image_files... ] \n",
     SetClientName((char *) NULL));
   (void) printf("\nWhere options include:\n");
   for (p=options; *p != (char *) NULL; p++)
