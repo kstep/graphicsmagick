@@ -266,6 +266,11 @@ meta_la_SOURCES     = meta.c
 meta_la_LDFLAGS     = $(MODULECOMMONFLAGS)
 meta_la_LIBADD      = $(LIBMAGICK)
 
+# MGK module
+mgk_la_SOURCES     = mgk.c
+mgk_la_LDFLAGS     = $(MODULECOMMONFLAGS)
+mgk_la_LIBADD      = $(LIBMAGICK)
+
 # MIFF module
 miff_la_SOURCES     = miff.c
 miff_la_LDFLAGS     = $(MODULECOMMONFLAGS)

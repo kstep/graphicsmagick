@@ -3,14 +3,14 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%               M   M  EEEEE  SSSSS  SSSSS   AAA    GGGG  EEEEE               %
-%               MM MM  E      SS     SS     A   A  G      E                   %
-%               M M M  EEE     SSS    SSS   AAAAA  G  GG  EEE                 %
-%               M   M  E         SS     SS  A   A  G   G  E                   %
-%               M   M  EEEEE  SSSSS  SSSSS  A   A   GGG   EEEEE               %
+%                  L       OOO    CCCC   AAA   L      EEEEE                   %
+%                  L      O   O  C      A   A  L      E                       %
+%                  L      O   O  C      AAAAA  L      EEE                     %
+%                  L      O   O  C      A   A  L      E                       %
+%                  LLLLL   OOO    CCCC  A   A  LLLLL  EEEEE                   %
 %                                                                             %
 %                                                                             %
-%                        ImageMagick Message Methods                          %
+%                    ImageMagick Locale Message Methods                       %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
