@@ -24,6 +24,14 @@
 2004-11-07  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/nt_base.h: Only define HAVE_GLOBALMEMORYSTATUSEX for MSVC
+        7.0 and later.
+
+</UL>
+<p>
+2004-11-07  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
   <LI> coders/tiff.c (WriteTIFFImage): Ensure that words in the
         scanline are converted to little-endian format on little-endian
         CPUs.

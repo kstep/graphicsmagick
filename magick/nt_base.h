@@ -92,10 +92,15 @@ extern "C" {
 #define pclose(stream)  _pclose(stream)
 
 /*
-  Visual C++ supports GlobalMemoryStatusEx but MinGW headers lack
-  support for it.
+  Visual C++ 7.0 supports GlobalMemoryStatusEx but MinGW headers and
+  Visual C++ 6.0 lack support for it.
+
+  _MSC_VER values:
+    1100 MSVC 5.0
+    1200 MSVC 6.0
+    1300 MSVC 7.0
 */
-#if !defined(__MINGW32__)
+#if defined(_VISUALC_) && (_MSC_VER >= 1300)
 #  define HAVE_GLOBALMEMORYSTATUSEX 1
 #endif
 
