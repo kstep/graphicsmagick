@@ -922,7 +922,7 @@ MagickExport unsigned int OpenCache(Cache cache,const ClassType class_type,
         allocation=AllocateMemory(length);
       else
         {
-          cache_info->pixels=ReallocateMemory(cache_info->pixels,length);
+          ReallocateMemory((void **) &cache_info->pixels,length);
           if (cache_info->pixels == (void *) NULL)
             return(False);
           allocation=cache_info->pixels;
@@ -1288,7 +1288,7 @@ MagickExport PixelPacket *SetCacheNexus(Cache cache,const unsigned int id,
     nexus->line=AllocateMemory(length);
   else
     if (nexus->length != length)
-      nexus->line=ReallocateMemory(nexus->line,length);
+      ReallocateMemory((void **) &nexus->line,length);
   if (nexus->line == (void *) NULL)
     MagickError(ResourceLimitError,"Memory allocation failed",
       "unable to allocate cache nexus");

@@ -118,6 +118,7 @@ MagickExport void *AllocateMemory(const size_t size)
 */
 MagickExport void FreeMemory(void **memory)
 {
+  assert(memory != (void **) NULL);
   if (*memory == (void *) NULL)
     return;
   free(*memory);
@@ -137,11 +138,11 @@ MagickExport void FreeMemory(void **memory)
 %
 %  Method ReallocateMemory changes the size of the memory and returns a
 %  pointer to the (possibly moved) block.  The contents will be unchanged up
-%  to the lesser  of the new and old sizes.
+%  to the lesser of the new and old sizes.
 %
 %  The format of the ReallocateMemory method is:
 %
-%      void *ReallocateMemory(void *memory,const size_t size)
+%      void ReallocateMemory(void **memory,const size_t size)
 %
 %  A description of each parameter follows:
 %
@@ -152,17 +153,19 @@ MagickExport void FreeMemory(void **memory)
 %
 %
 */
-MagickExport void *ReallocateMemory(void *memory,const size_t size)
+MagickExport void ReallocateMemory(void **memory,const size_t size)
 {
   void
-    *new_memory;
+    *allocation;
 
-  if (memory == (void *) NULL)
-    return(AllocateMemory(size));
-  new_memory=(void *) NULL;
-  if (size)
-    new_memory=realloc(memory,size);
-  if (new_memory == (void *) NULL)
-    FreeMemory((void **) &memory);
-  return(new_memory);
+  assert(memory != (void **) NULL);
+  if (*memory == (void *) NULL)
+    {
+      *memory=AllocateMemory(size);
+      return;
+    }
+  allocation=realloc(*memory,size);
+  if (allocation == (void *) NULL)
+    FreeMemory((void **) memory);
+  *memory=allocation;
 }

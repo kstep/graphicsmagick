@@ -246,7 +246,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
               {
                 *p='\0';
                 length<<=1;
-                comment=(char *) ReallocateMemory(comment,length);
+                ReallocateMemory((void **) &comment,length);
                 if (comment == (char *) NULL)
                   break;
                 p=comment+Extent(comment);
@@ -284,7 +284,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
                 {
                   *p='\0';
                   length<<=1;
-                  values=(char *) ReallocateMemory(values,length);
+                  ReallocateMemory((void **) &values,length);
                   if (values == (char *) NULL)
                     break;
                   p=values+Extent(values);
@@ -612,8 +612,8 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
               /*
                 Allocate more memory for the image directory.
               */
-              image->directory=(char *) ReallocateMemory((char *)
-                image->directory,(Extent(image->directory)+MaxTextExtent+1));
+              ReallocateMemory((void **) &image->directory,
+                (Extent(image->directory)+MaxTextExtent+1));
               if (image->directory == (char *) NULL)
                 ThrowReaderException(CorruptImageWarning,
                   "Unable to read image data",image);

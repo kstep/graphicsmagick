@@ -107,7 +107,7 @@ extern MagickExport void
   LocaleLower(char *),
   LocaleUpper(char *),
   LocaleFilename(char *),
-  *ReallocateMemory(void *,const size_t),
+  ReallocateMemory(void **,const size_t),
   Strip(char *),
   TemporaryFilename(char *);
 

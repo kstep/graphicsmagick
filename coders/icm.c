@@ -133,8 +133,7 @@ static Image *ReadICMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       {
         image->color_profile.length=q-image->color_profile.info;
         length<<=1;
-        image->color_profile.info=(unsigned char *)
-          ReallocateMemory((char *) image->color_profile.info,length);
+        ReallocateMemory((void **) &image->color_profile.info,length);
         if (image->color_profile.info == (unsigned char *) NULL)
           break;
         q=image->color_profile.info+image->color_profile.length;

@@ -407,7 +407,7 @@ static PixelPacket *SetPixelStream(Image *image,const int x,const int y,
     stream_info->stash=AllocateMemory(length);
   else
     if (stream_info->length != length)
-      stream_info->stash=ReallocateMemory(stream_info->stash,length);
+      ReallocateMemory((void **) &stream_info->stash,length);
   if (stream_info->stash == (void *) NULL)
     MagickError(ResourceLimitError,"Memory allocation failed",
       "unable to allocate cache info");

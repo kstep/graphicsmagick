@@ -797,10 +797,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (length <= 0)
                 break;
               if (comments != (char *) NULL)
-                {
-                  comments=(char *)
-                    ReallocateMemory(comments,Extent(comments)+length+1);
-                }
+                ReallocateMemory((void **) &comments,Extent(comments)+length+1);
               else
                 {
                   comments=(char *) AllocateMemory(length+1);
@@ -1182,7 +1179,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
               Set transparent pixel.
             */
             opacity=image->colors++;
-            image->colormap=(PixelPacket *) ReallocateMemory(image->colormap,
+            ReallocateMemory((void **) &image->colormap,
               image->colors*sizeof(PixelPacket));
             if (image->colormap == (PixelPacket *) NULL)
               {

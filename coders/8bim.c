@@ -174,8 +174,7 @@ static Image *Read8BIMImage(const ImageInfo *image_info,
       {
         image->iptc_profile.length=q-image->iptc_profile.info;
         length<<=1;
-        image->iptc_profile.info=(unsigned char *) ReallocateMemory((char *)
-          image->iptc_profile.info,length+2);
+        ReallocateMemory((void **) &image->iptc_profile.info,length+2);
         if (image->iptc_profile.info == (unsigned char *) NULL)
           break;
         q=image->iptc_profile.info+image->iptc_profile.length;

@@ -653,9 +653,8 @@ static unsigned int ReadDelegates(const char *path,const char *directory)
             break;
           Strip(text);
           if (delegate_info.commands != (char *) NULL)
-            delegate_info.commands=(char *) ReallocateMemory(
-              delegate_info.commands,(strlen(delegate_info.commands)+
-              strlen(text)+3));
+            ReallocateMemory((void **) &delegate_info.commands,
+              (strlen(delegate_info.commands)+strlen(text)+3));
           else
             {
               delegate_info.commands=(char *) AllocateMemory(strlen(text)+3);

@@ -235,7 +235,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if ((p-xpm_buffer+MaxTextExtent+1) < length)
         continue;
       length<<=1;
-      xpm_buffer=(char *) ReallocateMemory((char *) xpm_buffer,length);
+      ReallocateMemory((void **) &xpm_buffer,length);
       if (xpm_buffer == (char *) NULL)
         break;
       p=xpm_buffer+Extent(xpm_buffer);

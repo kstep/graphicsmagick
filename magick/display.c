@@ -4283,8 +4283,8 @@ static unsigned int XDrawEditImage(Display *display,
               break;
             }
           max_coordinates<<=1;
-          coordinate_info=(XPoint *)
-            ReallocateMemory(coordinate_info,max_coordinates*sizeof(XPoint));
+          ReallocateMemory((void **) &coordinate_info,
+            max_coordinates*sizeof(XPoint));
           if (coordinate_info == (XPoint *) NULL)
             MagickWarning(ResourceLimitWarning,"Unable to draw on image",
               "Memory allocation failed");
@@ -4310,8 +4310,8 @@ static unsigned int XDrawEditImage(Display *display,
           if (number_coordinates < (int) max_coordinates)
             break;
           max_coordinates<<=1;
-          coordinate_info=(XPoint *)
-            ReallocateMemory(coordinate_info,max_coordinates*sizeof(XPoint));
+          ReallocateMemory((void **) &coordinate_info,
+            max_coordinates*sizeof(XPoint));
           if (coordinate_info == (XPoint *) NULL)
             MagickWarning(ResourceLimitWarning,"Unable to draw on image",
               "Memory allocation failed");
@@ -7992,7 +7992,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
           {
             *p='\0';
             length<<=1;
-            text=(char *) ReallocateMemory((char *) text,length);
+            ReallocateMemory((void **) &text,length);
             if (text == (char *) NULL)
               break;
             p=text+Extent(text);

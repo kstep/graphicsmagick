@@ -692,8 +692,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
   if (svg_info->verbose)
     (void) fprintf(stdout,"SAX.startElement(%s",(char *) name);
   svg_info->n++;
-  svg_info->graphic_context=(GraphicContext *) ReallocateMemory(
-    svg_info->graphic_context,(svg_info->n+1)*sizeof(GraphicContext));
+  ReallocateMemory((void **) &svg_info->graphic_context,
+    (svg_info->n+1)*sizeof(GraphicContext));
   if (svg_info->graphic_context == (GraphicContext *) NULL)
     return;
   q=svg_info->graphic_context+svg_info->n;
@@ -1213,7 +1213,7 @@ static void SVGCharacters(void *context,const xmlChar *c,int length)
   if (svg_info->text == (char *) NULL)
     svg_info->text=(char *) AllocateMemory(length+1);
   else
-    svg_info->text=(char *) ReallocateMemory(svg_info->text,length+1);
+    ReallocateMemory((void **) &svg_info->text,length+1);
   if (svg_info->text == (char *) NULL)
     return;
   for (i=0; i < length; i++)

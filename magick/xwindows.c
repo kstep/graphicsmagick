@@ -1652,7 +1652,7 @@ MagickExport void XDisplayImageInfo(Display *display,
       {
         *p='\0';
         length<<=1;
-        text=(char *) ReallocateMemory((char *) text,length);
+        ReallocateMemory((void **) &text,length);
         if (text == (char *) NULL)
           break;
         p=text+Extent(text);
@@ -3764,8 +3764,7 @@ MagickExport Image *XGetWindowImage(Display *display,const Window window,
         window_info=(WindowInfo *)
           AllocateMemory(max_windows*sizeof(WindowInfo));
       else
-        window_info=(WindowInfo *)
-          ReallocateMemory((char *) window_info,max_windows*sizeof(WindowInfo));
+        ReallocateMemory((void **) &window_info,max_windows*sizeof(WindowInfo));
     }
   if (window_info == (WindowInfo *) NULL)
     {

@@ -290,8 +290,8 @@ static boolean ReadColorProfile(j_decompress_ptr jpeg_info)
   if (image->color_profile.length == 0)
     image->color_profile.info=(unsigned char *) AllocateMemory(length);
   else
-    image->color_profile.info=(unsigned char *) ReallocateMemory((char *)
-      image->color_profile.info,image->color_profile.length+length);
+    ReallocateMemory((void **) &image->color_profile.info,
+      image->color_profile.length+length);
   if (image->color_profile.info == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
       (char *) NULL);
@@ -413,8 +413,7 @@ static boolean ReadNewsProfile(j_decompress_ptr jpeg_info)
     return(True);
   image=(Image *) jpeg_info->client_data;
   if (image->iptc_profile.length != 0)
-    image->iptc_profile.info=(unsigned char *)
-      ReallocateMemory((char *) image->iptc_profile.info,length+tag_length);
+    ReallocateMemory((void **) &image->iptc_profile.info,length+tag_length);
   else
     {
       image->iptc_profile.info=(unsigned char *)

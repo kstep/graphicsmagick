@@ -1498,8 +1498,7 @@ MagickExport off_t SeekBlob(Image *image,const off_t offset,const int whence)
   if (image->blob.offset > image->blob.length)
     {
       image->blob.length=image->blob.offset;
-      image->blob.data=(char *)
-        ReallocateMemory(image->blob.data,image->blob.length);
+      ReallocateMemory((void **) &image->blob.data,image->blob.length);
       if (image->blob.data == (char *) NULL)
         {
           image->blob.length=0;
@@ -1739,8 +1738,7 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
   if (length > (image->blob.extent-image->blob.offset))
     {
       image->blob.extent+=length+image->blob.quantum;
-      image->blob.data=(char *)
-        ReallocateMemory(image->blob.data,image->blob.extent);
+      ReallocateMemory((void **) &image->blob.data,image->blob.extent);
       if (image->blob.data == (char *) NULL)
         {
           image->blob.extent=0;

@@ -794,7 +794,7 @@ static Image *GetList(SV *reference,SV ***reference_vector,int *current,
             {
               *last+=256;
               if (*reference_vector)
-                *reference_vector=(SV **) ReallocateMemory(*reference_vector,
+                ReallocateMemory((void **) & (*reference_vector),
                   *last*sizeof(*reference_vector));
               else
                 *reference_vector=(SV **)

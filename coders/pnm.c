@@ -177,8 +177,7 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
               {
                 length<<=1;
                 length+=MaxTextExtent;
-                comment=(char *)
-                  ReallocateMemory(comment,length+strlen(P7Comment)+1);
+                ReallocateMemory((void **) &comment,length+strlen(P7Comment)+1);
                 if (comment == (char *) NULL)
                   break;
                 p=comment+Extent(comment);

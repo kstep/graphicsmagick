@@ -206,7 +206,7 @@ static void GetFontInfo(TT_Face face,TT_Face_Properties *face_properties,
     *p='\0';
     break;
   }
-  label=(char *) ReallocateMemory((char *) label,strlen(label)+1);
+  ReallocateMemory((void **) &label,strlen(label)+1);
   (void) SetImageAttribute(image,"Label",label);
   FreeMemory((void **) &label);
 }
@@ -1328,7 +1328,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
           {
             *q='\0';
             length<<=1;
-            s=(char *) ReallocateMemory(s,length);
+            ReallocateMemory((void **) &s,length);
             if (s == (char *) NULL)
               break;
             q=s+Extent(s);

@@ -483,8 +483,7 @@ MagickExport char **ListModules(void)
 {
   char
     message[MaxTextExtent],
-    **module_list,
-    **module_list_tmp;
+    **module_list;
 
 #if !defined(_VISUALC_)
   char
@@ -545,11 +544,9 @@ MagickExport char **ListModules(void)
       if (entry_index >= max_entries)
         {
           max_entries<<=1;
-          module_list_tmp=(char **) ReallocateMemory((char **) module_list,
-            max_entries*sizeof(char *));
-          if (module_list_tmp == (char **) NULL)
+          ReallocateMemory((void **) &module_list,max_entries*sizeof(char *));
+          if (module_list == (char **) NULL)
             break;
-          module_list=module_list_tmp;
         }
       /*
         Only add new module name to list.

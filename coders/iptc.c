@@ -185,7 +185,7 @@ static Image *ReadIPTCImage(const ImageInfo *image_info,
       {
         image->iptc_profile.length=q-data;
         length<<=1;
-        data=(unsigned char *) ReallocateMemory((char *) data,length+2);
+        ReallocateMemory((void **) &data,length+2);
         if (data == (unsigned char *) NULL)
           break;
         q=data+image->iptc_profile.length;

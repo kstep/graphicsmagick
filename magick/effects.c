@@ -2751,8 +2751,8 @@ MagickExport Image *SteganoImage(Image *image,Image *watermark,
             Shift colormap to make room for information hiding.
           */
           stegano_image->colors<<=1;
-          stegano_image->colormap=(PixelPacket *) ReallocateMemory((char *)
-            stegano_image->colormap,stegano_image->colors*sizeof(PixelPacket));
+          ReallocateMemory((void **) stegano_image->colormap,
+            stegano_image->colors*sizeof(PixelPacket));
           if (stegano_image->colormap == (PixelPacket *) NULL)
             {
               DestroyImage(stegano_image);

@@ -1341,8 +1341,8 @@ MagickExport unsigned long GetNumberColors(Image *image,FILE *file)
         if (node_info->number_unique == 0)
           node_info->list=(ColorPacket *) AllocateMemory(sizeof(ColorPacket));
         else
-          node_info->list=(ColorPacket *)
-            ReallocateMemory(node_info->list,(i+1)*sizeof(ColorPacket));
+          ReallocateMemory((void **) &node_info->list,
+            (i+1)*sizeof(ColorPacket));
         if (node_info->list == (ColorPacket *) NULL)
           {
             ThrowException(&image->exception,ResourceLimitWarning,
@@ -1788,8 +1788,8 @@ MagickExport unsigned int IsPseudoClass(Image *image)
           if (node_info->number_unique == 0)
             node_info->list=(ColorPacket *) AllocateMemory(sizeof(ColorPacket));
           else
-            node_info->list=(ColorPacket *)
-              ReallocateMemory(node_info->list,(i+1)*sizeof(ColorPacket));
+            ReallocateMemory((void **) &node_info->list,
+              (i+1)*sizeof(ColorPacket));
           if (node_info->list == (ColorPacket *) NULL)
             ThrowBinaryException(ResourceLimitWarning,
               "Unable to determine image class","Memory allocation failed");
@@ -1816,8 +1816,8 @@ MagickExport unsigned int IsPseudoClass(Image *image)
         image->colormap=(PixelPacket *)
           AllocateMemory(image->colors*sizeof(PixelPacket));
       else
-        image->colormap=(PixelPacket *) ReallocateMemory((char *)
-          image->colormap,image->colors*sizeof(PixelPacket));
+        ReallocateMemory((void **) &image->colormap,
+          image->colors*sizeof(PixelPacket));
       if (image->colormap == (PixelPacket *) NULL)
         ThrowBinaryException(ResourceLimitWarning,
           "Unable to determine image class","Memory allocation failed");

@@ -1814,7 +1814,7 @@ MagickExport Image *ReadImages(const ImageInfo *image_info,
       {
         *p='\0';
         length<<=1;
-        command=(char *) ReallocateMemory((char *) command,length);
+        ReallocateMemory((void **) &command,length);
         if (command == (char *) NULL)
           break;
         p=command+Extent(command);

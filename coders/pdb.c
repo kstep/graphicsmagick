@@ -505,7 +505,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               length<<=1;
               length+=MaxTextExtent;
-              comment=(char *) ReallocateMemory(comment,length+1);
+              ReallocateMemory((void **) &comment,length+1);
               if (comment == (char *) NULL)
                 break;
               p=comment+Extent(comment);

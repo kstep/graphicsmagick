@@ -623,8 +623,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlob(image,strlen(buffer),buffer);
         kid_image=kid_image->next;
       }
-      xref=(unsigned long *)
-        ReallocateMemory((char *) xref,(count+2048)*sizeof(unsigned long));
+      ReallocateMemory((void **) &xref,(count+2048)*sizeof(unsigned long));
       if (xref == (unsigned long *) NULL)
         ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
           image);

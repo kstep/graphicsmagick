@@ -302,8 +302,8 @@ MagickExport unsigned int ConcatenateString(char **destination,
   assert(destination != (char **) NULL);
   if (source == (const char *) NULL)
     return(True);
-  *destination=(char *)
-    ReallocateMemory(*destination,Extent(*destination)+Extent(source)+1);
+  ReallocateMemory((void **) &(*destination),
+    Extent(*destination)+Extent(source)+1);
   if (*destination == (char *) NULL)
     MagickError(ResourceLimitError,"Unable to concatenate string",
       "Memory allocation failed");
@@ -626,8 +626,8 @@ MagickExport unsigned int ExpandFilenames(int *argc,char ***argv)
     /*
       Transfer file list to argument vector.
     */
-    vector=(char **)
-      ReallocateMemory(vector,(*argc+count+number_files)*sizeof(char *));
+    ReallocateMemory((void **) &vector,
+      (*argc+count+number_files)*sizeof(char *));
     if (vector == (char **) NULL)
       return(False);
     count--;
@@ -1470,8 +1470,7 @@ MagickExport char **ListColors(const char *pattern,int *number_colors)
         if (*number_colors >= (int) max_colors)
           {
             max_colors<<=1;
-            colorlist=(char **)
-              ReallocateMemory((char **) colorlist,max_colors*sizeof(char *));
+            ReallocateMemory((void **) &colorlist,max_colors*sizeof(char *));
             if (colorlist == (char **) NULL)
               {
                 (void) fclose(database);
@@ -1605,8 +1604,7 @@ MagickExport char **ListFiles(const char *directory,const char *pattern,
               Extend the file list.
             */
             max_entries<<=1;
-            filelist=(char **)
-              ReallocateMemory((char **) filelist,max_entries*sizeof(char *));
+            ReallocateMemory((void **) &filelist,max_entries*sizeof(char *));
             if (filelist == (char **) NULL)
               {
                 (void) closedir(current_directory);
@@ -2891,7 +2889,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
               {
                 *q='\0';
                 length<<=1;
-                text=(char *) ReallocateMemory((char *) text,length);
+                ReallocateMemory((void **) &text,length);
                 if (text == (char *) NULL)
                   break;
                 q=text+Extent(text);
@@ -2927,8 +2925,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
     if ((q-translated_text+MaxTextExtent) >= (int) length)
       {
         length<<=1;
-        translated_text=(char *)
-          ReallocateMemory((char *) translated_text,length);
+        ReallocateMemory((void **) &translated_text,length);
         if (translated_text == (char *) NULL)
           break;
         q=translated_text+Extent(translated_text);
