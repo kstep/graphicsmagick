@@ -1007,10 +1007,13 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
     *source_image,
     *resize_image;
 
+  register long
+    i;
+
   static const FilterInfo
     filters[SincFilter+1] =
     {
-      { Lanczos, 3.0 },
+      { Box, 0.0 },
       { Box, 0.0 },
       { Box, 0.5 },
       { Triangle, 1.0 },
@@ -1057,12 +1060,15 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
     Allocate filter contribution info.
   */
   x_factor=(double) resize_image->columns/image->columns;
-  x_support=blur*Max(1.0/x_factor,1.0)*filters[filter].support;
   y_factor=(double) resize_image->rows/image->rows;
-  y_support=blur*Max(1.0/y_factor,1.0)*filters[filter].support;
+  i=(long) MitchellFilter;
+  if ((x_factor*y_factor) < 1.0)
+    i=(long) LanczosFilter;
+  x_support=blur*Max(1.0/x_factor,1.0)*filters[i].support;
+  y_support=blur*Max(1.0/y_factor,1.0)*filters[i].support;
   support=Max(x_support,y_support);
-  if (support < filters[filter].support)
-    support=filters[filter].support;
+  if (support < filters[i].support)
+    support=filters[i].support;
   contribution=(ContributionInfo *)
     AcquireMemory((size_t) (2.0*Max(support,0.5)+3)*sizeof(ContributionInfo));
   if (contribution == (ContributionInfo *) NULL)
@@ -1086,10 +1092,10 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
           return((Image *) NULL);
         }
       span=source_image->columns+resize_image->rows;
-      status=HorizontalFilter(image,source_image,x_factor,&filters[filter],blur,
+      status=HorizontalFilter(image,source_image,x_factor,&filters[i],blur,
         contribution,span,&quantum,exception);
-      status|=VerticalFilter(source_image,resize_image,y_factor,
-        &filters[filter],blur,contribution,span,&quantum,exception);
+      status|=VerticalFilter(source_image,resize_image,y_factor,&filters[i],
+        blur,contribution,span,&quantum,exception);
     }
   else
     {
@@ -1101,10 +1107,10 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
           return((Image *) NULL);
         }
       span=resize_image->columns+source_image->columns;
-      status=VerticalFilter(image,source_image,y_factor,&filters[filter],blur,
+      status=VerticalFilter(image,source_image,y_factor,&filters[i],blur,
         contribution,span,&quantum,exception);
-      status|=HorizontalFilter(source_image,resize_image,x_factor,
-        &filters[filter],blur,contribution,span,&quantum,exception);
+      status|=HorizontalFilter(source_image,resize_image,x_factor,&filters[i],
+        blur,contribution,span,&quantum,exception);
     }
   /*
     Free allocated memory.
