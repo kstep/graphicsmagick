@@ -75,7 +75,6 @@ typedef struct _DrawInfo
 
   char
     *text,
-    *encoding,
     *font,
     *family;
 
@@ -87,6 +86,9 @@ typedef struct _DrawInfo
 
   unsigned long
     weight;
+
+  char
+    *encoding;
 
   double
     pointsize;
