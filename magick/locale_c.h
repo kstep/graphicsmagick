@@ -716,7 +716,7 @@ static const SeverityInfo severity_map[] =
     { "XServer/Error", 579, XServerError },
     { "XServer/FatalError", 601, XServerFatalError },
     { "XServer/Warning", 617, XServerWarning },
-    { 0, 619, 0 }
+    { 0, 619, UndefinedException }
   };
 #endif
 

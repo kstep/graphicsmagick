@@ -1014,7 +1014,7 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
               }
           }
       }
-      FormatString(text, "    { 0, %ld, 0 }",count);
+      FormatString(text, "    { 0, %ld, UndefinedException }",count);
       WriteBlobStringWithEOL(image,text);
       WriteBlobStringWithEOL(image,"  };");
       WriteBlobStringWithEOL(image,"#endif");

@@ -1,5 +1,8 @@
 2003-09-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/locale.c (WriteLOCALEImage): Use UndefinedException
+	rather than 0 in severity_list terminating entry in order to avoid
+	a type conversion warning.
 	* magick/image.c (SetImageChannelDepth): Depth parameter was being
 	returned rather than status.  Oops!
 	* magick/effect.c (BlurScanline): Due to automatic casting
