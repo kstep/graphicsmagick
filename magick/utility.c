@@ -378,6 +378,11 @@ MagickExport unsigned char *Base64Decode(const char *source,size_t *length)
                 LiberateMemory((void **) &decode);
                 return((unsigned char *) NULL);
               }
+          if (decode[i] != 0)
+            {
+              LiberateMemory((void **) &decode);
+              return((unsigned char *) NULL);
+            }
         }
       }
     }
