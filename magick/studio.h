@@ -312,8 +312,8 @@ extern "C" {
 #define QuantumTick(i,span) \
   ((((i) & 0xff) == 0) || (i == ((ExtendedSignedIntegralType) (span)-1)))
 #define RadiansToDegrees(x) (180.0*(x)/MagickPI)
-#define ScaleColor5to8(x)  (((x) << 3) | ((x) >> 5))
-#define ScaleColor6to8(x)  (((x) << 2) | ((x) >> 6))
+#define ScaleColor5to8(x)  (((x) << 3) | ((x) >> 2))
+#define ScaleColor6to8(x)  (((x) << 2) | ((x) >> 4))
 #define Swap(x,y) ((x)^=(y), (y)^=(x), (x)^=(y))
 #define True  1
 

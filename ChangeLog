@@ -1,3 +1,8 @@
+2003-10-07  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+        * Revised ScaleColor5to8 and ScaleColor6to8 macros again, to
+	fill the low bits correctly.
+
 2003-10-06  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* coders/png.c (ReadOnePNGImage): PNG decoder would exit too
