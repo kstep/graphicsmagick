@@ -254,7 +254,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
   width=image->columns;
   height=image->rows;
   x=0;
-  y=text_size;
+  y=(long) text_size;
   FormatString(geometry,"%lux%lu",image->columns,image->rows);
   if (image_info->page != (char *) NULL)
     (void) strncpy(geometry,image_info->page,MaxTextExtent-1);

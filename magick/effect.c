@@ -665,9 +665,9 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
 {
 #define ConvolveImageText  "  Convolving image...  "
 #define Cx(x) (x) < 0 ? (x)+(long) image->columns : \
-  (x) >= (long) image->columns ? (x)-image->columns : x
+  (x) >= (long) image->columns ? (x)-(long) image->columns : x
 #define Cy(y) (y) < 0 ? (y)+(long) image->rows : \
-  (y) >= (long) image->rows ? (y)-image->rows : y
+  (y) >= (long) image->rows ? (y)-(long) image->rows : y
 
   AggregatePacket
     aggregate;
@@ -708,7 +708,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  width=order;
+  width=(long) order;
   if ((width % 2) == 0)
     ThrowImageException(OptionWarning,"Unable to convolve image",
       "kernel width must be an odd number");
@@ -889,7 +889,7 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
   {
     (void) memset(buffer,0,length);
     (void) memset(pixels,0,length);
-    j=image->columns+2;
+    j=(long) image->columns+2;
     for (y=0; y < (long) image->rows; y++)
     {
       p=AcquireImagePixels(image,0,y,image->columns,1,exception);
@@ -919,7 +919,7 @@ MagickExport Image *DespeckleImage(const Image *image,ExceptionInfo *exception)
       Hull(-X[i],-Y[i],image->columns,image->rows,pixels,buffer,-1);
       Hull(X[i],Y[i],image->columns,image->rows,pixels,buffer,-1);
     }
-    j=image->columns+2;
+    j=(long) image->columns+2;
     for (y=0; y < (long) image->rows; y++)
     {
       q=GetImagePixels(despeckle_image,0,y,despeckle_image->columns,1);
@@ -2118,7 +2118,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
           if ((int) histogram[k] > count)
             {
               *q=(*r);
-              count=histogram[k];
+              count=(long) histogram[k];
             }
           r++;
         }
@@ -2130,7 +2130,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
           if ((int) histogram[k] > count)
             {
               *q=(*r);
-              count=histogram[k];
+              count=(long) histogram[k];
             }
           r++;
         }
@@ -2143,7 +2143,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
         if ((int) histogram[k] > count)
           {
             *q=(*r);
-            count=histogram[k];
+            count=(long) histogram[k];
           }
         r++;
       }
@@ -2925,7 +2925,7 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
   /*
     Convolve each row.
   */
-  quantum=radius;
+  quantum=(long) radius;
   for (y=0; y < (long) image->rows; y++)
   {
     q=SetImagePixels(spread_image,0,y,spread_image->columns,1);
@@ -2935,8 +2935,8 @@ MagickExport Image *SpreadImage(const Image *image,const unsigned int radius,
     {
       do
       {
-        x_distance=(rand() & (2*radius+1))-quantum;
-        y_distance=(rand() & (2*radius+1))-quantum;
+        x_distance=(long) (rand() & (2*radius+1))-quantum;
+        y_distance=(long) (rand() & (2*radius+1))-quantum;
       } while (((x+x_distance) < 0) || ((y+y_distance) < 0) ||
                ((x+x_distance) >= (long) image->columns) ||
                ((y+y_distance) >= (long) image->rows));

@@ -859,7 +859,7 @@ MagickExport unsigned int NormalizeImage(Image *image)
   /*
     Find the histogram boundaries by locating the 1 percent levels.
   */
-  threshold_intensity=(image->columns*image->rows)/100;
+  threshold_intensity=(long) (image->columns*image->rows)/100;
   intensity=0;
   for (low=0; low < MaxRGB; low++)
   {

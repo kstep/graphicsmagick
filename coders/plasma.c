@@ -171,7 +171,7 @@ static Image *ReadPlasmaImage(const ImageInfo *image_info,
       PlasmaPixel(segment_info.x2,(segment_info.y1+segment_info.y2)/2);
       PlasmaPixel(segment_info.x2,segment_info.y2);
     }
-  i=Max(image->columns,image->rows) >> 1;
+  i=(long) (Max(image->columns,image->rows) >> 1);
   for (max_depth=0; i != 0; max_depth++)
     i>>=1;
   for (depth=1; ; depth++)

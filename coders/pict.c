@@ -100,7 +100,7 @@ typedef struct _PICTPixmap
     version,
     pack_type;
 
-  long int
+  unsigned long
     pack_size,
     horizontal_resolution,
     vertical_resolution;
@@ -111,7 +111,7 @@ typedef struct _PICTPixmap
     component_count,
     component_size;
 
-  long int
+  unsigned long
     plane_bytes,
     table,
     reserved;
@@ -450,9 +450,9 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *blob,
       width*=image->matte ? 4 : 3;
   if (bytes_per_line == 0)
     bytes_per_line=width;
-  row_bytes=image->columns | 0x8000;
+  row_bytes=(unsigned short) (image->columns | 0x8000);
   if (image->storage_class == DirectClass)
-    row_bytes=(4*image->columns) | 0x8000;
+    row_bytes=(unsigned short) ((4*image->columns) | 0x8000);
   /*
     Allocate pixel and scanline buffer.
   */
@@ -587,7 +587,7 @@ static size_t EncodeImage(Image *image,const unsigned char *scanline,
   p=scanline+(bytes_per_line-1);
   q=pixels;
   index=(*p);
-  for (i=bytes_per_line-1; i >= 0; i--)
+  for (i=(long) bytes_per_line-1; i >= 0; i--)
   {
     if (index == *p)
       runlength++;
@@ -665,7 +665,7 @@ static size_t EncodeImage(Image *image,const unsigned char *scanline,
     }
   else
     {
-      (void) WriteBlobByte(image,length);
+      (void) WriteBlobByte(image,(long) length);
       length++;
     }
   while (q != pixels)
@@ -1460,18 +1460,18 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   */
   size_rectangle.top=0;
   size_rectangle.left=0;
-  size_rectangle.bottom=image->rows;
-  size_rectangle.right=image->columns;
+  size_rectangle.bottom=(short) image->rows;
+  size_rectangle.right=(short) image->columns;
   frame_rectangle=size_rectangle;
   crop_rectangle=size_rectangle;
   source_rectangle=size_rectangle;
   destination_rectangle=size_rectangle;
   base_address=0xff;
-  row_bytes=image->columns | 0x8000;
+  row_bytes=(unsigned short) (image->columns | 0x8000);
   bounds.top=0;
   bounds.left=0;
-  bounds.bottom=image->rows;
-  bounds.right=image->columns;
+  bounds.bottom=(short) image->rows;
+  bounds.right=(short) image->columns;
   pixmap.version=0;
   pixmap.pack_type=0;
   pixmap.pack_size=0;
@@ -1495,7 +1495,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
       pixmap.bits_per_pixel=32;
       pixmap.pack_type=0x04;
       transfer_mode=0x40;
-      row_bytes=(4*image->columns) | 0x8000;
+      row_bytes=(unsigned short) ((4*image->columns) | 0x8000);
     }
   /*
     Allocate memory.
@@ -1683,9 +1683,12 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
       (void) WriteBlobMSBShort(image,(unsigned short) Max(image->colors-1,1));
       for (i=0; i < (long) image->colors; i++)
       {
-        red=((unsigned long) (image->colormap[i].red*65535L)/MaxRGB);
-        green=((unsigned long) (image->colormap[i].green*65535L)/MaxRGB);
-        blue=((unsigned long) (image->colormap[i].blue*65535L)/MaxRGB);
+        red=(unsigned short)
+          ((unsigned long) (image->colormap[i].red*65535L)/MaxRGB);
+        green=(unsigned short)
+          ((unsigned long) (image->colormap[i].green*65535L)/MaxRGB);
+        blue=(unsigned short)
+          ((unsigned long) (image->colormap[i].blue*65535L)/MaxRGB);
         (void) WriteBlobMSBShort(image,i);
         (void) WriteBlobMSBShort(image,red);
         (void) WriteBlobMSBShort(image,green);

@@ -204,7 +204,7 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
       /*
         Read APP1 image.
       */
-      i=image->generic_profiles;
+      i=(long) image->generic_profiles;
       if (image->generic_profile == (ProfileInfo *) NULL)
         image->generic_profile=(ProfileInfo *)
           AcquireMemory(sizeof(ProfileInfo));
@@ -434,8 +434,8 @@ ModuleExport void UnregisterMETAImage(void)
 
 static long GetIPTCStream(unsigned char **info,unsigned long length)
 {
-  unsigned char
-    buffer[4];
+  long
+    info_length;
 
   register int
     i;
@@ -444,13 +444,13 @@ static long GetIPTCStream(unsigned char **info,unsigned long length)
     *p;
 
   unsigned char
+    buffer[4],
     c;
 
   unsigned int
     marker;
 
   unsigned long
-    info_length,
     tag_length;
 
   /*

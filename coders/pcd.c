@@ -250,20 +250,20 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
           case 0:
           {
             q=luma+row*image->columns;
-            count=image->columns;
+            count=(long) image->columns;
             break;
           }
           case 2:
           {
             q=chroma1+(row >> 1)*image->columns;
-            count=image->columns >> 1;
+            count=(long) (image->columns >> 1);
             plane--;
             break;
           }
           case 3:
           {
             q=chroma2+(row >> 1)*image->columns;
-            count=image->columns >> 1;
+            count=(long) (image->columns >> 1);
             plane--;
             break;
           }

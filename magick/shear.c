@@ -166,7 +166,8 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
       for (y=0; y < (long) image->rows; y++)
       {
         p=AcquireImagePixels(image,0,y,image->columns,1,exception);
-        q=SetImagePixels(rotate_image,image->rows-y-1,0,1,rotate_image->rows);
+        q=SetImagePixels(rotate_image,(long) (image->rows-y-1),0,1,
+          rotate_image->rows);
         if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
         (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
@@ -181,7 +182,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
       }
       Swap(page.width,page.height);
       Swap(page.x,page.y);
-      page.x=page.width-rotate_image->columns-page.x;
+      page.x=(long) (page.width-rotate_image->columns-page.x);
       break;
     }
     case 2:
@@ -192,7 +193,8 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
       for (y=0; y < (long) image->rows; y++)
       {
         p=AcquireImagePixels(image,0,y,image->columns,1,exception);
-        q=SetImagePixels(rotate_image,0,image->rows-y-1,image->columns,1);
+        q=SetImagePixels(rotate_image,0,(long) (image->rows-y-1),
+          image->columns,1);
         if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
         q+=image->columns;
@@ -207,8 +209,8 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
         if (QuantumTick(y,image->rows))
           MagickMonitor(RotateImageText,y,image->rows);
       }
-      page.x=page.width-rotate_image->columns-page.x;
-      page.y=page.height-rotate_image->rows-page.y;
+      page.x=(long) (page.width-rotate_image->columns-page.x);
+      page.y=(long) (page.height-rotate_image->rows-page.y);
       break;
     }
     case 3:
@@ -236,7 +238,7 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations,
       }
       Swap(page.width,page.height);
       Swap(page.x,page.y);
-      page.y=page.height-rotate_image->rows-page.y;
+      page.y=(long) (page.height-rotate_image->rows-page.y);
       break;
     }
   }
@@ -892,11 +894,11 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
     Rotate the image.
   */
   XShearImage(rotate_image,shear.x,width,height,x_offset,
-    (rotate_image->rows-height+1)/2);
+    (long) (rotate_image->rows-height+1)/2);
   YShearImage(rotate_image,shear.y,y_width,height,
-    (rotate_image->columns-y_width+1)/2,y_offset);
+    (long) (rotate_image->columns-y_width+1)/2,y_offset);
   XShearImage(rotate_image,shear.x,y_width,rotate_image->rows,
-    (rotate_image->columns-y_width+1)/2,0);
+    (long) (rotate_image->columns-y_width+1)/2,0);
   TransformImage(&rotate_image,"0x0",(char *) NULL);
   (void) memset(&rotate_image->page,0,sizeof(RectangleInfo));
   return(rotate_image);
@@ -1010,9 +1012,9 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
     Shear the image.
   */
   XShearImage(shear_image,shear.x,image->columns,image->rows,x_offset,
-    (shear_image->rows-image->rows+1)/2);
+    (long) (shear_image->rows-image->rows+1)/2);
   YShearImage(shear_image,shear.y,y_width,image->rows,
-    (shear_image->columns-y_width+1)/2,y_offset);
+    (long) (shear_image->columns-y_width+1)/2,y_offset);
   TransformImage(&shear_image,"0x0",(char *) NULL);
   (void) memset(&shear_image->page,0,sizeof(RectangleInfo));
   return(shear_image);

@@ -1052,7 +1052,7 @@ static unsigned int Dither(CubeInfo *cube_info,Image *image,
           p->color.blue=blue;
           p->distance=3.0*(MaxRGB+1)*(MaxRGB+1);
           ClosestColor(p,node_info->parent);
-          p->cache[i]=p->color_number;
+          p->cache[i]=(long) p->color_number;
         }
       /*
         Assign pixel to closest colormap entry.
@@ -1141,7 +1141,7 @@ static unsigned int DitherImage(CubeInfo *cube_info,Image *image)
   */
   cube_info->x=0;
   cube_info->y=0;
-  i=image->columns > image->rows ? image->columns : image->rows;
+  i=(long) (image->columns > image->rows ? image->columns : image->rows);
   for (depth=1; i != 0; depth++)
     i>>=1;
   HilbertCurve(cube_info,image,depth-1,NorthGravity);

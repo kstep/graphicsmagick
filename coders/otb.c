@@ -289,7 +289,8 @@ ModuleExport void UnregisterOTBImage(void)
 */
 static unsigned int WriteOTBImage(const ImageInfo *image_info,Image *image)
 {
-#define SetBit(a,i,set) a=(set) ? (a) | (1L << (i)) : (a) & ~(1L << (i))
+#define SetBit(a,i,set) \
+  a=(unsigned char) ((set) ? (a) | (1L << (i)) : (a) & ~(1L << (i)))
 
   long
     y;
@@ -351,8 +352,8 @@ static unsigned int WriteOTBImage(const ImageInfo *image_info,Image *image)
     }
   else
     {
-      (void) WriteBlobByte(image,image->columns);
-      (void) WriteBlobByte(image,image->rows);
+      (void) WriteBlobByte(image,(long) image->columns);
+      (void) WriteBlobByte(image,(long) image->rows);
     }
   (void) WriteBlobByte(image,1);  /* depth */
   for (y=0; y < (long) image->rows; y++)

@@ -825,7 +825,7 @@ static int GenerateEXIFAttribute(Image *image,const char *spec)
       f=Read16u(morder,pde+2); /* get the format */
       if ((f-1) >= EXIF_NUM_FORMATS)
         break;
-      c=Read32u(morder,pde+4); /* get number of components */
+      c=(long) Read32u(morder,pde+4); /* get number of components */
       n=c*exiffmtbytes[f];
       if (n <= 4)
         pval=pde+8;
@@ -979,7 +979,7 @@ static int GenerateEXIFAttribute(Image *image,const char *spec)
             long
               offset;
 
-            offset=Read32u(morder,pval);
+            offset=(long) Read32u(morder,pval);
             if ((offset < (long) length) || (level < (DE_STACK_SIZE-2)))
               {
                 /*

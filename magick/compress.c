@@ -236,14 +236,14 @@ static char *Ascii85Tuple(unsigned char *data)
       return(tuple);
     }
   x=(word/(85L*85*85*85));
-  tuple[0]=x+'!';
+  tuple[0]=(char) (x+'!');
   word-=x*(85L*85*85*85);
   x=(word/(85L*85*85));
-  tuple[1]=x+'!';
+  tuple[1]=(char) (x+'!');
   word-=x*(85L*85*85);
   x=(word/(85*85));
-  tuple[2]=x+'!';
-  y=(word-x*(85L*85));
+  tuple[2]=(char) (x+'!');
+  y=(unsigned short) (word-x*(85L*85));
   tuple[3]=(y/85)+'!';
   tuple[4]=(y % 85)+'!';
   tuple[5]='\0';
@@ -290,7 +290,7 @@ MagickExport void Ascii85Encode(Image *image,const unsigned long code)
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  image->ascii85.buffer[image->ascii85.offset]=code;
+  image->ascii85.buffer[image->ascii85.offset]=(unsigned char) code;
   image->ascii85.offset++;
   if (image->ascii85.offset < 4)
     return;
@@ -536,7 +536,7 @@ MagickExport unsigned int HuffmanDecodeImage(Image *image)
         {
           count+=entry->count;
           if ((x+count) > (long) image->columns)
-            count=image->columns-x;
+            count=(long) image->columns-x;
           if (count > 0)
             {
               if (color)
@@ -750,7 +750,7 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
       Huffman encode scanline.
     */
     q=scanline;
-    for (n=width; n > 0; )
+    for (n=(long) width; n > 0; )
     {
       /*
         Output white run.
@@ -1063,7 +1063,7 @@ MagickExport unsigned int PackbitsEncodeImage(Image *image,const size_t length,
   if (packbits == (unsigned char *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
       (char *) NULL);
-  i=length;
+  i=(long) length;
   while (i != 0)
   {
     switch (i)

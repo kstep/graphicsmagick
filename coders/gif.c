@@ -218,7 +218,7 @@ static unsigned int DecodeImage(Image *image,const long opacity)
           /*
             Get the next code.
           */
-          code=datum & code_mask;
+          code=(long) (datum & code_mask);
           datum>>=code_size;
           bits-=code_size;
           /*
@@ -262,7 +262,7 @@ static unsigned int DecodeImage(Image *image,const long opacity)
           if (available >= MaxStackSize)
             break;
           *top_stack++=first;
-          prefix[available]=old_code;
+          prefix[available]=(short) old_code;
           suffix[available]=first;
           available++;
           if (((available & code_mask) == 0) && (available < MaxStackSize))
@@ -401,7 +401,7 @@ static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
     /*  \
       Add a character to current packet. \
     */ \
-    packet[byte_count++]=(datum & 0xff); \
+    packet[byte_count++]=(unsigned char) (datum & 0xff); \
     if (byte_count >= 254) \
       { \
         (void) WriteBlobByte(image,byte_count); \
@@ -621,7 +621,7 @@ static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
       /*
         Add a character to current packet.
       */
-      packet[byte_count++]=(datum & 0xff);
+      packet[byte_count++]=(unsigned char) (datum & 0xff);
       if (byte_count >= 254)
         {
           (void) WriteBlobByte(image,byte_count);
@@ -1203,7 +1203,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
             /*
               Set transparent pixel.
             */
-            opacity=image->colors++;
+            opacity=(long) image->colors++;
             ReacquireMemory((void **) &image->colormap,
               image->colors*sizeof(PixelPacket));
             if (image->colormap == (PixelPacket *) NULL)
@@ -1287,7 +1287,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
         for (j=0; j < Max(image->colors-1,1); j++)
           if (ColorMatch(&image->background_color,image->colormap+j,0))
             break;
-        (void) WriteBlobByte(image,j);  /* background color */
+        (void) WriteBlobByte(image,(long) j);  /* background color */
         (void) WriteBlobByte(image,0x0);  /* reserved */
         (void) WriteBlob(image,3*(1 << bits_per_pixel),(char *) colormap);
         for (j=0; j < 768; j++)
@@ -1301,7 +1301,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobByte(image,0x21);
         (void) WriteBlobByte(image,0xf9);
         (void) WriteBlobByte(image,0x04);
-        c=image->dispose << 2;
+        c=(unsigned char) (image->dispose << 2);
         if (opacity >= 0)
           c|=0x01;
         (void) WriteBlobByte(image,c);
@@ -1329,7 +1329,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
             while (strlen(p) != 0)
             {
               count=Min(strlen(p),255);
-              (void) WriteBlobByte(image,count);
+              (void) WriteBlobByte(image,(long) count);
               for (i=0; i < (long) count; i++)
                 (void) WriteBlobByte(image,*p++);
             }

@@ -867,7 +867,7 @@ MagickExport void GetToken(const char *start,char **end,char *token)
   token[i]='\0';
   if (LocaleNCompare(token,"url(#",5) == 0)
     {
-      i=strlen(token);
+      i=(long) strlen(token);
       (void) strncpy(token,token+5,MaxTextExtent-1);
       token[i-6]='\0';
     }
@@ -2598,8 +2598,8 @@ static long sindex(char c,char *string)
   return(-1);
 }
 
-static void StoreToken(TokenInfo *token_info,char *string,long max_token_length,
-  char c)
+static void StoreToken(TokenInfo *token_info,char *string,
+  size_t max_token_length,char c)
 {
   register long
     i;

@@ -1325,7 +1325,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     have_mng_structure,
     num_text;
 
-  int
+  volatile int
     have_global_bkgd,
     have_global_chrm,
     have_global_gama,
@@ -1343,7 +1343,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   long
     y;
 
-  long
+  volatile long
     image_count = 0,
     image_found;
 
@@ -1358,7 +1358,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image_box,
     previous_fb;
 
-  PixelPacket
+  volatile PixelPacket
     mng_background_color,
     mng_global_bkgd,
     transparent_color;
@@ -1392,7 +1392,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     loop_level,
     loops_active;
 
-  short
+  volatile short
     skipping_loop;
 
   unsigned char
@@ -1403,7 +1403,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     mandatory_back = 0,
     status;
 
-  unsigned int
+  volatile unsigned int
     framing_mode = 1,
 #ifdef MNG_OBJECT_BUFFERS
     mng_background_object = 0,
@@ -1417,7 +1417,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image_width,
     length;
 
-  unsigned long
+  volatile unsigned long
     default_frame_delay,
     final_delay,
     frame_delay,
@@ -1626,7 +1626,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
         if (!memcmp(type,mng_MHDR,4))
           {
-            MngPair
+            volatile MngPair
                pair;
 
             pair.a=0;
@@ -1742,7 +1742,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
             */
             if (length>11)
               {
-                MngPair
+                volatile MngPair
                   pair;
 
                 pair.a=0;
@@ -2099,7 +2099,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   MngPair
                     new_pair;
 
-                  MngPair
+                  volatile MngPair
                     old_pair;
 
                   old_pair.a=mng_info->x_off[i];
@@ -4331,7 +4331,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     need_iterations,
     need_matte;
 
-  int
+  volatile int
 #if defined(PNG_WRITE_EMPTY_PLTE_SUPPORTED) || \
     defined(PNG_MNG_FEATURES_SUPPORTED)
     equal_palettes,
@@ -4359,7 +4359,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   register IndexPacket
     *indexes;
 
-  register long
+  register volatile long
     x=0;
 
   register long
@@ -4383,7 +4383,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     matte,
     status;
   
-  unsigned int
+  volatile unsigned int
     adjoin,
     optimize,
     scene;
@@ -4393,7 +4393,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     initial_delay,
     save_image_depth;
   
-  unsigned long
+  volatile unsigned long
     delay,
     ticks_per_second=0;
 
@@ -4458,7 +4458,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       /*
         Check all the scenes.
       */
-      initial_delay=image->delay;
+      initial_delay=(long) image->delay;
       need_iterations=False;
       equal_chrms=image->chromaticity.white_point.x != 0.0;
       equal_gammas=True;
@@ -5476,7 +5476,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
               ((ticks_per_second*image->delay)/100));
             (void) WriteBlob(image,14,(char *) chunk);
             (void) WriteBlobMSBLong(image,crc32(0,chunk,14));
-            delay=image->delay;
+            delay=(long) image->delay;
           }
         old_framing_mode=framing_mode;
       }

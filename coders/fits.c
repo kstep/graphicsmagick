@@ -417,7 +417,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
         ((fits_info.max_data-fits_info.min_data) > ((1 << image->depth)-1)))
       scale=((1 << image->depth)-1)/(fits_info.max_data-fits_info.min_data);
     p=fits_pixels;
-    for (y=image->rows-1; y >= 0; y--)
+    for (y=(long) image->rows-1; y >= 0; y--)
     {
       q=SetImagePixels(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
@@ -645,7 +645,7 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
   /*
     Convert image to fits scale PseudoColor class.
   */
-  for (y=image->rows-1; y >= 0; y--)
+  for (y=(long) image->rows-1; y >= 0; y--)
   {
     p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
     if (p == (const PixelPacket *) NULL)

@@ -241,7 +241,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert PseudoColor scanline.
         */
-        for (y=image->rows-1; y >= 0; y--)
+        for (y=(long) image->rows-1; y >= 0; y--)
         {
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
@@ -271,7 +271,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert PseudoColor scanline.
         */
-        for (y=image->rows-1; y >= 0; y--)
+        for (y=(long) image->rows-1; y >= 0; y--)
         {
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
@@ -292,7 +292,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert DirectColor scanline.
         */
-        for (y=image->rows-1; y >= 0; y--)
+        for (y=(long) image->rows-1; y >= 0; y--)
         {
           p=tim_pixels+y*bytes_per_line;
           q=SetImagePixels(image,0,y,image->columns,1);
@@ -319,7 +319,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert DirectColor scanline.
         */
-        for (y=image->rows-1; y >= 0; y--)
+        for (y=(long) image->rows-1; y >= 0; y--)
         {
           p=tim_pixels+y*bytes_per_line;
           q=SetImagePixels(image,0,y,image->columns,1);

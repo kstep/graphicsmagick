@@ -499,7 +499,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                       image->iptc_profile.length=atol(values);
                       break;
                     }
-                  i=image->generic_profiles;
+                  i=(long) image->generic_profiles;
                   if (image->generic_profile == (ProfileInfo *) NULL)
                     image->generic_profile=(ProfileInfo *)
                       AcquireMemory(sizeof(ProfileInfo));

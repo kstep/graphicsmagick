@@ -2392,7 +2392,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->filename);
   while (ReadBlobString(image,message) != (char *) NULL)
   {
-    n=strlen(message);
+    n=(long) strlen(message);
     if (n == 0)
       continue;
     status=xmlParseChunk(svg_info.parser,message,(int) n,False);

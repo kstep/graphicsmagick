@@ -1084,7 +1084,7 @@ MagickExport unsigned int IsPaletteImage(const Image *image,
           node_info->list[i].red=p->red;
           node_info->list[i].green=p->green;
           node_info->list[i].blue=p->blue;
-          node_info->list[i].index=cube_info->colors++;
+          node_info->list[i].index=(unsigned short) cube_info->colors++;
           node_info->number_unique++;
           if (cube_info->colors > 256)
             {
@@ -1148,7 +1148,7 @@ MagickExport unsigned int ListColorInfo(FILE *file,ExceptionInfo *exception)
   for ( ; p != (const ColorInfo *) NULL; p=p->next)
   {
     (void) fprintf(file,"%.1024s",p->name);
-    for (i=strlen(p->name); i <= 22; i++)
+    for (i=(long) strlen(p->name); i <= 22; i++)
       (void) fprintf(file," ");
     if (p->color.opacity == OpaqueOpacity)
       (void) fprintf(file,"%5d,%5d,%5d       ",p->color.red,p->color.green,
@@ -1236,7 +1236,7 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
       blue=0;
       opacity=(-1);
       name++;
-      n=strlen(name);
+      n=(long) strlen(name);
       if ((n == 3) || (n == 6) || (n == 9) || (n == 12))
         {
           /*

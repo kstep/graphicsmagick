@@ -185,7 +185,8 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
           if (compression == 1)
             *q++=(unsigned char) byte;
           else
-            *q++=(i & 0x01) ? (byte & 0x0f) : ((byte >> 4) & 0x0f);
+            *q++=(unsigned char)
+              ((i & 0x01) ? (byte & 0x0f) : ((byte >> 4) & 0x0f));
           x++;
         }
       }
@@ -232,7 +233,8 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
                 {
                   if ((i & 0x01) == 0)
                     byte=ReadBlobByte(image);
-                  *q++=(i & 0x01) ? (byte & 0x0f) : ((byte >> 4) & 0x0f);
+                  *q++=(unsigned char)
+                    ((i & 0x01) ? (byte & 0x0f) : ((byte >> 4) & 0x0f));
                 }
               x++;
             }
@@ -465,7 +467,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Convert bitmap scanline.
             */
-            for (y=image->rows-1; y >= 0; y--)
+            for (y=(long) image->rows-1; y >= 0; y--)
             {
               p=pixels+(image->rows-y-1)*bytes_per_line;
               q=SetImagePixels(image,0,y,image->columns,1);
@@ -505,7 +507,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Convert PseudoColor scanline.
             */
-            for (y=image->rows-1; y >= 0; y--)
+            for (y=(long) image->rows-1; y >= 0; y--)
             {
               p=pixels+(image->rows-y-1)*bytes_per_line;
               q=SetImagePixels(image,0,y,image->columns,1);
@@ -543,7 +545,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               Convert PseudoColor scanline.
             */
             bytes_per_line=image->columns;
-            for (y=image->rows-1; y >= 0; y--)
+            for (y=(long) image->rows-1; y >= 0; y--)
             {
               p=pixels+(image->rows-y-1)*bytes_per_line;
               q=SetImagePixels(image,0,y,image->columns,1);
@@ -577,7 +579,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
             */
               bytes_per_line=image->columns << 1;
             image->storage_class=DirectClass;
-            for (y=image->rows-1; y >= 0; y--)
+            for (y=(long) image->rows-1; y >= 0; y--)
             {
               p=pixels+(image->rows-y-1)*bytes_per_line;
               q=SetImagePixels(image,0,y,image->columns,1);
@@ -607,7 +609,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               Convert DirectColor scanline.
             */
             image->storage_class=DirectClass;
-            for (y=image->rows-1; y >= 0; y--)
+            for (y=(long) image->rows-1; y >= 0; y--)
             {
               p=pixels+(image->rows-y-1)*bytes_per_line;
               q=SetImagePixels(image,0,y,image->columns,1);

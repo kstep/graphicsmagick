@@ -198,7 +198,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       flags,
       version;
 
-    long
+    unsigned long
       create_time,
       modify_time,
       archive_time,
@@ -221,7 +221,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       version,
       type;
 
-    long
+    unsigned long
       reserved_1,
       note;
 
@@ -229,7 +229,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       x_last,
       y_last;
 
-    long
+    unsigned long
       reserved_2;
 
     short int
@@ -318,7 +318,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read record header.
   */
-  offset=ReadBlobMSBLong(image);
+  offset=(long) ReadBlobMSBLong(image);
   (void) ReadBlob(image,3,tag);
   record_type=ReadBlobByte(image);
   if (((record_type != 0x00) && (record_type != 0x01)) ||
@@ -331,7 +331,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   if (pdb_info.number_records > 1)
     {
-      offset=ReadBlobMSBLong(image);
+      offset=(long) ReadBlobMSBLong(image);
       (void) ReadBlob(image,3,tag);
       record_type=ReadBlobByte(image);
       if (((record_type != 0x00) && (record_type != 0x01)) ||

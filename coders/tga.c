@@ -305,7 +305,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       real=offset;
       if (((unsigned char) (tga_info.attributes & 0x20) >> 5) == 0)
         real=image->rows-real-1;
-      q=SetImagePixels(image,0,real,image->columns,1);
+      q=SetImagePixels(image,0,(long) real,image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
       indexes=GetIndexes(image);
@@ -643,8 +643,8 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
     targa_info.colormap_size=0;
     targa_info.x_origin=0;
     targa_info.y_origin=0;
-    targa_info.width=image->columns;
-    targa_info.height=image->rows;
+    targa_info.width=(unsigned short) image->columns;
+    targa_info.height=(unsigned short) image->rows;
     targa_info.bits_per_pixel=8;
     targa_info.attributes=0;
     if ((image->storage_class == DirectClass) || (image->colors > 256))
@@ -663,7 +663,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
         targa_info.image_type=TargaColormap;
         targa_info.colormap_type=1;
         targa_info.colormap_index=0;
-        targa_info.colormap_length=image->colors;
+        targa_info.colormap_length=(unsigned short) image->colors;
         targa_info.colormap_size=24;
       }
     /*
@@ -710,7 +710,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
     /*
       Convert MIFF to TGA raster pixels.
     */
-    count=(unsigned int) (targa_info.bits_per_pixel*targa_info.width) >> 3;
+    count=(long) ((targa_info.bits_per_pixel*targa_info.width) >> 3);
     targa_pixels=(unsigned char *) AcquireMemory(count);
     if (targa_pixels == (unsigned char *) NULL)
       ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",

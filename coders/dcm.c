@@ -2781,7 +2781,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Read a group.
     */
-    image->offset=TellBlob(image);
+    image->offset=(long) TellBlob(image);
     group=ReadBlobLSBShort(image);
     element=ReadBlobLSBShort(image);
     quantum=0;
@@ -2826,10 +2826,10 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     datum=0;
     if (quantum == 4)
-      datum=ReadBlobLSBLong(image);
+      datum=(long) ReadBlobLSBLong(image);
     else
       if (quantum == 2)
-        datum=ReadBlobLSBShort(image);
+        datum=(long) ReadBlobLSBShort(image);
     quantum=0;
     length=1;
     if (datum != 0)
@@ -2914,7 +2914,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         datum=ReadBlobLSBShort(image);
       else
         if ((length == 1) && (quantum == 4))
-          datum=ReadBlobLSBLong(image);
+          datum=(long) ReadBlobLSBLong(image);
         else
           if ((quantum != 0) && (length != 0))
             {
@@ -3054,7 +3054,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               Populate image colormap.
             */
             colors=length/bytes_per_pixel;
-            datum=colors;
+            datum=(long) colors;
             graymap=(unsigned short *)
               AcquireMemory(colors*sizeof(unsigned short));
             if (graymap == (unsigned short *) NULL)
@@ -3118,7 +3118,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   j;
 
                 datum=0;
-                for (j=length-1; j >= 0; j--)
+                for (j=(long) length-1; j >= 0; j--)
                   datum=256*datum+data[j];
                 (void) fprintf(stdout,"%lu",datum);
               }
@@ -3295,7 +3295,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     }
                 index&=mask;
                 if (index > max_value)
-                  index=max_value;
+                  index=(unsigned short) max_value;
                 if (graymap != (unsigned short *) NULL)
                   index=graymap[index];
                 index=ValidateColormapIndex(image,index);

@@ -537,7 +537,7 @@ MagickExport unsigned int ListModuleAliases(FILE *file,ExceptionInfo *exception)
   for ( ; p != (ModuleAlias *) NULL; p=p->next)
   {
     (void) fprintf(file,"%.1024s",p->name);
-    for (i=strlen(p->name); i <= 9; i++)
+    for (i=(long) strlen(p->name); i <= 9; i++)
       (void) fprintf(file," ");
     if (p->alias != (char *) NULL)
       (void) fprintf(file,"%.1024s",p->alias);

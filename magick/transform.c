@@ -560,7 +560,7 @@ MagickExport Image *DeconstructImages(const Image *image,
         break;
     }
     bounds[i].y=y;
-    for (x=next->columns-1; x >= 0; x--)
+    for (x=(long) next->columns-1; x >= 0; x--)
     {
       p=AcquireImagePixels(next,x,0,1,next->rows,exception);
       q=GetImagePixels(next->previous,x,0,1,next->previous->rows);
@@ -577,7 +577,7 @@ MagickExport Image *DeconstructImages(const Image *image,
         break;
     }
     bounds[i].width=x-bounds[i].x+1;
-    for (y=next->rows-1; y >= 0; y--)
+    for (y=(long) next->rows-1; y >= 0; y--)
     {
       p=AcquireImagePixels(next,0,y,next->columns,1,exception);
       q=GetImagePixels(next->previous,0,y,next->previous->columns,1);
@@ -754,7 +754,8 @@ MagickExport Image *FlipImage(const Image *image,ExceptionInfo *exception)
   for (y=0; y < (long) flip_image->rows; y++)
   {
     p=AcquireImagePixels(image,0,y,image->columns,1,exception);
-    q=SetImagePixels(flip_image,0,flip_image->rows-y-1,flip_image->columns,1);
+    q=SetImagePixels(flip_image,0,(long) (flip_image->rows-y-1),
+      flip_image->columns,1);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     (void) memcpy(q,p,flip_image->columns*sizeof(PixelPacket));
@@ -1201,7 +1202,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
           ThrowBinaryException(ResourceLimitWarning,"Memory allocation failed",
             (char *) NULL)
         }
-      j=image->generic_profiles;
+      j=(long) image->generic_profiles;
       for (i=0; i < (long) profile_image->generic_profiles; i++)
       {
         image->generic_profile[j].name=profile_image->generic_profile[i].name;
@@ -1306,8 +1307,8 @@ MagickExport Image *RollImage(const Image *image,const long x_offset,
     indexes=GetIndexes(image);
     for (x=0; x < (long) image->columns; x++)
     {
-      q=SetImagePixels(roll_image,((int) offset.x+x) % image->columns,
-        ((int) offset.y+y) % image->rows,1,1);
+      q=SetImagePixels(roll_image,(long) ((long) (offset.x+x) % image->columns),
+        (long) ((long) (offset.y+y) % image->rows),1,1);
       if (q == (PixelPacket *) NULL)
         break;
       roll_indexes=GetIndexes(roll_image);
@@ -1367,8 +1368,8 @@ MagickExport Image *ShaveImage(const Image *image,
 
   crop_info.width=image->columns-2*shave_info->width;
   crop_info.height=image->rows-2*shave_info->height;
-  crop_info.x=shave_info->width;
-  crop_info.y=shave_info->height;
+  crop_info.x=(long) shave_info->width;
+  crop_info.y=(long) shave_info->height;
   return(CropImage(image,&crop_info,exception));
 }
 
@@ -1453,8 +1454,8 @@ MagickExport void TransformImage(Image **image,const char *crop_geometry,
           x=0;
           y=0;
           (void) ParseImageGeometry(crop_geometry,&x,&y,&width,&height);
-          crop_info.x=width/2;
-          crop_info.y=height/2;
+          crop_info.x=(long) width/2;
+          crop_info.y=(long) height/2;
           width=transform_image->columns-2*crop_info.x;
           height=transform_image->rows-2*crop_info.y;
           flags|=XValue | YValue;

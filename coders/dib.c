@@ -172,7 +172,8 @@ static unsigned int DecodeImage(Image *image,const unsigned long compression,
           if (compression == 1)
             *q++=(unsigned char) byte;
           else
-            *q++=(i & 0x01) ? (byte & 0x0f) : ((byte >> 4) & 0x0f);
+            *q++=(unsigned char)
+              ((i & 0x01) ? (byte & 0x0f) : ((byte >> 4) & 0x0f));
           x++;
         }
       }
@@ -219,7 +220,8 @@ static unsigned int DecodeImage(Image *image,const unsigned long compression,
                 {
                   if ((i & 0x01) == 0)
                     byte=ReadBlobByte(image);
-                  *q++=(i & 0x01) ? (byte & 0x0f) : ((byte >> 4) & 0x0f);
+                  *q++=(unsigned char)
+                    ((i & 0x01) ? (byte & 0x0f) : ((byte >> 4) & 0x0f));
                 }
               x++;
             }
@@ -527,7 +529,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Convert bitmap scanline.
       */
-      for (y=image->rows-1; y >= 0; y--)
+      for (y=(long) image->rows-1; y >= 0; y--)
       {
         p=pixels+(image->rows-y-1)*bytes_per_line;
         q=SetImagePixels(image,0,y,image->columns,1);
@@ -567,7 +569,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Convert PseudoColor scanline.
       */
-      for (y=image->rows-1; y >= 0; y--)
+      for (y=(long) image->rows-1; y >= 0; y--)
       {
         p=pixels+(image->rows-y-1)*bytes_per_line;
         q=SetImagePixels(image,0,y,image->columns,1);
@@ -606,7 +608,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       if ((dib_info.compression == 1) || (dib_info.compression == 2))
         bytes_per_line=image->columns;
-      for (y=image->rows-1; y >= 0; y--)
+      for (y=(long) image->rows-1; y >= 0; y--)
       {
         p=pixels+(image->rows-y-1)*bytes_per_line;
         q=SetImagePixels(image,0,y,image->columns,1);
@@ -640,7 +642,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->storage_class=DirectClass;
       if (dib_info.compression == 1)
         bytes_per_line=2*image->columns;
-      for (y=image->rows-1; y >= 0; y--)
+      for (y=(long) image->rows-1; y >= 0; y--)
       {
         p=pixels+(image->rows-y-1)*bytes_per_line;
         q=SetImagePixels(image,0,y,image->columns,1);
@@ -678,7 +680,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Convert DirectColor scanline.
       */
-      for (y=image->rows-1; y >= 0; y--)
+      for (y=(long) image->rows-1; y >= 0; y--)
       {
         p=pixels+(image->rows-y-1)*bytes_per_line;
         q=SetImagePixels(image,0,y,image->columns,1);
@@ -885,8 +887,8 @@ static unsigned int WriteDIBImage(const ImageInfo *image_info,Image *image)
     }
   bytes_per_line=4*((image->columns*dib_info.bits_per_pixel+31)/32);
   dib_info.size=40;
-  dib_info.width=image->columns;
-  dib_info.height=image->rows;
+  dib_info.width=(long) image->columns;
+  dib_info.height=(long) image->rows;
   dib_info.planes=1;
   dib_info.compression=0;
   dib_info.image_size=bytes_per_line*image->rows;

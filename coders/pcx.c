@@ -792,8 +792,8 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
       pcx_info.bits_per_pixel=1;
     pcx_info.left=0;
     pcx_info.top=0;
-    pcx_info.right=image->columns-1;
-    pcx_info.bottom=image->rows-1;
+    pcx_info.right=(short) (image->columns-1);
+    pcx_info.bottom=(short) (image->rows-1);
     pcx_info.horizontal_resolution=(short) image->columns;
     pcx_info.vertical_resolution=(short) image->rows;
     if (image->units == PixelsPerInchResolution)
@@ -814,7 +814,8 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
         if (image->matte)
           pcx_info.planes++;
       }
-    pcx_info.bytes_per_line=(image->columns*pcx_info.bits_per_pixel+7)/8;
+    pcx_info.bytes_per_line=(short)
+      (image->columns*pcx_info.bits_per_pixel+7)/8;
     pcx_info.palette_info=1;
     pcx_info.colormap_signature=0x0c;
     /*

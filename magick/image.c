@@ -1635,7 +1635,7 @@ MagickExport void CycleColormapImage(Image *image,const int amount)
     indexes=GetIndexes(image);
     for (x=0; x < (long) image->columns; x++)
     {
-      index=(long) (indexes[x]+amount) % image->colors;
+      index=(long) ((indexes[x]+amount) % image->colors);
       if (index < 0)
         index+=image->colors;
       indexes[x]=(IndexPacket) index;
@@ -3938,8 +3938,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               frame_info.outer_bevel=(long) (frame_info.width >> 2)+1;
             if ((flags & YValue) == 0)
               frame_info.inner_bevel=(long) frame_info.outer_bevel;
-            frame_info.x=frame_info.width;
-            frame_info.y=frame_info.height;
+            frame_info.x=(long) frame_info.width;
+            frame_info.y=(long) frame_info.height;
             frame_info.width=(*image)->columns+(frame_info.width << 1);
             frame_info.height=(*image)->rows+(frame_info.height << 1);
             frame_image=FrameImage(*image,&frame_info,&(*image)->exception);
@@ -5109,8 +5109,8 @@ MagickExport int ParseImageGeometry(const char *geometry,long *x,long *y,
         count=sscanf(geometry,"%lfx%lf",&x_scale,&y_scale);
       if (count == 1)
         y_scale=x_scale;
-      *width=Max((unsigned long) ((x_scale*former_width)/100.0)+0.5,1.0);
-      *height=Max((unsigned long) ((y_scale*former_height)/100.0)+0.5,1.0);
+      *width=Max((unsigned long) ((x_scale*former_width)/100.0+0.5),1);
+      *height=Max((unsigned long) ((y_scale*former_height)/100.0+0.5),1);
       former_width=(*width);
       former_height=(*height);
     }

@@ -159,7 +159,7 @@ static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image);
     for (y=0; y < (long) image->rows; y++)
     {
-      count=ReadBlob(image,3*image->columns,pixels);
+      count=(long) ReadBlob(image,3*image->columns,pixels);
       if (count == 0)
         ThrowReaderException(CorruptImageWarning,"Unable to read image data",
           image);

@@ -152,7 +152,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
       for (y=0; y < (long) image->rows; y++)
         (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
     }
-  x=packet_size*image->tile_info.x;
+  x=(long) (packet_size*image->tile_info.x);
   do
   {
     /*

@@ -113,7 +113,7 @@ static unsigned int DecodeImage(Image *image,const int channel)
     *q;
 
   x=0;
-  number_pixels=image->columns*image->rows;
+  number_pixels=(long) (image->columns*image->rows);
   while (number_pixels > 0)
   {
     count=ReadBlobByte(image);
@@ -126,7 +126,8 @@ static unsigned int DecodeImage(Image *image,const int channel)
         pixel=ReadBlobByte(image);
         for (count=(-count+1); count > 0; count--)
         {
-          q=GetImagePixels(image,x % image->columns,x/image->columns,1,1);
+          q=GetImagePixels(image,(long) (x % image->columns),
+            (long) (x/image->columns),1,1);
           if (q == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
@@ -185,7 +186,8 @@ static unsigned int DecodeImage(Image *image,const int channel)
     for (i=count; i > 0; i--)
     {
       pixel=ReadBlobByte(image);
-      q=GetImagePixels(image,x % image->columns,x/image->columns,1,1);
+      q=GetImagePixels(image,(long) (x % image->columns),
+        (long) (x/image->columns),1,1);
       if (q == (PixelPacket *) NULL)
         break;
       indexes=GetIndexes(image);
@@ -535,8 +537,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) memset(layer_info,0,number_layers*sizeof(LayerInfo));
       for (i=0; i < number_layers; i++)
       {
-        layer_info[i].page.y=ReadBlobMSBLong(image);
-        layer_info[i].page.x=ReadBlobMSBLong(image);
+        layer_info[i].page.y=(long) ReadBlobMSBLong(image);
+        layer_info[i].page.x=(long) ReadBlobMSBLong(image);
         layer_info[i].page.height=(ReadBlobMSBLong(image)-layer_info[i].page.y);
         layer_info[i].page.width=(ReadBlobMSBLong(image)-layer_info[i].page.x);
         layer_info[i].channels=ReadBlobMSBShort(image);
@@ -563,8 +565,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 /*
                   Layer mask info.
                 */
-                layer_info[i].mask.y=ReadBlobMSBLong(image);
-                layer_info[i].mask.x=ReadBlobMSBLong(image);
+                layer_info[i].mask.y=(long) ReadBlobMSBLong(image);
+                layer_info[i].mask.x=(long) ReadBlobMSBLong(image);
                 layer_info[i].mask.height=
                   (ReadBlobMSBLong(image)-layer_info[i].mask.y);
                 layer_info[i].mask.width=

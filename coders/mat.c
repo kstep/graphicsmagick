@@ -304,13 +304,13 @@ MATLAB_KO:  ThrowReaderException(CorruptImageWarning,"Not a MATLAB image file!",
    switch((int) CellType)
       {
       case 2:image->depth=8;		/*Byte type cell*/
-             ldblk=MATLAB_HDR.SizeX;
+             ldblk=(long) MATLAB_HDR.SizeX;
              break;
       case 4:image->depth=16;    	/*Word type cell*/
-             ldblk=2*MATLAB_HDR.SizeX;break; 
+             ldblk=(long) (2*MATLAB_HDR.SizeX);break; 
       case 9:image->depth=24;    	/*double type cell*/
              if(sizeof(double)!=8) ThrowReaderException(CorruptImageWarning,"Incompatible size of double!",image)
-             ldblk=8*MATLAB_HDR.SizeX;
+             ldblk=(long) (8*MATLAB_HDR.SizeX);
              break; 
       default:ThrowReaderException(CorruptImageWarning,"Unsupported cell type in the matrix!",image)
       }	  

@@ -336,7 +336,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
           operand=ReadBlobByte(image);
           plane=(unsigned char) operand;
           if (plane == 255)
-            plane=number_planes-1;
+            plane=(unsigned char) (number_planes-1);
           x=0;
           break;
         }

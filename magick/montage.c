@@ -407,16 +407,16 @@ MagickExport Image *MontageImages(const Image *image,
       if ((flags & HeightValue) == 0)
         frame_info.height=frame_info.width;
       if ((flags & XValue) == 0)
-        frame_info.outer_bevel=(frame_info.width >> 2)+1;
+        frame_info.outer_bevel=(long) (frame_info.width >> 2)+1;
       if ((flags & YValue) == 0)
         frame_info.inner_bevel=frame_info.outer_bevel;
-      frame_info.x=frame_info.width;
-      frame_info.y=frame_info.height;
+      frame_info.x=(long) frame_info.width;
+      frame_info.y=(long) frame_info.height;
       bevel_width=Max(frame_info.inner_bevel,frame_info.outer_bevel);
       border_width=Max(frame_info.width,frame_info.height);
     }
-  tile_info.x=montage_info->border_width;
-  tile_info.y=montage_info->border_width;
+  tile_info.x=(long) montage_info->border_width;
+  tile_info.y=(long) montage_info->border_width;
   tile_info.width=next_list[0]->columns;
   tile_info.height=next_list[0]->rows;
   concatenate=False;
@@ -503,7 +503,7 @@ MagickExport Image *MontageImages(const Image *image,
     */
     tiles_per_page=Min(number_images,tiles_per_row*tiles_per_column);
     x_offset=0;
-    y_offset=title_offset;
+    y_offset=(long) title_offset;
     max_height=0;
     bounds.width=0;
     bounds.height=0;
@@ -551,7 +551,7 @@ MagickExport Image *MontageImages(const Image *image,
           "Memory allocation failed")
       }
     x_offset=0;
-    y_offset=title_offset;
+    y_offset=(long) title_offset;
     FormatString(montage_next->montage,"%ldx%ld%+ld%+ld",
       (long) (tile_info.width+(tile_info.x+border_width)*2),
       (long) (tile_info.height+(tile_info.y+border_width)*2+(font_height+4)*
@@ -582,7 +582,7 @@ MagickExport Image *MontageImages(const Image *image,
       Copy tile next to the composite next.
     */
     x_offset=tile_info.x;
-    y_offset=title_offset+tile_info.y;
+    y_offset=(long) title_offset+tile_info.y;
     max_height=0;
     for (tile=0; tile < tiles_per_page; tile++)
     {
@@ -638,20 +638,20 @@ MagickExport Image *MontageImages(const Image *image,
         }
         case NorthGravity:
         {
-          x=((width+2*border_width)-(long) next->columns)/2;
+          x=(long) ((width+2*border_width)-(long) next->columns)/2;
           y=0;
           break;
         }
         case NorthEastGravity:
         {
-          x=(width+2*border_width)-(long) next->columns;
+          x=(long) (width+2*border_width)-(long) next->columns;
           y=0;
           break;
         }
         case WestGravity:
         {
           x=0;
-          y=((height+2*border_width)-(long) next->rows)/2;
+          y=(long) (((height+2*border_width)-(long) next->rows)/2);
           break;
         }
         case ForgetGravity:
@@ -659,32 +659,32 @@ MagickExport Image *MontageImages(const Image *image,
         case CenterGravity:
         default:
         {
-          x=((width+2*border_width)-(long) next->columns)/2;
-          y=((height+2*border_width)-(long) next->rows)/2;
+          x=(long) (((width+2*border_width)-(long) next->columns)/2);
+          y=(long) (((height+2*border_width)-(long) next->rows)/2);
           break;
         }
         case EastGravity:
         {
-          x=(width+2*border_width)-(long) next->columns;
-          y=((height+2*border_width)-(long) next->rows)/2;
+          x=(long) ((width+2*border_width)-(long) next->columns);
+          y=(long) (((height+2*border_width)-(long) next->rows)/2);
           break;
         }
         case SouthWestGravity:
         {
           x=0;
-          y=(height+2*border_width)-(long) next->rows;
+          y=(long) (height+2*border_width)-(long) next->rows;
           break;
         }
         case SouthGravity:
         {
-          x=((width+2*border_width)-(long) next->columns)/2;
-          y=(height+2*border_width)-(long) next->rows;
+          x=(long) ((width+2*border_width)-(long) next->columns)/2;
+          y=(long) (height+2*border_width)-(long) next->rows;
           break;
         }
         case SouthEastGravity:
         {
-          x=(width+2*border_width)-(long) next->columns;
-          y=(height+2*border_width)-(long) next->rows;
+          x=(long) (width+2*border_width)-(long) next->columns;
+          y=(long) (height+2*border_width)-(long) next->rows;
           break;
         }
       }
@@ -737,8 +737,8 @@ MagickExport Image *MontageImages(const Image *image,
               */
               for (rows=0; rows < ((long) next->rows-4); rows++)
               {
-                q=GetImagePixels(montage_next,x+x_offset+next->columns,
-                  y+y_offset+rows+4,Min(tile_info.x,4),1);
+                q=GetImagePixels(montage_next,(long) (x+x_offset+next->columns),
+                  (long) (y+y_offset+rows+4),Min(tile_info.x,4),1);
                 if (q == (PixelPacket *) NULL)
                   break;
                 for (columns=0; columns < Min(tile_info.x,4); columns++)
@@ -752,7 +752,7 @@ MagickExport Image *MontageImages(const Image *image,
               for (rows=0; rows < Min(tile_info.y,4); rows++)
               {
                 q=GetImagePixels(montage_next,x+x_offset+4,y+y_offset+
-                  next->rows+rows,next->columns,1);
+                  (long) next->rows+rows,next->columns,1);
                 if (q == (PixelPacket *) NULL)
                   break;
                 for (columns=0; columns < (long) next->columns; columns++)

@@ -589,7 +589,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     width=image->columns;
     height=image->rows;
     x=0;
-    y=text_size;
+    y=(long) text_size;
     FormatString(geometry,"%lux%lu",image->columns,image->rows);
     if (image_info->page != (char *) NULL)
       (void) strncpy(geometry,image_info->page,MaxTextExtent-1);
@@ -690,7 +690,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
         }
         attribute=GetImageAttribute(image,"label");
         if (attribute != (const ImageAttribute *) NULL)
-          for (j=MultilineCensus(attribute->value)-1; j >= 0; j--)
+          for (j=(long) MultilineCensus(attribute->value)-1; j >= 0; j--)
           {
             (void) WriteBlobString(image,"  /label 512 string def\n");
             (void) WriteBlobString(image,"  currentfile label readline pop\n");

@@ -288,21 +288,21 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
     q=GetImagePixels(histogram_image,x,0,1,histogram_image->rows);
     if (q == (PixelPacket *) NULL)
       break;
-    y=histogram_image->rows-(int) (scale*red[x]);
+    y=(long) (histogram_image->rows-(long) (scale*red[x]));
     r=q+y;
     for ( ; y < (long) histogram_image->rows; y++)
     {
       r->red=MaxRGB;
       r++;
     }
-    y=histogram_image->rows-(int) (scale*green[x]);
+    y=(long) (histogram_image->rows-(long) (scale*green[x]));
     r=q+y;
     for ( ; y < (long) histogram_image->rows; y++)
     {
       r->green=MaxRGB;
       r++;
     }
-    y=histogram_image->rows-(int) (scale*blue[x]);
+    y=(long) (histogram_image->rows-(long) (scale*blue[x]));
     r=q+y;
     for ( ; y < (long) histogram_image->rows; y++)
     {

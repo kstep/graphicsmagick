@@ -121,7 +121,7 @@ static void FinalizeSignature(SignatureInfo *signature_info)
   */
   low_order=signature_info->low_order;
   high_order=signature_info->high_order;
-  count=((low_order >> 3) & 0x3f);
+  count=(long) ((low_order >> 3) & 0x3f);
   signature_info->message[count++]=0x80;
   if (count <= (SignatureSize-8))
     (void) memset(signature_info->message+count,0,SignatureSize-8-count);
@@ -131,14 +131,14 @@ static void FinalizeSignature(SignatureInfo *signature_info)
       TransformSignature(signature_info);
       (void) memset(signature_info->message,0,SignatureSize-8);
     }
-  signature_info->message[56]=high_order >> 24;
-  signature_info->message[57]=high_order >> 16;
-  signature_info->message[58]=high_order >> 8;
-  signature_info->message[59]=high_order;
-  signature_info->message[60]=low_order >> 24;
-  signature_info->message[61]=low_order >> 16;
-  signature_info->message[62]=low_order >> 8;
-  signature_info->message[63]=low_order;
+  signature_info->message[56]=(unsigned char) (high_order >> 24);
+  signature_info->message[57]=(unsigned char) (high_order >> 16);
+  signature_info->message[58]=(unsigned char) (high_order >> 8);
+  signature_info->message[59]=(unsigned char) high_order;
+  signature_info->message[60]=(unsigned char) (low_order >> 24);
+  signature_info->message[61]=(unsigned char) (low_order >> 16);
+  signature_info->message[62]=(unsigned char) (low_order >> 8);
+  signature_info->message[63]=(unsigned char) low_order;
   TransformSignature(signature_info);
 }
 
@@ -379,7 +379,7 @@ static void UpdateSignature(SignatureInfo *signature_info,
     {
       i=SignatureSize-signature_info->offset;
       if (i > (long) length)
-        i=length;
+        i=(long) length;
       (void) memcpy(signature_info->message+signature_info->offset,message,i);
       length-=i;
       message+=i;
@@ -396,7 +396,7 @@ static void UpdateSignature(SignatureInfo *signature_info,
     TransformSignature(signature_info);
   }
   (void) memcpy(signature_info->message,message,length);
-  signature_info->offset=length;
+  signature_info->offset=(long) length;
 }
 
 /*

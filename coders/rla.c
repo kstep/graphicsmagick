@@ -286,7 +286,8 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
           break;
         if (runlength < 0)
           {
-            q=GetImagePixels(image,x % image->columns,y/image->columns,1,1);
+            q=GetImagePixels(image,(long) (x % image->columns),
+              (long) (y/image->columns),1,1);
             if (q == (PixelPacket *) NULL)
               break;
             indexes=GetIndexes(image);
@@ -331,7 +332,8 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
         runlength++;
         do
         {
-          q=GetImagePixels(image,x % image->columns,y/image->columns,1,1);
+          q=GetImagePixels(image,(long) (x % image->columns),
+            (long) (y/image->columns),1,1);
           if (q == (PixelPacket *) NULL)
             break;
           switch (channel)

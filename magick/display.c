@@ -3365,33 +3365,32 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
               (y < (long) (crop_info.y+RoiDelta)) &&
               (y > (int) (crop_info.y-RoiDelta)))
             {
-              crop_info.x=crop_info.x+crop_info.width;
-              crop_info.y=crop_info.y+crop_info.height;
+              crop_info.x=(long) (crop_info.x+crop_info.width);
+              crop_info.y=(long) (crop_info.y+crop_info.height);
               state|=UpdateConfigurationState;
               break;
             }
-          if ((x < (long) (crop_info.x+RoiDelta)) &&
-              (x > (int) (crop_info.x-RoiDelta)) &&
-              (y < (long) (crop_info.y+crop_info.height+RoiDelta)) &&
-              (y > (int) (crop_info.y+crop_info.height-RoiDelta)))
+          if ((x < (crop_info.x+RoiDelta)) && (x > (crop_info.x-RoiDelta)) &&
+              (y < (crop_info.y+crop_info.height+RoiDelta)) &&
+              (y > (crop_info.y+crop_info.height-RoiDelta)))
             {
-              crop_info.x=crop_info.x+crop_info.width;
+              crop_info.x=(long) (crop_info.x+crop_info.width);
               state|=UpdateConfigurationState;
               break;
             }
-          if ((x < (long) (crop_info.x+crop_info.width+RoiDelta)) &&
-              (x > (int) (crop_info.x+crop_info.width-RoiDelta)) &&
-              (y < (long) (crop_info.y+RoiDelta)) &&
-              (y > (int) (crop_info.y-RoiDelta)))
+          if ((x < (crop_info.x+crop_info.width+RoiDelta)) &&
+              (x > (crop_info.x+crop_info.width-RoiDelta)) &&
+              (y < (crop_info.y+RoiDelta)) &&
+              (y > (crop_info.y-RoiDelta)))
             {
-              crop_info.y=crop_info.y+crop_info.height;
+              crop_info.y=(long) (crop_info.y+crop_info.height);
               state|=UpdateConfigurationState;
               break;
             }
-          if ((x < (long) (crop_info.x+crop_info.width+RoiDelta)) &&
-              (x > (int) (crop_info.x+crop_info.width-RoiDelta)) &&
-              (y < (long) (crop_info.y+crop_info.height+RoiDelta)) &&
-              (y > (int) (crop_info.y+crop_info.height-RoiDelta)))
+          if ((x < (crop_info.x+crop_info.width+RoiDelta)) &&
+              (x > (crop_info.x+crop_info.width-RoiDelta)) &&
+              (y < (crop_info.y+crop_info.height+RoiDelta)) &&
+              (y > (crop_info.y+crop_info.height-RoiDelta)))
             {
               state|=UpdateConfigurationState;
               break;
@@ -4385,7 +4384,7 @@ static unsigned int XDrawEditImage(Display *display,
             rectangle_info.x=0;
           else
             if (rectangle_info.x > (int) windows->image.width)
-              rectangle_info.x=windows->image.width;
+              rectangle_info.x=(long) windows->image.width;
           if ((int) rectangle_info.x < x)
             rectangle_info.width=(unsigned int) (x-rectangle_info.x);
           else
@@ -4397,7 +4396,7 @@ static unsigned int XDrawEditImage(Display *display,
             rectangle_info.y=0;
           else
             if (rectangle_info.y > (int) windows->image.height)
-              rectangle_info.y=windows->image.height;
+              rectangle_info.y=(long) windows->image.height;
           if ((int) rectangle_info.y < y)
             rectangle_info.height=(unsigned int) (y-rectangle_info.y);
           else
@@ -4509,9 +4508,9 @@ static unsigned int XDrawEditImage(Display *display,
       }
     draw_info.rectangle_info=rectangle_info;
     if (draw_info.rectangle_info.x > (int) (line_width/2))
-      draw_info.rectangle_info.x=line_width/2;
+      draw_info.rectangle_info.x=(long) line_width/2;
     if (draw_info.rectangle_info.y > (int) (line_width/2))
-      draw_info.rectangle_info.y=line_width/2;
+      draw_info.rectangle_info.y=(long) line_width/2;
     draw_info.number_coordinates=number_coordinates;
     draw_info.coordinate_info=coordinate_info;
     windows->pixel_info->pen_color=windows->pixel_info->pen_colors[pen_id];
@@ -4742,7 +4741,7 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
       long
         bytes;
 
-      bytes=((*image)->columns*(*image)->rows*sizeof(PixelPacket));
+      bytes=(long) ((*image)->columns*(*image)->rows*sizeof(PixelPacket));
       if (undo_image != (Image *) NULL)
         {
           /*
@@ -6840,7 +6839,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
       image_info->preview_type=(PreviewType) (i+1);
-      image_info->group=windows->image.id;
+      image_info->group=(long) windows->image.id;
       (void) SetImageAttribute(*image,"label","Preview");
       TemporaryFilename(filename);
       FormatString((*image)->filename,"preview:%s",filename);
@@ -6861,7 +6860,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      image_info->group=windows->image.id;
+      image_info->group=(long) windows->image.id;
       (void) SetImageAttribute(*image,"label","Histogram");
       TemporaryFilename(filename);
       FormatString((*image)->filename,"histogram:%s",filename);
@@ -6888,7 +6887,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      image_info->group=windows->image.id;
+      image_info->group=(long) windows->image.id;
       (void) SetImageAttribute(*image,"label","Matte");
       TemporaryFilename(filename);
       FormatString((*image)->filename,"matte:%s",filename);
@@ -8166,17 +8165,19 @@ static void XPanImage(Display *display,XWindows *windows,XEvent *event)
         else
           if ((int) (pan_info.x+windows->image.width) >
               windows->image.ximage->width)
-            pan_info.x=windows->image.ximage->width-windows->image.width;
+            pan_info.x=(long)
+              (windows->image.ximage->width-windows->image.width);
         if (pan_info.y < (long) (pan_info.height/2))
           pan_info.y=0;
         else
-          pan_info.y=(int) (y_factor*(pan_info.y-(pan_info.height/2)));
+          pan_info.y=(long) (y_factor*(pan_info.y-(pan_info.height/2)));
         if (pan_info.y < 0)
           pan_info.y=0;
         else
           if ((int) (pan_info.y+windows->image.height) >
               windows->image.ximage->height)
-            pan_info.y=windows->image.ximage->height-windows->image.height;
+            pan_info.y=(long)
+              (windows->image.ximage->height-windows->image.height);
         if ((windows->image.x != (int) pan_info.x) ||
             (windows->image.y != (int) pan_info.y))
           {
@@ -9391,38 +9392,38 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
             break;
           x=windows->image.x+event.xbutton.x;
           y=windows->image.y+event.xbutton.y;
-          if ((x < (long) (roi_info.x+RoiDelta)) &&
-              (x > (int) (roi_info.x-RoiDelta)) &&
-              (y < (long) (roi_info.y+RoiDelta)) &&
-              (y > (int) (roi_info.y-RoiDelta)))
+          if ((x < (roi_info.x+RoiDelta)) &&
+              (x > (roi_info.x-RoiDelta)) &&
+              (y < (roi_info.y+RoiDelta)) &&
+              (y > (roi_info.y-RoiDelta)))
             {
-              roi_info.x=roi_info.x+roi_info.width;
-              roi_info.y=roi_info.y+roi_info.height;
+              roi_info.x=(long) (roi_info.x+roi_info.width);
+              roi_info.y=(long) (roi_info.y+roi_info.height);
               state|=UpdateConfigurationState;
               break;
             }
-          if ((x < (long) (roi_info.x+RoiDelta)) &&
-              (x > (int) (roi_info.x-RoiDelta)) &&
-              (y < (long) (roi_info.y+roi_info.height+RoiDelta)) &&
-              (y > (int) (roi_info.y+roi_info.height-RoiDelta)))
+          if ((x < (roi_info.x+RoiDelta)) &&
+              (x > (roi_info.x-RoiDelta)) &&
+              (y < (roi_info.y+roi_info.height+RoiDelta)) &&
+              (y > (roi_info.y+roi_info.height-RoiDelta)))
             {
-              roi_info.x=roi_info.x+roi_info.width;
+              roi_info.x=(long) (roi_info.x+roi_info.width);
               state|=UpdateConfigurationState;
               break;
             }
-          if ((x < (long) (roi_info.x+roi_info.width+RoiDelta)) &&
-              (x > (int) (roi_info.x+roi_info.width-RoiDelta)) &&
-              (y < (long) (roi_info.y+RoiDelta)) &&
-              (y > (int) (roi_info.y-RoiDelta)))
+          if ((x < (roi_info.x+roi_info.width+RoiDelta)) &&
+              (x > (roi_info.x+roi_info.width-RoiDelta)) &&
+              (y < (roi_info.y+RoiDelta)) &&
+              (y > (roi_info.y-RoiDelta)))
             {
-              roi_info.y=roi_info.y+roi_info.height;
+              roi_info.y=(long) (roi_info.y+roi_info.height);
               state|=UpdateConfigurationState;
               break;
             }
-          if ((x < (long) (roi_info.x+roi_info.width+RoiDelta)) &&
-              (x > (int) (roi_info.x+roi_info.width-RoiDelta)) &&
-              (y < (long) (roi_info.y+roi_info.height+RoiDelta)) &&
-              (y > (int) (roi_info.y+roi_info.height-RoiDelta)))
+          if ((x < (roi_info.x+roi_info.width+RoiDelta)) &&
+              (x > (roi_info.x+roi_info.width-RoiDelta)) &&
+              (y < (roi_info.y+roi_info.height+RoiDelta)) &&
+              (y > (roi_info.y+roi_info.height-RoiDelta)))
             {
               state|=UpdateConfigurationState;
               break;
@@ -12574,7 +12575,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   */
   if (resource_info->delay > 1)
     display_image->delay=resource_info->delay;
-  timer=time((time_t *) NULL)+display_image->delay/100+1;
+  timer=time((time_t *) NULL)+(long) display_image->delay/100+1;
   update_time=0;
   if (resource_info->update)
     {
@@ -12624,7 +12625,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                       if (nexus != (Image *) NULL)
                         *state|=NextImageState | ExitState;
                     }
-                timer=time((time_t *) NULL)+display_image->delay/100+1;
+                timer=time((time_t *) NULL)+(long) display_image->delay/100+1;
               }
           }
         if (XEventsQueued(display,QueuedAfterFlush) == 0)
@@ -12819,7 +12820,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
             XPanImage(display,windows,&event);
             break;
           }
-        timer=time((time_t *) NULL)+display_image->delay/100+1;
+        timer=time((time_t *) NULL)+(long) display_image->delay/100+1;
         break;
       }
       case ButtonRelease:
@@ -13196,7 +13197,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
           if (windows->image.mapped)
             {
               XRefreshWindow(display,&windows->image,&event);
-              timer=time((time_t *) NULL)+display_image->delay/100+1;
+              timer=time((time_t *) NULL)+(long) display_image->delay/100+1;
               break;
             }
         if (event.xexpose.window == windows->magnify.id)
@@ -13256,7 +13257,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
               else
                 XTranslateImage(display,windows,*image,key_symbol);
           }
-        timer=time((time_t *) NULL)+display_image->delay/100+1;
+        timer=time((time_t *) NULL)+(long) display_image->delay/100+1;
         break;
       }
       case KeyRelease:

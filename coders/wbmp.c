@@ -329,7 +329,7 @@ static void WBMPWriteInteger(Image *image,const unsigned long value)
   flag=False;
   for(i=4; i >= 0; i--)
   {
-    octet=((value >> bits) & 0x7f);
+    octet=(unsigned char) ((value >> bits) & 0x7f);
     if (!flag && octet)
       {
         flag=True;

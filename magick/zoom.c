@@ -353,11 +353,12 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
   */
   for (y=0; y < (long) image->rows; y++)
   {
-    p=GetImagePixels(magnify_image,0,image->rows-1-y,magnify_image->columns,1);
+    p=GetImagePixels(magnify_image,0,(long) (image->rows-1-y),
+      magnify_image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
     (void) memcpy(scanline,p,magnify_image->columns*sizeof(PixelPacket));
-    q=GetImagePixels(magnify_image,0,2*(image->rows-1-y),
+    q=GetImagePixels(magnify_image,0,(long) (2*(image->rows-1-y)),
       magnify_image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
@@ -380,7 +381,7 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
   }
   for (y=0; y < (long) image->rows; y++)
   {
-    rows=Min(image->rows-y,3);
+    rows=(long) Min(image->rows-y,3);
     p=GetImagePixels(magnify_image,0,2*y,magnify_image->columns,rows);
     if (p == (PixelPacket *) NULL)
       break;
@@ -424,10 +425,12 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
     if (QuantumTick(y,image->rows))
       MagickMonitor(MagnifyImageText,y,image->rows);
   }
-  p=GetImagePixels(magnify_image,0,2*image->rows-2,magnify_image->columns,1);
+  p=GetImagePixels(magnify_image,0,(long) (2*image->rows-2),
+    magnify_image->columns,1);
   if (p != (PixelPacket *) NULL)
     (void) memcpy(scanline,p,magnify_image->columns*sizeof(PixelPacket));
-  q=GetImagePixels(magnify_image,0,2*image->rows-1,magnify_image->columns,1);
+  q=GetImagePixels(magnify_image,0,(long) (2*image->rows-1),
+    magnify_image->columns,1);
   if (q != (PixelPacket *) NULL)
     (void) memcpy(q,scanline,magnify_image->columns*sizeof(PixelPacket));
   (void) SyncImagePixels(magnify_image);
@@ -973,7 +976,8 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
       opacity=0.0;
       for (i=0; i < n; i++)
       {
-        j=(contribution[i].pixel-contribution[0].pixel)*source->columns+x;
+        j=(long)
+          ((contribution[i].pixel-contribution[0].pixel)*source->columns+x);
         red+=contribution[i].weight*(p+j)->red;
         green+=contribution[i].weight*(p+j)->green;
         blue+=contribution[i].weight*(p+j)->blue;

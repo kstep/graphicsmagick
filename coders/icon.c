@@ -272,7 +272,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
         /*
           Convert bitmap scanline.
         */
-        for (y=image->rows-1; y >= 0; y--)
+        for (y=(long) image->rows-1; y >= 0; y--)
         {
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
@@ -303,7 +303,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
         /*
           Read 4-bit Icon scanline.
         */
-        for (y=image->rows-1; y >= 0; y--)
+        for (y=(long) image->rows-1; y >= 0; y--)
         {
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
@@ -333,7 +333,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
         /*
           Convert PseudoColor scanline.
         */
-        for (y=image->rows-1; y >= 0; y--)
+        for (y=(long) image->rows-1; y >= 0; y--)
         {
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
@@ -357,7 +357,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
         /*
           Convert PseudoColor scanline.
         */
-        for (y=image->rows-1; y >= 0; y--)
+        for (y=(long) image->rows-1; y >= 0; y--)
         {
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
@@ -384,7 +384,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
         /*
           Convert DirectColor scanline.
         */
-        for (y=image->rows-1; y >= 0; y--)
+        for (y=(long) image->rows-1; y >= 0; y--)
         {
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
@@ -415,7 +415,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
     */
     image->storage_class=DirectClass;
     image->matte=True;
-    for (y=image->rows-1; y >= 0; y--)
+    for (y=(long) image->rows-1; y >= 0; y--)
     {
       q=GetImagePixels(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)

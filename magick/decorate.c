@@ -102,8 +102,8 @@ MagickExport Image *BorderImage(const Image *image,
   assert(border_info != (RectangleInfo *) NULL);
   frame_info.width=image->columns+(border_info->width << 1);
   frame_info.height=image->rows+(border_info->height << 1);
-  frame_info.x=border_info->width;
-  frame_info.y=border_info->height;
+  frame_info.x=(long) border_info->width;
+  frame_info.y=(long) border_info->height;
   frame_info.inner_bevel=0;
   frame_info.outer_bevel=0;
   clone_image=CloneImage(image,0,0,False,exception);
@@ -189,8 +189,8 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     ThrowImageException(OptionWarning,"Unable to frame image",
       "bevel width is negative");
   bevel_width=frame_info->outer_bevel+frame_info->inner_bevel;
-  width=(long) frame_info->width-frame_info->x-bevel_width;
-  height=(long) frame_info->height-frame_info->y-bevel_width;
+  width=(long) (frame_info->width-frame_info->x-bevel_width);
+  height=(long) (frame_info->height-frame_info->y-bevel_width);
   if ((width < (long) image->columns) || (height < (long) image->rows))
     ThrowImageException(OptionWarning,"Unable to frame image",
       "frame is less than image size");
@@ -235,8 +235,8 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
   /*
     Draw top of ornamental border.
   */
-  height=frame_info->outer_bevel+(frame_info->y-bevel_width)+
-    frame_info->inner_bevel;
+  height=(long) (frame_info->outer_bevel+(frame_info->y-bevel_width)+
+    frame_info->inner_bevel);
   q=SetImagePixels(frame_image,0,0,frame_image->columns,height);
   if (q != (PixelPacket *) NULL)
     {
@@ -265,7 +265,7 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
           *q++=highlight;
         for (x=0; x < (long) (frame_info->x-bevel_width); x++)
           *q++=matte;
-        width=image->columns+(frame_info->inner_bevel << 1)-y;
+        width=(long) (image->columns+(frame_info->inner_bevel << 1)-y);
         for (x=0; x < width; x++)
           if (x < y)
             *q++=shadow;
@@ -273,7 +273,8 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
             *q++=trough;
         for ( ; x < (long) (image->columns+(frame_info->inner_bevel << 1)); x++)
           *q++=highlight;
-        width=frame_info->width-frame_info->x-image->columns-bevel_width;
+        width=(long)
+          (frame_info->width-frame_info->x-image->columns-bevel_width);
         for (x=0; x < width; x++)
           *q++=matte;
         for (x=0; x < frame_info->outer_bevel; x++)
@@ -306,7 +307,7 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
     q+=image->columns;
     for (x=0; x < frame_info->inner_bevel; x++)
       *q++=highlight;
-    width=frame_info->width-frame_info->x-image->columns-bevel_width;
+    width=(long) (frame_info->width-frame_info->x-image->columns-bevel_width);
     for (x=0; x < width; x++)
       *q++=matte;
     for (x=0; x < frame_info->outer_bevel; x++)
@@ -319,10 +320,10 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
   /*
     Draw bottom of ornamental border.
   */
-  height=frame_info->inner_bevel+frame_info->height-frame_info->y-image->rows-
-    bevel_width+frame_info->outer_bevel;
-  q=SetImagePixels(frame_image,0,frame_image->rows-height,frame_image->columns,
-    height);
+  height=(long) (frame_info->inner_bevel+frame_info->height-frame_info->y-
+    image->rows-bevel_width+frame_info->outer_bevel);
+  q=SetImagePixels(frame_image,0,(long) (frame_image->rows-height),
+    frame_image->columns,height);
   if (q == (PixelPacket *) NULL)
     return(frame_image);
   for (y=frame_info->inner_bevel-1; y >= 0; y--)
@@ -338,13 +339,13 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
         *q++=highlight;
       else
         *q++=accentuate;
-    width=frame_info->width-frame_info->x-image->columns-bevel_width;
+    width=(long) (frame_info->width-frame_info->x-image->columns-bevel_width);
     for (x=0; x < (long) width; x++)
       *q++=matte;
     for (x=0; x < frame_info->outer_bevel; x++)
       *q++=shadow;
   }
-  height=frame_info->height-frame_info->y-image->rows-bevel_width;
+  height=(long) (frame_info->height-frame_info->y-image->rows-bevel_width);
   for (y=0; y < height; y++)
   {
     for (x=0; x < frame_info->outer_bevel; x++)

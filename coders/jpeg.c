@@ -312,7 +312,7 @@ static boolean ReadGenericProfile(j_decompress_ptr jpeg_info)
     Allocate generic profile.
   */
   image=(Image *) jpeg_info->client_data;
-  i=image->generic_profiles;
+  i=(long) image->generic_profiles;
   if (image->generic_profile == (ProfileInfo *) NULL)
     image->generic_profile=(ProfileInfo *) AcquireMemory(sizeof(ProfileInfo));
   else
@@ -1006,7 +1006,7 @@ static void WriteICCProfile(j_compress_ptr jpeg_info,Image *image)
     if (profile == (unsigned char *) NULL)
       break;
     (void) strcpy((char *) profile,"ICC_PROFILE");
-    profile[12]=(i/65519)+1;
+    profile[12]=(unsigned char) ((i/65519)+1);
     profile[13]=(image->color_profile.length/65519)+1;
     for (j=0; j < length; j++)
       profile[j+14]=image->color_profile.info[i+j];

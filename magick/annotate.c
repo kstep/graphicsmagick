@@ -882,8 +882,8 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
         {
           if (draw_info->fill_pattern != (Image *) NULL)
             fill_color=GetOnePixel(draw_info->fill_pattern,
-              x % draw_info->fill_pattern->columns,
-              y % draw_info->fill_pattern->rows);
+              (long) (x % draw_info->fill_pattern->columns),
+              (long) (y % draw_info->fill_pattern->rows));
           q->opacity=(Quantum) (MaxRGB-((unsigned long) ((MaxRGB-Intensity(q))*
             (MaxRGB-fill_color.opacity))/MaxRGB));
           q->red=fill_color.red;
@@ -1114,7 +1114,7 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
             (void) strncpy(filename,p,q-p);
             filename[q-p]='\0';
           }
-        i=strlen(filename);
+        i=(long) strlen(filename);
         if ((i > 0) && (filename[i-1] != *DirectorySeparator))
           (void) strcat(filename,DirectorySeparator);
         (void) strncat(filename,draw_info->font,MaxTextExtent-i-1);
@@ -1254,8 +1254,8 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
                 fill_color=draw_info->fill;
                 if (draw_info->fill_pattern != (Image *) NULL)
                   fill_color=GetOnePixel(draw_info->fill_pattern,
-                    x % draw_info->fill_pattern->columns,
-                    y % draw_info->fill_pattern->rows);
+                    (long) (x % draw_info->fill_pattern->columns),
+                    (long) (y % draw_info->fill_pattern->rows));
                 opacity=(Quantum) ((unsigned long) ((MaxRGB-opacity)*
                   (MaxRGB-fill_color.opacity))/MaxRGB);
                 if (!active)
