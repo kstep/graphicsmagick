@@ -1,3 +1,10 @@
+2004-03-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Check for rand_r().
+	* magick/tempfile.c (ComposeTemporaryFileName): The full range of
+	safe characters was not being used, thereby limiting the number of
+	unique temporary file names available.
+
 2004-03-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/image.c (GetImageStatistics): New function to obtain

@@ -5,7 +5,7 @@
 # Copyright.txt. You should have received a copy of Copyright.txt with this
 # package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
 #
-# Makefile for ImageMagick tests invoked via the C API
+# Makefile for GraphicsMagick tests invoked via the C API
 #
 
 AUTOMAKE_OPTIONS = 1.8 foreign
