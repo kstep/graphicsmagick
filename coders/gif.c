@@ -1001,7 +1001,7 @@ ModuleExport void RegisterGIFImage(void)
   entry->magick=IsGIF;
   entry->description=AllocateString("CompuServe graphics interchange format");
   entry->module=AllocateString("GIF");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("GIF87");
   entry->decoder=ReadGIFImage;
   entry->encoder=WriteGIFImage;
@@ -1010,7 +1010,7 @@ ModuleExport void RegisterGIFImage(void)
   entry->description=
     AllocateString("CompuServe graphics interchange format (version 87a)");
   entry->module=AllocateString("GIF");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -1034,8 +1034,8 @@ ModuleExport void RegisterGIFImage(void)
 */
 ModuleExport void UnregisterGIFImage(void)
 {
-  UnregisterMagickInfo("GIF");
-  UnregisterMagickInfo("GIF87");
+  (void) UnregisterMagickInfo("GIF");
+  (void) UnregisterMagickInfo("GIF87");
 }
 
 /*

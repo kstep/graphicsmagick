@@ -156,8 +156,8 @@ MagickExport void DestroyModuleInfo(void)
   {
     module_info=p;
     p=p->next;
-    UnloadDynamicModule(module_info->tag);
-    UnregisterModuleInfo(module_info->tag);
+    (void) UnloadDynamicModule(module_info->tag);
+    (void) UnregisterModuleInfo(module_info->tag);
   }
   /*
     Free module list and aliases.
@@ -283,7 +283,7 @@ MagickExport unsigned int ExecuteModuleProcess(const char *tag,Image *image,
     lt_dlsym(handle,module_name);
   if (method != NULL)
     status=(*method)(image,argc,argv);
-  lt_dlclose(handle);
+  (void) lt_dlclose(handle);
   LiberateMemory((void **) &module_name);
   return(status);
 }
@@ -676,11 +676,11 @@ MagickExport unsigned int OpenModule(const char *module,
   module_info=SetModuleInfo(module_name);
   if (module_info == (ModuleInfo*) NULL)
     {
-      lt_dlclose(handle);
+      (void) lt_dlclose(handle);
       return(False);
     }
   module_info->handle=handle;
-  time(&module_info->load_time);
+  (void) time(&module_info->load_time);
   if (!RegisterModuleInfo(module_info))
     return(False);
   /*
@@ -742,7 +742,7 @@ MagickExport unsigned int OpenModules(ExceptionInfo *exception)
   if (modules == (char **) NULL)
     return(False);
   for (p=modules; *p != (char *) NULL; p++)
-    OpenModule(*p,exception);
+    (void) OpenModule(*p,exception);
   /*
     Free resources.
   */
@@ -841,7 +841,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
         if (alias_info == (ModuleAlias *) NULL)
           MagickError(ResourceLimitError,"Unable to allocate module aliases",
             "Memory allocation failed");
-        memset(alias_info,0,sizeof(ModuleAlias));
+        (void) memset(alias_info,0,sizeof(ModuleAlias));
         if (module_aliases == (ModuleAlias *) NULL)
           {
             alias_info->filename=AllocateString(filename);
@@ -1011,7 +1011,7 @@ static ModuleInfo *SetModuleInfo(const char *tag)
   if (entry == (ModuleInfo *) NULL)
     MagickError(ResourceLimitError,"Unable to allocate module info",
       "Memory allocation failed");
-  memset(entry,0,sizeof(ModuleInfo));
+  (void) memset(entry,0,sizeof(ModuleInfo));
   entry->tag=AllocateString(tag);
   entry->signature=MagickSignature;
   return(entry);
@@ -1160,7 +1160,7 @@ static int UnloadDynamicModule(const char *module)
   /*
     Close and remove module from list.
   */
-  lt_dlclose((ModuleHandle) module_info->handle);
+  (void) lt_dlclose((ModuleHandle) module_info->handle);
   return(True);
 }
 

@@ -238,7 +238,7 @@ ModuleExport void RegisterAPP1Image(void)
   entry->adjoin=False;
   entry->description=AllocateString("Photoshop resource format");
   entry->module=AllocateString("APP1");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -262,7 +262,7 @@ ModuleExport void RegisterAPP1Image(void)
 */
 ModuleExport void UnregisterAPP1Image(void)
 {
-  UnregisterMagickInfo("APP1");
+  (void) UnregisterMagickInfo("APP1");
 }
 
 /*

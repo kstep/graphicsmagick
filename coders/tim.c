@@ -397,7 +397,7 @@ ModuleExport void RegisterTIMImage(void)
   entry->decoder=ReadTIMImage;
   entry->description=AllocateString("PSX TIM");
   entry->module=AllocateString("TIM");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -421,5 +421,5 @@ ModuleExport void RegisterTIMImage(void)
 */
 ModuleExport void UnregisterTIMImage(void)
 {
-  UnregisterMagickInfo("TIM");
+  (void) UnregisterMagickInfo("TIM");
 }

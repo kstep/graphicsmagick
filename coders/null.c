@@ -145,7 +145,7 @@ ModuleExport void RegisterNULLImage(void)
   entry->adjoin=False;
   entry->description=AllocateString("Constant image of uniform color");
   entry->module=AllocateString("NULL");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -169,5 +169,5 @@ ModuleExport void RegisterNULLImage(void)
 */
 ModuleExport void UnregisterNULLImage(void)
 {
-  UnregisterMagickInfo("NULL");
+  (void) UnregisterMagickInfo("NULL");
 }

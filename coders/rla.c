@@ -398,7 +398,7 @@ ModuleExport void RegisterRLAImage(void)
   entry->adjoin=False;
   entry->description=AllocateString("Alias/Wavefront image");
   entry->module=AllocateString("RLA");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -422,5 +422,5 @@ ModuleExport void RegisterRLAImage(void)
 */
 ModuleExport void UnregisterRLAImage(void)
 {
-  UnregisterMagickInfo("RLA");
+  (void) UnregisterMagickInfo("RLA");
 }

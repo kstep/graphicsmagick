@@ -516,7 +516,7 @@ ModuleExport void RegisterFITSImage(void)
   entry->adjoin=False;
   entry->description=AllocateString("Flexible Image Transport System");
   entry->module=AllocateString("FITS");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -540,7 +540,7 @@ ModuleExport void RegisterFITSImage(void)
 */
 ModuleExport void UnregisterFITSImage(void)
 {
-  UnregisterMagickInfo("FITS");
+  (void) UnregisterMagickInfo("FITS");
 }
 
 /*

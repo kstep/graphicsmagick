@@ -587,7 +587,7 @@ ModuleExport void RegisterCUTImage(void)
   entry->decoder=ReadCUTImage;
   entry->description=AllocateString("DR Hallo");
   entry->module=AllocateString("CUT");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -611,5 +611,5 @@ ModuleExport void RegisterCUTImage(void)
 */
 ModuleExport void UnregisterCUTImage(void)
 {
-  UnregisterMagickInfo("CUT");
+  (void) UnregisterMagickInfo("CUT");
 }

@@ -2627,7 +2627,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
               }
             else
               {
-                 memcpy(image->color_profile.info,(unsigned char *) info,length);
+                 (void) memcpy(image->color_profile.info,(unsigned char *) info,length);
                  image->color_profile.name=AllocateString("icm");
                  /* Note that the PNG iCCP profile name gets lost. */
               }
@@ -3507,7 +3507,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                        "Memory allocation failed while magnifying",image)
                   }
                 n=GetImagePixels(image,0,0,image->columns,1);
-                memcpy(next,n,length);
+                (void) memcpy(next,n,length);
                 for (y=0; y < (int) image->rows; y++)
                 {
                   if (y == 0)
@@ -3526,7 +3526,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   if (y < (int) image->rows-1)
                     {
                       n=GetImagePixels(image,0,y+1,image->columns,1);
-                      memcpy(next,n,length);
+                      (void) memcpy(next,n,length);
                     }
                   for (i=0; i<m; i++, yy++)
                   {
@@ -3969,7 +3969,7 @@ ModuleExport void RegisterPNGImage(void)
   entry->magick=IsMNG;
   entry->description=AllocateString("Multiple-image Network Graphics");
   entry->module=AllocateString("PNG");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PNG");
   entry->decoder=ReadPNGImage;
   entry->encoder=WritePNGImage;
@@ -3977,7 +3977,7 @@ ModuleExport void RegisterPNGImage(void)
   entry->adjoin=False;
   entry->description=AllocateString("Portable Network Graphics");
   entry->module=AllocateString("PNG");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -4001,8 +4001,8 @@ ModuleExport void RegisterPNGImage(void)
 */
 ModuleExport void UnregisterPNGImage(void)
 {
-  UnregisterMagickInfo("MNG");
-  UnregisterMagickInfo("PNG");
+  (void) UnregisterMagickInfo("MNG");
+  (void) UnregisterMagickInfo("PNG");
 }
 
 #if defined(HasPNG)
@@ -4106,7 +4106,7 @@ static void PNGShort(png_bytep p,png_uint_16 value)
 
 static void PNGType(png_bytep p,png_bytep type)
 {
-  memcpy(p,type,4*sizeof(png_byte));
+  (void) memcpy(p,type,4*sizeof(png_byte));
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)

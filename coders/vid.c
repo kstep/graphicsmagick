@@ -222,7 +222,7 @@ ModuleExport void RegisterVIDImage(void)
   entry->encoder=WriteVIDImage;
   entry->description=AllocateString("Visual Image Directory");
   entry->module=AllocateString("VID");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -246,7 +246,7 @@ ModuleExport void RegisterVIDImage(void)
 */
 ModuleExport void UnregisterVIDImage(void)
 {
-  UnregisterMagickInfo("VID");
+  (void) UnregisterMagickInfo("VID");
 }
 
 /*

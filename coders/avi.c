@@ -167,7 +167,7 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
 
   assert(image != (Image *) NULL);
   assert(pixels != (unsigned char *) NULL);
-  memset(pixels,0,image->columns*image->rows);
+  (void) memset(pixels,0,image->columns*image->rows);
   byte=0;
   x=0;
   q=pixels;
@@ -392,8 +392,8 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
-  memset(&avi_info,0,sizeof(AVIInfo));
-  memset(&bmp_info,0,sizeof(BMPInfo));
+  (void) memset(&avi_info,0,sizeof(AVIInfo));
+  (void) memset(&bmp_info,0,sizeof(BMPInfo));
   colormap=(PixelPacket *) NULL;
   number_colors=0;
   for ( ; ; )
@@ -426,7 +426,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(ResourceLimitWarning,
             "Memory allocation failed",image);
         if (number_colors != 0)
-          memcpy(image->colormap,colormap,number_colors*sizeof(PixelPacket));
+          (void) memcpy(image->colormap,colormap,number_colors*sizeof(PixelPacket));
         bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
         pixels=(unsigned char *) AcquireMemory(bytes_per_line*image->rows);
         if (LocaleCompare(id,"00db") == 0)
@@ -830,7 +830,7 @@ ModuleExport void RegisterAVIImage(void)
   entry->magick=IsAVI;
   entry->description=AllocateString("Audio/Visual Interleaved");
   entry->module=AllocateString("AVI");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -854,5 +854,5 @@ ModuleExport void RegisterAVIImage(void)
 */
 ModuleExport void UnregisterAVIImage(void)
 {
-  UnregisterMagickInfo("AVI");
+  (void) UnregisterMagickInfo("AVI");
 }

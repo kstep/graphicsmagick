@@ -483,7 +483,7 @@ ModuleExport void RegisterFPXImage(void)
   entry->adjoin=False;
   entry->description=AllocateString("FlashPix Format");
   entry->module=AllocateString("FPX");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -507,7 +507,7 @@ ModuleExport void RegisterFPXImage(void)
 */
 ModuleExport void UnregisterFPXImage(void)
 {
-  UnregisterMagickInfo("FPX");
+  (void) UnregisterMagickInfo("FPX");
 }
 
 #if defined(HasFPX)

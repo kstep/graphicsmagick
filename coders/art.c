@@ -223,7 +223,7 @@ ModuleExport void RegisterARTImage(void)
   entry->decoder=ReadARTImage;
   entry->description=AllocateString("PF1: 1st Publisher");
   entry->module=AllocateString("ART");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -247,5 +247,5 @@ ModuleExport void RegisterARTImage(void)
 */
 ModuleExport void UnregisterARTImage(void)
 {
-  UnregisterMagickInfo("ART");
+  (void) UnregisterMagickInfo("ART");
 }

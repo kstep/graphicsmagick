@@ -492,7 +492,7 @@ ModuleExport void RegisterXWDImage(void)
   entry->adjoin=False;
   entry->description=AllocateString("X Windows system window dump (color)");
   entry->module=AllocateString("XWD");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -517,7 +517,7 @@ ModuleExport void RegisterXWDImage(void)
 ModuleExport void UnregisterXWDImage(void)
 {
 #if defined(HasX11)
-  UnregisterMagickInfo("XWD");
+  (void) UnregisterMagickInfo("XWD");
 #endif
 }
 

@@ -184,7 +184,7 @@ ModuleExport void RegisterMVGImage(void)
   entry->adjoin=False;
   entry->description=AllocateString("Magick Vector Graphics");
   entry->module=AllocateString("MVG");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -208,7 +208,7 @@ ModuleExport void RegisterMVGImage(void)
 */
 ModuleExport void UnregisterMVGImage(void)
 {
-  UnregisterMagickInfo("MVG");
+  (void) UnregisterMagickInfo("MVG");
 }
 
 /*

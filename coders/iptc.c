@@ -173,7 +173,7 @@ static Image *ReadIPTCImage(const ImageInfo *image_info,
   data=(unsigned char *) AcquireMemory(length+2);
   if (data == (unsigned char *) NULL)
     ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
-  memcpy(data,"8BIM\04\04\0\0\0\0\0\0",tag_length);
+  (void) memcpy(data,"8BIM\04\04\0\0\0\0\0\0",tag_length);
   q=data;
   q+=tag_length;
   for ( ; ; )
@@ -240,7 +240,7 @@ ModuleExport void RegisterIPTCImage(void)
   entry->adjoin=False;
   entry->description=AllocateString("IPTC Newsphoto");
   entry->module=AllocateString("IPTC");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -264,7 +264,7 @@ ModuleExport void RegisterIPTCImage(void)
 */
 ModuleExport void UnregisterIPTCImage(void)
 {
-  UnregisterMagickInfo("IPTC");
+  (void) UnregisterMagickInfo("IPTC");
 }
 
 /*

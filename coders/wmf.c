@@ -1636,7 +1636,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   cstruct=(CSTRUCT *)AcquireMemory(sizeof(CSTRUCT));
   if(cstruct == (CSTRUCT*)NULL)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
-  memset((void*)cstruct,0,sizeof(CSTRUCT));
+  (void) memset((void*)cstruct,0,sizeof(CSTRUCT));
   wmfinit(cstruct); /* Simply initializes realwidth & realheight */
   cstruct->userdata=(void*)AcquireMemory(sizeof(ImUserData));
   if(cstruct->userdata == (void*)NULL)
@@ -1801,49 +1801,49 @@ ModuleExport void RegisterWMFImage(void)
 /*   entry->description=AllocateString("WMF decoder internal format"); */
 /*   entry->stealth=True; */
 /*   entry->module=AllocateString("WMF"); */
-/*   RegisterMagickInfo(entry); */
+/*   (void) RegisterMagickInfo(entry); */
 
 /*   entry=SetMagickInfo("HATCH_CROSS"); */
 /*   entry->decoder=ReadWMFImage; */
 /*   entry->description=AllocateString("WMF decoder internal format"); */
 /*   entry->stealth=True; */
 /*   entry->module=AllocateString("WMF"); */
-/*   RegisterMagickInfo(entry); */
+/*   (void) RegisterMagickInfo(entry); */
 
 /*   entry=SetMagickInfo("HATCH_DIAGCROSS"); */
 /*   entry->decoder=ReadWMFImage; */
 /*   entry->description=AllocateString("WMF decoder internal format"); */
 /*   entry->stealth=True; */
 /*   entry->module=AllocateString("WMF"); */
-/*   RegisterMagickInfo(entry); */
+/*   (void) RegisterMagickInfo(entry); */
 
 /*   entry=SetMagickInfo("HATCH_FDIAGONAL"); */
 /*   entry->decoder=ReadWMFImage; */
 /*   entry->description=AllocateString("WMF decoder internal format"); */
 /*   entry->stealth=True; */
 /*   entry->module=AllocateString("WMF"); */
-/*   RegisterMagickInfo(entry); */
+/*   (void) RegisterMagickInfo(entry); */
 
 /*   entry=SetMagickInfo("HATCH_HORIZONTAL"); */
 /*   entry->decoder=ReadWMFImage; */
 /*   entry->description=AllocateString("WMF decoder internal format"); */
 /*   entry->stealth=True; */
 /*   entry->module=AllocateString("WMF"); */
-/*   RegisterMagickInfo(entry); */
+/*   (void) RegisterMagickInfo(entry); */
 
 /*   entry=SetMagickInfo("HATCH_VERTICAL"); */
 /*   entry->decoder=ReadWMFImage; */
 /*   entry->description=AllocateString("WMF decoder internal format"); */
 /*   entry->stealth=True; */
 /*   entry->module=AllocateString("WMF"); */
-/*   RegisterMagickInfo(entry); */
+/*   (void) RegisterMagickInfo(entry); */
 
   entry=SetMagickInfo("WMF");
   entry->decoder=ReadWMFImage;
   entry->description=AllocateString("Windows Meta File");
   entry->blob_support=False;
   entry->module=AllocateString("WMF");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 #endif /* defined(HasWMF) || defined(HasWMF2) */
 }
 
@@ -1869,6 +1869,6 @@ ModuleExport void RegisterWMFImage(void)
 ModuleExport void UnregisterWMFImage(void)
 {
 #if defined(HasWMF) || defined(HasWMF2)
-  UnregisterMagickInfo("WMF");
+  (void) UnregisterMagickInfo("WMF");
 #endif /* defined(HasWMF) || defined(HasWMF2) */
 }

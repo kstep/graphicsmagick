@@ -241,7 +241,7 @@ ModuleExport void RegisterMTVImage(void)
   entry->encoder=WriteMTVImage;
   entry->description=AllocateString("MTV Raytracing image format");
   entry->module=AllocateString("MTV");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -265,7 +265,7 @@ ModuleExport void RegisterMTVImage(void)
 */
 ModuleExport void UnregisterMTVImage(void)
 {
-  UnregisterMagickInfo("MTV");
+  (void) UnregisterMagickInfo("MTV");
 }
 
 /*

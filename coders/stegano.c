@@ -227,7 +227,7 @@ ModuleExport void RegisterSTEGANOImage(void)
   entry->decoder=ReadSTEGANOImage;
   entry->description=AllocateString("Steganographic image");
   entry->module=AllocateString("STEGANO");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -251,5 +251,5 @@ ModuleExport void RegisterSTEGANOImage(void)
 */
 ModuleExport void UnregisterSTEGANOImage(void)
 {
-  UnregisterMagickInfo("STEGANO");
+  (void) UnregisterMagickInfo("STEGANO");
 }

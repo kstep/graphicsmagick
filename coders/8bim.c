@@ -223,7 +223,7 @@ ModuleExport void Register8BIMImage(void)
   entry->adjoin=False;
   entry->description=AllocateString("Photoshop resource format");
   entry->module=AllocateString("8BIM");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -247,7 +247,7 @@ ModuleExport void Register8BIMImage(void)
 */
 ModuleExport void Unregister8BIMImage(void)
 {
-  UnregisterMagickInfo("8BIM");
+  (void) UnregisterMagickInfo("8BIM");
 }
 
 /*

@@ -654,7 +654,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x_offset,
       {
         if (image->colorspace == CMYKColorspace)
           break;
-        RGBTransformImage(image,CMYKColorspace);
+        (void) RGBTransformImage(image,CMYKColorspace);
         break;
       }
       case 'i':
@@ -698,7 +698,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x_offset,
               case 'c':
               case 'C':
               {
-                *q++=DownScale(p->red);
+                *q++=(unsigned char) DownScale(p->red);
                 break;
               }
               case 'g':
@@ -706,7 +706,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x_offset,
               case 'm':
               case 'M':
               {
-                *q++=DownScale(p->green);
+                *q++=(unsigned char) DownScale(p->green);
                 break;
               }
               case 'b':
@@ -714,7 +714,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x_offset,
               case 'y':
               case 'Y':
               {
-                *q++=DownScale(p->blue);
+                *q++=(unsigned char) DownScale(p->blue);
                 break;
               }
               case 'a':
@@ -722,13 +722,13 @@ MagickExport unsigned int DispatchImage(Image *image,const int x_offset,
               case 'k':
               case 'K':
               {
-                *q++=DownScale(p->opacity);
+                *q++=(unsigned char) DownScale(p->opacity);
                 break;
               }
               case 'i':
               case 'I':
               {
-                *q++=indexes[x];
+                *q++=(unsigned char) indexes[x];
                 break;
               }
               default:
@@ -763,7 +763,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x_offset,
               case 'c':
               case 'C':
               {
-                *q++=p->red;
+                *q++=(unsigned short) p->red;
                 break;
               }
               case 'g':
@@ -771,7 +771,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x_offset,
               case 'm':
               case 'M':
               {
-                *q++=p->green;
+                *q++=(unsigned short) p->green;
                 break;
               }
               case 'b':
@@ -779,7 +779,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x_offset,
               case 'y':
               case 'Y':
               {
-                *q++=p->blue;
+                *q++=(unsigned short) p->blue;
                 break;
               }
               case 'a':
@@ -787,7 +787,7 @@ MagickExport unsigned int DispatchImage(Image *image,const int x_offset,
               case 'k':
               case 'K':
               {
-                *q++=p->opacity;
+                *q++=(unsigned short) p->opacity;
                 break;
               }
               case 'i':

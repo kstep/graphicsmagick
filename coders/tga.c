@@ -227,7 +227,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) SetImageAttribute(image,"comment",comment);
         LiberateMemory((void **) &comment);
       }
-    memset(&pixel,0,sizeof(PixelPacket));
+    (void) memset(&pixel,0,sizeof(PixelPacket));
     pixel.opacity=TransparentOpacity;
     if (tga_info.colormap_type != 0)
       {
@@ -463,25 +463,25 @@ ModuleExport void RegisterTGAImage(void)
   entry->encoder=WriteTGAImage;
   entry->description=AllocateString("Truevision Targa image");
   entry->module=AllocateString("TGA");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("TGA");
   entry->decoder=ReadTGAImage;
   entry->encoder=WriteTGAImage;
   entry->description=AllocateString("Truevision Targa image");
   entry->module=AllocateString("TGA");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("VDA");
   entry->decoder=ReadTGAImage;
   entry->encoder=WriteTGAImage;
   entry->description=AllocateString("Truevision Targa image");
   entry->module=AllocateString("TGA");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("VST");
   entry->decoder=ReadTGAImage;
   entry->encoder=WriteTGAImage;
   entry->description=AllocateString("Truevision Targa image");
   entry->module=AllocateString("TGA");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -505,10 +505,10 @@ ModuleExport void RegisterTGAImage(void)
 */
 ModuleExport void UnregisterTGAImage(void)
 {
-  UnregisterMagickInfo("ICB");
-  UnregisterMagickInfo("TGA");
-  UnregisterMagickInfo("VDA");
-  UnregisterMagickInfo("VST");
+  (void) UnregisterMagickInfo("ICB");
+  (void) UnregisterMagickInfo("TGA");
+  (void) UnregisterMagickInfo("VDA");
+  (void) UnregisterMagickInfo("VST");
 }
 
 /*

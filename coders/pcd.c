@@ -797,14 +797,14 @@ ModuleExport void RegisterPCDImage(void)
   entry->adjoin=False;
   entry->description=AllocateString("Photo CD");
   entry->module=AllocateString("PCD");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PCDS");
   entry->decoder=ReadPCDImage;
   entry->encoder=WritePCDImage;
   entry->adjoin=False;
   entry->description=AllocateString("Photo CD");
   entry->module=AllocateString("PCD");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -828,8 +828,8 @@ ModuleExport void RegisterPCDImage(void)
 */
 ModuleExport void UnregisterPCDImage(void)
 {
-  UnregisterMagickInfo("PCD");
-  UnregisterMagickInfo("PCDS");
+  (void) UnregisterMagickInfo("PCD");
+  (void) UnregisterMagickInfo("PCDS");
 }
 
 /*

@@ -155,7 +155,7 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
 
   assert(image != (Image *) NULL);
   assert(pixels != (unsigned char *) NULL);
-  memset(pixels,0,image->columns*image->rows);
+  (void) memset(pixels,0,image->columns*image->rows);
   byte=0;
   x=0;
   q=pixels;
@@ -472,7 +472,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Determine if this is a BMP file.
   */
-  memset(&bmp_info,0,sizeof(BMPInfo));
+  (void) memset(&bmp_info,0,sizeof(BMPInfo));
   bmp_info.ba_offset=0;
   start_position=0;
   count=ReadBlob(image,2,(char *) magick);
@@ -905,13 +905,13 @@ ModuleExport void RegisterBMPImage(void)
   entry->magick=IsBMP;
   entry->description=AllocateString("Microsoft Windows bitmap image");
   entry->module=AllocateString("BMP");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("DIB");
   entry->decoder=ReadBMPImage;
   entry->encoder=WriteBMPImage;
   entry->description=AllocateString("Microsoft Windows bitmap image");
   entry->module=AllocateString("BMP");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -935,8 +935,8 @@ ModuleExport void RegisterBMPImage(void)
 */
 ModuleExport void UnregisterBMPImage(void)
 {
-  UnregisterMagickInfo("BMP");
-  UnregisterMagickInfo("DIB");
+  (void) UnregisterMagickInfo("BMP");
+  (void) UnregisterMagickInfo("DIB");
 }
 
 /*

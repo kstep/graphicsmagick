@@ -315,7 +315,7 @@ ModuleExport void RegisterVICARImage(void)
   entry->adjoin=False;
   entry->description=AllocateString("VICAR rasterfile format");
   entry->module=AllocateString("VICAR");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -339,7 +339,7 @@ ModuleExport void RegisterVICARImage(void)
 */
 ModuleExport void UnregisterVICARImage(void)
 {
-  UnregisterMagickInfo("VICAR");
+  (void) UnregisterMagickInfo("VICAR");
 }
 
 /*
@@ -402,7 +402,7 @@ static unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
   /*
     Write header.
   */
-  memset(header,' ',MaxTextExtent);
+  (void) memset(header,' ',MaxTextExtent);
   FormatString(header,"LBLSIZE=%u FORMAT='BYTE' TYPE='IMAGE' BUFSIZE=20000 "
     "DIM=2 EOL=0 RECSIZE=%u ORG='BSQ' NL=%u NS=%u NB=1 N1=0 N2=0 N3=0 N4=0 "
     "NBB=0 NLB=0 TASK='ImageMagick'",MaxTextExtent,image->columns,image->rows,

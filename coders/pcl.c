@@ -135,7 +135,7 @@ ModuleExport void RegisterPCLImage(void)
   entry->adjoin=False;
   entry->description=AllocateString("Page Control Language");
   entry->module=AllocateString("PCL");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -159,7 +159,7 @@ ModuleExport void RegisterPCLImage(void)
 */
 ModuleExport void UnregisterPCLImage(void)
 {
-  UnregisterMagickInfo("PCL");
+  (void) UnregisterMagickInfo("PCL");
 }
 
 /*

@@ -233,7 +233,7 @@ MagickExport ViewInfo *OpenCacheView(Image *image)
   if (view == (ViewInfo *) NULL)
     MagickError(ResourceLimitError,"Unable to allocate cache view",
       "Memory allocation failed");
-  memset(view,0,sizeof(ViewInfo));
+  (void) memset(view,0,sizeof(ViewInfo));
   view->id=GetNexus(image->cache);
   view->image=image;
   view->signature=MagickSignature;

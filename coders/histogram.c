@@ -94,7 +94,7 @@ ModuleExport void RegisterHISTOGRAMImage(void)
   entry->adjoin=False;
   entry->description=AllocateString("Histogram of the image");
   entry->module=AllocateString("HISTOGRAM");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -118,7 +118,7 @@ ModuleExport void RegisterHISTOGRAMImage(void)
 */
 ModuleExport void UnregisterHISTOGRAMImage(void)
 {
-  UnregisterMagickInfo("HISTOGRAM");
+  (void) UnregisterMagickInfo("HISTOGRAM");
 }
 
 /*

@@ -148,7 +148,7 @@ ModuleExport void RegisterXCImage(void)
   entry->raw=True;
   entry->description=AllocateString("Constant image uniform color");
   entry->module=AllocateString("XC");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -172,5 +172,5 @@ ModuleExport void RegisterXCImage(void)
 */
 ModuleExport void UnregisterXCImage(void)
 {
-  UnregisterMagickInfo("XC");
+  (void) UnregisterMagickInfo("XC");
 }

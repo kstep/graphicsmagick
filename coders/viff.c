@@ -757,12 +757,12 @@ ModuleExport void RegisterVIFFImage(void)
   entry->magick=IsVIFF;
   entry->description=AllocateString("Khoros Visualization image");
   entry->module=AllocateString("VIFF");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("XV");
   entry->decoder=ReadVIFFImage;
   entry->encoder=WriteVIFFImage;
   entry->description=AllocateString("Khoros Visualization image");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -786,8 +786,8 @@ ModuleExport void RegisterVIFFImage(void)
 */
 ModuleExport void UnregisterVIFFImage(void)
 {
-  UnregisterMagickInfo("VIFF");
-  UnregisterMagickInfo("XV");
+  (void) UnregisterMagickInfo("VIFF");
+  (void) UnregisterMagickInfo("XV");
 }
 
 /*

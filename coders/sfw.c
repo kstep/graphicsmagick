@@ -261,7 +261,7 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
   TranslateSFWMarker(header);  /* translate soi and app tags */
   TranslateSFWMarker(header+2);
-  memcpy(header+6,"JFIF\0\001\0",7);  /* JFIF magic */
+  (void) memcpy(header+6,"JFIF\0\001\0",7);  /* JFIF magic */
   /*
     Translate remaining markers.
   */
@@ -360,7 +360,7 @@ ModuleExport void RegisterSFWImage(void)
   entry->adjoin=False;
   entry->description=AllocateString("Seattle Film Works");
   entry->module=AllocateString("SFW");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -384,5 +384,5 @@ ModuleExport void RegisterSFWImage(void)
 */
 ModuleExport void UnregisterSFWImage(void)
 {
-  UnregisterMagickInfo("SFW");
+  (void) UnregisterMagickInfo("SFW");
 }

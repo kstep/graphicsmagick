@@ -528,7 +528,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
             case 8:
             {
-              memcpy(r,p,image->columns);
+              (void) memcpy(r,p,image->columns);
               break;
             }
             default:
@@ -633,7 +633,7 @@ ModuleExport void RegisterPCXImage(void)
   entry->magick=IsDCX;
   entry->description=AllocateString("ZSoft IBM PC multi-page Paintbrush");
   entry->module=AllocateString("PCX");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PCX");
   entry->decoder=ReadPCXImage;
   entry->encoder=WritePCXImage;
@@ -641,7 +641,7 @@ ModuleExport void RegisterPCXImage(void)
   entry->adjoin=False;
   entry->description=AllocateString("ZSoft IBM PC Paintbrush");
   entry->module=AllocateString("PCX");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -665,8 +665,8 @@ ModuleExport void RegisterPCXImage(void)
 */
 ModuleExport void UnregisterPCXImage(void)
 {
-  UnregisterMagickInfo("DCX");
-  UnregisterMagickInfo("PCX");
+  (void) UnregisterMagickInfo("DCX");
+  (void) UnregisterMagickInfo("PCX");
 }
 
 /*

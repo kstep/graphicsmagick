@@ -3876,27 +3876,27 @@ ModuleExport void RegisterLOGOImage(void)
   entry->adjoin=False;
   entry->description=AllocateString("Granite texture");
   entry->module=AllocateString("LOGO");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("H");
   entry->decoder=ReadLOGOImage;
   entry->encoder=WriteLOGOImage;
   entry->adjoin=False;
   entry->description=AllocateString("Internal format");
   entry->module=AllocateString("LOGO");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("LOGO");
   entry->decoder=ReadLOGOImage;
   entry->encoder=WriteLOGOImage;
   entry->adjoin=False;
   entry->description=AllocateString("ImageMagick Logo");
   entry->module=AllocateString("LOGO");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("NETSCAPE");
   entry->decoder=ReadLOGOImage;
   entry->adjoin=False;
   entry->description=AllocateString("Netscape 216 color cube");
   entry->module=AllocateString("LOGO");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -3920,10 +3920,10 @@ ModuleExport void RegisterLOGOImage(void)
 */
 ModuleExport void UnregisterLOGOImage(void)
 {
-  UnregisterMagickInfo("GRANITE");
-  UnregisterMagickInfo("H");
-  UnregisterMagickInfo("LOGO");
-  UnregisterMagickInfo("NETSCAPE");
+  (void) UnregisterMagickInfo("GRANITE");
+  (void) UnregisterMagickInfo("H");
+  (void) UnregisterMagickInfo("LOGO");
+  (void) UnregisterMagickInfo("NETSCAPE");
 }
 
 /*

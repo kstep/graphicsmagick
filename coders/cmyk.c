@@ -454,7 +454,7 @@ ModuleExport void RegisterCMYKImage(void)
   entry->description=
     AllocateString("Raw cyan, magenta, yellow, and black bytes");
   entry->module=AllocateString("CMYK");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("CMYKA");
   entry->decoder=ReadCMYKImage;
   entry->encoder=WriteCMYKImage;
@@ -462,7 +462,7 @@ ModuleExport void RegisterCMYKImage(void)
   entry->description=
     AllocateString("Raw cyan, magenta, yellow, black, and matte bytes");
   entry->module=AllocateString("CMYK");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -486,8 +486,8 @@ ModuleExport void RegisterCMYKImage(void)
 */
 ModuleExport void UnregisterCMYKImage(void)
 {
-  UnregisterMagickInfo("CMYK");
-  UnregisterMagickInfo("CMYKA");
+  (void) UnregisterMagickInfo("CMYK");
+  (void) UnregisterMagickInfo("CMYKA");
 }
 
 /*

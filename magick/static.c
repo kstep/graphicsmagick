@@ -2,7 +2,7 @@
 #include "magick.h"
 #include "define.h"
 
-void OpenStaticModules()
+void OpenStaticModules(void)
 {
 #if !defined(HasMODULES)
   Register8BIMImage();

@@ -834,7 +834,7 @@ ModuleExport void RegisterMPCImage(void)
   entry->blob_support=False;
   entry->description=AllocateString("Magick Persistent Cache image format");
   entry->module=AllocateString("MPC");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -858,7 +858,7 @@ ModuleExport void RegisterMPCImage(void)
 */
 ModuleExport void UnregisterMPCImage(void)
 {
-  UnregisterMagickInfo("MPC");
+  (void) UnregisterMagickInfo("MPC");
 }
 
 /*
@@ -941,10 +941,10 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
     q=SetImagePixels(clone_image,0,y,clone_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    memcpy(q,p,image->columns*sizeof(PixelPacket));
+    (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
     indexes=GetIndexes(clone_image);
     if (indexes != (IndexPacket *) NULL)
-      memcpy(indexes,GetIndexes(image),image->columns*sizeof(IndexPacket));
+      (void) memcpy(indexes,GetIndexes(image),image->columns*sizeof(IndexPacket));
     if (!SyncImagePixels(clone_image))
       break;
   }

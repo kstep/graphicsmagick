@@ -204,7 +204,7 @@ ModuleExport void RegisterMONOImage(void)
   entry->description=
     AllocateString("Bi-level bitmap in least-significant-byte first order");
   entry->module=AllocateString("MONO");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -228,7 +228,7 @@ ModuleExport void RegisterMONOImage(void)
 */
 ModuleExport void UnregisterMONOImage(void)
 {
-  UnregisterMagickInfo("MONO");
+  (void) UnregisterMagickInfo("MONO");
 }
 
 /*

@@ -529,7 +529,7 @@ ModuleExport void RegisterDPSImage(void)
   entry->blob_support=False;
   entry->description=AllocateString("Display Postscript");
   entry->module=AllocateString("DPS");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -553,5 +553,5 @@ ModuleExport void RegisterDPSImage(void)
 */
 ModuleExport void UnregisterDPSImage(void)
 {
-  UnregisterMagickInfo("DPS");
+  (void) UnregisterMagickInfo("DPS");
 }

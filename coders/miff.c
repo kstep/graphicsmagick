@@ -885,7 +885,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,
         {
           if (y == 0)
             {
-              memset(&pixel,0,sizeof(PixelPacket));
+              (void) memset(&pixel,0,sizeof(PixelPacket));
               pixel.opacity=TransparentOpacity;
             }
           p=pixels;
@@ -1022,14 +1022,14 @@ ModuleExport void RegisterMIFFImage(void)
 
   entry=SetMagickInfo("IMPLICIT");
   entry->module=AllocateString("MIFF");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("MIFF");
   entry->decoder=ReadMIFFImage;
   entry->encoder=WriteMIFFImage;
   entry->magick=IsMIFF;
   entry->description=AllocateString("Magick image format");
   entry->module=AllocateString("MIFF");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -1053,8 +1053,8 @@ ModuleExport void RegisterMIFFImage(void)
 */
 ModuleExport void UnregisterMIFFImage(void)
 {
-  UnregisterMagickInfo("IMPLICIT");
-  UnregisterMagickInfo("MIFF");
+  (void) UnregisterMagickInfo("IMPLICIT");
+  (void) UnregisterMagickInfo("MIFF");
 }
 
 /*

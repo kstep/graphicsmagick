@@ -2292,7 +2292,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Parse SVG file.
   */
-  memset(&svg_info,0,sizeof(SVGInfo));
+  (void) memset(&svg_info,0,sizeof(SVGInfo));
   svg_info.file=file;
   svg_info.debug=image_info->debug;
   svg_info.exception=exception;
@@ -2413,13 +2413,13 @@ ModuleExport void RegisterSVGImage(void)
   entry->encoder=WriteSVGImage;
   entry->description=AllocateString("Scalable Vector Gaphics");
   entry->module=AllocateString("SVG");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("XML");
   entry->magick=IsSVG;
   entry->decoder=ReadSVGImage;
   entry->description=AllocateString("Scalable Vector Gaphics");
   entry->module=AllocateString("SVG");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -2443,8 +2443,8 @@ ModuleExport void RegisterSVGImage(void)
 */
 ModuleExport void UnregisterSVGImage(void)
 {
-  UnregisterMagickInfo("SVG");
-  UnregisterMagickInfo("XML");
+  (void) UnregisterMagickInfo("SVG");
+  (void) UnregisterMagickInfo("XML");
 }
 
 #if defined(HasAUTOTRACE)

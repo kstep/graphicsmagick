@@ -98,12 +98,12 @@ ModuleExport void RegisterPS3Image(void)
   entry->encoder=WritePS3Image;
   entry->description=AllocateString("Adobe Level III Encapsulated PostScript");
   entry->module=AllocateString("PS3");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PS3");
   entry->encoder=WritePS3Image;
   entry->description=AllocateString("Adobe Level III PostScript");
   entry->module=AllocateString("PS3");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -127,8 +127,8 @@ ModuleExport void RegisterPS3Image(void)
 */
 ModuleExport void UnregisterPS3Image(void)
 {
-  UnregisterMagickInfo("EPS3");
-  UnregisterMagickInfo("PS3");
+  (void) UnregisterMagickInfo("EPS3");
+  (void) UnregisterMagickInfo("PS3");
 }
 
 /*

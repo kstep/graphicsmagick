@@ -612,7 +612,7 @@ ModuleExport void RegisterSGIImage(void)
   entry->magick=IsSGI;
   entry->description=AllocateString("Irix RGB image");
   entry->module=AllocateString("SGI");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -636,7 +636,7 @@ ModuleExport void RegisterSGIImage(void)
 */
 ModuleExport void UnregisterSGIImage(void)
 {
-  UnregisterMagickInfo("SGI");
+  (void) UnregisterMagickInfo("SGI");
 }
 
 /*

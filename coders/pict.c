@@ -475,7 +475,7 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *blob,
         number_pixels=bytes_per_line;
         (void) ReadBlob(blob,number_pixels,(char *) scanline);
         p=ExpandBuffer(scanline,&number_pixels,bits_per_pixel);
-        memcpy(q,p,number_pixels);
+        (void) memcpy(q,p,number_pixels);
       }
       LiberateMemory((void **) &scanline);
       return(pixels);
@@ -497,7 +497,7 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *blob,
           length=(scanline[j] & 0xff)+1;
           number_pixels=length*bytes_per_pixel;
           p=ExpandBuffer(scanline+j+1,&number_pixels,bits_per_pixel);
-          memcpy(q,p,number_pixels);
+          (void) memcpy(q,p,number_pixels);
           q+=number_pixels;
           j+=length*bytes_per_pixel+1;
         }
@@ -508,7 +508,7 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *blob,
           p=ExpandBuffer(scanline+j+1,&number_pixels,bits_per_pixel);
           for (i=0; i < (long) length; i++)
           {
-            memcpy(q,p,number_pixels);
+            (void) memcpy(q,p,number_pixels);
             q+=number_pixels;
           }
           j+=bytes_per_pixel+1;
@@ -1148,7 +1148,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                   ThrowReaderException(ResourceLimitWarning,
                     "Memory allocation failed",image);
                 image->color_profile.length=length;
-                memcpy(image->color_profile.info,info,length);
+                (void) memcpy(image->color_profile.info,info,length);
                 break;
               }
               case 0x1f2:
@@ -1159,7 +1159,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                   ThrowReaderException(ResourceLimitWarning,
                     "Memory allocation failed",image);
                 image->iptc_profile.length=length;
-                memcpy(image->iptc_profile.info,info,length);
+                (void) memcpy(image->iptc_profile.info,info,length);
                 break;
               }
               default:
@@ -1303,14 +1303,14 @@ ModuleExport void RegisterPICTImage(void)
   entry->adjoin=False;
   entry->description=AllocateString("Apple Macintosh QuickDraw/PICT");
   entry->module=AllocateString("PICT");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PICT");
   entry->decoder=ReadPICTImage;
   entry->encoder=WritePICTImage;
   entry->adjoin=False;
   entry->description=AllocateString("Apple Macintosh QuickDraw/PICT");
   entry->module=AllocateString("PICT");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -1334,8 +1334,8 @@ ModuleExport void RegisterPICTImage(void)
 */
 ModuleExport void UnregisterPICTImage(void)
 {
-  UnregisterMagickInfo("PCT");
-  UnregisterMagickInfo("PICT");
+  (void) UnregisterMagickInfo("PCT");
+  (void) UnregisterMagickInfo("PICT");
 }
 
 /*
@@ -1703,7 +1703,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   else
     if (image->compression == JPEGCompression)
       {
-        memset(scanline,0,row_bytes);
+        (void) memset(scanline,0,row_bytes);
         for (y=0; y < (int) image->rows; y++)
           count+=EncodeImage(image,scanline,row_bytes & 0x7FFF,packed_scanline);
       }

@@ -238,7 +238,7 @@ ModuleExport void RegisterAVSImage(void)
   entry->encoder=WriteAVSImage;
   entry->description=AllocateString("AVS X image");
   entry->module=AllocateString("AVS");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -262,7 +262,7 @@ ModuleExport void RegisterAVSImage(void)
 */
 ModuleExport void UnregisterAVSImage(void)
 {
-  UnregisterMagickInfo("AVS");
+  (void) UnregisterMagickInfo("AVS");
 }
 
 /*

@@ -238,7 +238,7 @@ static jas_stream_t *JP2StreamManager(Image *image)
   stream=(jas_stream_t *) AcquireMemory(sizeof(jas_stream_t));
   if (stream == (jas_stream_t *) NULL)
     return((jas_stream_t *) NULL);
-  memset(stream,0,sizeof(jas_stream_t));
+  (void) memset(stream,0,sizeof(jas_stream_t));
   stream->rwlimit_=(-1);
   stream->obj_=(jas_stream_obj_t *) AcquireMemory(sizeof(StreamManager));
   if (stream->obj_ == (jas_stream_obj_t *) NULL)
@@ -397,7 +397,7 @@ ModuleExport void RegisterJP2Image(void)
   entry->thread_support=False;
   entry->decoder=ReadJP2Image;
   entry->encoder=WriteJP2Image;
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("JPC");
   entry->description=AllocateString("JPEG-2000 Code Stream Syntax");
   entry->module=AllocateString("JPC");
@@ -406,7 +406,7 @@ ModuleExport void RegisterJP2Image(void)
   entry->thread_support=False;
   entry->decoder=ReadJP2Image;
   entry->encoder=WriteJP2Image;
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -430,8 +430,8 @@ ModuleExport void RegisterJP2Image(void)
 */
 ModuleExport void UnregisterJP2Image(void)
 {
-  UnregisterMagickInfo("JP2");
-  UnregisterMagickInfo("JPC");
+  (void) UnregisterMagickInfo("JP2");
+  (void) UnregisterMagickInfo("JPC");
 }
 
 /*
@@ -520,7 +520,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
     number_components=1;
   for (i=0; i < (int) number_components; i++)
   {
-    memset(component_info+i,0,sizeof(jas_image_cmptparm_t));
+    (void) memset(component_info+i,0,sizeof(jas_image_cmptparm_t));
     component_info[i].hstep=1;
     component_info[i].vstep=1;
     component_info[i].width=image->columns;

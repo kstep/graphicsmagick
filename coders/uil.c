@@ -94,7 +94,7 @@ ModuleExport void RegisterUILImage(void)
   entry->adjoin=False;
   entry->description=AllocateString("X-Motif UIL table");
   entry->module=AllocateString("UIL");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -118,7 +118,7 @@ ModuleExport void RegisterUILImage(void)
 */
 ModuleExport void UnregisterUILImage(void)
 {
-  UnregisterMagickInfo("UIL");
+  (void) UnregisterMagickInfo("UIL");
 }
 
 /*

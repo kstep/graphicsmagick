@@ -287,7 +287,7 @@ ModuleExport void RegisterDPXImage(void)
   entry->magick=IsDPX;
   entry->description=AllocateString("Digital Moving Picture Exchange");
   entry->module=AllocateString("DPX");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -311,7 +311,7 @@ ModuleExport void RegisterDPXImage(void)
 */
 ModuleExport void UnregisterDPXImage(void)
 {
-  UnregisterMagickInfo("DPX");
+  (void) UnregisterMagickInfo("DPX");
 }
 
 /*

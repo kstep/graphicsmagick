@@ -270,7 +270,7 @@ ModuleExport void RegisterPWPImage(void)
   entry->magick=IsPWP;
   entry->description=AllocateString("Seattle Film Works");
   entry->module=AllocateString("PWP");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -294,5 +294,5 @@ ModuleExport void RegisterPWPImage(void)
 */
 ModuleExport void UnregisterPWPImage(void)
 {
-  UnregisterMagickInfo("PWP");
+  (void) UnregisterMagickInfo("PWP");
 }

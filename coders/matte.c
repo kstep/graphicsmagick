@@ -94,7 +94,7 @@ ModuleExport void RegisterMATTEImage(void)
   entry->raw=True;
   entry->description=AllocateString("MATTE format");
   entry->module=AllocateString("MATTE");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -118,7 +118,7 @@ ModuleExport void RegisterMATTEImage(void)
 */
 ModuleExport void UnregisterMATTEImage(void)
 {
-  UnregisterMagickInfo("MATTE");
+  (void) UnregisterMagickInfo("MATTE");
 }
 
 /*

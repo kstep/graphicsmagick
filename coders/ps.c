@@ -418,7 +418,7 @@ ModuleExport void RegisterPSImage(void)
   entry->description=
     AllocateString("Adobe Encapsulated PostScript Interchange format");
   entry->module=AllocateString("PS");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("EPS");
   entry->decoder=ReadPSImage;
   entry->encoder=WritePSImage;
@@ -426,7 +426,7 @@ ModuleExport void RegisterPSImage(void)
   entry->adjoin=False;
   entry->description=AllocateString("Adobe Encapsulated PostScript");
   entry->module=AllocateString("PS");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("EPSF");
   entry->decoder=ReadPSImage;
   entry->encoder=WritePSImage;
@@ -434,7 +434,7 @@ ModuleExport void RegisterPSImage(void)
   entry->adjoin=False;
   entry->description=AllocateString("Adobe Encapsulated PostScript");
   entry->module=AllocateString("PS");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("EPSI");
   entry->decoder=ReadPSImage;
   entry->encoder=WritePSImage;
@@ -443,14 +443,14 @@ ModuleExport void RegisterPSImage(void)
   entry->description=
     AllocateString("Adobe Encapsulated PostScript Interchange format");
   entry->module=AllocateString("PS");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PS");
   entry->decoder=ReadPSImage;
   entry->encoder=WritePSImage;
   entry->magick=IsPS;
   entry->description=AllocateString("Adobe PostScript");
   entry->module=AllocateString("PS");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -474,11 +474,11 @@ ModuleExport void RegisterPSImage(void)
 */
 ModuleExport void UnregisterPSImage(void)
 {
-  UnregisterMagickInfo("EPI");
-  UnregisterMagickInfo("EPS");
-  UnregisterMagickInfo("EPSF");
-  UnregisterMagickInfo("EPSI");
-  UnregisterMagickInfo("PS");
+  (void) UnregisterMagickInfo("EPI");
+  (void) UnregisterMagickInfo("EPS");
+  (void) UnregisterMagickInfo("EPSF");
+  (void) UnregisterMagickInfo("EPSI");
+  (void) UnregisterMagickInfo("PS");
 }
 
 /*
@@ -1108,7 +1108,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
         }
         LiberateMemory((void **) &labels);
       }
-    memset(&pixel,0,sizeof(PixelPacket));
+    (void) memset(&pixel,0,sizeof(PixelPacket));
     pixel.opacity=TransparentOpacity;
     i=0;
     index=0;

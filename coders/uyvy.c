@@ -203,7 +203,7 @@ ModuleExport void RegisterUYVYImage(void)
   entry->raw=True;
   entry->description=AllocateString("16bit/pixel interleaved YUV");
   entry->module=AllocateString("UYVY");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("UYVY");
   entry->decoder=ReadUYVYImage;
   entry->encoder=WriteUYVYImage;
@@ -211,7 +211,7 @@ ModuleExport void RegisterUYVYImage(void)
   entry->raw=True;
   entry->description=AllocateString("16bit/pixel interleaved YUV");
   entry->module=AllocateString("UYVY");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -235,8 +235,8 @@ ModuleExport void RegisterUYVYImage(void)
 */
 ModuleExport void UnregisterUYVYImage(void)
 {
-  UnregisterMagickInfo("PAL");
-  UnregisterMagickInfo("UYVY");
+  (void) UnregisterMagickInfo("PAL");
+  (void) UnregisterMagickInfo("UYVY");
 }
 
 /*

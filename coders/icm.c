@@ -181,7 +181,7 @@ ModuleExport void RegisterICMImage(void)
   entry->adjoin=False;
   entry->description=AllocateString("ICC Color Profile");
   entry->module=AllocateString("ICM");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -205,7 +205,7 @@ ModuleExport void RegisterICMImage(void)
 */
 ModuleExport void UnregisterICMImage(void)
 {
-  UnregisterMagickInfo("ICM");
+  (void) UnregisterMagickInfo("ICM");
 }
 
 /*

@@ -836,7 +836,7 @@ ModuleExport void RegisterJPEGImage(void)
   entry->description=
     AllocateString("Joint Photographic Experts Group JFIF format");
   entry->module=AllocateString("JPEG");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("JPG");
   entry->decoder=ReadJPEGImage;
   entry->encoder=WriteJPEGImage;
@@ -844,7 +844,7 @@ ModuleExport void RegisterJPEGImage(void)
   entry->description=
     AllocateString("Joint Photographic Experts Group JFIF format");
   entry->module=AllocateString("JPEG");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -868,8 +868,8 @@ ModuleExport void RegisterJPEGImage(void)
 */
 ModuleExport void UnregisterJPEGImage(void)
 {
-  UnregisterMagickInfo("JPEG");
-  UnregisterMagickInfo("JPG");
+  (void) UnregisterMagickInfo("JPEG");
+  (void) UnregisterMagickInfo("JPG");
 }
 
 #if defined(HasJPEG)
@@ -1036,15 +1036,15 @@ static void WriteIPTCProfile(j_compress_ptr jpeg_info,Image *image)
     if (profile == (unsigned char *) NULL)
       break;
 #ifdef GET_ONLY_IPTC_DATA
-    memcpy(profile,"Photoshop 3.0 8BIM\04\04\0\0\0\0",24);
+    (void) memcpy(profile,"Photoshop 3.0 8BIM\04\04\0\0\0\0",24);
     profile[13]=0x00;
     profile[24]=length >> 8;
     profile[25]=length & 0xff;
 #else
-    memcpy(profile,"Photoshop 3.0 ",14);
+    (void) memcpy(profile,"Photoshop 3.0 ",14);
     profile[13]=0x00;
 #endif
-    memcpy(&(profile[tag_length]),&(image->iptc_profile.info[i]),length);
+    (void) memcpy(&(profile[tag_length]),&(image->iptc_profile.info[i]),length);
     if (roundup)
       profile[length+tag_length]=0;
     jpeg_write_marker(jpeg_info,IPTC_MARKER,profile,(unsigned int)

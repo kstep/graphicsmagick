@@ -181,7 +181,7 @@ ModuleExport void RegisterLABELImage(void)
   entry->adjoin=False;
   entry->description=AllocateString("Text image format");
   entry->module=AllocateString("LABEL");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -205,5 +205,5 @@ ModuleExport void RegisterLABELImage(void)
 */
 ModuleExport void UnregisterLABELImage(void)
 {
-  UnregisterMagickInfo("LABEL");
+  (void) UnregisterMagickInfo("LABEL");
 }

@@ -384,14 +384,14 @@ ModuleExport void RegisterPDFImage(void)
   entry->description=
     AllocateString("Encapsulated Portable Document Format");
   entry->module=AllocateString("PDF");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PDF");
   entry->decoder=ReadPDFImage;
   entry->encoder=WritePDFImage;
   entry->magick=IsPDF;
   entry->description=AllocateString("Portable Document Format");
   entry->module=AllocateString("PDF");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -415,8 +415,8 @@ ModuleExport void RegisterPDFImage(void)
 */
 ModuleExport void UnregisterPDFImage(void)
 {
-  UnregisterMagickInfo("EPDF");
-  UnregisterMagickInfo("PDF");
+  (void) UnregisterMagickInfo("EPDF");
+  (void) UnregisterMagickInfo("PDF");
 }
 
 /*

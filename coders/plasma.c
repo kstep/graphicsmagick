@@ -216,7 +216,7 @@ ModuleExport void RegisterPLASMAImage(void)
   entry->adjoin=False;
   entry->description=AllocateString("Plasma fractal image");
   entry->module=AllocateString("PLASMA");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -240,5 +240,5 @@ ModuleExport void RegisterPLASMAImage(void)
 */
 ModuleExport void UnregisterPLASMAImage(void)
 {
-  UnregisterMagickInfo("PLASMA");
+  (void) UnregisterMagickInfo("PLASMA");
 }

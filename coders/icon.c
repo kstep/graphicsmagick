@@ -493,13 +493,13 @@ ModuleExport void RegisterICONImage(void)
   entry->adjoin=False;
   entry->description=AllocateString("Microsoft icon");
   entry->module=AllocateString("ICON");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("ICON");
   entry->decoder=ReadIconImage;
   entry->adjoin=False;
   entry->description=AllocateString("Microsoft icon");
   entry->module=AllocateString("ICON");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -523,6 +523,6 @@ ModuleExport void RegisterICONImage(void)
 */
 ModuleExport void UnregisterICONImage(void)
 {
-  UnregisterMagickInfo("ICO");
-  UnregisterMagickInfo("ICON");
+  (void) UnregisterMagickInfo("ICO");
+  (void) UnregisterMagickInfo("ICON");
 }

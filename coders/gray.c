@@ -241,7 +241,7 @@ ModuleExport void RegisterGRAYImage(void)
   entry->raw=True;
   entry->description=AllocateString("Raw gray bytes");
   entry->module=AllocateString("GRAY");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -265,7 +265,7 @@ ModuleExport void RegisterGRAYImage(void)
 */
 ModuleExport void UnregisterGRAYImage(void)
 {
-  UnregisterMagickInfo("GRAY");
+  (void) UnregisterMagickInfo("GRAY");
 }
 
 /*

@@ -170,7 +170,7 @@ ModuleExport void RegisterTILEImage(void)
   entry->raw=True;
   entry->description=AllocateString("Tile image with a texture");
   entry->module=AllocateString("TILE");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -194,5 +194,5 @@ ModuleExport void RegisterTILEImage(void)
 */
 ModuleExport void UnregisterTILEImage(void)
 {
-  UnregisterMagickInfo("TILE");
+  (void) UnregisterMagickInfo("TILE");
 }

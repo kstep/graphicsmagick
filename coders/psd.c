@@ -527,7 +527,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (layer_info == (LayerInfo *) NULL)
         ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
           image);
-      memset(layer_info,0,number_layers*sizeof(LayerInfo));
+      (void) memset(layer_info,0,number_layers*sizeof(LayerInfo));
       for (i=0; i < number_layers; i++)
       {
         layer_info[i].page.y=(int) ReadBlobMSBLong(image);
@@ -939,7 +939,7 @@ ModuleExport void RegisterPSDImage(void)
   entry->adjoin=False;
   entry->description=AllocateString("Adobe Photoshop bitmap");
   entry->module=AllocateString("PSD");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -963,7 +963,7 @@ ModuleExport void RegisterPSDImage(void)
 */
 ModuleExport void UnregisterPSDImage(void)
 {
-  UnregisterMagickInfo("PSD");
+  (void) UnregisterMagickInfo("PSD");
 }
 
 /*

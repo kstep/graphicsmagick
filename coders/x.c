@@ -141,7 +141,7 @@ ModuleExport void RegisterXImage(void)
   entry->adjoin=False;
   entry->description=AllocateString("X Image");
   entry->module=AllocateString("X");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -165,7 +165,7 @@ ModuleExport void RegisterXImage(void)
 */
 ModuleExport void UnregisterXImage(void)
 {
-  UnregisterMagickInfo("X");
+  (void) UnregisterMagickInfo("X");
 }
 
 #if defined(HasX11)

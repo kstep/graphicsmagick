@@ -470,7 +470,7 @@ static unsigned int Assignment(CubeInfo *cube_info,Image *image)
     }
   if (cube_info->quantize_info->measure_error)
     {
-      QuantizationError(image);
+      (void) QuantizationError(image);
       SyncImage(image);
     }
   return(True);
@@ -1200,7 +1200,7 @@ static CubeInfo *GetCubeInfo(const QuantizeInfo *quantize_info,
   cube_info=(CubeInfo *) AcquireMemory(sizeof(CubeInfo));
   if (cube_info == (CubeInfo *) NULL)
     return((CubeInfo *) NULL);
-  memset(cube_info,0,sizeof(CubeInfo));
+  (void) memset(cube_info,0,sizeof(CubeInfo));
   if (depth > MaxTreeDepth)
     depth=MaxTreeDepth;
   if (depth < 2)
@@ -1301,7 +1301,7 @@ static NodeInfo *GetNodeInfo(CubeInfo *cube_info,const unsigned int id,
   cube_info->nodes++;
   cube_info->free_nodes--;
   node_info=cube_info->next_node++;
-  memset(node_info,0,sizeof(NodeInfo));
+  (void) memset(node_info,0,sizeof(NodeInfo));
   node_info->parent=parent;
   node_info->id=id;
   node_info->level=level;
@@ -1334,7 +1334,7 @@ static NodeInfo *GetNodeInfo(CubeInfo *cube_info,const unsigned int id,
 MagickExport void GetQuantizeInfo(QuantizeInfo *quantize_info)
 {
   assert(quantize_info != (QuantizeInfo *) NULL);
-  memset(quantize_info,0,sizeof(QuantizeInfo));
+  (void) memset(quantize_info,0,sizeof(QuantizeInfo));
   quantize_info->number_colors=256;
   quantize_info->dither=True;
   quantize_info->colorspace=RGBColorspace;
@@ -1383,30 +1383,30 @@ static void HilbertCurve(CubeInfo *cube_info,Image *image,const int level,
       {
         case WestGravity:
         {
-          Dither(cube_info,image,EastGravity);
-          Dither(cube_info,image,SouthGravity);
-          Dither(cube_info,image,WestGravity);
+          (void) Dither(cube_info,image,EastGravity);
+          (void) Dither(cube_info,image,SouthGravity);
+          (void) Dither(cube_info,image,WestGravity);
           break;
         }
         case EastGravity:
         {
-          Dither(cube_info,image,WestGravity);
-          Dither(cube_info,image,NorthGravity);
-          Dither(cube_info,image,EastGravity);
+          (void) Dither(cube_info,image,WestGravity);
+          (void) Dither(cube_info,image,NorthGravity);
+          (void) Dither(cube_info,image,EastGravity);
           break;
         }
         case NorthGravity:
         {
-          Dither(cube_info,image,SouthGravity);
-          Dither(cube_info,image,EastGravity);
-          Dither(cube_info,image,NorthGravity);
+          (void) Dither(cube_info,image,SouthGravity);
+          (void) Dither(cube_info,image,EastGravity);
+          (void) Dither(cube_info,image,NorthGravity);
           break;
         }
         case SouthGravity:
         {
-          Dither(cube_info,image,NorthGravity);
-          Dither(cube_info,image,WestGravity);
-          Dither(cube_info,image,SouthGravity);
+          (void) Dither(cube_info,image,NorthGravity);
+          (void) Dither(cube_info,image,WestGravity);
+          (void) Dither(cube_info,image,SouthGravity);
           break;
         }
         default:
@@ -1419,44 +1419,44 @@ static void HilbertCurve(CubeInfo *cube_info,Image *image,const int level,
     case WestGravity:
     {
       HilbertCurve(cube_info,image,level-1,NorthGravity);
-      Dither(cube_info,image,EastGravity);
+      (void) Dither(cube_info,image,EastGravity);
       HilbertCurve(cube_info,image,level-1,WestGravity);
-      Dither(cube_info,image,SouthGravity);
+      (void) Dither(cube_info,image,SouthGravity);
       HilbertCurve(cube_info,image,level-1,WestGravity);
-      Dither(cube_info,image,WestGravity);
+      (void) Dither(cube_info,image,WestGravity);
       HilbertCurve(cube_info,image,level-1,SouthGravity);
       break;
     }
     case EastGravity:
     {
       HilbertCurve(cube_info,image,level-1,SouthGravity);
-      Dither(cube_info,image,WestGravity);
+      (void) Dither(cube_info,image,WestGravity);
       HilbertCurve(cube_info,image,level-1,EastGravity);
-      Dither(cube_info,image,NorthGravity);
+      (void) Dither(cube_info,image,NorthGravity);
       HilbertCurve(cube_info,image,level-1,EastGravity);
-      Dither(cube_info,image,EastGravity);
+      (void) Dither(cube_info,image,EastGravity);
       HilbertCurve(cube_info,image,level-1,NorthGravity);
       break;
     }
     case NorthGravity:
     {
       HilbertCurve(cube_info,image,level-1,WestGravity);
-      Dither(cube_info,image,SouthGravity);
+      (void) Dither(cube_info,image,SouthGravity);
       HilbertCurve(cube_info,image,level-1,NorthGravity);
-      Dither(cube_info,image,EastGravity);
+      (void) Dither(cube_info,image,EastGravity);
       HilbertCurve(cube_info,image,level-1,NorthGravity);
-      Dither(cube_info,image,NorthGravity);
+      (void) Dither(cube_info,image,NorthGravity);
       HilbertCurve(cube_info,image,level-1,EastGravity);
       break;
     }
     case SouthGravity:
     {
       HilbertCurve(cube_info,image,level-1,EastGravity);
-      Dither(cube_info,image,NorthGravity);
+      (void) Dither(cube_info,image,NorthGravity);
       HilbertCurve(cube_info,image,level-1,SouthGravity);
-      Dither(cube_info,image,WestGravity);
+      (void) Dither(cube_info,image,WestGravity);
       HilbertCurve(cube_info,image,level-1,SouthGravity);
-      Dither(cube_info,image,SouthGravity);
+      (void) Dither(cube_info,image,SouthGravity);
       HilbertCurve(cube_info,image,level-1,WestGravity);
       break;
     }
@@ -1701,7 +1701,7 @@ MagickExport unsigned int OrderedDitherImage(Image *image)
   /*
     Initialize colormap.
   */
-  NormalizeImage(image);
+  (void) NormalizeImage(image);
   if (!AllocateImageColormap(image,2))
     ThrowBinaryException(ResourceLimitWarning,"Unable to dither image",
       "Memory allocation failed");
@@ -2020,7 +2020,7 @@ MagickExport unsigned int QuantizeImage(const QuantizeInfo *quantize_info,
     ThrowBinaryException(ResourceLimitWarning,"Unable to quantize image",
       "Memory allocation failed");
   if (quantize_info->colorspace != RGBColorspace)
-    RGBTransformImage(image,quantize_info->colorspace);
+    (void) RGBTransformImage(image,quantize_info->colorspace);
   status=Classification(cube_info,image);
   if (status != False)
     {
@@ -2030,7 +2030,7 @@ MagickExport unsigned int QuantizeImage(const QuantizeInfo *quantize_info,
       Reduction(cube_info,number_colors);
       status=Assignment(cube_info,image);
       if (quantize_info->colorspace != RGBColorspace)
-        TransformRGBImage(image,quantize_info->colorspace);
+        (void) TransformRGBImage(image,quantize_info->colorspace);
     }
   DestroyCubeInfo(cube_info);
   return(status);
@@ -2172,7 +2172,7 @@ MagickExport unsigned int QuantizeImages(const QuantizeInfo *quantize_info,
         if (status == False)
           break;
         if (quantize_info->colorspace != RGBColorspace)
-          TransformRGBImage(image,quantize_info->colorspace);
+          (void) TransformRGBImage(image,quantize_info->colorspace);
         image=image->next;
         (void) SetMonitorHandler(handler);
         MagickMonitor(AssignImageText,i,number_images);

@@ -239,7 +239,7 @@ ModuleExport void RegisterWBMPImage(void)
   entry->adjoin=False;
   entry->description=AllocateString("Wireless Bitmap (level 0) image");
   entry->module=AllocateString("WBMP");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -263,7 +263,7 @@ ModuleExport void RegisterWBMPImage(void)
 */
 ModuleExport void UnregisterWBMPImage(void)
 {
-  UnregisterMagickInfo("WBMP");
+  (void) UnregisterMagickInfo("WBMP");
 }
 
 /*

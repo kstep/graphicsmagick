@@ -101,7 +101,7 @@ ModuleExport void RegisterPREVIEWImage(void)
   entry->description=
     AllocateString("Show a preview an image enhancement, effect, or f/x");
   entry->module=AllocateString("PREVIEW");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -125,7 +125,7 @@ ModuleExport void RegisterPREVIEWImage(void)
 */
 ModuleExport void UnregisterPREVIEWImage(void)
 {
-  UnregisterMagickInfo("PREVIEW");
+  (void) UnregisterMagickInfo("PREVIEW");
 }
 
 /*

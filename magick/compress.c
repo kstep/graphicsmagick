@@ -1045,7 +1045,7 @@ MagickExport unsigned int LZWEncodeImage(Image *image,const size_t length,
     number_bits+=code_width; \
     while (number_bits >= 8) \
     { \
-        WriteBlobByte(image,(unsigned int) (accumulator >> 24)); \
+        (void) WriteBlobByte(image,(unsigned int) (accumulator >> 24)); \
         accumulator=accumulator << 8; \
         number_bits-=8; \
     } \
@@ -1241,16 +1241,16 @@ MagickExport unsigned int PackbitsEncodeImage(Image *image,const size_t length,
       case 1:
       {
         i--;
-        WriteBlobByte(image,0);
-        WriteBlobByte(image,*pixels);
+        (void) WriteBlobByte(image,0);
+        (void) WriteBlobByte(image,*pixels);
         break;
       }
       case 2:
       {
         i-=2;
-        WriteBlobByte(image,1);
-        WriteBlobByte(image,*pixels);
-        WriteBlobByte(image,pixels[1]);
+        (void) WriteBlobByte(image,1);
+        (void) WriteBlobByte(image,*pixels);
+        (void) WriteBlobByte(image,pixels[1]);
         break;
       }
       case 3:
@@ -1262,10 +1262,10 @@ MagickExport unsigned int PackbitsEncodeImage(Image *image,const size_t length,
             WriteBlobByte(image,*pixels);
             break;
           }
-        WriteBlobByte(image,2);
-        WriteBlobByte(image,*pixels);
-        WriteBlobByte(image,pixels[1]);
-        WriteBlobByte(image,pixels[2]);
+        (void) WriteBlobByte(image,2);
+        (void) WriteBlobByte(image,*pixels);
+        (void) WriteBlobByte(image,pixels[1]);
+        (void) WriteBlobByte(image,pixels[2]);
         break;
       }
       default:
@@ -1283,8 +1283,8 @@ MagickExport unsigned int PackbitsEncodeImage(Image *image,const size_t length,
                 break;
             }
             i-=count;
-            WriteBlobByte(image,(int) ((256-count)+1));
-            WriteBlobByte(image,*pixels);
+            (void) WriteBlobByte(image,(int) ((256-count)+1));
+            (void) WriteBlobByte(image,*pixels);
             pixels+=count;
             break;
           }
@@ -1303,13 +1303,13 @@ MagickExport unsigned int PackbitsEncodeImage(Image *image,const size_t length,
         i-=count;
         *packbits=count-1;
         for (j=0; j <= count; j++)
-          WriteBlobByte(image,packbits[j]);
+          (void) WriteBlobByte(image,packbits[j]);
         pixels+=count;
         break;
       }
     }
   }
-  WriteBlobByte(image,128);  /* EOD marker */
+  (void) WriteBlobByte(image,128);  /* EOD marker */
   LiberateMemory((void **) &packbits);
   return(True);
 }
@@ -1399,7 +1399,7 @@ MagickExport unsigned int ZLIBEncodeImage(Image *image,const size_t length,
       (char *) NULL)
   else
     for (i=0; i < (long) compressed_packets; i++)
-      WriteBlobByte(image,compressed_pixels[i]);
+      (void) WriteBlobByte(image,compressed_pixels[i]);
   LiberateMemory((void **) &compressed_pixels);
   return(!status);
 }

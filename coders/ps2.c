@@ -99,11 +99,11 @@ ModuleExport void RegisterPS2Image(void)
   entry->adjoin=False;
   entry->description=AllocateString("Adobe Level II Encapsulated PostScript");
   entry->module=AllocateString("PS2");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("PS2");
   entry->encoder=WritePS2Image;
   entry->description=AllocateString("Adobe Level II PostScript");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -127,8 +127,8 @@ ModuleExport void RegisterPS2Image(void)
 */
 ModuleExport void UnregisterPS2Image(void)
 {
-  UnregisterMagickInfo("EPS2");
-  UnregisterMagickInfo("PS2");
+  (void) UnregisterMagickInfo("EPS2");
+  (void) UnregisterMagickInfo("PS2");
 }
 
 /*

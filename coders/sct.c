@@ -272,7 +272,7 @@ ModuleExport void RegisterSCTImage(void)
   entry->adjoin=False;
   entry->description=AllocateString("Scitex HandShake");
   entry->module=AllocateString("SCT");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -296,5 +296,5 @@ ModuleExport void RegisterSCTImage(void)
 */
 ModuleExport void UnregisterSCTImage(void)
 {
-  UnregisterMagickInfo("SCT");
+  (void) UnregisterMagickInfo("SCT");
 }

@@ -3156,7 +3156,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       file=fopen(filename,WriteBinaryType);
       if (file == (FILE *) NULL)
         ThrowReaderException(FileOpenWarning,"Unable to write file",image);
-      memset(magick,0,sizeof(magick));
+      (void) memset(magick,0,sizeof(magick));
       while ((c=ReadBlobByte(image)) != EOF)
       {
         magick[0]=magick[1];
@@ -3416,7 +3416,7 @@ ModuleExport void RegisterDCMImage(void)
   entry->description=
     AllocateString("Digital Imaging and Communications in Medicine image");
   entry->module=AllocateString("DCM");
-  RegisterMagickInfo(entry);
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -3440,5 +3440,5 @@ ModuleExport void RegisterDCMImage(void)
 */
 ModuleExport void UnregisterDCMImage(void)
 {
-  UnregisterMagickInfo("DCM");
+  (void) UnregisterMagickInfo("DCM");
 }

@@ -493,7 +493,7 @@ MagickExport Image *BlurImage(Image *image,const double radius,
     q=GetImagePixels(blur_image,x,0,1,image->rows);
     if (q == (PixelPacket *) NULL)
       break;
-    memcpy(scanline,q,image->rows*sizeof(PixelPacket));
+    (void) memcpy(scanline,q,image->rows*sizeof(PixelPacket));
     BlurScanline(kernel,width,scanline,q,image->rows);
     if (!SyncImagePixels(blur_image))
       break;
@@ -565,8 +565,8 @@ MagickExport Image *CharcoalImage(Image *image,const double radius,
   if (blur_image == (Image *) NULL)
     return((Image *) NULL);
   DestroyImage(edge_image);
-  NormalizeImage(blur_image);
-  NegateImage(blur_image,False);
+  (void) NormalizeImage(blur_image);
+  (void) NegateImage(blur_image,False);
   SetImageType(blur_image,GrayscaleType);
   return(blur_image);
 }
@@ -949,8 +949,8 @@ MagickExport Image *DespeckleImage(Image *image,ExceptionInfo *exception)
   */
   for (layer=0; layer < 3; layer++)
   {
-    memset(buffer,0,packets*sizeof(Quantum));
-    memset(pixels,0,packets*sizeof(Quantum));
+    (void) memset(buffer,0,packets*sizeof(Quantum));
+    (void) memset(pixels,0,packets*sizeof(Quantum));
     j=image->columns+2;
     for (y=0; y < (int) image->rows; y++)
     {
