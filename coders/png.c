@@ -4393,7 +4393,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   if (status == False)
     ThrowWriterException((ExceptionType) FileOpenWarning,
       "Unable to open file",image);
-  optimize=image_info->type == OptimizeType;
+  optimize=(image_info->type == OptimizeType || image->depth < 8);
   use_global_plte=False;
   page.width=0;
   page.height=0;
@@ -4963,11 +4963,18 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 
         if (image->depth < QuantumDepth)
           {
-            background.red=DownScale(image->background_color.red);
-            background.green=DownScale(image->background_color.green);
-            background.blue=DownScale(image->background_color.blue);
+            int
+               maxval;
+
+            maxval=(1<<image->depth)-1;
+            background.red=(png_uint_16)
+              (maxval*image->background_color.red/MaxRGB);
+            background.green=(png_uint_16)
+              (maxval*image->background_color.green/MaxRGB);
+            background.blue=(png_uint_16)
+              (maxval*image->background_color.blue/MaxRGB);
             background.gray=(png_uint_16)
-              DownScale(Intensity(image->background_color));
+              (maxval*Intensity(image->background_color)/MaxRGB);
           }
         else
           {
@@ -5274,6 +5281,28 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             ping_info->trans_values.gray*=0x0101;
           }
       }
+
+    /*
+      Adjust background and transparency samples in sub-8-bit grayscale files.
+    */
+      if (ping_info->bit_depth<8 && ping_info->color_type==PNG_COLOR_TYPE_GRAY)
+        {
+           png_uint_16
+             maxval;
+
+           png_color_16
+             background;
+
+           maxval=(1<<ping_info->bit_depth)-1;
+
+           background.gray=(png_uint_16)
+             (maxval*(Intensity(image->background_color))/MaxRGB);
+
+           png_set_bKGD(ping,ping_info,&background);
+
+           ping_info->trans_values.gray=(png_uint_16)(maxval*
+             ping_info->trans_values.gray/MaxRGB);
+        }
 
     /*
       Initialize compression level and filtering.
