@@ -465,7 +465,7 @@ static unsigned int ConvertImages(ImageInfo *image_info,Image **image,
 %      void Usage()
 %
 */
-static void Usage(void)
+static void ConvertUsage(void)
 {
   static const char
     *options[]=
@@ -618,7 +618,7 @@ static void Usage(void)
 %
 %
 */
-int main(int argc,char **argv)
+int ConvertMain(int argc,char **argv)
 {
 #define NotInitialized  (unsigned int) (~0)
 
@@ -656,28 +656,6 @@ int main(int argc,char **argv)
     ping,
     status;
 
-  /*
-    Initialize command line arguments.
-  */
-  if (LocaleCompare("-convert",argv[0]) == 0)
-    {
-      if (argc < 3)
-        return(False);
-    }
-  else
-    {
-      ReadCommandlLine(argc,&argv);
-      if (LocaleCompare("convert",argv[0]) == 0)
-        InitializeMagick(GetExecutionPath(argv[0]));
-      else
-        InitializeMagick(*argv);
-      status=ExpandFilenames(&argc,&argv);
-      if (status == False)
-        MagickError(ResourceLimitError,"Memory allocation failed",
-          (char *) NULL);
-      if (argc < 3)
-        Usage();
-    }
   /*
     Set defaults.
   */
@@ -1347,7 +1325,7 @@ int main(int argc,char **argv)
         {
           if (LocaleCompare("help",option+1) == 0)
             {
-              Usage();
+              ConvertUsage();
               break;
             }
           MagickError(OptionError,"Unrecognized option",option);
@@ -2188,7 +2166,7 @@ int main(int argc,char **argv)
         }
         case '?':
         {
-          Usage();
+          ConvertUsage();
           break;
         }
         default:
@@ -2204,10 +2182,30 @@ int main(int argc,char **argv)
     ConvertImages(image_info,&image,&option_info,argc-j+1,argv+j-1,&exception);
   DestroyImageList(image);
   DestroyImageInfo(image_info);
-  if (LocaleCompare("-convert",argv[0]) == 0)
-    return(True);
+  return((int) status);
+}
+
+#ifndef SUPRESS_MAIN
+int main(int argc,char **argv)
+{
+  unsigned int
+    status;
+
+  /*
+    Initialize command line arguments.
+  */
+  ReadCommandlLine(argc,&argv);
+  InitializeMagick((const char *) NULL);
+  status=ExpandFilenames(&argc,&argv);
+  if (status == False)
+    MagickError(ResourceLimitError,"Memory allocation failed",
+      (char *) NULL);
+  if (argc < 3)
+    ConvertUsage();
+  status=(unsigned int) ConvertMain(argc,argv);
   DestroyMagick();
   LiberateMemory((void **) &argv);
   Exit(!status);
   return(False);
 }
+#endif
