@@ -18,6 +18,9 @@
 /* Define if you have the wait3 system call.  */
 #undef HAVE_WAIT3
 
+/* Define as __inline if that's what the C compiler calls it.  */
+#undef inline
+
 /* Define to `int' if <sys/types.h> doesn't define.  */
 #undef mode_t
 
@@ -45,11 +48,18 @@
 /* Define if you can safely include both <sys/time.h> and <time.h>.  */
 #undef TIME_WITH_SYS_TIME
 
+/* Define if your processor stores words with the most significant
+   byte first (like Motorola and SPARC, unlike Intel and VAX).  */
+#undef WORDS_BIGENDIAN
+
 /* Define if the X Window System is missing or not being used.  */
 #undef X_DISPLAY_MISSING
 
 /* Define to empty if the keyword does not work.  */
 #undef const
+
+/* Define to empty if the keyword does not work.  */
+#undef inline
 
 /* Define if you don't have vprintf but do have _doprnt.  */
 #undef HAVE_DOPRNT
@@ -74,6 +84,10 @@
 
 /* Define if you have the ANSI C header files.  */
 #undef STDC_HEADERS
+
+/* Define if your processor stores words with the most significant
+   byte first (like Motorola and SPARC, unlike Intel and VAX).  */
+#undef WORDS_BIGENDIAN
 
 /* Define on System V Release 4.  */
 #undef SVR4
@@ -141,35 +155,23 @@
 /* Define if you have sys_errlist[] in libc */
 #undef HAVE_SYS_ERRLIST
 
-/* Define if you have HP style pty allocation (/dev/ptym/ptyp*) */
-#undef HAVE_PTYM
-
-/* Define if you have HP style pty trapping (struct.*request_info in sys/ptyio.h) */
-#undef HAVE_PTYTRAP
-
-/* Define if you have AIX new-style pty allocation (/dev/ptc && /dev/pts) */
-#undef HAVE_PTC_PTS
-
-/* Define if you have SGI old-style pty allocation (/dev/ptc && ! /dev/pts) */
-#undef HAVE_PTC
-
-/* Define if you have SCO style pty allocation */
-#undef HAVE_SCO_CLIST_PTYS
-
 /* Define if you have SVR4 style pty allocation (/dev/ptmx) */
 #undef HAVE_PTMX
 
-/* Define if you have OSF/1 style pty allocation (/dev/ptmx_bsd) */
-#undef HAVE_PTMX_BSD
-
 /* Define directory where ImageMagick/delegates.h lives. (default /usr/local/share) */
 #undef DelegatePath
+
+/* Define if you have the POSIX.4 clock_gettime function.  */
+#undef HAVE_CLOCK_GETTIME
 
 /* Define if you have the getcwd function.  */
 #undef HAVE_GETCWD
 
 /* Define if you have the getpagesize function.  */
 #undef HAVE_GETPAGESIZE
+
+/* Define if you have the gettimeofday function.  */
+#undef HAVE_GETTIMEOFDAY
 
 /* Define if you have the mkdir function.  */
 #undef HAVE_MKDIR

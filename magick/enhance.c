@@ -88,13 +88,15 @@ Export void ContrastImage(Image *image,const unsigned int sharpen)
 #define SharpenContrastImageText  "  Sharpening image contrast...  "
 
   int
-    sign;
+    sign,
+    y;
 
   register int
-    i;
+    i,
+    x;
 
-  register RunlengthPacket
-    *p;
+  register PixelPacket
+    *q;
 
   assert(image != (Image *) NULL);
   sign=sharpen ? 1 : -1;
@@ -106,17 +108,24 @@ Export void ContrastImage(Image *image,const unsigned int sharpen)
       /*
         Contrast enhance DirectClass image.
       */
-      p=image->pixels;
-      for (i=0; i < (int) image->packets; i++)
+      for (y=0; y < (int) image->rows; y++)
       {
-        Contrast(sign,&p->red,&p->green,&p->blue);
-        p++;
-        if (QuantumTick(i,image->packets))
+        q=GetPixelCache(image,0,y,image->columns,1);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (int) image->columns; x++)
+        {
+          Contrast(sign,&q->red,&q->green,&q->blue);
+          q++;
+        }
+        if (!SyncPixelCache(image))
+          break;
+        if (QuantumTick(y,image->rows))
           {
             if (sharpen)
-              ProgressMonitor(SharpenContrastImageText,i,image->packets);
+              ProgressMonitor(SharpenContrastImageText,y,image->rows);
             else
-              ProgressMonitor(DullContrastImageText,i,image->packets);
+              ProgressMonitor(DullContrastImageText,y,image->rows);
           }
       }
       break;
@@ -175,15 +184,20 @@ Export void EqualizeImage(Image *image)
 {
 #define EqualizeImageText  "  Equalizing image...  "
 
+  int
+    j,
+    y;
+
   Quantum
     *equalize_map;
 
   register int
     i,
-    j;
+    x;
 
-  register RunlengthPacket
-    *p;
+  register PixelPacket
+    *p,
+    *q;
 
   unsigned int
     high,
@@ -210,11 +224,16 @@ Export void EqualizeImage(Image *image)
   */
   for (i=0; i <= MaxRGB; i++)
     histogram[i]=0;
-  p=image->pixels;
-  for (i=0; i < (int) image->packets; i++)
+  for (y=0; y < (int) image->rows; y++)
   {
-    histogram[Intensity(*p)]+=(p->length+1);
-    p++;
+    p=GetPixelCache(image,0,y,image->columns,1);
+    if (p == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < (int) image->columns; x++)
+    {
+      histogram[Intensity(*p)]++;
+      p++;
+    }
   }
   /*
     Integrate the histogram to get the equalization map.
@@ -225,11 +244,11 @@ Export void EqualizeImage(Image *image)
     j+=histogram[i];
     map[i]=j;
   }
-  FreeMemory((char *) histogram);
+  FreeMemory(histogram);
   if (map[MaxRGB] == 0)
     {
-      FreeMemory((char *) equalize_map);
-      FreeMemory((char *) map);
+      FreeMemory(equalize_map);
+      FreeMemory(map);
       return;
     }
   /*
@@ -240,7 +259,7 @@ Export void EqualizeImage(Image *image)
   for (i=0; i <= MaxRGB; i++)
     equalize_map[i]=(Quantum)
       ((((double) (map[i]-low))*MaxRGB)/Max(high-low,1));
-  FreeMemory((char *) map);
+  FreeMemory(map);
   /*
     Stretch the histogram.
   */
@@ -252,15 +271,22 @@ Export void EqualizeImage(Image *image)
       /*
         Equalize DirectClass packets.
       */
-      p=image->pixels;
-      for (i=0; i < (int) image->packets; i++)
+      for (y=0; y < (int) image->rows; y++)
       {
-        p->red=equalize_map[p->red];
-        p->green=equalize_map[p->green];
-        p->blue=equalize_map[p->blue];
-        p++;
-        if (QuantumTick(i,image->packets))
-          ProgressMonitor(EqualizeImageText,i,image->packets);
+        q=SetPixelCache(image,0,y,image->columns,1);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (int) image->columns; x++)
+        {
+          q->red=equalize_map[q->red];
+          q->green=equalize_map[q->green];
+          q->blue=equalize_map[q->blue];
+          q++;
+        }
+        if (!SyncPixelCache(image))
+          break;
+        if (QuantumTick(y,image->rows))
+          ProgressMonitor(EqualizeImageText,y,image->rows);
       }
       break;
     }
@@ -279,7 +305,7 @@ Export void EqualizeImage(Image *image)
       break;
     }
   }
-  FreeMemory((char *) equalize_map);
+  FreeMemory(equalize_map);
 }
 
 /*
@@ -311,22 +337,25 @@ Export void GammaImage(Image *image,const char *gamma)
 {
 #define GammaImageText  "  Gamma correcting the image...  "
 
-  ColorPacket
-    *gamma_map;
-
   double
     blue_gamma,
     green_gamma,
+    opacity_gamma,
     red_gamma;
 
   int
-    count;
+    count,
+    y;
 
   register int
-    i;
+    i,
+    x;
 
-  register RunlengthPacket
-    *p;
+  register PixelPacket
+    *q;
+
+  PixelPacket
+    *gamma_map;
 
   assert(image != (Image *) NULL);
   if (gamma == (char *) NULL)
@@ -334,8 +363,11 @@ Export void GammaImage(Image *image,const char *gamma)
   red_gamma=1.0;
   green_gamma=1.0;
   blue_gamma=1.0;
-  count=sscanf(gamma,"%lf,%lf,%lf",&red_gamma,&green_gamma,&blue_gamma);
-  count=sscanf(gamma,"%lf/%lf/%lf",&red_gamma,&green_gamma,&blue_gamma);
+  opacity_gamma=1.0;
+  count=sscanf(gamma,"%lf,%lf,%lf,%lf",&red_gamma,&green_gamma,&blue_gamma,
+    &opacity_gamma);
+  count=sscanf(gamma,"%lf/%lf/%lf/%lf",&red_gamma,&green_gamma,&blue_gamma,
+    &opacity_gamma);
   if (count == 1)
     {
       if (red_gamma == 1.0)
@@ -346,10 +378,10 @@ Export void GammaImage(Image *image,const char *gamma)
   /*
     Allocate and initialize gamma maps.
   */
-  gamma_map=(ColorPacket *) AllocateMemory((MaxRGB+1)*sizeof(ColorPacket));
-  if (gamma_map == (ColorPacket *) NULL)
+  gamma_map=(PixelPacket *) AllocateMemory((MaxRGB+1)*sizeof(PixelPacket));
+  if (gamma_map == (PixelPacket *) NULL)
     {
-      MagickWarning(ResourceLimitWarning,"Unable to gamma image",
+      MagickWarning(ResourceLimitWarning,"Unable to gamma correct image",
         "Memory allocation failed");
       return;
     }
@@ -358,6 +390,7 @@ Export void GammaImage(Image *image,const char *gamma)
     gamma_map[i].red=0;
     gamma_map[i].green=0;
     gamma_map[i].blue=0;
+    gamma_map[i].opacity=0;
   }
   /*
     Initialize gamma table.
@@ -373,8 +406,10 @@ Export void GammaImage(Image *image,const char *gamma)
     if (blue_gamma != 0.0)
       gamma_map[i].blue=(Quantum)
         ((pow((double) i/MaxRGB,1.0/blue_gamma)*MaxRGB)+0.5);
+    if (opacity_gamma != 0.0)
+      gamma_map[i].opacity=(Quantum)
+        ((pow((double) i/MaxRGB,1.0/opacity_gamma)*MaxRGB)+0.5);
   }
-  image->tainted=True;
   switch (image->class)
   {
     case DirectClass:
@@ -383,15 +418,23 @@ Export void GammaImage(Image *image,const char *gamma)
       /*
         Gamma-correct DirectClass image.
       */
-      p=image->pixels;
-      for (i=0; i < (int) image->packets; i++)
+      for (y=0; y < (int) image->rows; y++)
       {
-        p->red=gamma_map[p->red].red;
-        p->green=gamma_map[p->green].green;
-        p->blue=gamma_map[p->blue].blue;
-        p++;
-        if (QuantumTick(i,image->packets))
-          ProgressMonitor(GammaImageText,i,image->packets);
+        q=GetPixelCache(image,0,y,image->columns,1);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (int) image->columns; x++)
+        {
+          q->red=gamma_map[q->red].red;
+          q->green=gamma_map[q->green].green;
+          q->blue=gamma_map[q->blue].blue;
+          q->opacity=gamma_map[q->opacity].opacity;
+          q++;
+        }
+        if (!SyncPixelCache(image))
+          break;
+        if (QuantumTick(y,image->rows))
+          ProgressMonitor(GammaImageText,y,image->rows);
       }
       break;
     }
@@ -412,7 +455,7 @@ Export void GammaImage(Image *image,const char *gamma)
   }
   if (image->gamma != 0.0)
     image->gamma*=(red_gamma+green_gamma+blue_gamma)/3.0;
-  FreeMemory((char *) gamma_map);
+  FreeMemory(gamma_map);
 }
 
 /*
@@ -452,11 +495,15 @@ Export void ModulateImage(Image *image,const char *modulate)
     percent_hue,
     percent_saturation;
 
-  register int
-    i;
+  int
+    y;
 
-  register RunlengthPacket
-    *p;
+  register int
+    i,
+    x;
+
+  register PixelPacket
+    *q;
 
   /*
     Initialize gamma table.
@@ -479,14 +526,21 @@ Export void ModulateImage(Image *image,const char *modulate)
       /*
         Modulate the color for a DirectClass image.
       */
-      p=image->pixels;
-      for (i=0; i < (int) image->packets; i++)
+      for (y=0; y < (int) image->rows; y++)
       {
-        Modulate(percent_hue,percent_saturation,percent_brightness,
-          &p->red,&p->green,&p->blue);
-        p++;
-        if (QuantumTick(i,image->packets))
-          ProgressMonitor(ModulateImageText,i,image->packets);
+        q=GetPixelCache(image,0,y,image->columns,1);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (int) image->columns; x++)
+        {
+          Modulate(percent_hue,percent_saturation,percent_brightness,
+            &q->red,&q->green,&q->blue);
+          q++;
+        }
+        if (!SyncPixelCache(image))
+          break;
+        if (QuantumTick(y,image->rows))
+          ProgressMonitor(ModulateImageText,y,image->rows);
       }
       break;
     }
@@ -546,14 +600,17 @@ Export void NegateImage(Image *image,const unsigned int grayscale)
 {
 #define NegateImageText  "  Negating the image colors...  "
 
-  register int
-    i;
+  int
+    y;
 
-  register RunlengthPacket
-    *p;
+  register int
+    i,
+    x;
+
+  register PixelPacket
+    *q;
 
   assert(image != (Image *) NULL);
-  image->tainted=True;
   switch (image->class)
   {
     case DirectClass:
@@ -562,22 +619,29 @@ Export void NegateImage(Image *image,const unsigned int grayscale)
       /*
         Negate DirectClass packets.
       */
-      p=image->pixels;
-      for (i=0; i < (int) image->packets; i++)
+      for (y=0; y < (int) image->rows; y++)
       {
-        if (grayscale)
-          if ((p->red != p->green) || (p->green != p->blue))
-            {
-              p++;
-              continue;
-            }
-        p->red=(~p->red);
-        p->green=(~p->green);
-        p->blue=(~p->blue);
-        p->index=(~p->index);
-        p++;
-        if (QuantumTick(i,image->packets))
-          ProgressMonitor(NegateImageText,i,image->packets);
+        q=GetPixelCache(image,0,y,image->columns,1);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (int) image->columns; x++)
+        {
+          if (grayscale)
+            if ((q->red != q->green) || (q->green != q->blue))
+              {
+                q++;
+                continue;
+              }
+          q->red=(~q->red);
+          q->green=(~q->green);
+          q->blue=(~q->blue);
+          q->opacity=(~q->opacity);
+          q++;
+        }
+        if (!SyncPixelCache(image))
+          break;
+        if (QuantumTick(y,image->rows))
+          ProgressMonitor(NegateImageText,y,image->rows);
       }
       break;
     }
@@ -632,7 +696,8 @@ Export void NormalizeImage(Image *image)
 
   int
     *histogram,
-    threshold_intensity;
+    threshold_intensity,
+    y;
 
   Quantum
     gray_value,
@@ -640,10 +705,12 @@ Export void NormalizeImage(Image *image)
 
   register int
     i,
-    intensity;
+    intensity,
+    x;
 
-  register RunlengthPacket
-    *p;
+  register PixelPacket
+    *p,
+    *q;
 
   unsigned int
     high,
@@ -666,12 +733,17 @@ Export void NormalizeImage(Image *image)
   */
   for (i=0; i <= MaxRGB; i++)
     histogram[i]=0;
-  p=image->pixels;
-  for (i=0; i < (int) image->packets; i++)
+  for (y=0; y < (int) image->rows; y++)
   {
-    gray_value=Intensity(*p);
-    histogram[gray_value]+=p->length+1;
-    p++;
+    p=GetPixelCache(image,0,y,image->columns,1);
+    if (p == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < (int) image->columns; x++)
+    {
+      gray_value=Intensity(*p);
+      histogram[gray_value]++;
+      p++;
+    }
   }
   /*
     Find the histogram boundaries by locating the 1 percent levels.
@@ -736,15 +808,22 @@ Export void NormalizeImage(Image *image)
       /*
         Normalize DirectClass image.
       */
-      p=image->pixels;
-      for (i=0; i < (int) image->packets; i++)
+      for (y=0; y < (int) image->rows; y++)
       {
-        p->red=normalize_map[p->red];
-        p->green=normalize_map[p->green];
-        p->blue=normalize_map[p->blue];
-        p++;
-        if (QuantumTick(i,image->packets))
-          ProgressMonitor(NormalizeImageText,i,image->packets);
+        q=GetPixelCache(image,0,y,image->columns,1);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (int) image->columns; x++)
+        {
+          q->red=normalize_map[q->red];
+          q->green=normalize_map[q->green];
+          q->blue=normalize_map[q->blue];
+          q++;
+        }
+        if (!SyncPixelCache(image))
+          break;
+        if (QuantumTick(y,image->rows))
+          ProgressMonitor(NormalizeImageText,y,image->rows);
       }
       break;
     }
@@ -763,6 +842,6 @@ Export void NormalizeImage(Image *image)
       break;
     }
   }
-  FreeMemory((char *) normalize_map);
-  FreeMemory((char *) histogram);
+  FreeMemory(normalize_map);
+  FreeMemory(histogram);
 }

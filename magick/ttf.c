@@ -210,7 +210,6 @@ Export Image *ReadTTFImage(const ImageInfo *image_info)
     if (i >= 24)
       i+=6;
   }
-  CondenseImage(image);
   DestroyAnnotateInfo(&annotate_info);
   return(image);
 }

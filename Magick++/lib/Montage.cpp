@@ -16,9 +16,7 @@
 void Magick::Montage::updateMontageInfo ( MagickLib::MontageInfo &montageInfo_ ) const
 {
   if ( _backgroundColor.isValid() )
-    {
-      Magick::CloneString( &montageInfo_.background_color, _backgroundColor );
-    }
+    montageInfo_.background_color = _backgroundColor;
 
   if ( _compose != Magick::UndefinedCompositeOp )
     montageInfo_.compose = _compose;
@@ -45,7 +43,7 @@ void Magick::Montage::updateMontageInfo ( MagickLib::MontageInfo &montageInfo_ )
     montageInfo_.pointsize = _pointSize;
 
   if ( _shadow == true )
-    montageInfo_.shadow = True;
+    montageInfo_.shadow = (int)true;
 
   if ( _texture.length() != 0 )
     Magick::CloneString( &montageInfo_.texture, _texture );
@@ -63,13 +61,14 @@ void Magick::Montage::updateMontageInfo ( MagickLib::MontageInfo &montageInfo_ )
 //
 
 
-/* virtual */ void  Magick::MontageFramed::updateMontageInfo ( MagickLib::MontageInfo &montageInfo_ ) const
+/* virtual */ void
+Magick::MontageFramed::updateMontageInfo ( MagickLib::MontageInfo &montageInfo_ ) const
 {
   // Do base updates
   Montage::updateMontageInfo ( montageInfo_ );
 
   if ( _borderColor.isValid() )
-    Magick::CloneString( &montageInfo_.border_color, _borderColor );
+    montageInfo_.border_color = _borderColor;
 
   if ( _borderWidth != 0 )
     montageInfo_.border_width = _borderWidth;
@@ -78,5 +77,5 @@ void Magick::Montage::updateMontageInfo ( MagickLib::MontageInfo &montageInfo_ )
     Magick::CloneString( &montageInfo_.frame, _frame );
 
   if ( _matteColor.isValid() )
-    Magick::CloneString( &montageInfo_.matte_color, _matteColor );
+    montageInfo_.matte_color = _matteColor;
 }

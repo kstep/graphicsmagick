@@ -18,3 +18,9 @@ shapes_SOURCES = shapes.cpp
 
 EXTRA_DIST = Generic.ttf model.gif smile.gif smile_anim.gif tile.gif \
 	button.dsp demo.dsp flip.dsp shapes.dsp
+
+check:
+	./button
+	-./demo
+	./flip
+	./shapes

@@ -22,6 +22,7 @@
 		<LI><A HREF="#FlipImage">FlipImage</A>
 		<LI><A HREF="#FlopImage">FlopImage</A>
 		<LI><A HREF="#RollImage">RollImage</A>
+		<LI><A HREF="#TransformImage">TransformImage</A>
 	</UL>
 
 </UL>
@@ -37,25 +38,29 @@ transform - Methods to Transform an Image
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-Image * <STRONG>ChopImage</STRONG>( const Image *image, const RectangleInfo <CODE>*chop_info</CODE> );
+Image * <STRONG>ChopImage</STRONG>( Image *image, const RectangleInfo <CODE>*chop_info</CODE> );
 
 <P>
-void  <STRONG>CoalesceImages</STRONG>( Image <CODE>*images</CODE> );
+Image * <STRONG>CoalesceImages</STRONG>( Image <CODE>*images</CODE> );
 
 <P>
-Image * <STRONG>CropImage</STRONG>( const Image *image, const RectangleInfo <CODE>*crop_info</CODE> );
+Image * <STRONG>CropImage</STRONG>( Image *image, const RectangleInfo <CODE>*crop_info</CODE> );
 
 <P>
-void  <STRONG>DeconstructImages</STRONG>( Image <CODE>*images</CODE> );
+Image * <STRONG>DeconstructImages</STRONG>( Image <CODE>*images</CODE> );
 
 <P>
-Image * <STRONG>FlipImage</STRONG>( const Image <CODE>*image</CODE> );
+Image * <STRONG>FlipImage</STRONG>( Image <CODE>*image</CODE> );
 
 <P>
-Image * <STRONG>FlopImage</STRONG>( const Image <CODE>*image</CODE> );
+Image * <STRONG>FlopImage</STRONG>( Image <CODE>*image</CODE> );
 
 <P>
-Image * <STRONG>RollImage</STRONG>( const Image *image, const int x_offset, const int y_offset );
+Image * <STRONG>RollImage</STRONG>( Image *image, const int x_offset, const int y_offset );
+
+<P>
+void  <STRONG>TransformImage</STRONG>( Image ** image, const char *crop_geometry, const char
+<CODE>*image_geometry</CODE> );
 
 <P>
 <HR>
@@ -71,7 +76,7 @@ returns a pointer to the new image.
 <P>
 The format of the ChopImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *ChopImage ( const <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *chop_info ); </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *ChopImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *chop_info ); </blockquote>
 
 <P>
 
@@ -106,7 +111,7 @@ Method CoalesceImages merges a sequence of images. This is useful for
 <P>
 The format of the CoalesceImages method is:
 
-<blockquote>void CoalesceImages ( <A HREF="types/Image.html">Image</A> *images ); </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *CoalesceImages ( <A HREF="types/Image.html">Image</A> *images ); </blockquote>
 
 <P>
 
@@ -126,22 +131,22 @@ points to the first image in the group to be coalesced.
 Method CropImage creates a new image that is a subregion of an existing
 one. It allocates the memory necessary for the new Image structure and
 returns a pointer to the new image. This method is optimized to preserve
-the runlength encoding. That is, the cropped image will always use less
-memory than the original.
+the runlength encoding. That is, the crop image will always use less memory
+than the original.
 
 <P>
 The format of the CropImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *CropImage ( const <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *crop_info ); </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *CropImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RectangleInfo.html">RectangleInfo</A> *crop_info ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<p><dt><STRONG>cropped_image:</STRONG><DD>
+<p><dt><STRONG>crop_image:</STRONG><DD>
 <P>
-Method CropImage returns a pointer to the cropped image. 
+Method CropImage returns a pointer to the crop image. 
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage
 or if the image width or height is zero.
 
@@ -167,7 +172,7 @@ Method DeconstructImages breaks down an image sequence into constituent parts. T
 <P>
 The format of the DeconstructImages method is:
 
-<blockquote>void DeconstructImages ( <A HREF="types/Image.html">Image</A> *images ); </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *DeconstructImages ( <A HREF="types/Image.html">Image</A> *images ); </blockquote>
 
 <P>
 
@@ -191,14 +196,14 @@ structure and returns a pointer to the new image.
 <P>
 The format of the FlipImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *FlipImage ( const <A HREF="types/Image.html">Image</A> *image ); </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *FlipImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<p><dt><STRONG>flipped_image:</STRONG><DD>
+<p><dt><STRONG>flip_image:</STRONG><DD>
 <P>
 Method FlipImage returns a pointer to the image after reflecting. 
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory
@@ -220,14 +225,14 @@ structure and returns a pointer to the new image.
 <P>
 The format of the FlopImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *FlopImage ( const <A HREF="types/Image.html">Image</A> *image ); </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *FlopImage ( <A HREF="types/Image.html">Image</A> *image ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<p><dt><STRONG>flopped_image:</STRONG><DD>
+<p><dt><STRONG>flop_image:</STRONG><DD>
 <P>
 Method FlopImage returns a pointer to the image after reflecting. 
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory
@@ -249,14 +254,14 @@ the new image.
 <P>
 The format of the RollImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *RollImage ( const <A HREF="types/Image.html">Image</A> *image, const int x_offset, const int y_offset ); </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *RollImage ( <A HREF="types/Image.html">Image</A> *image, const int x_offset, const int y_offset ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<p><dt><STRONG>rolled_image:</STRONG><DD>
+<p><dt><STRONG>roll_image:</STRONG><DD>
 <P>
 Method RollImage returns a pointer to the image after rolling. 
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory
@@ -275,6 +280,52 @@ direction.
 <P>
 An integer that specifies the number of rows to roll in the vertical
 direction.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="TransformImage">TransformImage</A></H2>
+<P>
+Method TransformImage creates a new image that is a transformed size of of
+existing one as specified by the crop and image geometries. It allocates
+the memory necessary for the new Image structure and returns a pointer to
+the new image.
+
+<P>
+If a crop geometry is specified a subregion of the image is obtained. If
+the specified image size, as defined by the image and scale geometries, is
+smaller than the actual image size, the image is first minified to an
+integral of the specified image size with an antialias digital filter. The
+image is then scaled to the exact specified image size with pixel
+replication. If the specified image size is greater than the actual image
+size, the image is first enlarged to an integral of the specified image
+size with bilinear interpolation. The image is then scaled to the exact
+specified image size with pixel replication.
+
+<P>
+The format of the TransformImage method is:
+
+<blockquote>void TransformImage ( <A HREF="types/Image.html">Image</A> **image, const char *crop_geometry, const char *image_geometry ); </blockquote>
+
+<P>
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
+
+<DL><DL>
+<p><dt><STRONG>image:</STRONG><DD>
+<P>
+The address of an address of a structure of type Image. The transformed
+image is returned as this parameter.
+
+<p><dt><STRONG>crop_geometry:</STRONG><DD>
+<P>
+Specifies a pointer to a crop geometry string. This geometry defines a
+subregion of the image.
+
+<p><dt><STRONG>image_geometry:</STRONG><DD>
+<P>
+Specifies a pointer to a image geometry string. The specified width and
+height of this geometry string are absolute.
 
 </DL></DL>
 </BODY>

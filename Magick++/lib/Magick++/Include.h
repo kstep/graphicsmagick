@@ -31,6 +31,9 @@
 // Needed for stdio FILE
 #include <cstdio>
 
+// Needed for time_t
+#include <ctime>
+
 namespace MagickLib
 {
 #undef PACKAGE
@@ -38,9 +41,6 @@ namespace MagickLib
 
 #include <magick/api.h>
 
-#ifdef MAGICK_IMPLEMENTATION
-# include <magick/defines.h>
-#endif // MAGICK_IMPLEMENTATION
 #undef class
 }
 
@@ -133,7 +133,7 @@ namespace Magick
   using MagickLib::GrayscaleType;
   using MagickLib::PaletteType;
   using MagickLib::TrueColorType;
-  using MagickLib::MatteType;
+  using MagickLib::TrueColorMatteType;
   using MagickLib::ColorSeparationType;
   
   // Interlace types

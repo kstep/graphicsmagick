@@ -95,24 +95,12 @@ Export Image *ReadMONOImage(const ImageInfo *image_info)
     i,
     x;
 
-  register long
-    packets;
-
-  register RunlengthPacket
-    *q;
-
   unsigned char
     bit,
     byte;
 
   unsigned int
     status;
-
-  unsigned long
-    max_packets;
-
-  unsigned short
-    index;
 
   /*
     Allocate image structure.
@@ -121,7 +109,7 @@ Export Image *ReadMONOImage(const ImageInfo *image_info)
   if (image == (Image *) NULL)
     return((Image *) NULL);
   if ((image->columns == 0) || (image->rows == 0))
-    ReaderExit(OptionWarning,"must specify image size",image);
+    ReaderExit(OptionWarning,"Must specify image size",image);
   /*
     Open image file.
   */
@@ -135,9 +123,9 @@ Export Image *ReadMONOImage(const ImageInfo *image_info)
   */
   image->class=PseudoClass;
   image->colors=2;
-  image->colormap=(ColorPacket *)
-    AllocateMemory(image->colors*sizeof(ColorPacket));
-  if (image->colormap == (ColorPacket *) NULL)
+  image->colormap=(PixelPacket *)
+    AllocateMemory(image->colors*sizeof(PixelPacket));
+  if (image->colormap == (PixelPacket *) NULL)
     ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
   for (i=0; i < (int) image->colors; i++)
   {
@@ -145,55 +133,30 @@ Export Image *ReadMONOImage(const ImageInfo *image_info)
     image->colormap[i].green=(MaxRGB*i)/(image->colors-1);
     image->colormap[i].blue=(MaxRGB*i)/(image->colors-1);
   }
-  packets=0;
-  max_packets=Max((image->columns*image->rows+2) >> 2,1);
-  image->pixels=(RunlengthPacket *)
-    AllocateMemory(max_packets*sizeof(RunlengthPacket));
-  if (image->pixels == (RunlengthPacket *) NULL)
-    ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
   /*
-    Convert bi-level image to runlength-encoded packets.
+    Convert bi-level image to pixel packets.
   */
-  byte=0;
-  q=image->pixels;
-  SetRunlengthEncoder(q);
   for (y=0; y < (int) image->rows; y++)
   {
+    if (!SetPixelCache(image,0,y,image->columns,1))
+      break;
     bit=0;
+    byte=0;
     for (x=0; x < (int) image->columns; x++)
     {
       if (bit == 0)
         byte=ReadByte(image);
-      index=(byte & 0x01) ? 0 : 1;
-      if ((index == q->index) && ((int) q->length < MaxRunlength))
-        q->length++;
-      else
-        {
-          if (packets != 0)
-            q++;
-          packets++;
-          if (packets == (int) max_packets)
-            {
-              max_packets<<=1;
-              image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
-                image->pixels,max_packets*sizeof(RunlengthPacket));
-              if (image->pixels == (RunlengthPacket *) NULL)
-                ReaderExit(ResourceLimitWarning,"Memory allocation failed",
-                  image);
-              q=image->pixels+packets-1;
-            }
-          q->index=index;
-          q->length=0;
-        }
+      image->indexes[x]=(byte & 0x01) ? 0 : 1;
       bit++;
       if (bit == 8)
         bit=0;
       byte>>=1;
     }
+    if (!SyncPixelCache(image))
+      break;
     if (QuantumTick(y,image->rows))
       ProgressMonitor(LoadImageText,y,image->rows);
   }
-  SetRunlengthPackets(image,packets);
   SyncImage(image);
   CloseBlob(image);
   return(image);
@@ -231,7 +194,6 @@ Export Image *ReadMONOImage(const ImageInfo *image_info)
 Export unsigned int WriteMONOImage(const ImageInfo *image_info,Image *image)
 {
   int
-    x,
     y;
 
   register unsigned char
@@ -240,11 +202,7 @@ Export unsigned int WriteMONOImage(const ImageInfo *image_info,Image *image)
     polarity;
 
   register int
-    i,
-    j;
-
-  register RunlengthPacket
-    *p;
+    x;
 
   unsigned int
     status;
@@ -269,22 +227,20 @@ Export unsigned int WriteMONOImage(const ImageInfo *image_info,Image *image)
       quantize_info.dither=image_info->dither;
       quantize_info.colorspace=GRAYColorspace;
       (void) QuantizeImage(&quantize_info,image);
-      SyncImage(image);
     }
   polarity=Intensity(image->colormap[0]) > (MaxRGB >> 1);
   if (image->colors == 2)
     polarity=Intensity(image->colormap[0]) > Intensity(image->colormap[1]);
-  bit=0;
-  byte=0;
-  x=0;
-  y=0;
-  p=image->pixels;
-  for (i=0; i < (int) image->packets; i++)
+  for (y=0; y < (int) image->rows; y++)
   {
-    for (j=0; j <= ((int) p->length); j++)
+    if (!GetPixelCache(image,0,y,image->columns,1))
+      break;
+    bit=0;
+    byte=0;
+    for (x=0; x < (int) image->columns; x++)
     {
       byte>>=1;
-      if (p->index == polarity)
+      if (image->indexes[x] == polarity)
         byte|=0x80;
       bit++;
       if (bit == 8)
@@ -293,23 +249,11 @@ Export unsigned int WriteMONOImage(const ImageInfo *image_info,Image *image)
           bit=0;
           byte=0;
         }
-      x++;
-      if (x == (int) image->columns)
-        {
-          /*
-            Advance to the next scanline.
-          */
-          if (bit != 0)
-            (void) WriteByte(image,byte >> (8-bit));
-          if (QuantumTick(y,image->rows))
-            ProgressMonitor(SaveImageText,y,image->rows);
-          bit=0;
-          byte=0;
-          x=0;
-          y++;
-       }
     }
-    p++;
+    if (bit != 0)
+      (void) WriteByte(image,byte >> (8-bit));
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(SaveImageText,y,image->rows);
   }
   CloseBlob(image);
   return(True);

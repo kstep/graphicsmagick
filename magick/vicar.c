@@ -59,6 +59,48 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   I s V I C A R                                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsVICAR returns True if the image format type, identified by the
+%  magick string, is VICAR.
+%
+%  The format of the ReadVICARImage method is:
+%
+%      unsigned int IsVICAR(const unsigned char *magick,
+%        const unsigned int length)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method IsVICAR returns True if the image format type is VICAR.
+%
+%    o magick: This string is generally the first few bytes of an image file
+%      or blob.
+%
+%    o length: Specifies the length of the magick string.
+%
+%
+*/
+Export unsigned int IsVICAR(const unsigned char *magick,
+  const unsigned int length)
+{
+  if (length < 7)
+    return(False);
+  if (strncmp((char *) magick,"LBLSIZE",7) == 0)
+    return(True);
+  if (strncmp((char *) magick,"NJPL1I",6) == 0)
+    return(True);
+  return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   R e a d V I C A R I m a g e                                               %
 %                                                                             %
 %                                                                             %
@@ -92,6 +134,9 @@ Export Image *ReadVICARImage(const ImageInfo *image_info)
   Image
     *image;
 
+  IndexPacket
+    index;
+
   int
     c,
     y;
@@ -103,7 +148,7 @@ Export Image *ReadVICARImage(const ImageInfo *image_info)
     i,
     x;
 
-  register RunlengthPacket
+  register PixelPacket
     *q;
 
   register unsigned char
@@ -228,9 +273,9 @@ Export Image *ReadVICARImage(const ImageInfo *image_info)
   /*
     Create linear colormap.
   */
-  image->colormap=(ColorPacket *)
-    AllocateMemory(image->colors*sizeof(ColorPacket));
-  if (image->colormap == (ColorPacket *) NULL)
+  image->colormap=(PixelPacket *)
+    AllocateMemory(image->colors*sizeof(PixelPacket));
+  if (image->colormap == (PixelPacket *) NULL)
     ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
   for (i=0; i < (int) image->colors; i++)
   {
@@ -241,41 +286,41 @@ Export Image *ReadVICARImage(const ImageInfo *image_info)
   /*
     Initialize image structure.
   */
-  image->packets=image->columns*image->rows;
-  image->pixels=(RunlengthPacket *)
-    AllocateMemory(image->packets*sizeof(RunlengthPacket));
   vicar_pixels=(unsigned char *)
-    AllocateMemory(image->packets*sizeof(unsigned char));
-  if ((image->pixels == (RunlengthPacket *) NULL) ||
-      (vicar_pixels == (unsigned char *) NULL))
+    AllocateMemory(image->columns*image->rows*sizeof(unsigned char));
+  if (vicar_pixels == (unsigned char *) NULL)
     ReaderExit(CorruptImageWarning,"Unable to read image data",image);
-  SetImage(image);
   /*
-    Convert VICAR pixels to runlength-encoded packets.
+    Convert VICAR pixels to pixel packets.
   */
-  status=ReadBlob(image,image->packets,(char *) vicar_pixels);
+  status=ReadBlob(image,image->columns*image->rows,(char *) vicar_pixels);
   if (status == False)
     ReaderExit(CorruptImageWarning,"Insufficient image data in file",image);
   /*
-    Convert VICAR pixels to runlength-encoded packets.
+    Convert VICAR pixels to pixel packets.
   */
   p=vicar_pixels;
-  q=image->pixels;
   for (y=0; y < (int) image->rows; y++)
   {
+    q=SetPixelCache(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
     for (x=0; x < (int) image->columns; x++)
     {
-      q->index=(unsigned short) *p;
-      q->length=0;
+      index=(unsigned short) *p;
+      image->indexes[x]=index;
+      q->red=image->colormap[index].red;
+      q->green=image->colormap[index].green;
+      q->blue=image->colormap[index].blue;
       p++;
       q++;
     }
+    if (!SyncPixelCache(image))
+      break;
     if (QuantumTick(y,image->rows))
       ProgressMonitor(LoadImageText,y,image->rows);
   }
-  FreeMemory((char *) vicar_pixels);
-  SyncImage(image);
-  CondenseImage(image);
+  FreeMemory(vicar_pixels);
   CloseBlob(image);
   return(image);
 }
@@ -325,14 +370,13 @@ Export unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
 
   int
     label_size,
-    x,
     y;
 
   register int
     i,
-    j;
+    x;
 
-  register RunlengthPacket
+  register PixelPacket
     *p;
 
   register unsigned char
@@ -378,36 +422,29 @@ Export unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
     Allocate memory for pixels.
   */
   pixels=(unsigned char *)
-    AllocateMemory(image->columns*sizeof(RunlengthPacket));
+    AllocateMemory(image->columns*sizeof(PixelPacket));
   if (pixels == (unsigned char *) NULL)
     WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
   /*
     Write VICAR pixels.
   */
-  x=0;
-  y=0;
-  p=image->pixels;
-  q=pixels;
-  for (i=0; i < (int) image->packets; i++)
+  for (y=0; y < (int) image->rows; y++)
   {
-    for (j=0; j <= ((int) p->length); j++)
+    p=GetPixelCache(image,0,y,image->columns,1);
+    if (p == (PixelPacket *) NULL)
+      break;
+    q=pixels;
+    for (x=0; x < (int) image->columns; x++)
     {
       *q++=DownScale(Intensity(*p));
-      x++;
-      if (x == (int) image->columns)
-        {
-          (void) WriteBlob(image,q-pixels,(char *) pixels);
-          if (image->previous == (Image *) NULL)
-            if (QuantumTick(y,image->rows))
-              ProgressMonitor(SaveImageText,y,image->rows);
-          q=pixels;
-          x=0;
-          y++;
-        }
+      p++;
     }
-    p++;
+    (void) WriteBlob(image,q-pixels,(char *) pixels);
+    if (image->previous == (Image *) NULL)
+      if (QuantumTick(y,image->rows))
+        ProgressMonitor(SaveImageText,y,image->rows);
   }
-  FreeMemory((char *) pixels);
+  FreeMemory(pixels);
   CloseBlob(image);
   return(True);
 }

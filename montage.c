@@ -89,6 +89,7 @@
 %  Where options include:
 %    -adjoin             join images into a single multi-image file
 %    -blur factor        apply a filter to blur the image
+%    -cache threshold    megabytes of memory available to the pixel cache
 %    -colors value       preferred number of colors in the image
 %    -colorspace type    alternate image colorspace
 %    -comment string     annotate image with comment
@@ -181,6 +182,7 @@ static void Usage(const char *client_name)
     {
       "-adjoin             join images into a single multi-image file",
       "-blur factor        apply a filter to blur the image",
+      "-cache threshold    megabytes of memory available to the pixel cache",
       "-colors value       preferred number of colors in the image",
       "-colorspace type    alternate image colorsapce",
       "-comment string     annotate image with comment",
@@ -338,15 +340,15 @@ int main(int argc,char **argv)
           if ((strncmp("background",option+1,5) == 0) ||
               (strncmp("bg",option+1,2) == 0))
             {
-              image_info.background_color=(char *) NULL;
-              montage_info.background_color=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing color",option);
-                  (void) CloneString(&image_info.background_color,argv[i]);
-                  (void) CloneString(&montage_info.background_color,argv[i]);
+                  (void) QueryColorDatabase(argv[i],
+                    &montage_info.background_color);
+                  (void) QueryColorDatabase(argv[i],
+                    &image_info.background_color);
                 }
               break;
             }
@@ -362,15 +364,13 @@ int main(int argc,char **argv)
             }
           if (strncmp("bordercolor",option+1,7) == 0)
             {
-              image_info.border_color=(char *) NULL;
-              montage_info.border_color=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing color",option);
-                  (void) CloneString(&image_info.border_color,argv[i]);
-                  (void) CloneString(&montage_info.border_color,argv[i]);
+                  (void) QueryColorDatabase(argv[i],&montage_info.border_color);
+                  (void) QueryColorDatabase(argv[i],&image_info.border_color);
                 }
               break;
             }
@@ -391,6 +391,17 @@ int main(int argc,char **argv)
         }
         case 'c':
         {
+          if (strncmp("cache",option+1,3) == 0)
+            {
+              if (*option == '-')
+                {
+                  i++;
+                  if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                    MagickError(OptionError,"Missing threshold",option);
+                }
+              SetCacheThreshold(atoi(argv[i]));
+              break;
+            }
           if (strncmp("colors",option+1,7) == 0)
             {
               quantize_info.number_colors=0;
@@ -801,15 +812,13 @@ int main(int argc,char **argv)
             break;
           if (strncmp("mattecolor",option+1,6) == 0)
             {
-              image_info.matte_color=(char *) NULL;
-              montage_info.matte_color=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing color",option);
-                  (void) CloneString(&image_info.matte_color,argv[i]);
-                  (void) CloneString(&montage_info.matte_color,argv[i]);
+                  (void) QueryColorDatabase(argv[i],&montage_info.matte_color);
+                  (void) QueryColorDatabase(argv[i],&image_info.matte_color);
                 }
               break;
             }
@@ -905,8 +914,8 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%d",&x))
                     MagickError(OptionError,"Missing size",option);
-                  image_info.pointsize=atoi(argv[i]);
-                  montage_info.pointsize=atoi(argv[i]);
+                  image_info.pointsize=atof(argv[i]);
+                  montage_info.pointsize=atof(argv[i]);
                 }
               break;
             }
@@ -932,12 +941,17 @@ int main(int argc,char **argv)
         }
         case 'r':
         {
-          if (*option == '-')
+          if (strncmp("rotate",option+1,3) == 0)
             {
-              i++;
-              if ((i == argc) || !IsGeometry(argv[i]))
-                MagickError(OptionError,"Missing degrees",option);
+              if (*option == '-')
+                {
+                  i++;
+                  if ((i == argc) || !IsGeometry(argv[i]))
+                    MagickError(OptionError,"Missing degrees",option);
+                }
+              break;
             }
+          MagickError(OptionError,"Unrecognized option",option);
           break;
         }
         case 's':
@@ -1175,7 +1189,9 @@ int main(int argc,char **argv)
   (void) strcpy(montage_image->magick_filename,argv[argc-1]);
   if (image_info.verbose)
     DescribeImage(montage_image,(FILE *) NULL,False);
+  DestroyImages(montage_image);
   DestroyDelegateInfo();
+  FreeMemory(argv);
   Exit(status ? 0 : errno);
   return(False);
 }

@@ -59,6 +59,45 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   I s S G I                                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsSGI returns True if the image format type, identified by the
+%  magick string, is SGI.
+%
+%  The format of the ReadSGIImage method is:
+%
+%      unsigned int IsSGI(const unsigned char *magick,
+%        const unsigned int length)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method IsSGI returns True if the image format type is SGI.
+%
+%    o magick: This string is generally the first few bytes of an image file
+%      or blob.
+%
+%    o length: Specifies the length of the magick string.
+%
+%
+*/
+Export unsigned int IsSGI(const unsigned char *magick,const unsigned int length)
+{
+  if (length < 2)
+    return(False);
+  if (strncmp((char *) magick,"\001\332",2) == 0)
+    return(True);
+  return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   R e a d S G I I m a g e                                                   %
 %                                                                             %
 %                                                                             %
@@ -151,7 +190,7 @@ Export Image *ReadSGIImage(const ImageInfo *image_info)
     y,
     z;
 
-  register RunlengthPacket
+  register PixelPacket
     *q;
 
   register unsigned char
@@ -243,7 +282,7 @@ Export Image *ReadSGIImage(const ImageInfo *image_info)
             }
           }
         }
-        FreeMemory((char *) scanline);
+        FreeMemory(scanline);
       }
     else
       {
@@ -338,34 +377,31 @@ Export Image *ReadSGIImage(const ImageInfo *image_info)
     image->matte=iris_header.depth == 4;
     image->columns=iris_header.columns;
     image->rows=iris_header.rows;
-    image->packets=image->columns*image->rows;
-    image->pixels=(RunlengthPacket *)
-      AllocateMemory(image->packets*sizeof(RunlengthPacket));
-    if (image->pixels == (RunlengthPacket *) NULL)
-      ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-    SetImage(image);
     /*
-      Convert SGI raster image to runlength-encoded packets.
+      Convert SGI raster image to pixel packets.
     */
-    q=image->pixels;
     if (image->class == DirectClass)
       {
         /*
-          Convert SGI image to DirectClass runlength-encoded packets.
+          Convert SGI image to DirectClass pixel packets.
         */
         for (y=0; y < (int) image->rows; y++)
         {
           p=iris_pixels+((image->rows-1)-y)*(image->columns*4);
+          q=SetPixelCache(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            break;
           for (x=0; x < (int) image->columns; x++)
           {
             q->red=UpScale(*p);
             q->green=UpScale(*(p+1));
             q->blue=UpScale(*(p+2));
-            q->index=UpScale(*(p+3));
-            q->length=0;
+            q->opacity=UpScale(*(p+3));
             p+=4;
             q++;
           }
+          if (!SyncPixelCache(image))
+            break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(LoadImageText,y,image->rows);
@@ -379,9 +415,9 @@ Export Image *ReadSGIImage(const ImageInfo *image_info)
         /*
           Create grayscale map.
         */
-        image->colormap=(ColorPacket *)
-          AllocateMemory(image->colors*sizeof(ColorPacket));
-        if (image->colormap == (ColorPacket *) NULL)
+        image->colormap=(PixelPacket *)
+          AllocateMemory(image->colors*sizeof(PixelPacket));
+        if (image->colormap == (PixelPacket *) NULL)
           ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
         for (i=0; i < (int) image->colors; i++)
         {
@@ -390,27 +426,29 @@ Export Image *ReadSGIImage(const ImageInfo *image_info)
           image->colormap[i].blue=(Quantum) UpScale(i);
         }
         /*
-          Convert SGI image to PseudoClass runlength-encoded packets.
+          Convert SGI image to PseudoClass pixel packets.
         */
         for (y=0; y < (int) image->rows; y++)
         {
+          if (!SetPixelCache(image,0,y,image->columns,1))
+            break;
           p=iris_pixels+((image->rows-1)-y)*(image->columns*4);
           for (x=0; x < (int) image->columns; x++)
           {
             index=(unsigned short) (*p);
-            q->index=index;
-            q->length=0;
+            image->indexes[x]=index;
             p+=4;
             q++;
           }
+          if (!SyncPixelCache(image))
+            break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(LoadImageText,y,image->rows);
         }
         SyncImage(image);
       }
-    FreeMemory((char *) iris_pixels);
-    CondenseImage(image);
+    FreeMemory(iris_pixels);
     /*
       Proceed to next image.
     */
@@ -546,17 +584,18 @@ Export unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
       filler[492];
   } SGIHeader;
 
+  int
+    y,
+    z;
+
   SGIHeader
     iris_header;
 
   register int
     i,
-    j,
-    x,
-    y,
-    z;
+    x;
 
-  register RunlengthPacket
+  register PixelPacket
     *p;
 
   register unsigned char
@@ -624,32 +663,25 @@ Export unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
     if (iris_pixels == (unsigned char *) NULL)
       WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
     /*
-      Convert runlength-encoded packets to uncompressed SGI pixels.
+      Convert pixel packets to uncompressed SGI pixels.
     */
-    x=0;
-    y=0;
-    p=image->pixels;
-    q=iris_pixels+(iris_header.rows-1)*(iris_header.columns*4);
-    for (i=0; i < (int) image->packets; i++)
+    for (y=0; y < (int) image->rows; y++)
     {
-      for (j=0; j <= ((int) p->length); j++)
+      p=GetPixelCache(image,0,y,image->columns,1);
+      if (p == (PixelPacket *) NULL)
+        break;
+      q=iris_pixels+((iris_header.rows-1)-y)*(iris_header.columns*4);
+      for (x=0; x < (int) image->columns; x++)
       {
         *q++=DownScale(p->red);
         *q++=DownScale(p->green);
         *q++=DownScale(p->blue);
-        *q++=(unsigned char) p->index;
-        x++;
-        if (x == (int) image->columns)
-          {
-            if (image->previous == (Image *) NULL)
-              if (QuantumTick(y,image->rows))
-                ProgressMonitor(SaveImageText,y,image->rows);
-            y++;
-            q=iris_pixels+((iris_header.rows-1)-y)*(iris_header.columns*4);
-            x=0;
-          }
+        *q++=(unsigned char) p->opacity;
+        p++;
       }
-      p++;
+      if (image->previous == (Image *) NULL)
+        if (QuantumTick(y,image->rows))
+          ProgressMonitor(SaveImageText,y,image->rows);
     }
     if (image_info->compression == NoCompression)
       {
@@ -734,8 +766,7 @@ Export unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
     FreeMemory(iris_pixels);
     if (image->next == (Image *) NULL)
       break;
-    image->next->file=image->file;
-    image=image->next;
+    image=GetNextImage(image);
     ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)

@@ -59,6 +59,48 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   I s F I T S                                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsFITS returns True if the image format type, identified by the
+%  magick string, is FITS.
+%
+%  The format of the ReadFITSImage method is:
+%
+%      unsigned int IsFITS(const unsigned char *magick,
+%        const unsigned int length)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method IsFITS returns True if the image format type is FITS.
+%
+%    o magick: This string is generally the first few bytes of an image file
+%      or blob.
+%
+%    o length: Specifies the length of the magick string.
+%
+%
+*/
+Export unsigned int IsFITS(const unsigned char *magick,
+  const unsigned int length)
+{
+  if (length < 6)
+    return(False);
+  if (strncmp((char *) magick,"IT0",3) == 0)
+    return(True);
+  if (strncmp((char *) magick,"SIMPLE",6) == 0)
+    return(True);
+  return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   R e a d F I T S I m a g e                                                 %
 %                                                                             %
 %                                                                             %
@@ -135,9 +177,6 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
   register int
     i,
     x;
-
-  register RunlengthPacket
-    *q;
 
   register unsigned char
     *p;
@@ -285,9 +324,9 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
         CloseBlob(image);
         return(image);
       }
-    image->colormap=(ColorPacket *)
-      AllocateMemory(image->colors*sizeof(ColorPacket));
-    if (image->colormap == (ColorPacket *) NULL)
+    image->colormap=(PixelPacket *)
+      AllocateMemory(image->colors*sizeof(PixelPacket));
+    if (image->colormap == (PixelPacket *) NULL)
       ReaderExit(FileOpenWarning,"Unable to open file",image);
     for (i=0; i < (int) image->colors; i++)
     {
@@ -298,22 +337,18 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
     /*
       Initialize image structure.
     */
-    image->packets=image->columns*image->rows;
-    image->pixels=(RunlengthPacket *)
-      AllocateMemory(image->packets*sizeof(RunlengthPacket));
     packet_size=fits_header.bits_per_pixel/8;
     if (packet_size < 0)
       packet_size=(-packet_size);
-    fits_pixels=(unsigned char *)
-      AllocateMemory(image->packets*packet_size*sizeof(unsigned char));
-    if ((image->pixels == (RunlengthPacket *) NULL) ||
-        (fits_pixels == (unsigned char *) NULL))
+    fits_pixels=(unsigned char *) AllocateMemory(
+      image->columns*image->rows*packet_size*sizeof(unsigned char));
+    if (fits_pixels == (unsigned char *) NULL)
       ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-    SetImage(image);
     /*
-      Convert FITS pixels to runlength-encoded packets.
+      Convert FITS pixels to pixel packets.
     */
-    status=ReadBlob(image,packet_size*image->packets,(char *) fits_pixels);
+    status=ReadBlob(image,image->columns*image->rows*packet_size,
+      (char *) fits_pixels);
     if (status == False)
       MagickWarning(CorruptImageWarning,"Insufficient image data in file",
         image->filename);
@@ -340,7 +375,7 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
           pixel=(double) (*((double *) long_quantum));
         fits_header.min_data=pixel*fits_header.scale+fits_header.zero;
         fits_header.max_data=pixel*fits_header.scale+fits_header.zero;
-        for (i=1; i < (int) image->packets; i++)
+        for (i=1; i < (int) (image->columns*image->rows); i++)
         {
           long_quantum[0]=(*p);
           quantum=(*p++);
@@ -365,16 +400,16 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
         }
       }
     /*
-      Convert FITS pixels to runlength-encoded packets.
+      Convert FITS pixels to pixel packets.
     */
     scale=1.0;
     if (fits_header.min_data != fits_header.max_data)
       scale=MaxRGB/(fits_header.max_data-fits_header.min_data);
     p=fits_pixels;
-    q=image->pixels;
     for (y=image->rows-1; y >= 0; y--)
     {
-      q=image->pixels+(y*image->columns);
+      if (!SetPixelCache(image,0,y,image->columns,1))
+        break;
       for (x=0; x < (int) image->columns; x++)
       {
         long_quantum[0]=(*p);
@@ -399,16 +434,15 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
         else
           if (scaled_pixel > MaxRGB)
             scaled_pixel=MaxRGB;
-        q->index=(unsigned short) scaled_pixel;
-        q->length=0;
-        q++;
+        image->indexes[x]=(unsigned short) scaled_pixel;
       }
+      if (!SyncPixelCache(image))
+        break;
       if (QuantumTick(y,image->rows))
         ProgressMonitor(LoadImageText,y,image->rows);
     }
-    FreeMemory((char *) fits_pixels);
     SyncImage(image);
-    CondenseImage(image);
+    FreeMemory(fits_pixels);
     /*
       Proceed to next image.
     */
@@ -475,12 +509,14 @@ Export unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
     buffer[81],
     *fits_header;
 
-  register int
-    i,
-    x,
+  int
     y;
 
-  register RunlengthPacket
+  register int
+    i,
+    x;
+
+  register PixelPacket
     *p;
 
   register unsigned char
@@ -492,8 +528,6 @@ Export unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
   unsigned int
     status;
 
-  if (!UncondenseImage(image))
-    return(False);
   /*
     Open output image file.
   */
@@ -506,7 +540,7 @@ Export unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
   */
   fits_header=(char *) AllocateMemory(2880*sizeof(unsigned char));
   pixels=(unsigned char *)
-    AllocateMemory(image->columns*sizeof(RunlengthPacket));
+    AllocateMemory(image->columns*sizeof(PixelPacket));
   if ((fits_header == (char *) NULL) || (pixels == (unsigned char *) NULL))
     WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
   /*
@@ -529,13 +563,15 @@ Export unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
   (void) strcpy(buffer,"END");
   (void) strncpy(fits_header+480,buffer,Extent(buffer));
   (void) WriteBlob(image,2880,(char *) fits_header);
-  FreeMemory((char *) fits_header);
+  FreeMemory(fits_header);
   /*
     Convert image to fits scale PseudoColor class.
   */
   for (y=image->rows-1; y >= 0; y--)
   {
-    p=image->pixels+(y*image->columns);
+    p=GetPixelCache(image,0,y,image->columns,1);
+    if (p == (PixelPacket *) NULL)
+      break;
     q=pixels;
     for (x=0; x < (int) image->columns; x++)
     {
@@ -546,7 +582,7 @@ Export unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
     if (QuantumTick(image->rows-y-1,image->rows))
       ProgressMonitor(SaveImageText,image->rows-y-1,image->rows);
   }
-  FreeMemory((char *) pixels);
+  FreeMemory(pixels);
   CloseBlob(image);
   return(True);
 }

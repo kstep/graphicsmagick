@@ -105,12 +105,12 @@ Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
     *annotate_image;
 
   int
+    j,
     x,
     y;
 
   register int
-    i,
-    j;
+    i;
 
   unsigned int
     height,
@@ -126,8 +126,6 @@ Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
   if (annotate_info->text == (char *) NULL)
     return;
   if (*annotate_info->text == '\0')
-    return;
-  if (!UncondenseImage(image))
     return;
   /*
     Translate any embedded format characters (e.g. %f).
@@ -205,7 +203,7 @@ Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
             (char *) NULL);
           for ( ; textlist[i] != (char *) NULL; i++)
             FreeMemory(textlist[i]);
-          FreeMemory((char *) textlist);
+          FreeMemory(textlist);
           break;
         }
       if ((annotate_image->columns <= width) || (strlen(label) < 4))
@@ -307,8 +305,7 @@ Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
         /*
           Rotate text.
         */
-        rotated_image=
-          RotateImage(annotate_image,annotate_info->degrees,False,False);
+        rotated_image=RotateImage(annotate_image,annotate_info->degrees);
         if (rotated_image != (Image *) NULL)
           {
             DestroyImage(annotate_image);
@@ -323,7 +320,7 @@ Export void AnnotateImage(Image *image,const AnnotateInfo *annotate_info)
   FreeMemory(text);
   for ( ; textlist[i] != (char *) NULL; i++)
     FreeMemory(textlist[i]);
-  FreeMemory((char *) textlist);
+  FreeMemory(textlist);
 }
 
 /*
@@ -384,7 +381,7 @@ Export AnnotateInfo *CloneAnnotateInfo(const ImageInfo *image_info,
     cloned_info->font_name=AllocateString(annotate_info->font_name);
   if (annotate_info->tile != (Image *) NULL)
     cloned_info->tile=CloneImage(annotate_info->tile,
-      annotate_info->tile->columns,annotate_info->tile->rows,True);
+      annotate_info->tile->columns,annotate_info->tile->rows,False);
   return(cloned_info);
 }
 
@@ -417,16 +414,16 @@ Export void DestroyAnnotateInfo(AnnotateInfo *annotate_info)
   assert(annotate_info != (AnnotateInfo *) NULL);
   DestroyImageInfo(annotate_info->image_info);
   if (annotate_info->geometry != (char *) NULL)
-    FreeMemory((char *) annotate_info->geometry);
+    FreeMemory(annotate_info->geometry);
   annotate_info->geometry=(char *) NULL;
   if (annotate_info->text != (char *) NULL)
-    FreeMemory((char *) annotate_info->text);
+    FreeMemory(annotate_info->text);
   annotate_info->text=(char *) NULL;
   if (annotate_info->primitive != (char *) NULL)
-    FreeMemory((char *) annotate_info->primitive);
+    FreeMemory(annotate_info->primitive);
   annotate_info->primitive=(char *) NULL;
   if (annotate_info->font_name != (char *) NULL)
-    FreeMemory((char *) annotate_info->font_name);
+    FreeMemory(annotate_info->font_name);
   annotate_info->font_name=(char *) NULL;
   if (annotate_info->tile != (Image *) NULL)
     DestroyImage(annotate_info->tile);
@@ -474,8 +471,8 @@ Export void GetAnnotateInfo(const ImageInfo *image_info,
   annotate_info->primitive=(char *) NULL;
   annotate_info->font_name=(char *) NULL;
   annotate_info->degrees=0.0;
-  annotate_info->bounds.width=annotate_info->image_info->pointsize;
-  annotate_info->bounds.height=annotate_info->image_info->pointsize;
+  annotate_info->bounds.width=ceil(annotate_info->image_info->pointsize);
+  annotate_info->bounds.height=ceil(annotate_info->image_info->pointsize);
   annotate_info->bounds.x=0;
   annotate_info->bounds.y=0;
   /*

@@ -89,7 +89,7 @@ Export Image *ReadGRADATIONImage(const ImageInfo *image_info)
   char
     colorname[MaxTextExtent];
 
-  ColorPacket
+  PixelPacket
     color;
 
   double
@@ -104,10 +104,12 @@ Export Image *ReadGRADATIONImage(const ImageInfo *image_info)
     *image;
 
   int
-    x,
     y;
 
-  register RunlengthPacket
+  register int
+    x;
+
+  register PixelPacket
     *q;
 
   /*
@@ -124,51 +126,45 @@ Export Image *ReadGRADATIONImage(const ImageInfo *image_info)
     image->columns=512;
   if (image->rows == 0)
     image->rows=512;
-  image->packets=image->columns*image->rows;
-  image->pixels=(RunlengthPacket *)
-    AllocateMemory(image->packets*sizeof(RunlengthPacket));
-  if (image->pixels == (RunlengthPacket *) NULL)
-    ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-  SetImage(image);
   /*
     Determine (Hue, Saturation, Brightness) gradient.
   */
   (void) strcpy(colorname,image_info->filename);
   (void) sscanf(image_info->filename,"%[^-]",colorname);
   (void) QueryColorDatabase(colorname,&color);
-  TransformHSL((Quantum) XDownScale(color.red),
-    (Quantum) XDownScale(color.green),(Quantum) XDownScale(color.blue),
-    &hue,&saturation,&brightness);
+  TransformHSL(color.red,color.green,color.blue,&hue,&saturation,&brightness);
   (void) strcpy(colorname,"white");
-  if (Intensity(color) > 32767)
+  if (Intensity(color) > (MaxRGB >> 1))
     (void) strcpy(colorname,"black");
   (void) sscanf(image_info->filename,"%*[^-]-%s",colorname);
   (void) QueryColorDatabase(colorname,&color);
-  TransformHSL((Quantum) XDownScale(color.red),
-    (Quantum) XDownScale(color.green),(Quantum) XDownScale(color.blue),
-    &hue_step,&saturation_step,&brightness_step);
-  hue_step=(hue_step-hue)/(double) image->packets;
-  saturation_step=(saturation_step-saturation)/(double) image->packets;
-  brightness_step=(brightness_step-brightness)/(double) image->packets;
+  TransformHSL(color.red,color.green,color.blue,&hue_step,&saturation_step,
+    &brightness_step);
+  hue_step=(hue_step-hue)/(double) (image->columns*image->rows);
+  saturation_step=
+    (saturation_step-saturation)/(double) (image->columns*image->rows);
+  brightness_step=
+    (brightness_step-brightness)/(double) (image->columns*image->rows);
   /*
     Initialize image pixels.
   */
-  q=image->pixels;
   for (y=0; y < (int) image->rows; y++)
   {
+    q=SetPixelCache(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
     for (x=0; x < (int) image->columns; x++)
     {
       HSLTransform(hue,saturation,brightness,&q->red,&q->green,&q->blue);
-      q->index=0;
-      q->length=0;
       q++;
       hue+=hue_step;
       saturation+=saturation_step;
       brightness+=brightness_step;
     }
+    if (!SyncPixelCache(image))
+      break;
     if (QuantumTick(y,image->rows))
       ProgressMonitor(LoadImageText,y,image->rows);
   }
-  CondenseImage(image);
   return(image);
 }

@@ -59,6 +59,45 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   I s R L E                                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsRLE returns True if the image format type, identified by the
+%  magick string, is RLE.
+%
+%  The format of the ReadRLEImage method is:
+%
+%      unsigned int IsRLE(const unsigned char *magick,
+%        const unsigned int length)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method IsRLE returns True if the image format type is RLE.
+%
+%    o magick: This string is generally the first few bytes of an image file
+%      or blob.
+%
+%    o length: Specifies the length of the magick string.
+%
+%
+*/
+Export unsigned int IsRLE(const unsigned char *magick,const unsigned int length)
+{
+  if (length < 2)
+    return(False);
+  if (strncmp((char *) magick,"\122\314",2) == 0)
+    return(True);
+  return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   R e a d R L E I m a g e                                                   %
 %                                                                             %
 %                                                                             %
@@ -102,14 +141,13 @@ Export Image *ReadRLEImage(const ImageInfo *image_info)
     opcode,
     operand,
     status,
-    x,
     y;
 
   register int
     i,
-    j;
+    x;
 
-  register RunlengthPacket
+  register PixelPacket
     *q;
 
   register unsigned char
@@ -161,7 +199,6 @@ Export Image *ReadRLEImage(const ImageInfo *image_info)
         CloseBlob(image);
         return(image);
       }
-    image->packets=image->columns*image->rows;
     flags=ReadByte(image);
     image->matte=flags & 0x04;
     number_planes=ReadByte(image);
@@ -203,7 +240,7 @@ Export Image *ReadRLEImage(const ImageInfo *image_info)
           ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
         p=colormap;
         for (i=0; i < (int) number_colormaps; i++)
-          for (j=0; j < (int) map_length; j++)
+          for (x=0; x < (int) map_length; x++)
             *p++=XDownScale(LSBFirstReadShort(image));
       }
     if (flags & 0x08)
@@ -228,8 +265,8 @@ Export Image *ReadRLEImage(const ImageInfo *image_info)
     */
     if (image->matte)
       number_planes++;
-    rle_pixels=(unsigned char *)
-      AllocateMemory(image->packets*number_planes*sizeof(unsigned char));
+    rle_pixels=(unsigned char *) AllocateMemory(
+      image->columns*image->rows*number_planes*sizeof(unsigned char));
     if (rle_pixels == (unsigned char *) NULL)
       ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
     if ((flags & 0x01) && !(flags & 0x02))
@@ -238,15 +275,15 @@ Export Image *ReadRLEImage(const ImageInfo *image_info)
           Set background color.
         */
         p=rle_pixels;
-        for (i=0; i < (int) image->packets; i++)
+        for (i=0; i < (int) (image->columns*image->rows); i++)
         {
           if (!image->matte)
-            for (j=0; j < (int) number_planes; j++)
-              *p++=background_color[j];
+            for (x=0; x < (int) number_planes; x++)
+              *p++=background_color[x];
           else
             {
-              for (j=0; j < (int) (number_planes-1); j++)
-                *p++=background_color[j];
+              for (x=0; x < (int) (number_planes-1); x++)
+                *p++=background_color[x];
               *p++=0;  /* initialize matte channel */
             }
         }
@@ -343,48 +380,45 @@ Export Image *ReadRLEImage(const ImageInfo *image_info)
         mask=(map_length-1);
         p=rle_pixels;
         if (number_colormaps == 1)
-          for (i=0; i < (int) image->packets; i++)
+          for (i=0; i < (int) (image->columns*image->rows); i++)
           {
             *p=(unsigned char) colormap[*p & mask];
             p++;
           }
         else
           if ((number_planes >= 3) && (number_colormaps >= 3))
-            for (i=0; i < (int) image->packets; i++)
-              for (j=0; j < (int) number_planes; j++)
+            for (i=0; i < (int) (image->columns*image->rows); i++)
+              for (x=0; x < (int) number_planes; x++)
               {
-                *p=(unsigned char) colormap[j*map_length+(*p & mask)];
+                *p=(unsigned char) colormap[x*map_length+(*p & mask)];
                 p++;
               }
       }
     /*
       Initialize image structure.
     */
-    image->pixels=(RunlengthPacket *)
-      AllocateMemory(image->packets*sizeof(RunlengthPacket));
-    if (image->pixels == (RunlengthPacket *) NULL)
-      ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-    SetImage(image);
-    q=image->pixels;
     if (number_planes >= 3)
       {
         /*
-          Convert raster image to DirectClass runlength-encoded packets.
+          Convert raster image to DirectClass pixel packets.
         */
         p=rle_pixels;
         for (y=0; y < (int) image->rows; y++)
         {
+          q=SetPixelCache(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            break;
           for (x=0; x < (int) image->columns; x++)
           {
             q->red=UpScale(*p++);
             q->green=UpScale(*p++);
             q->blue=UpScale(*p++);
-            q->index=0;
             if (image->matte)
-              q->index=UpScale(*p++);
-            q->length=0;
+              q->opacity=UpScale(*p++);
             q++;
           }
+          if (!SyncPixelCache(image))
+            break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(LoadImageText,y,image->rows);
@@ -399,9 +433,9 @@ Export Image *ReadRLEImage(const ImageInfo *image_info)
         if (number_colormaps == 0)
           map_length=256;
         image->colors=map_length;
-        image->colormap=(ColorPacket *)
-          AllocateMemory(image->colors*sizeof(ColorPacket));
-        if (image->colormap == (ColorPacket *) NULL)
+        image->colormap=(PixelPacket *)
+          AllocateMemory(image->colors*sizeof(PixelPacket));
+        if (image->colormap == (PixelPacket *) NULL)
           ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
         p=colormap;
         if (number_colormaps == 0)
@@ -437,16 +471,16 @@ Export Image *ReadRLEImage(const ImageInfo *image_info)
         if (!image->matte)
           {
             /*
-              Convert raster image to PseudoClass runlength-encoded packets.
+              Convert raster image to PseudoClass pixel packets.
             */
             for (y=0; y < (int) image->rows; y++)
             {
+              if (!SetPixelCache(image,0,y,image->columns,1))
+                break;
               for (x=0; x < (int) image->columns; x++)
-              {
-                q->index=(unsigned short) (*p++);
-                q->length=0;
-                q++;
-              }
+                image->indexes[x]=(unsigned short) (*p++);
+              if (!SyncPixelCache(image))
+                break;
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
                   ProgressMonitor(LoadImageText,y,image->rows);
@@ -460,29 +494,32 @@ Export Image *ReadRLEImage(const ImageInfo *image_info)
             */
             for (y=0; y < (int) image->rows; y++)
             {
+              q=SetPixelCache(image,0,y,image->columns,1);
+              if (q == (PixelPacket *) NULL)
+                break;
               for (x=0; x < (int) image->columns; x++)
               {
                 q->red=image->colormap[*p++].red;
                 q->green=image->colormap[*p++].green;
                 q->blue=image->colormap[*p++].blue;
-                q->index=UpScale(*p++);
-                q->length=0;
+                q->opacity=UpScale(*p++);
                 q++;
               }
+              if (!SyncPixelCache(image))
+                break;
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
                   ProgressMonitor(LoadImageText,y,image->rows);
             }
             FreeMemory(image->colormap);
-            image->colormap=(ColorPacket *) NULL;
+            image->colormap=(PixelPacket *) NULL;
             image->class=DirectClass;
             image->colors=0;
           }
       }
     if (number_colormaps != 0)
-      FreeMemory((char *) colormap);
-    FreeMemory((char *) rle_pixels);
-    CondenseImage(image);
+      FreeMemory(colormap);
+    FreeMemory(rle_pixels);
     /*
       Proceed to next image.
     */

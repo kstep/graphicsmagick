@@ -86,8 +86,9 @@
 Export Image *ReadYUVImage(const ImageInfo *image_info)
 {
   Image
+    *chroma_image,
     *image,
-    *zoomed_image;
+    *zoom_image;
 
   int
     count,
@@ -97,7 +98,7 @@ Export Image *ReadYUVImage(const ImageInfo *image_info)
     i,
     x;
 
-  register RunlengthPacket
+  register PixelPacket
     *q,
     *r;
 
@@ -117,7 +118,7 @@ Export Image *ReadYUVImage(const ImageInfo *image_info)
   if (image == (Image *) NULL)
     return((Image *) NULL);
   if ((image->columns == 0) || (image->rows == 0))
-    ReaderExit(OptionWarning,"must specify image size",image);
+    ReaderExit(OptionWarning,"Must specify image size",image);
   if (image_info->interlace != PartitionInterlace)
     {
       /*
@@ -139,18 +140,7 @@ Export Image *ReadYUVImage(const ImageInfo *image_info)
   do
   {
     /*
-      Initialize image structure.
-    */
-    image->columns>>=1;
-    image->rows>>=1;
-    image->packets=image->columns*image->rows;
-    image->pixels=(RunlengthPacket *)
-      AllocateMemory((image->packets << 2)*sizeof(RunlengthPacket));
-    if (image->pixels == (RunlengthPacket *) NULL)
-      ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-    SetImage(image);
-    /*
-      Convert raster image to runlength-encoded packets.
+      Convert raster image to pixel packets.
     */
     if (image_info->interlace == PartitionInterlace)
       {
@@ -159,23 +149,23 @@ Export Image *ReadYUVImage(const ImageInfo *image_info)
         if (status == False)
           ReaderExit(FileOpenWarning,"Unable to open file",image);
       }
-    i=0;
-    q=image->pixels;
-    for (y=0; y < (int) (image->rows << 1); y++)
+    for (y=0; y < (int) image->rows; y++)
     {
       if ((y > 0) || (image->previous == (Image *) NULL))
-        (void) ReadBlob(image,image->columns << 1,(char *) scanline);
+        (void) ReadBlob(image,image->columns,(char *) scanline);
       p=scanline;
-      for (x=0; x < (int) (image->columns << 1); x++)
+      q=SetPixelCache(image,0,y,image->columns,1);
+      if (q == (PixelPacket *) NULL)
+        break;
+      for (x=0; x < (int) image->columns; x++)
       {
         q->red=UpScale(*p++);
-        q->index=0;
-        q->length=0;
         q++;
       }
+      if (!SyncPixelCache(image))
+        break;
       if (image->previous == (Image *) NULL)
-        ProgressMonitor(LoadImageText,i,3);
-      i++;
+        ProgressMonitor(LoadImageText,y,image->rows);
     }
     if (image_info->interlace == PartitionInterlace)
       {
@@ -185,19 +175,23 @@ Export Image *ReadYUVImage(const ImageInfo *image_info)
         if (status == False)
           ReaderExit(FileOpenWarning,"Unable to open file",image);
       }
-    q=image->pixels;
-    for (y=0; y < (int) image->rows; y++)
+    chroma_image=CloneImage(image,image->columns >> 1,image->rows >> 1,True);
+    if (chroma_image == (Image *) NULL)
+      ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+    for (y=0; y < (int) chroma_image->rows; y++)
     {
-      (void) ReadBlob(image,image->columns,(char *) scanline);
+      (void) ReadBlob(image,chroma_image->columns,(char *) scanline);
       p=scanline;
-      for (x=0; x < (int) image->columns; x++)
+      q=GetPixelCache(chroma_image,0,y,chroma_image->columns,1);
+      if (q == (PixelPacket *) NULL)
+        break;
+      for (x=0; x < (int) chroma_image->columns; x++)
       {
         q->green=UpScale(*p++);
         q++;
       }
-      if (image->previous == (Image *) NULL)
-        ProgressMonitor(LoadImageText,i,3);
-      i++;
+      if (!SyncPixelCache(chroma_image))
+        break;
     }
     if (image_info->interlace == PartitionInterlace)
       {
@@ -207,43 +201,46 @@ Export Image *ReadYUVImage(const ImageInfo *image_info)
         if (status == False)
           ReaderExit(FileOpenWarning,"Unable to open file",image);
       }
-    q=image->pixels;
-    for (y=0; y < (int) image->rows; y++)
+    for (y=0; y < (int) chroma_image->rows; y++)
     {
-      (void) ReadBlob(image,image->columns,(char *) scanline);
+      (void) ReadBlob(image,chroma_image->columns,(char *) scanline);
       p=scanline;
-      for (x=0; x < (int) image->columns; x++)
+      q=GetPixelCache(chroma_image,0,y,chroma_image->columns,1);
+      if (q == (PixelPacket *) NULL)
+        break;
+      for (x=0; x < (int) chroma_image->columns; x++)
       {
         q->blue=UpScale(*p++);
         q++;
       }
-      if (image->previous == (Image *) NULL)
-        ProgressMonitor(LoadImageText,i,3);
-      i++;
+      if (!SyncPixelCache(chroma_image))
+        break;
     }
     /*
       Scale image.
     */
-    image->orphan=True;
-    zoomed_image=MagnifyImage(image);
-    image->orphan=False;
-    if (zoomed_image == (Image *) NULL)
+    zoom_image=ZoomImage(chroma_image,image->columns,image->rows);
+    DestroyImage(chroma_image);
+    if (zoom_image == (Image *) NULL)
       ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-    image->columns<<=1;
-    image->rows<<=1;
-    image->packets=image->columns*image->rows;
-    q=image->pixels;
-    r=zoomed_image->pixels;
-    for (i=0; i < (int) image->packets; i++)
+    for (y=0; y < (int) image->rows; y++)
     {
-      q->green=r->green;
-      q->blue=r->blue;
-      q++;
-      r++;
+      q=GetPixelCache(image,0,y,image->columns,1);
+      r=GetPixelCache(zoom_image,0,y,zoom_image->columns,1);
+      if ((q == (PixelPacket *) NULL) || (r == (PixelPacket *) NULL))
+        break;
+      for (x=0; x < (int) image->columns; x++)
+      {
+        q->green=r->green;
+        q->blue=r->blue;
+        r++;
+        q++;
+      }
+      if (!SyncPixelCache(image))
+        break;
     }
-    DestroyImage(zoomed_image);
+    DestroyImage(zoom_image);
     TransformRGBImage(image,YCbCrColorspace);
-    CondenseImage(image);
     if (image_info->interlace == PartitionInterlace)
       (void) strcpy(image->filename,image_info->filename);
     /*
@@ -269,7 +266,7 @@ Export Image *ReadYUVImage(const ImageInfo *image_info)
           (unsigned int) image->filesize);
       }
   } while (count > 0);
-  FreeMemory((char *) scanline);
+  FreeMemory(scanline);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);
@@ -308,23 +305,24 @@ Export Image *ReadYUVImage(const ImageInfo *image_info)
 */
 Export unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
 {
-  FilterType
-    filter;
-
   Image
-    *downsampled_image,
+    *chroma_image,
     *yuv_image;
 
-  register int
-    i,
-    j;
+  int
+    y;
 
-  register RunlengthPacket
+  register int
+    x;
+
+  register PixelPacket
     *p;
 
   unsigned int
+    height,
     scene,
-    status;
+    status,
+    width;
 
   if (image_info->interlace != PartitionInterlace)
     {
@@ -349,44 +347,40 @@ Export unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
       Zoom image to an even width and height.
     */
     TransformRGBImage(image,RGBColorspace);
-    filter=image->filter;
-    image->filter=PointFilter;
-    image->orphan=True;
-    yuv_image=ZoomImage(image,image->columns+(image->columns & 0x01 ? 1 : 0),
-      image->rows+(image->rows & 0x01 ? 1 : 0));
-    image->orphan=False;
+    width=image->columns+(image->columns & 0x01);
+    height=image->rows+(image->rows & 0x01);
+    yuv_image=ZoomImage(image,width,height);
     if (yuv_image == (Image *) NULL)
       WriterExit(ResourceLimitWarning,"Unable to zoom image",image);
+    RGBTransformImage(yuv_image,YCbCrColorspace);
     /*
       Initialize Y channel.
     */
-    if (image->previous == (Image *) NULL)
-      ProgressMonitor(SaveImageText,100,400);
-    RGBTransformImage(yuv_image,YCbCrColorspace);
-    p=yuv_image->pixels;
-    for (i=0; i < (int) yuv_image->packets; i++)
+    for (y=0; y < (int) yuv_image->rows; y++)
     {
-      for (j=0; j <= ((int) p->length); j++)
+      p=GetPixelCache(yuv_image,0,y,yuv_image->columns,1);
+      if (p == (PixelPacket *) NULL)
+        break;
+      for (x=0; x < (int) yuv_image->columns; x++)
+      {
         (void) WriteByte(image,DownScale(p->red));
-      p++;
+        p++;
+      }
+      if (image->previous == (Image *) NULL)
+        if (QuantumTick(y,image->rows))
+          ProgressMonitor(SaveImageText,y,image->rows);
     }
     DestroyImage(yuv_image);
     /*
       Downsample image.
     */
-    image->orphan=True;
-    downsampled_image=ZoomImage(image,
-      (image->columns+(image->columns & 0x01 ? 1 : 0)) >> 1,
-      (image->rows+(image->rows & 0x01 ? 1 : 0)) >> 1);
-    image->orphan=False;
-    image->filter=filter;
-    if (downsampled_image == (Image *) NULL)
+    chroma_image=ZoomImage(image,width >> 1,height >> 1);
+    if (chroma_image == (Image *) NULL)
       WriterExit(ResourceLimitWarning,"Unable to zoom image",image);
+    RGBTransformImage(chroma_image,YCbCrColorspace);
     /*
       Initialize U channel.
     */
-    if (image->previous == (Image *) NULL)
-      ProgressMonitor(SaveImageText,200,400);
     if (image_info->interlace == PartitionInterlace)
       {
         CloseBlob(image);
@@ -395,19 +389,20 @@ Export unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
         if (status == False)
           WriterExit(FileOpenWarning,"Unable to open file",image);
       }
-    RGBTransformImage(downsampled_image,YCbCrColorspace);
-    p=downsampled_image->pixels;
-    for (i=0; i < (int) downsampled_image->packets; i++)
+    for (y=0; y < (int) chroma_image->rows; y++)
     {
-      for (j=0; j <= ((int) p->length); j++)
+      p=GetPixelCache(chroma_image,0,y,chroma_image->columns,1);
+      if (p == (PixelPacket *) NULL)
+        break;
+      for (x=0; x < (int) chroma_image->columns; x++)
+      {
         (void) WriteByte(image,DownScale(p->green));
-      p++;
+        p++;
+      }
     }
     /*
       Initialize V channel.
     */
-    if (image->previous == (Image *) NULL)
-      ProgressMonitor(SaveImageText,300,400);
     if (image_info->interlace == PartitionInterlace)
       {
         CloseBlob(image);
@@ -416,22 +411,23 @@ Export unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
         if (status == False)
           WriterExit(FileOpenWarning,"Unable to open file",image);
       }
-    p=downsampled_image->pixels;
-    for (i=0; i < (int) downsampled_image->packets; i++)
+    for (y=0; y < (int) chroma_image->rows; y++)
     {
-      for (j=0; j <= ((int) p->length); j++)
+      p=GetPixelCache(chroma_image,0,y,chroma_image->columns,1);
+      if (p == (PixelPacket *) NULL)
+        break;
+      for (x=0; x < (int) chroma_image->columns; x++)
+      {
         (void) WriteByte(image,DownScale(p->blue));
-      p++;
+        p++;
+      }
     }
-    DestroyImage(downsampled_image);
+    DestroyImage(chroma_image);
     if (image_info->interlace == PartitionInterlace)
       (void) strcpy(image->filename,image_info->filename);
-    if (image->previous == (Image *) NULL)
-      ProgressMonitor(SaveImageText,400,400);
     if (image->next == (Image *) NULL)
       break;
-    image->next->file=image->file;
-    image=image->next;
+    image=GetNextImage(image);
     ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)

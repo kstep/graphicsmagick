@@ -65,6 +65,7 @@
 %
 %  Where options include:
 %    -backdrop            display image centered on a backdrop
+%    -cache threshold     megabytes of memory available to the pixel cache
 %    -colormap type       Shared or Private
 %    -colors value        preferred number of colors in the image
 %    -colorspace type     alternate image colorspace
@@ -156,6 +157,7 @@ static void Usage(const char *client_name)
     *options[]=
     {
       "-backdrop            display image centered on a backdrop",
+      "-cache threshold     megabytes of memory available to the pixel cache",
       "-colormap type       Shared or Private",
       "-colors value        preferred number of colors in the image",
       "-colorspace type     alternate image colorspace",
@@ -392,26 +394,26 @@ int main(int argc,char **argv)
             }
           if (strncmp("background",option+1,5) == 0)
             {
-              resource_info.background_color=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing color",option);
                   (void) CloneString(&resource_info.background_color,argv[i]);
-                  (void) CloneString(&image_info->background_color,argv[i]);
+                  (void) QueryColorDatabase(argv[i],
+                    &image_info->background_color);
                 }
               break;
             }
           if (strncmp("bordercolor",option+1,7) == 0)
             {
-              resource_info.border_color=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing color",option);
                   (void) CloneString(&resource_info.border_color,argv[i]);
+                  (void) QueryColorDatabase(argv[i],&image_info->border_color);
                 }
               break;
             }
@@ -432,6 +434,17 @@ int main(int argc,char **argv)
         }
         case 'c':
         {
+          if (strncmp("cache",option+1,3) == 0)
+            {
+              if (*option == '-')
+                {
+                  i++;
+                  if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                    MagickError(OptionError,"Missing threshold",option);
+                }
+              SetCacheThreshold(atoi(argv[i]));
+              break;
+            }
           if (strncmp("colormap",option+1,6) == 0)
             {
               resource_info.colormap=PrivateColormap;
@@ -591,7 +604,6 @@ int main(int argc,char **argv)
             }
           if (strncmp("foreground",option+1,3) == 0)
             {
-              resource_info.foreground_color=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
@@ -702,13 +714,13 @@ int main(int argc,char **argv)
             break;
           if (strncmp("mattecolor",option+1,6) == 0)
             {
-              resource_info.matte_color=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing color",option);
                   (void) CloneString(&resource_info.matte_color,argv[i]);
+                  (void) QueryColorDatabase(argv[i],&image_info->matte_color);
                 }
               break;
             }
@@ -961,7 +973,9 @@ int main(int argc,char **argv)
         DestroyImages(image);
       }
     }
+  DestroyImages(image);
   DestroyDelegateInfo();
+  FreeMemory(argv);
   Exit(0);
 #endif
   return(False);

@@ -32,28 +32,32 @@
 #endif
 #include <magick/classify.h>
 #include <magick/image.h>
-#include <magick/quantize.h>
+#include <magick/cache.h>
 #include <magick/gems.h>
-#include <magick/blob.h>
+#include <magick/quantize.h>
+#include <magick/error.h>
+#include <magick/monitor.h>
 #include <magick/compress.h>
 #include <magick/utility.h>
-#include <magick/monitor.h>
-#include <magick/error.h>
+#include <magick/blob.h>
 #include <magick/memory.h>
 #include <magick/delegates.h>
+#include <magick/timer.h>
 #include <magick/version.h>
 #else
 #include "classify.h"
 #include "image.h"
-#include "quantize.h"
+#include "cache.h"
 #include "gems.h"
-#include "blob.h"
+#include "quantize.h"
+#include "error.h"
+#include "monitor.h"
 #include "compress.h"
 #include "utility.h"
-#include "monitor.h"
-#include "error.h"
+#include "blob.h"
 #include "memory.h"
 #include "delegates.h"
+#include "timer.h"
 #include "version.h"
 #endif
 

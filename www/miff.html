@@ -67,22 +67,19 @@ that may be found in a <b>MIFF</b> file:
 <dl>
 <dl>
 <p><dt>
-<b>background-color</b>=<i>x,y</i></dt>
-
-<p><dt>
-<b>border-color</b>=<i>x,y</i></dt>
-
-<p><dt>
-<b>matte-color</b>=<i>x,y</i></dt>
-
+<b>background-color</b>=<i>color</i></dt>
+<dt>
+<b>border-color</b>=<i>color</i></dt>
+<dt>
+<b>matte-color</b>=<i>color</i></dt>
 <dd>
 these optional keywords reflects the image background, border, and matte
-colors respectively.</dd>
+colors respectively.  A color can be a name (e.g. <i>white</i>) or a
+hex value (e.g. <i>#ccc</i>).</dd>
 
 <p><dt>
 <b>class</b>=<i>DirectClass</i></dt>
-
-<p><dt>
+<dt>
 <b>class</b>=<i>PseudoClass</i></dt>
 
 <dd>
@@ -96,7 +93,8 @@ is not present, <i>DirectClass</i> image data is assumed.</dd>
 the number of colors in a <i>DirectClass</i> image. For a <i>PseudoClass</i>
 image, this keyword specifies the size of the colormap. If this keyword
 is not present in the header, and the image is <i>PseudoClass</i>, a linear
-256 color grayscale colormap is used with the image data.</dd>
+256 color grayscale colormap is used with the image data.</dd>  The maximum
+number of colormap entries is 65535.
 
 <p><dt>
 <b>columns</b>=<i>value</i></dt>
@@ -115,20 +113,16 @@ profile specification</a>.</dd>
 
 <p><dt>
 <b>colorspace</b>=<i>RGB</i></dt>
-
-<p><dt>
+<dt>
 <b>colorspace</b>=<i>CMYK</i></dt>
-
 <dd>
 the colorspace of the pixel data. The default is <i>RGB</i>.</dd>
 
 <p><dt>
 <b>compression</b>=<i>RunlengthEncoded</i></dt>
-
-<p><dt>
+<dt>
 <b>compression</b>=<i>Zip</i></dt>
-
-<p><dt>
+<dt>
 <b>compression</b>=<i>BZip</i></dt>
 
 <dd>
@@ -143,8 +137,7 @@ the interframe delay in an image sequence. The maximum delay is 65535.</dd>
 
 <p><dt>
 <b>depth</b>=<i>8</i></dt>
-
-<p><dt>
+<dt>
 <b>depth</b>=<i>16</i></dt>
 
 <dd>
@@ -198,10 +191,8 @@ quotes.</dd>
 
 <p><dt>
 <b>matte</b>=<i>True</i></dt>
-
-<p><dt>
+<dt>
 <b>matte</b>=<i>False</i></dt>
-
 <dd>
 specifies whether a <i>DirectClass</i> image has matte data. Matte data
 is generally useful for image compositing. This keyword has no meaning
@@ -232,17 +223,6 @@ If this keyword is specified, a directory of tile names must follow the
 image header. The format of the directory is explained below.</dd>
 
 <p><dt>
-<b>packets</b>=<i>value</i></dt>
-
-<dd>
-the number of compressed color packets in the image data section. This
-keyword is optional for
-<i>RunlengthEncoded</i> images, mandatory for <a href="http://www.cdrom.com/pub/infozip/zlib/index.html">Zip</a>
-or
-<a href="http://www.muraroa.demon.co.uk">BZip</a> compressed images,
-and not used for uncompressed image.</dd>
-
-<p><dt>
 <b>page</b>=<i>value</i></dt>
 
 <dd>
@@ -250,14 +230,11 @@ preferred size and location of an image canvas.</dd>
 
 <p><dt>
 <b>red-primary</b>=<i>x,y</i></dt>
-
-<p><dt>
+<dt>
 <b>green-primary</b>=<i>x,y</i></dt>
-
-<p><dt>
+<dt>
 <b>blue-primary</b>=<i>x,y</i></dt>
-
-<p><dt>
+<dt>
 <b>white-point</b>=<i>x,y</i></dt>
 
 <dd>
@@ -265,14 +242,11 @@ this optional keyword reflects the chromaticity primaries and white point.</dd>
 
 <p><dt>
 <b>rendering-intent</b>=<i>saturation</i></dt>
-
-<p><dt>
+<dt>
 <b>rendering-intent</b>=<i>perceptual</i></dt>
-
-<p><dt>
+<dt>
 <b>rendering-intent</b>=<i>absolute</i></dt>
-
-<p><dt>
+<dt>
 <b>rendering-intent</b>=<i>relative</i></dt>
 
 <dd>
@@ -310,9 +284,8 @@ this optional keyword contains a string that uniquely identifies the image
 pixel contents. RSA's Data Security MD5 Digest Algorithm is recommended.</dd>
 
 <p><dt>
-<b>units</b>=<b>pixels-per-inch</b></dt>
-
-<p><dt>
+<b>units</b>=<i>pixels-per-inch</i></dt>
+<dt>
 <b>units</b>=<i>pixels-per-centimeter</i></dt>
 
 <dd>
@@ -325,7 +298,7 @@ The following is a sample <b>MIFF</b> header. In this example, &lt;FF&gt;
 is a formfeed character:
 <pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; id=ImageMagick
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; class=PseudoClass&nbsp; colors=256
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; compression=RunlengthEncoded&nbsp; packets=27601
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; compression=RunlengthEncoded&nbsp; 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; columns=1280&nbsp; rows=1024
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; scene=1
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; signature=d79e1c308aa5bbcdeea8ed63df412da9
@@ -348,54 +321,37 @@ header) with the binary color profile.
 depends upon the class of the image as specified (or not specified) by
 the value of the <b>class</b> keyword in the header.
 <p><b>DirectClass</b> images (<tt>class=DirectClass</tt>) are continuous-tone,
-<b>RGB</b>
-images stored as intensity values in red-green-blue order. Each color value
-is one byte in size for an image depth of 8 and there are three bytes per
-pixel (four with an optional matte value). If the depth is 16, each color
-value is two bytes with the most significant byte being first. The total
-number of pixels in a <b>DirectClass</b> image is calculates by multiplying
-the rows value by the column value in the header.
+images stored as RGB (red, green, blue), RGBA (red, green, blue, alpha), or
+CMYK (cyan, yellow, magenta, black) intensity values as defined by the
+<b>colorspace</b> keyword.  Each intensity value
+is one byte in length for images of depth 8 (0..255), whereas, images of depth
+16 (0..65535) require two bytes in most significant byte first order.
+
 <p><b>PseudoClass</b> images (<tt>class=PseudoClass</tt>) are colormapped
-<b>RGB</b> images. The colormap is stored as a series of red-green-blue
+<b>RGB</b> images. The colormap is stored as a series of red, green, and blue
 pixel values, each value being a byte in size. If the image depth is 16,
-each colormap entry is two bytes with the most significant byte being first.
-The number of colormap entries is indicated by the colors keyword in the
-header, with a maximum of 65,535 total entries allowed. The colormap data
-occurs immediately following the header (or image directory if the <b>montage</b>
-keyword is in the header).
-<p><b>PseudoClass</b> image data is an array of index values into the color
-map. If these are 256 or fewer colors in the image, each byte of image
+each colormap entry consumes two bytes with the most significant byte being
+first.  The number of colormap entries is defined by the <b>colors</b> keyword.
+The colormap data occurs immediately following the header (or image directory
+if the <b>montage</b> keyword is in the header).
+<b>PseudoClass</b> image data is an array of index values into the color
+map. If there are 256 or fewer colors in the image, each byte of image
 data contains an index value. If the image contains more than 256 colors
-or the depth is 16, the index value is stored as two contiguous bytes with
-the most significant byte being first. The total number of pixels in a
-<i>PseudoClass</i>
-image is calculated by multiplying the rows value by the columns value
-in the header.
-<p>The image data in a <b>MIFF</b> file may be uncompressed or may be compressed
-using one of two algorithms. The compression keyword in the header indicates
-how the image data is compressed. The run-length encoding (RLE) algorithm
-may be used to encode image data into packets of compressed data. For <b>DirectClass</b>
-images, runs of identical pixels values (not BYTE values) are encoded into
-a series of four-byte packets (five bytes if a matte value is included).
-The first three bytes of the packet contain the red, green, and blue values
-of the pixel in the run. The fourth byte contains the number of pixels
-in the run. This value is in the range of 0 to 255 and is one less than
-the actual number of pixels in the run. For example, a value of 127 indicates
-that there are 128 pixels in the run.
-<p>For <b>PseudoClass</b> images, the same RLE algorithm is used. Runs
-of identical index values are encoded into packets. Each packet contains
-the colormap index value followed by the number of index values in the
-run. The number of bytes
-<i>n</i> a <b>PseudoClass</b> RLE packet will
-be either two or three, depending upon the size of the index values. The
-number of RLE packets stored in the file is specified by the packets keyword
-in the header, but is not required.
-<p>Use <a href="ftp://ftp.uu.net/graphics/png/src/">Zip</a> or
-<a href="http://www.muraroa.demon.co.uk">BZip</a>
-compression to achieve a greater compression ratio than run-length encoding.
-The number of compressed packets stored in the file is specified by the
-<b>packets</b>
-keyword in the header.
+or the image depth is 16, the index value is stored as two contiguous bytes with
+the most significant byte being first.  If <b>matte</b> is true, each
+colormap index is followed by a 1 or 2-byte alpha value.
+
+<p>The image data in a <b>MIFF</b> file may be uncompressed,
+runlength encoded, <a href="ftp://ftp.uu.net/graphics/png/src/">Zip</a> 
+compressed, or <a href="http://www.muraroa.demon.co.uk">BZip</a> compressed.
+The <b>compression</b> keyword in the header defines how the image data is
+compressed.  Uncompressed pixels are just stored one scanline at a time in row
+order.  Runlength encoded compression counts runs of identical adjacent pixels
+and stores the pixels followed by a length byte (the number of 
+identical pixels minus 1).  Zip and BZip compression compresses each 
+row of an image and preceeds the compressed row with the length
+of compressed pixel bytes as a word in most significant byte first order.
+
 <p><b>MIFF</b> files may contain more than one image. Simply concatenate
 each individual image (composed of a header and image data) into one file.</dl>
 <p>

@@ -61,6 +61,47 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   I s X W D                                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsXWD returns True if the image format type, identified by the
+%  magick string, is XWD.
+%
+%  The format of the ReadXWDImage method is:
+%
+%      unsigned int IsXWD(const unsigned char *magick,
+%        const unsigned int length)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method IsXWD returns True if the image format type is XWD.
+%
+%    o magick: This string is generally the first few bytes of an image file
+%      or blob.
+%
+%    o length: Specifies the length of the magick string.
+%
+%
+*/
+Export unsigned int IsXWD(const unsigned char *magick,const unsigned int length)
+{
+  if (length < 8)
+    return(False);
+  if ((magick[1] == 0x00) && (magick[2] == 0x00))
+    if ((magick[5] == 0x00) && (magick[6] == 0x00))
+      if ((magick[4] == 0x07) || (magick[7] == 0x07))
+        return(True);
+  return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   R e a d X W D I m a g e                                                   %
 %                                                                             %
 %                                                                             %
@@ -90,6 +131,9 @@ Export Image *ReadXWDImage(const ImageInfo *image_info)
   Image
     *image;
 
+  IndexPacket
+    index;
+
   int
     status,
     y;
@@ -98,10 +142,7 @@ Export Image *ReadXWDImage(const ImageInfo *image_info)
     i,
     x;
 
-  register long
-    packets;
-
-  register RunlengthPacket
+  register PixelPacket
     *q;
 
   register unsigned long
@@ -109,10 +150,7 @@ Export Image *ReadXWDImage(const ImageInfo *image_info)
 
   unsigned long
     lsb_first,
-    max_packets;
-
-  unsigned short
-    index;
+    length;
 
   XColor
     *colors;
@@ -156,12 +194,12 @@ Export Image *ReadXWDImage(const ImageInfo *image_info)
     ReaderExit(CorruptImageWarning,"XWD file format version mismatch",image);
   if (header.header_size < sz_XWDheader)
     ReaderExit(CorruptImageWarning,"XWD header size is too small",image);
-  max_packets=(header.header_size-sz_XWDheader);
-  image->comments=(char *) AllocateMemory((max_packets+1)*sizeof(char));
+  length=header.header_size-sz_XWDheader;
+  image->comments=(char *) AllocateMemory((length+1)*sizeof(char));
   if (image->comments == (char *) NULL)
     ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-  status=ReadBlob(image,max_packets,(char *) image->comments);
-  image->comments[max_packets]='\0';
+  status=ReadBlob(image,length,(char *) image->comments);
+  image->comments[length]='\0';
   if (status == False)
     ReaderExit(CorruptImageWarning,
       "Unable to read window name from dump file",image);
@@ -229,13 +267,13 @@ Export Image *ReadXWDImage(const ImageInfo *image_info)
     Allocate the pixel buffer.
   */
   if (ximage->format == ZPixmap)
-    max_packets=ximage->bytes_per_line*ximage->height;
+    length=ximage->bytes_per_line*ximage->height;
   else
-    max_packets=ximage->bytes_per_line*ximage->height*ximage->depth;
-  ximage->data=(char *) AllocateMemory(max_packets*sizeof(unsigned char));
+    length=ximage->bytes_per_line*ximage->height*ximage->depth;
+  ximage->data=(char *) AllocateMemory(length*sizeof(unsigned char));
   if (ximage->data == (char *) NULL)
     ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-  status=ReadBlob(image,max_packets,ximage->data);
+  status=ReadBlob(image,length,ximage->data);
   if (status == False)
     ReaderExit(CorruptImageWarning,"Unable to read dump pixmap",image);
   /*
@@ -252,18 +290,10 @@ Export Image *ReadXWDImage(const ImageInfo *image_info)
   if (image_info->ping)
     {
       if (header.ncolors != 0)
-        FreeMemory((char *) colors);
+        FreeMemory(colors);
       CloseBlob(image);
       return(image);
     }
-  packets=0;
-  max_packets=Max((image->columns*image->rows+4) >> 3,1);
-  image->pixels=(RunlengthPacket *)
-    AllocateMemory(max_packets*sizeof(RunlengthPacket));
-  if (image->pixels == (RunlengthPacket *) NULL)
-    ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-  q=image->pixels;
-  SetRunlengthEncoder(q);
   switch (image->class)
   {
     case DirectClass:
@@ -271,11 +301,6 @@ Export Image *ReadXWDImage(const ImageInfo *image_info)
     {
       register unsigned long
         color;
-
-      unsigned int
-        blue,
-        green,
-        red;
 
       unsigned long
         blue_mask,
@@ -315,80 +340,44 @@ Export Image *ReadXWDImage(const ImageInfo *image_info)
       if (image->colors != 0)
         for (y=0; y < (int) image->rows; y++)
         {
+          q=SetPixelCache(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            break;
           for (x=0; x < (int) image->columns; x++)
           {
             pixel=XGetPixel(ximage,x,y);
             index=(unsigned short) ((pixel >> red_shift) & red_mask);
-            red=XDownScale(colors[index].red);
+            q->red=XDownScale(colors[index].red);
             index=(unsigned short) ((pixel >> green_shift) & green_mask);
-            green=XDownScale(colors[index].green);
+            q->green=XDownScale(colors[index].green);
             index=(unsigned short) ((pixel >> blue_shift) & blue_mask);
-            blue=XDownScale(colors[index].blue);
-            if ((red == q->red) && (green == q->green) && (blue == q->blue) &&
-                ((int) q->length < MaxRunlength))
-              q->length++;
-            else
-              {
-                if (packets != 0)
-                  q++;
-                packets++;
-                if (packets == (int) max_packets)
-                  {
-                    max_packets<<=1;
-                    image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
-                      image->pixels,max_packets*sizeof(RunlengthPacket));
-                    if (image->pixels == (RunlengthPacket *) NULL)
-                      ReaderExit(ResourceLimitWarning,
-                        "Memory allocation failed",image);
-                    q=image->pixels+packets-1;
-                  }
-                q->red=red;
-                q->green=green;
-                q->blue=blue;
-                q->index=0;
-                q->length=0;
-              }
+            q->blue=XDownScale(colors[index].blue);
+            q++;
           }
+          if (!SyncPixelCache(image))
+            break;
           if (QuantumTick(y,image->rows))
             ProgressMonitor(LoadImageText,y,image->rows);
         }
       else
         for (y=0; y < (int) image->rows; y++)
         {
+          q=SetPixelCache(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            break;
           for (x=0; x < (int) image->columns; x++)
           {
             pixel=XGetPixel(ximage,x,y);
             color=(pixel >> red_shift) & red_mask;
-            red=XDownScale((color*65535L)/red_mask);
+            q->red=XDownScale((color*65535L)/red_mask);
             color=(pixel >> green_shift) & green_mask;
-            green=XDownScale((color*65535L)/green_mask);
+            q->green=XDownScale((color*65535L)/green_mask);
             color=(pixel >> blue_shift) & blue_mask;
-            blue=XDownScale((color*65535L)/blue_mask);
-            if ((red == q->red) && (green == q->green) && (blue == q->blue) &&
-                ((int) q->length < MaxRunlength))
-              q->length++;
-            else
-              {
-                if (packets != 0)
-                  q++;
-                packets++;
-                if (packets == (int) max_packets)
-                  {
-                    max_packets<<=1;
-                    image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
-                      image->pixels,max_packets*sizeof(RunlengthPacket));
-                    if (image->pixels == (RunlengthPacket *) NULL)
-                      ReaderExit(ResourceLimitWarning,
-                        "Memory allocation failed",image);
-                    q=image->pixels+packets-1;
-                  }
-                q->red=red;
-                q->green=green;
-                q->blue=blue;
-                q->index=0;
-                q->length=0;
-              }
+            q->blue=XDownScale((color*65535L)/blue_mask);
+            q++;
           }
+          if (!SyncPixelCache(image))
+            break;
           if (QuantumTick(y,image->rows))
             ProgressMonitor(LoadImageText,y,image->rows);
         }
@@ -399,9 +388,9 @@ Export Image *ReadXWDImage(const ImageInfo *image_info)
       /*
         Convert X image to PseudoClass packets.
       */
-      image->colormap=(ColorPacket *)
-        AllocateMemory(image->colors*sizeof(ColorPacket));
-      if (image->colormap == (ColorPacket *) NULL)
+      image->colormap=(PixelPacket *)
+        AllocateMemory(image->colors*sizeof(PixelPacket));
+      if (image->colormap == (PixelPacket *) NULL)
         ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
       for (i=0; i < (int) image->colors; i++)
       {
@@ -411,45 +400,33 @@ Export Image *ReadXWDImage(const ImageInfo *image_info)
       }
       for (y=0; y < (int) image->rows; y++)
       {
+        q=SetPixelCache(image,0,y,image->columns,1);
+        if (q == (PixelPacket *) NULL)
+          break;
         for (x=0; x < (int) image->columns; x++)
         {
-          pixel=XGetPixel(ximage,x,y);
-          index=(unsigned short) pixel;
-          if ((index == q->index) && ((int) q->length < MaxRunlength))
-            q->length++;
-          else
-            {
-              if (packets != 0)
-                q++;
-              packets++;
-              if (packets == (int) max_packets)
-                {
-                  max_packets<<=1;
-                  image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
-                    image->pixels,max_packets*sizeof(RunlengthPacket));
-                  if (image->pixels == (RunlengthPacket *) NULL)
-                    ReaderExit(ResourceLimitWarning,
-                      "Memory allocation failed",image);
-                  q=image->pixels+packets-1;
-                }
-              q->index=index;
-              q->length=0;
-            }
+          index=XGetPixel(ximage,x,y);
+          image->indexes[x]=index;
+          if (index >= image->colors)
+            ReaderExit(CorruptImageWarning,"invalid colormap index",image);
+          q->red=image->colormap[index].red;
+          q->green=image->colormap[index].green;
+          q->blue=image->colormap[index].blue;
+          q++;
         }
+        if (!SyncPixelCache(image))
+          break;
         if (QuantumTick(y,image->rows))
           ProgressMonitor(LoadImageText,y,image->rows);
       }
       break;
     }
   }
-  SetRunlengthPackets(image,packets);
-  if (image->class == PseudoClass)
-    SyncImage(image);
   /*
     Free image and colormap.
   */
   if (header.ncolors != 0)
-    FreeMemory((char *) colors);
+    FreeMemory(colors);
   FreeMemory(ximage->data);
   FreeMemory(ximage);
   CloseBlob(image);
@@ -498,14 +475,13 @@ Export Image *ReadXWDImage(const ImageInfo *image_info)
 Export unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
 {
   int
-    x,
     y;
 
   register int
     i,
-    j;
+    x;
 
-  register RunlengthPacket
+  register PixelPacket
     *p;
 
   register unsigned char
@@ -612,13 +588,13 @@ Export unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
         color.flags=colors[i].flags;
         (void) WriteBlob(image,sz_XWDColor,(char *) &color);
       }
-      FreeMemory((char *) colors);
+      FreeMemory(colors);
     }
   /*
     Allocate memory for pixels.
   */
   pixels=(unsigned char *)
-    AllocateMemory(image->columns*sizeof(RunlengthPacket));
+    AllocateMemory(image->columns*sizeof(PixelPacket));
   if (pixels == (unsigned char *) NULL)
     WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
   /*
@@ -626,39 +602,32 @@ Export unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
   */
   scanline_pad=(unsigned int)
     (bytes_per_line-((image->columns*bits_per_pixel) >> 3));
-  x=0;
-  y=0;
-  p=image->pixels;
-  q=pixels;
-  for (i=0; i < (int) image->packets; i++)
+  for (y=0; y < (int) image->rows; y++)
   {
-    for (j=0; j <= ((int) p->length); j++)
+    p=GetPixelCache(image,0,y,image->columns,1);
+    if (p == (PixelPacket *) NULL)
+      break;
+    q=pixels;
+    for (x=0; x < (int) image->columns; x++)
     {
       if (image->class == PseudoClass)
-        *q++=p->index;
+        *q++=image->indexes[x];
       else
         {
           *q++=DownScale(p->red);
           *q++=DownScale(p->green);
           *q++=DownScale(p->blue);
         }
-      x++;
-      if (x == (int) image->columns)
-        {
-          for (x=0; x < (int) scanline_pad; x++)
-            *q++=0;
-          (void) WriteBlob(image,q-pixels,(char *) pixels);
-          if (image->previous == (Image *) NULL)
-            if (QuantumTick(y,image->rows))
-              ProgressMonitor(SaveImageText,y,image->rows);
-          q=pixels;
-          x=0;
-          y++;
-        }
+      p++;
     }
-    p++;
+    for (x=0; x < (int) scanline_pad; x++)
+      *q++=0;
+    (void) WriteBlob(image,q-pixels,(char *) pixels);
+    if (image->previous == (Image *) NULL)
+      if (QuantumTick(y,image->rows))
+        ProgressMonitor(SaveImageText,y,image->rows);
   }
-  FreeMemory((char *) pixels);
+  FreeMemory(pixels);
   CloseBlob(image);
   return(True);
 }

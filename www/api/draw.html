@@ -34,15 +34,15 @@ draw - Methods to Draw on an Image
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-void  <STRONG>ColorFloodfillImage</STRONG>( Image *image, const RunlengthPacket *target, Image *tile, const int
-x_offset, const int y_offset, const PaintMethod method );
+void  <STRONG>ColorFloodfillImage</STRONG>( Image *image, const PixelPacket *target, Image *tile, const int x_offset,
+const int y_offset, const PaintMethod method );
 
 <P>
 void  <STRONG>DrawImage</STRONG>( Image *image, const AnnotateInfo <CODE>*annotate_info</CODE> );
 
 <P>
-void  <STRONG>MatteFloodfillImage</STRONG>( Image *image, const RunlengthPacket *target, const unsigned int matte,
-const int x_offset, const int y_offset, const PaintMethod method );
+void  <STRONG>MatteFloodfillImage</STRONG>( Image *image, const PixelPacket *target, const unsigned int matte, const
+int x_offset, const int y_offset, const PaintMethod method );
 
 <P>
 void  <STRONG>OpaqueImage</STRONG>( Image *image, const char *opaque_color, const char
@@ -62,7 +62,7 @@ Gems'' by Paul Heckbert.
 <P>
 The format of the ColorFloodfillImage method is:
 
-<blockquote>void ColorFloodfillImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RunlengthPacket.html">RunlengthPacket</A> *target, <A HREF="types/Image.html">Image</A> *tile, const int x_offset, const int y_offset, const <A HREF="types/Enumerations.html#PaintMethod">PaintMethod</A> method ); </blockquote>
+<blockquote>void ColorFloodfillImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/PixelPacket.html">PixelPacket</A> *target, <A HREF="types/Image.html">Image</A> *tile, const int x_offset, const int y_offset, const <A HREF="types/Enumerations.html#PaintMethod">PaintMethod</A> method ); </blockquote>
 
 <P>
 
@@ -76,7 +76,7 @@ The address of a structure of type Image.
 <p><dt><STRONG>target:</STRONG><DD>
 <P>
 
-<FONT SIZE=-1>A</FONT> RunlengthPacket structure. This is the 
+<FONT SIZE=-1>A</FONT> PixelPacket structure. This is the 
 <FONT SIZE=-1>RGB</FONT> value of the target color.
 
 
@@ -129,7 +129,7 @@ value. The floodfill algorithm is strongly based on a similar algorithm in
 <P>
 The format of the MatteFloodfillImage method is:
 
-<blockquote>void MatteFloodfillImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/RunlengthPacket.html">RunlengthPacket</A> *target, const unsigned int matte, const int x_offset, const int y_offset, const <A HREF="types/Enumerations.html#PaintMethod">PaintMethod</A> method ); </blockquote>
+<blockquote>void MatteFloodfillImage ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/PixelPacket.html">PixelPacket</A> *target, const unsigned int matte, const int x_offset, const int y_offset, const <A HREF="types/Enumerations.html#PaintMethod">PaintMethod</A> method ); </blockquote>
 
 <P>
 
@@ -143,7 +143,7 @@ The address of a structure of type Image.
 <p><dt><STRONG>target:</STRONG><DD>
 <P>
 
-<FONT SIZE=-1>A</FONT> RunlengthPacket structure. This is the 
+<FONT SIZE=-1>A</FONT> PixelPacket structure. This is the 
 <FONT SIZE=-1>RGB</FONT> value of the target color.
 
 

@@ -59,32 +59,32 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   P a c k b i t s D e c o d e I m a g e                                     %
+%   D e c o d e I m a g e                                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method PackbitsDecodeImage uncompresses an image via Macintosh Packbits
-%  encoding specific to the Adobe Photoshop image format.
+%  Method DecodeImage uncompresses an image via Macintosh encoding specific to
+%  the Adobe Photoshop image format.
 %
-%  The format of the PackbitsDecodeImage method is:
+%  The format of the DecodeImage method is:
 %
-%      Image *ReadPSDImage(const ImageInfo *image_info)
+%      unsigned int DecodeImage(Image *image,const int channel)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method PackbitsDecodeImage return True if the image is
+%    o status: Method DecodeImage return True if the image is
 %      decoded.  False is returned if there is an error occurs.
 %
-%    o image: The address of a structure of type Image.
+%    o image,image: The address of a structure of type Image.
 %
 %    o channel:  Specifies which channel: red, green, blue, or index to
 %      decode the pixel values into.
 %
 %
 */
-static unsigned int PackbitsDecodeImage(Image *image,const int channel)
+static unsigned int DecodeImage(Image *image,const int channel)
 {
   int
     count,
@@ -94,12 +94,13 @@ static unsigned int PackbitsDecodeImage(Image *image,const int channel)
     length;
 
   register int
-    i;
+    i,
+    x;
 
-  register RunlengthPacket
+  register PixelPacket
     *q;
 
-  q=image->pixels;
+  x=0;
   length=image->columns*image->rows;
   while (length > 0)
   {
@@ -110,38 +111,41 @@ static unsigned int PackbitsDecodeImage(Image *image,const int channel)
       {
         if (count == -128)
           continue;
-        count=(-count+1);
         pixel=ReadByte(image);
-        for ( ; count > 0; count--)
+        for (count=(-count+1); count > 0; count--)
         {
+          q=SetPixelCache(image,x % image->columns,x/image->columns,1,1);
+          if (q == (PixelPacket *) NULL)
+            break;
           switch (channel)
           {
             case 0:
             {
-              q->red=(Quantum) pixel;
+              q->red=pixel;
               if (image->class == PseudoClass)
-                q->index=(unsigned short) pixel;
+                *image->indexes=pixel;
               break;
             }
             case 1:
             {
-              q->green=(Quantum) pixel;
+              q->green=pixel;
               break;
             }
             case 2:
             {
-              q->blue=(Quantum) pixel;
+              q->blue=pixel;
               break;
             }
             case 3:
             default:
             {
-              q->index=(unsigned short) pixel;
+              q->opacity=pixel;
               break;
             }
           }
-          q->length=0;
-          q++;
+          if (!SyncPixelCache(image))
+            break;
+          x++;
           length--;
         }
         continue;
@@ -150,13 +154,16 @@ static unsigned int PackbitsDecodeImage(Image *image,const int channel)
     for (i=count; i > 0; i--)
     {
       pixel=ReadByte(image);
+      q=SetPixelCache(image,x % image->columns,x/image->columns,1,1);
+      if (q == (PixelPacket *) NULL)
+        break;
       switch (channel)
       {
         case 0:
         {
           q->red=(Quantum) pixel;
           if (image->class == PseudoClass)
-            q->index=(unsigned short) pixel;
+            *image->indexes=(unsigned short) pixel;
           break;
         }
         case 1:
@@ -172,12 +179,13 @@ static unsigned int PackbitsDecodeImage(Image *image,const int channel)
         case 3:
         default:
         {
-          q->index=(unsigned short) pixel;
+          q->opacity=(Quantum) pixel;
           break;
         }
       }
-      q->length=0;
-      q++;
+      if (!SyncPixelCache(image))
+        break;
+      x++;
       length--;
     }
   }
@@ -198,6 +206,45 @@ static unsigned int PackbitsDecodeImage(Image *image,const int channel)
         return(False);
       }
   return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   I s P S D                                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsPSD returns True if the image format type, identified by the
+%  magick string, is PSD.
+%
+%  The format of the ReadPSDImage method is:
+%
+%      unsigned int IsPSD(const unsigned char *magick,
+%        const unsigned int length)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method IsPSD returns True if the image format type is PSD.
+%
+%    o magick: This string is generally the first few bytes of an image file
+%      or blob.
+%
+%    o length: Specifies the length of the magick string.
+%
+%
+*/
+Export unsigned int IsPSD(const unsigned char *magick,const unsigned int length)
+{
+  if (length < 4)
+    return(False);
+  if (strncmp((char *) magick,"8BPS",4) == 0)
+    return(True);
+  return(False);
 }
 
 /*
@@ -300,11 +347,13 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
   Image
     *image;
 
+  int
+    y;
+
   LayerInfo
     *layer_info;
 
   long
-    count,
     length,
     size;
 
@@ -314,9 +363,9 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
   register int
     i,
     j,
-    k;
+    x;
 
-  register RunlengthPacket
+  register PixelPacket
     *q;
 
   short int
@@ -374,9 +423,9 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
       */
       image->class=PseudoClass;
       image->colors=1 << image->depth;
-      image->colormap=(ColorPacket *)
-        AllocateMemory(image->colors*sizeof(ColorPacket));
-      if (image->colormap == (ColorPacket *) NULL)
+      image->colormap=(PixelPacket *)
+        AllocateMemory(image->colors*sizeof(PixelPacket));
+      if (image->colormap == (PixelPacket *) NULL)
         ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
       for (i=0; i < (int) image->colors; i++)
       {
@@ -398,34 +447,22 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
         }
     }
   length=MSBFirstReadLong(image);
-  while (length > 0)
-  {
-    /*
-      Read image resource block.
-    */
-    status=ReadBlob(image,4,(char *) type);
-    if ((status == False) || (strncmp(type,"8BIM",4) != 0))
-      ReaderExit(CorruptImageWarning,"Not a PSD image file",image);
-    (void) MSBFirstReadShort(image);
-    count=ReadByte(image);
-    if (count > 0)
-      for (i=0; i < count; i++)
-        (void) ReadByte(image);
-    if (!(count & 0x01))
-      {
-        (void) ReadByte(image);
-        length--;
-      }
-    size=MSBFirstReadLong(image);
-    for (i=0; i < size; i++)
-      (void) ReadByte(image);
-    length-=(count+size+11);
-    if (size & 0x01)
-      {
-        (void) ReadByte(image);
-        length--;
-      }
-  }
+  if (length > 0)
+    {
+      unsigned char
+        *data;
+
+      data=(unsigned char *)
+        AllocateMemory((length)*sizeof(unsigned char));
+      if (data == (unsigned char *) NULL)
+        ReaderExit(ResourceLimitWarning,
+          "8BIM resource memory allocation failed",image);
+      status=ReadBlob(image,length,(char *) data);
+      if ((status == False) || (strncmp((char *) data,"8BIM",4) != 0))
+        ReaderExit(CorruptImageWarning,"Not a PSD image file",image);
+      image->iptc_profile.info=data;
+      image->iptc_profile.length=length;
+    }
   if (image_info->ping)
     {
       CloseBlob(image);
@@ -473,63 +510,34 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
         /*
           Allocate layered image.
         */
-        layer_info[i].image=AllocateImage(image_info);
+        layer_info[i].image=
+          CloneImage(image,layer_info[i].width,layer_info[i].height,True);
         if (layer_info[i].image == (Image *) NULL)
           {
             for (j=0; j < i; j++)
               DestroyImage(layer_info[j].image);
-            ReaderExit(ResourceLimitWarning,"Memory allocation failed",
-              image);
+            ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
           }
-        layer_info[i].image->file=image->file;
-        layer_info[i].image->class=image->class;
         if (psd_header.mode == CMYKMode)
           layer_info[i].image->colorspace=CMYKColorspace;
         else
           layer_info[i].image->matte=layer_info[i].channels >= 4;
-        if (image->colormap != (ColorPacket *) NULL)
-          {
-            /*
-              Convert pixels to Runlength encoded.
-            */
-            layer_info[i].image->colormap=(ColorPacket *)
-              AllocateMemory(image->colors*sizeof(ColorPacket));
-            if (layer_info[i].image->colormap == (ColorPacket *) NULL)
-              {
-                for (j=0; j < i; j++)
-                  DestroyImage(layer_info[j].image);
-                ReaderExit(ResourceLimitWarning,"Memory allocation failed",
-                  image);
-              }
-          }
-        layer_info[i].image->columns=layer_info[i].width;
-        layer_info[i].image->rows=layer_info[i].height;
-        layer_info[i].image->packets=
-          layer_info[i].image->columns*layer_info[i].image->rows;
-        layer_info[i].image->pixels=(RunlengthPacket *) AllocateMemory(
-          (layer_info[i].image->packets+256)*sizeof(RunlengthPacket));
-        if (layer_info[i].image->pixels == (RunlengthPacket *) NULL)
-          {
-            for (j=0; j < i; j++)
-              DestroyImage(layer_info[j].image);
-            ReaderExit(ResourceLimitWarning,"Memory allocation failed",
-              image);
-          }
-        SetImage(layer_info[i].image);
       }
       /*
         Read pixel data for each layer.
       */
       for (i=0; i < number_layers; i++)
       {
+        layer_info[i].image->file=image->file;
+        layer_info[i].image->blob_info=image->blob_info;
         for (j=0; j < (int) layer_info[i].channels; j++)
         {
           compression=MSBFirstReadShort(layer_info[i].image);
           if (compression != 0)
             {
-              for (k=0; k < (int) layer_info[i].image->rows; k++)
-                (void) MSBFirstReadShort(image);
-              (void) PackbitsDecodeImage(layer_info[i].image,
+              for (y=0; y < (int) layer_info[i].image->rows; y++)
+                (void) MSBFirstReadShort(layer_info[i].image);
+              (void) DecodeImage(layer_info[i].image,
                 layer_info[i].channel_info[j].type);
             }
           else
@@ -537,70 +545,95 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
               /*
                 Read uncompressed pixel data as separate planes.
               */
-              q=layer_info[i].image->pixels;
-              for (k=0; k < (int) layer_info[i].image->packets; k++)
+              for (y=0; y < (int) layer_info[i].image->rows; y++)
               {
+                q=SetPixelCache(layer_info[i].image,0,y,
+                  layer_info[i].image->columns,1);
+                if (q == (PixelPacket *) NULL)
+                  break;
                 switch (layer_info[i].channel_info[j].type)
                 {
                   case 0:
                   {
-                    ReadQuantumFile(q->red);
-                    q->index=q->red;
+                    if (layer_info[i].image->class == PseudoClass)
+                      ReadPixelCache(layer_info[i].image,IndexQuantum,
+                        (unsigned char *) NULL);
+                    else
+                      ReadPixelCache(layer_info[i].image,RedQuantum,
+                        (unsigned char *) NULL);
                     break;
                   }
                   case 1:
                   {
-                    ReadQuantumFile(q->green);
+                    ReadPixelCache(layer_info[i].image,GreenQuantum,
+                      (unsigned char *) NULL);
                     break;
                   }
                   case 2:
                   {
-                    ReadQuantumFile(q->blue);
+                    ReadPixelCache(layer_info[i].image,BlueQuantum,
+                      (unsigned char *) NULL);
                     break;
                   }
                   case 3:
                   default:
                   {
-                    ReadQuantumFile(q->index);
+                    ReadPixelCache(layer_info[i].image,OpacityQuantum,
+                      (unsigned char *) NULL);
                     break;
                   }
                 }
-                q->length=0;
-                q++;
+                if (!SyncPixelCache(layer_info[i].image))
+                  break;
               }
             }
         }
-        if (layer_info[i].image->class == PseudoClass)
-          SyncImage(layer_info[i].image);
-        else
-          if (layer_info[i].image->colorspace == CMYKColorspace)
+        image->file=layer_info[i].image->file;
+        image->blob_info=layer_info[i].image->blob_info;
+        if (layer_info[i].image->colorspace == CMYKColorspace)
+          {
+            /*
+              Correct CMYK levels.
+            */
+            for (y=0; y < (int) layer_info[i].image->rows; y++)
             {
-              /*
-                Correct CMYK levels.
-              */
-              q=layer_info[i].image->pixels;
-              for (k=0; k < (int) layer_info[i].image->packets; k++)
+              q=SetPixelCache(layer_info[i].image,0,y,
+                layer_info[i].image->columns,1);
+              if (q == (PixelPacket *) NULL)
+                break;
+              for (x=0; x < (int) layer_info[i].image->columns; x++)
               {
                 q->red=MaxRGB-q->red;
                 q->green=MaxRGB-q->green;
                 q->blue=MaxRGB-q->blue;
-                q->index=MaxRGB-q->index;
+                q->opacity=MaxRGB-q->opacity;
                 q++;
               }
+              if (!SyncPixelCache(layer_info[i].image))
+                break;
             }
-          else
-            if (layer_info[i].opacity != Opaque)
+          }
+        else
+          if (layer_info[i].opacity != Opaque)
+            {
+              /*
+                Correct for opacity level.
+              */
+              for (y=0; y < (int) layer_info[i].image->rows; y++)
               {
-                /*
-                  Correct for opacity level.
-                */
-                q=layer_info[i].image->pixels;
-                for (k=0; k < (int) layer_info[i].image->packets; k++)
+                q=GetPixelCache(layer_info[i].image,0,y,
+                  layer_info[i].image->columns,1);
+                if (q == (PixelPacket *) NULL)
+                  break;
+                for (x=0; x < (int) layer_info[i].image->columns; x++)
                 {
-                  q->index=(int) (q->index*layer_info[i].opacity)/Opaque;
+                  q->opacity=(int) (q->opacity*layer_info[i].opacity)/Opaque;
                   q++;
                 }
+                if (!SyncPixelCache(layer_info[i].image))
+                  break;
               }
+            }
         layer_info[i].image->file=(FILE *) NULL;
       }
       for (i=0; i < 4; i++)
@@ -610,11 +643,6 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
     Convert pixels to Runlength encoded.
   */
   compression=MSBFirstReadShort(image);
-  image->packets=image->columns*image->rows;
-  image->pixels=(RunlengthPacket *)
-    AllocateMemory((image->packets+256)*sizeof(RunlengthPacket));
-  if (image->pixels == (RunlengthPacket *) NULL)
-    ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
   SetImage(image);
   if (compression != 0)
     {
@@ -624,7 +652,7 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
       for (i=0; i < (int) (image->rows*psd_header.channels); i++)
         (void) MSBFirstReadShort(image);
       for (i=0; i < (int) psd_header.channels; i++)
-        (void) PackbitsDecodeImage(image,i);
+        (void) DecodeImage(image,i);
     }
   else
     {
@@ -633,36 +661,39 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
       */
       for (i=0; i < (int) psd_header.channels; i++)
       {
-        q=image->pixels;
-        for (j=0; j < (int) image->packets; j++)
+        for (y=0; y < (int) image->rows; y++)
         {
+          if (!GetPixelCache(image,0,y,image->columns,1))
+            break;
           switch (i)
           {
             case 0:
             {
-              ReadQuantumFile(q->red);
-              q->index=q->red;
+              if (image->class == PseudoClass)
+                ReadPixelCache(image,IndexQuantum,(unsigned char *) NULL);
+              else
+                ReadPixelCache(image,RedQuantum,(unsigned char *) NULL);
               break;
             }
             case 1:
             {
-              ReadQuantumFile(q->green);
+              ReadPixelCache(image,GreenQuantum,(unsigned char *) NULL);
               break;
             }
             case 2:
             {
-              ReadQuantumFile(q->blue);
+              ReadPixelCache(image,BlueQuantum,(unsigned char *) NULL);
               break;
             }
             case 3:
             default:
             {
-              ReadQuantumFile(q->index);
+              ReadPixelCache(image,OpacityQuantum,(unsigned char *) NULL);
               break;
             }
           }
-          q->length=0;
-          q++;
+          if (!SyncPixelCache(image))
+            break;
         }
       }
     }
@@ -674,14 +705,21 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
         /*
           Correct CMYK levels.
         */
-        q=image->pixels;
-        for (i=0; i < (int) image->packets; i++)
+        for (y=0; y < (int) image->rows; y++)
         {
-          q->red=MaxRGB-q->red;
-          q->green=MaxRGB-q->green;
-          q->blue=MaxRGB-q->blue;
-          q->index=MaxRGB-q->index;
-          q++;
+          q=GetPixelCache(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            break;
+          for (x=0; x < (int) image->columns; x++)
+          {
+            q->red=MaxRGB-q->red;
+            q->green=MaxRGB-q->green;
+            q->blue=MaxRGB-q->blue;
+            q->opacity=MaxRGB-q->opacity;
+            q++;
+          }
+          if (!SyncPixelCache(image))
+            break;
         }
       }
   for (i=0; i < number_layers; i++)
@@ -690,15 +728,14 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
       Composite layer onto image.
     */
     if ((layer_info[i].width != 0) && (layer_info[i].height != 0))
-      CompositeImage(image,OverCompositeOp,layer_info[i].image,
-        layer_info[i].x,layer_info[i].y);
-    layer_info[i].image->colormap=(ColorPacket *) NULL;
+      CompositeImage(image,OverCompositeOp,layer_info[i].image,layer_info[i].x,
+        layer_info[i].y);
     DestroyImage(layer_info[i].image);
   }
   image->matte=False;
   if (image->colorspace != CMYKColorspace)
     image->matte=psd_header.channels >= 4;
-  CondenseImage(image);
+  CloseBlob(image);
   return(image);
 }
 
@@ -734,14 +771,17 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
 */
 Export unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
 {
-  register int
-    i,
-    j;
+  int
+    y;
 
-  register RunlengthPacket
-    *p;
+  register int
+    i;
+
+  unsigned char
+    *pixels;
 
   unsigned int
+    packet_size,
     status;
 
   /*
@@ -750,6 +790,14 @@ Export unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
+  image->depth=QuantumDepth;
+  packet_size=3*(image->depth >> 3);
+  if (image->matte)
+    packet_size=4*(image->depth >> 3);
+  pixels=(unsigned char *)
+    AllocateMemory(packet_size*image->columns*sizeof(PixelPacket));
+  if (pixels == (unsigned char *) NULL)
+    WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
   (void) WriteBlob(image,4,"8BPS");
   MSBFirstWriteShort(image,1);  /* version */
   (void) WriteBlob(image,6,"      ");  /* reserved */
@@ -800,57 +848,59 @@ Export unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
   /*
     Write uncompressed pixel data as separate planes.
   */
-  p=image->pixels;
   if (image->class == PseudoClass)
-    for (i=0; i < (int) image->packets; i++)
+    for (y=0; y < (int) image->rows; y++)
     {
-      for (j=0; j <= ((int) p->length); j++)
-        WriteQuantumFile(p->index);
-      p++;
+      if (!GetPixelCache(image,0,y,image->columns,1))
+        break;
+      WritePixelCache(image,IndexQuantum,pixels);
+      (void) WriteBlob(image,image->columns,pixels);
     }
   else
     {
-      for (i=0; i < (int) image->packets; i++)
+      for (y=0; y < (int) image->rows; y++)
       {
-        for (j=0; j <= ((int) p->length); j++)
-          if (image->colorspace != CMYKColorspace)
-            WriteQuantumFile(p->red)
-          else
-            WriteQuantumFile(MaxRGB-p->red);
-        p++;
+        if (!GetPixelCache(image,0,y,image->columns,1))
+          break;
+        if (image->colorspace == CMYKColorspace)
+          WritePixelCache(image,CyanQuantum,pixels);
+        else
+          WritePixelCache(image,RedQuantum,pixels);
+        (void) WriteBlob(image,image->columns,pixels);
       }
-      p=image->pixels;
-      for (i=0; i < (int) image->packets; i++)
+      for (y=0; y < (int) image->rows; y++)
       {
-        for (j=0; j <= ((int) p->length); j++)
-          if (image->colorspace != CMYKColorspace)
-            WriteQuantumFile(p->green)
-          else
-            WriteQuantumFile(MaxRGB-p->green);
-        p++;
+        if (!GetPixelCache(image,0,y,image->columns,1))
+          break;
+        if (image->colorspace == CMYKColorspace)
+          WritePixelCache(image,YellowQuantum,pixels);
+        else
+          WritePixelCache(image,GreenQuantum,pixels);
+        (void) WriteBlob(image,image->columns,pixels);
       }
-      p=image->pixels;
-      for (i=0; i < (int) image->packets; i++)
+      for (y=0; y < (int) image->rows; y++)
       {
-        for (j=0; j <= ((int) p->length); j++)
-          if (image->colorspace != CMYKColorspace)
-            WriteQuantumFile(p->blue)
-          else
-            WriteQuantumFile(MaxRGB-p->blue);
-        p++;
+        if (!GetPixelCache(image,0,y,image->columns,1))
+          break;
+        if (image->colorspace == CMYKColorspace)
+          WritePixelCache(image,MagentaQuantum,pixels);
+        else
+          WritePixelCache(image,BlueQuantum,pixels);
+        (void) WriteBlob(image,image->columns,pixels);
       }
-      p=image->pixels;
       if (image->matte || (image->colorspace == CMYKColorspace))
-        for (i=0; i < (int) image->packets; i++)
+        for (y=0; y < (int) image->rows; y++)
         {
-          for (j=0; j <= ((int) p->length); j++)
-            if (image->colorspace != CMYKColorspace)
-              WriteQuantumFile(p->index)
-            else
-              WriteQuantumFile(MaxRGB-p->index);
-          p++;
+          if (!GetPixelCache(image,0,y,image->columns,1))
+            break;
+          if (image->colorspace == CMYKColorspace)
+            WritePixelCache(image,BlackQuantum,pixels);
+          else
+            WritePixelCache(image,OpacityQuantum,pixels);
+          (void) WriteBlob(image,image->columns,pixels);
         }
     }
+  FreeMemory(pixels);
   CloseBlob(image);
   return(True);
 }

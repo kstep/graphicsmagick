@@ -15,7 +15,6 @@ extern "C" {
 #define DownScale(quantum)  (((unsigned long) (quantum)) >> 8)
 #define HexColorFormat "#%04x%04x%04x"
 #define MaxRGB  65535L
-#define MaxRunlength  65535L
 #define QuantumDepth  16
 #define UpScale(quantum)  (((unsigned long) (quantum))*257)
 #define XDownScale(color)  ((unsigned long) (color))
@@ -29,7 +28,6 @@ typedef unsigned short Quantum;
 #define DownScale(quantum)  ((unsigned long) (quantum))
 #define HexColorFormat "#%02x%02x%02x"
 #define MaxRGB  255
-#define MaxRunlength  255
 #define QuantumDepth  8
 #define UpScale(quantum)  ((unsigned long) (quantum))
 #define XDownScale(color)  (((unsigned long) (color)) >> 8)
@@ -37,6 +35,8 @@ typedef unsigned short Quantum;
 
 typedef unsigned char Quantum;
 #endif
+#define Opaque  MaxRGB
+#define Transparent  0
 
 /*
   3D effects.
@@ -52,11 +52,16 @@ typedef unsigned char Quantum;
 */
 typedef struct _BlobInfo
 {
+  unsigned int
+    mapped;
+
   char
     *data;
 
-  long
-    offset,
+  off_t
+    offset;
+
+  size_t
     length,
     extent,
     quantum;
@@ -73,40 +78,6 @@ typedef struct _ColorlistInfo
     blue;
 } ColorlistInfo;
 
-typedef struct _ColorPacket
-{
-  unsigned short
-    red,
-    green,
-    blue,
-    index;
-
-  unsigned char
-    flags;
-
-  char
-    key[3];
-
-  unsigned long
-    count;
-} ColorPacket;
-
-typedef struct _ContributionInfo
-{
-  int
-    pixel;
-
-  double
-    weight;
-} ContributionInfo;
-
-typedef struct _FilterInfo
-{
-  double
-    (*function)(double),
-    support;
-} FilterInfo;
-
 typedef struct _FrameInfo
 {
   int
@@ -122,13 +93,33 @@ typedef struct _FrameInfo
     outer_bevel;
 } FrameInfo;
 
+typedef unsigned short IndexPacket;
+
+typedef struct _PixelPacket
+{
+#if defined(WORDS_BIGENDIAN)
+  Quantum
+    blue,
+    green,
+    red,
+    opacity;
+#else
+  Quantum
+    red,
+    green,
+    blue,
+    opacity;
+#endif
+} PixelPacket;
+
 typedef struct _ImageInfo
 {
   /*
     Blob member.
   */
   BlobInfo
-    blob;
+    blob_info;
+
   /*
     File and image dimension members.
   */
@@ -142,7 +133,6 @@ typedef struct _ImageInfo
     zero[MaxTextExtent];
 
   unsigned int
-    affirm,
     temporary,
     adjoin,
     subimage,
@@ -181,18 +171,20 @@ typedef struct _ImageInfo
     *texture,
     *density;
 
+  double
+    pointsize;
+
   unsigned int
     linewidth,
-    pointsize,
     antialias;
 
   int
     fuzz;
 
-  char
-    *background_color,
-    *border_color,
-    *matte_color;
+  PixelPacket
+    background_color,
+    border_color,
+    matte_color;
 
   /*
     Color reduction members.
@@ -236,22 +228,24 @@ typedef struct _ImageInfo
 typedef struct _MontageInfo
 {
   char
-    filename[MaxTextExtent];
-
-  char
+    filename[MaxTextExtent],
     *geometry,
     *tile,
-    *background_color,
-    *border_color,
-    *matte_color,
     *title,
     *frame,
     *texture,
     *pen,
     *font;
 
+  PixelPacket
+    background_color,
+    border_color,
+    matte_color;
+
+  double
+    pointsize;
+
   unsigned int
-    pointsize,
     border_width,
     gravity,
     shadow;
@@ -268,24 +262,14 @@ typedef struct _PointInfo
     z;
 } PointInfo;
 
-typedef struct _PrimitiveInfo
+typedef struct _ProfileInfo
 {
-  PrimitiveType
-    primitive;
-
   unsigned int
-    coordinates;
+    length;
 
-  double
-    x,
-    y;
-
-  PaintMethod
-    method;
-
-  char
-    *text;
-} PrimitiveInfo;
+  unsigned char
+    *info;
+} ProfileInfo;
 
 typedef struct _RectangleInfo
 {
@@ -298,18 +282,6 @@ typedef struct _RectangleInfo
     y;
 } RectangleInfo;
 
-typedef struct _RunlengthPacket
-{
-  Quantum
-    red,
-    green,
-    blue,
-    length;
-
-  unsigned short
-    index;
-} RunlengthPacket;
-
 typedef struct _SegmentInfo
 {
   double
@@ -319,14 +291,59 @@ typedef struct _SegmentInfo
     y2;
 } SegmentInfo;
 
-typedef struct _ProfileInfo
+typedef struct _Timer
 {
-  unsigned int
-    length;
+  double
+    start,
+    stop,
+    total;
+} Timer;
 
-  unsigned char
-    *info;
-} ProfileInfo;
+typedef struct _TimerInfo
+{
+  Timer
+    user,
+    elapsed;
+
+  TimerState
+    state;
+} TimerInfo;
+
+typedef struct _CacheInfo
+{
+  char
+    filename[MaxTextExtent];
+
+  FILE
+    *file;
+
+  ClassType
+#if defined(__cplusplus) || defined(c_plusplus)
+    c_class;
+#else
+    class;
+#endif
+
+  size_t
+    number_pixels;
+
+  unsigned int
+    mapped;
+
+  PixelPacket
+    *pixels;
+
+  IndexPacket
+    *indexes;
+
+  int
+    x,
+    y;
+
+  unsigned int
+    width,
+    height;
+} CacheInfo;
 
 typedef struct _ChromaticityInfo
 {
@@ -339,8 +356,11 @@ typedef struct _ChromaticityInfo
 
 typedef struct _Image
 {
+  CacheInfo
+    cache_info;
+
   BlobInfo
-    blob;
+    blob_info;
 
   FILE
     *file;
@@ -353,7 +373,7 @@ typedef struct _Image
   char
     filename[MaxTextExtent];
 
-  long int
+  size_t
     filesize;
 
   int
@@ -398,7 +418,7 @@ typedef struct _Image
     *montage,
     *directory;
 
-  ColorPacket
+  PixelPacket
     *colormap;
 
   unsigned int
@@ -430,26 +450,22 @@ typedef struct _Image
   char
     *signature;
 
-  RunlengthPacket
+  PixelPacket
     *pixels;
 
-  unsigned long
-    packets;
+  unsigned short
+    *indexes;
 
-  unsigned int
-    packet_size;
-
-  unsigned char
-    *packed_pixels;
-
-  ColorPacket
+  PixelPacket
     background_color,
     border_color,
     matte_color;
 
   char
-    *geometry,
-    *page;
+    *geometry;
+
+  RectangleInfo
+    page_info;
 
   unsigned int
     dispose,
@@ -475,9 +491,6 @@ typedef struct _Image
     normalized_mean_error,
     normalized_maximum_error;
 
-  long int
-    magick_time;
-
   char
     magick_filename[MaxTextExtent];
 
@@ -488,6 +501,9 @@ typedef struct _Image
   int
     restart_animation_here,
     tainted;
+
+  TimerInfo
+    timer_info;
 
   unsigned int
     orphan;
@@ -581,33 +597,38 @@ extern Export AnnotateInfo
   *CloneAnnotateInfo(const ImageInfo *,const AnnotateInfo *);
 
 extern Export Image
-  *AddNoiseImage(const Image *,const NoiseType),
+  *AddNoiseImage(Image *,const NoiseType),
   *AllocateImage(const ImageInfo *),
   *AppendImages(Image *,const unsigned int),
-  *AverageImages(const Image *),
-  *BlurImage(const Image *,const double),
-  *BorderImage(const Image *,const RectangleInfo *),
-  *ChopImage(const Image *,const RectangleInfo *),
-  *CloneImage(const Image *,const unsigned int,const unsigned int,
-    const unsigned int),
-  *CreateImage(const unsigned int,const unsigned int,const float *,
-    const float *,const float *,const float *),
-  *CropImage(const Image *,const RectangleInfo *),
+  *AverageImages(Image *),
+  *BlurImage(Image *,const double),
+  *BorderImage(Image *,const RectangleInfo *),
+  *ChopImage(Image *,const RectangleInfo *),
+  *CloneImage(Image *,const unsigned int,const unsigned int,const unsigned int),
+  *CoalesceImages(Image *),
+  *ColorizeImage(Image *,const char *,const char *),
+  *CreateImage(const unsigned int,const unsigned int,const char *,
+    const StorageType,const void *),
+  *CropImage(Image *,const RectangleInfo *),
+  *DeconstructImages(Image *),
   *DespeckleImage(Image *),
-  *EdgeImage(const Image *,const double),
-  *EmbossImage(const Image *),
-  *EnhanceImage(const Image *),
-  *FlipImage(const Image *),
-  *FlopImage(const Image *),
-  *FrameImage(const Image *,const FrameInfo *),
+  *EdgeImage(Image *,const double),
+  *EmbossImage(Image *),
+  *EnhanceImage(Image *),
+  *FlipImage(Image *),
+  *FlopImage(Image *),
+  *FrameImage(Image *,const FrameInfo *),
+  *GetNextImage(Image *),
   *ImplodeImage(Image *,const double),
   **ListToGroupImage(const Image *,unsigned int *),
   *MagnifyImage(Image *),
   *MinifyImage(Image *),
   *MontageImages(const Image *,const MontageInfo *),
   *MorphImages(Image *,const unsigned int),
+  *MosaicImages(Image *),
   *OilPaintImage(Image *,const unsigned int),
   *PingImage(const ImageInfo *),
+  *Read8BIMImage(const ImageInfo *image_info),
   *ReadAVSImage(const ImageInfo *image_info),
   *ReadBMPImage(const ImageInfo *image_info),
   *ReadCMYKImage(const ImageInfo *image_info),
@@ -672,18 +693,17 @@ extern Export Image
   *ReadXPMImage(const ImageInfo *image_info),
   *ReadXWDImage(const ImageInfo *image_info),
   *ReadYUVImage(const ImageInfo *image_info),
-  *ReduceNoiseImage(const Image *),
-  *RollImage(const Image *,const int,const int),
-  *RotateImage(const Image *,const double,const unsigned int,
-    const unsigned int),
-  *SampleImage(const Image *,const unsigned int,const unsigned int),
-  *ScaleImage(const Image *,const unsigned int,const unsigned int),
+  *ReduceNoiseImage(Image *),
+  *RollImage(Image *,const int,const int),
+  *RotateImage(Image *,const double),
+  *SampleImage(Image *,const unsigned int,const unsigned int),
+  *ScaleImage(Image *,const unsigned int,const unsigned int),
   *ShadeImage(Image *,const unsigned int,double,double),
-  *SharpenImage(const Image *,const double),
-  *ShearImage(const Image *,const double,const double,const unsigned int),
+  *SharpenImage(Image *,const double),
+  *ShearImage(Image *,const double,const double),
   *SpreadImage(Image *,const unsigned int),
   *SteganoImage(Image *,Image *),
-  *StereoImage(Image *,const Image *),
+  *StereoImage(Image *,Image *),
   *SwirlImage(Image *,double),
   *WaveImage(Image *,const double,const double),
   *ZoomImage(Image *,const unsigned int,const unsigned int);
@@ -709,15 +729,49 @@ extern Export unsigned int
   AnimateImages(const ImageInfo *image_info,Image *image),
   DisplayImages(const ImageInfo *image_info,Image *image),
   GetNumberScenes(const Image *),
+  Is8BIM(const unsigned char *,const unsigned int),
+  IsBMP(const unsigned char *,const unsigned int),
+  IsDCM(const unsigned char *,const unsigned int),
+  IsDCX(const unsigned char *,const unsigned int),
+  IsEPT(const unsigned char *,const unsigned int),
+  IsFAX(const unsigned char *,const unsigned int),
+  IsFITS(const unsigned char *,const unsigned int),
+  IsGIF(const unsigned char *,const unsigned int),
   IsGeometry(const char *),
   IsGrayImage(Image *),
+  IsHDF(const unsigned char *,const unsigned int),
+  IsHTML(const unsigned char *,const unsigned int),
+  IsIPTC(const unsigned char *,const unsigned int),
+  IsJPEG(const unsigned char *,const unsigned int),
+  IsMIFF(const unsigned char *,const unsigned int),
+  IsMNG(const unsigned char *,const unsigned int),
   IsMonochromeImage(Image *),
+  IsPCD(const unsigned char *,const unsigned int),
+  IsPCL(const unsigned char *,const unsigned int),
+  IsPCX(const unsigned char *,const unsigned int),
+  IsPDF(const unsigned char *,const unsigned int),
+  IsPNG(const unsigned char *,const unsigned int),
+  IsPNM(const unsigned char *,const unsigned int),
+  IsPS(const unsigned char *,const unsigned int),
+  IsPSD(const unsigned char *,const unsigned int),
+  IsPWP(const unsigned char *,const unsigned int),
   IsPseudoClass(Image *),
+  IsRLE(const unsigned char *,const unsigned int),
+  IsSCT(const unsigned char *,const unsigned int),
+  IsSFW(const unsigned char *,const unsigned int),
+  IsSGI(const unsigned char *,const unsigned int),
+  IsSUN(const unsigned char *,const unsigned int),
   IsSubimage(const char *,const unsigned int),
+  IsTIFF(const unsigned char *,const unsigned int),
   IsTainted(const Image *),
+  IsVICAR(const unsigned char *,const unsigned int),
+  IsVIFF(const unsigned char *,const unsigned int),
+  IsXBM(const unsigned char *,const unsigned int),
+  IsXPM(const unsigned char *,const unsigned int),
+  IsXWD(const unsigned char *,const unsigned int),
   PlasmaImage(Image *,const SegmentInfo *,int,int),
-  QueryColorDatabase(const char *,ColorPacket *),
-  UncondenseImage(Image *),
+  QueryColorDatabase(const char *,PixelPacket *),
+  Write8BIMImage(const ImageInfo *image_info,Image *image),
   WriteAVSImage(const ImageInfo *image_info,Image *image),
   WriteBMPImage(const ImageInfo *image_info,Image *image),
   WriteCMYKImage(const ImageInfo *image_info,Image *image),
@@ -773,17 +827,13 @@ extern Export unsigned int
 extern Export void
   AllocateNextImage(const ImageInfo *,Image *),
   AnnotateImage(Image *,const AnnotateInfo *),
-  CoalesceImages(Image *),
-  ColorFloodfillImage(Image *,const RunlengthPacket *,Image *,const int x,
+  ColorFloodfillImage(Image *,const PixelPacket *,Image *,const int x,
     const int y,const PaintMethod),
-  ColorizeImage(Image *,const char *,const char *),
   CommentImage(Image *,const char *),
   CompositeImage(Image *,const CompositeOperator,Image *,const int,const int),
   CompressColormap(Image *),
-  CondenseImage(Image *),
   ContrastImage(Image *,const unsigned int),
   CycleColormapImage(Image *,const int),
-  DeconstructImages(Image *),
   DescribeImage(Image *,FILE *,const unsigned int),
   DestroyAnnotateInfo(AnnotateInfo *),
   DestroyImage(Image *),
@@ -796,13 +846,16 @@ extern Export void
   GetAnnotateInfo(const ImageInfo *,AnnotateInfo *),
   GetImageInfo(ImageInfo *),
   GetMontageInfo(MontageInfo *),
-  GetPixels(const Image *,float *,float *,float *,float *),
+  GetPageInfo(RectangleInfo *),
+  GetPixels(Image *,const int,const int,const unsigned int,const unsigned int,
+    const char *,const StorageType,void *),
+  GetPixelPacket(PixelPacket *),
   LabelImage(Image *,const char *),
   LayerImage(Image *,const LayerType),
   ListMagickInfo(FILE *),
-  MatteFloodfillImage(Image *,const RunlengthPacket *,const unsigned int,
+  MatteFloodfillImage(Image *,const PixelPacket *,const unsigned int,
     const int x,const int y,const PaintMethod),
-  MatteImage(Image *),
+  MatteImage(Image *,Quantum),
   ModulateImage(Image *,const char *),
   MogrifyImage(const ImageInfo *,const int,char **,Image **),
   MogrifyImages(const ImageInfo *,const int,char **,Image **),

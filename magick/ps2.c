@@ -248,6 +248,7 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     buffer[MaxTextExtent],
     date[MaxTextExtent],
     density[MaxTextExtent],
+    geometry[MaxTextExtent],
     **labels;
 
   const char
@@ -270,12 +271,11 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     x,
     y;
 
-  register RunlengthPacket
+  register PixelPacket
     *p;
 
   register int
-    i,
-    j;
+    i;
 
   SegmentInfo
     bounding_box;
@@ -321,14 +321,17 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     height=image->rows;
     x=0;
     y=text_size;
+    FormatString(geometry,"%ux%u",image->columns,image->rows);
     if (image_info->page != (char *) NULL)
-      (void) ParseImageGeometry(image_info->page,&x,&y,&width,&height);
+      (void) strcpy(geometry,image_info->page);
     else
-      if (image->page != (char *) NULL)
-        (void) ParseImageGeometry(image->page,&x,&y,&width,&height);
+      if ((image->page_info.width != 0) && (image->page_info.height != 0))
+        (void) FormatString(geometry,"%ux%u%+d%+d",image->page_info.width,
+	  image->page_info.height,image->page_info.x,image->page_info.y);
       else
         if (Latin1Compare(image_info->magick,"PS2") == 0)
-          (void) ParseImageGeometry(PSPageGeometry,&x,&y,&width,&height);
+          (void) strcpy(geometry,PSPageGeometry);
+    (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
     /*
       Scale relative to dots-per-inch.
     */
@@ -429,7 +432,7 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
           (void) WriteBlob(image,strlen(buffer),buffer);
           (void) strcpy(buffer,"  currentfile label readline pop\n");
           (void) WriteBlob(image,strlen(buffer),buffer);
-          (void) sprintf(buffer,"  0 y %d add moveto label show pop\n",
+          (void) sprintf(buffer,"  0 y %f add moveto label show pop\n",
             i*image_info->pointsize+12);
           (void) WriteBlob(image,strlen(buffer),buffer);
         }
@@ -479,7 +482,7 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
       Output image data.
     */
     labels=StringToList(image->label);
-    (void) sprintf(buffer,"%d %d\n%g %g\n%u\n",x,y,x_scale,y_scale,
+    (void) sprintf(buffer,"%d %d\n%g %g\n%f\n",x,y,x_scale,y_scale,
       image_info->pointsize);
     (void) WriteBlob(image,strlen(buffer),buffer);
     if (labels != (char **) NULL)
@@ -496,7 +499,6 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
       IsPseudoClass(image),(int) (image->colorspace == CMYKColorspace),
       (int) (compression == NoCompression));
     (void) WriteBlob(image,strlen(buffer),buffer);
-    p=image->pixels;
     if (!IsPseudoClass(image) && !IsGrayImage(image))
       switch (compression)
       {
@@ -520,11 +522,14 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
             Dump Packbit encoded pixels.
           */
           q=pixels;
-          for (i=0; i < (int) image->packets; i++)
+          for (y=0; y < (int) image->rows; y++)
           {
-            for (j=0; j <= ((int) p->length); j++)
+            p=GetPixelCache(image,0,y,image->columns,1);
+            if (p == (PixelPacket *) NULL)
+              break;
+            for (x=0; x < (int) image->columns; x++)
             {
-              if (image->matte && (p->index == Transparent))
+              if (image->matte && (p->opacity == Transparent))
                 {
                   *q++=DownScale(MaxRGB);
                   *q++=DownScale(MaxRGB);
@@ -542,13 +547,13 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                     *q++=DownScale(p->red);
                     *q++=DownScale(p->green);
                     *q++=DownScale(p->blue);
-                    *q++=DownScale(p->index);
+                    *q++=DownScale(p->opacity);
                   }
+              p++;
             }
-            p++;
             if (image->previous == (Image *) NULL)
-              if (QuantumTick(i,image->packets))
-                ProgressMonitor(SaveImageText,i,image->packets);
+              if (QuantumTick(y,image->rows))
+                ProgressMonitor(SaveImageText,y,image->rows);
           }
           if (compression == ZipCompression)
             status=
@@ -563,7 +568,7 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
               CloseBlob(image);
               return(False);
             }
-          FreeMemory((char *) pixels);
+          FreeMemory(pixels);
           break;
         }
         case NoCompression:
@@ -572,11 +577,14 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
             Dump uncompressed DirectColor packets.
           */
           Ascii85Initialize();
-          for (i=0; i < (int) image->packets; i++)
+          for (y=0; y < (int) image->rows; y++)
           {
-            for (j=0; j <= ((int) p->length); j++)
+            p=GetPixelCache(image,0,y,image->columns,1);
+            if (p == (PixelPacket *) NULL)
+              break;
+            for (x=0; x < (int) image->columns; x++)
             {
-              if (image->matte && (p->index == Transparent))
+              if (image->matte && (p->opacity == Transparent))
                 {
                   Ascii85Encode(image,DownScale(MaxRGB));
                   Ascii85Encode(image,DownScale(MaxRGB));
@@ -594,13 +602,13 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                     Ascii85Encode(image,DownScale(p->red));
                     Ascii85Encode(image,DownScale(p->green));
                     Ascii85Encode(image,DownScale(p->blue));
-                    Ascii85Encode(image,DownScale(p->index));
+                    Ascii85Encode(image,DownScale(p->opacity));
                   }
+              p++;
             }
-            p++;
             if (image->previous == (Image *) NULL)
-              if (QuantumTick(i,image->packets))
-                ProgressMonitor(SaveImageText,i,image->packets);
+              if (QuantumTick(y,image->rows))
+                ProgressMonitor(SaveImageText,y,image->rows);
           }
           Ascii85Flush(image);
           break;
@@ -618,9 +626,6 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
           if (image->colors == 2)
             polarity=
               Intensity(image->colormap[0]) < Intensity(image->colormap[1]);
-          bit=0;
-          byte=0;
-          x=0;
           (void) WriteByte(image,'\0');
           (void) WriteByte(image,'\n');
           switch (compression)
@@ -640,12 +645,16 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                 Dump uncompressed PseudoColor packets.
               */
               Ascii85Initialize();
-              for (i=0; i < (int) image->packets; i++)
+              for (y=0; y < (int) image->rows; y++)
               {
-                for (j=0; j <= ((int) p->length); j++)
+                if (!GetPixelCache(image,0,y,image->columns,1))
+                  break;
+                bit=0;
+                byte=0;
+                for (x=0; x < (int) image->columns; x++)
                 {
                   byte<<=1;
-                  if (p->index == polarity)
+                  if (image->indexes[x] == polarity)
                     byte|=0x01;
                   bit++;
                   if (bit == 8)
@@ -654,23 +663,13 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                       bit=0;
                       byte=0;
                     }
-                  x++;
-                  if (x == (int) image->columns)
-                    {
-                      /*
-                        Advance to the next scanline.
-                      */
-                      if (bit != 0)
-                        Ascii85Encode(image,byte << (8-bit));
-                      if (image->previous == (Image *) NULL)
-                        if (QuantumTick(y,image->rows))
-                          ProgressMonitor(SaveImageText,y,image->rows);
-                      bit=0;
-                      byte=0;
-                      x=0;
-                   }
+                  p++;
                 }
-                p++;
+                if (bit != 0)
+                  Ascii85Encode(image,byte << (8-bit));
+                if (image->previous == (Image *) NULL)
+                  if (QuantumTick(y,image->rows))
+                    ProgressMonitor(SaveImageText,y,image->rows);
               }
               Ascii85Flush(image);
               break;
@@ -713,14 +712,18 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                 Dump Runlength encoded pixels.
               */
               q=pixels;
-              for (i=0; i < (int) image->packets; i++)
+              for (y=0; y < (int) image->rows; y++)
               {
-                for (j=0; j <= ((int) p->length); j++)
-                  *q++=(unsigned char) p->index;
-                p++;
+                if (!GetPixelCache(image,0,y,image->columns,1))
+                  break;
+                for (x=0; x < (int) image->columns; x++)
+                {
+                  *q++=image->indexes[x];
+                  p++;
+                }
                 if (image->previous == (Image *) NULL)
-                  if (QuantumTick(i,image->packets))
-                    ProgressMonitor(SaveImageText,i,image->packets);
+                  if (QuantumTick(y,image->rows))
+                    ProgressMonitor(SaveImageText,y,image->rows);
               }
               if (compression == ZipCompression)
                 status=ZLIBEncodeImage(image,number_packets,image_info->quality,
@@ -730,7 +733,7 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                   status=LZWEncodeImage(image,number_packets,pixels);
                 else
                   status=PackbitsEncodeImage(image,number_packets,pixels);
-              FreeMemory((char *) pixels);
+              FreeMemory(pixels);
               if (!status)
                 {
                   CloseBlob(image);
@@ -744,14 +747,18 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                 Dump uncompressed PseudoColor packets.
               */
               Ascii85Initialize();
-              for (i=0; i < (int) image->packets; i++)
+              for (y=0; y < (int) image->rows; y++)
               {
-                for (j=0; j <= ((int) p->length); j++)
-                  Ascii85Encode(image,(unsigned char) p->index);
-                p++;
+                if (!GetPixelCache(image,0,y,image->columns,1))
+                  break;
+                for (x=0; x < (int) image->columns; x++)
+                {
+                  Ascii85Encode(image,image->indexes[x]);
+                  p++;
+                }
                 if (image->previous == (Image *) NULL)
-                  if (QuantumTick(i,image->packets))
-                    ProgressMonitor(SaveImageText,i,image->packets);
+                  if (QuantumTick(y,image->rows))
+                    ProgressMonitor(SaveImageText,y,image->rows);
               }
               Ascii85Flush(image);
               break;
@@ -770,8 +777,7 @@ Export unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     (void) WriteBlob(image,strlen(buffer),buffer);
     if (image->next == (Image *) NULL)
       break;
-    image->next->file=image->file;
-    image=image->next;
+    image=GetNextImage(image);
     ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)

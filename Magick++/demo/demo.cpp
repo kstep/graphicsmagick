@@ -228,17 +228,7 @@ int main( int /*argc*/, char ** /*argv*/)
     cout << "  segment ..." << endl;
     example = model;
     example.label( "Segment" );
-    // Segment is *extremely* slow at 16-bit color so skip
-    // it in that case.
-    if ( example.depth() == 16 )
-      {
-	example.penColor( "gold" );
-	example.annotate( "Skipped", CenterGravity );
-      }
-    else
-      {
-	example.segment( );
-      }
+    example.segment( );
     images.push_back( example );
 
     cout << "  shade ..." << endl;
@@ -283,7 +273,7 @@ int main( int /*argc*/, char ** /*argv*/)
     example.label( "Wave" );
     example.wave( 25, 150 );
     images.push_back( example );
-
+    
     cout << "  zoom ..." << endl;
     example = model;
     example.label( "Zoom" );
@@ -361,7 +351,7 @@ int main( int /*argc*/, char ** /*argv*/)
 		    "Magick++ and ImageMagick libraries.",
 		    "+20+175" );
 
-    cout << "Write image \"demo.jpg\" ..." << endl;
+    cout << "Writing image \"demo.jpg\" ..." << endl;
     final.matte( false );
     final.write( "demo.jpg" );
 

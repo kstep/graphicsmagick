@@ -61,6 +61,7 @@
 %  Where options include:
 %    -adjoin             join images into a single multi-image file
 %    -border             include image borders in the output image
+%    -cache threshold    megabytes of memory available to the pixel cache
 %    -colors value       preferred number of colors in the image
 %    -colorspace type    alternate image colorspace
 %    -comment string     annotate image with comment
@@ -145,6 +146,7 @@ static void Usage(const char *client_name)
     {
       "-adjoin             join images into a single multi-image file",
       "-border             include image borders in the output image",
+      "-cache threshold    megabytes of memory available to the pixel cache",
       "-colors value       preferred number of colors in the image",
       "-colorspace type    alternate image colorspace",
       "-comment string     annotate image with comment",
@@ -221,6 +223,9 @@ int main(int argc,char **argv)
 
   Display
     *display;
+
+  double
+    sans;
 
   Image
     *image,
@@ -378,13 +383,12 @@ int main(int argc,char **argv)
             }
           if (strncmp("bordercolor",option+1,7) == 0)
             {
-              image_info->border_color=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing border color",option);
-                  (void) CloneString(&image_info->border_color,argv[i]);
+                  (void) QueryColorDatabase(argv[i],&image_info->border_color);
                 }
               break;
             }
@@ -393,6 +397,17 @@ int main(int argc,char **argv)
         }
         case 'c':
         {
+          if (strncmp("cache",option+1,3) == 0)
+            {
+              if (*option == '-')
+                {
+                  i++;
+                  if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                    MagickError(OptionError,"Missing threshold",option);
+                }
+              SetCacheThreshold(atoi(argv[i]));
+              break;
+            }
           if (strncmp("colors",option+1,7) == 0)
             {
               quantize_info->number_colors=0;
@@ -694,7 +709,7 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%d",&x))
                     MagickError(OptionError,"Missing size",option);
-                  image_info->pointsize=atoi(argv[i]);
+                  image_info->pointsize=atof(argv[i]);
                 }
               break;
             }
@@ -850,7 +865,9 @@ int main(int argc,char **argv)
   }
   if (image_info->verbose)
     DescribeImage(image,(FILE *) NULL,False);
+  DestroyImages(image);
   DestroyDelegateInfo();
+  FreeMemory(argv);
   Exit(status ? 0 : errno);
 #endif
   return(False);

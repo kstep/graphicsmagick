@@ -79,7 +79,7 @@ testRead( 'granite:', '30086994324339ccb531dbb82e46128b' );
 # Microsoft icon
 #
 ++$test;
-testRead( 'input.ico', 'd6fb93a149f45c8002358d58cd2db2c7' );
+testRead( 'input.ico', '8353269a2be9c1f13055b7fa147a6351' );
 
 #
 # Magick image file format
@@ -177,7 +177,7 @@ testRead( 'input_p6.ppm', 'e9b162b8431709942886f79b7b7c11bb' );
 # Adobe Photoshop bitmap file
 #
 ++$test;
-testRead( 'input.psd', '7785d161ea66bd39394bb74ef704a0aa' );
+testRead( 'input.psd', '898ac726feb48948a54697320978d325' );
 
 #
 # Irix RGB image file
@@ -274,7 +274,7 @@ testReadSized( 'input_70x46.rgba', '70x46', 'f3e5ab88e328da3044c1fc177a7e2978' )
 # CMYK format
 #
 ++$test;
-testReadSized( 'input_70x46.cmyk', '70x46', '70b0c3d7fcc7a617481285a1e27345d5' );
+testReadSized( 'input_70x46.cmyk', '70x46', 'cf80501135a580d67542a4ec1a4ff524' );
 
 
 #

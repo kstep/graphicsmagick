@@ -2603,6 +2603,45 @@ static const DicomInfo
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   I s D C M                                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsDCM returns True if the image format type, identified by the
+%  magick string, is DCM.
+%
+%  The format of the ReadDCMImage method is:
+%
+%      unsigned int IsDCM(const unsigned char *magick,
+%        const unsigned int length)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method IsDCM returns True if the image format type is DCM.
+%
+%    o magick: This string is generally the first few bytes of an image file
+%      or blob.
+%
+%    o length: Specifies the length of the magick string.
+%
+%
+*/
+Export unsigned int IsDCM(const unsigned char *magick,const unsigned int length)
+{
+  if (length < 132)
+    return(False);
+  if (strncmp((char *) (magick+128),"DICM",4) == 0)
+    return(True);
+  return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   R e a d D C M I m a g e                                                   %
 %                                                                             %
 %                                                                             %
@@ -2639,6 +2678,9 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
   Image
     *image;
 
+  IndexPacket
+    index;
+
   int
     element,
     group,
@@ -2656,10 +2698,7 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
     x,
     i;
 
-  register long
-    packets;
-
-  register RunlengthPacket
+  register PixelPacket
     *q;
 
   register unsigned char
@@ -2681,12 +2720,10 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
     width;
 
   unsigned long
-    max_packets,
     max_value;
 
   unsigned short
-    *graymap,
-    index;
+    *graymap;
 
   /*
     Allocate image structure.
@@ -3010,15 +3047,18 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
           case 0x1202:
           case 0x1203:
           {
+            unsigned short
+              index;
+
             /*
               Initialize colormap.
             */
             image->class=PseudoClass;
             image->colors=length >> 1;
-            if (image->colormap == (ColorPacket *) NULL)
-              image->colormap=(ColorPacket *)
-                AllocateMemory(image->colors*sizeof(ColorPacket));
-            if (image->colormap == (ColorPacket *) NULL)
+            if (image->colormap == (PixelPacket *) NULL)
+              image->colormap=(PixelPacket *)
+                AllocateMemory(image->colors*sizeof(PixelPacket));
+            if (image->colormap == (PixelPacket *) NULL)
               {
                 MagickWarning(ResourceLimitWarning,"Unable to create colormap",
                  "Memory allocation failed");
@@ -3136,16 +3176,16 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
     */
     image->columns=width;
     image->rows=height;
-    if ((image->colormap == (ColorPacket *) NULL) && (samples_per_pixel == 1))
+    if ((image->colormap == (PixelPacket *) NULL) && (samples_per_pixel == 1))
       {
         /*
           Allocate image colormap.
         */
         image->class=PseudoClass;
         image->colors=Min(max_value,MaxRGB)+1;
-        image->colormap=(ColorPacket *)
-          AllocateMemory(image->colors*sizeof(ColorPacket));
-        if (image->colormap == (ColorPacket *) NULL)
+        image->colormap=(PixelPacket *)
+          AllocateMemory(image->colors*sizeof(PixelPacket));
+        if (image->colormap == (PixelPacket *) NULL)
           ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
         for (i=0; i < (int) image->colors; i++)
         {
@@ -3157,14 +3197,6 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
             ((long) (MaxRGB*i)/(image->colors-1));
         }
       }
-    packets=0;
-    max_packets=image->columns*image->rows;
-    if (samples_per_pixel == 1)
-      max_packets=Max((image->columns*image->rows+1) >> 1,1);
-    image->pixels=(RunlengthPacket *)
-      AllocateMemory(max_packets*sizeof(RunlengthPacket));
-    if (image->pixels == (RunlengthPacket *) NULL)
-      ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
     if (image_info->ping)
       {
         CloseBlob(image);
@@ -3173,15 +3205,15 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
     if ((samples_per_pixel > 1) && (image->interlace == PlaneInterlace))
       {
         /*
-          Convert Planar RGB DCM Medical image to runlength-encoded packets.
+          Convert Planar RGB DCM Medical image to pixel packets.
         */
-        image->packets=image->columns*image->rows;
-        SetImage(image);
         for (i=0; i < (int) samples_per_pixel; i++)
         {
-          q=image->pixels;
           for (y=0; y < (int) image->rows; y++)
           {
+            q=SetPixelCache(image,0,y,image->columns,1);
+            if (q == (PixelPacket *) NULL)
+              break;
             for (x=0; x < (int) image->columns; x++)
             {
               switch (i)
@@ -3189,11 +3221,13 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
                 case 0: q->red=(Quantum) ReadByte(image); break;
                 case 1: q->green=(Quantum) ReadByte(image); break;
                 case 2: q->blue=(Quantum) ReadByte(image); break;
-                case 3: q->index=(unsigned int) ReadByte(image); break;
+                case 3: q->opacity=(unsigned int) ReadByte(image); break;
                 default: break;
               }
               q++;
             }
+            if (!SyncPixelCache(image))
+              break;
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
                 ProgressMonitor(LoadImageText,y,image->rows);
@@ -3202,27 +3236,19 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
       }
     else
       {
-        Quantum
-          blue,
-          green,
-          red;
-
         unsigned char
           byte;
 
         /*
-          Convert DCM Medical image to runlength-encoded packets.
+          Convert DCM Medical image to pixel packets.
         */
         i=0;
         byte=0;
-        red=0;
-        green=0;
-        blue=0;
-        index=0;
-        q=image->pixels;
-        SetRunlengthEncoder(q);
         for (y=0; y < (int) image->rows; y++)
         {
+          q=SetPixelCache(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            break;
           for (x=0; x < (int) image->columns; x++)
           {
             if (samples_per_pixel == 1)
@@ -3248,61 +3274,36 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
                   index=max_value;
                 if (graymap != (unsigned short *) NULL)
                   index=graymap[index];
+                image->indexes[x]=index;
               }
             else
               if (bytes_per_pixel == 1)
                 {
-                  red=ReadByte(image);
-                  green=ReadByte(image);
-                  blue=ReadByte(image);
+                  q->red=ReadByte(image);
+                  q->green=ReadByte(image);
+                  q->blue=ReadByte(image);
                 }
               else
                 {
-                  red=LSBFirstReadShort(image);
-                  green=LSBFirstReadShort(image);
-                  blue=LSBFirstReadShort(image);
+                  q->red=LSBFirstReadShort(image);
+                  q->green=LSBFirstReadShort(image);
+                  q->blue=LSBFirstReadShort(image);
                 }
             if (scale != (Quantum *) NULL)
               {
-                red=scale[red];
-                green=scale[green];
-                blue=scale[blue];
-                index=scale[index];
+                q->red=scale[q->red];
+                q->green=scale[q->green];
+                q->blue=scale[q->blue];
+                q->opacity=scale[q->opacity];
               }
-            if ((red == q->red) && (green == q->green) && (blue == q->blue) &&
-                (index == q->index) && ((int) q->length < MaxRunlength))
-              q->length++;
-            else
-              {
-                if (packets != 0)
-                  q++;
-                packets++;
-                if (packets == (int) max_packets)
-                  {
-                    max_packets<<=1;
-                    image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
-                      image->pixels,max_packets*sizeof(RunlengthPacket));
-                    if (image->pixels == (RunlengthPacket *) NULL)
-                      {
-                        if (scale != (Quantum *) NULL)
-                          FreeMemory((char *) scale);
-                        ReaderExit(ResourceLimitWarning,
-                          "Memory allocation failed",image);
-                      }
-                    q=image->pixels+packets-1;
-                  }
-                q->red=red;
-                q->green=green;
-                q->blue=blue;
-                q->index=index;
-                q->length=0;
-              }
+            q++;
           }
+          if (!SyncPixelCache(image))
+            break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(LoadImageText,y,image->rows);
         }
-        SetRunlengthPackets(image,packets);
         if (image->class == PseudoClass)
           {
             SyncImage(image);
@@ -3338,7 +3339,7 @@ Export Image *ReadDCMImage(const ImageInfo *image_info)
     Free scale resource.
   */
   if (scale != (Quantum *) NULL)
-    FreeMemory((char *) scale);
+    FreeMemory(scale);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);

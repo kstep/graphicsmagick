@@ -109,6 +109,46 @@ static jmp_buf
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   I s J P E G                                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsJPEG returns True if the image format type, identified by the
+%  magick string, is JPEG.
+%
+%  The format of the ReadJPEGImage method is:
+%
+%      unsigned int IsJPEG(const unsigned char *magick,
+%        const unsigned int length)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method IsJPEG returns True if the image format type is JPEG.
+%
+%    o magick: This string is generally the first few bytes of an image file
+%      or blob.
+%
+%    o length: Specifies the length of the magick string.
+%
+%
+*/
+Export unsigned int IsJPEG(const unsigned char *magick,
+  const unsigned int length)
+{
+  if (length < 3)
+    return(False);
+  if (strncmp((char *) magick,"\377\330\377",3) == 0)
+    return(True);
+  return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   R e a d J P E G I m a g e                                                 %
 %                                                                             %
 %                                                                             %
@@ -297,20 +337,34 @@ static boolean ReadComment(j_decompress_ptr jpeg_info)
 static boolean ReadNewsProfile(j_decompress_ptr jpeg_info)
 {
   long int
+    taglen,
     length;
 
   register unsigned char
     *p;
 
+  register int
+    i;
+
+#ifdef GET_ONLY_IPTC_DATA
   unsigned char
     tag[2];
+#else
+  char
+    magick[11];
+#endif
 
   /*
-    Determine length of IPTC profile.
+    Determine length of binary data stored here.
   */
   length=GetCharacter(jpeg_info) << 8;
   length+=GetCharacter(jpeg_info);
   length-=2;
+#ifdef GET_ONLY_IPTC_DATA
+  /*
+    The following tries to find the beginning of
+    the IPTC portion of the binary data
+   */
   for (*tag='\0'; length > 0; )
   {
     *tag=GetCharacter(jpeg_info);
@@ -319,16 +373,41 @@ static boolean ReadNewsProfile(j_decompress_ptr jpeg_info)
     if ((*tag == 0x1c) && (*(tag+1) == 0x02))
       break;
   }
+  taglen=2;
+#else
+  /*
+    The following validates that this was written
+    as a Photoshop resource format slug
+   */
+  for (i=0; i < 10; i++)
+    magick[i]=GetCharacter(jpeg_info);
+  magick[10]='\0';
+  length-=10;
+  if (Latin1Compare(magick,"Photoshop ") != 0)
+    {
+      /*
+        Not a ICC profile, return.
+      */
+      for (i=0; i < length; i++)
+        (void) GetCharacter(jpeg_info);
+      return(True);
+    }
+  /* remove the version number */
+  for (i=0; i < 4; i++)
+    (void) GetCharacter(jpeg_info);
+  length-=4;
+  taglen=0;
+#endif
   if (length <= 0)
     return(True);
   if (image->iptc_profile.length != 0)
     image->iptc_profile.info=(unsigned char *) ReallocateMemory((char *)
-      image->iptc_profile.info,(unsigned int) (image->iptc_profile.length+
-      length+2)*sizeof(unsigned char));
+      image->iptc_profile.info,
+        (unsigned int) (length+taglen)*sizeof(unsigned char));
   else
     {
       image->iptc_profile.info=(unsigned char *)
-        AllocateMemory((unsigned int) (length+2)*sizeof(unsigned char));
+        AllocateMemory((unsigned int) (length+taglen)*sizeof(unsigned char));
       if (image->iptc_profile.info != (unsigned char *) NULL)
         image->iptc_profile.length=0;
     }
@@ -339,12 +418,15 @@ static boolean ReadNewsProfile(j_decompress_ptr jpeg_info)
       return(False);
     }
   /*
-    Read IPTC profile.
-  */
-  p=image->iptc_profile.info+image->iptc_profile.length;
-  image->iptc_profile.length+=length+2;
+    Read the payload of this binary data, decoding
+    is left as a excercise for the application.
+   */
+  p=image->iptc_profile.info;
+  image->iptc_profile.length=length+taglen;
+#ifdef GET_ONLY_IPTC_DATA
   *p++=0x1c;
   *p++=0x02;
+#endif
   while (--length >= 0)
     *p++=GetCharacter(jpeg_info);
   return(True);
@@ -407,11 +489,6 @@ Export Image *ReadJPEGImage(const ImageInfo *image_info)
   JSAMPROW
     scanline[1];
 
-  Quantum
-    blue,
-    green,
-    red;
-
   register int
     i;
 
@@ -424,17 +501,11 @@ Export Image *ReadJPEGImage(const ImageInfo *image_info)
   register JSAMPLE
     *p;
 
-  register long
-    packets;
-
-  register RunlengthPacket
+  register PixelPacket
     *q;
 
   unsigned int
     status;
-
-  unsigned short
-    index;
 
   /*
     Allocate image structure.
@@ -454,7 +525,7 @@ Export Image *ReadJPEGImage(const ImageInfo *image_info)
   jpeg_info.err=jpeg_std_error(&jpeg_error);
   jpeg_info.err->emit_message=EmitMessage;
   jpeg_info.err->error_exit=JPEGErrorHandler;
-  image->pixels=(RunlengthPacket *) NULL;
+  image->pixels=(PixelPacket *) NULL;
   jpeg_pixels=(JSAMPLE *) NULL;
   if (setjmp(error_recovery))
     {
@@ -462,7 +533,7 @@ Export Image *ReadJPEGImage(const ImageInfo *image_info)
         JPEG image is corrupt.
       */
       if (jpeg_pixels != (JSAMPLE *) NULL)
-        FreeMemory((char *) jpeg_pixels);
+        FreeMemory(jpeg_pixels);
       jpeg_destroy_decompress(&jpeg_info);
       DestroyImage(image);
       return((Image *) NULL);
@@ -533,9 +604,9 @@ Export Image *ReadJPEGImage(const ImageInfo *image_info)
       */
       image->class=PseudoClass;
       image->colors=MaxRGB+1;
-      image->colormap=(ColorPacket *)
-        AllocateMemory(image->colors*sizeof(ColorPacket));
-      if (image->colormap == (ColorPacket *) NULL)
+      image->colormap=(PixelPacket *)
+        AllocateMemory(image->colors*sizeof(PixelPacket));
+      if (image->colormap == (PixelPacket *) NULL)
         ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
       for (i=0; i < (int) image->colors; i++)
       {
@@ -544,73 +615,57 @@ Export Image *ReadJPEGImage(const ImageInfo *image_info)
         image->colormap[i].blue=UpScale(i);
       }
     }
-  packets=0;
   jpeg_pixels=(JSAMPLE *)
     AllocateMemory(jpeg_info.output_components*image->columns*sizeof(JSAMPLE));
-  image->pixels=(RunlengthPacket *)
-    AllocateMemory(image->columns*image->rows*sizeof(RunlengthPacket));
-  if ((image->pixels == (RunlengthPacket *) NULL) ||
+  image->pixels=(PixelPacket *)
+    AllocateMemory(image->columns*image->rows*sizeof(PixelPacket));
+  if ((image->pixels == (PixelPacket *) NULL) ||
       (jpeg_pixels == (JSAMPLE *) NULL))
     ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
   /*
-    Convert JPEG pixels to runlength-encoded packets.
+    Convert JPEG pixels to pixel packets.
   */
-  red=0;
-  green=0;
-  blue=0;
-  index=0;
   scanline[0]=(JSAMPROW) jpeg_pixels;
-  q=image->pixels;
-  SetRunlengthEncoder(q);
   for (y=0; y < (int) image->rows; y++)
   {
-    (void) jpeg_read_scanlines(&jpeg_info,scanline,1);
     p=jpeg_pixels;
+    q=SetPixelCache(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
+    (void) jpeg_read_scanlines(&jpeg_info,scanline,1);
     for (x=0; x < (int) image->columns; x++)
     {
       if (jpeg_info.data_precision > QuantumDepth)
         {
           if (jpeg_info.out_color_space == JCS_GRAYSCALE)
-            index=GETJSAMPLE(*p++) >> 4;
+            image->indexes[x]=GETJSAMPLE(*p++) >> 4;
           else
             {
-              red=(Quantum) (GETJSAMPLE(*p++) >> 4);
-              green=(Quantum) (GETJSAMPLE(*p++) >> 4);
-              blue=(Quantum) (GETJSAMPLE(*p++) >> 4);
+              q->red=(Quantum) (GETJSAMPLE(*p++) >> 4);
+              q->green=(Quantum) (GETJSAMPLE(*p++) >> 4);
+              q->blue=(Quantum) (GETJSAMPLE(*p++) >> 4);
               if (image->colorspace == CMYKColorspace)
-                index=(unsigned short) (GETJSAMPLE(*p++) >> 4);
+                q->opacity=(Quantum) (GETJSAMPLE(*p++) >> 4);
             }
         }
       else
         if (jpeg_info.out_color_space == JCS_GRAYSCALE)
-          index=GETJSAMPLE(*p++);
+          image->indexes[x]=GETJSAMPLE(*p++);
         else
           {
-            red=(Quantum) UpScale(GETJSAMPLE(*p++));
-            green=(Quantum) UpScale(GETJSAMPLE(*p++));
-            blue=(Quantum) UpScale(GETJSAMPLE(*p++));
+            q->red=(Quantum) UpScale(GETJSAMPLE(*p++));
+            q->green=(Quantum) UpScale(GETJSAMPLE(*p++));
+            q->blue=(Quantum) UpScale(GETJSAMPLE(*p++));
             if (image->colorspace == CMYKColorspace)
-              index=(unsigned short) UpScale(GETJSAMPLE(*p++));
+              q->opacity=(Quantum) UpScale(GETJSAMPLE(*p++));
           }
-      if ((red == q->red) && (green == q->green) && (blue == q->blue) &&
-          (index == q->index) && ((int) q->length < MaxRunlength))
-        q->length++;
-      else
-        {
-          if (packets != 0)
-            q++;
-          packets++;
-          q->red=red;
-          q->green=green;
-          q->blue=blue;
-          q->index=index;
-          q->length=0;
-        }
+      q++;
     }
+    if (!SyncPixelCache(image))
+      break;
     if (QuantumTick(y,image->rows))
       ProgressMonitor(LoadImageText,y,image->rows);
   }
-  SetRunlengthPackets(image,packets);
   if (image->class == PseudoClass)
     SyncImage(image);
   else
@@ -619,14 +674,21 @@ Export Image *ReadJPEGImage(const ImageInfo *image_info)
         /*
           Correct CMYK levels.
         */
-        q=image->pixels;
-        for (i=0; i < (int) image->packets; i++)
+        for (y=0; y < (int) image->rows; y++)
         {
-          q->red=MaxRGB-q->red;
-          q->green=MaxRGB-q->green;
-          q->blue=MaxRGB-q->blue;
-          q->index=MaxRGB-q->index;
-          q++;
+          q=GetPixelCache(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            break;
+          for (x=0; x < (int) image->columns; x++)
+          {
+            q->red=MaxRGB-q->red;
+            q->green=MaxRGB-q->green;
+            q->blue=MaxRGB-q->blue;
+            q->opacity=MaxRGB-q->opacity;
+            q++;
+          }
+          if (!SyncPixelCache(image))
+            break;
         }
       }
   /*
@@ -634,7 +696,7 @@ Export Image *ReadJPEGImage(const ImageInfo *image_info)
   */
   (void) jpeg_finish_decompress(&jpeg_info);
   jpeg_destroy_decompress(&jpeg_info);
-  FreeMemory((char *) jpeg_pixels);
+  FreeMemory(jpeg_pixels);
   CloseBlob(image);
   return(image);
 }
@@ -740,7 +802,7 @@ static void TerminateDestination(j_compress_ptr cinfo)
       if (number_bytes != (MaxBufferExtent-destination->manager.free_in_buffer))
         ERREXIT(cinfo,JERR_FILE_WRITE);
     }
-  if (FlushBlob(destination->image))
+  if (SyncBlob(destination->image))
     ERREXIT(cinfo,JERR_FILE_WRITE);
 }
 
@@ -769,9 +831,9 @@ static void WriteColorProfile(j_compress_ptr jpeg_info,Image *image)
     profile[12]=(i/65519)+1;
     profile[13]=(image->color_profile.length/65519)+1;
     for (j=0; j < (int) length; j++)
-      profile[j+14]=image->color_profile.info[j];
+      profile[j+14]=image->color_profile.info[i+j];
     jpeg_write_marker(jpeg_info,ICC_MARKER,profile,(unsigned int) length+14);
-    FreeMemory((char *) profile);
+    FreeMemory(profile);
   }
 }
 
@@ -781,37 +843,46 @@ static void WriteNewsProfile(j_compress_ptr jpeg_info,Image *image)
     roundup;
 
   register int
-    i,
-    j;
+    i;
 
   unsigned char
     *profile;
 
   unsigned int
+    taglen,
     length;
 
   /*
-    Save IPTC profile as a APP marker.
+    Save binary Photoshop resource data using an APP marker.
   */
+#ifdef GET_ONLY_IPTC_DATA
+  taglen=26;
+#else
+  taglen=14;
+#endif
   for (i=0; i < (int) image->iptc_profile.length; i+=65500)
   {
     length=Min(image->iptc_profile.length-i,65500);
     roundup=(length & 0x01); /* round up for Photoshop */
     profile=(unsigned char *)
-      AllocateMemory((length+roundup+26)*sizeof(unsigned char));
+      AllocateMemory((length+roundup+taglen)*sizeof(unsigned char));
     if (profile == (unsigned char *) NULL)
       break;
+#ifdef GET_ONLY_IPTC_DATA
     (void) memcpy((char *) profile,"Photoshop 3.0 8BIM\04\04\0\0\0\0",24);
     profile[13]=0x00;
     profile[24]=length >> 8;
     profile[25]=length & 0xff;
-    for (j=0; j < (int) length; j++)
-      profile[j+26]=image->iptc_profile.info[j];
+#else
+    (void) memcpy((char *) profile,"Photoshop 3.0 ",14);
+    profile[13]=0x00;
+#endif
+    (void) memcpy((char *) &(profile[taglen]),&(image->iptc_profile.info[i]),length);
     if (roundup)
-      profile[length+roundup+25]=0;
+      profile[length+taglen]=0;
     jpeg_write_marker(jpeg_info,IPTC_MARKER,profile,(unsigned int)
-      length+roundup+26);
-    FreeMemory((char *) profile);
+      length+roundup+taglen);
+    FreeMemory(profile);
   }
 }
 
@@ -833,10 +904,9 @@ static void JPEGDestinationManager(j_compress_ptr cinfo,Image * image)
 Export unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
 {
   int
-    x,
-    y,
     flags,
-    sans_offset;
+    sans_offset,
+    y;
 
   JSAMPLE
     *jpeg_pixels;
@@ -846,12 +916,12 @@ Export unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
 
   register int
     i,
-    j;
+    x;
 
   register JSAMPLE
     *q;
 
-  register RunlengthPacket
+  register PixelPacket
     *p;
 
   struct jpeg_compress_struct
@@ -861,7 +931,6 @@ Export unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     jpeg_error;
 
   unsigned int
-    packets,
     status,
     x_resolution,
     y_resolution;
@@ -924,6 +993,15 @@ Export unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       if (image->units == PixelsPerCentimeterResolution)
         jpeg_info.density_unit=2;
     }
+  /*
+     Allow user to ask for no color subsampling
+  */
+  if (image->compression == NoCompression)
+    for (i=0; i < MAX_COMPONENTS; i++)
+    {
+      jpeg_info.comp_info[i].h_samp_factor=1;
+      jpeg_info.comp_info[i].v_samp_factor=1;
+    }
   jpeg_set_quality(&jpeg_info,image_info->quality,True);
   jpeg_info.optimize_coding=True;
 #if (JPEG_LIB_VERSION >= 61) && !defined(C_LOSSLESS_SUPPORTED)
@@ -942,64 +1020,56 @@ Export unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   /*
     Convert MIFF to JPEG raster pixels.
   */
-  packets=jpeg_info.input_components*image->columns;
-  jpeg_pixels=(JSAMPLE *) AllocateMemory(packets*sizeof(JSAMPLE));
+  jpeg_pixels=(JSAMPLE *)
+    AllocateMemory(jpeg_info.input_components*image->columns*sizeof(JSAMPLE));
   if (jpeg_pixels == (JSAMPLE *) NULL)
     WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
-  x=0;
-  y=0;
-  p=image->pixels;
-  q=jpeg_pixels;
   scanline[0]=(JSAMPROW) jpeg_pixels;
   if ((jpeg_info.data_precision > 8) && (QuantumDepth > 8))
     {
       if (jpeg_info.in_color_space == JCS_GRAYSCALE)
-        for (i=0; i < (int) image->packets; i++)
+        for (y=0; y < (int) image->rows; y++)
         {
-          for (j=0; j <= ((int) p->length); j++)
+          p=GetPixelCache(image,0,y,image->columns,1);
+          if (p == (PixelPacket *) NULL)
+            break;
+          q=jpeg_pixels;
+          for (x=0; x < (int) image->columns; x++)
           {
             *q++=(JSAMPLE) (Intensity(*p) >> 4);
-            x++;
-            if (x == (int) image->columns)
-              {
-                (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
-                if (QuantumTick(y,image->rows))
-                  ProgressMonitor(SaveImageText,y,image->rows);
-                q=jpeg_pixels;
-                x=0;
-                y++;
-              }
+            p++;
           }
-          p++;
+          (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
+          if (QuantumTick(y,image->rows))
+            ProgressMonitor(SaveImageText,y,image->rows);
         }
       else
         if (jpeg_info.in_color_space == JCS_RGB)
-          for (i=0; i < (int) image->packets; i++)
+          for (y=0; y < (int) image->rows; y++)
           {
-            for (j=0; j <= ((int) p->length); j++)
+            p=GetPixelCache(image,0,y,image->columns,1);
+            if (p == (PixelPacket *) NULL)
+              break;
+            q=jpeg_pixels;
+            for (x=0; x < (int) image->columns; x++)
             {
               *q++=(JSAMPLE) (p->red >> 4);
               *q++=(JSAMPLE) (p->green >> 4);
               *q++=(JSAMPLE) (p->blue >> 4);
-              x++;
-              if (x == (int) image->columns)
-                {
-                  (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
-                  if (QuantumTick(y,image->rows))
-                    ProgressMonitor(SaveImageText,y,image->rows);
-                  q=jpeg_pixels;
-                  x=0;
-                  y++;
-                }
+              p++;
             }
-            p++;
-            if (QuantumTick(i,image->packets))
-              ProgressMonitor(SaveImageText,i,image->packets);
+            (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(SaveImageText,y,image->rows);
           }
         else
-          for (i=0; i < (int) image->packets; i++)
+          for (y=0; y < (int) image->rows; y++)
           {
-            for (j=0; j <= ((int) p->length); j++)
+            p=GetPixelCache(image,0,y,image->columns,1);
+            if (p == (PixelPacket *) NULL)
+              break;
+            q=jpeg_pixels;
+            for (x=0; x < (int) image->columns; x++)
             {
               /*
                 Convert DirectClass packets to contiguous CMYK scanlines.
@@ -1007,67 +1077,58 @@ Export unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
               *q++=(JSAMPLE) (MaxRGB-(p->red >> 4));
               *q++=(JSAMPLE) (MaxRGB-(p->green >> 4));
               *q++=(JSAMPLE) (MaxRGB-(p->blue >> 4));
-              *q++=(JSAMPLE) (MaxRGB-(p->index >> 4));
-              x++;
-              if (x == (int) image->columns)
-                {
-                  (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
-                  if (QuantumTick(y,image->rows))
-                    ProgressMonitor(SaveImageText,y,image->rows);
-                  q=jpeg_pixels;
-                  x=0;
-                  y++;
-                }
+              *q++=(JSAMPLE) (MaxRGB-(p->opacity >> 4));
+              p++;
             }
-            p++;
+            (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(SaveImageText,y,image->rows);
           }
     }
   else
     if (jpeg_info.in_color_space == JCS_GRAYSCALE)
-      for (i=0; i < (int) image->packets; i++)
+      for (y=0; y < (int) image->rows; y++)
       {
-        for (j=0; j <= ((int) p->length); j++)
+        p=GetPixelCache(image,0,y,image->columns,1);
+        if (p == (PixelPacket *) NULL)
+          break;
+        q=jpeg_pixels;
+        for (x=0; x < (int) image->columns; x++)
         {
           *q++=(JSAMPLE) DownScale(Intensity(*p));
-          x++;
-          if (x == (int) image->columns)
-            {
-              (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
-              if (QuantumTick(y,image->rows))
-                ProgressMonitor(SaveImageText,y,image->rows);
-              q=jpeg_pixels;
-              x=0;
-              y++;
-            }
+          p++;
         }
-        p++;
+        (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
+        if (QuantumTick(y,image->rows))
+          ProgressMonitor(SaveImageText,y,image->rows);
       }
     else
       if (jpeg_info.in_color_space == JCS_RGB)
-        for (i=0; i < (int) image->packets; i++)
+        for (y=0; y < (int) image->rows; y++)
         {
-          for (j=0; j <= ((int) p->length); j++)
+          p=GetPixelCache(image,0,y,image->columns,1);
+          if (p == (PixelPacket *) NULL)
+            break;
+          q=jpeg_pixels;
+          for (x=0; x < (int) image->columns; x++)
           {
             *q++=(JSAMPLE) DownScale(p->red);
             *q++=(JSAMPLE) DownScale(p->green);
             *q++=(JSAMPLE) DownScale(p->blue);
-            x++;
-            if (x == (int) image->columns)
-              {
-                (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
-                if (QuantumTick(y,image->rows))
-                  ProgressMonitor(SaveImageText,y,image->rows);
-                q=jpeg_pixels;
-                x=0;
-                y++;
-              }
+            p++;
           }
-          p++;
+          (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
+          if (QuantumTick(y,image->rows))
+            ProgressMonitor(SaveImageText,y,image->rows);
         }
       else
-        for (i=0; i < (int) image->packets; i++)
+        for (y=0; y < (int) image->rows; y++)
         {
-          for (j=0; j <= ((int) p->length); j++)
+          p=GetPixelCache(image,0,y,image->columns,1);
+          if (p == (PixelPacket *) NULL)
+            break;
+          q=jpeg_pixels;
+          for (x=0; x < (int) image->columns; x++)
           {
             /*
               Convert DirectClass packets to contiguous CMYK scanlines.
@@ -1075,26 +1136,19 @@ Export unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
             *q++=(JSAMPLE) DownScale(MaxRGB-p->red);
             *q++=(JSAMPLE) DownScale(MaxRGB-p->green);
             *q++=(JSAMPLE) DownScale(MaxRGB-p->blue);
-            *q++=(JSAMPLE) DownScale(MaxRGB-p->index);
-            x++;
-            if (x == (int) image->columns)
-              {
-                (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
-                if (QuantumTick(y,image->rows))
-                  ProgressMonitor(SaveImageText,y,image->rows);
-                q=jpeg_pixels;
-                x=0;
-                y++;
-              }
+            *q++=(JSAMPLE) DownScale(MaxRGB-p->opacity);
+            p++;
           }
-          p++;
+          (void) jpeg_write_scanlines(&jpeg_info,scanline,1);
+          if (QuantumTick(y,image->rows))
+            ProgressMonitor(SaveImageText,y,image->rows);
         }
   jpeg_finish_compress(&jpeg_info);
   /*
     Free memory.
   */
   jpeg_destroy_compress(&jpeg_info);
-  FreeMemory((char *) jpeg_pixels);
+  FreeMemory(jpeg_pixels);
   CloseBlob(image);
   return(True);
 }

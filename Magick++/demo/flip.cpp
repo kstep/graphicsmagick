@@ -36,6 +36,7 @@ int main( int /*argc*/, char ** /*argv*/)
     morphImages( &morphed, imageList.begin(), imageList.end(), 3 );
 
     // Write out images
+    cout << "Writing image \"flip_out.gif\" ..." << endl;
     writeImages( morphed.begin(), morphed.end(), "flip_out.gif" );
 
   }

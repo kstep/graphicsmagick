@@ -144,25 +144,22 @@ Export Image *ReadICONImage(const ImageInfo *image_info)
   Image
     *image;
 
-  register int
+  int
     bit,
-    i,
-    x,
+    byte,
     y;
 
-  register RunlengthPacket
-    *q;
+  register int
+    i,
+    x;
 
   register unsigned char
     *p;
 
   unsigned char
-    *icon_colormap,
-    *icon_pixels;
+    *icon_colormap;
 
   unsigned int
-    bytes_per_line,
-    offset,
     status;
 
   /*
@@ -213,20 +210,20 @@ Export Image *ReadICONImage(const ImageInfo *image_info)
     icon_header.colors_important=LSBFirstReadLong(image);
     image->columns=(unsigned int) icon_header.width;
     image->rows=(unsigned int) icon_header.height;
+    /*
+      Allocate image colormap.
+    */
     image->class=PseudoClass;
     image->colors=image->colors=1 << icon_header.bits_per_pixel;
+    image->colormap=(PixelPacket *)
+      AllocateMemory(image->colors*sizeof(PixelPacket));
+    if (image->colormap == (PixelPacket *) NULL)
+      ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
     if (image_info->ping)
       {
         CloseBlob(image);
         return(image);
       }
-    /*
-      Allocate image colormap.
-    */
-    image->colormap=(ColorPacket *)
-      AllocateMemory(image->colors*sizeof(ColorPacket));
-    if (image->colormap == (ColorPacket *) NULL)
-      ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
     /*
       Read ICON raster colormap.
     */
@@ -243,30 +240,12 @@ Export Image *ReadICONImage(const ImageInfo *image_info)
       image->colormap[x].red=UpScale(*p++);
       p++;
     }
-    FreeMemory((char *) icon_colormap);
+    FreeMemory(icon_colormap);
     /*
-      Read image data.
-    */
-    icon_pixels=(unsigned char *)
-      AllocateMemory(icon_file.directory[i].size*sizeof(unsigned char));
-    if (icon_pixels == (unsigned char *) NULL)
-      ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-    (void) ReadBlob(image,icon_file.directory[i].size,(char *) icon_pixels);
-    /*
-      Initialize image structure.
+      Convert ICON raster image to pixel packets.
     */
     image->columns=icon_file.directory[i].width;
     image->rows=icon_file.directory[i].height;
-    image->packets=image->columns*image->rows;
-    image->pixels=(RunlengthPacket *)
-      AllocateMemory(image->packets*sizeof(RunlengthPacket));
-    if (image->pixels == (RunlengthPacket *) NULL)
-      ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-    SetImage(image);
-    /*
-      Convert ICON raster image to runlength-encoded packets.
-    */
-    bytes_per_line=((image->columns*icon_header.bits_per_pixel+31)/32)*4;
     switch (icon_header.bits_per_pixel)
     {
       case 1:
@@ -276,28 +255,22 @@ Export Image *ReadICONImage(const ImageInfo *image_info)
         */
         for (y=image->rows-1; y >= 0; y--)
         {
-          p=icon_pixels+(image->rows-y-1)*bytes_per_line;
-          q=image->pixels+(y*image->columns);
+          if (!SetPixelCache(image,0,y,image->columns,1))
+            break;
           for (x=0; x < ((int) image->columns-7); x+=8)
           {
+            byte=ReadByte(image);
             for (bit=0; bit < 8; bit++)
-            {
-              q->index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
-              q->length=0;
-              q++;
-            }
-            p++;
+              image->indexes[x+bit]=(byte & (0x80 >> bit) ? 0x01 : 0x00);
           }
           if ((image->columns % 8) != 0)
             {
+              byte=ReadByte(image);
               for (bit=0; bit < (int) (image->columns % 8); bit++)
-              {
-                q->index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
-                q->length=0;
-                q++;
-              }
-              p++;
+                image->indexes[x+bit]=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
             }
+          if (!SyncPixelCache(image))
+            break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
@@ -311,25 +284,21 @@ Export Image *ReadICONImage(const ImageInfo *image_info)
         */
         for (y=image->rows-1; y >= 0; y--)
         {
-          p=icon_pixels+(image->rows-y-1)*bytes_per_line;
-          q=image->pixels+(y*image->columns);
+          if (!SetPixelCache(image,0,y,image->columns,1))
+            break;
           for (x=0; x < ((int) image->columns-1); x+=2)
           {
-            q->index=(*p >> 4) & 0xf;
-            q->length=0;
-            q++;
-            q->index=(*p) & 0xf;
-            q->length=0;
-            p++;
-            q++;
+            byte=ReadByte(image);
+            image->indexes[x]=(byte >> 4) & 0xf;
+            image->indexes[x+1]=(byte) & 0xf;
           }
           if ((image->columns % 2) != 0)
             {
-              q->index=(*p >> 4) & 0xf;
-              q->length=0;
-              q++;
-              p++;
+              byte=ReadByte(image);
+              image->indexes[x]=(byte >> 4) & 0xf;
             }
+          if (!SyncPixelCache(image))
+            break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
@@ -343,14 +312,15 @@ Export Image *ReadICONImage(const ImageInfo *image_info)
         */
         for (y=image->rows-1; y >= 0; y--)
         {
-          p=icon_pixels+(image->rows-y-1)*bytes_per_line;
-          q=image->pixels+(y*image->columns);
+          if (!SetPixelCache(image,0,y,image->columns,1))
+            break;
           for (x=0; x < (int) image->columns; x++)
           {
-            q->index=(*p++);
-            q->length=0;
-            q++;
+            byte=ReadByte(image);
+            image->indexes[x]=(IndexPacket) byte;
           }
+          if (!SyncPixelCache(image))
+            break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
@@ -362,19 +332,19 @@ Export Image *ReadICONImage(const ImageInfo *image_info)
         /*
           Convert PseudoColor scanline to runlength-encoded color packets.
         */
-        if (icon_header.compression == 1)
-          bytes_per_line=image->columns << 1;
         for (y=image->rows-1; y >= 0; y--)
         {
-          p=icon_pixels+(image->rows-y-1)*bytes_per_line;
-          q=image->pixels+(y*image->columns);
+          if (!SetPixelCache(image,0,y,image->columns,1))
+            break;
           for (x=0; x < (int) image->columns; x++)
           {
-            q->index=(*p++);
-            q->index|=(*p++) << 8;
-            q->length=0;
-            q++;
+            byte=ReadByte(image);
+            image->indexes[x]=(IndexPacket) byte;
+            byte=ReadByte(image);
+            image->indexes[x]|=byte << 8;
           }
+          if (!SyncPixelCache(image))
+            break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
@@ -386,42 +356,32 @@ Export Image *ReadICONImage(const ImageInfo *image_info)
     }
     SyncImage(image);
     /*
-      Convert bitmap scanline to runlength-encoded color packets.
+      Convert bitmap scanline to pixel packets.
     */
     image->class=DirectClass;
     image->matte=True;
-    offset=image->rows*bytes_per_line;
-    bytes_per_line=((image->columns+31)/32)*4;
     for (y=image->rows-1; y >= 0; y--)
     {
-      p=icon_pixels+offset+(image->rows-y-1)*bytes_per_line;
-      q=image->pixels+(y*image->columns);
+      if (!GetPixelCache(image,0,y,image->columns,1))
+        break;
       for (x=0; x < ((int) image->columns-7); x+=8)
       {
+        byte=ReadByte(image);
         for (bit=0; bit < 8; bit++)
-        {
-          q->index=((*p) & (0x80 >> bit) ? Transparent : Opaque);
-          q->length=0;
-          q++;
-        }
-        p++;
+          image->indexes[x+bit]=(byte & (0x80 >> bit) ? Transparent : Opaque);
       }
       if ((image->columns % 8) != 0)
         {
+          byte=ReadByte(image);
           for (bit=0; bit < (int) (image->columns % 8); bit++)
-          {
-            q->index=((*p) & (0x80 >> bit) ? Transparent : Opaque);
-            q->length=0;
-            q++;
-          }
-          p++;
+            image->indexes[x+bit]=(byte & (0x80 >> bit) ? Transparent : Opaque);
         }
+      if (!SyncPixelCache(image))
+        break;
       if (image->previous == (Image *) NULL)
         if (QuantumTick(y,image->rows))
           ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
     }
-    FreeMemory((char *) icon_pixels);
-    CondenseImage(image);
     /*
       Proceed to next image.
     */

@@ -32,11 +32,10 @@ shear - Methods to Shear or Rotate an Image by an Arbitrary Angle
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-<STRONG>RotateImage</STRONG>( image, degrees, crop, sharpen );
+Image * <STRONG>RotateImage</STRONG>( Image *image, const double degrees );
 
 <P>
-Image * <STRONG>ShearImage</STRONG>( const Image *image, const double x_shear, const double y_shear, const
-unsigned int crop );
+Image * <STRONG>ShearImage</STRONG>( Image *image, const double x_shear, const double y_shear );
 
 <P>
 <HR>
@@ -59,7 +58,7 @@ Method RotateImage is based on the paper
 <P>
 The format of the RotateImage method is:
 
-<blockquote>RotateImage ( image, degrees, crop, sharpen ); </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *RotateImage ( <A HREF="types/Image.html">Image</A> *image, const double degrees ); </blockquote>
 
 <P>
 
@@ -80,24 +79,12 @@ The address of a structure of type Image; returned from ReadImage.
 <P>
 Specifies the number of degrees to rotate the image.
 
-<p><dt><STRONG>crop:</STRONG><DD>
-<P>
-
-<FONT SIZE=-1>A</FONT> value other than zero crops the corners of the
-rotated image and retains the original image size.
-
-<p><dt><STRONG>sharpen:</STRONG><DD>
-<P>
-
-<FONT SIZE=-1>A</FONT> value other than zero sharpens the image after it is
-rotated.
-
 </DL></DL>
 <P>
 <HR>
 <H2><A NAME="ShearImage">ShearImage</A></H2>
 <P>
-Method ShearImage creates a new image that is a sheared copy of an existing one. Shearing slides one edge of an image along the 
+Method ShearImage creates a new image that is a shear_image copy of an existing one. Shearing slides one edge of an image along the 
 <FONT SIZE=-1>X</FONT> or 
 <FONT SIZE=-1>Y</FONT> axis, creating a parallelogram. An 
 <FONT SIZE=-1>X</FONT> direction shear slides an edge along the 
@@ -119,7 +106,7 @@ Method ShearImage is based on the paper
 <P>
 The format of the ShearImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *ShearImage ( const <A HREF="types/Image.html">Image</A> *image, const double x_shear, const double y_shear, const unsigned int crop ); </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *ShearImage ( <A HREF="types/Image.html">Image</A> *image, const double x_shear, const double y_shear ); </blockquote>
 
 <P>
 
@@ -139,12 +126,6 @@ The address of a structure of type Image; returned from ReadImage.
 <p><dt><STRONG>x_shear, y_shear:</STRONG><DD>
 <P>
 Specifies the number of degrees to shear the image.
-
-<p><dt><STRONG>crop:</STRONG><DD>
-<P>
-
-<FONT SIZE=-1>A</FONT> value other than zero crops the corners of the
-rotated image and retains the original image size.
 
 </DL></DL>
 </BODY>

@@ -101,12 +101,12 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
 {
   int
     byte,
-    count;
+    count,
+    y;
 
   register int
     i,
-    x,
-    y;
+    x;
 
   register unsigned char
     *q;
@@ -122,7 +122,7 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
   {
     count=ReadByte(image);
     if (count == EOF)
-      return(False);
+      break;
     if (count != 0)
       {
         /*
@@ -203,6 +203,8 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
     if (QuantumTick(y,number_rows))
       ProgressMonitor(LoadImageText,y,number_rows);
   }
+  (void) ReadByte(image);  /* end of line */
+  (void) ReadByte(image);
   return(True);
 }
 
@@ -247,13 +249,15 @@ static unsigned int EncodeImage(const unsigned char *pixels,
   const unsigned int number_columns,const unsigned int number_rows,
   unsigned char *compressed_pixels)
 {
+  int
+    y;
+
   register const unsigned char
     *p;
 
   register int
     i,
-    x,
-    y;
+    x;
 
   register unsigned char
     *q;
@@ -287,7 +291,7 @@ static unsigned int EncodeImage(const unsigned char *pixels,
     /*
       End of line.
     */
-    *q++=0;
+    *q++=0x00;
     *q++=0x00;
     if (QuantumTick(y,number_rows))
       ProgressMonitor(SaveImageText,y,number_rows);
@@ -298,6 +302,53 @@ static unsigned int EncodeImage(const unsigned char *pixels,
   *q++=0;
   *q++=0x01;
   return((unsigned int) (q-compressed_pixels));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   I s B M P                                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsBMP returns True if the image format type, identified by the
+%  magick string, is BMP.
+%
+%  The format of the ReadBMPImage method is:
+%
+%      unsigned int IsBMP(const unsigned char *magick,
+%        const unsigned int length)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method IsBMP returns True if the image format type is BMP.
+%
+%    o magick: This string is generally the first few bytes of an image file
+%      or blob.
+%
+%    o length: Specifies the length of the magick string.
+%
+%
+*/
+Export unsigned int IsBMP(const unsigned char *magick,const unsigned int length)
+{
+  if (length < 2)
+    return(False);
+  if (strncmp((char *) magick,"BM",2) == 0)
+    return(True);
+  if (strncmp((char *) magick,"IC",2) == 0)
+    return(True);
+  if (strncmp((char *) magick,"PI",2) == 0)
+    return(True);
+  if (strncmp((char *) magick,"CI",2) == 0)
+    return(True);
+  if (strncmp((char *) magick,"CP",2) == 0)
+    return(True);
+  return(False);
 }
 
 /*
@@ -381,16 +432,21 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
   Image
     *image;
 
+  IndexPacket
+    index;
+
+  int
+    bit,
+    y;
+
   long
     start_position;
 
   register int
-    bit,
     i,
-    x,
-    y;
+    x;
 
-  register RunlengthPacket
+  register PixelPacket
     *q;
 
   register unsigned char
@@ -518,9 +574,9 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
         /*
           Allocate image colormap.
         */
-        image->colormap=(ColorPacket *)
-          AllocateMemory(image->colors*sizeof(ColorPacket));
-        if (image->colormap == (ColorPacket *) NULL)
+        image->colormap=(PixelPacket *)
+          AllocateMemory(image->colors*sizeof(PixelPacket));
+        if (image->colormap == (PixelPacket *) NULL)
           ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
         for (i=0; i < (int) image->colors; i++)
         {
@@ -561,7 +617,7 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
               if (bmp_header.size != 12)
                 p++;
             }
-            FreeMemory((char *) bmp_colormap);
+            FreeMemory(bmp_colormap);
           }
       }
     while (TellBlob(image) < (int) (start_position+bmp_header.offset_bits))
@@ -587,7 +643,7 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
         status=DecodeImage(image,(unsigned int) bmp_header.compression,
           (unsigned int) bmp_header.width,image->rows,bmp_pixels);
         if (status == False)
-          ReaderExit(CorruptImageWarning,"not enough image pixels",image);
+          ReaderExit(CorruptImageWarning,"runlength decoding failed",image);
       }
     /*
       Initialize image structure.
@@ -595,14 +651,8 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
     image->units=PixelsPerCentimeterResolution;
     image->x_resolution=bmp_header.x_pixels/100.0;
     image->y_resolution=bmp_header.y_pixels/100.0;
-    image->packets=image->columns*image->rows;
-    image->pixels=(RunlengthPacket *)
-      AllocateMemory(image->packets*sizeof(RunlengthPacket));
-    if (image->pixels == (RunlengthPacket *) NULL)
-      ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-    SetImage(image);
     /*
-      Convert BMP raster image to runlength-encoded packets.
+      Convert BMP raster image to pixel packets.
     */
     switch (bmp_header.bits_per_pixel)
     {
@@ -614,13 +664,18 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
         for (y=image->rows-1; y >= 0; y--)
         {
           p=bmp_pixels+(image->rows-y-1)*bytes_per_line;
-          q=image->pixels+(y*image->columns);
+          q=SetPixelCache(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            break;
           for (x=0; x < ((int) image->columns-7); x+=8)
           {
             for (bit=0; bit < 8; bit++)
             {
-              q->index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
-              q->length=0;
+              index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
+              image->indexes[x]=index;
+              q->red=image->colormap[index].red;
+              q->green=image->colormap[index].green;
+              q->blue=image->colormap[index].blue;
               q++;
             }
             p++;
@@ -629,12 +684,17 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
             {
               for (bit=0; bit < (int) (image->columns % 8); bit++)
               {
-                q->index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
-                q->length=0;
+                index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
+                image->indexes[x]=index;
+                q->red=image->colormap[index].red;
+                q->green=image->colormap[index].green;
+                q->blue=image->colormap[index].blue;
                 q++;
               }
               p++;
             }
+          if (!SyncPixelCache(image))
+            break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
@@ -649,24 +709,37 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
         for (y=image->rows-1; y >= 0; y--)
         {
           p=bmp_pixels+(image->rows-y-1)*bytes_per_line;
-          q=image->pixels+(y*image->columns);
+          q=SetPixelCache(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            break;
           for (x=0; x < ((int) image->columns-1); x+=2)
           {
-            q->index=(*p >> 4) & 0xf;
-            q->length=0;
+            index=(*p >> 4) & 0xf;
+            image->indexes[x]=index;
+            q->red=image->colormap[index].red;
+            q->green=image->colormap[index].green;
+            q->blue=image->colormap[index].blue;
             q++;
-            q->index=(*p) & 0xf;
-            q->length=0;
+            index=(*p) & 0xf;
+            image->indexes[x+1]=index;
+            q->red=image->colormap[index].red;
+            q->green=image->colormap[index].green;
+            q->blue=image->colormap[index].blue;
             p++;
             q++;
           }
           if ((image->columns % 2) != 0)
             {
-              q->index=(*p >> 4) & 0xf;
-              q->length=0;
-              q++;
+              index=(*p >> 4) & 0xf;
+              image->indexes[x]=index;
+              q->red=image->colormap[index].red;
+              q->green=image->colormap[index].green;
+              q->blue=image->colormap[index].blue;
               p++;
+              q++;
             }
+          if (!SyncPixelCache(image))
+            break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
@@ -683,13 +756,20 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
         for (y=image->rows-1; y >= 0; y--)
         {
           p=bmp_pixels+(image->rows-y-1)*bytes_per_line;
-          q=image->pixels+(y*image->columns);
+          q=SetPixelCache(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            break;
           for (x=0; x < (int) image->columns; x++)
           {
-            q->index=(*p++);
-            q->length=0;
+            index=(*p++);
+            image->indexes[x]=index;
+            q->red=image->colormap[index].red;
+            q->green=image->colormap[index].green;
+            q->blue=image->colormap[index].blue;
             q++;
           }
+          if (!SyncPixelCache(image))
+            break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
@@ -710,7 +790,9 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
         for (y=image->rows-1; y >= 0; y--)
         {
           p=bmp_pixels+(image->rows-y-1)*bytes_per_line;
-          q=image->pixels+(y*image->columns);
+          q=SetPixelCache(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            break;
           for (x=0; x < (int) image->columns; x++)
           {
             h=(*p++);
@@ -719,10 +801,10 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
             q->green=(Quantum)
               ((MaxRGB*(((int) (l & 0x03) << 3)+((int) (h & 0xe0) >> 5)))/31);
             q->blue=(Quantum) ((MaxRGB*((int) (h & 0x1f)))/31);
-            q->index=0;
-            q->length=0;
             q++;
           }
+          if (!SyncPixelCache(image))
+            break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
@@ -738,18 +820,20 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
         for (y=image->rows-1; y >= 0; y--)
         {
           p=bmp_pixels+(image->rows-y-1)*bytes_per_line;
-          q=image->pixels+(y*image->columns);
+          q=SetPixelCache(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            break;
           for (x=0; x < (int) image->columns; x++)
           {
             q->blue=UpScale(*p++);
             q->green=UpScale(*p++);
             q->red=UpScale(*p++);
-            q->index=0;
             if (image->matte)
-              q->index=Opaque-UpScale(*p++);
-            q->length=0;
+              q->opacity=Opaque-UpScale(*p++);
             q++;
           }
+          if (!SyncPixelCache(image))
+            break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
@@ -759,10 +843,7 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
       default:
         ReaderExit(CorruptImageWarning,"Not a BMP image file",image);
     }
-    FreeMemory((char *) bmp_pixels);
-    if (image->class == PseudoClass)
-      SyncImage(image);
-    CondenseImage(image);
+    FreeMemory(bmp_pixels);
     if (bmp_header.height < 0)
       {
         Image
@@ -784,8 +865,9 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
-    status=ReadBlob(image,2,(char *) magick);
-    if ((status == True) && (strncmp((char *) magick,"BM",2) == 0))
+    *magick='\0';
+    (void) ReadBlob(image,2,(char *) magick);
+    if (strncmp((char *) magick,"BM",2) == 0)
       {
         /*
           Allocate next image structure.
@@ -800,7 +882,7 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
         ProgressMonitor(LoadImagesText,(unsigned int) TellBlob(image),
           (unsigned int) image->filesize);
       }
-  } while ((status == True) && (strncmp((char *) magick,"BM",2) == 0));
+  } while (strncmp((char *) magick,"BM",2) == 0);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);
@@ -869,13 +951,14 @@ Export unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
   BMPHeader
     bmp_header;
 
-  register int
-    i,
-    j,
-    x,
+  int
     y;
 
-  register RunlengthPacket
+  register int
+    i,
+    x;
+
+  register PixelPacket
     *p;
 
   register unsigned char
@@ -961,8 +1044,6 @@ Export unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
       AllocateMemory(bmp_header.image_size*sizeof(unsigned char));
     if (bmp_pixels == (unsigned char *) NULL)
       WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
-    x=0;
-    y=image->rows-1;
     switch (bmp_header.bit_count)
     {
       case 1:
@@ -975,20 +1056,22 @@ Export unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         /*
           Convert PseudoClass image to a BMP monochrome image.
         */
-        p=image->pixels;
         polarity=Intensity(image->colormap[0]) < (MaxRGB >> 1);
         if (image->colors == 2)
           polarity=
             Intensity(image->colormap[1]) > Intensity(image->colormap[0]);
-        bit=0;
-        byte=0;
-        q=bmp_pixels+y*bytes_per_line;
-        for (i=0; i < (int) image->packets; i++)
+        for (y=0; y < (int) image->rows; y++)
         {
-          for (j=0; j <= ((int) p->length); j++)
+          p=GetPixelCache(image,0,y,image->columns,1);
+          if (p == (PixelPacket *) NULL)
+            break;
+          q=bmp_pixels+(image->rows-y-1)*bytes_per_line;
+          bit=0;
+          byte=0;
+          for (x=0; x < (int) image->columns; x++)
           {
             byte<<=1;
-            if (p->index == polarity)
+            if (image->indexes[x] == polarity)
               byte|=0x01;
             bit++;
             if (bit == 8)
@@ -997,25 +1080,13 @@ Export unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
                 bit=0;
                 byte=0;
               }
-            x++;
-            if (x == (int) image->columns)
-              {
-                /*
-                  Advance to the next scanline.
-                */
-                if (bit != 0)
-                  *q++=byte << (8-bit);
-                if (image->previous == (Image *) NULL)
-                  if (QuantumTick(image->rows-y-1,image->rows))
-                    ProgressMonitor(SaveImageText,image->rows-y-1,image->rows);
-                bit=0;
-                byte=0;
-                x=0;
-                y--;
-                q=bmp_pixels+y*bytes_per_line;
-             }
-          }
-          p++;
+             p++;
+           }
+         if (bit != 0)
+           *q++=byte << (8-bit);
+         if (image->previous == (Image *) NULL)
+           if (QuantumTick(y,image->rows))
+             ProgressMonitor(SaveImageText,y,image->rows);
         }
         break;
       }
@@ -1024,25 +1095,20 @@ Export unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         /*
           Convert PseudoClass packet to BMP pixel.
         */
-        p=image->pixels;
-        q=bmp_pixels+y*bytes_per_line;
-        for (i=0; i < (int) image->packets; i++)
+        for (y=0; y < (int) image->rows; y++)
         {
-          for (j=0; j <= ((int) p->length); j++)
+          p=GetPixelCache(image,0,y,image->columns,1);
+          if (p == (PixelPacket *) NULL)
+            break;
+          q=bmp_pixels+(image->rows-y-1)*bytes_per_line;
+          for (x=0; x < (int) image->columns; x++)
           {
-            *q++=p->index;
-            x++;
-            if (x == (int) image->columns)
-              {
-                if (image->previous == (Image *) NULL)
-                  if (QuantumTick(image->rows-y-1,image->rows))
-                    ProgressMonitor(SaveImageText,image->rows-y-1,image->rows);
-                x=0;
-                y--;
-                q=bmp_pixels+y*bytes_per_line;
-              }
+            *q++=image->indexes[x];
+            p++;
           }
-          p++;
+          if (image->previous == (Image *) NULL)
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(SaveImageText,y,image->rows);
         }
         break;
       }
@@ -1052,29 +1118,24 @@ Export unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         /*
           Convert DirectClass packet to BMP RGB pixel.
         */
-        p=image->pixels;
-        q=bmp_pixels+y*bytes_per_line;
-        for (i=0; i < (int) image->packets; i++)
+        for (y=0; y < (int) image->rows; y++)
         {
-          for (j=0; j <= ((int) p->length); j++)
+          p=GetPixelCache(image,0,y,image->columns,1);
+          if (p == (PixelPacket *) NULL)
+            break;
+          q=bmp_pixels+(image->rows-y-1)*bytes_per_line;
+          for (x=0; x < (int) image->columns; x++)
           {
             *q++=DownScale(p->blue);
             *q++=DownScale(p->green);
             *q++=DownScale(p->red);
             if (image->matte)
-              *q++=Opaque-DownScale(p->index);
-            x++;
-            if (x == (int) image->columns)
-              {
-                if (image->previous == (Image *) NULL)
-                  if (QuantumTick(image->rows-y-1,image->rows))
-                    ProgressMonitor(SaveImageText,image->rows-y-1,image->rows);
-                x=0;
-                y--;
-                q=bmp_pixels+y*bytes_per_line;
-              }
+              *q++=Opaque-DownScale(p->opacity);
+            p++;
           }
-          p++;
+          if (image->previous == (Image *) NULL)
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(SaveImageText,y,image->rows);
         }
         break;
       }
@@ -1094,7 +1155,7 @@ Export unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
             AllocateMemory(packets*sizeof(unsigned char));
           if (bmp_pixels == (unsigned char *) NULL)
             {
-              FreeMemory((char *) bmp_pixels);
+              FreeMemory(bmp_pixels);
               WriterExit(ResourceLimitWarning,"Memory allocation failed",
                 image);
             }
@@ -1102,7 +1163,7 @@ Export unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           bmp_header.image_size=
             EncodeImage(bmp_pixels,image->columns,image->rows,bmp_data);
           bmp_header.file_size+=bmp_header.image_size;
-          FreeMemory((char *) bmp_pixels);
+          FreeMemory(bmp_pixels);
           bmp_pixels=bmp_data;
           bmp_header.compression=1;
         }
@@ -1154,14 +1215,13 @@ Export unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         }
         (void) WriteBlob(image,4*(1 << bmp_header.bit_count),
           (char *) bmp_colormap);
-        FreeMemory((char *) bmp_colormap);
+        FreeMemory(bmp_colormap);
       }
     (void) WriteBlob(image,bmp_header.image_size,(char *) bmp_pixels);
-    FreeMemory((char *) bmp_pixels);
+    FreeMemory(bmp_pixels);
     if (image->next == (Image *) NULL)
       break;
-    image->next->file=image->file;
-    image=image->next;
+    image=GetNextImage(image);
     ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)

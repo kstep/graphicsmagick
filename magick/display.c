@@ -78,8 +78,8 @@ const int
 %
 %  The format of the XAnnotateEditImage method is:
 %
-%      unsigned int XDisplayBackgroundImage(Display *display,
-%        XResourceInfo *resource_info,Image *image)
+%      unsigned int XAnnotateEditImage(Display *display,
+%        XResourceInfo *resource_info,XWindows *windows,Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -956,8 +956,8 @@ static unsigned int XAnnotateEditImage(Display *display,
           No text on this line--  go to the next line of text.
         */
         previous_info=annotate_info->previous;
-        FreeMemory((char *) annotate_info->text);
-        FreeMemory((char *) annotate_info);
+        FreeMemory(annotate_info->text);
+        FreeMemory(annotate_info);
         annotate_info=previous_info;
         continue;
       }
@@ -1003,8 +1003,8 @@ static unsigned int XAnnotateEditImage(Display *display,
       Free up memory.
     */
     previous_info=annotate_info->previous;
-    FreeMemory((char *) annotate_info->text);
-    FreeMemory((char *) annotate_info);
+    FreeMemory(annotate_info->text);
+    FreeMemory(annotate_info);
     annotate_info=previous_info;
   }
   XSetForeground(display,annotate_context,
@@ -1037,7 +1037,8 @@ static unsigned int XAnnotateEditImage(Display *display,
 %
 %  The format of the XBackgroundImage method is:
 %
-%    status=XBackgroundImage(display,resource_info,windows,image)
+%      unsigned int XBackgroundImage(Display *display,
+%        XResourceInfo *resource_info,XWindows *windows,Image **image)
 %
 %  A description of each parameter follows:
 %
@@ -1109,7 +1110,8 @@ static unsigned int XBackgroundImage(Display *display,
 %
 %  The format of the XChopImage method is:
 %
-%    status=XChopImage(display,resource_info,windows,image)
+%    unsigned int XChopImage(Display *display,XResourceInfo *resource_info,
+%      XWindows *windows,Image **image)
 %
 %  A description of each parameter follows:
 %
@@ -1527,7 +1529,8 @@ static unsigned int XChopImage(Display *display,XResourceInfo *resource_info,
 %
 %  The format of the XColorEditImage method is:
 %
-%    XColorEditImage(display,resource_info,windows,image)
+%      unsigned int XColorEditImage(Display *display,
+%        XResourceInfo *resource_info,XWindows *windows,Image **image)
 %
 %  A description of each parameter follows:
 %
@@ -1597,8 +1600,9 @@ static unsigned int XColorEditImage(Display *display,
   register int
     i;
 
-  register RunlengthPacket
-    *p;
+  register PixelPacket
+    *p,
+    *q;
 
   unsigned int
     height,
@@ -1988,44 +1992,46 @@ static unsigned int XColorEditImage(Display *display,
               Update color information using point algorithm.
             */
             (*image)->class=DirectClass;
-            if (!UncondenseImage(*image))
+            p=GetPixelCache(*image,x_offset,y_offset,1,1);
+            if (p == (PixelPacket *) NULL)
               break;
-            p=(*image)->pixels+(y_offset*(*image)->columns+x_offset);
             p->red=XDownScale(color.red);
             p->green=XDownScale(color.green);
             p->blue=XDownScale(color.blue);
+            (void) SyncPixelCache(*image);
             break;
           }
           case ReplaceMethod:
           {
-            RunlengthPacket
+            PixelPacket
               target;
 
             /*
               Update color information using replace algorithm.
             */
-            x=0;
-            p=(*image)->pixels;
-            for (i=0; i < (int) (*image)->packets; i++)
-            {
-              x+=(p->length+1);
-              if (x > (int) (y_offset*(*image)->columns+x_offset))
-                break;
-              p++;
-            }
-            target=(*image)->pixels[i];
+            p=GetPixelCache(*image,x_offset,y_offset,1,1);
+            if (p == (PixelPacket *) NULL)
+              break;
+            target=(*p);
             if ((*image)->class == DirectClass)
               {
-                p=(*image)->pixels;
-                for (i=0; i < (int) (*image)->packets; i++)
+                for (y=0; y < (int) (*image)->rows; y++)
                 {
-                  if (ColorMatch(*p,target,(*image)->fuzz))
-                    {
-                      p->red=XDownScale(color.red);
-                      p->green=XDownScale(color.green);
-                      p->blue=XDownScale(color.blue);
-                    }
-                  p++;
+                  q=GetPixelCache(*image,0,y,(*image)->columns,1);
+                  if (q == (PixelPacket *) NULL)
+                    break;
+                  for (x=0; x < (int) (*image)->columns; x++)
+                  {
+                    if (ColorMatch(*q,target,(*image)->fuzz))
+                      {
+                        q->red=XDownScale(color.red);
+                        q->green=XDownScale(color.green);
+                        q->blue=XDownScale(color.blue);
+                      }
+                    q++;
+                  }
+                  if (!SyncPixelCache(*image))
+                    break;
                 }
               }
             else
@@ -2050,16 +2056,16 @@ static unsigned int XColorEditImage(Display *display,
             ImageInfo
               *image_info;
 
-            RunlengthPacket
+            PixelPacket
               target;
 
             /*
               Update color information using floodfill algorithm.
             */
             (*image)->class=DirectClass;
-            if (!UncondenseImage(*image))
+            if (!GetPixelCache(*image,x_offset,y_offset,1,1))
               break;
-            target=(*image)->pixels[y_offset*(*image)->columns+x_offset];
+            target=(*(*image)->pixels);
             if (method == FillToBorderMethod)
               {
                 target.red=XDownScale(border_color.red);
@@ -2082,13 +2088,20 @@ static unsigned int XColorEditImage(Display *display,
               Update color information using reset algorithm.
             */
             (*image)->class=DirectClass;
-            p=(*image)->pixels;
-            for (i=0; i < (int) (*image)->packets; i++)
+            for (y=0; y < (int) (*image)->rows; y++)
             {
-              p->red=XDownScale(color.red);
-              p->green=XDownScale(color.green);
-              p->blue=XDownScale(color.blue);
-              p++;
+              q=SetPixelCache(*image,0,y,(*image)->columns,1);
+              if (q == (PixelPacket *) NULL)
+                break;
+              for (x=0; x < (int) (*image)->columns; x++)
+              {
+                q->red=XDownScale(color.red);
+                q->green=XDownScale(color.green);
+                q->blue=XDownScale(color.blue);
+                q++;
+              }
+              if (!SyncPixelCache(*image))
+                break;
             }
             break;
           }
@@ -2119,7 +2132,8 @@ static unsigned int XColorEditImage(Display *display,
 %
 %  The format of the XCompositeImage method is:
 %
-%    status=XCompositeImage(display,resource_info,windows,image)
+%      unsigned int XCompositeImage(Display *display,
+%        XResourceInfo *resource_info,XWindows *windows,Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -2579,29 +2593,39 @@ static unsigned int XCompositeImage(Display *display,
     composite_image->geometry=displacement_geometry;
   if (blend != 0.0)
     {
-      register int
-        i;
+      int
+        y;
 
-      register RunlengthPacket
-        *p;
+      register int
+        x;
+
+      register PixelPacket
+        *q;
 
       unsigned short
-        index;
+        opacity;
 
       /*
         Create mattes for blending.
       */
-      index=(unsigned short) (((int) DownScale(MaxRGB)*blend)/100);
-      MatteImage(composite_image);
-      index=(unsigned short)
+      opacity=(Quantum) (((int) DownScale(MaxRGB)*blend)/100);
+      MatteImage(composite_image,Opaque);
+      opacity=(Quantum)
         ((int) DownScale(MaxRGB)-((int) DownScale(MaxRGB)*blend)/100);
       image->class=DirectClass;
       image->matte=True;
-      p=image->pixels;
-      for (i=0; i < (int) image->packets; i++)
+      for (y=0; y < (int) image->rows; y++)
       {
-        p->index=index;
-        p++;
+        q=GetPixelCache(image,0,y,image->columns,1);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (int) image->columns; x++)
+        {
+          q->opacity=opacity;
+          q++;
+        }
+        if (!SyncPixelCache(image))
+          break;
       }
     }
   /*
@@ -2635,7 +2659,8 @@ static unsigned int XCompositeImage(Display *display,
 %
 %  The format of the XConfigureImage method is:
 %
-%    status=XConfigureImage(display,resource_info,windows,image)
+%      unsigned int XConfigureImage(Display *display,
+%        XResourceInfo *resource_info,XWindows *windows,Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -2797,7 +2822,8 @@ static unsigned int XConfigureImage(Display *display,
 %
 %  The format of the XCropImage method is:
 %
-%    status=XCropImage(display,resource_info,windows,image,mode)
+%      unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
+%        XWindows *windows,Image *image,const ClipboardMode mode)
 %
 %  A description of each parameter follows:
 %
@@ -2873,8 +2899,8 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
     crop_info,
     highlight_info;
 
-  register RunlengthPacket
-    *p;
+  register PixelPacket
+    *q;
 
   unsigned int
     height,
@@ -3505,17 +3531,21 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
   */
   image->class=DirectClass;
   if (!image->matte)
-    MatteImage(image);
-  if (UncondenseImage(image))
-    for (y=0; y < (int) crop_info.height; y++)
+    MatteImage(image,Opaque);
+  for (y=0; y < (int) crop_info.height; y++)
+  {
+    q=GetPixelCache(image,0,y+crop_info.y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
+    q+=crop_info.x;
+    for (x=0; x < (int) crop_info.width; x++)
     {
-      p=image->pixels+(crop_info.y+y)*image->columns+crop_info.x;
-      for (x=0; x < (int) crop_info.width; x++)
-      {
-        p->index=Transparent;
-        p++;
-      }
+      q->opacity=Transparent;
+      q++;
     }
+    if (!SyncPixelCache(image))
+      break;
+  }
   /*
     Update image configuration.
   */
@@ -3540,7 +3570,8 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
 %
 %  The format of the XDrawEditImage method is:
 %
-%    status=XDrawEditImage(display,resource_info,windows,degrees,image)
+%      unsigned int XDrawEditImage(Display *display,
+%        XResourceInfo *resource_info,XWindows *windows,Image **image)
 %
 %  A description of each parameter follows:
 %
@@ -4460,7 +4491,7 @@ static unsigned int XDrawEditImage(Display *display,
     (void) XConfigureImage(display,resource_info,windows,*image);
   }
   XSetCursorState(display,windows,False);
-  FreeMemory((char *) coordinate_info);
+  FreeMemory(coordinate_info);
   return(status);
 }
 
@@ -4481,7 +4512,7 @@ static unsigned int XDrawEditImage(Display *display,
 %
 %  The format of the XDrawPanRectangle method is:
 %
-%    XDrawPanRectangle(display,windows)
+%      XDrawPanRectangle(Display *display,XWindows *windows)
 %
 %  A description of each parameter follows:
 %
@@ -4535,7 +4566,8 @@ static void XDrawPanRectangle(Display *display,XWindows *windows)
 %
 %  The format of the XImageCache method is:
 %
-%    XImageCache(display,resource_info,windows,command,image)
+%      void XImageCache(Display *display,XResourceInfo *resource_info,
+%        XWindows *windows,const CommandType command,Image **image)
 %
 %  A description of each parameter follows:
 %
@@ -4598,7 +4630,7 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
       windows->image.window_changes.width=cache_image->columns;
       windows->image.window_changes.height=cache_image->rows;
       if (windows->image.crop_geometry != (char *) NULL)
-        FreeMemory((char *) windows->image.crop_geometry);
+        FreeMemory(windows->image.crop_geometry);
       windows->image.crop_geometry=cache_image->geometry;
       if (redo_image != (Image *) NULL)
         DestroyImage(redo_image);
@@ -4674,7 +4706,8 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
       unsigned int
         bytes;
 
-      bytes=(unsigned int) ((*image)->packets*sizeof(RunlengthPacket));
+      bytes=(unsigned int)
+        ((*image)->columns*(*image)->rows*sizeof(PixelPacket));
       if (undo_image != (Image *) NULL)
         {
           /*
@@ -4683,13 +4716,15 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
           previous_image=undo_image;
           while (previous_image != (Image *) NULL)
           {
-            bytes+=previous_image->list->packets*sizeof(RunlengthPacket);
+            bytes+=previous_image->list->columns*previous_image->list->rows*
+              sizeof(PixelPacket);
             if (bytes <= (resource_info->undo_cache << 20))
               {
                 previous_image=previous_image->previous;
                 continue;
               }
-            bytes-=previous_image->list->packets*sizeof(RunlengthPacket);
+            bytes-=previous_image->list->columns*previous_image->list->rows*
+              sizeof(PixelPacket);
             if (previous_image == undo_image)
               undo_image=(Image *) NULL;
             else
@@ -4718,10 +4753,8 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
         break;
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      (*image)->orphan=True;
       cache_image->list=
         CloneImage(*image,(*image)->columns,(*image)->rows,True);
-      (*image)->orphan=False;
       XSetCursorState(display,windows,False);
       if (cache_image->list == (Image *) NULL)
         {
@@ -4764,7 +4797,7 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
       windows->image.window_changes.width=redo_image->columns;
       windows->image.window_changes.height=redo_image->rows;
       if (windows->image.crop_geometry != (char *) NULL)
-        FreeMemory((char *) windows->image.crop_geometry);
+        FreeMemory(windows->image.crop_geometry);
       windows->image.crop_geometry=redo_image->geometry;
       DestroyImage(*image);
       *image=redo_image;
@@ -4802,8 +4835,9 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
 %
 %  The format of the XMagickCommand method is:
 %
-%    loaded_image=XImageWindowCommand(display,resource_info,windows,state,
-%      key_symbol,image)
+%      CommandType XImageWindowCommand(Display *display,
+%        XResourceInfo *resource_info,XWindows *windows,
+%        const unsigned int state,KeySym key_symbol,Image **image)
 %
 %  A description of each parameter follows:
 %
@@ -4863,6 +4897,9 @@ static CommandType XImageWindowCommand(Display *display,
       {
         case XK_question:
           return(InfoCommand);
+        case XK_p:
+        case XK_Print:
+          return(PrintCommand);
         case XK_space:
           return(NextCommand);
         case XK_q:
@@ -5199,7 +5236,8 @@ static CommandType XImageWindowCommand(Display *display,
 %
 %  The format of the XMagickCommand method is:
 %
-%    loaded_image=XMagickCommand(display,resource_info,windows,command,image)
+%      Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
+%        XWindows *windows,const CommandType command,Image **image)
 %
 %  A description of each parameter follows:
 %
@@ -5221,7 +5259,6 @@ static CommandType XImageWindowCommand(Display *display,
 %
 %
 */
-
 static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
   XWindows *windows,const CommandType command,Image **image)
 {
@@ -5265,7 +5302,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Load image.
       */
-      loaded_image=XOpenBlob(display,resource_info,windows,False);
+      loaded_image=XOpenImage(display,resource_info,windows,False);
       break;
     }
     case NextCommand:
@@ -5292,7 +5329,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         Select image.
       */
       (void) chdir(resource_info->home_directory);
-      loaded_image=XOpenBlob(display,resource_info,windows,True);
+      loaded_image=XOpenImage(display,resource_info,windows,True);
       break;
     }
     case SaveCommand:
@@ -5506,7 +5543,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       TransformImage(image,windows->image.crop_geometry,image_geometry);
       if (windows->image.crop_geometry != (char *) NULL)
         {
-          FreeMemory((char *) windows->image.crop_geometry);
+          FreeMemory(windows->image.crop_geometry);
           windows->image.crop_geometry=(char *) NULL;
         }
       windows->image.x=0;
@@ -5520,7 +5557,6 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
               ((*image)->colors > resource_info->quantize_info->number_colors) ||
               (resource_info->quantize_info->colorspace == GRAYColorspace))
             (void) QuantizeImage(resource_info->quantize_info,*image);
-          SyncImage(*image);
         }
       XConfigureImageColormap(display,resource_info,windows,*image);
       (void) XConfigureImage(display,resource_info,windows,*image);
@@ -5547,7 +5583,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       windows->image.window_changes.height=(*image)->rows;
       if (windows->image.crop_geometry != (char *) NULL)
         {
-          FreeMemory((char *) windows->image.crop_geometry);
+          FreeMemory(windows->image.crop_geometry);
           windows->image.crop_geometry=(char *) NULL;
           windows->image.x=0;
           windows->image.y=0;
@@ -6799,9 +6835,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       status=XBackgroundImage(display,resource_info,windows,image);
       if (status == False)
         break;
-      (*image)->orphan=True;
       loaded_image=CloneImage(*image,(*image)->columns,(*image)->rows,True);
-      (*image)->orphan=False;
       if (loaded_image != (Image *) NULL)
         XClientMessage(display,windows->image.id,windows->im_protocols,
           windows->im_next_image,CurrentTime);
@@ -6833,9 +6867,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       status=XPreferencesWidget(display,resource_info,windows);
       if (status == False)
         break;
-      (*image)->orphan=True;
       loaded_image=CloneImage(*image,(*image)->columns,(*image)->rows,True);
-      (*image)->orphan=False;
       if (loaded_image != (Image *) NULL)
         XClientMessage(display,windows->image.id,windows->im_protocols,
           windows->im_next_image,CurrentTime);
@@ -6923,7 +6955,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
 %
 %  The format of the XMagnifyImage method is:
 %
-%    XMagnifyImage(display,windows,event)
+%      void XMagnifyImage(Display *display,XWindows *windows,XEvent *event)
 %
 %  A description of each parameter follows:
 %
@@ -7046,7 +7078,8 @@ static void XMagnifyImage(Display *display,XWindows *windows,XEvent *event)
 %
 %  The format of the XMagnifyWindowCommand method is:
 %
-%    XMagnifyWindowCommand(display,windows,state,key_symbol)
+%      void XMagnifyWindowCommand(Display *display,XWindows *windows,
+%        const unsigned int state,const KeySym key_symbol)
 %
 %  A description of each parameter follows:
 %
@@ -7166,7 +7199,8 @@ static void XMagnifyWindowCommand(Display *display,XWindows *windows,
 %
 %  The format of the XMakePanImage method is:
 %
-%      XMakePanImage(display,resource_info,windows,image)
+%        void XMakePanImage(Display *display,XResourceInfo *resource_info,
+%          XWindows *windows,Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -7223,7 +7257,8 @@ static void XMakePanImage(Display *display,XResourceInfo *resource_info,
 %
 %  The format of the XMatteEditImage method is:
 %
-%    XMatteEditImage(display,resource_info,windows,image)
+%      unsigned int XMatteEditImage(Display *display,
+%        XResourceInfo *resource_info,XWindows *windows,Image **image)
 %
 %  A description of each parameter follows:
 %
@@ -7293,8 +7328,9 @@ static unsigned int XMatteEditImage(Display *display,
   register int
     i;
 
-  register RunlengthPacket
-    *p;
+  register PixelPacket
+    *p,
+    *q;
 
   unsigned int
     height,
@@ -7641,7 +7677,7 @@ static unsigned int XMatteEditImage(Display *display,
           continue;
         (*image)->class=DirectClass;
         if (!(*image)->matte)
-          MatteImage(*image);
+          MatteImage(*image,Opaque);
         switch (method)
         {
           case PointMethod:
@@ -7650,51 +7686,54 @@ static unsigned int XMatteEditImage(Display *display,
             /*
               Update matte information using point algorithm.
             */
-            if (!UncondenseImage(*image))
+            q=GetPixelCache(*image,x_offset,y_offset,1,1);
+            if (q == (PixelPacket *) NULL)
               break;
-            p=(*image)->pixels+(y_offset*(*image)->columns+x_offset);
-            p->index=atoi(matte) & 0xff;
+            q->opacity=atoi(matte) & 0xff;
+            (void) SyncPixelCache(*image);
             break;
           }
           case ReplaceMethod:
           {
-            RunlengthPacket
+            PixelPacket
               target;
 
             /*
               Update matte information using replace algorithm.
             */
-            x=0;
-            p=(*image)->pixels;
-            for (i=0; i < (int) (*image)->packets; i++)
+            p=GetPixelCache(*image,x_offset,y_offset,1,1);
+            if (p == (PixelPacket *) NULL)
+              break;
+            target=(*p);
+            for (y=0; y < (int) (*image)->rows; y++)
             {
-              x+=(p->length+1);
-              if (x > (int) (y_offset*(*image)->columns+x_offset))
+              q=GetPixelCache(*image,0,y,(*image)->columns,1);
+              if (q == (PixelPacket *) NULL)
                 break;
-              p++;
-            }
-            target=(*image)->pixels[i];
-            p=(*image)->pixels;
-            for (i=0; i < (int) (*image)->packets; i++)
-            {
-              if (ColorMatch(*p,target,(*image)->fuzz))
-                p->index=atoi(matte) & 0xff;
-              p++;
+              for (x=0; x < (int) (*image)->columns; x++)
+              {
+                if (ColorMatch(*q,target,(*image)->fuzz))
+                  q->opacity=atoi(matte) & 0xff;
+                q++;
+              }
+              if (!SyncPixelCache(*image))
+                break;
             }
             break;
           }
           case FloodfillMethod:
           case FillToBorderMethod:
           {
-            RunlengthPacket
+            PixelPacket
               target;
 
             /*
               Update matte information using floodfill algorithm.
             */
-            if (!UncondenseImage(*image))
+            p=GetPixelCache(*image,x_offset,y_offset,1,1);
+            if (p == (PixelPacket *) NULL)
               break;
-            target=(*image)->pixels[y_offset*(*image)->columns+x_offset];
+            target=(*p);
             if (method == FillToBorderMethod)
               {
                 target.red=XDownScale(border_color.red);
@@ -7710,11 +7749,19 @@ static unsigned int XMatteEditImage(Display *display,
             /*
               Update matte information using reset algorithm.
             */
-            p=(*image)->pixels;
-            for (i=0; i < (int) (*image)->packets; i++)
+            (*image)->class=DirectClass;
+            for (y=0; y < (int) (*image)->rows; y++)
             {
-              p->index=atoi(matte) & 0xff;
-              p++;
+              q=SetPixelCache(*image,0,y,(*image)->columns,1);
+              if (q == (PixelPacket *) NULL)
+                break;
+              for (x=0; x < (int) (*image)->columns; x++)
+              {
+                q->opacity=atoi(matte) & 0xff;
+                q++;
+              }
+              if (!SyncPixelCache(*image))
+                break;
             }
             if ((atoi(matte) & 0xff) == Opaque)
               (*image)->matte=False;
@@ -7741,15 +7788,16 @@ static unsigned int XMatteEditImage(Display *display,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XOpenBlob loads an image from a file.
+%  Method XOpenImage loads an image from a file.
 %
-%  The format of the XOpenBlob method is:
+%  The format of the XOpenImage method is:
 %
-%    loaded_image=XOpenBlob(display,resource_info,windows,command)
+%     Image *XOpenImage(Display *display,XResourceInfo *resource_info,
+%       XWindows *windows,const unsigned int command)
 %
 %  A description of each parameter follows:
 %
-%    o loaded_image: Method XOpenBlob returns an image if can be loaded
+%    o loaded_image: Method XOpenImage returns an image if can be loaded
 %      successfully.  Otherwise a null image is returned.
 %
 %    o display: Specifies a connection to an X server; returned from
@@ -7764,7 +7812,7 @@ static unsigned int XMatteEditImage(Display *display,
 %
 %
 */
-static Image *XOpenBlob(Display *display,XResourceInfo *resource_info,
+static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
   XWindows *windows,const unsigned int command)
 {
   Image
@@ -7823,7 +7871,7 @@ static Image *XOpenBlob(Display *display,XResourceInfo *resource_info,
       filelist[j]=(char *) NULL;
       XListBrowserWidget(display,windows,&windows->widget,
         (const char **) filelist,"Load","Select Image to Load:",filename);
-      FreeMemory((char *) filelist);
+      FreeMemory(filelist);
       XFreeStringList(files);
     }
   if (*filename == '\0')
@@ -7944,10 +7992,10 @@ static Image *XOpenBlob(Display *display,XResourceInfo *resource_info,
           XTextViewWidget(display,resource_info,windows,True,title,
             (const char **) textlist);
           for (i=0; textlist[i] != (char *) NULL; i++)
-            FreeMemory((char *) textlist[i]);
-          FreeMemory((char *) textlist);
+            FreeMemory(textlist[i]);
+          FreeMemory(textlist);
         }
-      FreeMemory((char *) text);
+      FreeMemory(text);
     }
   return(loaded_image);
 }
@@ -7967,7 +8015,7 @@ static Image *XOpenBlob(Display *display,XResourceInfo *resource_info,
 %
 %  The format of the XPanImage method is:
 %
-%    XPanImage(display,windows,event)
+%      void XPanImage(Display *display,XWindows *windows,XEvent *event)
 %
 %  A description of each parameter follows:
 %
@@ -8130,7 +8178,8 @@ static void XPanImage(Display *display,XWindows *windows,XEvent *event)
 %
 %  The format of the XPasteImage method is:
 %
-%    status=XPasteImage(display,resource_info,windows,image)
+%      unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
+%        XWindows *windows,Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -8206,9 +8255,8 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
   */
   if (resource_info->copy_image == (Image *) NULL)
     return(False);
-  resource_info->copy_image->orphan=True;
-  paste_image=CloneImage(resource_info->copy_image,resource_info->copy_image->columns,resource_info->copy_image->rows,True);
-  resource_info->copy_image->orphan=False;
+  paste_image=CloneImage(resource_info->copy_image,
+    resource_info->copy_image->columns,resource_info->copy_image->rows,True);
   /*
     Map Command widget.
   */
@@ -8505,7 +8553,8 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
 %
 %  The format of the XPrintImage method is:
 %
-%    status=XPrintImage(display,resource_info,windows,image)
+%      unsigned int XPrintImage(Display *display,XResourceInfo *resource_info,
+%        XWindows *windows,Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -8557,9 +8606,7 @@ static unsigned int XPrintImage(Display *display,XResourceInfo *resource_info,
   */
   XSetCursorState(display,windows,True);
   XCheckRefreshWindows(display,windows);
-  image->orphan=True;
   print_image=CloneImage(image,image->columns,image->rows,True);
-  image->orphan=False;
   if (print_image == (Image *) NULL)
     return(True);
   FormatString(geometry,"%dx%d!",windows->image.ximage->width,
@@ -8574,7 +8621,6 @@ static unsigned int XPrintImage(Display *display,XResourceInfo *resource_info,
           (print_image->colors > resource_info->quantize_info->number_colors) ||
           (resource_info->quantize_info->colorspace == GRAYColorspace))
         (void) QuantizeImage(resource_info->quantize_info,print_image);
-      SyncImage(print_image);
     }
   /*
     Print image.
@@ -8605,7 +8651,8 @@ static unsigned int XPrintImage(Display *display,XResourceInfo *resource_info,
 %
 %  The format of the XROIImage method is:
 %
-%    status=XROIImage(display,resource_info,windows,image)
+%      unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
+%        XWindows *windows,Image **image)
 %
 %  A description of each parameter follows:
 %
@@ -9452,7 +9499,8 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
 %
 %  The format of the XRotateImage method is:
 %
-%    status=XRotateImage(display,resource_info,windows,degrees,image)
+%      unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
+%        XWindows *windows,double degrees,Image **image)
 %
 %  A description of each parameter follows:
 %
@@ -9482,8 +9530,6 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
     {
       "Pixel Color",
       "Direction",
-      "Crop",
-      "Sharpen",
       "Help",
       "Dismiss",
       (char *) NULL
@@ -9509,9 +9555,7 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
     };
 
   static unsigned int
-    crop = False,
-    pen_id = 0,
-    sharpen = True;
+    pen_id = 0;
 
   char
     command[MaxTextExtent],
@@ -9656,40 +9700,6 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
                   Directions,command);
                 if (id >= 0)
                   direction=DirectionCommands[id];
-                break;
-              }
-              case RotateCropCommand:
-              {
-                static const char
-                  *Options[]=
-                  {
-                    "false",
-                    "true",
-                    (char *) NULL,
-                  };
-
-                /*
-                  Select a command from the pop-up menu.
-                */
-                crop=XMenuWidget(display,windows,RotateMenu[id],
-                  Options,command);
-                break;
-              }
-              case RotateSharpenCommand:
-              {
-                static const char
-                  *Options[]=
-                  {
-                    "false",
-                    "true",
-                    (char *) NULL,
-                  };
-
-                /*
-                  Select a command from the pop-up menu.
-                */
-                sharpen=XMenuWidget(display,windows,RotateMenu[id],
-                  Options,command);
                 break;
               }
               case RotateHelpCommand:
@@ -9901,8 +9911,8 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
     XDownScale(windows->pixel_info->pen_colors[pen_id].green);
   (*image)->border_color.blue=
     XDownScale(windows->pixel_info->pen_colors[pen_id].blue);
-  (*image)->border_color.index=0;
-  rotated_image=RotateImage(*image,degrees,crop,sharpen);
+  (*image)->border_color.opacity=Transparent;
+  rotated_image=RotateImage(*image,degrees);
   XSetCursorState(display,windows,False);
   if (rotated_image == (Image *) NULL)
     return(False);
@@ -9999,7 +10009,8 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
 %
 %  The format of the XSaveImage method is:
 %
-%    status=XSaveImage(display,resource_info,windows,image)
+%      unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
+%        XWindows *windows,Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -10115,9 +10126,7 @@ static unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
   */
   XSetCursorState(display,windows,True);
   XCheckRefreshWindows(display,windows);
-  image->orphan=True;
   save_image=CloneImage(image,image->columns,image->rows,True);
-  image->orphan=False;
   if (save_image == (Image *) NULL)
     return(False);
   FormatString(geometry,"%dx%d!",windows->image.ximage->width,
@@ -10132,7 +10141,6 @@ static unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
           (save_image->colors > resource_info->quantize_info->number_colors) ||
           (resource_info->quantize_info->colorspace == GRAYColorspace))
         (void) QuantizeImage(resource_info->quantize_info,save_image);
-      SyncImage(save_image);
     }
   /*
     Write image.
@@ -10163,7 +10171,7 @@ static unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
 %
 %  The format of the XScreenEvent function is:
 %
-%      XScreenEvent(display,windows,event)
+%      void XScreenEvent(Display *display,XWindows *windows,XEvent *event)
 %
 %  A description of each parameter follows:
 %
@@ -10435,7 +10443,8 @@ static void XScreenEvent(Display *display,XWindows *windows,XEvent *event)
 %
 %  The format of the XSetCropGeometry method is:
 %
-%    XSetCropGeometry(display,windows,crop_info,image)
+%      void XSetCropGeometry(Display *display,XWindows *windows,
+%        RectangleInfo *crop_info,Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -10531,7 +10540,8 @@ static void XSetCropGeometry(Display *display,XWindows *windows,
 %
 %  The format of the XTileImage method is:
 %
-%    tiled_image=XTileImage(display,resource_info,windows,image,event)
+%      Image *XTileImage(Display *display,XResourceInfo *resource_info,
+%        XWindows *windows,Image *image,XEvent *event)
 %
 %  A description of each parameter follows:
 %
@@ -10735,14 +10745,12 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
       register int
         j;
 
-      register RunlengthPacket
+      register PixelPacket
         *r;
 
       /*
         Ensure all the images exist.
       */
-      if (!UncondenseImage(image))
-        return((Image *) NULL);
       tile=0;
       for (p=image->directory; *p != '\0'; p++)
       {
@@ -10801,7 +10809,8 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
 %
 %  The format of the XTranslateImage method is:
 %
-%    XTranslateImage(display,windows,image,key_symbol)
+%      void XTranslateImage(Display *display,XWindows *windows,
+%        Image *image,const KeySym key_symbol)
 %
 %  A description of each parameter follows:
 %
@@ -10919,7 +10928,8 @@ static void XTranslateImage(Display *display,XWindows *windows,
 %
 %  The format of the XTrimImage method is:
 %
-%    status=XTrimImage(display,resource_info,windows,image)
+%      unsigned int XTrimImage(Display *display,XResourceInfo *resource_info,
+%        XWindows *windows,Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -10932,7 +10942,6 @@ static void XTranslateImage(Display *display,XWindows *windows,
 %
 %    o resource_info: Specifies a pointer to a X11 XResourceInfo structure.
 %
-%    o windows: Specifies a pointer to a XWindows structure.
 %    o windows: Specifies a pointer to a XWindows structure.
 %
 %    o image: Specifies a pointer to a Image structure.
@@ -11059,7 +11068,8 @@ static unsigned int XTrimImage(Display *display,XResourceInfo *resource_info,
 %
 %  The format of the XVisualDirectoryImage method is:
 %
-%    loaded_image=XVisualDirectoryImage(display,resource_info,windows)
+%      Image *XVisualDirectoryImage(Display *display,
+%        XResourceInfo *resource_info,XWindows *windows)
 %
 %  A description of each parameter follows:
 %
@@ -11174,7 +11184,7 @@ static Image *XVisualDirectoryImage(Display *display,
     (void) CloneString(&local_info->size,DefaultTileGeometry);
     next_image=ReadImage(local_info);
     if (filelist[i] != filenames)
-      FreeMemory((char *) filelist[i]);
+      FreeMemory(filelist[i]);
     if (next_image != (Image *) NULL)
       {
         MogrifyImages(local_info,5,commands,&next_image);
@@ -11198,7 +11208,7 @@ static Image *XVisualDirectoryImage(Display *display,
     ProgressMonitor(LoadImageText,i,number_files);
   }
   DestroyImageInfo(local_info);
-  FreeMemory((char *) filelist);
+  FreeMemory(filelist);
   if (image == (Image *) NULL)
     {
       XSetCursorState(display,windows,False);
@@ -11241,7 +11251,8 @@ static Image *XVisualDirectoryImage(Display *display,
 %
 %  The format of the XDisplayBackgroundImage method is:
 %
-%      status=XDisplayBackgroundImage(display,resource_info,image)
+%      unsigned int XDisplayBackgroundImage(Display *display,
+%        XResourceInfo *resource_info,Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -11266,7 +11277,7 @@ Export unsigned int XDisplayBackgroundImage(Display *display,
     visual_type[MaxTextExtent];
 
   static XPixelInfo
-    pixel_info;
+    pixel;
 
   static XStandardColormap
     *map_info;
@@ -11337,8 +11348,8 @@ Export unsigned int XDisplayBackgroundImage(Display *display,
         MagickError(XServerError,"Unable to create standard colormap",
           "Memory allocation failed");
       map_info->colormap=(Colormap) NULL;
-      pixel_info.pixels=(unsigned long *) NULL;
-      pixel_info.gamma_map=(XColor *) NULL;
+      pixel.pixels=(unsigned long *) NULL;
+      pixel.gamma_map=(XColor *) NULL;
       /*
         Initialize visual info.
       */
@@ -11365,20 +11376,20 @@ Export unsigned int XDisplayBackgroundImage(Display *display,
   */
   resources.colormap=SharedColormap;
   XMakeStandardColormap(display,visual_info,&resources,image,map_info,
-    &pixel_info);
+    &pixel);
   /*
     Graphic context superclass.
   */
-  context_values.background=pixel_info.background_color.pixel;
-  context_values.foreground=pixel_info.foreground_color.pixel;
-  pixel_info.annotate_context=XCreateGC(display,window_info.id,GCBackground |
+  context_values.background=pixel.background_color.pixel;
+  context_values.foreground=pixel.foreground_color.pixel;
+  pixel.annotate_context=XCreateGC(display,window_info.id,GCBackground |
     GCForeground,&context_values);
-  if (pixel_info.annotate_context == (GC) NULL)
+  if (pixel.annotate_context == (GC) NULL)
     MagickError(XServerError,"Unable to create graphic context",(char *) NULL);
   /*
     Initialize Image window attributes.
   */
-  XGetWindowInfo(display,visual_info,map_info,&pixel_info,(XFontStruct *) NULL,
+  XGetWindowInfo(display,visual_info,map_info,&pixel,(XFontStruct *) NULL,
     &resources,&window_info);
   /*
     Create the X image.
@@ -11676,6 +11687,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     *ImmutableMenu[]=
     {
       "Image Info",
+      "Print",
       "Next",
       "Quit",
       (char *) NULL
@@ -11838,6 +11850,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     ImmutableCommands[]=
     {
       InfoCommand,
+      PrintCommand,
       NextCommand,
       QuitCommand
     };
@@ -11927,7 +11940,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
 
   XPixelInfo
     *icon_pixel,
-    *pixel_info;
+    *pixel;
 
   XResourceInfo
     *icon_resources;
@@ -12006,7 +12019,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   icon_map=windows->icon_map;
   visual_info=windows->visual_info;
   icon_visual=windows->icon_visual;
-  pixel_info=windows->pixel_info;
+  pixel=windows->pixel_info;
   icon_pixel=windows->icon_pixel;
   font_info=windows->font_info;
   icon_resources=windows->icon_resources;
@@ -12024,13 +12037,13 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       (void) fprintf(stderr,"%.1024s\n",displayed_image->magick);
     }
   XMakeStandardColormap(display,visual_info,resource_info,displayed_image,
-    map_info,pixel_info);
+    map_info,pixel);
   displayed_image->tainted=False;
   /*
     Initialize graphic context.
   */
   windows->context.id=(Window) NULL;
-  XGetWindowInfo(display,visual_info,map_info,pixel_info,font_info,
+  XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->context);
   class_hints->res_name="superclass";
   class_hints->res_class="Display";
@@ -12041,33 +12054,33 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     &windows->context);
   if (resource_info->debug)
     (void) fprintf(stderr,"Window id: 0x%lx (context)\n",windows->context.id);
-  context_values.background=pixel_info->background_color.pixel;
+  context_values.background=pixel->background_color.pixel;
   context_values.font=font_info->fid;
-  context_values.foreground=pixel_info->foreground_color.pixel;
+  context_values.foreground=pixel->foreground_color.pixel;
   context_values.graphics_exposures=False;
   context_mask=GCBackground | GCFont | GCForeground | GCGraphicsExposures;
-  if (pixel_info->annotate_context != (GC) NULL)
-    XFreeGC(display,pixel_info->annotate_context);
-  pixel_info->annotate_context=
+  if (pixel->annotate_context != (GC) NULL)
+    XFreeGC(display,pixel->annotate_context);
+  pixel->annotate_context=
     XCreateGC(display,windows->context.id,context_mask,&context_values);
-  if (pixel_info->annotate_context == (GC) NULL)
+  if (pixel->annotate_context == (GC) NULL)
     MagickError(XServerError,"Unable to create graphic context",(char *) NULL);
-  context_values.background=pixel_info->depth_color.pixel;
-  if (pixel_info->widget_context != (GC) NULL)
-    XFreeGC(display,pixel_info->widget_context);
-  pixel_info->widget_context=
+  context_values.background=pixel->depth_color.pixel;
+  if (pixel->widget_context != (GC) NULL)
+    XFreeGC(display,pixel->widget_context);
+  pixel->widget_context=
     XCreateGC(display,windows->context.id,context_mask,&context_values);
-  if (pixel_info->widget_context == (GC) NULL)
+  if (pixel->widget_context == (GC) NULL)
     MagickError(XServerError,"Unable to create graphic context",(char *) NULL);
-  context_values.background=pixel_info->foreground_color.pixel;
-  context_values.foreground=pixel_info->background_color.pixel;
+  context_values.background=pixel->foreground_color.pixel;
+  context_values.foreground=pixel->background_color.pixel;
   context_values.plane_mask=
     context_values.background ^ context_values.foreground;
-  if (pixel_info->highlight_context != (GC) NULL)
-    XFreeGC(display,pixel_info->highlight_context);
-  pixel_info->highlight_context=XCreateGC(display,windows->context.id,
+  if (pixel->highlight_context != (GC) NULL)
+    XFreeGC(display,pixel->highlight_context);
+  pixel->highlight_context=XCreateGC(display,windows->context.id,
     context_mask | GCPlaneMask,&context_values);
-  if (pixel_info->highlight_context == (GC) NULL)
+  if (pixel->highlight_context == (GC) NULL)
     MagickError(XServerError,"Unable to create graphic context",(char *) NULL);
   XDestroyWindow(display,windows->context.id);
   /*
@@ -12105,10 +12118,10 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   */
   if (windows->image.id != (Window) NULL)
     {
-      FreeMemory((char *) windows->image.name);
-      FreeMemory((char *) windows->image.icon_name);
+      FreeMemory(windows->image.name);
+      FreeMemory(windows->image.icon_name);
     }
-  XGetWindowInfo(display,visual_info,map_info,pixel_info,font_info,
+  XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->image);
   windows->image.shape=True;  /* non-rectangular shape hint */
   windows->image.shared_memory=resource_info->use_shared_memory;
@@ -12173,7 +12186,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     ButtonReleaseMask | EnterWindowMask | ExposureMask | KeyPressMask |
     KeyReleaseMask | LeaveWindowMask | OwnerGrabButtonMask |
     PropertyChangeMask | StructureNotifyMask | SubstructureNotifyMask;
-  XGetWindowInfo(display,visual_info,map_info,pixel_info,font_info,
+  XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->backdrop);
   if ((resource_info->backdrop) || (windows->backdrop.id != (Window) NULL))
     {
@@ -12253,7 +12266,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   /*
     Initialize Info widget.
   */
-  XGetWindowInfo(display,visual_info,map_info,pixel_info,font_info,
+  XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->info);
   windows->info.name="Info";
   windows->info.icon_name="Info";
@@ -12283,7 +12296,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   /*
     Initialize Command widget.
   */
-  XGetWindowInfo(display,visual_info,map_info,pixel_info,font_info,
+  XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->command);
   windows->command.data=MagickMenus;
   (void) XCommandWidget(display,windows,CommandMenu,(XEvent *) NULL);
@@ -12314,8 +12327,8 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     Initialize Widget window.
   */
   if (windows->widget.id != (Window) NULL)
-    FreeMemory((char *) windows->widget.name);
-  XGetWindowInfo(display,visual_info,map_info,pixel_info,font_info,
+    FreeMemory(windows->widget.name);
+  XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->widget);
   FormatString(resource_name,"%.1024s.widget",resource_info->client_name);
   windows->widget.geometry=XGetResourceClass(resource_info->resource_database,
@@ -12349,8 +12362,8 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     Initialize popup window.
   */
   if (windows->popup.id != (Window) NULL)
-    FreeMemory((char *) windows->popup.name);
-  XGetWindowInfo(display,visual_info,map_info,pixel_info,font_info,
+    FreeMemory(windows->popup.name);
+  XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->popup);
   windows->popup.name=(char *) AllocateMemory(MaxTextExtent*sizeof(char));
   if (windows->popup.name == NULL)
@@ -12380,8 +12393,8 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     Initialize Magnify window and cursor.
   */
   if (windows->magnify.id != (Window) NULL)
-    FreeMemory((char *) windows->magnify.name);
-  XGetWindowInfo(display,visual_info,map_info,pixel_info,font_info,
+    FreeMemory(windows->magnify.name);
+  XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->magnify);
   windows->magnify.shared_memory=resource_info->use_shared_memory;
   FormatString(resource_name,"%.1024s.magnify",resource_info->client_name);
@@ -12422,7 +12435,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   /*
     Initialize panning window.
   */
-  XGetWindowInfo(display,visual_info,map_info,pixel_info,font_info,
+  XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->pan);
   windows->pan.name="Pan Icon";
   windows->pan.width=windows->icon.width;
@@ -12765,22 +12778,22 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                 {
                   if (magick_windows[i]->id == windows->icon.id)
                     continue;
-                  context_values.background=pixel_info->background_color.pixel;
-                  context_values.foreground=pixel_info->foreground_color.pixel;
+                  context_values.background=pixel->background_color.pixel;
+                  context_values.foreground=pixel->foreground_color.pixel;
                   XChangeGC(display,magick_windows[i]->annotate_context,
                     context_mask,&context_values);
                   XChangeGC(display,magick_windows[i]->widget_context,
                     context_mask,&context_values);
-                  context_values.background=pixel_info->foreground_color.pixel;
-                  context_values.foreground=pixel_info->background_color.pixel;
+                  context_values.background=pixel->foreground_color.pixel;
+                  context_values.foreground=pixel->background_color.pixel;
                   context_values.plane_mask=
                     context_values.background ^ context_values.foreground;
                   XChangeGC(display,magick_windows[i]->highlight_context,
                     context_mask | GCPlaneMask,&context_values);
                   magick_windows[i]->attributes.background_pixel=
-                    pixel_info->background_color.pixel;
+                    pixel->background_color.pixel;
                   magick_windows[i]->attributes.border_pixel=
-                    pixel_info->border_color.pixel;
+                    pixel->border_color.pixel;
                   magick_windows[i]->attributes.colormap=map_info->colormap;
                   XChangeWindowAttributes(display,magick_windows[i]->id,
                     magick_windows[i]->mask,&magick_windows[i]->attributes);
@@ -13205,7 +13218,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
             if (Latin1Compare(displayed_image->magick,"LOGO") == 0)
               {
                 if (Latin1Compare(displayed_image->filename,"Untitled") == 0)
-                  loaded_image=XOpenBlob(display,resource_info,windows,False);
+                  loaded_image=XOpenImage(display,resource_info,windows,False);
                 else
                   *state|=NextImageState | ExitState;
               }
@@ -13469,7 +13482,7 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       */
       XFreeStandardColormap(display,icon_visual,icon_map,icon_pixel);
       if (resource_info->map_type == (char *) NULL)
-        XFreeStandardColormap(display,visual_info,map_info,pixel_info);
+        XFreeStandardColormap(display,visual_info,map_info,pixel);
       /*
         Free X resources.
       */
@@ -13479,9 +13492,9 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
         XFreePixmap(display,windows->widget.highlight_stipple);
       if (windows->widget.highlight_stipple != (Pixmap) NULL)
         XFreePixmap(display,windows->widget.shadow_stipple);
-      XFreeGC(display,pixel_info->widget_context);
-      XFreeGC(display,pixel_info->highlight_context);
-      XFreeGC(display,pixel_info->annotate_context);
+      XFreeGC(display,pixel->widget_context);
+      XFreeGC(display,pixel->highlight_context);
+      XFreeGC(display,pixel->annotate_context);
       XFreeGC(display,icon_pixel->annotate_context);
       XFreeFont(display,font_info);
       XFree((void *) class_hints);
@@ -13490,16 +13503,16 @@ Export Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       XFree((void *) visual_info);
       XFree((void *) icon_map);
       XFree((void *) map_info);
-      FreeMemory((char *) windows->popup.name);
-      FreeMemory((char *) windows->widget.name);
-      FreeMemory((char *) windows->magnify.name);
-      FreeMemory((char *) windows->image.icon_name);
-      FreeMemory((char *) windows->image.name);
+      FreeMemory(windows->popup.name);
+      FreeMemory(windows->widget.name);
+      FreeMemory(windows->magnify.name);
+      FreeMemory(windows->image.icon_name);
+      FreeMemory(windows->image.name);
       if (resource_info->copy_image != (Image *) NULL)
         DestroyImage(resource_info->copy_image);
-      FreeMemory((char *) windows->icon_resources);
-      FreeMemory((char *) windows->icon_pixel);
-      FreeMemory((char *) windows->pixel_info);
+      FreeMemory(windows->icon_resources);
+      FreeMemory(windows->icon_pixel);
+      FreeMemory(windows->pixel_info);
       (void) signal(SIGSEGV,SIG_DFL);
       (void) signal(SIGINT,SIG_DFL);
       (void) XSetWindows((XWindows *) NULL);

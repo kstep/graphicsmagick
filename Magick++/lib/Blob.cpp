@@ -26,7 +26,7 @@ Magick::Blob::Blob ( void )
 }
 
 // Construct with data
-Magick::Blob::Blob ( const void* data_, unsigned long length_ )
+Magick::Blob::Blob ( const void* data_, size_t length_ )
 {
   _blobRef = new Magick::BlobRef( data_, length_ );
 }
@@ -64,7 +64,7 @@ Magick::Blob Magick::Blob::operator= ( const Magick::Blob& blob_ )
 
 // Update object contents, making a copy of the supplied data.
 // Any existing data in the object is deallocated.
-void Magick::Blob::update ( const void* data_, unsigned long length_ )
+void Magick::Blob::update ( const void* data_, size_t length_ )
 {
   if ( --_blobRef->_refCount == 0 )
     {
@@ -79,7 +79,7 @@ void Magick::Blob::update ( const void* data_, unsigned long length_ )
 // Any existing data in the object is deallocated.  The user must
 // ensure that the pointer supplied is not deleted or otherwise
 // modified after it has been supplied to this method.
-void Magick::Blob::updateNoCopy ( void* data_, unsigned long length_ )
+void Magick::Blob::updateNoCopy ( void* data_, size_t length_ )
 {
   if ( --_blobRef->_refCount == 0 )
     {
@@ -97,10 +97,10 @@ void Magick::Blob::updateNoCopy ( void* data_, unsigned long length_ )
 
 // Construct with data, making private copy of data
 Magick::BlobRef::BlobRef ( const void* data_,
-			   unsigned long length_ )
+			   size_t length_ )
   : _data(0),
     _length(length_),
-    _refCount(0)
+    _refCount(1)
 {
   if ( data_ != 0 )
     {

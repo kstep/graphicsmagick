@@ -303,19 +303,6 @@ namespace Magick
     const CompositeOperator _compose;
   };
 
-  // Condense image (Re-run-length encode image in memory)
-  class condenseImage : public std::unary_function<Image&,void>
-  {
-  public:
-    condenseImage( void ) { }
-
-    void operator()( Image &image_ )
-      {
-	image_.condense( );
-      }
-  private:
-  };
-
   // Contrast image (enhance intensity differences in image)
   class contrastImage : public std::unary_function<Image&,void>
   {
@@ -912,21 +899,15 @@ namespace Magick
   class rotateImage : public std::unary_function<Image&,void>
   {
   public:
-    rotateImage( double degrees_,
-		 bool crop_ = false,
-		 unsigned int sharpen_ = false )
-      : _degrees( degrees_ ),
-	_crop( crop_ ),
-	_sharpen( sharpen_ ) { }
+    rotateImage( double degrees_ )
+      : _degrees( degrees_ ) { }
 
     void operator()( Image &image_ )
       {
-	image_.rotate( _degrees, _crop, _sharpen );
+	image_.rotate( _degrees );
       }
   private:
     const double       _degrees;
-    const bool         _crop;
-    const unsigned int _sharpen;
   };
 
   // Resize image by using pixel sampling algorithm
@@ -1018,20 +999,17 @@ namespace Magick
   {
   public:
     shearImage( double xShearAngle_,
-		double yShearAngle_,
-		bool crop_ = false )
+		double yShearAngle_ )
       : _xShearAngle( xShearAngle_ ),
-	_yShearAngle( yShearAngle_ ),
-	_crop( crop_ ) { }
+	_yShearAngle( yShearAngle_ ) { }
 
     void operator()( Image &image_ )
       {
-	image_.shear( _xShearAngle, _yShearAngle, _crop );
+	image_.shear( _xShearAngle, _yShearAngle );
       }
   private:
     const double _xShearAngle;
     const double _yShearAngle;
-    const bool   _crop;
   };
 
   // Solarize image (similar to effect seen when exposing a
@@ -2103,15 +2081,12 @@ namespace Magick
     MagickLib::GetMontageInfo( montageInfo );
 
     // Set some default options based on current imageInfo settings.
-    if ( first_->backgroundColor().isValid() )
-      Magick::CloneString( &montageInfo->background_color,
-			   first_->backgroundColor() );
-    if ( first_->borderColor().isValid() )
-      Magick::CloneString ( &montageInfo->border_color,
-			    first_->borderColor() );
-    if ( first_->matteColor().isValid() )
-      Magick::CloneString ( &montageInfo->matte_color,
-			    first_->matteColor() );
+    montageInfo->background_color = first_->backgroundColor();
+
+    montageInfo->border_color = first_->borderColor();
+
+    montageInfo->matte_color = first_->matteColor();
+
     if ( first_->penColor().isValid() )
       Magick::CloneString ( &montageInfo->pen,
 			    first_->penColor() );
@@ -2320,6 +2295,7 @@ namespace Magick
 
 	current->previous = previous;
 	current->next     = (MagickLib::Image*) NULL;
+	current->orphan   = (int)false; // In a list
 
 	if ( previous != (MagickLib::Image*) NULL)
 	  previous->next = current;
@@ -2336,6 +2312,7 @@ namespace Magick
 	MagickLib::Image* image = iter->image();
 	image->previous = (MagickLib::Image*) NULL;
 	image->next = (MagickLib::Image*) NULL;
+	image->orphan = (int)true; // Stand-alone
       }
   }
 

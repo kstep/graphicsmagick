@@ -25,7 +25,7 @@ AVAILABILITY
 
   ImageMagick is available as
 
-    ftp://ftp.wizards.dupont.com/pub/ImageMagick/ImageMagick-4.2.9.tar.gz
+    ftp://ftp.wizards.dupont.com/pub/ImageMagick/ImageMagick-5.0.0.tar.gz
 
   ImageMagick client executables are available for some platforms. See
 
@@ -38,7 +38,9 @@ AVAILABILITY
   I want ImageMagick to be of high quality, so if you encounter a
   problem I will investigate.  However, be sure you are using the most
   recent version from ftp://ftp.wizards.dupont.com/pub/ImageMagick
-  before submitting any bug reports or suggestions.
+  before submitting any bug reports or suggestions.  Report any problems
+  via the web-based reporting facility at
+  http://www.simplesystems.org/ImageMagick/bugs.html.
 
 
 WWW
@@ -83,8 +85,8 @@ UNIX/Cygwin COMPILATION
 
   Type:
 
-    gzip -dc ImageMagick-4.2.9.tar.gz | tar xvf -
-    cd ImageMagick-4.2.9
+    gzip -dc ImageMagick-5.0.0.tar.gz | tar xvf -
+    cd ImageMagick-5.0.0
 
   If you do not have gunzip(1), it is available as
   prep.ai.mit.edu:pub/gnu/gzip-1.2.4.shar.
@@ -363,7 +365,7 @@ MAGICK DELEGATES
 
     o ImageMagick requires the BZLIB library from
 
-          http://www.bzip2.org/
+          http://sourceware.cygnus.com/bzip2/index.html
 
       to read and write BZip compressed MIFF images.
 
@@ -410,7 +412,7 @@ MAGICK DELEGATES
     o ImageMagick requires the NCSA HDF library available via anonymous FTP
       as
 
-          ftp://ftp.ncsa.uiuc.edu/HDF/HDF4.1r2/tar/HDF4.1r2.tar.gz
+          ftp://ftp.ncsa.uiuc.edu/HDF/HDF/HDF_Current
 
       to read and write the HDF image format.
 
@@ -564,16 +566,16 @@ HOW TO COMPILE
 
     BZLIB:
       cd ImageMagick
-      gunzip -c bzip2-0.9.5b.tar.gz | tar xvof -
-      mv bzip2-0.9.5b bzlib
+      gunzip -c bzip2-0.9.5d.tar.gz | tar xvof -
+      mv bzip2-0.9.5d bzlib
       cd bzlib
       make
       cd ..
 
     HDF:
       cd ImageMagick
-      gunzip -c HDF4.1r2.tar.gz | tar xvf -
-      mv HDF4.1r2 hdf
+      gunzip -c HDF4.1r3.tar.gz | tar xvf -
+      mv HDF4.1r3 hdf
       cd hdf
       configure
       make -k hdf-libnofortran
@@ -598,16 +600,16 @@ HOW TO COMPILE
 
     PNG:
       cd ImageMagick
-      gunzip -c libpng-1.0.3.tgz | tar xvf -
-      mv libpng-1.0.3 png
+      gunzip -c libpng-1.0.5.tgz | tar xvf -
+      mv libpng-1.0.5 png
       cd png
       make
       cd ..
 
     TIFF:
       cd ImageMagick
-      gunzip -c tiff-v3.4beta037.tar.Z | tar xvof -
-      mv tiff-v3.4beta037 tiff
+      gunzip -c tiff-v3.5.2.tar.gz | tar xvof -
+      mv tiff-v3.5.2 tiff
       cd tiff
       ./configure
       make
@@ -662,7 +664,7 @@ VMS COMPILATION
 
   Type
 
-      unzip ImageMagick-4.2.9.zip
+      unzip ImageMagick-5.0.0.zip
       set default [.imagemagick]
       @make
       set display/create/node=node_name::
@@ -805,26 +807,26 @@ ANIMATION
 
 64-BIT MACHINES
 
-  Each pixel, within ImageMagick, is represented by the RunlengthPacket
+  Each pixel, within ImageMagick, is represented by the PixelPacket
   structure found in magick/image.h.  Only 8 bits are required for each
   color component and 16 bits for the colormap index for a total of 6
   bytes.  If QuantumLeap is defined (see 16-BIT IMAGING above), the
   color component size increases to 16 bits for a total of 10 bytes.
   Some 64-bit machines pad the structure which can cause a significant
-  waste of memory.  For the cray, change the RunlengthPacket structure
+  waste of memory.  For the cray, change the PixelPacket structure
   to this
 
-      typedef struct _RunlengthPacket
+      typedef struct _PixelPacket
       {
         unsigned char
           red : QuantumDepth,
           green : QuantumDepth,
           blue : QuantumDepth,
-          length : QuantumDepth;
+          opacity : QuantumDepth;
 
         unsigned short
           index : 16;
-      } RunlengthPacket;
+      } PixelPacket;
 
   before compiling.
 

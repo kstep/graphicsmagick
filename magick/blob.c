@@ -54,6 +54,9 @@
 */
 #include "magick.h"
 #include "defines.h"
+#if defined(HAVE_MMAP)
+#include <sys/mman.h>
+#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -72,7 +75,7 @@
 %  The format of the BlobToImage method is:
 %
 %      Image *BlobToImage(const ImageInfo *image_info,const char *blob,
-%        const unsigned long length)
+%        const size_t length)
 %
 %  A description of each parameter follows:
 %
@@ -89,7 +92,7 @@
 %
 */
 Export Image *BlobToImage(const ImageInfo *image_info,const char *blob,
-  const unsigned long length)
+  const size_t length)
 {
   FILE
     *file;
@@ -103,10 +106,14 @@ Export Image *BlobToImage(const ImageInfo *image_info,const char *blob,
   MagickInfo
     *magick_info;
 
+  size_t
+    count;
+
   local_info=CloneImageInfo(image_info);
-  local_info->blob.data=(char *) blob;
-  local_info->blob.offset=0;
-  local_info->blob.length=length;
+  local_info->blob_info.data=(char *) blob;
+  local_info->blob_info.offset=0;
+  local_info->blob_info.length=length;
+  local_info->blob_info.extent=length;
   SetImageInfo(local_info,False);
   magick_info=(MagickInfo *) GetMagickInfo(local_info->magick);
   if (magick_info == (MagickInfo *) NULL)
@@ -116,18 +123,20 @@ Export Image *BlobToImage(const ImageInfo *image_info,const char *blob,
       DestroyImageInfo(local_info);
       return((Image *) NULL);
     }
-  GetBlobInfo(&(local_info->blob));
+  GetBlobInfo(&(local_info->blob_info));
   if (magick_info->blob_support)
     {
       /*
         Native blob support for this image format.
       */
       *local_info->filename='\0';
-      local_info->blob.data=(char *) blob;
-      local_info->blob.length=length;
+      local_info->blob_info.data=(char *) blob;
+      local_info->blob_info.length=length;
+      local_info->blob_info.extent=length;
       image=ReadImage(local_info);
       DestroyImageInfo(local_info);
-      GetBlobInfo(&(image->blob));
+      if (image != (Image *) NULL)
+        GetBlobInfo(&(image->blob_info));
       return(image);
     }
   /*
@@ -142,8 +151,15 @@ Export Image *BlobToImage(const ImageInfo *image_info,const char *blob,
       DestroyImageInfo(local_info);
       return((Image *) NULL);
     }
-  (void) fwrite(blob,1,length,file);
+  count=fwrite(blob,1,length,file);
   (void) fclose(file);
+  if (count != length)
+    {
+      MagickWarning(BlobWarning,"Unable to convert blob to an image",
+        local_info->filename);
+      DestroyImageInfo(local_info);
+      return((Image *) NULL);
+    }
   image=ReadImage(local_info);
   (void) remove(local_info->filename);
   DestroyImageInfo(local_info);
@@ -180,27 +196,29 @@ Export void CloseBlob(Image *image)
     Close image file.
   */
   assert(image != (Image *) NULL);
-  if (image->blob.data != (char *) NULL)
+  ClosePixelCache(&image->cache_info);
+  if (image->blob_info.data != (char *) NULL)
     {
-      image->filesize=image->blob.length;
-      image->blob.extent=image->blob.length;
-      image->blob.data=(char *)
-        ReallocateMemory(image->blob.data,image->blob.extent);
+      image->filesize=image->blob_info.length;
+      image->blob_info.extent=image->blob_info.length;
       return;
     }
   if (image->file == (FILE *) NULL)
     return;
-  (void) FlushBlob(image);
+  (void) SyncBlob(image);
   image->status=ferror(image->file);
   (void) SeekBlob(image,0L,SEEK_END);
   image->filesize=TellBlob(image);
+  errno=0;
+  image->tainted=False;
+  if (image->exempt)
+    return;
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)
   if (image->pipe)
     (void) pclose(image->file);
   else
 #endif
-    if (!image->exempt)
-      (void) fclose(image->file);
+    (void) fclose(image->file);
   image->file=(FILE *) NULL;
   if (!image->orphan)
     {
@@ -209,7 +227,38 @@ Export void CloseBlob(Image *image)
       for ( ; image != (Image *) NULL; image=image->next)
         image->file=(FILE *) NULL;
     }
-  errno=0;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D e s t r o y B l o b I n f o                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method DestroyBlobInfo deallocates memory associated with an BlobInfo
+%  structure.
+%
+%  The format of the DestroyBlobInfo method is:
+%
+%      void DestroyBlobInfo(BlobInfo *blob_info)
+%
+%  A description of each parameter follows:
+%
+%    o blob_info: Specifies a pointer to a BlobInfo structure.
+%
+%
+*/
+Export void DestroyBlobInfo(BlobInfo *blob_info)
+{
+  assert(blob_info != (BlobInfo *) NULL);
+  if (blob_info->mapped)
+    UnmapBlob(blob_info->data,blob_info->length);
+  GetBlobInfo(blob_info);
 }
 
 /*
@@ -242,43 +291,9 @@ Export void CloseBlob(Image *image)
 Export int EOFBlob(const Image *image)
 {
   assert(image != (Image *) NULL);
-  if (image->blob.data == (char *) NULL)
+  if (image->blob_info.data == (char *) NULL)
     return(feof(image->file));
-  return(image->blob.offset > image->blob.length);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+  F l u s h B l o b                                                          %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method FlushBlob flushes the datastream if it is a file.
-%
-%  The format of the FlushBlob method is:
-%
-%      int FlushBlob(const Image *image)
-%
-%  A description of each parameter follows:
-%
-%    o status:  Method FlushBlob returns 0 on success; otherwise,  it
-%      returns -1 and set errno to indicate the error.
-%
-%    o image: The address of a structure of type Image.
-%
-%
-*/
-Export int FlushBlob(const Image *image)
-{
-  assert(image != (Image *) NULL);
-  if (image->blob.data == (char *) NULL)
-    return(fflush(image->file));
-  return(0);
+  return(image->blob_info.offset > image->blob_info.length);
 }
 
 /*
@@ -307,6 +322,7 @@ Export int FlushBlob(const Image *image)
 Export void GetBlobInfo(BlobInfo *blob_info)
 {
   assert(blob_info != (BlobInfo *) NULL);
+  blob_info->mapped=False;
   blob_info->data=(char *) NULL;
   blob_info->offset=0;
   blob_info->length=0;
@@ -353,7 +369,7 @@ Export char *GetStringBlob(Image *image,char *string)
     i;
 
   assert(image != (Image *) NULL);
-  if (image->blob.data == (char *) NULL)
+  if (image->blob_info.data == (char *) NULL)
     return(fgets((char *) string,MaxTextExtent,image->file));
   for (i=0; i < (MaxTextExtent-1); i++)
   {
@@ -403,8 +419,8 @@ Export char *GetStringBlob(Image *image,char *string)
 %
 %
 */
-Export char *ImageToBlob(const ImageInfo *image_info,Image *image,
-  unsigned long *length)
+Export void *ImageToBlob(const ImageInfo *image_info,Image *image,
+  size_t *length)
 {
   char
     *blob,
@@ -425,32 +441,40 @@ Export char *ImageToBlob(const ImageInfo *image_info,Image *image,
   local_info=CloneImageInfo(image_info);
   (void) strcpy(local_info->magick,image->magick);
   magick_info=(MagickInfo *) GetMagickInfo(local_info->magick);
+  if (magick_info == (MagickInfo *) NULL)
+     {
+       MagickWarning(BlobWarning,"No delegate for this image format",
+         local_info->magick);
+       return((char *) NULL);
+     }
   if (magick_info->blob_support)
     {
       /*
         Native blob support for this image format.
       */
       *image->filename='\0';
-      local_info->blob.extent=Max((int) *length,image->blob.quantum);
-      local_info->blob.data=(char *) AllocateMemory(local_info->blob.extent);
-      if (local_info->blob.data == (char *) NULL)
+      local_info->blob_info.extent=Max((int) *length,image->blob_info.quantum);
+      local_info->blob_info.data=(char *)
+        AllocateMemory(local_info->blob_info.extent);
+      if (local_info->blob_info.data == (char *) NULL)
         {
           MagickWarning(BlobWarning,"Unable to create blob",
             "Memory allocation failed");
           return((char *) NULL);
         }
-      local_info->blob.offset=0;
-      local_info->blob.length=0;
+      local_info->blob_info.offset=0;
+      local_info->blob_info.length=0;
       status=WriteImage(local_info,image);
-      DestroyImageInfo(local_info);
       if (status == False)
         {
           MagickWarning(BlobWarning,"Unable to create blob",local_info->magick);
+          DestroyImageInfo(local_info);
           return((char *) NULL);
         }
-      *length=image->blob.length;
-      blob=image->blob.data;
-      GetBlobInfo(&(image->blob));
+      DestroyImageInfo(local_info);
+      *length=image->blob_info.length;
+      blob=image->blob_info.data;
+      GetBlobInfo(&(image->blob_info));
       return(blob);
     }
   /*
@@ -600,7 +624,7 @@ Export unsigned short LSBFirstReadShort(Image *image)
 %
 %  The format of the LSBFirstWriteLong method is:
 %
-%      unsigned long LSBFirstWriteLong(Image *image,const unsigned long value)
+%      size_t LSBFirstWriteLong(Image *image,const unsigned long value)
 %
 %  A description of each parameter follows.
 %
@@ -613,7 +637,7 @@ Export unsigned short LSBFirstReadShort(Image *image)
 %
 %
 */
-Export unsigned long LSBFirstWriteLong(Image *image,const unsigned long value)
+Export size_t LSBFirstWriteLong(Image *image,const unsigned long value)
 {
   unsigned char
     buffer[4];
@@ -623,7 +647,7 @@ Export unsigned long LSBFirstWriteLong(Image *image,const unsigned long value)
   buffer[1]=(unsigned char) ((value) >> 8);
   buffer[2]=(unsigned char) ((value) >> 16);
   buffer[3]=(unsigned char) ((value) >> 24);
-  return(WriteBlob(image,4,(char *) buffer));
+  return(WriteBlob(image,4,buffer));
 }
 
 /*
@@ -642,7 +666,7 @@ Export unsigned long LSBFirstWriteLong(Image *image,const unsigned long value)
 %
 %  The format of the LSBFirstWriteShort method is:
 %
-%      unsigned long LSBFirstWriteShort(Image *image,const unsigned short value)
+%      size_t LSBFirstWriteShort(Image *image,const unsigned short value)
 %
 %  A description of each parameter follows.
 %
@@ -655,7 +679,7 @@ Export unsigned long LSBFirstWriteLong(Image *image,const unsigned long value)
 %
 %
 */
-Export unsigned long LSBFirstWriteShort(Image *image,const unsigned short value)
+Export size_t LSBFirstWriteShort(Image *image,const unsigned short value)
 {
   unsigned char
     buffer[2];
@@ -663,7 +687,101 @@ Export unsigned long LSBFirstWriteShort(Image *image,const unsigned short value)
   assert(image != (Image *) NULL);
   buffer[0]=(unsigned char) (value);
   buffer[1]=(unsigned char) ((value) >> 8);
-  return(WriteBlob(image,2,(char *) buffer));
+  return(WriteBlob(image,2,buffer));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++  M a p B l o b                                                              %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method MapBlob creates a mapping from a file to a binary large object.
+%
+%  The format of the MapBlob method is:
+%
+%      void *MapBlob(const char *filename,const MapMode mode,size_t *length)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method MapBlob returns the address of the blob as well as
+%      its length in bytes.
+%
+%    o filename: this string is the name of the file to map.
+%
+%    o mode: ReadMode, WriteMode, or IOMode.
+%
+%    o length: the length of the mapping is returned in this pointer.
+%
+%
+*/
+Export void *MapBlob(const char *filename,const MapMode mode,size_t *length)
+{
+#if defined(HAVE_MMAP) || defined(WIN32)
+  int
+    descriptor;
+
+  struct stat
+    status;
+
+  void
+    *map;
+
+  /*
+    Open file.
+  */
+  assert(filename != (char *) NULL);
+  assert(length != (size_t *) NULL);
+  switch (mode)
+  {
+    default:
+    case ReadMode: descriptor=open(filename,O_RDONLY); break;
+    case WriteMode: descriptor=open(filename,O_WRONLY); break;
+    case IOMode: descriptor=open(filename,O_RDWR); break;
+  }
+  if (descriptor == -1)
+    return((void *) NULL);
+  if (fstat(descriptor,&status) == -1)
+    return((void *) NULL);
+  *length=status.st_size;
+  /*
+    Map file.
+  */
+  switch (mode)
+  {
+    case ReadMode:
+    default:
+    {
+      map=mmap((char *) NULL,*length,PROT_READ,MAP_SHARED,descriptor,0);
+      break;
+    }
+    case WriteMode:
+    {
+      map=mmap((char *) NULL,*length,PROT_WRITE,MAP_SHARED,descriptor,0);
+      break;
+    }
+    case IOMode:
+    {
+      map=mmap((char *) NULL,*length,PROT_READ | PROT_WRITE,MAP_SHARED,
+        descriptor,0);
+      break;
+    }
+  }
+  (void) close(descriptor);
+  if (map == MAP_FAILED)
+    {
+      MagickWarning(FileOpenWarning,"Unable to map file",filename);
+      return((void *) NULL);
+    }
+  return((void *) map);
+#else
+  return((void *) NULL);
+#endif
 }
 
 /*
@@ -692,7 +810,7 @@ Export unsigned long LSBFirstWriteShort(Image *image,const unsigned short value)
 %
 %
 */
-Export void MSBFirstOrderLong(register char *p,const unsigned int length)
+Export void MSBFirstOrderLong(register char *p,const size_t length)
 {
   register char
     c,
@@ -731,7 +849,7 @@ Export void MSBFirstOrderLong(register char *p,const unsigned int length)
 %
 %  The format of the MSBFirstOrderShort method is:
 %
-%      void MSBFirstOrderShort(register char *p,const unsigned int length)
+%      void MSBFirstOrderShort(register char *p,const size_t length)
 %
 %  A description of each parameter follows.
 %
@@ -741,7 +859,7 @@ Export void MSBFirstOrderLong(register char *p,const unsigned int length)
 %
 %
 */
-Export void MSBFirstOrderShort(register char *p,const unsigned int length)
+Export void MSBFirstOrderShort(register char *p,const size_t length)
 {
   register char
     c,
@@ -865,7 +983,7 @@ Export unsigned long MSBFirstReadLong(Image *image)
 %
 %  The format of the MSBFirstWriteLong method is:
 %
-%      unsigned long MSBFirstWriteLong(Image *image,const unsigned long value)
+%      size_t MSBFirstWriteLong(Image *image,const unsigned long value)
 %
 %  A description of each parameter follows.
 %
@@ -877,9 +995,8 @@ Export unsigned long MSBFirstReadLong(Image *image)
 %    o image: The address of a structure of type Image.
 %
 %
-%
 */
-Export unsigned long MSBFirstWriteLong(Image *image,const unsigned long value)
+Export size_t MSBFirstWriteLong(Image *image,const unsigned long value)
 {
   unsigned char
     buffer[4];
@@ -889,7 +1006,7 @@ Export unsigned long MSBFirstWriteLong(Image *image,const unsigned long value)
   buffer[1]=(unsigned char) ((value) >> 16);
   buffer[2]=(unsigned char) ((value) >> 8);
   buffer[3]=(unsigned char) (value);
-  return(WriteBlob(image,4,(char *) buffer));
+  return(WriteBlob(image,4,buffer));
 }
 
 /*
@@ -908,7 +1025,7 @@ Export unsigned long MSBFirstWriteLong(Image *image,const unsigned long value)
 %
 %  The format of the MSBFirstWriteShort method is:
 %
-%      unsigned long MSBFirstWriteShort(Image *image,const unsigned short value)
+%      size_t MSBFirstWriteShort(Image *image,const unsigned short value)
 %
 %  A description of each parameter follows.
 %
@@ -918,7 +1035,7 @@ Export unsigned long MSBFirstWriteLong(Image *image,const unsigned long value)
 %
 %
 */
-Export unsigned long MSBFirstWriteShort(Image *image,const unsigned short value)
+Export size_t MSBFirstWriteShort(Image *image,const unsigned short value)
 {
   unsigned char
     buffer[2];
@@ -926,7 +1043,7 @@ Export unsigned long MSBFirstWriteShort(Image *image,const unsigned short value)
   assert(image != (Image *) NULL);
   buffer[0]=(unsigned char) ((value) >> 8);
   buffer[1]=(unsigned char) (value);
-  return(WriteBlob(image,2,(char *) buffer));
+  return(WriteBlob(image,2,buffer));
 }
 
 /*
@@ -975,9 +1092,9 @@ Export unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
   assert(image_info != (ImageInfo *) NULL);
   assert(image != (Image *) NULL);
   assert(type != (char *) NULL);
-  if (image_info->blob.data != (char *) NULL)
+  if (image_info->blob_info.data != (char *) NULL)
     {
-      image->blob=image_info->blob;
+      image->blob_info=image_info->blob_info;
       return(True);
     }
   image->exempt=False;
@@ -1045,7 +1162,7 @@ Export unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
   if (p != (char *) NULL)
     {
       (void) strcpy(filename,p);
-      FreeMemory((char *) p);
+      FreeMemory(p);
     }
   /*
     Open image file.
@@ -1100,7 +1217,15 @@ Export unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
         if (*type == 'w')
           SetApplicationType(filename,image_info->magick,'8BIM');
 #endif
-        image->file=(FILE *) fopen(filename,type);
+        if (*type == 'r')
+          {
+            image->blob_info.length=0;
+            image->blob_info.data=(char *)
+              MapBlob(filename,ReadMode,&image->blob_info.length);
+            image->blob_info.mapped=image->blob_info.data != (void *) NULL;
+          }
+        if (!image->blob_info.mapped)
+          image->file=(FILE *) fopen(filename,type);
         if (image->file != (FILE *) NULL)
           {
             (void) SeekBlob(image,0L,SEEK_END);
@@ -1114,7 +1239,7 @@ Export unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
       image->next=(Image *) NULL;
       image->previous=(Image *) NULL;
     }
-  return(image->file != (FILE *) NULL);
+  return((image->file != (FILE *) NULL) || (image->blob_info.data != NULL));
 }
 
 /*
@@ -1133,8 +1258,7 @@ Export unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
 %
 %  The format of the ReadBlob method is:
 %
-%      unsigned long ReadBlob(Image *image,const unsigned long number_bytes,
-%        char *data)
+%      size_t ReadBlob(Image *image,const size_t number_bytes,char *data)
 %
 %  A description of each parameter follows:
 %
@@ -1150,28 +1274,30 @@ Export unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
 %
 %
 */
-Export unsigned long ReadBlob(Image *image,const unsigned long number_bytes,
-  char *data)
+Export size_t ReadBlob(Image *image,const size_t number_bytes,void *data)
 {
+  off_t
+    offset;
+
   register int
     i;
 
-  unsigned long
-    count,
-    offset;
+  size_t
+    count;
 
   assert(image != (Image *) NULL);
   assert(data != (char *) NULL);
-  if (image->blob.data != (char *) NULL)
+  if (image->blob_info.data != (char *) NULL)
     {
       /*
         Read bytes from blob.
       */
       offset=Min(number_bytes,(unsigned long)
-        (image->blob.length-image->blob.offset));
-      if (number_bytes > 0)
-        (void) memcpy(data,image->blob.data+image->blob.offset,offset);
-      image->blob.offset+=offset;
+        (image->blob_info.length-image->blob_info.offset));
+      if (offset > 0)
+        (void) memcpy(data,image->blob_info.data+image->blob_info.offset,
+          offset);
+      image->blob_info.offset+=offset;
       return(offset);
     }
   /*
@@ -1180,7 +1306,7 @@ Export unsigned long ReadBlob(Image *image,const unsigned long number_bytes,
   offset=0;
   for (i=number_bytes; i > 0; i-=count)
   {
-    count=fread(data+offset,1,number_bytes,image->file);
+    count=fread((char *) data+offset,1,number_bytes,image->file);
     if (count <= 0)
       break;
     offset+=count;
@@ -1207,7 +1333,7 @@ Export unsigned long ReadBlob(Image *image,const unsigned long number_bytes,
 %
 %  A description of each parameter follows.
 %
-%    o value:  Method ReadByte returns an integer read from the file.
+%    o value: Method ReadByte returns an integer read from the file.
 %
 %    o image: The address of a structure of type Image.
 %
@@ -1245,7 +1371,7 @@ Export int ReadByte(Image *image)
 %
 %  The format of the ReadBlobBlock method is:
 %
-%      unsigned long ReadBlobBlock(Image *image,char *data)
+%      size_t ReadBlobBlock(Image *image,char *data)
 %
 %  A description of each parameter follows:
 %
@@ -1258,20 +1384,20 @@ Export int ReadByte(Image *image)
 %
 %
 */
-Export unsigned long ReadBlobBlock(Image *image,char *data)
+Export size_t ReadBlobBlock(Image *image,char *data)
 {
+  size_t
+    count;
+
   unsigned char
     block_count;
-
-  unsigned long
-    count;
 
   assert(image != (Image *) NULL);
   assert(data != (char *) NULL);
   count=ReadBlob(image,1,(char *) &block_count);
   if (count == 0)
     return(0);
-  count=ReadBlob(image,(unsigned long) block_count,data);
+  count=ReadBlob(image,(size_t) block_count,data);
   return(count);
 }
 
@@ -1291,7 +1417,7 @@ Export unsigned long ReadBlobBlock(Image *image,char *data)
 %
 %  The format of the SeekBlob method is:
 %
-%      int SeekBlob(Image *image,const long offset,const int whence)
+%      int SeekBlob(Image *image,const off_t offset,const int whence)
 %
 %  A description of each parameter follows:
 %
@@ -1311,42 +1437,48 @@ Export unsigned long ReadBlobBlock(Image *image,char *data)
 %
 %
 */
-Export int SeekBlob(Image *image,const long offset,const int whence)
+Export int SeekBlob(Image *image,const off_t offset,const int whence)
 {
   assert(image != (Image *) NULL);
-  if (image->blob.data == (char *) NULL)
+  if (image->blob_info.data == (char *) NULL)
     return(fseek(image->file,offset,whence));
-  switch(whence)
+  switch (whence)
   {
     case SEEK_SET:
     default:
     {
       if (offset < 0)
         return(-1);
-      if (offset >= image->blob.length)
-        return(-1);
-      image->blob.offset=offset;
+      image->blob_info.offset=offset;
       break;
     }
     case SEEK_CUR:
     {
-      if ((image->blob.offset+offset) < 0)
+      if ((image->blob_info.offset+offset) < 0)
         return(-1);
-      if ((image->blob.offset+offset) >= (long) image->blob.length)
-        return(-1);
-      image->blob.offset+=offset;
+      image->blob_info.offset+=offset;
       break;
     }
     case SEEK_END:
     {
-      if ((image->blob.offset+image->blob.length+offset) < 0)
+      if ((image->blob_info.offset+image->blob_info.length+offset) < 0)
         return(-1);
-      if ((image->blob.offset+image->blob.length+offset) >= image->blob.length)
-        return(-1);
-      image->blob.offset+=image->blob.length+offset;
+      image->blob_info.offset=image->blob_info.length+offset;
       break;
     }
   }
+  if (image->blob_info.offset > image->blob_info.length)
+    {
+      image->blob_info.length=image->blob_info.offset;
+      image->blob_info.data=(char *)
+        ReallocateMemory(image->blob_info.data,image->blob_info.length);
+      if (image->blob_info.data == (char *) NULL)
+        {
+          image->blob_info.length=0;
+          return(-1);
+        }
+      image->blob_info.extent=image->blob_info.length;
+    }
   return(0);
 }
 
@@ -1367,21 +1499,54 @@ Export int SeekBlob(Image *image,const long offset,const int whence)
 %
 %  The format of the SetBlobQuantum method is:
 %
-%      void SetBlobQuantum(BlobInfo *blob_info,const unsigned long quantum)
+%      void SetBlobQuantum(BlobInfo *blob_info,const size_t quantum)
 %
 %  A description of each parameter follows:
 %
 %    o blob_info:  A pointer to a BlobInfo structure.
 %
-%    o quantum: An unsigned long that reflects the number of bytes to
-%      increase a blob.
+%    o quantum: A size_t that reflects the number of bytes to increase a blob.
 %
 %
 */
-Export void SetBlobQuantum(BlobInfo *blob_info,const unsigned long quantum)
+Export void SetBlobQuantum(BlobInfo *blob_info,const size_t quantum)
 {
   assert(blob_info != (BlobInfo *) NULL);
   blob_info->quantum=quantum;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++  S y n c B l o b                                                            %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method SyncBlob flushes the datastream if it is a file.
+%
+%  The format of the SyncBlob method is:
+%
+%      int SyncBlob(const Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method SyncBlob returns 0 on success; otherwise,  it
+%      returns -1 and set errno to indicate the error.
+%
+%    o image: The address of a structure of type Image.
+%
+%
+*/
+Export int SyncBlob(const Image *image)
+{
+  assert(image != (Image *) NULL);
+  if (image->blob_info.data == (char *) NULL)
+    return(fflush(image->file));
+  return(0);
 }
 
 /*
@@ -1399,23 +1564,68 @@ Export void SetBlobQuantum(BlobInfo *blob_info,const unsigned long quantum)
 %
 %  The format of the TellBlob method is:
 %
-%      int TellBlob(const Image *image)
+%      off_t TellBlob(const Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o status:  Method TellBlob returns 0 on success; otherwise,  it
-%      returned -1 and set errno to indicate the error.
+%    o status:  Method TellBlob returns the current value of the blob or
+%      file position success; otherwise, it returns -1 and sets errno to
+%      indicate the error.
 %
 %    o image: The address of a structure of type Image.
 %
 %
 */
-Export int TellBlob(const Image *image)
+Export off_t TellBlob(const Image *image)
 {
   assert(image != (Image *) NULL);
-  if (image->blob.data == (char *) NULL)
+  if (image->file != (FILE *) NULL)
     return(ftell(image->file));
-  return(image->blob.offset);
+  return(image->blob_info.offset);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++  U n m a p B l o b                                                          %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UnmapBlob deallocates the binary large object previously allocated
+%  with the MapBlob method.
+%
+%  The format of the UnmapBlob method is:
+%
+%      unsigned int UnmapBlob(void *map,const size_t length)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method UnmapBlob returns True on success; otherwise,  it
+%      returns False and set errno to indicate the error.
+%
+%    o map: The address  of the binary large object.
+%
+%    o length: The length of the binary large object.
+%
+%
+*/
+Export unsigned int UnmapBlob(void *map,const size_t length)
+{
+#if defined(HAVE_MMAP) || defined(WIN32)
+  int
+    status;
+
+  status=munmap(map,length);
+  if (status == -1)
+    MagickError(BlobWarning,"Unable to unmap file",(char *) NULL);
+  return(status);
+#else
+  return(-1);
+#endif
 }
 
 /*
@@ -1434,8 +1644,7 @@ Export int TellBlob(const Image *image)
 %
 %  The format of the WriteBlob method is:
 %
-%      unsigned long WriteBlob(Image *image,const unsigned long number_bytes,
-%        const char *data)
+%      size_t WriteBlob(Image *image,const size_t number_bytes,const void *data)
 %
 %  A description of each parameter follows:
 %
@@ -1454,34 +1663,34 @@ Export int TellBlob(const Image *image)
 %
 %
 */
-Export unsigned long WriteBlob(Image *image,const unsigned long number_bytes,
-  const char *data)
+Export size_t WriteBlob(Image *image,const size_t number_bytes,const void *data)
 {
-  unsigned long
+  size_t
     count;
 
   assert(image != (Image *) NULL);
   assert(data != (const char *) NULL);
-  if (image->blob.data == (char *) NULL)
+  if (image->blob_info.data == (char *) NULL)
     {
-      count=(long) fwrite((char *) data,1,number_bytes,image->file);
+      count=fwrite((char *) data,1,number_bytes,image->file);
       return(count);
     }
-  if (number_bytes > (unsigned long) (image->blob.extent-image->blob.offset))
+  if (number_bytes > (image->blob_info.extent-image->blob_info.offset))
     {
-      image->blob.extent+=number_bytes+image->blob.quantum;
-      image->blob.data=(char *)
-        ReallocateMemory(image->blob.data,image->blob.extent);
-      if (image->blob.data == (char *) NULL)
+      image->blob_info.extent+=number_bytes+image->blob_info.quantum;
+      image->blob_info.data=(char *)
+        ReallocateMemory(image->blob_info.data,image->blob_info.extent);
+      if (image->blob_info.data == (char *) NULL)
         {
-          image->blob.extent=0;
+          image->blob_info.extent=0;
           return(0);
         }
     }
-  memcpy(image->blob.data+image->blob.offset,data,number_bytes);
-  image->blob.offset+=number_bytes;
-  if (image->blob.offset > image->blob.length)
-    image->blob.length=image->blob.offset;
+  (void) memcpy(image->blob_info.data+image->blob_info.offset,data,
+    number_bytes);
+  image->blob_info.offset+=number_bytes;
+  if (image->blob_info.offset > image->blob_info.length)
+    image->blob_info.length=image->blob_info.offset;
   return(number_bytes);
 }
 
@@ -1501,7 +1710,7 @@ Export unsigned long WriteBlob(Image *image,const unsigned long number_bytes,
 %
 %  The format of the WriteByte method is:
 %
-%      unsigned long WriteByte(Image *image,const char value)
+%      size_t WriteByte(Image *image,const char value)
 %
 %  A description of each parameter follows.
 %
@@ -1513,12 +1722,12 @@ Export unsigned long WriteBlob(Image *image,const unsigned long number_bytes,
 %
 %
 */
-Export unsigned long WriteByte(Image *image,const char value)
+Export size_t WriteByte(Image *image,const char value)
 {
-  unsigned long
+  size_t
     count;
 
   assert(image != (Image *) NULL);
-  count=WriteBlob(image,1,(char *) &value);
+  count=WriteBlob(image,1,&value);
   return(count);
 }

@@ -72,7 +72,7 @@
 %
 %  The format of the ChopImage method is:
 %
-%      Image *ChopImage(const Image *image,const RectangleInfo *chop_info)
+%      Image *ChopImage(Image *image,const RectangleInfo *chop_info)
 %
 %  A description of each parameter follows:
 %
@@ -87,29 +87,30 @@
 %
 %
 */
-Export Image *ChopImage(const Image *image,const RectangleInfo *chop_info)
+Export Image *ChopImage(Image *image,const RectangleInfo *chop_info)
 {
 #define ChopImageText  "  Chopping image...  "
 
   Image
-    *chopped_image;
+    *chop_image;
 
   int
+    j,
     y;
 
   RectangleInfo
     local_info;
 
+  register IndexPacket
+    *r;
+
   register int
-    runlength,
+    i,
     x;
 
-  register RunlengthPacket
+  register PixelPacket
     *p,
     *q;
-
-  unsigned int
-    height;
 
   /*
     Check chop geometry.
@@ -143,9 +144,9 @@ Export Image *ChopImage(const Image *image,const RectangleInfo *chop_info)
   /*
     Initialize chop image attributes.
   */
-  chopped_image=CloneImage(image,image->columns-local_info.width,
-    image->rows-local_info.height,False);
-  if (chopped_image == (Image *) NULL)
+  chop_image=CloneImage(image,image->columns-local_info.width,
+    image->rows-local_info.height,True);
+  if (chop_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to chop image",
         "Memory allocation failed");
@@ -154,63 +155,59 @@ Export Image *ChopImage(const Image *image,const RectangleInfo *chop_info)
   /*
     Extract chop image.
   */
-  p=image->pixels;
-  runlength=p->length+1;
-  q=chopped_image->pixels;
+  i=0;
+  j=0;
   for (y=0; y < local_info.y; y++)
+  {
+    p=GetPixelCache(image,0,i++,image->columns,1);
+    q=SetPixelCache(chop_image,0,j++,chop_image->columns,1);
+    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+      break;
+    r=chop_image->indexes;
     for (x=0; x < (int) image->columns; x++)
     {
-      if (runlength != 0)
-        runlength--;
-      else
-        {
-          p++;
-          runlength=p->length;
-        }
       if ((x < local_info.x) || (x >= (int) (local_info.x+local_info.width)))
         {
+          if (image->class == PseudoClass)
+            *r++=image->indexes[x];
           *q=(*p);
-          q->length=0;
           q++;
         }
+      p++;
     }
-  /*
-    Skip pixels up to the chop image.
-  */
-  for (x=0; x < (int) (local_info.height*image->columns); x++)
-    if (runlength != 0)
-      runlength--;
-    else
-      {
-        p++;
-        runlength=p->length;
-      }
+    if (!SyncPixelCache(chop_image))
+      break;
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(ChopImageText,y,image->rows);
+  }
   /*
     Extract chop image.
   */
-  height=image->rows-(local_info.y+local_info.height);
-  for (y=0; y < (int) height; y++)
+  i+=local_info.height;
+  for (y=0; y < (int) (image->rows-(local_info.y+local_info.height)); y++)
   {
+    p=GetPixelCache(image,0,i++,image->columns,1);
+    q=SetPixelCache(chop_image,0,j++,chop_image->columns,1);
+    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+      break;
+    r=chop_image->indexes;
     for (x=0; x < (int) image->columns; x++)
     {
-      if (runlength != 0)
-        runlength--;
-      else
-        {
-          p++;
-          runlength=p->length;
-        }
       if ((x < local_info.x) || (x >= (int) (local_info.x+local_info.width)))
         {
+          if (image->class == PseudoClass)
+            *r++=image->indexes[x];
           *q=(*p);
-          q->length=0;
           q++;
         }
+      p++;
     }
-    if (QuantumTick(y,height))
-      ProgressMonitor(ChopImageText,y,height);
+    if (!SyncPixelCache(chop_image))
+      break;
+    if (QuantumTick(i,image->rows))
+      ProgressMonitor(ChopImageText,i,image->rows);
   }
-  return(chopped_image);
+  return(chop_image);
 }
 
 /*
@@ -228,7 +225,7 @@ Export Image *ChopImage(const Image *image,const RectangleInfo *chop_info)
 %
 %  The format of the CoalesceImages method is:
 %
-%      void CoalesceImages(Image *images)
+%      Image *CoalesceImages(Image *images)
 %
 %  A description of each parameter follows:
 %
@@ -237,26 +234,11 @@ Export Image *ChopImage(const Image *image,const RectangleInfo *chop_info)
 %      coalesced.
 %
 */
-Export void CoalesceImages(Image *images)
+Export Image *CoalesceImages(Image *images)
 {
-  char
-    geometry[MaxTextExtent];
-
   Image
-    *cloned_image,
+    *coalesce_image,
     *image;
-
-  int
-    x,
-    y;
-
-  unsigned int
-    matte,
-    sans;
-
-  SegmentInfo
-    bounding_box,
-    previous_box;
 
   /*
     Coalesce the image sequence.
@@ -266,92 +248,38 @@ Export void CoalesceImages(Image *images)
     {
       MagickWarning(OptionWarning,"Unable to coalesce images",
         "image sequence required");
-      return;
+      return((Image *) NULL);
     }
+  /*
+    Clone first image in sequence.
+  */
+  coalesce_image=CloneImage(images,images->columns,images->rows,True);
+  if (coalesce_image == (Image *) NULL)
+    return((Image *) NULL);
+  GetPageInfo(&coalesce_image->page_info);
+  /*
+    Coalesce images.
+  */
   for (image=images->next; image != (Image *) NULL; image=image->next)
   {
-    assert(image->previous != (Image *) NULL);
-    x=0;
-    y=0;
-    if (image->previous->page != (char *) NULL)
-      (void) ParseGeometry(image->previous->page,&x,&y,&sans,&sans);
-    previous_box.x1=x;
-    previous_box.y1=y;
-    previous_box.x2=image->previous->columns+x;
-    previous_box.y2=image->previous->rows+y;
-    x=0;
-    y=0;
-    if (image->page != (char *) NULL)
-      (void) ParseGeometry(image->page,&x,&y,&sans,&sans);
-    if (!image->matte && (x <= previous_box.x1) && (y <= previous_box.y1) &&
-        ((image->columns+x) >= previous_box.x2) &&
-        ((image->rows+y) >= previous_box.y2))
-      continue; /* image completely obscures previous image */
-    bounding_box.x1=x < previous_box.x1 ? x : previous_box.x1;
-    bounding_box.y1=y < previous_box.y1 ? y : previous_box.y1;
-    bounding_box.x2=(image->columns+x) > previous_box.x2 ?
-      (image->columns+x) : previous_box.x2;
-    bounding_box.y2=(image->rows+y) > (previous_box.y2) ?
-      (image->rows+y) : previous_box.y2;
-    assert(!image->orphan);
-    image->orphan=True;
-    cloned_image=CloneImage(image,image->columns,image->rows,True);
-    image->orphan=False;
-    if (cloned_image == (Image *) NULL)
+    coalesce_image->next=CloneImage(coalesce_image,coalesce_image->columns,
+      coalesce_image->rows,True);
+    if (coalesce_image->next == (Image *) NULL)
       {
         MagickWarning(ResourceLimitWarning,"Unable to coalesce images",
           "Memory allocation failed for cloned image");
-        return;
+        DestroyImages(coalesce_image);
+        return((Image *) NULL);
       }
-    image->columns=(unsigned int) (bounding_box.x2-bounding_box.x1+0.5);
-    image->rows=(unsigned int) (bounding_box.y2-bounding_box.y1+0.5);
-    image->packets=image->columns*image->rows;
-    image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
-      image->pixels,image->packets*sizeof(RunlengthPacket));
-    if (image->pixels == (RunlengthPacket *) NULL)
-      {
-        MagickWarning(ResourceLimitWarning,"Unable to coalesce images",
-          "Memory reallocation failed");
-        return;
-      }
-    image->matte |=
-      ((((bounding_box.x1 != x) ||
-         (bounding_box.y1 != y)) &&
-        ((bounding_box.x1 != previous_box.x1) ||
-         (bounding_box.y1 != previous_box.y1))) ||
-       (((bounding_box.x2 != (image->columns+x)) ||
-         (bounding_box.y2 != (image->rows+y))) &&
-        ((bounding_box.x2 != previous_box.x2) ||
-         (bounding_box.y2 != previous_box.y2))) ||
-       (((bounding_box.x1 != x) ||
-         (bounding_box.y2 != (image->rows+y))) &&
-        ((bounding_box.x1 != previous_box.x1) ||
-         (bounding_box.y2 != previous_box.y2))) ||
-       (((bounding_box.x2 != (image->columns+x)) ||
-         (bounding_box.y1 != y)) &&
-        ((bounding_box.x2 != previous_box.x2) ||
-         (bounding_box.y1 != previous_box.y1))) ||
-       (previous_box.x2-previous_box.x1+image->columns <
-        bounding_box.x2-bounding_box.x1) ||
-       (previous_box.y2-previous_box.y1+image->rows <
-        bounding_box.y2-bounding_box.y1));
-    matte=image->matte;
-    SetImage(image);
-    CompositeImage(image,ReplaceCompositeOp,image->previous,
-      (int) (previous_box.x1-bounding_box.x1+0.5),
-      (int) (previous_box.y1-bounding_box.y1+0.5));
-    CompositeImage(image,
-      cloned_image->matte ? OverCompositeOp : ReplaceCompositeOp,
-      cloned_image,(int) (x-bounding_box.x1+0.5),(int) (y-bounding_box.y1+0.5));
-    cloned_image->orphan=True;
-    DestroyImage(cloned_image);
-    FormatString(geometry,"%ux%u%+d%+d",image->columns,image->rows,
-      (int) bounding_box.x1,(int) bounding_box.y1);
-    if (image->page != (char *) NULL)
-      FreeMemory(image->page);
-    image->page=PostscriptGeometry(geometry);
-    image->matte=matte;
+    coalesce_image->next->previous=coalesce_image;
+    coalesce_image=coalesce_image->next;
+    CompositeImage(coalesce_image,image->matte ? OverCompositeOp :
+      ReplaceCompositeOp,image,image->page_info.x,image->page_info.y);
+    GetPageInfo(&coalesce_image->page_info);
   }
+  while (coalesce_image->previous != (Image *) NULL)
+    coalesce_image=coalesce_image->previous;
+  return(coalesce_image);
 }
 
 /*
@@ -368,16 +296,16 @@ Export void CoalesceImages(Image *images)
 %  Method CropImage creates a new image that is a subregion of an existing
 %  one.  It allocates the memory necessary for the new Image structure and
 %  returns a pointer to the new image.  This method is optimized to preserve
-%  the runlength encoding.  That is, the cropped image will always use less
+%  the runlength encoding.  That is, the crop image will always use less
 %  memory than the original.
 %
 %  The format of the CropImage method is:
 %
-%      Image *CropImage(const Image *image,const RectangleInfo *crop_info)
+%      Image *CropImage(Image *image,const RectangleInfo *crop_info)
 %
 %  A description of each parameter follows:
 %
-%    o cropped_image: Method CropImage returns a pointer to the cropped
+%    o crop_image: Method CropImage returns a pointer to the crop
 %      image.  A null image is returned if there is a memory shortage or
 %      if the image width or height is zero.
 %
@@ -388,27 +316,23 @@ Export void CoalesceImages(Image *images)
 %
 %
 */
-Export Image *CropImage(const Image *image,const RectangleInfo *crop_info)
+Export Image *CropImage(Image *image,const RectangleInfo *crop_info)
 {
 #define CropImageText  "  Cropping image...  "
 
   Image
-    *cropped_image;
+    *crop_image;
 
   int
     y;
 
   RectangleInfo
-    local_info;
+    page_info;
 
   register int
-    runlength,
     x;
 
-  register long
-    max_packets;
-
-  register RunlengthPacket
+  register PixelPacket
     *p,
     *q;
 
@@ -417,227 +341,153 @@ Export Image *CropImage(const Image *image,const RectangleInfo *crop_info)
   */
   assert(image != (Image *) NULL);
   assert(crop_info != (const RectangleInfo *) NULL);
-  if (((crop_info->x+(int) crop_info->width) < 0) ||
-      ((crop_info->y+(int) crop_info->height) < 0) ||
-      (crop_info->x >= (int) image->columns) ||
-      (crop_info->y >= (int) image->rows))
+  if ((crop_info->width != 0) || (crop_info->height != 0))
     {
-      MagickWarning(OptionWarning,"Unable to crop image",
-        "geometry does not contain any part of the image");
-      return((Image *) NULL);
+      if (((crop_info->x+(int) crop_info->width) < 0) ||
+          ((crop_info->y+(int) crop_info->height) < 0) ||
+          (crop_info->x >= (int) image->columns) ||
+          (crop_info->y >= (int) image->rows))
+        {
+          MagickWarning(OptionWarning,"Unable to crop image",
+            "geometry does not contain any part of the image");
+          return((Image *) NULL);
+        }
     }
-  local_info=(*crop_info);
-  if ((local_info.x+(int) local_info.width) > (int) image->columns)
-    local_info.width=(unsigned int) ((int) image->columns-local_info.x);
-  if ((local_info.y+(int) local_info.height) > (int) image->rows)
-    local_info.height=(unsigned int) ((int) image->rows-local_info.y);
-  if (local_info.x < 0)
+  page_info=(*crop_info);
+  if ((page_info.width != 0) || (page_info.height != 0))
     {
-      local_info.width-=(unsigned int) (-local_info.x);
-      local_info.x=0;
+      if ((page_info.x+(int) page_info.width) > (int) image->columns)
+        page_info.width=(unsigned int) ((int) image->columns-page_info.x);
+      if ((page_info.y+(int) page_info.height) > (int) image->rows)
+        page_info.height=(unsigned int) ((int) image->rows-page_info.y);
+      if (page_info.x < 0)
+        {
+          page_info.width-=(unsigned int) (-page_info.x);
+          page_info.x=0;
+        }
+      if (page_info.y < 0)
+        {
+          page_info.height-=(unsigned int) (-page_info.y);
+          page_info.y=0;
+        }
     }
-  if (local_info.y < 0)
-    {
-      local_info.height-=(unsigned int) (-local_info.y);
-      local_info.y=0;
-    }
-  if ((local_info.width == 0) && (local_info.height == 0))
+  else
     {
       int
         x_border,
         y_border;
 
-      register int
-        i;
-
-      RunlengthPacket
-        corners[4];
+      PixelPacket
+        corners[3];
 
       /*
         Set bounding box to the image dimensions.
       */
-      x_border=local_info.x;
-      y_border=local_info.y;
-      local_info.width=0;
-      local_info.height=0;
-      local_info.x=image->columns;
-      local_info.y=image->rows;
-      p=image->pixels;
-      runlength=p->length+1;
-      corners[0]=(*p);
-      for (i=1; i <= (int) (image->rows*image->columns); i++)
-      {
-        if (runlength != 0)
-          runlength--;
-        else
-          {
-            p++;
-            runlength=p->length;
-          }
-        if (i == (int) image->columns)
-          corners[1]=(*p);
-        if (i == (int) (image->rows*image->columns-image->columns+1))
-          corners[2]=(*p);
-        if (i == (int) (image->rows*image->columns))
-          corners[3]=(*p);
-      }
-      p=image->pixels;
-      runlength=p->length+1;
+      x_border=page_info.x;
+      y_border=page_info.y;
+      page_info.width=0;
+      page_info.height=0;
+      page_info.x=image->columns;
+      page_info.y=image->rows;
+      if (!GetPixelCache(image,0,0,1,1))
+        return((Image *) NULL);
+      corners[0]=(*image->pixels);
+      if (!GetPixelCache(image,image->columns-1,0,1,1))
+        return((Image *) NULL);
+      corners[1]=(*image->pixels);
+      if (!GetPixelCache(image,0,image->rows-1,1,1))
+        return((Image *) NULL);
+      corners[2]=(*image->pixels);
       for (y=0; y < (int) image->rows; y++)
       {
+        p=GetPixelCache(image,0,y,image->columns,1);
+        if (p == (PixelPacket *) NULL)
+          break;
         for (x=0; x < (int) image->columns; x++)
         {
-          if (runlength != 0)
-            runlength--;
-          else
-            {
-              p++;
-              runlength=p->length;
-            }
           if (!ColorMatch(*p,corners[0],image->fuzz))
-            if (x < local_info.x)
-              local_info.x=x;
+            if (x < page_info.x)
+              page_info.x=x;
           if (!ColorMatch(*p,corners[1],image->fuzz))
-            if (x > (int) local_info.width)
-              local_info.width=x;
+            if (x > (int) page_info.width)
+              page_info.width=x;
           if (!ColorMatch(*p,corners[0],image->fuzz))
-            if (y < local_info.y)
-              local_info.y=y;
+            if (y < page_info.y)
+              page_info.y=y;
           if (!ColorMatch(*p,corners[2],image->fuzz))
-            if (y > (int) local_info.height)
-              local_info.height=y;
+            if (y > (int) page_info.height)
+              page_info.height=y;
+          p++;
         }
       }
-      if ((local_info.width != 0) || (local_info.height != 0))
+      if ((page_info.width != 0) || (page_info.height != 0))
         {
-          local_info.width-=local_info.x-1;
-          local_info.height-=local_info.y-1;
+          page_info.width-=page_info.x-1;
+          page_info.height-=page_info.y-1;
         }
-      local_info.width+=x_border*2;
-      local_info.height+=y_border*2;
-      local_info.x-=x_border;
-      if (local_info.x < 0)
-        local_info.x=0;
-      local_info.y-=y_border;
-      if (local_info.y < 0)
-        local_info.y=0;
-      if ((((int) local_info.width+local_info.x) > (int) image->columns) ||
-          (((int) local_info.height+local_info.y) > (int) image->rows))
+      page_info.width+=x_border*2;
+      page_info.height+=y_border*2;
+      page_info.x-=x_border;
+      if (page_info.x < 0)
+        page_info.x=0;
+      page_info.y-=y_border;
+      if (page_info.y < 0)
+        page_info.y=0;
+      if ((((int) page_info.width+page_info.x) > (int) image->columns) ||
+          (((int) page_info.height+page_info.y) > (int) image->rows))
         {
           MagickWarning(OptionWarning,"Unable to crop image",
             "geometry does not contain image");
           return((Image *) NULL);
         }
     }
-  if ((local_info.width == 0) || (local_info.height == 0))
+  if ((page_info.width == 0) || (page_info.height == 0))
     {
       MagickWarning(OptionWarning,"Unable to crop image",
         "geometry dimensions are zero");
       return((Image *) NULL);
     }
-  if ((local_info.width == image->columns) &&
-      (local_info.height == image->rows) && (local_info.x == 0) &&
-      (local_info.y == 0))
+  if ((page_info.width == image->columns) &&
+      (page_info.height == image->rows) && (page_info.x == 0) &&
+      (page_info.y == 0))
     return((Image *) NULL);
   /*
-    Initialize cropped image attributes.
+    Initialize crop image attributes.
   */
-  cropped_image=CloneImage(image,local_info.width,local_info.height,True);
-  if (cropped_image == (Image *) NULL)
+  crop_image=CloneImage(image,page_info.width,page_info.height,True);
+  if (crop_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to crop image",
         "Memory allocation failed");
       return((Image *) NULL);
     }
   /*
-    Skip pixels up to the cropped image.
+    Extract crop image.
   */
-  p=image->pixels;
-  runlength=p->length+1;
-  for (x=0; x < (int) (local_info.y*image->columns+local_info.x); x++)
-    if (runlength != 0)
-      runlength--;
-    else
-      {
-        p++;
-        runlength=p->length;
-      }
-  /*
-    Extract cropped image.
-  */
-  max_packets=0;
-  q=cropped_image->pixels;
-  SetRunlengthEncoder(q);
-  for (y=0; y < (int) (cropped_image->rows-1); y++)
+  crop_image->page_info=page_info;
+  for (y=0; y < (int) crop_image->rows; y++)
   {
-    /*
-      Transfer scanline.
-    */
-    for (x=0; x < (int) cropped_image->columns; x++)
+    p=GetPixelCache(image,page_info.x,page_info.y+y,crop_image->columns,1);
+    q=SetPixelCache(crop_image,0,y,crop_image->columns,1);
+    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+      break;
+    for (x=0; x < (int) crop_image->columns; x++)
     {
-      if (runlength != 0)
-        runlength--;
-      else
-        {
-          p++;
-          runlength=p->length;
-        }
-      if ((p->red == q->red) && (p->green == q->green) &&
-          (p->blue == q->blue) && (p->index == q->index) &&
-          ((int) q->length < MaxRunlength))
-        q->length++;
-      else
-        {
-          if (max_packets != 0)
-            q++;
-          max_packets++;
-          *q=(*p);
-          q->length=0;
-        }
+      if (image->class == PseudoClass)
+        crop_image->indexes[x]=image->indexes[x];
+      *q++=(*p++);
     }
-    /*
-      Skip to next scanline.
-    */
-    for (x=0; x < (int) (image->columns-cropped_image->columns); x++)
-      if (runlength != 0)
-        runlength--;
-      else
-        {
-          p++;
-          runlength=p->length;
-        }
-    if (QuantumTick(y,cropped_image->rows))
-      ProgressMonitor(CropImageText,y,cropped_image->rows-1);
+    if (!SyncPixelCache(crop_image))
+      break;
+    if (QuantumTick(y,crop_image->rows))
+      ProgressMonitor(CropImageText,y,crop_image->rows-1);
   }
-  /*
-    Transfer last scanline.
-  */
-  for (x=0; x < (int) cropped_image->columns; x++)
-  {
-    if (runlength != 0)
-      runlength--;
-    else
-      {
-        p++;
-        runlength=p->length;
-      }
-    if ((p->red == q->red) && (p->green == q->green) &&
-        (p->blue == q->blue) && (p->index == q->index) &&
-        ((int) q->length < MaxRunlength))
-      q->length++;
-    else
-      {
-        if (max_packets != 0)
-          q++;
-        max_packets++;
-        *q=(*p);
-        q->length=0;
-      }
-  }
-  cropped_image->packets=max_packets;
-  cropped_image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
-    cropped_image->pixels,cropped_image->packets*sizeof(RunlengthPacket));
-  return(cropped_image);
+  if (y != (int) crop_image->rows)
+    {
+      DestroyImage(crop_image);
+      return((Image *) NULL);
+    }
+  return(crop_image);
 }
 
 /*
@@ -655,7 +505,7 @@ Export Image *CropImage(const Image *image,const RectangleInfo *crop_info)
 %
 %  The format of the DeconstructImages method is:
 %
-%      void DeconstructImages(Image *images)
+%      Image *DeconstructImages(Image *images)
 %
 %  A description of each parameter follows:
 %
@@ -664,35 +514,33 @@ Export Image *CropImage(const Image *image,const RectangleInfo *crop_info)
 %      deconstructed.
 %
 */
-Export void DeconstructImages(Image *images)
+Export Image *DeconstructImages(Image *images)
 {
-  char
-    geometry[MaxTextExtent];
-
   Image
+    *crop_image,
     *deconstructed_image,
     *image;
 
   int
-    x,
     y;
 
   RectangleInfo
     *bounding_box;
 
   register int
-    i;
+    i,
+    x;
 
-  register RunlengthPacket
+  register PixelPacket
     *p,
     *q;
 
   assert(images != (Image *) NULL);
   if (images->next == (Image *) NULL)
     {
-      MagickWarning(OptionWarning,"Unable to disntegrate images",
+      MagickWarning(OptionWarning,"Unable to deconstruct images",
         "image sequence required");
-      return;
+      return((Image *) NULL);
     }
   /*
     Ensure the images are the same size.
@@ -703,11 +551,9 @@ Export void DeconstructImages(Image *images)
       {
         MagickWarning(OptionWarning,"Unable to deconstruct images",
           "images are not the same size");
-        return;
+        return((Image *) NULL);
       }
   }
-  if (!UncondenseImage(images))
-    return;
   /*
     Allocate memory.
   */
@@ -717,7 +563,7 @@ Export void DeconstructImages(Image *images)
     {
       MagickWarning(OptionWarning,"Unable to disintegrate images",
         "Memory allocation failed");
-      return;
+      return((Image *) NULL);
     }
   /*
     Compute the bounding box for each image in the sequence.
@@ -725,25 +571,21 @@ Export void DeconstructImages(Image *images)
   i=0;
   for (image=images->next; image != (Image *) NULL; image=image->next)
   {
-    assert(image->previous != (Image *) NULL);
-    if (!UncondenseImage(image))
-      {
-        FreeMemory((char *) bounding_box);
-        return;
-      }
     /*
       Set bounding box to the image dimensions.
     */
     for (x=0; x < (int) image->columns; x++)
     {
-      p=image->pixels+x;
-      q=image->previous->pixels+x;
+      p=GetPixelCache(image,x,0,1,image->rows);
+      q=GetPixelCache(image->previous,x,0,1,image->previous->rows);
+      if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+        break;
       for (y=0; y < (int) image->rows; y++)
       {
         if (!ColorMatch(*p,*q,image->fuzz))
           break;
-        p+=image->columns;
-        q+=image->columns;
+        p++;
+        q++;
       }
       if (y < (int) image->rows)
         break;
@@ -751,8 +593,10 @@ Export void DeconstructImages(Image *images)
     bounding_box[i].x=x;
     for (y=0; y < (int) image->rows; y++)
     {
-      p=image->pixels+y*image->columns;
-      q=image->previous->pixels+y*image->previous->columns;
+      p=GetPixelCache(image,0,y,image->columns,1);
+      q=GetPixelCache(image->previous,0,y,image->previous->columns,1);
+      if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+        break;
       for (x=0; x < (int) image->columns; x++)
       {
         if (!ColorMatch(*p,*q,image->fuzz))
@@ -766,14 +610,16 @@ Export void DeconstructImages(Image *images)
     bounding_box[i].y=y;
     for (x=image->columns-1; x >= 0; x--)
     {
-      p=image->pixels+x;
-      q=image->previous->pixels+x;
+      p=GetPixelCache(image,x,0,1,image->rows);
+      q=GetPixelCache(image->previous,x,0,1,image->previous->rows);
+      if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+        break;
       for (y=0; y < (int) image->rows; y++)
       {
         if (!ColorMatch(*p,*q,image->fuzz))
           break;
-        p+=image->columns;
-        q+=image->columns;
+        p++;
+        q++;
       }
       if (y < (int) image->rows)
         break;
@@ -781,8 +627,10 @@ Export void DeconstructImages(Image *images)
     bounding_box[i].width=x-bounding_box[i].x+1;
     for (y=image->rows-1; y >= 0; y--)
     {
-      p=image->pixels+y*image->columns;
-      q=image->previous->pixels+y*image->previous->columns;
+      p=GetPixelCache(image,0,y,image->columns,1);
+      q=GetPixelCache(image->previous,0,y,image->previous->columns,1);
+      if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+        break;
       for (x=0; x < (int) image->columns; x++)
       {
         if (!ColorMatch(*p,*q,image->fuzz))
@@ -797,34 +645,31 @@ Export void DeconstructImages(Image *images)
     i++;
   }
   /*
+    Clone first image in sequence.
+  */
+  deconstructed_image=CloneImage(images,images->columns,images->rows,True);
+  if (deconstructed_image == (Image *) NULL)
+    {
+      FreeMemory(bounding_box);
+      return((Image *) NULL);
+    }
+  /*
     Deconstruct the image sequence.
   */
   i=0;
-  if (images->page != (char *) NULL)
-    FreeMemory(images->page);
-  images->page=(char *) NULL;
   for (image=images->next; image != (Image *) NULL; image=image->next)
   {
-    image->orphan=True;
-    deconstructed_image=CropImage(image,&bounding_box[i]);
-    image->orphan=False;
-    if (deconstructed_image == (Image *) NULL)
+    crop_image=CropImage(image,&bounding_box[i++]);
+    if (crop_image == (Image *) NULL)
       break;
-    FreeMemory(image->pixels);
-    image->columns=deconstructed_image->columns;
-    image->rows=deconstructed_image->rows;
-    image->packets=deconstructed_image->packets;
-    image->pixels=deconstructed_image->pixels;
-    deconstructed_image->pixels=(RunlengthPacket *) NULL;
-    DestroyImage(deconstructed_image);
-    FormatString(geometry,"%ux%u%+d%+d",image->columns,image->rows,
-      bounding_box[i].x,bounding_box[i].y);
-    if (image->page != (char *) NULL)
-      FreeMemory(image->page);
-    image->page=PostscriptGeometry(geometry);
-    i++;
+    deconstructed_image->next=crop_image;
+    crop_image->previous=deconstructed_image;
+    deconstructed_image=deconstructed_image->next;
   }
-  FreeMemory((char *) bounding_box);
+  FreeMemory(bounding_box);
+  while (deconstructed_image->previous != (Image *) NULL)
+    deconstructed_image=deconstructed_image->previous;
+  return(deconstructed_image);
 }
 
 /*
@@ -844,11 +689,11 @@ Export void DeconstructImages(Image *images)
 %
 %  The format of the FlipImage method is:
 %
-%      Image *FlipImage(const Image *image)
+%      Image *FlipImage(Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o flipped_image: Method FlipImage returns a pointer to the image
+%    o flip_image: Method FlipImage returns a pointer to the image
 %      after reflecting.  A null image is returned if there is a memory
 %      shortage.
 %
@@ -856,91 +701,59 @@ Export void DeconstructImages(Image *images)
 %
 %
 */
-Export Image *FlipImage(const Image *image)
+Export Image *FlipImage(Image *image)
 {
 #define FlipImageText  "  Flipping image...  "
 
   Image
-    *flipped_image;
+    *flip_image;
 
   int
     y;
 
   register int
-    runlength,
     x;
 
-  register RunlengthPacket
+  register PixelPacket
     *p,
-    *q,
-    *s;
+    *q;
 
-  RunlengthPacket
-    *scanline;
+  unsigned int
+    status;
 
   /*
-    Initialize flipped image attributes.
+    Initialize flip image attributes.
   */
   assert(image != (Image *) NULL);
-  flipped_image=CloneImage(image,image->columns,image->rows,False);
-  if (flipped_image == (Image *) NULL)
+  flip_image=CloneImage(image,image->columns,image->rows,True);
+  if (flip_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to flip image",
         "Memory allocation failed");
       return((Image *) NULL);
     }
   /*
-    Allocate scan line buffer and column offset buffers.
-  */
-  scanline=(RunlengthPacket *)
-    AllocateMemory(image->columns*sizeof(RunlengthPacket));
-  if (scanline == (RunlengthPacket *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to reflect image",
-        "Memory allocation failed");
-      DestroyImage(flipped_image);
-      return((Image *) NULL);
-    }
-  /*
     Flip each row.
   */
-  p=image->pixels;
-  runlength=p->length+1;
-  q=flipped_image->pixels+flipped_image->packets-1;
-  for (y=0; y < (int) flipped_image->rows; y++)
+  for (y=0; y < (int) flip_image->rows; y++)
   {
-    /*
-      Read a scan line.
-    */
-    s=scanline;
-    for (x=0; x < (int) image->columns; x++)
+    p=GetPixelCache(image,0,y,image->columns,1);
+    q=SetPixelCache(flip_image,0,flip_image->rows-y-1,flip_image->columns,1);
+    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+      break;
+    for (x=0; x < (int) flip_image->columns; x++)
     {
-      if (runlength != 0)
-        runlength--;
-      else
-        {
-          p++;
-          runlength=p->length;
-        }
-      *s=(*p);
-      s++;
+      *q=(*p);
+      p++;
+      q++;
     }
-    /*
-      Flip each column.
-    */
-    s=scanline+image->columns;
-    for (x=0; x < (int) flipped_image->columns; x++)
-    {
-      s--;
-      *q=(*s);
-      q->length=0;
-      q--;
-    }
-    if (QuantumTick(y,flipped_image->rows))
-      ProgressMonitor(FlipImageText,y,flipped_image->rows);
+    status=SyncPixelCache(flip_image);
+    if (status == False)
+      break;
+    if (QuantumTick(y,flip_image->rows))
+      ProgressMonitor(FlipImageText,y,flip_image->rows);
   }
-  FreeMemory((char *) scanline);
-  return(flipped_image);
+  return(flip_image);
 }
 
 /*
@@ -960,11 +773,11 @@ Export Image *FlipImage(const Image *image)
 %
 %  The format of the FlopImage method is:
 %
-%      Image *FlopImage(const Image *image)
+%      Image *FlopImage(Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o flopped_image: Method FlopImage returns a pointer to the image
+%    o flop_image: Method FlopImage returns a pointer to the image
 %      after reflecting.  A null image is returned if there is a memory
 %      shortage.
 %
@@ -972,91 +785,60 @@ Export Image *FlipImage(const Image *image)
 %
 %
 */
-Export Image *FlopImage(const Image *image)
+Export Image *FlopImage(Image *image)
 {
 #define FlopImageText  "  Flopping image...  "
 
   Image
-    *flopped_image;
+    *flop_image;
 
   int
     y;
 
   register int
-    runlength,
     x;
 
-  register RunlengthPacket
+  register PixelPacket
     *p,
-    *q,
-    *s;
+    *q;
 
-  RunlengthPacket
-    *scanline;
+  unsigned int
+    status;
 
   /*
-    Initialize flopped image attributes.
+    Initialize flop image attributes.
   */
   assert(image != (Image *) NULL);
-  flopped_image=CloneImage(image,image->columns,image->rows,False);
-  if (flopped_image == (Image *) NULL)
+  flop_image=CloneImage(image,image->columns,image->rows,True);
+  if (flop_image == (Image *) NULL)
     {
-      MagickWarning(ResourceLimitWarning,"Unable to reflect image",
+      MagickWarning(ResourceLimitWarning,"Unable to flop image",
         "Memory allocation failed");
-      return((Image *) NULL);
-    }
-  /*
-    Allocate scan line buffer and column offset buffers.
-  */
-  scanline=(RunlengthPacket *)
-    AllocateMemory(image->columns*sizeof(RunlengthPacket));
-  if (scanline == (RunlengthPacket *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to reflect image",
-        "Memory allocation failed");
-      DestroyImage(flopped_image);
       return((Image *) NULL);
     }
   /*
     Flop each row.
   */
-  p=image->pixels;
-  runlength=p->length+1;
-  q=flopped_image->pixels;
-  for (y=0; y < (int) flopped_image->rows; y++)
+  for (y=0; y < (int) flop_image->rows; y++)
   {
-    /*
-      Read a scan line.
-    */
-    s=scanline;
-    for (x=0; x < (int) image->columns; x++)
+    p=GetPixelCache(image,0,y,image->columns,1);
+    q=SetPixelCache(flop_image,0,y,flop_image->columns,1);
+    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+      break;
+    q+=flop_image->columns;
+    for (x=0; x < (int) flop_image->columns; x++)
     {
-      if (runlength != 0)
-        runlength--;
-      else
-        {
-          p++;
-          runlength=p->length;
-        }
-      *s=(*p);
-      s++;
+      q--;
+      *q=(*p);
+      p++;
     }
-    /*
-      Flop each column.
-    */
-    s=scanline+image->columns;
-    for (x=0; x < (int) flopped_image->columns; x++)
-    {
-      s--;
-      *q=(*s);
-      q->length=0;
-      q++;
-    }
-    if (QuantumTick(y,flopped_image->rows))
-      ProgressMonitor(FlopImageText,y,flopped_image->rows);
+    status=SyncPixelCache(flop_image);
+    if (status == False)
+      break;
+    if (QuantumTick(y,flop_image->rows))
+      ProgressMonitor(FlopImageText,y,flop_image->rows);
   }
-  FreeMemory((char *) scanline);
-  return(flopped_image);
+  return(flop_image);
 }
 
 /*
@@ -1076,12 +858,11 @@ Export Image *FlopImage(const Image *image)
 %
 %  The format of the RollImage method is:
 %
-%      Image *RollImage(const Image *image,const int x_offset,
-%        const int y_offset)
+%      Image *RollImage(Image *image,const int x_offset,const int y_offset)
 %
 %  A description of each parameter follows:
 %
-%    o rolled_image: Method RollImage returns a pointer to the image after
+%    o roll_image: Method RollImage returns a pointer to the image after
 %      rolling.  A null image is returned if there is a memory shortage.
 %
 %    o image: The address of a structure of type Image.
@@ -1094,22 +875,20 @@ Export Image *FlopImage(const Image *image)
 %
 %
 */
-Export Image *RollImage(const Image *image,const int x_offset,
-  const int y_offset)
+Export Image *RollImage(Image *image,const int x_offset,const int y_offset)
 {
 #define RollImageText  "  Rolling image...  "
 
   Image
-    *rolled_image;
+    *roll_image;
 
   int
     y;
 
   register int
-    runlength,
     x;
 
-  register RunlengthPacket
+  register PixelPacket
     *p,
     *q;
 
@@ -1117,11 +896,11 @@ Export Image *RollImage(const Image *image,const int x_offset,
     offset;
 
   /*
-    Initialize rolled image attributes.
+    Initialize roll image attributes.
   */
   assert(image != (Image *) NULL);
-  rolled_image=CloneImage(image,image->columns,image->rows,False);
-  if (rolled_image == (Image *) NULL)
+  roll_image=CloneImage(image,image->columns,image->rows,True);
+  if (roll_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to roll image",
         "Memory allocation failed");
@@ -1136,29 +915,217 @@ Export Image *RollImage(const Image *image,const int x_offset,
     offset.x+=image->columns;
   if (offset.y < 0)
     offset.y+=image->rows;
-  p=image->pixels;
-  runlength=p->length+1;
   for (y=0; y < (int) image->rows; y++)
   {
     /*
       Transfer scanline.
     */
+    p=GetPixelCache(image,0,y,image->columns,1);
+    if (p == (PixelPacket *) NULL)
+      break;
     for (x=0; x < (int) image->columns; x++)
     {
-      if (runlength != 0)
-        runlength--;
-      else
-        {
-          p++;
-          runlength=p->length;
-        }
-      q=rolled_image->pixels+(((int) offset.y+y) % image->rows)*image->columns+
-        (((int) offset.x+x) % image->columns);
+      q=SetPixelCache(roll_image,((int) offset.x+x) % image->columns,
+        ((int) offset.y+y) % image->rows,1,1);
+      if (q == (PixelPacket *) NULL)
+        break;
+      if (image->class == PseudoClass)
+        roll_image->indexes[x]=*image->indexes;
       *q=(*p);
-      q->length=0;
+      p++;
+      if (!SyncPixelCache(roll_image))
+        break;
     }
     if (QuantumTick(y,image->rows))
       ProgressMonitor(RollImageText,y,image->rows);
   }
-  return(rolled_image);
+  return(roll_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   T r a n s f o r m I m a g e                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method TransformImage creates a new image that is a transformed size of
+%  of existing one as specified by the crop and image geometries.  It
+%  allocates the memory necessary for the new Image structure and returns a
+%  pointer to the new image.
+%
+%  If a crop geometry is specified a subregion of the image is obtained.
+%  If the specified image size, as defined by the image and scale geometries,
+%  is smaller than the actual image size, the image is first minified to an
+%  integral of the specified image size with an antialias digital filter.  The
+%  image is then scaled to the exact specified image size with pixel
+%  replication.  If the specified image size is greater than the actual image
+%  size, the image is first enlarged to an integral of the specified image
+%  size with bilinear interpolation.  The image is then scaled to the exact
+%  specified image size with pixel replication.
+%
+%  The format of the TransformImage method is:
+%
+%      void TransformImage(Image **image,const char *crop_geometry,
+%        const char *image_geometry)
+%
+%  A description of each parameter follows:
+%
+%    o image: The address of an address of a structure of type Image.  The
+%      transformed image is returned as this parameter.
+%
+%    o crop_geometry: Specifies a pointer to a crop geometry string.
+%      This geometry defines a subregion of the image.
+%
+%    o image_geometry: Specifies a pointer to a image geometry string.
+%      The specified width and height of this geometry string are absolute.
+%
+%
+*/
+Export void TransformImage(Image **image,const char *crop_geometry,
+  const char *image_geometry)
+{
+  Image
+    *transformed_image;
+
+  int
+    flags,
+    x,
+    y;
+
+  unsigned int
+    height,
+    width;
+
+  assert(image != (Image **) NULL);
+  transformed_image=(*image);
+  if (crop_geometry != (const char *) NULL)
+    {
+      Image
+        *crop_image;
+
+      RectangleInfo
+        crop_info;
+
+      /*
+        Crop image to a user specified size.
+      */
+      width=transformed_image->columns;
+      height=transformed_image->rows;
+      crop_info.x=0;
+      crop_info.y=0;
+      flags=ParseGeometry((char *) crop_geometry,&crop_info.x,&crop_info.y,
+        &width,&height);
+      if ((flags & WidthValue) == 0)
+        width=(unsigned int) ((int) transformed_image->columns-crop_info.x);
+      if ((flags & HeightValue) == 0)
+        height=(unsigned int) ((int) transformed_image->rows-crop_info.y);
+      /*
+         do not muck with offsets for autocrop case - let x and y be
+         positive and negative to allow adjustment of the autocrop
+         in either direction
+      */
+      if ((width != 0) || (height != 0))
+        {
+          if ((flags & XNegative) != 0)
+            crop_info.x+=transformed_image->columns-width;
+          if ((flags & YNegative) != 0)
+            crop_info.y+=transformed_image->rows-height;
+        }
+      if (strchr(crop_geometry,'%') != (char *) NULL)
+        {
+          /*
+            Crop geometry is relative to image size.
+          */
+          x=0;
+          y=0;
+          (void) ParseImageGeometry(crop_geometry,&x,&y,&width,&height);
+          if (width > transformed_image->columns)
+            width=transformed_image->columns;
+          if (height > transformed_image->rows)
+            height=transformed_image->rows;
+          crop_info.x=width >> 1;
+          crop_info.y=height >> 1;
+          width=transformed_image->columns-width;
+          height=transformed_image->rows-height;
+          flags|=XValue | YValue;
+        }
+      crop_info.width=width;
+      crop_info.height=height;
+      if ((width == 0) || (height == 0) ||
+          ((flags & XValue) != 0) || ((flags & YValue) != 0))
+        crop_image=CropImage(transformed_image,&crop_info);
+      else
+        {
+          Image
+            *next_image;
+
+          /*
+            Crop repeatedly to create uniform subimages.
+          */
+          next_image=(Image *) NULL;
+          crop_image=(Image *) NULL;
+          for (y=0; y < (int) transformed_image->rows; y+=height)
+          {
+            for (x=0; x < (int) transformed_image->columns; x+=width)
+            {
+              crop_info.width=width;
+              crop_info.height=height;
+              crop_info.x=x;
+              crop_info.y=y;
+              next_image=CropImage(transformed_image,&crop_info);
+              if (next_image == (Image *) NULL)
+                break;
+              if (crop_image == (Image *) NULL)
+                crop_image=next_image;
+              else
+                {
+                  next_image->previous=crop_image;
+                  crop_image->next=next_image;
+                  crop_image=crop_image->next;
+                }
+            }
+            if (next_image == (Image *) NULL)
+              break;
+          }
+        }
+      if (crop_image != (Image *) NULL)
+        {
+          DestroyImage(transformed_image);
+          while (crop_image->previous != (Image *) NULL)
+            crop_image=crop_image->previous;
+          transformed_image=crop_image;
+        }
+    }
+  /*
+    Scale image to a user specified size.
+  */
+  width=transformed_image->columns;
+  height=transformed_image->rows;
+  x=0;
+  y=0;
+  (void) ParseImageGeometry(image_geometry,&x,&y,&width,&height);
+  if ((transformed_image->columns != width) ||
+      (transformed_image->rows != height))
+    {
+      Image
+        *zoomed_image;
+
+      /*
+        Zoom image.
+      */
+      zoomed_image=ZoomImage(transformed_image,width,height);
+      if (zoomed_image == (Image *) NULL)
+        zoomed_image=ScaleImage(transformed_image,width,height);
+      if (zoomed_image != (Image *) NULL)
+        {
+          DestroyImage(transformed_image);
+          transformed_image=zoomed_image;
+        }
+    }
+  *image=transformed_image;
 }

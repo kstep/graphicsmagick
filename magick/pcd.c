@@ -59,22 +59,23 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   P C D D e c o d e I m a g e                                               %
+%   D e c o d e I m a g e                                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method PCDDecodeImage recovers the Huffman encoded luminance and
-%  chrominance deltas.
+%  Method DecodeImage recovers the Huffman encoded luminance and chrominance
+%  deltas.
 %
-%  The format of the PCDDecodeImage method is:
+%  The format of the DecodeImage method is:
 %
-%      Image *ReadPCDImage(const ImageInfo *image_info)
+%      static unsigned int DecodeImage(Image *image,unsigned char *luma,
+%        unsigned char *chroma1,unsigned char *chroma2)
 %
 %  A description of each parameter follows:
 %
-%    o status:  Method PCDDecodeImage returns True if all the deltas are
+%    o status:  Method DecodeImage returns True if all the deltas are
 %      recovered without error, otherwise False.
 %
 %    o image: The address of a structure of type Image.
@@ -91,11 +92,11 @@
 %
 %
 */
-static unsigned int PCDDecodeImage(Image *image,unsigned char *luma,
+static unsigned int DecodeImage(Image *image,unsigned char *luma,
   unsigned char *chroma1,unsigned char *chroma2)
 {
 #define IsSync  ((accumulator & 0xffffff00) == 0xfffffe00)
-#define PCDDecodeImageText  "  PCD decode image...  "
+#define DecodeImageText  "  PCD decode image...  "
 #define PCDGetBits(n) \
 {  \
   accumulator=(accumulator << n) & 0xffffffff; \
@@ -185,7 +186,7 @@ static unsigned int PCDDecodeImage(Image *image,unsigned char *luma,
       {
         MagickWarning(ResourceLimitWarning,"Memory allocation failed",
           (char *) NULL);
-        FreeMemory((char *) buffer);
+        FreeMemory(buffer);
         return(False);
       }
     r=pcd_table[i];
@@ -195,7 +196,7 @@ static unsigned int PCDDecodeImage(Image *image,unsigned char *luma,
       r->length=(accumulator & 0xff)+1;
       if (r->length > 16)
         {
-          FreeMemory((char *) buffer);
+          FreeMemory(buffer);
           return(False);
         }
       PCDGetBits(16);
@@ -215,7 +216,7 @@ static unsigned int PCDDecodeImage(Image *image,unsigned char *luma,
     {
       MagickWarning(ResourceLimitWarning,"Memory allocation failed",
         (char *) NULL);
-      FreeMemory((char *) buffer);
+      FreeMemory(buffer);
       return(False);
     }
   for (i=0; i <= MaxRGB; i++)
@@ -286,7 +287,7 @@ static unsigned int PCDDecodeImage(Image *image,unsigned char *luma,
         }
         length=pcd_length[plane];
         if (QuantumTick(row,image->rows))
-          ProgressMonitor(PCDDecodeImageText,row,image->rows);
+          ProgressMonitor(DecodeImageText,row,image->rows);
         continue;
       }
     /*
@@ -317,11 +318,50 @@ static unsigned int PCDDecodeImage(Image *image,unsigned char *luma,
     Free memory.
   */
   for (i=0; i < (image->columns > 1536 ? 3 : 1); i++)
-    FreeMemory((char *) pcd_table[i]);
+    FreeMemory(pcd_table[i]);
   range_limit-=(MaxRGB+1);
-  FreeMemory((char *) range_limit);
-  FreeMemory((char *) buffer);
+  FreeMemory(range_limit);
+  FreeMemory(buffer);
   return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   I s P C D                                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsPCD returns True if the image format type, identified by the
+%  magick string, is PCD.
+%
+%  The format of the ReadPCDImage method is:
+%
+%      unsigned int IsPCD(const unsigned char *magick,
+%        const unsigned int length)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method IsPCD returns True if the image format type is PCD.
+%
+%    o magick: This string is generally the first few bytes of an image file
+%      or blob.
+%
+%    o length: Specifies the length of the magick string.
+%
+%
+*/
+Export unsigned int IsPCD(const unsigned char *magick,const unsigned int length)
+{
+  if (length < 4)
+    return(False);
+  if (strncmp((char *) magick,"PCD_",4) == 0)
+    return(True);
+  return(False);
 }
 
 /*
@@ -399,19 +439,23 @@ Export Image *ReadPCDImage(const ImageInfo *image_info)
   Image
     *image;
 
+  int
+    x;
+
   long int
     offset;
 
   register int
-    i;
+    i,
+    y;
 
-  register RunlengthPacket
-    *p;
+  register PixelPacket
+    *q;
 
   register unsigned char
     *c1,
     *c2,
-    *y;
+    *yy;
 
   unsigned char
     *chroma1,
@@ -453,7 +497,7 @@ Export Image *ReadPCDImage(const ImageInfo *image_info)
     ReaderExit(CorruptImageWarning,"Not a PCD image file",image);
   rotate=header[0x0e02] & 0x03;
   number_images=(header[10] << 8) | header[11];
-  FreeMemory((char *) header);
+  FreeMemory(header);
   /*
     Determine resolution by subimage specification.
   */
@@ -502,13 +546,12 @@ Export Image *ReadPCDImage(const ImageInfo *image_info)
   /*
     Allocate luma and chroma memory.
   */
-  image->packets=image->columns*image->rows;
   chroma1=(unsigned char *)
-    AllocateMemory((image->packets+1)*sizeof(unsigned char));
+    AllocateMemory((image->columns*image->rows+1)*sizeof(unsigned char));
   chroma2=(unsigned char *)
-    AllocateMemory((image->packets+1)*sizeof(unsigned char));
+    AllocateMemory((image->columns*image->rows+1)*sizeof(unsigned char));
   luma=(unsigned char *)
-    AllocateMemory((image->packets+1)*sizeof(unsigned char));
+    AllocateMemory((image->columns*image->rows+1)*sizeof(unsigned char));
   if ((chroma1 == (unsigned char *) NULL) ||
       (chroma2 == (unsigned char *) NULL) || (luma == (unsigned char *) NULL))
     ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
@@ -548,21 +591,15 @@ Export Image *ReadPCDImage(const ImageInfo *image_info)
         image->scene=j;
         image->columns=width;
         image->rows=height;
-        image->packets=image->columns*image->rows;
-        image->pixels=(RunlengthPacket *)
-          AllocateMemory(image->packets*sizeof(RunlengthPacket));
-        if (image->pixels == (RunlengthPacket *) NULL)
-          ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-        SetImage(image);
-        y=luma;
+        yy=luma;
         c1=chroma1;
         c2=chroma2;
         for (i=0; i < (int) height; i+=2)
         {
-          (void) ReadBlob(image,width,(char *) y);
-          y+=image->columns;
-          (void) ReadBlob(image,width,(char *) y);
-          y+=image->columns;
+          (void) ReadBlob(image,width,(char *) yy);
+          yy+=image->columns;
+          (void) ReadBlob(image,width,(char *) yy);
+          yy+=image->columns;
           (void) ReadBlob(image,width >> 1,(char *) c1);
           c1+=image->columns;
           (void) ReadBlob(image,width >> 1,(char *) c2);
@@ -573,18 +610,23 @@ Export Image *ReadPCDImage(const ImageInfo *image_info)
         /*
           Transfer luminance and chrominance channels.
         */
-        p=image->pixels;
-        y=luma;
+        yy=luma;
         c1=chroma1;
         c2=chroma2;
-        for (i=0; i < (int) image->packets; i++)
+        for (y=0; y < (int) image->rows; y++)
         {
-          p->red=UpScale(*y++);
-          p->green=UpScale(*c1++);
-          p->blue=UpScale(*c2++);
-          p->index=0;
-          p->length=0;
-          p++;
+          q=SetPixelCache(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            break;
+          for (x=0; x < (int) image->columns; x++)
+          {
+            q->red=UpScale(*yy++);
+            q->green=UpScale(*c1++);
+            q->blue=UpScale(*c2++);
+            q++;
+          }
+          if (!SyncPixelCache(image))
+            break;
         }
         if (Latin1Compare(image_info->magick,"PCDS") == 0)
           TransformRGBImage(image,sRGBColorspace);
@@ -609,32 +651,23 @@ Export Image *ReadPCDImage(const ImageInfo *image_info)
       FreeMemory(chroma2);
       FreeMemory(chroma1);
       FreeMemory(luma);
-      CondenseImage(image);
       while (image->previous != (Image *) NULL)
         image=image->previous;
       overview_image=OverviewImage(image_info,image);
       return(overview_image);
     }
   /*
-    Allocate image pixels.
-  */
-  image->pixels=(RunlengthPacket *)
-    AllocateMemory(image->packets*sizeof(RunlengthPacket));
-  if (image->pixels == (RunlengthPacket *) NULL)
-    ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-  SetImage(image);
-  /*
     Read interleaved image.
   */
-  y=luma;
+  yy=luma;
   c1=chroma1;
   c2=chroma2;
   for (i=0; i < (int) height; i+=2)
   {
-    (void) ReadBlob(image,width,(char *) y);
-    y+=image->columns;
-    (void) ReadBlob(image,width,(char *) y);
-    y+=image->columns;
+    (void) ReadBlob(image,width,(char *) yy);
+    yy+=image->columns;
+    (void) ReadBlob(image,width,(char *) yy);
+    yy+=image->columns;
     (void) ReadBlob(image,width >> 1,(char *) c1);
     c1+=image->columns;
     (void) ReadBlob(image,width >> 1,(char *) c2);
@@ -651,7 +684,7 @@ Export Image *ReadPCDImage(const ImageInfo *image_info)
       image->rows=1024;
       for (i=0; i < (4*0x800); i++)
         (void) ReadByte(image);
-      status=PCDDecodeImage(image,luma,chroma1,chroma2);
+      status=DecodeImage(image,luma,chroma1,chroma2);
       if ((subimage >= 5) && status)
         {
           /*
@@ -663,7 +696,7 @@ Export Image *ReadPCDImage(const ImageInfo *image_info)
           image->rows=2048;
           offset=TellBlob(image)/0x800+12;
           (void) SeekBlob(image,offset*0x800,SEEK_SET);
-          status=PCDDecodeImage(image,luma,chroma1,chroma2);
+          status=DecodeImage(image,luma,chroma1,chroma2);
           if ((subimage >= 6) && status)
             {
               /*
@@ -681,20 +714,25 @@ Export Image *ReadPCDImage(const ImageInfo *image_info)
   /*
     Transfer luminance and chrominance channels.
   */
-  p=image->pixels;
-  y=luma;
+  yy=luma;
   c1=chroma1;
   c2=chroma2;
-  for (i=0; i < (int) image->packets; i++)
+  for (y=0; y < (int) image->rows; y++)
   {
-    p->red=UpScale(*y++);
-    p->green=UpScale(*c1++);
-    p->blue=UpScale(*c2++);
-    p->index=0;
-    p->length=0;
-    p++;
-    if (QuantumTick(i,image->columns*image->rows))
-      ProgressMonitor(LoadImageText,i,image->columns*image->rows);
+    q=SetPixelCache(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < (int) image->columns; x++)
+    {
+      q->red=UpScale(*yy++);
+      q->green=UpScale(*c1++);
+      q->blue=UpScale(*c2++);
+      q++;
+    }
+    if (!SyncPixelCache(image))
+      break;
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(LoadImageText,y,image->rows);
   }
   FreeMemory(chroma2);
   FreeMemory(chroma1);
@@ -715,9 +753,7 @@ Export Image *ReadPCDImage(const ImageInfo *image_info)
         Rotate image.
       */
       degrees=rotate == 1 ? -90.0 : 90.0;
-      image->orphan=True;
-      rotated_image=RotateImage(image,degrees,False,True);
-      image->orphan=False;
+      rotated_image=RotateImage(image,degrees);
       if (rotated_image != (Image *) NULL)
         {
           DestroyImage(image);
@@ -736,7 +772,6 @@ Export Image *ReadPCDImage(const ImageInfo *image_info)
   image->chromaticity.white_point.x=0.3127f;
   image->chromaticity.white_point.y=0.3290f;
   image->gamma=0.5;
-  CondenseImage(image);
   CloseBlob(image);
   return(image);
 }
@@ -757,8 +792,7 @@ Export Image *ReadPCDImage(const ImageInfo *image_info)
 %
 %  The format of the WritePCDImage method is:
 %
-%      unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
-%        char *geometry,char *tile_geometry)
+%      unsigned int WritePCDImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %
@@ -773,7 +807,7 @@ Export Image *ReadPCDImage(const ImageInfo *image_info)
 %
 */
 
-Export unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
+static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
   char *geometry,char *tile_geometry)
 {
   Image
@@ -787,7 +821,7 @@ Export unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
   register int
     i;
 
-  register RunlengthPacket
+  register PixelPacket
     *p,
     *q;
 
@@ -807,9 +841,7 @@ Export unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
     width--;
   if ((height % 2) != 0)
     height--;
-  image->orphan=True;
   tile_image=ZoomImage(image,width,height);
-  image->orphan=False;
   if (tile_image == (Image *) NULL)
     WriterExit(ResourceLimitWarning,"Unable to scale image",image);
   (void) sscanf(geometry,"%ux%u",&width,&height);
@@ -834,31 +866,34 @@ Export unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
     }
   TransformImage(&tile_image,(char *) NULL,tile_geometry);
   RGBTransformImage(tile_image,YCCColorspace);
-  downsampled_image=MinifyImage(tile_image);
+  downsampled_image=
+    ZoomImage(tile_image,tile_image->columns >> 1,tile_image->rows >> 1);
   if (downsampled_image == (Image *) NULL)
     WriterExit(ResourceLimitWarning,"Unable to scale image",image);
-  if (!UncondenseImage(tile_image))
-    return(False);
-  if (!UncondenseImage(downsampled_image))
-    return(False);
   /*
     Write tile to PCD file.
   */
-  p=tile_image->pixels;
   for (y=0; y < (int) tile_image->rows; y+=2)
   {
+    p=GetPixelCache(tile_image,0,y,tile_image->columns,2);
+    if (p == (PixelPacket *) NULL)
+      break;
     for (x=0; x < (int) (tile_image->columns << 1); x++)
     {
       (void) WriteByte(image,DownScale(p->red));
       p++;
     }
-    q=downsampled_image->pixels+(y >> 1)*downsampled_image->columns;
+    q=GetPixelCache(downsampled_image,0,y >> 1,downsampled_image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
     for (x=0; x < (int) downsampled_image->columns; x++)
     {
       (void) WriteByte(image,DownScale(q->green));
       q++;
     }
-    q=downsampled_image->pixels+(y >> 1)*downsampled_image->columns;
+    q=GetPixelCache(downsampled_image,0,y >> 1,downsampled_image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
     for (x=0; x < (int) downsampled_image->columns; x++)
     {
       (void) WriteByte(image,DownScale(q->blue));
@@ -894,9 +929,7 @@ Export unsigned int WritePCDImage(const ImageInfo *image_info,Image *image)
       /*
         Rotate portrait to landscape.
       */
-      image->orphan=True;
-      rotated_image=RotateImage(image,90.0,False,True);
-      image->orphan=False;
+      rotated_image=RotateImage(image,90.0);
       if (rotated_image == (Image *) NULL)
         WriterExit(ResourceLimitWarning,"Unable to rotate image",image);
       pcd_image=rotated_image;
@@ -905,7 +938,7 @@ Export unsigned int WritePCDImage(const ImageInfo *image_info,Image *image)
     Open output image file.
   */
   status=OpenBlob(image_info,pcd_image,WriteBinaryType);
-  if (pcd_image->file == (FILE *) NULL)
+  if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",pcd_image);
   TransformRGBImage(pcd_image,RGBColorspace);
   /*

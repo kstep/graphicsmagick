@@ -57,11 +57,11 @@ namespace Magick
     void           blueQuantum ( Quantum blue_ );
     Quantum        blueQuantum ( void ) const;
 
-    // Alpha level (0 = transparent, 1 = opaque)
+    // Alpha level (0 = transparent, MaxRGB = opaque)
     void           alphaQuantum ( Quantum alpha_ );
     Quantum        alphaQuantum ( void ) const;
 
-    // Scaled version of alpha for use in sub-classes
+    // Scaled (to 1.0) version of alpha for use in sub-classes
     void           alpha ( double alpha_ );
     double         alpha ( void ) const;
         
@@ -83,17 +83,26 @@ namespace Magick
     // Public methods beyond this point are for Magick++ use only.
     //
 
-    // Increment operator (advance to next RunlengthPacket)
+    // Construct color via ImageMagick PixelPacket
+    Color ( MagickLib::PixelPacket &color_ );
+
+    // Set color via ImageMagick PixelPacket
+    const Color operator= ( MagickLib::PixelPacket &color_ );
+
+    // Return ImageMagick PixelPacket
+    operator MagickLib::PixelPacket() const;
+
+    // Increment operator (advance to next PixelPacket)
     Color& operator++ ();
 
-    // Decrement operator (go to preceding RunlengthPacket)
+    // Decrement operator (go to preceding PixelPacket)
     Color& operator-- ();
 
   protected:
 
   private:
 
-    // PacketType specifies the interpretation of RunlengthPacket members
+    // PacketType specifies the interpretation of PixelPacket members
     // RGBPacket:
     //   Red      = red;
     //   Green    = green;
@@ -115,16 +124,26 @@ namespace Magick
       CYMKPacket
     };
 
-    // Private constructor to construct with RunlengthPacket*
+    // Private constructor to construct with PixelPacket*
     // Used to point Color at a pixel.
-    Color ( MagickLib::RunlengthPacket* rep_ );
+    Color ( MagickLib::PixelPacket* rep_, PacketType packetType_ );
 
-    // Common initializer for RunlengthPacket representation
+    // Common initializer for PixelPacket representation
     void initRep();
 
 
-    MagickLib::RunlengthPacket* _packet;
+    // PixelPacket represents a color pixel:
+    //  red     = red   (range 0 to MaxRGB)
+    //  green   = green (range 0 to MaxRGB)
+    //  blue    = blue  (range 0 to MaxRGB)
+    //  opacity = alpha (range Transparent to Opaque)
+    //  index   = PseudoColor colormap index
+    MagickLib::PixelPacket*     _packet;
+
+    // Set true if we allocated packet
     bool                        _packetOwn;
+
+    // Color type supported by _packet
     PacketType			_packetType;
   };
 
@@ -242,7 +261,8 @@ inline Magick::Color::Color ( Quantum red_,
 			      Quantum blue_,
 			      Quantum alpha_ )
   : _packet(0),
-    _packetOwn(true)
+    _packetOwn(true),
+    _packetType(RGBPacket)
 {
 
   initRep();
@@ -255,7 +275,8 @@ inline Magick::Color::Color ( Quantum red_,
 
 inline Magick::Color::Color ( const std::string x11color_ )
   : _packet(0),
-    _packetOwn(true)
+    _packetOwn(true),
+    _packetType(RGBPacket)
 {
   initRep();
 
@@ -275,7 +296,8 @@ inline Magick::Color::Color ( const char * x11color_ )
 
 inline Magick::Color::Color ( void )
   : _packet(0),
-    _packetOwn(true)
+    _packetOwn(false),
+    _packetType(RGBPacket)
 {
   // No more initialization
 }
@@ -284,6 +306,7 @@ inline Magick::Color::~Color( void )
 {
   if ( _packetOwn )
     delete _packet;
+  _packetOwn = false;
 }
 
 inline void Magick::Color::redQuantum ( Quantum red_ )
@@ -296,7 +319,9 @@ inline void Magick::Color::redQuantum ( Quantum red_ )
 
 inline Magick::Quantum Magick::Color::redQuantum ( void ) const
 {
-  return _packet->red;
+  if ( _packet )
+    return _packet->red;
+  return 0;
 }
 
 inline void Magick::Color::greenQuantum ( Quantum green_ )
@@ -309,7 +334,9 @@ inline void Magick::Color::greenQuantum ( Quantum green_ )
 
 inline Magick::Quantum  Magick::Color::greenQuantum ( void ) const
 {
-  return _packet->green;
+  if ( _packet )
+    return _packet->green;
+  return 0;
 }
 
 inline void  Magick::Color::blueQuantum ( Quantum blue_ )
@@ -322,7 +349,9 @@ inline void  Magick::Color::blueQuantum ( Quantum blue_ )
 
 inline Magick::Quantum Magick::Color::blueQuantum ( void ) const
 {
-  return _packet->blue;
+  if ( _packet )
+    return _packet->blue;
+  return 0;
 }
 
 inline void  Magick::Color::alphaQuantum ( Quantum alpha_ )
@@ -330,12 +359,16 @@ inline void  Magick::Color::alphaQuantum ( Quantum alpha_ )
   if ( !_packet )
     initRep();
 
-  _packet->index = (Quantum) (alpha_ > MaxRGB ? MaxRGB : alpha_);
+  _packet->opacity = (Quantum) (alpha_ > MaxRGB ? MaxRGB : alpha_);
+
+  // Only promote to RGBAPacket if not Opaque
+  if ( _packet->opacity < MaxRGB )
+    _packetType = RGBAPacket;
 }
 
 inline Magick::Quantum Magick::Color::alphaQuantum ( void ) const
 {
-  return _packet->index;
+  return _packet->opacity;
 }
 
 // Scaled version of alpha for use in sub-classes
@@ -353,7 +386,8 @@ inline void Magick::Color::isValid ( bool valid_ )
 {
   if ( ! valid_ )
     {
-      delete _packet;
+      if ( _packetOwn )
+	delete _packet;
       _packet = 0;
     }
 }
@@ -362,23 +396,24 @@ inline bool Magick::Color::isValid ( void ) const
   return _packet != 0;
 }
 
-// Private constructor to construct with RunlengthPacket*
+// Private constructor to construct with PixelPacket*
 // Used to point Color at a pixel.
-inline Magick::Color::Color ( MagickLib::RunlengthPacket* rep_ )
+inline Magick::Color::Color ( MagickLib::PixelPacket* rep_, PacketType packetType_  )
   : _packet(rep_),
-    _packetOwn(true)
+    _packetOwn(false),
+    _packetType(packetType_)
 {
+  // Nothing more to do
 }
 
-// Common initializer for RunlengthPacket representation
+// Common initializer for PixelPacket representation
 inline void Magick::Color::initRep()
 {
-  _packet = new MagickLib::RunlengthPacket;
-  _packet->red    = 0;
-  _packet->green  = 0;
-  _packet->blue   = 0;
-  _packet->length = 1;
-  _packet->index  = MaxRGB;
+  _packet = new MagickLib::PixelPacket;
+  _packet->red     = 0;
+  _packet->green   = 0;
+  _packet->blue    = 0;
+  _packet->opacity = MaxRGB;
 }
 
 // Increment operator
@@ -394,7 +429,6 @@ inline Magick::Color& Magick::Color::operator-- ()
   --_packet;
   return *this;
 }
-
 
 //
 // ColorRGB

@@ -59,6 +59,48 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   I s H T M L                                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsHTML returns True if the image format type, identified by the
+%  magick string, is HTML.
+%
+%  The format of the ReadHTMLImage method is:
+%
+%      unsigned int IsHTML(const unsigned char *magick,
+%        const unsigned int length)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method IsHTML returns True if the image format type is HTML.
+%
+%    o magick: This string is generally the first few bytes of an image file
+%      or blob.
+%
+%    o length: Specifies the length of the magick string.
+%
+%
+*/
+Export unsigned int IsHTML(const unsigned char *magick,
+  const unsigned int length)
+{
+  if (length < 5)
+    return(False);
+  if (strncmp((char *) magick,"<HTML",5) == 0)
+    return(True);
+  if (strncmp((char *) magick,"<html",5) == 0)
+    return(True);
+  return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   W r i t e H T M L I m a g e                                               %
 %                                                                             %
 %                                                                             %

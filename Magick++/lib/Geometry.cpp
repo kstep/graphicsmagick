@@ -263,3 +263,18 @@ ostream& operator<<(ostream& stream_, const Magick::Geometry& geometry_)
   stream_ << geomStr;
   return stream_;
 }
+
+// Return an ImageMagick RectangleInfo struct
+Magick::Geometry::operator MagickLib::RectangleInfo() const
+{
+  MagickLib::RectangleInfo rectangle;
+  rectangle.width  = width();
+  rectangle.height = height();;
+  rectangle.x      = xOff();
+  if ( xNegative() )
+    rectangle.x -= 2 * rectangle.x;
+  rectangle.y      = yOff();
+  if ( yNegative() )
+    rectangle.y -= 2 * rectangle.y;
+  return rectangle;
+}

@@ -277,10 +277,8 @@ typedef struct _XResourceInfo
     magnify;
 
   char
+    *map_type,
     *matte_color,
-    *map_type;
-
-  char
     *name;
 
   unsigned int
@@ -502,7 +500,7 @@ extern Export unsigned int
   XMakeImage(Display *,const XResourceInfo *,XWindowInfo *,Image *,
     unsigned int,unsigned int),
   XMakePixmap(Display *,const XResourceInfo *,XWindowInfo *),
-  XQueryColorDatabase(const char *,ColorPacket *);
+  XQueryColorDatabase(const char *,XColor *);
 
 extern Export void
   XAnimateBackgroundImage(Display *,XResourceInfo *,Image *),
@@ -522,7 +520,7 @@ extern Export void
   XGetAnnotateInfo(XAnnotateInfo *),
   XGetImportInfo(XImportInfo *),
   XGetMapInfo(const XVisualInfo *,const Colormap,XStandardColormap *),
-  XGetPixelInfo(Display *,const XVisualInfo *,const XStandardColormap *,
+  XGetPixelPacket(Display *,const XVisualInfo *,const XStandardColormap *,
     const XResourceInfo *,Image *,XPixelInfo *),
   XGetResourceInfo(XrmDatabase,char *,XResourceInfo *),
   XGetWindowInfo(Display *,XVisualInfo *,XStandardColormap *,XPixelInfo *,

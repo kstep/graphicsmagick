@@ -36,7 +36,7 @@ decorate - ImageMagick Image Decoration Methods
 Image * <STRONG>BorderImage</STRONG>( const Image *image, const RectangleInfo <CODE>*border_info</CODE> );
 
 <P>
-Image * <STRONG>FrameImage</STRONG>( const Image *image, const FrameInfo <CODE>*frame_info</CODE> );
+Image * <STRONG>FrameImage</STRONG>( Image *image, const FrameInfo <CODE>*frame_info</CODE> );
 
 <P>
 void  <STRONG>RaiseImage</STRONG>( Image *image, const RectangleInfo *raise_info, const int raised );
@@ -89,14 +89,14 @@ returns a pointer to the new image.
 <P>
 The format of the FrameImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *FrameImage ( const <A HREF="types/Image.html">Image</A> *image, const FrameInfo *frame_info ); </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *FrameImage ( <A HREF="types/Image.html">Image</A> *image, const FrameInfo *frame_info ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<p><dt><STRONG>framed_image:</STRONG><DD>
+<p><dt><STRONG>frame_image:</STRONG><DD>
 <P>
 Method FrameImage returns a pointer to the framed image. 
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory

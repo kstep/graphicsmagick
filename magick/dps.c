@@ -113,8 +113,8 @@ Export Image *ReadDPSImage(const ImageInfo *image_info)
   register int
     i;
 
-  register RunlengthPacket
-    *p;
+  register PixelPacket
+    *q;
 
   register unsigned long
     pixel;
@@ -302,20 +302,6 @@ Export Image *ReadDPSImage(const ImageInfo *image_info)
     image->class=PseudoClass;
   image->columns=dps_image->width;
   image->rows=dps_image->height;
-  image->packets=image->columns*image->rows;
-  image->pixels=(RunlengthPacket *)
-    AllocateMemory(image->packets*sizeof(RunlengthPacket));
-  if (image->pixels == (RunlengthPacket *) NULL)
-    {
-      DestroyImage(image);
-      FreeMemory((char *) colors);
-      XDestroyImage(dps_image);
-      XFreeResources(display,visual_info,map_info,(XPixelInfo *) NULL,
-        (XFontStruct *) NULL,&resource_info,(XWindowInfo *) NULL);
-      return((Image *) NULL);
-    }
-  SetImage(image);
-  p=image->pixels;
   switch (image->class)
   {
     case DirectClass:
@@ -364,38 +350,44 @@ Export Image *ReadDPSImage(const ImageInfo *image_info)
           (visual_info->class == DirectColor))
         for (y=0; y < (int) image->rows; y++)
         {
+          q=SetPixelCache(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            break;
           for (x=0; x < (int) image->columns; x++)
           {
             pixel=XGetPixel(dps_image,x,y);
             index=(pixel >> red_shift) & red_mask;
-            p->red=XDownScale(colors[index].red);
+            q->red=XDownScale(colors[index].red);
             index=(pixel >> green_shift) & green_mask;
-            p->green=XDownScale(colors[index].green);
+            q->green=XDownScale(colors[index].green);
             index=(pixel >> blue_shift) & blue_mask;
-            p->blue=XDownScale(colors[index].blue);
-            p->index=0;
-            p->length=0;
-            p++;
+            q->blue=XDownScale(colors[index].blue);
+            q++;
           }
+          if (!SyncPixelCache(image))
+            break;
           if (QuantumTick(y,image->rows))
             ProgressMonitor(LoadImageText,y,image->rows);
         }
       else
         for (y=0; y < (int) image->rows; y++)
         {
+          q=SetPixelCache(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            break;
           for (x=0; x < (int) image->columns; x++)
           {
             pixel=XGetPixel(dps_image,x,y);
             color=(pixel >> red_shift) & red_mask;
-            p->red=XDownScale((color*65535L)/red_mask);
+            q->red=XDownScale((color*65535L)/red_mask);
             color=(pixel >> green_shift) & green_mask;
-            p->green=XDownScale((color*65535L)/green_mask);
+            q->green=XDownScale((color*65535L)/green_mask);
             color=(pixel >> blue_shift) & blue_mask;
-            p->blue=XDownScale((color*65535L)/blue_mask);
-            p->index=0;
-            p->length=0;
-            p++;
+            q->blue=XDownScale((color*65535L)/blue_mask);
+            q++;
           }
+          if (!SyncPixelCache(image))
+            break;
           if (QuantumTick(y,image->rows))
             ProgressMonitor(LoadImageText,y,image->rows);
         }
@@ -407,12 +399,12 @@ Export Image *ReadDPSImage(const ImageInfo *image_info)
         Create colormap.
       */
       image->colors=visual_info->colormap_size;
-      image->colormap=(ColorPacket *)
-        AllocateMemory(image->colors*sizeof(ColorPacket));
-      if (image->colormap == (ColorPacket *) NULL)
+      image->colormap=(PixelPacket *)
+        AllocateMemory(image->colors*sizeof(PixelPacket));
+      if (image->colormap == (PixelPacket *) NULL)
         {
           DestroyImage(image);
-          FreeMemory((char *) colors);
+          FreeMemory(colors);
           XDestroyImage(dps_image);
           XFreeResources(display,visual_info,map_info,(XPixelInfo *) NULL,
             (XFontStruct *) NULL,&resource_info,(XWindowInfo *) NULL);
@@ -429,23 +421,22 @@ Export Image *ReadDPSImage(const ImageInfo *image_info)
       */
       for (y=0; y < (int) image->rows; y++)
       {
+        if (!SetPixelCache(image,0,y,image->columns,1))
+          break;
         for (x=0; x < (int) image->columns; x++)
-        {
-          p->index=(unsigned short) XGetPixel(dps_image,x,y);
-          p->length=0;
-          p++;
-        }
+          image->indexes[x]=(unsigned short) XGetPixel(dps_image,x,y);
+        if (!SyncPixelCache(image))
+          break;
         if (QuantumTick(y,image->rows))
           ProgressMonitor(LoadImageText,y,image->rows);
       }
       break;
     }
   }
-  FreeMemory((char *) colors);
+  FreeMemory(colors);
   XDestroyImage(dps_image);
   if (image->class == PseudoClass)
     SyncImage(image);
-  CondenseImage(image);
   /*
     Rasterize matte image.
   */
@@ -471,15 +462,21 @@ Export Image *ReadDPSImage(const ImageInfo *image_info)
             {
               image->class=DirectClass;
               image->matte=True;
-              p=image->pixels;
               for (y=0; y < (int) image->rows; y++)
+              {
+                q=SetPixelCache(image,0,y,image->columns,1);
+                if (q == (PixelPacket *) NULL)
+                  break;
                 for (x=0; x < (int) image->columns; x++)
                 {
-                  p->index=Opaque;
+                  q->opacity=Opaque;
                   if (!XGetPixel(matte_image,x,y))
-                    p->index=Transparent;
-                  p++;
+                    q->opacity=Transparent;
+                  q++;
                 }
+                if (!SyncPixelCache(image))
+                  break;
+              }
               XDestroyImage(matte_image);
             }
         }

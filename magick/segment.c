@@ -137,10 +137,10 @@ typedef struct _ZeroCrossing
 {
   double
     tau,
-    histogram[MaxRGB+1];
+    histogram[DownScale(MaxRGB)+1];
 
   short
-    crossings[MaxRGB+1];
+    crossings[DownScale(MaxRGB)+1];
 } ZeroCrossing;
 
 /*
@@ -234,7 +234,7 @@ static unsigned int Classify(Image *image,short **extrema,
     *last_cluster,
     *next_cluster;
 
-  ColorPacket
+  PixelPacket
     *colormap;
 
   double
@@ -249,7 +249,8 @@ static unsigned int Classify(Image *image,short **extrema,
     red;
 
   int
-    count;
+    count,
+    y;
 
   register double
     distance_squared,
@@ -258,9 +259,10 @@ static unsigned int Classify(Image *image,short **extrema,
   register int
     i,
     j,
-    k;
+    k,
+    x;
 
-  register RunlengthPacket
+  register PixelPacket
     *p,
     *q;
 
@@ -337,30 +339,35 @@ static unsigned int Classify(Image *image,short **extrema,
     Count the pixels for each cluster.
   */
   count=0;
-  p=image->pixels;
-  for (i=0; i < (int) image->packets; i++)
+  for (y=0; y < (int) image->rows; y++)
   {
-    for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
-      if (((int) p->red >= (cluster->red.left-SafeMargin)) &&
-          ((int) p->red <= (cluster->red.right+SafeMargin)) &&
-          ((int) p->green >= (cluster->green.left-SafeMargin)) &&
-          ((int) p->green <= (cluster->green.right+SafeMargin)) &&
-          ((int) p->blue >= (cluster->blue.left-SafeMargin)) &&
-          ((int) p->blue <= (cluster->blue.right+SafeMargin)))
-        {
-          /*
-            Count this pixel.
-          */
-          count+=(p->length+1);
-          cluster->count+=(p->length+1);
-          cluster->red.center+=(p->red*(p->length+1));
-          cluster->green.center+=(p->green*(p->length+1));
-          cluster->blue.center+=(p->blue*(p->length+1));
-          break;
-        }
-    p++;
-    if (QuantumTick(i,image->packets))
-      ProgressMonitor(SegmentImageText,i,image->packets << 1);
+    p=GetPixelCache(image,0,y,image->columns,1);
+    if (p == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < (int) image->columns; x++)
+    {
+      for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
+        if (((int) DownScale(p->red) >= (cluster->red.left-SafeMargin)) &&
+            ((int) DownScale(p->red) <= (cluster->red.right+SafeMargin)) &&
+            ((int) DownScale(p->green) >= (cluster->green.left-SafeMargin)) &&
+            ((int) DownScale(p->green) <= (cluster->green.right+SafeMargin)) &&
+            ((int) DownScale(p->blue) >= (cluster->blue.left-SafeMargin)) &&
+            ((int) DownScale(p->blue) <= (cluster->blue.right+SafeMargin)))
+          {
+            /*
+              Count this pixel.
+            */
+            count++;
+            cluster->count++;
+            cluster->red.center+=DownScale(p->red);
+            cluster->green.center+=DownScale(p->green);
+            cluster->blue.center+=DownScale(p->blue);
+            break;
+          }
+      p++;
+    }
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(SegmentImageText,y,image->rows << 1);
   }
   /*
     Remove clusters that do not meet minimum cluster threshold.
@@ -377,12 +384,12 @@ static unsigned int Classify(Image *image,short **extrema,
           Initialize cluster.
         */
         cluster->id=count;
-        cluster->red.center=(cluster->red.center+(cluster->count >> 1))/
-          cluster->count;
-        cluster->green.center=(cluster->green.center+(cluster->count >> 1))/
-          cluster->count;
-        cluster->blue.center=(cluster->blue.center+(cluster->count >> 1))/
-          cluster->count;
+        cluster->red.center=
+          (cluster->red.center+(cluster->count >> 1))/cluster->count;
+        cluster->green.center=
+          (cluster->green.center+(cluster->count >> 1))/cluster->count;
+        cluster->blue.center=
+          (cluster->blue.center+(cluster->count >> 1))/cluster->count;
         count++;
         last_cluster=cluster;
       }
@@ -395,7 +402,7 @@ static unsigned int Classify(Image *image,short **extrema,
           head=next_cluster;
         else
           last_cluster->next=next_cluster;
-        FreeMemory((char *) cluster);
+        FreeMemory(cluster);
       }
   }
   number_clusters=count;
@@ -446,22 +453,23 @@ static unsigned int Classify(Image *image,short **extrema,
   /*
     Speed up distance calculations.
   */
-  squares=(double *) AllocateMemory((MaxRGB+MaxRGB+1)*sizeof(double));
+  squares=(double *)
+    AllocateMemory((DownScale(MaxRGB)+DownScale(MaxRGB)+1)*sizeof(double));
   if (squares == (double *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Memory allocation failed",
         (char *) NULL);
       return(False);
     }
-  squares+=MaxRGB;
-  for (i=(-MaxRGB); i <= MaxRGB; i++)
+  squares+=DownScale(MaxRGB);
+  for (i=(-(int) DownScale(MaxRGB)); i <= (int) DownScale(MaxRGB); i++)
     squares[i]=i*i;
   /*
     Allocate image colormap.
   */
-  colormap=(ColorPacket *)
-    AllocateMemory((unsigned int) number_clusters*sizeof(ColorPacket));
-  if (colormap == (ColorPacket *) NULL)
+  colormap=(PixelPacket *)
+    AllocateMemory((unsigned int) number_clusters*sizeof(PixelPacket));
+  if (colormap == (PixelPacket *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Memory allocation failed",
         (char *) NULL);
@@ -469,84 +477,95 @@ static unsigned int Classify(Image *image,short **extrema,
     }
   image->matte=False;
   image->class=PseudoClass;
-  if (image->colormap != (ColorPacket *) NULL)
-    FreeMemory((char *) image->colormap);
+  if (image->colormap != (PixelPacket *) NULL)
+    FreeMemory(image->colormap);
   image->colormap=colormap;
   image->colors=number_clusters;
   i=0;
   for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
   {
-    image->colormap[i].red=(Quantum) cluster->red.center;
-    image->colormap[i].green=(Quantum) cluster->green.center;
-    image->colormap[i].blue=(Quantum) cluster->blue.center;
+    image->colormap[i].red=(Quantum) UpScale(cluster->red.center);
+    image->colormap[i].green=(Quantum) UpScale(cluster->green.center);
+    image->colormap[i].blue=(Quantum) UpScale(cluster->blue.center);
     i++;
   }
   /*
     Do course grain classification.
   */
-  image->tainted=True;
-  q=image->pixels;
-  for (i=0; i < (int) image->packets; i++)
+  for (y=0; y < (int) image->rows; y++)
   {
-    for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
-      if (((int) q->red >= (cluster->red.left-SafeMargin)) &&
-          ((int) q->red <= (cluster->red.right+SafeMargin)) &&
-          ((int) q->green >= (cluster->green.left-SafeMargin)) &&
-          ((int) q->green <= (cluster->green.right+SafeMargin)) &&
-          ((int) q->blue >= (cluster->blue.left-SafeMargin)) &&
-          ((int) q->blue <= (cluster->blue.right+SafeMargin)))
+    q=GetPixelCache(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < (int) image->columns; x++)
+    {
+      for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
+        if (((int) DownScale(q->red) >= (cluster->red.left-SafeMargin)) &&
+            ((int) DownScale(q->red) <= (cluster->red.right+SafeMargin)) &&
+            ((int) DownScale(q->green) >= (cluster->green.left-SafeMargin)) &&
+            ((int) DownScale(q->green) <= (cluster->green.right+SafeMargin)) &&
+            ((int) DownScale(q->blue) >= (cluster->blue.left-SafeMargin)) &&
+            ((int) DownScale(q->blue) <= (cluster->blue.right+SafeMargin)))
+          {
+            /*
+              Classify this pixel.
+            */
+            image->indexes[x]=cluster->id;
+            break;
+          }
+      if (cluster == (Cluster *) NULL)
         {
           /*
-            Classify this pixel.
+            Compute fuzzy membership.
           */
-          q->index=cluster->id;
-          break;
-        }
-    if (cluster == (Cluster *) NULL)
-      {
-        /*
-          Compute fuzzy membership.
-        */
-        local_minima=0.0;
-        for (j=0; j < (int) image->colors; j++)
-        {
-          sum=0.0;
-          distance_squared=squares[(int) q->red-(int) image->colormap[j].red]+
-            squares[(int) q->green-(int) image->colormap[j].green]+
-            squares[(int) q->blue-(int) image->colormap[j].blue];
-          numerator=sqrt(distance_squared);
-          for (k=0; k < (int) image->colors; k++)
+          local_minima=0.0;
+          for (j=0; j < (int) image->colors; j++)
           {
-            distance_squared=squares[(int) q->red-(int) image->colormap[k].red]+
-              squares[(int) q->green-(int) image->colormap[k].green]+
-              squares[(int) q->blue-(int) image->colormap[k].blue];
-            ratio=numerator/sqrt(distance_squared);
-            sum+=pow(ratio,(double) (2.0/(weighting_exponent-1.0)));
-          }
-          if ((1.0/sum) > local_minima)
+            sum=0.0;
+            p=image->colormap+j;
+            distance_squared=
+              squares[(int) DownScale(q->red)-(int) DownScale(p->red)]+
+              squares[(int) DownScale(q->green)-(int) DownScale(p->green)]+
+              squares[(int) DownScale(q->blue)-(int) DownScale(p->blue)];
+            numerator=sqrt(distance_squared);
+            for (k=j+1; k < (int) image->colors; k++)
             {
-              /*
-                Classify this pixel.
-              */
-              local_minima=1.0/sum;
-              q->index=j;
+              p=image->colormap+k;
+              distance_squared=
+                squares[(int) DownScale(q->red)-(int) DownScale(p->red)]+
+                squares[(int) DownScale(q->green)-(int) DownScale(p->green)]+
+                squares[(int) DownScale(q->blue)-(int) DownScale(p->blue)];
+              ratio=numerator/sqrt(distance_squared);
+              sum+=pow(ratio,(double) (2.0/(weighting_exponent-1.0)));
             }
+            if ((1.0/sum) > local_minima)
+              {
+                /*
+                  Classify this pixel.
+                */
+                local_minima=1.0/sum;
+                image->indexes[x]=(IndexPacket) j;
+              }
+          }
         }
-      }
-    q++;
-    if (QuantumTick(i,image->packets))
-      ProgressMonitor(SegmentImageText,i+image->packets,image->packets << 1);
+      q++;
+    }
+    if (!SyncPixelCache(image))
+      break;
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(SegmentImageText,y+image->rows,image->rows << 1);
   }
+  SyncImage(image);
   /*
     Free memory.
   */
   for (cluster=head; cluster != (Cluster *) NULL; cluster=next_cluster)
   {
     next_cluster=cluster->next;
-    FreeMemory((char *) cluster);
+    FreeMemory(cluster);
   }
-  squares-=MaxRGB;
-  FreeMemory((char *) squares);
+  squares-=(int) DownScale(MaxRGB);
+  FreeMemory(squares);
   return(True);
 }
 
@@ -598,7 +617,7 @@ static void ConsolidateCrossings(ZeroCrossing *zero_crossing,
     Consolidate zero crossings.
   */
   for (i=number_crossings-1; i >= 0; i--)
-    for (j=0; j <= MaxRGB; j++)
+    for (j=0; j <= (int) DownScale(MaxRGB); j++)
     {
       if (zero_crossing[i].crossings[j] == 0)
         continue;
@@ -612,10 +631,10 @@ static void ConsolidateCrossings(ZeroCrossing *zero_crossing,
           break;
       left=Max(k,0);
       center=j;
-      for (k=j+1; k < MaxRGB; k++)
+      for (k=j+1; k < (int) DownScale(MaxRGB); k++)
         if (zero_crossing[i+1].crossings[k] != 0)
           break;
-      right=Min(k,MaxRGB);
+      right=Min(k,(int) DownScale(MaxRGB));
       /*
         K is the zero crossing just left of j.
       */
@@ -667,7 +686,7 @@ static void ConsolidateCrossings(ZeroCrossing *zero_crossing,
       l=zero_crossing[i].crossings[j];
       zero_crossing[i].crossings[j]=0;
       if (correct != -1)
-        zero_crossing[i].crossings[correct]=l;
+        zero_crossing[i].crossings[correct]=(IndexPacket) l;
     }
 }
 
@@ -708,20 +727,20 @@ static int DefineRegion(const short *extrema,ExtentPacket *extents)
   */
   extents->left=0;
   extents->center=0;
-  extents->right=MaxRGB;
+  extents->right=DownScale(MaxRGB);
   /*
     Find the left side (maxima).
   */
-  for ( ; extents->index <= MaxRGB; extents->index++)
+  for ( ; extents->index <= (int) DownScale(MaxRGB); extents->index++)
     if (extrema[extents->index] > 0)
       break;
-  if (extents->index > MaxRGB)
+  if (extents->index > (int) DownScale(MaxRGB))
     return(False);  /* no left side - no region exists */
   extents->left=extents->index;
   /*
     Find the right side (minima).
   */
-  for ( ; extents->index <= MaxRGB; extents->index++)
+  for ( ; extents->index <= (int) DownScale(MaxRGB); extents->index++)
     if (extrema[extents->index] < 0)
       break;
   extents->right=extents->index-1;
@@ -766,7 +785,7 @@ static void DerivativeHistogram(const double *histogram,double *derivative)
   /*
     Compute endpoints using second order polynomial interpolation.
   */
-  n=MaxRGB;
+  n=DownScale(MaxRGB);
   derivative[0]=(-1.5*histogram[0]+2.0*histogram[1]-0.5*histogram[2]);
   derivative[n]=(0.5*histogram[n-2]-2.0*histogram[n-1]+1.5*histogram[n]);
   /*
@@ -804,30 +823,39 @@ static void DerivativeHistogram(const double *histogram,double *derivative)
 %
 %
 */
-static void InitializeHistogram(const Image *image,long **histogram)
+static void InitializeHistogram(Image *image,long **histogram)
 {
-  register int
-    i;
+  int
+    y;
 
-  register RunlengthPacket
+  register int
+    i,
+    x;
+
+  register PixelPacket
     *p;
 
   /*
     Initialize histogram.
   */
-  for (i=0; i <= MaxRGB; i++)
+  for (i=0; i <= (int) DownScale(MaxRGB); i++)
   {
     histogram[Red][i]=0;
     histogram[Green][i]=0;
     histogram[Blue][i]=0;
   }
-  p=image->pixels;
-  for (i=0; i < (int) image->packets; i++)
+  for (y=0; y < (int) image->rows; y++)
   {
-    histogram[Red][p->red]+=(p->length+1);
-    histogram[Green][p->green]+=(p->length+1);
-    histogram[Blue][p->blue]+=(p->length+1);
-    p++;
+    p=GetPixelCache(image,0,y,image->columns,1);
+    if (p == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < (int) image->columns; x++)
+    {
+      histogram[Red][DownScale(p->red)]++;
+      histogram[Green][DownScale(p->green)]++;
+      histogram[Blue][DownScale(p->blue)]++;
+      p++;
+    }
   }
 }
 
@@ -949,7 +977,7 @@ static IntervalTree *InitializeIntervalTree(const ZeroCrossing *zero_crossing,
   root->sibling=(IntervalTree *) NULL;
   root->tau=0.0;
   root->left=0;
-  root->right=MaxRGB;
+  root->right=DownScale(MaxRGB);
   for (i=(-1); i < (int) number_crossings; i++)
   {
     /*
@@ -1006,7 +1034,7 @@ static IntervalTree *InitializeIntervalTree(const ZeroCrossing *zero_crossing,
   */
   Stability(root->child);
   MeanStability(root->child);
-  FreeMemory((char *) list);
+  FreeMemory(list);
   return(root);
 }
 
@@ -1064,7 +1092,7 @@ static void FreeNodes(const IntervalTree *node)
     return;
   FreeNodes(node->sibling);
   FreeNodes(node->child);
-  FreeMemory((char *) node);
+  FreeMemory((void *) node);
 }
 
 static double OptimalTau(const long *histogram,const double max_tau,
@@ -1073,8 +1101,8 @@ static double OptimalTau(const long *histogram,const double max_tau,
 {
   double
     average_tau,
-    derivative[MaxRGB+1],
-    second_derivative[MaxRGB+1],
+    derivative[DownScale(MaxRGB)+1],
+    second_derivative[DownScale(MaxRGB)+1],
     tau,
     value;
 
@@ -1142,7 +1170,7 @@ static double OptimalTau(const long *histogram,const double max_tau,
     Add an entry for the original histogram.
   */
   zero_crossing[i].tau=0.0;
-  for (j=0; j <= MaxRGB; j++)
+  for (j=0; j <= (int) DownScale(MaxRGB); j++)
     zero_crossing[i].histogram[j]=(double) histogram[j];
   DerivativeHistogram(zero_crossing[i].histogram,derivative);
   DerivativeHistogram(derivative,second_derivative);
@@ -1158,14 +1186,15 @@ static double OptimalTau(const long *histogram,const double max_tau,
   */
   for (i=0; i <= (int) number_crossings; i++)
   {
-    for (j=0; j < MaxRGB; j++)
+    for (j=0; j < (int) DownScale(MaxRGB); j++)
       if (zero_crossing[i].crossings[j] != 0)
         break;
     zero_crossing[i].crossings[0]=(-zero_crossing[i].crossings[j]);
-    for (j=MaxRGB; j > 0; j--)
+    for (j=(int) DownScale(MaxRGB); j > 0; j--)
       if (zero_crossing[i].crossings[j] != 0)
         break;
-    zero_crossing[i].crossings[MaxRGB]=(-zero_crossing[i].crossings[j]);
+    zero_crossing[i].crossings[DownScale(MaxRGB)]=
+      (-zero_crossing[i].crossings[j]);
   }
   /*
     Initialize interval tree.
@@ -1182,7 +1211,7 @@ static double OptimalTau(const long *histogram,const double max_tau,
   /*
     Initialize extrema.
   */
-  for (i=0; i <= MaxRGB; i++)
+  for (i=0; i <= (int) DownScale(MaxRGB); i++)
     extrema[i]=0;
   for (i=0; i < number_nodes; i++)
   {
@@ -1220,7 +1249,7 @@ static double OptimalTau(const long *histogram,const double max_tau,
     for (x=node->left; x <= node->right; x++)
     {
       if (index == 0)
-        index=MaxRGB+1;
+        index=DownScale(MaxRGB)+1;
       if (peak)
         extrema[x]=index;
       else
@@ -1238,8 +1267,8 @@ static double OptimalTau(const long *histogram,const double max_tau,
     Free memory.
   */
   FreeNodes(root);
-  FreeMemory((char *) zero_crossing);
-  FreeMemory((char *) list);
+  FreeMemory(zero_crossing);
+  FreeMemory(list);
   return(average_tau);
 }
 
@@ -1274,7 +1303,7 @@ static void ScaleSpace(const long *histogram,const double tau,
   double
     alpha,
     beta,
-    gamma[MaxRGB+1],
+    gamma[DownScale(MaxRGB)+1],
     sum;
 
   register int
@@ -1283,12 +1312,12 @@ static void ScaleSpace(const long *histogram,const double tau,
 
   alpha=1.0/(tau*sqrt((double) (2.0*M_PI)));
   beta=(-1.0/(2.0*tau*tau));
-  for (x=0; x <= MaxRGB; x++)
+  for (x=0; x <= (int) DownScale(MaxRGB); x++)
     gamma[x]=exp((double) (beta*x*x));
-  for (x=0; x <= MaxRGB; x++)
+  for (x=0; x <= (int) DownScale(MaxRGB); x++)
   {
     sum=0.0;
-    for (u=0; u <= MaxRGB; u++)
+    for (u=0; u <= (int) DownScale(MaxRGB); u++)
       sum+=(double) histogram[u]*gamma[AbsoluteValue(x-u)];
     scaled_histogram[x]=alpha*sum;
   }
@@ -1337,7 +1366,7 @@ static void ZeroCrossHistogram(double *second_derivative,
   /*
     Merge low numbers to zero to help prevent noise.
   */
-  for (i=0; i <= MaxRGB; i++)
+  for (i=0; i <= (int) DownScale(MaxRGB); i++)
     if ((second_derivative[i] < smoothing_threshold) &&
         (second_derivative[i] >= -smoothing_threshold))
       second_derivative[i]=0.0;
@@ -1345,7 +1374,7 @@ static void ZeroCrossHistogram(double *second_derivative,
     Mark zero crossings.
   */
   parity=0;
-  for (i=0; i <= MaxRGB; i++)
+  for (i=0; i <= (int) DownScale(MaxRGB); i++)
   {
     crossings[i]=0;
     if (second_derivative[i] < 0.0)
@@ -1435,16 +1464,16 @@ Export unsigned int SegmentImage(Image *image,const ColorspaceType colorspace,
   assert(image != (Image *) NULL);
   for (i=0; i < Dimension; i++)
   {
-    histogram[i]=(long *) AllocateMemory((MaxRGB+1)*sizeof(long));
-    extrema[i]=(short *) AllocateMemory((MaxRGB+1)*sizeof(short));
+    histogram[i]=(long *) AllocateMemory((DownScale(MaxRGB)+1)*sizeof(long));
+    extrema[i]=(short *) AllocateMemory((DownScale(MaxRGB)+1)*sizeof(short));
     if ((histogram[i] == (long *) NULL) || (extrema[i] == (short *) NULL))
       {
         MagickWarning(ResourceLimitWarning,"Memory allocation failed",
           (char *) NULL);
         for (i-- ; i >= 0; i--)
         {
-          FreeMemory((char *) extrema[i]);
-          FreeMemory((char *) histogram[i]);
+          FreeMemory(extrema[i]);
+          FreeMemory(histogram[i]);
         }
         return(False);
       }
@@ -1472,8 +1501,8 @@ Export unsigned int SegmentImage(Image *image,const ColorspaceType colorspace,
   */
   for (i=0; i < Dimension; i++)
   {
-    FreeMemory((char *) extrema[i]);
-    FreeMemory((char *) histogram[i]);
+    FreeMemory(extrema[i]);
+    FreeMemory(histogram[i]);
   }
   return(status);
 }

@@ -59,6 +59,45 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   I s S F W                                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsSFW returns True if the image format type, identified by the
+%  magick string, is SFW.
+%
+%  The format of the ReadSFWImage method is:
+%
+%      unsigned int IsSFW(const unsigned char *magick,
+%        const unsigned int length)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method IsSFW returns True if the image format type is SFW.
+%
+%    o magick: This string is generally the first few bytes of an image file
+%      or blob.
+%
+%    o length: Specifies the length of the magick string.
+%
+%
+*/
+Export unsigned int IsSFW(const unsigned char *magick,const unsigned int length)
+{
+  if (length < 5)
+    return(False);
+  if (strncmp((char *) magick,"SFW94",5) == 0)
+    return(True);
+  return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   R e a d S F W I m a g e                                                   %
 %                                                                             %
 %                                                                             %
@@ -217,7 +256,7 @@ Export Image *ReadSFWImage(const ImageInfo *image_info)
     "\377\310\377\320",4);
   if (header == (unsigned char *) NULL)
     {
-      FreeMemory((char *) buffer);
+      FreeMemory(buffer);
       ReaderExit(CorruptImageWarning,"Not a SFW image file",image);
     }
   TranslateSFWMarker(header);  /* translate soi and app tags */
@@ -239,7 +278,7 @@ Export Image *ReadSFWImage(const ImageInfo *image_info)
   data=SFWScan(offset,buffer+image->filesize-1,(unsigned char *) "\377\311",2);
   if (data == (unsigned char *) NULL)
     {
-      FreeMemory((char *) buffer);
+      FreeMemory(buffer);
       ReaderExit(CorruptImageWarning,"Not a SFW image file",image);
     }
   TranslateSFWMarker(data++);  /* translate eoi marker */
@@ -251,7 +290,7 @@ Export Image *ReadSFWImage(const ImageInfo *image_info)
   file=fopen(local_info->filename,WriteBinaryType);
   if (file == (FILE *) NULL)
     {
-      FreeMemory((char *) buffer);
+      FreeMemory(buffer);
       DestroyImageInfo(local_info);
       ReaderExit(FileOpenWarning,"Unable to write file",image);
     }
@@ -260,7 +299,7 @@ Export Image *ReadSFWImage(const ImageInfo *image_info)
   (void) fwrite(offset+1,data-offset,1,file);
   status=ferror(file);
   (void) fclose(file);
-  FreeMemory((char *) buffer);
+  FreeMemory(buffer);
   if (status)
     {
       (void) remove(local_info->filename);

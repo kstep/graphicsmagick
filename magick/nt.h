@@ -13,8 +13,17 @@ extern "C" {
 #include <windows.h>
 #include <winuser.h>
 #include <wingdi.h>
+#include <io.h>
 #include <errno.h>
 
+/*
+  Define declarations.
+*/
+#define PROT_READ 1
+#define PROT_WRITE 2
+#define PROT_READWRITE 3
+#define MAP_SHARED 1
+#define MAP_FAILED ((void*)0xffffffff)
 /*
   Typedef declarations.
 */
@@ -23,7 +32,7 @@ typedef struct _DIR
 {
   HANDLE
     hSearch;
-
+ 
   WIN32_FIND_DATA
     Win32FindData;
 } DIR;
@@ -55,6 +64,7 @@ extern __declspec(dllexport) DIR
   *opendir(char *);
  
 extern __declspec(dllexport) int
+  munmap(void *,size_t),
   NTTemporaryFilename(char *);
 
 extern __declspec(dllexport) long
@@ -65,6 +75,7 @@ extern __declspec(dllexport) struct dirent
  
 extern __declspec(dllexport) void
   closedir(DIR *),
+  *mmap(char *,size_t,int,int,int,off_t),
   NTErrorHandler(const unsigned int,const char *,const char *),
   NTWarningHandler(const unsigned int,const char *,const char *),
   seekdir(DIR *,long);

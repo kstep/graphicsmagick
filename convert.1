@@ -365,7 +365,7 @@ same width are stacked top-to-bottom.  Images of the same height are
 stacked left-to-right.  Use \fB+append\fP to stack rectangular images
 left-to-right.
 .TP
-.B "-average
+.B "-average"
 averages an image sequence.
 .TP
 .B "-blur \fIfactor\fP"
@@ -384,6 +384,15 @@ set the color of the annotation bounding box.  See \fB-draw\fP or
 for further details.
 
 See \fBX(1)\fP for details about the color specification.
+.TP
+.B "-cache \fIthreshold\fP"
+megabytes of memory available to the pixel cache.
+
+Image pixels are stored in memory until 80 megabytes of memory
+have been consumed.  Subsequent pixel operations are cached on disk.
+Operations to memory are significantly faster but if your computer does not
+have a sufficient amount of free memory you may want to adjust this threshold
+value.
 .TP
 .B "-charcoal \fIfactor\fP"
 simulate a charcoal drawing.
@@ -857,6 +866,9 @@ morphs an image sequence.
 
 Both the image pixels and size are linearly interpolated to give the
 appearance of a meta-morphosis from one image to the next.
+.TP
+.B "-mosaic"
+create an mosaic from an image sequence.
 .TP
 .B "-negate"
 replace every pixel with its complementary color (white becomes black, yellow

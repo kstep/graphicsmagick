@@ -452,7 +452,7 @@ Export void Hull(const int x_offset,const int y_offset,const int polarity,
 %
 %  The format of the InterpolateColor method is:
 %
-%      ColorPacket InterpolateColor(Image *image,const double x_offset,
+%      PixelPacket InterpolateColor(Image *image,const double x_offset,
 %        const double y_offset)
 %
 %  A description of each parameter follows:
@@ -464,68 +464,77 @@ Export void Hull(const int x_offset,const int y_offset,const int polarity,
 %
 %
 */
-Export ColorPacket InterpolateColor(Image *image,const double x_offset,
+Export PixelPacket InterpolateColor(Image *image,const double x_offset,
   const double y_offset)
 {
-  ColorPacket
-    interpolated_pixel;
-
   double
     alpha,
     beta,
     x,
     y;
 
-  register RunlengthPacket
-    *p,
-    *q,
-    *r,
-    *s;
+  PixelPacket
+    interpolated_pixel;
 
-  RunlengthPacket
-    background_pixel;
+  register PixelPacket
+    p,
+    q,
+    r,
+    s;
 
   assert(image != (Image *) NULL);
-  if (image->packets != (image->columns*image->rows))
-    if (!UncondenseImage(image))
-      return(image->background_color);
-  if ((x_offset < -1) || (x_offset >= image->columns) ||
-      (y_offset < -1) || (y_offset >= image->rows))
-    return(image->background_color);
-  background_pixel.red=image->background_color.red;
-  background_pixel.green=image->background_color.green;
-  background_pixel.blue=image->background_color.blue;
-  background_pixel.index=image->background_color.index;
   x=x_offset;
   y=y_offset;
+  if ((x < -1) || (x >= image->columns) || (y < -1) || (y >= image->rows))
+    return(image->background_color);
+  p=image->background_color;
+  q=image->background_color;
+  r=image->background_color;
+  s=image->background_color;
   if ((x >= 0) && (y >= 0))
     {
-      p=image->pixels+((int) y)*image->columns+(int) x;
-      q=p+1;
-      if ((x+1) >= image->columns)
-        q=(&background_pixel);
-      r=p+image->columns;
-      if ((y+1) >= image->rows)
-        r=(&background_pixel);
-      s=p+image->columns+1;
-      if (((x+1) >= image->columns) || ((y+1) >= image->rows))
-        s=(&background_pixel);
+      if (GetPixelCache(image,x,y,1,1))
+        p=(*image->pixels);
+      if ((x+1) < image->columns)
+        {
+          if (GetPixelCache(image,x+1,y,1,1))
+            q=(*image->pixels);
+        }
+      if ((y+1) < image->rows)
+        {
+          if (GetPixelCache(image,x,y+1,1,1))
+            r=(*image->pixels);
+        }
+      if (((x+1) < image->columns) && ((y+1) < image->rows))
+        {
+          if (GetPixelCache(image,x+1,y+1,1,1))
+            s=(*image->pixels);
+        }
     }
   else
     {
-      p=(&background_pixel);
-      q=(&background_pixel);
-      r=image->pixels+(int) x;
-      s=r+1;
+      if (x == 0)
+        {
+          if (GetPixelCache(image,x,0,1,1))
+            r=(*image->pixels);
+          if (GetPixelCache(image,x+1,0,1,1))
+            s=(*image->pixels);
+        }
       if ((x >= -1) && (x < 0))
         {
-          q=image->pixels+(int) y*image->columns;
-          r=(&background_pixel);
-          s=q+(int) image->columns;
+          if (y == 0)
+            {
+              if (GetPixelCache(image,0,y,1,1))
+                q=(*image->pixels);
+              r=image->background_color;
+              if (GetPixelCache(image,0,y+1,1,1))
+                s=(*image->pixels);
+            }
           if ((y >= -1) && (y < 0))
             {
-              q=(&background_pixel);
-              s=image->pixels;
+              q=image->background_color;
+              if (GetPixelCache(image,0,0,1,1))
+                s=(*image->pixels);
             }
         }
     }
@@ -534,13 +543,13 @@ Export ColorPacket InterpolateColor(Image *image,const double x_offset,
   alpha=1.0-x;
   beta=1.0-y;
   interpolated_pixel.red=(Quantum)
-    (beta*(alpha*p->red+x*q->red)+y*(alpha*r->red+x*s->red));
+    (beta*(alpha*p.red+x*q.red)+y*(alpha*r.red+x*s.red));
   interpolated_pixel.green=(Quantum)
-    (beta*(alpha*p->green+x*q->green)+y*(alpha*r->green+x*s->green));
+    (beta*(alpha*p.green+x*q.green)+y*(alpha*r.green+x*s.green));
   interpolated_pixel.blue=(Quantum)
-    (beta*(alpha*p->blue+x*q->blue)+y*(alpha*r->blue+x*s->blue));
-  interpolated_pixel.index=(unsigned short)
-    (beta*(alpha*p->index+x*q->index)+y*(alpha*r->index+x*s->index));
+    (beta*(alpha*p.blue+x*q.blue)+y*(alpha*r.blue+x*s.blue));
+  interpolated_pixel.opacity=(Quantum)
+    (beta*(alpha*p.opacity+x*q.opacity)+y*(alpha*r.opacity+x*s.opacity));
   return(interpolated_pixel);
 }
 

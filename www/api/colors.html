@@ -52,10 +52,10 @@ status= <STRONG>IsMonochromeImage</STRONG>( image );
 unsigned int  <STRONG>IsPseudoClass</STRONG>( Image <CODE>*image</CODE> );
 
 <P>
-unsigned int  <STRONG>QueryColorDatabase</STRONG>( const char *target, ColorPacket <CODE>*color</CODE> );
+unsigned int  <STRONG>QueryColorDatabase</STRONG>( const char *target, PixelPacket <CODE>*color</CODE> );
 
 <P>
-unsigned int  <STRONG>QueryColorName</STRONG>( const ColorPacket *color, char <CODE>*name</CODE> );
+unsigned int  <STRONG>QueryColorName</STRONG>( const PixelPacket *color, char <CODE>*name</CODE> );
 
 <P>
 <HR>
@@ -228,7 +228,7 @@ Method QueryColorDatabase looks up a
 <P>
 The format of the QueryColorDatabase method is:
 
-<blockquote>unsigned int QueryColorDatabase ( const char *target, <A HREF="types/ColorPacket.html">ColorPacket</A> *color ); </blockquote>
+<blockquote>unsigned int QueryColorDatabase ( const char *target, <A HREF="types/PixelPacket.html">PixelPacket</A> *color ); </blockquote>
 
 <P>
 
@@ -249,7 +249,7 @@ Specifies the color to lookup in the
 <p><dt><STRONG>color:</STRONG><DD>
 <P>
 
-<FONT SIZE=-1>A</FONT> pointer to an ColorPacket structure. The 
+<FONT SIZE=-1>A</FONT> pointer to an PixelPacket structure. The 
 <FONT SIZE=-1>RGB</FONT> value of the target color is returned as this value.
 
 
@@ -265,7 +265,7 @@ Method QueryColorName returns the name of the color that is closest to the suppl
 <P>
 The format of the QueryColorName method is:
 
-<blockquote>unsigned int QueryColorName ( const <A HREF="types/ColorPacket.html">ColorPacket</A> *color, char *name ); </blockquote>
+<blockquote>unsigned int QueryColorName ( const <A HREF="types/PixelPacket.html">PixelPacket</A> *color, char *name ); </blockquote>
 
 <P>
 
@@ -280,7 +280,7 @@ minimum distance.
 
 <p><dt><STRONG>color:</STRONG><DD>
 <P>
-This is a pointer to a ColorPacket structure that contains the color we are
+This is a pointer to a PixelPacket structure that contains the color we are
 searching for.
 
 <p><dt><STRONG>name:</STRONG><DD>

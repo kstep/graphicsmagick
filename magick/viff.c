@@ -59,6 +59,46 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   I s V I F F                                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsVIFF returns True if the image format type, identified by the
+%  magick string, is VIFF.
+%
+%  The format of the ReadVIFFImage method is:
+%
+%      unsigned int IsVIFF(const unsigned char *magick,
+%        const unsigned int length)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method IsVIFF returns True if the image format type is VIFF.
+%
+%    o magick: This string is generally the first few bytes of an image file
+%      or blob.
+%
+%    o length: Specifies the length of the magick string.
+%
+%
+*/
+Export unsigned int IsVIFF(const unsigned char *magick,
+  const unsigned int length)
+{
+  if (length < 2)
+    return(False);
+  if (strncmp((char *) magick,"\253\1",2) == 0)
+    return(True);
+  return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   R e a d V I F F I m a g e                                                 %
 %                                                                             %
 %                                                                             %
@@ -159,13 +199,15 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
   Image
     *image;
 
-  register int
+  int
     bit,
-    i,
-    x,
     y;
 
-  register RunlengthPacket
+  register int
+    i,
+    x;
+
+  register PixelPacket
     *q;
 
   register unsigned char
@@ -325,9 +367,9 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
               image->colors=2;
             else
               image->colors=1 << (viff_header.number_data_bands*QuantumDepth);
-            image->colormap=(ColorPacket *)
-              AllocateMemory(image->colors*sizeof(ColorPacket));
-            if (image->colormap == (ColorPacket *) NULL)
+            image->colormap=(PixelPacket *)
+              AllocateMemory(image->colors*sizeof(PixelPacket));
+            if (image->colormap == (PixelPacket *) NULL)
               ReaderExit(ResourceLimitWarning,"Memory allocation failed",
                 image);
             for (i=0; i < (int) image->colors; i++)
@@ -358,11 +400,11 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
           default: bytes_per_pixel=1; break;
         }
         image->colors=(unsigned int) viff_header.map_columns;
-        image->colormap=(ColorPacket *)
-          AllocateMemory(image->colors*sizeof(ColorPacket));
+        image->colormap=(PixelPacket *)
+          AllocateMemory(image->colors*sizeof(PixelPacket));
         viff_colormap=(unsigned char *) AllocateMemory(bytes_per_pixel*
           image->colors*viff_header.map_rows*sizeof(unsigned char));
-        if ((image->colormap == (ColorPacket *) NULL) ||
+        if ((image->colormap == (PixelPacket *) NULL) ||
             (viff_colormap == (unsigned char *) NULL))
           ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
         /*
@@ -414,7 +456,7 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
                 image->colormap[i % image->colors].blue=
                   UpScale((unsigned int) value);
         }
-        FreeMemory((char *) viff_colormap);
+        FreeMemory(viff_colormap);
         break;
       }
       default:
@@ -546,17 +588,10 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
         CloseBlob(image);
         return(image);
       }
-    image->packets=image->columns*image->rows;
-    image->pixels=(RunlengthPacket *)
-      AllocateMemory(image->packets*sizeof(RunlengthPacket));
-    if (image->pixels == (RunlengthPacket *) NULL)
-      ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-    SetImage(image);
     /*
-      Convert VIFF raster image to runlength-encoded packets.
+      Convert VIFF raster image to pixel packets.
     */
     p=(unsigned char *) viff_pixels;
-    q=image->pixels;
     if (viff_header.data_storage_type == VFF_TYP_BIT)
       {
         unsigned int
@@ -571,31 +606,24 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
             Intensity(image->colormap[1]);
         for (y=0; y < (int) image->rows; y++)
         {
-          /*
-            Convert bitmap scanline to runlength-encoded color packets.
-          */
+          if (!SetPixelCache(image,0,y,image->columns,1))
+            break;
           for (x=0; x < (int) (image->columns >> 3); x++)
           {
             for (bit=0; bit < 8; bit++)
-            {
-              q->index=
+              image->indexes[x+bit]=
                 ((*p) & (0x01 << bit) ? (int) polarity : (int) !polarity);
-              q->length=0;
-              q++;
-            }
             p++;
           }
           if ((image->columns % 8) != 0)
             {
               for (bit=0; bit < (int) (image->columns % 8); bit++)
-              {
-                q->index=
+                image->indexes[x+bit]=
                   ((*p) & (0x01 << bit) ? (int) polarity : (int) !polarity);
-                q->length=0;
-                q++;
-              }
               p++;
             }
+          if (!SyncPixelCache(image))
+            break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(LoadImageText,y,image->rows);
@@ -605,15 +633,12 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
       if (image->class == PseudoClass)
         for (y=0; y < (int) image->rows; y++)
         {
-          /*
-            Convert PseudoColor scanline to runlength-encoded color packets.
-          */
+          if (!SetPixelCache(image,0,y,image->columns,1))
+            break;
           for (x=0; x < (int) image->columns; x++)
-          {
-            q->index=(*p++);
-            q->length=0;
-            q++;
-          }
+            image->indexes[x]=(*p++);
+          if (!SyncPixelCache(image))
+            break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(LoadImageText,y,image->rows);
@@ -629,6 +654,9 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
           offset=image->columns*image->rows;
           for (y=0; y < (int) image->rows; y++)
           {
+            q=SetPixelCache(image,0,y,image->columns,1);
+            if (q == (PixelPacket *) NULL)
+              break;
             for (x=0; x < (int) image->columns; x++)
             {
               q->red=(*p);
@@ -640,20 +668,20 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
                   q->green=image->colormap[q->green].green;
                   q->blue=image->colormap[q->blue].blue;
                 }
-              q->index=(unsigned short) (image->matte ? (*(p+offset*3)) : 0);
-              q->length=0;
+              q->opacity=(Quantum) (image->matte ? (*(p+offset*3)) : 0);
               p++;
               q++;
             }
+            if (!SyncPixelCache(image))
+              break;
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
                 ProgressMonitor(LoadImageText,y,image->rows);
           }
         }
-    FreeMemory((char *) viff_pixels);
+    FreeMemory(viff_pixels);
     if (image->class == PseudoClass)
       SyncImage(image);
-    CondenseImage(image);
     /*
       Proceed to next image.
     */
@@ -767,11 +795,14 @@ Export unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
       color_space_model;
   } ViffHeader;
 
+  int
+    y;
+
   register int
     i,
-    j;
+    x;
 
-  register RunlengthPacket
+  register PixelPacket
     *p;
 
   register unsigned char
@@ -914,7 +945,6 @@ Export unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
     viff_pixels=(unsigned char *) AllocateMemory(packets*sizeof(unsigned char));
     if (viff_pixels == (unsigned char *) NULL)
       WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
-    p=image->pixels;
     q=viff_pixels;
     if (!IsPseudoClass(image) && !IsGrayImage(image))
       {
@@ -925,21 +955,24 @@ Export unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
           Convert DirectClass packet to VIFF RGB pixel.
         */
         offset=image->columns*image->rows;
-        for (i=0; i < (int) image->packets; i++)
+        for (y=0; y < (int) image->rows; y++)
         {
-          for (j=0; j <= ((int) p->length); j++)
+          p=GetPixelCache(image,0,y,image->columns,1);
+          if (p == (PixelPacket *) NULL)
+            break;
+          for (x=0; x < (int) image->columns; x++)
           {
             *q=DownScale(p->red);
             *(q+offset)=DownScale(p->green);
             *(q+offset*2)=DownScale(p->blue);
             if (image->matte)
-              *(q+offset*3)=DownScale(p->index);
+              *(q+offset*3)=DownScale(p->opacity);
+            p++;
             q++;
           }
-          p++;
           if (image->previous == (Image *) NULL)
-            if (QuantumTick(i,image->packets))
-              ProgressMonitor(SaveImageText,i,image->packets);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(SaveImageText,y,image->rows);
         }
       }
     else
@@ -954,8 +987,7 @@ Export unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
           viff_colormap=(unsigned char *)
             AllocateMemory(image->colors*3*sizeof(unsigned char));
           if (viff_colormap == (unsigned char *) NULL)
-            WriterExit(ResourceLimitWarning,"Memory allocation failed",
-              image);
+            WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
           q=viff_colormap;
           for (i=0; i < (int) image->colors; i++)
             *q++=DownScale(image->colormap[i].red);
@@ -964,19 +996,20 @@ Export unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
           for (i=0; i < (int) image->colors; i++)
             *q++=DownScale(image->colormap[i].blue);
           (void) WriteBlob(image,3*image->colors,(char *) viff_colormap);
-          FreeMemory((char *) viff_colormap);
+          FreeMemory(viff_colormap);
           /*
             Convert PseudoClass packet to VIFF colormapped pixels.
           */
           q=viff_pixels;
-          for (i=0; i < (int) image->packets; i++)
+          for (y=0; y < (int) image->rows; y++)
           {
-            for (j=0; j <= ((int) p->length); j++)
-              *q++=p->index;
-            p++;
+            if (!GetPixelCache(image,0,y,image->columns,1))
+              break;
+            for (x=0; x < (int) image->columns; x++)
+              *q++=image->indexes[x];
             if (image->previous == (Image *) NULL)
-              if (QuantumTick(i,image->packets))
-                ProgressMonitor(SaveImageText,i,image->packets);
+              if (QuantumTick(y,image->rows))
+                ProgressMonitor(SaveImageText,y,image->rows);
           }
         }
       else
@@ -998,16 +1031,16 @@ Export unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
             if (image->colors == 2)
               polarity=
                 Intensity(image->colormap[0]) > Intensity(image->colormap[1]);
-            x=0;
-            y=0;
-            bit=0;
-            byte=0;
-            for (i=0; i < (int) image->packets; i++)
+            for (y=0; y < (int) image->rows; y++)
             {
-              for (j=0; j <= ((int) p->length); j++)
+              if (!GetPixelCache(image,0,y,image->columns,1))
+                break;
+              bit=0;
+              byte=0;
+              for (x=0; x < (int) image->columns; x++)
               {
                 byte>>=1;
-                if (p->index == polarity)
+                if (image->indexes[x] == polarity)
                   byte|=0x80;
                 bit++;
                 if (bit == 8)
@@ -1016,24 +1049,13 @@ Export unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
                     bit=0;
                     byte=0;
                   }
-                x++;
-                if (x == (int) image->columns)
-                  {
-                    /*
-                      Advance to the next scanline.
-                    */
-                    if (bit != 0)
-                      *q++=byte >> (8-bit);
-                    if (image->previous == (Image *) NULL)
-                      if (QuantumTick(y,image->rows))
-                        ProgressMonitor(SaveImageText,y,image->rows);
-                    bit=0;
-                    byte=0;
-                    x=0;
-                    y++;
-                 }
+                p++;
               }
-              p++;
+              if (bit != 0)
+                *q++=byte >> (8-bit);
+              if (image->previous == (Image *) NULL)
+                if (QuantumTick(y,image->rows))
+                  ProgressMonitor(SaveImageText,y,image->rows);
             }
           }
         else
@@ -1041,22 +1063,26 @@ Export unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
             /*
               Convert PseudoClass packet to VIFF grayscale pixel.
             */
-            for (i=0; i < (int) image->packets; i++)
+            for (y=0; y < (int) image->rows; y++)
             {
-              for (j=0; j <= ((int) p->length); j++)
+              p=GetPixelCache(image,0,y,image->columns,1);
+              if (p == (PixelPacket *) NULL)
+                break;
+              for (x=0; x < (int) image->columns; x++)
+              {
                 *q++=p->red;
-              p++;
+                p++;
+              }
               if (image->previous == (Image *) NULL)
-                if (QuantumTick(i,image->packets))
-                  ProgressMonitor(SaveImageText,i,image->packets);
+                if (QuantumTick(y,image->rows))
+                  ProgressMonitor(SaveImageText,y,image->rows);
             }
           }
     (void) WriteBlob(image,packets,(char *) viff_pixels);
-    FreeMemory((char *) viff_pixels);
+    FreeMemory(viff_pixels);
     if (image->next == (Image *) NULL)
       break;
-    image->next->file=image->file;
-    image=image->next;
+    image=GetNextImage(image);
     ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)

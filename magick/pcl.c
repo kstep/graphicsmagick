@@ -59,6 +59,45 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   I s P C L                                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsPCL returns True if the image format type, identified by the
+%  magick string, is PCL.
+%
+%  The format of the ReadPCLImage method is:
+%
+%      unsigned int IsPCL(const unsigned char *magick,
+%        const unsigned int length)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method IsPCL returns True if the image format type is PCL.
+%
+%    o magick: This string is generally the first few bytes of an image file
+%      or blob.
+%
+%    o length: Specifies the length of the magick string.
+%
+%
+*/
+Export unsigned int IsPCL(const unsigned char *magick,const unsigned int length)
+{
+  if (length < 3)
+    return(False);
+  if (strncmp((char *) magick,"\033E\033",3) == 0)
+    return(True);
+  return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   R e a d P C L I m a g e                                                   %
 %                                                                             %
 %                                                                             %
@@ -131,11 +170,7 @@ Export unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
     x,
     y;
 
-  register int
-    i,
-    j;
-
-  register RunlengthPacket
+  register PixelPacket
     *p;
 
   RectangleInfo
@@ -175,13 +210,16 @@ Export unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
   height=image->rows;
   x=0;
   y=text_size;
+  FormatString(geometry,"%ux%u",image->columns,image->rows);
   if (image_info->page != (char *) NULL)
     (void) strcpy(geometry,image_info->page);
   else
-    if (image->page != (char *) NULL)
-      (void) strcpy(geometry,image->page);
+    if ((image->page_info.width != 0) && (image->page_info.height != 0))
+      (void) FormatString(geometry,"%ux%u%+d%+d",image->page_info.width,
+        image->page_info.height,image->page_info.x,image->page_info.y);
     else
-      (void) strcpy(geometry,PSPageGeometry);
+      if (Latin1Compare(image_info->magick,"PCL") == 0)
+        (void) strcpy(geometry,PSPageGeometry);
   (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
   (void) GetGeometry(geometry,&media_info.x,&media_info.y,
     &media_info.width,&media_info.height);
@@ -220,7 +258,8 @@ Export unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
       */
       (void) strcpy(buffer,"\033&k2G");
       (void) WriteBlob(image,strlen(buffer),buffer);
-      (void) sprintf(buffer,"\033(s1p%uv5t3b",image_info->pointsize);
+      (void) sprintf(buffer,"\033(s1p%uv5t3b",(unsigned int)
+        image_info->pointsize);
       (void) WriteBlob(image,strlen(buffer),buffer);
       (void) sprintf(buffer,"\n%.1024s\n",image->label);
       (void) WriteBlob(image,strlen(buffer),buffer);
@@ -254,28 +293,22 @@ Export unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
       (void) WriteBlob(image,strlen(buffer),buffer);
       (void) sprintf(buffer,"\033*b%uW",3*image->columns);
       (void) WriteBlob(image,strlen(buffer),buffer);
-      x=0;
-      y=0;
-      p=image->pixels;
-      for (i=0; i < (int) image->packets; i++)
+      for (y=0; y < (int) image->rows; y++)
       {
-        for (j=0; j <= ((int) p->length); j++)
+        p=GetPixelCache(image,0,y,image->columns,1);
+        if (p == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (int) image->columns; x++)
         {
           (void) sprintf(buffer,"%c%c%c",(int) DownScale(p->red),
             (int) DownScale(p->green),(int) DownScale(p->blue));
           (void) WriteBlob(image,strlen(buffer),buffer);
+          p++;
         }
-        x++;
-        if (x == (int) image->columns)
-          {
-            (void) sprintf(buffer,"\033*b%uW",3*image->columns);
-            (void) WriteBlob(image,strlen(buffer),buffer);
-            if (QuantumTick(y,image->rows))
-              ProgressMonitor(SaveImageText,y,image->rows);
-            x=0;
-            y++;
-          }
-        p++;
+        (void) sprintf(buffer,"\033*b%uW",3*image->columns);
+        (void) WriteBlob(image,strlen(buffer),buffer);
+        if (QuantumTick(y,image->rows))
+          ProgressMonitor(SaveImageText,y,image->rows);
       }
       (void) strcpy(buffer,"\033*rC");  /* end graphics */
       (void) WriteBlob(image,strlen(buffer),buffer);
@@ -315,17 +348,11 @@ Export unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
           quantize_info.dither=image_info->dither;
           quantize_info.colorspace=GRAYColorspace;
           (void) QuantizeImage(&quantize_info,monochrome_image);
-          SyncImage(monochrome_image);
         }
-      p=monochrome_image->pixels;
       polarity=Intensity(image->colormap[0]) > (MaxRGB >> 1);
       if (monochrome_image->colors == 2)
         polarity=Intensity(monochrome_image->colormap[0]) >
           Intensity(monochrome_image->colormap[1]);
-      bit=0;
-      byte=0;
-      x=0;
-      y=0;
       (void) sprintf(buffer,"\033*r%us%uT",monochrome_image->columns,
         monochrome_image->rows);
       (void) WriteBlob(image,strlen(buffer),buffer);
@@ -335,12 +362,16 @@ Export unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
       (void) WriteBlob(image,strlen(buffer),buffer);
       (void) sprintf(buffer,"\033*b%uW",(image->columns+7)/8);
       (void) WriteBlob(image,strlen(buffer),buffer);
-      for (i=0; i < (int) monochrome_image->packets; i++)
+      for (y=0; y < (int) image->rows; y++)
       {
-        for (j=0; j <= ((int) p->length); j++)
+        if (!GetPixelCache(image,0,y,image->columns,1))
+          break;
+        bit=0;
+        byte=0;
+        for (x=0; x < (int) image->columns; x++)
         {
           byte<<=1;
-          if (p->index == polarity)
+          if (image->indexes[x] == polarity)
             byte|=0x01;
           bit++;
           if (bit == 8)
@@ -349,29 +380,17 @@ Export unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
               bit=0;
               byte=0;
             }
-          x++;
-          if (x == (int) monochrome_image->columns)
-            {
-              /*
-                Advance to the next scanline.
-              */
-              if (bit != 0)
-                (void) WriteByte(image,byte << (8-bit));
-              if (QuantumTick(y,monochrome_image->rows))
-                ProgressMonitor(SaveImageText,y,monochrome_image->rows);
-              bit=0;
-              byte=0;
-              x=0;
-              y++;
-              if (y < (int) monochrome_image->rows)
-                {
-                  (void) sprintf(buffer,"\033*b%uW",
-                    (monochrome_image->columns+7)/8);
-                  (void) WriteBlob(image,strlen(buffer),buffer);
-                }
-           }
         }
-        p++;
+        if (bit != 0)
+          (void) WriteByte(image,byte << (8-bit));
+        if (y < (int) monochrome_image->rows)
+          {
+            (void) sprintf(buffer,"\033*b%uW",
+              (monochrome_image->columns+7)/8);
+            (void) WriteBlob(image,strlen(buffer),buffer);
+          }
+        if (QuantumTick(y,monochrome_image->rows))
+          ProgressMonitor(SaveImageText,y,monochrome_image->rows);
       }
       (void) strcpy(buffer,"\033*rB");  /* end graphics */
       (void) WriteBlob(image,strlen(buffer),buffer);

@@ -96,21 +96,12 @@ Export Image *ReadRGBImage(const ImageInfo *image_info)
     i,
     x;
 
-  register RunlengthPacket
-    *q;
-
-  register unsigned char
-    *p;
-
   unsigned char
     *scanline;
 
   unsigned int
     packet_size,
     status;
-
-  unsigned short
-    value;
 
   /*
     Allocate image structure.
@@ -119,7 +110,7 @@ Export Image *ReadRGBImage(const ImageInfo *image_info)
   if (image == (Image *) NULL)
     return((Image *) NULL);
   if ((image->columns == 0) || (image->rows == 0))
-    ReaderExit(OptionWarning,"must specify image size",image);
+    ReaderExit(OptionWarning,"Must specify image size",image);
   if (image_info->interlace != PartitionInterlace)
     {
       /*
@@ -134,11 +125,11 @@ Export Image *ReadRGBImage(const ImageInfo *image_info)
   /*
     Allocate memory for a scanline.
   */
-  packet_size=3*(image->depth >> 3);
+  packet_size=image->depth > 8 ? 6 : 3;
   if (Latin1Compare(image_info->magick,"RGBA") == 0)
     {
       image->matte=True;
-      packet_size=4*(image->depth >> 3);
+      packet_size=image->depth > 8 ? 8 : 4;
     }
   scanline=(unsigned char *)
     AllocateMemory(packet_size*image->tile_info.width*sizeof(unsigned char));
@@ -152,22 +143,13 @@ Export Image *ReadRGBImage(const ImageInfo *image_info)
       */
       image->scene++;
       for (y=0; y < (int) image->rows; y++)
-        (void) ReadBlob(image,packet_size*image->tile_info.width,
-          (char *) scanline);
+        (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
     }
+  x=packet_size*image->tile_info.x;
   do
   {
     /*
-      Initialize image structure.
-    */
-    image->packets=image->columns*image->rows;
-    image->pixels=(RunlengthPacket *)
-      AllocateMemory(image->packets*sizeof(RunlengthPacket));
-    if (image->pixels == (RunlengthPacket *) NULL)
-      ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-    SetImage(image);
-    /*
-      Convert raster image to runlength-encoded packets.
+      Convert raster image to pixel packets.
     */
     switch (image_info->interlace)
     {
@@ -178,34 +160,26 @@ Export Image *ReadRGBImage(const ImageInfo *image_info)
           No interlacing:  RGBRGBRGBRGBRGBRGB...
         */
         for (y=0; y < image->tile_info.y; y++)
-          (void) ReadBlob(image,packet_size*image->tile_info.width,
-            (char *) scanline);
-        q=image->pixels;
+          (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
         for (y=0; y < (int) image->rows; y++)
         {
           if ((y > 0) || (image->previous == (Image *) NULL))
-            (void) ReadBlob(image,packet_size*image->tile_info.width,
-              (char *) scanline);
-          p=scanline+packet_size*image->tile_info.x;
-          for (x=0; x < (int) image->columns; x++)
-          {
-            ReadQuantum(q->red,p);
-            ReadQuantum(q->green,p);
-            ReadQuantum(q->blue,p);
-            q->index=0;
-            if (image->matte)
-              ReadQuantum(q->index,p);
-            q->length=0;
-            q++;
-          }
+            (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
+          if (!SetPixelCache(image,0,y,image->columns,1))
+            break;
+          if (!image->matte)
+            ReadPixelCache(image,RGBQuantum,scanline+x);
+          else
+            ReadPixelCache(image,RGBAQuantum,scanline+x);
+          if (!SyncPixelCache(image))
+            break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(LoadImageText,y,image->rows);
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
         for (y=0; y < count; y++)
-          (void) ReadBlob(image,packet_size*image->tile_info.width,
-            (char *) scanline);
+          (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
         break;
       }
       case LineInterlace:
@@ -213,62 +187,35 @@ Export Image *ReadRGBImage(const ImageInfo *image_info)
         /*
           Line interlacing:  RRR...GGG...BBB...RRR...GGG...BBB...
         */
-        packet_size=image->depth >> 3;
+        packet_size=image->depth > 8 ? 2 : 1;
         for (y=0; y < image->tile_info.y; y++)
-          (void) ReadBlob(image,packet_size*image->tile_info.width,
-            (char *) scanline);
+          (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
         for (y=0; y < (int) image->rows; y++)
         {
           if ((y > 0) || (image->previous == (Image *) NULL))
-            (void) ReadBlob(image,packet_size*image->tile_info.width,
-              (char *) scanline);
-          p=scanline+packet_size*image->tile_info.x;
-          q=image->pixels+y*image->columns;
-          for (x=0; x < (int) image->columns; x++)
-          {
-            ReadQuantum(q->red,p);
-            q->index=0;
-            q->length=0;
-            q++;
-          }
-          (void) ReadBlob(image,packet_size*image->tile_info.width,
-            (char *) scanline);
-          p=scanline+packet_size*image->tile_info.x;
-          q=image->pixels+y*image->columns;
-          for (x=0; x < (int) image->columns; x++)
-          {
-            ReadQuantum(q->green,p);
-            q++;
-          }
-          (void) ReadBlob(image,packet_size*image->tile_info.width,
-            (char *) scanline);
-          p=scanline+packet_size*image->tile_info.x;
-          q=image->pixels+y*image->columns;
-          for (x=0; x < (int) image->columns; x++)
-          {
-            ReadQuantum(q->blue,p);
-            q++;
-          }
+            (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
+          if (!SetPixelCache(image,0,y,image->columns,1))
+            break;
+          ReadPixelCache(image,RedQuantum,scanline+x);
+          (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
+          ReadPixelCache(image,GreenQuantum,scanline+x);
+          (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
+          ReadPixelCache(image,BlueQuantum,scanline+x);
           if (image->matte)
             {
               (void) ReadBlob(image,packet_size*image->tile_info.width,
-                (char *) scanline);
-              p=scanline+packet_size*image->tile_info.x;
-              q=image->pixels+y*image->columns;
-              for (x=0; x < (int) image->columns; x++)
-              {
-                ReadQuantum(q->index,p);
-                q++;
-              }
+                scanline);
+              ReadPixelCache(image,OpacityQuantum,scanline+x);
             }
+          if (!SyncPixelCache(image))
+            break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(LoadImageText,y,image->rows);
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
         for (y=0; y < count; y++)
-          (void) ReadBlob(image,packet_size*image->tile_info.width,
-            (char *) scanline);
+          (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
         break;
       }
       case PlaneInterlace:
@@ -287,26 +234,20 @@ Export Image *ReadRGBImage(const ImageInfo *image_info)
             if (status == False)
               ReaderExit(FileOpenWarning,"Unable to open file",image);
           }
-        packet_size=image->depth >> 3;
+        packet_size=image->depth > 8 ? 2 : 1;
         for (y=0; y < image->tile_info.y; y++)
-          (void) ReadBlob(image,packet_size*image->tile_info.width,
-            (char *) scanline);
+          (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
         i=0;
         span=image->rows*(image->matte ? 4 : 3);
-        q=image->pixels;
         for (y=0; y < (int) image->rows; y++)
         {
           if ((y > 0) || (image->previous == (Image *) NULL))
-            (void) ReadBlob(image,packet_size*image->tile_info.width,
-              (char *) scanline);
-          p=scanline+packet_size*image->tile_info.x;
-          for (x=0; x < (int) image->columns; x++)
-          {
-            ReadQuantum(q->red,p);
-            q->index=0;
-            q->length=0;
-            q++;
-          }
+            (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
+          if (!SetPixelCache(image,0,y,image->columns,1))
+            break;
+          ReadPixelCache(image,RedQuantum,scanline+x);
+          if (!SyncPixelCache(image))
+            break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(i,span))
               ProgressMonitor(LoadImageText,i,span);
@@ -314,8 +255,7 @@ Export Image *ReadRGBImage(const ImageInfo *image_info)
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
         for (y=0; y < count; y++)
-          (void) ReadBlob(image,packet_size*image->tile_info.width,
-            (char *) scanline);
+          (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
         if (image_info->interlace == PartitionInterlace)
           {
             CloseBlob(image);
@@ -324,20 +264,16 @@ Export Image *ReadRGBImage(const ImageInfo *image_info)
             if (status == False)
               ReaderExit(FileOpenWarning,"Unable to open file",image);
           }
-        q=image->pixels;
         for (y=0; y < image->tile_info.y; y++)
-          (void) ReadBlob(image,packet_size*image->tile_info.width,
-            (char *) scanline);
+          (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
         for (y=0; y < (int) image->rows; y++)
         {
-          (void) ReadBlob(image,packet_size*image->tile_info.width,
-            (char *) scanline);
-          p=scanline+packet_size*image->tile_info.x;
-          for (x=0; x < (int) image->columns; x++)
-          {
-            ReadQuantum(q->green,p);
-            q++;
-          }
+          (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
+          if (!GetPixelCache(image,0,y,image->columns,1))
+            break;
+          ReadPixelCache(image,GreenQuantum,scanline+x);
+          if (!SyncPixelCache(image))
+            break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(i,span))
               ProgressMonitor(LoadImageText,i,span);
@@ -345,8 +281,7 @@ Export Image *ReadRGBImage(const ImageInfo *image_info)
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
         for (y=0; y < count; y++)
-          (void) ReadBlob(image,packet_size*image->tile_info.width,
-            (char *) scanline);
+          (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
         if (image_info->interlace == PartitionInterlace)
           {
             CloseBlob(image);
@@ -355,20 +290,16 @@ Export Image *ReadRGBImage(const ImageInfo *image_info)
             if (status == False)
               ReaderExit(FileOpenWarning,"Unable to open file",image);
           }
-        q=image->pixels;
         for (y=0; y < image->tile_info.y; y++)
-          (void) ReadBlob(image,packet_size*image->tile_info.width,
-            (char *) scanline);
+          (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
         for (y=0; y < (int) image->rows; y++)
         {
-          (void) ReadBlob(image,packet_size*image->tile_info.width,
-            (char *) scanline);
-          p=scanline+packet_size*image->tile_info.x;
-          for (x=0; x < (int) image->columns; x++)
-          {
-            ReadQuantum(q->blue,p);
-            q++;
-          }
+          (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
+          if (!GetPixelCache(image,0,y,image->columns,1))
+            break;
+          ReadPixelCache(image,BlueQuantum,scanline+x);
+          if (!SyncPixelCache(image))
+            break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(i,span))
               ProgressMonitor(LoadImageText,i,span);
@@ -376,8 +307,7 @@ Export Image *ReadRGBImage(const ImageInfo *image_info)
         }
         count=image->tile_info.height-image->rows-image->tile_info.y;
         for (y=0; y < count; y++)
-          (void) ReadBlob(image,packet_size*image->tile_info.width,
-            (char *) scanline);
+          (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
         if (image->matte)
           {
             /*
@@ -391,20 +321,18 @@ Export Image *ReadRGBImage(const ImageInfo *image_info)
                 if (status == False)
                   ReaderExit(FileOpenWarning,"Unable to open file",image);
               }
-            q=image->pixels;
             for (y=0; y < image->tile_info.y; y++)
               (void) ReadBlob(image,packet_size*image->tile_info.width,
-                (char *) scanline);
+                scanline);
             for (y=0; y < (int) image->rows; y++)
             {
               (void) ReadBlob(image,packet_size*image->tile_info.width,
-                (char *) scanline);
-              p=scanline+packet_size*image->tile_info.x;
-              for (x=0; x < (int) image->columns; x++)
-              {
-                ReadQuantum(q->index,p);
-                q++;
-              }
+                scanline);
+              if (!GetPixelCache(image,0,y,image->columns,1))
+                break;
+              ReadPixelCache(image,OpacityQuantum,scanline+x);
+              if (!SyncPixelCache(image))
+                break;
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(i,span))
                   ProgressMonitor(LoadImageText,i,span);
@@ -413,23 +341,20 @@ Export Image *ReadRGBImage(const ImageInfo *image_info)
             count=image->tile_info.height-image->rows-image->tile_info.y;
             for (y=0; y < count; y++)
               (void) ReadBlob(image,packet_size*image->tile_info.width,
-                (char *) scanline);
+                scanline);
           }
         if (image_info->interlace == PartitionInterlace)
           (void) strcpy(image->filename,image_info->filename);
         break;
       }
     }
-    CondenseImage(image);
-    if (EOFBlob(image))
-      MagickWarning(CorruptImageWarning,"not enough pixels",image->filename);
     /*
       Proceed to next image.
     */
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
-    count=ReadBlob(image,packet_size*image->tile_info.width,(char *) scanline);
+    count=ReadBlob(image,packet_size*image->tile_info.width,scanline);
     if (count > 0)
       {
         /*
@@ -446,7 +371,7 @@ Export Image *ReadRGBImage(const ImageInfo *image_info)
           (unsigned int) image->filesize);
       }
   } while (count > 0);
-  FreeMemory((char *) scanline);
+  FreeMemory(scanline);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);
@@ -464,8 +389,8 @@ Export Image *ReadRGBImage(const ImageInfo *image_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method WriteRGBImage writes an image to a file in red, green, and
-%  blue rasterfile format.
+%  Method WriteRGBImage writes an image to a file in red, green, and blue
+%  rasterfile format.
 %
 %  The format of the WriteRGBImage method is:
 %
@@ -486,21 +411,27 @@ Export Image *ReadRGBImage(const ImageInfo *image_info)
 Export unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
 {
   int
-    x,
     y;
 
-  register int
-    i,
-    j;
-
-  register RunlengthPacket
-    *p;
+  unsigned char
+    *pixels;
 
   unsigned int
+    packet_size,
     scene,
     status;
 
+  /*
+    Allocate memory for pixels.
+  */
   image->depth=QuantumDepth;
+  packet_size=image->depth > 8 ? 6 : 3;
+  if (image->matte)
+    packet_size=image->depth > 8 ? 8 : 4;
+  pixels=(unsigned char *)
+    AllocateMemory(packet_size*image->columns*sizeof(PixelPacket));
+  if (pixels == (unsigned char *) NULL)
+    WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
   if (image_info->interlace != PartitionInterlace)
     {
       /*
@@ -517,58 +448,35 @@ Export unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
       Convert MIFF to RGB raster pixels.
     */
     TransformRGBImage(image,RGBColorspace);
+    if (Latin1Compare(image_info->magick,"RGBA") == 0)
+      if (!image->matte)
+        MatteImage(image,Opaque);
     switch (image_info->interlace)
     {
       case NoInterlace:
       default:
       {
-        register unsigned char
-          *q;
-
-        unsigned char
-          *pixels;
-
-        unsigned short
-          value;
-
-        /*
-          Allocate memory for pixels.
-        */
-        pixels=(unsigned char *)
-          AllocateMemory(image->columns*sizeof(RunlengthPacket));
-        if (pixels == (unsigned char *) NULL)
-          WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
         /*
           No interlacing:  RGBRGBRGBRGBRGBRGB...
         */
-        x=0;
-        y=0;
-        p=image->pixels;
-        q=pixels;
-        for (i=0; i < (int) image->packets; i++)
+        for (y=0; y < (int) image->rows; y++)
         {
-          for (j=0; j <= ((int) p->length); j++)
-          {
-            WriteQuantum(p->red,q);
-            WriteQuantum(p->green,q);
-            WriteQuantum(p->blue,q);
-            if (Latin1Compare(image_info->magick,"RGBA") == 0)
-              WriteQuantum(image->matte ? p->index : Opaque,q);
-            x++;
-            if (x == (int) image->columns)
-              {
-                (void) WriteBlob(image,q-pixels,(char *) pixels);
-                if (image->previous == (Image *) NULL)
-                  if (QuantumTick(y,image->rows))
-                    ProgressMonitor(SaveImageText,y,image->rows);
-                q=pixels;
-                x=0;
-                y++;
-              }
-          }
-          p++;
+          if (!GetPixelCache(image,0,y,image->columns,1))
+            break;
+          if (Latin1Compare(image_info->magick,"RGBA") != 0)
+            {
+              WritePixelCache(image,RGBQuantum,pixels);
+              (void) WriteBlob(image,3*image->columns,pixels);
+            }
+          else
+            {
+              WritePixelCache(image,RGBAQuantum,pixels);
+              (void) WriteBlob(image,4*image->columns,pixels);
+            }
+          if (image->previous == (Image *) NULL)
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(SaveImageText,y,image->rows);
         }
-        FreeMemory((char *) pixels);
         break;
       }
       case LineInterlace:
@@ -576,34 +484,20 @@ Export unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
         /*
           Line interlacing:  RRR...GGG...BBB...RRR...GGG...BBB...
         */
-        if (!UncondenseImage(image))
-          return(False);
         for (y=0; y < (int) image->rows; y++)
         {
-          p=image->pixels+(y*image->columns);
-          for (x=0; x < (int) image->columns; x++)
-          {
-            WriteQuantumFile(p->red);
-            p++;
-          }
-          p=image->pixels+(y*image->columns);
-          for (x=0; x < (int) image->columns; x++)
-          {
-            WriteQuantumFile(p->green);
-            p++;
-          }
-          p=image->pixels+(y*image->columns);
-          for (x=0; x < (int) image->columns; x++)
-          {
-            WriteQuantumFile(p->blue);
-            p++;
-          }
-          p=image->pixels+(y*image->columns);
+          if (!GetPixelCache(image,0,y,image->columns,1))
+            break;
+          WritePixelCache(image,RedQuantum,pixels);
+          (void) WriteBlob(image,image->columns,pixels);
+          WritePixelCache(image,GreenQuantum,pixels);
+          (void) WriteBlob(image,image->columns,pixels);
+          WritePixelCache(image,BlueQuantum,pixels);
+          (void) WriteBlob(image,image->columns,pixels);
           if (image->matte)
-            for (x=0; x < (int) image->columns; x++)
             {
-              WriteQuantumFile(p->index);
-              p++;
+              WritePixelCache(image,OpacityQuantum,pixels);
+              (void) WriteBlob(image,image->columns,pixels);
             }
           if (QuantumTick(y,image->rows))
             ProgressMonitor(SaveImageText,y,image->rows);
@@ -623,12 +517,12 @@ Export unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
             if (status == False)
               WriterExit(FileOpenWarning,"Unable to open file",image);
           }
-        p=image->pixels;
-        for (i=0; i < (int) image->packets; i++)
+        for (y=0; y < (int) image->rows; y++)
         {
-          for (j=0; j <= ((int) p->length); j++)
-            WriteQuantumFile(p->red);
-          p++;
+          if (!GetPixelCache(image,0,y,image->columns,1))
+            break;
+          WritePixelCache(image,RedQuantum,pixels);
+          (void) WriteBlob(image,image->columns,pixels);
         }
         if (image_info->interlace == PartitionInterlace)
           {
@@ -639,12 +533,12 @@ Export unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
               WriterExit(FileOpenWarning,"Unable to open file",image);
           }
         ProgressMonitor(SaveImageText,100,400);
-        p=image->pixels;
-        for (i=0; i < (int) image->packets; i++)
+        for (y=0; y < (int) image->rows; y++)
         {
-          for (j=0; j <= ((int) p->length); j++)
-            WriteQuantumFile(p->green);
-          p++;
+          if (!GetPixelCache(image,0,y,image->columns,1))
+            break;
+          WritePixelCache(image,GreenQuantum,pixels);
+          (void) WriteBlob(image,image->columns,pixels);
         }
         if (image_info->interlace == PartitionInterlace)
           {
@@ -655,17 +549,16 @@ Export unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
               WriterExit(FileOpenWarning,"Unable to open file",image);
           }
         ProgressMonitor(SaveImageText,200,400);
-        p=image->pixels;
-        for (i=0; i < (int) image->packets; i++)
+        for (y=0; y < (int) image->rows; y++)
         {
-          for (j=0; j <= ((int) p->length); j++)
-            WriteQuantumFile(p->blue);
-          p++;
+          if (!GetPixelCache(image,0,y,image->columns,1))
+            break;
+          WritePixelCache(image,BlueQuantum,pixels);
+          (void) WriteBlob(image,image->columns,pixels);
         }
         if (image->matte)
           {
             ProgressMonitor(SaveImageText,300,400);
-            p=image->pixels;
             if (image_info->interlace == PartitionInterlace)
               {
                 CloseBlob(image);
@@ -674,11 +567,12 @@ Export unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
                 if (status == False)
                   WriterExit(FileOpenWarning,"Unable to open file",image);
               }
-            for (i=0; i < (int) image->packets; i++)
+            for (y=0; y < (int) image->rows; y++)
             {
-              for (j=0; j <= ((int) p->length); j++)
-                WriteQuantumFile(p->index);
-              p++;
+              if (!GetPixelCache(image,0,y,image->columns,1))
+                break;
+              WritePixelCache(image,OpacityQuantum,pixels);
+              (void) WriteBlob(image,image->columns,pixels);
             }
           }
         if (image_info->interlace == PartitionInterlace)
@@ -689,10 +583,10 @@ Export unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
     }
     if (image->next == (Image *) NULL)
       break;
-    image->next->file=image->file;
-    image=image->next;
+    image=GetNextImage(image);
     ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
+  FreeMemory(pixels);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
       image=image->previous;

@@ -1,0 +1,168 @@
+<HTML>
+<HEAD>
+<TITLE>Magick++ News</TITLE>
+</HEAD>
+<BODY text="#000000" bgcolor="#FFFFFF" link="#0000EE" vlink="#551A8B" alink="#FF0000">
+<p>
+This file records noteworthy changes.
+
+<p>
+(0.8.7)<BR>
+<UL>
+  <LI> Bugfix: condensed() was returning wrong state.
+
+</UL>
+<p>
+(0.8.6)<BR>
+<UL>
+  <LI> Color is now based on ImageMagick's RunlengthPacket structure (via a
+    pointer) so that it may eventually be used to represent an image
+    pixel.  This is currently a work in progress.
+
+</UL>
+<p>
+(0.8.5)<BR>
+<UL>
+  <LI> Headers are now installed under prefix/include/Magick++ on Unix
+    systems with the exception that Magick++.h is installed under
+    prefix/include as it was before.  Programs which include Magick++.h
+    (the documented approach) should not be impacted.
+  <LI> Image constructors to construct an image from a BLOB.
+  <LI> Image read and write methods to decode and encode images stored in a
+    BLOB.  This allows reading/writing image "files" from/to memory rather
+    than a traditional file.
+
+</UL>
+<p>
+(0.8.4)<BR>
+<UL>
+  <LI> New mapImages algorithm maps a sequence of images to the colormap of
+    a provided image.<BR>
+  <LI> New quantizeImages algorithm computes and applies a common colormap
+    to a sequence of images.
+
+</UL>
+<p>
+(0.8.3)<BR>
+<UL>
+  <LI> Ported to ImageMagick 4.2.6.
+  <LI> Blob supports default constructor.
+  <LI> New Blob method updateNoCopy() to support efficient initialization by
+    derived class.
+
+</UL>
+<p>
+(0.8.2)<BR>
+<UL>
+  <LI> Uses libtool 1.3 to build library under Unix and Cygwin (static lib only).
+  <LI> Added Blob class to support supplying formatted binary data to methods.
+  <LI> Added support for setting ICC and IPTC profiles from a binary BLOB.
+  <LI> Added support for transformations of image data to/from alternate
+    colorspace (e.g. CYMK).<BR>
+  <LI> Added support for 'pinging' an image (get image dimensions/size quickly).
+  <LI> Added 'uncondense' method to de-compress in-memory image data.
+  <LI> Added support for annotation using rotated text.
+
+</UL>
+<p>
+(0.8.1)<BR>
+<UL>
+  <LI> Added support for setting alpha in Magick::Color
+  <LI> Set/get color alpha in Magick::Image::pixelColor() for DirectClass images.
+
+</UL>
+<p>
+(0.8)<BR>
+<UL>
+  <LI> Transitioned to Beta
+  <LI> Improved Microsoft Visual C++ build environment.
+
+</UL>
+<p>
+(0.7.4)<BR>
+<UL>
+  <LI> Added animateImages() and displayImages() to MagickSTL.h.
+  <LI> Added function objects to support setting image attributes.
+
+</UL>
+<p>
+(0.7.3)<BR>
+<UL>
+  <LI> Image::penTexture() now takes Image reference rather than
+    Image pointer.  Set Image to invalid using isValid(false)
+    to unset texture.<BR>
+  <LI> Attribute methods that take Color, Geometry, Image, or string
+    arguments may now unset the attribute by setting the state of
+    the object to invalid using isValid(false), or the empty string
+    (in the case of string).  This allows full control over ImageMagick
+    attributes which are stored as C strings which may be set to NULL.
+  <LI> Updated for ImageMagick 4.2.1
+
+</UL>
+<p>
+(0.7.2)<BR>
+<UL>
+  <LI> Added STL function object support for all Image manipulation
+    methods to support operating on all or part of the images
+    stored in an STL container.
+
+</UL>
+<p>
+(0.7.1)<BR>
+<UL>
+  <LI> Added Coordinate class and methods in Drawable to support x,y
+    coordinates.<BR>
+  <LI> Changed coordinate parameters from unsigned int to double in Drawable.
+  <LI> Changed polygon methods in Drawable to use STL list argument.
+  <LI> Added STL list based draw method to Image.
+  <LI> Changed Exception heirarchy to support Warning and Error sub-classes.
+    Most exception class names have changed.
+
+</UL>
+<p>
+(0.7)<BR>
+<UL>
+  <LI> Updated for ImageMagick 4.2.0
+  <LI> Added support for flood-filling and drawing with texture.
+  <LI> Montage supported.
+  <LI> Oodles of bugs fixed.
+  <LI> Implemented image attribute tests.
+  <LI> Implemented PerlMagick 'demo' and 'shapes' demo programs in Magick++.
+  <LI> Some parameters re-ordered due to experience from writing demo programs.
+
+</UL>
+<p>
+(0.6)<BR>
+<UL>
+  <LI> Initial support for integrating image-list oriented operations with
+    STL containers.
+
+</UL>
+<p>
+(0.5)<BR>
+<UL>
+  <LI> Compiles and runs under Unix using egcs release 1.1 or later.
+  <LI> Compiles and runs under Windows using Visual C++ 5.X or later.
+  <LI> Users of Magick++ API are not exposed to ImageMagick headers.
+  <LI> Magick++ API is namespaced under "Magick".
+  <LI> "Magick" prefix removed from object names.
+  <LI> User options are now completely contained within Image object.
+    There is no longer a MagickOptions parameter to some methods.
+
+</UL>
+<p>
+(0.1)<BR>
+<UL>
+  <LI> All ImageMagick operations which operate on individual images are
+    supported.<BR>
+  <LI> Image objects have value semantics, avoid unnecessary image
+    copies through the use of reference counting, and may be compared
+    via standard operators.<BR>
+  <LI> Geometry, color, annotations, and user-options are supported by
+    separate classes.<BR>
+  <LI> Errors are reported synchronously via C++ exceptions.
+
+</UL>
+
+</BODY>
+</HTML>

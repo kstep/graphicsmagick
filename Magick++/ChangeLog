@@ -1,3 +1,53 @@
+1999-10-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Blob.cpp (BlobRef): Bugfix -- start blob reference count at
+ 	one rather than zero.
+
+1999-10-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (Image): Fixed Image constructors from Blob.  The
+ 	image reference was not being instantiated as it should have been,
+ 	causing a crash.
+
+1999-10-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Blob.cpp: All blob length parameters are now of type size_t.
+
+	* lib/Image.cpp (write): Length estimate is now of type size_t.
+
+1999-09-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (rotate): No longer accepts a crop option since
+ 	ImageMagick no longer supports this.
+	(shear): No longer accepts a crop option since ImageMagick no
+ 	longer supports this.
+
+1999-09-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp:
+	(rotate): No longer accepts sharpen argument.
+  	User must sharpen seperately if desired.  This change is due to a
+ 	similar change in ImageMagick 5.0.
+	(condense): Removed method.
+	(uncondense): Removed method.
+	(condensed): Removed method.
+	(pixelColor): Adapted to 5.0.
+
+	* lib/Magick++/Color.h : Rewrote to efficiently use ImageMagick
+ 	5.0's PixelPacket color representation.
+
+	* lib/Color.cpp : Rewrote to efficiently use ImageMagick 5.0's
+ 	PixelPacket color representation.
+
+1999-09-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (condensed): Bug fix.  The condensed() method was returning the opposite bool value than it should.  Oops!
+
+1999-09-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/Include.h (MagickLib): Eliminated requirement for
+ 	including <magick/defines.h>.
+
 1999-08-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Image.cpp: Added accessor methods for other key ImageMagick

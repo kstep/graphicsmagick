@@ -67,6 +67,47 @@ const char
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   I s P S                                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsPS returns True if the image format type, identified by the
+%  magick string, is PS.
+%
+%  The format of the ReadPSImage method is:
+%
+%      unsigned int IsPS(const unsigned char *magick,
+%        const unsigned int length)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method IsPS returns True if the image format type is PS.
+%
+%    o magick: This string is generally the first few bytes of an image file
+%      or blob.
+%
+%    o length: Specifies the length of the magick string.
+%
+%
+*/
+Export unsigned int IsPS(const unsigned char *magick,const unsigned int length)
+{
+  if (length < 3)
+    return(False);
+  if (strncmp((char *) magick,"\004%!",3) == 0)
+    return(True);
+  if (strncmp((char *) magick,"%!",2) == 0)
+    return(True);
+  return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   R e a d P S I m a g e                                                     %
 %                                                                             %
 %                                                                             %
@@ -336,7 +377,7 @@ Export Image *ReadPSImage(const ImageInfo *image_info)
       return((Image *) NULL);
     }
   local_info=CloneImageInfo(image_info);
-  GetBlobInfo(&(local_info->blob));
+  GetBlobInfo(&(local_info->blob_info));
   image=ReadPNMImage(local_info);
   DestroyImageInfo(local_info);
   (void) remove(image_info->filename);
@@ -657,6 +698,7 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     buffer[MaxTextExtent],
     date[MaxTextExtent],
     density[MaxTextExtent],
+    geometry[MaxTextExtent],
     **labels;
 
   const char
@@ -670,17 +712,23 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     y_resolution,
     y_scale;
 
+  IndexPacket
+    index;
+
   int
     length,
+    max_runlength,
     x,
     y;
 
-  register RunlengthPacket
+  PixelPacket
+    pixel;
+
+  register PixelPacket
     *p;
 
   register int
-    i,
-    j;
+    i;
 
   SegmentInfo
     bounding_box;
@@ -721,14 +769,17 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     height=image->rows;
     x=0;
     y=text_size;
+    FormatString(geometry,"%ux%u",image->columns,image->rows);
     if (image_info->page != (char *) NULL)
-      (void) ParseImageGeometry(image_info->page,&x,&y,&width,&height);
+      (void) strcpy(geometry,image_info->page);
     else
-      if (image->page != (char *) NULL)
-        (void) ParseImageGeometry(image->page,&x,&y,&width,&height);
+      if ((image->page_info.width != 0) && (image->page_info.height != 0))
+        (void) FormatString(geometry,"%ux%u%+d%+d",image->page_info.width,
+	  image->page_info.height,image->page_info.x,image->page_info.y);
       else
         if (Latin1Compare(image_info->magick,"PS") == 0)
-          (void) ParseImageGeometry(PSPageGeometry,&x,&y,&width,&height);
+          (void) strcpy(geometry,PSPageGeometry);
+    (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
     /*
       Scale relative to dots-per-inch.
     */
@@ -837,12 +888,9 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
             /*
               Create preview image.
             */
-            image->orphan=True;
             preview_image=CloneImage(image,image->columns,image->rows,True);
-            image->orphan=False;
             if (preview_image == (Image *) NULL)
-              WriterExit(ResourceLimitWarning,"Memory allocation failed",
-                image);
+              WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
             /*
               Dump image as bitmap.
             */
@@ -856,27 +904,26 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 quantize_info.dither=image_info->dither;
                 quantize_info.colorspace=GRAYColorspace;
                 (void) QuantizeImage(&quantize_info,preview_image);
-                SyncImage(preview_image);
               }
             polarity=Intensity(preview_image->colormap[0]) < (MaxRGB >> 1);
             if (preview_image->colors == 2)
               polarity=Intensity(preview_image->colormap[0]) >
                 Intensity(preview_image->colormap[1]);
-            bit=0;
-            byte=0;
-            count=0;
-            x=0;
-            p=preview_image->pixels;
             (void) sprintf(buffer,"%%%%BeginPreview: %u %u %u %u\n%%  ",
               preview_image->columns,preview_image->rows,(unsigned int) 1,
               (((preview_image->columns+7) >> 3)*preview_image->rows+35)/36);
             (void) WriteBlob(image,strlen(buffer),buffer);
-            for (i=0; i < (int) preview_image->packets; i++)
+            count=0;
+            for (y=0; y < (int) image->rows; y++)
             {
-              for (j=0; j <= ((int) p->length); j++)
+              if (!GetPixelCache(preview_image,0,y,preview_image->columns,1))
+                break;
+              bit=0;
+              byte=0;
+              for (x=0; x < (int) preview_image->columns; x++)
               {
                 byte<<=1;
-                if (p->index == polarity)
+                if (image->indexes[x] == polarity)
                   byte|=0x01;
                 bit++;
                 if (bit == 8)
@@ -893,33 +940,25 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                     bit=0;
                     byte=0;
                   }
-                x++;
-                if (x == (int) preview_image->columns)
-                  {
-                    if (bit != 0)
-                      {
-                        byte<<=(8-bit);
-                        (void) sprintf(buffer,"%02x",byte & 0xff);
-                        (void) WriteBlob(image,strlen(buffer),buffer);
-                        count++;
-                        if (count == 36)
-                          {
-                            (void) strcpy(buffer,"\n%%  ");
-                            (void) WriteBlob(image,strlen(buffer),buffer);
-                            count=0;
-                          };
-                        bit=0;
-                        byte=0;
-                      };
-                    x=0;
-                  }
-                }
-                p++;
               }
-              (void) strcpy(buffer,"\n%%EndPreview\n");
-              (void) WriteBlob(image,strlen(buffer),buffer);
-              DestroyImage(preview_image);
+              if (bit != 0)
+                {
+                  byte<<=(8-bit);
+                  (void) sprintf(buffer,"%02x",byte & 0xff);
+                  (void) WriteBlob(image,strlen(buffer),buffer);
+                  count++;
+                  if (count == 36)
+                    {
+                      (void) strcpy(buffer,"\n%%  ");
+                      (void) WriteBlob(image,strlen(buffer),buffer);
+                      count=0;
+                    };
+                };
             }
+            (void) strcpy(buffer,"\n%%EndPreview\n");
+            (void) WriteBlob(image,strlen(buffer),buffer);
+            DestroyImage(preview_image);
+          }
         /*
           Output Postscript commands.
         */
@@ -934,7 +973,7 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
           (void) WriteBlob(image,strlen(buffer),buffer);
           (void) strcpy(buffer,"  currentfile label readline pop\n");
           (void) WriteBlob(image,strlen(buffer),buffer);
-          (void) sprintf(buffer,"  0 y %d add moveto label show pop\n",
+          (void) sprintf(buffer,"  0 y %f add moveto label show pop\n",
             i*image_info->pointsize+12);
           (void) WriteBlob(image,strlen(buffer),buffer);
         }
@@ -984,7 +1023,7 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
       Output image data.
     */
     labels=StringToList(image->label);
-    (void) sprintf(buffer,"%d %d\n%g %g\n%u\n",x,y,x_scale,y_scale,
+    (void) sprintf(buffer,"%d %d\n%g %g\n%lf\n",x,y,x_scale,y_scale,
       image_info->pointsize);
     (void) WriteBlob(image,strlen(buffer),buffer);
     if (labels != (char **) NULL)
@@ -997,8 +1036,12 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
         }
         FreeMemory(labels);
       }
+    GetPixelPacket(&pixel);
+    i=0;
+    index=0;
+    length=0;
+    max_runlength=255;
     x=0;
-    p=image->pixels;
     if (!IsPseudoClass(image) && !IsGrayImage(image))
       {
         /*
@@ -1016,29 +1059,50 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
             /*
               Dump runlength-encoded DirectColor packets.
             */
-            for (i=0; i < (int) image->packets; i++)
+            for (y=0; y < (int) image->rows; y++)
             {
-              for (length=p->length; length >= 0; length-=256)
+              p=GetPixelCache(image,0,y,image->columns,1);
+              if (p == (PixelPacket *) NULL)
+                break;
+              if (y == 0)
+                {
+                  pixel=(*p);
+                  if (image->class == PseudoClass)
+                    index=(*image->indexes);
+                }
+              for (x=0; x < (int) image->columns; x++)
               {
-                if (image->matte && (p->index == Transparent))
-                  (void) sprintf(buffer,"ffffff%02x",(unsigned int)
-                    Min(length,0xff));
+                if ((x == (int) (image->columns-1)) &&
+                    (y == (int) (image->rows-1)))
+                  max_runlength=0;
+                if ((p->red == pixel.red) && (p->green == pixel.green) &&
+                    (p->blue == pixel.blue) && (p->opacity == pixel.opacity) &&
+                    (length < max_runlength))
+                  length++;
                 else
-                  (void) sprintf(buffer,"%02lx%02lx%02lx%02lx",
-                    DownScale(p->red),DownScale(p->green),DownScale(p->blue),
-                    (unsigned long) Min(length,0xff));
-                (void) WriteBlob(image,strlen(buffer),buffer);
-                x++;
-                if (x == 9)
                   {
-                    x=0;
-                    (void) strcpy(buffer,"\n");
+                    if (image->matte && (p->opacity == Transparent))
+                      (void) sprintf(buffer,"ffffff%02x",(unsigned int)
+                        Min(length,0xff));
+                    else
+                      (void) sprintf(buffer,"%02lx%02lx%02lx%02lx",
+                        DownScale(pixel.red),DownScale(pixel.green),
+                        DownScale(pixel.blue),
+                        (unsigned long) Min(length,0xff));
+                    (void) WriteBlob(image,strlen(buffer),buffer);
+                    i++;
+                    if (i == 9)
+                      {
+                        (void) strcpy(buffer,"\n");
+                        i=0;
+                      }
+                    length=0;
                   }
+                pixel=(*p++);
               }
-              p++;
               if (image->previous == (Image *) NULL)
-                if (QuantumTick(i,image->packets))
-                  ProgressMonitor(SaveImageText,i,image->packets);
+                if (QuantumTick(y,image->rows))
+                  ProgressMonitor(SaveImageText,y,image->rows);
             }
             break;
           }
@@ -1047,27 +1111,31 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
             /*
               Dump uncompressed DirectColor packets.
             */
-            for (i=0; i < (int) image->packets; i++)
+            i=0;
+            for (y=0; y < (int) image->rows; y++)
             {
-              for (j=0; j <= ((int) p->length); j++)
+              p=GetPixelCache(image,0,y,image->columns,1);
+              if (p == (PixelPacket *) NULL)
+                break;
+              for (x=0; x < (int) image->columns; x++)
               {
-                if (image->matte && (p->index == Transparent))
+                if (image->matte && (p->opacity == Transparent))
                   (void) strcpy(buffer,"ffffff");
                 else
                   (void) sprintf(buffer,"%02lx%02lx%02lx",
                     DownScale(p->red),DownScale(p->green),DownScale(p->blue));
                 (void) WriteBlob(image,strlen(buffer),buffer);
-                x++;
-                if (x == 12)
+                i++;
+                if (i == 12)
                   {
-                    x=0;
+                    i=0;
                     (void) WriteByte(image,'\n');
                   }
+                p++;
               }
-              p++;
               if (image->previous == (Image *) NULL)
-                if (QuantumTick(i,image->packets))
-                  ProgressMonitor(SaveImageText,i,image->packets);
+                if (QuantumTick(y,image->rows))
+                  ProgressMonitor(SaveImageText,y,image->rows);
             }
             break;
           }
@@ -1085,23 +1153,27 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               /*
                 Dump image as grayscale.
               */
-              for (i=0; i < (int) image->packets; i++)
+              i++;
+              for (y=0; y < (int) image->rows; y++)
               {
-                for (j=0; j <= ((int) p->length); j++)
+                p=GetPixelCache(image,0,y,image->columns,1);
+                if (p == (PixelPacket *) NULL)
+                  break;
+                for (x=0; x < (int) image->columns; x++)
                 {
                   (void) sprintf(buffer,"%02lx",Intensity(*p));
                   (void) WriteBlob(image,strlen(buffer),buffer);
-                  x++;
-                  if (x == 36)
+                  i++;
+                  if (i == 36)
                     {
-                      x=0;
                       (void) WriteByte(image,'\n');
+                      i=0;
                     }
+                  p++;
                 }
-                p++;
                 if (image->previous == (Image *) NULL)
-                  if (QuantumTick(i,image->packets))
-                    ProgressMonitor(SaveImageText,i,image->packets);
+                  if (QuantumTick(y,image->rows))
+                    ProgressMonitor(SaveImageText,y,image->rows);
               }
             }
           else
@@ -1116,16 +1188,17 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               if (image->colors == 2)
                 polarity=
                   Intensity(image->colormap[1]) > Intensity(image->colormap[0]);
-              bit=0;
-              byte=0;
               count=0;
-              y=0;
-              for (i=0; i < (int) image->packets; i++)
+              for (y=0; y < (int) image->rows; y++)
               {
-                for (j=0; j <= ((int) p->length); j++)
+                if (!GetPixelCache(image,0,y,image->columns,1))
+                  break;
+                bit=0;
+                byte=0;
+                for (x=0; x < (int) image->columns; x++)
                 {
                   byte<<=1;
-                  if (p->index == polarity)
+                  if (image->indexes[x] == polarity)
                     byte|=0x01;
                   bit++;
                   if (bit == 8)
@@ -1141,34 +1214,23 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                       bit=0;
                       byte=0;
                     }
-                  x++;
-                  if (x == (int) image->columns)
-                    {
-                      /*
-                        Advance to the next scanline.
-                      */
-                      if (bit != 0)
-                        {
-                          byte<<=(8-bit);
-                          (void) sprintf(buffer,"%02x",byte & 0xff);
-                          (void) WriteBlob(image,strlen(buffer),buffer);
-                          count++;
-                          if (count == 36)
-                            {
-                              (void) WriteByte(image,'\n');
-                              count=0;
-                            };
-                        };
-                      if (image->previous == (Image *) NULL)
-                        if (QuantumTick(y,image->rows))
-                          ProgressMonitor(SaveImageText,y,image->rows);
-                      bit=0;
-                      byte=0;
-                      x=0;
-                      y++;
-                    }
-                  }
-                p++;
+                  p++;
+                }
+                if (bit != 0)
+                  {
+                    byte<<=(8-bit);
+                    (void) sprintf(buffer,"%02x",byte & 0xff);
+                    (void) WriteBlob(image,strlen(buffer),buffer);
+                    count++;
+                    if (count == 36)
+                      {
+                        (void) WriteByte(image,'\n');
+                        count=0;
+                      };
+                  };
+                if (image->previous == (Image *) NULL)
+                  if (QuantumTick(y,image->rows))
+                    ProgressMonitor(SaveImageText,y,image->rows);
               }
             }
           if (count != 0)
@@ -1204,24 +1266,43 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               /*
                 Dump runlength-encoded PseudoColor packets.
               */
-              for (i=0; i < (int) image->packets; i++)
+              i=0;
+              for (y=0; y < (int) image->rows; y++)
               {
-                for (length=p->length; length >= 0; length-=256)
+                p=GetPixelCache(image,0,y,image->columns,1);
+                if (p == (PixelPacket *) NULL)
+                  break;
+                if (y == 0)
+                  {
+                    pixel=(*p);
+                    index=(*image->indexes);
+                  }
+                for (x=0; x < (int) image->columns; x++)
                 {
-                  (void) sprintf(buffer,"%02x%02x",(unsigned int) p->index,
-                    (unsigned int) Min(length,0xff));
-                  (void) WriteBlob(image,strlen(buffer),buffer);
-                  x++;
-                  if (x == 18)
+                  if ((x == (int) (image->columns-1)) &&
+                      (y == (int) (image->rows-1)))
+                    max_runlength=0;
+                  if ((index == image->indexes[x]) && (length < max_runlength))
+                    length++;
+                  else
                     {
-                      x=0;
-                      (void) WriteByte(image,'\n');
+                      (void) sprintf(buffer,"%02x%02x",(unsigned int)
+                        index,(unsigned int) Min(length,0xff));
+                      (void) WriteBlob(image,strlen(buffer),buffer);
+                      i++;
+                      if (i == 18)
+                        {
+                          (void) WriteByte(image,'\n');
+                          i=0;
+                        }
+                      length=0;
                     }
+                  index=image->indexes[x];
+                  pixel=(*p++);
                 }
-                p++;
                 if (image->previous == (Image *) NULL)
-                  if (QuantumTick(i,image->packets))
-                    ProgressMonitor(SaveImageText,i,image->packets);
+                  if (QuantumTick(y,image->rows))
+                    ProgressMonitor(SaveImageText,y,image->rows);
               }
               break;
             }
@@ -1230,23 +1311,27 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               /*
                 Dump uncompressed PseudoColor packets.
               */
-              for (i=0; i < (int) image->packets; i++)
+              i=0;
+              for (y=0; y < (int) image->rows; y++)
               {
-                for (j=0; j <= ((int) p->length); j++)
+                p=GetPixelCache(image,0,y,image->columns,1);
+                if (p == (PixelPacket *) NULL)
+                  break;
+                for (x=0; x < (int) image->columns; x++)
                 {
-                  (void) sprintf(buffer,"%02x",(unsigned int) p->index);
+                  (void) sprintf(buffer,"%02x",image->indexes[x]);
                   (void) WriteBlob(image,strlen(buffer),buffer);
-                  x++;
-                  if (x == 36)
+                  i++;
+                  if (i == 36)
                     {
-                      x=0;
                       (void) WriteByte(image,'\n');
+                      i=0;
                     }
+                  p++;
                 }
-                p++;
                 if (image->previous == (Image *) NULL)
-                  if (QuantumTick(i,image->packets))
-                    ProgressMonitor(SaveImageText,i,image->packets);
+                  if (QuantumTick(y,image->rows))
+                    ProgressMonitor(SaveImageText,y,image->rows);
               }
               break;
             }
@@ -1264,8 +1349,7 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlob(image,strlen(buffer),buffer);
     if (image->next == (Image *) NULL)
       break;
-    image->next->file=image->file;
-    image=image->next;
+    image=GetNextImage(image);
     ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)

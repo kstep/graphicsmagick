@@ -16,44 +16,51 @@ extern "C" {
   Blob methods.
 */
 extern Export char
-  *GetStringBlob(Image *,char *),
-  *ImageToBlob(const ImageInfo *,Image *,unsigned long *);
+  *GetStringBlob(Image *,char *);
 
 extern Export Image
-  *BlobToImage(const ImageInfo *,const char *,const unsigned long);
+  *BlobToImage(const ImageInfo *,const char *,const size_t);
 
 extern Export int
   EOFBlob(const Image *),
-  FlushBlob(const Image *),
   ReadByte(Image *),
-  SeekBlob(Image *,const long,const int),
+  SeekBlob(Image *,const off_t,const int),
+  SyncBlob(const Image *);
+
+extern Export off_t
   TellBlob(const Image *image);
 
-extern Export unsigned int
-  OpenBlob(const ImageInfo *,Image *,const char *);
-
-extern Export unsigned long
-  LSBFirstReadLong(Image *),
+extern Export size_t
   LSBFirstWriteLong(Image *,const unsigned long),
   LSBFirstWriteShort(Image *,const unsigned short),
-  MSBFirstReadLong(Image *),
   MSBFirstWriteLong(Image *,const unsigned long),
   MSBFirstWriteShort(Image *,const unsigned short),
-  ReadBlob(Image *,const unsigned long,char *),
+  ReadBlob(Image *,const size_t,void *),
   ReadBlobBlock(Image *,char *),
-  WriteBlob(Image *,const unsigned long,const char *),
+  WriteBlob(Image *,const size_t,const void *),
   WriteByte(Image *,const char value);
+
+extern Export unsigned int
+  OpenBlob(const ImageInfo *,Image *,const char *),
+  UnmapBlob(void *,const size_t);
 
 extern Export unsigned short
   LSBFirstReadShort(Image *),
   MSBFirstReadShort(Image *);
 
+extern Export unsigned long
+  LSBFirstReadLong(Image *),
+  MSBFirstReadLong(Image *);
+
 extern Export void
   CloseBlob(Image *),
-  MSBFirstOrderLong(char *,const unsigned int),
-  MSBFirstOrderShort(char *,const unsigned int),
+  DestroyBlobInfo(BlobInfo *),
+  *ImageToBlob(const ImageInfo *,Image *,size_t *),
+  *MapBlob(const char *,const MapMode,size_t *),
+  MSBFirstOrderLong(char *,const size_t),
+  MSBFirstOrderShort(char *,const size_t),
   GetBlobInfo(BlobInfo *),
-  SetBlobQuantum(BlobInfo *,const unsigned long);
+  SetBlobQuantum(BlobInfo *,const size_t);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

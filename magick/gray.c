@@ -96,25 +96,12 @@ Export Image *ReadGRAYImage(const ImageInfo *image_info)
     i,
     x;
 
-  register long
-    packets;
-
-  register RunlengthPacket
-    *q;
-
-  register unsigned char
-    *p;
-
   unsigned char
     *scanline;
 
   unsigned int
     packet_size,
     status;
-
-  unsigned short
-    index,
-    value;
 
   /*
     Allocate image structure.
@@ -123,7 +110,7 @@ Export Image *ReadGRAYImage(const ImageInfo *image_info)
   if (image == (Image *) NULL)
     return((Image *) NULL);
   if ((image->columns == 0) || (image->rows == 0))
-    ReaderExit(OptionWarning,"must specify image size",image);
+    ReaderExit(OptionWarning,"Must specify image size",image);
   /*
     Open image file.
   */
@@ -135,7 +122,7 @@ Export Image *ReadGRAYImage(const ImageInfo *image_info)
   /*
     Allocate memory for a scanline.
   */
-  packet_size=image->depth >> 3;
+  packet_size=image->depth > 8 ? 2 : 1;
   scanline=(unsigned char *)
     AllocateMemory(packet_size*image->tile_info.width*sizeof(unsigned char));
   if (scanline == (unsigned char *) NULL)
@@ -148,9 +135,9 @@ Export Image *ReadGRAYImage(const ImageInfo *image_info)
       */
       image->scene++;
       for (y=0; y < (int) image->rows; y++)
-        (void) ReadBlob(image,packet_size*image->tile_info.width,
-          (char *) scanline);
+        (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
     }
+  x=packet_size*image->tile_info.x;
   do
   {
     /*
@@ -158,9 +145,9 @@ Export Image *ReadGRAYImage(const ImageInfo *image_info)
     */
     image->class=PseudoClass;
     image->colors=1 << image->depth;
-    image->colormap=(ColorPacket *)
-      AllocateMemory(image->colors*sizeof(ColorPacket));
-    if (image->colormap == (ColorPacket *) NULL)
+    image->colormap=(PixelPacket *)
+      AllocateMemory(image->colors*sizeof(PixelPacket));
+    if (image->colormap == (PixelPacket *) NULL)
       ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
     for (i=0; i < (int) image->colors; i++)
     {
@@ -169,52 +156,28 @@ Export Image *ReadGRAYImage(const ImageInfo *image_info)
       image->colormap[i].blue=(Quantum) i;
     }
     /*
-      Initialize image structure.
-    */
-    packets=0;
-    image->pixels=(RunlengthPacket *)
-      AllocateMemory(image->columns*image->rows*sizeof(RunlengthPacket));
-    if (image->pixels == (RunlengthPacket *) NULL)
-      ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-    /*
-      Convert raster image to runlength-encoded packets.
+      Convert raster image to pixel packets.
     */
     for (y=0; y < image->tile_info.y; y++)
-      (void) ReadBlob(image,packet_size*image->tile_info.width,
-        (char *) scanline);
-    q=image->pixels;
-    SetRunlengthEncoder(q);
+      (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
     for (y=0; y < (int) image->rows; y++)
     {
       if ((y > 0) || (image->previous == (Image *) NULL))
-        (void) ReadBlob(image,packet_size*image->tile_info.width,
-          (char *) scanline);
-      p=scanline+packet_size*image->tile_info.x;
-      for (x=0; x < (int) image->columns; x++)
-      {
-        ReadQuantum(index,p);
-        if ((index == q->index) && ((int) q->length < MaxRunlength))
-          q->length++;
-        else
-          {
-            if (packets != 0)
-              q++;
-            packets++;
-            q->index=index;
-            q->length=0;
-          }
-      }
+        (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
+      if (!SetPixelCache(image,0,y,image->columns,1))
+        break;
+      ReadPixelCache(image,GrayQuantum,scanline+x);
+      if (!SyncPixelCache(image))
+        break;
       if (image->previous == (Image *) NULL)
         if (QuantumTick(y,image->rows))
           ProgressMonitor(LoadImageText,y,image->rows);
     }
     count=image->tile_info.height-image->rows-image->tile_info.y;
     for (y=0; y < count; y++)
-      (void) ReadBlob(image,packet_size*image->tile_info.width,
-        (char *) scanline);
+      (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
     if (EOFBlob(image))
       MagickWarning(CorruptImageWarning,"not enough pixels",image->filename);
-    SetRunlengthPackets(image,packets);
     SyncImage(image);
     /*
       Proceed to next image.
@@ -222,8 +185,7 @@ Export Image *ReadGRAYImage(const ImageInfo *image_info)
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
-    count=ReadBlob(image,packet_size*image->tile_info.width,
-      (char *) scanline);
+    count=ReadBlob(image,packet_size*image->tile_info.width,scanline);
     if (count > 0)
       {
         /*
@@ -240,7 +202,7 @@ Export Image *ReadGRAYImage(const ImageInfo *image_info)
           (unsigned int) image->filesize);
       }
   } while (count > 0);
-  FreeMemory((char *) scanline);
+  FreeMemory(scanline);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);
@@ -280,28 +242,15 @@ Export Image *ReadGRAYImage(const ImageInfo *image_info)
 Export unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
 {
   int
-    x,
     y;
-
-  register int
-    i,
-    j;
-
-  register RunlengthPacket
-    *p;
-
-  register unsigned char
-    *q;
 
   unsigned char
     *pixels;
 
   unsigned int
+    packet_size,
     scene,
     status;
-
-  unsigned short
-    value;
 
   /*
     Open output image file.
@@ -320,41 +269,28 @@ Export unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
       Allocate memory for pixels.
     */
     TransformRGBImage(image,RGBColorspace);
+    packet_size=image->depth > 8 ? 2: 1;
     pixels=(unsigned char *)
-      AllocateMemory(image->columns*sizeof(RunlengthPacket));
+      AllocateMemory(packet_size*image->columns*sizeof(unsigned char));
     if (pixels == (unsigned char *) NULL)
       WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
     /*
       Convert MIFF to GRAY raster pixels.
     */
-    x=0;
-    y=0;
-    p=image->pixels;
-    q=pixels;
-    for (i=0; i < (int) image->packets; i++)
+    for (y=0; y < (int) image->rows; y++)
     {
-      for (j=0; j <= ((int) p->length); j++)
-      {
-        WriteQuantum(Intensity(*p),q);
-        x++;
-        if (x == (int) image->columns)
-          {
-            (void) WriteBlob(image,q-pixels,(char *) pixels);
-            if (image->previous == (Image *) NULL)
-              if (QuantumTick(y,image->rows))
-                ProgressMonitor(SaveImageText,y,image->rows);
-            q=pixels;
-            x=0;
-            y++;
-          }
-      }
-      p++;
+      if (!GetPixelCache(image,0,y,image->columns,1))
+        break;
+      WritePixelCache(image,GrayQuantum,pixels);
+      (void) WriteBlob(image,packet_size*image->columns,pixels);
+      if (image->previous == (Image *) NULL)
+        if (QuantumTick(y,image->rows))
+          ProgressMonitor(SaveImageText,y,image->rows);
     }
-    FreeMemory((char *) pixels);
+    FreeMemory(pixels);
     if (image->next == (Image *) NULL)
       break;
-    image->next->file=image->file;
-    image=image->next;
+    image=GetNextImage(image);
     ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)

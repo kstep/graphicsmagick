@@ -143,11 +143,11 @@ int main( int /*argc*/, char ** /*argv*/)
     // backgroundColor
     //
 
-    // Test default value
-    if ( image.backgroundColor().isValid() )
+    // Test default value. BackgroundColor comes from magick/image.h
+    if ( image.backgroundColor() != ColorRGB(MagickLib::BackgroundColor) )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", backgroundColor default is incorrectly valid" << endl;
+	cout << "Line: " << __LINE__ << ", backgroundColor default is incorrect" << endl;
       }
 
     // Test setting to blue
@@ -155,7 +155,7 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( !image.backgroundColor().isValid() )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", backgroundColor is incorrectly invalid" << endl;
+	cout << "Line: " << __LINE__ << ", backgroundColor failed set" << endl;
       }
     else
       if ( string(image.backgroundColor()) != "#0000FF" &&
@@ -183,14 +183,6 @@ int main( int /*argc*/, char ** /*argv*/)
 	       << string(image.backgroundColor()) << ") is incorrect"
 	       << endl;
 	}
-
-    // Test setting to invalid value
-    image.backgroundColor(Color());
-    if ( image.backgroundColor().isValid() )
-      {
-	++failures;
-	cout << "Line: " << __LINE__ << ", backgroundColor failed set to inValid" << endl;
-      }
 
     //
     // backgroundTexture
@@ -247,16 +239,17 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.baseRows() != rows )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", baseRows is incorrect" << endl;
+	cout << "Line: " << __LINE__ << ", baseRows (" << image.baseRows()
+	     << ") != rows (" << rows << ")" << endl;
       }
 
     //
     // borderColor
     //
-    if ( image.borderColor().isValid() )
+    if ( image.borderColor() != ColorRGB( MagickLib::BorderColor ) )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ",  borderColor default is incorrectly valid" << endl;
+	cout << "Line: " << __LINE__ << ",  borderColor default is incorrect" << endl;
       }
 
     image.borderColor("#FF0000");
@@ -274,14 +267,6 @@ int main( int /*argc*/, char ** /*argv*/)
 	cout << "Line: " << __LINE__ << ", failed to set borderColor" << endl;
       }
     
-    // Test setting to invalid color
-    image.borderColor( Color() );
-    if ( image.borderColor().isValid() )
-      {
-	++failures;
-	cout << "Line: " << __LINE__ << ",  borderColor failed to set inValid" << endl;
-      }
-
     //
     // boxColor
     //
@@ -913,27 +898,6 @@ int main( int /*argc*/, char ** /*argv*/)
       }
 
     //
-    // packets
-    //
-    image.condense(); // Ensure run-length encoding
-    if ( image.packets() != 1200 &&
-	 image.packets() != 5 )
-      {
-	++failures;
-	cout << "Line: " << __LINE__ << ", packets ("
-	     << image.packets() << ") is not 5 as expected" << endl;
-      }
-
-    //
-    // packetSize
-    //
-    if ( image.packetSize() != 0 )
-      {
-	++failures;
-	cout << "Line: " << __LINE__ << ", packetSize is not zero as expected" << endl;
-      }
-
-    //
     // penColor
     //
     if ( image.penColor().isValid() )
@@ -1262,7 +1226,8 @@ int main( int /*argc*/, char ** /*argv*/)
     if ( image.totalColors() != 2 )
       {
 	++failures;
-	cout << "Line: " << __LINE__ << ", totalColors is not 2 as expected" << endl;
+	cout << "Line: " << __LINE__ << ", totalColors is " << image.totalColors()
+	     << " rather than 2 as expected" << endl;
       }
 
     //

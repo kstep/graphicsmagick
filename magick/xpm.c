@@ -302,6 +302,45 @@ const ColorlistInfo
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   I s X P M                                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsXPM returns True if the image format type, identified by the
+%  magick string, is XPM.
+%
+%  The format of the ReadXPMImage method is:
+%
+%      unsigned int IsXPM(const unsigned char *magick,
+%        const unsigned int length)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method IsXPM returns True if the image format type is XPM.
+%
+%    o magick: This string is generally the first few bytes of an image file
+%      or blob.
+%
+%    o length: Specifies the length of the magick string.
+%
+%
+*/
+Export unsigned int IsXPM(const unsigned char *magick,const unsigned int length)
+{
+  if (length < 9)
+    return(False);
+  if (strncmp((char *) magick,"/* XPM */",9) == 0)
+    return(True);
+  return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   R e a d X P M I m a g e                                                   %
 %                                                                             %
 %                                                                             %
@@ -371,20 +410,18 @@ Export Image *ReadXPMImage(const ImageInfo *image_info)
 {
   char
     key[MaxTextExtent],
+    **keys,
     target[MaxTextExtent],
     **textlist,
     *xpm_buffer;
-
-  ColorPacket
-    color;
 
   Image
     *image;
 
   int
     count,
+    j,
     length,
-    x,
     y;
 
   register char
@@ -393,9 +430,9 @@ Export Image *ReadXPMImage(const ImageInfo *image_info)
 
   register int
     i,
-    j;
+    x;
 
-  register RunlengthPacket
+  register PixelPacket
     *r;
 
   unsigned int
@@ -499,33 +536,43 @@ Export Image *ReadXPMImage(const ImageInfo *image_info)
       ((image->columns*image->rows*image->colors) == 0))
     {
       for (i=0; textlist[i] != (char *) NULL; i++)
-        FreeMemory((char *) textlist[i]);
-      FreeMemory((char *) textlist);
+        FreeMemory(textlist[i]);
+      FreeMemory(textlist);
       ReaderExit(CorruptImageWarning,"Not a XPM image file",image);
     }
   /*
     Initialize image structure.
   */
-  image->colormap=(ColorPacket *)
-    AllocateMemory(image->colors*sizeof(ColorPacket));
-  if (image->colormap == (ColorPacket *) NULL)
+  image->colormap=(PixelPacket *)
+    AllocateMemory(image->colors*sizeof(PixelPacket));
+  keys=(char **) AllocateMemory(image->colors*sizeof(char *));
+  if ((image->colormap == (PixelPacket *) NULL) || (keys == (char **) NULL))
     {
       for (i=0; textlist[i] != (char *) NULL; i++)
-        FreeMemory((char *) textlist[i]);
-      FreeMemory((char *) textlist);
+        FreeMemory(textlist[i]);
+      FreeMemory(textlist);
       ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
     }
   /*
     Read image colormap.
   */
   i=1;
-  for (j=0; j < (int) image->colors; j++)
+  for (x=0; x < (int) image->colors; x++)
   {
     p=textlist[i++];
     if (p == (char *) NULL)
       break;
-    image->colormap[j].key[width]='\0';
-    (void) strncpy(image->colormap[j].key,p,width);
+    keys[x]=(char *) AllocateMemory((width+1)*sizeof(char));
+    if (keys[x] == (char *) NULL)
+      {
+        for (i=0; textlist[i] != (char *) NULL; i++)
+          FreeMemory(textlist[i]);
+        FreeMemory(textlist);
+        FreeMemory(keys);
+        ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+      }
+    keys[x][width]='\0';
+    (void) strncpy(keys[x],p,width);
     /*
       Parse color.
     */
@@ -541,23 +588,20 @@ Export Image *ReadXPMImage(const ImageInfo *image_info)
           *q='\0';
       }
     Strip(target);
-    image->colormap[j].flags=Latin1Compare(target,"none") == 0;
-    if (image->colormap[j].flags)
+    image->colormap[x].opacity=Latin1Compare(target,"none") == 0;
+    if (image->colormap[x].opacity)
       {
         image->class=DirectClass;
         image->matte=True;
         (void) strcpy(target,"black");
       }
-    (void) QueryColorDatabase(target,&color);
-    image->colormap[j].red=XDownScale(color.red);
-    image->colormap[j].green=XDownScale(color.green);
-    image->colormap[j].blue=XDownScale(color.blue);
+    (void) QueryColorDatabase(target,&image->colormap[x]);
   }
-  if (j < (int) image->colors)
+  if (x < (int) image->colors)
     {
       for (i=0; textlist[i] != (char *) NULL; i++)
-        FreeMemory((char *) textlist[i]);
-      FreeMemory((char *) textlist);
+        FreeMemory(textlist[i]);
+      FreeMemory(textlist);
       ReaderExit(CorruptImageWarning,"Corrupt XPM image file",image);
     }
   if (image_info->ping)
@@ -568,61 +612,48 @@ Export Image *ReadXPMImage(const ImageInfo *image_info)
   /*
     Read image pixels.
   */
-  image->packets=image->columns*image->rows;
-  image->pixels=(RunlengthPacket *)
-    AllocateMemory(image->packets*sizeof(RunlengthPacket));
-  if (image->pixels == (RunlengthPacket *) NULL)
-    {
-      for (i=0; textlist[i] != (char *) NULL; i++)
-        FreeMemory((char *) textlist[i]);
-      FreeMemory((char *) textlist);
-      ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-    }
-  SetImage(image);
   j=0;
   key[width]='\0';
-  r=image->pixels;
   for (y=0; y < (int) image->rows; y++)
   {
     p=textlist[i++];
     if (p == (char *) NULL)
       break;
+    r=SetPixelCache(image,0,y,image->columns,1);
+    if (r == (PixelPacket *) NULL)
+      break;
     for (x=0; x < (int) image->columns; x++)
     {
       (void) strncpy(key,p,width);
-      if (strcmp(key,image->colormap[j].key) != 0)
+      if (strcmp(key,keys[j]) != 0)
         for (j=0; j < (int) (image->colors-1); j++)
-          if (strcmp(key,image->colormap[j].key) == 0)
+          if (strcmp(key,keys[j]) == 0)
             break;
       r->red=image->colormap[j].red;
       r->green=image->colormap[j].green;
       r->blue=image->colormap[j].blue;
       if (image->class == PseudoClass)
-        r->index=(unsigned short) j;
+        image->indexes[x]=(unsigned short) j;
       else
-        if (image->colormap[j].flags)
-          r->index=Transparent;
+        if (image->colormap[j].opacity)
+          r->opacity=Transparent;
         else
-          r->index=Opaque;
-      r->length=0;
+          r->opacity=Opaque;
       r++;
       p+=width;
     }
+    if (!SyncPixelCache(image))
+      break;
   }
-  if (y < (int) image->rows)
-    {
-      for (i=0; textlist[i] != (char *) NULL; i++)
-        FreeMemory((char *) textlist[i]);
-      FreeMemory((char *) textlist);
-      ReaderExit(CorruptImageWarning,"Corrupt XPM image file",image);
-    }
   /*
     Free resources.
   */
+  for (x=0; x < (int) image->colors; x++)
+    FreeMemory(keys[x]);
+  FreeMemory(keys);
   for (i=0; textlist[i] != (char *) NULL; i++)
-    FreeMemory((char *) textlist[i]);
-  FreeMemory((char *) textlist);
-  CondenseImage(image);
+    FreeMemory(textlist[i]);
+  FreeMemory(textlist);
   CloseBlob(image);
   return(image);
 }
@@ -686,10 +717,9 @@ Export unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
   register int
     distance,
     i,
-    runlength,
     x;
 
-  register RunlengthPacket
+  register PixelPacket
     *p;
 
   register const ColorlistInfo
@@ -716,54 +746,52 @@ Export unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
       QuantizeInfo
         quantize_info;
 
-      unsigned char
-        *matte_image;
-
       /*
         Convert DirectClass to PseudoClass image.
       */
-      matte_image=(unsigned char *) NULL;
       if (image->matte)
         {
           /*
             Map all the transparent pixels.
           */
-          if (!UncondenseImage(image))
-            return(False);
-          matte_image=(unsigned char *)
-            AllocateMemory(image->packets*sizeof(unsigned char));
-          if (matte_image == (unsigned char *) NULL)
-            WriterExit(ResourceLimitWarning,"Memory allocation failed",
-              image);
-          p=image->pixels;
-          for (i=0; i < (int) image->packets; i++)
+          for (y=0; y < (int) image->rows; y++)
           {
-            matte_image[i]=p->index == Transparent;
-            if (matte_image[i])
-              transparent=True;
-            p++;
+            p=GetPixelCache(image,0,y,image->columns,1);
+            if (p == (PixelPacket *) NULL)
+              break;
+            for (x=0; x < (int) image->columns; x++)
+            {
+              p->opacity=p->opacity == Transparent;
+              if (p->opacity == Transparent)
+                transparent=True;
+              p++;
+            }
+            if (!SyncPixelCache(image))
+              break;
           }
         }
       GetQuantizeInfo(&quantize_info);
       quantize_info.dither=image_info->dither;
       (void) QuantizeImage(&quantize_info,image);
-      SyncImage(image);
       colors=image->colors;
       if (transparent)
         {
-          if (!UncondenseImage(image))
-            return(False);
           colors++;
-          p=image->pixels;
-          for (i=0; i < (int) image->packets; i++)
+          for (y=0; y < (int) image->rows; y++)
           {
-            if (matte_image[i])
-              p->index=image->colors;
-            p++;
+            p=GetPixelCache(image,0,y,image->columns,1);
+            if (p == (PixelPacket *) NULL)
+              break;
+            for (x=0; x < (int) image->columns; x++)
+            {
+              if (p->opacity)
+                image->indexes[x]=image->colors;
+              p++;
+            }
+            if (!SyncPixelCache(image))
+              break;
           }
         }
-      if (matte_image != (unsigned char *) NULL)
-        FreeMemory((char *) matte_image);
     }
   /*
     Compute the character per pixel.
@@ -785,7 +813,7 @@ Export unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlob(image,strlen(buffer),buffer);
   for (i=0; i < (int) colors; i++)
   {
-    ColorPacket
+    PixelPacket
       *p;
 
     /*
@@ -833,31 +861,26 @@ Export unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
   */
   (void) strcpy(buffer,"/* pixels */\n");
   (void) WriteBlob(image,strlen(buffer),buffer);
-  p=image->pixels;
-  runlength=p->length+1;
   for (y=0; y < (int) image->rows; y++)
   {
+    p=GetPixelCache(image,0,y,image->columns,1);
+    if (p == (PixelPacket *) NULL)
+      break;
     (void) strcpy(buffer,"\"");
     (void) WriteBlob(image,strlen(buffer),buffer);
     for (x=0; x < (int) image->columns; x++)
     {
-      if (runlength != 0)
-        runlength--;
-      else
-        {
-          p++;
-          runlength=p->length;
-        }
-      k=p->index % MaxCixels;
+      k=image->indexes[x] % MaxCixels;
       symbol[0]=Cixel[k];
       for (j=1; j < (int) characters_per_pixel; j++)
       {
-        k=(((int) p->index-k)/MaxCixels) % MaxCixels;
+        k=(((int) image->indexes[x]-k)/MaxCixels) % MaxCixels;
         symbol[j]=Cixel[k];
       }
       symbol[j]='\0';
       (void) sprintf(buffer,"%.1024s",symbol);
       (void) WriteBlob(image,strlen(buffer),buffer);
+      p++;
     }
     (void) sprintf(buffer,"\"%.1024s\n",
       (y == (int) (image->rows-1) ? "" : ","));

@@ -92,6 +92,7 @@ Magick::Image::Image( const Geometry &size_,
 
 // Construct Image from in-memory BLOB
 Magick::Image::Image ( const Blob &blob_ )
+  : _imgRef(new ImageRef)
 {
   // Ensure that error collection object is instantiated
   LastError::instance();
@@ -102,6 +103,7 @@ Magick::Image::Image ( const Blob &blob_ )
 
 // Construct Image of specified size from in-memory BLOB
 Magick::Image::Image ( const Geometry &size_, const Blob &blob_ )
+  : _imgRef(new ImageRef)
 {
   // Ensure that error collection object is instantiated
   LastError::instance();
@@ -119,6 +121,7 @@ Magick::Image::Image( void )
 }
 
 // Destructor
+/* virtual */
 Magick::Image::~Image()
 {
   if ( --_imgRef->_refCount == 0 )
@@ -397,17 +400,6 @@ void Magick::Image::composite ( const Image &compositeImage_,
   throwMagickError();
 }
 
-// Condense
-void Magick::Image::condense ( void )
-{
-  if ( !condensed() )
-    {
-      modifyImage();
-      MagickLib::CondenseImage( image() );
-      throwMagickError();
-    }
-}
-
 // Contrast image
 void Magick::Image::contrast ( unsigned int sharpen_ )
 {
@@ -467,7 +459,7 @@ void Magick::Image::draw ( const Drawable &drawable_ )
       annotateInfo.tile = MagickLib::CloneImage( penTexture().image(),
 						 penTexture().columns(),
 						 penTexture().rows(),
-						 True);
+						 (int)true);
     }
 
   Magick::CloneString( &annotateInfo.primitive, drawable_.primitive() );
@@ -502,7 +494,7 @@ void Magick::Image::draw ( const std::list<Magick::Drawable> &drawable_ )
       annotateInfo.tile = MagickLib::CloneImage( penTexture().image(),
 						 penTexture().columns(),
 						 penTexture().rows(),
-						 True);
+						 (int)true);
     }
 
   Magick::CloneString( &annotateInfo.primitive, primitives );
@@ -589,11 +581,10 @@ void Magick::Image::floodFillTexture( int x_, int y_,
 {
   modifyImage();
 
-  // Decompress into rectangular array of pixels.
-  uncondense();
-
-  MagickLib::RunlengthPacket target;
+  MagickLib::PixelPacket target;
   // FIXME: should throw exception if x or y is out of bounds
+#define PixelOffset(image,x,y) \
+  ((image)->pixels+(((int) (y))*(image)->columns+((int) (x))))
   target=(*PixelOffset( image(), x_ % columns(), y_ % rows() ));
 
   MagickLib::ColorFloodfillImage ( image(), &target,
@@ -616,12 +607,10 @@ void Magick::Image::floodFillTexture( int x_, int y_,
 {
   modifyImage();
 
-  MagickLib::RunlengthPacket target;
+  MagickLib::PixelPacket target;
   target.red = borderColor_.redQuantum();
   target.green = borderColor_.greenQuantum();
   target.blue = borderColor_.blueQuantum();
-  target.length = 1;
-  target.index = 0;
 
   MagickLib::ColorFloodfillImage ( image(), &target,
 				   const_cast<Image &>(texture_).image(),
@@ -721,7 +710,8 @@ void Magick::Image::magnify ( void )
 void Magick::Image::map ( const Image &mapImage_ , bool dither_ )
 {
   modifyImage();
-  MagickLib::MapImage ( image(), mapImage_.constImage(),
+  MagickLib::MapImage ( image(),
+			const_cast<MagickLib::Image*>(mapImage_.constImage()),
 			dither_ );
   throwMagickError();
 }
@@ -738,12 +728,10 @@ void Magick::Image::matteFloodfill ( const Color &target_ ,
       err.throwException();
     }
 
-  MagickLib::RunlengthPacket rllPacket;
+  MagickLib::PixelPacket rllPacket;
   rllPacket.red = target_.redQuantum();
   rllPacket.green = target_.greenQuantum();
   rllPacket.blue = target_.blueQuantum();
-  rllPacket.length = 1;
-  rllPacket.index = 0;
 
   modifyImage();
   MagickLib::MatteFloodfillImage ( image(), &rllPacket, matte_,
@@ -888,9 +876,6 @@ void Magick::Image::read ( const Blob &blob_ )
   MagickLib::Image *image = MagickLib::BlobToImage( imageInfo(),
 					static_cast<const char *>(blob_.data()),
 					blob_.length() );
-  // Reset-blob struct in Image.
-  // FIXME: requirement for this should be temporary
-  MagickLib::GetBlobInfo( &(image->blob) );
   replaceImage( image );
 }
 
@@ -925,11 +910,9 @@ void Magick::Image::roll ( int columns_, int rows_ )
 }
 
 // Rotate image
-void Magick::Image::rotate ( double degrees_, bool crop_,
-				  unsigned int sharpen_ )
+void Magick::Image::rotate ( double degrees_ )
 {
-  replaceImage( MagickLib::RotateImage( image(), degrees_, crop_,
-			       sharpen_ ) );
+  replaceImage( MagickLib::RotateImage( image(), degrees_) );
 }
 
 // Sample image
@@ -990,11 +973,12 @@ void Magick::Image::sharpen ( double factor_ )
 
 // Shear image
 void Magick::Image::shear ( double xShearAngle_,
-			    double yShearAngle_,
-			    bool crop_ )
+			    double yShearAngle_ )
 {
-  replaceImage( MagickLib::ShearImage( image(), xShearAngle_,
-				       yShearAngle_, crop_ ) );
+  replaceImage( MagickLib::ShearImage( image(),
+				       xShearAngle_,
+				       yShearAngle_ )
+		);
 }
 
 // Solarize image (similar to effect seen when exposing a photographic
@@ -1146,22 +1130,11 @@ void Magick::Image::trim ( void )
   crop ( cropInfo );
 }
 
-// Un-condense image (Decompresses runlength-encoded pixels packets to
-// a rectangular array of pixels)
-void Magick::Image::uncondense ( void )
-{
-  if ( condensed() )
-    {
-      modifyImage();
-      MagickLib::UncondenseImage( image() );
-      throwMagickError();
-    }
-}
-
 // Map image pixels to a sine wave
 void Magick::Image::wave ( double amplitude_, double wavelength_ )
 {
-  replaceImage( MagickLib::WaveImage( image(), amplitude_,
+  replaceImage( MagickLib::WaveImage( image(),
+				      amplitude_,
 				      wavelength_ ) );
 }
 
@@ -1176,16 +1149,13 @@ void Magick::Image::write( const std::string &imageSpec_ )
 
 // Write image to in-memory BLOB
 void Magick::Image::write ( Blob *blob_,
-			    unsigned long lengthEstimate_ )
+			    size_t lengthEstimate_ )
 {
-  unsigned long length = lengthEstimate_;
+  size_t length = lengthEstimate_;
   void* data = MagickLib::ImageToBlob( imageInfo(),
 				       image(),
 				       &length );
   blob_->updateNoCopy( data, length );
-  // Reset-blob struct in Image.
-  // FIXME: requirement for this should be temporary
-  MagickLib::GetBlobInfo( &(image()->blob) );
   throwMagickError();
 }
 
@@ -1459,7 +1429,7 @@ void Magick::Image::colorMap ( unsigned int index_,
 
       if ( image()->colormap )
 	{
-	  MagickLib::ColorPacket *color = image()->colormap + index_;
+	  MagickLib::PixelPacket *color = image()->colormap + index_;
 	  
 	  color->red   = color_.redQuantum();
 	  color->green = color_.greenQuantum();
@@ -1490,7 +1460,7 @@ Magick::Color Magick::Image::colorMap ( unsigned int index_ ) const
 	  //index_ %= constImage()->colors;
 	}
 
-      MagickLib::ColorPacket *color = constImage()->colormap + index_;
+      MagickLib::PixelPacket *color = constImage()->colormap + index_;
 
       return Magick::Color( color->red, color->green, color->blue );
     }
@@ -1546,14 +1516,6 @@ Magick::CompressionType Magick::Image::compressType ( void ) const
 {
   return constOptions()->compressType( );
   //  return constImage()->compression;
-}
-
-// Image pixels are condensed (Run-Length encoded)
-bool Magick::Image::condensed( void ) const
-{
-  if ( packets() == rows()*columns() )
-    return true;
-  return false;
 }
 
 void Magick::Image::density ( const Geometry &density_ )
@@ -1787,7 +1749,8 @@ void Magick::Image::isValid ( bool isValid_ )
 
 bool Magick::Image::isValid ( void ) const
 {
-  if ( packets() )
+  // Image is considered valid if we have pixels
+  if ( constImage()->pixels != (MagickLib::PixelPacket*)0 )
     return true;
 
   return false;
@@ -1912,15 +1875,15 @@ double Magick::Image::normalizedMeanError ( void ) const
   return constImage()->normalized_mean_error;
 }
 
-unsigned int Magick::Image::packets ( void ) const
-{
-  return constImage()->packets;
-}
+// unsigned int Magick::Image::packets ( void ) const
+// {
+//   return constImage()->packets;
+// }
 
-unsigned int Magick::Image::packetSize ( void ) const
-{
-  return constImage()->packet_size;
-}
+// unsigned int Magick::Image::packetSize ( void ) const
+// {
+//   return constImage()->packet_size;
+// }
 
 void Magick::Image::penColor ( const Color &penColor_ )
 {
@@ -1946,10 +1909,10 @@ Magick::Image  Magick::Image::penTexture ( void  ) const
 
   if ( tmpTexture )
     {
-    texture.replaceImage( MagickLib::CloneImage( tmpTexture,
+    texture.replaceImage( MagickLib::CloneImage( const_cast<MagickLib::Image *>(tmpTexture),
 						 tmpTexture->columns,
 						 tmpTexture->rows,
-						 True ) );
+						 (int)true ) );
     }
   return texture;
 }
@@ -1969,24 +1932,22 @@ void Magick::Image::pixelColor ( unsigned int x_, unsigned int y_,
 
       modifyImage();
 
-      // Uncondense image into rectangular array of packets
-      if ( !MagickLib::UncondenseImage( image() ) )
-        return;
+      // Set image to DirectClass
+      classType( DirectClass );
 
-      // Calculate location of color packet
-      MagickLib::RunlengthPacket* packet = image()->pixels+(y_*image()->columns+x_);
+      // Retrieve single pixel at co-ordinate from pixel cache
+      if ( !MagickLib::GetPixelCache( image(), x_, y_, 1, 1 ) )
+      {
+	throwMagickError();
+	return;  // Shouldn't get here if GetPixelCache reports error
+      }
 
-      // Updating DirectClass pixels invalidates colormap so set to DirectClass type
-      image()->c_class = MagickLib::DirectClass;
+      // Set pixel
+      MagickLib::PixelPacket *pixel = image()->pixels;
+      *pixel = color_;
 
-      // Set RGB
-      packet->red   = color_.redQuantum();
-      packet->green = color_.greenQuantum();
-      packet->blue  = color_.blueQuantum();
-
-      // Set alpha
-      if ( classType() == DirectClass )
-        packet->index = color_.alphaQuantum();
+      // Tell ImageMagick that pixels have been updated
+      MagickLib::SyncPixelCache( image() );
 
       return;
     }
@@ -2005,13 +1966,6 @@ Magick::Color Magick::Image::pixelColor ( unsigned int x_,
       err.throwException();
     }
 
-  // Uncondense image into rectangular array of packets
-  if ( !MagickLib::UncondenseImage( image() ) ) 
-    {
-      Magick::LastError *err = LastError::instance();
-      err->throwException();
-    }
-
   // Test arguments to ensure they are within the image.
   if ( y_ > rows() || x_ > columns() )
     {
@@ -2020,19 +1974,16 @@ Magick::Color Magick::Image::pixelColor ( unsigned int x_,
       err.throwException();
     }
 
-  // Calculate location of color packet
-  MagickLib::RunlengthPacket* packet = image()->pixels+(y_*image()->columns+x_);
+  // Retrieve single pixel at co-ordinate from pixel cache
+  if ( !MagickLib::GetPixelCache( image(), x_, y_, 1, 1 ) )
+  {
+    throwMagickError();
+    return Color();  // Shouldn't get here if GetPixelCache reports error
+  }
+  MagickLib::PixelPacket* pixel = image()->pixels;
 
-  // If DirectClass and support a matte plane, then alpha is supported.
-  if ( matte() && classType() == DirectClass )
-    return Color ( packet->red,
-                   packet->green,
-                   packet->blue,
-                   packet->index );
-  
-  return Color ( packet->red,
-                 packet->green,
-                 packet->blue );
+  return Color ( *pixel );
+
 }
 
 void Magick::Image::psPageSize ( const Magick::Geometry &pageSize_ )
@@ -2042,15 +1993,10 @@ void Magick::Image::psPageSize ( const Magick::Geometry &pageSize_ )
 
   if ( pageSize_.isValid() )
     {
-      Magick::CloneString( &(image()->page),
-			   options()->psPageSize() );
+      image()->page_info = pageSize_;
     }
-  else
-    {
-      if ( image()->page )
-	MagickLib::FreeMemory( image()->page );
-      image()->page = 0;
-    }
+  // FIXME: need to handle case where page size is not valid
+  //        What to do?
 }
 Magick::Geometry Magick::Image::psPageSize ( void ) const
 {
@@ -2211,9 +2157,9 @@ std::string Magick::Image::tileName ( void ) const
   return constOptions()->tileName( );
 }
 
-unsigned long Magick::Image::totalColors ( void ) const
+unsigned long Magick::Image::totalColors ( void )
 {
-  return MagickLib::GetNumberColors( constImage(), (FILE *) NULL);
+  return MagickLib::GetNumberColors( image(), (FILE *) NULL);
 }
 
 Magick::ImageType Magick::Image::type ( void ) const
@@ -2342,7 +2288,7 @@ void Magick::Image::modifyImage( void )
   replaceImage( MagickLib::CloneImage( image,
 				       image->columns,
 				       image->rows,
-				       True) );
+				       true) );
   return;
 }
 

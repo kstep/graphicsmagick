@@ -32,7 +32,8 @@ display - Methods to Interactively Display and Edit an Image
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-status= <STRONG>XDisplayBackgroundImage</STRONG>( display, resource_info, image );
+unsigned int  <STRONG>XDisplayBackgroundImage</STRONG>( Display *display, XResourceInfo *resource_info, Image <CODE>*image</CODE>
+);
 
 <P>
 Image * <STRONG>XDisplayImage</STRONG>( Display *display, XResourceInfo *resource_info, char ** argv, int argc,
@@ -51,7 +52,7 @@ window.
 <P>
 The format of the XDisplayBackgroundImage method is:
 
-<blockquote>status=XDisplayBackgroundImage ( display, resource_info, image ); </blockquote>
+<blockquote>unsigned int XDisplayBackgroundImage ( Display *display, XResourceInfo *resource_info, <A HREF="types/Image.html">Image</A> *image ); </blockquote>
 
 <P>
 

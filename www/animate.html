@@ -208,6 +208,24 @@ for details.</dd>
 <dl>
 <table BORDER=0 WIDTH="65%" >
 <tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">-cache
+<i>threshold</i></font></font></font></b></td>
+</tr>
+</table>
+
+<dd> megabytes of memory available to the pixel cache. </dd>
+<p>
+<dd>Image pixels are stored in memory until 80 megabytes of memory
+have been consumed.  Subsequent pixel operations are cached on disk.
+Operations to memory are significantly faster but if your computer does not
+have a sufficient amount of free memory you may want to adjust this threshold
+value.</dd>
+
+</dl>
+<p>
+<dl>
+<table BORDER=0 WIDTH="65%" >
+<tr>
 <td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">-colormap
 <i>type</i></font></font></font></b></td>
 </tr>

@@ -156,10 +156,7 @@ extern "C" {
 #if !defined(M_PI)
 #define M_PI  3.14159265358979323846
 #endif
-#define Opaque  MaxRGB
 #define OpenImage(image_info,image,type)  OpenBlob(image,image,type)
-#define PixelOffset(image,x,y) \
-  ((image)->pixels+(((int) (y))*(image)->columns+((int) (x))))
 #define QuantumTick(i,span) \
   (((~((span)-i-1) & ((span)-i-2))+1) == ((span)-i-1))
 #define RadiansToDegrees(x) ((x)*180/M_PI)
@@ -169,56 +166,14 @@ extern "C" {
   DestroyImages(image); \
   return((Image *) NULL); \
 }
-#define ReadQuantum(quantum,p)  \
-{  \
-  if (image->depth <= 8) \
-    quantum=UpScale(*p++); \
-  else \
-    { \
-      value=(*p++) << 8;  \
-      value|=(*p++);  \
-      quantum=value >> (image->depth-QuantumDepth); \
-    } \
-}
-#define ReadQuantumFile(quantum)  \
-{  \
-  if (image->depth <= 8) \
-    quantum=UpScale(ReadByte(image)); \
-  else \
-    quantum=MSBFirstReadShort(image) >> (image->depth-QuantumDepth); \
-}
 #define RenderPostscriptText  "  Rendering postscript...  "
 #define Swap(x,y) ((x)^=(y), (y)^=(x), (x)^=(y))
 #if !defined(STDIN_FILENO)
 #define STDIN_FILENO  0
 #endif
-#define Transparent  0
 #define True  1
 #define UpShift(x) ((int) (x) << 14)
 #define UpShifted(x) ((int) ((x)*(1L << 14)+0.5))
-#define WriteQuantum(quantum,q)  \
-{  \
-  if (image->depth <= 8) \
-    *q++=DownScale(quantum); \
-  else \
-    { \
-      value=(quantum); \
-      if ((QuantumDepth-image->depth) > 0) \
-        value*=257; \
-      *q++=value >> 8; \
-      *q++=value; \
-    } \
-}
-#define WriteQuantumFile(quantum)  \
-{  \
-  if (image->depth <= 8) \
-    (void) WriteByte(image,DownScale(quantum)); \
-  else \
-    if ((QuantumDepth-image->depth) > 0) \
-      MSBFirstWriteShort(image,(quantum)*257); \
-    else \
-      MSBFirstWriteShort(image,quantum); \
-}
 #define WriterExit(error,message,image) \
 { \
   MagickWarning(error,message,image->filename); \

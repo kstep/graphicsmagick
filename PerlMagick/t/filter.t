@@ -20,7 +20,7 @@ testFilter('input.miff', 'Border',
 ++$test;
 testFilter('input.miff', 'Blur',
   q/60/,
-  '7669a6d89e4c47b3b98752f9ff9b8224');
+  'a1af7b4d08186a26ed9e01738b568051');
 
 ++$test;
 testFilter('input.miff', 'Border',
@@ -38,6 +38,11 @@ testFilter('input.miff', 'ColorFloodfill',
   'a51dc2d20c36c8e4df18afc567db636e');
 
 ++$test;
+testFilter('input.miff', 'Colorize',
+  q/red/,
+  'd61bcae2abd48b9a8cb789f054c609e8');
+
+++$test;
 testFilter('input.miff', 'Contrast',
   q/1/,
   '60e07b732b6cd84177e0ba22a8aa4106');
@@ -48,16 +53,6 @@ testFilter('input.miff', 'Crop',
   '92fd46db3668d557b12c30fc810b1fe6');
 
 ++$test;
-testFilter('input.miff', 'Colorize',
-  q/red/,
-  '6dc34477296f85d8584e655b3a429945');
-
-++$test;
-testFilter('input.miff', 'Contrast',
-  q/1/,
-  '60e07b732b6cd84177e0ba22a8aa4106');
-
-++$test;
 testFilter('input.miff', 'Despeckle',
   q/ /,
   '9166d0fff05dc5805eef1275863ec244');
@@ -65,12 +60,12 @@ testFilter('input.miff', 'Despeckle',
 ++$test;
 testFilter('input.miff', 'Edge',
   q/60/,
-  '007f4247da95e7948816d0d17b1b6a2e');
+  '60c956dcc6cd627cdd583a6d3c3686dc');
 
 ++$test;
 testFilter('input.miff', 'Emboss',
   q/ /,
-  '28cddc797457c25ce339610cd1a8a374');
+  '3bd50587263c86a4229dda55b3c80e16');
 
 ++$test;
 testFilter('input.miff', 'Equalize',
@@ -100,7 +95,7 @@ testFilter('input.miff', 'Gamma',
 ++$test;
 testFilter('input.miff', 'Implode',
   q/60/,
-  'e0ccb026dd63abb1da662219e76980aa');
+  'b3ecf3faa306a1d95136d2aba79f7215');
 
 ++$test;
 testFilter('input.miff', 'Layer',
@@ -110,7 +105,7 @@ testFilter('input.miff', 'Layer',
 ++$test;
 testFilter('input.miff', 'Magnify',
   q/ /,
-  '7e926c0a076f567b61eeb08d553bc7e3');
+  '107ef834d2f53864c021a4801d67adee');
 
 ++$test;
 testFilter('input.miff', 'MatteFloodfill',
@@ -120,7 +115,7 @@ testFilter('input.miff', 'MatteFloodfill',
 ++$test;
 testFilter('input.miff', 'Minify',
   q/ /,
-  'b89f0cae97e3e8e1cd237fa8fac660b6');
+  '8b31e05a3a8710cf9864e7de0567fbec');
 
 ++$test;
 testFilter('input.miff', 'Modulate',
@@ -140,7 +135,7 @@ testFilter('input.miff', 'Normalize',
 ++$test;
 testFilter('input.miff', 'OilPaint',
   q/3/,
-  '8a103428f762f6e96c03fb52c78b90aa');
+  '7bfd698305d42711246edfa48f6aa9f9');
 
 ++$test;
 testFilter('input.miff', 'Opaque',
@@ -165,7 +160,7 @@ testFilter('input.miff', 'Roll',
 ++$test;
 testFilter('input.miff', 'Rotate',
   q/45/,
-  'f2f0a9e4e1431863423d40088069554d');
+  'd8227927877e43f75c517bea4b0a9720');
 
 ++$test;
 testFilter('input.miff', 'Sample',
@@ -180,22 +175,27 @@ testFilter('input.miff', 'Scale',
 ++$test;
 testFilter('input.miff', 'Segment',
   q/1/,
-  '492cfb48dd301a0dad2cbf79afea916c');
+  '02179931bd9f63a64883c210ba52641e');
 
 ++$test;
 testFilter('input.miff', 'Shade',
   q/30x30/,
-  'fbca87612e348428f4112a7912132c0e');
+  '343c8d296684f40b331d9d68fc6df48c');
 
 ++$test;
 testFilter('input.miff', 'Shear',
   q/45x45/,
-  '494bb715137e5181d0783068ebe8c84c');
+  '9bb77fc01cf42c37f9e2c4f130375701');
 
 ++$test;
 testFilter('input.miff', 'Solarize',
   q/60/,
   '2594080986a34434961fe5841ae1bebc');
+
+++$test;
+testFilter('input.miff', 'Swirl',
+  q/60/,
+  'a356452eaa53857e1d5156c709d6a14c');
 
 ++$test;
 testFilter('input.miff', 'Texture',
@@ -210,7 +210,7 @@ testFilter('input.miff', 'Transform',
 ++$test;
 testFilter('input.miff', 'Threshold',
   q/128/,
-  'ad5daf059a1f4dcd132f8aeed878611d');
+  'b3afb90c9902a65b84107daa197828de');
 
 ++$test;
 testFilter('input.miff', 'Trim',
@@ -220,7 +220,7 @@ testFilter('input.miff', 'Trim',
 ++$test;
 testFilter('input.miff', 'Wave',
   q/25x157/,
-  '7b245cb58da477c1e4cce2a9626681cc');
+  '6299ea8d5d3f7cc5da6b3a103d72181c');
 
 ++$test;
 testFilter('input.miff', 'Zoom',

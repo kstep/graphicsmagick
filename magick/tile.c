@@ -106,7 +106,7 @@ Export Image *ReadTILEImage(const ImageInfo *image_info)
   if (image == (Image *) NULL)
     return((Image *) NULL);
   if ((image->columns == 0) || (image->rows == 0))
-    ReaderExit(OptionWarning,"must specify image size",image);
+    ReaderExit(OptionWarning,"Must specify image size",image);
   if (*image_info->filename == '\0')
     ReaderExit(OptionWarning,"must specify an image name",image);
   /*
@@ -120,9 +120,7 @@ Export Image *ReadTILEImage(const ImageInfo *image_info)
   DestroyImageInfo(local_info);
   if (tiled_image == (Image *) NULL)
     return((Image *) NULL);
-  tiled_image->orphan=True;
-  cloned_image=CloneImage(tiled_image,image->columns,image->rows,False);
-  tiled_image->orphan=False;
+  cloned_image=CloneImage(tiled_image,image->columns,image->rows,True);
   DestroyImage(image);
   if (cloned_image == (Image *) NULL)
     ReaderExit(ResourceLimitWarning,"Memory allocation failed",tiled_image);
@@ -138,6 +136,5 @@ Export Image *ReadTILEImage(const ImageInfo *image_info)
     ProgressMonitor(LoadImageText,y,image->rows);
   }
   DestroyImage(tiled_image);
-  CondenseImage(image);
   return(image);
 }

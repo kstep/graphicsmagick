@@ -112,7 +112,7 @@ Export Image *ReadTIMImage(const ImageInfo *image_info)
     has_clut,
     pixel_mode;
 
-  register RunlengthPacket
+  register PixelPacket
     *q;
 
   register unsigned char
@@ -181,11 +181,11 @@ Export Image *ReadTIMImage(const ImageInfo *image_info)
         height=LSBFirstReadShort(image);
         image->class=PseudoClass;
         image->colors=(unsigned int) pixel_mode == 1 ? 256 : 16;
-        image->colormap=(ColorPacket *)
-          AllocateMemory(image->colors*sizeof(ColorPacket));
+        image->colormap=(PixelPacket *)
+          AllocateMemory(image->colors*sizeof(PixelPacket));
         tim_colormap=(unsigned char *)
           AllocateMemory(image->colors*2*sizeof(unsigned char));
-        if ((image->colormap == (ColorPacket *) NULL) ||
+        if ((image->colormap == (PixelPacket *) NULL) ||
             (tim_colormap == (unsigned char *) NULL))
           ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
         (void) ReadBlob(image,2*image->colors,(char *) tim_colormap);
@@ -198,7 +198,7 @@ Export Image *ReadTIMImage(const ImageInfo *image_info)
           image->colormap[i].green=UpScale(ScaleColor5to8((word >> 5) & 0x1f));
           image->colormap[i].red=UpScale(ScaleColor5to8(word & 0x1f));
         }
-        free((char *) tim_colormap);
+        FreeMemory(tim_colormap);
       }
     /*
       Read image data.
@@ -221,13 +221,8 @@ Export Image *ReadTIMImage(const ImageInfo *image_info)
     */
     image->columns=width;
     image->rows=height;
-    image->packets=image->columns*image->rows;
-    image->pixels=(RunlengthPacket *)
-      AllocateMemory(image->packets*sizeof(RunlengthPacket));
-    if (image->pixels == (RunlengthPacket *) NULL)
-      ReaderExit(ResourceLimitWarning,"Unable to allocate memory",image);
     /*
-      Convert TIM raster image to runlength-encoded packets.
+      Convert TIM raster image to pixel packets.
     */
     switch (bits_per_pixel)
     {
@@ -238,25 +233,22 @@ Export Image *ReadTIMImage(const ImageInfo *image_info)
         */
         for (y=image->rows-1; y >= 0; y--)
         {
+          if (!SetPixelCache(image,0,y,image->columns,1))
+            break;
           p=tim_pixels+y*bytes_per_line;
-          q=image->pixels+(y*image->columns);
           for (x=0; x < ((int) image->columns-1); x+=2)
           {
-            q->index=(*p) & 0xf;
-            q->length=0;
-            q++;
-            q->index=(*p >> 4) & 0xf;
-            q->length=0;
+            image->indexes[x]=(*p) & 0xf;
+            image->indexes[x+1]=(*p >> 4) & 0xf;
             p++;
-            q++;
           }
           if ((image->columns % 2) != 0)
             {
-              q->index=(*p >> 4) & 0xf;
-              q->length=0;
-              q++;
+              image->indexes[x]=(*p >> 4) & 0xf;
               p++;
             }
+          if (!SyncPixelCache(image))
+            break;
           if (QuantumTick(y,image->rows))
             ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
         }
@@ -269,14 +261,13 @@ Export Image *ReadTIMImage(const ImageInfo *image_info)
         */
         for (y=image->rows-1; y >= 0; y--)
         {
+          if (!SetPixelCache(image,0,y,image->columns,1))
+            break;
           p=tim_pixels+y*bytes_per_line;
-          q=image->pixels+(y*image->columns);
           for (x=0; x < (int) image->columns; x++)
-          {
-            q->index=(*p++);
-            q->length=0;
-            q++;
-          }
+            image->indexes[x]=(*p++);
+          if (!SyncPixelCache(image))
+            break;
           if (QuantumTick(y,image->rows))
             ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
         }
@@ -290,18 +281,20 @@ Export Image *ReadTIMImage(const ImageInfo *image_info)
         for (y=image->rows-1; y >= 0; y--)
         {
           p=tim_pixels+y*bytes_per_line;
-          q=image->pixels+(y*image->columns);
+          q=SetPixelCache(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            break;
           for (x=0; x < (int) image->columns; x++)
           {
-            q->index=0;
             word=(*p++);
             word=word | (*p++ << 8);
             q->blue=UpScale(ScaleColor5to8((word >> 10) & 0x1f));
             q->green=UpScale(ScaleColor5to8((word >> 5) & 0x1f));
             q->red=UpScale(ScaleColor5to8(word & 0x1f));
-            q->length=0;
             q++;
           }
+          if (!SyncPixelCache(image))
+            break;
           if (QuantumTick(y,image->rows))
             ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
         }
@@ -315,16 +308,18 @@ Export Image *ReadTIMImage(const ImageInfo *image_info)
         for (y=image->rows-1; y >= 0; y--)
         {
           p=tim_pixels+y*bytes_per_line;
-          q=image->pixels+(y*image->columns);
+          q=SetPixelCache(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            break;
           for (x=0; x < (int) image->columns; x++)
           {
-            q->index=0;
             q->red=UpScale(*p++);
             q->green=UpScale(*p++);
             q->blue=UpScale(*p++);
-            q->length=0;
             q++;
           }
+          if (!SyncPixelCache(image))
+            break;
           if (QuantumTick(y,image->rows))
             ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
         }
@@ -333,10 +328,9 @@ Export Image *ReadTIMImage(const ImageInfo *image_info)
       default:
         ReaderExit(CorruptImageWarning,"Not a TIM image file",image);
     }
-    free((char *) tim_pixels);
     if (image->class == PseudoClass)
       SyncImage(image);
-    CondenseImage(image);
+    FreeMemory(tim_pixels);
     /*
       Proceed to next image.
     */

@@ -92,18 +92,20 @@ Export Image *ReadJBIGImage(const ImageInfo *image_info)
   Image
     *image;
 
+  IndexPacket
+    index;
+
   int
     status,
     y;
 
   long
-    length,
-    packets;
+    length;
 
   register int
     x;
 
-  register RunlengthPacket
+  register PixelPacket
     *q;
 
   register unsigned char
@@ -121,12 +123,6 @@ Export Image *ReadJBIGImage(const ImageInfo *image_info)
 
   unsigned int
     byte;
-
-  unsigned long
-    max_packets;
-
-  unsigned short
-    index;
 
   /*
     Allocate image structure.
@@ -179,13 +175,15 @@ Export Image *ReadJBIGImage(const ImageInfo *image_info)
   /*
     Create colormap.
   */
+  image->columns=(unsigned int) jbg_dec_getwidth(&jbig_info);
+  image->rows=(unsigned int) jbg_dec_getheight(&jbig_info);
   image->class=PseudoClass;
   image->colors=2;
-  image->colormap=(ColorPacket *)
-    AllocateMemory(image->colors*sizeof(ColorPacket));
-  if (image->colormap == (ColorPacket *) NULL)
+  image->colormap=(PixelPacket *)
+    AllocateMemory(image->colors*sizeof(PixelPacket));
+  if (image->colormap == (PixelPacket *) NULL)
     {
-      FreeMemory((char *) buffer);
+      FreeMemory(buffer);
       ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
     }
   image->colormap[0].red=0;
@@ -197,73 +195,41 @@ Export Image *ReadJBIGImage(const ImageInfo *image_info)
   image->x_resolution=300;
   image->y_resolution=300;
   /*
-    Initialize image structure.
+    Convert X bitmap image to pixel packets.
   */
-  image->columns=(unsigned int) jbg_dec_getwidth(&jbig_info);
-  image->rows=(unsigned int) jbg_dec_getheight(&jbig_info);
-  packets=0;
-  max_packets=Max((image->columns*image->rows+2) >> 2,1);
-  image->pixels=(RunlengthPacket *)
-    AllocateMemory(max_packets*sizeof(RunlengthPacket));
-  if (image->pixels == (RunlengthPacket *) NULL)
-    {
-      FreeMemory((char *) buffer);
-      ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-    }
-  /*
-    Convert X bitmap image to runlength-encoded packets.
-  */
-  byte=0;
   p=jbg_dec_getimage(&jbig_info,0);
-  q=image->pixels;
-  SetRunlengthEncoder(q);
   for (y=0; y < (int) image->rows; y++)
   {
+    q=SetPixelCache(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
     bit=0;
+    byte=0;
     for (x=0; x < (int) image->columns; x++)
     {
       if (bit == 0)
         byte=(*p++);
       index=(byte & 0x80) ? 0 : 1;
-      if ((index == q->index) && ((int) q->length < MaxRunlength))
-        q->length++;
-      else
-        {
-          if (packets != 0)
-            q++;
-          packets++;
-          if (packets == (int) max_packets)
-            {
-              max_packets<<=1;
-              image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
-                image->pixels,max_packets*sizeof(RunlengthPacket));
-              if (image->pixels == (RunlengthPacket *) NULL)
-                {
-                  jbg_dec_free(&jbig_info);
-                  FreeMemory((char *) buffer);
-                  ReaderExit(ResourceLimitWarning,
-                    "Memory allocation failed",image);
-                }
-              q=image->pixels+packets-1;
-            }
-          q->index=index;
-          q->length=0;
-        }
       bit++;
       byte<<=1;
       if (bit == 8)
         bit=0;
+      image->indexes[x]=index;
+      q->red=image->colormap[index].red;
+      q->green=image->colormap[index].green;
+      q->blue=image->colormap[index].blue;
+      q++;
     }
+    if (!SyncPixelCache(image))
+      break;
     if (QuantumTick(y,image->rows))
       ProgressMonitor(LoadImageText,y,image->rows);
   }
-  SetRunlengthPackets(image,packets);
-  SyncImage(image);
   /*
     Free scale resource.
   */
   jbg_dec_free(&jbig_info);
-  FreeMemory((char *) buffer);
+  FreeMemory(buffer);
   CloseBlob(image);
   return(image);
 }
@@ -307,25 +273,23 @@ Export Image *ReadJBIGImage(const ImageInfo *image_info)
 %
 */
 
-static void JBIGEncode(unsigned char *start,size_t length,void *file)
+static void JBIGEncode(unsigned char *pixels,size_t length,void *data)
 {
-  (void) fwrite(start,length,1,(FILE *) file);
-  return;
+  Image
+    *image;
+
+  image=(Image *) data;
+  (void) WriteBlob(image,length,pixels);
 }
 
 Export unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
 {
   int
     sans_offset,
-    x,
     y;
 
   register int
-    i,
-    j;
-
-  register RunlengthPacket
-    *p;
+    x;
 
   register unsigned char
     bit,
@@ -377,23 +341,21 @@ Export unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
         quantize_info.dither=image_info->dither;
         quantize_info.colorspace=GRAYColorspace;
         (void) QuantizeImage(&quantize_info,image);
-        SyncImage(image);
       }
     polarity=Intensity(image->colormap[0]) > (MaxRGB >> 1);
     if (image->colors == 2)
       polarity=Intensity(image->colormap[0]) > Intensity(image->colormap[1]);
-    bit=0;
-    byte=0;
-    x=0;
-    y=0;
-    p=image->pixels;
     q=pixels;
-    for (i=0; i < (int) image->packets; i++)
+    for (y=0; y < (int) image->rows; y++)
     {
-      for (j=0; j <= ((int) p->length); j++)
+      if (!GetPixelCache(image,0,y,image->columns,1))
+        break;
+      bit=0;
+      byte=0;
+      for (x=0; x < (int) image->columns; x++)
       {
         byte<<=1;
-        if (p->index == polarity)
+        if (image->indexes[x] == polarity)
           byte|=0x01;
         bit++;
         if (bit == 8)
@@ -402,29 +364,17 @@ Export unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
             bit=0;
             byte=0;
           }
-        x++;
-        if (x == (int) image->columns)
-          {
-            /*
-              Advance to the next scanline.
-            */
-            if (bit != 0)
-              *q++=byte << (8-bit);
-            if (QuantumTick(y,image->rows))
-              ProgressMonitor(SaveImageText,y,image->rows);
-            bit=0;
-            byte=0;
-            x=0;
-            y++;
-         }
-      }
-      p++;
+       }
+      if (bit != 0)
+        *q++=byte << (8-bit);
+      if (QuantumTick(y,image->rows))
+        ProgressMonitor(SaveImageText,y,image->rows);
     }
     /*
       Initialize JBIG info structure.
     */
     jbg_enc_init(&jbig_info,image->columns,image->rows,1,&pixels,
-      (void (*)(unsigned char *,size_t,void *)) JBIGEncode,image->file);
+      (void (*)(unsigned char *,size_t,void *)) JBIGEncode,image);
     if (image_info->subimage != 0)
       jbg_enc_layers(&jbig_info,image_info->subimage);
     else
@@ -448,11 +398,10 @@ Export unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
     */
     jbg_enc_out(&jbig_info);
     jbg_enc_free(&jbig_info);
-    FreeMemory((char *) pixels);
+    FreeMemory(pixels);
     if (image->next == (Image *) NULL)
       break;
-    image->next->file=image->file;
-    image=image->next;
+    image=GetNextImage(image);
     ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)

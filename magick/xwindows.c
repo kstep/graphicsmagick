@@ -142,7 +142,7 @@ Export unsigned int IsTrue(const char *message)
 %  The format of the XAnnotateImage method is:
 %
 %      unsigned int XAnnotateImage(Display *display,
-%        const XPixelInfo *pixel_info,XAnnotateInfo *annotate_info,Image *image)
+%        const XPixelInfo *pixel,XAnnotateInfo *annotate_info,Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -153,7 +153,7 @@ Export unsigned int IsTrue(const char *message)
 %    o display: Specifies a connection to an X server;  returned from
 %      XOpenDisplay.
 %
-%    o pixel_info: Specifies a pointer to a XPixelInfo structure.
+%    o pixel: Specifies a pointer to a XPixelInfo structure.
 %
 %    o annotate_info: Specifies a pointer to a XAnnotateInfo structure.
 %
@@ -163,7 +163,7 @@ Export unsigned int IsTrue(const char *message)
 %
 */
 Export unsigned int XAnnotateImage(Display *display,
-  const XPixelInfo *pixel_info,XAnnotateInfo *annotate_info,Image *image)
+  const XPixelInfo *pixel,XAnnotateInfo *annotate_info,Image *image)
 {
   GC
     annotate_context;
@@ -178,11 +178,8 @@ Export unsigned int XAnnotateImage(Display *display,
   Pixmap
     annotate_pixmap;
 
-  register int
-    i;
-
-  register RunlengthPacket
-    *p;
+  register PixelPacket
+    *q;
 
   unsigned int
     depth,
@@ -203,11 +200,9 @@ Export unsigned int XAnnotateImage(Display *display,
     Initialize annotated image.
   */
   assert(display != (Display *) NULL);
-  assert(pixel_info != (XPixelInfo *) NULL);
+  assert(pixel != (XPixelInfo *) NULL);
   assert(annotate_info != (XAnnotateInfo *) NULL);
   assert(image != (Image *) NULL);
-  if (!UncondenseImage(image))
-    return(False);
   /*
     Initialize annotated pixmap.
   */
@@ -250,14 +245,6 @@ Export unsigned int XAnnotateImage(Display *display,
     return(False);
   annotate_image->columns=annotate_info->width;
   annotate_image->rows=annotate_info->height;
-  annotate_image->packets=annotate_image->columns*annotate_image->rows;
-  annotate_image->pixels=(RunlengthPacket *)
-    AllocateMemory((unsigned int) image->packets*sizeof(RunlengthPacket));
-  if (annotate_image->pixels == (RunlengthPacket *) NULL)
-    {
-      DestroyImage(annotate_image);
-      return(False);
-    }
   /*
     Transfer annotated X image to image.
   */
@@ -266,32 +253,34 @@ Export unsigned int XAnnotateImage(Display *display,
   x=0;
   y=0;
   (void) XParseGeometry(annotate_info->geometry,&x,&y,&width,&height);
-  p=image->pixels+y*image->columns+x;
-  annotate_image->background_color.red=p->red;
-  annotate_image->background_color.green=p->green;
-  annotate_image->background_color.blue=p->blue;
-  annotate_image->background_color.index=Transparent;
-  annotate_image->matte=True;
-  p=annotate_image->pixels;
+  if (GetPixelCache(image,x,y,1,1))
+    {
+      annotate_image->background_color=(*image->pixels);
+      annotate_image->matte=True;
+    }
   for (y=0; y < (int) annotate_image->rows; y++)
+  {
+    q=SetPixelCache(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
     for (x=0; x < (int) annotate_image->columns; x++)
     {
-      p->index=(unsigned short) XGetPixel(annotate_ximage,x,y);
-      if (p->index == 0)
+      q->opacity=(Quantum) XGetPixel(annotate_ximage,x,y);
+      if (q->opacity == Transparent)
         {
           /*
             Set this pixel to the background color.
           */
-          p->red=XDownScale(pixel_info->box_color.red);
-          p->green=XDownScale(pixel_info->box_color.green);
-          p->blue=XDownScale(pixel_info->box_color.blue);
-          p->index=Opaque;
+          q->red=XDownScale(pixel->box_color.red);
+          q->green=XDownScale(pixel->box_color.green);
+          q->blue=XDownScale(pixel->box_color.blue);
+          q->opacity=Opaque;
           if (annotate_info->stencil == ForegroundStencil)
             {
-              p->red=annotate_image->background_color.red;
-              p->green=annotate_image->background_color.green;
-              p->blue=annotate_image->background_color.blue;
-              p->index=Transparent;
+              q->red=annotate_image->background_color.red;
+              q->green=annotate_image->background_color.green;
+              q->blue=annotate_image->background_color.blue;
+              q->opacity=Transparent;
             }
         }
       else
@@ -299,21 +288,23 @@ Export unsigned int XAnnotateImage(Display *display,
           /*
             Set this pixel to the pen color.
           */
-          p->red=XDownScale(pixel_info->pen_color.red);
-          p->green=XDownScale(pixel_info->pen_color.green);
-          p->blue=XDownScale(pixel_info->pen_color.blue);
-          p->index=Opaque;
+          q->red=XDownScale(pixel->pen_color.red);
+          q->green=XDownScale(pixel->pen_color.green);
+          q->blue=XDownScale(pixel->pen_color.blue);
+          q->opacity=Opaque;
           if (annotate_info->stencil == BackgroundStencil)
             {
-              p->red=annotate_image->background_color.red;
-              p->green=annotate_image->background_color.green;
-              p->blue=annotate_image->background_color.blue;
-              p->index=Transparent;
+              q->red=annotate_image->background_color.red;
+              q->green=annotate_image->background_color.green;
+              q->blue=annotate_image->background_color.blue;
+              q->opacity=Transparent;
             }
         }
-      p->length=0;
-      p++;
+      q++;
     }
+    if (!SyncPixelCache(image))
+      break;
+  }
   XDestroyImage(annotate_ximage);
   /*
     Determine annotate geometry.
@@ -336,7 +327,7 @@ Export unsigned int XAnnotateImage(Display *display,
         normalized_degrees;
 
       Image
-        *rotated_image;
+        *rotate_image;
 
       int
         rotations;
@@ -344,12 +335,11 @@ Export unsigned int XAnnotateImage(Display *display,
       /*
         Rotate image.
       */
-      rotated_image=
-        RotateImage(annotate_image,annotate_info->degrees,False,True);
-      if (rotated_image == (Image *) NULL)
+      rotate_image=RotateImage(annotate_image,annotate_info->degrees);
+      if (rotate_image == (Image *) NULL)
         return(False);
       DestroyImage(annotate_image);
-      annotate_image=rotated_image;
+      annotate_image=rotate_image;
       /*
         Annotation is relative to the degree of rotation.
       */
@@ -394,12 +384,17 @@ Export unsigned int XAnnotateImage(Display *display,
   /*
     Composite text onto the image.
   */
-  p=annotate_image->pixels;
-  for (i=0; i < (int) annotate_image->packets; i++)
+  for (y=0; y < (int) annotate_image->rows; y++)
   {
-    if (p->index != Transparent)
-      p->index=Opaque;
-    p++;
+    q=GetPixelCache(annotate_image,0,y,annotate_image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < (int) annotate_image->columns; x++)
+    {
+      if (q->opacity != Transparent)
+        q->opacity=Opaque;
+      q++;
+    }
   }
   matte=image->matte;
   CompositeImage(image,OverCompositeOp,annotate_image,x,y);
@@ -548,9 +543,9 @@ Export XFontStruct *XBestFont(Display *display,
           {
             if (font_info == (XFontStruct *) NULL)
               font_info=XLoadQueryFont(display,fontlist[i]);
-            FreeMemory((char *) fontlist[i]);
+            FreeMemory(fontlist[i]);
           }
-          FreeMemory((char *) fontlist);
+          FreeMemory(fontlist);
         }
       if (font_info == (XFontStruct *) NULL)
         MagickWarning(XServerWarning,"Unable to load font",font_name);
@@ -799,7 +794,7 @@ Export void XBestPixel(Display *display,const Colormap colormap,XColor *colors,
   }
   (void) XAllocColor(display,colormap,&colors[j]);
   if (query_server)
-    FreeMemory((char *) colors);
+    FreeMemory(colors);
 }
 
 /*
@@ -1641,7 +1636,7 @@ Export void XDisplayImageInfo(Display *display,
   bytes=0;
   for (levels=0; undo_image != (Image *) NULL; levels++)
   {
-    bytes+=undo_image->list->packets*sizeof(RunlengthPacket);
+    bytes+=undo_image->list->columns*undo_image->list->rows*sizeof(PixelPacket);
     undo_image=undo_image->previous;
   }
   (void) fprintf(file,"Undo Edit Cache\n  levels: %u\n",levels);
@@ -1696,10 +1691,10 @@ Export void XDisplayImageInfo(Display *display,
       XTextViewWidget(display,resource_info,windows,True,title,
         (char const **) textlist);
       for (i=0; textlist[i] != (char *) NULL; i++)
-        FreeMemory((char *) textlist[i]);
-      FreeMemory((char *) textlist);
+        FreeMemory(textlist[i]);
+      FreeMemory(textlist);
     }
-  FreeMemory((char *) text);
+  FreeMemory(text);
 }
 
 /*
@@ -1720,7 +1715,7 @@ Export void XDisplayImageInfo(Display *display,
 %
 %  The format of the XDitherImage method is:
 %
-%      unsigned int XDrawImage(Display *display,const XPixelInfo *pixel_info,
+%      unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
 %        XDrawInfo *draw_info,Image *image)
 %
 %  A description of each parameter follows:
@@ -1752,7 +1747,7 @@ static void XDitherImage(Image *image,XImage *ximage)
       {  2,-10, 12, -8,  0,-12, 14, -6,  3, -9, 13, -7,  1,-11, 15, -5}
     };
 
-  ColorPacket
+  PixelPacket
     color;
 
   int
@@ -1767,7 +1762,7 @@ static void XDitherImage(Image *image,XImage *ximage)
     j,
     x;
 
-  register RunlengthPacket
+  register PixelPacket
     *p;
 
   unsigned int
@@ -1781,8 +1776,6 @@ static void XDitherImage(Image *image,XImage *ximage)
     *green_map[2][16],
     *red_map[2][16];
 
-  if (!UncondenseImage(image))
-    return;
   /*
     Allocate and initialize dither maps.
   */
@@ -1837,10 +1830,12 @@ static void XDitherImage(Image *image,XImage *ximage)
     ((ximage->width*ximage->bits_per_pixel) >> 3);
   i=0;
   j=0;
-  p=image->pixels;
   q=ximage->data;
   for (y=0; y < (int) image->rows; y++)
   {
+    p=GetPixelCache(image,0,y,image->columns,1);
+    if (p == (PixelPacket *) NULL)
+      break;
     for (x=0; x < (int) image->columns; x++)
     {
       color.red=red_map[i][j][p->red];
@@ -1866,9 +1861,9 @@ static void XDitherImage(Image *image,XImage *ximage)
   for (i=0; i < 2; i++)
     for (j=0; j < 16; j++)
     {
-      FreeMemory((char *) green_map[i][j]);
-      FreeMemory((char *) blue_map[i][j]);
-      FreeMemory((char *) red_map[i][j]);
+      FreeMemory(green_map[i][j]);
+      FreeMemory(blue_map[i][j]);
+      FreeMemory(red_map[i][j]);
     }
 }
 
@@ -1887,7 +1882,7 @@ static void XDitherImage(Image *image,XImage *ximage)
 %
 %  The format of the XDrawImage method is:
 %
-%    status=XDrawImage(display,pixel_info,draw_info,image)
+%    status=XDrawImage(display,pixel,draw_info,image)
 %
 %  A description of each parameter follows:
 %
@@ -1898,7 +1893,7 @@ static void XDitherImage(Image *image,XImage *ximage)
 %    o display: Specifies a connection to an X server;  returned from
 %      XOpenDisplay.
 %
-%    o pixel_info: Specifies a pointer to a XPixelInfo structure.
+%    o pixel: Specifies a pointer to a XPixelInfo structure.
 %
 %    o draw_info: Specifies a pointer to a XDrawInfo structure.
 %
@@ -1907,7 +1902,7 @@ static void XDitherImage(Image *image,XImage *ximage)
 %
 %
 */
-Export unsigned int XDrawImage(Display *display,const XPixelInfo *pixel_info,
+Export unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
   XDrawInfo *draw_info,Image *image)
 {
   GC
@@ -1923,10 +1918,7 @@ Export unsigned int XDrawImage(Display *display,const XPixelInfo *pixel_info,
   Pixmap
     draw_pixmap;
 
-  register int
-    i;
-
-  register RunlengthPacket
+  register PixelPacket
     *p,
     *q;
 
@@ -1949,11 +1941,9 @@ Export unsigned int XDrawImage(Display *display,const XPixelInfo *pixel_info,
     Initialize drawd image.
   */
   assert(display != (Display *) NULL);
-  assert(pixel_info != (XPixelInfo *) NULL);
+  assert(pixel != (XPixelInfo *) NULL);
   assert(draw_info != (XDrawInfo *) NULL);
   assert(image != (Image *) NULL);
-  if (!UncondenseImage(image))
-    return(False);
   /*
     Initialize drawd pixmap.
   */
@@ -2071,14 +2061,6 @@ Export unsigned int XDrawImage(Display *display,const XPixelInfo *pixel_info,
     return(False);
   draw_image->columns=draw_info->width;
   draw_image->rows=draw_info->height;
-  draw_image->packets=draw_image->columns*draw_image->rows;
-  draw_image->pixels=(RunlengthPacket *)
-    AllocateMemory((unsigned int) image->packets*sizeof(RunlengthPacket));
-  if (draw_image->pixels == (RunlengthPacket *) NULL)
-    {
-      DestroyImage(draw_image);
-      return(False);
-    }
   /*
     Transfer drawn X image to image.
   */
@@ -2087,40 +2069,47 @@ Export unsigned int XDrawImage(Display *display,const XPixelInfo *pixel_info,
   x=0;
   y=0;
   (void) XParseGeometry(draw_info->geometry,&x,&y,&width,&height);
-  q=image->pixels+y*image->columns+x;
-  draw_image->background_color.red=q->red;
-  draw_image->background_color.green=q->green;
-  draw_image->background_color.blue=q->blue;
-  draw_image->background_color.index=0;
-  draw_image->matte=True;
-  p=draw_image->pixels;
+  p=GetPixelCache(image,x,y,1,1);
+  if (p != (PixelPacket *) NULL)
+    {
+      draw_image->background_color.red=p->red;
+      draw_image->background_color.green=p->green;
+      draw_image->background_color.blue=p->blue;
+      draw_image->matte=True;
+    }
   for (y=0; y < (int) draw_image->rows; y++)
+  {
+    q=SetPixelCache(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
     for (x=0; x < (int) draw_image->columns; x++)
     {
-      p->index=(unsigned short) XGetPixel(draw_ximage,x,y);
-      if (p->index == 0)
+      q->opacity=(Quantum) XGetPixel(draw_ximage,x,y);
+      if (q->opacity == Transparent)
         {
           /*
             Set this pixel to the background color.
           */
-          p->red=draw_image->background_color.red;
-          p->green=draw_image->background_color.green;
-          p->blue=draw_image->background_color.blue;
-          p->index=draw_info->stencil == OpaqueStencil ? Transparent : Opaque;
+          q->red=draw_image->background_color.red;
+          q->green=draw_image->background_color.green;
+          q->blue=draw_image->background_color.blue;
+          q->opacity=draw_info->stencil == OpaqueStencil ? Transparent : Opaque;
         }
       else
         {
           /*
             Set this pixel to the pen color.
           */
-          p->red=XDownScale(pixel_info->pen_color.red);
-          p->green=XDownScale(pixel_info->pen_color.green);
-          p->blue=XDownScale(pixel_info->pen_color.blue);
-          p->index=draw_info->stencil == OpaqueStencil ? Opaque : Transparent;
+          q->red=XDownScale(pixel->pen_color.red);
+          q->green=XDownScale(pixel->pen_color.green);
+          q->blue=XDownScale(pixel->pen_color.blue);
+          q->opacity=draw_info->stencil == OpaqueStencil ? Opaque : Transparent;
         }
-      p->length=0;
-      p++;
+      q++;
     }
+    if (!SyncPixelCache(draw_image))
+      break;
+  }
   XDestroyImage(draw_ximage);
   /*
     Determine draw geometry.
@@ -2143,7 +2132,7 @@ Export unsigned int XDrawImage(Display *display,const XPixelInfo *pixel_info,
         normalized_degrees;
 
       Image
-        *rotated_image;
+        *rotate_image;
 
       int
         rotations;
@@ -2151,11 +2140,11 @@ Export unsigned int XDrawImage(Display *display,const XPixelInfo *pixel_info,
       /*
         Rotate image.
       */
-      rotated_image=RotateImage(draw_image,draw_info->degrees,False,True);
-      if (rotated_image == (Image *) NULL)
+      rotate_image=RotateImage(draw_image,draw_info->degrees);
+      if (rotate_image == (Image *) NULL)
         return(False);
       DestroyImage(draw_image);
-      draw_image=rotated_image;
+      draw_image=rotate_image;
       /*
         Annotation is relative to the degree of rotation.
       */
@@ -2200,12 +2189,19 @@ Export unsigned int XDrawImage(Display *display,const XPixelInfo *pixel_info,
   /*
     Composite text onto the image.
   */
-  p=draw_image->pixels;
-  for (i=0; i < (int) draw_image->packets; i++)
+  for (y=0; y < (int) draw_image->rows; y++)
   {
-    if (p->index != Transparent)
-      p->index=Opaque;
-    p++;
+    q=GetPixelCache(draw_image,0,y,draw_image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < (int) draw_image->columns; x++)
+    {
+      if (q->opacity != Transparent)
+        q->opacity=Opaque;
+      q++;
+    }
+    if (!SyncPixelCache(draw_image))
+      break;
   }
   if (draw_info->stencil == TransparentStencil)
     CompositeImage(image,ReplaceMatteCompositeOp,draw_image,x,y);
@@ -2294,7 +2290,7 @@ Export int XError(Display *display,XErrorEvent *error)
 %  The format of the XFreeResources method is:
 %
 %      void XFreeResources(Display *display,XVisualInfo *visual_info,
-%        XStandardColormap *map_info,XPixelInfo *pixel_info,XFontStruct *font_info,
+%        XStandardColormap *map_info,XPixelInfo *pixel,XFontStruct *font_info,
 %        XResourceInfo *resource_info,XWindowInfo *window_info)
 %        resource_info,window_info)
 %
@@ -2309,7 +2305,7 @@ Export int XError(Display *display,XErrorEvent *error)
 %    o map_info: If map_type is specified, this structure is initialized
 %      with info from the Standard Colormap.
 %
-%    o pixel_info: Specifies a pointer to a XPixelInfo structure.
+%    o pixel: Specifies a pointer to a XPixelInfo structure.
 %
 %    o font_info: Specifies a pointer to a XFontStruct structure.
 %
@@ -2320,7 +2316,7 @@ Export int XError(Display *display,XErrorEvent *error)
 %
 */
 Export void XFreeResources(Display *display,XVisualInfo *visual_info,
-  XStandardColormap *map_info,XPixelInfo *pixel_info,XFontStruct *font_info,
+  XStandardColormap *map_info,XPixelInfo *pixel,XFontStruct *font_info,
   XResourceInfo *resource_info,XWindowInfo *window_info)
 {
   assert(display != (Display *) NULL);
@@ -2360,7 +2356,7 @@ Export void XFreeResources(Display *display,XVisualInfo *visual_info,
         Free X Standard Colormap.
       */
       if (resource_info->map_type == (char *) NULL)
-        XFreeStandardColormap(display,visual_info,map_info,pixel_info);
+        XFreeStandardColormap(display,visual_info,map_info,pixel);
       XFree((void *) map_info);
     }
   /*
@@ -2389,7 +2385,7 @@ Export void XFreeResources(Display *display,XVisualInfo *visual_info,
 %
 %      void XFreeStandardColormap(Display *display,
 %        const XVisualInfo *visual_info,XStandardColormap *map_info,
-%        XPixelInfo *pixel_info)
+%        XPixelInfo *pixel)
 %
 %  A description of each parameter follows:
 %
@@ -2402,13 +2398,13 @@ Export void XFreeResources(Display *display,XVisualInfo *visual_info,
 %    o map_info: If map_type is specified, this structure is initialized
 %      with info from the Standard Colormap.
 %
-%    o pixel_info: Specifies a pointer to a XPixelInfo structure.
+%    o pixel: Specifies a pointer to a XPixelInfo structure.
 %
 %
 */
 Export void XFreeStandardColormap(Display *display,
   const XVisualInfo *visual_info,XStandardColormap *map_info,
-  XPixelInfo *pixel_info)
+  XPixelInfo *pixel)
 {
   /*
     Free colormap.
@@ -2422,21 +2418,21 @@ Export void XFreeStandardColormap(Display *display,
       if (map_info->colormap != XDefaultColormap(display,visual_info->screen))
         XFreeColormap(display,map_info->colormap);
       else
-        if (pixel_info != (XPixelInfo *) NULL)
+        if (pixel != (XPixelInfo *) NULL)
           if ((visual_info->class != TrueColor) &&
               (visual_info->class != DirectColor))
-            XFreeColors(display,map_info->colormap,pixel_info->pixels,
-              (int) pixel_info->colors,0);
+            XFreeColors(display,map_info->colormap,pixel->pixels,
+              (int) pixel->colors,0);
     }
   map_info->colormap=(Colormap) NULL;
-  if (pixel_info != (XPixelInfo *) NULL)
+  if (pixel != (XPixelInfo *) NULL)
     {
-      if (pixel_info->gamma_map != (XColor *) NULL)
-        FreeMemory((char *) pixel_info->gamma_map);
-      pixel_info->gamma_map=(XColor *) NULL;
-      if (pixel_info->pixels != (unsigned long *) NULL)
-        FreeMemory((char *) pixel_info->pixels);
-      pixel_info->pixels=(unsigned long *) NULL;
+      if (pixel->gamma_map != (XColor *) NULL)
+        FreeMemory(pixel->gamma_map);
+      pixel->gamma_map=(XColor *) NULL;
+      if (pixel->pixels != (unsigned long *) NULL)
+        FreeMemory(pixel->pixels);
+      pixel->pixels=(unsigned long *) NULL;
     }
 }
 
@@ -2595,14 +2591,14 @@ Export void XGetImportInfo(XImportInfo *ximage_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method XGetPixelInfo initializes the PixelInfo structure.
+%  Method XGetPixelPacket initializes the PixelPacket structure.
 %
-%  The format of the XGetPixelInfo method is:
+%  The format of the XGetPixelPacket method is:
 %
-%      void XGetPixelInfo(Display *display,const XVisualInfo *visual_info,
+%      void XGetPixelPacket(Display *display,const XVisualInfo *visual_info,
 %        const XStandardColormap *map_info,const XResourceInfo *resource_info,
-%        Image *image,XPixelInfo *pixel_info)
-%        pixel_info)
+%        Image *image,XPixelInfo *pixel)
+%        pixel)
 %
 %  A description of each parameter follows:
 %
@@ -2620,13 +2616,13 @@ Export void XGetImportInfo(XImportInfo *ximage_info)
 %    o image: Specifies a pointer to a Image structure;  returned from
 %      ReadImage.
 %
-%    o pixel_info: Specifies a pointer to a XPixelInfo structure.
+%    o pixel: Specifies a pointer to a XPixelInfo structure.
 %
 %
 */
-Export void XGetPixelInfo(Display *display,const XVisualInfo *visual_info,
+Export void XGetPixelPacket(Display *display,const XVisualInfo *visual_info,
   const XStandardColormap *map_info,const XResourceInfo *resource_info,
-  Image *image,XPixelInfo *pixel_info)
+  Image *image,XPixelInfo *pixel)
 {
   static const char
     *PenColors[MaxNumberPens]=
@@ -2663,18 +2659,18 @@ Export void XGetPixelInfo(Display *display,const XVisualInfo *visual_info,
   assert(visual_info != (XVisualInfo *) NULL);
   assert(map_info != (XStandardColormap *) NULL);
   assert(resource_info != (XResourceInfo *) NULL);
-  assert(pixel_info != (XPixelInfo *) NULL);
-  pixel_info->colors=0;
+  assert(pixel != (XPixelInfo *) NULL);
+  pixel->colors=0;
   if (image != (Image *) NULL)
     if (image->class == PseudoClass)
-      pixel_info->colors=image->colors;
-  packets=Max((int) pixel_info->colors,visual_info->colormap_size)+
+      pixel->colors=image->colors;
+  packets=Max((int) pixel->colors,visual_info->colormap_size)+
     MaxNumberPens;
-  if (pixel_info->pixels != (unsigned long *) NULL)
-    FreeMemory((char *) pixel_info->pixels);
-  pixel_info->pixels=(unsigned long *)
+  if (pixel->pixels != (unsigned long *) NULL)
+    FreeMemory(pixel->pixels);
+  pixel->pixels=(unsigned long *)
     AllocateMemory(packets*sizeof(unsigned long));
-  if (pixel_info->pixels == (unsigned long *) NULL)
+  if (pixel->pixels == (unsigned long *) NULL)
     MagickError(ResourceLimitError,"Unable to get pixel info",
       "Memory allocation failed");
   /*
@@ -2682,144 +2678,144 @@ Export void XGetPixelInfo(Display *display,const XVisualInfo *visual_info,
   */
   colormap=map_info->colormap;
   (void) XParseColor(display,colormap,ForegroundColor,
-    &pixel_info->foreground_color);
+    &pixel->foreground_color);
   status=XParseColor(display,colormap,resource_info->foreground_color,
-    &pixel_info->foreground_color);
+    &pixel->foreground_color);
   if (status == 0)
     MagickWarning(XServerWarning,"Color is not known to X server",
       resource_info->foreground_color);
-  pixel_info->foreground_color.pixel=
-    XStandardPixel(map_info,pixel_info->foreground_color,16);
-  pixel_info->foreground_color.flags=DoRed | DoGreen | DoBlue;
+  pixel->foreground_color.pixel=
+    XStandardPixel(map_info,pixel->foreground_color,16);
+  pixel->foreground_color.flags=DoRed | DoGreen | DoBlue;
   /*
     Set background color.
   */
   (void) XParseColor(display,colormap,BackgroundColor,
-    &pixel_info->background_color);
+    &pixel->background_color);
   status=XParseColor(display,colormap,resource_info->background_color,
-    &pixel_info->background_color);
+    &pixel->background_color);
   if (status == 0)
     MagickWarning(XServerWarning,"Color is not known to X server",
       resource_info->background_color);
-  pixel_info->background_color.pixel=
-    XStandardPixel(map_info,pixel_info->background_color,16);
-  pixel_info->background_color.flags=DoRed | DoGreen | DoBlue;
+  pixel->background_color.pixel=
+    XStandardPixel(map_info,pixel->background_color,16);
+  pixel->background_color.flags=DoRed | DoGreen | DoBlue;
   /*
     Set border color.
   */
-  (void) XParseColor(display,colormap,BorderColor,&pixel_info->border_color);
+  (void) XParseColor(display,colormap,BorderColor,&pixel->border_color);
   status=XParseColor(display,colormap,resource_info->border_color,
-    &pixel_info->border_color);
+    &pixel->border_color);
   if (status == 0)
     MagickWarning(XServerWarning,"Color is not known to X server",
       resource_info->border_color);
-  pixel_info->border_color.pixel=
-    XStandardPixel(map_info,pixel_info->border_color,16);
-  pixel_info->border_color.flags=DoRed | DoGreen | DoBlue;
+  pixel->border_color.pixel=
+    XStandardPixel(map_info,pixel->border_color,16);
+  pixel->border_color.flags=DoRed | DoGreen | DoBlue;
   /*
     Set matte color.
   */
-  pixel_info->matte_color=pixel_info->background_color;
+  pixel->matte_color=pixel->background_color;
   if (resource_info->matte_color != (char *) NULL)
     {
       /*
         Matte color is specified as a X resource or command line argument.
       */
       status=XParseColor(display,colormap,resource_info->matte_color,
-        &pixel_info->matte_color);
+        &pixel->matte_color);
       if (status == 0)
         MagickWarning(XServerWarning,"Color is not known to X server",
           resource_info->matte_color);
-      pixel_info->matte_color.pixel=
-        XStandardPixel(map_info,pixel_info->matte_color,16);
-      pixel_info->matte_color.flags=DoRed | DoGreen | DoBlue;
+      pixel->matte_color.pixel=
+        XStandardPixel(map_info,pixel->matte_color,16);
+      pixel->matte_color.flags=DoRed | DoGreen | DoBlue;
     }
   /*
     Set highlight color.
   */
-  pixel_info->highlight_color.red=((unsigned long)
-    (pixel_info->matte_color.red*HighlightModulate+(MaxRGB-HighlightModulate)*
+  pixel->highlight_color.red=((unsigned long)
+    (pixel->matte_color.red*HighlightModulate+(MaxRGB-HighlightModulate)*
     65535L)/MaxRGB);
-  pixel_info->highlight_color.green=((unsigned long)
-    (pixel_info->matte_color.green*HighlightModulate+(MaxRGB-HighlightModulate)*
+  pixel->highlight_color.green=((unsigned long)
+    (pixel->matte_color.green*HighlightModulate+(MaxRGB-HighlightModulate)*
     65535L)/MaxRGB);
-  pixel_info->highlight_color.blue=((unsigned long)
-    (pixel_info->matte_color.blue*HighlightModulate+(MaxRGB-HighlightModulate)*
+  pixel->highlight_color.blue=((unsigned long)
+    (pixel->matte_color.blue*HighlightModulate+(MaxRGB-HighlightModulate)*
     65535L)/MaxRGB);
-  pixel_info->highlight_color.pixel=
-    XStandardPixel(map_info,pixel_info->highlight_color,16);
-  pixel_info->highlight_color.flags=DoRed | DoGreen | DoBlue;
+  pixel->highlight_color.pixel=
+    XStandardPixel(map_info,pixel->highlight_color,16);
+  pixel->highlight_color.flags=DoRed | DoGreen | DoBlue;
   /*
     Set shadow color.
   */
-  pixel_info->shadow_color.red=((unsigned long)
-    (pixel_info->matte_color.red*ShadowModulate)/MaxRGB);
-  pixel_info->shadow_color.green=((unsigned long)
-    (pixel_info->matte_color.green*ShadowModulate)/MaxRGB);
-  pixel_info->shadow_color.blue=((unsigned long)
-    (pixel_info->matte_color.blue*ShadowModulate)/MaxRGB);
-  pixel_info->shadow_color.pixel=
-    XStandardPixel(map_info,pixel_info->shadow_color,16);
-  pixel_info->shadow_color.flags=DoRed | DoGreen | DoBlue;
+  pixel->shadow_color.red=((unsigned long)
+    (pixel->matte_color.red*ShadowModulate)/MaxRGB);
+  pixel->shadow_color.green=((unsigned long)
+    (pixel->matte_color.green*ShadowModulate)/MaxRGB);
+  pixel->shadow_color.blue=((unsigned long)
+    (pixel->matte_color.blue*ShadowModulate)/MaxRGB);
+  pixel->shadow_color.pixel=
+    XStandardPixel(map_info,pixel->shadow_color,16);
+  pixel->shadow_color.flags=DoRed | DoGreen | DoBlue;
   /*
     Set depth color.
   */
-  pixel_info->depth_color.red=((unsigned long)
-    (pixel_info->matte_color.red*DepthModulate)/MaxRGB);
-  pixel_info->depth_color.green=((unsigned long)
-    (pixel_info->matte_color.green*DepthModulate)/MaxRGB);
-  pixel_info->depth_color.blue=((unsigned long)
-    (pixel_info->matte_color.blue*DepthModulate)/MaxRGB);
-  pixel_info->depth_color.pixel=
-    XStandardPixel(map_info,pixel_info->depth_color,16);
-  pixel_info->depth_color.flags=DoRed | DoGreen | DoBlue;
+  pixel->depth_color.red=((unsigned long)
+    (pixel->matte_color.red*DepthModulate)/MaxRGB);
+  pixel->depth_color.green=((unsigned long)
+    (pixel->matte_color.green*DepthModulate)/MaxRGB);
+  pixel->depth_color.blue=((unsigned long)
+    (pixel->matte_color.blue*DepthModulate)/MaxRGB);
+  pixel->depth_color.pixel=
+    XStandardPixel(map_info,pixel->depth_color,16);
+  pixel->depth_color.flags=DoRed | DoGreen | DoBlue;
   /*
     Set trough color.
   */
-  pixel_info->trough_color.red=((unsigned long)
-    (pixel_info->matte_color.red*TroughModulate)/MaxRGB);
-  pixel_info->trough_color.green=((unsigned long)
-    (pixel_info->matte_color.green*TroughModulate)/MaxRGB);
-  pixel_info->trough_color.blue=((unsigned long)
-    (pixel_info->matte_color.blue*TroughModulate)/MaxRGB);
-  pixel_info->trough_color.pixel=
-    XStandardPixel(map_info,pixel_info->trough_color,16);
-  pixel_info->trough_color.flags=DoRed | DoGreen | DoBlue;
+  pixel->trough_color.red=((unsigned long)
+    (pixel->matte_color.red*TroughModulate)/MaxRGB);
+  pixel->trough_color.green=((unsigned long)
+    (pixel->matte_color.green*TroughModulate)/MaxRGB);
+  pixel->trough_color.blue=((unsigned long)
+    (pixel->matte_color.blue*TroughModulate)/MaxRGB);
+  pixel->trough_color.pixel=
+    XStandardPixel(map_info,pixel->trough_color,16);
+  pixel->trough_color.flags=DoRed | DoGreen | DoBlue;
   /*
     Set pen color.
   */
   for (i=0; i < MaxNumberPens; i++)
   {
     (void) XParseColor(display,colormap,(char *) PenColors[i],
-      &pixel_info->pen_colors[i]);
+      &pixel->pen_colors[i]);
     status=XParseColor(display,colormap,resource_info->pen_colors[i],
-      &pixel_info->pen_colors[i]);
+      &pixel->pen_colors[i]);
     if (status == 0)
       MagickWarning(XServerWarning,"Color is not known to X server",
         resource_info->pen_colors[i]);
-    pixel_info->pen_colors[i].pixel=
-      XStandardPixel(map_info,pixel_info->pen_colors[i],16);
-    pixel_info->pen_colors[i].flags=DoRed | DoGreen | DoBlue;
+    pixel->pen_colors[i].pixel=
+      XStandardPixel(map_info,pixel->pen_colors[i],16);
+    pixel->pen_colors[i].flags=DoRed | DoGreen | DoBlue;
   }
-  pixel_info->box_color=pixel_info->background_color;
-  pixel_info->pen_color=pixel_info->foreground_color;
-  pixel_info->box_index=0;
-  pixel_info->pen_index=1;
+  pixel->box_color=pixel->background_color;
+  pixel->pen_color=pixel->foreground_color;
+  pixel->box_index=0;
+  pixel->pen_index=1;
   /*
     Initialize gamma map to linear brightness.
   */
-  if (pixel_info->gamma_map != (XColor *) NULL)
-    FreeMemory((char *) pixel_info->gamma_map);
-  pixel_info->gamma_map=(XColor *) AllocateMemory((MaxRGB+1)*sizeof(XColor));
-  if (pixel_info->gamma_map == (XColor *) NULL)
+  if (pixel->gamma_map != (XColor *) NULL)
+    FreeMemory(pixel->gamma_map);
+  pixel->gamma_map=(XColor *) AllocateMemory((MaxRGB+1)*sizeof(XColor));
+  if (pixel->gamma_map == (XColor *) NULL)
     MagickWarning(ResourceLimitWarning,"Unable to allocate gamma map",
       "Memory allocation failed");
     else
       for (i=0; i <= MaxRGB; i++)
       {
-        pixel_info->gamma_map[i].red=(unsigned short) i;
-        pixel_info->gamma_map[i].green=(unsigned short) i;
-        pixel_info->gamma_map[i].blue=(unsigned short) i;
+        pixel->gamma_map[i].red=(unsigned short) i;
+        pixel->gamma_map[i].green=(unsigned short) i;
+        pixel->gamma_map[i].blue=(unsigned short) i;
       }
   if (image != (Image *) NULL)
     {
@@ -2851,11 +2847,11 @@ Export void XGetPixelInfo(Display *display,const XVisualInfo *visual_info,
           blue_gamma*=image->gamma;
           for (i=0; i <= MaxRGB; i++)
           {
-            pixel_info->gamma_map[i].red=(short unsigned int)
+            pixel->gamma_map[i].red=(short unsigned int)
               ((pow((double) i/MaxRGB,1.0/red_gamma)*MaxRGB)+0.5);
-            pixel_info->gamma_map[i].green=(short unsigned int)
+            pixel->gamma_map[i].green=(short unsigned int)
               ((pow((double) i/MaxRGB,1.0/green_gamma)*MaxRGB)+0.5);
-            pixel_info->gamma_map[i].blue=(short unsigned int)
+            pixel->gamma_map[i].blue=(short unsigned int)
               ((pow((double) i/MaxRGB,1.0/blue_gamma)*MaxRGB)+0.5);
           }
         }
@@ -2867,13 +2863,13 @@ Export void XGetPixelInfo(Display *display,const XVisualInfo *visual_info,
           /*
             Initialize pixel array for images of type PseudoClass.
           */
-          gamma_map=pixel_info->gamma_map;
+          gamma_map=pixel->gamma_map;
           for (i=0; i < (int) image->colors; i++)
-            pixel_info->pixels[i]=
+            pixel->pixels[i]=
               XGammaPixel(map_info,gamma_map,image->colormap+i,QuantumDepth);
           for (i=0; i < MaxNumberPens; i++)
-            pixel_info->pixels[image->colors+i]=pixel_info->pen_colors[i].pixel;
-          pixel_info->colors+=MaxNumberPens;
+            pixel->pixels[image->colors+i]=pixel->pen_colors[i].pixel;
+          pixel->colors+=MaxNumberPens;
         }
     }
 }
@@ -3691,6 +3687,9 @@ Export Image *XGetWindowImage(Display *display,const Window window,
       crop_info;
   } WindowInfo;
 
+  IndexPacket
+    index;
+
   int
     display_height,
     display_width,
@@ -3852,8 +3851,8 @@ Export Image *XGetWindowImage(Display *display,const Window window,
         j,
         x;
 
-      register RunlengthPacket
-        *p;
+      register PixelPacket
+        *q;
 
       register unsigned long
         pixel;
@@ -4015,16 +4014,6 @@ Export Image *XGetWindowImage(Display *display,const Window window,
           composite_image->class=PseudoClass;
         composite_image->columns=ximage->width;
         composite_image->rows=ximage->height;
-        composite_image->packets=composite_image->columns*composite_image->rows;
-        composite_image->pixels=(RunlengthPacket *) AllocateMemory(
-          (unsigned int) composite_image->packets*sizeof(RunlengthPacket));
-        if (composite_image->pixels == (RunlengthPacket *) NULL)
-          {
-            XDestroyImage(ximage);
-            DestroyImage(composite_image);
-            return((Image *) NULL);
-          }
-        p=composite_image->pixels;
         switch (composite_image->class)
         {
           case DirectClass:
@@ -4073,36 +4062,44 @@ Export Image *XGetWindowImage(Display *display,const Window window,
                 (window_info[id].visual->class == DirectColor))
               for (y=0; y < (int) composite_image->rows; y++)
               {
+                q=SetPixelCache(composite_image,0,y,composite_image->columns,1);
+                if (q == (PixelPacket *) NULL)
+                  break;
                 for (x=0; x < (int) composite_image->columns; x++)
                 {
                   pixel=XGetPixel(ximage,x,y);
                   index=(pixel >> red_shift) & red_mask;
-                  p->red=XDownScale(colors[index].red);
+                  q->red=XDownScale(colors[index].red);
                   index=(pixel >> green_shift) & green_mask;
-                  p->green=XDownScale(colors[index].green);
+                  q->green=XDownScale(colors[index].green);
                   index=(pixel >> blue_shift) & blue_mask;
-                  p->blue=XDownScale(colors[index].blue);
-                  p->index=0;
-                  p->length=0;
-                  p++;
+                  q->blue=XDownScale(colors[index].blue);
+                  q->opacity=Transparent;
+                  q++;
                 }
+                if (!SyncPixelCache(composite_image))
+                  break;
               }
             else
               for (y=0; y < (int) composite_image->rows; y++)
               {
+                q=SetPixelCache(composite_image,0,y,composite_image->columns,1);
+                if (q == (PixelPacket *) NULL)
+                  break;
                 for (x=0; x < (int) composite_image->columns; x++)
                 {
                   pixel=XGetPixel(ximage,x,y);
                   color=(pixel >> red_shift) & red_mask;
-                  p->red=XDownScale((color*65535L)/red_mask);
+                  q->red=XDownScale((color*65535L)/red_mask);
                   color=(pixel >> green_shift) & green_mask;
-                  p->green=XDownScale((color*65535L)/green_mask);
+                  q->green=XDownScale((color*65535L)/green_mask);
                   color=(pixel >> blue_shift) & blue_mask;
-                  p->blue=XDownScale((color*65535L)/blue_mask);
-                  p->index=0;
-                  p->length=0;
-                  p++;
+                  q->blue=XDownScale((color*65535L)/blue_mask);
+                  q->opacity=Transparent;
+                  q++;
                 }
+                if (!SyncPixelCache(composite_image))
+                  break;
               }
             break;
           }
@@ -4112,9 +4109,9 @@ Export Image *XGetWindowImage(Display *display,const Window window,
               Create colormap.
             */
             composite_image->colors=number_colors;
-            composite_image->colormap=(ColorPacket *)
-              AllocateMemory(composite_image->colors*sizeof(ColorPacket));
-            if (composite_image->colormap == (ColorPacket *) NULL)
+            composite_image->colormap=(PixelPacket *)
+              AllocateMemory(composite_image->colors*sizeof(PixelPacket));
+            if (composite_image->colormap == (PixelPacket *) NULL)
               {
                 XDestroyImage(ximage);
                 DestroyImage(composite_image);
@@ -4134,15 +4131,22 @@ Export Image *XGetWindowImage(Display *display,const Window window,
             */
             for (y=0; y < (int) composite_image->rows; y++)
             {
+              q=SetPixelCache(composite_image,0,y,composite_image->columns,1);
+              if (q == (PixelPacket *) NULL)
+                break;
               for (x=0; x < (int) composite_image->columns; x++)
               {
                 pixel=XGetPixel(ximage,x,y);
-                p->index=(unsigned short) pixel;
-                p->length=0;
-                p++;
+                index=(unsigned short) pixel;
+                image->indexes[x]=index;
+                q->red=image->colormap[index].red;
+                q->green=image->colormap[index].green;
+                q->blue=image->colormap[index].blue;
+                q++;
               }
+              if (!SyncPixelCache(composite_image))
+                break;
             }
-            SyncImage(composite_image);
             break;
           }
         }
@@ -4172,19 +4176,18 @@ Export Image *XGetWindowImage(Display *display,const Window window,
       while (colormap_info != (ColormapInfo *) NULL)
       {
         next=colormap_info->next;
-        FreeMemory((char *) colormap_info->colors);
-        FreeMemory((char *) colormap_info);
+        FreeMemory(colormap_info->colors);
+        FreeMemory(colormap_info);
         colormap_info=next;
       }
       /*
         Free resources and restore initial state.
       */
-      FreeMemory((char *) window_info);
+      FreeMemory(window_info);
       window_info=(WindowInfo *) NULL;
       max_windows=0;
       number_windows=0;
       colormap_info=(ColormapInfo *) NULL;
-      CondenseImage(image);
       return(image);
     }
   return((Image *) NULL);
@@ -4206,7 +4209,7 @@ Export Image *XGetWindowImage(Display *display,const Window window,
 %  The format of the XGetWindowInfo method is:
 %
 %      void XGetWindowInfo(Display *display,XVisualInfo *visual_info,
-%        XStandardColormap *map_info,XPixelInfo *pixel_info,XFontStruct *font_info,
+%        XStandardColormap *map_info,XPixelInfo *pixel,XFontStruct *font_info,
 %        XResourceInfo *resource_info,XWindowInfo *window)
 %        resource_info,window)
 %
@@ -4221,7 +4224,7 @@ Export Image *XGetWindowImage(Display *display,const Window window,
 %    o map_info: If map_type is specified, this structure is initialized
 %      with info from the Standard Colormap.
 %
-%    o pixel_info: Specifies a pointer to a XPixelInfo structure.
+%    o pixel: Specifies a pointer to a XPixelInfo structure.
 %
 %    o font_info: Specifies a pointer to a XFontStruct structure.
 %
@@ -4230,7 +4233,7 @@ Export Image *XGetWindowImage(Display *display,const Window window,
 %
 */
 Export void XGetWindowInfo(Display *display,XVisualInfo *visual_info,
-  XStandardColormap *map_info,XPixelInfo *pixel_info,XFontStruct *font_info,
+  XStandardColormap *map_info,XPixelInfo *pixel,XFontStruct *font_info,
   XResourceInfo *resource_info,XWindowInfo *window)
 {
   /*
@@ -4239,7 +4242,7 @@ Export void XGetWindowInfo(Display *display,XVisualInfo *visual_info,
   assert(display != (Display *) NULL);
   assert(visual_info != (XVisualInfo *) NULL);
   assert(map_info != (XStandardColormap *) NULL);
-  assert(pixel_info != (XPixelInfo *) NULL);
+  assert(pixel != (XPixelInfo *) NULL);
   assert(resource_info != (XResourceInfo *) NULL);
   assert(window != (XWindowInfo *) NULL);
   if (window->id != (Window) NULL)
@@ -4280,7 +4283,7 @@ Export void XGetWindowInfo(Display *display,XVisualInfo *visual_info,
   window->depth=visual_info->depth;
   window->visual_info=visual_info;
   window->map_info=map_info;
-  window->pixel_info=pixel_info;
+  window->pixel_info=pixel;
   window->font_info=font_info;
   window->cursor=XCreateFontCursor(display,XC_left_ptr);
   window->busy_cursor=XCreateFontCursor(display,XC_watch);
@@ -4297,9 +4300,9 @@ Export void XGetWindowInfo(Display *display,XVisualInfo *visual_info,
   window->width_inc=1;
   window->height_inc=1;
   window->border_width=resource_info->border_width;
-  window->annotate_context=pixel_info->annotate_context;
-  window->highlight_context=pixel_info->highlight_context;
-  window->widget_context=pixel_info->widget_context;
+  window->annotate_context=pixel->annotate_context;
+  window->highlight_context=pixel->highlight_context;
+  window->widget_context=pixel->widget_context;
   window->shadow_stipple=(Pixmap) NULL;
   window->highlight_stipple=(Pixmap) NULL;
   window->use_pixmap=True;
@@ -4310,12 +4313,12 @@ Export void XGetWindowInfo(Display *display,XVisualInfo *visual_info,
   window->mask=CWBackingStore | CWBackPixel | CWBackPixmap | CWBitGravity |
     CWBorderPixel | CWColormap | CWCursor | CWDontPropagate | CWEventMask |
     CWOverrideRedirect | CWSaveUnder | CWWinGravity;
-  window->attributes.background_pixel=pixel_info->background_color.pixel;
+  window->attributes.background_pixel=pixel->background_color.pixel;
   window->attributes.background_pixmap=(Pixmap) NULL;
   window->attributes.bit_gravity=ForgetGravity;
   window->attributes.backing_store=NotUseful;
   window->attributes.save_under=False;
-  window->attributes.border_pixel=pixel_info->border_color.pixel;
+  window->attributes.border_pixel=pixel->border_color.pixel;
   window->attributes.colormap=map_info->colormap;
   window->attributes.cursor=window->cursor;
   window->attributes.do_not_propagate_mask=NoEventMask;
@@ -5099,9 +5102,7 @@ Export unsigned int XMakeImage(Display *display,
           crop_info.y=0;
           (void) XParseGeometry(window->crop_geometry,&crop_info.x,
             &crop_info.y,&crop_info.width,&crop_info.height);
-          transformed_image->orphan=True;
           cropped_image=CropImage(transformed_image,&crop_info);
-          transformed_image->orphan=False;
           if (cropped_image != (Image *) NULL)
             {
               if (transformed_image != image)
@@ -5118,7 +5119,6 @@ Export unsigned int XMakeImage(Display *display,
           /*
             Scale image.
           */
-          transformed_image->orphan=True;
           if ((window->pixel_info->colors != 0) || transformed_image->matte)
             zoomed_image=SampleImage(transformed_image,width,height);
           else
@@ -5129,7 +5129,6 @@ Export unsigned int XMakeImage(Display *display,
                 DestroyImage(transformed_image);
               transformed_image=zoomed_image;
             }
-          transformed_image->orphan=False;
         }
       if (window->immutable)
         if (IsMonochromeImage(transformed_image))
@@ -5247,7 +5246,7 @@ Export unsigned int XMakeImage(Display *display,
         }
 #endif
       if (window->ximage->data != (char *) NULL)
-        FreeMemory((char *) window->ximage->data);
+        FreeMemory(window->ximage->data);
       window->ximage->data=(char *) NULL;
       XDestroyImage(window->ximage);
     }
@@ -5292,7 +5291,7 @@ Export unsigned int XMakeImage(Display *display,
         Free matte image.
       */
       if (window->matte_image->data != (char *) NULL)
-        (void) FreeMemory((char *) window->matte_image->data);
+        (void) FreeMemory(window->matte_image->data);
       window->matte_image->data=(char *) NULL;
       XDestroyImage(window->matte_image);
     }
@@ -5401,12 +5400,13 @@ Export unsigned int XMakeImage(Display *display,
 static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
   const XWindowInfo *window,Image *image,XImage *ximage,XImage *matte_image)
 {
+  int
+    y;
+
   register int
-    i,
-    j,
     x;
 
-  register RunlengthPacket
+  register PixelPacket
     *p;
 
   register unsigned char
@@ -5437,7 +5437,6 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
   map_info=window->map_info;
   pixels=window->pixel_info->pixels;
   gamma_map=window->pixel_info->gamma_map;
-  p=image->pixels;
   q=(unsigned char *) ximage->data;
   x=0;
   if (ximage->format == XYBitmap)
@@ -5459,14 +5458,16 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
       polarity=Intensity(image->colormap[0]) < (MaxRGB >> 1);
       if (image->colors == 2)
         polarity=Intensity(image->colormap[0]) < Intensity(image->colormap[1]);
-      bit=0;
-      byte=0;
-      for (i=0; i < (int) image->packets; i++)
+      for (y=0; y < (int) image->rows; y++)
       {
-        for (j=0; j <= ((int) p->length); j++)
+        if (!GetPixelCache(image,0,y,image->columns,1))
+          break;
+        bit=0;
+        byte=0;
+        for (x=0; x < (int) image->columns; x++)
         {
           byte>>=1;
-          if (p->index == polarity)
+          if (image->indexes[x] == polarity)
             byte|=foreground;
           else
             byte|=background;
@@ -5477,21 +5478,10 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
               bit=0;
               byte=0;
             }
-          x++;
-          if (x == ximage->width)
-            {
-              /*
-                Advance to the next scanline.
-              */
-              if (bit != 0)
-                *q=byte >> (8-bit);
-              q+=scanline_pad;
-              bit=0;
-              byte=0;
-              x=0;
-            }
         }
-        p++;
+        if (bit != 0)
+          *q=byte >> (8-bit);
+        q+=scanline_pad;
       }
     }
   else
@@ -5506,12 +5496,14 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
           /*
             Convert to 2 bit color-mapped X image.
           */
-          nibble=0;
-          for (i=0; i < (int) image->packets; i++)
+          for (y=0; y < (int) image->rows; y++)
           {
-            pixel=pixels[p->index] & 0xf;
-            for (j=0; j <= ((int) p->length); j++)
+            if (!GetPixelCache(image,0,y,image->columns,1))
+              break;
+            nibble=0;
+            for (x=0; x < (int) image->columns; x++)
             {
+              pixel=pixels[image->indexes[x]] & 0x0f;
               switch (nibble)
               {
                 case 0:
@@ -5540,15 +5532,8 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
                   break;
                 }
               }
-              x++;
-              if (x == ximage->width)
-                {
-                  x=0;
-                  nibble=0;
-                  q+=scanline_pad;
-                }
             }
-            p++;
+            q+=scanline_pad;
           }
           break;
         }
@@ -5560,12 +5545,14 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
           /*
             Convert to 4 bit color-mapped X image.
           */
-          nibble=0;
-          for (i=0; i < (int) image->packets; i++)
+          for (y=0; y < (int) image->rows; y++)
           {
-            pixel=pixels[p->index] & 0xf;
-            for (j=0; j <= ((int) p->length); j++)
+            nibble=0;
+            if (!GetPixelCache(image,0,y,image->columns,1))
+              break;
+            for (x=0; x < (int) image->columns; x++)
             {
+              pixel=pixels[image->indexes[x]] & 0xf;
               switch (nibble)
               {
                 case 0:
@@ -5582,15 +5569,8 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
                   break;
                 }
               }
-              x++;
-              if (x == ximage->width)
-                {
-                  x=0;
-                  nibble=0;
-                  q+=scanline_pad;
-                }
             }
-            p++;
+            q+=scanline_pad;
           }
           break;
         }
@@ -5606,20 +5586,16 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
               XDitherImage(image,ximage);
               break;
             }
-          for (i=0; i < (int) image->packets; i++)
+          for (y=0; y < (int) image->rows; y++)
           {
-            pixel=pixels[p->index];
-            for (j=0; j <= ((int) p->length); j++)
+            if (!GetPixelCache(image,0,y,image->columns,1))
+              break;
+            for (x=0; x < (int) image->columns; x++)
             {
+              pixel=pixels[image->indexes[x]];
               *q++=(unsigned char) pixel;
-              x++;
-              if (x == ximage->width)
-                {
-                  x=0;
-                  q+=scanline_pad;
-                }
             }
-            p++;
+            q+=scanline_pad;
           }
           break;
         }
@@ -5638,26 +5614,22 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
             Convert to multi-byte color-mapped X image.
           */
           bytes_per_pixel=ximage->bits_per_pixel >> 3;
-          for (i=0; i < (int) image->packets; i++)
+          for (y=0; y < (int) image->rows; y++)
           {
-            pixel=pixels[p->index];
-            for (k=0; k < (int) bytes_per_pixel; k++)
+            if (!GetPixelCache(image,0,y,image->columns,1))
+              break;
+            for (x=0; x < (int) image->columns; x++)
             {
-              channel[k]=(unsigned char) pixel;
-              pixel>>=8;
-            }
-            for (j=0; j <= ((int) p->length); j++)
-            {
+              pixel=pixels[image->indexes[x]];
+              for (k=0; k < (int) bytes_per_pixel; k++)
+              {
+                channel[k]=(unsigned char) pixel;
+                pixel>>=8;
+              }
               for (k=0; k < (int) bytes_per_pixel; k++)
                 *q++=channel[k];
-              x++;
-              if (x == ximage->width)
-                {
-                  x=0;
-                  q+=scanline_pad;
-                }
             }
-            p++;
+            q+=scanline_pad;
           }
           break;
         }
@@ -5673,13 +5645,16 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
           /*
             Convert to contiguous 2 bit continuous-tone X image.
           */
-          nibble=0;
-          for (i=0; i < (int) image->packets; i++)
+          for (y=0; y < (int) image->rows; y++)
           {
-            pixel=XGammaPixel(map_info,gamma_map,p,QuantumDepth);
-            pixel&=0xf;
-            for (j=0; j <= ((int) p->length); j++)
+            nibble=0;
+            p=GetPixelCache(image,0,y,image->columns,1);
+            if (p == (PixelPacket *) NULL)
+              break;
+            for (x=0; x < (int) image->columns; x++)
             {
+              pixel=XGammaPixel(map_info,gamma_map,p,QuantumDepth);
+              pixel&=0xf;
               switch (nibble)
               {
                 case 0:
@@ -5708,15 +5683,9 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
                   break;
                 }
               }
-              x++;
-              if (x == ximage->width)
-                {
-                  x=0;
-                  nibble=0;
-                  q+=scanline_pad;
-                }
+              p++;
             }
-            p++;
+            q+=scanline_pad;
           }
           break;
         }
@@ -5728,13 +5697,16 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
           /*
             Convert to contiguous 4 bit continuous-tone X image.
           */
-          nibble=0;
-          for (i=0; i < (int) image->packets; i++)
+          for (y=0; y < (int) image->rows; y++)
           {
-            pixel=XGammaPixel(map_info,gamma_map,p,QuantumDepth);
-            pixel&=0xf;
-            for (j=0; j <= ((int) p->length); j++)
+            p=GetPixelCache(image,0,y,image->columns,1);
+            if (p == (PixelPacket *) NULL)
+              break;
+            nibble=0;
+            for (x=0; x < (int) image->columns; x++)
             {
+              pixel=XGammaPixel(map_info,gamma_map,p,QuantumDepth);
+              pixel&=0xf;
               switch (nibble)
               {
                 case 0:
@@ -5751,15 +5723,9 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
                   break;
                 }
               }
-              x++;
-              if (x == ximage->width)
-                {
-                  x=0;
-                  nibble=0;
-                  q+=scanline_pad;
-                }
+              p++;
             }
-            p++;
+            q+=scanline_pad;
           }
           break;
         }
@@ -5775,20 +5741,18 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
               XDitherImage(image,ximage);
               break;
             }
-          for (i=0; i < (int) image->packets; i++)
+          for (y=0; y < (int) image->rows; y++)
           {
-            pixel=XGammaPixel(map_info,gamma_map,p,QuantumDepth);
-            for (j=0; j <= ((int) p->length); j++)
+            p=GetPixelCache(image,0,y,image->columns,1);
+            if (p == (PixelPacket *) NULL)
+              break;
+            for (x=0; x < (int) image->columns; x++)
             {
+              pixel=XGammaPixel(map_info,gamma_map,p,QuantumDepth);
               *q++=(unsigned char) pixel;
-              x++;
-              if (x == ximage->width)
-                {
-                  x=0;
-                  q+=scanline_pad;
-                }
+              p++;
             }
-            p++;
+            q+=scanline_pad;
           }
           break;
         }
@@ -5802,16 +5766,19 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
               /*
                 Convert to 32 bit continuous-tone X image.
               */
-              for (i=0; i < (int) image->packets; i++)
+              for (y=0; y < (int) image->rows; y++)
               {
-                for (j=0; j <= ((int) p->length); j++)
+                p=GetPixelCache(image,0,y,image->columns,1);
+                if (p == (PixelPacket *) NULL)
+                  break;
+                for (x=0; x < (int) image->columns; x++)
                 {
                   *q++=DownScale(gamma_map[p->blue].blue);
                   *q++=DownScale(gamma_map[p->green].green);
                   *q++=DownScale(gamma_map[p->red].red);
                   *q++=0;
+                  p++;
                 }
-                p++;
               }
             }
           else
@@ -5823,16 +5790,19 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
                 /*
                   Convert to 32 bit continuous-tone X image.
                 */
-                for (i=0; i < (int) image->packets; i++)
+                for (y=0; y < (int) image->rows; y++)
                 {
-                  for (j=0; j <= ((int) p->length); j++)
+                  p=GetPixelCache(image,0,y,image->columns,1);
+                  if (p == (PixelPacket *) NULL)
+                    break;
+                  for (x=0; x < (int) image->columns; x++)
                   {
                     *q++=DownScale(gamma_map[p->red].red);
                     *q++=DownScale(gamma_map[p->green].green);
                     *q++=DownScale(gamma_map[p->blue].blue);
                     *q++=0;
+                    p++;
                   }
-                  p++;
                 }
               }
             else
@@ -5850,26 +5820,24 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
                   Convert to multi-byte continuous-tone X image.
                 */
                 bytes_per_pixel=ximage->bits_per_pixel >> 3;
-                for (i=0; i < (int) image->packets; i++)
+                for (y=0; y < (int) image->rows; y++)
                 {
-                  pixel=XGammaPixel(map_info,gamma_map,p,QuantumDepth);
-                  for (k=0; k < (int) bytes_per_pixel; k++)
+                  p=GetPixelCache(image,0,y,image->columns,1);
+                  if (p == (PixelPacket *) NULL)
+                    break;
+                  for (x=0; x < (int) image->columns; x++)
                   {
-                    channel[k]=(unsigned char) pixel;
-                    pixel>>=8;
-                  }
-                  for (j=0; j <= ((int) p->length); j++)
-                  {
+                    pixel=XGammaPixel(map_info,gamma_map,p,QuantumDepth);
+                    for (k=0; k < (int) bytes_per_pixel; k++)
+                    {
+                      channel[k]=(unsigned char) pixel;
+                      pixel>>=8;
+                    }
                     for (k=0; k < (int) bytes_per_pixel; k++)
                       *q++=channel[k];
-                    x++;
-                    if (x == ximage->width)
-                      {
-                        x=0;
-                        q+=scanline_pad;
-                      }
+                    p++;
                   }
-                  p++;
+                  q+=scanline_pad;
                 }
               }
           break;
@@ -5882,17 +5850,18 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
       */
       scanline_pad=matte_image->bytes_per_line-
         ((matte_image->width*matte_image->bits_per_pixel) >> 3);
-      p=image->pixels;
       q=(unsigned char *) matte_image->data;
-      bit=0;
-      byte=0;
-      x=0;
-      for (i=0; i < (int) image->packets; i++)
+      for (y=0; y < (int) image->rows; y++)
       {
-        for (j=0; j <= ((int) p->length); j++)
+        p=GetPixelCache(image,0,y,image->columns,1);
+        if (p == (PixelPacket *) NULL)
+          break;
+        bit=0;
+        byte=0;
+        for (x=0; x < (int) image->columns; x++)
         {
           byte>>=1;
-          if (p->index == Transparent)
+          if (p->opacity == Transparent)
             byte|=0x80;
           bit++;
           if (bit == 8)
@@ -5901,21 +5870,11 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
               bit=0;
               byte=0;
             }
-          x++;
-          if (x == matte_image->width)
-            {
-              /*
-                Advance to the next scanline.
-              */
-              if (bit != 0)
-                *q=byte >> (8-bit);
-              q+=scanline_pad;
-              bit=0;
-              byte=0;
-              x=0;
-            }
+          p++;
         }
-        p++;
+        if (bit != 0)
+          *q=byte >> (8-bit);
+        q+=scanline_pad;
       }
     }
 }
@@ -5961,12 +5920,13 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
 static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
   const XWindowInfo *window,Image *image,XImage *ximage,XImage *matte_image)
 {
+  int
+    y;
+
   register int
-    i,
-    j,
     x;
 
-  register RunlengthPacket
+  register PixelPacket
     *p;
 
   register unsigned char
@@ -5997,7 +5957,6 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
   map_info=window->map_info;
   pixels=window->pixel_info->pixels;
   gamma_map=window->pixel_info->gamma_map;
-  p=image->pixels;
   q=(unsigned char *) ximage->data;
   x=0;
   if (ximage->format == XYBitmap)
@@ -6019,14 +5978,16 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
       polarity=Intensity(image->colormap[0]) < (MaxRGB >> 1);
       if (image->colors == 2)
         polarity=Intensity(image->colormap[0]) < Intensity(image->colormap[1]);
-      bit=0;
-      byte=0;
-      for (i=0; i < (int) image->packets; i++)
+      for (y=0; y < (int) image->rows; y++)
       {
-        for (j=0; j <= ((int) p->length); j++)
+        if (!GetPixelCache(image,0,y,image->columns,1))
+          break;
+        bit=0;
+        byte=0;
+        for (x=0; x < (int) image->columns; x++)
         {
           byte<<=1;
-          if (p->index == polarity)
+          if (image->indexes[x] == polarity)
             byte|=foreground;
           else
             byte|=background;
@@ -6037,21 +5998,10 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
               bit=0;
               byte=0;
             }
-          x++;
-          if (x == ximage->width)
-            {
-              /*
-                Advance to the next scanline.
-              */
-              if (bit != 0)
-                *q=byte << (8-bit);
-              q+=scanline_pad;
-              bit=0;
-              byte=0;
-              x=0;
-            }
         }
-        p++;
+        if (bit != 0)
+          *q=byte << (8-bit);
+        q+=scanline_pad;
       }
     }
   else
@@ -6066,12 +6016,14 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
           /*
             Convert to 2 bit color-mapped X image.
           */
-          nibble=0;
-          for (i=0; i < (int) image->packets; i++)
+          for (y=0; y < (int) image->rows; y++)
           {
-            pixel=pixels[p->index] & 0xf;
-            for (j=0; j <= ((int) p->length); j++)
+            if (!GetPixelCache(image,0,y,image->columns,1))
+              break;
+            nibble=0;
+            for (x=0; x < (int) image->columns; x++)
             {
+              pixel=pixels[image->indexes[x]] & 0xf;
               switch (nibble)
               {
                 case 0:
@@ -6100,15 +6052,8 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
                   break;
                 }
               }
-              x++;
-              if (x == ximage->width)
-                {
-                  x=0;
-                  nibble=0;
-                  q+=scanline_pad;
-                }
             }
-            p++;
+            q+=scanline_pad;
           }
           break;
         }
@@ -6120,12 +6065,14 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
           /*
             Convert to 4 bit color-mapped X image.
           */
-          nibble=0;
-          for (i=0; i < (int) image->packets; i++)
+          for (y=0; y < (int) image->rows; y++)
           {
-            pixel=pixels[p->index] & 0xf;
-            for (j=0; j <= ((int) p->length); j++)
+            if (!GetPixelCache(image,0,y,image->columns,1))
+              break;
+            nibble=0;
+            for (x=0; x < (int) image->columns; x++)
             {
+              pixel=pixels[image->indexes[x]] & 0xf;
               switch (nibble)
               {
                 case 0:
@@ -6142,15 +6089,8 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
                   break;
                 }
               }
-              x++;
-              if (x == ximage->width)
-                {
-                  x=0;
-                  nibble=0;
-                  q+=scanline_pad;
-                }
             }
-            p++;
+            q+=scanline_pad;
           }
           break;
         }
@@ -6166,20 +6106,16 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
               XDitherImage(image,ximage);
               break;
             }
-          for (i=0; i < (int) image->packets; i++)
+          for (y=0; y < (int) image->rows; y++)
           {
-            pixel=pixels[p->index];
-            for (j=0; j <= ((int) p->length); j++)
+            if (!GetPixelCache(image,0,y,image->columns,1))
+              break;
+            for (x=0; x < (int) image->columns; x++)
             {
+              pixel=pixels[image->indexes[x]];
               *q++=(unsigned char) pixel;
-              x++;
-              if (x == ximage->width)
-                {
-                  x=0;
-                  q+=scanline_pad;
-                }
             }
-            p++;
+            q+=scanline_pad;
           }
           break;
         }
@@ -6198,26 +6134,22 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
             Convert to 8 bit color-mapped X image.
           */
           bytes_per_pixel=ximage->bits_per_pixel >> 3;
-          for (i=0; i < (int) image->packets; i++)
+          for (y=0; y < (int) image->rows; y++)
           {
-            pixel=pixels[p->index];
-            for (k=bytes_per_pixel-1; k >= 0; k--)
+            if (!GetPixelCache(image,0,y,image->columns,1))
+              break;
+            for (x=0; x < (int) image->columns; x++)
             {
-              channel[k]=(unsigned char) pixel;
-              pixel>>=8;
-            }
-            for (j=0; j <= ((int) p->length); j++)
-            {
+              pixel=pixels[image->indexes[x]];
+              for (k=bytes_per_pixel-1; k >= 0; k--)
+              {
+                channel[k]=(unsigned char) pixel;
+                pixel>>=8;
+              }
               for (k=0; k < (int) bytes_per_pixel; k++)
                 *q++=channel[k];
-              x++;
-              if (x == ximage->width)
-                {
-                  x=0;
-                  q+=scanline_pad;
-                }
             }
-            p++;
+            q+=scanline_pad;
           }
           break;
         }
@@ -6233,13 +6165,16 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
           /*
             Convert to 4 bit continuous-tone X image.
           */
-          nibble=0;
-          for (i=0; i < (int) image->packets; i++)
+          for (y=0; y < (int) image->rows; y++)
           {
-            pixel=XGammaPixel(map_info,gamma_map,p,QuantumDepth);
-            pixel&=0xf;
-            for (j=0; j <= ((int) p->length); j++)
+            p=GetPixelCache(image,0,y,image->columns,1);
+            if (p == (PixelPacket *) NULL)
+              break;
+            nibble=0;
+            for (x=0; x < (int) image->columns; x++)
             {
+              pixel=XGammaPixel(map_info,gamma_map,p,QuantumDepth);
+              pixel&=0xf;
               switch (nibble)
               {
                 case 0:
@@ -6268,15 +6203,9 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
                   break;
                 }
               }
-              x++;
-              if (x == ximage->width)
-                {
-                  x=0;
-                  nibble=0;
-                  q+=scanline_pad;
-                }
+              p++;
             }
-            p++;
+            q+=scanline_pad;
           }
           break;
         }
@@ -6288,13 +6217,16 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
           /*
             Convert to 4 bit continuous-tone X image.
           */
-          nibble=0;
-          for (i=0; i < (int) image->packets; i++)
+          for (y=0; y < (int) image->rows; y++)
           {
-            pixel=XGammaPixel(map_info,gamma_map,p,QuantumDepth);
-            pixel&=0xf;
-            for (j=0; j <= ((int) p->length); j++)
+            p=GetPixelCache(image,0,y,image->columns,1);
+            if (p == (PixelPacket *) NULL)
+              break;
+            nibble=0;
+            for (x=0; x < (int) image->columns; x++)
             {
+              pixel=XGammaPixel(map_info,gamma_map,p,QuantumDepth);
+              pixel&=0xf;
               switch (nibble)
               {
                 case 0:
@@ -6311,15 +6243,9 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
                   break;
                 }
               }
-              x++;
-              if (x == ximage->width)
-                {
-                  x=0;
-                  nibble=0;
-                  q+=scanline_pad;
-                }
+              p++;
             }
-            p++;
+            q+=scanline_pad;
           }
           break;
         }
@@ -6335,20 +6261,18 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
               XDitherImage(image,ximage);
               break;
             }
-          for (i=0; i < (int) image->packets; i++)
+          for (y=0; y < (int) image->rows; y++)
           {
-            pixel=XGammaPixel(map_info,gamma_map,p,QuantumDepth);
-            for (j=0; j <= ((int) p->length); j++)
+            p=GetPixelCache(image,0,y,image->columns,1);
+            if (p == (PixelPacket *) NULL)
+              break;
+            for (x=0; x < (int) image->columns; x++)
             {
+              pixel=XGammaPixel(map_info,gamma_map,p,QuantumDepth);
               *q++=(unsigned char) pixel;
-              x++;
-              if (x == ximage->width)
-                {
-                  x=0;
-                  q+=scanline_pad;
-                }
+              p++;
             }
-            p++;
+            q+=scanline_pad;
           }
           break;
         }
@@ -6362,16 +6286,19 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
               /*
                 Convert to 32 bit continuous-tone X image.
               */
-              for (i=0; i < (int) image->packets; i++)
+              for (y=0; y < (int) image->rows; y++)
               {
-                for (j=0; j <= ((int) p->length); j++)
+                p=GetPixelCache(image,0,y,image->columns,1);
+                if (p == (PixelPacket *) NULL)
+                  break;
+                for (x=0; x < (int) image->columns; x++)
                 {
                   *q++=0;
                   *q++=DownScale(gamma_map[p->red].red);
                   *q++=DownScale(gamma_map[p->green].green);
                   *q++=DownScale(gamma_map[p->blue].blue);
+                  p++;
                 }
-                p++;
               }
             }
           else
@@ -6383,16 +6310,19 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
                 /*
                   Convert to 32 bit continuous-tone X image.
                 */
-                for (i=0; i < (int) image->packets; i++)
+                for (y=0; y < (int) image->rows; y++)
                 {
-                  for (j=0; j <= ((int) p->length); j++)
+                  p=GetPixelCache(image,0,y,image->columns,1);
+                  if (p == (PixelPacket *) NULL)
+                    break;
+                  for (x=0; x < (int) image->columns; x++)
                   {
                     *q++=0;
                     *q++=DownScale(gamma_map[p->blue].blue);
                     *q++=DownScale(gamma_map[p->green].green);
                     *q++=DownScale(gamma_map[p->red].red);
+                    p++;
                   }
-                  p++;
                 }
               }
             else
@@ -6410,26 +6340,24 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
                   Convert to multi-byte continuous-tone X image.
                 */
                 bytes_per_pixel=ximage->bits_per_pixel >> 3;
-                for (i=0; i < (int) image->packets; i++)
+                for (y=0; y < (int) image->rows; y++)
                 {
-                  pixel=XGammaPixel(map_info,gamma_map,p,QuantumDepth);
-                  for (k=bytes_per_pixel-1; k >= 0; k--)
+                  p=GetPixelCache(image,0,y,image->columns,1);
+                  if (p == (PixelPacket *) NULL)
+                    break;
+                  for (x=0; x < (int) image->columns; x++)
                   {
-                    channel[k]=(unsigned char) pixel;
-                    pixel>>=8;
-                  }
-                  for (j=0; j <= ((int) p->length); j++)
-                  {
+                    pixel=XGammaPixel(map_info,gamma_map,p,QuantumDepth);
+                    for (k=bytes_per_pixel-1; k >= 0; k--)
+                    {
+                      channel[k]=(unsigned char) pixel;
+                      pixel>>=8;
+                    }
                     for (k=0; k < (int) bytes_per_pixel; k++)
                       *q++=channel[k];
-                    x++;
-                    if (x == ximage->width)
-                      {
-                        x=0;
-                        q+=scanline_pad;
-                      }
+                    p++;
                   }
-                  p++;
+                  q+=scanline_pad;
                 }
               }
           break;
@@ -6442,17 +6370,18 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
       */
       scanline_pad=matte_image->bytes_per_line-
         ((matte_image->width*matte_image->bits_per_pixel) >> 3);
-      p=image->pixels;
       q=(unsigned char *) matte_image->data;
-      bit=0;
-      byte=0;
-      x=0;
-      for (i=0; i < (int) image->packets; i++)
+      for (y=0; y < (int) image->rows; y++)
       {
-        for (j=0; j <= ((int) p->length); j++)
+        p=GetPixelCache(image,0,y,image->columns,1);
+        if (p == (PixelPacket *) NULL)
+          break;
+        bit=0;
+        byte=0;
+        for (x=0; x < (int) image->columns; x++)
         {
           byte<<=1;
-          if (p->index == Transparent)
+          if (p->opacity == Transparent)
             byte|=0x01;
           bit++;
           if (bit == 8)
@@ -6461,21 +6390,11 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
               bit=0;
               byte=0;
             }
-          x++;
-          if (x == matte_image->width)
-            {
-              /*
-                Advance to the next scanline.
-              */
-              if (bit != 0)
-                *q=byte << (8-bit);
-              q+=scanline_pad;
-              bit=0;
-              byte=0;
-              x=0;
-            }
+          p++;
         }
-        p++;
+        if (bit != 0)
+          *q=byte << (8-bit);
+        q+=scanline_pad;
       }
     }
 }
@@ -6931,7 +6850,7 @@ Export void XMakeMagnifyImage(Display *display,XWindows *windows)
 %
 %      void XMakeStandardColormap(Display *display,XVisualInfo *visual_info,
 %        XResourceInfo *resource_info,Image *image,XStandardColormap *map_info,
-%        XPixelInfo *pixel_info)
+%        XPixelInfo *pixel)
 %
 %  A description of each parameter follows:
 %
@@ -7028,7 +6947,7 @@ unsigned int XMakePixmap(Display *display,const XResourceInfo *resource_info,
 %  The format of the XMakeStandardColormap method is:
 %
 %      XMakeStandardColormap(display,visual_info,resource_info,image,
-%        map_info,pixel_info)
+%        map_info,pixel)
 %
 %  A description of each parameter follows:
 %
@@ -7046,7 +6965,7 @@ unsigned int XMakePixmap(Display *display,const XResourceInfo *resource_info,
 %    o map_info: If a Standard Colormap type is specified, this structure is
 %      initialized with info from the Standard Colormap.
 %
-%    o pixel_info: Specifies a pointer to a XPixelInfo structure.
+%    o pixel: Specifies a pointer to a XPixelInfo structure.
 %
 %
 */
@@ -7075,7 +6994,7 @@ static int PopularityCompare(const void *x,const void *y)
 
 Export void XMakeStandardColormap(Display *display,XVisualInfo *visual_info,
   XResourceInfo *resource_info,Image *image,XStandardColormap *map_info,
-  XPixelInfo *pixel_info)
+  XPixelInfo *pixel)
 {
   Colormap
     colormap;
@@ -7085,6 +7004,9 @@ Export void XMakeStandardColormap(Display *display,XVisualInfo *visual_info,
 
   register int
     i;
+
+  register PixelPacket
+    *q;
 
   register XColor
     *gamma_map;
@@ -7105,14 +7027,14 @@ Export void XMakeStandardColormap(Display *display,XVisualInfo *visual_info,
   assert(visual_info != (XVisualInfo *) NULL);
   assert(map_info != (XStandardColormap *) NULL);
   assert(resource_info != (XResourceInfo *) NULL);
-  assert(pixel_info != (XPixelInfo *) NULL);
+  assert(pixel != (XPixelInfo *) NULL);
   if (resource_info->map_type != (char *) NULL)
     {
       /*
         Standard Colormap is already defined (i.e. xstdcmap).
       */
-      XGetPixelInfo(display,visual_info,map_info,resource_info,image,
-        pixel_info);
+      XGetPixelPacket(display,visual_info,map_info,resource_info,image,
+        pixel);
       number_colors=(unsigned int) (map_info->base_pixel+
         (map_info->red_max+1)*(map_info->green_max+1)*(map_info->blue_max+1));
       if ((map_info->red_max*map_info->green_max*map_info->blue_max) != 0)
@@ -7123,9 +7045,6 @@ Export void XMakeStandardColormap(Display *display,XVisualInfo *visual_info,
             Image
               *map_image;
 
-            register RunlengthPacket
-              *p;
-
             /*
               Improve image appearance with error diffusion.
             */
@@ -7135,37 +7054,34 @@ Export void XMakeStandardColormap(Display *display,XVisualInfo *visual_info,
                 "Memory allocation failed");
             map_image->columns=number_colors;
             map_image->rows=1;
-            map_image->packets=map_image->columns*map_image->rows;
-            map_image->pixels=(RunlengthPacket *)
-              AllocateMemory(map_image->packets*sizeof(RunlengthPacket));
-            if (map_image->pixels == (RunlengthPacket *) NULL)
-              MagickError(ResourceLimitError,"Unable to dither image",
-                "Memory allocation failed");
             /*
               Initialize colormap image.
             */
-            p=map_image->pixels;
-            for (i=0; i < (int) number_colors; i++)
-            {
-              p->red=0;
-              if (map_info->red_max != 0)
-                p->red=(Quantum)
-                  (((i/map_info->red_mult)*MaxRGB)/map_info->red_max);
-              p->green=0;
-              if (map_info->green_max != 0)
-                p->green=(Quantum) ((((i/map_info->green_mult) %
-                  (map_info->green_max+1))*MaxRGB)/map_info->green_max);
-              p->blue=0;
-              if (map_info->blue_max != 0)
-                p->blue=(Quantum)
-                  (((i % map_info->green_mult)*MaxRGB)/map_info->blue_max);
-              p->index=0;
-              p->length=0;
-              p++;
-            }
-            (void) MapImage(image,map_image,True);
-            XGetPixelInfo(display,visual_info,map_info,resource_info,image,
-              pixel_info);
+            q=SetPixelCache(map_image,0,0,map_image->columns,1);
+            if (q != (PixelPacket *) NULL)
+              {
+                for (i=0; i < (int) number_colors; i++)
+                {
+                  q->red=0;
+                  if (map_info->red_max != 0)
+                    q->red=(Quantum)
+                      (((i/map_info->red_mult)*MaxRGB)/map_info->red_max);
+                  q->green=0;
+                  if (map_info->green_max != 0)
+                    q->green=(Quantum) ((((i/map_info->green_mult) %
+                      (map_info->green_max+1))*MaxRGB)/map_info->green_max);
+                  q->blue=0;
+                  if (map_info->blue_max != 0)
+                    q->blue=(Quantum)
+                      (((i % map_info->green_mult)*MaxRGB)/map_info->blue_max);
+                  q->opacity=Transparent;
+                  q++;
+                }
+                (void) SyncPixelCache(map_image);
+                (void) MapImage(image,map_image,True);
+              }
+            XGetPixelPacket(display,visual_info,map_info,resource_info,image,
+              pixel);
             image->class=DirectClass;
             DestroyImage(map_image);
           }
@@ -7191,52 +7107,14 @@ Export void XMakeStandardColormap(Display *display,XVisualInfo *visual_info,
         /*
           Image has more colors than the visual supports.
         */
-        if (image->matte)
-          {
-            ColorPacket
-              background_color;
-
-            register RunlengthPacket
-              *p;
-
-            /*
-              Composite image with background color.
-            */
-            MagickWarning(XServerWarning,
-              "This visual does not support an image matte",
-              XVisualClassName(visual_info->class));
-            background_color=image->background_color;
-            p=image->pixels;
-            for (i=0; i < (int) image->packets; i++)
-            {
-              if (p->index == Transparent)
-                {
-                  p->red=background_color.red;
-                  p->green=background_color.green;
-                  p->blue=background_color.blue;
-                }
-              else
-                if (p->index != Opaque)
-                  {
-                    p->red=(long) (p->red*Opaque+background_color.red*
-                      (Opaque-p->index))/Opaque;
-                    p->green=(long) (p->green*Opaque+background_color.green*
-                      (Opaque-p->index))/Opaque;
-                    p->blue=(long) (p->blue*Opaque+background_color.blue*
-                      (Opaque-p->index))/Opaque;
-                  }
-              p++;
-            }
-          }
         quantize_info=(*resource_info->quantize_info);
         quantize_info.number_colors=visual_info->colormap_size;
         (void) QuantizeImage(&quantize_info,image);
-        image->class=DirectClass;  /* promote to DirectClass */
       }
   /*
     Free previous and create new colormap.
   */
-  XFreeStandardColormap(display,visual_info,map_info,pixel_info);
+  XFreeStandardColormap(display,visual_info,map_info,pixel);
   colormap=XDefaultColormap(display,visual_info->screen);
   if (visual_info->visual != XDefaultVisual(display,visual_info->screen))
     colormap=XCreateColormap(display,XRootWindow(display,visual_info->screen),
@@ -7248,8 +7126,8 @@ Export void XMakeStandardColormap(Display *display,XVisualInfo *visual_info,
     Initialize the map and pixel info structures.
   */
   XGetMapInfo(visual_info,colormap,map_info);
-  XGetPixelInfo(display,visual_info,map_info,resource_info,image,pixel_info);
-  gamma_map=pixel_info->gamma_map;
+  XGetPixelPacket(display,visual_info,map_info,resource_info,image,pixel);
+  gamma_map=pixel->gamma_map;
   /*
     Allocating colors in server colormap is based on visual class.
   */
@@ -7281,7 +7159,7 @@ Export void XMakeStandardColormap(Display *display,XVisualInfo *visual_info,
               colormap=XCopyColormapAndFree(display,colormap);
               XAllocColor(display,colormap,&color);
             }
-          pixel_info->pixels[i]=color.pixel;
+          pixel->pixels[i]=color.pixel;
           *p++=color;
         }
       else
@@ -7297,7 +7175,7 @@ Export void XMakeStandardColormap(Display *display,XVisualInfo *visual_info,
               colormap=XCopyColormapAndFree(display,colormap);
               XAllocColor(display,colormap,&color);
             }
-          pixel_info->pixels[i]=color.pixel;
+          pixel->pixels[i]=color.pixel;
           *p++=color;
         }
       break;
@@ -7320,22 +7198,22 @@ Export void XMakeStandardColormap(Display *display,XVisualInfo *visual_info,
       /*
         Preallocate our GUI colors.
       */
-      (void) XAllocColor(display,colormap,&pixel_info->foreground_color);
-      (void) XAllocColor(display,colormap,&pixel_info->background_color);
-      (void) XAllocColor(display,colormap,&pixel_info->border_color);
-      (void) XAllocColor(display,colormap,&pixel_info->matte_color);
-      (void) XAllocColor(display,colormap,&pixel_info->highlight_color);
-      (void) XAllocColor(display,colormap,&pixel_info->shadow_color);
-      (void) XAllocColor(display,colormap,&pixel_info->depth_color);
-      (void) XAllocColor(display,colormap,&pixel_info->trough_color);
+      (void) XAllocColor(display,colormap,&pixel->foreground_color);
+      (void) XAllocColor(display,colormap,&pixel->background_color);
+      (void) XAllocColor(display,colormap,&pixel->border_color);
+      (void) XAllocColor(display,colormap,&pixel->matte_color);
+      (void) XAllocColor(display,colormap,&pixel->highlight_color);
+      (void) XAllocColor(display,colormap,&pixel->shadow_color);
+      (void) XAllocColor(display,colormap,&pixel->depth_color);
+      (void) XAllocColor(display,colormap,&pixel->trough_color);
       for (i=0; i < MaxNumberPens; i++)
-        (void) XAllocColor(display,colormap,&pixel_info->pen_colors[i]);
+        (void) XAllocColor(display,colormap,&pixel->pen_colors[i]);
       /*
         Determine if image colors will "fit" into X server colormap.
       */
       colormap_type=resource_info->colormap;
       status=XAllocColorCells(display,colormap,False,(unsigned long *) NULL,0,
-        pixel_info->pixels,image->colors);
+        pixel->pixels,image->colors);
       if (status != 0)
         colormap_type=PrivateColormap;
       if (colormap_type == SharedColormap)
@@ -7343,11 +7221,11 @@ Export void XMakeStandardColormap(Display *display,XVisualInfo *visual_info,
           DiversityPacket
             *diversity;
 
-          register int
-            j;
+          int
+            y;
 
-          register RunlengthPacket
-            *q;
+          register int
+            x;
 
           unsigned short
             index;
@@ -7371,11 +7249,12 @@ Export void XMakeStandardColormap(Display *display,XVisualInfo *visual_info,
             diversity[i].index=(unsigned short) i;
             diversity[i].count=0;
           }
-          q=image->pixels;
-          for (i=0; i < (int) image->packets; i++)
+          for (y=0; y < (int) image->rows; y++)
           {
-            diversity[q->index].count+=(q->length+1);
-            q++;
+            if (!GetPixelCache(image,0,y,image->columns,1))
+              break;
+            for (x=0; x < (int) image->columns; x++)
+              diversity[image->indexes[x]].count++;
           }
           /*
             Sort colors by decreasing intensity.
@@ -7403,7 +7282,7 @@ Export void XMakeStandardColormap(Display *display,XVisualInfo *visual_info,
               status=XAllocColor(display,colormap,&color);
               if (status == 0)
                 break;
-              pixel_info->pixels[index]=color.pixel;
+              pixel->pixels[index]=color.pixel;
               *p++=color;
             }
           else
@@ -7418,7 +7297,7 @@ Export void XMakeStandardColormap(Display *display,XVisualInfo *visual_info,
               status=XAllocColor(display,colormap,&color);
               if (status == 0)
                 break;
-              pixel_info->pixels[index]=color.pixel;
+              pixel->pixels[index]=color.pixel;
               *p++=color;
             }
           /*
@@ -7429,8 +7308,8 @@ Export void XMakeStandardColormap(Display *display,XVisualInfo *visual_info,
           if (server_colors == (XColor *) NULL)
             MagickError(ResourceLimitError,"Unable to create colormap",
               "Memory allocation failed");
-          for (j=0; j < visual_info->colormap_size; j++)
-            server_colors[j].pixel=(unsigned long) j;
+          for (x=0; x < visual_info->colormap_size; x++)
+            server_colors[x].pixel=(unsigned long) x;
           XQueryColors(display,colormap,server_colors,
             (int) Min(visual_info->colormap_size,256));
           /*
@@ -7446,7 +7325,7 @@ Export void XMakeStandardColormap(Display *display,XVisualInfo *visual_info,
               color.blue=XUpScale(gamma_map[image->colormap[index].blue].blue);
               XBestPixel(display,colormap,server_colors,(unsigned int)
                 visual_info->colormap_size,&color);
-              pixel_info->pixels[index]=color.pixel;
+              pixel->pixels[index]=color.pixel;
               *p++=color;
             }
           else
@@ -7460,7 +7339,7 @@ Export void XMakeStandardColormap(Display *display,XVisualInfo *visual_info,
               color.blue=XUpScale(gray_value);
               XBestPixel(display,colormap,server_colors,(unsigned int)
                 visual_info->colormap_size,&color);
-              pixel_info->pixels[index]=color.pixel;
+              pixel->pixels[index]=color.pixel;
               *p++=color;
             }
           if ((int) image->colors < visual_info->colormap_size)
@@ -7473,8 +7352,8 @@ Export void XMakeStandardColormap(Display *display,XVisualInfo *visual_info,
                 *p++=server_colors[i];
               number_colors+=retain_colors;
             }
-          FreeMemory((char *) server_colors);
-          FreeMemory((char *) diversity);
+          FreeMemory(server_colors);
+          FreeMemory(diversity);
           break;
         }
       /*
@@ -7512,18 +7391,18 @@ Export void XMakeStandardColormap(Display *display,XVisualInfo *visual_info,
                 Transfer colors from default to private colormap.
               */
               XAllocColorCells(display,colormap,False,(unsigned long *) NULL,0,
-                pixel_info->pixels,retain_colors);
+                pixel->pixels,retain_colors);
               p=colors+image->colors;
               for (i=0; i < (int) retain_colors; i++)
               {
-                p->pixel=pixel_info->pixels[i];
+                p->pixel=pixel->pixels[i];
                 p++;
               }
               XStoreColors(display,colormap,colors+image->colors,retain_colors);
               number_colors+=retain_colors;
             }
           XAllocColorCells(display,colormap,False,(unsigned long *) NULL,0,
-            pixel_info->pixels,image->colors);
+            pixel->pixels,image->colors);
         }
       /*
         Store the image colormap.
@@ -7536,7 +7415,7 @@ Export void XMakeStandardColormap(Display *display,XVisualInfo *visual_info,
           color.red=XUpScale(gamma_map[image->colormap[i].red].red);
           color.green=XUpScale(gamma_map[image->colormap[i].green].green);
           color.blue=XUpScale(gamma_map[image->colormap[i].blue].blue);
-          color.pixel=pixel_info->pixels[i];
+          color.pixel=pixel->pixels[i];
           *p++=color;
         }
       else
@@ -7546,7 +7425,7 @@ Export void XMakeStandardColormap(Display *display,XVisualInfo *visual_info,
           color.red=XUpScale(gray_value);
           color.green=XUpScale(gray_value);
           color.blue=XUpScale(gray_value);
-          color.pixel=pixel_info->pixels[i];
+          color.pixel=pixel->pixels[i];
           *p++=color;
         }
       XStoreColors(display,colormap,colors,image->colors);
@@ -7628,44 +7507,44 @@ Export void XMakeStandardColormap(Display *display,XVisualInfo *visual_info,
         Set foreground, background, border, etc. pixels.
       */
       XBestPixel(display,colormap,colors,number_colors,
-        &pixel_info->foreground_color);
+        &pixel->foreground_color);
       XBestPixel(display,colormap,colors,number_colors,
-        &pixel_info->background_color);
-      if (pixel_info->background_color.pixel ==
-          pixel_info->foreground_color.pixel)
+        &pixel->background_color);
+      if (pixel->background_color.pixel ==
+          pixel->foreground_color.pixel)
         {
           /*
             Foreground and background colors must differ.
           */
-          pixel_info->background_color.red=(~pixel_info->foreground_color.red);
-          pixel_info->background_color.green=
-            (~pixel_info->foreground_color.green);
-          pixel_info->background_color.blue=
-            (~pixel_info->foreground_color.blue);
+          pixel->background_color.red=(~pixel->foreground_color.red);
+          pixel->background_color.green=
+            (~pixel->foreground_color.green);
+          pixel->background_color.blue=
+            (~pixel->foreground_color.blue);
           XBestPixel(display,colormap,colors,number_colors,
-            &pixel_info->background_color);
+            &pixel->background_color);
         }
       XBestPixel(display,colormap,colors,number_colors,
-        &pixel_info->border_color);
+        &pixel->border_color);
       XBestPixel(display,colormap,colors,number_colors,
-        &pixel_info->matte_color);
+        &pixel->matte_color);
       XBestPixel(display,colormap,colors,number_colors,
-        &pixel_info->highlight_color);
+        &pixel->highlight_color);
       XBestPixel(display,colormap,colors,number_colors,
-        &pixel_info->shadow_color);
+        &pixel->shadow_color);
       XBestPixel(display,colormap,colors,number_colors,
-        &pixel_info->depth_color);
+        &pixel->depth_color);
       XBestPixel(display,colormap,colors,number_colors,
-        &pixel_info->trough_color);
+        &pixel->trough_color);
       for (i=0; i < MaxNumberPens; i++)
       {
         XBestPixel(display,colormap,colors,number_colors,
-          &pixel_info->pen_colors[i]);
-        pixel_info->pixels[image->colors+i]=pixel_info->pen_colors[i].pixel;
+          &pixel->pen_colors[i]);
+        pixel->pixels[image->colors+i]=pixel->pen_colors[i].pixel;
       }
-      pixel_info->colors=image->colors+MaxNumberPens;
+      pixel->colors=image->colors+MaxNumberPens;
     }
-  FreeMemory((char *) colors);
+  FreeMemory(colors);
   if (resource_info->debug)
     {
       (void) fprintf(stderr,"Standard Colormap:\n");
@@ -7976,7 +7855,7 @@ Export void XProgressMonitor(const char *task,const unsigned int quantum,
 %
 %  The format of the XQueryColorDatabase method is:
 %
-%      unsigned int XQueryColorDatabase(const char *target,ColorPacket *color)
+%      unsigned int XQueryColorDatabase(const char *target,XColor *color)
 %
 %  A description of each parameter follows:
 %
@@ -7985,12 +7864,12 @@ Export void XProgressMonitor(const char *task,const unsigned int quantum,
 %
 %    o target: Specifies the color to lookup in the X color database.
 %
-%    o color: A pointer to an ColorPacket structure.  The RGB value of the target
+%    o color: A pointer to an PixelPacket structure.  The RGB value of the target
 %      color is returned as this value.
 %
 %
 */
-Export unsigned int XQueryColorDatabase(const char *target,ColorPacket *color)
+Export unsigned int XQueryColorDatabase(const char *target,XColor *color)
 {
   Colormap
     colormap;
@@ -8007,11 +7886,10 @@ Export unsigned int XQueryColorDatabase(const char *target,ColorPacket *color)
   /*
     Initialize color return value.
   */
-  assert(color != (ColorPacket *) NULL);
+  assert(color != (XColor *) NULL);
   color->red=0;
   color->green=0;
   color->blue=0;
-  color->index=0;
   color->flags=DoRed | DoGreen | DoBlue;
   if ((target == (char *) NULL) || (*target == '\0'))
     target=BackgroundColor;

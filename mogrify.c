@@ -59,6 +59,7 @@
 %    -border geometry     surround image with a border of color
 %    -bordercolor color   border color
 %    -box color           color for annotation bounding box
+%    -cache threshold     megabytes of memory available to the pixel cache
 %    -charcoal factor     simulate a charcoal drawing
 %    -colorize value      colorize the image with the pen color
 %    -colors value        preferred number of colors in the image
@@ -187,6 +188,7 @@ static void Usage(const char *client_name)
       "-border geometry     surround image with a border of color",
       "-bordercolor color   border color",
       "-box color           color for annotation bounding box",
+      "-cache threshold     megabytes of memory available to the pixel cache",
       "-charcoal factor     simulate a charcoal drawing",
       "-colorize value      colorize the image with the pen color",
       "-colors value        preferred number of colors in the image",
@@ -369,13 +371,13 @@ int main(int argc,char **argv)
         {
           if (strncmp("background",option+1,5) == 0)
             {
-              image_info.background_color=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing background color",option);
-                  (void) CloneString(&image_info.background_color,argv[i]);
+                  (void) QueryColorDatabase(argv[i],
+                    &image_info.background_color);
                 }
               break;
             }
@@ -401,13 +403,12 @@ int main(int argc,char **argv)
             }
           if (strncmp("bordercolor",option+1,7) == 0)
             {
-              image_info.border_color=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing border color",option);
-                  (void) CloneString(&image_info.border_color,argv[i]);
+                  (void) QueryColorDatabase(argv[i],&image_info.border_color);
                 }
               break;
             }
@@ -428,6 +429,17 @@ int main(int argc,char **argv)
         }
         case 'c':
         {
+          if (strncmp("cache",option+1,3) == 0)
+            {
+              if (*option == '-')
+                {
+                  i++;
+                  if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                    MagickError(OptionError,"Missing threshold",option);
+                }
+              SetCacheThreshold(atoi(argv[i]));
+              break;
+            }
           if (strncmp("charcoal",option+1,3) == 0)
             {
               if (*option == '-')
@@ -955,13 +967,12 @@ int main(int argc,char **argv)
             break;
           if (strncmp("mattecolor",option+1,6) == 0)
             {
-              image_info.matte_color=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing matte color",option);
-                  (void) CloneString(&image_info.matte_color,argv[i]);
+                  (void) QueryColorDatabase(argv[i],&image_info.matte_color);
                 }
               break;
             }
@@ -1069,7 +1080,7 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%d",&x))
                     MagickError(OptionError,"Missing size",option);
-                  image_info.pointsize=atoi(argv[i]);
+                  image_info.pointsize=atof(argv[i]);
                 }
               break;
             }
@@ -1447,7 +1458,9 @@ int main(int argc,char **argv)
     }
   if (image == (Image *) NULL)
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
+  DestroyImages(image);
   DestroyDelegateInfo();
+  FreeMemory(argv);
   Exit(status ? 0 : errno);
   return(False);
 }

@@ -53,11 +53,52 @@
 */
 #include "magick.h"
 #include "defines.h"
-
 #if defined(HasHDF)
 #include "hdf.h"
 #undef BSD
 #undef LOCAL
+#endif
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   I s H D F                                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsHDF returns True if the image format type, identified by the
+%  magick string, is HDF.
+%
+%  The format of the ReadHDFImage method is:
+%
+%      unsigned int IsHDF(const unsigned char *magick,
+%        const unsigned int length)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method IsHDF returns True if the image format type is HDF.
+%
+%    o magick: This string is generally the first few bytes of an image file
+%      or blob.
+%
+%    o length: Specifies the length of the magick string.
+%
+%
+*/
+Export unsigned int IsHDF(const unsigned char *magick,const unsigned int length)
+{
+  if (length < 4)
+    return(False);
+  if (strncmp((char *) magick,"\016\003\023\001",4) == 0)
+    return(True);
+  return(False);
+}
+
+#if defined(HasHDF)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -89,7 +130,6 @@
 */
 Export Image *ReadHDFImage(const ImageInfo *image_info)
 {
-
   ClassType
     class;
 
@@ -114,7 +154,7 @@ Export Image *ReadHDFImage(const ImageInfo *image_info)
   register unsigned char
     *p;
 
-  register RunlengthPacket
+  register PixelPacket
     *q;
 
   uint16
@@ -138,7 +178,6 @@ Export Image *ReadHDFImage(const ImageInfo *image_info)
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
-  CloseBlob(image);
   /*
     Read HDF image.
   */
@@ -167,19 +206,11 @@ Export Image *ReadHDFImage(const ImageInfo *image_info)
         CloseBlob(image);
         return(image);
       }
-    image->packets=image->columns*image->rows;
-    packet_size=1;
-    if (image->class == DirectClass)
-      packet_size=3;
-    hdf_pixels=(unsigned char *)
-      AllocateMemory(packet_size*image->packets*sizeof(unsigned char));
-    image->pixels=(RunlengthPacket *)
-      AllocateMemory(image->packets*sizeof(RunlengthPacket));
-    if ((hdf_pixels == (unsigned char *) NULL) ||
-        (image->pixels == (RunlengthPacket *) NULL))
+    packet_size=image->class == DirectClass ? 3 : 1;
+    hdf_pixels=(unsigned char *) AllocateMemory(
+      packet_size*image->columns*image->rows*sizeof(unsigned char));
+    if (hdf_pixels == (unsigned char *) NULL)
       ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-    SetImage(image);
-    q=image->pixels;
     if (image->class == PseudoClass)
       {
         unsigned char
@@ -189,16 +220,16 @@ Export Image *ReadHDFImage(const ImageInfo *image_info)
           Create colormap.
         */
         hdf_palette=(unsigned char *) AllocateMemory(768*sizeof(unsigned char));
-        image->colormap=(ColorPacket *)
-          AllocateMemory(image->colors*sizeof(ColorPacket));
+        image->colormap=(PixelPacket *)
+          AllocateMemory(image->colors*sizeof(PixelPacket));
         if ((hdf_palette == (unsigned char *) NULL) ||
-            (image->colormap == (ColorPacket *) NULL))
+            (image->colormap == (PixelPacket *) NULL))
           ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
         (void) DFR8getimage(image->filename,hdf_pixels,(int) image->columns,
           (int) image->rows,hdf_palette);
         reference=DFR8lastref();
         /*
-          Convert HDF raster image to PseudoClass runlength-encoded packets.
+          Convert HDF raster image to PseudoClass pixel packets.
         */
         p=hdf_palette;
         if (is_palette)
@@ -215,16 +246,16 @@ Export Image *ReadHDFImage(const ImageInfo *image_info)
             image->colormap[i].green=(Quantum) UpScale(i);
             image->colormap[i].blue=(Quantum) UpScale(i);
           }
-        FreeMemory((char *) hdf_palette);
+        FreeMemory(hdf_palette);
         p=hdf_pixels;
         for (y=0; y < (int) image->rows; y++)
         {
+          if (!SetPixelCache(image,0,y,image->columns,1))
+            break;
           for (x=0; x < (int) image->columns; x++)
-          {
-            q->index=(*p++);
-            q->length=0;
-            q++;
-          }
+            image->indexes[x]=(*p++);
+          if (!SyncPixelCache(image))
+            break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(LoadImageText,y,image->rows);
@@ -232,29 +263,29 @@ Export Image *ReadHDFImage(const ImageInfo *image_info)
       }
     else
       {
-        int
-          y;
-
         /*
-          Convert HDF raster image to DirectClass runlength-encoded packets.
+          Convert HDF raster image to DirectClass pixel packets.
         */
         (void) DF24getimage(image->filename,(void *) hdf_pixels,image->columns,
           image->rows);
         reference=DF24lastref();
         p=hdf_pixels;
         image->interlace=interlace ? PlaneInterlace : NoInterlace;
-        q=image->pixels;
         for (y=0; y < (int) image->rows; y++)
         {
+          q=SetPixelCache(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            break;
+          q=image->pixels;
           for (x=0; x < (int) image->columns; x++)
           {
             q->red=UpScale(*p++);
             q->green=UpScale(*p++);
             q->blue=UpScale(*p++);
-            q->index=0;
-            q->length=0;
             q++;
           }
+          if (!SyncPixelCache(image))
+            break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(LoadImageText,y,image->rows);
@@ -283,10 +314,9 @@ Export Image *ReadHDFImage(const ImageInfo *image_info)
           DFANgetdesc(image->filename,DFTAG_RIG,reference,image->comments,
             length);
       }
-    FreeMemory((char *) hdf_pixels);
+    FreeMemory(hdf_pixels);
     if (image->class == PseudoClass)
       SyncImage(image);
-    CondenseImage(image);
     /*
       Proceed to next image.
     */
@@ -318,6 +348,7 @@ Export Image *ReadHDFImage(const ImageInfo *image_info)
   } while (status != -1);
   while (image->previous != (Image *) NULL)
     image=image->previous;
+  CloseBlob(image);
   return(image);
 }
 #else
@@ -363,13 +394,14 @@ Export Image *ReadHDFImage(const ImageInfo *image_info)
 Export unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
 {
   int
-    status;
+    status,
+    y;
 
   register int
     i,
-    j;
+    x;
 
-  register RunlengthPacket
+  register PixelPacket
     *p;
 
   register unsigned char
@@ -400,14 +432,11 @@ Export unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
       Initialize raster file header.
     */
     TransformRGBImage(image,RGBColorspace);
-    packet_size=1;
-    if (image->class == DirectClass)
-      packet_size=3;
+    packet_size=image->class == DirectClass ? 3 : 11;
     hdf_pixels=(unsigned char *) AllocateMemory(packet_size*image->columns*
       image->rows*sizeof(unsigned char));
     if (hdf_pixels == (unsigned char *) NULL)
       WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
-    p=image->pixels;
     if (!IsPseudoClass(image) && !IsGrayImage(image))
       {
         /*
@@ -423,48 +452,47 @@ Export unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
               No interlacing:  RGBRGBRGBRGBRGBRGB...
             */
             DF24setil(DFIL_PIXEL);
-            for (i=0; i < (int) image->packets; i++)
+            for (y=0; y < (int) image->rows; y++)
             {
-              for (j=0; j <= ((int) p->length); j++)
+              p=GetPixelCache(image,0,y,image->columns,1);
+              if (p == (PixelPacket *) NULL)
+                break;
+              for (x=0; x < (int) image->columns; x++)
               {
                 *q++=DownScale(p->red);
                 *q++=DownScale(p->green);
                 *q++=DownScale(p->blue);
+                p++;
               }
-              p++;
               if (image->previous == (Image *) NULL)
-                if (QuantumTick(i,image->packets))
-                  ProgressMonitor(SaveImageText,i,image->packets);
+                if (QuantumTick(y,image->rows))
+                  ProgressMonitor(SaveImageText,y,image->rows);
             }
             break;
           }
           case LineInterlace:
           {
-            register int
-              x,
-              y;
-
             /*
               Line interlacing:  RRR...GGG...BBB...RRR...GGG...BBB...
             */
-            if (!UncondenseImage(image))
-              return(False);
             DF24setil(DFIL_LINE);
             for (y=0; y < (int) image->rows; y++)
             {
-              p=image->pixels+(y*image->columns);
+              p=GetPixelCache(image,0,y,image->columns,1);
+              if (p == (PixelPacket *) NULL)
+                break;
               for (x=0; x < (int) image->columns; x++)
               {
                 *q++=DownScale(p->red);
                 p++;
               }
-              p=image->pixels+(y*image->columns);
+              p=image->pixels;
               for (x=0; x < (int) image->columns; x++)
               {
                 *q++=DownScale(p->green);
                 p++;
               }
-              p=image->pixels+(y*image->columns);
+              p=image->pixels;
               for (x=0; x < (int) image->columns; x++)
               {
                 *q++=DownScale(p->blue);
@@ -482,27 +510,40 @@ Export unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
               Plane interlacing:  RRRRRR...GGGGGG...BBBBBB...
             */
             DF24setil(DFIL_PLANE);
-            for (i=0; i < (int) image->packets; i++)
+            for (y=0; y < (int) image->rows; y++)
             {
-              for (j=0; j <= ((int) p->length); j++)
+              p=GetPixelCache(image,0,y,image->columns,1);
+              if (p == (PixelPacket *) NULL)
+                break;
+              for (x=0; x < (int) image->columns; x++)
+              {
                 *q++=DownScale(p->red);
-              p++;
+                p++;
+              }
             }
             ProgressMonitor(SaveImageText,100,400);
-            p=image->pixels;
-            for (i=0; i < (int) image->packets; i++)
+            for (y=0; y < (int) image->rows; y++)
             {
-              for (j=0; j <= ((int) p->length); j++)
+              p=GetPixelCache(image,0,y,image->columns,1);
+              if (p == (PixelPacket *) NULL)
+                break;
+              for (x=0; x < (int) image->columns; x++)
+              {
                 *q++=DownScale(p->green);
-              p++;
+                p++;
+              }
             }
             ProgressMonitor(SaveImageText,250,400);
-            p=image->pixels;
-            for (i=0; i < (int) image->packets; i++)
+            for (y=0; y < (int) image->rows; y++)
             {
-              for (j=0; j <= ((int) p->length); j++)
+              p=GetPixelCache(image,0,y,image->columns,1);
+              if (p == (PixelPacket *) NULL)
+                break;
+              for (x=0; x < (int) image->columns; x++)
+              {
                 *q++=DownScale(p->blue);
-              p++;
+                p++;
+              }
             }
             ProgressMonitor(SaveImageText,400,400);
             break;
@@ -523,14 +564,19 @@ Export unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
         */
         q=hdf_pixels;
         if (IsGrayImage(image))
-          for (i=0; i < (int) image->packets; i++)
+          for (y=0; y < (int) image->rows; y++)
           {
-            for (j=0; j <= ((int) p->length); j++)
-              *q++=DownScale(p->red);
-            p++;
+            p=GetPixelCache(image,0,y,image->columns,1);
+            if (p == (PixelPacket *) NULL)
+              break;
+            for (x=0; x < (int) image->columns; x++)
+            {
+              *q++=DownScale(Intensity(*p));
+              p++;
+            }
             if (image->previous == (Image *) NULL)
-              if (QuantumTick(i,image->packets))
-                ProgressMonitor(SaveImageText,i,image->packets);
+              if (QuantumTick(y,image->rows))
+                ProgressMonitor(SaveImageText,y,image->rows);
           }
         else
           {
@@ -552,14 +598,18 @@ Export unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
             (void) DFR8setpalette(hdf_palette);
             FreeMemory(hdf_palette);
             q=hdf_pixels;
-            for (i=0; i < (int) image->packets; i++)
+            for (y=0; y < (int) image->rows; y++)
             {
-              for (j=0; j <= ((int) p->length); j++)
-                *q++=p->index;
-              p++;
+              if (!GetPixelCache(image,0,y,image->columns,1))
+                break;
+              for (x=0; x < (int) image->columns; x++)
+              {
+                *q++=image->indexes[x];
+                p++;
+              }
               if (image->previous == (Image *) NULL)
-                if (QuantumTick(i,image->packets))
-                  ProgressMonitor(SaveImageText,i,image->packets);
+                if (QuantumTick(y,image->rows))
+                  ProgressMonitor(SaveImageText,y,image->rows);
             }
           }
         compression=image_info->compression == NoCompression ? 0 : DFTAG_RLE;
@@ -579,8 +629,7 @@ Export unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
     FreeMemory(hdf_pixels);
     if (image->next == (Image *) NULL)
       break;
-    image->next->file=image->file;
-    image=image->next;
+    image=GetNextImage(image);
     ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)

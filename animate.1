@@ -62,6 +62,15 @@ hiding other X window activity while viewing the image sequence.   The color
 of the backdrop is specified as the background color.  Refer to \fBX
 RESOURCES\fP for details.
 .TP
+.B "-cache \fIthreshold\fP"
+megabytes of memory available to the pixel cache.
+
+Image pixels are stored in memory until 80 megabytes of memory
+have been consumed.  Subsequent pixel operations are cached on disk.
+Operations to memory are significantly faster but if your computer does not
+have a sufficient amount of free memory you may want to adjust this threshold
+value.
+.TP
 .B "-colormap \fItype\fP"
 the type of colormap: \fBShared\fP or \fBPrivate\fP.
 

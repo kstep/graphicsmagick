@@ -152,15 +152,15 @@ Export unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
     *green,
     maximum,
     *red,
-    sans_offset;
+    sans_offset,
+    y;
 
-  register RunlengthPacket
+  register PixelPacket
     *p,
     *q;
 
   register int
-    i,
-    j;
+    x;
 
   unsigned int
     height,
@@ -178,12 +178,11 @@ Export unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   else
     (void) ParseGeometry(HistogramDensity,&sans_offset,&sans_offset,
       &width,&height);
-  image->orphan=True;
-  histogram_image=CloneImage(image,width,height,False);
-  image->orphan=False;
+  histogram_image=CloneImage(image,Max(width,DownScale(MaxRGB+1)),height,True);
   if (histogram_image == (Image *) NULL)
     WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
   histogram_image->class=DirectClass;
+  SetImage(histogram_image);
   /*
     Allocate histogram count arrays.
   */
@@ -199,80 +198,83 @@ Export unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   /*
     Initialize histogram count arrays.
   */
-  for (i=0; i < (int) histogram_image->columns; i++)
+  for (x=0; x < (int) histogram_image->columns; x++)
   {
-    red[i]=0;
-    green[i]=0;
-    blue[i]=0;
+    red[x]=0;
+    green[x]=0;
+    blue[x]=0;
   }
-  p=image->pixels;
-  for (i=0; i < (int) image->packets; i++)
+  for (y=0; y < (int) image->rows; y++)
   {
-    red[DownScale(p->red)]+=(p->length+1);
-    green[DownScale(p->green)]+=(p->length+1);
-    blue[DownScale(p->blue)]+=(p->length+1);
-    p++;
+    p=GetPixelCache(image,0,y,image->columns,1);
+    if (p == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < (int) image->columns; x++)
+    {
+      red[DownScale(p->red)]++;
+      green[DownScale(p->green)]++;
+      blue[DownScale(p->blue)]++;
+      p++;
+    }
   }
   maximum=0;
-  for (i=0; i < (int) histogram_image->columns; i++)
+  for (x=0; x < (int) histogram_image->columns; x++)
   {
-    if (maximum < red[i])
-      maximum=red[i];
-    if (maximum < green[i])
-      maximum=green[i];
-    if (maximum < blue[i])
-      maximum=blue[i];
+    if (maximum < red[x])
+      maximum=red[x];
+    if (maximum < green[x])
+      maximum=green[x];
+    if (maximum < blue[x])
+      maximum=blue[x];
   }
-  for (i=0; i < (int) histogram_image->columns; i++)
+  for (x=0; x < (int) histogram_image->columns; x++)
   {
-    if (red[i] > maximum)
-      red[i]=maximum;
-    if (green[i] > maximum)
-      green[i]=maximum;
-    if (blue[i] > maximum)
-      blue[i]=maximum;
+    if (red[x] > maximum)
+      red[x]=maximum;
+    if (green[x] > maximum)
+      green[x]=maximum;
+    if (blue[x] > maximum)
+      blue[x]=maximum;
   }
   /*
     Initialize histogram image.
   */
-  q=histogram_image->pixels;
-  for (i=0; i < (int) histogram_image->packets; i++)
-  {
-    q->red=0;
-    q->green=0;
-    q->blue=0;
-    q->index=0;
-    q->length=0;
-    q++;
-  }
   scale=(double) histogram_image->rows/maximum;
-  q=histogram_image->pixels;
-  for (i=0; i < (int) histogram_image->columns; i++)
+  for (x=0; x < (int) histogram_image->columns; x++)
   {
-    j=histogram_image->rows-(int) (scale*red[i]);
-    while (j < (int) histogram_image->rows)
+    q=SetPixelCache(histogram_image,x,0,1,histogram_image->rows);
+    if (q == (PixelPacket *) NULL)
+      break;
+    q=histogram_image->pixels;
+    y=histogram_image->rows-(int) (scale*red[x]);
+    p=q+y;
+    for ( ; y < (int) histogram_image->rows; y++)
     {
-      q=histogram_image->pixels+(j*histogram_image->columns+i);
-      q->red=MaxRGB;
-      j++;
+      p->red=MaxRGB;
+      p++;
     }
-    j=histogram_image->rows-(int) (scale*green[i]);
-    while (j < (int) histogram_image->rows)
+    y=histogram_image->rows-(int) (scale*green[x]);
+    p=q+y;
+    for ( ; y < (int) histogram_image->rows; y++)
     {
-      q=histogram_image->pixels+(j*histogram_image->columns+i);
-      q->green=MaxRGB;
-      j++;
+      p->green=MaxRGB;
+      p++;
     }
-    j=histogram_image->rows-(int) (scale*blue[i]);
-    while (j < (int) histogram_image->rows)
+    y=histogram_image->rows-(int) (scale*blue[x]);
+    p=q+y;
+    for ( ; y < (int) histogram_image->rows; y++)
     {
-      q=histogram_image->pixels+(j*histogram_image->columns+i);
-      q->blue=MaxRGB;
-      j++;
+      p->blue=MaxRGB;
+      p++;
     }
-    if (QuantumTick(i,histogram_image->columns))
-      ProgressMonitor(SaveImageText,i,histogram_image->columns);
+    if (!SyncPixelCache(histogram_image))
+      break;
+    if (QuantumTick(x,histogram_image->columns))
+      ProgressMonitor(SaveImageText,x,histogram_image->columns);
   }
+  /*
+    Free memory resources.
+  */
   FreeMemory ((char *) blue);
   FreeMemory ((char *) green);
   FreeMemory ((char *) red);

@@ -54,9 +54,10 @@
 %  Usage: identify [options ...] file [ files... ]
 %
 %  Where options include:
-%    -ping           efficiently determine image characteristics
-%    -size geometry  width and height of image
-%    -verbose        print detailed information about the image
+%    -cache threshold  megabytes of memory available to the pixel cache
+%    -ping             efficiently determine image characteristics
+%    -size geometry    width and height of image
+%    -verbose          print detailed information about the image
 %
 %
 */
@@ -102,9 +103,10 @@ static void Usage(const char *client_name)
   static const char
     *options[]=
     {
-      "-ping           efficiently determine image characteristics",
-      "-size geometry  width and height of image",
-      "-verbose        print detailed information about the image",
+      "-cache threshold  megabytes of memory available to the pixel cache",
+      "-ping             efficiently determine image characteristics",
+      "-size geometry    width and height of image",
+      "-verbose          print detailed information about the image",
       (char *) NULL
     };
 
@@ -135,6 +137,9 @@ int main(int argc,char **argv)
   char
     *client_name,
     *option;
+
+  double
+    sans;
 
   Image
     *image,
@@ -176,6 +181,22 @@ int main(int argc,char **argv)
       {
         switch(*(option+1))
         {
+          case 'c':
+          {
+            if (strncmp("cache",option+1,3) == 0)
+              {
+                if (*option == '-')
+                  {
+                    i++;
+                    if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                      MagickError(OptionError,"Missing threshold",option);
+                  }
+                SetCacheThreshold(atoi(argv[i]));
+                break;
+              }
+            MagickError(OptionError,"Unrecognized option",option);
+            break;
+          }
           case 'h':
           {
             if (strncmp("help",option+1,2) == 0)
@@ -262,6 +283,7 @@ int main(int argc,char **argv)
   if (number_images == 0)
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
   DestroyDelegateInfo();
+  FreeMemory(argv);
   Exit(0);
   return(False);
 }

@@ -88,17 +88,21 @@ Export Image *ReadUYVYImage(const ImageInfo *image_info)
   Image
     *image;
 
-  register int
-    i;
+  int
+    y;
 
-  register RunlengthPacket
+  register int
+    i,
+    x;
+
+  register PixelPacket
     *q;
 
-  register unsigned char
-    *p;
-
   unsigned char
-    *uyvy_pixels;
+    u,
+    v,
+    y1,
+    y2;
 
   unsigned int
     status;
@@ -110,7 +114,7 @@ Export Image *ReadUYVYImage(const ImageInfo *image_info)
   if (image == (Image *) NULL)
     return((Image *) NULL);
   if ((image->columns == 0) || (image->rows == 0))
-    ReaderExit(OptionWarning,"must specify image size",image);
+    ReaderExit(OptionWarning,"Must specify image size",image);
   /*
     Open image file.
   */
@@ -121,44 +125,34 @@ Export Image *ReadUYVYImage(const ImageInfo *image_info)
   for (i=0; i < image->offset; i++)
     (void) ReadByte(image);
   /*
-    Read data.
-  */
-  image->packets=image->columns*image->rows;
-  uyvy_pixels=(unsigned char *)
-    AllocateMemory((2*image->packets)*sizeof(unsigned char));
-  image->pixels=(RunlengthPacket *)
-    AllocateMemory(image->packets*sizeof(RunlengthPacket));
-  if ((uyvy_pixels == (unsigned char *) NULL) ||
-      (image->pixels == (RunlengthPacket *) NULL))
-    ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-  SetImage(image);
-  (void) ReadBlob(image,2*image->packets,(char *) uyvy_pixels);
-  /*
     Accumulate UYVY, then unpack into two pixels.
   */
-  p=uyvy_pixels;
-  q=image->pixels;
-  for (i=0; i < (int) (image->packets >> 1); i++)
+  for (y=0; y < (int) image->rows; y++)
   {
-    q->red=UpScale(p[1]);
-    q->green=UpScale(p[0]);
-    q->blue=UpScale(p[2]);
-    q->index=0;
-    q->length=0;
-    q++;
-    q->red=UpScale(p[3]);
-    q->green=UpScale(p[0]);
-    q->blue=UpScale(p[2]);
-    q->index=0;
-    q->length=0;
-    q++;
-    p+=4;
-    if (QuantumTick(i,image->columns*image->rows >> 1))
-      ProgressMonitor(LoadImageText,i,image->columns*image->rows >> 1);
+    q=SetPixelCache(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < (int) (image->columns >> 1); x++)
+    {
+      u=ReadByte(image);
+      y1=ReadByte(image);
+      v=ReadByte(image);
+      y2=ReadByte(image);
+      q->red=UpScale(y1);
+      q->green=UpScale(u);
+      q->blue=UpScale(v);
+      q++;
+      q->red=UpScale(y2);
+      q->green=UpScale(u);
+      q->blue=UpScale(v);
+      q++;
+    }
+    if (!SyncPixelCache(image))
+      break;
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(LoadImageText,y,image->rows);
   }
-  FreeMemory((char *) uyvy_pixels);
   TransformRGBImage(image,YCbCrColorspace);
-  CondenseImage(image);
   CloseBlob(image);
   return(image);
 }
@@ -196,11 +190,13 @@ Export Image *ReadUYVYImage(const ImageInfo *image_info)
 */
 Export unsigned int WriteUYVYImage(const ImageInfo *image_info,Image *image)
 {
-  register int
-    i,
-    j;
+  int
+    y;
 
-  register RunlengthPacket
+  register int
+    x;
+
+  register PixelPacket
     *p;
 
   unsigned int
@@ -208,13 +204,11 @@ Export unsigned int WriteUYVYImage(const ImageInfo *image_info,Image *image)
     status,
     u,
     v,
-    y;
+    y1;
 
   /*
     Open output image file.
   */
-  if (!UncondenseImage(image))
-    return(False);
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
@@ -229,33 +223,34 @@ Export unsigned int WriteUYVYImage(const ImageInfo *image_info,Image *image)
   full=False;
   u=0;
   v=0;
-  y=0;
+  y1=0;
   full=False;
-  full=False;
-  p=image->pixels;
-  for (i=0; i < (int) image->packets; i++)
+  for (y=0; y < (int) image->rows; y++)
   {
-    for (j=0; j <= ((int) p->length); j++)
+    p=GetPixelCache(image,0,y,image->columns,1);
+    if (p == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < (int) image->columns; x++)
     {
       if (full)
         {
           (void) WriteByte(image,DownScale((u+p->green) >> 1));
-          (void) WriteByte(image,DownScale(y));
+          (void) WriteByte(image,DownScale(y1));
           (void) WriteByte(image,DownScale((v+p->blue) >> 1));
           (void) WriteByte(image,DownScale(p->red));
           full=False;
         }
       else
         {
-          y=p->red;
+          y1=p->red;
           u=p->green;
           v=p->blue;
           full=True;
         }
+      p++;
     }
-    p++;
-    if (QuantumTick(i,image->packets))
-      ProgressMonitor(SaveImageText,i,image->packets);
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(SaveImageText,y,image->rows);
   }
   TransformRGBImage(image,YCbCrColorspace);
   CloseBlob(image);

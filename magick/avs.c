@@ -88,19 +88,11 @@ Export Image *ReadAVSImage(const ImageInfo *image_info)
   Image
     *image;
 
-  Quantum
-    blue,
-    green,
-    red;
-
   register int
     x,
     y;
 
-  register long
-    packets;
-
-  register RunlengthPacket
+  register PixelPacket
     *q;
 
   unsigned int
@@ -109,9 +101,6 @@ Export Image *ReadAVSImage(const ImageInfo *image_info)
   unsigned long
     height,
     width;
-
-  unsigned short
-    index;
 
   /*
     Allocate image structure.
@@ -144,45 +133,29 @@ Export Image *ReadAVSImage(const ImageInfo *image_info)
         CloseBlob(image);
         return(image);
       }
-    packets=0;
-    image->pixels=(RunlengthPacket *)
-      AllocateMemory(image->columns*image->rows*sizeof(RunlengthPacket));
-    if (image->pixels == (RunlengthPacket *) NULL)
-      ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
     /*
-      Convert AVS raster image to runlength-encoded packets.
+      Convert AVS raster image to pixel packets.
     */
-    q=image->pixels;
-    SetRunlengthEncoder(q);
     for (y=0; y < (int) image->rows; y++)
     {
+      q=SetPixelCache(image,0,y,image->columns,1);
+      if (q == (PixelPacket *) NULL)
+        break;
       for (x=0; x < (int) image->columns; x++)
       {
-        index=UpScale(ReadByte(image));
-        image->matte|=index != Opaque;
-        red=UpScale(ReadByte(image));
-        green=UpScale(ReadByte(image));
-        blue=UpScale(ReadByte(image));
-        if ((red == q->red) && (green == q->green) && (blue == q->blue) &&
-            (index == q->index) && ((int) q->length < MaxRunlength))
-          q->length++;
-        else
-          {
-            if (packets != 0)
-              q++;
-            packets++;
-            q->red=red;
-            q->green=green;
-            q->blue=blue;
-            q->index=index;
-            q->length=0;
-          }
+        q->opacity=UpScale(ReadByte(image));
+        q->red=UpScale(ReadByte(image));
+        q->green=UpScale(ReadByte(image));
+        q->blue=UpScale(ReadByte(image));
+        image->matte|=q->opacity != Opaque;
+        q++;
       }
+      if (!SyncPixelCache(image))
+        break;
       if (image->previous == (Image *) NULL)
         if (QuantumTick(y,image->rows))
           ProgressMonitor(LoadImageText,y,image->rows);
     }
-    SetRunlengthPackets(image,packets);
     /*
       Proceed to next image.
     */
@@ -244,15 +217,11 @@ Export Image *ReadAVSImage(const ImageInfo *image_info)
 */
 Export unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
 {
-  int
+  register int
     x,
     y;
 
-  register int
-    i,
-    j;
-
-  register RunlengthPacket
+  register PixelPacket
     *p;
 
   register unsigned char
@@ -284,43 +253,35 @@ Export unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
       Allocate memory for pixels.
     */
     pixels=(unsigned char *)
-      AllocateMemory(image->columns*sizeof(RunlengthPacket));
+      AllocateMemory(image->columns*sizeof(PixelPacket));
     if (pixels == (unsigned char *) NULL)
       WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
     /*
       Convert MIFF to AVS raster pixels.
     */
-    x=0;
-    y=0;
-    p=image->pixels;
-    q=pixels;
-    for (i=0; i < (int) image->packets; i++)
+    for (y=0; y < (int) image->rows; y++)
     {
-      for (j=0; j <= ((int) p->length); j++)
+      p=GetPixelCache(image,0,y,image->columns,1);
+      if (p == (PixelPacket *) NULL)
+        break;
+      q=pixels;
+      for (x=0; x < (int) image->columns; x++)
       {
-        *q++=DownScale(image->matte ? p->index : Opaque);
+        *q++=DownScale(image->matte ? p->opacity : Opaque);
         *q++=DownScale(p->red);
         *q++=DownScale(p->green);
         *q++=DownScale(p->blue);
-        x++;
-        if (x == (int) image->columns)
-          {
-            (void) WriteBlob(image,q-pixels,(char *) pixels);
-            if (image->previous == (Image *) NULL)
-              if (QuantumTick(y,image->rows))
-                ProgressMonitor(SaveImageText,y,image->rows);
-            q=pixels;
-            x=0;
-            y++;
-          }
+        p++;
       }
-      p++;
+      (void) WriteBlob(image,q-pixels,(char *) pixels);
+      if (image->previous == (Image *) NULL)
+        if (QuantumTick(y,image->rows))
+          ProgressMonitor(SaveImageText,y,image->rows);
     }
-    FreeMemory((char *) pixels);
+    FreeMemory(pixels);
     if (image->next == (Image *) NULL)
       break;
-    image->next->file=image->file;
-    image=image->next;
+    image=GetNextImage(image);
     ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)

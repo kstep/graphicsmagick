@@ -405,16 +405,6 @@ by <i>gravity_</i> using composition algorithm specified by <i>compose_</i>.</fo
 
 <tr>
 <td>
-<center><a NAME="condense"></a><font size=-1>condense</font></center>
-</td>
-
-<td><font size=-1>void</font></td>
-
-<td><font size=-1>Condense image (Run-length encode image in memory).</font></td>
-</tr>
-
-<tr>
-<td>
 <center><a NAME="contrast"></a><font size=-1>contrast</font></center>
 </td>
 
@@ -896,11 +886,10 @@ by specified number of columnms and rows)</font></td>
 <center><a NAME="rotate"></a><font size=-1>rotate</font></center>
 </td>
 
-<td><font size=-1>double degrees_, bool crop_ = false, unsigned int sharpen_
-= false</font></td>
+<td><font size=-1>double degrees_</font></td>
 
 <td><font size=-1>Rotate image counter-clockwise by specified number of
-degrees. Optionally crop image to original size and sharpen image.</font></td>
+degrees.</font></td>
 </tr>
 
 <tr>
@@ -973,8 +962,7 @@ enhancement (0.0 - 99.9%).</font></td>
 <center><a NAME="shear"></a><font size=-1>shear</font></center>
 </td>
 
-<td><font size=-1>double xShearAngle_, double yShearAngle_,</font>
-<br><font size=-1>&nbsp;bool crop_ = false</font></td>
+<td><font size=-1>double xShearAngle_, double yShearAngle_</font></td>
 
 <td><font size=-1>Shear image (create parallelogram by sliding image by
 X or Y axis).&nbsp; Shearing slides one edge of an image along the X&nbsp;
@@ -985,8 +973,7 @@ the shear is controlled by a shear angle.&nbsp; For X direction&nbsp; shears,&nb
 x&nbsp; degrees is measured relative to the Y axis, and similarly, for
 Y direction shears&nbsp; y&nbsp; degrees is measured relative to the X
 axis. Empty triangles left over from shearing the&nbsp; image&nbsp; are
-filled&nbsp; with&nbsp; the&nbsp; color&nbsp; defined as <i>borderColor</i>.
-Specify crop_ as true_ to crop the sheared image to the original size.</font></td>
+filled&nbsp; with&nbsp; the&nbsp; color&nbsp; defined as <i>borderColor</i>.&nbsp;</font></td>
 </tr>
 
 <tr NOSAVE>
@@ -1107,15 +1094,6 @@ to transparent.</font></td>
 <td><font size=-1>void</font></td>
 
 <td><font size=-1>Trim edges that are the background color from the image.</font></td>
-</tr>
-
-<tr>
-<td><a NAME="uncondense"></a><font size=-1>uncondense</font></td>
-
-<td><font size=-1>void</font></td>
-
-<td><font size=-1>Uncondense image. Removes any run-length encoding from
-image pixels so that they may be edited as an array.</font></td>
 </tr>
 
 <tr>
@@ -1576,20 +1554,6 @@ compressType_</font></td>
 
 <td><font size=-1>Image compresion type. The default is the compression
 type of the specified image file.</font></td>
-</tr>
-
-<tr NOSAVE>
-<td><a NAME="condensed"></a><font size=-1>condensed</font></td>
-
-<td><font size=-1>Image</font></td>
-
-<td><font size=-1>bool</font></td>
-
-<td><font size=-1>void</font></td>
-
-<td BGCOLOR="#666666" NOSAVE><font size=-1>&nbsp;</font></td>
-
-<td><font size=-1>Image is condensed (uses run-length encoding).</font></td>
 </tr>
 
 <tr>

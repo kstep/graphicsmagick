@@ -41,7 +41,7 @@ Magick::Options::Options( const Magick::Options& options_ )
       _penTexture = MagickLib::CloneImage( options_._penTexture,
 					   options_._penTexture->columns,
 					   options_._penTexture->rows,
-					   True );
+					   (int)true );
     }
 }
 
@@ -99,23 +99,11 @@ unsigned int Magick::Options::animationIterations ( void ) const
 
 void Magick::Options::backgroundColor ( const Magick::Color &color_ )
 {
-  if ( !color_.isValid() )
-    {
-      if ( _imageInfo->background_color )
-	{
-	  MagickLib::FreeMemory( _imageInfo->background_color );
-	  _imageInfo->background_color = (char *)NULL;
-	}
-      return;
-    }
-  Magick::CloneString( &_imageInfo->background_color, color_ );
+  _imageInfo->background_color = color_;
 }
 Magick::Color Magick::Options::backgroundColor ( void ) const
 {
-  if ( _imageInfo->background_color )
-      return Magick::Color( _imageInfo->background_color );
-
-  return Magick::Color();
+  return Magick::Color( _imageInfo->background_color );
 }
 
 void Magick::Options::backgroundTexture ( const std::string &backgroundTexture_ )
@@ -142,24 +130,11 @@ std::string Magick::Options::backgroundTexture ( void ) const
 
 void Magick::Options::borderColor ( const Color &color_ )
 {
-  if ( !color_.isValid() )
-    {
-      if ( _imageInfo->border_color )
-	{
-	  MagickLib::FreeMemory( _imageInfo->border_color );
-	  _imageInfo->border_color = (char *)NULL;
-	}
-      return;
-    }
-
-  Magick::CloneString( &_imageInfo->border_color, color_ );
+  _imageInfo->border_color = color_;
 }
 Magick::Color Magick::Options::borderColor ( void ) const
 {
-    if ( _imageInfo->border_color )
-      return Magick::Color( _imageInfo->border_color );
-
-    return Magick::Color();
+  return Magick::Color( _imageInfo->border_color );
 }
 
 // Text bounding-box base color
@@ -286,24 +261,11 @@ std::string Magick::Options::magick ( void ) const
 
 void Magick::Options::matteColor ( const Magick::Color &matteColor_ )
 {
-  if ( !matteColor_.isValid() )
-    {
-      if ( _imageInfo->matte_color )
-	{
-	  MagickLib::FreeMemory( _imageInfo->matte_color );
-	  _imageInfo->matte_color = (char *)NULL;
-	}
-      return;
-    }
-
-  Magick::CloneString( &_imageInfo->matte_color, matteColor_ );
+  _imageInfo->matte_color = matteColor_;
 }
 Magick::Color Magick::Options::matteColor ( void ) const
 {
-  if ( _imageInfo->matte_color )
-    return Magick::Color( _imageInfo->matte_color );
-
-  return Magick::Color();
+  return Magick::Color( _imageInfo->matte_color );
 }
 
 void Magick::Options::penColor ( const Color &penColor_ )
@@ -335,11 +297,11 @@ void Magick::Options::penTexture ( const MagickLib::Image *penTexture_ )
 
   _penTexture = (MagickLib::Image *)NULL;
 
-  if ( penTexture_ && penTexture_->packets )
-    _penTexture = MagickLib::CloneImage( penTexture_,
+  if ( penTexture_ && penTexture_->pixels )
+    _penTexture = MagickLib::CloneImage( const_cast<MagickLib::Image*>(penTexture_),
 					 penTexture_->columns,
 					 penTexture_->rows,
-					 True );
+					 (int)true );
 }
 const MagickLib::Image* Magick::Options::penTexture ( void  ) const
 {

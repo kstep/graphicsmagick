@@ -350,7 +350,7 @@ Exception.lo Exception.o : Exception.cpp Magick++/Exception.h
 Functions.lo Functions.o : Functions.cpp Magick++/Functions.h \
 	Magick++/Include.h
 Geometry.lo Geometry.o : Geometry.cpp Magick++/Geometry.h \
-	Magick++/Functions.h Magick++/Include.h
+	Magick++/Include.h Magick++/Functions.h
 Image.lo Image.o : Image.cpp Magick++/Image.h Magick++/Blob.h \
 	Magick++/Color.h Magick++/Include.h Magick++/Drawable.h \
 	Magick++/Geometry.h Magick++/Exception.h Magick++/Options.h \

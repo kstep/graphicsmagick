@@ -56,7 +56,8 @@ typedef enum
   ReplaceMatteCompositeOp,
   BlendCompositeOp,
   DisplaceCompositeOp,
-  AnnotateCompositeOp
+  AnnotateCompositeOp,
+  ModulateCompositeOp
 } CompositeOperator;
 
 typedef enum
@@ -129,8 +130,9 @@ typedef enum
   BilevelType,
   GrayscaleType,
   PaletteType,
+  PaletteMatteType,
   TrueColorType,
-  MatteType,
+  TrueColorMatteType,
   ColorSeparationType
 } ImageType;
 
@@ -151,6 +153,13 @@ typedef enum
   BlueLayer,
   MatteLayer
 } LayerType;
+
+typedef enum
+{
+  ReadMode,
+  WriteMode,
+  IOMode
+} MapMode;
 
 typedef enum
 {
@@ -234,6 +243,24 @@ typedef enum
 
 typedef enum
 {
+  IndexQuantum,
+  GrayQuantum,
+  GrayOpacityQuantum,
+  RedQuantum,
+  CyanQuantum,
+  GreenQuantum,
+  YellowQuantum,
+  BlueQuantum,
+  MagentaQuantum,
+  OpacityQuantum,
+  BlackQuantum,
+  RGBQuantum,
+  RGBAQuantum,
+  CMYKQuantum
+} QuantumTypes;
+
+typedef enum
+{
   UndefinedIntent,
   SaturationIntent,
   PerceptualIntent,
@@ -247,6 +274,22 @@ typedef enum
   PixelsPerInchResolution,
   PixelsPerCentimeterResolution
 } ResolutionType;
+
+typedef enum
+{
+  CharPixel,
+  ShortPixel,
+  IntegerPixel,
+  FloatPixel,
+  DoublePixel
+} StorageType;
+
+typedef enum
+{
+  UndefinedTimerState,
+  StoppedTimerState,
+  RunningTimerState
+} TimerState;
 
 typedef enum
 {
@@ -295,7 +338,8 @@ typedef enum
   MissingDelegateError = 420,
   CorruptImageError = 425,
   FileOpenError = 430,
-  BlobError = 435
+  BlobError = 435,
+  CacheError = 440
 } ErrorType;
 
 typedef enum
@@ -308,7 +352,8 @@ typedef enum
   MissingDelegateWarning = 320,
   CorruptImageWarning = 325,
   FileOpenWarning = 330,
-  BlobWarning = 335
+  BlobWarning = 335,
+  CacheWarning = 340
 } WarningType;
 
 #if defined(__cplusplus) || defined(c_plusplus)

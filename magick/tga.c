@@ -120,17 +120,20 @@ Export Image *ReadTGAImage(const ImageInfo *image_info)
   Image
     *image;
 
-  Quantum
-    blue,
-    green,
-    red;
+  IndexPacket
+    index;
+
+  int
+    y;
+
+  PixelPacket
+    pixel;
 
   register int
     i,
-    x,
-    y;
+    x;
 
-  register RunlengthPacket
+  register PixelPacket
     *q;
 
   TGAHeader
@@ -148,9 +151,6 @@ Export Image *ReadTGAImage(const ImageInfo *image_info)
     real,
     skip,
     status;
-
-  unsigned short
-    index;
 
   /*
     Allocate image structure.
@@ -202,12 +202,6 @@ Export Image *ReadTGAImage(const ImageInfo *image_info)
         CloseBlob(image);
         return(image);
       }
-    image->packets=image->columns*image->rows;
-    image->pixels=(RunlengthPacket *)
-      AllocateMemory(image->packets*sizeof(RunlengthPacket));
-    if (image->pixels == (RunlengthPacket *) NULL)
-      ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-    SetImage(image);
     if (tga_header.id_length != 0)
       {
         /*
@@ -220,17 +214,15 @@ Export Image *ReadTGAImage(const ImageInfo *image_info)
         (void) ReadBlob(image,tga_header.id_length,image->comments);
         image->comments[tga_header.id_length]='\0';
       }
-    red=0;
-    green=0;
-    blue=0;
+    GetPixelPacket(&pixel);
     if (tga_header.colormap_type != 0)
       {
         /*
           Read TGA raster colormap.
         */
-        image->colormap=(ColorPacket *)
-          AllocateMemory(image->colors*sizeof(ColorPacket));
-        if (image->colormap == (ColorPacket *) NULL)
+        image->colormap=(PixelPacket *)
+          AllocateMemory(image->colors*sizeof(PixelPacket));
+        if (image->colormap == (PixelPacket *) NULL)
           ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
         for (i=0; i < (int) image->colors; i++)
         {
@@ -242,9 +234,9 @@ Export Image *ReadTGAImage(const ImageInfo *image_info)
               /*
                 Gray scale.
               */
-              red=UpScale(ReadByte(image));
-              green=red;
-              blue=red;
+              pixel.red=UpScale(ReadByte(image));
+              pixel.green=pixel.red;
+              pixel.blue=pixel.red;
               break;
             }
             case 15:
@@ -253,12 +245,12 @@ Export Image *ReadTGAImage(const ImageInfo *image_info)
               /*
                 5 bits each of red green and blue.
               */
-              j=fgetc(image->file);
-              k=fgetc(image->file);
-              red=(Quantum) ((MaxRGB*((int) (k & 0x7c) >> 2))/31);
-              green=(Quantum)
+              j=ReadByte(image);
+              k=ReadByte(image);
+              pixel.red=(Quantum) ((MaxRGB*((int) (k & 0x7c) >> 2))/31);
+              pixel.green=(Quantum)
                 ((MaxRGB*(((int) (k & 0x03) << 3)+((int) (j & 0xe0) >> 5)))/31);
-              blue=(Quantum) ((MaxRGB*((int) (j & 0x1f)))/31);
+              pixel.blue=(Quantum) ((MaxRGB*((int) (j & 0x1f)))/31);
               break;
             }
             case 24:
@@ -267,43 +259,33 @@ Export Image *ReadTGAImage(const ImageInfo *image_info)
               /*
                 8 bits each of blue, green and red.
               */
-              blue=UpScale(ReadByte(image));
-              green=UpScale(ReadByte(image));
-              red=UpScale(ReadByte(image));
+              pixel.blue=UpScale(ReadByte(image));
+              pixel.green=UpScale(ReadByte(image));
+              pixel.red=UpScale(ReadByte(image));
               break;
             }
           }
-          image->colormap[i].red=red;
-          image->colormap[i].green=green;
-          image->colormap[i].blue=blue;
+          image->colormap[i]=pixel;
         }
       }
     /*
-      Convert TGA pixels to runlength-encoded packets.
+      Convert TGA pixels to pixel packets.
     */
     base=0;
     flag=0;
-    index=0;
     skip=False;
     real=0;
+    index=0;
     runlength=0;
     offset=0;
-    q=image->pixels;
-    for (i=0; i < (int) image->packets; i++)
-    {
-      q->red=0;
-      q->green=0;
-      q->blue=0;
-      q->index=0;
-      q->length=0;
-      q++;
-    }
     for (y=0; y < (int) image->rows; y++)
     {
       real=offset;
       if (((unsigned char) (tga_header.attributes & 0x20) >> 5) == 0)
         real=image->rows-real-1;
-      q=image->pixels+(real*image->columns);
+      q=SetPixelCache(image,0,real,image->columns,1);
+      if (q == (PixelPacket *) NULL)
+        break;
       for (x=0; x < (int) image->columns; x++)
       {
         if ((tga_header.image_type == TGARLEColormap) ||
@@ -339,15 +321,15 @@ Export Image *ReadTGAImage(const ImageInfo *image_info)
               index=ReadByte(image);
               if (tga_header.colormap_type == 0)
                 {
-                  red=(Quantum) UpScale(index);
-                  green=(Quantum) UpScale(index);
-                  blue=(Quantum) UpScale(index);
+                  pixel.red=(Quantum) UpScale(index);
+                  pixel.green=(Quantum) UpScale(index);
+                  pixel.blue=(Quantum) UpScale(index);
                 }
               else
                 {
-                  red=image->colormap[index].red;
-                  green=image->colormap[index].green;
-                  blue=image->colormap[index].blue;
+                  pixel.red=image->colormap[index].red;
+                  pixel.green=image->colormap[index].green;
+                  pixel.blue=image->colormap[index].blue;
                 }
               break;
             }
@@ -359,10 +341,10 @@ Export Image *ReadTGAImage(const ImageInfo *image_info)
               */
               j=ReadByte(image);
               k=ReadByte(image);
-              red=(Quantum) ((MaxRGB*((int) (k & 0x7c) >> 2))/31);
-              green=(Quantum)
+              pixel.red=(Quantum) ((MaxRGB*((int) (k & 0x7c) >> 2))/31);
+              pixel.green=(Quantum)
                 ((MaxRGB*(((int) (k & 0x03) << 3)+((int) (j & 0xe0) >> 5)))/31);
-              blue=(Quantum) ((MaxRGB*((int) (j & 0x1f)))/31);
+              pixel.blue=(Quantum) ((MaxRGB*((int) (j & 0x1f)))/31);
               index=((unsigned short) k << 8)+j;
               break;
             }
@@ -372,22 +354,19 @@ Export Image *ReadTGAImage(const ImageInfo *image_info)
               /*
                 8 bits each of blue green and red.
               */
-              blue=UpScale(ReadByte(image));
-              green=UpScale(ReadByte(image));
-              red=UpScale(ReadByte(image));
+              pixel.blue=UpScale(ReadByte(image));
+              pixel.green=UpScale(ReadByte(image));
+              pixel.red=UpScale(ReadByte(image));
               if (tga_header.bits_per_pixel == 32)
-                index=Opaque-UpScale(ReadByte(image));
+                pixel.opacity=UpScale(ReadByte(image));
               break;
             }
           }
         if (status == False)
           ReaderExit(CorruptImageWarning,"Unable to read image data",image);
-        q->red=red;
-        q->green=green;
-        q->blue=blue;
-        q->index=index;
-        q->length=0;
-        q++;
+        if (image->class == PseudoClass)
+          image->indexes[x]=index;
+        *q++=pixel;
       }
       if (((unsigned char) (tga_header.attributes & 0xc0) >> 6) == 4)
         offset+=4;
@@ -401,6 +380,8 @@ Export Image *ReadTGAImage(const ImageInfo *image_info)
           base++;
           offset=base;
         }
+      if (!SyncPixelCache(image))
+        break;
       if (EOFBlob(image))
         break;
       if (image->previous == (Image *) NULL)
@@ -408,9 +389,6 @@ Export Image *ReadTGAImage(const ImageInfo *image_info)
           ProgressMonitor(LoadImageText,y,image->rows);
     }
     (void) IsGrayImage(image);
-    if (image->class == PseudoClass)
-      SyncImage(image);
-    CondenseImage(image);
     /*
       Proceed to next image.
     */
@@ -507,23 +485,19 @@ Export unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
       attributes;
   } TargaHeader;
 
-  Image
-    *flopped_image;
-
   int
     count,
-    runlength;
+    y;
 
   register int
     i,
-    j;
+    x;
 
-  register RunlengthPacket
+  register PixelPacket
     *p;
 
   register unsigned char
-    *q,
-    *r;
+    *q;
 
   TargaHeader
     targa_header;
@@ -545,39 +519,29 @@ Export unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
   do
   {
     /*
-      Flop image.
-    */
-    TransformRGBImage(image,RGBColorspace);
-    image->orphan=True;
-    flopped_image=FlopImage(image);
-    image->orphan=False;
-    if (flopped_image == (Image *) NULL)
-      WriterExit(ResourceLimitWarning,"Unable to flop image",image);
-    /*
       Initialize TGA raster file header.
     */
+    TransformRGBImage(image,RGBColorspace);
     targa_header.id_length=0;
-    if (flopped_image->comments != (char *) NULL)
-      targa_header.id_length=Min(Extent(flopped_image->comments),255);
+    if (image->comments != (char *) NULL)
+      targa_header.id_length=Min(Extent(image->comments),255);
     targa_header.colormap_type=0;
     targa_header.colormap_index=0;
     targa_header.colormap_length=0;
     targa_header.colormap_size=0;
     targa_header.x_origin=0;
     targa_header.y_origin=0;
-    targa_header.width=flopped_image->columns;
-    targa_header.height=flopped_image->rows;
+    targa_header.width=image->columns;
+    targa_header.height=image->rows;
     targa_header.bits_per_pixel=8;
     targa_header.attributes=0;
-    if (!IsPseudoClass(flopped_image))
+    if (!IsPseudoClass(image))
       {
         /*
           Full color TGA raster.
         */
         targa_header.image_type=TargaRGB;
-        if (image_info->compression != NoCompression)
-          targa_header.image_type=TargaRLERGB;
-        targa_header.bits_per_pixel=flopped_image->matte ? 32 : 24;
+        targa_header.bits_per_pixel=image->matte ? 32 : 24;
       }
     else
       {
@@ -585,24 +549,10 @@ Export unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
           Colormapped TGA raster.
         */
         targa_header.image_type=TargaColormap;
-        if (image_info->compression != NoCompression)
-          targa_header.image_type=TargaRLEColormap;
-        if (!IsMonochromeImage(flopped_image))
-          {
-            targa_header.colormap_type=1;
-            targa_header.colormap_index=0;
-            targa_header.colormap_length=flopped_image->colors;
-            targa_header.colormap_size=24;
-          }
-        else
-          {
-            /*
-              Monochrome TGA raster.
-            */
-            targa_header.image_type=TargaMonochrome;
-            if (image_info->compression != NoCompression)
-              targa_header.image_type=TargaRLEMonochrome;
-          }
+        targa_header.colormap_type=1;
+        targa_header.colormap_index=0;
+        targa_header.colormap_length=image->colors;
+        targa_header.colormap_size=24;
       }
     /*
       Write TGA header.
@@ -620,216 +570,67 @@ Export unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
     (void) WriteByte(image,(char) targa_header.bits_per_pixel);
     (void) WriteByte(image,(char) targa_header.attributes);
     if (targa_header.id_length != 0)
-      (void) WriteBlob(image,targa_header.id_length,
-        (char *) flopped_image->comments);
+      (void) WriteBlob(image,targa_header.id_length,(char *) image->comments);
+    if (IsPseudoClass(image))
+      {
+        unsigned char
+          *targa_colormap;
+
+        /*
+          Dump colormap to file (blue, green, red byte order).
+        */
+        targa_colormap=(unsigned char *) AllocateMemory(3*
+          targa_header.colormap_length*sizeof(unsigned char));
+        if (targa_colormap == (unsigned char *) NULL)
+          WriterExit(ResourceLimitWarning,"Memory allocation failed",
+            image);
+        q=targa_colormap;
+        for (i=0; i < (int) image->colors; i++)
+        {
+          *q++=DownScale(image->colormap[i].blue);
+          *q++=DownScale(image->colormap[i].green);
+          *q++=DownScale(image->colormap[i].red);
+        }
+        (void) WriteBlob(image,(int) 3*targa_header.colormap_length,
+          (char *) targa_colormap);
+        FreeMemory(targa_colormap);
+      }
     /*
       Convert MIFF to TGA raster pixels.
     */
-    count=(unsigned int)
-      (targa_header.bits_per_pixel*targa_header.width*targa_header.height) >> 3;
-    if (image_info->compression != NoCompression)
-      count+=(count/128)+1;
+    count=(unsigned int) (targa_header.bits_per_pixel*targa_header.width) >> 3;
     targa_pixels=(unsigned char *) AllocateMemory(count*sizeof(unsigned char));
     if (targa_pixels == (unsigned char *) NULL)
-      WriterExit(ResourceLimitWarning,"Memory allocation failed",
-        flopped_image);
-    p=flopped_image->pixels+(flopped_image->packets-1);
-    q=targa_pixels;
-    if (!IsPseudoClass(flopped_image))
+      WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+    for (y=(int) (image->rows-1); y >= 0; y--)
+    {
+      p=GetPixelCache(image,0,y,image->columns,1);
+      if (p == (PixelPacket *) NULL)
+        break;
+      q=targa_pixels;
+      for (x=0; x < (int) image->columns; x++)
       {
-        /*
-          Convert DirectClass packet to TGA RGB pixel.
-        */
-        if (image_info->compression == NoCompression)
-          for (i=0; i < (int) flopped_image->packets; i++)
-          {
-            for (j=0; j <= ((int) p->length); j++)
-            {
-              *q++=DownScale(p->blue);
-              *q++=DownScale(p->green);
-              *q++=DownScale(p->red);
-              if (flopped_image->matte)
-                *q++=Opaque-DownScale(p->index);
-            }
-            p--;
-            if (QuantumTick(i,flopped_image->packets))
-              ProgressMonitor(SaveImageText,i,flopped_image->packets);
-          }
+        if (image->class == PseudoClass)
+          *q++=image->indexes[x];
         else
-          for (i=0; i < (int) flopped_image->packets; i++)
           {
-            for (runlength=p->length+1; runlength > 128; runlength-=128)
-            {
-              *q++=0xff;
-              *q++=DownScale(p->blue);
-              *q++=DownScale(p->green);
-              *q++=DownScale(p->red);
-              if (flopped_image->matte)
-                *q++=DownScale(p->index);
-            }
-            r=q;
-            *q++=0x80+(runlength-1);
             *q++=DownScale(p->blue);
             *q++=DownScale(p->green);
             *q++=DownScale(p->red);
-            if (flopped_image->matte)
-              *q++=DownScale(p->index);
-            if (runlength != 1)
-              p--;
-            else
-              {
-                for ( ; i < (int) flopped_image->packets; i++)
-                {
-                  p--;
-                  if ((runlength == 128) || (p->length != 0))
-                    break;
-                  *q++=DownScale(p->blue);
-                  *q++=DownScale(p->green);
-                  *q++=DownScale(p->red);
-                  if (flopped_image->matte)
-                    *q++=DownScale(p->index);
-                  runlength++;
-                }
-                *r=runlength-1;
-              }
-            if (QuantumTick(i,flopped_image->packets))
-              ProgressMonitor(SaveImageText,i,flopped_image->packets);
+            if (image->matte || (image->colorspace == CMYKColorspace))
+              *q++=p->opacity;
           }
+        p++;
       }
-    else
-      if (!IsMonochromeImage(flopped_image))
-        {
-          unsigned char
-            *targa_colormap;
-
-          /*
-            Dump colormap to file (blue, green, red byte order).
-          */
-          if (flopped_image->colors > 256)
-            {
-              QuantizeInfo
-                quantize_info;
-
-              GetQuantizeInfo(&quantize_info);
-              quantize_info.number_colors=256;
-              quantize_info.dither=image_info->dither;
-              (void) QuantizeImage(&quantize_info,flopped_image);
-            }
-          targa_colormap=(unsigned char *) AllocateMemory(3*
-            targa_header.colormap_length*sizeof(unsigned char));
-          if (targa_colormap == (unsigned char *) NULL)
-            WriterExit(ResourceLimitWarning,"Memory allocation failed",
-              flopped_image);
-          q=targa_colormap;
-          for (i=0; i < (int) flopped_image->colors; i++)
-          {
-            *q++=DownScale(flopped_image->colormap[i].blue);
-            *q++=DownScale(flopped_image->colormap[i].green);
-            *q++=DownScale(flopped_image->colormap[i].red);
-          }
-          (void) WriteBlob(image,(int) 3*targa_header.colormap_length,
-            (char *) targa_colormap);
-          /*
-            Convert PseudoClass packet to TGA colormapped pixel.
-          */
-          q=targa_pixels;
-          if (image_info->compression == NoCompression)
-            for (i=0; i < (int) flopped_image->packets; i++)
-            {
-              for (j=0; j <= ((int) p->length); j++)
-                *q++=p->index;
-              p--;
-              if (QuantumTick(i,flopped_image->packets))
-                ProgressMonitor(SaveImageText,i,flopped_image->packets);
-            }
-          else
-            for (i=0; i < (int) flopped_image->packets; i++)
-            {
-              for (runlength=p->length+1; runlength > 128; runlength-=128)
-              {
-                *q++=0xff;
-                *q++=p->index;
-              }
-              r=q;
-              *q++=0x80+(runlength-1);
-              *q++=p->index;
-              if (runlength != 1)
-                p--;
-              else
-                {
-                  for ( ; i < (int) flopped_image->packets; i++)
-                  {
-                    p--;
-                    if ((runlength == 128) || (p->length != 0))
-                      break;
-                    *q++=p->index;
-                    runlength++;
-                  }
-                  *r=runlength-1;
-                }
-              if (QuantumTick(i,flopped_image->packets))
-                ProgressMonitor(SaveImageText,i,flopped_image->packets);
-            }
-        }
-      else
-        {
-          unsigned int
-            polarity;
-
-          /*
-            Convert PseudoClass image to a TGA monochrome image.
-          */
-          polarity=Intensity(image->colormap[0]) > (MaxRGB >> 1);
-          if (image->colors == 2)
-            polarity=Intensity(image->colormap[0]) > (MaxRGB >> 1);
-          if (flopped_image->colors == 2)
-            polarity=Intensity(flopped_image->colormap[0]) >
-              Intensity(flopped_image->colormap[1]);
-          if (image_info->compression == NoCompression)
-            for (i=0; i < (int) flopped_image->packets; i++)
-            {
-              for (j=0; j <= ((int) p->length); j++)
-                *q++=p->index == polarity ? 0 : DownScale(MaxRGB);
-              p--;
-              if (QuantumTick(i,flopped_image->packets))
-                ProgressMonitor(SaveImageText,i,flopped_image->packets);
-            }
-          else
-            for (i=0; i < (int) flopped_image->packets; i++)
-            {
-              for (runlength=p->length+1; runlength > 128; runlength-=128)
-              {
-                *q++=0xff;
-                *q++=p->index == polarity ? 0 : DownScale(MaxRGB);
-              }
-              r=q;
-              *q++=0x80+(runlength-1);
-              *q++=p->index == polarity ? 0 : DownScale(MaxRGB);
-              if (runlength != 1)
-                p--;
-              else
-                {
-                  for ( ; i < (int) flopped_image->packets; i++)
-                  {
-                    p--;
-                    if ((runlength == 128) || (p->length != 0))
-                      break;
-                    *q++=p->index == polarity ? 0 : DownScale(MaxRGB);
-                    runlength++;
-                  }
-                  *r=runlength-1;
-                }
-              if (QuantumTick(i,flopped_image->packets))
-                ProgressMonitor(SaveImageText,i,flopped_image->packets);
-            }
-        }
-    (void) WriteBlob(image,q-targa_pixels,(char *) targa_pixels);
-    DestroyImage(flopped_image);
-    FreeMemory((char *) targa_pixels);
+      status=WriteBlob(image,q-targa_pixels,(char *) targa_pixels);
+      if (image->previous == (Image *) NULL)
+        if (QuantumTick(y,image->rows))
+          ProgressMonitor(SaveImageText,y,image->rows);
+    }
+    FreeMemory(targa_pixels);
     if (image->next == (Image *) NULL)
       break;
-    image->next->file=image->file;
-    image=image->next;
+    image=GetNextImage(image);
     ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)

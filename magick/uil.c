@@ -137,6 +137,7 @@ Export unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
     min_distance;
 
   int
+    distance,
     j,
     k,
     y;
@@ -148,12 +149,10 @@ Export unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
     distance_squared;
 
   register int
-    distance,
     i,
-    runlength,
     x;
 
-  register RunlengthPacket
+  register PixelPacket
     *p;
 
   register const ColorlistInfo
@@ -173,6 +172,7 @@ Export unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   TransformRGBImage(image,RGBColorspace);
   transparent=False;
+  i=0;
   if (image->class == PseudoClass)
     colors=image->colors;
   else
@@ -192,42 +192,47 @@ Export unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
           /*
             Map all the transparent pixels.
           */
-          if (!UncondenseImage(image))
-            return(False);
           matte_image=(unsigned char *)
-            AllocateMemory(image->packets*sizeof(unsigned char));
+            AllocateMemory(image->columns*image->rows*sizeof(unsigned char));
           if (matte_image == (unsigned char *) NULL)
             WriterExit(ResourceLimitWarning,"Memory allocation failed",
               image);
-          p=image->pixels;
-          for (i=0; i < (int) image->packets; i++)
+          for (y=0; y < (int) image->rows; y++)
           {
-            matte_image[i]=p->index == Transparent;
-            if (matte_image[i])
-              transparent=True;
-            p++;
+            p=GetPixelCache(image,0,y,image->columns,1);
+            if (p == (PixelPacket *) NULL)
+              break;
+            for (x=0; x < (int) image->columns; x++)
+            {
+              matte_image[i]=p->opacity == Transparent;
+              if (matte_image[i])
+                transparent=True;
+              i++;
+              p++;
+            }
           }
         }
       GetQuantizeInfo(&quantize_info);
       quantize_info.dither=image_info->dither;
       (void) QuantizeImage(&quantize_info,image);
-      SyncImage(image);
       colors=image->colors;
       if (transparent)
         {
-          if (!UncondenseImage(image))
-            return(False);
           colors++;
-          p=image->pixels;
-          for (i=0; i < (int) image->packets; i++)
+          for (y=0; y < (int) image->rows; y++)
           {
-            if (matte_image[i])
-              p->index=image->colors;
-            p++;
+            if (!GetPixelCache(image,0,y,image->columns,1))
+              break;
+            for (x=0; x < (int) image->columns; x++)
+            {
+              if (matte_image[i])
+                image->indexes[x]=image->colors;
+              p++;
+            }
           }
         }
       if (matte_image != (unsigned char *) NULL)
-        FreeMemory((char *) matte_image);
+        FreeMemory(matte_image);
     }
   /*
     Compute the character per pixel.
@@ -245,7 +250,7 @@ Export unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlob(image,strlen(buffer),buffer);
   for (i=0; i < (int) colors; i++)
   {
-    ColorPacket
+    PixelPacket
       *p;
 
     /*
@@ -299,31 +304,26 @@ Export unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
     "  %.1024s_icon : icon(color_table = %.1024s_ct,\n",
     BaseFilename(image->filename),BaseFilename(image->filename));
   (void) WriteBlob(image,strlen(buffer),buffer);
-  p=image->pixels;
-  runlength=p->length+1;
   for (y=0; y < (int) image->rows; y++)
   {
+    p=GetPixelCache(image,0,y,image->columns,1);
+    if (p == (PixelPacket *) NULL)
+      break;
     (void) strcpy(buffer,"    \"");
     (void) WriteBlob(image,strlen(buffer),buffer);
     for (x=0; x < (int) image->columns; x++)
     {
-      if (runlength != 0)
-        runlength--;
-      else
-        {
-          p++;
-          runlength=p->length;
-        }
-      k=p->index % MaxCixels;
+      k=image->indexes[x] % MaxCixels;
       symbol[0]=Cixel[k];
       for (j=1; j < (int) characters_per_pixel; j++)
       {
-        k=(((int) p->index-k)/MaxCixels) % MaxCixels;
+        k=(((int) image->indexes[x]-k)/MaxCixels) % MaxCixels;
         symbol[j]=Cixel[k];
       }
       symbol[j]='\0';
       (void) sprintf(buffer,"%.1024s",symbol);
       (void) WriteBlob(image,strlen(buffer),buffer);
+      p++;
     }
     (void) sprintf(buffer,"\"%.1024s\n",
       (y == (int) (image->rows-1) ? ");" : ","));

@@ -62,6 +62,7 @@
 %    -border geometry     surround image with a border of color
 %    -bordercolor color   border color
 %    -box color           color for annotation bounding box
+%    -cache threshold     number of megabytes available to the pixel cache
 %    -charcoal factor     simulate a charcoal drawing
 %    -coalesce            merge a sequence of images
 %    -colorize value      colorize the image with the pen color
@@ -105,13 +106,15 @@
 %    -modulate value      vary the brightness, saturation and hue
 %    -monochrome          transform image to black and white
 %    -morph value         morph an image sequence
-%    -negate              replace every pixel with its complementary color 
+%    -mosaic              create an mosaic from an image sequence
+%    -negate              replace every pixel with its complementary color
 %    -noise               add or reduce noise in an image
 %    -normalize           transform image to span the full range of colors
 %    -opaque color        change this color to the pen color
 %    -page geometry       size and location of an image canvas
 %    -paint radius        simulate an oil painting
 %    -pen color           color for annotating or changing opaque color
+%    -ping                efficiently determine image characteristics
 %    -pointsize value     pointsize of Postscript font
 %    -preview type        image preview type
 %    -profile filename    add ICC or IPTC information profile to image
@@ -303,6 +306,7 @@ static void Usage(const char *client_name)
       "-modulate value      vary the brightness, saturation, and hue",
       "-monochrome          transform image to black and white",
       "-morph value         morph an image sequence",
+      "-mosaic              create an mosaic from an image sequence",
       "-negate              replace every pixel with its complementary color ",
       "-noise               add or reduce noise in an image",
       "-normalize           transform image to span the full range of colors",
@@ -310,6 +314,7 @@ static void Usage(const char *client_name)
       "-page geometry       size and location of an image canvas",
       "-paint radius        simulate an oil painting",
       "-pen color           color for annotating or changing opaque color",
+      "-ping                efficiently determine image characteristics",
       "-pointsize value     pointsize of Postscript font",
       "-preview type        image preview type",
       "-profile filename    add ICC or IPTC information profile to image",
@@ -410,6 +415,7 @@ int main(int argc,char **argv)
     coalesce,
     deconstruct,
     morph,
+    mosaic,
     global_colormap,
     scene;
 
@@ -429,6 +435,7 @@ int main(int argc,char **argv)
   coalesce=False;
   deconstruct=False;
   morph=0;
+  mosaic=False;
   filename=(char *) NULL;
   global_colormap=False;
   image=(Image *) NULL;
@@ -498,13 +505,13 @@ int main(int argc,char **argv)
         {
           if (strncmp("background",option+1,5) == 0)
             {
-              image_info.background_color=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing background color",option);
-                  (void) CloneString(&image_info.background_color,argv[i]);
+                  (void) QueryColorDatabase(argv[i],
+                    &image_info.background_color);
                 }
               break;
             }
@@ -530,13 +537,12 @@ int main(int argc,char **argv)
             }
           if (strncmp("bordercolor",option+1,7) == 0)
             {
-              image_info.border_color=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing border color",option);
-                  (void) CloneString(&image_info.border_color,argv[i]);
+                  (void) QueryColorDatabase(argv[i],&image_info.border_color);
                 }
               break;
             }
@@ -1076,13 +1082,12 @@ int main(int argc,char **argv)
             break;
           if (strncmp("mattecolor",option+1,6) == 0)
             {
-              image_info.matte_color=(char *) NULL;
               if (*option == '-')
                 {
                   i++;
                   if (i == argc)
                     MagickError(OptionError,"Missing matte color",option);
-                  (void) CloneString(&image_info.matte_color,argv[i]);
+                  (void) QueryColorDatabase(argv[i],&image_info.matte_color);
                 }
               break;
             }
@@ -1094,6 +1099,11 @@ int main(int argc,char **argv)
                   if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
                     MagickError(OptionError,"Missing value",option);
                 }
+              break;
+            }
+          if (strncmp("monochrome",option+1,4) == 0)
+            {
+              image_info.monochrome=(*option == '-');
               break;
             }
           if (strncmp("morph",option+1,3) == 0)
@@ -1108,9 +1118,9 @@ int main(int argc,char **argv)
                 }
               break;
             }
-          if (strncmp("monochrome",option+1,4) == 0)
+          if (strncmp("mosaic",option+1,3) == 0)
             {
-              image_info.monochrome=(*option == '-');
+              mosaic=(*option == '-');
               break;
             }
           MagickError(OptionError,"Unrecognized option",option);
@@ -1193,6 +1203,11 @@ int main(int argc,char **argv)
                 }
               break;
             }
+          if (strncmp("ping",option+1,2) == 0)
+            {
+              image_info.ping=(*option == '-');
+              break;
+            }
           if (strncmp("pointsize",option+1,2) == 0)
             {
               image_info.pointsize=12;
@@ -1201,7 +1216,7 @@ int main(int argc,char **argv)
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%d",&x))
                     MagickError(OptionError,"Missing size",option);
-                  image_info.pointsize=atoi(argv[i]);
+                  image_info.pointsize=atof(argv[i]);
                 }
               break;
             }
@@ -1620,6 +1635,36 @@ int main(int argc,char **argv)
           image=averaged_image;
         }
     }
+  if (coalesce)
+    {
+      Image
+        *coalesced_image;
+
+      /*
+        Average an image sequence.
+      */
+      coalesced_image=CoalesceImages(image);
+      if (coalesced_image != (Image *) NULL)
+        {
+          DestroyImages(image);
+          image=coalesced_image;
+        }
+    }
+  if (deconstruct)
+    {
+      Image
+        *deconstructed_image;
+
+      /*
+        Average an image sequence.
+      */
+      deconstructed_image=DeconstructImages(image);
+      if (deconstructed_image != (Image *) NULL)
+        {
+          DestroyImages(image);
+          image=deconstructed_image;
+        }
+    }
   if (morph != 0)
     {
       Image
@@ -1635,10 +1680,21 @@ int main(int argc,char **argv)
           image=morphed_image;
         }
     }
-  if (coalesce)
-    CoalesceImages(image);
-  if (deconstruct)
-    DeconstructImages(image);
+  if (mosaic)
+    {
+      Image
+        *mosaic_image;
+
+      /*
+        Average an image sequence.
+      */
+      mosaic_image=MosaicImages(image);
+      if (mosaic_image != (Image *) NULL)
+        {
+          DestroyImages(image);
+          image=mosaic_image;
+        }
+    }
   if (global_colormap)
     (void) MapImages(image,(Image *) NULL,image_info.dither);
   /*
@@ -1659,7 +1715,9 @@ int main(int argc,char **argv)
   }
   if (image_info.verbose)
     DescribeImage(image,(FILE *) NULL,False);
+  DestroyImages(image);
   DestroyDelegateInfo();
+  FreeMemory(argv);
   Exit(status ? 0 : errno);
   return(False);
 }

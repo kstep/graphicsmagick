@@ -95,7 +95,7 @@ Export void closedir(DIR *entry)
 {
   assert(entry != (DIR *) NULL);
   FindClose(entry->hSearch);
-  FreeMemory((char *) entry);
+  FreeMemory(entry);
 }
 
 /*
@@ -199,6 +199,76 @@ Export int IsWindows95()
       (version_info.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS))
     return(1);
   return(0);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++  m m a p                                                                    %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method mmap emulates the Unix method of the same name.
+%
+%  The format of the mmap method is:
+%
+%    Export void *mmap(char *address,size_t length,int protection,int access,
+%      int descriptor,off_t offset)
+%
+%
+*/
+Export void *mmap(char *address,size_t length,int protection,int access,
+  int descriptor,off_t offset)
+{
+  void
+    *map;
+
+  HANDLE
+    handle;
+
+  map=(void *) NULL;
+  handle=INVALID_HANDLE_VALUE;
+  switch (protection)
+  {
+    case PROT_READ:
+    default:
+    {
+      handle=CreateFileMapping((HANDLE) _get_osfhandle(descriptor),0,
+        PAGE_READONLY,0,length,0);
+      if (!handle)
+        break;
+      map=(void *) MapViewOfFile(handle,FILE_MAP_READ,0,0,length);
+      CloseHandle(handle);
+      break;
+    }
+    case PROT_WRITE:
+    {
+      handle=CreateFileMapping((HANDLE) _get_osfhandle(descriptor),0,
+        PAGE_READWRITE,0,length,0);
+      if (!handle)
+        break;
+      map=(void *) MapViewOfFile(handle,FILE_MAP_WRITE,0,0,length);
+      CloseHandle(handle);
+      break;
+    }
+    case PROT_READWRITE:
+    {
+      handle=CreateFileMapping((HANDLE) _get_osfhandle(descriptor),0,
+        PAGE_READWRITE,0,length,0);
+      if (!handle)
+        break;
+      map=(void *) MapViewOfFile(handle,FILE_MAP_ALL_ACCESS,0,0,length);
+      CloseHandle(handle);
+      break;
+    }
+  }
+  if (map == (void *) NULL)
+    return((void *) MAP_FAILED);
+  return((void *) ((char *) map+offset));
 }
 
 /*
@@ -375,6 +445,41 @@ Export int NTTemporaryFilename(char *filename)
     if (strcmp(filename+strlen(filename)-4,".tmp") == 0)
       filename[strlen(filename)-4]='\0';
   return(status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++  m u n m a p                                                                %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method munmap emulates the Unix method with the same name.
+%
+%  The format of the munmap method is:
+%
+%      int munmap(void *map,size_t length)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method munmap returns 0 on success; otherwise, it
+%      returns -1 and sets errno to indicate the error.
+%
+%    o map: The address of the binary large object.
+%
+%    o length: The length of the binary large object.
+%
+%
+*/
+Export int munmap(void *map,size_t length)
+{
+  if (!UnmapViewOfFile(map))
+    return(-1);
+  return(0);
 }
 
 /*

@@ -64,6 +64,45 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   I s P D F                                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsPDF returns True if the image format type, identified by the
+%  magick string, is PDF.
+%
+%  The format of the ReadPDFImage method is:
+%
+%      unsigned int IsPDF(const unsigned char *magick,
+%        const unsigned int length)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method IsPDF returns True if the image format type is PDF.
+%
+%    o magick: This string is generally the first few bytes of an image file
+%      or blob.
+%
+%    o length: Specifies the length of the magick string.
+%
+%
+*/
+Export unsigned int IsPDF(const unsigned char *magick,const unsigned int length)
+{
+  if (length < 5)
+    return(False);
+  if (strncmp((char *) magick,"%PDF-",5) == 0)
+    return(True);
+  return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   R e a d P D F I m a g e                                                   %
 %                                                                             %
 %                                                                             %
@@ -274,7 +313,7 @@ Export Image *ReadPDFImage(const ImageInfo *image_info)
       return((Image *) NULL);
     }
   local_info=CloneImageInfo(image_info);
-  GetBlobInfo(&local_info->blob);
+  GetBlobInfo(&local_info->blob_info);
   image=ReadPNMImage(local_info);
   DestroyImageInfo(local_info);
   (void) remove(postscript_filename);
@@ -299,9 +338,7 @@ Export Image *ReadPDFImage(const ImageInfo *image_info)
         /*
           Rotate image.
         */
-        image->orphan=True;
-        rotated_image=RotateImage(image,90,False,True);
-        image->orphan=False;
+        rotated_image=RotateImage(image,90);
         if (rotated_image != (Image *) NULL)
           {
             DestroyImage(image);
@@ -382,15 +419,14 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   RectangleInfo
     media_info;
 
-  register RunlengthPacket
+  register PixelPacket
     *p;
 
   register unsigned char
     *q;
 
   register int
-    i,
-    j;
+    i;
 
   time_t
     timer;
@@ -547,8 +583,9 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     if (image_info->page != (char *) NULL)
       (void) strcpy(geometry,image_info->page);
     else
-      if (image->page != (char *) NULL)
-        (void) strcpy(geometry,image->page);
+      if ((image->page_info.width != 0) && (image->page_info.height != 0))
+        (void) FormatString(geometry,"%ux%u%+d%+d",image->page_info.width,
+	  image->page_info.height,image->page_info.x,image->page_info.y);
       else
         if (Latin1Compare(image_info->magick,"PDF") == 0)
           (void) strcpy(geometry,PSPageGeometry);
@@ -632,10 +669,10 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         {
           (void) strcpy(buffer,"BT\n");
           (void) WriteBlob(image,strlen(buffer),buffer);
-          (void) sprintf(buffer,"/F%u %u Tf\n",image->scene,
+          (void) sprintf(buffer,"/F%u %lf Tf\n",image->scene,
             image_info->pointsize);
           (void) WriteBlob(image,strlen(buffer),buffer);
-          (void) sprintf(buffer,"%d %u Td\n",x,y+height+
+          (void) sprintf(buffer,"%d %lf Td\n",x,y+height+
             i*image_info->pointsize+12);
           (void) WriteBlob(image,strlen(buffer),buffer);
           (void) sprintf(buffer,"(%.1024s) Tj\n",labels[i]);
@@ -644,7 +681,7 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
           (void) WriteBlob(image,strlen(buffer),buffer);
           FreeMemory(labels[i]);
         }
-        FreeMemory((char *) labels);
+        FreeMemory(labels);
       }
     (void) sprintf(buffer,"%g 0 0 %g %d %d cm\n",x_scale,y_scale,x,y);
     (void) WriteBlob(image,strlen(buffer),buffer);
@@ -778,11 +815,14 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             Dump runlength encoded pixels.
           */
           q=pixels;
-          for (i=0; i < (int) image->packets; i++)
+          for (y=0; y < (int) image->rows; y++)
           {
-            for (j=0; j <= ((int) p->length); j++)
+            p=GetPixelCache(image,0,y,image->columns,1);
+            if (p == (PixelPacket *) NULL)
+              break;
+            for (x=0; x < (int) image->columns; x++)
             {
-              if (image->matte && (p->index == Transparent))
+              if (image->matte && (p->opacity == Transparent))
                 {
                   *q++=DownScale(MaxRGB);
                   *q++=DownScale(MaxRGB);
@@ -800,13 +840,13 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                     *q++=DownScale(p->red);
                     *q++=DownScale(p->green);
                     *q++=DownScale(p->blue);
-                    *q++=DownScale(p->index);
+                    *q++=DownScale(p->opacity);
                   }
+              p++;
             }
-            p++;
             if (image->previous == (Image *) NULL)
-              if (QuantumTick(i,image->packets))
-                ProgressMonitor(SaveImageText,i,image->packets);
+              if (QuantumTick(y,image->rows))
+                ProgressMonitor(SaveImageText,y,image->rows);
           }
           if (compression == ZipCompression)
             status=
@@ -816,7 +856,7 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               status=LZWEncodeImage(image,number_packets,pixels);
             else
               status=PackbitsEncodeImage(image,number_packets,pixels);
-          FreeMemory((char *) pixels);
+          FreeMemory(pixels);
           if (!status)
             {
               CloseBlob(image);
@@ -830,11 +870,14 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             Dump uncompressed DirectColor packets.
           */
           Ascii85Initialize();
-          for (i=0; i < (int) image->packets; i++)
+          for (y=0; y < (int) image->rows; y++)
           {
-            for (j=0; j <= ((int) p->length); j++)
+            p=GetPixelCache(image,0,y,image->columns,1);
+            if (p == (PixelPacket *) NULL)
+              break;
+            for (x=0; x < (int) image->columns; x++)
             {
-              if (image->matte && (p->index == Transparent))
+              if (image->matte && (p->opacity == Transparent))
                 {
                   Ascii85Encode(image,DownScale(MaxRGB));
                   Ascii85Encode(image,DownScale(MaxRGB));
@@ -852,13 +895,13 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                     Ascii85Encode(image,DownScale(p->red));
                     Ascii85Encode(image,DownScale(p->green));
                     Ascii85Encode(image,DownScale(p->blue));
-                    Ascii85Encode(image,DownScale(p->index));
+                    Ascii85Encode(image,DownScale(p->opacity));
                   }
+              p++;
             }
-            p++;
             if (image->previous == (Image *) NULL)
-              if (QuantumTick(i,image->packets))
-                ProgressMonitor(SaveImageText,i,image->packets);
+              if (QuantumTick(y,image->rows))
+                ProgressMonitor(SaveImageText,y,image->rows);
           }
           Ascii85Flush(image);
           break;
@@ -876,9 +919,6 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
           if (image->colors == 2)
             polarity=
               Intensity(image->colormap[0]) < Intensity(image->colormap[1]);
-          bit=0;
-          byte=0;
-          x=0;
           switch (compression)
           {
             case RunlengthEncodedCompression:
@@ -896,12 +936,16 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 Dump uncompressed PseudoColor packets.
               */
               Ascii85Initialize();
-              for (i=0; i < (int) image->packets; i++)
+              for (y=0; y < (int) image->rows; y++)
               {
-                for (j=0; j <= ((int) p->length); j++)
+                if (!GetPixelCache(image,0,y,image->columns,1))
+                  break;
+                bit=0;
+                byte=0;
+                for (x=0; x < (int) image->columns; x++)
                 {
                   byte<<=1;
-                  if (p->index == polarity)
+                  if (image->indexes[x] == polarity)
                     byte|=0x01;
                   bit++;
                   if (bit == 8)
@@ -910,24 +954,13 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                       bit=0;
                       byte=0;
                     }
-                  x++;
-                  if (x == (int) image->columns)
-                    {
-                      /*
-                        Advance to the next scanline.
-                      */
-                      if (bit != 0)
-                        Ascii85Encode(image,byte << (8-bit));
-                      if (image->previous == (Image *) NULL)
-                        if (QuantumTick(y,image->rows))
-                          ProgressMonitor(SaveImageText,y,image->rows);
-                      bit=0;
-                      byte=0;
-                      x=0;
-                      y++;
-                   }
+                  p++;
                 }
-                p++;
+                if (bit != 0)
+                  Ascii85Encode(image,byte << (8-bit));
+                if (image->previous == (Image *) NULL)
+                  if (QuantumTick(y,image->rows))
+                    ProgressMonitor(SaveImageText,y,image->rows);
               }
               Ascii85Flush(image);
               break;
@@ -957,14 +990,18 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 Dump Runlength encoded pixels.
               */
               q=pixels;
-              for (i=0; i < (int) image->packets; i++)
+              for (y=0; y < (int) image->rows; y++)
               {
-                for (j=0; j <= ((int) p->length); j++)
-                  *q++=(unsigned char) p->index;
-                p++;
+                if (!GetPixelCache(image,0,y,image->columns,1))
+                  break;
+                for (x=0; x < (int) image->columns; x++)
+                {
+                  *q++=(unsigned char) image->indexes[x];
+                  p++;
+                }
                 if (image->previous == (Image *) NULL)
-                  if (QuantumTick(i,image->packets))
-                    ProgressMonitor(SaveImageText,i,image->packets);
+                  if (QuantumTick(y,image->rows))
+                    ProgressMonitor(SaveImageText,y,image->rows);
               }
               if (compression == ZipCompression)
                 status=ZLIBEncodeImage(image,number_packets,image_info->quality,
@@ -974,7 +1011,7 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                   status=LZWEncodeImage(image,number_packets,pixels);
                 else
                   status=PackbitsEncodeImage(image,number_packets,pixels);
-              FreeMemory((char *) pixels);
+              FreeMemory(pixels);
               if (!status)
                 {
                   CloseBlob(image);
@@ -988,14 +1025,18 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 Dump uncompressed PseudoColor packets.
               */
               Ascii85Initialize();
-              for (i=0; i < (int) image->packets; i++)
+              for (y=0; y < (int) image->rows; y++)
               {
-                for (j=0; j <= ((int) p->length); j++)
-                  Ascii85Encode(image,(unsigned char) p->index);
-                p++;
+                if (!GetPixelCache(image,0,y,image->columns,1))
+                  break;
+                for (x=0; x < (int) image->columns; x++)
+                {
+                  Ascii85Encode(image,(unsigned char) image->indexes[x]);
+                  p++;
+                }
                 if (image->previous == (Image *) NULL)
-                  if (QuantumTick(i,image->packets))
-                    ProgressMonitor(SaveImageText,i,image->packets);
+                  if (QuantumTick(y,image->rows))
+                    ProgressMonitor(SaveImageText,y,image->rows);
               }
               Ascii85Flush(image);
               break;
@@ -1118,11 +1159,14 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             Dump runlength encoded pixels.
           */
           q=pixels;
-          for (i=0; i < (int) tile_image->packets; i++)
+          for (y=0; y < (int) tile_image->rows; y++)
           {
-            for (j=0; j <= ((int) p->length); j++)
+            p=GetPixelCache(tile_image,0,y,tile_image->columns,1);
+            if (p == (PixelPacket *) NULL)
+              break;
+            for (x=0; x < (int) tile_image->columns; x++)
             {
-              if (tile_image->matte && (p->index == Transparent))
+              if (tile_image->matte && (p->opacity == Transparent))
                 {
                   *q++=DownScale(MaxRGB);
                   *q++=DownScale(MaxRGB);
@@ -1134,10 +1178,10 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                   *q++=DownScale(p->green);
                   *q++=DownScale(p->blue);
                   if (image->colorspace == CMYKColorspace)
-                    *q++=DownScale(p->index);
+                    *q++=DownScale(p->opacity);
                 }
+              p++;
             }
-            p++;
           }
           if (compression == ZipCompression)
             status=
@@ -1147,7 +1191,7 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               status=LZWEncodeImage(image,number_packets,pixels);
             else
               status=PackbitsEncodeImage(image,number_packets,pixels);
-          FreeMemory((char *) pixels);
+          FreeMemory(pixels);
           if (!status)
             {
               CloseBlob(image);
@@ -1161,11 +1205,14 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             Dump uncompressed DirectColor packets.
           */
           Ascii85Initialize();
-          for (i=0; i < (int) tile_image->packets; i++)
+          for (y=0; y < (int) tile_image->rows; y++)
           {
-            for (j=0; j <= ((int) p->length); j++)
+            p=GetPixelCache(tile_image,0,y,tile_image->columns,1);
+            if (p == (PixelPacket *) NULL)
+              break;
+            for (x=0; x < (int) tile_image->columns; x++)
             {
-              if (tile_image->matte && (p->index == Transparent))
+              if (tile_image->matte && (p->opacity == Transparent))
                 {
                   Ascii85Encode(image,DownScale(MaxRGB));
                   Ascii85Encode(image,DownScale(MaxRGB));
@@ -1177,10 +1224,10 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                   Ascii85Encode(image,DownScale(p->green));
                   Ascii85Encode(image,DownScale(p->blue));
                   if (image->colorspace == CMYKColorspace)
-                    Ascii85Encode(image,DownScale(p->index));
+                    Ascii85Encode(image,DownScale(p->opacity));
                 }
+              p++;
             }
-            p++;
           }
           Ascii85Flush(image);
           break;
@@ -1198,9 +1245,6 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
           if (image->colors == 2)
             polarity=Intensity(tile_image->colormap[0]) <
               Intensity(tile_image->colormap[1]);
-          bit=0;
-          byte=0;
-          x=0;
           switch (compression)
           {
             case RunlengthEncodedCompression:
@@ -1222,12 +1266,16 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 Dump Runlength encoded pixels.
               */
               q=pixels;
-              for (i=0; i < (int) tile_image->packets; i++)
+              for (y=0; y < (int) tile_image->rows; y++)
               {
-                for (j=0; j <= ((int) p->length); j++)
+                if (!GetPixelCache(tile_image,0,y,tile_image->columns,1))
+                  break;
+                bit=0;
+                byte=0;
+                for (x=0; x < (int) tile_image->columns; x++)
                 {
                   byte<<=1;
-                  if (p->index == polarity)
+                  if (tile_image->indexes[x] == polarity)
                     byte|=0x01;
                   bit++;
                   if (bit == 8)
@@ -1236,24 +1284,13 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                       bit=0;
                       byte=0;
                     }
-                  x++;
-                  if (x == (int) tile_image->columns)
-                    {
-                      /*
-                        Advance to the next scanline.
-                      */
-                      if (bit != 0)
-                        *q++=byte << (8-bit);
-                      if (image->previous == (Image *) NULL)
-                        if (QuantumTick(y,tile_image->rows))
-                          ProgressMonitor(SaveImageText,y,tile_image->rows);
-                      bit=0;
-                      byte=0;
-                      x=0;
-                      y++;
-                   }
+                  p++;
                 }
-                p++;
+                if (bit != 0)
+                  *q++=byte << (8-bit);
+                if (image->previous == (Image *) NULL)
+                  if (QuantumTick(y,tile_image->rows))
+                    ProgressMonitor(SaveImageText,y,tile_image->rows);
               }
               if (compression == ZipCompression)
                 status=ZLIBEncodeImage(image,number_packets,image_info->quality,
@@ -1263,7 +1300,7 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                   status=LZWEncodeImage(image,number_packets,pixels);
                 else
                   status=PackbitsEncodeImage(image,number_packets,pixels);
-              FreeMemory((char *) pixels);
+              FreeMemory(pixels);
               if (!status)
                 {
                   CloseBlob(image);
@@ -1277,12 +1314,16 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 Dump uncompressed PseudoColor packets.
               */
               Ascii85Initialize();
-              for (i=0; i < (int) tile_image->packets; i++)
+              for (y=0; y < (int) tile_image->rows; y++)
               {
-                for (j=0; j <= ((int) p->length); j++)
+                if (!GetPixelCache(tile_image,0,y,tile_image->columns,1))
+                  break;
+                bit=0;
+                byte=0;
+                for (x=0; x < (int) tile_image->columns; x++)
                 {
                   byte<<=1;
-                  if (p->index == polarity)
+                  if (tile_image->indexes[x] == polarity)
                     byte|=0x01;
                   bit++;
                   if (bit == 8)
@@ -1291,24 +1332,13 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                       bit=0;
                       byte=0;
                     }
-                  x++;
-                  if (x == (int) tile_image->columns)
-                    {
-                      /*
-                        Advance to the next scanline.
-                      */
-                      if (bit != 0)
-                        Ascii85Encode(image,byte << (8-bit));
-                      if (image->previous == (Image *) NULL)
-                        if (QuantumTick(y,tile_image->rows))
-                          ProgressMonitor(SaveImageText,y,tile_image->rows);
-                      bit=0;
-                      byte=0;
-                      x=0;
-                      y++;
-                   }
+                  p++;
                 }
-                p++;
+                if (bit != 0)
+                  Ascii85Encode(image,byte << (8-bit));
+                if (image->previous == (Image *) NULL)
+                  if (QuantumTick(y,tile_image->rows))
+                    ProgressMonitor(SaveImageText,y,tile_image->rows);
               }
               Ascii85Flush(image);
               break;
@@ -1341,11 +1371,15 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 Dump Runlength encoded pixels.
               */
               q=pixels;
-              for (i=0; i < (int) tile_image->packets; i++)
+              for (y=0; y < (int) tile_image->rows; y++)
               {
-                for (j=0; j <= ((int) p->length); j++)
-                  *q++=(unsigned char) p->index;
-                p++;
+                if (!GetPixelCache(tile_image,0,y,tile_image->columns,1))
+                  break;
+                for (x=0; x < (int) tile_image->columns; x++)
+                {
+                  *q++=(unsigned char) tile_image->indexes[x];
+                  p++;
+                }
               }
               if (compression == ZipCompression)
                 status=ZLIBEncodeImage(image,number_packets,image_info->quality,
@@ -1355,7 +1389,7 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                   status=LZWEncodeImage(image,number_packets,pixels);
                 else
                   status=PackbitsEncodeImage(image,number_packets,pixels);
-              FreeMemory((char *) pixels);
+              FreeMemory(pixels);
               if (!status)
                 {
                   CloseBlob(image);
@@ -1369,11 +1403,15 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 Dump uncompressed PseudoColor packets.
               */
               Ascii85Initialize();
-              for (i=0; i < (int) tile_image->packets; i++)
+              for (y=0; y < (int) tile_image->rows; y++)
               {
-                for (j=0; j <= ((int) p->length); j++)
-                  Ascii85Encode(image,(unsigned char) p->index);
-                p++;
+                if (!GetPixelCache(tile_image,0,y,tile_image->columns,1))
+                  break;
+                for (x=0; x < (int) tile_image->columns; x++)
+                {
+                  Ascii85Encode(image,tile_image->indexes[x]);
+                  p++;
+                }
               }
               Ascii85Flush(image);
               break;
@@ -1446,8 +1484,7 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       }
     if (image->next == (Image *) NULL)
       break;
-    image->next->file=image->file;
-    image=image->next;
+    image=GetNextImage(image);
     ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)
@@ -1486,7 +1523,7 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlob(image,strlen(buffer),buffer);
   (void) strcpy(buffer,"%%EOF\n");
   (void) WriteBlob(image,strlen(buffer),buffer);
-  FreeMemory((char *) xref);
+  FreeMemory(xref);
   CloseBlob(image);
   if (image->temporary)
     {

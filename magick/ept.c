@@ -59,6 +59,45 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   I s E P T                                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsEPT returns True if the image format type, identified by the
+%  magick string, is EPT.
+%
+%  The format of the ReadEPTImage method is:
+%
+%      unsigned int IsEPT(const unsigned char *magick,
+%        const unsigned int length)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method IsEPT returns True if the image format type is EPT.
+%
+%    o magick: This string is generally the first few bytes of an image file
+%      or blob.
+%
+%    o length: Specifies the length of the magick string.
+%
+%
+*/
+Export unsigned int IsEPT(const unsigned char *magick,const unsigned int length)
+{
+  if (length < 4)
+    return(False);
+  if (strncmp((char *) magick,"\305\320\323\306",4) == 0)
+    return(True);
+  return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   W r i t e E P T I m a g e                                                 %
 %                                                                             %
 %                                                                             %

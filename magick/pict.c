@@ -309,13 +309,15 @@ const PICTCode
 %
 %  The format of the DecodeImage method is:
 %
-%      unsigned char* DecodeImage(Image *image,int bytes_per_line,
-%        const int bits_per_pixel)
+%      unsigned char* DecodeImage(const ImageInfo *image_info,Image *image,
+%        int bytes_per_line,const int bits_per_pixel)
 %
 %  A description of each parameter follows:
 %
 %    o status:  Method DecodeImage returns True if all the pixels are
 %      uncompressed without error, otherwise False.
+%
+%    o image_info: Specifies a pointer to an ImageInfo structure.
 %
 %    o image: The address of a structure of type Image.
 %
@@ -395,21 +397,21 @@ static unsigned char *ExpandBuffer(unsigned char *pixels,int *bytes_per_line,
   return(scanline);
 }
 
-static unsigned char* DecodeImage(Image *image,int bytes_per_line,
-  const int bits_per_pixel)
+static unsigned char *DecodeImage(const ImageInfo *image_info,Image *image,
+  int bytes_per_line,const int bits_per_pixel)
 {
   int
     bytes_per_pixel,
-    k,
+    j,
     length,
     number_pixels,
-    packets,
     scanline_length,
-    width;
+    width,
+    y;
 
   register int
     i,
-    j;
+    x;
 
   register unsigned char
     *p,
@@ -418,6 +420,9 @@ static unsigned char* DecodeImage(Image *image,int bytes_per_line,
   unsigned char
     *pixels,
     *scanline;
+
+  unsigned short
+    row_bytes;
 
   /*
     Determine pixel buffer size.
@@ -436,18 +441,18 @@ static unsigned char* DecodeImage(Image *image,int bytes_per_line,
       width*=image->matte ? 4 : 3;
   if (bytes_per_line == 0)
     bytes_per_line=width;
-  packets=width;
-  if (bytes_per_line < 8)
-    packets=8*bytes_per_line;
+  row_bytes=image->columns | 0x8000;
+  if ((Latin1Compare(image_info->magick,"PICT24") == 0) ||
+      (image->class == DirectClass))
+    row_bytes=(4*image->columns) | 0x8000;
   /*
     Allocate pixel and scanline buffer.
   */
   pixels=(unsigned char *)
-    AllocateMemory((packets*image->rows+8)*sizeof(unsigned char));
+    AllocateMemory(row_bytes*image->rows*sizeof(unsigned char));
   if (pixels == (unsigned char *) NULL)
     return((unsigned char *) NULL);
-  scanline=(unsigned char *)
-    AllocateMemory((bytes_per_line+65535)*sizeof(unsigned char));
+  scanline=(unsigned char *) AllocateMemory(row_bytes*sizeof(unsigned char));
   if (scanline == (unsigned char *) NULL)
     return((unsigned char *) NULL);
   if (bytes_per_line < 8)
@@ -455,13 +460,13 @@ static unsigned char* DecodeImage(Image *image,int bytes_per_line,
       /*
         Pixels are already uncompressed.
       */
-      for (i=0; i < (int) image->rows; i++)
+      for (y=0; y < (int) image->rows; y++)
       {
-        q=pixels+i*width;
+        q=pixels+y*width;
         number_pixels=bytes_per_line;
         (void) ReadBlob(image,number_pixels,(char *) scanline);
         p=ExpandBuffer(scanline,&number_pixels,bits_per_pixel);
-        for (j=0; j < number_pixels; j++)
+        for (x=0; x < number_pixels; x++)
           *q++=(*p++);
       }
       FreeMemory(scanline);
@@ -470,39 +475,36 @@ static unsigned char* DecodeImage(Image *image,int bytes_per_line,
   /*
     Uncompress RLE pixels into uncompressed pixel buffer.
   */
-  for (i=0; i < (int) image->rows; i++)
+  for (y=0; y < (int) image->rows; y++)
   {
-    q=pixels+i*width;
+    q=pixels+y*width;
     if ((bytes_per_line > 250) || (bits_per_pixel > 8))
       scanline_length=MSBFirstReadShort(image);
     else
       scanline_length=ReadByte(image);
     (void) ReadBlob(image,scanline_length,(char *) scanline);
-    for (j=0; j < scanline_length; )
-      if ((scanline[j] & 0x80) == 0)
+    for (x=0; x < scanline_length; )
+      if ((scanline[x] & 0x80) == 0)
         {
-          length=(scanline[j] & 0xff)+1;
+          length=(scanline[x] & 0xff)+1;
           number_pixels=length*bytes_per_pixel;
-          p=ExpandBuffer(scanline+j+1,&number_pixels,bits_per_pixel);
-          for (k=0; k < number_pixels; k++)
+          p=ExpandBuffer(scanline+x+1,&number_pixels,bits_per_pixel);
+          for (i=0; i < number_pixels; i++)
             *q++=(*p++);
-          j+=length*bytes_per_pixel+1;
+          x+=length*bytes_per_pixel+1;
         }
       else
         {
-          int
-            l;
-
-          length=((scanline[j] ^ 0xff) & 0xff)+2;
+          length=((scanline[x] ^ 0xff) & 0xff)+2;
           number_pixels=bytes_per_pixel;
-          p=ExpandBuffer(scanline+j+1,&number_pixels,bits_per_pixel);
-          for (k=0; k < length; k++)
+          p=ExpandBuffer(scanline+x+1,&number_pixels,bits_per_pixel);
+          for (i=0; i < length; i++)
           {
-            for (l=0; l < number_pixels; l++)
+            for (j=0; j < number_pixels; j++)
               *q++=(*p++);
             p-=number_pixels;
           }
-          j+=bytes_per_pixel+1;
+          x+=bytes_per_pixel+1;
         }
   }
   FreeMemory(scanline);
@@ -525,12 +527,11 @@ static unsigned char* DecodeImage(Image *image,int bytes_per_line,
 %
 %  The format of the EncodeImage method is:
 %
-%      status=EncodeImage(image,scanline,bytes_per_line,pixels)
+%      count=EncodeImage(image,scanline,bytes_per_line,pixels)
 %
 %  A description of each parameter follows:
 %
-%    o status:  Method EncodeImage returns True if all the pixels are
-%      compressed without error, otherwise False.
+%    o status:  Method EncodeImage returns the number of encoded pixels.
 %
 %    o image: The address of a structure of type Image.
 %
@@ -543,7 +544,7 @@ static unsigned char* DecodeImage(Image *image,int bytes_per_line,
 %
 %
 */
-static unsigned int EncodeImage(Image *image,const unsigned char *scanline,
+static size_t EncodeImage(Image *image,const unsigned char *scanline,
   const int bytes_per_line,unsigned char *pixels)
 {
 #define MaxCount  128
@@ -706,13 +707,17 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
 
   Image
     *image,
-    *tiled_image;
+    *tile_image;
+
+  IndexPacket
+    index;
 
   int
     c,
     code,
     flags,
-    version;
+    version,
+    y;
 
   long
     length;
@@ -724,9 +729,10 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
     pixmap;
 
   register int
-    i;
+    i,
+    x;
 
-  register RunlengthPacket
+  register PixelPacket
     *q;
 
   unsigned int
@@ -775,23 +781,6 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
       CloseBlob(image);
       return(image);
     }
-  image->packets=((Max(image->columns*image->rows,1)-1)/(MaxRunlength+1))+1;
-  image->pixels=(RunlengthPacket *)
-    AllocateMemory(image->packets*sizeof(RunlengthPacket));
-  if (image->pixels == (RunlengthPacket *) NULL)
-    ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-  q=image->pixels;
-  for (i=0; i < (int) image->packets; i++)
-  {
-    q->red=0;
-    q->green=0;
-    q->blue=0;
-    q->index=0;
-    SetRunlengthEncoder(q);
-    q++;
-  }
-  q--;
-  q->length=image->columns*image->rows-(MaxRunlength+1)*(image->packets-1)-1;
   /*
     Interpret PICT opcodes.
   */
@@ -824,24 +813,7 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
             break;
           image->columns=frame.right-frame.left;
           image->rows=frame.bottom-frame.top;
-          image->packets=
-            ((Max(image->columns*image->rows,1)-1)/(MaxRunlength+1))+1;
-          image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
-            image->pixels,image->packets*sizeof(RunlengthPacket));
-          if (image->pixels == (RunlengthPacket *) NULL)
-            ReaderExit(ResourceLimitWarning,"Memory allocation failed",
-              image);
-          q=image->pixels;
-          for (i=0; i < (int) image->packets; i++)
-          {
-            q->index=0;
-            SetRunlengthEncoder(q);
-            q++;
-          }
-          q--;
-          q->length=image->columns*image->rows-(MaxRunlength+1)*
-            (image->packets-1)-1;
-          SyncImage(image);
+          SetImage(image);
           break;
         }
         case 0x12:
@@ -935,31 +907,16 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
         {
           int
             bytes_per_line,
-            j,
-            y;
+            j;
 
           PICTRectangle
             destination;
-
-          Quantum
-            blue,
-            green,
-            red;
-
-          register int
-            x;
-
-          register long
-            packets;
 
           register unsigned char
             *p;
 
           unsigned char
             *pixels;
-
-          unsigned short
-            index;
 
           /*
             Pixmap clipped by a rectangle.
@@ -975,61 +932,58 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
             }
           ReadRectangle(frame);
           /*
-            Initialize tiled_image.
+            Initialize tile_image.
           */
-          tiled_image=AllocateImage(image_info);
-          if (tiled_image == (Image *) NULL)
-            ReaderExit(ResourceLimitWarning,"Memory allocation failed",
-              image);
-          tiled_image->file=image->file;
-          tiled_image->columns=frame.right-frame.left;
-          tiled_image->rows=frame.bottom-frame.top;
+          tile_image=CloneImage(image,frame.right-frame.left,
+            frame.bottom-frame.top,True);
+          if (tile_image == (Image *) NULL)
+            ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
           if ((code == 0x9a) || (bytes_per_line & 0x8000))
             {
               ReadPixmap(pixmap);
-              tiled_image->matte=pixmap.component_count == 4;
+              tile_image->matte=pixmap.component_count == 4;
             }
           if (code != 0x9a)
             {
               /*
                 Initialize colormap.
               */
-              tiled_image->colors=2;
+              tile_image->colors=2;
               if (bytes_per_line & 0x8000)
                 {
                   (void) MSBFirstReadLong(image);
                   flags=MSBFirstReadShort(image);
-                  tiled_image->colors=MSBFirstReadShort(image)+1;
+                  tile_image->colors=MSBFirstReadShort(image)+1;
                 }
-              tiled_image->class=PseudoClass;
-              tiled_image->colormap=(ColorPacket *)
-                AllocateMemory(tiled_image->colors*sizeof(ColorPacket));
-              if (tiled_image->colormap == (ColorPacket *) NULL)
+              tile_image->class=PseudoClass;
+              tile_image->colormap=(PixelPacket *)
+                AllocateMemory(tile_image->colors*sizeof(PixelPacket));
+              if (tile_image->colormap == (PixelPacket *) NULL)
                 {
-                  DestroyImage(tiled_image);
+                  DestroyImage(tile_image);
                   ReaderExit(ResourceLimitWarning,"Memory allocation failed",
                     image);
                 }
-              for (i=0; i < (int) tiled_image->colors; i++)
+              for (i=0; i < (int) tile_image->colors; i++)
               {
-                tiled_image->colormap[i].red=(Quantum)
-                  ((long) (MaxRGB*i)/(tiled_image->colors-1));
-                tiled_image->colormap[i].green=(Quantum)
-                  ((long) (MaxRGB*i)/(tiled_image->colors-1));
-                tiled_image->colormap[i].blue=(Quantum)
-                  ((long) (MaxRGB*i)/(tiled_image->colors-1));
+                tile_image->colormap[i].red=(Quantum)
+                  ((long) (MaxRGB*i)/(tile_image->colors-1));
+                tile_image->colormap[i].green=(Quantum)
+                  ((long) (MaxRGB*i)/(tile_image->colors-1));
+                tile_image->colormap[i].blue=(Quantum)
+                  ((long) (MaxRGB*i)/(tile_image->colors-1));
               }
               if (bytes_per_line & 0x8000)
-                for (i=0; i < (int) tiled_image->colors; i++)
+                for (i=0; i < (int) tile_image->colors; i++)
                 {
-                  j=MSBFirstReadShort(image) % tiled_image->colors;
+                  j=MSBFirstReadShort(image) % tile_image->colors;
                   if (flags & 0x8000)
                     j=i;
-                  tiled_image->colormap[j].red=
+                  tile_image->colormap[j].red=
                     XDownScale(MSBFirstReadShort(image));
-                  tiled_image->colormap[j].green=
+                  tile_image->colormap[j].green=
                     XDownScale(MSBFirstReadShort(image));
-                  tiled_image->colormap[j].blue=
+                  tile_image->colormap[j].blue=
                     XDownScale(MSBFirstReadShort(image));
                 }
             }
@@ -1045,94 +999,76 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
               for (i=0; i < (length-2); i++)
                 (void) ReadByte(image);
             }
-          packets=0;
-          tiled_image->pixels=(RunlengthPacket *) AllocateMemory(
-            tiled_image->columns*tiled_image->rows*sizeof(RunlengthPacket));
           if ((code != 0x9a) && (bytes_per_line & 0x8000) == 0)
-            pixels=DecodeImage(tiled_image,bytes_per_line,1);
+            pixels=DecodeImage(image_info,image,bytes_per_line,1);
           else
-            pixels=DecodeImage(tiled_image,bytes_per_line,
+            pixels=DecodeImage(image_info,image,bytes_per_line,
               pixmap.bits_per_pixel);
-          if ((tiled_image->pixels == (RunlengthPacket *) NULL) ||
-              (pixels == (unsigned char *) NULL))
+          if (pixels == (unsigned char *) NULL)
             {
-              DestroyImage(tiled_image);
-              ReaderExit(ResourceLimitWarning,"Memory allocation failed",
-                image);
+              DestroyImage(tile_image);
+              ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
             }
           /*
-            Convert PICT tiled image to runlength-encoded packets.
+            Convert PICT tile image to pixel packets.
           */
-          red=0;
-          green=0;
-          blue=0;
-          index=0;
           p=pixels;
-          q=tiled_image->pixels;
-          SetRunlengthEncoder(q);
-          for (y=0; y < (int) tiled_image->rows; y++)
+          for (y=0; y < (int) tile_image->rows; y++)
           {
-            for (x=0; x < (int) tiled_image->columns; x++)
+            q=SetPixelCache(tile_image,0,y,tile_image->columns,1);
+            if (q == (PixelPacket *) NULL)
+              break;
+            for (x=0; x < (int) tile_image->columns; x++)
             {
-              if (tiled_image->class == PseudoClass)
-                index=(*p++);
+              if (tile_image->class == PseudoClass)
+                {
+                  index=(*p);
+                  tile_image->indexes[x]=index;
+                  q->red=tile_image->colormap[index].red;
+                  q->green=tile_image->colormap[index].green;
+                  q->blue=tile_image->colormap[index].blue;
+                }
               else
                 {
                   if (pixmap.bits_per_pixel == 16)
                     {
                       i=(*p++);
                       j=(*p);
-                      red=UpScale((i & 0x7c) << 1);
-                      green=UpScale(((i & 0x03) << 6) | ((j & 0xe0) >> 2));
-                      blue=UpScale((j & 0x1f) << 3);
+                      q->red=UpScale((i & 0x7c) << 1);
+                      q->green=UpScale(((i & 0x03) << 6) | ((j & 0xe0) >> 2));
+                      q->blue=UpScale((j & 0x1f) << 3);
                     }
                   else
-                    if (!tiled_image->matte)
+                    if (!tile_image->matte)
                       {
-                        red=UpScale(*p);
-                        green=UpScale(*(p+tiled_image->columns));
-                        blue=UpScale(*(p+2*tiled_image->columns));
+                        q->red=UpScale(*p);
+                        q->green=UpScale(*(p+tile_image->columns));
+                        q->blue=UpScale(*(p+2*tile_image->columns));
                       }
                     else
                       {
-                        index=UpScale(*p);
-                        red=UpScale(*(p+tiled_image->columns));
-                        green=UpScale(*(p+2*tiled_image->columns));
-                        blue=UpScale(*(p+3*tiled_image->columns));
+                        q->opacity=UpScale(*p);
+                        q->red=UpScale(*(p+tile_image->columns));
+                        q->green=UpScale(*(p+2*tile_image->columns));
+                        q->blue=UpScale(*(p+3*tile_image->columns));
                       }
-                  p++;
                 }
-              if ((red == q->red) && (green == q->green) &&
-                  (blue == q->blue) && (index == q->index) &&
-                  ((int) q->length < MaxRunlength))
-                q->length++;
-              else
-                {
-                  if (packets != 0)
-                    q++;
-                  packets++;
-                  q->red=red;
-                  q->green=green;
-                  q->blue=blue;
-                  q->index=index;
-                  q->length=0;
-                }
+              p++;
+              q++;
             }
-            if ((tiled_image->class == DirectClass) &&
+            if (!SyncPixelCache(tile_image))
+              break;
+            if ((tile_image->class == DirectClass) &&
                 (pixmap.bits_per_pixel != 16))
-              p+=(pixmap.component_count-1)*tiled_image->columns;
+              p+=(pixmap.component_count-1)*tile_image->columns;
             if (destination.bottom == (int) image->rows)
-              if (QuantumTick(y,tiled_image->rows))
-                ProgressMonitor(LoadImageText,y,tiled_image->rows);
+              if (QuantumTick(y,tile_image->rows))
+                ProgressMonitor(LoadImageText,y,tile_image->rows);
           }
-          SetRunlengthPackets(tiled_image,packets);
-          if (tiled_image->class == PseudoClass)
-            SyncImage(tiled_image);
-          (void) FreeMemory((char *) pixels);
-          CompositeImage(image,ReplaceCompositeOp,tiled_image,destination.left,
+          (void) FreeMemory(pixels);
+          CompositeImage(image,ReplaceCompositeOp,tile_image,destination.left,
             destination.top);
-          tiled_image->file=(FILE *) NULL;
-          DestroyImage(tiled_image);
+          DestroyImage(tile_image);
           if (destination.bottom != (int) image->rows)
             ProgressMonitor(LoadImageText,destination.bottom,image->rows);
           break;
@@ -1147,7 +1083,7 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
           if (length == 0)
             break;
           if (image->comments != (char *) NULL)
-            FreeMemory((char *) image->comments);
+            FreeMemory(image->comments);
           image->comments=(char *) AllocateMemory((length+1)*sizeof(char));
           if (image->comments == (char *) NULL)
             break;
@@ -1194,7 +1130,7 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
         local_info=CloneImageInfo(image_info);
         if (local_info == (ImageInfo *) NULL)
           ReaderExit(FileOpenWarning,"Unable to write file",image);
-        GetBlobInfo(&(local_info->blob));
+        GetBlobInfo(&(local_info->blob_info));
         TemporaryFilename(local_info->filename);
         file=fopen(local_info->filename,WriteBinaryType);
         if (file == (FILE *) NULL)
@@ -1208,21 +1144,20 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
         for (i=0; i < (length-154); i++)
         {
           c=ReadByte(image);
-          (void) putc(c,file);
+          (void) fputc(c,file);
         }
         (void) fclose(file);
-        tiled_image=ReadJPEGImage(local_info);
+        tile_image=ReadJPEGImage(local_info);
         DestroyImageInfo(local_info);
         (void) remove(local_info->filename);
-        if (tiled_image == (Image *) NULL)
+        if (tile_image == (Image *) NULL)
           continue;
-        FormatString(geometry,"%ux%u",Max(image->columns,tiled_image->columns),
-          Max(image->rows,tiled_image->rows));
+        FormatString(geometry,"%ux%u",Max(image->columns,tile_image->columns),
+          Max(image->rows,tile_image->rows));
         TransformImage(&image,(char *) NULL,geometry);
-        CompositeImage(image,ReplaceCompositeOp,tiled_image,
-          frame.left,frame.right);
-        tiled_image->file=(FILE *) NULL;
-        DestroyImage(tiled_image);
+        CompositeImage(image,ReplaceCompositeOp,tile_image,frame.left,
+          frame.right);
+        DestroyImage(tile_image);
         continue;
       }
     if (((code >= 0xd0) && (code <= 0xfe)) ||
@@ -1247,7 +1182,7 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
         continue;
       }
   }
-  CondenseImage(image);
+  CloseBlob(image);
   return(image);
 }
 #endif
@@ -1294,8 +1229,6 @@ Export unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
 #define PictVersion  0x11
 
   int
-    count,
-    x,
     y;
 
   PICTPixmap
@@ -1309,11 +1242,14 @@ Export unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
     size_rectangle,
     source_rectangle;
 
+  size_t
+    count;
+
   register int
     i,
-    j;
+    x;
 
-  register RunlengthPacket
+  register PixelPacket
     *p;
 
   unsigned char
@@ -1341,23 +1277,6 @@ Export unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   TransformRGBImage(image,RGBColorspace);
-  /*
-    Allocate memory.
-  */
-  bytes_per_line=image->columns;
-  if ((Latin1Compare(image_info->magick,"PICT24") == 0) || 
-      !IsPseudoClass(image))
-    bytes_per_line*=image->matte ? 4 : 3;
-  buffer=(unsigned char *)
-    AllocateMemory(PictHeaderSize*sizeof(unsigned char));
-  packed_scanline=(unsigned char *) AllocateMemory((bytes_per_line+
-    bytes_per_line/MaxCount+1)*sizeof(unsigned char));
-  scanline=(unsigned char *)
-    AllocateMemory(bytes_per_line*sizeof(unsigned char));
-  if ((buffer == (unsigned char *) NULL) ||
-      (packed_scanline == (unsigned char *) NULL) ||
-      (scanline == (unsigned char *) NULL))
-    WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
   /*
     Initialize image info.
   */
@@ -1390,8 +1309,8 @@ Export unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   pixmap.table=0;
   pixmap.reserved=0;
   transfer_mode=0;
-  if ((Latin1Compare(image_info->magick,"PICT24") == 0) ||
-      (image->class == DirectClass))
+  if (!IsPseudoClass(image) ||
+      (Latin1Compare(image_info->magick,"PICT24") == 0))
     {
       pixmap.component_count=image->matte ? 4 : 3;
       pixmap.pixel_type=16;
@@ -1401,11 +1320,26 @@ Export unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
       row_bytes=(4*image->columns) | 0x8000;
     }
   /*
+    Allocate memory.
+  */
+  bytes_per_line=image->columns;
+  if ((image->class == DirectClass) ||
+      (Latin1Compare(image_info->magick,"PICT24") == 0))
+    bytes_per_line*=image->matte ? 4 : 3;
+  buffer=(unsigned char *) AllocateMemory(PictHeaderSize*sizeof(unsigned char));
+  packed_scanline=(unsigned char *)
+    AllocateMemory((row_bytes+MaxCount)*sizeof(unsigned char));
+  scanline=(unsigned char *) AllocateMemory(row_bytes*sizeof(unsigned char));
+  if ((buffer == (unsigned char *) NULL) ||
+      (packed_scanline == (unsigned char *) NULL) ||
+      (scanline == (unsigned char *) NULL))
+    WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+  /*
     Write header, header size, size bounding box, version, and reserved.
   */
   for (i=0; i < PictHeaderSize; i++)
     buffer[i]=0;
-  (void) WriteBlob(image,PictHeaderSize,(char *) buffer);
+  (void) WriteBlob(image,PictHeaderSize,buffer);
   MSBFirstWriteShort(image,0);
   MSBFirstWriteShort(image,size_rectangle.top);
   MSBFirstWriteShort(image,size_rectangle.left);
@@ -1509,94 +1443,64 @@ Export unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
     Write picture data.
   */
   count=0;
-  x=0;
-  y=0;
-  p=image->pixels;
   if ((Latin1Compare(image_info->magick,"PICT24") != 0) &&
       (image->class == PseudoClass))
+    for (y=0; y < (int) image->rows; y++)
     {
-      register unsigned char
-        *index;
-
-      index=scanline;
-      for (i=0; i < (int) image->packets; i++)
-      {
-        for (j=0; j <= ((int) p->length); j++)
-        {
-          *index++=(unsigned char) p->index;
-          x++;
-          if (x == (int) image->columns)
-            {
-              count+=
-                EncodeImage(image,scanline,row_bytes & 0x7FFF,packed_scanline);
-              if (QuantumTick(y,image->rows))
-                ProgressMonitor(SaveImageText,y,image->rows);
-              index=scanline;
-              x=0;
-              y++;
-            }
-        }
-        p++;
-      }
+      if (!GetPixelCache(image,0,y,image->columns,1))
+        break;
+      for (x=0; x < (int) image->columns; x++)
+        scanline[x]=image->indexes[x];
+      count+=EncodeImage(image,scanline,row_bytes & 0x7FFF,packed_scanline);
+      if (QuantumTick(y,image->rows))
+        ProgressMonitor(SaveImageText,y,image->rows);
     }
   else
     {
       register unsigned char
         *blue,
         *green,
-        *index,
+        *opacity,
         *red;
 
       red=scanline;
       green=scanline+image->columns;
       blue=scanline+2*image->columns;
-      index=(unsigned char *) NULL;
-      if (image->matte)
-        {
-          index=scanline;
-          red=scanline+image->columns;
-          green=scanline+2*image->columns;
-          blue=scanline+3*image->columns;
-        }
-      for (i=0; i < (int) image->packets; i++)
+      for (y=0; y < (int) image->rows; y++)
       {
-        for (j=0; j <= ((int) p->length); j++)
+        p=GetPixelCache(image,0,y,image->columns,1);
+        if (p == (PixelPacket *) NULL)
+          break;
+        red=scanline;
+        green=scanline+image->columns;
+        blue=scanline+2*image->columns;
+        if (image->matte)
+          {
+            opacity=scanline;
+            red=scanline+image->columns;
+            green=scanline+2*image->columns;
+            blue=scanline+3*image->columns;
+          }
+        for (x=0; x < (int) image->columns; x++)
         {
           *red++=DownScale(p->red);
           *green++=DownScale(p->green);
           *blue++=DownScale(p->blue);
           if (image->matte)
-            *index++=DownScale(p->index);
-          x++;
-          if (x == (int) image->columns)
-            {
-              if (QuantumTick(y,image->rows))
-                ProgressMonitor(SaveImageText,y,image->rows);
-              red=scanline;
-              green=scanline+image->columns;
-              blue=scanline+2*image->columns;
-              if (image->matte)
-                {
-                  index=scanline;
-                  red=scanline+image->columns;
-                  green=scanline+2*image->columns;
-                  blue=scanline+3*image->columns;
-                }
-              count+=
-                EncodeImage(image,scanline,row_bytes & 0x7FFF,packed_scanline);
-              x=0;
-              y++;
-            }
+            *opacity++=DownScale(p->opacity);
+          p++;
         }
-        p++;
+        count+=EncodeImage(image,scanline,row_bytes & 0x7FFF,packed_scanline);
+        if (QuantumTick(y,image->rows))
+          ProgressMonitor(SaveImageText,y,image->rows);
       }
     }
   if (count & 0x1)
     (void) WriteByte(image,'\0');
   MSBFirstWriteShort(image,PictEndOfPictureOp);
-  FreeMemory((char *) scanline);
-  FreeMemory((char *) packed_scanline);
-  FreeMemory((char *) buffer);
+  FreeMemory(scanline);
+  FreeMemory(packed_scanline);
+  FreeMemory(buffer);
   CloseBlob(image);
   return(True);
 }

@@ -83,34 +83,25 @@ Export void DestroyMontageInfo(MontageInfo *montage_info)
 {
   assert(montage_info != (MontageInfo *) NULL);
   if (montage_info->geometry != (char *) NULL)
-    FreeMemory((char *) montage_info->geometry);
+    FreeMemory(montage_info->geometry);
   montage_info->geometry=(char *) NULL;
   if (montage_info->tile != (char *) NULL)
-    FreeMemory((char *) montage_info->tile);
+    FreeMemory(montage_info->tile);
   montage_info->tile=(char *) NULL;
-  if (montage_info->background_color != (char *) NULL)
-    FreeMemory((char *) montage_info->background_color);
-  montage_info->background_color=(char *) NULL;
-  if (montage_info->border_color != (char *) NULL)
-    FreeMemory((char *) montage_info->border_color);
-  montage_info->border_color=(char *) NULL;
-  if (montage_info->matte_color != (char *) NULL)
-    FreeMemory((char *) montage_info->matte_color);
-  montage_info->matte_color=(char *) NULL;
   if (montage_info->title != (char *) NULL)
-    FreeMemory((char *) montage_info->title);
+    FreeMemory(montage_info->title);
   montage_info->title=(char *) NULL;
   if (montage_info->frame != (char *) NULL)
-    FreeMemory((char *) montage_info->frame);
+    FreeMemory(montage_info->frame);
   montage_info->frame=(char *) NULL;
   if (montage_info->texture != (char *) NULL)
-    FreeMemory((char *) montage_info->texture);
+    FreeMemory(montage_info->texture);
   montage_info->texture=(char *) NULL;
   if (montage_info->pen != (char *) NULL)
-    FreeMemory((char *) montage_info->pen);
+    FreeMemory(montage_info->pen);
   montage_info->pen=(char *) NULL;
   if (montage_info->font != (char *) NULL)
-    FreeMemory((char *) montage_info->font);
+    FreeMemory(montage_info->font);
   montage_info->font=(char *) NULL;
 }
 
@@ -143,15 +134,15 @@ Export void GetMontageInfo(MontageInfo *montage_info)
   *montage_info->filename='\0';
   montage_info->geometry=AllocateString(DefaultTileGeometry);
   montage_info->tile=AllocateString("6x4");
-  montage_info->background_color=AllocateString("#c0c0c0");
-  montage_info->border_color=(char *) NULL;
-  montage_info->matte_color=AllocateString("#bdbdbd");
+  (void) QueryColorDatabase("#c0c0c0",&montage_info->background_color);
+  (void) QueryColorDatabase(BorderColor,&montage_info->border_color);
+  (void) QueryColorDatabase("#bdbdbd",&montage_info->matte_color);
   montage_info->title=(char *) NULL;
   montage_info->frame=(char *) NULL;
   montage_info->texture=(char *) NULL;
   montage_info->pen=(char *) NULL;
   montage_info->font=(char *) NULL;
-  montage_info->pointsize=atoi(DefaultPointSize);
+  montage_info->pointsize=atof(DefaultPointSize);
   montage_info->border_width=0;
   montage_info->gravity=CenterGravity;
   montage_info->shadow=False;
@@ -280,8 +271,8 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
   register int
     i;
 
-  register RunlengthPacket
-    *p;
+  register PixelPacket
+    *q;
 
   RectangleInfo
     bounding_box,
@@ -443,9 +434,8 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
   (void) CloneString(&local_info->pen,montage_info->pen);
   (void) CloneString(&local_info->font,montage_info->font);
   local_info->pointsize=montage_info->pointsize;
-  (void) CloneString(&local_info->background_color,
-    montage_info->background_color);
-  (void) CloneString(&local_info->border_color,montage_info->border_color);
+  local_info->background_color=montage_info->background_color;
+  local_info->border_color=montage_info->border_color;
   GetAnnotateInfo(local_info,&annotate_info);
   annotate_info.gravity=NorthGravity;
   texture=(Image *) NULL;
@@ -525,16 +515,7 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
     (void) strcpy(montage_image->filename,montage_info->filename);
     montage_image->columns=bounding_box.width;
     montage_image->rows=bounding_box.height;
-    montage_image->packets=montage_image->columns*montage_image->rows;
-    montage_image->pixels=(RunlengthPacket *) AllocateMemory((unsigned int)
-      montage_image->packets*sizeof(RunlengthPacket));
-    if (montage_image->pixels == (RunlengthPacket *) NULL)
-      {
-        MagickWarning(ResourceLimitWarning,"Unable to montage image_list",
-          "Memory allocation failed");
-        DestroyImages(montage_image);
-        return((Image *) NULL);
-      }
+    SetImage(montage_image);
     /*
       Set montage geometry.
     */
@@ -563,10 +544,6 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
       (void) strcat(montage_image->directory,image_list[tile]->filename);
       (void) strcat(montage_image->directory,"\n");
     }
-    /*
-      Initialize montage image to background color.
-    */
-    SetImage(montage_image);
     handler=SetMonitorHandler((MonitorHandler) NULL);
     if (texture != (Image *) NULL)
       TextureImage(montage_image,texture);
@@ -738,27 +715,31 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
               */
               for (rows=0; rows < ((int) image->rows-4); rows++)
               {
-                p=montage_image->pixels+montage_image->columns*
-                  (y_offset+y+rows+4)+x_offset+x+image->columns;
+                q=GetPixelCache(montage_image,x+x_offset+image->columns,
+                  y_offset+y+rows+4,Min(tile_info.x,4),1);
+                if (q == (PixelPacket *) NULL)
+                  break;
                 for (columns=0; columns < Min(tile_info.x,4); columns++)
                 {
-                  if (p >= (montage_image->pixels+montage_image->packets))
-                    continue;
-                  Modulate(0.0,0.0,-25.0+4*columns,&p->red,&p->green,&p->blue);
-                  p++;
+                  Modulate(0.0,0.0,-25.0+4*columns,&q->red,&q->green,&q->blue);
+                  q++;
                 }
+                if (!SyncPixelCache(montage_image))
+                  break;
               }
               for (rows=0; rows < Min(tile_info.y,4); rows++)
               {
-                p=montage_image->pixels+montage_image->columns*
-                  (y_offset+y+image->rows+rows)+x_offset+x+4;
+                q=GetPixelCache(montage_image,x+x_offset+4,y_offset+y+
+                  image->rows+rows,image->columns,1);
+                if (q == (PixelPacket *) NULL)
+                  break;
                 for (columns=0; columns < (int) image->columns; columns++)
                 {
-                  if (p >= (montage_image->pixels+montage_image->packets))
-                    continue;
-                  Modulate(0.0,0.0,-25.0+4*rows,&p->red,&p->green,&p->blue);
-                  p++;
+                  Modulate(0.0,0.0,-25.0+4*rows,&q->red,&q->green,&q->blue);
+                  q++;
                 }
+                if (!SyncPixelCache(montage_image))
+                  break;
               }
             }
           if (image->label != (char *) NULL)
@@ -790,13 +771,12 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
       ProgressMonitor(MontageImageText,tiles,total_tiles);
       tiles++;
     }
-    CondenseImage(montage_image);
     if ((i+1) < (int) images_per_page)
       {
         /*
           Allocate next image structure.
         */
-        AllocateNextImage((ImageInfo *) NULL,montage_image);
+        AllocateNextImage(local_info,montage_image);
         if (montage_image->next == (Image *) NULL)
           {
             DestroyImages(montage_image);
@@ -808,8 +788,8 @@ Export Image *MontageImages(const Image *images,const MontageInfo *montage_info)
       }
   }
   if (texture != (Image *) NULL)
-    FreeMemory((char *) texture);
-  FreeMemory((char *) master_list);
+    FreeMemory(texture);
+  FreeMemory(master_list);
   DestroyImageInfo(local_info);
   while (montage_image->previous != (Image *) NULL)
     montage_image=montage_image->previous;

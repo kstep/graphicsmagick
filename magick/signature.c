@@ -448,7 +448,7 @@ static void UpdateMessageDigest(MessageDigest *message_digest,
 %
 %  The format of the SignatureImage method is:
 %
-%      SignatureImage(image)
+%      void SignatureImage(Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -463,17 +463,13 @@ Export void SignatureImage(Image *image)
     hex[] = "0123456789abcdef";
 
   int
-    x;
+    y;
 
   MessageDigest
     message_digest;
 
   register int
-    i,
-    j;
-
-  register RunlengthPacket
-    *p;
+    i;
 
   register unsigned char
     *q;
@@ -481,20 +477,27 @@ Export void SignatureImage(Image *image)
   unsigned char
     *message;
 
-  unsigned short
-    value;
+  unsigned int
+    packet_size;
 
   assert(image != (Image *) NULL);
-  if (image->pixels == (RunlengthPacket *) NULL)
+  if (image->pixels == (PixelPacket *) NULL)
     return;
   /*
     Allocate memory for digital signature.
   */
   if (image->signature != (char *) NULL)
-    FreeMemory((char *) image->signature);
+    FreeMemory(image->signature);
   image->signature=(char *) AllocateMemory(33*sizeof(char));
+  if (image->colorspace == CMYKColorspace)
+    packet_size=image->depth > 8 ? 8 : 4;
+  else
+    if (!image->matte)
+      packet_size=image->depth > 8 ? 6 : 3;
+    else
+      packet_size=image->depth > 8 ? 8 : 4;
   message=(unsigned char *)
-    AllocateMemory(image->columns*sizeof(RunlengthPacket));
+    AllocateMemory(packet_size*image->columns*sizeof(unsigned char));
   if ((image->signature == (char *) NULL) ||
       (message == (unsigned char *) NULL))
     {
@@ -506,29 +509,20 @@ Export void SignatureImage(Image *image)
     Compute image digital signature.
   */
   InitializeMessageDigest(&message_digest);
-  x=0;
-  p=image->pixels;
-  q=message;
-  for (i=0; i < (int) image->packets; i++)
+  for (y=0; y < (int) image->rows; y++)
   {
-    for (j=0; j <= ((int) p->length); j++)
-    {
-      WriteQuantum(p->red,q);
-      WriteQuantum(p->green,q);
-      WriteQuantum(p->blue,q);
-      if (image->matte)
-        WriteQuantum(p->index,q);
-      x++;
-      if (x == (int) image->columns)
-        {
-          UpdateMessageDigest(&message_digest,message,q-message);
-          q=message;
-          x=0;
-        }
-    }
-    p++;
+    if (!GetPixelCache(image,0,y,image->columns,1))
+      break;
+    if (image->colorspace == CMYKColorspace)
+      WritePixelCache(image,CMYKQuantum,message);
+    else
+      if (!image->matte)
+        WritePixelCache(image,RGBQuantum,message);
+      else
+        WritePixelCache(image,RGBAQuantum,message);
+    UpdateMessageDigest(&message_digest,message,packet_size*image->columns);
   }
-  FreeMemory((char *) message);
+  FreeMemory(message);
   /*
     Convert digital signature to a 32 character hex string.
   */

@@ -57,6 +57,15 @@ and are saved to separate files.  Use \fB+adjoin\fP to force this behavior.
 .TP
 .B "-border"
 include image borders in the output image.
+.TP
+.B "-cache \fIthreshold\fP"
+megabytes of memory available to the pixel cache.
+
+Image pixels are stored in memory until 80 megabytes of memory
+have been consumed.  Subsequent pixel operations are cached on disk.
+Operations to memory are significantly faster but if your computer does not
+have a sufficient amount of free memory you may want to adjust this threshold
+value.
 .B "-colors \fIvalue\fP"
 preferred number of colors in the image.
 

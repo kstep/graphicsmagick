@@ -59,6 +59,45 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   I s F A X                                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsFAX returns True if the image format type, identified by the
+%  magick string, is FAX.
+%
+%  The format of the ReadFAXImage method is:
+%
+%      unsigned int IsFAX(const unsigned char *magick,
+%        const unsigned int length)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method IsFAX returns True if the image format type is FAX.
+%
+%    o magick: This string is generally the first few bytes of an image file
+%      or blob.
+%
+%    o length: Specifies the length of the magick string.
+%
+%
+*/
+Export unsigned int IsFAX(const unsigned char *magick,const unsigned int length)
+{
+  if (length < 4)
+    return(False);
+  if (strncmp((char *) magick,"DFAX",4) == 0)
+    return(True);
+  return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   R e a d F A X I m a g e                                                   %
 %                                                                             %
 %                                                                             %
@@ -111,14 +150,10 @@ Export Image *ReadFAXImage(const ImageInfo *image_info)
     image->columns=2592;
   if (image->rows == 0)
     image->rows=3508;
-  image->packets=Max((image->columns*image->rows+8) >> 4,1);
-  image->pixels=(RunlengthPacket *)
-    AllocateMemory(image->packets*sizeof(RunlengthPacket));
   image->colors=2;
-  image->colormap=(ColorPacket *)
-    AllocateMemory(image->colors*sizeof(ColorPacket));
-  if ((image->pixels == (RunlengthPacket *) NULL) ||
-      (image->colormap == (ColorPacket *) NULL))
+  image->colormap=(PixelPacket *)
+    AllocateMemory(image->colors*sizeof(PixelPacket));
+  if (image->colormap == (PixelPacket *) NULL)
     ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
   /*
     Monochrome colormap.
@@ -189,8 +224,7 @@ Export unsigned int WriteFAXImage(const ImageInfo *image_info,Image *image)
     status=HuffmanEncodeImage((ImageInfo *) image_info,image);
     if (image->next == (Image *) NULL)
       break;
-    image->next->file=image->file;
-    image=image->next;
+    image=GetNextImage(image);
     ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)

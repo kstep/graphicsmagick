@@ -65,123 +65,6 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   C r o p S h e a r I m a g e                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method CropShearImage crops the sheared image as determined by the
-%  bounding box as defined by width and height and shearing angles.
-%
-%  The format of the CropShearImage method is:
-%
-%      Image *RotateImage(const Image *image,const double degrees,
-%        const unsigned int crop,const unsigned int sharpen)
-%
-%  A description of each parameter follows.
-%
-%    o image: The address of a structure of type Image.
-%
-%    o x_shear, y_shear, width, height: Defines a region of the image to crop.
-%
-%    o crop: A value other than zero crops the corners of the rotated
-%      image and retains the original image size.
-%
-%
-*/
-static void CropShearImage(Image **image,const double x_shear,
-  const double y_shear,const unsigned int width,const unsigned int height,
-  const unsigned int crop)
-{
-  typedef struct Point
-  {
-    double
-      x,
-      y;
-  } Point;
-
-  char
-    geometry[MaxTextExtent];
-
-  double
-    x_max,
-    x_min,
-    y_max,
-    y_min;
-
-  Point
-    corners[4];
-
-  RectangleInfo
-    crop_info;
-
-  register int
-    i;
-
-  /*
-    Calculate the rotated image size.
-  */
-  crop_info.width=width;
-  crop_info.height=height;
-  corners[0].x=(-((int) crop_info.width)/2.0);
-  corners[0].y=(-((int) crop_info.height)/2.0);
-  corners[1].x=((int) crop_info.width)/2.0;
-  corners[1].y=(-((int) crop_info.height)/2.0);
-  corners[2].x=(-((int) crop_info.width)/2.0);
-  corners[2].y=((int) crop_info.height)/2.0;
-  corners[3].x=((int) crop_info.width)/2.0;
-  corners[3].y=((int) crop_info.height)/2.0;
-  for (i=0; i < 4; i++)
-  {
-    corners[i].x+=x_shear*corners[i].y;
-    corners[i].y+=y_shear*corners[i].x;
-    corners[i].x+=x_shear*corners[i].y;
-    corners[i].x+=((*image)->columns-1)/2.0;
-    corners[i].y+=((*image)->rows-3)/2.0;
-  }
-  x_min=corners[0].x;
-  y_min=corners[0].y;
-  x_max=corners[0].x;
-  y_max=corners[0].y;
-  for (i=1; i < 4; i++)
-  {
-    if (x_min > corners[i].x)
-      x_min=corners[i].x;
-    if (y_min > corners[i].y)
-      y_min=corners[i].y;
-    if (x_max < corners[i].x)
-      x_max=corners[i].x;
-    if (y_max < corners[i].y)
-      y_max=corners[i].y;
-  }
-  x_min=floor((double) x_min);
-  x_max=ceil((double) x_max);
-  y_min=floor((double) y_min);
-  y_max=ceil((double) y_max);
-  if (!crop)
-    {
-      /*
-        Do not crop sheared image.
-      */
-      crop_info.width=(unsigned int) (x_max-x_min)-1;
-      crop_info.height=(unsigned int) (y_max-y_min)-1;
-    }
-  crop_info.x=(int) x_min+(((int) (x_max-x_min)-crop_info.width) >> 1)+1;
-  crop_info.y=(int) y_min+(((int) (y_max-y_min)-crop_info.height) >> 1)+2;
-  /*
-    Crop image and return.
-  */
-  FormatString(geometry,"%ux%u%+d%+d",crop_info.width,crop_info.height,
-    crop_info.x,crop_info.y);
-  TransformImage(image,geometry,(char *) NULL);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 +   I n t e g r a l R o t a t e I m a g e                                     %
 %                                                                             %
 %                                                                             %
@@ -194,11 +77,11 @@ static void CropShearImage(Image **image,const double x_shear,
 %
 %  The format of the IntegralRotateImage method is:
 %
-%      rotated_image=IntegralRotateImage(image,rotations)
+%      Image *IntegralRotateImage(Image *image,unsigned int rotations)
 %
 %  A description of each parameter follows.
 %
-%    o rotated_image: Method IntegralRotateImage returns a pointer to the
+%    o rotate_image: Method IntegralRotateImage returns a pointer to the
 %      rotated image.  A null image is returned if there is a a memory shortage.
 %
 %    o image: The address of a structure of type Image.
@@ -207,43 +90,41 @@ static void CropShearImage(Image **image,const double x_shear,
 %
 %
 */
-static Image *IntegralRotateImage(const Image *image,unsigned int rotations)
+static Image *IntegralRotateImage(Image *image,unsigned int rotations)
 {
 #define RotateImageText  "  Rotating image...  "
 
   Image
-    *rotated_image;
+    *rotate_image;
 
   int
     y;
 
   register int
-    runlength,
     x;
 
-  register RunlengthPacket
+  register PixelPacket
     *p,
     *q;
 
   /*
     Initialize rotated image attributes.
   */
+  assert(image != (Image *) NULL);
   rotations%=4;
   if ((rotations == 1) || (rotations == 3))
-    rotated_image=CloneImage(image,image->rows,image->columns,False);
+    rotate_image=CloneImage(image,image->rows,image->columns,True);
   else
-    rotated_image=CloneImage(image,image->columns,image->rows,False);
-  if (rotated_image == (Image *) NULL)
+    rotate_image=CloneImage(image,image->columns,image->rows,True);
+  if (rotate_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to rotate image",
         "Memory allocation failed");
       return((Image *) NULL);
     }
   /*
-    Expand runlength packets into a rectangular array of pixels.
+    Integral rotate the image.
   */
-  p=image->pixels;
-  runlength=p->length+1;
   switch (rotations)
   {
     case 0:
@@ -251,22 +132,19 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations)
       /*
         Rotate 0 degrees.
       */
-      q=rotated_image->pixels;
       for (y=0; y < (int) image->rows; y++)
       {
+        p=GetPixelCache(image,0,y,image->columns,1);
+        q=SetPixelCache(rotate_image,0,y,rotate_image->columns,1);
+        if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+          break;
         for (x=0; x < (int) image->columns; x++)
-        {
-          if (runlength != 0)
-            runlength--;
-          else
-            {
-              p++;
-              runlength=p->length;
-            }
-          *q=(*p);
-          q->length=0;
-          q++;
-        }
+          *q++=(*p++);
+        if (image->class == PseudoClass)
+          for (x=0; x < (int) image->columns; x++)
+            rotate_image->indexes[x]=image->indexes[x];
+        if (!SyncPixelCache(rotate_image))
+          return((Image *) NULL);
         if (QuantumTick(y,image->rows))
           ProgressMonitor(RotateImageText,y,image->rows);
       }
@@ -277,24 +155,21 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations)
       /*
         Rotate 90 degrees.
       */
-      for (x=0; x < (int) rotated_image->columns; x++)
+      for (y=0; y < (int) image->rows; y++)
       {
-        q=rotated_image->pixels+(rotated_image->columns-x)-1;
-        for (y=0; y < (int) rotated_image->rows; y++)
-        {
-          if (runlength != 0)
-            runlength--;
-          else
-            {
-              p++;
-              runlength=p->length;
-            }
-          *q=(*p);
-          q->length=0;
-          q+=rotated_image->columns;
-        }
-        if (QuantumTick(x,rotated_image->columns))
-          ProgressMonitor(RotateImageText,x,rotated_image->columns);
+        p=GetPixelCache(image,0,y,image->columns,1);
+        q=SetPixelCache(rotate_image,image->rows-y-1,0,1,rotate_image->rows);
+        if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+          break;
+        for (x=0; x < (int) image->columns; x++)
+          *q++=(*p++);
+        if (image->class == PseudoClass)
+          for (x=0; x < (int) image->columns; x++)
+            rotate_image->indexes[x]=image->indexes[x];
+        if (!SyncPixelCache(rotate_image))
+          return((Image *) NULL);
+        if (QuantumTick(y,image->rows))
+          ProgressMonitor(RotateImageText,y,image->rows);
       }
       break;
     }
@@ -303,24 +178,23 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations)
       /*
         Rotate 180 degrees.
       */
-      q=rotated_image->pixels+(rotated_image->columns*rotated_image->rows)-1;
-      for (y=image->rows-1; y >= 0; y--)
+      for (y=0; y < (int) image->rows; y++)
       {
+        p=GetPixelCache(image,0,y,image->columns,1);
+        q=SetPixelCache(rotate_image,0,image->rows-y-1,image->columns,1);
+          return((Image *) NULL);
+        if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+          break;
+        q+=image->columns;
         for (x=0; x < (int) image->columns; x++)
-        {
-          if (runlength != 0)
-            runlength--;
-          else
-            {
-              p++;
-              runlength=p->length;
-            }
-          *q=(*p);
-          q->length=0;
-          q--;
-        }
+          *--q=(*p++);
+        if (image->class == PseudoClass)
+          for (x=0; x < (int) image->columns; x++)
+            rotate_image->indexes[image->columns-x-1]=image->indexes[x];
+        if (!SyncPixelCache(rotate_image))
+          return((Image *) NULL);
         if (QuantumTick(y,image->rows))
-          ProgressMonitor(RotateImageText,image->rows-y,image->rows);
+          ProgressMonitor(RotateImageText,y,image->rows);
       }
       break;
     }
@@ -329,31 +203,27 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations)
       /*
         Rotate 270 degrees.
       */
-      for (x=rotated_image->columns-1; x >= 0; x--)
+      for (y=0; y < (int) image->rows; y++)
       {
-        q=rotated_image->pixels+(rotated_image->columns*rotated_image->rows)-
-          x-1;
-        for (y=0; y < (int) rotated_image->rows; y++)
-        {
-          if (runlength != 0)
-            runlength--;
-          else
-            {
-              p++;
-              runlength=p->length;
-            }
-          *q=(*p);
-          q->length=0;
-          q-=rotated_image->columns;
-        }
-        if (QuantumTick(x,rotated_image->columns))
-          ProgressMonitor(RotateImageText,rotated_image->columns-x,
-            rotated_image->columns);
+        p=GetPixelCache(image,0,y,image->columns,1);
+        q=SetPixelCache(rotate_image,y,0,1,rotate_image->rows);
+        if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+          break;
+        q+=image->columns;
+        for (x=0; x < (int) image->columns; x++)
+          *--q=(*p++);
+        if (image->class == PseudoClass)
+          for (x=0; x < (int) image->columns; x++)
+            rotate_image->indexes[image->columns-x-1]=image->indexes[x];
+        if (!SyncPixelCache(rotate_image))
+          return((Image *) NULL);
+        if (QuantumTick(y,image->rows))
+          ProgressMonitor(RotateImageText,y,image->rows);
       }
       break;
     }
   }
-  return(rotated_image);
+  return(rotate_image);
 }
 
 /*
@@ -375,7 +245,9 @@ static Image *IntegralRotateImage(const Image *image,unsigned int rotations)
 %
 %  The format of the XShearImage method is:
 %
-%      XShearImage(image,degrees,width,height,x_offset,y_offset,range_limit)
+%      void XShearImage(Image *image,const double degrees,
+%        const unsigned int width,const unsigned int height,const int x_offset,
+%        int y_offset,register Quantum *range_limit)
 %
 %  A description of each parameter follows.
 %
@@ -404,27 +276,24 @@ static void XShearImage(Image *image,const double degrees,
     y;
 
   long
-    blue,
-    fractional_step,
-    green,
-    index,
-    red;
+    opacity;
 
-  register RunlengthPacket
+  register PixelPacket
     *p,
     *q;
 
   register int
     i;
 
-  RunlengthPacket
-    last_pixel;
+  PixelPacket
+    pixel;
 
+  assert(image != (Image *) NULL);
   y_offset--;
   for (y=0; y < (int) height; y++)
   {
     y_offset++;
-    displacement=degrees*(((double) y)-(height-1)/2.0);
+    displacement=degrees*(y-height/2.0);
     if (displacement == 0.0)
       continue;
     if (displacement > 0.0)
@@ -435,8 +304,8 @@ static void XShearImage(Image *image,const double degrees,
         direction=LEFT;
       }
     step=(int) floor(displacement);
-    fractional_step=UpShifted(displacement-(double) step);
-    if (fractional_step == 0)
+    opacity=MaxRGB*(displacement-step);
+    if (opacity == 0)
       {
         /*
           No fractional displacement-- just copy.
@@ -448,25 +317,18 @@ static void XShearImage(Image *image,const double degrees,
             /*
               Transfer pixels left-to-right.
             */
-            p=image->pixels+image->columns*y_offset+x_offset;
+            p=GetPixelCache(image,0,y_offset,image->columns,1);
+            if (p == (PixelPacket *) NULL)
+              break;
+            p+=x_offset;
             q=p-step;
             for (i=0; i < (int) width; i++)
-            {
-              *q=(*p);
-              q++;
-              p++;
-            }
+              *q++=(*p++);
             /*
-              Set old row to background color.
+              Set old row to border color.
             */
             for (i=0; i < (int) step; i++)
-            {
-              q->red=image->background_color.red;
-              q->green=image->background_color.green;
-              q->blue=image->background_color.blue;
-              q->index=image->background_color.index;
-              q++;
-            }
+              *q++=image->border_color;
             break;
           }
           case RIGHT:
@@ -474,38 +336,29 @@ static void XShearImage(Image *image,const double degrees,
             /*
               Transfer pixels right-to-left.
             */
-            p=image->pixels+image->columns*y_offset+x_offset+width;
+            p=GetPixelCache(image,0,y_offset,image->columns,1);
+            if (p == (PixelPacket *) NULL)
+              break;
+            p+=x_offset+width;
             q=p+step;
             for (i=0; i < (int) width; i++)
-            {
-              p--;
-              q--;
-              *q=(*p);
-            }
+              *--q=(*--p);
             /*
-              Set old row to background color.
+              Set old row to border color.
             */
             for (i=0; i < (int) step; i++)
-            {
-              q--;
-              q->red=image->background_color.red;
-              q->green=image->background_color.green;
-              q->blue=image->background_color.blue;
-              q->index=image->background_color.index;
-            }
+              *--q=image->border_color;
             break;
           }
         }
+        (void) SyncPixelCache(image);
         continue;
       }
     /*
       Fractional displacement.
     */
     step++;
-    last_pixel.red=image->background_color.red;
-    last_pixel.green=image->background_color.green;
-    last_pixel.blue=image->background_color.blue;
-    last_pixel.index=image->background_color.index;
+    pixel=image->border_color;
     switch (direction)
     {
       case LEFT:
@@ -513,62 +366,44 @@ static void XShearImage(Image *image,const double degrees,
         /*
           Transfer pixels left-to-right.
         */
-        p=image->pixels+image->columns*y_offset+x_offset;
+        p=GetPixelCache(image,0,y_offset,image->columns,1);
+        if (p == (PixelPacket *) NULL)
+          break;
+        p+=x_offset;
         q=p-step;
         for (i=0; i < (int) width; i++)
         {
-          red=DownShift(last_pixel.red*(UpShift(1)-fractional_step)+p->red*
-            fractional_step);
-          green=DownShift(last_pixel.green*(UpShift(1)-fractional_step)+
-            p->green*fractional_step);
-          blue=DownShift(last_pixel.blue*(UpShift(1)-fractional_step)+p->blue*
-            fractional_step);
-          index=DownShift(last_pixel.index*(UpShift(1)-fractional_step)+
-            p->index*fractional_step);
-          last_pixel=(*p);
+          if ((x_offset+i) < step)
+            {
+              p++;
+              q++;
+              continue;
+            }
+          q->red=range_limit[(unsigned long) (pixel.red*(MaxRGB-
+             opacity)+p->red*opacity)/MaxRGB];
+          q->green=range_limit[(unsigned long) (pixel.green*(MaxRGB-
+             opacity)+p->green*opacity)/MaxRGB];
+          q->blue=range_limit[(unsigned long) (pixel.blue*(MaxRGB-
+             opacity)+p->blue*opacity)/MaxRGB];
+          q->opacity=range_limit[(unsigned long) (pixel.opacity*(MaxRGB-
+            opacity)+p->opacity*opacity)/MaxRGB];
+          pixel=(*p);
           p++;
-          q->red=range_limit[red];
-          q->green=range_limit[green];
-          q->blue=range_limit[blue];
-          if (index < 0)
-            q->index=0;
-          else
-            if (index > MaxColormapSize)
-              q->index=MaxColormapSize;
-            else
-              q->index=(unsigned short) index;
           q++;
         }
         /*
-          Set old row to background color.
+          Set old row to border color.
         */
-        red=DownShift(last_pixel.red*(UpShift(1)-fractional_step)+
-          image->background_color.red*fractional_step);
-        green=DownShift(last_pixel.green*(UpShift(1)-fractional_step)+
-          image->background_color.green*fractional_step);
-        blue=DownShift(last_pixel.blue*(UpShift(1)-fractional_step)+
-          image->background_color.blue*fractional_step);
-        index=DownShift(last_pixel.index*(UpShift(1)-fractional_step)+
-          image->background_color.index*fractional_step);
-        q->red=range_limit[red];
-        q->green=range_limit[green];
-        q->blue=range_limit[blue];
-        if (index < 0)
-          q->index=0;
-        else
-          if (index > MaxColormapSize)
-            q->index=MaxColormapSize;
-          else
-            q->index=(unsigned short) index;
-        q++;
-        for (i=0; i < step-1; i++)
-        {
-          q->red=image->background_color.red;
-          q->green=image->background_color.green;
-          q->blue=image->background_color.blue;
-          q->index=image->background_color.index;
-          q++;
-        }
+        q->red=range_limit[(unsigned long) (pixel.red*(MaxRGB-
+          opacity)+image->border_color.red*opacity)/MaxRGB];
+        q->green=range_limit[(unsigned long) (pixel.green*(MaxRGB-
+          opacity)+image->border_color.green*opacity)/MaxRGB];
+        q->blue=range_limit[(unsigned long) (pixel.blue*(MaxRGB-
+          opacity)+image->border_color.blue*opacity)/MaxRGB];
+        q->opacity=range_limit[(unsigned long) (pixel.opacity*(MaxRGB-
+          opacity)+image->border_color.opacity*opacity)/MaxRGB];
+        for (i=0; i < (step-1); i++)
+          *++q=image->border_color;
         break;
       }
       case RIGHT:
@@ -576,65 +411,45 @@ static void XShearImage(Image *image,const double degrees,
         /*
           Transfer pixels right-to-left.
         */
-        p=image->pixels+image->columns*y_offset+x_offset+width;
+        p=GetPixelCache(image,0,y_offset,image->columns,1);
+        if (p == (PixelPacket *) NULL)
+          break;
+        p+=x_offset+width;
         q=p+step;
         for (i=0; i < (int) width; i++)
         {
           p--;
-          red=DownShift(last_pixel.red*(UpShift(1)-fractional_step)+p->red*
-            fractional_step);
-          green=DownShift(last_pixel.green*(UpShift(1)-fractional_step)+
-            p->green*fractional_step);
-          blue=DownShift(last_pixel.blue*(UpShift(1)-fractional_step)+p->blue*
-            fractional_step);
-          index=DownShift(last_pixel.index*(UpShift(1)-fractional_step)+
-            p->index*fractional_step);
-          last_pixel=(*p);
           q--;
-          q->red=range_limit[red];
-          q->green=range_limit[green];
-          q->blue=range_limit[blue];
-          if (index < 0)
-            q->index=0;
-          else
-            if (index > MaxColormapSize)
-              q->index=MaxColormapSize;
-            else
-              q->index=(unsigned short) index;
+          if ((x_offset+width+step-i) >= image->columns)
+            continue;
+          q->red=range_limit[(unsigned long) (pixel.red*(MaxRGB-
+            opacity)+p->red*opacity)/MaxRGB];
+          q->green=range_limit[(unsigned long) (pixel.green*(MaxRGB-
+            opacity)+p->green*opacity)/MaxRGB];
+          q->blue=range_limit[(unsigned long) (pixel.blue*(MaxRGB-
+            opacity)+p->blue*opacity)/MaxRGB];
+          q->opacity=range_limit[(unsigned long) (pixel.opacity*(MaxRGB-
+            opacity)+p->opacity*opacity)/MaxRGB];
+          pixel=(*p);
         }
         /*
-          Set old row to background color.
+          Set old row to border color.
         */
-        red=DownShift(last_pixel.red*(UpShift(1)-fractional_step)+
-          image->background_color.red*fractional_step);
-        green=DownShift(last_pixel.green*(UpShift(1)-fractional_step)+
-          image->background_color.green*fractional_step);
-        blue=DownShift(last_pixel.blue*(UpShift(1)-fractional_step)+
-          image->background_color.blue*fractional_step);
-        index=DownShift(last_pixel.index*(UpShift(1)-fractional_step)+
-          image->background_color.index*fractional_step);
         q--;
-        q->red=range_limit[red];
-        q->green=range_limit[green];
-        q->blue=range_limit[blue];
-        if (index < 0)
-          q->index=0;
-        else
-          if (index > MaxColormapSize)
-            q->index=MaxColormapSize;
-          else
-            q->index=(unsigned short) index;
-        for (i=0; i < step-1; i++)
-        {
-          q--;
-          q->red=image->background_color.red;
-          q->green=image->background_color.green;
-          q->blue=image->background_color.blue;
-          q->index=image->background_color.index;
-        }
+        q->red=range_limit[(unsigned long) (pixel.red*(MaxRGB-
+          opacity)+image->border_color.red*opacity)/MaxRGB];
+        q->green=range_limit[(unsigned long) (pixel.green*(MaxRGB-
+          opacity)+image->border_color.green*opacity)/MaxRGB];
+        q->blue=range_limit[(unsigned long) (pixel.blue*(MaxRGB-
+          opacity)+image->border_color.blue*opacity)/MaxRGB];
+        q->opacity=range_limit[(unsigned long) (pixel.opacity*(MaxRGB-
+          opacity)+image->border_color.opacity*opacity)/MaxRGB];
+        for (i=0; i < (step-1); i++)
+          *--q=image->border_color;
         break;
       }
     }
+    (void) SyncPixelCache(image);
     if (QuantumTick(y,height))
       ProgressMonitor(XShearImageText,y,height);
   }
@@ -659,7 +474,9 @@ static void XShearImage(Image *image,const double degrees,
 %
 %  The format of the YShearImage method is:
 %
-%      YShearImage(image,degrees,width,height,x_offset,y_offset,range_limit)
+%      void YShearImage(Image *image,const double degrees,
+%        const unsigned int width,const unsigned int height,int x_offset,
+%        const int y_offset,register Quantum *range_limit)
 %
 %  A description of each parameter follows.
 %
@@ -689,27 +506,24 @@ static void YShearImage(Image *image,const double degrees,
     y;
 
   long
-    blue,
-    fractional_step,
-    green,
-    index,
-    red;
+    opacity;
 
-  register RunlengthPacket
+  register PixelPacket
     *p,
     *q;
 
   register int
     i;
 
-  RunlengthPacket
-    last_pixel;
+  PixelPacket
+    pixel;
 
+  assert(image != (Image *) NULL);
   x_offset--;
   for (y=0; y < (int) width; y++)
   {
     x_offset++;
-    displacement=degrees*(((double) y)-(width-1)/2.0);
+    displacement=degrees*(y-width/2.0);
     if (displacement == 0.0)
       continue;
     if (displacement > 0.0)
@@ -720,8 +534,8 @@ static void YShearImage(Image *image,const double degrees,
         direction=UP;
       }
     step=(int) floor(displacement);
-    fractional_step=UpShifted(displacement-(double) step);
-    if (fractional_step == 0)
+    opacity=MaxRGB*(displacement-step);
+    if (opacity == 0)
       {
         /*
           No fractional displacement-- just copy the pixels.
@@ -733,25 +547,18 @@ static void YShearImage(Image *image,const double degrees,
             /*
               Transfer pixels top-to-bottom.
             */
-            p=image->pixels+image->columns*y_offset+x_offset;
-            q=p-step*image->columns;
+            p=GetPixelCache(image,x_offset,0,1,image->rows);
+            if (p == (PixelPacket *) NULL)
+              break;
+            p+=y_offset;
+            q=p-step;
             for (i=0; i < (int) height; i++)
-            {
-              *q=(*p);
-              q+=image->columns;
-              p+=image->columns;
-            }
+              *q++=(*p++);
             /*
-              Set old column to background color.
+              Set old column to border color.
             */
             for (i=0; i < (int) step; i++)
-            {
-              q->red=image->background_color.red;
-              q->green=image->background_color.green;
-              q->blue=image->background_color.blue;
-              q->index=image->background_color.index;
-              q+=image->columns;
-            }
+              *q++=image->border_color;
             break;
           }
           case DOWN:
@@ -759,38 +566,29 @@ static void YShearImage(Image *image,const double degrees,
             /*
               Transfer pixels bottom-to-top.
             */
-            p=image->pixels+image->columns*(y_offset+height)+x_offset;
-            q=p+step*image->columns;
+            p=GetPixelCache(image,x_offset,0,1,image->rows);
+            if (p == (PixelPacket *) NULL)
+              break;
+            p+=y_offset+height;
+            q=p+step;
             for (i=0; i < (int) height; i++)
-            {
-              q-=image->columns;
-              p-=image->columns;
-              *q=(*p);
-            }
+              *--q=(*--p);
             /*
-              Set old column to background color.
+              Set old column to border color.
             */
             for (i=0; i < (int) step; i++)
-            {
-              q-=image->columns;
-              q->red=image->background_color.red;
-              q->green=image->background_color.green;
-              q->blue=image->background_color.blue;
-              q->index=image->background_color.index;
-            }
+              *--q=image->border_color;
             break;
           }
         }
+        (void) SyncPixelCache(image);
         continue;
       }
     /*
       Fractional displacment.
     */
     step++;
-    last_pixel.red=image->background_color.red;
-    last_pixel.green=image->background_color.green;
-    last_pixel.blue=image->background_color.blue;
-    last_pixel.index=image->background_color.index;
+    pixel=image->border_color;
     switch (direction)
     {
       case UP:
@@ -798,62 +596,38 @@ static void YShearImage(Image *image,const double degrees,
         /*
           Transfer pixels top-to-bottom.
         */
-        p=image->pixels+image->columns*y_offset+x_offset;
-        q=p-step*image->columns;
+        p=GetPixelCache(image,x_offset,0,1,image->rows);
+        if (p == (PixelPacket *) NULL)
+          break;
+        p+=y_offset;
+        q=p-step;
         for (i=0; i < (int) height; i++)
         {
-          red=DownShift(last_pixel.red*(UpShift(1)-fractional_step)+p->red*
-            fractional_step);
-          green=DownShift(last_pixel.green*(UpShift(1)-fractional_step)+
-            p->green*fractional_step);
-          blue=DownShift(last_pixel.blue*(UpShift(1)-fractional_step)+p->blue*
-            fractional_step);
-          index=DownShift(last_pixel.index*(UpShift(1)-fractional_step)+
-            p->index*fractional_step);
-          last_pixel=(*p);
-          p+=image->columns;
-          q->red=range_limit[red];
-          q->green=range_limit[green];
-          q->blue=range_limit[blue];
-          if (index < 0)
-            q->index=0;
-          else
-            if (index > MaxColormapSize)
-              q->index=MaxColormapSize;
-            else
-              q->index=(unsigned short) index;
-          q+=image->columns;
+          q->red=range_limit[(unsigned long) (pixel.red*(MaxRGB-
+            opacity)+p->red*opacity)/MaxRGB];
+          q->green=range_limit[(unsigned long) (pixel.green*(MaxRGB-
+            opacity)+p->green*opacity)/MaxRGB];
+          q->blue=range_limit[(unsigned long) (pixel.blue*(MaxRGB-
+            opacity)+p->blue*opacity)/MaxRGB];
+          q->opacity=range_limit[(unsigned long) (pixel.opacity*(MaxRGB-
+            opacity)+p->opacity*opacity)/MaxRGB];
+          pixel=(*p);
+          p++;
+          q++;
         }
         /*
-          Set old column to background color.
+          Set old column to border color.
         */
-        red=DownShift(last_pixel.red*(UpShift(1)-fractional_step)+
-          image->background_color.red*fractional_step);
-        green=DownShift(last_pixel.green*(UpShift(1)-fractional_step)+
-          image->background_color.green*fractional_step);
-        blue=DownShift(last_pixel.blue*(UpShift(1)-fractional_step)+
-          image->background_color.blue*fractional_step);
-        index=DownShift(last_pixel.index*(UpShift(1)-fractional_step)+
-          image->background_color.index*fractional_step);
-        q->red=range_limit[red];
-        q->green=range_limit[green];
-        q->blue=range_limit[blue];
-        if (index < 0)
-          q->index=0;
-        else
-          if (index > MaxColormapSize)
-            q->index=MaxColormapSize;
-          else
-            q->index=(unsigned short) index;
-        q+=image->columns;
-        for (i=0; i < step-1; i++)
-        {
-          q->red=image->background_color.red;
-          q->green=image->background_color.green;
-          q->blue=image->background_color.blue;
-          q->index=image->background_color.index;
-          q+=image->columns;
-        }
+        q->red=range_limit[(unsigned long) (pixel.red*(MaxRGB-
+          opacity)+image->border_color.red*opacity)/MaxRGB];
+        q->green=range_limit[(unsigned long) (pixel.green*(MaxRGB-
+          opacity)+image->border_color.green*opacity)/MaxRGB];
+        q->blue=range_limit[(unsigned long) (pixel.blue*(MaxRGB-
+          opacity)+image->border_color.blue*opacity)/MaxRGB];
+        q->opacity=range_limit[(unsigned long) (pixel.opacity*(MaxRGB-
+          opacity)+image->border_color.opacity*opacity)/MaxRGB];
+        for (i=0; i < (step-1); i++)
+          *++q=image->border_color;
         break;
       }
       case DOWN:
@@ -861,65 +635,45 @@ static void YShearImage(Image *image,const double degrees,
         /*
           Transfer pixels bottom-to-top.
         */
-        p=image->pixels+image->columns*(y_offset+height)+x_offset;
-        q=p+step*image->columns;
+        p=GetPixelCache(image,x_offset,0,1,image->rows);
+        if (p == (PixelPacket *) NULL)
+          break;
+        p+=y_offset+height;
+        q=p+step;
         for (i=0; i < (int) height; i++)
         {
-          p-=image->columns;
-          red=DownShift(last_pixel.red*(UpShift(1)-fractional_step)+p->red*
-            fractional_step);
-          green=DownShift(last_pixel.green*(UpShift(1)-fractional_step)+
-            p->green*fractional_step);
-          blue=DownShift(last_pixel.blue*(UpShift(1)-fractional_step)+p->blue*
-            fractional_step);
-          index=DownShift(last_pixel.index*(UpShift(1)-fractional_step)+
-            p->index*fractional_step);
-          last_pixel=(*p);
-          q-=image->columns;
-          q->red=range_limit[red];
-          q->green=range_limit[green];
-          q->blue=range_limit[blue];
-          if (index < 0)
-            q->index=0;
-          else
-            if (index > MaxColormapSize)
-              q->index=MaxColormapSize;
-            else
-              q->index=(unsigned short) index;
+          p--;
+          q--;
+          if ((y_offset+height+step-i) >= image->rows)
+            continue;
+          q->red=range_limit[(unsigned long) (pixel.red*(MaxRGB-
+            opacity)+p->red*opacity)/MaxRGB];
+          q->green=range_limit[(unsigned long) (pixel.green*(MaxRGB-
+            opacity)+p->green*opacity)/MaxRGB];
+          q->blue=range_limit[(unsigned long) (pixel.blue*(MaxRGB-
+            opacity)+p->blue*opacity)/MaxRGB];
+          q->opacity=range_limit[(unsigned long) (pixel.opacity*(MaxRGB-
+            opacity)+p->opacity*opacity)/MaxRGB];
+          pixel=(*p);
         }
         /*
-          Set old column to background color.
+          Set old column to border color.
         */
-        red=DownShift(last_pixel.red*(UpShift(1)-fractional_step)+
-          image->background_color.red*fractional_step);
-        green=DownShift(last_pixel.green*(UpShift(1)-fractional_step)+
-          image->background_color.green*fractional_step);
-        blue=DownShift(last_pixel.blue*(UpShift(1)-fractional_step)+
-          image->background_color.blue*fractional_step);
-        index=DownShift(last_pixel.index*(UpShift(1)-fractional_step)+
-          image->background_color.index*fractional_step);
-        q-=image->columns;
-        q->red=range_limit[red];
-        q->green=range_limit[green];
-        q->blue=range_limit[blue];
-        if (index < 0)
-          q->index=0;
-        else
-          if (index > MaxColormapSize)
-            q->index=MaxColormapSize;
-          else
-            q->index=(unsigned short) index;
-        for (i=0; i < step-1; i++)
-        {
-          q-=image->columns;
-          q->red=image->background_color.red;
-          q->green=image->background_color.green;
-          q->blue=image->background_color.blue;
-          q->index=image->background_color.index;
-        }
+        q--;
+        q->red=range_limit[(unsigned long) (pixel.red*(MaxRGB-
+          opacity)+image->border_color.red*opacity)/MaxRGB];
+        q->green=range_limit[(unsigned long) (pixel.green*(MaxRGB-
+          opacity)+image->border_color.green*opacity)/MaxRGB];
+        q->blue=range_limit[(unsigned long) (pixel.blue*(MaxRGB-
+          opacity)+image->border_color.blue*opacity)/MaxRGB];
+        q->opacity=range_limit[(unsigned long) (pixel.opacity*(MaxRGB-
+          opacity)+image->border_color.opacity*opacity)/MaxRGB];
+        for (i=0; i < (step-1); i++)
+          *--q=image->border_color;
         break;
       }
     }
+    (void) SyncPixelCache(image);
     if (QuantumTick(y,width))
       ProgressMonitor(YShearImageText,y,width);
   }
@@ -952,7 +706,7 @@ static void YShearImage(Image *image,const double degrees,
 %
 %  The format of the RotateImage method is:
 %
-%      RotateImage(image,degrees,crop,sharpen)
+%      Image *RotateImage(Image *image,const double degrees)
 %
 %  A description of each parameter follows.
 %
@@ -964,24 +718,16 @@ static void YShearImage(Image *image,const double degrees,
 %
 %    o degrees: Specifies the number of degrees to rotate the image.
 %
-%    o crop: A value other than zero crops the corners of the rotated
-%      image and retains the original image size.
-%
-%    o sharpen: A value other than zero sharpens the image after it is
-%      rotated.
-%
 %
 */
-Export Image *RotateImage(const Image *image,const double degrees,
-  const unsigned int crop,const unsigned int sharpen)
+Export Image *RotateImage(Image *image,const double degrees)
 {
   double
     angle;
 
   Image
     *integral_image,
-    *rotated_image,
-    *sharpened_image;
+    *rotate_image;
 
   int
     x_offset,
@@ -1022,6 +768,12 @@ Export Image *RotateImage(const Image *image,const double degrees,
   shear.x=(-tan(DegreesToRadians(angle)/2.0));
   shear.y=sin(DegreesToRadians(angle));
   integral_image=IntegralRotateImage(image,rotations);
+  if (integral_image == (Image *) NULL)
+    {
+      MagickWarning(ResourceLimitWarning,"Unable to rotate image",
+        "Memory allocation failed");
+      return((Image *) NULL);
+    }
   if ((shear.x == 0.0) || (shear.y == 0.0))
     return(integral_image);
   /*
@@ -1052,62 +804,37 @@ Export Image *RotateImage(const Image *image,const double degrees,
       width=image->rows;
       height=image->columns;
     }
-  y_width=width+(int) ceil(fabs(shear.x)*(double) (height-1));
-  x_offset=(width+
-    ((int) ceil(fabs(shear.y)*(double) (height-1)) << 1)-width) >> 1;
-  y_offset=(height+(int) ceil(fabs(shear.y)*(double) (y_width-1))-height) >> 1;
+  y_width=(unsigned int) (width+ceil(height*fabs(shear.x)));
+  x_offset=(int) ((width+2.0*ceil(height*fabs(shear.y))-width+1)/2.0);
+  y_offset=(int) ((height+ceil(y_width*fabs(shear.y))-height+1)/2.0);
   /*
-    Surround image with border of background color.
+    Surround image with a border.
   */
+  if (!integral_image->matte)
+    MatteImage(integral_image,Opaque);
   border_info.width=x_offset;
-  border_info.height=y_offset+1;
-  if (integral_image->matte)
-    {
-      integral_image->border_color.index=Transparent;
-      integral_image->background_color.index=Transparent;
-    }
-  rotated_image=BorderImage(integral_image,&border_info);
+  border_info.height=y_offset;
+  rotate_image=BorderImage(integral_image,&border_info);
   DestroyImage(integral_image);
-  if (rotated_image == (Image *) NULL)
+  if (rotate_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to rotate image",
         "Memory allocation failed");
       return((Image *) NULL);
     }
-  rotated_image->class=DirectClass;
+  rotate_image->class=DirectClass;
   /*
-    Perform a fractional rotation.  First, shear the image rows.
+    Rotate the image.
   */
-  XShearImage(rotated_image,shear.x,width,height,x_offset,
-    ((int) (rotated_image->rows-height) >> 1),range_limit);
-  /*
-    Shear the image columns.
-  */
-  YShearImage(rotated_image,shear.y,y_width,height,
-    ((int) (rotated_image->columns-y_width) >> 1),y_offset+1,range_limit);
-  /*
-    Shear the image rows again.
-  */
-  XShearImage(rotated_image,shear.x,y_width,rotated_image->rows-2,
-    ((int) (rotated_image->columns-y_width) >> 1),1,range_limit);
-  FreeMemory((char *) range_table);
-  /*
-    Crop image.
-  */
-  CropShearImage(&rotated_image,shear.x,shear.y,width,height,crop);
-  if (sharpen)
-    {
-      /*
-        Sharpen image.
-      */
-      sharpened_image=SharpenImage(rotated_image,60.0);
-      if (sharpened_image != (Image *) NULL)
-        {
-          DestroyImage(rotated_image);
-          rotated_image=sharpened_image;
-        }
-    }
-  return(rotated_image);
+  XShearImage(rotate_image,shear.x,width,height,x_offset,
+    (rotate_image->rows-height+1)/2,range_limit);
+  YShearImage(rotate_image,shear.y,y_width,height,
+    (rotate_image->columns-y_width+1)/2,y_offset,range_limit);
+  XShearImage(rotate_image,shear.x,y_width,rotate_image->rows,
+    (rotate_image->columns-y_width+1)/2,0,range_limit);
+  TransformImage(&rotate_image,"0x0",(char *) NULL);
+  FreeMemory(range_table);
+  return(rotate_image);
 }
 
 /*
@@ -1121,7 +848,7 @@ Export Image *RotateImage(const Image *image,const double degrees,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ShearImage creates a new image that is a sheared copy of an
+%  Method ShearImage creates a new image that is a shear_image copy of an
 %  existing one.  Shearing slides one edge of an image along the X or Y
 %  axis, creating a parallelogram.  An X direction shear slides an edge
 %  along the X axis, while a Y direction shear slides an edge along the Y
@@ -1138,8 +865,7 @@ Export Image *RotateImage(const Image *image,const double degrees,
 %
 %  The format of the ShearImage method is:
 %
-%      Image *ShearImage(const Image *image,const double x_shear,
-%        const double y_shear,const unsigned int crop)
+%      Image *ShearImage(Image *image,const double x_shear,const double y_shear)
 %
 %  A description of each parameter follows.
 %
@@ -1151,17 +877,13 @@ Export Image *RotateImage(const Image *image,const double degrees,
 %
 %    o x_shear, y_shear: Specifies the number of degrees to shear the image.
 %
-%    o crop: A value other than zero crops the corners of the rotated
-%      image and retains the original image size.
-%
 %
 */
-Export Image *ShearImage(const Image *image,const double x_shear,
-  const double y_shear,const unsigned int crop)
+Export Image *ShearImage(Image *image,const double x_shear,const double y_shear)
 {
   Image
-    *sharpened_image,
-    *sheared_image;
+    *integral_image,
+    *shear_image;
 
   int
     x_offset,
@@ -1195,6 +917,15 @@ Export Image *ShearImage(const Image *image,const double x_shear,
   */
   shear.x=(-tan(DegreesToRadians(x_shear)/2.0));
   shear.y=sin(DegreesToRadians(y_shear));
+  integral_image=IntegralRotateImage(image,0);
+  if (integral_image == (Image *) NULL)
+    {
+      MagickWarning(ResourceLimitWarning,"Unable to shear image",
+        "Memory allocation failed");
+      return((Image *) NULL);
+    }
+  if ((shear.x == 0.0) || (shear.y == 0.0))
+    return(integral_image);
   /*
     Initialize range table.
   */
@@ -1215,53 +946,34 @@ Export Image *ShearImage(const Image *image,const double x_shear,
   /*
     Compute image size.
   */
-  y_width=image->columns+(int) ceil(fabs(shear.x)*(double) (image->rows-1));
-  x_offset=(image->columns+((int) ceil(fabs(shear.x)*(double)
-    (image->rows-1)) << 1)-image->columns) >> 1;
-  y_offset=(image->rows+(int) ceil(fabs(shear.y)*(double) (y_width-1))-
-    image->rows) >> 1;
+  y_width=(unsigned int) (image->columns+ceil(image->rows*fabs(shear.x)));
+  x_offset=(int)
+    ((image->columns+2.0*ceil(image->rows*fabs(shear.y))-image->columns+1)/2.0);
+  y_offset=(int) ((image->rows+ceil(y_width*fabs(shear.y))-image->rows+1)/2.0);
   /*
-    Surround image with border of background color.
+    Surround image with border.
   */
+  if (!integral_image->matte)
+    MatteImage(integral_image,Opaque);
   border_info.width=x_offset;
-  border_info.height=y_offset+1;
-  if (image->matte)
-    {
-      ((Image *) image)->border_color.index=Transparent;
-      ((Image *) image)->background_color.index=Transparent;
-    }
-  sheared_image=BorderImage(image,&border_info);
-  if (sheared_image == (Image *) NULL)
+  border_info.height=y_offset;
+  shear_image=BorderImage(integral_image,&border_info);
+  if (shear_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to shear image",
         "Memory allocation failed");
       return((Image *) NULL);
     }
-  sheared_image->class=DirectClass;
+  DestroyImage(integral_image);
+  shear_image->class=DirectClass;
   /*
-    Shear the image rows.
+    Shear the image.
   */
-  XShearImage(sheared_image,shear.x,image->columns,image->rows,x_offset,
-    ((int) (sheared_image->rows-image->rows) >> 1),range_limit);
-  /*
-    Shear the image columns.
-  */
-  YShearImage(sheared_image,shear.y,y_width,image->rows,
-    ((int) (sheared_image->columns-y_width) >> 1),y_offset+1,range_limit);
-  FreeMemory((char *) range_table);
-  /*
-    Crop image.
-  */
-  CropShearImage(&sheared_image,shear.x,shear.y,image->columns,image->rows,
-    crop);
-  /*
-    Sharpen image.
-  */
-  sharpened_image=SharpenImage(sheared_image,60.0);
-  if (sharpened_image != (Image *) NULL)
-    {
-      DestroyImage(sheared_image);
-      sheared_image=sharpened_image;
-    }
-  return(sheared_image);
+  XShearImage(shear_image,shear.x,image->columns,image->rows,x_offset,
+    (shear_image->rows-image->rows+1)/2,range_limit);
+  YShearImage(shear_image,shear.y,y_width,image->rows,
+    (shear_image->columns-y_width+1)/2,y_offset,range_limit);
+  TransformImage(&shear_image,"0x0",(char *) NULL);
+  FreeMemory(range_table);
+  return(shear_image);
 }

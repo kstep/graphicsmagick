@@ -4,7 +4,7 @@
 #
 # Contributed by Bob Friesenhahn <bfriesen@simple.dallas.tx.us>
 #
-BEGIN { $| = 1; $test=1, print "1..29\n"; }
+BEGIN { $| = 1; $test=1, print "1..27\n"; }
 END {print "not ok 1\n" unless $loaded;}
 use Image::Magick;
 $loaded=1;
@@ -68,12 +68,6 @@ testGetAttribute('input.miff','normalized_max','0');
 
 ++$test;
 testGetAttribute('input.miff','normalized_mean','0');
-
-++$test;
-testGetAttribute('input.miff','packetsize','1');
-
-++$test;
-testGetAttribute('input.miff','packets','2534');
 
 ++$test;
 testGetAttribute('input.miff','rows','46');

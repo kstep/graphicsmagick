@@ -362,11 +362,11 @@ Export unsigned short *ConvertTextToUnicode(const char *text,int *count)
 
   *count=0;
   if ((text == (char *) NULL) || (*text == '\0'))
-    return((unsigned short*) NULL);
+    return((unsigned short *) NULL);
   unicode=(unsigned short *)
-    AllocateMemory(strlen(text)*sizeof(unsigned short *));
+    AllocateMemory((strlen(text)+1)*sizeof(unsigned short));
   if (unicode == (unsigned short *) NULL)
-    return((unsigned short*) NULL);
+    return((unsigned short *) NULL);
   p=text;
   q=unicode;
   while (*p != '\0')
@@ -378,7 +378,7 @@ Export unsigned short *ConvertTextToUnicode(const char *text,int *count)
         value=InterpretUnicode(p,4);
         if (value < 0)
           {
-            FreeMemory((char *) unicode);
+            FreeMemory(unicode);
             return((unsigned short *) NULL);
           }
         *q=(unsigned short) value;
@@ -592,8 +592,8 @@ Export unsigned int ExpandFilenames(int *argc,char ***argv)
     if (j == number_files)
       {
         for (j=0; j < number_files; j++)
-          FreeMemory((char *) filelist[j]);
-        FreeMemory((char *) filelist);
+          FreeMemory(filelist[j]);
+        FreeMemory(filelist);
         continue;
       }
     /*
@@ -612,7 +612,7 @@ Export unsigned int ExpandFilenames(int *argc,char ***argv)
     {
       if (IsDirectory(filelist[j]))
         {
-          FreeMemory((char *) filelist[j]);
+          FreeMemory(filelist[j]);
           continue;
         }
       expanded=True;
@@ -623,21 +623,21 @@ Export unsigned int ExpandFilenames(int *argc,char ***argv)
           MagickWarning(ResourceLimitWarning,"Unable to expand filenames",
             (char *) NULL);
           for ( ; j < number_files; j++)
-            FreeMemory((char *) filelist[j]);
-          FreeMemory((char *) filelist);
+            FreeMemory(filelist[j]);
+          FreeMemory(filelist);
           return(False);
         }
       FormatString(vector[count],"%.*s%.1024s",(int) (p-filename),filename,
         filelist[j]);
-      FreeMemory((char *) filelist[j]);
+      FreeMemory(filelist[j]);
       count++;
     }
-    FreeMemory((char *) filelist);
+    FreeMemory(filelist);
   }
   (void) chdir(home_directory);
   if (!expanded)
     {
-      FreeMemory((char *) vector);
+      FreeMemory(vector);
       return(False);
     }
   *argc=count;
@@ -1124,6 +1124,9 @@ Export unsigned int IsDirectory(const char *filename)
   struct stat
     file_info;
 
+  assert(filename != (const char *) NULL);
+  if (*filename == '\0')
+    return(False);
   status=stat(filename,&file_info);
   if (status != 0)
     return(False);
@@ -1132,6 +1135,9 @@ Export unsigned int IsDirectory(const char *filename)
   char
     current_directory[MaxTextExtent];
 
+  assert(filename != (const char *) NULL);
+  if (*filename == '\0')
+    return(False);
   (void) getcwd(current_directory,MaxTextExtent-1);
   status=chdir(filename);
   if (status == 0)
@@ -2317,7 +2323,7 @@ Export int SystemCommand(const unsigned int verbose,const char *command)
 
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)
   status=system(command);
-#else
+#endif
 #if defined(vms)
   status=!system(command);
 #endif
@@ -2326,7 +2332,6 @@ Export int SystemCommand(const unsigned int verbose,const char *command)
 #endif
 #if defined(WIN32)
   status=NTSystemCommand(command);
-#endif
 #endif
   if (verbose)
     MagickWarning(UndefinedWarning,command,
@@ -2357,7 +2362,6 @@ Export int SystemCommand(const unsigned int verbose,const char *command)
 %
 %   o  filename:  Specifies a pointer to an array of characters.  The unique
 %      file name is returned in this array.
-%
 %
 */
 Export void TemporaryFilename(char *filename)
@@ -2505,7 +2509,7 @@ Export char *TranslateText(const ImageInfo *image_info,const Image *image,
       MagickWarning(ResourceLimitWarning,"Unable to translate text",
         "Memory allocation failed");
       if (indirection)
-        FreeMemory((char *) text);
+        FreeMemory(text);
       return((char *) NULL);
     }
   local_info=CloneImageInfo(image_info);
@@ -2514,8 +2518,8 @@ Export char *TranslateText(const ImageInfo *image_info,const Image *image,
       MagickWarning(ResourceLimitWarning,"Unable to translate text",
         "Memory allocation failed");
       if (indirection)
-        FreeMemory((char *) text);
-      FreeMemory((char *) translated_text);
+        FreeMemory(text);
+      FreeMemory(translated_text);
       return((char *) NULL);
     }
   /*
@@ -2745,6 +2749,6 @@ Export char *TranslateText(const ImageInfo *image_info,const Image *image,
   *q='\0';
   DestroyImageInfo(local_info);
   if (indirection)
-    FreeMemory((char *) text);
+    FreeMemory(text);
   return(translated_text);
 }

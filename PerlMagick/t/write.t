@@ -194,7 +194,7 @@ testReadWrite( 'PPM:input_p6.ppm',
 testReadWrite( 'PSD:input.psd',
                'PSD:output.psd',
                q//,
-               '7785d161ea66bd39394bb74ef704a0aa' );
+               '898ac726feb48948a54697320978d325' );
 
 #
 # Irix RGB image file

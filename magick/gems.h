@@ -11,15 +11,11 @@ extern "C" {
 /*
   Graphic gems define declarations.
 */
-extern Export ColorPacket
+extern Export PixelPacket
   InterpolateColor(Image *,const double,const double);
 
 extern Export Quantum
   GenerateNoise(const Quantum,const NoiseType);
-
-extern Export unsigned short
-  InsidePrimitive(PrimitiveInfo *,const AnnotateInfo *,const PointInfo *,
-    Image *);
 
 extern Export void
   Contrast(const int,Quantum *,Quantum *,Quantum *),

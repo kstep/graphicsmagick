@@ -166,9 +166,10 @@ Export Image *ReadRLAImage(const ImageInfo *image_info)
     *scanlines;
 
   register int
-    i;
+    i,
+    x;
 
-  register RunlengthPacket
+  register PixelPacket
     *q;
 
   RLAHeader
@@ -242,18 +243,14 @@ Export Image *ReadRLAImage(const ImageInfo *image_info)
   image->depth=QuantumDepth;
   image->columns=rla_header.active_window.right-rla_header.active_window.left;
   image->rows=rla_header.active_window.top-rla_header.active_window.bottom;
-  image->packets=image->columns*image->rows;
   if (image_info->ping)
     {
       CloseBlob(image);
       return(image);
     }
   scanlines=(long *) AllocateMemory(image->rows*sizeof(long));
-  image->pixels=(RunlengthPacket *)
-    AllocateMemory(image->packets*sizeof(RunlengthPacket));
-  if (image->pixels == (RunlengthPacket *) NULL)
+  if (scanlines == (long *) NULL)
     ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-  SetImage(image);
   if (*rla_header.description != '\0')
     {
       /*
@@ -273,7 +270,7 @@ Export Image *ReadRLAImage(const ImageInfo *image_info)
   /*
     Read image data.
   */
-  q=image->pixels;
+  x=0;
   for (y=0; y < (int) image->rows; y++)
   {
     (void) SeekBlob(image,scanlines[image->rows-y-1],SEEK_SET);
@@ -292,6 +289,9 @@ Export Image *ReadRLAImage(const ImageInfo *image_info)
           break;
         if (runlength < 0)
           {
+            q=GetPixelCache(image,x % image->columns,y/image->columns,1,1);
+            if (q == (PixelPacket *) NULL)
+              break;
             while (runlength < 0)
             {
               byte=ReadByte(image);
@@ -301,8 +301,7 @@ Export Image *ReadRLAImage(const ImageInfo *image_info)
                 case 0:
                 {
                   q->red=UpScale(byte);
-                  q->index=0;
-                  q->length=0;
+                  *image->indexes=0;
                   break;
                 }
                 case 1:
@@ -318,13 +317,13 @@ Export Image *ReadRLAImage(const ImageInfo *image_info)
                 case 3:
                 default:
                 {
-                  q->index=UpScale(byte);
+                  q->opacity=UpScale(byte);
                   break;
                 }
               }
-              q++;
-              if ((q-image->pixels) >= (int) image->packets)
+              if (!SyncPixelCache(image))
                 break;
+              x++;
               runlength++;
             }
             continue;
@@ -334,13 +333,15 @@ Export Image *ReadRLAImage(const ImageInfo *image_info)
         runlength++;
         do
         {
+          q=GetPixelCache(image,x % image->columns,y/image->columns,1,1);
+          if (q == (PixelPacket *) NULL)
+            break;
           switch (channel)
           {
             case 0:
             {
               q->red=UpScale(byte);
-              q->index=0;
-              q->length=0;
+              *image->indexes=0;
               break;
             }
             case 1:
@@ -356,13 +357,13 @@ Export Image *ReadRLAImage(const ImageInfo *image_info)
             case 3:
             default:
             {
-              q->index=UpScale(byte);
+              q->opacity=UpScale(byte);
               break;
             }
           }
-          q++;
-          if ((q-image->pixels) >= (int) image->packets)
+          if (!SyncPixelCache(image))
             break;
+          x++;
           runlength--;
         }
         while (runlength > 0);
@@ -370,12 +371,7 @@ Export Image *ReadRLAImage(const ImageInfo *image_info)
     }
     if (QuantumTick(y,image->rows))
       ProgressMonitor(LoadImageText,y,image->rows);
-    if ((q-image->pixels) >= (int) image->packets)
-      break;
   }
-  for ( ;  (q-image->pixels) < (int) image->packets; q++)
-    q->length=0;
-  CondenseImage(image);
   CloseBlob(image);
   return(image);
 }

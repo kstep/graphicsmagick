@@ -59,18 +59,47 @@
   Define declarations.
 */
 #define MatteMatch(color,target,delta) \
-  (ColorMatch(color,target,delta) && ((color).index == (target).index))
+  (ColorMatch(color,target,delta) && ((color).opacity == (target).opacity))
 #define MaxStacksize  (1 << 15)
 #define Push(up,left,right,delta) \
-  if ((p < (segment_stack+MaxStacksize)) && (((up)+(delta)) >= 0) && \
+  if ((s < (segment_stack+MaxStacksize)) && (((up)+(delta)) >= 0) && \
       (((up)+(delta)) < (int) image->rows)) \
     { \
-      p->y1=(up); \
-      p->x1=(left); \
-      p->x2=(right); \
-      p->y2=(delta); \
-      p++; \
+      s->y1=(up); \
+      s->x1=(left); \
+      s->x2=(right); \
+      s->y2=(delta); \
+      s++; \
     }
+
+/*
+  Typedef declaractions.
+*/
+typedef struct _PrimitiveInfo
+{
+  PrimitiveType
+    primitive;
+
+  unsigned int
+    coordinates;
+
+  double
+    x,
+    y;
+
+  PaintMethod
+    method;
+
+  char
+    *text;
+} PrimitiveInfo;
+
+/*
+  Forward declarations
+*/
+static unsigned short
+  InsidePrimitive(PrimitiveInfo *,const AnnotateInfo *,const PointInfo *,
+    Image *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -89,14 +118,15 @@
 %
 %  The format of the ColorFloodfillImage method is:
 %
-%      void ColorFloodfillImage(Image *image,const RunlengthPacket *target,
-%        Image *tile,const int x_offset,const int y_offset,const PaintMethod method)
+%      void ColorFloodfillImage(Image *image,const PixelPacket *target,
+%        Image *tile,const int x_offset,const int y_offset,
+%        const PaintMethod method)
 %
 %  A description of each parameter follows:
 %
 %    o image: The address of a structure of type Image.
 %
-%    o target: A RunlengthPacket structure.  This is the RGB value of the target
+%    o target: A PixelPacket structure.  This is the RGB value of the target
 %      color.
 %
 %    o tile: An image representing the image to tile onto the floodplane.
@@ -108,10 +138,10 @@
 %
 %
 */
-Export void ColorFloodfillImage(Image *image,const RunlengthPacket *target,
+Export void ColorFloodfillImage(Image *image,const PixelPacket *target,
   Image *tile,const int x_offset,const int y_offset,const PaintMethod method)
 {
-  ColorPacket
+  PixelPacket
     color;
 
   int
@@ -119,28 +149,22 @@ Export void ColorFloodfillImage(Image *image,const RunlengthPacket *target,
     skip,
     start,
     x1,
-    x2;
+    x2,
+    y;
 
   register int
     i,
-    x,
-    y;
+    x;
 
-  register RunlengthPacket
-    *pixel,
+  register PixelPacket
+    *p,
     *q;
 
   register SegmentInfo
-    *p;
-
-  register unsigned char
-    *r;
+    *s;
 
   SegmentInfo
     *segment_stack;
-
-  unsigned char
-    *markers;
 
   /*
     Check boundary conditions.
@@ -151,86 +175,83 @@ Export void ColorFloodfillImage(Image *image,const RunlengthPacket *target,
     return;
   if ((y_offset < 0) || (y_offset >= (int) image->rows))
     return;
-  if (!UncondenseImage(image))
-    return;
-  if (!UncondenseImage(tile))
-    return;
   /*
     Set floodfill color.
   */
-  x=x_offset;
-  y=y_offset;
-  color.red=tile->pixels[0].red;
-  color.green=tile->pixels[0].green;
-  color.blue=tile->pixels[0].blue;
-  markers=(unsigned char *)
-    AllocateMemory(image->rows*image->columns*sizeof(unsigned char));
-  if (markers == (unsigned char *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to floodfill image",
-        "Memory allocation failed");
-      return;
-    }
-  for (i=0; i < (int) (image->rows*image->columns); i++)
-    markers[i]=False;
+  (void) QueryColorDatabase("black",&color);
+  if (!GetPixelCache(tile,0,0,1,1))
+    return;
+  color.red=tile->pixels->red;
+  color.green=tile->pixels->green;
+  color.blue=tile->pixels->blue;
   if (ColorMatch(color,*target,image->fuzz))
     return;
-  /*
-    Allocate segment stack.
-  */
   segment_stack=(SegmentInfo *)
     AllocateMemory(MaxStacksize*sizeof(SegmentInfo));
   if (segment_stack == (SegmentInfo *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to floodfill image",
         "Memory allocation failed");
-      if (tile != (Image *) NULL)
-        {
-          FreeMemory((char *) markers);
-          DestroyImage(tile);
-        }
       return;
     }
   /*
+    Track "hot" pixels with the image index packets.
+  */
+  image->class=PseudoClass;
+  for (y=0; y < (int) image->rows; y++)
+  {
+    if (!GetPixelCache(image,0,y,image->columns,1))
+      break;
+    for (x=0; x < (int) image->columns; x++)
+      image->indexes[x]=False;
+    if (!SyncPixelCache(image))
+      break;
+  }
+  /*
     Push initial segment on stack.
   */
-  image->class=DirectClass;
+  x=x_offset;
+  y=y_offset;
   start=0;
-  p=segment_stack;
+  s=segment_stack;
   Push(y,x,x,1);
   Push(y+1,x,x,-1);
-  while (p > segment_stack)
+  while (s > segment_stack)
   {
     /*
       Pop segment off stack.
     */
-    p--;
-    x1=(int) p->x1;
-    x2=(int) p->x2;
-    offset=(int) p->y2;
-    y=(int) p->y1+offset;
+    s--;
+    x1=(int) s->x1;
+    x2=(int) s->x2;
+    offset=(int) s->y2;
+    y=(int) s->y1+offset;
     /*
       Recolor neighboring pixels.
     */
-    pixel=PixelOffset(image,x1,y);
+    q=GetPixelCache(image,0,y,x1+1,1);
+    if (q == (PixelPacket *) NULL)
+      break;
+    q+=x1;
     for (x=x1; x >= 0 ; x--)
     {
       if (method == FloodfillMethod)
         {
-          if (!ColorMatch(*pixel,*target,image->fuzz))
+          if (!ColorMatch(*q,*target,image->fuzz))
             break;
         }
       else
-        if (ColorMatch(*pixel,*target,image->fuzz) ||
-            ColorMatch(*pixel,color,image->fuzz))
+        if (ColorMatch(*q,*target,image->fuzz) ||
+            ColorMatch(*q,color,image->fuzz))
           break;
-      pixel->red=color.red;
-      pixel->green=color.green;
-      pixel->blue=color.blue;
-      if (markers != (unsigned char *) NULL)
-        markers[y*image->columns+x]=True;
-      pixel--;
+      image->indexes[x]=True;
+      q->red=color.red;
+      q->green=color.green;
+      q->blue=color.blue;
+      q--;
     }
+    if (!SyncPixelCache(image))
+      break;
     skip=x >= x1;
     if (!skip)
       {
@@ -243,83 +264,96 @@ Export void ColorFloodfillImage(Image *image,const RunlengthPacket *target,
     {
       if (!skip)
         {
-          pixel=PixelOffset(image,x,y);
-          for ( ; x < (int) image->columns; x++)
+          q=GetPixelCache(image,x,y,image->columns-x,1);
+          if (q == (PixelPacket *) NULL)
+            break;
+          for (i=0; x < (int) image->columns; x++)
           {
             if (method == FloodfillMethod)
               {
-                if (!ColorMatch(*pixel,*target,image->fuzz))
+                if (!ColorMatch(*q,*target,image->fuzz))
                   break;
               }
             else
-              if (ColorMatch(*pixel,*target,image->fuzz) ||
-                  ColorMatch(*pixel,color,image->fuzz))
+              if (ColorMatch(*q,*target,image->fuzz) ||
+                  ColorMatch(*q,color,image->fuzz))
                 break;
-            pixel->red=color.red;
-            pixel->green=color.green;
-            pixel->blue=color.blue;
-            if (markers != (unsigned char *) NULL)
-              markers[y*image->columns+x]=True;
-            pixel++;
+            image->indexes[i++]=True;
+            q->red=color.red;
+            q->green=color.green;
+            q->blue=color.blue;
+            q++;
           }
+          if (!SyncPixelCache(image))
+            break;
           Push(y,start,x-1,offset);
           if (x > (x2+1))
             Push(y,x2+1,x-1,-offset);
         }
       skip=False;
-      pixel=PixelOffset(image,x,y);
-      for (x++; x <= x2; x++)
-      {
-        pixel++;
-        if (method == FloodfillMethod)
-          {
-            if (ColorMatch(*pixel,*target,image->fuzz))
-              break;
-          }
-        else
-          if (!ColorMatch(*pixel,*target,image->fuzz) &&
-              !ColorMatch(*pixel,color,image->fuzz))
+      x++;
+      if (x <= x2)
+        {
+          q=GetPixelCache(image,x,y,x2-x+1,1);
+          if (q == (PixelPacket *) NULL)
             break;
-      }
+          for ( ; x <= x2; x++)
+          {
+            if (method == FloodfillMethod)
+              {
+                if (ColorMatch(*q,*target,image->fuzz))
+                  break;
+              }
+            else
+              if (!ColorMatch(*q,*target,image->fuzz) &&
+                  !ColorMatch(*q,color,image->fuzz))
+                break;
+            q++;
+          }
+        }
       start=x;
     } while (x <= x2);
   }
   /*
     Tile image onto floodplane.
   */
-  r=markers;
-  q=image->pixels;
   for (y=0; y < (int) image->rows; y++)
   {
+    q=GetPixelCache(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
     for (x=0; x < (int) image->columns; x++)
     {
-      if (*r)
+      if (image->indexes[x])
         {
-          pixel=PixelOffset(tile,x % tile->columns,y % tile->rows);
+          p=GetPixelCache(tile,x % tile->columns,y % tile->rows,1,1);
+          if (p == (PixelPacket *) NULL)
+            break;
           if (!tile->matte)
             {
-              q->red=pixel->red;
-              q->green=pixel->green;
-              q->blue=pixel->blue;
+              q->red=p->red;
+              q->green=p->green;
+              q->blue=p->blue;
             }
           else
             {
-              q->red=(Quantum) ((unsigned long) (pixel->red*pixel->index+
-                q->red*(Opaque-pixel->index))/Opaque);
-              q->green=(Quantum) ((unsigned long) (pixel->green*pixel->index+
-                q->green*(Opaque-pixel->index))/Opaque);
-              q->blue=(Quantum) ((unsigned long) (pixel->blue*pixel->index+
-                q->blue*(Opaque-pixel->index))/Opaque);
-              q->index=(unsigned short) ((unsigned long) (pixel->index*
-                pixel->index+q->index*(Opaque-pixel->index))/Opaque);
+              q->red=(Quantum) ((unsigned long) (p->red*p->opacity+
+                q->red*(Opaque-p->opacity))/Opaque);
+              q->green=(Quantum) ((unsigned long) (p->green*p->opacity+
+                q->green*(Opaque-p->opacity))/Opaque);
+              q->blue=(Quantum) ((unsigned long) (p->blue*p->opacity+
+                q->blue*(Opaque-p->opacity))/Opaque);
+              q->opacity=(Quantum) ((unsigned long) (p->opacity*
+                p->opacity+q->opacity*(Opaque-p->opacity))/Opaque);
             }
         }
-      r++;
       q++;
     }
+    if (!SyncPixelCache(image))
+      break;
   }
-  FreeMemory((char *) markers);
-  FreeMemory((char *) segment_stack);
+  image->class=DirectClass;
+  FreeMemory(segment_stack);
 }
 
 /*
@@ -377,9 +411,6 @@ Export void DrawImage(Image *image,const AnnotateInfo *annotate_info)
   PrimitiveType
     primitive_type;
 
-  RunlengthPacket
-    pixel;
-
   SegmentInfo
     bounds;
 
@@ -390,7 +421,7 @@ Export void DrawImage(Image *image,const AnnotateInfo *annotate_info)
     i,
     x;
 
-  register RunlengthPacket
+  register PixelPacket
     *q;
 
   unsigned int
@@ -410,14 +441,7 @@ Export void DrawImage(Image *image,const AnnotateInfo *annotate_info)
   assert(annotate_info->tile != (Image *) NULL);
   if (*annotate_info->primitive == '\0')
     return;
-  if (!UncondenseImage(image))
-    return;
   local_info=CloneAnnotateInfo(annotate_info->image_info,annotate_info);
-  if (!UncondenseImage(local_info->tile))
-    {
-      DestroyAnnotateInfo(local_info);
-      return;
-    }
   primitive=local_info->primitive;
   indirection=(*primitive == '@');
   if (indirection)
@@ -496,7 +520,7 @@ Export void DrawImage(Image *image,const AnnotateInfo *annotate_info)
       MagickWarning(ResourceLimitWarning,"Unable to draw image",
         "Memory allocation failed");
       if (indirection)
-        FreeMemory((char *) primitive);
+        FreeMemory(primitive);
       DestroyAnnotateInfo(local_info);
       return;
     }
@@ -605,7 +629,7 @@ Export void DrawImage(Image *image,const AnnotateInfo *annotate_info)
       MagickWarning(ResourceLimitWarning,"Unable to draw image",
         "Memory allocation failed");
       if (indirection)
-        FreeMemory((char *) primitive);
+        FreeMemory(primitive);
       DestroyAnnotateInfo(local_info);
       return;
     }
@@ -813,9 +837,9 @@ Export void DrawImage(Image *image,const AnnotateInfo *annotate_info)
     {
       MagickWarning(OptionWarning,
         "Non-conforming drawing primitive definition",keyword);
-      FreeMemory((char *) primitive_info);
+      FreeMemory(primitive_info);
       if (indirection)
-        FreeMemory((char *) primitive);
+        FreeMemory(primitive);
       DestroyAnnotateInfo(local_info);
       return;
     }
@@ -849,7 +873,6 @@ Export void DrawImage(Image *image,const AnnotateInfo *annotate_info)
   for (y=(int) bounds.y1; y <= (int) bounds.y2; y++)
   {
     target.y=y;
-    q=PixelOffset(image,bounds.x1,y);
     for (x=(int) bounds.x1; x <= (int) bounds.x2; x++)
     {
       target.x=x;
@@ -859,39 +882,51 @@ Export void DrawImage(Image *image,const AnnotateInfo *annotate_info)
           opacity=Opaque;
       if (opacity != Transparent)
         {
-          pixel=(*PixelOffset(local_info->tile,x % local_info->tile->columns,
-            y % local_info->tile->rows));
-          q->red=(Quantum) ((unsigned long)
-            (pixel.red*opacity+q->red*(Opaque-opacity))/Opaque);
-          q->green=(Quantum) ((unsigned long)
-            (pixel.green*opacity+q->green*(Opaque-opacity))/Opaque);
-          q->blue=(Quantum) ((unsigned long)
-            (pixel.blue*opacity+q->blue*(Opaque-opacity))/Opaque);
-          if (local_info->tile->matte)
+          register PixelPacket
+            *p;
+
+          p=GetPixelCache(local_info->tile,x % local_info->tile->columns,
+            y % local_info->tile->rows,1,1);
+          q=GetPixelCache(image,x,y,1,1);
+          if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+            break;
+          if (!local_info->tile->matte)
             {
-              q->index=(unsigned short) ((unsigned long)
-                (pixel.index*opacity+q->index*(Opaque-opacity))/Opaque);
               q->red=(Quantum) ((unsigned long)
-                (pixel.red*pixel.index+q->red*(Opaque-pixel.index))/Opaque);
+                (p->red*opacity+q->red*(Opaque-opacity))/Opaque);
               q->green=(Quantum) ((unsigned long)
-                (pixel.green*pixel.index+q->green*(Opaque-pixel.index))/Opaque);
+                (p->green*opacity+q->green*(Opaque-opacity))/Opaque);
               q->blue=(Quantum) ((unsigned long)
-                (pixel.blue*pixel.index+q->blue*(Opaque-pixel.index))/Opaque);
-              q->index=(unsigned short) ((unsigned long) (pixel.index*
-                pixel.index+q->index*(Opaque-pixel.index))/Opaque);
+                (p->blue*opacity+q->blue*(Opaque-opacity))/Opaque);
             }
+          else
+            {
+              q->red=(Quantum) ((unsigned long)
+                (p->red*p->opacity+q->red*(Opaque-p->opacity))/Opaque);
+              q->green=(Quantum) ((unsigned long) (p->green*p->opacity+
+                q->green*(Opaque-p->opacity))/Opaque);
+              q->blue=(Quantum) ((unsigned long) (p->blue*p->opacity+
+                q->blue*(Opaque-p->opacity))/Opaque);
+              q->opacity=(Quantum) ((unsigned long) (p->opacity*
+                p->opacity+q->opacity*(Opaque-p->opacity))/Opaque);
+            }
+          if (!SyncPixelCache(image))
+            break;
         }
-      q++;
     }
     if (QuantumTick(y,image->rows))
       ProgressMonitor(DrawImageText,y,image->rows);
   }
+  for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++)
+    if ((primitive_info[i].primitive == MattePrimitive) &&
+	(primitive_info[i].method == ResetMethod))
+      image->matte=False;
   /*
     Free resources.
   */
-  FreeMemory((char *) primitive_info);
+  FreeMemory(primitive_info);
   if (indirection)
-    FreeMemory((char *) primitive);
+    FreeMemory(primitive);
   DestroyAnnotateInfo(local_info);
 }
 
@@ -983,10 +1018,10 @@ static unsigned short PixelOnLine(const PointInfo *pixel,
   return(opacity);
 }
 
-Export unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
+static unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
   const AnnotateInfo *annotate_info,const PointInfo *pixel,Image *image)
 {
-  ColorPacket
+  PixelPacket
     border_color;
 
   double
@@ -996,9 +1031,6 @@ Export unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
     mid,
     radius;
 
-  register int
-    i;
-
   register PrimitiveInfo
     *p,
     *q;
@@ -1006,7 +1038,7 @@ Export unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
   register unsigned short
     opacity;
 
-  RunlengthPacket
+  PixelPacket
     target;
 
   SegmentInfo
@@ -1077,7 +1109,7 @@ Export unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
             else
               {
                 alpha=mid-beta+0.5;
-                opacity=(unsigned short) Max((int) opacity,Opaque*alpha*alpha);
+                opacity=(Quantum) Max((int) opacity,Opaque*alpha*alpha);
               }
           }
         break;
@@ -1096,7 +1128,7 @@ Export unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
           if (distance < (radius+1.0))
             {
               alpha=(radius-distance+1.0)/2.0;
-              opacity=(unsigned short) Max((int) opacity,Opaque*alpha*alpha);
+              opacity=(Quantum) Max((int) opacity,Opaque*alpha*alpha);
             }
         break;
       }
@@ -1201,7 +1233,7 @@ Export unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
             if (minimum_distance < 0.5)
               {
                 alpha=0.5+minimum_distance;
-                poly_opacity=(unsigned short) (Opaque*alpha*alpha);
+                poly_opacity=(Quantum) (Opaque*alpha*alpha);
               }
             opacity=Max(opacity,poly_opacity);
             break;
@@ -1210,7 +1242,7 @@ Export unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
         if (minimum_distance < 0.5)
           {
             alpha=0.5-minimum_distance;
-            poly_opacity=(unsigned short) (Opaque*alpha*alpha);
+            poly_opacity=(Quantum) (Opaque*alpha*alpha);
           }
         opacity=Max(opacity,poly_opacity);
         break;
@@ -1230,15 +1262,19 @@ Export unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
           }
           case ReplaceMethod:
           {
-            RunlengthPacket
+            PixelPacket
               color;
 
-            static RunlengthPacket
+            static PixelPacket
               target;
 
             if ((pixel->x == 0) && (pixel->y == 0))
-              target=(*PixelOffset(image,p->x,p->y));
-            color=(*PixelOffset(image,pixel->x,pixel->y));
+              {
+                if (GetPixelCache(image,p->x,p->y,1,1))
+                  target=(*image->pixels);
+              }
+            if (GetPixelCache(image,pixel->x,pixel->y,1,1))
+              color=(*image->pixels);
             if (ColorMatch(color,target,(int) image->fuzz))
               opacity=Opaque;
             break;
@@ -1249,14 +1285,14 @@ Export unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
             if ((pixel->x != (int) (p->x+0.5)) &&
                 (pixel->y != (int) (p->y+0.5)))
               break;
-            target=(*PixelOffset(image,pixel->x,pixel->y));
+            if (GetPixelCache(image,pixel->x,pixel->y,1,1))
+              target=(*image->pixels);
             if (p->method == FillToBorderMethod)
               {
-                (void) QueryColorDatabase(
-                  annotate_info->image_info->border_color,&border_color);
-                target.red=XDownScale(border_color.red);
-                target.green=XDownScale(border_color.green);
-                target.blue=XDownScale(border_color.blue);
+                border_color=annotate_info->image_info->border_color;
+                target.red=border_color.red;
+                target.green=border_color.green;
+                target.blue=border_color.blue;
               }
             ColorFloodfillImage(image,&target,annotate_info->tile,
               (int) pixel->x,(int) pixel->y,p->method);
@@ -1273,15 +1309,7 @@ Export unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
       case MattePrimitive:
       {
         if (!image->matte)
-          {
-            /*
-              Initialize matte image.
-            */
-            image->class=DirectClass;
-            image->matte=True;
-            for (i=0; i < (int) image->packets; i++)
-              image->pixels[i].index=Opaque;
-          }
+          MatteImage(image,Opaque);
         switch (p->method)
         {
           case PointMethod:
@@ -1290,22 +1318,33 @@ Export unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
             if ((pixel->x != (int) (p->x+0.5)) &&
                 (pixel->y != (int) (p->y+0.5)))
               break;
-            PixelOffset(image,pixel->x,pixel->y)->index=Transparent;
+            if (GetPixelCache(image,pixel->x,pixel->y,1,1))
+              {
+                image->pixels->opacity=Transparent;
+                (void) SyncPixelCache(image);
+              }
             break;
           }
           case ReplaceMethod:
           {
-            RunlengthPacket
+            PixelPacket
               color;
 
-            static RunlengthPacket
+            static PixelPacket
               target;
 
             if ((pixel->x == 0) && (pixel->y == 0))
-              target=(*PixelOffset(image,p->x,p->y));
-            color=(*PixelOffset(image,pixel->x,pixel->y));
+              {
+                if (GetPixelCache(image,p->x,p->y,1,1))
+                  target=(*image->pixels);
+              }
+            if (GetPixelCache(image,pixel->x,pixel->y,1,1))
+              color=(*image->pixels);
             if (ColorMatch(color,target,image->fuzz))
-              PixelOffset(image,pixel->x,pixel->y)->index=Transparent;
+              {
+                image->pixels->opacity=Transparent;
+                (void) SyncPixelCache(image);
+              }
             break;
           }
           case FloodfillMethod:
@@ -1314,14 +1353,14 @@ Export unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
             if ((pixel->x != (int) (p->x+0.5)) &&
                 (pixel->y != (int) (p->y+0.5)))
               break;
-            target=(*PixelOffset(image,pixel->x,pixel->y));
+            if (GetPixelCache(image,pixel->x,pixel->y,1,1))
+              target=(*image->pixels);
             if (p->method == FillToBorderMethod)
               {
-                (void) QueryColorDatabase(
-                  annotate_info->image_info->border_color,&border_color);
-                target.red=XDownScale(border_color.red);
-                target.green=XDownScale(border_color.green);
-                target.blue=XDownScale(border_color.blue);
+                border_color=annotate_info->image_info->border_color;
+                target.red=border_color.red;
+                target.green=border_color.green;
+                target.blue=border_color.blue;
               }
             MatteFloodfillImage(image,&target,Transparent,(int) pixel->x,
               (int) pixel->y,p->method);
@@ -1329,7 +1368,11 @@ Export unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
           }
           case ResetMethod:
           {
-            PixelOffset(image,pixel->x,pixel->y)->index=Opaque;
+            if (GetPixelCache(image,pixel->x,pixel->y,1,1))
+              {
+                image->pixels->opacity=Opaque;
+                (void) SyncPixelCache(image);
+              }
             break;
           }
         }
@@ -1419,7 +1462,7 @@ Export unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
 %
 %  The format of the MatteFloodfillImage method is:
 %
-%      void MatteFloodfillImage(Image *image,const RunlengthPacket *target,
+%      void MatteFloodfillImage(Image *image,const PixelPacket *target,
 %        const unsigned int matte,const int x_offset,const int y_offset,
 %        const PaintMethod method)
 %
@@ -1427,7 +1470,7 @@ Export unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
 %
 %    o image: The address of a structure of type Image.
 %
-%    o target: A RunlengthPacket structure.  This is the RGB value of the target
+%    o target: A PixelPacket structure.  This is the RGB value of the target
 %      color.
 %
 %    o matte: A integer value representing the amount of transparency.
@@ -1439,7 +1482,7 @@ Export unsigned short InsidePrimitive(PrimitiveInfo *primitive_info,
 %
 %
 */
-Export void MatteFloodfillImage(Image *image,const RunlengthPacket *target,
+Export void MatteFloodfillImage(Image *image,const PixelPacket *target,
   const unsigned int matte,const int x_offset,const int y_offset,
   const PaintMethod method)
 {
@@ -1448,17 +1491,17 @@ Export void MatteFloodfillImage(Image *image,const RunlengthPacket *target,
     skip,
     start,
     x1,
-    x2;
-
-  register int
-    x,
+    x2,
     y;
 
-  register RunlengthPacket
-    *pixel;
+  register int
+    x;
+
+  register PixelPacket
+    *q;
 
   register SegmentInfo
-    *p;
+    *s;
 
   SegmentInfo
     *segment_stack;
@@ -1471,18 +1514,15 @@ Export void MatteFloodfillImage(Image *image,const RunlengthPacket *target,
     return;
   if ((y_offset < 0) || (y_offset >= (int) image->rows))
     return;
-  if (target->index == (unsigned short) matte)
+  if (target->opacity == (unsigned short) matte)
     return;
-  if (!UncondenseImage(image))
+  if (!GetPixelCache(image,x_offset,y_offset,1,1))
     return;
-  pixel=PixelOffset(image,x_offset,y_offset);
-  if (pixel->index == (unsigned short) matte)
+  if (image->pixels->opacity == (unsigned short) matte)
     return;
   /*
     Allocate segment stack.
   */
-  x=x_offset;
-  y=y_offset;
   segment_stack=(SegmentInfo *)
     AllocateMemory(MaxStacksize*sizeof(SegmentInfo));
   if (segment_stack == (SegmentInfo *) NULL)
@@ -1496,39 +1536,46 @@ Export void MatteFloodfillImage(Image *image,const RunlengthPacket *target,
   */
   image->class=DirectClass;
   if (!image->matte)
-    MatteImage(image);
+    MatteImage(image,Opaque);
+  x=x_offset;
+  y=y_offset;
   start=0;
-  p=segment_stack;
+  s=segment_stack;
   Push(y,x,x,1);
   Push(y+1,x,x,-1);
-  while (p > segment_stack)
+  while (s > segment_stack)
   {
     /*
       Pop segment off stack.
     */
-    p--;
-    x1=(int) p->x1;
-    x2=(int) p->x2;
-    offset=(int) p->y2;
-    y=(int) p->y1+offset;
+    s--;
+    x1=(int) s->x1;
+    x2=(int) s->x2;
+    offset=(int) s->y2;
+    y=(int) s->y1+offset;
     /*
       Recolor neighboring pixels.
     */
-    pixel=PixelOffset(image,x1,y);
+    q=GetPixelCache(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
+    q+=x1;
     for (x=x1; x >= 0 ; x--)
     {
       if (method == FloodfillMethod)
         {
-          if (!MatteMatch(*pixel,*target,image->fuzz))
+          if (!MatteMatch(*q,*target,image->fuzz))
             break;
         }
       else
-        if (MatteMatch(*pixel,*target,image->fuzz) ||
-            (pixel->index == (unsigned short) matte))
+        if (MatteMatch(*q,*target,image->fuzz) ||
+            (q->opacity == (unsigned short) matte))
           break;
-      pixel->index=(unsigned short) matte;
-      pixel--;
+      q->opacity=(Quantum) matte;
+      q--;
     }
+    if (!SyncPixelCache(image))
+      break;
     skip=x >= x1;
     if (!skip)
       {
@@ -1541,44 +1588,52 @@ Export void MatteFloodfillImage(Image *image,const RunlengthPacket *target,
     {
       if (!skip)
         {
-          pixel=PixelOffset(image,x,y);
+          q=GetPixelCache(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            break;
+          q+=x;
           for ( ; x < (int) image->columns; x++)
           {
             if (method == FloodfillMethod)
               {
-                if (!MatteMatch(*pixel,*target,image->fuzz))
+                if (!MatteMatch(*q,*target,image->fuzz))
                   break;
               }
             else
-              if (MatteMatch(*pixel,*target,image->fuzz) ||
-                  (pixel->index == (unsigned short) matte))
+              if (MatteMatch(*q,*target,image->fuzz) ||
+                  (q->opacity == (unsigned short) matte))
                 break;
-            pixel->index=(unsigned short) matte;
-            pixel++;
+            q->opacity=(Quantum) matte;
+            q++;
           }
+          if (!SyncPixelCache(image))
+            break;
           Push(y,start,x-1,offset);
           if (x > (x2+1))
             Push(y,x2+1,x-1,-offset);
         }
       skip=False;
-      pixel=PixelOffset(image,x,y);
+      q=GetPixelCache(image,0,y,image->columns,1);
+      if (q == (PixelPacket *) NULL)
+        break;
+      q+=x;
       for (x++; x <= x2 ; x++)
       {
-        pixel++;
+        q++;
         if (method == FloodfillMethod)
           {
-            if (MatteMatch(*pixel,*target,image->fuzz))
+            if (MatteMatch(*q,*target,image->fuzz))
               break;
           }
         else
-          if (!MatteMatch(*pixel,*target,image->fuzz) &&
-              (pixel->index != (unsigned short) matte))
+          if (!MatteMatch(*q,*target,image->fuzz) &&
+              (q->opacity != (unsigned short) matte))
             break;
       }
       start=x;
     } while (x <= x2);
   }
-  FreeMemory((char *) segment_stack);
+  FreeMemory(segment_stack);
 }
 
 /*
@@ -1613,12 +1668,19 @@ Export void OpaqueImage(Image *image,const char *opaque_color,
 {
 #define OpaqueImageText  "  Setting opaque color in the image...  "
 
-  ColorPacket
+  PixelPacket
     target,
     target_color;
 
+  int
+    y;
+
   register int
-    i;
+    i,
+    x;
+
+  register PixelPacket
+    *q;
 
   unsigned int
     status;
@@ -1627,12 +1689,9 @@ Export void OpaqueImage(Image *image,const char *opaque_color,
     Determine RGB values of the opaque color.
   */
   assert(image != (Image *) NULL);
-  status=QueryColorDatabase(opaque_color,&target_color);
+  status=QueryColorDatabase(opaque_color,&target);
   if (status == False)
     return;
-  target.red=XDownScale(target_color.red);
-  target.green=XDownScale(target_color.green);
-  target.blue=XDownScale(target_color.blue);
   status=QueryColorDatabase(pen_color,&target_color);
   if (status == False)
     return;
@@ -1644,47 +1703,38 @@ Export void OpaqueImage(Image *image,const char *opaque_color,
     case DirectClass:
     default:
     {
-      register RunlengthPacket
-        *p;
-
       /*
         Make DirectClass image opaque.
       */
-      p=image->pixels;
-      for (i=0; i < (int) image->packets; i++)
+      for (y=0; y < (int) image->rows; y++)
       {
-        if (ColorMatch(*p,target,image->fuzz))
-          {
-            p->red=XDownScale(target_color.red);
-            p->green=XDownScale(target_color.green);
-            p->blue=XDownScale(target_color.blue);
-          }
-        p++;
-        if (QuantumTick(i,image->packets))
-          ProgressMonitor(OpaqueImageText,i,image->packets);
+        q=GetPixelCache(image,0,y,image->columns,1);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (int) image->columns; x++)
+        {
+          if (ColorMatch(*q,target,image->fuzz))
+            *q=target_color;
+          q++;
+        }
+        if (!SyncPixelCache(image))
+          break;
+        if (QuantumTick(y,image->rows))
+          ProgressMonitor(OpaqueImageText,y,image->rows);
       }
       break;
     }
     case PseudoClass:
     {
-      register ColorPacket
-        *p;
-
       /*
         Make PseudoClass image opaque.
       */
-      p=image->colormap;
       for (i=0; i < (int) image->colors; i++)
       {
-        if (ColorMatch(*p,target,image->fuzz))
-          {
-            p->red=XDownScale(target_color.red);
-            p->green=XDownScale(target_color.green);
-            p->blue=XDownScale(target_color.blue);
-          }
-        p++;
-        if (QuantumTick(i,image->packets))
-          ProgressMonitor(OpaqueImageText,i,image->packets);
+        if (ColorMatch(image->colormap[i],target,image->fuzz))
+          image->colormap[i]=target_color;
+        if (QuantumTick(i,image->colors))
+          ProgressMonitor(OpaqueImageText,i,image->colors);
       }
       SyncImage(image);
       break;

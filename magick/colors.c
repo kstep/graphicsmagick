@@ -3,11 +3,11 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                  CCCC   OOO   L       OOO   RRRR    SSSSS                   %
-%                 C      O   O  L      O   O  R   R   SS                      %
-%                 C      O   O  L      O   O  RRRR     SSS                    %
-%                 C      O   O  L      O   O  R R        SS                   %
-%                  CCCC   OOO   LLLLL   OOO   R  R    SSSSS                   %
+%                  CCCC   OOO   L       OOO   RRRR   SSSSS                    %
+%                 C      O   O  L      O   O  R   R  SS                       %
+%                 C      O   O  L      O   O  RRRR    SSS                     %
+%                 C      O   O  L      O   O  R R       SS                    %
+%                  CCCC   OOO   LLLLL   OOO   R  R   SSSSS                    %
 %                                                                             %
 %                                                                             %
 %                  Methods to Count the Colors in an Image                    %
@@ -62,6 +62,20 @@
 /*
   Structures.
 */
+typedef struct _ColorPacket
+{
+  Quantum
+    red,
+    green,
+    blue;
+
+  unsigned short
+    index;
+
+  unsigned long
+    count;
+} ColorPacket;
+
 typedef struct _NodeInfo
 {
   unsigned char
@@ -907,21 +921,19 @@ static void
 */
 Export void CompressColormap(Image *image)
 {
-  ColorPacket
+  int
+    number_colors,
+    y;
+
+  PixelPacket
     *colormap;
 
-  int
-    number_colors;
+  register IndexPacket
+    index;
 
   register int
     i,
-    j;
-
-  register RunlengthPacket
-    *p;
-
-  register unsigned short
-    index;
+    x;
 
   /*
     Determine if colormap can be compressed.
@@ -931,35 +943,39 @@ Export void CompressColormap(Image *image)
     return;
   number_colors=image->colors;
   for (i=0; i < (int) image->colors; i++)
-    image->colormap[i].flags=False;
+    image->colormap[i].opacity=False;
   image->colors=0;
-  p=image->pixels;
-  for (i=0; i < (int) image->packets; i++)
+  for (y=0; y < (int) image->rows; y++)
   {
-    if (!image->colormap[p->index].flags)
-      {
-        /*
-          Eliminate duplicate colors.
-        */
-        for (j=0; j < number_colors; j++)
-          if ((j != p->index) && image->colormap[j].flags)
-            if (ColorMatch(image->colormap[p->index],image->colormap[j],0))
-              break;
-        if (j != number_colors)
-          image->colormap[p->index].index=image->colormap[j].index;
-        else
-          image->colormap[p->index].index=image->colors++;
-        image->colormap[p->index].flags=True;
-      }
-    p++;
+    if (!GetPixelCache(image,0,y,image->columns,1))
+      break;
+    for (x=0; x < (int) image->columns; x++)
+    {
+      index=image->indexes[x];
+      if (!image->colormap[index].opacity)
+        {
+          /*
+            Eliminate duplicate colors.
+          */
+          for (i=0; i < number_colors; i++)
+            if ((i != index) && image->colormap[i].opacity)
+              if (ColorMatch(image->colormap[index],image->colormap[i],0))
+                break;
+          if (i != number_colors)
+            image->colormap[index].opacity=image->colormap[i].opacity;
+          else
+            image->colormap[index].opacity=image->colors++;
+          image->colormap[index].opacity=True;
+        }
+    }
   }
   if ((int) image->colors == number_colors)
     return;  /* no duplicate or unused entries */
   /*
     Compress colormap.
   */
-  colormap=(ColorPacket *) AllocateMemory(image->colors*sizeof(ColorPacket));
-  if (colormap == (ColorPacket *) NULL)
+  colormap=(PixelPacket *) AllocateMemory(image->colors*sizeof(PixelPacket));
+  if (colormap == (PixelPacket *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to compress colormap",
         "Memory allocation failed");
@@ -970,9 +986,9 @@ Export void CompressColormap(Image *image)
     Eliminate unused colormap entries.
   */
   for (i=0; i < number_colors; i++)
-    if (image->colormap[i].flags)
+    if (image->colormap[i].opacity)
       {
-        index=image->colormap[i].index;
+        index=image->colormap[i].opacity;
         colormap[index].red=image->colormap[i].red;
         colormap[index].green=image->colormap[i].green;
         colormap[index].blue=image->colormap[i].blue;
@@ -980,13 +996,19 @@ Export void CompressColormap(Image *image)
   /*
     Remap pixels.
   */
-  p=image->pixels;
-  for (i=0; i < (int) image->packets; i++)
+  for (y=0; y < (int) image->rows; y++)
   {
-    p->index=image->colormap[p->index].index;
-    p++;
+    if (!GetPixelCache(image,0,y,image->columns,1))
+      break;
+    for (x=0; x < (int) image->columns; x++)
+    {
+      index=image->indexes[x];
+      image->indexes[x]=image->colormap[index].opacity;
+    }
+    if (!SyncPixelCache(image))
+      break;
   }
-  FreeMemory((char *) image->colormap);
+  FreeMemory(image->colormap);
   image->colormap=colormap;
 }
 
@@ -1026,9 +1048,8 @@ static void DestroyList(const NodeInfo *node_info)
   for (id=0; id < 8; id++)
     if (node_info->child[id] != (NodeInfo *) NULL)
       DestroyList(node_info->child[id]);
-  if (node_info->level == MaxTreeDepth)
-    if (node_info->list != (ColorPacket *) NULL)
-      FreeMemory((char *) node_info->list);
+  if (node_info->list != (ColorPacket *) NULL)
+    FreeMemory(node_info->list);
 }
 
 /*
@@ -1065,12 +1086,15 @@ static void DestroyList(const NodeInfo *node_info)
 %
 %
 */
-Export unsigned long GetNumberColors(const Image *image,FILE *file)
+Export unsigned long GetNumberColors(Image *image,FILE *file)
 {
 #define NumberColorsImageText  "  Computing image colors...  "
 
   CubeInfo
     color_cube;
+
+  int
+    y;
 
   NodeInfo
     *node_info;
@@ -1080,9 +1104,9 @@ Export unsigned long GetNumberColors(const Image *image,FILE *file)
 
   register int
     i,
-    j;
+    x;
 
-  register RunlengthPacket
+  register PixelPacket
     *p;
 
   register unsigned int
@@ -1101,66 +1125,74 @@ Export unsigned long GetNumberColors(const Image *image,FILE *file)
   color_cube.root=InitializeNode(&color_cube,0);
   if (color_cube.root == (NodeInfo *) NULL)
     {
-      MagickWarning(ResourceLimitWarning,"Unable to determine image class",
+      MagickWarning(ResourceLimitWarning,
+        "Unable to determine the number of image colors",
         "Memory allocation failed");
       return(0);
     }
-  p=image->pixels;
-  for (i=0; i < (int) image->packets; i++)
+  for (y=0; y < (int) image->rows; y++)
   {
-    /*
-      Start at the root and proceed level by level.
-    */
-    node_info=color_cube.root;
-    index=MaxTreeDepth-1;
-    for (level=1; level <= MaxTreeDepth; level++)
+    p=GetPixelCache(image,0,y,image->columns,1);
+    if (p == (PixelPacket *) NULL)
+      return(False);
+    for (x=0; x < (int) image->columns; x++)
     {
-      id=(((Quantum) DownScale(p->red) >> index) & 0x01) << 2 |
-         (((Quantum) DownScale(p->green) >> index) & 0x01) << 1 |
-         (((Quantum) DownScale(p->blue) >> index) & 0x01);
-      if (node_info->child[id] == (NodeInfo *) NULL)
-        {
-          node_info->child[id]=InitializeNode(&color_cube,level);
-          if (node_info->child[id] == (NodeInfo *) NULL)
-            {
-              MagickWarning(ResourceLimitWarning,"Unable to determine image class",
-                "Memory allocation failed");
-              return(0);
-            }
-        }
-      node_info=node_info->child[id];
-      index--;
-      if (level != MaxTreeDepth)
-        continue;
-      for (j=0; j < (int) node_info->number_unique; j++)
-         if (ColorMatch(*p,node_info->list[j],0))
-           break;
-      if (j < (int) node_info->number_unique)
-        {
-          node_info->list[j].count+=p->length+1;
+      /*
+        Start at the root and proceed level by level.
+      */
+      node_info=color_cube.root;
+      index=MaxTreeDepth-1;
+      for (level=1; level <= MaxTreeDepth; level++)
+      {
+        id=(((Quantum) DownScale(p->red) >> index) & 0x01) << 2 |
+           (((Quantum) DownScale(p->green) >> index) & 0x01) << 1 |
+           (((Quantum) DownScale(p->blue) >> index) & 0x01);
+        if (node_info->child[id] == (NodeInfo *) NULL)
+          {
+            node_info->child[id]=InitializeNode(&color_cube,level);
+            if (node_info->child[id] == (NodeInfo *) NULL)
+              {
+                MagickWarning(ResourceLimitWarning,
+                  "Unable to determine the number of image colors",
+                  "Memory allocation failed");
+                return(0);
+              }
+          }
+        node_info=node_info->child[id];
+        index--;
+        if (level != MaxTreeDepth)
           continue;
-        }
-      if (node_info->number_unique == 0)
-        node_info->list=(ColorPacket *) AllocateMemory(sizeof(ColorPacket));
-      else
-        node_info->list=(ColorPacket *)
-          ReallocateMemory(node_info->list,(j+1)*sizeof(ColorPacket));
-      if (node_info->list == (ColorPacket *) NULL)
-        {
-          MagickWarning(ResourceLimitWarning,"Unable to determine image class",
-            "Memory allocation failed");
-          return(0);
-        }
-      node_info->list[j].red=p->red;
-      node_info->list[j].green=p->green;
-      node_info->list[j].blue=p->blue;
-      node_info->list[j].count=p->length+1;
-      node_info->number_unique++;
-      color_cube.colors++;
+        for (i=0; i < (int) node_info->number_unique; i++)
+           if (ColorMatch(*p,node_info->list[i],0))
+             break;
+        if (i < (int) node_info->number_unique)
+          {
+            node_info->list[i].count++;
+            continue;
+          }
+        if (node_info->number_unique == 0)
+          node_info->list=(ColorPacket *) AllocateMemory(sizeof(ColorPacket));
+        else
+          node_info->list=(ColorPacket *)
+            ReallocateMemory(node_info->list,(i+1)*sizeof(ColorPacket));
+        if (node_info->list == (ColorPacket *) NULL)
+          {
+            MagickWarning(ResourceLimitWarning,
+              "Unable to determine the number of image colors",
+              "Memory allocation failed");
+            return(0);
+          }
+        node_info->list[i].red=p->red;
+        node_info->list[i].green=p->green;
+        node_info->list[i].blue=p->blue;
+        node_info->list[i].count=1;
+        node_info->number_unique++;
+        color_cube.colors++;
+      }
+      p++;
     }
-    p++;
-    if (QuantumTick(i,image->packets))
-      ProgressMonitor(NumberColorsImageText,i,image->packets);
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(NumberColorsImageText,y,image->rows);
   }
   if (file != (FILE *) NULL)
     {
@@ -1174,7 +1206,7 @@ Export unsigned long GetNumberColors(const Image *image,FILE *file)
   do
   {
     nodes=color_cube.node_list->next;
-    FreeMemory((char *) color_cube.node_list);
+    FreeMemory(color_cube.node_list);
     color_cube.node_list=nodes;
   }
   while (color_cube.node_list != (Nodes *) NULL);
@@ -1227,6 +1259,9 @@ static void Histogram(CubeInfo *color_cube,const NodeInfo *node_info,FILE *file)
       char
         name[MaxTextExtent];
 
+      PixelPacket
+        color;
+
       register ColorPacket
         *p;
 
@@ -1236,15 +1271,14 @@ static void Histogram(CubeInfo *color_cube,const NodeInfo *node_info,FILE *file)
       p=node_info->list;
       for (i=0; i < (int) node_info->number_unique; i++)
       {
-#if (QuantumDepth == 8)
         (void) fprintf(file,"%10lu: (%3d,%3d,%3d)  #%02x%02x%02x",
-#else
-        (void) fprintf(file,"%10lu: (%5d,%5d,%5d)  #%04x%04x%04x",
-#endif
           p->count,p->red,p->green,p->blue,(unsigned int) p->red,
           (unsigned int) p->green,(unsigned int) p->blue);
         (void) fprintf(file,"  ");
-        (void) QueryColorName(p,name);
+        color.red=p->red;
+        color.green=p->green;
+        color.blue=p->blue;
+        (void) QueryColorName(&color,name);
         (void) fprintf(file,"%.1024s",name);
         (void) fprintf(file,"\n");
         p++;
@@ -1395,7 +1429,7 @@ Export unsigned int IsMonochromeImage(Image *image)
     Determine if image is monochrome.
   */
   assert(image != (Image *) NULL);
-  if (image->pixels == (RunlengthPacket *) NULL)
+  if (image->pixels == (PixelPacket *) NULL)
     return(False);
   if (!IsGrayImage(image))
     return(False);
@@ -1447,18 +1481,22 @@ Export unsigned int IsPseudoClass(Image *image)
   CubeInfo
     color_cube;
 
+  int
+    y;
+
   Nodes
     *nodes;
 
   register int
     i,
-    j;
+    x;
 
   register NodeInfo
     *node_info;
 
-  register RunlengthPacket
-    *p;
+  register PixelPacket
+    *p,
+    *q;
 
   register unsigned int
     index,
@@ -1470,8 +1508,6 @@ Export unsigned int IsPseudoClass(Image *image)
   assert(image != (Image *) NULL);
   if ((image->class == PseudoClass) && (image->colors <= 256))
     return(True);
-  if (image->matte)
-    return(False);
   if (image->colorspace == CMYKColorspace)
     return(False);
   /*
@@ -1487,100 +1523,118 @@ Export unsigned int IsPseudoClass(Image *image)
         "Memory allocation failed");
       return(False);
     }
-  p=image->pixels;
-  for (i=0; (i < (int) image->packets) && (color_cube.colors <= 256); i++)
+  for (y=0; (y < (int) image->rows) && (color_cube.colors <= 256); y++)
   {
-    /*
-      Start at the root and proceed level by level.
-    */
-    node_info=color_cube.root;
-    index=MaxTreeDepth-1;
-    for (level=1; level < MaxTreeDepth; level++)
+    p=GetPixelCache(image,0,y,image->columns,1);
+    if (p == (PixelPacket *) NULL)
+      return(False);
+    for (x=0; (x < (int) image->columns) && (color_cube.colors <= 256); x++)
     {
-      id=((DownScale(p->red) >> index) & 0x01) << 2 |
-         ((DownScale(p->green) >> index) & 0x01) << 1 |
-         ((DownScale(p->blue) >> index) & 0x01);
-      if (node_info->child[id] == (NodeInfo *) NULL)
+      /*
+        Start at the root and proceed level by level.
+      */
+      node_info=color_cube.root;
+      index=MaxTreeDepth-1;
+      for (level=1; level < MaxTreeDepth; level++)
+      {
+        id=((DownScale(p->red) >> index) & 0x01) << 2 |
+           ((DownScale(p->green) >> index) & 0x01) << 1 |
+           ((DownScale(p->blue) >> index) & 0x01);
+        if (node_info->child[id] == (NodeInfo *) NULL)
+          {
+            node_info->child[id]=InitializeNode(&color_cube,level);
+            if (node_info->child[id] == (NodeInfo *) NULL)
+              {
+                MagickWarning(ResourceLimitWarning,
+                  "Unable to determine image class","Memory allocation failed");
+                return(False);
+              }
+          }
+        node_info=node_info->child[id];
+        index--;
+      }
+      for (i=0; i < (int) node_info->number_unique; i++)
+        if (ColorMatch(*p,node_info->list[i],0))
+          break;
+      if (i == (int) node_info->number_unique)
         {
-          node_info->child[id]=InitializeNode(&color_cube,level);
-          if (node_info->child[id] == (NodeInfo *) NULL)
+          /*
+            Add this unique color to the color list.
+          */
+          if (node_info->number_unique == 0)
+            node_info->list=(ColorPacket *) AllocateMemory(sizeof(ColorPacket));
+          else
+            node_info->list=(ColorPacket *)
+              ReallocateMemory(node_info->list,(i+1)*sizeof(ColorPacket));
+          if (node_info->list == (ColorPacket *) NULL)
             {
               MagickWarning(ResourceLimitWarning,
                 "Unable to determine image class","Memory allocation failed");
               return(False);
             }
+          node_info->list[i].red=p->red;
+          node_info->list[i].green=p->green;
+          node_info->list[i].blue=p->blue;
+          node_info->list[i].index=color_cube.colors++;
+          node_info->number_unique++;
         }
-      node_info=node_info->child[id];
-      index--;
+      p++;
     }
-    for (j=0; j < (int) node_info->number_unique; j++)
-      if (ColorMatch(*p,node_info->list[j],0))
-        break;
-    if (j == (int) node_info->number_unique)
-      {
-        /*
-          Add this unique color to the color list.
-        */
-        if (node_info->number_unique == 0)
-          node_info->list=(ColorPacket *) AllocateMemory(sizeof(ColorPacket));
-        else
-          node_info->list=(ColorPacket *)
-            ReallocateMemory(node_info->list,(j+1)*sizeof(ColorPacket));
-        if (node_info->list == (ColorPacket *) NULL)
-          {
-            MagickWarning(ResourceLimitWarning,
-              "Unable to determine image class","Memory allocation failed");
-            return(False);
-          }
-        node_info->list[j].red=p->red;
-        node_info->list[j].green=p->green;
-        node_info->list[j].blue=p->blue;
-        node_info->list[j].index=color_cube.colors++;
-        node_info->number_unique++;
-      }
-    p++;
   }
   if (color_cube.colors <= 256)
     {
+      IndexPacket
+        index;
+
       /*
         Create colormap.
       */
       image->class=PseudoClass;
       image->colors=color_cube.colors;
-      if (image->colormap == (ColorPacket *) NULL)
-        image->colormap=(ColorPacket *)
-          AllocateMemory(image->colors*sizeof(ColorPacket));
+      if (image->colormap == (PixelPacket *) NULL)
+        image->colormap=(PixelPacket *)
+          AllocateMemory(image->colors*sizeof(PixelPacket));
       else
-        image->colormap=(ColorPacket *) ReallocateMemory((char *)
-          image->colormap,image->colors*sizeof(ColorPacket));
-      if (image->colormap == (ColorPacket *) NULL)
+        image->colormap=(PixelPacket *) ReallocateMemory((char *)
+          image->colormap,image->colors*sizeof(PixelPacket));
+      if (image->colormap == (PixelPacket *) NULL)
         {
           MagickWarning(ResourceLimitWarning,"Unable to determine image class",
             "Memory allocation failed");
           return(False);
         }
-      p=image->pixels;
-      for (i=0; i < (int) image->packets; i++)
+      for (y=0; y < (int) image->rows; y++)
       {
-        /*
-          Start at the root and proceed level by level.
-        */
-        node_info=color_cube.root;
-        index=MaxTreeDepth-1;
-        for (level=1; level < MaxTreeDepth; level++)
+        q=GetPixelCache(image,0,y,image->columns,1);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (int) image->columns; x++)
         {
-          id=((DownScale(p->red) >> index) & 0x01) << 2 |
-             ((DownScale(p->green) >> index) & 0x01) << 1 |
-             ((DownScale(p->blue) >> index) & 0x01);
-          node_info=node_info->child[id];
-          index--;
+          /*
+            Start at the root and proceed level by level.
+          */
+          node_info=color_cube.root;
+          index=MaxTreeDepth-1;
+          for (level=1; level < MaxTreeDepth; level++)
+          {
+            id=((DownScale(q->red) >> index) & 0x01) << 2 |
+               ((DownScale(q->green) >> index) & 0x01) << 1 |
+               ((DownScale(q->blue) >> index) & 0x01);
+            node_info=node_info->child[id];
+            index--;
+          }
+          for (i=0; i < (int) node_info->number_unique; i++)
+            if (ColorMatch(*q,node_info->list[i],0))
+              break;
+          index=node_info->list[i].index;
+          image->indexes[x]=index;
+          image->colormap[index].red=node_info->list[i].red;
+          image->colormap[index].green=node_info->list[i].green;
+          image->colormap[index].blue=node_info->list[i].blue;
+          q++;
         }
-        for (j=0; j < (int) node_info->number_unique; j++)
-          if (ColorMatch(*p,node_info->list[j],0))
-            break;
-        p->index=node_info->list[j].index;
-        image->colormap[p->index]=node_info->list[j];
-        p++;
+        if (!SyncPixelCache(image))
+          break;
       }
     }
   /*
@@ -1590,7 +1644,7 @@ Export unsigned int IsPseudoClass(Image *image)
   do
   {
     nodes=color_cube.node_list->next;
-    FreeMemory((char *) color_cube.node_list);
+    FreeMemory(color_cube.node_list);
     color_cube.node_list=nodes;
   } while (color_cube.node_list != (Nodes *) NULL);
   return((image->class == PseudoClass) && (image->colors <= 256));
@@ -1612,7 +1666,7 @@ Export unsigned int IsPseudoClass(Image *image)
 %
 %  The format of the QueryColorDatabase method is:
 %
-%      unsigned int QueryColorDatabase(const char *target,ColorPacket *color)
+%      unsigned int QueryColorDatabase(const char *target,PixelPacket *color)
 %
 %  A description of each parameter follows:
 %
@@ -1621,12 +1675,12 @@ Export unsigned int IsPseudoClass(Image *image)
 %
 %    o target: Specifies the color to lookup in the X color database.
 %
-%    o color: A pointer to an ColorPacket structure.  The RGB value of the target
-%      color is returned as this value.
+%    o color: A pointer to an PixelPacket structure.  The RGB value of the
+%      target color is returned as this value.
 %
 %
 */
-Export unsigned int QueryColorDatabase(const char *target,ColorPacket *color)
+Export unsigned int QueryColorDatabase(const char *target,PixelPacket *color)
 {
   char
     colorname[MaxTextExtent],
@@ -1636,7 +1690,7 @@ Export unsigned int QueryColorDatabase(const char *target,ColorPacket *color)
     blue,
     count,
     green,
-    index,
+    opacity,
     red;
 
   register const ColorlistInfo
@@ -1645,15 +1699,14 @@ Export unsigned int QueryColorDatabase(const char *target,ColorPacket *color)
   static FILE
     *database = (FILE *) NULL;
 
+  unsigned int
+    status;
+
   /*
     Initialize color return value.
   */
-  assert(color != (ColorPacket *) NULL);
-  color->red=0;
-  color->green=0;
-  color->blue=0;
-  color->index=0;
-  color->flags=DoRed | DoGreen | DoBlue;
+  assert(color != (PixelPacket *) NULL);
+  GetPixelPacket(color);
   if ((target == (char *) NULL) || (*target == '\0'))
     target=BackgroundColor;
   while (isspace((int) (*target)))
@@ -1671,7 +1724,7 @@ Export unsigned int QueryColorDatabase(const char *target,ColorPacket *color)
 
       green=0;
       blue=0;
-      index=0;
+      opacity=0;
       target++;
       n=Extent(target);
       if ((n == 3) || (n == 6) || (n == 9) || (n == 12))
@@ -1710,36 +1763,35 @@ Export unsigned int QueryColorDatabase(const char *target,ColorPacket *color)
             /*
               Parse RGBA specification.
             */
-            color->flags|=DoMatte;
             n/=4;
             do
             {
               red=green;
               green=blue;
-              blue=index;
-              index=0;
+              blue=opacity;
+              opacity=0;
               for (i=(int) n-1; i >= 0; i--)
               {
                 c=(*target++);
-                index<<=4;
+                opacity<<=4;
                 if ((c >= '0') && (c <= '9'))
-                  index|=c-'0';
+                  opacity|=c-'0';
                 else
                   if ((c >= 'A') && (c <= 'F'))
-                    index|=c-('A'-10);
+                    opacity|=c-('A'-10);
                   else
                     if ((c >= 'a') && (c <= 'f'))
-                      index|=c-('a'-10);
+                      opacity|=c-('a'-10);
                     else
                       return(False);
               }
             } while (*target != '\0');
           }
       n<<=2;
-      color->red=((unsigned long) (65535L*red)/((1 << n)-1));
-      color->green=((unsigned long) (65535L*green)/((1 << n)-1));
-      color->blue=((unsigned long) (65535L*blue)/((1 << n)-1));
-      color->index=((unsigned long) (65535L*index)/((1 << n)-1));
+      color->red=((unsigned long) (MaxRGB*red)/((1 << n)-1));
+      color->green=((unsigned long) (MaxRGB*green)/((1 << n)-1));
+      color->blue=((unsigned long) (MaxRGB*blue)/((1 << n)-1));
+      color->opacity=((unsigned long) (MaxRGB*opacity)/((1 << n)-1));
       return(True);
     }
   if (database == (FILE *) NULL)
@@ -1757,9 +1809,9 @@ Export unsigned int QueryColorDatabase(const char *target,ColorPacket *color)
           continue;
         if (Latin1Compare(colorname,target) == 0)
           {
-            color->red=257*red;
-            color->green=257*green;
-            color->blue=257*blue;
+            color->red=red;
+            color->green=green;
+            color->blue=blue;
             return(True);
           }
       }
@@ -1770,16 +1822,25 @@ Export unsigned int QueryColorDatabase(const char *target,ColorPacket *color)
   for (p=XColorlist; p->name != (char *) NULL; p++)
     if (Latin1Compare(p->name,target) == 0)
       {
-        color->red=257*p->red;
-        color->green=257*p->green;
-        color->blue=257*p->blue;
+        color->red=p->red;
+        color->green=p->green;
+        color->blue=p->blue;
         return(True);
       }
   /*
     Let the X server define the color for us.
   */
 #if defined(HasX11)
-  return(XQueryColorDatabase(target,color));
+  {
+    XColor
+      xcolor;
+
+    status=XQueryColorDatabase(target,&xcolor);
+    color->red=XDownScale(xcolor.red);
+    color->green=XDownScale(xcolor.green);
+    color->blue=XDownScale(xcolor.blue);
+    return(status);
+  }
 #else
   return(False);
 #endif
@@ -1801,14 +1862,14 @@ Export unsigned int QueryColorDatabase(const char *target,ColorPacket *color)
 %
 %  The format of the QueryColorName method is:
 %
-%      unsigned int QueryColorName(const ColorPacket *color,char *name)
+%      unsigned int QueryColorName(const PixelPacket *color,char *name)
 %
 %  A description of each parameter follows.
 %
 %    o distance: Method QueryColorName returns the distance-squared in RGB
 %      space as well as the color name that is at a minimum distance.
 %
-%    o color: This is a pointer to a ColorPacket structure that contains the
+%    o color: This is a pointer to a PixelPacket structure that contains the
 %      color we are searching for.
 %
 %    o name: The name of the color that is closest to the supplied color is
@@ -1816,7 +1877,7 @@ Export unsigned int QueryColorDatabase(const char *target,ColorPacket *color)
 %
 %
 */
-Export unsigned int QueryColorName(const ColorPacket *color,char *name)
+Export unsigned int QueryColorName(const PixelPacket *color,char *name)
 {
   double
     min_distance;

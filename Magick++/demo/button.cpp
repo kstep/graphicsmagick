@@ -80,7 +80,7 @@ int main( int /*argc*/, char ** /*argv*/)
     button.write("GIF:button.gif");
 
     // Display on screen
-    button.display();
+    // button.display();
 
   }
   catch( Exception error_ )

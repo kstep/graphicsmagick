@@ -35,18 +35,16 @@ zoom - Methods to Resize an Image
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-magnified_image= <STRONG>MagnifyImage</STRONG>( image );
+magnify_image= <STRONG>MagnifyImage</STRONG>( image );
 
 <P>
 Image * <STRONG>MinifyImage</STRONG>( Image <CODE>*image</CODE> );
 
 <P>
-Image * <STRONG>SampleImage</STRONG>( const Image *image, const unsigned int columns, const unsigned int rows
-);
+Image * <STRONG>SampleImage</STRONG>( Image *image, const unsigned int columns, const unsigned int rows );
 
 <P>
-Image * <STRONG>ScaleImage</STRONG>( const Image *image, const unsigned int columns, const unsigned int rows
-);
+Image * <STRONG>ScaleImage</STRONG>( Image *image, const unsigned int columns, const unsigned int rows );
 
 <P>
 Image * <STRONG>ZoomImage</STRONG>( Image *image, const unsigned int columns, const unsigned int rows );
@@ -63,8 +61,8 @@ than an existing one. It allocates the memory necessary for the new Image
 structure and returns a pointer to the new image.
 
 <P>
-MagnifyImage scans the reference image to create a magnified image by
-bilinear interpolation. The magnified image columns and rows become:
+MagnifyImage scans the reference image to create a magnify image by
+bilinear interpolation. The magnify image columns and rows become:
 
 <P>
 <PRE>  number_columns &lt;&lt; 1
@@ -73,14 +71,14 @@ bilinear interpolation. The magnified image columns and rows become:
 <P>
 The format of the MagnifyImage method is:
 
-<blockquote>magnified_image=MagnifyImage ( image ); </blockquote>
+<blockquote>magnify_image=MagnifyImage ( image ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<p><dt><STRONG><A NAME="item_o">magnified_image:</A></STRONG><DD>
+<p><dt><STRONG><A NAME="item_o">magnify_image:</A></STRONG><DD>
 <P>
 Method MagnifyImage returns a pointer to the image after magnification. 
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory
@@ -128,7 +126,7 @@ The format of the MinifyImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<p><dt><STRONG>minified_image:</STRONG><DD>
+<p><dt><STRONG>minify_image:</STRONG><DD>
 <P>
 Method MinifyImage returns a pointer to the image after reducing. 
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage
@@ -150,14 +148,14 @@ Image structure and returns a pointer to the new image.
 <P>
 The format of the SampleImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *SampleImage ( const <A HREF="types/Image.html">Image</A> *image, const unsigned int columns, const unsigned int rows ); </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *SampleImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int columns, const unsigned int rows ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<p><dt><STRONG>sampled_image:</STRONG><DD>
+<p><dt><STRONG>sample_image:</STRONG><DD>
 <P>
 Method SampleImage returns a pointer to the image after scaling. 
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory
@@ -196,14 +194,14 @@ The scaling algorithm was suggested by <A HREF="mailto:rjohnson@shell.com">rjohn
 <P>
 The format of the ScaleImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *ScaleImage ( const <A HREF="types/Image.html">Image</A> *image, const unsigned int columns, const unsigned int rows ); </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *ScaleImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int columns, const unsigned int rows ); </blockquote>
 
 <P>
 
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<p><dt><STRONG>scaled_image:</STRONG><DD>
+<p><dt><STRONG>scale_image:</STRONG><DD>
 <P>
 Method ScaleImage returns a pointer to the image after scaling. 
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory
@@ -245,7 +243,7 @@ The format of the ZoomImage method is:
 <FONT SIZE=-1>A</FONT> description of each parameter follows:
 
 <DL><DL>
-<p><dt><STRONG>zoomed_image:</STRONG><DD>
+<p><dt><STRONG>zoom_image:</STRONG><DD>
 <P>
 Method ZoomImage returns a pointer to the image after scaling. 
 <FONT SIZE=-1>A</FONT> null image is returned if there is a memory
@@ -257,7 +255,7 @@ The address of a structure of type Image.
 
 <p><dt><STRONG>columns:</STRONG><DD>
 <P>
-An integer that specifies the number of columns in the zoomed image.
+An integer that specifies the number of columns in the zoom image.
 
 <p><dt><STRONG>rows:</STRONG><DD>
 <P>

@@ -93,9 +93,6 @@ Export Image *ReadTXTImage(const ImageInfo *image_info)
     geometry[MaxTextExtent],
     text[MaxTextExtent];
 
-  ColorPacket
-    color;
-
   double
     dx_resolution,
     dy_resolution;
@@ -113,12 +110,6 @@ Export Image *ReadTXTImage(const ImageInfo *image_info)
 
   register char
     *p;
-
-  register int
-    i;
-
-  register RunlengthPacket
-    *q;
 
   unsigned int
     status;
@@ -166,16 +157,7 @@ Export Image *ReadTXTImage(const ImageInfo *image_info)
     (((page_info.width*image->x_resolution)/dx_resolution)+0.5);
   image->rows=(unsigned int)
     (((page_info.height*image->y_resolution)/dy_resolution)+0.5);
-  image->packets=image->columns*image->rows;
-  image->pixels=(RunlengthPacket *)
-    AllocateMemory(image->packets*sizeof(RunlengthPacket));
-  if (image->pixels == (RunlengthPacket *) NULL)
-    ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-  (void) QueryColorDatabase("#c0c0c0",&color);
-  image->background_color.red=XDownScale(color.red);
-  image->background_color.green=XDownScale(color.green);
-  image->background_color.blue=XDownScale(color.blue);
-  SetImage(image);
+  (void) QueryColorDatabase("#c0c0c0",&image->background_color);
   texture=(Image *) NULL;
   if (image_info->texture != (char *) NULL)
     {
@@ -220,9 +202,7 @@ Export Image *ReadTXTImage(const ImageInfo *image_info)
     /*
       Page is full-- allocate next image structure.
     */
-    image->orphan=True;
-    image->next=CloneImage(image,image->columns,image->rows,False);
-    image->orphan=False;
+    image->next=CloneImage(image,image->columns,image->rows,True);
     if (image->next == (Image *) NULL)
       {
         DestroyAnnotateInfo(&annotate_info);
@@ -231,6 +211,7 @@ Export Image *ReadTXTImage(const ImageInfo *image_info)
         break;
       }
     (void) strcpy(image->next->filename,filename);
+    image->next->blob_info=image->blob_info;
     image->next->file=image->file;
     image->next->filesize=image->filesize;
     image->next->scene=image->scene+1;
@@ -242,16 +223,6 @@ Export Image *ReadTXTImage(const ImageInfo *image_info)
     /*
       Initialize text image to background color.
     */
-    q=image->pixels;
-    for (i=0; i < (int) image->packets; i++)
-    {
-      q->red=XDownScale(color.red);
-      q->green=XDownScale(color.green);
-      q->blue=XDownScale(color.blue);
-      q->index=0;
-      q->length=0;
-      q++;
-    }
     if (texture != (Image *) NULL)
       {
         MonitorHandler
@@ -308,14 +279,12 @@ Export unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
     buffer[MaxTextExtent];
 
   int
-    x,
     y;
 
   register int
-    i,
-    j;
+    x;
 
-  register RunlengthPacket
+  register PixelPacket
     *p;
 
   unsigned int
@@ -335,17 +304,17 @@ Export unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
       Convert MIFF to TXT raster pixels.
     */
     TransformRGBImage(image,RGBColorspace);
-    x=0;
-    y=0;
-    p=image->pixels;
-    for (i=0; i < (int) image->packets; i++)
+    for (y=0; y < (int) image->rows; y++)
     {
-      for (j=0; j <= ((int) p->length); j++)
+      p=GetPixelCache(image,0,y,image->columns,1);
+      if (p == (PixelPacket *) NULL)
+        break;
+      for (x=0; x < (int) image->columns; x++)
       {
         if (image->matte)
           {
             (void) sprintf(buffer,"%d,%d: %d,%d,%d,%d\n",x,y,
-              p->red,p->green,p->blue,p->index);
+              p->red,p->green,p->blue,p->opacity);
             (void) WriteBlob(image,strlen(buffer),buffer);
           }
         else

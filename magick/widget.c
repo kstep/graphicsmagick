@@ -1872,9 +1872,9 @@ Export void XColorBrowserWidget(Display *display,XWindows *windows,
         else
           {
             for (i=0; i < colors; i++)
-              FreeMemory((char *) colorlist[i]);
+              FreeMemory(colorlist[i]);
             if (colorlist != (char **) NULL)
-              FreeMemory((char *) colorlist);
+              FreeMemory(colorlist);
             colorlist=checklist;
             colors=number_colors;
           }
@@ -2641,9 +2641,9 @@ Export void XColorBrowserWidget(Display *display,XWindows *windows,
     Free color list.
   */
   for (i=0; i < colors; i++)
-    FreeMemory((char *) colorlist[i]);
+    FreeMemory(colorlist[i]);
   if (colorlist != (char **) NULL)
-    FreeMemory((char *) colorlist);
+    FreeMemory(colorlist);
   if ((*reply == '\0') || (strchr(reply,'-') != (char *) NULL))
     return;
   status=XParseColor(display,windows->widget.map_info->colormap,reply,&color);
@@ -2866,7 +2866,7 @@ Export int XCommandWidget(Display *display,XWindows *windows,
         Allocate selection info memory.
       */
       if (selection_info != (XWidgetInfo *) NULL)
-        FreeMemory((char *) selection_info);
+        FreeMemory(selection_info);
       selection_info=(XWidgetInfo *)
         AllocateMemory(number_selections*sizeof(XWidgetInfo));
       if (selection_info == (XWidgetInfo *) NULL)
@@ -4499,9 +4499,9 @@ Export void XFileBrowserWidget(Display *display,XWindows *windows,
             break;
           }
         for (i=0; i < files; i++)
-          FreeMemory((char *) filelist[i]);
+          FreeMemory(filelist[i]);
         if (filelist != (char **) NULL)
-          FreeMemory((char *) filelist);
+          FreeMemory(filelist);
         filelist=checklist;
         files=number_files;
         /*
@@ -5275,9 +5275,9 @@ Export void XFileBrowserWidget(Display *display,XWindows *windows,
     Free file list.
   */
   for (i=0; i < files; i++)
-    FreeMemory((char *) filelist[i]);
+    FreeMemory(filelist[i]);
   if (filelist != (char **) NULL)
-    FreeMemory((char *) filelist);
+    FreeMemory(filelist);
   if (*reply == '~')
     ExpandFilename(reply);
 }
@@ -5703,7 +5703,7 @@ Export void XFontBrowserWidget(Display *display,XWindows *windows,
           else
             {
               XFreeFontNames(listhead);
-              FreeMemory((char *) fontlist);
+              FreeMemory(fontlist);
               fontlist=checklist;
               fonts=number_fonts;
             }
@@ -6456,7 +6456,7 @@ Export void XFontBrowserWidget(Display *display,XWindows *windows,
     Free font list.
   */
   XFreeFontNames(listhead);
-  FreeMemory((char *) fontlist);
+  FreeMemory(fontlist);
 }
 
 /*

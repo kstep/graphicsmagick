@@ -381,7 +381,7 @@ Export unsigned int HuffmanDecodeImage(Image *image)
 {  \
   if ((mask & 0xff) == 0)  \
     {  \
-      byte=getc(image->file);  \
+      byte=ReadByte(image);  \
       mask=0x80;  \
     }  \
   runlength++;  \
@@ -400,6 +400,9 @@ Export unsigned int HuffmanDecodeImage(Image *image)
     **mb_hash,
     **mw_hash;
 
+  IndexPacket
+    index;
+
   int
     bail,
     code,
@@ -408,13 +411,13 @@ Export unsigned int HuffmanDecodeImage(Image *image)
     length,
     null_lines,
     runlength,
-    x,
     y;
 
   register int
-    i;
+    i,
+    x;
 
-  register RunlengthPacket
+  register PixelPacket
     *q;
 
   register unsigned char
@@ -425,13 +428,6 @@ Export unsigned int HuffmanDecodeImage(Image *image)
     byte,
     mask,
     *scanline;
-
-  unsigned long
-    packets,
-    max_packets;
-
-  unsigned short
-    index;
 
   /*
     Allocate buffers.
@@ -473,14 +469,9 @@ Export unsigned int HuffmanDecodeImage(Image *image)
   while (runlength < 11)
    InputBit(bit);
   do { InputBit(bit); } while (bit == 0);
-  packets=0;
-  max_packets=image->packets;
   image->x_resolution=204.0;
   image->y_resolution=196.0;
   image->units=PixelsPerInchResolution;
-  image->packets=0;
-  q=image->pixels;
-  SetRunlengthEncoder(q);
   for (y=0; ((y < (int) image->rows) && (null_lines < 3)); )
   {
     /*
@@ -591,47 +582,32 @@ Export unsigned int HuffmanDecodeImage(Image *image)
       Transfer scanline to image pixels.
     */
     p=scanline;
+    q=SetPixelCache(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
     for (x=0; x < (int) image->columns; x++)
     {
       index=(unsigned short) (*p++);
-      if ((index == q->index) && ((int) q->length < MaxRunlength))
-        q->length++;
-      else
-        {
-          if (packets != 0)
-            q++;
-          packets++;
-          if (packets == max_packets)
-            {
-              max_packets<<=1;
-              image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
-                image->pixels,max_packets*sizeof(RunlengthPacket));
-              if (image->pixels == (RunlengthPacket *) NULL)
-                {
-                  MagickWarning(ResourceLimitWarning,
-                    "Memory allocation failed",(char *) NULL);
-                  return(False);
-                }
-              q=image->pixels+packets-1;
-            }
-          q->index=index;
-          q->length=0;
-        }
+      image->indexes[x]=index;
+      q->red=image->colormap[index].red;
+      q->green=image->colormap[index].green;
+      q->blue=image->colormap[index].blue;
+      q++;
     }
+    if (!SyncPixelCache(image))
+      break;
     if (QuantumTick(y,image->rows))
       ProgressMonitor(LoadImageText,y,image->rows);
     y++;
   }
-  image->packets=packets;
-  image->rows=y;
-  SyncImage(image);
+  image->rows=Max(y-3,1);
   image->compression=FaxCompression;
   /*
     Free decoder memory.
   */
-  FreeMemory((char *) mw_hash);
-  FreeMemory((char *) mb_hash);
-  FreeMemory((char *) scanline);
+  FreeMemory(mw_hash);
+  FreeMemory(mb_hash);
+  FreeMemory(scanline);
   return(True);
 }
 
@@ -694,20 +670,17 @@ Export unsigned int HuffmanEncodeImage(const ImageInfo *image_info,Image *image)
     *entry;
 
   int
-    i,
     k,
-    runlength;
+    runlength,
+    y;
 
   Image
     *huffman_image;
 
   register int
-    j,
+    i,
     n,
     x;
-
-  register RunlengthPacket
-    *p;
 
   register unsigned char
     *q;
@@ -747,9 +720,7 @@ Export unsigned int HuffmanEncodeImage(const ImageInfo *image_info,Image *image)
       /*
         Convert image to monochrome.
       */
-      ((Image *) image)->orphan=True;
       huffman_image=CloneImage(image,image->columns,image->rows,True);
-      ((Image *) image)->orphan=False;
       if (huffman_image == (Image *) NULL)
         return(False);
       GetQuantizeInfo(&quantize_info);
@@ -757,7 +728,6 @@ Export unsigned int HuffmanEncodeImage(const ImageInfo *image_info,Image *image)
       quantize_info.dither=image_info->dither;
       quantize_info.colorspace=GRAYColorspace;
       (void) QuantizeImage(&quantize_info,huffman_image);
-      SyncImage(huffman_image);
     }
   byte=0;
   bit=0x80;
@@ -782,77 +752,73 @@ Export unsigned int HuffmanEncodeImage(const ImageInfo *image_info,Image *image)
   q=scanline;
   for (i=0; i < (int) width; i++)
     *q++=(unsigned char) polarity;
-  p=huffman_image->pixels;
   q=scanline;
-  x=0;
-  for (i=0; i < (int) huffman_image->packets; i++)
+  for (y=0; y < (int) huffman_image->rows; y++)
   {
-    for (j=0; j <= ((int) p->length); j++)
+    if (!GetPixelCache(huffman_image,0,y,huffman_image->columns,1))
+      break;
+    for (x=0; x < (int) huffman_image->columns; x++)
     {
-      *q++=(unsigned char)
-        (p->index == polarity ? (int) polarity : (int) !polarity);
-      x++;
-      if (x < (int) huffman_image->columns)
-        continue;
-      /*
-        Huffman encode scanline.
-      */
-      q=scanline;
-      for (n=width; n > 0; )
-      {
-        /*
-          Output white run.
-        */
-        for (runlength=0; ((*q == polarity) && (n > 0)); n--)
-        {
-          q++;
-          runlength++;
-        }
-        if (runlength >= 64)
-          {
-            entry=MWTable+((runlength/64)-1);
-            if (runlength >= 1792)
-              entry=EXTable+(Min(runlength,2560)-1792)/64;
-            runlength-=entry->count;
-            HuffmanOutputCode(entry);
-          }
-        entry=TWTable+Min(runlength,63);
-        HuffmanOutputCode(entry);
-        if (n != 0)
-          {
-            /*
-              Output black run.
-            */
-            for (runlength=0; ((*q != polarity) && (n > 0)); n--)
-            {
-              q++;
-              runlength++;
-            }
-            if (runlength >= 64)
-              {
-                entry=MBTable+((runlength/64)-1);
-                if (runlength >= 1792)
-                  entry=EXTable+(Min(runlength,2560)-1792)/64;
-                runlength-=entry->count;
-                HuffmanOutputCode(entry);
-              }
-            entry=TBTable+Min(runlength,63);
-            HuffmanOutputCode(entry);
-          }
-      }
-      /*
-        End of line.
-      */
-      for (k=0; k < 11; k++)
-        OutputBit(0);
-      OutputBit(1);
-      x=0;
-      q=scanline;
+      *q=(unsigned char) (huffman_image->indexes[x] == polarity ?
+        (int) polarity : (int) !polarity);
+      q++;
     }
-    p++;
+    /*
+      Huffman encode scanline.
+    */
+    q=scanline;
+    for (n=width; n > 0; )
+    {
+      /*
+        Output white run.
+      */
+      for (runlength=0; ((*q == polarity) && (n > 0)); n--)
+      {
+        q++;
+        runlength++;
+      }
+      if (runlength >= 64)
+        {
+          entry=MWTable+((runlength/64)-1);
+          if (runlength >= 1792)
+            entry=EXTable+(Min(runlength,2560)-1792)/64;
+          runlength-=entry->count;
+          HuffmanOutputCode(entry);
+        }
+      entry=TWTable+Min(runlength,63);
+      HuffmanOutputCode(entry);
+      if (n != 0)
+        {
+          /*
+            Output black run.
+          */
+          for (runlength=0; ((*q != polarity) && (n > 0)); n--)
+          {
+            q++;
+            runlength++;
+          }
+          if (runlength >= 64)
+            {
+              entry=MBTable+((runlength/64)-1);
+              if (runlength >= 1792)
+                entry=EXTable+(Min(runlength,2560)-1792)/64;
+              runlength-=entry->count;
+              HuffmanOutputCode(entry);
+            }
+          entry=TBTable+Min(runlength,63);
+          HuffmanOutputCode(entry);
+        }
+    }
+    /*
+      End of line.
+    */
+    for (k=0; k < 11; k++)
+      OutputBit(0);
+    OutputBit(1);
+    q=scanline;
     if (huffman_image->previous == (Image *) NULL)
-      if (QuantumTick(i,huffman_image->packets))
-        ProgressMonitor(SaveImageText,i,huffman_image->packets);
+      if (QuantumTick(y,huffman_image->rows))
+        ProgressMonitor(SaveImageText,y,huffman_image->rows);
   }
   /*
     End of page.
@@ -877,7 +843,7 @@ Export unsigned int HuffmanEncodeImage(const ImageInfo *image_info,Image *image)
     Ascii85Flush(image);
   if (huffman_image != image)
     DestroyImage(huffman_image);
-  FreeMemory((char *) scanline);
+  FreeMemory(scanline);
   return(True);
 }
 
@@ -948,9 +914,7 @@ Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
   */
   assert(image_info != (ImageInfo *) NULL);
   assert(image != (Image *) NULL);
-  ((Image *) image)->orphan=True;
   huffman_image=CloneImage(image,image->columns,image->rows,True);
-  ((Image *) image)->orphan=False;
   if (huffman_image == (Image *) NULL)
     return(False);
   if (!IsMonochromeImage(huffman_image))
@@ -966,7 +930,6 @@ Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
       quantize_info.dither=image_info->dither;
       quantize_info.colorspace=GRAYColorspace;
       (void) QuantizeImage(&quantize_info,huffman_image);
-      SyncImage(huffman_image);
     }
   TemporaryFilename(filename);
   (void) strcpy(huffman_image->filename,filename);
@@ -1015,15 +978,16 @@ Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
       Ascii85Encode(image,(unsigned int) buffer[j]);
     Ascii85Flush(image);
   }
-  FreeMemory((char *) buffer);
+  FreeMemory(buffer);
   TIFFClose(tiff);
   return(True);
 }
 #else
 Export unsigned int Huffman2DEncodeImage(ImageInfo *image_info,Image *image)
 {
+  assert(image != (Image *) NULL);
   MagickWarning(MissingDelegateWarning,"TIFF library is not available",
-    image_info->filename);
+    image->filename);
   return(False);
 }
 #endif
@@ -1200,6 +1164,7 @@ Export unsigned int LZWEncodeImage(Image *image,
 Export unsigned int LZWEncodeImage(Image *image,
   const unsigned int number_pixels,unsigned char *pixels)
 {
+  assert(image != (Image *) NULL);
   MagickWarning(MissingDelegateWarning,"LZW library is not available",
     (char *) NULL);
   return(False);
@@ -1343,560 +1308,8 @@ Export unsigned int PackbitsEncodeImage(Image *image,
   }
   Ascii85Encode(image,128);  /* EOD marker */
   Ascii85Flush(image);
-  FreeMemory((char *) packbits);
+  FreeMemory(packbits);
   return(True);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   R u n l e n g t h D e c o d e I m a g e                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method RunlengthDecodeImage unpacks the packed image pixels into
-%  runlength-encoded pixel packets.  The packed image pixel memory is then
-%  freed.
-%
-%  The format of the RunlengthDecodeImage method is:
-%
-%      unsigned int RunlengthDecodeImage(Image *image)
-%
-%  A description of each parameter follows:
-%
-%    o status: Method RunlengthDecodeImage return True if the image is
-%      decoded.  False is returned if there is an error occurs.
-%
-%    o image: The address of a structure of type Image.
-%
-%
-*/
-Export unsigned int RunlengthDecodeImage(Image *image)
-{
-  register int
-    i;
-
-  register RunlengthPacket
-    *q;
-
-  register unsigned char
-    *p;
-
-  unsigned long
-    count;
-
-  unsigned short
-    value;
-
-  assert(image != (Image *) NULL);
-  if (image->packed_pixels == (unsigned char *) NULL)
-    return(True);
-  /*
-    Allocate pixels.
-  */
-  if (image->pixels == (RunlengthPacket *) NULL)
-    image->pixels=(RunlengthPacket *)
-      AllocateMemory((unsigned int) image->packets*sizeof(RunlengthPacket));
-  else
-    image->pixels=(RunlengthPacket *) ReallocateMemory((char *) image->pixels,
-      image->packets*sizeof(RunlengthPacket));
-  if (image->pixels == (RunlengthPacket *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to unpack pixels",
-        "Memory allocation failed");
-      return(False);
-    }
-  /*
-    Unpack the packed image pixels into runlength-encoded pixel packets.
-  */
-  p=image->packed_pixels;
-  q=image->pixels;
-  count=0;
-  if (image->class == DirectClass)
-    {
-      if (image->compression == RunlengthEncodedCompression)
-        for (i=0; i < (int) image->packets; i++)
-        {
-          ReadQuantum(q->red,p);
-          ReadQuantum(q->green,p);
-          ReadQuantum(q->blue,p);
-          q->index=0;
-          if (image->matte || (image->colorspace == CMYKColorspace))
-            ReadQuantum(q->index,p);
-          q->length=(*p++);
-          count+=(q->length+1);
-          q++;
-          if (image->previous == (Image *) NULL)
-            if (QuantumTick(i,image->packets))
-              ProgressMonitor(LoadImageText,i,image->packets);
-        }
-      else
-        for (i=0; i < (int) image->packets; i++)
-        {
-          ReadQuantum(q->red,p);
-          ReadQuantum(q->green,p);
-          ReadQuantum(q->blue,p);
-          q->index=0;
-          if (image->matte || (image->colorspace == CMYKColorspace))
-            ReadQuantum(q->index,p);
-          q->length=0;
-          count++;
-          q++;
-          if (image->previous == (Image *) NULL)
-            if (QuantumTick(i,image->packets))
-              ProgressMonitor(LoadImageText,i,image->packets);
-        }
-    }
-  else
-    {
-      register unsigned short
-        index;
-
-      if (image->compression == RunlengthEncodedCompression)
-        {
-          if (image->colors <= 256)
-            for (i=0; i < (int) image->packets; i++)
-            {
-              q->index=(unsigned short) (*p++);
-              q->length=(*p++);
-              count+=(q->length+1);
-              q++;
-              if (image->previous == (Image *) NULL)
-                if (QuantumTick(i,image->packets))
-                  ProgressMonitor(LoadImageText,i,image->packets);
-            }
-          else
-            for (i=0; i < (int) image->packets; i++)
-            {
-              index=(*p++) << 8;
-              index|=(*p++);
-              q->index=index;
-              q->length=(*p++);
-              count+=(q->length+1);
-              q++;
-              if (image->previous == (Image *) NULL)
-                if (QuantumTick(i,image->packets))
-                  ProgressMonitor(LoadImageText,i,image->packets);
-            }
-        }
-      else
-        if (image->colors <= 256)
-          for (i=0; i < (int) image->packets; i++)
-          {
-            q->index=(unsigned short) (*p++);
-            q->length=0;
-            count++;
-            q++;
-            if (image->previous == (Image *) NULL)
-              if (QuantumTick(i,image->packets))
-                ProgressMonitor(LoadImageText,i,image->packets);
-          }
-        else
-          for (i=0; i < (int) image->packets; i++)
-          {
-            index=(*p++) << 8;
-            index|=(*p++);
-            q->index=index;
-            q->length=0;
-            count++;
-            q++;
-            if (image->previous == (Image *) NULL)
-              if (QuantumTick(i,image->packets))
-                ProgressMonitor(LoadImageText,i,image->packets);
-          }
-      SyncImage(image);
-    }
-  /*
-    Free packed pixels memory.
-  */
-  FreeMemory((char *) image->packed_pixels);
-  image->packed_pixels=(unsigned char *) NULL;
-  /*
-    Guarentee the correct number of pixel packets.
-  */
-  if (count > (image->columns*image->rows))
-    {
-      MagickWarning(CorruptImageWarning,"insufficient image data in file",
-        image->filename);
-      return(False);
-    }
-  else
-    if (count < (image->columns*image->rows))
-      {
-        MagickWarning(CorruptImageWarning,"too much image data in file",
-          image->filename);
-        return(False);
-      }
-  return(True);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   R u n l e n g t h E n c o d e I m a g e                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method RunlengthEncodeImage packs the runlength-encoded pixel packets
-%  into the minimum number of bytes.
-%
-%  The format of the RunlengthEncodeImage method is:
-%
-%      unsigned int RunlengthEncodeImage(Image *image)
-%
-%  A description of each parameter follows:
-%
-%    o status: Method RunlengthEncodeImage return the number of bytes the
-%      image consumes.  Zero is returned if an error occurs.
-%
-%    o image: The address of a structure of type Image.
-%
-%
-*/
-Export unsigned int RunlengthEncodeImage(Image *image)
-{
-#define SpecialRunlength  255
-
-  register int
-    i,
-    j,
-    runlength;
-
-  register long
-    packets;
-
-  register RunlengthPacket
-    *p;
-
-  register unsigned char
-    *q;
-
-  unsigned long
-    count;
-
-  unsigned short
-    value;
-
-  assert(image != (Image *) NULL);
-  if (image->pixels == (RunlengthPacket *) NULL)
-    {
-      MagickWarning(CorruptImageWarning,"Unable to pack pixels",
-        "no image pixels");
-      return(0);
-    }
-  if (image->compression == RunlengthEncodedCompression)
-    {
-      register RunlengthPacket
-        *q;
-
-      /*
-        Compress image.
-      */
-      p=image->pixels;
-      for (i=0; i < (int) image->packets; i++)
-      {
-        if (p->length > SpecialRunlength)
-          {
-            /*
-              Uncompress image to allow in-place compression.
-            */
-            if (!UncondenseImage(image))
-              return(0);
-            break;
-          }
-        p++;
-      }
-      p=image->pixels;
-      runlength=p->length+1;
-      packets=0;
-      q=image->pixels;
-      q->length=SpecialRunlength;
-      if (image->matte || (image->colorspace == CMYKColorspace))
-        for (i=0; i < (int) (image->columns*image->rows); i++)
-        {
-          if (runlength != 0)
-            runlength--;
-          else
-            {
-              p++;
-              runlength=p->length;
-            }
-          if ((p->red == q->red) && (p->green == q->green) &&
-              (p->blue == q->blue) && (p->index == q->index) &&
-              (q->length < SpecialRunlength))
-            q->length++;
-          else
-            {
-              if (packets != 0)
-                q++;
-              packets++;
-              *q=(*p);
-              q->length=0;
-            }
-        }
-      else
-        for (i=0; i < (int) (image->columns*image->rows); i++)
-        {
-          if (runlength != 0)
-            runlength--;
-          else
-            {
-              p++;
-              runlength=p->length;
-            }
-          if ((p->red == q->red) && (p->green == q->green) &&
-              (p->blue == q->blue) && (q->length < SpecialRunlength))
-            q->length++;
-          else
-            {
-              if (packets != 0)
-                q++;
-              packets++;
-              *q=(*p);
-              q->length=0;
-            }
-        }
-      image->packets=packets;
-      image->pixels=(RunlengthPacket *) ReallocateMemory((char *) image->pixels,
-        image->packets*sizeof(RunlengthPacket));
-      /*
-        Runlength-encode only if it consumes less memory than no compression.
-      */
-      if (image->class == DirectClass)
-        {
-          if (image->packets >= ((image->columns*image->rows*3) >> 2))
-            image->compression=NoCompression;
-        }
-      else
-        if (image->packets >= ((image->columns*image->rows) >> 1))
-          image->compression=NoCompression;
-    }
-  /*
-    Determine packed packet size.
-  */
-  if (image->class == PseudoClass)
-    {
-      image->packet_size=1;
-      if (image->colors > 256)
-        image->packet_size++;
-    }
-  else
-    {
-      image->packet_size=3*(image->depth >> 3);
-      if (image->matte || (image->colorspace == CMYKColorspace))
-        image->packet_size+=image->depth >> 3;
-    }
-  if (image->compression == RunlengthEncodedCompression)
-    image->packet_size++;
-  /*
-    Allocate packed pixel memory.
-  */
-  packets=image->packets;
-  if (image->compression != RunlengthEncodedCompression)
-    packets=image->columns*image->rows;
-  if (image->packed_pixels == (unsigned char *) NULL)
-    image->packed_pixels=(unsigned char *) AllocateMemory((unsigned int)
-      packets*image->packet_size*sizeof(unsigned char));
-  else
-    image->packed_pixels=(unsigned char *) ReallocateMemory((char *)
-      image->packed_pixels,packets*image->packet_size*sizeof(unsigned char));
-  if (image->packed_pixels == (unsigned char *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to pack pixels",
-        "Memory allocation failed");
-      return(0);
-    }
-  /*
-    Packs the runlength-encoded pixel packets into the minimum number of bytes.
-  */
-  p=image->pixels;
-  q=image->packed_pixels;
-  count=0;
-  if (image->class == DirectClass)
-    {
-      if (image->compression == RunlengthEncodedCompression)
-        for (i=0; i < (int) image->packets; i++)
-        {
-          WriteQuantum(p->red,q);
-          WriteQuantum(p->green,q);
-          WriteQuantum(p->blue,q);
-          if (image->matte || (image->colorspace == CMYKColorspace))
-            WriteQuantum(p->index,q);
-          *q++=p->length;
-          count+=(p->length+1);
-          p++;
-          if (image->previous == (Image *) NULL)
-            if (QuantumTick(i,image->packets))
-              ProgressMonitor(SaveImageText,i,image->packets);
-        }
-      else
-        for (i=0; i < (int) image->packets; i++)
-        {
-          for (j=0; j <= ((int) p->length); j++)
-          {
-            WriteQuantum(p->red,q);
-            WriteQuantum(p->green,q);
-            WriteQuantum(p->blue,q);
-            if (image->matte || (image->colorspace == CMYKColorspace))
-              WriteQuantum(p->index,q);
-          }
-          count+=(p->length+1);
-          p++;
-          if (image->previous == (Image *) NULL)
-            if (QuantumTick(i,image->packets))
-              ProgressMonitor(SaveImageText,i,image->packets);
-        }
-    }
-  else
-    if (image->compression == RunlengthEncodedCompression)
-      {
-        if (image->colors <= 256)
-          for (i=0; i < (int) image->packets; i++)
-          {
-            *q++=(unsigned char) p->index;
-            *q++=p->length;
-            count+=(p->length+1);
-            p++;
-            if (image->previous == (Image *) NULL)
-              if (QuantumTick(i,image->packets))
-                ProgressMonitor(SaveImageText,i,image->packets);
-          }
-        else
-          for (i=0; i < (int) image->packets; i++)
-          {
-            *q++=p->index >> 8;
-            *q++=(unsigned char) p->index;
-            *q++=p->length;
-            count+=(p->length+1);
-            p++;
-            if (image->previous == (Image *) NULL)
-              if (QuantumTick(i,image->packets))
-                ProgressMonitor(SaveImageText,i,image->packets);
-          }
-      }
-    else
-      if (image->colors <= 256)
-        for (i=0; i < (int) image->packets; i++)
-        {
-          for (j=0; j <= ((int) p->length); j++)
-            *q++=p->index;
-          count+=(p->length+1);
-          p++;
-          if (image->previous == (Image *) NULL)
-            if (QuantumTick(i,image->packets))
-              ProgressMonitor(SaveImageText,i,image->packets);
-        }
-      else
-        {
-          register unsigned char
-            xff00,
-            xff;
-
-          for (i=0; i < (int) image->packets; i++)
-          {
-            xff00=p->index >> 8;
-            xff=p->index;
-            for (j=0; j <= ((int) p->length); j++)
-            {
-              *q++=xff00;
-              *q++=xff;
-            }
-            count+=(p->length+1);
-            p++;
-            if (image->previous == (Image *) NULL)
-              if (QuantumTick(i,image->packets))
-                ProgressMonitor(SaveImageText,i,image->packets);
-          }
-        }
-  /*
-    Guarentee the correct number of pixel packets.
-  */
-  if (count < (image->columns*image->rows))
-    {
-      MagickWarning(CorruptImageWarning,"insufficient image data in",
-        image->filename);
-      return(0);
-    }
-  else
-    if (count > (image->columns*image->rows))
-      {
-        MagickWarning(CorruptImageWarning,"too much image data in",
-          image->filename);
-        return(0);
-      }
-  return((unsigned int) packets);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   S e t R u n l e n g t h E n c o d e r                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method SetRunlengthEncoder initializes the runlength encoder.
-%
-%  The format of the SetRunlengthEncoder function is:
-%
-%      SetRunlengthEncoder(packet)
-%
-%  A description of each parameter follows:
-%
-%    o packet: Specifies a RunlengthPacket type.
-%
-%
-*/
-Export void SetRunlengthEncoder(RunlengthPacket *packet)
-{
-  packet->red=0;
-  packet->green=0;
-  packet->blue=0;
-  packet->index=0;
-  packet->length=MaxRunlength;
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   S e t R u n l e n g t h P a c k e t s                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method SetRunlengthPackets initializes the runlength encoder.
-%
-%  The format of the SetRunlengthPackets function is:
-%
-%      SetRunlengthPackets(image,packets)
-%
-%  A description of each parameter follows:
-%
-%    o image: The address of a structure of type Image.
-%
-%    o packets: The number of runlength packets.
-%
-%
-*/
-Export void SetRunlengthPackets(Image *image,const unsigned long packets)
-{
-  image->packets=packets;
-  image->pixels=(RunlengthPacket *) ReallocateMemory((char *) image->pixels,
-    image->packets*sizeof(RunlengthPacket));
 }
 
 #if defined(HasZLIB)
@@ -1958,6 +1371,7 @@ Export unsigned int ZLIBEncodeImage(Image *image,
   z_stream
     stream;
 
+  assert(image != (Image *) NULL);
   compressed_packets=(unsigned long) (1.001*number_pixels+12);
   compressed_pixels=(unsigned char *)
     AllocateMemory(compressed_packets*sizeof(unsigned char));
@@ -1993,7 +1407,7 @@ Export unsigned int ZLIBEncodeImage(Image *image,
         Ascii85Encode(image,compressed_pixels[i]);
       Ascii85Flush(image);
     }
-  FreeMemory((char *) compressed_pixels);
+  FreeMemory(compressed_pixels);
   return(!status);
 }
 #else
@@ -2001,8 +1415,9 @@ Export unsigned int ZLIBEncodeImage(Image *image,
   const unsigned long number_pixels,const unsigned int quality,
   unsigned char *pixels)
 {
+  assert(image != (Image *) NULL);
   MagickWarning(MissingDelegateWarning,"ZLIB library is not available",
-    (char *) NULL);
+    image->filename);
   return(False);
 }
 #endif

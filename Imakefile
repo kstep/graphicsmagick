@@ -45,11 +45,11 @@ HEADERS = magick/magick.h magick/image.h magick/compress.h magick/utility.h \
   magick/widget.h magick/PreRvIcccm.h
 
 LINTSRCS = display.c magick/PreRvIcccm.c magick/animate.c magick/annotate.c \
-  magick/avs.c magick/bmp.c magick/cmyk.c magick/colors.c magick/compress.c \
-  magick/dcm.c magick/decorate.c magick/delegates.c magick/display.c \
-  magick/dps.c magick/draw.c magick/effects.c magick/enhance.c \
-  magick/ept.c magick/error.c magick/fax.c magick/fits.c magick/fpx.c \
-  magick/gems.c magick/gif.c magick/gradation.c magick/gray.c \
+  magick/avs.c magick/bmp.c magick/cache.c magick/cmyk.c magick/colors.c \
+  magick/compress.c magick/dcm.c magick/decorate.c magick/delegates.c \
+  magick/display.c magick/dps.c magick/draw.c magick/effects.c \
+  magick/enhance.c magick/ept.c magick/error.c magick/fax.c magick/fits.c \
+  magick/fpx.c magick/gems.c magick/gif.c magick/gradation.c magick/gray.c \
   magick/hdf.c magick/histogram.c magick/html.c magick/icc.c \
   magick/icon.c magick/image.c magick/iptc.c magick/jbig.c \
   magick/jpeg.c magick/label.c magick/logo.c magick/mac.c \
@@ -61,7 +61,7 @@ LINTSRCS = display.c magick/PreRvIcccm.c magick/animate.c magick/annotate.c \
   magick/psd.c magick/pwp.c magick/quantize.c magick/rgb.c magick/rla.c \
   magick/rle.c magick/segment.c magick/sfw.c magick/sgi.c \
   magick/shear.c magick/signature.c magick/stegano.c magick/sun.c \
-  magick/tga.c magick/tiff.c magick/tile.c magick/tim.c \
+  magick/tga.c magick/tiff.c magick/tile.c magick/tim.c magick/timer.c \
   magick/transform.c magick/ttf.c magick/txt.c magick/uil.c \
   magick/utility.c magick/uyvy.c magick/vicar.c magick/vid.c \
   magick/viff.c magick/vms.c magick/widget.c magick/x.c magick/xbm.c \
@@ -78,10 +78,10 @@ PROGRAMS = magick display.exe animate.exe import.exe montage.exe convert.exe \
   mogrify.exe identify.exe combine.exe
 #else
 PROGRAMS = magick display animate import montage convert mogrify identify \
-  combine xtp
+  combine
 #endif
 
-SUBDIRS = magick xtp
+SUBDIRS = magick
 
 AllTarget($(PROGRAMS))
 DependTarget()

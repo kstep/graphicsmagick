@@ -87,17 +87,28 @@ Export Image *ReadPLASMAImage(const ImageInfo *image_info)
 #define PlasmaImageText  "  Applying image plasma...  "
 #define PlasmaPixel(x,y) \
 { \
-  p=PixelOffset(image,x,y); \
-  p->red=(Quantum) (rand() % (MaxRGB+1)); \
-  p->green=(Quantum) (rand() % (MaxRGB+1)); \
-  p->blue=(Quantum) (rand() % (MaxRGB+1)); \
+  q=GetPixelCache(image,x,y,1,1); \
+  if (q != (PixelPacket *) NULL) \
+    { \
+      q->red=(Quantum) (rand() % (MaxRGB+1)); \
+      q->green=(Quantum) (rand() % (MaxRGB+1)); \
+      q->blue=(Quantum) (rand() % (MaxRGB+1)); \
+     (void) SyncPixelCache(image); \
+    } \
 }
 
   Image
     *image;
 
+  int
+    y;
+
   register int
-    i;
+    i,
+    x;
+
+  register PixelPacket
+    *q;
 
   SegmentInfo
     segment_info;
@@ -112,11 +123,20 @@ Export Image *ReadPLASMAImage(const ImageInfo *image_info)
   image=ReadGRADATIONImage(image_info);
   if (image == (Image *) NULL)
     return(image);
-  if (!UncondenseImage(image))
-    return(image);
   image->class=DirectClass;
-  for (i=0; i < (int) image->packets; i++)
-    image->pixels[i].index=(Opaque-Transparent) >> 1;
+  for (y=0; y < (int) image->rows; y++)
+  {
+    q=GetPixelCache(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < (int) image->columns; x++)
+    {
+      q->opacity=(Opaque-Transparent) >> 1;
+      q++;
+    }
+    if (!SyncPixelCache(image))
+      break;
+  }
   segment_info.x1=0;
   segment_info.y1=0;
   segment_info.x2=image->columns-1;
@@ -124,9 +144,6 @@ Export Image *ReadPLASMAImage(const ImageInfo *image_info)
   srand(time(0));
   if (Latin1Compare(image_info->filename,"fractal") == 0)
     {
-      register RunlengthPacket
-        *p;
-
       /*
         Seed pixels before recursion.
       */

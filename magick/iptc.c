@@ -59,6 +59,46 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   I s I P T C                                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsIPTC returns True if the image format type, identified by the
+%  magick string, is IPTC.
+%
+%  The format of the ReadIPTCImage method is:
+%
+%      unsigned int IsIPTC(const unsigned char *magick,
+%        const unsigned int length)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method IsIPTC returns True if the image format type is IPTC.
+%
+%    o magick: This string is generally the first few bytes of an image file
+%      or blob.
+%
+%    o length: Specifies the length of the magick string.
+%
+%
+*/
+Export unsigned int IsIPTC(const unsigned char *magick,
+  const unsigned int length)
+{
+  if (length < 2)
+    return(False);
+  if (strncmp((char *) magick,"\034\002",2) == 0)
+    return(True);
+  return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   R e a d I P T C I m a g e                                                 %
 %                                                                             %
 %                                                                             %
@@ -96,7 +136,11 @@ Export Image *ReadIPTCImage(const ImageInfo *image_info)
   register unsigned char
     *q;
 
+  unsigned char
+    *data;
+
   unsigned int
+    tag_length,
     length,
     status;
 
@@ -116,28 +160,40 @@ Export Image *ReadIPTCImage(const ImageInfo *image_info)
     Read IPTC image.
   */
   length=MaxTextExtent;
-  image->iptc_profile.info=(unsigned char *)
+  tag_length=12;
+  data=(unsigned char *)
     AllocateMemory((length+2)*sizeof(unsigned char));
-  for (q=image->iptc_profile.info; ; q++)
+  if (data == (unsigned char *) NULL)
+    WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+  (void) memcpy((char *) data,"8BIM\04\04\0\0\0\0\0\0",tag_length);
+  q=data;
+  q+=tag_length;
+  while (1)
   {
     c=ReadByte(image);
     if (c == EOF)
       break;
-    if ((q-image->iptc_profile.info+1) >= (int) length)
+    if ((q-data+1) >= (int) length)
       {
-        image->iptc_profile.length=q-image->iptc_profile.info;
+        image->iptc_profile.length=q-data;
         length<<=1;
-        image->iptc_profile.info=(unsigned char *) ReallocateMemory((char *)
-          image->iptc_profile.info,(length+2)*sizeof(unsigned char));
-        if (image->iptc_profile.info == (unsigned char *) NULL)
+        data=(unsigned char *) ReallocateMemory((char *)
+          data,(length+2)*sizeof(unsigned char));
+        if (data == (unsigned char *) NULL)
           break;
-        q=image->iptc_profile.info+image->iptc_profile.length;
+        q=data+image->iptc_profile.length;
       }
-    *q=(unsigned char) c;
+    *q++=(unsigned char) c;
   }
   image->iptc_profile.length=0;
-  if (image->iptc_profile.info != (unsigned char *) NULL)
-    image->iptc_profile.length=q-image->iptc_profile.info;
+  if (data != (unsigned char *) NULL)
+    {
+      image->iptc_profile.length=q-data;
+      length=image->iptc_profile.length-tag_length;
+      data[10]=length >> 8;
+      data[11]=length & 0xff;
+      image->iptc_profile.info=data;
+    }
   CloseBlob(image);
   return(image);
 }
@@ -155,6 +211,8 @@ Export Image *ReadIPTCImage(const ImageInfo *image_info)
 %
 %  Method WriteIPTCImage writes an image in the IPTC format.
 %
+%  Contributed by Bill Radcliffe.
+%
 %  The format of the WriteIPTCImage method is:
 %
 %      unsigned int WriteIPTCImage(const ImageInfo *image_info,Image *image)
@@ -171,21 +229,139 @@ Export Image *ReadIPTCImage(const ImageInfo *image_info)
 %
 %
 */
+
+static long GetIPTCStream(unsigned char **info,long length)
+{
+  register unsigned char
+    *p;
+
+  unsigned char
+    c;
+
+  unsigned int
+    info_length,
+    marker,
+    tag_length;
+
+  /*
+    Find the beginning of the IPTC info.
+  */
+  p=(*info);
+  tag_length=0;
+  info_length=0;
+  marker=False;
+  while (length > 0)
+  {
+    c=(*p++);
+    length--;
+    if (length <= 0)
+      break; 
+    if (c == 0x1c)
+      {
+        p--;
+        *info=p; /* let the caller know were it is */
+        break;
+      }
+  }
+  /*
+    Determine the length of the IPTC info.
+  */
+  while (length > 0)
+  {
+    c=(*p++);
+    length--;
+    if (length <= 0)
+      break; 
+    if (c == 0x1c)
+      marker=True;
+    else
+      if (marker)
+        break; 
+      else
+        continue;
+    info_length++;
+    /*
+      Found the 0x1c tag; skip the dataset and record number tags.
+    */
+    p++; /* dataset */
+    length--;
+    if (length <= 0)
+      break; 
+    info_length++;
+    p++; /* record number */
+    length--;
+    if (length <= 0)
+      break; 
+    info_length++;
+    /*
+      Then we decode the length of the block that follows - long or short fmt.
+    */
+    c=(*p++);
+    length--;
+    if (length <= 0)
+      break; 
+    info_length++;
+    if (c & (unsigned char) 0x80)
+      {
+        unsigned char
+          buffer[4];
+
+        int
+          i;
+
+        for (i=0; i < 4; i++)
+        {
+          buffer[i]=(*p++);
+          length--;
+          if (length <= 0)
+            break; 
+          info_length++;
+        }
+        tag_length=(((long) buffer[0]) << 24) | (((long) buffer[1]) << 16) |
+          (((long) buffer[2]) << 8) | (((long) buffer[3]));
+      }
+    else
+      {
+        tag_length=((long) c) << 8;
+        c=(*p++);
+        length--;
+        if (length <= 0)
+          break; 
+        info_length++;
+        tag_length|=(long) c;
+      }
+    p+=tag_length;
+    length-=tag_length;
+    info_length+=tag_length;  
+  }
+  return(info_length);
+}
+
 Export unsigned int WriteIPTCImage(const ImageInfo *image_info,Image *image)
 {
   unsigned int
     status;
 
+  unsigned char
+    *info;
+
+  long
+    length;
+
   if (image->iptc_profile.length == 0)
     WriterExit(FileOpenWarning,"No IPTC profile available",image);
+  info=image->iptc_profile.info;
+  length=image->iptc_profile.length;
+  length=GetIPTCStream(&info,length);
+  if (length <= 0)
+    WriterExit(FileOpenWarning,"No IPTC info was found",image);
   /*
     Open image file.
   */
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
-  (void) WriteBlob(image,(int) image->iptc_profile.length,
-    (char *) image->iptc_profile.info);
+  (void) WriteBlob(image,(int) length,info);
   CloseBlob(image);
   return(True);
 }

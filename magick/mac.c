@@ -697,17 +697,19 @@ static OSErr MacGSSetWorkingFolder(char *directory)
     event;
 
   DescType
-    folder_type = 'wfdr';
+    folder_type;
 
   OSErr
     error;
 
   OSType
-    id = 'GPLT';
+    id;
 
   /*
     Send the Apple Event.
   */
+  folder_type='wfdr';
+  id='GPLT';
   AECreateDesc(typeNull,NULL,0,&application_descriptor);
   AECreateDesc(typeChar,directory,strlen(directory),&path_descriptor);
   (void) AECreateDesc(typeType,&folder_type,sizeof(DescType),&type_descriptor);
@@ -1037,18 +1039,13 @@ Image *ReadPICTImage(const ImageInfo *image_info)
   PictInfo
     picture_info;
 
-  Quantum
-    blue,
-    green,
-    red;
-
   Rect
     rectangle;
 
   register int
     x;
 
-  register RunlengthPacket
+  register PixelPacket
     *q;
 
   RGBColor
@@ -1057,12 +1054,6 @@ Image *ReadPICTImage(const ImageInfo *image_info)
   short
     colormap_id;
 
-  unsigned int
-    packets;
-
-  unsigned short
-    index;
-  
   /*
     Allocate image structure.
   */
@@ -1134,17 +1125,6 @@ Image *ReadPICTImage(const ImageInfo *image_info)
   image->units=PixelsPerInchResolution;
   image->columns=picture_info.sourceRect.right-picture_info.sourceRect.left;
   image->rows=picture_info.sourceRect.bottom-picture_info.sourceRect.top;
-  image->packets=0;
-  packets=Max((image->columns*image->rows+2) >> 2,1);
-  image->pixels=(RunlengthPacket *)
-    AllocateMemory(packets*sizeof(RunlengthPacket));
-  if (image->pixels == (RunlengthPacket *) NULL)
-    {
-      if (picture_info.theColorTable != nil)
-        DisposeHandle((Handle) picture_info.theColorTable); 
-      DisposeGWorld(graphic_world);
-      PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-    }
   if ((depth <= 8) && ((*(picture_info.theColorTable))->ctSize != 0))
     {
       /*
@@ -1152,9 +1132,9 @@ Image *ReadPICTImage(const ImageInfo *image_info)
       */
       image->class=PseudoClass;
       image->colors=(*(picture_info.theColorTable))->ctSize;
-      image->colormap=(ColorPacket *)
-        AllocateMemory(image->colors*sizeof(ColorPacket));
-      if (image->colormap == (ColorPacket *) NULL)
+      image->colormap=(PixelPacket *)
+        AllocateMemory(image->colors*sizeof(PixelPacket));
+      if (image->colormap == (PixelPacket *) NULL)
         {
           if (picture_info.theColorTable != nil)
             DisposeHandle((Handle) picture_info.theColorTable); 
@@ -1185,56 +1165,25 @@ Image *ReadPICTImage(const ImageInfo *image_info)
     }
   DisposeHandle((Handle) picture_handle);
   /*
-    Convert PICT pixels to runlength-encoded packets.
+    Convert PICT pixels to pixel packets.
   */
-  red=0;
-  green=0;
-  blue=0;
-  index=0;
-  q=image->pixels;
-  SetRunlengthEncoder(q);
   for (y=0; y < image->rows; y++)
   {
+    q=SetPixelCache(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
     for (x=0; x < image->columns; x++)
     {
       GetCPixel(x,y,&Pixel);
-      red=UpScale(Pixel.red & 0xff);
-      green=UpScale(Pixel.green & 0xff);
-      blue=UpScale(Pixel.blue & 0xff);
+      q->red=UpScale(Pixel.red & 0xff);
+      q->green=UpScale(Pixel.green & 0xff);
+      q->blue=UpScale(Pixel.blue & 0xff);
       if (image->class == PseudoClass)
-        index=(unsigned short) Color2Index(&Pixel);
-      if ((red == q->red) && (green == q->green) && (blue == q->blue) &&
-          (index == q->index) && ((int) q->length < MaxRunlength))
-        q->length++;
-      else
-        {
-          if (image->packets != 0)
-            q++;
-          image->packets++;
-          if (image->packets == packets)
-            {
-              packets<<=1;
-              image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
-                image->pixels,packets*sizeof(RunlengthPacket));
-              if (image->pixels == (RunlengthPacket *) NULL)
-                {
-                  UnlockPixels(graphic_world->portPixMap);
-                  SetGWorld(port,device);
-                  if (picture_info.theColorTable != nil)
-                    DisposeHandle((Handle) picture_info.theColorTable); 
-                  DisposeGWorld(graphic_world);
-                  PrematureExit(ResourceLimitWarning,
-                    "Memory allocation failed",image);
-                }
-              q=image->pixels+image->packets-1;
-            }
-          q->red=red;
-          q->green=green;
-          q->blue=blue;
-          q->index=index;
-          q->length=0;
-        }
+        image->indexes[x]=(unsigned short) Color2Index(&Pixel);
+      q++;
     }
+    if (!SyncPixelCache(image))
+      break;
     if (QuantumTick(y,image->rows))
       ProgressMonitor(LoadImageText,y,image->rows);
   }
@@ -1279,7 +1228,7 @@ static Boolean SearchForFile(OSType creator_type,OSType file_type,FSSpec *file,
     parameter_info;
 
   long
-    buffer_size = 16384;
+    buffer_size;
 
   OSErr
     error;
@@ -1290,6 +1239,7 @@ static Boolean SearchForFile(OSType creator_type,OSType file_type,FSSpec *file,
   ProcessSerialNumber
     serial_number;
 
+  buffer_size=16384;
   serial_number.lowLongOfPSN=kCurrentProcess;
   serial_number.highLongOfPSN=0;
   application_info.processInfoLength=sizeof(ProcessInfoRec);

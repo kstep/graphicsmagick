@@ -64,7 +64,7 @@ namespace Magick
     Image( void );
     
     // Destructor
-    ~Image();
+    virtual ~Image();
     
     /// Copy constructor
     Image ( const Image & image_ );
@@ -125,9 +125,6 @@ namespace Magick
     void            composite ( const Image &compositeImage_,
 				GravityType gravity_,
 				CompositeOperator compose_ = InCompositeOp );
-    
-    // Condense image (Re-run-length encode image in memory)
-    void            condense ( void );
     
     // Contrast image (enhance intensity differences in image)
     void            contrast ( unsigned int sharpen_ );
@@ -297,10 +294,7 @@ namespace Magick
 			   int rows_ );
     
     // Rotate image counter-clockwise by specified number of degrees.
-    // Optionally crop image to original size and sharpen image.
-    void            rotate ( double degrees_,
-			     bool crop_ = false,
-			     unsigned int sharpen_ = false );
+    void            rotate ( double degrees_ );
     
     // Resize image by using pixel sampling algorithm
     void            sample ( const Geometry &geometry_ );
@@ -325,8 +319,7 @@ namespace Magick
     
     // Shear image (create parallelogram by sliding image by X or Y axis)
     void            shear ( double xShearAngle_,
-			    double yShearAngle_,
-			    bool crop_ = false );
+			    double yShearAngle_ );
     
     // Solarize image (similar to effect seen when exposing a
     // photographic film to light during the development process)
@@ -366,10 +359,6 @@ namespace Magick
     // Trim edges that are the background color from the image
     void            trim ( void );
 
-    // Un-condense image (Uncompresses runlength-encoded pixels
-    // packets to a rectangular array of pixels)
-    void            uncondense ( void );
-    
     // Map image pixels to a sine wave
     void            wave ( double amplitude_ = 25.0, double wavelength_ = 150.0 );
     
@@ -380,7 +369,7 @@ namespace Magick
     // avoid overhead associated with reallocation of memory if the output
     // size can be estimated in advance.
     void            write ( Blob *blob_,
-			    unsigned long lengthEstimate_ = 1664 );
+			    size_t lengthEstimate_ = 1664 );
     
     // Zoom image to specified size.
     void            zoom ( const Geometry &geometry_ );
@@ -475,9 +464,6 @@ namespace Magick
     void            compressType ( CompressionType compressType_ );
     CompressionType compressType ( void ) const;
 
-    // Image pixels are condensed (Run-Length encoded)
-    bool            condensed( void ) const;
-    
     // Vertical and horizontal resolution in pixels of the image
     void            density ( const Geometry &geomery_ );
     Geometry        density ( void ) const;
@@ -575,10 +561,10 @@ namespace Magick
     double          normalizedMeanError ( void ) const;
 
     // The number of runlength-encoded packets in the image
-    unsigned int    packets ( void ) const;
+//     unsigned int    packets ( void ) const;
 
     // The number of bytes in each pixel packet
-    unsigned int    packetSize ( void ) const;
+//     unsigned int    packetSize ( void ) const;
 
     // Pen color
     void            penColor ( const Color &penColor_ );
@@ -659,7 +645,7 @@ namespace Magick
     std::string     tileName ( void ) const;
 
     // Number of colors in the image
-    unsigned long   totalColors ( void ) const;
+    unsigned long   totalColors ( void );
 
     // Image type
     ImageType       type ( void ) const;

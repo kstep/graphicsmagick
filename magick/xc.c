@@ -86,16 +86,16 @@
 */
 Export Image *ReadXCImage(const ImageInfo *image_info)
 {
-  ColorPacket
-    color;
-
   Image
     *image;
 
-  register int
-    i;
+  int
+    y;
 
-  register RunlengthPacket
+  register int
+    x;
+
+  register PixelPacket
     *q;
 
   /*
@@ -112,33 +112,31 @@ Export Image *ReadXCImage(const ImageInfo *image_info)
     Initialize Image structure.
   */
   (void) strcpy(image->filename,image_info->filename);
-  image->packets=((Max(image->columns*image->rows,1)-1)/(MaxRunlength+1))+1;
-  image->pixels=(RunlengthPacket *)
-    AllocateMemory(image->packets*sizeof(RunlengthPacket));
   image->class=PseudoClass;
   image->colors=1;
-  image->colormap=(ColorPacket *)
-    AllocateMemory(image->colors*sizeof(ColorPacket));
-  if ((image->pixels == (RunlengthPacket *) NULL) ||
-      (image->colormap == (ColorPacket *) NULL))
+  image->colormap=(PixelPacket *)
+    AllocateMemory(image->colors*sizeof(PixelPacket));
+  if (image->colormap == (PixelPacket *) NULL)
     ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
   /*
     Initialize colormap.
   */
-  (void) QueryColorDatabase((char *) image_info->filename,&color);
-  image->colormap[0].red=XDownScale(color.red);
-  image->colormap[0].green=XDownScale(color.green);
-  image->colormap[0].blue=XDownScale(color.blue);
-  q=image->pixels;
-  for (i=0; i < (int) image->packets; i++)
+  (void) QueryColorDatabase((char *) image_info->filename,&image->colormap[0]);
+  for (y=0; y < (int) image->rows; y++)
   {
-    SetRunlengthEncoder(q);
-    q++;
-    if (QuantumTick(i,image->packets))
-      ProgressMonitor(LoadImageText,i,image->packets);
+    q=SetPixelCache(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < (int) image->columns; x++)
+    {
+      q->red=image->colormap[0].red;
+      q->green=image->colormap[0].green;
+      q->blue=image->colormap[0].blue;
+      q->opacity=image->colormap[0].opacity;
+      q++;
+    }
+    if (!SyncPixelCache(image))
+      break;
   }
-  q--;
-  q->length=image->columns*image->rows-(MaxRunlength+1)*(image->packets-1)-1;
-  SyncImage(image);
   return(image);
 }

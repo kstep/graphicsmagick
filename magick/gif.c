@@ -69,7 +69,7 @@
 %
 %  The format of the DecodeImage method is:
 %
-%      Image *ReadGIFImage(const ImageInfo *image_info)
+%      unsigned int DecodeImag(Image *image,const short int opacity)
 %
 %  A description of each parameter follows:
 %
@@ -78,34 +78,41 @@
 %
 %    o image: The address of a structure of type Image.
 %
+%    o opacity:  The colormap index associated with the transparent
+%      color.
+%
 %
 */
-static unsigned int DecodeImage(Image *image)
+static unsigned int DecodeImage(Image *image,const short int opacity)
 {
 #define MaxStackSize  4096
 #define NullCode  (-1)
 
+  IndexPacket
+    index;
+
   int
     available,
+    bits,
+    code,
     clear,
     code_mask,
     code_size,
+    count,
     end_of_information,
     in_code,
-    old_code;
+    old_code,
+    y;
 
   register int
-    bits,
-    code,
-    count,
-    i;
+    i,
+    x;
 
-  register RunlengthPacket
+  register PixelPacket
     *q;
 
   register unsigned char
-    *c,
-    *p;
+    *c;
 
   register unsigned int
     datum;
@@ -117,30 +124,20 @@ static unsigned int DecodeImage(Image *image)
     data_size,
     first,
     *packet,
-    *pixels,
     *pixel_stack,
     *suffix,
     *top_stack;
-
-  unsigned long
-    packets;
-
-  unsigned short
-    index;
 
   /*
     Allocate decoder tables.
   */
   assert(image != (Image *) NULL);
-  pixels=(unsigned char *)
-    AllocateMemory(image->columns*image->rows*sizeof(unsigned char));
   packet=(unsigned char *) AllocateMemory(256*sizeof(unsigned char));
   prefix=(short *) AllocateMemory(MaxStackSize*sizeof(short));
   suffix=(unsigned char *) AllocateMemory(MaxStackSize*sizeof(unsigned char));
   pixel_stack=(unsigned char *)
     AllocateMemory((MaxStackSize+1)*sizeof(unsigned char));
-  if ((pixels == (unsigned char *) NULL) ||
-      (packet == (unsigned char *) NULL) ||
+  if ((packet == (unsigned char *) NULL) ||
       (prefix == (short *) NULL) ||
       (suffix == (unsigned char *) NULL) ||
       (pixel_stack == (unsigned char *) NULL))
@@ -173,197 +170,166 @@ static unsigned int DecodeImage(Image *image)
   count=0;
   first=0;
   top_stack=pixel_stack;
-  p=pixels;
-  for (i=0; i < (int) (image->columns*image->rows); )
+  for (y=0; y < (int) image->rows; y++)
   {
-    if (top_stack == pixel_stack)
-      {
-        if (bits < code_size)
-          {
-            /*
-              Load bytes until there is enough bits for a code.
-            */
-            if (count == 0)
-              {
-                /*
-                  Read a new data block.
-                */
-                count=ReadBlobBlock(image,(char *) packet);
-                if (count <= 0)
-                  break;
-                c=packet;
-              }
-            datum+=(*c) << bits;
-            bits+=8;
-            c++;
-            count--;
-            continue;
-          }
-        /*
-          Get the next code.
-        */
-        code=datum & code_mask;
-        datum>>=code_size;
-        bits-=code_size;
-        /*
-          Interpret the code
-        */
-        if ((code > available) || (code == end_of_information))
-          break;
-        if (code == clear)
-          {
-            /*
-              Reset decoder.
-            */
-            code_size=data_size+1;
-            code_mask=(1 << code_size)-1;
-            available=clear+2;
-            old_code=NullCode;
-            continue;
-          }
-        if (old_code == NullCode)
+    q=SetPixelCache(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < (int) image->columns; )
+    {
+      if (top_stack == pixel_stack)
+        {
+          if (bits < code_size)
+            {
+              /*
+                Load bytes until there is enough bits for a code.
+              */
+              if (count == 0)
+                {
+                  /*
+                    Read a new data block.
+                  */
+                  count=ReadBlobBlock(image,(char *) packet);
+                  if (count <= 0)
+                    break;
+                  c=packet;
+                }
+              datum+=(*c) << bits;
+              bits+=8;
+              c++;
+              count--;
+              continue;
+            }
+          /*
+            Get the next code.
+          */
+          code=datum & code_mask;
+          datum>>=code_size;
+          bits-=code_size;
+          /*
+            Interpret the code
+          */
+          if ((code > available) || (code == end_of_information))
+            break;
+          if (code == clear)
+            {
+              /*
+                Reset decoder.
+              */
+              code_size=data_size+1;
+              code_mask=(1 << code_size)-1;
+              available=clear+2;
+              old_code=NullCode;
+              continue;
+            }
+          if (old_code == NullCode)
+            {
+              *top_stack++=suffix[code];
+              old_code=code;
+              first=(unsigned char) code;
+              continue;
+            }
+          in_code=code;
+          if (code == available)
+            {
+              *top_stack++=first;
+              code=old_code;
+            }
+          while (code > clear)
           {
             *top_stack++=suffix[code];
-            old_code=code;
-            first=(unsigned char) code;
-            continue;
+            code=prefix[code];
           }
-        in_code=code;
-        if (code == available)
-          {
-            *top_stack++=first;
-            code=old_code;
-          }
-        while (code > clear)
-        {
-          *top_stack++=suffix[code];
-          code=prefix[code];
+          first=suffix[code];
+          /*
+            Add a new string to the string table,
+          */
+          if (available >= MaxStackSize)
+            break;
+          *top_stack++=first;
+          prefix[available]=old_code;
+          suffix[available]=first;
+          available++;
+          if (((available & code_mask) == 0) && (available < MaxStackSize))
+            {
+              code_size++;
+              code_mask+=available;
+            }
+          old_code=in_code;
         }
-        first=suffix[code];
-        /*
-          Add a new string to the string table,
-        */
-        if (available >= MaxStackSize)
-          break;
-        *top_stack++=first;
-        prefix[available]=old_code;
-        suffix[available]=first;
-        available++;
-        if (((available & code_mask) == 0) && (available < MaxStackSize))
-          {
-            code_size++;
-            code_mask+=available;
-          }
-        old_code=in_code;
-      }
-    /*
-      Pop a pixel off the pixel stack.
-    */
-    top_stack--;
-    *p=(*top_stack);
-    p++;
-    i++;
-  }
-  if (i < (int) (image->columns*image->rows))
-    {
-      for ( ; i < (int) (image->columns*image->rows); i++)
-        *p++=0;
-      MagickWarning(CorruptImageWarning,"Corrupt GIF image",image->filename);
+      /*
+        Pop a pixel off the pixel stack.
+      */
+      top_stack--;
+      index=(*top_stack);
+      image->indexes[x++]=index;
+      q->red=image->colormap[index].red;
+      q->green=image->colormap[index].green;
+      q->blue=image->colormap[index].blue;
+      q->opacity=index == opacity ? Transparent : Opaque;
+      q++;
     }
+    if (!SyncPixelCache(image))
+      break;
+    if (image->previous == (Image *) NULL)
+      if (QuantumTick(y,image->rows))
+        ProgressMonitor(LoadImageText,y,image->rows);
+  }
+  image->compression=LZWCompression;
+  image->matte=opacity >= 0;
   /*
     Free decoder memory.
   */
-  FreeMemory((char *) pixel_stack);
-  FreeMemory((char *) suffix);
-  FreeMemory((char *) prefix);
-  FreeMemory((char *) packet);
+  FreeMemory(pixel_stack);
+  FreeMemory(suffix);
+  FreeMemory(prefix);
+  FreeMemory(packet);
   if (image->interlace != NoInterlace)
     {
+      Image
+        *interlace_image;
+
       int
         pass,
         y;
 
-      register int
-        x;
-
-      register unsigned char
+      register PixelPacket
+        *p,
         *q;
 
       static const int
         interlace_rate[4] = { 8, 8, 4, 2 },
         interlace_start[4] = { 0, 4, 2, 1 };
 
-      unsigned char
-        *interlaced_pixels;
-
       /*
         Interlace image.
       */
-      interlaced_pixels=pixels;
-      pixels=(unsigned char *)
-        AllocateMemory(image->columns*image->rows*sizeof(unsigned char));
-      if (pixels == (unsigned char *) NULL)
-        {
-          FreeMemory(interlaced_pixels);
-          MagickWarning(ResourceLimitWarning,"Memory allocation failed",
-            image->filename);
-          return(False);
-        }
-      p=interlaced_pixels;
-      q=pixels;
+      interlace_image=CloneImage(image,image->columns,image->rows,True);
+      if (interlace_image == (Image *) NULL)
+        return(False);
+      i=0;
       for (pass=0; pass < 4; pass++)
       {
         y=interlace_start[pass];
         while (y < (int) image->rows)
         {
-          q=pixels+(y*image->columns);
+          p=GetPixelCache(interlace_image,0,i,interlace_image->columns,1);
+          q=SetPixelCache(image,0,y,image->columns,1);
+          if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+            break;
           for (x=0; x < (int) image->columns; x++)
           {
-            *q=(*p);
-            p++;
-            q++;
+            image->indexes[x]=interlace_image->indexes[x];
+            *q++=(*p++);
           }
+          if (!SyncPixelCache(image))
+            break;
+          i++;
           y+=interlace_rate[pass];
         }
       }
-      FreeMemory(interlaced_pixels);
+      DestroyImage(interlace_image);
     }
-  /*
-    Convert GIF pixels to runlength-encoded packets.
-  */
-  packets=0;
-  image->pixels=(RunlengthPacket *)
-    AllocateMemory(image->columns*image->rows*sizeof(RunlengthPacket));
-  if (image->pixels == (RunlengthPacket *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Memory allocation failed",
-        image->filename);
-      return(False);
-    }
-  p=pixels;
-  q=image->pixels;
-  SetRunlengthEncoder(q);
-  for (i=0; i < (int) (image->columns*image->rows); i++)
-  {
-    index=(*p++);
-    if ((index == q->index) && ((int) q->length < MaxRunlength))
-       q->length++;
-     else
-       {
-         if (packets != 0)
-           q++;
-         packets++;
-         q->index=index;
-         q->length=0;
-       }
-    if (image->previous == (Image *) NULL)
-      if (QuantumTick(i,image->columns*image->rows))
-        ProgressMonitor(LoadImageText,i,image->columns*image->rows);
-  }
-  SetRunlengthPackets(image,packets);
-  SyncImage(image);
-  image->compression=LZWCompression;
-  FreeMemory(pixels);
   return(True);
 }
 
@@ -382,7 +348,7 @@ static unsigned int DecodeImage(Image *image)
 %
 %  The format of the EncodeImage method is:
 %
-%      status=EncodeImage(image,data_size)
+%      unsigned int EncodeImage(Image *image,const unsigned int data_size)
 %
 %  A description of each parameter follows:
 %
@@ -390,6 +356,8 @@ static unsigned int DecodeImage(Image *image)
 %      compressed without error, otherwise False.
 %
 %    o image: The address of a structure of type Image.
+%
+%    o data_size:  The number of bits in the compressed packet.
 %
 %
 */
@@ -441,19 +409,20 @@ static unsigned int EncodeImage(Image *image,const unsigned int data_size)
   int
     bits,
     byte_count,
-    i,
+    displacement,
     next_pixel,
-    number_bits;
+    number_bits,
+    y;
 
   long
     datum;
 
   register int
-    displacement,
-    j,
-    k;
+    i,
+    k,
+    x;
 
-  register RunlengthPacket
+  register PixelPacket
     *p;
 
   short
@@ -500,21 +469,26 @@ static unsigned int EncodeImage(Image *image,const unsigned int data_size)
   /*
     Encode pixels.
   */
-  p=image->pixels;
-  waiting_code=p->index;
-  for (i=0; i < (int) image->packets; i++)
+  waiting_code=0;
+  for (y=0; y < (int) image->rows; y++)
   {
-    for (j=(i == 0) ? 1 : 0; j <= ((int) p->length); j++)
+    p=GetPixelCache(image,0,y,image->columns,1);
+    if (p == (PixelPacket *) NULL)
+      break;
+    if (y == 0)
+      waiting_code=(*image->indexes);
+    for (x=(y == 0) ? 1 : 0; x < (int) image->columns; x++)
     {
       /*
         Probe hash table.
       */
-      index=p->index & 0xff;
+      index=image->indexes[x] & 0xff;
+      p++;
       k=(int) ((int) index << (MaxGIFBits-8))+waiting_code;
       if (k >= MaxHashTable)
         k-=MaxHashTable;
 #if defined(HasLZW)
-      if (hash_code[k] > 0)
+      if ((image->compression != NoCompression) && (hash_code[k] > 0))
         {
           if ((hash_prefix[k] == waiting_code) && (hash_suffix[k] == index))
             {
@@ -567,11 +541,10 @@ static unsigned int EncodeImage(Image *image,const unsigned int data_size)
           max_code=MaxCode(number_bits);
         }
       waiting_code=index;
-      if (image->previous == (Image *) NULL)
-        if (QuantumTick(i,image->packets))
-          ProgressMonitor(SaveImageText,i,image->packets);
     }
-    p++;
+    if (image->previous == (Image *) NULL)
+      if (QuantumTick(y,image->rows))
+        ProgressMonitor(SaveImageText,y,image->rows);
   }
   /*
     Flush out the buffered code.
@@ -602,13 +575,50 @@ static unsigned int EncodeImage(Image *image,const unsigned int data_size)
   /*
     Free encoder memory.
   */
-  FreeMemory((char *) hash_suffix);
-  FreeMemory((char *) hash_prefix);
-  FreeMemory((char *) hash_code);
-  FreeMemory((char *) packet);
-  if (i < (int) image->packets)
-    return(False);
+  FreeMemory(hash_suffix);
+  FreeMemory(hash_prefix);
+  FreeMemory(hash_code);
+  FreeMemory(packet);
   return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   I s G I F                                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsGIF returns True if the image format type, identified by the
+%  magick string, is GIF.
+%
+%  The format of the ReadGIFImage method is:
+%
+%      unsigned int IsGIF(const unsigned char *magick,
+%        const unsigned int length)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method IsGIF returns True if the image format type is GIF.
+%
+%    o magick: This string is generally the first few bytes of an image file
+%      or blob.
+%
+%    o length: Specifies the length of the magick string.
+%
+%
+*/
+Export unsigned int IsGIF(const unsigned char *magick,const unsigned int length)
+{
+  if (length < 4)
+    return(False);
+  if (strncmp((char *) magick,"GIF8",4) == 0)
+    return(True);
+  return(False);
 }
 
 /*
@@ -628,7 +638,7 @@ static unsigned int EncodeImage(Image *image,const unsigned int data_size)
 %
 %  The format of the ReadGIFImage method is:
 %
-%      image=ReadGIFImage(image_info)
+%      Image *ReadGIFImage(const ImageInfo *image_info)
 %
 %  A description of each parameter follows:
 %
@@ -645,9 +655,6 @@ Export Image *ReadGIFImage(const ImageInfo *image_info)
 #define BitSet(byte,bit)  (((byte) & (bit)) == (bit))
 #define LSBFirstOrder(x,y)  (((y) << 8) | (x))
 
-  char
-    geometry[MaxTextExtent];
-
   Image
     *image;
 
@@ -660,14 +667,11 @@ Export Image *ReadGIFImage(const ImageInfo *image_info)
   register int
     i;
 
-  register RunlengthPacket
-    *q;
-
   register unsigned char
     *p;
 
   short int
-    transparency_index;
+    opacity;
 
   unsigned char
     background,
@@ -713,7 +717,7 @@ Export Image *ReadGIFImage(const ImageInfo *image_info)
   if (BitSet(flag,0x80))
     {
       /*
-        Read global colormap.
+        opacity global colormap.
       */
       global_colors=1 << ((flag & 0x07)+1);
       global_colormap=(unsigned char *)
@@ -726,7 +730,7 @@ Export Image *ReadGIFImage(const ImageInfo *image_info)
   delay=0;
   dispose=0;
   iterations=1;
-  transparency_index=(-1);
+  opacity=(-1);
   image_count=0;
   for ( ; ; )
   {
@@ -755,7 +759,7 @@ Export Image *ReadGIFImage(const ImageInfo *image_info)
             dispose=header[0] >> 2;
             delay=(header[2] << 8) | header[1];
             if ((header[0] & 0x01) == 1)
-              transparency_index=header[3];
+              opacity=header[3];
             break;
           }
           case 0xfe:
@@ -848,10 +852,10 @@ Export Image *ReadGIFImage(const ImageInfo *image_info)
     flag=ReadByte(image);
     image->interlace=BitSet(flag,0x40) ? PlaneInterlace : NoInterlace;
     image->colors=!BitSet(flag,0x80) ? global_colors : 1 << ((flag & 0x07)+1);
-    FormatString(geometry,"%ux%u%+d%+d",page_info.width,page_info.height,
-      page_info.x,page_info.y);
-    if (image_info->page == (char *) NULL)
-      image->page=PostscriptGeometry(geometry);
+    image->page_info.width=page_info.width;
+    image->page_info.height=page_info.height;
+    image->page_info.y=page_info.y;
+    image->page_info.x=page_info.x;
     if (image_info->delay == (char *) NULL)
       image->delay=delay;
     if (image_info->dispose == (char *) NULL)
@@ -863,8 +867,8 @@ Export Image *ReadGIFImage(const ImageInfo *image_info)
     iterations=1;
     if (image_info->ping)
       {
-        if (transparency_index >= 0)
-          image->class=DirectClass;
+        if (opacity >= 0)
+          image->matte=True;
         CloseBlob(image);
         return(image);
       }
@@ -873,12 +877,11 @@ Export Image *ReadGIFImage(const ImageInfo *image_info)
     /*
       Inititialize colormap.
     */
-    if (image->pixels != (RunlengthPacket *) NULL)
-      FreeMemory((char *) image->pixels);
-    image->pixels=(RunlengthPacket *) NULL;
-    image->colormap=(ColorPacket *)
-      AllocateMemory(image->colors*sizeof(ColorPacket));
-    if (image->colormap == (ColorPacket *) NULL)
+    if (image->pixels != (PixelPacket *) NULL)
+      FreeMemory(image->pixels);
+    image->colormap=(PixelPacket *)
+      AllocateMemory(image->colors*sizeof(PixelPacket));
+    if (image->colormap == (PixelPacket *) NULL)
       ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
     if (!BitSet(flag,0x80))
       {
@@ -915,40 +918,12 @@ Export Image *ReadGIFImage(const ImageInfo *image_info)
           image->colormap[i].green=UpScale(*p++);
           image->colormap[i].blue=UpScale(*p++);
         }
-        FreeMemory((char *) colormap);
+        FreeMemory(colormap);
       }
     /*
       Decode image.
     */
-    status=DecodeImage(image);
-    if (transparency_index >= 0)
-      {
-        /*
-          Create matte channel.
-        */
-        ColorPacket
-          transparent_color;
-
-        transparent_color=
-          image->colormap[Min(transparency_index,image->colors-1)];
-        q=image->pixels;
-        for (i=0; i < (int) image->packets; i++)
-        {
-          if (q->index != (unsigned short) transparency_index)
-            q->index=Opaque;
-          else
-            {
-              q->index=Transparent;
-              q->red=transparent_color.red;
-              q->green=transparent_color.green;
-              q->blue=transparent_color.blue;
-            }
-          q++;
-        }
-        transparency_index=(-1);
-        image->class=DirectClass;
-        image->matte=True;
-      }
+    status=DecodeImage(image,opacity);
     if (status == False)
       {
         MagickWarning(CorruptImageWarning,"Corrupt GIF image",image->filename);
@@ -980,8 +955,8 @@ Export Image *ReadGIFImage(const ImageInfo *image_info)
       }
   }
   if (global_colormap != (unsigned char *) NULL)
-    FreeMemory((char *) global_colormap);
-  if (image->pixels == (RunlengthPacket *) NULL)
+    FreeMemory(global_colormap);
+  if (image->pixels == (PixelPacket *) NULL)
     ReaderExit(CorruptImageWarning,"Corrupt GIF image or subimage not found",
       image);
   while (image->previous != (Image *) NULL)
@@ -1025,15 +1000,21 @@ Export unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
   Image
     *next_image;
 
+  int
+    j,
+    y;
+
+  QuantizeInfo
+    quantize_info;
+
   RectangleInfo
     page_info;
 
   register int
     i,
-    j,
     x;
 
-  register RunlengthPacket
+  register PixelPacket
     *p;
 
   register unsigned char
@@ -1043,17 +1024,13 @@ Export unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
     bits_per_pixel,
     c,
     *colormap,
-    *global_colormap,
-    *matte;
+    *global_colormap;
 
   unsigned int
-    colors,
-    height,
     interlace,
+    opacity,
     scene,
-    status,
-    transparency,
-    width;
+    status;
 
   /*
     Open output image file.
@@ -1068,11 +1045,10 @@ Export unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
   page_info.height=image->rows;
   page_info.x=0;
   page_info.y=0;
-  next_image=image;
   for (next_image=image; next_image != (Image *) NULL; )
   {
-    (void) ParseGeometry(next_image->page,&page_info.x,&page_info.y,
-      &width,&height);
+    page_info.x=next_image->page_info.x;
+    page_info.y=next_image->page_info.y;
     if ((next_image->columns+page_info.x) > page_info.width)
       page_info.width=next_image->columns+page_info.x;
     if ((next_image->rows+page_info.y) > page_info.height)
@@ -1082,12 +1058,9 @@ Export unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
   /*
     Allocate colormap.
   */
-  matte=(unsigned char *)
-    AllocateMemory(page_info.width*page_info.height*sizeof(unsigned char));
   global_colormap=(unsigned char *) AllocateMemory(768*sizeof(unsigned char));
   colormap=(unsigned char *) AllocateMemory(768*sizeof(unsigned char));
-  if ((matte == (unsigned char *) NULL) ||
-      (global_colormap == (unsigned char *) NULL) ||
+  if ((global_colormap == (unsigned char *) NULL) ||
       (colormap == (unsigned char *) NULL))
     WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
   for (i=0; i < 768; i++)
@@ -1103,9 +1076,8 @@ Export unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
       (void) WriteBlob(image,6,"GIF87a");
     else
       (void) WriteBlob(image,6,"GIF89a");
-  if (image_info->page != (char *) NULL)
-    (void) ParseGeometry(image_info->page,&page_info.x,&page_info.y,
-      &page_info.width,&page_info.height);
+  if ((image->page_info.width != 0) && (image->page_info.height != 0))
+    page_info=image->page_info;
   LSBFirstWriteShort(image,page_info.width);
   LSBFirstWriteShort(image,page_info.height);
   page_info.x=0;
@@ -1116,61 +1088,78 @@ Export unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
   interlace=image_info->interlace;
   if (image_info->adjoin && (image->next != (Image *) NULL))
     interlace=NoInterlace;
+  opacity=0;
   scene=0;
   do
   {
     TransformRGBImage(image,RGBColorspace);
-    transparency=False;
-    if (IsPseudoClass(image))
-      colors=image->colors;
-    else
+    if (!IsPseudoClass(image))
       {
-        QuantizeInfo
-          quantize_info;
-
+        /*
+          GIF requires that the image is colormapped.
+        */
+        GetQuantizeInfo(&quantize_info);
+        quantize_info.dither=image_info->dither;
+        quantize_info.number_colors=image->matte ? 255 : 256;
+        (void) QuantizeImage(&quantize_info,image);
         if (image->matte)
           {
             /*
-              Track all the transparent pixels.
+              Set transparent pixel.
             */
-            if (!UncondenseImage(image))
-              return(False);
-            p=image->pixels;
-            for (i=0; i < (int) image->packets; i++)
+            opacity=image->colors++;
+            image->colormap=(PixelPacket *) ReallocateMemory(image->colormap,
+              image->colors*sizeof(PixelPacket));
+            if (image->colormap == (PixelPacket *) NULL)
+              {
+                FreeMemory(global_colormap);
+                FreeMemory(colormap);
+                WriterExit(ResourceLimitWarning,"Memory allocation failed",
+                  image);
+              }
+            image->colormap[opacity]=image->background_color;
+            for (y=0; y < (int) image->rows; y++)
             {
-              matte[i]=p->index == Transparent;
-              if (p->index == Transparent)
-                transparency=True;
-              p++;
+              p=GetPixelCache(image,0,y,image->columns,1);
+              if (p == (PixelPacket *) NULL)
+                break;
+              for (x=0; x < (int) image->columns; x++)
+              {
+                if (p->opacity == Transparent)
+                  image->indexes[x]=opacity;
+                p++;
+              }
+              if (!SyncPixelCache(image))
+                break;
             }
-          }
-        GetQuantizeInfo(&quantize_info);
-        quantize_info.number_colors=transparency ? 255 : 256;
-        quantize_info.dither=image_info->dither;
-        (void) QuantizeImage(&quantize_info,image);
-        SyncImage(image);
-        colors=image->colors;
-        if (transparency)
-          {
-            /*
-              Set the transparent pixel index.
-            */
-            if (!UncondenseImage(image))
-              return(False);
-            p=image->pixels;
-            image->class=DirectClass;
-            image->matte=True;
-            for (i=0; i < (int) image->packets; i++)
-            {
-              if (matte[i])
-                p->index=image->colors;
-              p++;
-            }
-            colors++;
           }
       }
+    else
+      if (image->matte)
+        {
+          /*
+            Identify transparent pixel index.
+          */
+          for (y=0; y < (int) image->rows; y++)
+          {
+            p=GetPixelCache(image,0,y,image->columns,1);
+            if (p == (PixelPacket *) NULL)
+              break;
+            for (x=0; x < (int) image->columns; x++)
+            {
+              if (p->opacity == Transparent)
+                {
+                  opacity=image->indexes[x];
+                  break;
+                }
+              p++;
+            }
+            if (x < (int) image->columns)
+              break;
+          }
+        }
     for (bits_per_pixel=1; bits_per_pixel < 8; bits_per_pixel++)
-      if ((1 << bits_per_pixel) >= (int) colors)
+      if ((1 << bits_per_pixel) >= (int) image->colors)
         break;
     q=colormap;
     for (i=0; i < (int) image->colors; i++)
@@ -1179,13 +1168,6 @@ Export unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
       *q++=DownScale(image->colormap[i].green);
       *q++=DownScale(image->colormap[i].blue);
     }
-    if (transparency)
-      {
-        *q++=DownScale(image->background_color.red);
-        *q++=DownScale(image->background_color.green);
-        *q++=DownScale(image->background_color.blue);
-        i++;
-      }
     for ( ; i < (int) (1 << bits_per_pixel); i++)
     {
       *q++=(Quantum) 0x0;
@@ -1219,11 +1201,11 @@ Export unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
         (void) WriteByte(image,0xf9);
         (void) WriteByte(image,0x04);
         c=image->dispose << 2;
-        if (transparency)
+        if (image->matte)
           c|=0x01;
         (void) WriteByte(image,c);
         LSBFirstWriteShort(image,image->delay);
-        (void) WriteByte(image,(char) image->colors);
+        (void) WriteByte(image,(char) opacity);
         (void) WriteByte(image,0x00);
         if (image->comments != (char *) NULL)
           {
@@ -1268,9 +1250,8 @@ Export unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
     /*
       Write the image header.
     */
-    if (image->page != (char *) NULL)
-      (void) ParseGeometry(image->page,&page_info.x,&page_info.y,
-        &page_info.width,&page_info.height);
+    if ((image->page_info.width != 0) && (image->page_info.height != 0))
+      page_info=image->page_info;
     LSBFirstWriteShort(image,page_info.x);
     LSBFirstWriteShort(image,page_info.y);
     LSBFirstWriteShort(image,image->columns);
@@ -1278,10 +1259,10 @@ Export unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
     c=0x00;
     if (interlace != NoInterlace)
       c|=0x40;  /* pixel data is interlaced */
-    for (j=0; j < (int) (3*colors); j++)
+    for (j=0; j < (int) (3*image->colors); j++)
       if (colormap[j] != global_colormap[j])
         break;
-    if (j == (int) (3*colors))
+    if (j == (int) (3*image->colors))
       (void) WriteByte(image,(char) c);
     else
       {
@@ -1300,13 +1281,12 @@ Export unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
     else
       {
         Image
-          *interlaced_image;
+          *interlace_image;
 
         int
-          pass,
-          y;
+          pass;
 
-        register RunlengthPacket
+        register PixelPacket
           *q;
 
         static const int
@@ -1316,48 +1296,54 @@ Export unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
         /*
           Interlace image.
         */
-        if (!UncondenseImage(image))
-          return(False);
-        image->orphan=True;
-        interlaced_image=CloneImage(image,image->columns,image->rows,False);
-        image->orphan=False;
-        if (interlaced_image == (Image *) NULL)
-          WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
-        p=image->pixels;
-        q=interlaced_image->pixels;
+        interlace_image=CloneImage(image,image->columns,image->rows,True);
+        if (interlace_image == (Image *) NULL)
+          {
+            FreeMemory(global_colormap);
+            FreeMemory(colormap);
+            WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+          }
+        i=0;
         for (pass=0; pass < 4; pass++)
         {
           y=interlace_start[pass];
           while (y < (int) image->rows)
           {
-            p=image->pixels+(y*image->columns);
+            p=GetPixelCache(image,0,y,image->columns,1);
+            q=SetPixelCache(interlace_image,0,i,interlace_image->columns,1);
+            if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+              break;
             for (x=0; x < (int) image->columns; x++)
             {
-              *q=(*p);
-              p++;
-              q++;
+              interlace_image->indexes[x]=image->indexes[x];
+              *q++=(*p++);
             }
+            if (!SyncPixelCache(interlace_image))
+              break;
+            i++;
             y+=interlace_rate[pass];
           }
         }
-        interlaced_image->file=image->file;
-        status=EncodeImage(interlaced_image,Max(bits_per_pixel,2)+1);
-        interlaced_image->file=(FILE *) NULL;
-        DestroyImage(interlaced_image);
+        interlace_image->file=image->file;
+        status=EncodeImage(interlace_image,Max(bits_per_pixel,2)+1);
+        interlace_image->file=(FILE *) NULL;
+        DestroyImage(interlace_image);
       }
     if (status == False)
-      WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+      {
+        FreeMemory(global_colormap);
+        FreeMemory(colormap);
+        WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+      }
     (void) WriteByte(image,0x0);
     if (image->next == (Image *) NULL)
       break;
-    image->next->file=image->file;
-    image=image->next;
+    image=GetNextImage(image);
     ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   (void) WriteByte(image,';'); /* terminator */
-  FreeMemory((char *) global_colormap);
-  FreeMemory((char *) colormap);
-  FreeMemory((char *) matte);
+  FreeMemory(global_colormap);
+  FreeMemory(colormap);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
       image=image->previous;

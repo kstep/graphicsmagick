@@ -85,9 +85,9 @@
 %      defines the border region.
 %
 */
-Export Image *BorderImage(const Image *image,const RectangleInfo *border_info)
+Export Image *BorderImage(Image *image,const RectangleInfo *border_info)
 {
-  ColorPacket
+  PixelPacket
     matte_color;
 
   Image
@@ -105,10 +105,10 @@ Export Image *BorderImage(const Image *image,const RectangleInfo *border_info)
   frame_info.inner_bevel=0;
   frame_info.outer_bevel=0;
   matte_color=image->matte_color;
-  ((Image *) image)->matte_color=image->border_color;
+  image->matte_color=image->border_color;
   bordered_image=FrameImage(image,&frame_info);
   bordered_image->matte_color=matte_color;
-  ((Image *) image)->matte_color=matte_color;
+  image->matte_color=matte_color;
   return(bordered_image);
 }
 
@@ -129,11 +129,11 @@ Export Image *BorderImage(const Image *image,const RectangleInfo *border_info)
 %
 %  The format of the FrameImage method is:
 %
-%      Image *FrameImage(const Image *image,const FrameInfo *frame_info)
+%      Image *FrameImage(Image *image,const FrameInfo *frame_info)
 %
 %  A description of each parameter follows:
 %
-%    o framed_image: Method FrameImage returns a pointer to the framed
+%    o frame_image: Method FrameImage returns a pointer to the framed
 %      image.  A null image is returned if there is a memory shortage.
 %
 %    o image: The address of a structure of type Image.
@@ -143,12 +143,12 @@ Export Image *BorderImage(const Image *image,const RectangleInfo *border_info)
 %
 %
 */
-Export Image *FrameImage(const Image *image,const FrameInfo *frame_info)
+Export Image *FrameImage(Image *image,const FrameInfo *frame_info)
 {
 #define FrameImageText  "  Adding frame to image...  "
 
   Image
-    *framed_image;
+    *frame_image;
 
   int
     height,
@@ -156,14 +156,13 @@ Export Image *FrameImage(const Image *image,const FrameInfo *frame_info)
     y;
 
   register int
-    runlength,
     x;
 
-  register RunlengthPacket
+  register PixelPacket
     *p,
     *q;
 
-  RunlengthPacket
+  PixelPacket
     accentuate,
     highlight,
     matte,
@@ -196,71 +195,68 @@ Export Image *FrameImage(const Image *image,const FrameInfo *frame_info)
   /*
     Initialize framed image attributes.
   */
-  framed_image=CloneImage(image,frame_info->width,frame_info->height,False);
-  if (framed_image == (Image *) NULL)
+  frame_image=CloneImage(image,frame_info->width,frame_info->height,True);
+  if (frame_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to frame image",
         "Memory allocation failed");
       return((Image *) NULL);
     }
-  framed_image->class=DirectClass;
+  frame_image->class=DirectClass;
   /*
     Initialize 3D effects color.
   */
-  matte.red=image->matte_color.red;
-  matte.green=image->matte_color.green;
-  matte.blue=image->matte_color.blue;
-  matte.index=image->matte_color.index;
-  matte.length=0;
+  matte=image->matte_color;
   accentuate.red=(Quantum) ((unsigned long)
     (matte.red*AccentuateModulate+(MaxRGB-AccentuateModulate)*MaxRGB)/MaxRGB);
   accentuate.green=(Quantum) ((unsigned long)
     (matte.green*AccentuateModulate+(MaxRGB-AccentuateModulate)*MaxRGB)/MaxRGB);
   accentuate.blue=(Quantum) ((unsigned long)
     (matte.blue*AccentuateModulate+(MaxRGB-AccentuateModulate)*MaxRGB)/MaxRGB);
-  accentuate.index=(unsigned short) ((unsigned long)
-    (matte.index*AccentuateModulate+(MaxRGB-AccentuateModulate)*MaxRGB)/MaxRGB);
-  accentuate.length=0;
+  accentuate.opacity=(Quantum) ((unsigned long) (matte.opacity*
+    AccentuateModulate+(MaxRGB-AccentuateModulate)*MaxRGB)/MaxRGB);
   highlight.red=(Quantum) ((unsigned long)
     (matte.red*HighlightModulate+(MaxRGB-HighlightModulate)*MaxRGB)/MaxRGB);
   highlight.green=(Quantum) ((unsigned long)
     (matte.green*HighlightModulate+(MaxRGB-HighlightModulate)*MaxRGB)/MaxRGB);
   highlight.blue=(Quantum) ((unsigned long)
     (matte.blue*HighlightModulate+(MaxRGB-HighlightModulate)*MaxRGB)/MaxRGB);
-  highlight.index=(unsigned short) ((unsigned long)
-    (matte.index*HighlightModulate+(MaxRGB-HighlightModulate)*MaxRGB)/MaxRGB);
-  highlight.length=0;
+  highlight.opacity=(Quantum) ((unsigned long)
+    (matte.opacity*HighlightModulate+(MaxRGB-HighlightModulate)*MaxRGB)/MaxRGB);
   shadow.red=(Quantum) ((unsigned long) (matte.red*ShadowModulate)/MaxRGB);
   shadow.green=(Quantum) ((unsigned long) (matte.green*ShadowModulate)/MaxRGB);
   shadow.blue=(Quantum) ((unsigned long) (matte.blue*ShadowModulate)/MaxRGB);
-  shadow.index=(unsigned short)
-    ((unsigned long) (matte.index*ShadowModulate)/MaxRGB);
-  shadow.length=0;
+  shadow.opacity=(Quantum)
+    ((unsigned long) (matte.opacity*ShadowModulate)/MaxRGB);
   trough.red=(Quantum) ((unsigned long) (matte.red*TroughModulate)/MaxRGB);
   trough.green=(Quantum) ((unsigned long) (matte.green*TroughModulate)/MaxRGB);
   trough.blue=(Quantum) ((unsigned long) (matte.blue*TroughModulate)/MaxRGB);
-  trough.index=(unsigned short)
-    ((unsigned long) (matte.index*TroughModulate)/MaxRGB);
-  trough.length=0;
+  trough.opacity=(Quantum)
+    ((unsigned long) (matte.opacity*TroughModulate)/MaxRGB);
   /*
-    Put an ornamental border around the image.
+    Draw top of ornamental border.
   */
-  q=framed_image->pixels;
+  q=SetPixelCache(frame_image,0,0,frame_image->columns,Max(frame_info->y,1));
+  if (q == (PixelPacket *) NULL)
+    {
+      DestroyImage(frame_image);
+      return((Image *) NULL);
+    }
   for (y=0; y < frame_info->outer_bevel; y++)
   {
-    for (x=0; x < (int) (framed_image->columns-y); x++)
+    for (x=0; x < (int) (frame_image->columns-y); x++)
       if (x < y)
         *q++=highlight;
       else
         *q++=accentuate;
-    for ( ; x < (int) framed_image->columns; x++)
+    for ( ; x < (int) frame_image->columns; x++)
       *q++=shadow;
   }
   for (y=0; y < (int) (frame_info->y-bevel_width); y++)
   {
     for (x=0; x < frame_info->outer_bevel; x++)
       *q++=highlight;
-    for (x=0; x < (int) (framed_image->columns-2*frame_info->outer_bevel); x++)
+    for (x=0; x < (int) (frame_image->columns-2*frame_info->outer_bevel); x++)
       *q++=matte;
     for (x=0; x < frame_info->outer_bevel; x++)
       *q++=shadow;
@@ -284,13 +280,23 @@ Export Image *FrameImage(const Image *image,const FrameInfo *frame_info)
     for (x=0; x < frame_info->outer_bevel; x++)
       *q++=shadow;
   }
-  p=image->pixels;
-  runlength=p->length+1;
+  if (!SyncPixelCache(frame_image))
+    {
+      DestroyImage(frame_image);
+      return((Image *) NULL);
+    }
+  /*
+    Draw sides of ornamental border.
+  */
   for (y=0; y < (int) image->rows; y++)
   {
     /*
       Initialize scanline with border color.
     */
+    p=GetPixelCache(image,0,y,image->columns,1);
+    q=SetPixelCache(frame_image,0,frame_info->y+y,frame_image->columns,1);
+    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+      break;
     for (x=0; x < frame_info->outer_bevel; x++)
       *q++=highlight;
     for (x=0; x < (int) (frame_info->x-bevel_width); x++)
@@ -301,18 +307,7 @@ Export Image *FrameImage(const Image *image,const FrameInfo *frame_info)
       Transfer scanline.
     */
     for (x=0; x < (int) image->columns; x++)
-    {
-      if (runlength != 0)
-        runlength--;
-      else
-        {
-          p++;
-          runlength=p->length;
-        }
-      *q=(*p);
-      q->length=0;
-      q++;
-    }
+      *q++=(*p++);
     for (x=0; x < frame_info->inner_bevel; x++)
       *q++=highlight;
     width=frame_info->width-frame_info->x-image->columns-bevel_width;
@@ -320,9 +315,21 @@ Export Image *FrameImage(const Image *image,const FrameInfo *frame_info)
       *q++=matte;
     for (x=0; x < frame_info->outer_bevel; x++)
       *q++=shadow;
+    if (!SyncPixelCache(frame_image))
+      break;
     if (QuantumTick(y,image->rows))
       ProgressMonitor(FrameImageText,y,image->rows);
   }
+  /*
+    Draw bottom of ornamental border.
+  */
+  q=SetPixelCache(frame_image,0,frame_image->rows-Max(frame_info->y,1),
+    frame_image->columns,Max(frame_info->y,1));
+  if (q == (PixelPacket *) NULL)
+    {
+      DestroyImage(frame_image);
+      return((Image *) NULL);
+    }
   for (y=frame_info->inner_bevel-1; y >= 0; y--)
   {
     for (x=0; x < frame_info->outer_bevel; x++)
@@ -347,7 +354,7 @@ Export Image *FrameImage(const Image *image,const FrameInfo *frame_info)
   {
     for (x=0; x < frame_info->outer_bevel; x++)
       *q++=highlight;
-    for (x=0; x < (int) (framed_image->columns-2*frame_info->outer_bevel); x++)
+    for (x=0; x < (int) (frame_image->columns-2*frame_info->outer_bevel); x++)
       *q++=matte;
     for (x=0; x < frame_info->outer_bevel; x++)
       *q++=shadow;
@@ -356,13 +363,18 @@ Export Image *FrameImage(const Image *image,const FrameInfo *frame_info)
   {
     for (x=0; x < y; x++)
       *q++=highlight;
-    for ( ; x < (int) framed_image->columns; x++)
-      if (x >= (int) (framed_image->columns-y))
+    for ( ; x < (int) frame_image->columns; x++)
+      if (x >= (int) (frame_image->columns-y))
         *q++=shadow;
       else
         *q++=trough;
   }
-  return(framed_image);
+  if (!SyncPixelCache(frame_image))
+    {
+      DestroyImage(frame_image);
+      return((Image *) NULL);
+    }
+  return(frame_image);
 }
 
 /*
@@ -405,16 +417,19 @@ Export void RaiseImage(Image *image,const RectangleInfo *raise_info,
 #define RaiseImageText  "  Raising image...  "
 #define TroughFactor  UpScale(135)
 
+  int
+    y;
+
   Quantum
     foreground,
     background;
 
   register int
-    x,
-    y;
+    i,
+    x;
 
-  register RunlengthPacket
-    *p;
+  register PixelPacket
+    *q;
 
   unsigned int
     height;
@@ -428,8 +443,6 @@ Export void RaiseImage(Image *image,const RectangleInfo *raise_info,
         "image size must exceed bevel width");
       return;
     }
-  if (!UncondenseImage(image))
-    return;
   foreground=MaxRGB;
   background=0;
   if (!raised)
@@ -437,101 +450,120 @@ Export void RaiseImage(Image *image,const RectangleInfo *raise_info,
       foreground=0;
       background=MaxRGB;
     }
+  i=0;
   image->class=DirectClass;
-  p=image->pixels;
   for (y=0; y < (int) raise_info->height; y++)
   {
+    q=GetPixelCache(image,0,i++,image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
     for (x=0; x < y; x++)
     {
-      p->red=(Quantum) ((unsigned long)
-        (p->red*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
-      p->green=(Quantum) ((unsigned long)
-        (p->green*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
-      p->blue=(Quantum) ((unsigned long)
-        (p->blue*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
-      p++;
+      q->red=(Quantum) ((unsigned long)
+        (q->red*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
+      q->green=(Quantum) ((unsigned long)
+        (q->green*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
+      q->blue=(Quantum) ((unsigned long)
+        (q->blue*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
+      q++;
     }
     for (x=0; x < (int) (image->columns-(y << 1)); x++)
     {
-      p->red=(Quantum) ((unsigned long)
-        (p->red*AccentuateFactor+foreground*(MaxRGB-AccentuateFactor))/MaxRGB);
-      p->green=(Quantum) ((unsigned long) (p->green*
+      q->red=(Quantum) ((unsigned long)
+        (q->red*AccentuateFactor+foreground*(MaxRGB-AccentuateFactor))/MaxRGB);
+      q->green=(Quantum) ((unsigned long) (q->green*
         AccentuateFactor+foreground*(MaxRGB-AccentuateFactor))/MaxRGB);
-      p->blue=(Quantum) ((unsigned long)
-        (p->blue*AccentuateFactor+foreground*(MaxRGB-AccentuateFactor))/MaxRGB);
-      p++;
+      q->blue=(Quantum) ((unsigned long)
+        (q->blue*AccentuateFactor+foreground*(MaxRGB-AccentuateFactor))/MaxRGB);
+      q++;
     }
     for (x=0; x < y; x++)
     {
-      p->red=(Quantum) ((unsigned long)
-        (p->red*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
-      p->green=(Quantum) ((unsigned long)
-        (p->green*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
-      p->blue=(Quantum) ((unsigned long)
-        (p->blue*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
-      p++;
+      q->red=(Quantum) ((unsigned long)
+        (q->red*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
+      q->green=(Quantum) ((unsigned long)
+        (q->green*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
+      q->blue=(Quantum) ((unsigned long)
+        (q->blue*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
+      q++;
     }
+    if (!SyncPixelCache(image))
+      break;
+    if (QuantumTick(i,image->rows))
+      ProgressMonitor(RaiseImageText,i,image->rows);
   }
   height=image->rows-(raise_info->height << 1);
   for (y=0; y < (int) height; y++)
   {
+    q=GetPixelCache(image,0,i++,image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
     for (x=0; x < (int) raise_info->width; x++)
     {
-      p->red=(Quantum) ((unsigned long)
-	(p->red*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
-      p->green=(Quantum) ((unsigned long)
-	(p->green*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
-      p->blue=(Quantum) ((unsigned long)
-	(p->blue*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
-      p++;
+      q->red=(Quantum) ((unsigned long)
+	(q->red*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
+      q->green=(Quantum) ((unsigned long)
+	(q->green*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
+      q->blue=(Quantum) ((unsigned long)
+	(q->blue*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
+      q++;
     }
     for (x=0; x < (int) (image->columns-(raise_info->width << 1)); x++)
-      p++;
+      q++;
     for (x=0; x < (int) raise_info->width; x++)
     {
-      p->red=(Quantum) ((unsigned long)
-        (p->red*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
-      p->green=(Quantum) ((unsigned long)
-        (p->green*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
-      p->blue=(Quantum) ((unsigned long)
-        (p->blue*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
-      p++;
+      q->red=(Quantum) ((unsigned long)
+        (q->red*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
+      q->green=(Quantum) ((unsigned long)
+        (q->green*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
+      q->blue=(Quantum) ((unsigned long)
+        (q->blue*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
+      q++;
     }
-    if (QuantumTick(y,height))
-      ProgressMonitor(RaiseImageText,y,height);
+    if (!SyncPixelCache(image))
+      break;
+    if (QuantumTick(i,image->rows))
+      ProgressMonitor(RaiseImageText,i,image->rows);
   }
   for (y=0; y < (int) raise_info->height; y++)
   {
+    q=GetPixelCache(image,0,i++,image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
     for (x=0; x < (int) (raise_info->width-y); x++)
     {
-      p->red=(Quantum) ((unsigned long)
-	(p->red*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
-      p->green=(Quantum) ((unsigned long)
-	(p->green*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
-      p->blue=(Quantum) ((unsigned long)
-	(p->blue*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
-      p++;
+      q->red=(Quantum) ((unsigned long)
+	(q->red*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
+      q->green=(Quantum) ((unsigned long)
+	(q->green*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
+      q->blue=(Quantum) ((unsigned long)
+	(q->blue*HighlightFactor+foreground*(MaxRGB-HighlightFactor))/MaxRGB);
+      q++;
     }
     for (x=0; x < (int) (image->columns-((raise_info->width-y) << 1)); x++)
     {
-      p->red=(Quantum) ((unsigned long)
-        (p->red*TroughFactor+background*(MaxRGB-TroughFactor))/MaxRGB);
-      p->green=(Quantum) ((unsigned long)
-        (p->green*TroughFactor+background*(MaxRGB-TroughFactor))/MaxRGB);
-      p->blue=(Quantum) ((unsigned long)
-        (p->blue*TroughFactor+background*(MaxRGB-TroughFactor))/MaxRGB);
-      p++;
+      q->red=(Quantum) ((unsigned long)
+        (q->red*TroughFactor+background*(MaxRGB-TroughFactor))/MaxRGB);
+      q->green=(Quantum) ((unsigned long)
+        (q->green*TroughFactor+background*(MaxRGB-TroughFactor))/MaxRGB);
+      q->blue=(Quantum) ((unsigned long)
+        (q->blue*TroughFactor+background*(MaxRGB-TroughFactor))/MaxRGB);
+      q++;
     }
     for (x=0; x < (int) (raise_info->width-y); x++)
     {
-      p->red=(Quantum) ((unsigned long)
-        (p->red*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
-      p->green=(Quantum) ((unsigned long)
-        (p->green*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
-      p->blue=(Quantum) ((unsigned long)
-        (p->blue*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
-      p++;
+      q->red=(Quantum) ((unsigned long)
+        (q->red*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
+      q->green=(Quantum) ((unsigned long)
+        (q->green*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
+      q->blue=(Quantum) ((unsigned long)
+        (q->blue*ShadowFactor+background*(MaxRGB-ShadowFactor))/MaxRGB);
+      q++;
     }
+    if (!SyncPixelCache(image))
+      break;
+    if (QuantumTick(i,image->rows))
+      ProgressMonitor(RaiseImageText,i,image->rows);
   }
   return;
 }

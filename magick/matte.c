@@ -98,16 +98,14 @@ Export unsigned int WriteMATTEImage(const ImageInfo *image_info,Image *image)
   if (!image->matte)
     WriterExit(ResourceLimitWarning,"Image does not have a matte channel",
       image);
-  image->orphan=True;
   matte_image=CloneImage(image,image->columns,image->rows,True);
-  image->orphan=False;
   if (matte_image == (Image *) NULL)
     WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
   matte_image->class=PseudoClass;
   matte_image->colors=(Opaque-Transparent)+1;
-  matte_image->colormap=(ColorPacket *)
-    AllocateMemory(matte_image->colors*sizeof(ColorPacket));
-  if (matte_image->colormap == (ColorPacket *) NULL)
+  matte_image->colormap=(PixelPacket *)
+    AllocateMemory(matte_image->colors*sizeof(PixelPacket));
+  if (matte_image->colormap == (PixelPacket *) NULL)
     WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
   for (i=Transparent; i <= Opaque; i++)
   {

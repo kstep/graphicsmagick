@@ -31,11 +31,12 @@ has the same effect with the \fBtype\fP command on the Win32 command line.
 The following is a list of \fIkeyword=value\fP combinations that may be
 found in a MIFF file:
 .TP
-.B "background-color=\fIx,y\fP"
-.B "border-color=\fIx,y\fP"
-.B "matte-color=\fIx,y\fP"
+.B "background-color=\fIcolor\fP"
+.B "border-color=\fIcolor\fP"
+.B "matte-color=\fIcolor\fP"
 these optional keywords reflects the image background, border, and matte
-colors respectively.
+colors respectively. A color can be a name (e.g. white) or a
+hex value (e.g. #ccc).
 .TP
 .B "class=\fIDirectClass\fP"
 .B "class=\fBPseudoClass\fP"
@@ -47,7 +48,7 @@ the number of colors in a \fBDirectClass\fP image. For a
 \fBPseudoClass\fP image, this keyword specifies the size of the
 colormap.  If this keyword is not present in the header, and the image
 is \fBPseudoClass\fP, a linear 256 color grayscale colormap is used
-with the image data.
+with the image data.  The maximum number of colormap entries is 65535. 
 .TP
 .B "color-profile=\fIvalue\fP"
 the number of bytes in the International Color Consortium color profile.
@@ -135,12 +136,6 @@ of a column begins.
 If this keyword is specified, a directory of tile names must follow the
 image header.  The format of the directory is explained below.
 .TP
-.B "packets=\fIvalue\fP"
-the number of compressed color packets in the image data
-section.  This keyword is optional for \fBRunlengthEncoded\fP
-images, mandatory for \fBZip\fP  or \fBBZip\fP images, and not used for
-uncompressed image.
-.TP
 .B "page=\fIvalue\fP"
 preferred size and location of an image canvas.
 .TP
@@ -211,55 +206,36 @@ Next comes the binary image data itself.  How the image
 data is formatted depends upon the class of the image as specified (or
 not specified) by the value of the \fBclass\fP keyword in the header.
 
-\fBDirectClass\fP images (class=DirectClass) are continuous-tone, RGB
-images stored as intensity values in red-green-blue order.  Each color
-value is one byte in size for an image depth of 8 and there are three bytes per
-pixel (four with an optional matte value).  If the depth is 16, each
-color value is two bytes with the most significant byte being first.
-The total number of pixels in a \fBDirectClass\fP image is calculates
-by multiplying the rows value by the column value in the header.
+DirectClass images (class=DirectClass) are continuous-tone, images
+stored as RGB (red, green, blue), RGBA (red, green, blue, alpha), or
+CMYK (cyan, yellow, magenta, black) intensity values as defined by the
+colorspace keyword. Each intensity value is one byte in length for
+images of depth 8 (0..255), whereas, images of depth 16 (0..65535)
+require two bytes in most significant byte first order.
 
-\fBPseudoClass\fP images (class=PseudoClass) are colormapped RGB
-images.  The colormap is stored as a series of red-green-blue pixel
-values, each value being a byte in size.  If the image depth is 16,
-each colormap entry is two bytes with the most significant byte being
-first. The number of colormap entries is indicated by the colors keyword
-in the header, with a maximum of 65,535 total entries allowed.  The
-colormap data occurs immediately following the header (or image directory
-if the \fBmontage\fP keyword is in the header).
+PseudoClass images (class=PseudoClass) are colormapped RGB images. The
+colormap is stored as a series of red, green, and blue pixel values,
+each value being a byte in size. If the image depth is 16, each
+colormap entry consumes two bytes with the most significant byte being
+first. The number of colormap entries is defined by the colors keyword.
+The colormap data occurs immediately following the header (or image
+directory if the montage keyword is in the header). PseudoClass image
+data is an array of index values into the color map. If there are 256
+or fewer colors in the image, each byte of image data contains an index
+value. If the image contains more than 256 colors or the image depth is
+16, the index value is stored as two contiguous bytes with the most
+significant byte being first. If matte is true, each
+colormap index is followed by a 1 or 2-byte alpha value.
 
-\fBPseudoClass\fP image data is an array of index values into the color
-map.  If there are 256 or fewer colors in the image, each byte of image
-data contains an index value.  If the image contains more than 256
-colors or the depth is 16, the index value is stored as two contiguous
-bytes with the most significant byte being first.  The total number of
-pixels in a \fBPseudoClass\fP image is calculated by multiplying the
-rows value by the columns value in the header.
-
-The image data in a MIFF file may be uncompressed or may be compressed
-using one of two algorithms.  The compression keyword in the header
-indicates how the image data is compressed. The run-length encoding
-(RLE) algorithm may be used to encode image data into packets of
-compressed data.  For \fBDirectClass\fP images, runs of identical
-pixels values (not BYTE values) are encoded into a series of four-byte
-packets (five bytes if a matte value is included).  The first three
-bytes of the packet contain the red, green, and blue values of the
-pixel in the run.  The fourth byte contains the number of pixels in the
-run.  This value is in the range of 0 to 255 and is one less than
-the actual number of pixels in the run.  For example, a value of 127
-indicates that there are 128 pixels in the run.
-
-For \fBPseudoClass\fP images, the same RLE algorithm is used.  Runs of
-identical index values are encoded into packets.  Each packet contains
-the colormap index value followed by the number of index values in the
-run.  The number of bytes in a \fBPseudoClass\fP RLE packet will be
-either two or three, depending upon the size of the index values.  The
-number of RLE packets stored in the file is specified by the packets
-keyword in the header, but is not required.
-
-Use Zip or BZip compression to achieve a greater compression ratio than
-run-length encoding.  The number of compressed packets stored in the file is
-specified by the packets keyword in the header.
+The image data in a MIFF file may be uncompressed, runlength encoded,
+Zip compressed, or BZip compressed. The compression keyword in the
+header defines how the image data is compressed. Uncompressed pixels
+are just stored one scanline at a time in row order. Runlength encoded
+compression counts runs of identical adjacent pixels and stores the
+pixels followed by a length byte (the number of identical pixels minus
+1). Zip and BZip compression compresses each row of an image and
+preceeds the compressed row with the length of compressed pixel bytes
+as a word in most significant byte first order.
 
 MIFF files may contain more than one image.  Simply concatenate each
 individual image (composed of a header and image data) into one file.

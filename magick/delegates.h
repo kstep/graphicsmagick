@@ -29,18 +29,18 @@ typedef struct _DelegateInfo
 /*
   Exported delegate methods.
 */
-Export char
+extern Export char
   *GetDelegateCommand(const ImageInfo *,const Image *,const char *,
     const char *);
 
-Export DelegateInfo
+extern Export DelegateInfo
   *SetDelegateInfo(DelegateInfo *);
 
-Export unsigned int
+extern Export unsigned int
   GetDelegateInfo(const char *,const char *,DelegateInfo *),
   InvokeDelegate(const ImageInfo *,Image *,const char *,const char *);
 
-Export void
+extern Export void
   DestroyDelegateInfo(void),
   ListDelegateInfo(FILE *);
 

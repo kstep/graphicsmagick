@@ -96,7 +96,8 @@ Export unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
   char
     buffer[MaxTextExtent],
     date[MaxTextExtent],
-    density[MaxTextExtent];
+    density[MaxTextExtent],
+    geometry[MaxTextExtent];
 
   CompressionType
     compression;
@@ -115,12 +116,8 @@ Export unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     x,
     y;
 
-  register RunlengthPacket
+  register PixelPacket
     *p;
-
-  register int
-    i,
-    j;
 
   SegmentInfo
     bounding_box;
@@ -168,13 +165,17 @@ Export unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     height=image->rows;
     x=0;
     y=text_size;
+    FormatString(geometry,"%ux%u",image->columns,image->rows);
     if (image_info->page != (char *) NULL)
-      (void) ParseImageGeometry(image_info->page,&x,&y,&width,&height);
+      (void) strcpy(geometry,image_info->page);
     else
-      if (image->page != (char *) NULL)
-        (void) ParseImageGeometry(image->page,&x,&y,&width,&height);
+      if ((image->page_info.width != 0) && (image->page_info.height != 0))
+        (void) FormatString(geometry,"%ux%u%+d%+d",image->page_info.width,
+	  image->page_info.height,image->page_info.x,image->page_info.y);
       else
-        (void) ParseImageGeometry(PSPageGeometry,&x,&y,&width,&height);
+        if (Latin1Compare(image_info->magick,"PDF") == 0)
+          (void) strcpy(geometry,PSPageGeometry);
+    (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
     /*
       Scale relative to dots-per-inch.
     */
@@ -271,7 +272,6 @@ Export unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
       }
     (void) strcpy(buffer,"/ReusableStreamDecode filter\n");
     (void) WriteBlob(image,strlen(buffer),buffer);
-    p=image->pixels;
     switch (compression)
     {
       case RunlengthEncodedCompression:
@@ -293,19 +293,22 @@ Export unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
           Dump Packbit encoded pixels.
         */
         q=pixels;
-        for (i=0; i < (int) image->packets; i++)
+        for (y=0; y < (int) image->rows; y++)
         {
-          for (j=0; j <= ((int) p->length); j++)
+          p=GetPixelCache(image,0,y,image->columns,1);
+          if (p == (PixelPacket *) NULL)
+            break;
+          for (x=0; x < (int) image->columns; x++)
           {
-              *q++=DownScale(p->index);
-              *q++=DownScale(p->red);
-              *q++=DownScale(p->green);
-              *q++=DownScale(p->blue);
+            *q++=DownScale(p->opacity);
+            *q++=DownScale(p->red);
+            *q++=DownScale(p->green);
+            *q++=DownScale(p->blue);
+            p++;
           }
-          p++;
           if (image->previous == (Image *) NULL)
-            if (QuantumTick(i,image->packets))
-              ProgressMonitor(SaveImageText,i,image->packets);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(SaveImageText,y,image->rows);
         }
         if (compression == ZipCompression)
           status=
@@ -320,7 +323,7 @@ Export unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
             CloseBlob(image);
             return(False);
           }
-        FreeMemory((char *) pixels);
+        FreeMemory(pixels);
         break;
       }
       case NoCompression:
@@ -329,19 +332,22 @@ Export unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
           Dump uncompressed DirectColor packets.
         */
         Ascii85Initialize();
-        for (i=0; i < (int) image->packets; i++)
+        for (y=0; y < (int) image->rows; y++)
         {
-          for (j=0; j <= ((int) p->length); j++)
+          p=GetPixelCache(image,0,y,image->columns,1);
+          if (p == (PixelPacket *) NULL)
+            break;
+          for (x=0; x < (int) image->columns; x++)
           {
-            Ascii85Encode(image,DownScale(p->index));
+            Ascii85Encode(image,DownScale(p->opacity));
             Ascii85Encode(image,DownScale(p->red));
             Ascii85Encode(image,DownScale(p->green));
             Ascii85Encode(image,DownScale(p->blue));
+            p++;
           }
-          p++;
           if (image->previous == (Image *) NULL)
-            if (QuantumTick(i,image->packets))
-              ProgressMonitor(SaveImageText,i,image->packets);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(SaveImageText,y,image->rows);
         }
         Ascii85Flush(image);
         break;
@@ -433,8 +439,7 @@ Export unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     (void) WriteBlob(image,strlen(buffer),buffer);
     if (image->next == (Image *) NULL)
       break;
-    image->next->file=image->file;
-    image=image->next;
+    image=GetNextImage(image);
     ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)

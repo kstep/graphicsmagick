@@ -56,6 +56,25 @@
 #include "defines.h"
 
 /*
+  Typedef declarations.
+*/
+typedef struct _ContributionInfo
+{
+  int
+    pixel;
+
+  double
+    weight;
+} ContributionInfo;
+
+typedef struct _FilterInfo
+{
+  double
+    (*function)(double),
+    support;
+} FilterInfo;
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -86,7 +105,7 @@
 %
 %  The format of the BesselOrderOne method is:
 %
-%      Image *MagnifyImage(Image *image)
+%      double BesselOrderOne(double x)
 %
 %  A description of each parameter follows:
 %
@@ -256,19 +275,19 @@ static double BesselOrderOne(double x)
 %  than an existing one.  It allocates the memory necessary for the new Image
 %  structure and returns a pointer to the new image.
 %
-%  MagnifyImage scans the reference image to create a magnified image by
-%  bilinear interpolation.  The magnified image columns and rows become:
+%  MagnifyImage scans the reference image to create a magnify image by
+%  bilinear interpolation.  The magnify image columns and rows become:
 %
 %    number_columns << 1
 %    number_rows << 1
 %
 %  The format of the MagnifyImage method is:
 %
-%      magnified_image=MagnifyImage(image)
+%      magnify_image=MagnifyImage(image)
 %
 %  A description of each parameter follows:
 %
-%    o magnified_image: Method MagnifyImage returns a pointer to the image
+%    o magnify_image: Method MagnifyImage returns a pointer to the image
 %      after magnification.  A null image is returned if there is a memory
 %      shortage.
 %
@@ -281,64 +300,78 @@ Export Image *MagnifyImage(Image *image)
 #define MagnifyImageText  "  Magnifying the image...  "
 
   Image
-    *magnified_image;
+    *magnify_image;
 
   int
+    rows,
     y;
 
+  PixelPacket
+    *scanline;
+
   register int
-    runlength,
     x;
 
-  register RunlengthPacket
+  register PixelPacket
     *p,
     *q,
-    *r;
+    *s;
 
   /*
-    Initialize magnified image attributes.
+    Initialize magnify image attributes.
   */
   assert(image != (Image *) NULL);
-  magnified_image=CloneImage(image,image->columns << 1,image->rows << 1,False);
-  if (magnified_image == (Image *) NULL)
+  magnify_image=CloneImage(image,image->columns << 1,image->rows << 1,True);
+  if (magnify_image == (Image *) NULL)
     {
-      MagickWarning(ResourceLimitWarning,"Unable to zoom image",
+      MagickWarning(ResourceLimitWarning,"Unable to magnify image",
         "Memory allocation failed");
       return((Image *) NULL);
     }
-  magnified_image->class=DirectClass;
+  magnify_image->class=DirectClass;
+  /*
+    Allocate image buffer and scanline buffer for 4 rows of the image.
+  */
+  scanline=(PixelPacket *)
+    AllocateMemory(magnify_image->columns*sizeof(PixelPacket));
+  if (scanline == (PixelPacket *) NULL)
+    {
+      MagickWarning(ResourceLimitWarning,"Unable to magnify image",
+        "Memory allocation failed");
+      DestroyImage(magnify_image);
+      return((Image *) NULL);
+    }
   /*
     Initialize zoom image pixels.
   */
-  p=image->pixels;
-  runlength=p->length+1;
-  q=magnified_image->pixels;
   for (y=0; y < (int) image->rows; y++)
   {
+    p=GetPixelCache(image,0,y,image->columns,1);
+    q=SetPixelCache(magnify_image,0,y,magnify_image->columns,1);
+    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+      break;
     for (x=0; x < (int) image->columns; x++)
-    {
-      if (runlength != 0)
-        runlength--;
-      else
-        {
-          p++;
-          runlength=p->length;
-        }
-      *q=(*p);
-      q->length=0;
-      q++;
-    }
-    q+=image->columns;
+      *q++=(*p++);
+    if (!SyncPixelCache(magnify_image))
+      break;
   }
   /*
     Magnify each row.
   */
   for (y=0; y < (int) image->rows; y++)
   {
-    p=magnified_image->pixels+(image->rows-1-y)*magnified_image->columns+
-      (image->columns-1);
-    q=magnified_image->pixels+((image->rows-1-y) << 1)*magnified_image->columns+
-      ((image->columns-1) << 1);
+    p=GetPixelCache(magnify_image,0,image->rows-1-y,magnify_image->columns,1);
+    if (p == (PixelPacket *) NULL)
+      break;
+    s=scanline;
+    for (x=0; x < (int) magnify_image->columns; x++)
+      *s++=(*p++);
+    q=GetPixelCache(magnify_image,0,(image->rows-1-y) << 1,
+      magnify_image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
+    p=scanline+image->columns-1;
+    q+=((image->columns-1) << 1);
     *q=(*p);
     *(q+1)=(*(p));
     for (x=1; x < (int) image->columns; x++)
@@ -349,62 +382,59 @@ Export Image *MagnifyImage(Image *image)
       (q+1)->red=(((int) p->red)+((int) (p+1)->red)+1) >> 1;
       (q+1)->green=(((int) p->green)+((int) (p+1)->green)+1) >> 1;
       (q+1)->blue=(((int) p->blue)+((int) (p+1)->blue)+1) >> 1;
-      (q+1)->index=(((int) p->index)+((int) (p+1)->index)+1) >> 1;
-      (q+1)->length=0;
+      (q+1)->opacity=(((int) p->opacity)+((int) (p+1)->opacity)+1) >> 1;
     }
+    if (!SyncPixelCache(magnify_image))
+      break;
   }
-  for (y=0; y < (int) (image->rows-1); y++)
+  for (y=0; y < (int) image->rows; y++)
   {
-    p=magnified_image->pixels+(y << 1)*magnified_image->columns;
-    q=p+magnified_image->columns;
-    r=q+magnified_image->columns;
+    rows=Min(image->rows-y,3);
+    p=GetPixelCache(magnify_image,0,y << 1,magnify_image->columns,rows);
+    if (p == (PixelPacket *) NULL)
+      break;
+    q=p;
+    if (rows > 1)
+      q=p+magnify_image->columns;
+    s=p;
+    if (rows > 2)
+      s=q+magnify_image->columns;
     for (x=0; x < (int) (image->columns-1); x++)
     {
-      q->red=(((int) p->red)+((int) r->red)+1) >> 1;
-      q->green=(((int) p->green)+((int) r->green)+1) >> 1;
-      q->blue=(((int) p->blue)+((int) r->blue)+1) >> 1;
-      q->index=(((int) p->index)+((int) r->index)+1) >> 1;
-      q->length=0;
-      (q+1)->red=(((int) p->red)+((int) (p+2)->red)+((int) r->red)+
-        ((int) (r+2)->red)+2) >> 2;
-      (q+1)->green=(((int) p->green)+((int) (p+2)->green)+((int) r->green)+
-        ((int) (r+2)->green)+2) >> 2;
-      (q+1)->blue=(((int) p->blue)+((int) (p+2)->blue)+((int) r->blue)+
-        ((int) (r+2)->blue)+2) >> 2;
-      (q+1)->index=(((int) p->index)+((int) (p+2)->index)+((int) r->index)+
-        ((int) (r+2)->index)+2) >> 2;
-      (q+1)->length=0;
+      q->red=(((int) p->red)+((int) s->red)+1) >> 1;
+      q->green=(((int) p->green)+((int) s->green)+1) >> 1;
+      q->blue=(((int) p->blue)+((int) s->blue)+1) >> 1;
+      q->opacity=(((int) p->opacity)+((int) s->opacity)+1) >> 1;
+      (q+1)->red=(((int) p->red)+((int) (p+2)->red)+((int) s->red)+
+        ((int) (s+2)->red)+2) >> 2;
+      (q+1)->green=(((int) p->green)+((int) (p+2)->green)+((int) s->green)+
+        ((int) (s+2)->green)+2) >> 2;
+      (q+1)->blue=(((int) p->blue)+((int) (p+2)->blue)+((int) s->blue)+
+        ((int) (s+2)->blue)+2) >> 2;
+      (q+1)->opacity=(((int) p->opacity)+((int) (p+2)->opacity)+
+        ((int) s->opacity)+((int) (s+2)->opacity)+2) >> 2;
       q+=2;
       p+=2;
-      r+=2;
+      s+=2;
     }
-    q->red=(((int) p->red)+((int) r->red)+1) >> 1;
-    q->green=(((int) p->green)+((int) r->green)+1) >> 1;
-    q->blue=(((int) p->blue)+((int) r->blue)+1) >> 1;
-    q->index=(((int) p->index)+((int) r->index)+1) >> 1;
-    q->length=0;
+    q->red=(((int) p->red)+((int) s->red)+1) >> 1;
+    q->green=(((int) p->green)+((int) s->green)+1) >> 1;
+    q->blue=(((int) p->blue)+((int) s->blue)+1) >> 1;
+    q->opacity=(((int) p->opacity)+((int) s->opacity)+1) >> 1;
     p++;
     q++;
-    r++;
-    q->red=(((int) p->red)+((int) r->red)+1) >> 1;
-    q->green=(((int) p->green)+((int) r->green)+1) >> 1;
-    q->blue=(((int) p->blue)+((int) r->blue)+1) >> 1;
-    q->index=(((int) p->index)+((int) r->index)+1) >> 1;
-    q->length=0;
-    p++;
-    q++;
-    r++;
+    s++;
+    q->red=(((int) p->red)+((int) s->red)+1) >> 1;
+    q->green=(((int) p->green)+((int) s->green)+1) >> 1;
+    q->blue=(((int) p->blue)+((int) s->blue)+1) >> 1;
+    q->opacity=(((int) p->opacity)+((int) s->opacity)+1) >> 1;
+    if (!SyncPixelCache(magnify_image))
+      break;
     if (QuantumTick(y,image->rows))
       ProgressMonitor(MagnifyImageText,y,image->rows);
   }
-  p=magnified_image->pixels+(2*image->rows-2)*magnified_image->columns;
-  q=magnified_image->pixels+(2*image->rows-1)*magnified_image->columns;
-  for (x=0; x < (int) image->columns; x++)
-  {
-    *q++=(*p++);
-    *q++=(*p++);
-  }
-  return(magnified_image);
+  FreeMemory(scanline);
+  return(magnify_image);
 }
 
 /*
@@ -422,10 +452,10 @@ Export Image *MagnifyImage(Image *image)
 %  an existing one.  It allocates the memory necessary for the new Image
 %  structure and returns a pointer to the new image.
 %
-%  MinifyImage scans the reference image to create a minified image by computing
-%  the weighted average of a 4x4 cell centered at each reference pixel.  The
-%  target pixel requires two columns and two rows of the reference pixels.
-%  Therefore the minified image columns and rows become:
+%  MinifyImage scans the reference image to create a minified image by
+%  computing the weighted average of a 4x4 cell centered at each reference
+%  pixel.  The target pixel requires two columns and two rows of the reference
+%  pixels.  Therefore the minified image columns and rows become:
 %
 %    number_columns/2
 %    number_rows/2
@@ -443,7 +473,7 @@ Export Image *MagnifyImage(Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o minified_image: Method MinifyImage returns a pointer to the image
+%    o minify_image: Method MinifyImage returns a pointer to the image
 %      after reducing.  A null image is returned if there is a memory
 %      shortage or if the image size is less than IconSize*2.
 %
@@ -457,214 +487,84 @@ Export Image *MinifyImage(Image *image)
   total_red+=(weight)*(s->red); \
   total_green+=(weight)*(s->green); \
   total_blue+=(weight)*(s->blue); \
-  total_matte+=(weight)*(s->index); \
+  total_opacity+=(weight)*(s->opacity); \
   s++;
 #define MinifyImageText  "  Minifying image...  "
 
   Image
-    *minified_image;
+    *minify_image;
 
   int
     y;
 
   register int
-    runlength,
     x;
 
-  register long
-    packets;
-
-  register RunlengthPacket
+  register PixelPacket
     *p,
     *q,
-    *s,
-    *s0,
-    *s1,
-    *s2,
-    *s3;
-
-  RunlengthPacket
-    *scanline;
-
-  unsigned int
-    blue,
-    green,
-    red;
+    *s;
 
   unsigned long
-    max_packets,
-    total_matte,
     total_blue,
     total_green,
+    total_opacity,
     total_red;
-
-  unsigned short
-    index;
 
   assert(image != (Image *) NULL);
   if ((image->columns < 4) || (image->rows < 4))
     return((Image *) NULL);
   /*
-    Initialize minified image attributes.
+    Initialize minified image.
   */
-  max_packets=Max(image->packets >> 2,1);
-  minified_image=CloneImage(image,max_packets,1,False);
-  if (minified_image == (Image *) NULL)
+  minify_image=CloneImage(image,image->columns >> 1,image->rows >> 1,True);
+  if (minify_image == (Image *) NULL)
     {
-      MagickWarning(ResourceLimitWarning,"Unable to reduce image",
+      MagickWarning(ResourceLimitWarning,"Unable to minify image",
         "Memory allocation failed");
       return((Image *) NULL);
     }
-  minified_image->class=DirectClass;
-  minified_image->columns=image->columns >> 1;
-  minified_image->rows=image->rows >> 1;
-  packets=0;
-  /*
-    Allocate image buffer and scanline buffer for 4 rows of the image.
-  */
-  scanline=(RunlengthPacket *)
-    AllocateMemory(4*(image->columns+1)*sizeof(RunlengthPacket));
-  if (scanline == (RunlengthPacket *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Unable to reduce image",
-        "Memory allocation failed");
-      DestroyImage(minified_image);
-      return((Image *) NULL);
-    }
-  /*
-    Preload the first 2 rows of the image.
-  */
-  p=image->pixels;
-  runlength=p->length+1;
-  for (x=0; x < (int) (4*(image->columns+1)); x++)
-    scanline[x]=(*p);
-  s=scanline;
-  for (x=0; x < (int) (image->columns << 1); x++)
-  {
-    if (runlength != 0)
-      runlength--;
-    else
-      {
-        p++;
-        runlength=p->length;
-      }
-    *s=(*p);
-    s++;
-  }
+  minify_image->class=DirectClass;
   /*
     Reduce each row.
   */
-  p=image->pixels;
-  runlength=p->length+1;
-  q=minified_image->pixels;
-  SetRunlengthEncoder(q);
-  for (y=0; y < (int) (image->rows-1); y+=2)
+  for (y=0; y < (int) minify_image->rows; y++)
   {
-    /*
-      Initialize sliding window pointers.
-    */
-    s0=scanline+image->columns*((y+0) % 4);
-    s1=scanline+image->columns*((y+1) % 4);
-    s2=scanline+image->columns*((y+2) % 4);
-    s3=scanline+image->columns*((y+3) % 4);
-    /*
-      Read another scan line.
-    */
-    s=s2;
-    for (x=0; x < (int) image->columns; x++)
-    {
-      if (runlength != 0)
-        runlength--;
-      else
-        {
-          p++;
-          runlength=p->length;
-        }
-      *s=(*p);
-      s++;
-    }
-    /*
-      Read another scan line.
-    */
-    s=s3;
-    for (x=0; x < (int) image->columns; x++)
-    {
-      if (runlength != 0)
-        runlength--;
-      else
-        {
-          p++;
-          runlength=p->length;
-        }
-      *s=(*p);
-      s++;
-    }
-    for (x=0; x < (int) (image->columns-1); x+=2)
+    p=GetPixelCache(image,0,Min(y << 1,image->rows-4),image->columns,4);
+    q=SetPixelCache(minify_image,0,y,minify_image->columns,1);
+    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+      break;
+    for (x=0; x < (int) (minify_image->columns-1); x++)
     {
       /*
         Compute weighted average of target pixel color components.
-
-        These particular coefficients total to 128.  Use 128/2-1 or 63 to
-        insure correct round off.
       */
       total_red=0;
       total_green=0;
       total_blue=0;
-      total_matte=0;
-      s=s0;
+      total_opacity=0;
+      s=p;
       Minify(3); Minify(7);  Minify(7);  Minify(3);
-      s=s1;
+      s=p+image->columns;
       Minify(7); Minify(15); Minify(15); Minify(7);
-      s=s2;
+      s=p+2*image->columns;
       Minify(7); Minify(15); Minify(15); Minify(7);
-      s=s3;
+      s=p+3*image->columns;
       Minify(3); Minify(7);  Minify(7);  Minify(3);
-      s0+=2;
-      s1+=2;
-      s2+=2;
-      s3+=2;
-      red=(Quantum) ((total_red+63) >> 7);
-      green=(Quantum) ((total_green+63) >> 7);
-      blue=(Quantum) ((total_blue+63) >> 7);
-      index=(unsigned short) ((total_matte+63) >> 7);
-      if ((red == q->red) && (green == q->green) && (blue == q->blue) &&
-          (index == q->index) && ((int) q->length < MaxRunlength))
-        q->length++;
-      else
-        {
-          if (packets != 0)
-            q++;
-          packets++;
-          if (packets == (int) max_packets)
-            {
-              max_packets<<=1;
-              minified_image->pixels=(RunlengthPacket *) ReallocateMemory(
-                (char *) minified_image->pixels,max_packets*
-                sizeof(RunlengthPacket));
-              if (minified_image->pixels == (RunlengthPacket *) NULL)
-                {
-                  MagickWarning(ResourceLimitWarning,"Unable to reduce image",
-                    "Memory allocation failed");
-                  DestroyImage(minified_image);
-                  return((Image *) NULL);
-                }
-              q=minified_image->pixels+packets-1;
-            }
-          q->red=red;
-          q->green=green;
-          q->blue=blue;
-          q->index=index;
-          q->length=0;
-        }
+      q->red=(Quantum) ((total_red+63) >> 7);
+      q->green=(Quantum) ((total_green+63) >> 7);
+      q->blue=(Quantum) ((total_blue+63) >> 7);
+      q->opacity=(Quantum) ((total_opacity+63) >> 7);
+      p+=2;
+      q++;
     }
+    *q++=(*++p);
+    if (!SyncPixelCache(minify_image))
+      break;
     if (QuantumTick(y,image->rows))
       ProgressMonitor(MinifyImageText,y,image->rows-1);
   }
-  minified_image->packets=packets;
-  minified_image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
-    minified_image->pixels,minified_image->packets*sizeof(RunlengthPacket));
-  FreeMemory((char *) scanline);
-  return(minified_image);
+  return(minify_image);
 }
 
 /*
@@ -684,12 +584,12 @@ Export Image *MinifyImage(Image *image)
 %
 %  The format of the SampleImage method is:
 %
-%      Image *SampleImage(const Image *image,const unsigned int columns,
+%      Image *SampleImage(Image *image,const unsigned int columns,
 %        const unsigned int rows)
 %
 %  A description of each parameter follows:
 %
-%    o sampled_image: Method SampleImage returns a pointer to the image after
+%    o sample_image: Method SampleImage returns a pointer to the image after
 %      scaling.  A null image is returned if there is a memory shortage.
 %
 %    o image: The address of a structure of type Image.
@@ -702,7 +602,7 @@ Export Image *MinifyImage(Image *image)
 %
 %
 */
-Export Image *SampleImage(const Image *image,const unsigned int columns,
+Export Image *SampleImage(Image *image,const unsigned int columns,
   const unsigned int rows)
 {
 #define SampleImageText  "  Sampling image...  "
@@ -711,22 +611,26 @@ Export Image *SampleImage(const Image *image,const unsigned int columns,
     scale_factor;
 
   Image
-    *sampled_image;
+    *sample_image;
+
+  IndexPacket
+    *indexes;
 
   int
+    j,
+    k,
     y;
 
   register int
     i,
-    runlength,
     x;
 
-  register RunlengthPacket
+  register PixelPacket
     *p,
     *q,
     *s;
 
-  RunlengthPacket
+  PixelPacket
     *scanline;
 
   unsigned int
@@ -745,8 +649,8 @@ Export Image *SampleImage(const Image *image,const unsigned int columns,
   /*
     Initialize sampled image attributes.
   */
-  sampled_image=CloneImage(image,columns,rows,False);
-  if (sampled_image == (Image *) NULL)
+  sample_image=CloneImage(image,columns,rows,True);
+  if (sample_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to sample image",
         "Memory allocation failed");
@@ -755,27 +659,29 @@ Export Image *SampleImage(const Image *image,const unsigned int columns,
   /*
     Allocate scan line buffer and column offset buffers.
   */
-  scanline=(RunlengthPacket *)
-    AllocateMemory(image->columns*sizeof(RunlengthPacket));
+  scanline=(PixelPacket *)
+    AllocateMemory(image->columns*sizeof(PixelPacket));
+  indexes=(IndexPacket *)
+    AllocateMemory(image->columns*sizeof(IndexPacket));
   x_offset=(unsigned int *)
-    AllocateMemory(sampled_image->columns*sizeof(unsigned int));
+    AllocateMemory(sample_image->columns*sizeof(unsigned int));
   y_offset=(unsigned int *)
-    AllocateMemory(sampled_image->rows*sizeof(unsigned int));
-  if ((scanline == (RunlengthPacket *) NULL) ||
+    AllocateMemory(sample_image->rows*sizeof(unsigned int));
+  if ((scanline == (PixelPacket *) NULL) || (indexes == (IndexPacket *) NULL) ||
       (x_offset == (unsigned int *) NULL) ||
       (y_offset == (unsigned int *) NULL))
     {
       MagickWarning(ResourceLimitWarning,"Unable to sample image",
         "Memory allocation failed");
-      DestroyImage(sampled_image);
+      DestroyImage(sample_image);
       return((Image *) NULL);
     }
   /*
     Initialize column pixel offsets.
   */
-  scale_factor=(double) image->columns/sampled_image->columns;
+  scale_factor=(double) image->columns/sample_image->columns;
   i=0;
-  for (x=0; x < (int) sampled_image->columns; x++)
+  for (x=0; x < (int) sample_image->columns; x++)
   {
     x_offset[x]=(unsigned int) ((x+1)*scale_factor-i);
     i+=x_offset[x];
@@ -783,77 +689,73 @@ Export Image *SampleImage(const Image *image,const unsigned int columns,
   /*
     Initialize row pixel offsets.
   */
-  scale_factor=(double) image->rows/sampled_image->rows;
+  scale_factor=(double) image->rows/sample_image->rows;
   i=0;
-  for (y=0; y < (int) sampled_image->rows; y++)
+  for (y=0; y < (int) sample_image->rows; y++)
   {
     y_offset[y]=(unsigned int) ((y+1)*scale_factor-i);
     i+=y_offset[y];
   }
-  /*
-    Preload first scanline.
-  */
-  p=image->pixels;
-  runlength=p->length+1;
-  s=scanline;
-  for (x=0; x < (int) image->columns; x++)
-  {
-    if (runlength != 0)
-      runlength--;
-    else
+  p=GetPixelCache(image,0,0,image->columns,1);
+  if (p != (PixelPacket *) NULL)
+    {
+      /*
+        Preload first scanline.
+      */
+      s=scanline;
+      for (x=0; x < (int) image->columns; x++)
       {
-        p++;
-        runlength=p->length;
+        indexes[x]=image->indexes[x];
+        *s++=(*p++);
       }
-    *s=(*p);
-    s->length=0;
-    s++;
-  }
+    }
   /*
     Sample each row.
   */
-  p=image->pixels;
-  runlength=p->length+1;
-  q=sampled_image->pixels;
-  for (y=0; y < (int) sampled_image->rows; y++)
+  j=0;
+  q=sample_image->pixels;
+  for (y=0; y < (int) sample_image->rows; y++)
   {
+    q=SetPixelCache(sample_image,0,y,sample_image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
     for (i=0; i < (int) y_offset[y]; i++)
     {
       /*
         Read a scan line.
       */
+      p=GetPixelCache(image,0,j++,image->columns,1);
+      if (p == (PixelPacket *) NULL)
+        break;
       s=scanline;
       for (x=0; x < (int) image->columns; x++)
       {
-        if (runlength != 0)
-          runlength--;
-        else
-          {
-            p++;
-            runlength=p->length;
-          }
-        *s=(*p);
-        s->length=0;
-        s++;
+        indexes[x]=image->indexes[x];
+        *s++=(*p++);
       }
     }
     /*
       Sample each column.
     */
+    k=0;
     s=scanline;
-    for (x=0; x < (int) sampled_image->columns; x++)
+    for (x=0; x < (int) sample_image->columns; x++)
     {
-      *q=(*s);
-      q++;
+      sample_image->indexes[x]=indexes[k];
+      *q++=(*s);
+      k+=x_offset[x];
       s+=x_offset[x];
     }
-    if (QuantumTick(y,sampled_image->rows))
-      ProgressMonitor(SampleImageText,y,sampled_image->rows);
+    if (!SyncPixelCache(sample_image))
+      break;
+    if (QuantumTick(y,sample_image->rows))
+      ProgressMonitor(SampleImageText,y,sample_image->rows);
   }
-  FreeMemory((char *) scanline);
-  FreeMemory((char *) x_offset);
-  FreeMemory((char *) y_offset);
-  return(sampled_image);
+  FreeMemory(scanline);
+  FreeMemory(indexes);
+  FreeMemory(x_offset);
+  FreeMemory(y_offset);
+  return(sample_image);
 }
 
 /*
@@ -880,12 +782,12 @@ Export Image *SampleImage(const Image *image,const unsigned int columns,
 %
 %  The format of the ScaleImage method is:
 %
-%      Image *ScaleImage(const Image *image,const unsigned int columns,
+%      Image *ScaleImage(Image *image,const unsigned int columns,
 %        const unsigned int rows)
 %
 %  A description of each parameter follows:
 %
-%    o scaled_image: Method ScaleImage returns a pointer to the image after
+%    o scale_image: Method ScaleImage returns a pointer to the image after
 %      scaling.  A null image is returned if there is a memory shortage.
 %
 %    o image: The address of a structure of type Image.
@@ -898,7 +800,7 @@ Export Image *SampleImage(const Image *image,const unsigned int columns,
 %
 %
 */
-Export Image *ScaleImage(const Image *image,const unsigned int columns,
+Export Image *ScaleImage(Image *image,const unsigned int columns,
   const unsigned int rows)
 {
 #define ScaleImageText  "  Scaling image...  "
@@ -909,11 +811,11 @@ Export Image *ScaleImage(const Image *image,const unsigned int columns,
       red,
       green,
       blue,
-      index;
+      opacity;
   } ScaledPacket;
 
   Image
-    *scaled_image;
+    *scale_image;
 
   int
     next_row,
@@ -924,14 +826,13 @@ Export Image *ScaleImage(const Image *image,const unsigned int columns,
     x_span;
 
   register int
-    runlength,
+    i,
     x;
 
   register long
-    index,
-    packets;
+    opacity;
 
-  register RunlengthPacket
+  register PixelPacket
     *p,
     *q;
 
@@ -951,9 +852,7 @@ Export Image *ScaleImage(const Image *image,const unsigned int columns,
   unsigned long
     blue,
     green,
-    max_packets,
-    red,
-    scale_factor;
+    red;
 
   assert(image != (Image *) NULL);
   if ((columns == 0) || (rows == 0))
@@ -961,31 +860,24 @@ Export Image *ScaleImage(const Image *image,const unsigned int columns,
   /*
     Initialize scaled image attributes.
   */
-  scale_factor=UpShift(columns*rows)/(image->columns*image->rows);
-  max_packets=Max(DownShift(image->packets*scale_factor),1);
-  ((Image *) image)->orphan=True;
-  scaled_image=CloneImage(image,max_packets,1,False);
-  ((Image *) image)->orphan=False;
-  if (scaled_image == (Image *) NULL)
+  scale_image=CloneImage(image,columns,rows,True);
+  if (scale_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to scale image",
         "Memory allocation failed");
       return((Image *) NULL);
     }
-  scaled_image->class=DirectClass;
-  scaled_image->columns=columns;
-  scaled_image->rows=rows;
-  packets=0;
+  scale_image->class=DirectClass;
   /*
     Allocate memory.
   */
   x_vector=(ScaledPacket *) AllocateMemory(image->columns*sizeof(ScaledPacket));
   scanline=x_vector;
-  if (scaled_image->rows != image->rows)
+  if (scale_image->rows != image->rows)
     scanline=(ScaledPacket *)
       AllocateMemory(image->columns*sizeof(ScaledPacket));
   scaled_scanline=(ScaledPacket *)
-    AllocateMemory(scaled_image->columns*sizeof(ScaledPacket));
+    AllocateMemory(scale_image->columns*sizeof(ScaledPacket));
   y_vector=(ScaledPacket *) AllocateMemory(image->columns*sizeof(ScaledPacket));
   if ((x_vector == (ScaledPacket *) NULL) ||
       (scanline == (ScaledPacket *) NULL) ||
@@ -994,47 +886,47 @@ Export Image *ScaleImage(const Image *image,const unsigned int columns,
     {
       MagickWarning(ResourceLimitWarning,"Unable to scale image",
         "Memory allocation failed");
-      DestroyImage(scaled_image);
+      DestroyImage(scale_image);
       return((Image *) NULL);
     }
   /*
     Scale image.
   */
-  index=0;
+  opacity=0;
   number_rows=0;
   next_row=True;
-  x_scale=UpShift(scaled_image->rows)/image->rows;
+  x_scale=UpShift(scale_image->rows)/image->rows;
   x_span=UpShift(1);
   for (x=0; x < (int) image->columns; x++)
   {
     y_vector[x].red=0;
     y_vector[x].green=0;
     y_vector[x].blue=0;
-    y_vector[x].index=0;
+    y_vector[x].opacity=0;
   }
-  p=image->pixels;
-  runlength=p->length+1;
-  q=scaled_image->pixels;
-  SetRunlengthEncoder(q);
-  for (y=0; y < scaled_image->rows; y++)
+  i=0;
+  q=scale_image->pixels;
+  for (y=0; y < scale_image->rows; y++)
   {
-    if (scaled_image->rows == image->rows)
-      for (x=0; x < (int) image->columns; x++)
+    q=SetPixelCache(scale_image,0,y,scale_image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
+    if (scale_image->rows == image->rows)
       {
         /*
           Read a new scanline.
         */
-        if (runlength != 0)
-          runlength--;
-        else
-          {
-            p++;
-            runlength=p->length;
-          }
-        x_vector[x].red=p->red;
-        x_vector[x].green=p->green;
-        x_vector[x].blue=p->blue;
-        x_vector[x].index=p->index;
+        p=GetPixelCache(image,0,i++,image->columns,1);
+        if (p == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (int) image->columns; x++)
+        {
+          x_vector[x].red=p->red;
+          x_vector[x].green=p->green;
+          x_vector[x].blue=p->blue;
+          x_vector[x].opacity=p->opacity;
+          p++;
+        }
       }
     else
       {
@@ -1048,19 +940,16 @@ Export Image *ScaleImage(const Image *image,const unsigned int columns,
               /*
                 Read a new scanline.
               */
+              p=GetPixelCache(image,0,i++,image->columns,1);
+              if (p == (PixelPacket *) NULL)
+                break;
               for (x=0; x < (int) image->columns; x++)
               {
-                if (runlength != 0)
-                  runlength--;
-                else
-                  {
-                    p++;
-                    runlength=p->length;
-                  }
                 x_vector[x].red=p->red;
                 x_vector[x].green=p->green;
                 x_vector[x].blue=p->blue;
-                x_vector[x].index=p->index;
+                x_vector[x].opacity=p->opacity;
+                p++;
               }
               number_rows++;
             }
@@ -1069,10 +958,10 @@ Export Image *ScaleImage(const Image *image,const unsigned int columns,
             y_vector[x].red+=x_scale*x_vector[x].red;
             y_vector[x].green+=x_scale*x_vector[x].green;
             y_vector[x].blue+=x_scale*x_vector[x].blue;
-            y_vector[x].index+=x_scale*x_vector[x].index;
+            y_vector[x].opacity+=x_scale*x_vector[x].opacity;
           }
           x_span-=x_scale;
-          x_scale=UpShift(scaled_image->rows)/image->rows;
+          x_scale=UpShift(scale_image->rows)/image->rows;
           next_row=True;
         }
         if (next_row && (number_rows < (int) image->rows))
@@ -1080,19 +969,16 @@ Export Image *ScaleImage(const Image *image,const unsigned int columns,
             /*
               Read a new scanline.
             */
+            p=GetPixelCache(image,0,i++,image->columns,1);
+            if (p == (PixelPacket *) NULL)
+              break;
             for (x=0; x < (int) image->columns; x++)
             {
-              if (runlength != 0)
-                runlength--;
-              else
-                {
-                  p++;
-                  runlength=p->length;
-                }
               x_vector[x].red=p->red;
               x_vector[x].green=p->green;
               x_vector[x].blue=p->blue;
-              x_vector[x].index=p->index;
+              x_vector[x].opacity=p->opacity;
+              p++;
             }
             number_rows++;
             next_row=False;
@@ -1103,64 +989,39 @@ Export Image *ScaleImage(const Image *image,const unsigned int columns,
           red=DownShift(y_vector[x].red+x_span*x_vector[x].red);
           green=DownShift(y_vector[x].green+x_span*x_vector[x].green);
           blue=DownShift(y_vector[x].blue+x_span*x_vector[x].blue);
-          index=DownShift(y_vector[x].index+x_span*x_vector[x].index);
+          opacity=DownShift(y_vector[x].opacity+x_span*x_vector[x].opacity);
           s->red=(Quantum) (red > MaxRGB ? MaxRGB : red);
           s->green=(Quantum) (green > MaxRGB ? MaxRGB : green);
           s->blue=(Quantum) (blue > MaxRGB ? MaxRGB : blue);
-          s->index=(unsigned short)
-            (index > MaxColormapSize ? MaxColormapSize : index);
+          s->opacity=(Quantum)
+            (opacity > MaxColormapSize ? MaxColormapSize : opacity);
           s++;
           y_vector[x].red=0;
           y_vector[x].green=0;
           y_vector[x].blue=0;
-          y_vector[x].index=0;
+          y_vector[x].opacity=0;
         }
         x_scale-=x_span;
         if (x_scale == 0)
           {
-            x_scale=UpShift(scaled_image->rows)/image->rows;
+            x_scale=UpShift(scale_image->rows)/image->rows;
             next_row=True;
           }
         x_span=UpShift(1);
       }
-    if (scaled_image->columns == image->columns)
+    if (scale_image->columns == image->columns)
       {
         /*
           Transfer scanline to scaled image.
         */
         s=scanline;
-        for (x=0; x < (int) scaled_image->columns; x++)
+        for (x=0; x < (int) scale_image->columns; x++)
         {
-          if ((s->red == q->red) && (s->green == q->green) &&
-              (s->blue == q->blue) && (s->index == q->index) &&
-              ((int) q->length < MaxRunlength))
-            q->length++;
-          else
-            {
-              if (packets != 0)
-                q++;
-              packets++;
-              if (packets == (int) max_packets)
-                {
-                  max_packets<<=1;
-                  scaled_image->pixels=(RunlengthPacket *) ReallocateMemory(
-                    (char *) scaled_image->pixels,max_packets*
-                    sizeof(RunlengthPacket));
-                  if (scaled_image->pixels == (RunlengthPacket *) NULL)
-                    {
-                      MagickWarning(ResourceLimitWarning,
-                        "Unable to scale image","Memory allocation failed");
-                      DestroyImage(scaled_image);
-                      return((Image *) NULL);
-                    }
-                  q=scaled_image->pixels+packets-1;
-                }
-              q->red=(Quantum) s->red;
-              q->green=(Quantum) s->green;
-              q->blue=(Quantum) s->blue;
-              q->index=(unsigned short) s->index;
-              q->length=0;
-            }
+          q->red=(Quantum) s->red;
+          q->green=(Quantum) s->green;
+          q->blue=(Quantum) s->blue;
+          q->opacity=(Quantum) s->opacity;
+          q++;
           s++;
         }
       }
@@ -1185,7 +1046,7 @@ Export Image *ScaleImage(const Image *image,const unsigned int columns,
         t=scaled_scanline;
         for (x=0; x < (int) image->columns; x++)
         {
-          y_scale=UpShift(scaled_image->columns)/image->columns;
+          y_scale=UpShift(scale_image->columns)/image->columns;
           while (y_scale >= y_span)
           {
             if (next_column)
@@ -1193,18 +1054,18 @@ Export Image *ScaleImage(const Image *image,const unsigned int columns,
                 red=0;
                 green=0;
                 blue=0;
-                index=0;
+                opacity=0;
                 t++;
               }
             red=DownShift(red+y_span*s->red);
             green=DownShift(green+y_span*s->green);
             blue=DownShift(blue+y_span*s->blue);
-            index=DownShift(index+y_span*s->index);
+            opacity=DownShift(opacity+y_span*s->opacity);
             t->red=(Quantum) (red > MaxRGB ? MaxRGB : red);
             t->green=(Quantum) (green > MaxRGB ? MaxRGB : green);
             t->blue=(Quantum) (blue > MaxRGB ? MaxRGB : blue);
-            t->index=(unsigned short)
-              (index > MaxColormapSize ? MaxColormapSize : index);
+            t->opacity=(Quantum)
+              (opacity > MaxColormapSize ? MaxColormapSize : opacity);
             y_scale-=y_span;
             y_span=UpShift(1);
             next_column=True;
@@ -1216,14 +1077,14 @@ Export Image *ScaleImage(const Image *image,const unsigned int columns,
                 red=0;
                 green=0;
                 blue=0;
-                index=0;
+                opacity=0;
                 next_column=False;
                 t++;
               }
             red+=y_scale*s->red;
             green+=y_scale*s->green;
             blue+=y_scale*s->blue;
-            index+=y_scale*s->index;
+            opacity+=y_scale*s->opacity;
             y_span-=y_scale;
           }
         s++;
@@ -1234,73 +1095,47 @@ Export Image *ScaleImage(const Image *image,const unsigned int columns,
           red+=y_span*s->red;
           green+=y_span*s->green;
           blue+=y_span*s->blue;
-          index+=y_span*s->index;
+          opacity+=y_span*s->opacity;
         }
       if (!next_column)
         {
           red=DownShift(red);
           green=DownShift(green);
           blue=DownShift(blue);
-          index=DownShift(index);
+          opacity=DownShift(opacity);
           t->red=(Quantum) (red > MaxRGB ? MaxRGB : red);
           t->green=(Quantum) (green > MaxRGB ? MaxRGB : green);
           t->blue=(Quantum) (blue > MaxRGB ? MaxRGB : blue);
-          t->index=(unsigned short) (index > MaxRGB ? MaxRGB : index);
+          t->opacity=(Quantum) (opacity > MaxRGB ? MaxRGB : opacity);
         }
       /*
         Transfer scanline to scaled image.
       */
       t=scaled_scanline;
-      for (x=0; x < (int) scaled_image->columns; x++)
+      for (x=0; x < (int) scale_image->columns; x++)
       {
-        if ((t->red == q->red) && (t->green == q->green) &&
-            (t->blue == q->blue) && (t->index == q->index) &&
-            ((int) q->length < MaxRunlength))
-          q->length++;
-        else
-          {
-            if (packets != 0)
-              q++;
-            packets++;
-            if (packets == (int) max_packets)
-              {
-                max_packets<<=1;
-                scaled_image->pixels=(RunlengthPacket *) ReallocateMemory(
-                  (char *) scaled_image->pixels,max_packets*
-                  sizeof(RunlengthPacket));
-                if (scaled_image->pixels == (RunlengthPacket *) NULL)
-                  {
-                    MagickWarning(ResourceLimitWarning,"Unable to scale image",
-                      "Memory allocation failed");
-                    DestroyImage(scaled_image);
-                    return((Image *) NULL);
-                  }
-                q=scaled_image->pixels+packets-1;
-              }
-            q->red=(Quantum) t->red;
-            q->green=(Quantum) t->green;
-            q->blue=(Quantum) t->blue;
-            q->index=(unsigned short) t->index;
-            q->length=0;
-          }
+        q->red=(Quantum) t->red;
+        q->green=(Quantum) t->green;
+        q->blue=(Quantum) t->blue;
+        q->opacity=(Quantum) t->opacity;
+        q++;
         t++;
       }
     }
-    if (QuantumTick(y,scaled_image->rows))
-      ProgressMonitor(ScaleImageText,y,scaled_image->rows);
+    if (!SyncPixelCache(scale_image))
+      break;
+    if (QuantumTick(y,scale_image->rows))
+      ProgressMonitor(ScaleImageText,y,scale_image->rows);
   }
-  scaled_image->packets=packets;
-  scaled_image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
-    scaled_image->pixels,scaled_image->packets*sizeof(RunlengthPacket));
   /*
     Free allocated memory.
   */
-  FreeMemory((char *) y_vector);
-  FreeMemory((char *) scaled_scanline);
+  FreeMemory(y_vector);
+  FreeMemory(scaled_scanline);
   if (scanline != x_vector)
-    FreeMemory((char *) scanline);
-  FreeMemory((char *) x_vector);
-  return(scaled_image);
+    FreeMemory(scanline);
+  FreeMemory(x_vector);
+  return(scale_image);
 }
 
 /*
@@ -1331,12 +1166,12 @@ Export Image *ScaleImage(const Image *image,const unsigned int columns,
 %
 %  A description of each parameter follows:
 %
-%    o zoomed_image: Method ZoomImage returns a pointer to the image after
+%    o zoom_image: Method ZoomImage returns a pointer to the image after
 %      scaling.  A null image is returned if there is a memory shortage.
 %
 %    o image: The address of a structure of type Image.
 %
-%    o columns: An integer that specifies the number of columns in the zoomed
+%    o columns: An integer that specifies the number of columns in the zoom
 %      image.
 %
 %    o rows: An integer that specifies the number of rows in the scaled
@@ -1487,31 +1322,33 @@ static double Triangle(double x)
 }
 #endif
 
-static void HorizontalFilter(Image *source,Image *destination,double x_factor,
-  const FilterInfo *filter_info,ContributionInfo *contribution_info,
-  const Quantum *range_limit,const unsigned int span,unsigned int *quantum)
+static unsigned int HorizontalFilter(Image *source,Image *destination,
+  double x_factor,const FilterInfo *filter_info,
+  ContributionInfo *contribution_info,const Quantum *range_limit,
+  const unsigned int span,unsigned int *quantum)
 {
   double
     blue_weight,
     center,
     density,
     green_weight,
-    index_weight,
+    opacity_weight,
     red_weight,
     scale_factor,
     support;
 
   int
     end,
+    j,
     n,
     start,
-    x;
+    y;
 
   register int
     i,
-    y;
+    x;
 
-  register RunlengthPacket
+  register PixelPacket
     *p,
     *q;
 
@@ -1551,56 +1388,61 @@ static void HorizontalFilter(Image *source,Image *destination,double x_factor,
     if ((density != 0.0) && (density != 1.0))
       for (i=0; i < n; i++)
         contribution_info[i].weight/=density;  /* normalize */
-    q=destination->pixels+x;
+    p=GetPixelCache(source,contribution_info[0].pixel,0,
+      contribution_info[n-1].pixel-contribution_info[0].pixel+1,source->rows);
+    q=SetPixelCache(destination,x,0,1,destination->rows);
+    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+      break;
     for (y=0; y < (int) destination->rows; y++)
     {
       blue_weight=0.0;
       green_weight=0.0;
       red_weight=0.0;
-      index_weight=0.0;
+      opacity_weight=0.0;
       for (i=0; i < n; i++)
       {
-        p=source->pixels+(y*source->columns)+contribution_info[i].pixel;
-        red_weight+=contribution_info[i].weight*p->red;
-        green_weight+=contribution_info[i].weight*p->green;
-        blue_weight+=contribution_info[i].weight*p->blue;
-        index_weight+=contribution_info[i].weight*p->index;
+        j=y*(contribution_info[n-1].pixel-contribution_info[0].pixel+1)+
+          (contribution_info[i].pixel-contribution_info[0].pixel);
+        red_weight+=contribution_info[i].weight*(p+j)->red;
+        green_weight+=contribution_info[i].weight*(p+j)->green;
+        blue_weight+=contribution_info[i].weight*(p+j)->blue;
+        opacity_weight+=contribution_info[i].weight*(p+j)->opacity;
       }
       q->red=range_limit[(int) (red_weight+0.5)];
       q->green=range_limit[(int) (green_weight+0.5)];
       q->blue=range_limit[(int) (blue_weight+0.5)];
-      if (index_weight > Opaque)
-        q->index=Opaque;
-      else
-        if (index_weight < Transparent)
-          q->index=Transparent;
-        else
-          q->index=(unsigned short) (index_weight+0.5);
-      q->length=0;
-      q+=destination->columns;
+      q->opacity=range_limit[(int) (opacity_weight+0.5)];
+      if (destination->class == PseudoClass)
+        destination->indexes[y]=source->indexes[j];
+      q++;
     }
+    if (!SyncPixelCache(destination))
+      break;
     if (QuantumTick(*quantum,span))
       ProgressMonitor(ZoomImageText,*quantum,span);
     (*quantum)++;
   }
+  return(x == (int) destination->columns);
 }
 
-static void VerticalFilter(Image *source,Image *destination,double y_factor,
-  const FilterInfo *filter_info,ContributionInfo *contribution_info,
-  const Quantum *range_limit,const unsigned int span,unsigned int *quantum)
+static unsigned int VerticalFilter(Image *source,Image *destination,
+  double y_factor,const FilterInfo *filter_info,
+  ContributionInfo *contribution_info,const Quantum *range_limit,
+  const unsigned int span,unsigned int *quantum)
 {
   double
     blue_weight,
     center,
     density,
     green_weight,
-    index_weight,
+    opacity_weight,
     red_weight,
     scale_factor,
     support;
 
   int
     end,
+    j,
     n,
     start,
     y;
@@ -1609,7 +1451,7 @@ static void VerticalFilter(Image *source,Image *destination,double y_factor,
     i,
     x;
 
-  register RunlengthPacket
+  register PixelPacket
     *p,
     *q;
 
@@ -1630,7 +1472,6 @@ static void VerticalFilter(Image *source,Image *destination,double y_factor,
       scale_factor=1.0;
     }
   support+=1.0e-7;
-  q=destination->pixels;
   for (y=0; y < (int) destination->rows; y++)
   {
     density=0.0;
@@ -1650,37 +1491,41 @@ static void VerticalFilter(Image *source,Image *destination,double y_factor,
     if ((density != 0.0) && (density != 1.0))
       for (i=0; i < n; i++)
         contribution_info[i].weight/=density;  /* normalize */
+    p=GetPixelCache(source,0,contribution_info[0].pixel,source->columns,
+      contribution_info[n-1].pixel-contribution_info[0].pixel+1);
+    q=SetPixelCache(destination,0,y,destination->columns,1);
+    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+      break;
     for (x=0; x < (int) destination->columns; x++)
     {
       blue_weight=0.0;
       green_weight=0.0;
       red_weight=0.0;
-      index_weight=0.0;
+      opacity_weight=0.0;
       for (i=0; i < n; i++)
       {
-        p=source->pixels+(contribution_info[i].pixel*source->columns)+x;
-        red_weight+=contribution_info[i].weight*p->red;
-        green_weight+=contribution_info[i].weight*p->green;
-        blue_weight+=contribution_info[i].weight*p->blue;
-        index_weight+=contribution_info[i].weight*p->index;
+        j=(contribution_info[i].pixel-contribution_info[0].pixel)*
+          source->columns+x;
+        red_weight+=contribution_info[i].weight*(p+j)->red;
+        green_weight+=contribution_info[i].weight*(p+j)->green;
+        blue_weight+=contribution_info[i].weight*(p+j)->blue;
+        opacity_weight+=contribution_info[i].weight*(p+j)->opacity;
       }
       q->red=range_limit[(int) (red_weight+0.5)];
       q->green=range_limit[(int) (green_weight+0.5)];
       q->blue=range_limit[(int) (blue_weight+0.5)];
-      if (index_weight > Opaque)
-        q->index=Opaque;
-      else
-        if (index_weight < Transparent)
-          q->index=Transparent;
-        else
-          q->index=(unsigned short) (index_weight+0.5);
-      q->length=0;
+      q->opacity=range_limit[(int) (opacity_weight+0.5)];
+      if (destination->class == PseudoClass)
+        destination->indexes[x]=source->indexes[j];
       q++;
     }
+    if (!SyncPixelCache(destination))
+      break;
     if (QuantumTick(*quantum,span))
       ProgressMonitor(ZoomImageText,*quantum,span);
     (*quantum)++;
   }
+  return(y == (int) destination->rows);
 }
 
 Export Image *ZoomImage(Image *image,const unsigned int columns,
@@ -1696,7 +1541,7 @@ Export Image *ZoomImage(Image *image,const unsigned int columns,
 
   Image
     *source_image,
-    *zoomed_image;
+    *zoom_image;
 
   Quantum
     *range_table;
@@ -1730,44 +1575,38 @@ Export Image *ZoomImage(Image *image,const unsigned int columns,
 
   unsigned int
     quantum,
-    span;
+    span,
+    status;
 
   assert(image != (Image *) NULL);
   assert((image->filter >= 0) && (image->filter <= SincFilter));
   if ((columns == 0) || (rows == 0))
     {
-      MagickWarning(OptionWarning,"Unable to resize image",
+      MagickWarning(OptionWarning,"Unable to zoom image",
         "image dimensions are zero");
       return((Image *) NULL);
     }
   if ((columns == image->columns) && (rows == image->rows))
     return(CloneImage(image,columns,rows,True));
   /*
-    Image must be uncompressed.
+    Initialize zoom image attributes.
   */
-  if (!UncondenseImage(image))
-    return((Image *) NULL);
-  /*
-    Initialize zoomed image attributes.
-  */
-  zoomed_image=CloneImage(image,columns,rows,False);
-  if (zoomed_image == (Image *) NULL)
+  zoom_image=CloneImage(image,columns,rows,True);
+  if (zoom_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to zoom image",
         "Memory allocation failed");
       return((Image *) NULL);
     }
-  image->orphan=True;
-  if (zoomed_image->rows >= image->rows)
-    source_image=CloneImage(image,zoomed_image->columns,image->rows,False);
+  if (zoom_image->rows >= image->rows)
+    source_image=CloneImage(image,zoom_image->columns,image->rows,True);
   else
-    source_image=CloneImage(image,image->columns,zoomed_image->rows,False);
-  image->orphan=False;
+    source_image=CloneImage(image,image->columns,zoom_image->rows,True);
   if (source_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to zoom image",
         "Memory allocation failed");
-      DestroyImage(zoomed_image);
+      DestroyImage(zoom_image);
       return((Image *) NULL);
     }
   /*
@@ -1779,7 +1618,7 @@ Export Image *ZoomImage(Image *image,const unsigned int columns,
       MagickWarning(ResourceLimitWarning,"Unable to zoom image",
         "Memory allocation failed");
       DestroyImage(source_image);
-      DestroyImage(zoomed_image);
+      DestroyImage(zoom_image);
       return((Image *) NULL);
     }
   /*
@@ -1795,8 +1634,8 @@ Export Image *ZoomImage(Image *image,const unsigned int columns,
   /*
     Allocate filter info list.
   */
-  x_factor=(double) zoomed_image->columns/(double) image->columns;
-  y_factor=(double) zoomed_image->rows/(double) image->rows;
+  x_factor=(double) zoom_image->columns/(double) image->columns;
+  y_factor=(double) zoom_image->rows/(double) image->rows;
   support=Max(filters[image->filter].support/x_factor,
     filters[image->filter].support/y_factor);
   if (support < filters[image->filter].support)
@@ -1807,36 +1646,38 @@ Export Image *ZoomImage(Image *image,const unsigned int columns,
     {
       MagickWarning(ResourceLimitWarning,"Unable to zoom image",
         "Memory allocation failed");
-      FreeMemory((char *) range_table);
+      FreeMemory(range_table);
       DestroyImage(source_image);
-      DestroyImage(zoomed_image);
+      DestroyImage(zoom_image);
       return((Image *) NULL);
     }
   /*
     Zoom image.
   */
   quantum=0;
-  if (zoomed_image->rows >= image->rows)
+  if (zoom_image->rows >= image->rows)
     {
-      span=source_image->columns+zoomed_image->rows;
-      HorizontalFilter(image,source_image,x_factor,&filters[image->filter],
-        contribution_info,range_limit,span,&quantum);
-      VerticalFilter(source_image,zoomed_image,y_factor,&filters[image->filter],
-        contribution_info,range_limit,span,&quantum);
+      span=source_image->columns+zoom_image->rows;
+      status=HorizontalFilter(image,source_image,x_factor,
+        &filters[image->filter],contribution_info,range_limit,span,&quantum);
+      status|=VerticalFilter(source_image,zoom_image,y_factor,
+        &filters[image->filter],contribution_info,range_limit,span,&quantum);
     }
   else
     {
-      span=zoomed_image->columns+source_image->columns;
-      VerticalFilter(image,source_image,y_factor,&filters[image->filter],
+      span=zoom_image->columns+source_image->columns;
+      status=VerticalFilter(image,source_image,y_factor,&filters[image->filter],
         contribution_info,range_limit,span,&quantum);
-      HorizontalFilter(source_image,zoomed_image,x_factor,
+      status|=HorizontalFilter(source_image,zoom_image,x_factor,
         &filters[image->filter],contribution_info,range_limit,span,&quantum);
     }
+  if (status == False)
+    MagickWarning(CacheWarning,"Unable to zoom image",(char *) NULL);
   /*
     Free allocated memory.
   */
-  FreeMemory((char *) contribution_info);
-  FreeMemory((char *) range_table);
+  FreeMemory(contribution_info);
+  FreeMemory(range_table);
   DestroyImage(source_image);
-  return(zoomed_image);
+  return(zoom_image);
 }

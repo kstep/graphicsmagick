@@ -84,8 +84,14 @@
 */
 Export void *AllocateMemory(const size_t size)
 {
+  void
+    *allocation;
+
   assert(size > 0);
-  return(malloc(size));
+  allocation=malloc(size);
+  if (allocation != (void *) NULL)
+    (void) memset(allocation,0,size);
+  return(allocation);
 }
 
 /*
@@ -116,7 +122,7 @@ Export void FreeMemory(void *memory)
   if (memory == (void *) NULL)
     return;
   free(memory);
-  memory=(void *)NULL;
+  memory=(void *) NULL;
 }
 
 /*

@@ -161,7 +161,7 @@ Export Image *ReadVIDImage(const ImageInfo *image_info)
     (void) strcpy(local_info->filename,filelist[i]);
     *local_info->magick='\0';
     next_image=ReadImage(local_info);
-    FreeMemory((char *) filelist[i]);
+    FreeMemory(filelist[i]);
     if (next_image != (Image *) NULL)
       {
         MogrifyImages(local_info,5,commands,&next_image);
@@ -178,7 +178,7 @@ Export Image *ReadVIDImage(const ImageInfo *image_info)
     ProgressMonitor(LoadImageText,i,number_files);
   }
   DestroyImageInfo(local_info);
-  FreeMemory((char *) filelist);
+  FreeMemory(filelist);
   if (image == (Image *) NULL)
     {
       MagickWarning(CorruptImageWarning,"unable to read VID image",
@@ -203,7 +203,7 @@ Export Image *ReadVIDImage(const ImageInfo *image_info)
       return((Image *) NULL);
     }
   DestroyImages(image);
-  FreeMemory((char *) list[0]);
-  FreeMemory((char *) list);
+  FreeMemory(list[0]);
+  FreeMemory(list);
   return(montage_image);
 }

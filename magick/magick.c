@@ -90,318 +90,6 @@ static MagickInfo
 %
 %
 */
-
-static unsigned int IsBMP(const unsigned char *magick,unsigned int length)
-{
-  if (length < 2)
-    return(False);
-  if (strncmp((char *) magick,"BM",2) == 0)
-    return(True);
-  if (strncmp((char *) magick,"IC",2) == 0)
-    return(True);
-  if (strncmp((char *) magick,"PI",2) == 0)
-    return(True);
-  if (strncmp((char *) magick,"CI",2) == 0)
-    return(True);
-  if (strncmp((char *) magick,"CP",2) == 0)
-    return(True);
-  return(False);
-}
-
-static unsigned int IsDCM(const unsigned char *magick,unsigned int length)
-{
-  if (length < 132)
-    return(False);
-  if (strncmp((char *) (magick+128),"DICM",4) == 0)
-    return(True);
-  return(False);
-}
-
-static unsigned int IsDCX(const unsigned char *magick,unsigned int length)
-{
-  if (length < 4)
-    return(False);
-  if (strncmp((char *) magick,"\261\150\336\72",4) == 0)
-    return(True);
-  return(False);
-}
-
-static unsigned int IsEPT(const unsigned char *magick,unsigned int length)
-{
-  if (length < 4)
-    return(False);
-  if (strncmp((char *) magick,"\305\320\323\306",4) == 0)
-    return(True);
-  return(False);
-}
-
-static unsigned int IsFAX(const unsigned char *magick,unsigned int length)
-{
-  if (length < 4)
-    return(False);
-  if (strncmp((char *) magick,"DFAX",4) == 0)
-    return(True);
-  return(False);
-}
-
-static unsigned int IsFITS(const unsigned char *magick,unsigned int length)
-{
-  if (length < 6)
-    return(False);
-  if (strncmp((char *) magick,"IT0",3) == 0)
-    return(True);
-  if (strncmp((char *) magick,"SIMPLE",6) == 0)
-    return(True);
-  return(False);
-}
-
-static unsigned int IsGIF(const unsigned char *magick,unsigned int length)
-{
-  if (length < 4)
-    return(False);
-  if (strncmp((char *) magick,"GIF8",4) == 0)
-    return(True);
-  return(False);
-}
-
-static unsigned int IsHDF(const unsigned char *magick,unsigned int length)
-{
-  if (length < 4)
-    return(False);
-  if (strncmp((char *) magick,"\016\003\023\001",4) == 0)
-    return(True);
-  return(False);
-}
-
-static unsigned int IsHTML(const unsigned char *magick,unsigned int length)
-{
-  if (length < 5)
-    return(False);
-  if (strncmp((char *) magick,"<HTML",5) == 0)
-    return(True);
-  if (strncmp((char *) magick,"<html",5) == 0)
-    return(True);
-  return(False);
-}
-
-static unsigned int IsJPEG(const unsigned char *magick,unsigned int length)
-{
-  if (length < 3)
-    return(False);
-  if (strncmp((char *) magick,"\377\330\377",3) == 0)
-    return(True);
-  return(False);
-}
-
-static unsigned int IsMIFF(const unsigned char *magick,unsigned int length)
-{
-  if (length < 14)
-    return(False);
-  if (strncmp((char *) magick,"id=ImageMagick",14) == 0)
-    return(True);
-  return(False);
-}
-
-static unsigned int IsMNG(const unsigned char *magick,unsigned int length)
-{
-  if (length < 8)
-    return(False);
-  if (strncmp((char *) magick,"\212MNG\r\n\032\n",8) == 0)
-    return(True);
-  return(False);
-}
-
-static unsigned int IsPCD(const unsigned char *magick,unsigned int length)
-{
-  if (length < 4)
-    return(False);
-  if (strncmp((char *) magick,"PCD_",4) == 0)
-    return(True);
-  return(False);
-}
-
-static unsigned int IsPCL(const unsigned char *magick,unsigned int length)
-{
-  if (length < 3)
-    return(False);
-  if (strncmp((char *) magick,"\033E\033",3) == 0)
-    return(True);
-  return(False);
-}
-
-static unsigned int IsPCX(const unsigned char *magick,unsigned int length)
-{
-  if (length < 2)
-    return(False);
-  if (strncmp((char *) magick,"\12\2",2) == 0)
-    return(True);
-  if (strncmp((char *) magick,"\12\5",2) == 0)
-    return(True);
-  return(False);
-}
-
-static unsigned int IsPDF(const unsigned char *magick,unsigned int length)
-{
-  if (length < 5)
-    return(False);
-  if (strncmp((char *) magick,"%PDF-",5) == 0)
-    return(True);
-  return(False);
-}
-
-static unsigned int IsPNM(const unsigned char *magick,unsigned int length)
-{
-  if (length < 2)
-    return(False);
-  if ((*magick == 'P') && isdigit((int) magick[1]))
-    return(True);
-  return(False);
-}
-
-static unsigned int IsPNG(const unsigned char *magick,unsigned int length)
-{
-  if (length < 8)
-    return(False);
-  if (strncmp((char *) magick,"\211PNG\r\n\032\n",8) == 0)
-    return(True);
-  return(False);
-}
-
-static unsigned int IsPS(const unsigned char *magick,unsigned int length)
-{
-  if (length < 3)
-    return(False);
-  if (strncmp((char *) magick,"\004%!",3) == 0)
-    return(True);
-  if (strncmp((char *) magick,"%!",2) == 0)
-    return(True);
-  return(False);
-}
-
-static unsigned int IsPSD(const unsigned char *magick,unsigned int length)
-{
-  if (length < 4)
-    return(False);
-  if (strncmp((char *) magick,"8BPS",4) == 0)
-    return(True);
-  return(False);
-}
-
-static unsigned int IsPWP(const unsigned char *magick,unsigned int length)
-{
-  if (length < 5)
-    return(False);
-  if (strncmp((char *) magick,"SFW95",5) == 0)
-    return(True);
-  return(False);
-}
-
-static unsigned int IsRLE(const unsigned char *magick,unsigned int length)
-{
-  if (length < 2)
-    return(False);
-  if (strncmp((char *) magick,"\122\314",2) == 0)
-    return(True);
-  return(False);
-}
-
-static unsigned int IsSCT(const unsigned char *magick,unsigned int length)
-{
-  if (length < 2)
-    return(False);
-  if (strncmp((char *) magick,"CT",2) == 0)
-    return(True);
-  return(False);
-}
-
-static unsigned int IsSFW(const unsigned char *magick,unsigned int length)
-{
-  if (length < 5)
-    return(False);
-  if (strncmp((char *) magick,"SFW94",5) == 0)
-    return(True);
-  return(False);
-}
-
-static unsigned int IsSGI(const unsigned char *magick,unsigned int length)
-{
-  if (length < 2)
-    return(False);
-  if (strncmp((char *) magick,"\001\332",2) == 0)
-    return(True);
-  return(False);
-}
-
-static unsigned int IsSUN(const unsigned char *magick,unsigned int length)
-{
-  if (length < 4)
-    return(False);
-  if (strncmp((char *) magick,"\131\246\152\225",4) == 0)
-    return(True);
-  return(False);
-}
-
-static unsigned int IsTIFF(const unsigned char *magick,unsigned int length)
-{
-  if (length < 4)
-    return(False);
-  if ((magick[0] == 0x4D) && (magick[1] == 0x4D))
-    if ((magick[2] == 0x00) && (magick[3] == 0x2A))
-      return(True);
-  if (strncmp((char *) magick,"\111\111\052\000",4) == 0)
-    return(True);
-  return(False);
-}
-
-static unsigned int IsVICAR(const unsigned char *magick,unsigned int length)
-{
-  if (length < 7)
-    return(False);
-  if (strncmp((char *) magick,"LBLSIZE",7) == 0)
-    return(True);
-  if (strncmp((char *) magick,"NJPL1I",6) == 0)
-    return(True);
-  return(False);
-}
-
-static unsigned int IsVIFF(const unsigned char *magick,unsigned int length)
-{
-  if (length < 2)
-    return(False);
-  if (strncmp((char *) magick,"\253\1",2) == 0)
-    return(True);
-  return(False);
-}
-
-static unsigned int IsXBM(const unsigned char *magick,unsigned int length)
-{
-  if (length < 7)
-    return(False);
-  if (strncmp((char *) magick,"#define",7) == 0)
-    return(True);
-  return(False);
-}
-
-static unsigned int IsXPM(const unsigned char *magick,unsigned int length)
-{
-  if (length < 9)
-    return(False);
-  if (strncmp((char *) magick,"/* XPM */",9) == 0)
-    return(True);
-  return(False);
-}
-
-static unsigned int IsXWD(const unsigned char *magick,unsigned int length)
-{
-  if (length < 8)
-    return(False);
-  if ((magick[1] == 0x00) && (magick[2] == 0x00))
-    if ((magick[5] == 0x00) && (magick[6] == 0x00))
-      if ((magick[4] == 0x07) || (magick[7] == 0x07))
-        return(True);
-  return(False);
-}
-
 Export MagickInfo *GetMagickInfo(const char *tag)
 {
   register MagickInfo
@@ -409,13 +97,15 @@ Export MagickInfo *GetMagickInfo(const char *tag)
 
   if (magick_info == (MagickInfo *) NULL)
     {
+      (void) RegisterMagickInfo("8BIM",Read8BIMImage,Write8BIMImage,Is8BIM,
+        False,True,"Photoshop resource format");
       (void) RegisterMagickInfo("AVS",ReadAVSImage,WriteAVSImage,
         (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
         True,True,"AVS X image");
 #if defined(HasJBIG)
       (void) RegisterMagickInfo("BIE",ReadJBIGImage,WriteJBIGImage,
         (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,False,"Joint Bi-level Image experts Group interchange format");
+        False,True,"Joint Bi-level Image experts Group interchange format");
 #endif
       (void) RegisterMagickInfo("BMP",ReadBMPImage,WriteBMPImage,IsBMP,True,
         True,"Microsoft Windows bitmap image");
@@ -453,7 +143,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
         (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
         False,True,"Adobe Encapsulated PostScript Interchange format");
       (void) RegisterMagickInfo("EPT",ReadPSImage,WriteEPTImage,IsEPT,False,
-        False,"Adobe Encapsulated PostScript with TIFF preview");
+        True,"Adobe Encapsulated PostScript with TIFF preview");
       (void) RegisterMagickInfo("FAX",ReadFAXImage,WriteFAXImage,IsFAX,True,
         True,"Group 3 FAX");
       (void) RegisterMagickInfo("FITS",ReadFITSImage,WriteFITSImage,IsFITS,
@@ -478,15 +168,17 @@ Export MagickInfo *GetMagickInfo(const char *tag)
         False,True,"Gradual passing from one shade to another");
       (void) RegisterMagickInfo("GRANITE",ReadLOGOImage,WriteLOGOImage,
         (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,False,"Granite texture");
+        False,True,"Granite texture");
       (void) RegisterMagickInfo("GRAY",ReadGRAYImage,WriteGRAYImage,
         (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
         True,True,"Raw gray bytes");
       (void) RegisterMagickInfo("H",ReadLOGOImage,WriteLOGOImage,
         (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,False,"Internal format");
+        False,True,"Internal format");
+#if defined(HasHDF)
       (void) RegisterMagickInfo("HDF",ReadHDFImage,WriteHDFImage,IsHDF,True,
         False,"Hierarchical Data Format");
+#endif
       (void) RegisterMagickInfo("HISTOGRAM",ReadHISTOGRAMImage,
         WriteHISTOGRAMImage,
         (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
@@ -497,7 +189,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       (void) RegisterMagickInfo("HTML",(Image *(*)(const ImageInfo *)) NULL,
         WriteHTMLImage,
         (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,False,"Hypertext Markup Language with a client-side image map");
+        False,True,"Hypertext Markup Language with a client-side image map");
       (void) RegisterMagickInfo("ICB",ReadTGAImage,WriteTGAImage,
         (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
         True,True,"Truevision Targa image");
@@ -512,16 +204,15 @@ Export MagickInfo *GetMagickInfo(const char *tag)
         (unsigned int (*)(const ImageInfo *,Image *)) NULL,
         (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
         True,True,"Internal format");
-      (void) RegisterMagickInfo("IPTC",ReadIPTCImage,WriteIPTCImage,
-        (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
+      (void) RegisterMagickInfo("IPTC",ReadIPTCImage,WriteIPTCImage,IsIPTC,
         False,True,"IPTC Newsphoto");
 #if defined(HasJBIG)
       (void) RegisterMagickInfo("JBG",ReadJBIGImage,WriteJBIGImage,
         (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        True,False,"Joint Bi-level Image experts Group interchange format");
+        True,True,"Joint Bi-level Image experts Group interchange format");
       (void) RegisterMagickInfo("JBIG",ReadJBIGImage,WriteJBIGImage,
         (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-         True,False,"Joint Bi-level Image experts Group interchange format");
+         True,True,"Joint Bi-level Image experts Group interchange format");
 #endif
 #if defined(HasJPEG)
       (void) RegisterMagickInfo("JPG",ReadJPEGImage,WriteJPEGImage,
@@ -539,7 +230,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
         False,True,"Text image format");
       (void) RegisterMagickInfo("LOGO",ReadLOGOImage,WriteLOGOImage,
         (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,False,"ImageMagick Logo");
+        False,True,"ImageMagick Logo");
       (void) RegisterMagickInfo("MAP",ReadMAPImage,WriteMAPImage,
         (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
         False,True,"Colormap intensities and indices");
@@ -560,7 +251,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
         True,True,"MTV Raytracing image format");
       (void) RegisterMagickInfo("NETSCAPE",ReadLOGOImage,WriteLOGOImage,
         (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,False,"Netscape 216 color cube");
+        False,True,"Netscape 216 color cube");
       (void) RegisterMagickInfo("NULL",ReadNULLImage,
         (unsigned int (*)(const ImageInfo *,Image *)) NULL,
         (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
@@ -572,10 +263,10 @@ Export MagickInfo *GetMagickInfo(const char *tag)
         (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
         True,True,"Portable bitmap format (black and white)");
       (void) RegisterMagickInfo("PCD",ReadPCDImage,WritePCDImage,IsPCD,False,
-        False,"Photo CD");
+        True,"Photo CD");
       (void) RegisterMagickInfo("PCDS",ReadPCDImage,WritePCDImage,
         (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,False,"Photo CD");
+        False,True,"Photo CD");
       (void) RegisterMagickInfo("PCL",ReadPCLImage,WritePCLImage,IsPCL,False,
         True,"Page Control Language");
       (void) RegisterMagickInfo("PCT",
@@ -637,7 +328,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
 #if defined(HasTIFF)
       (void) RegisterMagickInfo("PTIF",ReadTIFFImage,WriteTIFFImage,
         (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        True,False,"Pyramid encoded TIFF");
+        True,True,"Pyramid encoded TIFF");
 #endif
       (void) RegisterMagickInfo("PWP",ReadPWPImage,
         (unsigned int (*)(const ImageInfo *,Image *)) NULL,IsPWP,True,True,
@@ -655,7 +346,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
         (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
         False,True,"Alias/Wavefront image");
       (void) RegisterMagickInfo("RLE",ReadRLEImage,
-        (unsigned int (*)(const ImageInfo *,Image *)) NULL,IsRLE,False,False,
+        (unsigned int (*)(const ImageInfo *,Image *)) NULL,IsRLE,False,True,
         "Utah Run length encoded image");
       (void) RegisterMagickInfo("SCT",ReadSCTImage,
         (unsigned int (*)(const ImageInfo *,Image *)) NULL,IsSCT,False,True,
@@ -668,7 +359,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       (void) RegisterMagickInfo("SHTML",(Image *(*)(const ImageInfo *)) NULL,
         WriteHTMLImage,
         (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,False,
-        False,"Hypertext Markup Language with a client-side image map");
+        True,"Hypertext Markup Language with a client-side image map");
       (void) RegisterMagickInfo("STEGANO",ReadSTEGANOImage,
         (unsigned int (*)(const ImageInfo *,Image *)) NULL,
         (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
@@ -685,12 +376,12 @@ Export MagickInfo *GetMagickInfo(const char *tag)
 #if defined(HasTIFF)
       (void) RegisterMagickInfo("TIF",ReadTIFFImage,WriteTIFFImage,
         (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        True,False,"Tagged Image File Format");
+        True,True,"Tagged Image File Format");
       (void) RegisterMagickInfo("TIFF",ReadTIFFImage,WriteTIFFImage,IsTIFF,
-        True,False,"Tagged Image File Format");
+        True,True,"Tagged Image File Format");
       (void) RegisterMagickInfo("TIFF24",ReadTIFFImage,WriteTIFFImage,
         (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        True,False,"24-bit Tagged Image File Format");
+        True,True,"24-bit Tagged Image File Format");
 #endif
       (void) RegisterMagickInfo("TILE",ReadTILEImage,
         (unsigned int (*)(const ImageInfo *,Image *)) NULL,
@@ -714,7 +405,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
         False,True,"X-Motif UIL table");
       (void) RegisterMagickInfo("UYVY",ReadUYVYImage,WriteUYVYImage,
         (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,False,"16bit/pixel interleaved YUV");
+        False,True,"16bit/pixel interleaved YUV");
       (void) RegisterMagickInfo("VDA",ReadTGAImage,WriteTGAImage,
         (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
         True,True,"Truevision Targa image");
@@ -750,7 +441,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
 #endif
       (void) RegisterMagickInfo("YUV",ReadYUVImage,WriteYUVImage,
         (unsigned int (*)(const unsigned char *,const unsigned int)) NULL,
-        False,False,"CCIR 601 4:1:1");
+        False,True,"CCIR 601 4:1:1");
     }
   if (tag == (char *) NULL)
     return(magick_info);

@@ -59,6 +59,45 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   I s X B M                                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsXBM returns True if the image format type, identified by the
+%  magick string, is XBM.
+%
+%  The format of the ReadXBMImage method is:
+%
+%      unsigned int IsXBM(const unsigned char *magick,
+%        const unsigned int length)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method IsXBM returns True if the image format type is XBM.
+%
+%    o magick: This string is generally the first few bytes of an image file
+%      or blob.
+%
+%    o length: Specifies the length of the magick string.
+%
+%
+*/
+Export unsigned int IsXBM(const unsigned char *magick,const unsigned int length)
+{
+  if (length < 7)
+    return(False);
+  if (strncmp((char *) magick,"#define",7) == 0)
+    return(True);
+  return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   R e a d X B M I m a g e                                                   %
 %                                                                             %
 %                                                                             %
@@ -123,24 +162,21 @@ Export Image *ReadXBMImage(const ImageInfo *image_info)
   Image
     *image;
 
-  register int
-    x,
+  int
+    bit,
     y;
 
-  register RunlengthPacket
-    *q;
+  register int
+    i,
+    x;
 
   register unsigned char
     *p;
-
-  register long
-    packets;
 
   short int
     hex_digits[256];
 
   unsigned char
-    bit,
     *data;
 
   unsigned int
@@ -150,9 +186,6 @@ Export Image *ReadXBMImage(const ImageInfo *image_info)
     status,
     value,
     version;
-
-  unsigned short
-    index;
 
   /*
     Allocate image structure.
@@ -216,19 +249,15 @@ Export Image *ReadXBMImage(const ImageInfo *image_info)
   /*
     Initialize image structure.
   */
-  image->colormap=(ColorPacket *)
-    AllocateMemory(image->colors*sizeof(ColorPacket));
-  packets=0;
-  image->pixels=(RunlengthPacket *)
-    AllocateMemory(image->columns*image->rows*sizeof(RunlengthPacket));
+  image->colormap=(PixelPacket *)
+    AllocateMemory(image->colors*sizeof(PixelPacket));
   padding=0;
   if ((image->columns % 16) && ((image->columns % 16) < 9)  && (version == 10))
     padding=1;
   bytes_per_line=(image->columns+7)/8+padding;
   data=(unsigned char *)
     AllocateMemory(bytes_per_line*image->rows*sizeof(unsigned char *));
-  if ((image->colormap == (ColorPacket *) NULL) ||
-      (image->pixels == (RunlengthPacket *) NULL) ||
+  if ((image->colormap == (PixelPacket *) NULL) ||
       (data == (unsigned char *) NULL))
     ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
   /*
@@ -276,54 +305,45 @@ Export Image *ReadXBMImage(const ImageInfo *image_info)
   */
   p=data;
   if (version == 10)
-    for (x=0; x < (int) (bytes_per_line*image->rows); (x+=2))
+    for (i=0; i < (int) (bytes_per_line*image->rows); (i+=2))
     {
       value=XBMInteger(image,hex_digits);
       *p++=value;
-      if (!padding || ((x+2) % bytes_per_line))
+      if (!padding || ((i+2) % bytes_per_line))
         *p++=value >> 8;
     }
   else
-    for (x=0; x < (int) (bytes_per_line*image->rows); x++)
+    for (i=0; i < (int) (bytes_per_line*image->rows); i++)
     {
       value=XBMInteger(image,hex_digits);
       *p++=value;
     }
   /*
-    Convert X bitmap image to runlength-encoded packets.
+    Convert X bitmap image to pixel packets.
   */
-  byte=0;
   p=data;
-  q=image->pixels;
-  SetRunlengthEncoder(q);
   for (y=0; y < (int) image->rows; y++)
   {
+    if (!SetPixelCache(image,0,y,image->columns,1))
+      break;
     bit=0;
+    byte=0;
     for (x=0; x < (int) image->columns; x++)
     {
       if (bit == 0)
         byte=(*p++);
-      index=byte & 0x01 ? 0 : 1;
-      if ((index == q->index) && ((int) q->length < MaxRunlength))
-        q->length++;
-      else
-        {
-          if (packets != 0)
-            q++;
-          packets++;
-          q->index=index;
-          q->length=0;
-        }
+      image->indexes[x]=byte & 0x01 ? 0 : 1;
       bit++;
       byte>>=1;
       if (bit == 8)
         bit=0;
     }
+    if (!SyncPixelCache(image))
+      break;
     if (QuantumTick(y,image->rows))
       ProgressMonitor(LoadImageText,y,image->rows);
   }
-  FreeMemory((char *) data);
-  SetRunlengthPackets(image,packets);
+  FreeMemory(data);
   SyncImage(image);
   CloseBlob(image);
   return(image);
@@ -365,17 +385,15 @@ Export unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
     name[MaxTextExtent];
 
   int
-    x,
     y;
 
   register int
-    i,
-    j;
+    x;
 
   register char
     *q;
 
-  register RunlengthPacket
+  register PixelPacket
     *p;
 
   register unsigned char
@@ -424,7 +442,6 @@ Export unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
       quantize_info.dither=image_info->dither;
       quantize_info.colorspace=GRAYColorspace;
       (void) QuantizeImage(&quantize_info,image);
-      SyncImage(image);
     }
   polarity=Intensity(image->colormap[0]) > (MaxRGB >> 1);
   if (image->colors == 2)
@@ -437,12 +454,14 @@ Export unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
   p=image->pixels;
   (void) strcpy(buffer," ");
   (void) WriteBlob(image,strlen(buffer),buffer);
-  for (i=0; i < (int) image->packets; i++)
+  for (y=0; y < (int) image->rows; y++)
   {
-    for (j=0; j <= ((int) p->length); j++)
+    if (!GetPixelCache(image,0,y,image->columns,1))
+      break;
+    for (x=0; x < (int) image->columns; x++)
     {
       byte>>=1;
-      if (p->index == polarity)
+      if (image->indexes[x] == polarity)
         byte|=0x80;
       bit++;
       if (bit == 8)
@@ -462,34 +481,28 @@ Export unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
           bit=0;
           byte=0;
         }
-      x++;
-      if (x == (int) image->columns)
-        {
-          if (bit != 0)
-            {
-              /*
-                Write a bitmap byte to the image file.
-              */
-              byte>>=(8-bit);
-              (void) sprintf(buffer,"0x%02x, ",(unsigned int) (byte & 0xff));
-              (void) WriteBlob(image,strlen(buffer),buffer);
-              count++;
-              if (count == 12)
-                {
-                  (void) strcpy(buffer,"\n  ");
-                  (void) WriteBlob(image,strlen(buffer),buffer);
-                  count=0;
-                };
-              bit=0;
-              byte=0;
-            };
-          if (QuantumTick(y,image->rows))
-            ProgressMonitor(SaveImageText,y,image->rows);
-          x=0;
-          y++;
-        }
-    }
-    p++;
+        p++;
+      }
+    if (bit != 0)
+      {
+        /*
+          Write a bitmap byte to the image file.
+        */
+        byte>>=(8-bit);
+        (void) sprintf(buffer,"0x%02x, ",(unsigned int) (byte & 0xff));
+        (void) WriteBlob(image,strlen(buffer),buffer);
+        count++;
+        if (count == 12)
+          {
+            (void) strcpy(buffer,"\n  ");
+            (void) WriteBlob(image,strlen(buffer),buffer);
+            count=0;
+          };
+        bit=0;
+        byte=0;
+      };
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(SaveImageText,y,image->rows);
   }
   (void) strcpy(buffer,"};\n");
   (void) WriteBlob(image,strlen(buffer),buffer);

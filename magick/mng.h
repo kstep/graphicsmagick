@@ -157,7 +157,7 @@ typedef struct _MngBuffer
 } MngBuffer;
 #endif
 
-typedef struct _Mng
+typedef struct _MngInfo
 {
 
 #ifdef MNG_OBJECT_BUFFERS
@@ -255,7 +255,7 @@ typedef struct _Mng
     basi_alpha,
     basi_viewable;
 #endif
-} Mng;
+} MngInfo;
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -16,6 +16,7 @@
 	<UL>
 
 		<LI><A HREF="#BlobToImage">BlobToImage</A>
+		<LI><A HREF="#DestroyBlobInfo">DestroyBlobInfo</A>
 		<LI><A HREF="#GetBlobInfo">GetBlobInfo</A>
 		<LI><A HREF="#ImageToBlob">ImageToBlob</A>
 		<LI><A HREF="#SetBlobQuantum">SetBlobQuantum</A>
@@ -34,8 +35,10 @@ blob -
 <HR>
 <H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
 <P>
-Image * <STRONG>BlobToImage</STRONG>( const ImageInfo *image_info, const char *blob, const unsigned long length
-);
+Image * <STRONG>BlobToImage</STRONG>( const ImageInfo *image_info, const char *blob, const size_t length );
+
+<P>
+void  <STRONG>DestroyBlobInfo</STRONG>( BlobInfo <CODE>*blob_info</CODE> );
 
 <P>
 void  <STRONG>GetBlobInfo</STRONG>( BlobInfo <CODE>*blob_info</CODE> );
@@ -45,7 +48,7 @@ char * <STRONG>ImageToBlob</STRONG>( const ImageInfo *image_info, Image *image, 
 <CODE>*length</CODE> );
 
 <P>
-void  <STRONG>SetBlobQuantum</STRONG>( BlobInfo *blob_info, const unsigned long quantum );
+void  <STRONG>SetBlobQuantum</STRONG>( BlobInfo *blob_info, const size_t quantum );
 
 <P>
 <HR>
@@ -60,7 +63,7 @@ the blob as an image.
 <P>
 The format of the BlobToImage method is:
 
-<blockquote><A HREF="types/Image.html">Image</A> *BlobToImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, const char *blob, const unsigned long length ); </blockquote>
+<blockquote><A HREF="types/Image.html">Image</A> *BlobToImage ( const <A HREF="types/ImageInfo.html">ImageInfo</A> *image_info, const char *blob, const size_t length ); </blockquote>
 
 <P>
 
@@ -89,6 +92,28 @@ This unsigned integer reflects the length in bytes of the blob.
 </DL></DL>
 <P>
 <HR>
+<H2><A NAME="DestroyBlobInfo">DestroyBlobInfo</A></H2>
+<P>
+Method DestroyBlobInfo deallocates memory associated with an BlobInfo
+structure.
+
+<P>
+The format of the DestroyBlobInfo method is:
+
+<blockquote>void DestroyBlobInfo ( BlobInfo *blob_info ); </blockquote>
+
+<P>
+
+<FONT SIZE=-1>A</FONT> description of each parameter follows:
+
+<DL><DL>
+<p><dt><STRONG>blob_info:</STRONG><DD>
+<P>
+Specifies a pointer to a BlobInfo structure.
+
+</DL></DL>
+<P>
+<HR>
 <H2><A NAME="GetBlobInfo">GetBlobInfo</A></H2>
 <P>
 Method GetBlobInfo initializes the BlobInfo structure.
@@ -112,8 +137,11 @@ Specifies a pointer to a BlobInfo structure.
 <HR>
 <H2><A NAME="ImageToBlob">ImageToBlob</A></H2>
 <P>
-Method ImageToBlob implements direct to memory image formats. It returns
-the image as a blob and its length.
+Method ImageToBlob implements direct to memory image formats. It returns the image as a blob and its length. The magick member of the Image structure determines the format of the returned blob 
+<FONT SIZE=-1>(GIG,</FONT> 
+<FONT SIZE=-1>JPEG,</FONT> 
+<FONT SIZE=-1>PNG,</FONT> etc.).
+
 
 <P>
 The format of the ImageToBlob method is:
@@ -158,7 +186,7 @@ current length.
 <P>
 The format of the SetBlobQuantum method is:
 
-<blockquote>void SetBlobQuantum ( BlobInfo *blob_info, const unsigned long quantum ); </blockquote>
+<blockquote>void SetBlobQuantum ( BlobInfo *blob_info, const size_t quantum ); </blockquote>
 
 <P>
 
@@ -172,7 +200,9 @@ The format of the SetBlobQuantum method is:
 
 <p><dt><STRONG>quantum:</STRONG><DD>
 <P>
-An unsigned long that reflects the number of bytes to increase a blob.
+
+<FONT SIZE=-1>A</FONT> size_t that reflects the number of bytes to increase
+a blob.
 
 </DL></DL>
 </BODY>

@@ -56,6 +56,50 @@
 
 #if defined(HasTIFF)
 #include "tiffio.h"
+#include "tiffconf.h"
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   I s T I F F                                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsTIFF returns True if the image format type, identified by the
+%  magick string, is TIFF.
+%
+%  The format of the ReadTIFFImage method is:
+%
+%      unsigned int IsTIFF(const unsigned char *magick,
+%        const unsigned int length)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method IsTIFF returns True if the image format type is TIFF.
+%
+%    o magick: This string is generally the first few bytes of an image file
+%      or blob.
+%
+%    o length: Specifies the length of the magick string.
+%
+%
+*/
+Export unsigned int IsTIFF(const unsigned char *magick,
+  const unsigned int length)
+{
+  if (length < 4)
+    return(False);
+  if ((magick[0] == 0x4D) && (magick[1] == 0x4D))
+    if ((magick[2] == 0x00) && (magick[3] == 0x2A))
+      return(True);
+  if (strncmp((char *) magick,"\111\111\052\000",4) == 0)
+    return(True);
+  return(False);
+}
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -91,8 +135,7 @@ extern "C" {
 #endif
 
 #if defined(ICC_SUPPORT)
-static unsigned int ReadColorProfile(char *text,long int length,
-  Image *image)
+static unsigned int ReadColorProfile(char *text,long int length,Image *image)
 {
   register unsigned char
     *p;
@@ -120,8 +163,8 @@ static unsigned int ReadColorProfile(char *text,long int length,
 #endif
 
 #if defined(IPTC_SUPPORT)
-static unsigned int ReadNewsProfile(char *text,long int length,
-  Image *image,int type)
+static unsigned int ReadNewsProfile(char *text,long int length,Image *image,
+  int type)
 {
   register unsigned char
     *p;
@@ -133,7 +176,7 @@ static unsigned int ReadNewsProfile(char *text,long int length,
     {
       FreeMemory(image->iptc_profile.info);
       image->iptc_profile.length=0;
-      image->iptc_profile.info=(char *) NULL;
+      image->iptc_profile.info=(unsigned char *) NULL;
     }
   if (type == TIFFTAG_RICHTIFFIPTC)
     {
@@ -158,8 +201,11 @@ static unsigned int ReadNewsProfile(char *text,long int length,
   */
   while (length > 0)
   {
-    if ((p[0] == '8') && (p[1] == 'B') && (p[2] == 'I') && (p[3] == 'M') &&
-        (p[4] == 4) && (p[5] == 4))
+#if defined(GET_ONLY_IPTC_DATA)
+    if (strncmp((char *) p,"8BIM44",6) == 0)
+#else
+    if (strncmp((char *) p,"8BIM",4) == 0)
+#endif
       break;
     length-=2;
     p+=2;
@@ -171,6 +217,7 @@ static unsigned int ReadNewsProfile(char *text,long int length,
       FreeMemory(image->iptc_profile.info);
       image->iptc_profile.length=0;
     }
+#if defined(GET_ONLY_IPTC_DATA)
   /*
     Eat OSType, IPTC ID code, and Pascal string length bytes.
   */
@@ -178,9 +225,11 @@ static unsigned int ReadNewsProfile(char *text,long int length,
   length=(*p++);
   if (length)
     p+=length;
-  if ((length & 1) == 0)
+  if ((length & 0x01) == 0)
     p++;  /* align to an even byte boundary */
   length=(p[0] << 24) | (p[1] << 16) | (p[2] << 8) | p[3];
+  p+=4;
+#endif
   image->iptc_profile.info=(unsigned char *)
     AllocateMemory((unsigned int) length*sizeof(unsigned char));
   if (image->iptc_profile.info == (unsigned char *) NULL)
@@ -190,10 +239,44 @@ static unsigned int ReadNewsProfile(char *text,long int length,
       return(False);
     }
   image->iptc_profile.length=length;
-  (void) memcpy(image->iptc_profile.info,p+4,length);
+  (void) memcpy(image->iptc_profile.info,p,length);
   return(True);
 }
 #endif
+
+static int TIFFCloseBlob(thandle_t image)
+{
+  CloseBlob((Image *) image);
+  return(0);
+}
+
+static int TIFFMapBlob(thandle_t image,tdata_t *buffer,toff_t *offset)
+{
+  return(0);
+}
+
+static tsize_t TIFFReadBlob(thandle_t image,tdata_t buffer,tsize_t size)
+{
+  return(ReadBlob((Image *) image,(size_t) size,buffer));
+}
+
+static toff_t TIFFSeekBlob(thandle_t image,toff_t offset,int whence)
+{
+  if (SeekBlob((Image *) image,(off_t) offset,whence) == -1)
+    return(-1);
+  return(TellBlob((Image *) image));
+}
+
+static toff_t TIFFSizeBlob(thandle_t image)
+{
+  (void) SeekBlob((Image *) image,0L,SEEK_END);
+  return(TellBlob((Image *) image));
+}
+
+static void TIFFUnmapBlob(thandle_t image,tdata_t buffer,toff_t offset)
+{
+  return;
+}
 
 static void TIFFWarningHandler(const char *module,const char *format,
   va_list warning)
@@ -213,6 +296,11 @@ static void TIFFWarningHandler(const char *module,const char *format,
   (void) vsprintf(p,format,warning);
   (void) strcat(p,".");
   MagickWarning(DelegateWarning,message,(char *) NULL);
+}
+
+static tsize_t TIFFWriteBlob(thandle_t image,tdata_t buffer,tsize_t size)
+{
+  return(WriteBlob((Image *) image,(size_t) size,buffer));
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -236,19 +324,11 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
     range,
     y;
 
-  Quantum
-    blue,
-    green,
-    red;
-
   register int
     i,
     x;
 
-  register long
-    packets;
-
-  register RunlengthPacket
+  register PixelPacket
     *q;
 
   register unsigned char
@@ -274,12 +354,8 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
     status,
     width;
 
-  unsigned long
-    max_packets;
-
   unsigned short
     bits_per_sample,
-    index,
     interlace,
     max_sample_value,
     min_sample_value,
@@ -302,35 +378,11 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
-  if ((image->file == stdin) || image->pipe)
-    {
-      FILE
-        *file;
-
-      int
-        c;
-
-      /*
-        Copy standard input or pipe to temporary file.
-      */
-      TemporaryFilename((char *) image_info->filename);
-      file=fopen(image_info->filename,WriteBinaryType);
-      if (file == (FILE *) NULL)
-        ReaderExit(FileOpenWarning,"Unable to write file",image);
-      c=ReadByte(image);
-      while (c != EOF)
-      {
-        (void) putc(c,file);
-        c=ReadByte(image);
-      }
-      (void) fclose(file);
-      (void) strcpy(image->filename,image_info->filename);
-      image->temporary=True;
-    }
-  CloseBlob(image);
   TIFFSetErrorHandler(TIFFWarningHandler);
   TIFFSetWarningHandler(TIFFWarningHandler);
-  tiff=TIFFOpen(image->filename,ReadBinaryUnbufferedType);
+  tiff=TIFFClientOpen(image->filename,ReadBinaryUnbufferedType,
+    (thandle_t) image,TIFFReadBlob,TIFFWriteBlob,TIFFSeekBlob,TIFFCloseBlob,
+    TIFFSizeBlob,TIFFMapBlob,TIFFUnmapBlob);
   if (tiff == (TIFF *) NULL)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   if (image_info->subrange != 0)
@@ -360,6 +412,8 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
       image->colorspace=CMYKColorspace;
     TIFFGetFieldDefaulted(tiff,TIFFTAG_SAMPLESPERPIXEL,&samples_per_pixel);
     TIFFGetFieldDefaulted(tiff,TIFFTAG_RESOLUTIONUNIT,&units);
+    x_resolution=image->x_resolution;
+    y_resolution=image->y_resolution;
     TIFFGetFieldDefaulted(tiff,TIFFTAG_XRESOLUTION,&x_resolution);
     TIFFGetFieldDefaulted(tiff,TIFFTAG_YRESOLUTION,&y_resolution);
     image->x_resolution=x_resolution;
@@ -391,6 +445,11 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
 #if defined(IPTC_SUPPORT)
     length=0;
     text=(char *) NULL;
+#if defined(PHOTOSHOP_SUPPORT)
+    TIFFGetField(tiff,TIFFTAG_PHOTOSHOP,&length,&text);
+    if (length > 0)
+      ReadNewsProfile(text,length,image,TIFFTAG_PHOTOSHOP);
+#else
     TIFFGetField(tiff,TIFFTAG_RICHTIFFIPTC,&length,&text);
     if (length > 0)
       {
@@ -398,12 +457,7 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
           TIFFSwabArrayOfLong((uint32 *) text,length);
         ReadNewsProfile(text,length,image,TIFFTAG_RICHTIFFIPTC);
       }
-    else
-      {
-        TIFFGetField(tiff,TIFFTAG_PHOTOSHOP,&length,&text);
-        if ( length > 0)
-          ReadNewsProfile(text,length,image,TIFFTAG_PHOTOSHOP);
-      }
+#endif
 #endif
     /*
       Allocate memory for the image and pixel buffer.
@@ -430,6 +484,13 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
           image->colors=range+1;
         if (bits_per_sample > QuantumDepth)
           image->colors=MaxRGB+1;
+        image->colormap=(PixelPacket *)
+          AllocateMemory(image->colors*sizeof(PixelPacket));
+        if (image->colormap == (PixelPacket *) NULL)
+          {
+            TIFFClose(tiff);
+            ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
+          }
       }
     if (image_info->ping)
       {
@@ -444,19 +505,6 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
     image->depth=bits_per_sample;
     if (bits_per_sample < 8)
       image->depth=8;
-    packets=0;
-    max_packets=image->columns*image->rows;
-    if (samples_per_pixel == 1)
-      max_packets=Max((image->columns*image->rows+1) >> 1,1);
-    if (bits_per_sample == 1)
-      max_packets=Max((image->columns*image->rows+2) >> 2,1);
-    image->pixels=(RunlengthPacket *)
-      AllocateMemory(max_packets*sizeof(RunlengthPacket));
-    if (image->pixels == (RunlengthPacket *) NULL)
-      {
-        TIFFClose(tiff);
-        ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-      }
     value=0;
     TIFFGetFieldDefaulted(tiff,TIFFTAG_PAGENUMBER,&value,&pages);
     image->scene=value;
@@ -470,8 +518,6 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
       (void) CloneString(&image->comments,text);
     if (range < 0)
       range=max_sample_value;
-    q=image->pixels;
-    SetRunlengthEncoder(q);
     method=0;
     if (samples_per_pixel > 1)
       {
@@ -488,6 +534,9 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
     {
       case 0:
       {
+        IndexPacket
+          index;
+
         Quantum
           *quantum_scanline;
 
@@ -497,17 +546,13 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
         /*
           Convert TIFF image to PseudoClass MIFF image.
         */
-        image->colormap=(ColorPacket *)
-          AllocateMemory(image->colors*sizeof(ColorPacket));
         quantum_scanline=(Quantum *) AllocateMemory(width*sizeof(Quantum));
         scanline=(unsigned char *) AllocateMemory(2*TIFFScanlineSize(tiff)+4);
-        if ((image->colormap == (ColorPacket *) NULL) ||
-            (quantum_scanline == (Quantum *) NULL) ||
+        if ((quantum_scanline == (Quantum *) NULL) ||
             (scanline == (unsigned char *) NULL))
           {
             TIFFClose(tiff);
-            ReaderExit(ResourceLimitWarning,"Memory allocation failed",
-              image);
+            ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
           }
         /*
           Create colormap.
@@ -525,6 +570,7 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
             break;
           }
           case PHOTOMETRIC_MINISWHITE:
+          default:
           {
             unsigned int
               colors;
@@ -569,14 +615,15 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
             }
             break;
           }
-          default:
-            break;
         }
         /*
-          Convert image to PseudoClass runlength-encoded packets.
+          Convert image to PseudoClass pixel packets.
         */
         for (y=0; y < (int) image->rows; y++)
         {
+          q=SetPixelCache(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            break;
           TIFFReadScanline(tiff,(char *) scanline,y,0);
           if (bits_per_sample == 16)
             {
@@ -654,7 +701,7 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
             {
               for (x=0; x < (int) image->columns; x++)
               {
-                ReadQuantum(*r,p);
+                *r=(*p++ << 8) | (*p++);
                 r++;
               }
               break;
@@ -669,38 +716,22 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
           for (x=0; x < (int) image->columns; x++)
           {
             index=(*r++);
-            if ((index == q->index) && ((int) q->length < MaxRunlength))
-              q->length++;
-            else
-              {
-                if (packets != 0)
-                  q++;
-                packets++;
-                if (packets == (int) max_packets)
-                  {
-                    max_packets<<=1;
-                    image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
-                      image->pixels,max_packets*sizeof(RunlengthPacket));
-                    if (image->pixels == (RunlengthPacket *) NULL)
-                      {
-                        FreeMemory((char *) scanline);
-                        FreeMemory((char *) quantum_scanline);
-                        TIFFClose(tiff);
-                        ReaderExit(ResourceLimitWarning,
-                          "Memory allocation failed",image);
-                      }
-                    q=image->pixels+packets-1;
-                  }
-                q->index=index;
-                q->length=0;
-              }
+            if (index >= image->colors)
+              ReaderExit(CorruptImageWarning,"invalid colormap index",image);
+            image->indexes[x]=index;
+            q->red=image->colormap[index].red;
+            q->green=image->colormap[index].green;
+            q->blue=image->colormap[index].blue;
+            q++;
           }
+          if (!SyncPixelCache(image))
+            break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(LoadImageText,y,image->rows);
         }
-        FreeMemory((char *) scanline);
-        FreeMemory((char *) quantum_scanline);
+        FreeMemory(scanline);
+        FreeMemory(quantum_scanline);
         break;
       }
       case 1:
@@ -721,6 +752,9 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
           image->matte=extra_samples == 1;
         for (y=0; y < (int) image->rows; y++)
         {
+          q=SetPixelCache(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            break;
           TIFFReadScanline(tiff,(char *) scanline,y,0);
           if (bits_per_sample == 16)
             {
@@ -751,50 +785,36 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
               }
             }
           p=scanline;
-          for (x=0; x < (int) image->columns; x++)
-          {
-            ReadQuantum(red,p);
-            ReadQuantum(green,p);
-            ReadQuantum(blue,p);
-            index=0;
-            if (samples_per_pixel > 3)
-              ReadQuantum(index,p);
-            for (i=4; i < samples_per_pixel; i++)
-              ReadQuantum(sans,p);
-            if ((red == q->red) && (green == q->green) && (blue == q->blue) &&
-                (index == q->index) && ((int) q->length < MaxRunlength))
-              q->length++;
-            else
-              {
-                if (packets != 0)
-                  q++;
-                packets++;
-                if (packets == (int) max_packets)
-                  {
-                    max_packets<<=1;
-                    image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
-                      image->pixels,max_packets*sizeof(RunlengthPacket));
-                    if (image->pixels == (RunlengthPacket *) NULL)
-                      {
-                        TIFFClose(tiff);
-                        FreeMemory((char *) scanline);
-                        ReaderExit(ResourceLimitWarning,
-                          "Memory allocation failed",image);
-                      }
-                    q=image->pixels+packets-1;
-                  }
-                q->red=red;
-                q->green=green;
-                q->blue=blue;
-                q->index=index;
-                q->length=0;
-              }
-          }
+          if (image->depth <= 8)
+            for (x=0; x < (int) image->columns; x++)
+            {
+              q->red=(*p++);
+              q->green=(*p++);
+              q->blue=(*p++);
+              if (samples_per_pixel > 3)
+                q->opacity=(*p++);
+              for (i=4; i < samples_per_pixel; i++)
+                sans=(*p++);
+              q++;
+            }
+          else
+            {
+              q->red=(*p++ << 8) || (*p++);
+              q->green=(*p++ << 8) || (*p++);
+              q->blue=(*p++ << 8) || (*p++);
+              if (samples_per_pixel > 3)
+                q->opacity=(*p++ << 8) || (*p++);
+              for (i=4; i < samples_per_pixel; i++)
+                sans=(*p++ << 8) || (*p++);
+              q++;
+            }
+          if (!SyncPixelCache(image))
+            break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(LoadImageText,y,image->rows);
         }
-        FreeMemory((char *) scanline);
+        FreeMemory(scanline);
         break;
       }
       case 2:
@@ -816,69 +836,44 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
         if (pixels == (uint32 *) NULL)
           {
             TIFFClose(tiff);
-            ReaderExit(ResourceLimitWarning,"Memory allocation failed",
-              image);
+            ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
           }
         status=TIFFReadRGBAImage(tiff,image->columns,image->rows,pixels,0);
         if (status == False)
           {
-            FreeMemory((char *) pixels);
+            FreeMemory(pixels);
             TIFFClose(tiff);
             ReaderExit(CorruptImageWarning,"Unable to read image",image);
           }
         /*
-          Convert image to DirectClass runlength-encoded packets.
+          Convert image to DirectClass pixel packets.
         */
         for (y=image->rows-1; y >= 0; y--)
         {
           p=pixels+y*image->columns;
+          q=SetPixelCache(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            break;
           for (x=0; x < (int) image->columns; x++)
           {
-            red=UpScale(TIFFGetR(*p));
-            green=UpScale(TIFFGetG(*p));
-            blue=UpScale(TIFFGetB(*p));
-            index=image->matte ? UpScale(TIFFGetA(*p)) : 0;
-            if ((red == q->red) && (green == q->green) && (blue == q->blue) &&
-                (index == q->index) && ((int) q->length < MaxRunlength))
-              q->length++;
-            else
-              {
-                if (packets != 0)
-                  q++;
-                packets++;
-                if (packets == (int) max_packets)
-                  {
-                    max_packets<<=1;
-                    image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
-                      image->pixels,max_packets*sizeof(RunlengthPacket));
-                    if (image->pixels == (RunlengthPacket *) NULL)
-                      {
-                        FreeMemory((char *) pixels);
-                        TIFFClose(tiff);
-                        ReaderExit(ResourceLimitWarning,
-                          "Memory allocation failed",image);
-                      }
-                    q=image->pixels+packets-1;
-                  }
-                q->red=red;
-                q->green=green;
-                q->blue=blue;
-                q->index=index;
-                q->length=0;
-              }
+            q->red=UpScale(TIFFGetR(*p));
+            q->green=UpScale(TIFFGetG(*p));
+            q->blue=UpScale(TIFFGetB(*p));
+            if (image->matte)
+              q->opacity=UpScale(TIFFGetA(*p));
             p++;
+            q++;
           }
+          if (!SyncPixelCache(image))
+            break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(LoadImageText,image->rows-y-1,image->rows);
         }
-        FreeMemory((char *) pixels);
+        FreeMemory(pixels);
         break;
       }
     }
-    SetRunlengthPackets(image,packets);
-    if (image->class == PseudoClass)
-      SyncImage(image);
     /*
       Proceed to next image.
     */
@@ -902,13 +897,9 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
       }
   } while (status == True);
   TIFFClose(tiff);
-  if (image->temporary)
-    {
-      (void) remove(image->filename);
-      image->temporary=False;
-    }
   while (image->previous != (Image *) NULL)
     image=image->previous;
+  CloseBlob(image);
   return(image);
 }
 #else
@@ -982,18 +973,19 @@ static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
       if (TIFFIsByteSwapped(tiff))
         TIFFSwabArrayOfLong((uint32 *) profile,length);
       TIFFSetField(tiff,type,(uint32) (length+roundup),(void *) profile);
-      FreeMemory((char *) profile);
+      FreeMemory(profile);
       return;
     }
   /*
     Handle TIFFTAG_PHOTOSHOP tag.
   */
+#if defined(GET_ONLY_IPTC_DATA)
   length=image->iptc_profile.length;
   roundup=(length & 0x01); /* round up for Photoshop */
   profile=(unsigned char *)
     AllocateMemory((length+roundup+12)*sizeof(unsigned char));
   if ((length == 0) || (profile == (unsigned char *) NULL))
-  (void) memcpy((char *) profile,"8BIM\04\04\0\0",8);
+    (void) memcpy((char *) profile,"8BIM\04\04\0\0",8);
   profile[8]=(length >> 24) & 0xff;
   profile[9]=(length >> 16) & 0xff;
   profile[10]=(length >> 8) & 0xff;
@@ -1003,7 +995,21 @@ static void WriteNewsProfile(TIFF *tiff,int type,Image *image)
   if (roundup)
     profile[length+roundup+11]=0;
   TIFFSetField(tiff,type,(uint32) length+roundup+12,(void *) profile);
-  FreeMemory((char *) profile);
+#else
+  length=image->iptc_profile.length;
+  if (length == 0)
+    return;
+  roundup=(length & 0x01); /* round up for Photoshop */
+  profile=(unsigned char *)
+    AllocateMemory((length+roundup)*sizeof(unsigned char));
+  if (profile == (unsigned char *) NULL)
+    return;
+  (void) memcpy((char *) profile,image->iptc_profile.info,length);
+  if (roundup)
+    profile[length+roundup]=0;
+  TIFFSetField(tiff,type,(uint32) length+roundup,(void *) profile);
+#endif
+  FreeMemory(profile);
 }
 #endif
 
@@ -1083,9 +1089,9 @@ static int TIFFWritePixels(TIFF *tiff,tdata_t scanline,uint32 row,
       /*
         Free memory resources.
       */
-      FreeMemory((char *) scanlines);
+      FreeMemory(scanlines);
       scanlines=(unsigned char *) NULL;
-      FreeMemory((char *) tile_pixels);
+      FreeMemory(tile_pixels);
       tile_pixels=(unsigned char *) NULL;
     }
   return(status);
@@ -1097,18 +1103,14 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
 #define TIFFDefaultStripSize(tiff,request)  ((8*1024)/TIFFScanlineSize(tiff))
 #endif
 
-  Image
-    encode_image;
-
   int
     y;
 
-  register RunlengthPacket
+  register PixelPacket
     *p;
 
   register int
     i,
-    j,
     x;
 
   register unsigned char
@@ -1130,9 +1132,6 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
 
   unsigned long
     strip_size;
-
-  unsigned short
-    value;
 
   if (Latin1Compare(image_info->magick,"PTIF") == 0)
     {
@@ -1156,9 +1155,7 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       height=image->rows;
       do
       {
-        image->orphan=True;
         next_image=ZoomImage(image,width,height);
-        image->orphan=False;
         if (next_image == (Image *) NULL)
           WriterExit(FileOpenWarning,"Unable to pyramid encode image",image);
         if (pyramid_image == (Image *) NULL)
@@ -1189,21 +1186,12 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
-  if ((image->file != stdout) && !image->pipe)
-    (void) remove(image->filename);
-  else
-    {
-      /*
-        Write standard output or pipe to temporary file.
-      */
-      encode_image=(*image);
-      TemporaryFilename(image->filename);
-      image->temporary=True;
-    }
-  CloseBlob(image);
-  tiff=TIFFOpen(image->filename,WriteBinaryType);
+  tiff=TIFFClientOpen(image->filename,WriteBinaryType,
+    (thandle_t) image,TIFFReadBlob,TIFFWriteBlob,TIFFSeekBlob,TIFFCloseBlob,
+    TIFFSizeBlob,TIFFMapBlob,TIFFUnmapBlob);
   if (tiff == (TIFF *) NULL)
     return(False);
+  image->status=0;
   scene=0;
   do
   {
@@ -1231,7 +1219,6 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           quantize_info.dither=image_info->dither;
           quantize_info.colorspace=GRAYColorspace;
           (void) QuantizeImage(&quantize_info,image);
-          SyncImage(image);
         }
     switch (image->compression)
     {
@@ -1264,7 +1251,7 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       }
     else
       if ((Latin1Compare(image_info->magick,"TIFF24") == 0) ||
-          (compress_tag == JPEGCompression) ||
+          (compress_tag == COMPRESSION_JPEG) ||
           (!IsPseudoClass(image) && !IsGrayImage(image)))
         {
           /*
@@ -1381,9 +1368,10 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
 #if defined(PHOTOSHOP_SUPPORT)
     if (image->iptc_profile.length > 0)
       WriteNewsProfile(tiff,TIFFTAG_PHOTOSHOP,image);
-#endif
+#else
     if (image->iptc_profile.length > 0)
       WriteNewsProfile(tiff,TIFFTAG_RICHTIFFIPTC,image);
+#endif
 #endif
     TIFFSetField(tiff,TIFFTAG_DOCUMENTNAME,image->filename);
     TIFFSetField(tiff,TIFFTAG_SOFTWARE,MagickVersion);
@@ -1403,10 +1391,6 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     scanline=(unsigned char *) AllocateMemory(TIFFScanlineSize(tiff));
     if (scanline == (unsigned char *) NULL)
       WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
-    p=image->pixels;
-    q=scanline;
-    x=0;
-    y=0;
     switch (photometric)
     {
       case PHOTOMETRIC_RGB:
@@ -1419,32 +1403,19 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           case NoInterlace:
           default:
           {
-            for (i=0; i < (int) image->packets; i++)
+            for (y=0; y < (int) image->rows; y++)
             {
-              for (j=0; j <= ((int) p->length); j++)
-              {
-                /*
-                  Convert DirectClass packets to contiguous RGB scanlines.
-                */
-                WriteQuantum(p->red,q);
-                WriteQuantum(p->green,q);
-                WriteQuantum(p->blue,q);
-                if (image->matte)
-                  WriteQuantum(p->index,q);
-                x++;
-                if (x == (int) image->columns)
-                  {
-                    if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
-                      break;
-                    if (image->previous == (Image *) NULL)
-                      if (QuantumTick(y,image->rows))
-                        ProgressMonitor(SaveImageText,y,image->rows);
-                    q=scanline;
-                    x=0;
-                    y++;
-                  }
-              }
-              p++;
+              if (!GetPixelCache(image,0,y,image->columns,1))
+                break;
+              if (!image->matte)
+                WritePixelCache(image,RGBQuantum,scanline);
+              else
+                WritePixelCache(image,RGBAQuantum,scanline);
+              if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
+                break;
+              if (image->previous == (Image *) NULL)
+                if (QuantumTick(y,image->rows))
+                  ProgressMonitor(SaveImageText,y,image->rows);
             }
             break;
           }
@@ -1454,84 +1425,41 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             /*
               Plane interlacing:  RRRRRR...GGGGGG...BBBBBB...
             */
-            p=image->pixels;
-            for (i=0; i < (int) image->packets; i++)
+            for (y=0; y < (int) image->rows; y++)
             {
-              for (j=0; j <= ((int) p->length); j++)
-              {
-                WriteQuantum(p->red,q);
-                x++;
-                if (x == (int) image->columns)
-                  {
-                    if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
-                      break;
-                    q=scanline;
-                    x=0;
-                    y++;
-                  }
-              }
-              p++;
+              if (!GetPixelCache(image,0,y,image->columns,1))
+                break;
+              WritePixelCache(image,RedQuantum,scanline);
+              if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
+                break;
             }
             ProgressMonitor(SaveImageText,100,400);
-            p=image->pixels;
-            y=0;
-            for (i=0; i < (int) image->packets; i++)
+            for (y=0; y < (int) image->rows; y++)
             {
-              for (j=0; j <= ((int) p->length); j++)
-              {
-                WriteQuantum(p->green,q);
-                x++;
-                if (x == (int) image->columns)
-                  {
-                    if (TIFFWritePixels(tiff,(char *) scanline,y,1,image) < 0)
-                      break;
-                    q=scanline;
-                    x=0;
-                    y++;
-                  }
-              }
-              p++;
+              if (!GetPixelCache(image,0,y,image->columns,1))
+                break;
+              WritePixelCache(image,GreenQuantum,scanline);
+              if (TIFFWritePixels(tiff,(char *) scanline,y,1,image) < 0)
+                break;
             }
             ProgressMonitor(SaveImageText,200,400);
-            p=image->pixels;
-            y=0;
-            for (i=0; i < (int) image->packets; i++)
+            for (y=0; y < (int) image->rows; y++)
             {
-              for (j=0; j <= ((int) p->length); j++)
-              {
-                WriteQuantum(p->blue,q);
-                x++;
-                if (x == (int) image->columns)
-                  {
-                    if (TIFFWritePixels(tiff,(char *) scanline,y,2,image) < 0)
-                      break;
-                    q=scanline;
-                    x=0;
-                    y++;
-                  }
-              }
-              p++;
+              if (!GetPixelCache(image,0,y,image->columns,1))
+                break;
+              WritePixelCache(image,BlueQuantum,scanline);
+              if (TIFFWritePixels(tiff,(char *) scanline,y,2,image) < 0)
+                break;
             }
             ProgressMonitor(SaveImageText,300,400);
-            p=image->pixels;
-            y=0;
             if (image->matte)
-              for (i=0; i < (int) image->packets; i++)
+              for (y=0; y < (int) image->rows; y++)
               {
-                for (j=0; j <= ((int) p->length); j++)
-                {
-                  WriteQuantum(p->index,q);
-                  x++;
-                  if (x == (int) image->columns)
-                    {
-                      if (TIFFWritePixels(tiff,(char *) scanline,y,3,image) < 0)
-                        break;
-                      q=scanline;
-                      x=0;
-                      y++;
-                    }
-                }
-                p++;
+                if (!GetPixelCache(image,0,y,image->columns,1))
+                  break;
+                WritePixelCache(image,OpacityQuantum,scanline);
+                if (TIFFWritePixels(tiff,(char *) scanline,y,3,image) < 0)
+                  break;
               }
             ProgressMonitor(SaveImageText,400,400);
             break;
@@ -1546,31 +1474,16 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         */
         if (image->colorspace != CMYKColorspace)
           RGBTransformImage(image,CMYKColorspace);
-        for (i=0; i < (int) image->packets; i++)
+        for (y=0; y < (int) image->rows; y++)
         {
-          for (j=0; j <= ((int) p->length); j++)
-          {
-            /*
-              Convert DirectClass packets to contiguous RGB scanlines.
-            */
-            WriteQuantum(p->red,q);
-            WriteQuantum(p->green,q);
-            WriteQuantum(p->blue,q);
-            WriteQuantum(p->index,q);
-            x++;
-            if (x == (int) image->columns)
-              {
-                if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
-                  break;
-                if (image->previous == (Image *) NULL)
-                  if (QuantumTick(y,image->rows))
-                    ProgressMonitor(SaveImageText,y,image->rows);
-                q=scanline;
-                x=0;
-                y++;
-              }
-          }
-          p++;
+          if (!GetPixelCache(image,0,y,image->columns,1))
+            break;
+          WritePixelCache(image,RGBAQuantum,scanline);
+          if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
+            break;
+          if (image->previous == (Image *) NULL)
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(SaveImageText,y,image->rows);
         }
         break;
       }
@@ -1593,8 +1506,7 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         if ((blue == (unsigned short *) NULL) ||
             (green == (unsigned short *) NULL) ||
             (red == (unsigned short *) NULL))
-          WriterExit(ResourceLimitWarning,"Memory allocation failed",
-            image);
+          WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
         /*
           Initialize TIFF colormap.
         */
@@ -1611,9 +1523,9 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           blue[i]=0;
         }
         TIFFSetField(tiff,TIFFTAG_COLORMAP,red,green,blue);
-        FreeMemory((char *) red);
-        FreeMemory((char *) green);
-        FreeMemory((char *) blue);
+        FreeMemory(red);
+        FreeMemory(green);
+        FreeMemory(blue);
       }
       default:
       {
@@ -1627,28 +1539,19 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
             /*
               Convert PseudoClass packets to contiguous grayscale scanlines.
             */
-            for (i=0; i < (int) image->packets; i++)
+            for (y=0; y < (int) image->rows; y++)
             {
-              for (j=0; j <= ((int) p->length); j++)
-              {
-                if (photometric == PHOTOMETRIC_PALETTE)
-                  WriteQuantum(p->index,q)
-                else
-                  WriteQuantum(Intensity(*p),q);
-                x++;
-                if (x == (int) image->columns)
-                  {
-                    if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
-                      break;
-                    if (image->previous == (Image *) NULL)
-                      if (QuantumTick(y,image->rows))
-                        ProgressMonitor(SaveImageText,y,image->rows);
-                    q=scanline;
-                    x=0;
-                    y++;
-                  }
-              }
-              p++;
+              if (!GetPixelCache(image,0,y,image->columns,1))
+                break;
+              if (photometric == PHOTOMETRIC_PALETTE)
+                WritePixelCache(image,IndexQuantum,scanline);
+              else
+                WritePixelCache(image,GrayQuantum,scanline);
+              if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
+                break;
+              if (image->previous == (Image *) NULL)
+                if (QuantumTick(y,image->rows))
+                  ProgressMonitor(SaveImageText,y,image->rows);
             }
             break;
           }
@@ -1666,15 +1569,17 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
               if (photometric == PHOTOMETRIC_MINISBLACK)
                 polarity=!polarity;
             }
-        bit=0;
-        byte=0;
-        x=0;
-        for (i=0; i < (int) image->packets; i++)
+        for (y=0; y < (int) image->rows; y++)
         {
-          for (j=0; j <= ((int) p->length); j++)
+          if (!GetPixelCache(image,0,y,image->columns,1))
+            break;
+          bit=0;
+          byte=0;
+          q=scanline;
+          for (x=0; x < (int) image->columns; x++)
           {
             byte<<=1;
-            if (p->index == polarity)
+            if (image->indexes[x] == polarity)
               byte|=0x01;
             bit++;
             if (bit == 8)
@@ -1683,66 +1588,33 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                 bit=0;
                 byte=0;
               }
-            x++;
-            if (x == (int) image->columns)
-              {
-                /*
-                  Advance to the next scanline.
-                */
-                if (bit != 0)
-                  *q++=byte << (8-bit);
-                if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
-                  break;
-                if (image->previous == (Image *) NULL)
-                  if (QuantumTick(y,image->rows))
-                    ProgressMonitor(SaveImageText,y,image->rows);
-                q=scanline;
-                bit=0;
-                byte=0;
-                x=0;
-                y++;
-             }
+            p++;
           }
-          p++;
+          if (bit != 0)
+            *q++=byte << (8-bit);
+          if (TIFFWritePixels(tiff,(char *) scanline,y,0,image) < 0)
+            break;
+          if (image->previous == (Image *) NULL)
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(SaveImageText,y,image->rows);
         }
         break;
       }
     }
-    FreeMemory((char *) scanline);
+    FreeMemory(scanline);
     if (image_info->verbose == True)
       TIFFPrintDirectory(tiff,stderr,False);
     TIFFWriteDirectory(tiff);
     if (image->next == (Image *) NULL)
       break;
-    image->next->file=image->file;
-    image=image->next;
+    image=GetNextImage(image);
     ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
-  if (image_info->adjoin)
-    while (image->previous != (Image *) NULL)
-      image=image->previous;
-  (void) TIFFClose(tiff);
-  if (image->temporary)
-    {
-      FILE
-        *file;
-
-      int
-        c;
-
-      /*
-        Copy temporary file to standard output or pipe.
-      */
-      file=fopen(image->filename,ReadBinaryType);
-      if (file == (FILE *) NULL)
-        WriterExit(FileOpenWarning,"Unable to open file",image);
-      for (c=fgetc(file); c != EOF; c=fgetc(file))
-        (void) putc(c,encode_image.file);
-      (void) fclose(file);
-      (void) remove(image->filename);
-      image->temporary=False;
-      CloseBlob(&encode_image);
-    }
+  while (image->previous != (Image *) NULL)
+    image=image->previous;
+  TIFFClose(tiff);
+  CloseBlob(image);
+  image->status=0;
   if (Latin1Compare(image_info->magick,"PTIF") == 0)
     DestroyImages(image);
   return(True);

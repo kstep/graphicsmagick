@@ -79,9 +79,6 @@ const char
   *BorderColor = "#bdbdbd",  /* gray */
   *ForegroundColor = "#000",  /* black */
   *MatteColor = "#bdbdbd";  /* gray */
-
-const InterlaceType
-  DefaultInterlace = NoInterlace;
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -113,9 +110,6 @@ const InterlaceType
 */
 Export Image *AllocateImage(const ImageInfo *image_info)
 {
-  ColorPacket
-    color;
-
   Image
     *allocated_image;
 
@@ -135,7 +129,8 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   /*
     Initialize Image structure.
   */
-  GetBlobInfo(&(allocated_image->blob));
+  GetBlobInfo(&(allocated_image->blob_info));
+  GetCacheInfo(&(allocated_image->cache_info));
   allocated_image->file=(FILE *) NULL;
   allocated_image->exempt=False;
   allocated_image->status=False;
@@ -157,14 +152,14 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   allocated_image->tile_info.x=0;
   allocated_image->tile_info.y=0;
   allocated_image->offset=0;
-  allocated_image->interlace=DefaultInterlace;
+  allocated_image->interlace=NoInterlace;
   allocated_image->scene=0;
   allocated_image->units=UndefinedResolution;
   allocated_image->x_resolution=0.0;
   allocated_image->y_resolution=0.0;
   allocated_image->montage=(char *) NULL;
   allocated_image->directory=(char *) NULL;
-  allocated_image->colormap=(ColorPacket *) NULL;
+  allocated_image->colormap=(PixelPacket *) NULL;
   allocated_image->colors=0;
   allocated_image->colorspace=RGBColorspace;
   allocated_image->rendering_intent=UndefinedIntent;
@@ -181,34 +176,19 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   allocated_image->color_profile.info=(unsigned char *) NULL;
   allocated_image->iptc_profile.length=0;
   allocated_image->iptc_profile.info=(unsigned char *) NULL;
-  allocated_image->pixels=(RunlengthPacket *) NULL;
-  allocated_image->packets=0;
-  allocated_image->packet_size=0;
-  allocated_image->packed_pixels=(unsigned char *) NULL;
+  allocated_image->pixels=(PixelPacket *) NULL;
+  allocated_image->indexes=(IndexPacket *) NULL;
   allocated_image->geometry=(char *) NULL;
-  allocated_image->page=(char *) NULL;
+  GetPageInfo(&allocated_image->page_info);
   allocated_image->dispose=0;
   allocated_image->delay=0;
   allocated_image->iterations=1;
   allocated_image->fuzz=0;
   allocated_image->filter=LanczosFilter;
   allocated_image->blur=1.0;
-  (void) QueryColorDatabase(BackgroundColor,&color);
-  allocated_image->background_color.red=XDownScale(color.red);
-  allocated_image->background_color.green=XDownScale(color.green);
-  allocated_image->background_color.blue=XDownScale(color.blue);
-  allocated_image->background_color.index=Opaque;
-  (void) QueryColorDatabase(BorderColor,&color);
-  allocated_image->border_color.red=XDownScale(color.red);
-  allocated_image->border_color.green=XDownScale(color.green);
-  allocated_image->border_color.blue=XDownScale(color.blue);
-  allocated_image->border_color.index=Opaque;
-  (void) QueryColorDatabase(MatteColor,&color);
-  allocated_image->matte_color.red=XDownScale(color.red);
-  allocated_image->matte_color.green=XDownScale(color.green);
-  allocated_image->matte_color.blue=XDownScale(color.blue);
-  allocated_image->matte_color.index=Opaque;
-  allocated_image->total_colors=0;
+  (void) QueryColorDatabase(BackgroundColor,&allocated_image->background_color);
+  (void) QueryColorDatabase(BorderColor,&allocated_image->border_color);
+  (void) QueryColorDatabase(MatteColor,&allocated_image->matte_color);
   allocated_image->normalized_mean_error=0.0;
   allocated_image->normalized_maximum_error=0.0;
   allocated_image->mean_error_per_pixel=0;
@@ -216,7 +196,7 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   *allocated_image->magick_filename='\0';
   allocated_image->magick_columns=0;
   allocated_image->magick_rows=0;
-  allocated_image->magick_time=time((time_t *) NULL);
+  GetTimerInfo(&(allocated_image->timer_info));
   allocated_image->tainted=False;
   allocated_image->orphan=False;
   allocated_image->previous=(Image *) NULL;
@@ -228,7 +208,8 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   /*
     Transfer image info.
   */
-  allocated_image->blob=image_info->blob;
+  allocated_image->blob_info=image_info->blob_info;
+  allocated_image->exempt=image_info->file != (FILE *) NULL;
   (void) strcpy(allocated_image->filename,image_info->filename);
   (void) strcpy(allocated_image->magick_filename,image_info->filename);
   (void) strcpy(allocated_image->magick,image_info->magick);
@@ -271,7 +252,9 @@ Export Image *AllocateImage(const ImageInfo *image_info)
         allocated_image->y_resolution=allocated_image->x_resolution;
     }
   if (image_info->page != (char *) NULL)
-    allocated_image->page=PostscriptGeometry(image_info->page);
+    ParseImageGeometry(PostscriptGeometry(image_info->page),
+      &allocated_image->page_info.x,&allocated_image->page_info.y,
+      &allocated_image->page_info.width,&allocated_image->page_info.height);
   if (image_info->dispose != (char *) NULL)
     allocated_image->dispose=atoi(image_info->dispose);
   if (image_info->delay != (char *) NULL)
@@ -279,27 +262,9 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   if (image_info->iterations != (char *) NULL)
     allocated_image->iterations=atoi(image_info->iterations);
   allocated_image->depth=image_info->depth;
-  if (image_info->background_color != (char *) NULL)
-    {
-      (void) QueryColorDatabase(image_info->background_color,&color);
-      allocated_image->background_color.red=XDownScale(color.red);
-      allocated_image->background_color.green=XDownScale(color.green);
-      allocated_image->background_color.blue=XDownScale(color.blue);
-    }
-  if (image_info->border_color != (char *) NULL)
-    {
-      (void) QueryColorDatabase(image_info->border_color,&color);
-      allocated_image->border_color.red=XDownScale(color.red);
-      allocated_image->border_color.green=XDownScale(color.green);
-      allocated_image->border_color.blue=XDownScale(color.blue);
-    }
-  if (image_info->matte_color != (char *) NULL)
-    {
-      (void) QueryColorDatabase(image_info->matte_color,&color);
-      allocated_image->matte_color.red=XDownScale(color.red);
-      allocated_image->matte_color.green=XDownScale(color.green);
-      allocated_image->matte_color.blue=XDownScale(color.blue);
-    }
+  allocated_image->background_color=image_info->background_color;
+  allocated_image->border_color=image_info->border_color;
+  allocated_image->matte_color=image_info->matte_color;
   return(allocated_image);
 }
 
@@ -335,12 +300,15 @@ Export void AllocateNextImage(const ImageInfo *image_info,Image *image)
     Allocate image structure.
   */
   assert(image != (Image *) NULL);
+  ClosePixelCache(&image->cache_info);
   image->next=AllocateImage(image_info);
   if (image->next == (Image *) NULL)
     return;
   (void) strcpy(image->next->filename,image->filename);
   if (image_info != (ImageInfo *) NULL)
     (void) strcpy(image->next->filename,image_info->filename);
+  image->next->blob_info=image->blob_info;
+  image->next->filesize=image->filesize;
   image->next->file=image->file;
   image->next->filesize=image->filesize;
   image->next->scene=image->scene+1;
@@ -452,13 +420,8 @@ Export Image *AppendImages(Image *images,const unsigned int stack)
   register int
     i;
 
-  register RunlengthPacket
-    *p,
-    *q;
-
   unsigned int
     height,
-    max_packets,
     scene,
     width;
 
@@ -482,22 +445,18 @@ Export Image *AppendImages(Image *images,const unsigned int stack)
       }
   width=images->columns;
   height=images->rows;
-  max_packets=images->packets;
   for (image=images->next; image != (Image *) NULL; image=image->next)
   {
     width+=image->columns;
     height+=image->rows;
-    max_packets+=image->packets;
   }
   /*
     Initialize append image attributes.
   */
-  images->orphan=True;
   if ((images->columns != images->next->columns) || !stack)
-    appended_image=CloneImage(images,width,images->rows,False);
+    appended_image=CloneImage(images,width,images->rows,True);
   else
-    appended_image=CloneImage(images,images->columns,images->rows,False);
-  images->orphan=False;
+    appended_image=CloneImage(images,images->columns,height,True);
   if (appended_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to append image",
@@ -520,38 +479,24 @@ Export Image *AppendImages(Image *images,const unsigned int stack)
           appended_image->class=DirectClass;
         CompositeImage(appended_image,ReplaceCompositeOp,image,x,0);
         x+=image->columns;
-        ProgressMonitor(AppendImageText,scene,GetNumberScenes(images));
-        scene++;
+        ProgressMonitor(AppendImageText,scene++,GetNumberScenes(images));
       }
     }
   else
     {
+      register int
+        y;
+
       /*
         Stack top-to-bottom.
       */
-      appended_image->rows=height;
-      appended_image->packets=max_packets;
-      appended_image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
-        appended_image->pixels,appended_image->packets*sizeof(RunlengthPacket));
-      if (appended_image->pixels == (RunlengthPacket *) NULL)
-        {
-          DestroyImage(appended_image);
-          MagickWarning(ResourceLimitWarning,"Unable to append image",
-            "Memory allocation failed");
-          return((Image *) NULL);
-        }
-      q=appended_image->pixels;
+      y=0;
       for (image=images; image != (Image *) NULL; image=image->next)
       {
         if (image->class == DirectClass)
           appended_image->class=DirectClass;
-        p=image->pixels;
-        for (i=0; i < (int) image->packets; i++)
-        {
-          *q=(*p);
-          p++;
-          q++;
-        }
+        CompositeImage(appended_image,ReplaceCompositeOp,image,0,y);
+        y+=image->rows;
         ProgressMonitor(AppendImageText,scene,GetNumberScenes(images));
         scene++;
       }
@@ -613,7 +558,7 @@ Export Image *AppendImages(Image *images,const unsigned int stack)
 %
 %
 */
-Export Image *AverageImages(const Image *images)
+Export Image *AverageImages(Image *images)
 {
 #define AverageImageText  "  Average image sequence...  "
 
@@ -623,23 +568,23 @@ Export Image *AverageImages(const Image *images)
       red,
       green,
       blue,
-      index;
+      opacity;
   } SumPacket;
 
-  const Image
+  Image
     *image;
 
   Image
     *averaged_image;
 
   int
-    x;
+    y;
 
   register int
     i,
-    j;
+    x;
 
-  register RunlengthPacket
+  register PixelPacket
     *p,
     *q;
 
@@ -685,60 +630,68 @@ Export Image *AverageImages(const Image *images)
     sum[i].red=0.0;
     sum[i].green=0.0;
     sum[i].blue=0.0;
-    sum[i].index=0.0;
+    sum[i].opacity=0.0;
   }
   /*
     Initialize average image attributes.
   */
-  ((Image *) images)->orphan=True;
-  averaged_image=CloneImage(images,images->columns,images->rows,False);
-  ((Image *) images)->orphan=False;
+  averaged_image=CloneImage(images,images->columns,images->rows,True);
   if (averaged_image == (Image *) NULL)
     {
       MagickWarning(ResourceLimitWarning,"Unable to average image",
         "Memory allocation failed");
-      FreeMemory((char *) sum);
+      FreeMemory(sum);
       return((Image *) NULL);
     }
+  averaged_image->class=DirectClass;
   /*
     Compute sum over each pixel color component.
   */
-  averaged_image->class=DirectClass;
   number_scenes=0;
   for (image=images; image != (Image *) NULL; image=image->next)
   {
-    x=0;
-    p=image->pixels;
-    for (i=0; i < (int) image->packets; i++)
+    i=0;
+    for (y=0; y < (int) image->rows; y++)
     {
-      for (j=0; j <= (int) p->length; j++)
+      p=GetPixelCache(image,0,y,image->columns,1);
+      if (p == (PixelPacket *) NULL)
+        break;
+      for (x=0; x < (int) image->columns; x++)
       {
-        sum[x].red+=p->red;
-        sum[x].green+=p->green;
-        sum[x].blue+=p->blue;
-        sum[x].index+=p->index;
-        x++;
+        sum[i].red+=p->red;
+        sum[i].green+=p->green;
+        sum[i].blue+=p->blue;
+        sum[i].opacity+=p->opacity;
+        p++;
+        i++;
       }
-      p++;
     }
     number_scenes++;
   }
   /*
     Average image pixels.
   */
-  q=averaged_image->pixels;
-  for (i=0; i < (int) averaged_image->packets; i++)
+  i=0;
+  for (y=0; y < (int) averaged_image->rows; y++)
   {
-    q->red=(Quantum) ((sum[i].red+number_scenes/2.0)/number_scenes);
-    q->green=(Quantum) ((sum[i].green+number_scenes/2.0)/number_scenes);
-    q->blue=(Quantum) ((sum[i].blue+number_scenes/2.0)/number_scenes);
-    q->index=(Quantum) ((sum[i].index+number_scenes/2.0)/number_scenes);
-    q->length=0;
-    q++;
-    if (QuantumTick(i,averaged_image->packets))
-      ProgressMonitor(AverageImageText,i,averaged_image->packets);
+    q=SetPixelCache(averaged_image,0,y,averaged_image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < (int) averaged_image->columns; x++)
+    {
+      q->red=(Quantum) ((sum[i].red+number_scenes/2.0)/number_scenes);
+      q->green=(Quantum) ((sum[i].green+number_scenes/2.0)/number_scenes);
+      q->blue=(Quantum) ((sum[i].blue+number_scenes/2.0)/number_scenes);
+      q->opacity=(Quantum) ((sum[i].opacity+number_scenes/2.0)/number_scenes);
+      q++;
+      i++;
+    }
+    if (!SyncPixelCache(averaged_image))
+      break;
+    if (QuantumTick(y,averaged_image->rows))
+      ProgressMonitor(AverageImageText,y,averaged_image->rows);
   }
-  FreeMemory((char *) sum);
+  FreeMemory(sum);
   return(averaged_image);
 }
 
@@ -754,12 +707,13 @@ Export Image *AverageImages(const Image *images)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method CloneImage returns a copy of all fields of the input image.  The
-%  the pixel memory is allocated but the pixel data is not copied.
+%  image pixels are copied only if the columns and rows of the cloned image
+%  are the same as the original.
 %
 %  The format of the CloneImage method is:
 %
-%      Image *CloneImage(const Image *image,const unsigned int columns,
-%        const unsigned int rows,const unsigned int clone_pixels)
+%      Image *CloneImage(Image *image,const unsigned int columns,
+%        const unsigned int rows,const unsigned int orphan)
 %
 %  A description of each parameter follows:
 %
@@ -774,19 +728,18 @@ Export Image *AverageImages(const Image *images)
 %    o rows: An integer that specifies the number of rows in the copied
 %      image.
 %
-%    o clone_pixels: Specifies whether the pixel data is copied.  Must be
-%      either True or False;
+%    o orphan:  if true, consider this image an orphan.
 %
 %
 */
-Export Image *CloneImage(const Image *image,const unsigned int columns,
-  const unsigned int rows,const unsigned int clone_pixels)
+Export Image *CloneImage(Image *image,const unsigned int columns,
+  const unsigned int rows,const unsigned int orphan)
 {
   Image
     *clone_image;
 
-  register int
-    i;
+  unsigned long
+    length;
 
   /*
     Allocate image structure.
@@ -796,104 +749,97 @@ Export Image *CloneImage(const Image *image,const unsigned int columns,
   if (clone_image == (Image *) NULL)
     return((Image *) NULL);
   /*
-    Allocate the image pixels.
+    Clone the image.
   */
   *clone_image=(*image);
-  clone_image->columns=columns;
-  clone_image->rows=rows;
-  if (!clone_pixels)
-    clone_image->packets=clone_image->columns*clone_image->rows;
-  clone_image->pixels=(RunlengthPacket *) AllocateMemory((unsigned int)
-    clone_image->packets*sizeof(RunlengthPacket));
-  if (clone_image->pixels == (RunlengthPacket *) NULL)
-    return((Image *) NULL);
-  if (!clone_pixels)
-    {
-      clone_image->tainted=True;
-      SetImage(clone_image);
-    }
-  else
-    {
-      register RunlengthPacket
-        *p,
-        *q;
-
-      /*
-        Copy image pixels.
-      */
-      p=image->pixels;
-      q=clone_image->pixels;
-      assert (p != (RunlengthPacket *)NULL);
-      assert (q != (RunlengthPacket *)NULL);
-      for (i=0; i < (int) image->packets; i++)
-      {
-        *q=(*p);
-        p++;
-        q++;
-      }
-    }
-  clone_image->packed_pixels=(unsigned char *) NULL;
   clone_image->comments=(char *) NULL;
+  clone_image->label=(char *) NULL;
+  clone_image->montage=(char *) NULL;
+  clone_image->directory=(char *) NULL;
+  clone_image->signature=(char *) NULL;
   if (image->comments != (char *) NULL)
     (void) CloneString(&clone_image->comments,image->comments);
-  clone_image->label=(char *) NULL;
   if (image->label != (char *) NULL)
     (void) CloneString(&clone_image->label,image->label);
-  clone_image->montage=(char *) NULL;
-  if (clone_pixels)
-    if (image->montage != (char *) NULL)
-      (void) CloneString(&clone_image->montage,image->montage);
-  clone_image->directory=(char *) NULL;
-  if (clone_pixels)
-    if (image->directory != (char *) NULL)
-      (void) CloneString(&clone_image->directory,image->directory);
-  clone_image->signature=(char *) NULL;
-  if (clone_pixels)
-    if (image->signature != (char *) NULL)
-      (void) CloneString(&clone_image->signature,image->signature);
-  clone_image->page=(char *) NULL;
-  if (clone_pixels)
-    if (image->page != (char *) NULL)
-      (void) CloneString(&clone_image->page,image->page);
-  if (image->colormap != (ColorPacket *) NULL)
+  if (image->colormap != (PixelPacket *) NULL)
     {
       /*
         Allocate and copy the image colormap.
       */
-      clone_image->colormap=(ColorPacket *)
-        AllocateMemory(image->colors*sizeof(ColorPacket));
-      if (clone_image->colormap == (ColorPacket *) NULL)
+      length=image->colors*sizeof(PixelPacket);
+      clone_image->colormap=(PixelPacket *) AllocateMemory(length);
+      if (clone_image->colormap == (PixelPacket *) NULL)
         return((Image *) NULL);
-      for (i=0; i < (int) image->colors; i++)
-        clone_image->colormap[i]=image->colormap[i];
+      (void) memcpy((char *) clone_image->colormap,(char *) image->colormap,
+        length);
     }
   if (image->color_profile.length > 0)
     {
       /*
         Allocate and copy the image ICC profile.
       */
-      clone_image->color_profile.info=(unsigned char *)
-        AllocateMemory(image->color_profile.length*sizeof(unsigned char));
+      length=image->color_profile.length*sizeof(unsigned char);
+      clone_image->color_profile.info=(unsigned char *) AllocateMemory(length);
       if (clone_image->color_profile.info == (unsigned char *) NULL)
         return((Image *) NULL);
-      for (i=0; i < (int) image->color_profile.length; i++)
-        clone_image->color_profile.info[i]=image->color_profile.info[i];
+      (void) memcpy((char *) clone_image->color_profile.info,
+        (char *) image->color_profile.info,length);
     }
   if (image->iptc_profile.length > 0)
     {
       /*
         Allocate and copy the image IPTC profile.
       */
-      clone_image->iptc_profile.info=(unsigned char *)
-        AllocateMemory(image->iptc_profile.length*sizeof(unsigned char));
+      length=image->iptc_profile.length*sizeof(unsigned char);
+      clone_image->iptc_profile.info=(unsigned char *) AllocateMemory(length);
       if (clone_image->iptc_profile.info == (unsigned char *) NULL)
         return((Image *) NULL);
-      for (i=0; i < (int) image->iptc_profile.length; i++)
-        clone_image->iptc_profile.info[i]=image->iptc_profile.info[i];
+      (void) memcpy((char *) clone_image->iptc_profile.info,
+        (char *) image->iptc_profile.info,length);
     }
-  if (image->orphan)
+  GetBlobInfo(&clone_image->blob_info);
+  clone_image->pixels=(PixelPacket *) NULL;
+  clone_image->indexes=(IndexPacket *) NULL;
+  GetCacheInfo(&clone_image->cache_info);
+  if ((image->columns != columns) || (image->rows != rows))
     {
-      clone_image->file=(FILE *) NULL;
+      clone_image->columns=columns;
+      clone_image->rows=rows;
+      clone_image->page_info.width=0;
+      clone_image->page_info.height=0;
+    }
+  else
+    {
+      int
+        y;
+
+      /*
+        Clone pixel cache.
+      */
+      for (y=0; y < (int) image->rows; y++)
+      {
+        if (!GetPixelCache(image,0,y,image->columns,1))
+          break;
+        if (!SetPixelCache(clone_image,0,y,clone_image->columns,1))
+          break;
+        (void) memcpy(clone_image->pixels,image->pixels,
+          image->columns*sizeof(PixelPacket));
+        if (image->class == PseudoClass)
+          (void) memcpy(clone_image->indexes,image->indexes,
+            image->columns*sizeof(IndexPacket));
+        if (!SyncPixelCache(clone_image))
+          break;
+      }
+      if (image->montage != (char *) NULL)
+        (void) CloneString(&clone_image->montage,image->montage);
+      if (image->directory != (char *) NULL)
+        (void) CloneString(&clone_image->directory,image->directory);
+      if (image->signature != (char *) NULL)
+        (void) CloneString(&clone_image->signature,image->signature);
+    }
+  if (orphan)
+    {
+      clone_image->exempt=True;
       clone_image->previous=(Image *) NULL;
       clone_image->next=(Image *) NULL;
     }
@@ -907,7 +853,6 @@ Export Image *CloneImage(const Image *image,const unsigned int columns,
       if (clone_image->next != (Image *) NULL)
         clone_image->next->previous=clone_image;
     }
-  clone_image->orphan=False;
   return(clone_image);
 }
 
@@ -931,7 +876,7 @@ Export Image *CloneImage(const Image *image,const unsigned int columns,
 %
 %  A description of each parameter follows:
 %
-%    o cloned_info: Method CloneImageInfo returns a duplicate of the given
+%    o clone_info: Method CloneImageInfo returns a duplicate of the given
 %      image info, or if image info is NULL a new one.
 %
 %    o image_info: a structure of type info.
@@ -941,51 +886,45 @@ Export Image *CloneImage(const Image *image,const unsigned int columns,
 Export ImageInfo *CloneImageInfo(const ImageInfo *image_info)
 {
   ImageInfo
-    *cloned_info;
+    *clone_info;
 
-  cloned_info=(ImageInfo *) AllocateMemory(sizeof(ImageInfo));
-  if (cloned_info == (ImageInfo *) NULL)
+  clone_info=(ImageInfo *) AllocateMemory(sizeof(ImageInfo));
+  if (clone_info == (ImageInfo *) NULL)
     MagickError(ResourceLimitWarning,"Unable to clone image info",
       "Memory allocation failed");
   if (image_info == (ImageInfo *) NULL)
     {
-      GetImageInfo(cloned_info);
-      return(cloned_info);
+      GetImageInfo(clone_info);
+      return(clone_info);
     }
-  *cloned_info=(*image_info);
+  *clone_info=(*image_info);
   if (image_info->size != (char *) NULL)
-    cloned_info->size=AllocateString(image_info->size);
+    clone_info->size=AllocateString(image_info->size);
   if (image_info->tile != (char *) NULL)
-    cloned_info->tile=AllocateString(image_info->tile);
+    clone_info->tile=AllocateString(image_info->tile);
   if (image_info->page != (char *) NULL)
-    cloned_info->page=AllocateString(image_info->page);
+    clone_info->page=AllocateString(image_info->page);
   if (image_info->server_name != (char *) NULL)
-    cloned_info->server_name=AllocateString(image_info->server_name);
+    clone_info->server_name=AllocateString(image_info->server_name);
   if (image_info->box != (char *) NULL)
-    cloned_info->box=AllocateString(image_info->box);
+    clone_info->box=AllocateString(image_info->box);
   if (image_info->font != (char *) NULL)
-    cloned_info->font=AllocateString(image_info->font);
+    clone_info->font=AllocateString(image_info->font);
   if (image_info->pen != (char *) NULL)
-    cloned_info->pen=AllocateString(image_info->pen);
+    clone_info->pen=AllocateString(image_info->pen);
   if (image_info->texture != (char *) NULL)
-    cloned_info->texture=AllocateString(image_info->texture);
+    clone_info->texture=AllocateString(image_info->texture);
   if (image_info->density != (char *) NULL)
-    cloned_info->density=AllocateString(image_info->density);
-  if (image_info->background_color != (char *) NULL)
-    cloned_info->background_color=AllocateString(image_info->background_color);
-  if (image_info->border_color != (char *) NULL)
-    cloned_info->border_color=AllocateString(image_info->border_color);
-  if (image_info->matte_color != (char *) NULL)
-    cloned_info->matte_color=AllocateString(image_info->matte_color);
+    clone_info->density=AllocateString(image_info->density);
   if (image_info->dispose != (char *) NULL)
-    cloned_info->dispose=AllocateString(image_info->dispose);
+    clone_info->dispose=AllocateString(image_info->dispose);
   if (image_info->delay != (char *) NULL)
-    cloned_info->delay=AllocateString(image_info->delay);
+    clone_info->delay=AllocateString(image_info->delay);
   if (image_info->iterations != (char *) NULL)
-    cloned_info->iterations=AllocateString(image_info->iterations);
+    clone_info->iterations=AllocateString(image_info->iterations);
   if (image_info->view != (char *) NULL)
-    cloned_info->view=AllocateString(image_info->view);
-  return(cloned_info);
+    clone_info->view=AllocateString(image_info->view);
+  return(clone_info);
 }
 
 /*
@@ -1019,7 +958,7 @@ Export ImageInfo *CloneImageInfo(const ImageInfo *image_info)
 Export void CommentImage(Image *image,const char *comments)
 {
   if (image->comments != (char *) NULL)
-    FreeMemory((char *) image->comments);
+    FreeMemory(image->comments);
   image->comments=TranslateText((ImageInfo *) NULL,image,comments);
 }
 
@@ -1062,25 +1001,36 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
   Image *composite_image,const int x_offset,const int y_offset)
 {
   int
+    height,
+    width,
     y;
 
   long
     blue,
     green,
-    index,
+    opacity,
     red;
 
   Quantum
+    midpoint,
     shade;
 
+  PixelPacket
+    color;
+
   register int
-    i,
-    runlength,
     x;
 
-  register RunlengthPacket
+  register PixelPacket
     *p,
     *q;
+
+  double
+    saturation_scale,
+    brightness_scale,
+    brightness,
+    hue,
+    saturation;
 
   /*
     Check composite geometry.
@@ -1098,10 +1048,9 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
   /*
     Image must be uncompressed.
   */
-  if (!UncondenseImage(image))
-    return;
-  if (!UncondenseImage(composite_image))
-    return;
+  red=0;
+  green=0;
+  blue=0;
   switch (compose)
   {
     case XorCompositeOp:
@@ -1121,15 +1070,12 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
     }
     case ReplaceMatteCompositeOp:
     {
-      image->class=DirectClass;
-      image->matte=True;
+      if (!image->matte)
+        MatteImage(image,Opaque);
       break;
     }
     case DisplaceCompositeOp:
     {
-      ColorPacket
-        interpolated_color;
-
       double
         x_displace,
         y_displace;
@@ -1139,19 +1085,17 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
         vertical_scale;
 
       Image
-        *displaced_image;
+        *displace_image;
 
-      register RunlengthPacket
+      register PixelPacket
         *r;
 
       /*
-        Allocate the displaced image.
+        Allocate the displace image.
       */
-      composite_image->orphan=True;
-      displaced_image=CloneImage(composite_image,composite_image->columns,
-        composite_image->rows,False);
-      composite_image->orphan=False;
-      if (displaced_image == (Image *) NULL)
+      displace_image=CloneImage(composite_image,composite_image->columns,
+        composite_image->rows,True);
+      if (displace_image == (Image *) NULL)
         {
           MagickWarning(ResourceLimitWarning,"Unable to display image",
             "Memory allocation failed");
@@ -1175,28 +1119,22 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
       /*
         Shift image pixels as defined by a displacement map.
       */
-      p=composite_image->pixels;
-      runlength=p->length+1;
-      r=displaced_image->pixels;
       for (y=0; y < (int) composite_image->rows; y++)
       {
-        if (((y_offset+y) < 0) || ((y_offset+y) >= (int) image->rows))
-          {
-            p+=composite_image->columns;
-            continue;
-          }
-        q=image->pixels+(y_offset+y)*image->columns+x_offset;
+        if (((y+y_offset) < 0) || ((y+y_offset) >= (int) image->rows))
+          continue;
+        p=GetPixelCache(composite_image,0,y,composite_image->columns,1);
+        q=GetPixelCache(image,0,y+y_offset,image->columns,1);
+        r=GetPixelCache(displace_image,0,y,displace_image->columns,1);
+        if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL) ||
+            (r == (PixelPacket *) NULL))
+          break;
+        q+=x_offset;
         for (x=0; x < (int) composite_image->columns; x++)
         {
-          if (runlength != 0)
-            runlength--;
-          else
-            {
-              p++;
-              runlength=p->length;
-            }
           if (((x_offset+x) < 0) || ((x_offset+x) >= (int) image->columns))
             {
+              p++;
               q++;
               continue;
             }
@@ -1204,20 +1142,40 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
             ((MaxRGB+1) >> 1)))/((MaxRGB+1) >> 1);
           y_displace=x_displace;
           if (composite_image->matte)
-            y_displace=(vertical_scale*((double) p->index-
+            y_displace=(vertical_scale*((double) p->opacity-
               ((MaxRGB+1) >> 1)))/((MaxRGB+1) >> 1);
-          interpolated_color=
-            InterpolateColor(image,x_offset+x+x_displace,y_offset+y+y_displace);
-          r->red=interpolated_color.red;
-          r->green=interpolated_color.green;
-          r->blue=interpolated_color.blue;
-          r->index=interpolated_color.index;
-          r->length=0;
+          *r=InterpolateColor(image,x_offset+x+x_displace,
+            y_offset+y+y_displace);
+          p++;
           q++;
           r++;
         }
+        if (!SyncPixelCache(displace_image))
+          break;
       }
-      composite_image=displaced_image;
+      composite_image=displace_image;
+      break;
+    }
+    case ModulateCompositeOp:
+    {
+      midpoint=(MaxRGB) >> 1;
+      saturation_scale=50.0;
+      brightness_scale=50.0;
+      if (composite_image->geometry != (char *) NULL)
+        {
+          int
+            count;
+
+          /*
+            Determine the brightness and saturation scale.
+          */
+          count=sscanf(composite_image->geometry,"%lfx%lf\n",
+            &brightness_scale,&saturation_scale);
+          if (count == 1)
+            saturation_scale=brightness_scale;
+        }
+      brightness_scale/=100.0;
+      saturation_scale/=100.0;
       break;
     }
     case ReplaceCompositeOp:
@@ -1232,18 +1190,17 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
             image->class=DirectClass;
           else
             {
-              int
-                status;
-
-              status=memcmp((char *) composite_image->colormap,
-                (char *) image->colormap,composite_image->colors*
-                sizeof(ColorPacket));
-              if (status != 0)
-                image->class=DirectClass;
+              for (x=0; x < (int) image->colors; x++)
+                if (!ColorMatch(image->colormap[x],
+                     composite_image->colormap[x],0))
+                  {
+                    image->class=DirectClass;
+                    break;
+                  }
             }
         }
       if (image->matte && !composite_image->matte)
-        MatteImage(composite_image);
+        MatteImage(composite_image,Opaque);
       break;
     }
     default:
@@ -1255,27 +1212,38 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
         {
           image->class=DirectClass;
           if (compose != AnnotateCompositeOp)
-            MatteImage(image);
+            MatteImage(image,Opaque);
         }
       if (!composite_image->matte)
         {
-          p=composite_image->pixels;
-          red=p->red;
-          green=p->green;
-          blue=p->blue;
-          if (IsMonochromeImage(composite_image))
-            {
-              red=composite_image->background_color.red;
-              green=composite_image->background_color.green;
-              blue=composite_image->background_color.blue;
-            }
-          for (i=0; i < (int) composite_image->packets; i++)
+          (void) IsMonochromeImage(composite_image);
+          for (y=0; y < (int) composite_image->rows; y++)
           {
-            p->index=Opaque;
-            if ((p->red == red) && (p->green == green) &&
-                (p->blue == blue))
-              p->index=Transparent;
-            p++;
+            p=GetPixelCache(composite_image,0,y,composite_image->columns,1);
+            if (p == (PixelPacket *) NULL)
+              break;
+            if (y == 0)
+              {
+                red=p->red;
+                green=p->green;
+                blue=p->blue;
+                if (IsMonochromeImage(composite_image))
+                  {
+                    red=composite_image->background_color.red;
+                    green=composite_image->background_color.green;
+                    blue=composite_image->background_color.blue;
+                  }
+              }
+            for (x=0; x < (int) composite_image->columns; x++)
+            {
+              p->opacity=Opaque;
+              if ((p->red == red) && (p->green == green) &&
+                  (p->blue == blue))
+                p->opacity=Transparent;
+              p++;
+            }
+            if (!SyncPixelCache(composite_image))
+              break;
           }
           composite_image->class=DirectClass;
           composite_image->matte=True;
@@ -1286,103 +1254,88 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
   /*
     Initialize composited image.
   */
-  composite_image->tainted=True;
-  p=composite_image->pixels;
-  runlength=p->length+1;
-  for (y=0; y < (int) composite_image->rows; y++)
+  width=Min(composite_image->columns,image->columns-x_offset);
+  height=Min(composite_image->rows,image->rows-y_offset);
+  for (y=0; y < height; y++)
   {
-    if (((y_offset+y) < 0) || ((y_offset+y) >= (int) image->rows))
-      {
-        p+=composite_image->columns;
-        continue;
-      }
-    q=image->pixels+(y_offset+y)*image->columns+x_offset;
-    for (x=0; x < (int) composite_image->columns; x++)
+    p=GetPixelCache(composite_image,0,y,width,1);
+    q=GetPixelCache(image,x_offset,y+y_offset,width,1);
+    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+      break;
+    for (x=0; x < width; x++)
     {
-      if (runlength != 0)
-        runlength--;
-      else
-        {
-          p++;
-          runlength=p->length;
-        }
-      if (((x_offset+x) < 0) || ((x_offset+x) >= (int) image->columns))
-        {
-          q++;
-          continue;
-        }
       switch (compose)
       {
         case AnnotateCompositeOp:
         case OverCompositeOp:
         default:
         {
-          if (p->index == Transparent)
+          if (p->opacity == Transparent)
             {
               red=q->red;
               green=q->green;
               blue=q->blue;
-              index=q->index;
+              opacity=q->opacity;
             }
           else
-            if (p->index == Opaque)
+            if (p->opacity == Opaque)
               {
                 red=p->red;
                 green=p->green;
                 blue=p->blue;
-                index=p->index;
+                opacity=p->opacity;
               }
             else
               {
                 red=(long) ((unsigned long)
-                  (p->red*p->index+q->red*(Opaque-p->index))/Opaque);
+                  (p->red*p->opacity+q->red*(Opaque-p->opacity))/Opaque);
                 green=(long) ((unsigned long)
-                  (p->green*p->index+q->green*(Opaque-p->index))/Opaque);
+                  (p->green*p->opacity+q->green*(Opaque-p->opacity))/Opaque);
                 blue=(long) ((unsigned long)
-                  (p->blue*p->index+q->blue*(Opaque-p->index))/Opaque);
-                index=(long) ((unsigned long)
-                  (p->index*p->index+q->index*(Opaque-p->index))/Opaque);
+                  (p->blue*p->opacity+q->blue*(Opaque-p->opacity))/Opaque);
+                opacity=(long) ((unsigned long) (p->opacity*p->opacity+
+                  q->opacity*(Opaque-p->opacity))/Opaque);
               }
           break;
         }
         case InCompositeOp:
         {
-          red=((unsigned long) (p->red*q->index)/Opaque);
-          green=((unsigned long) (p->green*q->index)/Opaque);
-          blue=((unsigned long) (p->blue*q->index)/Opaque);
-          index=((unsigned long) (p->index*q->index)/Opaque);
+          red=((unsigned long) (p->red*q->opacity)/Opaque);
+          green=((unsigned long) (p->green*q->opacity)/Opaque);
+          blue=((unsigned long) (p->blue*q->opacity)/Opaque);
+          opacity=((unsigned long) (p->opacity*q->opacity)/Opaque);
           break;
         }
         case OutCompositeOp:
         {
-          red=((unsigned long) (p->red*(Opaque-q->index))/Opaque);
-          green=((unsigned long) (p->green*(Opaque-q->index))/Opaque);
-          blue=((unsigned long) (p->blue*(Opaque-q->index))/Opaque);
-          index=((unsigned long) (p->index*(Opaque-q->index))/Opaque);
+          red=((unsigned long) (p->red*(Opaque-q->opacity))/Opaque);
+          green=((unsigned long) (p->green*(Opaque-q->opacity))/Opaque);
+          blue=((unsigned long) (p->blue*(Opaque-q->opacity))/Opaque);
+          opacity=((unsigned long) (p->opacity*(Opaque-q->opacity))/Opaque);
           break;
         }
         case AtopCompositeOp:
         {
           red=((unsigned long)
-            (p->red*q->index+q->red*(Opaque-p->index))/Opaque);
+            (p->red*q->opacity+q->red*(Opaque-p->opacity))/Opaque);
           green=((unsigned long)
-            (p->green*q->index+q->green*(Opaque-p->index))/Opaque);
+            (p->green*q->opacity+q->green*(Opaque-p->opacity))/Opaque);
           blue=((unsigned long)
-            (p->blue*q->index+q->blue*(Opaque-p->index))/Opaque);
-          index=((unsigned long)
-            (p->index*q->index+q->index*(Opaque-p->index))/Opaque);
+            (p->blue*q->opacity+q->blue*(Opaque-p->opacity))/Opaque);
+          opacity=((unsigned long)
+            (p->opacity*q->opacity+q->opacity*(Opaque-p->opacity))/Opaque);
           break;
         }
         case XorCompositeOp:
         {
           red=((unsigned long)
-            (p->red*(Opaque-q->index)+q->red*(Opaque-p->index))/Opaque);
+            (p->red*(Opaque-q->opacity)+q->red*(Opaque-p->opacity))/Opaque);
           green=((unsigned long)
-            (p->green*(Opaque-q->index)+q->green*(Opaque-p->index))/Opaque);
+            (p->green*(Opaque-q->opacity)+q->green*(Opaque-p->opacity))/Opaque);
           blue=((unsigned long)
-            (p->blue*(Opaque-q->index)+q->blue*(Opaque-p->index))/Opaque);
-          index=((unsigned long)
-            (p->index*(Opaque-q->index)+q->index*(Opaque-p->index))/Opaque);
+            (p->blue*(Opaque-q->opacity)+q->blue*(Opaque-p->opacity))/Opaque);
+          opacity=((unsigned long) (p->opacity*(Opaque-q->opacity)+
+            q->opacity*(Opaque-p->opacity))/Opaque);
           break;
         }
         case PlusCompositeOp:
@@ -1390,7 +1343,7 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
           red=p->red+q->red;
           green=p->green+q->green;
           blue=p->blue+q->blue;
-          index=p->index+q->index;
+          opacity=p->opacity+q->opacity;
           break;
         }
         case MinusCompositeOp:
@@ -1398,7 +1351,7 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
           red=p->red-(int) q->red;
           green=p->green-(int) q->green;
           blue=p->blue-(int) q->blue;
-          index=Opaque;
+          opacity=Opaque;
           break;
         }
         case AddCompositeOp:
@@ -1412,9 +1365,9 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
           blue=p->blue+q->blue;
           if (blue > MaxRGB)
             blue-=(MaxRGB+1);
-          index=p->index+q->index;
-          if (index > Opaque)
-            index-=(Opaque+1);
+          opacity=p->opacity+q->opacity;
+          if (opacity > Opaque)
+            opacity-=(Opaque+1);
           break;
         }
         case SubtractCompositeOp:
@@ -1428,9 +1381,9 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
           blue=p->blue-(int) q->blue;
           if (blue < 0)
             blue+=(MaxRGB+1);
-          index=p->index-(int) q->index;
-          if (index < 0)
-            index+=(MaxRGB+1);
+          opacity=p->opacity-(int) q->opacity;
+          if (opacity < 0)
+            opacity+=(MaxRGB+1);
           break;
         }
         case DifferenceCompositeOp:
@@ -1438,7 +1391,7 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
           red=AbsoluteValue(p->red-(int) q->red);
           green=AbsoluteValue(p->green-(int) q->green);
           blue=AbsoluteValue(p->blue-(int) q->blue);
-          index=AbsoluteValue(p->index-(int) q->index);
+          opacity=AbsoluteValue(p->opacity-(int) q->opacity);
           break;
         }
         case BumpmapCompositeOp:
@@ -1447,7 +1400,7 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
           red=((unsigned long) (q->red*shade)/Opaque);
           green=((unsigned long) (q->green*shade)/Opaque);
           blue=((unsigned long) (q->blue*shade)/Opaque);
-          index=((unsigned long) (q->index*shade)/Opaque);
+          opacity=((unsigned long) (q->opacity*shade)/Opaque);
           break;
         }
         case ReplaceCompositeOp:
@@ -1455,7 +1408,7 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
           red=p->red;
           green=p->green;
           blue=p->blue;
-          index=p->index;
+          opacity=p->opacity;
           break;
         }
         case ReplaceRedCompositeOp:
@@ -1463,7 +1416,7 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
           red=DownScale(Intensity(*p));
           green=q->green;
           blue=q->blue;
-          index=q->index;
+          opacity=q->opacity;
           break;
         }
         case ReplaceGreenCompositeOp:
@@ -1471,7 +1424,7 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
           red=q->red;
           green=DownScale(Intensity(*p));
           blue=q->blue;
-          index=q->index;
+          opacity=q->opacity;
           break;
         }
         case ReplaceBlueCompositeOp:
@@ -1479,7 +1432,7 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
           red=q->red;
           green=q->green;
           blue=DownScale(Intensity(*p));
-          index=q->index;
+          opacity=q->opacity;
           break;
         }
         case ReplaceMatteCompositeOp:
@@ -1487,18 +1440,18 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
           red=q->red;
           green=q->green;
           blue=q->blue;
-          index=DownScale(Intensity(*p));
+          opacity=DownScale(Intensity(*p));
           break;
         }
         case BlendCompositeOp:
         {
           red=((unsigned long)
-            (p->red*p->index+q->red*q->index)/Opaque);
+            (p->red*p->opacity+q->red*q->opacity)/Opaque);
           green=((unsigned long)
-            (p->green*p->index+q->green*q->index)/Opaque);
+            (p->green*p->opacity+q->green*q->opacity)/Opaque);
           blue=((unsigned long)
-            (p->blue*p->index+q->blue*q->index)/Opaque);
-          index=Opaque;
+            (p->blue*p->opacity+q->blue*q->opacity)/Opaque);
+          opacity=Opaque;
           break;
         }
         case DisplaceCompositeOp:
@@ -1506,18 +1459,60 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
           red=p->red;
           green=p->green;
           blue=p->blue;
-          index=p->index;
+          opacity=p->opacity;
+          break;
+        }
+        case ModulateCompositeOp:
+        {
+          if (Intensity(*p) != midpoint)
+            {
+              double
+                percent_brightness;
+
+              /*
+                Pixel is not at 0 point.
+              */
+              color.red=q->red;
+              color.green=q->green;
+              color.blue=q->blue;
+              TransformHSL(color.red,color.green,color.blue,&hue,&saturation,
+                &brightness);
+              percent_brightness=(brightness_scale*
+                ((double) Intensity(*p)-midpoint))/midpoint;
+              brightness+=percent_brightness;
+              if (brightness < 0.0)
+                brightness=0.0;
+              else
+                if (brightness > 1.0)
+                  brightness=1.0;
+              HSLTransform(hue,saturation,brightness,&color.red,&color.green,
+                &color.blue);
+              red=color.red;
+              green=color.green;
+              blue=color.blue;
+              opacity=q->opacity;
+              break;
+            }
+          red=q->red;
+          green=q->green;
+          blue=q->blue;
+          opacity=q->opacity;
           break;
         }
       }
       q->red=(Quantum) ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red);
       q->green=(Quantum) ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green);
       q->blue=(Quantum) ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue);
-      q->index=(unsigned short) ((index < Transparent) ? Transparent :
-        (index > Opaque) ? Opaque : index);
-      q->length=0;
+      q->opacity=(Quantum) ((opacity < Transparent) ? Transparent :
+        (opacity > Opaque) ? Opaque : opacity);
+      if ((image->class == PseudoClass) &&
+          (composite_image->class == PseudoClass))
+        image->indexes[x]=composite_image->indexes[x];
+      p++;
       q++;
     }
+    if (!SyncPixelCache(image))
+      break;
   }
   if (compose == BlendCompositeOp)
     image->matte=False;
@@ -1533,193 +1528,439 @@ Export void CompositeImage(Image *image,const CompositeOperator compose,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C o n d e n s e I m a g e                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method CondenseImage compresses an image to the minimum number of
-%  runlength-encoded packets.
-%
-%  The format of the CondenseImage method is:
-%
-%      void CondenseImage(Image *image)
-%
-%  A description of each parameter follows:
-%
-%    o image: The address of a structure of type Image.
-%
-%
-*/
-Export void CondenseImage(Image *image)
-{
-  register int
-    i,
-    runlength;
-
-  register long
-    packets;
-
-  register RunlengthPacket
-    *p,
-    *q;
-
-  assert(image != (Image *) NULL);
-  if ((image->columns == 0) || (image->rows == 0))
-    return;
-  if (image->pixels == (RunlengthPacket *) NULL)
-    return;
-  /*
-    Compress image pixels.
-  */
-  p=image->pixels;
-  runlength=p->length+1;
-  packets=0;
-  q=image->pixels;
-  q->length=MaxRunlength;
-  if (image->matte || (image->colorspace == CMYKColorspace))
-    for (i=0; i < (int) (image->columns*image->rows); i++)
-    {
-      if (runlength != 0)
-        runlength--;
-      else
-        {
-          p++;
-          runlength=p->length;
-        }
-      if ((p->red == q->red) && (p->green == q->green) &&
-          (p->blue == q->blue) && (p->index == q->index) &&
-          ((int) q->length < MaxRunlength))
-        q->length++;
-      else
-        {
-          if (packets != 0)
-            q++;
-          packets++;
-          *q=(*p);
-          q->length=0;
-        }
-    }
-  else
-    for (i=0; i < (int) (image->columns*image->rows); i++)
-    {
-      if (runlength != 0)
-        runlength--;
-      else
-        {
-          p++;
-          runlength=p->length;
-        }
-      if ((p->red == q->red) && (p->green == q->green) &&
-          (p->blue == q->blue) && ((int) q->length < MaxRunlength))
-        q->length++;
-      else
-        {
-          if (packets != 0)
-            q++;
-          packets++;
-          *q=(*p);
-          q->length=0;
-        }
-    }
-  SetRunlengthPackets(image,packets);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   C r e a t e I m a g e                                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method CreateImage creates an image from the specified normalized pixel data
-%  and returns it.  It allocates the memory necessary for the new Image
-%  structure and returns a pointer to the new image.
+%  Method CreateImage is a convenience routine that creates an image from the
+%  pixel data you supply and returns it.  It allocates the memory necessary
+%  for the new Image structure and returns a pointer to the new image.  The
+%  pixel data must be in scanline order top-to-bottom.  The data can be
+%  character, short int, integer, float, or double.  Float and double require
+%  the pixels to be normalized [0..1].  The other types are [0..MaxRGB].  For
+%  example, to create a 640x480 image from unsigned red-green-blue character
+%  data, use
+%
+%      image=CreateImage(640,480,"RGB",0,pixels);
 %
 %  The format of the CreateImage method is:
 %
 %      Image *CreateImage(const unsigned int width,const unsigned int height,
-%        const float *red,const float *green,const float *blue,
-%        const float *opacity)
+%        const char *map,const StorageType type,const void *pixels)
 %
 %  A description of each parameter follows:
 %
-%    o image:  Method CreateImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a memory shortage or
-%      if the image cannot be read.
+%    o image:  Method CreateImage returns a pointer to the image.  A null
+%      image is returned if there is a memory shortage or if the image cannot
+%      be read.
 %
 %    o width: Specifies the width in pixels of the image.
 %
 %    o height: Specifies the height in pixels of the image.
 %
-%    o red,green,blue,opacity: This array of normalized float values [0..1]
-%      contain the red, green, blue, and opacity components of the pixel data.
-%      The length of the arrays must equal the area specified by the width and
-%      height values.  If you do not want to initialize a particular
-%      component, specify it as NULL.
+%    o map:  This character string can be any combination or order of 
+%      R = red, G = green, B = blue, A = alpha, C = cyan, Y = yellow,
+%      M = magenta, and K = black.  The ordering reflects the order of the
+%      pixels in the supplied pixel array.
+%
+%    o type: pixel type where 0 = unsigned char, 1 = short int, 2 = int,
+%      3 = float, and 4 = double.  Float and double types are expected to be
+%      normalized [0..1] otherwise [0..MaxRGB].
+%
+%    o pixels: This array of values contain the pixel components as defined
+%      by the map and type parameters.  The length of the arrays must
+%      equal the area specified by the width and height values and type
+%      parameters.
 %
 %
 */
-Image *CreateImage(const unsigned int width,const unsigned int height,
-  const float *red,const float *green,const float *blue,const float *opacity)
+Export Image *CreateImage(const unsigned int width,const unsigned int height,
+  const char *map,const StorageType type,const void *pixels)
 {
   Image
     *image;
 
-  register int
-    i;
+  int
+    y;
 
-  RunlengthPacket
+  register int
+    i,
+    x;
+
+  PixelPacket
     *q;
 
+  /*
+    Allocate image structure.
+  */
+  assert(pixels != (void *) NULL);
   if ((width*height) == 0)
     {
       MagickWarning(CorruptImageWarning,"impossible image size",(char *) NULL);
       return((Image *) NULL);
     }
-  /*
-    Allocate image structure.
-  */
   image=AllocateImage((ImageInfo *) NULL);
   if (image == (Image *) NULL)
     return((Image *) NULL);
-  /*
-    Initialize image structure.
-  */
-  image->matte=opacity != (float *) NULL;
   image->columns=width;
   image->rows=height;
-  image->packets=image->columns*image->rows;
-  image->pixels=(RunlengthPacket *)
-    AllocateMemory(image->packets*sizeof(RunlengthPacket));
-  if (image->pixels == (RunlengthPacket *) NULL)
+  for (i=0; i < strlen(map); i++)
+    switch (map[i])
     {
-      MagickWarning(ResourceLimitWarning,"Memory allocation failed",
-        (char *) NULL);
+      case 'a':
+      case 'A':
+      {
+        image->matte=True;
+        break;
+      }
+      case 'c':
+      case 'C':
+      case 'm':
+      case 'M':
+      case 'y':
+      case 'Y':
+      case 'k':
+      case 'K':
+      {
+        image->colorspace=CMYKColorspace;
+        break;
+      }
+      default:
+        break;
+    }
+  /*
+    Transfer the pixels from the pixel data array to the image.
+  */
+  switch (type)
+  {
+    case CharPixel:
+    {
+      register char
+        *p;
+
+      p=(char *) pixels;
+      for (y=0; y < (int) image->rows; y++)
+      {
+        q=SetPixelCache(image,0,y,image->columns,1);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (int) image->columns; x++)
+        {
+          for (i=0; i < strlen(map); i++)
+          {
+            switch (map[i])
+            {
+              case 'r':
+              case 'R':
+              case 'c':
+              case 'C':
+              {
+                q->red=(*p++);
+                break;
+              }
+              case 'g':
+              case 'G':
+              case 'y':
+              case 'Y':
+              {
+                q->green=(*p++);
+                break;
+              }
+              case 'b':
+              case 'B':
+              case 'm':
+              case 'M':
+              {
+                q->blue=(*p++);
+                break;
+              }
+              case 'a':
+              case 'A':
+              case 'k':
+              case 'K':
+              {
+                q->opacity=(*p++);
+                break;
+              }
+              default:
+              {
+                MagickWarning(OptionWarning,"Invalid pixel map",map);
+                DestroyImage(image);
+                return((Image *) NULL);
+              }
+            }
+          }
+          q++;
+        }
+        if (!SyncPixelCache(image))
+          break;
+      }
+      break;
+    }
+    case ShortPixel:
+    {
+      register unsigned short
+        *p;
+
+      p=(unsigned short *) pixels;
+      for (y=0; y < (int) image->rows; y++)
+      {
+        q=SetPixelCache(image,0,y,image->columns,1);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (int) image->columns; x++)
+        {
+          for (i=0; i < strlen(map); i++)
+          {
+            switch (map[i])
+            {
+              case 'r':
+              case 'R':
+              case 'c':
+              case 'C':
+              {
+                q->red=(*p++);
+                break;
+              }
+              case 'g':
+              case 'G':
+              case 'y':
+              case 'Y':
+              {
+                q->green=(*p++);
+                break;
+              }
+              case 'b':
+              case 'B':
+              case 'm':
+              case 'M':
+              {
+                q->blue=(*p++);
+                break;
+              }
+              case 'a':
+              case 'A':
+              case 'k':
+              case 'K':
+              {
+                q->opacity=(*p++);
+                break;
+              }
+              default:
+              {
+                MagickWarning(OptionWarning,"Invalid pixel map",map);
+                DestroyImage(image);
+                return((Image *) NULL);
+              }
+            }
+          }
+          q++;
+        }
+        if (!SyncPixelCache(image))
+          break;
+      }
+      break;
+    }
+    case IntegerPixel:
+    {
+      register unsigned int
+        *p;
+
+      p=(unsigned int *) pixels;
+      for (y=0; y < (int) image->rows; y++)
+      {
+        q=SetPixelCache(image,0,y,image->columns,1);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (int) image->columns; x++)
+        {
+          for (i=0; i < strlen(map); i++)
+          {
+            switch (map[i])
+            {
+              case 'r':
+              case 'R':
+              case 'c':
+              case 'C':
+              {
+                q->red=(*p++);
+                break;
+              }
+              case 'g':
+              case 'G':
+              case 'y':
+              case 'Y':
+              {
+                q->green=(*p++);
+                break;
+              }
+              case 'b':
+              case 'B':
+              case 'm':
+              case 'M':
+              {
+                q->blue=(*p++);
+                break;
+              }
+              case 'a':
+              case 'A':
+              case 'k':
+              case 'K':
+              {
+                q->opacity=(*p++);
+                break;
+              }
+              default:
+              {
+                MagickWarning(OptionWarning,"Invalid pixel map",map);
+                DestroyImage(image);
+                return((Image *) NULL);
+              }
+            }
+          }
+          q++;
+        }
+        if (!SyncPixelCache(image))
+          break;
+      }
+      break;
+    }
+    case FloatPixel:
+    {
+      register float
+        *p;
+
+      p=(float *) pixels;
+      for (y=0; y < (int) image->rows; y++)
+      {
+        q=SetPixelCache(image,0,y,image->columns,1);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (int) image->columns; x++)
+        {
+          for (i=0; i < strlen(map); i++)
+          {
+            switch (map[i])
+            {
+              case 'r':
+              case 'R':
+              case 'c':
+              case 'C':
+              {
+                q->red=MaxRGB*(*p++);
+                break;
+              }
+              case 'g':
+              case 'G':
+              case 'y':
+              case 'Y':
+              {
+                q->green=MaxRGB*(*p++);
+                break;
+              }
+              case 'b':
+              case 'B':
+              case 'm':
+              case 'M':
+              {
+                q->blue=MaxRGB*(*p++);
+                break;
+              }
+              case 'a':
+              case 'A':
+              case 'k':
+              case 'K':
+              {
+                q->opacity=MaxRGB*(*p++);
+                break;
+              }
+              default:
+              {
+                MagickWarning(OptionWarning,"Invalid pixel map",map);
+                DestroyImage(image);
+                return((Image *) NULL);
+              }
+            }
+          }
+          q++;
+        }
+        if (!SyncPixelCache(image))
+          break;
+      }
+      break;
+    }
+    case DoublePixel:
+    {
+      register double
+        *p;
+
+      p=(double *) pixels;
+      for (y=0; y < (int) image->rows; y++)
+      {
+        q=SetPixelCache(image,0,y,image->columns,1);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (int) image->columns; x++)
+        {
+          for (i=0; i < strlen(map); i++)
+          {
+            switch (map[i])
+            {
+              case 'r':
+              case 'R':
+              case 'c':
+              case 'C':
+              {
+                q->red=MaxRGB*(*p++);
+                break;
+              }
+              case 'g':
+              case 'G':
+              case 'y':
+              case 'Y':
+              {
+                q->green=MaxRGB*(*p++);
+                break;
+              }
+              case 'b':
+              case 'B':
+              case 'm':
+              case 'M':
+              {
+                q->blue=MaxRGB*(*p++);
+                break;
+              }
+              case 'a':
+              case 'A':
+              case 'k':
+              case 'K':
+              {
+                q->opacity=MaxRGB*(*p++);
+                break;
+              }
+              default:
+              {
+                MagickWarning(OptionWarning,"Invalid pixel map",map);
+                DestroyImage(image);
+                return((Image *) NULL);
+              }
+            }
+          }
+          q++;
+        }
+        if (!SyncPixelCache(image))
+          break;
+      }
+      break;
+    }
+    default:
+    {
+      MagickWarning(OptionWarning,"Invalid pixel type",(char *) NULL);
+      DestroyImage(image);
       return((Image *) NULL);
     }
-  SetImage(image);
-  /*
-    Convert a rectangular array of float pixels to runlength-encoded.
-  */
-  q=image->pixels;
-  for (i=0; i < (int) image->packets; i++)
-  {
-    if (red != (float *) NULL)
-      q->red=(Quantum) (MaxRGB*red[i]);
-    if (green != (float *) NULL)
-      q->green=(Quantum) (MaxRGB*green[i]);
-    if (blue != (float *) NULL)
-      q->blue=(Quantum) (MaxRGB*blue[i]);
-    if (opacity != (float *) NULL)
-      q->index=(unsigned short) (Opaque*opacity[i]);
-    q->length=0;
-    q++;
   }
   return(image);
 }
@@ -1754,14 +1995,13 @@ Export void CycleColormapImage(Image *image,const int amount)
 {
 #define CycleColormapImageText  "  Cycling image...  "
 
+
   int
-    index;
+    index,
+    y;
 
   register int
-    i;
-
-  register RunlengthPacket
-    *q;
+    x;
 
   assert(image != (Image *) NULL);
   if (image->class == DirectClass)
@@ -1773,14 +2013,19 @@ Export void CycleColormapImage(Image *image,const int amount)
       quantize_info.number_colors=MaxColormapSize;
       (void) QuantizeImage(&quantize_info,image);
     }
-  q=image->pixels;
-  for (i=0; i < (int) image->packets; i++)
+  for (y=0; y < (int) image->rows; y++)
   {
-    index=((int) q->index+amount) % image->colors;
-    if (index < 0)
-      index+=image->colors;
-    q->index=(unsigned short) index;
-    q++;
+    if (!GetPixelCache(image,0,y,image->columns,1))
+      break;
+    for (x=0; x < (int) image->columns; x++)
+    {
+      index=((int) image->indexes[x]+amount) % image->colors;
+      if (index < 0)
+        index+=image->colors;
+      image->indexes[x]=(IndexPacket) index;
+    }
+    if (!SyncPixelCache(image))
+      break;
   }
   SyncImage(image);
 }
@@ -1823,11 +2068,15 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
   Image
     *p;
 
+  int
+    y;
+
   MagickInfo
     *magick_info;
 
   register int
-    i;
+    i,
+    x;
 
   unsigned int
     count;
@@ -1835,11 +2084,16 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
   unsigned long
     number_colors;
 
+
   assert(image != (Image *) NULL);
   if (file == (FILE *) NULL)
     file=stdout;
   if (!verbose)
     {
+      double
+        elapsed_time,
+        user_time;
+
       /*
         Display detailed info about the image.
       */
@@ -1856,22 +2110,11 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
             (image->magick_rows != image->rows))
           (void) fprintf(file,"%ux%u=>",image->magick_columns,
             image->magick_rows);
-      if (image->page == (char *) NULL)
+      if ((image->page_info.width == 0) || (image->page_info.height == 0))
         (void) fprintf(file,"%ux%u ",image->columns,image->rows);
       else
-        {
-          int
-            x,
-            y;
-
-          unsigned int
-            sans;
-
-          x=0;
-          y=0;
-          (void) ParseGeometry(image->page,&x,&y,&sans,&sans);
-          (void) fprintf(file,"%ux%u%+d%+d ",image->columns,image->rows,x,y);
-        }
+        (void) fprintf(file,"%ux%u%+d%+d ",image->page_info.width,
+          image->page_info.height,image->page_info.x,image->page_info.y);
       if (image->class == DirectClass)
         {
           (void) fprintf(file,"DirectClass ");
@@ -1891,15 +2134,18 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
       if (image->filesize != 0)
         {
           if (image->filesize >= (1 << 24))
-            (void) fprintf(file,"%ldmb ",image->filesize/1024/1024);
+            (void) fprintf(file,"%dmb ",image->filesize/1024/1024);
           else
             if (image->filesize >= (1 << 14))
-              (void) fprintf(file,"%ldkb ",image->filesize/1024);
+              (void) fprintf(file,"%dkb ",image->filesize/1024);
             else
-              (void) fprintf(file,"%ldb ",image->filesize);
+              (void) fprintf(file,"%db ",image->filesize);
         }
-      (void) fprintf(file,"%.1024s %lds\n",image->magick,time((time_t *) NULL)-
-        image->magick_time+1);
+      elapsed_time=GetElapsedTime(&image->timer_info);
+      user_time=GetUserTime(&image->timer_info);
+      ContinueTimer(&image->timer_info);
+      (void) fprintf(file,"%.1024s %.1fu %d:%02d\n",image->magick,user_time,
+        (int) (elapsed_time/60.0),(int) fmod(elapsed_time,60.0));
       return;
     }
   /*
@@ -1920,8 +2166,11 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
     case BilevelType: (void) fprintf(file,"bilevel"); break;
     case GrayscaleType: (void) fprintf(file,"grayscale"); break;
     case PaletteType: (void) fprintf(file,"palette"); break;
+    case PaletteMatteType:
+      (void) fprintf(file,"palette with transparency"); break;
     case TrueColorType: (void) fprintf(file,"true color"); break;
-    case MatteType: (void) fprintf(file,"true color with transparency"); break;
+    case TrueColorMatteType:
+      (void) fprintf(file,"true color with transparency"); break;
     case ColorSeparationType: (void) fprintf(file,"color separated"); break;
     default: (void) fprintf(file,"undefined"); break;
   }
@@ -1930,6 +2179,8 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
     (void) fprintf(file,"  class: DirectClass\n");
   else
     (void) fprintf(file,"  class: PseudoClass\n");
+  x=0;
+  p=(Image *) NULL;
   if (!image->matte)
     (void) fprintf(file,"  matte: False\n");
   else
@@ -1937,22 +2188,32 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
       (void) fprintf(file,"  matte: True\n");
     else
       {
-        RunlengthPacket
-          *q;
+        PixelPacket
+          *p;
 
-        q=image->pixels;
-        for (i=0; i < (int) (image->packets-1); i++)
+        for (y=0; y < (int) image->rows; y++)
         {
-          if (q->index == Transparent)
+          p=GetPixelCache(image,0,y,image->columns,1);
+          if (p == (PixelPacket *) NULL)
             break;
-          q++;
+          for (x=0; x < (int) image->columns; x++)
+          {
+            if (p->opacity == Transparent)
+              break;
+            p++;
+          }
+          if (x < (int) image->columns)
+            break;
         }
-        if (image->depth == 8)
-          (void) fprintf(file,"  matte: (%3d,%3d,%3d) #%02x%02x%02x\n",
-            q->red,q->green,q->blue,q->red,q->green,q->blue);
-        else
-          (void) fprintf(file,"  matte: (%5d,%5d,%5d) #%04x%04x%04x\n",
-            q->red,q->green,q->blue,q->red,q->green,q->blue);
+        if ((x < (int) image->columns) || (y < (int) image->rows))
+          {
+            if (image->depth == 8)
+              (void) fprintf(file,"  matte: (%3d,%3d,%3d) #%02x%02x%02x\n",
+                p->red,p->green,p->blue,p->red,p->green,p->blue);
+            else
+              (void) fprintf(file,"  matte: (%5d,%5d,%5d) #%04x%04x%04x\n",
+                p->red,p->green,p->blue,p->red,p->green,p->blue);
+        }
       }
   if (image->class == DirectClass)
     (void) fprintf(file,"  colors: %lu\n",number_colors);
@@ -1971,7 +2232,7 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
       char
         name[MaxTextExtent];
 
-      register ColorPacket
+      register PixelPacket
         *p;
 
       /*
@@ -2153,12 +2414,12 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
   if (image->filesize != 0)
     {
       if (image->filesize >= (1 << 24))
-        (void) fprintf(file,"  filesize: %ldmb\n",image->filesize/1024/1024);
+        (void) fprintf(file,"  filesize: %dmb\n",image->filesize/1024/1024);
       else
         if (image->filesize >= (1 << 14))
-          (void) fprintf(file,"  filesize: %ldkb\n",image->filesize/1024);
+          (void) fprintf(file,"  filesize: %dkb\n",image->filesize/1024);
         else
-          (void) fprintf(file,"  filesize: %ldb\n",image->filesize);
+          (void) fprintf(file,"  filesize: %db\n",image->filesize);
     }
   if (image->interlace == NoInterlace)
     (void) fprintf(file,"  interlace: None\n");
@@ -2177,8 +2438,9 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
   (void) fprintf(file,"  border-color: %.1024s\n",color);
   (void) QueryColorName(&image->matte_color,color);
   (void) fprintf(file,"  matte-color: %.1024s\n",color);
-  if (image->page != (char *) NULL)
-    (void) fprintf(file,"  page geometry: %.1024s\n",image->page);
+  if ((image->page_info.width != 0) && (image->page_info.height != 0))
+    (void) fprintf(file,"  page geometry: %ux%u%+d%+d\n",image->page_info.width,
+      image->page_info.height,image->page_info.x,image->page_info.y);
   if (image->dispose != 0)
     (void) fprintf(file,"  dispose method: %d\n",image->dispose);
   if (image->delay != 0)
@@ -2211,9 +2473,6 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
     case ZipCompression: (void) fprintf(file,"Zip\n"); break;
     default: (void) fprintf(file,"\n");  break;
   }
-  if (image->packets < (image->columns*image->rows))
-    (void) fprintf(file,"  runlength packets: %lu of %u\n",image->packets,
-      image->columns*image->rows);
   if (image->tainted)
     (void) fprintf(file,"  tainted: True\n");
   else
@@ -2234,7 +2493,7 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
             (void) fprintf(file,"  %.1024s\n",textlist[i]);
             FreeMemory(textlist[i]);
           }
-          FreeMemory((char *) textlist);
+          FreeMemory(textlist);
         }
     }
   if (image->montage != (char *) NULL)
@@ -2292,7 +2551,7 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
                   (void) fprintf(file,"    %.1024s\n",textlist[i]);
                   FreeMemory(textlist[i]);
                 }
-                FreeMemory((char *) textlist);
+                FreeMemory(textlist);
               }
           }
         DestroyImage(tile);
@@ -2330,6 +2589,8 @@ Export void DestroyImage(Image *image)
     Close image.
   */
   assert(image != (Image *) NULL);
+  DestroyBlobInfo(&image->blob_info);
+  DestroyCacheInfo(&image->cache_info);
   if (image->file != (FILE *) NULL)
     {
       CloseBlob(image);
@@ -2340,51 +2601,46 @@ Export void DestroyImage(Image *image)
     Deallocate the image comments.
   */
   if (image->comments != (char *) NULL)
-    FreeMemory((char *) image->comments);
+    FreeMemory(image->comments);
   /*
     Deallocate the image label.
   */
   if (image->label != (char *) NULL)
-    FreeMemory((char *) image->label);
+    FreeMemory(image->label);
   /*
     Deallocate the image montage directory.
   */
   if (image->montage != (char *) NULL)
-    FreeMemory((char *) image->montage);
+    FreeMemory(image->montage);
   if (image->directory != (char *) NULL)
-    FreeMemory((char *) image->directory);
+    FreeMemory(image->directory);
   /*
     Deallocate the image colormap.
   */
-  if (image->colormap != (ColorPacket *) NULL)
-    FreeMemory((char *) image->colormap);
+  if (image->colormap != (PixelPacket *) NULL)
+    FreeMemory(image->colormap);
   /*
     Deallocate the image ICC profile.
   */
   if (image->color_profile.length > 0)
-    FreeMemory((char *) image->color_profile.info);
+    FreeMemory(image->color_profile.info);
   /*
     Deallocate the image IPTC profile.
   */
   if (image->iptc_profile.length > 0)
-    FreeMemory((char *) image->iptc_profile.info);
+    FreeMemory(image->iptc_profile.info);
   /*
     Deallocate the image signature.
   */
   if (image->signature != (char *) NULL)
-    FreeMemory((char *) image->signature);
+    FreeMemory(image->signature);
   /*
     Deallocate the image pixels.
   */
-  if (image->pixels != (RunlengthPacket *) NULL)
-    FreeMemory((char *) image->pixels);
-  if (image->packed_pixels != (unsigned char *) NULL)
-    FreeMemory((char *) image->packed_pixels);
-  /*
-    Deallocate the image page geometry.
-  */
-  if (image->page != (char *) NULL)
-    FreeMemory((char *) image->page);
+  if (image->pixels != (PixelPacket *) NULL)
+    FreeMemory(image->pixels);
+  if (image->indexes != (IndexPacket *) NULL)
+    FreeMemory(image->indexes);
   if (!image->orphan)
     {
       /*
@@ -2408,7 +2664,7 @@ Export void DestroyImage(Image *image)
   /*
     Deallocate the image structure.
   */
-  FreeMemory((char *) image);
+  FreeMemory(image);
   image=(Image *) NULL;
 }
 
@@ -2440,53 +2696,44 @@ Export void DestroyImageInfo(ImageInfo *image_info)
 {
   assert(image_info != (ImageInfo *) NULL);
   if (image_info->server_name != (char *) NULL)
-    FreeMemory((char *) image_info->server_name);
+    FreeMemory(image_info->server_name);
   image_info->server_name=(char *) NULL;
   if (image_info->size != (char *) NULL)
-    FreeMemory((char *) image_info->size);
+    FreeMemory(image_info->size);
   image_info->size=(char *) NULL;
   if (image_info->tile != (char *) NULL)
-    FreeMemory((char *) image_info->tile);
+    FreeMemory(image_info->tile);
   image_info->tile=(char *) NULL;
-  if (image_info->density != (char *) NULL)
-    FreeMemory((char *) image_info->density);
-  image_info->density=(char *) NULL;
   if (image_info->page != (char *) NULL)
-    FreeMemory((char *) image_info->page);
+    FreeMemory(image_info->page);
   image_info->page=(char *) NULL;
+  if (image_info->density != (char *) NULL)
+    FreeMemory(image_info->density);
+  image_info->density=(char *) NULL;
   if (image_info->dispose != (char *) NULL)
-    FreeMemory((char *) image_info->dispose);
+    FreeMemory(image_info->dispose);
   image_info->dispose=(char *) NULL;
   if (image_info->delay != (char *) NULL)
-    FreeMemory((char *) image_info->delay);
+    FreeMemory(image_info->delay);
   image_info->delay=(char *) NULL;
   if (image_info->iterations != (char *) NULL)
-    FreeMemory((char *) image_info->iterations);
+    FreeMemory(image_info->iterations);
   image_info->iterations=(char *) NULL;
   if (image_info->texture != (char *) NULL)
-    FreeMemory((char *) image_info->texture);
+    FreeMemory(image_info->texture);
   image_info->texture=(char *) NULL;
   if (image_info->box != (char *) NULL)
-    FreeMemory((char *) image_info->box);
+    FreeMemory(image_info->box);
   image_info->box=(char *) NULL;
   if (image_info->font != (char *) NULL)
-    FreeMemory((char *) image_info->font);
+    FreeMemory(image_info->font);
   image_info->font=(char *) NULL;
   if (image_info->pen != (char *) NULL)
-    FreeMemory((char *) image_info->pen);
+    FreeMemory(image_info->pen);
   image_info->pen=(char *) NULL;
   if (image_info->view != (char *) NULL)
-    FreeMemory((char *) image_info->view);
+    FreeMemory(image_info->view);
   image_info->view=(char *) NULL;
-  if (image_info->background_color != (char *) NULL)
-    FreeMemory((char *) image_info->background_color);
-  image_info->background_color=(char *) NULL;
-  if (image_info->border_color != (char *) NULL)
-    FreeMemory((char *) image_info->border_color);
-  image_info->border_color=(char *) NULL;
-  if (image_info->matte_color != (char *) NULL)
-    FreeMemory((char *) image_info->matte_color);
-  image_info->matte_color=(char *) NULL;
   FreeMemory((ImageInfo *) image_info);
   image_info=(ImageInfo *) NULL;
 }
@@ -2523,7 +2770,8 @@ Export void DestroyImages(Image *image)
   /*
     Proceed to the top of the image list.
   */
-  assert(image != (Image *) NULL);
+  if (image == (Image *) NULL)
+    return;
   while (image->previous != (Image *) NULL)
     image=image->previous;
   do
@@ -2644,24 +2892,23 @@ Export void GetImageInfo(ImageInfo *image_info)
     File and image dimension members.
   */
   assert(image_info != (ImageInfo *) NULL);
-  GetBlobInfo(&(image_info->blob));
+  GetBlobInfo(&(image_info->blob_info));
   image_info->file=(FILE *) NULL;
   *image_info->filename='\0';
   *image_info->magick='\0';
   TemporaryFilename(image_info->unique);
   (void) strcat(image_info->unique,"u");
   TemporaryFilename(image_info->zero);
-  image_info->affirm=False;
   image_info->temporary=False;
   image_info->adjoin=True;
   image_info->subimage=0;
   image_info->subrange=0;
-  image_info->ping=False;
   image_info->depth=QuantumDepth;
+  image_info->ping=False;
   image_info->size=(char *) NULL;
   image_info->tile=(char *) NULL;
   image_info->page=(char *) NULL;
-  image_info->interlace=DefaultInterlace;
+  image_info->interlace=NoInterlace;
   image_info->units=UndefinedResolution;
   /*
     Compression members.
@@ -2678,12 +2925,12 @@ Export void GetImageInfo(ImageInfo *image_info)
   image_info->texture=(char *) NULL;
   image_info->density=(char *) NULL;
   image_info->linewidth=1;
-  image_info->pointsize=atoi(DefaultPointSize);
+  image_info->pointsize=atof(DefaultPointSize);
   image_info->antialias=True;
   image_info->fuzz=0;
-  image_info->background_color=(char *) NULL;
-  image_info->border_color=(char *) NULL;
-  image_info->matte_color=(char *) NULL;
+  (void) QueryColorDatabase(BackgroundColor,&image_info->background_color);
+  (void) QueryColorDatabase(BorderColor,&image_info->border_color);
+  (void) QueryColorDatabase(MatteColor,&image_info->matte_color);
   /*
     Color reduction members.
   */
@@ -2696,6 +2943,7 @@ Export void GetImageInfo(ImageInfo *image_info)
   image_info->dispose=(char *) NULL;
   image_info->delay=(char *) NULL;
   image_info->iterations=(char *) NULL;
+  image_info->decode_all_MNG_objects=False;
   image_info->coalesce_frames=False;
   image_info->insert_backdrops=False;
   /*
@@ -2742,11 +2990,46 @@ Export ImageType GetImageType(Image *image)
     return(BilevelType);
   if (IsGrayImage(image))
     return(GrayscaleType);
+  if (IsPseudoClass(image) && image->matte)
+    return(PaletteMatteType);
   if (IsPseudoClass(image))
     return(PaletteType);
-  if (!image->matte)
-    return(TrueColorType);
-  return(MatteType);
+  if (image->matte)
+    return(TrueColorMatteType);
+  return(TrueColorType);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t N e x t I m a g e                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetNextImage returns the next image in an image sequence.
+%
+%  The format of the GetNextImage method is:
+%
+%      Image *GetNextImage(Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o next: Method GetNextImage returns the next image in an image sequence.
+%
+%    o image: The address of a structure of type Image.
+%
+%
+*/
+Export Image *GetNextImage(Image *image)
+{
+  assert(image != (Image *) NULL);
+  image->next->blob_info=image->blob_info;
+  image->next->file=image->file;
+  return(image->next);
 }
 
 /*
@@ -2800,72 +3083,443 @@ Export unsigned int GetNumberScenes(const Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t P a g e I n f o                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetPageInfo initializes the image page structure.
+%
+%  The format of the GetPageInfo method is:
+%
+%      void GetPageInfo(RectangleInfo *page_info)
+%
+%  A description of each parameter follows:
+%
+%    o page_info: Specifies a pointer to a RectangleInfo structure.
+%
+%
+*/
+Export void GetPageInfo(RectangleInfo *page_info)
+{
+  assert(page_info != (RectangleInfo *) NULL);
+  page_info->width=0;
+  page_info->height=0;
+  page_info->x=0;
+  page_info->y=0;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t P i x e l s                                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetPixels returns the pixel data of an image as normalized red,
-%  green, blue, and opacity values.
+%  Method GetPixels is a convenience routine.  Use it to extract pixel data
+%  from an image and place it in a buffer you supply.  The data is saved
+%  either as char, short int, integer, float or double format in the order
+%  specified by the type parameter.  For example, we want to extract
+%  scanline 1 of a 640x480 image as character data in red-green-blue order:
+%
+%      GetPixels(image,0,0,640,1,"RGB",0,pixels);
 %
 %  The format of the GetPixels method is:
 %
-%      unsigned int IsGeometry(const char *geometry)
+%      void GetPixels(Image *image,const int x,const int y,
+%        const unsigned int columns,const unsigned int rows,
+%        const char *map,const StorageType type,void *pixels)
 %
 %  A description of each parameter follows:
 %
 %    o image: Specifies a pointer to a Image structure;  returned from
 %      ReadImage.
 %
-%    o red_pixels,green_pixels,blue_pixels,opacity_pixels: These arrays are
-%      returned with the correpondingred, green, blue, and opacity values from
-%      the image.  The length of the arrays must equal the area specified by
-%      the columns and row values values of the Image structure.  If you do
-%      not want to initialize a particular component, specify it as NULL.
+%    o x,y,columns,rows:  These values define the perimeter of a region of
+%      pixels you want to extract.
+%
+%    o map:  This character string can be any combination or order of 
+%      R = red, G = green, B = blue, A = alpha, C = cyan, Y = yellow,
+%      M = magenta, and K = black.  The ordering reflects the order of the
+%      pixels in the supplied pixel array.
+%
+%    o type: pixel type where 0 = unsigned char, 1 = short int, 2 = int,
+%      3 = float, and 4 = double.  Float and double types are expected to
+%      be normalized [0..1] otherwise [0..MaxRGB].
+%
+%    o pixels: This array of values contain the pixel components as defined
+%      by the map and type parameters.  The length of the arrays must
+%      equal the area specified by the width and height values and type
+%      parameters.
 %
 %
 */
-void GetPixels(const Image *image,float *red_pixels,float *green_pixels,
-  float *blue_pixels,float *opacity_pixels)
+Export void GetPixels(Image *image,const int x,const int y,
+  const unsigned int columns,const unsigned int rows,const char *map,
+  const StorageType type,void *pixels)
 {
-  double
-    blue,
-    green,
-    opacity,
-    red;
-
   register int
     i,
-    j,
-    x;
+    j;
 
-  register RunlengthPacket
+  register PixelPacket
     *p;
 
   assert(image != (Image *) NULL);
-  x=0;
-  p=image->pixels;
-  for (i=0; i < (int) image->packets; i++)
-  {
-    red=(double) p->red/MaxRGB;
-    green=(double) p->green/MaxRGB;
-    blue=(double) p->blue/MaxRGB;
-    opacity=(double) (image->matte ? p->index/Opaque : 0);
-    for (j=0; j <= (int) p->length; j++)
+  for (i=0; i < strlen(map); i++)
+    switch (map[i])
     {
-      if (red_pixels != (float *) NULL)
-        red_pixels[x]=red;
-      if (green_pixels != (float *) NULL)
-        green_pixels[x]=green;
-      if (blue_pixels != (float *) NULL)
-        blue_pixels[x]=blue;
-      if (opacity_pixels != (float *) NULL)
-        opacity_pixels[x]=opacity;
-      x++;
+      case 'c':
+      case 'C':
+      case 'm':
+      case 'M':
+      case 'y':
+      case 'Y':
+      case 'k':
+      case 'K':
+      {
+        if (image->colorspace != CMYKColorspace)
+          RGBTransformImage(image,CMYKColorspace);
+        break;
+      }
+      default:
+        break;
     }
-    p++;
+  switch (type)
+  {
+    case CharPixel:
+    {
+      register unsigned char
+        *q;
+
+      p=GetPixelCache(image,x,y,columns,rows);
+      if (p == (PixelPacket *) NULL)
+        break;
+      q=(unsigned char *) pixels;
+      for (i=0; i < (columns*rows); i++)
+      {
+        for (j=0; j < strlen(map); j++)
+        {
+          switch (map[j])
+          {
+            case 'r':
+            case 'R':
+            case 'c':
+            case 'C':
+            {
+              *q++=p->red;
+              break;
+            }
+            case 'g':
+            case 'G':
+            case 'y':
+            case 'Y':
+            {
+              *q++=p->green;
+              break;
+            }
+            case 'b':
+            case 'B':
+            case 'm':
+            case 'M':
+            {
+              *q++=p->blue;
+              break;
+            }
+            case 'a':
+            case 'A':
+            case 'k':
+            case 'K':
+            {
+              *q++=p->opacity;
+              break;
+            }
+            default:
+            {
+              MagickWarning(OptionWarning,"Invalid pixel map",map);
+              return;
+            }
+          }
+        }
+        p++;
+      }
+      break;
+    }
+    case ShortPixel:
+    {
+      register unsigned short
+        *q;
+
+      p=GetPixelCache(image,x,y,columns,rows);
+      if (p == (PixelPacket *) NULL)
+        break;
+      q=(unsigned short *) pixels;
+      for (i=0; i < (columns*rows); i++)
+      {
+        for (j=0; j < strlen(map); j++)
+        {
+          switch (map[j])
+          {
+            case 'r':
+            case 'R':
+            case 'c':
+            case 'C':
+            {
+              *q++=p->red;
+              break;
+            }
+            case 'g':
+            case 'G':
+            case 'y':
+            case 'Y':
+            {
+              *q++=p->green;
+              break;
+            }
+            case 'b':
+            case 'B':
+            case 'm':
+            case 'M':
+            {
+              *q++=p->blue;
+              break;
+            }
+            case 'a':
+            case 'A':
+            case 'k':
+            case 'K':
+            {
+              *q++=p->opacity;
+              break;
+            }
+            default:
+            {
+              MagickWarning(OptionWarning,"Invalid pixel map",map);
+              return;
+            }
+          }
+        }
+        p++;
+      }
+      break;
+    }
+    case IntegerPixel:
+    {
+      register unsigned int
+        *q;
+
+      p=GetPixelCache(image,x,y,columns,rows);
+      if (p == (PixelPacket *) NULL)
+        break;
+      q=(unsigned int *) pixels;
+      for (i=0; i < (columns*rows); i++)
+      {
+        for (j=0; j < strlen(map); j++)
+        {
+          switch (map[j])
+          {
+            case 'r':
+            case 'R':
+            case 'c':
+            case 'C':
+            {
+              *q++=p->red;
+              break;
+            }
+            case 'g':
+            case 'G':
+            case 'y':
+            case 'Y':
+            {
+              *q++=p->green;
+              break;
+            }
+            case 'b':
+            case 'B':
+            case 'm':
+            case 'M':
+            {
+              *q++=p->blue;
+              break;
+            }
+            case 'a':
+            case 'A':
+            case 'k':
+            case 'K':
+            {
+              *q++=p->opacity;
+              break;
+            }
+            default:
+            {
+              MagickWarning(OptionWarning,"Invalid pixel map",map);
+              return;
+            }
+          }
+        }
+        p++;
+      }
+      break;
+    }
+    case FloatPixel:
+    {
+      register float
+        *q;
+
+      p=GetPixelCache(image,x,y,columns,rows);
+      if (p == (PixelPacket *) NULL)
+        break;
+      q=(float *) pixels;
+      for (i=0; i < (columns*rows); i++)
+      {
+        for (j=0; j < strlen(map); j++)
+        {
+          switch (map[j])
+          {
+            case 'r':
+            case 'R':
+            case 'c':
+            case 'C':
+            {
+              *q++=p->red/MaxRGB;
+              break;
+            }
+            case 'g':
+            case 'G':
+            case 'y':
+            case 'Y':
+            {
+              *q++=p->green/MaxRGB;
+              break;
+            }
+            case 'b':
+            case 'B':
+            case 'm':
+            case 'M':
+            {
+              *q++=p->blue/MaxRGB;
+              break;
+            }
+            case 'a':
+            case 'A':
+            case 'k':
+            case 'K':
+            {
+              *q++=p->opacity/MaxRGB;
+              break;
+            }
+            default:
+            {
+              MagickWarning(OptionWarning,"Invalid pixel map",map);
+              return;
+            }
+          }
+        }
+        p++;
+      }
+      break;
+    }
+    case DoublePixel:
+    {
+      register double
+        *q;
+
+      p=GetPixelCache(image,x,y,columns,rows);
+      if (p == (PixelPacket *) NULL)
+        break;
+      q=(double *) pixels;
+      for (i=0; i < (columns*rows); i++)
+      {
+        for (j=0; j < strlen(map); j++)
+        {
+          switch (map[j])
+          {
+            case 'r':
+            case 'R':
+            case 'c':
+            case 'C':
+            {
+              *q++=p->red/MaxRGB;
+              break;
+            }
+            case 'g':
+            case 'G':
+            case 'y':
+            case 'Y':
+            {
+              *q++=p->green/MaxRGB;
+              break;
+            }
+            case 'b':
+            case 'B':
+            case 'm':
+            case 'M':
+            {
+              *q++=p->blue/MaxRGB;
+              break;
+            }
+            case 'a':
+            case 'A':
+            case 'k':
+            case 'K':
+            {
+              *q++=p->opacity/MaxRGB;
+              break;
+            }
+            default:
+            {
+              MagickWarning(OptionWarning,"Invalid pixel map",map);
+              return;
+            }
+          }
+        }
+        p++;
+      }
+      break;
+    }
+    default:
+    {
+      MagickWarning(OptionWarning,"Invalid pixel type",(char *) NULL);
+      return;
+    }
   }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t P i x e l P a c k e t                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetPixelPacket initializes the PixelPacket structure.
+%
+%  The format of the GetPixelPacket method is:
+%
+%      void GetPixelPacket(PixelPacket *pixel)
+%
+%  A description of each parameter follows:
+%
+%    o pixel: Specifies a pointer to a PixelPacket structure.
+%
+%
+*/
+Export void GetPixelPacket(PixelPacket *pixel)
+{
+  assert(pixel != (PixelPacket *) NULL);
+  pixel->red=0;
+  pixel->green=0;
+  pixel->blue=0;
+  pixel->opacity=Transparent;
 }
 
 /*
@@ -3043,7 +3697,7 @@ Export unsigned int IsTainted(const Image *image)
 Export void LabelImage(Image *image,const char *label)
 {
   if (image->label != (char *) NULL)
-    FreeMemory((char *) image->label);
+    FreeMemory(image->label);
   image->label=TranslateText((ImageInfo *) NULL,image,label);
 }
 
@@ -3076,14 +3730,14 @@ Export void LayerImage(Image *image,const LayerType layer)
 {
 #define LayerImageText  "  Extracting the layer from the image...  "
 
-  QuantizeInfo
-    quantize_info;
+  int
+    y;
 
   register int
-    i;
+    x;
 
-  register RunlengthPacket
-    *p;
+  register PixelPacket
+    *q;
 
   assert(image != (Image *) NULL);
   if ((layer == MatteLayer) && !image->matte)
@@ -3097,48 +3751,50 @@ Export void LayerImage(Image *image,const LayerType layer)
   */
   image->class=DirectClass;
   image->matte=False;
-  p=image->pixels;
-  for (i=0; i < (int) image->packets; i++)
+  for (y=0; y < (int) image->rows; y++)
   {
-    switch (layer)
+    q=GetPixelCache(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < (int) image->columns; x++)
     {
-      case RedLayer:
+      switch (layer)
       {
-        p->green=p->red;
-        p->blue=p->red;
-        break;
+        case RedLayer:
+        {
+          q->green=q->red;
+          q->blue=q->red;
+          break;
+        }
+        case GreenLayer:
+        {
+          q->red=q->green;
+          q->blue=q->green;
+          break;
+        }
+        case BlueLayer:
+        {
+          q->red=q->blue;
+          q->green=q->blue;
+          break;
+        }
+        case MatteLayer:
+        default:
+        {
+          q->red=q->opacity;
+          q->green=q->opacity;
+          q->blue=q->opacity;
+          break;
+        }
       }
-      case GreenLayer:
-      {
-        p->red=p->green;
-        p->blue=p->green;
-        break;
-      }
-      case BlueLayer:
-      {
-        p->red=p->blue;
-        p->green=p->blue;
-        break;
-      }
-      case MatteLayer:
-      default:
-      {
-        p->red=p->index;
-        p->green=p->index;
-        p->blue=p->index;
-        break;
-      }
+      q++;
     }
-    p++;
-    if (QuantumTick(i,image->packets))
-      ProgressMonitor(LayerImageText,i,image->packets);
+    if (!SyncPixelCache(image))
+      break;
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(LayerImageText,y,image->rows);
   }
-  /*
-    Treat layer as gray scale image.
-  */
-  GetQuantizeInfo(&quantize_info);
-  quantize_info.colorspace=GRAYColorspace;
-  (void) QuantizeImage(&quantize_info,image);
+  (void) IsGrayImage(image);
 }
 
 /*
@@ -3223,31 +3879,43 @@ Export Image **ListToGroupImage(const Image *image,unsigned int *number_images)
 %
 %  The format of the MatteImage method is:
 %
-%      void MatteImage(Image *image)
+%      void MatteImage(Image *image,Quantum opacity)
 %
 %  A description of each parameter follows:
 %
 %    o image: The address of a structure of type Image;  returned from
 %      ReadImage.
 %
+%    o opacity: The level of transparency.
+%
 %
 */
-Export void MatteImage(Image *image)
+Export void MatteImage(Image *image,Quantum opacity)
 {
-  register int
-    i;
+  int
+    y;
 
-  register RunlengthPacket
-    *p;
+  register int
+    x;
+
+  register PixelPacket
+    *q;
 
   assert(image != (Image *) NULL);
   image->class=DirectClass;
   image->matte=True;
-  p=image->pixels;
-  for (i=0; i < (int) image->packets; i++)
+  for (y=0; y < (int) image->rows; y++)
   {
-    p->index=Opaque;
-    p++;
+    q=GetPixelCache(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < (int) image->columns; x++)
+    {
+      q->opacity=opacity;
+      q++;
+    }
+    if (!SyncPixelCache(image))
+      break;
   }
 }
 
@@ -3291,7 +3959,7 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
     *geometry,
     *option;
 
-  ColorPacket
+  PixelPacket
     target_color;
 
   Image
@@ -3316,7 +3984,6 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
     i;
 
   unsigned int
-    compress,
     gravity,
     matte,
     height,
@@ -3339,7 +4006,6 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
   */
   local_info=CloneImageInfo(image_info);
   GetQuantizeInfo(&quantize_info);
-  compress=(*image)->packets < (((*image)->columns*(*image)->rows*3) >> 2);
   geometry=(char *) NULL;
   gravity=ForgetGravity;
   map_image=(Image *) NULL;
@@ -3373,11 +4039,9 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
       }
     if (strncmp("-background",option,6) == 0)
       {
-        (void) CloneString(&local_info->background_color,argv[++i]);
-        (void) QueryColorDatabase(local_info->background_color,&target_color);
-        (*image)->background_color.red=XDownScale(target_color.red);
-        (*image)->background_color.green=XDownScale(target_color.green);
-        (*image)->background_color.blue=XDownScale(target_color.blue);
+        (void) QueryColorDatabase(argv[++i],&target_color);
+        local_info->background_color=target_color;
+        (*image)->background_color=target_color;
         continue;
       }
     if (strncmp("-blur",option,4) == 0)
@@ -3430,11 +4094,9 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
       }
     if (strncmp("-bordercolor",option,8) == 0)
       {
-        (void) CloneString(&local_info->border_color,argv[++i]);
-        (void) QueryColorDatabase(local_info->border_color,&target_color);
-        (*image)->border_color.red=XDownScale(target_color.red);
-        (*image)->border_color.green=XDownScale(target_color.green);
-        (*image)->border_color.blue=XDownScale(target_color.blue);
+        (void) QueryColorDatabase(argv[++i],&target_color);
+        local_info->border_color=target_color;
+        (*image)->border_color=target_color;
         continue;
       }
     if (Latin1Compare("-box",option) == 0)
@@ -3458,7 +4120,6 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
         quantize_info.dither=image_info->dither;
         quantize_info.colorspace=GRAYColorspace;
         (void) QuantizeImage(&quantize_info,*image);
-        SyncImage(*image);
         commands[0]=SetClientName((char *) NULL);
         commands[1]="-edge";
         commands[2]=argv[i];
@@ -3468,12 +4129,53 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
         commands[6]="-negate";
         MogrifyImage(local_info,7,commands,image);
         (void) QuantizeImage(&quantize_info,*image);
-        SyncImage(*image);
         continue;
       }
     if (strncmp("-colorize",option,8) == 0)
       {
-        ColorizeImage(*image,argv[++i],local_info->pen);
+        Image
+          *colorized_image;
+
+        /*
+          Colorize the image.
+        */
+        colorized_image=ColorizeImage(*image,argv[++i],local_info->pen);
+        if (colorized_image != (Image *) NULL)
+          {
+            DestroyImage(*image);
+            *image=colorized_image;
+          }
+        continue;
+      }
+    if (strncmp("-compress",option,6) == 0)
+      {
+        if (*option == '-')
+          {
+            CompressionType
+              compression;
+
+            option=argv[++i];
+            compression=UndefinedCompression;
+            if (Latin1Compare("None",option) == 0)
+              compression=NoCompression;
+            if (Latin1Compare("BZip",option) == 0)
+              compression=BZipCompression;
+            if (Latin1Compare("Fax",option) == 0)
+              compression=FaxCompression;
+            if (Latin1Compare("Group4",option) == 0)
+              compression=Group4Compression;
+            if (Latin1Compare("JPEG",option) == 0)
+              compression=JPEGCompression;
+            if (Latin1Compare("LZW",option) == 0)
+              compression=LZWCompression;
+            if (Latin1Compare("RunlengthEncoded",option) == 0)
+              compression=RunlengthEncodedCompression;
+            if (Latin1Compare("Zip",option) == 0)
+              compression=ZipCompression;
+            if (compression == UndefinedCompression)
+              MagickError(OptionError,"Invalid compression type",option);
+            (*image)->compression=compression;
+          }
         continue;
       }
     if (Latin1Compare("-colors",option) == 0)
@@ -3917,17 +4619,15 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
       {
         if (*option == '-')
           if (!(*image)->matte)
-            MatteImage(*image);
+            MatteImage(*image,Opaque);
         (*image)->matte=(*option == '-');
         continue;
       }
     if (strncmp("-mattecolor",option,7) == 0)
       {
-        (void) CloneString(&local_info->matte_color,argv[++i]);
-        (void) QueryColorDatabase(local_info->matte_color,&target_color);
-        (*image)->matte_color.red=XDownScale(target_color.red);
-        (*image)->matte_color.green=XDownScale(target_color.green);
-        (*image)->matte_color.blue=XDownScale(target_color.blue);
+        (void) QueryColorDatabase(argv[++i],&target_color);
+        local_info->matte_color=target_color;
+        (*image)->matte_color=target_color;
         continue;
       }
     if (strncmp("-modulate",option,4) == 0)
@@ -4017,7 +4717,7 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
       }
     if (strncmp("pointsize",option+1,2) == 0)
       {
-        local_info->pointsize=atoi(argv[++i]);
+        local_info->pointsize=atof(argv[++i]);
         continue;
       }
     if (strncmp("profile",option+1,4) == 0)
@@ -4034,14 +4734,21 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
             if (Latin1Compare("icc",option) == 0)
               {
                 if ((*image)->color_profile.length != 0)
-                  FreeMemory((char *) (*image)->color_profile.info);
+                  FreeMemory((*image)->color_profile.info);
                 (*image)->color_profile.length=0;
                 (*image)->color_profile.info=(unsigned char *) NULL;
+              }
+            if (Latin1Compare("8bim",option) == 0)
+              {
+                if ((*image)->iptc_profile.length != 0)
+                  FreeMemory((*image)->iptc_profile.info);
+                (*image)->iptc_profile.length=0;
+                (*image)->iptc_profile.info=(unsigned char *) NULL;
               }
             if (Latin1Compare("iptc",option) == 0)
               {
                 if ((*image)->iptc_profile.length != 0)
-                  FreeMemory((char *) (*image)->iptc_profile.info);
+                  FreeMemory((*image)->iptc_profile.info);
                 (*image)->iptc_profile.length=0;
                 (*image)->iptc_profile.info=(unsigned char *) NULL;
               }
@@ -4057,16 +4764,25 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
         if (Latin1Compare("icc",profile->magick) == 0)
           {
             if ((*image)->color_profile.length != 0)
-              FreeMemory((char *) (*image)->color_profile.info);
+              FreeMemory((*image)->color_profile.info);
             (*image)->color_profile.length=profile->color_profile.length;
             (*image)->color_profile.info=profile->color_profile.info;
             profile->color_profile.length=0;
             profile->color_profile.info=(unsigned char *) NULL;
           }
+        if (Latin1Compare("8bim",profile->magick) == 0)
+          {
+            if ((*image)->iptc_profile.length != 0)
+              FreeMemory((*image)->iptc_profile.info);
+            (*image)->iptc_profile.length=profile->iptc_profile.length;
+            (*image)->iptc_profile.info=profile->iptc_profile.info;
+            profile->iptc_profile.length=0;
+            profile->iptc_profile.info=(unsigned char *) NULL;
+          }
         if (Latin1Compare("iptc",profile->magick) == 0)
           {
             if ((*image)->iptc_profile.length != 0)
-              FreeMemory((char *) (*image)->iptc_profile.info);
+              FreeMemory((*image)->iptc_profile.info);
             (*image)->iptc_profile.length=profile->iptc_profile.length;
             (*image)->iptc_profile.info=profile->iptc_profile.info;
             profile->iptc_profile.length=0;
@@ -4171,7 +4887,7 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
           Rotate image.
         */
         degrees=atof(argv[i]);
-        rotated_image=RotateImage(*image,degrees,False,True);
+        rotated_image=RotateImage(*image,degrees);
         if (rotated_image != (Image *) NULL)
           {
             DestroyImage(*image);
@@ -4223,7 +4939,6 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
           &smoothing_threshold);
         (void) SegmentImage(*image,quantize_info.colorspace,local_info->verbose,
           (double) cluster_threshold,(double) smoothing_threshold);
-        SyncImage(*image);
         continue;
       }
     if (strncmp("shade",option+1,5) == 0)
@@ -4240,7 +4955,13 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
         */
         azimuth=30.0;
         elevation=30.0;
+        /*
+          The following prevents shading an image using the color
+          algorithm from programs like "convert"
+        */
+#ifdef PREVENT_MINUS_OPTION_ON_SHADE
         if (*option == '-')
+#endif
           (void) sscanf(argv[++i],"%lfx%lf",&azimuth,&elevation);
         shaded_image=ShadeImage(*image,*option == '-',(double) azimuth,
           (double) elevation);
@@ -4278,7 +4999,7 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
           y_shear;
 
         Image
-          *sheared_image;
+          *shear_image;
 
         /*
           Shear image.
@@ -4286,13 +5007,12 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
         x_shear=0.0;
         y_shear=0.0;
         (void) sscanf(argv[++i],"%lfx%lf",&x_shear,&y_shear);
-        sheared_image=
-          ShearImage(*image,(double) x_shear,(double) y_shear,False);
-        if (sheared_image != (Image *) NULL)
+        shear_image=ShearImage(*image,(double) x_shear,(double) y_shear);
+        if (shear_image != (Image *) NULL)
           {
             DestroyImage(*image);
-            sheared_image->class=DirectClass;
-            *image=sheared_image;
+            shear_image->class=DirectClass;
+            *image=shear_image;
           }
         continue;
       }
@@ -4376,6 +5096,12 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
           }
         continue;
       }
+    if (strncmp("verbose",option+1,3) == 0)
+      {
+        local_info->verbose=(*option == '-');
+        quantize_info.measure_error=(*option == '-');
+        continue;
+      }
     if (Latin1Compare("wave",option+1) == 0)
       {
         double
@@ -4414,8 +5140,6 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
       *image=region_image;
       (*image)->matte=matte;
     }
-  if (compress)
-    CondenseImage(*image);
   if ((quantize_info.number_colors != 0) ||
       (quantize_info.colorspace == GRAYColorspace))
     {
@@ -4428,12 +5152,6 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
         (void) QuantizeImage(&quantize_info,*image);
       else
         CompressColormap(*image);
-      /*
-        Measure quantization error.
-      */
-      if (local_info->verbose)
-        (void) QuantizationError(*image);
-      SyncImage(*image);
     }
   if (map_image != (Image *) NULL)
     {
@@ -4444,8 +5162,9 @@ Export void MogrifyImage(const ImageInfo *image_info,const int argc,char **argv,
     Free resources.
   */
   if (geometry != (char *) NULL)
-    FreeMemory((char *) geometry);
+    FreeMemory(geometry);
   DestroyImageInfo(local_info);
+  ClosePixelCache(&(*image)->cache_info);
 }
 
 /*
@@ -4525,6 +5244,110 @@ Export void MogrifyImages(const ImageInfo *image_info,const int argc,
     (void) SetMonitorHandler(handler);
     ProgressMonitor(MogrifyImageText,i,number_images);
   }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%     M o s a i c I m a g e s                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method MosaicImages inlays a number of images to form a single coherent
+%  picture.
+%
+%  The format of the MosaicImage method is:
+%
+%      Image *MosaicImages(const Image *images)
+%
+%  A description of each parameter follows:
+%
+%    o images: The address of a structure of type Image;  returned from
+%      ReadImage.
+%
+%
+*/
+Export Image *MosaicImages(Image *images)
+{
+#define MosaicImageText  "  Creating an image mosaic...  "
+
+  Image
+    *image,
+    *mosaic_image;
+
+  int
+    y;
+
+  RectangleInfo
+    page_info;
+
+  register int
+    x;
+
+  register PixelPacket
+    *q;
+
+  unsigned int
+    scene;
+
+  assert(images != (Image *) NULL);
+  if (images->next == (Image *) NULL)
+    {
+      MagickWarning(OptionWarning,"Unable to create a mosaic",
+        "image sequence required");
+      return((Image *) NULL);
+    }
+  /*
+    Determine image bounding box.
+  */
+  page_info.width=images->columns;
+  page_info.height=images->rows;
+  page_info.x=0;
+  page_info.y=0;
+  for (image=images; image != (Image *) NULL; image=image->next)
+  {
+    page_info.x=image->page_info.x;
+    page_info.y=image->page_info.y;
+    if ((image->columns+page_info.x) > page_info.width)
+      page_info.width=image->columns+page_info.x;
+    if ((image->rows+page_info.y) > page_info.height)
+      page_info.height=image->rows+page_info.y;
+  }
+  /*
+    Allocate image structure.
+  */
+  mosaic_image=AllocateImage((ImageInfo *) NULL);
+  if (mosaic_image == (Image *) NULL)
+    return((Image *) NULL);
+  /*
+    Initialize colormap.
+  */
+  mosaic_image->columns=page_info.width;
+  mosaic_image->rows=page_info.height;
+  for (y=0; y < (int) mosaic_image->rows; y++)
+  {
+    q=SetPixelCache(mosaic_image,0,y,mosaic_image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < (int) mosaic_image->columns; x++)
+    {
+      *q=mosaic_image->background_color;
+      q++;
+    }
+    if (!SyncPixelCache(mosaic_image))
+      break;
+  }
+  scene=0;
+  for (image=images; image != (Image *) NULL; image=image->next)
+  {
+    CompositeImage(mosaic_image,ReplaceCompositeOp,image,image->page_info.x,
+      image->page_info.y);
+    ProgressMonitor(MosaicImageText,scene++,GetNumberScenes(images));
+  }
+  return(mosaic_image);
 }
 
 /*
@@ -4913,10 +5736,8 @@ Export Image *ReadImage(ImageInfo *image_info)
             /*
               Clone this subimage.
             */
-            next_image->orphan=True;
             clone_image=CloneImage(next_image,next_image->columns,
               next_image->rows,True);
-            next_image->orphan=False;
             if (clone_image == (Image *) NULL)
               {
                 MagickWarning(ResourceLimitWarning,"Memory allocation failed",
@@ -4994,7 +5815,7 @@ Export Image *ReadImage(ImageInfo *image_info)
       image->filename);
   for (next_image=image; next_image; next_image=next_image->next)
   {
-    next_image->tainted=False;
+    DestroyBlobInfo(&image->blob_info);
     (void) strcpy(next_image->magick_filename,image_info->filename);
     if (image->temporary)
       (void) strcpy(next_image->filename,image_info->filename);
@@ -5103,7 +5924,7 @@ Export Image *ReadImages(ImageInfo *image_info)
   *p='\0';
   Strip(command);
   images=StringToArgv(command,&number_images);
-  FreeMemory((char *) command);
+  FreeMemory(command);
   /*
     Read the images into a linked list.
   */
@@ -5173,25 +5994,30 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
     ty,
     tz;
 
+  int
+    blue,
+    green,
+    red,
+    y;
+
   Quantum
     *range_table;
 
   register double
-    *x,
-    *y,
-    *z;
+    *x_map,
+    *y_map,
+    *z_map;
 
   register int
-    blue,
-    green,
     i,
-    red;
+    x;
 
   register Quantum
     *range_limit;
 
-  register RunlengthPacket
-    *p;
+  register PixelPacket
+    *p,
+    *q;
 
   assert(image != (Image *) NULL);
   if ((colorspace == RGBColorspace) || (colorspace == TransparentColorspace))
@@ -5208,49 +6034,64 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
         Convert RGB to CMYK colorspace.
       */
       image->colorspace=CMYKColorspace;
-      p=image->pixels;
-      for (i=0; i < (int) image->packets; i++)
+      for (y=0; y < (int) image->rows; y++)
       {
-        cyan=MaxRGB-p->red;
-        magenta=MaxRGB-p->green;
-        yellow=MaxRGB-p->blue;
-        black=cyan;
-        if (magenta < black)
-          black=magenta;
-        if (yellow < black)
-          black=yellow;
-        p->red=cyan;
-        p->green=magenta;
-        p->blue=yellow;
-        p->index=black;
-        p++;
+        q=GetPixelCache(image,0,y,image->columns,1);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (int) image->columns; x++)
+        {
+          cyan=MaxRGB-q->red;
+          magenta=MaxRGB-q->green;
+          yellow=MaxRGB-q->blue;
+          black=cyan;
+          if (magenta < black)
+            black=magenta;
+          if (yellow < black)
+            black=yellow;
+          q->red=cyan;
+          q->green=magenta;
+          q->blue=yellow;
+          q->opacity=black;
+          q++;
+        }
+        if (!SyncPixelCache(image))
+          break;
       }
       return;
     }
+  x=0;
   if (colorspace == GRAYColorspace)
     {
       /*
-        Return if the image is already gray_scale.
+        Return if the image is already grayscale.
       */
-      p=image->pixels;
-      for (i=0; i < (int) image->packets; i++)
+      for (y=0; y < (int) image->rows; y++)
       {
-        if ((p->red != p->green) || (p->green != p->blue))
+        p=GetPixelCache(image,0,y,image->columns,1);
+        if (p == (PixelPacket *) NULL)
           break;
-        p++;
+        for (x=0; x < (int) image->columns; x++)
+        {
+          if ((p->red != p->green) || (p->green != p->blue))
+            break;
+          p++;
+        }
+        if (x < (int) image->columns)
+          break;
       }
-      if (i == (int) image->packets)
+      if ((x == (int) image->columns) && (y == (int) image->rows))
         return;
     }
   /*
     Allocate the tables.
   */
-  x=(double *) AllocateMemory(3*(MaxRGB+1)*sizeof(double));
-  y=(double *) AllocateMemory(3*(MaxRGB+1)*sizeof(double));
-  z=(double *) AllocateMemory(3*(MaxRGB+1)*sizeof(double));
+  x_map=(double *) AllocateMemory(3*(MaxRGB+1)*sizeof(double));
+  y_map=(double *) AllocateMemory(3*(MaxRGB+1)*sizeof(double));
+  z_map=(double *) AllocateMemory(3*(MaxRGB+1)*sizeof(double));
   range_table=(Quantum *) AllocateMemory(4*(MaxRGB+1)*sizeof(Quantum));
-  if ((x == (double *) NULL) || (y == (double *) NULL) ||
-      (z == (double *) NULL) || (range_table == (Quantum *) NULL))
+  if ((x_map == (double *) NULL) || (y_map == (double *) NULL) ||
+      (z_map == (double *) NULL) || (range_table == (Quantum *) NULL))
     {
       MagickWarning(ResourceLimitWarning,"Unable to transform color space",
         "Memory allocation failed");
@@ -5282,15 +6123,15 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
       */
       for (i=0; i <= MaxRGB; i++)
       {
-        x[i+X]=0.299*i;
-        y[i+X]=0.587*i;
-        z[i+X]=0.114*i;
-        x[i+Y]=0.299*i;
-        y[i+Y]=0.587*i;
-        z[i+Y]=0.114*i;
-        x[i+Z]=0.299*i;
-        y[i+Z]=0.587*i;
-        z[i+Z]=0.114*i;
+        x_map[i+X]=0.299*i;
+        y_map[i+X]=0.587*i;
+        z_map[i+X]=0.114*i;
+        x_map[i+Y]=0.299*i;
+        y_map[i+Y]=0.587*i;
+        z_map[i+Y]=0.114*i;
+        x_map[i+Z]=0.299*i;
+        y_map[i+Z]=0.587*i;
+        z_map[i+Z]=0.114*i;
       }
       break;
     }
@@ -5310,15 +6151,15 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
       tz=(MaxRGB+1) >> 1;
       for (i=0; i <= MaxRGB; i++)
       {
-        x[i+X]=0.33333*i;
-        y[i+X]=0.33334*i;
-        z[i+X]=0.33333*i;
-        x[i+Y]=0.5*i;
-        y[i+Y]=0.0;
-        z[i+Y]=(-0.5)*i;
-        x[i+Z]=(-0.25)*i;
-        y[i+Z]=0.5*i;
-        z[i+Z]=(-0.25)*i;
+        x_map[i+X]=0.33333*i;
+        y_map[i+X]=0.33334*i;
+        z_map[i+X]=0.33333*i;
+        x_map[i+Y]=0.5*i;
+        y_map[i+Y]=0.0;
+        z_map[i+Y]=(-0.5)*i;
+        x_map[i+Z]=(-0.25)*i;
+        y_map[i+Z]=0.5*i;
+        z_map[i+Z]=(-0.25)*i;
       }
       break;
     }
@@ -5337,27 +6178,27 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
       tz=UpScale(137);
       for (i=0; i <= (int) (0.018*MaxRGB); i++)
       {
-        x[i+X]=0.003962014134275617*MaxRGB*i;
-        y[i+X]=0.007778268551236748*MaxRGB*i;
-        z[i+X]=0.001510600706713781*MaxRGB*i;
-        x[i+Y]=(-0.002426619775463276)*MaxRGB*i;
-        y[i+Y]=(-0.004763965913702149)*MaxRGB*i;
-        z[i+Y]=0.007190585689165425*MaxRGB*i;
-        x[i+Z]=0.006927257754597858*MaxRGB*i;
-        y[i+Z]=(-0.005800713697502058)*MaxRGB*i;
-        z[i+Z]=(-0.0011265440570958)*MaxRGB*i;
+        x_map[i+X]=0.003962014134275617*MaxRGB*i;
+        y_map[i+X]=0.007778268551236748*MaxRGB*i;
+        z_map[i+X]=0.001510600706713781*MaxRGB*i;
+        x_map[i+Y]=(-0.002426619775463276)*MaxRGB*i;
+        y_map[i+Y]=(-0.004763965913702149)*MaxRGB*i;
+        z_map[i+Y]=0.007190585689165425*MaxRGB*i;
+        x_map[i+Z]=0.006927257754597858*MaxRGB*i;
+        y_map[i+Z]=(-0.005800713697502058)*MaxRGB*i;
+        z_map[i+Z]=(-0.0011265440570958)*MaxRGB*i;
       }
       for ( ; i <= MaxRGB; i++)
       {
-        x[i+X]=0.2201118963486454*(1.099*i-0.099);
-        y[i+X]=0.4321260306242638*(1.099*i-0.099);
-        z[i+X]=0.08392226148409894*(1.099*i-0.099);
-        x[i+Y]=(-0.1348122097479598)*(1.099*i-0.099);
-        y[i+Y]=(-0.2646647729834528)*(1.099*i-0.099);
-        z[i+Y]=0.3994769827314126*(1.099*i-0.099);
-        x[i+Z]=0.3848476530332144*(1.099*i-0.099);
-        y[i+Z]=(-0.3222618720834477)*(1.099*i-0.099);
-        z[i+Z]=(-0.06258578094976668)*(1.099*i-0.099);
+        x_map[i+X]=0.2201118963486454*(1.099*i-0.099);
+        y_map[i+X]=0.4321260306242638*(1.099*i-0.099);
+        z_map[i+X]=0.08392226148409894*(1.099*i-0.099);
+        x_map[i+Y]=(-0.1348122097479598)*(1.099*i-0.099);
+        y_map[i+Y]=(-0.2646647729834528)*(1.099*i-0.099);
+        z_map[i+Y]=0.3994769827314126*(1.099*i-0.099);
+        x_map[i+Z]=0.3848476530332144*(1.099*i-0.099);
+        y_map[i+Z]=(-0.3222618720834477)*(1.099*i-0.099);
+        z_map[i+Z]=(-0.06258578094976668)*(1.099*i-0.099);
       }
       break;
     }
@@ -5372,15 +6213,15 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
       */
       for (i=0; i <= MaxRGB; i++)
       {
-        x[i+X]=0.412453*i;
-        y[i+X]=0.35758*i;
-        z[i+X]=0.180423*i;
-        x[i+Y]=0.212671*i;
-        y[i+Y]=0.71516*i;
-        z[i+Y]=0.072169*i;
-        x[i+Z]=0.019334*i;
-        y[i+Z]=0.119193*i;
-        z[i+Z]=0.950227*i;
+        x_map[i+X]=0.412453*i;
+        y_map[i+X]=0.35758*i;
+        z_map[i+X]=0.180423*i;
+        x_map[i+Y]=0.212671*i;
+        y_map[i+Y]=0.71516*i;
+        z_map[i+Y]=0.072169*i;
+        x_map[i+Z]=0.019334*i;
+        y_map[i+Z]=0.119193*i;
+        z_map[i+Z]=0.950227*i;
       }
       break;
     }
@@ -5400,15 +6241,15 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
       tz=(MaxRGB+1) >> 1;
       for (i=0; i <= MaxRGB; i++)
       {
-        x[i+X]=0.299*i;
-        y[i+X]=0.587*i;
-        z[i+X]=0.114*i;
-        x[i+Y]=(-0.16873)*i;
-        y[i+Y]=(-0.331264)*i;
-        z[i+Y]=0.500000*i;
-        x[i+Z]=0.500000*i;
-        y[i+Z]=(-0.418688)*i;
-        z[i+Z]=(-0.081312)*i;
+        x_map[i+X]=0.299*i;
+        y_map[i+X]=0.587*i;
+        z_map[i+X]=0.114*i;
+        x_map[i+Y]=(-0.16873)*i;
+        y_map[i+Y]=(-0.331264)*i;
+        z_map[i+Y]=0.500000*i;
+        x_map[i+Z]=0.500000*i;
+        y_map[i+Z]=(-0.418688)*i;
+        z_map[i+Z]=(-0.081312)*i;
       }
       break;
     }
@@ -5427,27 +6268,27 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
       tz=UpScale(137);
       for (i=0; i <= (int) (0.018*MaxRGB); i++)
       {
-        x[i+X]=0.003962014134275617*MaxRGB*i;
-        y[i+X]=0.007778268551236748*MaxRGB*i;
-        z[i+X]=0.001510600706713781*MaxRGB*i;
-        x[i+Y]=(-0.002426619775463276)*MaxRGB*i;
-        y[i+Y]=(-0.004763965913702149)*MaxRGB*i;
-        z[i+Y]=0.007190585689165425*MaxRGB*i;
-        x[i+Z]=0.006927257754597858*MaxRGB*i;
-        y[i+Z]=(-0.005800713697502058)*MaxRGB*i;
-        z[i+Z]=(-0.0011265440570958)*MaxRGB*i;
+        x_map[i+X]=0.003962014134275617*MaxRGB*i;
+        y_map[i+X]=0.007778268551236748*MaxRGB*i;
+        z_map[i+X]=0.001510600706713781*MaxRGB*i;
+        x_map[i+Y]=(-0.002426619775463276)*MaxRGB*i;
+        y_map[i+Y]=(-0.004763965913702149)*MaxRGB*i;
+        z_map[i+Y]=0.007190585689165425*MaxRGB*i;
+        x_map[i+Z]=0.006927257754597858*MaxRGB*i;
+        y_map[i+Z]=(-0.005800713697502058)*MaxRGB*i;
+        z_map[i+Z]=(-0.0011265440570958)*MaxRGB*i;
       }
       for ( ; i <= MaxRGB; i++)
       {
-        x[i+X]=0.2201118963486454*(1.099*i-0.099);
-        y[i+X]=0.4321260306242638*(1.099*i-0.099);
-        z[i+X]=0.08392226148409894*(1.099*i-0.099);
-        x[i+Y]=(-0.1348122097479598)*(1.099*i-0.099);
-        y[i+Y]=(-0.2646647729834528)*(1.099*i-0.099);
-        z[i+Y]=0.3994769827314126*(1.099*i-0.099);
-        x[i+Z]=0.3848476530332144*(1.099*i-0.099);
-        y[i+Z]=(-0.3222618720834477)*(1.099*i-0.099);
-        z[i+Z]=(-0.06258578094976668)*(1.099*i-0.099);
+        x_map[i+X]=0.2201118963486454*(1.099*i-0.099);
+        y_map[i+X]=0.4321260306242638*(1.099*i-0.099);
+        z_map[i+X]=0.08392226148409894*(1.099*i-0.099);
+        x_map[i+Y]=(-0.1348122097479598)*(1.099*i-0.099);
+        y_map[i+Y]=(-0.2646647729834528)*(1.099*i-0.099);
+        z_map[i+Y]=0.3994769827314126*(1.099*i-0.099);
+        x_map[i+Z]=0.3848476530332144*(1.099*i-0.099);
+        y_map[i+Z]=(-0.3222618720834477)*(1.099*i-0.099);
+        z_map[i+Z]=(-0.06258578094976668)*(1.099*i-0.099);
       }
       break;
     }
@@ -5467,15 +6308,15 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
       tz=(MaxRGB+1) >> 1;
       for (i=0; i <= MaxRGB; i++)
       {
-        x[i+X]=0.299*i;
-        y[i+X]=0.587*i;
-        z[i+X]=0.114*i;
-        x[i+Y]=0.596*i;
-        y[i+Y]=(-0.274)*i;
-        z[i+Y]=(-0.322)*i;
-        x[i+Z]=0.211*i;
-        y[i+Z]=(-0.523)*i;
-        z[i+Z]=0.312*i;
+        x_map[i+X]=0.299*i;
+        y_map[i+X]=0.587*i;
+        z_map[i+X]=0.114*i;
+        x_map[i+Y]=0.596*i;
+        y_map[i+Y]=(-0.274)*i;
+        z_map[i+Y]=(-0.322)*i;
+        x_map[i+Z]=0.211*i;
+        y_map[i+Z]=(-0.523)*i;
+        z_map[i+Z]=0.312*i;
       }
       break;
     }
@@ -5495,15 +6336,15 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
       tz=(MaxRGB+1) >> 1;
       for (i=0; i <= MaxRGB; i++)
       {
-        x[i+X]=0.299*i;
-        y[i+X]=0.587*i;
-        z[i+X]=0.114*i;
-        x[i+Y]=(-0.168736)*i;
-        y[i+Y]=(-0.331264)*i;
-        z[i+Y]=0.5*i;
-        x[i+Z]=0.5*i;
-        y[i+Z]=(-0.418688)*i;
-        z[i+Z]=(-0.081312)*i;
+        x_map[i+X]=0.299*i;
+        y_map[i+X]=0.587*i;
+        z_map[i+X]=0.114*i;
+        x_map[i+Y]=(-0.168736)*i;
+        y_map[i+Y]=(-0.331264)*i;
+        z_map[i+Y]=0.5*i;
+        x_map[i+Z]=0.5*i;
+        y_map[i+Z]=(-0.418688)*i;
+        z_map[i+Z]=(-0.081312)*i;
       }
       break;
     }
@@ -5524,15 +6365,15 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
       tz=(MaxRGB+1) >> 1;
       for (i=0; i <= MaxRGB; i++)
       {
-        x[i+X]=0.299*i;
-        y[i+X]=0.587*i;
-        z[i+X]=0.114*i;
-        x[i+Y]=(-0.1474)*i;
-        y[i+Y]=(-0.2895)*i;
-        z[i+Y]=0.4369*i;
-        x[i+Z]=0.615*i;
-        y[i+Z]=(-0.515)*i;
-        z[i+Z]=(-0.1)*i;
+        x_map[i+X]=0.299*i;
+        y_map[i+X]=0.587*i;
+        z_map[i+X]=0.114*i;
+        x_map[i+Y]=(-0.1474)*i;
+        y_map[i+Y]=(-0.2895)*i;
+        z_map[i+Y]=0.4369*i;
+        x_map[i+Z]=0.615*i;
+        y_map[i+Z]=(-0.515)*i;
+        z_map[i+Z]=(-0.1)*i;
       }
       break;
     }
@@ -5548,18 +6389,28 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
       /*
         Convert DirectClass image.
       */
-      p=image->pixels;
-      for (i=0; i < (int) image->packets; i++)
+      for (y=0; y < (int) image->rows; y++)
       {
-        red=p->red;
-        green=p->green;
-        blue=p->blue;
-        p->red=range_limit[(int) (x[red+X]+y[green+X]+z[blue+X]+tx)];
-        p->green=range_limit[(int) (x[red+Y]+y[green+Y]+z[blue+Y]+ty)];
-        p->blue=range_limit[(int) (x[red+Z]+y[green+Z]+z[blue+Z]+tz)];
-        p++;
-        if (QuantumTick(i,image->packets))
-          ProgressMonitor(RGBTransformImageText,i,image->packets);
+        q=GetPixelCache(image,0,y,image->columns,1);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (int) image->columns; x++)
+        {
+          red=q->red;
+          green=q->green;
+          blue=q->blue;
+          q->red=
+            range_limit[(int) (x_map[red+X]+y_map[green+X]+z_map[blue+X]+tx)];
+          q->green=
+            range_limit[(int) (x_map[red+Y]+y_map[green+Y]+z_map[blue+Y]+ty)];
+          q->blue=
+            range_limit[(int) (x_map[red+Z]+y_map[green+Z]+z_map[blue+Z]+tz)];
+          q++;
+        }
+        if (!SyncPixelCache(image))
+          break;
+        if (QuantumTick(y,image->rows))
+          ProgressMonitor(RGBTransformImageText,y,image->rows);
       }
       break;
     }
@@ -5574,11 +6425,11 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
         green=image->colormap[i].green;
         blue=image->colormap[i].blue;
         image->colormap[i].red=
-          range_limit[(int) (x[red+X]+y[green+X]+z[blue+X]+tx)];
+          range_limit[(int) (x_map[red+X]+y_map[green+X]+z_map[blue+X]+tx)];
         image->colormap[i].green=
-          range_limit[(int) (x[red+Y]+y[green+Y]+z[blue+Y]+ty)];
+          range_limit[(int) (x_map[red+Y]+y_map[green+Y]+z_map[blue+Y]+ty)];
         image->colormap[i].blue=
-          range_limit[(int) (x[red+Z]+y[green+Z]+z[blue+Z]+tz)];
+          range_limit[(int) (x_map[red+Z]+y_map[green+Z]+z_map[blue+Z]+tz)];
       }
       SyncImage(image);
       break;
@@ -5587,10 +6438,10 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
   /*
     Free allocated memory.
   */
-  FreeMemory((char *) range_table);
-  FreeMemory((char *) z);
-  FreeMemory((char *) y);
-  FreeMemory((char *) x);
+  FreeMemory(range_table);
+  FreeMemory(z_map);
+  FreeMemory(y_map);
+  FreeMemory(x_map);
 }
 
 /*
@@ -5618,26 +6469,34 @@ Export void RGBTransformImage(Image *image,const ColorspaceType colorspace)
 */
 Export void SetImage(Image *image)
 {
-  ColorPacket
-    color;
+  int
+    y;
 
   register int
-    i;
+    x;
 
-  register RunlengthPacket
-    *p;
+  register PixelPacket
+    *q;
 
   assert(image != (Image *) NULL);
-  color=image->background_color;
-  p=image->pixels;
-  for (i=0; i < (int) image->packets; i++)
+  if (image->class == PseudoClass)
+    image->colormap[0]=image->background_color;
+  for (y=0; y < (int) image->rows; y++)
   {
-    p->red=color.red;
-    p->green=color.green;
-    p->blue=color.blue;
-    p->length=0;
-    p->index=0;
-    p++;
+    q=SetPixelCache(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < (int) image->columns; x++)
+    {
+      *q=image->background_color;
+      q->opacity=Opaque;
+      q++;
+    }
+    if (image->class == PseudoClass)
+      for (x=0; x < (int) image->columns; x++)
+        image->indexes[x]=0;
+    if (!SyncPixelCache(image))
+      break;
   }
 }
 
@@ -5690,6 +6549,7 @@ Export void SetImageInfo(ImageInfo *image_info,const unsigned int rectify)
     *r;
 
   unsigned int
+    affirm,
     status;
 
   /*
@@ -5719,7 +6579,7 @@ Export void SetImageInfo(ImageInfo *image_info,const unsigned int rectify)
       *q='\0';
       p=q;
       (void) CloneString(&image_info->tile,tile);
-      FreeMemory((char *) tile);
+      FreeMemory(tile);
       if (!IsSubimage(image_info->tile,True))
         break;
       /*
@@ -5771,7 +6631,7 @@ Export void SetImageInfo(ImageInfo *image_info,const unsigned int rectify)
   /*
     Look for explicit 'format:image' in filename.
   */
-  image_info->affirm=image_info->file != (FILE *) NULL;
+  affirm=False;
   p=image_info->filename;
   while (isalnum((int) *p))
     p++;
@@ -5800,7 +6660,7 @@ Export void SetImageInfo(ImageInfo *image_info,const unsigned int rectify)
             {
               (void) strcpy(image_info->magick,magick);
               if (Latin1Compare(magick,"TMP") != 0)
-                image_info->affirm=True;
+                affirm=True;
               else
                 image_info->temporary=True;
             }
@@ -5826,7 +6686,7 @@ Export void SetImageInfo(ImageInfo *image_info,const unsigned int rectify)
         image_info->adjoin&=magick_info->adjoin;
       return;
     }
-  if (image_info->affirm)
+  if (affirm)
     return;
   /*
     Allocate image structure.
@@ -5841,7 +6701,7 @@ Export void SetImageInfo(ImageInfo *image_info,const unsigned int rectify)
   status=OpenBlob(image_info,image,ReadBinaryType);
   if (status == False)
     return;
-  if ((image->blob.data != (char *) NULL)  || !image->exempt)
+  if ((image->blob_info.data != (char *) NULL)  || !image->exempt)
     (void) ReadBlob(image,MaxTextExtent,magick);
   else
     {
@@ -5928,22 +6788,26 @@ Export void SetImageInfo(ImageInfo *image_info,const unsigned int rectify)
 
 static int IntensityCompare(const void *x,const void *y)
 {
-  ColorPacket
+  PixelPacket
     *color_1,
     *color_2;
 
-  color_1=(ColorPacket *) x;
-  color_2=(ColorPacket *) y;
+  color_1=(PixelPacket *) x;
+  color_2=(PixelPacket *) y;
   return((int) Intensity(*color_2)-(int) Intensity(*color_1));
 }
 
 Export void SortColormapByIntensity(Image *image)
 {
-  register int
-    i;
+  int
+    y;
 
-  register RunlengthPacket
-    *p;
+  register int
+    i,
+    x;
+
+  register PixelPacket
+    *q;
 
   register unsigned short
     index;
@@ -5969,28 +6833,33 @@ Export void SortColormapByIntensity(Image *image)
     Assign index values to colormap entries.
   */
   for (i=0; i < (int) image->colors; i++)
-    image->colormap[i].index=(unsigned short) i;
+    image->colormap[i].opacity=(unsigned short) i;
   /*
     Sort image colormap by decreasing color popularity.
   */
-  qsort((void *) image->colormap,(int) image->colors,sizeof(ColorPacket),
+  qsort((void *) image->colormap,(int) image->colors,sizeof(PixelPacket),
     (int (*)(const void *, const void *)) IntensityCompare);
   /*
     Update image colormap indexes to sorted colormap order.
   */
   for (i=0; i < (int) image->colors; i++)
-    pixels[image->colormap[i].index]=(unsigned short) i;
-  p=image->pixels;
-  for (i=0; i < (int) image->packets; i++)
+    pixels[image->colormap[i].opacity]=(unsigned short) i;
+  for (y=0; y < (int) image->rows; y++)
   {
-    index=pixels[p->index];
-    p->red=image->colormap[index].red;
-    p->green=image->colormap[index].green;
-    p->blue=image->colormap[index].blue;
-    p->index=index;
-    p++;
+    q=GetPixelCache(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < (int) image->columns; x++)
+    {
+      index=pixels[image->indexes[x]];
+      q->red=image->colormap[index].red;
+      q->green=image->colormap[index].green;
+      q->blue=image->colormap[index].blue;
+      image->indexes[x]=index;
+      q++;
+    }
   }
-  FreeMemory((char *) pixels);
+  FreeMemory(pixels);
 }
 
 /*
@@ -6019,31 +6888,36 @@ Export void SortColormapByIntensity(Image *image)
 */
 Export void SyncImage(Image *image)
 {
-  register int
-    i;
-
-  register RunlengthPacket
-    *p;
-
-  register unsigned short
+  IndexPacket
     index;
+
+  int
+    y;
+
+  register int
+    x;
+
+  register PixelPacket
+    *q;
 
   assert(image != (Image *) NULL);
   if (image->class == DirectClass)
     return;
-  for (i=0; i < (int) image->colors; i++)
+  for (y=0; y < (int) image->rows; y++)
   {
-    image->colormap[i].index=0;
-    image->colormap[i].flags=0;
-  }
-  p=image->pixels;
-  for (i=0; i < (int) image->packets; i++)
-  {
-    index=p->index;
-    p->red=image->colormap[index].red;
-    p->green=image->colormap[index].green;
-    p->blue=image->colormap[index].blue;
-    p++;
+    q=GetPixelCache(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < (int) image->columns; x++)
+    {
+      index=image->indexes[x];
+      q->red=image->colormap[index].red;
+      q->green=image->colormap[index].green;
+      q->blue=image->colormap[index].blue;
+      q++;
+    }
+    if (!SyncPixelCache(image))
+      break;
   }
 }
 
@@ -6099,186 +6973,6 @@ Export void TextureImage(Image *image,Image *texture)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%                                                                             %
-%   T r a n s f o r m I m a g e                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method TransformImage creates a new image that is a transformed size of
-%  of existing one as specified by the crop and image geometries.  It
-%  allocates the memory necessary for the new Image structure and returns a
-%  pointer to the new image.
-%
-%  If a crop geometry is specified a subregion of the image is obtained.
-%  If the specified image size, as defined by the image and scale geometries,
-%  is smaller than the actual image size, the image is first minified to an
-%  integral of the specified image size with an antialias digital filter.  The
-%  image is then scaled to the exact specified image size with pixel
-%  replication.  If the specified image size is greater than the actual image
-%  size, the image is first enlarged to an integral of the specified image
-%  size with bilinear interpolation.  The image is then scaled to the exact
-%  specified image size with pixel replication.
-%
-%  The format of the TransformImage method is:
-%
-%      void TransformImage(Image **image,const char *crop_geometry,
-%        const char *image_geometry)
-%
-%  A description of each parameter follows:
-%
-%    o image: The address of an address of a structure of type Image.  The
-%      transformed image is returned as this parameter.
-%
-%    o crop_geometry: Specifies a pointer to a crop geometry string.
-%      This geometry defines a subregion of the image.
-%
-%    o image_geometry: Specifies a pointer to a image geometry string.
-%      The specified width and height of this geometry string are absolute.
-%
-%
-*/
-Export void TransformImage(Image **image,const char *crop_geometry,
-  const char *image_geometry)
-{
-  Image
-    *transformed_image;
-
-  int
-    flags,
-    x,
-    y;
-
-  unsigned int
-    height,
-    width;
-
-  assert(image != (Image **) NULL);
-  transformed_image=(*image);
-  if (crop_geometry != (const char *) NULL)
-    {
-      Image
-        *cropped_image;
-
-      RectangleInfo
-        crop_info;
-
-      /*
-        Crop image to a user specified size.
-      */
-      width=transformed_image->columns;
-      height=transformed_image->rows;
-      crop_info.x=0;
-      crop_info.y=0;
-      flags=ParseGeometry((char *) crop_geometry,&crop_info.x,&crop_info.y,
-        &width,&height);
-      if ((flags & WidthValue) == 0)
-        width=(unsigned int) ((int) transformed_image->columns-crop_info.x);
-      if ((flags & HeightValue) == 0)
-        height=(unsigned int) ((int) transformed_image->rows-crop_info.y);
-      if ((flags & XNegative) != 0)
-        crop_info.x+=transformed_image->columns-width;
-      if ((flags & YNegative) != 0)
-        crop_info.y+=transformed_image->rows-height;
-      if (strchr(crop_geometry,'%') != (char *) NULL)
-        {
-          /*
-            Crop geometry is relative to image size.
-          */
-          x=0;
-          y=0;
-          (void) ParseImageGeometry(crop_geometry,&x,&y,&width,&height);
-          if (width > transformed_image->columns)
-            width=transformed_image->columns;
-          if (height > transformed_image->rows)
-            height=transformed_image->rows;
-          crop_info.x=width >> 1;
-          crop_info.y=height >> 1;
-          width=transformed_image->columns-width;
-          height=transformed_image->rows-height;
-          flags|=XValue | YValue;
-        }
-      crop_info.width=width;
-      crop_info.height=height;
-      if ((width == 0) || (height == 0) ||
-          ((flags & XValue) != 0) || ((flags & YValue) != 0))
-        cropped_image=CropImage(transformed_image,&crop_info);
-      else
-        {
-          Image
-            *next_image;
-
-          /*
-            Crop repeatedly to create uniform subimages.
-          */
-          next_image=(Image *) NULL;
-          cropped_image=(Image *) NULL;
-          for (y=0; y < (int) transformed_image->rows; y+=height)
-          {
-            for (x=0; x < (int) transformed_image->columns; x+=width)
-            {
-              crop_info.width=width;
-              crop_info.height=height;
-              crop_info.x=x;
-              crop_info.y=y;
-              next_image=CropImage(transformed_image,&crop_info);
-              if (next_image == (Image *) NULL)
-                break;
-              if (cropped_image == (Image *) NULL)
-                cropped_image=next_image;
-              else
-                {
-                  next_image->previous=cropped_image;
-                  cropped_image->next=next_image;
-                  cropped_image=cropped_image->next;
-                }
-            }
-            if (next_image == (Image *) NULL)
-              break;
-          }
-        }
-      if (cropped_image != (Image *) NULL)
-        {
-          DestroyImage(transformed_image);
-          while (cropped_image->previous != (Image *) NULL)
-            cropped_image=cropped_image->previous;
-          transformed_image=cropped_image;
-        }
-    }
-  /*
-    Scale image to a user specified size.
-  */
-  width=transformed_image->columns;
-  height=transformed_image->rows;
-  x=0;
-  y=0;
-  (void) ParseImageGeometry(image_geometry,&x,&y,&width,&height);
-  if ((transformed_image->columns != width) ||
-      (transformed_image->rows != height))
-    {
-      Image
-        *zoomed_image;
-
-      /*
-        Zoom image.
-      */
-      zoomed_image=ZoomImage(transformed_image,width,height);
-      if (zoomed_image == (Image *) NULL)
-        zoomed_image=ScaleImage(transformed_image,width,height);
-      if (zoomed_image != (Image *) NULL)
-        {
-          DestroyImage(transformed_image);
-          transformed_image=zoomed_image;
-        }
-    }
-  *image=transformed_image;
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
 %     T r a n s f o r m R G B I m a g e                                       %
 %                                                                             %
 %                                                                             %
@@ -6287,7 +6981,7 @@ Export void TransformImage(Image **image,const char *crop_geometry,
 %
 %  Method TransformRGBImage converts the reference image from an alternate
 %  colorspace.  The transformation matrices are not the standard ones:  the
-%  weights are rescaled to normalized the range of the transformed values to
+%  weights are rescaled to normalize the range of the transformed values to
 %  be [0..MaxRGB].
 %
 %  The format of the TransformRGBImage method is:
@@ -6299,9 +6993,8 @@ Export void TransformImage(Image **image,const char *crop_geometry,
 %    o image: The address of a structure of type Image;  returned from
 %      ReadImage.
 %
-%    o colorspace: An unsigned integer value that indicates the colorspace
-%      the image is currently in.  On return the image is in the RGB
-%      color space.
+%    o colorspace: An unsigned integer value defines which colorspace to
+%      transform the image to.
 %
 %
 */
@@ -6373,24 +7066,29 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
     };
 
   double
-    *blue,
-    *green,
-    *red;
+    *blue_map,
+    *green_map,
+    *red_map;
+
+  int
+    index,
+    y;
 
   Quantum
-    *range_table;
+    blue,
+    green,
+    *range_table,
+    red;
 
   register int
     i,
-    x,
-    y,
-    z;
+    x;
 
   register Quantum
     *range_limit;
 
-  register RunlengthPacket
-    *p;
+  register PixelPacket
+    *q;
 
   assert(image != (Image *) NULL);
   if ((image->colorspace == CMYKColorspace) && (colorspace == RGBColorspace))
@@ -6405,27 +7103,34 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
         Transform image from CMYK to RGB.
       */
       image->colorspace=RGBColorspace;
-      p=image->pixels;
-      for (i=0; i < (int) image->packets; i++)
+      for (y=0; y < (int) image->rows; y++)
       {
-        cyan=p->red;
-        magenta=p->green;
-        yellow=p->blue;
-        black=p->index;
-        if ((cyan+black) > MaxRGB)
-          p->red=0;
-        else
-          p->red=MaxRGB-(cyan+black);
-        if ((magenta+black) > MaxRGB)
-          p->green=0;
-        else
-          p->green=MaxRGB-(magenta+black);
-        if ((yellow+black) > MaxRGB)
-          p->blue=0;
-        else
-          p->blue=MaxRGB-(yellow+black);
-        p->index=0;
-        p++;
+        q=GetPixelCache(image,0,y,image->columns,1);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (int) image->columns; x++)
+        {
+          cyan=q->red;
+          magenta=q->green;
+          yellow=q->blue;
+          black=q->opacity;
+          if ((cyan+black) > MaxRGB)
+            q->red=0;
+          else
+            q->red=MaxRGB-(cyan+black);
+          if ((magenta+black) > MaxRGB)
+            q->green=0;
+          else
+            q->green=MaxRGB-(magenta+black);
+          if ((yellow+black) > MaxRGB)
+            q->blue=0;
+          else
+            q->blue=MaxRGB-(yellow+black);
+          q->opacity=0;
+          q++;
+        }
+        if (!SyncPixelCache(image))
+          break;
       }
       return;
     }
@@ -6435,12 +7140,12 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
   /*
     Allocate the tables.
   */
-  red=(double *) AllocateMemory(3*(MaxRGB+1)*sizeof(double));
-  green=(double *) AllocateMemory(3*(MaxRGB+1)*sizeof(double));
-  blue=(double *) AllocateMemory(3*(MaxRGB+1)*sizeof(double));
+  red_map=(double *) AllocateMemory(3*(MaxRGB+1)*sizeof(double));
+  green_map=(double *) AllocateMemory(3*(MaxRGB+1)*sizeof(double));
+  blue_map=(double *) AllocateMemory(3*(MaxRGB+1)*sizeof(double));
   range_table=(Quantum *) AllocateMemory(4*(MaxRGB+1)*sizeof(Quantum));
-  if ((red == (double *) NULL) || (green == (double *) NULL) ||
-      (blue == (double *) NULL) || (range_table == (Quantum *) NULL))
+  if ((red_map == (double *) NULL) || (green_map == (double *) NULL) ||
+      (blue_map == (double *) NULL) || (range_table == (Quantum *) NULL))
     {
       MagickWarning(ResourceLimitWarning,"Unable to transform color space",
         "Memory allocation failed");
@@ -6474,15 +7179,15 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
       */
       for (i=0; i <= MaxRGB; i++)
       {
-        red[i+R]=i;
-        green[i+R]=0.5*(2.0*i-MaxRGB);
-        blue[i+R]=(-0.33334)*(2.0*i-MaxRGB);
-        red[i+G]=i;
-        green[i+G]=0.0;
-        blue[i+G]=0.666665*(2.0*i-MaxRGB);
-        red[i+B]=i;
-        green[i+B]=(-0.5)*(2.0*i-MaxRGB);
-        blue[i+B]=(-0.33334)*(2.0*i-MaxRGB);
+        red_map[i+R]=i;
+        green_map[i+R]=0.5*(2.0*i-MaxRGB);
+        blue_map[i+R]=(-0.33334)*(2.0*i-MaxRGB);
+        red_map[i+G]=i;
+        green_map[i+G]=0.0;
+        blue_map[i+G]=0.666665*(2.0*i-MaxRGB);
+        red_map[i+B]=i;
+        green_map[i+B]=(-0.5)*(2.0*i-MaxRGB);
+        blue_map[i+B]=(-0.33334)*(2.0*i-MaxRGB);
       }
       break;
     }
@@ -6499,15 +7204,15 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
       */
       for (i=0; i <= MaxRGB; i++)
       {
-        red[i+R]=1.40200*i;
-        green[i+R]=0.0;
-        blue[i+R]=1.88000*(i-(double) UpScale(137));
-        red[i+G]=1.40200*i;
-        green[i+G]=(-0.444066)*(i-(double) UpScale(156));
-        blue[i+G]=(-0.95692)*(i-(double) UpScale(137));
-        red[i+B]=1.40200*i;
-        green[i+B]=2.28900*(i-(double) UpScale(156));
-        blue[i+B]=0.0;
+        red_map[i+R]=1.40200*i;
+        green_map[i+R]=0.0;
+        blue_map[i+R]=1.88000*(i-(double) UpScale(137));
+        red_map[i+G]=1.40200*i;
+        green_map[i+G]=(-0.444066)*(i-(double) UpScale(156));
+        blue_map[i+G]=(-0.95692)*(i-(double) UpScale(137));
+        red_map[i+B]=1.40200*i;
+        green_map[i+B]=2.28900*(i-(double) UpScale(156));
+        blue_map[i+B]=0.0;
         range_table[i+(MaxRGB+1)]=(Quantum) UpScale(sRGBMap[DownScale(i)]);
       }
       for ( ; i < (int) UpScale(351); i++)
@@ -6525,15 +7230,15 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
       */
       for (i=0; i <= MaxRGB; i++)
       {
-        red[i+R]=3.240479*i;
-        green[i+R]=(-1.537150)*i;
-        blue[i+R]=(-0.498535)*i;
-        red[i+G]=(-0.969256)*i;
-        green[i+G]=1.875992*i;
-        blue[i+G]=0.041556*i;
-        red[i+B]=0.055648*i;
-        green[i+B]=(-0.204043)*i;
-        blue[i+B]=1.057311*i;
+        red_map[i+R]=3.240479*i;
+        green_map[i+R]=(-1.537150)*i;
+        blue_map[i+R]=(-0.498535)*i;
+        red_map[i+G]=(-0.969256)*i;
+        green_map[i+G]=1.875992*i;
+        blue_map[i+G]=0.041556*i;
+        red_map[i+B]=0.055648*i;
+        green_map[i+B]=(-0.204043)*i;
+        blue_map[i+B]=1.057311*i;
       }
       break;
     }
@@ -6551,15 +7256,15 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
       */
       for (i=0; i <= MaxRGB; i++)
       {
-        red[i+R]=i;
-        green[i+R]=0.0;
-        blue[i+R]=(1.402000*0.5)*(2.0*i-MaxRGB);
-        red[i+G]=i;
-        green[i+G]=(-0.344136*0.5)*(2.0*i-MaxRGB);
-        blue[i+G]=(-0.714136*0.5)*(2.0*i-MaxRGB);
-        red[i+B]=i;
-        green[i+B]=(1.772000*0.5)*(2.0*i-MaxRGB);
-        blue[i+B]=0.0;
+        red_map[i+R]=i;
+        green_map[i+R]=0.0;
+        blue_map[i+R]=(1.402000*0.5)*(2.0*i-MaxRGB);
+        red_map[i+G]=i;
+        green_map[i+G]=(-0.344136*0.5)*(2.0*i-MaxRGB);
+        blue_map[i+G]=(-0.714136*0.5)*(2.0*i-MaxRGB);
+        red_map[i+B]=i;
+        green_map[i+B]=(1.772000*0.5)*(2.0*i-MaxRGB);
+        blue_map[i+B]=0.0;
       }
       break;
     }
@@ -6576,15 +7281,15 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
       */
       for (i=0; i <= MaxRGB; i++)
       {
-        red[i+R]=1.3584*i;
-        green[i+R]=0.0;
-        blue[i+R]=1.8215*(i-(double) UpScale(137));
-        red[i+G]=1.3584*i;
-        green[i+G]=(-0.4302726)*(i-(double) UpScale(156));
-        blue[i+G]=(-0.9271435)*(i-(double) UpScale(137));
-        red[i+B]=1.3584*i;
-        green[i+B]=2.2179*(i-(double) UpScale(156));
-        blue[i+B]=0.0;
+        red_map[i+R]=1.3584*i;
+        green_map[i+R]=0.0;
+        blue_map[i+R]=1.8215*(i-(double) UpScale(137));
+        red_map[i+G]=1.3584*i;
+        green_map[i+G]=(-0.4302726)*(i-(double) UpScale(156));
+        blue_map[i+G]=(-0.9271435)*(i-(double) UpScale(137));
+        red_map[i+B]=1.3584*i;
+        green_map[i+B]=2.2179*(i-(double) UpScale(156));
+        blue_map[i+B]=0.0;
         range_table[i+(MaxRGB+1)]=(Quantum) UpScale(YCCMap[DownScale(i)]);
       }
       for ( ; i < (int) UpScale(351); i++)
@@ -6605,15 +7310,15 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
       */
       for (i=0; i <= MaxRGB; i++)
       {
-        red[i+R]=i;
-        green[i+R]=0.4781*(2.0*i-MaxRGB);
-        blue[i+R]=0.3107*(2.0*i-MaxRGB);
-        red[i+G]=i;
-        green[i+G]=(-0.13635)*(2.0*i-MaxRGB);
-        blue[i+G]=(-0.3234)*(2.0*i-MaxRGB);
-        red[i+B]=i;
-        green[i+B]=(-0.55185)*(2.0*i-MaxRGB);
-        blue[i+B]=0.8503*(2.0*i-MaxRGB);
+        red_map[i+R]=i;
+        green_map[i+R]=0.4781*(2.0*i-MaxRGB);
+        blue_map[i+R]=0.3107*(2.0*i-MaxRGB);
+        red_map[i+G]=i;
+        green_map[i+G]=(-0.13635)*(2.0*i-MaxRGB);
+        blue_map[i+G]=(-0.3234)*(2.0*i-MaxRGB);
+        red_map[i+B]=i;
+        green_map[i+B]=(-0.55185)*(2.0*i-MaxRGB);
+        blue_map[i+B]=0.8503*(2.0*i-MaxRGB);
       }
       break;
     }
@@ -6631,15 +7336,15 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
       */
       for (i=0; i <= MaxRGB; i++)
       {
-        red[i+R]=i;
-        green[i+R]=0.0;
-        blue[i+R]=0.701*(2.0*i-MaxRGB);
-        red[i+G]=i;
-        green[i+G]=(-0.172068)*(2.0*i-MaxRGB);
-        blue[i+G]=0.357068*(2.0*i-MaxRGB);
-        red[i+B]=i;
-        green[i+B]=0.886*(2.0*i-MaxRGB);
-        blue[i+B]=0.0;
+        red_map[i+R]=i;
+        green_map[i+R]=0.0;
+        blue_map[i+R]=0.701*(2.0*i-MaxRGB);
+        red_map[i+G]=i;
+        green_map[i+G]=(-0.172068)*(2.0*i-MaxRGB);
+        blue_map[i+G]=0.357068*(2.0*i-MaxRGB);
+        red_map[i+B]=i;
+        green_map[i+B]=0.886*(2.0*i-MaxRGB);
+        blue_map[i+B]=0.0;
       }
       break;
     }
@@ -6658,15 +7363,15 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
       */
       for (i=0; i <= MaxRGB; i++)
       {
-        red[i+R]=i;
-        green[i+R]=0.0;
-        blue[i+R]=0.5699*(2.0*i-MaxRGB);
-        red[i+G]=i;
-        green[i+G]=(-0.1969)*(2.0*i-MaxRGB);
-        blue[i+G]=(-0.29025)*(2.0*i-MaxRGB);
-        red[i+B]=i;
-        green[i+B]=1.01395*(2.0*i-MaxRGB);
-        blue[i+B]=0;
+        red_map[i+R]=i;
+        green_map[i+R]=0.0;
+        blue_map[i+R]=0.5699*(2.0*i-MaxRGB);
+        red_map[i+G]=i;
+        green_map[i+G]=(-0.1969)*(2.0*i-MaxRGB);
+        blue_map[i+G]=(-0.29025)*(2.0*i-MaxRGB);
+        red_map[i+B]=i;
+        green_map[i+B]=1.01395*(2.0*i-MaxRGB);
+        blue_map[i+B]=0;
       }
       break;
     }
@@ -6682,18 +7387,28 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
       /*
         Convert DirectClass image.
       */
-      p=image->pixels;
-      for (i=0; i < (int) image->packets; i++)
+      for (y=0; y < (int) image->rows; y++)
       {
-        x=p->red;
-        y=p->green;
-        z=p->blue;
-        p->red=range_limit[(int) (red[x+R]+green[y+R]+blue[z+R])];
-        p->green=range_limit[(int) (red[x+G]+green[y+G]+blue[z+G])];
-        p->blue=range_limit[(int) (red[x+B]+green[y+B]+blue[z+B])];
-        p++;
-        if (QuantumTick(i,image->packets))
-          ProgressMonitor(TransformRGBImageText,i,image->packets);
+        q=GetPixelCache(image,0,y,image->columns,1);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (int) image->columns; x++)
+        {
+          red=q->red;
+          green=q->green;
+          blue=q->blue;
+          index=red_map[red+R]+green_map[green+R]+blue_map[blue+R];
+          q->red=range_limit[index];
+          index=red_map[red+G]+green_map[green+G]+blue_map[blue+G];
+          q->green=range_limit[index];
+          index=red_map[red+B]+green_map[green+B]+blue_map[blue+B];
+          q->blue=range_limit[index];
+          q++;
+        }
+        if (!SyncPixelCache(image))
+          break;
+        if (QuantumTick(y,image->rows))
+          ProgressMonitor(TransformRGBImageText,y,image->rows);
       }
       break;
     }
@@ -6704,15 +7419,15 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
       */
       for (i=0; i < (int) image->colors; i++)
       {
-        x=image->colormap[i].red;
-        y=image->colormap[i].green;
-        z=image->colormap[i].blue;
-        image->colormap[i].red=
-          range_limit[(int) (red[x+R]+green[y+R]+blue[z+R])];
-        image->colormap[i].green=
-          range_limit[(int) (red[x+G]+green[y+G]+blue[z+G])];
-        image->colormap[i].blue=
-          range_limit[(int) (red[x+B]+green[y+B]+blue[z+B])];
+        red=image->colormap[i].red;
+        green=image->colormap[i].green;
+        blue=image->colormap[i].blue;
+        index=red_map[red+R]+green_map[green+R]+blue_map[blue+R];
+        image->colormap[i].red=range_limit[index];
+        index=red_map[red+G]+green_map[green+G]+blue_map[blue+G];
+        image->colormap[i].green=range_limit[index];
+        index=red_map[red+B]+green_map[green+B]+blue_map[blue+B];
+        image->colormap[i].blue=range_limit[index];
       }
       SyncImage(image);
       break;
@@ -6721,10 +7436,10 @@ Export void TransformRGBImage(Image *image,const ColorspaceType colorspace)
   /*
     Free allocated memory.
   */
-  FreeMemory((char *) range_table);
-  FreeMemory((char *) blue);
-  FreeMemory((char *) green);
-  FreeMemory((char *) red);
+  FreeMemory(range_table);
+  FreeMemory(blue_map);
+  FreeMemory(green_map);
+  FreeMemory(red_map);
 }
 
 /*
@@ -6758,15 +7473,17 @@ Export void TransparentImage(Image *image,const char *color)
 {
 #define TransparentImageText  "  Setting transparent color in the image...  "
 
-  ColorPacket
-    target,
-    target_color;
+  PixelPacket
+    target;
+
+  int
+    y;
 
   register int
-    i;
+    x;
 
-  register RunlengthPacket
-    *p;
+  register PixelPacket
+    *q;
 
   unsigned int
     status;
@@ -6775,101 +7492,30 @@ Export void TransparentImage(Image *image,const char *color)
     Determine RGB values of the transparent color.
   */
   assert(image != (Image *) NULL);
-  status=QueryColorDatabase(color,&target_color);
+  status=QueryColorDatabase(color,&target);
   if (status == False)
     return;
-  target.red=XDownScale(target_color.red);
-  target.green=XDownScale(target_color.green);
-  target.blue=XDownScale(target_color.blue);
   /*
     Make image color transparent.
   */
   if (!image->matte)
-    MatteImage(image);
-  p=image->pixels;
-  for (i=0; i < (int) image->packets; i++)
+    MatteImage(image,Opaque);
+  for (y=0; y < (int) image->rows; y++)
   {
-    if (ColorMatch(*p,target,image->fuzz))
-      p->index=Transparent;
-    p++;
-    if (QuantumTick(i,image->packets))
-      ProgressMonitor(TransparentImageText,i,image->packets);
-  }
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   U n c o n d e n s e I m a g e                                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method UncondenseImage uncompresses runlength-encoded pixels packets to
-%  a rectangular array of pixels.
-%
-%  The format of the UncondenseImage method is:
-%
-%      unsigned int UncondenseImage(Image *image)
-%
-%  A description of each parameter follows:
-%
-%    o status: Method UncondenseImage returns True if the image is
-%      uncompressed otherwise False.
-%
-%    o image: The address of a structure of type Image.
-%
-%
-*/
-Export unsigned int UncondenseImage(Image *image)
-{
-  int
-    length;
-
-  register int
-    i,
-    j;
-
-  register RunlengthPacket
-    *p,
-    *q;
-
-  RunlengthPacket
-    *uncompressed_pixels;
-
-  assert(image != (Image *) NULL);
-  if (image->packets == (image->columns*image->rows))
-    return(True);
-  /*
-    Uncompress runlength-encoded packets.
-  */
-  uncompressed_pixels=(RunlengthPacket *) ReallocateMemory((char *)
-    image->pixels,image->columns*image->rows*sizeof(RunlengthPacket));
-  if (uncompressed_pixels == (RunlengthPacket *) NULL)
+    q=GetPixelCache(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < (int) image->columns; x++)
     {
-      MagickWarning(ResourceLimitWarning,"Unable to uncompress image",
-        "Memory allocation failed");
-      return(False);
+      if (ColorMatch(*q,target,image->fuzz))
+        q->opacity=Transparent;
+      q++;
     }
-  p=uncompressed_pixels+(image->packets-1);
-  q=uncompressed_pixels+(image->columns*image->rows-1);
-  for (i=0; i < (int) image->packets; i++)
-  {
-    length=p->length;
-    for (j=0; j <= length; j++)
-    {
-      *q=(*p);
-      q->length=0;
-      q--;
-    }
-    p--;
+    if (!SyncPixelCache(image))
+      break;
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(TransparentImageText,y,image->rows);
   }
-  image->packets=image->columns*image->rows;
-  image->pixels=uncompressed_pixels;
-  return(True);
 }
 
 /*

@@ -197,7 +197,7 @@ static unsigned int ReadDelegates(const char *path,const char *directory)
     Strip(delegate_info.commands);
     (void) SetDelegateInfo(&delegate_info);
     number_delegates++;
-    FreeMemory((char *) delegate_info.commands);
+    FreeMemory(delegate_info.commands);
   }
   return(number_delegates != 0);
 }
@@ -241,10 +241,10 @@ Export void DestroyDelegateInfo(void)
   for (p=delegates; p != (DelegateInfo *) NULL; )
   {
     if (p->commands != (char *) NULL)
-      FreeMemory((char *) p->commands);
+      FreeMemory(p->commands);
     delegate=p;
     p=p->next;
-    FreeMemory((char *) delegate);
+    FreeMemory(delegate);
   }
 }
 
@@ -414,8 +414,8 @@ Export char *GetDelegateCommand(const ImageInfo *image_info,const Image *image,
     Free resources.
   */
   for (i=0; commands[i] != (char *) NULL; i++)
-    FreeMemory((char *) commands[i]);
-  FreeMemory((char *) commands);
+    FreeMemory(commands[i]);
+  FreeMemory(commands);
   return(command);
 }
 
@@ -583,7 +583,7 @@ Export unsigned int InvokeDelegate(const ImageInfo *image_info,
         Latin1Upper(magick);
         (void) strcpy((char *) image_info->magick,magick);
         (void) strcpy(image->magick,magick);
-        FreeMemory((char *) magick);
+        FreeMemory(magick);
         (void) strcpy(filename,image->filename);
         local_info=CloneImageInfo(image_info);
         if (local_info == (ImageInfo *) NULL)
@@ -630,13 +630,13 @@ Export unsigned int InvokeDelegate(const ImageInfo *image_info,
       Execute delegate.
     */
     status=SystemCommand(image_info->verbose,command);
-    FreeMemory((char *) command);
+    FreeMemory(command);
     if (status != False)
       {
         MagickWarning(DelegateWarning,"delegate failed",commands[i]);
         break;
       }
-    FreeMemory((char *) commands[i]);
+    FreeMemory(commands[i]);
   }
   /*
     Free resources.
@@ -644,8 +644,8 @@ Export unsigned int InvokeDelegate(const ImageInfo *image_info,
   (void) remove(image_info->unique);
   (void) remove(image_info->zero);
   for ( ; commands[i] != (char *) NULL; i++)
-    FreeMemory((char *) commands[i]);
-  FreeMemory((char *) commands);
+    FreeMemory(commands[i]);
+  FreeMemory(commands);
   return(status);
 }
 
@@ -817,9 +817,9 @@ Export DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
         /*
           Delegate overrides an existing one with the same tags.
         */
-        FreeMemory((char *) p->commands);
+        FreeMemory(p->commands);
         p->commands=new_delegate->commands;
-        FreeMemory((char *) new_delegate);
+        FreeMemory(new_delegate);
         return(delegates);
       }
     if (p->next == (DelegateInfo *) NULL)

@@ -1,0 +1,14 @@
+libtool
+Makefile
+combine
+convert
+identify
+mogrify
+montage
+animate
+display
+import
+perl-sources
+config.log
+config.status
+config.cache

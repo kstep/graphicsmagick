@@ -2,6 +2,9 @@
 /* Define to empty if the keyword does not work.  */
 #undef const
 
+/* Define to empty if the keyword does not work.  */
+#undef inline
+
 /* Define if you don't have vprintf but do have _doprnt.  */
 #undef HAVE_DOPRNT
 
@@ -31,6 +34,10 @@
 
 /* Define if you have the ANSI C header files.  */
 #undef STDC_HEADERS
+
+/* Define if your processor stores words with the most significant
+   byte first (like Motorola and SPARC, unlike Intel and VAX).  */
+#undef WORDS_BIGENDIAN
 
 /* Define on System V Release 4.  */
 #undef SVR4
@@ -271,3 +278,9 @@
 
 /* Define location of the XCF support program 'xcftopnm' */
 #undef XCFDecodeDelegate
+
+/* Define if you have the gettimeofday function.  */
+#undef HAVE_GETTIMEOFDAY
+
+/* Define if you have the POSIX.4 clock_gettime function.  */
+#undef HAVE_CLOCK_GETTIME

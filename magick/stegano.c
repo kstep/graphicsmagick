@@ -87,11 +87,14 @@ Export Image *ReadSTEGANOImage(const ImageInfo *image_info)
 {
 #define UnembedBit(byte) \
 { \
-  q->index|=(byte & 0x01) << shift; \
-  q++; \
-  if (q >= (image->pixels+image->packets-1)) \
+  if (!GetPixelCache(image,j % image->columns,j/image->columns,1,1)) \
+    break; \
+  (*image->indexes)|=((byte) & 0x01) << shift; \
+  (void) SyncPixelCache(image); \
+  j++; \
+  if (j == (image->columns*image->rows)) \
     { \
-      q=image->pixels; \
+      j=0; \
       shift--; \
       if (shift < 0) \
         break; \
@@ -102,14 +105,16 @@ Export Image *ReadSTEGANOImage(const ImageInfo *image_info)
     *local_info;
 
   int
-    shift;
+    j,
+    shift,
+    y;
 
   register int
-    i;
+    i,
+    x;
 
-  register RunlengthPacket
-    *p,
-    *q;
+  register PixelPacket
+    *p;
 
   Image
     *cloned_image,
@@ -123,7 +128,7 @@ Export Image *ReadSTEGANOImage(const ImageInfo *image_info)
   if (image == (Image *) NULL)
     return((Image *) NULL);
   if ((image->columns == 0) || (image->rows == 0))
-    ReaderExit(OptionWarning,"must specify image size",image);
+    ReaderExit(OptionWarning,"Must specify image size",image);
   /*
     Initialize Image structure.
   */
@@ -135,22 +140,17 @@ Export Image *ReadSTEGANOImage(const ImageInfo *image_info)
   DestroyImageInfo(local_info);
   if (stegano_image == (Image *) NULL)
     return((Image *) NULL);
-  if (!UncondenseImage(stegano_image))
-    return((Image *) NULL);
-  stegano_image->orphan=True;
-  cloned_image=CloneImage(stegano_image,image->columns,image->rows,False);
-  stegano_image->orphan=False;
+  cloned_image=CloneImage(stegano_image,image->columns,image->rows,True);
   DestroyImage(image);
   if (cloned_image == (Image *) NULL)
     ReaderExit(ResourceLimitWarning,"Memory allocation failed",
       stegano_image);
   image=cloned_image;
-  SetImage(image);
   image->class=PseudoClass;
   image->colors=1 << QuantumDepth;
-  image->colormap=(ColorPacket *)
-    AllocateMemory(image->colors*sizeof(ColorPacket));
-  if (image->colormap == (ColorPacket *) NULL)
+  image->colormap=(PixelPacket *)
+    AllocateMemory(image->colors*sizeof(PixelPacket));
+  if (image->colormap == (PixelPacket *) NULL)
     ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
   for (i=0; i < (int) image->colors; i++)
   {
@@ -164,27 +164,35 @@ Export Image *ReadSTEGANOImage(const ImageInfo *image_info)
   /*
     Grab embedded watermark.
   */
+  i=image->offset;
+  j=0;
   shift=image->depth-1;
-  p=stegano_image->pixels+(stegano_image->offset % stegano_image->packets);
-  q=image->pixels;
-  for (i=0; i < (int) stegano_image->packets; i++)
+  for (y=0; y < (int) stegano_image->rows; y++)
   {
-    if (stegano_image->class == PseudoClass)
-      UnembedBit(p->index)
-    else
-      {
-        UnembedBit(p->red);
-        UnembedBit(p->green);
-        UnembedBit(p->blue);
-      }
-    p++;
-    if (p >= (stegano_image->pixels+stegano_image->packets-1))
-      p=stegano_image->pixels;
-    if (QuantumTick(i,stegano_image->packets))
-      ProgressMonitor(LoadImageText,i,stegano_image->packets);
+    for (x=0; x < (int) stegano_image->columns; x++)
+    {
+      if (i == (stegano_image->columns*stegano_image->rows))
+        i=0;
+      p=GetPixelCache(stegano_image,i % stegano_image->columns,
+        i/stegano_image->columns,1,1);
+      if (p == (PixelPacket *) NULL)
+        break;
+      if (stegano_image->class == PseudoClass)
+        UnembedBit(*stegano_image->indexes)
+      else
+        {
+          UnembedBit(stegano_image->pixels->red);
+          UnembedBit(stegano_image->pixels->green);
+          UnembedBit(stegano_image->pixels->blue);
+        }
+      i++;
+    }
+    if (shift < 0)
+      break;
+    if (QuantumTick(y,stegano_image->rows))
+      ProgressMonitor(LoadImageText,y,stegano_image->rows);
   }
   SyncImage(image);
-  CondenseImage(image);
   DestroyImage(stegano_image);
   return(image);
 }

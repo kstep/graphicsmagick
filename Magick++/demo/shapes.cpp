@@ -97,11 +97,11 @@ int main( int /*argc*/, char ** /*argv*/)
     // Write image.
     //
 
-    cout << "Write image..." << endl;
+    cout << "Writing image \"shapes.gif\" ..." << endl;
     image.write( "shapes.gif" );
 
-    cout << "Display image..." << endl;
-    image.display( );
+    // cout << "Display image..." << endl;
+    // image.display( );
 
   }
   catch( Exception error_ )

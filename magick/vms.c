@@ -85,7 +85,7 @@
 void closedir(DIR *directory)
 {
   assert(directory != (DIR *) NULL);
-  free(directory->pattern);
+  FreeMemory(directory->pattern);
   free((char *) directory);
 }
 
@@ -133,7 +133,7 @@ DIR *opendir(char *name)
     +sizeof("*.*")+1));
   if (directory->pattern == (char *) NULL)
     {
-      FreeMemory((char *) directory);
+      FreeMemory(directory);
       errno=ENOMEM;
       return(NULL);
     }

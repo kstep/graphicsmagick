@@ -142,6 +142,9 @@ a problem I will investigate. <i>However, be sure you are using the most
 recent version from
 <a href="ftp://ftp.wizards.dupont.com/pub/ImageMagick/">ftp.wizards.dupont.com</a>,
 or a mirror site, before submitting any bug reports or suggestions</i>.
+Report any problems via the 
+<a href=http://www.simplesystems.org/ImageMagick/bugs.html>
+web-based reporting facility</a>.
 </dl>
 <i><a href="#contents">Back to Contents</a></i>
 <br>&nbsp;
@@ -425,7 +428,7 @@ If all reasonable corrective actions have been tried and the
 problem appears to be due to a flaw in the configure script,
 please send a bug report to the configure script maintainer
 (currently
-<a href="mailto:bfriesenb@simple.dallas.tx.us">bfriesenb@simple.dallas.tx.us</a>).
+<a href="mailto:bfriesen@simple.dallas.tx.us">bfriesen@simple.dallas.tx.us</a>).
 All bug reports should
 contain the operating system type (as reported by <tt>uname -a</tt>) and
 the compiler/compiler-version. A copy of the configure script
@@ -560,7 +563,7 @@ You can use your own or get samples or get additional samples from
 <table BORDER=0 WIDTH="65%" >
 <tr>
 <td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">"
- BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1"><a href="http://www.bzip2.org/">BZLIB</a></font></font></font></b></td>
+ BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1"><a href="http://sourceware.cygnus.com/bzip2/index.html">BZLIB</a></font></font></font></b></td>
 </tr>
 </table>
 
@@ -647,7 +650,7 @@ to annotate with TrueType fonts.</dd>
 <table BORDER=0 WIDTH="65%" >
 <tr>
 <td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">"
- BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1"><a href="ftp://ftp.ncsa.uiuc.edu/HDF/HDF_Current">HDF</a></font></font></font></b></td>
+ BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1"><a href="ftp://ftp.ncsa.uiuc.edu/HDF/HDF/HDF_Current">HDF</a></font></font></font></b></td>
 </tr>
 </table>
 
@@ -805,7 +808,7 @@ device.</dd>
 <table BORDER=0 WIDTH="65%" >
 <tr>
 <td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">"
- BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1"><a href="ftp://ftp.uu.net/graphics/tiff/">TIFF</a></font></font></font></b></td>
+ BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1"><a href="http://www.libtiff.org/">TIFF</a></font></font></font></b></td>
 </tr>
 </table>
 
@@ -891,8 +894,8 @@ format, get the respective archives and build <b>ImageMagick</b> as follows:</dd
 HDF</dt>
 
 <pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cd ImageMagick
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; gunzip -c HDF4.1r2.tar.gz | tar xvf -
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mv HDF4.1r2 hdf
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; gunzip -c HDF4.1r3.tar.gz | tar xvf -
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mv HDF4.1r3 hdf
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cd hdf
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; configure
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; make -k hdf-libnofortran
@@ -941,8 +944,8 @@ PNG</dt>
 TIFF</dt>
 
 <pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cd ImageMagick
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; gunzip -c tiff-v3.4beta037.tar.Z | tar xvof -
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mv tiff-v3.4beta037 tiff
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; gunzip -c tiff-v3.5.2.tar.gz | tar xvof -
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mv tiff-v3.5.2 tiff
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cd tiff
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ./configure
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; make
@@ -1256,27 +1259,27 @@ Machines</font></font></font></b></td>
 <p>
 <dd>
 Each pixel, within <b>ImageMagick</b>, is represented by the
-<tt>RunlengthPacket</tt>
+<tt>PixelPacket</tt>
 structure found in <tt>magick/image.h</tt>. Only 8 bits are required for
 each color component and 16 bits for the colormap index for a total of
 6 bytes. If <tt>QuantumLeap</tt> is defined (see 16-BIT IMAGING above),
 the color component size increases to 16 bits for a total of 10 bytes.
 Some 64-bit machines pad the structure which can cause a significant waste
 of memory. For the cray, change the
-<tt>RunlengthPacket</tt> structure
+<tt>PixelPacket</tt> structure
 to this</dd>
 
-<pre>&nbsp;&nbsp;&nbsp; typedef struct _RunlengthPacket
+<pre>&nbsp;&nbsp;&nbsp; typedef struct _PixelPacket
 &nbsp;&nbsp;&nbsp; {
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; unsigned char
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; red : QuantumDepth,
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; green : QuantumDepth,
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; blue : QuantumDepth,
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; length : QuantumDepth;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; opacity : QuantumDepth;
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; unsigned short
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; index : 16;
-&nbsp;&nbsp;&nbsp; } RunlengthPacket;</pre>
+&nbsp;&nbsp;&nbsp; } PixelPacket;</pre>
 before compiling.
 <p>I'm not sure if this will work on other 64-bit machines that pad. If
 you know a better solution, please send me E-mail. Note, that the Dec Alpha

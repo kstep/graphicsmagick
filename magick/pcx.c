@@ -59,6 +59,86 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   I s D C X                                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsDCX returns True if the image format type, identified by the
+%  magick string, is DCX.
+%
+%  The format of the ReadDCXImage method is:
+%
+%      unsigned int IsDCX(const unsigned char *magick,
+%        const unsigned int length)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method IsDCX returns True if the image format type is DCX.
+%
+%    o magick: This string is generally the first few bytes of an image file
+%      or blob.
+%
+%    o length: Specifies the length of the magick string.
+%
+%
+*/
+Export unsigned int IsDCX(const unsigned char *magick,const unsigned int length)
+{
+  if (length < 4)
+    return(False);
+  if (strncmp((char *) magick,"\261\150\336\72",4) == 0)
+    return(True);
+  return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   I s P C X                                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsPCX returns True if the image format type, identified by the
+%  magick string, is PCX.
+%
+%  The format of the ReadPCXImage method is:
+%
+%      unsigned int IsPCX(const unsigned char *magick,
+%        const unsigned int length)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method IsPCX returns True if the image format type is PCX.
+%
+%    o magick: This string is generally the first few bytes of an image file
+%      or blob.
+%
+%    o length: Specifies the length of the magick string.
+%
+%
+*/
+Export unsigned int IsPCX(const unsigned char *magick,const unsigned int length)
+{
+  if (length < 2)
+    return(False);
+  if (strncmp((char *) magick,"\12\2",2) == 0)
+    return(True);
+  if (strncmp((char *) magick,"\12\5",2) == 0)
+    return(True);
+  return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   R e a d P C X I m a g e                                                   %
 %                                                                             %
 %                                                                             %
@@ -127,19 +207,11 @@ Export Image *ReadPCXImage(const ImageInfo *image_info)
     pcx_packets,
     y;
 
-  Quantum
-    blue,
-    green,
-    red;
-
   register int
     i,
     x;
 
-  register long
-    packets;
-
-  register RunlengthPacket
+  register PixelPacket
     *q;
 
   register unsigned char
@@ -157,9 +229,6 @@ Export Image *ReadPCXImage(const ImageInfo *image_info)
 
   unsigned long
     *page_table;
-
-  unsigned short
-    index;
 
   /*
     Allocate image structure.
@@ -199,7 +268,7 @@ Export Image *ReadPCXImage(const ImageInfo *image_info)
       }
     }
   if (page_table != (unsigned long *) NULL)
-    (void) SeekBlob(image,(long) page_table[0],SEEK_SET);
+    (void) SeekBlob(image,page_table[0],SEEK_SET);
   status=ReadBlob(image,1,(char *) &pcx_header.identifier);
   for (id=1; id < 1024; id++)
   {
@@ -227,7 +296,6 @@ Export Image *ReadPCXImage(const ImageInfo *image_info)
     image->units=PixelsPerInchResolution;
     image->x_resolution=pcx_header.horizontal_resolution;
     image->y_resolution=pcx_header.vertical_resolution;
-    image->packets=image->columns*image->rows;
     image->colors=16;
     pcx_colormap=(unsigned char *) AllocateMemory(3*256*sizeof(unsigned char));
     if (pcx_colormap == (unsigned char *) NULL)
@@ -243,14 +311,14 @@ Export Image *ReadPCXImage(const ImageInfo *image_info)
       }
     if (image_info->ping)
       {
-        FreeMemory((char *) pcx_colormap);
+        FreeMemory(pcx_colormap);
         if (page_table != (unsigned long *) NULL)
-          FreeMemory((char *) page_table);
+          FreeMemory(page_table);
         CloseBlob(image);
         return(image);
       }
-    image->colormap=(ColorPacket *) AllocateMemory(256*sizeof(ColorPacket));
-    if (image->colormap == (ColorPacket *) NULL)
+    image->colormap=(PixelPacket *) AllocateMemory(256*sizeof(PixelPacket));
+    if (image->colormap == (PixelPacket *) NULL)
       ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
     p=pcx_colormap;
     for (i=0; i < (int) image->colors; i++)
@@ -282,13 +350,12 @@ Export Image *ReadPCXImage(const ImageInfo *image_info)
     if ((pcx_pixels == (unsigned char *) NULL) ||
         (scanline == (unsigned char *) NULL))
       ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-    packets=0;
-    image->pixels=(RunlengthPacket *)
-      AllocateMemory(image->columns*image->rows*sizeof(RunlengthPacket));
-    if (image->pixels == (RunlengthPacket *) NULL)
+    image->pixels=(PixelPacket *)
+      AllocateMemory(image->columns*image->rows*sizeof(PixelPacket));
+    if (image->pixels == (PixelPacket *) NULL)
       {
-        FreeMemory((char *) scanline);
-        FreeMemory((char *) pcx_pixels);
+        FreeMemory(scanline);
+        FreeMemory(pcx_pixels);
         ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
       }
     /*
@@ -352,20 +419,17 @@ Export Image *ReadPCXImage(const ImageInfo *image_info)
                   image->colormap[i].blue=UpScale(*p++);
                 }
             }
-          FreeMemory((char *) pcx_colormap);
+          FreeMemory(pcx_colormap);
         }
     /*
-      Convert PCX raster image to runlength-encoded packets.
+      Convert PCX raster image to pixel packets.
     */
-    red=0;
-    green=0;
-    blue=0;
-    index=0;
-    q=image->pixels;
-    SetRunlengthEncoder(q);
     for (y=0; y < (int) image->rows; y++)
     {
       p=pcx_pixels+(y*pcx_header.bytes_per_line*pcx_header.planes);
+      q=SetPixelCache(image,0,y,image->columns,1);
+      if (q == (PixelPacket *) NULL)
+        break;
       r=scanline;
       if (image->class == DirectClass)
         for (i=0; i < (int) pcx_header.planes; i++)
@@ -488,39 +552,27 @@ Export Image *ReadPCXImage(const ImageInfo *image_info)
       for (x=0; x < (int) image->columns; x++)
       {
         if (image->class == PseudoClass)
-          index=(*r++);
+          image->indexes[x]=(*r++);
         else
           {
-            red=UpScale(*r++);
-            green=UpScale(*r++);
-            blue=UpScale(*r++);
+            q->red=UpScale(*r++);
+            q->green=UpScale(*r++);
+            q->blue=UpScale(*r++);
             if (image->matte)
-              index=UpScale(*r++);
+              q->opacity=UpScale(*r++);
           }
-        if ((red == q->red) && (green == q->green) && (blue == q->blue) &&
-            (index == q->index) && ((int) q->length < MaxRunlength))
-          q->length++;
-        else
-          {
-            if (packets != 0)
-              q++;
-            packets++;
-            q->red=red;
-            q->green=green;
-            q->blue=blue;
-            q->index=index;
-            q->length=0;
-          }
+        q++;
       }
+      if (!SyncPixelCache(image))
+        break;
       if (image->previous == (Image *) NULL)
         if (QuantumTick(y,image->rows))
           ProgressMonitor(LoadImageText,y,image->rows);
     }
-    SetRunlengthPackets(image,packets);
     if (image->class == PseudoClass)
       SyncImage(image);
-    FreeMemory((char *) scanline);
-    FreeMemory((char *) pcx_pixels);
+    FreeMemory(scanline);
+    FreeMemory(pcx_pixels);
     /*
       Proceed to next image.
     */
@@ -531,7 +583,7 @@ Export Image *ReadPCXImage(const ImageInfo *image_info)
       break;
     if (page_table[id] == 0)
       break;
-    (void) SeekBlob(image,(long) page_table[id],SEEK_SET);
+    (void) SeekBlob(image,page_table[id],SEEK_SET);
     status=ReadBlob(image,1,(char *) &pcx_header.identifier);
     if ((status == True) && (pcx_header.identifier == 0x0a))
       {
@@ -550,7 +602,7 @@ Export Image *ReadPCXImage(const ImageInfo *image_info)
       }
   }
   if (page_table != (unsigned long *) NULL)
-    FreeMemory((char *) page_table);
+    FreeMemory(page_table);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);
@@ -617,16 +669,17 @@ Export unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
       colormap_signature;
   } PCXHeader;
 
+  int
+    y;
+
   PCXHeader
     pcx_header;
 
   register int
     i,
-    j,
-    x,
-    y;
+    x;
 
-  register RunlengthPacket
+  register PixelPacket
     *p;
 
   register unsigned char
@@ -748,23 +801,20 @@ Export unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     pcx_pixels=(unsigned char *) AllocateMemory(packets*sizeof(unsigned char));
     if (pcx_pixels == (unsigned char *) NULL)
       WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
-    x=0;
-    y=0;
-    p=image->pixels;
     q=pcx_pixels;
     if (image->class == DirectClass)
       {
         /*
           Convert DirectClass image to PCX raster pixels.
         */
-        if (!UncondenseImage(image))
-          return(False);
         for (y=0; y < (int) image->rows; y++)
         {
           q=pcx_pixels+(y*pcx_header.bytes_per_line*pcx_header.planes);
           for (i=0; i < (int) pcx_header.planes; i++)
           {
-            p=image->pixels+y*image->columns;
+            p=GetPixelCache(image,0,y,image->columns,1);
+            if (p == (PixelPacket *) NULL)
+              break;
             for (x=0; x < pcx_header.bytes_per_line; x++)
             {
               switch (i)
@@ -787,7 +837,7 @@ Export unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
                 case 3:
                 default:
                 {
-                  *q++=DownScale(p->index);
+                  *q++=DownScale(p->opacity);
                   break;
                 }
               }
@@ -800,26 +850,16 @@ Export unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
       }
     else
       if (pcx_header.bits_per_pixel > 1)
-        for (i=0; i < (int) image->packets; i++)
+        for (y=0; y < (int) image->rows; y++)
         {
-          /*
-            Convert PseudoClass image to PCX raster pixels.
-          */
-          for (j=0; j <= ((int) p->length); j++)
-          {
-            *q++=p->index;
-            x++;
-            if (x == (int) image->columns)
-              {
-                if (image->previous == (Image *) NULL)
-                  if (QuantumTick(y,image->rows))
-                    ProgressMonitor(SaveImageText,y,image->rows);
-                x=0;
-                y++;
-                q=pcx_pixels+y*pcx_header.bytes_per_line;
-              }
-          }
-          p++;
+          if (!GetPixelCache(image,0,y,image->columns,1))
+            break;
+          q=pcx_pixels+y*pcx_header.bytes_per_line;
+          for (x=0; x < (int) image->columns; x++)
+            *q++=image->indexes[x];
+          if (image->previous == (Image *) NULL)
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(SaveImageText,y,image->rows);
         }
       else
         {
@@ -835,14 +875,17 @@ Export unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
           if (image->colors == 2)
             polarity=Intensity(image->colormap[0]) <
               Intensity(image->colormap[1]);
-          bit=0;
-          byte=0;
-          for (i=0; i < (int) image->packets; i++)
+          for (y=0; y < (int) image->rows; y++)
           {
-            for (j=0; j <= ((int) p->length); j++)
+            if (!GetPixelCache(image,0,y,image->columns,1))
+              break;
+            bit=0;
+            byte=0;
+            q=pcx_pixels+y*pcx_header.bytes_per_line;
+            for (x=0; x < (int) image->columns; x++)
             {
               byte<<=1;
-              if (p->index == polarity)
+              if (image->indexes[x] == polarity)
                 byte|=0x01;
               bit++;
               if (bit == 8)
@@ -851,25 +894,13 @@ Export unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
                   bit=0;
                   byte=0;
                 }
-              x++;
-              if (x == (int) image->columns)
-                {
-                  /*
-                    Advance to the next scanline.
-                  */
-                  if (bit != 0)
-                    *q++=byte << (8-bit);
-                  if (image->previous == (Image *) NULL)
-                    if (QuantumTick(y,image->rows))
-                      ProgressMonitor(SaveImageText,y,image->rows);
-                  bit=0;
-                  byte=0;
-                  x=0;
-                  y++;
-                  q=pcx_pixels+y*pcx_header.bytes_per_line;
-                }
+              p++;
             }
-            p++;
+            if (bit != 0)
+              *q++=byte << (8-bit);
+            if (image->previous == (Image *) NULL)
+              if (QuantumTick(y,image->rows))
+                ProgressMonitor(SaveImageText,y,image->rows);
           }
         }
     /*
@@ -911,12 +942,11 @@ Export unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     }
     (void) WriteByte(image,pcx_header.colormap_signature);
     (void) WriteBlob(image,3*256,(char *) pcx_colormap);
-    FreeMemory((char *) pcx_pixels);
-    FreeMemory((char *) pcx_colormap);
+    FreeMemory(pcx_pixels);
+    FreeMemory(pcx_colormap);
     if (image->next == (Image *) NULL)
       break;
-    image->next->file=image->file;
-    image=image->next;
+    image=GetNextImage(image);
     ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
     if (scene >= 1023)
       break;
@@ -934,7 +964,7 @@ Export unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
       LSBFirstWriteLong(image,0x3ADE68B1L);
       for (i=0; i <= (int) scene; i++)
         LSBFirstWriteLong(image,page_table[i]);
-      FreeMemory((char *) page_table);
+      FreeMemory(page_table);
     }
   CloseBlob(image);
   return(True);

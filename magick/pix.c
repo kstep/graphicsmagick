@@ -88,10 +88,18 @@ Export Image *ReadPIXImage(const ImageInfo *image_info)
   Image
     *image;
 
-  register long
-    packets;
+  int
+    y;
 
-  register RunlengthPacket
+  Quantum
+    blue,
+    green,
+    red;
+
+  register int
+    x;
+
+  register PixelPacket
     *q;
 
   unsigned int
@@ -100,8 +108,11 @@ Export Image *ReadPIXImage(const ImageInfo *image_info)
 
   unsigned long
     height,
-    number_pixels,
+    length,
     width;
+
+  unsigned short
+    index;
 
   /*
     Allocate image structure.
@@ -143,9 +154,9 @@ Export Image *ReadPIXImage(const ImageInfo *image_info)
         */
         image->class=PseudoClass;
         image->colors=MaxRGB+1;
-        image->colormap=(ColorPacket *)
-          AllocateMemory(image->colors*sizeof(ColorPacket));
-        if (image->colormap == (ColorPacket *) NULL)
+        image->colormap=(PixelPacket *)
+          AllocateMemory(image->colors*sizeof(PixelPacket));
+        if (image->colormap == (PixelPacket *) NULL)
           ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
         for (i=0; i < (int) image->colors; i++)
         {
@@ -159,37 +170,44 @@ Export Image *ReadPIXImage(const ImageInfo *image_info)
         CloseBlob(image);
         return(image);
       }
-    packets=0;
-    image->pixels=(RunlengthPacket *)
-      AllocateMemory(image->columns*image->rows*sizeof(RunlengthPacket));
-    if (image->pixels == (RunlengthPacket *) NULL)
-      ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
     /*
-      Convert PIX raster image to runlength-encoded packets.
+      Convert PIX raster image to pixel packets.
     */
-    number_pixels=0;
-    q=image->pixels;
-    do
+    red=0;
+    green=0;
+    blue=0;
+    length=0;
+    for (y=0; y < (int) image->rows; y++)
     {
-      q->length=ReadByte(image);
-      if (q->length == 0)
-        continue;
-      if (bits_per_pixel == 8)
-        q->index=UpScale(ReadByte(image));
-      else
-        {
-          q->blue=UpScale(ReadByte(image));
-          q->green=UpScale(ReadByte(image));
-          q->red=UpScale(ReadByte(image));
-          q->index=0;
-        }
-      number_pixels+=q->length;
-      q++;
-      packets++;
+      q=SetPixelCache(image,0,y,image->columns,1);
+      if (q == (PixelPacket *) NULL)
+        break;
+      for (x=0; x < (int) image->columns; x++)
+      {
+        if (length == 0)
+          {
+            length=ReadByte(image);
+            if (bits_per_pixel == 8)
+              index=UpScale(ReadByte(image));
+            else
+              {
+                blue=UpScale(ReadByte(image));
+                green=UpScale(ReadByte(image));
+                red=UpScale(ReadByte(image));
+              }
+          }
+        q->blue=blue;
+        q->green=green;
+        q->red=red;
+        image->indexes[x]=index;
+        length--;
+        q++;
+      }
+      if (!SyncPixelCache(image))
+        break;
       if (image->previous == (Image *) NULL)
-        ProgressMonitor(LoadImageText,number_pixels,image->columns*image->rows);
-    } while (number_pixels < (image->columns*image->rows));
-    SetRunlengthPackets(image,packets);
+        ProgressMonitor(LoadImageText,y,image->rows);
+    }
     if (image->class == PseudoClass)
       SyncImage(image);
     /*

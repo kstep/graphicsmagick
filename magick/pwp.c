@@ -59,7 +59,46 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e a d L O G O I m a g e                                                 %
+%   I s P W P                                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsPWP returns True if the image format type, identified by the
+%  magick string, is PWP.
+%
+%  The format of the ReadPWPImage method is:
+%
+%      unsigned int IsPWP(const unsigned char *magick,
+%        const unsigned int length)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method IsPWP returns True if the image format type is PWP.
+%
+%    o magick: This string is generally the first few bytes of an image file
+%      or blob.
+%
+%    o length: Specifies the length of the magick string.
+%
+%
+*/
+Export unsigned int IsPWP(const unsigned char *magick,const unsigned int length)
+{
+  if (length < 5)
+    return(False);
+  if (strncmp((char *) magick,"SFW95",5) == 0)
+    return(True);
+  return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e a d P W P I m a g e                                                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %

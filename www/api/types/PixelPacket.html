@@ -4,15 +4,15 @@
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
    <meta name="GENERATOR" content="Mozilla/4.61 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
    <meta name="Author" content="Bob Friesenhahn">
-   <meta name="Description" content="Description of RunlengthPacket structure members.">
-   <title>ImageMagick RunlengthPacket Structure</title>
+   <meta name="Description" content="Description of PixelPacket structure members.">
+   <title>ImageMagick PixelPacket Structure</title>
 </head>
 <body text="#000000" link="#0000EE" vlink="#551A8B" alink="#FF0000" background="../../../images/background.gif">
 
 <center>
 <h1>
-ImageMagick RunlengthPacket Structure</h1></center>
-The <i>RunlengthPacket</i> structure is used to represent <a href="Enumerations.html#ClassType">DirectClass</a>
+ImageMagick PixelPacket Structure</h1></center>
+The <i>PixelPacket</i> structure is used to represent <a href="Enumerations.html#ClassType">DirectClass</a>
 color <a href="Image.html#pixels">pixels</a> in ImageMagick. If the image
 is indicated as a <a href="Enumerations.html#ClassType">PseudoClass</a>
 image, its DirectClass representation is only valid immediately after calling
@@ -20,11 +20,11 @@ SyncImage(). If an image is set as PseudoClass and the DirectClass representatio
 is modified, the image should then be set as DirectClass. Use QuantizeImage()
 to restore the PseudoClass colormap if the DirectClass representation is
 modified.
-<p>The members of the <i>RunlengthPacket</i> structure are shown in the
+<p>The members of the <i>PixelPacket</i> structure are shown in the
 following table:
 <br>&nbsp;
 <table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" NOSAVE >
-<caption><b>RunlengthPacket Structure Members</b></caption>
+<caption><b>PixelPacket Structure Members</b></caption>
 
 <tr NOSAVE>
 <td ROWSPAN="2" NOSAVE>
@@ -93,15 +93,15 @@ following table:
 </tr>
 
 <tr>
-<td><font size=-1>length</font></td>
+<td><font size=-1>opacity</font></td>
 
 <td><font size=-1>Quantum</font></td>
 
-<td><font size=-1>Run Length</font></td>
+<td><font size=-1>Opacity</font></td>
 
-<td><font size=-1>Run length</font></td>
+<td><font size=-1>Opacity</font></td>
 
-<td><font size=-1>Run length</font></td>
+<td><font size=-1>Black</font></td>
 </tr>
 
 <tr>
@@ -111,9 +111,9 @@ following table:
 
 <td><font size=-1>Index into image <a href="Image.html#colormap">colormap</a><font color="#FF0000">(2)</font></font></td>
 
-<td><font size=-1>Alpha</font></td>
+<td><font size=-1>Index into image <a href="Image.html#colormap">colormap</a><font color="#FF0000">(2)</font></font></td>
 
-<td><font size=-1>Black</font></td>
+<td><font size=-1>Index into image <a href="Image.html#colormap">colormap</a><font color="#FF0000">(2)</font></font></td>
 </tr>
 </table>
 
@@ -124,7 +124,7 @@ Quantum is an unsigned short (MaxRGB=65535) if ImageMagick is built using
 -DQuantumLeap. Otherwise it is an unsigned char (MaxRGB=255).</li>
 
 <li>
-RGB index is only valid for PsuedoClass images (<a href="Image.html#class">class</a>=<a href="Enumerations.html#ClassType">PsuedoClass</a>).</li>
+RGB index is only valid for PseudoClass images (<a href="Image.html#class">class</a>=<a href="Enumerations.html#ClassType">PseudoClass</a>).</li>
 
 <li>
 SyncImage() may be used to synchronize the DirectClass color pixels to
@@ -134,6 +134,11 @@ the current PseudoClass colormap.</li>
 For pixel representation purposes, all colorspaces are treated like RGBColorspace
 except for CMYKColorspace.</li>
 </ol>
+
+<p><hr>
+<p><a href="../../../ImageMagick.html"><img SRC="../../../images/home.gif"
+  ALT="Home Page" BORDER=0 height=40 width=40 align=CENTER></a><font size=-2>
+  Image manipulation software that works like magic.</font></dl>
 
 </body>
 </html>

@@ -59,6 +59,45 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   I s S C T                                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsSCT returns True if the image format type, identified by the
+%  magick string, is SCT.
+%
+%  The format of the ReadSCTImage method is:
+%
+%      unsigned int IsSCT(const unsigned char *magick,
+%        const unsigned int length)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method IsSCT returns True if the image format type is SCT.
+%
+%    o magick: This string is generally the first few bytes of an image file
+%      or blob.
+%
+%    o length: Specifies the length of the magick string.
+%
+%
+*/
+Export unsigned int IsSCT(const unsigned char *magick,const unsigned int length)
+{
+  if (length < 2)
+    return(False);
+  if (strncmp((char *) magick,"CT",2) == 0)
+    return(True);
+  return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   R e a d S C T I m a g e                                                   %
 %                                                                             %
 %                                                                             %
@@ -98,7 +137,7 @@ Export Image *ReadSCTImage(const ImageInfo *image_info)
   register int
     x;
 
-  register RunlengthPacket
+  register PixelPacket
     *q;
 
   unsigned int
@@ -151,21 +190,14 @@ Export Image *ReadSCTImage(const ImageInfo *image_info)
       return(image);
     }
   /*
-    Allocate image pixels.
+    Convert SCT raster image to pixel packets.
   */
   image->colorspace=CMYKColorspace;
-  image->packets=image->columns*image->rows;
-  image->pixels=(RunlengthPacket *)
-    AllocateMemory(image->packets*sizeof(RunlengthPacket));
-  if (image->pixels == (RunlengthPacket *) NULL)
-    ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-  SetImage(image);
-  /*
-    Convert SCT raster image to runlength-encoded packets.
-  */
   for (y=0; y < (int) image->rows; y++)
   {
-    q=image->pixels+image->columns*y;
+    q=SetPixelCache(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
     for (x=0; x < (int) image->columns; x++)
     {
       q->red=MaxRGB-UpScale(ReadByte(image));
@@ -173,7 +205,7 @@ Export Image *ReadSCTImage(const ImageInfo *image_info)
     }
     if ((image->columns % 2) != 0)
       (void) ReadByte(image);  /* pad */
-    q=image->pixels+image->columns*y;
+    q=image->pixels;
     for (x=0; x < (int) image->columns; x++)
     {
       q->green=MaxRGB-UpScale(ReadByte(image));
@@ -181,7 +213,7 @@ Export Image *ReadSCTImage(const ImageInfo *image_info)
     }
     if ((image->columns % 2) != 0)
       (void) ReadByte(image);  /* pad */
-    q=image->pixels+image->columns*y;
+    q=image->pixels;
     for (x=0; x < (int) image->columns; x++)
     {
       q->blue=MaxRGB-UpScale(ReadByte(image));
@@ -189,16 +221,18 @@ Export Image *ReadSCTImage(const ImageInfo *image_info)
     }
     if ((image->columns % 2) != 0)
       (void) ReadByte(image);  /* pad */
-    q=image->pixels+image->columns*y;
+    q=image->pixels;
     for (x=0; x < (int) image->columns; x++)
     {
-      q->index=MaxRGB-UpScale(ReadByte(image));
+      q->opacity=MaxRGB-UpScale(ReadByte(image));
       q++;
     }
+    if (!SyncPixelCache(image))
+      break;
     if ((image->columns % 2) != 0)
       (void) ReadByte(image);  /* pad */
-    ProgressMonitor(LoadImageText,y,image->rows);
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(LoadImageText,y,image->rows);
   }
-  CondenseImage(image);
   return(image);
 }

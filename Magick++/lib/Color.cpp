@@ -79,35 +79,50 @@ int Magick::operator <= ( const Magick::Color& left_,
 
 // Copy constructor
 Magick::Color::Color ( const Color & color_ )
-  : _packet(0)
+  : _packet(0),
+    _packetOwn(false),
+    _packetType(RGBPacket)
 {
+  // If not being set to ourself
   if ( this != &color_ )
     {
+      // If the color has a valid packet
       if ( color_._packet != 0 )
 	{
-	  _packet = new MagickLib::RunlengthPacket;
-	  _packet->red    = color_._packet->red;
-	  _packet->green  = color_._packet->green;
-	  _packet->blue   = color_._packet->blue;
-	  _packet->length = 1;
-	  _packet->index  = color_._packet->index;
+	  // Allocate a new packet, with our ownership, and set value
+	  _packet = new MagickLib::PixelPacket;
+	  _packetOwn  = true;
+	  *_packet    = *color_._packet;
+
+	  // Copy packet type
+	  _packetType = color_._packetType;
 	}
     }
 }
 
 Magick::Color Magick::Color::operator = ( const Color& color_ )
 {
+  // If not being set to ourself
   if ( this != &color_ )
     {
+      // Copy packet type
+      _packetType = color_._packetType;
+
+      // If we own the current packet, delete it
+      if ( _packetOwn )
+	delete _packet;
+
+      // Forget any existing pointer and relinquish ownership
+      _packet = 0;
+      _packetOwn = false;
+
+      // If the color has a valid packet
       if ( color_._packet != 0 )
 	{
-	  if ( ! _packet )
-	    _packet = new MagickLib::RunlengthPacket;
-	  _packet->red    = color_._packet->red;
-	  _packet->green  = color_._packet->green;
-	  _packet->blue   = color_._packet->blue;
-	  _packet->length = 1;
-	  _packet->index  = color_._packet->index;
+	  // Create new packet, with our ownership, and set to value.
+	  _packet = new MagickLib::PixelPacket;
+	  _packetOwn  = true;
+	  *_packet = *color_._packet;
 	}
     }
   return *this;
@@ -119,16 +134,16 @@ const Magick::Color& Magick::Color::operator = ( std::string x11color_ )
   if ( !_packet )
     initRep();
 
-  MagickLib::ColorPacket target_color;
+  MagickLib::PixelPacket target_color;
   if ( MagickLib::QueryColorDatabase( x11color_.c_str(), &target_color ) )
     {
-      redQuantum( XDownScale(target_color.red) );
-      greenQuantum( XDownScale(target_color.green) );
-      blueQuantum( XDownScale(target_color.blue) );
+      redQuantum( target_color.red );
+      greenQuantum( target_color.green );
+      blueQuantum( target_color.blue );
 
-      if ( target_color.flags & MagickLib::DoMatte )
+      if ( target_color.opacity & MagickLib::DoMatte )
 	// MagickLib::DoMatte is set if alpha was set by XQueryColorDatabase()
-	alphaQuantum(  XDownScale(target_color.index) );
+	alphaQuantum(  target_color.opacity );
       else
 	// If alpha is not set, then set to MaxRGB (Opaque) since that
 	// is the default when a color is specified.
@@ -155,7 +170,7 @@ Magick::Color::operator std::string() const
 {
 
   if ( !isValid() )
-    return std::string("");
+    return std::string("INVALID");
 
   char colorbuf[17];
   ostrstream colorstr( colorbuf, sizeof(colorbuf ));
@@ -184,6 +199,38 @@ Magick::Color::operator std::string() const
 
   return std::string(colorbuf);
 }
+
+// Construct color via ImageMagick PixelPacket
+Magick::Color::Color ( MagickLib::PixelPacket &color_ )
+  : _packet(0),
+    _packetOwn(true),	    // We allocated this packet
+    _packetType(RGBPacket)  // RGB packet by default
+{
+  _packet = new MagickLib::PixelPacket;
+  *_packet = color_;
+
+  if ( color_.opacity != MaxRGB )
+    _packetType = RGBAPacket;
+}
+
+// Set color via ImageMagick PixelPacket
+const Magick::Color Magick::Color::operator= ( MagickLib::PixelPacket &color_ )
+{
+  Magick::Color color( color_ );
+  return color;
+}
+
+// Return ImageMagick PixelPacket struct based on color.
+Magick::Color::operator MagickLib::PixelPacket () const
+{
+  if ( !_packet )
+    {
+      LastError err( MagickLib::OptionError, "Color not valid." );
+      err.throwException();
+    }
+  return *_packet;
+}
+
 
 //
 // ColorHSL Implementation

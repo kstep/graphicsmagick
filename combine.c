@@ -52,6 +52,7 @@
 %
 %  Where options include:
 %    -blend value        blend the two images a given percent
+%    -cache threshold    number of megabytes available to the pixel cache
 %    -colors value       preferred number of colors in the image
 %    -compose operator   composite operator
 %    -colorspace type    alternate image colorspace
@@ -125,6 +126,7 @@ static void Usage(const char *client_name)
     *options[]=
     {
       "-blend value        blend the two images a given percent",
+      "-cache threshold    number of megabytes available to the pixel cache",
       "-colors value       preferred number of colors in the image",
       "-colorspace type    alternate image colorspace",
       "-comment string     annotate image with comment",
@@ -185,6 +187,7 @@ int main(int argc,char **argv)
   char
     *client_name,
     *displacement_geometry,
+    *watermark_geometry,
     *filename,
     *geometry,
     *option,
@@ -235,6 +238,7 @@ int main(int argc,char **argv)
   compose=ReplaceCompositeOp;
   composite_image=(Image *) NULL;
   displacement_geometry=(char *) NULL;
+  watermark_geometry=(char *) NULL;
   geometry=(char *) NULL;
   gravity=NorthWestGravity;
   image=(Image *) NULL;
@@ -303,6 +307,17 @@ int main(int argc,char **argv)
         }
         case 'c':
         {
+          if (strncmp("cache",option+1,3) == 0)
+            {
+              if (*option == '-')
+                {
+                  i++;
+                  if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                    MagickError(OptionError,"Missing threshold",option);
+                }
+              SetCacheThreshold(atoi(argv[i]));
+              break;
+            }
           if (strncmp("colors",option+1,7) == 0)
             {
               if (*option == '-')
@@ -743,6 +758,24 @@ int main(int argc,char **argv)
           MagickError(OptionError,"Unrecognized option",option);
           break;
         }
+        case 'w':
+        {
+          if (Latin1Compare("watermark",option+1) == 0)
+            {
+              watermark_geometry=(char *) NULL;
+              if (*option == '-')
+                {
+                  i++;
+                  if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
+                    MagickError(OptionError,"Missing geometry",option);
+                  (void) CloneString(&watermark_geometry,argv[i]);
+                  compose=ModulateCompositeOp;
+                }
+              break;
+            }
+          MagickError(OptionError,"Unrecognized option",option);
+          break;
+        }
         case '?':
         {
           Usage(client_name);
@@ -764,37 +797,53 @@ int main(int argc,char **argv)
     }
   if (compose == BlendCompositeOp)
     {
-      register RunlengthPacket
-        *p;
+      Quantum
+        opacity;
 
-      unsigned short
-        index;
+      register PixelPacket
+        *q;
 
       /*
         Create mattes for blending.
       */
-      index=(unsigned short)
+      opacity=(unsigned short)
         (DownScale(MaxRGB)-(((int) DownScale(MaxRGB)*blend)/100));
       image->class=DirectClass;
       image->matte=True;
-      p=image->pixels;
-      for (i=0; i < (int) image->packets; i++)
+      for (y=0; y < (int) image->rows; y++)
       {
-        p->index=index;
-        p++;
+        if (!GetPixelCache(image,0,y,image->columns,1))
+          break;
+        q=image->pixels;
+        for (x=0; x < (int) image->columns; x++)
+        {
+          q->opacity=opacity;
+          q++;
+        }
+        if (!SyncPixelCache(image))
+          break;
       }
-      index=(unsigned short) (DownScale(MaxRGB)-index);
+      opacity=(unsigned short) (DownScale(MaxRGB)-opacity);
       composite_image->class=DirectClass;
       composite_image->matte=True;
-      p=composite_image->pixels;
-      for (i=0; i < (int) composite_image->packets; i++)
+      for (y=0; y < (int) composite_image->rows; y++)
       {
-        p->index=index;
-        p++;
+        if (!GetPixelCache(composite_image,0,y,composite_image->columns,1))
+          break;
+        q=image->pixels;
+        for (x=0; x < (int) composite_image->columns; x++)
+        {
+          q->opacity=opacity;
+          q++;
+        }
+        if (!SyncPixelCache(composite_image))
+          break;
       }
     }
   if (compose == DisplaceCompositeOp)
     composite_image->geometry=displacement_geometry;
+  if (compose == ModulateCompositeOp)
+    composite_image->geometry=watermark_geometry;
   /*
     Combine image.
   */
@@ -911,7 +960,9 @@ int main(int argc,char **argv)
   status=WriteImage(&image_info,combined_image);
   if (image_info.verbose)
     DescribeImage(combined_image,(FILE *) NULL,False);
+  DestroyImages(combined_image);
   DestroyDelegateInfo();
+  FreeMemory(argv);
   Exit(status ? 0 : errno);
   return(False);
 }

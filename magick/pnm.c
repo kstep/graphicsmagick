@@ -59,6 +59,45 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   I s P N M                                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsPNM returns True if the image format type, identified by the
+%  magick string, is PNM.
+%
+%  The format of the ReadPNMImage method is:
+%
+%      unsigned int IsPNM(const unsigned char *magick,
+%        const unsigned int length)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method IsPNM returns True if the image format type is PNM.
+%
+%    o magick: This string is generally the first few bytes of an image file
+%      or blob.
+%
+%    o length: Specifies the length of the magick string.
+%
+%
+*/
+Export unsigned int IsPNM(const unsigned char *magick,const unsigned int length)
+{
+  if (length < 2)
+    return(False);
+  if ((*magick == 'P') && isdigit((int) magick[1]))
+    return(True);
+  return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   R e a d P N M I m a g e                                                   %
 %                                                                             %
 %                                                                             %
@@ -109,7 +148,8 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
           *q;
 
         unsigned int
-          length;
+          length,
+          offset;
 
         /*
           Read comment.
@@ -122,19 +162,20 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
         else
           {
             length=MaxTextExtent;
-            image->comments=(char *) AllocateMemory(length*sizeof(char));
+            image->comments=(char *)
+              AllocateMemory((length+strlen(P7Comment)+1)*sizeof(char));
             p=image->comments;
           }
-        q=p;
+        offset=p-image->comments;
         if (image->comments != (char *) NULL)
           for ( ; (c != EOF) && (c != '\n'); p++)
           {
-            if ((p-image->comments+sizeof(P7Comment)) >= length)
+            if ((p-image->comments) >= length)
               {
                 length<<=1;
                 length+=MaxTextExtent;
                 image->comments=(char *) ReallocateMemory((char *)
-                  image->comments,length*sizeof(char));
+                  image->comments,(length+strlen(P7Comment)+1)*sizeof(char));
                 if (image->comments == (char *) NULL)
                   break;
                 p=image->comments+Extent(image->comments);
@@ -149,6 +190,7 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
               (char *) NULL);
             return(0);
           }
+        q=image->comments+offset;
         if (Latin1Compare(q,P7Comment) == 0)
           *q='\0';
         continue;
@@ -182,6 +224,9 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
   Image
     *image;
 
+  IndexPacket
+    index;
+
   int
     y;
 
@@ -195,21 +240,12 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
     i,
     x;
 
-  register long
-    packets;
-
-  register RunlengthPacket
+  register PixelPacket
     *q;
 
   unsigned int
     max_value,
     status;
-
-  unsigned short
-    blue,
-    green,
-    index,
-    red;
 
   /*
     Allocate image structure.
@@ -265,22 +301,27 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
         /*
           Create colormap.
         */
-        image->colormap=(ColorPacket *)
-          AllocateMemory(image->colors*sizeof(ColorPacket));
-        if (image->colormap == (ColorPacket *) NULL)
+        image->colormap=(PixelPacket *)
+          AllocateMemory(image->colors*sizeof(PixelPacket));
+        if (image->colormap == (PixelPacket *) NULL)
           ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
         if (format != '7')
           for (i=0; i < (int) image->colors; i++)
           {
             image->colormap[i].red=(Quantum)
-              ((long) (MaxRGB*i)/(image->colors-1));
+              ((unsigned long) (MaxRGB*i)/(image->colors-1));
             image->colormap[i].green=(Quantum)
-              ((long) (MaxRGB*i)/(image->colors-1));
+              ((unsigned long) (MaxRGB*i)/(image->colors-1));
             image->colormap[i].blue=(Quantum)
-              ((long) (MaxRGB*i)/(image->colors-1));
+              ((unsigned long) (MaxRGB*i)/(image->colors-1));
           }
         else
           {
+            int
+              blue,
+              green,
+              red;
+
             /*
               Initialize 332 colormap.
             */
@@ -289,9 +330,10 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
               for (green=0; green < 8; green++)
                 for (blue=0; blue < 4; blue++)
                 {
-                  image->colormap[i].red=(Quantum) ((long) (red*MaxRGB)/7);
-                  image->colormap[i].green=(Quantum) ((long) (green*MaxRGB)/7);
-                  image->colormap[i].blue=(Quantum) ((long) (blue*MaxRGB)/3);
+                  image->colormap[i].red=(Quantum) ((long) (red*MaxRGB)/0x07);
+                  image->colormap[i].green=(Quantum)
+                    ((long) (green*MaxRGB)/0x07);
+                  image->colormap[i].blue=(Quantum) ((long) (blue*MaxRGB)/0x03);
                   i++;
                 }
           }
@@ -308,39 +350,32 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
           for (i=0; i <= (int) max_value; i++)
             scale[i]=(Quantum) ((i*MaxRGB+(max_value >> 1))/max_value);
         }
-    packets=0;
-    image->pixels=(RunlengthPacket *)
-      AllocateMemory(image->columns*image->rows*sizeof(RunlengthPacket));
-    if (image->pixels == (RunlengthPacket *) NULL)
-      ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
     /*
       Convert PNM pixels to runlength-encoded MIFF packets.
     */
-    q=image->pixels;
-    SetRunlengthEncoder(q);
     switch (format)
     {
       case '1':
       {
         /*
-          Convert PBM image to runlength-encoded packets.
+          Convert PBM image to pixel packets.
         */
         for (y=0; y < (int) image->rows; y++)
         {
+          q=SetPixelCache(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            break;
           for (x=0; x < (int) image->columns; x++)
           {
             index=!PNMInteger(image,2);
-            if ((index == q->index) && ((int) q->length < MaxRunlength))
-              q->length++;
-            else
-              {
-                if (packets != 0)
-                  q++;
-                packets++;
-                q->index=index;
-                q->length=0;
-              }
+            image->indexes[x]=index;
+            q->red=image->colormap[index].red;
+            q->green=image->colormap[index].green;
+            q->blue=image->colormap[index].blue;
+            q++;
           }
+          if (!SyncPixelCache(image))
+            break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(LoadImageText,y,image->rows);
@@ -350,24 +385,24 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
       case '2':
       {
         /*
-          Convert PGM image to runlength-encoded packets.
+          Convert PGM image to pixel packets.
         */
         for (y=0; y < (int) image->rows; y++)
         {
+          q=SetPixelCache(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            break;
           for (x=0; x < (int) image->columns; x++)
           {
             index=PNMInteger(image,10);
-            if ((index == q->index) && ((int) q->length < MaxRunlength))
-              q->length++;
-            else
-              {
-                if (packets != 0)
-                  q++;
-                packets++;
-                q->index=index;
-                q->length=0;
-              }
+            image->indexes[x]=index;
+            q->red=image->colormap[index].red;
+            q->green=image->colormap[index].green;
+            q->blue=image->colormap[index].blue;
+            q++;
           }
+          if (!SyncPixelCache(image))
+            break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(LoadImageText,y,image->rows);
@@ -377,36 +412,28 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
       case '3':
       {
         /*
-          Convert PNM image to runlength-encoded packets.
+          Convert PNM image to pixel packets.
         */
         for (y=0; y < (int) image->rows; y++)
         {
+          q=SetPixelCache(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            break;
           for (x=0; x < (int) image->columns; x++)
           {
-            red=PNMInteger(image,10);
-            green=PNMInteger(image,10);
-            blue=PNMInteger(image,10);
+            q->red=PNMInteger(image,10);
+            q->green=PNMInteger(image,10);
+            q->blue=PNMInteger(image,10);
             if (scale != (Quantum *) NULL)
               {
-                red=scale[red];
-                green=scale[green];
-                blue=scale[blue];
+                q->red=scale[q->red];
+                q->green=scale[q->green];
+                q->blue=scale[q->blue];
               }
-            if ((red == q->red) && (green == q->green) && (blue == q->blue) &&
-                ((int) q->length < MaxRunlength))
-              q->length++;
-            else
-              {
-                if (packets != 0)
-                  q++;
-                packets++;
-                q->red=red;
-                q->green=green;
-                q->blue=blue;
-                q->index=0;
-                q->length=0;
-            }
+            q++;
           }
+          if (!SyncPixelCache(image))
+            break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(LoadImageText,y,image->rows);
@@ -420,10 +447,13 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
           byte;
 
         /*
-          Convert PBM raw image to runlength-encoded packets.
+          Convert PBM raw image to pixel packets.
         */
         for (y=0; y < (int) image->rows; y++)
         {
+          q=SetPixelCache(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            break;
           bit=0;
           byte=0;
           for (x=0; x < (int) image->columns; x++)
@@ -431,21 +461,18 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
             if (bit == 0)
               byte=ReadByte(image);
             index=(byte & 0x80) ? 0 : 1;
-            if ((index == q->index) && ((int) q->length < MaxRunlength))
-              q->length++;
-            else
-              {
-                if (packets != 0)
-                  q++;
-                packets++;
-                q->index=index;
-                q->length=0;
-              }
+            image->indexes[x]=index;
+            q->red=image->colormap[index].red;
+            q->green=image->colormap[index].green;
+            q->blue=image->colormap[index].blue;
+            q++;
             bit++;
             if (bit == 8)
               bit=0;
             byte<<=1;
           }
+          if (!SyncPixelCache(image))
+            break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(LoadImageText,y,image->rows);
@@ -456,10 +483,13 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
       case '7':
       {
         /*
-          Convert PGM raw image to runlength-encoded packets.
+          Convert PGM raw image to pixel packets.
         */
         for (y=0; y < (int) image->rows; y++)
         {
+          q=SetPixelCache(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            break;
           for (x=0; x < (int) image->columns; x++)
           {
             if (max_value <= MaxRawValue)
@@ -468,17 +498,14 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
               index=LSBFirstReadShort(image);
             if (index > max_value)
               index=max_value;
-            if ((index == q->index) && ((int) q->length < MaxRunlength))
-              q->length++;
-            else
-              {
-                if (packets != 0)
-                  q++;
-                packets++;
-                q->index=index;
-                q->length=0;
-              }
+            image->indexes[x]=index;
+            q->red=image->colormap[index].red;
+            q->green=image->colormap[index].green;
+            q->blue=image->colormap[index].blue;
+            q++;
           }
+          if (!SyncPixelCache(image))
+            break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(LoadImageText,y,image->rows);
@@ -488,45 +515,37 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
       case '6':
       {
         /*
-          Convert PNM raster image to runlength-encoded packets.
+          Convert PNM raster image to pixel packets.
         */
         for (y=0; y < (int) image->rows; y++)
         {
+          q=SetPixelCache(image,0,y,image->columns,1);
+          if (q == (PixelPacket *) NULL)
+            break;
           for (x=0; x < (int) image->columns; x++)
           {
             if (max_value <= MaxRawValue)
               {
-                red=ReadByte(image);
-                green=ReadByte(image);
-                blue=ReadByte(image);
+                q->red=ReadByte(image);
+                q->green=ReadByte(image);
+                q->blue=ReadByte(image);
               }
             else
               {
-                red=LSBFirstReadShort(image);
-                green=LSBFirstReadShort(image);
-                blue=LSBFirstReadShort(image);
+                q->red=LSBFirstReadShort(image);
+                q->green=LSBFirstReadShort(image);
+                q->blue=LSBFirstReadShort(image);
               }
             if (scale != (Quantum *) NULL)
               {
-                red=scale[red];
-                green=scale[green];
-                blue=scale[blue];
+                q->red=scale[q->red];
+                q->green=scale[q->green];
+                q->blue=scale[q->blue];
               }
-            if ((red == q->red) && (green == q->green) && (blue == q->blue) &&
-                ((int) q->length < MaxRunlength))
-              q->length++;
-            else
-              {
-                if (packets != 0)
-                  q++;
-                packets++;
-                q->red=red;
-                q->green=green;
-                q->blue=blue;
-                q->index=0;
-                q->length=0;
-              }
+            q++;
           }
+          if (!SyncPixelCache(image))
+            break;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(LoadImageText,y,image->rows);
@@ -539,12 +558,9 @@ Export Image *ReadPNMImage(const ImageInfo *image_info)
         ReaderExit(CorruptImageWarning,"Not a PNM image file",image);
     }
     if (scale != (Quantum *) NULL)
-      FreeMemory((char *) scale);
+      FreeMemory(scale);
     if (EOFBlob(image))
       MagickWarning(CorruptImageWarning,"not enough pixels",image->filename);
-    SetRunlengthPackets(image,packets);
-    if (image->class == PseudoClass)
-      SyncImage(image);
     /*
       Proceed to next image.
     */
@@ -623,14 +639,14 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
     *magick;
 
   int
-    x,
     y;
 
   register int
     i,
-    j;
+    j,
+    x;
 
-  register RunlengthPacket
+  register PixelPacket
     *p;
 
   unsigned char
@@ -673,7 +689,6 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         quantize_info.dither=image_info->dither;
         quantize_info.colorspace=GRAYColorspace;
         (void) QuantizeImage(&quantize_info,image);
-        SyncImage(image);
       }
     /*
       Write PNM file header.
@@ -748,9 +763,6 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
     /*
       Convert runlength encoded to PNM raster pixels.
     */
-    x=0;
-    y=0;
-    p=image->pixels;
     switch (format)
     {
       case '1':
@@ -765,23 +777,25 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         if (image->colors == 2)
           polarity=
             Intensity(image->colormap[0]) > Intensity(image->colormap[1]);
-        for (i=0; i < (int) image->packets; i++)
+        i=0;
+        for (y=0; y < (int) image->rows; y++)
         {
-          for (j=0; j <= ((int) p->length); j++)
+          if (!GetPixelCache(image,0,y,image->columns,1))
+            break;
+          for (x=0; x < (int) image->columns; x++)
           {
-            (void) sprintf(buffer,"%d ",(int) (p->index == polarity));
+            (void) sprintf(buffer,"%d ",(int) (image->indexes[x] == polarity));
             (void) WriteBlob(image,strlen(buffer),buffer);
-            x++;
-            if (x == 36)
+            i++;
+            if (i == 36)
               {
                 (void) WriteByte(image,'\n');
-                x=0;
+                i=0;
               }
           }
-          p++;
           if (image->previous == (Image *) NULL)
-            if (QuantumTick(i,image->packets))
-              ProgressMonitor(SaveImageText,i,image->packets);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(SaveImageText,y,image->rows);
         }
         break;
       }
@@ -792,24 +806,28 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         */
         (void) sprintf(buffer,"%d\n",MaxRGB);
         (void) WriteBlob(image,strlen(buffer),buffer);
-        for (i=0; i < (int) image->packets; i++)
+        i=0;
+        for (y=0; y < (int) image->rows; y++)
         {
-          index=Intensity(*p);
-          for (j=0; j <= ((int) p->length); j++)
+          p=GetPixelCache(image,0,y,image->columns,1);
+          if (p == (PixelPacket *) NULL)
+            break;
+          for (x=0; x < (int) image->columns; x++)
           {
+            index=Intensity(*p);
             (void) sprintf(buffer,"%d ",index);
             (void) WriteBlob(image,strlen(buffer),buffer);
-            x++;
-            if (x == 12)
+            i++;
+            if (i == 12)
               {
                 (void) WriteByte(image,'\n');
-                x=0;
+                i=0;
               }
+            p++;
           }
-          p++;
           if (image->previous == (Image *) NULL)
-            if (QuantumTick(i,image->packets))
-              ProgressMonitor(SaveImageText,i,image->packets);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(SaveImageText,y,image->rows);
         }
         break;
       }
@@ -820,23 +838,27 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         */
         (void) sprintf(buffer,"%d\n",MaxRGB);
         (void) WriteBlob(image,strlen(buffer),buffer);
-        for (i=0; i < (int) image->packets; i++)
+        i=0;
+        for (y=0; y < (int) image->rows; y++)
         {
-          for (j=0; j <= ((int) p->length); j++)
+          p=GetPixelCache(image,0,y,image->columns,1);
+          if (p == (PixelPacket *) NULL)
+            break;
+          for (x=0; x < (int) image->columns; x++)
           {
             (void) sprintf(buffer,"%d %d %d ",p->red,p->green,p->blue);
             (void) WriteBlob(image,strlen(buffer),buffer);
-            x++;
-            if (x == 4)
+            i++;
+            if (i == 4)
               {
                 (void) WriteByte(image,'\n');
-                x=0;
+                i=0;
               }
+            p++;
           }
-          p++;
           if (image->previous == (Image *) NULL)
-            if (QuantumTick(i,image->packets))
-              ProgressMonitor(SaveImageText,i,image->packets);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(SaveImageText,y,image->rows);
         }
         break;
       }
@@ -854,14 +876,16 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         if (image->colors == 2)
           polarity=
             Intensity(image->colormap[0]) > Intensity(image->colormap[1]);
-        bit=0;
-        byte=0;
-        for (i=0; i < (int) image->packets; i++)
+        for (y=0; y < (int) image->rows; y++)
         {
-          for (j=0; j <= ((int) p->length); j++)
+          if (!GetPixelCache(image,0,y,image->columns,1))
+            break;
+          bit=0;
+          byte=0;
+          for (x=0; x < (int) image->columns; x++)
           {
             byte<<=1;
-            if (p->index == polarity)
+            if (image->indexes[x] == polarity)
               byte|=0x01;
             bit++;
             if (bit == 8)
@@ -870,24 +894,13 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
                 bit=0;
                 byte=0;
               }
-            x++;
-            if (x == (int) image->columns)
-              {
-                /*
-                  Advance to the next scanline.
-                */
-                if (bit != 0)
-                  (void) WriteByte(image,byte << (8-bit));
-                if (image->previous == (Image *) NULL)
-                  if (QuantumTick(y,image->rows))
-                    ProgressMonitor(SaveImageText,y,image->rows);
-                bit=0;
-                byte=0;
-                x=0;
-                y++;
-             }
+            p++;
           }
-          p++;
+          if (bit != 0)
+            (void) WriteByte(image,byte << (8-bit));
+          if (image->previous == (Image *) NULL)
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(SaveImageText,y,image->rows);
         }
         break;
       }
@@ -898,15 +911,20 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         */
         (void) sprintf(buffer,"%lu\n",DownScale(MaxRGB));
         (void) WriteBlob(image,strlen(buffer),buffer);
-        for (i=0; i < (int) image->packets; i++)
+        for (y=0; y < (int) image->rows; y++)
         {
-          index=DownScale(Intensity(*p));
-          for (j=0; j <= ((int) p->length); j++)
+          p=GetPixelCache(image,0,y,image->columns,1);
+          if (p == (PixelPacket *) NULL)
+            break;
+          for (x=0; x < (int) image->columns; x++)
+          {
+            index=DownScale(Intensity(*p));
             (void) WriteByte(image,index);
-          p++;
+            p++;
+          }
           if (image->previous == (Image *) NULL)
-            if (QuantumTick(i,image->packets))
-              ProgressMonitor(SaveImageText,i,image->packets);
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(SaveImageText,y,image->rows);
         }
         break;
       }
@@ -922,7 +940,7 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           Allocate memory for pixels.
         */
         pixels=(unsigned char *)
-          AllocateMemory(image->columns*sizeof(RunlengthPacket));
+          AllocateMemory(image->columns*sizeof(PixelPacket));
         if (pixels == (unsigned char *) NULL)
           WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
         /*
@@ -930,29 +948,25 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         */
         (void) sprintf(buffer,"%lu\n",DownScale(MaxRGB));
         (void) WriteBlob(image,strlen(buffer),buffer);
-        q=pixels;
-        for (i=0; i < (int) image->packets; i++)
+        for (y=0; y < (int) image->rows; y++)
         {
-          for (j=0; j <= ((int) p->length); j++)
+          p=GetPixelCache(image,0,y,image->columns,1);
+          if (p == (PixelPacket *) NULL)
+            break;
+          q=pixels;
+          for (x=0; x < (int) image->columns; x++)
           {
             *q++=DownScale(p->red);
             *q++=DownScale(p->green);
             *q++=DownScale(p->blue);
-            x++;
-            if (x == (int) image->columns)
-              {
-                (void) WriteBlob(image,q-pixels,(char *) pixels);
-                if (image->previous == (Image *) NULL)
-                  if (QuantumTick(y,image->rows))
-                    ProgressMonitor(SaveImageText,y,image->rows);
-                q=pixels;
-                x=0;
-                y++;
-              }
+            p++;
           }
-          p++;
+          (void) WriteBlob(image,q-pixels,(char *) pixels);
+          if (image->previous == (Image *) NULL)
+            if (QuantumTick(y,image->rows))
+              ProgressMonitor(SaveImageText,y,image->rows);
         }
-        FreeMemory((char *) pixels);
+        FreeMemory(pixels);
         break;
       }
       case '7':
@@ -978,18 +992,13 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           value;
 
         Quantum
-          blue,
-          green,
-          pixel,
-          red;
+          pixel;
 
         unsigned short
           *blue_map[2][16],
           *green_map[2][16],
           *red_map[2][16];
 
-        if (!UncondenseImage(image))
-          break;
         /*
           Allocate and initialize dither maps.
         */
@@ -1005,8 +1014,7 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
             if ((red_map[i][j] == (unsigned short *) NULL) ||
                 (green_map[i][j] == (unsigned short *) NULL) ||
                 (blue_map[i][j] == (unsigned short *) NULL))
-              WriterExit(ResourceLimitWarning,"Memory allocation failed",
-                image);
+              WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
           }
         /*
           Initialize dither tables.
@@ -1043,17 +1051,20 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlob(image,strlen(buffer),buffer);
         i=0;
         j=0;
-        p=image->pixels;
         for (y=0; y < (int) image->rows; y++)
         {
+          p=GetPixelCache(image,0,y,image->columns,1);
+          if (p == (PixelPacket *) NULL)
+            break;
           for (x=0; x < (int) image->columns; x++)
           {
-            red=DownScale(p->red);
-            green=DownScale(p->green);
-            blue=DownScale(p->blue);
-            pixel=(Quantum) ((red_map[i][j][red] & 0xe0) |
-              ((unsigned int) (green_map[i][j][green] & 0xe0) >> 3) |
-              ((unsigned int) (blue_map[i][j][blue] & 0xc0) >> 6));
+            if (!image_info->dither)
+              pixel=(Quantum) ((p->red & 0xe0) | ((p->green & 0xe0) >> 3) |
+                ((p->blue & 0xc0) >> 6));
+            else
+              pixel=(Quantum) ((red_map[i][j][DownScale(p->red)] & 0xe0) |
+                ((green_map[i][j][DownScale(p->green)] & 0xe0) >> 3) |
+                ((blue_map[i][j][DownScale(p->blue)] & 0xc0) >> 6));
             (void) WriteByte(image,pixel);
             p++;
             j++;
@@ -1072,17 +1083,16 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         for (i=0; i < 2; i++)
           for (j=0; j < 16; j++)
           {
-            FreeMemory((char *) green_map[i][j]);
-            FreeMemory((char *) blue_map[i][j]);
-            FreeMemory((char *) red_map[i][j]);
+            FreeMemory(green_map[i][j]);
+            FreeMemory(blue_map[i][j]);
+            FreeMemory(red_map[i][j]);
           }
         break;
       }
     }
     if (image->next == (Image *) NULL)
       break;
-    image->next->file=image->file;
-    image=image->next;
+    image=GetNextImage(image);
     ProgressMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
   if (image_info->adjoin)

@@ -73,8 +73,9 @@
 %
 %  The format of the XMagickCommand method is:
 %
-%      void XAnimateBackgroundImage(Display *display,
-%        XResourceInfo *resource_info, Image *image)
+%      Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
+%        XWindows *windows,const CommandType command_type,Image **image,
+%        unsigned int *state)
 %
 %  A description of each parameter follows:
 %
@@ -185,7 +186,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         /* Something's wrong here.  No matching AllocMemory except for
            filelist[0] .. glennrp Jun 1999 */
         if (filelist[i] != filenames)
-          FreeMemory((char *) filelist[i]);
+          FreeMemory(filelist[i]);
 #endif
         if (next_image != (Image *) NULL)
           {
@@ -393,7 +394,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
 %
 %  The format of the XAnimateBackgroundImage method is:
 %
-%      XAnimateBackgroundImage(display,resource_info,image)
+%      void XAnimateBackgroundImage(Display *display,
+%        XResourceInfo *resource_info, Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -427,7 +429,7 @@ Export void XAnimateBackgroundImage(Display *display,
     visual_type[MaxTextExtent];
 
   static XPixelInfo
-    pixel_info;
+    pixel;
 
   static XStandardColormap
     *map_info;
@@ -513,8 +515,8 @@ Export void XAnimateBackgroundImage(Display *display,
         MagickError(XServerError,"Unable to create standard colormap",
           "Memory allocation failed");
       map_info->colormap=(Colormap) NULL;
-      pixel_info.pixels=(unsigned long *) NULL;
-      pixel_info.gamma_map=(XColor *) NULL;
+      pixel.pixels=(unsigned long *) NULL;
+      pixel.gamma_map=(XColor *) NULL;
       /*
         Initialize visual info.
       */
@@ -537,7 +539,17 @@ Export void XAnimateBackgroundImage(Display *display,
   if (window_info.id == root_window)
     XDestroyWindowColors(display,root_window);
   if (image->next != (Image *)NULL)
-    CoalesceImages(image);
+    {
+      Image
+        *coalesce_image;
+
+      coalesce_image=CoalesceImages(image);
+      if (coalesce_image != (Image *) NULL)
+        {
+          DestroyImages(image);
+          image=coalesce_image;
+        }
+    }
   if (resources.map_type == (char *) NULL)
     if ((visual_info->class != TrueColor) &&
         (visual_info->class != DirectColor))
@@ -607,20 +619,20 @@ Export void XAnimateBackgroundImage(Display *display,
       (visual_info->class == DirectColor))
     displayed_image->class=DirectClass;
   XMakeStandardColormap(display,visual_info,&resources,displayed_image,map_info,
-    &pixel_info);
+    &pixel);
   /*
     Graphic context superclass.
   */
-  context_values.background=pixel_info.background_color.pixel;
-  context_values.foreground=pixel_info.foreground_color.pixel;
-  pixel_info.annotate_context=XCreateGC(display,window_info.id,GCBackground |
+  context_values.background=pixel.background_color.pixel;
+  context_values.foreground=pixel.foreground_color.pixel;
+  pixel.annotate_context=XCreateGC(display,window_info.id,GCBackground |
     GCForeground,&context_values);
-  if (pixel_info.annotate_context == (GC) NULL)
+  if (pixel.annotate_context == (GC) NULL)
     MagickError(XServerError,"Unable to create graphic context",(char *) NULL);
   /*
     Initialize Image window attributes.
   */
-  XGetWindowInfo(display,visual_info,map_info,&pixel_info,(XFontStruct *) NULL,
+  XGetWindowInfo(display,visual_info,map_info,&pixel,(XFontStruct *) NULL,
     &resources,&window_info);
   /*
     Create the X image.
@@ -740,7 +752,7 @@ Export void XAnimateBackgroundImage(Display *display,
           /*
             Get pixel info for this scene.
           */
-          XGetPixelInfo(display,visual_info,map_info,&resources,images[scene],
+          XGetPixelPacket(display,visual_info,map_info,&resources,images[scene],
             &scene_info);
           window_info.pixel_info=(&scene_info);
         }
@@ -783,7 +795,7 @@ Export void XAnimateBackgroundImage(Display *display,
     else
       XDelay(display,(unsigned long) image->delay*10);
   }
-  window_info.pixel_info=(&pixel_info);
+  window_info.pixel_info=(&pixel);
   /*
     Display pixmap on the window.
   */
@@ -1014,7 +1026,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
 
   XPixelInfo
     *icon_pixel,
-    *pixel_info,
+    *pixel,
     scene_info;
 
   XResourceInfo
@@ -1100,7 +1112,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
   icon_map=windows->icon_map;
   visual_info=windows->visual_info;
   icon_visual=windows->icon_visual;
-  pixel_info=windows->pixel_info;
+  pixel=windows->pixel_info;
   icon_pixel=windows->icon_pixel;
   font_info=windows->font_info;
   icon_resources=windows->icon_resources;
@@ -1108,7 +1120,17 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
   manager_hints=windows->manager_hints;
   root_window=XRootWindow(display,visual_info->screen);
   if (image->next != (Image *)NULL)
-    CoalesceImages(image);
+    {
+      Image
+        *coalesce_image;
+
+      coalesce_image=CoalesceImages(image);
+      if (coalesce_image != (Image *) NULL)
+        {
+          DestroyImages(image);
+          image=coalesce_image;
+        }
+    }
   if (resource_info->map_type == (char *) NULL)
     if ((visual_info->class != TrueColor) &&
         (visual_info->class != DirectColor))
@@ -1185,12 +1207,12 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
       (void) fprintf(stderr,"%.1024s\n",displayed_image->magick);
     }
   XMakeStandardColormap(display,visual_info,resource_info,displayed_image,
-    map_info,pixel_info);
+    map_info,pixel);
   /*
     Initialize graphic context.
   */
   windows->context.id=(Window) NULL;
-  XGetWindowInfo(display,visual_info,map_info,pixel_info,font_info,
+  XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->context);
   class_hints->res_name="superclass";
   class_hints->res_class="Display";
@@ -1201,33 +1223,33 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
     &windows->context);
   if (resource_info->debug)
     (void) fprintf(stderr,"Window id: 0x%lx (context)\n",windows->context.id);
-  context_values.background=pixel_info->background_color.pixel;
+  context_values.background=pixel->background_color.pixel;
   context_values.font=font_info->fid;
-  context_values.foreground=pixel_info->foreground_color.pixel;
+  context_values.foreground=pixel->foreground_color.pixel;
   context_values.graphics_exposures=False;
   context_mask=GCBackground | GCFont | GCForeground | GCGraphicsExposures;
-  if (pixel_info->annotate_context != (GC) NULL)
-    XFreeGC(display,pixel_info->annotate_context);
-  pixel_info->annotate_context=
+  if (pixel->annotate_context != (GC) NULL)
+    XFreeGC(display,pixel->annotate_context);
+  pixel->annotate_context=
     XCreateGC(display,windows->context.id,context_mask,&context_values);
-  if (pixel_info->annotate_context == (GC) NULL)
+  if (pixel->annotate_context == (GC) NULL)
     MagickError(XServerError,"Unable to create graphic context",(char *) NULL);
-  context_values.background=pixel_info->depth_color.pixel;
-  if (pixel_info->widget_context != (GC) NULL)
-    XFreeGC(display,pixel_info->widget_context);
-  pixel_info->widget_context=
+  context_values.background=pixel->depth_color.pixel;
+  if (pixel->widget_context != (GC) NULL)
+    XFreeGC(display,pixel->widget_context);
+  pixel->widget_context=
     XCreateGC(display,windows->context.id,context_mask,&context_values);
-  if (pixel_info->widget_context == (GC) NULL)
+  if (pixel->widget_context == (GC) NULL)
     MagickError(XServerError,"Unable to create graphic context",(char *) NULL);
-  context_values.background=pixel_info->foreground_color.pixel;
-  context_values.foreground=pixel_info->background_color.pixel;
+  context_values.background=pixel->foreground_color.pixel;
+  context_values.foreground=pixel->background_color.pixel;
   context_values.plane_mask=
     context_values.background ^ context_values.foreground;
-  if (pixel_info->highlight_context != (GC) NULL)
-    XFreeGC(display,pixel_info->highlight_context);
-  pixel_info->highlight_context=XCreateGC(display,windows->context.id,
+  if (pixel->highlight_context != (GC) NULL)
+    XFreeGC(display,pixel->highlight_context);
+  pixel->highlight_context=XCreateGC(display,windows->context.id,
     context_mask | GCPlaneMask,&context_values);
-  if (pixel_info->highlight_context == (GC) NULL)
+  if (pixel->highlight_context == (GC) NULL)
     MagickError(XServerError,"Unable to create graphic context",(char *) NULL);
   XDestroyWindow(display,windows->context.id);
   /*
@@ -1265,10 +1287,10 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
   */
   if (windows->image.id != (Window) NULL)
     {
-      FreeMemory((char *) windows->image.name);
-      FreeMemory((char *) windows->image.icon_name);
+      FreeMemory(windows->image.name);
+      FreeMemory(windows->image.icon_name);
     }
-  XGetWindowInfo(display,visual_info,map_info,pixel_info,font_info,
+  XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->image);
   windows->image.shape=True;  /* non-rectangular shape hint */
   windows->image.shared_memory=resource_info->use_shared_memory;
@@ -1312,7 +1334,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
     ButtonReleaseMask | EnterWindowMask | ExposureMask | KeyPressMask |
     KeyReleaseMask | LeaveWindowMask | OwnerGrabButtonMask |
     PropertyChangeMask | StructureNotifyMask | SubstructureNotifyMask;
-  XGetWindowInfo(display,visual_info,map_info,pixel_info,font_info,
+  XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->backdrop);
   if ((resource_info->backdrop) || (windows->backdrop.id != (Window) NULL))
     {
@@ -1392,7 +1414,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
   /*
     Initialize Info widget.
   */
-  XGetWindowInfo(display,visual_info,map_info,pixel_info,font_info,
+  XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->info);
   windows->info.name="Info";
   windows->info.icon_name="Info";
@@ -1422,7 +1444,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
   /*
     Initialize Command widget.
   */
-  XGetWindowInfo(display,visual_info,map_info,pixel_info,font_info,
+  XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->command);
   windows->command.data=MagickMenus;
   (void) XCommandWidget(display,windows,CommandMenu,(XEvent *) NULL);
@@ -1451,8 +1473,8 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
     Initialize Widget window.
   */
   if (windows->widget.id != (Window) NULL)
-    FreeMemory((char *) windows->widget.name);
-  XGetWindowInfo(display,visual_info,map_info,pixel_info,font_info,
+    FreeMemory(windows->widget.name);
+  XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->widget);
   FormatString(resource_name,"%.1024s.widget",resource_info->client_name);
   windows->widget.geometry=XGetResourceClass(resource_info->resource_database,
@@ -1486,8 +1508,8 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
     Initialize popup window.
   */
   if (windows->popup.id != (Window) NULL)
-    FreeMemory((char *) windows->popup.name);
-  XGetWindowInfo(display,visual_info,map_info,pixel_info,font_info,
+    FreeMemory(windows->popup.name);
+  XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->popup);
   windows->popup.name=(char *) AllocateMemory(MaxTextExtent*sizeof(char));
   if (windows->popup.name == NULL)
@@ -1568,7 +1590,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
           /*
             Get pixel info for this scene.
           */
-          XGetPixelInfo(display,visual_info,map_info,resource_info,
+          XGetPixelPacket(display,visual_info,map_info,resource_info,
             images[scene],&scene_info);
           windows->image.pixel_info=(&scene_info);
         }
@@ -1700,7 +1722,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
           /*
             Copy X pixmap to Image window.
           */
-          XGetPixelInfo(display,visual_info,map_info,resource_info,
+          XGetPixelPacket(display,visual_info,map_info,resource_info,
           images[scene],&scene_info);
           windows->image.pixel_info=(&scene_info);
           windows->image.ximage->width=image->columns;
@@ -1830,22 +1852,22 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
                 {
                   if (magick_windows[i]->id == windows->icon.id)
                     continue;
-                  context_values.background=pixel_info->background_color.pixel;
-                  context_values.foreground=pixel_info->foreground_color.pixel;
+                  context_values.background=pixel->background_color.pixel;
+                  context_values.foreground=pixel->foreground_color.pixel;
                   XChangeGC(display,magick_windows[i]->annotate_context,
                     context_mask,&context_values);
                   XChangeGC(display,magick_windows[i]->widget_context,
                     context_mask,&context_values);
-                  context_values.background=pixel_info->foreground_color.pixel;
-                  context_values.foreground=pixel_info->background_color.pixel;
+                  context_values.background=pixel->foreground_color.pixel;
+                  context_values.foreground=pixel->background_color.pixel;
                   context_values.plane_mask=
                     context_values.background ^ context_values.foreground;
                   XChangeGC(display,magick_windows[i]->highlight_context,
                     context_mask | GCPlaneMask,&context_values);
                   magick_windows[i]->attributes.background_pixel=
-                    pixel_info->background_color.pixel;
+                    pixel->background_color.pixel;
                   magick_windows[i]->attributes.border_pixel=
-                    pixel_info->border_color.pixel;
+                    pixel->border_color.pixel;
                   magick_windows[i]->attributes.colormap=map_info->colormap;
                   XChangeWindowAttributes(display,magick_windows[i]->id,
                     magick_windows[i]->mask,&magick_windows[i]->attributes);
@@ -2347,9 +2369,9 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
       XFreePixmap(display,windows->image.matte_pixmaps[scene]);
     windows->image.matte_pixmaps[scene]=(Pixmap) NULL;
   }
-  FreeMemory((char *) windows->image.pixmaps);
+  FreeMemory(windows->image.pixmaps);
   windows->image.pixmaps=(Pixmap *) NULL;
-  FreeMemory((char *) windows->image.matte_pixmaps);
+  FreeMemory(windows->image.matte_pixmaps);
   windows->image.matte_pixmaps=(Pixmap *) NULL;
   if (loaded_image == (Image *) NULL)
     {
@@ -2378,7 +2400,7 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
       */
       XFreeStandardColormap(display,icon_visual,icon_map,icon_pixel);
       if (resource_info->map_type == (char *) NULL)
-        XFreeStandardColormap(display,visual_info,map_info,pixel_info);
+        XFreeStandardColormap(display,visual_info,map_info,pixel);
       /*
         Free X resources.
       */
@@ -2388,9 +2410,9 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
         XFreePixmap(display,windows->widget.highlight_stipple);
       if (windows->widget.highlight_stipple != (Pixmap) NULL)
         XFreePixmap(display,windows->widget.shadow_stipple);
-      XFreeGC(display,pixel_info->widget_context);
-      XFreeGC(display,pixel_info->highlight_context);
-      XFreeGC(display,pixel_info->annotate_context);
+      XFreeGC(display,pixel->widget_context);
+      XFreeGC(display,pixel->highlight_context);
+      XFreeGC(display,pixel->annotate_context);
       XFreeGC(display,icon_pixel->annotate_context);
       XFreeFont(display,font_info);
       XFree((void *) class_hints);
@@ -2399,13 +2421,13 @@ Export Image *XAnimateImages(Display *display,XResourceInfo *resource_info,
       XFree((void *) visual_info);
       XFree((void *) icon_map);
       XFree((void *) map_info);
-      FreeMemory((char *) windows->popup.name);
-      FreeMemory((char *) windows->widget.name);
-      FreeMemory((char *) windows->image.icon_name);
-      FreeMemory((char *) windows->image.name);
-      FreeMemory((char *) windows->icon_resources);
-      FreeMemory((char *) windows->icon_pixel);
-      FreeMemory((char *) windows->pixel_info);
+      FreeMemory(windows->popup.name);
+      FreeMemory(windows->widget.name);
+      FreeMemory(windows->image.icon_name);
+      FreeMemory(windows->image.name);
+      FreeMemory(windows->icon_resources);
+      FreeMemory(windows->icon_pixel);
+      FreeMemory(windows->pixel_info);
       (void) signal(SIGSEGV,SIG_DFL);
       (void) signal(SIGINT,SIG_DFL);
       (void) XSetWindows((XWindows *) NULL);

@@ -237,7 +237,7 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
     text[MaxTextExtent],
     page[MaxTextExtent];
 
-  ColorPacket
+  PixelPacket
     pen_color;
 
   FILE
@@ -250,20 +250,19 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
     *local_info;
 
   int
-    x,
     y;
 
   RectangleInfo
     crop_info;
 
   register int
-    i,
-    runlength;
+    x;
 
-  register RunlengthPacket
+  register PixelPacket
+    *p,
     *q;
 
-  RunlengthPacket
+  PixelPacket
     corner;
 
   /*
@@ -484,7 +483,7 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
       }
       TT_Get_Face_Properties(face,&face_properties);
       TT_Get_Instance_Metrics(instance,&instance_metrics);
-      width=local_info->pointsize >> 1;
+      width=ceil(local_info->pointsize/2);
       height=((int) (face_properties.horizontal->Ascender*
         instance_metrics.y_ppem)/(int) face_properties.header->Units_Per_EM)-
         ((int) (face_properties.horizontal->Descender*instance_metrics.y_ppem)/
@@ -532,49 +531,44 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
       image->matte=True;
       image->columns=canvas.width;
       image->rows=canvas.rows;
-      image->packets=image->columns*image->rows;
-      image->pixels=(RunlengthPacket *)
-        AllocateMemory(image->packets*sizeof(RunlengthPacket));
-      if (image->pixels == (RunlengthPacket *) NULL)
-        ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
       p=(unsigned char *) canvas.bitmap;
-      q=image->pixels;
-      x=0;
-      for (i=0; i < (int) image->packets; i++)
+      for (y=0; y < (int) image->rows; y++)
       {
-        q->red=XDownScale(pen_color.red);
-        q->green=XDownScale(pen_color.green);
-        q->blue=XDownScale(pen_color.blue);
-        if (local_info->antialias)
-          q->index=(int) (Opaque*Min(*p,4))/4;
-        else
-          q->index=(*p) > 1 ? Opaque : Transparent;
-        if (q->index == Transparent)
-          {
-            q->red=(~q->red);
-            q->green=(~q->green);
-            q->blue=(~q->blue);
-          }
-        q->length=0;
-        x++;
-        if (x == (int) image->columns)
-          {
-            if ((image->columns % 2) != 0)
-              p++;
-            x=0;
-          }
-        p++;
-        q++;
+        q=SetPixelCache(image,0,y,image->columns,1);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (int) image->columns; x++)
+        {
+          q->red=pen_color.red;
+          q->green=pen_color.green;
+          q->blue=pen_color.blue;
+          if (local_info->antialias)
+            q->opacity=(int) (Opaque*Min(*p,4))/4;
+          else
+            q->opacity=(*p) > 1 ? Opaque : Transparent;
+          if (q->opacity == Transparent)
+            {
+              q->red=(~q->red);
+              q->green=(~q->green);
+              q->blue=(~q->blue);
+            }
+          p++;
+          q++;
+        }
+        if (!SyncPixelCache(image))
+          break;
+        if ((image->columns % 2) != 0)
+          p++;
       }
       /*
         Free TrueType resources.
       */
-      FreeMemory((char *) canvas.bitmap);
-      FreeMemory((char *) character.bitmap);
+      FreeMemory(canvas.bitmap);
+      FreeMemory(character.bitmap);
       for (i=0; i < MaxGlyphs; i++)
         TT_Done_Glyph(glyphs[i]);
       FreeMemory(glyphs);
-      FreeMemory((char *) unicode);
+      FreeMemory(unicode);
       TT_Done_Instance(instance);
       TT_Close_Face(face);
       TT_Done_FreeType(engine);
@@ -604,7 +598,7 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
         *font_info;
 
       static XPixelInfo
-        pixel_info;
+        pixel;
 
       static XResourceInfo
         resource_info;
@@ -655,16 +649,16 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
               if (visual_info == (XVisualInfo *) NULL)
                 ReaderExit(XServerWarning,"Unable to get visual",image);
               map_info->colormap=(Colormap) NULL;
-              pixel_info.pixels=(unsigned long *) NULL;
-              pixel_info.gamma_map=(XColor *) NULL;
+              pixel.pixels=(unsigned long *) NULL;
+              pixel.gamma_map=(XColor *) NULL;
               /*
                 Initialize Standard Colormap info.
               */
               XGetMapInfo(visual_info,XDefaultColormap(display,
                 visual_info->screen),map_info);
-              XGetPixelInfo(display,visual_info,map_info,&resource_info,
-                (Image *) NULL,&pixel_info);
-              pixel_info.annotate_context=
+              XGetPixelPacket(display,visual_info,map_info,&resource_info,
+                (Image *) NULL,&pixel);
+              pixel.annotate_context=
                 XDefaultGC(display,visual_info->screen);
               /*
                 Initialize font info.
@@ -676,7 +670,7 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
                   (visual_info == (XVisualInfo *) NULL) ||
                   (font_info == (XFontStruct *) NULL))
                 {
-                  XFreeResources(display,visual_info,map_info,&pixel_info,
+                  XFreeResources(display,visual_info,map_info,&pixel,
                     font_info,&resource_info,(XWindowInfo *) NULL);
                   display=(Display *) NULL;
                 }
@@ -722,32 +716,34 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
       /*
         Render label with a X11 server font.
       */
+      image->matte=True;
       image->columns=annotate_info.width;
       image->rows=annotate_info.height;
-      image->packets=image->columns*image->rows;
-      image->pixels=(RunlengthPacket *)
-        AllocateMemory(image->packets*sizeof(RunlengthPacket));
-      if (image->pixels == (RunlengthPacket *) NULL)
-        ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
       image->background_color=image->border_color;
-      status=XAnnotateImage(display,&pixel_info,&annotate_info,image);
+      status=XAnnotateImage(display,&pixel,&annotate_info,image);
       if (status == 0)
         ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-      image->matte=True;
-      q=image->pixels;
-      for (i=0; i < (int) image->packets; i++)
+      for (y=0; y < (int) image->rows; y++)
       {
-        q->index=Intensity(*q);
-        q->red=XDownScale(pen_color.red);
-        q->green=XDownScale(pen_color.green);
-        q->blue=XDownScale(pen_color.blue);
-        if (q->index == Transparent)
-          {
-            q->red=(~q->red);
-            q->green=(~q->green);
-            q->blue=(~q->blue);
-          }
-        q++;
+        q=GetPixelCache(image,0,y,image->columns,1);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (int) image->columns; x++)
+        {
+          q->opacity=Intensity(*q);
+          q->red=pen_color.red;
+          q->green=pen_color.green;
+          q->blue=pen_color.blue;
+          if (q->opacity == Transparent)
+            {
+              q->red=(~q->red);
+              q->green=(~q->green);
+              q->blue=(~q->blue);
+            }
+          q++;
+        }
+        if (!SyncPixelCache(image))
+          break;
       }
       DestroyImageInfo(local_info);
       return(image);
@@ -760,8 +756,9 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
     Render label with a Postscript font.
   */
   local_info->density=(char *) NULL;
-  (void) sprintf(page,"%ux%u+0+0!",local_info->pointsize*Extent(text),
-    local_info->pointsize << 1);
+  (void) sprintf(page,"%ux%u+0+0!",
+    (unsigned int) ceil(local_info->pointsize*Extent(text)),
+    (unsigned int) ceil(2*local_info->pointsize));
   (void) CloneString(&local_info->page,page);
   TemporaryFilename(filename);
   file=fopen(filename,WriteBinaryType);
@@ -777,13 +774,14 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
     "  /Encoding ISOLatin1Encoding def currentdict end definefont pop\n");
   (void) fprintf(file,"} bind def\n");
   (void) fprintf(file,
-    "/%.1024s-ISO dup /%.1024s ReencodeFont findfont %u scalefont setfont\n",
+    "/%.1024s-ISO dup /%.1024s ReencodeFont findfont %f scalefont setfont\n",
     local_info->font,local_info->font,local_info->pointsize);
   (void) fprintf(file,"0.0 0.0 0.0 setrgbcolor\n");
   (void) fprintf(file,"0 0 %u %u rectfill\n",
-    local_info->pointsize*Extent(text),local_info->pointsize << 1);
+    (unsigned int) ceil(local_info->pointsize*Extent(text)),
+    (unsigned int) ceil(2*local_info->pointsize));
   (void) fprintf(file,"1.0 1.0 1.0 setrgbcolor\n");
-  (void) fprintf(file,"0 %u moveto (%.1024s) show\n",local_info->pointsize,
+  (void) fprintf(file,"0 %f moveto (%.1024s) show\n",local_info->pointsize,
     EscapeParenthesis(text));
   (void) fprintf(file,"showpage\n");
   (void) fclose(file);
@@ -795,31 +793,26 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
     Set bounding box to the image dimensions.
   */
   crop_info.width=0;
-  crop_info.height=local_info->pointsize;
+  crop_info.height=ceil(local_info->pointsize);
   crop_info.x=0;
-  crop_info.y=local_info->pointsize >> 2;
+  crop_info.y=local_info->pointsize/4;
   DestroyImageInfo(local_info);
   if (image == (Image *) NULL)
     return(image);
-  q=image->pixels;
-  runlength=q->length+1;
   corner.red=0;
   corner.green=0;
   corner.blue=0;
   for (y=0; y < (int) image->rows; y++)
   {
+    p=GetPixelCache(image,0,y,image->columns,1);
+    if (p == (PixelPacket *) NULL)
+      break;
     for (x=0; x < (int) image->columns; x++)
     {
-      if (runlength != 0)
-        runlength--;
-      else
-        {
-          q++;
-          runlength=q->length;
-        }
-      if (!ColorMatch(*q,corner,0))
+      if (!ColorMatch(*p,corner,0))
         if (x > (int) crop_info.width)
           crop_info.width=x;
+      p++;
     }
   }
   crop_info.width++;
@@ -827,20 +820,27 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
     crop_info.x,crop_info.y);
   TransformImage(&image,geometry,(char *) NULL);
   image->matte=True;
-  q=image->pixels;
-  for (i=0; i < (int) image->packets; i++)
+  for (y=0; y < (int) image->rows; y++)
   {
-    q->index=Intensity(*q);
-    q->red=XDownScale(pen_color.red);
-    q->green=XDownScale(pen_color.green);
-    q->blue=XDownScale(pen_color.blue);
-    if (q->index == Transparent)
-      {
-        q->red=(~q->red);
-        q->green=(~q->green);
-        q->blue=(~q->blue);
-      }
-    q++;
+    q=GetPixelCache(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
+    for (x=0; x < (int) image->columns; x++)
+    {
+      q->opacity=Intensity(*q);
+      q->red=pen_color.red;
+      q->green=pen_color.green;
+      q->blue=pen_color.blue;
+      if (q->opacity == Transparent)
+        {
+          q->red=(~q->red);
+          q->green=(~q->green);
+          q->blue=(~q->blue);
+        }
+      q++;
+    }
+    if (!SyncPixelCache(image))
+      break;
   }
   return(image);
 }

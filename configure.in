@@ -9,9 +9,9 @@ dnl Currently maintained by Bob Friesenhahn, bfriesen@simple.dallas.tx.us
 AC_INIT(magick/magick.h)
 
 # Set version
-MAJOR_VERSION=4
-MINOR_VERSION=2
-MICRO_VERSION=9
+MAJOR_VERSION=5
+MINOR_VERSION=1
+MICRO_VERSION=0
 echo "configuring ImageMagick $MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION"
 AC_CANONICAL_SYSTEM
 AC_SUBST(MAJOR_VERSION)dnl
@@ -36,6 +36,38 @@ AM_PROG_CC_STDC
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 AC_PROG_LN_S
+
+# If available, prefer support for large files unless the user specified
+# one of the CPPFLAGS, LDFLAGS, or LIBS variables.
+AC_MSG_CHECKING(whether large file support needs explicit enabling)
+ac_getconfs=''
+ac_result=yes
+ac_set=''
+ac_shellvars='CPPFLAGS LDFLAGS LIBS'
+for ac_shellvar in $ac_shellvars; do
+  case $ac_shellvar in
+  CPPFLAGS) ac_lfsvar=LFS_CFLAGS ;;
+  *) ac_lfsvar=LFS_$ac_shellvar ;;
+  esac
+  eval test '"${'$ac_shellvar'+set}"' = set && ac_set=$ac_shellvar
+  (getconf $ac_lfsvar) >/dev/null 2>&1 || { ac_result=no; break; }
+  ac_getconf=`getconf $ac_lfsvar`
+  ac_getconfs=$ac_getconfs$ac_getconf
+  eval ac_test_$ac_shellvar=\$ac_getconf
+done
+case "$ac_result$ac_getconfs" in
+yes) ac_result=no ;;
+esac
+case "$ac_result$ac_set" in
+yes?*) ac_result="yes, but $ac_set is already set, so use its settings"
+esac
+AC_MSG_RESULT($ac_result)
+case $ac_result in
+yes)
+  for ac_shellvar in $ac_shellvars; do
+    eval $ac_shellvar=\$ac_test_$ac_shellvar
+  done ;;
+esac
 
 # Tests for Windows
 AC_CYGWIN
@@ -125,12 +157,6 @@ AC_ARG_ENABLE(sfio,
 	      [  --enable-sfio           enable sfio-based stdio support (default is no)],
 	      [with_sfio=$enableval],
 	      [with_sfio='no'])
-
-# Enable SOCKS version 5 proxy support
-AC_ARG_ENABLE(socks,
-	      [  --enable-socks          enable SOCKS v5 proxy support (default is no)],
-	      [with_socks=$enableval],
-	      [with_socks='no'])
 
 # Enable support for full delegate paths
 AC_ARG_WITH(frozenpaths,
@@ -242,6 +268,8 @@ AC_CHECK_HEADERS(memory.h errno.h fcntl.h)
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
+AC_C_INLINE
+AC_C_BIGENDIAN
 
 AC_RETSIGTYPE
 AC_TYPE_MODE_T
@@ -250,23 +278,61 @@ AC_TYPE_PID_T
 AC_TYPE_SIZE_T
 
 
-# Checks for library functions.
+# Check for functions.
 AC_PROG_GCC_TRADITIONAL
 AC_FUNC_MEMCMP
 AC_TYPE_SIGNAL
 AC_FUNC_VPRINTF
 AC_FUNC_WAIT3
-AC_CHECK_FUNCS(strchr strtol getcwd mkdir select tempnam)
 AC_FUNC_MMAP
 
-# Check standard functions
-AC_CHECK_FUNCS(strerror)
-AC_CHECK_FUNCS(snprintf)
-AC_CHECK_FUNCS(vsnprintf)
-AC_MSG_CHECKING(for sys_errlist)
-AC_TRY_LINK([extern char** sys_errlist;],[char** p = sys_errlist;],
-AC_MSG_RESULT(yes); AC_DEFINE(HAVE_SYS_ERRLIST),AC_MSG_RESULT(no))
+# Check for functions
+AC_CHECK_FUNCS(getcwd gettimeofday mkdir select snprintf strchr strerror strtol tempnam vsnprintf)
 
+# Test for sys_errlist array if strerror() not supported.
+if test "$ac_cv_func_strerror" != 'yes' ; then
+AC_CACHE_CHECK(for sys_errlist array, ac_cv_sys_errlist,
+[AC_TRY_LINK(
+changequote(<<, >>)dnl
+<<
+extern char** sys_errlist;
+>>,<<
+char** p = sys_errlist;
+>>,
+changequote([, ])dnl
+ac_cv_sys_errlist='yes',
+ac_cv_sys_errlist='no')])
+if test "$ac_cv_sys_errlist" = 'yes' ; then
+ AC_DEFINE(HAVE_SYS_ERRLIST)
+ AC_MSG_RESULT(yes)
+else
+ AC_MSG_RESULT(no)
+fi
+fi
+
+# Check for clock_gettime() in the default libraries, and verify that it works.
+# This test will rarely pass since most systems put this function in an
+# additional library (e.g. -lposix4 under Solaris).  However, if you want to
+# use it, you can just add the appropriate library to the LIBS environment
+# variable prior to running configure.
+AC_CACHE_CHECK(for clock_gettime, ac_cv_func_clock_gettime,
+[AC_TRY_RUN(
+changequote(<<, >>)dnl
+<<
+#include <time.h>
+int main( int argc, char **argv ) {
+  struct timespec time_spec;
+  if (clock_gettime(CLOCK_REALTIME,&time_spec) != -1)
+    exit(0);
+  exit(1);
+}
+>>,
+changequote([, ])dnl
+  ac_cv_func_clock_gettime='yes', ac_cv_func_clock_gettime='no',
+  ac_cv_func_clock_gettime='cross')])
+if test "$ac_cv_func_clock_gettime" = 'yes' ; then
+  AC_DEFINE(HAVE_CLOCK_GETTIME)
+fi
 
 # Check for delegate sub-directories and add -I & -L options as required.
 # This presumes that delegates are installed as detailed in the ImageMagick
@@ -491,8 +557,8 @@ then
   failed=0;
   passed=0;
   AC_CHECK_HEADER(bzlib.h,passed=`expr $passed + 1`,failed=`expr $failed + 1`)
-  AC_CHECK_LIB(bz2,bzBuffToBuffCompress,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
-  AC_CHECK_LIB(bz2,bzBuffToBuffDecompress,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+  AC_CHECK_LIB(bz2,bzCompress,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
+  AC_CHECK_LIB(bz2,bzDecompress,passed=`expr $passed + 1`,failed=`expr $failed + 1`,)
   AC_MSG_CHECKING(if BZLIB package is complete)
   if test $passed -gt 0
   then
@@ -1072,131 +1138,9 @@ if test "$have_zlib"   = 'yes' ; then DELEGATES="$DELEGATES zlib" ; fi
 
 AC_SUBST(DELEGATES)
 
-# Check for networking libraries and definitions needed by xtp
 #
-# This code was obtained from the 'expect' package written by Don Libes of NIST
-# which contains statements similar to: Design and implementation of this
-# program was paid for by U.S. tax dollars.  Therefore it is public domain.
-# However, the author and NIST would appreciate credit if this program or parts
-# of it are used.
+# Handle special compiler flags
 #
-# Look for various features to determine what kind of pty
-# we have. For some weird reason, ac_compile_check would not
-# work, but ac_test_program does.
-#
-
-AC_MSG_CHECKING([for HP style pty allocation])
-# following test fails on DECstations and other things that don't grok -c
-# but that's ok, since they don't have PTYMs anyway
-if test -r /dev/ptym/ptyp0 2>/dev/null ; then
-    AC_MSG_RESULT(yes)
-    AC_DEFINE(HAVE_PTYM)
-    AC_MSG_WARN([HP style ptys not yet supported.])
-else
-    AC_MSG_RESULT(no)
-fi
-
-AC_MSG_CHECKING([for HP style pty trapping])
-AC_HEADER_EGREP([struct.*request_info], sys/ptyio.h,
-        AC_MSG_RESULT(yes)
-        AC_DEFINE(HAVE_PTYTRAP)
-,
-        AC_MSG_RESULT(no)
-)
-
-AC_MSG_CHECKING([for AIX new-style pty allocation])
-if test -r /dev/ptc -a -r /dev/pts ; then
-    AC_MSG_RESULT(yes)
-    AC_DEFINE(HAVE_PTC_PTS)
-    AC_MSG_WARN([AIX new-style ptys not yet supported.])
-else
-    AC_MSG_RESULT(no)
-fi
-
-AC_MSG_CHECKING([for SGI old-style pty allocation])
-if test -r /dev/ptc -a ! -r /dev/pts ; then
-    AC_MSG_RESULT(yes)
-    AC_DEFINE(HAVE_PTC)
-    AC_MSG_WARN([SGI old-style ptys not yet supported.])
-else
-    AC_MSG_RESULT(no)
-fi
-
-# On SCO OpenServer, two types of ptys are available: SVR4 streams and c-list.
-# The library routines to open the SVR4 ptys are broken on certain systems and
-# the SCO command to increase the number of ptys only configure c-list ones
-# anyway.  So we chose these, which have a special numbering scheme.
-#
-AC_MSG_CHECKING([for SCO style pty allocation])
-sco_ptys=""
-case "${host}" in
-  *-sco3.2v[[45]]*)     sco_clist_ptys=1 svr4_ptys_broken=1;;
-esac
-
-if test x"${sco_clist_ptys}" != x"" ; then
-  AC_MSG_RESULT(yes)
-  AC_DEFINE(HAVE_SCO_CLIST_PTYS)
-  AC_MSG_WARN([SCO Clist ptys not yet supported.])
-else
-  AC_MSG_RESULT(no)
-fi
-
-AC_MSG_CHECKING([for SVR4/UNIX-'98 style pty allocation])
-if test -r /dev/ptmx -a "x$svr4_ptys_broken" = x ; then
-  AC_MSG_RESULT(yes)
-  AC_DEFINE(HAVE_PTMX)
-  # aargg. Some systems need libpt.a to use /dev/ptmx
-  AC_CHECK_FUNC(ptsname, , LIBS="${LIBS} -lpt")
-else
-  AC_MSG_RESULT(no)
-fi
-
-# In OSF/1 case, SVR4 are somewhat different.
-# Gregory Depp <depp@osf.org> 17Aug93
-AC_MSG_CHECKING([for OSF/1 style pty allocation])
-if test -r /dev/ptmx_bsd ; then
-    AC_DEFINE(HAVE_PTMX_BSD)
-    AC_MSG_WARN([OSF/1 style ptys not yet supported.])
-    AC_MSG_RESULT(yes)
-else
-    AC_MSG_RESULT(no)
-fi
-
-#
-# End of pty checks lifted from 'expect'
-#
-
-have_socks='no'
-XTP_LIBS="$XTP_LIBS $LIBS_INITIAL"
-XTP_LIBS="$LIB_SFIO $XTP_LIBS"
-XTP_DEFS=''
-XTP_FTP='ftp'
-
-AC_CHECK_LIB(socket,socket,XTP_LIBS="-lsocket $XTP_LIBS",,)
-AC_CHECK_LIB(nsl,gethostbyname,XTP_LIBS="-lnsl $XTP_LIBS",,)
-# If profiling, then check for -ldl and dlopen (required for Solaris & gcc)
-if test "$with_profiling" = 'yes'
-then
-  AC_CHECK_LIB(dl,dlopen,XTP_LIBS="-ldl $XTP_LIBS",,)
-fi
-if test "$with_socks" = 'yes'
-then
-  have_socks_header='no'
-  have_socks_lib='no'
-  AC_CHECK_HEADER(socks.h,have_socks_header='yes',have_socks_header='no')
-  AC_CHECK_LIB(socks5,SOCKSinit,have_socks_lib='yes',have_socks_lib='no',)
-  if test $have_socks_header = 'yes' && test $have_socks_lib = 'yes'
-  then
-    XTP_LIBS="-lsocks5 $XTP_LIBS"
-    XTP_DEFS="-DSOCKS $XTP_DEFS "
-    have_socks='yes'
-  fi
-  AC_PATH_PROGS(XTP_FTP,rftp ftp,,)
-fi
-
-XTP_DEFS="$XTP_DEFS -DXTP_FTP=\"\\\"$XTP_FTP\\\"\""
-AC_SUBST(XTP_LIBS)dnl
-AC_SUBST(XTP_DEFS)dnl
 
 # Add '-p' if prof source profiling support enabled
 if test "$with_prof" = 'yes'
@@ -1241,7 +1185,7 @@ AC_SUBST(X_PRE_LIBS)
 AC_SUBST(X_LIBS)
 AC_SUBST(X_EXTRA_LIBS)
 
-AC_OUTPUT(Makefile delegates/delegates.mgk delegates/Makefile magick/Makefile magick/Magick-config xtp/Makefile PerlMagick/Makefile.PL)
+AC_OUTPUT(Makefile delegates/delegates.mgk delegates/Makefile magick/Makefile tests/Makefile magick/Magick-config PerlMagick/Makefile.PL)
 
 echo ""
 
@@ -1259,7 +1203,6 @@ echo "Ghostscript       None                          $have_gs"
 echo "LZW support       --enable-lzw=$with_lzw		$with_lzw"
 echo "16 bit pixels     --enable-16bit-pixel=$with_16_bit_pixel	$with_16_bit_pixel"
 echo "SFIO              --enable-sfio=$with_sfio		$have_sfio"
-echo "SOCKS             --enable-socks=$with_socks		$have_socks"
 echo "PERL              --with-perl=$with_perl		$have_perl"
 echo "BZLIB             --with-bzlib=$with_bzlib		$with_bzlib"
 echo "DPS               --with-dps=$with_dps		$have_dps"

@@ -13,6 +13,8 @@
 #include <string>
 #include <iostream>
 
+#include <Magick++/Include.h>
+
 namespace Magick
 {
 
@@ -95,6 +97,13 @@ namespace Magick
     
     // print object to a stream
     friend std::ostream& operator<<(std::ostream& stream_, const Geometry& geometry_);
+
+    //
+    // Public methods below this point are for Magick++ use only.
+    //
+
+    // Return an ImageMagick RectangleInfo struct
+    operator MagickLib::RectangleInfo() const;
     
   private:
     unsigned int  _width;

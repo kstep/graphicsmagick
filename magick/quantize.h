@@ -10,6 +10,7 @@ extern "C" {
 
 #define ErrorQueueLength  16
 #define MaxTreeDepth  8
+#define DitherTileSize  512
 #define NodesInAList  2048
 
 /*
@@ -32,6 +33,9 @@ typedef struct _QuantizeInfo
 
   ColorspaceType
     colorspace;
+
+  unsigned int
+    measure_error;
 } QuantizeInfo;
 
 /*
@@ -47,17 +51,17 @@ extern Export QuantizeInfo
   *CloneQuantizeInfo(const QuantizeInfo *);
 
 extern Export unsigned int
-  MapImage(Image *,const Image *,const unsigned int),
-  MapImages(Image *,const Image *,const unsigned int),
+  MapImage(Image *,Image *,const unsigned int),
+  MapImages(Image *,Image *,const unsigned int),
   QuantizationError(Image *),
   QuantizeImage(const QuantizeInfo *,Image *),
   QuantizeImages(const QuantizeInfo *,Image *),
-  QueryColorName(const ColorPacket *,char *),
+  QueryColorName(const PixelPacket *,char *),
   SegmentImage(Image *,const ColorspaceType,const unsigned int,const double,
     const double);
 
 extern Export unsigned long
-  GetNumberColors(const Image *,FILE *);
+  GetNumberColors(Image *,FILE *);
 
 extern Export void
   DestroyQuantizeInfo(QuantizeInfo *),

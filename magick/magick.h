@@ -20,54 +20,51 @@
   System include declarations.
 */
 #if defined(__cplusplus) || defined(c_plusplus)
-#include <cstdio>
-#include <cstdlib>
-#include <cstdarg>
-#include <cstring>
+# include <cstdio>
+# include <cstdlib>
+# include <cstdarg>
+# include <cstring>
 #else
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdarg.h>
-#include <string.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <stdarg.h>
+# include <string.h>
 #endif
+
 #if defined(_VISUALC_)
-#include <direct.h>
+# include <direct.h>
 #else
-#include <unistd.h>
+# include <unistd.h>
 #endif
+
 #include <ctype.h>
+#include <fcntl.h>
 #include <signal.h>
 #include <locale.h>
 #include <errno.h>
 #include <math.h>
 #include <assert.h>
+
 #if !defined(__OPENNT)
-#include <time.h>
+# include <time.h>
 #else
-#include <sys/time.h>
+# include <sys/time.h>
 #endif
+
 #if !defined(__MWERKS__)
-#include <sys/types.h>
-#include <sys/stat.h>
+# include <sys/types.h>
+# include <sys/stat.h>
 #else
-#include <SIOUX.h>
-#include <console.h>
-#include <unix.h>
-#include <types.h>
-#include <stat.h>
+# include <SIOUX.h>
+# include <console.h>
+# include <unix.h>
+# include <types.h>
+# include <stat.h>
 #endif
 
 /*
   ImageMagick API headers
 */
-#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
-#include <magick/api.h>
-#else
-#include "api.h"
-#endif
-
-#undef index
-
 #if defined(macintosh)
 #define HasJPEG
 #define HasLZW
@@ -97,5 +94,17 @@
 #define HasX11
 #define HasZLIB
 #endif
+
+#if !defined(inline)
+#define inline
+#endif
+
+#if !defined(vms) && !defined(macintosh) && !defined(WIN32)
+#include <magick/api.h>
+#else
+#include "api.h"
+#endif
+
+#undef index
 
 #endif

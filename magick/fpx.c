@@ -111,22 +111,20 @@ Export Image *ReadFPXImage(const ImageInfo *image_info)
   Image
     *image;
 
+  IndexPacket
+    index;
+
   int
-    x,
     y;
 
-  Quantum
-    blue,
-    green,
-    red;
-
   register int
-    i;
+    i,
+    x;
 
   register long
     packets;
 
-  register RunlengthPacket
+  register PixelPacket
     *q;
 
   register unsigned char
@@ -148,9 +146,6 @@ Export Image *ReadFPXImage(const ImageInfo *image_info)
     tile_width,
     tile_height,
     width;
-
-  unsigned short
-    index;
 
   /*
     Allocate image structure.
@@ -315,9 +310,9 @@ Export Image *ReadFPXImage(const ImageInfo *image_info)
       */
       image->class=PseudoClass;
       image->colors=MaxRGB+1;
-      image->colormap=(ColorPacket *)
-        AllocateMemory(image->colors*sizeof(ColorPacket));
-      if (image->colormap == (ColorPacket *) NULL)
+      image->colormap=(PixelPacket *)
+        AllocateMemory(image->colors*sizeof(PixelPacket));
+      if (image->colormap == (PixelPacket *) NULL)
         {
           FPX_ClearSystem();
           ReaderExit(ResourceLimitWarning,"Memory allocation failed",
@@ -341,9 +336,9 @@ Export Image *ReadFPXImage(const ImageInfo *image_info)
   packets=0;
   scanline=(unsigned char *) AllocateMemory(colorspace.numberOfComponents*
     image->columns*(tile_height+1)*sizeof(unsigned char));
-  image->pixels=(RunlengthPacket *)
-    AllocateMemory(image->columns*image->rows*sizeof(RunlengthPacket));
-  if ((image->pixels == (RunlengthPacket *) NULL) ||
+  image->pixels=(PixelPacket *)
+    AllocateMemory(image->columns*image->rows*sizeof(PixelPacket));
+  if ((image->pixels == (PixelPacket *) NULL) ||
       (scanline == (unsigned char *) NULL))
     {
       FPX_ClearSystem();
@@ -379,14 +374,11 @@ Export Image *ReadFPXImage(const ImageInfo *image_info)
   /*
     Initialize image pixels.
   */
-  red=0;
-  green=0;
-  blue=0;
-  index=0;
-  q=image->pixels;
-  SetRunlengthEncoder(q);
   for (y=0; y < (int) image->rows; y++)
   {
+    q=SetPixelCache(image,0,y,image->columns,1);
+    if (q == (PixelPacket *) NULL)
+      break;
     if ((y % tile_height) == 0)
       {
         /*
@@ -402,7 +394,7 @@ Export Image *ReadFPXImage(const ImageInfo *image_info)
             &fpx_info);
         if (fpx_status == FPX_LOW_MEMORY_ERROR)
           {
-            FreeMemory((char *) scanline);
+            FreeMemory(scanline);
             (void) FPX_CloseImage(flashpix);
             FPX_ClearSystem();
             ReaderExit(ResourceLimitWarning,"Memory allocation failed",
@@ -420,43 +412,32 @@ Export Image *ReadFPXImage(const ImageInfo *image_info)
     {
       if (fpx_info.numberOfComponents > 2)
         {
-          red=UpScale(*r);
-          green=UpScale(*g);
-          blue=UpScale(*b);
+          q->red=UpScale(*r);
+          q->green=UpScale(*g);
+          q->blue=UpScale(*b);
         }
       else
         {
           index=UpScale(*r);
-          red=index;
-          green=index;
-          blue=index;
+          image->indexes[x]=index;
+          q->red=index;
+          q->green=index;
+          q->blue=index;
         }
       if (image->matte)
-        index=UpScale(*a);
-      if ((red == q->red) && (green == q->green) && (blue == q->blue) &&
-          (index == q->index) && ((int) q->length < MaxRunlength))
-        q->length++;
-      else
-        {
-          if (packets != 0)
-            q++;
-          packets++;
-          q->red=red;
-          q->green=green;
-          q->blue=blue;
-          q->index=index;
-          q->length=0;
-        }
+        q->opacity=UpScale(*a);
+      q++;
       r+=red_component->columnStride;
       g+=green_component->columnStride;
       b+=blue_component->columnStride;
       a+=alpha_component->columnStride;
     }
+    if (!SyncPixelCache(image))
+      break;
     if (QuantumTick(y,image->rows))
       ProgressMonitor(LoadImageText,y,image->rows);
   }
-  SetRunlengthPackets(image,packets);
-  FreeMemory((char *) scanline);
+  FreeMemory(scanline);
   (void) FPX_CloseImage(flashpix);
   FPX_ClearSystem();
   if (image->temporary)
@@ -722,18 +703,10 @@ Export unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
     fpx_image;
 
   int
-    x,
     y;
 
   register int
-    i,
-    j;
-
-  register RunlengthPacket
-    *p;
-
-  register unsigned char
-    *q;
+    i;
 
   unsigned char
     *pixels;
@@ -745,9 +718,6 @@ Export unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
     memory_limit,
     tile_height,
     tile_width;
-
-  unsigned short
-    value;
 
   /*
     Open input file.
@@ -904,38 +874,22 @@ Export unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   /*
     Write image scanlines.
   */
-  x=0;
-  y=0;
-  p=image->pixels;
-  q=pixels;
-  for (i=0; i < (int) image->packets; i++)
+  for (y=0; y < (int) image->rows; y++)
   {
-    for (j=0; j <= (int) p->length; j++)
-    {
-      if (fpx_info.numberOfComponents == 1)
-        WriteQuantum(Intensity(*p),q)
+    if (!GetPixelCache(image,0,y,image->columns,1))
+      break;
+    if (fpx_info.numberOfComponents == 1)
+      WritePixelCache(image,GrayQuantum,pixels);
+    else
+      if (!image->matte)
+        WritePixelCache(image,RGBQuantum,pixels);
       else
-        {
-          WriteQuantum(p->red,q);
-          WriteQuantum(p->green,q);
-          WriteQuantum(p->blue,q);
-          if (image->matte)
-            WriteQuantum(p->index,q);
-        }
-      x++;
-      if (x == (int) image->columns)
-        {
-          fpx_status=FPX_WriteImageLine(flashpix,&fpx_info);
-          if (fpx_status != FPX_OK)
-            break;
-          if (QuantumTick(y,image->rows))
-            ProgressMonitor(SaveImageText,y,image->rows);
-          q=pixels;
-          x=0;
-          y++;
-        }
-    }
-    p++;
+        WritePixelCache(image,RGBAQuantum,pixels);
+    fpx_status=FPX_WriteImageLine(flashpix,&fpx_info);
+    if (fpx_status != FPX_OK)
+      break;
+    if (QuantumTick(y,image->rows))
+      ProgressMonitor(SaveImageText,y,image->rows);
   }
   if (image_info->view != (char *) NULL)
     {
@@ -1068,7 +1022,7 @@ Export unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
     }
   (void) FPX_CloseImage(flashpix);
   FPX_ClearSystem();
-  FreeMemory((char *) pixels);
+  FreeMemory(pixels);
   if (image->temporary)
     {
       FILE
