@@ -89,6 +89,9 @@ extern "C" {
 # if !defined(S_ISDIR)
 #  define S_ISDIR(mode) (((mode) & S_IFMT) == S_IFDIR)
 # endif
+# if !defined(S_ISREG)
+#  define S_ISREG(mode) (((mode) & S_IFMT) == S_IFREG)
+# endif
 # include "magick/api.h"
 # if !defined(WIN32)
 #  include <sys/time.h>

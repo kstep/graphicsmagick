@@ -473,6 +473,9 @@ MagickExport HBITMAP ImageToHBITMAP(Image* image)
     HANDLE
       theBitsH;
 
+    unsigned long
+      nPixelCount;
+
     nPixels = image->columns * image->rows;
 
     bitmap.bmType		= 0;
@@ -501,7 +504,6 @@ MagickExport HBITMAP ImageToHBITMAP(Image* image)
 		  memcpy((void*)pDestPixel,(const void*)pPixels,sizeof(PixelPacket)*nPixels);
 
 		#else	// 16 or 32 bit Quantum
-		  unsigned long nPixelCount;
 
 		  // Transfer pixels, scaling to Quantum
 		  for( nPixelCount = nPixels; nPixelCount ; nPixelCount-- )
