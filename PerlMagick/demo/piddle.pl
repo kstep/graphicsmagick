@@ -19,12 +19,12 @@ for ($i=0; $i < 300; $i+=10)
 #
 # Draw rounded rectangle.
 #
-$image->Draw(primitve=>'RoundRectangle',fill=>'blue',stroke=>'maroon',
+$image->Draw(primitive=>'RoundRectangle',fill=>'blue',stroke=>'maroon',
   strokewidth=>4,points=>'30,30 100,100 10,10');
 #
 # Draw curve.
 #
-$image->Draw(primitve=>'bezier',points=>'20,20, 100,50, 50,100, 160,160',
+$image->Draw(primitive=>'bezier',points=>'20,20, 100,50, 50,100, 160,160',
   fill=>'none',stroke=>'black',strokewidth=>4);
 #
 # Draw line.
