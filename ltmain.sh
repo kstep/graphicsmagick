@@ -56,7 +56,7 @@ modename="$progname"
 PROGRAM=ltmain.sh
 PACKAGE=libtool
 VERSION=1.4e
-TIMESTAMP=" (1.1125 2002/06/26 07:15:36)"
+TIMESTAMP=" (1.1128 2002/07/31 20:31:13)"
 
 default_mode=
 help="Try \`$progname --help' for more information."
@@ -1220,6 +1220,17 @@ EOF
 	 esac
 	fi
 	deplibs="$deplibs $arg"
+	continue
+	;;
+
+      # Pass -m32 and -m64 to gcc for SPARC Solaris targets to
+      # control 32/64 bit linkage.
+      -m32 | -m64)
+	case $with_gcc/$host in
+	yes/sparc-sun-solaris2*)
+	  compiler_flags="$compiler_flags $arg"
+	  ;;
+	esac
 	continue
 	;;
 
