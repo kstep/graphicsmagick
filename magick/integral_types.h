@@ -73,7 +73,7 @@
 
 #if (SIZEOF_LONG == 8)
   typedef long gm_int64_t;
-#elif (SIZEOF_LONG_LONG == 8)
+#elif (SIZEOF_LONG_LONG == 8) && !defined(_VISUALC_)
   typedef long long gm_int64_t;
 #elif defined(_VISUALC_)
   typedef __int64 gm_int64_t;
@@ -83,7 +83,7 @@
 
 #if (SIZEOF_UNSIGNED_LONG == 8)
   typedef unsigned long gm_uint64_t;
-#elif (SIZEOF_UNSIGNED_LONG_LONG == 8)
+#elif (SIZEOF_UNSIGNED_LONG_LONG == 8) && !defined(_VISUALC_)
   typedef unsigned long long gm_uint64_t;
 #elif defined(_VISUALC_)
   typedef unsigned __int64 gm_uint64_t;

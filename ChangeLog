@@ -5,6 +5,8 @@
 	Visual C++ 7.0.
 	* coders/jpeg.c (ReadICCProfile): Incorporate ImageMagick fix
 	to handle short JPEG ICC profiles.
+	* magick/integral_types.h: Ignore SIZEOF_LONG_LONG and
+	SIZEOF_UNSIGNED_LONG_LONG defines if _VISUALC_ is defined.
 
 2003-03-11  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 	* www/gm.html, utilities/gm.1, guide/gm.tex: Expanded description
