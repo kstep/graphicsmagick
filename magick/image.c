@@ -6283,10 +6283,8 @@ MagickExport unsigned int SetImageDepth(Image *image,const unsigned long depth)
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  image->depth=depth;
-  if (image->depth <= QuantumDepth)
-    return(True);
-  if (GetImageDepth(image,&image->exception) == depth)
+  image->depth=GetImageDepth(image,&image->exception);
+  if (image->depth == depth)
     return(True);
   for (y=0; y < (long) image->rows; y++)
   {
