@@ -85,8 +85,8 @@ static Image
 %
 %  The format of the Constitute method is:
 %
-%      Image *ConstituteImage(const unsigned int width,
-%        const unsigned int height,const char *map,const StorageType type,
+%      Image *ConstituteImage(const unsigned long width,
+%        const unsigned long height,const char *map,const StorageType type,
 %        const void *pixels,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -106,8 +106,8 @@ static Image
 %
 %    o type: Define the data type of the pixels.  Float and double types are
 %      expected to be normalized [0..1] otherwise [0..MaxRGB].  Choose from
-%      these types: CharPixel, ShortPixel, IntegerPixel, FloatPixel, or
-%      DoublePixel.
+%      these types: CharPixel, ShortPixel, IntegerPixel, LongPixel, FloatPixel,
+%      or DoublePixel.
 %
 %    o pixels: This array of values contain the pixel components as defined by
 %      map and type.  You must preallocate this array where the expected
@@ -117,8 +117,8 @@ static Image
 %
 %
 */
-MagickExport Image *ConstituteImage(const unsigned int width,
-  const unsigned int height,const char *map,const StorageType type,
+MagickExport Image *ConstituteImage(const unsigned long width,
+  const unsigned long height,const char *map,const StorageType type,
   const void *pixels,ExceptionInfo *exception)
 {
   Image
@@ -332,6 +332,76 @@ MagickExport Image *ConstituteImage(const unsigned int width,
         *p;
 
       p=(unsigned int *) pixels;
+      for (y=0; y < (long) image->rows; y++)
+      {
+        q=SetImagePixels(image,0,y,image->columns,1);
+        if (q == (PixelPacket *) NULL)
+          break;
+        for (x=0; x < (long) image->columns; x++)
+        {
+          for (i=0; i < (long) strlen(map); i++)
+          {
+            switch (map[i])
+            {
+              case 'r':
+              case 'R':
+              case 'c':
+              case 'C':
+              {
+                q->red=(*p++);
+                break;
+              }
+              case 'g':
+              case 'G':
+              case 'm':
+              case 'M':
+              {
+                q->green=(*p++);
+                break;
+              }
+              case 'b':
+              case 'B':
+              case 'y':
+              case 'Y':
+              {
+                q->blue=(*p++);
+                break;
+              }
+              case 'a':
+              case 'A':
+              case 'k':
+              case 'K':
+              {
+                q->opacity=(*p++);
+                break;
+              }
+              case 'I':
+              {
+                q->red=(*p++);
+                q->green=q->red;
+                q->blue=q->red;
+                break;
+              }
+              default:
+              {
+                DestroyImage(image);
+                ThrowImageException(OptionWarning,"Invalid pixel map",map)
+              }
+            }
+          }
+          q++;
+        }
+        if (!SyncImagePixels(image))
+          break;
+      }
+      break;
+    }
+    case LongPixel:
+    {
+      register unsigned long
+        *p;
+
+      p=(unsigned long *) pixels;
       for (y=0; y < (long) image->rows; y++)
       {
         q=SetImagePixels(image,0,y,image->columns,1);

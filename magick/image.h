@@ -612,7 +612,7 @@ extern MagickExport Image
     const unsigned int,ExceptionInfo *),
   *CoalesceImages(const Image *,ExceptionInfo *),
   *ColorizeImage(const Image *,const char *,const PixelPacket,ExceptionInfo *),
-  *ConstituteImage(const unsigned int,const unsigned int,const char *,
+  *ConstituteImage(const unsigned long,const unsigned long,const char *,
     const StorageType,const void *,ExceptionInfo *),
   *ConvolveImage(const Image *,const unsigned int,const double *,
     ExceptionInfo *),
