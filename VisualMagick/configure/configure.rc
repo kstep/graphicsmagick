@@ -152,8 +152,8 @@ STYLE WS_CHILD | WS_DISABLED | WS_CAPTION
 CAPTION "VisualMagick configuration finished."
 FONT 8, "MS Sans Serif"
 BEGIN
-    LTEXT           "some finish text...",IDC_FINISHED_TEXT,7,7,304,110
-    PUSHBUTTON      "Build It!",IDC_BuildIt,127,132,50,14,NOT WS_VISIBLE
+    LTEXT           "some finish text...",IDC_FINISHED_TEXT,7,7,304,192
+    PUSHBUTTON      "Build It!",IDC_BuildIt,135,212,50,14,NOT WS_VISIBLE
 END
 
 

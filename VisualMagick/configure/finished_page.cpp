@@ -57,7 +57,12 @@ BOOL CFinishedPage::OnInitDialog()
   m_text += " configuration you selected. The dynamic (DLL) build is named VisualDynamicMT.dsw";
   m_text += " while the static build configurations are named VisualStaticXX.dsw, were the XX";
   m_text += " indicates the type of threading allowed: (ST: single-threaded, MT; multi-threaded,";
-  m_text += " and MTD: multi-threaded DLL)";
+  m_text += " and MTD: multi-threaded DLL)\n\n";
+  m_text += " You will find a project in the workspace called \"All\". Select this and make it";
+  m_text += " the active project.\n\nMake sure to do a:\n\n";
+  m_text += "    \"Build: Clean\", followed by a \"Build: Build\"\n\n";
+  m_text += "Failure to do the Clean may result in a failed build.\n\nGood luck!";
+
 
 	UpdateData(FALSE);
 	
