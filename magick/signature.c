@@ -233,7 +233,7 @@ static void TransformSignature(SignatureInfo *signature_info)
       0x391c0cb3L, 0x4ed8aa4aL, 0x5b9cca4fL, 0x682e6ff3L,
       0x748f82eeL, 0x78a5636fL, 0x84c87814L, 0x8cc70208L,
       0x90befffaL, 0xa4506cebL, 0xbef9a3f7L, 0xc67178f2L
-    };  /* 32-bit fractional part of the cure root of the first 64 primes */
+    };  /* 32-bit fractional part of the cube root of the first 64 primes */
 
   int
     j,
