@@ -267,22 +267,18 @@ typedef struct _TimerInfo
 
 typedef struct _Image
 {
-  int
-    exempt,
-    status,
-    temporary;
-
   char
-    filename[MaxTextExtent];
+    filename[MaxTextExtent],
+    magick[MaxTextExtent];
 
   FILE
     *file;
 
   int
+    exempt,
+    status,
+    temporary,
     pipet;
-
-  char
-    magick[MaxTextExtent];
 
   ClassType
     storage_class;
