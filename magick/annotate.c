@@ -783,7 +783,7 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
 
 #if defined(HasTTF)
 
-static int CubicBezier(FT_Vector *p,FT_Vector *q,FT_Vector *to,
+static int TraceCubicBezier(FT_Vector *p,FT_Vector *q,FT_Vector *to,
   DrawInfo *draw_info)
 {
   char
@@ -795,7 +795,7 @@ static int CubicBezier(FT_Vector *p,FT_Vector *q,FT_Vector *to,
   return(0);
 }
 
-static int LineTo(FT_Vector *to,DrawInfo *draw_info)
+static int TraceLineTo(FT_Vector *to,DrawInfo *draw_info)
 {
   char
     path[MaxTextExtent];
@@ -805,7 +805,7 @@ static int LineTo(FT_Vector *to,DrawInfo *draw_info)
   return(0);
 }
 
-static int MoveTo(FT_Vector *to,DrawInfo *draw_info)
+static int TraceMoveTo(FT_Vector *to,DrawInfo *draw_info)
 {
   char
     path[MaxTextExtent];
@@ -815,7 +815,7 @@ static int MoveTo(FT_Vector *to,DrawInfo *draw_info)
   return(0);
 }
 
-static int QuadraticBezier(FT_Vector *control,FT_Vector *to,
+static int TraceQuadraticBezier(FT_Vector *control,FT_Vector *to,
   DrawInfo *draw_info)
 {
   char
@@ -863,10 +863,10 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
   static FT_Outline_Funcs
     OutlineMethods =
     {
-      (FT_Outline_MoveTo_Func) MoveTo,
-      (FT_Outline_LineTo_Func) LineTo,
-      (FT_Outline_ConicTo_Func) QuadraticBezier,
-      (FT_Outline_CubicTo_Func) CubicBezier,
+      (FT_Outline_MoveTo_Func) TraceMoveTo,
+      (FT_Outline_LineTo_Func) TraceLineTo,
+      (FT_Outline_ConicTo_Func) TraceQuadraticBezier,
+      (FT_Outline_CubicTo_Func) TraceCubicBezier,
       0,
       0
     };
