@@ -3,11 +3,11 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%          X   X  W   W  IIIII  N   N  DDDD    OOO   W   W  SSSSS             %
-%           X X   W   W    I    NN  N  D   D  O   O  W   W  SS                %
-%            X    W   W    I    N N N  D   D  O   O  W   W   SSS              %
-%           X X   W W W    I    N  NN  D   D  O   O  W W W     SS             %
-%          X   X   W W   IIIII  N   N  DDDD    OOO    W W   SSSSS             %
+%              X   X  W   W  IIIII  N   N  DDDD    OOO   W   W                %
+%               X X   W   W    I    NN  N  D   D  O   O  W   W                %
+%                X    W   W    I    N N N  D   D  O   O  W   W                %
+%               X X   W W W    I    N  NN  D   D  O   O  W W W                %
+%              X   X   W W   IIIII  N   N  DDDD    OOO    W W                 %
 %                                                                             %
 %                                                                             %
 %                     X11 Utility Methods for ImageMagick                     %
