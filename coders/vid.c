@@ -105,10 +105,15 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     **filelist,
     **list;
 
+  double
+    x_factor,
+    y_factor;
+
   Image
     *image,
     *montage_image,
-    *next_image;
+    *next_image,
+    *thumbnail_image;
 
   ImageInfo
     *clone_info;
@@ -121,6 +126,9 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   MontageInfo
     *montage_info;
+
+  RectangleInfo
+    geometry;
 
   register long
     i;
@@ -161,11 +169,11 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   clone_info=CloneImageInfo(image_info);
   clone_info->blob=(void *) NULL;
   clone_info->length=0;
+  if (clone_info->size == (char *) NULL)
+    CloneString(&clone_info->size,DefaultTileGeometry);
   for (i=0; i < number_files; i++)
   {
     handler=SetMonitorHandler((MonitorHandler) NULL);
-    if (clone_info->size == (char *) NULL)
-      CloneString(&clone_info->size,DefaultTileGeometry);
     (void) strncpy(clone_info->filename,filelist[i],MaxTextExtent-1);
     (void) LogMagickEvent(CoderEvent,GetMagickModule(),"name: %.1024s",
       clone_info->filename);
@@ -173,12 +181,27 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     LiberateMemory((void **) &filelist[i]);
     if (next_image != (Image *) NULL)
       {
+        (void) SetImageAttribute(next_image,"label",DefaultTileLabel);
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),"geometry: %ldx%ld",
           next_image->columns,next_image->rows);
-        (void) SetImageAttribute(next_image,"label",DefaultTileLabel);
-        (void) TransformImage(&next_image,(char *) NULL,clone_info->size);
-        (void) LogMagickEvent(CoderEvent,GetMagickModule(),"thumbnail geometry: %ldx%ld",
-          next_image->columns,next_image->rows);
+        SetGeometry(next_image,&geometry);
+        (void) GetMagickGeometry(clone_info->size,&geometry.x,&geometry.y,
+          &geometry.width,&geometry.height);
+        x_factor=(double) geometry.width/next_image->columns;
+        y_factor=(double) geometry.height/next_image->rows;
+        if ((x_factor*y_factor) > 0.1)
+          thumbnail_image=ZoomImage(next_image,geometry.width,geometry.height,
+            exception);
+        else
+          thumbnail_image=ThumbnailImage(next_image,geometry.width,
+            geometry.height,exception);
+        if (thumbnail_image != (Image *) NULL)
+          {
+            DestroyImage(next_image);
+            next_image=thumbnail_image;
+          }
+        (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+          "thumbnail geometry: %ldx%ld",next_image->columns,next_image->rows);
         if (image == (Image *) NULL)
           image=next_image;
         else

@@ -74,13 +74,6 @@ typedef struct _FilterInfo
 } FilterInfo;
 
 /*
-  Forward declarations.
-*/
-static Image
-  *ThumbnailImage(const Image *,const unsigned long,const unsigned long,
-    ExceptionInfo *);
-
-/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -1075,16 +1068,12 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
   */
   x_factor=(double) resize_image->columns/image->columns;
   y_factor=(double) resize_image->rows/image->rows;
+  i=(long) LanczosFilter;
   if (image->filter != UndefinedFilter)
     i=(long) image->filter;
   else
     if ((x_factor*y_factor) > 1.0)
       i=(long) MitchellFilter;
-    else
-      if ((x_factor*y_factor) > 0.01)
-        i=(long) LanczosFilter;
-      else
-        return(ThumbnailImage(image,columns,rows,exception));
   x_support=blur*Max(1.0/x_factor,1.0)*filters[i].support;
   y_support=blur*Max(1.0/y_factor,1.0)*filters[i].support;
   support=Max(x_support,y_support);
@@ -1641,7 +1630,7 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   T h u m b n a i l I m a g e                                               %
+%   T h u m b n a i l I m a g e                                               %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1668,8 +1657,8 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
 %
 %
 */
-static Image *ThumbnailImage(const Image *image,const unsigned long columns,
-  const unsigned long rows,ExceptionInfo *exception)
+MagickExport Image *ThumbnailImage(const Image *image,
+  const unsigned long columns,const unsigned long rows,ExceptionInfo *exception)
 {
   Image
     *sample_image,
@@ -1694,12 +1683,12 @@ static Image *ThumbnailImage(const Image *image,const unsigned long columns,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ZoomImage() creates a new image that is a scaled size of an existing one.
-%  It allocates the memory necessary for the new Image structure and returns
-%  a pointer to the new image.  The Point filter gives fast pixel replication,
-%  Triangle is equivalent to bi-linear interpolation, and Mitchel giver slower,
-%  very high-quality results.  See Graphic Gems III for details on this
-%  algorithm.
+%  Method ZoomImage creates a new image that is a scaled size of an
+%  existing one.  It allocates the memory necessary for the new Image
+%  structure and returns a pointer to the new image.  The Point filter gives
+%  fast pixel replication, Triangle is equivalent to bi-linear interpolation,
+%  and Mitchel giver slower, very high-quality results.  See Graphic Gems III
+%  for details on this algorithm.
 %
 %  The filter member of the Image structure specifies which image filter to
 %  use. Blur specifies the blur factor where > 1 is blurry, < 1 is sharp.
