@@ -195,9 +195,16 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
         allocate_image->y_resolution=allocate_image->x_resolution;
     }
   if (image_info->page != (char *) NULL)
-    ParseImageGeometry(PostscriptGeometry(image_info->page),
-      &allocate_image->page.x,&allocate_image->page.y,
-      &allocate_image->page.width,&allocate_image->page.height);
+    {
+      char
+        *geometry;
+
+      geometry=PostscriptGeometry(image_info->page);
+      ParseImageGeometry(geometry,&allocate_image->page.x,
+        &allocate_image->page.y,&allocate_image->page.width,
+        &allocate_image->page.height);
+      LiberateMemory((void **) &geometry);
+    }
   allocate_image->depth=image_info->depth;
   allocate_image->background_color=image_info->background_color;
   allocate_image->border_color=image_info->border_color;
