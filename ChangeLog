@@ -1,3 +1,10 @@
+2005-13-10 Glenn Randers-Pehrson <glennrp@glennrp.com>
+
+	* coders/png.c: Avoid attempting to write indexed PNG when
+	a color entry has more than one opacity level.  The PNG format
+	supports this but GM's colormap does not, so erroneous files
+	were being written.
+
 2005-03-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/tiff.c: Added some code to support extending libtiff's

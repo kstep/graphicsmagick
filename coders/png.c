@@ -6590,17 +6590,15 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
             ping_info->num_trans=0;
             if (matte)
             {
+              int
+                trans[256];
+
               /*
                 Identify which colormap entry is transparent.
               */
-              ping_info->trans=MagickAllocateMemory(unsigned char *,
-                  number_colors);
-              if (ping_info->trans == (unsigned char *) NULL)
-                ThrowWriterException(ResourceLimitError,
-                    MemoryAllocationFailed,image);
               assert(number_colors <= 256);
               for (i=0; i < (long) number_colors; i++)
-                 ping_info->trans[i]=255;
+                 trans[i]=256;
               for (y=0; y < (long) image->rows; y++)
               {
                 register const PixelPacket
@@ -6620,21 +6618,53 @@ static unsigned int WriteOnePNGImage(MngInfo *mng_info,
 
                       index=indexes[x];
                       assert((unsigned long) index < number_colors);
-                      ping_info->trans[index]=(png_byte) (255-
+                      if (trans[index] != 256)
+                        {
+                          if (trans[index] != (png_byte) (255-
+                             ScaleQuantumToChar(p->opacity)))
+                            {
+                              ping_info->color_type=PNG_COLOR_TYPE_RGB_ALPHA;
+                              break;
+                            }
+                        }
+                      trans[index]=(png_byte) (255-
                         ScaleQuantumToChar(p->opacity));
                     }
                   p++;
                 }
+                if (ping_info->color_type==PNG_COLOR_TYPE_RGB_ALPHA)
+                {
+                  ping_info->num_trans=0;
+                  ping_info->valid&=(~PNG_INFO_tRNS);
+                  ping_info->valid&=(~PNG_INFO_PLTE);
+                  mng_info->IsPalette=False;
+                  (void) SyncImage(image);
+                  if (logging)
+                    (void) LogMagickEvent(CoderEvent, GetMagickModule(),
+                        "    Cannot write image as indexed PNG, writing RGBA.");
+                  break;
+                }
               }
-              for (i=0; i < (long) number_colors; i++)
-                if (ping_info->trans[i] != 255)
-                  ping_info->num_trans=(unsigned short) (i+1);
+              if ((ping_info->valid & PNG_INFO_tRNS))
+              {
+                for (i=0; i < (long) number_colors; i++)
+                  if (ping_info->trans[i] != 255)
+                    ping_info->num_trans=(unsigned short) (i+1);
+              }
               if (ping_info->num_trans == 0)
                 ping_info->valid&=(~PNG_INFO_tRNS);
               if (!(ping_info->valid & PNG_INFO_tRNS))
                 ping_info->num_trans=0;
-              if (ping_info->num_trans == 0)
-                MagickFreeMemory(ping_info->trans);
+              if (ping_info->num_trans != 0)
+              {
+                ping_info->trans=MagickAllocateMemory(unsigned char *,
+                    number_colors);
+                if (ping_info->trans == (unsigned char *) NULL)
+                  ThrowWriterException(ResourceLimitError,
+                      MemoryAllocationFailed,image);
+                for (i=0; i < (long) number_colors; i++)
+                    ping_info->trans[i]=(png_byte) trans[i];
+              }
             }
 
             /*
