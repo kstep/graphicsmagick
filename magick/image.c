@@ -5943,18 +5943,17 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
     p+=2;  /* skip DECnet node spec */
 #endif
   if ((*p == ':') && ((p-image_info->filename) < (int) sizeof(magic)))
+    {
+      /*
+        User specified image format.
+      */
+      (void) strncpy(magic,image_info->filename,p-image_info->filename);
+      magic[p-image_info->filename]='\0';
+      LocaleUpper(magic);
 #if defined(macintosh) || defined(WIN32) || defined(vms)
     if (!ImageFormatConflict(magic))
 #endif
       {
-        /*
-          User specified image format.
-        */
-        (void) strncpy(magic,image_info->filename,p-image_info->filename);
-        magic[p-image_info->filename]='\0';
-        if (LocaleCompare(magic,"GRADATION") == 0)
-          (void) strcpy(magic,"GRADIENT");
-        LocaleUpper(magic);
         /*
           Strip off image format prefix.
         */
@@ -5969,6 +5968,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
               image_info->temporary=True;
           }
       }
+    }
   if (rectify)
     {
       char
