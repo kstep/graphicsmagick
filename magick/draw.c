@@ -926,14 +926,14 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       Define primitive.
     */
     primitive_type=UndefinedPrimitive;
-    while (isspace((int) (*p)))
+    while (isspace((int) (*p)) && (*p != '\0'))
       p++;
-    for (x=0; !isspace((int) (*p)); x++)
+    for (x=0; !isspace((int) (*p)) && (*p != '\0'); x++)
       keyword[x]=(*p++);
     keyword[x]='\0';
     if (*keyword == '\0')
       break;
-    while (isspace((int) (*p)))
+    while (isspace((int) (*p)) && (*p != '\0'))
       p++;
     n=0;
     if (Latin1Compare("antialias",keyword) == 0)
@@ -962,7 +962,7 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       }
     if (Latin1Compare("pen",keyword) == 0)
       {
-        for (x=0; !isspace((int) (*p)); x++)
+        for (x=0; !isspace((int) (*p)) && (*p != '\0'); x++)
           keyword[x]=(*p++);
         keyword[x]='\0';
         CloneString(&clone_info->pen,keyword);
@@ -986,7 +986,7 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     if (Latin1Compare("translate",keyword) == 0)
       {
         (void) sscanf(p,"%lf%lf%n",&clone_info->translate.x,
-          clone_info->translate.y,&n);
+          &clone_info->translate.y,&n);
         if (n == 0)
           (void) sscanf(p,"%lf,%lf%n",&clone_info->translate.x,
             &clone_info->translate.y,&n);
@@ -1043,7 +1043,7 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       /*
         Define points.
       */
-      while (isspace((int) (*p)))
+      while (isspace((int) (*p)) && (*p != '\0'))
         p++;
       if (!IsGeometry(p))
         break;
@@ -1063,7 +1063,7 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       primitive_info[i].coordinates=0;
       primitive_info[i].pixel=pixel;
       primitive_info[i].method=FloodfillMethod;
-      while (isspace((int) (*p)) || (*p == ','))
+      while ((isspace((int) (*p)) || (*p == ',')) && (*p != '\0'))
         p++;
       i++;
       if (i < (int) (number_coordinates-Max(BezierQuantum*x,360)-1))
@@ -1079,7 +1079,7 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       ThrowBinaryException(ResourceLimitWarning,"Unable to draw image",
         "Memory allocation failed");
     }
-    while (isspace((int) (*p)))
+    while (isspace((int) (*p)) && (*p != '\0'))
       p++;
     primitive_info[j].coordinates=x;
     primitive_info[j].method=FloodfillMethod;
@@ -1222,7 +1222,7 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         /*
           Define method.
         */
-        for (x=0; !isspace((int) (*p)); x++)
+        for (x=0; !isspace((int) (*p)) && (*p != '\0'); x++)
           keyword[x]=(*p++);
         keyword[x]='\0';
         if (*keyword == '\0')
@@ -1251,7 +1251,7 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             bounds.x2=image->columns-1.0;
             bounds.y2=image->rows-1.0;
           }
-        while (isspace((int) (*p)))
+        while (isspace((int) (*p)) && (*p != '\0'))
           p++;
         break;
       }
@@ -1280,7 +1280,7 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
                 }
               else
                 for (p++;  *p != '\0'; p++)
-                  if (isspace((int) *p) && (*(p-1) != '\\'))
+                  if (isspace((int) *p) && (*(p-1) != '\\') && (*p != '\0'))
                     break;
             if (*p != '\0')
               p++;
@@ -1333,7 +1333,7 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
               else
                 for ( ;  *p != '\0'; p++)
                 {
-                  if (isspace((int) *p) && (*(p-1) != '\\'))
+                  if (isspace((int) *p) && (*(p-1) != '\\') && (*p != '\0'))
                     break;
                   *q++=(*p);
                 }
@@ -1469,6 +1469,7 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
   if (indirection)
     FreeMemory((void **) &primitive);
   DestroyDrawInfo(clone_info);
+if (0)
   if (primitive_type == UndefinedPrimitive)
     ThrowBinaryException(OptionWarning,
       "Non-conforming drawing primitive definition",keyword);
@@ -1995,7 +1996,7 @@ static Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
             }
           else
             for (r++;  *r != '\0'; r++)
-              if (isspace((int) *r) && (*(r-1) != '\\'))
+              if (isspace((int) *r) && (*(r-1) != '\\') && (*r != '\0'))
                 break;
         clone_info=CloneImageInfo((ImageInfo *) NULL);
         annotate=CloneAnnotateInfo(clone_info,(AnnotateInfo *) NULL);
