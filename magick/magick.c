@@ -330,6 +330,7 @@ MagickExport void InitializeMagick(const char *path)
     execution_path[MaxTextExtent];
 
   (void) setlocale(LC_ALL,"");
+  (void) setlocale(LC_NUMERIC,"C");
   InitializeSemaphore();
 #if defined(HAVE_SYSCONF) && defined(_SC_PAGE_SIZE) && defined(_SC_PHYS_PAGES)
   SetMagickResourceLimit(MemoryResource,

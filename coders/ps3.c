@@ -355,6 +355,9 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
   SegmentInfo
     bounds;
 
+  size_t
+    length;
+
   time_t
     timer;
 
@@ -472,6 +475,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
           (void) strcpy(buffer,"%!PS-Adobe-3.0 Resource-ProcSet\n");
         else
           (void) strcpy(buffer,"%!PS-Adobe-3.0 EPSF-3.0 Resource-ProcSet\n");
+        (void) WriteBlobString(image,buffer);
         (void) WriteBlobString(image,"%%Creator: (ImageMagick)\n");
         FormatString(buffer,"%%%%Title: (%.1024s)\n",image->filename);
         (void) WriteBlobString(image,buffer);
@@ -529,6 +533,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     attribute=GetImageAttribute(image,"label");
     if (attribute != (const ImageAttribute *) NULL)
       (void) WriteBlobString(image,"%%PageResources: font Times-Roman\n");
+(void) WriteBlobString(image,"/DeviceRGB setcolorspace\n");
     /*
       Output image data.
     */
@@ -558,9 +563,6 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
         Image
           *jpeg_image;
 
-        size_t
-          length;
-
         void
           *blob;
 
@@ -581,9 +583,6 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
       {
         register unsigned char
           *q;
-
-        size_t
-          length;
 
         unsigned long
           number_pixels;
@@ -734,7 +733,9 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     if (image->next == (Image *) NULL)
       break;
     image=GetNextImage(image);
-    if (!MagickMonitor(SaveImagesText,scene++,GetImageListSize(image),&image->exception))
+    status=MagickMonitor(SaveImagesText,scene++,GetImageListSize(image),
+      &image->exception);
+    if (status == False)
       break;
   } while (image_info->adjoin);
   if (image_info->adjoin)
