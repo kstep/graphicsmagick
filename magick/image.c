@@ -157,6 +157,7 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
       long
         offset;
 
+      offset=0;
       flags=ParseGeometry(image_info->size,&offset,&offset,
         &allocate_image->columns,&allocate_image->rows);
       if ((flags & HeightValue) == 0)
