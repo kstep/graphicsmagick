@@ -64,9 +64,9 @@
   Define declarations.
 */
 #define BezierQuantum  200
-#define FuzzyMatteMatch(color,target,fuzz) \
-  (FuzzyColorMatch(color,target,fuzz) && \
-	 ((color)->opacity == (target)->opacity))
+#define FuzzyOpacityMatch(color,target,fuzz) \
+  (((color)->opacity == (target)->opacity) &&
+   FuzzyColorMatch(color,target,fuzz))
 #define MaxStacksize  (1 << 15)
 #define Push(up,left,right,delta) \
   if ((s < (segment_stack+MaxStacksize)) && (((up)+(delta)) >= 0) && \
@@ -4228,11 +4228,11 @@ MagickExport unsigned int MatteFloodfillImage(Image *image,
     {
       if (method == FloodfillMethod)
         {
-          if (!FuzzyMatteMatch(q,&target,image->fuzz))
+          if (!FuzzyOpacityMatch(q,&target,image->fuzz))
             break;
         }
       else
-        if (FuzzyMatteMatch(q,&target,image->fuzz) || (q->opacity == opacity))
+        if (FuzzyOpacityMatch(q,&target,image->fuzz) || (q->opacity == opacity))
           break;
       q->opacity=opacity;
       q--;
@@ -4259,11 +4259,11 @@ MagickExport unsigned int MatteFloodfillImage(Image *image,
           {
             if (method == FloodfillMethod)
               {
-                if (!FuzzyMatteMatch(q,&target,image->fuzz))
+                if (!FuzzyOpacityMatch(q,&target,image->fuzz))
                   break;
               }
             else
-              if (FuzzyMatteMatch(q,&target,image->fuzz) ||
+              if (FuzzyOpacityMatch(q,&target,image->fuzz) ||
                   (q->opacity == opacity))
                 break;
             q->opacity=opacity;
@@ -4285,11 +4285,11 @@ MagickExport unsigned int MatteFloodfillImage(Image *image,
         q++;
         if (method == FloodfillMethod)
           {
-            if (FuzzyMatteMatch(q,&target,image->fuzz))
+            if (FuzzyOpacityMatch(q,&target,image->fuzz))
               break;
           }
         else
-          if (!FuzzyMatteMatch(q,&target,image->fuzz) &&
+          if (!FuzzyOpacityMatch(q,&target,image->fuzz) &&
               (q->opacity != opacity))
             break;
       }
