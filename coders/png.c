@@ -59,16 +59,9 @@
 #include "zlib.h"
 
 /*
-  Optional declarations. Uncomment them if you like.
+  Optional declarations. Define or undefine them as you like.
 */
 #define PNG_DEBUG
-
-/*
-  This is temporary until I set up malloc'ed object attributes array.
-  Recompile with MNG_MAX_OBJECTS = 65536 to avoid this limit but
-  waste more memory.
-*/
-#define MNG_MAX_OBJECTS 256
 
 /*
   Features under construction.  Define these to work on them.
@@ -77,6 +70,13 @@
 #undef MNG_BASI_SUPPORTED
 #define PNG_SORT_PALETTE
 #undef PNG_REDUCE_TO_PSEUDOCLASS
+
+/*
+  This is temporary until I set up malloc'ed object attributes array.
+  Recompile with MNG_MAX_OBJECTS = 65536 to avoid this limit but
+  waste more memory.
+*/
+#define MNG_MAX_OBJECTS 256
 
 /*
   If this is not defined, spec is interpreted strictly.  If it is
@@ -419,7 +419,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
     {
       marker[(int) indexes[x]]=True;
       opacity[(int) indexes[x]]=p->opacity;
-      if(p->opacity != OpaqueOpacity)
+      if (p->opacity != OpaqueOpacity)
          transparent_pixels++;
       p++;
     }
@@ -556,7 +556,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
     }
   LiberateMemory((void **) &marker);
 
-  if(remap_needed)
+  if (remap_needed)
     {
       /*
       Remap pixels.
@@ -668,7 +668,7 @@ unsigned int ImageIsMonochrome(Image *image)
     {
       for (i=0; i < (int) image->colors; i++)
       {
-        if(!IsGray(image->colormap[i]) || (image->colormap[i].red != 0) ||
+        if (!IsGray(image->colormap[i]) || (image->colormap[i].red != 0) ||
             (image->colormap[i].red != MaxRGB))
           return(False);
       }
@@ -1013,7 +1013,7 @@ static void MngInfoDiscardObject(MngInfo *mng_info,int i)
       mng_info->exists[i] && !mng_info->frozen[i])
     {
 #ifdef MNG_OBJECT_BUFFERS
-      if (mng_info->ob[i] != (MngInfoBuffer *) NULL)
+      if (mng_info->ob[i] != (MngBuffer *) NULL)
         {
           if (mng_info->ob[i]->reference_count > 0)
             mng_info->ob[i]->reference_count--;
@@ -1024,7 +1024,7 @@ static void MngInfoDiscardObject(MngInfo *mng_info,int i)
               LiberateMemory((void **) &mng_info->ob[i]);
             }
         }
-      mng_info->ob[i]=(MngInfoBuffer *) NULL;
+      mng_info->ob[i]=(MngBuffer *) NULL;
 #endif
       mng_info->exists[i]=False;
       mng_info->visible[i]=True;
@@ -1126,6 +1126,9 @@ static void PNGErrorHandler(png_struct *ping,png_const_charp message)
     *image;
 
   image=(Image *) ping->error_ptr;
+#ifdef PNG_DEBUG
+  printf("libpng-%s error: %s\n", PNG_LIBPNG_VER_STRING, message);
+#endif
   ThrowException(&image->exception,DelegateWarning,message,(char *) NULL);
   longjmp(ping->jmpbuf,1);
 }
@@ -1135,6 +1138,9 @@ static void PNGWarningHandler(png_struct *ping,png_const_charp message)
   Image
     *image;
 
+#ifdef PNG_DEBUG
+  printf("libpng-%s warning: %s\n", PNG_LIBPNG_VER_STRING, message);
+#endif
   image=(Image *) ping->error_ptr;
   ThrowException(&image->exception,DelegateWarning,message,(char *) NULL);
 }
@@ -1326,7 +1332,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         mng_info->object_clip[i].top=0;
         mng_info->object_clip[i].bottom=PNG_MAX_UINT;
 #ifdef MNG_OBJECT_BUFFERS
-        mng_info->ob[i]=(MngInfoBuffer *) NULL;
+        mng_info->ob[i]=(MngBuffer *) NULL;
 #endif
       }
       mng_info->exists[0]=True;
@@ -1842,7 +1848,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 {
                  mng_info->frozen[i]=True;
 #ifdef MNG_OBJECT_BUFFERS
-                 if (mng_info->ob[i] != (MngInfoBuffer *) NULL)
+                 if (mng_info->ob[i] != (MngBuffer *) NULL)
                     mng_info->ob[i]->frozen=True;
 #endif
                 }
@@ -2443,11 +2449,11 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         png_get_iCCP(ping,ping_info,&name,(int *) &compression,&info,
           (png_uint_32 *) &image->color_profile.length);
 
-        if(image->color_profile.name)
+        if (image->color_profile.name)
            LiberateMemory((void **) &image->color_profile.name);
-        if(image->color_profile.info)
+        if (image->color_profile.info)
             LiberateMemory((void **) &image->color_profile.info);
-        if(image->color_profile.length)
+        if (image->color_profile.length)
           {
 #ifdef PNG_FREE_ME_SUPPORTED
             image->color_profile.name=name;
@@ -2829,7 +2835,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     else
                          *r++ = OpaqueOpacity;
                   }
-                if(ping_info->color_type == PNG_COLOR_TYPE_RGB)
+                if (ping_info->color_type == PNG_COLOR_TYPE_RGB)
                   {
                     *r++ = *p++;
                     p++;
@@ -3121,23 +3127,23 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     if (object_id && !mng_info->frozen[object_id])
       {
-        if (mng_info->ob[object_id] == (MngInfoBuffer *) NULL)
+        if (mng_info->ob[object_id] == (MngBuffer *) NULL)
           {
             /*
               create a new object buffer.
             */
-            mng_info->ob[object_id]=(MngInfoBuffer *)
-              AcquireMemory(sizeof(MngInfoBuffer));
-            if (mng_info->ob[object_id] != (MngInfoBuffer *) NULL)
+            mng_info->ob[object_id]=(MngBuffer *)
+              AcquireMemory(sizeof(MngBuffer));
+            if (mng_info->ob[object_id] != (MngBuffer *) NULL)
               {
                 mng_info->ob[object_id]->image=(Image *) NULL;
                 mng_info->ob[object_id]->reference_count=1;
               }
           }
-        if ((mng_info->ob[object_id] == (MngInfoBuffer *) NULL) ||
+        if ((mng_info->ob[object_id] == (MngBuffer *) NULL) ||
             mng_info->ob[object_id]->frozen)
           {
-            if (mng_info->ob[object_id] == (MngInfoBuffer *) NULL)
+            if (mng_info->ob[object_id] == (MngBuffer *) NULL)
               ThrowException(&image->exception,ResourceLimitWarning,
                 "Memory allocation of MNG object buffer failed",
                 image->filename);
@@ -3215,7 +3221,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                magnified_height,
                magnified_width;
 
-            if(mng_info->magn_methx == 1)
+            if (mng_info->magn_methx == 1)
               {
                 magnified_width=mng_info->magn_ml;
                 if (image->columns > 1)
@@ -3233,7 +3239,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 if (image->columns > 3)
                    magnified_width += (image->columns-3)*(mng_info->magn_mx-1);
               }
-            if(mng_info->magn_methy == 1)
+            if (mng_info->magn_methy == 1)
               {
                 magnified_height=mng_info->magn_mt;
                 if (image->rows > 1)
@@ -3972,7 +3978,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   {
     if (next_image->storage_class==DirectClass && IsPseudoClass(next_image))
 #  ifdef PNG_DEBUG
-     if(image_info->verbose)
+     if (image_info->verbose)
        printf("  reduced to %d-bit PseudoClass with %d colors\n",
            next_image->depth, next_image->colors);
 #  else
@@ -4446,6 +4452,10 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         /*
           PNG write failed.
         */
+#ifdef PNG_DEBUG
+       if (image_info->verbose)
+          printf("PNG write has failed.\n");
+#endif
         png_destroy_write_struct(&ping,&ping_info);
         if (scanlines != (unsigned char **) NULL)
           LiberateMemory((void **) &scanlines);
@@ -4470,11 +4480,6 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     ping_info->height=image->rows;
     save_image_depth=image->depth;
     ping_info->bit_depth=save_image_depth;
-#ifdef PNG_DEBUG
-    if(image_info->verbose)
-       printf("Writing %lu x %lu PNG image\n",ping_info->width,
-          ping_info->height);
-#endif
 #if (QuantumDepth == 16)
     if (ping_info->bit_depth == 16)
       {
@@ -4490,7 +4495,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           == (image->background_color.green & 0xff)) &&
            (((image->background_color.blue >> 8) & 0xff)
           == (image->background_color.blue & 0xff)));
-        if(ok_to_reduce)
+        if (ok_to_reduce)
           /* Note: GetImageDepth() could be used here. */
           for (y=0; y < (int) image->rows; y++)
           {
@@ -4516,7 +4521,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             ping_info->bit_depth=8;
             image->depth=8;
 #ifdef PNG_DEBUG
-            if(image_info->verbose)
+            if (image_info->verbose)
               printf("png.c: reducing bit depth to 8 without loss of info\n");
 #endif
           }
@@ -4698,13 +4703,18 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           image->depth=QuantumDepth;
         if (image->colors == 0 || image->colors > MaxRGB+1)
           image->colors = MaxRGB+1;
-        if (image->depth == 16)
+        if (image->depth > 8)
           ping_info->bit_depth=16;
         else
           {
-            ping_info->bit_depth=1;
-            while ((1 << ping_info->bit_depth) < image->colors)
-              ping_info->bit_depth<<=1;
+            if (image->matte)
+              ping_info->bit_depth=8;
+            else
+            {
+              ping_info->bit_depth=1;
+              while ((1 << ping_info->bit_depth) < image->colors)
+                ping_info->bit_depth<<=1;
+            }
           }
       }
     else
@@ -4818,15 +4828,10 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             ping_info->trans_values.gray*=0x0101;
           }
       }
-#ifdef PNG_DEBUG
-    if(image_info->verbose)
-       printf("Color type=%d, depth=%d\n",ping_info->color_type,
-          ping_info->bit_depth);
-#endif
 #if (PNG_LIBPNG_VER > 10008) && defined(PNG_WRITE_iCCP_SUPPORTED)
-    if(image->color_profile.length)
+    if (image->color_profile.length)
       {
-        if(image->color_profile.name == (png_charp) NULL)
+        if (image->color_profile.name == (png_charp) NULL)
           png_set_iCCP(ping,ping_info,(png_charp) "ICC Profile",
              (int) 0, (png_charp) image->color_profile.info,
              (png_uint_32) image->color_profile.length);
@@ -4880,7 +4885,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       Initialize compression level and filtering.
     */
     png_set_compression_mem_level(ping, 9);
-    if(image_info->quality > 9)
+    if (image_info->quality > 9)
        png_set_compression_level(ping,Min(image_info->quality/10,9));
     else
        png_set_compression_strategy(ping, Z_HUFFMAN_ONLY);
@@ -5184,9 +5189,9 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     png_destroy_write_struct(&ping,&ping_info);
     LiberateMemory((void **) &scanlines);
     LiberateMemory((void **) &png_pixels);
+    CatchImageException(image);
     if (image->next == (Image *) NULL)
       break;
-    CatchImageException(image);
     image=GetNextImage(image);
     MagickMonitor(SaveImagesText,scene++,GetNumberScenes(image));
   } while (image_info->adjoin);
