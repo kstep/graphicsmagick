@@ -376,7 +376,7 @@ typedef struct _Image
     filter;
 
   double
-    blur;
+    blur,
     total_colors,
     mean_error_per_pixel,
     normalized_mean_error,
