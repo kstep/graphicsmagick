@@ -1984,9 +1984,8 @@ MagickExport unsigned int OpenCache(Image *image,const MapMode mode)
             if ((cache_info->storage_class == PseudoClass) ||
                 (cache_info->colorspace == CMYKColorspace))
               cache_info->indexes=(IndexPacket *) (pixels+number_pixels);
-            FormatString(message,"open %.1024s (%lumb)",
-							cache_info->filename,(unsigned long)
-              (cache_info->length/1024/1024));
+            FormatString(message,"open %.1024s (%lumb)",cache_info->filename,
+              (unsigned long) (cache_info->length/1024/1024));
             LogMagickEvent(CacheEvent,message);
             return(True);
           }
@@ -2741,7 +2740,7 @@ static PixelPacket *SetNexus(const Image *image,const RectangleInfo *region,
   /*
     Pixels are stored in a staging area until they are synced to the cache.
   */
-  number_pixels=nexus_info->columns*nexus_info->rows;
+  number_pixels=Max(nexus_info->columns*nexus_info->rows,cache_info->columns);
   offset=number_pixels*sizeof(PixelPacket);
   if ((cache_info->storage_class == PseudoClass) ||
       (cache_info->colorspace == CMYKColorspace))
