@@ -361,7 +361,8 @@ MagickExport unsigned int CompositeImage(Image *image,
               destination.opacity=TransparentOpacity;
               break;
             }
-          pixel.opacity=(double) (MaxRGB-source.opacity)*destination.opacity/MaxRGB;
+          pixel.opacity=(double)
+            (MaxRGB-source.opacity)*destination.opacity/MaxRGB;
           destination.red=(Quantum) (((double) MaxRGB-source.opacity)*
             destination.opacity*source.red/MaxRGB/pixel.opacity+0.5);
           destination.green=(Quantum) (((double) MaxRGB-source.opacity)*
@@ -550,7 +551,7 @@ MagickExport unsigned int CompositeImage(Image *image,
         {
           if (!composite_image->matte)
             {
-              destination.opacity=PixelIntensityToQuantum(&source);
+              destination.opacity=MaxRGB-PixelIntensityToQuantum(&source);
               break;
             }
           destination.opacity=source.opacity;
