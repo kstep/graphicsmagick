@@ -1,6 +1,7 @@
 2003-06-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* GraphicsMagick 1.0.2 released.
+	* acinclude.m4: Add '#undef inline' in front of C++ tests.
 	* coders/x.c (RegisterXImage): Only register the X coder if HasX11
 	is defined.
 	* libxml/libxml2.def: Since VisualMagick configure is not fixed
