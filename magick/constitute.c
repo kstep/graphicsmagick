@@ -56,6 +56,12 @@
 #include "defines.h"
 
 /*
+  Forward declarations.
+*/
+static Image
+  *ReadImages(const ImageInfo *,ExceptionInfo *);
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -915,18 +921,20 @@ MagickExport unsigned int DispatchImage(Image *image,const int x,const int y,
 %  For an image sequence, only the information for the first image
 %  in the sequence is returned.
 %
+%  PingImage() returns an Image on success and NULL if the image cannot be
+%  pinged.  The image does not contain any pixel data.
+%
+%
 %  The format of the PingImage method is:
 %
 %      Image *PingImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o Image: Method PingImage returns the image size in bytes if the
-%      image file exists and it size can be determined otherwise 0.
+%    o image_info: Ping the image defined by the file or filename members of
+%      this structure.
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -1730,12 +1738,9 @@ MagickExport unsigned int PushImagePixels(Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadImage reads an image and returns it.  It allocates
-%  the memory necessary for the new Image structure and returns a pointer to
-%  the new image.  By default, the image format is determined by its magic
-%  number. To specify a particular image format, precede the filename with an
-%  explicit image format name and a colon (i.e.  ps:image) or as the filename
-%  suffix  (i.e. image.ps).
+%  ReadImage() reads an image or image sequence from a file or file handle.
+%  The method returns a NULL if there is a memory shortage or if the image
+%  cannot be read.
 %
 %  The format of the ReadImage method is:
 %
@@ -1743,13 +1748,10 @@ MagickExport unsigned int PushImagePixels(Image *image,
 %
 %  A description of each parameter follows:
 %
-%    o image: Method ReadImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a memory shortage or
-%      if the image cannot be read.
+%    o image_info: Read the image defined by the file or filename members of
+%      this structure.
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%    o exception: return any errors or warnings in this structure.
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
@@ -2003,14 +2005,14 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e a d I m a g e s                                                       %
++   R e a d I m a g e s                                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadImages reads a list of image names from a file and then returns
-%  the images as a linked list.
+%  ReadImages() reads a list of image names from a file and then returns the
+%  images as a linked list.
 %
 %  The format of the ReadImage method is:
 %
@@ -2022,12 +2024,14 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
 %      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
-%    o image_info: Specifies a pointer to an ImageInfo structure.
+%    o image_info: The list of filenames are defined in the filename member of
+%      this structure.
+%
+%    o exception: Return any errors or warnings in this structure.
 %
 %
 */
-MagickExport Image *ReadImages(const ImageInfo *image_info,
-  ExceptionInfo *exception)
+static Image *ReadImages(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   char
     *command,

@@ -653,7 +653,6 @@ extern MagickExport Image
   *OilPaintImage(Image *,const double,ExceptionInfo *),
   *PingImage(const ImageInfo *,ExceptionInfo *),
   *ReadImage(const ImageInfo *,ExceptionInfo *),
-  *ReadImages(const ImageInfo *,ExceptionInfo *),
   *ReduceNoiseImage(Image *,const double,ExceptionInfo *),
   *ResizeImage(Image *,const unsigned int,const unsigned int,const FilterTypes,
     const double,ExceptionInfo *),
