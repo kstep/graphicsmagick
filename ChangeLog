@@ -1,3 +1,6 @@
+2002-12-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* Added build support for utilities/gm.c
+
 2002-12-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* coders/pdf.c: Remove bogus code for handling temporary file.
 

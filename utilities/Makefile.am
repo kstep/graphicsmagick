@@ -40,21 +40,24 @@ X11MANPAGES = animate.1 display.1 import.1
 ALLMANPAGES = $(STDMANPAGES) $(X11MANPAGES)
 
 # Executables to build
-if HasX11
-X11PROGRAMS = animate display import
+#if HasX11
+#X11PROGRAMS = animate display import
+#MANPAGES = $(ALLMANPAGES)
+#else
+#X11PROGRAMS =
+#MANPAGES = $(STDMANPAGES)
+#endif
+
+#if HasXML
+#XMLPROGRAMS = conjure
+#else
+#XMLPROGRAMS = 
+#endif
+
 MANPAGES = $(ALLMANPAGES)
-else
-X11PROGRAMS =
-MANPAGES = $(STDMANPAGES)
-endif
 
-if HasXML
-XMLPROGRAMS = conjure
-else
-XMLPROGRAMS = 
-endif
-
-bin_PROGRAMS = composite $(XMLPROGRAMS) convert identify mogrify montage $(X11PROGRAMS)
+#bin_PROGRAMS = composite $(XMLPROGRAMS) convert identify mogrify montage $(X11PROGRAMS)
+bin_PROGRAMS = gm
 
 # Libtool libraries, dependencies, and linker flags used by most executables
 if WITH_MODULES
@@ -65,41 +68,45 @@ COMMONLDADD	= $(MAGICK_LIB)
 COMMONLDFLAGS	= @LDFLAGS@
 endif # WITH_MODULES
 
-animate_LDADD     = $(COMMONLDADD)
-animate_LDFLAGS   = $(COMMONLDFLAGS)
-animate_SOURCES   = animate.c
+gm_LDADD           = $(COMMONLDADD)
+gm_LDFLAGS         = $(COMMONLDFLAGS)
+gm_SOURCES         = gm.c
 
-composite_LDADD     = $(COMMONLDADD)
-composite_LDFLAGS   = $(COMMONLDFLAGS)
-composite_SOURCES   = composite.c
+#animate_LDADD     = $(COMMONLDADD)
+#animate_LDFLAGS   = $(COMMONLDFLAGS)
+#animate_SOURCES   = animate.c
 
-conjure_LDADD     = $(COMMONLDADD) @LIB_XML@
-conjure_LDFLAGS   = $(COMMONLDFLAGS)
-conjure_SOURCES   = conjure.c
+#composite_LDADD     = $(COMMONLDADD)
+#composite_LDFLAGS   = $(COMMONLDFLAGS)
+#composite_SOURCES   = composite.c
 
-convert_LDADD     = $(COMMONLDADD)
-convert_LDFLAGS   = $(COMMONLDFLAGS)
-convert_SOURCES   = convert.c
+#conjure_LDADD     = $(COMMONLDADD) @LIB_XML@
+#conjure_LDFLAGS   = $(COMMONLDFLAGS)
+#conjure_SOURCES   = conjure.c
 
-display_LDADD     = $(COMMONLDADD)
-display_LDFLAGS   = $(COMMONLDFLAGS)
-display_SOURCES   = display.c
+#convert_LDADD     = $(COMMONLDADD)
+#convert_LDFLAGS   = $(COMMONLDFLAGS)
+#convert_SOURCES   = convert.c
 
-identify_LDADD    = $(COMMONLDADD)
-identify_LDFLAGS  = $(COMMONLDFLAGS)
-identify_SOURCES  = identify.c
+#display_LDADD     = $(COMMONLDADD)
+#display_LDFLAGS   = $(COMMONLDFLAGS)
+#display_SOURCES   = display.c
 
-import_LDADD      = $(COMMONLDADD)
-import_LDFLAGS    = $(COMMONLDFLAGS)
-import_SOURCES    = import.c
+#identify_LDADD    = $(COMMONLDADD)
+#identify_LDFLAGS  = $(COMMONLDFLAGS)
+#identify_SOURCES  = identify.c
 
-mogrify_LDADD     = $(COMMONLDADD)
-mogrify_LDFLAGS   = $(COMMONLDFLAGS)
-mogrify_SOURCES   = mogrify.c
+#import_LDADD      = $(COMMONLDADD)
+#import_LDFLAGS    = $(COMMONLDFLAGS)
+#import_SOURCES    = import.c
 
-montage_LDADD     = $(COMMONLDADD)
-montage_LDFLAGS   = $(COMMONLDFLAGS)
-montage_SOURCES   = montage.c
+#mogrify_LDADD     = $(COMMONLDADD)
+#mogrify_LDFLAGS   = $(COMMONLDFLAGS)
+#mogrify_SOURCES   = mogrify.c
+
+#montage_LDADD     = $(COMMONLDADD)
+#montage_LDFLAGS   = $(COMMONLDFLAGS)
+#montage_SOURCES   = montage.c
 
 # Manual pages to install
 man_MANS = $(MANPAGES)
