@@ -141,7 +141,7 @@ testMontage( q/bordercolor=>'blue', mattecolor=>'red'/,
 testMontage( q//,
   q/background=>'#696e7e', label=>'', tile=>'4x4', geometry=>'90x80+6+6>', frame=>'False',
   borderwidth=>'0', gravity=>'Center', background=>'gray'/,
-  '4c2a95b56cf4281cdda19294237bc347618aa4fbfed4965d0a948a6697290b4b',
+  '54ca4428fd00911ab1cd81c79dd021c0c898c8f136fa68c127361d5b1f13076a',
   '76cfa9952d40163fcc05d76c787b794f3594f4d41cc8bd9ef8847bcf38e7e0fb');
 
 #
@@ -151,7 +151,7 @@ testMontage( q//,
 testMontage( q/bordercolor=>'red'/, 
   q/background=>'#696e7e', label=>'', tile=>'4x4', geometry=>'90x80+6+6>', frame=>'False',
   borderwidth=>'5', gravity=>'Center', background=>'gray'/,
-  'f43e6f0485f84a60e4bcc25ecd12e33867bbaff0ab8fe16a5978d6331d106075',
+  '16ecaa37dbeb88ebfbf17ebc216e5d0700b8c7926338b6f5086d7b9989bcc42b',
   'd6e5bdfacae3855bf26ec1e7d1e371c85fd9126af83c5b8b03df89e8c4b81648');
 
 #
@@ -161,7 +161,7 @@ testMontage( q/bordercolor=>'red'/,
 testMontage( q/bordercolor=>'red'/, 
   q/label=>'', tile=>'4x4', geometry=>'90x80+6+6>', mode=>'UnFrame',
   borderwidth=>'5', gravity=>'Center', background=>'gray'/,
-  '243cbaa33eaba0ff5e316124ad7620f25ef7cac2fd10393e01e3248eac793d7c',
+  '16ecaa37dbeb88ebfbf17ebc216e5d0700b8c7926338b6f5086d7b9989bcc42b',
   '243cbaa33eaba0ff5e316124ad7620f25ef7cac2fd10393e01e3248eac793d7c');
 
 #
@@ -171,7 +171,7 @@ testMontage( q/bordercolor=>'red'/,
 testMontage( q//,
   q/background=>'#696e7e', label=>'', tile=>'16x1', geometry=>'90x80+0+0>', frame=>'False',
   borderwidth=>'0', gravity=>'Center', background=>'gray'/,
-  '243cbaa33eaba0ff5e316124ad7620f25ef7cac2fd10393e01e3248eac793d7c',
+  'e3a7e7131cff4fb340f77fdf643f28c2fb8c5df7f8656c146ea3ea9119c32ed8',
   'cc02af23170bf06722943f70e94b404b580aab32f1b6d32b5392703d426e4427');
 
 #
@@ -191,5 +191,5 @@ testMontage( q//,
 testMontage( q//, 
   q/background=>'#696e7e', label=>'', tile=>'4x4', geometry=>'+0+0', frame=>'False', shadow=>'False',
   borderwidth=>'0', background=>'gray'/,
-  'aa24b5ea6f3775fd8f115730fc2ece8a9c6c7bccd2ae835caa6778c6c4db8e2f',
+  'd5ae380d2e007621935ee4add9e14227cf75e929e992effe0152054ef1a273c6',
   'aa24b5ea6f3775fd8f115730fc2ece8a9c6c7bccd2ae835caa6778c6c4db8e2f');

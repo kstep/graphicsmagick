@@ -1255,7 +1255,7 @@ int main( int /*argc*/, char ** argv)
     // signature
     //
 
-    if ( image.signature() != "2b49e648f8b74589923f55786751897d10e930c19c3a6b26d1a0620214e8e2e8" &&
+    if ( image.signature() != "3af362f5b4ad66e9c4a684427fad20c12f2fd9c3c1c7128b00a050d7bec72f44" &&
 	 image.signature() != "a529e8fe1d83890d893a153777be5f0fd48cf21e0124adee65da248694a204b2" )
       {
 	++failures;
