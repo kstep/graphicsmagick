@@ -44,15 +44,20 @@ int main( int /*argc*/, char **argv)
     // Default montage
     montageImages( &montage, imageList.begin(), imageList.end(), montageOpts );
 
-    if ( montage[0].montageGeometry() != Geometry( 128, 126 ) )
-      {
-	++failures;
-	cout << "Line: " << __LINE__ 
-	     << "  Montage geometry ("
-	     << string(montage[0].montageGeometry())
-	     << ") is incorrect."
-	     << endl;
-      }
+    {
+      Geometry targetGeometry(128, 126 );
+      if ( montage[0].montageGeometry() != targetGeometry )
+        {
+          ++failures;
+          cout << "Line: " << __LINE__ 
+               << "  Montage geometry ("
+               << string(montage[0].montageGeometry())
+               << ") is incorrect (expected "
+               << string(targetGeometry)
+               << ")"
+               << endl;
+        }
+    }
 
     if ( montage[0].columns() != 768 || montage[0].rows() != 126 )
       {
@@ -88,15 +93,20 @@ int main( int /*argc*/, char **argv)
 	     << " rather than 3 as expected." << endl;
       }
 
-    if ( montage[0].montageGeometry() != Geometry( 66, 70 ) )
-      {
-	++failures;
-	cout << "Line: " << __LINE__ 
-	     << "  Montage geometry ("
-	     << string(montage[0].montageGeometry())
-	     << ") is incorrect."
-	     << endl;
-      }
+    {
+      Geometry targetGeometry( 66, 70 );
+      if ( montage[0].montageGeometry() != targetGeometry )
+        {
+          ++failures;
+          cout << "Line: " << __LINE__ 
+               << "  Montage geometry ("
+               << string(montage[0].montageGeometry())
+               << ") is incorrect (expected "
+               << string(targetGeometry)
+               << ")."
+               << endl;
+        }
+    }
 
     if ( montage[0].columns() != 132 || montage[0].rows() != 70 )
       {
