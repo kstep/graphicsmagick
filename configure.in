@@ -43,66 +43,35 @@ AC_PROG_LN_S
 #
 # Check for large file support
 #
-# This code fragment is evidence that unmaintainable code can be
-# written in any language.  Some of the self-modifying code has been
-# removed in order to protect the sanity of those who are still
-# living.
 AC_MSG_CHECKING(whether large file support needs explicit enabling)
-
 result='no'
-if (getconf LFS_CFLAGS) >/dev/null 2>&1
+getconf='getconf LFS_CFLAGS'
+if ($getconf) >/dev/null 2>&1
 then
-  CPPFLAGS="$CPPFLAGS "`getconf LFS_CFLAGS`
+  CPPFLAGS="$CPPFLAGS "`$getconf`
   result='yes'
 fi
-if (getconf LFS_LDFLAGS) >/dev/null 2>&1
+getconf='getconf LFS_LDFLAGS'
+if ($getconf) >/dev/null 2>&1
 then
-  LDFLAGS="$LDFLAGS "`getconf LFS_LDFLAGS`
+  LDFLAGS="$LDFLAGS "`$getconf`
   result='yes'
 fi
-if (getconf LFS_LIBS) >/dev/null 2>&1
+getconf='getconf LFS_LIBS'
+if ($getconf) >/dev/null 2>&1
 then
-  LIBS="$LIBS "`getconf LFS_LIBS`
+  LIBS="$LIBS "`$getconf`
   result='yes'
 fi
 AC_MSG_RESULT($result)
-
-#ac_getconfs=''
-#ac_result=yes
-#ac_set=''
-#ac_shellvars='CPPFLAGS LDFLAGS LIBS'
-#for ac_shellvar in $ac_shellvars; do
-#  case $ac_shellvar in
-#   CPPFLAGS)
-#     ac_lfsvar=LFS_CFLAGS ;;
-#   *)
-#     ac_lfsvar=LFS_$ac_shellvar ;;
-#  esac
-#  ac_set=$ac_shellvar
-#  (getconf $ac_lfsvar) >/dev/null 2>&1 || { ac_result=no; break; }
-#  ac_getconf=`getconf $ac_lfsvar`
-#  ac_getconfs=$ac_getconfs$ac_getconf
-#  eval ac_test_$ac_shellvar=\"\$ac_getconf\"
-#done
-#case "$ac_result$ac_getconfs" in
-#  yes) ac_result=no ;;
-#esac
-#AC_MSG_RESULT($ac_result)
-#case $ac_result in
-#  yes)
-#    for ac_shellvar in $ac_shellvars; do
-#      eval $ac_shellvar=\$ac_shellvar\" \"\$ac_test_$ac_shellvar
-#    done ;;
-#esac
 
 # Tests for Windows
 AC_CYGWIN
 AC_EXEEXT
 AC_OBJEXT
-AC_MINGW32
 # Declare that the library is prepared to build a DLL
 # Must also pass -no-undefined to libtool in Makefile
-AC_LIBTOOL_WIN32_DLL
+# AC_LIBTOOL_WIN32_DLL
 
 # Configure libtool
 AM_ENABLE_SHARED(no)
@@ -1064,11 +1033,11 @@ then
 
   # GSColorDevice
   AC_MSG_CHECKING(for gs color device)
-  if $PSDelegate -q -dBATCH -sDEVICE=pnmraw < /dev/null 2> /dev/null
+  if $PSDelegate -q -dBATCH -sDEVICE=pnmraw -sOutputFile=/dev/null < /dev/null 2> /dev/null
   then
     GSColorDevice=pnmraw
   else
-    if $PSDelegate -q -dBATCH -sDEVICE=ppmraw < /dev/null 2> /dev/null
+    if $PSDelegate -q -dBATCH -sDEVICE=ppmraw -sOutputFile=/dev/null < /dev/null 2> /dev/null
     then
       GSColorDevice=ppmraw
     else
@@ -1080,7 +1049,7 @@ then
 
   # GSMonoDevice
   AC_MSG_CHECKING(for gs mono device)
-  if $PSDelegate -q -dBATCH -sDEVICE=pbmraw < /dev/null 2> /dev/null
+  if $PSDelegate -q -dBATCH -sDEVICE=pbmraw -sOutputFile=/dev/null < /dev/null 2> /dev/null
   then
     GSMonoDevice=pbmraw
   else
@@ -1091,7 +1060,7 @@ then
 
   # GSPDFDevice
   AC_MSG_CHECKING(for gs PDF writing device)
-  if $PSDelegate -q -dBATCH -sDEVICE=pdfwrite < /dev/null 2> /dev/null
+  if $PSDelegate -q -dBATCH -sDEVICE=pdfwrite -sOutputFile=/dev/null < /dev/null 2> /dev/null
   then
     GSPDFDevice=pdfwrite
   else
@@ -1102,7 +1071,7 @@ then
 
   # GSPSDevice
   AC_MSG_CHECKING(for gs PS writing device)
-  if $PSDelegate -q -dBATCH -sDEVICE=pswrite < /dev/null 2> /dev/null
+  if $PSDelegate -q -dBATCH -sDEVICE=pswrite -sOutputFile=/dev/null < /dev/null 2> /dev/null
   then
     GSPSDevice=pswrite
   else
@@ -1113,7 +1082,7 @@ then
 
   # GSEPSDevice
   AC_MSG_CHECKING(for gs EPS writing device)
-  if $PSDelegate -q -dBATCH -sDEVICE=epswrite < /dev/null 2> /dev/null
+  if $PSDelegate -q -dBATCH -sDEVICE=epswrite -sOutputFile=/dev/null < /dev/null 2> /dev/null
   then
     GSEPSDevice=epswrite
   else
