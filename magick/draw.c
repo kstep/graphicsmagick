@@ -3441,6 +3441,7 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
             Draw dash polygon.
           */
           clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
+          clone_info->stroke_width=0.0;
           clone_info->stroke.opacity=TransparentOpacity;
           status=DrawPolygonPrimitive(image,clone_info,primitive_info);
           DestroyDrawInfo(clone_info);
@@ -3469,6 +3470,7 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
               break;
             }
           clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
+          clone_info->stroke_width=0.0;
           clone_info->stroke.opacity=TransparentOpacity;
           status=DrawPolygonPrimitive(image,clone_info,primitive_info);
           DestroyDrawInfo(clone_info);
@@ -3514,8 +3516,8 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
 %
 */
 
-static void DrawRoundLinecap(Image *image,const DrawInfo *draw_info,
-  const PrimitiveInfo *primitive_info)
+static void DrawRoundLinecap(const DrawInfo *draw_info,
+  const PrimitiveInfo *primitive_info,Image *image)
 {
   PrimitiveInfo
     linecap[5];
@@ -3966,15 +3968,16 @@ static unsigned int DrawStrokePolygon(Image *image,const DrawInfo *draw_info,
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   clone_info->fill=draw_info->stroke;
   clone_info->stroke.opacity=TransparentOpacity;
+  clone_info->stroke_width=0.0;
   clone_info->fill_rule=NonZeroRule;
   status=DrawPolygonPrimitive(image,clone_info,stroke_polygon);
   LiberateMemory((void **) &stroke_polygon);
-  DestroyDrawInfo(clone_info);
   if ((draw_info->linecap == RoundCap) && !closed_path)
     {
-      DrawRoundLinecap(image,draw_info,&polygon_primitive[0]);
-      DrawRoundLinecap(image,draw_info,&polygon_primitive[number_vertices-1]);
+      DrawRoundLinecap(clone_info,&polygon_primitive[0],image);
+      DrawRoundLinecap(clone_info,&polygon_primitive[number_vertices-1],image);
     }
+  DestroyDrawInfo(clone_info);
   LiberateMemory((void **) &polygon_primitive);
   if (draw_info->debug)
     (void) fprintf(stdout,"    end draw-stroke-polygon (%.2fu)\n",
