@@ -542,6 +542,7 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
 
   double
     bisect[MaxTreeDepth+1],
+    distance_squared,
     mid_red,
     mid_green,
     mid_blue;
@@ -550,7 +551,6 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
     y;
 
   register double
-    distance_squared,
     *squares;
 
   register int
@@ -736,21 +736,23 @@ static void ClosestColor(CubeInfo *cube_info,const NodeInfo *node_info)
             ClosestColor(cube_info,node_info->child[id]);
       if (node_info->number_unique != 0)
         {
-          register PixelPacket
-            *color;
+          double
+            distance_squared;
 
           register double
-            distance_squared,
             *squares;
+
+          register PixelPacket
+            *color;
 
           /*
             Determine if this color is "closest".
           */
           squares=cube_info->squares;
           color=cube_info->colormap+node_info->color_number;
-          distance_squared=squares[(int) (color->red-cube_info->color.red)]+
-            squares[(int) (color->green-cube_info->color.green)]+
-            squares[(int) (color->blue-cube_info->color.blue)];
+          distance_squared=squares[color->red-(int) cube_info->color.red]+
+            squares[color->green-(int) cube_info->color.green]+
+            squares[color->blue-(int) cube_info->color.blue];
           if (distance_squared < cube_info->distance)
             {
               cube_info->distance=distance_squared;
@@ -1866,7 +1868,6 @@ Export unsigned int QuantizationError(Image *image)
   double
     distance_squared,
     maximum_error_per_pixel,
-    *squares,
     total_error;
 
   IndexPacket
@@ -1874,6 +1875,9 @@ Export unsigned int QuantizationError(Image *image)
 
   int
     y;
+
+  register double
+    *squares;
 
   register IndexPacket
     *indexes;
@@ -1917,9 +1921,9 @@ Export unsigned int QuantizationError(Image *image)
     for (x=0; x < (int) image->columns; x++)
     {
       index=indexes[x];
-      distance_squared=squares[(int) (p->red-image->colormap[index].red)]+
-        squares[(int) (p->green-image->colormap[index].green)]+
-        squares[(int) (p->blue-image->colormap[index].blue)];
+      distance_squared=squares[p->red-(int) image->colormap[index].red]+
+        squares[p->green-(int) image->colormap[index].green]+
+        squares[p->blue-(int) image->colormap[index].blue];
       total_error+=distance_squared;
       if (distance_squared > maximum_error_per_pixel)
         maximum_error_per_pixel=distance_squared;
