@@ -1199,7 +1199,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
           Image
             *clip_mask;
 
-          clip_mask=SetupList(SvRV(sval),&info,(SV ***) NULL);
+          clip_mask=SetupList(aTHX_ SvRV(sval),&info,(SV ***) NULL);
           for ( ; image; image=image->next)
             SetImageClipMask(image,clip_mask);
           return;
