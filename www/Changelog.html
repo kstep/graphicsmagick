@@ -26,6 +26,8 @@ ImageMagick Changes</font></font></font></b></td>
 2002-08-08  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
   * Added logging capabilities to the CORE API.  This facility is useful
     for debugging.
+  * AcquireImagePixels() did not always return the same pixel values
+    for virtual pixels when the cache was stored on disk (very rare).
 
 2002-08-07  Cristy  &lt;cristy@mystic.es.dupont.com&gt;
   * ImageMagick 5.4.9 released.
