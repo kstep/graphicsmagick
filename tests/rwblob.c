@@ -99,6 +99,7 @@ int main ( int argc, char **argv )
   int fuzz_factor = 0;
   int diff = 0;
   ImageInfo imageInfo;
+  ExceptionInfo exception;
 
   if ( argc != 3 )
     {
@@ -120,7 +121,7 @@ int main ( int argc, char **argv )
   imageInfo.dither = 0;
   strcpy( imageInfo.filename, infile );
 
-  original = ReadImage ( &imageInfo, &error );
+  original = ReadImage ( &imageInfo, &exception );
   if ( original == (Image *)NULL )
     {
       printf ( "Failed to read original image %s\n", imageInfo.filename );
@@ -156,7 +157,7 @@ int main ( int argc, char **argv )
   original->delay = 10;
   FormatString( scratch, "%d", 10 );
   CloneString( &imageInfo.delay, scratch );
-  blob = ImageToBlob ( &imageInfo, original, &blob_length );
+  blob = ImageToBlob ( &imageInfo, original, &blob_length, &exception );
   if ( blob == NULL )
     {
       printf ( "Failed to write BLOB in format %s\n", imageInfo.magick );
@@ -173,7 +174,7 @@ int main ( int argc, char **argv )
   strcpy( imageInfo.filename, "" );
   if ( size != NULL )
     CloneString( &imageInfo.size, size );
-  original = BlobToImage( &imageInfo, blob, blob_length );
+  original = BlobToImage( &imageInfo, blob, blob_length, &exception );
   if ( original == (Image *)NULL )
     {
       printf ( "Failed to read image from BLOB in format %s\n", imageInfo.magick );
@@ -192,7 +193,7 @@ int main ( int argc, char **argv )
   original->delay = 10;
   FormatString( scratch, "%d", 10 );
   CloneString( &imageInfo.delay, scratch );
-  blob = ImageToBlob ( &imageInfo, original, &blob_length );
+  blob = ImageToBlob ( &imageInfo, original, &blob_length, &exception );
   if ( blob == NULL )
     {
       printf ( "Failed to write BLOB in format %s\n", imageInfo.magick );
@@ -207,7 +208,7 @@ int main ( int argc, char **argv )
   strcpy( imageInfo.filename, "" );
   if ( size != NULL )
     CloneString( &imageInfo.size, size );
-  final = BlobToImage( &imageInfo, blob, blob_length );
+  final = BlobToImage( &imageInfo, blob, blob_length, &exception );
   if ( final == (Image *)NULL )
     {
       printf ( "Failed to read image from BLOB in format %s\n", imageInfo.magick );
