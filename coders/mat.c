@@ -206,6 +206,7 @@ static Image *ReadMATImage(const ImageInfo *image_info,ExceptionInfo *exception)
   MATHeader MATLAB_HDR;
   DWORD size;
   int i;
+  int rotate;
   long ldblk;
   unsigned char *BImgBuff=NULL;
 
@@ -278,12 +279,27 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
    for(i=0;i<MATLAB_HDR.SizeY;i++)
 	{
         ReadBlob(image,ldblk,(char *)BImgBuff);
-//      ReadBlob(image,k,(char *)&dummy);
         InsertRow(BImgBuff,i,image);
 	}
+  rotate=3;
+  if ((rotate == 1) || (rotate == 3))
+    {
+      double
+        degrees;
 
-  CloseBlob(image);
+      Image
+        *rotated_image;
+
+      /*
+        Rotate image.
+      */
+      degrees=rotate == 1 ? -90.0 : 90.0;
+      rotated_image=RotateImage(image,degrees,exception);
+      if (rotated_image != (Image *) NULL)
+        image=rotated_image;
+    }
   if(BImgBuff!=NULL) free(BImgBuff);
+  CloseBlob(image);
   return(image);
 }
 
@@ -317,7 +333,7 @@ ModuleExport void RegisterMATImage(void)
 
   entry=SetMagickInfo("MAT");
   entry->decoder=ReadMATImage;
-  entry->description=AllocateString("MATLAB image format");
+  entry->description=AllocateString("MATLAB");
   entry->module=AllocateString("MAT");
   RegisterMagickInfo(entry);
 }
