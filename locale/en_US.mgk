@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<locale name="C">
+<locale name="en_us">
   <Blob>
     <Error>
       <Message name="UnableToCreateBlob">
@@ -53,6 +53,23 @@
       </Message>
     </Error>
   </Cache>
+  <Configure>
+    <Error>
+      <Message name="IncludeElementNestedTooDeeply">
+        include element nested too deeply
+      </Message>
+      </Message>
+      <Message name="UnableToAccessConfigureFile">
+        Unable to access configure file
+      </Message>
+      <Message name="UnableToAccessFontFile">
+        Unable to access font file
+      </Message>
+      <Message name="UnableToAccessModuleFile">
+        Unable to access module file
+      </Message>
+    </Error>
+  </Configure>
   <Resource>
     <Limit>
       <Error>

@@ -686,7 +686,7 @@ static unsigned int ReadConfigureFile(const char *basename,
             {
               if (depth > 200)
                 ThrowException(exception,ConfigureError,
-                  "<include /> nested too deeply",path);
+                  "IncludeElementNestedTooDeeply",path);
               else
                 {
                   char

@@ -1863,8 +1863,7 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowConvertException(OptionError,"Missing event mask",
-                    option);
+                  ThrowConvertException(OptionError,"Missing event mask",option);
                 (void) SetLogEventMask(argv[i]);
               }
             break;
@@ -2294,6 +2293,16 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
             i++;
             if ((i == argc) || !sscanf(argv[i],"%lf",&sans))
               ThrowConvertException(OptionError,"Missing value",option);
+            break;
+          }
+        if (LocaleCompare("linewidth",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                  ThrowConvertException(OptionWarning,"Missing size",option);
+              }
             break;
           }
         if (LocaleCompare("limit",option+1) == 0)
@@ -3362,8 +3371,7 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowIdentifyException(OptionError,"Missing event mask",
-                    option);
+                  ThrowIdentifyException(OptionError,"Missing event mask",option);
                 (void) SetLogEventMask(argv[i]);
               }
             break;
@@ -3995,8 +4003,7 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMogrifyException(OptionError,"Missing event mask",
-                    option);
+                  ThrowMogrifyException(OptionError,"Missing event mask",option);
                 (void) SetLogEventMask(argv[i]);
               }
             break;
@@ -5622,8 +5629,7 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
               {
                 i++;
                 if (i == argc)
-                  ThrowMontageException(OptionError,"Missing event mask",
-                    option);
+                  ThrowMontageException(OptionError,"Missing event mask",option);
                 (void) SetLogEventMask(argv[i]);
               }
             break;

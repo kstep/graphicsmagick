@@ -636,12 +636,17 @@ MagickExport void ThrowException(ExceptionInfo *exception,
   {
     case BlobError:
     {
-      (void) strcpy(tag,"Blobe/Error/");
+      (void) strcpy(tag,"Blob/Error/");
       break;
     }
     case CacheError:
     {
       (void) strcpy(tag,"Cache/Error/");
+      break;
+    }
+    case ConfigureError:
+    {
+      (void) strcpy(tag,"Configure/Error/");
       break;
     }
     default:

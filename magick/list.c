@@ -324,12 +324,6 @@ MagickExport long GetImageListIndex(const Image *images)
 %
 %
 */
-
-MagickExport unsigned int GetNumberScenes(const Image *image)
-{
-  return(GetImageListSize(image));
-}
-
 MagickExport unsigned long GetImageListSize(const Image *images)
 {
   register long

@@ -553,11 +553,11 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
     *blob;
 
   unsigned int
+    logging,
     status;
 
   unsigned long
     count,
-    logging,
     scene;
 
   /*
@@ -620,7 +620,7 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
   for (p=coalesce_image; p != (Image *) NULL; p=p->next)
   {
     char
-      savename[MaxTextExtent];
+      previous_image[MaxTextExtent];
 
     blob=(unsigned char *) NULL;
     length=0;
@@ -629,48 +629,39 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
     {
       p->scene=count;
       count++;
-      switch ((int) i)
+      status=False;
+      switch (i)
       {
         case 0:
         {
           Image
-            *next,
-            *previous;
+            *frame;
 
           FormatString(p->filename,"%.1024s.%lu.yuv",basename,p->scene);
           FormatString(filename,"%.1024s.%lu.yuv",basename,p->scene);
-          FormatString(savename,"%.1024s.%lu.yuv",basename,p->scene);
-       
-          /* defeat suffix numbering by OpenBlob */
-          previous=p->previous;
-          next=p->next;
-          p->previous=(Image *) NULL;
-          p->next=(Image *) NULL;
-
-          status=WriteImage(clone_info,p);
-
-          p->previous=previous;
-          p->next=next;
-
+          FormatString(previous_image,"%.1024s.%lu.yuv",basename,p->scene);
+          frame=CloneImage(p,0,0,True,&p->exception);
+          if (frame == (Image *) NULL)
+            break;
+          status=WriteImage(clone_info,frame);
+          DestroyImage(frame);
           break;
         }
         case 1:
-          blob=FileToBlob(savename,&length,&image->exception);
+          blob=FileToBlob(previous_image,&length,&image->exception);
         default:
         {
           FormatString(filename,"%.1024s.%lu.yuv",basename,p->scene);
           if (length > 0)
             status=BlobToFile(filename,blob,length,&image->exception);
-          else
-            status=False;
           break;
         }
       }
       if (logging)
         {
           if (status)
-            LogMagickEvent(CoderEvent,"  %lu. Wrote YUV file for scene %lu:",
-              i,p->scene);
+            LogMagickEvent(CoderEvent,"  %lu. Wrote YUV file for scene %lu:",i,
+              p->scene);
           else
             LogMagickEvent(CoderEvent,
               "  %lu. Failed to write YUV file for scene %lu:",i,p->scene);

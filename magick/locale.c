@@ -108,125 +108,295 @@ const char *GetLocaleMessage(const char *tag)
    tp = locale;
    p = locale + strlen(locale);
    np = tag;
-  if (LocaleNCompare(locale, "C", 1) || p - tp != 1)
+  switch (*locale)
+  {
+  default:
     return tag;
-  else
-    switch (*NEXT_FIELD)
-    {
-    default:
+
+  case 'c':  case 'C':
+    if (p - tp == 1 && !LocaleNCompare(tp, "C", 1))
+      switch (*NEXT_FIELD)
+      {
+      default:
+        return tag;
+
+      case 'b':  case 'B':
+        if (p - tp == 4 && !LocaleNCompare(tp, "Blob", 4))
+          if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
+            return tag;
+          else
+            switch (*NEXT_FIELD)
+            {
+            default:
+              return tag;
+
+            case 'u':  case 'U':
+              if (p - tp == 18 && !LocaleNCompare(tp, "UnableToCreateBlob", 18))
+                return *np ? tag : "Unable to create blob";
+              else
+              if (p - tp == 16 && !LocaleNCompare(tp, "UnableToOpenFile", 16))
+                return *np ? tag : "Unable to open file";
+              else
+              if (p - tp == 16 && !LocaleNCompare(tp, "UnableToReadBlob", 16))
+                return *np ? tag : "Unable to read blob";
+              else
+              if (p - tp == 16 && !LocaleNCompare(tp, "UnableToReadFile", 16))
+                return *np ? tag : "Unable to read file";
+              else
+              if (p - tp == 17 && !LocaleNCompare(tp, "UnableToWriteBlob", 17))
+                return *np ? tag : "Unable to write blob";
+              else
+              if (p - tp == 23 && !LocaleNCompare(tp, "UnrecognizedImageFormat", 23))
+                return *np ? tag : "Unrecognized image format";
+              else
+                return tag;
+
+            case 'z':  case 'Z':
+              if (p - tp == 26 && !LocaleNCompare(tp, "ZeroLengthBlobNotPermitted", 26))
+                return *np ? tag : "Zero-length blob not permitted";
+              else
+                return tag;
+            }
+        else
+          return tag;
+
+      case 'c':  case 'C':
+        if (p - tp == 5 && !LocaleNCompare(tp, "Cache", 5))
+          if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
+            return tag;
+          else
+            switch (*NEXT_FIELD)
+            {
+            default:
+              return tag;
+
+            case 'p':  case 'P':
+              if (p - tp == 19 && !LocaleNCompare(tp, "PixelCacheIsNotOpen", 19))
+                return *np ? tag : "Pixel cache is not open";
+              else
+                return tag;
+
+            case 'u':  case 'U':
+              if (p - tp == 18 && !LocaleNCompare(tp, "UnableToCloneCache", 18))
+                return *np ? tag : "Unable to clone cache";
+              else
+              if (p - tp == 19 && !LocaleNCompare(tp, "UnableToExtendCache", 19))
+                return *np ? tag : "Unable to extend cache";
+              else
+              if (p - tp == 21 && !LocaleNCompare(tp, "UnableToGetCacheNexus", 21))
+                return *np ? tag : "Unable to get cache nexus";
+              else
+              if (p - tp == 26 && !LocaleNCompare(tp, "UnableToGetPixelsFromCache", 26))
+                return *np ? tag : "Unable to get pixels from cache";
+              else
+              if (p - tp == 17 && !LocaleNCompare(tp, "UnableToOpenCache", 17))
+                return *np ? tag : "Unable to open cache";
+              else
+              if (p - tp == 22 && !LocaleNCompare(tp, "UnableToReadPixelCache", 22))
+                return *np ? tag : "Unable to read pixel cache";
+              else
+              if (p - tp == 17 && !LocaleNCompare(tp, "UnableToSyncCache", 17))
+                return *np ? tag : "Unable to sync cache";
+              else
+                return tag;
+            }
+        else
+        if (p - tp == 9 && !LocaleNCompare(tp, "Configure", 9))
+          if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
+            return tag;
+          else
+          if (LocaleNCompare(NEXT_FIELD, "IncludeElementNestedTooDeeply", 29) || p - tp != 29)
+            return tag;
+          else
+            return *np ? tag : "include element nested too deeply";
+        else
+          return tag;
+
+      case 'r':  case 'R':
+        if (p - tp == 8 && !LocaleNCompare(tp, "Resource", 8))
+          if (LocaleNCompare(NEXT_FIELD, "Limit", 5) || p - tp != 5)
+            return tag;
+          else
+          if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
+            return tag;
+          else
+            switch (*NEXT_FIELD)
+            {
+            default:
+              return tag;
+
+            case 'm':  case 'M':
+              if (p - tp == 22 && !LocaleNCompare(tp, "MemoryAllocationFailed", 22))
+                return *np ? tag : "Memory allocation failed";
+              else
+                return tag;
+
+            case 'u':  case 'U':
+              if (p - tp == 18 && !LocaleNCompare(tp, "UnableToCloneImage", 18))
+                return *np ? tag : "Unable to clone image";
+              else
+                return tag;
+            }
+        else
+          return tag;
+
+      case 'u':  case 'U':
+        if (p - tp == 27 && !LocaleNCompare(tp, "UnableToAccessConfigureFile", 27))
+          return *np ? tag : "Unable to access configure file";
+        else
+        if (p - tp == 22 && !LocaleNCompare(tp, "UnableToAccessFontFile", 22))
+          return *np ? tag : "Unable to access font file";
+        else
+        if (p - tp == 24 && !LocaleNCompare(tp, "UnableToAccessModuleFile", 24))
+          return *np ? tag : "Unable to access module file";
+        else
+          return tag;
+      }
+    else
       return tag;
 
-    case 'b':  case 'B':
-      if (p - tp == 4 && !LocaleNCompare(tp, "Blob", 4))
-        if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
-          return tag;
-        else
-          switch (*NEXT_FIELD)
-          {
-          default:
-            return tag;
-
-          case 'u':  case 'U':
-            if (p - tp == 18 && !LocaleNCompare(tp, "UnableToCreateBlob", 18))
-              return *np ? tag : "Unable to create blob";
-            else
-            if (p - tp == 16 && !LocaleNCompare(tp, "UnableToOpenFile", 16))
-              return *np ? tag : "Unable to open file";
-            else
-            if (p - tp == 16 && !LocaleNCompare(tp, "UnableToReadBlob", 16))
-              return *np ? tag : "Unable to read blob";
-            else
-            if (p - tp == 16 && !LocaleNCompare(tp, "UnableToReadFile", 16))
-              return *np ? tag : "Unable to read file";
-            else
-            if (p - tp == 17 && !LocaleNCompare(tp, "UnableToWriteBlob", 17))
-              return *np ? tag : "Unable to write blob";
-            else
-            if (p - tp == 23 && !LocaleNCompare(tp, "UnrecognizedImageFormat", 23))
-              return *np ? tag : "Unrecognized image format";
-            else
-              return tag;
-
-          case 'z':  case 'Z':
-            if (p - tp == 26 && !LocaleNCompare(tp, "ZeroLengthBlobNotPermitted", 26))
-              return *np ? tag : "Zero-length blob not permitted";
-            else
-              return tag;
-          }
-      else
+  case 'e':  case 'E':
+    if (p - tp == 5 && !LocaleNCompare(tp, "en_us", 5))
+      switch (*NEXT_FIELD)
+      {
+      default:
         return tag;
 
-    case 'c':  case 'C':
-      if (p - tp == 5 && !LocaleNCompare(tp, "Cache", 5))
-        if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
-          return tag;
-        else
-          switch (*NEXT_FIELD)
-          {
-          default:
+      case 'b':  case 'B':
+        if (p - tp == 4 && !LocaleNCompare(tp, "Blob", 4))
+          if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
             return tag;
-
-          case 'p':  case 'P':
-            if (p - tp == 19 && !LocaleNCompare(tp, "PixelCacheIsNotOpen", 19))
-              return *np ? tag : "Pixel cache is not open";
-            else
+          else
+            switch (*NEXT_FIELD)
+            {
+            default:
               return tag;
 
-          case 'u':  case 'U':
-            if (p - tp == 18 && !LocaleNCompare(tp, "UnableToCloneCache", 18))
-              return *np ? tag : "Unable to clone cache";
-            else
-            if (p - tp == 19 && !LocaleNCompare(tp, "UnableToExtendCache", 19))
-              return *np ? tag : "Unable to extend cache";
-            else
-            if (p - tp == 21 && !LocaleNCompare(tp, "UnableToGetCacheNexus", 21))
-              return *np ? tag : "Unable to get cache nexus";
-            else
-            if (p - tp == 26 && !LocaleNCompare(tp, "UnableToGetPixelsFromCache", 26))
-              return *np ? tag : "Unable to get pixels from cache";
-            else
-            if (p - tp == 17 && !LocaleNCompare(tp, "UnableToOpenCache", 17))
-              return *np ? tag : "Unable to open cache";
-            else
-            if (p - tp == 22 && !LocaleNCompare(tp, "UnableToReadPixelCache", 22))
-              return *np ? tag : "Unable to read pixel cache";
-            else
-            if (p - tp == 17 && !LocaleNCompare(tp, "UnableToSyncCache", 17))
-              return *np ? tag : "Unable to sync cache";
-            else
-              return tag;
-          }
-      else
-        return tag;
+            case 'u':  case 'U':
+              if (p - tp == 18 && !LocaleNCompare(tp, "UnableToCreateBlob", 18))
+                return *np ? tag : "Unable to create blob";
+              else
+              if (p - tp == 16 && !LocaleNCompare(tp, "UnableToOpenFile", 16))
+                return *np ? tag : "Unable to open file";
+              else
+              if (p - tp == 16 && !LocaleNCompare(tp, "UnableToReadBlob", 16))
+                return *np ? tag : "Unable to read blob";
+              else
+              if (p - tp == 16 && !LocaleNCompare(tp, "UnableToReadFile", 16))
+                return *np ? tag : "Unable to read file";
+              else
+              if (p - tp == 17 && !LocaleNCompare(tp, "UnableToWriteBlob", 17))
+                return *np ? tag : "Unable to write blob";
+              else
+              if (p - tp == 23 && !LocaleNCompare(tp, "UnrecognizedImageFormat", 23))
+                return *np ? tag : "Unrecognized image format";
+              else
+                return tag;
 
-    case 'r':  case 'R':
-      if (p - tp == 8 && !LocaleNCompare(tp, "Resource", 8))
-        if (LocaleNCompare(NEXT_FIELD, "Limit", 5) || p - tp != 5)
-          return tag;
+            case 'z':  case 'Z':
+              if (p - tp == 26 && !LocaleNCompare(tp, "ZeroLengthBlobNotPermitted", 26))
+                return *np ? tag : "Zero-length blob not permitted";
+              else
+                return tag;
+            }
         else
-        if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
           return tag;
-        else
-          switch (*NEXT_FIELD)
-          {
-          default:
+
+      case 'c':  case 'C':
+        if (p - tp == 5 && !LocaleNCompare(tp, "Cache", 5))
+          if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
             return tag;
-
-          case 'm':  case 'M':
-            if (p - tp == 22 && !LocaleNCompare(tp, "MemoryAllocationFailed", 22))
-              return *np ? tag : "Memory allocation failed";
-            else
+          else
+            switch (*NEXT_FIELD)
+            {
+            default:
               return tag;
 
-          case 'u':  case 'U':
-            if (p - tp == 18 && !LocaleNCompare(tp, "UnableToCloneImage", 18))
-              return *np ? tag : "Unable to clone image";
-            else
+            case 'p':  case 'P':
+              if (p - tp == 19 && !LocaleNCompare(tp, "PixelCacheIsNotOpen", 19))
+                return *np ? tag : "Pixel cache is not open";
+              else
+                return tag;
+
+            case 'u':  case 'U':
+              if (p - tp == 18 && !LocaleNCompare(tp, "UnableToCloneCache", 18))
+                return *np ? tag : "Unable to clone cache";
+              else
+              if (p - tp == 19 && !LocaleNCompare(tp, "UnableToExtendCache", 19))
+                return *np ? tag : "Unable to extend cache";
+              else
+              if (p - tp == 21 && !LocaleNCompare(tp, "UnableToGetCacheNexus", 21))
+                return *np ? tag : "Unable to get cache nexus";
+              else
+              if (p - tp == 26 && !LocaleNCompare(tp, "UnableToGetPixelsFromCache", 26))
+                return *np ? tag : "Unable to get pixels from cache";
+              else
+              if (p - tp == 17 && !LocaleNCompare(tp, "UnableToOpenCache", 17))
+                return *np ? tag : "Unable to open cache";
+              else
+              if (p - tp == 22 && !LocaleNCompare(tp, "UnableToReadPixelCache", 22))
+                return *np ? tag : "Unable to read pixel cache";
+              else
+              if (p - tp == 17 && !LocaleNCompare(tp, "UnableToSyncCache", 17))
+                return *np ? tag : "Unable to sync cache";
+              else
+                return tag;
+            }
+        else
+        if (p - tp == 9 && !LocaleNCompare(tp, "Configure", 9))
+          if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
+            return tag;
+          else
+          if (LocaleNCompare(NEXT_FIELD, "IncludeElementNestedTooDeeply", 29) || p - tp != 29)
+            return tag;
+          else
+            return *np ? tag : "include element nested too deeply";
+        else
+          return tag;
+
+      case 'r':  case 'R':
+        if (p - tp == 8 && !LocaleNCompare(tp, "Resource", 8))
+          if (LocaleNCompare(NEXT_FIELD, "Limit", 5) || p - tp != 5)
+            return tag;
+          else
+          if (LocaleNCompare(NEXT_FIELD, "Error", 5) || p - tp != 5)
+            return tag;
+          else
+            switch (*NEXT_FIELD)
+            {
+            default:
               return tag;
-          }
-      else
-        return tag;
-    }
+
+            case 'm':  case 'M':
+              if (p - tp == 22 && !LocaleNCompare(tp, "MemoryAllocationFailed", 22))
+                return *np ? tag : "Memory allocation failed";
+              else
+                return tag;
+
+            case 'u':  case 'U':
+              if (p - tp == 18 && !LocaleNCompare(tp, "UnableToCloneImage", 18))
+                return *np ? tag : "Unable to clone image";
+              else
+                return tag;
+            }
+        else
+          return tag;
+
+      case 'u':  case 'U':
+        if (p - tp == 27 && !LocaleNCompare(tp, "UnableToAccessConfigureFile", 27))
+          return *np ? tag : "Unable to access configure file";
+        else
+        if (p - tp == 22 && !LocaleNCompare(tp, "UnableToAccessFontFile", 22))
+          return *np ? tag : "Unable to access font file";
+        else
+        if (p - tp == 24 && !LocaleNCompare(tp, "UnableToAccessModuleFile", 24))
+          return *np ? tag : "Unable to access module file";
+        else
+          return tag;
+      }
+    else
+      return tag;
+  }
 
    return tag;
 }

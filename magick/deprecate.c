@@ -1,4 +1,3 @@
-
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -57,6 +56,34 @@
 #include "deprecate.h"
 #include "resource.h"
 #include "utility.h"
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t N u m b e r S c e n e s                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetNumberScenes() returns the number of images in the list.
+%
+%  The format of the GetNumberScenes method is:
+%
+%      unsigned int GetNumberScenes(const Image *images)
+%
+%  A description of each parameter follows:
+%
+%    o images: The image list.
+%
+%
+*/
+MagickExport unsigned int GetNumberScenes(const Image *image)
+{
+  return(GetImageListSize(image));
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -15,6 +15,9 @@ extern MagickExport int
   ParseImageGeometry(const char *,long *,long *,unsigned long *,
     unsigned long *);
 
+extern MagickExport unsigned int
+  GetNumberScenes(const Image *);
+
 extern MagickExport void
   SetCacheThreshold(const unsigned long);
 

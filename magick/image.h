@@ -1016,7 +1016,6 @@ extern MagickExport unsigned int
   EqualizeImage(Image *),
   FuzzyColorMatch(const PixelPacket *,const PixelPacket *,const double),
   GammaImage(Image *,const char *),
-  GetNumberScenes(const Image *),
   GradientImage(Image *,const PixelPacket *,const PixelPacket *),
   IsGrayImage(const Image *,ExceptionInfo *),
   IsImagesEqual(Image *,const Image *),

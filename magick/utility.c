@@ -1318,6 +1318,8 @@ MagickExport int GetMagickGeometry(const char *geometry,long *x,long *y,
   former_width=(*width);
   former_height=(*height);
   flags=GetGeometry(geometry,x,y,width,height);
+  if ((flags & WidthValue) && !(flags & HeightValue))
+    *height=(*width);
   if (flags & PercentValue)
     {
       double
@@ -3274,7 +3276,7 @@ MagickExport void TemporaryFilename(char *filename)
     LiberateMemory((void **) &name);
   }
 #endif
-  FormatString(filename+strlen(filename),"%ld.tmp",(long) getpid());
+  FormatString(filename+strlen(filename),".%ld.tmp",(long) getpid());
 }
 
 /*
