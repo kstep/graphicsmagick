@@ -1,226 +1,746 @@
 <?xml version="1.0"?>
-<fontmap>
-  <font format="truetype" glyphs="c:\windows\fonts\ARIAL.ttf" fullname="Arial" name="Arial" />
-  <font format="truetype" glyphs="c:\windows\fonts\ARIALBD.ttf" fullname="Arial Bold" name="Arial-Bold" />
-  <font format="truetype" glyphs="c:\windows\fonts\ARIALBI.ttf" fullname="Arial Bold Italic" name="Arial-Bold-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\ARIALI.ttf" fullname="Arial Italic" name="Arial-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\COUR.ttf" fullname="Courier New" name="Courier-New" />
-  <font format="truetype" glyphs="c:\windows\fonts\COURBD.ttf" fullname="Courier New Bold" name="Courier-New-Bold" />
-  <font format="truetype" glyphs="c:\windows\fonts\COURBI.ttf" fullname="Courier New Bold Italic" name="Courier-New-Bold-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\COURI.ttf" fullname="Courier New Italic" name="Courier-New-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\LUCON.ttf" fullname="Lucida Console" name="Lucida-Console" />
-  <font format="truetype" glyphs="c:\windows\fonts\L_10646.ttf" fullname="Lucida Sans Unicode" name="Lucida-Sans-Unicode" />
-  <font format="truetype" glyphs="c:\windows\fonts\TIMES.ttf" fullname="Times New Roman" name="Times-New-Roman" />
-  <font format="truetype" glyphs="c:\windows\fonts\TIMESBD.ttf" fullname="Times New Roman Bold" name="Times-New-Roman-Bold" />
-  <font format="truetype" glyphs="c:\windows\fonts\TIMESBI.ttf" fullname="Times New Roman Bold Italic" name="Times-New-Roman-Bold-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\TIMESI.ttf" fullname="Times New Roman Italic" name="Times-New-Roman-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\WINGDING.ttf" fullname="WingDings" name="WingDings" />
-  <font format="truetype" glyphs="c:\windows\fonts\SYMBOL.ttf" fullname="Symbol" name="Symbol" />
-  <font format="truetype" glyphs="c:\windows\fonts\Verdana.ttf" fullname="Verdana" name="Verdana" />
-  <font format="truetype" glyphs="c:\windows\fonts\Verdanab.ttf" fullname="Verdana Bold" name="Verdana-Bold" />
-  <font format="truetype" glyphs="c:\windows\fonts\Verdanai.ttf" fullname="Verdana Italic" name="Verdana-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\Verdanaz.ttf" fullname="Verdana Bold Italic" name="Verdana-Bold-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\AriBlk.ttf" fullname="Arial Black" name="Arial-Black" />
-  <font format="truetype" glyphs="c:\windows\fonts\Comic.ttf" fullname="Comic Sans MS" name="Comic-Sans-MS" />
-  <font format="truetype" glyphs="c:\windows\fonts\Comicbd.ttf" fullname="Comic Sans MS Bold" name="Comic-Sans-MS-Bold" />
-  <font format="truetype" glyphs="c:\windows\fonts\Impact.ttf" fullname="Impact" name="Impact" />
-  <font format="truetype" glyphs="c:\windows\fonts\Georgia.ttf" fullname="Georgia" name="Georgia" />
-  <font format="truetype" glyphs="c:\windows\fonts\Georgiab.ttf" fullname="Georgia Bold" name="Georgia-Bold" />
-  <font format="truetype" glyphs="c:\windows\fonts\Georgiaz.ttf" fullname="Georgia Bold Italic" name="Georgia-Bold-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\Georgiai.ttf" fullname="Georgia Italic" name="Georgia-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\pala.ttf" fullname="Palatino Linotype" name="Palatino-Linotype" />
-  <font format="truetype" glyphs="c:\windows\fonts\palab.ttf" fullname="Palatino Linotype Bold" name="Palatino-Linotype-Bold" />
-  <font format="truetype" glyphs="c:\windows\fonts\palabi.ttf" fullname="Palatino Linotype Bold Italic" name="Palatino-Linotype-Bold-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\palai.ttf" fullname="Palatino Linotype Italic" name="Palatino-Linotype-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\TAHOMABD.ttf" fullname="Tahoma Bold" name="Tahoma-Bold" />
-  <font format="truetype" glyphs="c:\windows\fonts\Trebuc.ttf" fullname="Trebuchet MS" name="Trebuchet-MS" />
-  <font format="truetype" glyphs="c:\windows\fonts\Trebucbd.ttf" fullname="Trebuchet MS Bold" name="Trebuchet-MS-Bold" />
-  <font format="truetype" glyphs="c:\windows\fonts\Trebucbi.ttf" fullname="Trebuchet MS Bold Italic" name="Trebuchet-MS-Bold-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\Trebucit.ttf" fullname="Trebuchet MS Italic" name="Trebuchet-MS-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\webdings.ttf" fullname="Webdings" name="Webdings" />
-  <font format="truetype" glyphs="c:\windows\fonts\TAHOMA.ttf" fullname="Tahoma" name="Tahoma" />
-  <font format="truetype" glyphs="c:\windows\fonts\MICROSS.ttf" fullname="Microsoft Sans Serif Regular" name="Microsoft-Sans-Serif-Regular" />
-  <font format="truetype" glyphs="c:\windows\fonts\BKAnt.ttf" fullname="Book Antiqua" name="Book-Antiqua" />
-  <font format="truetype" glyphs="c:\windows\fonts\BookOS.ttf" fullname="Bookman Old Style" name="Bookman-Old-Style" />
-  <font format="truetype" glyphs="c:\windows\fonts\OUTLOOK.ttf" fullname="MS Outlook" name="MS-Outlook" />
-  <font format="truetype" glyphs="c:\windows\fonts\WINGDNG2.ttf" fullname="Wingdings 2" name="Wingdings-2" />
-  <font format="truetype" glyphs="c:\windows\fonts\WINGDNG3.ttf" fullname="Wingdings 3" name="Wingdings-3" />
-  <font format="truetype" glyphs="c:\windows\fonts\Antquab.ttf" fullname="Book Antiqua Bold" name="Book-Antiqua-Bold" />
-  <font format="truetype" glyphs="c:\windows\fonts\Antquabi.ttf" fullname="Book Antiqua Bold Italic" name="Book-Antiqua-Bold-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\Antquai.ttf" fullname="Book Antiqua Italic" name="Book-Antiqua-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\ARBLI___.ttf" fullname="Arial Black Italic" name="Arial-Black-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\BookOSb.ttf" fullname="Bookman Old Style Bold" name="Bookman-Old-Style-Bold" />
-  <font format="truetype" glyphs="c:\windows\fonts\BookOSbi.ttf" fullname="Bookman Old Style Bold Italic" name="Bookman-Old-Style-Bold-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\MTSORTS.ttf" fullname="Monotype Sorts" name="Monotype-Sorts" />
-  <font format="truetype" glyphs="c:\windows\fonts\MTSORTS2.ttf" fullname="Monotype Sorts 2" name="Monotype-Sorts-2" />
-  <font format="truetype" glyphs="c:\windows\fonts\OCRB.ttf" fullname="OCRB" name="OCRB" />
-  <font format="truetype" glyphs="c:\windows\fonts\Oldengl.ttf" fullname="Old English Text MT" name="Old-English-Text-MT" />
-  <font format="truetype" glyphs="c:\windows\fonts\Onyx.ttf" fullname="Onyx" name="Onyx" />
-  <font format="truetype" glyphs="c:\windows\fonts\Palscri.ttf" fullname="Palace Script MT" name="Palace-Script-MT" />
-  <font format="truetype" glyphs="c:\windows\fonts\Papyrus.ttf" fullname="Papyrus" name="Papyrus" />
-  <font format="truetype" glyphs="c:\windows\fonts\PARADE.ttf" fullname="Parade" name="Parade" />
-  <font format="truetype" glyphs="c:\windows\fonts\Parchm.ttf" fullname="Parchment" name="Parchment" />
-  <font format="truetype" glyphs="c:\windows\fonts\PEPITA.ttf" fullname="Pepita MT" name="Pepita-MT" />
-  <font format="truetype" glyphs="c:\windows\fonts\Per_____.ttf" fullname="Perpetua" name="Perpetua" />
-  <font format="truetype" glyphs="c:\windows\fonts\Perb____.ttf" fullname="Perpetua Bold" name="Perpetua-Bold" />
-  <font format="truetype" glyphs="c:\windows\fonts\Perbi___.ttf" fullname="Perpetua Bold Italic" name="Perpetua-Bold-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\Peri____.ttf" fullname="Perpetua Italic" name="Perpetua-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\Pertibd.ttf" fullname="Perpetua Titling MT Bold" name="Perpetua-Titling-MT-Bold" />
-  <font format="truetype" glyphs="c:\windows\fonts\Pertili.ttf" fullname="Perpetua Titling MT Light" name="Perpetua-Titling-MT-Light" />
-  <font format="truetype" glyphs="c:\windows\fonts\PLACCOND.ttf" fullname="Placard Condensed" name="Placard-Condensed" />
-  <font format="truetype" glyphs="c:\windows\fonts\Playbill.ttf" fullname="Playbill" name="Playbill" />
-  <font format="truetype" glyphs="c:\windows\fonts\Poorich.ttf" fullname="Poor Richard" name="Poor-Richard" />
-  <font format="truetype" glyphs="c:\windows\fonts\Pristina.ttf" fullname="Pristina" name="Pristina" />
-  <font format="truetype" glyphs="c:\windows\fonts\Rage.ttf" fullname="Rage Italic" name="Rage-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\RANSOM.ttf" fullname="Ransom" name="Ransom" />
-  <font format="truetype" glyphs="c:\windows\fonts\RANSOMB.ttf" fullname="Ransom Bold" name="Ransom-Bold" />
-  <font format="truetype" glyphs="c:\windows\fonts\RANSOMBI.ttf" fullname="Ransom Bold Italic" name="Ransom-Bold-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\RANSOMI.ttf" fullname="Ransom Italic" name="Ransom-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\Ravie.ttf" fullname="Ravie" name="Ravie" />
-  <font format="truetype" glyphs="c:\windows\fonts\Rock.ttf" fullname="Rockwell" name="Rockwell" />
-  <font format="truetype" glyphs="c:\windows\fonts\Rockb.ttf" fullname="Rockwell Bold" name="Rockwell-Bold" />
-  <font format="truetype" glyphs="c:\windows\fonts\Rockbi.ttf" fullname="Rockwell Bold Italic" name="Rockwell-Bold-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\Rockeb.ttf" fullname="Rockwell Extra Bold" name="Rockwell-Extra-Bold" />
-  <font format="truetype" glyphs="c:\windows\fonts\Rocki.ttf" fullname="Rockwell Italic" name="Rockwell-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\RUNICCN.ttf" fullname="Runic MT Condensed" name="Runic-MT-Condensed" />
-  <font format="truetype" glyphs="c:\windows\fonts\Scriptbl.ttf" fullname="Script MT Bold" name="Script-MT-Bold" />
-  <font format="truetype" glyphs="c:\windows\fonts\ShowG.ttf" fullname="Showcard Gothic" name="Showcard-Gothic" />
-  <font format="truetype" glyphs="c:\windows\fonts\Snap____.ttf" fullname="Snap ITC" name="Snap-ITC" />
-  <font format="truetype" glyphs="c:\windows\fonts\Stencil.ttf" fullname="Stencil" name="Stencil" />
-  <font format="truetype" glyphs="c:\windows\fonts\STOP.ttf" fullname="Stop" name="Stop" />
-  <font format="truetype" glyphs="c:\windows\fonts\Tcbi____.ttf" fullname="Tw Cen MT Bold Italic" name="Tw-Cen-MT-Bold-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\Tccb____.ttf" fullname="Tw Cen MT Condensed Bold" name="Tw-Cen-MT-Condensed-Bold" />
-  <font format="truetype" glyphs="c:\windows\fonts\TCCEB.ttf" fullname="Tw Cen MT Condensed Extra Bold" name="Tw-Cen-MT-Condensed-Extra-Bold" />
-  <font format="truetype" glyphs="c:\windows\fonts\Tccm____.ttf" fullname="Tw Cen MT Condensed" name="Tw-Cen-MT-Condensed" />
-  <font format="truetype" glyphs="c:\windows\fonts\Tcm_____.ttf" fullname="Tw Cen MT" name="Tw-Cen-MT" />
-  <font format="truetype" glyphs="c:\windows\fonts\Tcmi____.ttf" fullname="Tw Cen MT Italic" name="Tw-Cen-MT-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\TempsITC.ttf" fullname="Tempus Sans ITC" name="Tempus-Sans-ITC" />
-  <font format="truetype" glyphs="c:\windows\fonts\vacation.ttf" fullname="Vacation MT" name="Vacation-MT" />
-  <font format="truetype" glyphs="c:\windows\fonts\VinerITC.ttf" fullname="Viner Hand ITC" name="Viner-Hand-ITC" />
-  <font format="truetype" glyphs="c:\windows\fonts\Vivaldii.ttf" fullname="Vivaldi Italic" name="Vivaldi-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\Vladimir.ttf" fullname="Vladimir Script" name="Vladimir-Script" />
-  <font format="truetype" glyphs="c:\windows\fonts\MtCorsva.ttf" fullname="Monotype Corsiva" name="Monotype-Corsiva" />
-  <font format="truetype" glyphs="c:\windows\fonts\Mod20.ttf" fullname="Modern No. 20" name="Modern-No.-20" />
-  <font format="truetype" glyphs="c:\windows\fonts\Mistral.ttf" fullname="Mistral" name="Mistral" />
-  <font format="truetype" glyphs="c:\windows\fonts\MERSCRB.ttf" fullname="Mercurius Script MT Bold" name="Mercurius-Script-MT-Bold" />
-  <font format="truetype" glyphs="c:\windows\fonts\Maturasc.ttf" fullname="Matura MT Script Capitals" name="Matura-MT-Script-Capitals" />
-  <font format="truetype" glyphs="c:\windows\fonts\matisse_.ttf" fullname="Matisse ITC" name="Matisse-ITC" />
-  <font format="truetype" glyphs="c:\windows\fonts\Maiandit.ttf" fullname="Maiandra GD Italic" name="Maiandra-GD-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\Maiandb.ttf" fullname="Maiandra GD Demi Bold" name="Maiandra-GD-Demi-Bold" />
-  <font format="truetype" glyphs="c:\windows\fonts\Maian.ttf" fullname="Maiandra GD" name="Maiandra-GD" />
-  <font format="truetype" glyphs="c:\windows\fonts\Lsansi.ttf" fullname="Lucida Sans Italic" name="Lucida-Sans-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\Lsansdi.ttf" fullname="Lucida Sans Demibold Italic" name="Lucida-Sans-Demibold-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\Lsansd.ttf" fullname="Lucida Sans Demibold Roman" name="Lucida-Sans-Demibold-Roman" />
-  <font format="truetype" glyphs="c:\windows\fonts\Lsans.ttf" fullname="Lucida Sans Regular" name="Lucida-Sans-Regular" />
-  <font format="truetype" glyphs="c:\windows\fonts\Lhandw.ttf" fullname="Lucida Handwriting Italic" name="Lucida-Handwriting-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\Lcallig.ttf" fullname="Lucida Calligraphy Italic" name="Lucida-Calligraphy-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\Latinwd.ttf" fullname="Wide Latin" name="Wide-Latin" />
-  <font format="truetype" glyphs="c:\windows\fonts\Kunstler.ttf" fullname="Kunstler Script" name="Kunstler-Script" />
-  <font format="truetype" glyphs="c:\windows\fonts\Kino.ttf" fullname="Kino MT" name="Kino-MT" />
-  <font format="truetype" glyphs="c:\windows\fonts\Juice___.ttf" fullname="Juice ITC" name="Juice-ITC" />
-  <font format="truetype" glyphs="c:\windows\fonts\Jokerman.ttf" fullname="Jokerman" name="Jokerman" />
-  <font format="truetype" glyphs="c:\windows\fonts\ITCKrist.ttf" fullname="Kristen ITC" name="Kristen-ITC" />
-  <font format="truetype" glyphs="c:\windows\fonts\ITCEdscr.ttf" fullname="Edwardian Script ITC" name="Edwardian-Script-ITC" />
-  <font format="truetype" glyphs="c:\windows\fonts\ITCBlkad.ttf" fullname="Blackadder ITC" name="Blackadder-ITC" />
-  <font format="truetype" glyphs="c:\windows\fonts\Infroman.ttf" fullname="Informal Roman" name="Informal-Roman" />
-  <font format="truetype" glyphs="c:\windows\fonts\Imprisha.ttf" fullname="Imprint MT Shadow" name="Imprint-MT-Shadow" />
-  <font format="truetype" glyphs="c:\windows\fonts\HTowerTI.ttf" fullname="High Tower Text Italic" name="High-Tower-Text-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\HTowerT.ttf" fullname="High Tower Text" name="High-Tower-Text" />
-  <font format="truetype" glyphs="c:\windows\fonts\HO.ttf" fullname="Holidays MT" name="Holidays-MT" />
-  <font format="truetype" glyphs="c:\windows\fonts\Hatten.ttf" fullname="Haettenschweiler" name="Haettenschweiler" />
-  <font format="truetype" glyphs="c:\windows\fonts\Harngton.ttf" fullname="Harrington" name="Harrington" />
-  <font format="truetype" glyphs="c:\windows\fonts\Harlowsi.ttf" fullname="Harlow Solid Italic" name="Harlow-Solid-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\GRADL.ttf" fullname="Gradl" name="Gradl" />
-  <font format="truetype" glyphs="c:\windows\fonts\Goudysto.ttf" fullname="Goudy Stout" name="Goudy-Stout" />
-  <font format="truetype" glyphs="c:\windows\fonts\Goudosi.ttf" fullname="Goudy Old Style Italic" name="Goudy-Old-Style-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\Goudos.ttf" fullname="Goudy Old Style" name="Goudy-Old-Style" />
-  <font format="truetype" glyphs="c:\windows\fonts\Gothici.ttf" fullname="Century Gothic Italic" name="Century-Gothic-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\Gothicbi.ttf" fullname="Century Gothic Bold Italic" name="Century-Gothic-Bold-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\Gothicb.ttf" fullname="Century Gothic Bold" name="Century-Gothic-Bold" />
-  <font format="truetype" glyphs="c:\windows\fonts\Gothic.ttf" fullname="Century Gothic" name="Century-Gothic" />
-  <font format="truetype" glyphs="c:\windows\fonts\Glsnecb.ttf" fullname="Gill Sans MT Ext Condensed Bold" name="Gill-Sans-MT-Ext-Condensed-Bold" />
-  <font format="truetype" glyphs="c:\windows\fonts\Gilsanub.ttf" fullname="Gill Sans Ultra Bold" name="Gill-Sans-Ultra-Bold" />
-  <font format="truetype" glyphs="c:\windows\fonts\Gillubcd.ttf" fullname="Gill Sans Ultra Bold Condensed" name="Gill-Sans-Ultra-Bold-Condensed" />
-  <font format="truetype" glyphs="c:\windows\fonts\Gili____.ttf" fullname="Gill Sans MT Italic" name="Gill-Sans-MT-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\Gilcb___.ttf" fullname="Gill Sans MT Condensed Bold" name="Gill-Sans-MT-Condensed-Bold" />
-  <font format="truetype" glyphs="c:\windows\fonts\Gilc____.ttf" fullname="Gill Sans MT Condensed" name="Gill-Sans-MT-Condensed" />
-  <font format="truetype" glyphs="c:\windows\fonts\Gilbi___.ttf" fullname="Gill Sans MT Bold Italic" name="Gill-Sans-MT-Bold-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\Gilb____.ttf" fullname="Gill Sans MT Bold" name="Gill-Sans-MT-Bold" />
-  <font format="truetype" glyphs="c:\windows\fonts\Gil_____.ttf" fullname="Gill Sans MT" name="Gill-Sans-MT" />
-  <font format="truetype" glyphs="c:\windows\fonts\Gigi.ttf" fullname="Gigi" name="Gigi" />
-  <font format="truetype" glyphs="c:\windows\fonts\Garait.ttf" fullname="Garamond Italic" name="Garamond-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\Garabd.ttf" fullname="Garamond Bold" name="Garamond-Bold" />
-  <font format="truetype" glyphs="c:\windows\fonts\Gara.ttf" fullname="Garamond" name="Garamond" />
-  <font format="truetype" glyphs="c:\windows\fonts\Ftltlt.ttf" fullname="Footlight MT Light" name="Footlight-MT-Light" />
-  <font format="truetype" glyphs="c:\windows\fonts\Frscript.ttf" fullname="French Script MT" name="French-Script-MT" />
-  <font format="truetype" glyphs="c:\windows\fonts\Freescpt.ttf" fullname="Freestyle Script" name="Freestyle-Script" />
-  <font format="truetype" glyphs="c:\windows\fonts\Framdit.ttf" fullname="Franklin Gothic Medium Italic" name="Franklin-Gothic-Medium-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\Framdcn.ttf" fullname="Franklin Gothic Medium Cond" name="Franklin-Gothic-Medium-Cond" />
-  <font format="truetype" glyphs="c:\windows\fonts\Framd.ttf" fullname="Franklin Gothic Medium" name="Franklin-Gothic-Medium" />
-  <font format="truetype" glyphs="c:\windows\fonts\Frahvit.ttf" fullname="Franklin Gothic Heavy Italic" name="Franklin-Gothic-Heavy-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\Frahv.ttf" fullname="Franklin Gothic Heavy" name="Franklin-Gothic-Heavy" />
-  <font format="truetype" glyphs="c:\windows\fonts\Fradmit.ttf" fullname="Franklin Gothic Demi Italic" name="Franklin-Gothic-Demi-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\Fradmcn.ttf" fullname="Franklin Gothic Demi Cond" name="Franklin-Gothic-Demi-Cond" />
-  <font format="truetype" glyphs="c:\windows\fonts\Fradm.ttf" fullname="Franklin Gothic Demi" name="Franklin-Gothic-Demi" />
-  <font format="truetype" glyphs="c:\windows\fonts\Frabkit.ttf" fullname="Franklin Gothic Book Italic" name="Franklin-Gothic-Book-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\Frabk.ttf" fullname="Franklin Gothic Book" name="Franklin-Gothic-Book" />
-  <font format="truetype" glyphs="c:\windows\fonts\FORTE.ttf" fullname="Forte" name="Forte" />
-  <font format="truetype" glyphs="c:\windows\fonts\FineHand.ttf" fullname="Fine Hand" name="Fine-Hand" />
-  <font format="truetype" glyphs="c:\windows\fonts\Felixti.ttf" fullname="Felix Titling" name="Felix-Titling" />
-  <font format="truetype" glyphs="c:\windows\fonts\Eurostib.ttf" fullname="Eurostile Bold" name="Eurostile-Bold" />
-  <font format="truetype" glyphs="c:\windows\fonts\Eurosti.ttf" fullname="Eurostile" name="Eurostile" />
-  <font format="truetype" glyphs="c:\windows\fonts\Erasult.ttf" fullname="Eras Ultra ITC" name="Eras-Ultra-ITC" />
-  <font format="truetype" glyphs="c:\windows\fonts\Erasmd.ttf" fullname="Eras Medium ITC" name="Eras-Medium-ITC" />
-  <font format="truetype" glyphs="c:\windows\fonts\Eraslght.ttf" fullname="Eras Light ITC" name="Eras-Light-ITC" />
-  <font format="truetype" glyphs="c:\windows\fonts\Erasdemi.ttf" fullname="Eras Demi ITC" name="Eras-Demi-ITC" />
-  <font format="truetype" glyphs="c:\windows\fonts\Erasbd.ttf" fullname="Eras Bold ITC" name="Eras-Bold-ITC" />
-  <font format="truetype" glyphs="c:\windows\fonts\Enviro.ttf" fullname="Enviro" name="Enviro" />
-  <font format="truetype" glyphs="c:\windows\fonts\Engrb.ttf" fullname="Engravers MT Bold" name="Engravers-MT-Bold" />
-  <font format="truetype" glyphs="c:\windows\fonts\Engr.ttf" fullname="Engravers MT" name="Engravers-MT" />
-  <font format="truetype" glyphs="c:\windows\fonts\Elephnti.ttf" fullname="Elephant Italic" name="Elephant-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\Elephnt.ttf" fullname="Elephant" name="Elephant" />
-  <font format="truetype" glyphs="c:\windows\fonts\EDDA.ttf" fullname="Edda" name="Edda" />
-  <font format="truetype" glyphs="c:\windows\fonts\Desdemon.ttf" fullname="Desdemona" name="Desdemona" />
-  <font format="truetype" glyphs="c:\windows\fonts\CURLZ___.ttf" fullname="Curlz MT" name="Curlz-MT" />
-  <font format="truetype" glyphs="c:\windows\fonts\Coprgtl.ttf" fullname="Copperplate Gothic Light" name="Copperplate-Gothic-Light" />
-  <font format="truetype" glyphs="c:\windows\fonts\Coprgtb.ttf" fullname="Copperplate Gothic Bold" name="Copperplate-Gothic-Bold" />
-  <font format="truetype" glyphs="c:\windows\fonts\Coopbl.ttf" fullname="Cooper Black" name="Cooper-Black" />
-  <font format="truetype" glyphs="c:\windows\fonts\Chiller.ttf" fullname="Chiller" name="Chiller" />
-  <font format="truetype" glyphs="c:\windows\fonts\Castelar.ttf" fullname="Castellar" name="Castellar" />
-  <font format="truetype" glyphs="c:\windows\fonts\Calisti.ttf" fullname="Calisto MT Italic" name="Calisto-MT-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\Calistbi.ttf" fullname="Calisto MT Bold Italic" name="Calisto-MT-Bold-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\Calistb.ttf" fullname="Calisto MT Bold" name="Calisto-MT-Bold" />
-  <font format="truetype" glyphs="c:\windows\fonts\Calist.ttf" fullname="Calisto MT" name="Calisto-MT" />
-  <font format="truetype" glyphs="c:\windows\fonts\CalifR.ttf" fullname="Californian FB" name="Californian-FB" />
-  <font format="truetype" glyphs="c:\windows\fonts\Califi.ttf" fullname="Californian FB Italic" name="Californian-FB-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\CalifB.ttf" fullname="Californian FB Bold" name="Californian-FB-Bold" />
-  <font format="truetype" glyphs="c:\windows\fonts\Brushsci.ttf" fullname="Brush Script MT Italic" name="Brush-Script-MT-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\BROADW.ttf" fullname="Broadway" name="Broadway" />
-  <font format="truetype" glyphs="c:\windows\fonts\Britanic.ttf" fullname="Britannic Bold" name="Britannic-Bold" />
-  <font format="truetype" glyphs="c:\windows\fonts\Bragga.ttf" fullname="Braggadocio" name="Braggadocio" />
-  <font format="truetype" glyphs="c:\windows\fonts\BradhITC.ttf" fullname="Bradley Hand ITC" name="Bradley-Hand-ITC" />
-  <font format="truetype" glyphs="c:\windows\fonts\BookOSi.ttf" fullname="Bookman Old Style Italic" name="Bookman-Old-Style-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\BicklySc.ttf" fullname="Bickley Script" name="Bickley-Script" />
-  <font format="truetype" glyphs="c:\windows\fonts\Bernhc.ttf" fullname="Bernard MT Condensed" name="Bernard-MT-Condensed" />
-  <font format="truetype" glyphs="c:\windows\fonts\Belli.ttf" fullname="Bell MT Italic" name="Bell-MT-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\Bellb.ttf" fullname="Bell MT Bold" name="Bell-MT-Bold" />
-  <font format="truetype" glyphs="c:\windows\fonts\Bell.ttf" fullname="Bell MT" name="Bell-MT" />
-  <font format="truetype" glyphs="c:\windows\fonts\Beesknee.ttf" fullname="Beesknees ITC" name="Beesknees-ITC" />
-  <font format="truetype" glyphs="c:\windows\fonts\Bauhs93.ttf" fullname="Bauhaus 93" name="Bauhaus-93" />
-  <font format="truetype" glyphs="c:\windows\fonts\Baskvill.ttf" fullname="Baskerville Old Face" name="Baskerville-Old-Face" />
-  <font format="truetype" glyphs="c:\windows\fonts\Augsburg.ttf" fullname="Augsburger Initials" name="Augsburger-Initials" />
-  <font format="truetype" glyphs="c:\windows\fonts\Arlrdbd.ttf" fullname="Arial Rounded MT Bold" name="Arial-Rounded-MT-Bold" />
-  <font format="truetype" glyphs="c:\windows\fonts\ArialNi.ttf" fullname="Arial Narrow Italic" name="Arial-Narrow-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\ArialNbi.ttf" fullname="Arial Narrow Bold Italic" name="Arial-Narrow-Bold-Italic" />
-  <font format="truetype" glyphs="c:\windows\fonts\ArialNb.ttf" fullname="Arial Narrow Bold" name="Arial-Narrow-Bold" />
-  <font format="truetype" glyphs="c:\windows\fonts\ArialN.ttf" fullname="Arial Narrow" name="Arial-Narrow" />
-  <font format="truetype" glyphs="c:\windows\fonts\Andyb.ttf" fullname="Andy Bold" name="Andy-Bold" />
-  <font format="truetype" glyphs="c:\windows\fonts\AMERIUNC.ttf" fullname="American Uncial" name="American-Uncial" />
-  <font format="truetype" glyphs="c:\windows\fonts\ALMANAC.ttf" fullname="Almanac MT" name="Almanac-MT" />
-  <font format="truetype" glyphs="c:\windows\fonts\Alger.ttf" fullname="Algerian" name="Algerian" />
-  <font format="truetype" glyphs="c:\windows\fonts\Abalc.ttf" fullname="Abadi MT Condensed Light" name="Abadi-MT-Condensed-Light" />
-  <font format="truetype" glyphs="c:\windows\fonts\Abaexbc.ttf" fullname="Abadi MT Condensed Extra Bold" name="Abadi-MT-Condensed-Extra-Bold" />
-  <font format="truetype" glyphs="c:\windows\fonts\Abac.ttf" fullname="Abadi MT Condensed" name="Abadi-MT-Condensed" />
-  <font format="truetype" glyphs="c:\windows\fonts\Goudosb.ttf" fullname="Goudy Old Style Bold" name="Goudy-Old-Style-Bold" />
-</fontmap>
-</xml>
+<typemap>
+  <type
+    name="Arial"
+    fullname="Arial"
+    family="Arial"
+    weight="400"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\arial.ttf"
+    version="0.1" />
+  <type
+    name="Arial-Black"
+    fullname="Arial Black"
+    family="Arial"
+    weight="900"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\ariblk.ttf"
+    version="0.1" />
+  <type
+    name="Arial-Bold"
+    fullname="Arial Bold"
+    family="Arial"
+    weight="700"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\arialbd.ttf"
+    version="0.1" />
+  <type
+    name="Arial-Bold-Italic"
+    fullname="Arial Bold Italic"
+    family="Arial"
+    weight="700"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\arialbi.ttf"
+    version="0.1" />
+  <type
+    name="Arial-Italic"
+    fullname="Arial Italic"
+    family="Arial"
+    weight="400"
+    style="italic"
+    stretch="normal"
+    glyphs="c:\windows\fonts\ariali.ttf"
+    version="0.1" />
+  <type
+    name="Arial-Narrow"
+    fullname="Arial Narrow"
+    family="Arial Narrow"
+    weight="400"
+    style="normal"
+    style="condensed"
+    glyphs="c:\windows\fonts\arialn.ttf"
+    version="0.1" />
+  <type
+    name="Arial-Narrow-Bold"
+    fullname="Arial Narrow Bold"
+    family="Arial Narrow"
+    weight="700"
+    style="normal"
+    style="condensed"
+    glyphs="c:\windows\fonts\arialnb.ttf"
+    version="0.1" />
+  <type
+    name="Arial-Narrow-Bold-Italic"
+    fullname="Arial Narrow Bold Italic"
+    family="Arial Narrow"
+    weight="700"
+    style="italic"
+    style="condensed"
+    glyphs="c:\windows\fonts\arialnbi.ttf"
+    version="0.1" />
+  <type
+    name="Arial-Narrow-Italic"
+    fullname="Arial Narrow Italic"
+    family="Arial Narrow"
+    weight="400"
+    style="italic"
+    style="condensed"
+    glyphs="c:\windows\fonts\arnari.ttf"
+    version="0.1" />
+  <type
+    name="Arial-Narrow-Special-G1"
+    fullname="Arial Narrow Special G1"
+    family="Arial Narrow Special G1"
+    weight="400"
+    style="normal"
+    style="condensed"
+    glyphs="c:\windows\fonts\msgeonr1.ttf"
+    version="0.1" />
+  <type
+    name="Arial-Narrow-Special-G1-Bold"
+    fullname="Arial Narrow Special G1 Bold"
+    family="Arial Narrow Special G1"
+    weight="700"
+    style="normal"
+    style="condensed"
+    glyphs="c:\windows\fonts\msgeonb1.ttf"
+    version="0.1" />
+  <type
+    name="Arial-Narrow-Special-G1-Italic"
+    fullname="Arial Narrow Special G1 Italic"
+    family="Arial Narrow Special G1"
+    weight="400"
+    style="italic"
+    style="condensed"
+    glyphs="c:\windows\fonts\msgeoni1.ttf"
+    version="0.1" />
+  <type
+    name="Arial-Narrow-Special-G2"
+    fullname="Arial Narrow Special G2"
+    family="Arial Narrow Special G2"
+    weight="400"
+    style="normal"
+    style="condensed"
+    glyphs="c:\windows\fonts\msgeonr2.ttf"
+    version="0.1" />
+  <type
+    name="Arial-Narrow-Special-G2-Bold"
+    fullname="Arial Narrow Special G2 Bold"
+    family="Arial Narrow Special G2"
+    weight="700"
+    style="Narrow"
+    stretch="normal"
+    glyphs="c:\windows\fonts\msgeonb2.ttf"
+    version="0.1" />
+  <type
+    name="Arial-Narrow-Special-G2-Italic"
+    fullname="Arial Narrow Special G2 Italic"
+    family="Arial Narrow Special G2"
+    weight="400"
+    style="italic"
+    style="condensed"
+    glyphs="c:\windows\fonts\msgeoni2.ttf"
+    version="0.1" />
+  <type
+    name="Arial-Rounded-MT-Bold"
+    fullname="Arial Rounded MT Bold"
+    family="Arial Rounded MT"
+    weight="700"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\arlrdbd.ttf"
+    version="0.1" />
+  <type
+    name="Arial-Special-G1"
+    fullname="Arial Special G1"
+    family="Arial Special G1"
+    weight="400"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\msgeor1.ttf"
+    version="0.1" />
+  <type
+    name="Arial-Special-G1-Bold"
+    fullname="Arial Special G1 Bold"
+    family="Arial Special G1"
+    weight="700"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\msgeoab1.ttf"
+    version="0.1" />
+  <type
+    name="Arial-Special-G1-Bold-Italic"
+    fullname="Arial Special G1 Bold Italic"
+    family="Arial Special G1"
+    weight="700"
+    style="italic"
+    stretch="normal"
+    glyphs="c:\windows\fonts\msgeoax1.ttf"
+    version="0.1" />
+  <type
+    name="Arial-Special-G1-Italic"
+    fullname="Arial Special G1 Italic"
+    family="Arial Special G1"
+    weight="400"
+    style="italic"
+    stretch="normal"
+    glyphs="c:\windows\fonts\msgeoai1.ttf"
+    version="0.1" />
+  <type
+    name="Arial-Special-G2"
+    fullname="Arial Special G2"
+    family="Arial Special G2"
+    weight="400"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\msgeoar2.ttf"
+    version="0.1" />
+  <type
+    name="Arial-Special-G2-Bold"
+    fullname="Arial Special G2 Bold"
+    family="Arial Special G2"
+    weight="700"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\msgeoab2.ttf"
+    version="0.1" />
+  <type
+    name="Arial-Special-G2-Bold-Italic"
+    fullname="Arial Special G2 Bold Italic"
+    family="Arial Special G2"
+    weight="700"
+    style="italic"
+    stretch="normal"
+    glyphs="c:\windows\fonts\msgeoax2.ttf"
+    version="0.1" />
+  <type
+    name="Arial-Special-G2-Italic"
+    fullname="Arial Special G2 Italic"
+    family="Arial Special G2"
+    weight="400"
+    style="italic"
+    stretch="normal"
+    glyphs="c:\windows\fonts\msgeoai2.ttf"
+    version="0.1" />
+  <type
+    name="Bookman-Old-Style"
+    fullname="Bookman Old Style"
+    family="Bookman Old Style"
+    weight="400"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\bkmnos.ttf"
+    version="0.1" />
+  <type
+    name="Bookman-Old-Style-Bold"
+    fullname="Bookman Old Style Bold"
+    family="Bookman Old Style"
+    weight="700"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\bookosb.ttf"
+    version="0.1" />
+  <type
+    name="Bookman-Old-Style-Bold-Italic"
+    fullname="Bookman Old Style Bold Italic"
+    family="Bookman Old Style"
+    weight="400"
+    style="italic"
+    stretch="normal"
+    glyphs="c:\windows\fonts\bookosbi.ttf"
+    version="0.1" />
+  <type
+    name="Bookman-Old-Style-Italic"
+    fullname="Bookman Old Style Italic"
+    family="Bookman Old Style"
+    weight="400"
+    style="italic"
+    stretch="normal"
+    glyphs="c:\windows\fonts\boookosi.ttf"
+    version="0.1" />
+  <type
+    name="Century-Schoolbook"
+    fullname="Century Schoolbook"
+    family="Century Schoolbook"
+    weight="400"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\censcbk.ttf"
+    version="0.1" />
+  <type
+    name="Century-Schoolbook-Bold"
+    fullname="Century Schoolbook Bold"
+    family="Century Schoolbook"
+    weight="700"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\schlbkb.ttf"
+    version="0.1" />
+  <type
+    name="Century-Schoolbook-Bold-Italic"
+    fullname="Century Schoolbook Bold Italic"
+    family="Century Schoolbook"
+    weight="700"
+    style="italic"
+    stretch="normal"
+    glyphs="c:\windows\fonts\schlbkbi.ttf"
+    version="0.1" />
+  <type
+    name="Century-Schoolbook-Italic"
+    fullname="Century Schoolbook Italic"
+    family="Century Schoolbook"
+    weight="400"
+    style="italic"
+    stretch="normal"
+    glyphs="c:\windows\fonts\schlbki.ttf"
+    version="0.1" />
+  <type
+    name="Comic-Sans-MS"
+    fullname="Comic Sans MS"
+    family="Comic Sans MS"
+    weight="400"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\comic.ttf"
+    version="0.1" />
+  <type
+    name="Comic-Sans-MS-Bold"
+    fullname="Comic Sans MS Bold"
+    family="Comic Sans MS"
+    weight="700"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\comicbd.ttf"
+    version="0.1" />
+  <type
+    name="Courier-New"
+    fullname="Courier New"
+    family="Courier New"
+    weight="400"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\cour.ttf"
+    version="0.1" />
+  <type
+    name="Courier-New-Bold"
+    fullname="Courier New Bold"
+    family="Courier New"
+    weight="700"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\courbd.ttf"
+    version="0.1" />
+  <type
+    name="Courier-New-Bold-Italic"
+    fullname="Courier New Bold Italic"
+    family="Courier New"
+    weight="700"
+    style="italic"
+    stretch="normal"
+    glyphs="c:\windows\fonts\courbi.ttf"
+    version="0.1" />
+  <type
+    name="Courier-New-Italic"
+    fullname="Courier New Italic"
+    family="Courier New"
+    weight="400"
+    style="italic"
+    stretch="normal"
+    glyphs="c:\windows\fonts\couri.ttf"
+    version="0.1" />
+  <type
+    name="Garamond"
+    fullname="Garamond"
+    family="Garamond"
+    weight="400"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\gara.ttf"
+    version="0.1" />
+  <type
+    name="Garamond-Bold"
+    fullname="Garamond Bold"
+    family="Garamond"
+    weight="700"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\garabd.ttf"
+    version="0.1" />
+  <type
+    name="Garamond-Italic"
+    fullname="Garamond Italic"
+    family="Garamond"
+    weight="400"
+    style="italic"
+    stretch="normal"
+    glyphs="c:\windows\fonts\Italic"
+    version="0.1" />
+  <type
+    name="Gill-Sans-MT-Ext-Condensed-Bold"
+    fullname="Gill Sans MT Ext Condensed Bold"
+    family="Gill Sans MT"
+    weight="700"
+    style="normal"
+    style="extra-condensed"
+    glyphs="c:\windows\fonts\glsnecb.ttf"
+    version="0.1" />
+  <type
+    name="Impact"
+    fullname="Impact"
+    family="Impact"
+    weight="400"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\impact.ttf"
+    version="0.1" />
+  <type
+    name="Lucida-Blackletter"
+    fullname="Lucida Blackletter"
+    family="Lucida Blackletter"
+    weight="400"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\lblack.ttf"
+    version="0.1" />
+  <type
+    name="Lucida-Bright"
+    fullname="Lucida Bright"
+    family="Lucida Bright"
+    weight="400"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\lbrite.ttf"
+    version="0.1" />
+  <type
+    name="Lucida-Bright-Demibold"
+    fullname="Lucida Bright Demibold"
+    family="Lucida Bright"
+    weight="600"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\lbrited.ttf"
+    version="0.1" />
+  <type
+    name="Lucida-Bright-Demibold-Italic"
+    fullname="Lucida Bright Demibold Italic"
+    family="Lucida Bright"
+    weight="600"
+    style="italic"
+    stretch="normal"
+    glyphs="c:\windows\fonts\lbritedi.ttf"
+    version="0.1" />
+  <type
+    name="Lucida-Bright-Italic"
+    fullname="Lucida Bright Italic"
+    family="Lucida Bright"
+    weight="400"
+    style="italic"
+    stretch="normal"
+    glyphs="c:\windows\fonts\lbritei.ttf"
+    version="0.1" />
+  <type
+    name="Lucida-Caligraphy-Italic"
+    fullname="Lucida Caligraphy Italic"
+    family="Lucida Caligraphy"
+    weight="400"
+    style="italic"
+    stretch="normal"
+    glyphs="c:\windows\fonts\lcalig.ttf"
+    version="0.1" />
+  <type
+    name="Lucida-Console,	Lucida-Console"
+    fullname="Lucida Console,	Lucida Console"
+    family="Regular"
+    weight="400"
+    style="lucon.ttf"
+    stretch="normal"
+    glyphs="c:\windows\fonts\"
+    version="0.1" />
+  <type
+    name="Lucida-Fax-Demibold"
+    fullname="Lucida Fax Demibold"
+    family="Lucida Fax"
+    weight="600"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\lfaxd.ttf"
+    version="0.1" />
+  <type
+    name="Lucida-Fax-Demibold-Italic"
+    fullname="Lucida Fax Demibold Italic"
+    family="Lucida Fax"
+    weight="600"
+    style="italic"
+    stretch="normal"
+    glyphs="c:\windows\fonts\lfaxdi.ttf"
+    version="0.1" />
+  <type
+    name="Lucida-Fax-Italic"
+    fullname="Lucida Fax Italic"
+    family="Lucida Fax"
+    weight="400"
+    style="italic"
+    stretch="normal"
+    glyphs="c:\windows\fonts\lfaxi.ttf"
+    version="0.1" />
+  <type
+    name="Lucida-Fax-Regular"
+    fullname="Lucida Fax Regular"
+    family="Lucida Fax"
+    weight="400"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\lfax.ttf"
+    version="0.1" />
+  <type
+    name="Lucida-Handwriting-Italic"
+    fullname="Lucida Handwriting Italic"
+    family="Lucida Handwriting"
+    weight="400"
+    style="italic"
+    stretch="normal"
+    glyphs="c:\windows\fonts\lhandw.ttf"
+    version="0.1" />
+  <type
+    name="Lucida-Sans-Demibold-Italic"
+    fullname="Lucida Sans Demibold Italic"
+    family="Lucida Sans"
+    weight="600"
+    style="italic"
+    stretch="normal"
+    glyphs="c:\windows\fonts\lsansdi.ttf"
+    version="0.1" />
+  <type
+    name="Lucida-Sans-Demibold-Roman"
+    fullname="Lucida Sans Demibold Roman"
+    family="Lucida Sans Demibold"
+    weight="400"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\lsansd.ttf"
+    version="0.1" />
+  <type
+    name="Lucida-Sans-Regular"
+    fullname="Lucida Sans Regular"
+    family="Lucida Sans"
+    weight="400"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\lsans.ttf"
+    version="0.1" />
+  <type
+    name="Lucida-Sans-Typewriter-Bold"
+    fullname="Lucida Sans Typewriter Bold"
+    family="Lucida Sans Typewriter"
+    weight="700"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\ltypeb.ttf"
+    version="0.1" />
+  <type
+    name="Lucida-Sans-Typewriter-Bold-Oblique"
+    fullname="Lucida Sans Typewriter Bold Oblique"
+    family="Lucida Sans Typewriter"
+    weight="700"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\ltypebo.ttf"
+    version="0.1" />
+  <type
+    name="Lucida-Sans-Typewriter-Oblique"
+    fullname="Lucida Sans Typewriter Oblique"
+    family="Lucida Sans Typewriter"
+    weight="700"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\ltypeo.ttf"
+    version="0.1" />
+  <type
+    name="Lucida-Sans-Typewriter-Regular"
+    fullname="Lucida Sans Typewriter Regular"
+    family="Lucida Sans Typewriter"
+    weight="400"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\ltype.ttf"
+    version="0.1" />
+  <type
+    name="MS-Sans-Serif"
+    fullname="MS Sans Serif"
+    family="MS Sans Serif"
+    weight="400"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\sseriff.ttf"
+    version="0.1" />
+  <type
+    name="MS-Serif"
+    fullname="MS Serif"
+    family="MS Serif"
+    weight="400"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\seriff.ttf"
+    version="0.1" />
+  <type
+    name="Modern"
+    fullname="Modern"
+    family="Modern"
+    weight="400"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\modern.ttf"
+    version="0.1" />
+  <type
+    name="Monotype-Corsiva"
+    fullname="Monotype Corsiva"
+    family="Monotype Corsiva"
+    weight="400"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\mtcorsva.ttf"
+    version="0.1" />
+  <type
+    name="Small-Fonts"
+    fullname="Small Fonts"
+    family="Small Fonts"
+    weight="400"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\smallf.ttf"
+    version="0.1" />
+  <type
+    name="Symbol"
+    fullname="Symbol"
+    family="Symbol"
+    weight="400"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\symbol.ttf"
+    encoding="AppleRoman"
+    version="0.1" />
+  <type
+    name="Tahoma"
+    fullname="Tahoma"
+    family="Tahoma"
+    weight="400"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\tahoma.ttf"
+    version="0.1" />
+  <type
+    name="Tahoma-Bold"
+    fullname="Tahoma Bold"
+    family="Tahoma"
+    weight="700"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\tahomabd.ttf"
+    version="0.1" />
+  <type
+    name="Times-New-Roman"
+    fullname="Times New Roman"
+    family="Times New Roman"
+    weight="400"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\times.ttf"
+    version="0.1" />
+  <type
+    name="Times-New-Roman-Bold"
+    fullname="Times New Roman Bold"
+    family="Times New Roman"
+    weight="700"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\timesbd.ttf"
+    version="0.1" />
+  <type
+    name="Times-New-Roman-Bold-Italic"
+    fullname="Times New Roman Bold Italic"
+    family="Times New Roman"
+    weight="700"
+    style="italic"
+    stretch="normal"
+    glyphs="c:\windows\fonts\timesbi.ttf"
+    version="0.1" />
+  <type
+    name="Times-New-Roman-Italic"
+    fullname="Times New Roman Italic"
+    family="Times New Roman"
+    weight="400"
+    style="italic"
+    stretch="normal"
+    glyphs="c:\windows\fonts\timesi.ttf"
+    version="0.1" />
+  <type
+    name="Times-New-Roman-MT-Extra-Bold"
+    fullname="Times New Roman MT Extra Bold"
+    family="Times New Roman MT"
+    weight="800"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\timnreb.ttf"
+    version="0.1" />
+  <type
+    name="Verdana"
+    fullname="Verdana"
+    family="Verdana"
+    weight="400"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\verdana.ttf"
+    version="0.1" />
+  <type
+    name="Verdana-Bold"
+    fullname="Verdana Bold"
+    family="Verdana"
+    weight="700"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\verdanab.ttf"
+    version="0.1" />
+  <type
+    name="Verdana-Bold-Italic"
+    fullname="Verdana Bold Italic"
+    family="Verdana"
+    weight="700"
+    style="italic"
+    stretch="normal"
+    glyphs="c:\windows\fonts\verdanaz.ttf"
+    version="0.1" />
+  <type
+    name="Verdana-Italic"
+    fullname="Verdana Italic"
+    family="Verdana"
+    weight="400"
+    style="italic"
+    stretch="normal"
+    glyphs="c:\windows\fonts\verdanai.ttf"
+    version="0.1" />
+  <type
+    name="Wingdings"
+    fullname="Wingdings"
+    family="Wingdings"
+    weight="400"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\wingding.ttf"
+    encoding="AppleRoman"
+    version="0.1" />
+  <type
+    name="Wingdings-2"
+    fullname="Wingdings 2"
+    family="Wingdings 2"
+    weight="400"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\wingdng2.ttf"
+    encoding="AppleRoman"
+    version="0.1" />
+  <type
+    name="Wingdings-3"
+    fullname="Wingdings 3"
+    family="Wingdings 3"
+    weight="400"
+    style="normal"
+    stretch="normal"
+    glyphs="c:\windows\fonts\wingdng3.ttf"
+    encoding="AppleRoman"
+    version="0.1" />
+</typemap>
+
