@@ -144,7 +144,7 @@ Export Image *BlobToImage(const ImageInfo *image_info,const char *blob,
     Write blob to a temporary file on disk.
   */
   TemporaryFilename(local_info->filename);
-  file=fopen(local_info->filename,"w");
+  file=fopen(local_info->filename,"wb");
   if (file == (FILE *) NULL)
     {
       MagickWarning(BlobWarning,"Unable to convert blob to an image",
@@ -505,11 +505,11 @@ Export void *ImageToBlob(const ImageInfo *image_info,Image *image,
     Read image from disk as blob.
   */
   file=fopen(image->filename,"rb");
-  (void) remove(image->filename);
-  (void) strcpy(image->filename,filename);
   DestroyImageInfo(local_info);
   if (file == (FILE *) NULL)
     {
+      (void) remove(image->filename);
+      (void) strcpy(image->filename,filename);
       MagickWarning(BlobWarning,"Unable to create blob",image->filename);
       return((char *) NULL);
     }
@@ -519,6 +519,8 @@ Export void *ImageToBlob(const ImageInfo *image_info,Image *image,
   blob=(char *) AllocateMemory(*length*sizeof(char));
   if (blob == (char *) NULL)
     {
+      (void) remove(image->filename);
+      (void) strcpy(image->filename,filename);
       MagickWarning(BlobWarning,"Unable to create blob",
         "Memory allocation failed");
       return((char *) NULL);
@@ -532,6 +534,8 @@ Export void *ImageToBlob(const ImageInfo *image_info,Image *image,
     offset+=count;
   }
   (void) fclose(file);
+  (void) remove(image->filename);
+  (void) strcpy(image->filename,filename);
   return(blob);
 }
 
