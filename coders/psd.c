@@ -1114,7 +1114,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   q->red=(Quantum) pixel;
                   if (layer_info[i].image->storage_class == PseudoClass)
                     {
-                      indexes[x]=(IndexPacket) MaxRGB - ScaleQuantumToChar(pixel);
+                      indexes[x]=(IndexPacket) ScaleQuantumToChar(MaxRGB - pixel);
                       *q=layer_info[i].image->colormap[indexes[x]];
                     }
                   break;

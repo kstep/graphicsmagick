@@ -53,6 +53,17 @@
 </tr>
 </table>
 <p>
+2003-06-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/xpm.c (RegisterXPMImage): Module registration for PICON
+        should have been XPM.  Thanks to John Cristy for noticing this
+        bug.<BR>
+  <LI> coders/psd.c (ReadPSDImage): Applied John Cristy's patch to fix
+        a index calculation bug which is evident when QuantumDepth&gt;8.
+
+</UL>
+<p>
 2003-06-02  Glenn Randers-Pehrson &lt;randeg@alum.rpi.edu&gt;
 
 <UL>

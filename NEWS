@@ -10,6 +10,7 @@ Major changes associated with GraphicsMagick 1.0.2 (Pending)
     * Minor memory leak fixed.
     * Fixed PerlMagick Shade 'elevation' argument.
     * Fixed EPT writing.
+    * PNG, MNG, and JNG writer fixes.
     * Fixed an error handling path in mogrify command.
     * Added missing module mappings for a number of coders.
     * Fixed problem with libxml/libxml2.def & Visual C++ 6.0.
