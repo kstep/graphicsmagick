@@ -10200,7 +10200,7 @@ static void XScreenEvent(Display *display,XWindows *windows,XEvent *event)
     x,
     y;
 
-  XIfEvent(display,event,XPredicate,(char *) windows);
+  (void) XIfEvent(display,event,XPredicate,(char *) windows);
   if (event->xany.window == windows->command.id)
     return;
   switch (event->type)
@@ -12469,7 +12469,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     MagickError(XServerError,"Unable to create X image",(char *) NULL);
   if (windows->image.mapped)
     XRefreshWindow(display,&windows->image,(XEvent *) NULL);
-  SignatureImage(display_image);
+  (void) SignatureImage(display_image);
   handler=SetMonitorHandler((MonitorHandler) NULL);
   status=XMakeImage(display,resource_info,&windows->magnify,(Image *) NULL,
     windows->magnify.width,windows->magnify.height);

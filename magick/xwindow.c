@@ -3559,7 +3559,7 @@ MagickExport unsigned int XGetWindowColor(Display *display,char *name)
   /*
     Match color against the X color database.
   */
-  XQueryColor(display,window_attributes.colormap,&color);
+  (void) XQueryColor(display,window_attributes.colormap,&color);
   path=GetMagickConfigurePath("rgb.txt");
   if (path == (char *) NULL)
     return(False);

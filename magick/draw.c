@@ -3367,7 +3367,7 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
       if (primitive_info->text == (char *) NULL)
         break;
       clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
-      CloneString(&clone_info->text,primitive_info->text);
+      (void) CloneString(&clone_info->text,primitive_info->text);
       FormatString(geometry,"%+g%+g",primitive_info->point.x,
         primitive_info->point.y);
       (void) CloneString(&clone_info->geometry,geometry);
