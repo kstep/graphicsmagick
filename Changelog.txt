@@ -1,3 +1,18 @@
+2001-12-13  Leonard Rosenthol  <leonardr@lazerware.com>
+	* Added new composite operators to support PSD/XCF layer compositing
+		  NoCompositeOp,
+		  DarkenCompositeOp,
+		  LightenCompositeOp,
+		  HueCompositeOp,
+		  SaturateCompositeOp,
+		  ValueCompositeOp,
+		  ColorizeCompositeOp,
+		  LuminizeCompositeOp,
+		  ScreenCompositeOp,
+		  OverlayCompositeOp
+	* Modified the PSD coder to set the appropriate composite operator
+	* Modified the XCF coder to set the appropriate composite operator
+
 2001-12-09  Leonard Rosenthol  <leonardr@lazerware.com>
 	* Added new member to ImageInfo: flatten.   Used by
 	  PSD and XCF to determine whether to flatten an image when read.
