@@ -394,7 +394,7 @@ DISTDIRS = images locale scenes scripts www PerlMagick
 
 # Install HTML files
 pkgdocdir = @MagickSharePath@
-DOCDIRS = images www www/api www/api/types www/Magick++
+DOCDIRS = images www www/api www/Magick++
 
 @WITH_PERL_TRUE@PERLMAGICK = PerlMagick
 @WITH_PERL_TRUE@PERLMAKEMAKER = $(PERLMAGICK)/Makefile.PL

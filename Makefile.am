@@ -66,7 +66,7 @@ dist-hook:
 
 # Install HTML files
 pkgdocdir = @MagickSharePath@
-DOCDIRS = images www www/api www/api/types www/Magick++
+DOCDIRS = images www www/api www/Magick++
 install-data-html:
 	$(mkinstalldirs) $(DESTDIR)$(pkgdocdir)
 	$(INSTALL_DATA) $(srcdir)/index.html $(DESTDIR)$(pkgdocdir)

@@ -260,6 +260,9 @@
 /* Define to 1 if you have the `strlcpy' function. */
 #undef HAVE_STRLCPY
 
+/* Headers provide a prototype for strlcpy */
+#undef HAVE_STRLCPY_PROTOTYPE
+
 /* Define to 1 if you have the `strrchr' function. */
 #undef HAVE_STRRCHR
 
@@ -303,6 +306,9 @@
 
 /* Define to 1 if you have the `vsnprintf' function. */
 #undef HAVE_VSNPRINTF
+
+/* Headers provide a prototype for vsnprintf */
+#undef HAVE_VSNPRINTF_PROTOTYPE
 
 /* Define to 1 if you have the `vsprintf' function. */
 #undef HAVE_VSPRINTF
@@ -495,11 +501,23 @@
 /* Number of bits in a file offset, on hosts where this is settable. */
 #undef _FILE_OFFSET_BITS
 
+/* Code may make use of ISO C '99 features */
+#undef _ISOC99_SOURCE
+
 /* Define to 1 to make fseeko visible on some hosts (e.g. glibc 2.2). */
 #undef _LARGEFILE_SOURCE
 
 /* Define for large files, on AIX-style hosts. */
 #undef _LARGE_FILES
+
+/* Required POSIX interface level (199506L) */
+#undef _POSIX_C_SOURCE
+
+/* Required X Open interface level (500) */
+#undef _XOPEN_SOURCE
+
+/* Enable all API extensions (for Solaris) */
+#undef __EXTENSIONS__
 
 /* Define to empty if `const' does not conform to ANSI C. */
 #undef const

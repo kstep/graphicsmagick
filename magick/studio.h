@@ -20,20 +20,10 @@ extern "C" {
 #endif
 
 /*
-  Private functions and types should only be exposed by the
-  headers when MAGICK_IMPLEMENTATION is defined.
+  Private functions and types which are not part of the published API
+  should only be exposed when MAGICK_IMPLEMENTATION is defined.
 */
 #define MAGICK_IMPLEMENTATION 1
-
-/*
-  System include declarations.
-*/
-#define __EXTENSIONS__  1
-#define _GNU_SOURCE  1
-#define _ISOC99_SOURCE  1
-#define _POSIX_C_SOURCE  200112L
-#define _XOPEN_SOURCE  600
-#define _LARGEFILE64_SOURCE  1
 
 #if !defined(_MAGICK_CONFIG_H)
 # define _MAGICK_CONFIG_H
@@ -243,6 +233,19 @@ extern "C" {
 #  define HAVE_SNPRINTF 1
 #  define vsnprintf trio_vsnprintf
 #  define HAVE_VSNPRINTF 1
+#endif
+
+/*
+  Provide prototypes for several functions which are detected to be
+  available, but which do not provide a prototype due to interface
+  standards conformace.
+*/
+#if defined(HAVE_STRLCPY) && !defined(HAVE_STRLCPY_PROTOTYPE)
+extern size_t strlcpy(char *dst, const char *src, size_t dstsize);
+#endif
+
+#if defined(HAVE_VSNPRINTF) && !defined(HAVE_VSNPRINTF_PROTOTYPE)
+extern int vsnprintf(char *s, size_t n, const char *format, va_list ap);
 #endif
 
 /*

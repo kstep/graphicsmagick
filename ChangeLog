@@ -1,3 +1,13 @@
+2003-09-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/studio.h: Provide prototypes for strlcpy and vsnprintf if
+	the system doesn't provide them in the requested compilation
+	environment.
+	* configure.ac: Add necessary standards compilance definitions to
+	magick_config.h.
+	Check for strlcpy and vsnprintf prototypes.
+	* Makefile.am (DOCDIRS): www/api/types does not exist anymore.
+
 2003-09-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac: Move multithread tests prior to libtool

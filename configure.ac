@@ -76,6 +76,14 @@ MAGICK_API_LDFLAGS=''
 MAGICK_API_LIBS=''
 
 #
+# Standards compliance definitions
+#
+AC_DEFINE(_XOPEN_SOURCE,500,[Required X Open interface level (500)])
+AC_DEFINE(_POSIX_C_SOURCE,199506L,[Required POSIX interface level (199506L)])
+AC_DEFINE(_ISOC99_SOURCE,1,[Code may make use of ISO C '99 features])
+AC_DEFINE(__EXTENSIONS__,1,[Enable all API extensions (for Solaris)])
+
+#
 # Evaluate shell variable equivalents to Makefile directory variables
 #
 if test "x$prefix" = xNONE
@@ -819,6 +827,21 @@ AC_FUNC_MMAP
 AC_CHECK_FUNCS([ftime getexecname getc_unlocked getpagesize mkstemp poll \
   pread pwrite putc_unlocked raise select tempnam times sigemptyset sigaction \
   strerror strlcpy sysconf vsprintf vsnprintf])
+
+########
+#
+# Check for function prototypes
+#
+########
+AC_EGREP_HEADER([strlcpy],[
+#include <stdio.h>
+#include <stdarg.h>],[
+AC_DEFINE(HAVE_STRLCPY_PROTOTYPE, 1, [Headers provide a prototype for strlcpy])])
+
+AC_EGREP_HEADER([vsnprintf],[
+#include <stdio.h>
+#include <stdarg.h>],[
+AC_DEFINE(HAVE_VSNPRINTF_PROTOTYPE, 1, [Headers provide a prototype for vsnprintf])])
 
 ########
 #
