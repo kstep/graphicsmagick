@@ -776,12 +776,18 @@ static void SVGStartElement(void *context,const xmlChar *name,
         }
       if (LocaleCompare(keyword,"rx") == 0)
         {
-          svg_info->radius.x=atof(value)*UnitOfMeasure(value);
+          if (LocaleCompare((char *) name,"ellipse") == 0)
+            svg_info->element.major=atof(value)*UnitOfMeasure(value);
+          else
+            svg_info->radius.x=atof(value)*UnitOfMeasure(value);
           continue;
         }
       if (LocaleCompare(keyword,"ry") == 0)
         {
-          svg_info->radius.y=atof(value)*UnitOfMeasure(value);
+          if (LocaleCompare((char *) name,"ellipse") == 0)
+            svg_info->element.minor=atof(value)*UnitOfMeasure(value);
+          else
+            svg_info->radius.y=atof(value)*UnitOfMeasure(value);
           continue;
         }
       if (LocaleCompare(keyword,"style") == 0)
@@ -1188,9 +1194,8 @@ static void SVGEndElement(void *context,const xmlChar *name)
       if (svg_info->radius.y == 0.0)
         svg_info->radius.y=svg_info->radius.x;
       (void) fprintf(svg_info->file,"roundRectangle %g,%g %g,%g %g,%g\n",
-        svg_info->page.x+svg_info->page.width/2.0,svg_info->page.y+
-        svg_info->page.height/2.0,svg_info->page.width,svg_info->page.height,
-        svg_info->radius.x,svg_info->radius.y);
+        svg_info->page.x,svg_info->page.y,svg_info->page.width,
+        svg_info->page.height,svg_info->radius.x,svg_info->radius.y);
       svg_info->radius.x=0.0;
       svg_info->radius.y=0.0;
       return;

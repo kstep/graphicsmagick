@@ -1501,8 +1501,6 @@ static void GenerateEllipse(PrimitiveInfo *primitive_info,PointInfo start,
     Arc's are just short segmented polys.
   */
   p=primitive_info;
-  end.x/=2.0;
-  end.y/=2.0;
   while (degrees.y < degrees.x)
     degrees.y+=360.0;
   for (angle=(degrees.x+1.0); angle <= degrees.y; angle+=1.0)
@@ -1887,82 +1885,42 @@ static void GenerateRoundRectangle(PrimitiveInfo *primitive_info,
 {
   PointInfo
     degrees,
-    u,
-    v;
+    point;
 
   register PrimitiveInfo
     *p;
 
   p=primitive_info;
-  start.x-=end.x/2;
-  start.y-=end.y/2;
-  end.x+=start.x-1;
-  end.y+=start.y-1;
-  u.x=start.x+arc.x;
-  u.y=start.y;
-  v.x=end.x-arc.x;
-  v.y=start.y;
-  GenerateLine(p,u,v);
-  p+=p->coordinates;
-  p->primitive=primitive_info->primitive;
-  u.x=end.x-arc.x;
-  u.y=start.y+arc.y;
-  v.x=2.0*arc.x;
-  v.y=2.0*arc.y;
+  if (arc.x > (0.5*end.x))
+    arc.x=0.5*end.x;
+  if (arc.y > (0.5*end.y))
+    arc.y=0.5*end.y;
+  point.x=start.x+end.x-arc.x;
+  point.y=start.y+arc.y;
   degrees.x=270.0;
   degrees.y=360.0;
-  GenerateEllipse(p,u,v,degrees);
+  GenerateEllipse(p,point,arc,degrees);
   p+=p->coordinates;
   p->primitive=primitive_info->primitive;
-  u.x=end.x;
-  u.y=start.y+arc.y;
-  v.x=end.x;
-  v.y=end.y-arc.y;
-  GenerateLine(p,u,v);
-  p+=p->coordinates;
-  p->primitive=primitive_info->primitive;
-  u.x=end.x-arc.x;
-  u.y=end.y-arc.y;
-  v.x=2.0*arc.x;
-  v.y=2.0*arc.y;
+  point.x=start.x+end.x-arc.x;
+  point.y=start.y+end.y-arc.y;
   degrees.x=0.0;
   degrees.y=90.0;
-  GenerateEllipse(p,u,v,degrees);
+  GenerateEllipse(p,point,arc,degrees);
   p+=p->coordinates;
   p->primitive=primitive_info->primitive;
-  u.x=end.x-arc.x;
-  u.y=end.y;
-  v.x=start.x+arc.x;
-  v.y=end.y;
-  GenerateLine(p,u,v);
-  u.x=start.x+arc.x;
-  u.y=end.y-arc.y;
-  v.x=2.0*arc.x;
-  v.y=2.0*arc.y;
+  point.x=start.x+arc.x;
+  point.y=start.y+end.y-arc.y;
   degrees.x=90.0;
   degrees.y=180.0;
-  GenerateEllipse(p,u,v,degrees);
+  GenerateEllipse(p,point,arc,degrees);
   p+=p->coordinates;
   p->primitive=primitive_info->primitive;
-  u.x=start.x;
-  u.y=end.y-arc.y;
-  v.x=start.x;
-  v.y=start.y+arc.y;
-  GenerateLine(p,u,v);
-  p+=p->coordinates;
-  p->primitive=primitive_info->primitive;
-  u.x=start.x+arc.x;
-  u.y=start.y+arc.y;
-  v.x=2.0*arc.x;
-  v.y=2.0*arc.y;
+  point.x=start.x+arc.x;
+  point.y=start.y+arc.y;
   degrees.x=180.0;
   degrees.y=270.0;
-  GenerateEllipse(p,u,v,degrees);
-  p+=p->coordinates;
-  p->primitive=primitive_info->primitive;
-  u.x=start.x+arc.x;
-  u.y=start.y;
-  GeneratePoint(p,u);
+  GenerateEllipse(p,point,arc,degrees);
   p+=p->coordinates;
   p->primitive=primitive_info->primitive;
   primitive_info->primitive=PolygonPrimitive;
