@@ -308,11 +308,11 @@ static unsigned int CompositeImageList(ImageInfo *image_info,Image **image,
               y=0;
               flags=ParseGeometry(option_info->geometry,&x,&y,&width,&height);
               if ((flags & XNegative) != 0)
-                x+=(*image)->columns;
+                x+=(*image)->columns-width;
               if ((flags & WidthValue) == 0)
                 width-=2*x > (long) width ? width : 2*x;
               if ((flags & YNegative) != 0)
-                y+=(*image)->rows;
+                y+=(*image)->rows-height;
               if ((flags & HeightValue) == 0)
                 height-=2*y > (long) height ? height : 2*y;
               switch (option_info->gravity)

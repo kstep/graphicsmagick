@@ -3556,6 +3556,18 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             (void) memset(&chop_info,0,sizeof(RectangleInfo));
             flags=ParseGeometry(argv[++i],&chop_info.x,&chop_info.y,
               &chop_info.width,&chop_info.height);
+
+            if ((flags & WidthValue) == 0)
+              chop_info.width=(unsigned long) ((long) (*image)->columns
+                -chop_info.x);
+            if ((flags & HeightValue) == 0)
+              chop_info.height=(unsigned long) ((long) (*image)->rows
+                -chop_info.y);
+            if ((flags & XNegative) != 0)
+              chop_info.x+=(*image)->columns-chop_info.width;
+            if ((flags & YNegative) != 0)
+              chop_info.y+=(*image)->rows-chop_info.height;
+
             chop_image=ChopImage(*image,&chop_info,&(*image)->exception);
             if (chop_image == (Image *) NULL)
               break;
@@ -4491,13 +4503,10 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               width=(unsigned long) ((long) (*image)->columns-region_info.x);
             if ((flags & HeightValue) == 0)
               height=(unsigned long) ((long) (*image)->rows-region_info.y);
-            if ((width != 0) || (height != 0))
-              {
-                if ((flags & XNegative) != 0)
-                  region_info.x+=(*image)->columns-width;
-                if ((flags & YNegative) != 0)
-                  region_info.y+=(*image)->rows-height;
-              }
+            if ((flags & XNegative) != 0)
+              region_info.x+=(*image)->columns-width;
+            if ((flags & YNegative) != 0)
+              region_info.y+=(*image)->rows-height;
             if (strchr(argv[i],'%') != (char *) NULL)
               {
                 /*
