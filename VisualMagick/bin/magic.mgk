@@ -19,6 +19,7 @@
   <magic name="FIG" offset="0" target="#FIG" />
   <magic name="FITS" offset="0" target="IT0" />
   <magic name="FITS" offset="0" target="SIMPLE" />
+  <magic name="FPX" offset="0" target="\320\317\021\340" />
   <magic name="GIF" offset="0" target="GIF8" />
   <magic name="GPLT" offset="0" target="#!/usr/local/bin/gnuplot" />
   <magic name="HDF" offset="1" target="HDF" />
@@ -45,6 +46,8 @@
   <magic name="PDF" offset="0" target="%PDF-" />
   <magic name="PFA" offset="0" target="%!PS-AdobeFont-1.0" />
   <magic name="PFB" offset="6" target="%!PS-AdobeFont-1.0" />
+  <magic name="PICT" offset="522" target="\000\021\002\377\014\000" />
+  <magic name="PICT" offset="522" target="\021\001" />
   <magic name="PNG" offset="0" target="\211PNG\r\n\032\n" />
   <magic name="PNM" offset="0" target="P1" />
   <magic name="PNM" offset="0" target="P2" />

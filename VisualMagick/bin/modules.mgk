@@ -7,7 +7,7 @@
   <module magick="BIE" name="JBIG" />
   <module magick="C" name="GRAY" />
   <module magick="DCX" name="PCX" />
-  <module magick="EMF" name="WMF" />
+  <module magick="EMF" name="EMF" />
   <module magick="EPDF" name="PDF" />
   <module magick="EPI" name="PS" />
   <module magick="EPS" name="PS" />
@@ -15,6 +15,7 @@
   <module magick="EPSF" name="PS" />
   <module magick="EPSI" name="PS" />
   <module magick="FILE" name="URL" />
+  <module magick="FRACTAL" name="PLASMA" />
   <module magick="FTP" name="URL" />
   <module magick="G" name="GRAY" />
   <module magick="G3" name="FAX" />
@@ -25,6 +26,7 @@
   <module magick="HTM" name="HTML" />
   <module magick="HTTP" name="URL" />
   <module magick="ICB" name="TGA" />
+  <module magick="ICC" name="META" />
   <module magick="ICM" name="META" />
   <module magick="ICO" name="ICON" />
   <module magick="IMPLICIT" name="MIFF" />
@@ -62,7 +64,7 @@
   <module magick="TIF" name="TIFF" />
   <module magick="VDA" name="TGA" />
   <module magick="VST" name="TGA" />
-  <module magick="WMFWIN32" name="WMF" />
+  <module magick="WMFWIN32" name="EMF" />
   <module magick="XV" name="VIFF" />
   <module magick="Y" name="GRAY" />
 </modulemap>

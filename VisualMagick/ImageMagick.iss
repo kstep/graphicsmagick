@@ -37,15 +37,19 @@ AppName=ImageMagick
 ; When updating the version string, remember to also update the version in
 ; the [Registry] section
 AppVerName=ImageMagick version 5.4.8
+AppVersion=5.4.8
 AppCopyright=Copyright (C) 2002 ImageMagick Studio
-; To install under "C:\Program Files ImageMagick":
-; DefaultDirName={pf}\ImageMagick
-DefaultDirName={sd}\ImageMagick
+AppPublisher=ImageMagick Studio
+AppPublisherURL=http://www.imagemagick.org/
+; To install under "C:\Program Files\ImageMagick":
+DefaultDirName={pf}\ImageMagick
+; To install under "C:\ImageMagick":
+; DefaultDirName={sd}\ImageMagick
 DefaultGroupName=ImageMagick
 AllowRootDirectory=yes
 UninstallDisplayIcon={app}\ImageMagick.ico
 OutputDir=bin
-OutputBaseFilename=ImageMagick-win2k
+OutputBaseFilename=ImageMagick-5.4.8-win2k
 ; uncomment the following line if you want your installation to run on NT 3.51 too.
 ; MinVersion=4,3.51
 
@@ -79,13 +83,11 @@ Source: "bin\IM_MOD_RL*.dll"; DestDir: "{app}\modules"
 Source: "bin\X11.dll"; DestDir: "{app}"
 Source: "bin\Xext.dll"; DestDir: "{app}"
 ; Configuration files
-Source: "bin\colors.mgk"; DestDir: "{app}\config"
+Source: "..\magick\colors.mgk"; DestDir: "{app}\config"
 Source: "bin\delegates.mgk"; DestDir: "{app}\config"
-Source: "bin\fonts.mgk"; DestDir: "{app}\config"
-Source: "bin\magic.mgk"; DestDir: "{app}\config"
-Source: "bin\modules.mgk"; DestDir: "{app}\modules"
+Source: "..\magick\magic.mgk"; DestDir: "{app}\config"
+Source: "..\coders\modules.mgk"; DestDir: "{app}\modules"
 Source: "bin\type-ghostscript.mgk"; DestDir: "{app}\config"
-Source: "bin\type-windows.mgk"; DestDir: "{app}\config"
 Source: "bin\type.mgk"; DestDir: "{app}\config"
 ; Release documentation files
 Source: "..\ChangeLog"; DestDir: "{app}"; DestName: "ChangeLog.txt"
