@@ -1,3 +1,10 @@
+2004-03-16  David N. Welton  <davidw@dedasys.com>
+
+	* doc/index.html: Add license link.
+
+	* doc/license.txt: Added license to be displayed on the web.  This
+	needs to be kept in sync with the main LICENSE file.
+
 2004-03-12  David N. Welton  <davidw@dedasys.com>
 
 	* doc/index.html: Fixed up HTML pages some.
