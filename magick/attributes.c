@@ -2,6 +2,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
+%                                                                             %
 %     AAA   TTTTT  TTTTT  RRRR   IIIII  BBBB   U   U  TTTTT  EEEEE  SSSSS     %
 %    A   A    T      T    R   R    I    B   B  U   U    T    E      SS        %
 %    AAAAA    T      T    RRRR     I    BBBB   U   U    T    EEE     SSS      %
@@ -795,8 +796,6 @@ MagickExport unsigned int SetImageAttribute(Image *image,const char *key,
     }
   if (*value == '\0')
     return(False);
-  if (LocaleCompare(key,"Comment") == 0)
-    while (SetImageAttribute(image,"Comment",(char *) NULL) != False);
   if (LocaleCompare(key,"Label") == 0)
     while (SetImageAttribute(image,"Label",(char *) NULL) != False);
   if (LocaleCompare(key,"Signature") == 0)
@@ -821,7 +820,11 @@ MagickExport unsigned int SetImageAttribute(Image *image,const char *key,
   for (p=image->attributes; p != (ImageAttribute *) NULL; p=p->next)
   {
     if (LocaleCompare(attribute->key,p->key) == 0)
-      break;
+      {
+        ConcatenateString(&p->value,attribute->value);
+        LiberateMemory((void **) &attribute->value);
+        LiberateMemory((void **) &attribute->key);
+      }
     if (p->next == (ImageAttribute *) NULL)
       break;
   }

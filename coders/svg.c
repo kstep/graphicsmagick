@@ -2639,7 +2639,13 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
         */
         WriteBlobString(image,"<desc>");
         for (q++; (*q != '\n') && (*q != '\0'); q++)
-          WriteBlobByte(image,*q);
+          switch (*q)
+          {
+            case '<': WriteBlobString(image,"&lt;"); break;
+            case '>': WriteBlobString(image,"&gt;"); break;
+            case '&': WriteBlobString(image,"&amp;"); break;
+            default: WriteBlobByte(image,*q); break;
+          }
         WriteBlobString(image,"</desc>\n");
         continue;
       }
@@ -3232,7 +3238,9 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
             status=False;
             break;
           }
-        (void) FormatString(buffer,"  <ellipse rx=\"%g\" ry=\"%g\"/>\n",
+        (void) FormatString(buffer,
+          "  <ellipse cx=\"%g\" cy=\"%g\" rx=\"%g\" ry=\"%g\"/>\n",
+          primitive_info[j].point.x,primitive_info[j].point.y,
           primitive_info[j+1].point.x,primitive_info[j+1].point.y);
         (void) WriteBlobString(image,buffer);
         break;
@@ -3452,10 +3460,13 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
           primitive_info[j].point.x,primitive_info[j].point.y);
         (void) WriteBlobString(image,buffer);
         for (p=primitive_info[j].text; *p != '\0'; p++)
-          if (*p != '&')
-            WriteBlobByte(image,*p);
-          else
-            WriteBlobString(image,"&amp;");
+          switch (*p)
+          {
+            case '<': WriteBlobString(image,"&lt;"); break;
+            case '>': WriteBlobString(image,"&gt;"); break;
+            case '&': WriteBlobString(image,"&amp;"); break;
+            default: WriteBlobByte(image,*p); break;
+          }
         (void) WriteBlobString(image,"</text>\n");
         break;
       }
