@@ -22,11 +22,11 @@ in the header are keyword and value combination in the
 equal sign (=).  Each \fIkeyword=value\fP combination is delimited by
 at least one control or whitespace character.  Comments may appear in
 the header section and are always delimited by braces.  The MIFF header
-always ends with a colon (:) character, followed by a \fBnewline\fP
-character.  It is also common for a \fBformfeed\fP and a \fBnewline\fP
-character to appear before the colon. You can then list the image
-keywords with \fImore(1)\fP, without printing the binary image that
-follows the colon separator.
+always ends with a colon (:) character, followed by a \fBctrl-Z\fP
+character.  It is also common to proceed the colon with a \fBformfeed\fP
+and a \fBnewline\fP character.  The \fBformfeed\fP prevents the listing
+of binary data when using \fBmore(1)\fP under Unix where the \fBctrl-Z\fP
+has the same effect with the \fBtype\fP command on the Win32 command line.
 
 The following is a list of \fIkeyword=value\fP combinations that may be
 found in a MIFF file:
@@ -87,9 +87,9 @@ Here are the valid methods:
 
 .nf
      0  No disposal specified.
-     1  Do not dispose.
-     2  Restore to background color.
-     3  Restore to previous.
+     1  Do not dispose between frames.
+     2  Overwrite frame with background color from header.
+     3  Overwrite with previous frame.
 .fi
 .TP
 .B "gamma=\fIvalue\fP"

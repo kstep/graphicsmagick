@@ -11217,11 +11217,7 @@ Export void SetImageInfo(ImageInfo *image_info,const unsigned int rectify)
   if ((strncmp(magick,"<HTML",5) == 0) ||
       (strncmp(magick,"<html",5) == 0))
     (void) strcpy(image_info->magick,"HTML");
-  if (strncmp(magick,"\377\330\377\340",4) == 0)
-    (void) strcpy(image_info->magick,"JPEG");
-  if (strncmp(magick,"\377\330\377\356",4) == 0)
-    (void) strcpy(image_info->magick,"JPEG");
-  if (strncmp(magick,"\377\330\377\376",4) == 0)
+  if (strncmp(magick,"\377\330\377",3) == 0)
     (void) strcpy(image_info->magick,"JPEG");
   if (strncmp(magick,"id=ImageMagick",14) == 0)
     (void) strcpy(image_info->magick,"MIFF");
@@ -12659,7 +12655,7 @@ static double Bessel(double x)
 {
   if (x == 0.0)
     return(M_PI/4.0);
-  return(M_PI*x/2.0*x);
+  return(BesselOrderOne(M_PI*x)/(2.0*x));
 }
 
 static double Blackman(double x)

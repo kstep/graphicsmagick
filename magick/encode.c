@@ -550,9 +550,7 @@ Export unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           Colormapped BMP raster.
         */
         bmp_header.bit_count=8;
-        bytes_per_line=4*((image->columns*bmp_header.bit_count+31)/32);
-        if (image->compression == NoCompression)
-          bytes_per_line=image->columns;
+        bytes_per_line=image->columns;
         if (IsMonochromeImage(image))
           {
             bmp_header.bit_count=1;
@@ -2255,10 +2253,10 @@ Export unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
     c=0x00;
     if (interlace != NoInterlace)
       c|=0x40;  /* pixel data is interlaced */
-    for (j=0; j < (int) colors; j++)
+    for (j=0; j < (int) 3*colors; j++)
       if (colormap[j] != global_colormap[j])
         break;
-    if (j == (int) colors)
+    if (j == (int) 3*colors)
       (void) fputc((char) c,image->file);
     else
       {
@@ -4404,7 +4402,7 @@ Export unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
       (void) fprintf(image->file,"label=\"%.1024s\"\n",image->label);
     if (image->comments != (char *) NULL)
       (void) fprintf(image->file,"{%s}\n",image->comments);
-    (void) fprintf(image->file,"\f\n:\n");
+    (void) fprintf(image->file,"\f\n:\032");
     if (image->montage != (char *) NULL)
       {
         /*

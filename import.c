@@ -679,7 +679,7 @@ int main(int argc,char **argv)
             }
           if (strncmp("pointsize",option+1,2) == 0)
             {
-              image_info->pointsize=atoi(DefaultPointSize);
+              image_info->pointsize=12;
               if (*option == '-')
                 {
                   i++;

@@ -2,7 +2,7 @@
 <HEAD>
 <TITLE>ImageMagick Image File Format</TITLE>
 <LINK rev="made" href="mailto:magick@wizards.dupont.com">
-<meta name="description" content="ImageMagick, version 4.2.0, is a package for
+<meta name="description" content="ImageMagick, version 4.2.1, is a package for
   display and interactive manipulation of images for the X Window System. It
   is written in C and interfaces to the X library, and therefore does not
   require any proprietary toolkit in order to compile.  Although the software
@@ -37,7 +37,7 @@ A <B>MIFF</B> image file consist of two sections.  The first
 section is a header composed of keywords describing the
 image in text form.  The next section is the binary image
 data.  The header is separated from the image data by a <tt>:</tt>
-character immediately followed by a <I>newline</I>.
+character immediately followed by a <I>ctrl-Z</I>.
 <P>
 The <B>MIFF</B> header is composed entirely of LATIN-1 characters.
 The fields in the header are keyword and value combination
@@ -47,11 +47,11 @@ combination is delimited by at least one control or
 whitespace character.  Comments may appear in the header
 section and are always delimited by braces.  The <B>MIFF</B> header
 always ends with a colon (<tt>:</tt>) character, followed by a
-<I>newline</I> character.  It is also common for a
-<I>formfeed</I> and a
-<I>newline</I> character to appear before the colon. You can then
-list the image keywords with <b>more(1)</b>, without printing the
-binary image that follows the colon separator.
+<I>ctrl-Z</I> character.
+It is also common to proceed the colon with a <i>formfeed</i>
+and a <i>newline</i> character.  The <i>formfeed</i> prevents the listing
+of binary data when using <b>more(1)</b> under Unix where the <i>ctrl-Z</i>
+has the same effect with the <b>type</b> command on the Win32 command line.
 <P>
 The following is a list of <EM>keyword</EM>=<EM>value</EM> combinations that
 may be found in a <B>MIFF</B> file:
@@ -115,9 +115,9 @@ assumed.
 <p>
 <pre>
   0     No disposal specified.
-  1     Do not dispose.
-  2     Restore to background color.
-  3     Restore to previous.
+  1     Do not dispose between frames.
+  2     Overwrite frame with background color from header.
+  3     Overwrite with previous frame.
 </pre>
 <P>
 <DT><B>gamma</B>=<I>value</I>

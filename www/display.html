@@ -2,7 +2,7 @@
 <HEAD>
 <TITLE>ImageMagick Display and Editor for the X Window System</TITLE>
 <LINK rev="made" href="mailto:magick@wizards.dupont.com">
-<meta name="description" content="ImageMagick, version 4.2.0, is a package for
+<meta name="description" content="ImageMagick, version 4.2.1, is a package for
   display and interactive manipulation of images for the X Window System. It
   is written in C and interfaces to the X library, and therefore does not
   require any proprietary toolkit in order to compile.  Although the software
@@ -393,9 +393,9 @@ This option is used in concert with <b>-page</b>.
 <p>
 <pre>
       0  No disposal specified.
-      1  Do not dispose.      
-      2  Restore to background color.
-      3  Restore to previous.
+      1  Do not dispose between frames.      
+      2  Overwrite frame with background color from header.
+      3  Overwrite with previous frame.
 </pre>
 <P>
 <DT><B>-dither</B>

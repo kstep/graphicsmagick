@@ -10132,6 +10132,8 @@ static unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
   */
   (void) strcpy(save_image->filename,filename);
   status=WriteImage(image_info,save_image);
+  if (status == True)
+    image->tainted=False;
   DestroyImage(save_image);
   DestroyImageInfo(image_info);
   XSetCursorState(display,windows,False);

@@ -5755,7 +5755,8 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
     {
 #if defined(HasTTF)
       char
-        *path;
+        *path,
+        *path_end;
 
       int
         character_map,
@@ -5817,22 +5818,68 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
       error=TT_Init_FreeType(&engine);
       if (error)
         PrematureExit(DelegateWarning,"Cannot initialize TTF engine",image);
-      error=TT_Open_Face(engine,local_info->font+1,&face);
+      /*
+        Search for Truetype font filename.
+      */
+      error=True;
       path=getenv("TT_FONT_PATH");
-      if (error && (path != (char *) NULL))
+      if (path != (char *) NULL)
         {
-          char
-            filename[MaxTextExtent];
-
           /*
-            Try Truetype font path.
+            Environment variable TT_FONT_PATH.
           */
-          (void) strcpy(filename,path);
-          if (strncmp(filename+(strlen(filename)-1),DirectorySeparator,1))
-            (void) strcat(filename,DirectorySeparator);
-          (void) strcat(filename,local_info->font+1);
-          error=TT_Open_Face(engine,filename,&face);
+          for ( ; ; )
+          {
+            path_end=strchr(path,DirectoryListSeparator);
+            if (path_end == (char *) NULL)
+              (void) strcpy(filename,path);
+            else
+              {
+                i=(int) (path_end-path);
+                (void) strncpy(filename,path,i);
+                filename[i]='\0';
+              }
+            i=strlen(filename);
+            if ((i > 0) && (!IsBasenameSeparator(filename[i-1])))
+              (void) strcat(filename,DirectorySeparator);
+            (void) strcat(filename,local_info->font+1);
+            error=TT_Open_Face(engine,filename,&face);
+            if (!error || (path_end == (char *) NULL) || (*path_end == '\0'))
+              break;
+            path=path_end+1;
+          }
+       }
+#if defined(TT_FONT_PATH)
+      if (error)
+        {
+          /*
+            Configured Truetype font path.
+          */
+          path=TT_FONT_PATH;
+          for ( ; ; )
+          {
+            path_end=strchr(path,DirectoryListSeparator);
+            if (path_end == (char *) NULL)
+              (void) strcpy(filename,path);
+            else
+              {
+                i=(int)(path_end-path);
+                (void) strncpy(filename,path,i);
+                filename[i]='\0';
+              }
+            i=strlen(filename);
+            if ((i > 0) && (!IsBasenameSeparator(filename[i-1])))
+              (void) strcat(filename,DirectorySeparator);
+            (void) strcat(filename,local_info->font+1);
+            error=TT_Open_Face(engine,filename,&face);
+            if (!error || (path_end == (char *) NULL) || (*path_end == '\0'))
+              break;
+            path=path_end+1;
+          }
         }
+#endif
+      if (error)
+        error=TT_Open_Face(engine,local_info->font+1,&face);
       if (error)
         {
           /*
@@ -18591,6 +18638,7 @@ Export Image *ReadImage(ImageInfo *image_info)
         status=
           InvokeDelegate(image_info,image,image_info->magick,(char *) NULL);
         DestroyImages(image);
+        image=(Image *) NULL;
         if (status == False)
           image_info->temporary=True;
         SetImageInfo(image_info,False);
@@ -18675,6 +18723,7 @@ Export Image *ReadImage(ImageInfo *image_info)
         }
       }
       DestroyImages(image);
+      image=(Image *) NULL;
       if (subimages == (Image *) NULL)
         {
           MagickWarning(OptionWarning,

@@ -9,6 +9,7 @@ extern "C" {
 #endif
 
 #define ErrorQueueLength  16
+#define MaxTreeDepth  8
 #define NodesInAList  2048
 
 /*
@@ -36,9 +37,6 @@ typedef struct _QuantizeInfo
 /*
   Constant declarations.
 */
-extern const int
-  MaxTreeDepth;
-
 extern const long
   MaxColormapSize;
 

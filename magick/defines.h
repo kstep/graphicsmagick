@@ -17,6 +17,7 @@ extern "C" {
 #define DelegatePath  "/usr/local/share/ImageMagick/"
 #endif
 #define DirectorySeparator  "/"
+#define DirectoryListSeparator  ':'
 #define EditorOptions  " -title \"Edit Image Comment\" -e vi"
 #define Exit  exit
 #define IsBasenameSeparator(c)  ((c) == '/')
@@ -40,6 +41,7 @@ extern "C" {
 #define ApplicationDefaults  "decw$system_defaults:"
 #define DelegatePath  "sys$login:"
 #define DirectorySeparator  ""
+#define DirectoryListSeparator  ';'
 #define EditorOptions  ""
 #define Exit(errno)  errno ? exit(-1) : exit(0)
 #define IsBasenameSeparator(c)  ((c) == ']')
@@ -48,6 +50,7 @@ extern "C" {
    (strchr(text,'?') != (char *) NULL) || \
    (strchr(text,'{') != (char *) NULL) || \
    (strchr(text,'}') != (char *) NULL))
+#define j1(x)  x
 #define PreferencesDefaults  "decw$user_defaults:"
 #define ProcessPendingEvents(text)
 #define ReadCommandlLine(argc,argv)
@@ -60,6 +63,7 @@ extern "C" {
 #define ApplicationDefaults  "/usr/lib/X11/app-defaults/"
 #define DelegatePath  ""
 #define DirectorySeparator  ":"
+#define DirectoryListSeparator  ';'
 #define EditorOptions ""
 #define IsBasenameSeparator(c)  ((c) == ':')
 #define IsGlob(text) \
@@ -69,6 +73,7 @@ extern "C" {
    (strchr(text,'}') != (char *) NULL) || \
    (strchr(text,'[') != (char *) NULL) || \
    (strchr(text,']') != (char *) NULL))
+#define j1(x)  x
 #define PreferencesDefaults  "~/."
 #define ReadCommandlLine(argc,argv)  argc=ccommand(argv); puts(MagickVersion);
 #if !defined(RGBColorDatabase)
@@ -82,6 +87,7 @@ extern "C" {
 #define ApplicationDefaults  "c:\\ImageMagick\\"
 #define DelegatePath  "c:\\ImageMagick\\"
 #define DirectorySeparator  "\\"
+#define DirectoryListSeparator  ';'
 #define EditorOptions ""
 #undef isatty
 #define isatty(filedes)  1
@@ -93,6 +99,7 @@ extern "C" {
    (strchr(text,'}') != (char *) NULL) || \
    (strchr(text,'[') != (char *) NULL) || \
    (strchr(text,']') != (char *) NULL))
+#define j1(x)  x
 #define PreferencesDefaults  "~/."
 #define ProcessPendingEvents(text)
 #define ReadCommandlLine(argc,argv)

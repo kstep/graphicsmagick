@@ -41,5 +41,7 @@
 #if defined(HasZLIB)
 #include "zlib.h"
 #endif
+#undef const
+#undef void
 
 #endif

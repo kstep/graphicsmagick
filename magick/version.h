@@ -14,9 +14,9 @@ extern "C" {
 #define MagickCopyright  "Copyright 1999 E. I. du Pont de Nemours and Company" \
   "\n           portions copyright Eastman Kodak Company, 1996"
 #endif
-#define MagickLibVersion  0x0420
+#define MagickLibVersion  0x0421
 #define MagickVersion  \
-  "@(#)ImageMagick 4.2.0 99/03/01 cristy@mystic.es.dupont.com"
+  "@(#)ImageMagick 4.2.1 99/04/01 cristy@mystic.es.dupont.com"
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -141,6 +141,13 @@
 #include "defines.h"
 
 /*
+  Constant declarations.
+*/
+#define ExitState  0x0002
+#define FormerImageState  0x0004
+#define RetainColorsState 0x0040
+
+/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
@@ -359,7 +366,7 @@ int main(int argc,char **argv)
   for (i=0; i <= argc; i++)
     image_marker[i]=argc;
   resource_database=(XrmDatabase) NULL;
-  state=DefaultState;
+  state=0;
   /*
     Check for server name specified on the command line.
   */
@@ -999,7 +1006,7 @@ int main(int argc,char **argv)
         {
           if (strncmp("quality",option+1,2) == 0)
             {
-              image_info->quality=atoi(DefaultImageQuality);
+              image_info->quality=75;
               if (*option == '-')
                 {
                   i++;

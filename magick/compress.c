@@ -311,13 +311,13 @@ Export void Ascii85Encode(const unsigned int code,FILE *file)
   {
     for (q=Ascii85Tuple(p); *q; q++)
     {
-      (void) fputc(*q,file);
       line_break--;
-      if ((line_break <= 0) && (*(q+1) != '%'))
+      if ((line_break < 0) && (*(q+1) != '%'))
         {
           (void) fputc('\n',file);
           line_break=2*MaxLineExtent;
         }
+      (void) fputc(*q,file);
     }
     p+=8;
   }

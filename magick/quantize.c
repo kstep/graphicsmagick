@@ -282,8 +282,7 @@ typedef struct _CubeInfo
 */
 const int
   CacheShift = (QuantumDepth-6),
-  MaxNodes = 266817,
-  MaxTreeDepth = 8;
+  MaxNodes = 266817;
 
 const long
   MaxColormapSize = 65535L;

@@ -784,11 +784,6 @@ Export int GetGeometry(const char *image_geometry,int *x,int *y,
     Parse geometry using XParseGeometry.
   */
   flags|=XParseGeometry(geometry,x,y,width,height);
-  if (((flags & WidthValue) != 0) && (flags & HeightValue) == 0)
-    {
-      *height=(*width);
-      flags|=HeightValue;
-    }
   return(flags);
 }
 

@@ -577,6 +577,12 @@ else
 fi
 
 
+
+# Set version
+MAJOR_VERSION=4
+MINOR_VERSION=2
+MICRO_VERSION=1
+echo "configuring ImageMagick $MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION"
 ac_aux_dir=
 for ac_dir in $srcdir $srcdir/.. $srcdir/../..; do
   if test -f $ac_dir/install-sh; then
@@ -624,7 +630,7 @@ else { echo "configure: error: can not run $ac_config_sub" 1>&2; exit 1; }
 fi
 
 echo $ac_n "checking host system type""... $ac_c" 1>&6
-echo "configure:628: checking host system type" >&5
+echo "configure:634: checking host system type" >&5
 
 host_alias=$host
 case "$host_alias" in
@@ -645,7 +651,7 @@ host_os=`echo $host | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\3/'`
 echo "$ac_t""$host" 1>&6
 
 echo $ac_n "checking target system type""... $ac_c" 1>&6
-echo "configure:649: checking target system type" >&5
+echo "configure:655: checking target system type" >&5
 
 target_alias=$target
 case "$target_alias" in
@@ -663,7 +669,7 @@ target_os=`echo $target | sed 's/^\([^-]*\)-\([^-]*\)-\(.*\)$/\3/'`
 echo "$ac_t""$target" 1>&6
 
 echo $ac_n "checking build system type""... $ac_c" 1>&6
-echo "configure:667: checking build system type" >&5
+echo "configure:673: checking build system type" >&5
 
 build_alias=$build
 case "$build_alias" in
@@ -685,12 +691,6 @@ test "$host_alias" != "$target_alias" &&
     NONENONEs,x,x, &&
   program_prefix=${target_alias}-
 
-
-# Set version
-MAJOR_VERSION=4
-MINOR_VERSION=2
-MICRO_VERSION=0
-echo "configuring ImageMagick $MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION"
 
 # Generate configure header.
 
@@ -8269,7 +8269,7 @@ echo "configure:8268: checking for gs PDF writing device" >&5
   then
     GSPDFDevice=pdfwrite
   else
-    GSPDFDevice=ppmraw
+    GSPDFDevice=nodevice
   fi
   
   echo "$ac_t""$GSPDFDevice" 1>&6
@@ -8281,7 +8281,7 @@ echo "configure:8280: checking for gs PS writing device" >&5
   then
     GSPSDevice=pswrite
   else
-    GSPSDevice=ppmraw
+    GSPSDevice=nodevice
   fi
   
   echo "$ac_t""$GSPSDevice" 1>&6
@@ -8293,7 +8293,7 @@ echo "configure:8292: checking for gs EPS writing device" >&5
   then
     GSEPSDevice=epswrite
   else
-    GSEPSDevice=ppmraw
+    GSEPSDevice=nodevice
   fi
   
   echo "$ac_t""$GSEPSDevice" 1>&6

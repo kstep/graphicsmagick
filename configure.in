@@ -7,13 +7,13 @@ dnl Currently maintained by Bob Friesenhahn, bfriesen@simple.dallas.tx.us
 #
 
 AC_INIT(magick/magick.h)
-AC_CANONICAL_SYSTEM
 
 # Set version
 MAJOR_VERSION=4
 MINOR_VERSION=2
-MICRO_VERSION=0
+MICRO_VERSION=1
 echo "configuring ImageMagick $MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION"
+AC_CANONICAL_SYSTEM
 AC_SUBST(MAJOR_VERSION)dnl
 AC_SUBST(MINOR_VERSION)dnl
 AC_SUBST(MICRO_VERSION)dnl
@@ -978,7 +978,7 @@ then
   then
     GSPDFDevice=pdfwrite
   else
-    GSPDFDevice=ppmraw
+    GSPDFDevice=nodevice
   fi
   AC_SUBST(GSPDFDevice)
   AC_MSG_RESULT($GSPDFDevice)
@@ -989,7 +989,7 @@ then
   then
     GSPSDevice=pswrite
   else
-    GSPSDevice=ppmraw
+    GSPSDevice=nodevice
   fi
   AC_SUBST(GSPSDevice)
   AC_MSG_RESULT($GSPSDevice)
@@ -1000,7 +1000,7 @@ then
   then
     GSEPSDevice=epswrite
   else
-    GSEPSDevice=ppmraw
+    GSEPSDevice=nodevice
   fi
   AC_SUBST(GSEPSDevice)
   AC_MSG_RESULT($GSEPSDevice)

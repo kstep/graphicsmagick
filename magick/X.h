@@ -46,7 +46,7 @@ extern "C" {
 #include <X11/extensions/XShm.h>
 #endif
 #undef index
-#if defined(_AIX) || defined(hpux9)
+#if defined(hpux9)
 #define XFD_SET  int
 #else
 #define XFD_SET  fd_set

@@ -1053,7 +1053,7 @@ int main(int argc,char **argv)
             }
           if (strncmp("pointsize",option+1,2) == 0)
             {
-              image_info.pointsize=atoi(DefaultPointSize);
+              image_info.pointsize=12;
               if (*option == '-')
                 {
                   i++;
@@ -1070,7 +1070,7 @@ int main(int argc,char **argv)
         {
           if (strncmp("quality",option+1,2) == 0)
             {
-              image_info.quality=atoi(DefaultImageQuality);
+              image_info.quality=75;
               if (*option == '-')
                 {
                   i++;
