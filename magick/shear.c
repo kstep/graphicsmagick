@@ -66,6 +66,91 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
++   C r o p S h e a r I m a g e                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method CropShearImage crops the sheared image as determined by the bounding
+%  box as defined by width and height and shearing angles.
+%
+%  The format of the CropShearImage method is:
+%
+%      Image *CropShearImage(Image **image,const double x_shear,
+%        const double x_shear,const double width,const double height)
+%
+%  A description of each parameter follows.
+%
+%    o image: The address of a structure of type Image.
+%
+%    o x_shear, y_shear, width, height: Defines a region of the image to crop.
+%
+%
+*/
+static void CropShearImage(Image **image,const double x_shear,
+  const double y_shear,const double width,const double height)
+{
+  char
+    geometry[MaxTextExtent];
+
+  PointInfo
+    extent[4],
+		min,
+		max;
+
+  RectangleInfo
+    crop_info;
+
+  register long
+    i;
+
+  /*
+    Calculate the rotated image size.
+  */
+  extent[0].x=(-width/2.0);
+  extent[0].y=(-height/2.0);
+  extent[1].x=width/2.0;
+  extent[1].y=(-height/2.0);
+  extent[2].x=(-width/2.0);
+  extent[2].y=height/2.0;
+  extent[3].x=width/2.0;
+  extent[3].y=height/2.0;
+  for (i=0; i < 4; i++)
+  {
+    extent[i].x+=x_shear*extent[i].y;
+    extent[i].y+=y_shear*extent[i].x;
+    extent[i].x+=x_shear*extent[i].y;
+    extent[i].x+=(double) (*image)->columns/2.0;
+    extent[i].y+=(double) (*image)->rows/2.0;
+  }
+  min=extent[0];
+  max=extent[0];
+  for (i=1; i < 4; i++)
+  {
+    if (min.x > extent[i].x)
+      min.x=extent[i].x;
+    if (min.y > extent[i].y)
+      min.y=extent[i].y;
+    if (max.x < extent[i].x)
+      max.x=extent[i].x;
+    if (max.y < extent[i].y)
+      max.y=extent[i].y;
+  }
+  crop_info.width=(unsigned long) floor(max.x-min.x+0.5);
+	crop_info.height=(unsigned long) floor(max.y-min.y+0.5);
+  crop_info.x=(long) ceil(min.x-0.5);
+  crop_info.y=(long) ceil(min.y-0.5);
+  FormatString(geometry,"%lux%lu%+ld%+ld",crop_info.width,crop_info.height,
+    crop_info.x,crop_info.y);
+  TransformImage(image,geometry,(char *) NULL);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   I n t e g r a l R o t a t e I m a g e                                     %
 %                                                                             %
 %                                                                             %
@@ -899,7 +984,7 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
   XShearImage(rotate_image,shear.x,y_width,rotate_image->rows,
     (long) (rotate_image->columns-y_width+1)/2,0);
   (void) memset(&rotate_image->page,0,sizeof(RectangleInfo));
-  TransformImage(&rotate_image,"0x0",(char *) NULL);
+  CropShearImage(&rotate_image,shear.x,shear.y,width,height);
   return(rotate_image);
 }
 
@@ -1014,6 +1099,6 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
   YShearImage(shear_image,shear.y,y_width,image->rows,
     (long) (shear_image->columns-y_width+1)/2,y_offset);
   (void) memset(&shear_image->page,0,sizeof(RectangleInfo));
-  TransformImage(&shear_image,"0x0",(char *) NULL);
+  CropShearImage(&shear_image,shear.x,shear.y,image->columns,image->rows);
   return(shear_image);
 }
