@@ -696,7 +696,7 @@ static void WmfDrawRectangle(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
   char
     buff[MaxTextExtent];
 
-  double
+  int
     x1,
     y1,
     x2,
@@ -734,7 +734,7 @@ static void WmfDrawRectangle(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
   y1 = NormY(wmfrecord->Parameters[2]+(cstruct->dc->pen->lopnWidth/2),cstruct);
   x2 = NormX(wmfrecord->Parameters[1]-(cstruct->dc->pen->lopnWidth/2),cstruct);
   y2 = NormY(wmfrecord->Parameters[0]-(cstruct->dc->pen->lopnWidth/2),cstruct);
-  sprintf(buff,"rectangle %f,%f %f,%f\n",x1,y1,x2,y2);
+  sprintf(buff,"rectangle %i,%i %i,%i\n",x1,y1,x2,y2);
   ExtendMVG(cstruct, buff);
   ExtendMVG(cstruct, "pop graphic-context\n");
 }
@@ -745,7 +745,7 @@ static void WmfDrawRoundRectangle(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
   char
     buff[MaxTextExtent];
 
-  double
+  int
     ch,
     cw,
     x1,
@@ -784,7 +784,7 @@ static void WmfDrawRoundRectangle(CSTRUCT *cstruct, WMFRECORD *wmfrecord)
   y2 = NormY(wmfrecord->Parameters[2]-(cstruct->dc->pen->lopnWidth/2),cstruct); /* bottom */
   cw = ScaleX(wmfrecord->Parameters[1],cstruct); /* ell_width */
   ch = ScaleY(wmfrecord->Parameters[0],cstruct); /* ell_height */
-  sprintf(buff,"roundrectangle %f,%f %f,%f %f,%f\n",x1,y1,x2,y2, cw, ch);
+  sprintf(buff,"roundrectangle %i,%i %i,%i %i,%i\n",x1,y1,x2,y2, cw, ch);
   ExtendMVG(cstruct, buff);
   ExtendMVG(cstruct, "pop graphic-context\n");
 }
@@ -1106,6 +1106,11 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   if(!image_info->ping)
     {
+      /* Add viewbox primitive to support a stand-alone mvg file */
+      sprintf( buff, "viewbox 0,0 %i,%i\n",
+               (int)cstruct->realwidth, (int)cstruct->realheight );
+      ExtendMVG(cstruct, buff);
+
       /* Create white canvas image */
       local_info = (ImageInfo*)AcquireMemory(sizeof(ImageInfo));
       if(local_info == (ImageInfo*)NULL)
@@ -1144,6 +1149,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       draw_info = (DrawInfo*)AcquireMemory(sizeof(DrawInfo));
       GetDrawInfo( local_info, draw_info );
       draw_info->primitive=(char*)cstruct->userdata;
+puts(draw_info->primitive);
       DrawImage(image,draw_info);
       draw_info->primitive = (char*)NULL;
       DestroyDrawInfo(draw_info);
