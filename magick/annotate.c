@@ -72,12 +72,12 @@
   Forward declarations.
 */
 static unsigned int
-  RenderType(Image *,const DrawInfo *,const PointInfo *,
-    const unsigned int,TypeMetric *),
+  RenderType(Image *,const DrawInfo *,const PointInfo *,const unsigned int,
+	  TypeMetric *),
   RenderPostscript(Image *,const DrawInfo *,const PointInfo *,
     const unsigned int,TypeMetric *),
-  RenderFreetype(Image *,const DrawInfo *,const PointInfo *,
-    const unsigned int,TypeMetric *),
+  RenderFreetype(Image *,const DrawInfo *,const PointInfo *,const unsigned int,
+	  TypeMetric *),
   RenderX11(Image *,const DrawInfo *,const PointInfo *,const unsigned int,
     TypeMetric *);
 
