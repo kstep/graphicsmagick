@@ -89,7 +89,7 @@ static WarningHandler
 %
 %  The format of the CatchImageException method is:
 %
-%      CatchImageException(Image *image)
+%      ExceptionType CatchImageException(Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -97,7 +97,7 @@ static WarningHandler
 %
 %
 */
-MagickExport void CatchImageException(Image *image)
+MagickExport ExceptionInfo CatchImageException(Image *image)
 {
   ExceptionInfo
     exception;
@@ -107,10 +107,11 @@ MagickExport void CatchImageException(Image *image)
   GetExceptionInfo(&exception);
   GetImageException(image,&exception);
   if (exception.severity == UndefinedException)
-    return;
+    return(exception.severity);
   if (exception.severity >= FatalException)
     MagickError(exception.severity,exception.reason,exception.description);
   MagickWarning(exception.severity,exception.reason,exception.description);
+  return(exception.severity);
 }
 
 /*

@@ -2198,7 +2198,7 @@ int main(int argc,char **argv)
   if ((i != (argc-1)) || (image == (Image *) NULL))
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
   status=
-	  ConvertImages(image_info,&image,&option_info,argc-j+1,argv+j-1,&exception);
+    ConvertImages(image_info,&image,&option_info,argc-j+1,argv+j-1,&exception);
   DestroyImageList(image);
   DestroyImageInfo(image_info);
   if (LocaleCompare("-convert",argv[0]) == 0)

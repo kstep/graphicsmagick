@@ -1890,7 +1890,7 @@ Animate(ref,...)
         for (i=2; i < items; i+=2)
           SetAttribute(package_info,image,SvPV(ST(i-1),na),ST(i));
     AnimateImages(package_info->image_info,image);
-    CatchImageException(image);
+    (void) CatchImageException(image);
 
   MethodException:
     if (package_info)
@@ -4822,7 +4822,7 @@ Mogrify(ref,...)
                     (void) CompositeImage(image,compose,rotate_image,x,y);
                   else
                     (void) CompositeImage(image,compose,composite_image,x,y);
-                  CatchImageException(image);
+                  (void) CatchImageException(image);
                 }
               if (attribute_flag[8])
                 DestroyImage(rotate_image);
@@ -5566,7 +5566,7 @@ Mogrify(ref,...)
         MagickWarning(exception.severity,exception.reason,exception.description);
       else
         if (next != (Image *) NULL)
-          CatchImageException(next);
+          (void) CatchImageException(next);
       if (region_image != (Image *) NULL)
         {
           unsigned int
@@ -5577,7 +5577,7 @@ Mogrify(ref,...)
           */
           status=CompositeImage(region_image,CopyCompositeOp,image,
             region_info.x,region_info.y);
-          CatchImageException(region_image);
+          (void) CatchImageException(region_image);
           DestroyImage(image);
           image=region_image;
         }
@@ -7396,7 +7396,7 @@ Write(ref,...)
     for (next=image; next; next=next->next)
     {
       (void) WriteImage(package_info->image_info,next);
-      CatchImageException(next);
+      (void) CatchImageException(next);
       number_images++;
       if (package_info->image_info->adjoin)
         break;
