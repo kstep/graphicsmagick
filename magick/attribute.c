@@ -966,8 +966,7 @@ static int GenerateEXIFAttribute(Image *image,const char *spec)
   return(True);
 }
 
-MagickExport ImageAttribute *GetImageAttribute(const Image *image,
-  const char *key)
+MagickExport ImageAttribute *GetImageAttribute(const Image *image,const char *key)
 {
   register ImageAttribute
     *p;
@@ -1060,8 +1059,8 @@ MagickExport ImageAttribute *GetImageClippingPathAttribute(const Image *image)
 %      return.
 %
 */
-ImageAttribute *GetImageInfoAttribute(const ImageInfo *image_info,
-  Image *image,const char *key)
+ImageAttribute *GetImageInfoAttribute(const ImageInfo *image_info,Image *image,
+  const char *key)
 {
   char
     attribute[MaxTextExtent],
