@@ -849,11 +849,11 @@ And here is a list of all the image attributes you can set:<br>
   <tr>
  <td>cache-threshold</td>
   <td><i>integer</i></td>
-  <td>Image pixels are stored in memory until your computers real memory has
-been consumed. Subsequent pixel operations are cached on disk. Operations 
-to memory are significantly faster but if your computer does not have a sufficient
-amount of free memory you may want to set this threshold to a small megabyte
-value. Use 0 to cache all images to disk.</td>
+  <td>Image pixels are stored in memory until your computers memory is
+consumed. Subsequent pixel operations are cached to disk. Operations 
+to memory are significantly faster but if your computer does not have a
+sufficient amount of free memory you may want to set this threshold to
+a small megabyte value (e.g. 8). </td>
  </tr>
   <tr>
  <td>clip-mask</td>
@@ -869,6 +869,10 @@ value. Use 0 to cache all images to disk.</td>
  <td>colorspace</td>
   <td>{RGB, CMYK}</td>
   <td>type of colorspace</td>
+ </tr>
+ <td>comment</td>
+  <td><i>string</i></td>
+  <td>Append to the image comment.</td>
  </tr>
   <tr>
  <td>compression</td>
@@ -940,6 +944,10 @@ next image in a sequence</td>
  <td>iterations</td>
   <td><i>integer</i></td>
   <td>add Netscape loop extension to your GIF animation</td>
+ </tr>
+ <td>label</td>
+  <td><i>string</i></td>
+  <td>Append to the image label.</td>
  </tr>
   <tr>
  <td>loop</td>
