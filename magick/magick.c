@@ -239,19 +239,6 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
   path=AllocateString(filename);
   if (IsAccessible(path))
     return(path);
-#if defined(WIN32)
-  {
-    void
-      *blob;
-
-    blob=NTResourceToBlob(path);
-    if (blob != (unsigned char *) NULL)
-      {
-        LiberateMemory((void **) &blob);
-        return(path);
-      }
-  }
-#endif
   search_path=AllocateString(path);
   FormatString(path,"%.1024s%.1024s%.1024s",SetClientPath((char *) NULL),
     DirectorySeparator,filename);
@@ -311,6 +298,22 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
     }
   ConcatenateString(&search_path,"; MagickSharePath:");
   ConcatenateString(&search_path,path);
+#if defined(WIN32)
+  {
+    void
+      *blob;
+
+    blob=NTResourceToBlob(path);
+    if (blob != (unsigned char *) NULL)
+      {
+        LiberateMemory((void **) &blob);
+        LiberateMemory((void **) &search_path);
+        return(path);
+      }
+    ConcatenateString(&search_path,"; Windows Registry:");
+    ConcatenateString(&search_path,path);
+  }
+#endif
   ThrowException(exception,ConfigurationWarning,
     "Unable to open configuration file",search_path);
   LiberateMemory((void **) &search_path);
