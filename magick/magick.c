@@ -288,13 +288,17 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag)
 
   AcquireSemaphore(&magick_semaphore);
   initialize=magick_list == (MagickInfo *) NULL;
+  if (initialize)
+    {
+      RegisterMagickInfo(SetMagickInfo(MagickSignature));
+      atexit(DestroyMagickInfo);
+    }
   LiberateSemaphore(&magick_semaphore);
   if (initialize)
     {
       /*
         Register image formats.
       */
-      atexit(DestroyMagickInfo);
 #if defined(HasLTDL) || defined(_MAGICKMOD_)
       InitializeModules();
 #else
