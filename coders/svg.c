@@ -2046,7 +2046,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
       if (LocaleCompare((char *) name,"text") == 0)
         {
           if (strlen(svg_info->text) == 0)
-            break;
+            CloneString(&svg_info->text," ");
           if (strchr(svg_info->text,'\'') != (char *) NULL)
             {
               (void) fprintf(svg_info->file,"text %g,%g \"%s\"\n",
@@ -2062,7 +2062,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
       if (LocaleCompare((char *) name,"tspan") == 0)
         {
           if (strlen(svg_info->text) == 0)
-            break;
+            CloneString(&svg_info->text," ");
           if (strchr(svg_info->text,'\'') != (char *) NULL)
             {
               (void) fprintf(svg_info->file,"text %g,%g \"%s\"\n",
