@@ -6857,14 +6857,12 @@ MagickExport unsigned int TransformRGBImage(Image *image,
                 (image->colorspace == GRAYColorspace));
 
   /*
-    If colorspace is already RGB type, or undefined, then set
-    colorspace to RGBColorspace and return
+    If colorspace is already an RGB type then simply return.
   */
   if ((image->colorspace == RGBColorspace) ||
       (image->colorspace == GRAYColorspace) ||
       (image->colorspace == TransparentColorspace))
     {
-      image->colorspace=RGBColorspace;
       return(True);
     }
 

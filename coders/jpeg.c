@@ -1453,6 +1453,12 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       TransformColorspace(image,YCbCrColorspace);
       break;
     }
+    case GRAYColorspace:
+    {
+      jpeg_info.in_color_space=JCS_GRAYSCALE;
+      TransformColorspace(image,GRAYColorspace);
+      break;
+    }
     default:
     {
       if (image->colorspace == CMYKColorspace)

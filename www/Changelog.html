@@ -53,6 +53,19 @@
 </tr>
 </table>
 <p>
+2004-03-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/jpeg.c (WriteJPEGImage): If image_info-&gt;colorspace is set
+        to GRAYColorspace then make sure that image is in a gray
+        colorspace.<BR>
+  <LI> magick/image.c (TransformRGBImage): If colorspace is already an
+        RGB type (RGBColorspace, GRAYColorspace, or TransparentColorspace),
+        then simply return.  Do *not* set image-&gt;colorspace to RGBColorspace
+        since this potentially loses a valuable setting.
+
+</UL>
+<p>
 2004-03-10  Peter Boos  &lt;pedib@colorfullife.com&gt;
 
 <UL>

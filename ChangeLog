@@ -1,3 +1,13 @@
+2004-03-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/jpeg.c (WriteJPEGImage): If image_info->colorspace is set
+	to GRAYColorspace then make sure that image is in a gray
+	colorspace.
+	* magick/image.c (TransformRGBImage): If colorspace is already an
+	RGB type (RGBColorspace, GRAYColorspace, or TransparentColorspace),
+	then simply return.  Do *not* set image->colorspace to RGBColorspace
+	since this potentially loses a valuable setting.
+
 2004-03-10  Peter Boos  <pedib@colorfullife.com>
 
 	* magick/annotate.c (RenderFreetype): If DrawAnnotation is called
