@@ -412,9 +412,9 @@ namespace Magick
     // that accepted by a C 'main' routine. An exception is thrown if the
     // requested process module doesn't exist, fails to load, or fails during
     // execution.
-    void Magick::Image::process( std::string name_,
-                                 const int argc_,
-                                 char **argv_ );
+    void            process ( std::string name_,
+                              const int argc_,
+                              char **argv_ );
 
     // Raise image (lighten or darken the edges of an image to give a
     // 3-D raised or lowered effect)
