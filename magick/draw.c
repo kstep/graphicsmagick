@@ -2180,6 +2180,11 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
                 graphic_context[n]->linejoin=MiterJoin;
                 break;
               }
+            if (LocaleCompare("miter",token) == 0)
+              {
+                graphic_context[n]->linejoin=MiterJoin;
+                break;
+              }
             if (LocaleCompare("round",token) == 0)
               {
                 graphic_context[n]->linejoin=RoundJoin;
