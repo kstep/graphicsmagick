@@ -243,6 +243,9 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
         quantize_info.colorspace=GRAYColorspace;
         (void) QuantizeImage(&quantize_info,image);
       }
+    if ((compression != NoCompression) &&
+        (compression != RunlengthEncodedCompression))
+      image->storage_class=DirectClass;
     /*
       Scale image to size of Postscript page.
     */
