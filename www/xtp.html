@@ -1,607 +1,666 @@
-<HTML VERSION="2.0">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+	"http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
 <head>
-<TITLE>ImageMagick File Transfer Utility</TITLE>
-<link rev="made" href="mailto:magick@wizards.dupont.com">
-<meta name="description" content="ImageMagick, version 4.2.8, is a
-  robust collection of tools and libraries to read, write, and
-  manipulate an image in any of the more popular image formats
-  including GIF, JPEG, PNG, PDF, and Photo CD.  With ImageMagick you
-  can create GIFs dynamically making it suitable for Web applications.
-  You can also resize, rotate, sharpen, color reduce, or add special
-  effects to an image and save your completed work in the same or
-  differing image format.">
-<meta name="keywords" content="ImageMagick, Image Magick, Image Magic,
-  PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel
-  Magic, WebMagick, Web Magic, visualization, image processing,
-  software development, simulation, image, software, AniMagick,
-  Animagic, Magick++">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="description" content="ImageMagick, version 4.2.8, is a
+    robust collection of tools and libraries to read, write, and manipulate
+    an image in any of the more popular image formats including GIF, JPEG,
+    PNG, PDF, and Photo CD.  With ImageMagick you can create GIFs dynamically
+    making it suitable for Web applications.  You can also resize, rotate,
+    sharpen, color reduce, or add special effects to an image and save your
+    completed work in the same or  differing image format.">
+  <meta name="keywords" content="ImageMagick, Image Magick, Image Magic,
+    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,
+    WebMagick, Web Magic, visualization, image processing, software 
+    development, simulation, image, software, AniMagick, Animagic,
+    Magick++">
+  <title>ImageMagick - X11 Image Processing and Display Package</title>
+  <link rev="made" href="mailto:magick@wizards.dupont.com">
 </head>
-<body text="#000000" link="#0062CE" vlink="#6C9EFF"
-  alink="#ff0000" background="../images/background.gif">
-<A NAME="top"></A>
+<body text="#000000" link="#0062CE" vlink="#6C9EFF" alink="#FF0000"
+  background="../images/background.gif">
+
 <center>
-<img src="../images/xtp.gif" align=bottom width=108 height=42>
+  <img SRC="../images/xtp.gif" height=42 width=108 align=BOTTOM>
 </center>
-<pre>
- 
-</pre>
+
+<pre>&nbsp;</pre>
+
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>Contents</font></font></font></b></td>
+</tr>
+</table>
+<ul>
+<li>
+<a href="#syno">Synopsis</a></li>
+
+<li>
+<a href="#desc">Description</a></li>
+
+<li>
+<a href="#exam">Examples</a></li>
+
+<li>
+<a href="#opti">Options</a></li>
+
+<li>
+<a href="#rege">Regular Expressions</a></li>
+
+<li>
+<a href="#file">Files</a></li>
+
+<li>
+<a href="#envi">Environment</a></li>
+
+<li>
+<a href="#ackn">Acknowledgement</a></li>
+
+<li>
+<a href="#auth">Authors</a></li>
+
+<li>
+<a href="#copy">Copyright</a></li>
+</ul>
 <p>
-<table width="100%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#52799e">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;">Contents</b></big>
-  </font>
-</td></tr>
+<br>
+<dl><a NAME="syno"></a>
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>Synopsis</font></font></font></b></td>
+</tr>
 </table>
 <p>
-<UL>
-<LI><A HREF="#syno">Synopsis</A>
-<LI><A HREF="#desc">Description</A>
-<LI><A HREF="#exam">Examples</A>
-<LI><A HREF="#opti">Options</A>
-<LI><A HREF="#rege">Regular Expressions</A>
-<LI><A HREF="#file">Files</A>
-<LI><A HREF="#envi">Environment</A>
-<LI><A HREF="#ackn">Acknowledgement</A>
-<LI><A HREF="#auth">Authors</A>
-<LI><A HREF="#copy">Copyright</A>
-</UL>
+<dd>
+<b>xtp</b> [ -<i>options</i> ... ] &lt;<i>uniform</i> <i>resource</i> <i>locator</i>></dd>
+</dl>
+<i><a href="#top">Back to Contents</a></i>
 <p>
-<DL>
-<p>
-<A NAME="syno">
-<table width="100%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#52799e">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;">Synopsis</b></big>
-  </font>
-</td></tr>
-</table>
-<p>   
-<p>  
-<DD><B>xtp</B> [ -<EM>options</EM> ... ] &lt;<EM>uniform</EM> <EM>resource</EM> <EM>locator</EM>&gt;
-</DL>
-<P>
-<A HREF="#top"><I>Back to Contents</I></A>
-<p>
-<DL>
-<p>
-<A NAME="desc">
-<table width="100%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#52799e">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;">Description</b></big>
-  </font>
-</td></tr>
+<br>
+<dl><a NAME="desc"></a>
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>Description</font></font></font></b></td>
+</tr>
 </table>
 <p>
+<dd>
+<b></b></dd>
+
+<dd>
+<b>Xtp</b> is a utility for retrieving, listing, or printing files from
+a remote network site, or sending files to a remote network site. <i>xtp</i>
+performs most of the same functions as the <b>ftp(1)</b> program, but does
+not require any interactive commands. You simply specify the file transfer
+task on the command line and <b>xtp</b> performs the task automatically.</dd>
+</dl>
+<i><a href="#top">Back to Contents</a></i>
 <p>
-<DD><B>Xtp</B> is a utility for retrieving, listing, or printing files
-from a remote network site, or sending files to a remote
-network site.  <EM>xtp</EM> performs most of the same functions as
-the <B>ftp(1)</B> program, but does not require any interactive
-commands.  You simply specify the file transfer task on the
-command line and <B>xtp</B> performs the task automatically.
-</DL>
-<P>
-<A HREF="#top"><I>Back to Contents</I></A>
-<p>
-<DL>
-<p>
-<A NAME="exam">
-<table width="100%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#52799e">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;">Examples</b></big>
-  </font>
-</td></tr>
+<br>
+<dl><a NAME="exam"></a>
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>Examples</font></font></font></b></td>
+</tr>
 </table>
-<p> 
+
 <p>
-<DD>To retrieve the file <B>bird.jpg</B> in directory <B>images</B> from  host
-<B>wizard.wizards.dupont.com</B>, use:
-<p><dl>
-   <dd><tt>xtp ftp://wizard.wizards.dupont.com/images/bird.jpg</tt>
-</p></dl>
-<P>
-<DD>To retrieve all the files from directory <b>images</B>
-from host <B>wizard.wizards.dupont.com</B>, use:
-<p><dl>
-   <dd><tt>xtp -retrieve ftp://wizard.wizards.dupont.com/images/</tt>
-</p></dl>
+<dd>
+To retrieve the file <b>bird.jpg</b> in directory <b>images</b> from host
+<tt>wizard.wizards.dupont.com</tt>,
+use:</dd>
+
+<p>
+
+<dl>
+<dd>
+<tt>xtp ftp://wizard.wizards.dupont.com/images/bird.jpg</tt></dd>
+</dl>
+
+<p>
+
+<dd>
+To retrieve all the files from directory <b>images</b> from host <tt>wizard.wizards.dupont.com</tt>,
+use:</dd>
+
+<p>
+
+<dl>
+<dd>
+<tt>xtp -retrieve ftp://wizard.wizards.dupont.com/images/</tt></dd>
+
+<dd>
+<tt></tt></dd>
+</dl>
+<p>
 You will be prompted for a password.
+<br>&nbsp;
+<dd>
+To retrieve all the files from directory <b>images</b> as user <b>magick</b>
+and password <b>magick</b> from host
+<tt>wizard.wizards.dupont.com</tt>,
+use:</dd>
+
 <p>
-<DD>To retrieve all the files from directory <b>images</B>
-as user <b>magick</b> and password <b>magick</b> from host
-<B>wizard.wizards.dupont.com</B>, use:
-<p><dl>
-   <dd><tt>xtp -retrieve ftp://magick:magick@wizard.wizards.dupont.com/images/</tt>
-</p></dl>
-</DL>
-<P>
-<A HREF="#top"><I>Back to Contents</I></A>
+<dd>
+</dd>
+
+<dl>
+<dd>
+<tt>xtp -retrieve ftp://magick:magick@wizard.wizards.dupont.com/images/</tt></dd>
+</dl>
+</dl>
+<i><a href="#top">Back to Contents</a></i>
 <p>
-<DL>
+<br>
+<dl><a NAME="opti"></a>
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>Options</font></font></font></b></td>
+</tr>
+</table>
 <p>
-<A NAME="opti">
-<table width="100%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#52799e">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;">Options</b></big>
-  </font>
-</td></tr>
+<dd>
+Options are processed in command line order. Any option you specify on
+the command line remains in effect until it is explicitly changed by specifying
+the option again with a different effect.</dd>
+
+<dl>&nbsp;
+<table BORDER=0 WIDTH="65%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-account
+<i>password</i></font></font></font></b></td>
+</tr>
 </table>
-<P>
-<dd>Options are processed in command line order.  Any option you
-specify  on  the  command line remains in effect until it is
-explicitly changed by specifying the  option  again  with  a
-different effect.
+
+<dd>
+Supply a supplemental password required by a remote system for access to
+resources.</dd>
+</dl>
 <p>
-<DL>
-<dt><table width="65%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#9ebac6">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;"><B>-account</B> <EM>password</EM></b></big>
-  </font>
-</td></tr>
+<dl>
+
+<table BORDER=0 WIDTH="65%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-binary</font></font></font></b></td>
+</tr>
 </table>
-<DD>Supply a supplemental password required by a remote
-system for access to resources.
-<P>
-<dt><table width="65%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#9ebac6">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;"><B>-binary</B></b></big>
-  </font>
-</td></tr>
-</table>
-<DD>retrieve files as binary.  This is the default.  Use
-<B>+binary</B> to retrieve files as text.
-<P>
-<dt><table width="65%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#9ebac6">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;"><B>-directory</B></b></big>
-  </font>
-</td></tr>
-</table>
-<DD>list the names of files and their attributes that match
-the filename component of the uniform resource locator.
-The filename component is processed as a regular
-expression.
-<P>
-<dt><table width="65%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#9ebac6">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;"><B>-exclude</B> <EM>expression</EM></b></big>
-  </font>
-</td></tr>
-</table>
-<DD>exclude files that match the regular <EM>expression</EM>.
-<P>
-<DD>This option applies to the <B>-directory</B>, <B>-print</B>, or
-<B>-retrieve</B> options.
-<P>
-<dt><table width="65%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#9ebac6">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;"><B>-file</B> <EM>name</EM></b></big>
-  </font>
-</td></tr>
-</table>
-<DD>store the file with this name.
-<P>
-<DD>Refer to the <B>-get</B> and <B>-put</B> option for more details.
-<P>
-<dt><table width="65%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#9ebac6">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;"><B>-get</B></b></big>
-  </font>
-</td></tr>
-</table>
-<DD>get files that match the filename component of the
-uniform resource locator.  The filename component is
-expanded by passing it to <B>csh(1)</B>.
-<P>
-<DD>This option is equivalent to using the <B>ftp</B> <B>get</B> command.
-However, if the filename contains globbing characters
-this option is equivalent to the <B>ftp</B> <B>mget</B> command.
-Without globbing characters, you can store the file
-locally with a different name by using the <B>-file</B>
-option.
-<P>
-<dt><table width="65%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#9ebac6">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;"><B>-ident</B> <EM>password</EM></b></big>
-  </font>
-</td></tr>
-</table>
-<DD>Supply a password required by a remote system.  This
-defaults to your username and hostname.
-<P>
-<dt><table width="65%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#9ebac6">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;"><B>-port</B> <EM>number</EM></b></big>
-  </font>
-</td></tr>
-</table>
-<DD>If no port number is specified, <B>xtp</B> attempts to contact
-a FTP server at the default port.  Otherwise, the
-specified port number is used.
-<P>
-<dt><table width="65%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#9ebac6">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;"><B>-proxy</B> <EM>hostname</EM></b></big>
-  </font>
-</td></tr>
-</table>
-<DD>access the remote host via a proxy <B>ftpd</B> client running
-on this host.
-<P>
-<DD>The default value of this option can be set with the
-environment variable <B>xtp_proxy</B>.  See 
-<A HREF="#envi"><B>Environment</B></A> for
-more details.  Use <B>+proxy</B> to prevent proxy connections.
-<P>
-<dt><table width="65%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#9ebac6">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;"><B>-print</B></b></big>
-  </font>
-</td></tr>
-</table>
-<DD>print files that match the filename component of the
-uniform resource locator.  The filename component is
-processed as a regular expression.
-<P>
-<dt><table width="65%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#9ebac6">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;"><B>-prune</B></b></big>
-  </font>
-</td></tr>
-</table>
-<DD>process files in the remote directory specified by the
-directory component of the uniform resource locator.
-Do not recursively search for files.
-<P>
-<dt><table width="65%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#9ebac6">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;"><B>-put</B></b></big>
-  </font>
-</td></tr>
-</table>
-<DD>put files that match the filename component of the
-uniform resource locator.  The filename component is
-expanded by passing it to <B>csh(1)</B>.
-<P>
-<DD>This option is equivalent to using the <B>ftp</B> <B>put</B> command.
-However, if the filename contains globbing characters, this option is
-equivalent to the <B>ftp mput</B> command.
-<P>
-<DD>Without globbing characters, you can store the file
-remotely with a different name by using the <B>-file</B>
-option.
-<P>
-<dt><table width="65%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#9ebac6">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;"><B>-retrieve</B></b></big>
-  </font>
-</td></tr>
-</table>
-<DD>retrieve files that match the filename component of the
-uniform resource locator.  The filename component is
-processed as a regular expression.
-<P>
-<DD>Retrieved files are stored on your local host directory
-as the full name of the retrieved file.  For example,
-if the retrieved file is named <B>documents/xtp.man</B> on the
-remote FTP server, it will appear in your remote
-directory as <B>documents/xtp.man</B>.
-<P>
-<dt><table width="65%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#9ebac6">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;"><B>-timeout</B> <EM>seconds</EM></b></big>
-  </font>
-</td></tr>
-</table>
-<DD>specifies the maximum seconds to complete your remote
-FTP server request.  If this time expires, the program
-terminates.  The program also terminates if one tenth
-of this value is exceeded while logging onto the remote
-FTP server.
-<P>
-<dt><table width="65%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#9ebac6">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;"><B>-type</B> <EM>name</EM></b></big>
-  </font>
-</td></tr>
-</table>
-<DD>identify the remote system type: UNIX, VMS, or other.
-<p> 
-<dd> The system type is determined automatically, however, you can override
-the system type with this option.
-<P>
-<P>
-<dt><table width="65%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#9ebac6">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;"><B>-verbose</B></b></big>
-  </font>
-</td></tr>
-</table>
-<DD>show all responses from the remote server.
-<p> 
-</DL>
+
+<dd>
+retrieve files as binary. This is the default. Use
+<b>+binary</b> to retrieve
+files as text.</dd>
+
+</dl>
 <p>
-<dd>If only the program name is specified on the command line, the program
-command syntax and options are listed.
+<dl>
+<table BORDER=0 WIDTH="65%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-directory</font></font></font></b></td>
+</tr>
+</table>
+
+<dd>
+list the names of files and their attributes that match the filename component
+of the uniform resource locator. The filename component is processed as
+a regular expression.</dd>
+
+</dl>
 <p>
-<dd>If neither <b>-directory</b>, <b>-print</b>, <b>-put</b>, or
-<b>-retrieve</b> are specified on the command line, the file or files
-specified by the uniform resource locator is retrieved from the remote
-network host (as if <b>-get</b> was specified).
+<dl>
+<table BORDER=0 WIDTH="65%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-exclude
+<i>expression</i></font></font></font></b></td>
+</tr>
+</table>
+
+<dd>
+exclude files that match the regular <i>expression</i>.</dd>
 <p>
-<dd><i><uniform resource locator></i> has the format:
+<dd>
+This option applies to the <b>-directory</b>, <b>-print</b>, or
+<b>-retrieve</b>
+options.</dd>
+
+</dl>
 <p>
-<pre>
-    protocol://host/[directory/[filename]]
-</pre>
+<dl>
+<table BORDER=0 WIDTH="65%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-file
+<i>name</i></font></font></font></b></td>
+</tr>
+</table>
+
+<dd>
+store the file with this name.</dd>
 <p>
-<dd>where protocol is <tt>ftp</tt> and host is
-<tt>[user[:password]]@hostname</tt>.  User defaults to <tt>anonymous</tt> and
-password defaults to <tt>host.domain</tt>.  Note that
-<tt>directory/[filename]</tt> is interpreted relative to the home directory
-for <tt>user</tt>, thus an absolute pathname must be specified with the
-leading <tt>/</tt>;
+<dd>
+Refer to the <b>-get</b> and <b>-put</b> option for more details.</dd>
+
+</dl>
 <p>
-<pre>
-    ftp://host//tmp/anyfile
-</pre>
+<dl>
+<table BORDER=0 WIDTH="65%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-get</font></font></font></b></td>
+</tr>
+</table>
+
+<dd>
+get files that match the filename component of the uniform resource locator.
+The filename component is expanded by passing it to <b>csh(1)</b>.</dd>
 <p>
-<dd>As an extension, the filename part of the locator is expanded by the
-shell for options <b>-get</b> or <b>-put</b>, otherwise it is processed as a
-regular expression.  For convenience, the protocol component of the uniform
-resource locator (<tt>ftp://</tt>) may be omitted.
+<dd>
+This option is equivalent to using the <b>ftp</b> <b>get</b> command. However,
+if the filename contains globbing characters this option is equivalent
+to the <b>ftp</b> <b>mget</b> command. Without globbing characters, you
+can store the file locally with a different name by using the <b>-file</b>
+option.</dd>
+
+</dl>
 <p>
-<dd><b>Xtp</b> retrieves files from the remote directory for <b>-get</b> and
-puts files in the remote directory for <b>-put</b>.  Otherwise, <b>xtp</b>
-looks for a file of the form <tt>ls-lls-l([Rt])+([Rt])*</tt> and assumes it
-contains a recursive directory listing.  If none is found, <b>xtp</b>
+<dl>
+<table BORDER=0 WIDTH="65%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-ident
+<i>password</i></font></font></font></b></td>
+</tr>
+</table>
+
+<dd>
+Supply a password required by a remote system. This defaults to your username
+and hostname.</dd>
+
+</dl>
+<p>
+<dl>
+<table BORDER=0 WIDTH="65%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-port
+<i>number</i></font></font></font></b></td>
+</tr>
+</table>
+
+<dd>
+If no port number is specified, <b>xtp</b> attempts to contact a FTP server
+at the default port. Otherwise, the specified port number is used.</dd>
+
+</dl>
+<p>
+<dl>
+<table BORDER=0 WIDTH="65%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-proxy
+<i>hostname</i></font></font></font></b></td>
+</tr>
+</table>
+
+<dd>
+access the remote host via a proxy <b>ftpd</b> client running on this host.</dd>
+<p>
+<dd>
+The default value of this option can be set with the environment variable
+<b>xtp_proxy</b>. See <b><a href="#envi">Environment</a></b> for more details.
+Use <b>+proxy</b> to prevent proxy connections.</dd>
+
+</dl>
+<p>
+<dl>
+<table BORDER=0 WIDTH="65%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-print</font></font></font></b></td>
+</tr>
+</table>
+
+<dd>
+print files that match the filename component of the uniform resource locator.
+The filename component is processed as a regular expression.</dd>
+
+</dl>
+<p>
+<dl>
+<table BORDER=0 WIDTH="65%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-prune</font></font></font></b></td>
+</tr>
+</table>
+
+<dd>
+process files in the remote directory specified by the directory component
+of the uniform resource locator. Do not recursively search for files.</dd>
+
+</dl>
+<p>
+<dl>
+<table BORDER=0 WIDTH="65%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-put</font></font></font></b></td>
+</tr>
+</table>
+
+<dd>
+put files that match the filename component of the uniform resource locator.
+The filename component is expanded by passing it to <b>csh(1)</b>.</dd>
+<p>
+<dd>
+This option is equivalent to using the <b>ftp</b> <b>put</b> command. However,
+if the filename contains globbing characters, this option is equivalent
+to the <b>ftp mput</b> command.</dd>
+<p>
+<dd>
+Without globbing characters, you can store the file remotely with a different
+name by using the <b>-file</b> option.</dd>
+
+</dl>
+<p>
+<dl>
+<table BORDER=0 WIDTH="65%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-retrieve</font></font></font></b></td>
+</tr>
+</table>
+
+<dd>
+retrieve files that match the filename component of the uniform resource
+locator. The filename component is processed as a regular expression.</dd>
+<p>
+<dd>
+Retrieved files are stored on your local host directory as the full name
+of the retrieved file. For example, if the retrieved file is named <b>documents/xtp.man</b>
+on the remote FTP server, it will appear in your remote directory as <b>documents/xtp.man</b>.</dd>
+
+</dl>
+<p>
+<dl>
+<table BORDER=0 WIDTH="65%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-timeout
+<i>seconds</i></font></font></font></b></td>
+</tr>
+</table>
+
+<dd>
+specifies the maximum seconds to complete your remote FTP server request.
+If this time expires, the program terminates. The program also terminates
+if one tenth of this value is exceeded while logging onto the remote FTP
+server.</dd>
+
+</dl>
+<p>
+<dl>
+<table BORDER=0 WIDTH="65%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-type
+<i>name</i></font></font></font></b></td>
+</tr>
+</table>
+
+<dd>
+identify the remote system type: UNIX, VMS, or other.</dd>
+
+<dd>
+The system type is determined automatically, however, you can override
+the system type with this option.</dd>
+
+</dl>
+<p>
+<dl>
+<table BORDER=0 WIDTH="65%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>-verbose</font></font></font></b></td>
+</tr>
+</table>
+
+<dd>
+show all responses from the remote server.</dd>
+
+<p>&nbsp;</dl>
+
+<dd>
+If only the program name is specified on the command line, the program
+command syntax and options are listed.</dd>
+
+<dd>
+If neither <b>-directory</b>, <b>-print</b>, <b>-put</b>, or
+<b>-retrieve</b>
+are specified on the command line, the file or files specified by the
+<em>uniform resource locator</em> is retrieved from the remote network host
+(as if <b>-get</b> was specified).</dd>
+<p>
+<dd>
+Uniform resource locator has the format:</dd>
+
+<pre>&nbsp;&nbsp;&nbsp; protocol://host/[directory/[filename]]</pre>
+
+<dd>
+where protocol is <tt>ftp</tt> and host is
+<tt>[user[:password]]@hostname</tt>.
+User defaults to <tt>anonymous</tt> and password defaults to <tt>host.domain</tt>.
+Note that
+<tt>directory/[filename]</tt> is interpreted relative to the
+home directory for <tt>user</tt>, thus an absolute pathname must be specified
+with the leading <tt>/</tt>;</dd>
+
+<pre>&nbsp;&nbsp;&nbsp; ftp://host//tmp/anyfile</pre>
+
+<dd>
+As an extension, the filename part of the locator is expanded by the shell
+for options <b>-get</b> or <b>-put</b>, otherwise it is processed as a
+regular expression. For convenience, the protocol component of the uniform
+resource locator (<tt>ftp://</tt>) may be omitted.</dd>
+
+<p>
+
+<dd>
+<b>Xtp</b> retrieves files from the remote directory for <b>-get</b> and
+puts files in the remote directory for <b>-put</b>. Otherwise, <b>xtp</b>
+looks for a file of the form <tt>ls-lls-l([Rt])+([Rt])*</tt> and assumes
+it contains a recursive directory listing. If none is found, <b>xtp</b>
 recursively descends the directory hierarchy from the remote directory.
-Some remote hosts may have thousands of files causing a significant
-delay satisfying your request.  This can be wasteful if the files you
-are interested in reside in a known directory.  You can reduce the
-searching required by specifying <i>remote directory</i> on the command
-line.  This limits the filename search to the specified directory and
-any of its subdirectories.  Alternatively, <b>-prune</b> restricts the
-search to the remote directory only.
-</DL>
-<A HREF="#top"><I>Back to Contents</I></A>
+Some remote hosts may have thousands of files causing a significant delay
+satisfying your request. This can be wasteful if the files you are interested
+in reside in a known directory. You can reduce the searching required by
+specifying <i>remote directory</i> on the command line. This limits the
+filename search to the specified directory and any of its subdirectories.
+Alternatively, <b>-prune</b> restricts the search to the remote directory
+only.</dd>
+</dl>
+<i><a href="#top">Back to Contents</a></i>
 <p>
-<DL>
+<br>
+<dl><a NAME="rege"></a>
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>Regular
+Expressions</font></font></font></b></td>
+</tr>
+</table>
+
 <p>
-<A NAME="rege">
-<table width="100%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#52799e">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;">Regular Expressions</b></big>
-  </font>
-</td></tr>
+
+<dd>
+A <i>regular</i> <i>expression</i> is zero or more branches, separated
+by <b>|</b>. It matches anything that matches one of the branches.</dd>
+<p>
+<dd>
+A branch is zero or more pieces, concatenated. It matches a match for the
+first, followed by a match for the second, etc.</dd>
+
+<p>
+<dd>
+A piece is an atom possibly followed by <b>*</b>, <b>+</b>, or
+<b>?</b>.
+An atom followed by <b>*</b> matches a sequence of 0 or more matches of
+the atom. An atom followed by <b>+</b> matches a sequence of 1 or more
+matches of the atom. An atom followed by <b>?</b> matches a match of the
+atom, or the null pattern.</dd>
+
+<p>
+<dd>
+An atom is a <i>regular</i> <i>expression</i> in parentheses (matching
+a match for the <i>regular</i> <i>expression)</i>, a range (see below),
+<b>.</b> (matching any single character), <b>^</b> (matching the null pattern
+at the beginning of the input pattern), <b>$</b> (matching the null pattern
+at the end of the input pattern), a <b>'</b> followed by a single character
+(matching that character), or a single character with no other significance
+(matching that character).</dd>
+<p>
+
+<dd>
+A range is a sequence of characters enclosed in <b>[]</b>. It normally
+matches any single character from the sequence. If the sequence begins
+with <b>^</b>, it matches any single character not from the rest of the
+sequence. If two characters in the sequence are separated by <b>-</b>,
+this is shorthand for the full list of ASCII characters between them (e.g.
+<b>[0-9]</b> matches any decimal digit). To include a literal <b>]</b>
+in the sequence, make it the first character (following a possible <b>^</b>).
+To include a literal <b>-</b>, make it the first or last character.</dd>
+
+<p></dl>
+<i><a href="#top">Back to Contents</a></i>
+<p>
+<dl><a NAME="file"></a>
+<p>
+<br>
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>Files</font></font></font></b></td>
+</tr>
+</table>
+
+<dl>&nbsp;
+<table BORDER=0 WIDTH="65%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><tt><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>~/.netrc</font></font></font></tt></b></td>
+</tr>
+</table>
+</dl>
+</dl>
+<i><a href="#top">Back to Contents</a></i>
+<p>
+<br>
+<dl><a NAME="envi"></a>
+<table BORDER=0 WIDTH="65%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>Environment</font></font></font></b></td>
+</tr>
+</table>
+
+<dl>&nbsp;
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#9EBAC6"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>xtp_proxy</font></font></font></b></td>
+</tr>
+</table>
+
+<dd>
+Specifies that the remote site should be contacted by proxy. See <b>-proxy</b>.</dd>
+</dl>
+</dl>
+<i><a href="#top">Back to Contents</a></i>
+<p>
+<br>
+<dl><a NAME="ackn"></a>
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>Acknowledgements</font></font></font></b></td>
+</tr>
+</table>
+
+<dd>
+<i></i></dd>
+<p>
+<dd>
+<i>Steve Singles</i>, <b>University of Delaware</b>, for the initial implementation
+of this program.</dd>
+
+<dd>
+<i></i></dd>
+<p>
+
+<dd>
+<i>Henry Spencer</i>, <b>University of Toronto</b>, for the implementation
+of the <i>regular</i> <i>expression</i> interpreter and the text in
+<b>Regular</b>
+<b>Expressions</b>.</dd>
+</dl>
+<a href="#top">Back to Contents</a>
+<p>
+<br>
+<dl><a NAME="auth"></a>
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>Authors</font></font></font></b></td>
+</tr>
+</table>
+
+<dd>
+<i></i></dd>
+<p>
+<dd>
+<i>John Cristy</i>, <i><a href="mailto:magick@wizards.dupont.com">magick@wizards.dupont.com</a></i>
+<b>E.I. du Pont de Nemours and Company Incorporated</b>.</dd>
+</dl>
+<a href="#top">Back to Contents</a>
+<p>
+<br>
+<dl><a NAME="copy"></a>
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td ALIGN=LEFT BGCOLOR="#52799E"><img SRC="../images/right_triangle.gif" ALT=">" BORDER=0 height=14 width=15><b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size=+1>Copyright</font></font></font></b></td>
+</tr>
 </table>
 <p>
+<dd>
+<b>Copyright 1999 E. I. du Pont de Nemours and Company</b></dd>
 <p>
-<DD>A <EM>regular</EM> <EM>expression</EM> is zero or more branches,
-separated by <B>|</B>.  It matches anything that matches one of the branches.
-<P>
-<DD>A branch is zero or more pieces, concatenated.  It matches a
-match for the first, followed by a match for the second,
-etc.
-<P>
-<DD>A piece is an atom possibly followed by <B>*</B>, <B>+</B>, or
-<B>?</B>.  An atom followed by <B>*</B> matches a sequence of 0 or more
-matches of the
-atom.  An atom followed by <B>+</B> matches a sequence of 1 or more
-matches of the atom.  An atom followed by <B>?</B> matches a match
-of the atom, or the null pattern.
-<P>
-<DD>An atom is a <EM>regular</EM> <EM>expression</EM> in parentheses (matching a
-match for the <EM>regular</EM> <EM>expression)</EM>, a range (see below), <B>.</B>
-(matching any single character), <B>^</B> (matching the null
-pattern at the beginning of the input pattern), <B>$</B> (matching
-the null pattern at the end of the input pattern), a <B>'</B>
-followed by a single character (matching that character), or
-a single character with no other significance (matching that
-character).
-<P>
-<DD>A range is a sequence of characters enclosed in <B>[]</B>.  It
-normally matches any single character from the sequence.  If
-the sequence begins with <B>^</B>, it matches any single character
-not from the rest of the sequence.  If two characters in the
-sequence are separated by <B>-</B>, this is shorthand for the full
-list of ASCII characters between them (e.g.  <B>[0-9]</B> matches
-any decimal digit). To include a literal <B>]</B> in the sequence,
-make it the first character (following a possible <B>^</B>).  To
-include a literal <B>-</B>, make it the first or last character.
-<P>
-</DL>
-<P>
-<A HREF="#top"><I>Back to Contents</I></A>
+<dd>
+<b></b></dd>
+
 <p>
-<DL>
+<dd>
+<b>Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files ("ImageMagick"),
+to deal in ImageMagick without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of ImageMagick, and to permit persons to whom the ImageMagick
+is furnished to do so, subject to the following conditions:</b></dd>
+
 <p>
-<A NAME="file">
-<table width="100%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#52799e">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;">Files</b></big>
-  </font>
-</td></tr>
-</table>
+<dd>
+<b>The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of ImageMagick.</b></dd>
+
+<dd>
+<b></b></dd>
+
 <p>
+<dd>
+<b>The software is provided "as is", without warranty of any kind, express
+or implied, including but not limited to the warranties of merchantability,
+fitness for a particular purpose and noninfringement.In no event shall
+E. I. du Pont de Nemours and Company be liable for any claim, damages or
+other liability, whether in an action of contract, tort or otherwise, arising
+from, out of or in connection with ImageMagick or the use or other dealings
+in ImageMagick.</b></dd>
+
+<dd>
+<b></b></dd>
 <p>
-<DL>
-<table width="65%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#9ebac6">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;"><tt>~/.netrc</tt></b></big>
-  </font>
-</td></tr>
-</table>
-</DL>
-</DL>
-<P>
-<A HREF="#top"><I>Back to Contents</I></A>
+
+<dd>
+<b>Except as contained in this notice, the name of the E. I. du Pont de
+Nemours and Company shall not be used in advertising or otherwise to promote
+the sale, use or other dealings in ImageMagick without prior written authorization
+from the E. I. du Pont de Nemours and Company.</b></dd>
+</dl>
+<i><a href="#top">Back to Contents</a></i>
 <p>
-<DL>
-<p>
-<A NAME="envi">
-<table width="65%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#52799e">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;">Environment</b></big>
-  </font>
-</td></tr>
-</table>
-<p>
-<p>
-<DL>
-<table width="100%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#9ebac6">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;"><B>xtp_proxy</B></b></big>
-  </font>
-</td></tr>
-</table>
-<DD>Specifies that the remote site should be contacted by
-proxy.  See <B>-proxy</B>.
-</DL>
-</DL>
-<P>
-<A HREF="#top"><I>Back to Contents</I></A>
-<p>
-<DL>
-<p>
-<A NAME="ackn">
-<table width="100%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#52799e">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;">Acknowledgements</b></big>
-  </font>
-</td></tr>
-</table>
-<p>
-<p>
-<DD><I>Steve Singles</I>, <B>University of Delaware</B>, for the initial
-implementation of this program.
-<p>
-<dd><I>Henry Spencer</I>, <B>University of Toronto</B>, for the implementation
-of the <EM>regular</EM> <EM>expression</EM> interpreter and the text in
-<B>Regular</B> <B>Expressions</B>.
-</DL>
-<P>
-<A HREF="#top">Back to Contents</A>
-<p>
-<DL>
-<p>
-<A NAME="auth">
-<table width="100%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#52799e">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;">Authors</b></big>
-  </font>
-</td></tr>
-</table>
-<p>
-<p>
-<DD><I>John Cristy</I>, <A HREF="mailto:magick@wizards.dupont.com">
- <I>magick@wizards.dupont.com</I></A> <B>E.I. du Pont de Nemours and Company
-Incorporated</B>.
-</DL>
-<P>
-<A HREF="#top">Back to Contents</A>
-<P>
-<DL>
-<p>
-<A NAME="copy">
-<table width="100%" cellpadding="1" border="0">
-<tr><td align="left" bgcolor="#52799e">
-  <font color="#ffffff" face="Helvetica, Arial"><big><b>
-    <img src="../images/right_triangle.gif" width="15" height="14" border="0"
-     alt="&gt;">Copyright</b></big>
-  </font>
-</td></tr>
-</table>
-<p>
-<p>
-<B>
-<dd>Copyright 1999 E. I. du Pont de Nemours and Company
-<p>
-<dd>Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files ("ImageMagick"),
-to deal in ImageMagick without restriction, including without limitation 
-the rights to use, copy, modify, merge, publish, distribute, sublicense, 
-and/or sell copies of ImageMagick, and to permit persons to whom the 
-ImageMagick is furnished to do so, subject to the following conditions:
-<p>
-<dd>The above copyright notice and this permission notice shall be included in 
-all copies or substantial portions of ImageMagick. 
-<p> 
-<dd>The software is provided "as is", without warranty of any kind, express or 
-implied, including but not limited to the warranties of merchantability, 
-fitness for a particular purpose and noninfringement.In no event shall 
-E. I. du Pont de Nemours and Company be liable for any claim, damages or 
-other liability, whether in an action of contract, tort or otherwise,
-arising from, out of or in connection with ImageMagick or the use or other 
-dealings in ImageMagick. 
-<p> 
-<dd>Except as contained in this notice, the name of the E. I. du Pont de 
-Nemours and Company shall not be used in advertising or otherwise to 
-promote the sale, use or other dealings in ImageMagick without prior 
-written authorization from the E. I. du Pont de Nemours and Company. 
-</B>
-</DL>
-<P>
-<A HREF="#top"><I>Back to Contents</I></A>
-<p><hr><p>
-<a href="../ImageMagick.html"><img alt="Home Page"
-  src="../images/home.gif" width=40 height=40 align=middle border=0></a>
-<font size="-2">Image manipulation software that works like magic.</font>
+<hr>
+<p><a href="../ImageMagick.html"><img SRC="../images/home.gif" ALT="Home Page" BORDER=0 height=40 width=40 align=CENTER></a><font size=-2>&nbsp;&nbsp;
+Image manipulation software that works like magic.</font>
 </body>
 </html>
