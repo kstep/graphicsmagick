@@ -2604,6 +2604,7 @@ MAGICK_INCLUDE_HDRS = \
 	magick/module.h \
 	magick/monitor.h \
 	magick/montage.h \
+	magick/operator.h \
 	magick/paint.h \
 	magick/profile.h \
 	magick/quantize.h \

@@ -24,6 +24,8 @@
 2005-01-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> magick/Makefile.am (MAGICK_INCLUDE_HDRS): Needed to install
+        magick/operator.h.<BR>
   <LI> coders/tiff.c (ReadTIFFImage): Re-wrote TIFF reading code again
         for more flexibility and performance.
 
@@ -40,7 +42,7 @@
 2005-01-16  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
-  <LI> coders/tga.c (WriteTGAImage): Incorported patch from Stefan
+  <LI> coders/tga.c (WriteTGAImage): Incorporated patch from Stefan
         v. Wachter to enable writing grayscale images as well as adding
         more image type option smarts.<BR>
   <LI> coders/psd.c (ReadPSDImage): Fix stack overflow vulnerability
