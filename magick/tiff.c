@@ -462,15 +462,16 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
     }
     image->columns=width;
     image->rows=height;
+    image->depth=Min(bits_per_sample,QuantumDepth);
+    if (bits_per_sample < 8)
+      image->depth=8;
     range=max_sample_value-min_sample_value;
     if ((samples_per_pixel == 1) && !TIFFIsTiled(tiff))
       {
         image->class=PseudoClass;
-        image->colors=1 << bits_per_sample;
+        image->colors=1 << image->depth;
         if (range <= (int) image->colors)
           image->colors=range+1;
-        if (bits_per_sample > QuantumDepth)
-          image->colors=MaxRGB+1;
         image->colormap=(PixelPacket *)
           AllocateMemory(image->colors*sizeof(PixelPacket));
         if (image->colormap == (PixelPacket *) NULL)
@@ -489,9 +490,6 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
       image->units=PixelsPerInchResolution;
     if (units == RESUNIT_CENTIMETER)
       image->units=PixelsPerCentimeterResolution;
-    image->depth=bits_per_sample;
-    if (bits_per_sample < 8)
-      image->depth=8;
     value=0;
     TIFFGetFieldDefaulted(tiff,TIFFTAG_PAGENUMBER,&value,&pages);
     image->scene=value;
@@ -688,9 +686,9 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
             {
               for (x=0; x < (int) image->columns; x++)
               {
-                *r=(*p++ << 8);
-                *r|=(*p++);
-                r++;
+                index=(*p++ << 8);
+                index|=(*p++);
+                *r++=index >> (bits_per_sample-QuantumDepth);
               }
               break;
             }
@@ -700,15 +698,7 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
           /*
             Transfer image scanline.
           */
-          r=quantum_scanline;
-          for (x=0; x < (int) image->columns; x++)
-          {
-            index=(*r++);
-            if (index >= image->colors)
-              ReaderExit(CorruptImageWarning,"invalid colormap index",image);
-            image->indexes[x]=index;
-            *q++=image->colormap[index];
-          }
+          (void) ReadPixelCache(image,IndexQuantum,quantum_scanline);
           if (!SyncPixelCache(image))
             break;
           if (image->previous == (Image *) NULL)
