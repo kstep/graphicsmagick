@@ -1096,17 +1096,30 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   jpeg_info.input_components=3;
   jpeg_info.data_precision=image->depth <= 8 ? 8 : 12;
   jpeg_info.in_color_space=JCS_RGB;
-  if (((image_info->colorspace != UndefinedColorspace) ||
-       (image->colorspace != CMYKColorspace)) &&
-       (image_info->colorspace != CMYKColorspace))
-    TransformRGBImage(image,RGBColorspace);
-  else
+  switch (image_info->colorspace)
+  {
+    case CMYKColorspace:
     {
       jpeg_info.input_components=4;
       jpeg_info.in_color_space=JCS_CMYK;
       if (image->colorspace != CMYKColorspace)
         RGBTransformImage(image,CMYKColorspace);
+      break;
     }
+    case YCbCrColorspace:
+    {
+      jpeg_info.in_color_space=JCS_YCbCr;
+      if (image->colorspace != YCbCrColorspace)
+        RGBTransformImage(image,YCbCrColorspace);
+      break;
+    }
+    default:
+    {
+      if (image->colorspace != RGBColorspace)
+        TransformRGBImage(image,RGBColorspace);
+      break;
+    }
+  }
   if (LocaleCompare(image_info->magick,"JPEG24") != 0)
     if (IsGrayImage(image))
       {
@@ -1204,7 +1217,8 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
             MagickMonitor(SaveImageText,y,image->rows);
         }
       else
-        if (jpeg_info.in_color_space == JCS_RGB)
+        if ((jpeg_info.in_color_space == JCS_RGB) ||
+            (jpeg_info.in_color_space == JCS_YCbCr))
           for (y=0; y < (int) image->rows; y++)
           {
             p=GetImagePixels(image,0,y,image->columns,1);
@@ -1263,7 +1277,8 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
           MagickMonitor(SaveImageText,y,image->rows);
       }
     else
-      if (jpeg_info.in_color_space == JCS_RGB)
+      if ((jpeg_info.in_color_space == JCS_RGB) ||
+            (jpeg_info.in_color_space == JCS_YCbCr))
         for (y=0; y < (int) image->rows; y++)
         {
           p=GetImagePixels(image,0,y,image->columns,1);
