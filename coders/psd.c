@@ -782,7 +782,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for (i=0; i < (long) (image->rows*psd_info.channels); i++)
         (void) ReadBlobMSBShort(image);
       for (i=0; i < psd_info.channels; i++)
-        (void) DecodeImage(image,i);
+        (void) DecodeImage(image,(int) i);
     }
   else
     {
