@@ -352,7 +352,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,ExceptionInfo *exception)
         (unsigned int) image->columns,1,pixels[i]);
     for (x=0; x < (long) image->columns; x++)
     {
-      q->red=ScaleCharToQuantum(jas_matrix_getv(pixels[0],x));
+      q->red=ScaleShortToQuantum(jas_matrix_getv(pixels[0],x));
       q->green=q->red;
       q->blue=q->red;
       if (number_components > 1)
@@ -558,7 +558,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
     component_info[i].height=(unsigned int) image->rows;
     component_info[i].prec=(unsigned int) image->depth;
   }
-  jp2_image=jas_image_create((short)number_components,component_info,
+  jp2_image=jas_image_create((short) number_components,component_info,
     number_components == 1 ? JAS_IMAGE_CM_GRAY : JAS_IMAGE_CM_RGB);
   if (jp2_image == (jas_image_t *) NULL)
     ThrowWriterException(FileOpenError,"Unable to create image",image);
@@ -586,7 +586,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
     {
       if (number_components == 1)
         jas_matrix_setv(pixels[0],x,
-          ScaleQuantumToChar(PixelIntensityToQuantum(p)));
+          ScaleQuantumToShort(PixelIntensityToQuantum(p)));
       else
         {
           jas_matrix_setv(pixels[0],x,ScaleQuantumToChar(p->red));
