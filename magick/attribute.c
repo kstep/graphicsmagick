@@ -450,6 +450,522 @@ static int Generate8BIMAttribute(Image *image,const char *key)
   return(status);
 }
 
+#define EXIF_NUM_FORMATS 12
+static int exiffmtbytes[] = {0,1,1,2,4,8,1,1,2,4,8,4,8};
+#define EXIF_FMT_BYTE       1 
+#define EXIF_FMT_STRING     2
+#define EXIF_FMT_USHORT     3
+#define EXIF_FMT_ULONG      4
+#define EXIF_FMT_URATIONAL  5
+#define EXIF_FMT_SBYTE      6
+#define EXIF_FMT_UNDEFINED  7
+#define EXIF_FMT_SSHORT     8
+#define EXIF_FMT_SLONG      9
+#define EXIF_FMT_SRATIONAL 10
+#define EXIF_FMT_SINGLE    11
+#define EXIF_FMT_DOUBLE    12
+
+#define TAG_EXIF_OFFSET       0x8769
+#define TAG_INTEROP_OFFSET    0xa005
+
+static const struct {
+    unsigned short Tag;
+    char * Desc;
+} TagTable[] = {
+  {	0x100,	"ImageWidth"},
+  {	0x101,	"ImageLength"},
+  {	0x102,	"BitsPerSample"},
+  {	0x103,	"Compression"},
+  {	0x106,	"PhotometricInterpretation"},
+  {	0x10A,	"FillOrder"},
+  {	0x10D,	"DocumentName"},
+  {	0x10E,	"ImageDescription"},
+  {	0x10F,	"Make"},
+  {	0x110,	"Model"},
+  {	0x111,	"StripOffsets"},
+  {	0x112,	"Orientation"},
+  {	0x115,	"SamplesPerPixel"},
+  {	0x116,	"RowsPerStrip"},
+  {	0x117,	"StripByteCounts"},
+  {	0x11A,	"XResolution"},
+  {	0x11B,	"YResolution"},
+  {	0x11C,	"PlanarConfiguration"},
+  {	0x128,	"ResolutionUnit"},
+  {	0x12D,	"TransferFunction"},
+  {	0x131,	"Software"},
+  {	0x132,	"DateTime"},
+  {	0x13B,	"Artist"},
+  {	0x13E,	"WhitePoint"},
+  {	0x13F,	"PrimaryChromaticities"},
+  {	0x156,	"TransferRange"},
+  {	0x200,	"JPEGProc"},
+  {	0x201,	"JPEGInterchangeFormat"},
+  {	0x202,	"JPEGInterchangeFormatLength"},
+  {	0x211,	"YCbCrCoefficients"},
+  {	0x212,	"YCbCrSubSampling"},
+  {	0x213,	"YCbCrPositioning"},
+  {	0x214,	"ReferenceBlackWhite"},
+  {	0x828D,	"CFARepeatPatternDim"},
+  {	0x828E,	"CFAPattern"},
+  {	0x828F,	"BatteryLevel"},
+  {	0x8298,	"Copyright"},
+  {	0x829A,	"ExposureTime"},
+  {	0x829D,	"FNumber"},
+  {	0x83BB,	"IPTC/NAA"},
+  {	0x8769,	"ExifOffset"},
+  {	0x8773,	"InterColorProfile"},
+  {	0x8822,	"ExposureProgram"},
+  {	0x8824,	"SpectralSensitivity"},
+  {	0x8825,	"GPSInfo"},
+  {	0x8827,	"ISOSpeedRatings"},
+  {	0x8828,	"OECF"},
+  {	0x9000,	"ExifVersion"},
+  {	0x9003,	"DateTimeOriginal"},
+  {	0x9004,	"DateTimeDigitized"},
+  {	0x9101,	"ComponentsConfiguration"},
+  {	0x9102,	"CompressedBitsPerPixel"},
+  {	0x9201,	"ShutterSpeedValue"},
+  {	0x9202,	"ApertureValue"},
+  {	0x9203,	"BrightnessValue"},
+  {	0x9204,	"ExposureBiasValue"},
+  {	0x9205,	"MaxApertureValue"},
+  {	0x9206,	"SubjectDistance"},
+  {	0x9207,	"MeteringMode"},
+  {	0x9208,	"LightSource"},
+  {	0x9209,	"Flash"},
+  {	0x920A,	"FocalLength"},
+  {	0x927C,	"MakerNote"},
+  {	0x9286,	"UserComment"},
+  {	0x9290,	"SubSecTime"},
+  {	0x9291,	"SubSecTimeOriginal"},
+  {	0x9292,	"SubSecTimeDigitized"},
+  {	0xA000,	"FlashPixVersion"},
+  {	0xA001,	"ColorSpace"},
+  {	0xA002,	"ExifImageWidth"},
+  {	0xA003,	"ExifImageLength"},
+  {	0xA005,	"InteroperabilityOffset"},
+  {	0xA20B,	"FlashEnergy"},			        // 0x920B in TIFF/EP
+  {	0xA20C,	"SpatialFrequencyResponse"},	// 0x920C    -  -
+  {	0xA20E,	"FocalPlaneXResolution"},    	// 0x920E    -  -
+  {	0xA20F,	"FocalPlaneYResolution"},	    // 0x920F    -  -
+  {	0xA210,	"FocalPlaneResolutionUnit"},	// 0x9210    -  -
+  {	0xA214,	"SubjectLocation"},		        // 0x9214    -  -
+  {	0xA215,	"ExposureIndex"},		        // 0x9215    -  -
+  {	0xA217,	"SensingMethod"},		        // 0x9217    -  -
+  {	0xA300,	"FileSource"},
+  {	0xA301,	"SceneType"},
+  {      0, NULL}
+} ;
+
+static short Read16s(int morder, void *ishort)
+{
+    if (morder)
+      return (((unsigned char *)ishort)[0] << 8) | ((unsigned char *)ishort)[1];
+    else
+      return (((unsigned char *)ishort)[1] << 8) | ((unsigned char *)ishort)[0];
+}
+
+static unsigned short Read16u(int morder, void *ishort)
+{
+    if (morder)
+      return (((unsigned char *)ishort)[0] << 8) | ((unsigned char *)ishort)[1];
+    else
+      return (((unsigned char *)ishort)[1] << 8) | ((unsigned char *)ishort)[0];
+}
+
+static long Read32s(int morder, void *ilong)
+{
+    if (morder)
+      return  (((         char *)ilong)[0] << 24) | (((unsigned char *)ilong)[1] << 16)
+            | (((unsigned char *)ilong)[2] << 8 ) | (((unsigned char *)ilong)[3] << 0 );
+    else
+      return  (((         char *)ilong)[3] << 24) | (((unsigned char *)ilong)[2] << 16)
+            | (((unsigned char *)ilong)[1] << 8 ) | (((unsigned char *)ilong)[0] << 0 );
+}
+
+static unsigned long Read32u(int morder, void *ilong)
+{
+  return Read32s(morder,ilong) & 0xffffffff;
+}
+
+#define DE_STACK_SIZE 16
+#if !defined(macintosh) && !defined(WIN32)
+#  define EXIT_DELIMITER "\n"
+#else
+#  if defined(macintosh)
+#    define EXIT_DELIMITER "\r"
+#  endif
+#  if defined(WIN32)
+#    define EXIT_DELIMITER "\r\n"
+#  endif
+#endif
+
+static int GenerateEXIFAttribute(Image *image,const char *spec)
+{
+  char
+    *key,
+    *value,
+    *final;
+
+  int
+    i,
+    id,
+    index,
+    level,
+    tag,
+    morder,
+    all;
+
+  unsigned long
+    offset;
+
+  unsigned char
+    *tiffp,
+    *ifdstack[DE_STACK_SIZE],
+    *ifdp,
+    *info;
+
+  unsigned int
+    de,
+    destack[DE_STACK_SIZE],
+    length,
+    nde,
+    status;
+
+  value=(char *) NULL;
+  final=AllocateString("");
+  /* first see if there is any EXIF data available in the image */
+  index=-1;
+  for (i=0; i < (int) image->generic_profiles; i++)
+  {
+    if ((LocaleCompare(image->generic_profile[i].name,"APP1") == 0) &&
+      (image->generic_profile[i].length > 0))
+      {
+        index=i;
+        break;
+      }
+  }
+  if (index<0)
+    return(False);
+  /* if EXIF data exists, then try to parse the request for a tag */
+  key=(char *) &spec[5];
+  if ((key == (char *) NULL) || (*key == '\0'))
+    return(False);
+  while (isspace((int) (*key)))
+    key++;
+
+  all=0; /* default to showing a specific tag */
+  tag=-1;
+  switch(*key)
+  {
+    /* Caller has asked for all the tags in the EXIF data */
+    case '*':
+    {
+      tag=0;
+      all=1; /* return the data in description=value format */
+      break;
+    }
+    case '!':
+    {
+      tag=0;
+      all=2; /* return the data in tageid=value format */
+      break;
+    }
+    /* Check for a hex based tag specification first */
+    case '#':
+    {
+      char
+        c;
+
+      unsigned long
+        n;
+
+      tag=0;
+      key++;
+      n=Extent(key);
+      if (n != 4)
+        return(False);
+      else
+        {
+          /* Parse tag specification as a hex number. */
+          n/=4;
+          do
+          {
+            for (i=(int) n-1; i >= 0; i--)
+            {
+              c=(*key++);
+              tag<<=4;
+              if ((c >= '0') && (c <= '9'))
+                tag|=c-'0';
+              else
+                if ((c >= 'A') && (c <= 'F'))
+                  tag|=c-('A'-10);
+                else
+                  if ((c >= 'a') && (c <= 'f'))
+                    tag|=c-('a'-10);
+                  else
+                    return(False);
+            }
+          } while (*key != '\0');
+        }
+      break;
+    }
+    default:
+    {
+      /* try to match the text with a tag name instead */
+      for (i=0;;i++)
+      {
+          if (TagTable[i].Tag == 0)
+            break;
+          if (LocaleCompare(TagTable[i].Desc,key) == 0)
+            {
+              tag=TagTable[i].Tag;
+              break;
+            }
+      }
+      break;
+    }
+  }
+  if (tag < 0)
+    return(False);
+  status=False;
+
+  length=image->generic_profile[index].length;
+  info=image->generic_profile[index].info;
+
+  while (length > 0)
+  {
+    if (ReadByte((char **) &info,&length) != 0x45)
+      continue;
+    if (ReadByte((char **) &info,&length) != 0x78)
+      continue;
+    if (ReadByte((char **) &info,&length) != 0x69)
+      continue;
+    if (ReadByte((char **) &info,&length) != 0x66)
+      continue;
+    if (ReadByte((char **) &info,&length) != 0x00)
+      continue;
+    if (ReadByte((char **) &info,&length) != 0x00)
+      continue;
+    break;
+  }
+  if (length < 16)
+    return(False);
+
+  tiffp=info;
+  id=Read16u(0,tiffp);
+  morder=0;
+  if (id == 0x4949) /* is it Intel byte order? */
+    morder=0;
+  else if (id == 0x4D4D) /* is it Moto byte order? */
+    morder=1;
+  else
+    return(False);
+
+  /* The next values now have to obey the Intel - Motorola flag */
+  if (Read16u(morder,tiffp+2) != 0x002a)
+    return(False);
+
+  /* This is the offset to the first IFD. It will be 8 if the IFD
+     immediately follows the header */
+  offset=Read32u(morder,tiffp+4);
+  if (offset >= length)
+    return(False);
+
+  /* set the pointer to the first IFD and follow it were it leads */
+  ifdp=tiffp+offset;
+  level=0;
+  de=0;
+  do
+  {
+    /* if there is anything on the stack then pop it off */
+    if (level>0)
+    {
+      level--;
+      ifdp=ifdstack[level];
+      de=destack[level];
+    }
+    /* Determine how many entries there are in the current IFD */
+    nde=Read16u(morder,ifdp);
+    for (;de<nde;de++)
+    {
+      int
+        n,
+        t,
+        f,
+        c;
+
+      char
+        *pde,
+        *pval;
+
+      pde=ifdp+2+(12*de);
+
+      t=Read16u(morder,pde); /* get tag value */
+      f=Read16u(morder,pde+2); /* get the format */
+      if ((f-1) >= EXIF_NUM_FORMATS)
+        break;
+      c=Read32u(morder,pde+4); /* get number of components */
+      n=c*exiffmtbytes[f];
+      /* If its bigger than 4 bytes, the dir entry contains an offset. */
+      if (n > 4)
+        {
+          unsigned long
+            oval;
+
+          oval=Read32u(morder,pde+8);
+          if (oval+n > length)
+            continue;
+          pval=(char *)(tiffp+oval);
+        }
+      else
+        {
+          /* 4 bytes or less and value is in the dir entry itself */
+          pval=pde+8;
+        }
+
+      if (all || (tag==t))
+        {
+          char
+            s[MaxTextExtent];
+
+          switch(f)
+          {
+            case EXIF_FMT_SBYTE:
+              FormatString(s,"%d",(int)(*(char *)pval));
+              value=AllocateString(s);
+              break;
+            case EXIF_FMT_BYTE:
+              FormatString(s,"%d",(int)(*(unsigned char *)pval));
+              value=AllocateString(s);
+              break;
+            case EXIF_FMT_SSHORT:
+              FormatString(s,"%hd",Read16u(morder,pval));
+              value=AllocateString(s);
+              break;
+            case EXIF_FMT_USHORT:
+              FormatString(s,"%hu",Read16s(morder,pval));
+              value=AllocateString(s);
+              break;
+            case EXIF_FMT_ULONG:     
+              FormatString(s,"%lu",Read32u(morder,pval));
+              value=AllocateString(s);
+              break;
+            case EXIF_FMT_SLONG:
+              FormatString(s,"%ld",Read32s(morder,pval));
+              value=AllocateString(s);
+              break;
+            case EXIF_FMT_URATIONAL:
+              FormatString(s,"%d/%d",Read32u(morder,pval),Read32u(morder,4+(char *)pval));
+              value=AllocateString(s);
+              break;
+            case EXIF_FMT_SRATIONAL: 
+              FormatString(s,"%d/%d",Read32s(morder,pval),Read32s(morder,4+(char *)pval));
+              value=AllocateString(s);
+              break;
+            case EXIF_FMT_SINGLE:
+              FormatString(s,"%f",(double)*(float *)pval);
+              value=AllocateString(s);
+              break;
+            case EXIF_FMT_DOUBLE:
+              FormatString(s,"%f",*(double *)pval);
+              value=AllocateString(s);
+              break;
+            default:
+            case EXIF_FMT_UNDEFINED:
+            case EXIF_FMT_STRING:
+            {
+              value=(char *) AcquireMemory(n+1);
+              if (value != (char *) NULL)
+                {
+                  int
+                    a;
+
+                  value[n]='\0';
+                  for (a=0;a<n;a++)
+                  {
+                      if (isprint(pval[a]) || (pval[a]=='\0'))
+                        value[a]=pval[a];
+                      else
+                        value[a]='.';
+                  }
+                  break;
+                }
+              break;
+            }
+          }
+          if (value != (char *) NULL)
+            {
+              int
+                i;
+
+              char
+                *desc;
+
+              if (Extent(final) > 0)
+                ConcatenateString(&final,EXIT_DELIMITER);
+              desc=(char *) NULL;
+              switch (all)
+              {
+                case 1:
+                {
+                  desc="unknown";
+                  for (i=0;;i++)
+                  {
+                      if (TagTable[i].Tag == 0)
+                        break;
+                      if (TagTable[i].Tag == t)
+                        {
+                          desc=TagTable[i].Desc;
+                          break;
+                        }
+                  }
+                  FormatString(s,"%.1024s=",desc);
+                  ConcatenateString(&final,s);
+                  break;
+                }
+                case 2:
+                {
+                  FormatString(s,"#%04x=",t);
+                  ConcatenateString(&final,s);
+                  break;
+                }
+              }
+              ConcatenateString(&final,value);
+              LiberateMemory((void **) &value);
+            }
+        }
+
+        if (t == TAG_EXIF_OFFSET || t == TAG_INTEROP_OFFSET)
+          {
+            long
+              offset;
+
+            offset=Read32u(morder,pval);
+            if ((offset < length) ||
+                (level < (DE_STACK_SIZE-2)))
+              {
+                /* push our current directory state onto the stack */
+                ifdstack[level]=ifdp;
+                de++; /* bump to the next entry */
+                destack[level]=de;
+                level++;
+                /* push new state onto of stack to cause a jump */
+                ifdstack[level]=tiffp+offset;
+                destack[level]=0;
+                level++;
+              }
+            break; /* break out of the for loop */
+          }
+    }
+  } while (level>0);
+  if (Extent(final) <= 0)
+    ConcatenateString(&final,"unknown");
+  SetImageAttribute(image,spec,(const char *) final);
+  LiberateMemory((void **) &final);
+  return(True);
+}
+
 MagickExport ImageAttribute *GetImageAttribute(const Image *image,
   const char *key)
 {
@@ -471,6 +987,11 @@ MagickExport ImageAttribute *GetImageAttribute(const Image *image,
   if (LocaleNCompare("8BIM:",key,5) == 0)
     {
       if (Generate8BIMAttribute((Image *) image,key) == True)
+        return(GetImageAttribute(image,key));
+    }
+  if (LocaleNCompare("EXIF:",key,5) == 0)
+    {
+      if (GenerateEXIFAttribute((Image *) image,key) == True)
         return(GetImageAttribute(image,key));
     }
   return(p);
@@ -829,7 +1350,8 @@ MagickExport unsigned int SetImageAttribute(Image *image,const char *key,
     return(False);
   attribute->key=AllocateString(key);
   if ((LocaleNCompare(key,"IPTC",4) == 0) ||
-      (LocaleNCompare(key,"8BIM",4) == 0))
+      (LocaleNCompare(key,"8BIM",4) == 0) ||
+        (LocaleNCompare(key,"EXIF",4) == 0))
     attribute->value=AllocateString(value);
   else
     attribute->value=TranslateText((ImageInfo *) NULL,image,value);
