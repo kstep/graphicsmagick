@@ -705,7 +705,8 @@ Export Image *SampleImage(Image *image,const unsigned int columns,
       s=scanline;
       for (x=0; x < (int) image->columns; x++)
       {
-        indexes[x]=image->indexes[x];
+        if (image->class == PseudoClass)
+          indexes[x]=image->indexes[x];
         *s++=(*p++);
       }
     }
@@ -713,7 +714,6 @@ Export Image *SampleImage(Image *image,const unsigned int columns,
     Sample each row.
   */
   j=0;
-  q=sample_image->pixels;
   for (y=0; y < (int) sample_image->rows; y++)
   {
     q=SetPixelCache(sample_image,0,y,sample_image->columns,1);
@@ -730,7 +730,8 @@ Export Image *SampleImage(Image *image,const unsigned int columns,
       s=scanline;
       for (x=0; x < (int) image->columns; x++)
       {
-        indexes[x]=image->indexes[x];
+        if (image->class == PseudoClass)
+          indexes[x]=image->indexes[x];
         *s++=(*p++);
       }
     }
@@ -741,7 +742,8 @@ Export Image *SampleImage(Image *image,const unsigned int columns,
     s=scanline;
     for (x=0; x < (int) sample_image->columns; x++)
     {
-      sample_image->indexes[x]=indexes[k];
+      if (sample_image->class == PseudoClass)
+        sample_image->indexes[x]=indexes[k];
       *q++=(*s);
       k+=x_offset[x];
       s+=x_offset[x];
