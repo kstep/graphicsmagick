@@ -63,9 +63,6 @@
 #if defined(macintosh)
 #define CLK_TCK  CLOCKS_PER_SEC
 #endif
-#if defined(WIN32)
-#include "nt.h"
-#endif
 #if !defined(CLK_TCK)
 #define CLK_TCK  sysconf(_SC_CLK_TCK)
 #endif
@@ -147,21 +144,7 @@ static double ElapsedTime(void)
   return((double) clock()/CLK_TCK);
 #endif
 #if defined(WIN32)
-  union
-  {
-    FILETIME
-      filetime;
-
-    __int64
-      filetime64;
-  } elapsed_time;
-
-  SYSTEMTIME
-    system_time;
-
-  GetSystemTime(&system_time);
-  SystemTimeToFileTime(&system_time,&elapsed_time.filetime);
-  return((double) 1.0e-7*elapsed_time.filetime64);
+  return(NTElapsedTime());
 #endif
 }
 
@@ -407,42 +390,6 @@ static double UserTime(void)
   return((double) clock()/CLK_TCK);
 #endif
 #if defined(WIN32)
-  DWORD
-    status;
-
-  FILETIME
-    create_time,
-    exit_time;
-
-  OSVERSIONINFO
-    OsVersionInfo;
-
-  union
-  {
-    FILETIME
-      filetime;
-
-    __int64
-      filetime64;
-  } kernel_time;
-
-  union
-  {
-    FILETIME
-      filetime;
-
-    __int64
-      filetime64;
-  } user_time;
-
-  OsVersionInfo.dwOSVersionInfoSize=sizeof(OSVERSIONINFO);
-  GetVersionEx(&OsVersionInfo);
-  if (OsVersionInfo.dwPlatformId != VER_PLATFORM_WIN32_NT)
-    return(ElapsedTime());
-  status=GetProcessTimes(GetCurrentProcess(),&create_time,&exit_time,
-    &kernel_time.filetime,&user_time.filetime);
-  if (status != TRUE)
-    return(0.0);
-  return((double) 1.0e-7*(kernel_time.filetime64+user_time.filetime64));
+  return(NTUserTime());
 #endif
 }

@@ -64,6 +64,10 @@ extern __declspec(dllexport) int
 extern __declspec(dllexport) DIR
   *opendir(char *);
  
+extern __declspec(dllexport) double
+  NTElapsedTime(void),
+  NTUserTime(void);
+
 extern __declspec(dllexport) int
   munmap(void *,size_t),
   NTTemporaryFilename(char *);

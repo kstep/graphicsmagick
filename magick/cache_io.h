@@ -15,6 +15,9 @@ extern "C" {
 /*
   Exported interfaces.
 */
+extern Export CacheType
+  GetCacheType(Cache);
+
 extern Export ClassType
   GetCacheClassType(Cache);
 
@@ -40,7 +43,6 @@ extern Export void
   DestroyCacheInfo(Cache),
   GetCacheInfo(Cache *),
   *GetCacheStash(Cache,unsigned int),
-  SetCacheClassType(Cache,const ClassType),
   SetCacheThreshold(const off_t),
   SetCacheType(Cache,const CacheType);
 

@@ -277,6 +277,80 @@ Export void *mmap(char *address,size_t length,int protection,int access,
 %                                                                             %
 %                                                                             %
 %                                                                             %
++  m u n m a p                                                                %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method munmap emulates the Unix method with the same name.
+%
+%  The format of the munmap method is:
+%
+%      int munmap(void *map,size_t length)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method munmap returns 0 on success; otherwise, it
+%      returns -1 and sets errno to indicate the error.
+%
+%    o map: The address of the binary large object.
+%
+%    o length: The length of the binary large object.
+%
+%
+*/
+Export int munmap(void *map,size_t length)
+{
+  if (!UnmapViewOfFile(map))
+    return(-1);
+  return(0);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   N T E l a p s e d T i m e                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method NTElapsedTime returns the elapsed time (in seconds) since the last
+%  call to StartTimer().
+%
+%  The format of the ElapsedTime method is:
+%
+%      double NTElapsedTime(void)
+%
+%
+*/
+Export double NTElapsedTime(void)
+{
+  union
+  {
+    FILETIME
+      filetime;
+
+    __int64
+      filetime64;
+  } elapsed_time;
+
+  SYSTEMTIME
+    system_time;
+
+  GetSystemTime(&system_time);
+  SystemTimeToFileTime(&system_time,&elapsed_time.filetime);
+  return((double) 1.0e-7*elapsed_time.filetime64);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   N T E r r o r H a n d l e r                                               %
 %                                                                             %
 %                                                                             %
@@ -416,8 +490,8 @@ Export int NTSystemCommand(const char *command)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%   Method NTTemporaryFilename creates a name for a temporary file.  It
-%   returns zero if an error occurs.
+%  Method NTTemporaryFilename creates a name for a temporary file.  It
+%  returns zero if an error occurs.
 %
 %  The format of the TemporaryFilename method is:
 %
@@ -453,34 +527,60 @@ Export int NTTemporaryFilename(char *filename)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+  m u n m a p                                                                %
+%   N T U s e r T i m e                                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method munmap emulates the Unix method with the same name.
+%  Method NTUserTime returns the total time the process has been scheduled (i
+%  seconds) since the last call to StartTimer().
 %
-%  The format of the munmap method is:
+%  The format of the UserTime method is:
 %
-%      int munmap(void *map,size_t length)
-%
-%  A description of each parameter follows:
-%
-%    o status:  Method munmap returns 0 on success; otherwise, it
-%      returns -1 and sets errno to indicate the error.
-%
-%    o map: The address of the binary large object.
-%
-%    o length: The length of the binary large object.
+%      double NTUserTime(void)
 %
 %
 */
-Export int munmap(void *map,size_t length)
+Export double NTUserTime(void)
 {
-  if (!UnmapViewOfFile(map))
-    return(-1);
-  return(0);
+  DWORD
+    status;
+
+  FILETIME
+    create_time,
+    exit_time;
+
+  OSVERSIONINFO
+    OsVersionInfo;
+
+  union
+  {
+    FILETIME
+      filetime;
+
+    __int64
+      filetime64;
+  } kernel_time;
+
+  union
+  {
+    FILETIME
+      filetime;
+
+    __int64
+      filetime64;
+  } user_time;
+
+  OsVersionInfo.dwOSVersionInfoSize=sizeof(OSVERSIONINFO);
+  GetVersionEx(&OsVersionInfo);
+  if (OsVersionInfo.dwPlatformId != VER_PLATFORM_WIN32_NT)
+    return(ElapsedTime());
+  status=GetProcessTimes(GetCurrentProcess(),&create_time,&exit_time,
+    &kernel_time.filetime,&user_time.filetime);
+  if (status != TRUE)
+    return(0.0);
+  return((double) 1.0e-7*(kernel_time.filetime64+user_time.filetime64));
 }
 
 /*

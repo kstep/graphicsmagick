@@ -956,7 +956,7 @@ Export Image *RollImage(Image *image,const int x_offset,const int y_offset)
       if (q == (PixelPacket *) NULL)
         break;
       if (image->class == PseudoClass)
-        roll_image->indexes[x]=(*image->indexes);
+        *roll_image->indexes=image->indexes[x];
       *q=(*p);
       p++;
       if (!SyncPixelCache(roll_image))
