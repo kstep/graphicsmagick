@@ -501,9 +501,8 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  if ((image->columns < 4) || (image->rows < 4))
-    return((Image *) NULL);
-  minify_image=CloneImage(image,image->columns/2,image->rows/2,True,exception);
+  minify_image=CloneImage(image,Max(image->columns/2,1),Max(image->rows/2,1),
+    True,exception);
   if (minify_image == (Image *) NULL)
     return((Image *) NULL);
   minify_image->storage_class=DirectClass;
@@ -512,11 +511,11 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
   */
   for (y=0; y < (long) minify_image->rows; y++)
   {
-    p=AcquireImagePixels(image,0,2*y,image->columns,4,exception);
+    p=AcquireImagePixels(image,0,2*y,image->columns+4,4,exception);
     q=SetImagePixels(minify_image,0,y,minify_image->columns,1);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    for (x=0; x < (long) (minify_image->columns-1); x++)
+    for (x=0; x < (long) minify_image->columns; x++)
     {
       /*
         Compute weighted average of target pixel color components.
@@ -527,11 +526,11 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
       total_opacity=0;
       r=p;
       Minify(3L); Minify(7L);  Minify(7L);  Minify(3L);
-      r=p+image->columns;
+      r=p+image->columns+4;
       Minify(7L); Minify(15L); Minify(15L); Minify(7L);
-      r=p+2*image->columns;
+      r=p+2*(image->columns+4);
       Minify(7L); Minify(15L); Minify(15L); Minify(7L);
-      r=p+3*image->columns;
+      r=p+3*(image->columns+4);
       Minify(3L); Minify(7L);  Minify(7L);  Minify(3L);
       q->red=(Quantum) ((total_red+63L) >> 7L);
       q->green=(Quantum) ((total_green+63L) >> 7L);
@@ -540,12 +539,10 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
       p+=2;
       q++;
     }
-    p++;
-    *q++=(*p);
     if (!SyncImagePixels(minify_image))
       break;
     if (QuantumTick(y,image->rows))
-      MagickMonitor(MinifyImageText,y,image->rows-1);
+      MagickMonitor(MinifyImageText,y,image->rows);
   }
   return(minify_image);
 }
