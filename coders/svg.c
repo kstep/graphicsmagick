@@ -1652,6 +1652,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
                         (void) fprintf(svg_info->file,"text-align %s\n",value);
                         break;
                       }
+                    if (LocaleCompare(keyword,"text-anchor") == 0)
+                      {
+                        (void) fprintf(svg_info->file,"text-anchor %s\n",value);
+                        break;
+                      }
                     if (LocaleCompare(keyword,"text-decoration") == 0)
                       {
                         if (LocaleCompare(value,"underline") == 0)
@@ -1688,6 +1693,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
           if (LocaleCompare(keyword,"text-align") == 0)
             {
               (void) fprintf(svg_info->file,"text-align %s\n",value);
+              break;
+            }
+          if (LocaleCompare(keyword,"text-anchor") == 0)
+            {
+              (void) fprintf(svg_info->file,"text-anchor %s\n",value);
               break;
             }
           if (LocaleCompare(keyword,"text-decoration") == 0)
@@ -3287,6 +3297,13 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
           {
             GetToken(q,&q,token);
             FormatString(message,"text-align %.1024s ",token);
+            (void) WriteBlobString(image,message);
+            break;
+          }
+        if (LocaleCompare("text-anchor",keyword) == 0)
+          {
+            GetToken(q,&q,token);
+            FormatString(message,"text-anchor %.1024s ",token);
             (void) WriteBlobString(image,message);
             break;
           }

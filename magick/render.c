@@ -2821,6 +2821,17 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
               graphic_context[n]->align=RightAlign;
             break;
           }
+        if (LocaleCompare("text-anchor",keyword) == 0)
+          {
+            GetToken(q,&q,token);
+            if (LocaleCompare(token,"start") == 0)
+              graphic_context[n]->align=LeftAlign;
+            if (LocaleCompare(token,"middle") == 0)
+              graphic_context[n]->align=CenterAlign;
+            if (LocaleCompare(token,"end") == 0)
+              graphic_context[n]->align=RightAlign;
+            break;
+          }
         if (LocaleCompare("text-antialias",keyword) == 0)
           {
             GetToken(q,&q,token);
