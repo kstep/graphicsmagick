@@ -745,7 +745,11 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int order,
       else
         {
           if (p == (PixelPacket *) NULL)
-            p=GetImagePixels(image,0,y-width/2,image->columns,width);
+            {
+              p=GetImagePixels(image,0,y-width/2,image->columns,width);
+              if (p == (PixelPacket *) NULL)
+                break;
+            }
           s=p+x;
           for (v=(-width/2); v <= (width/2); v++)
           {
