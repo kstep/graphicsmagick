@@ -2037,8 +2037,12 @@ MagickExport unsigned int IsAccessible(const char *filename)
       (void) fclose(file);
     }
   if (magick_debug)
-    (void) fprintf(stdout,"  %.1024s%.1024s.\n",filename,
-      status ? "" : strerror(errno));
+    {
+      (void) fprintf(stdout,"  %.1024s",filename);
+      if (status == False)
+        (void) fprintf(stdout," [%.1024s]",strerror(errno));
+      (void) fprintf(stdout,"\n");
+    }
   return(status);
 }
 
