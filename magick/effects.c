@@ -3487,7 +3487,7 @@ MagickExport Image *WaveImage(Image *image,const double amplitude,
       break;
     for (x=0; x < (int) wave_image->columns; x++)
     {
-      *q=InterpolateColor(image,x,(int) (y-sine_map[x]));
+      *q=InterpolateColor(image,(double) x,(double) y-sine_map[x]);
       q++;
     }
     if (!SyncImagePixels(wave_image))
