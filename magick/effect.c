@@ -63,6 +63,130 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
+%     A d a p t i v e T h r e s h o l d I m a g e                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  AdaptiveThresholdImage() selects an individual threshold for each pixel
+%  based on the range of intensity values in its local neighborhood.  This
+%  allows for thresholding of an image whose global intensity histogram
+%  doesn't contain distinctive peaks.
+%
+%  The format of the AdaptiveThresholdImage method is:
+%
+%      Image *AdaptiveThresholdImage(Image *image,const double radius,
+%        const double sigma,const double offset,ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%    o radius: The radius of the Gaussian, in pixels, not counting the center
+%      pixel.
+%
+%    o sigma: The standard deviation of the Gaussian, in pixels.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport Image *AdaptiveThresholdImage(const Image *image,
+  const double radius,const double sigma,const double offset,
+  ExceptionInfo *exception)
+{
+#define ThresholdImageText  "  Threshold the image...  "
+
+  DoublePixelPacket
+    aggregate,
+    mean,
+    zero;
+
+  Image
+    *threshold_image;
+
+  long
+    width,
+    y;
+
+  register const PixelPacket
+    *p,
+    *r;
+
+  register long
+    x,
+    u,
+    v;
+
+  register PixelPacket
+    *q;
+
+  /*
+    Initialize thresholded image attributes.
+  */
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  width=GetOptimalKernelWidth(radius,sigma);
+  if (((long) image->columns < width) || ((long) image->rows < width))
+    ThrowImageException(OptionError,"Unable to threshold image",
+      "image smaller than radius");
+  threshold_image=CloneImage(image,0,0,True,exception);
+  if (threshold_image == (Image *) NULL)
+    return((Image *) NULL);
+  SetImageType(threshold_image,TrueColorType);
+  /*
+    Threshold each row of the image.
+  */
+  (void) memset(&zero,0,sizeof(DoublePixelPacket));
+  for (y=0; y < (long) image->rows; y++)
+  {
+    p=AcquireImagePixels(image,-width/2,y-width/2,image->columns+width,width,
+      exception);
+    q=SetImagePixels(threshold_image,0,y,threshold_image->columns,1);
+    if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+      break;
+    for (x=0; x < (long) image->columns; x++)
+    {
+      r=p;
+      aggregate=zero;
+      for (v=0; v < width; v++)
+      {
+        for (u=0; u < width; u++)
+        {
+          aggregate.red+=r[u].red;
+          aggregate.green+=r[u].green;
+          aggregate.blue+=r[u].blue;
+          aggregate.opacity+=r[u].opacity;
+        }
+        r+=image->columns+width;
+      }
+      mean.red=aggregate.red/(width*width)+offset;
+      mean.green=aggregate.green/(width*width)+offset;
+      mean.blue=aggregate.blue/(width*width)+offset;
+      mean.opacity=aggregate.opacity/(width*width)+offset;
+      q->red=q->red <= mean.red ? 0 : MaxRGB;
+      q->green=q->green <= mean.green ? 0 : MaxRGB;
+      q->blue=q->blue <= mean.blue ? 0 : MaxRGB;
+      q->opacity=q->opacity <= mean.opacity ? 0 : MaxRGB;
+      p++;
+      q++;
+    }
+    if (!SyncImagePixels(threshold_image))
+      break;
+    if (QuantumTick(y,image->rows))
+      if (!MagickMonitor(ThresholdImageText,y,image->rows,exception))
+        break;
+  }
+  return(threshold_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
 %     A d d N o i s e I m a g e                                               %
 %                                                                             %
 %                                                                             %
@@ -2196,7 +2320,7 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  UnsharpMaskImage() sharpens an image.  We convolve the image with a
-%  Gaussian operatorof the given radius and standard deviation (sigma).
+%  Gaussian operator of the given radius and standard deviation (sigma).
 %  For reasonable results, radius should be larger than sigma.  Use a radius
 %  of 0 and UnsharpMaskImage() selects a suitable radius for you.
 %
