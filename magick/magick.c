@@ -147,7 +147,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
       /* Initialize ltdl */
       InitializeModules();
 
-#if 0
+#if 1
       /* Load all modules */
       LoadAllModules();
 #endif
@@ -229,7 +229,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
   for (p=magick_info; p != (MagickInfo *) NULL; p=p->next)
     if (Latin1Compare(p->tag,tag) == 0)
       return(p);
-#if defined(HasLTDL)
+#if 0
   /* Try loading format module */
   if(LoadModule(tag))
     for (p=magick_info; p != (MagickInfo *) NULL; p=p->next)
