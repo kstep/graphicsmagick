@@ -1260,11 +1260,11 @@ MagickExport unsigned int ListColorInfo(FILE *file,ExceptionInfo *exception)
     else
       (void) fprintf(file,"%5d,%5d,%5d,%5d ",p->color.red,p->color.green,
         p->color.blue,p->color.opacity);
-    if (p->compliance == SVGCompliance)
+    if (p->compliance & SVGCompliance)
       (void) fprintf(file,"SVG ");
-    if (p->compliance == X11Compliance)
+    if (p->compliance & X11Compliance)
       (void) fprintf(file,"X11 ");
-    if (p->compliance == XPMCompliance)
+    if (p->compliance & XPMCompliance)
       (void) fprintf(file,"XPM ");
     (void) fprintf(file,"\n");
   }
@@ -1477,7 +1477,7 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
 %  The format of the QueryColorname method is:
 %
 %      unsigned int QueryColorname(const Image *image,const PixelPacket *color,
-%        ComplianceType compliance,char *name,ExceptionInfo *exception)
+%        unsigned long compliance,char *name,ExceptionInfo *exception)
 %
 %  A description of each parameter follows.
 %
@@ -1494,7 +1494,7 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
 %
 */
 MagickExport unsigned int QueryColorname(const Image *image,
-  const PixelPacket *color,const ComplianceType compliance,char *name,
+  const PixelPacket *color,const unsigned long compliance,char *name,
   ExceptionInfo *exception)
 {
   register const ColorInfo
@@ -1506,8 +1506,7 @@ MagickExport unsigned int QueryColorname(const Image *image,
     {
       for (p=color_list; p != (const ColorInfo *) NULL; p=p->next)
       {
-        if ((p->compliance != UndefinedCompliance) &&
-            (p->compliance != compliance))
+        if (!(p->compliance & compliance))
           continue;
         if ((p->color.red != color->red) ||
             (p->color.green != color->green) ||
@@ -1685,11 +1684,11 @@ static unsigned int ReadConfigurationFile(const char *basename,
         if (LocaleCompare((char *) keyword,"compliance") == 0)
           {
             if (GlobExpression(token,"*SVG*"))
-              color_list->compliance=SVGCompliance;
+              color_list->compliance|=SVGCompliance;
             if (GlobExpression(token,"*X11*"))
-              color_list->compliance=X11Compliance;
+              color_list->compliance|=X11Compliance;
             if (GlobExpression(token,"*XPM*"))
-              color_list->compliance=XPMCompliance;
+              color_list->compliance|=XPMCompliance;
             break;
           }
         break;

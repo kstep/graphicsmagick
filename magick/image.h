@@ -109,7 +109,7 @@ typedef struct _ColorInfo
     *filename,
     *name;
 
-  ComplianceType
+  unsigned long
     compliance;
 
   PixelPacket
@@ -654,7 +654,7 @@ extern MagickExport unsigned int
     unsigned int),
   PushImagePixels(Image *,const QuantumType,const unsigned char *),
   QueryColorDatabase(const char *,PixelPacket *,ExceptionInfo *),
-  QueryColorname(const Image *,const PixelPacket *,const ComplianceType,char *,
+  QueryColorname(const Image *,const PixelPacket *,const unsigned long,char *,
     ExceptionInfo *),
   RaiseImage(Image *,const RectangleInfo *,const int),
   RGBTransformImage(Image *,const ColorspaceType),
