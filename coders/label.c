@@ -114,10 +114,10 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   status=GetFontMetrics(annotate_info,&bounds);
   if (status == False)
     ThrowReaderException(DelegateWarning,"Unable to get font metrics",image);
-  image->rows=bounds.y2-bounds.y1;
-  image->columns=bounds.x2-bounds.x1;
+  image->rows=bounds.y2-bounds.y1+2.0;
+  image->columns=bounds.x2-bounds.x1+2.0;
   SetImage(image,OpaqueOpacity);
-  (void) FormatString(geometry,"+0%+g",bounds.y2);
+  (void) FormatString(geometry,"+1%+g",bounds.y2);
   annotate_info->geometry=AllocateString(geometry);
   (void) AnnotateImage(image,annotate_info);
   DestroyAnnotateInfo(annotate_info);
