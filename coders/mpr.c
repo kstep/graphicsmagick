@@ -230,8 +230,9 @@ static unsigned int WriteMPRImage(const ImageInfo *image_info,Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   GetExceptionInfo(&exception);
-  id = SetMagickRegistry(ImageRegistryType,image,sizeof(Image),&exception);
-  if( id < 0 )
-    ThrowWriterException(RegistryWarning,"Unable to write image to registry",image);
+  id=SetMagickRegistry(ImageRegistryType,image,sizeof(Image),&exception);
+  if(id < 0)
+    ThrowWriterException(RegistryWarning,"Unable to write image to registry",
+      image);
   return(True);
 }
