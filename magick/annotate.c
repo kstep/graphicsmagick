@@ -1187,7 +1187,7 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
     *display = (Display *) NULL;
 
   static XAnnotateInfo
-    xdraw_info;
+    annotate_info;
 
   static XFontStruct
     *font_info;
@@ -1279,8 +1279,8 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
   /*
     Initialize annotate info.
   */
-  XGetAnnotateInfo(&xdraw_info);
-  xdraw_info.stencil=OpaqueStencil;
+  XGetAnnotateInfo(&annotate_info);
+  annotate_info.stencil=OpaqueStencil;
   if (cache_info.font != draw_info->font)
     {
       /*
@@ -1294,45 +1294,44 @@ static unsigned int RenderX11(Image *image,const DrawInfo *draw_info,
           draw_info->font);
     }
   cache_info=(*draw_info);
-  xdraw_info.font_info=font_info;
-  xdraw_info.text=(char *) draw_info->text;
-  xdraw_info.width=XTextWidth(font_info,draw_info->text,
+  annotate_info.font_info=font_info;
+  annotate_info.text=(char *) draw_info->text;
+  annotate_info.width=XTextWidth(font_info,draw_info->text,
     Extent(draw_info->text));
-  xdraw_info.height=font_info->ascent+font_info->descent;
+  annotate_info.height=font_info->ascent+font_info->descent;
   metrics->pixels_per_em.x=font_info->max_bounds.width;
   metrics->pixels_per_em.y=font_info->max_bounds.width;
   metrics->ascent=font_info->ascent;
   metrics->descent=(-font_info->descent);
-  metrics->width=xdraw_info.width/ExpandAffine(&draw_info->affine);
+  metrics->width=annotate_info.width/ExpandAffine(&draw_info->affine);
   metrics->height=metrics->pixels_per_em.x+4;
   metrics->max_advance=font_info->max_bounds.width;
   if (!render)
     return(True);
-  if (draw_info->fill.opacity != TransparentOpacity)
+  if (draw_info->fill.opacity == TransparentOpacity)
+    return(True);
+  /*
+    Render fill color.
+  */
+  width=annotate_info.width;
+  height=annotate_info.height;
+  if ((draw_info->affine.rx != 0.0) || (draw_info->affine.ry != 0.0))
     {
-      /*
-        Render fill color.
-      */
-      width=xdraw_info.width;
-      height=xdraw_info.height;
-      if ((draw_info->affine.rx != 0.0) || (draw_info->affine.ry != 0.0))
-        {
-          if (((draw_info->affine.sx-draw_info->affine.sy) == 0.0) &&
-              ((draw_info->affine.rx+draw_info->affine.ry) == 0.0))
-            xdraw_info.degrees=(180.0/M_PI)*
-              atan2(draw_info->affine.rx,draw_info->affine.sx);
-        }
-      FormatString(xdraw_info.geometry,"%ux%u+%d+%d",width,height,
-        (int) ceil(offset->x-0.5),(int) ceil(offset->y-metrics->ascent-
-        metrics->descent-1.5));
-      pixel.pen_color.red=XUpScale(draw_info->fill.red);
-      pixel.pen_color.green=XUpScale(draw_info->fill.green);
-      pixel.pen_color.blue=XUpScale(draw_info->fill.blue);
-      status=XAnnotateImage(display,&pixel,&xdraw_info,image);
-      if (status == 0)
-        ThrowBinaryException(ResourceLimitWarning,"Unable to annotate image",
-          "Memory allocation failed");
+      if (((draw_info->affine.sx-draw_info->affine.sy) == 0.0) &&
+          ((draw_info->affine.rx+draw_info->affine.ry) == 0.0))
+        annotate_info.degrees=(180.0/MagickPI)*
+          atan2(draw_info->affine.rx,draw_info->affine.sx);
     }
+  FormatString(annotate_info.geometry,"%ux%u+%d+%d",width,height,
+    (int) ceil(offset->x-0.5),(int) ceil(offset->y-metrics->ascent-
+    metrics->descent-1.5));
+  pixel.pen_color.red=XUpScale(draw_info->fill.red);
+  pixel.pen_color.green=XUpScale(draw_info->fill.green);
+  pixel.pen_color.blue=XUpScale(draw_info->fill.blue);
+  status=XAnnotateImage(display,&pixel,&annotate_info,image);
+  if (status == 0)
+    ThrowBinaryException(ResourceLimitWarning,"Unable to annotate image",
+      "Memory allocation failed");
   return(True);
 }
 #else
