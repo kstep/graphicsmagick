@@ -697,7 +697,7 @@ unsigned int ImageIsMonochrome(Image *image)
     p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       return(False);
-    for (x=0; (x < int) image->columns; x++)
+    for (x=0; x < (int) image->columns; x++)
     {
       if ((p->red != 0) && (p->red != MaxRGB))
         return(False);
