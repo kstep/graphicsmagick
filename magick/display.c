@@ -1799,11 +1799,11 @@ static unsigned int XColorEditImage(Display *display,
             static const char
               *FuzzMenu[]=
               {
-                "0",
-                "2",
-                "4",
-                "8",
-                "16",
+                "0%",
+                "2%",
+                "5%",
+                "10%",
+                "15%",
                 (char *) NULL,
                 (char *) NULL,
               };
@@ -1821,11 +1821,12 @@ static unsigned int XColorEditImage(Display *display,
                 (*image)->fuzz=StringToDouble(FuzzMenu[entry],MaxRGB);
                 break;
               }
-            FormatString(fuzz,"%g",(*image)->fuzz);
-            (void) XDialogWidget(display,windows,"Ok","Enter fuzz factor:",
-              fuzz);
+            strcpy(fuzz,"20%");
+            (void) XDialogWidget(display,windows,"Ok",
+              "Enter fuzz factor (0.0 - 99.9%):",fuzz);
             if (*fuzz == '\0')
               break;
+            (void) strcat(fuzz,"%");
             (*image)->fuzz=StringToDouble(fuzz,MaxRGB);
             break;
           }
@@ -7535,11 +7536,11 @@ static unsigned int XMatteEditImage(Display *display,
             static const char
               *FuzzMenu[]=
               {
-                "0",
-                "2",
-                "4",
-                "8",
-                "16",
+                "0%",
+                "2%",
+                "5%",
+                "10%",
+                "15%",
                 (char *) NULL,
                 (char *) NULL,
               };
@@ -7557,21 +7558,25 @@ static unsigned int XMatteEditImage(Display *display,
                 (*image)->fuzz=StringToDouble(FuzzMenu[entry],MaxRGB);
                 break;
               }
-            FormatString(fuzz,"%g",(*image)->fuzz);
-            (void) XDialogWidget(display,windows,"Ok","Enter fuzz factor:",
-              fuzz);
+            strcpy(fuzz,"20%");
+            (void) XDialogWidget(display,windows,"Ok",
+              "Enter fuzz factor (0.0 - 99.9%):",fuzz);
             if (*fuzz == '\0')
               break;
+            (void) strcat(fuzz,"%");
             (*image)->fuzz=StringToDouble(fuzz,MaxRGB);
             break;
           }
           case MatteEditValueCommand:
           {
+            char
+              message[MaxTextExtent];
+
             /*
               Request matte value from the user.
             */
-            (void) XDialogWidget(display,windows,"Matte","Enter matte value:",
-              matte);
+            FormatString(message,"Enter matte value (0 - %lu):",MaxRGB);
+            (void) XDialogWidget(display,windows,"Matte",message,matte);
             break;
           }
           case MatteEditUndoCommand:
