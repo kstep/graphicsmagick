@@ -140,10 +140,9 @@ MagickExport Image *CloneImageList(const Image *images,ExceptionInfo *exception)
   if (images == (Image *) NULL)
     return((Image *) NULL);
   assert(images->signature == MagickSignature);
-  p=(Image *) NULL;
   while (images->previous != (Image *) NULL)
     images=images->previous;
-  for ( ; images != (Image *) NULL; images=images->next)
+  for (p=(Image *) NULL; images != (Image *) NULL; images=images->next)
   {
     clone=CloneImage(images,0,0,True,exception);
     if (clone == (Image *) NULL)
@@ -177,7 +176,7 @@ MagickExport Image *CloneImageList(const Image *images,ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DeleteImageFromList() deletes an image at the specified position from the
+%  DeleteImageFromList() deletes an image at the specified offset from the
 %  list.
 %
 %  The format of the DeleteImageFromList method is:
@@ -262,12 +261,11 @@ MagickExport void DestroyImageList(Image *images)
   if (images == (Image *) NULL)
     return;
   assert(images->signature == MagickSignature);
-  while (images->previous != (Image *) NULL)
-    images=images->previous;
-  for (p=images; images != (Image *) NULL; p=images)
+  for (p=images; p->previous != (Image *) NULL; p=p->previous);
+  for (images=p; p != (Image *) NULL; images=p)
   {
-    images=images->next;
-    DestroyImage(p);
+    p=p->next;
+    DestroyImage(images);
   }
 }
 
@@ -282,7 +280,7 @@ MagickExport void DestroyImageList(Image *images)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetImageFromList() returns an image at the specified position from the list.
+%  GetImageFromList() returns an image at the specified offset from the list.
 %
 %  The format of the GetImageFromList method is:
 %
@@ -541,11 +539,11 @@ MagickExport Image **ImageListToArray(const Image *images,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  InsertImageInList() inserts an image in the list at the specified position.
+%  InsertImageInList() inserts an image in the list at the specified offset.
 %
 %  The format of the InsertImageInList method is:
 %
-%      unsigned int InsertImageInList(Image *images,Image *image,
+%      unsigned int InsertImageInList(Image **images,Image *image,
 %        const long offset)
 %
 %  A description of each parameter follows:
@@ -654,13 +652,11 @@ MagickExport unsigned int PrependImageToList(Image **images,Image *image)
       return(True);
     }
   assert((*images)->signature == MagickSignature);
+  for (p=image; p->next != (Image *) NULL; p=p->next);
   while ((*images)->previous != (Image *) NULL)
     (*images)=(*images)->previous;
-  p=image;
-  while (p->next != (Image *) NULL)
-    p=p->next;
+  p->next=(*images);
   (*images)->previous=p;
-  (*images)->previous->next=(*images);
   while ((*images)->previous != (Image *) NULL)
     (*images)=(*images)->previous;
   return(True);
@@ -746,8 +742,8 @@ MagickExport Image *RemoveLastImageFromList(Image **images)
       (*images)=(Image *) NULL;
       return(p);
     }
-  p->next->previous=(Image *) NULL;
-  p->next=(Image *) NULL;
+  p->previous->next=(Image *) NULL;
+  p->previous=(Image *) NULL;
   return(p);
 }
 
@@ -788,10 +784,9 @@ MagickExport Image *ReverseImageList(const Image *images,
   if (images == (Image *) NULL)
     return((Image *) NULL);
   assert(images->signature == MagickSignature);
-  p=(Image *) NULL;
   while (images->next != (Image *) NULL)
     images=images->next;
-  for ( ; images != (Image *) NULL; images=images->previous)
+  for (p=(Image *) NULL; images != (Image *) NULL; images=images->previous)
   {
     clone=CloneImage(images,0,0,True,exception);
     if (clone == (Image *) NULL)
@@ -868,10 +863,10 @@ MagickExport unsigned int SpliceImageIntoList(Image **images,const long offset,
   split=SplitImageList(*images,offset);
   if (split == False)
     return(False);
+  AppendImageToList(images,splices);
   status=False;
   for (i=0; i < length; i++)
     status|=DeleteImageFromList(&split,0);
-  AppendImageToList(images,splices);
   AppendImageToList(images,split);
   return(status);
 }
