@@ -6858,9 +6858,9 @@ else
   failed=`expr $failed + 1`
 fi
 
-echo "$as_me:6861: checking for png_info_init in -lpng" >&5
-echo $ECHO_N "checking for png_info_init in -lpng... $ECHO_C" >&6
-if test "${ac_cv_lib_png_png_info_init+set}" = set; then
+echo "$as_me:6861: checking for png_free in -lpng" >&5
+echo $ECHO_N "checking for png_free in -lpng... $ECHO_C" >&6
+if test "${ac_cv_lib_png_png_free+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   ac_check_lib_save_LIBS=$LIBS
@@ -6875,11 +6875,11 @@ extern "C"
 #endif
 /* We use char because int might match the return type of a gcc2
    builtin and then its argument prototype would still apply.  */
-char png_info_init ();
+char png_free ();
 int
 main ()
 {
-png_info_init ();
+png_free ();
   ;
   return 0;
 }
@@ -6895,18 +6895,18 @@ if { (eval echo "$as_me:6888: \"$ac_link\"") >&5
   ac_status=$?
   echo "$as_me:6896: \$? = $ac_status" >&5
   (exit $ac_status); }; then
-  ac_cv_lib_png_png_info_init=yes
+  ac_cv_lib_png_png_free=yes
 else
   echo "$as_me: failed program was:" >&5
 cat conftest.$ac_ext >&5
-ac_cv_lib_png_png_info_init=no
+ac_cv_lib_png_png_free=no
 fi
 rm -f conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-echo "$as_me:6907: result: $ac_cv_lib_png_png_info_init" >&5
-echo "${ECHO_T}$ac_cv_lib_png_png_info_init" >&6
-if test $ac_cv_lib_png_png_info_init = yes; then
+echo "$as_me:6907: result: $ac_cv_lib_png_png_free" >&5
+echo "${ECHO_T}$ac_cv_lib_png_png_free" >&6
+if test $ac_cv_lib_png_png_free = yes; then
   passed=`expr $passed + 1`
 else
   failed=`expr $failed + 1`
@@ -10869,8 +10869,8 @@ fi
 # Configure Delegates
 #
 
-# Define directory where ImageMagick/delegates.mgk lives. (default /usr/local/share)
-eval MagickConfigurePath="${DATA_DIR}/ImageMagick/"
+# Define directory where configured ImageMagick/delegates.mgk lives. (default /usr/local/lib/ImageMagick)
+eval MagickConfigurePath="${LIB_DIR}/ImageMagick/"
 
 cat >>confdefs.h <<EOF
 #define MagickConfigurePath "$MagickConfigurePath"

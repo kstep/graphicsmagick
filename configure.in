@@ -1146,8 +1146,8 @@ fi
 # Configure Delegates
 #
 
-# Define directory where ImageMagick/delegates.mgk lives. (default /usr/local/share)
-eval MagickConfigurePath="${DATA_DIR}/ImageMagick/"
+# Define directory where configured ImageMagick/delegates.mgk lives. (default /usr/local/lib/ImageMagick)
+eval MagickConfigurePath="${LIB_DIR}/ImageMagick/"
 AC_DEFINE_UNQUOTED(MagickConfigurePath,"$MagickConfigurePath",Define directory where ImageMagick/delegates.mgk lives.)
 
 # Locate delegates

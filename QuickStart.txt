@@ -13,7 +13,7 @@ Configuration Files:
       X11ConfigurePath
 
   Where MagickConfigurePath and MagickModulesPath are defined by the
-  configure program on Unix and default to /usr/local/share/ImageMagick/
+  configure program on Unix and default to /usr/local/lib/ImageMagick/
   and /usr/local/lib/ImageMagick/modules/coders/ respectively.
   X11ConfigurePath defines where to find the X11 color database,
   rgb.txt. It defaults to /usr/X11R6/lib and is set to its actual path
@@ -57,6 +57,7 @@ Unix/Linux/Cygwin Install:
 
       gunzip -c ImageMagick-*.tar.gz | tar xvf -
       /bin/mv share/ImageMagick/* /opt/ImageMagick
+      /bin/mv lib/ImageMagick/* /opt/ImageMagick
       /bin/mv lib/ImageMagick/modules/coders/* /opt/ImageMagick
       /bin/mv lib/libMagick* /opt/ImageMagick
       /bin/mv bin/* /opt/ImageMagick

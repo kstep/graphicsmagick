@@ -31,12 +31,21 @@
 AUTOMAKE_OPTIONS = 1.4 foreign
 
 # Architecture independent data files installed in the package's data directory
-pkgdata_DATA = delegates.mgk magic.mgk
+pkgdata_DATA = magic.mgk
 
 # Additional files to distribute
 EXTRA_DIST = delegates.mgk.in mac.mgk magic.mgk nt.mgk \
              unix.mgk vms.mgk win98.mgk win2k.mgk
 
-# Ensure that processed delegates file is not distributed
-#dist-hook:
-#	$(RM) $(distdir)/delegates.mgk
+# Install delegates files
+install-data-delegates:
+	$(mkinstalldirs) $(pkglibdir)
+	$(INSTALL_DATA) delegates.mgk $(pkglibdir)
+
+# Uninstall delegates files
+uninstall-data-delegates:
+	rm -f $(pkglibdir)/delegates.mgk
+
+install-exec-local: install-data-delegates
+
+uninstall-local: uninstall-data-delegates

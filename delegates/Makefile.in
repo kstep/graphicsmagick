@@ -202,7 +202,7 @@ install_sh = @install_sh@
 AUTOMAKE_OPTIONS = 1.4 foreign
 
 # Architecture independent data files installed in the package's data directory
-pkgdata_DATA = delegates.mgk magic.mgk
+pkgdata_DATA = magic.mgk
 
 # Additional files to distribute
 EXTRA_DIST = delegates.mgk.in mac.mgk magic.mgk nt.mgk \
@@ -276,7 +276,7 @@ check-am: all-am
 check: check-am
 installcheck-am:
 installcheck: installcheck-am
-install-exec-am:
+install-exec-am: install-exec-local
 install-exec: install-exec-am
 
 install-data-am: install-pkgdataDATA
@@ -285,7 +285,7 @@ install-data: install-data-am
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am: uninstall-pkgdataDATA
+uninstall-am: uninstall-pkgdataDATA uninstall-local
 uninstall: uninstall-am
 all-am: Makefile $(DATA)
 all-redirect: all-am
@@ -326,15 +326,25 @@ maintainer-clean: maintainer-clean-am
 
 .PHONY: uninstall-pkgdataDATA install-pkgdataDATA tags distdir info-am \
 info dvi-am dvi check check-am installcheck-am installcheck \
-install-exec-am install-exec install-data-am install-data install-am \
-install uninstall-am uninstall all-redirect all-am all install-strip \
-installdirs mostlyclean-generic distclean-generic clean-generic \
-maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+install-exec-local install-exec-am install-exec install-data-am \
+install-data install-am install uninstall-local uninstall-am uninstall \
+all-redirect all-am all install-strip installdirs mostlyclean-generic \
+distclean-generic clean-generic maintainer-clean-generic clean \
+mostlyclean distclean maintainer-clean
 
 
-# Ensure that processed delegates file is not distributed
-#dist-hook:
-#	$(RM) $(distdir)/delegates.mgk
+# Install delegates files
+install-data-delegates:
+	$(mkinstalldirs) $(pkglibdir)
+	$(INSTALL_DATA) delegates.mgk $(pkglibdir)
+
+# Uninstall delegates files
+uninstall-data-delegates:
+	rm -f $(pkglibdir)/delegates.mgk
+
+install-exec-local: install-data-delegates
+
+uninstall-local: uninstall-data-delegates
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

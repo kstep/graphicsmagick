@@ -76,6 +76,9 @@ extern wmf_functions WmfFunctions;
 extern int currentx;
 extern int currenty;
 
+
+#define MVG_PTR ((ImUserData*)(cstruct->userdata))->mvg
+#define IMG_PTR ((ImUserData*)(cstruct->userdata))->image
 typedef struct _ImUserData
 {
   char*    mvg;
@@ -199,8 +202,63 @@ static const ImWmfFont FontList [] =
   { (char *) NULL,  (char *) NULL, (char *) NULL }
 };
 
-#define MVG_PTR ((ImUserData*)(cstruct->userdata))->mvg
-#define IMG_PTR ((ImUserData*)(cstruct->userdata))->image
+/* Hatch images */
+#define HatchBDIAGONALImageExtent  53
+#define HatchCROSSImageExtent      54
+#define HatchDIAGCROSSImageExtent  54
+#define HatchFDIAGONALImageExtent  53
+#define HatchHORIZONTALImageExtent 50
+#define HatchVERTICALImageExtent   53
+static const unsigned char
+  HatchBDIAGONALImage[]=
+  {
+    0x47, 0x49, 0x46, 0x38, 0x37, 0x61, 0x08, 0x00, 0x08, 0x00, 0xf0, 0x01, 
+    0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0x21, 0xf9, 0x04, 0x00, 0x00, 
+    0x00, 0x00, 0x00, 0x2c, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, 0x08, 0x00, 
+    0x00, 0x02, 0x0c, 0x8c, 0x1f, 0x80, 0xa6, 0xdb, 0xf8, 0x4e, 0x64, 0x2b, 
+    0xd5, 0x69, 0x0a, 0x00, 0x3b, 
+  },
+  HatchCROSSImage[]=
+  {
+    0x47, 0x49, 0x46, 0x38, 0x37, 0x61, 0x08, 0x00, 0x08, 0x00, 0xf0, 0x01, 
+    0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0x21, 0xf9, 0x04, 0x00, 0x00, 
+    0x00, 0x00, 0x00, 0x2c, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, 0x08, 0x00, 
+    0x00, 0x02, 0x0d, 0x8c, 0x61, 0x79, 0x9a, 0xd8, 0x00, 0xa3, 0x0b, 0x53, 
+    0xd5, 0xc6, 0x56, 0x2a, 0x00, 0x3b, 
+  },
+  HatchDIAGCROSSImage[]=
+  {
+    0x47, 0x49, 0x46, 0x38, 0x37, 0x61, 0x08, 0x00, 0x08, 0x00, 0xf0, 0x01, 
+    0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0x21, 0xf9, 0x04, 0x00, 0x00, 
+    0x00, 0x00, 0x00, 0x2c, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, 0x08, 0x00, 
+    0x00, 0x02, 0x0d, 0x44, 0x8e, 0x66, 0xc9, 0xb1, 0xf9, 0x20, 0x3a, 0xeb, 
+    0x45, 0x35, 0x69, 0x01, 0x00, 0x3b, 
+  },
+  HatchFDIAGONALImage[]=
+  {
+    0x47, 0x49, 0x46, 0x38, 0x37, 0x61, 0x08, 0x00, 0x08, 0x00, 0xf0, 0x01, 
+    0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0x21, 0xf9, 0x04, 0x00, 0x00, 
+    0x00, 0x00, 0x00, 0x2c, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, 0x08, 0x00, 
+    0x00, 0x02, 0x0c, 0x44, 0x8e, 0x67, 0x89, 0xcb, 0xe1, 0x58, 0x4c, 0xb3, 
+    0x3d, 0x55, 0x00, 0x00, 0x3b, 
+  },
+  HatchHORIZONTALImage[]=
+  {
+    0x47, 0x49, 0x46, 0x38, 0x37, 0x61, 0x08, 0x00, 0x08, 0x00, 0xf0, 0x01, 
+    0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0x21, 0xf9, 0x04, 0x00, 0x00, 
+    0x00, 0x00, 0x00, 0x2c, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, 0x08, 0x00, 
+    0x00, 0x02, 0x09, 0x8c, 0x8f, 0xa9, 0x07, 0xed, 0xbd, 0xa2, 0x8c, 0x05, 
+    0x00, 0x3b, 
+  },
+  HatchVERTICALImage[]=
+  {
+    0x47, 0x49, 0x46, 0x38, 0x37, 0x61, 0x08, 0x00, 0x08, 0x00, 0xf0, 0x01, 
+    0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0x21, 0xf9, 0x04, 0x00, 0x00, 
+    0x00, 0x00, 0x00, 0x2c, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, 0x08, 0x00, 
+    0x00, 0x02, 0x0c, 0x8c, 0x61, 0x79, 0x9a, 0xc8, 0xe1, 0x58, 0x54, 0xb3, 
+    0x3d, 0xa8, 0x0a, 0x00, 0x3b, 
+  };
+
 
 static int
   WmfMmHeight(CSTRUCT *),
@@ -1520,7 +1578,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image;
 
   ImageInfo*
-    local_info;
+    clone_info;
 
   char
     buff[MaxTextExtent],
@@ -1529,10 +1587,34 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   off_t
     filesize;
 
-  wmffunctions = &WmfFunctions;
-
   image=AllocateImage(image_info);
   GetExceptionInfo(exception);
+
+/*       printf("magick=%s\n", image_info->magick); */
+  /* Return WFM hatch images */
+/*   if(LocaleCompare(image_info->magick,"WMF") != 0) */
+/*     { */
+/*       clone_info=CloneImageInfo(image_info); */
+/*       (void) strcpy(clone_info->magick,"GIF");  */
+/*       if (LocaleCompare(image_info->magick,"HATCH_BDIAGONAL") == 0) */
+/*         image=BlobToImage(clone_info,HatchBDIAGONALImage,HatchBDIAGONALImageExtent,exception); */
+/*       else if (LocaleCompare(image_info->magick,"HATCH_CROSS") == 0) */
+/*         image=BlobToImage(clone_info,HatchCROSSImage,HatchCROSSImageExtent,exception); */
+/*       else if (LocaleCompare(image_info->magick,"HATCH_DIAGCROSS") == 0) */
+/*         image=BlobToImage(clone_info,HatchDIAGCROSSImage,HatchDIAGCROSSImageExtent,exception); */
+/*       else if (LocaleCompare(image_info->magick,"HATCH_FDIAGONAL") == 0) */
+/*         image=BlobToImage(clone_info,HatchFDIAGONALImage,HatchFDIAGONALImageExtent,exception); */
+/*       else if (LocaleCompare(image_info->magick,"HATCH_HORIZONTAL") == 0) */
+/*         image=BlobToImage(clone_info,HatchHORIZONTALImage,HatchHORIZONTALImageExtent,exception); */
+/*       else if (LocaleCompare(image_info->magick,"HATCH_VERTICAL") == 0) */
+/*         image=BlobToImage(clone_info,HatchVERTICALImage,HatchVERTICALImageExtent,exception); */
+/*       else */
+/*         image=BlobToImage(clone_info,HatchCROSSImage,HatchCROSSImageExtent,exception); */
+/*       DestroyImageInfo(clone_info); */
+/*       return(image); */
+/*     } */
+
+  wmffunctions = &WmfFunctions;
 
   /* Allocate and initialize cstruct */
   cstruct=(CSTRUCT *)AcquireMemory(sizeof(CSTRUCT));
@@ -1602,24 +1684,24 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ExtendMVG(cstruct, buff);
 
       /* Create white canvas image */
-      local_info = (ImageInfo*)AcquireMemory(sizeof(ImageInfo));
-      if(local_info == (ImageInfo*)NULL)
+      clone_info = (ImageInfo*)AcquireMemory(sizeof(ImageInfo));
+      if(clone_info == (ImageInfo*)NULL)
         ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
 
-      GetImageInfo( local_info );
+      GetImageInfo( clone_info );
       sprintf( buff, "%ix%i", (int)cstruct->realwidth, (int)cstruct->realheight );
-      CloneString(&(local_info->size), buff);
+      CloneString(&(clone_info->size), buff);
       if(image_info->texture == (char*)NULL)
-        sprintf(local_info->filename,"XC:#%02x%02x%02x%02x",
+        sprintf(clone_info->filename,"XC:#%02x%02x%02x%02x",
                 image_info->background_color.red,
                 image_info->background_color.green,
                 image_info->background_color.blue,
                 image_info->background_color.opacity);
       else
-        sprintf(local_info->filename,"TILE:%s",image_info->texture);
+        sprintf(clone_info->filename,"TILE:%s",image_info->texture);
       GetExceptionInfo(exception);
       DestroyImage(image);
-      image = ReadImage( local_info, exception );
+      image = ReadImage( clone_info, exception );
       if(image == (Image*)NULL)
         {
           /* Destroy metafile handle (lacks a convenient Destroy function */
@@ -1635,7 +1717,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           LiberateMemory((void**)&(cstruct));
 
           /* Destroy other allocations */
-          DestroyImageInfo(local_info);
+          DestroyImageInfo(clone_info);
           DestroyImage(image);
           return image;
         }
@@ -1646,7 +1728,7 @@ static Image *ReadWMFImage(const ImageInfo *image_info,ExceptionInfo *exception)
       PlayMetaFile((void *)cstruct,metafile,1,NULL);
 
       ScribbleMVG(cstruct);
-      DestroyImageInfo(local_info);
+      DestroyImageInfo(clone_info);
     }
 
   /* Restore original filename and magick */
@@ -1702,10 +1784,52 @@ ModuleExport void RegisterWMFImage(void)
   MagickInfo
     *entry;
 
+/*   entry=SetMagickInfo("HATCH_BDIAGONAL"); */
+/*   entry->decoder=ReadWMFImage; */
+/*   entry->description=AllocateString("WMF decoder internal format"); */
+/*   entry->stealth=True; */
+/*   entry->module=AllocateString("WMF"); */
+/*   RegisterMagickInfo(entry); */
+
+/*   entry=SetMagickInfo("HATCH_CROSS"); */
+/*   entry->decoder=ReadWMFImage; */
+/*   entry->description=AllocateString("WMF decoder internal format"); */
+/*   entry->stealth=True; */
+/*   entry->module=AllocateString("WMF"); */
+/*   RegisterMagickInfo(entry); */
+
+/*   entry=SetMagickInfo("HATCH_DIAGCROSS"); */
+/*   entry->decoder=ReadWMFImage; */
+/*   entry->description=AllocateString("WMF decoder internal format"); */
+/*   entry->stealth=True; */
+/*   entry->module=AllocateString("WMF"); */
+/*   RegisterMagickInfo(entry); */
+
+/*   entry=SetMagickInfo("HATCH_FDIAGONAL"); */
+/*   entry->decoder=ReadWMFImage; */
+/*   entry->description=AllocateString("WMF decoder internal format"); */
+/*   entry->stealth=True; */
+/*   entry->module=AllocateString("WMF"); */
+/*   RegisterMagickInfo(entry); */
+
+/*   entry=SetMagickInfo("HATCH_HORIZONTAL"); */
+/*   entry->decoder=ReadWMFImage; */
+/*   entry->description=AllocateString("WMF decoder internal format"); */
+/*   entry->stealth=True; */
+/*   entry->module=AllocateString("WMF"); */
+/*   RegisterMagickInfo(entry); */
+
+/*   entry=SetMagickInfo("HATCH_VERTICAL"); */
+/*   entry->decoder=ReadWMFImage; */
+/*   entry->description=AllocateString("WMF decoder internal format"); */
+/*   entry->stealth=True; */
+/*   entry->module=AllocateString("WMF"); */
+/*   RegisterMagickInfo(entry); */
+
   entry=SetMagickInfo("WMF");
   entry->decoder=ReadWMFImage;
-  entry->blob_support=False;
   entry->description=AllocateString("Windows Meta File");
+  entry->blob_support=False;
   entry->module=AllocateString("WMF");
   RegisterMagickInfo(entry);
 #endif
