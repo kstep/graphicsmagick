@@ -3801,8 +3801,11 @@ ModuleExport void UnregisterPNGImage(void)
 %    o image:  A pointer to an Image structure.
 %
 %
-%  To do (as of version 5.2.8, January 23, 2001 -- glennrp -- see also
+%  To do (as of version 5.2.9, February 14, 2001 -- glennrp -- see also
 %    "To do" under ReadPNGImage):
+%
+%    Fix problem with palette sorting (when PNG_SORT_PALETTE is enabled,
+%    some GIF animations don't convert properly)
 %
 %    Preserve all unknown and not-yet-handled known chunks found in input
 %    PNG file and copy them  into output PNG files according to the PNG
@@ -3970,7 +3973,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     if (next_image->storage_class==DirectClass && IsPseudoClass(next_image))
 #  ifdef PNG_DEBUG
      if(image_info->verbose)
-       printf("png.c: %d-bit image reduced to PseudoClass with %d colors\n",
+       printf("  reduced to %d-bit PseudoClass with %d colors\n",
            next_image->depth, next_image->colors);
 #  else
         /* image reduced */;
@@ -4482,6 +4485,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
            (((image->background_color.blue >> 8) & 0xff)
           == (image->background_color.blue & 0xff)));
         if(ok_to_reduce)
+          /* Note: GetImageDepth() could be used here. */
           for (y=0; y < (int) image->rows; y++)
           {
             p=GetImagePixels(image,0,y,image->columns,1);
@@ -4682,11 +4686,16 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           }
         if (image->depth > QuantumDepth)
           image->depth=QuantumDepth;
-        ping_info->bit_depth=1;
         if (image->colors == 0 || image->colors > MaxRGB+1)
           image->colors = MaxRGB+1;
-        while ((1 << ping_info->bit_depth) < image->colors)
-          ping_info->bit_depth<<=1;
+        if (image->depth == 16)
+          ping_info->bit_depth=16;
+        else
+          {
+            ping_info->bit_depth=1;
+            while ((1 << ping_info->bit_depth) < image->colors)
+              ping_info->bit_depth<<=1;
+          }
       }
     else
       if (image->storage_class==PseudoClass)
@@ -4981,18 +4990,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
               {
                 if (image->storage_class == PseudoClass)
-                  {
-                   if(image->depth > 8)
-                     /* logo8 and logo16 are dark */
-                     /* coyote has pink background */
-                     /* catrun is black */
-                     (void) PopImagePixels(image,IndexQuantum,scanlines[y]);
-                   else
-                     /* logo8 is ok, logo16 is stretched */
-                     /* coyote OK */
-                     /* catrun OK */
-                     (void) PopImagePixels(image,GrayQuantum,scanlines[y]);
-                  }
+                  (void) PopImagePixels(image,GrayQuantum,scanlines[y]);
                 else
                   (void) PopImagePixels(image,RedQuantum,scanlines[y]);
               }

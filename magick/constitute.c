@@ -2,6 +2,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
+%                                                                             %
 %     CCCC   OOO   N   N  SSSSS  TTTTT  IIIII  TTTTT  U   U  TTTTT  EEEEE     %
 %    C      O   O  NN  N  SS       T      I      T    U   U    T    E         %
 %    C      O   O  N N N  ESSS     T      I      T    U   U    T    EEE       %
@@ -2076,6 +2077,10 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
     if (!GetDelegateInfo((char *) NULL,clone_info->magick,&delegate_info))
       {
         magick_info=(MagickInfo *) GetMagickInfo(clone_info->magick);
+        if ((magick_info == (MagickInfo *) NULL) ||
+            (magick_info->encoder ==
+              (unsigned int (*)(const ImageInfo *,Image *)) NULL))
+          magick_info=(MagickInfo *) GetMagickInfo(image->magick);
         if ((magick_info == (MagickInfo *) NULL) ||
             (magick_info->encoder ==
               (unsigned int (*)(const ImageInfo *,Image *)) NULL))
