@@ -156,7 +156,7 @@ MagickExport Image *AddNoiseImage(Image *image,const NoiseType noise_type,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method BlurImage creates a blurred copy of the input image.  We
-%  convolve the image with a Gaussian operator of the given width and
+%  convolve the image with a Gaussian operator of the given radius and
 %  standard deviation (sigma).
 %
 %  Each output pixel is set to a value that is the weighted average of the

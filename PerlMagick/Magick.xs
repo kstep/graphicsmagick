@@ -343,7 +343,7 @@ static struct
       {"antialias", BooleanTypes} } },
     { "ColorFloodfill", { {"geom", StringReference}, {"x", IntegerReference},
       {"y", IntegerReference}, {"fill", StringReference},
-      {"bordercolor", StringReference} } },
+      {"bordercolor", StringReference}, {"fuzz", DoubleReference} } },
     { "Composite", { {"compos", CompositeTypes}, {"image", ImageReference},
       {"geom", StringReference}, {"x", IntegerReference},
       {"y", IntegerReference}, {"grav", GravityTypes},
@@ -389,11 +389,12 @@ static struct
       {"filter", FilterTypess} } },
     { "Transparent", { {"color", StringReference} } },
     { "Threshold", { {"threshold", DoubleReference} } },
-    { "Charcoal", { {"factor", StringReference} } },
+    { "Charcoal", { {"geom", StringReference}, {"radius", DoubleReference},
+      {"sigma", DoubleReference} } },
     { "Trim", },
     { "Wave", { {"geom", StringReference}, {"ampli", DoubleReference},
       {"wave", DoubleReference} } },
-    { "Channel", { {"channel", ChannelTypes} } },
+    { "Channel", { {"radius", ChannelTypes} } },
     { "Condense", },
     { "Stereo", { {"image", ImageReference} } },
     { "Stegano", { {"image", ImageReference}, {"offset", IntegerReference} } },
@@ -4551,6 +4552,8 @@ Mogrify(ref,...)
             rectangle_info.y % image->rows);
           if (attribute_flag[4])
             target=fill_color;
+          if (attribute_flag[5])
+            image->fuzz=argument_list[5].int_reference;
           ColorFloodfillImage(image,draw_info,target,rectangle_info.x,
             rectangle_info.y,attribute_flag[4] ? FillToBorderMethod :
             FloodfillMethod);
@@ -5116,11 +5119,26 @@ Mogrify(ref,...)
         }
         case 58:  /* Charcoal */
         {
-          if (!attribute_flag[0])
-            argument_list[0].string_reference="0";
+          char
+            geometry[MaxTextExtent];
+
+          double
+            radius,
+            sigma;
+
+          radius=0.0;
+          sigma=1.0;
+          if (attribute_flag[1])
+            radius=argument_list[1].double_reference;
+          if (attribute_flag[2])
+            sigma=argument_list[2].double_reference;
+          if (attribute_flag[0])
+            (void) sscanf(argument_list[0].string_reference,"%lfx%lf",
+              &radius,&sigma);
+          FormatString(geometry,"%gx%g",radius,sigma);
           commands[0]=client_name;
           commands[1]="-charcoal";
-          commands[2]=argument_list[0].string_reference;
+          commands[2]=geometry;
           MogrifyImage(info->image_info,3,commands,&image);
           if (next != image)
             next=NULL;  /* 'cause it's been blown away */
