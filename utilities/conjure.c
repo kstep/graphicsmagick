@@ -190,8 +190,8 @@ int main(int argc,char **argv)
         /*
           Persist key/value pair.
         */
-        status=SetImageAttribute(image_info->attributes,option+1,(char *) NULL);
-        status=SetImageAttribute(image_info->attributes,option+1,argv[i+1]);
+        (void) SetImageAttribute(image_info->attributes,option+1,(char *) NULL);
+        status&=SetImageAttribute(image_info->attributes,option+1,argv[i+1]);
         if (status == False)
           MagickError(ResourceLimitError,"Unable to persist key",option);
         i++;
@@ -200,7 +200,7 @@ int main(int argc,char **argv)
     /*
       Interpret MSL script.
     */
-    status&=SetImageAttribute(image_info->attributes,"filename",(char *) NULL);
+    (void) SetImageAttribute(image_info->attributes,"filename",(char *) NULL);
     status&=SetImageAttribute(image_info->attributes,"filename",argv[i]);
     if (status == False)
       MagickError(ResourceLimitError,"Unable to persist key",argv[i]);
