@@ -146,20 +146,11 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
   do
   {
     /*
-      Create linear colormap.
+      Convert raster image to pixel packets.
     */
     if (!AllocateImageColormap(image,1 << image->depth))
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
         image);
-    for (i=0; i < (int) image->colors; i++)
-    {
-      image->colormap[i].red=image->depth == QuantumDepth ? i : UpScale(i);
-      image->colormap[i].green=image->colormap[i].red;
-      image->colormap[i].blue=image->colormap[i].red;
-    }
-    /*
-      Convert raster image to pixel packets.
-    */
     for (y=0; y < image->tile_info.y; y++)
       (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
     for (y=0; y < (int) image->rows; y++)
