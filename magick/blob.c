@@ -151,7 +151,7 @@ Export Image *BlobToImage(const ImageInfo *image_info,const char *blob,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   C l o s e B l o b                                                         %
++   C l o s e B l o b                                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -213,7 +213,7 @@ Export void CloseBlob(Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  E O F B l o b                                                              %
++  E O F B l o b                                                              %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -248,7 +248,7 @@ Export int EOFBlob(const Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  F l u s h B l o b                                                          %
++  F l u s h B l o b                                                          %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -315,7 +315,7 @@ Export void GetBlobInfo(BlobInfo *blob_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t S t r i n g B l o b                                                 %
++   G e t S t r i n g B l o b                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -494,7 +494,7 @@ Export char *ImageToBlob(const ImageInfo *image_info,Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  L S B F i r s t R e a d L o n g                                            %
++  L S B F i r s t R e a d L o n g                                            %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -540,7 +540,7 @@ Export unsigned long LSBFirstReadLong(Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  L S B F i r s t R e a d S h o r t                                          %
++  L S B F i r s t R e a d S h o r t                                          %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -584,7 +584,7 @@ Export unsigned short LSBFirstReadShort(Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  L S B F i r s t W r i t e L o n g                                          %
++  L S B F i r s t W r i t e L o n g                                          %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -626,7 +626,7 @@ Export unsigned long LSBFirstWriteLong(Image *image,const unsigned long value)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  L S B F i r s t W r i t e S h o r t                                        %
++  L S B F i r s t W r i t e S h o r t                                        %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -666,7 +666,7 @@ Export unsigned long LSBFirstWriteShort(Image *image,const unsigned short value)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  M S B F i r s t O r d e r L o n g                                          %
++  M S B F i r s t O r d e r L o n g                                          %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -715,7 +715,7 @@ Export void MSBFirstOrderLong(register char *p,const unsigned int length)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  M S B F i r s t O r d e r S h o r t                                        %
++  M S B F i r s t O r d e r S h o r t                                        %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -758,7 +758,7 @@ Export void MSBFirstOrderShort(register char *p,const unsigned int length)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  M S B F i r s t R e a d S h o r t                                          %
++  M S B F i r s t R e a d S h o r t                                          %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -802,7 +802,7 @@ Export unsigned short MSBFirstReadShort(Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  M S B F i r s t R e a d L o n g                                            %
++  M S B F i r s t R e a d L o n g                                            %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -849,7 +849,7 @@ Export unsigned long MSBFirstReadLong(Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  M S B F i r s t W r i t e L o n g                                          %
++  M S B F i r s t W r i t e L o n g                                          %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -892,7 +892,7 @@ Export unsigned long MSBFirstWriteLong(Image *image,const unsigned long value)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  M S B F i r s t W r i t e S h o r t                                        %
++  M S B F i r s t W r i t e S h o r t                                        %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -929,7 +929,7 @@ Export unsigned long MSBFirstWriteShort(Image *image,const unsigned short value)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   O p e n B l o b                                                           %
++   O p e n B l o b                                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1117,7 +1117,7 @@ Export unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  R e a d B l o b                                                            %
++  R e a d B l o b                                                            %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1188,7 +1188,7 @@ Export unsigned long ReadBlob(Image *image,const unsigned long number_bytes,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  R e a d B y t e                                                            %
++  R e a d B y t e                                                            %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1228,7 +1228,7 @@ Export int ReadByte(Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  R e a d D a t a B l o c k                                                  %
++  R e a d D a t a B l o c k                                                  %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1275,7 +1275,7 @@ Export unsigned long ReadBlobBlock(Image *image,char *data)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  S e e k B l o b                                                            %
++  S e e k B l o b                                                            %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1384,7 +1384,7 @@ Export void SetBlobQuantum(BlobInfo *blob_info,const unsigned long quantum)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  T e l l B l o b                                                            %
++  T e l l B l o b                                                            %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1418,7 +1418,7 @@ Export int TellBlob(const Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  W r i t e B l o b                                                          %
++  W r i t e B l o b                                                          %
 %                                                                             %
 %                                                                             %
 %                                                                             %
@@ -1485,7 +1485,7 @@ Export unsigned long WriteBlob(Image *image,const unsigned long number_bytes,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%  W r i t e B y t e                                                          %
++  W r i t e B y t e                                                          %
 %                                                                             %
 %                                                                             %
 %                                                                             %
