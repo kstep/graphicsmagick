@@ -432,7 +432,7 @@ Image *image2;
 if((clone_info=CloneImageInfo(image_info))==NULL) return(image);
 TemporaryFilename((char *) clone_info->filename);
 
-/*printf("PS part %ld %ld %s\n",PS_Offset,PS_Size,clone_info->filename);/**/
+/*printf("PS part %ld %ld %s\n",PS_Offset,PS_Size,clone_info->filename);*/
 
 if( (f=fopen(clone_info->filename,"wb"))==NULL) goto FINISH;
 SeekBlob(image,PS_Offset,SEEK_SET);
@@ -824,7 +824,7 @@ DecompressionFailed: ThrowReaderException(ResourceLimitWarning,"Cannot decompres
 			       Rec2.RecordLength-0x12);
 	     break;
 	     
-/*	 default:printf("Record type %d; size %ld; offset %lX\n",Rec2.RecType,Rec2.RecordLength,Header.DataOffset-Rec2.RecordLength);/* */     
+/*	 default:printf("Record type %d; size %ld; offset %lX\n",Rec2.RecType,Rec2.RecordLength,Header.DataOffset-Rec2.RecordLength); */     
 	 }
        }
 
