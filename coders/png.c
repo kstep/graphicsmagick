@@ -4950,7 +4950,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         if (ping_info->valid & PNG_INFO_tRNS)
           {
             ping_info->color_type &= 0x03;  /* changes 4 or 6 to 0 or 2 */
-            if (save_image_depth == 16 && image->depth == 8)
+            if (image->depth == 8)
               {
                 ping_info->trans_values.red&=0xff;
                 ping_info->trans_values.green&=0xff;
