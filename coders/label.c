@@ -861,7 +861,6 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
   char
     filename[MaxTextExtent],
     *font,
-    geometry[MaxTextExtent],
     page[MaxTextExtent];
 
   FILE
@@ -876,17 +875,14 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
   ImageInfo
     *clone_info;
 
-  PixelPacket
-    corner;
-
   PointInfo
     point;
 
   register int
+    i,
     x;
 
   register PixelPacket
-    *p,
     *q;
 
   /*
@@ -909,12 +905,23 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
   font=image_info->font;
   if (font == (char *) NULL)
     font="Times-Roman";
-  point.x=AbsoluteValue(image_info->affine[0]*image_info->pointsize*
-    (Extent(text)+2)+image_info->affine[2]*image_info->pointsize);
-  point.y=AbsoluteValue(image_info->affine[1]*image_info->pointsize*
-    (Extent(text)+2)+image_info->affine[3]*image_info->pointsize);
-  (void) fprintf(file,"%g %g moveto\n",Max(point.x,point.y)/2.0,
-    Max(point.x,point.y)/2.0);
+  /*
+    Sample to compute bounding box.
+  */
+  x=0;
+  y=0;
+  for (i=0; i <= (Extent(text)+2); i++)
+  {
+    point.x=image_info->affine[0]*i*image_info->pointsize+
+      image_info->affine[2]*2.0*image_info->pointsize;
+    point.y=image_info->affine[1]*i*image_info->pointsize+
+      image_info->affine[3]*2.0*image_info->pointsize;
+    if (AbsoluteValue(point.x) > x)
+      x=AbsoluteValue(point.x)+0.5;
+    if (AbsoluteValue(point.y) > y)
+      y=AbsoluteValue(point.y)+0.5;
+  }
+  (void) fprintf(file,"%g %g moveto\n",x/2.0,y/2.0);
   (void) fprintf(file,"%g %g scale\n",image_info->pointsize,
     image_info->pointsize);
   (void) fprintf(file,
@@ -922,12 +929,13 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
   (void) fprintf(file,"[%g %g %g %g 0 0] concat\n",image_info->affine[0],
     -image_info->affine[1],-image_info->affine[2],
     image_info->affine[3]);
+  (void) fprintf(file,"(%.1024s) stringwidth pop -0.5 mul -0.5 rmoveto\n",
+    EscapeParenthesis(text));
   (void) fprintf(file,"(%.1024s) show\n",EscapeParenthesis(text));
   (void) fprintf(file,"showpage\n");
   (void) fclose(file);
   clone_info=CloneImageInfo(image_info);
-  FormatString(page,"%dx%d+0+0!",(int) Max(point.x,point.y),
-    (int) Max(point.x,point.y));
+  FormatString(page,"%dx%d+0+0!",x,y);
   (void) FormatString(clone_info->filename,"ps:%.1024s",filename);
   (void) CloneString(&clone_info->page,page);
   DestroyImage(image);
@@ -1108,9 +1116,9 @@ static Image *RenderX11(const ImageInfo *image_info,const char *text,
   /*
     Render label with a X11 server font.
   */
-  image->matte=True;
   image->columns=annotate_info.width;
   image->rows=annotate_info.height;
+  SetImage(image,TransparentOpacity);
   image->bounding_box.x1=0.0;
   image->bounding_box.y1=0.0;
   image->bounding_box.x2=annotate_info.width;
