@@ -19,7 +19,8 @@ chdir 't/png' || die 'Cd failed';
 # 
 print( "1-bit grayscale PNG ...\n" );
 testReadWrite( 'input_bw.png', 'output_bw.png', q/quality=>95/,
-               'dbb89a80821a79ddd91bc3e994306f72' );
+               'dbb89a80821a79ddd91bc3e994306f72',
+	       '3b69a5385ee461dee7b6faf5c6c0b922');
 
 #
 # 2) Test monochrome image
@@ -28,7 +29,8 @@ testReadWrite( 'input_bw.png', 'output_bw.png', q/quality=>95/,
 print( "8-bit grayscale PNG ...\n" );
 testReadWrite( 'input_mono.png',
 	       'output_mono.png', '',
-	       'a1f6cc3e45f2d8c5d01b79355aa90e05' );
+	       'a1f6cc3e45f2d8c5d01b79355aa90e05',
+	       '3a25beb452133a9b53e812ac409e44ee');
 #
 # 3) Test 16-bit Portable Network Graphics
 # 
@@ -37,7 +39,7 @@ print( "16-bit grayscale PNG ...\n" );
 testReadWrite( 'input_16.png',
 	       'output_16.png',
 	       q/quality=>55/,
-               'e29e5f11479a4a07f035d932cac1f66f',
+               '97cefa6468e01d55a6024a02c93bc5c6',
                '283037a3703baa1595b6c146a4187baa' );
 #
 # 4) Test pseudocolor image

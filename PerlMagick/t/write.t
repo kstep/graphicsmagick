@@ -57,8 +57,8 @@ print("Flexible Image Transport System ...\n");
 testReadWrite( 'FITS:input.fits',
                'FITS:output.fits',
                q//,
-               'ec5b1420c419973d9ca3c723ae265c98',
-               '4bbb09705c7a86e64d9e175be6623dd4' );
+               '7be12472f36590f489b22ecabe0a80c9',
+               '76f33dda6073bf289333ee6383dea7ff' );
 
 print("CompuServe graphics interchange format ...\n");
 ++$test;
@@ -125,7 +125,8 @@ print("Portable graymap format (gray scale), ASCII format ...\n");
 testReadWrite( 'PGM:input_p2.pgm',
                'PGM:output_p2.pgm',
                q/compress=>'None'/,
-               'c49de394a410034d4682fb48384b5c1a');
+               '815eed8c573d33e45a63467507c93532',
+	       'f7943cb6bd610629d2314b75ad3c1218');
 
 print("Apple Macintosh QuickDraw/PICT file ...\n");
 ++$test;
@@ -146,7 +147,8 @@ print("Portable graymap format (gray scale), binary format ...\n");
 testReadWrite( 'PGM:input_p5.pgm',
                'PGM:output_p5.pgm',
                q//,
-               'c49de394a410034d4682fb48384b5c1a');
+               '815eed8c573d33e45a63467507c93532',
+	       'f7943cb6bd610629d2314b75ad3c1218');
 
 print("Portable pixmap format (color), binary format ...\n");
 ++$test;
@@ -250,8 +252,8 @@ testReadWriteSized( 'GRAY:input_70x46.gray',
 		    'GRAY:output_70x46.gray',
 		    '70x46',
 		    q//,
-		    'f0ad0e33df6ed019b9e15ee5e1741d16',
-                    'e0b0d2607784a1b831024d66b9565b2c' );
+		    'd22d4e1f73d6324472b4d4b283df1ae1',
+                    'e62f2cea7aa5bf01fcb9417b0626dc2f' );
 
 print("RGB format ...\n");
 ++$test;

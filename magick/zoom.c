@@ -633,8 +633,7 @@ Export Image *SampleImage(Image *image,const unsigned int columns,
 
   register PixelPacket
     *p,
-    *q,
-    *s;
+    *q;
 
   PixelPacket
     *pixels;
@@ -708,7 +707,6 @@ Export Image *SampleImage(Image *image,const unsigned int columns,
     /*
       Sample each column.
     */
-    s=pixels;
     for (x=0; x < (int) sample_image->columns; x++)
     {
       k=x_offset[x];

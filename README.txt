@@ -607,8 +607,8 @@ HOW TO COMPILE
 
     TIFF:
       cd ImageMagick
-      gunzip -c tiff-v3.5.3.tar.gz | tar xvof -
-      mv tiff-v3.5.3 tiff
+      gunzip -c tiff-v3.5.4.tar.gz | tar xvof -
+      mv tiff-v3.5.4 tiff
       cd tiff
       ./configure
       make

@@ -36,7 +36,8 @@ testFilter('input.miff', 'Chop',
 ++$test;
 testFilter('input.miff', 'ColorFloodfill',
   q/geometry=>+10+10,pen=>black/,
-  '4af3b2e075157f4493f8980ec3b9612f');
+  '4af3b2e075157f4493f8980ec3b9612f',
+  '12643c99ecf96cf1d7e8f5cc62b13c78');
 
 ++$test;
 testFilter('input.miff', 'Colorize',
@@ -64,19 +65,19 @@ testFilter('input.miff', 'Despeckle',
 testFilter('input.miff', 'Edge',
   q/60/,
   'efababe350b4cb8b0e08423fcdf70895',
-  'b1c57d6727fc7f44af4e95cb06efba87');
+  '9b85d0feacb3d62aaa9851b1a23a91bf');
 
 ++$test;
 testFilter('input.miff', 'Emboss',
   q/ /,
   '53d333238024e412189bf0e43b585504',
-  'cab0f35d59cd03d7c230df9c29c73a5e');
+  '101944481ee0cc84b783929ff42264f5');
 
 ++$test;
 testFilter('input.miff', 'Equalize',
   q/ /,
-  '439090ad2ed811ae0c03ef3e9597fedd',
-  '457bfc1fd604ec8f2e30e5d59380c616');
+  '72407ad6aa24d2be2489a4a0890762c6',
+  '658fdb444984fd0505e22649d051d8a9');
 
 ++$test;
 testFilter('input.miff', 'Flip',
@@ -120,7 +121,8 @@ testFilter('input.miff', 'Magnify',
 ++$test;
 testFilter('input.miff', 'MatteFloodfill',
   q/geometry=>+10+10,matte=>Opaque/,
-  '43c99602c51d08df9f6e57ea4d710603');
+  '43c99602c51d08df9f6e57ea4d710603',
+  '6f55ec5c0a6e1472ea54c4320d3a9030');
 
 ++$test;
 testFilter('input.miff', 'Minify',
@@ -143,13 +145,13 @@ testFilter('input.miff', 'Negate',
 testFilter('input.miff', 'Normalize',
   q/ /,
   '94973214e269266f2fa95c93a45aad3e',
-  '7172f13abfaa77f105a59c463498d63d');
+  'efb45f15687cd2b4656d203a21b353f1');
 
 ++$test;
 testFilter('input.miff', 'OilPaint',
   q/3/,
-  'b50f0037c332a894c7f8feec5518d1af',
-  '045c760a3f775375b1f8f66e306c184d');
+  '93872823e517ba0562fcdcf954bd4a24',
+  '355b61e9f3d2210cf753a89f849686bc');
 
 ++$test;
 testFilter('input.miff', 'Opaque',
@@ -198,8 +200,8 @@ testFilter('input.miff', 'Segment',
 ++$test;
 testFilter('input.miff', 'Shade',
   q/30x30/,
-  'e0386a1db33967dfb96711f96e86fdba',
-  '00c21abdaf56855db95b4fda02b5bbbd');
+  '883d2876639db90581044138c986fb0c',
+  'e3be7aee0fb28cbdf8b9830f13c53bac');
 
 ++$test;
 testFilter('input.miff', 'Shear',
@@ -231,7 +233,7 @@ testFilter('input.miff', 'Transform',
 ++$test;
 testFilter('input.miff', 'Threshold',
   q/128/,
-  'c814d57949a4c2ac54befa72791e54dd',
+  '137bfacdec4b7a8dba0abe31e43db0f2',
   'caa7ebca666f176a8f4d4a2f012e2236');
 
 ++$test;

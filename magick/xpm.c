@@ -632,7 +632,7 @@ Export Image *ReadXPMImage(const ImageInfo *image_info)
             break;
       *r=image->colormap[j];
       if (image->class == PseudoClass)
-        image->indexes[x]=j;
+        image->indexes[x]=(IndexPacket) j;
       else
         if (image->colormap[j].opacity)
           r->opacity=Transparent;

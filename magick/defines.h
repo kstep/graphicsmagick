@@ -145,7 +145,7 @@ extern "C" {
 #define False  0
 #define DegreesToRadians(x) ((x)*M_PI/180.0)
 #define Intensity(color)  \
-  ((77*(color).red+150*(color).green+29*(color).blue)/256)
+  ((unsigned long) ((0.299*(color).red+0.587*(color).green+0.114*(color).blue)))
 #define IsFaxImage(color)  \
   (IsMonochromeImage(image) && ((image)->columns <= 2560))
 #define IsGray(color)  \
@@ -158,7 +158,7 @@ extern "C" {
 #define OpenImage(image_info,image,type)  OpenBlob(image,image,type)
 #define QuantumTick(i,span) \
   (((~((span)-i-1) & ((span)-i-2))+1) == ((span)-i-1))
-#define RadiansToDegrees(x) ((x)*180/M_PI)
+#define RadiansToDegrees(x) (180.0*(x)/M_PI)
 #define ReaderExit(warning,message,image) \
 { \
   MagickWarning(warning,message,image->filename); \

@@ -18,8 +18,8 @@ chdir 't/ttf' || die 'Cd failed';
 # 1) Test default ImageMagick read operation on font
 #
 print("Default ImageMagick read ...\n");
-testRead( 'input.ttf', 'c6f1219ceef6450feb86de5fbd0bd252',
-	               '2c88d84148a8341290ea44b90179b49c' );
+testRead( 'input.ttf', 'dc6501cd08010987ee7d354c6d91feb6',
+	               'c6f1219ceef6450feb86de5fbd0bd252' );
 
 #
 # 2) Test drawing text using font

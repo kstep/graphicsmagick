@@ -1262,7 +1262,7 @@ Export Image *MedianFilterImage(Image *image,const unsigned int radius)
   assert(image != (Image *) NULL);
   if ((image->columns < (2*radius+1)) || (image->rows < (2*radius+1)))
     {
-      MagickWarning(ResourceLimitWarning,"Unable to oil median",
+      MagickWarning(ResourceLimitWarning,"Unable to median filter",
         "image smaller than radius");
       return((Image *) NULL);
     }
@@ -2151,9 +2151,11 @@ Export Image *ShadeImage(Image *image,const unsigned int color_shading,
         Determine the surface normal and compute shading.
       */
       normal.x=Intensity(*(s0-1))+Intensity(*(s1-1))+Intensity(*(s2-1))-
-        Intensity(*(s0+1))-Intensity(*(s1+1))-Intensity(*(s2+1));
+        (double) Intensity(*(s0+1))-(double) Intensity(*(s1+1))-
+        (double) Intensity(*(s2+1));
       normal.y=Intensity(*(s2-1))+Intensity(*s2)+Intensity(*(s2+1))-
-        Intensity(*(s0-1))-Intensity(*s0)-Intensity(*(s0+1));
+        (double) Intensity(*(s0-1))-(double) Intensity(*s0)-
+        (double) Intensity(*(s0+1));
       if ((normal.x == 0) && (normal.y == 0))
         shade=light.z;
       else
