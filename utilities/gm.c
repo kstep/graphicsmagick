@@ -264,6 +264,7 @@ int main(int argc,char **argv)
       SetClientName("identify");
       if (help_wanted)
         IdentifyUsage();
+      text=(char *) NULL;
       status=IdentifyImageCommand(image_info,argc,argv,&text,&exception);
       if (text != (char *) NULL)
         {
