@@ -47,6 +47,20 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 */
 
+
+/*
+
+  Should write replacements for:
+  WMF_FONT_PSNAME
+  wmf_api_create
+  wmf_api_destroy
+  wmf_ipa_font_lookup
+  wmf_stream_create
+  wmf_stream_destroy
+  wmf_stream_printf
+  
+ */
+
 /*
   Include declarations.
 */
@@ -55,6 +69,8 @@
 
 #if defined(HasWMF)
 #if !defined(WIN32)
+
+#define WMF_USE_NATIVE_READ 1
 
 #ifdef  min
 #undef  min
@@ -82,6 +98,7 @@
 #include "libwmf/api.h"
 #include "libwmf/defs.h"
 #include "libwmf/ipa.h"
+#include "libwmf/font.h"
 #include "libwmf/color.h"
 #include "libwmf/macro.h"
 
@@ -90,22 +107,30 @@ typedef struct _wmf_magick_t wmf_magick_t;
 struct _wmf_magick_t
 {
   /* Bounding box */
-  wmfD_Rect bbox;
+  wmfD_Rect
+    bbox;
 
   /* Output stream */
-  wmfStream* out;
+  wmfStream
+    *out;
 
   /* ImageMagick image */
-  Image *image;
+  Image
+    *image;
 
-  /* Maximum number of temporary files */
-  int max_temp_file_index;
+  /* Maximum and current number of temporary files */
+  int
+    max_temp_file_index,
+    cur_temp_file_index;
 
-  /* Current number of temporary files */
-  int cur_temp_file_index;
-
-  /* Temporary file names */
-  char **temp_files;
+  /* Temporary image IDs */
+#if WMF_USE_NATIVE_READ
+  long
+    *temp_images;
+#else
+  char
+    **temp_images;
+#endif /* WMF_USE_NATIVE_READ */
 };
 
 #define WMF_MAGICK_GetData(Z) ((wmf_magick_t*)((Z)->device_data))
@@ -175,7 +200,8 @@ static void wmf_magick_rop_draw (wmfAPI* API,wmfROP_Draw_t* rop_draw)
 	
 }
 
-/* TODO ?? Care about bmp_draw->type
+/*
+  TODO ?? Care about bmp_draw->type
  */
 #if 0
 /* passed as argument to wmf_magick_bmp_read */
@@ -232,7 +258,7 @@ static void wmf_magick_bmp_draw (wmfAPI* API,wmfBMP_Draw_t* bmp_draw)
     width;
 
   char
-    *tmpname;
+    *imgspec;
 
   magickPoint
     pt;
@@ -246,25 +272,46 @@ static void wmf_magick_bmp_draw (wmfAPI* API,wmfBMP_Draw_t* bmp_draw)
 
   if (bmp_draw->bmp.data == 0) return;
 
-  tmpname = (char*)AcquireMemory(MaxTextExtent*sizeof(char));
-  *tmpname = '\0';
-  TemporaryFilename(tmpname);
-  (ddata->temp_files)[ddata->cur_temp_file_index] = tmpname;
+  imgspec = (char*)AcquireMemory(MaxTextExtent*sizeof(char));
+  *imgspec = '\0';
+
+#if WMF_USE_NATIVE_READ
+  {
+    ExceptionInfo
+      exception;
+    long
+      id;
+
+    GetExceptionInfo(&exception);
+    id = SetMagickRegistry(ImageRegistryType,bmp_draw->bmp.data,sizeof(Image*),&exception);
+  (ddata->temp_images)[ddata->cur_temp_file_index] = id;
   ++ddata->cur_temp_file_index;
   if(ddata->cur_temp_file_index == ddata->max_temp_file_index)
     {
       ddata->max_temp_file_index += 2048;
-      ReacquireMemory((void **) &ddata->temp_files, ddata->max_temp_file_index*sizeof(char *));
+      ReacquireMemory((void **) &ddata->temp_images, ddata->max_temp_file_index*sizeof(long));
+    }
+  sprintf(imgspec,"registry:%li", id);
+  }
+#else
+  TemporaryFilename(imgspec);
+  (ddata->temp_images)[ddata->cur_temp_file_index] = imgspec;
+  ++ddata->cur_temp_file_index;
+  if(ddata->cur_temp_file_index == ddata->max_temp_file_index)
+    {
+      ddata->max_temp_file_index += 2048;
+      ReacquireMemory((void **) &ddata->temp_images, ddata->max_temp_file_index*sizeof(char *));
     }
 
-  wmf_ipa_bmp_png (API,bmp_draw,tmpname);
+  wmf_ipa_bmp_png (API,bmp_draw,imgspec);
 
   if (ERR (API))
     {	WMF_DEBUG (API,"bailing...");
     return;
     }
+#endif /* WMF_USE_NATIVE_READ */
 
-  /* Okay, if we've got this far then "tmpname" is the filename of an png
+  /* Okay, if we've got this far then "imgspec" is the filename of an png
      (cropped) image */
 
   pt = magick_translate (API,bmp_draw->pt);
@@ -273,7 +320,7 @@ static void wmf_magick_bmp_draw (wmfAPI* API,wmfBMP_Draw_t* bmp_draw)
   height = ceil(abs(magick_height(API,bmp_draw->pixel_height*(double)bmp_draw->crop.h)));
 
   wmf_stream_printf (API,out,"image Copy %f,%f %i,%i '%s'\n",
-                     pt.x,pt.y,(int)width,(int)height,tmpname);
+                     pt.x,pt.y,(int)width,(int)height,imgspec);
 }
 
 #if 0
@@ -290,13 +337,28 @@ struct _wmfBMP_Read_t    /* Two means available for accessing BMP image:        
 
   wmfBMP bmp;
 };
+
+(gdb) p *bmp_read
+$23 = {
+  offset = 96, 
+  length = 99400, 
+  buffer = 0x2fac4e "(", 
+  width = 0, 
+  height = 0, 
+  bmp = {
+    width = 61439, 
+    height = 48296, 
+    data = 0x0
+  }
+}
+
 #endif /* out */
 static void wmf_magick_bmp_read (wmfAPI* API,wmfBMP_Read_t* bmp_read)
 {
   WMF_DEBUG (API,"~~~~~~~~wmf_[magick_]bmp_read");
 
-  wmf_ipa_bmp_read (API,bmp_read);
-#if 0 
+#if WMF_USE_NATIVE_READ
+
   ExceptionInfo
     exception;
 
@@ -307,8 +369,11 @@ static void wmf_magick_bmp_read (wmfAPI* API,wmfBMP_Read_t* bmp_read)
     *image;
 
   image_info=CloneImageInfo((ImageInfo *)0);
-  strcpy(image_info->magick,"BMP");
+  strcpy(image_info->magick,"DIB");
   GetExceptionInfo( &exception );
+/* printf("offset=%ld, length=%ld, width=%i, height=%i\n", */
+/*        bmp_read->offset,bmp_read->length,bmp_read->width,bmp_read->height); */
+
   image = BlobToImage(image_info,(const void*)bmp_read->buffer,
                       bmp_read->length,&exception);
   DestroyImageInfo(image_info);
@@ -317,10 +382,8 @@ static void wmf_magick_bmp_read (wmfAPI* API,wmfBMP_Read_t* bmp_read)
       char error_message[MaxTextExtent];
       snprintf(error_message,sizeof(error_message)-1,"%s (%s)",
                exception.reason, exception.description);
-      bmp_read->bmp->data   = (void *)0;
-      bmp_read->bmp->width  = (U16)0;
-      bmp_read->bmp->height = (U16)0;
-      WMF_ERROR(API,error_message);
+      bmp_read->bmp.data   = (void *)0;
+/*       WMF_ERROR(API,error_message); */
       switch(exception.severity)
         {
         case ResourceLimitWarning:
@@ -335,31 +398,37 @@ static void wmf_magick_bmp_read (wmfAPI* API,wmfBMP_Read_t* bmp_read)
           {
             API->err = wmf_E_DeviceError;
           }
+        }
     }
   else
     {
-      bmp_read->bmp->data   = image;
-      bmp_read->bmp->width  = (U16)image->columns;
-      bmp_read->bmp->height = (U16)image->rows;
+      printf("rows=%ld,columns=%ld\n", image->rows, image->columns);
+      bmp_read->bmp.data   = image;
+/*       bmp_read->bmp.width  = (U16)image->columns; */
+/*       bmp_read->bmp.height = (U16)image->rows; */
     }
-#endif /* out */
+#else
+  wmf_ipa_bmp_read (API,bmp_read);
+#endif
 }
 
 static void wmf_magick_bmp_free (wmfAPI* API,wmfBMP* bmp)
 {
   WMF_DEBUG (API,"~~~~~~~~wmf_[magick_]bmp_free");
 
-  wmf_ipa_bmp_free (API,bmp);
-#if 0
+#if WMF_USE_NATIVE_READ
   DestroyImage((Image*)bmp->data);
   bmp->data   = (void*)0;
   bmp->width  = (U16)0;
   bmp->height = (U16)0;
-#endif /* out */
+#else
+  wmf_ipa_bmp_free (API,bmp);
+#endif
 }
 
 
-/* This is called by wmf_play() the *first* time the meta file is played
+/*
+  This is called by wmf_play() the *first* time the meta file is played
  */
 static void wmf_magick_device_open (wmfAPI* API)
 {
@@ -370,7 +439,8 @@ static void wmf_magick_device_open (wmfAPI* API)
 	
 }
 
-/* This is called by wmf_api_destroy()
+/*
+  This is called by wmf_api_destroy()
  */
 static void wmf_magick_device_close (wmfAPI* API)
 {
@@ -382,18 +452,23 @@ static void wmf_magick_device_close (wmfAPI* API)
   WMF_DEBUG (API,"~~~~~~~~wmf_[magick_]device_close");
 
   /* Remove any temporary files */
-  if(ddata->temp_files != (char **)NULL)
+  if(ddata->temp_images != 0)
     {
       for( index=0; index<ddata->cur_temp_file_index; index++ )
         {
-          remove((ddata->temp_files)[index]);
-          LiberateMemory((void**)&(ddata->temp_files)[index]);
+#if WMF_USE_NATIVE_READ
+          DeleteMagickRegistry((ddata->temp_images)[index]);
+#else
+          remove((ddata->temp_images)[index]);
+          LiberateMemory((void**)&(ddata->temp_images)[index]);
+#endif /* WMF_USE_NATIVE_READ */
         }
-      LiberateMemory((void**)&ddata->temp_files);
+      LiberateMemory((void**)&ddata->temp_images);
     }
 }
 
-/* This is called from the beginning of each play for initial page setup
+/*
+  This is called from the beginning of each play for initial page setup
  */
 static void wmf_magick_device_begin (wmfAPI* API)
 {
@@ -424,12 +499,17 @@ static void wmf_magick_device_begin (wmfAPI* API)
 
   ddata->max_temp_file_index = 2048;
   ddata->cur_temp_file_index = 0;
-  ddata->temp_files = (char**)AcquireMemory(ddata->max_temp_file_index*sizeof(char *));
+#if WMF_USE_NATIVE_READ
+  ddata->temp_images = (long*)AcquireMemory(ddata->max_temp_file_index*sizeof(long));
+#else
+  ddata->temp_images = (char**)AcquireMemory(ddata->max_temp_file_index*sizeof(char *));
+#endif /* WMF_USE_NATIVE_READ */
   
   wmf_stream_printf (API,out,"viewbox 0 0 %u %u\n",ddata->image->columns,ddata->image->rows);
 }
 
-/* This is called from the end of each play for page termination
+/*
+  This is called from the end of each play for page termination
  */
 static void wmf_magick_device_end (wmfAPI* API)
 {
@@ -918,8 +998,9 @@ static void wmf_magick_function (wmfAPI* API)
 
   wmfFunctionReference* FR = (wmfFunctionReference*) API->function_reference;
 
-  /* IPA function reference links
-   */
+  /*
+    IPA function reference links
+  */
   FR->device_open    = wmf_magick_device_open;
   FR->device_close   = wmf_magick_device_close;
   FR->device_begin   = wmf_magick_device_begin;
@@ -948,8 +1029,9 @@ static void wmf_magick_function (wmfAPI* API)
   FR->region_paint   = wmf_magick_region_paint;
   FR->region_clip    = wmf_magick_region_clip;
 
-  /* Allocate device data structure
-   */
+  /*
+    Allocate device data structure
+  */
   ddata = (wmf_magick_t*) wmf_malloc (API,sizeof (wmf_magick_t));
 
   if (ERR (API))
@@ -960,8 +1042,9 @@ static void wmf_magick_function (wmfAPI* API)
 
   API->device_data = (void*) ddata;
 
-  /* Device data defaults
-   */
+  /*
+    Device data defaults
+  */
   ddata->bbox.TL.x = 0;
   ddata->bbox.TL.y = 0;
   ddata->bbox.BR.x = 0;
@@ -1514,16 +1597,16 @@ static Image *ReadWMFImage(const ImageInfo *image_info,
   wmf_options_flags |= WMF_OPT_IGNORE_NONFATAL;
 
   /* Use ImageMagick's font map file */
-  {
-    char *p = GetMagickConfigurePath(TypeFilename);
-    if(p!=NULL)
-      {
-        strcpy(font_map_path, p);
-        wmf_options_flags |= WMF_OPT_XTRA_FONTS;
-        wmf_options_flags |= WMF_OPT_XTRA_FONTMAP;
-        wmf_api_options.xtra_fontmap_file = font_map_path;
-      }
-  }
+/*   { */
+/*     char *p = GetMagickConfigurePath(TypeFilename); */
+/*     if(p!=NULL) */
+/*       { */
+/*         strcpy(font_map_path, p); */
+/*         wmf_options_flags |= WMF_OPT_XTRA_FONTS; */
+/*         wmf_options_flags |= WMF_OPT_XTRA_FONTMAP; */
+/*         wmf_api_options.xtra_fontmap_file = font_map_path; */
+/*       } */
+/*   } */
   wmf_error = wmf_api_create (&API,wmf_options_flags,&wmf_api_options);
   if ( wmf_error != wmf_E_None )
     {
