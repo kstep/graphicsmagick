@@ -350,12 +350,11 @@ static unsigned int MogrifyUtility(int argc,char **argv)
                 }
             }
         status&=WriteImages(image_info,image,image->filename,&image->exception);
-        if ((format != (char *) NULL) && (status != False))
-          if (LocaleCompare(image_info->filename,"-") != 0)
-            {
-              (void) remove(filename);
-              (void) rename(image->filename,filename);
-            }
+        if ((status != False) && (LocaleCompare(image_info->filename,"-") != 0))
+          {
+            (void) remove(filename);
+            (void) rename(image->filename,filename);
+          }
         DestroyImage(image);
         continue;
       }
