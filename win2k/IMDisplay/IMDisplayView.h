@@ -66,7 +66,7 @@ protected:
 
 	CRectTracker	m_tracker;  // marching ants
 
-	Image	    &mUndoImage;
+	Image	    mUndoImage;
 
 	BITMAPINFOHEADER    mBMI;
 
