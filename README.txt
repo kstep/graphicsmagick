@@ -404,8 +404,7 @@ MAGICK DELEGATES
 
     o ImageMagick requires the FlashPix SDK available from
 
-          http://www.kodak.com/US/en/drg/productsTechnologies/
-            prodTechFlashPix.shtml
+          http://www.digitalimaging.org/i_flashpix.html
 
       to read and write the FPX image format.
 
@@ -608,8 +607,8 @@ HOW TO COMPILE
 
     TIFF:
       cd ImageMagick
-      gunzip -c tiff-v3.5.2.tar.gz | tar xvof -
-      mv tiff-v3.5.2 tiff
+      gunzip -c tiff-v3.5.3.tar.gz | tar xvof -
+      mv tiff-v3.5.3 tiff
       cd tiff
       ./configure
       make
