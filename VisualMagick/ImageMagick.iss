@@ -96,6 +96,9 @@ Source: "..\www\api\types\*.html"; DestDir: "{app}\www\api\types"
 Source: "..\licenses\*.txt"; DestDir: "{app}\licenses"
 ; Icon file
 Source: "..\magick\ImageMagick.ico"; DestDir: "{app}"
+; Path Tool
+Source: "..\contrib\win32\PathTool\PathTool.exe"; DestDir: "{app}"
+Source: "..\contrib\win32\PathTool\PathTool.pdf"; DestDir: "{app}"
 
 [Icons]
 Name: "{group}\ImageMagick Web Pages"; Filename: "{app}\ImageMagick.html"
@@ -103,3 +106,11 @@ Name: "{group}\ImageMagick Web Pages"; Filename: "{app}\ImageMagick.html"
 ; Name: "{group}\ImageMagick Quick Start"; Filename: "{app}\QuickStart.txt"
 ; Name: "{group}\ImageMagick License"; Filename: "{app}\Copyright.txt"
 Name: "{group}\ImageMagick Display"; Filename: "{app}\IMDisplay.exe"; IconFilename: "{app}\ImageMagick.ico"
+
+[Run]
+Filename: "{app}\PathTool.exe"; Parameters: "-a:""{app}"" -debug"; StatusMsg: "Updating environment variables..."
+
+[UninstallRun]
+Filename: "{app}\PathTool.exe"; Parameters: "-r:""{app}"" -debug"; StatusMsg: "Restoring environment variables..."
+
+
