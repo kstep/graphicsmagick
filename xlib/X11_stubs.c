@@ -40,9 +40,9 @@ in this Software without prior written authorization from the X Consortium.
 #else
 #if defined(_VISUALC_)
 #	if defined(_MT) && defined(_DLL) && !defined(_LIB)
-#		define Export __declspec(dllexport)
+#		define MagickExport __declspec(dllexport)
 #	else
-#		define Export
+#		define MagickExport
 #	endif
 #pragma warning(disable : 4035)
 #pragma warning(disable : 4018)
@@ -50,7 +50,7 @@ in this Software without prior written authorization from the X Consortium.
 #pragma warning(disable : 4142)
 #pragma warning(disable : 4716)
 #else
-#	define Export
+#	define MagickExport
 #endif
 #endif
 
@@ -1356,7 +1356,7 @@ typedef struct {
 int _Xdebug;
 
 #if defined(_VISUALC_)
-extern Export XFontStruct *XLoadQueryFont(
+extern MagickExport XFontStruct *XLoadQueryFont(
 #else
 XFontStruct *XLoadQueryFont(
 #endif
@@ -1367,7 +1367,7 @@ XFontStruct *XLoadQueryFont(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XFontStruct *XQueryFont(
+extern MagickExport XFontStruct *XQueryFont(
 #else
 XFontStruct *XQueryFont(
 #endif
@@ -1378,7 +1378,7 @@ XFontStruct *XQueryFont(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XTimeCoord *XGetMotionEvents(
+extern MagickExport XTimeCoord *XGetMotionEvents(
 #else
 XTimeCoord *XGetMotionEvents(
 #endif
@@ -1392,7 +1392,7 @@ XTimeCoord *XGetMotionEvents(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XModifierKeymap *XDeleteModifiermapEntry(
+extern MagickExport XModifierKeymap *XDeleteModifiermapEntry(
 #else
 XModifierKeymap *XDeleteModifiermapEntry(
 #endif
@@ -1408,7 +1408,7 @@ XModifierKeymap *XDeleteModifiermapEntry(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XModifierKeymap	*XGetModifierMapping(
+extern MagickExport XModifierKeymap	*XGetModifierMapping(
 #else
 XModifierKeymap	*XGetModifierMapping(
 #endif
@@ -1418,7 +1418,7 @@ XModifierKeymap	*XGetModifierMapping(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XModifierKeymap	*XInsertModifiermapEntry(
+extern MagickExport XModifierKeymap	*XInsertModifiermapEntry(
 #else
 XModifierKeymap	*XInsertModifiermapEntry(
 #endif
@@ -1434,7 +1434,7 @@ XModifierKeymap	*XInsertModifiermapEntry(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XModifierKeymap *XNewModifiermap(
+extern MagickExport XModifierKeymap *XNewModifiermap(
 #else
 XModifierKeymap *XNewModifiermap(
 #endif
@@ -1444,7 +1444,7 @@ XModifierKeymap *XNewModifiermap(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XImage *XCreateImage(
+extern MagickExport XImage *XCreateImage(
 #else
 XImage *XCreateImage(
 #endif
@@ -1462,7 +1462,7 @@ XImage *XCreateImage(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export Status XInitImage(
+extern MagickExport Status XInitImage(
 #else
 Status XInitImage(
 #endif
@@ -1471,7 +1471,7 @@ Status XInitImage(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export XImage *XGetImage(
+extern MagickExport XImage *XGetImage(
 #else
 XImage *XGetImage(
 #endif
@@ -1487,7 +1487,7 @@ XImage *XGetImage(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export XImage *XGetSubImage(
+extern MagickExport XImage *XGetSubImage(
 #else
 XImage *XGetSubImage(
 #endif
@@ -1510,7 +1510,7 @@ XImage *XGetSubImage(
  * X function declarations.
  */
 #if defined(_VISUALC_)
-extern Export Display *XOpenDisplay(server_name)
+extern MagickExport Display *XOpenDisplay(server_name)
 #else
 Display *XOpenDisplay(server_name)
 #endif
@@ -1521,7 +1521,7 @@ const char
 }
 
 #if defined(_VISUALC_)
-extern Export void XrmInitialize(
+extern MagickExport void XrmInitialize(
 #else
 void XrmInitialize(
 #endif
@@ -1531,7 +1531,7 @@ void XrmInitialize(
 ){}
 
 #if defined(_VISUALC_)
-extern Export char *XFetchBytes(
+extern MagickExport char *XFetchBytes(
 #else
 char *XFetchBytes(
 #endif
@@ -1541,7 +1541,7 @@ char *XFetchBytes(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export char *XFetchBuffer(
+extern MagickExport char *XFetchBuffer(
 #else
 char *XFetchBuffer(
 #endif
@@ -1552,7 +1552,7 @@ char *XFetchBuffer(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export char *XGetAtomName(
+extern MagickExport char *XGetAtomName(
 #else
 char *XGetAtomName(
 #endif
@@ -1562,7 +1562,7 @@ char *XGetAtomName(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export Status XGetAtomNames(
+extern MagickExport Status XGetAtomNames(
 #else
 Status XGetAtomNames(
 #endif
@@ -1574,7 +1574,7 @@ Status XGetAtomNames(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export char *XGetDefault(
+extern MagickExport char *XGetDefault(
 #else
 char *XGetDefault(
 #endif
@@ -1585,13 +1585,13 @@ char *XGetDefault(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export char *XDisplayName(_Xconst char* a)
+extern MagickExport char *XDisplayName(_Xconst char* a)
 #else
 char *XDisplayName(_Xconst char* a)
 #endif
 {}
 #if defined(_VISUALC_)
-extern Export char *XKeysymToString(
+extern MagickExport char *XKeysymToString(
 #else
 char *XKeysymToString(
 #endif
@@ -1601,7 +1601,7 @@ char *XKeysymToString(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int (*XSynchronize(
+extern MagickExport int (*XSynchronize(
 #else
 int (*XSynchronize(
 #endif
@@ -1611,7 +1611,7 @@ int (*XSynchronize(
 #endif
 )){};
 #if defined(_VISUALC_)
-extern Export int (*XSetAfterFunction(
+extern MagickExport int (*XSetAfterFunction(
 #else
 int (*XSetAfterFunction(
 #endif
@@ -1625,7 +1625,7 @@ int (*XSetAfterFunction(
 #endif
 )){};
 #if defined(_VISUALC_)
-extern Export Atom XInternAtom(
+extern MagickExport Atom XInternAtom(
 #else
 Atom XInternAtom(
 #endif
@@ -1636,7 +1636,7 @@ Atom XInternAtom(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export Status XInternAtoms(
+extern MagickExport Status XInternAtoms(
 #else
 Status XInternAtoms(
 #endif
@@ -1649,7 +1649,7 @@ Status XInternAtoms(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export Colormap XCopyColormapAndFree(
+extern MagickExport Colormap XCopyColormapAndFree(
 #else
 Colormap XCopyColormapAndFree(
 #endif
@@ -1659,7 +1659,7 @@ Colormap XCopyColormapAndFree(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export Colormap XCreateColormap(
+extern MagickExport Colormap XCreateColormap(
 #else
 Colormap XCreateColormap(
 #endif
@@ -1671,7 +1671,7 @@ Colormap XCreateColormap(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export Cursor XCreatePixmapCursor(
+extern MagickExport Cursor XCreatePixmapCursor(
 #else
 Cursor XCreatePixmapCursor(
 #endif
@@ -1686,7 +1686,7 @@ Cursor XCreatePixmapCursor(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export Cursor XCreateGlyphCursor(
+extern MagickExport Cursor XCreateGlyphCursor(
 #else
 Cursor XCreateGlyphCursor(
 #endif
@@ -1701,7 +1701,7 @@ Cursor XCreateGlyphCursor(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export Cursor XCreateFontCursor(
+extern MagickExport Cursor XCreateFontCursor(
 #else
 Cursor XCreateFontCursor(
 #endif
@@ -1711,7 +1711,7 @@ Cursor XCreateFontCursor(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export Font XLoadFont(
+extern MagickExport Font XLoadFont(
 #else
 Font XLoadFont(
 #endif
@@ -1721,7 +1721,7 @@ Font XLoadFont(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export GC XCreateGC(
+extern MagickExport GC XCreateGC(
 #else
 GC XCreateGC(
 #endif
@@ -1733,7 +1733,7 @@ GC XCreateGC(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export GContext XGContextFromGC(
+extern MagickExport GContext XGContextFromGC(
 #else
 GContext XGContextFromGC(
 #endif
@@ -1742,7 +1742,7 @@ GContext XGContextFromGC(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export void XFlushGC(
+extern MagickExport void XFlushGC(
 #else
 void XFlushGC(
 #endif
@@ -1752,7 +1752,7 @@ void XFlushGC(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export Pixmap XCreatePixmap(
+extern MagickExport Pixmap XCreatePixmap(
 #else
 Pixmap XCreatePixmap(
 #endif
@@ -1765,7 +1765,7 @@ Pixmap XCreatePixmap(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export Pixmap XCreateBitmapFromData(
+extern MagickExport Pixmap XCreateBitmapFromData(
 #else
 Pixmap XCreateBitmapFromData(
 #endif
@@ -1778,7 +1778,7 @@ Pixmap XCreateBitmapFromData(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export Pixmap XCreatePixmapFromBitmapData(
+extern MagickExport Pixmap XCreatePixmapFromBitmapData(
 #else
 Pixmap XCreatePixmapFromBitmapData(
 #endif
@@ -1794,7 +1794,7 @@ Pixmap XCreatePixmapFromBitmapData(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export Window XCreateSimpleWindow(
+extern MagickExport Window XCreateSimpleWindow(
 #else
 Window XCreateSimpleWindow(
 #endif
@@ -1811,7 +1811,7 @@ Window XCreateSimpleWindow(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export Window XGetSelectionOwner(
+extern MagickExport Window XGetSelectionOwner(
 #else
 Window XGetSelectionOwner(
 #endif
@@ -1821,7 +1821,7 @@ Window XGetSelectionOwner(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export Window XCreateWindow(
+extern MagickExport Window XCreateWindow(
 #else
 Window XCreateWindow(
 #endif
@@ -1841,7 +1841,7 @@ Window XCreateWindow(
 #endif
 ){} 
 #if defined(_VISUALC_)
-extern Export Colormap *XListInstalledColormaps(
+extern MagickExport Colormap *XListInstalledColormaps(
 #else
 Colormap *XListInstalledColormaps(
 #endif
@@ -1852,7 +1852,7 @@ Colormap *XListInstalledColormaps(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export char **XListFonts(
+extern MagickExport char **XListFonts(
 #else
 char **XListFonts(
 #endif
@@ -1864,7 +1864,7 @@ char **XListFonts(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export char **XListFontsWithInfo(
+extern MagickExport char **XListFontsWithInfo(
 #else
 char **XListFontsWithInfo(
 #endif
@@ -1877,7 +1877,7 @@ char **XListFontsWithInfo(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export char **XGetFontPath(
+extern MagickExport char **XGetFontPath(
 #else
 char **XGetFontPath(
 #endif
@@ -1887,7 +1887,7 @@ char **XGetFontPath(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export char **XListExtensions(
+extern MagickExport char **XListExtensions(
 #else
 char **XListExtensions(
 #endif
@@ -1897,7 +1897,7 @@ char **XListExtensions(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export Atom *XListProperties(
+extern MagickExport Atom *XListProperties(
 #else
 Atom *XListProperties(
 #endif
@@ -1908,7 +1908,7 @@ Atom *XListProperties(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export XHostAddress *XListHosts(
+extern MagickExport XHostAddress *XListHosts(
 #else
 XHostAddress *XListHosts(
 #endif
@@ -1919,7 +1919,7 @@ XHostAddress *XListHosts(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export KeySym XKeycodeToKeysym(
+extern MagickExport KeySym XKeycodeToKeysym(
 #else
 KeySym XKeycodeToKeysym(
 #endif
@@ -1934,7 +1934,7 @@ KeySym XKeycodeToKeysym(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export KeySym XLookupKeysym(
+extern MagickExport KeySym XLookupKeysym(
 #else
 KeySym XLookupKeysym(
 #endif
@@ -1944,7 +1944,7 @@ KeySym XLookupKeysym(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export KeySym *XGetKeyboardMapping(
+extern MagickExport KeySym *XGetKeyboardMapping(
 #else
 KeySym *XGetKeyboardMapping(
 #endif
@@ -1960,7 +1960,7 @@ KeySym *XGetKeyboardMapping(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export KeySym XStringToKeysym(
+extern MagickExport KeySym XStringToKeysym(
 #else
 KeySym XStringToKeysym(
 #endif
@@ -1969,7 +1969,7 @@ KeySym XStringToKeysym(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export long XMaxRequestSize(
+extern MagickExport long XMaxRequestSize(
 #else
 long XMaxRequestSize(
 #endif
@@ -1978,7 +1978,7 @@ long XMaxRequestSize(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export long XExtendedMaxRequestSize(
+extern MagickExport long XExtendedMaxRequestSize(
 #else
 long XExtendedMaxRequestSize(
 #endif
@@ -1987,7 +1987,7 @@ long XExtendedMaxRequestSize(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export char *XResourceManagerString(
+extern MagickExport char *XResourceManagerString(
 #else
 char *XResourceManagerString(
 #endif
@@ -1996,7 +1996,7 @@ char *XResourceManagerString(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export char *XScreenResourceString(
+extern MagickExport char *XScreenResourceString(
 #else
 char *XScreenResourceString(
 #endif
@@ -2005,7 +2005,7 @@ char *XScreenResourceString(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export unsigned long XDisplayMotionBufferSize(
+extern MagickExport unsigned long XDisplayMotionBufferSize(
 #else
 unsigned long XDisplayMotionBufferSize(
 #endif
@@ -2014,7 +2014,7 @@ unsigned long XDisplayMotionBufferSize(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export VisualID XVisualIDFromVisual(
+extern MagickExport VisualID XVisualIDFromVisual(
 #else
 VisualID XVisualIDFromVisual(
 #endif
@@ -2026,7 +2026,7 @@ VisualID XVisualIDFromVisual(
 /* multithread routines */
 
 #if defined(_VISUALC_)
-extern Export Status XInitThreads(
+extern MagickExport Status XInitThreads(
 #else
 Status XInitThreads(
 #endif
@@ -2036,7 +2036,7 @@ Status XInitThreads(
 ){}
 
 #if defined(_VISUALC_)
-extern Export void XLockDisplay(
+extern MagickExport void XLockDisplay(
 #else
 void XLockDisplay(
 #endif
@@ -2046,7 +2046,7 @@ void XLockDisplay(
 ){}
 
 #if defined(_VISUALC_)
-extern Export void XUnlockDisplay(
+extern MagickExport void XUnlockDisplay(
 #else
 void XUnlockDisplay(
 #endif
@@ -2058,7 +2058,7 @@ void XUnlockDisplay(
 /* routines for dealing with extensions */
 
 #if defined(_VISUALC_)
-extern Export XExtCodes *XInitExtension(
+extern MagickExport XExtCodes *XInitExtension(
 #else
 XExtCodes *XInitExtension(
 #endif
@@ -2069,7 +2069,7 @@ XExtCodes *XInitExtension(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XExtCodes *XAddExtension(
+extern MagickExport XExtCodes *XAddExtension(
 #else
 XExtCodes *XAddExtension(
 #endif
@@ -2078,7 +2078,7 @@ XExtCodes *XAddExtension(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export XExtData *XFindOnExtensionList(
+extern MagickExport XExtData *XFindOnExtensionList(
 #else
 XExtData *XFindOnExtensionList(
 #endif
@@ -2088,7 +2088,7 @@ XExtData *XFindOnExtensionList(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export XExtData **XEHeadOfExtensionList(
+extern MagickExport XExtData **XEHeadOfExtensionList(
 #else
 XExtData **XEHeadOfExtensionList(
 #endif
@@ -2099,13 +2099,13 @@ XExtData **XEHeadOfExtensionList(
 
 /* these are routines for which there are also macros */
 #if defined(_VISUALC_)
-extern Export Window XRootWindow(Display* a,int b)
+extern MagickExport Window XRootWindow(Display* a,int b)
 #else
 Window XRootWindow(Display* a,int b)
 #endif
 {}
 #if defined(_VISUALC_)
-extern Export Window XDefaultRootWindow(
+extern MagickExport Window XDefaultRootWindow(
 #else
 Window XDefaultRootWindow(
 #endif
@@ -2114,7 +2114,7 @@ Window XDefaultRootWindow(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export Window XRootWindowOfScreen(
+extern MagickExport Window XRootWindowOfScreen(
 #else
 Window XRootWindowOfScreen(
 #endif
@@ -2123,7 +2123,7 @@ Window XRootWindowOfScreen(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export Visual *XDefaultVisual(
+extern MagickExport Visual *XDefaultVisual(
 #else
 Visual *XDefaultVisual(
 #endif
@@ -2133,7 +2133,7 @@ Visual *XDefaultVisual(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export Visual *XDefaultVisualOfScreen(
+extern MagickExport Visual *XDefaultVisualOfScreen(
 #else
 Visual *XDefaultVisualOfScreen(
 #endif
@@ -2142,7 +2142,7 @@ Visual *XDefaultVisualOfScreen(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export GC XDefaultGC(
+extern MagickExport GC XDefaultGC(
 #else
 GC XDefaultGC(
 #endif
@@ -2152,7 +2152,7 @@ GC XDefaultGC(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export GC XDefaultGCOfScreen(
+extern MagickExport GC XDefaultGCOfScreen(
 #else
 GC XDefaultGCOfScreen(
 #endif
@@ -2161,7 +2161,7 @@ GC XDefaultGCOfScreen(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export unsigned long XBlackPixel(
+extern MagickExport unsigned long XBlackPixel(
 #else
 unsigned long XBlackPixel(
 #endif
@@ -2171,7 +2171,7 @@ unsigned long XBlackPixel(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export unsigned long XWhitePixel(
+extern MagickExport unsigned long XWhitePixel(
 #else
 unsigned long XWhitePixel(
 #endif
@@ -2181,7 +2181,7 @@ unsigned long XWhitePixel(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export unsigned long XAllPlanes(
+extern MagickExport unsigned long XAllPlanes(
 #else
 unsigned long XAllPlanes(
 #endif
@@ -2190,7 +2190,7 @@ unsigned long XAllPlanes(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export unsigned long XBlackPixelOfScreen(
+extern MagickExport unsigned long XBlackPixelOfScreen(
 #else
 unsigned long XBlackPixelOfScreen(
 #endif
@@ -2199,7 +2199,7 @@ unsigned long XBlackPixelOfScreen(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export unsigned long XWhitePixelOfScreen(
+extern MagickExport unsigned long XWhitePixelOfScreen(
 #else
 unsigned long XWhitePixelOfScreen(
 #endif
@@ -2208,7 +2208,7 @@ unsigned long XWhitePixelOfScreen(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export unsigned long XNextRequest(
+extern MagickExport unsigned long XNextRequest(
 #else
 unsigned long XNextRequest(
 #endif
@@ -2217,7 +2217,7 @@ unsigned long XNextRequest(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export unsigned long XLastKnownRequestProcessed(
+extern MagickExport unsigned long XLastKnownRequestProcessed(
 #else
 unsigned long XLastKnownRequestProcessed(
 #endif
@@ -2226,7 +2226,7 @@ unsigned long XLastKnownRequestProcessed(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export char *XServerVendor(
+extern MagickExport char *XServerVendor(
 #else
 char *XServerVendor(
 #endif
@@ -2235,7 +2235,7 @@ char *XServerVendor(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export char *XDisplayString(
+extern MagickExport char *XDisplayString(
 #else
 char *XDisplayString(
 #endif
@@ -2244,7 +2244,7 @@ char *XDisplayString(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export Colormap XDefaultColormap(
+extern MagickExport Colormap XDefaultColormap(
 #else
 Colormap XDefaultColormap(
 #endif
@@ -2254,7 +2254,7 @@ Colormap XDefaultColormap(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export Colormap XDefaultColormapOfScreen(
+extern MagickExport Colormap XDefaultColormapOfScreen(
 #else
 Colormap XDefaultColormapOfScreen(
 #endif
@@ -2263,7 +2263,7 @@ Colormap XDefaultColormapOfScreen(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export Display *XDisplayOfScreen(
+extern MagickExport Display *XDisplayOfScreen(
 #else
 Display *XDisplayOfScreen(
 #endif
@@ -2272,7 +2272,7 @@ Display *XDisplayOfScreen(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export Screen *XScreenOfDisplay(
+extern MagickExport Screen *XScreenOfDisplay(
 #else
 Screen *XScreenOfDisplay(
 #endif
@@ -2282,13 +2282,13 @@ Screen *XScreenOfDisplay(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export Screen *XDefaultScreenOfDisplay(Display* a)
+extern MagickExport Screen *XDefaultScreenOfDisplay(Display* a)
 #else
 Screen *XDefaultScreenOfDisplay(Display* a)
 #endif
 {}
 #if defined(_VISUALC_)
-extern Export long XEventMaskOfScreen(
+extern MagickExport long XEventMaskOfScreen(
 #else
 long XEventMaskOfScreen(
 #endif
@@ -2298,7 +2298,7 @@ long XEventMaskOfScreen(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XScreenNumberOfScreen(
+extern MagickExport int XScreenNumberOfScreen(
 #else
 int XScreenNumberOfScreen(
 #endif
@@ -2316,7 +2316,7 @@ typedef int (*XErrorHandler) (	    /* WARNING, this type not in Xlib spec */
 
 
 #if defined(_VISUALC_)
-extern Export XErrorHandler XSetErrorHandler (
+extern MagickExport XErrorHandler XSetErrorHandler (
 #else
 XErrorHandler XSetErrorHandler (
 #endif
@@ -2333,7 +2333,7 @@ typedef int (*XIOErrorHandler) (    /* WARNING, this type not in Xlib spec */
 );
 
 #if defined(_VISUALC_)
-extern Export XIOErrorHandler XSetIOErrorHandler (
+extern MagickExport XIOErrorHandler XSetIOErrorHandler (
 #else
 XIOErrorHandler XSetIOErrorHandler (
 #endif
@@ -2344,7 +2344,7 @@ XIOErrorHandler XSetIOErrorHandler (
 
 
 #if defined(_VISUALC_)
-extern Export XPixmapFormatValues *XListPixmapFormats(
+extern MagickExport XPixmapFormatValues *XListPixmapFormats(
 #else
 XPixmapFormatValues *XListPixmapFormats(
 #endif
@@ -2354,7 +2354,7 @@ XPixmapFormatValues *XListPixmapFormats(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export int *XListDepths(
+extern MagickExport int *XListDepths(
 #else
 int *XListDepths(
 #endif
@@ -2368,7 +2368,7 @@ int *XListDepths(
 /* ICCCM routines for things that don't require special include files; */
 /* other declarations are given in Xutil.h                             */
 #if defined(_VISUALC_)
-extern Export Status XReconfigureWMWindow(
+extern MagickExport Status XReconfigureWMWindow(
 #else
 Status XReconfigureWMWindow(
 #endif
@@ -2382,7 +2382,7 @@ Status XReconfigureWMWindow(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Status XGetWMProtocols(
+extern MagickExport Status XGetWMProtocols(
 #else
 Status XGetWMProtocols(
 #endif
@@ -2394,7 +2394,7 @@ Status XGetWMProtocols(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export Status XSetWMProtocols(
+extern MagickExport Status XSetWMProtocols(
 #else
 Status XSetWMProtocols(
 #endif
@@ -2406,7 +2406,7 @@ Status XSetWMProtocols(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export Status XIconifyWindow(
+extern MagickExport Status XIconifyWindow(
 #else
 Status XIconifyWindow(
 #endif
@@ -2417,7 +2417,7 @@ Status XIconifyWindow(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export Status XWithdrawWindow(
+extern MagickExport Status XWithdrawWindow(
 #else
 Status XWithdrawWindow(
 #endif
@@ -2428,7 +2428,7 @@ Status XWithdrawWindow(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export Status XGetCommand(
+extern MagickExport Status XGetCommand(
 #else
 Status XGetCommand(
 #endif
@@ -2440,7 +2440,7 @@ Status XGetCommand(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export Status XGetWMColormapWindows(
+extern MagickExport Status XGetWMColormapWindows(
 #else
 Status XGetWMColormapWindows(
 #endif
@@ -2452,7 +2452,7 @@ Status XGetWMColormapWindows(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export Status XSetWMColormapWindows(
+extern MagickExport Status XSetWMColormapWindows(
 #else
 Status XSetWMColormapWindows(
 #endif
@@ -2464,7 +2464,7 @@ Status XSetWMColormapWindows(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export void XFreeStringList(
+extern MagickExport void XFreeStringList(
 #else
 void XFreeStringList(
 #endif
@@ -2473,7 +2473,7 @@ void XFreeStringList(
 #endif
 ){}
 #if defined(_VISUALC_)
-extern Export XSetTransientForHint(
+extern MagickExport XSetTransientForHint(
 #else
 XSetTransientForHint(
 #endif
@@ -2487,7 +2487,7 @@ XSetTransientForHint(
 /* The following are given in alphabetical order */
 
 #if defined(_VISUALC_)
-extern Export XActivateScreenSaver(
+extern MagickExport XActivateScreenSaver(
 #else
 XActivateScreenSaver(
 #endif
@@ -2497,7 +2497,7 @@ XActivateScreenSaver(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XAddHost(
+extern MagickExport XAddHost(
 #else
 XAddHost(
 #endif
@@ -2508,7 +2508,7 @@ XAddHost(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XAddHosts(
+extern MagickExport XAddHosts(
 #else
 XAddHosts(
 #endif
@@ -2520,7 +2520,7 @@ XAddHosts(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XAddToExtensionList(
+extern MagickExport XAddToExtensionList(
 #else
 XAddToExtensionList(
 #endif
@@ -2531,7 +2531,7 @@ XAddToExtensionList(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XAddToSaveSet(
+extern MagickExport XAddToSaveSet(
 #else
 XAddToSaveSet(
 #endif
@@ -2542,7 +2542,7 @@ XAddToSaveSet(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Status XAllocColor(
+extern MagickExport Status XAllocColor(
 #else
 Status XAllocColor(
 #endif
@@ -2554,7 +2554,7 @@ Status XAllocColor(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Status XAllocColorCells(
+extern MagickExport Status XAllocColorCells(
 #else
 Status XAllocColorCells(
 #endif
@@ -2570,7 +2570,7 @@ Status XAllocColorCells(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Status XAllocColorPlanes(
+extern MagickExport Status XAllocColorPlanes(
 #else
 Status XAllocColorPlanes(
 #endif
@@ -2590,7 +2590,7 @@ Status XAllocColorPlanes(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Status XAllocNamedColor(
+extern MagickExport Status XAllocNamedColor(
 #else
 Status XAllocNamedColor(
 #endif
@@ -2604,7 +2604,7 @@ Status XAllocNamedColor(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XAllowEvents(
+extern MagickExport XAllowEvents(
 #else
 XAllowEvents(
 #endif
@@ -2616,7 +2616,7 @@ XAllowEvents(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XAutoRepeatOff(
+extern MagickExport XAutoRepeatOff(
 #else
 XAutoRepeatOff(
 #endif
@@ -2626,7 +2626,7 @@ XAutoRepeatOff(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XAutoRepeatOn(
+extern MagickExport XAutoRepeatOn(
 #else
 XAutoRepeatOn(
 #endif
@@ -2636,7 +2636,7 @@ XAutoRepeatOn(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XBell(
+extern MagickExport XBell(
 #else
 XBell(
 #endif
@@ -2647,7 +2647,7 @@ XBell(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XBitmapBitOrder(
+extern MagickExport int XBitmapBitOrder(
 #else
 int XBitmapBitOrder(
 #endif
@@ -2657,7 +2657,7 @@ int XBitmapBitOrder(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XBitmapPad(
+extern MagickExport int XBitmapPad(
 #else
 int XBitmapPad(
 #endif
@@ -2667,7 +2667,7 @@ int XBitmapPad(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XBitmapUnit(
+extern MagickExport int XBitmapUnit(
 #else
 int XBitmapUnit(
 #endif
@@ -2677,7 +2677,7 @@ int XBitmapUnit(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XCellsOfScreen(
+extern MagickExport int XCellsOfScreen(
 #else
 int XCellsOfScreen(
 #endif
@@ -2687,7 +2687,7 @@ int XCellsOfScreen(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XChangeActivePointerGrab(
+extern MagickExport XChangeActivePointerGrab(
 #else
 XChangeActivePointerGrab(
 #endif
@@ -2700,7 +2700,7 @@ XChangeActivePointerGrab(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XChangeGC(
+extern MagickExport XChangeGC(
 #else
 XChangeGC(
 #endif
@@ -2713,7 +2713,7 @@ XChangeGC(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XChangeKeyboardControl(
+extern MagickExport XChangeKeyboardControl(
 #else
 XChangeKeyboardControl(
 #endif
@@ -2725,7 +2725,7 @@ XChangeKeyboardControl(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XChangeKeyboardMapping(
+extern MagickExport XChangeKeyboardMapping(
 #else
 XChangeKeyboardMapping(
 #endif
@@ -2739,7 +2739,7 @@ XChangeKeyboardMapping(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XChangePointerControl(
+extern MagickExport XChangePointerControl(
 #else
 XChangePointerControl(
 #endif
@@ -2754,7 +2754,7 @@ XChangePointerControl(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XChangeProperty(
+extern MagickExport XChangeProperty(
 #else
 XChangeProperty(
 #endif
@@ -2771,7 +2771,7 @@ XChangeProperty(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XChangeSaveSet(
+extern MagickExport XChangeSaveSet(
 #else
 XChangeSaveSet(
 #endif
@@ -2783,7 +2783,7 @@ XChangeSaveSet(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XChangeWindowAttributes(
+extern MagickExport XChangeWindowAttributes(
 #else
 XChangeWindowAttributes(
 #endif
@@ -2796,7 +2796,7 @@ XChangeWindowAttributes(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Bool XCheckIfEvent(
+extern MagickExport Bool XCheckIfEvent(
 #else
 Bool XCheckIfEvent(
 #endif
@@ -2815,7 +2815,7 @@ Bool XCheckIfEvent(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Bool XCheckMaskEvent(
+extern MagickExport Bool XCheckMaskEvent(
 #else
 Bool XCheckMaskEvent(
 #endif
@@ -2827,7 +2827,7 @@ Bool XCheckMaskEvent(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Bool XCheckTypedEvent(
+extern MagickExport Bool XCheckTypedEvent(
 #else
 Bool XCheckTypedEvent(
 #endif
@@ -2839,7 +2839,7 @@ Bool XCheckTypedEvent(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Bool XCheckTypedWindowEvent(
+extern MagickExport Bool XCheckTypedWindowEvent(
 #else
 Bool XCheckTypedWindowEvent(
 #endif
@@ -2852,7 +2852,7 @@ Bool XCheckTypedWindowEvent(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Bool XCheckWindowEvent(
+extern MagickExport Bool XCheckWindowEvent(
 #else
 Bool XCheckWindowEvent(
 #endif
@@ -2865,7 +2865,7 @@ Bool XCheckWindowEvent(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XCirculateSubwindows(
+extern MagickExport XCirculateSubwindows(
 #else
 XCirculateSubwindows(
 #endif
@@ -2877,7 +2877,7 @@ XCirculateSubwindows(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XCirculateSubwindowsDown(
+extern MagickExport XCirculateSubwindowsDown(
 #else
 XCirculateSubwindowsDown(
 #endif
@@ -2888,7 +2888,7 @@ XCirculateSubwindowsDown(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XCirculateSubwindowsUp(
+extern MagickExport XCirculateSubwindowsUp(
 #else
 XCirculateSubwindowsUp(
 #endif
@@ -2899,7 +2899,7 @@ XCirculateSubwindowsUp(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XClearArea(
+extern MagickExport XClearArea(
 #else
 XClearArea(
 #endif
@@ -2915,7 +2915,7 @@ XClearArea(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XClearWindow(
+extern MagickExport XClearWindow(
 #else
 XClearWindow(
 #endif
@@ -2926,7 +2926,7 @@ XClearWindow(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XCloseDisplay(
+extern MagickExport XCloseDisplay(
 #else
 XCloseDisplay(
 #endif
@@ -2936,7 +2936,7 @@ XCloseDisplay(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XConfigureWindow(
+extern MagickExport XConfigureWindow(
 #else
 XConfigureWindow(
 #endif
@@ -2949,7 +2949,7 @@ XConfigureWindow(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XConnectionNumber(
+extern MagickExport int XConnectionNumber(
 #else
 int XConnectionNumber(
 #endif
@@ -2959,7 +2959,7 @@ int XConnectionNumber(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XConvertSelection(
+extern MagickExport XConvertSelection(
 #else
 XConvertSelection(
 #endif
@@ -2974,7 +2974,7 @@ XConvertSelection(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XCopyArea(
+extern MagickExport XCopyArea(
 #else
 XCopyArea(
 #endif
@@ -2993,7 +2993,7 @@ XCopyArea(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XCopyGC(
+extern MagickExport XCopyGC(
 #else
 XCopyGC(
 #endif
@@ -3006,7 +3006,7 @@ XCopyGC(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XCopyPlane(
+extern MagickExport XCopyPlane(
 #else
 XCopyPlane(
 #endif
@@ -3026,7 +3026,7 @@ XCopyPlane(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XDefaultDepth(
+extern MagickExport int XDefaultDepth(
 #else
 int XDefaultDepth(
 #endif
@@ -3037,7 +3037,7 @@ int XDefaultDepth(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XDefaultDepthOfScreen(
+extern MagickExport int XDefaultDepthOfScreen(
 #else
 int XDefaultDepthOfScreen(
 #endif
@@ -3047,14 +3047,14 @@ int XDefaultDepthOfScreen(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XDefaultScreen(Display* a)
+extern MagickExport int XDefaultScreen(Display* a)
 #else
 int XDefaultScreen(Display* a)
 #endif
 {}
 
 #if defined(_VISUALC_)
-extern Export XDefineCursor(
+extern MagickExport XDefineCursor(
 #else
 XDefineCursor(
 #endif
@@ -3066,7 +3066,7 @@ XDefineCursor(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XDeleteProperty(
+extern MagickExport XDeleteProperty(
 #else
 XDeleteProperty(
 #endif
@@ -3078,7 +3078,7 @@ XDeleteProperty(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XDestroyWindow(
+extern MagickExport XDestroyWindow(
 #else
 XDestroyWindow(
 #endif
@@ -3089,7 +3089,7 @@ XDestroyWindow(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XDestroySubwindows(
+extern MagickExport XDestroySubwindows(
 #else
 XDestroySubwindows(
 #endif
@@ -3100,7 +3100,7 @@ XDestroySubwindows(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XDoesBackingStore(
+extern MagickExport int XDoesBackingStore(
 #else
 int XDoesBackingStore(
 #endif
@@ -3110,7 +3110,7 @@ int XDoesBackingStore(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Bool XDoesSaveUnders(
+extern MagickExport Bool XDoesSaveUnders(
 #else
 Bool XDoesSaveUnders(
 #endif
@@ -3120,7 +3120,7 @@ Bool XDoesSaveUnders(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XDisableAccessControl(
+extern MagickExport XDisableAccessControl(
 #else
 XDisableAccessControl(
 #endif
@@ -3131,7 +3131,7 @@ XDisableAccessControl(
 
 
 #if defined(_VISUALC_)
-extern Export int XDisplayCells(
+extern MagickExport int XDisplayCells(
 #else
 int XDisplayCells(
 #endif
@@ -3142,7 +3142,7 @@ int XDisplayCells(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XDisplayHeight(
+extern MagickExport int XDisplayHeight(
 #else
 int XDisplayHeight(
 #endif
@@ -3153,7 +3153,7 @@ int XDisplayHeight(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XDisplayHeightMM(
+extern MagickExport int XDisplayHeightMM(
 #else
 int XDisplayHeightMM(
 #endif
@@ -3164,7 +3164,7 @@ int XDisplayHeightMM(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XDisplayKeycodes(
+extern MagickExport XDisplayKeycodes(
 #else
 XDisplayKeycodes(
 #endif
@@ -3176,7 +3176,7 @@ XDisplayKeycodes(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XDisplayPlanes(
+extern MagickExport int XDisplayPlanes(
 #else
 int XDisplayPlanes(
 #endif
@@ -3187,7 +3187,7 @@ int XDisplayPlanes(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XDisplayWidth(
+extern MagickExport int XDisplayWidth(
 #else
 int XDisplayWidth(
 #endif
@@ -3198,7 +3198,7 @@ int XDisplayWidth(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XDisplayWidthMM(
+extern MagickExport int XDisplayWidthMM(
 #else
 int XDisplayWidthMM(
 #endif
@@ -3209,7 +3209,7 @@ int XDisplayWidthMM(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XDrawArc(
+extern MagickExport XDrawArc(
 #else
 XDrawArc(
 #endif
@@ -3227,7 +3227,7 @@ XDrawArc(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XDrawArcs(
+extern MagickExport XDrawArcs(
 #else
 XDrawArcs(
 #endif
@@ -3241,7 +3241,7 @@ XDrawArcs(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XDrawImageString(
+extern MagickExport XDrawImageString(
 #else
 XDrawImageString(
 #endif
@@ -3257,7 +3257,7 @@ XDrawImageString(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XDrawImageString16(
+extern MagickExport XDrawImageString16(
 #else
 XDrawImageString16(
 #endif
@@ -3273,7 +3273,7 @@ XDrawImageString16(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XDrawLine(
+extern MagickExport XDrawLine(
 #else
 XDrawLine(
 #endif
@@ -3289,7 +3289,7 @@ XDrawLine(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XDrawLines(
+extern MagickExport XDrawLines(
 #else
 XDrawLines(
 #endif
@@ -3304,7 +3304,7 @@ XDrawLines(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XDrawPoint(
+extern MagickExport XDrawPoint(
 #else
 XDrawPoint(
 #endif
@@ -3318,7 +3318,7 @@ XDrawPoint(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XDrawPoints(
+extern MagickExport XDrawPoints(
 #else
 XDrawPoints(
 #endif
@@ -3333,7 +3333,7 @@ XDrawPoints(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XDrawRectangle(
+extern MagickExport XDrawRectangle(
 #else
 XDrawRectangle(
 #endif
@@ -3349,7 +3349,7 @@ XDrawRectangle(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XDrawRectangles(
+extern MagickExport XDrawRectangles(
 #else
 XDrawRectangles(
 #endif
@@ -3363,7 +3363,7 @@ XDrawRectangles(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XDrawSegments(
+extern MagickExport XDrawSegments(
 #else
 XDrawSegments(
 #endif
@@ -3377,7 +3377,7 @@ XDrawSegments(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XDrawString(
+extern MagickExport XDrawString(
 #else
 XDrawString(
 #endif
@@ -3393,7 +3393,7 @@ XDrawString(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XDrawString16(
+extern MagickExport XDrawString16(
 #else
 XDrawString16(
 #endif
@@ -3409,7 +3409,7 @@ XDrawString16(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XDrawText(
+extern MagickExport XDrawText(
 #else
 XDrawText(
 #endif
@@ -3425,7 +3425,7 @@ XDrawText(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XDrawText16(
+extern MagickExport XDrawText16(
 #else
 XDrawText16(
 #endif
@@ -3441,7 +3441,7 @@ XDrawText16(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XEnableAccessControl(
+extern MagickExport XEnableAccessControl(
 #else
 XEnableAccessControl(
 #endif
@@ -3451,7 +3451,7 @@ XEnableAccessControl(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XEventsQueued(
+extern MagickExport int XEventsQueued(
 #else
 int XEventsQueued(
 #endif
@@ -3462,7 +3462,7 @@ int XEventsQueued(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Status XFetchName(
+extern MagickExport Status XFetchName(
 #else
 Status XFetchName(
 #endif
@@ -3474,7 +3474,7 @@ Status XFetchName(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XFillArc(
+extern MagickExport XFillArc(
 #else
 XFillArc(
 #endif
@@ -3492,7 +3492,7 @@ XFillArc(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XFillArcs(
+extern MagickExport XFillArcs(
 #else
 XFillArcs(
 #endif
@@ -3506,7 +3506,7 @@ XFillArcs(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XFillPolygon(
+extern MagickExport XFillPolygon(
 #else
 XFillPolygon(
 #endif
@@ -3522,7 +3522,7 @@ XFillPolygon(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XFillRectangle(
+extern MagickExport XFillRectangle(
 #else
 XFillRectangle(
 #endif
@@ -3538,7 +3538,7 @@ XFillRectangle(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XFillRectangles(
+extern MagickExport XFillRectangles(
 #else
 XFillRectangles(
 #endif
@@ -3552,7 +3552,7 @@ XFillRectangles(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XFlush(
+extern MagickExport XFlush(
 #else
 XFlush(
 #endif
@@ -3562,7 +3562,7 @@ XFlush(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XForceScreenSaver(
+extern MagickExport XForceScreenSaver(
 #else
 XForceScreenSaver(
 #endif
@@ -3573,7 +3573,7 @@ XForceScreenSaver(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XFree(
+extern MagickExport XFree(
 #else
 XFree(
 #endif
@@ -3583,7 +3583,7 @@ XFree(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XFreeColormap(
+extern MagickExport XFreeColormap(
 #else
 XFreeColormap(
 #endif
@@ -3594,7 +3594,7 @@ XFreeColormap(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XFreeColors(
+extern MagickExport XFreeColors(
 #else
 XFreeColors(
 #endif
@@ -3608,7 +3608,7 @@ XFreeColors(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XFreeCursor(
+extern MagickExport XFreeCursor(
 #else
 XFreeCursor(
 #endif
@@ -3619,7 +3619,7 @@ XFreeCursor(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XFreeExtensionList(
+extern MagickExport XFreeExtensionList(
 #else
 XFreeExtensionList(
 #endif
@@ -3629,7 +3629,7 @@ XFreeExtensionList(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XFreeFont(
+extern MagickExport XFreeFont(
 #else
 XFreeFont(
 #endif
@@ -3640,7 +3640,7 @@ XFreeFont(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XFreeFontInfo(
+extern MagickExport XFreeFontInfo(
 #else
 XFreeFontInfo(
 #endif
@@ -3652,7 +3652,7 @@ XFreeFontInfo(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XFreeFontNames(
+extern MagickExport XFreeFontNames(
 #else
 XFreeFontNames(
 #endif
@@ -3662,7 +3662,7 @@ XFreeFontNames(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XFreeFontPath(
+extern MagickExport XFreeFontPath(
 #else
 XFreeFontPath(
 #endif
@@ -3672,7 +3672,7 @@ XFreeFontPath(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XFreeGC(
+extern MagickExport XFreeGC(
 #else
 XFreeGC(
 #endif
@@ -3683,7 +3683,7 @@ XFreeGC(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XFreeModifiermap(
+extern MagickExport XFreeModifiermap(
 #else
 XFreeModifiermap(
 #endif
@@ -3693,7 +3693,7 @@ XFreeModifiermap(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XFreePixmap(
+extern MagickExport XFreePixmap(
 #else
 XFreePixmap(
 #endif
@@ -3704,7 +3704,7 @@ XFreePixmap(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XGeometry(
+extern MagickExport int XGeometry(
 #else
 int XGeometry(
 #endif
@@ -3726,7 +3726,7 @@ int XGeometry(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XGetErrorDatabaseText(
+extern MagickExport XGetErrorDatabaseText(
 #else
 XGetErrorDatabaseText(
 #endif
@@ -3741,7 +3741,7 @@ XGetErrorDatabaseText(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XGetErrorText(
+extern MagickExport XGetErrorText(
 #else
 XGetErrorText(
 #endif
@@ -3754,7 +3754,7 @@ XGetErrorText(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Bool XGetFontProperty(
+extern MagickExport Bool XGetFontProperty(
 #else
 Bool XGetFontProperty(
 #endif
@@ -3766,7 +3766,7 @@ Bool XGetFontProperty(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Status XGetGCValues(
+extern MagickExport Status XGetGCValues(
 #else
 Status XGetGCValues(
 #endif
@@ -3779,7 +3779,7 @@ Status XGetGCValues(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Status XGetGeometry(
+extern MagickExport Status XGetGeometry(
 #else
 Status XGetGeometry(
 #endif
@@ -3797,7 +3797,7 @@ Status XGetGeometry(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Status XGetIconName(
+extern MagickExport Status XGetIconName(
 #else
 Status XGetIconName(
 #endif
@@ -3809,7 +3809,7 @@ Status XGetIconName(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XGetInputFocus(
+extern MagickExport XGetInputFocus(
 #else
 XGetInputFocus(
 #endif
@@ -3821,7 +3821,7 @@ XGetInputFocus(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XGetKeyboardControl(
+extern MagickExport XGetKeyboardControl(
 #else
 XGetKeyboardControl(
 #endif
@@ -3832,7 +3832,7 @@ XGetKeyboardControl(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XGetPointerControl(
+extern MagickExport XGetPointerControl(
 #else
 XGetPointerControl(
 #endif
@@ -3845,7 +3845,7 @@ XGetPointerControl(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XGetPointerMapping(
+extern MagickExport int XGetPointerMapping(
 #else
 int XGetPointerMapping(
 #endif
@@ -3857,7 +3857,7 @@ int XGetPointerMapping(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XGetScreenSaver(
+extern MagickExport XGetScreenSaver(
 #else
 XGetScreenSaver(
 #endif
@@ -3871,7 +3871,7 @@ XGetScreenSaver(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Status XGetTransientForHint(
+extern MagickExport Status XGetTransientForHint(
 #else
 Status XGetTransientForHint(
 #endif
@@ -3883,7 +3883,7 @@ Status XGetTransientForHint(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XGetWindowProperty(
+extern MagickExport int XGetWindowProperty(
 #else
 int XGetWindowProperty(
 #endif
@@ -3904,7 +3904,7 @@ int XGetWindowProperty(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Status XGetWindowAttributes(
+extern MagickExport Status XGetWindowAttributes(
 #else
 Status XGetWindowAttributes(
 #endif
@@ -3916,7 +3916,7 @@ Status XGetWindowAttributes(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XGrabButton(
+extern MagickExport XGrabButton(
 #else
 XGrabButton(
 #endif
@@ -3935,7 +3935,7 @@ XGrabButton(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XGrabKey(
+extern MagickExport XGrabKey(
 #else
 XGrabKey(
 #endif
@@ -3951,7 +3951,7 @@ XGrabKey(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XGrabKeyboard(
+extern MagickExport int XGrabKeyboard(
 #else
 int XGrabKeyboard(
 #endif
@@ -3966,7 +3966,7 @@ int XGrabKeyboard(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XGrabPointer(
+extern MagickExport int XGrabPointer(
 #else
 int XGrabPointer(
 #endif
@@ -3984,7 +3984,7 @@ int XGrabPointer(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XGrabServer(
+extern MagickExport XGrabServer(
 #else
 XGrabServer(
 #endif
@@ -3994,7 +3994,7 @@ XGrabServer(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XHeightMMOfScreen(
+extern MagickExport int XHeightMMOfScreen(
 #else
 int XHeightMMOfScreen(
 #endif
@@ -4004,7 +4004,7 @@ int XHeightMMOfScreen(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XHeightOfScreen(
+extern MagickExport int XHeightOfScreen(
 #else
 int XHeightOfScreen(
 #endif
@@ -4014,7 +4014,7 @@ int XHeightOfScreen(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XIfEvent(
+extern MagickExport XIfEvent(
 #else
 XIfEvent(
 #endif
@@ -4033,7 +4033,7 @@ XIfEvent(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XImageByteOrder(
+extern MagickExport int XImageByteOrder(
 #else
 int XImageByteOrder(
 #endif
@@ -4043,7 +4043,7 @@ int XImageByteOrder(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XInstallColormap(
+extern MagickExport XInstallColormap(
 #else
 XInstallColormap(
 #endif
@@ -4054,7 +4054,7 @@ XInstallColormap(
 ){}
 
 #if defined(_VISUALC_)
-extern Export KeyCode XKeysymToKeycode(
+extern MagickExport KeyCode XKeysymToKeycode(
 #else
 KeyCode XKeysymToKeycode(
 #endif
@@ -4065,7 +4065,7 @@ KeyCode XKeysymToKeycode(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XKillClient(
+extern MagickExport XKillClient(
 #else
 XKillClient(
 #endif
@@ -4076,7 +4076,7 @@ XKillClient(
 ){}
 
 #if defined(_VISUALC_)
-extern Export unsigned long XXLastKnownRequestProcessed(
+extern MagickExport unsigned long XXLastKnownRequestProcessed(
 #else
 unsigned long XXLastKnownRequestProcessed(
 #endif
@@ -4086,7 +4086,7 @@ unsigned long XXLastKnownRequestProcessed(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Status XLookupColor(
+extern MagickExport Status XLookupColor(
 #else
 Status XLookupColor(
 #endif
@@ -4100,7 +4100,7 @@ Status XLookupColor(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XLowerWindow(
+extern MagickExport XLowerWindow(
 #else
 XLowerWindow(
 #endif
@@ -4111,7 +4111,7 @@ XLowerWindow(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XMapRaised(
+extern MagickExport XMapRaised(
 #else
 XMapRaised(
 #endif
@@ -4122,7 +4122,7 @@ XMapRaised(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XMapSubwindows(
+extern MagickExport XMapSubwindows(
 #else
 XMapSubwindows(
 #endif
@@ -4133,7 +4133,7 @@ XMapSubwindows(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XMapWindow(
+extern MagickExport XMapWindow(
 #else
 XMapWindow(
 #endif
@@ -4144,7 +4144,7 @@ XMapWindow(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XMaskEvent(
+extern MagickExport XMaskEvent(
 #else
 XMaskEvent(
 #endif
@@ -4156,7 +4156,7 @@ XMaskEvent(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XMaxCmapsOfScreen(
+extern MagickExport int XMaxCmapsOfScreen(
 #else
 int XMaxCmapsOfScreen(
 #endif
@@ -4166,7 +4166,7 @@ int XMaxCmapsOfScreen(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XMinCmapsOfScreen(
+extern MagickExport int XMinCmapsOfScreen(
 #else
 int XMinCmapsOfScreen(
 #endif
@@ -4176,7 +4176,7 @@ int XMinCmapsOfScreen(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XMoveResizeWindow(
+extern MagickExport XMoveResizeWindow(
 #else
 XMoveResizeWindow(
 #endif
@@ -4191,7 +4191,7 @@ XMoveResizeWindow(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XMoveWindow(
+extern MagickExport XMoveWindow(
 #else
 XMoveWindow(
 #endif
@@ -4204,7 +4204,7 @@ XMoveWindow(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XNextEvent(
+extern MagickExport XNextEvent(
 #else
 XNextEvent(
 #endif
@@ -4215,7 +4215,7 @@ XNextEvent(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XNoOp(
+extern MagickExport XNoOp(
 #else
 XNoOp(
 #endif
@@ -4225,7 +4225,7 @@ XNoOp(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Status XParseColor(
+extern MagickExport Status XParseColor(
 #else
 Status XParseColor(
 #endif
@@ -4275,7 +4275,7 @@ char **NextString;
 
 #if NeedFunctionPrototypes
 #if defined(_VISUALC_)
-extern Export int XParseGeometry (
+extern MagickExport int XParseGeometry (
 #else
 int XParseGeometry (
 #endif
@@ -4376,7 +4376,7 @@ unsigned int *width, *height;    /* RETURN */
 }
 
 #if defined(_VISUALC_)
-extern Export XPeekEvent(
+extern MagickExport XPeekEvent(
 #else
 XPeekEvent(
 #endif
@@ -4387,7 +4387,7 @@ XPeekEvent(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XPeekIfEvent(
+extern MagickExport XPeekIfEvent(
 #else
 XPeekIfEvent(
 #endif
@@ -4406,7 +4406,7 @@ XPeekIfEvent(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XPending(
+extern MagickExport int XPending(
 #else
 int XPending(
 #endif
@@ -4416,7 +4416,7 @@ int XPending(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XPlanesOfScreen(
+extern MagickExport int XPlanesOfScreen(
 #else
 int XPlanesOfScreen(
 #endif
@@ -4427,7 +4427,7 @@ int XPlanesOfScreen(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XProtocolRevision(
+extern MagickExport int XProtocolRevision(
 #else
 int XProtocolRevision(
 #endif
@@ -4437,7 +4437,7 @@ int XProtocolRevision(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XProtocolVersion(
+extern MagickExport int XProtocolVersion(
 #else
 int XProtocolVersion(
 #endif
@@ -4448,7 +4448,7 @@ int XProtocolVersion(
 
 
 #if defined(_VISUALC_)
-extern Export XPutBackEvent(
+extern MagickExport XPutBackEvent(
 #else
 XPutBackEvent(
 #endif
@@ -4459,7 +4459,7 @@ XPutBackEvent(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XPutImage(
+extern MagickExport XPutImage(
 #else
 XPutImage(
 #endif
@@ -4478,7 +4478,7 @@ XPutImage(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XQLength(
+extern MagickExport int XQLength(
 #else
 int XQLength(
 #endif
@@ -4488,7 +4488,7 @@ int XQLength(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Status XQueryBestCursor(
+extern MagickExport Status XQueryBestCursor(
 #else
 Status XQueryBestCursor(
 #endif
@@ -4503,7 +4503,7 @@ Status XQueryBestCursor(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Status XQueryBestSize(
+extern MagickExport Status XQueryBestSize(
 #else
 Status XQueryBestSize(
 #endif
@@ -4519,7 +4519,7 @@ Status XQueryBestSize(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Status XQueryBestStipple(
+extern MagickExport Status XQueryBestStipple(
 #else
 Status XQueryBestStipple(
 #endif
@@ -4534,7 +4534,7 @@ Status XQueryBestStipple(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Status XQueryBestTile(
+extern MagickExport Status XQueryBestTile(
 #else
 Status XQueryBestTile(
 #endif
@@ -4549,7 +4549,7 @@ Status XQueryBestTile(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XQueryColor(
+extern MagickExport XQueryColor(
 #else
 XQueryColor(
 #endif
@@ -4561,7 +4561,7 @@ XQueryColor(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XQueryColors(
+extern MagickExport XQueryColors(
 #else
 XQueryColors(
 #endif
@@ -4574,7 +4574,7 @@ XQueryColors(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Bool XQueryExtension(
+extern MagickExport Bool XQueryExtension(
 #else
 Bool XQueryExtension(
 #endif
@@ -4588,7 +4588,7 @@ Bool XQueryExtension(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XQueryKeymap(
+extern MagickExport XQueryKeymap(
 #else
 XQueryKeymap(
 #endif
@@ -4599,7 +4599,7 @@ XQueryKeymap(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Bool XQueryPointer(
+extern MagickExport Bool XQueryPointer(
 #else
 Bool XQueryPointer(
 #endif
@@ -4617,7 +4617,7 @@ Bool XQueryPointer(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XQueryTextExtents(
+extern MagickExport XQueryTextExtents(
 #else
 XQueryTextExtents(
 #endif
@@ -4634,7 +4634,7 @@ XQueryTextExtents(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XQueryTextExtents16(
+extern MagickExport XQueryTextExtents16(
 #else
 XQueryTextExtents16(
 #endif
@@ -4651,7 +4651,7 @@ XQueryTextExtents16(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Status XQueryTree(
+extern MagickExport Status XQueryTree(
 #else
 Status XQueryTree(
 #endif
@@ -4666,7 +4666,7 @@ Status XQueryTree(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XRaiseWindow(
+extern MagickExport XRaiseWindow(
 #else
 XRaiseWindow(
 #endif
@@ -4677,7 +4677,7 @@ XRaiseWindow(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XReadBitmapFile(
+extern MagickExport int XReadBitmapFile(
 #else
 int XReadBitmapFile(
 #endif
@@ -4694,7 +4694,7 @@ int XReadBitmapFile(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XReadBitmapFileData(
+extern MagickExport int XReadBitmapFileData(
 #else
 int XReadBitmapFileData(
 #endif
@@ -4709,7 +4709,7 @@ int XReadBitmapFileData(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XRebindKeysym(
+extern MagickExport XRebindKeysym(
 #else
 XRebindKeysym(
 #endif
@@ -4724,7 +4724,7 @@ XRebindKeysym(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XRecolorCursor(
+extern MagickExport XRecolorCursor(
 #else
 XRecolorCursor(
 #endif
@@ -4737,7 +4737,7 @@ XRecolorCursor(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XRefreshKeyboardMapping(
+extern MagickExport XRefreshKeyboardMapping(
 #else
 XRefreshKeyboardMapping(
 #endif
@@ -4747,7 +4747,7 @@ XRefreshKeyboardMapping(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XRemoveFromSaveSet(
+extern MagickExport XRemoveFromSaveSet(
 #else
 XRemoveFromSaveSet(
 #endif
@@ -4758,7 +4758,7 @@ XRemoveFromSaveSet(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XRemoveHost(
+extern MagickExport XRemoveHost(
 #else
 XRemoveHost(
 #endif
@@ -4769,7 +4769,7 @@ XRemoveHost(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XRemoveHosts(
+extern MagickExport XRemoveHosts(
 #else
 XRemoveHosts(
 #endif
@@ -4781,7 +4781,7 @@ XRemoveHosts(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XReparentWindow(
+extern MagickExport XReparentWindow(
 #else
 XReparentWindow(
 #endif
@@ -4795,7 +4795,7 @@ XReparentWindow(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XResetScreenSaver(
+extern MagickExport XResetScreenSaver(
 #else
 XResetScreenSaver(
 #endif
@@ -4805,7 +4805,7 @@ XResetScreenSaver(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XResizeWindow(
+extern MagickExport XResizeWindow(
 #else
 XResizeWindow(
 #endif
@@ -4818,7 +4818,7 @@ XResizeWindow(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XRestackWindows(
+extern MagickExport XRestackWindows(
 #else
 XRestackWindows(
 #endif
@@ -4830,7 +4830,7 @@ XRestackWindows(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XRotateBuffers(
+extern MagickExport XRotateBuffers(
 #else
 XRotateBuffers(
 #endif
@@ -4841,7 +4841,7 @@ XRotateBuffers(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XRotateWindowProperties(
+extern MagickExport XRotateWindowProperties(
 #else
 XRotateWindowProperties(
 #endif
@@ -4855,7 +4855,7 @@ XRotateWindowProperties(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XScreenCount(
+extern MagickExport int XScreenCount(
 #else
 int XScreenCount(
 #endif
@@ -4865,7 +4865,7 @@ int XScreenCount(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XSelectInput(
+extern MagickExport XSelectInput(
 #else
 XSelectInput(
 #endif
@@ -4877,7 +4877,7 @@ XSelectInput(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Status XSendEvent(
+extern MagickExport Status XSendEvent(
 #else
 Status XSendEvent(
 #endif
@@ -4891,7 +4891,7 @@ Status XSendEvent(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XSetAccessControl(
+extern MagickExport XSetAccessControl(
 #else
 XSetAccessControl(
 #endif
@@ -4902,7 +4902,7 @@ XSetAccessControl(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XSetArcMode(
+extern MagickExport XSetArcMode(
 #else
 XSetArcMode(
 #endif
@@ -4914,7 +4914,7 @@ XSetArcMode(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XSetBackground(
+extern MagickExport XSetBackground(
 #else
 XSetBackground(
 #endif
@@ -4926,7 +4926,7 @@ XSetBackground(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XSetClipMask(
+extern MagickExport XSetClipMask(
 #else
 XSetClipMask(
 #endif
@@ -4938,7 +4938,7 @@ XSetClipMask(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XSetClipOrigin(
+extern MagickExport XSetClipOrigin(
 #else
 XSetClipOrigin(
 #endif
@@ -4951,7 +4951,7 @@ XSetClipOrigin(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XSetClipRectangles(
+extern MagickExport XSetClipRectangles(
 #else
 XSetClipRectangles(
 #endif
@@ -4967,7 +4967,7 @@ XSetClipRectangles(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XSetCloseDownMode(
+extern MagickExport XSetCloseDownMode(
 #else
 XSetCloseDownMode(
 #endif
@@ -4978,7 +4978,7 @@ XSetCloseDownMode(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XSetCommand(
+extern MagickExport XSetCommand(
 #else
 XSetCommand(
 #endif
@@ -4991,7 +4991,7 @@ XSetCommand(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XSetDashes(
+extern MagickExport XSetDashes(
 #else
 XSetDashes(
 #endif
@@ -5005,7 +5005,7 @@ XSetDashes(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XSetFillRule(
+extern MagickExport XSetFillRule(
 #else
 XSetFillRule(
 #endif
@@ -5017,7 +5017,7 @@ XSetFillRule(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XSetFillStyle(
+extern MagickExport XSetFillStyle(
 #else
 XSetFillStyle(
 #endif
@@ -5029,7 +5029,7 @@ XSetFillStyle(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XSetFont(
+extern MagickExport XSetFont(
 #else
 XSetFont(
 #endif
@@ -5041,7 +5041,7 @@ XSetFont(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XSetFontPath(
+extern MagickExport XSetFontPath(
 #else
 XSetFontPath(
 #endif
@@ -5053,7 +5053,7 @@ XSetFontPath(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XSetForeground(
+extern MagickExport XSetForeground(
 #else
 XSetForeground(
 #endif
@@ -5065,7 +5065,7 @@ XSetForeground(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XSetFunction(
+extern MagickExport XSetFunction(
 #else
 XSetFunction(
 #endif
@@ -5077,7 +5077,7 @@ XSetFunction(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XSetGraphicsExposures(
+extern MagickExport XSetGraphicsExposures(
 #else
 XSetGraphicsExposures(
 #endif
@@ -5089,7 +5089,7 @@ XSetGraphicsExposures(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XSetIconName(
+extern MagickExport XSetIconName(
 #else
 XSetIconName(
 #endif
@@ -5101,7 +5101,7 @@ XSetIconName(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XSetInputFocus(
+extern MagickExport XSetInputFocus(
 #else
 XSetInputFocus(
 #endif
@@ -5114,7 +5114,7 @@ XSetInputFocus(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XSetLineAttributes(
+extern MagickExport XSetLineAttributes(
 #else
 XSetLineAttributes(
 #endif
@@ -5129,7 +5129,7 @@ XSetLineAttributes(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XSetModifierMapping(
+extern MagickExport int XSetModifierMapping(
 #else
 int XSetModifierMapping(
 #endif
@@ -5140,7 +5140,7 @@ int XSetModifierMapping(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XSetPlaneMask(
+extern MagickExport XSetPlaneMask(
 #else
 XSetPlaneMask(
 #endif
@@ -5152,7 +5152,7 @@ XSetPlaneMask(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XSetPointerMapping(
+extern MagickExport int XSetPointerMapping(
 #else
 int XSetPointerMapping(
 #endif
@@ -5164,7 +5164,7 @@ int XSetPointerMapping(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XSetScreenSaver(
+extern MagickExport XSetScreenSaver(
 #else
 XSetScreenSaver(
 #endif
@@ -5178,7 +5178,7 @@ XSetScreenSaver(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XSetSelectionOwner(
+extern MagickExport XSetSelectionOwner(
 #else
 XSetSelectionOwner(
 #endif
@@ -5191,7 +5191,7 @@ XSetSelectionOwner(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XSetState(
+extern MagickExport XSetState(
 #else
 XSetState(
 #endif
@@ -5206,7 +5206,7 @@ XSetState(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XSetStipple(
+extern MagickExport XSetStipple(
 #else
 XSetStipple(
 #endif
@@ -5218,7 +5218,7 @@ XSetStipple(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XSetSubwindowMode(
+extern MagickExport XSetSubwindowMode(
 #else
 XSetSubwindowMode(
 #endif
@@ -5230,7 +5230,7 @@ XSetSubwindowMode(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XSetTSOrigin(
+extern MagickExport XSetTSOrigin(
 #else
 XSetTSOrigin(
 #endif
@@ -5243,7 +5243,7 @@ XSetTSOrigin(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XSetTile(
+extern MagickExport XSetTile(
 #else
 XSetTile(
 #endif
@@ -5255,7 +5255,7 @@ XSetTile(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XSetWindowBackground(
+extern MagickExport XSetWindowBackground(
 #else
 XSetWindowBackground(
 #endif
@@ -5267,7 +5267,7 @@ XSetWindowBackground(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XSetWindowBackgroundPixmap(
+extern MagickExport XSetWindowBackgroundPixmap(
 #else
 XSetWindowBackgroundPixmap(
 #endif
@@ -5279,7 +5279,7 @@ XSetWindowBackgroundPixmap(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XSetWindowBorder(
+extern MagickExport XSetWindowBorder(
 #else
 XSetWindowBorder(
 #endif
@@ -5291,7 +5291,7 @@ XSetWindowBorder(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XSetWindowBorderPixmap(
+extern MagickExport XSetWindowBorderPixmap(
 #else
 XSetWindowBorderPixmap(
 #endif
@@ -5303,7 +5303,7 @@ XSetWindowBorderPixmap(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XSetWindowBorderWidth(
+extern MagickExport XSetWindowBorderWidth(
 #else
 XSetWindowBorderWidth(
 #endif
@@ -5315,7 +5315,7 @@ XSetWindowBorderWidth(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XSetWindowColormap(
+extern MagickExport XSetWindowColormap(
 #else
 XSetWindowColormap(
 #endif
@@ -5327,7 +5327,7 @@ XSetWindowColormap(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XStoreBuffer(
+extern MagickExport XStoreBuffer(
 #else
 XStoreBuffer(
 #endif
@@ -5340,7 +5340,7 @@ XStoreBuffer(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XStoreBytes(
+extern MagickExport XStoreBytes(
 #else
 XStoreBytes(
 #endif
@@ -5352,7 +5352,7 @@ XStoreBytes(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XStoreColor(
+extern MagickExport XStoreColor(
 #else
 XStoreColor(
 #endif
@@ -5364,7 +5364,7 @@ XStoreColor(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XStoreColors(
+extern MagickExport XStoreColors(
 #else
 XStoreColors(
 #endif
@@ -5377,7 +5377,7 @@ XStoreColors(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XStoreName(
+extern MagickExport XStoreName(
 #else
 XStoreName(
 #endif
@@ -5389,7 +5389,7 @@ XStoreName(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XStoreNamedColor(
+extern MagickExport XStoreNamedColor(
 #else
 XStoreNamedColor(
 #endif
@@ -5403,14 +5403,14 @@ XStoreNamedColor(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XSync(Display* a,Bool b)
+extern MagickExport XSync(Display* a,Bool b)
 #else
 XSync(Display* a,Bool b)
 #endif
 {}
 
 #if defined(_VISUALC_)
-extern Export XTextExtents(
+extern MagickExport XTextExtents(
 #else
 XTextExtents(
 #endif
@@ -5426,7 +5426,7 @@ XTextExtents(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XTextExtents16(
+extern MagickExport XTextExtents16(
 #else
 XTextExtents16(
 #endif
@@ -5442,7 +5442,7 @@ XTextExtents16(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XTextWidth(
+extern MagickExport int XTextWidth(
 #else
 int XTextWidth(
 #endif
@@ -5454,7 +5454,7 @@ int XTextWidth(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XTextWidth16(
+extern MagickExport int XTextWidth16(
 #else
 int XTextWidth16(
 #endif
@@ -5466,7 +5466,7 @@ int XTextWidth16(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Bool XTranslateCoordinates(
+extern MagickExport Bool XTranslateCoordinates(
 #else
 Bool XTranslateCoordinates(
 #endif
@@ -5483,7 +5483,7 @@ Bool XTranslateCoordinates(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XUndefineCursor(
+extern MagickExport XUndefineCursor(
 #else
 XUndefineCursor(
 #endif
@@ -5494,7 +5494,7 @@ XUndefineCursor(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XUngrabButton(
+extern MagickExport XUngrabButton(
 #else
 XUngrabButton(
 #endif
@@ -5507,7 +5507,7 @@ XUngrabButton(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XUngrabKey(
+extern MagickExport XUngrabKey(
 #else
 XUngrabKey(
 #endif
@@ -5520,7 +5520,7 @@ XUngrabKey(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XUngrabKeyboard(
+extern MagickExport XUngrabKeyboard(
 #else
 XUngrabKeyboard(
 #endif
@@ -5531,7 +5531,7 @@ XUngrabKeyboard(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XUngrabPointer(
+extern MagickExport XUngrabPointer(
 #else
 XUngrabPointer(
 #endif
@@ -5542,7 +5542,7 @@ XUngrabPointer(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XUngrabServer(
+extern MagickExport XUngrabServer(
 #else
 XUngrabServer(
 #endif
@@ -5552,7 +5552,7 @@ XUngrabServer(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XUninstallColormap(
+extern MagickExport XUninstallColormap(
 #else
 XUninstallColormap(
 #endif
@@ -5563,7 +5563,7 @@ XUninstallColormap(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XUnloadFont(
+extern MagickExport XUnloadFont(
 #else
 XUnloadFont(
 #endif
@@ -5574,7 +5574,7 @@ XUnloadFont(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XUnmapSubwindows(
+extern MagickExport XUnmapSubwindows(
 #else
 XUnmapSubwindows(
 #endif
@@ -5585,7 +5585,7 @@ XUnmapSubwindows(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XUnmapWindow(
+extern MagickExport XUnmapWindow(
 #else
 XUnmapWindow(
 #endif
@@ -5596,7 +5596,7 @@ XUnmapWindow(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XVendorRelease(
+extern MagickExport int XVendorRelease(
 #else
 int XVendorRelease(
 #endif
@@ -5606,7 +5606,7 @@ int XVendorRelease(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XWarpPointer(
+extern MagickExport XWarpPointer(
 #else
 XWarpPointer(
 #endif
@@ -5624,7 +5624,7 @@ XWarpPointer(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XWidthMMOfScreen(
+extern MagickExport int XWidthMMOfScreen(
 #else
 int XWidthMMOfScreen(
 #endif
@@ -5634,7 +5634,7 @@ int XWidthMMOfScreen(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XWidthOfScreen(
+extern MagickExport int XWidthOfScreen(
 #else
 int XWidthOfScreen(
 #endif
@@ -5644,7 +5644,7 @@ int XWidthOfScreen(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XWindowEvent(
+extern MagickExport XWindowEvent(
 #else
 XWindowEvent(
 #endif
@@ -5657,7 +5657,7 @@ XWindowEvent(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XWriteBitmapFile(
+extern MagickExport int XWriteBitmapFile(
 #else
 int XWriteBitmapFile(
 #endif
@@ -5673,7 +5673,7 @@ int XWriteBitmapFile(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Bool XSupportsLocale(
+extern MagickExport Bool XSupportsLocale(
 #else
 Bool XSupportsLocale(
 #endif
@@ -5683,7 +5683,7 @@ Bool XSupportsLocale(
 ){}
 
 #if defined(_VISUALC_)
-extern Export char *XSetLocaleModifiers(
+extern MagickExport char *XSetLocaleModifiers(
 #else
 char *XSetLocaleModifiers(
 #endif
@@ -5693,7 +5693,7 @@ char *XSetLocaleModifiers(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XOM XOpenOM(
+extern MagickExport XOM XOpenOM(
 #else
 XOM XOpenOM(
 #endif
@@ -5706,7 +5706,7 @@ XOM XOpenOM(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Status XCloseOM(
+extern MagickExport Status XCloseOM(
 #else
 Status XCloseOM(
 #endif
@@ -5716,7 +5716,7 @@ Status XCloseOM(
 ){}
 
 #if defined(_VISUALC_)
-extern Export char *XSetOMValues(
+extern MagickExport char *XSetOMValues(
 #else
 char *XSetOMValues(
 #endif
@@ -5727,7 +5727,7 @@ char *XSetOMValues(
 ){}
 
 #if defined(_VISUALC_)
-extern Export char *XGetOMValues(
+extern MagickExport char *XGetOMValues(
 #else
 char *XGetOMValues(
 #endif
@@ -5738,7 +5738,7 @@ char *XGetOMValues(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Display *XDisplayOfOM(
+extern MagickExport Display *XDisplayOfOM(
 #else
 Display *XDisplayOfOM(
 #endif
@@ -5748,7 +5748,7 @@ Display *XDisplayOfOM(
 ){}
 
 #if defined(_VISUALC_)
-extern Export char *XLocaleOfOM(
+extern MagickExport char *XLocaleOfOM(
 #else
 char *XLocaleOfOM(
 #endif
@@ -5758,7 +5758,7 @@ char *XLocaleOfOM(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XOC XCreateOC(
+extern MagickExport XOC XCreateOC(
 #else
 XOC XCreateOC(
 #endif
@@ -5769,7 +5769,7 @@ XOC XCreateOC(
 ){}
 
 #if defined(_VISUALC_)
-extern Export void XDestroyOC(
+extern MagickExport void XDestroyOC(
 #else
 void XDestroyOC(
 #endif
@@ -5779,7 +5779,7 @@ void XDestroyOC(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XOM XOMOfOC(
+extern MagickExport XOM XOMOfOC(
 #else
 XOM XOMOfOC(
 #endif
@@ -5789,7 +5789,7 @@ XOM XOMOfOC(
 ){}
 
 #if defined(_VISUALC_)
-extern Export char *XSetOCValues(
+extern MagickExport char *XSetOCValues(
 #else
 char *XSetOCValues(
 #endif
@@ -5800,7 +5800,7 @@ char *XSetOCValues(
 ){}
 
 #if defined(_VISUALC_)
-extern Export char *XGetOCValues(
+extern MagickExport char *XGetOCValues(
 #else
 char *XGetOCValues(
 #endif
@@ -5811,7 +5811,7 @@ char *XGetOCValues(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XFontSet XCreateFontSet(
+extern MagickExport XFontSet XCreateFontSet(
 #else
 XFontSet XCreateFontSet(
 #endif
@@ -5825,7 +5825,7 @@ XFontSet XCreateFontSet(
 ){}
 
 #if defined(_VISUALC_)
-extern Export void XFreeFontSet(
+extern MagickExport void XFreeFontSet(
 #else
 void XFreeFontSet(
 #endif
@@ -5836,7 +5836,7 @@ void XFreeFontSet(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XFontsOfFontSet(
+extern MagickExport int XFontsOfFontSet(
 #else
 int XFontsOfFontSet(
 #endif
@@ -5848,7 +5848,7 @@ int XFontsOfFontSet(
 ){}
 
 #if defined(_VISUALC_)
-extern Export char *XBaseFontNameListOfFontSet(
+extern MagickExport char *XBaseFontNameListOfFontSet(
 #else
 char *XBaseFontNameListOfFontSet(
 #endif
@@ -5858,7 +5858,7 @@ char *XBaseFontNameListOfFontSet(
 ){}
 
 #if defined(_VISUALC_)
-extern Export char *XLocaleOfFontSet(
+extern MagickExport char *XLocaleOfFontSet(
 #else
 char *XLocaleOfFontSet(
 #endif
@@ -5868,7 +5868,7 @@ char *XLocaleOfFontSet(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Bool XContextDependentDrawing(
+extern MagickExport Bool XContextDependentDrawing(
 #else
 Bool XContextDependentDrawing(
 #endif
@@ -5878,7 +5878,7 @@ Bool XContextDependentDrawing(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Bool XDirectionalDependentDrawing(
+extern MagickExport Bool XDirectionalDependentDrawing(
 #else
 Bool XDirectionalDependentDrawing(
 #endif
@@ -5888,7 +5888,7 @@ Bool XDirectionalDependentDrawing(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Bool XContextualDrawing(
+extern MagickExport Bool XContextualDrawing(
 #else
 Bool XContextualDrawing(
 #endif
@@ -5898,7 +5898,7 @@ Bool XContextualDrawing(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XFontSetExtents *XExtentsOfFontSet(
+extern MagickExport XFontSetExtents *XExtentsOfFontSet(
 #else
 XFontSetExtents *XExtentsOfFontSet(
 #endif
@@ -5908,7 +5908,7 @@ XFontSetExtents *XExtentsOfFontSet(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XmbTextEscapement(
+extern MagickExport int XmbTextEscapement(
 #else
 int XmbTextEscapement(
 #endif
@@ -5920,7 +5920,7 @@ int XmbTextEscapement(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XwcTextEscapement(
+extern MagickExport int XwcTextEscapement(
 #else
 int XwcTextEscapement(
 #endif
@@ -5932,7 +5932,7 @@ int XwcTextEscapement(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XmbTextExtents(
+extern MagickExport int XmbTextExtents(
 #else
 int XmbTextExtents(
 #endif
@@ -5946,7 +5946,7 @@ int XmbTextExtents(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XwcTextExtents(
+extern MagickExport int XwcTextExtents(
 #else
 int XwcTextExtents(
 #endif
@@ -5960,7 +5960,7 @@ int XwcTextExtents(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Status XmbTextPerCharExtents(
+extern MagickExport Status XmbTextPerCharExtents(
 #else
 Status XmbTextPerCharExtents(
 #endif
@@ -5978,7 +5978,7 @@ Status XmbTextPerCharExtents(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Status XwcTextPerCharExtents(
+extern MagickExport Status XwcTextPerCharExtents(
 #else
 Status XwcTextPerCharExtents(
 #endif
@@ -5996,7 +5996,7 @@ Status XwcTextPerCharExtents(
 ){}
 
 #if defined(_VISUALC_)
-extern Export void XmbDrawText(
+extern MagickExport void XmbDrawText(
 #else
 void XmbDrawText(
 #endif
@@ -6012,7 +6012,7 @@ void XmbDrawText(
 ){}
 
 #if defined(_VISUALC_)
-extern Export void XwcDrawText(
+extern MagickExport void XwcDrawText(
 #else
 void XwcDrawText(
 #endif
@@ -6028,7 +6028,7 @@ void XwcDrawText(
 ){}
 
 #if defined(_VISUALC_)
-extern Export void XmbDrawString(
+extern MagickExport void XmbDrawString(
 #else
 void XmbDrawString(
 #endif
@@ -6045,7 +6045,7 @@ void XmbDrawString(
 ){}
 
 #if defined(_VISUALC_)
-extern Export void XwcDrawString(
+extern MagickExport void XwcDrawString(
 #else
 void XwcDrawString(
 #endif
@@ -6062,7 +6062,7 @@ void XwcDrawString(
 ){}
 
 #if defined(_VISUALC_)
-extern Export void XmbDrawImageString(
+extern MagickExport void XmbDrawImageString(
 #else
 void XmbDrawImageString(
 #endif
@@ -6079,7 +6079,7 @@ void XmbDrawImageString(
 ){}
 
 #if defined(_VISUALC_)
-extern Export void XwcDrawImageString(
+extern MagickExport void XwcDrawImageString(
 #else
 void XwcDrawImageString(
 #endif
@@ -6096,7 +6096,7 @@ void XwcDrawImageString(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XIM XOpenIM(
+extern MagickExport XIM XOpenIM(
 #else
 XIM XOpenIM(
 #endif
@@ -6109,7 +6109,7 @@ XIM XOpenIM(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Status XCloseIM(
+extern MagickExport Status XCloseIM(
 #else
 Status XCloseIM(
 #endif
@@ -6119,7 +6119,7 @@ Status XCloseIM(
 ){}
 
 #if defined(_VISUALC_)
-extern Export char *XGetIMValues(
+extern MagickExport char *XGetIMValues(
 #else
 char *XGetIMValues(
 #endif
@@ -6129,7 +6129,7 @@ char *XGetIMValues(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Display *XDisplayOfIM(
+extern MagickExport Display *XDisplayOfIM(
 #else
 Display *XDisplayOfIM(
 #endif
@@ -6139,7 +6139,7 @@ Display *XDisplayOfIM(
 ){}
 
 #if defined(_VISUALC_)
-extern Export char *XLocaleOfIM(
+extern MagickExport char *XLocaleOfIM(
 #else
 char *XLocaleOfIM(
 #endif
@@ -6149,7 +6149,7 @@ char *XLocaleOfIM(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XIC XCreateIC(
+extern MagickExport XIC XCreateIC(
 #else
 XIC XCreateIC(
 #endif
@@ -6159,7 +6159,7 @@ XIC XCreateIC(
 ){}
 
 #if defined(_VISUALC_)
-extern Export void XDestroyIC(
+extern MagickExport void XDestroyIC(
 #else
 void XDestroyIC(
 #endif
@@ -6169,7 +6169,7 @@ void XDestroyIC(
 ){}
 
 #if defined(_VISUALC_)
-extern Export void XSetICFocus(
+extern MagickExport void XSetICFocus(
 #else
 void XSetICFocus(
 #endif
@@ -6179,7 +6179,7 @@ void XSetICFocus(
 ){}
 
 #if defined(_VISUALC_)
-extern Export void XUnsetICFocus(
+extern MagickExport void XUnsetICFocus(
 #else
 void XUnsetICFocus(
 #endif
@@ -6189,7 +6189,7 @@ void XUnsetICFocus(
 ){}
 
 #if defined(_VISUALC_)
-extern Export wchar_t *XwcResetIC(
+extern MagickExport wchar_t *XwcResetIC(
 #else
 wchar_t *XwcResetIC(
 #endif
@@ -6199,7 +6199,7 @@ wchar_t *XwcResetIC(
 ){}
 
 #if defined(_VISUALC_)
-extern Export char *XmbResetIC(
+extern MagickExport char *XmbResetIC(
 #else
 char *XmbResetIC(
 #endif
@@ -6209,7 +6209,7 @@ char *XmbResetIC(
 ){}
 
 #if defined(_VISUALC_)
-extern Export char *XSetICValues(
+extern MagickExport char *XSetICValues(
 #else
 char *XSetICValues(
 #endif
@@ -6219,7 +6219,7 @@ char *XSetICValues(
 ){}
 
 #if defined(_VISUALC_)
-extern Export char *XGetICValues(
+extern MagickExport char *XGetICValues(
 #else
 char *XGetICValues(
 #endif
@@ -6229,7 +6229,7 @@ char *XGetICValues(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XIM XIMOfIC(
+extern MagickExport XIM XIMOfIC(
 #else
 XIM XIMOfIC(
 #endif
@@ -6239,7 +6239,7 @@ XIM XIMOfIC(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Bool XFilterEvent(
+extern MagickExport Bool XFilterEvent(
 #else
 Bool XFilterEvent(
 #endif
@@ -6250,7 +6250,7 @@ Bool XFilterEvent(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XmbLookupString(
+extern MagickExport int XmbLookupString(
 #else
 int XmbLookupString(
 #endif
@@ -6265,7 +6265,7 @@ int XmbLookupString(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XwcLookupString(
+extern MagickExport int XwcLookupString(
 #else
 int XwcLookupString(
 #endif
@@ -6280,7 +6280,7 @@ int XwcLookupString(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XVaNestedList XVaCreateNestedList(
+extern MagickExport XVaNestedList XVaCreateNestedList(
 #else
 XVaNestedList XVaCreateNestedList(
 #endif
@@ -6292,7 +6292,7 @@ XVaNestedList XVaCreateNestedList(
 /* internal connections for IMs */
 
 #if defined(_VISUALC_)
-extern Export Bool XRegisterIMInstantiateCallback(
+extern MagickExport Bool XRegisterIMInstantiateCallback(
 #else
 Bool XRegisterIMInstantiateCallback(
 #endif
@@ -6307,7 +6307,7 @@ Bool XRegisterIMInstantiateCallback(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Bool XUnregisterIMInstantiateCallback(
+extern MagickExport Bool XUnregisterIMInstantiateCallback(
 #else
 Bool XUnregisterIMInstantiateCallback(
 #endif
@@ -6333,7 +6333,7 @@ typedef void (*XConnectionWatchProc)(
     
 
 #if defined(_VISUALC_)
-extern Export Status XInternalConnectionNumbers(
+extern MagickExport Status XInternalConnectionNumbers(
 #else
 Status XInternalConnectionNumbers(
 #endif
@@ -6345,7 +6345,7 @@ Status XInternalConnectionNumbers(
 ){}
 
 #if defined(_VISUALC_)
-extern Export void XProcessInternalConnection(
+extern MagickExport void XProcessInternalConnection(
 #else
 void XProcessInternalConnection(
 #endif
@@ -6356,7 +6356,7 @@ void XProcessInternalConnection(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Status XAddConnectionWatch(
+extern MagickExport Status XAddConnectionWatch(
 #else
 Status XAddConnectionWatch(
 #endif
@@ -6368,7 +6368,7 @@ Status XAddConnectionWatch(
 ){}
 
 #if defined(_VISUALC_)
-extern Export void XRemoveConnectionWatch(
+extern MagickExport void XRemoveConnectionWatch(
 #else
 void XRemoveConnectionWatch(
 #endif
@@ -6653,7 +6653,7 @@ typedef int XContext;
 /* The following declarations are alphabetized. */
 
 #if defined(_VISUALC_)
-extern Export XClassHint *XAllocClassHint (
+extern MagickExport XClassHint *XAllocClassHint (
 #else
 XClassHint *XAllocClassHint (
 #endif
@@ -6663,7 +6663,7 @@ XClassHint *XAllocClassHint (
 ){}
 
 #if defined(_VISUALC_)
-extern Export XIconSize *XAllocIconSize (
+extern MagickExport XIconSize *XAllocIconSize (
 #else
 XIconSize *XAllocIconSize (
 #endif
@@ -6673,7 +6673,7 @@ XIconSize *XAllocIconSize (
 ){}
 
 #if defined(_VISUALC_)
-extern Export XSizeHints *XAllocSizeHints (
+extern MagickExport XSizeHints *XAllocSizeHints (
 #else
 XSizeHints *XAllocSizeHints (
 #endif
@@ -6683,7 +6683,7 @@ XSizeHints *XAllocSizeHints (
 ){}
 
 #if defined(_VISUALC_)
-extern Export XStandardColormap *XAllocStandardColormap (
+extern MagickExport XStandardColormap *XAllocStandardColormap (
 #else
 XStandardColormap *XAllocStandardColormap (
 #endif
@@ -6693,7 +6693,7 @@ XStandardColormap *XAllocStandardColormap (
 ){}
 
 #if defined(_VISUALC_)
-extern Export XWMHints *XAllocWMHints (
+extern MagickExport XWMHints *XAllocWMHints (
 #else
 XWMHints *XAllocWMHints (
 #endif
@@ -6703,7 +6703,7 @@ XWMHints *XAllocWMHints (
 ){}
 
 #if defined(_VISUALC_)
-extern Export XClipBox(
+extern MagickExport XClipBox(
 #else
 XClipBox(
 #endif
@@ -6714,7 +6714,7 @@ XClipBox(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Region XCreateRegion(
+extern MagickExport Region XCreateRegion(
 #else
 Region XCreateRegion(
 #endif
@@ -6724,7 +6724,7 @@ Region XCreateRegion(
 ){}
 
 #if defined(_VISUALC_)
-extern Export char *XDefaultString(
+extern MagickExport char *XDefaultString(
 #else
 char *XDefaultString(
 #endif
@@ -6734,7 +6734,7 @@ char *XDefaultString(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XDeleteContext(
+extern MagickExport int XDeleteContext(
 #else
 int XDeleteContext(
 #endif
@@ -6746,7 +6746,7 @@ int XDeleteContext(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XDestroyRegion(
+extern MagickExport XDestroyRegion(
 #else
 XDestroyRegion(
 #endif
@@ -6756,7 +6756,7 @@ XDestroyRegion(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XEmptyRegion(
+extern MagickExport XEmptyRegion(
 #else
 XEmptyRegion(
 #endif
@@ -6766,7 +6766,7 @@ XEmptyRegion(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XEqualRegion(
+extern MagickExport XEqualRegion(
 #else
 XEqualRegion(
 #endif
@@ -6777,7 +6777,7 @@ XEqualRegion(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XFindContext(
+extern MagickExport int XFindContext(
 #else
 int XFindContext(
 #endif
@@ -6790,7 +6790,7 @@ int XFindContext(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Status XGetClassHint(
+extern MagickExport Status XGetClassHint(
 #else
 Status XGetClassHint(
 #endif
@@ -6802,7 +6802,7 @@ Status XGetClassHint(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Status XGetIconSizes(
+extern MagickExport Status XGetIconSizes(
 #else
 Status XGetIconSizes(
 #endif
@@ -6815,7 +6815,7 @@ Status XGetIconSizes(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Status XGetNormalHints(
+extern MagickExport Status XGetNormalHints(
 #else
 Status XGetNormalHints(
 #endif
@@ -6827,7 +6827,7 @@ Status XGetNormalHints(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Status XGetRGBColormaps(
+extern MagickExport Status XGetRGBColormaps(
 #else
 Status XGetRGBColormaps(
 #endif
@@ -6841,7 +6841,7 @@ Status XGetRGBColormaps(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Status XGetSizeHints(
+extern MagickExport Status XGetSizeHints(
 #else
 Status XGetSizeHints(
 #endif
@@ -6854,7 +6854,7 @@ Status XGetSizeHints(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Status XGetStandardColormap(
+extern MagickExport Status XGetStandardColormap(
 #else
 Status XGetStandardColormap(
 #endif
@@ -6867,7 +6867,7 @@ Status XGetStandardColormap(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Status XGetTextProperty(
+extern MagickExport Status XGetTextProperty(
 #else
 Status XGetTextProperty(
 #endif
@@ -6880,7 +6880,7 @@ Status XGetTextProperty(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XVisualInfo *XGetVisualInfo(
+extern MagickExport XVisualInfo *XGetVisualInfo(
 #else
 XVisualInfo *XGetVisualInfo(
 #endif
@@ -6893,7 +6893,7 @@ XVisualInfo *XGetVisualInfo(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Status XGetWMClientMachine(
+extern MagickExport Status XGetWMClientMachine(
 #else
 Status XGetWMClientMachine(
 #endif
@@ -6905,7 +6905,7 @@ Status XGetWMClientMachine(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XWMHints *XGetWMHints(
+extern MagickExport XWMHints *XGetWMHints(
 #else
 XWMHints *XGetWMHints(
 #endif
@@ -6916,7 +6916,7 @@ XWMHints *XGetWMHints(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Status XGetWMIconName(
+extern MagickExport Status XGetWMIconName(
 #else
 Status XGetWMIconName(
 #endif
@@ -6928,7 +6928,7 @@ Status XGetWMIconName(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Status XGetWMName(
+extern MagickExport Status XGetWMName(
 #else
 Status XGetWMName(
 #endif
@@ -6940,7 +6940,7 @@ Status XGetWMName(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Status XGetWMNormalHints(
+extern MagickExport Status XGetWMNormalHints(
 #else
 Status XGetWMNormalHints(
 #endif
@@ -6953,7 +6953,7 @@ Status XGetWMNormalHints(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Status XGetWMSizeHints(
+extern MagickExport Status XGetWMSizeHints(
 #else
 Status XGetWMSizeHints(
 #endif
@@ -6967,7 +6967,7 @@ Status XGetWMSizeHints(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Status XGetZoomHints(
+extern MagickExport Status XGetZoomHints(
 #else
 Status XGetZoomHints(
 #endif
@@ -6979,7 +6979,7 @@ Status XGetZoomHints(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XIntersectRegion(
+extern MagickExport XIntersectRegion(
 #else
 XIntersectRegion(
 #endif
@@ -6991,7 +6991,7 @@ XIntersectRegion(
 ){}
 
 #if defined(_VISUALC_)
-extern Export void XConvertCase(
+extern MagickExport void XConvertCase(
 #else
 void XConvertCase(
 #endif
@@ -7003,7 +7003,7 @@ void XConvertCase(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XLookupString(
+extern MagickExport int XLookupString(
 #else
 int XLookupString(
 #endif
@@ -7017,7 +7017,7 @@ int XLookupString(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Status XMatchVisualInfo(
+extern MagickExport Status XMatchVisualInfo(
 #else
 Status XMatchVisualInfo(
 #endif
@@ -7031,7 +7031,7 @@ Status XMatchVisualInfo(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XOffsetRegion(
+extern MagickExport XOffsetRegion(
 #else
 XOffsetRegion(
 #endif
@@ -7043,7 +7043,7 @@ XOffsetRegion(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Bool XPointInRegion(
+extern MagickExport Bool XPointInRegion(
 #else
 Bool XPointInRegion(
 #endif
@@ -7055,7 +7055,7 @@ Bool XPointInRegion(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Region XPolygonRegion(
+extern MagickExport Region XPolygonRegion(
 #else
 Region XPolygonRegion(
 #endif
@@ -7067,7 +7067,7 @@ Region XPolygonRegion(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XRectInRegion(
+extern MagickExport int XRectInRegion(
 #else
 int XRectInRegion(
 #endif
@@ -7081,7 +7081,7 @@ int XRectInRegion(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XSaveContext(
+extern MagickExport int XSaveContext(
 #else
 int XSaveContext(
 #endif
@@ -7094,7 +7094,7 @@ int XSaveContext(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XSetClassHint(
+extern MagickExport XSetClassHint(
 #else
 XSetClassHint(
 #endif
@@ -7106,7 +7106,7 @@ XSetClassHint(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XSetIconSizes(
+extern MagickExport XSetIconSizes(
 #else
 XSetIconSizes(
 #endif
@@ -7119,7 +7119,7 @@ XSetIconSizes(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XSetNormalHints(
+extern MagickExport XSetNormalHints(
 #else
 XSetNormalHints(
 #endif
@@ -7131,7 +7131,7 @@ XSetNormalHints(
 ){}
 
 #if defined(_VISUALC_)
-extern Export void XSetRGBColormaps(
+extern MagickExport void XSetRGBColormaps(
 #else
 void XSetRGBColormaps(
 #endif
@@ -7145,7 +7145,7 @@ void XSetRGBColormaps(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XSetSizeHints(
+extern MagickExport XSetSizeHints(
 #else
 XSetSizeHints(
 #endif
@@ -7158,7 +7158,7 @@ XSetSizeHints(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XSetStandardProperties(
+extern MagickExport XSetStandardProperties(
 #else
 XSetStandardProperties(
 #endif
@@ -7175,7 +7175,7 @@ XSetStandardProperties(
 ){}
 
 #if defined(_VISUALC_)
-extern Export void XSetTextProperty(
+extern MagickExport void XSetTextProperty(
 #else
 void XSetTextProperty(
 #endif
@@ -7188,7 +7188,7 @@ void XSetTextProperty(
 ){}
 
 #if defined(_VISUALC_)
-extern Export void XSetWMClientMachine(
+extern MagickExport void XSetWMClientMachine(
 #else
 void XSetWMClientMachine(
 #endif
@@ -7200,7 +7200,7 @@ void XSetWMClientMachine(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XSetWMHints(
+extern MagickExport XSetWMHints(
 #else
 XSetWMHints(
 #endif
@@ -7212,7 +7212,7 @@ XSetWMHints(
 ){}
 
 #if defined(_VISUALC_)
-extern Export void XSetWMIconName(
+extern MagickExport void XSetWMIconName(
 #else
 void XSetWMIconName(
 #endif
@@ -7224,7 +7224,7 @@ void XSetWMIconName(
 ){}
 
 #if defined(_VISUALC_)
-extern Export void XSetWMName(
+extern MagickExport void XSetWMName(
 #else
 void XSetWMName(
 #endif
@@ -7236,7 +7236,7 @@ void XSetWMName(
 ){}
 
 #if defined(_VISUALC_)
-extern Export void XSetWMNormalHints(
+extern MagickExport void XSetWMNormalHints(
 #else
 void XSetWMNormalHints(
 #endif
@@ -7248,7 +7248,7 @@ void XSetWMNormalHints(
 ){}
 
 #if defined(_VISUALC_)
-extern Export void XSetWMProperties(
+extern MagickExport void XSetWMProperties(
 #else
 void XSetWMProperties(
 #endif
@@ -7266,7 +7266,7 @@ void XSetWMProperties(
 ){}
 
 #if defined(_VISUALC_)
-extern Export void XmbSetWMProperties(
+extern MagickExport void XmbSetWMProperties(
 #else
 void XmbSetWMProperties(
 #endif
@@ -7284,7 +7284,7 @@ void XmbSetWMProperties(
 ){}
 
 #if defined(_VISUALC_)
-extern Export void XSetWMSizeHints(
+extern MagickExport void XSetWMSizeHints(
 #else
 void XSetWMSizeHints(
 #endif
@@ -7297,7 +7297,7 @@ void XSetWMSizeHints(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XSetRegion(
+extern MagickExport XSetRegion(
 #else
 XSetRegion(
 #endif
@@ -7309,7 +7309,7 @@ XSetRegion(
 ){}
 
 #if defined(_VISUALC_)
-extern Export void XSetStandardColormap(
+extern MagickExport void XSetStandardColormap(
 #else
 void XSetStandardColormap(
 #endif
@@ -7322,7 +7322,7 @@ void XSetStandardColormap(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XSetZoomHints(
+extern MagickExport XSetZoomHints(
 #else
 XSetZoomHints(
 #endif
@@ -7334,7 +7334,7 @@ XSetZoomHints(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XShrinkRegion(
+extern MagickExport XShrinkRegion(
 #else
 XShrinkRegion(
 #endif
@@ -7346,7 +7346,7 @@ XShrinkRegion(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Status XStringListToTextProperty(
+extern MagickExport Status XStringListToTextProperty(
 #else
 Status XStringListToTextProperty(
 #endif
@@ -7358,7 +7358,7 @@ Status XStringListToTextProperty(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XSubtractRegion(
+extern MagickExport XSubtractRegion(
 #else
 XSubtractRegion(
 #endif
@@ -7370,7 +7370,7 @@ XSubtractRegion(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XmbTextListToTextProperty(
+extern MagickExport int XmbTextListToTextProperty(
 #else
 int XmbTextListToTextProperty(
 #endif
@@ -7384,7 +7384,7 @@ int XmbTextListToTextProperty(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XwcTextListToTextProperty(
+extern MagickExport int XwcTextListToTextProperty(
 #else
 int XwcTextListToTextProperty(
 #endif
@@ -7398,7 +7398,7 @@ int XwcTextListToTextProperty(
 ){}
 
 #if defined(_VISUALC_)
-extern Export void XwcFreeStringList(
+extern MagickExport void XwcFreeStringList(
 #else
 void XwcFreeStringList(
 #endif
@@ -7408,7 +7408,7 @@ void XwcFreeStringList(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Status XTextPropertyToStringList(
+extern MagickExport Status XTextPropertyToStringList(
 #else
 Status XTextPropertyToStringList(
 #endif
@@ -7420,7 +7420,7 @@ Status XTextPropertyToStringList(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XmbTextPropertyToTextList(
+extern MagickExport int XmbTextPropertyToTextList(
 #else
 int XmbTextPropertyToTextList(
 #endif
@@ -7433,7 +7433,7 @@ int XmbTextPropertyToTextList(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XwcTextPropertyToTextList(
+extern MagickExport int XwcTextPropertyToTextList(
 #else
 int XwcTextPropertyToTextList(
 #endif
@@ -7446,7 +7446,7 @@ int XwcTextPropertyToTextList(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XUnionRectWithRegion(
+extern MagickExport XUnionRectWithRegion(
 #else
 XUnionRectWithRegion(
 #endif
@@ -7458,7 +7458,7 @@ XUnionRectWithRegion(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XUnionRegion(
+extern MagickExport XUnionRegion(
 #else
 XUnionRegion(
 #endif
@@ -7470,7 +7470,7 @@ XUnionRegion(
 ){}
 
 #if defined(_VISUALC_)
-extern Export int XWMGeometry(
+extern MagickExport int XWMGeometry(
 #else
 int XWMGeometry(
 #endif
@@ -7490,7 +7490,7 @@ int XWMGeometry(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XXorRegion(
+extern MagickExport XXorRegion(
 #else
 XXorRegion(
 #endif
@@ -7522,7 +7522,7 @@ _XFUNCPROTOBEGIN
  ****************************************************************/
 
 #if defined(_VISUALC_)
-extern Export char *Xpermalloc(
+extern MagickExport char *Xpermalloc(
 #else
 char *Xpermalloc(
 #endif
@@ -7545,7 +7545,7 @@ typedef char *XrmString;
 
 /* find quark for string, create new quark if none already exists */
 #if defined(_VISUALC_)
-extern Export XrmQuark XrmStringToQuark(
+extern MagickExport XrmQuark XrmStringToQuark(
 #else
 XrmQuark XrmStringToQuark(
 #endif
@@ -7555,7 +7555,7 @@ XrmQuark XrmStringToQuark(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XrmQuark XrmPermStringToQuark(
+extern MagickExport XrmQuark XrmPermStringToQuark(
 #else
 XrmQuark XrmPermStringToQuark(
 #endif
@@ -7566,7 +7566,7 @@ XrmQuark XrmPermStringToQuark(
 
 /* find string for quark */
 #if defined(_VISUALC_)
-extern Export XrmString XrmQuarkToString(
+extern MagickExport XrmString XrmQuarkToString(
 #else
 XrmString XrmQuarkToString(
 #endif
@@ -7576,7 +7576,7 @@ XrmString XrmQuarkToString(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XrmQuark XrmUniqueQuark(
+extern MagickExport XrmQuark XrmUniqueQuark(
 #else
 XrmQuark XrmUniqueQuark(
 #endif
@@ -7597,7 +7597,7 @@ XrmQuark XrmUniqueQuark(
 typedef enum {XrmBindTightly, XrmBindLoosely} XrmBinding, *XrmBindingList;
 
 #if defined(_VISUALC_)
-extern Export void XrmStringToQuarkList(
+extern MagickExport void XrmStringToQuarkList(
 #else
 void XrmStringToQuarkList(
 #endif
@@ -7608,7 +7608,7 @@ void XrmStringToQuarkList(
 ){}
 
 #if defined(_VISUALC_)
-extern Export void XrmStringToBindingQuarkList(
+extern MagickExport void XrmStringToBindingQuarkList(
 #else
 void XrmStringToBindingQuarkList(
 #endif
@@ -7668,7 +7668,7 @@ typedef struct _XrmHashBucketRec *XrmDatabase;
 
 
 #if defined(_VISUALC_)
-extern Export void XrmDestroyDatabase(
+extern MagickExport void XrmDestroyDatabase(
 #else
 void XrmDestroyDatabase(
 #endif
@@ -7678,7 +7678,7 @@ void XrmDestroyDatabase(
 ){}
 
 #if defined(_VISUALC_)
-extern Export void XrmQPutResource(
+extern MagickExport void XrmQPutResource(
 #else
 void XrmQPutResource(
 #endif
@@ -7692,7 +7692,7 @@ void XrmQPutResource(
 ){}
 
 #if defined(_VISUALC_)
-extern Export void XrmPutResource(
+extern MagickExport void XrmPutResource(
 #else
 void XrmPutResource(
 #endif
@@ -7705,7 +7705,7 @@ void XrmPutResource(
 ){}
 
 #if defined(_VISUALC_)
-extern Export void XrmQPutStringResource(
+extern MagickExport void XrmQPutStringResource(
 #else
 void XrmQPutStringResource(
 #endif
@@ -7718,7 +7718,7 @@ void XrmQPutStringResource(
 ){}
 
 #if defined(_VISUALC_)
-extern Export void XrmPutStringResource(
+extern MagickExport void XrmPutStringResource(
 #else
 void XrmPutStringResource(
 #endif
@@ -7730,7 +7730,7 @@ void XrmPutStringResource(
 ){}
 
 #if defined(_VISUALC_)
-extern Export void XrmPutLineResource(
+extern MagickExport void XrmPutLineResource(
 #else
 void XrmPutLineResource(
 #endif
@@ -7741,7 +7741,7 @@ void XrmPutLineResource(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XrmQGetResource(
+extern MagickExport XrmQGetResource(
 #else
 XrmQGetResource(
 #endif
@@ -7755,7 +7755,7 @@ XrmQGetResource(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Bool XrmGetResource(
+extern MagickExport Bool XrmGetResource(
 #else
 Bool XrmGetResource(
 #endif
@@ -7772,7 +7772,7 @@ Bool XrmGetResource(
 }
 
 #if defined(_VISUALC_)
-extern Export Bool XrmQGetSearchList(
+extern MagickExport Bool XrmQGetSearchList(
 #else
 Bool XrmQGetSearchList(
 #endif
@@ -7786,7 +7786,7 @@ Bool XrmQGetSearchList(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Bool XrmQGetSearchResource(
+extern MagickExport Bool XrmQGetSearchResource(
 #else
 Bool XrmQGetSearchResource(
 #endif
@@ -7806,7 +7806,7 @@ Bool XrmQGetSearchResource(
  ****************************************************************/
 
 #if defined(_VISUALC_)
-extern Export void XrmSetDatabase(
+extern MagickExport void XrmSetDatabase(
 #else
 void XrmSetDatabase(
 #endif
@@ -7817,7 +7817,7 @@ void XrmSetDatabase(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XrmDatabase XrmGetDatabase(
+extern MagickExport XrmDatabase XrmGetDatabase(
 #else
 XrmDatabase XrmGetDatabase(
 #endif
@@ -7827,7 +7827,7 @@ XrmDatabase XrmGetDatabase(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XrmDatabase XrmGetFileDatabase(
+extern MagickExport XrmDatabase XrmGetFileDatabase(
 #else
 XrmDatabase XrmGetFileDatabase(
 #endif
@@ -7837,7 +7837,7 @@ XrmDatabase XrmGetFileDatabase(
 ){}
 
 #if defined(_VISUALC_)
-extern Export Status XrmCombineFileDatabase(
+extern MagickExport Status XrmCombineFileDatabase(
 #else
 Status XrmCombineFileDatabase(
 #endif
@@ -7849,7 +7849,7 @@ Status XrmCombineFileDatabase(
 ){}
 
 #if defined(_VISUALC_)
-extern Export XrmDatabase XrmGetStringDatabase(
+extern MagickExport XrmDatabase XrmGetStringDatabase(
 #else
 XrmDatabase XrmGetStringDatabase(
 #endif
@@ -7859,7 +7859,7 @@ XrmDatabase XrmGetStringDatabase(
 ){}
 
 #if defined(_VISUALC_)
-extern Export void XrmPutFileDatabase(
+extern MagickExport void XrmPutFileDatabase(
 #else
 void XrmPutFileDatabase(
 #endif
@@ -7870,7 +7870,7 @@ void XrmPutFileDatabase(
 ){}
 
 #if defined(_VISUALC_)
-extern Export void XrmMergeDatabases(
+extern MagickExport void XrmMergeDatabases(
 #else
 void XrmMergeDatabases(
 #endif
@@ -7881,7 +7881,7 @@ void XrmMergeDatabases(
 ){}
 
 #if defined(_VISUALC_)
-extern Export void XrmCombineDatabase(
+extern MagickExport void XrmCombineDatabase(
 #else
 void XrmCombineDatabase(
 #endif
@@ -7896,7 +7896,7 @@ void XrmCombineDatabase(
 #define XrmEnumOneLevel  1
 
 #if defined(_VISUALC_)
-extern Export Bool XrmEnumerateDatabase(
+extern MagickExport Bool XrmEnumerateDatabase(
 #else
 Bool XrmEnumerateDatabase(
 #endif
@@ -7920,7 +7920,7 @@ Bool XrmEnumerateDatabase(
 ){}
 
 #if defined(_VISUALC_)
-extern Export char *XrmLocaleOfDatabase(
+extern MagickExport char *XrmLocaleOfDatabase(
 #else
 char *XrmLocaleOfDatabase(
 #endif
@@ -7957,7 +7957,7 @@ typedef struct {
 
 
 #if defined(_VISUALC_)
-extern Export void XrmParseCommand(
+extern MagickExport void XrmParseCommand(
 #else
 void XrmParseCommand(
 #endif

@@ -1494,7 +1494,7 @@ extern char *XGetDefault(
     _Xconst char*	/* option */		  
 #endif
 );
-extern Export char *XDisplayName(
+extern MagickExport char *XDisplayName(
 #if NeedFunctionPrototypes
     _Xconst char*	/* string */
 #endif
