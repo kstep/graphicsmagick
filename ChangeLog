@@ -1,3 +1,8 @@
+2003-12-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Search for the shmctl() function.  Under current
+	Cygwin, this is hiding in -lcygipc.
+
 2003-12-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* Makefile.am (uninstall-data-html): Pathnames were not computed

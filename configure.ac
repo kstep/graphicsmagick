@@ -1036,10 +1036,26 @@ then
 
   AC_DEFINE(HasX11,1,Define if you have X11 library)dnl
 
-  AC_CHECK_LIB(Xext,XShmAttach,LIB_XEXT='-lXext',,)
-  AC_CHECK_LIB(Xext,XShmAttach,AC_DEFINE(HasSharedMemory,1,X11 server supports shared memory extension),,)
-  AC_CHECK_LIB(Xext,XShapeCombineMask,LIB_XEXT='-lXext',,)
-  AC_CHECK_LIB(Xext,XShapeCombineMask,AC_DEFINE(HasShape,1,X11 server supports shape extension),,)
+  #
+  # Check for X11 shared memory extension
+  #
+  # shmctl is required to support the shared memory extension
+  LIB_IPC=''
+  AC_CHECK_FUNC([shmctl],[have_shmctl='yes'],[])
+  if test "$have_shmctl" != 'yes'
+  then
+     AC_SEARCH_LIBS([shmctl],[cygipc],[have_shmctl='yes'; LIB_IPC='-lcygipc'],[])
+  fi
+
+  if test "$have_shmctl" = 'yes'
+  then
+    AC_CHECK_LIB([Xext],[XShmAttach],[LIB_XEXT='-lXext' ; AC_DEFINE(HasSharedMemory,1,X11 server supports shared memory extension)],[],[])
+  fi
+
+  #
+  # Check for X11 shape extension
+  #
+  AC_CHECK_LIB([Xext],[XShapeCombineMask],[LIB_XEXT='-lXext' ; AC_DEFINE(HasShape,1,X11 server supports shape extension)],[],[])
 
   LIBS="$LIB_XEXT $LIBS"
 fi
@@ -2283,9 +2299,9 @@ fi
 #
 if test "$with_modules" != 'no'
 then
-  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_X11 $LIB_BZLIB $LIB_ZLIB $LIB_GDI32 $LIB_THREAD $LIB_LF $LIB_MATH $LIB_CCMALLOC $LIBS_INITIAL"
+  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_BZLIB $LIB_ZLIB $LIB_GDI32 $LIB_THREAD $LIB_LF $LIB_MATH $LIB_CCMALLOC $LIBS_INITIAL"
 else
-  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_X11 $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_GDI32 $LIB_THREAD $LIB_LF $LIB_MATH $LIB_CCMALLOC $LIBS_INITIAL"
+  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_GDI32 $LIB_THREAD $LIB_LF $LIB_MATH $LIB_CCMALLOC $LIBS_INITIAL"
 fi
 AC_SUBST(MAGICK_DEP_LIBS)
 
