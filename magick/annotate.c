@@ -882,7 +882,7 @@ static unsigned int RenderTruetype(Image *image,
           (int) ceil(point.y+y-0.5),1,1);
         if (q == (PixelPacket *) NULL)
           break;
-        opacity=MaxRGB-(UpScale(*p)*fill_color.opacity/MaxRGB);
+        opacity=MaxRGB-UpScale(*p)*(MaxRGB-fill_color.opacity)*alpha;
         q->red=(Quantum) (((double) fill_color.red*(MaxRGB-opacity)+
           (double) q->red*opacity)*alpha);
         q->green=(Quantum) (((double) fill_color.green*(MaxRGB-opacity)+
@@ -920,6 +920,7 @@ static unsigned int RenderPostscript(Image *image,
     geometry[MaxTextExtent];
 
   double
+    alpha,
     font_height,
     opacity;
 
@@ -1046,6 +1047,7 @@ static unsigned int RenderPostscript(Image *image,
     }
   annotate_image->matte=True;
   fill_color=annotate_info->fill;
+  alpha=1.0/MaxRGB;
   for (y=0; y < (int) annotate_image->rows; y++)
   {
     q=GetImagePixels(annotate_image,0,y,annotate_image->columns,1);
@@ -1053,7 +1055,7 @@ static unsigned int RenderPostscript(Image *image,
       break;
     for (x=0; x < (int) annotate_image->columns; x++)
     {
-      opacity=(MaxRGB-Intensity(*q))*fill_color.opacity/MaxRGB;
+      opacity=(MaxRGB-Intensity(*q))*(MaxRGB-fill_color.opacity)*alpha;
       q->opacity=(Quantum) ceil(MaxRGB-opacity-0.5);
       q->red=fill_color.red;
       q->green=fill_color.green;
