@@ -597,11 +597,10 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
 #define WriteRunlengthPacket(image,pixel,length,p) \
 { \
   if (image->matte && (p->opacity == TransparentOpacity)) \
-    FormatString(buffer,"ffffff%02lx",(unsigned int) Min(length,0xff)); \
+    FormatString(buffer,"ffffff%02lx",Min(length,0xff)); \
   else \
-    FormatString(buffer,"%02lx%02x%02x%02x",Downscale(pixel.red), \
-      Downscale(pixel.green),Downscale(pixel.blue),(unsigned int) \
-      Min(length,0xff)); \
+    FormatString(buffer,"%02lx%02lx%02lx%02lx",Downscale(pixel.red), \
+      Downscale(pixel.green),Downscale(pixel.blue),Min(length,0xff)); \
   (void) WriteBlobString(image,buffer); \
 }
 
@@ -1091,7 +1090,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 bit++;
                 if (bit == 8)
                   {
-                    FormatString(buffer,"%02lx",byte & 0xff);
+                    FormatString(buffer,"%02x",byte & 0xff);
                     (void) WriteBlobString(image,buffer);
                     count++;
                     if (count == 36)
@@ -1106,7 +1105,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               if (bit != 0)
                 {
                   byte<<=(8-bit);
-                  FormatString(buffer,"%02lx",byte & 0xff);
+                  FormatString(buffer,"%02x",byte & 0xff);
                   (void) WriteBlobString(image,buffer);
                   count++;
                   if (count == 36)
@@ -1260,7 +1259,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 bit++;
                 if (bit == 8)
                   {
-                    FormatString(buffer,"%02lx",byte & 0xff);
+                    FormatString(buffer,"%02x",byte & 0xff);
                     (void) WriteBlobString(image,buffer);
                     count++;
                     if (count == 36)
@@ -1276,7 +1275,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               if (bit != 0)
                 {
                   byte<<=(8-bit);
-                  FormatString(buffer,"%02lx",byte & 0xff);
+                  FormatString(buffer,"%02x",byte & 0xff);
                   (void) WriteBlobString(image,buffer);
                   count++;
                   if (count == 36)
@@ -1365,7 +1364,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                   if (image->matte && (p->opacity == TransparentOpacity))
                     (void) strcpy(buffer,"ffffff");
                   else
-                    FormatString(buffer,"%02lx%02x%02x",
+                    FormatString(buffer,"%02lx%02lx%02lx",
                       Downscale(p->red),Downscale(p->green),Downscale(p->blue));
                   (void) WriteBlobString(image,buffer);
                   i++;
@@ -1401,7 +1400,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
           (void) WriteBlobString(image,buffer);
           for (i=0; i < (long) image->colors; i++)
           {
-            FormatString(buffer,"%02lx%02x%02x\n",
+            FormatString(buffer,"%02lx%02lx%02lx\n",
               Downscale(image->colormap[i].red),
               Downscale(image->colormap[i].green),
               Downscale(image->colormap[i].blue));
@@ -1433,7 +1432,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                     {
                       if (x > 0)
                         {
-                          FormatString(buffer,"%02lx%02x",(unsigned int)
+                          FormatString(buffer,"%02x%02x",(unsigned int)
                             index,(unsigned int) Min(length,0xff));
                           (void) WriteBlobString(image,buffer);
                           i++;
@@ -1449,7 +1448,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                   pixel=(*p);
                   p++;
                 }
-                FormatString(buffer,"%02lx%02x",(unsigned int) index,
+                FormatString(buffer,"%02x%02x",(unsigned int) index,
                   (unsigned int) Min(length,0xff));
                 (void) WriteBlobString(image,buffer);
                 if (image->previous == (Image *) NULL)
@@ -1474,7 +1473,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 indexes=GetIndexes(image);
                 for (x=0; x < (long) image->columns; x++)
                 {
-                  FormatString(buffer,"%02lx",indexes[x]);
+                  FormatString(buffer,"%02x",indexes[x]);
                   (void) WriteBlobString(image,buffer);
                   i++;
                   if (i == 36)
