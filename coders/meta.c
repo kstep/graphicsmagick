@@ -136,29 +136,652 @@ static unsigned int IsMETA(const unsigned char *magick,const size_t length)
 %
 %
 */
+#define BUFFER_SZ 4096
+
+typedef struct _html_code
+{
+  short
+    len;
+  const char
+    *code,
+    val;
+} html_code;
+
+static html_code html_codes[] = {
+#ifdef HANDLE_GT_LT
+  { 4,"&lt;",'<' },
+  { 4,"&gt;",'>' },
+#endif
+  { 5,"&amp;",'&' },
+  { 6,"&quot;",'"' },
+  { 6,"&apos;",'\''}
+};
+
+int stringnicmp(const char *p,const char *q,size_t n)
+{
+  register int
+    i,
+    j;
+
+  if (p == q)
+    return(0);
+  if (p == (char *) NULL)
+    return(-1);
+  if (q == (char *) NULL)
+    return(1);
+  while ((*p != '\0') && (*q != '\0'))
+  {
+    if ((*p == '\0') || (*q == '\0'))
+      break;
+    i=(*p);
+    if (islower(i))
+      i=toupper(i);
+    j=(*q);
+    if (islower(j))
+      j=toupper(j);
+    if (i != j)
+      break;
+    n--;
+    if (n == 0)
+      break;
+    p++;
+    q++;
+  }
+  return(toupper(*p)-toupper(*q));
+}
+
+static int convertHTMLcodes(char *s, int len)
+{
+  if (len <=0 || s==(char*)NULL || *s=='\0')
+    return 0;
+
+  if (s[1] == '#')
+    {
+      int val, o;
+
+      if (sscanf(s,"&#%d;",&val) == 1)
+      {
+        o = 3;
+        while (s[o] != ';')
+        {
+          o++;
+          if (o > 5)
+            break;
+        }
+        if (o < 6)
+          strcpy(s+1, s+1+o);
+        *s = val;
+        return o;
+      }
+    }
+  else
+    {
+      int
+        i,
+        codes = sizeof(html_codes) / sizeof(html_code);
+
+      for (i=0; i < codes; i++)
+      {
+        if (html_codes[i].len <= len)
+          if (stringnicmp(s, html_codes[i].code, html_codes[i].len) == 0)
+            {
+              strcpy(s+1, s+html_codes[i].len);
+              *s = html_codes[i].val;
+              return html_codes[i].len-1;
+            }
+      }
+    }
+  return 0;
+}
+
+char *super_fgets(char **b, int *blen, Image *file)
+{
+  int
+    c,
+    len;
+
+  unsigned char
+    *q;
+
+  len=*blen;
+  for (q=(unsigned char *) (*b); ; q++)
+  {
+    c=ReadBlobByte(file);
+    if (c == EOF || c == '\n')
+      break;
+    if ((q-(unsigned char *) (*b)+1) >= (int) len)
+      {
+        int
+          tlen;
+
+        tlen=q-(unsigned char *) (*b);
+        len<<=1;
+        ReacquireMemory((void **) b,(len+2));
+        if ((*b) == (char *) NULL)
+          break;
+        q=(unsigned char*) (*b)+tlen;
+      }
+    *q=(unsigned char) c;
+  }
+  *blen=0;
+  if ((*b) != (char *) NULL)
+    {
+      int
+        tlen;
+
+      tlen=q-(unsigned char *) (*b);
+      if (tlen == 0)
+        return (char *) NULL;
+      (*b)[tlen] = '\0';
+      *blen=++tlen;
+    }
+  return (*b);
+}
+
+#define BUFFER_SZ 4096
+#define IPTC_ID 1028
+#define THUMBNAIL_ID 1033
+
+long parse8BIM(Image *ifile, Image *ofile)
+{
+  char
+    brkused,
+    quoted,
+    *line,
+    *token,
+    *newstr,
+    *name;
+
+  int
+    state,
+    next;
+
+  unsigned char
+    dataset;
+
+  unsigned int
+    recnum;
+
+  int
+    inputlen = BUFFER_SZ;
+
+  long
+    savedolen = 0L,
+    outputlen = 0L;
+
+  off_t
+    savedpos,
+    currentpos;
+
+  TokenInfo
+    token_info;
+
+  dataset = 0;
+  recnum = 0;
+  line = (char *) AcquireMemory(inputlen);     
+  name = token = (char *)NULL;
+  while(super_fgets(&line,&inputlen,ifile)!=NULL)
+  {
+    state=0;
+    next=0;
+
+    token = (char *) AcquireMemory(inputlen);     
+    newstr = (char *) AcquireMemory(inputlen);     
+    while (Tokenizer(&token_info, 0, token, inputlen, line,
+          (char *) "", (char *) "=",
+      (char *) "\"", 0, &brkused,&next,&quoted)==0)
+    {
+      if (state == 0)
+        {                  
+          int
+            state,
+            next;
+
+          char
+            brkused,
+            quoted;
+
+          state=0;
+          next=0;
+          while(Tokenizer(&token_info, 0, newstr, inputlen, token, (char *) "",
+            (char *) "#", (char *) "", 0, &brkused, &next, &quoted)==0)
+          {
+            switch (state)
+            {
+              case 0:
+                if (strcmp(newstr,"8BIM")==0)
+                  dataset = 255;
+                else
+                  dataset = (unsigned char) atoi(newstr);
+                break;
+              case 1:
+                recnum = atoi(newstr);
+                break;
+              case 2:
+                name = (char *) AcquireMemory(strlen(newstr)+1);
+                if (name)
+                  strcpy(name,newstr);  
+                break;
+            }
+            state++;
+          }
+        }
+      else
+        if (state == 1)
+          {
+            int
+              next;
+
+            unsigned long
+              len;
+
+            char
+              brkused,
+              quoted;
+
+            next=0;
+            len = strlen(token);
+            while (Tokenizer(&token_info,0, newstr, inputlen, token, (char *) "",
+              (char *) "&", (char *) "", 0, &brkused, &next, &quoted)==0)
+            {
+              if (brkused && next > 0)
+                {
+                  char
+                    *s = &token[next-1];
+
+                  len -= convertHTMLcodes(s, strlen(s));
+                }
+            }
+
+            if (dataset == 255)
+              {
+                unsigned char
+                  nlen = 0;
+
+                int
+                  i;
+
+                if (savedolen > 0)
+                  {
+                    long diff = outputlen - savedolen;
+                    currentpos = TellBlob(ofile);
+                    SeekBlob(ofile,savedpos,SEEK_SET);
+                    WriteBlobMSBLong(ofile,diff);
+                    SeekBlob(ofile,currentpos,SEEK_SET);
+                    savedolen = 0L;
+                  }
+                if (outputlen & 1)
+                  {
+                    WriteBlobByte(ofile,0x00);
+                    outputlen++;
+                  }
+                WriteBlobString(ofile,"8BIM");
+                WriteBlobMSBShort(ofile,recnum);
+                outputlen += 6;
+                if (name)
+                  nlen = strlen(name);
+                WriteBlobByte(ofile,nlen);
+                outputlen++;
+                for (i=0; i<nlen; i++)
+                  WriteBlobByte(ofile,name[i]);
+                outputlen += nlen;
+                if (!(nlen&1))
+                  {
+                    WriteBlobByte(ofile,0x00);
+                    outputlen++;
+                  }
+                if (recnum != IPTC_ID)
+                  {
+                    WriteBlobMSBLong(ofile, len);
+                    outputlen += 4;
+
+                    next=0;
+                    outputlen += len;
+                    while (len--)
+                      WriteBlobByte(ofile,token[next++]);
+
+                    if (outputlen & 1)
+                      {
+                        WriteBlobByte(ofile,0x00);
+                        outputlen++;
+                      }
+                  }
+                else
+                  {
+                    /* patch in a fake length for now and fix it later */
+                    savedpos = TellBlob(ofile);
+                    WriteBlobMSBLong(ofile,0xFFFFFFFFL);
+                    outputlen += 4;
+                    savedolen = outputlen;
+                  }
+              }
+            else
+              {
+                if (len <= 0x7FFF)
+                  {
+                    WriteBlobByte(ofile,0x1c);
+                    WriteBlobByte(ofile,dataset);
+                    WriteBlobByte(ofile,recnum & 255);
+                    WriteBlobMSBShort(ofile,len);
+                    outputlen += 5;
+                    next=0;
+                    outputlen += len;
+                    while (len--)
+                      WriteBlobByte(ofile,token[next++]);
+                  }
+              }
+          }
+      state++;
+    }
+    LiberateMemory((void **) &token);
+    LiberateMemory((void **) &newstr);
+    LiberateMemory((void **) &name);
+  }
+  LiberateMemory((void **) &line);
+  if (savedolen > 0)
+    {
+      long diff = outputlen - savedolen;
+
+      currentpos = TellBlob(ofile);
+      SeekBlob(ofile,savedpos,SEEK_SET);
+      WriteBlobMSBLong(ofile,diff);
+      SeekBlob(ofile,currentpos,SEEK_SET);
+      savedolen = 0L;
+    }
+  return outputlen;
+}
+
+/* some defines for the different JPEG block types */
+#define M_SOF0  0xC0            /* Start Of Frame N */
+#define M_SOF1  0xC1            /* N indicates which compression process */
+#define M_SOF2  0xC2            /* Only SOF0-SOF2 are now in common use */
+#define M_SOF3  0xC3
+#define M_SOF5  0xC5            /* NB: codes C4 and CC are NOT SOF markers */
+#define M_SOF6  0xC6
+#define M_SOF7  0xC7
+#define M_SOF9  0xC9
+#define M_SOF10 0xCA
+#define M_SOF11 0xCB
+#define M_SOF13 0xCD
+#define M_SOF14 0xCE
+#define M_SOF15 0xCF
+#define M_SOI   0xD8
+#define M_EOI   0xD9            /* End Of Image (end of datastream) */
+#define M_SOS   0xDA            /* Start Of Scan (begins compressed data) */
+#define M_APP0  0xe0
+#define M_APP1  0xe1
+#define M_APP2  0xe2
+#define M_APP3  0xe3
+#define M_APP4  0xe4
+#define M_APP5  0xe5
+#define M_APP6  0xe6
+#define M_APP7  0xe7
+#define M_APP8  0xe8
+#define M_APP9  0xe9
+#define M_APP10 0xea
+#define M_APP11 0xeb
+#define M_APP12 0xec
+#define M_APP13 0xed
+#define M_APP14 0xee
+#define M_APP15 0xef
+
+static int jpeg_transfer_1(Image *ifile, Image *ofile)
+{ 	
+	int c;
+
+	c = ReadBlobByte(ifile);
+	if (c == EOF)
+    return EOF;
+  WriteBlobByte(ofile,c);
+	return c;
+}
+
+static int jpeg_skip_1(Image *ifile)
+{ 	
+	int c;
+
+	c = ReadBlobByte(ifile);
+	if (c == EOF)
+    return EOF;
+	return c;
+}
+
+static int jpeg_read_remaining(Image *ifile, Image *ofile)
+{
+ 	int c;
+
+  while ((c = jpeg_transfer_1(ifile, ofile)) != EOF)
+    continue;
+	return M_EOI;
+}
+
+static int jpeg_skip_variable(Image *ifile, Image *ofile)
+{ 
+	unsigned int  length;
+	int c1,c2;
+
+  if ((c1 = jpeg_transfer_1(ifile, ofile)) == EOF)
+    return M_EOI;
+  if ((c2 = jpeg_transfer_1(ifile, ofile)) == EOF)
+    return M_EOI;
+
+	length = (((unsigned char) c1) << 8) + ((unsigned char) c2);
+	length -= 2;
+
+	while (length--)
+		if (jpeg_transfer_1(ifile, ofile) == EOF)
+      return M_EOI;
+
+	return 0;
+}
+
+static int jpeg_skip_variable2(Image *ifile, Image *ofile)
+{ 
+	unsigned int  length;
+	int c1,c2;
+
+  if ((c1 = ReadBlobByte(ifile)) == EOF) return M_EOI;
+  if ((c2 = ReadBlobByte(ifile)) == EOF) return M_EOI;
+
+	length = (((unsigned char) c1) << 8) + ((unsigned char) c2);
+	length -= 2;
+
+	while (length--)
+		if (ReadBlobByte(ifile) == EOF)
+      return M_EOI;
+
+	return 0;
+}
+
+static int jpeg_nextmarker(Image *ifile, Image *ofile)
+{
+  int c;
+
+  /* transfer anything until we hit 0xff */
+  do
+  {
+    c = ReadBlobByte(ifile);
+	  if (c == EOF)
+      return M_EOI; /* we hit EOF */
+	  else
+	    if (c != 0xff)
+        WriteBlobByte(ofile,c);
+  } while (c != 0xff);
+
+  /* get marker byte, swallowing possible padding */
+  do
+  {
+    c = ReadBlobByte(ifile);
+	  if (c == EOF)
+      return M_EOI; /* we hit EOF */
+  } while (c == 0xff);
+
+  return c;
+}
+
+static int jpeg_skip_till_marker(Image *ifile, int marker)
+{ 
+  int c, i;
+
+  do
+  {
+    /* skip anything until we hit 0xff */
+    i = 0;
+    do
+    {
+      c = ReadBlobByte(ifile);
+      i++;
+	    if (c == EOF)
+        return M_EOI; /* we hit EOF */
+    } while (c != 0xff);
+
+    /* get marker byte, swallowing possible padding */
+    do
+    {
+      c = ReadBlobByte(ifile);
+	    if (c == EOF)
+        return M_EOI; /* we hit EOF */
+    } while (c == 0xff);
+  } while (c != marker);
+  return c;
+}
+
+static char psheader[] = "\xFF\xED\0\0Photoshop 3.0\08BIM\x04\x04\0\0\0\0";
+
+/* Embed binary IPTC data into a JPEG image. */
+int jpeg_embed(Image *ifile, Image *ofile, Image *iptc)
+{
+	unsigned int marker;
+	unsigned int done = 0;
+	unsigned int len;
+  int inx;
+
+	if (jpeg_transfer_1(ifile, ofile) != 0xFF)
+		return 0;
+	if (jpeg_transfer_1(ifile, ofile) != M_SOI)
+		return 0;
+
+	while (!done)
+  {
+		marker = jpeg_nextmarker(ifile, ofile);
+		if (marker == M_EOI)
+      { /* EOF */
+			  break;
+		  }
+    else
+      {
+        if (marker != M_APP13)
+          {
+            WriteBlobByte(ofile,0xff);
+            WriteBlobByte(ofile,marker);
+		      }
+      }
+
+		switch (marker)
+    {
+			case M_APP13:
+				/* we are going to write a new APP13 marker, so don't output the old one */
+				jpeg_skip_variable2(ifile, ofile);
+				break;
+
+			case M_APP0:
+				/* APP0 is in each and every JPEG, so when we hit APP0 we insert our new APP13! */
+				jpeg_skip_variable(ifile, ofile);
+
+        if (iptc != (Image *)NULL)
+          {
+            //fstat(fileno(iptc),&sb);
+		        //len = sb.st_size;
+            len=GetBlobSize(iptc);
+				    if (len & 1)
+              len++; /* make the length even */
+				    psheader[ 2 ] = (len+16)>>8;
+				    psheader[ 3 ] = (len+16)&0xff;
+				    for (inx = 0; inx < 18; inx++)
+              WriteBlobByte(ofile,psheader[inx]);
+				    jpeg_read_remaining(iptc, ofile);
+		        //len = sb.st_size;
+            len=GetBlobSize(iptc);
+				    if (len & 1)
+              WriteBlobByte(ofile,0);
+          }
+				break;
+
+			case M_SOS:								
+				/* we hit data, no more marker-inserting can be done! */
+				jpeg_read_remaining(ifile, ofile);
+				done = 1;
+				break;
+			
+			default:
+				jpeg_skip_variable(ifile, ofile);
+				break;
+		}
+	}
+	return 1;
+}
+
+/* handle writing iptc info into JPEG */
+// jpeg_embed(ifile, ofile, xfile);
+
+/* handle stripping the APP13 data out of a JPEG */
+void jpeg_strip(Image *ifile, Image *ofile)
+{
+  unsigned int marker;
+
+  marker = jpeg_skip_till_marker(ifile, M_SOI);
+  if (marker == M_SOI)
+  {
+    WriteBlobByte(ofile,0xff);
+    WriteBlobByte(ofile,M_SOI);
+    jpeg_read_remaining(ifile, ofile);
+  }
+}
+
+/* Extract any APP13 binary data into a file. */
+int jpeg_extract(Image *ifile, Image *ofile)
+{
+	unsigned int marker;
+	unsigned int done = 0;
+
+	if (jpeg_skip_1(ifile) != 0xff)
+		return 0;
+	if (jpeg_skip_1(ifile) != M_SOI)
+		return 0;
+
+	while (!done)
+  {
+		marker = jpeg_skip_till_marker(ifile, M_APP13);
+		if (marker == M_APP13)
+      {
+        marker = jpeg_nextmarker(ifile, ofile);
+			  break;
+		  }
+	}
+	return 1;
+}
+
 static Image *ReadMETAImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
   Image
+    *buff,
     *image;
     
   int
     c;
 
-  register long
-    i;
-    
-  register unsigned char
-    *q;
-    
   size_t
     length;
     
   unsigned int
     status;
 
+  void
+    *blob;
+
   /*
-    Open image file.
+    Open file containing binary metadata
   */
   assert(image_info != (const ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
@@ -171,37 +794,49 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
   image->columns=1;
   image->rows=1;
   SetImage(image,OpaqueOpacity);
-  length=MaxTextExtent;
-  if (LocaleCompare(image_info->magick,"8BIM") == 0)
+  length=1;
+  if (LocaleNCompare(image_info->magick,"8BIM",4) == 0)
     {
       /*
-        Read 8BIM image.
+        Read 8BIM binary metadata.
       */
-      image->iptc_profile.info=(unsigned char *) AcquireMemory(length+2);
-      for (q=image->iptc_profile.info; q != (unsigned char *) NULL; q++)
-      {
-        c=ReadBlobByte(image);
-        if (c == EOF)
-          break;
-        if ((size_t) (q-image->iptc_profile.info+1) >= length)
-          {
-            image->iptc_profile.length=q-image->iptc_profile.info;
-            length<<=1;
-            ReacquireMemory((void **) &image->iptc_profile.info,length+2);
-            if (image->iptc_profile.info == (unsigned char *) NULL)
-              break;
-            q=image->iptc_profile.info+image->iptc_profile.length;
-          }
-        *q=(unsigned char) c;
-      }
-      if (image->iptc_profile.info == (unsigned char *) NULL)
+      buff=AllocateImage((ImageInfo *) NULL);
+      if (buff == (Image *) NULL)
         ThrowReaderException(FileOpenError,"Memory allocation failed",image);
-      image->iptc_profile.length=q-image->iptc_profile.info;
+      blob=(unsigned char *) AcquireMemory(length);
+      if (blob == (unsigned char *) NULL)
+        {
+          DestroyImage(buff);
+          ThrowReaderException(FileOpenError,"Memory allocation failed",image);
+        }
+      AttachBlob(buff->blob,blob,length);
+      if (LocaleCompare(image_info->magick,"8BIMTEXT") == 0)
+        {
+          length=parse8BIM(image, buff);
+          if (length & 1)
+            WriteBlobByte(buff,0x0);
+        }
+      else
+        {
+          for ( ; ; )
+          {
+            c=ReadBlobByte(image);
+            if (c == EOF)
+              break;
+            WriteBlobByte(buff,c);
+          }
+        }
+      image->iptc_profile.info = buff->blob->data;
+      image->iptc_profile.length=GetBlobSize(buff);
+      DetachBlob(buff->blob);
+      DestroyImage(buff);
     }
-  if (LocaleCompare(image_info->magick,"APP1") == 0)
+  if (LocaleNCompare(image_info->magick,"APP1",4) == 0)
     {
+      int
+        i;
       /*
-        Read APP1 image.
+        Read APP1 binary metadata.
       */
       i=(long) image->generic_profiles;
       if (image->generic_profile == (ProfileInfo *) NULL)
@@ -217,94 +852,139 @@ static Image *ReadMETAImage(const ImageInfo *image_info,
         }
       image->generic_profiles++;
       image->generic_profile[i].name=AllocateString((char *) NULL);
+      image->generic_profile[i].length=0;
+      image->generic_profile[i].info=(unsigned char *) NULL;
       FormatString(image->generic_profile[i].name,"APP%d",1);
-      image->generic_profile[i].info=(unsigned char *) AcquireMemory(length+2);
-      for (q=image->generic_profile[i].info; image->generic_profile[i].info; q++)
-      {
-        c=ReadBlobByte(image);
-        if (c == EOF)
-          break;
-        if ((q-image->generic_profile[i].info+1) >= (int) length)
-          {
-            image->generic_profile[i].length=q-image->generic_profile[i].info;
-            length<<=1;
-            ReacquireMemory((void **) &image->generic_profile[i].info,length+2);
-            if (image->generic_profile[i].info == (unsigned char *) NULL)
-              break;
-            q=image->generic_profile[i].info+image->generic_profile[i].length;
-          }
-        *q=(unsigned char) c;
-      }
-      if (image->generic_profile[i].info == (unsigned char *) NULL)
+
+      buff=AllocateImage((ImageInfo *) NULL);
+      if (buff == (Image *) NULL)
         ThrowReaderException(FileOpenError,"Memory allocation failed",image);
-      image->generic_profile[i].length=q-image->generic_profile[i].info;
+      blob=(unsigned char *) AcquireMemory(length);
+      if (blob == (unsigned char *) NULL)
+        {
+          DestroyImage(buff);
+          ThrowReaderException(FileOpenError,"Memory allocation failed",image);
+        }
+      AttachBlob(buff->blob,blob,length);
+      if (LocaleCompare(image_info->magick,"APP1JPEG") == 0)
+        {
+          Image
+            *iptc;
+
+          int
+            result;
+
+          ProfileInfo
+            *pinfo;
+
+          pinfo = (ProfileInfo *) image_info->client_data;
+          if ((pinfo == (ProfileInfo *) NULL) ||
+              (pinfo->info == (unsigned char *) NULL) || (pinfo->length <= 0))
+            {
+              DetachBlob(buff->blob);
+              LiberateMemory((void **) &blob);
+              DestroyImage(buff);
+              ThrowReaderException(FileOpenError,"No iptc profile available",image);
+            }
+          iptc=AllocateImage((ImageInfo *) NULL);
+          if (iptc == (Image *) NULL)
+            {
+              DetachBlob(buff->blob);
+              LiberateMemory((void **) &blob);
+              DestroyImage(buff);
+              ThrowReaderException(FileOpenError,"Memory allocation failed",image);
+            }
+          AttachBlob(iptc->blob,pinfo->info,pinfo->length);
+          result=jpeg_embed(image,buff,iptc);
+          DetachBlob(iptc->blob);
+          DestroyImage(iptc);
+          if (result == 0)
+            {
+              DetachBlob(buff->blob);
+              LiberateMemory((void **) &blob);
+              DestroyImage(buff);
+              ThrowReaderException(FileOpenError,"jpeg embedding failed",image);
+            }
+        }
+      else
+        {
+          for ( ; ; )
+          {
+            c=ReadBlobByte(image);
+            if (c == EOF)
+              break;
+            WriteBlobByte(buff,c);
+          }
+        }
+      image->generic_profile[i].info = buff->blob->data;
+      image->generic_profile[i].length=GetBlobSize(buff);
+      DetachBlob(buff->blob);
+      DestroyImage(buff);
     }
   if (LocaleCompare(image_info->magick,"ICM") == 0)
     {
-      image->color_profile.info=(unsigned char *) AcquireMemory(length);
-      for (q=image->color_profile.info; ; q++)
-      {
-        c=ReadBlobByte(image);
-        if (c == EOF)
-          break;
-        if ((q-image->color_profile.info+1) >= (int) length)
-          {
-            image->color_profile.length=q-image->color_profile.info;
-            length<<=1;
-            ReacquireMemory((void **) &image->color_profile.info,length);
-            if (image->color_profile.info == (unsigned char *) NULL)
-              break;
-            q=image->color_profile.info+image->color_profile.length;
-          }
-        *q=(unsigned char) c;
-      }
-      image->color_profile.length=0;
-      if (image->color_profile.info != (unsigned char *) NULL)
-        image->color_profile.length=q-image->color_profile.info;
-    }
-  if (LocaleCompare(image_info->magick,"IPTC") == 0)
-    {
-      unsigned char
-        *data;
-
-      unsigned int
-        tag_length;
-
-      /*
-        Read IPTC image.
-      */
-      tag_length=12;
-      data=(unsigned char *) AcquireMemory(length+2);
-      if (data == (unsigned char *) NULL)
-        ThrowWriterException(ResourceLimitError,"Memory allocation failed",
-          image);
-      (void) memcpy(data,"8BIM\04\04\0\0\0\0\0\0",tag_length);
-      q=data;
-      q+=tag_length;
+      buff=AllocateImage((ImageInfo *) NULL);
+      if (buff == (Image *) NULL)
+        ThrowReaderException(FileOpenError,"Memory allocation failed",image);
+      blob=(unsigned char *) AcquireMemory(length);
+      if (blob == (unsigned char *) NULL)
+        {
+          DestroyImage(buff);
+          ThrowReaderException(FileOpenError,"Memory allocation failed",image);
+        }
+      AttachBlob(buff->blob,blob,length);
       for ( ; ; )
       {
         c=ReadBlobByte(image);
         if (c == EOF)
           break;
-        if ((size_t) (q-data+1) >= length)
-          {
-            image->iptc_profile.length=q-data;
-            length<<=1;
-            ReacquireMemory((void **) &data,length+2);
-            if (data == (unsigned char *) NULL)
-              break;
-            q=data+image->iptc_profile.length;
-          }
-        *q++=(unsigned char) c;
+        WriteBlobByte(buff,c);
       }
-      image->iptc_profile.length=0;
-      if (data != (unsigned char *) NULL)
+      image->color_profile.info = buff->blob->data;
+      image->color_profile.length=GetBlobSize(buff);
+      DetachBlob(buff->blob);
+      DestroyImage(buff);
+    }
+  if (LocaleCompare(image_info->magick,"IPTC") == 0)
+    {
+      buff=AllocateImage((ImageInfo *) NULL);
+      if (buff == (Image *) NULL)
+        ThrowReaderException(FileOpenError,"Memory allocation failed",image);
+      blob=(unsigned char *) AcquireMemory(length);
+      if (blob == (unsigned char *) NULL)
         {
-          image->iptc_profile.length=q-data;
-          length=image->iptc_profile.length-tag_length;
-          data[10]=length >> 8;
-          data[11]=length & 0xff;
-          image->iptc_profile.info=data;
+          DestroyImage(buff);
+          ThrowReaderException(FileOpenError,"Memory allocation failed",image);
+        }
+      AttachBlob(buff->blob,blob,length);
+      /* write out the header - length field patched below */
+      WriteBlob(buff,12,"8BIM\04\04\0\0\0\0\0\0");
+      if (LocaleCompare(image_info->magick,"IPTCTEXT") == 0)
+        {
+          length=parse8BIM(image, buff);
+          if (length & 1)
+            WriteBlobByte(buff,0x0);
+        }
+      else
+        {
+          for ( ; ; )
+          {
+            c=ReadBlobByte(image);
+            if (c == EOF)
+              break;
+            WriteBlobByte(buff,c);
+          }
+        }
+      image->iptc_profile.info = buff->blob->data;
+      image->iptc_profile.length=GetBlobSize(buff);
+      DetachBlob(buff->blob);
+      DestroyImage(buff);
+      if (image->iptc_profile.info != (unsigned char *) NULL)
+        {
+          /* subtract off the length of the 8BIM stuff */
+          length=image->iptc_profile.length-12;
+          image->iptc_profile.info[10]=length >> 8;
+          image->iptc_profile.info[11]=length & 0xff;
         }
     }
   CloseBlob(image);
@@ -344,31 +1024,61 @@ ModuleExport void RegisterMETAImage(void)
   entry->encoder=WriteMETAImage;
   entry->magick=IsMETA;
   entry->adjoin=False;
-  entry->description=AcquireString("Photoshop resource format");
-  entry->module=AcquireString("8BIM");
+  entry->description=AllocateString("Photoshop resource format");
+  entry->module=AllocateString("8BIM");
   (void) RegisterMagickInfo(entry);
+
+  entry=SetMagickInfo("8BIMTEXT");
+  entry->decoder=ReadMETAImage;
+  entry->encoder=WriteMETAImage;
+  entry->magick=IsMETA;
+  entry->adjoin=False;
+  entry->description=AllocateString("Photoshop resource format");
+  entry->module=AllocateString("8BIMTEXT");
+  (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("APP1");
   entry->decoder=ReadMETAImage;
   entry->encoder=WriteMETAImage;
   entry->magick=IsMETA;
   entry->adjoin=False;
-  entry->description=AcquireString("Photoshop resource format");
-  entry->module=AcquireString("APP1");
+  entry->description=AllocateString("Raw application information");
+  entry->module=AllocateString("APP1");
   (void) RegisterMagickInfo(entry);
+
+  entry=SetMagickInfo("APP1JPEG");
+  entry->decoder=ReadMETAImage;
+  entry->encoder=WriteMETAImage;
+  entry->magick=IsMETA;
+  entry->adjoin=False;
+  entry->description=AllocateString("Raw JPEG binary data");
+  entry->module=AllocateString("APP1");
+  (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("ICM");
   entry->decoder=ReadMETAImage;
   entry->encoder=WriteMETAImage;
   entry->adjoin=False;
-  entry->description=AcquireString("ICC Color Profile");
-  entry->module=AcquireString("ICM");
+  entry->description=AllocateString("ICC Color Profile");
+  entry->module=AllocateString("ICM");
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("IPTC");
   entry->decoder=ReadMETAImage;
   entry->encoder=WriteMETAImage;
   entry->magick=IsMETA;
   entry->adjoin=False;
-  entry->description=AcquireString("IPTC Newsphoto");
-  entry->module=AcquireString("IPTC");
+  entry->description=AllocateString("IPTC Newsphoto");
+  entry->module=AllocateString("IPTC");
+  (void) RegisterMagickInfo(entry);
+
+  entry=SetMagickInfo("IPTC");
+  entry->decoder=ReadMETAImage;
+  entry->encoder=WriteMETAImage;
+  entry->magick=IsMETA;
+  entry->adjoin=False;
+  entry->description=AllocateString("IPTC Newsphoto");
+  entry->module=AllocateString("IPTCTEXT");
   (void) RegisterMagickInfo(entry);
 }
 
@@ -394,6 +1104,7 @@ ModuleExport void RegisterMETAImage(void)
 ModuleExport void UnregisterMETAImage(void)
 {
   (void) UnregisterMagickInfo("8BIM");
+  (void) UnregisterMagickInfo("8BIMTEXT");
   (void) UnregisterMagickInfo("APP1");
   (void) UnregisterMagickInfo("ICM");
   (void) UnregisterMagickInfo("IPTC");
@@ -544,6 +1255,476 @@ static long GetIPTCStream(unsigned char **info,unsigned long length)
   return(info_length);
 }
 
+void formatString(Image *ofile, const char *s, int len)
+{
+  char
+    temp[MaxTextExtent];
+
+  WriteBlobByte(ofile,'"');
+  for (; len > 0; --len, ++s) {
+    int c = (*s) & 255;
+    switch (c) {
+    case '&':
+      WriteBlobString(ofile,"&amp;");
+      break;
+#ifdef HANDLE_GT_LT
+    case '<':
+      WriteBlobString(ofile,"&lt;");
+      break;
+    case '>':
+      WriteBlobString(ofile,"&gt;");
+      break;
+#endif
+    case '"':
+      WriteBlobString(ofile,"&quot;");
+      break;
+    default:
+      if (isprint(c))
+        WriteBlobByte(ofile,*s);
+      else
+        {
+          FormatString(temp, "&#%d;", c & 255);
+          WriteBlobString(ofile,temp);
+        }
+      break;
+    }
+  }
+#if defined(WIN32)
+  WriteBlobString(ofile,"\"\r\n");
+#else
+#if defined(macintosh)
+  WriteBlobString(ofile,"\"\r");
+#else
+  WriteBlobString(ofile,"\"\n");
+#endif
+#endif
+}
+
+typedef struct _tag_spec
+{
+  short
+    id;
+
+  char
+    *name;
+} tag_spec;
+
+static tag_spec tags[] = {
+  { 5, (char *) "Image Name" },
+  { 7, (char *) "Edit Status" },
+  { 10, (char *) "Priority" },
+  { 15, (char *) "Category" },
+  { 20, (char *) "Supplemental Category" },
+  { 22, (char *) "Fixture Identifier" },
+  { 25, (char *) "Keyword" },
+  { 30, (char *) "Release Date" },
+  { 35, (char *) "Release Time" },
+  { 40, (char *) "Special Instructions" },
+  { 45, (char *) "Reference Service" },
+  { 47, (char *) "Reference Date" },
+  { 50, (char *) "Reference Number" },
+  { 55, (char *) "Created Date" },
+  { 60, (char *) "Created Time" },
+  { 65, (char *) "Originating Program" },
+  { 70, (char *) "Program Version" },
+  { 75, (char *) "Object Cycle" },
+  { 80, (char *) "Byline" },
+  { 85, (char *) "Byline Title" },
+  { 90, (char *) "City" },
+  { 95, (char *) "Province State" },
+  { 100, (char *) "Country Code" },
+  { 101, (char *) "Country" },
+  { 103, (char *) "Original Transmission Reference" },
+  { 105, (char *) "Headline" },
+  { 110, (char *) "Credit" },
+  { 115, (char *) "Source" },
+  { 116, (char *) "Copyright String" },
+  { 120, (char *) "Caption" },
+  { 121, (char *) "Local Caption" },
+  { 122, (char *) "Caption Writer" },
+  { 200, (char *) "Custom Field 1" },
+  { 201, (char *) "Custom Field 2" },
+  { 202, (char *) "Custom Field 3" },
+  { 203, (char *) "Custom Field 4" },
+  { 204, (char *) "Custom Field 5" },
+  { 205, (char *) "Custom Field 6" },
+  { 206, (char *) "Custom Field 7" },
+  { 207, (char *) "Custom Field 8" },
+  { 208, (char *) "Custom Field 9" },
+  { 209, (char *) "Custom Field 10" },
+  { 210, (char *) "Custom Field 11" },
+  { 211, (char *) "Custom Field 12" },
+  { 212, (char *) "Custom Field 13" },
+  { 213, (char *) "Custom Field 14" },
+  { 214, (char *) "Custom Field 15" },
+  { 215, (char *) "Custom Field 16" },
+  { 216, (char *) "Custom Field 17" },
+  { 217, (char *) "Custom Field 18" },
+  { 218, (char *) "Custom Field 19" },
+  { 219, (char *) "Custom Field 20" }
+};
+
+int formatIPTC(Image *ifile, Image *ofile)
+{
+  char
+    temp[MaxTextExtent];
+
+  unsigned int
+    foundiptc,
+    tagsfound;
+
+  unsigned char
+    recnum,
+    dataset;
+
+  unsigned char
+    *readable,
+    *str;
+
+  long
+    tagindx,
+    taglen;
+
+  int
+    i,
+    tagcount = sizeof(tags) / sizeof(tag_spec);
+
+  int
+    c;
+
+  foundiptc = 0; /* found the IPTC-Header */
+  tagsfound = 0; /* number of tags found */
+
+  c = ReadBlobByte(ifile);
+  while (c != EOF)
+  {
+	  if (c == 0x1c)
+	    foundiptc = 1;
+	  else
+      {
+        if (foundiptc)
+	        return -1;
+        else
+	        continue;
+	    }
+
+    /* we found the 0x1c tag and now grab the dataset and record number tags */
+    c = ReadBlobByte(ifile);
+	  if (c == EOF) return -1;
+    dataset = c;
+    c = ReadBlobByte(ifile);
+	  if (c == EOF) return -1;
+    recnum = c;
+    /* try to match this record to one of the ones in our named table */
+    for (i=0; i< tagcount; i++)
+    {
+      if (tags[i].id == recnum)
+          break;
+    }
+    if (i < tagcount)
+      readable = (unsigned char *) tags[i].name;
+    else
+      readable = (unsigned char *) "";
+
+    /* then we decode the length of the block that follows - long or short fmt */
+    c=ReadBlobByte(ifile);
+	  if (c == EOF) return -1;
+	  if (c & (unsigned char) 0x80)
+      {
+        printf("Unable to read block longer then 32k");
+        return 0;
+      }
+    else
+      {
+        int
+          c0;
+
+        c0=ReadBlobByte(ifile);
+        if (c0 == EOF) return -1;
+        taglen = (c << 8) | c0;
+	    }
+    if (taglen < 0) return -1;
+    /* make a buffer to hold the tag data and snag it from the input stream */
+    str=(unsigned char *) AcquireMemory((unsigned int) (taglen+1));
+    if (str == (unsigned char *) NULL)
+      {
+        printf("Memory allocation failed");
+        return 0;
+      }
+    for (tagindx=0; tagindx<taglen; tagindx++)
+    {
+      c=ReadBlobByte(ifile);
+      if (c == EOF) return -1;
+      str[tagindx] = c;
+    }
+    str[taglen] = 0;
+
+    /* now finish up by formatting this binary data into ASCII equivalent */
+    if (strlen((char *)readable) > 0)
+	    FormatString(temp, "%d#%d#%s=",(unsigned int)dataset, (unsigned int) recnum, readable);
+    else
+	    FormatString(temp, "%d#%d=",(unsigned int)dataset, (unsigned int) recnum);
+    WriteBlobString(ofile,temp);
+    formatString( ofile, (char *)str, taglen );
+    LiberateMemory((void **) &str);
+
+	  tagsfound++;
+
+    c=ReadBlobByte(ifile);
+  }
+  return tagsfound;
+}
+
+int readWordFromBuffer(char **s, long *len)
+{
+  unsigned char
+    buffer[2];
+
+  int
+    i,
+    c;
+
+  for (i=0; i<2; i++)
+  {
+    c = *(*s)++; (*len)--;
+    if (*len < 0) return -1;
+    buffer[i] = c;
+  }
+  return (((int) buffer[ 0 ]) <<  8) |
+         (((int) buffer[ 1 ]));
+}
+
+int formatIPTCfromBuffer(Image *ofile, char *s, long len)
+{
+  char
+    temp[MaxTextExtent];
+
+  unsigned int
+    foundiptc,
+    tagsfound;
+
+  unsigned char
+    recnum,
+    dataset;
+
+  unsigned char
+    *readable,
+    *str;
+
+  long
+    tagindx,
+    taglen;
+
+  int
+    i,
+    tagcount = sizeof(tags) / sizeof(tag_spec);
+
+  int
+    c;
+
+  foundiptc = 0; /* found the IPTC-Header */
+  tagsfound = 0; /* number of tags found */
+
+  while (len > 0)
+  {
+    c = *s++; len--;
+	  if (c == 0x1c)
+	    foundiptc = 1;
+	  else
+      {
+        if (foundiptc)
+	        return -1;
+        else
+	        continue;
+	    }
+
+    /* we found the 0x1c tag and now grab the dataset and record number tags */
+    c = *s++; len--;
+	  if (len < 0) return -1;
+    dataset = c;
+    c = *s++; len--;
+	  if (len < 0) return -1;
+    recnum = c;
+    /* try to match this record to one of the ones in our named table */
+    for (i=0; i< tagcount; i++)
+    {
+      if (tags[i].id == recnum)
+          break;
+    }
+    if (i < tagcount)
+      readable = (unsigned char *) tags[i].name;
+    else
+      readable = (unsigned char *) "";
+
+    /* then we decode the length of the block that follows - long or short fmt */
+    c = *s++; len--;
+	  if (len < 0) return -1;
+	  if (c & (unsigned char) 0x80)
+      {
+        printf("Unable to read block longer then 32k");
+        return 0;
+      }
+    else
+      {
+        s--; len++;
+        taglen = readWordFromBuffer(&s, &len);
+	    }
+    if (taglen < 0) return -1;
+    /* make a buffer to hold the tag data and snag it from the input stream */
+    str=(unsigned char *) AcquireMemory((unsigned int) (taglen+1));
+    if (str == (unsigned char *) NULL)
+      {
+        printf("Memory allocation failed");
+        return 0;
+      }
+    for (tagindx=0; tagindx<taglen; tagindx++)
+    {
+      c = *s++; len--;
+      if (len < 0) return -1;
+      str[tagindx] = c;
+    }
+    str[ taglen ] = 0;
+
+    /* now finish up by formatting this binary data into ASCII equivalent */
+    if (strlen((char *)readable) > 0)
+	    FormatString(temp, "%d#%d#%s=",(unsigned int)dataset, (unsigned int) recnum, readable);
+    else
+	    FormatString(temp, "%d#%d=",(unsigned int)dataset, (unsigned int) recnum);
+    WriteBlobString(ofile,temp);
+    formatString( ofile, (char *)str, taglen );
+    LiberateMemory((void **) &str);
+
+	  tagsfound++;
+  }
+  return tagsfound;
+}
+
+int format8BIM(Image *ifile, Image *ofile)
+{
+  char
+    temp[MaxTextExtent];
+
+  unsigned int
+    foundOSType;
+
+  long
+    Size;
+
+  int
+    ID,
+    resCount,
+    i,
+    c;
+
+  unsigned char
+    *PString,
+    *str;
+
+  resCount = foundOSType = 0; /* found the OSType */
+
+  c =ReadBlobByte(ifile);
+  while (c != EOF)
+  {
+	  if (c == '8')
+      {
+        unsigned char
+          buffer[5];
+
+        buffer[0] = c;
+        for (i=1; i<4; i++)
+        {
+          c=ReadBlobByte(ifile);
+          if (c == EOF) return -1;
+          buffer[i] = c;
+        }
+        buffer[4] = 0;
+        if (strcmp((const char *)buffer, "8BIM") == 0)
+          foundOSType = 1;
+        else
+          continue;
+	    }
+	  else
+      {
+        c=ReadBlobByte(ifile);
+	      continue;
+      }
+
+    /* we found the OSType (8BIM) and now grab the ID, PString, and Size fields */
+    ID = ReadBlobMSBShort(ifile);
+    if (ID < 0) return -1;
+    {
+      unsigned char
+        plen;
+
+      c=ReadBlobByte(ifile);
+      if (c == EOF) return -1;
+      plen = c;
+      PString=(unsigned char *) AcquireMemory((unsigned int) (plen+1));
+      if (PString == (unsigned char *) NULL)
+      {
+        printf("Memory allocation failed");
+        return 0;
+      }
+      for (i=0; i<plen; i++)
+      {
+        c=ReadBlobByte(ifile);
+        if (c == EOF) return -1;
+        PString[i] = c;
+      }
+      PString[ plen ] = 0;
+      if (!(plen&1)) 
+      {
+        c=ReadBlobByte(ifile);
+        if (c == EOF) return -1;
+      }
+	  }
+    Size = ReadBlobMSBLong(ifile);
+    if (Size < 0) return -1;
+    /* make a buffer to hold the data and snag it from the input stream */
+    str=(unsigned char *) AcquireMemory(Size);
+    if (str == (unsigned char *) NULL)
+      {
+        printf("Memory allocation failed");
+        return 0;
+      }
+    for (i=0; i<Size; i++)
+    {
+      c=ReadBlobByte(ifile);
+      if (c == EOF) return -1;
+      str[i] = c;
+    }
+
+    /* we currently skip thumbnails, since it does not make
+     * any sense preserving them in a real world application
+     */
+    if (ID != THUMBNAIL_ID)
+      {
+        /* now finish up by formatting this binary data into
+         * ASCII equivalent
+         */
+        if (strlen((const char *)PString) > 0)
+	        FormatString(temp, "8BIM#%d#%s=", ID, PString);
+        else
+	        FormatString(temp, "8BIM#%d=", ID);
+        WriteBlobString(ofile,temp);
+        if (ID == IPTC_ID)
+          {
+            formatString(ofile, "IPTC", 4);
+            formatIPTCfromBuffer(ofile, (char *)str, Size);
+          }
+        else
+          formatString(ofile, (char *)str, Size);
+      }
+    LiberateMemory((void **) &str);
+    LiberateMemory((void **) &PString);
+
+    resCount++;
+
+    c=ReadBlobByte(ifile);
+  }
+  return resCount;
+}
+
 static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
 {
   register int
@@ -572,6 +1753,46 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
       (void) WriteBlob(image,image->iptc_profile.length,
         (char *) image->iptc_profile.info);
     }
+  if (LocaleCompare(image_info->magick,"IPTC") == 0)
+    {
+      size_t
+        length;
+
+      unsigned char
+        *info;
+
+      if (image->iptc_profile.length == 0)
+        ThrowWriterException(FileOpenError,"No IPTC profile available",image);
+      status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
+      info=image->iptc_profile.info;
+      length=image->iptc_profile.length;
+      length=GetIPTCStream(&info,length);
+      if (length == 0)
+        ThrowWriterException(FileOpenError,"No IPTC info was found",image);
+      (void) WriteBlob(image,length,info);
+    }
+  if ((LocaleCompare(image_info->magick,"8BIMTEXT") == 0) ||
+      (LocaleCompare(image_info->magick,"IPTCTEXT") == 0))
+    {
+      Image
+        *buff;
+
+      if (image->iptc_profile.length == 0) 
+        ThrowWriterException(FileOpenError,"No 8BIM data is available",image);
+      buff=AllocateImage((ImageInfo *) NULL);
+      if (buff == (Image *) NULL)
+        ThrowWriterException(FileOpenError,"Memory allocation failed",image);
+      AttachBlob(buff->blob,image->iptc_profile.info,image->iptc_profile.length);
+      status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
+      if (status == False)
+        ThrowWriterException(FileOpenError,"Unable to open file",image);
+	    if (image->iptc_profile.info[0] == 0x1c)
+        formatIPTC(buff, image);
+      else
+        format8BIM(buff, image);
+      DetachBlob(buff->blob);
+      DestroyImage(buff);
+    }
   if (LocaleCompare(image_info->magick,"APP1") == 0)
     {
       /*
@@ -582,14 +1803,56 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
         if ((LocaleCompare(image->generic_profile[i].name,"APP1") == 0) &&
             (image->generic_profile[i].length != 0))
           {
+            unsigned char
+              *p;
             /*
               Open image file.
             */
             status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
             if (status == False)
               ThrowWriterException(FileOpenError,"Unable to open file",image);
-            (void) WriteBlob(image,(int) image->generic_profile[i].length,
-              (char *) image->generic_profile[i].info);
+            p=(unsigned char *) image->generic_profile[i].info;
+            /* We used to do lossless embedding of IPTC into JPEG's at the point of
+               writing out the data using the APP1 mechanism, but changed it to the
+               read side instead since it was easier to figure out how to access it
+               at that point
+             */
+            //if (p[0]!=0xff || p[1]!=M_SOI || p[2]!=0xff)
+            if (1)
+              {
+                (void) WriteBlob(image,(int) image->generic_profile[i].length,
+                  (char *)p);
+              }
+            else
+              {
+                Image
+                  *jpeg,
+                  *iptc;
+
+                int
+                  result;
+
+                iptc=AllocateImage((ImageInfo *) NULL);
+                jpeg=AllocateImage((ImageInfo *) NULL);
+                if ((iptc == (Image *) NULL) || (jpeg == (Image *) NULL))
+                  ThrowWriterException(FileOpenError,"Memory allocation failed",image);
+                if ((image->iptc_profile.info == (unsigned char *) NULL) ||
+                    (image->iptc_profile.length <= 0))
+                  ThrowWriterException(FileOpenError,"No iptc profile available",image);
+                AttachBlob(iptc->blob,image->iptc_profile.info,
+                  image->iptc_profile.length);
+                if ((p == (unsigned char *) NULL) ||
+                    (image->generic_profile[i].length <= 0))
+                  ThrowWriterException(FileOpenError,"No jpeg profile available",image);
+                AttachBlob(jpeg->blob,p,image->generic_profile[i].length);
+                result=jpeg_embed(jpeg,image,iptc);
+                DetachBlob(jpeg->blob);
+                DestroyImage(jpeg);
+                DetachBlob(iptc->blob);
+                DestroyImage(iptc);
+                if (result == 0)
+                  ThrowWriterException(FileOpenError,"jpeg embedding failed",image);
+              }
             CloseBlob(image);
             return(True);
           }
@@ -608,24 +1871,6 @@ static unsigned int WriteMETAImage(const ImageInfo *image_info,Image *image)
         ThrowWriterException(FileOpenError,"Unable to open file",image);
       (void) WriteBlob(image,image->color_profile.length,
         (char *) image->color_profile.info);
-    }
-  if (LocaleCompare(image_info->magick,"IPTC") == 0)
-    {
-      size_t
-        length;
-
-      unsigned char
-        *info;
-
-      if (image->iptc_profile.length == 0)
-        ThrowWriterException(FileOpenError,"No IPTC profile available",image);
-      status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
-      info=image->iptc_profile.info;
-      length=image->iptc_profile.length;
-      length=GetIPTCStream(&info,length);
-      if (length == 0)
-        ThrowWriterException(FileOpenError,"No IPTC info was found",image);
-      (void) WriteBlob(image,length,info);
     }
   CloseBlob(image);
   return(True);
