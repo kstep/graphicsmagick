@@ -463,7 +463,8 @@ unsigned int CompositeUtility(int argc,char **argv)
         if (composite_image == (Image *) NULL)
           {
             composite_image=ReadImage(image_info,&exception);
-            CatchException(&exception);
+            if (exception.severity != UndefinedException)
+              CatchException(&exception);
             if (composite_image != (Image *) NULL)
               {
                 status&=MogrifyImages(image_info,i-j,argv+j,&composite_image);

@@ -385,10 +385,12 @@ int main ( int argc, char **argv )
   CloneString(&image_info->size, size);
   strcpy( image_info->filename, "xc:white");
   canvas = ReadImage ( image_info, &exception );
+  if (exception.severity != UndefinedException)
+    CatchException(&exception);
   if ( canvas == (Image *)NULL )
     {
       printf ( "Failed to read canvas image %s\n", image_info->filename );
-      MagickError(exception.severity,exception.reason,exception.description);
+      exit(1);
     }
 
   /*

@@ -1944,8 +1944,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
             (void) strcat(msl_info->image_info[n]->filename,value);
             next_image=ReadImage(msl_info->image_info[n],&exception);
             if (exception.severity != UndefinedException)
-              MagickError(exception.severity,exception.reason,
-              exception.description);
+              CatchException(&exception);
             if (next_image == (Image *) NULL)
               continue;
             if (msl_info->image[n] == (Image *) NULL)
@@ -2334,8 +2333,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
                     (void) strcpy(msl_info->image_info[n]->filename,value);
                     next_image=ReadImage(msl_info->image_info[n],&exception);
                     if (exception.severity != UndefinedException)
-                      MagickError(exception.severity,exception.reason,
-                        exception.description);
+                      CatchException(&exception);
                     if (next_image == (Image *) NULL)
                       continue;
                     if (msl_info->image[n] == (Image *) NULL)
@@ -3596,8 +3594,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           (void) strcpy(msl_info->image_info[n]->filename,"xc:white");
           next_image=ReadImage(msl_info->image_info[n],&exception);
           if (exception.severity != UndefinedException)
-            MagickError(exception.severity,exception.reason,
-            exception.description);
+            CatchException(&exception);
           if (next_image == (Image *) NULL)
             break;
           if (msl_info->image[n] == (Image *) NULL)

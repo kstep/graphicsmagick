@@ -390,7 +390,8 @@ static unsigned int ConvertUtility(int argc,char **argv)
           next_image=PingImage(image_info,&exception);
         else
           next_image=ReadImage(image_info,&exception);
-        CatchException(&exception);
+        if (exception.severity != UndefinedException)
+          CatchException(&exception);
         status&=next_image != (Image *) NULL;
         if (next_image == (Image *) NULL)
           continue;
@@ -1200,7 +1201,8 @@ static unsigned int ConvertUtility(int argc,char **argv)
                     MagickFatalError(OptionFatalError,"Invalid list type",
                       option);
                 }
-                CatchException(&exception);
+                if (exception.severity != UndefinedException)
+                  CatchException(&exception);
                 DestroyMagick();
                 Exit(0);
               }

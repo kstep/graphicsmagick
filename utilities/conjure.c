@@ -207,7 +207,8 @@ int main(int argc,char **argv)
       MagickFatalError(ResourceLimitFatalError,"Unable to persist key",argv[i]);
     (void) FormatString(image_info->filename,"msl:%.1024s",argv[i]);
     image=ReadImage(image_info,&exception);
-    CatchException(&exception);
+    if (exception.severity != UndefinedException)
+      CatchException(&exception);
     status&=image != (Image *) NULL;
     if (image != (Image *) NULL)
       DestroyImageList(image);

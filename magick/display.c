@@ -7991,7 +7991,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
     handler=SetMonitorHandler((MonitorHandler) NULL);
   nexus=ReadImage(image_info,&exception);
   if (exception.severity != UndefinedException)
-    MagickError(exception.severity,exception.reason,exception.description);
+    CatchException(&exception);
   if (LocaleCompare(image_info->magick,"X") == 0)
     (void) SetMonitorHandler(handler);
   XSetCursorState(display,windows,False);
@@ -11226,8 +11226,7 @@ static Image *XVisualDirectoryImage(Display *display,
     (void) CloneString(&clone_info->size,DefaultTileGeometry);
     next_image=ReadImage(clone_info,&exception);
     if (exception.severity != UndefinedException)
-      MagickError(exception.severity,exception.reason,
-        exception.description);
+      CatchException(&exception);
     if (filelist[i] != filenames)
       LiberateMemory((void **) &filelist[i]);
     if (next_image != (Image *) NULL)

@@ -65,10 +65,12 @@ int main ( int argc, char **argv )
   strncpy( imageInfo.filename, infile, MaxTextExtent-1 );
   fflush(stdout);
   original = ReadImage ( &imageInfo, &exception );
+  if (exception.severity != UndefinedException)
+    CatchException(&exception);
   if ( original == (Image *)NULL )
     {
       printf ( "Failed to read original image %s\n", imageInfo.filename );
-      MagickError(exception.severity,exception.reason,exception.description);
+      exit(1);
     }
 
   /*
@@ -101,11 +103,13 @@ int main ( int argc, char **argv )
     CloneString( &imageInfo.size, size );
   fflush(stdout);
   original = ReadImage ( &imageInfo, &exception );
+  if (exception.severity != UndefinedException)
+    CatchException(&exception);
   if ( original == (Image *)NULL )
     {
       printf ( "Failed to read image from file in format %s\n",
 	       imageInfo.magick );
-      MagickError(exception.severity,exception.reason,exception.description);
+      exit(1);
     }
 
   /*
@@ -127,11 +131,13 @@ int main ( int argc, char **argv )
     CloneString( &imageInfo.size, size );
   fflush(stdout);
   final = ReadImage ( &imageInfo, &exception );
+  if (exception.severity != UndefinedException)
+    CatchException(&exception);
   if ( final == (Image *)NULL )
     {
       printf ( "Failed to read image from file in format %s\n",
 	       imageInfo.magick );
-      MagickError(exception.severity,exception.reason,exception.description);
+      exit(1);
     }
 
   /*
@@ -157,7 +163,7 @@ int main ( int argc, char **argv )
       printf( "R/W file check for format \"%s\" failed: %u/%.6f/%.6fe\n",
         format,(unsigned int) original->mean_error_per_pixel,original->normalized_mean_error,
         original->normalized_maximum_error);
-      MagickError(exception.severity,exception.reason,exception.description);
+      exit(1);
     }
 
   DestroyImage( original );

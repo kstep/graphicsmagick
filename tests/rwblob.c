@@ -66,10 +66,12 @@ int main ( int argc, char **argv )
   strncpy( imageInfo.filename, infile, MaxTextExtent-1 );
 
   original = ReadImage ( &imageInfo, &exception );
+  if (exception.severity != UndefinedException)
+    CatchException(&exception);
   if ( original == (Image *)NULL )
     {
       printf ( "Failed to read original image %s\n", imageInfo.filename );
-      MagickError(exception.severity,exception.reason,exception.description);
+      exit(1);
     }
 
   /*
@@ -87,11 +89,13 @@ int main ( int argc, char **argv )
   strncpy( original->magick, format, MaxTextExtent-1 );
   strcpy( imageInfo.filename, "" );
   original->delay = 10;
-  blob = (char *) ImageToBlob ( &imageInfo, original, &blob_length, &exception );
+  blob =(char *) ImageToBlob ( &imageInfo, original, &blob_length, &exception );
+  if (exception.severity != UndefinedException)
+    CatchException(&exception);
   if ( blob == NULL )
     {
       printf ( "Failed to write BLOB in format %s\n", imageInfo.magick );
-      MagickError(exception.severity,exception.reason,exception.description);
+      exit(1);
     }
   imageInfo.depth=original->depth;
   DestroyImage( original );
@@ -105,10 +109,12 @@ int main ( int argc, char **argv )
   if ( size != NULL )
     CloneString( &imageInfo.size, size );
   original = BlobToImage( &imageInfo, blob, blob_length, &exception );
+  if (exception.severity != UndefinedException)
+    CatchException(&exception);
   if ( original == (Image *)NULL )
     {
       printf ( "Failed to read image from BLOB in format %s\n",imageInfo.magick );
-      MagickError(exception.severity,exception.reason,exception.description);
+      exit(1)
     }
   LiberateMemory( (void**)&blob );
 
@@ -120,11 +126,13 @@ int main ( int argc, char **argv )
   strcpy( imageInfo.filename, "" );
   original->delay = 10;
   blob = (char *) ImageToBlob ( &imageInfo, original, &blob_length, &exception );
+  if (exception.severity != UndefinedException)
+    CatchException(&exception);
   imageInfo.depth=original->depth;
   if ( blob == NULL )
     {
       printf ( "Failed to write BLOB in format %s\n", imageInfo.magick );
-      MagickError(exception.severity,exception.reason,exception.description);
+      exit(1)
     }
 
   /*
@@ -135,10 +143,12 @@ int main ( int argc, char **argv )
   if ( size != NULL )
     CloneString( &imageInfo.size, size );
   final = BlobToImage( &imageInfo, blob, blob_length, &exception );
+  if (exception.severity != UndefinedException)
+    CatchException(&exception);
   if ( final == (Image *)NULL )
     {
       printf ( "Failed to read image from BLOB in format %s\n",imageInfo.magick );
-      MagickError(exception.severity,exception.reason,exception.description);
+      exit(1);
     }
   LiberateMemory( (void**)&blob );
 

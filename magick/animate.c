@@ -189,8 +189,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         *clone_info->magick='\0';
         next=ReadImage(clone_info,&exception);
         if (exception.severity != UndefinedException)
-          MagickError(exception.severity,exception.reason,
-            exception.description);
+          CatchException(&exception);
         if (next != (Image *) NULL)
           {
             if (image == (Image *) NULL)

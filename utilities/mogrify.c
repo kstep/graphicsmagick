@@ -297,7 +297,8 @@ static unsigned int MogrifyUtility(int argc,char **argv)
         k=i;
         (void) strncpy(image_info->filename,argv[i],MaxTextExtent-1);
         image=ReadImage(image_info,&exception);
-        CatchException(&exception);
+        if (exception.severity != UndefinedException)
+          CatchException(&exception);
         status&=image != (Image *) NULL;
         if (image == (Image *) NULL)
           continue;

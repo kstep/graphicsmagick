@@ -44,7 +44,7 @@
 <HR>
 <H1><A NAME="synopsis">
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
-<P><STRONG>CatchException</STRONG>( ExceptionInfo *exception );</P>
+<P><STRONG>CatchException</STRONG>( const ExceptionInfo *exception );</P>
 <P>void  <STRONG>DestroyExceptionInfo</STRONG>( ExceptionInfo *exception );</P>
 <P><STRONG>GetExceptionInfo</STRONG>( ExceptionInfo *exception );</P>
 <P>void  <STRONG>MagickError</STRONG>( const ExceptionType error, const char *reason, const char *description );</P>
@@ -60,8 +60,8 @@
 <FONT SIZE=-1>DESCRIPTIONS</FONT></A></H1>
 <P>
 <H2><A NAME="catchexception">CatchException</A></H2>
-<blockquote>CatchException() returns if no exceptions is found otherwise it determines the most severe exception and reports it as a warning or error depending on the severity. </blockquote><P>The format of the CatchException method is:</P>
-<blockquote>CatchException ( <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote>CatchException() returns if no exceptions is found otherwise it reports the exception as a warning, error, or fatal depending on the severity. </blockquote><P>The format of the CatchException method is:</P>
+<blockquote>CatchException ( const <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <dd><p></p><dt><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>

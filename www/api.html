@@ -178,8 +178,10 @@ format.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; image_info=CloneImageInfo((ImageInfo *) NULL);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (void) strcpy(image_info->filename,"image.gif");
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; images=ReadImage(image_info,&amp;exception);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (exception.severity != UndefinedException)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CatchException(&amp;exception);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (images == (Image *) NULL)
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MagickError(exception.severity,exception.reason,exception.description);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; exit(1);
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /*
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Turn the images into a thumbnail sequence.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; */

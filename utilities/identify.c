@@ -228,7 +228,8 @@ static int IdentifyUtility(int argc,char **argv)
           image=ReadImage(image_info,&exception);
         else
           image=PingImage(image_info,&exception);
-        CatchException(&exception);
+        if (exception.severity != UndefinedException)
+          CatchException(&exception);
         status&=image != (Image *) NULL;
         if (image == (Image *) NULL)
           continue;

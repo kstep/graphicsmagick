@@ -292,7 +292,8 @@ static unsigned int MontageUtility(int argc,char **argv)
           if (image_info->size == (char *) NULL)
             (void) CloneString(&image_info->size,montage_info->geometry);
           next_image=ReadImage(image_info,&exception);
-          CatchException(&exception);
+          if (exception.severity != UndefinedException)
+            CatchException(&exception);
           status&=next_image != (Image *) NULL;
           if (next_image == (Image *) NULL)
             continue;

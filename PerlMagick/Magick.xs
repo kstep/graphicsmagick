@@ -754,7 +754,8 @@ static Image *GetList(SV *reference,SV ***reference_vector,int *current,
 
                 exception=(&image->exception);
                 image=CloneImage(image,0,0,True,exception);
-                CatchException(exception);
+                if (exception->severity != UndefinedException)
+                  CatchException(exception);
                 if (image == (Image *) NULL)
                   return(NULL);
               }
@@ -2407,7 +2408,8 @@ BlobToImage(ref,...)
     for (i=number_images=0; i < n; i++)
     {
       image=BlobToImage(info->image_info,list[i],length[i],&exception);
-      CatchException(&exception);
+      if (exception.severity != UndefinedException)
+        CatchException(&exception);
       for ( ; image; image=image->next)
       {
         sv=newSViv((IV) image);
@@ -2518,7 +2520,8 @@ Coalesce(ref)
       }
     exception=(&image->exception);
     image=CoalesceImages(image,exception);
-    CatchException(exception);
+    if (exception->severity != UndefinedException)
+      CatchException(exception);
     for (next=image; next; next=next->next)
     {
       sv=newSViv((IV) next);
@@ -2861,7 +2864,8 @@ Flatten(ref)
       }
     exception=(&image->exception);
     image=FlattenImages(image,exception);
-    CatchException(exception);
+    if (exception->severity != UndefinedException)
+      CatchException(exception);
     /*
       Create blessed Perl array for the returned image.
     */
@@ -4342,7 +4346,8 @@ Mogrify(ref,...)
         {
           region_image=image;
           image=CropImage(image,&region_info,exception);
-          CatchException(exception);
+          if (exception->severity != UndefinedException)
+            CatchException(exception);
         }
       switch (ix)
       {
@@ -5790,7 +5795,8 @@ Mogrify(ref,...)
           break;
         }
       }
-      CatchException(exception);
+      if (exception->severity != UndefinedException)
+        CatchException(exception);
       if (next != (Image *) NULL)
         (void) CatchImageException(next);
       if (region_image != (Image *) NULL)
@@ -6192,7 +6198,8 @@ Montage(ref,...)
     exception=(&image->exception);
     image=MontageImages(image,montage_info,exception);
     DestroyMontageInfo(montage_info);
-    CatchException(exception);
+    if (exception->severity != UndefinedException)
+      CatchException(exception);
     if (transparent_color.opacity != TransparentOpacity)
       for (next=image; next; next=next->next)
         TransparentImage(next,transparent_color,TransparentOpacity);
@@ -6332,7 +6339,8 @@ Morph(ref,...)
     }
     exception=(&image->exception);
     image=MorphImages(image,number_frames,exception);
-    CatchException(exception);
+    if (exception->severity != UndefinedException)
+      CatchException(exception);
     for (next=image; next; next=next->next)
     {
       sv=newSViv((IV) next);
@@ -6424,7 +6432,8 @@ Mosaic(ref)
       }
     exception=(&image->exception);
     image=MosaicImages(image,exception);
-    CatchException(exception);
+    if (exception->severity != UndefinedException)
+      CatchException(exception);
     /*
       Create blessed Perl array for the returned image.
     */
@@ -6571,7 +6580,8 @@ Ping(ref,...)
       (void) strncpy(package_info->image_info->filename,list[i],
         MaxTextExtent-1);
       image=PingImage(package_info->image_info,&exception);
-      CatchException(&exception);
+      if (exception.severity != UndefinedException)
+        CatchException(&exception);
       count+=GetImageListSize(image);
       EXTEND(sp,4*count);
       for ( ; image; image=image->next)
@@ -7369,7 +7379,8 @@ Read(ref,...)
       (void) strncpy(package_info->image_info->filename,list[i],
         MaxTextExtent-1);
       image=ReadImage(package_info->image_info,&exception);
-      CatchException(&exception);
+      if (exception.severity != UndefinedException)
+        CatchException(&exception);
       for ( ; image; image=image->next)
       {
         sv=newSViv((IV) image);
