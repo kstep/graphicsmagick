@@ -258,6 +258,7 @@ static void ConvertUsage(void)
       "-verbose             print detailed information about the image",
       "-view                FlashPix viewing transforms",
       "-wave geometry       alter an image along a sine wave",
+      "-write filename      write images to this file",
       (char *) NULL
     };
 
@@ -683,13 +684,6 @@ static unsigned int ConvertUtility(int argc,char **argv)
                 if ((i == argc) || !IsGeometry(argv[i]))
                   MagickError(OptionError,"Missing geometry",option);
               }
-            break;
-          }
-        if (LocaleCompare("copy",option+1) == 0)
-          {
-            i++;
-            if (i == argc)
-              MagickError(OptionError,"Missing filename",option);
             break;
           }
         if (LocaleCompare("cycle",option+1) == 0)
@@ -1492,13 +1486,6 @@ static unsigned int ConvertUtility(int argc,char **argv)
               }
             break;
           }
-        if (LocaleCompare("replace",option+1) == 0)
-          {
-            i++;
-            if (i == argc)
-              MagickError(OptionError,"Missing filename",option);
-            break;
-          }
         if (LocaleCompare("roll",option+1) == 0)
           {
             if (*option == '-')
@@ -1819,6 +1806,13 @@ static unsigned int ConvertUtility(int argc,char **argv)
             i++;
             if ((i == argc) || !sscanf(argv[i],"%ld",&x))
               MagickError(OptionError,"Missing amplitude",option);
+            break;
+          }
+        if (LocaleCompare("write",option+1) == 0)
+          {
+            i++;
+            if (i == argc)
+              MagickError(OptionError,"Missing filename",option);
             break;
           }
         MagickError(OptionError,"Unrecognized option",option);

@@ -1,3 +1,6 @@
+2002-02-16  Cristy  <cristy@mystic.es.dupont.com>,
+  * Replaced -copy/-replace options with +/-write in the convert program.
+
 2002-02-14  Cristy  <cristy@mystic.es.dupont.com>,
   * Command line options now stay in effect for any image in command
     line order until a another option is encountered or if -noop is specified.
