@@ -82,11 +82,11 @@ typedef struct _PrimitiveInfo
   PrimitiveType
     primitive;
 
+  PointInfo
+    point;
+
   unsigned int
     coordinates;
-
-  PointInfo
-    pixel;
 
   PaintMethod
     method;
@@ -543,7 +543,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     color;
 
   PointInfo
-    pixel,
+    point,
     target;
 
   PrimitiveInfo
@@ -818,15 +818,15 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         p++;
       if (!IsGeometry(p))
         break;
-      pixel.x=strtod(p,&p);
+      point.x=strtod(p,&p);
       if (*p == ',')
         p++;
-      pixel.y=strtod(p,&p);
+      point.y=strtod(p,&p);
       if (*p == ',')
         p++;
       primitive_info[i].primitive=primitive_type;
+      primitive_info[i].point=point;
       primitive_info[i].coordinates=0;
-      primitive_info[i].pixel=pixel;
       primitive_info[i].method=FloodfillMethod;
       while ((isspace((int) (*p)) || (*p == ',')) && (*p != '\0'))
         p++;
@@ -860,7 +860,7 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             primitive_type=UndefinedPrimitive;
             break;
           }
-        GeneratePoint(primitive_info+j,primitive_info[j].pixel);
+        GeneratePoint(primitive_info+j,primitive_info[j].point);
         i=j+primitive_info[j].coordinates;
         break;
       }
@@ -871,8 +871,8 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             primitive_type=UndefinedPrimitive;
             break;
           }
-        GenerateLine(primitive_info+j,primitive_info[j].pixel,
-          primitive_info[j+1].pixel);
+        GenerateLine(primitive_info+j,primitive_info[j].point,
+          primitive_info[j+1].point);
         i=j+primitive_info[j].coordinates;
         break;
       }
@@ -883,8 +883,8 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             primitive_type=UndefinedPrimitive;
             break;
           }
-        GenerateRectangle(primitive_info+j,primitive_info[j].pixel,
-          primitive_info[j+1].pixel);
+        GenerateRectangle(primitive_info+j,primitive_info[j].point,
+          primitive_info[j+1].point);
         i=j+primitive_info[j].coordinates;
         break;
       }
@@ -895,8 +895,8 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             primitive_type=UndefinedPrimitive;
             break;
           }
-        GenerateRoundRectangle(primitive_info+j,primitive_info[j].pixel,
-          primitive_info[j+1].pixel,primitive_info[j+2].pixel);
+        GenerateRoundRectangle(primitive_info+j,primitive_info[j].point,
+          primitive_info[j+1].point,primitive_info[j+2].point);
         i=j+primitive_info[j].coordinates;
         break;
       }
@@ -907,8 +907,8 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             primitive_type=UndefinedPrimitive;
             break;
           }
-        GenerateArc(primitive_info+j,primitive_info[j].pixel,
-          primitive_info[j+1].pixel,primitive_info[j+2].pixel,0,False,False);
+        GenerateArc(primitive_info+j,primitive_info[j].point,
+          primitive_info[j+1].point,primitive_info[j+2].point,0,False,False);
         i=j+primitive_info[j].coordinates;
         break;
       }
@@ -919,8 +919,8 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             primitive_type=UndefinedPrimitive;
             break;
           }
-        GenerateEllipse(primitive_info+j,primitive_info[j].pixel,
-          primitive_info[j+1].pixel,primitive_info[j+2].pixel);
+        GenerateEllipse(primitive_info+j,primitive_info[j].point,
+          primitive_info[j+1].point,primitive_info[j+2].point);
         i=j+primitive_info[j].coordinates;
         break;
       }
@@ -931,8 +931,8 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
             primitive_type=UndefinedPrimitive;
             break;
           }
-        radius=GenerateCircle(primitive_info+j,primitive_info[j].pixel,
-          primitive_info[j+1].pixel);
+        radius=GenerateCircle(primitive_info+j,primitive_info[j].point,
+          primitive_info[j+1].point);
         i=j+primitive_info[j].coordinates;
         break;
       }
@@ -1157,14 +1157,14 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
         composite_image=ReadImage(composite_info,&image->exception);
         if (composite_image == (Image *) NULL)
           break;
-        if ((primitive_info[j+1].pixel.x != 0) &&
-            (primitive_info[j+1].pixel.y != 0))
+        if ((primitive_info[j+1].point.x != 0) &&
+            (primitive_info[j+1].point.y != 0))
           {
             /*
               Resize image.
             */
-            FormatString(geometry,"%gx%g",primitive_info[j+1].pixel.x,
-              primitive_info[j+1].pixel.y);
+            FormatString(geometry,"%gx%g",primitive_info[j+1].point.x,
+              primitive_info[j+1].point.y);
             TransformImage(&composite_image,(char *) NULL,geometry);
           }
         if ((clone_info->affine[1] == 0.0) && (clone_info->affine[2] == 0.0))
@@ -1215,8 +1215,8 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
               }
           }
         CompositeImage(image,image->matte ? OverCompositeOp :
-          ReplaceCompositeOp,composite_image,(int) primitive_info[j].pixel.x,
-          (int) primitive_info[j].pixel.y);
+          ReplaceCompositeOp,composite_image,(int) primitive_info[j].point.x,
+          (int) primitive_info[j].point.y);
         DestroyImage(composite_image);
         DestroyImageInfo(composite_info);
         break;
@@ -1230,26 +1230,26 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
     */
     for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++)
     {
-      pixel=primitive_info[i].pixel;
-      primitive_info[i].pixel.x=clone_info->affine[0]*pixel.x+
-        clone_info->affine[2]*pixel.y+clone_info->affine[4];
-      primitive_info[i].pixel.y=clone_info->affine[1]*pixel.x+
-        clone_info->affine[3]*pixel.y+clone_info->affine[5];
+      point=primitive_info[i].point;
+      primitive_info[i].point.x=clone_info->affine[0]*point.x+
+        clone_info->affine[2]*point.y+clone_info->affine[4];
+      primitive_info[i].point.y=clone_info->affine[1]*point.x+
+        clone_info->affine[3]*point.y+clone_info->affine[5];
     }
     /*
       Compute bounding box.
     */
     for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++)
     {
-      pixel=primitive_info[i].pixel;
-      if (pixel.x < bounds.x1)
-        bounds.x1=pixel.x;
-      if (pixel.y < bounds.y1)
-        bounds.y1=pixel.y;
-      if (pixel.x > bounds.x2)
-        bounds.x2=pixel.x;
-      if (pixel.y > bounds.y2)
-        bounds.y2=pixel.y;
+      point=primitive_info[i].point;
+      if (point.x < bounds.x1)
+        bounds.x1=point.x;
+      if (point.y < bounds.y1)
+        bounds.y1=point.y;
+      if (point.x > bounds.x2)
+        bounds.x2=point.x;
+      if (point.y > bounds.y2)
+        bounds.y2=point.y;
     }
     mid=ceil(radius+clone_info->linewidth/2.0);
     bounds.x1-=mid;
@@ -1326,12 +1326,10 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
           }
         if (!clone_info->antialias)
           opacity=(Quantum) (OpaqueOpacity*clone_info->opacity/100.0);
-        q->red=(Quantum)
-          (alpha*(color.red*(MaxRGB-opacity)+q->red*opacity));
+        q->red=(Quantum) (alpha*(color.red*(MaxRGB-opacity)+q->red*opacity));
         q->green=(Quantum)
           (alpha*(color.green*(MaxRGB-opacity)+q->green*opacity));
-        q->blue=(Quantum)
-          (alpha*(color.blue*(MaxRGB-opacity)+q->blue*opacity));
+        q->blue=(Quantum) (alpha*(color.blue*(MaxRGB-opacity)+q->blue*opacity));
         q->opacity=(Quantum)
           (alpha*(opacity*(MaxRGB-opacity)+q->opacity*opacity));
         q++;
@@ -1437,15 +1435,15 @@ static void GenerateArc(PrimitiveInfo *primitive_info,const PointInfo start,
     points[2].y=center.y+sin((alpha+(i+1)*arc_angle/number_segments));
     points[1].x=points[2].x+gamma*sin((alpha+(i+1)*arc_angle/number_segments));
     points[1].y=points[2].y-gamma*cos((alpha+(i+1)*arc_angle/number_segments));
-    p->pixel=p == primitive_info ? start : (p-1)->pixel;
-    (p+1)->pixel.x=cosine*arc.x*points[0].x-sine*arc.y*points[0].y;
-    (p+1)->pixel.y=sine*arc.x*points[0].x+cosine*arc.y*points[0].y;
-    (p+2)->pixel.x=cosine*arc.x*points[1].x-sine*arc.y*points[1].y;
-    (p+2)->pixel.y=sine*arc.x*points[1].x+cosine*arc.y*points[1].y;
-    (p+3)->pixel.x=cosine*arc.x*points[2].x-sine*arc.y*points[2].y;
-    (p+3)->pixel.y=sine*arc.x*points[2].x+cosine*arc.y*points[2].y;
+    p->point=p == primitive_info ? start : (p-1)->point;
+    (p+1)->point.x=cosine*arc.x*points[0].x-sine*arc.y*points[0].y;
+    (p+1)->point.y=sine*arc.x*points[0].x+cosine*arc.y*points[0].y;
+    (p+2)->point.x=cosine*arc.x*points[1].x-sine*arc.y*points[1].y;
+    (p+2)->point.y=sine*arc.x*points[1].x+cosine*arc.y*points[1].y;
+    (p+3)->point.x=cosine*arc.x*points[2].x-sine*arc.y*points[2].y;
+    (p+3)->point.y=sine*arc.x*points[2].x+cosine*arc.y*points[2].y;
     if (i == (number_segments-1))
-      (p+3)->pixel=end;
+      (p+3)->point=end;
     p->coordinates=4;
     GenerateBezier(p);
     p+=p->coordinates;
@@ -1467,7 +1465,7 @@ static void GenerateBezier(PrimitiveInfo *primitive_info)
 
   PointInfo
     last,
-    pixel,
+    point,
     *points;
 
   register int
@@ -1489,10 +1487,10 @@ static void GenerateBezier(PrimitiveInfo *primitive_info)
   {
     for (j=i+1; j < primitive_info->coordinates; j++)
     {
-      alpha=fabs(primitive_info[j].pixel.x-primitive_info[i].pixel.x);
+      alpha=fabs(primitive_info[j].point.x-primitive_info[i].point.x);
       if (alpha > quantum)
         quantum=alpha;
-      alpha=fabs(primitive_info[j].pixel.y-primitive_info[i].pixel.y);
+      alpha=fabs(primitive_info[j].point.y-primitive_info[i].point.y);
       if (alpha > quantum)
         quantum=alpha;
     }
@@ -1508,24 +1506,24 @@ static void GenerateBezier(PrimitiveInfo *primitive_info)
   /*
     Compute bezier points.
   */
-  last=primitive_info[primitive_info->coordinates-1].pixel;
+  last=primitive_info[primitive_info->coordinates-1].point;
   weight=0.0;
   for (i=0; i < primitive_info->coordinates; i++)
     coefficients[i]=Permutate(primitive_info->coordinates-1,i);
   for (i=0; i < (int) control_points; i++)
   {
     p=primitive_info;
-    pixel.x=0;
-    pixel.y=0;
+    point.x=0;
+    point.y=0;
     alpha=pow(1.0-weight,primitive_info->coordinates-1);
     for (j=0; j < primitive_info->coordinates; j++)
     {
-      pixel.x+=alpha*coefficients[j]*p->pixel.x;
-      pixel.y+=alpha*coefficients[j]*p->pixel.y;
+      point.x+=alpha*coefficients[j]*p->point.x;
+      point.y+=alpha*coefficients[j]*p->point.y;
       alpha*=weight/(1.0-weight);
       p++;
     }
-    points[i]=pixel;
+    points[i]=point;
     weight+=1.0/quantum/primitive_info->coordinates;
   }
   /*
@@ -1534,11 +1532,11 @@ static void GenerateBezier(PrimitiveInfo *primitive_info)
   p=primitive_info;
   for (i=0; i < (int) control_points; i++)
   {
-    pixel=points[i];
-    p->pixel=pixel;
+    point=points[i];
+    p->point=point;
     p++;
   }
-  p->pixel=last;
+  p->point=last;
   p++;
   primitive_info->coordinates=p-primitive_info;
   for (i=0; i < primitive_info->coordinates; i++)
@@ -1563,12 +1561,12 @@ static double GenerateCircle(PrimitiveInfo *primitive_info,
 
   primitive_info->coordinates=2;
   p=primitive_info;
-  p->pixel=start;
+  p->point=start;
   q=p+1;
   q->primitive=primitive_info->primitive;
-  q->pixel=end;
-  alpha=q->pixel.x-p->pixel.x;
-  beta=q->pixel.y-p->pixel.y;
+  q->point=end;
+  alpha=q->point.x-p->point.x;
+  beta=q->point.y-p->point.y;
   return(sqrt(alpha*alpha+beta*beta));
 }
 
@@ -1579,7 +1577,7 @@ static void GenerateEllipse(PrimitiveInfo *primitive_info,const PointInfo start,
     angle;
 
   PointInfo
-    pixel;
+    point;
 
   register int
     i;
@@ -1593,9 +1591,9 @@ static void GenerateEllipse(PrimitiveInfo *primitive_info,const PointInfo start,
   p=primitive_info;
   for (angle=(degrees.x+1.0); angle <= degrees.y; angle+=1.0)
   {
-    pixel.x=cos(DegreesToRadians(fmod(angle,360.0)))*end.x+start.x;
-    pixel.y=sin(DegreesToRadians(fmod(angle,360.0)))*end.y+start.y;
-    p->pixel=pixel;
+    point.x=cos(DegreesToRadians(fmod(angle,360.0)))*end.x+start.x;
+    point.y=sin(DegreesToRadians(fmod(angle,360.0)))*end.y+start.y;
+    p->point=point;
     p++;
   }
   primitive_info->coordinates=p-primitive_info;
@@ -1614,10 +1612,10 @@ static void GenerateLine(PrimitiveInfo *primitive_info,const PointInfo start,
     *q;
 
   p=primitive_info;
-  p->pixel=start;
+  p->point=start;
   q=p+1;
   q->primitive=primitive_info->primitive;
-  q->pixel=end;
+  q->point=end;
   primitive_info->coordinates=2;
 }
 
@@ -1635,7 +1633,7 @@ static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
 
   PointInfo
     last,
-    pixels[4],
+    points[4],
     point,
     start;
 
@@ -1649,11 +1647,13 @@ static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
     *q;
 
   unsigned int
-    number_coordinates;
+    number_coordinates,
+    z_count;
 
   point.x=0;
   point.y=0;
   number_coordinates=0;
+  z_count=0;
   primitive_type=primitive_info->primitive;
   q=primitive_info;
   p=(char *) path;
@@ -1703,7 +1703,6 @@ static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
         last.y=attribute == 'A' ? y : point.y+y;
         GenerateArc(q,point,last,arc,angle,large_arc,sweep);
         q+=q->coordinates;
-        point=last;
         break;
       }
       case 'c':
@@ -1714,7 +1713,7 @@ static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
         */
         do
         {
-          pixels[0]=point;
+          points[0]=point;
           for (i=1; i <= 3; i++)
           {
             x=strtod(p,&p);
@@ -1725,11 +1724,10 @@ static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
               p++;
             last.x=attribute == 'C' ? x : point.x+x;
             last.y=attribute == 'C' ? y : point.y+y;
-            pixels[i]=last;
+            points[i]=last;
           }
-          point=last;
           for (i=0; i <= 3; i++)
-            (q+i)->pixel=pixels[i];
+            (q+i)->point=points[i];
           q->coordinates=4;
           GenerateBezier(q);
           q+=q->coordinates;
@@ -1766,15 +1764,8 @@ static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
       case 'm':
       {
         primitive_info->coordinates=q-primitive_info;
-        for (i=0; i < primitive_info->coordinates; i++)
-        {
-          q->primitive=primitive_info->primitive;
-          q--;
-        }
         number_coordinates+=primitive_info->coordinates;
-        primitive_info+=primitive_info->coordinates;
-        primitive_info->primitive=primitive_type;
-        q=primitive_info;
+        primitive_info=q;
       }
       case 'M':
       {
@@ -1800,7 +1791,7 @@ static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
         */
         do
         {
-          pixels[0]=point;
+          points[0]=point;
           for (i=1; i < 3; i++)
           {
             x=strtod(p,&p);
@@ -1811,11 +1802,10 @@ static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
               p++;
             last.x=attribute == 'Q' ? x : point.x+x;
             last.y=attribute == 'Q' ? y : point.y+y;
-            pixels[i]=last;
+            points[i]=last;
           }
-          point=last;
           for (i=0; i < 3; i++)
-            (q+i)->pixel=pixels[i];
+            (q+i)->point=points[i];
           q->coordinates=3;
           GenerateBezier(q);
           q+=q->coordinates;
@@ -1830,9 +1820,9 @@ static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
         */
         do
         {
-          pixels[0]=pixels[3];
-          pixels[1].x=2.0*pixels[3].x-pixels[2].x;
-          pixels[1].y=2.0*pixels[3].y-pixels[2].y;
+          points[0]=points[3];
+          points[1].x=2.0*points[3].x-points[2].x;
+          points[1].y=2.0*points[3].y-points[2].y;
           for (i=2; i <= 3; i++)
           {
             x=strtod(p,&p);
@@ -1843,11 +1833,10 @@ static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
               p++;
             last.x=attribute == 'S' ? x : point.x+x;
             last.y=attribute == 'S' ? y : point.y+y;
-            pixels[i]=last;
+            points[i]=last;
           }
-          point=last;
           for (i=0; i <= 4; i++)
-            (q+i)->pixel=pixels[i];
+            (q+i)->point=points[i];
           q->coordinates=4;
           GenerateBezier(q);
           q+=q->coordinates;
@@ -1862,9 +1851,9 @@ static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
         */
         do
         {
-          pixels[0]=pixels[2];
-          pixels[1].x=2.0*pixels[2].x-pixels[1].x;
-          pixels[1].y=2.0*pixels[2].y-pixels[1].y;
+          points[0]=points[2];
+          points[1].x=2.0*points[2].x-points[1].x;
+          points[1].y=2.0*points[2].y-points[1].y;
           for (i=2; i < 3; i++)
           {
             x=strtod(p,&p);
@@ -1875,11 +1864,10 @@ static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
               p++;
             last.x=attribute == 'T' ? x : point.x+x;
             last.y=attribute == 'T' ? y : point.y+y;
-            pixels[i]=last;
+            points[i]=last;
           }
-          point=last;
           for (i=0; i < 3; i++)
-            (q+i)->pixel=pixels[i];
+            (q+i)->point=points[i];
           q->coordinates=3;
           GenerateBezier(q);
           q+=q->coordinates;
@@ -1902,36 +1890,34 @@ static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
         GeneratePoint(q,point);
         q+=q->coordinates;
         primitive_info->coordinates=q-primitive_info;
-        for (i=0; i < primitive_info->coordinates; i++)
-        {
-          q->primitive=primitive_info->primitive;
-          q--;
-        }
         number_coordinates+=primitive_info->coordinates;
-        primitive_info+=primitive_info->coordinates;
-        primitive_info->primitive=primitive_type;
-        q=primitive_info;
+        primitive_info=q;
+        z_count++;
         break;
       }
       default:
       {
         if (isalpha((int) attribute))
-          (void) fprintf(stderr,"attribute not implemented: %c\n",attribute);
+          (void) fprintf(stderr,"attribute not recognized: %c\n",attribute);
         break;
       }
     }
+    if (q != primitive_info)
+      point=(q-1)->point;
   }
-  if (q != primitive_info)
+  if (z_count == 0)
     {
       GeneratePoint(q,point);
       q+=q->coordinates;
     }
   primitive_info->coordinates=q-primitive_info;
   number_coordinates+=primitive_info->coordinates;
-  for (i=0; i < primitive_info->coordinates; i++)
+  for (i=0; i < number_coordinates; i++)
   {
-    q->primitive=primitive_info->primitive;
     q--;
+    q->primitive=primitive_type;
+    if (z_count > 1)
+      q->method=FillToBorderMethod;
   }
   return(number_coordinates);
 }
@@ -1939,7 +1925,7 @@ static unsigned int GeneratePath(PrimitiveInfo *primitive_info,const char *path)
 static void GeneratePoint(PrimitiveInfo *primitive_info,const PointInfo start)
 {
   primitive_info->coordinates=1;
-  primitive_info->pixel=start;
+  primitive_info->point=start;
 }
 
 static void GenerateRectangle(PrimitiveInfo *primitive_info,
@@ -2019,7 +2005,7 @@ static void GenerateRoundRectangle(PrimitiveInfo *primitive_info,
   degrees.y=270.0;
   GenerateEllipse(p,point,arc,degrees);
   p+=p->coordinates;
-  GeneratePoint(p,primitive_info->pixel);
+  GeneratePoint(p,primitive_info->point);
   p+=p->coordinates;
   primitive_info->coordinates=p-primitive_info;
   for (i=0; i < primitive_info->coordinates; i++)
@@ -2098,7 +2084,7 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
 %  Method IntersectPrimitive returns the value from [0..1] for the (x,y)
 %  position of the image.  The opacity is 1.0 if the (x,y) position intersects
 %  within the bounds of the primitive as defined in primitive_info.  A value
-%  less than 1.0 and greater than 0.0 is returned for a primitive edge pixel
+%  less than 1.0 and greater than 0.0 is returned for a primitive edge point
 %  to allow for anti-aliasing.  Otherwise 0.0 is returned.
 %
 %  Rick Mabry provided the algorithms for anti-aliased primitives.
@@ -2106,7 +2092,7 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
 %  The format of the IntersectPrimitive method is:
 %
 %      double IntersectPrimitive(PrimitiveInfo *primitive_info,
-%        const DrawInfo *draw_info,const PointInfo *pixel,const int fill,
+%        const DrawInfo *draw_info,const PointInfo *point,const int fill,
 %        Image *image)
 %
 %  A description of each parameter follows:
@@ -2121,7 +2107,7 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
 %
 %    o target: PointInfo representing the (x,y) location in the image.
 %
-%    o fill: only return True if the pixel is in the interior of the
+%    o fill: only return True if the point is in the interior of the
 %      specified graphics primitive.
 %
 %    o image: The address of a structure of type Image.
@@ -2129,7 +2115,7 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
 %
 */
 
-static double DistanceToLine(const PointInfo *pixel,const PointInfo *p,
+static double DistanceToLine(const PointInfo *point,const PointInfo *p,
   const PointInfo *q)
 {
   double
@@ -2141,21 +2127,21 @@ static double DistanceToLine(const PointInfo *pixel,const PointInfo *p,
     alpha,
     beta;
 
-  alpha=pixel->x-p->x;
-  beta=pixel->y-p->y;
+  alpha=point->x-p->x;
+  beta=point->y-p->y;
   dot_product=alpha*(q->x-p->x)+beta*(q->y-p->y);
   if (dot_product <= 0)
     return(alpha*alpha+beta*beta);
   phi=(q->x-p->x)*(q->x-p->x)+(q->y-p->y)*(q->y-p->y);
   gamma=dot_product*dot_product/phi;
   if (gamma <= phi)
-    return(alpha*alpha+beta*beta-gamma);
-  alpha=pixel->x-q->x;
-  beta=pixel->y-q->y;
+    return(alpha*alpha+beta*beta-gamma+MagickEpsilon);
+  alpha=point->x-q->x;
+  beta=point->y-q->y;
   return(alpha*alpha+beta*beta);
 }
 
-static double PixelOnLine(const PointInfo *pixel,const PointInfo *p,
+static double PixelOnLine(const PointInfo *point,const PointInfo *p,
   const PointInfo *q,const double mid,const double opacity)
 {
   register double
@@ -2165,8 +2151,8 @@ static double PixelOnLine(const PointInfo *pixel,const PointInfo *p,
   if ((mid == 0) || (opacity == 1.0))
     return(opacity);
   if ((p->x == q->x) && (p->y == q->y))
-    return((pixel->x == p->x) && (pixel->y == p->y) ? 1.0 : opacity);
-  distance=DistanceToLine(pixel,p,q);
+    return((point->x == p->x) && (point->y == p->y) ? 1.0 : opacity);
+  distance=DistanceToLine(point,p,q);
   alpha=mid-0.5;
   if (distance <= (alpha*alpha))
     return(1.0);
@@ -2180,7 +2166,7 @@ static double PixelOnLine(const PointInfo *pixel,const PointInfo *p,
 }
 
 static double IntersectPrimitive(PrimitiveInfo *primitive_info,
-  const DrawInfo *draw_info,const PointInfo *pixel,const int fill,Image *image)
+  const DrawInfo *draw_info,const PointInfo *point,const int fill,Image *image)
 {
   PixelPacket
     border_color;
@@ -2219,23 +2205,23 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
       case PointPrimitive:
       default:
       {
-        if ((pixel->x == (int) (p->pixel.x+0.5)) &&
-            (pixel->y == (int) (p->pixel.y+0.5)))
+        if ((point->x == (int) (p->point.x+0.5)) &&
+            (point->y == (int) (p->point.y+0.5)))
           opacity=1.0;
         break;
       }
       case LinePrimitive:
       {
-        opacity=PixelOnLine(pixel,&p->pixel,&q->pixel,mid,opacity);
+        opacity=PixelOnLine(point,&p->point,&q->point,mid,opacity);
         break;
       }
       case CirclePrimitive:
       {
-        alpha=p->pixel.x-pixel->x;
-        beta=p->pixel.y-pixel->y;
+        alpha=p->point.x-point->x;
+        beta=p->point.y-point->y;
         distance=sqrt(alpha*alpha+beta*beta);
-        alpha=p->pixel.x-q->pixel.x;
-        beta=p->pixel.y-q->pixel.y;
+        alpha=p->point.x-q->point.x;
+        beta=p->point.y-q->point.y;
         radius=sqrt(alpha*alpha+beta*beta);
         if (fill)
           {
@@ -2285,64 +2271,61 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
           {
             poly_opacity=0.0;
             for ( ; (p < q) && (poly_opacity != 1.0); p++)
-              poly_opacity=PixelOnLine(pixel,&p->pixel,&(p+1)->pixel,mid,
+              poly_opacity=PixelOnLine(point,&p->point,&(p+1)->point,mid,
                 Max(opacity,poly_opacity));
             opacity=Max(opacity,poly_opacity);
             break;
           }
         primitive_info=p;
         crossings=0;
-        if ((pixel->y < q->pixel.y) != (pixel->y < p->pixel.y))
+        if ((point->y < q->point.y) != (point->y < p->point.y))
           {
-            crossing=pixel->x < q->pixel.x;
-            if (crossing != (pixel->x < p->pixel.x))
-              crossings+=pixel->x < (q->pixel.x-(q->pixel.y-pixel->y)*
-                (p->pixel.x-q->pixel.x)/(p->pixel.y-q->pixel.y));
+            crossing=point->x < q->point.x;
+            if (crossing != (point->x < p->point.x))
+              crossings+=point->x < (q->point.x-(q->point.y-point->y)*
+                (p->point.x-q->point.x)/(p->point.y-q->point.y));
             else
               if (crossing)
                 crossings++;
           }
         for (p++; p <= q; p++)
         {
-          if (pixel->y < (p-1)->pixel.y)
+          if (point->y < (p-1)->point.y)
             {
-              while ((p <= q) && (pixel->y < p->pixel.y))
+              while ((p <= q) && (point->y < p->point.y))
                 p++;
               if (p > q)
                 break;
-              crossing=pixel->x < (p-1)->pixel.x;
-              if (crossing != (pixel->x < p->pixel.x))
-                crossings+=pixel->x < ((p-1)->pixel.x-((p-1)->pixel.y-pixel->y)*
-                  (p->pixel.x-(p-1)->pixel.x)/(p->pixel.y-(p-1)->pixel.y));
+              crossing=point->x < (p-1)->point.x;
+              if (crossing != (point->x < p->point.x))
+                crossings+=point->x < ((p-1)->point.x-((p-1)->point.y-point->y)*
+                  (p->point.x-(p-1)->point.x)/(p->point.y-(p-1)->point.y));
               else
                 if (crossing)
                   crossings++;
               continue;
             }
-          while ((p <= q) && (pixel->y >= p->pixel.y))
+          while ((p <= q) && (point->y >= p->point.y))
             p++;
           if (p > q)
             break;
-          crossing=pixel->x < (p-1)->pixel.x;
-          if (crossing != (pixel->x < p->pixel.x))
-            crossings+=pixel->x < ((p-1)->pixel.x-((p-1)->pixel.y-pixel->y)*
-              (p->pixel.x-(p-1)->pixel.x)/(p->pixel.y-(p-1)->pixel.y));
+          crossing=point->x < (p-1)->point.x;
+          if (crossing != (point->x < p->point.x))
+            crossings+=point->x < ((p-1)->point.x-((p-1)->point.y-point->y)*
+              (p->point.x-(p-1)->point.x)/(p->point.y-(p-1)->point.y));
           else
             if (crossing)
               crossings++;
         }
-        poly_opacity=0.0;
-        if (crossings & 0x01)
-          poly_opacity=1.0;
-        p=primitive_info;
-        minimum_distance=DistanceToLine(pixel,&q->pixel,&p->pixel);
-        for (p++ ; p <= q; p++)
+        poly_opacity=crossings & 0x01 ? 1.0 : 0.0;
+        minimum_distance=DistanceToLine(point,&primitive_info->point,&q->point);
+        for (p=primitive_info ; p < q; p++)
         {
-          distance=DistanceToLine(pixel,&(p-1)->pixel,&p->pixel);
+          distance=DistanceToLine(point,&p->point,&(p+1)->point);
           if (distance < minimum_distance)
             minimum_distance=distance;
         }
-        if (minimum_distance < (0.5*0.5))
+        if (minimum_distance <= (0.5*0.5))
           {
             if (crossings & 0x01)
               alpha=0.5+sqrt(minimum_distance);
@@ -2350,6 +2333,12 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
               alpha=0.5-sqrt(minimum_distance);
             poly_opacity=alpha*alpha;
           }
+        if (primitive_info->method == FillToBorderMethod)
+          if ((opacity != 0.0) && (poly_opacity != 0.0))
+            {
+              opacity=1.0-poly_opacity;
+              break;
+            }
         opacity=Max(opacity,poly_opacity);
         break;
       }
@@ -2360,8 +2349,8 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
           case PointMethod:
           default:
           {
-            if ((pixel->x != (int) (p->pixel.x+0.5)) ||
-                (pixel->y != (int) (p->pixel.y+0.5)))
+            if ((point->x != (int) (p->point.x+0.5)) ||
+                (point->y != (int) (p->point.y+0.5)))
               break;
             opacity=1.0;
             break;
@@ -2371,10 +2360,10 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
             PixelPacket
               target;
 
-            if ((pixel->x != (int) (p->pixel.x+0.5)) ||
-                (pixel->y != (int) (p->pixel.y+0.5)))
+            if ((point->x != (int) (p->point.x+0.5)) ||
+                (point->y != (int) (p->point.y+0.5)))
               break;
-            target=GetOnePixel(image,(int) p->pixel.x,(int) p->pixel.y);
+            target=GetOnePixel(image,(int) p->point.x,(int) p->point.y);
             (void) OpaqueImage(image,target,draw_info->fill);
             opacity=0.0;
             break;
@@ -2382,17 +2371,17 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
           case FloodfillMethod:
           case FillToBorderMethod:
           {
-            if ((pixel->x != (int) (p->pixel.x+0.5)) ||
-                (pixel->y != (int) (p->pixel.y+0.5)))
+            if ((point->x != (int) (p->point.x+0.5)) ||
+                (point->y != (int) (p->point.y+0.5)))
               break;
-            target=GetOnePixel(image,(int) p->pixel.x,(int) p->pixel.y);
+            target=GetOnePixel(image,(int) p->point.x,(int) p->point.y);
             if (p->method == FillToBorderMethod)
               {
                 border_color=draw_info->border_color;
                 target=border_color;
               }
             (void) ColorFloodfillImage(image,draw_info,target,
-              (int) pixel->x,(int) pixel->y,p->method);
+              (int) point->x,(int) point->y,p->method);
             break;
           }
           case ResetMethod:
@@ -2415,10 +2404,10 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
           case PointMethod:
           default:
           {
-            if ((pixel->x != (int) (p->pixel.x+0.5)) ||
-                (pixel->y != (int) (p->pixel.y+0.5)))
+            if ((point->x != (int) (p->point.x+0.5)) ||
+                (point->y != (int) (p->point.y+0.5)))
               break;
-            q=GetImagePixels(image,(int) pixel->x,(int) pixel->y,1,1);
+            q=GetImagePixels(image,(int) point->x,(int) point->y,1,1);
             if (q != (PixelPacket *) NULL)
               {
                 q->opacity=TransparentOpacity;
@@ -2431,10 +2420,10 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
             PixelPacket
               target;
 
-            if ((pixel->x != (int) (p->pixel.x+0.5)) ||
-                (pixel->y != (int) (p->pixel.y+0.5)))
+            if ((point->x != (int) (p->point.x+0.5)) ||
+                (point->y != (int) (p->point.y+0.5)))
               break;
-            target=GetOnePixel(image,(int) p->pixel.x,(int) p->pixel.y);
+            target=GetOnePixel(image,(int) p->point.x,(int) p->point.y);
             (void) TransparentImage(image,target);
             opacity=0.0;
             break;
@@ -2442,22 +2431,22 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
           case FloodfillMethod:
           case FillToBorderMethod:
           {
-            if ((pixel->x != (int) (p->pixel.x+0.5)) ||
-                (pixel->y != (int) (p->pixel.y+0.5)))
+            if ((point->x != (int) (p->point.x+0.5)) ||
+                (point->y != (int) (p->point.y+0.5)))
               break;
-            target=GetOnePixel(image,(int) p->pixel.x,(int) p->pixel.y);
+            target=GetOnePixel(image,(int) p->point.x,(int) p->point.y);
             if (p->method == FillToBorderMethod)
               {
                 border_color=draw_info->border_color;
                 target=border_color;
               }
             (void) MatteFloodfillImage(image,target,TransparentOpacity,
-              (int) pixel->x,(int) pixel->y,p->method);
+              (int) point->x,(int) point->y,p->method);
             break;
           }
           case ResetMethod:
           {
-            q=GetImagePixels(image,(int) pixel->x,(int) pixel->y,1,1);
+            q=GetImagePixels(image,(int) point->x,(int) point->y,1,1);
             if (q != (PixelPacket *) NULL)
               {
                 q->opacity=OpaqueOpacity;
@@ -2479,8 +2468,8 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
         register char
           *r;
 
-        if ((pixel->x != (int) (p->pixel.x+0.5)) ||
-            (pixel->y != (int) (p->pixel.y+0.5)))
+        if ((point->x != (int) (p->point.x+0.5)) ||
+            (point->y != (int) (p->point.y+0.5)))
           break;
         if (p->text == (char *) NULL)
           break;
@@ -2525,7 +2514,7 @@ static double IntersectPrimitive(PrimitiveInfo *primitive_info,
             "Memory allocation failed");
         (void) strncpy(annotate->text,p->text,r-p->text);
         annotate->text[r-p->text]='\0';
-        FormatString(annotate->geometry,"%+f%+f",p->pixel.x,p->pixel.y);
+        FormatString(annotate->geometry,"%+f%+f",p->point.x,p->point.y);
         AnnotateImage(image,annotate);
         DestroyAnnotateInfo(annotate);
         break;
@@ -2646,7 +2635,7 @@ MagickExport unsigned int MatteFloodfillImage(Image *image,
     offset=(int) s->y2;
     y=(int) s->y1+offset;
     /*
-      Recolor neighboring pixels.
+      Recolor neighboring points.
     */
     q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
@@ -2736,7 +2725,7 @@ MagickExport unsigned int MatteFloodfillImage(Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method OpaqueImage changes the color of an opaque pixel to the pen color.
+%  Method OpaqueImage changes the color of an opaque point to the pen color.
 %
 %  The format of the OpaqueImage method is:
 %

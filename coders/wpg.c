@@ -377,18 +377,18 @@ long ldblk;
      RunCount=bbuf & 0x7F;
      if(bbuf & 0x80)
 	{
-	if(RunCount!=0x7F)	// repeat next byte runcount *
+	if(RunCount!=0x7F)	/* repeat next byte runcount */
 		{
 		bbuf=ReadByte(image);
 		for(i=0;i<=RunCount;i++) InsertRByte(bbuf);
 		}
-	   else {	//read next byte as RunCount; repeat 0xFF runcount*
+	   else {	/*read next byte as RunCount; repeat 0xFF runcount*/
 		RunCount=ReadByte(image);
 		for(i=0;i<=RunCount;i++) InsertRByte(0xFF);
 		}
 	}
    else {
-	if(RunCount!=0x7F)   // next runcount byte are readed directly
+	if(RunCount!=0x7F)   /* next runcount byte are readed directly */
 		{
 		for(i=0;i<=RunCount;i++)
 			{
@@ -398,11 +398,11 @@ long ldblk;
 		}
 	   else {
 		RunCount=ReadByte(image);
-		if(x) {		//read next byte as RunCount; repeat 0 runcount*
+		if(x) {		/*read next byte as RunCount; repeat 0 runcount*/
 		      for(i=0;i<=RunCount;i++)
 				 InsertRByte(0);
 		      }
-		else for(i=0;i<=RunCount;i++) // repeat previous line runcount*
+		else for(i=0;i<=RunCount;i++) /* repeat previous line runcount*/
 			{
 			x=0;
 			y++;   /* Here I need to duplicate previous row RUNCOUNT* */
@@ -762,7 +762,7 @@ DecompressionFailed: ThrowReaderException(ResourceLimitWarning,"Cannot decompres
 	     Bitmap2Header1.Depth=ReadByte(image);
 	     Bitmap2Header1.Compression=ReadByte(image);
 
-	     if(Bitmap2Header1.Compression>1) continue; //Unknown compression method
+	     if(Bitmap2Header1.Compression>1) continue; /*Unknown compression method */
 	     switch(Bitmap2Header1.Depth)
 	       {
 	       case 1:image->depth=1;break;
@@ -790,7 +790,7 @@ DecompressionFailed: ThrowReaderException(ResourceLimitWarning,"Cannot decompres
 
 	     switch(Bitmap2Header1.Compression)
 		{
-		case 0:		//Uncompressed raster
+		case 0:		/*Uncompressed raster*/
 		   {
 		   ldblk=((long)image->depth*image->columns+7)/8;
 		   if( (BImgBuff=(unsigned char *) malloc(ldblk))==NULL) goto NoMemory;
@@ -803,7 +803,7 @@ DecompressionFailed: ThrowReaderException(ResourceLimitWarning,"Cannot decompres
 		   if(BImgBuff) free(BImgBuff);
 		   break;
 		   }
-		case 1:		//RLE for WPG2
+		case 1:		/*RLE for WPG2 */
 		   {
 		   if(UnpackWPG2Raster(image)<0)
 			goto DecompressionFailed;
