@@ -316,7 +316,7 @@ static unsigned int
 %  The format of the DecodeImage method is:
 %
 %      unsigned char* DecodeImage(const ImageInfo *image_info,Image *blob,
-%        Image *image,int bytes_per_line,const int bits_per_pixel)
+%        Image *image,size_t bytes_per_line,const int bits_per_pixel)
 %
 %  A description of each parameter follows:
 %
@@ -335,7 +335,7 @@ static unsigned int
 %
 */
 
-static unsigned char *ExpandBuffer(unsigned char *pixels,int *bytes_per_line,
+static unsigned char *ExpandBuffer(unsigned char *pixels,size_t *bytes_per_line,
   const int bits_per_pixel)
 {
   register int
