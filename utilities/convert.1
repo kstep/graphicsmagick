@@ -28,7 +28,8 @@ To make a thumbnail of a JPEG image, use:
 
 In this example, '-size 120x120' gives a hint to the JPEG decoder
 that the image is going to be downscaled to 120x120, allowing it to run
-faster by avoiding returning a full-resolution image.  The
+faster by avoiding returning full-resolution images to ImageMagick for
+the subsequent resizing operation.  The
 '-resize 120x120' specifies the desired dimensions of the
 output image.  It will be scaled so its largest dimension is 120 pixels.  The
 '+profile "*"' removes any ICM, EXIF, IPTC, or other profiles
