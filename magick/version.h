@@ -2,7 +2,7 @@
   Version & copyright declaration.
 */
 static char
-  Version[]="@(#)ImageMagick 4.1.2 98/10/01 cristy@mystic.es.dupont.com";
+  Version[]="@(#)ImageMagick 4.1.3 98/11/01 cristy@mystic.es.dupont.com";
 
 #if !defined(HasFPX)
 static char

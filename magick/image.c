@@ -114,7 +114,6 @@ Export Image *AllocateImage(const ImageInfo *image_info)
   allocated_image->status=False;
   allocated_image->temporary=False;
   *allocated_image->filename='\0';
-  TemporaryFilename(allocated_image->unique);
   allocated_image->filesize=0;
   allocated_image->pipe=False;
   (void) strcpy(allocated_image->magick,"MIFF");
@@ -352,17 +351,12 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
     x,
     y;
 
-  register char
-    *p,
-    *q;
-
   register int
     i,
     j;
 
   unsigned int
     height,
-    indirection,
     length,
     matte,
     width;
@@ -375,7 +369,7 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
   assert(annotate_info->image_info != (ImageInfo *) NULL);
   if (image->text != (char *) NULL)
     FreeMemory((char *) image->text);
-  image->text=TranslateText(image,annotate_info->text);
+  image->text=TranslateText((ImageInfo *) NULL,image,annotate_info->text);
   if (image->text == (char *) NULL)
     return;
   textlist=StringToList(image->text);
@@ -464,7 +458,6 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
     if (annotate_info->image_info->box != (char *) NULL)
       {
         char
-          filename[MaxTextExtent],
           size[MaxTextExtent];
 
         Image
@@ -477,7 +470,6 @@ Export void AnnotateImage(Image *image,AnnotateInfo *annotate_info)
           Surround text with a bounding box.
         */
         local_info=(*annotate_info->image_info);
-        local_info.filename=filename;
         local_info.size=size;
         (void) sprintf(local_info.filename,"xc:%s",local_info.box);
         (void) sprintf(local_info.size,"%ux%u",annotate_image->columns,
@@ -1435,7 +1427,7 @@ Export void CommentImage(Image *image,char *comments)
 {
   if (image->comments != (char *) NULL)
     FreeMemory((char *) image->comments);
-  image->comments=TranslateText(image,comments);
+  image->comments=TranslateText((ImageInfo *) NULL,image,comments);
 }
 
 /*
@@ -2963,7 +2955,6 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
   if (image->normalized_maximum_error != 0)
     (void) fprintf(file,"  normalized maximum error: %.6f\n",
       image->normalized_maximum_error);
-  SignatureImage(image);
   if (image->signature != (char *) NULL)
     (void) fprintf(file,"  signature: %s\n",image->signature);
   if (image->matte)
@@ -3300,8 +3291,7 @@ Export void DestroyImage(Image *image)
 Export void DestroyImageInfo(ImageInfo *image_info)
 {
   assert(image_info != (ImageInfo *) NULL);
-  FreeMemory((char *) image_info->filename);
-  image_info->filename=(char *) NULL;
+  GetImageInfo(image_info);
 }
 
 /*
@@ -4585,10 +4575,6 @@ Export void GetImageInfo(ImageInfo *image_info)
 {
   assert(image_info != (ImageInfo *) NULL);
   image_info->file=(FILE *) NULL;
-  image_info->filename=(char *) AllocateMemory(MaxTextExtent);
-  if (image_info->filename == (char *) NULL)
-    MagickError(ResourceLimitError,"Unable to get image info",
-      "Memory allocation failed");
   *image_info->filename='\0';
   *image_info->magick='\0';
   image_info->affirm=False;
@@ -4616,12 +4602,14 @@ Export void GetImageInfo(ImageInfo *image_info)
   image_info->pointsize=atoi(DefaultPointSize);
   image_info->quality=atoi(DefaultImageQuality);
   image_info->verbose=False;
-  image_info->preview_type=JPEGPreview;
   image_info->filter=MitchellFilter;
+  image_info->preview_type=JPEGPreview;
+  image_info->group=0L;
   image_info->background_color=(char *) NULL;
   image_info->border_color=(char *) NULL;
   image_info->matte_color=(char *) NULL;
   image_info->undercolor=(char *) NULL;
+  TemporaryFilename(image_info->unique);
   image_info->ping=False;
 }
 
@@ -4860,6 +4848,53 @@ Export unsigned int IsSubimage(char *geometry,unsigned int pedantic)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
+%     I s T a i n t e d                                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsTainted returns True if the image has been altered since it
+%  was first read.
+%
+%  The format of the IsTainted routine is:
+%
+%      status=IsTainted(image)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method IsTainted returns True if the image has been altered
+%      since it was first read.
+%
+%    o image: The address of a structure of type Image.
+%
+%
+*/
+Export unsigned int IsTainted(Image *image)
+{
+  char
+    signature[MaxTextExtent];
+
+  register Image
+    *p;
+
+  assert(image != (Image *) NULL);
+  for (p=image; p != (Image *) NULL; p=p->next)
+  {
+    if (p->signature == (char *) NULL)
+      return(True);
+    (void) strcpy(signature,p->signature);
+    SignatureImage(p);
+    if (strcmp(signature,p->signature) != 0)
+      return(True);
+  }
+  return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
 %                                                                             %
 %   L a b e l I m a g e                                                       %
 %                                                                             %
@@ -4887,7 +4922,7 @@ Export void LabelImage(Image *image,char *label)
 {
   if (image->label != (char *) NULL)
     FreeMemory((char *) image->label);
-  image->label=TranslateText(image,label);
+  image->label=TranslateText((ImageInfo *) NULL,image,label);
 }
 
 /*
@@ -7224,6 +7259,9 @@ Export void OpenImage(const ImageInfo *image_info,Image *image,const char *type)
   char
     filename[MaxTextExtent];
 
+  register char
+    *p;
+
   assert(image_info != (ImageInfo *) NULL);
   assert(image != (Image *) NULL);
   assert(type != (char *) NULL);
@@ -7238,6 +7276,7 @@ Export void OpenImage(const ImageInfo *image_info,Image *image,const char *type)
       return;
     }
   (void) strcpy(filename,image->filename);
+  p=(char *) NULL;
   if (*filename != '|')
     if ((Extent(filename) > 4) &&
         (Latin1Compare(filename+Extent(filename)-4,".pgp") == 0))
@@ -7246,7 +7285,7 @@ Export void OpenImage(const ImageInfo *image_info,Image *image,const char *type)
           Decrypt image file with PGP encryption utilities.
         */
         if (*type == 'r')
-          (void) sprintf(filename,PGPDecodeCommand,image->filename);
+          p=GetDelegateCommand(image_info,image,"pgp",True);
       }
     else
       if ((Extent(filename) > 4) &&
@@ -7256,9 +7295,9 @@ Export void OpenImage(const ImageInfo *image_info,Image *image,const char *type)
             Uncompress/compress image file with BZIP compress utilities.
           */
           if (*type == 'r')
-            (void) sprintf(filename,BunzipCommand,image->filename);
+            p=GetDelegateCommand(image_info,image,"bzip",True);
           else
-            (void) sprintf(filename,BzipCommand,image->filename);
+            p=GetDelegateCommand(image_info,image,"bzip",False);
         }
       else
         if ((Extent(filename) > 3) &&
@@ -7268,9 +7307,9 @@ Export void OpenImage(const ImageInfo *image_info,Image *image,const char *type)
               Uncompress/compress image file with GNU compress utilities.
             */
             if (*type == 'r')
-              (void) sprintf(filename,ZIPDecodeCommand,image->filename);
+              p=GetDelegateCommand(image_info,image,"zip",True);
             else
-              (void) sprintf(filename,ZIPEncodeCommand,image->filename);
+              p=GetDelegateCommand(image_info,image,"zip",False);
           }
         else
           if ((Extent(filename) > 2) &&
@@ -7280,10 +7319,15 @@ Export void OpenImage(const ImageInfo *image_info,Image *image,const char *type)
                 Uncompress/compress image file with UNIX compress utilities.
               */
               if (*type == 'r')
-                (void) sprintf(filename,LZWDecodeCommand,image->filename);
+                p=GetDelegateCommand(image_info,image,"compress",True);
               else
-                (void) sprintf(filename,LZWEncodeCommand,image->filename);
+                p=GetDelegateCommand(image_info,image,"compress",False);
             }
+  if (p != (char *) NULL)
+    {
+      (void) strcpy(filename,p);
+      FreeMemory((char *) p);
+    }
   /*
     Open image file.
   */
@@ -8841,8 +8885,10 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
 Export void SetImageInfo(ImageInfo *image_info,unsigned int rectify)
 {
   char
-    c,
     magick[MaxTextExtent];
+
+  FILE
+    *file;
 
   register char
     *p,
@@ -8895,7 +8941,8 @@ Export void SetImageInfo(ImageInfo *image_info,unsigned int rectify)
     }
   while ((*p != '.') && (p > image_info->filename))
     p--;
-  if ((Latin1Compare(p,".gz") == 0) || (Latin1Compare(p,".Z") == 0))
+  if ((Latin1Compare(p,".gz") == 0) || (Latin1Compare(p,".Z") == 0) ||
+      (Latin1Compare(p,".bz2") == 0))
     do
     {
       p--;
@@ -8907,35 +8954,26 @@ Export void SetImageInfo(ImageInfo *image_info,unsigned int rectify)
       */
       (void) strcpy(magick,p+1);
       for (q=magick; *q != '\0'; q++)
-      {
         if (*q == '.')
           {
             *q='\0';
             break;
           }
-        c=(*q);
-        if (islower((int) c))
-          *q=toupper((int) c);
-      }
-      for (i=0; ImageFormats[i][0] != (char *) NULL; i++)
-        if (Latin1Compare(magick,ImageFormats[i][0]) == 0)
-          {
-            /*
-              SGI and RGB are ambiguous;  TMP must be set explicitly.
-            */
-            if (((strncmp(image_info->magick,"SGI",3) != 0) ||
-                 (Latin1Compare(ImageFormats[i][0],"RGB") != 0)) &&
-                (Latin1Compare(ImageFormats[i][0],"TMP") != 0))
-              (void) strcpy(image_info->magick,magick);
-            break;
-          }
+      Latin1Upper(magick);
+      /*
+        SGI and RGB are ambiguous;  TMP must be set explicitly.
+      */
+      if (((strncmp(image_info->magick,"SGI",3) != 0) ||
+          (Latin1Compare(magick,"RGB") != 0)) &&
+          (Latin1Compare(magick,"TMP") != 0))
+        (void) strcpy(image_info->magick,magick);
     }
   /*
     Look for explicit 'format:image' in filename.
   */
   image_info->affirm=False;
   p=image_info->filename;
-  while ((*p != ':') && (*p != '\0'))
+  while (isalnum(*p))
     p++;
 #if defined(vms)
   if (*(p+1) == '[')
@@ -8952,33 +8990,20 @@ Export void SetImageInfo(ImageInfo *image_info,unsigned int rectify)
         */
         (void) strncpy(magick,image_info->filename,p-image_info->filename);
         magick[p-image_info->filename]='\0';
-        for (q=magick; *q != '\0'; q++)
-        {
-          c=(*q);
-          if (islower((int) c))
-            *q=toupper(c);
-        }
-        for (i=0; ImageFormats[i][0] != (char *) NULL; i++)
-        {
-          if (Latin1Compare(magick,ImageFormats[i][0]) == 0)
-            {
+        Latin1Upper(magick);
+        /*
+          Strip off image format prefix.
+        */
+        p++;
+        (void) strcpy(image_info->filename,p);
+        if (Latin1Compare(magick,"IMPLICIT") != 0)
 #if defined(WIN32)
-              if (ImageFormatConflict(magick))
-                break;
+        if (!ImageFormatConflict(magick))
 #endif
-              /*
-                Strip off image format prefix.
-              */
-              p++;
-              (void) strcpy(image_info->filename,p);
-              if (Latin1Compare(magick,"IMPLICIT") != 0)
-                (void) strcpy(image_info->magick,magick);
-              if ((Latin1Compare(magick,"IMPLICIT") != 0) &&
-                  (Latin1Compare(magick,"TMP") != 0))
-                image_info->affirm=True;
-              break;
-            }
-        }
+          (void) strcpy(image_info->magick,magick);
+        if ((Latin1Compare(magick,"IMPLICIT") != 0) &&
+            (Latin1Compare(magick,"TMP") != 0))
+          image_info->affirm=True;
       }
   if (rectify)
     {
@@ -8995,7 +9020,108 @@ Export void SetImageInfo(ImageInfo *image_info,unsigned int rectify)
       for (i=0; ImageFormats[i][0] != (char *) NULL; i++)
         if (Latin1Compare(image_info->magick,ImageFormats[i][0]) == 0)
           image_info->adjoin&=IsTrue(ImageFormats[i][1]);
+      return;
     }
+  if (image_info->affirm)
+    return;
+  file=fopen(image_info->filename,ReadBinaryType);
+  if (file == (FILE *) NULL)
+    return;
+  /*
+    Determine the image format from the first few bytes of the file.
+  */
+  (void) ReadData(magick,1,MaxTextExtent,file);
+  (void) fclose(file);
+  magick[MaxTextExtent-1]='\0';
+  if (strncmp(magick,"BM",2) == 0)
+    (void) strcpy(image_info->magick,"BMP");
+  if (strncmp(magick,"IC",2) == 0)
+    (void) strcpy(image_info->magick,"BMP");
+  if (strncmp(magick,"PI",2) == 0)
+    (void) strcpy(image_info->magick,"BMP");
+  if (strncmp(magick,"CI",2) == 0)
+    (void) strcpy(image_info->magick,"BMP");
+  if (strncmp(magick,"CP",2) == 0)
+    (void) strcpy(image_info->magick,"BMP");
+  if (strncmp(magick,"BEGMF",3) == 0)
+    (void) strcpy(image_info->magick,"CGM");
+  if (strncmp(magick,"\305\320\323\306",4) == 0)
+    (void) strcpy(image_info->magick,"EPT");
+  if (strncmp(magick,"IT0",3) == 0)
+    (void) strcpy(image_info->magick,"FITS");
+  if (strncmp(magick,"\261\150\336\72",4) == 0)
+    (void) strcpy(image_info->magick,"DCX");
+  if (strncmp(magick,"DFAX",4) == 0)
+    (void) strcpy(image_info->magick,"FAX");
+  if (strncmp(magick,"SIMPLE",6) == 0)
+    (void) strcpy(image_info->magick,"FITS");
+  if (strncmp(magick,"#FIG",4) == 0)
+    (void) strcpy(image_info->magick,"FIG");
+  if (strncmp(magick,"GIF8",4) == 0)
+    (void) strcpy(image_info->magick,"GIF");
+  if (strncmp(magick,"\016\003\023\001",4) == 0)
+    (void) strcpy(image_info->magick,"HDF");
+  if ((strncmp(magick,"<HTML",5) == 0) ||
+      (strncmp(magick,"<html",5) == 0))
+    (void) strcpy(image_info->magick,"HTML");
+  if (strncmp(magick,"\377\330\377\340",4) == 0)
+    (void) strcpy(image_info->magick,"JPEG");
+  if (strncmp(magick,"\377\330\377\356",4) == 0)
+    (void) strcpy(image_info->magick,"JPEG");
+  if (strncmp(magick,"id=ImageMagick",14) == 0)
+    (void) strcpy(image_info->magick,"MIFF");
+  if (strncmp(magick,"\212MNG\r\n\032\n",8) == 0)
+    (void) strcpy(image_info->magick,"MNG");
+  if ((magick[0] == 0x00) && (magick[1] == 0x00))
+    if ((magick[2] == 0x01) && (magick[3] == (char) 0xb3))
+      (void) strcpy(image_info->magick,"M2V");
+  if (strncmp(magick,"PCD_",4) == 0)
+    (void) strcpy(image_info->magick,"PCD");
+  if (strncmp(magick,"\033E\033",3) == 0)
+    (void) strcpy(image_info->magick,"PCL");
+  if (strncmp(magick,"\12\2",2) == 0)
+    (void) strcpy(image_info->magick,"PCX");
+  if (strncmp(magick,"\12\5",2) == 0)
+    (void) strcpy(image_info->magick,"PCX");
+  if (strncmp(magick,"%PDF-",5) == 0)
+    (void) strcpy(image_info->magick,"PDF");
+  if ((*magick == 'P') && isdigit((int) (magick[1])))
+    (void) strcpy(image_info->magick,"PNM");
+  if (strncmp(magick,"\211PNG\r\n\032\n",8) == 0)
+    (void) strcpy(image_info->magick,"PNG");
+  if (strncmp(magick,"\004%!",3) == 0)
+    (void) strcpy(image_info->magick,"PS");
+  if (strncmp(magick,"%!",2) == 0)
+    (void) strcpy(image_info->magick,"PS");
+  if (strncmp(magick,"8BPS",4) == 0)
+    (void) strcpy(image_info->magick,"PSD");
+  if (strncmp(magick,"#?RADIANCE",10) == 0)
+    (void) strcpy(image_info->magick,"RAD");
+  if (strncmp(magick,"\122\314",2) == 0)
+    (void) strcpy(image_info->magick,"RLE");
+  if (strncmp(magick,"\001\332",2) == 0)
+    (void) strcpy(image_info->magick,"SGI");
+  if (strncmp(magick,"\131\246\152\225",4) == 0)
+    (void) strcpy(image_info->magick,"SUN");
+  if ((magick[0] == 0x4D) && (magick[1] == 0x4D))
+    if ((magick[2] == 0x00) && (magick[3] == (char) 0x2A))
+      (void) strcpy(image_info->magick,"TIFF");
+  if (strncmp(magick,"\111\111\052\000",4) == 0)
+    (void) strcpy(image_info->magick,"TIFF");
+  if ((strncmp(magick,"LBLSIZE",7) == 0) || (strncmp(magick,"NJPL1I",6) == 0))
+    (void) strcpy(image_info->magick,"VICAR");
+  if (strncmp(magick,"\253\1",2) == 0)
+    (void) strcpy(image_info->magick,"VIFF");
+  p=strchr(magick,'#');
+  if (p != (char *) NULL)
+    if (strncmp(p,"#define",7) == 0)
+      (void) strcpy(image_info->magick,"XBM");
+  if (strncmp(magick,"/* XPM */",9) == 0)
+    (void) strcpy(image_info->magick,"XPM");
+  if ((magick[1] == 0x00) && (magick[2] == 0x00))
+    if ((magick[5] == 0x00) && (magick[6] == 0x00))
+      if ((magick[4] == 0x07) || (magick[7] == 0x07))
+        (void) strcpy(image_info->magick,"XWD");
 }
 
 /*

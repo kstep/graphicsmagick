@@ -367,8 +367,6 @@ copy_info(struct info *info)
     }
 
     *newinfo = *info;
-    newinfo->info.filename =
-      strcpy((char *) safemalloc(MaxTextExtent), info->info.filename);
     if (info->info.server_name)
 	newinfo->info.server_name = copy_string(info->info.server_name);
     if (info->info.font)
@@ -410,8 +408,6 @@ copy_info(struct info *info)
 static void
 destroy_info(struct info *info)
 {
-    if (info->info.filename)
-	safefree(info->info.filename);
     if (info->info.server_name)
 	safefree(info->info.server_name);
     if (info->info.font)
@@ -1347,14 +1343,14 @@ Animate(ref, ...)
 		for (n = 2; n < items; n += 2)
 		    SetAttribute(temp, NULL, SvPV(ST(n-1), na), ST(n));
 
-	    display = XOpenDisplay(info->info.server_name);
+	    display = XOpenDisplay(temp->info.server_name);
 	    if (display)
 	    {
 		XSetErrorHandler(XError);
 		resource_database = XGetResourceDatabase(display, client_name);
 		XGetResourceInfo(resource_database, client_name, &resource);
-		resource.image_info = info->info;
-		resource.quantize_info = info->quant;
+		resource.image_info = temp->info;
+		resource.quantize_info = temp->quant;
 
 		(void) XAnimateImages(display, &resource, (char **) NULL, 0,
 		    image);
@@ -1636,10 +1632,10 @@ Display(ref, ...)
 		for (n = 2; n < items; n += 2)
 		    SetAttribute(temp, NULL, SvPV(ST(n-1), na), ST(n));
 
-	    display = XOpenDisplay(info->info.server_name);
+	    display = XOpenDisplay(temp->info.server_name);
             if (!display)
                 warning(XServerError,"Unable to connect to X server",
-                    XDisplayName(info->info.server_name))
+                    XDisplayName(temp->info.server_name))
             else
 	    {
 		XSetErrorHandler(XError);

@@ -5180,6 +5180,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
   loaded_image=(Image *) NULL;
   windows->image.window_changes.width=windows->image.ximage->width;
   windows->image.window_changes.height=windows->image.ximage->height;
+  GetImageInfo(&image_info);
   switch (command)
   {
     case OpenCommand:
@@ -5283,7 +5284,6 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Create canvas.
       */
-      GetImageInfo(&image_info);
       (void) sprintf(image_info.filename,"%s:%s",format,color);
       image_info.size=geometry;
       loaded_image=ReadImage(&image_info);
@@ -6534,27 +6534,23 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     }
     case CommentCommand:
     {
-      char
-        command[MaxTextExtent],
-        filename[MaxTextExtent];
-
-      FILE
-        *file;
-
       /*
         Edit image comment.
       */
-      TemporaryFilename(filename);
+      TemporaryFilename(image_info.filename);
       if ((*image)->comments != (char *) NULL)
         {
+          FILE
+            *file;
+
           register char
             *p;
 
-          file=fopen(filename,WriteBinaryType);
+          file=fopen(image_info.filename,WriteBinaryType);
           if (file == (FILE *) NULL)
             {
               XNoticeWidget(display,windows,"Unable to edit image comment",
-                filename);
+                image_info.filename);
               break;
             }
           for (p=(*image)->comments; *p != '\0'; p++)
@@ -6562,60 +6558,43 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           (void) putc('\n',file);
           (void) fclose(file);
         }
-      (void) sprintf(command,EditorCommand,filename);
-      if (resource_info->editor_command != (char *) NULL)
-        (void) sprintf(command,resource_info->editor_command,filename);
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      status=SystemCommand(command);
-      if (status)
-        XNoticeWidget(display,windows,"Unable to edit image comment",command);
+      status=InvokeDelegate(&image_info,*image,"edit",True);
+      if (status != False)
+        XNoticeWidget(display,windows,"Unable to edit image comment",
+          (char *) NULL);
       else
         {
-          (void) sprintf(command,"@%s",filename);
+          char
+            command[MaxTextExtent];
+
+          (void) sprintf(command,"@%s",image_info.filename);
           CommentImage(*image,command);
         }
-      (void) remove(filename);
+      (void) remove(image_info.filename);
       XSetCursorState(display,windows,False);
       break;
     }
     case LaunchCommand:
     {
-      char
-        command[MaxTextExtent],
-        filename[MaxTextExtent],
-        retain_filename[MaxTextExtent];
-
       /*
         Launch program.
       */
-      TemporaryFilename(filename);
-      (void) sprintf(command,resource_info->launch_command,filename);
-      (void) XDialogWidget(display,windows,"Launch","Launch command:",command);
-      if (*command == '\0')
-        break;
-      (void) sprintf(command,LauncherCommand,filename);
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      (void) strcpy(retain_filename,(*image)->filename);
-      (void) sprintf((*image)->filename,"%s:%s",LaunchFormat,filename);
-      GetImageInfo(&image_info);
-      status=WriteImage(&image_info,*image);
-      if (status)
+      TemporaryFilename((*image)->filename);
+      status=InvokeDelegate(&image_info,*image,"launch",True);
+      if (status != False)
+        XNoticeWidget(display,windows,"Unable to launch image editor",
+          (char *) NULL);
+      else
         {
-          status=SystemCommand(command);
-          if (status)
-            XNoticeWidget(display,windows,"Unable to launch image editor",
-              command);
-          else
-            {
-              loaded_image=ReadImage(&image_info);
-              XClientMessage(display,windows->image.id,windows->im_protocols,
-                windows->im_next_image,CurrentTime);
-            }
+          loaded_image=ReadImage(&resource_info->image_info);
+          XClientMessage(display,windows->image.id,windows->im_protocols,
+            windows->im_next_image,CurrentTime);
         }
-      (void) remove(filename);
-      (void) strcpy(loaded_image->filename,retain_filename);
+      (void) remove((*image)->filename);
       XSetCursorState(display,windows,False);
       break;
     }
@@ -6652,11 +6631,6 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       static char
         preview_type[MaxTextExtent] = "Gamma";
 
-      char
-        command[MaxTextExtent],
-        filename[MaxTextExtent],
-        server_name[MaxTextExtent];
-
       register int
         i;
 
@@ -6672,83 +6646,48 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           break;
       if (PreviewTypes[i] == (char *) NULL)
         {
-          XNoticeWidget(display,windows,"unknown image operator",preview_type);
+          XNoticeWidget(display,windows,"unknown preview type",preview_type);
           break;
         }
-      GetImageInfo(&image_info);
-      image_info.preview_type=(PreviewType) i;
       /*
         Show image preview.
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      TemporaryFilename(filename);
-      *server_name='\0';
-      if (resource_info->image_info.server_name != (char *) NULL)
-        (void) sprintf(server_name,"-display %s",
-          resource_info->image_info.server_name);
-      (void) sprintf(command,ShowImageCommand,server_name,
-        windows->image.id,"Preview",(*image)->filename,filename);
-      (void) sprintf((*image)->filename,"preview:%s",filename);
-      status=WriteImage(&image_info,*image);
-      DestroyImageInfo(&image_info);
-      (void) sprintf((*image)->filename,(*image)->magick_filename);
-      XCheckRefreshWindows(display,windows);
-      if (status)
-        status=!SystemCommand(command);
-      if (!status)
-        {
-          XNoticeWidget(display,windows,"Unable to show image preview",command);
-          (void) remove(filename);
-        }
+      image_info.preview_type=(PreviewType) (i+1);
+      image_info.group=windows->image.id;
+      TemporaryFilename((*image)->filename);
+      (void) strcpy((*image)->magick,"preview");
+      LabelImage(*image,"Preview");
+      status=InvokeDelegate(&image_info,*image,"show",True);
+      if (status != False)
+        XNoticeWidget(display,windows,"Unable to show image preview",
+          (*image)->filename);
       XDelay(display,1500);
       XSetCursorState(display,windows,False);
       break;
     }
     case ShowHistogramCommand:
     {
-      char
-        command[MaxTextExtent],
-        filename[MaxTextExtent],
-        server_name[MaxTextExtent];
-
       /*
         Show image histogram.
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      TemporaryFilename(filename);
-      *server_name='\0';
-      if (resource_info->image_info.server_name != (char *) NULL)
-        (void) sprintf(server_name,"-display %s",
-          resource_info->image_info.server_name);
-      (void) sprintf(command,ShowImageCommand,server_name,
-        windows->image.id,"Histogram",(*image)->filename,filename);
-      (void) sprintf((*image)->filename,"histogram:%s",filename);
-      GetImageInfo(&image_info);
-      status=WriteImage(&image_info,*image);
-      DestroyImageInfo(&image_info);
-      (void) sprintf((*image)->filename,(*image)->magick_filename);
-      XCheckRefreshWindows(display,windows);
-      if (status)
-        status=!SystemCommand(command);
-      if (!status)
-        {
-          XNoticeWidget(display,windows,"Unable to show image histogram",
-            command);
-          (void) remove(filename);
-        }
+      image_info.group=windows->image.id;
+      TemporaryFilename((*image)->filename);
+      (void) strcpy((*image)->magick,"histogram");
+      LabelImage(*image,"Histogram");
+      status=InvokeDelegate(&image_info,*image,"show",True);
+      if (status != False)
+        XNoticeWidget(display,windows,"Unable to show histogram",
+          (*image)->filename);
       XDelay(display,1500);
       XSetCursorState(display,windows,False);
       break;
     }
     case ShowMatteCommand:
     {
-      char
-        command[MaxTextExtent],
-        filename[MaxTextExtent],
-        server_name[MaxTextExtent];
-
       if (!(*image)->matte)
         {
           XNoticeWidget(display,windows,
@@ -6760,27 +6699,14 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       */
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      TemporaryFilename(filename);
-      *server_name='\0';
-      if (resource_info->image_info.server_name != (char *) NULL)
-        (void) sprintf(server_name,"-display %s",
-          resource_info->image_info.server_name);
-      (void) sprintf(command,ShowImageCommand,server_name,
-        windows->image.id,"Matte",(*image)->filename,filename);
-      (void) sprintf((*image)->filename,"matte:%s",filename);
-      GetImageInfo(&image_info);
-      status=WriteImage(&image_info,*image);
-      DestroyImageInfo(&image_info);
-      (void) sprintf((*image)->filename,(*image)->magick_filename);
-      XCheckRefreshWindows(display,windows);
-      if (status)
-        status=!SystemCommand(command);
-      if (!status)
-        {
-          XNoticeWidget(display,windows,"Unable to show image matte",
-            command);
-          (void) remove(filename);
-        }
+      image_info.group=windows->image.id;
+      TemporaryFilename((*image)->filename);
+      (void) strcpy((*image)->magick,"matte");
+      LabelImage(*image,"Matte");
+      status=InvokeDelegate(&image_info,*image,"show",True);
+      if (status != False)
+        XNoticeWidget(display,windows,"Unable to show histogram",
+          (*image)->filename);
       XDelay(display,1500);
       XSetCursorState(display,windows,False);
       break;
@@ -6849,9 +6775,6 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       Atom
         mozilla_atom;
 
-      char
-        command[MaxTextExtent];
-
       Window
         mozilla_window,
         root_window;
@@ -6864,6 +6787,9 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       mozilla_window=XWindowByProperty(display,root_window,mozilla_atom);
       if (mozilla_window != (Window) NULL)
         {
+          char
+            command[MaxTextExtent];
+
           /*
             Display documentation using Netscape remote control.
           */
@@ -6875,12 +6801,12 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           XSetCursorState(display,windows,False);
           break;
         }
-      (void) sprintf(command,resource_info->browse_command,DocumentationURL);
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      status=SystemCommand(command);
-      if (status)
-        XNoticeWidget(display,windows,"Unable to browse documentation",command);
+      status=InvokeDelegate(&image_info,*image,"browse",True);
+      if (status != False)
+        XNoticeWidget(display,windows,"Unable to browse documentation",
+          (char *) NULL);
       XDelay(display,1500);
       XSetCursorState(display,windows,False);
       break;
@@ -8483,8 +8409,6 @@ static unsigned int XPrintImage(Display *display,XResourceInfo *resource_info,
   XWindows *windows,Image *image)
 {
   char
-    command[MaxTextExtent],
-    filename[MaxTextExtent],
     geometry[MaxTextExtent];
 
   Image
@@ -8493,11 +8417,8 @@ static unsigned int XPrintImage(Display *display,XResourceInfo *resource_info,
   ImageInfo
     image_info;
 
-  int
+  unsigned int
     status;
-
-  static char
-    print_command[MaxTextExtent];
 
   /*
     Request Postscript page geometry from user.
@@ -8511,20 +8432,6 @@ static unsigned int XPrintImage(Display *display,XResourceInfo *resource_info,
   if (*geometry == '\0')
     return(True);
   image_info.page=PostscriptGeometry(geometry);
-  /*
-    Request file name from user.
-  */
-  XCheckRefreshWindows(display,windows);
-  TemporaryFilename(filename);
-  (void) strcpy(print_command,resource_info->print_command);
-  (void) XDialogWidget(display,windows,"Print","Print command:",print_command);
-  if (*print_command == '\0')
-    return(True);
-  if (Latin1Compare(print_command,resource_info->print_command) != 0)
-    {
-      resource_info->print_command=print_command;
-      XUserPreferences(resource_info);
-    }
   /*
     Apply image transforms.
   */
@@ -8552,13 +8459,13 @@ static unsigned int XPrintImage(Display *display,XResourceInfo *resource_info,
   /*
     Print image.
   */
-  (void) sprintf(print_image->filename,"%s:%s",PrinterFormat,filename);
-  status=WriteImage(&image_info,print_image);
-  DestroyImage(print_image);
-  (void) sprintf(command,print_command,filename);
-  status&=!SystemCommand(command);
+  TemporaryFilename(print_image->filename);
+  status=InvokeDelegate(&image_info,print_image,"print",True);
+  if (status == False)
+    XNoticeWidget(display,windows,"Unable to print image ",
+      print_image->filename);
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)
-  (void) remove(filename);
+  (void) remove(print_image->filename);
 #endif
   XSetCursorState(display,windows,False);
   return(status);
@@ -11155,7 +11062,7 @@ static Image *XVisualDirectoryImage(Display *display,
   for (i=0; i < number_files; i++)
   {
     handler=SetMonitorHandler((MonitorHandler) NULL);
-    local_info.filename=filelist[i];
+    (void) strcpy(local_info.filename,filelist[i]);
     *local_info.magick='\0';
     if (local_info.size == (char *) NULL)
       local_info.size=vid_resources.image_geometry;

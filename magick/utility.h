@@ -74,7 +74,7 @@
 #endif
 
 /*
-  Utilities routines.
+  Utilities methods.
 */
 extern Export char
   *BaseFilename(const char *),
@@ -84,7 +84,7 @@ extern Export char
   *SetClientName(const char *),
   **StringToArgv(const char *,int *),
   **StringToList(char *),
-  *TranslateText(Image *,char *);
+  *TranslateText(const ImageInfo *,Image *,char *);
 
 extern Export int
   GlobExpression(char *,const char *),

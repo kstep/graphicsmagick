@@ -15,20 +15,20 @@ require 't/subroutines.pl';
 chdir 't/mpeg' || die 'Cd failed';
 
 #
-# Create an MPEG
-#
-testReadWrite( 'MPEG:input.mpg',
-               'MPEG:output.mpg',
-               q//,
-               '562640e0c3044629a29a4f77913337df' );
-
-#
 # Create an MPEG (Version 2)
 #
-++$test;
 testReadWrite( 'M2V:input.m2v',
                'M2V:output.m2v',
                q//,
-               '14d779490ad401d17df02284b8dac0f0' );
+               'ac28009dd53049bce685dc6b7fb2e1de' );
+
+#
+# Create an MPEG
+#
+++$test;
+testReadWrite( 'mpg:input.mpg',
+               'mpg:output.mpg',
+               q//,
+               '4737eb56e976d6d958f3b6c7af4331e8' );
 
 1;

@@ -222,7 +222,7 @@ Export int Latin1Compare(const char *first,const char *second)
 %
 %
 */
-static void Latin1Upper(char *string)
+Export void Latin1Upper(char *string)
 {
   unsigned char
     c;
@@ -1819,7 +1819,6 @@ Export void XDisplayImageInfo(Display *display,
   if (image->normalized_maximum_error != 0)
     (void) sprintf(text,"%s  normalized maximum error: %.6f\n",text,
       image->normalized_maximum_error);
-  SignatureImage(image);
   if (image->signature != (char *) NULL)
     (void) sprintf(text,"%s  signature: %s\n",text,image->signature);
   if (image->matte)
@@ -3440,13 +3439,6 @@ Export void XGetResourceInfo(XrmDatabase database,char *client_name,
     "borderColor",BorderColor);
   resource_value=XGetResourceClass(database,client_name,"borderWidth","2");
   resource_info->border_width=atoi(resource_value);
-  resource_info->browse_command=XGetResourceClass(database,client_name,
-    "browseCommand",BrowseCommand);
-#if defined(WIN32)
-  if (IsWindows95())
-    resource_info->browse_command=XGetResourceClass(database,client_name,
-      "browseCommand",Win95BrowseCommand);
-#endif
   resource_value=XGetResourceClass(database,client_name,"colormap","shared");
   resource_info->colormap=UndefinedColormap;
   if (Latin1Compare("private",resource_value) == 0)
@@ -3471,8 +3463,6 @@ Export void XGetResourceInfo(XrmDatabase database,char *client_name,
   resource_info->display_warnings=IsTrue(resource_value);
   resource_value=XGetResourceClass(database,client_name,"dither","True");
   resource_info->quantize_info.dither=IsTrue(resource_value);
-  resource_info->editor_command=XGetResourceClass(database,client_name,
-    "editorCommand",EditorCommand);
   resource_info->font=
     XGetResourceClass(database,client_name,"font",(char *) NULL);
   resource_info->font=XGetResourceClass(database,client_name,"fontList",
@@ -3542,8 +3532,6 @@ Export void XGetResourceInfo(XrmDatabase database,char *client_name,
   resource_value=XGetResourceClass(database,client_name,"immutable",
     Latin1Compare(client_name,"PerlMagick") == 0 ? "True" : "False");
   resource_info->immutable=IsTrue(resource_value);
-  resource_info->launch_command=XGetResourceClass(database,client_name,
-    "launchCommand",LauncherCommand);
   resource_value=XGetResourceClass(database,client_name,"magnify","3");
   resource_info->magnify=atoi(resource_value);
   resource_info->map_type=
@@ -3576,8 +3564,6 @@ Export void XGetResourceInfo(XrmDatabase database,char *client_name,
     XGetResourceClass(database,client_name,"pen0","gray");
   resource_value=XGetResourceClass(database,client_name,"pause","0");
   resource_info->pause=atoi(resource_value);
-  resource_info->print_command=XGetResourceClass(database,client_name,
-    "printCommand",LPCommand);
   resource_value=XGetResourceClass(database,client_name,"quantum","1");
   resource_info->quantum=atoi(resource_value);
   resource_info->text_font=
@@ -9495,9 +9481,6 @@ Export void XUserPreferences(XResourceInfo *resource_info)
   (void) sprintf(specifier,"%s.backdrop",client_name);
   value=resource_info->backdrop ? "True" : "False";
   XrmPutStringResource(&preferences_database,specifier,value);
-  (void) sprintf(specifier,"%s.browseCommand",client_name);
-  value=resource_info->browse_command;
-  XrmPutStringResource(&preferences_database,specifier,value);
   (void) sprintf(specifier,"%s.colormap",client_name);
   value=resource_info->colormap == SharedColormap ? "Shared" : "Private";
   XrmPutStringResource(&preferences_database,specifier,value);
@@ -9510,14 +9493,8 @@ Export void XUserPreferences(XResourceInfo *resource_info)
   (void) sprintf(specifier,"%s.dither",client_name);
   value=resource_info->quantize_info.dither ? "True" : "False";
   XrmPutStringResource(&preferences_database,specifier,value);
-  (void) sprintf(specifier,"%s.editorCommand",client_name);
-  value=resource_info->editor_command;
-  XrmPutStringResource(&preferences_database,specifier,value);
   (void) sprintf(specifier,"%s.gammaCorrect",client_name);
   value=resource_info->gamma_correct ? "True" : "False";
-  XrmPutStringResource(&preferences_database,specifier,value);
-  (void) sprintf(specifier,"%s.printCommand",client_name);
-  value=resource_info->print_command;
   XrmPutStringResource(&preferences_database,specifier,value);
   (void) sprintf(specifier,"%s.undoCache",client_name);
   (void) sprintf(cache,"%u",resource_info->undo_cache);

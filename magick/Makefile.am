@@ -1,5 +1,4 @@
-#  Generic makefile for display, animate, montage, and import for
-#  computers that do not have xmkmf.
+#  Makefile for building ImageMagick library
 #
 #  Copyright 1998 E. I. du Pont de Nemours and Company
 #
@@ -29,9 +28,7 @@
 #
 
 # Don't require all the GNU mandated files
-# Remove comment from no-dependencies for distributions compatable with
-# traditional 'make'
-AUTOMAKE_OPTIONS = 1.2 foreign # no-dependencies
+AUTOMAKE_OPTIONS = 1.2 foreign
 
 lib_LTLIBRARIES = libMagick.la
 
@@ -43,8 +40,8 @@ libMagick_la_LDFLAGS = -version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VE
 
 # Library sources
 libMagick_la_SOURCES = PreRvIcccm.c X.c animate.c colors.c compress.c decode.c \
-  display.c effects.c encode.c error.c gems.c image.c monitor.c quantize.c \
-  segment.c shear.c signature.c utility.c widget.c memory.c
+  delegates.c display.c effects.c encode.c error.c gems.c image.c monitor.c \
+  quantize.c segment.c shear.c signature.c utility.c widget.c memory.c
 
 # Source files not used for Unix library but which are distributed
 EXTRA_libMagick_la_SOURCES = mac.c nt.c vms.c

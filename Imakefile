@@ -41,13 +41,14 @@ MANSUFFIX = 1
 #define PassCDebugFlags CCOPTIONS='$(CCOPTIONS)'
 
 HEADERS = magick/magick.h magick/image.h magick/compress.h magick/utility.h \
-  magick/monitor.h magick/X.h magick/widget.h magick/PreRvIcccm.h
+  magick/monitor.h magick/error.h magick/delegates.h magick/X.h \
+  magick/widget.h magick/PreRvIcccm.h
 
 LINTSRCS = display.c magick/image.c magick/gems.c magick/shear.c \
   magick/quantize.c magick/colors.c magick/signature.c magick/decode.c \
   magick/encode.c magick/compress.c magick/utility.c magick/monitor.c \
-  magick/error.c magick/X.c magick/display.c magick/animate.c magick/widget.c \
-  magick/PreRvIcccm.c
+  magick/error.c magick/delegates.c magick/X.c magick/display.c \
+  magick/animate.c magick/widget.c magick/PreRvIcccm.c
 
 SRCS = display.c animate.c import.c montage.c convert.c mogrify.c identify.c \
   combine.c
@@ -102,6 +103,7 @@ InstallMultipleMan(combine.1,$(LOCALMAN1))
 InstallMultipleMan(ImageMagick.1,$(LOCALMAN1))
 InstallMultipleMan(miff.4,$(LOCALMAN4))
 InstallMultipleMan(quantize.5,$(LOCALMAN5))
+InstallNonExecFile(delegates.mgk,$(PREFIX)/share/ImageMagick)
 
 strip:
 	strip display animate montage convert combine mogrify import identify

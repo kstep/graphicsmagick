@@ -1,5 +1,4 @@
-#  Generic makefile for display, animate, montage, and import for
-#  computers that do not have xmkmf.
+#  Makefile for installing delegate support files
 #
 #  Copyright 1998 E. I. du Pont de Nemours and Company
 #
@@ -35,4 +34,4 @@ AUTOMAKE_OPTIONS = 1.2 foreign
 pkgdata_DATA = delegates.mgk
 
 # Additional files to distribute
-EXTRA_DIST = delegates.mgk.in 
+EXTRA_DIST = delegates.mgk.in nt.mgk unix.mgk vms.mgk win95.mgk

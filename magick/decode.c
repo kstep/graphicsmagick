@@ -689,99 +689,6 @@ static Image *ReadBMPImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d C G M I m a g e                                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method ReadCGMImage reads a Computer Graphic Meta image file
-%  and returns it.  It allocates the memory necessary for the new Image
-%  structure and returns a pointer to the new image.
-%
-%  The format of the ReadCGMImage routine is:
-%
-%      image=ReadCGMImage(image_info)
-%
-%  A description of each parameter follows:
-%
-%    o image:  Method ReadCGMImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
-%      if the image cannot be read.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%
-*/
-static Image *ReadCGMImage(const ImageInfo *image_info)
-{
-  char
-    command[MaxTextExtent],
-    errors[MaxTextExtent],
-    filename[MaxTextExtent];
-
-  Image
-    *image,
-    *next_image;
-
-  int
-    status;
-
-  /*
-    Allocate image structure.
-  */
-  image=AllocateImage(image_info);
-  if (image == (Image *) NULL)
-    return((Image *) NULL);
-  /*
-    Open image file.
-  */
-  OpenImage(image_info,image,ReadBinaryType);
-  if (image->file == (FILE *) NULL)
-    PrematureExit(FileOpenWarning,"Unable to open file",image);
-  CloseImage(image);
-  /*
-    Ask our delegate to convert the CGM image to Postscript.
-  */
-  (void) strcpy(filename,image_info->filename);
-  TemporaryFilename(image_info->filename);
-  (void) strcat(image_info->filename,".ps");
-  TemporaryFilename(errors);
-  (void) strcat(errors,".err");
-  (void) sprintf(command,CGMCommand,filename,image_info->filename,errors);
-  status=SystemCommand(command);
-  (void) remove(errors);
-  if (status)
-    PrematureExit(CorruptImageWarning,"CGM delegation failed",image);
-  DestroyImage(image);
-  image=ReadPSImage(image_info);
-  (void) remove(image_info->filename);
-  if (image == (Image *) NULL)
-    {
-      MagickWarning(CorruptImageWarning,"CGM delegation failed",
-        image_info->filename);
-      return((Image *) NULL);
-    }
-  /*
-    Assign proper filename.
-  */
-  do
-  {
-    (void) strcpy(image->filename,filename);
-    next_image=image->next;
-    if (next_image != (Image *) NULL)
-      image=next_image;
-  } while (next_image != (Image *) NULL);
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
-  return(image);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 +   R e a d C M Y K I m a g e                                                 %
 %                                                                             %
 %                                                                             %
@@ -1407,7 +1314,7 @@ static Image *ReadDICOMImage(const ImageInfo *image_info)
           if ((group == dicom_info[i].group) &&
               (element == dicom_info[i].element))
             break;
-        (void) fprintf(stdout,"0x%04lx %4d (0x%04x,0x%04x)",image->offset,
+        (void) fprintf(stdout,"0x%04x %4d (0x%04x,0x%04x)",image->offset,
           length,group,element);
         if (dicom_info[i].description != (char *) NULL)
           (void) fprintf(stdout," %s",dicom_info[i].description);
@@ -2113,95 +2020,6 @@ static Image *ReadFAXImage(const ImageInfo *image_info)
   if (status == False)
     PrematureExit(CorruptImageWarning,"Unable to read image data",image);
   CloseImage(image);
-  return(image);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   R e a d F I G I m a g e                                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method ReadFIGImage reads a TransFig image file and returns it.
-%  It allocates the memory necessary for the new Image structure and returns
-%  a pointer to the new image.
-%
-%  The format of the ReadFIGImage routine is:
-%
-%      image=ReadFIGImage(image_info)
-%
-%  A description of each parameter follows:
-%
-%    o image:  Method ReadFIGImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
-%      if the image cannot be read.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%
-*/
-static Image *ReadFIGImage(const ImageInfo *image_info)
-{
-  char
-    command[MaxTextExtent],
-    filename[MaxTextExtent];
-
-  Image
-    *image,
-    *next_image;
-
-  int
-    status;
-
-  /*
-    Allocate image structure.
-  */
-  image=AllocateImage(image_info);
-  if (image == (Image *) NULL)
-    return((Image *) NULL);
-  /*
-    Open image file.
-  */
-  OpenImage(image_info,image,ReadBinaryType);
-  if (image->file == (FILE *) NULL)
-    PrematureExit(FileOpenWarning,"Unable to open file",image);
-  CloseImage(image);
-  /*
-    Ask our delegate to convert the FIG image to Postscript.
-  */
-  (void) strcpy(filename,image_info->filename);
-  TemporaryFilename(image_info->filename);
-  (void) strcat(image_info->filename,".ps");
-  (void) sprintf(command,FIGCommand,filename,image_info->filename);
-  status=SystemCommand(command);
-  if (status)
-    PrematureExit(CorruptImageWarning,"FIG delegation failed",image);
-  DestroyImage(image);
-  image=ReadPSImage(image_info);
-  (void) remove(image_info->filename);
-  if (image == (Image *) NULL)
-    {
-      MagickWarning(CorruptImageWarning,"FIG delegation failed",
-        image_info->filename);
-      return((Image *) NULL);
-    }
-  /*
-    Assign proper filename.
-  */
-  do
-  {
-    (void) strcpy(image->filename,filename);
-    next_image=image->next;
-    if (next_image != (Image *) NULL)
-      image=next_image;
-  } while (next_image != (Image *) NULL);
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
   return(image);
 }
 
@@ -3988,173 +3806,6 @@ static Image *ReadHISTOGRAMImage(const ImageInfo *image_info)
   return(image);
 }
 
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   R e a d H P G L I m a g e                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method ReadHPGLImage reads a HP-GL plotter language file and returns in.
-%  It allocates the memory necessary for the new Image structure and returns a
-%  pointer to the new image.
-%
-%  The format of the ReadHPGLImage routine is:
-%
-%      image=ReadHPGLImage(image_info)
-%
-%  A description of each parameter follows:
-%
-%    o image:  Method ReadHPGLImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
-%      if the image cannot be read.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%
-*/
-static Image *ReadHPGLImage(const ImageInfo *image_info)
-{
-  char
-    command[MaxTextExtent],
-    filename[MaxTextExtent];
-
-  Image
-    *image,
-    *next_image;
-
-  int
-    status;
-
-  /*
-    Allocate image structure.
-  */
-  image=AllocateImage(image_info);
-  if (image == (Image *) NULL)
-    return((Image *) NULL);
-  /*
-    Open image file.
-  */
-  OpenImage(image_info,image,ReadBinaryType);
-  if (image->file == (FILE *) NULL)
-    PrematureExit(FileOpenWarning,"Unable to open file",image);
-  CloseImage(image);
-  /*
-    Ask our delegate to convert the HPGL image to Postscript.
-  */
-  (void) strcpy(filename,image_info->filename);
-  TemporaryFilename(image_info->filename);
-  (void) strcpy(image_info->filename,BaseFilename(image_info->filename));
-  (void) sprintf(command,HPGLCommand,image_info->filename,filename);
-  status=SystemCommand(command);
-  if (status)
-    PrematureExit(CorruptImageWarning,"HPGL delegation failed",image);
-  DestroyImage(image);
-  image=ReadPSImage(image_info);
-  (void) remove(image_info->filename);
-  if (image == (Image *) NULL)
-    {
-      MagickWarning(MissingDelegateWarning,"HPGL delegation failed",
-        image_info->filename);
-      return((Image *) NULL);
-    }
-  /*
-    Assign proper filename.
-  */
-  do
-  {
-    (void) strcpy(image->filename,filename);
-    next_image=image->next;
-    if (next_image != (Image *) NULL)
-      image=next_image;
-  } while (next_image != (Image *) NULL);
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
-  return(image);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   R e a d H T M L I m a g e                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method ReadHTMLImage reads a HyperText Markup Language image file and
-%  returns it.  It allocates the memory necessary for the new Image structure
-%  and returns a pointer to the new image.
-%
-%  The format of the ReadHTMLImage routine is:
-%
-%      image=ReadHTMLImage(image_info)
-%
-%  A description of each parameter follows:
-%
-%    o image:  Method ReadHTMLImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
-%      if the image cannot be read.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%
-*/
-static Image *ReadHTMLImage(const ImageInfo *image_info)
-{
-  char
-    command[MaxTextExtent],
-    filename[MaxTextExtent];
-
-  Image
-    *image,
-    *next_image;
-
-  int
-    status;
-
-  /*
-    Ask our delegate to convert the HTML image to Postscript.
-  */
-  (void) strcpy(filename,image_info->filename);
-  TemporaryFilename(image_info->filename);
-  (void) sprintf(command,HTMLCommand,image_info->filename,filename);
-  status=SystemCommand(command);
-  if (status)
-    {
-      MagickWarning(MissingDelegateWarning,"HTML delegation failed",
-        image_info->filename);
-      return((Image *) NULL);
-    }
-  image=ReadPSImage(image_info);
-  (void) remove(image_info->filename);
-  if (image == (Image *) NULL)
-    {
-      MagickWarning(MissingDelegateWarning,"HTML delegation failed",
-        image_info->filename);
-      return((Image *) NULL);
-    }
-  /*
-    Assign proper filename.
-  */
-  do
-  {
-    (void) strcpy(image->filename,filename);
-    next_image=image->next;
-    if (next_image != (Image *) NULL)
-      image=next_image;
-  } while (next_image != (Image *) NULL);
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
-  return(image);
-}
-
 #if defined(HasJBIG)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -5885,10 +5536,6 @@ static Image *ReadLOGOImage(ImageInfo *image_info)
 {
 #include "logo.h"
 
-  char
-    *filename,
-    logo_filename[MaxTextExtent];
-
   FILE
     *file;
 
@@ -5907,11 +5554,12 @@ static Image *ReadLOGOImage(ImageInfo *image_info)
   /*
     Open temporary output file.
   */
-  TemporaryFilename(logo_filename);
-  file=fopen(logo_filename,WriteBinaryType);
+  TemporaryFilename(image_info->filename);
+  file=fopen(image_info->filename,WriteBinaryType);
   if (file == (FILE *) NULL)
     {
-      MagickWarning(FileOpenWarning,"Unable to write file",logo_filename);
+      MagickWarning(FileOpenWarning,"Unable to write file",
+        image_info->filename);
       return(ReadXCImage(image_info));
     }
   p=LogoImage;
@@ -5934,19 +5582,16 @@ static Image *ReadLOGOImage(ImageInfo *image_info)
   if (ferror(file))
     {
       MagickWarning(FileOpenWarning,"An error has occurred writing to file",
-        logo_filename);
+        image_info->filename);
       (void) fclose(file);
-      (void) remove(logo_filename);
+      (void) remove(image_info->filename);
       return(ReadXCImage(image_info));
     }
   (void) fclose(file);
-  filename=image_info->filename;
-  image_info->filename=logo_filename;
   image=ReadGIFImage(image_info);
-  image_info->filename=filename;
   if (image != (Image *) NULL)
     (void) strcpy(image->filename,image_info->filename);
-  (void) remove(logo_filename);
+  (void) remove(image_info->filename);
   return(image);
 }
 
@@ -6771,104 +6416,6 @@ static Image *ReadMONOImage(const ImageInfo *image_info)
   SetRunlengthPackets(image,packets);
   SyncImage(image);
   CloseImage(image);
-  return(image);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   R e a d M P E G I m a g e                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method ReadMPEGImage reads a MPEG image file and returns it.  It
-%  allocates the memory necessary for the new Image structure and returns a
-%  pointer to the new image.
-%
-%  The format of the ReadMPEGImage routine is:
-%
-%      image=ReadMPEGImage(image_info)
-%
-%  A description of each parameter follows:
-%
-%    o image:  Method ReadMPEGImage returns a pointer to the image after
-%      reading. A null image is returned if there is a a memory shortage or if
-%      the image cannot be read.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%
-*/
-static Image *ReadMPEGImage(const ImageInfo *image_info)
-{
-  char
-    basename[MaxTextExtent],
-    command[MaxTextExtent],
-    filename[MaxTextExtent];
-
-  Image
-    *image,
-    *next_image;
-
-  int
-    status;
-
-  register int
-    i;
-
-  /*
-    Allocate image structure.
-  */
-  image=AllocateImage(image_info);
-  if (image == (Image *) NULL)
-    return((Image *) NULL);
-  /*
-    Open image file.
-  */
-  OpenImage(image_info,image,ReadBinaryType);
-  if (image->file == (FILE *) NULL)
-    PrematureExit(FileOpenWarning,"Unable to open file",image);
-  CloseImage(image);
-  /*
-    Ask our delegate to convert the MPEG image to PNM.
-  */
-  (void) strcpy(filename,image_info->filename);
-  TemporaryFilename(basename);
-  (void) strcat(basename,"%d");
-  (void) sprintf(command,MPEGDecodeCommand,filename,basename);
-  status=SystemCommand(command);
-  if (status)
-    PrematureExit(CorruptImageWarning,"MPEG delegation failed",image);
-  DestroyImage(image);
-  /*
-    Create an image sequence from the individual MPEG frames.
-  */
-  image=(Image *) NULL;
-  for (i=0; ; i++)
-  {
-    (void) sprintf(image_info->filename,basename,i);
-    (void) strcat(image_info->filename,".ppm");
-    if (!IsAccessible(image_info->filename))
-      break;
-    next_image=ReadPNMImage(image_info);
-    (void) remove(image_info->filename);
-    if (next_image == (Image *) NULL)
-      break;
-    (void) strcpy(next_image->filename,filename);
-    next_image->scene=i;
-    next_image->previous=image;
-    if (image != (Image *) NULL)
-      image->next=next_image;
-    image=next_image;
-  }
-  if (image == (Image *) NULL)
-    PrematureExit(CorruptImageWarning,"MPEG delegation failed",image);
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
   return(image);
 }
 
@@ -8118,6 +7665,9 @@ static Image *ReadPDFImage(const ImageInfo *image_info)
     options[MaxTextExtent],
     postscript_filename[MaxTextExtent];
 
+  DelegateInfo
+    delegate_info;
+
   FILE
     *file;
 
@@ -8160,6 +7710,8 @@ static Image *ReadPDFImage(const ImageInfo *image_info)
     portrait,
     width;
 
+  if (!GetDelegateInfo("gs",True,&delegate_info))
+    return((Image *) NULL);
   /*
     Allocate image structure.
   */
@@ -8275,14 +7827,14 @@ static Image *ReadPDFImage(const ImageInfo *image_info)
     /*
       Ghostscript eats % characters.
     */
-    TemporaryFilename(image_info->filename);
+    TemporaryFilename((char *) image_info->filename);
     if (strchr(image_info->filename,'%') == (char *) NULL)
       break;
   }
   alias_bits=image_info->dither && !image_info->monochrome ? 4 : 1;
   (void) sprintf(density,"%gx%g",image->x_resolution,image->y_resolution);
-  (void) sprintf(command,PSCommand,device,alias_bits,alias_bits,geometry,
-    density,options,image_info->filename,postscript_filename);
+  (void) sprintf(command,delegate_info.commands,device,alias_bits,alias_bits,
+    geometry,density,options,image_info->filename,postscript_filename);
   ProgressMonitor(RenderPostscriptText,0,8);
   status=SystemCommand(command);
   if (status)
@@ -8291,8 +7843,9 @@ static Image *ReadPDFImage(const ImageInfo *image_info)
         Older ghostscript may not support text aliasing.
       */
       device="ppmraw";
-      (void) sprintf(command,PSCommand,device,alias_bits,alias_bits,geometry,
-        density,options,image_info->filename,postscript_filename);
+      (void) sprintf(command,delegate_info.commands,device,alias_bits,
+        alias_bits,geometry,density,options,image_info->filename,
+        postscript_filename);
       status=SystemCommand(command);
     }
   ProgressMonitor(RenderPostscriptText,7,8);
@@ -8313,7 +7866,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info)
         image_info->filename);
       return((Image *) NULL);
     }
-  (void) strcpy(image_info->filename,filename);
+  (void) strcpy((char *) image_info->filename,filename);
   do
   {
     (void) strcpy(image->magick,"PDF");
@@ -10481,6 +10034,9 @@ static Image *ReadPSImage(const ImageInfo *image_info)
     postscript_filename[MaxTextExtent],
     translate_geometry[MaxTextExtent];
 
+  DelegateInfo
+    delegate_info;
+
   FILE
     *file;
 
@@ -10522,6 +10078,8 @@ static Image *ReadPSImage(const ImageInfo *image_info)
     height,
     width;
 
+  if (!GetDelegateInfo("gs",True,&delegate_info))
+    return((Image *) NULL);
   /*
     Allocate image structure.
   */
@@ -10657,14 +10215,14 @@ static Image *ReadPSImage(const ImageInfo *image_info)
     /*
       Ghostscript eats % characters.
     */
-    TemporaryFilename(image_info->filename);
+    TemporaryFilename((char *) image_info->filename);
     if (strchr(image_info->filename,'%') == (char *) NULL)
       break;
   }
   alias_bits=image_info->dither && !image_info->monochrome ? 4 : 1;
   (void) sprintf(density,"%gx%g",image->x_resolution,image->y_resolution);
-  (void) sprintf(command,PSCommand,device,alias_bits,alias_bits,geometry,
-    density,options,image_info->filename,postscript_filename);
+  (void) sprintf(command,delegate_info.commands,device,alias_bits,alias_bits,
+    geometry,density,options,image_info->filename,postscript_filename);
   ProgressMonitor(RenderPostscriptText,0,8);
   status=SystemCommand(command);
   if (status)
@@ -10673,8 +10231,9 @@ static Image *ReadPSImage(const ImageInfo *image_info)
         Older ghostscript may not support text aliasing.
       */
       device="ppmraw";
-      (void) sprintf(command,PSCommand,device,alias_bits,alias_bits,geometry,
-        density,options,image_info->filename,postscript_filename);
+      (void) sprintf(command,delegate_info.commands,device,alias_bits,
+        alias_bits,geometry,density,options,image_info->filename,
+        postscript_filename);
       status=SystemCommand(command);
     }
   if (!IsAccessible(image_info->filename))
@@ -10696,7 +10255,7 @@ static Image *ReadPSImage(const ImageInfo *image_info)
       /*
         Ghostscript has failed-- try the Display Postscript Extension.
       */
-      (void) strcpy(image_info->filename,filename);
+      (void) strcpy((char *) image_info->filename,filename);
       image=ReadDPSImage(image_info);
       if (image != (Image *) NULL)
         return(image);
@@ -10713,7 +10272,7 @@ static Image *ReadPSImage(const ImageInfo *image_info)
         image_info->filename);
       return((Image *) NULL);
     }
-  (void) strcpy(image_info->filename,filename);
+  (void) strcpy((char *) image_info->filename,filename);
   do
   {
     (void) strcpy(image->magick,"PS");
@@ -11180,94 +10739,6 @@ static Image *ReadPSDImage(const ImageInfo *image_info)
   image->matte=False;
   if (psd_header.mode != CMYKMode)
    image->matte=psd_header.channels >= 4;
-  return(image);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   R e a d R A D I A N C E I m a g e                                         %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method ReadRADIANCEImage reads a RADIANCE image file and returns it.
-%  It allocates the memory necessary for the new Image structure and returns
-%  a pointer to the new image.
-%
-%  The format of the ReadRADIANCEImage routine is:
-%
-%      image=ReadRADIANCEImage(image_info)
-%
-%  A description of each parameter follows:
-%
-%    o image:  Method ReadRADIANCEImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
-%      if the image cannot be read.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%
-*/
-static Image *ReadRADIANCEImage(const ImageInfo *image_info)
-{
-  char
-    command[MaxTextExtent],
-    filename[MaxTextExtent];
-
-  Image
-    *image,
-    *next_image;
-
-  int
-    status;
-
-  /*
-    Allocate image structure.
-  */
-  image=AllocateImage(image_info);
-  if (image == (Image *) NULL)
-    return((Image *) NULL);
-  /*
-    Open image file.
-  */
-  OpenImage(image_info,image,ReadBinaryType);
-  if (image->file == (FILE *) NULL)
-    PrematureExit(FileOpenWarning,"Unable to open file",image);
-  CloseImage(image);
-  /*
-    Use ra_ppm to convert RADIANCE image.
-  */
-  (void) strcpy(filename,image_info->filename);
-  TemporaryFilename(image_info->filename);
-  (void) sprintf(command,RADCommand,filename,image_info->filename);
-  status=SystemCommand(command);
-  if (status)
-    PrematureExit(CorruptImageWarning,"RADIANCE delegation failed",image);
-  DestroyImage(image);
-  image=ReadPNMImage(image_info);
-  (void) remove(image_info->filename);
-  if (image == (Image *) NULL)
-    {
-      MagickWarning(CorruptImageWarning,"RAD delegation failed",
-        image_info->filename);
-      return((Image *) NULL);
-    }
-  /*
-    Assign proper filename.
-  */
-  do
-  {
-    (void) strcpy(image->filename,filename);
-    next_image=image->next;
-    if (next_image != (Image *) NULL)
-      image=next_image;
-  } while (next_image != (Image *) NULL);
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
   return(image);
 }
 
@@ -12436,94 +11907,6 @@ static Image *ReadRLEImage(const ImageInfo *image_info)
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseImage(image);
-  return(image);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   R e a d S C A N I m a g e                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method ReadSCANImage scans an image from a scanner device.  It allocates
-%  the memory necessary for the new Image structure and returns a pointer to
-%  the new image.
-%
-%  The format of the ReadSCANImage routine is:
-%
-%      image=ReadSCANImage(image_info)
-%
-%  A description of each parameter follows:
-%
-%    o image:  Method ReadSCANImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
-%      if the image cannot be read.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%
-*/
-static Image *ReadSCANImage(const ImageInfo *image_info)
-{
-  char
-    command[MaxTextExtent],
-    filename[MaxTextExtent];
-
-  Image
-    *image,
-    *next_image;
-
-  int
-    status;
-
-  /*
-    Allocate image structure.
-  */
-  image=AllocateImage(image_info);
-  if (image == (Image *) NULL)
-    return((Image *) NULL);
-  /*
-    Open image file.
-  */
-  OpenImage(image_info,image,ReadBinaryType);
-  if (image->file == (FILE *) NULL)
-    PrematureExit(FileOpenWarning,"Unable to open file",image);
-  CloseImage(image);
-  /*
-    Use scanimage to import the image from a scanner device.
-  */
-  (void) strcpy(filename,image_info->filename);
-  TemporaryFilename(image_info->filename);
-  (void) sprintf(command,SCANCommand,filename,image_info->filename);
-  status=SystemCommand(command);
-  if (status)
-    PrematureExit(CorruptImageWarning,"SCAN delegation failed",image);
-  DestroyImage(image);
-  image=ReadPNMImage(image_info);
-  (void) remove(image_info->filename);
-  if (image == (Image *) NULL)
-    {
-      MagickWarning(CorruptImageWarning,"SCAN delegation failed",
-        image_info->filename);
-      return((Image *) NULL);
-    }
-  /*
-    Assign proper filename.
-  */
-  do
-  {
-    (void) strcpy(image->filename,filename);
-    next_image=image->next;
-    if (next_image != (Image *) NULL)
-      image=next_image;
-  } while (next_image != (Image *) NULL);
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
   return(image);
 }
 
@@ -14024,7 +13407,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info)
       /*
         Copy standard input or pipe to temporary file.
       */
-      TemporaryFilename(image_info->filename);
+      TemporaryFilename((char *) image_info->filename);
       file=fopen(image_info->filename,WriteBinaryType);
       if (file == (FILE *) NULL)
         PrematureExit(FileOpenWarning,"Unable to write file",image);
@@ -15010,7 +14393,6 @@ static Image *ReadTTFImage(const ImageInfo *image_info)
 
   char
     font[MaxTextExtent],
-    filename[MaxTextExtent],
     geometry[MaxTextExtent],
     text[MaxTextExtent];
 
@@ -15031,7 +14413,6 @@ static Image *ReadTTFImage(const ImageInfo *image_info)
   */
   y=0;
   local_info=(*image_info);
-  local_info.filename=filename;
   local_info.size="800x480";
   local_info.pen="black";
   local_info.pointsize=18;
@@ -15598,7 +14979,7 @@ static Image *ReadVIDImage(const ImageInfo *image_info)
     handler=SetMonitorHandler((MonitorHandler) NULL);
     if (local_info.size == (char *) NULL)
       local_info.size=resource_info.image_geometry;
-    local_info.filename=filelist[i];
+    (void) strcpy(local_info.filename,filelist[i]);
     *local_info.magick='\0';
     next_image=ReadImage(&local_info);
     FreeMemory((char *) filelist[i]);
@@ -16279,44 +15660,6 @@ static Image *ReadVIFFImage(const ImageInfo *image_info)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   R e a d W I N I m a g e                                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method ReadWINImage reads a WIN image file and returns it.  It
-%  allocates the memory necessary for the new Image structure and returns a
-%  pointer to the new image.
-%
-%  The format of the ReadWINImage routine is:
-%
-%      image=ReadWINImage(image_info)
-%
-%  A description of each parameter follows:
-%
-%    o image:  Method ReadWINImage returns a pointer to the image after
-%      reading.  A null image is returned if there is a a memory shortage or
-%      if the image cannot be read.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%
-*/
-static Image *ReadWINImage(const ImageInfo *image_info)
-{
-  XImportInfo
-    ximage_info;
-
-  XGetImportInfo(&ximage_info);
-  return(ReadXImage((ImageInfo *) image_info,&ximage_info));
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   R e a d X I m a g e                                                       %
 %                                                                             %
 %                                                                             %
@@ -16898,7 +16241,7 @@ static Image *ReadXCImage(const ImageInfo *image_info)
   /*
     Initialize colormap.
   */
-  (void) XQueryColorDatabase(image_info->filename,&color);
+  (void) XQueryColorDatabase((char *) image_info->filename,&color);
   image->colormap[0].red=XDownScale(color.red);
   image->colormap[0].green=XDownScale(color.green);
   image->colormap[0].blue=XDownScale(color.blue);
@@ -17739,7 +17082,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info)
       p=scanline;
       for (x=0; x < (image->columns << 1); x++)
       {
-        ReadQuantum(q->red,p);
+        q->red=UpScale(*p++);
         q->index=0;
         q->length=0;
         q++;
@@ -17762,7 +17105,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info)
       p=scanline;
       for (x=0; x < image->columns; x++)
       {
-        ReadQuantum(q->green,p);
+        q->green=UpScale(*p++);
         q++;
       }
       if (image->previous == (Image *) NULL)
@@ -17783,7 +17126,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info)
       p=scanline;
       for (x=0; x < image->columns; x++)
       {
-        ReadQuantum(q->blue,p);
+        q->blue=UpScale(*p++);
         q++;
       }
       if (image->previous == (Image *) NULL)
@@ -17879,17 +17222,14 @@ static Image *ReadYUVImage(const ImageInfo *image_info)
 Export Image *ReadImage(ImageInfo *image_info)
 {
   char
-    command[MaxTextExtent],
-    filename[MaxTextExtent],
-    magic_number[MaxTextExtent];
+    filename[MaxTextExtent];
+
+  DelegateInfo
+    delegate_info;
 
   Image
-    *decode_image,
     *image,
     *next_image;
-
-  ImageInfo
-    decode_info;
 
   register char
     *p;
@@ -17897,738 +17237,562 @@ Export Image *ReadImage(ImageInfo *image_info)
   register int
     i;
 
-  register long
-    packets;
+  unsigned int
+    temporary;
 
   /*
     Determine image type from filename prefix or suffix (e.g. image.jpg).
   */
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->filename != (char *) NULL);
+  temporary=False;
   SetImageInfo(image_info,False);
-  decode_info=(*image_info);
-  decode_image=AllocateImage(image_info);
-  if (decode_image == (Image *) NULL)
-    return((Image *) NULL);
-  decode_image->temporary=Latin1Compare(decode_info.magick,"TMP") == 0;
-  decode_image->orphan=False;
-  if ((strncmp(decode_info.magick,"FILE",4) == 0) ||
-      (strncmp(decode_info.magick,"FTP",3) == 0) ||
-      (strncmp(decode_info.magick,"GOPHER",6) == 0) ||
-      (strncmp(decode_info.magick,"HTTP",4) == 0))
+  if (GetDelegateInfo(image_info->magick,True,&delegate_info))
     {
+      unsigned int
+        status;
+
       /*
-        Retrieve image as specified with a WWW uniform resource locator.
+        Let our delegate process the image.
       */
-      decode_image->temporary=True;
-      TemporaryFilename(filename);
-      (void) sprintf(command,WWWCommand,decode_info.magick,decode_info.filename,
-        filename);
-      (void) SystemCommand(command);
-      SetImageInfo(&decode_info,False);
-      (void) strcpy(decode_info.filename,filename);
-    }
-  if (!decode_info.affirm || (Latin1Compare(decode_info.magick,"SGI") == 0) ||
-      (Latin1Compare(decode_info.magick,"PCD") == 0))
-    {
-      /*
-        Determine type from image magic number.
-      */
-      for (i=0 ; i < sizeof(magic_number); i++)
-        magic_number[i]='\0';
-      (void) strcpy(decode_image->filename,decode_info.filename);
-      OpenImage(image_info,decode_image,ReadBinaryType);
-      if ((decode_image->file != (FILE *) NULL) && decode_image->exempt)
+      image=AllocateImage(image_info);
+      if (image == (Image *) NULL)
+        return((Image *) NULL);
+      (void) strcpy(filename,image_info->filename);
+      (void) strcpy(image->filename,image_info->filename);
+      TemporaryFilename(image_info->filename);
+      status=InvokeDelegate(image_info,image,image_info->magick,True);
+      DestroyImages(image);
+      if (status == False)
         {
-          FILE
-            *file;
-
-          int
-            c;
-
-          /*
-            Copy standard input or pipe to temporary file.
-          */
-          decode_image->temporary=True;
-          TemporaryFilename(decode_image->filename);
-          file=fopen(decode_image->filename,WriteBinaryType);
-          if (file == (FILE *) NULL)
-            {
-              MagickWarning(FileOpenWarning,"Unable to write file",
-                decode_info.filename);
-              return((Image *) NULL);
-            }
-          c=fgetc(decode_image->file);
-          while (c != EOF)
-          {
-            (void) putc(c,file);
-            c=fgetc(decode_image->file);
-          }
-          (void) fclose(file);
-          decode_image->exempt=False;
-          decode_info.file=(FILE *) NULL;
-          CloseImage(decode_image);
-          (void) strcpy(decode_info.filename,decode_image->filename);
-          OpenImage(&decode_info,decode_image,ReadBinaryType);
+          temporary=True;
+          image_info->affirm=False;
         }
-      if (decode_image->file != (FILE *) NULL)
-        {
-          /*
-            Read magic number.
-          */
-          (void) ReadData(magic_number,(unsigned int) sizeof(char),
-            (unsigned int) sizeof(magic_number),decode_image->file);
-          if (((unsigned char) magic_number[0] == 0xff) &&
-              ((unsigned char) magic_number[1] == 0xff))
-            {
-              register int
-                i;
-
-              /*
-                For PCD image type, skip to byte 2048.
-              */
-              for (i=0; i < (int) (0x800-sizeof(magic_number)); i++)
-                (void) fgetc(decode_image->file);
-              (void) ReadData(magic_number,(unsigned int) sizeof(char),
-                (unsigned int) sizeof(magic_number),decode_image->file);
-            }
-          CloseImage(decode_image);
-        }
-      /*
-        Determine the image format.
-      */
-      magic_number[MaxTextExtent-1]='\0';
-      if (strncmp(magic_number,"BM",2) == 0)
-        (void) strcpy(decode_info.magick,"BMP");
-      if (strncmp(magic_number,"IC",2) == 0)
-        (void) strcpy(decode_info.magick,"BMP");
-      if (strncmp(magic_number,"PI",2) == 0)
-        (void) strcpy(decode_info.magick,"BMP");
-      if (strncmp(magic_number,"CI",2) == 0)
-        (void) strcpy(decode_info.magick,"BMP");
-      if (strncmp(magic_number,"CP",2) == 0)
-        (void) strcpy(decode_info.magick,"BMP");
-      if (strncmp(magic_number,"BEGMF",3) == 0)
-        (void) strcpy(decode_info.magick,"CGM");
-      if (strncmp(magic_number,"\305\320\323\306",4) == 0)
-        (void) strcpy(decode_info.magick,"EPT");
-      if (strncmp(magic_number,"IT0",3) == 0)
-        (void) strcpy(decode_info.magick,"FITS");
-      if (strncmp(magic_number,"\261\150\336\72",4) == 0)
-        (void) strcpy(decode_info.magick,"DCX");
-      if (strncmp(magic_number,"SIMPLE",6) == 0)
-        (void) strcpy(decode_info.magick,"FITS");
-      if (strncmp(magic_number,"#FIG",4) == 0)
-        (void) strcpy(decode_info.magick,"FIG");
-      if (strncmp(magic_number,"GIF8",4) == 0)
-        (void) strcpy(decode_info.magick,"GIF");
-      if (strncmp(magic_number,"\016\003\023\001",4) == 0)
-        (void) strcpy(decode_info.magick,"HDF");
-      if ((strncmp(magic_number,"<HTML",5) == 0) ||
-          (strncmp(magic_number,"<html",5) == 0))
-        (void) strcpy(decode_info.magick,"HTML");
-      if (strncmp(magic_number,"\377\330\377\340",4) == 0)
-        (void) strcpy(decode_info.magick,"JPEG");
-      if (strncmp(magic_number,"\377\330\377\356",4) == 0)
-        (void) strcpy(decode_info.magick,"JPEG");
-      if (strncmp(magic_number,"id=ImageMagick",14) == 0)
-        (void) strcpy(decode_info.magick,"MIFF");
-      if (strncmp(magic_number,"\212MNG\r\n\032\n",8) == 0)
-        (void) strcpy(decode_info.magick,"MNG");
-      if ((magic_number[0] == 0x00) && (magic_number[1] == 0x00))
-        if ((magic_number[2] == 0x01) && (magic_number[3] == (char) 0xb3))
-          (void) strcpy(decode_info.magick,"MPEG");
-      if (strncmp(magic_number,"PCD_",4) == 0)
-        (void) strcpy(decode_info.magick,"PCD");
-      if (strncmp(magic_number,"\033E\033",3) == 0)
-        (void) strcpy(decode_info.magick,"PCL");
-      if (strncmp(magic_number,"\12\2",2) == 0)
-        (void) strcpy(decode_info.magick,"PCX");
-      if (strncmp(magic_number,"\12\5",2) == 0)
-        (void) strcpy(decode_info.magick,"PCX");
-      if (strncmp(magic_number,"%PDF-",5) == 0)
-        (void) strcpy(decode_info.magick,"PDF");
-      if ((*magic_number == 'P') && isdigit((int) (magic_number[1])))
-        (void) strcpy(decode_info.magick,"PNM");
-      if (strncmp(magic_number,"\211PNG\r\n\032\n",8) == 0)
-        (void) strcpy(decode_info.magick,"PNG");
-      if (strncmp(magic_number,"\004%!",3) == 0)
-        (void) strcpy(decode_info.magick,"PS");
-      if (strncmp(magic_number,"%!",2) == 0)
-        (void) strcpy(decode_info.magick,"PS");
-      if (strncmp(magic_number,"8BPS",4) == 0)
-        (void) strcpy(decode_info.magick,"PSD");
-      if (strncmp(magic_number,"#?RADIANCE",10) == 0)
-        (void) strcpy(decode_info.magick,"RAD");
-      if (strncmp(magic_number,"\122\314",2) == 0)
-        (void) strcpy(decode_info.magick,"RLE");
-      if (strncmp(magic_number,"\001\332",2) == 0)
-        (void) strcpy(decode_info.magick,"SGI");
-      if (strncmp(magic_number,"\131\246\152\225",4) == 0)
-        (void) strcpy(decode_info.magick,"SUN");
-      if ((magic_number[0] == 0x4D) && (magic_number[1] == 0x4D))
-        if ((magic_number[2] == 0x00) && (magic_number[3] == (char) 0x2A))
-          (void) strcpy(decode_info.magick,"TIFF");
-      if (strncmp(magic_number,"\111\111\052\000",4) == 0)
-        (void) strcpy(decode_info.magick,"TIFF");
-      if ((strncmp(magic_number,"LBLSIZE",7) == 0) ||
-          (strncmp(magic_number,"NJPL1I",6) == 0))
-        (void) strcpy(decode_info.magick,"VICAR");
-      if (strncmp(magic_number,"\253\1",2) == 0)
-        (void) strcpy(decode_info.magick,"VIFF");
-      p=strchr(magic_number,'#');
-      if (p != (char *) NULL)
-        if (strncmp(p,"#define",7) == 0)
-          (void) strcpy(decode_info.magick,"XBM");
-      if (strncmp(magic_number,"/* XPM */",9) == 0)
-        (void) strcpy(decode_info.magick,"XPM");
-      if ((magic_number[1] == 0x00) && (magic_number[2] == 0x00))
-        if ((magic_number[5] == 0x00) && (magic_number[6] == 0x00))
-          if ((magic_number[4] == 0x07) || (magic_number[7] == 0x07))
-            (void) strcpy(decode_info.magick,"XWD");
+      SetImageInfo(image_info,False);
     }
   /*
     Call appropriate image reader based on image type.
   */
   image=(Image *) NULL;
-  switch (*decode_info.magick)
+  switch (*image_info->magick)
   {
     case 'A':
     {
-      if (Latin1Compare(decode_info.magick,"AVS") == 0)
+      if (Latin1Compare(image_info->magick,"AVS") == 0)
         {
-          image=ReadAVSImage(&decode_info);
+          image=ReadAVSImage(image_info);
           break;
         }
-      image=ReadMIFFImage(&decode_info);
+      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+        image_info->magick);
       break;
     }
     case 'B':
     {
-      if (Latin1Compare(decode_info.magick,"BIE") == 0)
+      if (Latin1Compare(image_info->magick,"BIE") == 0)
         {
-          image=ReadJBIGImage(&decode_info);
+          image=ReadJBIGImage(image_info);
           break;
         }
-      if ((Latin1Compare(decode_info.magick,"BMP") == 0) ||
-          (Latin1Compare(decode_info.magick,"BMP24") == 0))
+      if ((Latin1Compare(image_info->magick,"BMP") == 0) ||
+          (Latin1Compare(image_info->magick,"BMP24") == 0))
         {
-          image=ReadBMPImage(&decode_info);
+          image=ReadBMPImage(image_info);
           break;
         }
-      image=ReadMIFFImage(&decode_info);
+      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+        image_info->magick);
       break;
     }
     case 'C':
     {
-      if (Latin1Compare(decode_info.magick,"CGM") == 0)
+      if (Latin1Compare(image_info->magick,"CMYK") == 0)
         {
-          image=ReadCGMImage(&decode_info);
+          image=ReadCMYKImage(image_info);
           break;
         }
-      if (Latin1Compare(decode_info.magick,"CMYK") == 0)
-        {
-          image=ReadCMYKImage(&decode_info);
-          break;
-        }
-      image=ReadMIFFImage(&decode_info);
+      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+        image_info->magick);
       break;
     }
     case 'D':
     {
-      if (strncmp(decode_info.magick,"DCX",3) == 0)
+      if (strncmp(image_info->magick,"DCX",3) == 0)
         {
-          image=ReadPCXImage(&decode_info);
+          image=ReadPCXImage(image_info);
           break;
         }
-      if (Latin1Compare(decode_info.magick,"DIB") == 0)
+      if (Latin1Compare(image_info->magick,"DIB") == 0)
         {
-          image=ReadBMPImage(&decode_info);
+          image=ReadBMPImage(image_info);
           break;
         }
-      if (Latin1Compare(decode_info.magick,"DICOM") == 0)
+      if (Latin1Compare(image_info->magick,"DICOM") == 0)
         {
-          image=ReadDICOMImage(&decode_info);
+          image=ReadDICOMImage(image_info);
           break;
         }
-      image=ReadMIFFImage(&decode_info);
+      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+        image_info->magick);
       break;
     }
     case 'E':
     {
-      if (strncmp(decode_info.magick,"EPDF",4) == 0)
+      if (strncmp(image_info->magick,"EPDF",4) == 0)
         {
-          image=ReadPDFImage(&decode_info);
+          image=ReadPDFImage(image_info);
           break;
         }
-      if ((Latin1Compare(decode_info.magick,"EPI") == 0) ||
-          (Latin1Compare(decode_info.magick,"EPT") == 0) ||
-          (strncmp(decode_info.magick,"EPS",3) == 0))
+      if ((Latin1Compare(image_info->magick,"EPI") == 0) ||
+          (Latin1Compare(image_info->magick,"EPT") == 0) ||
+          (strncmp(image_info->magick,"EPS",3) == 0))
         {
-          image=ReadPSImage(&decode_info);
+          image=ReadPSImage(image_info);
           break;
         }
-      image=ReadMIFFImage(&decode_info);
+      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+        image_info->magick);
       break;
     }
     case 'F':
     {
-      if (Latin1Compare(decode_info.magick,"FAX") == 0)
+      if (Latin1Compare(image_info->magick,"FAX") == 0)
         {
-          image=ReadFAXImage(&decode_info);
+          image=ReadFAXImage(image_info);
           break;
         }
-      if (Latin1Compare(decode_info.magick,"FIG") == 0)
+      if (Latin1Compare(image_info->magick,"FITS") == 0)
         {
-          image=ReadFIGImage(&decode_info);
+          image=ReadFITSImage(image_info);
           break;
         }
-      if (Latin1Compare(decode_info.magick,"FITS") == 0)
+      if (Latin1Compare(image_info->magick,"FPX") == 0)
         {
-          image=ReadFITSImage(&decode_info);
+          image=ReadFPXImage(image_info);
           break;
         }
-      if (Latin1Compare(decode_info.magick,"FPX") == 0)
-        {
-          image=ReadFPXImage(&decode_info);
-          break;
-        }
-      image=ReadMIFFImage(&decode_info);
+      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+        image_info->magick);
       break;
     }
     case 'G':
     {
-      if (strncmp(decode_info.magick,"GIF",3) == 0)
+      if (strncmp(image_info->magick,"GIF",3) == 0)
         {
-          image=ReadGIFImage(&decode_info);
+          image=ReadGIFImage(image_info);
           break;
         }
-      if (Latin1Compare(decode_info.magick,"GRADATION") == 0)
+      if (Latin1Compare(image_info->magick,"GRADATION") == 0)
         {
-          image=ReadGRADATIONImage(&decode_info);
+          image=ReadGRADATIONImage(image_info);
           break;
         }
-      if (Latin1Compare(decode_info.magick,"GRANITE") == 0)
+      if (Latin1Compare(image_info->magick,"GRANITE") == 0)
         {
-          image=ReadLOGOImage(&decode_info);
+          image=ReadLOGOImage(image_info);
           break;
         }
-      if (Latin1Compare(decode_info.magick,"GRAY") == 0)
+      if (Latin1Compare(image_info->magick,"GRAY") == 0)
         {
-          image=ReadGRAYImage(&decode_info);
+          image=ReadGRAYImage(image_info);
           break;
         }
-      if (strncmp(decode_info.magick,"G3",2) == 0)
+      if (strncmp(image_info->magick,"G3",2) == 0)
         {
-          image=ReadFAXImage(&decode_info);
+          image=ReadFAXImage(image_info);
           break;
         }
-      image=ReadMIFFImage(&decode_info);
+      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+        image_info->magick);
       break;
     }
     case 'H':
     {
-      if (Latin1Compare(decode_info.magick,"H") == 0)
+      if (Latin1Compare(image_info->magick,"H") == 0)
         {
-          image=ReadLOGOImage(&decode_info);
+          image=ReadLOGOImage(image_info);
           break;
         }
-      if (Latin1Compare(decode_info.magick,"HDF") == 0)
+      if (Latin1Compare(image_info->magick,"HDF") == 0)
         {
-          image=ReadHDFImage(&decode_info);
+          image=ReadHDFImage(image_info);
           break;
         }
-      if (strncmp(decode_info.magick,"HISTOGRAM",4) == 0)
+      if (strncmp(image_info->magick,"HISTOGRAM",4) == 0)
         {
-          image=ReadHISTOGRAMImage(&decode_info);
+          image=ReadHISTOGRAMImage(image_info);
           break;
         }
-      if (Latin1Compare(decode_info.magick,"HPGL") == 0)
-        {
-          image=ReadHPGLImage(&decode_info);
-          break;
-        }
-      if (strncmp(decode_info.magick,"HTM",3) == 0)
-        {
-          image=ReadHTMLImage(&decode_info);
-          break;
-        }
-      image=ReadMIFFImage(&decode_info);
+      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+        image_info->magick);
       break;
     }
     case 'J':
     {
-      if ((Latin1Compare(decode_info.magick,"JBG") == 0) ||
-          (Latin1Compare(decode_info.magick,"JBIG") == 0))
+      if ((Latin1Compare(image_info->magick,"JBG") == 0) ||
+          (Latin1Compare(image_info->magick,"JBIG") == 0))
         {
-          image=ReadJBIGImage(&decode_info);
+          image=ReadJBIGImage(image_info);
           break;
         }
-      if (Latin1Compare(decode_info.magick,"JPEG") == 0)
+      if (Latin1Compare(image_info->magick,"JPEG") == 0)
         {
-          image=ReadJPEGImage(&decode_info);
+          image=ReadJPEGImage(image_info);
           break;
         }
-      image=ReadMIFFImage(&decode_info);
+      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+        image_info->magick);
       break;
     }
     case 'I':
     {
-      if (Latin1Compare(decode_info.magick,"ICB") == 0)
+      if (Latin1Compare(image_info->magick,"ICB") == 0)
         {
-          image=ReadTGAImage(&decode_info);
+          image=ReadTGAImage(image_info);
           break;
         }
-      if (Latin1Compare(decode_info.magick,"ICO") == 0)
+      if (Latin1Compare(image_info->magick,"ICO") == 0)
         {
-          image=ReadICONImage(&decode_info);
+          image=ReadICONImage(image_info);
           break;
         }
-      image=ReadMIFFImage(&decode_info);
+      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+        image_info->magick);
       break;
     }
     case 'L':
     {
-      if (Latin1Compare(decode_info.magick,"LABEL") == 0)
+      if (Latin1Compare(image_info->magick,"LABEL") == 0)
         {
-          image=ReadLABELImage(&decode_info);
+          image=ReadLABELImage(image_info);
           break;
         }
-      if (Latin1Compare(decode_info.magick,"LOGO") == 0)
+      if (Latin1Compare(image_info->magick,"LOGO") == 0)
         {
-          image=ReadLOGOImage(&decode_info);
+          image=ReadLOGOImage(image_info);
           break;
         }
-      image=ReadMIFFImage(&decode_info);
+      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+        image_info->magick);
       break;
     }
     case 'M':
     {
-      if (Latin1Compare(decode_info.magick,"MAP") == 0)
+      if (Latin1Compare(image_info->magick,"MAP") == 0)
         {
-          image=ReadMAPImage(&decode_info);
+          image=ReadMAPImage(image_info);
           break;
         }
-      if (Latin1Compare(decode_info.magick,"MNG") == 0)
+      if (Latin1Compare(image_info->magick,"MIFF") == 0)
         {
-          image=ReadPNGImage(&decode_info);
+          image=ReadMIFFImage(image_info);
           break;
         }
-      if (Latin1Compare(decode_info.magick,"MONO") == 0)
+      if (Latin1Compare(image_info->magick,"MNG") == 0)
         {
-          image=ReadMONOImage(&decode_info);
+          image=ReadPNGImage(image_info);
           break;
         }
-      if ((Latin1Compare(decode_info.magick,"MPEG") == 0) ||
-          (Latin1Compare(decode_info.magick,"MPG") == 0) ||
-          (Latin1Compare(decode_info.magick,"M2V") == 0))
+      if (Latin1Compare(image_info->magick,"MONO") == 0)
         {
-          image=ReadMPEGImage(&decode_info);
+          image=ReadMONOImage(image_info);
           break;
         }
-      if (Latin1Compare(decode_info.magick,"MTV") == 0)
+      if (Latin1Compare(image_info->magick,"MTV") == 0)
         {
-          image=ReadMTVImage(&decode_info);
+          image=ReadMTVImage(image_info);
           break;
         }
-      image=ReadMIFFImage(&decode_info);
+      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+        image_info->magick);
       break;
     }
     case 'N':
     {
-      if (Latin1Compare(decode_info.magick,"NETSCAPE") == 0)
+      if (Latin1Compare(image_info->magick,"NETSCAPE") == 0)
         {
-          image=ReadLOGOImage(&decode_info);
+          image=ReadLOGOImage(image_info);
           break;
         }
-      if (Latin1Compare(decode_info.magick,"NULL") == 0)
+      if (Latin1Compare(image_info->magick,"NULL") == 0)
         {
-          image=ReadNULLImage(&decode_info);
+          image=ReadNULLImage(image_info);
           break;
         }
-      image=ReadMIFFImage(&decode_info);
+      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+        image_info->magick);
       break;
     }
     case 'P':
     {
-      if ((Latin1Compare(decode_info.magick,"P7") == 0) ||
-          (Latin1Compare(decode_info.magick,"PBM") == 0) ||
-          (Latin1Compare(decode_info.magick,"PGM") == 0) ||
-          (Latin1Compare(decode_info.magick,"PNM") == 0) ||
-          (Latin1Compare(decode_info.magick,"PPM") == 0))
+      if ((Latin1Compare(image_info->magick,"P7") == 0) ||
+          (Latin1Compare(image_info->magick,"PBM") == 0) ||
+          (Latin1Compare(image_info->magick,"PGM") == 0) ||
+          (Latin1Compare(image_info->magick,"PNM") == 0) ||
+          (Latin1Compare(image_info->magick,"PPM") == 0))
         {
-          image=ReadPNMImage(&decode_info);
+          image=ReadPNMImage(image_info);
           break;
         }
-      if ((Latin1Compare(decode_info.magick,"PCD") == 0) ||
-          (Latin1Compare(decode_info.magick,"PCDS") == 0))
+      if ((Latin1Compare(image_info->magick,"PCD") == 0) ||
+          (Latin1Compare(image_info->magick,"PCDS") == 0))
         {
-          image=ReadPCDImage(&decode_info);
+          image=ReadPCDImage(image_info);
           break;
         }
-      if (Latin1Compare(decode_info.magick,"PCL") == 0)
+      if (Latin1Compare(image_info->magick,"PCL") == 0)
         {
-          image=ReadPCLImage(&decode_info);
+          image=ReadPCLImage(image_info);
           break;
         }
-      if ((Latin1Compare(decode_info.magick,"PCT") == 0) ||
-          (Latin1Compare(decode_info.magick,"PIC") == 0) ||
-          (Latin1Compare(decode_info.magick,"PICT") == 0))
+      if ((Latin1Compare(image_info->magick,"PCT") == 0) ||
+          (Latin1Compare(image_info->magick,"PIC") == 0) ||
+          (Latin1Compare(image_info->magick,"PICT") == 0))
         {
-          image=ReadPICTImage(&decode_info);
+          image=ReadPICTImage(image_info);
           break;
         }
-      if (Latin1Compare(decode_info.magick,"PCX") == 0)
+      if (Latin1Compare(image_info->magick,"PCX") == 0)
         {
-          image=ReadPCXImage(&decode_info);
+          image=ReadPCXImage(image_info);
           break;
         }
-      if (Latin1Compare(decode_info.magick,"PDF") == 0)
+      if (Latin1Compare(image_info->magick,"PDF") == 0)
         {
-          image=ReadPDFImage(&decode_info);
+          image=ReadPDFImage(image_info);
           break;
         }
-      if (Latin1Compare(decode_info.magick,"PIX") == 0)
+      if (Latin1Compare(image_info->magick,"PIX") == 0)
         {
-          image=ReadPIXImage(&decode_info);
+          image=ReadPIXImage(image_info);
           break;
         }
-      if (Latin1Compare(decode_info.magick,"PLASMA") == 0)
+      if (Latin1Compare(image_info->magick,"PLASMA") == 0)
         {
-          image=ReadPLASMAImage(&decode_info);
+          image=ReadPLASMAImage(image_info);
           break;
         }
-      if (Latin1Compare(decode_info.magick,"PM") == 0)
+      if (Latin1Compare(image_info->magick,"PM") == 0)
         {
-          image=ReadXPMImage(&decode_info);
+          image=ReadXPMImage(image_info);
           break;
         }
-      if (Latin1Compare(decode_info.magick,"PNG") == 0)
+      if (Latin1Compare(image_info->magick,"PNG") == 0)
         {
-          image=ReadPNGImage(&decode_info);
+          image=ReadPNGImage(image_info);
           break;
         }
-      if (strncmp(decode_info.magick,"PSD",3) == 0)
+      if (strncmp(image_info->magick,"PSD",3) == 0)
         {
-          image=ReadPSDImage(&decode_info);
+          image=ReadPSDImage(image_info);
           break;
         }
-      if (strncmp(decode_info.magick,"PS",2) == 0)
+      if (strncmp(image_info->magick,"PS",2) == 0)
         {
-          image=ReadPSImage(&decode_info);
+          image=ReadPSImage(image_info);
           break;
         }
-      image=ReadMIFFImage(&decode_info);
+      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+        image_info->magick);
       break;
     }
     case 'R':
     {
-      if (Latin1Compare(decode_info.magick,"RAD") == 0)
+      if (Latin1Compare(image_info->magick,"RAS") == 0)
         {
-          image=ReadRADIANCEImage(&decode_info);
+          image=ReadSUNImage(image_info);
           break;
         }
-      if (Latin1Compare(decode_info.magick,"RAS") == 0)
+      if (strncmp(image_info->magick,"RGB",3) == 0)
         {
-          image=ReadSUNImage(&decode_info);
+          image=ReadRGBImage(image_info);
           break;
         }
-      if (strncmp(decode_info.magick,"RGB",3) == 0)
+      if (Latin1Compare(image_info->magick,"RLA") == 0)
         {
-          image=ReadRGBImage(&decode_info);
+          image=ReadRLAImage(image_info);
           break;
         }
-      if (Latin1Compare(decode_info.magick,"RLA") == 0)
+      if (Latin1Compare(image_info->magick,"RLE") == 0)
         {
-          image=ReadRLAImage(&decode_info);
+          image=ReadRLEImage(image_info);
           break;
         }
-      if (Latin1Compare(decode_info.magick,"RLE") == 0)
-        {
-          image=ReadRLEImage(&decode_info);
-          break;
-        }
-      image=ReadMIFFImage(&decode_info);
+      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+        image_info->magick);
       break;
     }
     case 'S':
     {
-      if (Latin1Compare(decode_info.magick,"SCAN") == 0)
+      if (Latin1Compare(image_info->magick,"SGI") == 0)
         {
-          image=ReadSCANImage(&decode_info);
+          image=ReadSGIImage(image_info);
           break;
         }
-      if (Latin1Compare(decode_info.magick,"SGI") == 0)
+      if (Latin1Compare(image_info->magick,"SUN") == 0)
         {
-          image=ReadSGIImage(&decode_info);
+          image=ReadSUNImage(image_info);
           break;
         }
-      if (Latin1Compare(decode_info.magick,"SHTML") == 0)
-        {
-          image=ReadHTMLImage(&decode_info);
-          break;
-        }
-      if (Latin1Compare(decode_info.magick,"SUN") == 0)
-        {
-          image=ReadSUNImage(&decode_info);
-          break;
-        }
-      image=ReadMIFFImage(&decode_info);
+      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+        image_info->magick);
       break;
     }
     case 'T':
     {
-      if (Latin1Compare(decode_info.magick,"TEXT") == 0)
+      if (Latin1Compare(image_info->magick,"TEXT") == 0)
         {
-          image=ReadTEXTImage(&decode_info);
+          image=ReadTEXTImage(image_info);
           break;
         }
-      if (Latin1Compare(decode_info.magick,"TGA") == 0)
+      if (Latin1Compare(image_info->magick,"TGA") == 0)
         {
-          image=ReadTGAImage(&decode_info);
+          image=ReadTGAImage(image_info);
           break;
         }
-      if (strncmp(decode_info.magick,"TIF",3) == 0)
+      if (strncmp(image_info->magick,"TIF",3) == 0)
         {
-          image=ReadTIFFImage(&decode_info);
+          image=ReadTIFFImage(image_info);
           break;
         }
-      if (Latin1Compare(decode_info.magick,"TILE") == 0)
+      if (Latin1Compare(image_info->magick,"TILE") == 0)
         {
-          image=ReadTILEImage(&decode_info);
+          image=ReadTILEImage(image_info);
           break;
         }
-      if (Latin1Compare(decode_info.magick,"TIM") == 0)
+      if (Latin1Compare(image_info->magick,"TIM") == 0)
         {
-          image=ReadTIMImage(&decode_info);
+          image=ReadTIMImage(image_info);
           break;
         }
-      if (Latin1Compare(decode_info.magick,"TTF") == 0)
+      if (Latin1Compare(image_info->magick,"TTF") == 0)
         {
-          image=ReadTTFImage(&decode_info);
+          image=ReadTTFImage(image_info);
           break;
         }
-      if (Latin1Compare(decode_info.magick,"TXT") == 0)
+      if (Latin1Compare(image_info->magick,"TXT") == 0)
         {
-          image=ReadTEXTImage(&decode_info);
+          image=ReadTEXTImage(image_info);
           break;
         }
-      image=ReadMIFFImage(&decode_info);
+      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+        image_info->magick);
       break;
     }
     case 'U':
     {
-      if (Latin1Compare(decode_info.magick,"UIL") == 0)
+      if (Latin1Compare(image_info->magick,"UIL") == 0)
         {
-          image=ReadUILImage(&decode_info);
+          image=ReadUILImage(image_info);
           break;
         }
-      if (Latin1Compare(decode_info.magick,"UYVY") == 0)
+      if (Latin1Compare(image_info->magick,"UYVY") == 0)
         {
-          image=ReadUYVYImage(&decode_info);
+          image=ReadUYVYImage(image_info);
           break;
         }
-      image=ReadMIFFImage(&decode_info);
+      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+        image_info->magick);
       break;
     }
     case 'V':
     {
-      if ((Latin1Compare(decode_info.magick,"VDA") == 0) ||
-          (Latin1Compare(decode_info.magick,"VST") == 0))
+      if ((Latin1Compare(image_info->magick,"VDA") == 0) ||
+          (Latin1Compare(image_info->magick,"VST") == 0))
         {
-          image=ReadTGAImage(&decode_info);
+          image=ReadTGAImage(image_info);
           break;
         }
-      if (Latin1Compare(decode_info.magick,"VICAR") == 0)
+      if (Latin1Compare(image_info->magick,"VICAR") == 0)
         {
-          image=ReadVICARImage(&decode_info);
+          image=ReadVICARImage(image_info);
           break;
         }
-      if (Latin1Compare(decode_info.magick,"VID") == 0)
+      if (Latin1Compare(image_info->magick,"VID") == 0)
         {
-          if (decode_info.affirm)
-            image=ReadVIDImage(&decode_info);
+          if (image_info->affirm)
+            image=ReadVIDImage(image_info);
           else
-            image=ReadMIFFImage(&decode_info);
+            image=ReadMIFFImage(image_info);
           break;
         }
-      if (Latin1Compare(decode_info.magick,"VIFF") == 0)
+      if (Latin1Compare(image_info->magick,"VIFF") == 0)
         {
-          image=ReadVIFFImage(&decode_info);
+          image=ReadVIFFImage(image_info);
           break;
         }
-      image=ReadMIFFImage(&decode_info);
-      break;
-    }
-    case 'W':
-    {
-      if (Latin1Compare(decode_info.magick,"WIN") == 0)
-        {
-          image=ReadWINImage(&decode_info);
-          break;
-        }
-      image=ReadMIFFImage(&decode_info);
+      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+        image_info->magick);
       break;
     }
     case 'X':
     {
-      if (Latin1Compare(decode_info.magick,"X") == 0)
+      if (Latin1Compare(image_info->magick,"X") == 0)
         {
           XImportInfo
             ximage_info;
 
           XGetImportInfo(&ximage_info);
-          image=ReadXImage(&decode_info,&ximage_info);
+          image=ReadXImage(image_info,&ximage_info);
           break;
         }
-      if (Latin1Compare(decode_info.magick,"XC") == 0)
+      if (Latin1Compare(image_info->magick,"XC") == 0)
         {
-          image=ReadXCImage(&decode_info);
+          image=ReadXCImage(image_info);
           break;
         }
-      if (Latin1Compare(decode_info.magick,"XBM") == 0)
+      if (Latin1Compare(image_info->magick,"XBM") == 0)
         {
-          image=ReadXBMImage(&decode_info);
+          image=ReadXBMImage(image_info);
           break;
         }
-      if (Latin1Compare(decode_info.magick,"XPM") == 0)
+      if (Latin1Compare(image_info->magick,"XPM") == 0)
         {
-          image=ReadXPMImage(&decode_info);
+          image=ReadXPMImage(image_info);
           break;
         }
-      if (Latin1Compare(decode_info.magick,"XV") == 0)
+      if (Latin1Compare(image_info->magick,"XV") == 0)
         {
-          image=ReadVIFFImage(&decode_info);
+          image=ReadVIFFImage(image_info);
           break;
         }
-      if (Latin1Compare(decode_info.magick,"XWD") == 0)
+      if (Latin1Compare(image_info->magick,"XWD") == 0)
         {
-          image=ReadXWDImage(&decode_info);
+          image=ReadXWDImage(image_info);
           break;
         }
-      image=ReadMIFFImage(&decode_info);
+      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+        image_info->magick);
       break;
     }
     case 'Y':
     {
-      if (Latin1Compare(decode_info.magick,"YUV") == 0)
+      if (Latin1Compare(image_info->magick,"YUV") == 0)
         {
-          image=ReadYUVImage(&decode_info);
+          image=ReadYUVImage(image_info);
           break;
         }
-      image=ReadMIFFImage(&decode_info);
+      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+        image_info->magick);
       break;
     }
     default:
     {
-      (void) strcpy(decode_info.magick,"MIFF");
-      image=ReadMIFFImage(&decode_info);
+      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+        image_info->magick);
+      break;
     }
   }
-  if (decode_image->temporary)
-    (void) remove(decode_info.filename);
+  if (temporary)
+    {
+      (void) remove(image_info->filename);
+      if (image != (Image *) NULL)
+        (void) strcpy(image->filename,filename);
+    }
   if (image == (Image *) NULL)
     return(image);
+  if (image->temporary)
+    (void) remove(image_info->filename);
   if (IsSubimage(image_info->tile,False))
     {
       int
@@ -18747,25 +17911,16 @@ Export Image *ReadImage(ImageInfo *image_info)
   if (image->status)
     MagickWarning(CorruptImageWarning,"An error has occurred reading file",
       image->filename);
-  image_info->interlace=decode_info.interlace;
   for (next_image=image; next_image; next_image=next_image->next)
   {
+    SignatureImage(next_image);
     (void) strcpy(next_image->magick_filename,image_info->filename);
-    if (decode_image->temporary)
+    if (image->temporary)
       (void) strcpy(next_image->filename,image_info->filename);
     if (next_image->magick_columns == 0)
       next_image->magick_columns=next_image->columns;
     if (next_image->magick_rows == 0)
       next_image->magick_rows=next_image->rows;
-    packets=next_image->columns*next_image->rows;
-    if (next_image->class == DirectClass)
-      {
-        if (next_image->packets >= ((3*packets) >> 2))
-          next_image->compression=NoCompression;
-      }
-    else
-      if (next_image->packets >= (packets >> 1))
-        next_image->compression=NoCompression;
     if (next_image->class == PseudoClass)
       if (IsMonochromeImage(next_image))
         {
@@ -18774,6 +17929,5 @@ Export Image *ReadImage(ImageInfo *image_info)
           next_image->background_color.blue=MaxRGB;
         }
   }
-  DestroyImage(decode_image);
   return(image);
 }

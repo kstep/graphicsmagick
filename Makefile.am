@@ -1,5 +1,5 @@
 #
-#  Automake Makefile for the ImageMagick applications
+#  Makefile for building ImageMagick utilities
 #
 #  Copyright 1998 E. I. du Pont de Nemours and Company
 #
@@ -38,7 +38,7 @@ MAGICK_LIB	= magick/libMagick.la # libtool library name
 INCLUDES	= -I$(srcdir)/magick $(X_CFLAGS)
 
 # Subdirectories to build
-SUBDIRS = magick xtp xlib
+SUBDIRS = delegates magick xtp xlib
 
 # Executables to build
 bin_PROGRAMS = animate combine convert display identify import mogrify montage
@@ -63,7 +63,8 @@ man_MANS = $(MANPAGES)
 
 # Additional files to distribute
 EXTRA_DIST = $(MANPAGES) Magick.tmpl Manifest.ps ImageMagick.html Imakefile \
-	Magickshr.opt Make.com README.txt Copyright.txt FlashPix.txt acconfig.h
+	Magickshr.opt Make.com README.txt Copyright.txt FlashPix.txt \
+	delegates.mgk acconfig.h QuickStart.txt
 
 # Non-Automake subdirectories to distribute
 DISTDIRS = docs images scenes scripts www PerlMagick

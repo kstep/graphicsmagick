@@ -367,7 +367,7 @@ typedef struct _ImageInfo
     *file;
 
   char
-    *filename,
+    filename[MaxTextExtent],
     magick[MaxTextExtent];
 
   unsigned int
@@ -417,11 +417,17 @@ typedef struct _ImageInfo
   PreviewType
     preview_type;
 
+  long
+    group;
+
   char
     *background_color,
     *border_color,
     *matte_color,
     *undercolor;
+
+  char
+    unique[MaxTextExtent];
 
   unsigned int
     ping;
@@ -545,8 +551,7 @@ typedef struct _Image
     temporary;
 
   char
-    filename[MaxTextExtent],
-    unique[MaxTextExtent];
+    filename[MaxTextExtent];
 
   long int
     filesize;
@@ -739,6 +744,7 @@ extern Export unsigned int
   IsMonochromeImage(Image *),
   IsPseudoClass(Image *),
   IsSubimage(char *,unsigned int),
+  IsTainted(Image *),
   MapImage(Image *,Image *,const unsigned int),
   MapImages(Image *,Image *,const unsigned int),
   PingImage(ImageInfo *,unsigned int *,unsigned int *),

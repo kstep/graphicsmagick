@@ -1,11 +1,10 @@
-    <HTML> 
-	<HEAD> 
-	    <TITLE>vms - VMS Utility Routines for ImageMagick
+<HTML>
+<HEAD>
+<TITLE>vms - VMS Utility Routines for ImageMagick</TITLE>
+<LINK REV="made" HREF="mailto:cristy@mystic.es.dupont.com">
+</HEAD>
 
-</TITLE> 
-	</HEAD>
-
-	<body background="../../images/background.gif">
+<body background="../../images/background.gif">
 
 <!-- INDEX BEGIN -->
 
@@ -17,11 +16,8 @@
 	<UL>
 
 		<LI><A HREF="#closedir">closedir</A>
-		<LI><A HREF="#index">index</A>
 		<LI><A HREF="#openedir">openedir</A>
 		<LI><A HREF="#readdir">readdir</A>
-		<LI><A HREF="#seekdir">seekdir</A>
-		<LI><A HREF="#telldir">telldir</A>
 	</UL>
 
 </UL>
@@ -29,248 +25,89 @@
 
 <HR>
 <P>
-<H1><A NAME="NAME">NAME
-
-</A></H1>
+<H1><A NAME="NAME">NAME</A></H1>
+<P>
 vms - VMS Utility Routines for ImageMagick
 
-
-<P>
-
 <P>
 <HR>
-<H1><A NAME="SYNOPSIS">SYNOPSIS
-
-</A></H1>
+<H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
+<P>
 <STRONG>closedir</STRONG>(entry)
 
-
 <P>
-
 <STRONG>readdir</STRONG>(entry)
 
-
-<P>
-
-<STRONG>telldir</STRONG>(entry)
-
-
-<P>
-
 <P>
 <HR>
-<H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS
-
-</A></H1>
+<H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
 <P>
 <HR>
-<H2><A NAME="closedir">closedir
-
-</A></H2>
-Function closedir closes the named directory stream and frees the DIR
+<H2><A NAME="closedir">closedir</A></H2>
+<P>
+Method closedir closes the named directory stream and frees the DIR
 structure.
 
-
 <P>
-
 The format of the closedir routine is:
 
-
 <P>
-
 <PRE>        closedir(entry)
 </PRE>
-
 <P>
-
 A description of each parameter follows:
 
-
+<DL><DL>
+<DT><STRONG><A NAME="item_o">entry:</A></STRONG><DD>
 <P>
-
-<DL>
-<DT><STRONG><A NAME="item_o">o entry:
-
-</A></STRONG><DD>
 Specifies a pointer to a DIR structure.
 
-
-<P>
-
-</DL>
+</DL></DL>
 <P>
 <HR>
-<H2><A NAME="index">index
-
-</A></H2>
-Function index returns a pointer to the first occurrence of a character
-within a string.
-
-
+<H2><A NAME="openedir">openedir</A></H2>
 <P>
-
-<P>
-<HR>
-<H2><A NAME="openedir">openedir
-
-</A></H2>
-Function opendir opens the directory named by filename and associates a
+Method opendir opens the directory named by filename and associates a
 directory stream with it.
 
-
 <P>
-
 The format of the opendir routine is:
 
-
 <P>
-
 <PRE>    opendir(entry)
 </PRE>
-
 <P>
-
 A description of each parameter follows:
 
-
+<DL><DL>
+<DT><STRONG>entry:</STRONG><DD>
 <P>
-
-<DL>
-<DT><STRONG>o entry:
-
-</A></STRONG><DD>
 Specifies a pointer to a DIR structure.
 
-
-<P>
-
-</DL>
+</DL></DL>
 <P>
 <HR>
-<H2><A NAME="readdir">readdir
-
-</A></H2>
-Function readdir returns a pointer to a structure representing the
-directory entry at the current position in the directory stream to which
-entry refers.
-
+<H2><A NAME="readdir">readdir</A></H2>
+<P>
+Method readdir returns a pointer to a structure representing the directory
+entry at the current position in the directory stream to which entry
+refers.
 
 <P>
-
 The format of the readdir
 
-
 <P>
-
 <PRE>        readdir(entry)
 </PRE>
-
 <P>
-
 A description of each parameter follows:
 
-
+<DL><DL>
+<DT><STRONG>entry:</STRONG><DD>
 <P>
-
-<DL>
-<DT><STRONG>o entry:
-
-</A></STRONG><DD>
 Specifies a pointer to a DIR structure.
 
+</DL></DL>
+</BODY>
 
-<P>
-
-</DL>
-<P>
-<HR>
-<H2><A NAME="seekdir">seekdir
-
-</A></H2>
-<PRE> Function seekdir sets the position of the next readdir() operation
-</PRE>
-
-<P>
-
-<PRE> on the directory stream.
-</PRE>
-
-<P>
-
-The format of the seekdir routine is:
-
-
-<P>
-
-<PRE>    closedir(entry,position)
-</PRE>
-
-<P>
-
-A description of each parameter follows:
-
-
-<P>
-
-<DL>
-<DT><STRONG>o entry:
-
-</A></STRONG><DD>
-Specifies a pointer to a DIR structure.
-
-
-<P>
-
-<DT><STRONG>o position:
-
-</A></STRONG><DD>
-specifies the position associated with the directory stream.
-
-
-<P>
-
-</DL>
-<P>
-<HR>
-<H2><A NAME="telldir">telldir
-
-</A></H2>
-<PRE> Function telldir returns the current location associated  with  the
-</PRE>
-
-<P>
-
-<PRE> named directory stream.
-</PRE>
-
-<P>
-
-The format of the telldir routine is:
-
-
-<P>
-
-<PRE>        telldir(entry)
-</PRE>
-
-<P>
-
-A description of each parameter follows:
-
-
-<P>
-
-<DL>
-<DT><STRONG>o entry:
-
-</A></STRONG><DD>
-Specifies a pointer to a DIR structure.
-
-
-<P>
-
-</DL>
-</DL>
-    </BODY>
-
-    </HTML>
+</HTML>

@@ -50,6 +50,7 @@
 		<LI><A HREF="#IsGrayImage">IsGrayImage</A>
 		<LI><A HREF="#IsMonochromeImage">IsMonochromeImage</A>
 		<LI><A HREF="#IsSubimage">IsSubimage</A>
+		<LI><A HREF="#IsTainted">IsTainted</A>
 		<LI><A HREF="#LabelImage">LabelImage</A>
 		<LI><A HREF="#LayerImage">LayerImage</A>
 		<LI><A HREF="#ListToGroupImage">ListToGroupImage</A>
@@ -120,7 +121,7 @@ clone_image=<STRONG>CloneImage</STRONG>(image,columns,rows,clone_pixels)
 <STRONG>CloseImage</STRONG>(image)
 
 <P>
-<STRONG>ColorFloodfillImage</STRONG>(image,x,y,xcolor,delta)
+<STRONG>ColorFloodfillImage</STRONG>(image,target,color,x,y,method)
 
 <P>
 <STRONG>ColorizeImage</STRONG>(image,opaque_color,pen_color)
@@ -192,6 +193,9 @@ status=<STRONG>IsMonochromeImage</STRONG>(image)
 status=<STRONG>IsSubimage</STRONG>(geometry,pedantic)
 
 <P>
+status=<STRONG>IsTainted</STRONG>(image)
+
+<P>
 <STRONG>LabelImage</STRONG>(image,label)
 
 <P>
@@ -204,7 +208,7 @@ images=<STRONG>ListToGroupImage</STRONG>(images,number_images)
 magnified_image=<STRONG>MagnifyImage</STRONG>(image)
 
 <P>
-<STRONG>MatteFloodfillImage</STRONG>(image,x,y,matte,delta)
+<STRONG>MatteFloodfillImage</STRONG>(image,target,matte,x,y,method)
 
 <P>
 minified_image=<STRONG>MinifyImage</STRONG>(image)
@@ -526,7 +530,7 @@ Gems'' by Paul Heckbert.
 The format of the ColorFloodfillImage routine is:
 
 <P>
-<PRE>        ColorFloodfillImage(image,x,y,xcolor,delta)
+<PRE>        ColorFloodfillImage(image,target,color,x,y,method)
 </PRE>
 <P>
 A description of each parameter follows:
@@ -536,17 +540,21 @@ A description of each parameter follows:
 <P>
 The address of a structure of type Image.
 
+<DT><STRONG>target:</STRONG><DD>
+<P>
+A RunlengthPacket structure. This is the RGB value of the target color.
+
+<DT><STRONG>color:</STRONG><DD>
+<P>
+A ColorPacket structure. This is the RGB value of the replacement color.
+
 <DT><STRONG>x,y:</STRONG><DD>
 <P>
 Unsigned integers representing the current location of the pen.
 
-<DT><STRONG>xcolor:</STRONG><DD>
+<DT><STRONG>method:</STRONG><DD>
 <P>
-A XColor structure. This is the RGB value of the target color.
-
-<DT><STRONG>delta:</STRONG><DD>
-<P>
-This is the allowed variance in color (fuzzy color).
+drawing method of type PrimitiveType: floodfill or fill to border.
 
 </DL></DL>
 <P>
@@ -1230,6 +1238,33 @@ valid specification (e.g. [1], [1-4], [4-1]).
 </DL></DL>
 <P>
 <HR>
+<H2><A NAME="IsTainted">IsTainted</A></H2>
+<P>
+Method IsTainted returns True if the image has been altered since it was
+first read.
+
+<P>
+The format of the IsTainted routine is:
+
+<P>
+<PRE>        status=IsTainted(image)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>status:</STRONG><DD>
+<P>
+Method IsTainted returns True if the image has been altered since it was
+first read.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+</DL></DL>
+<P>
+<HR>
 <H2><A NAME="LabelImage">LabelImage</A></H2>
 <P>
 Method LabelImage initializes an image label. Optionally the label can
@@ -1362,7 +1397,7 @@ value. The floodfill algorithm is strongly based on a similiar algorithm in
 The format of the MatteFloodfillImage routine is:
 
 <P>
-<PRE>        MatteFloodfillImage(image,x,y,matte,delta)
+<PRE>        MatteFloodfillImage(image,target,matte,x,y,method)
 </PRE>
 <P>
 A description of each parameter follows:
@@ -1372,17 +1407,21 @@ A description of each parameter follows:
 <P>
 The address of a structure of type Image.
 
-<DT><STRONG>x,y:</STRONG><DD>
+<DT><STRONG>target:</STRONG><DD>
 <P>
-Unsigned integers representing the current location of the pen.
+A RunlengthPacket structure. This is the RGB value of the target color.
 
 <DT><STRONG>matte:</STRONG><DD>
 <P>
 A integer value representing the amount of transparency.
 
-<DT><STRONG>delta:</STRONG><DD>
+<DT><STRONG>x,y:</STRONG><DD>
 <P>
-This is the allowed variance in color (fuzzy color).
+Unsigned integers representing the current location of the pen.
+
+<DT><STRONG>method:</STRONG><DD>
+<P>
+drawing method of type PrimitiveType: floodfill or fill to border.
 
 </DL></DL>
 <P>
@@ -2145,8 +2184,8 @@ A character string that contain an X11 color string.
 <HR>
 <H2><A NAME="UncompressImage">UncompressImage</A></H2>
 <P>
-Method UncondenseImage uncompresses runlength-encoded pixels max_packets to
-a rectangular array of pixels.
+Method UncondenseImage uncompresses runlength-encoded pixels packets to a
+rectangular array of pixels.
 
 <P>
 The format of the UncondenseImage routine is:

@@ -102,7 +102,7 @@ Export void ProgressMonitor(char *text,const unsigned int quantum,
     SIOUXHandleOneEvent(&event);
   if (isatty(STDIN_FILENO) && (text != mark))
     {
-      puts(text);
+      (void) puts(text);
       mark=text;
     }
 #endif

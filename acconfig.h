@@ -178,7 +178,7 @@
 #undef LZWDecodeDelegate
 
 /* Define location of 'gzip' program */
-#undef ZIPDelegate
+#undef ZipDelegate
 
 /* Define location of WWW 'GET' program */
 #undef WWWDecodeDelegate
@@ -230,3 +230,18 @@
 
 /* Define location of the 'lp' program */
 #undef LPDelegate
+
+/* Define location of the 'convert' program */
+#undef ConvertDelegate
+
+/* Define location of the 'mogrify' program */
+#undef MogrifyDelegate
+
+/* Define location of the 'mv' program */
+#undef MVDelegate
+
+/* Define location of the 'rm' program */
+#undef RMDelegate
+
+/* Define location of the 'cat' program */
+#undef CatDelegate

@@ -66,8 +66,9 @@
 #define PrematureExit(error,message,image) \
 { \
   MagickWarning(error,message,image->filename); \
-  while (image->previous != (Image *) NULL) \
-    image=image->previous; \
+  if (image_info->adjoin) \
+    while (image->previous != (Image *) NULL) \
+      image=image->previous; \
   CloseImage(image); \
   return(False); \
 }
@@ -79,8 +80,7 @@ static unsigned int
   WriteMIFFImage(const ImageInfo *,Image *),
   WritePSImage(const ImageInfo *,Image *),
   WriteTIFFImage(const ImageInfo *,Image *),
-  WriteXImage(const ImageInfo *image_info,Image *image),
-  WriteYUVImage(const ImageInfo *,Image *);
+  WriteXImage(const ImageInfo *image_info,Image *image);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -157,8 +157,9 @@ static unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
     image=image->next;
     ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
   } while (image_info->adjoin);
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
+  if (image_info->adjoin)
+    while (image->previous != (Image *) NULL)
+      image=image->previous;
   CloseImage(image);
   return(True);
 }
@@ -516,45 +517,11 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
     image=image->next;
     ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
   } while (image_info->adjoin);
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
+  if (image_info->adjoin)
+    while (image->previous != (Image *) NULL)
+      image=image->previous;
   CloseImage(image);
   return(True);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   W r i t e C G M I m a g e                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method WriteCGMImage writes an image in the CGM encoded image format.
-%
-%  The format of the WriteCGMImage routine is:
-%
-%      status=WriteCGMImage(image_info,image)
-%
-%  A description of each parameter follows.
-%
-%    o status: Method WriteCGMImage return True if the image is written.
-%      False is returned is there is a memory shortage or if the image file
-%      fails to write.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%    o image:  A pointer to a Image structure.
-%
-%
-*/
-static unsigned int WriteCGMImage(const ImageInfo *image_info,Image *image)
-{
-  MagickWarning(MissingDelegateWarning,"Cannot write CGM images",image->filename);
-  return(False);
 }
 
 /*
@@ -851,8 +818,9 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
     image=image->next;
     ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
   } while (image_info->adjoin);
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
+  if (image_info->adjoin)
+    while (image->previous != (Image *) NULL)
+      image=image->previous;
   CloseImage(image);
   return(True);
 }
@@ -1093,45 +1061,11 @@ static unsigned int WriteFAXImage(const ImageInfo *image_info,Image *image)
     image=image->next;
     ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
   } while (image_info->adjoin);
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
+  if (image_info->adjoin)
+    while (image->previous != (Image *) NULL)
+      image=image->previous;
   CloseImage(image);
   return(status);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   W r i t e F I G I m a g e                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method WriteFIGImage writes an image in the TransFIG encoded image format.
-%
-%  The format of the WriteFIGImage routine is:
-%
-%      status=WriteFIGImage(image_info,image)
-%
-%  A description of each parameter follows.
-%
-%    o status: Method WriteFIGImage return True if the image is written.
-%      False is returned is there is a memory shortage or if the image file
-%      fails to write.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%    o image:  A pointer to a Image structure.
-%
-%
-*/
-static unsigned int WriteFIGImage(const ImageInfo *image_info,Image *image)
-{
-  MagickWarning(MissingDelegateWarning,"Cannot write FIG images",image->filename);
-  return(False);
 }
 
 /*
@@ -2241,8 +2175,9 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
   } while (image_info->adjoin);
   (void) fputc(';',image->file); /* terminator */
   FreeMemory((char *) colormap);
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
+  if (image_info->adjoin)
+    while (image->previous != (Image *) NULL)
+      image=image->previous;
   CloseImage(image);
   return(True);
 }
@@ -2354,8 +2289,9 @@ static unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
     image=image->next;
     ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
   } while (image_info->adjoin);
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
+  if (image_info->adjoin)
+    while (image->previous != (Image *) NULL)
+      image=image->previous;
   CloseImage(image);
   return(True);
 }
@@ -2613,8 +2549,9 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
     image=image->next;
     ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
   } while (image_info->adjoin);
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
+  if (image_info->adjoin)
+    while (image->previous != (Image *) NULL)
+      image=image->previous;
   return(status != -1);
 }
 #else
@@ -2832,42 +2769,6 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   status=WriteMIFFImage(image_info,histogram_image);
   DestroyImage(histogram_image);
   return(status);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   W r i t e H P G L I m a g e                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method WriteHPGLImage writes an image in the HP-GL plotter language.
-%
-%  The format of the WriteHPGLImage routine is:
-%
-%      status=WriteHPGLImage(image_info,image)
-%
-%  A description of each parameter follows.
-%
-%    o status: Method WriteHPGLImage return True if the image is written.
-%      False is returned is there is a memory shortage or if the image file
-%      fails to write.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%    o image:  A pointer to a Image structure.
-%
-%
-*/
-static unsigned int WriteHPGLImage(const ImageInfo *image_info,Image *image)
-{
-  MagickWarning(MissingDelegateWarning,"Cannot write HPGL images",
-    image->filename);
-  return(False);
 }
 
 /*
@@ -3275,8 +3176,9 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
     image=image->next;
     ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
   } while (image_info->adjoin);
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
+  if (image_info->adjoin)
+    while (image->previous != (Image *) NULL)
+      image=image->previous;
   CloseImage(image);
   return(True);
 }
@@ -4235,8 +4137,9 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     image=image->next;
     ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
   } while (image_info->adjoin);
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
+  if (image_info->adjoin)
+    while (image->previous != (Image *) NULL)
+      image=image->previous;
   CloseImage(image);
   return(True);
 }
@@ -4355,193 +4258,6 @@ static unsigned int WriteMONOImage(const ImageInfo *image_info,Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e M P E G I m a g e                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method WriteMPEGImage writes an image in the MPEG encoded image format.
-%
-%  The format of the WriteMPEGImage routine is:
-%
-%      status=WriteMPEGImage(image_info,image)
-%
-%  A description of each parameter follows.
-%
-%    o status: Method WriteMPEGImage return True if the image is written.
-%      False is returned is there is a memory shortage or if the image file
-%      fails to write.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%    o image:  A pointer to a Image structure.
-%
-%
-*/
-static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
-{
-  char
-    basename[MaxTextExtent],
-    command[MaxTextExtent],
-    component_filename[MaxTextExtent],
-    filename[MaxTextExtent],
-    geometry[MaxTextExtent],
-    parameters[MaxTextExtent],
-    statistics[MaxTextExtent];
-
-  FILE
-    *file;
-
-  Image
-    *component_image;
-
-  ImageInfo
-    local_info;
-
-  int
-    x,
-    y;
-
-  MonitorHandler
-    handler;
-
-  register int
-    i;
-
-  unsigned int
-    height,
-    mpeg,
-    status,
-    width;
-
-  if (image->next == (Image *) NULL)
-    PrematureExit(ResourceLimitWarning,"MPEG requires multi-frame image",image);
-  width=image->columns;
-  height=image->rows;
-  if (image_info->page != (char *) NULL)
-    (void) ParseImageGeometry(image_info->page,&x,&y,&width,&height);
-  else
-    if (image->page != (char *) NULL)
-      (void) ParseImageGeometry(image->page,&x,&y,&width,&height);
-  /*
-    Write image sequence as individual YUV frames.
-  */
-  TemporaryFilename(basename);
-  (void) strcpy(filename,basename);
-  (void) strcat(filename,"%d.yuv");
-  local_info=(*image_info);
-  local_info.interlace=NoInterlace;
-  (void) sprintf(geometry,"%ux%u",image->columns+
-    (image->columns & 0x01 ? 1 : 0),image->rows+(image->rows & 0x01 ? 1 : 0));
-  for (i=0; i < image->number_scenes; i++)
-  {
-    handler=SetMonitorHandler((MonitorHandler) NULL);
-    image->orphan=True;
-    component_image=CloneImage(image,image->columns,image->rows,True);
-    image->orphan=False;
-    if (component_image == (Image *) NULL)
-      PrematureExit(ResourceLimitWarning,"Memory allocation failed",image);
-    TransformImage(&component_image,(char *) NULL,geometry);
-    (void) sprintf(component_image->filename,filename,i);
-    (void) WriteYUVImage(&local_info,component_image);
-    DestroyImage(component_image);
-    if (image->next != (Image *) NULL)
-      image=image->next;
-    (void) SetMonitorHandler(handler);
-    ProgressMonitor(SaveImageText,i,image->number_scenes);
-  }
-  /*
-    Write parameter file (see mpeg2encode documentation for details).
-  */
-  mpeg=Latin1Compare(image_info->magick,"M2V") != 0;
-  TemporaryFilename(statistics);
-  TemporaryFilename(parameters);
-  file=fopen(parameters,"w");
-  if (file == (FILE *) NULL)
-    PrematureExit(FileOpenWarning,"Unable to open file",image);
-  (void) fprintf(file,"MPEG\n");
-  (void) fprintf(file,"%s%%d\n",basename);
-  (void) fprintf(file,"-\n");
-  (void) fprintf(file,"-\n");
-  (void) fprintf(file,"-\n");
-  (void) fprintf(file,"%s\n",image_info->verbose ? "-" : statistics);
-  (void) fprintf(file,"1\n");
-  (void) fprintf(file,"%u\n",image->number_scenes);
-  (void) fprintf(file,"0\n");
-  (void) fprintf(file,"00:00:00:00\n");
-  (void) fprintf(file,"%d\n",mpeg ? 12 : 15);
-  (void) fprintf(file,"3\n");
-  (void) fprintf(file,"%d\n",mpeg ? 1 : 0);
-  (void) fprintf(file,"0\n");
-  (void) fprintf(file,"%u\n",image->columns+(image->columns & 0x01 ? 1 : 0));
-  (void) fprintf(file,"%u\n",image->rows+(image->rows & 0x01 ? 1 : 0));
-  (void) fprintf(file,"%d\n",mpeg ? 8 : 2);
-  (void) fprintf(file,"%d\n",mpeg ? 3 : 5);
-  (void) fprintf(file,"%.1f\n",mpeg ? 1152000.0 : 5000000.0);
-  (void) fprintf(file,"%d\n",mpeg ? 20 : 112);
-  (void) fprintf(file,"0\n");
-  (void) fprintf(file,"%d\n",mpeg ? 1 : 0);
-  (void) fprintf(file,"4\n");
-  (void) fprintf(file,"8\n");
-  (void) fprintf(file,"%d\n",mpeg ? 1 : 0);
-  (void) fprintf(file,"1\n");
-  (void) fprintf(file,"%d\n",mpeg ? 1 : 2);
-  (void) fprintf(file,"5\n");
-  (void) fprintf(file,"5\n");
-  (void) fprintf(file,"%d\n",mpeg ? 5 : 4);
-  (void) fprintf(file,"%u\n",width+(width & 0x01 ? 1 : 0));
-  (void) fprintf(file,"%u\n",height+(height & 0x01 ? 1 : 0));
-  (void) fprintf(file,"0\n");
-  (void) fprintf(file,"%d\n",mpeg ? 0 : 1);
-  (void) fprintf(file,"%d %d %d\n",mpeg ? 1 : 0,mpeg ? 1 : 0,mpeg ? 1 : 0);
-  (void) fprintf(file,"0 0 0\n");
-  (void) fprintf(file,"%d %d %d\n",mpeg ? 0 : 1,mpeg ? 0 : 1,mpeg ? 0 : 1);
-  (void) fprintf(file,"%d 0 0\n",mpeg ? 0 : 1);
-  (void) fprintf(file,"0 0 0\n");
-  (void) fprintf(file,"0\n");
-  (void) fprintf(file,"%d\n",mpeg ? 1 : 0);
-  (void) fprintf(file,"0\n");
-  (void) fprintf(file,"0\n");
-  (void) fprintf(file,"0\n");
-  (void) fprintf(file,"0\n");
-  (void) fprintf(file,"0\n");
-  (void) fprintf(file,"0\n");
-  (void) fprintf(file,"0\n");
-  (void) fprintf(file,"0\n");
-  (void) fprintf(file,"0\n");
-  (void) fprintf(file,"2 2 11 11\n");
-  (void) fprintf(file,"1 1 3 3\n");
-  (void) fprintf(file,"1 1 7 7\n");
-  (void) fprintf(file,"1 1 7 7\n");
-  (void) fprintf(file,"1 1 3 3\n");
-  (void) fclose(file);
-  /*
-    Ask our delegate to convert the image to MPEG.
-  */
-  (void) sprintf(command,MPEGEncodeCommand,parameters,image_info->filename);
-  status=SystemCommand(command);
-  if (status != False)
-    MagickWarning(CorruptImageWarning,"MPEG delegation failed",command);
-  /*
-    Remove component files.
-  */
-  (void) remove(parameters);
-  if (!image_info->verbose)
-    (void) remove(statistics);
-  for (i=0; i < image->number_scenes; i++)
-  {
-    (void) sprintf(component_filename,filename,i);
-    (void) remove(component_filename);
-  }
-  return(status);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 +   W r i t e M T V I m a g e                                                 %
 %                                                                             %
 %                                                                             %
@@ -4611,8 +4327,9 @@ static unsigned int WriteMTVImage(const ImageInfo *image_info,Image *image)
     image=image->next;
     ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
   } while (image_info->adjoin);
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
+  if (image_info->adjoin)
+    while (image->previous != (Image *) NULL)
+      image=image->previous;
   CloseImage(image);
   return(True);
 }
@@ -4648,8 +4365,8 @@ static unsigned int WriteMTVImage(const ImageInfo *image_info,Image *image)
 %
 */
 
-static unsigned int WritePCDTile(Image *image,char *geometry,
-  char *tile_geometry)
+static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
+  char *geometry,char *tile_geometry)
 {
   Image
     *downsampled_image,
@@ -4799,9 +4516,9 @@ static unsigned int WritePCDImage(const ImageInfo *image_info,Image *image)
   /*
     Write PCD tiles.
   */
-  status=WritePCDTile(pcd_image,"768x512>","192x128");
-  status|=WritePCDTile(pcd_image,"768x512>","384x256");
-  status|=WritePCDTile(pcd_image,"768x512>","768x512");
+  status=WritePCDTile(image_info,pcd_image,"768x512>","192x128");
+  status|=WritePCDTile(image_info,pcd_image,"768x512>","384x256");
+  status|=WritePCDTile(image_info,pcd_image,"768x512>","768x512");
   CloseImage(pcd_image);
   if (image->columns < image->rows)
     DestroyImage(pcd_image);
@@ -5429,8 +5146,9 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     if (scene >= 1023)
       break;
   } while (image_info->adjoin);
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
+  if (image_info->adjoin)
+    while (image->previous != (Image *) NULL)
+      image=image->previous;
   if (page_table != (unsigned long *) NULL)
     {
       /*
@@ -5490,6 +5208,9 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   CompressionType
     compression;
 
+  DelegateInfo
+    delegate_info;
+
   float
     dx_resolution,
     dy_resolution,
@@ -5542,6 +5263,21 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     number_packets,
     *xref;
 
+  if (Latin1Compare(image->magick,"PS") == 0)
+    if (GetDelegateInfo("gs",False,&delegate_info) && !IsTainted(image))
+      {
+        char
+          command[MaxTextExtent];
+
+        /*
+          Use Ghostscript's PDF writer.
+        */
+        (void) sprintf(command,delegate_info.commands,"pdfwrite",
+          image->filename,image->magick_filename);
+        status=SystemCommand(command);
+        if (status == False)
+          return(True);
+      }
   /*
     Open output image file.
   */
@@ -6432,8 +6168,9 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     image=image->next;
     ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
   } while (image_info->adjoin);
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
+  if (image_info->adjoin)
+    while (image->previous != (Image *) NULL)
+      image=image->previous;
   /*
     Write Xref object.
   */
@@ -7381,8 +7118,9 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     image=image->next;
     ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
   } while (image_info->adjoin);
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
+  if (image_info->adjoin)
+    while (image->previous != (Image *) NULL)
+      image=image->previous;
   if (image_info->adjoin)
     {
       /*
@@ -7855,8 +7593,9 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
     image=image->next;
     ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
   } while (image_info->adjoin);
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
+  if (image_info->adjoin)
+    while (image->previous != (Image *) NULL)
+      image=image->previous;
   CloseImage(image);
   return(True);
 }
@@ -7902,7 +7641,6 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
     *commands[NumberTiles+6],
     *client_name,
     factor[MaxTextExtent],
-    filename[MaxTextExtent],
     label[MaxTextExtent],
     *resource_value;
 
@@ -7967,7 +7705,6 @@ static unsigned int WritePREVIEWImage(const ImageInfo *image_info,
     Apply enhancement at varying strengths.
   */
   local_info=(*image_info);
-  local_info.filename=filename;
   local_info.quality=0;
   degrees=0;
   gamma=(float) (-0.2);
@@ -8648,6 +8385,9 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     **labels,
     **q;
 
+  DelegateInfo
+    delegate_info;
+
   float
     dx_resolution,
     dy_resolution,
@@ -8685,6 +8425,25 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
   XSegment
     bounding_box;
 
+  if (Latin1Compare(image->magick,"PDF") == 0)
+    if (GetDelegateInfo("gs",False,&delegate_info) && !IsTainted(image))
+      {
+        char
+          command[MaxTextExtent];
+
+        unsigned int
+          status;
+
+        /*
+          Use Ghostscript's PS writer.
+        */
+        (void) sprintf(command,delegate_info.commands,
+          Latin1Compare(image_info->magick,"PS") == 0 ? "pswrite" : "epswrite",
+          image->filename,image->magick_filename);
+        status=SystemCommand(command);
+        if (status == False)
+          return(True);
+      }
   /*
     Open output image file.
   */
@@ -9172,8 +8931,9 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     image=image->next;
     ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
   } while (image_info->adjoin);
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
+  if (image_info->adjoin)
+    while (image->previous != (Image *) NULL)
+      image=image->previous;
   (void) fprintf(image->file,"%%%%Trailer\n");
   if (page > 1)
     (void) fprintf(image->file,"%%%%BoundingBox: %d %d %d %d\n",
@@ -9940,8 +9700,9 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     image=image->next;
     ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
   } while (image_info->adjoin);
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
+  if (image_info->adjoin)
+    while (image->previous != (Image *) NULL)
+      image=image->previous;
   (void) fprintf(image->file,"%%%%Trailer\n");
   if (page > 1)
     (void) fprintf(image->file,"%%%%BoundingBox: %d %d %d %d\n",
@@ -9949,44 +9710,6 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
   (void) fprintf(image->file,"%%%%EOF\n");
   CloseImage(image);
   return(True);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   W r i t e R A D I A N C E I m a g e                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method WriteRADIANCEImage writes an image in the RADIANCE encoded image
-%  format.
-%
-%  The format of the WriteRADIANCEImage routine is:
-%
-%      status=WriteRADIANCEImage(image_info,image)
-%
-%  A description of each parameter follows.
-%
-%    o status: Method WriteRADIANCEImage return True if the image is written.
-%      False is returned is there is a memory shortage or if the image file
-%      fails to write.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%    o image:  A pointer to a Image structure.
-%
-%
-*/
-static unsigned int WriteRADIANCEImage(const ImageInfo *image_info,
-  Image *image)
-{
-  MagickWarning(MissingDelegateWarning,"Cannot write RADIANCE images",
-    image->filename);
-  return(False);
 }
 
 /*
@@ -10197,158 +9920,11 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
     image=image->next;
     ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
   } while (image_info->adjoin);
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
+  if (image_info->adjoin)
+    while (image->previous != (Image *) NULL)
+      image=image->previous;
   CloseImage(image);
   return(True);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   W r i t e R L A I m a g e                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method WriteRLAImage writes an image in the Alias/Wavefront encoded image
-%  format.
-%
-%  The format of the WriteRLAImage routine is:
-%
-%      status=WriteRLAImage(image_info,image)
-%
-%  A description of each parameter follows.
-%
-%    o status: Method WriteRLAImage return True if the image is written.
-%      False is returned is there is a memory shortage or if the image file
-%      fails to write.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%    o image:  A pointer to a Image structure.
-%
-%
-*/
-static unsigned int WriteRLAImage(const ImageInfo *image_info,Image *image)
-{
-  MagickWarning(MissingDelegateWarning,"Cannot write RLA images",image->filename);
-  return(False);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   W r i t e R L E I m a g e                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method WriteRLEImage writes an image in the Utah Run length encoded image
-%  format.
-%
-%  The format of the WriteRLEImage routine is:
-%
-%      status=WriteRLEImage(image_info,image)
-%
-%  A description of each parameter follows.
-%
-%    o status: Method WriteRLEImage return True if the image is written.
-%      False is returned is there is a memory shortage or if the image file
-%      fails to write.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%    o image:  A pointer to a Image structure.
-%
-%
-*/
-static unsigned int WriteRLEImage(const ImageInfo *image_info,Image *image)
-{
-  char
-    command[MaxTextExtent];
-
-  Image
-    *flipped_image;
-
-  ImageInfo
-    rle_info;
-
-  unsigned int
-    packet_size,
-    status;
-
-  /*
-    Flip image.
-  */
-  image->orphan=True;
-  flipped_image=FlipImage(image);
-  image->orphan=False;
-  if (flipped_image == (Image *) NULL)
-    PrematureExit(ResourceLimitWarning,"Unable to flip image",image);
-  rle_info=(*image_info);
-  rle_info.interlace=NoInterlace;
-  TemporaryFilename(flipped_image->filename);
-  status=WriteRGBImage(&rle_info,flipped_image);
-  if (status)
-    {
-      packet_size=3;
-      if (image->matte)
-        packet_size=4;
-      /*
-        Ask our delegate to convert the RGB image to RLE.
-      */
-      (void) sprintf(command,RLECommand,image->columns,image->rows,
-        packet_size,image_info->filename,flipped_image->filename);
-      status=SystemCommand(command);
-      (void) remove(flipped_image->filename);
-      if (!IsAccessible(image_info->filename))
-        MagickWarning(CorruptImageWarning,"RLE delegation failed",command);
-    }
-  DestroyImage(flipped_image);
-  return(status);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   W r i t e S C A N I m a g e                                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method WriteSCANImage writes an image in the SCAN encoded image format.
-%
-%  The format of the WriteSCANImage routine is:
-%
-%      status=WriteSCANImage(image_info,image)
-%
-%  A description of each parameter follows.
-%
-%    o status: Method WriteSCANImage return True if the image is written.
-%      False is returned is there is a memory shortage or if the image file
-%      fails to write.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%    o image:  A pointer to a Image structure.
-%
-%
-*/
-static unsigned int WriteSCANImage(const ImageInfo *image_info,Image *image)
-{
-  MagickWarning(MissingDelegateWarning,"Cannot write SCAN images",
-    image->filename);
-  return(False);
 }
 
 /*
@@ -10644,8 +10220,9 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
     image=image->next;
     ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
   } while (image_info->adjoin);
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
+  if (image_info->adjoin)
+    while (image->previous != (Image *) NULL)
+      image=image->previous;
   CloseImage(image);
   return(True);
 }
@@ -10896,8 +10473,9 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
     image=image->next;
     ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
   } while (image_info->adjoin);
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
+  if (image_info->adjoin)
+    while (image->previous != (Image *) NULL)
+      image=image->previous;
   CloseImage(image);
   return(True);
 }
@@ -11290,8 +10868,9 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
     image=image->next;
     ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
   } while (image_info->adjoin);
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
+  if (image_info->adjoin)
+    while (image->previous != (Image *) NULL)
+      image=image->previous;
   CloseImage(image);
   return(True);
 }
@@ -11921,8 +11500,9 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     image=image->next;
     ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
   } while (image_info->adjoin);
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
+  if (image_info->adjoin)
+    while (image->previous != (Image *) NULL)
+      image=image->previous;
   (void) TIFFClose(tiff);
   if (image->temporary)
     {
@@ -12816,47 +12396,11 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
     image=image->next;
     ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
   } while (image_info->adjoin);
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
+  if (image_info->adjoin)
+    while (image->previous != (Image *) NULL)
+      image=image->previous;
   CloseImage(image);
   return(True);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+   W r i t e W I N I m a g e                                                 %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method WriteWINImage writes an image in the WIN encoded image format.
-%
-%  The format of the WriteWINImage routine is:
-%
-%      status=WriteWINImage(image_info,image)
-%
-%  A description of each parameter follows.
-%
-%    o status: Method WriteWINImage return True if the image is written.
-%      False is returned is there is a memory shortage or if the image file
-%      fails to write.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%    o image:  A pointer to a Image structure.
-%
-%
-*/
-static unsigned int WriteWINImage(const ImageInfo *image_info,Image *image)
-{
-#if defined(WIN32)
-  return(WriteNTImage(image_info,image));
-#endif
-  return(WriteXImage(image_info,image));
 }
 
 /*
@@ -13607,8 +13151,9 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
     image=image->next;
     ProgressMonitor(SaveImagesText,scene++,image->number_scenes);
   } while (image_info->adjoin);
-  while (image->previous != (Image *) NULL)
-    image=image->previous;
+  if (image_info->adjoin)
+    while (image->previous != (Image *) NULL)
+      image=image->previous;
   CloseImage(image);
   return(True);
 }
@@ -13824,6 +13369,9 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
 */
 Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
 {
+  DelegateInfo
+    delegate_info;
+
   unsigned int
     status;
 
@@ -13833,20 +13381,37 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->filename != (char *) NULL);
   assert(image != (Image *) NULL);
-  status=False;
   (void) strcpy(image_info->filename,image->filename);
   (void) strcpy(image_info->magick,image->magick);
   SetImageInfo(image_info,True);
   SetNumberScenes(image);
   (void) strcpy(image->filename,image_info->filename);
+  if (GetDelegateInfo(image_info->magick,False,&delegate_info))
+    {
+      /*
+        Let our delegate process the image.
+      */
+      TemporaryFilename(image->filename);
+      status=InvokeDelegate(image_info,image,image_info->magick,False);
+      remove(image->filename);
+      remove(image_info->unique);
+      return(status);
+    }
   /*
     Call appropriate image writer based on image type.
   */
+  status=False;
   switch (*image_info->magick)
   {
     case 'A':
     {
-      status=WriteAVSImage(image_info,image);
+      if (Latin1Compare(image_info->magick,"AVS") == 0)
+        {
+          status=WriteAVSImage(image_info,image);
+          break;
+        }
+      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+        image->magick);
       break;
     }
     case 'B':
@@ -13856,17 +13421,25 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
           status=WriteJBIGImage(image_info,image);
           break;
         }
-      status=WriteBMPImage(image_info,image);
+      if ((Latin1Compare(image_info->magick,"BMP") == 0) ||
+          (Latin1Compare(image_info->magick,"BMP24") == 0))
+        {
+          status=WriteBMPImage(image_info,image);
+          break;
+        }
+      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+        image->magick);
       break;
     }
     case 'C':
     {
-      if (Latin1Compare(image_info->magick,"CGM") == 0)
+      if (Latin1Compare(image_info->magick,"CMYK") == 0)
         {
-          status=WriteCGMImage(image_info,image);
+          status=WriteCMYKImage(image_info,image);
           break;
         }
-      status=WriteCMYKImage(image_info,image);
+      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+        image->magick);
       break;
     }
     case 'D':
@@ -13876,12 +13449,18 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
           status=WritePCXImage(image_info,image);
           break;
         }
+      if (Latin1Compare(image_info->magick,"DIB") == 0)
+        {
+          status=WriteBMPImage(image_info,image);
+          break;
+        }
       if (Latin1Compare(image_info->magick,"DICOM") == 0)
         {
           status=WriteDICOMImage(image_info,image);
           break;
         }
-      status=WriteBMPImage(image_info,image);
+      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+        image->magick);
       break;
     }
     case 'E':
@@ -13889,6 +13468,13 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
       if (Latin1Compare(image_info->magick,"EPDF") == 0)
         {
           status=WritePDFImage(image_info,image);
+          break;
+        }
+      if ((Latin1Compare(image_info->magick,"EPS") == 0) ||
+          (Latin1Compare(image_info->magick,"EPSF") == 0) ||
+          (Latin1Compare(image_info->magick,"EPSI") == 0))
+        {
+          status=WritePSImage(image_info,image);
           break;
         }
       if (Latin1Compare(image_info->magick,"EPS2") == 0)
@@ -13901,7 +13487,8 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
           status=WriteEPTImage(image_info,image);
           break;
         }
-      status=WritePSImage(image_info,image);
+      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+        image->magick);
       break;
     }
     case 'F':
@@ -13909,11 +13496,6 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
       if (Latin1Compare(image_info->magick,"FAX") == 0)
         {
           status=WriteFAXImage(image_info,image);
-          break;
-        }
-      if (Latin1Compare(image_info->magick,"FIG") == 0)
-        {
-          status=WriteFIGImage(image_info,image);
           break;
         }
       if (Latin1Compare(image_info->magick,"FITS") == 0)
@@ -13926,12 +13508,14 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
           status=WriteFPXImage(image_info,image);
           break;
         }
-      status=WriteHTMLImage(image_info,image);
+      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+        image->magick);
       break;
     }
     case 'G':
     {
-      if (strncmp(image_info->magick,"GIF",3) == 0)
+      if ((Latin1Compare(image_info->magick,"GIF") == 0) ||
+          (Latin1Compare(image_info->magick,"GIF87") == 0))
         {
           status=WriteGIFImage(image_info,image);
           break;
@@ -13951,7 +13535,8 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
           status=WriteGRAYImage(image_info,image);
           break;
         }
-      status=WriteFAXImage(image_info,image);
+      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+        image->magick);
       break;
     }
     case 'H':
@@ -13971,12 +13556,14 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
           status=WriteHISTOGRAMImage(image_info,image);
           break;
         }
-      if (Latin1Compare(image_info->magick,"HPGL") == 0)
+      if ((Latin1Compare(image_info->magick,"HTM") == 0) ||
+          (Latin1Compare(image_info->magick,"HTML") == 0))
         {
-          status=WriteHPGLImage(image_info,image);
+          status=WriteHTMLImage(image_info,image);
           break;
         }
-      status=WriteHTMLImage(image_info,image);
+      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+        image->magick);
       break;
     }
     case 'J':
@@ -13987,7 +13574,14 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
           status=WriteJBIGImage(image_info,image);
           break;
         }
-      status=WriteJPEGImage(image_info,image);
+      if ((Latin1Compare(image_info->magick,"JPG") == 0) ||
+          (Latin1Compare(image_info->magick,"JPEG") == 0))
+        {
+          status=WriteJPEGImage(image_info,image);
+          break;
+        }
+      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+        image->magick);
       break;
     }
     case 'I':
@@ -13997,7 +13591,13 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
           status=WriteTGAImage(image_info,image);
           break;
         }
-      status=WriteICONImage(image_info,image);
+      if (Latin1Compare(image_info->magick,"ICON") == 0)
+        {
+          status=WriteICONImage(image_info,image);
+          break;
+        }
+      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+        image->magick);
       break;
     }
     case 'L':
@@ -14007,7 +13607,13 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
           status=WriteLABELImage(image_info,image);
           break;
         }
-      status=WriteLOGOImage(image_info,image);
+      if (Latin1Compare(image_info->magick,"LOGO") == 0)
+        {
+          status=WriteLOGOImage(image_info,image);
+          break;
+        }
+      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+        image->magick);
       break;
     }
     case 'M':
@@ -14032,14 +13638,13 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
           status=WriteMONOImage(image_info,image);
           break;
         }
-      if ((Latin1Compare(image_info->magick,"MPEG") == 0) ||
-          (Latin1Compare(image_info->magick,"MPG") == 0) ||
-          (Latin1Compare(image_info->magick,"M2V") == 0))
+      if (Latin1Compare(image_info->magick,"MTV") == 0)
         {
-          status=WriteMPEGImage(image_info,image);
+          status=WriteMTVImage(image_info,image);
           break;
         }
-      status=WriteMTVImage(image_info,image);
+      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+        image->magick);
       break;
     }
     case 'N':
@@ -14049,10 +13654,21 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
           status=WriteLOGOImage(image_info,image);
           break;
         }
+      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+        image->magick);
       break;
     }
     case 'P':
     {
+      if ((Latin1Compare(image_info->magick,"PBM") == 0) ||
+          (Latin1Compare(image_info->magick,"PGM") == 0) ||
+          (Latin1Compare(image_info->magick,"PPM") == 0) ||
+          (Latin1Compare(image_info->magick,"PNM") == 0) ||
+          (Latin1Compare(image_info->magick,"P7") == 0))
+        {
+          status=WritePNMImage(image_info,image);
+          break;
+        }
       if ((Latin1Compare(image_info->magick,"PCD") == 0) ||
           (Latin1Compare(image_info->magick,"PCDS") == 0))
         {
@@ -14121,16 +13737,12 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
           status=WritePS2Image(image_info,image);
           break;
         }
-      status=WritePNMImage(image_info,image);
+      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+        image->magick);
       break;
     }
     case 'R':
     {
-      if (Latin1Compare(image_info->magick,"RAD") == 0)
-        {
-          status=WriteRADIANCEImage(image_info,image);
-          break;
-        }
       if (Latin1Compare(image_info->magick,"RAS") == 0)
         {
           status=WriteSUNImage(image_info,image);
@@ -14141,21 +13753,12 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
           status=WriteRGBImage(image_info,image);
           break;
         }
-      if (strncmp(image_info->magick,"RLA",3) == 0)
-        {
-          status=WriteRLAImage(image_info,image);
-          break;
-        }
-      status=WriteRLEImage(image_info,image);
+      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+        image->magick);
       break;
     }
     case 'S':
     {
-      if (Latin1Compare(image_info->magick,"SCAN") == 0)
-        {
-          status=WriteSCANImage(image_info,image);
-          break;
-        }
       if (Latin1Compare(image_info->magick,"SGI") == 0)
         {
           status=WriteSGIImage(image_info,image);
@@ -14166,7 +13769,13 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
           status=WriteHTMLImage(image_info,image);
           break;
         }
-      status=WriteSUNImage(image_info,image);
+      if (Latin1Compare(image_info->magick,"SUN") == 0)
+        {
+          status=WriteSUNImage(image_info,image);
+          break;
+        }
+      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+        image->magick);
       break;
     }
     case 'T':
@@ -14181,9 +13790,15 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
           status=WriteTGAImage(image_info,image);
           break;
         }
-      if (strncmp(image_info->magick,"TIF",3) == 0)
+      if ((Latin1Compare(image_info->magick,"TIF") == 0) ||
+          (Latin1Compare(image_info->magick,"TIFF") == 0))
         {
           status=WriteTIFFImage(image_info,image);
+          break;
+        }
+      if (Latin1Compare(image_info->magick,"TILE") == 0)
+        {
+          status=WriteTILEImage(image_info,image);
           break;
         }
       if (Latin1Compare(image_info->magick,"TIM") == 0)
@@ -14191,11 +13806,10 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
           status=WriteTIMImage(image_info,image);
           break;
         }
-      if (strncmp(image_info->magick,"TTF",3) == 0)
+      if (Latin1Compare(image_info->magick,"TTF") == 0)
         {
           MagickWarning(MissingDelegateWarning,"Cannot write TTF images",
             image->filename);
-          status=False;
           break;
         }
       if (Latin1Compare(image_info->magick,"TXT") == 0)
@@ -14203,7 +13817,8 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
           status=WriteTEXTImage(image_info,image);
           break;
         }
-      status=WriteTILEImage(image_info,image);
+      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+        image->magick);
       break;
     }
     case 'U':
@@ -14213,7 +13828,13 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
           status=WriteUILImage(image_info,image);
           break;
         }
-      status=WriteUYVYImage(image_info,image);
+      if (Latin1Compare(image_info->magick,"UYVY") == 0)
+        {
+          status=WriteUYVYImage(image_info,image);
+          break;
+        }
+      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+        image->magick);
       break;
     }
     case 'V':
@@ -14234,12 +13855,13 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
           status=WriteMIFFImage(image_info,image);
           break;
         }
-      status=WriteVIFFImage(image_info,image);
-      break;
-    }
-    case 'W':
-    {
-      status=WriteWINImage(image_info,image);
+      if (Latin1Compare(image_info->magick,"VIFF") == 0)
+        {
+          status=WriteVIFFImage(image_info,image);
+          break;
+        }
+      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+        image->magick);
       break;
     }
     case 'X':
@@ -14269,16 +13891,29 @@ Export unsigned int WriteImage(ImageInfo *image_info,Image *image)
           status=WriteVIFFImage(image_info,image);
           break;
         }
-      status=WriteXWDImage(image_info,image);
+      if (Latin1Compare(image_info->magick,"XWD") == 0)
+        {
+          status=WriteXWDImage(image_info,image);
+          break;
+        }
+      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+        image->magick);
       break;
     }
     case 'Y':
     {
-      status=WriteYUVImage(image_info,image);
+      if (Latin1Compare(image_info->magick,"YUV") == 0)
+        {
+          status=WriteYUVImage(image_info,image);
+          break;
+        }
+      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+        image->magick);
       break;
     }
     default:
-      status=WriteMIFFImage(image_info,image);
+      MagickWarning(MissingDelegateWarning,"no delegate for this image format",
+        image->magick);
   }
   if (image->status)
     {

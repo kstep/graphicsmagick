@@ -144,9 +144,7 @@ extern "C" {
 #define ApplicationDefaults  "/usr/X11R6/lib/X11/app-defaults/"
 #define EditorOptions  " -title \"Edit Image Comment\" -e vi"
 #define Exit  exit
-#define LaunchFormat  "pnm"
 #define PreferencesDefaults  "~/."
-#define PrinterFormat  "ps"
 #define ReadCommandlLine(argc,argv)
 #if !defined(RGBColorDatabase)
 #define RGBColorDatabase  "/usr/X11R6/lib/X11/rgb.txt"
@@ -156,9 +154,7 @@ extern "C" {
 #define ApplicationDefaults  "decw$system_defaults:"
 #define EditorOptions  ""
 #define Exit(errno)  errno ? exit(-1) : exit(0)
-#define LaunchFormat  "psd"
 #define PreferencesDefaults  "decw$user_defaults:"
-#define PrinterFormat  "ps"
 #define ReadCommandlLine(argc,argv)
 #if !defined(RGBColorDatabase)
 #define RGBColorDatabase  "sys$common:[sysmgr]decw$rgb.dat"
@@ -167,9 +163,7 @@ extern "C" {
 #if defined(macintosh)
 #define ApplicationDefaults  "/usr/lib/X11/app-defaults/"
 #define EditorOptions ""
-#define LaunchFormat  "psd"
 #define PreferencesDefaults  "~/."
-#define PrinterFormat  "ps"
 #define ReadCommandlLine(argc,argv)  argc=ccommand(argv); puts(Version);
 #if !defined(RGBColorDatabase)
 #define RGBColorDatabase  "../xlib/lib/X11/rgb.txt"
@@ -178,11 +172,9 @@ extern "C" {
 #if defined(WIN32)
 #define ApplicationDefaults  "/usr/lib/X11/app-defaults/"
 #define EditorOptions ""
-#define LaunchFormat  "bmp"
 #undef isatty
 #define isatty(filedes)  1
 #define PreferencesDefaults  "~/."
-#define PrinterFormat  "pcl"
 #define ReadCommandlLine(argc,argv)
 #if !defined(RGBColorDatabase)
 #define RGBColorDatabase  "../xlib/lib/X11/rgb.txt"

@@ -1,5 +1,7 @@
 Revision history for Perl extension Image::Magick.
 
+1.48 Sun Oct 11 1998
+	- '$im->[1]->Display();' previously would cause a seg fault.
 1.47 Wed Sep 30 1998
 	- Added ColorFloodfill() and MatteFloodfill() methods.
 1.46 Sat Sep 22 1998

@@ -2350,9 +2350,11 @@ Export void TemporaryFilename(char *filename)
 %
 %  The format of the TranslateText routine is:
 %
-%      TranslateText(image,text)
+%      TranslateText(image_info,image,text)
 %
 %  A description of each parameter follows:
+%
+%    o image_info: The address of a structure of type ImageInfo.
 %
 %    o image: The address of a structure of type Image.
 %
@@ -2361,7 +2363,7 @@ Export void TemporaryFilename(char *filename)
 %
 %
 */
-Export char *TranslateText(Image *image,char *text)
+Export char *TranslateText(const ImageInfo *image_info,Image *image,char *text)
 {
   char
     *translated_text;
@@ -2374,7 +2376,7 @@ Export char *TranslateText(Image *image,char *text)
     indirection,
     length;
 
-  assert(image != (Image *) NULL);
+  assert((image_info != (ImageInfo *) NULL) || (image != (Image *) NULL));
   if ((text == (char *) NULL) || (*text == '\0'))
     return((char *) NULL);
   indirection=(*text == '@');
@@ -2476,6 +2478,8 @@ Export char *TranslateText(Image *image,char *text)
     {
       case 'b':
       {
+        if (image == (Image *) NULL)
+          break;
         if (image->filesize >= (1 << 24))
           (void) sprintf(q,"%ldmb",image->filesize/1024/1024);
         else
@@ -2496,6 +2500,8 @@ Export char *TranslateText(Image *image,char *text)
           *extension,
           *filename;
 
+        if (image == (Image *) NULL)
+          break;
         /*
           Label segment is the base of the filename.
         */
@@ -2516,7 +2522,7 @@ Export char *TranslateText(Image *image,char *text)
         {
           case 'd':
           {
-             *filename='\0';
+            *filename='\0';
             (void) strcpy(q,directory);
             q+=Extent(directory);
             break;
@@ -2535,7 +2541,7 @@ Export char *TranslateText(Image *image,char *text)
           }
           case 't':
           {
-             *(extension-1)='\0';
+            *(extension-1)='\0';
             (void) strcpy(q,filename);
             q+=Extent(filename);
             break;
@@ -2543,28 +2549,60 @@ Export char *TranslateText(Image *image,char *text)
         }
         break;
       }
+      case 'g':
+      {
+        if (image_info == (ImageInfo *) NULL)
+          break;
+        (void) sprintf(q,"0x%lx",image_info->group);
+        q=translated_text+Extent(translated_text);
+        break;
+      }
       case 'h':
       {
+        if (image == (Image *) NULL)
+          break;
         (void) sprintf(q,"%u",image->magick_rows);
         q=translated_text+Extent(translated_text);
         break;
       }
       case 'i':
       {
-        (void) strcpy(q,image->filename);
-        q+=Extent(image->filename);
+        if (image == (Image *) NULL)
+          {
+            (void) strcpy(q,image_info->filename);
+            q+=Extent(image_info->filename);
+          }
+        else
+          {
+            (void) strcpy(q,image->filename);
+            q+=Extent(image->filename);
+          }
+        break;
+      }
+      case 'l':
+      {
+        if (image == (Image *) NULL)
+          break;
+        if (image->label == (char *) NULL)
+          break;
+        (void) strcpy(q,image->label);
+        q+=Extent(image->label);
         break;
       }
       case 'm':
       {
+        if (image == (Image *) NULL)
+          break;
         (void) strcpy(q,image->magick);
         q+=Extent(image->magick);
         break;
       }
       case 'o':
       {
-        (void) strcpy(q,image->filename);
-        q+=Extent(image->filename);
+        if (image_info == (ImageInfo *) NULL)
+          break;
+        (void) strcpy(q,image_info->filename);
+        q+=Extent(image_info->filename);
         break;
       }
       case 'p':
@@ -2575,6 +2613,8 @@ Export char *TranslateText(Image *image,char *text)
         unsigned int
           page;
 
+        if (image == (Image *) NULL)
+          break;
         p=image;
         for (page=1; p->previous != (Image *) NULL; page++)
           p=p->previous;
@@ -2584,30 +2624,40 @@ Export char *TranslateText(Image *image,char *text)
       }
       case 's':
       {
+        if (image == (Image *) NULL)
+          break;
         (void) sprintf(q,"%u",image->scene);
         q=translated_text+Extent(translated_text);
         break;
       }
       case 'u':
       {
-        (void) strcpy(q,image->unique);
-        q+=Extent(image->unique);
+        if (image_info == (ImageInfo *) NULL)
+          break;
+        (void) strcpy(q,image_info->unique);
+        q+=Extent(image_info->unique);
         break;
       }
       case 'w':
       {
+        if (image == (Image *) NULL)
+          break;
         (void) sprintf(q,"%u",image->magick_columns);
         q=translated_text+Extent(translated_text);
         break;
       }
       case 'x':
       {
+        if (image == (Image *) NULL)
+          break;
         (void) sprintf(q,"%u",(unsigned int) image->x_resolution);
         q=translated_text+Extent(translated_text);
         break;
       }
       case 'y':
       {
+        if (image == (Image *) NULL)
+          break;
         (void) sprintf(q,"%u",(unsigned int) image->y_resolution);
         q=translated_text+Extent(translated_text);
         break;

@@ -45,6 +45,7 @@
 		<LI><A HREF="#StringToList">StringToList</A>
 		<LI><A HREF="#Strip">Strip</A>
 		<LI><A HREF="#TemporaryFilename">TemporaryFilename</A>
+		<LI><A HREF="#TranslateText">TranslateText</A>
 	</UL>
 
 </UL>
@@ -72,7 +73,7 @@ unicode=<STRONG>ConvertTextToUnicode</STRONG>(text,count)
 <STRONG>ExpandFilename</STRONG>(filename)
 
 <P>
-<STRONG>ExpandFilenames</STRONG>(argc,argv)
+status=<STRONG>ExpandFilenames</STRONG>(argc,argv)
 
 <P>
 <STRONG>GlobExpression</STRONG>(expression,pattern)
@@ -139,6 +140,9 @@ list=<STRONG>StringToList</STRONG>(text)
 
 <P>
 <STRONG>TemporaryFilename</STRONG>(filename)
+
+<P>
+<STRONG>TranslateText</STRONG>(image_info,image,text)
 
 <P>
 <HR>
@@ -260,7 +264,7 @@ expand to: bird.jpg rose.jpg tiki.jpg.
 The format of the ExpandFilenames function is:
 
 <P>
-<PRE>        ExpandFilenames(argc,argv)
+<PRE>        status=ExpandFilenames(argc,argv)
 </PRE>
 <P>
 A description of each parameter follows:
@@ -956,6 +960,37 @@ A description of each parameter follows.
 <P>
 Specifies a pointer to an array of characters. The unique file name is
 returned in this array.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="TranslateText">TranslateText</A></H2>
+<P>
+Method TranslateText replaces any embedded formating characters with the
+appropriate image attribute and returns the translated text.
+
+<P>
+The format of the TranslateText routine is:
+
+<P>
+<PRE>        TranslateText(image_info,image,text)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>image_info:</STRONG><DD>
+<P>
+The address of a structure of type ImageInfo.
+
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+<DT><STRONG>text:</STRONG><DD>
+<P>
+The address of a character string containing the embedded formatting
+characters.
 
 </DL></DL>
 </BODY>

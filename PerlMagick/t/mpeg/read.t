@@ -15,12 +15,14 @@ require 't/subroutines.pl';
 chdir 't/mpeg' || die 'Cd failed';
 
 #
-# Motion Picture Experts Group file nterchange format
-#
-testRead( 'input.mpg', '71d945c8ce8de757816d68823110c6ca' );
-
-#
 # Motion Picture Experts Group file interchange format (version 2)
 #
+testRead( 'input.m2v', 'e238246a6910d65a99ceb0b23135c986' );
+
+#
+# Motion Picture Experts Group file nterchange format
+#
 ++$test;
-testRead( 'input.m2v', '4ba485b7228a515095f9406c99e5fab2' );
+testRead( 'input.mpg', '2ab9b274742f981c30ff745cfc355ad8' );
+
+1;

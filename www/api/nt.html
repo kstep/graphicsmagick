@@ -1,11 +1,10 @@
-    <HTML> 
-	<HEAD> 
-	    <TITLE>nt - Windows NT Utility Routines for ImageMagick
+<HTML>
+<HEAD>
+<TITLE>nt - Windows NT Utility Routines for ImageMagick</TITLE>
+<LINK REV="made" HREF="mailto:cristy@mystic.es.dupont.com">
+</HEAD>
 
-</TITLE> 
-	</HEAD>
-
-	<body background="../../images/background.gif">
+<body background="../../images/background.gif">
 
 <!-- INDEX BEGIN -->
 
@@ -18,10 +17,14 @@
 
 		<LI><A HREF="#closedir">closedir</A>
 		<LI><A HREF="#Exit">Exit</A>
+		<LI><A HREF="#ImageFormatConflict">ImageFormatConflict</A>
+		<LI><A HREF="#IsWindows95">IsWindows95</A>
+		<LI><A HREF="#NTSystemCommand">NTSystemCommand</A>
+		<LI><A HREF="#NTTemporaryFilename">NTTemporaryFilename</A>
+		<LI><A HREF="#NTWarningHandler">NTWarningHandler</A>
 		<LI><A HREF="#opendir">opendir</A>
 		<LI><A HREF="#readdir">readdir</A>
 		<LI><A HREF="#seekdir">seekdir</A>
-		<LI><A HREF="#systemNT">systemNT</A>
 		<LI><A HREF="#telldir">telldir</A>
 		<LI><A HREF="#DllMain">DllMain</A>
 	</UL>
@@ -31,337 +34,297 @@
 
 <HR>
 <P>
-<H1><A NAME="NAME">NAME
-
-</A></H1>
+<H1><A NAME="NAME">NAME</A></H1>
+<P>
 nt - Windows NT Utility Routines for ImageMagick
 
-
-<P>
-
 <P>
 <HR>
-<H1><A NAME="SYNOPSIS">SYNOPSIS
-
-</A></H1>
+<H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
+<P>
 <STRONG>Exit</STRONG>(status)
 
+<P>
+status=<STRONG>ImageFormatConflict</STRONG>(magick)
 
 <P>
+<STRONG>IsWindows95</STRONG>()
 
+<P>
+<STRONG>NTSystemCommand</STRONG>(command)
+
+<P>
+<STRONG>NTTemporaryFilename</STRONG>(filename)
+
+<P>
 <STRONG>closedir</STRONG>(entry)
 
-
 <P>
-
 <STRONG>opendir</STRONG>(entry)
 
-
 <P>
-
 <STRONG>readdir</STRONG>(entry)
 
+<P>
+<STRONG>seekdir</STRONG>(entry,position)
 
 <P>
-
-<STRONG>systemNT</STRONG>(command)
-
-
-<P>
-
 <STRONG>telldir</STRONG>(entry)
 
-
-<P>
-
 <P>
 <HR>
-<H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS
-
-</A></H1>
+<H1><A NAME="FUNCTION_DESCRIPTIONS">FUNCTION DESCRIPTIONS</A></H1>
 <P>
 <HR>
-<H2><A NAME="closedir">closedir
-
-</A></H2>
-Function closedir closes the named directory stream and frees the DIR
+<H2><A NAME="closedir">closedir</A></H2>
+<P>
+Method closedir closes the named directory stream and frees the DIR
 structure.
 
-
 <P>
-
 The format of the closedir routine is:
 
-
 <P>
-
 <PRE>        closedir(entry)
 </PRE>
-
 <P>
-
 A description of each parameter follows:
 
-
+<DL><DL>
+<DT><STRONG><A NAME="item_o">entry:</A></STRONG><DD>
 <P>
-
-<DL>
-<DT><STRONG><A NAME="item_o">o entry:
-
-</A></STRONG><DD>
 Specifies a pointer to a DIR structure.
 
-
-<P>
-
-</DL>
+</DL></DL>
 <P>
 <HR>
-<H2><A NAME="Exit">Exit
-
-</A></H2>
-Function Exit calls TerminateProcess for Win95.
-
+<H2><A NAME="Exit">Exit</A></H2>
+<P>
+Method Exit calls TerminateProcess for Win95.
 
 <P>
-
 The format of the Exit routine is:
 
-
 <P>
-
 <PRE>        Exit(status)
 </PRE>
-
 <P>
-
 A description of each parameter follows:
 
-
+<DL><DL>
+<DT><STRONG>status:</STRONG><DD>
 <P>
-
-<DL>
-<DT><STRONG>o status:
-
-</A></STRONG><DD>
 an integer value representing the status of the terminating process.
 
-
-<P>
-
-</DL>
+</DL></DL>
 <P>
 <HR>
-<H2><A NAME="opendir">opendir
-
-</A></H2>
-Function opendir opens the directory named by filename and associates a
-directory stream with it.
-
+<H2><A NAME="ImageFormatConflict">ImageFormatConflict</A></H2>
+<P>
+Method ImageFormatConflict returns true if the image format conflicts with
+a logical drive (.e.g. X:).
 
 <P>
-
-The format of the opendir routine is:
-
+The format of the ImageFormatConflict routine is:
 
 <P>
-
-<PRE>        opendir(entry)
+<PRE>        status=ImageFormatConflict(magick)
 </PRE>
-
 <P>
-
 A description of each parameter follows:
 
-
+<DL><DL>
+<DT><STRONG>status:</STRONG><DD>
 <P>
+Method ImageFormatConflict returns true if the image format conflicts with
+a logical drive.
 
-<DL>
-<DT><STRONG>o entry:
-
-</A></STRONG><DD>
-Specifies a pointer to a DIR structure.
-
-
+<DT><STRONG>magick:</STRONG><DD>
 <P>
+Specifies the image format.
 
-</DL>
+</DL></DL>
 <P>
 <HR>
-<H2><A NAME="readdir">readdir
-
-</A></H2>
-Function readdir returns a pointer to a structure representing the
-directory entry at the current position in the directory stream to which
-entry refers.
-
+<H2><A NAME="IsWindows95">IsWindows95</A></H2>
+<P>
+Method IsWindows95 returns true if the system is Windows 95.
 
 <P>
-
-The format of the readdir
-
+The format of the IsWindows95 routine is:
 
 <P>
-
-<PRE>        readdir(entry)
+<PRE>        IsWindows95()
 </PRE>
-
 <P>
-
 A description of each parameter follows:
 
-
+<DL><DL>
+<DT><STRONG>status:</STRONG><DD>
 <P>
+an integer value representing the status of the terminating process.
 
-<DL>
-<DT><STRONG>o entry:
-
-</A></STRONG><DD>
-Specifies a pointer to a DIR structure.
-
-
-<P>
-
-</DL>
+</DL></DL>
 <P>
 <HR>
-<H2><A NAME="seekdir">seekdir
-
-</A></H2>
-<PRE> Function seekdir sets the position of the next readdir() operation
+<H2><A NAME="NTSystemCommand">NTSystemCommand</A></H2>
+<P>
+<PRE> Method NTSystemCommand executes the specified command and waits until it
 </PRE>
-
 <P>
-
-<PRE> on the directory stream.
-</PRE>
-
-<P>
-
-The format of the seekdir routine is:
-
-
-<P>
-
-<PRE>    closedir(entry,position)
-</PRE>
-
-<P>
-
-A description of each parameter follows:
-
-
-<P>
-
-<DL>
-<DT><STRONG>o entry:
-
-</A></STRONG><DD>
-Specifies a pointer to a DIR structure.
-
-
-<P>
-
-<DT><STRONG>o position:
-
-</A></STRONG><DD>
-specifies the position associated with the directory stream.
-
-
-<P>
-
-</DL>
-<P>
-<HR>
-<H2><A NAME="systemNT">systemNT
-
-</A></H2>
-<PRE> Function systemNT executes the specified command and waits until it
-</PRE>
-
-<P>
-
 <PRE> terminates.  The returned value is the exit status of the command.
 </PRE>
+<P>
+The format of the NTSystemCommand routine is:
 
 <P>
-
-The format of the systemNT routine is:
-
-
-<P>
-
-<PRE>        systemNT(command)
+<PRE>        NTSystemCommand(command)
 </PRE>
-
 <P>
-
 A description of each parameter follows:
 
-
+<DL><DL>
+<DT><STRONG>command:</STRONG><DD>
 <P>
-
-<DL>
-<DT><STRONG>o command:
-
-</A></STRONG><DD>
 This string is the command to execute.
 
-
-<P>
-
-</DL>
+</DL></DL>
 <P>
 <HR>
-<H2><A NAME="telldir">telldir
-
-</A></H2>
-<PRE> Function telldir returns the current location associated  with  the
+<H2><A NAME="NTTemporaryFilename">NTTemporaryFilename</A></H2>
+<P>
+<PRE> Method NTTemporaryFilename creates a name for a temporary file.  It
 </PRE>
-
 <P>
-
-<PRE> named directory stream.
+<PRE> returns zero if an error occurs.
 </PRE>
+<P>
+The format of the TemporaryFilename routine is:
 
 <P>
-
-The format of the telldir routine is:
-
-
-<P>
-
-<PRE>        telldir(entry)
+<PRE>        NTTemporaryFilename(filename)
 </PRE>
-
 <P>
-
 A description of each parameter follows:
 
-
+<DL><DL>
+<DT><STRONG>filename:</STRONG><DD>
 <P>
+Specifies a pointer to a string to place the filename.
 
-<DL>
-<DT><STRONG>o entry:
-
-</A></STRONG><DD>
-Specifies a pointer to a DIR structure.
-
-
-<P>
-
-</DL>
+</DL></DL>
 <P>
 <HR>
-<H2><A NAME="DllMain">DllMain
-
-</A></H2>
-Function Dllmain is the entry point for the ImageMagick DLL library.
-
+<H2><A NAME="NTWarningHandler">NTWarningHandler</A></H2>
+<P>
+Method NTWarningHandler displays a warning message.
 
 <P>
+The format of the NTWarningHandler routine is:
 
-</DL>
-    </BODY>
+<P>
+<HR>
+<H2><A NAME="opendir">opendir</A></H2>
+<P>
+Method opendir opens the directory named by filename and associates a
+directory stream with it.
 
-    </HTML>
+<P>
+The format of the opendir routine is:
+
+<P>
+<PRE>        opendir(entry)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>entry:</STRONG><DD>
+<P>
+Specifies a pointer to a DIR structure.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="readdir">readdir</A></H2>
+<P>
+Method readdir returns a pointer to a structure representing the directory
+entry at the current position in the directory stream to which entry
+refers.
+
+<P>
+The format of the readdir
+
+<P>
+<PRE>        readdir(entry)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>entry:</STRONG><DD>
+<P>
+Specifies a pointer to a DIR structure.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="seekdir">seekdir</A></H2>
+<P>
+<PRE> Method seekdir sets the position of the next readdir() operation
+</PRE>
+<P>
+<PRE> on the directory stream.
+</PRE>
+<P>
+The format of the seekdir routine is:
+
+<P>
+<PRE>        seekdir(entry,position)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>entry:</STRONG><DD>
+<P>
+Specifies a pointer to a DIR structure.
+
+<DT><STRONG>position:</STRONG><DD>
+<P>
+specifies the position associated with the directory stream.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="telldir">telldir</A></H2>
+<P>
+<PRE> Method telldir returns the current location associated  with  the
+</PRE>
+<P>
+<PRE> named directory stream.
+</PRE>
+<P>
+The format of the telldir routine is:
+
+<P>
+<PRE>        telldir(entry)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>entry:</STRONG><DD>
+<P>
+Specifies a pointer to a DIR structure.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="DllMain">DllMain</A></H2>
+<P>
+Method Dllmain is the entry point for the ImageMagick DLL library.
+
+</BODY>
+
+</HTML>

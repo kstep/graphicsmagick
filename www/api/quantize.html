@@ -39,19 +39,19 @@ quantize - Reduce the Number of Unique Colors in an Image
 <STRONG>GetQuantizeInfo</STRONG>(quantize_info)
 
 <P>
-<STRONG>MapImage</STRONG>(image,map_image,dither)
+status=<STRONG>MapImage</STRONG>(image,map_image,dither)
 
 <P>
-<STRONG>MapImages</STRONG>(images,map_image,dither)
+status=<STRONG>MapImages</STRONG>(images,map_image,dither)
 
 <P>
-<STRONG>QuantizationError</STRONG>(image)
+status=<STRONG>QuantizationError</STRONG>(image)
 
 <P>
-<STRONG>QuantizeImage</STRONG>(quantize_info,image)
+status=<STRONG>QuantizeImage</STRONG>(quantize_info,image)
 
 <P>
-<STRONG>QuantizeImages</STRONG>(quantize_info,number_images,images)
+status=<STRONG>QuantizeImages</STRONG>(quantize_info,number_images,images)
 
 <P>
 <HR>
@@ -88,7 +88,7 @@ reference image.
 The format of the MapImage routine is:
 
 <P>
-<PRE>        MapImage(image,map_image,dither)
+<PRE>        status=MapImage(image,map_image,dither)
 </PRE>
 <P>
 A description of each parameter follows:
@@ -120,7 +120,7 @@ color from a reference image.
 The format of the MapImage routine is:
 
 <P>
-<PRE>        MapImages(images,map_image,dither)
+<PRE>        status=MapImages(images,map_image,dither)
 </PRE>
 <P>
 A description of each parameter follows:
@@ -175,7 +175,7 @@ your image.
 The format of the QuantizationError routine is:
 
 <P>
-<PRE>        QuantizationError(image)
+<PRE>        status=QuantizationError(image)
 </PRE>
 <P>
 A description of each parameter follows.
@@ -201,7 +201,7 @@ while minimizing the processing time.
 The format of the QuantizeImage routine is:
 
 <P>
-<PRE>        QuantizeImage(quantize_info,image)
+<PRE>        status=QuantizeImage(quantize_info,image)
 </PRE>
 <P>
 A description of each parameter follows:
@@ -229,7 +229,7 @@ while minimizing the processing time.
 The format of the QuantizeImages routine is:
 
 <P>
-<PRE>        QuantizeImages(quantize_info,number_images,images)
+<PRE>        status=QuantizeImages(quantize_info,number_images,images)
 </PRE>
 <P>
 A description of each parameter follows:

@@ -31,6 +31,8 @@
 		<LI><A HREF="#PICTEncodeImage">PICTEncodeImage</A>
 		<LI><A HREF="#RunlengthDecodeImage">RunlengthDecodeImage</A>
 		<LI><A HREF="#RunlengthEncodeImage">RunlengthEncodeImage</A>
+		<LI><A HREF="#SetRunlengthEncoder">SetRunlengthEncoder</A>
+		<LI><A HREF="#SetRunlengthPackets">SetRunlengthPackets</A>
 		<LI><A HREF="#SUNDecodeImage">SUNDecodeImage</A>
 		<LI><A HREF="#ZLIBEncodeImage">ZLIBEncodeImage</A>
 	</UL>
@@ -91,6 +93,12 @@ status=<STRONG>RunlengthDecodeImage</STRONG>(image)
 
 <P>
 count=<STRONG>RunlengthEncodeImage</STRONG>(image)
+
+<P>
+<STRONG>SetRunlengthEncoder</STRONG>(packet)
+
+<P>
+<STRONG>SetRunlengthPackets</STRONG>(image,packets)
 
 <P>
 status=<STRONG>ZLIBEncodeImage</STRONG>(file,pixels,number_pixels)
@@ -623,6 +631,52 @@ Zero is returned if an error occurs.
 <DT><STRONG>image:</STRONG><DD>
 <P>
 The address of a structure of type Image.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="SetRunlengthEncoder">SetRunlengthEncoder</A></H2>
+<P>
+Method SetRunlengthEncoder initializes the runlength encoder.
+
+<P>
+The format of the SetRunlengthEncoder function is:
+
+<P>
+<PRE>        SetRunlengthEncoder(packet)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>packet:</STRONG><DD>
+<P>
+Specifies a RunlengthPacket type.
+
+</DL></DL>
+<P>
+<HR>
+<H2><A NAME="SetRunlengthPackets">SetRunlengthPackets</A></H2>
+<P>
+Method SetRunlengthPackets initializes the runlength encoder.
+
+<P>
+The format of the SetRunlengthPackets function is:
+
+<P>
+<PRE>        SetRunlengthPackets(image,packets)
+</PRE>
+<P>
+A description of each parameter follows:
+
+<DL><DL>
+<DT><STRONG>image:</STRONG><DD>
+<P>
+The address of a structure of type Image.
+
+<DT><STRONG>packets:</STRONG><DD>
+<P>
+The number of runlength packets.
 
 </DL></DL>
 <P>

@@ -1180,6 +1180,7 @@ int main(int argc,char **argv)
   if (image_info->verbose)
     DescribeImage(montage_image,stderr,False);
   DestroyImage(montage_image);
+  DestroyImageInfo(image_info);
   Exit(0);
   return(False);
 }

@@ -25,7 +25,7 @@ AVAILABILITY
 
   ImageMagick is available as
 
-    ftp://ftp.wizards.dupont.com/pub/ImageMagick/ImageMagick-4.1.2.tar.gz
+    ftp://ftp.wizards.dupont.com/pub/ImageMagick/ImageMagick-4.1.3.tar.gz
 
   ImageMagick client executables are available for some platforms. See
 
@@ -83,8 +83,8 @@ UNIX COMPILATION
 
   Type:
 
-    gunzip ImageMagick-4.1.2.tar.gz
-    tar xvf ImageMagick-4.1.2.tar
+    gunzip ImageMagick-4.1.3.tar.gz
+    tar xvf ImageMagick-4.1.3.tar
     cd ImageMagick
 
   If you do not have gunzip(1), it is available as
@@ -605,10 +605,8 @@ HOW TO COMPILE
 VMS COMPILATION
 
   You might want to check the values of certain program definitions
-  before compiling.  Change the definitions of ApplicationDefaults,
-  DocumentationBrowser, EditorCommand, PostscriptColorDevice,
-  PrintCommand, and RGBColorDatabase in magick/magick.h to suit your
-  local requirements.  Next, type.
+  before compiling.  Verify the definitions in delegates.mgk to suit
+  your local requirements.  Next, type.
 
   Type
 

@@ -10,8 +10,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-#  Generic makefile for display, animate, montage, and import for
-#  computers that do not have xmkmf.
+#  Makefile for building ImageMagick library
 #
 #  Copyright 1998 E. I. du Pont de Nemours and Company
 #
@@ -41,8 +40,6 @@
 #
 
 # Don't require all the GNU mandated files
-# Remove comment from no-dependencies for distributions compatable with
-# traditional 'make'
 
 
 SHELL = /bin/sh
@@ -98,6 +95,8 @@ BrowseDelegate = @BrowseDelegate@
 CC = @CC@
 CGMDecodeDelegate = @CGMDecodeDelegate@
 CPP = @CPP@
+CatDelegate = @CatDelegate@
+ConvertDelegate = @ConvertDelegate@
 DELEGATES = @DELEGATES@
 EditorDelegate = @EditorDelegate@
 FIGDecodeDelegate = @FIGDecodeDelegate@
@@ -115,6 +114,8 @@ MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MPEGDecodeDelegate = @MPEGDecodeDelegate@
 MPEGEncodeDelegate = @MPEGEncodeDelegate@
+MVDelegate = @MVDelegate@
+MogrifyDelegate = @MogrifyDelegate@
 NM = @NM@
 PACKAGE = @PACKAGE@
 PERL = @PERL@
@@ -123,6 +124,7 @@ PSDelegate = @PSDelegate@
 RADDecodeDelegate = @RADDecodeDelegate@
 RANLIB = @RANLIB@
 RLEEncodeDelegate = @RLEEncodeDelegate@
+RMDelegate = @RMDelegate@
 SCANDecodeDelegate = @SCANDecodeDelegate@
 ShowImageDelegate = @ShowImageDelegate@
 VERSION = @VERSION@
@@ -134,8 +136,9 @@ X11STUBSLIB = @X11STUBSLIB@
 XTP_DEFS = @XTP_DEFS@
 XTP_FTP = @XTP_FTP@
 XTP_LIBS = @XTP_LIBS@
+ZipDelegate = @ZipDelegate@
 
-AUTOMAKE_OPTIONS = 1.2 foreign # no-dependencies
+AUTOMAKE_OPTIONS = 1.2 foreign
 
 lib_LTLIBRARIES = libMagick.la
 
@@ -147,8 +150,8 @@ libMagick_la_LDFLAGS = -version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VE
 
 # Library sources
 libMagick_la_SOURCES = PreRvIcccm.c X.c animate.c colors.c compress.c decode.c \
-  display.c effects.c encode.c error.c gems.c image.c monitor.c quantize.c \
-  segment.c shear.c signature.c utility.c widget.c memory.c
+  delegates.c display.c effects.c encode.c error.c gems.c image.c monitor.c \
+  quantize.c segment.c shear.c signature.c utility.c widget.c memory.c
 
 # Source files not used for Unix library but which are distributed
 EXTRA_libMagick_la_SOURCES = mac.c nt.c vms.c
@@ -181,9 +184,9 @@ X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
 libMagick_la_LIBADD = 
 libMagick_la_OBJECTS =  PreRvIcccm.lo X.lo animate.lo colors.lo \
-compress.lo decode.lo display.lo effects.lo encode.lo error.lo gems.lo \
-image.lo monitor.lo quantize.lo segment.lo shear.lo signature.lo \
-utility.lo widget.lo memory.lo
+compress.lo decode.lo delegates.lo display.lo effects.lo encode.lo \
+error.lo gems.lo image.lo monitor.lo quantize.lo segment.lo shear.lo \
+signature.lo utility.lo widget.lo memory.lo
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)

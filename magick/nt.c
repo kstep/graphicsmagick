@@ -561,59 +561,6 @@ Export long telldir(DIR *entry)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   W r i t e N T I m a g e                                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method WriteNTImage writes an image in the NT encoded image format.
-%
-%  The format of the WriteNTImage routine is:
-%
-%      status=WriteNTImage(image_info,image)
-%
-%  A description of each parameter follows.
-%
-%    o status: Method WriteNTImage return True if the image is written.
-%      False is returned is there is a memory shortage or if the image file
-%      fails to write.
-%
-%    o image_info: Specifies a pointer to an ImageInfo structure.
-%
-%    o image:  A pointer to a Image structure.
-%
-%
-*/
-Export unsigned int WriteNTImage(const ImageInfo *image_info,Image *image)
-{
-  char
-    command[MaxTextExtent],
-    filename[MaxTextExtent];
-
-  unsigned int
-    status;
-
-  TemporaryFilename(filename);
-  (void) sprintf(command,LauncherCommand,filename);
-  (void) sprintf(image->filename,"%s:%s",LaunchFormat,filename);
-  status=WriteImage((ImageInfo *) image_info,image);
-  if (status != False)
-    {
-      status=SystemCommand(command);
-      if (status)
-        MagickWarning(MissingDelegateWarning,"Unable to display image",
-          image->filename);
-    }
-  remove(filename);
-  return(status);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 %   D l l M a i n                                                             %
 %                                                                             %
 %                                                                             %

@@ -169,7 +169,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       {
         if (number_files > 5)
           handler=SetMonitorHandler((MonitorHandler) NULL);
-        local_info.filename=filelist[i];
+        (void) strcpy(local_info.filename,filelist[i]);
         *local_info.magick='\0';
         next_image=ReadImage(&local_info);
         if (filelist[i] != filenames)
@@ -289,9 +289,6 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       Atom
         mozilla_atom;
 
-      char
-        command[MaxTextExtent];
-
       Window
         mozilla_window,
         root_window;
@@ -304,6 +301,9 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       mozilla_window=XWindowByProperty(display,root_window,mozilla_atom);
       if (mozilla_window != (Window) NULL)
         {
+          char
+            command[MaxTextExtent];
+
           /*
             Display documentation using Netscape remote control.
           */
@@ -315,12 +315,12 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           XSetCursorState(display,windows,False);
           break;
         }
-      (void) sprintf(command,resource_info->browse_command,DocumentationURL);
       XSetCursorState(display,windows,True);
       XCheckRefreshWindows(display,windows);
-      status=SystemCommand(command);
-      if (status)
-        XNoticeWidget(display,windows,"Unable to browse documentation",command);
+      status=InvokeDelegate(&resource_info->image_info,*image,"browse",True);
+      if (status != False)
+        XNoticeWidget(display,windows,"Unable to browse documentation",
+          (char *) NULL);
       XDelay(display,1500);
       XSetCursorState(display,windows,False);
       break;

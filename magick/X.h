@@ -299,7 +299,6 @@ typedef struct _XResourceInfo
     border_width;
 
   char
-    *browse_command,
     *client_name;
 
   XColormapType
@@ -320,7 +319,6 @@ typedef struct _XResourceInfo
     display_warnings;
 
   char
-    *editor_command,
     *font,
     *font_name[MaxNumberFonts],
     *foreground_color;
@@ -340,8 +338,7 @@ typedef struct _XResourceInfo
     immutable;
 
   char
-    *image_geometry,
-    *launch_command;
+    *image_geometry;
 
   unsigned int
     magnify;
@@ -357,8 +354,7 @@ typedef struct _XResourceInfo
     pause;
 
   char
-    *pen_colors[MaxNumberPens],
-    *print_command;
+    *pen_colors[MaxNumberPens];
 
   int
     quantum;
@@ -575,6 +571,7 @@ extern Export unsigned int
   XQueryColorDatabase(char *,XColor *);
 
 extern Export void
+  Latin1Upper(char *),
   XAnimateBackgroundImage(Display *,XResourceInfo *,Image *),
   XBestIconSize(Display *,XWindowInfo *,Image *),
   XBestPixel(Display *,const Colormap,XColor *,unsigned int,XColor *),
