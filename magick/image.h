@@ -109,7 +109,7 @@ typedef struct _AnnotateInfo
 
   double
     pointsize,
-    degrees;
+    angle;
 
   char
     *font_name;

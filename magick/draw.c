@@ -1424,7 +1424,7 @@ Export void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   draw_info->linewidth=1;
   draw_info->gravity=NorthWestGravity;
   draw_info->pointsize=image_info->pointsize;
-  draw_info->degrees=0.0;
+  draw_info->angle=0.0;
   draw_info->border_color=image_info->border_color;
   /*
     Get tile.
