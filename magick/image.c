@@ -857,7 +857,7 @@ MagickExport unsigned int ClipImage(Image *image)
   clip_mask=BlobToImage(image_info,attribute->value,strlen(attribute->value),
     &image->exception);
   DestroyImageInfo(image_info);
-  if (mask == (Image *) NULL)
+  if (clip_mask == (Image *) NULL)
     return(False);
   (void) SetImageClipMask(*image,clip_mask);
   DestroyImage(clip_mask);
