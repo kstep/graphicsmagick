@@ -1,3 +1,8 @@
+2001-10-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/Color.h (Color(const std::string)): Pass argument by reference.
+	* (operator=): Pass argument by const reference.
+	
 2001-09-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Magick++/STL.h (coderInfoList): New function to support
