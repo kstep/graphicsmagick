@@ -1,3 +1,12 @@
+2003-09-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* index.html: Added a link to the www/AUTHORS.html file, as well
+	as text stating that GraphicsMagick is originally derived from
+	ImageMagick 5.5.2, with a link to the ImageMagick site.
+	* Makefile.am: Add rules to generate www/AUTHORS.html.
+	* www/AUTHORS.html: New HTML file based on the AUTHORS file in the
+	source package.  GraphicsMagick has many authors.
+
 2003-09-25  William Radcliffe  <billr@corbis.com>
 	* magick/image.c: Updated DescribeImage to cleanup EXIF data display
 	based on work by Cristy in ImageMagick.

@@ -245,7 +245,7 @@ MAGICK DELEGATES
 
       or via HTTP at
 
-         http://www.libtiff.org/
+         http://www.remotesensing.org/libtiff/
 
       to read the TIFF image format. It in turn optionally requires the
       JPEG and ZLIB libraries. Support for JPEG, ZIP, and LZW compression

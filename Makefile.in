@@ -405,6 +405,7 @@ DOCDIRS = images www www/api www/Magick++
 
 # txt2html requires perl.
 @WITH_PERL_TRUE@TXT2HTMLTARGETS = \
+@WITH_PERL_TRUE@	$(top_srcdir)/www/AUTHORS.html \
 @WITH_PERL_TRUE@	$(top_srcdir)/www/Changelog.html \
 @WITH_PERL_TRUE@	$(top_srcdir)/www/INSTALL-mac.html \
 @WITH_PERL_TRUE@	$(top_srcdir)/www/INSTALL-unix.html \
@@ -973,17 +974,13 @@ check-local: check-perl
 libtool: $(LIBTOOL_DEPS)
 	$(SHELL) ./config.status --recheck
 
+# Build HTML version of AUTHORS
+$(top_srcdir)/www/AUTHORS.html: $(top_srcdir)/AUTHORS
+	@PERL@ $(top_srcdir)/scripts/txt2html -p 4 -pb 1 -t $(PACKAGE_NAME)' Authors' < $(top_srcdir)/AUTHORS > $(top_srcdir)/www/AUTHORS.html
+
 # Build HTML version of ChangeLog
 $(top_srcdir)/www/Changelog.html: $(top_srcdir)/ChangeLog
 	@PERL@ $(top_srcdir)/scripts/txt2html  -t $(PACKAGE_NAME)' '$(PACKAGE_VERSION)' ChangeLog' < $(top_srcdir)/ChangeLog > $(top_srcdir)/www/Changelog.html
-
-# Build HTML version of news
-$(top_srcdir)/www/NEWS.html: $(top_srcdir)/NEWS
-	@PERL@ $(top_srcdir)/scripts/txt2html -t $(PACKAGE_NAME)' '$(PACKAGE_VERSION)' News' < $(top_srcdir)/NEWS  > $(top_srcdir)/www/NEWS.html
-
-# Build HTML version of README
-$(top_srcdir)/www/README.html: $(top_srcdir)/README.txt
-	@PERL@ $(top_srcdir)/scripts/txt2html -p 4 -pb 1 -t $(PACKAGE_NAME)' Install README' < $(top_srcdir)/README.txt > $(top_srcdir)/www/README.html
 
 # Build HTML version of INSTALL-mac.txt
 $(top_srcdir)/www/INSTALL-mac.html: $(top_srcdir)/INSTALL-unix.txt
@@ -1000,6 +997,14 @@ $(top_srcdir)/www/INSTALL-vms.html: $(top_srcdir)/INSTALL-vms.txt
 # Build HTML version of INSTALL-windows.txt
 $(top_srcdir)/www/INSTALL-windows.html: $(top_srcdir)/INSTALL-windows.txt
 	@PERL@ $(top_srcdir)/scripts/txt2html -s 55 -p 4 -pb 1 -t $(PACKAGE_NAME)' Windows Installation' < $(top_srcdir)/INSTALL-windows.txt > $(top_srcdir)/www/INSTALL-windows.html
+
+# Build HTML version of news
+$(top_srcdir)/www/NEWS.html: $(top_srcdir)/NEWS
+	@PERL@ $(top_srcdir)/scripts/txt2html -t $(PACKAGE_NAME)' '$(PACKAGE_VERSION)' News' < $(top_srcdir)/NEWS  > $(top_srcdir)/www/NEWS.html
+
+# Build HTML version of README
+$(top_srcdir)/www/README.html: $(top_srcdir)/README.txt
+	@PERL@ $(top_srcdir)/scripts/txt2html -p 4 -pb 1 -t $(PACKAGE_NAME)' Install README' < $(top_srcdir)/README.txt > $(top_srcdir)/www/README.html
 
 format_c_api_docs:
 	@PERL@ $(top_srcdir)/scripts/format_c_api_docs -format html --srcdir $(top_srcdir)/magick --outdir $(top_srcdir)/www/api

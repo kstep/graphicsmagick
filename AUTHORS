@@ -1,10 +1,13 @@
 The following people have contributed substantially to the development
-of GraphicsMagick:
+of GraphicsMagick.  Please let us know if an author is missing, or a
+significant contribution was made and not recorded.
 
 John Cristy
 		Creator, principal author, and principal maintainer of
 		ImageMagick, from which GraphicsMagick is originally
-		derived.
+		derived (from ImageMagick 5.5.2).  Also the author of
+		the Wand API to ImageMagick which is incorporated as
+		a stand-alone library by GraphicsMagick.
 
 Bob Friesenhahn
 		Principal maintainer of GraphicsMagick. Author of
@@ -17,8 +20,9 @@ Bob Friesenhahn
 		and GraphicsMagick.
 
 William Radcliffe
-		Author of the VisualMagick project configure facility
-		for Visual C++. Author of FlashPix module. Author of the
+		Author of the VisualMagick project configure facility for
+		Visual C++. Author of FlashPix module. Author of the
+		ImageMagickObject COM object for Windows. Author of the
 		EMF, XTRN, and META coders. Significant contributions to
 		the MSL, JPEG, TIFF, SVG, and URL coders. Authored
 		"process" module support. Wrote the micro-timer facility
@@ -67,7 +71,8 @@ Nathan Brown
 		Original author of the JP2 coder.
 
 Kyle Shorter
-		Original author of PerlMagick. Author of the LOCALE coder.
+		Original author of PerlMagick. Original author of the
+		LOCALE coder.
 
 Markus Friedl
 		Original author of Base64 encode/decode sources.

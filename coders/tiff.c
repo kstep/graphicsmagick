@@ -2044,10 +2044,6 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                   /*
                     Colormapped TIFF raster.
                   */
-                  (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,1);
-                  if (logging)
-                    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                          "Using 1 sample per pixel");
 
                   if (image->colors <= 2)
                     bits_per_sample=1;
@@ -2058,15 +2054,13 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
                   else if (image->colors <= 256)
                     bits_per_sample=8;
 
+                  (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,1);
                   (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,bits_per_sample);
-                  if (logging)
-                    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                                          "Using %u bits per sample",
-                                          (unsigned int) bits_per_sample);
                   photometric=PHOTOMETRIC_PALETTE;
                   if (logging)
                     (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-                       "Using PHOTOMETRIC_PALETTE");
+                      "Using one sample per pixel, %u bits per sample, PHOTOMETRIC_PALETTE",
+                      (unsigned int) bits_per_sample);
                 }
           }
       }
