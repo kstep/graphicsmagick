@@ -872,6 +872,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
             "Memory allocation failed");
         (void) memset(module_info,0,sizeof(ModuleInfo));
         module_info->filename=AllocateString(filename);
+        module_info->signature=MagickSignature;
         if (module_list == (ModuleInfo *) NULL)
           {
             module_list=module_info;

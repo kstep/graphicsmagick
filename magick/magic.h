@@ -28,6 +28,9 @@ typedef struct _MagicInfo
   unsigned int
     stealth;
 
+  unsigned long
+    signature;
+
   struct _MagicInfo
     *previous,
     *next;

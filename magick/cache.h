@@ -41,9 +41,6 @@ typedef struct _NexusInfo
 
 typedef struct _CacheInfo
 {
-  unsigned long
-    signature;
-
   SemaphoreInfo
     *semaphore;
 
@@ -81,6 +78,9 @@ typedef struct _CacheInfo
   char
     cache_filename[MaxTextExtent],
     meta_filename[MaxTextExtent];
+
+  unsigned long
+    signature;
 } CacheInfo;
 
 typedef const PixelPacket

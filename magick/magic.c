@@ -360,6 +360,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
             "Memory allocation failed");
         (void) memset(magic_info,0,sizeof(MagicInfo));
         magic_info->filename=AllocateString(filename);
+        magic_info->signature=MagickSignature;
         if (magic_list == (MagicInfo *) NULL)
           {
             magic_list=magic_info;

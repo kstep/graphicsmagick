@@ -13,10 +13,6 @@ extern "C" {
 */
 typedef struct _RegistryInfo
 {
-  struct _RegistryInfo
-    *previous,
-    *next;
-
   long
     id;
 
@@ -28,6 +24,13 @@ typedef struct _RegistryInfo
 
   size_t
     length;
+
+  unsigned long
+    signature;
+
+  struct _RegistryInfo
+    *previous,
+    *next;
 } RegistryInfo;
 
 /*

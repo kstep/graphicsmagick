@@ -13,10 +13,6 @@ extern "C" {
 */
 typedef struct _DelegateInfo
 {
-  struct _DelegateInfo
-    *previous,
-    *next;
-
   char
     *filename,
     *decode,
@@ -29,6 +25,13 @@ typedef struct _DelegateInfo
   unsigned int
     stealth,
     spawn;
+
+  unsigned long
+	  signature;
+
+  struct _DelegateInfo
+    *previous,
+    *next;
 } DelegateInfo;
 
 /*

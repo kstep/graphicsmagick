@@ -366,6 +366,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
             "Memory allocation failed");
         (void) memset(type_info,0,sizeof(TypeInfo));
         type_info->filename=AllocateString(filename);
+        type_info->signature=MagickSignature;
         if (type_list == (TypeInfo *) NULL)
           {
             type_list=type_info;

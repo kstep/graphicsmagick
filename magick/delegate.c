@@ -634,6 +634,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
             "Memory allocation failed");
         (void) memset(delegate_info,0,sizeof(DelegateInfo));
         delegate_info->filename=AllocateString(filename);
+        delegate_info->signature=MagickSignature;
         if (delegate_list == (DelegateInfo *) NULL)
           {
             delegate_list=delegate_info;
@@ -769,6 +770,7 @@ MagickExport DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
     Initialize new delegate.
   */
   assert(delegate_info != (DelegateInfo *) NULL);
+  assert(delegate_info->signature == MagickSignature);
   delegate=(DelegateInfo *) AcquireMemory(sizeof(DelegateInfo));
   if (delegate == (DelegateInfo *) NULL)
     return(delegate_list);

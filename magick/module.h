@@ -10,13 +10,6 @@ extern "C" {
 
 typedef struct _CoderInfo
 {
-  unsigned long
-    signature;
-  
-  struct _CoderInfo
-    *previous,
-    *next;
-  
   char
     *tag;
   
@@ -25,6 +18,13 @@ typedef struct _CoderInfo
   
   time_t
     load_time;
+
+  unsigned long
+    signature;
+
+  struct _CoderInfo
+    *previous,
+    *next;
 } CoderInfo;
 
 typedef struct _ModuleInfo
@@ -36,6 +36,9 @@ typedef struct _ModuleInfo
 
   unsigned int
     stealth;
+
+  unsigned long
+    signature;
 
   struct _ModuleInfo
     *previous,

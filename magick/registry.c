@@ -459,6 +459,7 @@ MagickExport long SetMagickRegistry(const RegistryType type,const void *blob,
   registry_info->type=type;
   registry_info->blob=clone_blob;
   registry_info->length=length;
+  registry_info->signature=MagickSignature;
   AcquireSemaphoreInfo(&registry_semaphore);
   registry_info->id=id++;
   if (registry_list == (RegistryInfo *) NULL)

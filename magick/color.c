@@ -1567,6 +1567,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
             "Memory allocation failed");
         (void) memset(color_info,0,sizeof(ColorInfo));
         color_info->filename=AllocateString(filename);
+        color_info->signature=MagickSignature;
         if (color_list == (ColorInfo *) NULL)
           {
             color_list=color_info;

@@ -24,9 +24,6 @@ typedef struct _AffineMatrix
 
 typedef struct _DrawInfo
 {
-  unsigned long
-    signature;
-
   char
     *primitive,
     *text,
@@ -109,6 +106,9 @@ typedef struct _DrawInfo
 
   Quantum
     opacity;
+
+  unsigned long
+    signature;
 } DrawInfo;
 
 typedef struct _TypeInfo
@@ -131,6 +131,9 @@ typedef struct _TypeInfo
 
   unsigned int
     stealth;
+
+  unsigned long
+    signature;
 
   struct _TypeInfo
     *previous,
