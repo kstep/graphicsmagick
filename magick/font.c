@@ -218,15 +218,8 @@ MagickExport FontInfo *GetFontInfo(const char *name,ExceptionInfo *exception)
 */
 MagickExport unsigned int ListFontInfo(FILE *file,ExceptionInfo *exception)
 {
-  char
-    font[MaxTextExtent],
-    tag[MaxTextExtent];
-
   register FontInfo
     *p;
-
-  register int
-    i;
 
   if (file == (const FILE *) NULL)
     file=stdout;
@@ -234,7 +227,7 @@ MagickExport unsigned int ListFontInfo(FILE *file,ExceptionInfo *exception)
   (void) fprintf(file,"Font name   Glyphs\n");
   (void) fprintf(file,"--------------------------------------------------------"
     "-----------------\n");
-  p=GetFontInfo("*","*",exception);
+  p=GetFontInfo("*",exception);
   if (p == (FontInfo *) NULL)
     return(False);
   for (p=font_list; p != (FontInfo *) NULL; p=p->next)
