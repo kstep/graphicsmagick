@@ -448,7 +448,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
       }
       case RaisePreview:
       {
-        FormatString(factor,"%d",2*i+2);
+        FormatString(factor,"%dx%d",2*i+2,2*i+2);
         FormatString(label,"raise %.1024s",factor);
         commands[argc++]=(char *) "-raise";
         commands[argc++]=factor;
