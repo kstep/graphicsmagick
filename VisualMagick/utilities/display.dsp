@@ -158,5 +158,9 @@ SOURCE=.\display.h
 
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;cnt;rtf;gif;jpg;jpeg;jpe"
 # End Group
+# Begin Source File
+
+SOURCE=..\lib\X11.lib
+# End Source File
 # End Target
 # End Project
