@@ -417,7 +417,7 @@ pdb_la_LIBADD = ../magick/libMagick.la
 # PDF module
 pdf_la_SOURCES = pdf.c
 pdf_la_LDFLAGS = -no-undefined -module -avoid-version
-pdf_la_LIBADD = ../magick/libMagick.la
+pdf_la_LIBADD = ../magick/libMagick.la @LIB_TIFF@
 
 # PICT module
 pict_la_SOURCES = pict.c
@@ -457,7 +457,7 @@ ps_la_LIBADD = ../magick/libMagick.la
 # PS2 module
 ps2_la_SOURCES = ps2.c
 ps2_la_LDFLAGS = -no-undefined -module -avoid-version
-ps2_la_LIBADD = ../magick/libMagick.la
+ps2_la_LIBADD = ../magick/libMagick.la @LIB_TIFF@
 
 # PS3 module
 ps3_la_SOURCES = ps3.c
