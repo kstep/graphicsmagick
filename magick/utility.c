@@ -415,7 +415,7 @@ MagickExport unsigned char *Base64Decode(const char *source,size_t *length)
 %
 %    o blob_length:    The number of bytes to encode.
 %
-%    o encode_length: The number of bytes encoded.
+%    o encode_length:  The number of bytes encoded.
 %
 */
 MagickExport char *Base64Encode(const unsigned char *blob,
@@ -431,11 +431,13 @@ MagickExport char *Base64Encode(const unsigned char *blob,
     i;
 
   size_t
+    max_length,
     remainder;
 
   assert(blob != (const unsigned char *) NULL);
   *encode_length=0;
-  encode=(char *) AcquireMemory(4*blob_length/3+4);
+  max_length=4*blob_length/3+4;
+  encode=(char *) AcquireMemory(max_length);
   if (encode == (char *) NULL)
     return((char *) NULL);
   i=0;
@@ -469,6 +471,7 @@ MagickExport char *Base64Encode(const unsigned char *blob,
     }
   *encode_length=i;
   encode[i++]='\0';
+  assert(i <= max_length);
   return(encode);
 }
 
