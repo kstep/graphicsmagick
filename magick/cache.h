@@ -78,9 +78,6 @@ typedef struct _CacheInfo
   IndexPacket
     *indexes;
 
-  int
-    file;
-
   char
     cache_filename[MaxTextExtent],
     meta_filename[MaxTextExtent];
@@ -105,7 +102,6 @@ typedef unsigned int
 
 typedef void
   *Cache,
-  (*ClosePixelHandler)(Image *),
   (*DestroyPixelHandler)(Image *);
 
 /*
@@ -150,8 +146,7 @@ extern MagickExport void
   SetCacheThreshold(const off_t),
   SetPixelCacheMethods(AcquirePixelHandler,GetPixelHandler,SetPixelHandler,
     SyncPixelHandler,GetPixelsFromHandler,GetIndexesFromHandler,
-    AcquireOnePixelFromHandler,GetOnePixelFromHandler,ClosePixelHandler,
-    DestroyPixelHandler);
+    AcquireOnePixelFromHandler,GetOnePixelFromHandler,DestroyPixelHandler);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

@@ -223,36 +223,6 @@ static const PixelPacket *AcquirePixelStream(const Image *image,const long x,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   C l o s e P i x e l S t r e a m                                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method ClosePixelStream() closes the pixel stream.  For streams, this method
-%  is a no-op.
-%
-%  The format of the ClosePixelStream() method is:
-%
-%      void ClosePixelStream(Image *image)
-%
-%  A description of each parameter follows:
-%
-%    o image: The image.
-%
-%
-*/
-static void ClosePixelStream(Image *image)
-{
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 +   D e s t r o y P i x e l S t r e a m                                       %
 %                                                                             %
 %                                                                             %
@@ -505,8 +475,7 @@ MagickExport Image *ReadStream(const ImageInfo *image_info,
   assert(exception->signature == MagickSignature);
   SetPixelCacheMethods(AcquirePixelStream,GetPixelStream,SetPixelStream,
     SyncPixelStream,GetPixelsFromStream,GetIndexesFromStream,
-    AcquireOnePixelFromStream,GetOnePixelFromStream,ClosePixelStream,
-    DestroyPixelStream);
+    AcquireOnePixelFromStream,GetOnePixelFromStream,DestroyPixelStream);
   clone_info=CloneImageInfo(image_info);
   clone_info->fifo=fifo;
   image=ReadImage(clone_info,exception);

@@ -279,7 +279,6 @@ MagickExport void CloseBlob(Image *image)
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  CloseImagePixels(image);
   image->taint=False;
   if (image->fifo != (int (*)(const Image *,const void *,const size_t)) NULL)
     {

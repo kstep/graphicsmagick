@@ -312,7 +312,6 @@ MagickExport void AllocateNextImage(const ImageInfo *image_info,Image *image)
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  CloseImagePixels(image);
   image->next=AllocateImage(image_info);
   if (image->next == (Image *) NULL)
     return;
@@ -2793,7 +2792,6 @@ MagickExport Image *GetNextImage(Image *image)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  CloseImagePixels(image);
   if (image->next == (Image *) NULL)
     return((Image *) NULL);
   *image->next->blob=(*image->blob);
@@ -3179,10 +3177,10 @@ MagickExport Image **ListToGroupImage(const Image *image,
   /*
     Add each image in the linked list to the group.
   */
-  next=(Image *) image;
+  next=image;
   for (i=0; next != (Image *) NULL; i++)
   {
-    images[i]=next;
+    images[i]=(Image *) next;
     next=next->next;
   }
   return(images);
