@@ -505,6 +505,8 @@ static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
       k=(int) ((int) index << (MaxGIFBits-8))+waiting_code;
       if (k >= MaxHashTable)
         k-=MaxHashTable;
+      next_pixel=False;
+      displacement=1;
 #if defined(HasLZW)
       if ((image_info->compression != NoCompression) && (hash_code[k] > 0))
         {
@@ -513,11 +515,8 @@ static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
               waiting_code=hash_code[k];
               continue;
             }
-          if (k == 0)
-            displacement=1;
-          else
+          if (k != 0)
             displacement=MaxHashTable-k;
-          next_pixel=False;
           for ( ; ; )
           {
             k-=displacement;

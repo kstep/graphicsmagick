@@ -864,6 +864,7 @@ static PathInfo *ConvertPrimitiveToPath(const DrawInfo *draw_info,
   q.x=(-1.0);
   q.y=(-1.0);
   coordinates=0;
+  start=0;
   path_length=0;
   path_info=(PathInfo *) NULL;
   for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++)

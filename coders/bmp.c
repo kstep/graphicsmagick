@@ -471,6 +471,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   memset(&bmp_info,0,sizeof(BMPInfo));
   bmp_info.ba_offset=0;
+  start_position=0;
   status=ReadBlob(image,2,(char *) magick);
   do
   {
