@@ -730,10 +730,10 @@ DWORD WINAPI HttpExtensionProc(EXTENSION_CONTROL_BLOCK *pECB)
                         if (status)
                           impersonating=True;
                         else
-                          errmsg = ntgetlasterror(); 
+                          errmsg = NTGetLastError(); 
                       }
                     else
-                      errmsg = ntgetlasterror();
+                      errmsg = NTGetLastError();
                   }
 #endif
                 argc_hw = i+1;
@@ -914,7 +914,7 @@ DWORD WINAPI HttpExtensionProc(EXTENSION_CONTROL_BLOCK *pECB)
       if (status)
         impersonating=False;
       else
-        errmsg = ntgetlasterror();
+        errmsg = NTGetLastError();
 #endif
     }
   pECB->dwHttpStatusCode=200; // 200 OK
