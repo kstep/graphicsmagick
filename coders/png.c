@@ -2771,11 +2771,24 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Set image background color.
         */
-        if (ping_info->bit_depth <= QuantumDepth)
+        if (ping_info->bit_depth == QuantumDepth)
           {
             image->background_color.red=ping_info->background.red;
             image->background_color.green=ping_info->background.green;
             image->background_color.blue=ping_info->background.blue;
+          }
+        else if (ping_info->bit_depth < QuantumDepth)
+          {
+            int
+              scale;
+
+            if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
+               scale=MaxRGB/255;
+            else
+               scale=(int) MaxRGB/((1<<ping_info->bit_depth)-1);
+            image->background_color.red=scale*ping_info->background.red;
+            image->background_color.green=scale*ping_info->background.green;
+            image->background_color.blue=scale*ping_info->background.blue;
           }
         else
           {
