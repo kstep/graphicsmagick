@@ -2765,45 +2765,34 @@ static void DrawPolygonPrimitive(const DrawInfo *draw_info,
                 if (AbsoluteValue(winding_number) > 0)
                   fill_opacity=1.0;
             }
-          if (fill_opacity != 0.0)
+          /*
+            Fill.
+          */
+          if (draw_info->tile != (Image *) NULL)
+            fill_color=GetOnePixel(draw_info->tile,x %
+              draw_info->tile->columns,y % draw_info->tile->rows);
+          fill_opacity=MaxRGB-fill_opacity*(MaxRGB-fill_color.opacity);
+          stroke_opacity=MaxRGB-stroke_opacity*(MaxRGB-stroke_color.opacity);
+          if (stroke_opacity != OpaqueOpacity)
+            switch ((int) fill_opacity)
             {
-              if (draw_info->tile != (Image *) NULL)
-                fill_color=GetOnePixel(draw_info->tile,x %
-                  draw_info->tile->columns,y % draw_info->tile->rows);
-              if (fill_color.opacity != TransparentOpacity)
-                {
-                  /*
-                    Fill.
-                  */
-                  fill_opacity=MaxRGB-fill_opacity*(MaxRGB-fill_color.opacity);
-                  switch ((int) fill_opacity)
-                  {
-                    case TransparentOpacity:
-                      break;
-                    case OpaqueOpacity:
-                    {
-                      *q=fill_color;
-                      break;
-                    }
-                    default:
-                    {
-                      *q=AlphaComposite(OverCompositeOp,&fill_color,
-                        fill_opacity,q,q->opacity);
-                      break;
-                    }
-                  }
-                }
-            }
-          if ((stroke_opacity == 0.0) ||
-              (stroke_color.opacity == TransparentOpacity))
-            {
-              q++;
-              continue;
+              case TransparentOpacity:
+                break;
+              case OpaqueOpacity:
+              {
+                *q=fill_color;
+                break;
+              }
+              default:
+              {
+                *q=AlphaComposite(OverCompositeOp,&fill_color,fill_opacity,q,
+                  q->opacity);
+                break;
+              }
             }
           /*
             Stroke.
           */
-          stroke_opacity=MaxRGB-stroke_opacity*(MaxRGB-stroke_color.opacity);
           switch ((int) stroke_opacity)
           {
             case TransparentOpacity:
@@ -4261,6 +4250,9 @@ static void TraceArc(PrimitiveInfo *primitive_info,const PointInfo start,
   register PrimitiveInfo
     *p;
 
+  primitive_info->coordinates=0;
+  if ((arc.x == 0.0) || (arc.y == 0.0))
+    return;
   cosine=cos(DegreesToRadians(angle));
   sine=sin(DegreesToRadians(angle));
   points[0].x=cosine*start.x/arc.x+sine*start.y/arc.x;
