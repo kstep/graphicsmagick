@@ -414,9 +414,7 @@ MagickExport const MagickInfo *GetMagickInfo(const char *name,
         if (LocaleCompare(p->name,name) == 0)
           break;
     }
-  if (p == (MagickInfo *) NULL)
-    ThrowException(exception,OptionWarning,"Unrecognized type name",name);
-  else
+  if (p != (MagickInfo *) NULL)
     if (p != magick_list)
       {
         /*

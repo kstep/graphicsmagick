@@ -2647,8 +2647,6 @@ MagickExport Image *ShadeImage(const Image *image,
     *shade_image;
 
   long
-    dx,
-    dy,
     y;
 
   PrimaryInfo
@@ -2692,27 +2690,25 @@ MagickExport Image *ShadeImage(const Image *image,
   */
   for (y=0; y < (long) image->rows; y++)
   {
-    p=AcquireImagePixels(image,0,y-1,image->columns,3,exception);
+    p=AcquireImagePixels(image,-1,y-1,image->columns+2,3,exception);
     q=SetImagePixels(shade_image,0,y,shade_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     /*
       Shade this row of pixels.
     */
-    s0=p;
-    s1=s0+image->columns;
-    s2=s1+image->columns;
+    s0=p+1;
+    s1=s0+image->columns+2;
+    s2=s1+image->columns+2;
     for (x=0; x < (long) image->columns; x++)
     {
       /*
         Determine the surface normal and compute shading.
       */
-      dx=(x > 0) ? 1 : -1;
-      dy=(x < ((long) image->columns-1)) ? 1 : -1;
-      normal.x=Intensity(s0-dx)+Intensity(s1-dx)+Intensity(s2-dx)-
-        Intensity(s0+dy)-Intensity(s1+dy)-Intensity(s2+dy);
-      normal.y=Intensity(s2-dx)+Intensity(s2)+Intensity(s2+dy)-
-        Intensity(s0-dx)-Intensity(s0)-Intensity(s0+dy);
+      normal.x=Intensity(s0-1)+Intensity(s1-1)+Intensity(s2-1)-
+        Intensity(s0+1)-Intensity(s1+1)-Intensity(s2+1);
+      normal.y=Intensity(s2-1)+Intensity(s2)+Intensity(s2+1)-
+        Intensity(s0-1)-Intensity(s0)-Intensity(s0+1);
       if ((normal.x == 0.0) && (normal.y == 0.0))
         shade=light.z;
       else

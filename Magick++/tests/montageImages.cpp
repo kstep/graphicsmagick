@@ -59,14 +59,14 @@ int main( int /*argc*/, char **argv)
         }
     }
 
-    if ( montage[0].columns() != 768 || montage[0].rows() != 126 )
+    if ( montage[0].columns() != 768 || montage[0].rows() != 124 )
       {
 	++failures;
 	cout << "Line: " << __LINE__ 
 	     << "  Montage columns/rows ("
 	     << montage[0].columns() << "x"
 	     << montage[0].rows()
-	     << ") incorrect. (expected 768x126)" << endl;
+	     << ") incorrect. (expected 768x124)" << endl;
       }
 
     // Montage with options set
@@ -108,14 +108,14 @@ int main( int /*argc*/, char **argv)
         }
     }
 
-    if ( montage[0].columns() != 132 || montage[0].rows() != 70 )
+    if ( montage[0].columns() != 132 || montage[0].rows() != 68 )
       {
 	++failures;
 	cout << "Line: " << __LINE__ 
 	     << "  Montage columns/rows ("
 	     << montage[0].columns() << "x"
 	     << montage[0].rows()
-	     << ") incorrect. (expected 132x70)" << endl;
+	     << ") incorrect. (expected 132x68)" << endl;
       }
   }
 
