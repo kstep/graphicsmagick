@@ -1910,11 +1910,11 @@ Animate(ref,...)
       }
     package_info=ClonePackageInfo(info);
     if (items == 2)
-      SetAttribute(package_info,NULL,"server",ST(1));
+      SetAttribute(package_info,image,"server",ST(1));
     else
       if (items > 2)
         for (i=2; i < items; i+=2)
-          SetAttribute(package_info,NULL,SvPV(ST(i-1),na),ST(i));
+          SetAttribute(package_info,image,SvPV(ST(i-1),na),ST(i));
     AnimateImages(package_info->image_info,image);
     CatchImageException(image);
 
@@ -2654,11 +2654,11 @@ Display(ref,...)
       }
     package_info=ClonePackageInfo(info);
     if (items == 2)
-      SetAttribute(package_info,NULL,"server",ST(1));
+      SetAttribute(package_info,image,"server",ST(1));
     else
       if (items > 2)
         for (i=2; i < items; i+=2)
-          SetAttribute(package_info,NULL,SvPV(ST(i-1),na),ST(i));
+          SetAttribute(package_info,image,SvPV(ST(i-1),na),ST(i));
     DisplayImages(package_info->image_info,image);
 
   MethodException:
@@ -3562,7 +3562,7 @@ ImageToBlob(ref,...)
       }
     package_info=ClonePackageInfo(info);
     for (i=2; i < items; i+=2)
-      SetAttribute(package_info,NULL,SvPV(ST(i-1),na),ST(i));
+      SetAttribute(package_info,image,SvPV(ST(i-1),na),ST(i));
     (void) strcpy(filename,package_info->image_info->filename);
     scene=0;
     for (next=image; next; next=next->next)
@@ -6885,11 +6885,11 @@ Write(ref,...)
       }
     package_info=ClonePackageInfo(info);
     if (items == 2)
-      SetAttribute(package_info,NULL,"filen",ST(1));
+      SetAttribute(package_info,image,"filen",ST(1));
     else
       if (items > 2)
         for (i=2; i < items; i+=2)
-          SetAttribute(package_info,NULL,SvPV(ST(i-1),na),ST(i));
+          SetAttribute(package_info,image,SvPV(ST(i-1),na),ST(i));
     (void) strcpy(filename,package_info->image_info->filename);
     scene=0;
     for (next=image; next; next=next->next)

@@ -12524,7 +12524,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   /*
     Respond to events.
   */
-  timer=time((time_t *) NULL)+10*display_image->delay+1;
+  timer=time((time_t *) NULL)+display_image->delay/100+1;
   update_time=0;
   if (resource_info->update)
     {
@@ -12571,7 +12571,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                       if (nexus != (Image *) NULL)
                         *state|=NextImageState | ExitState;
                     }
-                timer=time((time_t *) NULL)+10*display_image->delay+1;
+                timer=time((time_t *) NULL)+display_image->delay/100+1;
               }
           }
         if (XEventsQueued(display,QueuedAfterFlush) == 0)
@@ -12766,7 +12766,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
             XPanImage(display,windows,&event);
             break;
           }
-        timer=time((time_t *) NULL)+10*display_image->delay+1;
+        timer=time((time_t *) NULL)+display_image->delay/100+1;
         break;
       }
       case ButtonRelease:
@@ -13143,7 +13143,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
           if (windows->image.mapped)
             {
               XRefreshWindow(display,&windows->image,&event);
-              timer=time((time_t *) NULL)+10*display_image->delay+1;
+              timer=time((time_t *) NULL)+display_image->delay/100+1;
               break;
             }
         if (event.xexpose.window == windows->magnify.id)
@@ -13202,7 +13202,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
               else
                 XTranslateImage(display,windows,*image,key_symbol);
           }
-        timer=time((time_t *) NULL)+10*display_image->delay+1;
+        timer=time((time_t *) NULL)+display_image->delay/100+1;
         break;
       }
       case KeyRelease:
