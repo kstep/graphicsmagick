@@ -278,6 +278,59 @@ be specified.</font></td>
 <a href="Geometry.html">Geometry</a>
 &amp;size, const string &amp;magick_</font></td>
 </tr>
+
+<tr>
+<td><font size=-1>const unsigned int width_, const unsigned int height_,
+std::string map_, const StorageType type_, const void *pixels_</font></td>
+
+<td><font size=-1>Construct a new Image based on an array of image pixels.
+The pixel data must be in scanline order top-to-bottom. The data can be
+character, short int, integer, float, or double. Float and double require
+the pixels to be normalized [0..1]. The other types are [0..MaxRGB].&nbsp;
+For example, to create a 640x480 image from unsigned red-green-blue character
+data, use</font><font size=-1></font>
+<p><font size=-1>&nbsp;&nbsp; Image image( 640, 480, "RGB", 0, pixels );</font><font size=-1></font>
+<p><font size=-1>The parameters are as follows:</font>
+<br><font size=-1></font>&nbsp;
+<table BORDER=0 WIDTH="100%" NOSAVE >
+<tr>
+<td><font size=-1>width_</font></td>
+
+<td><font size=-1>Width in pixels of the image.</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>height_</font></td>
+
+<td><font size=-1>Height in pixels of the image.</font></td>
+</tr>
+
+<tr NOSAVE>
+<td><font size=-1>map_</font></td>
+
+<td NOSAVE><font size=-1>This character string can be any combination or
+order of R = red, G = green, B = blue, A = alpha, C = cyan, Y = yellow
+M = magenta, and K = black. The ordering reflects the order of the pixels
+in the supplied pixel array.</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>type_</font></td>
+
+<td><font size=-1>Pixel storage type (CharPixel, ShortPixel, IntegerPixel,
+FloatPixel, or DoublePixel)</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>pixels_</font></td>
+
+<td><font size=-1>This array of values contain the pixel components as
+defined by the map_ and type_ parameters. The length of the arrays must
+equal the area specified by the width_ and height_ values and type_ parameters.</font></td>
+</tr>
+</table>
+</td>
+</tr>
 </table>
 
 <center>
@@ -906,7 +959,7 @@ to give a 3-D raised or lowered effect)</font></td>
 </tr>
 
 <tr NOSAVE>
-<td ROWSPAN="7" NOSAVE>
+<td ROWSPAN="8" NOSAVE>
 <center><a NAME="read"></a><font size=-1>read</font></center>
 </td>
 
@@ -963,6 +1016,59 @@ When a format can't be automatically detected, the format must be specified.</fo
 <td><font size=-1>const <a href="Blob.html">Blob</a> &amp;blob_, const
 <a href="Geometry.html">Geometry</a>
 &amp;size_, const string &amp;magick_</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>const unsigned int width_, const unsigned int height_,
+std::string map_, const StorageType type_, const void *pixels_</font></td>
+
+<td><font size=-1>Read image based on an array of image pixels. The pixel
+data must be in scanline order top-to-bottom. The data can be character,
+short int, integer, float, or double. Float and double require the pixels
+to be normalized [0..1]. The other types are [0..MaxRGB].&nbsp; For example,
+to create a 640x480 image from unsigned red-green-blue character data,
+use</font><font size=-1></font>
+<p><font size=-1>&nbsp; image.read( 640, 480, "RGB", 0, pixels );</font><font size=-1></font>
+<p><font size=-1>The parameters are as follows:</font>
+<br><font size=-1></font>&nbsp;
+<table BORDER=0 WIDTH="100%" NOSAVE >
+<tr>
+<td><font size=-1>width_</font></td>
+
+<td><font size=-1>Width in pixels of the image.</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>height_</font></td>
+
+<td><font size=-1>Height in pixels of the image.</font></td>
+</tr>
+
+<tr NOSAVE>
+<td NOSAVE><font size=-1>map_</font></td>
+
+<td NOSAVE><font size=-1>This character string can be any combination or
+order of R = red, G = green, B = blue, A = alpha, C = cyan, Y = yellow
+M = magenta, and K = black. The ordering reflects the order of the pixels
+in the supplied pixel array.</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>type_</font></td>
+
+<td><font size=-1>Pixel storage type (CharPixel, ShortPixel, IntegerPixel,
+FloatPixel, or DoublePixel)</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>pixels_</font></td>
+
+<td><font size=-1>This array of values contain the pixel components as
+defined by the map_ and type_ parameters. The length of the arrays must
+equal the area specified by the width_ and height_ values and type_ parameters.</font></td>
+</tr>
+</table>
+<font size=-1></font></td>
 </tr>
 
 <tr NOSAVE>
@@ -1209,7 +1315,7 @@ to transparent.</font></td>
 </tr>
 
 <tr NOSAVE>
-<td ROWSPAN="4" NOSAVE>
+<td ROWSPAN="5" NOSAVE>
 <center><a NAME="write"></a><font size=-1>write</font></center>
 </td>
 
@@ -1242,6 +1348,72 @@ be quantized to fewer colors. Use a copy of the original if this is a problem.</
 <tr>
 <td><font size=-1><a href="Blob.html">Blob</a> *blob_, std::string &amp;magick_,
 unsigned int depth_</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>const int x_, const int y_, const unsigned int columns_,
+const unsigned int rows_, const std::string &amp;map_, const StorageType
+type_, void *pixels_</font></td>
+
+<td><font size=-1>Write pixel data into a buffer you supply. The data is
+saved either as char, short int, integer, float or double format in the
+order specified by the type_ parameter. For example, we want to extract
+scanline 1 of a 640x480 image as character data in red-green-blue order:</font><font size=-1></font>
+<p><font size=-1>&nbsp; image.write(0,0,640,1,"RGB",0,pixels);</font><font size=-1></font>
+<p><font size=-1>The parameters are as follows:</font>
+<br><font size=-1></font>&nbsp;
+<table BORDER=0 WIDTH="100%" NOSAVE >
+<tr>
+<td><font size=-1>x_</font></td>
+
+<td><font size=-1>Horizontal ordinate of left-most coordinate of region
+to extract.</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>y_</font></td>
+
+<td><font size=-1>Vertical ordinate of top-most coordinate of region to
+extract.</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>columns_</font></td>
+
+<td><font size=-1>Width in pixels of the region to extract.</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>rows_</font></td>
+
+<td><font size=-1>Height in pixels of the region to extract.</font></td>
+</tr>
+
+<tr NOSAVE>
+<td><font size=-1>map_</font></td>
+
+<td NOSAVE><font size=-1>This character string can be any combination or
+order of R = red, G = green, B = blue, A = alpha, C = cyan, Y = yellow,
+M = magenta, and K = black. The ordering reflects the order of the pixels
+in the supplied pixel array.</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>type_</font></td>
+
+<td><font size=-1>Pixel storage type (CharPixel, ShortPixel, IntegerPixel,
+FloatPixel, or DoublePixel)</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>pixels_</font></td>
+
+<td><font size=-1>This array of values contain the pixel components as
+defined by the map_ and type_ parameters. The length of the arrays must
+equal the area specified by the width_ and height_ values and type_ parameters.</font></td>
+</tr>
+</table>
+<font size=-1></font></td>
 </tr>
 
 <tr>
@@ -1843,7 +2015,8 @@ been shown to produce high quality results when reducing most images.</font></td
 
 <td><font size=-1>Text rendering font. If the font is a fully qualified
 X server font name, the font is obtained from an X&nbsp; server. To use
-a TrueType font, precede the TrueType filename with an @. Otherwise, specify&nbsp;
+a
+TrueType font, precede the TrueType filename with an @. Otherwise, specify&nbsp;
 a&nbsp; Postscript font name (e.g. "helvetica").</font></td>
 </tr>
 

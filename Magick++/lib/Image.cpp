@@ -141,12 +141,12 @@ Magick::Image::Image ( const Blob &blob_,
 // type and mapping, in memory
 Magick::Image::Image ( const unsigned int width_,
                        const unsigned int height_,
-                       const char *map_,
+                       const std::string &map_,
                        const StorageType type_,
                        const void *pixels_ )
   : _imgRef(new ImageRef)
 {
-  read( width_, height_, map_, type_, pixels_ );
+  read( width_, height_, map_.c_str(), type_, pixels_ );
 }
 
 // Default constructor
@@ -1097,14 +1097,14 @@ void Magick::Image::read ( const Blob &blob_,
 // Read image based on raw pixels in memory (ConstituteImage)
 void Magick::Image::read ( const unsigned int width_,
                            const unsigned int height_,
-                           const char *map_,
+                           const std::string &map_,
                            const StorageType type_,
                            const void *pixels_ )
 {
   ExceptionInfo exceptionInfo;
   GetExceptionInfo( &exceptionInfo );
   MagickLib::Image* image =
-    ConstituteImage( width_, height_, map_, type_, pixels_, &exceptionInfo );
+    ConstituteImage( width_, height_, map_.c_str(), type_, pixels_, &exceptionInfo );
   replaceImage( image );
   throwException( exceptionInfo );
   if ( image )
@@ -1458,11 +1458,11 @@ void Magick::Image::write ( const int x_,
                             const int y_,
                             const unsigned int columns_,
                             const unsigned int rows_,
-                            const char *map_,
+                            const std::string &map_,
                             const StorageType type_,
                             void *pixels_ )
 {
-  DispatchImage( image(), x_, y_, columns_, rows_, map_, type_, pixels_ );
+  DispatchImage( image(), x_, y_, columns_, rows_, map_.c_str(), type_, pixels_ );
   throwImageException();
 }
 

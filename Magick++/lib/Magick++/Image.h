@@ -72,7 +72,7 @@ namespace Magick
     // specified type and mapping, in memory
     Image ( const unsigned int width_,
             const unsigned int height_,
-            const char *map_,
+            const std::string &map_,
             const StorageType type_,
             const void *pixels_ );
 
@@ -348,7 +348,7 @@ namespace Magick
     // image.read( 640, 480, "RGB", 0, pixels );
     void            read ( const unsigned int width_,
                            const unsigned int height_,
-                           const char *map_,
+                           const std::string &map_,
                            const StorageType type_,
                            const void *pixels_ );
 
@@ -449,7 +449,7 @@ namespace Magick
                             const int y_,
                             const unsigned int columns_,
                             const unsigned int rows_,
-                            const char *map_,
+                            const std::string& map_,
                             const StorageType type_,
                             void *pixels_ );
     
