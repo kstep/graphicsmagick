@@ -1,5 +1,5 @@
-You have now installed ImageMagick. To test the installation select
-"Command Prompt" from the Windows Start menu. Within the window type
+You have now installed ImageMagick. To test the installation select "Command
+Prompt" from the Windows Start menu. Within the window type
     
         convert logo: logo.miff
         imdisplay logo.miff
@@ -7,11 +7,11 @@ You have now installed ImageMagick. To test the installation select
 and the ImageMagick logo should be displayed in a window.
 
 If you selected to create a desktop icon, an icon labeled "ImageMagick
-Display" will appear on your desktop. Double clicking brings up
-ImageMagick's image display program. Please be patient with us. The
-image display program is still under development.
+Display" will appear on your desktop. Double clicking brings up ImageMagick's
+image display program. Please be patient with us. The image display program
+is still very much under development.
 
-For your convenience, the full content of the ImageMagick web site has
-been installed on your computer. This is available from the Windows
-start menu via "ImageMagick 5.4.9" -> "ImageMagick Web Pages".
+For your convenience, the full content of the ImageMagick web site has been
+installed on your computer. This is available from the Windows start menu via
+"ImageMagick 5.4.9" -> "ImageMagick Web Pages".
 
