@@ -24,9 +24,12 @@ GraphicsMagick.
 
 Others that might very well be helpful are --enable-shared.
 
---with-tcl tells it where to find Tcl, and --with-tk the Tk toolkit.
-The --with-magick option is necessary to tell the configure script where
-to get information about the GraphicsMagick or ImageMagick install.
+--with-tcl tells it where to find Tcl - or more accurately, the
+tclConfig.sh file that configure uses to find important information
+about how to compile Tcl.  The directory where tkConfig.sh resides is
+indicated with --with-tk.  The --with-magick option is necessary to
+tell the configure script where to get information about the
+GraphicsMagick or ImageMagick install.
 
 2) Run make - this should build the libraries.
 
