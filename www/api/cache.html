@@ -31,7 +31,6 @@
 		<LI><A HREF="#modifycache">ModifyCache</A>
 		<LI><A HREF="#referencecache">ReferenceCache</A>
 		<LI><A HREF="#setimagepixels">SetImagePixels</A>
-		<LI><A HREF="#setvirtualpixelmethod">SetVirtualPixelMethod</A>
 		<LI><A HREF="#syncimagepixels">SyncImagePixels</A>
 	</UL>
 
@@ -58,7 +57,6 @@
 <P>unsigned int  <STRONG>ModifyCache</STRONG>( Image *image );</P>
 <P>Cache  <STRONG>ReferenceCache</STRONG>( Cache cache_info );</P>
 <P>PixelPacket * <STRONG>SetImagePixels</STRONG>( Image *image, const long x, const long y, const unsigned long columns, const unsigned long rows );</P>
-<P><STRONG>SetVirtualPixelMethod</STRONG>( const VirtualPixelMethod method, const PixelPacket *pixel );</P>
 <P>unsigned int  <STRONG>SyncImagePixels</STRONG>( Image *image );</P>
 <P>
 <HR>
@@ -220,30 +218,6 @@ The image.
 <dd><p></p><dt><STRONG>x,y,columns,rows:</STRONG><BR>
 <DD>
 These values define the perimeter of a region of pixels.
-<P></P></DL></DL>
-<P>
-<H2><A NAME="setvirtualpixelmethod">SetVirtualPixelMethod</A></H2>
-<blockquote>SetVirtualPixelMethod() sets the method used to define "virtual" pixels. A virtual pixel is any pixel access that is outside the boundaries of the image. </blockquote><blockquote>The format of the SetVirtualPixelMethod() method is: </blockquote><blockquote>SetVirtualPixelMethod ( const VirtualPixelMethod method, const <A HREF="types/PixelPacket.html">PixelPacket</A> *pixel ); </blockquote><P>
-<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG><A NAME="item_o_method%3A">method:</A></STRONG><BR>
-<DD>
-choose from these access methods:
-<P></P></DL></DL>
-<PRE>
-      ConstantVPMethod:  every value outside the image is a constant as
-      defines by the pixel parameter.
-      EdgeVPMethod:  the edge pixels of the image extend infinitely.
-      Any pixel outside the image is assigned the same value as the
-      pixel at the edge closest to it.
-      TileVPMethod:  the image extends periodically or tiled.  The pixels
-      wrap around the edges of the image.
-      MirrorVPMethod:  mirror the image at the boundaries.
-=over 4</PRE>
-<DL><DT><DD><DL>
-<dd><p></p><dt><STRONG><A NAME="item_o_pixel%3A">pixel:</A></STRONG><BR>
-<DD>
-the constant pixel value for the ConstantVPMethod method.  This value is ignored for other access methods.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="syncimagepixels">SyncImagePixels</A></H2>
