@@ -74,9 +74,12 @@ DOCDIRS = images www www/api www/api/types www/Magick++
 install-data-html:
 	$(mkinstalldirs) $(DESTDIR)$(pkgdocdir)
 	$(INSTALL_DATA) $(srcdir)/ImageMagick.html $(DESTDIR)$(pkgdocdir)
-	for dir in $(DOCDIRS) ; do \
+	@for dir in $(DOCDIRS) ; do \
 	  $(mkinstalldirs) $(DESTDIR)$(pkgdocdir)$$dir && \
-	  $(INSTALL_DATA) $(srcdir)/$$dir/*.* $(DESTDIR)$(pkgdocdir)$$dir ; \
+	  for file in $(srcdir)/$$dir/*.* ; do \
+	    echo "$(INSTALL_DATA) $$file $(DESTDIR)$(pkgdocdir)$$dir" ; \
+	    $(INSTALL_DATA) "$$file" $(DESTDIR)$(pkgdocdir)$$dir ; \
+	  done ; \
 	done
 
 # Uninstall HTML files
