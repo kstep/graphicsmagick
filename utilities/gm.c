@@ -75,6 +75,7 @@ static void PrintUsage(void)
 int main(int argc,char **argv)
 {
   char
+    command[MaxTextExtent],
     *text;
 
   ExceptionInfo
@@ -90,19 +91,58 @@ int main(int argc,char **argv)
 #if defined(WIN32)
   InitializeMagick((char *) NULL);
 #else
-  InitializeMagick(*argv);
+  InitializeMagick(argv[0]);
 #endif
 
-  SetClientName(*argv);
-
+  (void) SetClientName(argv[0]);
   if (argc < 2)
     {
       PrintUsage();
       Exit(1);
     }
 
-  argc--;
-  argv++;
+  {
+    /*
+      Support traditional alternate names for GraphicsMagick subcommands.
+    */
+    static const char *command_names [] =
+      {
+        "animate",
+        "composite",
+        "conjure",
+        "convert",
+        "display",
+        "identify",
+        "import",
+        "mogrify",
+        "montage",
+        NULL
+      };
+
+    unsigned int
+      i;
+
+    GetPathComponent(argv[0],BasePath,command);
+    for (i=0; command_names[i]; i++)
+      if (LocaleCompare(command,command_names[i]) == 0)
+        break;
+
+    if (command_names[i])
+      {
+        /*
+          Set command name to alternate name.
+        */
+        argv[0]=command;
+      }
+    else
+      {
+        /*
+          Skip to subcommand name.
+        */
+        argc--;
+        argv++;
+      }
+  }
 
   GetExceptionInfo(&exception);
   image_info=CloneImageInfo((ImageInfo *) NULL);

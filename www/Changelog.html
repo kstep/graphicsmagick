@@ -53,6 +53,19 @@
 </tr>
 </table>
 <p>
+2004-04-10  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> utilities/gm.c (main): Invoke appropriate sub-command if gm is
+        executed under a traditional alternate name such as "convert". The
+        user may create hard or symbolic links from 'gm' to a traditional
+        ImageMagick utility name (or just copy 'gm' to the desired
+        sub-command name) in order to be 100% command-line compatible with
+        ImageMagick 5.5.2. This is necessary in order to work with
+        existing software designed to execute ImageMagick utilities.
+
+</UL>
+<p>
 2004-04-08  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
