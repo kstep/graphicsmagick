@@ -820,11 +820,6 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
       /*
         Rotate text.
       */
-printf("%f %f %f %f %f\n",
-   image_info->transform[0], 
-   image_info->transform[1], 
-   image_info->transform[2], 
-   image_info->transform[3],180.0*acos(image_info->transform[0])/M_PI);
       rotate_image=RotateImage(image,180.0*acos(image_info->transform[0])/M_PI,
         &image->exception);
       if (rotate_image == (Image *) NULL)
@@ -913,26 +908,25 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
   (void) fprintf(file,"} bind def\n");
   font=image_info->font;
   if (font == (char *) NULL)
-    font="Helvetica";
-  pointsize=image_info->pointsize;
-  if (image_info->transform[1] == 0.0)
-    pointsize*=image_info->transform[0];
+    font="Times";
+  pointsize=AbsoluteValue(image_info->transform[0]*image_info->pointsize+
+    -image_info->transform[1]*image_info->pointsize);
+  (void) fprintf(file,"%g %g moveto\n",0.5*pointsize*(Extent(text)+1),
+    0.5*pointsize*Extent(text));
+  (void) fprintf(file,"%g %g scale\n",image_info->pointsize,
+    image_info->pointsize);
   (void) fprintf(file,
-    "/%.1024s-ISO dup /%.1024s ReencodeFont findfont %f scalefont setfont\n",
-    font,font,pointsize);
-  (void) fprintf(file,"0.0 0.0 0.0 setrgbcolor\n");
-  (void) fprintf(file,"0 0 %u %u rectfill\n",
-    (unsigned int) ceil(pointsize*Extent(text)),
-    (unsigned int) ceil(2.0*pointsize));
-  (void) fprintf(file,"1.0 1.0 1.0 setrgbcolor\n");
-  (void) fprintf(file,"0 %f moveto (%.1024s) show\n",pointsize,
-    EscapeParenthesis(text));
+    "/%.1024s-ISO dup /%.1024s ReencodeFont findfont setfont\n",font,font);
+  (void) fprintf(file,"[%g %g %g %g 0 0] concat\n",image_info->transform[0],
+    -image_info->transform[1],-image_info->transform[2],
+    image_info->transform[3]);
+  (void) fprintf(file,"(%.1024s) show\n",EscapeParenthesis(text));
   (void) fprintf(file,"showpage\n");
   (void) fclose(file);
   clone_info=CloneImageInfo(image_info);
   FormatString(page,"%ux%u+0+0!",
-    (unsigned int) ceil(pointsize*Extent(text)),
-    (unsigned int) ceil(2.0*pointsize));
+    (unsigned int) ceil(pointsize*(Extent(text)+1)),
+    (unsigned int) ceil(pointsize*(Extent(text)+1)));
   (void) FormatString(clone_info->filename,"ps:%.1024s",filename);
   (void) CloneString(&clone_info->page,page);
   DestroyImage(image);
@@ -941,33 +935,7 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
   DestroyImageInfo(clone_info);
   if (image == (Image *) NULL)
     return(False);
-  /*
-    Set bounding box to the image dimensions.
-  */
-  image->bounding_box.x2=0;
-  image->bounding_box.y2=ceil(pointsize);
-  image->bounding_box.x1=0;
-  image->bounding_box.y1=pointsize/4;
-  corner.red=0;
-  corner.green=0;
-  corner.blue=0;
-  for (y=0; y < (int) image->rows; y++)
-  {
-    p=GetImagePixels(image,0,y,image->columns,1);
-    if (p == (PixelPacket *) NULL)
-      break;
-    for (x=0; x < (int) image->columns; x++)
-    {
-      if (!ColorMatch(*p,corner,0))
-        if (x > image->bounding_box.x2)
-          image->bounding_box.x2=x;
-      p++;
-    }
-  }
-  FormatString(geometry,"%dx%d%+d%+d",(int) image->bounding_box.x2+1,
-    (int) image->bounding_box.y2,(int) image->bounding_box.x1,
-    (int) image->bounding_box.y1);
-  TransformImage(&image,geometry,(char *) NULL);
+  TransformImage(&image,"0x0",(char *) NULL);
   image->matte=True;
   for (y=0; y < (int) image->rows; y++)
   {
@@ -976,7 +944,7 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
       break;
     for (x=0; x < (int) image->columns; x++)
     {
-      q->opacity=Intensity(*q);
+      q->opacity=OpaqueOpacity-Intensity(*q);
       q->red=image_info->fill.red;
       q->green=image_info->fill.green;
       q->blue=image_info->fill.blue;
@@ -991,21 +959,6 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
     if (!SyncImagePixels(image))
       break;
   }
-  if ((image_info->transform[0] != 1.0) && (image_info->transform[1] != 0.0))
-    {
-      Image
-        *rotate_image;
-
-      /*
-        Rotate text.
-      */
-      rotate_image=RotateImage(image,180.0*acos(image_info->transform[0])/M_PI,
-        &image->exception);
-      if (rotate_image == (Image *) NULL)
-        return(False);
-      DestroyImage(image);
-      image=rotate_image;
-    }
   image->bounding_box.x1=0.0;
   image->bounding_box.y1=0.0;
   image->bounding_box.x2=image->columns;
