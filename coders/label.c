@@ -864,9 +864,6 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
     geometry[MaxTextExtent],
     page[MaxTextExtent];
 
-  double
-    pointsize;
-
   FILE
     *file;
 
@@ -881,6 +878,9 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
 
   PixelPacket
     corner;
+
+  PointInfo
+    point;
 
   register int
     x;
@@ -908,11 +908,13 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
   (void) fprintf(file,"} bind def\n");
   font=image_info->font;
   if (font == (char *) NULL)
-    font="Times";
-  pointsize=AbsoluteValue(image_info->transform[0]*image_info->pointsize+
-    -image_info->transform[1]*image_info->pointsize);
-  (void) fprintf(file,"%g %g moveto\n",0.5*pointsize*(Extent(text)+1),
-    0.5*pointsize*Extent(text));
+    font="Times-Roman";
+  point.x=AbsoluteValue(image_info->transform[0]*image_info->pointsize*
+    (Extent(text)+2)+image_info->transform[2]*image_info->pointsize);
+  point.y=AbsoluteValue(image_info->transform[1]*image_info->pointsize*
+    (Extent(text)+2)+image_info->transform[3]*image_info->pointsize);
+  (void) fprintf(file,"%g %g moveto\n",Max(point.x,point.y)/2.0,
+    Max(point.x,point.y)/2.0);
   (void) fprintf(file,"%g %g scale\n",image_info->pointsize,
     image_info->pointsize);
   (void) fprintf(file,
@@ -924,9 +926,8 @@ static Image *RenderPostscript(const ImageInfo *image_info,const char *text,
   (void) fprintf(file,"showpage\n");
   (void) fclose(file);
   clone_info=CloneImageInfo(image_info);
-  FormatString(page,"%ux%u+0+0!",
-    (unsigned int) ceil(pointsize*(Extent(text)+1)),
-    (unsigned int) ceil(pointsize*(Extent(text)+1)));
+  FormatString(page,"%dx%d+0+0!",(int) Max(point.x,point.y),
+    (int) Max(point.x,point.y));
   (void) FormatString(clone_info->filename,"ps:%.1024s",filename);
   (void) CloneString(&clone_info->page,page);
   DestroyImage(image);

@@ -569,7 +569,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
     j,
     k;
 
- /*
+  /*
     Called when an opening tag has been processed.
   */
   svg_info=(SVGInfo *) context;
@@ -656,14 +656,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
           {
             if ((LocaleCompare(tokens[j],"fill:") == 0) ||
                 (LocaleCompare(tokens[j],"fillcolor:") == 0))
-              {
-                char
-                  *s;
-
-                s=NULL;
-                (void) CloneString(&s,tokens[++j]);
-                (void) CloneString(&svg_info->graphic_context[n].fill,s);
-              }
+              (void) CloneString(&svg_info->graphic_context[n].fill,
+                tokens[++j]);
             if (LocaleCompare(tokens[j],"fill-opacity:") == 0)
               {
                 (void) sscanf(tokens[++j],"%lf",
@@ -686,14 +680,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
                   svg_info->graphic_context[n].opacity*=100.0;
               }
             if (LocaleCompare(tokens[j],"stroke:") == 0)
-              {
-                char
-                  *s;
-
-                s=NULL;
-                (void) CloneString(&s,tokens[++j]);
-                (void) CloneString(&svg_info->graphic_context[n].stroke,s);
-              }
+              (void) CloneString(&svg_info->graphic_context[n].stroke,
+                tokens[++j]);
             if (LocaleCompare(tokens[j],"stroke-antialiasing:") == 0)
               svg_info->graphic_context[n].antialias=
                 LocaleCompare(tokens[++j],"true");
@@ -727,10 +715,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
             for (k=0; k < 6; k++)
             {
               current[k]=svg_info->graphic_context[n].transform[k];
-              transform[k]=0.0;
+              transform[k]=(k == 0) || (k == 3) ? 1.0 : 0.0;
             }
-            transform[0]=1.0;
-            transform[3]=1.0;
             if (LocaleCompare(tokens[j],"matrix") == 0)
               {
                 (void) sscanf(tokens[++j]+1,"%lf%lf%lf%lf%lf%lf",
@@ -989,8 +975,7 @@ static void SVGEndElement(void *context, const xmlChar *name)
   if (LocaleCompare((char *) name,"text") == 0)
     {
       (void) fprintf(svg_info->file,"text %g,%g '%s'\n",svg_info->page.x,
-        svg_info->page.y-svg_info->graphic_context[n].pointsize/2.0,
-        svg_info->text);
+        svg_info->page.y,svg_info->text);
       svg_info->n--;
       return;
     }
@@ -1279,9 +1264,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   svg_info.graphic_context[0].pointsize=12.0;
   svg_info.graphic_context[0].opacity=100.0;
   for (i=0; i < 6; i++)
-    svg_info.graphic_context[0].transform[i]=0.0;
-  svg_info.graphic_context[0].transform[0]=1.0;
-  svg_info.graphic_context[0].transform[3]=1.0;
+    svg_info.graphic_context[0].transform[i]=(i == 0) || (i == 3) ? 1.0 : 0.0;
   SAXHandler=(&SAXHandlerStruct);
   n=ReadBlob(image,4,buffer);
   if (n > 0)
