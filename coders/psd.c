@@ -1264,6 +1264,32 @@ static void WriteWhiteBackground( Image* image )
   
 }
 
+static void WritePascalString (Image* inImage, const char *inString, int inPad)
+{
+  unsigned char strLength;
+  int i;
+
+  /* max length is 255 */
+
+  strLength = ( strlen(inString) > 255 ) ? 255 : (unsigned char) strlen(inString);
+
+  if ( strLength !=  0 )
+  {
+	(void) WriteBlobByte(inImage, strLength);
+	(void) WriteBlob(inImage, strLength, inString);      
+  }
+  else
+	(void) WriteBlobByte(inImage, 0);
+
+  strLength ++;	
+
+  if ( (strLength % inPad) == 0 )
+    return;
+
+  for ( i=0; i < (inPad - (strLength % inPad)); i++)
+	(void) WriteBlobByte(inImage, 0);
+}
+
 static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
 {
   int
@@ -1485,15 +1511,17 @@ compute_layer_info:
       (void) WriteBlobMSBLong(image, 0);
       (void) WriteBlobMSBLong(image, 0);
 
-          theAttr = (ImageAttribute *)GetImageAttribute(tmp_image, "[layer-name]");
-          if (theAttr) {
+      theAttr = (ImageAttribute *)GetImageAttribute(tmp_image, "[layer-name]");
+      if (theAttr) {
+        WritePascalString( image, theAttr->value, 4 );
+        /*
         sprintf((char *) &(layer_name[1]), "%4s", theAttr->value );
         (void) WriteBlobByte(image, 3);
-        (void) WriteBlob(image, 3, &layer_name[1]);      
+        (void) WriteBlob(image, 3, &layer_name[1]);
+        */      
       } else {
-        sprintf((char *) &(layer_name[1]), "L%02d", layer_count++ );
-        (void) WriteBlobByte(image, 3);
-        (void) WriteBlob(image, 3, &layer_name[1]);      
+        sprintf((char *) layer_name, "L%02d", layer_count++ );
+        WritePascalString( image, (char*)layer_name, 4 );
       }
       tmp_image = tmp_image->next;
     };
