@@ -4255,12 +4255,12 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     attribute=GetImageAttribute(image,(char *) NULL);
     for ( ; attribute != (ImageAttribute *) NULL; attribute=attribute->next)
     {
-      if (*attribute->key == '[')
-        continue;
-#if (PNG_LIBPNG_VER > 10005)
       png_textp
         text;
 
+      if (*attribute->key == '[')
+        continue;
+#if (PNG_LIBPNG_VER > 10005)
       text=(png_textp) png_malloc(ping,(png_uint_32) sizeof(png_text));
       text[0].key=attribute->key;
       text[0].text=attribute->value;
@@ -4273,9 +4273,6 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
 #else
   /* Work directly with ping_info struct; png_set_text before libpng version
    * 1.0.5a is leaky */
-      register int
-        i;
-
       if (ping_info->num_text == 0)
         {
           ping_info->text=(png_text *) AcquireMemory(256*sizeof(png_text));
