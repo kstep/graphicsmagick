@@ -78,7 +78,7 @@ static MonitorHandler
 %
 %  The format of the MagickMonitor method is:
 %
-%      void MagickMonitor(const char *text,const off_t quantum,
+%      unsigned int MagickMonitor(const char *text,const off_t quantum,
 %        const size_t span,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
