@@ -52,9 +52,9 @@
 #include "define.h"
 
 /* Auto coloring method, sorry this creates some artefact inside data
-MinReal+j*MaxComplex = red	MaxReal+j*MaxComplex = black
-MinReal+j*0 = white	        MaxReal+j*0 = black
-MinReal+j*MinComplex = blue	MaxReal+j*MinComplex = black
+minReal+j*maxComplex = red	maxReal+j*maxComplex = black
+minReal+j*0 = white	        maxReal+j*0 = black
+minReal+j*minComplex = blue	maxReal+j*minComplex = black
 */
 
 
@@ -117,9 +117,9 @@ register IndexPacket *indexes;
 	     break;
            for (x=0; x < (long) image->columns; x++)
               {
-              q->red=XDownScale(*(WORD *)p);
-              q->green=XDownScale(*(WORD *)p);
-              q->blue=XDownScale(*(WORD *)p);
+              q->red=XDownscale(*(WORD *)p);
+              q->green=XDownscale(*(WORD *)p);
+              q->blue=XDownscale(*(WORD *)p);
 	      p+=2;
               q++;
               }
@@ -134,23 +134,23 @@ register IndexPacket *indexes;
 }
 
 
-static void InsertFloatRow(double *p,int y,Image *image,double Min,double Max)
+static void InsertFloatRow(double *p,int y,Image *image,double min,double max)
 {
 double f;
 int x;
 register PixelPacket *q;
 
-   if(Min>=Max) Max=Min+1;
+   if(min>=max) max=min+1;
 
    q=SetImagePixels(image,0,y,image->columns,1);
    if (q == (PixelPacket *) NULL)
         return;
    for (x=0; x < (long) image->columns; x++)
           {
-	  f=(double)MaxRGB* (*p-Min)/(Max-Min);
-          q->red=XDownScale(f);
-	  q->green=XDownScale(f);
-	  q->blue=XDownScale(f);
+	  f=(double)MaxRGB* (*p-min)/(max-min);
+          q->red=XDownscale(f);
+	  q->green=XDownscale(f);
+	  q->blue=XDownscale(f);
           p++;
           q++;
           }
@@ -163,14 +163,14 @@ register PixelPacket *q;
 }
 
 
-static void InsertComplexFloatRow(double *p,int y,Image *image,double Min,double Max)
+static void InsertComplexFloatRow(double *p,int y,Image *image,double min,double max)
 {
 double f;
 int x;
 register PixelPacket *q;
 
-   if(Min==0) Min=-1;
-   if(Max==0) Max=1;
+   if(min==0) min=-1;
+   if(max==0) max=1;
 
    q=SetImagePixels(image,0,y,image->columns,1);
    if (q == (PixelPacket *) NULL)
@@ -179,7 +179,7 @@ register PixelPacket *q;
           {
 	  if(*p>0)
 	    {
-	    f=(*p/Max)*(MaxRGB-q->red);
+	    f=(*p/max)*(MaxRGB-q->red);
 	    if(f+q->red>MaxRGB) q->red=MaxRGB;
 	                   else q->red+=f;
             if(f/2.0>q->green) q->green=q->blue=0;
@@ -187,7 +187,7 @@ register PixelPacket *q;
 	    }
 	  if(*p<0)
 	    {
-	    f=(*p/Max)*(MaxRGB-q->blue);
+	    f=(*p/max)*(MaxRGB-q->blue);
 	    if(f+q->blue>MaxRGB) q->blue=MaxRGB;
 	                    else q->blue+=f;
             if(f/2.0>q->green) q->green=q->red=0;
@@ -259,14 +259,14 @@ static Image *ReadMATImage(const ImageInfo *image_info,ExceptionInfo *exception)
   int i,x;
   long ldblk;
   unsigned char *BImgBuff=NULL;
-  double Min,Max,*dblrow;
+  double min,max,*dblrow;
 
   /*
     Open image file.
   */
   image=AllocateImage(image_info);
   
-  status=OpenBlob(image_info,image,ReadBinaryType);
+  status=OpenBlob(image_info,image,ReadBinaryType,exception);
   if (status == False)
     ThrowReaderException(FileOpenWarning,"Unable to open file",image);
   /*
@@ -354,9 +354,9 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
    
      for (i=0; i < (long)image->colors; i++)
            {
-           image->colormap[i].red=UpScale(i);
-           image->colormap[i].green=UpScale(i);
-           image->colormap[i].blue=UpScale(i);
+           image->colormap[i].red=Upscale(i);
+           image->colormap[i].green=Upscale(i);
+           image->colormap[i].blue=Upscale(i);
            }
      }	    
 
@@ -366,18 +366,20 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
    if(BImgBuff==NULL) goto NoMemory;
 
 
-   if(CellType==9) /*Find Min and Max Values for floats*/
+   min=0;
+   max=0;
+   if(CellType==9) /*Find min and max Values for floats*/
      {
      filepos=TellBlob(image);
      for(i=0;i<(long) MATLAB_HDR.SizeY;i++)
         {
         (void) ReadBlob(image,ldblk,(char *)BImgBuff);
 	dblrow=(double *)BImgBuff;
-	if(i==0) {Min=Max=*dblrow;}
+	if(i==0) {min=max=*dblrow;}
 	for(x=0;x<(long)MATLAB_HDR.SizeX;x++)
             {
-	    if(Min>*dblrow) Min=*dblrow;
-	    if(Max<*dblrow) Max=*dblrow;
+	    if(min>*dblrow) min=*dblrow;
+	    if(max<*dblrow) max=*dblrow;
 	    dblrow++;            
 	    }
 	}       
@@ -393,7 +395,7 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
 		   InsertRow(BImgBuff,i,image);
 		   break;
 	    case 9:(void) ReadBlob(image,ldblk,(char *)BImgBuff);
-		   InsertFloatRow((double *)BImgBuff,i,image,Min,Max);
+		   InsertFloatRow((double *)BImgBuff,i,image,min,max);
 		   break;
 	    default:(void) ReadBlob(image,ldblk,(char *)BImgBuff);
 		    InsertRow(BImgBuff,i,image);
@@ -403,18 +405,18 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
 	/*Read complex part of numbers here*/
   if(MATLAB_HDR.StructureFlag==0x806)
 	{
-	if(CellType==9) /*Find Min and Max Values for floats*/
+	if(CellType==9) /*Find min and max Values for floats*/
           {
 	  filepos=TellBlob(image);
           for(i=0;i<(long) MATLAB_HDR.SizeY;i++)
 	    {
             (void) ReadBlob(image,ldblk,(char *)BImgBuff);
 	    dblrow=(double *)BImgBuff;
-	    if(i==0) {Min=Max=*dblrow;}
+	    if(i==0) {min=max=*dblrow;}
 	    for(x=0;x<(long)MATLAB_HDR.SizeX;x++)
                 {
-	        if(Min>*dblrow) Min=*dblrow;
-		if(Max<*dblrow) Max=*dblrow;
+	        if(min>*dblrow) min=*dblrow;
+		if(max<*dblrow) max=*dblrow;
 		dblrow++;            
 	        }
 	    }       
@@ -423,7 +425,7 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
 	  for(i=0;i<(long) MATLAB_HDR.SizeY;i++)
             {
             (void) ReadBlob(image,ldblk,(char *)BImgBuff);
-	    InsertComplexFloatRow((double *)BImgBuff,i,image,Min,Max);
+	    InsertComplexFloatRow((double *)BImgBuff,i,image,min,max);
 	    }	
           }
         }
