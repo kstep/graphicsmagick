@@ -111,6 +111,7 @@ GSEPSDevice = @GSEPSDevice@
 GSMonoDevice = @GSMonoDevice@
 GSPDFDevice = @GSPDFDevice@
 GSPSDevice = @GSPSDevice@
+GSVersion = @GSVersion@
 GnuplotDecodeDelegate = @GnuplotDecodeDelegate@
 HPGLDecodeDelegate = @HPGLDecodeDelegate@
 HTMLDecodeDelegate = @HTMLDecodeDelegate@

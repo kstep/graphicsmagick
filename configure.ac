@@ -2000,8 +2000,18 @@ GSMonoDevice=pbmraw
 GSPDFDevice=pdfwrite
 GSPSDevice=pswrite
 GSEPSDevice=epswrite
+GSVersion='unknown'
 if test $have_gs = 'yes'
 then
+
+  AC_MSG_CHECKING(for Ghostscript version)
+  if GSVersion=`gs --version`
+  then
+    :
+  else
+    GSVersion=`gs --help | sed -e '1q' | awk '{ print $3 }'`
+  fi
+  AC_MSG_RESULT($GSVersion)
 
   # GSColorDevice
   AC_MSG_CHECKING(for gs color device)
@@ -2065,6 +2075,7 @@ AC_SUBST(GSPDFDevice)
 AC_SUBST(GSPSDevice)
 AC_SUBST(GSColorDevice)
 AC_SUBST(GSEPSDevice)
+AC_SUBST(GSVersion)
 
 #
 # PerlMagick-related configuration
@@ -2269,7 +2280,7 @@ echo "BZLIB             --with-bzlib=$with_bzlib          	$have_bzlib"
 echo "DPS               --with-dps=$with_dps              	$have_dps"
 echo "FlashPIX          --with-fpx=$with_fpx              	$have_fpx"
 echo "FreeType 2.0      --with-ttf=$with_ttf          	$have_ttf"
-echo "Ghostscript       None                   	$PSDelegate"
+echo "Ghostscript       None                   	$PSDelegate ($GSVersion)"
 result_ghostscript_font_dir='none'
 if test "${ghostscript_font_dir}x" != 'x'
 then
