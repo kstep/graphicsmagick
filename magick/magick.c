@@ -303,6 +303,7 @@ MagickExport char *GetMagickConfigurePath(const char *filename,
     void
       *blob;
 
+    FormatString(path,"%.1024s",filename);
     blob=NTResourceToBlob(path);
     if (blob != (unsigned char *) NULL)
       {
