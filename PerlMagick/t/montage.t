@@ -139,20 +139,20 @@ testMontage( q/bordercolor=>'blue', mattecolor=>'red'/,
 #
 ++$test;
 testMontage( q//,
-  q/background=>'#696e7e', label=>'', tile=>'4x4', geometry=>'90x80+6+6>', frame=>'False',
+  q/background=>'#696e7e', label=>'', tile=>'4x4', geometry=>'90x80+6+6>', mode=>'Unframe',
   borderwidth=>'0', gravity=>'Center', background=>'gray'/,
   'e8c78e09b2bc842b57470332659b6ca12dd5a6d0224f3109020346f33ae6139f',
-  '49dec854bc61bfff6785c0b4325c5ec63f9778ab2c25e270d84c8d68a6989760');
+  '87ff711946f98edc0b38d8685a01339f47aa80bebdbfc0787b31350db79c8ebb');
 
 #
-# 15) Test Bordered, Un-framed Montage (frame=>'False')
+# 15) Test Bordered, Un-framed Montage (mode=>'Unframe')
 #
 ++$test;
 testMontage( q/bordercolor=>'red'/, 
-  q/background=>'#696e7e', label=>'', tile=>'4x4', geometry=>'90x80+6+6>', frame=>'False',
+  q/background=>'#696e7e', label=>'', tile=>'4x4', geometry=>'90x80+6+6>', mode=>'Unframe',
   borderwidth=>'5', gravity=>'Center', background=>'gray'/,
   'd369869860ec335d43f4632d5dc6fa91077b9871a57df25cba03b044682108c5',
-  'bc25ee3e594f2a3a1f633e220ff2916b213ef78bd812f33be75d230f9810cb56');
+  'a3ea40117f37ff2a68772aaa1dd7c41cc81bd21179cbd19d193ebfb5381fed92');
 
 #
 # 16) Test Bordered, Un-framed Montage (mode=>'UnFrame')
@@ -169,10 +169,10 @@ testMontage( q/bordercolor=>'red'/,
 #
 ++$test;
 testMontage( q//,
-  q/background=>'#696e7e', label=>'', tile=>'16x1', geometry=>'90x80+0+0>', frame=>'False',
+  q/background=>'#696e7e', label=>'', tile=>'16x1', geometry=>'90x80+0+0>', mode=>'Unframe',
   borderwidth=>'0', gravity=>'Center', background=>'gray'/,
   'b60e513f1f90718ab5530f7902e58a1628f33598653131f584415c52b5ee1719',
-  '399a943baf51c8a1c26fa92460302af18b49f97d80527881b5b7cce595befb31');
+  'fe71f67323d14c1689216cf96b9977dd208f137592dd9708da001a41225e079a');
 
 #
 # 18) Test concatenated thumbnail Montage (concatenated via special Concatenate mode)
@@ -189,7 +189,7 @@ testMontage( q//,
 #
 ++$test;
 testMontage( q//, 
-  q/background=>'#696e7e', label=>'', tile=>'4x4', geometry=>'+0+0', frame=>'False', shadow=>'False',
+  q/background=>'#696e7e', label=>'', tile=>'4x4', geometry=>'+0+0', mode=>'Unframe', shadow=>'False',
   borderwidth=>'0', background=>'gray'/,
   'bae96cb788c8c5e231945548279605642560708bfca7ddd255a6ab08302031c5',
-  'e3aa9c4c515bd8ddcc7dae52d608da62c20dbe0b30d3ae5c948a113401630eaf');
+  '94f72cf702e54c52eda26f461fa7bdd541cbddfdca74d2619b12f1c308b0c37d');
