@@ -1515,7 +1515,7 @@ MagickExport unsigned int CompositeImage(Image *image,
         }
         case ReplaceRedCompositeOp:
         {
-          red=DownScale(Intensity(*p));
+          red=Intensity(*p);
           green=q->green;
           blue=q->blue;
           break;
@@ -1523,7 +1523,7 @@ MagickExport unsigned int CompositeImage(Image *image,
         case ReplaceGreenCompositeOp:
         {
           red=q->red;
-          green=DownScale(Intensity(*p));
+          green=Intensity(*p);
           blue=q->blue;
           break;
         }
@@ -1531,7 +1531,7 @@ MagickExport unsigned int CompositeImage(Image *image,
         {
           red=q->red;
           green=q->green;
-          blue=DownScale(Intensity(*p));
+          blue=Intensity(*p);
           break;
         }
         case ReplaceMatteCompositeOp:
@@ -1539,18 +1539,19 @@ MagickExport unsigned int CompositeImage(Image *image,
           red=q->red;
           green=q->green;
           blue=q->blue;
-          opacity=DownScale(Intensity(*p));
+          opacity=Intensity(*p);
           break;
         }
         case BlendCompositeOp:
         {
-          red=(double)
-            (p->red*(MaxRGB-p->opacity)+q->red*(MaxRGB-q->opacity))*alpha;
-          green=(double)
-            (p->green*(MaxRGB-p->opacity)+q->green*(MaxRGB-q->opacity))*alpha;
-          blue=(double)
-            (p->blue*(MaxRGB-p->opacity)+q->blue*(MaxRGB-q->opacity))*alpha;
-          opacity=OpaqueOpacity;
+          red=(double) (p->red*(MaxRGB-p->opacity)+
+            q->red*(MaxRGB-q->opacity))*alpha;
+          green=(double) (p->green*(MaxRGB-p->opacity)+
+            q->green*(MaxRGB-q->opacity))*alpha;
+          blue=(double) (p->blue*(MaxRGB-p->opacity)+
+            q->blue*(MaxRGB-q->opacity))*alpha;
+          opacity=(double) (p->opacity*(MaxRGB-p->opacity)+
+            q->opacity*(MaxRGB-q->opacity))*alpha;
           break;
         }
         case DisplaceCompositeOp:
