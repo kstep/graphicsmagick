@@ -109,22 +109,115 @@ MagickExport void DestroyImageAttributes(Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   G e t A l t A t t r i b u t e                                             %
+%   G e t I m a g e A t t r i b u t e s                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method GetAltAttribute returns a "fake" attribute based on data in the
-%  image info or image structures.
+%  Method GetImageAttribute searches the list of image attributes and returns
+%  a pointer to attribute if it exists otherwise NULL.
 %
-%  The format of the GetAltAttribute method is:
+%  The format of the GetImageAttribute method is:
 %
 %      ImageAttribute *GetImageAttribute(const Image *image,const char *key)
 %
 %  A description of each parameter follows:
 %
-%    o attribute:  Method GetAltAttribute returns the attribute if it
+%    o attribute:  Method GetImageAttribute returns the attribute if it
+%      exists otherwise NULL.
+%
+%    o image: The address of a structure of type Image.
+%
+%    o key:  These character strings are the name of an image attribute to
+%      return.
+%
+%
+*/
+
+static void GenerateIPTCAttribute(Image *image,const char *key)
+{
+  char
+    *attribute;
+
+  int
+    count,
+    dataset,
+    record;
+
+  register int
+    i;
+
+  unsigned short
+    length;
+
+  if (image->iptc_profile.length == 0)
+    return;
+  count=sscanf(key,"IPTC:%d:%d",&dataset,&record);
+  if (count != 2)
+    return;
+  for (i=0; i < image->iptc_profile.length; i++)
+  {
+    if (image->iptc_profile.info[i] != 0x1c)
+      continue;
+    if (image->iptc_profile.info[i+1] != dataset)
+      continue;
+    if (image->iptc_profile.info[i+2] != record)
+      continue;
+    length=image->iptc_profile.info[i+3] << 8;
+    length|=image->iptc_profile.info[i+4];
+    attribute=(char *) AcquireMemory(length+1);
+    if (attribute == (char *) NULL)
+      continue;
+    (void) strncpy(attribute,(char *) image->iptc_profile.info+i+5,length);
+    attribute[length]='\0';
+    SetImageAttribute(image,key,(const char *) attribute);
+    LiberateMemory((void **) &attribute);
+  }
+}
+
+MagickExport ImageAttribute *GetImageAttribute(const Image *image,
+  const char *key)
+{
+  register ImageAttribute
+    *p;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if (key == (char *) NULL)
+    return(image->attributes);
+  for (p=image->attributes; p != (ImageAttribute *) NULL; p=p->next)
+    if (LocaleCompare(key,p->key) == 0)
+      return(p);
+  if (LocaleNCompare("IPTC:",key,5) == 0)
+    {
+      GenerateIPTCAttribute((Image *) image, key);
+      return(GetImageAttribute(image,key));
+    }
+  return(p);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t I m a g e I n f i A t t r i b u t e                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetImageInfoAttribute returns a "fake" attribute based on data in the
+%  image info or image structures.
+%
+%  The format of the GetImageInfoAttribute method is:
+%
+%      ImageAttribute *GetImageAttribute(const Image *image,const char *key)
+%
+%  A description of each parameter follows:
+%
+%    o attribute:  Method GetImageInfoAttribute returns the attribute if it
 %      exists otherwise NULL.
 %
 %    o image_info: The address of a structure of type ImageInfo.
@@ -135,7 +228,7 @@ MagickExport void DestroyImageAttributes(Image *image)
 %      return.
 %
 */
-ImageAttribute *GetAltAttribute(const ImageInfo *image_info,
+ImageAttribute *GetImageInfoAttribute(const ImageInfo *image_info,
   Image *image,const char *key)
 {
   char
@@ -145,7 +238,13 @@ ImageAttribute *GetAltAttribute(const ImageInfo *image_info,
     *filename;
 
   attribute[0]='\0';
-  if (Extent(image->magick_filename) > 0)
+  if (Extent(image->magick_filename) <= 0)
+    {
+      directory[0]='\0';
+      extension=directory;
+      filename=extension;
+    }
+  else
     {
       (void) strcpy(directory,image->magick_filename);
       extension=directory+Extent(directory);
@@ -157,11 +256,6 @@ ImageAttribute *GetAltAttribute(const ImageInfo *image_info,
             extension=filename+1;
         filename--;
       }
-    }
-  else
-    {
-      directory[0]='\0';
-      filename=extension=filename=directory;
     }
   switch(*(key))
   {
@@ -212,7 +306,8 @@ ImageAttribute *GetAltAttribute(const ImageInfo *image_info,
     {
       if (LocaleNCompare("height",key,2) == 0)
         {
-          FormatString(attribute,"%u",image->magick_rows ? image->magick_rows : 256);
+          FormatString(attribute,"%u",
+            image->magick_rows ? image->magick_rows : 256);
           break;
         }
       break;
@@ -350,99 +445,7 @@ ImageAttribute *GetAltAttribute(const ImageInfo *image_info,
       SetImageAttribute(image,key,(const char *) attribute);
       return(GetImageAttribute(image,key));
     }
-  return (ImageAttribute *) NULL;
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   G e t I m a g e A t t r i b u t e s                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method GetImageAttribute searches the list of image attributes and returns
-%  a pointer to attribute if it exists otherwise NULL.
-%
-%  The format of the GetImageAttribute method is:
-%
-%      ImageAttribute *GetImageAttribute(const Image *image,const char *key)
-%
-%  A description of each parameter follows:
-%
-%    o attribute:  Method GetImageAttribute returns the attribute if it
-%      exists otherwise NULL.
-%
-%    o image: The address of a structure of type Image.
-%
-%    o key:  These character strings are the name of an image attribute to
-%      return.
-%
-%
-*/
-static void GenerateIPTCAttribute(Image *image,const char *key)
-{
-  char
-    *attribute;
-
-  int
-    count,
-    dataset,
-    record;
-
-  register int
-    i;
-
-  unsigned short
-    length;
-
-  if (image->iptc_profile.length == 0)
-    return;
-  count=sscanf(key,"IPTC:%d:%d",&dataset,&record);
-  if (count != 2)
-    return;
-  for (i=0; i < image->iptc_profile.length; i++)
-  {
-    if (image->iptc_profile.info[i] != 0x1c)
-      continue;
-    if (image->iptc_profile.info[i+1] != dataset)
-      continue;
-    if (image->iptc_profile.info[i+2] != record)
-      continue;
-    length=image->iptc_profile.info[i+3] << 8;
-    length|=image->iptc_profile.info[i+4];
-    attribute=(char *) AcquireMemory(length+1);
-    if (attribute == (char *) NULL)
-      continue;
-    (void) strncpy(attribute,(char *) image->iptc_profile.info+i+5,length);
-    attribute[length]='\0';
-    SetImageAttribute(image,key,(const char *) attribute);
-    LiberateMemory((void **) &attribute);
-  }
-}
-
-MagickExport ImageAttribute *GetImageAttribute(const Image *image,
-  const char *key)
-{
-  register ImageAttribute
-    *p;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (key == (char *) NULL)
-    return(image->attributes);
-  for (p=image->attributes; p != (ImageAttribute *) NULL; p=p->next)
-    if (LocaleCompare(key,p->key) == 0)
-      return(p);
-  if (LocaleNCompare("IPTC:",key,5) == 0)
-    {
-      GenerateIPTCAttribute((Image *) image, key);
-      return(GetImageAttribute(image,key));
-    }
-  return(p);
+  return((ImageAttribute *) NULL);
 }
 
 /*

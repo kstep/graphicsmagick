@@ -3192,7 +3192,7 @@ MagickExport char *TranslateText(const ImageInfo *image_info,Image *image,
           }
         else
           {
-            attribute=GetAltAttribute(clone_info,image,key);
+            attribute=GetImageInfoAttribute(clone_info,image,key);
             if (attribute != (ImageAttribute *) NULL)
               {
                 (void) strcpy(q,attribute->value);
