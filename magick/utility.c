@@ -822,6 +822,9 @@ Export unsigned int IsAccessible(const char *filename)
   FILE
     *file;
 
+  unsigned int
+    status;
+
   /*
     Return False if the file cannot be opened.
   */
@@ -829,8 +832,10 @@ Export unsigned int IsAccessible(const char *filename)
   file=fopen(filename,ReadBinaryType);
   if (file == (FILE *) NULL)
     return(False);
+  (void) fgetc(file);
+  status=!feof(file) && !ferror(file);
   (void) fclose(file);
-  return(True);
+  return(status);
 }
 
 /*

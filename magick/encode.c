@@ -54,7 +54,7 @@
   Include declarations.
 */
 #include "magick.h"
-#include "plug-ins.h"
+#include "proxy.h"
 #include "Colorlist.h"
 #include "version.h"
 
@@ -3735,7 +3735,7 @@ static unsigned int WriteLABELImage(const ImageInfo *image_info,Image *image)
 %
 %  Method WriteLOGOImage writes an image in the LOGO encoded image format.
 %  We use GIF because it is the only format that is compressed without
-%  requiring addition optional plug-ins (TIFF, ZIP, etc).
+%  requiring addition optional delegates (TIFF, ZIP, etc).
 %
 %  The format of the WriteLOGOImage routine is:
 %

@@ -55,7 +55,7 @@
   Include declarations.
 */
 #include "magick.h"
-#include "plug-ins.h"
+#include "proxy.h"
 
 /*
   Define declarations.
@@ -10005,7 +10005,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  OpenImage(image_info,image,"r");
+  OpenImage(image_info,image,ReadBinaryType);
   if (image->file == (FILE *) NULL)
     PrematureExit(FileOpenWarning,"Unable to open file",image);
   /*

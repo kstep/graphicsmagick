@@ -43,7 +43,7 @@ mine"
 <LI><A HREF="#mail">Mailing List</A>
 <LI><A HREF="#memo">Memory Requirements</A>
 <LI><A HREF="#unix">UNIX Compilation</A>
-<LI><A HREF="#extr">Plug-ins</A>
+<LI><A HREF="#extr">Delegates</A>
 <LI><A HREF="#howt">How to Compile</A>
 <LI><A HREF="#vmsc">VMS Compilation</A>
 <LI><A HREF="#ntc">NT Compilation</A>
@@ -294,12 +294,12 @@ libraries are required in order for PERL to dynamically load
 the PerlMagick extension.
 
 <p>
-ImageMagick built with plug-ins (see
-<A HREF="#extr">Plug-ins</A> below) can
-pose additional challenges.  You can build all the plug-ins
+ImageMagick built with delegates (see
+<A HREF="#extr">Delegates</A> below) can
+pose additional challenges.  You can build all the delegates
 statically and link them into the ImageMagick shared library
-(i.e. <tt>libMagick.so</tt>) or alternatively you can build the plug-ins
-as shared libraries (some systems already have plug-ins
+(i.e. <tt>libMagick.so</tt>) or alternatively you can build the delegates
+as shared libraries (some systems already have delegates
 installed as shared libraries).  Shared libraries compilation
 flags differ from vendor to vendor (gcc's is <tt>-fPIC</tt>).  However,
 you must compile all shared library source with the same flag
@@ -310,7 +310,7 @@ you must compile all shared library source with the same flag
 little value to building static libraries.  Reasons to build
 static libraries include:  1) they can be easier to debug; 2)
 the clients do not have external dependencies (i.e.
-<tt>libMagick.so</tt>);  3) building PIC versions of the plug-in libraries may
+<tt>libMagick.so</tt>);  3) building PIC versions of the delegate libraries may
 take additional expertise and effort;  4) you are unable to build shared
 libraries.
 <p>
@@ -354,10 +354,10 @@ corrective action, be sure to remove the 'config.cache' file
 before running configure so that configure will re-inspect the
 environment rather than using cached values.
 
-Common causes of configure falures are: 1) a plug-in header is not
-in the header include path (CPPFLAGS -I option); 2) a plug-in
+Common causes of configure falures are: 1) a delegate header is not
+in the header include path (CPPFLAGS -I option); 2) a delegate
 library is not in the linker search/run path (LDFLAGS -L/-R
-option); 3) a plug-in library is missing a function (old
+option); 3) a delegate library is missing a function (old
 version?); 4) compilation environment is faulty.
 
 If all reasonable corrective actions have been tried and the
@@ -474,7 +474,7 @@ from as a menu item of any window manager (olwm, mwm, twm, etc), use
 <HR>
 <H2>
 <A NAME="extr">
-<DT>Plug-ins
+<DT>Delegates
 </H2>
 <DD>To further enhance the capabilities of <B>ImageMagick</B>, you may
 want to get these programs or libraries:
@@ -687,7 +687,7 @@ that when the configure option <tt>--enable-shared</tt> is not disabled,
 these procedures must be supplemented with whatever compilation
 flags are required on your system to generate PIC code. In the case
 of gcc, this usually means that <tt>-fPIC</tt> must be added to the compiler
-options (i.e. CFLAGS) when building each plug-in library.
+options (i.e. CFLAGS) when building each delegate library.
 <p>
 <DD>To display images in the <B>HDF, JPEG, PNG</B>, <B>TIFF</B> or
 <b>TTF</b> format, get the respective archives and build <B>ImageMagick</B> as

@@ -23,7 +23,7 @@
 <h3><A HREF="../ImageMagick.html">ImageMagick</A> 4.1.1, October 1, 1998</h3>
 <ul>
 <li> Added support for MPEG2 and removed the requirement for the MPEG
-plug-in.  Instead a different decoder/encoder is required.  See README.txt
+delegate.  Instead a different decoder/encoder is required.  See README.txt
 for details.
 <p>
 <li> Added BZip as a compression option for MIFF images (suggested by
@@ -105,7 +105,7 @@ to <a href="mailto:BillR@corbis.com">Bill Radcliffe</a>).
 your computer screen.
 <p>
 <li> You can now view TrueType fonts directly (if you have the TTF
-plug-in): <tt>display TimesRoman.ttf</tt>.
+delegate): <tt>display TimesRoman.ttf</tt>.
 <p>
 <li> Fixed a number of fine-grain problems with ImageMagick and PerlMagick
 related to text annotation (e.g. some FreeType text was lopped in the
@@ -123,7 +123,7 @@ with the <b>-draw</b> option to align text.
 <li> ImageMagick can now read Macintosh PICT images under NT.
 <p>
 <li> Converting large images (> 2000x2000) to PDF with Flate compression
-(the default if you include the ZLIB plug-in) no longer produces corrupt
+(the default if you include the ZLIB delegate) no longer produces corrupt
 images.
 <p>
 <li> The <tt>matte</tt> attribute can now be set in PerlMagick.  Previously
@@ -166,7 +166,7 @@ Bill Radcliffe</a> for an updated Visual C++ workspace.
 Brian J. McCarthy</a> for patches to compile ImageMagick under 
 OpenVMS V7.1.
 <p>
-<li> Added support for TrueType fonts.  Requires the TTF plug-in.  See the
+<li> Added support for TrueType fonts.  Requires the TTF delegate.  See the
 <A HREF="../www/install.html">installation</A> instructions for details.
 <p>
 <li> Added a support for LABEL image format (e.g. <tt>label:This is a
@@ -205,8 +205,8 @@ of an image on the Postscript or PDF page.
 <li> Thanks to <a href="mailto:michal@ellpspace.math.ualberta.ca">
 michal@ellpspace.math.ualberta.ca</a> who discovered a bug in the MPEG 1.2
 library that causes a segmentation fault.  The patched distribution can
-be found as <a href=ftp://204.183.81.131/pub/ImageMagick/plug-ins/>
-ftp://204.183.81.131/pub/ImageMagick/plug-ins/mpeg_lib-1.2.tar.gz</a>.
+be found as <a href=ftp://204.183.81.131/pub/ImageMagick/delegates/>
+ftp://204.183.81.131/pub/ImageMagick/delegates/mpeg_lib-1.2.tar.gz</a>.
 <p>
 <li> Bi-level PS2 and PDF images are now 2-D Huffman encoded resulting in
 about a 50% space savings (if HasTIFF is defined).

@@ -60,10 +60,19 @@ extern "C" {
 
 #undef index
 
+#if defined(WIN32) || defined(macintosh)
+#define HasJBIG
+#define HasJPEG
+#define HasLZW
+#define HasPNG
+#define HasTIFF
+#define HasTTF
+#define HasZLIB
+#endif
+
 #if defined(HAVE_CONFIG_H)
 #include "config.h"
 #endif
-#include "delegates.h"
 #include "image.h"
 #include "gems.h"
 #include "compress.h"
@@ -74,6 +83,7 @@ extern "C" {
 #include "widget.h"
 #include "PreRvIcccm.h"
 #include "memory.h"
+#include "delegates.h"
 
 /*
   Define declarations.
@@ -156,12 +166,6 @@ extern "C" {
 #if defined(macintosh)
 #define ApplicationDefaults  "/usr/lib/X11/app-defaults/"
 #define EditorOptions ""
-#define HasJPEG
-#define HasLZW
-#define HasPNG
-#define HasTIFF
-#define HasZLIB
-#define HasTTF
 #define LaunchFormat  "psd"
 #define PreferencesDefaults  "~/."
 #define PrinterFormat  "ps"
@@ -173,13 +177,6 @@ extern "C" {
 #if defined(WIN32)
 #define ApplicationDefaults  "/usr/lib/X11/app-defaults/"
 #define EditorOptions ""
-#define HasJBIG
-#define HasJPEG
-#define HasLZW
-#define HasPNG
-#define HasTIFF
-#define HasTTF
-#define HasZLIB
 #define LaunchFormat  "bmp"
 #undef isatty
 #define isatty(filedes)  1

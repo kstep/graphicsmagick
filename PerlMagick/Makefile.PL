@@ -23,6 +23,7 @@ sub MY::test
    #
    #  Feature   Formats Tested		Prerequisites
    #  =======   ======================	======================================
+   #   bzlib    BZip compression        BZip library
    #   cgm	CGM format		'ralcgm' program
    #   hdf	HDF format		HDF library
    #   jbig	JBIG format		JBIG library
@@ -37,20 +38,20 @@ sub MY::test
    #   xfig	Xfig format		'transfig' program
    #   zlib	Zip compression		Zlib library
    #
-   # e.g. my @PLUGINS = qw/jpeg tiff/;
+   # e.g. my @DELEGATES = qw/jpeg tiff/;
    #
-   my @PLUGINS = qw/ cgm mpeg ps rad x xfig/;
+   my @DELEGATES = qw/ cgm mpeg ps rad x xfig/;
 
    package MY; # so that "SUPER" works right
    my $inherited = shift->SUPER::test(@_);
-   my $plugintests='';
-   my $plugin;
-   foreach $plugin (@PLUGINS) {
-     if( -d "t/$plugin" ) {
-       $plugintests .= " t/$plugin/*.t";
+   my $delegate_tests='';
+   my $delegate;
+   foreach $delegate (@DELEGATES) {
+     if( -d "t/$delegate" ) {
+       $delegate_tests .= " t/$delegate/*.t";
     }
    }
-   $inherited =~ s:^TEST_FILES =.*:TEST_FILES = t/*.t ${plugintests}:m;
+   $inherited =~ s:^TEST_FILES =.*:TEST_FILES = t/*.t ${delegate_tests}:m;
    $inherited;
 }
 

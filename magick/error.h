@@ -22,7 +22,9 @@ typedef enum
   XServerWarning = 305,
   OptionWarning = 310,
   DelegateWarning = 315,
+  PluginWarning = 315,
   MissingDelegateWarning = 320,
+  MissingPluginWarning = 320,
   CorruptImageWarning = 325,
   FileOpenWarning = 330
 } WarningType;

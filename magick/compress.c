@@ -54,7 +54,7 @@
   Include declarations.
 */
 #include "magick.h"
-#include "plug-ins.h"
+#include "proxy.h"
 
 /*
   Define declarations.

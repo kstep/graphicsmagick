@@ -193,11 +193,11 @@ UNIX COMPILATION
         libraries are required in order for PERL to dynamically load
         the PerlMagick extension.
 
-        ImageMagick built with plug-ins (see MAGICK PLUG-INS below) can
-        pose additional challenges.  You can build all the plug-ins
+        ImageMagick built with delegates (see MAGICK PLUG-INS below) can
+        pose additional challenges.  You can build all the delegates
         statically and link them into the ImageMagick shared library
-        (i.e. libMagick.so) or alternatively you can build the plug-ins
-        as shared libraries (some systems already have plug-ins
+        (i.e. libMagick.so) or alternatively you can build the delegates
+        as shared libraries (some systems already have delegates
         installed as shared libraries).  Shared libraries compilation
         flags differ from vendor to vendor (gcc's is -fPIC).  However,
         you must compile all shared library source with the same flag
@@ -208,7 +208,7 @@ UNIX COMPILATION
         little value to building static libraries. Reasons to build
         static libraries include: 1) they can be easier to debug; 2) the
         clients do not have external dependencies (i.e. libMagick.so);
-        3) building PIC versions of the plug-in libraries may take
+        3) building PIC versions of the delegate libraries may take
         additional expertise and effort; 4) you are unable to build
         shared libraries.
 
@@ -249,10 +249,10 @@ UNIX COMPILATION
       before running configure so that configure will re-inspect the
       environment rather than using cached values.
 
-      Common causes of configure falures are: 1) a plug-in header is not
-      in the header include path (CPPFLAGS -I option); 2) a plug-in
+      Common causes of configure falures are: 1) a delegate header is not
+      in the header include path (CPPFLAGS -I option); 2) a delegate
       library is not in the linker search/run path (LDFLAGS -L/-R
-      option); 3) a plug-in library is missing a function (old
+      option); 3) a delegate library is missing a function (old
       version?); 4) compilation environment is faulty.
 
       If all reasonable corrective actions have been tried and the
@@ -325,7 +325,7 @@ UNIX COMPILATION
       logo:Untitled
 
 
-MAGICK PLUGS-INS
+MAGICK DELEGATES
 
   To further enhance the capabilities of ImageMagick, you may
   want to get these programs or libraries:
@@ -505,7 +505,7 @@ HOW TO COMPILE
   these procedures must be supplemented with whatever compilation
   flags are required on your system to generate PIC code. In the case
   of gcc, this usually means that -fPIC must be added to the compiler
-  options (i.e. CFLAGS) when building each plug-in library.
+  options (i.e. CFLAGS) when building each delegate library.
   
   To display images in the HDF, JBIG, JPEG, PNG, TIFF, or TTF
   format, get the respective archives and build ImageMagick as follows:

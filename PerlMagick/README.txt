@@ -81,7 +81,7 @@ Testing PerlMagick
         make test
 
     to verify that PERL can load the PerlMagick extension ok.  Chances are
-    some of the tests will fail if you do not have the proper plugs-in
+    some of the tests will fail if you do not have the proper delegates
     installed for formats like JPEG, TIFF, etc.
 
     To see a number of PerlMagick demonstration scripts, type

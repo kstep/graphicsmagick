@@ -3073,9 +3073,9 @@ fi
 # Extend includedir to include magick subdirectory offset
 includedir="$includedir/magick"
 
-# Check for plug-in sub-directories and add -I & -L options as required.
-# This presumes that plug-ins are installed as detailed in the ImageMagick
-# README. If plug-ins are installed in a standard location where the
+# Check for delegate sub-directories and add -I & -L options as required.
+# This presumes that delegates are installed as detailed in the ImageMagick
+# README. If delegates are installed in a standard location where the
 # compiler will automatically find them then these options should not be
 # required.
 
@@ -3083,7 +3083,7 @@ srcdirfull=`cd $srcdir && pwd`
 builddir=`pwd`
 
 #
-# Sfio has a different structure than most plugins
+# Sfio has a different structure than most delegates
 #
 if test "$with_sfio" != 'no'
 then
@@ -3101,7 +3101,7 @@ then
 fi
 
 #
-# Most plugins have includes in the same directory as the library
+# Most delegates have includes in the same directory as the library
 #
 for dir in bzlib hdf/hdf/src jbig/libjbig jpeg zlib png tiff/libtiff ttf ttf/lib ttf/lib/.libs
 do
@@ -6918,27 +6918,27 @@ then
   MAGICKLIB="-L${builddir}/magick -lMagick"
 fi
 
-# Create a simple string containing format names for all plug-in libraries
-PLUGINS=''
-if test "$have_bzlib"  = 'yes' ; then PLUGINS="$PLUGINS bzlib"  ; fi
-if test "$have_cgm"  = 'yes' ; then PLUGINS="$PLUGINS cgm"  ; fi
-if test "$have_fpx"  = 'yes' ; then PLUGINS="$PLUGINS fpx"  ; fi
-if test "$have_hdf"  = 'yes' ; then PLUGINS="$PLUGINS hdf"  ; fi
-if test "$have_jbig" = 'yes' ; then PLUGINS="$PLUGINS jbig" ; fi
-if test "$have_jpeg" = 'yes' ; then PLUGINS="$PLUGINS jpeg" ; fi
-if test "$have_mpeg" = 'yes' ; then PLUGINS="$PLUGINS mpeg" ; fi
-if test "$have_png"  = 'yes' ; then PLUGINS="$PLUGINS png"  ; fi
+# Create a simple string containing format names for all delegate libraries
+DELEGATES=''
+if test "$have_bzlib"  = 'yes' ; then DELEGATES="$DELEGATES bzlib"  ; fi
+if test "$have_cgm"  = 'yes' ; then DELEGATES="$DELEGATES cgm"  ; fi
+if test "$have_fpx"  = 'yes' ; then DELEGATES="$DELEGATES fpx"  ; fi
+if test "$have_hdf"  = 'yes' ; then DELEGATES="$DELEGATES hdf"  ; fi
+if test "$have_jbig" = 'yes' ; then DELEGATES="$DELEGATES jbig" ; fi
+if test "$have_jpeg" = 'yes' ; then DELEGATES="$DELEGATES jpeg" ; fi
+if test "$have_mpeg" = 'yes' ; then DELEGATES="$DELEGATES mpeg" ; fi
+if test "$have_png"  = 'yes' ; then DELEGATES="$DELEGATES png"  ; fi
 
 have_ps='no'
 if test "$have_dps"  = 'yes' || test "$have_gs" = 'yes' ; then have_ps='yes'  ; fi
-if test "$have_ps"   = 'yes' ; then PLUGINS="$PLUGINS ps"  ; fi
+if test "$have_ps"   = 'yes' ; then DELEGATES="$DELEGATES ps"  ; fi
 
-if test "$have_rad"  = 'yes' ; then PLUGINS="$PLUGINS rad" ; fi
-if test "$have_tiff" = 'yes' ; then PLUGINS="$PLUGINS tiff" ; fi
-if test "$have_ttf"  = 'yes' ; then PLUGINS="$PLUGINS ttf"  ; fi
-if test "$have_x"    = 'yes' ; then PLUGINS="$PLUGINS x"    ; fi
-if test "$have_xfig" = 'yes' && test "$have_ps" = 'yes'  ; then PLUGINS="$PLUGINS xfig"    ; fi
-if test "$have_zlib" = 'yes' ; then PLUGINS="$PLUGINS zlib" ; fi
+if test "$have_rad"  = 'yes' ; then DELEGATES="$DELEGATES rad" ; fi
+if test "$have_tiff" = 'yes' ; then DELEGATES="$DELEGATES tiff" ; fi
+if test "$have_ttf"  = 'yes' ; then DELEGATES="$DELEGATES ttf"  ; fi
+if test "$have_x"    = 'yes' ; then DELEGATES="$DELEGATES x"    ; fi
+if test "$have_xfig" = 'yes' && test "$have_ps" = 'yes'  ; then DELEGATES="$DELEGATES xfig"    ; fi
+if test "$have_zlib" = 'yes' ; then DELEGATES="$DELEGATES zlib" ; fi
 
 
 # Check for networking libraries and definitions needed by xtp
@@ -7541,7 +7541,7 @@ s%@SCANDecodeDelegate@%$SCANDecodeDelegate%g
 s%@WWWDecodeDelegate@%$WWWDecodeDelegate%g
 s%@PERL@%$PERL%g
 s%@MAGICKLIB@%$MAGICKLIB%g
-s%@PLUGINS@%$PLUGINS%g
+s%@DELEGATES@%$DELEGATES%g
 s%@XTP_FTP@%$XTP_FTP%g
 s%@XTP_LIBS@%$XTP_LIBS%g
 s%@XTP_DEFS@%$XTP_DEFS%g

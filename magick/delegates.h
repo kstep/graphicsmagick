@@ -1,5 +1,5 @@
 /*
-  Delegate definitions.
+  Delegate define definitions.
 */
 #ifndef _DELEGATES_H
 #define _DELEGATES_H

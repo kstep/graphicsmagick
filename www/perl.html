@@ -84,7 +84,7 @@ PerlMagick</a> distribution and type the following:
 <p>
 Next, edit <tt>Makefile.PL</tt> and change LIBS and INC to include the
 appropriate path information to the required <tt>libMagick</tt> library.
-You will also need paths to JPEG, PNG, TIFF, etc. plug-ins if they were
+You will also need paths to JPEG, PNG, TIFF, etc. delegates if they were
 included with your installed version of <b>ImageMagick</b>.  Now type
 <p>
 <pre>
@@ -421,6 +421,11 @@ Image Manipulation Methods
   <td>chop an image</td>
 </tr>
 <tr>
+  <td>Clone</td>
+  <td></td>
+  <td>make a copy an image</td>
+</tr>
+<tr>
   <td>Composite</td>
   <td>compose=&gt;{Over, In, Out, Atop, Xor, Plus, 
     Minus, Add, Subtract, Difference, Bumpmap, Replace, ReplaceRed, 
@@ -434,11 +439,6 @@ Image Manipulation Methods
   <td>Contrast</td>
   <td>sharpen=&gt;{True, False}</td>
   <td>enhance or reduce the image contrast</td>
-</tr>
-<tr>
-  <td>Clone</td>
-  <td></td>
-  <td>make a copy an image</td>
 </tr>
 <tr>
   <td>Crop</td>
@@ -809,6 +809,12 @@ Image Attributes
   <td>type of image compression</td>
 </tr>
 <tr>
+  <td>delay</td>
+  <td><i>integer<i></td>
+  <td>this many 1/100ths of a second\fP must expire before displaying the next
+    image in a sequence</td>
+</tr>
+<tr>
   <td>density</td>
   <td><i>geometry</i></td>
   <td>vertical and horizontal resolution in pixels of the image</td>
@@ -817,12 +823,6 @@ Image Attributes
   <td>dispose</td>
   <td><i>{1, 2, 3, 4}</i></td>
   <td>GIF disposal method</td>
-</tr>
-<tr>
-  <td>delay</td>
-  <td><i>integer<i></td>
-  <td>this many 1/100ths of a second\fP must expire before displaying the next
-    image in a sequence</td>
 </tr>
 <tr>
   <td>dither</td>
@@ -866,14 +866,14 @@ Image Attributes
   <td>chromaticity green primary point (e.g. 0.3, 0.6)</td>
 </tr>
 <tr>
-  <td>iterations</td>
-  <td><i>integer</i></td>
-  <td>add Netscape loop extension to your GIF animation</td>
-</tr>
-<tr>
   <td>interlace</td>
   <td>{None, Line, Plane, Partition}</td>
   <td>the type of interlacing scheme</td>
+</tr>
+<tr>
+  <td>iterations</td>
+  <td><i>integer</i></td>
+  <td>add Netscape loop extension to your GIF animation</td>
 </tr>
 <tr>
   <td>loop</td>
@@ -1115,12 +1115,12 @@ Image Attributes
   <td>tile size and offset within an image montage</td>
 </tr>
 <tr>
-  <td>normalized-max</td>
+  <td>normalized_max</td>
   <td><i>double</i></td>
   <td>the normalized max error per pixel computed when an image is color reduced</td>
 </tr>
 <tr>
-  <td>normalized-mean</td>
+  <td>normalized_mean</td>
   <td><i>double</i></td>
   <td>the normalized mean error per pixel computed when an image is color reduced</td>
 </tr>
@@ -1150,7 +1150,7 @@ Image Attributes
   <td>any text associated with the image</td>
 </tr>
 <tr>
-  <td>total-colors</td>
+  <td>total_colors</td>
   <td><i>integer<i></td>
   <td>number of colors in the image</td>
 </tr>

@@ -20,8 +20,8 @@ require AutoLoader;
   qw(
     ResourceLimitError XServerError OptionError 
     Success
-    ResourceLimitWarning XServerWarning OptionWarning PluginWarning
-	MissingPluginWarning CorruptImageWarning FileOpenWarning
+    ResourceLimitWarning XServerWarning OptionWarning DelegateWarning
+	MissingDelegateWarning CorruptImageWarning FileOpenWarning
     );
 
 $VERSION = '1.46';
