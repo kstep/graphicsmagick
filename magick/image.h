@@ -102,6 +102,7 @@ typedef struct _BlobInfo
     *data;
 
   off_t
+    filesize,
     offset;
 
   size_t
@@ -111,9 +112,6 @@ typedef struct _BlobInfo
 
   unsigned int
     eof;
-
-  off_t
-    filesize;
 
   unsigned long
     signature;
