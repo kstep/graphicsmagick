@@ -232,8 +232,13 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
           if ((image->storage_class == PseudoClass) ||
               (image->colorspace == CMYKColorspace))
             status|=ReadCacheIndexes(cache_info,nexus);
-          if (status != False)
-            return(pixels);
+          if (status == False)
+            {
+              ThrowException(exception,CacheError,"Unable to read pixel cache",
+                image->filename);
+              return((const PixelPacket *) NULL);
+            }
+          return(pixels);
         }
     }
   /*
@@ -242,7 +247,7 @@ MagickExport const PixelPacket *AcquireCacheNexus(const Image *image,
   indexes=GetNexusIndexes(cache_info,nexus);
   image_nexus=GetNexus(cache_info);
   if (image_nexus == 0)
-    return(False);
+    return((const PixelPacket *) NULL);
   cache_info->virtual_pixel=image->background_color;
   q=pixels;
   for (v=0; v < (long) rows; v++)
