@@ -412,24 +412,24 @@ MagickExport void DestroyFontInfo(void)
   AcquireSemaphore(&font_semaphore);
   for (p=fonts; p != (FontInfo *) NULL; )
   {
-    if (p->format != (char *) NULL)
-      LiberateMemory((void **) &p->format);
-    if (p->metrics != (char *) NULL)
-      LiberateMemory((void **) &p->metrics);
-    if (p->glyphs != (char *) NULL)
-      LiberateMemory((void **) &p->glyphs);
     if (p->name != (char *) NULL)
       LiberateMemory((void **) &p->name);
     if (p->family != (char *) NULL)
       LiberateMemory((void **) &p->family);
-    if (p->weight != (char *) NULL)
-      LiberateMemory((void **) &p->weight);
-    if (p->description != (char *) NULL)
-      LiberateMemory((void **) &p->description);
-    if (p->version != (char *) NULL)
-      LiberateMemory((void **) &p->version);
     if (p->alias != (char *) NULL)
       LiberateMemory((void **) &p->alias);
+    if (p->description != (char *) NULL)
+      LiberateMemory((void **) &p->description);
+    if (p->format != (char *) NULL)
+      LiberateMemory((void **) &p->format);
+    if (p->weight != (char *) NULL)
+      LiberateMemory((void **) &p->weight);
+    if (p->metrics != (char *) NULL)
+      LiberateMemory((void **) &p->metrics);
+    if (p->glyphs != (char *) NULL)
+      LiberateMemory((void **) &p->glyphs);
+    if (p->version != (char *) NULL)
+      LiberateMemory((void **) &p->version);
     fonts=p;
     p=p->next;
     LiberateMemory((void **) &fonts);

@@ -32,15 +32,15 @@ typedef struct _EdgeInfo
 typedef struct _FontInfo
 {  
   char
-    *format,
-    *metrics,
-    *glyphs,
     *name,
     *family,
-    *weight,
+    *alias,
     *description,
-    *version,
-    *alias;
+    *format,
+    *weight,
+    *glyphs,
+    *metrics,
+    *version;
 
   unsigned long
     signature;
