@@ -49,7 +49,7 @@
 %
 %  The combine program syntax is:
 %
-%  Usage: combine [options ...] image composite [mask] combined
+%  Usage: combine [options ...] image composite [mask] combine
 %
 %  Where options include:
 %    -cache threshold    number of megabytes available to the pixel cache
@@ -74,6 +74,7 @@
 %    -negate             replace every pixel with its complementary color 
 %    -page geometry      size and location of an image canvas
 %    -quality value      JPEG/MIFF/PNG compression level
+%    -rotate degrees     apply Paeth rotation to the image
 %    -scene value        image scene number
 %    -size geometry      width and height of image
 %    -stegano offset     hide watermark within an image
@@ -142,6 +143,7 @@ static void Usage()
       "-negate             replace every pixel with its complementary color ",
       "-page geometry      size and location of an image canvas",
       "-quality value      JPEG/MIFF/PNG compression level",
+      "-rotate degrees     apply Paeth rotation to the image",
       "-scene value        image scene number",
       "-size geometry      width and height of image",
       "-stegano offset     hide watermark within an image",
@@ -159,7 +161,7 @@ static void Usage()
 
   (void) printf("Version: %.1024s\n",GetMagickVersion(&version));
   (void) printf("Copyright: %.1024s\n\n",MagickCopyright);
-  (void) printf("Usage: %.1024s [options ...] image composite [mask] combined\n",
+  (void) printf("Usage: %.1024s [options ...] image composite [mask] combine\n",
     SetClientName((char *) NULL));
   (void) printf("\nWhere options include:\n");
   for (p=options; *p != (char *) NULL; p++)
@@ -204,7 +206,7 @@ int main(int argc,char **argv)
     exception;
 
   Image
-    *combined_image,
+    *combine_image,
     *composite_image,
     *image,
     *mask_image;
@@ -221,6 +223,7 @@ int main(int argc,char **argv)
     i;
 
   unsigned int
+    matte,
     status,
     stegano,
     stereo,
@@ -724,6 +727,21 @@ int main(int argc,char **argv)
           MagickError(OptionError,"Unrecognized option",option);
           break;
         }
+        case 'r':
+        {
+          if (LocaleNCompare("rotate",option+1,3) == 0)
+            {
+              if (*option == '-')
+                {
+                  i++;
+                  if ((i == argc) || !IsGeometry(argv[i]))
+                    MagickError(OptionError,"Missing degrees",option);
+                }
+              break;
+            }
+          MagickError(OptionError,"Unrecognized option",option);
+          break;
+        }
         case 's':
         {
           if (LocaleNCompare("scene",option+1,2) == 0)
@@ -990,132 +1008,135 @@ int main(int argc,char **argv)
   /*
     Combine image.
   */
+  matte=image->matte;
   if (stegano != 0)
     {
       image->offset=stegano-1;
-      combined_image=SteganoImage(image,composite_image,&exception);
+      combine_image=SteganoImage(image,composite_image,&exception);
     }
   else
     if (stereo)
-      combined_image=StereoImage(image,composite_image,&exception);
+      combine_image=StereoImage(image,composite_image,&exception);
     else
       if (tile)
         {
           /*
             Tile the composite image.
           */
-          for (y=0; y < (int) image->rows; y+=(int) composite_image->rows)
-            for (x=0; x < (int) image->columns; x+=(int) composite_image->columns)
+          for (y=0; y < (int) image->rows; y+=composite_image->rows)
+            for (x=0; x < (int) image->columns; x+=composite_image->columns)
             {
               status=CompositeImage(image,compose,composite_image,x,y);
               if (status == False)
                 CatchImageException(image);
             }
-          combined_image=image;
+          combine_image=image;
         }
       else
         {
+          int
+            flags;
+
           unsigned int
-            size;
+            height,
+            width;
 
           /*
             Digitally composite image.
           */
-          size=0;
+          width=image->columns;
+          height=image->rows;
           x=0;
           y=0;
-          if (geometry != (char *) NULL)
-            (void) ParseImageGeometry(geometry,&x,&y,&size,&size);
+          flags=ParseGeometry(geometry,&x,&y,&width,&height);
+          if ((flags & XNegative) != 0)
+            x+=image->columns;
+          if ((flags & WidthValue) == 0)
+            width-=2*x > width ? width : 2*x;
+          if ((flags & YNegative) != 0)
+            y+=image->rows;
+          if ((flags & HeightValue) == 0)
+            height-=2*y > height ? height : 2*y;
           switch (gravity)
           {
             case NorthWestGravity:
               break;
             case NorthGravity:
             {
-              x+=((int) image->columns-(int) composite_image->columns)/2;
+              x+=0.5*width-composite_image->columns/2;
               break;
             }
             case NorthEastGravity:
             {
-              x+=(int) image->columns-(int) composite_image->columns;
+              x+=width-composite_image->columns;
               break;
             }
             case WestGravity:
             {
-              y+=(int) (image->rows-(int) composite_image->rows)/2;
+              y+=0.5*height-composite_image->rows/2;
               break;
             }
             case ForgetGravity:
-            {
-              char
-                geometry[MaxTextExtent];
-
-              /*
-                Stretch composite to the same size as the image.
-              */
-              FormatString(geometry,"%ux%u+0+0",image->columns,image->rows);
-              TransformImage(&composite_image,(char *) NULL,geometry);
-              break;
-            }
             case StaticGravity:
             case CenterGravity:
             default:
             {
-              x+=((int) image->columns-(int) composite_image->columns)/2;
-              y+=((int) image->rows-(int) composite_image->rows)/2;
+              x+=0.5*width-composite_image->columns/2;
+              y+=0.5*height-composite_image->rows/2;
               break;
             }
             case EastGravity:
             {
-              x+=(int) image->columns-(int) composite_image->columns;
-              y+=((int) image->rows-(int) composite_image->rows)/2;
+              x+=width-composite_image->columns;
+              y+=0.5*height-composite_image->rows/2;
               break;
             }
             case SouthWestGravity:
             {
-              y+=(int) image->rows-(int) composite_image->rows;
+              y+=height-composite_image->rows;
               break;
             }
             case SouthGravity:
             {
-              x+=((int) image->columns-(int) composite_image->columns)/2;
-              y+=(int) image->rows-(int) composite_image->rows;
+              x+=0.5*width-composite_image->columns/2;
+              y+=height-composite_image->rows;
               break;
             }
-            case SouthEastGravity:
+           case SouthEastGravity:
             {
-              x+=(int) image->columns-(int) composite_image->columns;
-              y+=(int) image->rows-(int) composite_image->rows;
+              x+=width-composite_image->columns;
+              y+=height-composite_image->rows;
               break;
             }
           }
           status=CompositeImage(image,compose,composite_image,x,y);
           if (status == False)
             CatchImageException(image);
-          combined_image=image;
+          combine_image=image;
         }
-  if (combined_image == (Image *) NULL)
+  if (combine_image == (Image *) NULL)
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
+  combine_image->matte=matte;
   /*
     Transmogrify image as defined by the image processing options.
   */
-  status=MogrifyImage(image_info,argc,argv,&combined_image);
+  status=MogrifyImage(image_info,argc,argv,&combine_image);
   if (status == False)
-    CatchImageException(combined_image);
+    CatchImageException(combine_image);
   /*
     Write image.
   */
-  (void) strcpy(combined_image->filename,write_filename);
+  (void) strcpy(combine_image->filename,write_filename);
   SetImageInfo(image_info,True);
   status=True;
-  status=TransmitImage(combined_image,image_info,sendmode,param1,param2);
+  status=TransmitImage(combine_image,image_info,sendmode,param1,param2);
   if (status == False)
-    CatchImageException(combined_image);
+    CatchImageException(combine_image);
   if (image_info->verbose)
-    DescribeImage(combined_image,stderr,False);
+    DescribeImage(combine_image,stderr,False);
   if (sendmode == ImageTransmitType)
     return(True);
-  DestroyImages(combined_image);
+  DestroyImages(combine_image);
   DestroyImageInfo(image_info);
   if (sendmode != UndefinedTransmitType)
     return(True);
