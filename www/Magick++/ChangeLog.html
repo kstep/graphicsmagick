@@ -4,6 +4,16 @@
 </HEAD>
 <BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#0000EE" VLINK="#551A8B" ALINK="#FF0000">
 <p>
+2003-09-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/STL.h (colorHistogram): If map key is not const,
+        then implicit type conversion occurs.  Sun's C++ compiler doesn't
+        seem to handle that.  The map key is now defined as const in
+        the insert arguments.
+
+</UL>
+<p>
 2003-09-01  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

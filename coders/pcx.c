@@ -264,7 +264,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       magic=ReadBlobLSBLong(image);
       if (magic != 987654321)
-        ThrowReaderException(CorruptImageError,NotADCXImageFile,image);
+        ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
       page_table=MagickAllocateMemory(ExtendedSignedIntegralType *,
          1024*sizeof(ExtendedSignedIntegralType));
       if (page_table == (ExtendedSignedIntegralType *) NULL)
@@ -286,7 +286,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     pcx_info.version=ReadBlobByte(image);
     if ((count == 0) || (pcx_info.identifier != 0x0a))
-      ThrowReaderException(CorruptImageError,NotAPCXImageFile,image);
+      ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
     pcx_info.encoding=ReadBlobByte(image);
     pcx_info.bits_per_pixel=ReadBlobByte(image);
     pcx_info.left=ReadBlobLSBShort(image);

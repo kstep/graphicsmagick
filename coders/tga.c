@@ -179,7 +179,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   {
     if ((count == 0) || (tga_info.image_type == 0) ||
         (tga_info.image_type > 11))
-      ThrowReaderException(CorruptImageError,NotATGAImageFile,image);
+      ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
     tga_info.colormap_index=ReadBlobLSBShort(image);
     tga_info.colormap_length=ReadBlobLSBShort(image);
     tga_info.colormap_size=ReadBlobByte(image);

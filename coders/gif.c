@@ -815,7 +815,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   count=ReadBlob(image,6,(char *) magick);
   if ((count == 0) || ((LocaleNCompare((char *) magick,"GIF87",5) != 0) &&
       (LocaleNCompare((char *) magick,"GIF89",5) != 0)))
-    ThrowReaderException(CorruptImageError,NotAGIFImageFile,image);
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   global_colors=0;
   global_colormap=(unsigned char *) NULL;
   page.width=ReadBlobLSBShort(image);

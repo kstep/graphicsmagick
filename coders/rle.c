@@ -186,7 +186,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   count=ReadBlob(image,2,(char *) magick);
   if ((count == 0) || (memcmp(magick,"\122\314",2) != 0))
-    ThrowReaderException(CorruptImageError,NotARLEImageFile,image);
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   do
   {
     /*

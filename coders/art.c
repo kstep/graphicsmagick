@@ -153,9 +153,8 @@ static Image *ReadARTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   ldblk=(long) ((width+7) / 8);
   k=(unsigned char) ((-ldblk) & 0x01);
 
-   if(GetBlobSize(image)!=(8+((long)ldblk+k)*height))
-     ThrowReaderException(CorruptImageError,NotAnARTImageFile,image);
-
+  if(GetBlobSize(image)!=(8+((long)ldblk+k)*height))
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
 
  image->columns=width;
  image->rows=height;

@@ -120,7 +120,7 @@ static Image *ReadXTRNImage(const ImageInfo *image_info, ExceptionInfo *exceptio
   if (clone_info->filename == NULL)
     {
       DestroyImageInfo(clone_info);
-      ThrowReaderException2(CoderError,"No filename was provided",image);
+      ThrowReaderException(OptionError,MissingAnImageFilename,image);
     }
   /* DebugString("ReadXTRN CODER: %s\n",clone_info->filename); */
   if (LocaleCompare(image_info->magick,"XTRNFILE") == 0)

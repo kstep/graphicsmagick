@@ -171,7 +171,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   count=ReadBlob(image,4,(char *) magick);
   if ((count == 0) || ((LocaleNCompare((char *) magick,"SDPX",4) != 0) &&
       (LocaleNCompare((char *) magick,"XPDS",4) != 0)))
-    ThrowReaderException(CorruptImageError,NotADPXImageFile,image);
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   headersize=ReadBlobMSBLong(image); 
   for (i=0; i < 764; i++)
     (void) ReadBlobByte(image);

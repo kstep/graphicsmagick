@@ -433,7 +433,7 @@ static Image *ReadTOPOLImage(const ImageInfo * image_info, ExceptionInfo * excep
   for (i = 0; i < sizeof(Header.Name); i++)
     {
       if (Header.Name[i] < ' ')
-        TOPOL_KO:ThrowReaderException(CorruptImageError, NotATOPOLImageFile,
+        TOPOL_KO:ThrowReaderException(CorruptImageError,ImproperImageHeader,
                                       image);
     }
   if (Header.Komprese != 0 || (Header.Version >= 2 && Header.TileCompression != 0))

@@ -2720,7 +2720,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   (void) ReadBlob(image,8,magic_number);
   if (memcmp(magic_number,"\211PNG\r\n\032\n",8) != 0)
-    ThrowReaderException(CorruptImageError,NotAPNGImageFile,image);
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   /*
     Allocate a MngInfo structure.
   */
@@ -3461,13 +3461,13 @@ static Image *ReadJNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (status == False)
     ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   if (LocaleCompare(image_info->magick,"JNG") != 0)
-    ThrowReaderException(CorruptImageError,NotAJNGImageFile,image);
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   /*
     Verify JNG signature.
   */
   (void) ReadBlob(image,8,magic_number);
   if (memcmp(magic_number,"\213JNG\r\n\032\n",8) != 0)
-    ThrowReaderException(CorruptImageError,NotAJNGImageFile,image);
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   /*
     Allocate a MngInfo structure.
   */
@@ -3651,7 +3651,7 @@ static Image *ReadMNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       (void) ReadBlob(image,8,magic_number);
       if (memcmp(magic_number,"\212MNG\r\n\032\n",8) != 0)
-        ThrowReaderException(CorruptImageError,NotAMNGImageFile,image);
+        ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
       /*
         Initialize some nonzero members of the MngInfo structure.
       */

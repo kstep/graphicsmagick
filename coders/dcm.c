@@ -3188,7 +3188,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     MagickFreeMemory(data);
   }
   if ((width == 0) || (height == 0))
-    ThrowReaderException(CorruptImageError,NotADCMImageFile,image);
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   if ((strcmp(transfer_syntax,"1.2.840.10008.1.2.4.50") == 0) ||
       (strcmp(transfer_syntax,"1.2.840.10008.1.2.4.70") == 0))
     {

@@ -546,7 +546,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         magick[0],magick[1]);
     if ((count == 0) || ((LocaleNCompare((char *) magick,"BM",2) != 0) &&
         (LocaleNCompare((char *) magick,"CI",2) != 0)))
-      ThrowReaderException(CorruptImageError,NotABMPImageFile,image);
+      ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
     bmp_info.file_size=ReadBlobLSBLong(image);
     (void) ReadBlobLSBLong(image);
     bmp_info.offset_bits=ReadBlobLSBLong(image);
@@ -1232,7 +1232,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       }
       default:
-        ThrowReaderException(CorruptImageError,NotABMPImageFile,image)
+        ThrowReaderException(CorruptImageError,ImproperImageHeader,image)
     }
     MagickFreeMemory(pixels);
     if (EOFBlob(image))

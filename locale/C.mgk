@@ -189,9 +189,6 @@
       <Message name="NoIPTCInfoWasFound">
         No IPTC info was found
       </Message>
-      <Message name="NotASupportedImageFile">
-        Not a supported image file
-      </Message>
       <Message name="NumberOfImagesIsNotSupported">
         Number of images is not supported
       </Message>
@@ -323,6 +320,12 @@
         <Message name="AnErrorHasOccurredWritingToFile">
           An error has occurred writing to file
         </Message>
+
+        <Message name="CoderDoesNotSupportThisFormat">
+          Decoder does not support this format
+        </Message>
+
+
         <Message name="ColormapExceeds256Colors">
           Colormap exceeded 256 colors
         </Message>
@@ -358,126 +361,6 @@
         </Message>
         <Message name="NonOS2HeaderSizeError">
           Non OS2 BMP header size less than 40
-        </Message>
-        <Message name="NotAnARTImageFile">
-          Not an ART image file
-        </Message>
-        <Message name="NotAnAVIImageFile">
-          Not an AVI image file
-        </Message>
-        <Message name="NotAnAVSImageFile">
-          Not an AVS image file
-        </Message>
-        <Message name="NotABMPImageFile">
-          Not a BMP image file
-        </Message>
-        <Message name="NotACUTImageFile">
-          Not a CUT image file
-        </Message>
-        <Message name="NotADCMImageFile">
-          Not a DCM image file
-        </Message>
-        <Message name="NotADCXImageFile">
-          Not a DCX image file
-        </Message>
-        <Message name="NotADIBImageFile">
-          Not a DIB image file
-        </Message>
-        <Message name="NotADPXImageFile">
-          Not a DPX image file
-        </Message>
-        <Message name="NotAnEMFImageFile">
-          Not an EMF image file
-        </Message>
-        <Message name="NotAGIFImageFile">
-          Not a GIF image file
-        </Message>
-        <Message name="NotAnICOImageFile">
-          Not a ICO image file
-        </Message>
-        <Message name="NotAJNGImageFile">
-          Not a JNG image file
-        </Message>
-        <Message name="NotAMATLABImageFile">
-          Not a MATLAB image file
-        </Message>
-        <Message name="NotAMNGImageFile">
-          Not a MNG image file
-        </Message>
-        <Message name="NotAMTVImageFile">
-          Not a MTV image file
-        </Message>
-        <Message name="NotAOTBImageFile">
-          Not a OTB image file
-        </Message>
-        <Message name="NotAPCDImageFile">
-          Not a PCD image file
-        </Message>
-        <Message name="NotAPCXImageFile">
-          Not a PCX image file
-        </Message>
-        <Message name="NotAPICTImageFile">
-          Not a PICT image file
-        </Message>
-        <Message name="NotAPIXImageFile">
-          Not a PIX image file
-        </Message>
-        <Message name="NotAPDBImageFile">
-          Not a PDB image file
-        </Message>
-        <Message name="NotAPNGImageFile">
-          Not a PNG image file
-        </Message>
-        <Message name="NotAPNMImageFile">
-          Not a PNM image file
-        </Message>
-        <Message name="NotAPSDImageFile">
-          Not a PSD image file
-        </Message>
-        <Message name="NotAPWPImageFile">
-          Not a PSP image file
-        </Message>
-        <Message name="NotARLEImageFile">
-          Not a RLE image file
-        </Message>
-        <Message name="NotASCTImageFile">
-          Not a SCT image file
-        </Message>
-        <Message name="NotASFWImageFile">
-          Not a SFW image file
-        </Message>
-        <Message name="NotASGIImageFile">
-          Not a SGI image file
-        </Message>
-        <Message name="NotASUNImageFile">
-          Not a SUN image file
-        </Message>
-        <Message name="NotATGAImageFile">
-          Not a TGA image file
-        </Message>
-        <Message name="NotATIMImageFile">
-          Not a TIM image file
-        </Message>
-        <Message name="NotATOPOLImageFile">
-          Not a TOPAL image file
-        </Message>
-        <Message name="NotAVIFFImageFile">
-          Not a VIFF image file
-        </Message>
-        <Message name="NotAWBMPImageFile">
-          Not a WBMP image file
-        </Message>
-        <Message name="NotAWPGImageFile">
-          Not a WPG image file
-        </Message>
-        <Message name="NotAXBMImageFile">
-          Not a XBM image file
-        </Message>
-        <Message name="NotAXCFImageFile">
-          Not a XCF image file
-        </Message>
-        <Message name="NotAXPMImageFile">
-          Not a XPM image file
         </Message>
         <Message name="NotEnoughTiles">
           Not enough tiles found in level

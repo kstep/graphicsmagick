@@ -913,7 +913,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   count=ReadBlob(image,14,(char *) magick);
   if ((count == 0) ||
       (LocaleNCompare((char *) magick,"gimp xcf",8) != 0))
-    ThrowReaderException(CorruptImageError,NotAXCFImageFile,image);
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   /* clear the docinfo stuff */
   memset( &doc_info, 0, sizeof(XCFDocInfo));
   doc_info.exception = exception;

@@ -280,7 +280,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Verify SUN identifier.
     */
     if (sun_info.magic != 0x59a66a95)
-      ThrowReaderException(CorruptImageError,NotASUNImageFile,image);
+      ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
     sun_info.width=ReadBlobMSBLong(image);
     sun_info.height=ReadBlobMSBLong(image);
     sun_info.depth=ReadBlobMSBLong(image);

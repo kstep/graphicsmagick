@@ -583,7 +583,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  File signature was %.4s instead of '8BPS'", psd_info.signature );
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
         }
-    ThrowReaderException(CorruptImageError,NotAPSDImageFile,image)
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image)
   }
   (void) ReadBlob(image,6,(char *) psd_info.reserved);
   psd_info.channels=ReadBlobMSBShort(image);
@@ -718,7 +718,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  image resources invalid");
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
       }
-        ThrowReaderException(CorruptImageError,NotAPSDImageFile,image)
+        ThrowReaderException(CorruptImageError,ImproperImageHeader,image)
     }
       image->iptc_profile.info=data;
       image->iptc_profile.length=length;
@@ -819,7 +819,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  layer type was %.4s instead of 8BIM", type);
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),"return");
       }
-          ThrowReaderException(CorruptImageError,NotAPSDImageFile,image)
+          ThrowReaderException(CorruptImageError,ImproperImageHeader,image)
     }
         (void) ReadBlob(image,4,(char *) layer_info[i].blendkey);
         layer_info[i].opacity=(Quantum) (MaxRGB-ScaleCharToQuantum(ReadBlobByte(image)));

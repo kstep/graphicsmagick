@@ -338,8 +338,7 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
   MATLAB_HDR.NameFlag = ReadBlobLSBShort(image);
 
   if (strncmp(MATLAB_HDR.identific, "MATLAB", 6))
-  MATLAB_KO:ThrowReaderException(CorruptImageError, NotAMATLABImageFile,
-                         image);
+  MATLAB_KO:ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   if (strncmp(MATLAB_HDR.idx, "\1IM", 3))
     goto MATLAB_KO;
   if (MATLAB_HDR.unknown0 != 0x0E)

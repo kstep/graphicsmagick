@@ -312,7 +312,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) ReadBlob(image,4,pdb_info.id);
   if ((count == 0) || (memcmp(pdb_info.type,"vIMG",4) != 0) ||
       (memcmp(pdb_info.id,"View",4) != 0))
-    ThrowReaderException(CoderError,NotASupportedImageFile,image);
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   pdb_info.seed=ReadBlobMSBLong(image);
   pdb_info.next_record=ReadBlobMSBLong(image);
   pdb_info.number_records=ReadBlobMSBShort(image);
@@ -503,7 +503,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     }
     default:
-      ThrowReaderException(CorruptImageError,NotAPDBImageFile,image)
+      ThrowReaderException(CorruptImageError,ImproperImageHeader,image)
   }
   MagickFreeMemory(pixels);
   if (EOFBlob(image))

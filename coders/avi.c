@@ -651,7 +651,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
             break;
           }
           default:
-            ThrowReaderException(CorruptImageError,NotAnAVIImageFile,image)
+            ThrowReaderException(CorruptImageError,ImproperImageHeader,image)
         }
 
         MagickFreeMemory(pixels);

@@ -128,7 +128,7 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   bits_per_pixel=ReadBlobMSBShort(image);
   if ((width == (unsigned long) ~0) || (height == (unsigned long) ~0) ||
       ((bits_per_pixel != 8) && (bits_per_pixel != 24)))
-    ThrowReaderException(CorruptImageError,NotAPIXImageFile,image);
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   do
   {
     /*

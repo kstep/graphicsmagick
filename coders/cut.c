@@ -312,7 +312,7 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Header.Reserved=ReadBlobLSBShort(image);
 
   if (Header.Width==0 || Header.Height==0 || Header.Reserved!=0)
-    CUT_KO:  ThrowReaderException(CorruptImageError,NotACUTImageFile,image);
+    CUT_KO:  ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
 
   /*---This code checks first line of image---*/
   EncodedByte=ReadBlobLSBShort(image);

@@ -273,7 +273,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Initialize image structure.
     */
     if ((count == 0) || (format != 'P'))
-      ThrowReaderException(CorruptImageError,NotAPNMImageFile,image);
+      ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
     format=ReadBlobByte(image);
     if (format == '7')
       (void) PNMInteger(image,10);
@@ -608,7 +608,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       }
       default:
-        ThrowReaderException(CorruptImageError,NotAPNMImageFile,image)
+        ThrowReaderException(CorruptImageError,ImproperImageHeader,image)
     }
     if (scale != (unsigned long *) NULL)
       MagickFreeMemory(scale);

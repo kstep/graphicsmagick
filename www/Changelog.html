@@ -56,6 +56,21 @@
 2003-09-18  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> locale/C.mgk: Eliminated the many "NotA" messages since they may
+        all be considered forms of "ImproperImageHeader".  It is useful to
+        provide the origin of such messages in case the wrong coder has
+        been invoked, however, this is expensive to do via the message
+        database since it explodes the number of messages.  The exception
+        logging can help here.  Once the exception reports include the
+        reporting entity, it will be more clear when the software
+        misbehaves.<BR>
+  <LI> magick/error.h (ThrowReaderException2): Remove since no longer
+        used.<BR>
+        (ThrowReaderException): Simplified implementation so that
+        ThrowException is not expanded twice.
+  <LI> magick/error.h (ThrowReaderException3): Remove since never used.
+  <LI> coders/xtrn.c (ReadXTRNImage): Use ThrowReaderException rather
+        than ThrowReaderException2.<BR>
   <LI> locale/C.mgk (MissingArgument) Updated to include %s so that the
         description field appears earlier in the message.
   <LI> magick/error.c (DefaultErrorHandler): Added a hack to allow the

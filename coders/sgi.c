@@ -269,7 +269,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Verify SGI identifier.
     */
     if (iris_info.magic != 0x01DA)
-      ThrowReaderException(CorruptImageError,NotASGIImageFile,image);
+      ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
     iris_info.storage=ReadBlobByte(image);
     if (iris_info.storage == 0x01)
       image->compression=RLECompression;

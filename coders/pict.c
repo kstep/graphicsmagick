@@ -776,17 +776,17 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
   ReadRectangle(frame);
   while ((c=ReadBlobByte(image)) == 0);
   if (c != 0x11)
-    ThrowReaderException(CorruptImageError,NotAPICTImageFile,image);
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   version=ReadBlobByte(image);
   if (version == 2)
     {
       c=ReadBlobByte(image);
       if (c != 0xff)
-        ThrowReaderException(CorruptImageError,NotAPICTImageFile,image);
+        ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
     }
   else
     if (version != 1)
-      ThrowReaderException(CorruptImageError,NotAPICTImageFile,image);
+      ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   /*
     Create black canvas.
   */

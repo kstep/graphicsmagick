@@ -876,7 +876,7 @@ static Image *ReadWPGImage(const ImageInfo *image_info,
   Header.Reserved=ReadBlobLSBShort(image);
 
   if (Header.FileId!=0x435057FF || (Header.ProductType>>8)!=0x16)
-    ThrowReaderException(CorruptImageError,NotAWPGImageFile,image);
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   if (Header.EncryptKey!=0)
     ThrowReaderException(CoderError,EncryptedWPGImageFileNotSupported,image);
 

@@ -126,7 +126,7 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   width=ReadBlobMSBLong(image);
   height=ReadBlobMSBLong(image);
   if ((width == (unsigned long) ~0) || (height == (unsigned long) ~0))
-    ThrowReaderException(CorruptImageError,NotAnAVSImageFile,image);
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   do
   {
     /*

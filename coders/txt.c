@@ -289,7 +289,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   if (IsTXT((unsigned char *)p,strlen(p)))
     {
-      ThrowReaderException(CoderError,NotASupportedImageFile,image);
+      ThrowReaderException(CoderError,ImageTypeNotSupported,image);
     }
 
   for (offset=2*page.y; p != (char *) NULL; )

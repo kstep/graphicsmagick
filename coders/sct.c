@@ -153,7 +153,7 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (LocaleNCompare((char *) magick,"BM",2) != 0) &&
       (LocaleNCompare((char *) magick,"PG",2) != 0) &&
       (LocaleNCompare((char *) magick,"TX",2) != 0))
-    ThrowReaderException(CorruptImageError,NotASCTImageFile,image);
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   if ((LocaleNCompare((char *) magick,"LW",2) == 0) ||
       (LocaleNCompare((char *) magick,"BM",2) == 0) ||
       (LocaleNCompare((char *) magick,"PG",2) == 0) ||

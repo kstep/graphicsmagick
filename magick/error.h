@@ -394,46 +394,12 @@ extern MagickExport WarningHandler
 }
 #define ThrowReaderException(code_,reason_,image_) \
 { \
-  if ((image) == (Image *) NULL) \
+  ThrowException(exception,code_,reason_,image_ ? (image_)->filename : 0); \
+  if (image_) \
     { \
-      ThrowException(exception,code_,reason_,(char *) NULL); \
-    } \
-  else \
-    { \
-      ThrowException(exception,code_,reason_,(image)->filename); \
-      if (image->blob->type != UndefinedStream) \
-        CloseBlob(image); \
-      DestroyImageList(image); \
-    } \
-  return((Image *) NULL); \
-}
-#define ThrowReaderException2(code_,reason_,image_) \
-{ \
-  if ((image) == (Image *) NULL) \
-    { \
-      ThrowException2(exception,code_,reason_,(char *) NULL); \
-    } \
-  else \
-    { \
-      ThrowException2(exception,code_,reason_,(image)->filename); \
-      if (image->blob->type != UndefinedStream) \
-        CloseBlob(image); \
-      DestroyImageList(image); \
-    } \
-  return((Image *) NULL); \
-}
-#define ThrowReaderException3(code_,reason_,image_) \
-{ \
-  if ((image) == (Image *) NULL) \
-    { \
-      ThrowException(exception,code_,reason_,(char *) NULL); \
-    } \
-  else \
-    { \
-      ThrowException3(exception,code_,reason_,(image)->filename); \
-      if (image->blob->type != UndefinedStream) \
-        CloseBlob(image); \
-      DestroyImageList(image); \
+       if (image_->blob->type != UndefinedStream) \
+         CloseBlob(image_); \
+       DestroyImageList(image_); \
     } \
   return((Image *) NULL); \
 }

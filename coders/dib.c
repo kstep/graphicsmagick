@@ -458,7 +458,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) memset(&dib_info,0,sizeof(DIBInfo));
   dib_info.size=ReadBlobLSBLong(image);
   if (dib_info.size!=40)
-    ThrowReaderException(CorruptImageError,NotADIBImageFile,image);
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   /*
     Microsoft Windows 3.X DIB image file.
   */
@@ -779,7 +779,7 @@ static Image *ReadDIBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     }
     default:
-      ThrowReaderException(CorruptImageError,NotADIBImageFile,image)
+      ThrowReaderException(CorruptImageError,ImproperImageHeader,image)
   }
   MagickFreeMemory(pixels);
   if (EOFBlob(image))
