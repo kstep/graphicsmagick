@@ -7,8 +7,7 @@
    <meta name="Description" content="Description of MagickInfo structure members.">
    <title>ImageMagick MagickInfo Structure</title>
 </head>
-<body bgcolor="#FFFFFF" text="#000000" link="#1F00FF" alink="#FF0000"
-  vlink="#9900DD">
+<body text="#000000" bgcolor="#FFFFFF" link="#1F00FF" vlink="#9900DD" alink="#FF0000">
 
 <center>
 <h1>
@@ -23,28 +22,99 @@ be obtained by calling <a href="../magick.html#GetMagickInfo">GetMagickInfo()</a
 Pass the argument NULL to obtain the first member of this list. A human-readable
 list of registered image formats may be printed to a file descriptor by
 calling <a href="../magick.html#ListMagickInfo">ListMagickInfo()</a>.
-<p>Example:
-<p><tt>export unsigned int IsGIF(const unsigned char *magick,unsigned int
-length)</tt>
+<p>Support for formats may be provided as a module which is part of the
+ImageMagick library, provided by a module which is loaded dynamically at
+run-time, or directly by the linked program. Users of ImageMagick will
+normally want to create a loadable-module, or support encode/decode of
+an image format directly from within their program.
+<h3>
+Sample Module:</h3>
+The following shows sample code for a module called "GIF" (gif.c). Note
+that the names of the Register and <tt>Unregister call-back routines are
+calculated at run-time, and therefore must follow the rigid naming scheme
+RegisterFORMATImage and UnregisterFORMATImage, respectively, where FORMAT
+is the upper-cased name of the module file</tt>:
+<p>/* Test file header to see if it is of my type */
+<br><tt>unsigned int IsGIF(const unsigned char *magick,unsigned int length)</tt>
 <br><tt>{</tt>
-<br><tt>&nbsp; [ test image header for supported magick ... ]</tt>
+<br><tt>&nbsp; if (length &lt; 4)</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; return(False);</tt>
+<br><tt>&nbsp; if (strncmp((char *) magick,"GIF8",4) == 0)</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; return(True);</tt>
+<br><tt>&nbsp; return(False);</tt>
 <br><tt>}</tt>
-<p><tt>export Image *ReadGIFImage(const ImageInfo *image_info)</tt>
+<p>/* Read image */
+<br><tt>Image *ReadGIFImage(const ImageInfo *image_info)</tt>
 <br><tt>{</tt>
 <br><tt>&nbsp; [ decode the image ... ]</tt>
 <br><tt>}</tt>
-<p><tt>export unsigned int WriteGIFImage(const ImageInfo *image_info,Image
-*image)</tt>
+<p>/* Write image */
+<br><tt>unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)</tt>
+<br><tt>{</tt>
+<br><tt>&nbsp; [ encode the image ... ]</tt>
+<br><tt>}</tt><tt></tt>
+<p><tt>/* Module call-back to register support for formats */</tt>
+<br><tt>void RegisterGIFImage(void)</tt>
+<br><tt>{</tt>
+<br><tt>&nbsp; MagickInfo</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; *entry;</tt><tt></tt>
+<p><tt>&nbsp; entry=SetMagickInfo("GIF");</tt>
+<br><tt>&nbsp; entry->decoder=ReadGIFImage;</tt>
+<br><tt>&nbsp; entry->encoder=WriteGIFImage;</tt>
+<br><tt>&nbsp; entry->magick=IsGIF;</tt>
+<br><tt>&nbsp; entry->description=AllocateString("CompuServe graphics interchange
+format");</tt>
+<br><tt>&nbsp; entry->module=AllocateString("GIF");</tt>
+<br><tt>&nbsp; RegisterMagickInfo(entry);</tt>
+<br><tt>&nbsp; entry=SetMagickInfo("GIF87");</tt>
+<br><tt>&nbsp; entry->decoder=ReadGIFImage;</tt>
+<br><tt>&nbsp; entry->encoder=WriteGIFImage;</tt>
+<br><tt>&nbsp; entry->magick=IsGIF;</tt>
+<br><tt>&nbsp; entry->adjoin=False;</tt>
+<br><tt>&nbsp; entry->description=</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; AllocateString("CompuServe graphics interchange
+format (version 87a)");</tt>
+<br><tt>&nbsp; entry->module=AllocateString("GIF");</tt>
+<br><tt>&nbsp; RegisterMagickInfo(entry);</tt>
+<br><tt>}</tt><tt></tt>
+<p><tt>/* Module call-back to unregister support for formats */</tt>
+<br><tt>Export void UnregisterGIFImage(void)</tt>
+<br><tt>{</tt>
+<br><tt>&nbsp; UnregisterMagickInfo("GIF");</tt>
+<br><tt>&nbsp; UnregisterMagickInfo("GIF87");</tt>
+<br><tt>}</tt>
+<h3>
+Sample Application Code</h3>
+Image format support provided within the user's application does not need
+to implement the RegisterFORMATImage and UnregisterFORMATImage call-back
+routines. Instead, the application takes responsibility for the registration
+itself. An example follows:
+<p>/* Test file header to see if it is of my type */
+<br><tt>unsigned int IsGIF(const unsigned char *magick,unsigned int length)</tt>
+<br><tt>{</tt>
+<br><tt>&nbsp; if (length &lt; 4)</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; return(False);</tt>
+<br><tt>&nbsp; if (strncmp((char *) magick,"GIF8",4) == 0)</tt>
+<br><tt>&nbsp;&nbsp;&nbsp; return(True);</tt>
+<br><tt>&nbsp; return(False);</tt>
+<br><tt>}</tt>
+<p>/* Read image */
+<br><tt>Image *ReadGIFImage(const ImageInfo *image_info)</tt>
+<br><tt>{</tt>
+<br><tt>&nbsp; [ decode the image ... ]</tt>
+<br><tt>}</tt>
+<p>/* Write image */
+<br><tt>unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)</tt>
 <br><tt>{</tt>
 <br><tt>&nbsp; [ encode the image ... ]</tt>
 <br><tt>}</tt>
 <p><tt>#include &lt;stdio.h></tt>
 <br><tt>int main( void )</tt>
 <br><tt>{</tt>
-<br><tt>&nbsp; struct MagickInfo* info;</tt><tt></tt>
-<p><tt>&nbsp; info = SetMagickInfo("GIF");</tt><tt></tt>
+<br><tt>&nbsp; struct MagickInfo* info;</tt>
+<p><tt>&nbsp; info = SetMagickInfo("GIF");</tt>
 <p><tt>&nbsp; if ( info == (MagickInfo*)NULL )</tt>
-<br><tt>&nbsp;&nbsp;&nbsp; exit(1);</tt><tt></tt>
+<br><tt>&nbsp;&nbsp;&nbsp; exit(1);</tt>
 <p><tt>&nbsp; info->decoder = ReadGIFImage;</tt>
 <br><tt>&nbsp; info->encoder = WriteGIFImage;</tt>
 <br><tt>&nbsp; info->magick&nbsp; = IsGIF;</tt>
@@ -58,7 +128,9 @@ interchange format");</tt>
 <p><tt>&nbsp; ListMagickInfo( stdout );</tt>
 <br><tt>&nbsp; return;</tt>
 <br><tt>}</tt>
-<p>The members of the MagickInfo structure are shown in the following table:
+<h3>
+MagickInfo Structure Definition</h3>
+The members of the MagickInfo structure are shown in the following table:
 <br>&nbsp;
 <table BORDER WIDTH="100%" BGCOLOR="#CCCCCC" NOSAVE >
 <caption><b>MagickInfo Structure Members</b></caption>
@@ -141,10 +213,19 @@ operating arbitrary BLOBs (rather than only disk files).</td>
 <tr>
 <td>description</td>
 
-<td>const char *</td>
+<td>char *</td>
 
 <td>Long form image format description (e.g. "CompuServe graphics interchange
 format").</td>
+</tr>
+
+<tr>
+<td>module</td>
+
+<td>char *</td>
+
+<td>Name of module (e.g. "GIF") which registered this format. Set to NULL
+if format is not registered by a module.</td>
 </tr>
 
 <tr>

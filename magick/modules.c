@@ -63,13 +63,15 @@
 */
 /* List of loaded modules */
 static ModuleInfo
-  *module_info = (ModuleInfo *) NULL;
+  *module_info_list = (ModuleInfo *) NULL;
 /* List of module aliases */
 static ModuleAliases
   *module_aliases = (ModuleAliases *) NULL;
 /* Module search path */
 static char
   **module_path = (char**) NULL;
+static int
+    modules_initialized = False;
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -98,7 +100,7 @@ Export void DestroyModuleInfo()
   register ModuleInfo
     *p;
 
-  for (p=module_info; p != (ModuleInfo *) NULL; )
+  for (p=module_info_list; p != (ModuleInfo *) NULL; )
   {
     entry=p;
     p=p->next;
@@ -106,7 +108,7 @@ Export void DestroyModuleInfo()
       FreeMemory((void **) &entry->tag);
     FreeMemory((void **) &entry);
   }
-  module_info=(ModuleInfo *) NULL;
+  module_info_list=(ModuleInfo *) NULL;
 }
 
 /*
@@ -140,28 +142,32 @@ Export void ExitModules(void)
     *alias,
     *entry;
 
-  /* Unload and de-register all loaded modules */
-  while((p=GetModuleInfo((char *)NULL))!=(ModuleInfo*)NULL)
-    UnloadModule(p->tag);
-
-  /* Free memory associated with ModuleAliases list */
-  for(alias=module_aliases; alias != (ModuleAliases*)NULL; )
+  if (modules_initialized == True)
     {
-      entry=alias;
-      alias=alias->next;
-      FreeMemory((void**)&entry->alias);
-      FreeMemory((void**)&entry->module);
-      FreeMemory((void**)&entry);
+      /* Unload and unregister all loaded modules */
+      while((p = GetModuleInfo((char *)NULL)) != (ModuleInfo*) NULL)
+	UnloadModule(p->tag);
+
+      /* Free memory associated with ModuleAliases list */
+      for(alias=module_aliases; alias != (ModuleAliases*)NULL; )
+	{
+	  entry=alias;
+	  alias=alias->next;
+	  FreeMemory((void**)&entry->alias);
+	  FreeMemory((void**)&entry->module);
+	  FreeMemory((void**)&entry);
+	}
+      module_aliases=(ModuleAliases*)NULL;
+
+      /* Free memory associated with module directory search list */
+      for( i=0; module_path[i]; ++i )
+	FreeMemory((void**)&module_path[i]);
+      FreeMemory((void**)&module_path);
+
+      /* Shut down libltdl */
+      /*  lt_dlexit(void); */
     }
-  module_aliases=(ModuleAliases*)NULL;
-
-  /* Free memory associated with module directory search list */
-  for( i=0; module_path[i]; ++i )
-    FreeMemory((void**)&module_path[i]);
-  FreeMemory((void**)&module_path);
-
-  /* Shut down libltdl */
- /*  lt_dlexit(void); */
+  modules_initialized = False;
 }
 
 /*
@@ -199,11 +205,11 @@ Export ModuleInfo *GetModuleInfo(const char *tag)
   register ModuleInfo
     *p;
 
-  if (module_info == (ModuleInfo*) NULL)
+  if (module_info_list == (ModuleInfo*) NULL)
     return((ModuleInfo*) NULL);
   if (tag == (char *) NULL)
-    return(module_info);
-  for (p=module_info; p != (ModuleInfo *) NULL; p=p->next)
+    return(module_info_list);
+  for (p=module_info_list; p != (ModuleInfo *) NULL; p=p->next)
     if (Latin1Compare(p->tag,tag) == 0)
       return(p);
   return((ModuleInfo *) NULL);
@@ -377,10 +383,7 @@ static void InitializeModuleSearchPath(void)
 }
 Export void InitializeModules(void)
 {
-  static int
-    initialized = 0;
-
-  if (!initialized)
+  if (modules_initialized != True)
     {
       /* Initialize ltdl */
       if(lt_dlinit() != 0)
@@ -395,6 +398,11 @@ Export void InitializeModules(void)
 
       /* Load module aliases */
       InitializeModuleAliases();
+
+      /* Register to be cleaned up at program exit */
+      atexit(ExitModules);
+
+      modules_initialized=True;
     }
 }
 
@@ -690,9 +698,9 @@ Export ModuleInfo *RegisterModuleInfo(ModuleInfo *entry)
     *p;
 
   p=(ModuleInfo *) NULL;
-  if (module_info != (ModuleInfo *) NULL)
+  if (module_info_list != (ModuleInfo *) NULL)
     {
-      for (p=module_info; p->next != (ModuleInfo *) NULL; p=p->next)
+      for (p=module_info_list; p->next != (ModuleInfo *) NULL; p=p->next)
 	{
 	  if (Latin1Compare(p->tag,entry->tag) >= 0)
 	    {
@@ -705,9 +713,9 @@ Export ModuleInfo *RegisterModuleInfo(ModuleInfo *entry)
 	    }
 	}
     }
-  if (module_info == (ModuleInfo *) NULL)
+  if (module_info_list == (ModuleInfo *) NULL)
     {
-      module_info=entry;
+      module_info_list=entry;
       return(entry);
     }
   entry->previous=p;
@@ -802,7 +810,7 @@ Export int UnloadModule(const char* module)
 	Locate and execute UnregisterFORMATImage function
       */
       strcpy(func_name, "Unregister");
-      strcat(func_name,module);
+      strcat(func_name, module);
       strcat(func_name, "Image");
 
       /*
@@ -864,24 +872,25 @@ Export int UnregisterModuleInfo(const char *tag)
   register ModuleInfo
     *p;
 
-  for (p=GetModuleInfo((char *) NULL); p != (ModuleInfo *) NULL; p=p->next)
+  for (p=module_info_list; p != (ModuleInfo *) NULL; p=p->next)
   {
     if (Latin1Compare(p->tag,tag) == 0)
       {
-        if (p->tag != (char *) NULL)
-          FreeMemory((void *) &p->tag);
+	FreeMemory((void **) &p->tag);
         if (p->previous != (ModuleInfo *) NULL)
+	  /* Not first in list */
           p->previous->next=p->next;
         else
           {
-            module_info=p->next;
+	    /* First in list */
+            module_info_list=p->next;
             if (p->next != (ModuleInfo *) NULL)
               p->next->previous=(ModuleInfo *) NULL;
           }
         if (p->next != (ModuleInfo *) NULL)
           p->next->previous=p->previous;
         module_info=p;
-        FreeMemory((void *) &module_info);
+        FreeMemory((void **) &module_info);
         return(True);
     }
   }

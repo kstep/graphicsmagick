@@ -636,13 +636,37 @@ Export void RegisterCACHEImage(void)
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("Cache");
+  entry=SetMagickInfo("CACHE");
   entry->decoder=ReadCACHEImage;
   entry->encoder=WriteCACHEImage;
   entry->magick=IsCACHE;
   entry->description=AllocateString("Magick Persistent Cache image format");
   entry->module=AllocateString("CACHE");
   RegisterMagickInfo(entry);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   U n r e g i s t e r C A C H E I m a g e                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method UnregisterCACHEImage removes format registrations made by the
+%  CACHE module from the list of supported formats.
+%
+%  The format of the UnregisterCACHEImage method is:
+%
+%      UnregisterCACHEImage(void)
+%
+*/
+Export void UnregisterCACHEImage(void)
+{
+  UnregisterMagickInfo("CACHE");
 }
 
 /*

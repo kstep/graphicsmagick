@@ -63,7 +63,7 @@
   Global declarations.
 */
 static MagickInfo
-  *magick_info = (MagickInfo *) NULL;
+  *magick_info_list = (MagickInfo *) NULL;
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -91,7 +91,7 @@ Export void DestroyMagickInfo()
   register MagickInfo
     *p;
 
-  for (p=magick_info; p != (MagickInfo *) NULL; )
+  for (p=magick_info_list; p != (MagickInfo *) NULL; )
   {
     entry=p;
     p=p->next;
@@ -100,7 +100,7 @@ Export void DestroyMagickInfo()
     FreeMemory((void **) &entry->module);
     FreeMemory((void **) &entry);
   }
-  magick_info=(MagickInfo *) NULL;
+  magick_info_list=(MagickInfo *) NULL;
 }
 
 /*
@@ -137,7 +137,7 @@ Export MagickInfo *GetMagickInfo(const char *tag)
   register MagickInfo
     *p;
 
-  if (magick_info == (MagickInfo *) NULL)
+  if (magick_info_list == (MagickInfo *) NULL)
     {
 #if defined(HasLTDL)
       /* Initialize ltdl */
@@ -221,14 +221,14 @@ Export MagickInfo *GetMagickInfo(const char *tag)
 #endif
     }
   if (tag == (char *) NULL)
-    return(magick_info);
-  for (p=magick_info; p != (MagickInfo *) NULL; p=p->next)
+    return(magick_info_list);
+  for (p=magick_info_list; p != (MagickInfo *) NULL; p=p->next)
     if (Latin1Compare(p->tag,tag) == 0)
       return(p);
 #if 0
   /* Try loading format module */
   if(LoadModule(tag))
-    for (p=magick_info; p != (MagickInfo *) NULL; p=p->next)
+    for (p=magick_info_list; p != (MagickInfo *) NULL; p=p->next)
       if (Latin1Compare(p->tag,tag) == 0)
 	return(p);
 #endif
@@ -324,9 +324,9 @@ Export MagickInfo *RegisterMagickInfo(MagickInfo *entry)
     Add tag info to the image format list.
   */
   p=(MagickInfo *) NULL;
-  if (magick_info != (MagickInfo *) NULL)
+  if (magick_info_list != (MagickInfo *) NULL)
     {
-      for (p=magick_info; p->next != (MagickInfo *) NULL; p=p->next)
+      for (p=magick_info_list; p->next != (MagickInfo *) NULL; p=p->next)
       {
         if (Latin1Compare(p->tag,entry->tag) >= 0)
           {
@@ -339,9 +339,9 @@ Export MagickInfo *RegisterMagickInfo(MagickInfo *entry)
           }
       }
     }
-  if (magick_info == (MagickInfo *) NULL)
+  if (magick_info_list == (MagickInfo *) NULL)
     {
-      magick_info=entry;
+      magick_info_list=entry;
       return(entry);
     }
   entry->previous=p;
@@ -438,7 +438,7 @@ Export unsigned int UnregisterMagickInfo(const char *tag)
   register MagickInfo
     *p;
 
-  for (p=GetMagickInfo((char *) NULL); p != (MagickInfo *) NULL; p=p->next)
+  for (p=magick_info_list; p != (MagickInfo *) NULL; p=p->next)
     {
       if (Latin1Compare(p->tag,tag) == 0)
 	{
