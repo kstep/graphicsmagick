@@ -46,7 +46,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %
-^L
+*/
+
 /*
   Include declarations.
 */
@@ -301,6 +302,377 @@ const PICTCode
 #endif
 
 #if !defined(macintosh)
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D e c o d e I m a g e                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method DecodeImage decompresses an image via Macintosh pack bits
+%  decoding for Macintosh PICT images.
+%
+%  The format of the DecodeImage routine is:
+%
+%      status=DecodeImage(image,bytes_per_line,bits_per_pixel)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method DecodeImage returns True if all the pixels are
+%      uncompressed without error, otherwise False.
+%
+%    o image: The address of a structure of type Image.
+%
+%    o bytes_per_line: This integer identifies the number of bytes in a
+%      scanline.
+%
+%    o bits_per_pixel: The number of bits in a pixel.
+%
+%
+*/
+
+static unsigned char *ExpandBuffer(unsigned char *pixels,int *bytes_per_line,
+  const int bits_per_pixel)
+{
+  register int
+    i;
+
+  register unsigned char
+    *p,
+    *q;
+
+  static unsigned char
+    scanline[8*256];
+
+  p=pixels;
+  q=scanline;
+  switch (bits_per_pixel)
+  {
+    case 8:
+    case 16:
+    case 32:
+      return(pixels);
+    case 4:
+    {
+      for (i=0; i < *bytes_per_line; i++)
+      {
+        *q++=(*p >> 4) & 0xff;
+        *q++=(*p & 15);
+        p++;
+      }
+      *bytes_per_line*=2;
+      break;
+    }
+    case 2:
+    {
+      for (i=0; i < *bytes_per_line; i++)
+      {
+        *q++=(*p >> 6) & 0x03;
+        *q++=(*p >> 4) & 0x03;
+        *q++=(*p >> 2) & 0x03;
+        *q++=(*p & 3);
+        p++;
+      }
+      *bytes_per_line*=4;
+      break;
+    }
+    case 1:
+    {
+      for (i=0; i < *bytes_per_line; i++)
+      {
+        *q++=(*p >> 7) & 0x01;
+        *q++=(*p >> 6) & 0x01;
+        *q++=(*p >> 5) & 0x01;
+        *q++=(*p >> 4) & 0x01;
+        *q++=(*p >> 3) & 0x01;
+        *q++=(*p >> 2) & 0x01;
+        *q++=(*p >> 1) & 0x01;
+        *q++=(*p & 0x01);
+        p++;
+      }
+      *bytes_per_line*=8;
+      break;
+    }
+    default:
+      break;
+  }
+  return(scanline);
+}
+
+static unsigned char* DecodeImage(const Image *image,int bytes_per_line,
+  const int bits_per_pixel)
+{
+  int
+    bytes_per_pixel,
+    k,
+    length,
+    number_pixels,
+    packets,
+    scanline_length,
+    width;
+
+  register int
+    i,
+    j;
+
+  register unsigned char
+    *p,
+    *q;
+
+  unsigned char
+    *pixels,
+    *scanline;
+
+  /*
+    Determine pixel buffer size.
+  */
+  if (bits_per_pixel <= 8)
+    bytes_per_line&=0x7fff;
+  width=image->columns;
+  bytes_per_pixel=1;
+  if (bits_per_pixel == 16)
+    {
+      bytes_per_pixel=2;
+      width*=2;
+    }
+  else
+    if (bits_per_pixel == 32)
+      width*=image->matte ? 4 : 3;
+  if (bytes_per_line == 0)
+    bytes_per_line=width;
+  packets=width;
+  if (bytes_per_line < 8)
+    packets=8*bytes_per_line;
+  /*
+    Allocate pixel and scanline buffer.
+  */
+  pixels=(unsigned char *)
+    AllocateMemory((packets*image->rows+8)*sizeof(unsigned char));
+  if (pixels == (unsigned char *) NULL)
+    return((unsigned char *) NULL);
+  scanline=(unsigned char *)
+    AllocateMemory((bytes_per_line+65535)*sizeof(unsigned char));
+  if (scanline == (unsigned char *) NULL)
+    return((unsigned char *) NULL);
+  if (bytes_per_line < 8)
+    {
+      /*
+        Pixels are already uncompressed.
+      */
+      for (i=0; i < (int) image->rows; i++)
+      {
+        q=pixels+i*width;
+        number_pixels=bytes_per_line;
+        (void) ReadData((char *) scanline,1,number_pixels,image->file);
+        p=ExpandBuffer(scanline,&number_pixels,bits_per_pixel);
+        for (j=0; j < number_pixels; j++)
+          *q++=(*p++);
+      }
+      FreeMemory(scanline);
+      return(pixels);
+    }
+  /*
+    Uncompress RLE pixels into uncompressed pixel buffer.
+  */
+  for (i=0; i < (int) image->rows; i++)
+  {
+    q=pixels+i*width;
+    if ((bytes_per_line > 250) || (bits_per_pixel > 8))
+      scanline_length=MSBFirstReadShort(image->file);
+    else
+      scanline_length=fgetc(image->file);
+    (void) ReadData((char *) scanline,1,scanline_length,image->file);
+    for (j=0; j < scanline_length; )
+      if ((scanline[j] & 0x80) == 0)
+        {
+          length=(scanline[j] & 0xff)+1;
+          number_pixels=length*bytes_per_pixel;
+          p=ExpandBuffer(scanline+j+1,&number_pixels,bits_per_pixel);
+          for (k=0; k < number_pixels; k++)
+            *q++=(*p++);
+          j+=length*bytes_per_pixel+1;
+        }
+      else
+        {
+          int
+            l;
+
+          length=((scanline[j] ^ 0xff) & 0xff)+2;
+          number_pixels=bytes_per_pixel;
+          p=ExpandBuffer(scanline+j+1,&number_pixels,bits_per_pixel);
+          for (k=0; k < length; k++)
+          {
+            for (l=0; l < number_pixels; l++)
+              *q++=(*p++);
+            p-=number_pixels;
+          }
+          j+=bytes_per_pixel+1;
+        }
+  }
+  FreeMemory(scanline);
+  return(pixels);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   E n c o d e I m a g e                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method EncodeImage compresses an image via Macintosh pack bits
+%  encoding for Macintosh PICT images.
+%
+%  The format of the EncodeImage routine is:
+%
+%      status=EncodeImage(image,scanline,pixels)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method EncodeImage returns True if all the pixels are
+%      compressed without error, otherwise False.
+%
+%    o image: The address of a structure of type Image.
+%
+%    o scanline: A pointer to an array of characters to pack.
+%
+%    o pixels: A pointer to an array of characters where the packed
+%      characters are stored.
+%
+%
+*/
+static unsigned int EncodeImage(Image *image,const unsigned char *scanline,
+  unsigned char *pixels)
+{
+#define MaxCount  128
+#define MaxPackbitsRunlength  128
+
+  int
+    count,
+    repeat_count,
+    runlength;
+
+  register const unsigned char
+    *p;
+
+  register int
+    i;
+
+  register long
+    packets;
+
+  register unsigned char
+    *q;
+
+  unsigned char
+    index;
+
+  unsigned int
+    bytes_per_line;
+
+  /*
+    Pack scanline.
+  */
+  assert(image != (Image *) NULL);
+  assert(scanline != (unsigned char *) NULL);
+  assert(pixels != (unsigned char *) NULL);
+  bytes_per_line=image->columns;
+  if (image->class == DirectClass)
+    bytes_per_line*=image->matte ? 4 : 3;
+  count=0;
+  runlength=0;
+  p=scanline+(bytes_per_line-1);
+  q=pixels;
+  index=(*p);
+  for (i=bytes_per_line-1; i >= 0; i--)
+  {
+    if (index == *p)
+      runlength++;
+    else
+      {
+        if (runlength < 3)
+          while (runlength > 0)
+          {
+            *q++=index;
+            runlength--;
+            count++;
+            if (count == MaxCount)
+              {
+                *q++=MaxCount-1;
+                count-=MaxCount;
+              }
+          }
+        else
+          {
+            if (count > 0)
+              *q++=count-1;
+            count=0;
+            while (runlength > 0)
+            {
+              repeat_count=runlength;
+              if (repeat_count > MaxPackbitsRunlength)
+                repeat_count=MaxPackbitsRunlength;
+              *q++=index;
+              *q++=257-repeat_count;
+              runlength-=repeat_count;
+            }
+          }
+        runlength=1;
+      }
+    index=(*p);
+    p--;
+  }
+  if (runlength < 3)
+    while (runlength > 0)
+    {
+      *q++=index;
+      runlength--;
+      count++;
+      if (count == MaxCount)
+        {
+          *q++=MaxCount-1;
+          count-=MaxCount;
+        }
+    }
+  else
+    {
+      if (count > 0)
+        *q++=count-1;
+      count=0;
+      while (runlength > 0)
+      {
+        repeat_count=runlength;
+        if (repeat_count > MaxPackbitsRunlength)
+          repeat_count=MaxPackbitsRunlength;
+        *q++=index;
+        *q++=257-repeat_count;
+        runlength-=repeat_count;
+      }
+    }
+  if (count > 0)
+    *q++=count-1;
+  /*
+    Write the number of and the packed packets.
+  */
+  packets=(int) (q-pixels);
+  MSBFirstWriteShort((unsigned short) packets,image->file);
+  packets+=2;
+  while (q != pixels)
+  {
+    q--;
+    (void) fputc((char) *q,image->file);
+  }
+  return(packets);
+}
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -686,9 +1058,9 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
           tiled_image->pixels=(RunlengthPacket *)
             AllocateMemory(max_packets*sizeof(RunlengthPacket));
           if ((code != 0x9a) && (bytes_per_line & 0x8000) == 0)
-            pixels=PICTDecodeImage(tiled_image,bytes_per_line,1);
+            pixels=DecodeImage(tiled_image,bytes_per_line,1);
           else
-            pixels=PICTDecodeImage(tiled_image,bytes_per_line,
+            pixels=DecodeImage(tiled_image,bytes_per_line,
               pixmap.bits_per_pixel);
           if ((tiled_image->pixels == (RunlengthPacket *) NULL) ||
               (pixels == (unsigned char *) NULL))
@@ -1151,7 +1523,7 @@ Export unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
           x++;
           if (x == (int) image->columns)
             {
-              count+=PICTEncodeImage(image,scanline,packed_scanline);
+              count+=EncodeImage(image,scanline,packed_scanline);
               if (QuantumTick(y,image->rows))
                 ProgressMonitor(SaveImageText,y,image->rows);
               index=scanline;
@@ -1192,7 +1564,7 @@ Export unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
               green=scanline+image->columns;
               blue=scanline+2*image->columns;
               index=scanline+3*image->columns;
-              count+=PICTEncodeImage(image,scanline,packed_scanline);
+              count+=EncodeImage(image,scanline,packed_scanline);
               x=0;
               y++;
             }

@@ -46,7 +46,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %
-^L
+*/
+
 /*
   Include declarations.
 */
@@ -66,9 +67,10 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadPNGImage reads a Portable Network Graphics image file and
+%  Method ReadPNGImage reads a Portable Network Graphics (PNG) or
+%  Multiple-image Network Graphics (MNG) image file and
 %  returns it.  It allocates the memory necessary for the new Image structure
-%  and returns a pointer to the new image.
+%  and returns a pointer to the new image or set of images.
 %
 %  MNG support written by Glenn Randers-Pehrson, randeg@alum.rpi.edu
 %
@@ -84,8 +86,8 @@
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%  To do, more or less in chronological order (as of version 4.2.4,
-%    18 May 1999 -- glennrp):
+%  To do, more or less in chronological order (as of version 4.2.6,
+%    22 May 1999 -- glennrp):
 %
 %    (At this point, decode is supposed to be in full MNG-LC compliance)
 % 
@@ -121,6 +123,9 @@
 %    Decode and act on the iTXt chunk (wait for libpng implementation).
 %
 */
+
+/* For diagnosing memory problem introduced in the patch to version 2.4.5 */
+#define REVERT_TO_PNG_ENCODE_4_2_4
 
 /*
   This is temporary until I set up malloc'ed object attributes array.
@@ -2311,7 +2316,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
 %    o image:  A pointer to a Image structure.
 %
 %
-%  To do (as of version 4.2.4, 07 May 1999 -- glennrp):
+%  To do (as of version 4.2.6, 22 May 1999 -- glennrp):
 % 
 %    Figure out what to do with "dispose=<restore-to-previous>"
 %    This will be complicated if we limit ourselves to generating
@@ -2364,10 +2369,18 @@ static void WriteTextChunk(const ImageInfo *image_info,png_info *ping_info,
   ping_info->text[i].key=keyword;
   ping_info->text[i].text=value;
   ping_info->text[i].text_length=Extent(value);
+#ifdef REVERT_TO_PNG_ENCODE_4_2_4
+  ping_info->text[i].compression= \
+    image_info->compression != NoCompression ? 0 : -1;
+#else
   ping_info->text[i].compression=
     image_info->compression == NoCompression ||
     (image_info->compression == UndefinedCompression &&
     ping_info->text[i].text_length < 128) ? -1 : 0;
+  if(image_info->verbose)
+    printf("image_info->compression = %d for text chunk %d\n",
+      image_info->compression,i);
+#endif
 }
 
 #if defined(__cplusplus) || defined(c_plusplus)
@@ -2434,7 +2447,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
   if (image_info->adjoin)
     {
       Image
-        *p;
+        *next_image;
 
       int
         need_geom;
@@ -2447,6 +2460,9 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       page_info.height=0;
       page_info.x=0;
       page_info.y=0;
+#ifdef REVERT_TO_PNG_ENCODE_4_2_4
+      next_image=image;
+#endif
       have_global_srgb=False;
       have_global_plte=False;
       have_global_gamma= False;
@@ -2473,12 +2489,12 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
       initial_delay = image->delay;
       need_iterations=False;
 
-      for (p=image; p != (Image *) NULL; )
+      for (next_image=image; next_image != (Image *) NULL; )
         {
-          if (p->page != (char *) NULL)
+          if (next_image->page != (char *) NULL)
             {
               /* Get "page" geometry of scene. */
-              (void) XParseGeometry(p->page,&page_info.x,
+              (void) XParseGeometry(next_image->page,&page_info.x,
                 &page_info.y, &width, &height);
             }
           else
@@ -2488,22 +2504,22 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             }
           if(need_geom)
             {
-              if ((p->columns+page_info.x) > page_info.width)
-                page_info.width=p->columns+page_info.x;
-              if ((p->rows+page_info.y) > page_info.height)
-                page_info.height=p->rows+page_info.y;
+              if ((next_image->columns+page_info.x) > page_info.width)
+                page_info.width=next_image->columns+page_info.x;
+              if ((next_image->rows+page_info.y) > page_info.height)
+                page_info.height=next_image->rows+page_info.y;
             }
           if (page_info.x || page_info.y)
                need_defi=True;
-          if (p->matte)
+          if (next_image->matte)
                need_matte=True;
-          if (p->dispose == 2)
+          if (next_image->dispose == 2)
                need_fram=True;
-          if (p->iterations)
+          if (next_image->iterations)
                need_iterations = True;
-          final_delay = p->delay;
+          final_delay = next_image->delay;
           if(final_delay != initial_delay) need_fram=1;
-          p=p->next;
+          next_image=next_image->next;
        }
 
        if(!need_fram)
@@ -3027,6 +3043,28 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     ping_info->text=(png_text *) AllocateMemory(256*sizeof(png_text));
     if (ping_info->text == (png_text *) NULL)
       WriterExit(ResourceLimitWarning,"Memory allocation failed",image);
+#ifdef REVERT_TO_PNG_ENCODE_4_2_4
+    WriteTextChunk(image_info,ping_info,"Software",MagickVersion);
+    SignatureImage(image);
+    if (image->signature != (char *) NULL)
+      WriteTextChunk(image_info,ping_info,"Signature",image->signature);
+    if (image->scene != 0)
+      {
+        char
+          scene[MaxTextExtent];
+
+        FormatString(scene,"%u",image->scene);
+        WriteTextChunk(image_info,ping_info,"Scene",scene);
+      }
+    if (!image_info->adjoin && image->delay != 0)
+      {
+        char
+          delay[MaxTextExtent];
+
+        FormatString(delay,"%u",image->delay);
+        WriteTextChunk(image_info,ping_info,"Delay",delay);
+      }
+#else
     /* Write a Software tEXt chunk only in the first PNG datastream */
     if (image->scene == 0)
     WriteTextChunk(image_info,ping_info,"Software",MagickVersion);
@@ -3054,6 +3092,7 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         if (image->page != (char *) NULL)
           WriteTextChunk(image_info,ping_info,"Page",image->page);
       }
+#endif
     if (image->label != (char *) NULL)
       WriteTextChunk(image_info,ping_info,"Label",image->label);
     if (image->montage != (char *) NULL)

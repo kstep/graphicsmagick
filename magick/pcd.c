@@ -46,13 +46,284 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %
-^L
+*/
+
 /*
   Include declarations.
 */
 #include "magick.h"
 #include "defines.h"
 #include "proxy.h"
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   P C D D e c o d e I m a g e                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method PCDDecodeImage recovers the Huffman encoded luminance and
+%  chrominance deltas.
+%
+%  The format of the PCDDecodeImage routine is:
+%
+%      status=PCDDecodeImage(image,luma,chroma1,chroma2)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method PCDDecodeImage returns True if all the deltas are
+%      recovered without error, otherwise False.
+%
+%    o image: The address of a structure of type Image.
+%
+%    o luma: The address of a character buffer that contains the
+%      luminance information.
+%
+%    o chroma1: The address of a character buffer that contains the
+%      chrominance information.
+%
+%    o chroma2: The address of a character buffer that contains the
+%      chrominance information.
+%
+%
+%
+*/
+static unsigned int PCDDecodeImage(const Image *image,unsigned char *luma,
+  unsigned char *chroma1,unsigned char *chroma2)
+{
+#define IsSync  ((accumulator & 0xffffff00) == 0xfffffe00)
+#define PCDDecodeImageText  "  PCD decode image...  "
+#define PCDGetBits(n) \
+{  \
+  accumulator=(accumulator << n) & 0xffffffff; \
+  bits-=n; \
+  while (bits <= 24) \
+  { \
+    if (p >= (buffer+0x800)) \
+      { \
+        (void) ReadData((char *) buffer,1,0x800,image->file); \
+        p=buffer; \
+      } \
+    accumulator|=((unsigned int) (*p) << (24-bits)); \
+    bits+=8; \
+    p++; \
+  } \
+  if (feof(image->file)) \
+    break; \
+}
+
+  typedef struct PCDTable
+  {
+    unsigned int
+      length,
+      sequence;
+
+    unsigned char
+      key;
+
+    unsigned int
+      mask;
+  } PCDTable;
+
+  int
+    count;
+
+  PCDTable
+    *pcd_table[3];
+
+  register int
+    i,
+    j;
+
+  register PCDTable
+    *r;
+
+  register Quantum
+    *range_limit;
+
+  register unsigned char
+    *p,
+    *q;
+
+  unsigned char
+    *buffer;
+
+  unsigned int
+    accumulator,
+    bits,
+    length,
+    pcd_length[3],
+    plane,
+    row;
+
+  /*
+    Initialize Huffman tables.
+  */
+  assert(image != (const Image *) NULL);
+  assert(luma != (unsigned char *) NULL);
+  assert(chroma1 != (unsigned char *) NULL);
+  assert(chroma2 != (unsigned char *) NULL);
+  buffer=(unsigned char *) AllocateMemory(0x800*sizeof(unsigned char));
+  if (buffer == (unsigned char *) NULL)
+    {
+      MagickWarning(ResourceLimitWarning,"Memory allocation failed",
+        (char *) NULL);
+      return(False);
+    }
+  accumulator=0;
+  bits=32;
+  p=buffer+0x800;
+  for (i=0; i < (image->columns > 1536 ? 3 : 1); i++)
+  {
+    PCDGetBits(8);
+    length=(accumulator & 0xff)+1;
+    pcd_table[i]=(PCDTable *) AllocateMemory(length*sizeof(PCDTable));
+    if (pcd_table[i] == (PCDTable *) NULL)
+      {
+        MagickWarning(ResourceLimitWarning,"Memory allocation failed",
+          (char *) NULL);
+        FreeMemory((char *) buffer);
+        return(False);
+      }
+    r=pcd_table[i];
+    for (j=0; j < (int) length; j++)
+    {
+      PCDGetBits(8);
+      r->length=(accumulator & 0xff)+1;
+      if (r->length > 16)
+        {
+          FreeMemory((char *) buffer);
+          return(False);
+        }
+      PCDGetBits(16);
+      r->sequence=(accumulator & 0xffff) << 16;
+      PCDGetBits(8);
+      r->key=accumulator & 0xff;
+      r->mask=(~((((unsigned int) 1) << (32-r->length))-1));
+      r++;
+    }
+    pcd_length[i]=length;
+  }
+  /*
+    Initialize range limits.
+  */
+  range_limit=(Quantum *) AllocateMemory(3*(MaxRGB+1)*sizeof(Quantum));
+  if (range_limit == (Quantum *) NULL)
+    {
+      MagickWarning(ResourceLimitWarning,"Memory allocation failed",
+        (char *) NULL);
+      FreeMemory((char *) buffer);
+      return(False);
+    }
+  for (i=0; i <= MaxRGB; i++)
+  {
+    range_limit[i]=0;
+    range_limit[i+(MaxRGB+1)]=(Quantum) i;
+    range_limit[i+(MaxRGB+1)*2]=MaxRGB;
+  }
+  range_limit+=(MaxRGB+1);
+  /*
+    Search for Sync byte.
+  */
+  do { PCDGetBits(16) } while (0);
+  do { PCDGetBits(16) } while (0);
+  while ((accumulator & 0x00fff000) != 0x00fff000)
+    PCDGetBits(8);
+  while (!IsSync)
+    PCDGetBits(1);
+  /*
+    Recover the Huffman encoded luminance and chrominance deltas.
+  */
+  count=0;
+  length=0;
+  plane=0;
+  q=luma;
+  for ( ; ; )
+  {
+    if (IsSync)
+      {
+        /*
+          Determine plane and row number.
+        */
+        PCDGetBits(16);
+        row=((accumulator >> 9) & 0x1fff);
+        if (row == image->rows)
+          break;
+        PCDGetBits(8);
+        plane=accumulator >> 30;
+        PCDGetBits(16);
+        switch (plane)
+        {
+          case 0:
+          {
+            q=luma+row*image->columns;
+            count=image->columns;
+            break;
+          }
+          case 2:
+          {
+            q=chroma1+(row >> 1)*image->columns;
+            count=image->columns >> 1;
+            plane--;
+            break;
+          }
+          case 3:
+          {
+            q=chroma2+(row >> 1)*image->columns;
+            count=image->columns >> 1;
+            plane--;
+            break;
+          }
+          default:
+          {
+            MagickWarning(CorruptImageWarning,"Corrupt PCD image",
+              image->filename);
+            return(False);
+          }
+        }
+        length=pcd_length[plane];
+        if (QuantumTick(row,image->rows))
+          ProgressMonitor(PCDDecodeImageText,row,image->rows);
+        continue;
+      }
+    /*
+      Decode luminance or chrominance deltas.
+    */
+    r=pcd_table[plane];
+    for (i=0; ((i < (int) length) && ((accumulator & r->mask) != r->sequence)); i++)
+      r++;
+    if (r == (PCDTable *) NULL)
+      {
+        MagickWarning(CorruptImageWarning,
+          "Corrupt PCD image, skipping to sync byte",image->filename);
+        while ((accumulator & 0x00fff000) != 0x00fff000)
+          PCDGetBits(8);
+        while (!IsSync)
+          PCDGetBits(1);
+        continue;
+      }
+    if (r->key < 128)
+      *q=range_limit[(int) *q+(int) r->key];
+    else
+      *q=range_limit[(int) *q+(int) r->key-256];
+    q++;
+    PCDGetBits(r->length);
+    count--;
+  }
+  /*
+    Free memory.
+  */
+  for (i=0; i < (image->columns > 1536 ? 3 : 1); i++)
+    FreeMemory((char *) pcd_table[i]);
+  range_limit-=(MaxRGB+1);
+  FreeMemory((char *) range_limit);
+  FreeMemory((char *) buffer);
+  return(True);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

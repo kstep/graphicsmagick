@@ -46,13 +46,586 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %
-^L
+*/
+
 /*
   Include declarations.
 */
 #include "magick.h"
 #include "defines.h"
 #include "proxy.h"
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D e c o d e I m a g e                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method DecodeImage uncompresses an image via GIF-coding.
+%
+%  The format of the DecodeImage routine is:
+%
+%      status=DecodeImage(image)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method DecodeImage returns True if all the pixels are
+%      uncompressed without error, otherwise False.
+%
+%    o image: The address of a structure of type Image.
+%
+%
+*/
+static unsigned int DecodeImage(Image *image)
+{
+#define MaxStackSize  4096
+#define NullCode  (-1)
+
+  int
+    available,
+    clear,
+    code_mask,
+    code_size,
+    end_of_information,
+    in_code,
+    old_code;
+
+  register int
+    bits,
+    code,
+    count,
+    i;
+
+  register RunlengthPacket
+    *q;
+
+  register unsigned char
+    *c,
+    *p;
+
+  register unsigned int
+    datum;
+
+  short
+    *prefix;
+
+  unsigned char
+    data_size,
+    first,
+    *packet,
+    *pixels,
+    *pixel_stack,
+    *suffix,
+    *top_stack;
+
+  unsigned long
+    packets,
+    max_packets;
+
+  unsigned short
+    index;
+
+  /*
+    Allocate decoder tables.
+  */
+  assert(image != (Image *) NULL);
+  pixels=(unsigned char *)
+    AllocateMemory(image->columns*image->rows*sizeof(unsigned char));
+  packet=(unsigned char *) AllocateMemory(256*sizeof(unsigned char));
+  prefix=(short *) AllocateMemory(MaxStackSize*sizeof(short));
+  suffix=(unsigned char *) AllocateMemory(MaxStackSize*sizeof(unsigned char));
+  pixel_stack=(unsigned char *)
+    AllocateMemory((MaxStackSize+1)*sizeof(unsigned char));
+  if ((pixels == (unsigned char *) NULL) ||
+      (packet == (unsigned char *) NULL) ||
+      (prefix == (short *) NULL) ||
+      (suffix == (unsigned char *) NULL) ||
+      (pixel_stack == (unsigned char *) NULL))
+    {
+      MagickWarning(ResourceLimitWarning,"Memory allocation failed",
+        image->filename);
+      return(False);
+    }
+  /*
+    Initialize GIF data stream decoder.
+  */
+  data_size=fgetc(image->file);
+  clear=1 << data_size;
+  end_of_information=clear+1;
+  available=clear+2;
+  old_code=NullCode;
+  code_size=data_size+1;
+  code_mask=(1 << code_size)-1;
+  for (code=0; code < clear; code++)
+  {
+    prefix[code]=0;
+    suffix[code]=(unsigned char) code;
+  }
+  /*
+    Decode GIF pixel stream.
+  */
+  datum=0;
+  bits=0;
+  c=0;
+  count=0;
+  first=0;
+  top_stack=pixel_stack;
+  p=pixels;
+  for (i=0; i < (int) (image->columns*image->rows); )
+  {
+    if (top_stack == pixel_stack)
+      {
+        if (bits < code_size)
+          {
+            /*
+              Load bytes until there is enough bits for a code.
+            */
+            if (count == 0)
+              {
+                /*
+                  Read a new data block.
+                */
+                count=ReadDataBlock((char *) packet,image->file);
+                if (count <= 0)
+                  break;
+                c=packet;
+              }
+            datum+=(*c) << bits;
+            bits+=8;
+            c++;
+            count--;
+            continue;
+          }
+        /*
+          Get the next code.
+        */
+        code=datum & code_mask;
+        datum>>=code_size;
+        bits-=code_size;
+        /*
+          Interpret the code
+        */
+        if ((code > available) || (code == end_of_information))
+          break;
+        if (code == clear)
+          {
+            /*
+              Reset decoder.
+            */
+            code_size=data_size+1;
+            code_mask=(1 << code_size)-1;
+            available=clear+2;
+            old_code=NullCode;
+            continue;
+          }
+        if (old_code == NullCode)
+          {
+            *top_stack++=suffix[code];
+            old_code=code;
+            first=(unsigned char) code;
+            continue;
+          }
+        in_code=code;
+        if (code == available)
+          {
+            *top_stack++=first;
+            code=old_code;
+          }
+        while (code > clear)
+        {
+          *top_stack++=suffix[code];
+          code=prefix[code];
+        }
+        first=suffix[code];
+        /*
+          Add a new string to the string table,
+        */
+        if (available >= MaxStackSize)
+          break;
+        *top_stack++=first;
+        prefix[available]=old_code;
+        suffix[available]=first;
+        available++;
+        if (((available & code_mask) == 0) && (available < MaxStackSize))
+          {
+            code_size++;
+            code_mask+=available;
+          }
+        old_code=in_code;
+      }
+    /*
+      Pop a pixel off the pixel stack.
+    */
+    top_stack--;
+    *p=(*top_stack);
+    p++;
+    i++;
+  }
+  if (i < (int) (image->columns*image->rows))
+    {
+      for ( ; i < (int) (image->columns*image->rows); i++)
+        *p++=0;
+      MagickWarning(CorruptImageWarning,"Corrupt GIF image",image->filename);
+    }
+  /*
+    Free decoder memory.
+  */
+  FreeMemory((char *) pixel_stack);
+  FreeMemory((char *) suffix);
+  FreeMemory((char *) prefix);
+  FreeMemory((char *) packet);
+  if (image->interlace != NoInterlace)
+    {
+      int
+        pass,
+        y;
+
+      register int
+        x;
+
+      register unsigned char
+        *q;
+
+      static const int
+        interlace_rate[4] = { 8, 8, 4, 2 },
+        interlace_start[4] = { 0, 4, 2, 1 };
+
+      unsigned char
+        *interlaced_pixels;
+
+      /*
+        Interlace image.
+      */
+      interlaced_pixels=pixels;
+      pixels=(unsigned char *)
+        AllocateMemory(image->columns*image->rows*sizeof(unsigned char));
+      if (pixels == (unsigned char *) NULL)
+        {
+          FreeMemory(interlaced_pixels);
+          MagickWarning(ResourceLimitWarning,"Memory allocation failed",
+            image->filename);
+          return(False);
+        }
+      p=interlaced_pixels;
+      q=pixels;
+      for (pass=0; pass < 4; pass++)
+      {
+        y=interlace_start[pass];
+        while (y < (int) image->rows)
+        {
+          q=pixels+(y*image->columns);
+          for (x=0; x < (int) image->columns; x++)
+          {
+            *q=(*p);
+            p++;
+            q++;
+          }
+          y+=interlace_rate[pass];
+        }
+      }
+      FreeMemory(interlaced_pixels);
+    }
+  /*
+    Convert GIF pixels to runlength-encoded packets.
+  */
+  packets=0;
+  max_packets=Max((image->columns*image->rows+2) >> 2,1);
+  image->pixels=(RunlengthPacket *)
+    AllocateMemory(max_packets*sizeof(RunlengthPacket));
+  if (image->pixels == (RunlengthPacket *) NULL)
+    {
+      MagickWarning(ResourceLimitWarning,"Memory allocation failed",
+        image->filename);
+      return(False);
+    }
+  p=pixels;
+  q=image->pixels;
+  SetRunlengthEncoder(q);
+  for (i=0; i < (int) (image->columns*image->rows); i++)
+  {
+    index=(*p++);
+    if ((index == q->index) && ((int) q->length < MaxRunlength))
+       q->length++;
+     else
+       {
+         if (packets != 0)
+           q++;
+         packets++;
+         if (packets == max_packets)
+           {
+             max_packets<<=1;
+             image->pixels=(RunlengthPacket *) ReallocateMemory((char *)
+               image->pixels,max_packets*sizeof(RunlengthPacket));
+             if (image->pixels == (RunlengthPacket *) NULL)
+               {
+                 MagickWarning(ResourceLimitWarning,"Memory allocation failed",
+                   image->filename);
+                 break;
+               }
+             q=image->pixels+packets-1;
+           }
+         q->index=index;
+         q->length=0;
+       }
+    if (image->previous == (Image *) NULL)
+      if (QuantumTick(i,image->columns*image->rows))
+        ProgressMonitor(LoadImageText,i,image->columns*image->rows);
+  }
+  SetRunlengthPackets(image,packets);
+  SyncImage(image);
+  image->compression=LZWCompression;
+  FreeMemory(pixels);
+  return(True);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   E n c o d e I m a g e                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method EncodeImage compresses an image via GIF-coding.
+%
+%  The format of the EncodeImage routine is:
+%
+%      status=EncodeImage(image,data_size)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method EncodeImage returns True if all the pixels are
+%      compressed without error, otherwise False.
+%
+%    o image: The address of a structure of type Image.
+%
+%
+*/
+static unsigned int EncodeImage(const Image *image,const unsigned int data_size)
+{
+#define MaxCode(number_bits)  ((1 << (number_bits))-1)
+#define MaxHashTable  5003
+#define MaxGIFBits  12
+#if defined(HasLZW)
+#define MaxGIFTable  (1 << MaxGIFBits)
+#else
+#define MaxGIFTable  max_code
+#endif
+#define GIFOutputCode(code) \
+{ \
+  /*  \
+    Emit a code. \
+  */ \
+  if (bits > 0) \
+    datum|=((long) code << bits); \
+  else \
+    datum=(long) code; \
+  bits+=number_bits; \
+  while (bits >= 8) \
+  { \
+    /*  \
+      Add a character to current packet. \
+    */ \
+    packet[byte_count++]=(unsigned char) (datum & 0xff); \
+    if (byte_count >= 254) \
+      { \
+        (void) fputc(byte_count,image->file); \
+        (void) fwrite((char *) packet,1,byte_count,image->file); \
+        byte_count=0; \
+      } \
+    datum>>=8; \
+    bits-=8; \
+  } \
+  if (free_code > max_code)  \
+    { \
+      number_bits++; \
+      if (number_bits == MaxGIFBits) \
+        max_code=MaxGIFTable; \
+      else \
+        max_code=MaxCode(number_bits); \
+    } \
+}
+
+  int
+    bits,
+    byte_count,
+    i,
+    next_pixel,
+    number_bits;
+
+  long
+    datum;
+
+  register int
+    displacement,
+    j,
+    k;
+
+  register RunlengthPacket
+    *p;
+
+  short
+    clear_code,
+    end_of_information_code,
+    free_code,
+    *hash_code,
+    *hash_prefix,
+    index,
+    max_code,
+    waiting_code;
+
+  unsigned char
+    *packet,
+    *hash_suffix;
+
+  /*
+    Allocate encoder tables.
+  */
+  assert(image != (Image *) NULL);
+  packet=(unsigned char *) AllocateMemory(256*sizeof(unsigned char));
+  hash_code=(short *) AllocateMemory(MaxHashTable*sizeof(short));
+  hash_prefix=(short *) AllocateMemory(MaxHashTable*sizeof(short));
+  hash_suffix=(unsigned char *)
+    AllocateMemory(MaxHashTable*sizeof(unsigned char));
+  if ((packet == (unsigned char *) NULL) || (hash_code == (short *) NULL) ||
+      (hash_prefix == (short *) NULL) ||
+      (hash_suffix == (unsigned char *) NULL))
+    return(False);
+  /*
+    Initialize GIF encoder.
+  */
+  number_bits=data_size;
+  max_code=MaxCode(number_bits);
+  clear_code=((short) 1 << (data_size-1));
+  end_of_information_code=clear_code+1;
+  free_code=clear_code+2;
+  byte_count=0;
+  datum=0;
+  bits=0;
+  for (i=0; i < MaxHashTable; i++)
+    hash_code[i]=0;
+  GIFOutputCode(clear_code);
+  /*
+    Encode pixels.
+  */
+  p=image->pixels;
+  waiting_code=p->index;
+  for (i=0; i < (int) image->packets; i++)
+  {
+    for (j=(i == 0) ? 1 : 0; j <= ((int) p->length); j++)
+    {
+      /*
+        Probe hash table.
+      */
+      index=p->index & 0xff;
+      k=(int) ((int) index << (MaxGIFBits-8))+waiting_code;
+      if (k >= MaxHashTable)
+        k-=MaxHashTable;
+#if defined(HasLZW)
+      if (hash_code[k] > 0)
+        {
+          if ((hash_prefix[k] == waiting_code) && (hash_suffix[k] == index))
+            {
+              waiting_code=hash_code[k];
+              continue;
+            }
+          if (k == 0)
+            displacement=1;
+          else
+            displacement=MaxHashTable-k;
+          next_pixel=False;
+          for ( ; ; )
+          {
+            k-=displacement;
+            if (k < 0)
+              k+=MaxHashTable;
+            if (hash_code[k] == 0)
+              break;
+            if ((hash_prefix[k] == waiting_code) && (hash_suffix[k] == index))
+              {
+                waiting_code=hash_code[k];
+                next_pixel=True;
+                break;
+              }
+          }
+          if (next_pixel == True)
+            continue;
+        }
+#endif
+      GIFOutputCode(waiting_code);
+      if (free_code < MaxGIFTable)
+        {
+          hash_code[k]=free_code++;
+          hash_prefix[k]=waiting_code;
+          hash_suffix[k]=(unsigned char) index;
+        }
+      else
+        {
+          /*
+            Fill the hash table with empty entries.
+          */
+          for (k=0; k < MaxHashTable; k++)
+            hash_code[k]=0;
+          /*
+            Reset compressor and issue a clear code.
+          */
+          free_code=clear_code+2;
+          GIFOutputCode(clear_code);
+          number_bits=data_size;
+          max_code=MaxCode(number_bits);
+        }
+      waiting_code=index;
+      if (image->previous == (Image *) NULL)
+        if (QuantumTick(i,image->packets))
+          ProgressMonitor(SaveImageText,i,image->packets);
+    }
+    p++;
+  }
+  /*
+    Flush out the buffered code.
+  */
+  GIFOutputCode(waiting_code);
+  GIFOutputCode(end_of_information_code);
+  if (bits > 0)
+    {
+      /*
+        Add a character to current packet.
+      */
+      packet[byte_count++]=(unsigned char) (datum & 0xff);
+      if (byte_count >= 254)
+        {
+          (void) fputc(byte_count,image->file);
+          (void) fwrite((char *) packet,1,byte_count,image->file);
+          byte_count=0;
+        }
+    }
+  /*
+    Flush accumulated data.
+  */
+  if (byte_count > 0)
+    {
+      (void) fputc(byte_count,image->file);
+      (void) fwrite((char *) packet,1,byte_count,image->file);
+    }
+  /*
+    Free encoder memory.
+  */
+  FreeMemory((char *) hash_suffix);
+  FreeMemory((char *) hash_prefix);
+  FreeMemory((char *) hash_code);
+  FreeMemory((char *) packet);
+  if (i < (int) image->packets)
+    return(False);
+  return(True);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -367,7 +940,7 @@ Export Image *ReadGIFImage(const ImageInfo *image_info)
     /*
       Decode image.
     */
-    status=GIFDecodeImage(image);
+    status=DecodeImage(image);
     if (transparency_index >= 0)
       {
         /*
@@ -731,7 +1304,7 @@ Export unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
     c=Max(bits_per_pixel,2);
     (void) fputc((char) c,image->file);
     if (interlace == NoInterlace)
-      status=GIFEncodeImage(image,Max(bits_per_pixel,2)+1);
+      status=EncodeImage(image,Max(bits_per_pixel,2)+1);
     else
       {
         Image
@@ -776,7 +1349,7 @@ Export unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
           }
         }
         interlaced_image->file=image->file;
-        status=GIFEncodeImage(interlaced_image,Max(bits_per_pixel,2)+1);
+        status=EncodeImage(interlaced_image,Max(bits_per_pixel,2)+1);
         interlaced_image->file=(FILE *) NULL;
         DestroyImage(interlaced_image);
       }

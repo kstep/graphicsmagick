@@ -46,13 +46,97 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %
-^L
+*/
+
 /*
   Include declarations.
 */
 #include "magick.h"
 #include "defines.h"
 #include "proxy.h"
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D e c o d e I m a g e                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method DecodeImage unpacks the packed image pixels into
+%  runlength-encoded pixel packets.
+%
+%  The format of the DecodeImage routine is:
+%
+%      status=DecodeImage(compressed_pixels,number_columns,number_rows,
+%        pixels)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method DecodeImage returns True if all the pixels are
+%      uncompressed without error, otherwise False.
+%
+%    o compressed_pixels:  The address of a byte (8 bits) array of compressed
+%      pixel data.
+%
+%    o pixels:  The address of a byte (8 bits) array of pixel data created by
+%      the uncompression process.  The number of bytes in this array
+%      must be at least equal to the number columns times the number of rows
+%      of the source pixels.
+%
+%    o number_columns:  An integer value that is the number of columns or
+%      width in pixels of your source image.
+%
+%    o number_rows:  An integer value that is the number of rows or
+%      heigth in pixels of your source image.
+%
+%
+*/
+static unsigned int DecodeImage(const unsigned char *compressed_pixels,
+  const unsigned int number_columns,const unsigned int number_rows,
+  unsigned char *pixels)
+{
+  register const unsigned char
+    *p;
+
+  register int
+    count;
+
+  register unsigned char
+    *q;
+
+  unsigned char
+    byte;
+
+  assert(compressed_pixels != (unsigned char *) NULL);
+  assert(pixels != (unsigned char *) NULL);
+  p=compressed_pixels;
+  q=pixels;
+  while ((q-pixels) <= (int) (number_columns*number_rows))
+  {
+    byte=(*p++);
+    if (byte != 128)
+      *q++=byte;
+    else
+      {
+        /*
+          Runlength-encoded packet: <count><byte>
+        */
+        count=(*p++);
+        if (count > 0)
+          byte=(*p++);
+        while (count >= 0)
+        {
+          *q++=byte;
+          count--;
+        }
+     }
+  }
+  return(True);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -271,7 +355,7 @@ Export Image *ReadSUNImage(const ImageInfo *image_info)
           AllocateMemory(bytes_per_line*height*sizeof(unsigned char));
         if (sun_pixels == (unsigned char *) NULL)
           ReaderExit(ResourceLimitWarning,"Memory allocation failed",image);
-        (void) SUNDecodeImage(sun_data,bytes_per_line,height,sun_pixels);
+        (void) DecodeImage(sun_data,bytes_per_line,height,sun_pixels);
         FreeMemory((char *) sun_data);
       }
     /*

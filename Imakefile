@@ -44,11 +44,29 @@ HEADERS = magick/magick.h magick/image.h magick/compress.h magick/utility.h \
   magick/monitor.h magick/error.h magick/delegates.h magick/X.h \
   magick/widget.h magick/PreRvIcccm.h
 
-LINTSRCS = display.c magick/image.c magick/gems.c magick/shear.c \
-  magick/quantize.c magick/colors.c magick/signature.c magick/decode.c \
-  magick/encode.c magick/compress.c magick/utility.c magick/monitor.c \
-  magick/error.c magick/delegates.c magick/X.c magick/display.c \
-  magick/animate.c magick/widget.c magick/PreRvIcccm.c
+LINTSRCS = display.c magick/PreRvIcccm.c magick/animate.c magick/annotate.c \
+  magick/avs.c magick/bmp.c magick/cmyk.c magick/colors.c magick/compress.c \
+  magick/dcm.c magick/decorate.c magick/delegates.c magick/display.c \
+  magick/dps.c magick/draw.c magick/effects.c magick/enhance.c \
+  magick/ept.c magick/error.c magick/fax.c magick/fits.c magick/fpx.c \
+  magick/gems.c magick/gif.c magick/gradation.c magick/gray.c \
+  magick/hdf.c magick/histogram.c magick/html.c magick/icc.c \
+  magick/icon.c magick/image.c magick/iptc.c magick/jbig.c \
+  magick/jpeg.c magick/label.c magick/logo.c magick/mac.c \
+  magick/magick.c magick/map.c magick/matte.c magick/memory.c \
+  magick/miff.c magick/monitor.c magick/mono.c magick/montage.c \
+  magick/mtv.c magick/nt.c magick/null.c magick/pcd.c magick/pcl.c \
+  magick/pcx.c magick/pdf.c magick/pict.c magick/pix.c magick/plasma.c \
+  magick/png.c magick/pnm.c magick/preview.c magick/ps.c magick/ps2.c \
+  magick/psd.c magick/pwp.c magick/quantize.c magick/rgb.c magick/rla.c \
+  magick/rle.c magick/segment.c magick/sfw.c magick/sgi.c \
+  magick/shear.c magick/signature.c magick/stegano.c magick/sun.c \
+  magick/tga.c magick/tiff.c magick/tile.c magick/tim.c \
+  magick/transform.c magick/ttf.c magick/txt.c magick/uil.c \
+  magick/utility.c magick/uyvy.c magick/vicar.c magick/vid.c \
+  magick/viff.c magick/vms.c magick/widget.c magick/x.c magick/xbm.c \
+  magick/xc.c magick/xpm.c magick/xwd.c magick/xwindows.c magick/yuv.c \
+  magick/zoom.c
 
 SRCS = display.c animate.c import.c montage.c convert.c mogrify.c identify.c \
   combine.c

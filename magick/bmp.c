@@ -46,13 +46,253 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %
-^L
+*/
+
 /*
   Include declarations.
 */
 #include "magick.h"
 #include "defines.h"
 #include "proxy.h"
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D e c o d e I m a g e                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method DecodeImage unpacks the packed image pixels into runlength-encoded
+%  pixel packets.
+%
+%  The format of the DecodeImage routine is:
+%
+%      status=DecodeImage(file,compression,number_columns,number_rows,pixels)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method DecodeImage returns True if all the pixels are
+%      uncompressed without error, otherwise False.
+%
+%    o file: The address of a structure of type FILE.  BMP encoded pixels
+%      are read from this file.
+%
+%    o compression:  A value of 1 means the compressed pixels are runlength
+%      encoded for a 256-color bitmap.  A value of 2 means a 16-color bitmap.
+%
+%    o number_columns:  An integer value that is the number of columns or
+%      width in pixels of your source image.
+%
+%    o number_rows:  An integer value that is the number of rows or
+%      heigth in pixels of your source image.
+%
+%    o pixels:  The address of a byte (8 bits) array of pixel data created by
+%      the decoding process.
+%
+%
+*/
+static unsigned int DecodeImage(FILE *file,const unsigned int compression,
+  const unsigned int number_columns,const unsigned int number_rows,
+  unsigned char *pixels)
+{
+  int
+    byte,
+    count;
+
+  register int
+    i,
+    x,
+    y;
+
+  register unsigned char
+    *q;
+
+  assert(file != (FILE *) NULL);
+  assert(pixels != (unsigned char *) NULL);
+  for (i=0; i < (int) (number_columns*number_rows); i++)
+    pixels[i]=0;
+  byte=0;
+  x=0;
+  q=pixels;
+  for (y=0; y < (int) number_rows; )
+  {
+    count=fgetc(file);
+    if (count != 0)
+      {
+        /*
+          Encoded mode.
+        */
+        byte=fgetc(file);
+        for (i=0; i < count; i++)
+        {
+          if (compression == 1)
+            *q++=(unsigned char) byte;
+          else
+            *q++=(i & 0x01) ? (byte & 0x0f) : ((byte >> 4) & 0x0f);
+          x++;
+        }
+      }
+    else
+      {
+        /*
+          Escape mode.
+        */
+        count=fgetc(file);
+        if (count == 0x01)
+          return(True);
+        switch (count)
+        {
+          case 0x00:
+          {
+            /*
+              End of line.
+            */
+            x=0;
+            y++;
+            q=pixels+y*number_columns;
+            break;
+          }
+          case 0x02:
+          {
+            /*
+              Delta mode.
+            */
+            x+=fgetc(file);
+            y+=fgetc(file);
+            q=pixels+y*number_columns+x;
+            break;
+          }
+          default:
+          {
+            /*
+              Absolute mode.
+            */
+            for (i=0; i < count; i++)
+            {
+              if (compression == 1)
+                *q++=fgetc(file);
+              else
+                {
+                  if ((i & 0x01) == 0)
+                    byte=fgetc(file);
+                  *q++=(i & 0x01) ? (byte & 0x0f) : ((byte >> 4) & 0x0f);
+                }
+              x++;
+            }
+            /*
+              Read pad byte.
+            */
+            if (compression == 1)
+              {
+                if (count & 0x01)
+                  (void) fgetc(file);
+              }
+            else
+              if (((count & 0x03) == 1) || ((count & 0x03) == 2))
+                (void) fgetc(file);
+            break;
+          }
+        }
+      }
+    if (QuantumTick(y,number_rows))
+      ProgressMonitor(LoadImageText,y,number_rows);
+  }
+  return(False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   E n c o d e I m a g e                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method EncodeImage compresses pixels using a runlength encoded format.
+%
+%  The format of the EncodeImage routine is:
+%
+%      status=EncodeImage(pixels,number_columns,number_rows,
+%        compressed_pixels)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method EncodeImage returns the number of bytes in the
+%      runlength encoded compress_pixels array.
+%
+%    o pixels:  The address of a byte (8 bits) array of pixel data created by
+%      the compression process.
+%
+%    o number_columns:  An integer value that is the number of columns or
+%      width in pixels of your source image.
+%
+%    o number_rows:  An integer value that is the number of rows or
+%      heigth in pixels of your source image.
+%
+%    o compressed_pixels:  The address of a byte (8 bits) array of compressed
+%      pixel data.
+%
+%
+*/
+static unsigned int EncodeImage(const unsigned char *pixels,
+  const unsigned int number_columns,const unsigned int number_rows,
+  unsigned char *compressed_pixels)
+{
+  register const unsigned char
+    *p;
+
+  register int
+    i,
+    x,
+    y;
+
+  register unsigned char
+    *q;
+
+  /*
+    Runlength encode pixels.
+  */
+  assert(pixels != (unsigned char *) NULL);
+  assert(compressed_pixels != (unsigned char *) NULL);
+  p=pixels;
+  q=compressed_pixels;
+  i=0;
+  for (y=0; y < (int) number_rows; y++)
+  {
+    for (x=0; x < (int) number_columns; x+=i)
+    {
+      /*
+        Determine runlength.
+      */
+      for (i=1; ((x+i) < (int) number_columns); i++)
+        if ((*(p+i) != *p) || (i == 255))
+          break;
+      *q++=(unsigned char) i;
+      *q++=(*p);
+      p+=i;
+    }
+    /*
+      End of line.
+    */
+    *q++=0;
+    *q++=0x00;
+    if (QuantumTick(y,number_rows))
+      ProgressMonitor(SaveImageText,y,number_rows);
+  }
+  /*
+    End of bitmap.
+  */
+  *q++=0;
+  *q++=0x01;
+  return((unsigned int) (q-compressed_pixels));
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -337,7 +577,7 @@ Export Image *ReadBMPImage(const ImageInfo *image_info)
         /*
           Convert run-length encoded raster pixels.
         */
-        (void) BMPDecodeImage(image->file,(unsigned int) bmp_header.compression,
+        (void) DecodeImage(image->file,(unsigned int) bmp_header.compression,
           (unsigned int) bmp_header.width,(unsigned int) bmp_header.height,
           bmp_pixels);
       }
@@ -660,7 +900,7 @@ Export unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           Colormapped BMP raster.
         */
         bmp_header.bit_count=8;
-        bytes_per_line=image->columns;
+        bytes_per_line=image->columns+(4-(image->columns % 4));
         if (IsMonochromeImage(image))
           {
             bmp_header.bit_count=1;
@@ -838,7 +1078,7 @@ Export unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
             }
           bmp_header.file_size-=bmp_header.image_size;
           bmp_header.image_size=
-            BMPEncodeImage(bmp_pixels,image->columns,image->rows,bmp_data);
+            EncodeImage(bmp_pixels,image->columns,image->rows,bmp_data);
           bmp_header.file_size+=bmp_header.image_size;
           FreeMemory((char *) bmp_pixels);
           bmp_pixels=bmp_data;

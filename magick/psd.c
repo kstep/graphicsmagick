@@ -46,13 +46,160 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %
-^L
+*/
+
 /*
   Include declarations.
 */
 #include "magick.h"
 #include "defines.h"
 #include "proxy.h"
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   P a c k b i t s D e c o d e I m a g e                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method PackbitsDecodeImage uncompresses an image via Macintosh Packbits
+%  encoding specific to the Adobe Photoshop image format.
+%
+%  The format of the PackbitsDecodeImage routine is:
+%
+%      status=PackbitsDecodeImage(image,channel)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method PackbitsDecodeImage return True if the image is
+%      decoded.  False is returned if there is an error occurs.
+%
+%    o image: The address of a structure of type Image.
+%
+%    o channel:  Specifies which channel: red, green, blue, or index to
+%      decode the pixel values into.
+%
+%
+*/
+static unsigned int PackbitsDecodeImage(Image *image,const int channel)
+{
+  int
+    count,
+    pixel;
+
+  long
+    length;
+
+  register int
+    i;
+
+  register RunlengthPacket
+    *q;
+
+  q=image->pixels;
+  length=image->columns*image->rows;
+  while (length > 0)
+  {
+    count=fgetc(image->file);
+    if (count >= 128)
+      count-=256;
+    if (count < 0)
+      {
+        if (count == -128)
+          continue;
+        count=(-count+1);
+        pixel=fgetc(image->file);
+        for ( ; count > 0; count--)
+        {
+          switch (channel)
+          {
+            case 0:
+            {
+              q->red=(Quantum) pixel;
+              if (image->class == PseudoClass)
+                q->index=(unsigned short) pixel;
+              break;
+            }
+            case 1:
+            {
+              q->green=(Quantum) pixel;
+              break;
+            }
+            case 2:
+            {
+              q->blue=(Quantum) pixel;
+              break;
+            }
+            case 3:
+            default:
+            {
+              q->index=(unsigned short) pixel;
+              break;
+            }
+          }
+          q->length=0;
+          q++;
+          length--;
+        }
+        continue;
+      }
+    count++;
+    for (i=count; i > 0; i--)
+    {
+      pixel=fgetc(image->file);
+      switch (channel)
+      {
+        case 0:
+        {
+          q->red=(Quantum) pixel;
+          if (image->class == PseudoClass)
+            q->index=(unsigned short) pixel;
+          break;
+        }
+        case 1:
+        {
+          q->green=(Quantum) pixel;
+          break;
+        }
+        case 2:
+        {
+          q->blue=(Quantum) pixel;
+          break;
+        }
+        case 3:
+        default:
+        {
+          q->index=(unsigned short) pixel;
+          break;
+        }
+      }
+      q->length=0;
+      q++;
+      length--;
+    }
+  }
+  /*
+    Guarentee the correct number of pixel packets.
+  */
+  if (length > 0)
+    {
+      MagickWarning(CorruptImageWarning,"insufficient image data in file",
+        image->filename);
+      return(False);
+    }
+  else
+    if (length < 0)
+      {
+        MagickWarning(CorruptImageWarning,"too much image data in file",
+          image->filename);
+        return(False);
+      }
+  return(True);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
