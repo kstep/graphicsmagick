@@ -1201,7 +1201,7 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
 %
 %  The format of the DrawClipPath method is:
 %
-%      unsigned int DrawClipPath(Image *image,DrawInfo *draw_info,
+%      unsigned int DrawClipPath(Image *image,const DrawInfo *draw_info,
 %        const char *name)
 %
 %  A description of each parameter follows:
@@ -1214,7 +1214,7 @@ static void DrawBoundingRectangles(Image *image,const DrawInfo *draw_info,
 %
 %
 */
-static unsigned int DrawClipPath(Image *image,DrawInfo *draw_info,
+static unsigned int DrawClipPath(Image *image,const DrawInfo *draw_info,
   const char *name)
 {
   char
@@ -1257,7 +1257,6 @@ static unsigned int DrawClipPath(Image *image,DrawInfo *draw_info,
   (void) QueryColorDatabase("white",&clone_info->fill);
   clone_info->clip_path=(char *) NULL;
   status=DrawImage(image->clip_mask,clone_info);
-  draw_info->clip_units=clone_info->clip_units;
   (void) NegateImage(image->clip_mask,False);
   DestroyDrawInfo(clone_info);
   if (draw_info->debug)
@@ -1668,7 +1667,8 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
             */
             GetToken(q,&q,token);
             graphic_context[n]->clip_path=AllocateString(token);
-            (void) DrawClipPath(image,draw_info,token);
+            (void) DrawClipPath(image,graphic_context[n],
+              graphic_context[n]->clip_path);
             break;
           }
         if (LocaleCompare("clip-rule",keyword) == 0)
@@ -1708,6 +1708,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
                 affine.sy=draw_info->bounds.y2;
                 affine.tx=draw_info->bounds.x1;
                 affine.ty=draw_info->bounds.y1;
+draw_info->clip_units=ObjectBoundingBox;
                 break;
               }
             status=False;
@@ -2069,16 +2070,16 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
               break;
             if (LocaleCompare("graphic-context",token) == 0)
               {
-                if (graphic_context[n]->clip_path != (char *) NULL)
-                  if (LocaleCompare(graphic_context[n]->clip_path,
-                      graphic_context[n-1]->clip_path) != 0)
-                    (void) SetImageClipMask(image,(Image *) NULL);
                 if (n == 0)
                   {
                     ThrowException(&image->exception,CorruptImageWarning,
                       "unbalanced graphic context push/pop",token);
                     break;
                   }
+                if (graphic_context[n]->clip_path != (char *) NULL)
+                  if (LocaleCompare(graphic_context[n]->clip_path,
+                      graphic_context[n-1]->clip_path) != 0)
+                    (void) SetImageClipMask(image,(Image *) NULL);
                 DestroyDrawInfo(graphic_context[n]);
                 n--;
                 break;
@@ -2796,10 +2797,11 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
       if (point.y > graphic_context[n]->bounds.y2)
         graphic_context[n]->bounds.y2=point.y;
     }
-    if (graphic_context[n]->clip_path != (char *) NULL)
-      if (graphic_context[n]->clip_units == ObjectBoundingBox)
-        (void) DrawClipPath(image,graphic_context[n],
-          graphic_context[n]->clip_path);
+    if ((n != 0) && (graphic_context[n]->clip_path != (char *) NULL) &&
+        (LocaleCompare(graphic_context[n]->clip_path,
+         graphic_context[n-1]->clip_path) != 0))
+      (void) DrawClipPath(image,graphic_context[n],
+        graphic_context[n]->clip_path);
     (void) DrawPrimitive(image,graphic_context[n],primitive_info);
     if (primitive_info->text != (char *) NULL)
       LiberateMemory((void **) &primitive_info->text);
