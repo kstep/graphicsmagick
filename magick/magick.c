@@ -369,7 +369,7 @@ MagickExport void InitializeMagick(const char *path)
         {
           (void) getcwd(execution_path,MaxTextExtent-1);
           (void) strcat(execution_path,DirectorySeparator);
-          if((path[0] == '.') && (path[1] == *DirectorySeparator))
+          if((*path == '.') && (*(path+1) == *DirectorySeparator))
             (void) strcat(execution_path,path+2);
           else
             (void) strcat(execution_path,path);
