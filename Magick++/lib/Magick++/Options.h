@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000
+// Copyright Bob Friesenhahn, 1999, 2000, 2001
 //
 // Definition of Options
 //
@@ -41,16 +41,6 @@ namespace Magick
     // Join images into a single multi-image file
     void            adjoin ( bool flag_ );
     bool            adjoin ( void ) const;
-    
-    // Time in 1/100ths of a second which must expire before displaying
-    // the next image in an animated sequence.
-    void            animationDelay ( unsigned int delay_ );
-    unsigned int    animationDelay ( void ) const;
-    
-    // Number of iterations to loop an animation (e.g. Netscape loop
-    // extension) for.
-    void            animationIterations ( unsigned int iterations_ );
-    unsigned int    animationIterations ( void ) const;
     
     // Image background color
     void            backgroundColor ( const Color &color_ );
@@ -103,10 +93,6 @@ namespace Magick
     double          fontPointsize ( void ) const;
     
     std::string     format ( void ) const;
-
-    // GIF disposal method
-    void            gifDisposeMethod ( unsigned int disposeMethod_ );
-    unsigned int    gifDisposeMethod ( void ) const;
 
     // Image interlace scheme
     void            interlaceType ( InterlaceType interlace_ );

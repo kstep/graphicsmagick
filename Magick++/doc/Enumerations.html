@@ -2,7 +2,7 @@
 <html>
 <head>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <meta name="GENERATOR" content="Mozilla/4.7 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
+   <meta name="GENERATOR" content="Mozilla/4.72 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
    <meta name="Author" content="Bob Friesenhahn">
    <meta name="Description" content="Documentation for ImageMagick enumerations">
    <title>Enumerations</title>
@@ -156,7 +156,7 @@ is only applicable when writing TIFF, JPEG, and Adobe Photoshop bitmap
 <tr NOSAVE>
 <td NOSAVE>GRAYColorspace</td>
 
-<td>&nbsp;</td>
+<td>&nbsp;Grayscale colorspace</td>
 </tr>
 
 <tr>
@@ -331,27 +331,33 @@ for comparing two very similar images.</td>
 </tr>
 
 <tr>
+<td>MultiplyCompositeOp</td>
+
+<td>&nbsp;</td>
+</tr>
+
+<tr>
 <td>BumpmapCompositeOp</td>
 
 <td>The result <i>image</i> shaded by <i>composite image.</i></td>
 </tr>
 
 <tr>
-<td>ReplaceCompositeOp</td>
+<td>CopyCompositeOp</td>
 
 <td>The resulting <i>image</i> is image replaced with c<i>omposite image</i>.
 Here the matte information is ignored.</td>
 </tr>
 
 <tr>
-<td>ReplaceRedCompositeOp</td>
+<td>CopyRedCompositeOp</td>
 
 <td>The resulting image is the red layer in <i>image</i> replaced with
 the red layer in <i>composite image</i>. The other layers are copied untouched.</td>
 </tr>
 
 <tr>
-<td>ReplaceGreenCompositeOp</td>
+<td>CopyGreenCompositeOp</td>
 
 <td>The resulting image is the green layer in <i>image</i> replaced with
 the green layer in <i>composite image</i>. The other layers are copied
@@ -359,14 +365,14 @@ untouched.</td>
 </tr>
 
 <tr>
-<td>ReplaceBlueCompositeOp</td>
+<td>CopyBlueCompositeOp</td>
 
 <td>The resulting image is the blue layer in <i>image</i> replaced with
 the blue layer in <i>composite image</i>. The other layers are copied untouched.</td>
 </tr>
 
 <tr>
-<td>ReplaceMatteCompositeOp</td>
+<td>CopyOpacityCompositeOp</td>
 
 <td>The resulting image is the matte layer in <i>image</i> replaced with
 the matte layer in <i>composite image</i>. The other layers are copied
@@ -379,6 +385,36 @@ zero and 255 on the boundary.&nbsp; For certain operations, if <i>image</i>
 does not have a matte channel, it is initialized with 0 for any pixel matching
 in color to pixel location (0,0), otherwise 255 (to work properly <i>borderWidth</i>
 must be 0).</td>
+</tr>
+
+<tr>
+<td>ClearCompositeOp</td>
+
+<td>&nbsp;</td>
+</tr>
+
+<tr>
+<td>DissolveCompositeOp</td>
+
+<td>&nbsp;</td>
+</tr>
+
+<tr>
+<td>DisplaceCompositeOp</td>
+
+<td>&nbsp;</td>
+</tr>
+
+<tr>
+<td>ModulateCompositeOp</td>
+
+<td>&nbsp;</td>
+</tr>
+
+<tr>
+<td>ThresholdCompositeOp</td>
+
+<td>&nbsp;</td>
 </tr>
 </table>
 
@@ -471,10 +507,10 @@ and Huffman coding)&nbsp; as used by bzip2 utilities</td>
 </tr>
 </table>
 
-<p><i>FilterTypes</i> is used to adjust the filter algorithm used when resizing
-images. Different filters experience varying degrees of success with various
-images and can take sipngicantly different amounts of processing time.
-ImageMagick uses the <i>LanczosFilter</i> by default since this filter
+<p><i>FilterTypes</i> is used to adjust the filter algorithm used when
+resizing images. Different filters experience varying degrees of success
+with various images and can take sipngicantly different amounts of processing
+time. ImageMagick uses the <i>LanczosFilter</i> by default since this filter
 has been shown to provide the best results for most images in a reasonable
 amount of time. Other filter types (e.g. <i>TriangleFilter</i>) may execute
 much faster but may show artifacts when the image is re-sized or around

@@ -75,38 +75,6 @@ Magick::Options::~Options()
  *
  */
 
-void Magick::Options::animationDelay ( unsigned int delay_ )
-{
-  // FIXME: replacement implementation unknown
-//   char tmpbuff[MaxTextExtent + 1];
-//   FormatString( tmpbuff, "%u", delay_ );
-//   Magick::CloneString( &_imageInfo->delay, tmpbuff );
-}
-unsigned int Magick::Options::animationDelay ( void ) const
-{
-  // FIXME: replacement implementation unknown
-//   if ( _imageInfo->delay )
-//     return atoi( _imageInfo->delay );
-//   else
-//     return 0;
-}
-
-void Magick::Options::animationIterations ( unsigned int iterations_ )
-{
-  // FIXME: replacement implementation unknown
-//   char tmpbuff[MaxTextExtent + 1];
-//   FormatString( tmpbuff, "%u", iterations_ );
-//   Magick::CloneString( &_imageInfo->iterations, tmpbuff );
-}
-unsigned int Magick::Options::animationIterations ( void ) const
-{
-  // FIXME: replacement implementation unknown
-//   if ( _imageInfo->iterations )
-//     return atoi( _imageInfo->iterations );
-//   else
-//     return 0;
-}
-
 void Magick::Options::backgroundColor ( const Magick::Color &color_ )
 {
   _imageInfo->background_color = color_;
@@ -244,23 +212,6 @@ std::string Magick::Options::format ( void ) const
     return std::string( magick_info->description );
   
   return std::string();
-}
-
-void Magick::Options::gifDisposeMethod ( unsigned int disposeMethod_ )
-{
-  // FIXME: replacement implementation unknown
-//   char tmpbuff[MaxTextExtent + 1];
-//   FormatString( tmpbuff, "%u", disposeMethod_ );
-//   Magick::CloneString( &_imageInfo->dispose, tmpbuff );
-}
-unsigned int Magick::Options::gifDisposeMethod ( void ) const
-{
-  // FIXME: replacement implementation unknown
-  // It would be better to return an enumeration
-//   if ( _imageInfo->dispose )
-//     return ( atoi( _imageInfo->dispose ) );
-  
-//   return 0;
 }
 
 void Magick::Options::magick ( const std::string &magick_ )

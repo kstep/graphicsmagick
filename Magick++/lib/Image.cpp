@@ -1614,30 +1614,29 @@ bool Magick::Image::antiAlias( void )
   return static_cast<bool>( options()->antiAlias( ) );
 }
 
+// Animation inter-frame delay
 void Magick::Image::animationDelay ( unsigned int delay_ )
 {
   modifyImage();
   image()->delay = delay_;
-  options()->animationDelay( delay_ );
 }
 unsigned int Magick::Image::animationDelay ( void ) const
 {
-  return constOptions()->animationDelay();
-  //return constImage()->delay;
+  return constImage()->delay;
 }
 
+// Number of iterations to play animation
 void Magick::Image::animationIterations ( unsigned int iterations_ )
 {
   modifyImage();
   image()->iterations = iterations_;
-  options()->animationIterations( iterations_ );
 }
 unsigned int Magick::Image::animationIterations ( void ) const
 {
-  return constOptions()->animationIterations( );
-  //return image()->iterations;
+  return constImage()->iterations;
 }
 
+// Background color
 void Magick::Image::backgroundColor ( const Color &color_ )
 {
   modifyImage();
@@ -1666,6 +1665,7 @@ Magick::Color Magick::Image::backgroundColor ( void ) const
 // 		      image->background_color.blue );
 }
 
+// Background fill texture
 void Magick::Image::backgroundTexture ( const std::string &backgroundTexture_ )
 {
   modifyImage();
@@ -1676,21 +1676,25 @@ std::string Magick::Image::backgroundTexture ( void ) const
   return constOptions()->backgroundTexture( );
 }
 
+// Original image columns
 unsigned int Magick::Image::baseColumns ( void ) const
 {
   return constImage()->magick_columns;
 }
 
+// Original image name
 std::string Magick::Image::baseFilename ( void ) const
 {
   return std::string(constImage()->magick_filename);
 }
 
+// Original image rows
 unsigned int Magick::Image::baseRows ( void ) const
 {
   return constImage()->magick_rows;
 }
 
+// Border color
 void Magick::Image::borderColor ( const Color &color_ )
 {
   modifyImage();
@@ -2119,15 +2123,11 @@ void Magick::Image::gifDisposeMethod ( unsigned int disposeMethod_ )
 {
   modifyImage();
   image()->dispose = disposeMethod_;
-  options()->gifDisposeMethod( disposeMethod_ );
 }
 unsigned int Magick::Image::gifDisposeMethod ( void ) const
 {
   // FIXME: It would be better to return an enumeration
-
-  return constOptions()->gifDisposeMethod( );
-
-//   return(image()->dispose);
+  return constImage()->dispose;
 }
 
 // ICC color profile (BLOB)
