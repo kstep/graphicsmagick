@@ -214,7 +214,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   unsigned long
     length,
-		width;
+    width;
 
   /*
     Open image file.
@@ -255,6 +255,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Remove comments.
   */
+  count=0;
   for (p=xpm_buffer; *p != '\0'; p++)
   {
     if (*p != '"')
@@ -556,14 +557,14 @@ static unsigned int WritePICONImage(const ImageInfo *image_info,Image *image)
     *map;
 
   RectangleInfo
-		geometry;
+    geometry;
 
   unsigned int
     status;
 
   SetGeometry(image,&geometry);
   (void) GetMagickGeometry(PiconGeometry,&geometry.x,&geometry.y,
-		&geometry.width,&geometry.height);
+    &geometry.width,&geometry.height);
   picon=ZoomImage(image,geometry.width,geometry.height,&image->exception);
   if (IsGrayImage(image,&image->exception))
     map=BlobToImage(image_info,Graymap,GraymapExtent,&image->exception);

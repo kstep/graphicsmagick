@@ -214,15 +214,15 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for (x=0; x < (long) ((image->columns*image->rows)/3); x++)
       {
         pixel=ReadBlobMSBLong(image);
-        q->red=(Quantum) (MaxRGB*((pixel >> 0) & 0x3ff)/1023);
+        q->red=(Quantum) (MaxRGB*((pixel >> 0) & 0x3ff)/1023L);
         q->green=q->red;
         q->blue=q->red;
         q++;
-        q->red=(Quantum) (MaxRGB*((pixel >> 10) & 0x3ff)/1023);
+        q->red=(Quantum) (MaxRGB*((pixel >> 10) & 0x3ff)/1023L);
         q->green=q->red;
         q->blue=q->red;
         q++;
-        q->red=(Quantum) (MaxRGB*((pixel >> 20) & 0x3ff)/1023);
+        q->red=(Quantum) (MaxRGB*((pixel >> 20) & 0x3ff)/1023L);
         q->green=q->red;
         q->blue=q->red;
         q++;
@@ -239,9 +239,9 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (x=0; x < (long) image->columns; x++)
         {
           pixel=ReadBlobMSBLong(image);
-          q->red=(Quantum) (MaxRGB*((pixel >> 22) & 0x3ff)/1023);
-          q->green=(Quantum) (MaxRGB*((pixel >> 12) & 0x3ff)/1023);
-          q->blue=(Quantum) (MaxRGB*((pixel >> 2) & 0x3ff)/1023);
+          q->red=(Quantum) (MaxRGB*((pixel >> 22) & 0x3ff)/1023L);
+          q->green=(Quantum) (MaxRGB*((pixel >> 12) & 0x3ff)/1023L);
+          q->blue=(Quantum) (MaxRGB*((pixel >> 2) & 0x3ff)/1023L);
           q++;
         }
         if (!SyncImagePixels(image))
@@ -364,12 +364,12 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
     i,
     x;
 
-  unsigned long
-    pixel;
-
   unsigned int
     status;
  
+  unsigned long
+    pixel;
+
   /*
     Open output image file.
   */
@@ -408,7 +408,7 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   for (i=0; i < (0x2000-804); i++)
     (void) WriteBlobByte(image,0x00);
   /*
-    Convert pixel packets to DPX raster image .
+    Convert pixel packets to DPX raster image.
   */
   for (y=0; y < (long) image->rows; y++)
   {
@@ -417,9 +417,9 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
       break;
     for (x=0; x < (long) image->columns; x++)
     {
-      pixel=((1023*XUpscale(p->red)/MaxRGB) << 22) |
-        ((1023*XUpscale(p->green)/MaxRGB) << 12) |
-        ((1023*XUpscale(p->blue)/MaxRGB) << 2);
+      pixel=((((1023L*p->red+MaxRGB/2)/MaxRGB) & 0x3ff) << 22) |
+        ((((1023L*p->green+MaxRGB/2)/MaxRGB) &0x3ff) << 12) |
+        ((((1023L*p->blue+MaxRGB/2)/MaxRGB) &0x3ff) << 2);
       (void) WriteBlobMSBLong(image,pixel);
       p++;
     }
