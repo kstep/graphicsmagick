@@ -569,7 +569,7 @@ MagickExport int OpenModule(const char *module)
   (void) strcpy(module_name,module);
   if (module_aliases != (ModuleAliases *) NULL)
     {
-      for (p=module_aliases; p->next != (ModuleAliases *) NULL; p=p->next)
+      for (p=module_aliases; p != (ModuleAliases *) NULL; p=p->next)
         if (LocaleCompare(p->alias,module) == 0)
           {
             (void) strcpy(module_name,p->module);
