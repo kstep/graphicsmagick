@@ -2510,6 +2510,14 @@ Export void DescribeImage(Image *image,FILE *file,const unsigned int verbose)
     (void) fprintf(file,"  tainted: False\n");
   SignatureImage(image);
   (void) fprintf(file,"  signature: %.1024s\n",image->signature);
+  (void) fprintf(file,"  cache type: ");
+  switch (GetCacheType(image->cache))
+  {
+    case MemoryCache: (void) fprintf(file,"memory\n"); break;
+    case DiskCache: (void) fprintf(file,"disk\n"); break;
+    case MemoryMappedCache: (void) fprintf(file,"memory-mapped\n"); break;
+    default: (void) fprintf(file,"\n");  break;
+  }
   if (user_time != 0.0)
     (void) fprintf(file,"  user time: %.1fu\n",user_time);
   if (elapsed_time != 0.0)
