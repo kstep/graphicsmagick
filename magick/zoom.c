@@ -741,9 +741,6 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
     scale,
     support;
 
-  IndexPacket
-    index;
-
   int
     end,
     j,
@@ -756,8 +753,7 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
     x;
 
   register IndexPacket
-    *destination_indexes,
-    *source_indexes;
+    *indexes;
 
   register PixelPacket
     *p,
@@ -777,13 +773,10 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
         memcpy(q,p,source->columns*sizeof(PixelPacket));
-        source_indexes=GetIndexes(source);
-        if (source_indexes != (IndexPacket *) NULL)
-          {
-            destination_indexes=GetIndexes(destination);
-            memcpy(destination_indexes,source_indexes,
-              source->columns*sizeof(IndexPacket));
-          }
+        indexes=GetIndexes(destination);
+        if (indexes != (IndexPacket *) NULL)
+          memcpy(indexes,GetIndexes(source),
+            source->columns*sizeof(IndexPacket));
         if (!SyncImagePixels(destination))
           break;
         if (QuantumTick(*quantum,span))
@@ -830,8 +823,7 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
     q=SetImagePixels(destination,x,0,1,destination->rows);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    source_indexes=GetIndexes(source);
-    destination_indexes=GetIndexes(destination);
+    indexes=GetIndexes(destination);
     for (y=0; y < (int) destination->rows; y++)
     {
       j=0;
@@ -849,10 +841,8 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
         opacity+=contribution[i].weight*(p+j)->opacity;
       }
       if (destination->storage_class == PseudoClass)
-        {
-          index=source_indexes[j];
-          destination_indexes[y]=index;
-        }
+      if (indexes != (IndexPacket *) NULL)
+        indexes[y]=(GetIndexes(source))[j];
       q->red=(Quantum)
         ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
       q->green=(Quantum)
@@ -886,9 +876,6 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
     scale,
     support;
 
-  IndexPacket
-    index;
-
   int
     end,
     j,
@@ -901,8 +888,7 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
     y;
 
   register IndexPacket
-    *destination_indexes,
-    *source_indexes;
+    *indexes;
 
   register PixelPacket
     *p,
@@ -922,13 +908,10 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
         memcpy(q,p,source->columns*sizeof(PixelPacket));
-        source_indexes=GetIndexes(source);
-        if (source_indexes != (IndexPacket *) NULL)
-          {
-            destination_indexes=GetIndexes(destination);
-            memcpy(destination_indexes,source_indexes,
-              source->columns*sizeof(IndexPacket));
-          }
+        indexes=GetIndexes(destination);
+        if (indexes != (IndexPacket *) NULL)
+          memcpy(indexes,GetIndexes(source),
+            source->columns*sizeof(IndexPacket));
         if (!SyncImagePixels(destination))
           break;
         if (QuantumTick(*quantum,span))
@@ -975,8 +958,7 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
     q=SetImagePixels(destination,0,y,destination->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    source_indexes=GetIndexes(source);
-    destination_indexes=GetIndexes(destination);
+    indexes=GetIndexes(destination);
     for (x=0; x < (int) destination->columns; x++)
     {
       j=0;
@@ -992,11 +974,8 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
         blue+=contribution[i].weight*(p+j)->blue;
         opacity+=contribution[i].weight*(p+j)->opacity;
       }
-      if (destination->storage_class == PseudoClass)
-        {
-          index=source_indexes[j];
-          destination_indexes[x]=index;
-        }
+      if (indexes != (IndexPacket *) NULL)
+        indexes[x]=(GetIndexes(source))[j];
       q->red=(Quantum)
         ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
       q->green=(Quantum)
@@ -1200,8 +1179,7 @@ MagickExport Image *SampleImage(Image *image,const unsigned int columns,
     *pixels;
 
   register IndexPacket
-    *indexes,
-    *sample_indexes;
+    *indexes;
 
   register int
     x;
@@ -1271,16 +1249,12 @@ MagickExport Image *SampleImage(Image *image,const unsigned int columns,
     */
     for (x=0; x < (int) sample_image->columns; x++)
       *q++=pixels[(int) x_offset[x]];
-    indexes=GetIndexes(image);
+    indexes=GetIndexes(sample_image);
     if (indexes != (IndexPacket *) NULL)
       {
-        /*
-          Sample colormap indexes.
-        */
-        memcpy(index,indexes,image->columns*sizeof(IndexPacket));
-        sample_indexes=GetIndexes(sample_image);
+        memcpy(index,GetIndexes(image),image->columns*sizeof(IndexPacket));
         for (x=0; x < (int) sample_image->columns; x++)
-          sample_indexes[x]=index[(int) x_offset[x]];
+          indexes[x]=index[(int) x_offset[x]];
       }
     if (!SyncImagePixels(sample_image))
       break;
