@@ -66,16 +66,16 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadPLASMAImage creates a plasma fractal image.  The image is
+%  Method ReadPlasmaImage creates a plasma fractal image.  The image is
 %  initialized to to the X server color as specified by the filename.
 %
-%  The format of the ReadPLASMAImage method is:
+%  The format of the ReadPlasmaImage method is:
 %
-%      Image *ReadPLASMAImage(const ImageInfo *image_info,ExceptionInfo *exception)
+%      Image *ReadPlasmaImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o image:  Method ReadPLASMAImage returns a pointer to the image after
+%    o image:  Method ReadPlasmaImage returns a pointer to the image after
 %      creating it. A null image is returned if there is a memory shortage
 %      or if the image cannot be read.
 %
@@ -85,7 +85,7 @@
 %
 %
 */
-static Image *ReadPLASMAImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadPlasmaImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
 #define PlasmaImageText  "  Applying image plasma...  "
 #define PlasmaPixel(x,y) \
@@ -190,25 +190,25 @@ static Image *ReadPLASMAImage(const ImageInfo *image_info,ExceptionInfo *excepti
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method RegisterPLASMAImage adds attributes for the PLASMA image format to
+%  Method RegisterPlasmaImage adds attributes for the Plasma image format to
 %  the list of supported formats.  The attributes include the image format
 %  tag, a method to read and/or write the format, whether the format
 %  supports the saving of more than one frame to the same file or blob,
 %  whether the format supports native in-memory I/O, and a brief
 %  description of the format.
 %
-%  The format of the RegisterPLASMAImage method is:
+%  The format of the RegisterPlasmaImage method is:
 %
-%      RegisterPLASMAImage(void)
+%      RegisterPlasmaImage(void)
 %
 */
-Export void RegisterPLASMAImage(void)
+Export void RegisterPlasmaImage(void)
 {
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("PLASMA");
-  entry->decoder=ReadPLASMAImage;
+  entry=SetMagickInfo("Plasma");
+  entry->decoder=ReadPlasmaImage;
   entry->adjoin=False;
   entry->description=AllocateString("Plasma fractal image");
   RegisterMagickInfo(entry);

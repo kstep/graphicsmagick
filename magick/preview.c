@@ -65,7 +65,7 @@ const char
   Forward declarations.
 */
 static unsigned int
-  WritePREVIEWImage(const ImageInfo *,Image *);
+  WritePreviewImage(const ImageInfo *,Image *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -78,25 +78,25 @@ static unsigned int
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method RegisterPREVIEWImage adds attributes for the PREVIEW image format to
+%  Method RegisterPreviewImage adds attributes for the Preview image format to
 %  the list of supported formats.  The attributes include the image format
 %  tag, a method to read and/or write the format, whether the format
 %  supports the saving of more than one frame to the same file or blob,
 %  whether the format supports native in-memory I/O, and a brief
 %  description of the format.
 %
-%  The format of the RegisterPREVIEWImage method is:
+%  The format of the RegisterPreviewImage method is:
 %
-%      RegisterPREVIEWImage(void)
+%      RegisterPreviewImage(void)
 %
 */
-Export void RegisterPREVIEWImage(void)
+Export void RegisterPreviewImage(void)
 {
   MagickInfo
     *entry;
 
-  entry=SetMagickInfo("PREVIEW");
-  entry->encoder=WritePREVIEWImage;
+  entry=SetMagickInfo("Preview");
+  entry->encoder=WritePreviewImage;
   entry->adjoin=False;
   entry->description=
     AllocateString("Show a preview an image enhancement, effect, or f/x");
@@ -114,17 +114,17 @@ Export void RegisterPREVIEWImage(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method WritePREVIEWImage creates several tiles each with a varying
+%  Method WritePreviewImage creates several tiles each with a varying
 %  stength of an image enhancement function (e.g. gamma).  The image is written
 %  in the MIFF format.
 %
-%  The format of the WritePREVIEWImage method is:
+%  The format of the WritePreviewImage method is:
 %
-%      unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
+%      unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
 %
 %  A description of each parameter follows.
 %
-%    o status: Method WritePREVIEWImage return True if the image is written.
+%    o status: Method WritePreviewImage return True if the image is written.
 %      False is returned is there is a memory shortage or if the image file
 %      fails to write.
 %
@@ -134,7 +134,7 @@ Export void RegisterPREVIEWImage(void)
 %
 %
 */
-static unsigned int WritePREVIEWImage(const ImageInfo *image_info,Image *image)
+static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
 {
 #define NumberTiles  9
 #define PreviewImageText  "  Creating image preview...  "

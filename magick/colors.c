@@ -1879,16 +1879,12 @@ Export unsigned int QueryColorDatabase(const char *target,PixelPacket *color)
 Export unsigned int QueryColorName(const PixelPacket *color,char *name)
 {
   double
+    distance,
+    distance_squared,
     min_distance;
 
   register const ColorlistInfo
     *p;
-
-  register double
-    distance_squared;
-
-  register int
-    distance;
 
   *name='\0';
   min_distance=0;

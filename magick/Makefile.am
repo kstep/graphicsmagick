@@ -53,7 +53,7 @@ MAGICK_BASE_SRCS=PreRvIcccm.c animate.c annotate.c attributes.c blob.c \
 
 # Library coder sources
 MAGICK_CODER_SRCS=avs.c bim.c bmp.c cmyk.c dcm.c dps.c ept.c fax.c fits.c \
-  fpx.c gif.c gray.c hdf.c icc.c icon.c iptc.c jbig.c jpeg.c logo.c mgk.c \
+  fpx.c gif.c gray.c hdf.c icc.c icon.c iptc.c jbig.c jpeg.c logo.c \
   miff.c mono.c mtv.c pcd.c pcl.c pcx.c pdb.c pdf.c pict.c pix.c png.c \
   plasma.c pnm.c preview.c ps.c ps2.c ps3.c psd.c pwp.c rgb.c rla.c rle.c \
   sct.c sfw.c sgi.c sun.c tga.c tiff.c tile.c tim.c txt.c uil.c uyvy.c vicar.c \
@@ -100,9 +100,9 @@ pkg_LTLIBRARIES   = avs.la bmp.la cmyk.la dcm.la dps.la ept.la fax.la fpx.la \
   fits.la gif.la gray.la hdf.la icc.la icon.la iptc.la jbig.la jpeg.la \
   logo.la miff.la mono.la mtv.la pcd.la pcl.la pcx.la pdb.la pdf.la pict.la \
   png.la pix.la plasma.la pnm.la preview.la ps.la ps2.la ps3.la psd.la \
-  pwp.la rgb.la rla.la rle.la sct.la sfw.la sgi.la sun.la tga.la  tiff.la tile.la \
-  tim.la txt.la uil.la uyvy.la vicar.la vid.la viff.la wbmp.la x.la xbm.la \
-  xc.la xpm.la xwd.la yuv.la bim.la
+  pwp.la rgb.la rla.la rle.la sct.la sfw.la sgi.la sun.la tga.la tiff.la \
+  tile.la tim.la txt.la uil.la uyvy.la vicar.la vid.la viff.la wbmp.la x.la \
+  xbm.la xc.la xpm.la xwd.la yuv.la bim.la
 else
 pkg_LTLIBRARIES   =
 endif # WITH_MODULES

@@ -221,7 +221,7 @@ MAGICK_BASE_SRCS = PreRvIcccm.c animate.c annotate.c attributes.c blob.c \
 
 # Library coder sources
 MAGICK_CODER_SRCS = avs.c bim.c bmp.c cmyk.c dcm.c dps.c ept.c fax.c fits.c \
-  fpx.c gif.c gray.c hdf.c icc.c icon.c iptc.c jbig.c jpeg.c logo.c mgk.c \
+  fpx.c gif.c gray.c hdf.c icc.c icon.c iptc.c jbig.c jpeg.c logo.c \
   miff.c mono.c mtv.c pcd.c pcl.c pcx.c pdb.c pdf.c pict.c pix.c png.c \
   plasma.c pnm.c preview.c ps.c ps2.c ps3.c psd.c pwp.c rgb.c rla.c rle.c \
   sct.c sfw.c sgi.c sun.c tga.c tiff.c tile.c tim.c txt.c uil.c uyvy.c vicar.c \
@@ -263,9 +263,9 @@ pkgdir = $(libdir)/ImageMagick/modules/coders
 @WITH_MODULES_TRUE@  fits.la gif.la gray.la hdf.la icc.la icon.la iptc.la jbig.la jpeg.la \
 @WITH_MODULES_TRUE@  logo.la miff.la mono.la mtv.la pcd.la pcl.la pcx.la pdb.la pdf.la pict.la \
 @WITH_MODULES_TRUE@  png.la pix.la plasma.la pnm.la preview.la ps.la ps2.la ps3.la psd.la \
-@WITH_MODULES_TRUE@  pwp.la rgb.la rla.la rle.la sct.la sfw.la sgi.la sun.la tga.la  tiff.la tile.la \
-@WITH_MODULES_TRUE@  tim.la txt.la uil.la uyvy.la vicar.la vid.la viff.la wbmp.la x.la xbm.la \
-@WITH_MODULES_TRUE@  xc.la xpm.la xwd.la yuv.la bim.la
+@WITH_MODULES_TRUE@  pwp.la rgb.la rla.la rle.la sct.la sfw.la sgi.la sun.la tga.la tiff.la \
+@WITH_MODULES_TRUE@  tile.la tim.la txt.la uil.la uyvy.la vicar.la vid.la viff.la wbmp.la x.la \
+@WITH_MODULES_TRUE@  xbm.la xc.la xpm.la xwd.la yuv.la bim.la
 @WITH_MODULES_FALSE@pkg_LTLIBRARIES = 
 
 # AVS module
@@ -656,14 +656,14 @@ jpeg_la_OBJECTS =  $(am_jpeg_la_OBJECTS)
 @WITH_MODULES_FALSE@utility.lo widget.lo xwindows.lo zoom.lo avs.lo \
 @WITH_MODULES_FALSE@bim.lo bmp.lo cmyk.lo dcm.lo dps.lo ept.lo fax.lo \
 @WITH_MODULES_FALSE@fits.lo fpx.lo gif.lo gray.lo hdf.lo icc.lo icon.lo \
-@WITH_MODULES_FALSE@iptc.lo jbig.lo jpeg.lo logo.lo mgk.lo miff.lo \
-@WITH_MODULES_FALSE@mono.lo mtv.lo pcd.lo pcl.lo pcx.lo pdb.lo pdf.lo \
-@WITH_MODULES_FALSE@pict.lo pix.lo png.lo plasma.lo pnm.lo preview.lo \
-@WITH_MODULES_FALSE@ps.lo ps2.lo ps3.lo psd.lo pwp.lo rgb.lo rla.lo \
-@WITH_MODULES_FALSE@rle.lo sct.lo sfw.lo sgi.lo sun.lo tga.lo tiff.lo \
-@WITH_MODULES_FALSE@tile.lo tim.lo txt.lo uil.lo uyvy.lo vicar.lo \
-@WITH_MODULES_FALSE@vid.lo viff.lo wbmp.lo x.lo xbm.lo xc.lo xpm.lo \
-@WITH_MODULES_FALSE@xwd.lo yuv.lo
+@WITH_MODULES_FALSE@iptc.lo jbig.lo jpeg.lo logo.lo miff.lo mono.lo \
+@WITH_MODULES_FALSE@mtv.lo pcd.lo pcl.lo pcx.lo pdb.lo pdf.lo pict.lo \
+@WITH_MODULES_FALSE@pix.lo png.lo plasma.lo pnm.lo preview.lo ps.lo \
+@WITH_MODULES_FALSE@ps2.lo ps3.lo psd.lo pwp.lo rgb.lo rla.lo rle.lo \
+@WITH_MODULES_FALSE@sct.lo sfw.lo sgi.lo sun.lo tga.lo tiff.lo tile.lo \
+@WITH_MODULES_FALSE@tim.lo txt.lo uil.lo uyvy.lo vicar.lo vid.lo \
+@WITH_MODULES_FALSE@viff.lo wbmp.lo x.lo xbm.lo xc.lo xpm.lo xwd.lo \
+@WITH_MODULES_FALSE@yuv.lo
 @WITH_MODULES_TRUE@am_libMagick_la_OBJECTS =  PreRvIcccm.lo animate.lo \
 @WITH_MODULES_TRUE@annotate.lo attributes.lo blob.lo cache.lo \
 @WITH_MODULES_TRUE@cache_view.lo colors.lo compress.lo constitute.lo \
@@ -858,26 +858,25 @@ $(DEPDIR)/histogram.Plo $(DEPDIR)/html.Plo $(DEPDIR)/icc.Plo \
 $(DEPDIR)/icon.Plo $(DEPDIR)/image.Plo $(DEPDIR)/iptc.Plo \
 $(DEPDIR)/jbig.Plo $(DEPDIR)/jpeg.Plo $(DEPDIR)/label.Plo \
 $(DEPDIR)/logo.Plo $(DEPDIR)/magick.Plo $(DEPDIR)/map.Plo \
-$(DEPDIR)/matte.Plo $(DEPDIR)/memory.Plo $(DEPDIR)/mgk.Plo \
-$(DEPDIR)/miff.Plo $(DEPDIR)/monitor.Plo $(DEPDIR)/mono.Plo \
-$(DEPDIR)/montage.Plo $(DEPDIR)/mtv.Plo $(DEPDIR)/pcd.Plo \
-$(DEPDIR)/pcl.Plo $(DEPDIR)/pcx.Plo $(DEPDIR)/pdb.Plo $(DEPDIR)/pdf.Plo \
-$(DEPDIR)/pict.Plo $(DEPDIR)/pix.Plo $(DEPDIR)/plasma.Plo \
-$(DEPDIR)/png.Plo $(DEPDIR)/pnm.Plo $(DEPDIR)/preview.Plo \
-$(DEPDIR)/ps.Plo $(DEPDIR)/ps2.Plo $(DEPDIR)/ps3.Plo $(DEPDIR)/psd.Plo \
-$(DEPDIR)/pwp.Plo $(DEPDIR)/quantize.Plo $(DEPDIR)/rgb.Plo \
-$(DEPDIR)/rla.Plo $(DEPDIR)/rle.Plo $(DEPDIR)/sct.Plo \
-$(DEPDIR)/segment.Plo $(DEPDIR)/sfw.Plo $(DEPDIR)/sgi.Plo \
-$(DEPDIR)/shear.Plo $(DEPDIR)/signature.Plo $(DEPDIR)/stegano.Plo \
-$(DEPDIR)/stream.Plo $(DEPDIR)/sun.Plo $(DEPDIR)/tga.Plo \
-$(DEPDIR)/tiff.Plo $(DEPDIR)/tile.Plo $(DEPDIR)/tim.Plo \
-$(DEPDIR)/timer.Plo $(DEPDIR)/transform.Plo $(DEPDIR)/ttf.Plo \
-$(DEPDIR)/txt.Plo $(DEPDIR)/uil.Plo $(DEPDIR)/utility.Plo \
-$(DEPDIR)/uyvy.Plo $(DEPDIR)/vicar.Plo $(DEPDIR)/vid.Plo \
-$(DEPDIR)/viff.Plo $(DEPDIR)/wbmp.Plo $(DEPDIR)/widget.Plo \
-$(DEPDIR)/x.Plo $(DEPDIR)/xbm.Plo $(DEPDIR)/xc.Plo $(DEPDIR)/xpm.Plo \
-$(DEPDIR)/xwd.Plo $(DEPDIR)/xwindows.Plo $(DEPDIR)/yuv.Plo \
-$(DEPDIR)/zoom.Plo
+$(DEPDIR)/matte.Plo $(DEPDIR)/memory.Plo $(DEPDIR)/miff.Plo \
+$(DEPDIR)/monitor.Plo $(DEPDIR)/mono.Plo $(DEPDIR)/montage.Plo \
+$(DEPDIR)/mtv.Plo $(DEPDIR)/pcd.Plo $(DEPDIR)/pcl.Plo $(DEPDIR)/pcx.Plo \
+$(DEPDIR)/pdb.Plo $(DEPDIR)/pdf.Plo $(DEPDIR)/pict.Plo \
+$(DEPDIR)/pix.Plo $(DEPDIR)/plasma.Plo $(DEPDIR)/png.Plo \
+$(DEPDIR)/pnm.Plo $(DEPDIR)/preview.Plo $(DEPDIR)/ps.Plo \
+$(DEPDIR)/ps2.Plo $(DEPDIR)/ps3.Plo $(DEPDIR)/psd.Plo $(DEPDIR)/pwp.Plo \
+$(DEPDIR)/quantize.Plo $(DEPDIR)/rgb.Plo $(DEPDIR)/rla.Plo \
+$(DEPDIR)/rle.Plo $(DEPDIR)/sct.Plo $(DEPDIR)/segment.Plo \
+$(DEPDIR)/sfw.Plo $(DEPDIR)/sgi.Plo $(DEPDIR)/shear.Plo \
+$(DEPDIR)/signature.Plo $(DEPDIR)/stegano.Plo $(DEPDIR)/stream.Plo \
+$(DEPDIR)/sun.Plo $(DEPDIR)/tga.Plo $(DEPDIR)/tiff.Plo \
+$(DEPDIR)/tile.Plo $(DEPDIR)/tim.Plo $(DEPDIR)/timer.Plo \
+$(DEPDIR)/transform.Plo $(DEPDIR)/ttf.Plo $(DEPDIR)/txt.Plo \
+$(DEPDIR)/uil.Plo $(DEPDIR)/utility.Plo $(DEPDIR)/uyvy.Plo \
+$(DEPDIR)/vicar.Plo $(DEPDIR)/vid.Plo $(DEPDIR)/viff.Plo \
+$(DEPDIR)/wbmp.Plo $(DEPDIR)/widget.Plo $(DEPDIR)/x.Plo \
+$(DEPDIR)/xbm.Plo $(DEPDIR)/xc.Plo $(DEPDIR)/xpm.Plo $(DEPDIR)/xwd.Plo \
+$(DEPDIR)/xwindows.Plo $(DEPDIR)/yuv.Plo $(DEPDIR)/zoom.Plo
 SOURCES = $(avs_la_SOURCES) $(bim_la_SOURCES) $(bmp_la_SOURCES) $(cmyk_la_SOURCES) $(dcm_la_SOURCES) $(dps_la_SOURCES) $(ept_la_SOURCES) $(fax_la_SOURCES) $(fits_la_SOURCES) $(fpx_la_SOURCES) $(gif_la_SOURCES) $(gray_la_SOURCES) $(hdf_la_SOURCES) $(icc_la_SOURCES) $(icon_la_SOURCES) $(iptc_la_SOURCES) $(jbig_la_SOURCES) $(jpeg_la_SOURCES) $(libMagick_la_SOURCES) $(logo_la_SOURCES) $(miff_la_SOURCES) $(mono_la_SOURCES) $(mtv_la_SOURCES) $(pcd_la_SOURCES) $(pcl_la_SOURCES) $(pcx_la_SOURCES) $(pdb_la_SOURCES) $(pdf_la_SOURCES) $(pict_la_SOURCES) $(pix_la_SOURCES) $(plasma_la_SOURCES) $(png_la_SOURCES) $(pnm_la_SOURCES) $(preview_la_SOURCES) $(ps_la_SOURCES) $(ps2_la_SOURCES) $(ps3_la_SOURCES) $(psd_la_SOURCES) $(pwp_la_SOURCES) $(rgb_la_SOURCES) $(rla_la_SOURCES) $(rle_la_SOURCES) $(sct_la_SOURCES) $(sfw_la_SOURCES) $(sgi_la_SOURCES) $(sun_la_SOURCES) $(tga_la_SOURCES) $(tiff_la_SOURCES) $(tile_la_SOURCES) $(tim_la_SOURCES) $(txt_la_SOURCES) $(uil_la_SOURCES) $(uyvy_la_SOURCES) $(vicar_la_SOURCES) $(vid_la_SOURCES) $(viff_la_SOURCES) $(wbmp_la_SOURCES) $(x_la_SOURCES) $(xbm_la_SOURCES) $(xc_la_SOURCES) $(xpm_la_SOURCES) $(xwd_la_SOURCES) $(yuv_la_SOURCES)
 OBJECTS = $(am_avs_la_OBJECTS) $(am_bim_la_OBJECTS) $(am_bmp_la_OBJECTS) $(am_cmyk_la_OBJECTS) $(am_dcm_la_OBJECTS) $(am_dps_la_OBJECTS) $(am_ept_la_OBJECTS) $(am_fax_la_OBJECTS) $(am_fits_la_OBJECTS) $(am_fpx_la_OBJECTS) $(am_gif_la_OBJECTS) $(am_gray_la_OBJECTS) $(am_hdf_la_OBJECTS) $(am_icc_la_OBJECTS) $(am_icon_la_OBJECTS) $(am_iptc_la_OBJECTS) $(am_jbig_la_OBJECTS) $(am_jpeg_la_OBJECTS) $(am_libMagick_la_OBJECTS) $(am_logo_la_OBJECTS) $(am_miff_la_OBJECTS) $(am_mono_la_OBJECTS) $(am_mtv_la_OBJECTS) $(am_pcd_la_OBJECTS) $(am_pcl_la_OBJECTS) $(am_pcx_la_OBJECTS) $(am_pdb_la_OBJECTS) $(am_pdf_la_OBJECTS) $(am_pict_la_OBJECTS) $(am_pix_la_OBJECTS) $(am_plasma_la_OBJECTS) $(am_png_la_OBJECTS) $(am_pnm_la_OBJECTS) $(am_preview_la_OBJECTS) $(am_ps_la_OBJECTS) $(am_ps2_la_OBJECTS) $(am_ps3_la_OBJECTS) $(am_psd_la_OBJECTS) $(am_pwp_la_OBJECTS) $(am_rgb_la_OBJECTS) $(am_rla_la_OBJECTS) $(am_rle_la_OBJECTS) $(am_sct_la_OBJECTS) $(am_sfw_la_OBJECTS) $(am_sgi_la_OBJECTS) $(am_sun_la_OBJECTS) $(am_tga_la_OBJECTS) $(am_tiff_la_OBJECTS) $(am_tile_la_OBJECTS) $(am_tim_la_OBJECTS) $(am_txt_la_OBJECTS) $(am_uil_la_OBJECTS) $(am_uyvy_la_OBJECTS) $(am_vicar_la_OBJECTS) $(am_vid_la_OBJECTS) $(am_viff_la_OBJECTS) $(am_wbmp_la_OBJECTS) $(am_x_la_OBJECTS) $(am_xbm_la_OBJECTS) $(am_xc_la_OBJECTS) $(am_xpm_la_OBJECTS) $(am_xwd_la_OBJECTS) $(am_yuv_la_OBJECTS)
 
@@ -1322,7 +1321,6 @@ distdir: $(DISTFILES)
 @AMDEP@include $(DEPDIR)/map.Plo
 @AMDEP@include $(DEPDIR)/matte.Plo
 @AMDEP@include $(DEPDIR)/memory.Plo
-@AMDEP@include $(DEPDIR)/mgk.Plo
 @AMDEP@include $(DEPDIR)/miff.Plo
 @AMDEP@include $(DEPDIR)/monitor.Plo
 @AMDEP@include $(DEPDIR)/mono.Plo

@@ -66,17 +66,17 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadICONImage reads a Microsoft icon image file and returns it.  It
+%  Method ReadIconImage reads a Microsoft icon image file and returns it.  It
 %  allocates the memory necessary for the new Image structure and returns a
 %  pointer to the new image.
 %
-%  The format of the ReadICONImage method is:
+%  The format of the ReadIconImage method is:
 %
-%      Image *ReadICONImage(const ImageInfo *image_info,ExceptionInfo *exception)
+%      Image *ReadIconImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o image:  Method ReadICONImage returns a pointer to the image after
+%    o image:  Method ReadIconImage returns a pointer to the image after
 %      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
@@ -86,7 +86,7 @@
 %
 %
 */
-static Image *ReadICONImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadIconImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
 #define MaxIcons  256
 
@@ -198,7 +198,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,ExceptionInfo *exception
   for (i=0; i < icon_file.count; i++)
   {
     /*
-      Verify ICON identifier.
+      Verify Icon identifier.
     */
     (void) SeekBlob(image,icon_file.directory[i].offset,SEEK_SET);
     icon_header.size=LSBFirstReadLong(image);
@@ -230,7 +230,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,ExceptionInfo *exception
         return(image);
       }
     /*
-      Read ICON raster colormap.
+      Read Icon raster colormap.
     */
     icon_colormap=(unsigned char *) AllocateMemory(4*image->colors);
     if (icon_colormap == (unsigned char *) NULL)
@@ -247,7 +247,7 @@ static Image *ReadICONImage(const ImageInfo *image_info,ExceptionInfo *exception
     }
     FreeMemory((void *) &icon_colormap);
     /*
-      Convert ICON raster image to pixel packets.
+      Convert Icon raster image to pixel packets.
     */
     image->columns=icon_file.directory[i].width;
     image->rows=icon_file.directory[i].height;
@@ -434,30 +434,30 @@ static Image *ReadICONImage(const ImageInfo *image_info,ExceptionInfo *exception
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method RegisterICONImage adds attributes for the ICON image format to
+%  Method RegisterIconImage adds attributes for the Icon image format to
 %  the list of supported formats.  The attributes include the image format
 %  tag, a method to read and/or write the format, whether the format
 %  supports the saving of more than one frame to the same file or blob,
 %  whether the format supports native in-memory I/O, and a brief
 %  description of the format.
 %
-%  The format of the RegisterICONImage method is:
+%  The format of the RegisterIconImage method is:
 %
-%      RegisterICONImage(void)
+%      RegisterIconImage(void)
 %
 */
-Export void RegisterICONImage(void)
+Export void RegisterIconImage(void)
 {
   MagickInfo
     *entry;
 
   entry=SetMagickInfo("ICO");
-  entry->decoder=ReadICONImage;
+  entry->decoder=ReadIconImage;
   entry->adjoin=False;
   entry->description=AllocateString("Microsoft icon");
   RegisterMagickInfo(entry);
-  entry=SetMagickInfo("ICON");
-  entry->decoder=ReadICONImage;
+  entry=SetMagickInfo("Icon");
+  entry->decoder=ReadIconImage;
   entry->adjoin=False;
   entry->description=AllocateString("Microsoft icon");
   RegisterMagickInfo(entry);

@@ -238,7 +238,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,ExceptionInfo *exceptio
         /*
           Assign a value to the specified keyword.
         */
-        if (Latin1Compare(keyword,"LABEL_RECORDS") == 0)
+        if (Latin1Compare(keyword,"Label_RECORDS") == 0)
           header_length=(unsigned int) atoi(value);
         if (Latin1Compare(keyword,"LBLSIZE") == 0)
           header_length=(unsigned int) atoi(value);

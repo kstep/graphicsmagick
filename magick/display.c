@@ -6791,7 +6791,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       image_info->group=windows->image.id;
       (void) SetImageAttribute(*image,"Label","Preview");
       TemporaryFilename((*image)->filename);
-      (void) strcpy((*image)->magick,"PREVIEW");
+      (void) strcpy((*image)->magick,"Preview");
       status=WriteImage(image_info,*image);
       (void) strcpy((*image)->magick,"SHOW");
       status=WriteImage(image_info,*image);
@@ -6812,7 +6812,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       image_info->group=windows->image.id;
       (void) SetImageAttribute(*image,"Label","Histogram");
       TemporaryFilename((*image)->filename);
-      (void) strcpy((*image)->magick,"HISTOGRAM");
+      (void) strcpy((*image)->magick,"Histogram");
       status=WriteImage(image_info,*image);
       (void) strcpy((*image)->magick,"SHOW");
       status=WriteImage(image_info,*image);
@@ -6839,7 +6839,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       image_info->group=windows->image.id;
       (void) SetImageAttribute(*image,"Label","Matte");
       TemporaryFilename((*image)->filename);
-      (void) strcpy((*image)->magick,"MATTE");
+      (void) strcpy((*image)->magick,"Matte");
       status=WriteImage(image_info,*image);
       (void) strcpy((*image)->magick,"SHOW");
       status=WriteImage(image_info,*image);
@@ -7919,7 +7919,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
   if ((Latin1Compare(image_info->magick,"CMYK") == 0) ||
       (Latin1Compare(image_info->magick,"GRAY") == 0) ||
       (Latin1Compare(image_info->magick,"MAP") == 0) ||
-      (Latin1Compare(image_info->magick,"MATTE") == 0) ||
+      (Latin1Compare(image_info->magick,"Matte") == 0) ||
       (Latin1Compare(image_info->magick,"RGB") == 0) ||
       (Latin1Compare(image_info->magick,"RGBA") == 0) ||
       (Latin1Compare(image_info->magick,"TEXT") == 0) ||

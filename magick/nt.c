@@ -399,7 +399,7 @@ Export void NTErrorHandler(const ExceptionType error,const char *message,
         FormatString(buffer,"%.1024s: %.1024s.\n",SetClientName((char *) NULL),
           message);
   (void) MessageBox(NULL,buffer,"ImageMagick Exception",MB_OK | MB_TASKMODAL |
-    MB_SETFOREGROUND | MB_ICONEXCLAMATION);
+    MB_SETFOREGROUND | MB_IconEXCLAMATION);
   Exit(0);
 }
 
@@ -627,7 +627,7 @@ Export void NTWarningHandler(const ExceptionType warning,const char *message,
     FormatString(buffer,"%.1024s: %.1024s (%.1024s).\n",
       SetClientName((char *) NULL),message,qualifier);
   (void) MessageBox(NULL,buffer,"ImageMagick Warning",MB_OK | MB_TASKMODAL |
-    MB_SETFOREGROUND | MB_ICONINFORMATION);
+    MB_SETFOREGROUND | MB_IconINFORMATION);
 }
 
 /*
