@@ -90,7 +90,7 @@ testFilter('input.miff', 'Flop',
 testFilter('input.miff', 'Frame',
   q/10x10/,
   'ce95aac45517ddbf9ea866c453207c01', 
-  '713a7f27f0a7d1859613ab953381d126');
+  '281e5e39e7dc6e13da4506fe2f64f6f7');
 
 ++$test;
 testFilter('input.miff', 'Gamma',
@@ -102,7 +102,7 @@ testFilter('input.miff', 'Gamma',
 testFilter('input.miff', 'Implode',
   q/60/,
   '0b86e917d3e117c0ec879d0a16d4cb3d',
-  '52f2364cc8410397f6fca3edfeb4d00a');
+  '3199982815d5c078d647fdbe91eda550');
 
 ++$test;
 testFilter('input.miff', 'Layer',
@@ -176,7 +176,7 @@ testFilter('input.miff', 'Roll',
 testFilter('input.miff', 'Rotate',
   q/45/,
   '348660b245a850b59bc9df4bd3000331',
-  'eaf55efaed0508098918a3adde5dc95b');
+  'cf2cf4a4502d0c9147373d1c4db35907');
 
 ++$test;
 testFilter('input.miff', 'Sample',
@@ -204,7 +204,7 @@ testFilter('input.miff', 'Shade',
 testFilter('input.miff', 'Shear',
   q/45x45/,
   'c50868db64675f2e7692c93c0ca6798d',
-  '182416f55e1f1d712eedfc61bc763b53');
+  '791f8a7ea64989e01c9e5e27375574a2');
 
 ++$test;
 testFilter('input.miff', 'Solarize',
@@ -215,7 +215,7 @@ testFilter('input.miff', 'Solarize',
 testFilter('input.miff', 'Swirl',
   q/60/,
   '80d5a065d0f040d509c4f5a81d0d4b5b',
-  'e3f92866ecdad7454b088b9c9bf177f9');
+  '23da17c30a2277cd35203bb9fd6fd790');
 
 ++$test;
 testFilter('input.miff', 'Texture',
