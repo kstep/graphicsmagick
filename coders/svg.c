@@ -709,7 +709,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
     *font_weight,
     *id,
     *p,
-    **tokens;
+    **tokens,
+    *units;
 
   const char
     *keyword,
@@ -744,6 +745,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
   font_family=(char *) NULL;
   font_style=(char *) NULL;
   font_weight=(char *) NULL;
+  units=AllocateString("userSpaceOnUse");
   if (attributes != (const xmlChar **) NULL)
     for (i=0; (attributes[i] != (const xmlChar *) NULL); i+=2)
     {
@@ -770,14 +772,19 @@ static void SVGStartElement(void *context,const xmlChar *name,
         case 'C':
         case 'c':
         {
-          if (LocaleCompare(keyword,"color") == 0)
-            {
-              CloneString(&color,value);
-              break;
-            }
           if (LocaleCompare(keyword,"clip-path") == 0)
             {
               (void) fprintf(svg_info->file,"clip-path %s\n",value);
+              break;
+            }
+          if (LocaleCompare(keyword,"clipPathUnits") == 0)
+            {
+              CloneString(&units,value);
+              break;
+            }
+          if (LocaleCompare(keyword,"color") == 0)
+            {
+              CloneString(&color,value);
               break;
             }
           if (LocaleCompare(keyword,"cx") == 0)
@@ -1032,6 +1039,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
                      if (LocaleCompare(keyword,"clip-path") == 0)
                        {
                          (void) fprintf(svg_info->file,"clip-path %s\n",value);
+                         break;
+                       }
+                     if (LocaleCompare(keyword,"clipPathUnits") == 0)
+                       {
+                         CloneString(&units,value);
                          break;
                        }
                     if (LocaleCompare(keyword,"color") == 0)
@@ -1541,8 +1553,9 @@ static void SVGStartElement(void *context,const xmlChar *name,
         }
     }
   if (LocaleCompare((char *) name,"clipPath") == 0)
-    (void) fprintf(svg_info->file,"push clip-path-%s\n",id);
+    (void) fprintf(svg_info->file,"push clip-path-%s %s\n",id,units);
   LiberateMemory((void **) &id);
+  LiberateMemory((void **) &units);
   if (color != (char *) NULL)
     LiberateMemory((void **) &color);
 }

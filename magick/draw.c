@@ -1783,7 +1783,14 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
               value[x]=(*q++);
             value[x]='\0';
             if (LocaleNCompare("clip-path-",value,10) == 0)
-              break;
+              {
+                while (isspace((int) (*q)) && (*q != '\0'))
+                  q++;
+                for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
+                  value[x]=(*q++);
+                value[x]='\0';
+                break;
+              }
             if (LocaleCompare("graphic-context",value) == 0)
               {
                 n++;
