@@ -127,13 +127,21 @@ To convert all the TIFF files in a particular directory to JPEG, use:
 <p>
 To convert a directory full of JPEG images to thumbnails, use:
 <pre>
-    convert -size 120x120 *.jpg -geometry 120x120 +profile '*'
+    convert -size 120x120 *.jpg -resize 120x120 +profile '*'
 </pre>
+<table width="90%" border="0" cellspacing="0"             cellpadding="8">             <tr><td width="6%"><br></td><td><font size="-1">
+In this example, <tt>"-i size 120x120"</tt> gives a hint to the JPEG decoder
+that the images are going to be downscaled to 120x120, allowing it to run
+faster by avoiding returning full-resolution images.  The
+<tt>"-resize 120x120"</tt> specifies the desired dimensions of the
+output images.  It will be scaled so its largest dimension is 120 pixels.  The
+<tt>"+profile '*'"</tt> removes any ICM, EXIF, IPTC, or other profiles
+that might be present in the input and aren't needed in the thumbnails.</font></td></tr></table>
 <p>
 To scale an image of a cockatoo to exactly 640 pixels in width and 480
 pixels in height, use: 
 <pre>
-    mogrify -geometry 640x480! cockatoo.miff
+    mogrify -resize 640x480! cockatoo.miff
 </pre>
 </td></tr></table>
      <p>
@@ -465,6 +473,17 @@ width=15><b><font face="Helvetica, Arial"
     <a name="-emboss">-emboss</a>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>emboss an image</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    <a name="-encoding">-encoding</a> <i>&lt;type&gt;</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>specify the font encoding</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -946,9 +965,9 @@ width=15><b><font face="Helvetica, Arial"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a name="-resize">-resize</a> <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+-</i>}<i>&lt;x&gt;</i>{<i>+-</i>}<i>&lt;y&gt;</i>{<i>%</i>}<i></i>{<i>@</i>}<i></i>{<i>!</i>}<i></i>{<i>&lt;</i>}<i></i>{<i>&gt;</i>}<i></i>
+    <a name="-resize">-resize</a> <i>&lt;width&gt;x&lt;height&gt;</i>{<i>%</i>}<i></i>{<i>@</i>}<i></i>{<i>!</i>}<i></i>{<i>&lt;</i>}<i></i>{<i>&gt;</i>}<i></i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>resize and locate an image</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>resize an image</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
