@@ -2503,6 +2503,8 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
 %    global MNG PLTE or PLTE/tRNS combination when appropriate.
 %    [mostly done 15 June 1999 but still need to take care of tRNS]
 %
+%    Put the transparent color first in the PLTE of indexed-color PNGs.
+%
 %    Check for identical sRGB and replace with a global sRGB (and remove
 %    gAMA/cHRM if sRGB is found; check for identical gAMA/cHRM and
 %    replace with global gAMA/cHRM (or with sRGB if appropriate; replace
@@ -3250,7 +3252,8 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
         if ((y == (int) image->rows) && (x == (int) image->columns))
           { 
             /*
-              No transparent pixels are present.  Changes 4 or 6 to 0 or 2.
+              No transparent pixels are present.  Change 4 or 6 to 0 or 2,
+              and do not set the PNG_INFO_tRNS flag in ping_info->valid.
             */
             image->matte=False;
             ping_info->color_type&=0x03;
@@ -3292,14 +3295,18 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                   {
                     if (ColorMatch(ping_info->trans_values,*p,0))
                       {
-                        /*
-                          Can't use RGB + tRNS.
+                        /* Can't use RGB + tRNS, another pixel having the
+                           same RGB samples is transparent.
                         */
-                        ping_info->valid&=(~PNG_INFO_tRNS);
                         break;
                       }
                   }
-                p++;
+              p++;
+            }
+            if (x < (int) image->columns)
+              {
+                ping_info->valid&=(~PNG_INFO_tRNS);
+                break;
               }
             }
           }
@@ -3320,16 +3327,21 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     if (ping_info->valid & PNG_INFO_tRNS)
       image->matte=False;
     if (IsGrayImage(image))
-      ping_info->color_type=PNG_COLOR_TYPE_GRAY;
+      {
+        if (ping_info->valid & PNG_INFO_tRNS)
+          ping_info->color_type=PNG_COLOR_TYPE_GRAY;
+      }
     else
       if (image->depth <= 8 && IsPseudoClass(image))
         {
+          if (matte)
+             ping_info->valid|=PNG_INFO_tRNS;
           /*
             Set image palette.
           */
           ping_info->color_type=PNG_COLOR_TYPE_PALETTE;
           ping_info->valid|=PNG_INFO_PLTE;
-          if (have_write_global_plte)
+          if (have_write_global_plte && !(ping_info->valid & PNG_INFO_tRNS))
             ping_info->num_palette=0;
           else
             {
@@ -3370,16 +3382,31 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
                 WriterExit(ResourceLimitWarning,"Memory allocation failed",
                   image);
               for (i=0; i < (int) image->colors; i++)
+                 ping_info->trans[i]=DownScale(Opaque);
+              for (y=0; y < (int) image->rows; y++)
               {
-                ping_info->trans[i]=DownScale(Opaque);
-                if (ColorMatch(ping_info->trans_values,image->colormap[i],0))
-                  {
-                    ping_info->trans[i]=ping_info->trans_values.index;
-                    break;
-                  }
+                p=GetPixelCache(image,0,y,image->columns,1);
+                if (p == (PixelPacket *) NULL)
+                  break;
+                for (x=0; x < (int) image->columns; x++)
+                {
+                  if (p->opacity != Opaque)
+                    for (i=image->colors-1; i; i--)
+                      if (image->indexes[x] == i)
+                        {
+                          ping_info->trans[i]=DownScale(p->opacity);
+                          break;
+                        }
+                  p++;
+                }
               }
-              ping_info->num_trans=i+1;
+              ping_info->num_trans=0;
+              for (i=0; i < (int) image->colors; i++)
+                 if(ping_info->trans[i] != DownScale(Opaque))
+                    ping_info->num_trans=i+1;
             }
+          else
+            ping_info->num_trans=0;
           /*
             Identify which colormap entry is the background color.
           */
@@ -3552,7 +3579,10 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
           {
             if (!GetPixelCache(image,0,y,image->columns,1))
               break;
-            WritePixelCache(image,GrayQuantum,scanlines[y]);
+            if (ping_info->color_type == PNG_COLOR_TYPE_GRAY)
+              WritePixelCache(image,GrayQuantum,scanlines[y]);
+            else
+              WritePixelCache(image,GrayOpacityQuantum,scanlines[y]);
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
                 ProgressMonitor(SaveImageText,y,image->rows);
