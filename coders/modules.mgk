@@ -25,6 +25,10 @@
   <module name="LOGO" alias="H"/>
   <module name="HDF" alias="H5"/>
   <module name="HTML" alias="HTM"/>
+  <module name="META" alias="8BIM"/>
+  <module name="META" alias="APP1"/>
+  <module name="META" alias="ICM"/>
+  <module name="META" alias="IPTC"/>
   <module name="URL" alias="HTTP"/>
   <module name="TGA" alias="ICB"/>
   <module name="ICON" alias="ICO"/>
