@@ -206,14 +206,14 @@ print("WBMP (Wireless Bitmap (level 0) image) ...\n");
 testReadWrite( 'WBMP:input.wbmp',
   'WBMP:output.wbmp',
   q//,
-  'ccde39dba836a36bbc076e7e6f20f06b034dab0eb2613b350b17c2759533b2ca');
+  '457634d93ea3dc70de0bd4d75844b92d00698423c1268a8aefaf7d54b84d394a');
 
 print("X Windows system bitmap (black and white only) ...\n");
 ++$test;
 testReadWrite( 'XBM:input.xbm',
   'XBM:output.xbm',
   q//,
-  '615fa1d8bae486118b3733c1dba4e2a225fc1f4f8ff9441bcb7c3293753e4da1');
+  '86cf46ab9d620aa85eba722d777cc97e30df51916b2380df3cbc2685614d1222');
 
 print("X Windows system pixmap file (color) ...\n");
 ++$test;

@@ -388,9 +388,9 @@ static unsigned int WriteWBMPImage(const ImageInfo *image_info,Image *image)
       quantize_info.colorspace=GRAYColorspace;
       (void) QuantizeImage(&quantize_info,image);
     }
-  polarity=PixelIntensityToQuantum(&image->colormap[0]) > (0.5*MaxRGB);
+  polarity=PixelIntensityToQuantum(&image->colormap[0]) < (MaxRGB/2);
   if (image->colors == 2)
-    polarity=PixelIntensityToQuantum(&image->colormap[0]) <
+    polarity=PixelIntensityToQuantum(&image->colormap[0]) >
       PixelIntensityToQuantum(&image->colormap[1]);
   (void) WriteBlobMSBShort(image,0);
   WBMPWriteInteger(image,image->columns);

@@ -732,7 +732,7 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
   /*
     Compress runlength encoded to 1D Huffman pixels.
   */
-  polarity=0;
+  polarity=PixelIntensityToQuantum(&image->colormap[0]) < (MaxRGB/2);
   if (huffman_image->colors == 2)
     polarity=(PixelIntensityToQuantum(&huffman_image->colormap[0]) >
       PixelIntensityToQuantum(&huffman_image->colormap[1]) ? 0 : 1);

@@ -493,13 +493,17 @@ MagickExport XFontStruct *XBestFont(Display *display,
   static const char
     *Fonts[]=
     {
-      "-*-helvetica-medium-r-normal-*-14-*-*-*-*-*-*-*",
+      "-*-helvetica-medium-r-normal--12-*-*-*-*-*-iso8859-1",
+      "-*-arial-medium-r-normal--12-*-*-*-*-*-iso8859-1",
+      "-*-helvetica-medium-r-normal--12-*-*-*-*-*-iso8859-15",
+      "-*-arial-medium-r-normal--12-*-*-*-*-*-iso8859-15",
       "variable",
       (char *) NULL
     },
     *TextFonts[]=
     {
-      "-*-fixed-medium-r-normal-*-14-*-*-*-*-*-*-*",
+      "-*-fixed-medium-r-normal-*-12-*-*-*-*-*-iso8859-1",
+      "-*-fixed-medium-r-normal-*-12-*-*-*-*-*-iso8859-15",
       "fixed",
       (char *) NULL
     };
@@ -5384,9 +5388,9 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
         PixelIntensity(&window->pixel_info->background_color) ?  0x80 : 0x00);
       foreground=(PixelIntensity(&window->pixel_info->background_color) <
         PixelIntensity(&window->pixel_info->foreground_color) ?  0x80 : 0x00);
-      polarity=PixelIntensity(image->colormap+0) < (0.5*MaxRGB);
+      polarity=PixelIntensityToQuantum(&image->colormap[0]) < (MaxRGB/2);
       if (image->colors == 2)
-        polarity=PixelIntensity(image->colormap+0) <
+        polarity=PixelIntensity(image->colormap+0) >
           PixelIntensity(image->colormap+1);
       for (y=0; y < (long) image->rows; y++)
       {
@@ -5917,9 +5921,9 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
         PixelIntensity(&window->pixel_info->background_color) ?  0x01 : 0x00);
       foreground=(PixelIntensity(&window->pixel_info->background_color) <
         PixelIntensity(&window->pixel_info->foreground_color) ?  0x01 : 0x00);
-      polarity=PixelIntensity(image->colormap+0) < (0.5*MaxRGB);
+      polarity=PixelIntensityToQuantum(&image->colormap[0]) < (MaxRGB/2);
       if (image->colors == 2)
-        polarity=PixelIntensity(image->colormap+0) <
+        polarity=PixelIntensity(image->colormap+0) >
           PixelIntensity(image->colormap+1);
       for (y=0; y < (long) image->rows; y++)
       {

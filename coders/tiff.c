@@ -1874,7 +1874,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         /*
           Convert PseudoClass packets to contiguous monochrome scanlines.
         */
-        polarity=PixelIntensityToQuantum(&image->colormap[0]) > (0.5*MaxRGB);
+        polarity=PixelIntensityToQuantum(&image->colormap[0]) < (MaxRGB/2);
         if (photometric == PHOTOMETRIC_PALETTE)
           polarity=1;
         else
@@ -1897,7 +1897,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
           for (x=0; x < (long) image->columns; x++)
           {
             byte<<=1;
-            if (indexes[x] == polarity)
+            if (indexes[x] != polarity)
               byte|=0x01;
             bit++;
             if (bit == 8)

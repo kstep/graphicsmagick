@@ -41,4 +41,4 @@ print("Monochrome image ...\n");
 testReadWrite(  'input_mono.tiff',
   'output_mono.tiff',
   q//,
-  '2b48bcf7d93cc31a8deb3026d872f1bb0a300b0f4e177423e5301adc638179e4' );
+  'dff1c15caf8bc7f460cfa14d4422e77a32569ae7510c881d9b7d907b0d4077dd' );
