@@ -101,8 +101,8 @@ static int
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method AllocateString allocates memory for a string and copies the source
-%  string to that memory location (and returns it).
+%  AllocateString() allocates memory for a string and copies the source string
+%  to that memory location (and returns it).
 %
 %  The format of the AllocateString method is:
 %
@@ -149,8 +149,8 @@ MagickExport char *AllocateString(const char *source)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method AppendImageFormat appends the image format type to the filename.
-%  If an extension to the file already exists, it is first removed.
+%  AppendImageFormat() appends the image format type to the filename.  If an
+%  extension to the file already exists, it is first removed.
 %
 %  The format of the AppendImageFormat method is:
 %
