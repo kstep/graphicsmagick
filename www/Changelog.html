@@ -2,7 +2,7 @@
   "http://www.w3.org/TR/html4/loose.dtd">
 <HTML>
 <HEAD>
-<TITLE>GraphicsMagick 1.0 ChangeLog</TITLE>
+<TITLE>GraphicsMagick 1.1 ChangeLog</TITLE>
 	<STYLE>
 	<!--
 		@page { size: 8.5in 11in }
@@ -49,9 +49,42 @@
 <table BORDER=0 WIDTH="100%" >
 <tr>
 <td BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" height=14 width=15>
-<b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">GraphicsMagick 1.0 ChangeLog</font></font></font></b></td>
+<b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">GraphicsMagick 1.1 ChangeLog</font></font></font></b></td>
 </tr>
 </table>
+<p>
+2003-05-07  William Radcliffe  &lt;billr@corbis.com&gt;
+
+<UL>
+  <LI> VisualMagick\bin : Brought the MGK files back into sync with
+        the rest of the package and added types for meta.c.
+  <LI> VisualMagick\bin\win32\ATL : removed config files in order to
+        prevent very old ATL project from being picked up in the config
+
+</UL>
+<p>
+2003-05-06  William Radcliffe  &lt;billr@corbis.com&gt;
+
+<UL>
+  <LI> VisualMagick\lcms\LIBRARY.txt : a define to prevent popup message
+        box behaviour.<BR>
+  <LI> VisualMagick\configure\ : New feature - -t consolidates all the
+        coders into on library for the static build in order to make the
+        build process tolerable.<BR>
+  <LI> coders\xtrn.c : new support for BSTR - wdie character data
+  <LI> coders\svg.c : put back logic that allows the -size parameter to
+        control the pixel dimensions of the output image.
+  <LI> coders\meta.c : added support for wide character parsing of iptc
+        and 8BIM formats.
+
+</UL>
+<p>
+2003-05-06  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> version.sh : Update to reflect development status.
+
+</UL>
 <p>
 2003-05-05  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
