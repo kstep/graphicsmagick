@@ -340,7 +340,7 @@ static int load_tile (Image* image, Image* tile_image, XCFDocInfo* inDocInfo,
 	}
 
 	LiberateMemory((void**)&xcfodata);
-	return TRUE;
+	return True;
 }
 
 static int load_tile_rle (Image* image, Image* tile_image, XCFDocInfo* inDocInfo, 
@@ -481,12 +481,12 @@ static int load_tile_rle (Image* image, Image* tile_image, XCFDocInfo* inDocInfo
 	}
     }
   LiberateMemory((void **) &xcfodata);
-  return TRUE;
+  return True;
 
  bogus_rle:
   if (xcfodata)
 	LiberateMemory((void **) &xcfodata);
-  return FALSE;
+  return False;
 }
 
 static int load_level (Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo* inLayerInfo)
@@ -538,13 +538,10 @@ static int load_level (Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo* inLaye
 	ntiles = ntile_rows * ntile_cols;
   for (i = 0; i < ntiles; i++)
     {
-      fail = FALSE;
+      fail = False;
 
       if (offset == 0)
-		{
-		  ThrowReaderException(FileOpenWarning,"not enough tiles found in level",image);
-		  return FALSE;
-		}
+		  ThrowBinaryException(FileOpenWarning,"not enough tiles found in level",image->filename);
 
       /* save the current position as it is where the
        *  next tile offset is stored.
@@ -579,20 +576,16 @@ static int load_level (Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo* inLaye
 	{
 		case COMPRESS_NONE:
 		  if (!load_tile (image, tile_image, inDocInfo, inLayerInfo, offset2 - offset))
-			fail = TRUE;
+			fail = True;
 		  break;
 		case COMPRESS_RLE:
 		  if (!load_tile_rle (image, tile_image, inDocInfo, inLayerInfo, offset2 - offset))
-			fail = TRUE;
+			fail = True;
 		  break;
 		case COMPRESS_ZLIB:
-		  ThrowReaderException(FileOpenWarning,"xcf: zlib compression unimplemented",image);
-		  fail = TRUE;
-		  break;
+		  ThrowBinaryException(FileOpenWarning,"xcf: zlib compression unimplemented",image->filename)
 		case COMPRESS_FRACTAL:
-		  ThrowReaderException(FileOpenWarning,"xcf: fractal compression unimplemented",image);
-		  fail = TRUE;
-		  break;
+		  ThrowBinaryException(FileOpenWarning,"xcf: fractal compression unimplemented",image->filename)
 	}
 
 	/* composite the tile onto the layer's image, and then destroy it */
@@ -609,7 +602,7 @@ static int load_level (Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo* inLaye
 
       if (fail) 
 	{
-	  return FALSE;
+	  return False;
 	}
 	    
       /* restore the saved position so we'll be ready to
@@ -622,10 +615,7 @@ static int load_level (Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo* inLaye
     }
 
   if (offset != 0)
-    {
-	  ThrowReaderException(FileOpenWarning,"encountered garbage after reading level",image);
-      return FALSE;
-    }
+	  ThrowBinaryException(FileOpenWarning,"encountered garbage after reading level",image->filename)
 
   return 1;
 }
@@ -788,10 +778,10 @@ static int ReadOneLayer( Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo* outL
 			/* read over it... */
 			while (prop_size > 0)
 			  {
-				amount = min (16, prop_size);
+				amount = Min (16, prop_size);
 				for (i=0; i<amount; i++)
 				amount = ReadBlob(image, amount, &buf);
-				prop_size -= min (16, amount);
+				prop_size -= Min (16, amount);
 			  }
 		  }
 		  break;
@@ -824,7 +814,7 @@ static int ReadOneLayer( Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo* outL
       GIMP_DRAWABLE (layer_mask)->offset_x = GIMP_DRAWABLE (layer)->offset_x;
       GIMP_DRAWABLE (layer_mask)->offset_y = GIMP_DRAWABLE (layer)->offset_y;
 
-      gimp_layer_add_mask (layer, layer_mask, FALSE);
+      gimp_layer_add_mask (layer, layer_mask, False);
 
       layer->mask->apply_mask = apply_mask;
       layer->mask->edit_mask  = edit_mask;
@@ -931,9 +921,8 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 		image->colorspace=RGBColorspace;
 	} else if ( image_type == GIMP_GRAY ) {
 		image->colorspace=GRAYColorspace;
-	} else if ( image_type == GIMP_INDEXED ) {
+	} else if ( image_type == GIMP_INDEXED )
 		ThrowReaderException(FileOpenWarning,"Indexed colors not currently supported",image);
-	}
 	SetImage(image,OpaqueOpacity);	/* until we know otherwise...*/
 
 
@@ -989,9 +978,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 				(doc_info.compression != COMPRESS_RLE) &&
 				(doc_info.compression != COMPRESS_ZLIB) &&
 				(doc_info.compression != COMPRESS_FRACTAL))
-				  {
 					ThrowReaderException(CorruptImageWarning,"Unknown compression type",image);
-				  }
 		  }
 		  break;
 
@@ -1097,10 +1084,10 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 			/* read over it... */
 			while (prop_size > 0)
 			  {
-				amount = min (16, prop_size);
+				amount = Min (16, prop_size);
 				for (i=0; i<amount; i++)
 				amount = ReadBlob(image, amount, &buf);
-				prop_size -= min (16, amount);
+				prop_size -= Min (16, amount);
 			  }
 		  }
 		  break;
@@ -1138,7 +1125,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 			ThrowReaderException(ResourceLimitWarning,"Memory allocation failed", image);
 		(void) memset(layer_info,0,number_layers*sizeof(XCFLayerInfo));
 
-		while (TRUE)
+		while (True)
 		{
 			unsigned long
 				offset,
@@ -1230,7 +1217,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 		LiberateMemory((void **) &layer_info);
 
 #if 0	/* BOGUS: do we need the channels?? */
-		while (TRUE)
+		while (True)
 		{
 			/* read in the offset of the next channel */
 			info->cp += xcf_read_int32 (info->fp, &offset, 1);
