@@ -1078,6 +1078,16 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
             }
           if (info)
             (void) CloneString(&info->image_info->density,SvPV(sval,na));
+          for ( ; image; image=image->next)
+          {
+            int
+              count;
+
+            count=sscanf(info->image_info->density,"%lfx%lf",
+              &image->x_resolution,&image->y_resolution);
+            if (count != 2)
+              image->y_resolution=image->x_resolution;
+          }
           return;
         }
       if (strEQcase(attribute,"depth"))
@@ -5362,8 +5372,8 @@ QueryColor(ref,...)
         s=(&sv_undef);
       else
         {
-          FormatString(message,"%u,%u,%u",target_color.red,
-            XDownScale(target_color.green),target_color.blue);
+          FormatString(message,"%u,%u,%u,%u",target_color.red,
+            target_color.green,target_color.blue,target_color.opacity);
           s=sv_2mortal(newSVpv(message,0));
         }
       PUSHs(s);
