@@ -4151,9 +4151,9 @@ Mogrify(ref,...)
           if (!attribute_flag[0])
             argument_list[0].int_reference=2;
           if (!attribute_flag[3])
-            argument_list[3].int_reference=1;
+            argument_list[3].int_reference=0;
           if (!attribute_flag[4])
-            argument_list[4].int_reference=1;
+            argument_list[4].int_reference=0;
           rectangle_info.x=argument_list[3].int_reference;
           rectangle_info.y=argument_list[4].int_reference;
           if (attribute_flag[2])
@@ -4178,70 +4178,70 @@ Mogrify(ref,...)
                 rectangle_info.y=0;
                 break;
               }
-            case NorthGravity:
-            {
-              rectangle_info.x=(image->columns-
-                argument_list[1].image_reference->columns) >> 1;
-              rectangle_info.y=0;
-              break;
+              case NorthGravity:
+              {
+                rectangle_info.x=(image->columns-
+                  argument_list[1].image_reference->columns) >> 1;
+                rectangle_info.y=0;
+                break;
+              }
+              case NorthEastGravity:
+              {
+                rectangle_info.x=image->columns-
+                  argument_list[1].image_reference->columns;
+                rectangle_info.y=0;
+                break;
+              }
+              case WestGravity:
+              {
+                rectangle_info.x=0;
+                rectangle_info.y=(image->rows-
+                  argument_list[1].image_reference->rows) >> 1;
+                break;
+              }
+              case ForgetGravity:
+              case StaticGravity:
+              case CenterGravity:
+              default:
+              {
+                rectangle_info.x=(image->columns-
+                  argument_list[1].image_reference->columns) >> 1;
+                rectangle_info.y=(image->rows-
+                  argument_list[1].image_reference->rows) >> 1;
+                break;
+              }
+              case EastGravity:
+              {
+                rectangle_info.x=image->columns-
+                  argument_list[1].image_reference->columns;
+                rectangle_info.y=(image->rows-
+                  argument_list[1].image_reference->rows) >> 1;
+                break;
+              }
+              case SouthWestGravity:
+              {
+                rectangle_info.x=0;
+                rectangle_info.y=image->rows-
+                  argument_list[1].image_reference->rows;
+                break;
+              }
+              case SouthGravity:
+              {
+                rectangle_info.x=(image->columns-
+                  argument_list[1].image_reference->columns) >> 1;
+                rectangle_info.y=image->rows-
+                  argument_list[1].image_reference->rows;
+                break;
+              }
+              case SouthEastGravity:
+              {
+                rectangle_info.x=image->columns-
+                  argument_list[1].image_reference->columns;
+                rectangle_info.y=image->rows-
+                  argument_list[1].image_reference->rows;
+                break;
+              }
             }
-            case NorthEastGravity:
-            {
-              rectangle_info.x=image->columns-
-                argument_list[1].image_reference->columns;
-              rectangle_info.y=0;
-              break;
-            }
-            case WestGravity:
-            {
-              rectangle_info.x=0;
-              rectangle_info.y=(image->rows-
-                argument_list[1].image_reference->rows) >> 1;
-              break;
-            }
-            case ForgetGravity:
-            case StaticGravity:
-            case CenterGravity:
-            default:
-            {
-              rectangle_info.x=(image->columns-
-                argument_list[1].image_reference->columns) >> 1;
-              rectangle_info.y=(image->rows-
-                argument_list[1].image_reference->rows) >> 1;
-              break;
-            }
-            case EastGravity:
-            {
-              rectangle_info.x=image->columns-
-                argument_list[1].image_reference->columns;
-              rectangle_info.y=(image->rows-
-                argument_list[1].image_reference->rows) >> 1;
-              break;
-            }
-            case SouthWestGravity:
-            {
-              rectangle_info.x=0;
-              rectangle_info.y=image->rows-
-                argument_list[1].image_reference->rows;
-              break;
-            }
-            case SouthGravity:
-            {
-              rectangle_info.x=(image->columns-
-                argument_list[1].image_reference->columns) >> 1;
-              rectangle_info.y=image->rows-
-                argument_list[1].image_reference->rows;
-              break;
-            }
-            case SouthEastGravity:
-            {
-              rectangle_info.x=image->columns-
-                argument_list[1].image_reference->columns;
-              rectangle_info.y=image->rows-
-                argument_list[1].image_reference->rows;
-              break;
-            }
-          }
           CompositeImage(image,(CompositeOperator)
             argument_list[0].int_reference,argument_list[1].image_reference,
             rectangle_info.x,rectangle_info.y);
@@ -4638,11 +4638,13 @@ Mogrify(ref,...)
         case 65:  /* Coalesce */
         {
           CoalesceImages(image);
+          goto ReturnIt;
           break;
         }
         case 66:  /* Deconstruct */
         {
           DeconstructImages(image);
+          goto ReturnIt;
           break;
         }
       }

@@ -22,7 +22,6 @@ int main( int /*argc*/, char ** /*argv*/)
 
   try {
 
-
     {
       //
       // Test appendImages
@@ -240,7 +239,7 @@ int main( int /*argc*/, char ** /*argv*/)
 		   << "  Image rows " << secondIter->rows()
 		   << " are not equal to original "
 		   << firstIter->rows()
-		 << endl;
+		   << endl;
 	    }
 
 	  if ( firstIter->columns() != secondIter->columns() )
@@ -265,6 +264,184 @@ int main( int /*argc*/, char ** /*argv*/)
 
 	  firstIter++;
 	  secondIter++;
+	}
+    }
+
+    {
+      //
+      // Test reading and writing BLOBs
+      //
+
+#include <magick/config.h>
+
+      Image master;
+      Blob blob;
+      // Read image from file
+      master.read( "test_image.miff" );
+      master.size( Geometry( master.columns(), master.rows()) );
+
+      // Formats to test
+      string formats[] =
+      {
+	"AVS",
+	"BIE",
+	"BMP",
+	"CMYK",
+	// 	"DCM",
+	"DCX",
+	"DIB",
+	"FITS",
+	"GIF",
+	"GIF87",
+	// 	"GRANITE", // cores
+	"GRAY",
+	// #ifdef HasHDF
+	// 	"HDF",
+	// #endif // HasHDF
+	"ICB",
+#ifdef HasJBIG
+	"JBG",
+	"JBIG",
+#endif // HasJBIG
+#ifdef HasJPEG
+	"JPG",
+	"JPEG",
+	"JPEG24",
+#endif // HasJPEG
+	// 	"LOGO", // cores
+	"MIFF",
+	"MNG",
+	"MONO",
+	// 	"MTV",  // cores
+	"P7",
+	"PBM",
+	// 	"PCD",
+	// 	"PCDS",
+	"PCT",
+	"PCX",
+	"PIC",
+	"PICT",
+	"PGM",
+	"PM",
+#ifdef HasPNG
+	"PNG",
+#endif // HasPNG
+	"PNM",
+	"PPM",
+	"PSD",
+	"RAS",
+	"RGB",
+	"RGBA",
+	"SGI",
+	"SUN",
+#ifdef HasTIFF
+// 	"FAX",
+// 	"G3",
+// 	"PTIFF",
+// 	"TIFF",
+// 	"TIF",
+// 	"TIFF24",
+#endif // HasTIFF
+	"TGA",
+	"UYVY",
+	"VDA",
+	"VICAR",
+	"VIFF",
+	"VST",
+	"XBM",
+	"XPM",
+	"XV",
+	"XWD",
+	// 	"YUV",  // consumes memory forever
+	""
+      };
+
+      for ( unsigned int i = 0 ; formats[i].length() > 0 ; ++i )
+	{
+	  try {
+	    string format = formats[ i ];
+	    // 	  cout << "Format \"" << format << "\"" << endl;
+	    // Write image to BLOB in specified format
+	    Image original = master;
+
+	    // 	  cout << " write ..." << endl;
+	    original.magick( formats[ i ] );
+	    original.animationDelay( 10 );
+	    original.size( master.size() );
+	    original.write( &blob );
+	  
+	    Image image;
+	  
+	    // Read image from BLOB
+	    // 	  cout << " read ..." << endl;
+	    image.magick( formats[ i ] );
+	    image.size( master.size() );
+	    image.read( blob );
+
+
+// 	    if ( format != "AVS" &&
+// 		 format != "BIE" &&
+// 		 format != "CMYK" &&
+// 		 format != "FITS" &&
+// 		 format != "GIF" &&
+// 		 format != "GIF87" &&
+// 		 format != "GRAY" &&
+// 		 format != "JBG" &&
+// 		 format != "JBIG" &&
+// 		 format != "JPEG" &&
+// 		 format != "JPG" &&
+// 		 format != "JPEG24" &&
+// 		 format != "MONO" &&
+// 		 format != "P7" &&
+// 		 format != "PBM" &&
+// 		 format != "PCT" &&
+// 		 format != "PGM" &&
+// 		 format != "PIC" &&
+// 		 format != "PICT" &&
+// 		 format != "PM" &&
+// 		 format != "RGBA" &&
+// 		 format != "UYVY" &&
+// 		 format != "VICAR" &&
+// 		 format != "XBM" &&
+// 		 format != "XPM"
+
+// 		 )
+// 	      {
+// 		if ( image.signature(true) != original.signature() )
+// 		  {
+// 		    cout << "Line: " << __LINE__
+// 			 << " Format \"" << image.magick()
+// 			 << "\" BLOB signature " << image.signature() << " "
+// 			 << "does not match original "
+// 			 << original.signature()
+// 			 << endl;
+// 		    ++failures;
+// 		  }
+// 	      }
+// 	    else
+// 	      {
+		// Lossy formats
+		if ( image.columns()*image.rows() != master.columns()*master.rows() )
+		  {
+		    cout << "Line: " << __LINE__
+			 << " Format \"" << formats[ i ]
+			 << "\" Image size " << image.columns() << "x" << image.rows() << " "
+			 << "does not match original "
+			 << master.columns() << "x" << master.rows()
+			 << endl;
+		    ++failures;
+		  }
+// 	      }
+	  }
+	
+	  catch( exception error_ )
+	    {
+	      cout << "Line: " << __LINE__
+		   << " Format \"" << formats[ i ] << "\" "
+		   << "Caught exception: " << error_.what() << endl;
+	      ++failures;
+	      continue;
+	    }
 	}
     }
   }

@@ -10,7 +10,7 @@ dnl Written by Bob Friesenhahn, bfriesen@simple.dallas.tx.us
 AC_INIT(lib/Magick++.h)
 
 MAGICK_RELEASE="0.8.5"		# Magick++ release
-TESTED_MAGICK_VERSION="4.2.7"	# Last tested ImageMagick release
+TESTED_MAGICK_VERSION="4.2.8"	# Last tested ImageMagick release
 
 dnl The most recent interface number that this library implements.
 INTERFACE_CURRENT=0
@@ -78,7 +78,8 @@ AM_WITH_DMALLOC
 #
 
 AC_MSG_CHECKING(pre-processor flags)
-CPPFLAGS="$CPPFLAGS "`Magick-config --cppflags`
+# If -DHAVE_CONFIG_H is not specified, then QuantumLeap doesn't work.
+CPPFLAGS="$CPPFLAGS -DHAVE_CONFIG_H "`Magick-config --cppflags`
 AC_MSG_RESULT("$CPPFLAGS")
 
 AC_MSG_CHECKING(linker flags)
@@ -89,4 +90,4 @@ AC_MSG_CHECKING(libraries)
 LIBS="$LIBS "`Magick-config --libs`
 AC_MSG_RESULT("$LIBS")
 
-AC_OUTPUT(Makefile lib/Makefile demo/Makefile tests/Makefile)
+AC_OUTPUT(Makefile lib/Makefile lib/Magick++/Makefile demo/Makefile tests/Makefile)

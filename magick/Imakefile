@@ -114,6 +114,8 @@ install:: all
 
 install:: all
 
+install:: all
+
 clean::
 	-$(RM) $(ARLIB) $(SHLIB)
 

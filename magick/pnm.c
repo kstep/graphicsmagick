@@ -790,11 +790,11 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a PGM image.
         */
-        (void) sprintf(buffer,"%d\n",MaxRGB);
+        (void) sprintf(buffer,"%ld\n",MaxRGB);
         (void) WriteBlob(image,strlen(buffer),buffer);
         for (i=0; i < (int) image->packets; i++)
         {
-          index=DownScale(Intensity(*p));
+          index=Intensity(*p);
           for (j=0; j <= ((int) p->length); j++)
           {
             (void) sprintf(buffer,"%d ",index);
@@ -818,7 +818,7 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a PNM image.
         */
-        (void) sprintf(buffer,"%d\n",MaxRGB);
+        (void) sprintf(buffer,"%ld\n",MaxRGB);
         (void) WriteBlob(image,strlen(buffer),buffer);
         for (i=0; i < (int) image->packets; i++)
         {
@@ -978,7 +978,10 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           value;
 
         Quantum
-          pixel;
+          blue,
+          green,
+          pixel,
+          red;
 
         unsigned short
           *blue_map[2][16],
@@ -1017,26 +1020,26 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
                 value=x/2+8;
               value+=dither_red[i][j];
               red_map[i][j][x]=(unsigned short)
-                ((value < 0) ? 0 : (value > MaxRGB) ? MaxRGB : value);
+                ((value < 0) ? 0 : (value > 255) ? 255 : value);
               value=x-16;
               if (x < 48)
                 value=x/2+8;
               value+=dither_green[i][j];
               green_map[i][j][x]=(unsigned short)
-                ((value < 0) ? 0 : (value > MaxRGB) ? MaxRGB : value);
+                ((value < 0) ? 0 : (value > 255) ? 255 : value);
               value=x-32;
               if (x < 112)
                 value=x/2+24;
               value+=(dither_blue[i][j] << 1);
               blue_map[i][j][x]=(unsigned short)
-                ((value < 0) ? 0 : (value > MaxRGB) ? MaxRGB : value);
+                ((value < 0) ? 0 : (value > 255) ? 255 : value);
             }
         /*
           Convert image to a P7 image.
         */
         (void) strcpy(buffer,"#END_OF_COMMENTS\n");
         (void) WriteBlob(image,strlen(buffer),buffer);
-        (void) sprintf(buffer,"%u %u %d\n",image->columns,image->rows,MaxRGB);
+        (void) sprintf(buffer,"%u %u %ld\n",image->columns,image->rows,255);
         (void) WriteBlob(image,strlen(buffer),buffer);
         i=0;
         j=0;
@@ -1045,10 +1048,13 @@ Export unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         {
           for (x=0; x < (int) image->columns; x++)
           {
-            pixel=(Quantum) ((red_map[i][j][p->red] & 0xe0) |
-              ((unsigned int) (green_map[i][j][p->green] & 0xe0) >> 3) |
-              ((unsigned int) (blue_map[i][j][p->blue] & 0xc0) >> 6));
-            WriteQuantumFile(pixel);
+            red=DownScale(p->red);
+            green=DownScale(p->green);
+            blue=DownScale(p->blue);
+            pixel=(Quantum) ((red_map[i][j][red] & 0xe0) |
+              ((unsigned int) (green_map[i][j][green] & 0xe0) >> 3) |
+              ((unsigned int) (blue_map[i][j][blue] & 0xc0) >> 6));
+            (void) WriteByte(image,pixel);
             p++;
             j++;
             if (j == 16)

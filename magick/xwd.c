@@ -638,18 +638,18 @@ Export unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
     for (j=0; j <= ((int) p->length); j++)
     {
       if (image->class == PseudoClass)
-        WriteQuantum(p->index,q)
+        *q++=p->index;
       else
         {
-          WriteQuantum(p->red,q);
-          WriteQuantum(p->green,q);
-          WriteQuantum(p->blue,q);
+          *q++=DownScale(p->red);
+          *q++=DownScale(p->green);
+          *q++=DownScale(p->blue);
         }
       x++;
       if (x == (int) image->columns)
         {
           for (x=0; x < (int) scanline_pad; x++)
-            WriteQuantum(0,q);
+            *q++=0;
           (void) WriteBlob(image,q-pixels,(char *) pixels);
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))

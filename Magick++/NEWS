@@ -1,3 +1,8 @@
+(0.8.5)
+  * Image constructors to construct an image from a BLOB.
+  * Image read and write methods to decode and encode images stored in a
+    BLOB.  This allows reading/writing image "files" from/to memory rather
+    than a traditional file.
 (0.8.4)
   * New mapImages algorithm maps a sequence of images to the colormap of
     a provided image.

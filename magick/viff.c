@@ -165,11 +165,11 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
     x,
     y;
 
-  register Quantum
-    *p;
-
   register RunlengthPacket
     *q;
+
+  register unsigned char
+    *p;
 
   unsigned char
     buffer[7],
@@ -296,13 +296,11 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
         (viff_header.map_storage_type != VFF_MAPTYP_4_BYTE) &&
         (viff_header.map_storage_type != VFF_MAPTYP_FLOAT) &&
         (viff_header.map_storage_type != VFF_MAPTYP_DOUBLE))
-      ReaderExit(CorruptImageWarning,
-        "Map storage type is not supported",image);
+      ReaderExit(CorruptImageWarning,"Map storage type is not supported",image);
     if ((viff_header.color_space_model != VFF_CM_NONE) &&
         (viff_header.color_space_model != VFF_CM_ntscRGB) &&
         (viff_header.color_space_model != VFF_CM_genericRGB))
-      ReaderExit(CorruptImageWarning,
-        "Colorspace model is not supported",image);
+      ReaderExit(CorruptImageWarning,"Colorspace model is not supported",image);
     if (viff_header.location_type != VFF_LOC_IMPLICIT)
       {
         MagickWarning(CorruptImageWarning,
@@ -420,8 +418,7 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
         break;
       }
       default:
-        ReaderExit(CorruptImageWarning,"Colormap type is not supported",
-          image);
+        ReaderExit(CorruptImageWarning,"Colormap type is not supported",image);
     }
     /*
       Allocate VIFF pixels.
@@ -513,7 +510,7 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
     /*
       Convert pixels to Quantum size.
     */
-    p=(Quantum *) viff_pixels;
+    p=(unsigned char *) viff_pixels;
     for (i=0; i < (int) max_packets; i++)
     {
       switch (viff_header.data_storage_type)
@@ -558,7 +555,7 @@ Export Image *ReadVIFFImage(const ImageInfo *image_info)
     /*
       Convert VIFF raster image to runlength-encoded packets.
     */
-    p=(Quantum *) viff_pixels;
+    p=(unsigned char *) viff_pixels;
     q=image->pixels;
     if (viff_header.data_storage_type == VFF_TYP_BIT)
       {

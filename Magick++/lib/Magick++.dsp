@@ -85,11 +85,11 @@ LIB32=link.exe -lib
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
 # Begin Source File
 
-SOURCE=.\MagickBlob.cpp
+SOURCE=.\Blob.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\MagickColor.cpp
+SOURCE=.\Color.cpp
 
 !IF  "$(CFG)" == "Magick++ - Win32 Release"
 
@@ -102,35 +102,35 @@ SOURCE=.\MagickColor.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\MagickDrawable.cpp
+SOURCE=.\Drawable.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\MagickException.cpp
+SOURCE=.\Exception.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\MagickFunctions.cpp
+SOURCE=.\Functions.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\MagickGeometry.cpp
+SOURCE=.\Geometry.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\MagickImage.cpp
+SOURCE=.\Image.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\MagickLastError.cpp
+SOURCE=.\LastError.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\MagickMontage.cpp
+SOURCE=.\Montage.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\MagickOptions.cpp
+SOURCE=.\Options.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -142,47 +142,47 @@ SOURCE=".\Magick++.h"
 # End Source File
 # Begin Source File
 
-SOURCE=.\MagickColor.h
+SOURCE=.\Magick++\Color.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\MagickDrawable.h
+SOURCE=.\Magick++\Drawable.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\MagickException.h
+SOURCE=.\Magick++\Exception.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\MagickFunctions.h
+SOURCE=.\Magick++\Functions.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\MagickGeometry.h
+SOURCE=.\Magick++\Geometry.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\MagickImage.h
+SOURCE=.\Magick++\Image.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\MagickInclude.h
+SOURCE=.\Magick++\Include.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\MagickLastError.h
+SOURCE=.\Magick++\LastError.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\MagickMontage.h
+SOURCE=.\Magick++\Montage.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\MagickOptions.h
+SOURCE=.\Magick++\Options.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\MagickSTL.h
+SOURCE=.\Magick++\STL.h
 # End Source File
 # End Group
 # End Target

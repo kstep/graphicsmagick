@@ -17,7 +17,7 @@ chdir 't' || die 'Cd failed';
 #
 # AVS X image file
 #
-testRead( 'input.avs', 'f3e5ab88e328da3044c1fc177a7e2978' );
+testRead( 'input.avs', 'e9b162b8431709942886f79b7b7c11bb' );
 
 #
 # Microsoft Windows bitmap image file

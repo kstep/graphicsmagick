@@ -539,7 +539,7 @@ fi
 
 
 MAGICK_RELEASE="0.8.5"		# Magick++ release
-TESTED_MAGICK_VERSION="4.2.7"	# Last tested ImageMagick release
+TESTED_MAGICK_VERSION="4.2.8"	# Last tested ImageMagick release
 
 INTERFACE_CURRENT=0
 INTERFACE_REVISION=0
@@ -2029,16 +2029,17 @@ fi
 
 echo $ac_n "checking pre-processor flags""... $ac_c" 1>&6
 echo "configure:2032: checking pre-processor flags" >&5
-CPPFLAGS="$CPPFLAGS "`Magick-config --cppflags`
+# If -DHAVE_CONFIG_H is not specified, then QuantumLeap doesn't work.
+CPPFLAGS="$CPPFLAGS -DHAVE_CONFIG_H "`Magick-config --cppflags`
 echo "$ac_t"""$CPPFLAGS"" 1>&6
 
 echo $ac_n "checking linker flags""... $ac_c" 1>&6
-echo "configure:2037: checking linker flags" >&5
+echo "configure:2038: checking linker flags" >&5
 LDFLAGS="$LDFLAGS "`Magick-config --ldflags`
 echo "$ac_t"""$LDFLAGS"" 1>&6
 
 echo $ac_n "checking libraries""... $ac_c" 1>&6
-echo "configure:2042: checking libraries" >&5
+echo "configure:2043: checking libraries" >&5
 LIBS="$LIBS "`Magick-config --libs`
 echo "$ac_t"""$LIBS"" 1>&6
 
@@ -2155,7 +2156,7 @@ done
 ac_given_srcdir=$srcdir
 ac_given_INSTALL="$INSTALL"
 
-trap 'rm -fr `echo "Makefile lib/Makefile demo/Makefile tests/Makefile" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
+trap 'rm -fr `echo "Makefile lib/Makefile lib/Magick++/Makefile demo/Makefile tests/Makefile" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
 EOF
 cat >> $CONFIG_STATUS <<EOF
 
@@ -2268,7 +2269,7 @@ EOF
 
 cat >> $CONFIG_STATUS <<EOF
 
-CONFIG_FILES=\${CONFIG_FILES-"Makefile lib/Makefile demo/Makefile tests/Makefile"}
+CONFIG_FILES=\${CONFIG_FILES-"Makefile lib/Makefile lib/Magick++/Makefile demo/Makefile tests/Makefile"}
 EOF
 cat >> $CONFIG_STATUS <<\EOF
 for ac_file in .. $CONFIG_FILES; do if test "x$ac_file" != x..; then

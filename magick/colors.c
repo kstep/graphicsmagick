@@ -886,6 +886,115 @@ static void
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   C o m p r e s s C o l o r m a p                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method CompressColormap compresses an image colormap removing any
+%  duplicate and unused color entries.
+%
+%  The format of the CompressColormap routine is:
+%
+%      CompressColormap(image)
+%
+%  A description of each parameter follows:
+%
+%    o image: The address of a structure of type Image.
+%
+%
+*/
+Export void CompressColormap(Image *image)
+{
+  ColorPacket
+    *colormap;
+
+  int
+    number_colors;
+
+  register int
+    i,
+    j;
+
+  register RunlengthPacket
+    *p;
+
+  register unsigned short
+    index;
+
+  /*
+    Determine if colormap can be compressed.
+  */
+  assert(image != (Image *) NULL);
+  if (image->class != PseudoClass)
+    return;
+  number_colors=image->colors;
+  for (i=0; i < (int) image->colors; i++)
+    image->colormap[i].flags=False;
+  image->colors=0;
+  p=image->pixels;
+  for (i=0; i < (int) image->packets; i++)
+  {
+    if (!image->colormap[p->index].flags)
+      {
+        /*
+          Eliminate duplicate colors.
+        */
+        for (j=0; j < number_colors; j++)
+          if ((j != p->index) && image->colormap[j].flags)
+            if (ColorMatch(image->colormap[p->index],image->colormap[j],0))
+              break;
+        if (j != number_colors)
+          image->colormap[p->index].index=image->colormap[j].index;
+        else
+          image->colormap[p->index].index=image->colors++;
+        image->colormap[p->index].flags=True;
+      }
+    p++;
+  }
+  if ((int) image->colors == number_colors)
+    return;  /* no duplicate or unused entries */
+  /*
+    Compress colormap.
+  */
+  colormap=(ColorPacket *) AllocateMemory(image->colors*sizeof(ColorPacket));
+  if (colormap == (ColorPacket *) NULL)
+    {
+      MagickWarning(ResourceLimitWarning,"Unable to compress colormap",
+        "Memory allocation failed");
+      image->colors=number_colors;
+      return;
+    }
+  /*
+    Eliminate unused colormap entries.
+  */
+  for (i=0; i < number_colors; i++)
+    if (image->colormap[i].flags)
+      {
+        index=image->colormap[i].index;
+        colormap[index].red=image->colormap[i].red;
+        colormap[index].green=image->colormap[i].green;
+        colormap[index].blue=image->colormap[i].blue;
+      }
+  /*
+    Remap pixels.
+  */
+  p=image->pixels;
+  for (i=0; i < (int) image->packets; i++)
+  {
+    p->index=image->colormap[p->index].index;
+    p++;
+  }
+  FreeMemory((char *) image->colormap);
+  image->colormap=colormap;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +  D e s t r o y L i s t                                                      %
 %                                                                             %
 %                                                                             %

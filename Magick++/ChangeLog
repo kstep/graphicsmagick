@@ -1,9 +1,30 @@
+1999-07-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* overall : Removed 'Magick' prefix from all source file
+ 	names. Moved class headers to Magick++ subdirectory.  This should
+ 	not break any code using the documented interface (via
+ 	Magick++.h).
+
+1999-07-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/MagickImage.cpp (composite): Support composition placement
+ 	by gravity like PerlMagick does.
+
+1999-07-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/MagickImage.cpp (Image): Added constructors to construct an
+ 	Image from a BLOB.
+
+1999-07-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* tests/manipulate.cpp (main): Wrote a basic sanity test for
+ 	reading and writing BLOBS.
+
 1999-06-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/MagickImage.cpp (read): Added support for reading an encoded
  	image stored in a BLOB.  Uses new ImageMagick APIs introduced on
- 	July 21, 1999.  Note that the implementation of these new APIs
- 	uses a temporary file.
+ 	July 21, 1999.
 	(write): Added support for writing an encoded image to a BLOB.
 
 1999-06-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>

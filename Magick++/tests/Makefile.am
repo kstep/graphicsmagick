@@ -20,7 +20,7 @@ color_SOURCES = color.cpp
 
 manipulate_SOURCES = manipulate.cpp
 
-EXTRA_DIST = Generic.ttf test_image.jpg test_image_anim.gif \
+EXTRA_DIST = Generic.ttf test_image.miff test_image_anim.gif \
 	attributes.dsp color.dsp manipulate.dsp
 
 check:

@@ -651,7 +651,7 @@ Export Image *CropImage(const Image *image,const RectangleInfo *crop_info)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  Method DeconstructImages breaks down an image sequence into constituent
-%  parts.  This is useful %  for creating GIF or MNG animation sequences.
+%  parts.  This is useful for creating GIF or MNG animation sequences.
 %
 %  The format of the DeconstructImages routine is:
 %
@@ -699,10 +699,9 @@ Export void DeconstructImages(Image *images)
   */
   for (image=images; image != (Image *) NULL; image=image->next)
   {
-    if ((image->columns != images->columns) ||
-        (image->rows != images->rows))
+    if ((image->columns != images->columns) || (image->rows != images->rows))
       {
-        MagickWarning(OptionWarning,"Unable to disintegrate images",
+        MagickWarning(OptionWarning,"Unable to deconstruct images",
           "images are not the same size");
         return;
       }
@@ -779,7 +778,7 @@ Export void DeconstructImages(Image *images)
       if (y < (int) image->rows)
         break;
     }
-    bounding_box[i].width=x-bounding_box[i].x;
+    bounding_box[i].width=x-bounding_box[i].x+1;
     for (y=image->rows-1; y >= 0; y--)
     {
       p=image->pixels+y*image->columns;
@@ -794,7 +793,7 @@ Export void DeconstructImages(Image *images)
       if (x < (int) image->columns)
         break;
     }
-    bounding_box[i].height=y-bounding_box[i].y;
+    bounding_box[i].height=y-bounding_box[i].y+1;
     i++;
   }
   /*
@@ -810,7 +809,7 @@ Export void DeconstructImages(Image *images)
     deconstructed_image=CropImage(image,&bounding_box[i]);
     image->orphan=False;
     if (deconstructed_image == (Image *) NULL)
-      return;
+      break;
     FreeMemory(image->pixels);
     image->columns=deconstructed_image->columns;
     image->rows=deconstructed_image->rows;

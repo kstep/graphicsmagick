@@ -2,7 +2,7 @@
 <html>
 <head>
    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <meta name="GENERATOR" content="Mozilla/4.5 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
+   <meta name="GENERATOR" content="Mozilla/4.61 [en] (X11; U; SunOS 5.6 sun4u) [Netscape]">
    <meta name="Author" content="Bob Friesenhahn">
    <meta name="Description" content="Description of Magick::Image Class">
    <title>Magick::Image Class</title>
@@ -120,10 +120,63 @@ add the lines:
 GRAYColorspace );</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.quantize( options
 );</font></tt>
-<p><tt>prior to writing the image.</tt>
-<p><tt>Image supports access to all the single-image (versus image-list)
-manipulation operations provided by the ImageMagick library. These operations
-are shown in the following table:</tt>
+<p>prior to writing the image.
+<p>Image may be constructed in a number of ways. It may be constructed
+from a file, a URL, or an encoded image (e.g. JPEG) contained in an in-memory
+BLOB. The available Image constructors are shown in the following table:
+<br>&nbsp;
+<br>&nbsp;
+<table BORDER WIDTH="100%" BGCOLOR="#FFFFFF" NOSAVE >
+<caption>Image Constructors</caption>
+
+<tr>
+<td>
+<center><b>Signature</b></center>
+</td>
+
+<td>
+<center><b>Description</b></center>
+</td>
+</tr>
+
+<tr>
+<td><font size=-1>const std::string &amp;imageSpec_</font></td>
+
+<td><font size=-1>Construct Image by reading from file or URL specified
+by <i>imageSpec_</i>.</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>const Geometry &amp;size_, const <a href="Color.html">Color</a>
+&amp;color_</font></td>
+
+<td><font size=-1>Construct a blank image canvas of specified size and
+color</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>const Blob &amp;blob_</font></td>
+
+<td><font size=-1>Construct Image by reading from encoded image data contained
+in an in-memory BLOB.</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>const <a href="Geometry.html">Geometry</a> &amp;size_,
+const Blob &amp;blob_</font></td>
+
+<td><font size=-1>Construct Image of specified size from encoded image
+data contained in an in-memory BLOB. This form is useful for images that
+do not specifiy their size or to specify a size hint for decoding an image.
+For example, when reading a Photo CD, JBIG, or JPEG image, a size request
+causes the library to return an image which is the next resolution greater
+or equal to the specified size. This may result in memory and time savings.</font></td>
+</tr>
+</table>
+
+<p>Image supports access to all the single-image (versus image-list) manipulation
+operations provided by the ImageMagick library. These operations are shown
+in the following table:
 <br>&nbsp;
 <table BORDER NOSAVE >
 <caption>Image Image Manipulation Methods</caption>
@@ -253,22 +306,37 @@ format characters.</a></font></td>
 </tr>
 
 <tr NOSAVE>
-<td ROWSPAN="2" NOSAVE>
+<td ROWSPAN="3" NOSAVE>
 <center><a NAME="composite"></a><font size=-1>composite</font></center>
 </td>
 
-<td><font size=-1>const Image &amp;compositeImage_, int xOffset_, int yOffset_,
+<td><font size=-1>const <a href="Image.html">Image</a> &amp;compositeImage_,
+int xOffset_, int yOffset_,
 <a href="Enumerations.html#CompositeOperator">CompositeOperator</a>
 compose_ = <i>InCompositeOp</i></font></td>
 
-<td ROWSPAN="2" NOSAVE><font size=-1>Compose an image onto another at specified
-offset and using specified algorithm</font></td>
+<td NOSAVE><font size=-1>Compose an image onto another at offset specified
+by <i>xOffset_</i>, <i>yOffset_&nbsp;</i> using composition algorithm specified
+by <i>compose_</i>.</font></td>
 </tr>
 
 <tr>
-<td><font size=-1>const Image &amp;compositeImage_, const Geometry &amp;offset_,
+<td><font size=-1>const <a href="Image.html">Image</a> &amp;compositeImage_,
+const <a href="Geometry.html">Geometry</a> &amp;offset_,
 <a href="Enumerations.html#CompositeOperator">CompositeOperator</a>
 compose_ = <i>InCompositeOp</i></font></td>
+
+<td><font size=-1>Compose an image onto another at offset specified by
+<i>offset_</i> using composition algorithm specified by <i>compose_</i>.</font></td>
+</tr>
+
+<tr>
+<td><font size=-1>const <a href="Image.html">Image</a> &amp;compositeImage_,
+<a href="Enumerations.html#GravityType">GravityType</a> gravity_, <a href="Enumerations.html#CompositeOperator">CompositeOperator</a>
+compose_ = <i>InCompositeOp</i></font></td>
+
+<td><font size=-1>Compose an image onto another with placement specified
+by <i>gravity_</i> using composition algorithm specified by <i>compose_</i>.</font></td>
 </tr>
 
 <tr>
@@ -716,7 +784,8 @@ may result in memory and time savings.</font></td>
 <tr>
 <td><font size=-1>const Blob &amp;blob_</font></td>
 
-<td><font size=-1>Read image stored in an in-memory BLOB into current object</font></td>
+<td><font size=-1>Read encoded image contained in an in-memory BLOB into
+current object</font></td>
 
 <td></td>
 </tr>
@@ -724,12 +793,12 @@ may result in memory and time savings.</font></td>
 <tr>
 <td><font size=-1>const Geometry &amp;size_, const Blob &amp;blob_</font></td>
 
-<td><font size=-1>Read image of specified size from an in-memory BLOB into
-current object. This form is useful for images that do not specifiy their
-size or to specify a size hint for decoding an image. For example, when
-reading a Photo CD, JBIG, or JPEG image, a size request causes the library
-to return an image which is the next resolution greater or equal to the
-specified size. This may result in memory and time savings.</font></td>
+<td><font size=-1>Read encoded image of specified size from an in-memory
+BLOB into current object. This form is useful for images that do not specifiy
+their size or to specify a size hint for decoding an image. For example,
+when reading a Photo CD, JBIG, or JPEG image, a size request causes the
+library to return an image which is the next resolution greater or equal
+to the specified size. This may result in memory and time savings.</font></td>
 
 <td></td>
 </tr>

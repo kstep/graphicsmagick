@@ -85,6 +85,9 @@
 */
 Export Image *ReadMTVImage(const ImageInfo *image_info)
 {
+  char
+    buffer[MaxTextExtent];
+
   Image
     *image;
 
@@ -126,7 +129,8 @@ Export Image *ReadMTVImage(const ImageInfo *image_info)
   /*
     Read MTV image.
   */
-  count=fscanf(image->file,"%u %u\n",&columns,&rows);
+  (void) GetStringBlob(image,buffer);
+  count=sscanf(buffer,"%u %u\n",&columns,&rows);
   if (count == 0)
     ReaderExit(CorruptImageWarning,"Not a MTV image file",image);
   do
@@ -184,7 +188,9 @@ Export Image *ReadMTVImage(const ImageInfo *image_info)
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
-    count=fscanf(image->file,"%u %u\n",&columns,&rows);
+    *buffer='\0';
+    (void) GetStringBlob(image,buffer);
+    count=sscanf(buffer,"%u %u\n",&columns,&rows);
     if (count > 0)
       {
         /*

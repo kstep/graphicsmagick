@@ -152,16 +152,12 @@ Export Image *ReadMONOImage(const ImageInfo *image_info)
   /*
     Convert bi-level image to runlength-encoded packets.
   */
-  for (y=0; y < (int) ((image->rows-image->tile_info.y*image->columns+7) >> 3); y++)
-    (void) ReadByte(image);
   byte=0;
   q=image->pixels;
   SetRunlengthEncoder(q);
   for (y=0; y < (int) image->rows; y++)
   {
     bit=0;
-    for (x=0; y < ((image->tile_info.x+7) >> 3); x++)
-      (void) ReadByte(image);
     for (x=0; x < (int) image->columns; x++)
     {
       if (bit == 0)

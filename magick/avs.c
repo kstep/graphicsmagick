@@ -159,7 +159,7 @@ Export Image *ReadAVSImage(const ImageInfo *image_info)
       for (x=0; x < (int) image->columns; x++)
       {
         index=UpScale(ReadByte(image));
-        image->matte|=index != Transparent;
+        image->matte|=index != Opaque;
         red=UpScale(ReadByte(image));
         green=UpScale(ReadByte(image));
         blue=UpScale(ReadByte(image));

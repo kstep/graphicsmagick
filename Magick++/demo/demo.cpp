@@ -232,6 +232,7 @@ int main( int /*argc*/, char ** /*argv*/)
     // it in that case.
     if ( example.depth() == 16 )
       {
+	example.penColor( "gold" );
 	example.annotate( "Skipped", CenterGravity );
       }
     else

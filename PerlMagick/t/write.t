@@ -23,7 +23,7 @@ chdir 't' || die 'Cd failed';
 testReadWrite( 'AVS:input.avs',
                'AVS:output.avs',
                q//,
-               'f3e5ab88e328da3044c1fc177a7e2978' );
+               'e9b162b8431709942886f79b7b7c11bb' );
 
 #
 # Microsoft Windows bitmap image file
