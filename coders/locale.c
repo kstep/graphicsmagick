@@ -491,7 +491,10 @@ static unsigned int WriteLOCALEImage(const ImageInfo *image_info,Image *image)
   if (attribute != (const ImageAttribute *) NULL)
     WriteBlobString(image,attribute->value);
   for (i=0; i < count; i++)
+	{
     WriteBlobString(image,locale[i]);
+    WriteBlobString(image,"\n");
+  }
   for (i=0; i <= count; i++)
     LiberateMemory((void **) &locale[i]);
   LiberateMemory((void **) &locale);
