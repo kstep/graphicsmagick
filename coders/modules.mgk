@@ -15,9 +15,10 @@
   <module magick="EPDF" name="PDF" />
   <module magick="EPI" name="PS" />
   <module magick="EPS" name="PS" />
-  <module magick="EPS2" name="PS2" />
   <module magick="EPSF" name="PS" />
   <module magick="EPSI" name="PS" />
+  <module magick="EPS2" name="PS2" />
+  <module magick="EPS3" name="PS3" />
   <module magick="EXIF" name="META" />
   <module magick="FILE" name="URL" />
   <module magick="FRACTAL" name="PLASMA" />

@@ -30,13 +30,32 @@ typedef struct _Ascii85Info
 } Ascii85Info;
 
 /*
+  TODO: Clean up the interface between BLOB write functions,
+  compression functions, and encoding functions so they
+  may be hooked into/stacked on top of each other. Most are
+  (or can be changed to be) stream based.
+*/
+typedef unsigned int
+  (*WriteByteHook)(Image *, const magick_uint8_t, void *);
+
+/*
+  Commonly used byte writer hooks.
+*/
+extern MagickExport unsigned int 
+  Ascii85WriteByteHook(Image *image, const magick_uint8_t, void *),
+  BlobWriteByteHook(Image *image, const magick_uint8_t, void *);
+
+/*
   Compress methods.
 */
 extern MagickExport unsigned int
   HuffmanDecodeImage(Image *),
   HuffmanEncodeImage(const ImageInfo *,Image *),
+  HuffmanEncode2Image(const ImageInfo *,Image *,WriteByteHook,void*),
   LZWEncodeImage(Image *,const size_t,unsigned char *),
-  PackbitsEncodeImage(Image *,const size_t,unsigned char *);
+  LZWEncode2Image(Image *,const size_t,unsigned char *,WriteByteHook,void*),
+  PackbitsEncodeImage(Image *,const size_t,unsigned char *),
+  PackbitsEncode2Image(Image *,const size_t,unsigned char *,WriteByteHook,void*);
 
 extern MagickExport void
   Ascii85Encode(Image *,const unsigned long),

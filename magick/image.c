@@ -970,6 +970,13 @@ MagickExport unsigned int ClipPathImage(Image *image,const char *pathname,
       if (!MagickMonitor(ClipPathImageTag,y,clip_mask->rows,&image->exception))
         break;
   }
+  /*
+    Overload magick_filename to keep name of path that created image.
+    This is needed so we can get the path as postscript for PS coders
+    to create a postscript vector based clipping path.
+  */
+  FormatString(clip_mask->magick_filename,"8BIM:1999,2998:%s\nPS",pathname);
+
   clip_mask->is_grayscale=True;
   clip_mask->is_monochrome=True;
   (void) SetImageClipMask(image,clip_mask);

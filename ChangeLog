@@ -1,3 +1,29 @@
+2003-09-18  Lars Ruben Skyum  <lars.skyum@stibo.com>
+
+	* coders/ps3.c: Major update of the PS3 coder. Now ascii85 encodes
+	all binary data. Many printer spoolers don't like the binary
+	data. The coder now creates much smaller files for bilevel, gray,
+	and colormapped images. Compression and image type is now
+	separated so they may be combined independently. Any alpha channel
+	is separated into a separate mask so it's possible to mask
+	bilevel, gray, colormapped, rgb, and CKYK images. You may also
+	mask a JPEG compressed PS file for instance. Clipping masks
+	created from a photoshop clipping path with -clip option is
+	converted to a corresponding postscript clipping path.  New
+	functions need comment headers.
+	* magick/attribute.c: Added TracePSClippingPath for creating a
+	postscript clipping path from a photoshop clipping path.
+	* magick/compress.c, magick/compress.h: Added write-hook based
+	interface to compression functions. Required for ascii encoding
+	compressed, binary data. The interface between blob write
+	functions, compression functions, and encoding functions could
+	benefit from more of this work.
+	* magick/image.c: ClipPathImage now stores the name of the
+	clipping path in the mask image filename so that it is remembered
+	and may be used for creating a postscript clipping path for
+	postscript output.
+	* coders/modules.mgk: Added EPS3 mapping to module PS3.
+
 2003-09-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/command.c: Coalesced various "Missing" error reports into

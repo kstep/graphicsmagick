@@ -229,7 +229,223 @@ static int ReadMSBShort(unsigned char **p,size_t *length)
   return(value);
 }
 
-static char *TraceClippingPath(unsigned char *blob,size_t length,
+static char *TracePSClippingPath(unsigned char *blob,size_t length,
+  unsigned long columns,unsigned long rows)
+{
+  char
+    *path,
+    *message;
+
+  int
+    knot_count,
+    selector;
+
+  long
+    x,
+    y;
+
+  PointInfo
+    first[3],       /* First Bezier knot in sub-path */
+    last[3],        /* Last seen Bezier knot in sub-path */
+    point[3];       /* Current Bezier knot in sub-path */
+
+  register long
+    i;
+
+  unsigned int
+    in_subpath;
+
+  path=AllocateString((char *) NULL);
+  if (path == (char *) NULL)
+    return((char *) NULL);
+  message=AllocateString((char *) NULL);
+
+  FormatString(message,"/ClipImage {\n");
+  (void) ConcatenateString(&path,message);
+  FormatString(message,"/c {curveto} bind def\n");
+  (void) ConcatenateString(&path,message);
+  FormatString(message,"/l {lineto} bind def\n");
+  (void) ConcatenateString(&path,message);
+  FormatString(message,"/m {moveto} bind def\n");
+  (void) ConcatenateString(&path,message);
+  FormatString(message,"/v {currentpoint 6 2 roll curveto} bind def\n");
+  (void) ConcatenateString(&path,message);
+  FormatString(message,"/y {2 copy curveto} bind def\n");
+  (void) ConcatenateString(&path,message);
+  FormatString(message,"/z {closepath} bind def\n");
+  (void) ConcatenateString(&path,message);
+  FormatString(message,"newpath\n");
+  (void) ConcatenateString(&path,message);
+
+  knot_count=0;
+  in_subpath=False;
+
+  /*
+    Open and closed subpaths are all closed in the following
+    parser loop as there's no way for the polygon renderer
+    to render an open path to a masking image.
+
+    The clipping path format is defined in "Adobe Photoshop File
+    Formats Specification" version 6.0 downloadable from adobe.com.
+  */
+  while (length > 0)
+  {
+    selector=ReadMSBShort(&blob,&length);
+    switch (selector)
+    {
+      case 0:
+      case 3:
+      {
+        if (knot_count == 0)
+          {
+            /*
+              Expected subpath length record
+            */
+            knot_count=ReadMSBShort(&blob,&length);
+            blob+=22;
+            length-=22;
+          }
+        else
+          {
+            blob+=24;
+            length-=24;
+          }	  
+        break;
+      }
+      case 1:
+      case 2:
+      case 4:
+      case 5:
+      {
+        if (knot_count == 0)
+          {
+            /*
+              Unexpected subpath knot
+            */
+            blob+=24;
+            length-=24;
+          }
+        else
+          {
+            /*
+              Add sub-path knot
+            */
+            for (i=0; i < 3; i++)
+              {
+                y=ReadMSBLong(&blob,&length);
+                x=ReadMSBLong(&blob,&length);
+                point[i].x=(double) x/4096/4096;
+                point[i].y=1.0-(double) y/4096/4096;
+              }
+            if (!in_subpath)
+              {
+                FormatString(message,"%.6f %.6f m\n",point[1].x,point[1].y);
+                for (i=0; i < 3; i++)
+                {
+                  first[i]=point[i];
+                  last[i]=point[i];
+                }
+              }
+            else
+              {
+                /*
+                  Handle special cases when Bezier curves are used to describe
+                  corners and straight lines. This special handling is desirable
+                  to bring down the size in bytes of the clipping path data.
+                */
+                if ((last[1].x == last[2].x) && (last[1].y == last[2].y) &&
+                  (point[0].x == point[1].x) && (point[0].y == point[1].y))
+                {
+                  /*
+                    First control point equals first anchor point and last control
+                    point equals last anchow point. Straigt line between anchor points.
+                  */
+                  FormatString(message,"%.6f %.6f l\n",point[1].x,point[1].y);
+                }
+                else if ((last[1].x == last[2].x) && (last[1].y == last[2].y))
+                {
+                  /* First control point equals first anchor point */
+                  FormatString(message,"%.6f %.6f %.6f %.6f v\n",
+                    point[0].x,point[0].y,point[1].x,point[1].y);
+                }
+                else if ((point[0].x == point[1].x) && (point[0].y == point[1].y))
+                {
+                  /* Last control point equals last anchow point. */
+                  FormatString(message,"%.6f %.6f %.6f %.6f y\n",
+                    last[2].x,last[2].y,point[1].x,point[1].y);
+                }
+                else
+                {
+                  /* The full monty */
+                  FormatString(message,"%.6f %.6f %.6f %.6f %.6f %.6f c\n",
+                    last[2].x,last[2].y,point[0].x,point[0].y,point[1].x,
+                    point[1].y);
+                }
+                for (i=0; i < 3; i++)
+                  last[i]=point[i];
+              }
+            (void) ConcatenateString(&path,message);
+            in_subpath=True;
+            knot_count--;
+            /*
+              Close the subpath if there are no more knots.
+            */
+            if (knot_count == 0)
+              {
+                /*
+                  Same special handling as above except we compare to the
+                  first point in the path and close the path.
+                */
+                if ((last[1].x == last[2].x) && (last[1].y == last[2].y) &&
+                  (first[0].x == first[1].x) && (first[0].y == first[1].y))
+                {
+                  FormatString(message,"%.6f %.6f l z\n",first[1].x,first[1].y);
+                }
+                else if ((last[1].x == last[2].x) && (last[1].y == last[2].y))
+                {
+                  FormatString(message,"%.6f %.6f %.6f %.6f v z\n",
+                    first[0].x,first[0].y,first[1].x,first[1].y);
+                }
+                else if ((first[0].x == first[1].x) && (first[0].y == first[1].y))
+                {
+                  FormatString(message,"%.6f %.6f %.6f %.6f y z\n",
+                    last[2].x,last[2].y,first[1].x,first[1].y);
+                }
+                else
+                {
+                  FormatString(message,"%.6f %.6f %.6f %.6f %.6f %.6f c z\n",
+                    last[2].x,last[2].y,first[0].x,first[0].y,first[1].x,
+                    first[1].y);
+                }
+                (void) ConcatenateString(&path,message);
+                in_subpath=False;
+              }
+          }
+          break;
+      }
+      case 6:
+      case 7:
+      case 8:
+      default:
+        {
+          blob+=24;
+          length-=24;
+          break;
+        }
+    }
+  }
+  /*
+    Returns an empty PS path if the path has no knots.
+  */
+  FormatString(message,"eoclip\n");
+  (void) ConcatenateString(&path,message);
+  FormatString(message,"} bind def");
+  (void) ConcatenateString(&path,message);
+  MagickFreeMemory(message);
+  return(path);
+}
+
+static char *TraceSVGClippingPath(unsigned char *blob,size_t length,
   unsigned long columns,unsigned long rows)
 {
   char
@@ -393,6 +609,7 @@ static int Generate8BIMAttribute(Image *image,const char *key)
   char
     *attribute,
     name[MaxTextExtent],
+    format[MaxTextExtent],
     *resource;
 
   int
@@ -424,10 +641,12 @@ static int Generate8BIMAttribute(Image *image,const char *key)
     newlines, so use a newline as terminater to get the full
     name.
   */
-  count=sscanf(key,"8BIM:%d,%d:%[^\n]",&start,&stop,name);
-  if ((count != 2) && (count != 3))
+  count=sscanf(key,"8BIM:%d,%d:%[^\n]\n%[^\n]",&start,&stop,name,format);
+  if ((count != 2) && (count != 3) && (count != 4))
     return(False);
-  if (count == 2)
+  if (count < 4)
+    (void)strcpy(format,"SVG");
+  if (count < 3)
     *name='\0';
   sub_number=1;
   if (*name == '#')
@@ -510,9 +729,12 @@ static int Generate8BIMAttribute(Image *image,const char *key)
           {
             char
               *path;
-
-            path=TraceClippingPath((unsigned char *) attribute,count,
-              image->columns,image->rows);
+            if (LocaleCompare("SVG",format) == 0)
+              path=TraceSVGClippingPath((unsigned char *) attribute,count,
+                image->columns,image->rows);
+            else
+              path=TracePSClippingPath((unsigned char *) attribute,count,
+                image->columns,image->rows);
             (void) SetImageAttribute(image,key,(const char *) path);
             MagickFreeMemory(path);
           }
