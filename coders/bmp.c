@@ -1596,7 +1596,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
              x++;
            }
          /* initialize padding bytes */
-         for (x=(long) image->columns/8; x < (long) bytes_per_line; x++)
+         for (x=(long) (image->columns+7)/8; x < (long) bytes_per_line; x++)
            *q++=0x00;
          if (image->previous == (Image *) NULL)
            if (QuantumTick(y,image->rows))
@@ -1641,7 +1641,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
              x++;
            }
          /* initialize padding bytes */
-         for (x=(long) image->columns/2; x < (long) bytes_per_line; x++)
+         for (x=(long) (image->columns+1)/2; x < (long) bytes_per_line; x++)
            *q++=0x00;
          if (image->previous == (Image *) NULL)
            if (QuantumTick(y,image->rows))

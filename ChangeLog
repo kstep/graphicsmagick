@@ -1,3 +1,8 @@
+2004-02-07  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* coders/bpp.c: Fix off-by-one error while initializing padding bytes.
+	* coders/dib.c: Fix off-by-one error while initializing padding bytes.
+
 2004-02-04  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* magick/compress.c:  avoid a reference to uninitialized data.

@@ -1025,7 +1025,7 @@ static unsigned int WriteDIBImage(const ImageInfo *image_info,Image *image)
        if (bit != 0)
          *q++=byte << (8-bit);
        /* initialize padding bytes */
-       for (x=(long) image->columns/8; x < (long) bytes_per_line; x++)
+       for (x=(long) (image->columns+7)/8; x < (long) bytes_per_line; x++)
          *q++=0x00;
        if (image->previous == (Image *) NULL)
          if (QuantumTick(y,image->rows))
