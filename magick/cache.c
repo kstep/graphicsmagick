@@ -1559,40 +1559,79 @@ static unsigned int IsNexusInCore(const Cache cache,const unsigned long id)
 %
 %  The format of the ModifyCache method is:
 %
-%      ModifyCache(Cache *cache,ExceptionInfo *exception)
+%      unsigned int ModifyCache(Image *image,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o cache: The pixel cache.
+%    o image: The image.
 %
 %    o exception: Return any errors or warnings in this structure.
 %
 %
 */
-static void ModifyCache(Cache *cache,ExceptionInfo *exception)
+static unsigned int ModifyCache(Image *image,ExceptionInfo *exception)
 {
   CacheInfo
     *cache_info;
 
+  Image
+    *clone_image;
+
+  int
+    y;
+
+  register const PixelPacket
+    *p;
+
+  register IndexPacket
+    *indexes;
+
+  register PixelPacket
+    *q;
+
   unsigned int
     clone;
 
-  assert(cache != (Cache *) NULL);
-  cache_info=(CacheInfo *) *cache;
+  assert(image != (Image *) NULL);
+  cache_info=(CacheInfo *) image->cache;
   clone=False;
   AcquireSemaphoreInfo(&cache_info->semaphore);
   if (cache_info->reference_count > 1)
     clone=True;
   LiberateSemaphoreInfo(&cache_info->semaphore);
   if (!clone)
-    return;
+    return(True);
   /*
-    Clone cache here.
+    Clone pixel cache.
   */
+  clone_image=AllocateImage((ImageInfo *) NULL);
+  for (y=0; y < (long) image->rows; y++)
+  {
+    p=AcquireImagePixels(image,0,y,image->columns,1,exception);
+    q=SetImagePixels(clone_image,0,y,clone_image->columns,1);
+    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+      break;
+    (void) memcpy(q,p,image->columns*sizeof(PixelPacket));
+    indexes=GetIndexes(image);
+    if (indexes != (IndexPacket *) NULL)
+      (void) memcpy(GetIndexes(clone_image),indexes,
+        image->columns*sizeof(IndexPacket));
+    if (!SyncImagePixels(clone_image))
+      break;
+  }
+  image->cache=clone_image->cache;
+  GetCacheInfo(&clone_image->cache);
+  DestroyImage(clone_image);
+  if (y < (long) image->rows)
+    {
+      ThrowException(exception,CacheWarning,"Unable to clone cache",
+        "could not get image cache");
+      return(False);
+    }
   AcquireSemaphoreInfo(&cache_info->semaphore);
   cache_info->reference_count--;
   LiberateSemaphoreInfo(&cache_info->semaphore);
-  *cache=cache_info;
+  return(True);
 }
 
 /*
