@@ -775,5 +775,9 @@ InputPath=.\Xmd.nth
 !ENDIF 
 
 # End Source File
+# Begin Source File
+
+SOURCE=..\lib\X11.lib
+# End Source File
 # End Target
 # End Project
