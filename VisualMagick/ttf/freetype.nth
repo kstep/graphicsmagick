@@ -63,9 +63,9 @@
 #	if defined(_TTFDLL_)
 #		pragma warning( disable: 4273 )	/* Disable the stupid dll linkage warnings */
 #		if !defined(_TTFLIB_)
-#     define EXPORT __declspec(dllimport) type
-#     define EXPORT_DEF __declspec(dllimport) type
-#     define EXPORT_FUNC __declspec(dllimport) type
+#     define EXPORT __declspec(dllimport)
+#     define EXPORT_DEF __declspec(dllimport)
+#     define EXPORT_FUNC __declspec(dllimport)
 #		else
 #     define EXPORT __declspec(dllexport)
 #     define EXPORT_DEF __declspec(dllexport)
