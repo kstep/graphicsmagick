@@ -3631,10 +3631,18 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   magn_methx,
                   magn_methy;
 
-                clone_image=CloneImage(image,0,0,True,&image->exception);
+                /*
+                  Allocate next image structure.
+                */
+                AllocateNextImage(image_info,image);
+                if (image->next == (Image *) NULL)
+                  {
+                    DestroyImageList(image);
+                    MngInfoFreeStruct(mng_info,&have_mng_structure);
+                    return((Image *) NULL);
+                  }
 
-                large_image=image;
-                image=clone_image;
+                large_image=image->next;
 
                 large_image->columns=magnified_width;
                 large_image->rows=magnified_height;
@@ -3768,7 +3776,8 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
                 length=image->columns;
 
-                DestroyImage(clone_image);
+                DeleteImageList(image,GetImageListIndex(image));
+
                 image=large_image;
 
                 mng_info->image=image;
