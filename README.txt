@@ -137,12 +137,12 @@ UNIX/Cygwin COMPILATION
   follows (execute 'configure --help' to see all options).
 
   Optional Features:
-   --enable-prof           enable prof profiling support (default disabled)
-   --enable-gprof          enable gprof profiling support (default disabled)
-   --enable-gcov           enable gcov profiling support (default disabled)
+   --enable-prof           enable 'prof' profiling support (default disabled)
+   --enable-gprof          enable 'gprof' profiling support (default disabled)
+   --enable-gcov           enable 'gcov' profiling support (default disabled)
+   --disable-largefile     disable support for large (64 bit) file offsets
    --enable-lzw            enable LZW support (default disabled)
    --disable-16bit-pixel   disable 16 bit/quantum pixels (default enabled)
-   --disable-largefile     omit support for large files
 
   Optional Packages:
    --with-modules          enable support for dynamically loadable modules

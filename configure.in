@@ -157,6 +157,12 @@ then
   fi
 fi
 
+# Disable support for largefiles
+AC_ARG_ENABLE(largefile,
+	      [  --disable-largefile     disable support for large (64 bit) file offsets],
+	      [with_largefile=$enableval],
+	      [with_largefile='yes'])
+
 # Enable LZW compression.
 AC_ARG_ENABLE(lzw,
 	      [  --enable-lzw            enable LZW support (default disabled)],
@@ -190,12 +196,6 @@ AC_ARG_WITH(frozenpaths,
 	      [  --without-frozenpaths   disable frozen delegate paths],
 	      [with_frozenpaths=$withval],
 	      [with_frozenpaths='yes'])
-
-# Disable support for largefiles
-AC_ARG_WITH(largefiles,
-	      [  --without-largefiles    disable support for large (64 bit) file offsets],
-	      [with_largefiles=$withval],
-	      [with_largefiles='yes'])
 
 # Enable build/install of Magick++
 AC_ARG_WITH(magick-plus-plus,
@@ -335,9 +335,9 @@ AC_PROG_GCC_TRADITIONAL
 # Check for large file support
 #
 LIB_LF=''
-if test "$with_largefiles" = 'yes'
+if test "$with_largefile" = 'yes'
 then
-  AC_SYS_LARGEFILE
+#  AC_SYS_LARGEFILE
   AC_MSG_CHECKING(whether large file support needs explicit enabling)
   result='no'
   getconf='getconf LFS_CFLAGS'
