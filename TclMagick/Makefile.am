@@ -1,6 +1,6 @@
 
+EXTRA_DIST=LICENSE tests images
 SUBDIRS = generic
-pkgdata_DATA=LICENSE
 
 install-data-local:
 	$(INSTALL_DATA) pkgIndex.tcl $(DESTDIR)$(pkglibdir);
