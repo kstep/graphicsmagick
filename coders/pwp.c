@@ -178,7 +178,7 @@ static Image *ReadPWPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   clone_info=CloneImageInfo(image_info);
   DetachBlob(clone_info->blob);
   TemporaryFilename(clone_info->filename);
-  image=(Image *) NULL;
+  image=NewImageList();
   for ( ; ; )
   {
     for (c=ReadBlobByte(pwp_image); c != EOF; c=ReadBlobByte(pwp_image))

@@ -88,13 +88,13 @@ The length of the binary string.
 <H2><A NAME="getmagickconfigurepath">GetMagickConfigurePath</A></H2>
 <blockquote>GetMagickConfigurePath() searches a number of pre-defined locations for the specified ImageMagick configuration file and returns the path. The search order follows: </blockquote><PRE>
            &lt;current directory&gt;/
-           Windows Resource
            &lt;client path&gt;/
            $MAGICK_HOME/
            $HOME/.magick/
            MagickLibPath
            MagickModulesPath
-           MagickSharePath</PRE>
+           MagickSharePath
+           Windows Resource</PRE>
 <P>The format of the GetMagickConfigurePath method is:</P>
 <blockquote>char *GetMagickConfigurePath ( const char *filename, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
 <FONT SIZE=-1>A</FONT> description of each parameter follows:</P>

@@ -4645,10 +4645,10 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
         DestroyImage(cache_image->list);
         DestroyImage(cache_image);
       }
-      undo_image=(Image *) NULL;
+      undo_image=NewImageList();
       if (redo_image != (Image *) NULL)
         DestroyImage(redo_image);
-      redo_image=(Image *) NULL;
+      redo_image=NewImageList();
       return;
     }
     case UndoCommand:
@@ -4761,9 +4761,9 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
             bytes-=previous_image->list->columns*previous_image->list->rows*
               sizeof(PixelPacket);
             if (previous_image == undo_image)
-              undo_image=(Image *) NULL;
+              undo_image=NewImageList();
             else
-              previous_image->next->previous=(Image *) NULL;
+              previous_image->next->previous=NewImageList();
             break;
           }
           while (previous_image != (Image *) NULL)
@@ -4834,7 +4834,7 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
       windows->image.crop_geometry=redo_image->geometry;
       DestroyImage(*image);
       *image=redo_image;
-      redo_image=(Image *) NULL;
+      redo_image=NewImageList();
       if (windows->image.orphan)
         return;
       XConfigureImageColormap(display,resource_info,windows,*image);
@@ -5330,7 +5330,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
   XCheckRefreshWindows(display,windows);
   XImageCache(display,resource_info,windows,command,image);
   argv[0]=resource_info->client_name;
-  nexus=(Image *) NULL;
+  nexus=NewImageList();
   windows->image.window_changes.width=windows->image.ximage->width;
   windows->image.window_changes.height=windows->image.ximage->height;
   image_info=CloneImageInfo((ImageInfo *) NULL);
@@ -10723,7 +10723,7 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
   */
   XSetCursorState(display,windows,True);
   XCheckRefreshWindows(display,windows);
-  tile_image=(Image *) NULL;
+  tile_image=NewImageList();
   switch (TileCommands[id])
   {
     case TileLoadCommand:
@@ -11230,7 +11230,7 @@ static Image *XVisualDirectoryImage(Display *display,
   clone_info=CloneImageInfo(resource_info->image_info);
   if (clone_info == (ImageInfo *) NULL)
     return((Image *) NULL);
-  image=(Image *) NULL;
+  image=NewImageList();
   XSetCursorState(display,windows,True);
   XCheckRefreshWindows(display,windows);
   for (i=0; i < number_files; i++)
@@ -12108,7 +12108,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   class_hints=windows->class_hints;
   manager_hints=windows->manager_hints;
   root_window=XRootWindow(display,visual_info->screen);
-  nexus=(Image *) NULL;
+  nexus=NewImageList();
   if (resource_info->debug)
     {
       (void) fprintf(stderr,"Image: %.1024s[%lu] %lux%lu ",

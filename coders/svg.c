@@ -2447,7 +2447,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) fclose(file);
   CloseBlob(image);
   DestroyImage(image);
-  image=(Image *) NULL;
+  image=NewImageList();
   if (!image_info->ping && (exception->severity == UndefinedException))
     {
       /*

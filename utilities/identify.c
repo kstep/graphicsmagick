@@ -204,7 +204,7 @@ int main(int argc,char **argv)
   count=0;
   GetExceptionInfo(&exception);
   image_info=CloneImageInfo((ImageInfo *) NULL);
-  image=(Image *) NULL;
+  image=NewImageList();
   number_images=0;
   /*
     Identify an image.

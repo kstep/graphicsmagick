@@ -173,7 +173,7 @@ static Image *ReadMPEGImage(const ImageInfo *image_info,
   /*
     Read PPM files.
   */
-  image=(Image *) NULL;
+  image=NewImageList();
   for (i=(long) clone_info->subimage; ; i++)
   {
     FormatString(clone_info->filename,"%.1024s%d.ppm",clone_info->unique,i);

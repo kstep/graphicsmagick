@@ -683,8 +683,8 @@ static Image *GetList(SV *reference,SV ***reference_vector,int *current,
       /*
         Array of images.
       */
-      previous=(Image *) NULL;
-      head=(Image *) NULL;
+      previous=NewImageList();
+      head=NewImageList();
       av=(AV *) reference;
       n=av_len(av);
       for (i=0; i <= n; i++)
@@ -727,8 +727,8 @@ static Image *GetList(SV *reference,SV ***reference_vector,int *current,
       image=(Image *) SvIV(reference);
       if (!image)
         return(NULL);
-      image->previous=(Image *) NULL;
-      image->next=(Image *) NULL;
+      image->previous=NewImageList();
+      image->next=NewImageList();
       if (reference_vector)
         {
           if (*current == *last)
@@ -4008,7 +4008,7 @@ Mogrify(ref,...)
     region_info.height=0;
     region_info.x=0;
     region_info.y=0;
-    region_image=(Image *) NULL;
+    region_image=NewImageList();
     if (ix && (ix != 666))
       {
         /*
@@ -4794,7 +4794,7 @@ Mogrify(ref,...)
                   break;
               }
             }
-          rotate_image=(Image *) NULL;
+          rotate_image=NewImageList();
           if (attribute_flag[8])
             {
                /*

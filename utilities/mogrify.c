@@ -387,7 +387,7 @@ int main(int argc,char **argv)
   GetExceptionInfo(&exception);
   format=(char *) NULL;
   global_colormap=False;
-  image=(Image *) NULL;
+  image=NewImageList();
   image_info=CloneImageInfo((ImageInfo *) NULL);
   scene=0;
   status=False;

@@ -212,7 +212,7 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
       {
         clone_info->fill_pattern=CloneImage(draw_info->tile,0,0,True,
           &draw_info->tile->exception);
-        clone_info->tile=(Image *) NULL;  /* tile is deprecated */
+        clone_info->tile=NewImageList();  /* tile is deprecated */
       }
   if (draw_info->stroke_pattern != (Image *) NULL)
     clone_info->stroke_pattern=CloneImage(draw_info->stroke_pattern,0,0,True,
@@ -2876,8 +2876,8 @@ static unsigned int DrawPatternPath(Image *image,DrawInfo *draw_info,
     (void) fprintf(stdout,"\nbegin pattern-path %.1024s %.1024s\n",name,
       geometry->value);
   clone_info=CloneDrawInfo((ImageInfo *) NULL,draw_info);
-  clone_info->fill_pattern=(Image *) NULL;
-  clone_info->stroke_pattern=(Image *) NULL;
+  clone_info->fill_pattern=NewImageList();
+  clone_info->stroke_pattern=NewImageList();
   (void) CloneString(&clone_info->primitive,path->value);
   status=DrawImage(*pattern,clone_info);
   DestroyDrawInfo(clone_info);

@@ -315,7 +315,7 @@ int main(int argc,char **argv)
   display=(Display *) NULL;
   GetExceptionInfo(&exception);
   first_scene=0;
-  image=(Image *) NULL;
+  image=NewImageList();
   last_scene=0;
   /*
     Check for server name specified on the command line.
