@@ -60,10 +60,10 @@
   Typedef declaractions.
 */
 #if defined(HasXML)
-#include <libxml/parser.h>
-#include <libxml/xmlmemory.h>
-#include <libxml/parserInternals.h>
-#include <libxml/xml-error.h>
+#include <gnome-xml/parser.h>
+#include <gnome-xml/xmlmemory.h>
+#include <gnome-xml/parserInternals.h>
+#include <gnome-xml/xml-error.h>
 typedef struct _ElementInfo
 {
   double

@@ -412,6 +412,8 @@ static unsigned int InitializeMagic(void)
       if (ReadMagicConfigurationFile(path) == True)
         return(True);
     }
+  if (ReadMagicConfigurationFile(MagicFilename) == True)
+    return(True);
   (void) strcpy(path,DelegatePath);
   (void) strcat(path,DirectorySeparator);
   (void) strcat(path,MagicFilename);

@@ -7,25 +7,28 @@
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
 #endif
-
+
 /*
   Define declarations.
+*/
+#if !defined(_VISUALC_)
+#define ModuleGlobExpression "*.so"
+#else
+#if defined(_DEBUG)
+#define ModuleGlobExpression "IM_MOD_DB_*.dll"
+#else
+#define ModuleGlobExpression "IM_MOD_RL_*.dll"
+#endif
+#endif
+
+/*
+  Typedef declarations.
 */
 #if defined(HasLTDL)
 #include "ltdl/ltdl.h"
 typedef lt_dlhandle ModuleHandle;
 #else
 typedef void *ModuleHandle;
-#endif
-#if defined(_MAGICKMOD_)
-#if defined(_MT) && defined(_VISUALC_)
-#  define CoderModuleDirectory "."
-#if defined(_DEBUG)
-#  define ModuleSearchSpec "IM_MOD_DB_*.dll"
-#else
-#  define ModuleSearchSpec "IM_MOD_RL_*.dll"
-#endif
-#endif
 #endif
 
 /*

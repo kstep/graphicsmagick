@@ -121,7 +121,7 @@ testMontage( q/bordercolor=>'blue', mattecolor=>'red'/,
 testMontage( q/bordercolor=>'blue', mattecolor=>'red'/, 
 	     q/background=>'#696e7e', label=>'', tile=>'4x4', geometry=>'90x80+6+6>', frame=>'8x10',
                borderwidth=>'0', gravity=>'Center', shadow=>'True',background=>'gray'/,
-	     'a99f811cecb90a366fabdb524a98d7ab',
+	     'a618a7d9fe5cd476edb7308c198b2113',
              'e1933b39fb865cfb7c9d16d277874254');
 
 #
@@ -131,7 +131,7 @@ testMontage( q/bordercolor=>'blue', mattecolor=>'red'/,
 testMontage( q/bordercolor=>'blue', mattecolor=>'red'/, 
 	     q/background=>'#696e7e', label=>'', tile=>'4x4', geometry=>'90x80+6+6>', frame=>'8x10',
                borderwidth=>'0', gravity=>'Center', shadow=>'True', texture=>'granite:'/,
-	     'f2a93b77d9eeb2aca0337aabd218a55b',
+	     'f205a6806f42331663c5655fba7ad621',
              'b26c68cab49bd2aad619b1ac1f2366af');
 
 #

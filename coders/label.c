@@ -1196,11 +1196,11 @@ static Image *RenderX11(const ImageInfo *image_info,const char *text,
   */
   image->columns=annotate_info.width;
   image->rows=annotate_info.height;
-  SetImage(image,TransparentOpacity);
-  image->background_color=image->border_color;
+  SetImage(image,OpaqueOpacity);
   status=XAnnotateImage(display,&pixel,&annotate_info,image);
   if (status == 0)
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
+  image->matte=True;
   for (y=0; y < (int) image->rows; y++)
   {
     q=GetImagePixels(image,0,y,image->columns,1);
@@ -1208,7 +1208,7 @@ static Image *RenderX11(const ImageInfo *image_info,const char *text,
       break;
     for (x=0; x < (int) image->columns; x++)
     {
-      q->opacity=MaxRGB-Intensity(*q);
+      q->opacity=Intensity(*q);
       q->red=image_info->fill.red;
       q->green=image_info->fill.green;
       q->blue=image_info->fill.blue;

@@ -35,7 +35,7 @@ INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/magick
 MAGICK_CODER_SRCS = avi.c avs.c 8bim.c bmp.c cache.c cmyk.c dcm.c dps.c ept.c \
   fax.c fits.c fpx.c gif.c gradation.c gray.c hdf.c histogram.c html.c icm.c \
   icon.c iptc.c jbig.c jpeg.c label.c logo.c map.c matte.c miff.c mono.c mtv.c \
-  mvg.c pcd.c pcl.c pcx.c pdb.c pdf.c pict.c pix.c png.c plasma.c pnm.c \
+  mvg.c null.c pcd.c pcl.c pcx.c pdb.c pdf.c pict.c pix.c png.c plasma.c pnm.c \
   preview.c ps.c ps2.c ps3.c psd.c pwp.c rgb.c rla.c rle.c sct.c sfw.c sgi.c \
   stegano.c sun.c svg.c tga.c tiff.c tile.c tim.c ttf.c txt.c uil.c uyvy.c \
   vicar.c vid.c viff.c wbmp.c wpg.c x.c xbm.c xc.c xpm.c xwd.c yuv.c
@@ -100,8 +100,8 @@ pkg_LTLIBRARIES   = 8bim.la avi.la avs.la bmp.la cache.la cmyk.la dcm.la \
   $(DSP_LA) ept.la $(FAX_LA) $(FPX_LA) fits.la gif.la gray.la gradation.la \
   $(HDF_LA) histogram.la html.la icm.la icon.la iptc.la $(JBIG_LA) \
   $(JPEG_LA) label.la logo.la map.la matte.la miff.la mono.la mtv.la mvg.la \
-  pcd.la pcl.la pcx.la pdb.la pdf.la pict.la $(PNG_LA) pix.la plasma.la \
-  pnm.la preview.la ps.la ps2.la ps3.la psd.la pwp.la rgb.la rla.la \
+  null.la pcd.la pcl.la pcx.la pdb.la pdf.la pict.la $(PNG_LA) pix.la \
+  plasma.la pnm.la preview.la ps.la ps2.la ps3.la psd.la pwp.la rgb.la rla.la \
   rle.la sct.la sfw.la sgi.la stegano.la sun.la svg.la tga.la $(TIFF_LA) \
   tile.la tim.la $(TTF_LA) txt.la uil.la uyvy.la vicar.la vid.la viff.la \
   wbmp.la wpg.la $(X_LA) xbm.la xc.la xpm.la $(XWD_LA) yuv.la
@@ -263,6 +263,11 @@ mtv_la_LIBADD       = ../magick/libMagick.la
 mvg_la_SOURCES      = mvg.c
 mvg_la_LDFLAGS      = -no-undefined -module -avoid-version
 mvg_la_LIBADD       = ../magick/libMagick.la
+
+# NULL module
+null_la_SOURCES      = null.c
+null_la_LDFLAGS      = -no-undefined -module -avoid-version
+null_la_LIBADD       = ../magick/libMagick.la
 
 # PCD module
 pcd_la_SOURCES      = pcd.c

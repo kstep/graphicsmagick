@@ -187,8 +187,13 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag)
   register MagickInfo
     *p;
 
+  unsigned int
+    initialize;
+
   EngageSemaphore(magick_semaphore);
-  if (magick_list == (MagickInfo *) NULL)
+  initialize=magick_list == (MagickInfo *) NULL;
+  DisengageSemaphore(magick_semaphore);
+  if (initialize)
     {
       /*
         Register image formats.
@@ -227,6 +232,7 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag)
       RegisterMONOImage();
       RegisterMTVImage();
       RegisterMVGImage();
+      RegisterNULLImage();
       RegisterPCDImage();
       RegisterPCLImage();
       RegisterPCXImage();
@@ -272,7 +278,6 @@ MagickExport MagickInfo *GetMagickInfo(const char *tag)
       RegisterYUVImage();
 #endif
     }
-  DisengageSemaphore(magick_semaphore);
   if ((tag == (char *) NULL) || (*tag == '\0'))
     return((MagickInfo *) NULL);
   /*
@@ -337,7 +342,7 @@ MagickExport void ListMagickInfo(FILE *file)
   (void) GetMagickInfo((char *) NULL);
 #if defined(HasLTDL) || defined(_MAGICKMOD_)
   OpenModules();
-#endif
+#endif    
   EngageSemaphore(magick_semaphore);
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
     (void) fprintf(file,"%10s%c  %c%c%c  %s\n",p->tag ? p->tag : "",

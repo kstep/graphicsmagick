@@ -3,11 +3,11 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                               X   X   CCCC                                  %
-%                                X X   C                                      %
-%                                 X    C                                      %
-%                                X X   C                                      %
-%                               X   X   CCCC                                  %
+%                        N   N  U   U  L      L                               %
+%                        NN  N  U   U  L      L                               %
+%                        N N N  U   U  L      L                               %
+%                        N  NN  U   U  L      L                               %
+%                        N   N   UUU   LLLLL  LLLLL                           %
 %                                                                             %
 %                                                                             %
 %                    Read/Write ImageMagick Image Format.                     %
@@ -60,24 +60,25 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e a d X C I m a g e                                                     %
+%   R e a d N U L L I m a g e                                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadXCImage creates a constant image and initializes it to the
+%  Method ReadNULLImage creates a constant image and initializes it to the
 %  X server color as specified by the filename.  It allocates the memory
 %  necessary for the new Image structure and returns a pointer to the new
 %  image.
 %
-%  The format of the ReadXCImage method is:
+%  The format of the ReadNULLImage method is:
 %
-%      Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
+%      Image *ReadNULLImage(const ImageInfo *image_info,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o image:  Method ReadXCImage returns a pointer to the image after
+%    o image:  Method ReadNULLImage returns a pointer to the image after
 %      creating it. A null image is returned if there is a memory shortage
 %      or if the image cannot be read.
 %
@@ -87,7 +88,8 @@
 %
 %
 */
-static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadNULLImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
   Image
     *image;
@@ -143,41 +145,41 @@ static Image *ReadXCImage(const ImageInfo *image_info,ExceptionInfo *exception)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   R e g i s t e r X C I m a g e                                             %
+%   R e g i s t e r N U L L I m a g e                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method RegisterXCImage adds attributes for the XC image format to
+%  Method RegisterNULLImage adds attributes for the NULL image format to
 %  the list of supported formats.  The attributes include the image format
 %  tag, a method to read and/or write the format, whether the format
 %  supports the saving of more than one frame to the same file or blob,
 %  whether the format supports native in-memory I/O, and a brief
 %  description of the format.
 %
-%  The format of the RegisterXCImage method is:
+%  The format of the RegisterNULLImage method is:
 %
-%      RegisterXCImage(void)
+%      RegisterNULLImage(void)
 %
 */
-ModuleExport void RegisterXCImage(void)
+ModuleExport void RegisterNULLImage(void)
 {
   MagickInfo
     *entry;
 
   entry=SetMagickInfo("NULL");
-  entry->decoder=ReadXCImage;
+  entry->decoder=ReadNULLImage;
   entry->adjoin=False;
   entry->description=AllocateString("NULL image");
-  entry->module=AllocateString("XC");
+  entry->module=AllocateString("NULL");
   RegisterMagickInfo(entry);
-  entry=SetMagickInfo("XC");
-  entry->decoder=ReadXCImage;
+  entry=SetMagickInfo("NULL");
+  entry->decoder=ReadNULLImage;
   entry->adjoin=False;
   entry->raw=True;
-  entry->description=AllocateString("Constant image uniform color");
-  entry->module=AllocateString("XC");
+  entry->description=AllocateString("Constant image of uniform color");
+  entry->module=AllocateString("NULL");
   RegisterMagickInfo(entry);
 }
 
@@ -186,22 +188,22 @@ ModuleExport void RegisterXCImage(void)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   U n r e g i s t e r X C I m a g e                                         %
+%   U n r e g i s t e r N U L L I m a g e                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method UnregisterXCImage removes format registrations made by the
-%  XC module from the list of supported formats.
+%  Method UnregisterNULLImage removes format registrations made by the
+%  NULL module from the list of supported formats.
 %
-%  The format of the UnregisterXCImage method is:
+%  The format of the UnregisterNULLImage method is:
 %
-%      UnregisterXCImage(void)
+%      UnregisterNULLImage(void)
 %
 */
-ModuleExport void UnregisterXCImage(void)
+ModuleExport void UnregisterNULLImage(void)
 {
   UnregisterMagickInfo("NULL");
-  UnregisterMagickInfo("XC");
+  UnregisterMagickInfo("NULL");
 }

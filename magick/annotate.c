@@ -263,29 +263,26 @@ MagickExport unsigned int AnnotateImage(Image *image,
       case NorthWestGravity:
       {
         clone_info->bounds.x=x;
-        clone_info->bounds.y=y+i*clone_info->bounds.height-
-          annotate_image->bounding_box.y2;
+        clone_info->bounds.y=y+i*clone_info->bounds.height;
         break;
       }
       case NorthGravity:
       {
         clone_info->bounds.x=x+(width/2.0)-(annotate_image->columns/2.0);
-        clone_info->bounds.y=y+i*clone_info->bounds.height-
-          annotate_image->bounding_box.y2;
+        clone_info->bounds.y=y+i*clone_info->bounds.height;
         break;
       }
       case NorthEastGravity:
       {
         clone_info->bounds.x=width-annotate_image->columns+x;
-        clone_info->bounds.y=y+i*clone_info->bounds.height-
-          annotate_image->bounding_box.y2;
+        clone_info->bounds.y=y+i*clone_info->bounds.height;
         break;
       }
       case WestGravity:
       {
         clone_info->bounds.x=x;
         clone_info->bounds.y=y+(height/2.0)+i*clone_info->bounds.height-
-          annotate_image->bounding_box.y2/2.0;
+          (clone_info->bounds.height/2.0);
         break;
       }
       case ForgetGravity:
@@ -295,32 +292,35 @@ MagickExport unsigned int AnnotateImage(Image *image,
       {
         clone_info->bounds.x=x+(width/2.0)-(annotate_image->columns/2.0);
         clone_info->bounds.y=y+(height/2.0)+i*clone_info->bounds.height-
-          annotate_image->bounding_box.y2/2.0;
+          (clone_info->bounds.height/2.0);
         break;
       }
       case EastGravity:
       {
         clone_info->bounds.x=x+width-annotate_image->columns;
         clone_info->bounds.y=y+(height/2.0)+i*clone_info->bounds.height-
-          annotate_image->bounding_box.y2/2.0;
+          (clone_info->bounds.height/2.0);
         break;
       }
       case SouthWestGravity:
       {
         clone_info->bounds.x=x;
-        clone_info->bounds.y=y+height+i*clone_info->bounds.height;
+        clone_info->bounds.y=y+height+i*clone_info->bounds.height-
+          clone_info->bounds.height;
         break;
       }
       case SouthGravity:
       {
         clone_info->bounds.x=x+(width/2.0)-(annotate_image->columns/2.0);
-        clone_info->bounds.y=y+height+i*clone_info->bounds.height;
+        clone_info->bounds.y=y+height+i*clone_info->bounds.height-
+          clone_info->bounds.height;
         break;
       }
       case SouthEastGravity:
       {
         clone_info->bounds.x=x+width-annotate_image->columns;
-        clone_info->bounds.y=y+height-i*clone_info->bounds.height;
+        clone_info->bounds.y=y+height-i*clone_info->bounds.height-
+          clone_info->bounds.height;
         break;
       }
     }
@@ -333,18 +333,20 @@ MagickExport unsigned int AnnotateImage(Image *image,
           Surround text with a border.
         */
         box_image=CloneImage(annotate_image,annotate_image->columns,
-          annotate_image->rows,True,&image->exception);
+          clone_info->bounds.height,True,&image->exception);
         if (box_image != (Image *) NULL)
           {
             box_image->background_color=annotate_info->box;
             SetImage(box_image,OpaqueOpacity);
             CompositeImage(box_image,AnnotateCompositeOp,annotate_image,0,0);
+            box_image->matte=False;
             DestroyImage(annotate_image);
             annotate_image=box_image;
           }
       }
-    CompositeImage(image,AnnotateCompositeOp,annotate_image,
-      clone_info->bounds.x,clone_info->bounds.y);
+    CompositeImage(image,
+      annotate_image->matte ? AnnotateCompositeOp : ReplaceCompositeOp,
+      annotate_image,clone_info->bounds.x,clone_info->bounds.y);
     DestroyImage(annotate_image);
   }
   image->matte=matte;

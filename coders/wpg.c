@@ -2,11 +2,11 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%                         W   W  PPPP    GGGG                                 %
-%                         W   W  P   P  G                                     %
-%                         W W W  PPPP   G GGG                                 %
-%                         WW WW  P      G   G                                 %
-%                         W   W  P       GGG                                  %
+%                            W   W  PPPP    GGGG                              %
+%                            W   W  P   P  G                                  %
+%                            W W W  PPPP   G GGG                              %
+%                            WW WW  P      G   G                              %
+%                            W   W  P       GGG                               %
 %                                                                             %
 %                                                                             %
 %                    Read/Write ImageMagick Image Format.                     %

@@ -815,7 +815,7 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
                 2*border_width,font_height,(int) (x_offset+border_width),
                 (int) (montage_info->frame ? y_offset+height+
                 2*border_width-bevel_width-2 : y_offset+tile_info.height+
-                2*border_width+(montage_info->shadow ? 4 : 0)+font_height));
+                2*border_width+(montage_info->shadow ? 4 : 0)));
               (void) CloneString(&annotate_info->geometry,geometry);
               (void) CloneString(&annotate_info->text,attribute->value);
               AnnotateImage(montage_next,annotate_info);
