@@ -334,7 +334,7 @@ static struct
     { "ReduceNoise", { {"radius", DoubleReference} } },
     { "Roll", { {"geometry", StringReference}, {"x", IntegerReference},
       {"y", IntegerReference} } },
-    { "Rotate", { {"degree", DoubleReference},
+    { "Rotate", { {"degrees", DoubleReference},
       {"color", StringReference} } },
     { "Sample", { {"geometry", StringReference}, {"width", IntegerReference},
       {"height", IntegerReference} } },
@@ -347,7 +347,7 @@ static struct
     { "Shear", { {"geometry", StringReference}, {"x", IntegerReference},
       {"y", DoubleReference}, {"color", StringReference} } },
     { "Spread", { {"radius", IntegerReference} } },
-    { "Swirl", { {"degree", DoubleReference} } },
+    { "Swirl", { {"degrees", DoubleReference} } },
     { "Resize", { {"geometry", StringReference}, {"width", IntegerReference},
       {"height", IntegerReference}, {"filter", FilterTypess},
       {"blur", DoubleReference } } },
@@ -414,7 +414,7 @@ static struct
       {"smooth", DoubleReference}, {"colorspace", ColorspaceTypes},
       {"verbose", BooleanTypes} } },
     { "Signature", },
-    { "Solarize", { {"factor", DoubleReference} } },
+    { "Solarize", { {"threshold", DoubleReference} } },
     { "Sync", },
     { "Texture", { {"texture", ImageReference} } },
     { "Sans", { {"geometry", StringReference}, {"crop", StringReference},
@@ -425,8 +425,8 @@ static struct
     { "Charcoal", { {"geometry", StringReference}, {"radius", DoubleReference},
       {"sigma", DoubleReference} } },
     { "Trim", { {"fuzz", DoubleReference} } },
-    { "Wave", { {"geometry", StringReference}, {"ampli", DoubleReference},
-      {"wave", DoubleReference} } },
+    { "Wave", { {"geometry", StringReference}, {"amplitude", DoubleReference},
+      {"wavelength", DoubleReference} } },
     { "Channel", { {"channel", ChannelTypes} } },
     { "Condense", },
     { "Stereo", { {"image", ImageReference} } },
@@ -1663,7 +1663,7 @@ static void SetAttribute(pTHX_ struct PackageInfo *info,Image *image,
               (long) (y % image->rows),1,1);
             if (p == (PixelPacket *) NULL)
               break;
-            SetImageType(image,TrueColorType);
+            image->storage_class=DirectClass;
             if (strchr(SvPV(sval,na),',') == 0)
               QueryColorDatabase(SvPV(sval,na),p,
                 image ? &image->exception : &exception);
@@ -2192,8 +2192,7 @@ Append(ref,...)
       *av_reference,
       *reference,
       *rv,
-      *sv,
-      **reference_vector;
+      *sv;
 
     volatile int
       status;
@@ -2202,7 +2201,6 @@ Append(ref,...)
     MY_CXT.error_list=newSVpv("",0);
     attribute=NULL;
     av=NULL;
-    reference_vector=NULL;
     status=0;
     if (!sv_isobject(ST(0)))
       {
@@ -2218,7 +2216,7 @@ Append(ref,...)
     status=setjmp(error_jmp);
     if (status)
       goto MethodException;
-    image=SetupList(aTHX_ reference,&info,&reference_vector);
+    image=SetupList(aTHX_ reference,&info,(SV ***) NULL);
     if (!image)
       {
         MagickError(OptionError,"NoImagesDefined",NULL);
@@ -2523,6 +2521,7 @@ BlobToImage(ref,...)
 
   ReturnIt:
     LiberateMemory((void **) &list);
+    LiberateMemory((void **) &length);
     sv_setiv(MY_CXT.error_list,(IV) number_images);
     SvPOK_on(MY_CXT.error_list);
     ST(0)=sv_2mortal(MY_CXT.error_list);
@@ -2555,9 +2554,6 @@ Coalesce(ref)
     AV
       *av;
 
-    char
-      *p;
-
     ExceptionInfo
       exception;
 
@@ -2577,7 +2573,6 @@ Coalesce(ref)
       *av_reference,
       *reference,
       *rv,
-      **reference_vector,
       *sv;
 
     volatile int
@@ -2585,7 +2580,6 @@ Coalesce(ref)
 
     dMY_CXT;
     MY_CXT.error_list=newSVpv("",0);
-    reference_vector=NULL;
     status=0;
     if (!sv_isobject(ST(0)))
       {
@@ -6102,7 +6096,6 @@ Montage(ref,...)
       *av_reference,
       *reference,
       *rv,
-      **reference_vector,
       *sv;
 
     volatile int
@@ -6110,7 +6103,6 @@ Montage(ref,...)
 
     dMY_CXT;
     MY_CXT.error_list=newSVpv("",0);
-    reference_vector=NULL;
     status=0;
     attribute=NULL;
     if (!sv_isobject(ST(0)))
@@ -6127,7 +6119,7 @@ Montage(ref,...)
     status=setjmp(error_jmp);
     if (status)
       goto MethodException;
-    image=SetupList(aTHX_ reference,&info,&reference_vector);
+    image=SetupList(aTHX_ reference,&info,(SV ***) NULL);
     if (!image)
       {
         MagickError(OptionError,"NoImagesDefined",NULL);
@@ -6484,8 +6476,7 @@ Morph(ref,...)
       *av_reference,
       *reference,
       *rv,
-      *sv,
-      **reference_vector;
+      *sv;
 
     volatile int
       status;
@@ -6493,7 +6484,6 @@ Morph(ref,...)
     dMY_CXT;
     MY_CXT.error_list=newSVpv("",0);
     av=NULL;
-    reference_vector=NULL;
     status=0;
     attribute=NULL;
     if (!sv_isobject(ST(0)))
@@ -6510,7 +6500,7 @@ Morph(ref,...)
     status=setjmp(error_jmp);
     if (status)
       goto MethodException;
-    image=SetupList(aTHX_ reference,&info,&reference_vector);
+    image=SetupList(aTHX_ reference,&info,(SV ***) NULL);
     if (!image)
       {
         MagickError(OptionError,"NoImagesDefined",NULL);
@@ -7705,7 +7695,7 @@ Set(ref,...)
       }
     reference=SvRV(ST(0));
     image=SetupList(aTHX_ reference,&info,(SV ***) NULL);
-    if (items <= 2)
+    if (items == 2)
       SetAttribute(aTHX_ info,image,"size",ST(1));
     else
       for (i=2; i < items; i+=2)
@@ -7771,8 +7761,7 @@ Transform(ref,...)
       *av_reference,
       *reference,
       *rv,
-      *sv,
-      **reference_vector;
+      *sv;
 
     volatile int
       status;
@@ -7780,7 +7769,6 @@ Transform(ref,...)
     dMY_CXT;
     MY_CXT.error_list=newSVpv("",0);
     av=NULL;
-    reference_vector=NULL;
     status=0;
     attribute=NULL;
     if (!sv_isobject(ST(0)))
@@ -7797,7 +7785,7 @@ Transform(ref,...)
     status=setjmp(error_jmp);
     if (status)
       goto MethodException;
-    image=SetupList(aTHX_ reference,&info,&reference_vector);
+    image=SetupList(aTHX_ reference,&info,(SV ***) NULL);
     if (!image)
       {
         MagickError(OptionError,"NoImagesDefined",NULL);

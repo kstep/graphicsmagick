@@ -56,6 +56,15 @@
 2003-06-07  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
+  <LI> PerlMagick/Magick.xs: RotateImage is documented to take
+        'degrees' argument, not 'degree'.  SwirlImage is documented to
+        take 'degrees' argument, not 'degree'.  SolarizeImage is
+        documented to take a 'threshold' argument, not 'factor'.  Wave is
+        documented to take 'amplitude' and 'wavelength' arguments.  Don't
+        transform colorspace to RGB when retrieving 'pixel' color value.
+        Release memory acquired to store 'length' pointer.  Picked up
+        memory leak fix related to 'SV **reference_vector' variable from
+        John Cristy's ImageMagick.<BR>
   <LI> configure: Incorporate patch to handle inline better.
   <LI> magick/utility.c (GetToken): Adjust code to avoid "end-of-loop
         code not reached" warning.<BR>
