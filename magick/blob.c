@@ -1642,7 +1642,7 @@ Export off_t TellBlob(const Image *image)
 %  A description of each parameter follows:
 %
 %    o status:  Method UnmapBlob returns True on success; otherwise,  it
-%      returns False and set errno to indicate the error.
+%      returns False and sets errno to indicate the error.
 %
 %    o map: The address  of the binary large object.
 %

@@ -4075,6 +4075,7 @@ Mogrify(ref,...)
         case 34:  /* ColorFloodfill */
         {
           PixelPacket
+            *pixel,
             target;
 
           register PixelPacket
@@ -4100,14 +4101,15 @@ Mogrify(ref,...)
               annotate_info=CloneAnnotateInfo(package_info->image_info,
                 (AnnotateInfo *) NULL);
             }
-          if (GetPixelCache(image,rectangle_info.x % image->columns,
-              rectangle_info.y % image->rows,1,1))
-            target=(*image->pixels);
+          pixel=GetPixelCache(image,rectangle_info.x % image->columns,
+            rectangle_info.y % image->rows,1,1);
+          if (pixel != (PixelPacket *) NULL)
+            target=(*pixel);
           if (attribute_flag[4])
             target=border_color;
-          ColorFloodfillImage(image,&target,annotate_info->tile,rectangle_info.x,
-            rectangle_info.y,attribute_flag[4] ? FillToBorderMethod :
-            FloodfillMethod);
+          ColorFloodfillImage(image,&target,annotate_info->tile,
+            rectangle_info.x,rectangle_info.y,attribute_flag[4] ?
+            FillToBorderMethod : FloodfillMethod);
           break;
         }
         case 35:  /* Composite */
@@ -4307,7 +4309,7 @@ Mogrify(ref,...)
         case 42:  /* MatteFloodfill */
         {
           PixelPacket
-            *p,
+            *pixel,
             target;
 
           unsigned int
@@ -4335,9 +4337,10 @@ Mogrify(ref,...)
             matte=argument_list[3].int_reference;
           if (!image->matte)
             MatteImage(image,Opaque);
-          if (GetPixelCache(image,rectangle_info.x % image->columns,
-              rectangle_info.y % image->rows,1,1))
-            target=(*image->pixels);
+          pixel=GetPixelCache(image,rectangle_info.x % image->columns,
+            rectangle_info.y % image->rows,1,1);
+          if (pixel != (PixelPacket *) NULL)
+            target=(*pixel);
           if (attribute_flag[4])
             target=border_color;
           MatteFloodfillImage(image,&target,matte,rectangle_info.x,
