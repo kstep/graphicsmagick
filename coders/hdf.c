@@ -416,7 +416,7 @@ ModuleExport void RegisterHDFImage(void)
 {
   MagickInfo
     *entry;
-
+#if defined(HasHDF)
   entry=SetMagickInfo("HDF");
   entry->decoder=ReadHDFImage;
   entry->encoder=WriteHDFImage;
@@ -425,6 +425,7 @@ ModuleExport void RegisterHDFImage(void)
   entry->description=AcquireString("Hierarchical Data Format");
   entry->module=AcquireString("HDF");
   (void) RegisterMagickInfo(entry);
+#endif /* HasHDF */
 }
 
 /*
