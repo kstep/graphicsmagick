@@ -247,7 +247,7 @@ MagickExport unsigned int AnnotateImage(Image *image,
       case WestGravity:
       {
         offset.x=x;
-        offset.y=y+0.5*height+i*font_height-0.5*font_height*(number_lines-1);
+        offset.y=y+0.5*height+i*font_height+0.5*font_height*number_lines;
         break;
       }
       case ForgetGravity:
@@ -256,13 +256,13 @@ MagickExport unsigned int AnnotateImage(Image *image,
       default:
       {
         offset.x=x+0.5*width-0.5*font_width;
-        offset.y=y+0.5*height+i*font_height-0.5*font_height*(number_lines-1);
+        offset.y=y+0.5*height+i*font_height+0.5*font_height*number_lines;
         break;
       }
       case EastGravity:
       {
         offset.x=x+width-font_width;
-        offset.y=y+0.5*height+i*font_height-0.5*font_height*(number_lines-1);
+        offset.y=y+0.5*height+i*font_height+0.5*font_height*number_lines;
         break;
       }
       case SouthWestGravity:

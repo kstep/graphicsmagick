@@ -576,6 +576,12 @@ typedef struct _ImageInfo
 
 typedef struct _MagickInfo
 {
+  char
+    *tag;
+
+  ImageInfo
+    *image_info;
+
   Image
     *(*decoder)(const ImageInfo *,ExceptionInfo *);
 
@@ -587,7 +593,6 @@ typedef struct _MagickInfo
     raw;
 
   char
-    *tag,
     *description,
     *module;
 
