@@ -391,8 +391,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
       image->scene++;
       status=TIFFReadDirectory(tiff);
       if (status == False)
-        ThrowReaderException(CorruptImageWarning,"Unable to read subimage",
-          image);
+        ThrowReaderException(CorruptImageWarning,"Unable to read subimage",image);
     }
   do
   {
@@ -551,8 +550,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
             (scanline == (unsigned char *) NULL))
           {
             TIFFClose(tiff);
-            ThrowReaderException(ResourceLimitWarning,
-              "Memory allocation failed",image)
+            ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+              image)
           }
         /*
           Create colormap.
@@ -641,8 +640,7 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
               */
               lsb_first=1;
               if (*(char *) &lsb_first)
-                MSBOrderShort((char *) scanline,
-                  (TIFFScanlineSize(tiff) << 1)+4);
+                MSBOrderShort((char *) scanline,(TIFFScanlineSize(tiff) << 1)+4);
             }
           p=scanline;
           r=quantum_scanline;
@@ -834,8 +832,8 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
         if (pixels == (uint32 *) NULL)
           {
             TIFFClose(tiff);
-            ThrowReaderException(ResourceLimitWarning,
-              "Memory allocation failed",image)
+            ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
+              image)
           }
         (void) TIFFReadRGBAImage(tiff,(uint32) image->columns,
           (uint32) image->rows,pixels+image->columns*sizeof(uint32),0);
@@ -894,15 +892,14 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
   TIFFClose(tiff);
   while (image->previous != (Image *) NULL)
     image=image->previous;
-  CloseBlob(image);
   return(image);
 }
 #else
 static Image *ReadTIFFImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
-  ThrowException(exception,MissingDelegateWarning,
-    "TIFF library is not available",image_info->filename);
+  ThrowException(exception,MissingDelegateWarning,"TIFF library is not available",
+    image_info->filename);
   return((Image *) NULL);
 }
 #endif
@@ -1131,8 +1128,7 @@ static int32 TIFFWritePixels(TIFF *tiff,tdata_t scanline,long row,
   status=0;
   bytes_per_pixel=
     TIFFTileSize(tiff)/(image->tile_info.height*image->tile_info.width);
-  number_tiles=
-    (image->columns+image->tile_info.width-1)/image->tile_info.height;
+  number_tiles=(image->columns+image->tile_info.width-1)/image->tile_info.height;
   for (i=0; i < number_tiles; i++)
   {
     tile_width=(i == number_tiles-1) ?
@@ -1174,6 +1170,9 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
 #if !defined(TIFFDefaultStripSize)
 #define TIFFDefaultStripSize(tiff,request)  ((8*1024)/TIFFScanlineSize(tiff))
 #endif
+
+  char
+    filename[MaxTextExtent];
 
   ImageAttribute
     *attribute;
@@ -1230,19 +1229,19 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       */
       pyramid_image=CloneImage(image,0,0,True,&image->exception);
       if (pyramid_image == (Image *) NULL)
-        ThrowWriterException(FileOpenWarning,
-          "Unable to pyramid encode image",image);
+        ThrowWriterException(FileOpenWarning,"Unable to pyramid encode image",
+          image);
       do
       {
         clone_image=CloneImage(pyramid_image,0,0,True,&image->exception);
         if (clone_image == (Image *) NULL)
           return(False);
         pyramid_image->next=ZoomImage(clone_image,pyramid_image->columns >> 1,
-          pyramid_image->rows >>1,&image->exception);
+          pyramid_image->rows >> 1,&image->exception);
         DestroyImage(clone_image);
         if (pyramid_image->next == (Image *) NULL)
-          ThrowWriterException(FileOpenWarning,
-            "Unable to pyramid encode image",image);
+          ThrowWriterException(FileOpenWarning,"Unable to pyramid encode image",
+            image);
         pyramid_image->next->previous=pyramid_image;
         pyramid_image=pyramid_image->next;
       } while ((pyramid_image->columns > 64) && (pyramid_image->rows > 64));
@@ -1254,11 +1253,16 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   tiff_exception=(&image->exception);
   (void) TIFFSetErrorHandler((TIFFErrorHandler) TIFFErrors);
   (void) TIFFSetWarningHandler((TIFFErrorHandler) TIFFWarnings);
-  tiff=TIFFClientOpen(image->filename,WriteBinaryType,(thandle_t) image,
-    TIFFReadBlob,TIFFWriteBlob,TIFFSeekBlob,TIFFCloseBlob,TIFFSizeBlob,
-    TIFFMapBlob,TIFFUnmapBlob);
+  (void) strncpy(filename,image->filename,MaxTextExtent-1);
+  if ((image->file == stdout) || image->pipet ||
+      (image->blob->data != (unsigned char *) NULL))
+    TemporaryFilename(filename);
+  else
+    CloseBlob(image);
+  tiff=TIFFOpen(filename,WriteBinaryType);
   if (tiff == (TIFF *) NULL)
     return(False);
+  image->status=False;
   scene=0;
   do
   {
@@ -1367,8 +1371,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
         (void) TIFFGetFieldDefaulted(tiff,TIFFTAG_SAMPLESPERPIXEL,
           &samples_per_pixel);
         (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,samples_per_pixel+1);
-        (void) TIFFSetField(tiff,TIFFTAG_EXTRASAMPLES,extra_samples,
-          &sample_info);
+        (void) TIFFSetField(tiff,TIFFTAG_EXTRASAMPLES,extra_samples,&sample_info);
       }
     switch (image_info->compression)
     {
@@ -1443,8 +1446,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       }
 #if defined(ICC_SUPPORT)
     if (image->color_profile.length != 0)
-      (void) TIFFSetField(tiff,TIFFTAG_ICCPROFILE,(uint32) image->color_profile.length,
-        (void *) image->color_profile.info);
+      (void) TIFFSetField(tiff,TIFFTAG_ICCPROFILE,(uint32)
+        image->color_profile.length,(void *) image->color_profile.info);
 #endif
 #if defined(IPTC_SUPPORT)
 #if defined(PHOTOSHOP_SUPPORT)
@@ -1458,8 +1461,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     if (adjoin && (GetNumberScenes(image) > 1))
       {
         (void) TIFFSetField(tiff,TIFFTAG_SUBFILETYPE,FILETYPE_PAGE);
-        (void) TIFFSetField(tiff,TIFFTAG_PAGENUMBER,(unsigned short)
-          image->scene,GetNumberScenes(image));
+        (void) TIFFSetField(tiff,TIFFTAG_PAGENUMBER,(unsigned short) image->scene,
+          GetNumberScenes(image));
       }
     attribute=GetImageAttribute(image,"artist");
     if (attribute != (ImageAttribute *) NULL)
@@ -1495,8 +1498,7 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     */
     scanline=(unsigned char *) AcquireMemory(2*TIFFScanlineSize(tiff)+4);
     if (scanline == (unsigned char *) NULL)
-      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
-        image);
+      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",image);
     switch (photometric)
     {
       case PHOTOMETRIC_RGB:
@@ -1735,7 +1737,27 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   while (image->previous != (Image *) NULL)
     image=image->previous;
   TIFFClose(tiff);
-  image->status=False;
+  if ((image->file == stdout) || image->pipet ||
+      (image->blob->data != (unsigned char *) NULL))
+    {
+      FILE
+        *file;
+
+      int
+        c;
+
+      /*
+        Copy temporary file to image blob->
+      */
+      file=fopen(filename,ReadBinaryType);
+      if (file == (FILE *) NULL)
+        ThrowWriterException(FileOpenWarning,"Unable to open file",image);
+      for (c=fgetc(file); c != EOF; c=fgetc(file))
+        (void) WriteBlobByte(image,c);
+      (void) fclose(file);
+      (void) remove(filename);
+      CloseBlob(image);
+    }
   if (LocaleCompare(image_info->magick,"PTIF") == 0)
     DestroyImages(image);
   return(True);
