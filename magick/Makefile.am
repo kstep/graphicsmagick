@@ -63,10 +63,10 @@ bin_SCRIPTS = Magick-config
 # Headers which are installed
 include_HEADERS = magick.h api.h classify.h image.h quantize.h gems.h \
 	blob.h compress.h utility.h monitor.h error.h memory.h delegates.h \
-	version.h config.h
+	defines.h version.h config.h
 
 # Headers which are not installed but which are distributed
-noinst_HEADERS = animate.h display.h mac.h nt.h vms.h defines.h mng.h \
+noinst_HEADERS = animate.h display.h mac.h nt.h vms.h mng.h \
 	PreRvIcccm.h widget.h xwindows.h
 
 # Additional files to distribute
