@@ -1,3 +1,9 @@
+2004-01-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/wpg.c: Applied patch from Jaroslav Fojtik to support
+	reading the CTM (current transform matrix).  The CTM is not
+	applied yet (expect later patch).
+
 2004-01-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/sfw.c (ReadSFWImage): Added size_t cast.
