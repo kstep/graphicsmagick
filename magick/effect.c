@@ -2733,7 +2733,7 @@ MagickExport Image *ShadeImage(Image *image,const unsigned int color_shading,
   for (y=0; y < (long) image->rows; y++)
   {
     p=GetImagePixels(image,0,Min(Max(y-1,0),(long) image->rows-3),
-      (long) image->columns,3);
+      image->columns,3);
     q=SetImagePixels(shade_image,0,y,shade_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
