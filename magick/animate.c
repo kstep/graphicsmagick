@@ -1121,7 +1121,7 @@ MagickExport Image *XAnimateImages(Display *display,
   icon_pixel=windows->icon_pixel;
   font_info=windows->font_info;
   icon_resources=windows->icon_resources;
-  class_hints=windows->color_class_hints;
+  class_hints=windows->class_hints;
   manager_hints=windows->manager_hints;
   root_window=XRootWindow(display,visual_info->screen);
   if (image->next != (Image *)NULL)

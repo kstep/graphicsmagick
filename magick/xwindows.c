@@ -4877,9 +4877,9 @@ MagickExport XWindows *XInitializeWindows(Display *display,
   /*
     Allocate class and manager hints.
   */
-  windows->color_class_hints=XAllocClassHint();
+  windows->class_hints=XAllocClassHint();
   windows->manager_hints=XAllocWMHints();
-  if ((windows->color_class_hints == (XClassHint *) NULL) ||
+  if ((windows->class_hints == (XClassHint *) NULL) ||
       (windows->manager_hints == (XWMHints *) NULL))
     MagickError(ResourceLimitError,"Unable to allocate X hints",(char *) NULL);
   /*
