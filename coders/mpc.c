@@ -188,8 +188,6 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     */
     length=MaxTextExtent;
     values=GetString((char *) NULL);
-    GetCacheInfo(&image->cache);
-    cache_info=(CacheInfo *) image->cache;
     quantum_depth=QuantumDepth;
     image->depth=8;
     image->compression=NoCompression;
@@ -303,12 +301,6 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
               case 'c':
               case 'C':
               {
-                if (LocaleCompare(keyword,"cache") == 0)
-                  {
-                    (void) strncpy(cache_info->cache_filename,values,
-                      MaxTextExtent-1);
-                    break;
-                  }
                 if (LocaleCompare(keyword,"class") == 0)
                   {
                     if (LocaleCompare(values,"PseudoClass") == 0)
@@ -652,7 +644,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if ((LocaleCompare(id,"MagickCache") != 0) ||
         (image->storage_class == UndefinedClass) ||
         (image->compression == UndefinedCompression) || (image->columns == 0) ||
-        (image->rows == 0) || (*cache_info->cache_filename == '\0'))
+        (image->rows == 0))
       ThrowReaderException(CorruptImageWarning,"Incorrect image header in file",
         image);
     if (quantum_depth != QuantumDepth)
@@ -793,6 +785,9 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Initialize cache.
     */
+    GetCacheInfo(&image->cache);
+    cache_info=(CacheInfo *) image->cache;
+    (void) strncpy(cache_info->cache_filename,image->filename,MaxTextExtent-1);
     cache_info->storage_class=image->storage_class;
     cache_info->colorspace=image->colorspace;
     cache_info->type=DiskCache;
@@ -931,9 +926,7 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
     *cache_info;
 
   char
-    buffer[MaxTextExtent],
-    basename[MaxTextExtent],
-    cache_filename[MaxTextExtent];
+    buffer[MaxTextExtent];
 
   const ImageAttribute
     *attribute;
@@ -978,10 +971,7 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
       Write persistent cache meta-information.
     */
     (void) WriteBlobString(image,"id=MagickCache\n");
-    GetPathComponent(image->filename,BasePath,basename);
-    (void) FormatString(cache_filename,"%.1024s-%lu.mpc",basename,scene);
-    FormatString(buffer,"cache=%.1024s  quantum-depth=%d\n",image->filename,
-      QuantumDepth);
+    FormatString(buffer,"quantum-depth=%d\n",QuantumDepth);
     (void) WriteBlobString(image,buffer);
     if (image->storage_class == PseudoClass)
       FormatString(buffer,"class=PseudoClass  colors=%lu  matte=%s\n",
@@ -1270,19 +1260,21 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
     */
     clone_image=CloneImage(image,image->columns,image->rows,True,
       &image->exception);
-    if (status == False)
+    if (clone_image == (Image *) NULL)
       ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
         image);
+    GetCacheInfo(&clone_image->cache);
     cache_info=(CacheInfo *) clone_image->cache;
+    (void) strncpy(cache_info->cache_filename,image->filename,MaxTextExtent-1);
     cache_info->storage_class=image->storage_class;
     cache_info->colorspace=image->colorspace;
     cache_info->type=DiskCache;
     cache_info->persist=True;
     cache_info->offset=TellBlob(image);
-    (void) strncpy(cache_info->cache_filename,image->filename,MaxTextExtent-1);
     status=OpenCache(clone_image);
     if (status == False)
-      ThrowWriterException(CacheWarning,"Unable to open pixel cache",image);
+      ThrowWriterException(CacheWarning,"Unable to open persistent cache",
+        image);
     for (y=0; y < (long) image->rows; y++)
     {
       p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
