@@ -5038,7 +5038,6 @@ static void TraceSquareLinecap(PrimitiveInfo *primitive_info,
   primitive_info[number_vertices-1].point.y=primitive_info[i].point.y+
     dy*(distance+offset)/distance;
 }
-
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
