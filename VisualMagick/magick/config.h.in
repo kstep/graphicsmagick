@@ -16,6 +16,6 @@
 #define HAVE_LIBXML_XMLERROR_H
 #define HAVE_FREETYPE_FREETYPE_H
 #define QuantumLeap
-#define HasAUTOTRACE
+//#define HasAUTOTRACE
 //#define HasWMF
 #endif
