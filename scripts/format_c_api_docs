@@ -50,6 +50,7 @@ if ( ! GetOptions(
 	 'monitor.c',
 	 'montage.c',
          'paint.c',
+         'profile.c',
 	 'quantize.c',
 	 'registry.c',
          'resource.c',
@@ -72,41 +73,42 @@ $tmpname_html = "/tmp/fmtdocs_html.$$";
 #
 %whatis =
 (
- 'animate',	'Methods to Interactively Animate an Image Sequence',
- 'annotate',	'Methods to Annotate an Image',
- 'attribute',	'Image Text Attributes Methods',
- 'blob',	'Methods to Read or Write Binary Large OBjects',
- 'color',	'Methods to Count the Colors in an Image',
- 'constitute',	'Methods to Constitute an Image',
- 'composite',	'Methods to Composite an Image',
- 'decorate',	'GraphicsMagick Image Decoration Methods',
- 'deprecate',	'GraphicsMagick Deprecated Methods',
- 'display',	'Methods to Interactively Display and Edit an Image',
- 'render',	'Methods to Draw on an Image',
- 'draw',	'Image Vector Drawing Methods',
- 'effect',	'GraphicsMagick Image Effects Methods',
- 'fx',		'GraphicsMagick Special Effects Methods',
- 'enhance',	'Methods to Enhance an Image',
- 'error',	'GraphicsMagick Error Methods',
- 'image',	'GraphicsMagick Image Methods',
- 'list',	'Working with Image Lists',
- 'cache',	'Methods to Get or Set Image Pixels',
- 'cache_view',	'GraphicsMagick Cache Views Methods',
- 'magick',	'Methods to Read or List GraphicsMagick Image formats',
- 'memory',	'GraphicsMagick Memory Allocation Methods',
- 'monitor',	'GraphicsMagick Progress Monitor Methods',
- 'montage',	'Methods to Create a Montage',
- 'paint',	'Methods to Paint on an Image',
- 'quantize',	'Methods to Reduce the Number of Unique Colors in an Image',
- 'registry',	'GraphicsMagick Registry Methods',
- 'resource',	'GraphicsMagick Resource Consumption Methods',
- 'segment',	'Methods to Segment an Image with Thresholding Fuzzy c-Means',
- 'shear',	'Methods to Shear or Rotate an Image by an Arbitrary Angle',
- 'signature',	'Methods to Compute a Digital Signature for an Image',
- 'stream',	'Image Pixel FIFO',
- 'transform',	'Methods to Transform an Image',
- 'resize',	'Methods to Resize an Image',
- 'widget',	'GraphicsMagick X11 Widgets'
+ 'animate',	'Interactively animate an image sequence',
+ 'annotate',	'Annotate an image with text',
+ 'attribute',	'Access key,value image attributes',
+ 'blob',	'Read or write formatted images in memory (BLOBs)',
+ 'color',	'Color related functions',
+ 'constitute',	'Read or write an image',
+ 'composite',	'Merge image pixels using a specified algorithm',
+ 'decorate',	'Add decorative frames and borders',
+ 'deprecate',	'Methods which should no longer be used',
+ 'display',	'Interactively display and edit an image',
+ 'render',	'Low-level methods to draw on an image',
+ 'draw',	'User-friendly methods to draw on an image',
+ 'effect',	'Image effects methods',
+ 'fx',		'Image special effects methods',
+ 'enhance',	'Methods to enhance or adjust an image',
+ 'error',	'Error reporting methods',
+ 'image',	'Miscellaneous image methods',
+ 'list',	'Image list support',
+ 'cache',	'Low-level access to image pixels',
+ 'cache_view',	'Low-level access to image pixels with multiple views',
+ 'magick',	'Image format support interfaces',
+ 'memory',	'Memory allocation/deallocation functions',
+ 'monitor',	'Progress monitor support',
+ 'montage',	'Create a thumbnail image mosaic',
+ 'paint',	'Methods to fill image pixel regions',
+ 'profile',     'Manipulate embedded profiles',
+ 'quantize',	'Reduce the number of colors in an image',
+ 'registry',	'In-memory image registration interface',
+ 'resource',	'Set resource consumption limits (e.g. memory)',
+ 'segment',	'Segment and image with thresholding using the fuzzy c-means method',
+ 'shear',	'Rotate image, shear image, or apply a 2D affine transformation',
+ 'signature',	'Add a digital signature to the image',
+ 'stream',	'Low-level image pixel FIFO (tap into encode/decode pixel stream)',
+ 'transform',	'Crop, flip, flop, roll, coalesce, etc.',
+ 'resize',	'Resize an image',
+ 'widget',	'X11 Widgets'
 );
 
 #
@@ -264,7 +266,7 @@ A:visited { color: #800080 }
                                 [<A HREF="../books.html">Books</A>] [<A HREF="../links.html">Links</A>]</P>
                         </TD>
                         <TD ROWSPAN=2 WIDTH=19%>
-                                <P ALIGN=CENTER><IMG SRC="../../images/magick_small.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0></P>
+                                <P ALIGN=CENTER><IMG SRC="../../images/gm-188x120t.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=188 HEIGHT=120 BORDER=0></P>
                         </TD>
                 </TR>
                 <TR>

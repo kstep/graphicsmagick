@@ -36,22 +36,13 @@
 #include "magick/studio.h"
 #include "magick/blob.h"
 #include "magick/magic.h"
+#include "magick/semaphore.h"
 #include "magick/utility.h"
 
 /*
   Define declarations.
 */
 #define MagicFilename  "magic.mgk"
-
-/*
-  Declare magick map.
-*/
-static char
-  *MagicMap = (char *)
-    "<?xml version=\"1.0\"?>"
-    "<magicmap>"
-    "  <magic stealth=\"True\" />"
-    "</magicmap>";
 
 /*
   Static declarations.
@@ -66,7 +57,7 @@ static MagicInfo
   Forward declarations.
 */
 static unsigned int
-  ReadConfigureFile(const char *,const unsigned long,ExceptionInfo *);
+  ReadMagicConfigureFile(const char *,const unsigned long,ExceptionInfo *);
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -101,16 +92,17 @@ MagickExport void DestroyMagicInfo(void)
     magic_info=p;
     p=p->next;
     if (magic_info->path != (char *) NULL)
-      LiberateMemory((void **) &magic_info->path);
+      MagickFreeMemory(magic_info->path);
     if (magic_info->name != (char *) NULL)
-      LiberateMemory((void **) &magic_info->name);
+      MagickFreeMemory(magic_info->name);
     if (magic_info->target != (char *) NULL)
-      LiberateMemory((void **) &magic_info->target);
+      MagickFreeMemory(magic_info->target);
     if (magic_info->magic != (unsigned char *) NULL)
-      LiberateMemory((void **) &magic_info->magic);
-    LiberateMemory((void **) &magic_info);
+      MagickFreeMemory(magic_info->magic);
+    MagickFreeMemory(magic_info);
   }
   magic_list=(MagicInfo *) NULL;
+  LiberateSemaphoreInfo(&magic_semaphore);
   DestroySemaphoreInfo(&magic_semaphore);
 }
 
@@ -158,8 +150,10 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
     {
       AcquireSemaphoreInfo(&magic_semaphore);
       if (magic_list == (MagicInfo *) NULL)
-        (void) ReadConfigureFile(MagicFilename,0,exception);
+        (void) ReadMagicConfigureFile(MagicFilename,0,exception);
       LiberateSemaphoreInfo(&magic_semaphore);
+      if (exception->severity > UndefinedException)
+        return 0;
     }
   if ((magic == (const unsigned char *) NULL) || (length == 0))
     return((const MagicInfo *) magic_list);
@@ -168,8 +162,9 @@ MagickExport const MagicInfo *GetMagicInfo(const unsigned char *magic,
   */
   AcquireSemaphoreInfo(&magic_semaphore);
   for (p=magic_list; p != (MagicInfo *) NULL; p=p->next)
-    if (memcmp(magic+p->offset,p->magic,p->length) == 0)
-      break;
+    if (p->offset+p->length <= length)
+      if (memcmp(magic+p->offset,p->magic,p->length) == 0)
+        break;
   if (p != (MagicInfo *) NULL)
     if (p != magic_list)
       {
@@ -265,20 +260,19 @@ MagickExport unsigned int ListMagicInfo(FILE *file,ExceptionInfo *exception)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadConfigureFile reads the color configuration file which maps
-%  color strings with a particular image format.
+%  Method ReadMagicConfigureFile reads the magic configuration file which provides
+%  the file header strings for identifying an image format.
 %
-%  The format of the ReadConfigureFile method is:
+%  The format of the ReadMagicConfigureFile method is:
 %
-%      unsigned int ReadConfigureFile(const char *basename,
+%      unsigned int ReadMagicConfigureFile(const char *basename,
 %        const unsigned long depth,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method ReadConfigureFile returns True if at least one color
-%      is defined otherwise False.
+%    o status: Method ReadMagicConfigureFile returns True if loading is successful.
 %
-%    o basename:  The color configuration filename.
+%    o basename:  The magic configuration filename.
 %
 %    o depth: depth of <include /> statements.
 %
@@ -286,7 +280,7 @@ MagickExport unsigned int ListMagicInfo(FILE *file,ExceptionInfo *exception)
 %
 %
 */
-static unsigned int ReadConfigureFile(const char *basename,
+static unsigned int ReadMagicConfigureFile(const char *basename,
   const unsigned long depth,ExceptionInfo *exception)
 {
   char
@@ -307,8 +301,10 @@ static unsigned int ReadConfigureFile(const char *basename,
     xml=(char *) GetConfigureBlob(basename,path,&length,exception);
   else
     xml=(char *) FileToBlob(basename,&length,exception);
-  if (xml == (char *) NULL)
-    xml=AllocateString(MagicMap);
+
+  if (exception->severity > UndefinedException)
+    return False;
+
   token=AllocateString(xml);
   for (q=xml; *q != '\0'; )
   {
@@ -343,8 +339,7 @@ static unsigned int ReadConfigureFile(const char *basename,
           if (LocaleCompare(keyword,"file") == 0)
             {
               if (depth > 200)
-                ThrowException(exception,ConfigureError,
-                  "IncludeElementNestedTooDeeply",path);
+                ThrowException(exception,ConfigureError,IncludeElementNestedTooDeeply,path);
               else
                 {
                   char
@@ -355,7 +350,7 @@ static unsigned int ReadConfigureFile(const char *basename,
                     (void) strcat(filename,DirectorySeparator);
                   (void) strncat(filename,token,MaxTextExtent-
                     strlen(filename)-1);
-                  (void) ReadConfigureFile(filename,depth+1,exception);
+                  (void) ReadMagicConfigureFile(filename,depth+1,exception);
                 }
               if (magic_list != (MagicInfo *) NULL)
                 while (magic_list->next != (MagicInfo *) NULL)
@@ -372,10 +367,10 @@ static unsigned int ReadConfigureFile(const char *basename,
         /*
           Allocate memory for the magic list.
         */
-        magic_info=(MagicInfo *) AcquireMemory(sizeof(MagicInfo));
+        magic_info=MagickAllocateMemory(MagicInfo *,sizeof(MagicInfo));
         if (magic_info == (MagicInfo *) NULL)
-          MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-            "UnableToAllocateMagicInfo");
+          MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+            UnableToAllocateMagicInfo);
         (void) memset(magic_info,0,sizeof(MagicInfo));
         magic_info->path=AcquireString(path);
         magic_info->signature=MagickSignature;
@@ -485,8 +480,8 @@ static unsigned int ReadConfigureFile(const char *basename,
         break;
     }
   }
-  LiberateMemory((void **) &token);
-  LiberateMemory((void **) &xml);
+  MagickFreeMemory(token);
+  MagickFreeMemory(xml);
   if (magic_list == (MagicInfo *) NULL)
     return(False);
   while (magic_list->previous != (MagicInfo *) NULL)

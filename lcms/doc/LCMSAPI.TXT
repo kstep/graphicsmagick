@@ -1,6 +1,6 @@
 
 
-                     little cms Engine 1.11
+                     little cms Engine 1.12
 
                          API Definition
 
@@ -23,6 +23,7 @@
         10 - Profile creation functions
         11 - LUT manipultation
         12 - Named color functions
+        13 - PostScript
 
 
 1 - Profile & Transform functions
@@ -517,6 +518,33 @@ Parameters:
 
 _________________________________________________________________________________
 
+const char*   LCMSEXPORT cmsTakeManufacturer(cmsHPROFILE hProfile);
+_________________________________________________________________________________
+
+  Returns a pointer to a string containing uncooked info about
+  manufacturer. The string is holded in a static buffer overwritten
+  in each call to this function.
+
+Parameters:
+            hProfile: Handle to an open profile
+
+
+_________________________________________________________________________________
+
+const char*   LCMSEXPORT cmsTakeModel(cmsHPROFILE hProfile);
+_________________________________________________________________________________
+
+  Returns a pointer to a string containing uncooked info about
+  model. The string is holded in a static buffer overwritten
+  in each call to this function.
+
+Parameters:
+            hProfile: Handle to an open profile
+
+
+
+_________________________________________________________________________________
+
 icColorSpaceSignature cmsGetPCS(cmsHPROFILE hProfile)
 _________________________________________________________________________________
 
@@ -733,6 +761,18 @@ ________________________________________________________________________________
 
         free(Data);
 
+
+_________________________________________________________________________________
+
+const LPBYTE cmsTakeProfileID(cmsHPROFILE hProfile);
+_________________________________________________________________________________
+
+
+   Returns the 16-bytes profile ID (version 4 only). The ProfileID is holded in 
+   a static buffer overwritten in each call to this function.
+
+
+
 _________________________________________________________________________________
 
 void  cmsSetAlarmCodes(int r, int g, int b)
@@ -861,6 +901,35 @@ Notes:
     Currently only works on CMYK, but Hexachrome support is expected in 
     future revisions.
 
+
+_________________________________________________________________________________
+
+cmsHPROFILE cmsCreateBCHSWabstractProfile(int nLUTPoints,
+                                          double Bright, 
+                                          double Contrast,
+                                          double Hue,
+                                          double Saturation,
+                                          int TempSrc, 
+                                          int TempDest);
+
+_________________________________________________________________________________
+
+  Creates a abstract devicelink operating in Lab for Bright/Contrast/Hue/Saturation
+  and white point translation. White points are specified as temperatures ºK
+
+
+ Parameters:
+
+  int nLUTPoints    : Resulting CLUT resolution
+  double Bright     : Bright increment. May be negative
+  double Contrast   : Contrast increment. May be negative.
+  double Hue        : Hue displacement in degree.
+  double Saturation : Saturation increment. May be negative
+  int TempSrc       : Source white point temperature
+  int TempDest      : Destination white point temperature.
+
+
+
 _________________________________________________________________________________
 
 4 - Built-In profiles
@@ -981,7 +1050,36 @@ LPGAMMATABLE  cmsBuildParametricGamma(int nEntries, int Type, double Params[]);
 _________________________________________________________________________________
 
 
-    Does build a parametric curve based on parametrers:
+    Does build a parametric curve based on parameters.
+
+     Params[] does contain Gamma, a, b, c, d, e, f
+                    
+                
+        Type 1 : 
+                    X = Y ^ Gamma   | Gamma = Params[0]
+
+        Type 2 : 
+                     CIE 122-1966
+                     Y = (aX + b)^Gamma  | X >= -b/a
+                     Y = 0               | else
+        Type 3: 
+
+                     IEC 61966-3
+                     Y = (aX + b)^Gamma | X <= -b/a
+                     Y = c              | else
+                
+        Type 4: 
+                    IEC 61966-2.1 (sRGB)
+                    Y = (aX + b)^Gamma | X >= d
+                    Y = cX             | X < d
+                
+        Type 5: 
+
+                    Y = (aX + b)^Gamma + e | X <= d
+                    Y = cX + f             | else
+                
+
+  Giving negative values for Type does result in reversed curve.
 
 
 _________________________________________________________________________________
@@ -1365,12 +1463,21 @@ ________________________________________________________________________________
     Does set PCS signature in profile header
 
 
+
 _________________________________________________________________________________
 
 void cmsSetRenderingIntent(cmsHPROFILE hProfile, int RenderingIntent);
 _________________________________________________________________________________
 
     Sets the rendering intent in profile header
+
+
+_________________________________________________________________________________
+
+void cmsSetProfileID(cmsHPROFILE hProfile, LPBYTE ProfileID);
+_________________________________________________________________________________
+
+    Sets the profile ID in profile header (ver 4 only)
 
 
 _________________________________________________________________________________
@@ -1734,5 +1841,55 @@ ________________________________________________________________________________
 
 
 
+
+ 13. PostScript generation
+ ============================================================================
+ 3 functions carry the task of obtaining CRD and CSA. 
+
+
+    DWORD cmsGetPostScriptCSA(cmsHPROFILE hProfile, int Intent, LPVOID Buffer, DWORD dwBufferLen);
+    DWORD cmsGetPostScriptCRD(cmsHPROFILE hProfile, int Intent, LPVOID Buffer, DWORD dwBufferLen);
+    DWORD cmsGetPostScriptCRDEx(cmsHPROFILE hProfile, int Intent, DWORD dwFlags, LPVOID Buffer, DWORD dwBufferLen);
+
+
+ cmsGetPostScriptCRDEx allows black point compensation using 
+ cmsFLAGS_WHITEBLACKCOMPENSATION in flags field.
+
+ PostScrip colorflow is often done in a different way. Insted of creating a 
+ transform, it is sometimes desirable to delegate the color management to 
+ PostScript interpreter. These functions does translate input and output 
+ profiles into Color Space Arrays (CSA) and Color Rendering Dictionaries (CRD)
+
+    · CRD are equivalent to output (printer) profiles. Can be 
+      loaded into printer at startup and can be stored as resources.
+
+    · CSA are equivalent to input and workspace profiles, and are 
+      intended to  be included in the document definition.
+
+ These functions does generate the PostScript equivalents. Since the lenght of 
+ the resultant PostScript code is unknown in advance, you can call the 
+ functions with len=0 and Buffer=NULL to get the lenght. After that, you need 
+ to allocate enough memory to contain the whole block
+
+ Example:
+
+      Size = cmsGetPostScriptCSA(hProfile, INTENT_PERCEPTUAL, NULL, 0);
+      If (Size == 0) error()
+
+       Block = malloc(Size); 
+       cmsGetPostScriptCSA(hProfile, INTENT_PERCEPTUAL, Block, Size);
+   
+
+  Devicelink profiles are supported, as long as input colorspace matches
+  Lab/XYZ for CSA or output colorspace matches Lab/XYZ for CRD. This can
+  be used in conjuntion with cmsCreateMultiprofileTransform(), 
+  and cmsTransform2DeviceLink() to embed complex color flow into PostScript.
+
+
+  
+  WARNING: Preccision of PostScript is limited to 8 bits per sample. If you 
+  can choose between normal transforms and CSA/CRD, normal transforms will 
+  give more accurancy. However, there are situations where there is no 
+  chance.
 
 

@@ -30,16 +30,16 @@ while test $# -gt 0; do
       echo @PACKAGE_VERSION@
       ;;
     --cppflags)
-      echo "-I@INCLUDE_DIR@/GraphicsMagick @CPPFLAGS@"
+      echo "`GraphicsMagick-config --cppflags`"
       ;;
     --cxxflags)
       echo '@CXXFLAGS@'
       ;;
     --ldflags)
-      echo '-L@LIB_DIR@ @LDFLAGS@'
+      echo "`GraphicsMagick-config --ldflags`"
       ;;
     --libs)
-      LIBS="-lGraphicsMagick++ -lGraphicsMagick @MAGICK_DEP_LIBS@"
+      LIBS="-lGraphicsMagick++ `GraphicsMagick-config --libs`"
       echo "$LIBS"
       ;;
     *)

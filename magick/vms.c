@@ -69,8 +69,8 @@
 void closedir(DIR *directory)
 {
   assert(directory != (DIR *) NULL);
-  LiberateMemory((void **) &directory->pattern);
-  LiberateMemory((void **) &directory);
+  MagickFreeMemory(directory->pattern);
+  MagickFreeMemory(directory);
 }
 
 /*
@@ -105,7 +105,7 @@ DIR *opendir(char *name)
   /*
     Allocate memory for handle and the pattern.
   */
-  directory=(DIR *) AcquireMemory(sizeof(DIR));
+  directory=MagickAllocateMemory(DIR *,sizeof(DIR));
   if (directory == (DIR *) NULL)
     {
       errno=ENOMEM;
@@ -113,10 +113,10 @@ DIR *opendir(char *name)
     }
   if (strcmp(".",name) == 0)
     name="";
-  directory->pattern=(char *) AcquireMemory(strlen(name)+sizeof("*.*")+1);
+  directory->pattern=MagickAllocateMemory(char *,strlen(name)+sizeof("*.*")+1);
   if (directory->pattern == (char *) NULL)
     {
-      LiberateMemory((void **) &directory);
+      MagickFreeMemory(directory);
       errno=ENOMEM;
       return(NULL);
     }

@@ -1,15 +1,220 @@
+2004-03-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (statistics): New method to obtain image
+	statistics (minimum, maximum, mean, variance, and standard
+	deviation).
+
+2004-03-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (quantumOperator): New image method to apply an
+	arithmetic or bitwise operator to the pixel quantums in an image.
+	Still needs documentation.
+	(quantumOperator): New image method to apply an arithmetic or
+	bitwise operator to the pixel quantums in an image region.
+
+2004-03-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Makefile.am (../www/Magick++/ChangeLog.html): Fix execution of
+	txt2html.
+	* lib/STL.cpp (composeImage): Added a function object to set/get
+	the Image composition option.
+	* lib/Image.cpp (compose): Added a method to set/get the Image
+	composition option.
+
+2004-03-06  Vladimir Lukianov  <lvm@integrum.ru>
+
+	* lib/Thread.cpp (lock): Use MsgWaitForMultipleObjects() rather than
+	WaitForSingleObject() in order to avoid possible deadlock when
+	application code directly or indirectly creates windows.
+
+2004-02-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (interlaceType): Retrieve interlace setting from
+	Image rather than ImageInfo.
+
+2004-02-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (Image): Delete the allocated image reference
+	object if a Magick::Error is thrown by the Image constructor.
+	Otherwise the image reference object becomes a memory leak.
+
+2004-01-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/STL.h (WriteImages): Pass Blob::MallocAllocator to
+	updateNoCopy() in order to ensure that correct deallocator is
+	used.
+	* tests/readWriteBlob.cpp (main): Needed to delete character array
+	using array [] reference.
+
+2004-01-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* demo/analyze.cpp (main): Fix a GNU C++ library portability
+	problem noticed under MinGW. The 'left' iostream manipulator seems
+	to be missing.
+
+2004-01-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* tests/Makefile.am: coderInfo test is expected to fail for moby
+	builds when the package is not yet installed since a .la file
+	exists in the coders directory, but there is no associated .so
+	file.  Therefore failures of the coderInfo test are now ignored.
+
+2003-12-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (defineValue): New method to support setting
+	format-specific defines.
+	(defineSet): New method to support setting or testing for
+	format-specific flags.
+
+2003-12-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (iccColorProfile): Implementation now uses the
+	profile method with profile name "ICM".  Note that this now
+	invokes the color profile if the image already has one.
+	(iccColorProfile): Reimplement using new GetImageProfile function.
+	(iptcProfile): Reimplement using the new GetImageProfile and
+	SetImageProfile functions.
+	(profile): Reimplement using new GetImageProfile function.
+
+2003-12-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/Makefile.am (pkglibdir): Improve header file
+	install location logic.
+
+2003-12-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* demo/analyze.cpp (main): New program to demonstrate using the
+	'analyze' process module.
+	* demo/Makefile.am: Add rules to build analyze program.
+	* lib/Image.cpp (process): New method to execute process modules.
+	* lib/Image.cpp (attribute): New method to get and set named image
+	attributes.
+
+2003-10-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Color.cpp: Ensure that all non-default constructors set
+	opacity to opaque.
+
+2003-09-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/STL.h (colorHistogram): If map key is not const,
+        then implicit type conversion occurs.  Sun's C++ compiler doesn't
+        seem to handle that.  The map key is now defined as const in
+	the insert arguments.
+
+2003-09-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* tests/Makefile.am: Add build support for colorHistogram.cpp.
+	* tests/colorHistogram.cpp: New test program to test retrieving
+	color histograms from the image using colorHistogram().
+	* lib/Magick++/STL.h (colorHistogram): Added new template function
+	to retrieve a color histogram into a user-provided container.
+	Verified to work when using STL <vector> and <map> as the target
+	container types.  When <map> is used, a user-specified color may
+	be used to perform lookups in the map to obtain the usage count for
+	that color.
+	* lib/Color.cpp (operator >=): Insufficient resolution was being
+	provided in order to reliably sort color objects in STL
+	containers.  The updated algorithm should be fail-safe.
+
+2003-08-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (channelDepth): New method to set or get the
+	modulus depth for a specified channel.
+
+2003-08-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/Include.h (Magick): Added support for
+	CopyCyanCompositeOp, CopyMagentaCompositeOp,
+	CopyYellowCompositeOp, and CopyBlackCompositeOp, composition
+	operators.
+
+2003-08-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (depth): Method now only updates the
+	Image/ImageInfo depth member and retrieves the value of the Image
+	depth member.
+	(modulusDepth): New method to inspect the pixels for actual
+	modulus depth, or update/reduce the pixels to a specified modulus
+	depth.  The depth method was performing this function so any code
+	which depended on the depth method to compute or set the modulus
+	depth should be updated to use modulusDepth() instead.
+
+2003-08-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (matte): If a new matte channel is created,
+	initialize it to opaque.  Likewise, if the matte channel is
+	eliminated, initialize the unused channel to opaque.
+
+2003-07-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* demo/demo.cpp (main): Don't crop logo image.  *
+	* *.h, *.cpp: Include "Magick++/Include.h" before including any
+	compiler or system header in order to ensure that LFS defines are
+	properly applied. Inspired by patch from Albert Chin-A-Young.
+
+2003-06-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/Include.h: Needed to import ThrowLoggedException.
+	* lib/Exception.cpp (throwException): Add originating source
+	module, source line, and function name (if available) to exception
+	report. This is useful in order to determine the exact conditions
+	that lead to the exception being thrown.
+	* lib/Magick++/Exception.h: Added ErrorCoder, WarningCoder,
+	ErrorConfigure, WarningConfigure, ErrorDraw, WarningDraw,
+	ErrorImage, WarningImage, ErrorMonitor, WarningMonitor,
+	ErrorRegistry, WarningRegistry, ErrorStream, WarningStream,
+	ErrorType, and WarningType, exception classes to support the full
+	set of exceptions that GraphicsMagick can throw.
+
 2003-06-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* lib/CoderInfo.cpp (CoderInfo): Apply Borland C++ compilation fix
-	from Mike Chiarappa.
+	* lib/CoderInfo.cpp (CoderInfo): Applied compilation fix from
+	Mike Chiarappa to compile using Borland C++.
 
 2003-06-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Geometry.cpp (string): Throw an exception if a string is
 	requested from an invalid geometry object.
+
+2003-06-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
 	* lib/Geometry.cpp (operator =): If GetGeometry returns NoValue,
 	then assign an invalid geometry object to cause an exception if
 	the geometry is then used.
+
+2003-06-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/Exception.h (ErrorModule): Added class to handle
+	module errors.
+	* lib/Magick++/Exception.h (WarningModule) Added class to handle
+	module warnings.
+
+2003-05-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/STL.h (coderInfoList): Use GetMagickInfoArray to
+	access coder list.
+
+2003-05-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/STL.h (affineTransformImage): Add function object
+	contributed by Vladimir Lukianov to apply an affine transform to
+	the image.
+	* lib/Image.cpp (affineTransform): Added method contributed by
+	Vladimir Lukianov to apply an affine transform to the image.
+
+2003-05-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/Include.h: Decided to back out change
+	which used the _VISUALC_ define to trigger inclusion of
+	<sys/types.h>.
+
+2003-05-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/Include.h: If _VISUALC_ is defined,
+	include <sys/types.h>. This ensures that this necessary
+	header is included even if HAVE_SYS_TYPES_H is not defined
+	in magick_config.h.
 
 2003-05-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 

@@ -9,10 +9,13 @@
 #endif
 
 ; Configuration files
-Source: "..\..\magick\colors.mgk"; DestDir: "{app}\config"; Flags: confirmoverwrite
-Source: "..\..\magick\log.mgk"; DestDir: "{app}\config"; Flags: confirmoverwrite
-Source: "..\bin\delegates.mgk"; DestDir: "{app}\config"; Flags: confirmoverwrite
-Source: "..\..\magick\magic.mgk"; DestDir: "{app}\config"; Flags: confirmoverwrite
-Source: "..\..\coders\modules.mgk"; DestDir: "{app}\modules\coders"; Flags: confirmoverwrite
-Source: "..\bin\type-ghostscript.mgk"; DestDir: "{app}\config"; Flags: confirmoverwrite
-Source: "..\bin\type.mgk"; DestDir: "{app}\config"; Flags: confirmoverwrite
+Source: "..\..\config\colors.mgk"; DestDir: {#MagickConfigDirectory}; Flags: confirmoverwrite
+Source: "..\..\config\log.mgk"; DestDir: {#MagickConfigDirectory}; Flags: confirmoverwrite
+Source: "..\..\config\magic.mgk"; DestDir: {#MagickConfigDirectory}; Flags: confirmoverwrite
+Source: "..\bin\delegates.mgk"; DestDir: {#MagickConfigDirectory}; Flags: confirmoverwrite
+Source: "..\bin\type-ghostscript.mgk"; DestDir: {#MagickConfigDirectory}; Flags: confirmoverwrite
+Source: "..\bin\type.mgk"; DestDir: {#MagickConfigDirectory}; Flags: confirmoverwrite
+
+#ifdef MagickCodersDirectory
+Source: "..\..\config\modules.mgk"; DestDir: {#MagickConfigDirectory}; Flags: confirmoverwrite
+#endif

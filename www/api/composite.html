@@ -12,8 +12,8 @@ A:visited { color: #800080 }
 -->
 </STYLE>
 
-<TITLE>composite - Methods to Composite an Image</TITLE>
-<LINK REV="made" HREF="mailto:bfriesen@scooby.simplesystems.org">
+<TITLE>composite - Merge image pixels using a specified algorithm</TITLE>
+<LINK REV="made" HREF="mailto:bfriesen@shaggy.simplesystems.org">
 </HEAD>
 
 <BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
@@ -36,7 +36,7 @@ A:visited { color: #800080 }
                                 [<A HREF="../books.html">Books</A>] [<A HREF="../links.html">Links</A>]</P>
                         </TD>
                         <TD ROWSPAN=2 WIDTH=19%>
-                                <P ALIGN=CENTER><IMG SRC="../../images/magick_small.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0></P>
+                                <P ALIGN=CENTER><IMG SRC="../../images/gm-188x120t.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=188 HEIGHT=120 BORDER=0></P>
                         </TD>
                 </TR>
                 <TR>
@@ -76,12 +76,12 @@ DESCRIPTIONS</A>
 <P>
 <H2><A NAME="name">
 NAME</A></H2>
-<P>composite - Methods to Composite an Image</P>
+<P>composite - Merge image pixels using a specified algorithm</P>
 <P>
 <HR>
 <H2><A NAME="synopsis">
 SYNOPSIS</A></H2>
-<P>unsigned int  <STRONG>CompositeImage</STRONG>( Image *image, const CompositeOperator compose, const Image *composite_image, const long x_offset, const long y_offset );</P>
+<P>unsigned int  <STRONG>CompositeImage</STRONG>( Image *canvas_image, const CompositeOperator compose, const Image *composite_image, const long x_offset, const long y_offset );</P>
 <P>
 <HR>
 <H2><A NAME="function descriptions">
@@ -89,17 +89,17 @@ FUNCTION
 DESCRIPTIONS</A></H2>
 <P>
 <H3><A NAME="compositeimage">CompositeImage</A></H3>
-<blockquote>CompositeImage() returns the second image composited onto the first at the specified offsets. </blockquote><P>The format of the CompositeImage method is:</P>
-<blockquote>unsigned int CompositeImage ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#CompositeOperator">CompositeOperator</A> compose, const <A HREF="types.html#Image">Image</A> *composite_image, const long x_offset, const long y_offset ); </blockquote><P>
+<blockquote>CompositeImage() returns the second image ( composite_image ) composited onto the first ( canvas_image ) at the specified offsets. </blockquote><P>The format of the CompositeImage method is:</P>
+<blockquote>unsigned int CompositeImage ( <A HREF="types.html#Image">Image</A> *canvas_image, const <A HREF="types.html#CompositeOperator">CompositeOperator</A> compose, const <A HREF="types.html#Image">Image</A> *composite_image, const long x_offset, const long y_offset ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
-<DD><P></P><DT><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
+<DD><P></P><DT><STRONG><A NAME="item_o_canvas_image%3A">canvas_image:</A></STRONG><BR>
 <DD>
-The image.
+The image to be updated.
 <P></P>
 <DD><P></P><DT><STRONG><A NAME="item_o_compose%3A">compose:</A></STRONG><BR>
 <DD>
-This operator affects how the composite is applied to the image.  The default is Over.  Choose from one of these operators: OverCompositeOp, InCompositeOp, OutCompositeOP, AtopCompositeOP, XorCompositeOP, PlusCompositeOP, MinusCompositeOP, AddCompositeOP, SubtractCompositeOP, DifferenceCompositeOP, BumpmapCompositeOP, CopyCompositeOP, DisplaceCompositeOP.
+This operator affects how the composite is applied to the image.  The default is Over.  Choose from one of these operators: OverCompositeOp, InCompositeOp, OutCompositeOP, AtopCompositeOP, XorCompositeOP, PlusCompositeOP, MinusCompositeOP, AddCompositeOP, SubtractCompositeOP, DifferenceCompositeOP, BumpmapCompositeOP, CopyCompositeOP, CopyRedCompositeOP, CopyGreenCompositeOP, CopyBlueCompositeOP, CopyOpacityCompositeOP.
 <P></P>
 <DD><P></P><DT><STRONG><A NAME="item_o_composite_image%3A">composite_image:</A></STRONG><BR>
 <DD>

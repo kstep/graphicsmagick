@@ -18,7 +18,7 @@
 %                         UUU     Y      V      Y                             %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%           Read/Write 16bit/pixel Interleaved YUV Image Format.              %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -116,11 +116,11 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,
   assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
   if ((image->columns == 0) || (image->rows == 0))
-    ThrowReaderException(OptionError,"MustSpecifyImageSize",image);
+    ThrowReaderException(OptionError,MustSpecifyImageSize,image);
   (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image)
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image)
   for (i=0; i < image->offset; i++)
     (void) ReadBlobByte(image);
   image->depth=8;
@@ -161,7 +161,7 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,
   image->colorspace=YCbCrColorspace;
   TransformColorspace(image,RGBColorspace);
   if (EOFBlob(image))
-    ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+    ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
       image->filename);
   CloseBlob(image);
   return(image);
@@ -299,7 +299,7 @@ static unsigned int WriteUYVYImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   /*
     Convert to YUV, at full resolution.
   */

@@ -18,7 +18,7 @@
 %                            A   A    V    SSSSS                              %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                        Read/Write AVS X Image Format.                       %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -119,14 +119,14 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   /*
     Read AVS image.
   */
   width=ReadBlobMSBLong(image);
   height=ReadBlobMSBLong(image);
   if ((width == (unsigned long) ~0) || (height == (unsigned long) ~0))
-    ThrowReaderException(CorruptImageError,"NotAnAVSImageFile",image);
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   do
   {
     /*
@@ -138,14 +138,14 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image_info->ping && (image_info->subrange != 0))
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
-    pixels=(unsigned char *) AcquireMemory(4*image->columns);
+    pixels=MagickAllocateMemory(unsigned char *,4*image->columns);
     if (pixels == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     for (y=0; y < (long) image->rows; y++)
     {
       count=ReadBlob(image,4*image->columns,pixels);
       if (count == 0)
-        ThrowReaderException(CorruptImageError,"UnableToReadImageData",image);
+        ThrowReaderException(CorruptImageError,UnableToReadImageData,image);
       p=pixels;
       q=SetImagePixels(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
@@ -166,10 +166,10 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (!MagickMonitor(LoadImageText,y,image->rows,exception))
             break;
     }
-    LiberateMemory((void **) &pixels);
+    MagickFreeMemory(pixels);
     if (EOFBlob(image))
       {
-        ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+        ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
                        image->filename);
         break;
       }
@@ -324,7 +324,7 @@ static unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   scene=0;
   do
   {
@@ -337,9 +337,9 @@ static unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
     /*
       Allocate memory for pixels.
     */
-    pixels=(unsigned char *) AcquireMemory(image->columns*sizeof(PixelPacket));
+    pixels=MagickAllocateMemory(unsigned char *,image->columns*sizeof(PixelPacket));
     if (pixels == (unsigned char *) NULL)
-      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
+      ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
     /*
       Convert MIFF to AVS raster pixels.
     */
@@ -364,7 +364,7 @@ static unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
           if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
             break;
     }
-    LiberateMemory((void **) &pixels);
+    MagickFreeMemory(pixels);
     if (image->next == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);

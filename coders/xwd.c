@@ -18,7 +18,7 @@
 %                            X   X   W W   DDDD                               %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%               Read/Write X Windows System Window Dump Format.               %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -184,13 +184,13 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   /*
      Read in header information.
   */
   count=ReadBlob(image,sz_XWDheader,(char *) &header);
   if (count == 0)
-    ThrowReaderException(CorruptImageError,"UnableToReadImageHeader",image);
+    ThrowReaderException(CorruptImageError,UnableToReadImageHeader,image);
   image->columns=header.pixmap_width;
   image->rows=header.pixmap_height;
   image->depth=8;
@@ -204,26 +204,26 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Check to see if the dump file is in the proper format.
   */
   if (header.file_version != XWD_FILE_VERSION)
-    ThrowReaderException(CorruptImageError,"FileFormatVersionMismatch",image);
+    ThrowReaderException(CorruptImageError,InvalidFileFormatVersion,image);
   if (header.header_size < sz_XWDheader)
-    ThrowReaderException(CorruptImageError,"CorruptXWDImage",image);
+    ThrowReaderException(CorruptImageError,CorruptImage,image);
   length=header.header_size-sz_XWDheader;
-  comment=(char *) AcquireMemory(length+1);
+  comment=MagickAllocateMemory(char *,length+1);
   if (comment == (char *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   count=ReadBlob(image,length,comment);
   comment[length]='\0';
   (void) SetImageAttribute(image,"comment",comment);
-  LiberateMemory((void **) &comment);
+  MagickFreeMemory(comment);
   if (count == 0)
-    ThrowReaderException(CorruptImageError,"UnableToReadWindowNameFromDumpFile",
+    ThrowReaderException(CorruptImageError,UnableToReadWindowNameFromDumpFile,
       image);
   /*
     Initialize the X image.
   */
-  ximage=(XImage *) AcquireMemory(sizeof(XImage));
+  ximage=MagickAllocateMemory(XImage *,sizeof(XImage));
   if (ximage == (XImage *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   ximage->depth=(int) header.pixmap_depth;
   ximage->format=(int) header.pixmap_format;
   ximage->xoffset=(int) header.xoffset;
@@ -241,7 +241,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   ximage->blue_mask=header.blue_mask;
   status=XInitImage(ximage);
   if (status == False)
-    ThrowReaderException(CorruptImageError,"UnrecognizedXWDHeader",image);
+    ThrowReaderException(CorruptImageError,UnrecognizedXWDHeader,image);
   /*
     Read colormap.
   */
@@ -251,15 +251,14 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       XWDColor
         color;
 
-      colors=(XColor *) AcquireMemory(header.ncolors*sizeof(XColor));
+      colors=MagickAllocateMemory(XColor *,header.ncolors*sizeof(XColor));
       if (colors == (XColor *) NULL)
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+        ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
       for (i=0; i < (long) header.ncolors; i++)
       {
         count=ReadBlob(image,sz_XWDColor,(char *) &color);
         if (count == 0)
-          ThrowReaderException(CorruptImageError,
-            "UnableToReadColormapFromDumpfile",image);
+          ThrowReaderException(CorruptImageError,UnableToReadColormapFromDumpFile,image);
         colors[i].pixel=color.pixel;
         colors[i].red=color.red;
         colors[i].green=color.green;
@@ -286,12 +285,12 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     length=ximage->bytes_per_line*ximage->height;
   else
     length=ximage->bytes_per_line*ximage->height*ximage->depth;
-  ximage->data=(char *) AcquireMemory(length);
+  ximage->data=MagickAllocateMemory(char *,length);
   if (ximage->data == (char *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   count=ReadBlob(image,length,ximage->data);
   if (count == 0)
-    ThrowReaderException(CorruptImageError,"UnableToReadPixmapFromDumpFile",
+    ThrowReaderException(CorruptImageError,UnableToReadPixmapFromDumpFile,
       image);
   /*
     Convert image to MIFF format.
@@ -402,7 +401,7 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Convert X image to PseudoClass packets.
         */
         if (!AllocateImageColormap(image,image->colors))
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
         for (i=0; i < (long) image->colors; i++)
         {
@@ -436,21 +435,14 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Free image and colormap.
   */
   if (header.ncolors != 0)
-    LiberateMemory((void **) &colors);
-  LiberateMemory((void **) &ximage->data);
-  LiberateMemory((void **) &ximage);
+    MagickFreeMemory(colors);
+  MagickFreeMemory(ximage->data);
+  MagickFreeMemory(ximage);
   if (EOFBlob(image))
-    ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+    ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
       image->filename);
   CloseBlob(image);
   return(image);
-}
-#else
-static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
-{
-  ThrowException(exception,MissingDelegateError,"XWindowLibraryIsNotAvailable",
-    image_info->filename);
-  return((Image *) NULL);
 }
 #endif
 
@@ -483,8 +475,10 @@ ModuleExport void RegisterXWDImage(void)
     *entry;
 
   entry=SetMagickInfo("XWD");
+#if defined(HasX11)
   entry->decoder=(DecoderHandler) ReadXWDImage;
   entry->encoder=(EncoderHandler) WriteXWDImage;
+#endif
   entry->magick=(MagickHandler) IsXWD;
   entry->adjoin=False;
   entry->description=AcquireString("X Windows system window dump (color)");
@@ -513,9 +507,7 @@ ModuleExport void RegisterXWDImage(void)
 */
 ModuleExport void UnregisterXWDImage(void)
 {
-#if defined(HasX11)
   (void) UnregisterMagickInfo("XWD");
-#endif
 }
 
 #if defined(HasX11)
@@ -551,7 +543,7 @@ ModuleExport void UnregisterXWDImage(void)
 */
 static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
 {
-  int
+  long
     y;
 
   register const PixelPacket
@@ -571,6 +563,9 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
 
   unsigned char
     *pixels;
+
+  size_t
+    pixels_size;
 
   unsigned int
     status;
@@ -593,7 +588,7 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   TransformColorspace(image,RGBColorspace);
   /*
     Initialize XWD file header.
@@ -651,9 +646,9 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
       /*
         Dump colormap to file.
       */
-      colors=(XColor *) AcquireMemory(image->colors*sizeof(XColor));
+      colors=MagickAllocateMemory(XColor *,image->colors*sizeof(XColor));
       if (colors == (XColor *) NULL)
-        ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
+        ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
       for (i=0; i < (long) image->colors; i++)
       {
         colors[i].pixel=i;
@@ -677,19 +672,19 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
         color.flags=colors[i].flags;
         (void) WriteBlob(image,sz_XWDColor,(char *) &color);
       }
-      LiberateMemory((void **) &colors);
+      MagickFreeMemory(colors);
     }
   /*
     Allocate memory for pixels.
   */
-  pixels=(unsigned char *)
-    AcquireMemory(image->columns*sizeof(PixelPacket));
+  scanline_pad=(bytes_per_line-((image->columns*bits_per_pixel) >> 3));
+  pixels_size=image->columns*(image->storage_class == PseudoClass ? 1 : 3)+scanline_pad;
+  pixels=MagickAllocateMemory(unsigned char *,pixels_size);
   if (pixels == (unsigned char *) NULL)
-    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
   /*
     Convert MIFF to XWD raster pixels.
   */
-  scanline_pad=(bytes_per_line-((image->columns*bits_per_pixel) >> 3));
   for (y=0; y < (long) image->rows; y++)
   {
     p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
@@ -697,34 +692,33 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
       break;
     indexes=GetIndexes(image);
     q=pixels;
-    for (x=0; x < (long) image->columns; x++)
-    {
-      if (image->storage_class == PseudoClass)
-        *q++=indexes[x];
-      else
-        {
-          *q++=ScaleQuantumToChar(p->red);
-          *q++=ScaleQuantumToChar(p->green);
-          *q++=ScaleQuantumToChar(p->blue);
-        }
-      p++;
-    }
-    for (x=0; x < (long) scanline_pad; x++)
+
+    if (image->storage_class == PseudoClass)
+      {
+        for (x=(long) image->columns; x > 0; x--)
+          *q++=(unsigned char) *indexes++;
+      }
+    else
+      {
+        for (x=(long) image->columns; x > 0; x--)
+          {
+            
+            *q++=ScaleQuantumToChar(p->red);
+            *q++=ScaleQuantumToChar(p->green);
+            *q++=ScaleQuantumToChar(p->blue);
+            p++;
+          }
+      }
+    for (x=(long) scanline_pad; x > 0; x--)
       *q++=0;
-    (void) WriteBlob(image,q-pixels,(char *) pixels);
+    (void) WriteBlob(image,(size_t) (q-pixels),(char *) pixels);
     if (image->previous == (Image *) NULL)
       if (QuantumTick(y,image->rows))
         if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
           break;
   }
-  LiberateMemory((void **) &pixels);
+  MagickFreeMemory(pixels);
   CloseBlob(image);
   return(True);
-}
-#else
-static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
-{
-  ThrowBinaryException(MissingDelegateError,"XWindowLibraryIsNotAvailable",
-    image->filename);
 }
 #endif

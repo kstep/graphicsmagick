@@ -12,8 +12,8 @@ A:visited { color: #800080 }
 -->
 </STYLE>
 
-<TITLE>widget - GraphicsMagick X11 Widgets</TITLE>
-<LINK REV="made" HREF="mailto:bfriesen@scooby.simplesystems.org">
+<TITLE>widget - X11 Widgets</TITLE>
+<LINK REV="made" HREF="mailto:bfriesen@shaggy.simplesystems.org">
 </HEAD>
 
 <BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
@@ -36,7 +36,7 @@ A:visited { color: #800080 }
                                 [<A HREF="../books.html">Books</A>] [<A HREF="../links.html">Links</A>]</P>
                         </TD>
                         <TD ROWSPAN=2 WIDTH=19%>
-                                <P ALIGN=CENTER><IMG SRC="../../images/magick_small.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0></P>
+                                <P ALIGN=CENTER><IMG SRC="../../images/gm-188x120t.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=188 HEIGHT=120 BORDER=0></P>
                         </TD>
                 </TR>
                 <TR>
@@ -88,7 +88,7 @@ DESCRIPTIONS</A>
 <P>
 <H2><A NAME="name">
 NAME</A></H2>
-<P>widget - GraphicsMagick 
+<P>widget - 
 X11 Widgets</P>
 <P>
 <HR>
@@ -103,7 +103,7 @@ SYNOPSIS</A></H2>
 <P>void  <STRONG>XInfoWidget</STRONG>( Display *display, XWindows *windows, const char *activity );</P>
 <P>void  <STRONG>XListBrowserWidget</STRONG>( Display *display, XWindows *windows, XWindowInfo *window_info, const char ** list, const char *action, const char *query, char *reply );</P>
 <P>int  <STRONG>XMenuWidget</STRONG>( Display *display, XWindows *windows, const char *title, const char ** selections, char *item );</P>
-<P>void  <STRONG>XMonitorWidget</STRONG>( Display *display, XWindows *windows, const char *task, const ExtendedSignedIntegralType quantum, const ExtendedUnsignedIntegralType span );</P>
+<P>void  <STRONG>XMonitorWidget</STRONG>( Display *display, XWindows *windows, const char *task, const magick_int64_t quantum, const magick_uint64_t span );</P>
 <P>void  <STRONG>XNoticeWidget</STRONG>( Display *display, XWindows *windows, const char *reason, const char *description );</P>
 <P>unsigned int  <STRONG>XPreferencesWidget</STRONG>( Display *display, XResourceInfo *resource_info, XWindows *windows );</P>
 <P>void  <STRONG>XTextViewWidget</STRONG>( Display *display, const XResourceInfo *resource_info, XWindows *windows, const unsigned int mono, const char *title, const char ** textlist );</P>
@@ -358,7 +358,7 @@ Specifies a character array.  The item selected from the menu is returned here.
 <P>Method XMonitorWidget displays the progress a task is making in completing a task.  
 A span of zero toggles the active status.  An inactive state disables the progress monitor.</P>
 <P>The format of the XMonitorWidget method is:</P>
-<blockquote>void XMonitorWidget ( Display *display, XWindows *windows, const char *task, const ExtendedSignedIntegralType quantum, const ExtendedUnsignedIntegralType span ); </blockquote><P>
+<blockquote>void XMonitorWidget ( Display *display, XWindows *windows, const char *task, const magick_int64_t quantum, const magick_uint64_t span ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>display:</STRONG><BR>

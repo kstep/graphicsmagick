@@ -1,6 +1,6 @@
 /*
 % Copyright (C) 2003 GraphicsMagick Group
-% Copyright (C) 2002 ImageMagick Studio
+% Copyright (C) 2002, 2003 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
 % Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -531,17 +531,18 @@ MagickExport Image **ImageListToArray(const Image *images,
   if (images == (Image *) NULL)
     return((Image **) NULL);
   assert(images->signature == MagickSignature);
-  group=(Image **) AcquireMemory(GetImageListLength(images)*sizeof(Image *));
+  group=MagickAllocateMemory(Image **,(GetImageListLength(images)+1)*sizeof(Image *));
   if (group == (Image **) NULL)
     {
-      ThrowException(exception,ResourceLimitError,"MemoryAllocationFailed",
-        "UnableToCreateImageGroup");
+      ThrowException3(exception,ResourceLimitError,MemoryAllocationFailed,
+        UnableToCreateImageGroup);
       return((Image **) NULL);
     }
   while (images->previous != (Image *) NULL)
     images=images->previous;
   for (i=0; images != (Image *) NULL; images=images->next)
     group[i++]=(Image *) images;
+  group[i] = (Image *) NULL;
   return(group);
 }
 
@@ -736,6 +737,49 @@ MagickExport Image *RemoveLastImageFromList(Image **images)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   R e p l a c e I m a g e I n L i s t                                       %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ReplaceImageInList() replaces an image in the list.
+%
+%  The format of the ReplaceImageInList method is:
+%
+%      ReplaceImageInList(Image **images,Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o images: The image list.
+%
+%    o image: The image.
+%
+%
+*/
+MagickExport void ReplaceImageInList(Image **images,Image *image)
+{
+  assert(images != (Image **) NULL);
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  if ((*images) == (Image *) NULL)
+    return;
+  assert((*images)->signature == MagickSignature);
+  image->next=(*images)->next;
+  if (image->next != (Image *) NULL)
+    image->next->previous=image;
+  image->previous=(*images)->previous;
+  if (image->previous != (Image *) NULL)
+    image->previous->next=image;
+  DestroyImage(*images);
+  (*images)=image;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   R e v e r s e I m a g e L i s t                                           %
 %                                                                             %
 %                                                                             %
@@ -895,7 +939,7 @@ MagickExport Image *SyncNextImageInList(const Image *images)
     return((Image *) NULL);
   if (images->blob != images->next->blob)
     {
-      DestroyBlobInfo(images->next->blob);
+      DestroyBlob(images->next);
       images->next->blob=ReferenceBlob(images->blob);
     }
   return(images->next);

@@ -18,15 +18,22 @@ AppPublisher=GraphicsMagick Group
 AppPublisherURL=http://www.{#MagickPackageName}.org/
 AppSupportURL=http://www.{#MagickPackageName}.org/
 AppUpdatesURL=http://www.{#MagickPackageName}.org/www/download.html
-; Default install is under "C:\Program Files\GraphicsMagick-1.0-Q16":
+; Default install is similar to "C:\Program Files\GraphicsMagick-1.1-Q16":
 DefaultDirName={pf}\{#MagickPackageName}-{#MagickPackageVersion}-Q{#QuantumDepth}
 DefaultGroupName={#MagickPackageName} {#MagickPackageVersion} Q{#QuantumDepth}
 Compression=bzip/9
 ChangesAssociations=1
 AllowRootDirectory=no
-InfoBeforeFile=txt\before-{#MagickPackageType}.txt
-InfoAfterFile=txt\after-{#MagickPackageType}.txt
-UninstallDisplayIcon={app}\ImageMagick.ico
+
+#ifdef MagickLZWCompression
+LicenseFile=txt\license-lzw.rtf
+#else
+LicenseFile=txt\license.rtf
+#endif
+
+InfoBeforeFile=txt\before.rtf
+InfoAfterFile=txt\after.rtf
+UninstallDisplayIcon={#MagickAppDirectory}\ImageMagick.ico
 OutputDir=..\bin
 OutputBaseFilename={#MagickPackageName}-{#MagickPackageVersion}{#MagickPackageVersionAddendum}-Q{#QuantumDepth}-windows-{#MagickPackageType}
 ; uncomment the following line if you want your installation to run on NT 3.51 too.

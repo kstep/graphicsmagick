@@ -18,7 +18,7 @@
 %              SSSSS    T    EEEEE   GGG   A   A  N   N   OOO                 %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                      Write A Steganographic Image.                          %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -117,7 +117,7 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
   assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
   if ((image->columns == 0) || (image->rows == 0))
-    ThrowReaderException(OptionError,"MustSpecifyImageSize",image);
+    ThrowReaderException(OptionError,MustSpecifyImageSize,image);
   clone_info=CloneImageInfo(image_info);
   clone_info->blob=(void *) NULL;
   clone_info->length=0;
@@ -128,7 +128,7 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
     return((Image *) NULL);
   watermark->depth=QuantumDepth;
   if (!AllocateImageColormap(image,MaxColormapSize))
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   if (image_info->ping)
     {
       CloseBlob(image);

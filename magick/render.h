@@ -332,7 +332,7 @@ typedef struct _PrimitiveInfo
 
 typedef struct _TypeInfo
 {
-  const char
+  char
     *path,
     *name,
     *description,
@@ -347,7 +347,7 @@ typedef struct _TypeInfo
   unsigned long
     weight;
 
-  const char
+  char
     *encoding,
     *foundry,
     *format,

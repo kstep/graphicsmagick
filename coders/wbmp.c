@@ -18,7 +18,7 @@
 %                         W   W  BBBB   M   M  P                              %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%              Read/Write Wireless Bitmap (level 0) Image Format.             %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -142,24 +142,24 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   if (!ReadBlob(image,2,(char *) &header)) 
-    ThrowReaderException(CorruptImageError,"NotAWBMPImageFile",image);
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   if (header != 0)
-    ThrowReaderException(CoderError,"OnlyLevelZerofilesSupported",image);
+    ThrowReaderException(CoderError,OnlyLevelZerofilesSupported,image);
   /*
     Initialize image structure.
   */
   if (WBMPReadInteger(image,&image->columns) == False) 
-    ThrowReaderException(CorruptImageError,"CorruptWBMPimage",image);
+    ThrowReaderException(CorruptImageError,CorruptImage,image);
   if (WBMPReadInteger(image,&image->rows) == False) 
-    ThrowReaderException(CorruptImageError,"CorruptWBMPimage",image);
+    ThrowReaderException(CorruptImageError,CorruptImage,image);
   if ((image->columns == 0) || (image->rows == 0))
-    ThrowReaderException(CorruptImageError,"NotAWBMPImageFile",image);
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   for (i=0; i < image->offset; i++)
     (void) ReadBlobByte(image);
   if (!AllocateImageColormap(image,2))
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   if (image_info->ping)
     {
       CloseBlob(image);
@@ -182,7 +182,7 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
         {
           byte=ReadBlobByte(image);
           if (byte == EOF)
-            ThrowReaderException(CorruptImageError,"CorruptWBMPImage",image);
+            ThrowReaderException(CorruptImageError,CorruptImage,image);
         }
       indexes[x]=(byte & (0x01 << (7-bit))) ? 1 : 0;
       bit++;
@@ -197,7 +197,7 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
   }
   SyncImage(image);
   if (EOFBlob(image))
-    ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+    ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
       image->filename);
   CloseBlob(image);
   return(image);
@@ -359,7 +359,7 @@ static unsigned int WriteWBMPImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   TransformColorspace(image,RGBColorspace);
   /*
     Convert image to a bi-level image.

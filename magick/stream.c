@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003, 2004 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -39,6 +39,7 @@
 #include "magick/blob.h"
 #include "magick/cache.h"
 #include "magick/constitute.h"
+#include "magick/semaphore.h"
 #include "magick/stream.h"
 #include "magick/utility.h"
 
@@ -173,7 +174,7 @@ static const PixelPacket *AcquirePixelStream(const Image *image,const long x,
   StreamInfo
     *stream_info;
 
-  ExtendedSignedIntegralType
+  magick_uint64_t
     number_pixels;
 
   /*
@@ -183,34 +184,34 @@ static const PixelPacket *AcquirePixelStream(const Image *image,const long x,
   if ((x < 0) || (y < 0) || ((x+(long) columns) > (long) image->columns) ||
       ((y+(long) rows) > (long) image->rows) || (columns == 0) || (rows == 0))
     {
-      ThrowException(exception,StreamError,"UnableToAcquirePixelStream",
-        "ImageDoesNotContainTheStreamGeometry");
+      ThrowException3(exception,StreamError,UnableToAcquirePixelStream,
+        ImageDoesNotContainTheStreamGeometry);
       return((PixelPacket *) NULL);
     }
   stream_info=(StreamInfo *) image->cache;
   assert(stream_info->signature == MagickSignature);
   if (stream_info->type == UndefinedCache)
     {
-      ThrowException(exception,StreamError,"PixelCacheIsNotOpen",
+      ThrowException(exception,StreamError,PixelCacheIsNotOpen,
         image->filename);
       return((PixelPacket *) NULL);
     }
   /*
     Pixels are stored in a temporary buffer until they are synced to the cache.
   */
-  number_pixels=(ExtendedSignedIntegralType)columns*rows;
+  number_pixels=(magick_uint64_t)columns*rows;
   length=number_pixels*sizeof(PixelPacket);
   if ((image->storage_class == PseudoClass) ||
       (image->colorspace == CMYKColorspace))
     length+=number_pixels*sizeof(IndexPacket);
   if (stream_info->pixels == (PixelPacket *) NULL)
-    stream_info->pixels=(PixelPacket *) AcquireMemory(length);
+    stream_info->pixels=MagickAllocateMemory(PixelPacket *,length);
   else
     if (length != stream_info->length)
-      ReacquireMemory((void **) &stream_info->pixels,length);
+      MagickReallocMemory(stream_info->pixels,length);
   if (stream_info->pixels == (void *) NULL)
-    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "UnableToAllocateCacheInfo");
+    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+      UnableToAllocateCacheInfo);
   stream_info->length=length;
   stream_info->indexes=(IndexPacket *) NULL;
   if ((image->storage_class == PseudoClass) ||
@@ -252,19 +253,19 @@ static void DestroyPixelStream(Image *image)
   assert(image->signature == MagickSignature);
   stream_info=(StreamInfo *) image->cache;
   assert(stream_info->signature == MagickSignature);
-  AcquireSemaphoreInfo(&stream_info->semaphore);
+  AcquireSemaphoreInfo((SemaphoreInfo **) &stream_info->semaphore);
   stream_info->reference_count--;
   if (stream_info->reference_count > 0)
     {
-      LiberateSemaphoreInfo(&stream_info->semaphore);
+      LiberateSemaphoreInfo((SemaphoreInfo **) &stream_info->semaphore);
       return;
     }
-  LiberateSemaphoreInfo(&stream_info->semaphore);
+  LiberateSemaphoreInfo((SemaphoreInfo **) &stream_info->semaphore);
   if (stream_info->pixels != (PixelPacket *) NULL)
-    LiberateMemory((void **) &stream_info->pixels);
+    MagickFreeMemory(stream_info->pixels);
   if (stream_info->semaphore != (SemaphoreInfo *) NULL)
-    DestroySemaphoreInfo(&stream_info->semaphore);
-  LiberateMemory((void **) &stream_info);
+    DestroySemaphoreInfo((SemaphoreInfo **) &stream_info->semaphore);
+  MagickFreeMemory(stream_info);
 }
 
 /*
@@ -532,7 +533,10 @@ static PixelPacket *SetPixelStream(Image *image,const long x,const long y,
   StreamInfo
     *stream_info;
 
-  ExtendedSignedIntegralType
+  StreamHandler
+    stream;
+
+  magick_uint64_t
     number_pixels;
 
   /*
@@ -542,14 +546,15 @@ static PixelPacket *SetPixelStream(Image *image,const long x,const long y,
   if ((x < 0) || (y < 0) || ((x+(long) columns) > (long) image->columns) ||
       ((y+(long) rows) > (long) image->rows) || (columns == 0) || (rows == 0))
     {
-      ThrowException(&image->exception,StreamError,"UnableToSetPixelStream",
-        "ImageDoesNotContainTheStreamGeometry");
+      ThrowException3(&image->exception,StreamError,UnableToSetPixelStream,
+        ImageDoesNotContainTheStreamGeometry);
       return((PixelPacket *) NULL);
     }
-  if (image->blob->stream == (StreamHandler) NULL)
+  stream=GetBlobStreamHandler(image);
+  if (stream == (const StreamHandler) NULL)
     {
-      ThrowException(&image->exception,StreamError,"UnableToSetPixelStream",
-        "NoStreamHandlerIsDefined");
+      ThrowException3(&image->exception,StreamError,UnableToSetPixelStream,
+        NoStreamHandlerIsDefined);
       return((PixelPacket *) NULL);
     }
   stream_info=(StreamInfo *) image->cache;
@@ -558,8 +563,7 @@ static PixelPacket *SetPixelStream(Image *image,const long x,const long y,
       (image->colorspace != GetCacheColorspace(image->cache)))
     {
       if (GetCacheClass(image->cache) == UndefinedClass)
-        (void) image->blob->stream(image,(const void *) NULL,
-          stream_info->columns);
+        (void) stream(image,(const void *) NULL,stream_info->columns);
       stream_info->storage_class=image->storage_class;
       stream_info->colorspace=image->colorspace;
       stream_info->columns=image->columns;
@@ -571,25 +575,25 @@ static PixelPacket *SetPixelStream(Image *image,const long x,const long y,
   */
   stream_info->columns=columns;
   stream_info->rows=rows;
-  number_pixels=(ExtendedSignedIntegralType)columns*rows;
+  number_pixels=(magick_uint64_t)columns*rows;
   length=number_pixels*sizeof(PixelPacket);
   if ((image->storage_class == PseudoClass) ||
       (image->colorspace == CMYKColorspace))
     length+=number_pixels*sizeof(IndexPacket);
   if (stream_info->pixels == (PixelPacket *) NULL)
     {
-      stream_info->pixels=(PixelPacket *) AcquireMemory(length);
+      stream_info->pixels=MagickAllocateMemory(PixelPacket *,length);
       stream_info->length=length;
     }
   else
     if (stream_info->length < length)
       {
-        ReacquireMemory((void **) &stream_info->pixels,length);
+        MagickReallocMemory(stream_info->pixels,length);
         stream_info->length=length;
       }
   if (stream_info->pixels == (void *) NULL)
-    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "UnableToAllocateImagePixels");
+    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+      UnableToAllocateImagePixels);
   stream_info->indexes=(IndexPacket *) NULL;
   if ((image->storage_class == PseudoClass) ||
       (image->colorspace == CMYKColorspace))
@@ -629,17 +633,21 @@ static unsigned int SyncPixelStream(Image *image)
   StreamInfo
     *stream_info;
 
+  StreamHandler
+    stream;
+
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   stream_info=(StreamInfo *) image->cache;
   assert(stream_info->signature == MagickSignature);
-  if (image->blob->stream == (StreamHandler) NULL)
+  stream=GetBlobStreamHandler(image);
+  if (stream == (StreamHandler) NULL)
     {
-      ThrowException(&image->exception,StreamError,"UnableToSyncPixelStream",
-        "NoStreamHandlerIsDefined");
+      ThrowException3(&image->exception,StreamError,UnableToSyncPixelStream,
+        NoStreamHandlerIsDefined);
       return(False);
     }
-  return(image->blob->stream(image,stream_info->pixels,stream_info->columns));
+  return(stream(image,stream_info->pixels,stream_info->columns));
 }
 
 /*

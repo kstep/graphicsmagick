@@ -1,13 +1,12 @@
 //
 // Magick++ demo to generate a simple text button
 //
-// Bob Friesenhahn, 1999, 2000, 2001
+// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2003
 // 
 
+#include <Magick++.h>
 #include <string>
 #include <iostream>
-
-#include <Magick++.h>
 
 using namespace std;
 
@@ -19,11 +18,11 @@ int main( int /*argc*/, char ** argv)
   // Initialize ImageMagick install location for Windows
   InitializeMagick(*argv);
 
-  string srcdir("");
-  if(getenv("SRCDIR") != 0)
-    srcdir = getenv("SRCDIR");
-
   try {
+
+    string srcdir("");
+    if(getenv("SRCDIR") != 0)
+      srcdir = getenv("SRCDIR");
 
     //
     // Options

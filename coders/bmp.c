@@ -18,7 +18,7 @@
 %                            BBBB   M   M  P                                  %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%             Read/Write Microsoft Windows Bitmap Image Format.               %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -345,7 +345,7 @@ static size_t EncodeImage(Image *image,const unsigned long bytes_per_line,
         Determine runlength.
       */
       for (i=1; ((x+i) < (long) bytes_per_line); i++)
-        if ((*(p+i) != *p) || (i == 255))
+        if ((i == 255) || (*(p+i) != *p))
           break;
       *q++=(unsigned char) i;
       *q++=(*p);
@@ -510,7 +510,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   /*
     Determine if this is a BMP file.
   */
@@ -546,7 +546,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         magick[0],magick[1]);
     if ((count == 0) || ((LocaleNCompare((char *) magick,"BM",2) != 0) &&
         (LocaleNCompare((char *) magick,"CI",2) != 0)))
-      ThrowReaderException(CorruptImageError,"NotABMPImageFile",image);
+      ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
     bmp_info.file_size=ReadBlobLSBLong(image);
     (void) ReadBlobLSBLong(image);
     bmp_info.offset_bits=ReadBlobLSBLong(image);
@@ -583,10 +583,10 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     else
       {
         /*
-          Microsoft Windows BMP image file.
+          Microsoft Windows 3.X or later BMP image file.
         */
         if (bmp_info.size < 40)
-          ThrowReaderException(CorruptImageWarning,"NonOS2HeaderSizeError",
+          ThrowReaderException(CorruptImageWarning,NonOS2HeaderSizeError,
             image);
         bmp_info.width=(short) ReadBlobLSBLong(image);
         bmp_info.height=(short) ReadBlobLSBLong(image);
@@ -761,31 +761,31 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
     if ((bmp_info.compression != BI_RGB) &&
         (bmp_info.file_size != GetBlobSize(image)))
-      ThrowReaderException(CorruptImageError,"LengthAndFilesizeDoNotMatch",
+      ThrowReaderException(CorruptImageError,LengthAndFilesizeDoNotMatch,
         image);
     if (bmp_info.width <= 0)
-      ThrowReaderException(CorruptImageWarning,"NegativeOrZeroImageSize",image);
+      ThrowReaderException(CorruptImageWarning,NegativeOrZeroImageSize,image);
     if (bmp_info.height == 0)
-      ThrowReaderException(CorruptImageWarning,"NegativeOrZeroImageSize",image);
+      ThrowReaderException(CorruptImageWarning,NegativeOrZeroImageSize,image);
     if ((bmp_info.height < 0) && (bmp_info.compression !=0))
-      ThrowReaderException(CorruptImageWarning,"CompressionNotValid",image);
+      ThrowReaderException(CorruptImageWarning,CompressionNotValid,image);
     if (bmp_info.planes != 1)
-      ThrowReaderException(CorruptImageWarning,"StaticPlanesValueNotEqualToOne",
+      ThrowReaderException(CorruptImageWarning,StaticPlanesValueNotEqualToOne,
         image);
     if ((bmp_info.bits_per_pixel != 1) && (bmp_info.bits_per_pixel != 4) &&
         (bmp_info.bits_per_pixel != 8) && (bmp_info.bits_per_pixel != 16) &&
         (bmp_info.bits_per_pixel != 24) && (bmp_info.bits_per_pixel != 32))
-      ThrowReaderException(CorruptImageWarning,"UnrecognizedBitsPerPixel",image);
+      ThrowReaderException(CorruptImageWarning,UnrecognizedBitsPerPixel,image);
     if (bmp_info.number_colors > (1UL << bmp_info.bits_per_pixel))
-      ThrowReaderException(CorruptImageWarning,"UnrecognizedNumberOfColors",image);
+      ThrowReaderException(CorruptImageWarning,UnrecognizedNumberOfColors,image);
     if (bmp_info.compression > 3)
-      ThrowReaderException(CorruptImageWarning,"UnrecognizedImageCompression",image);
+      ThrowReaderException(CorruptImageWarning,UnrecognizedImageCompression,image);
     if ((bmp_info.compression == 1) && (bmp_info.bits_per_pixel != 8))
-      ThrowReaderException(CorruptImageWarning,"UnrecognizedBitsPerPixel",image);
+      ThrowReaderException(CorruptImageWarning,UnrecognizedBitsPerPixel,image);
     if ((bmp_info.compression == 2) && (bmp_info.bits_per_pixel != 4))
-      ThrowReaderException(CorruptImageWarning,"UnrecognizedBitsPerPixel",image);
+      ThrowReaderException(CorruptImageWarning,UnrecognizedBitsPerPixel,image);
     if ((bmp_info.compression == 3) && (bmp_info.bits_per_pixel < 16))
-      ThrowReaderException(CorruptImageWarning,"UnrecognizedBitsPerPixel",image);
+      ThrowReaderException(CorruptImageWarning,UnrecognizedBitsPerPixel,image);
     switch (bmp_info.compression)
     {
       case BI_RGB:
@@ -794,11 +794,11 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       case BI_BITFIELDS:
         break;
       case BI_JPEG:
-        ThrowReaderException(CoderError,"JPEGCompressionNotSupported",image)
+        ThrowReaderException(CoderError,JPEGCompressionNotSupported,image)
       case BI_PNG:
-        ThrowReaderException(CoderError,"PNGCompressionNotSupported",image)
+        ThrowReaderException(CoderError,PNGCompressionNotSupported,image)
       default:
-        ThrowReaderException(CorruptImageError,"UnrecognizedImageCompressionMethod",
+        ThrowReaderException(CorruptImageError,UnrecognizedImageCompression,
           image)
     }
     image->columns=bmp_info.width;
@@ -827,11 +827,11 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "  Reading colormap of %ld colors",image->colors);
         if (!AllocateImageColormap(image,image->colors))
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
-        bmp_colormap=(unsigned char *) AcquireMemory(4*image->colors);
+        bmp_colormap=MagickAllocateMemory(unsigned char *,4*image->colors);
         if (bmp_colormap == (unsigned char *) NULL)
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
         if ((bmp_info.size == 12) || (bmp_info.size == 64))
           packet_size=3;
@@ -848,7 +848,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (packet_size == 4)
             p++;
         }
-        LiberateMemory((void **) &bmp_colormap);
+        MagickFreeMemory(bmp_colormap);
       }
     if (image_info->ping && (image_info->subrange != 0))
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
@@ -861,10 +861,10 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       bmp_info.bits_per_pixel<<=1;
     bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
     length=bytes_per_line*image->rows;
-    pixels=(unsigned char *)
-      AcquireMemory(Max(bytes_per_line,image->columns+1)*image->rows);
+    pixels=MagickAllocateMemory(unsigned char *,
+      Max(bytes_per_line,image->columns+1)*image->rows);
     if (pixels == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     if ((bmp_info.compression == BI_RGB) ||
         (bmp_info.compression == BI_BITFIELDS))
       {
@@ -880,7 +880,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         status=DecodeImage(image,bmp_info.compression,pixels);
         if (status == False)
-          ThrowReaderException(CorruptImageError,"UnableToRunlengthDecodeImage",
+          ThrowReaderException(CorruptImageError,UnableToRunlengthDecodeImage,
             image);
       }
     /*
@@ -1086,7 +1086,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         if (bmp_info.compression != BI_RGB &&
             bmp_info.compression != BI_BITFIELDS)
-          ThrowReaderException(CorruptImageError,"UnrecognizedImageCompression",image)
+          ThrowReaderException(CorruptImageError,UnrecognizedImageCompression,image)
         bytes_per_line=2*(image->columns+image->columns%2);
         image->storage_class=DirectClass;
         for (y=(long) image->rows-1; y >= 0; y--)
@@ -1172,7 +1172,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         if ((bmp_info.compression != BI_RGB) &&
             (bmp_info.compression != BI_BITFIELDS))
-          ThrowReaderException(CorruptImageError,"UnrecognizedImageCompression",image)
+          ThrowReaderException(CorruptImageError,UnrecognizedImageCompression,image)
         bytes_per_line=4*(image->columns);
         for (y=(long) image->rows-1; y >= 0; y--)
         {
@@ -1224,12 +1224,12 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       }
       default:
-        ThrowReaderException(CorruptImageError,"NotABMPImageFile",image)
+        ThrowReaderException(CorruptImageError,ImproperImageHeader,image)
     }
-    LiberateMemory((void **) &pixels);
+    MagickFreeMemory(pixels);
     if (EOFBlob(image))
       {
-        ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+        ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
           image->filename);
         break;
       }
@@ -1331,8 +1331,8 @@ ModuleExport void RegisterBMPImage(void)
   entry->module=AcquireString("BMP");
   entry->adjoin=False;
   entry->seekable_stream=True;
-  (void) RegisterMagickInfo(entry);
 
+  (void) RegisterMagickInfo(entry);
   entry=SetMagickInfo("BMP3");
   entry->encoder=(EncoderHandler) WriteBMPImage;
   entry->magick=(MagickHandler) IsBMP;
@@ -1365,6 +1365,8 @@ ModuleExport void RegisterBMPImage(void)
 ModuleExport void UnregisterBMPImage(void)
 {
   (void) UnregisterMagickInfo("BMP");
+  (void) UnregisterMagickInfo("BMP2");
+  (void) UnregisterMagickInfo("BMP3");
 }
 
 /*
@@ -1445,7 +1447,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
   logging=LogMagickEvent(CoderEvent,GetMagickModule(),"enter");
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   type=4;
   if (LocaleCompare(image_info->magick,"BMP2") == 0)
     type=2;
@@ -1555,9 +1557,9 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
     /*
       Convert MIFF to BMP raster pixels.
     */
-    pixels=(unsigned char *) AcquireMemory(bmp_info.image_size);
+    pixels=MagickAllocateMemory(unsigned char *,bmp_info.image_size);
     if (pixels == (unsigned char *) NULL)
-      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
+      ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
     switch (bmp_info.bits_per_pixel)
     {
       case 1:
@@ -1591,7 +1593,13 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
               }
            }
          if (bit != 0)
-           *q++=byte << (8-bit);
+           {
+             *q++=byte << (8-bit);
+             x++;
+           }
+         /* initialize padding bytes */
+         for (x=(long) (image->columns+7)/8; x < (long) bytes_per_line; x++)
+           *q++=0x00;
          if (image->previous == (Image *) NULL)
            if (QuantumTick(y,image->rows))
              if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
@@ -1630,7 +1638,13 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
               }
            }
          if (nibble != 0)
-           *q++=byte << 4;
+           {
+             *q++=byte << 4;
+             x++;
+           }
+         /* initialize padding bytes */
+         for (x=(long) (image->columns+1)/2; x < (long) bytes_per_line; x++)
+           *q++=0x00;
          if (image->previous == (Image *) NULL)
            if (QuantumTick(y,image->rows))
              if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
@@ -1652,6 +1666,9 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           q=pixels+(image->rows-y-1)*bytes_per_line;
           for (x=0; x < (long) image->columns; x++)
             *q++=indexes[x];
+          /* initialize padding bytes */
+          for (; x < (long) bytes_per_line; x++)
+            *q++=0x00;
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
@@ -1680,6 +1697,12 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
               *q++=ScaleQuantumToChar(p->opacity);
             p++;
           }
+          if (bmp_info.bits_per_pixel == 24)
+            {
+              /* initialize padding bytes */
+              for (x=3*image->columns; x < (long) bytes_per_line; x++)
+                *q++=0x00;
+            }
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
@@ -1698,17 +1721,18 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
             Convert run-length encoded raster pixels.
           */
           length=2*(bytes_per_line+2)*(image->rows+2)+2;
-          bmp_data=(unsigned char *) AcquireMemory(length);
-          if (pixels == (unsigned char *) NULL)
+          bmp_data=MagickAllocateMemory(unsigned char *,length);
+          if (bmp_data == (unsigned char *) NULL)
             {
-              LiberateMemory((void **) &pixels);
-              ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
+              MagickFreeMemory(pixels);
+              ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
                 image)
             }
           bmp_info.file_size-=bmp_info.image_size;
-          bmp_info.image_size=EncodeImage(image,bytes_per_line,pixels,bmp_data);
+          bmp_info.image_size=EncodeImage(image,bytes_per_line,pixels,
+              bmp_data);
           bmp_info.file_size+=bmp_info.image_size;
-          LiberateMemory((void **) &pixels);
+          MagickFreeMemory(pixels);
           pixels=bmp_data;
           bmp_info.compression=BI_RLE8;
         }
@@ -1810,7 +1834,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobLSBLong(image,0x0000ff00L);  /* Green mask */
         (void) WriteBlobLSBLong(image,0x000000ffL);  /* Blue mask */
         (void) WriteBlobLSBLong(image,0xff000000UL);  /* Alpha mask */
-        (void) WriteBlobLSBLong(image,0x00000001L);  /* CSType==Calib. RGB */
+        (void) WriteBlobLSBLong(image,0x00000001L);   /* CSType==Calib. RGB */
         (void) WriteBlobLSBLong(image,
           (long) image->chromaticity.red_primary.x*0x3ffffff);
         (void) WriteBlobLSBLong(image,
@@ -1832,6 +1856,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobLSBLong(image,
           (long) (1.000f-(image->chromaticity.blue_primary.x
           +image->chromaticity.blue_primary.y)*0x3ffffff));
+
         (void) WriteBlobLSBLong(image,(long) bmp_info.gamma_scale.x*0xffff);
         (void) WriteBlobLSBLong(image,(long) bmp_info.gamma_scale.y*0xffff);
         (void) WriteBlobLSBLong(image,(long) bmp_info.gamma_scale.z*0xffff);
@@ -1886,11 +1911,14 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         if (logging)
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),
             "  Colormap: %ld entries",image->colors);
-        bmp_colormap=(unsigned char *)
-          AcquireMemory(4*(1 << bmp_info.bits_per_pixel));
+        bmp_colormap=MagickAllocateMemory(unsigned char *,
+          (size_t) (4*(1L << bmp_info.bits_per_pixel)));
         if (bmp_colormap == (unsigned char *) NULL)
-          ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
-            image);
+          {
+            MagickFreeMemory(pixels);
+            ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
+              image);
+          }
         q=bmp_colormap;
         for (i=0; i < (long) image->colors; i++)
         {
@@ -1908,19 +1936,19 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           if (type > 2)
             *q++=(Quantum) 0x0;
         }
-        if (type == 2)
-          (void) WriteBlob(image,3*(1 << bmp_info.bits_per_pixel),
+        if (type <= 2)
+          (void) WriteBlob(image,3*(1L << bmp_info.bits_per_pixel),
              (char *) bmp_colormap);
           else
-            (void) WriteBlob(image,4*(1 << bmp_info.bits_per_pixel),
+            (void) WriteBlob(image,4*(1L << bmp_info.bits_per_pixel),
               (char *) bmp_colormap);
-        LiberateMemory((void **) &bmp_colormap);
+        MagickFreeMemory(bmp_colormap);
       }
     if (logging)
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "  Pixels:  %lu bytes",bmp_info.image_size);
     (void) WriteBlob(image,bmp_info.image_size,(char *) pixels);
-    LiberateMemory((void **) &pixels);
+    MagickFreeMemory(pixels);
     if (image->next == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);

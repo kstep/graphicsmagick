@@ -1,6 +1,6 @@
-.TH PBMTOJBG 1 "1998-04-10"
+.TH PBMTOJBG 1 "2003-06-04"
 .SH NAME
-pbmtojbg \- portable bitmap to JBIG file converter
+pbmtojbg \- portable bitmap to JBIG1 file converter
 .SH SYNOPSIS
 .B pbmtojbg
 [
@@ -16,16 +16,16 @@ pbmtojbg \- portable bitmap to JBIG file converter
 Reads in a portable bitmap (PBM)
 from a file or standard
 input, compresses it, and outputs the image as a
-.I JBIG
+.I JBIG1
 bi-level image entity (BIE) file.
 
-.I JBIG
+.I JBIG1
 is a highly effective lossless compression algorithm for
 bi-level images (one bit per pixel), which is particularly suitable
 for scanned document pages.
 
 A
-.I JBIG
+.I JBIG1
 encoded image can be stored in several resolutions (progressive mode).
 These resolution layers can be stored all in one single BIE or they
 can be stored in several separate BIE files.
@@ -34,7 +34,7 @@ differences to the next lower resolution layer, because this requires less
 space than encoding the full image completely every time. Each resolution
 layer has twice the number of horizontal and vertical pixels than
 the next lower layer.
-.I JBIG
+.I JBIG1
 files can also store several bits per pixel as separate bitmap planes,
 and
 .I pbmtojbg
@@ -64,7 +64,7 @@ The default is 480 pixels.
 .BI \-l " number"
 Select the lowest resolution layer that will be written to the
 BIE. It is possible to store the various resolution layers of a 
-.I JBIG
+.I JBIG1
 image in progressive mode into different BIEs. Options
 .BI \-l
 and
@@ -98,7 +98,7 @@ resolution layers.
 .TP
 .BI \-s " number"
 The
-.I JBIG
+.I JBIG1
 algorithm splits each image into a number of horizontal stripes. This
 option specifies that each stripe shall have
 .I number
@@ -108,7 +108,7 @@ lines in layer 0. The default value is selected so that approximately
 .BI \-m " number"
 Select the maximum horizontal offset of the adaptive template pixel.
 The
-.I JBIG
+.I JBIG1
 encoder uses a number of neighbour pixels in order to get statistical
 a priori knowledge of the probability, whether the next pixel will be black
 or white. One single pixel out of this template of context neighbor
@@ -121,7 +121,7 @@ support at least a distance of 16 pixels by the standard, no higher value
 than 16 for
 .I number
 is recommended in order to maintain interoperability with other
-.I JBIG
+.I JBIG1
 implementations. The maximal vertical offset of the adaptive
 template pixel is always zero.
 .TP
@@ -131,7 +131,7 @@ option allows to reduce the depth of an input PGM file if not all
 bits per pixel are needed in the output.
 .TP
 .BI \-o " number"
-.I JBIG
+.I JBIG1
 separates an image into several horizontal stripes, resolution layers
 and planes, were each plane contains one bit per pixel. One single
 stripe in one plane and layer is encoded as a data unit called stripe
@@ -140,7 +140,7 @@ orders in which the SDEs can be stored inside the BIE and
 .I number
 selects which one shall be used. The order of the SDEs is only relevant
 for applications that want to decode a
-.I JBIG
+.I JBIG1
 file which has not yet completely arrived from e.g. a slow network connection.
 For instance some applications prefer that the outermost of the three loops
 (stripes, layers, planes) is over all layers so that all data of the lowest
@@ -173,7 +173,7 @@ layer and so on.
 .BI \-p " number"
 This option allows to activate or deactivate various optional algorithms
 defined in the
-.I JBIG
+.I JBIG1
 standard. Just add the numbers of the following options which you want to
 activate in
 order to get the
@@ -189,19 +189,37 @@ value:
   64 	layer 0 two-line template (LRLTWO)
 
 Except for special applications (like communication with
-.I JBIG
+.I JBIG1
 subset implementations) and for debugging purposes you will normally
 not want to change anything here. The default is 28, which provides
 the best compression result.
 .TP
 .BI \-c
-The adaptive template pixel movement is determined as suggested in
-annex C of the standard. By default the template change takes place
-directly in the next line which is most effective. However a few conformance
-test examples in the standard require the adaptive template change to be
-delayed until the first line of the next stripe. This option selects
-this special behavior, which is normally not required except in order
-to pass some conformance test suite.
+Determine the adaptive template pixel movement as suggested in annex C
+of the standard. By default the template change takes place directly
+in the next line, which is most effective. However, a few conformance
+test examples in the standard require the adaptive template change to
+be delayed until the first line of the next stripe. This option
+selects this special behavior, which is normally not required except
+in order to pass some conformance tests.
+.TP
+.BI \-Y " number"
+A long time ago, there were fax machines that couldn't even hold a
+single page in memory. They had to start transmitting data before the
+page was scanned in completely and the length of the image was known.
+The authors of the standard added a rather ugly hack to the otherwise
+beautiful JBIG1 format to support this. The NEWLEN marker segment can
+override the image height stated in the BIE header anywhere later in
+the data stream. Normally
+.I pbmtojbg
+never generates NEWLEN marker segments, as it knows the correct image
+height when it outputs the header. This option is solely intended for
+the purpose of generating test files with NEWLEN marker segments. It
+can be used to specify a higher initial image height for use in the
+BIE header, and
+.I pbmtojbg
+will then add a NEWLEN marker segment at the latest possible
+opportunity to the data stream to signal the correct final height.
 .TP
 .BI \-v
 After the BIE has been created, a few technical details of the created
@@ -214,7 +232,7 @@ standard output may cause control characters like CR or LF to be
 inserted or deleted and this will damage the binary data.
 .SH STANDARDS
 This program implements the
-.I JBIG
+.I JBIG1
 image coding algorithm as specified in ISO/IEC 11544:1993 and
 ITU-T T.82(1993).
 .SH AUTHOR
@@ -225,10 +243,8 @@ program is part of the
 package, which has been developed by Markus Kuhn.
 The most recent version of this
 portable
-.I JBIG
-library and tools set is freely available on the Internet from
-anonymous ftp server ftp.informatik.uni-erlangen.de in directory
-pub/doc/ISO/JBIG/. Bug reports should be sent to
-<mkuhn@acm.org>.
+.I JBIG1
+library and tools set is available from
+<http://www.cl.cam.ac.uk/~mgk25/jbigkit/>.
 .SH SEE ALSO
 pbm(5), pgm(5), jbgtopbm(1)

@@ -1,0 +1,163 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.06.00"/>
+    <PROJECT value="libttf.lib"/>
+    <OBJFILES value="objs\ftsystem.obj objs\ftdebug.obj objs\ftinit.obj objs\ftbase.obj 
+      objs\ftglyph.obj objs\ftmm.obj objs\ftbdf.obj objs\ftpfr.obj objs\ftwinfnt.obj 
+      objs\ftbbox.obj objs\autohint.obj objs\bdf.obj objs\ftcache.obj 
+      objs\cff.obj objs\type1cid.obj src\gzip\ftgzip.obj objs\pcf.obj objs\pfr.obj objs\psaux.obj 
+      objs\pshinter.obj objs\psmodule.obj src\raster\raster.obj 
+      objs\sfnt.obj objs\smooth.obj objs\truetype.obj objs\type1.obj 
+      objs\type42.obj objs\winfnt.obj"/>
+    <RESFILES value=""/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES)"/>
+    <LIBFILES value=""/>
+    <LIBRARIES value=""/>
+    <PACKAGES value=""/>
+    <PATHCPP value=".;src\base;src\autohint;src\bdf;src\cache;src\cff;src\cid;src\gzip;src\pcf;src\pfr;src\psaux;src\pshinter;src\psnames;src\raster;src\sfnt;src\smooth;src\truetype;src\type1;src\type42;src\winfonts"/>
+    <PATHPAS value=".;"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <LINKER value="TLib"/>
+    <USERDEFINES value=""/>
+    <SYSDEFINES value="NO_STRICT"/>
+    <MAINSOURCE value="libttf.bpf"/>
+    <INCLUDEPATH value="include;src\winfonts;src\type42;src\type1;src\truetype;src\smooth;src\sfnt;src\raster;src\psnames;src\pshinter;src\psaux;src\pfr;src\pcf;src\gzip;src\cid;src\cff;src\cache;src\bdf;src\autohint;src\base;$(BCB)\include;$(BCB)\include\vcl"/>
+    <LIBPATH value="src\winfonts;src\type42;src\type1;src\truetype;src\smooth;src\sfnt;src\raster;src\psnames;src\pshinter;src\psaux;src\pfr;src\pcf;src\gzip;src\cid;src\cff;src\cache;src\bdf;src\autohint;src\base;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <WARNINGS value="-w-par -w-aus"/>
+    <LISTFILE value="libttf"/>
+    <OTHERFILES value=""/>
+  </MACROS>
+  <OPTIONS>
+    <CFLAG1 value="-O2 -Vx -Ve -X- -a8 -b- -k- -vi -c -tW -tWM"/>
+    <PFLAGS value="-N2objs -N0objs -$Y- -$L- -$D- -$A8 -v -JPHNE -M"/>
+    <AFLAGS value="/mx /w2 /zn"/>
+    <LFLAGS value="/P32 /0 /C"/>
+    <OTHERFILES value=""/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="$(OBJFILES)"/>
+    <ALLLIB value=""/>
+    <OTHERFILES value=""/>
+  </LINKER>
+  <FILELIST>
+      <FILE FILENAME="libttf.bpf" FORMNAME="" UNITNAME="libttf" CONTAINERID="BPF" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\base\ftsystem.c" FORMNAME="" UNITNAME="ftsystem" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\base\ftdebug.c" FORMNAME="" UNITNAME="ftdebug" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\base\ftinit.c" FORMNAME="" UNITNAME="ftinit" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\base\ftbase.c" FORMNAME="" UNITNAME="ftbase.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\base\ftglyph.c" FORMNAME="" UNITNAME="ftglyph.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\base\ftmm.c" FORMNAME="" UNITNAME="ftmm.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\base\ftbdf.c" FORMNAME="" UNITNAME="ftbdf.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\base\ftpfr.c" FORMNAME="" UNITNAME="ftpfr.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\base\ftwinfnt.c" FORMNAME="" UNITNAME="ftwinfnt.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\base\ftbbox.c" FORMNAME="" UNITNAME="ftbbox.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\autohint\autohint.c" FORMNAME="" UNITNAME="autohint" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\bdf\bdf.c" FORMNAME="" UNITNAME="bdf" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\cache\ftcache.c" FORMNAME="" UNITNAME="ftcache" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\cff\cff.c" FORMNAME="" UNITNAME="cff" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\cid\type1cid.c" FORMNAME="" UNITNAME="type1cid" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\gzip\ftgzip.c" FORMNAME="" UNITNAME="ftgzip" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\pcf\pcf.c" FORMNAME="" UNITNAME="pcf" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\pfr\pfr.c" FORMNAME="" UNITNAME="pfr" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\psaux\psaux.c" FORMNAME="" UNITNAME="psaux" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\pshinter\pshinter.c" FORMNAME="" UNITNAME="pshinter" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\psnames\psmodule.c" FORMNAME="" UNITNAME="psmodule" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\raster\raster.c" FORMNAME="" UNITNAME="raster" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\sfnt\sfnt.c" FORMNAME="" UNITNAME="sfnt" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\smooth\smooth.c" FORMNAME="" UNITNAME="smooth" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\truetype\truetype.c" FORMNAME="" UNITNAME="truetype" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\type1\type1.c" FORMNAME="" UNITNAME="type1" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\type42\type42.c" FORMNAME="" UNITNAME="type42" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\winfonts\winfnt.c" FORMNAME="" UNITNAME="winfnt" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+  </FILELIST>
+  <BUILDTOOLS>
+  </BUILDTOOLS>
+
+  <IDEOPTIONS>
+[Version Info]
+IncludeVerInfo=0
+AutoIncBuild=0
+MajorVer=1
+MinorVer=0
+Release=0
+Build=0
+Debug=0
+PreRelease=0
+Special=0
+Private=0
+DLL=0
+Locale=1040
+CodePage=1252
+
+[Version Info Keys]
+CompanyName=
+FileDescription=
+FileVersion=1.0.0.0
+InternalName=
+LegalCopyright=
+LegalTrademarks=
+OriginalFilename=
+ProductName=
+ProductVersion=1.0.0.0
+Comments=
+
+[HistoryLists\hlIncludePath]
+Count=1
+Item0=src\winfonts;src\type42;src\type1;src\truetype;src\smooth;src\sfnt;src\raster;src\psnames;src\pshinter;src\psaux;src\pfr;src\pcf;src\gzip;src\cid;src\cff;src\cache;src\bdf;src\autohint;src\base;$(BCB)\include;$(BCB)\include\vcl
+
+[HistoryLists\hlLibraryPath]
+Count=1
+Item0=src\winfonts;src\type42;src\type1;src\truetype;src\smooth;src\sfnt;src\raster;src\psnames;src\pshinter;src\psaux;src\pfr;src\pcf;src\gzip;src\cid;src\cff;src\cache;src\bdf;src\autohint;src\base;$(BCB)\lib\obj;$(BCB)\lib
+
+[HistoryLists\hlDebugSourcePath]
+Count=1
+Item0=$(BCB)\source\vcl
+
+[HistoryLists\hlConditionals]
+Count=1
+Item0=_DEBUG
+
+[HistoryLists\hlIntOutputDir]
+Count=2
+Item0=objs
+Item1=\objs
+
+[HistoryLists\hlTlibPageSize]
+Count=1
+Item0=0x0020
+
+[HistoryLists\hlTlibListFile]
+Count=2
+Item0=libttf
+Item1=FreeType.lst
+
+[Debugging]
+DebugSourceDirs=$(BCB)\source\vcl
+
+[Parameters]
+RunParams=
+Launcher=
+UseLauncher=0
+DebugCWD=
+HostApplication=
+RemoteHost=
+RemotePath=
+RemoteLauncher=
+RemoteCWD=
+RemoteDebug=0
+
+[Compiler]
+ShowInfoMsgs=0
+LinkDebugVcl=0
+LinkCGLIB=0
+
+[Language]
+ActiveLang=
+ProjectLang=
+RootDir=
+  </IDEOPTIONS>
+</PROJECT>

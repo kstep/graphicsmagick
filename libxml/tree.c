@@ -299,7 +299,7 @@ xmlFreeNsList(xmlNsPtr cur) {
  *
  * Returns a pointer to the new DTD structure
  */
-LIBXML_DLL_IMPORT xmlDtdPtr
+xmlDtdPtr
 xmlNewDtd(xmlDocPtr doc, const xmlChar *name,
                     const xmlChar *ExternalID, const xmlChar *SystemID) {
     xmlDtdPtr cur;
@@ -372,7 +372,7 @@ xmlGetIntSubset(xmlDocPtr doc) {
  * Create the internal subset of a document
  * Returns a pointer to the new DTD structure
  */
-LIBXML_DLL_IMPORT xmlDtdPtr
+xmlDtdPtr
 xmlCreateIntSubset(xmlDocPtr doc, const xmlChar *name,
                    const xmlChar *ExternalID, const xmlChar *SystemID) {
     xmlDtdPtr cur;
@@ -504,7 +504,7 @@ xmlFreeDtd(xmlDtdPtr cur) {
  *
  * Returns a new document
  */
-LIBXML_DLL_IMPORT xmlDocPtr
+xmlDocPtr
 xmlNewDoc(const xmlChar *version) {
     xmlDocPtr cur;
 
@@ -1561,7 +1561,7 @@ xmlNewTextChild(xmlNodePtr parent, xmlNsPtr ns,
  * Creation of a new character reference node.
  * Returns a pointer to the new node object.
  */
-LIBXML_DLL_IMPORT xmlNodePtr
+xmlNodePtr
 xmlNewCharRef(xmlDocPtr doc, const xmlChar *name) {
     xmlNodePtr cur;
 
@@ -1599,7 +1599,7 @@ xmlNewCharRef(xmlDocPtr doc, const xmlChar *name) {
  * Creation of a new reference node.
  * Returns a pointer to the new node object.
  */
-LIBXML_DLL_IMPORT xmlNodePtr
+xmlNodePtr
 xmlNewReference(xmlDocPtr doc, const xmlChar *name) {
     xmlNodePtr cur;
     xmlEntityPtr ent;
@@ -1748,7 +1748,7 @@ xmlNewComment(const xmlChar *content) {
  * Creation of a new node containing a CDATA block.
  * Returns a pointer to the new node object.
  */
-LIBXML_DLL_IMPORT xmlNodePtr
+xmlNodePtr
 xmlNewCDataBlock(xmlDocPtr doc, const xmlChar *content, int len) {
     xmlNodePtr cur;
 
@@ -2240,7 +2240,7 @@ xmlAddChildList(xmlNodePtr parent, xmlNodePtr cur) {
  *
  * Returns the child or NULL in case of error.
  */
-LIBXML_DLL_IMPORT xmlNodePtr
+xmlNodePtr
 xmlAddChild(xmlNodePtr parent, xmlNodePtr cur) {
     xmlNodePtr prev;
 
@@ -2340,7 +2340,7 @@ xmlAddChild(xmlNodePtr parent, xmlNodePtr cur) {
  * Search the last child of a node.
  * Returns the last child or NULL if none.
  */
-LIBXML_DLL_IMPORT xmlNodePtr
+xmlNodePtr
 xmlGetLastChild(xmlNodePtr parent) {
     if (parent == NULL) {
 #ifdef DEBUG_TREE
@@ -5064,7 +5064,7 @@ xmlIsBlankNode(xmlNodePtr node) {
  * Concat the given string at the end of the existing node content
  */
 
-LIBXML_DLL_IMPORT void
+void
 xmlTextConcat(xmlNodePtr node, const xmlChar *content, int len) {
     if (node == NULL) return;
 

@@ -41,7 +41,7 @@
 #  if defined(__CYGWIN__)
 #    include <windows.h>
 #  else
-     /* All MinGW needs ... */
+     // All MinGW needs ...
 #    include <wingdi.h>
 #  endif
 #endif
@@ -151,7 +151,7 @@ static HENHMETAFILE ReadEnhMetaFile(const char *szFileName,long *width,
           DeleteMetaFile(hOld);
           return((HENHMETAFILE) NULL);
         }
-      pBits=(LPBYTE) AcquireMemory(dwSize);
+      pBits=MagickAllocateMemory(LPBYTE,dwSize);
       if (pBits == (LPBYTE) NULL)
         {
           DeleteMetaFile(hOld);
@@ -159,7 +159,7 @@ static HENHMETAFILE ReadEnhMetaFile(const char *szFileName,long *width,
         }
       if (GetMetaFileBitsEx(hOld,dwSize,pBits) == 0)
         {
-          LiberateMemory((void **) &pBits);
+          MagickFreeMemory(pBits);
           DeleteMetaFile(hOld);
           return((HENHMETAFILE) NULL);
         }
@@ -174,7 +174,7 @@ static HENHMETAFILE ReadEnhMetaFile(const char *szFileName,long *width,
       hTemp=SetWinMetaFileBits(dwSize,pBits,hDC,&mp);
       ReleaseDC(NULL,hDC);
       DeleteMetaFile(hOld);
-      LiberateMemory((void **) &pBits);
+      MagickFreeMemory(pBits);
       GetEnhMetaFileHeader(hTemp,sizeof(ENHMETAHEADER),&emfh);
       *width=emfh.rclFrame.right-emfh.rclFrame.left;
       *height=emfh.rclFrame.bottom-emfh.rclFrame.top;
@@ -188,12 +188,12 @@ static HENHMETAFILE ReadEnhMetaFile(const char *szFileName,long *width,
   if (hFile == INVALID_HANDLE_VALUE)
     return(NULL);
   dwSize=GetFileSize(hFile,NULL);
-  pBits=(LPBYTE) AcquireMemory(dwSize);
+  pBits=MagickAllocateMemory(LPBYTE,dwSize);
   ReadFile(hFile,pBits,dwSize,&dwSize,NULL);
   CloseHandle(hFile);
   if (((PAPMHEADER) pBits)->dwKey != 0x9ac6cdd7l)
     {
-      LiberateMemory((void **) &pBits);
+      MagickFreeMemory(pBits);
       return((HENHMETAFILE) NULL);
     }
   /*
@@ -210,7 +210,7 @@ static HENHMETAFILE ReadEnhMetaFile(const char *szFileName,long *width,
   hDC=GetDC(NULL);
   hTemp=SetWinMetaFileBits(dwSize,&(pBits[sizeof(APMHEADER)]),hDC,&mp);
   ReleaseDC(NULL,hDC);
-  LiberateMemory((void **) &pBits);
+  MagickFreeMemory(pBits);
   return(hTemp);
 }
 
@@ -256,7 +256,7 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
   image=AllocateImage(image_info);
   hemf=ReadEnhMetaFile(image_info->filename,&width,&height);
   if (!hemf)
-    ThrowReaderException(CorruptImageWarning,"NotAnEMFImageFile",image);
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   if ((image->columns == 0) || (image->rows == 0))
     {
       double
@@ -328,11 +328,11 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
             image->rows=(unsigned int)
               (((image->rows*image->y_resolution)/72.0)+0.5);
         }
-      LiberateMemory((void **) &geometry);
+      MagickFreeMemory(geometry);
     }
   hDC=GetDC(NULL);
   if (!hDC)
-    ThrowReaderException(ResourceLimitError,"UnableToCreateADC",image);
+    ThrowReaderException(CoderError,UnableToCreateADC,image);
   /*
     Initialize the bitmap header info.
   */
@@ -347,19 +347,19 @@ static Image *ReadEMFImage(const ImageInfo *image_info,
     CreateDIBSection(hDC,&DIBinfo,DIB_RGB_COLORS,(void **) &ppBits,NULL,0);
   ReleaseDC(NULL,hDC);
   if (!hBitmap)
-    ThrowReaderException(ResourceLimitError,"UnableToCreateBitmap",image);
+    ThrowReaderException(CoderError,UnableToCreateBitmap,image);
   hDC=CreateCompatibleDC(NULL);
   if (!hDC)
     {
       DeleteObject(hBitmap);
-      ThrowReaderException(ResourceLimitError,"UnableToCreateADC",image);
+      ThrowReaderException(CoderError,UnableToCreateADC,image);
     }
   hOldBitmap=(HBITMAP) SelectObject(hDC,hBitmap);
   if (!hOldBitmap)
     {
       DeleteDC(hDC);
       DeleteObject(hBitmap);
-      ThrowReaderException(ResourceLimitError,"UnableToCreateBitmap",image);
+      ThrowReaderException(CoderError,UnableToCreateBitmap,image);
     }
   /*
     Initialize the bitmap to the image background color.

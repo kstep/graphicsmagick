@@ -93,14 +93,22 @@ MAGICK DELEGATES
 
       to read and write BZip compressed MIFF images.
 
-    o GraphicsMagick requires ralcgm from
+    o GraphicsMagick requires 'ralcgm' from
 
         http://www.agocg.ac.uk/train/cgm/ralcgm.htm
 
       to read the Computer Graphics Metafile (CGM) image format. You also
       need Ghostscript (see below).
 
-    o GraphicsMagick requires fig2dev from
+    o GraphicsMagick requires 'dcraw' from
+
+        http://www2.primushost.com/~dcoffin/powershot/
+
+      to read raw images from digital cameras.  Use similar to
+
+        gm convert dcraw:infile outfile
+
+    o GraphicsMagick requires 'fig2dev' from
 
         ftp://ftp.x.org/contrib/applications/drawing_tools/transfig
 
@@ -111,7 +119,10 @@ MAGICK DELEGATES
 
         http://www.freetype.org/
 
-      to annotate with TrueType and Postscript Type 1 fonts.
+      to annotate with TrueType and Postscript Type 1 fonts. Note that
+      enabling TT_CONFIG_OPTION_BYTECODE_INTERPRETER in FreeType's
+      include/freetype/config/ftoption.h will produce better glyph
+      renderings but may violate an Apple patent.
 
     o GraphicsMagick requires Ghostscript software (version 7.05 recommended)
       available from
@@ -233,11 +244,11 @@ MAGICK DELEGATES
     o GraphicsMagick requires Sam Leffler's TIFF software available via
       anonymous FTP at
 
-         ftp://ftp.remotesensing.org/pub/libtiff/
+         ftp://ftp.remotesensing.org/libtiff/
 
       or via HTTP at
 
-         http://www.libtiff.org/
+         http://www.remotesensing.org/libtiff/
 
       to read the TIFF image format. It in turn optionally requires the
       JPEG and ZLIB libraries. Support for JPEG, ZIP, and LZW compression
@@ -245,6 +256,17 @@ MAGICK DELEGATES
       library no longer includes support for LZW compression due to patent
       issues. If you need to use LZW compression, support is available via
       a seperate LZW compression kit (a patch) at the sites listed above.
+
+    o GraphicsMagick may optionally use the TRIO library from
+
+         http://sourceforge.net/projects/ctrio/
+
+      to substitute for the vsnprintf function when the operating system
+      does not provide one. Older operating systems (e.g. Solaris 2.5)
+      may not provide a vsnprintf function. If vsnprintf (or the TRIO
+      replacement) is not used, then vsprintf is used instead, which
+      decreases the security of GraphicsMagick due to possible buffer
+      overrun exploits.
 
     o GraphicsMagick requires libwmf 0.2.5 (or later) from
 
@@ -280,9 +302,13 @@ MAGICK DELEGATES
       Digital Imaging Group in order to support the FlashPIX format. The
       FlashPIX library may be obtained from GraphicsMagick anonymous CVS by
       checking out the 'fpx' module, or retrieving the file
-      libfpx-1.2.0.5.tar.gz from the ftp directory.
+      libfpx-1.2.0.9.tar.gz from the ftp directory.
 
          ftp://ftp.imagemagick.org/pub/GraphicsMagick/delegates/.
+
+      Please note that this library is not very portable. It is known to
+      work properly under SPARC Solaris and Windows, but exhibits severe
+      problems under FreeBSD and Linux.
 
     o GraphicsMagick requires an X server for the 'display', 'animate', and
       'import' functions to work properly. Unix systems usually provide an X

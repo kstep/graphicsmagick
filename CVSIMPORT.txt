@@ -13,8 +13,8 @@ bzlib:
 
 FreeType:
 cvs -d :pserver:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
-    import -m 'Import freetype 2.1.4' delegates/freetype2 \
-    FREETYPE2 FREETYPE_2_1_4
+    import -m 'Import freetype 2.1.5' delegates/freetype2 \
+    FREETYPE2 FREETYPE_2_1_5
 
 jasper
   cvs -d :pserver:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
@@ -24,20 +24,20 @@ jasper
 jbig:
 
   cvs -d :pserver:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
-    import -m 'Import jbigkit 1.4' delegates/jbig \
-    INITIAL JBIGKIT_1_4
+    import -m 'Import jbigkit 1.5' delegates/jbig \
+    INITIAL JBIGKIT_1_5
 
 lcms:
   
   cvs -d :pserver:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
-    import -m 'Import lcms 1.09' delegates/lcms \
-    LCMS_DIST LCMS_1_09
+    import -m 'Import lcms 1.12' delegates/lcms \
+    LCMS_DIST LCMS_1_12
 
 png:
 
   cvs -d :pserver:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
-    import -m 'Import libpng 1.2.4' delegates/png \
-    INITIAL LIBPNG_1_2_4
+    import -m 'Import libpng 1.2.5' delegates/png \
+    INITIAL LIBPNG_1_2_5
 
 ralcgm:
   cvs -d :pserver:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
@@ -47,10 +47,10 @@ ralcgm:
 wmf:
 
   cvs -d :pserver:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
-    import -m 'Import CVS libwmf 0.2.5' delegates/wmf \
-    LIBWMF_DIST LIBWMF_0_2_5
+    import -m 'Import CVS libwmf 0.2.8.2' delegates/wmf \
+    LIBWMF_DIST LIBWMF_0_2_8_2
 
-  Where 'LIBWMF_DIST' is the CVS vendor branch, and 'LIBWMF_0_2_5' is the
+  Where 'LIBWMF_DIST' is the CVS vendor branch, and 'LIBWMF_0_2_8_2' is the
   vendor release tag.
 
 xml: Note, this one may be bogus!
@@ -63,7 +63,7 @@ xml: Note, this one may be bogus!
 zlib:
 
   cvs -d :pserver:bfriesen@cvs.graphicsmagick.org:/GraphicsMagick \
-    import -m 'Import latest zlib' delegates/zlib \
-    INITIAL ZLIB_1_1_4
+    import -m 'Import zlib 1.2.1' delegates/zlib \
+    INITIAL ZLIB_1_2_1
 
 

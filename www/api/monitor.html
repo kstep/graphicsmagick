@@ -12,8 +12,8 @@ A:visited { color: #800080 }
 -->
 </STYLE>
 
-<TITLE>monitor - GraphicsMagick Progress Monitor Methods</TITLE>
-<LINK REV="made" HREF="mailto:bfriesen@scooby.simplesystems.org">
+<TITLE>monitor - Progress monitor support</TITLE>
+<LINK REV="made" HREF="mailto:bfriesen@shaggy.simplesystems.org">
 </HEAD>
 
 <BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
@@ -36,7 +36,7 @@ A:visited { color: #800080 }
                                 [<A HREF="../books.html">Books</A>] [<A HREF="../links.html">Links</A>]</P>
                         </TD>
                         <TD ROWSPAN=2 WIDTH=19%>
-                                <P ALIGN=CENTER><IMG SRC="../../images/magick_small.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0></P>
+                                <P ALIGN=CENTER><IMG SRC="../../images/gm-188x120t.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=188 HEIGHT=120 BORDER=0></P>
                         </TD>
                 </TR>
                 <TR>
@@ -77,12 +77,12 @@ DESCRIPTIONS</A>
 <P>
 <H2><A NAME="name">
 NAME</A></H2>
-<P>monitor - GraphicsMagick Progress Monitor Methods</P>
+<P>monitor - Progress monitor support</P>
 <P>
 <HR>
 <H2><A NAME="synopsis">
 SYNOPSIS</A></H2>
-<P>unsigned int  <STRONG>MagickMonitor</STRONG>( const char *text, const ExtendedSignedIntegralType quantum, const ExtendedUnsignedIntegralType span, ExceptionInfo *exception );</P>
+<P>unsigned int  <STRONG>MagickMonitor</STRONG>( const char *text, const magick_int64_t quantum, const magick_uint64_t span, ExceptionInfo *exception );</P>
 <P>MonitorHandler  <STRONG>SetMonitorHandler</STRONG>( MonitorHandler handler );</P>
 <P>
 <HR>
@@ -92,7 +92,7 @@ DESCRIPTIONS</A></H2>
 <P>
 <H3><A NAME="magickmonitor">MagickMonitor</A></H3>
 <blockquote>MagickMonitor() calls the monitor handler method with a text string that describes the task and a measure of completion. The method returns True on success otherwise False if an error is encountered, e.g. if there was a user interrupt. </blockquote><P>The format of the MagickMonitor method is:</P>
-<blockquote>unsigned int MagickMonitor ( const char *text, const ExtendedSignedIntegralType quantum, const ExtendedUnsignedIntegralType span, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
+<blockquote>unsigned int MagickMonitor ( const char *text, const magick_int64_t quantum, const magick_uint64_t span, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG><A NAME="item_o_quantum%3A">quantum:</A></STRONG><BR>

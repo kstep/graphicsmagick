@@ -11,14 +11,14 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                        M   M   OOO   N   N   OOO                            %
-%                        MM MM  O   O  NN  N  O   O                           %
-%                        M M M  O   O  N N N  O   O                           %
-%                        M   M  O   O  N  NN  O   O                           %
-%                        M   M   OOO   N   N   OOO                            %
+%                         M   M   OOO   N   N   OOO                           %
+%                         MM MM  O   O  NN  N  O   O                          %
+%                         M M M  O   O  N N N  O   O                          %
+%                         M   M  O   O  N  NN  O   O                          %
+%                         M   M   OOO   N   N   OOO                           %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                   Read/Write Raw Bi-Level Bitmap Format.                    %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -117,17 +117,17 @@ static Image *ReadMONOImage(const ImageInfo *image_info,
   assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
   if ((image->columns == 0) || (image->rows == 0))
-    ThrowReaderException(OptionError,"MustSpecifyImageSize",image);
+    ThrowReaderException(OptionError,MustSpecifyImageSize,image);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   for (i=0; i < image->offset; i++)
     (void) ReadBlobByte(image);
   /*
     Initialize image colormap.
   */
   if (!AllocateImageColormap(image,2))
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   if (image_info->ping)
     {
       CloseBlob(image);
@@ -162,7 +162,7 @@ static Image *ReadMONOImage(const ImageInfo *image_info,
   }
   SyncImage(image);
   if (EOFBlob(image))
-    ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+    ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
       image->filename);
   CloseBlob(image);
   return(image);
@@ -202,6 +202,7 @@ ModuleExport void RegisterMONOImage(void)
   entry->adjoin=False;
   entry->description=
     AcquireString("Bi-level bitmap in least-significant-byte first order");
+  entry->raw=True;
   entry->module=AcquireString("MONO");
   (void) RegisterMagickInfo(entry);
 }
@@ -290,7 +291,7 @@ static unsigned int WriteMONOImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   TransformColorspace(image,RGBColorspace);
   /*
     Convert image to a bi-level image.

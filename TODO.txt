@@ -2,6 +2,17 @@
 Items large and small which remain to be worked on.
 --------------------------------------------------------------------
 
+For Next Release
+===============
+
+ o Fix -process parsing so '-process analyze' works.
+ o Fix retrieving specified frames from an MPEG file.
+ o Update Windows libtiff to version 3.6.1.
+ o Fix broken web page links.
+
+For Future Release
+==================
+
 Utilities
 
   * Write documentation for the iptcutil and cgimagick utilities.

@@ -402,7 +402,7 @@ xmlSkipBlankChars(xmlParserCtxtPtr ctxt) {
  *
  * Returns the current xmlChar in the parser context
  */
-LIBXML_DLL_IMPORT xmlChar
+xmlChar
 xmlPopInput(xmlParserCtxtPtr ctxt) {
     if (ctxt->inputNr == 1) return(0); /* End of main Input */
     if (xmlParserDebugEntities)
@@ -423,7 +423,7 @@ xmlPopInput(xmlParserCtxtPtr ctxt) {
  * xmlPushInput: switch to a new input stream which is stacked on top
  *               of the previous one(s).
  */
-LIBXML_DLL_IMPORT void
+void
 xmlPushInput(xmlParserCtxtPtr ctxt, xmlParserInputPtr input) {
     if (input == NULL) return;
 
@@ -1078,7 +1078,7 @@ xmlStrndup(const xmlChar *cur, int len) {
  *
  * Returns a new xmlChar * or NULL
  */
-LIBXML_DLL_IMPORT xmlChar *
+xmlChar *
 xmlStrdup(const xmlChar *cur) {
     const xmlChar *p = cur;
 
@@ -1567,7 +1567,7 @@ static int areBlanks(xmlParserCtxtPtr ctxt, const xmlChar *str, int len) {
  *   to get the Prefix if any.
  */
 
-LIBXML_DLL_IMPORT xmlChar *
+xmlChar *
 xmlSplitQName(xmlParserCtxtPtr ctxt, const xmlChar *name, xmlChar **prefix) {
     xmlChar buf[XML_MAX_NAMELEN + 5];
     xmlChar *buffer = NULL;
@@ -5099,7 +5099,7 @@ xmlParseTextDecl(xmlParserCtxtPtr ctxt) {
  *
  * [31] extSubsetDecl ::= (markupdecl | conditionalSect | PEReference | S) *
  */
-LIBXML_DLL_IMPORT void
+void
 xmlParseExternalSubset(xmlParserCtxtPtr ctxt, const xmlChar *ExternalID,
                        const xmlChar *SystemID) {
     GROW;
@@ -10466,7 +10466,7 @@ xmlInitParser(void) {
  * function should not prevent reusing the parser.
  */
 
-LIBXML_DLL_IMPORT void
+void
 xmlCleanupParser(void) {
     xmlCleanupCharEncodingHandlers();
     xmlCleanupPredefinedEntities();

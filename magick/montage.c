@@ -83,10 +83,10 @@ MagickExport MontageInfo *CloneMontageInfo(const ImageInfo *image_info,
   MontageInfo
     *clone_info;
 
-  clone_info=(MontageInfo *) AcquireMemory(sizeof(MontageInfo));
+  clone_info=MagickAllocateMemory(MontageInfo *,sizeof(MontageInfo));
   if (clone_info == (MontageInfo *) NULL)
-    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "UnableToAllocateMontageInfo");
+    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+      UnableToAllocateMontageInfo);
   GetMontageInfo(image_info,clone_info);
   if (montage_info == (MontageInfo *) NULL)
     return(clone_info);
@@ -143,18 +143,18 @@ MagickExport void DestroyMontageInfo(MontageInfo *montage_info)
   assert(montage_info != (MontageInfo *) NULL);
   assert(montage_info->signature == MagickSignature);
   if (montage_info->geometry != (char *) NULL)
-    LiberateMemory((void **) &montage_info->geometry);
+    MagickFreeMemory(montage_info->geometry);
   if (montage_info->tile != (char *) NULL)
-    LiberateMemory((void **) &montage_info->tile);
+    MagickFreeMemory(montage_info->tile);
   if (montage_info->title != (char *) NULL)
-    LiberateMemory((void **) &montage_info->title);
+    MagickFreeMemory(montage_info->title);
   if (montage_info->frame != (char *) NULL)
-    LiberateMemory((void **) &montage_info->frame);
+    MagickFreeMemory(montage_info->frame);
   if (montage_info->texture != (char *) NULL)
-    LiberateMemory((void **) &montage_info->texture);
+    MagickFreeMemory(montage_info->texture);
   if (montage_info->font != (char *) NULL)
-    LiberateMemory((void **) &montage_info->font);
-  LiberateMemory((void **) &montage_info);
+    MagickFreeMemory(montage_info->font);
+  MagickFreeMemory(montage_info);
 }
 
 /*
@@ -347,8 +347,8 @@ MagickExport Image *MontageImages(const Image *images,
   number_images=GetImageListLength(images);
   master_list=ImageListToArray(images,exception);
   if (master_list == (Image **) NULL)
-    ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-      "UnableToCreateImageMontage");
+    ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
+      UnableToCreateImageMontage);
   image_list=master_list;
   for (i=0; i < (long) number_images; i++)
   {
@@ -377,7 +377,13 @@ MagickExport Image *MontageImages(const Image *images,
   }
   if (i < (long) number_images)
     {
-      LiberateMemory((void **) &master_list);
+      if (!thumbnail)
+        --i;
+
+      for (tile=0; tile <= i; tile++)
+        if (image_list[tile])
+          DestroyImage(image_list[tile]);
+      MagickFreeMemory(master_list);
       return((Image *) NULL);
     }
   /*
@@ -547,11 +553,11 @@ MagickExport Image *MontageImages(const Image *images,
     count=1;
     for (tile=0; tile < tiles_per_page; tile++)
       count+=strlen(image_list[tile]->filename)+1;
-    montage->directory=(char *) AcquireMemory(count);
+    montage->directory=MagickAllocateMemory(char *,count);
     if ((montage->montage == (char *) NULL) ||
         (montage->directory == (char *) NULL))
-      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-        "UnableToCreateImageMontage");
+      ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
+        UnableToCreateImageMontage);
     x_offset=0;
     y_offset=(long) title_offset;
     FormatString(montage->montage,"%ldx%ld%+ld%+ld",
@@ -742,6 +748,7 @@ MagickExport Image *MontageImages(const Image *images,
           max_height=0;
         }
       DestroyImage(image);
+      DestroyImage(image_list[tile]);
       (void) SetMonitorHandler(handler);
       if (!MagickMonitor(MontageImageText,tiles,total_tiles,&image->exception))
         break;
@@ -765,8 +772,8 @@ MagickExport Image *MontageImages(const Image *images,
   }
   DestroyImage(tile_image);
   if (texture != (Image *) NULL)
-    LiberateMemory((void **) &texture);
-  LiberateMemory((void **) &master_list);
+    DestroyImage(texture);
+  MagickFreeMemory(master_list);
   DestroyDrawInfo(draw_info);
   DestroyImageInfo(image_info);
   while (montage->previous != (Image *) NULL)

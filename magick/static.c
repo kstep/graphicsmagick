@@ -51,7 +51,10 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ExecuteStaticModuleProcess() is just a template method.
+%  ExecuteStaticModuleProcess() is just a template method. This version is
+%  only used for static and moby builds.  See the version in module.c for
+%  module-only builds. This function takes the place of ExecuteModuleProcess
+%  for builds which do not support loading modules.
 %
 %  The format of the ExecuteStaticModuleProcess method is:
 %
@@ -69,16 +72,37 @@
 %    o argv: A text array containing the command line arguments.
 %
 */
+#if defined(SupportMagickModules)
 MagickExport unsigned int ExecuteStaticModuleProcess(const char *tag,
   Image **image,const int argc,char **argv)
+#else
+MagickExport unsigned int ExecuteModuleProcess(const char *tag,
+  Image **image,const int argc,char **argv)
+#endif /* defined(SupportMagickModules) */
 {
+  unsigned int
+    status = False;
+
 #if !defined(BuildMagickModules)
-# if !defined(_VISUALC_)
+  unsigned int
+    (*method)(Image **,const int,char **) = 0;
+
   if (LocaleCompare("analyze",tag) == 0)
-    return AnalyzeImage(image,argc,argv);
-#endif
-#endif
-  return(False);
+    method=AnalyzeImage;
+
+  if (method)
+    {
+      LogMagickEvent(CoderEvent,GetMagickModule(),
+        "Invoking \"%.1024s\" filter module",tag);
+
+      status=(*method)(image,argc,argv);
+
+      LogMagickEvent(CoderEvent,GetMagickModule(),
+        "Returned from \"%.1024s\" filter module",tag);
+    }
+
+#endif /* !defined(BuildMagickModules) */
+  return(status);
 }
 
 /*
@@ -109,6 +133,7 @@ MagickExport void RegisterStaticModules(void)
   RegisterAVSImage();
   RegisterBMPImage();
   RegisterCAPTIONImage();
+  RegisterCINEONImage();
   RegisterCLIPBOARDImage();
   RegisterCMYKImage();
   RegisterCUTImage();
@@ -177,6 +202,7 @@ MagickExport void RegisterStaticModules(void)
   RegisterTIFFImage();
   RegisterTILEImage();
   RegisterTIMImage();
+  RegisterTOPOLImage();
   RegisterTTFImage();
   RegisterTXTImage();
   RegisterUILImage();
@@ -193,7 +219,132 @@ MagickExport void RegisterStaticModules(void)
   RegisterXCImage();
   RegisterXCFImage();
   RegisterXPMImage();
+#if defined(_VISUALC_)
+  RegisterXTRNImage();
+#endif /* defined(_VISUALC_) */
   RegisterXWDImage();
   RegisterYUVImage();
+#endif /* !defined(BuildMagickModules) */
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   U n r e g i s t e r S t a t i c M o d u l e s                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  UnregisterStaticModules() statically unregisters all the available module
+%  handlers. This allows allocated resources to be freed.
+%
+%  The format of the UnRegisterStaticModules method is:
+%
+%      UnRegisterStaticModules(void)
+%
+%
+*/
+MagickExport void UnregisterStaticModules(void)
+{
+#if !defined(BuildMagickModules)
+  UnregisterARTImage();
+  UnregisterAVIImage();
+  UnregisterAVSImage();
+  UnregisterBMPImage();
+  UnregisterCAPTIONImage();
+  UnregisterCINEONImage();
+  UnregisterCLIPBOARDImage();
+  UnregisterCMYKImage();
+  UnregisterCUTImage();
+  UnregisterDCMImage();
+  UnregisterDIBImage();
+  UnregisterDPSImage();
+  UnregisterDPXImage();
+  UnregisterEMFImage();
+  UnregisterEPTImage();
+  UnregisterFAXImage();
+  UnregisterFITSImage();
+  UnregisterFPXImage();
+  UnregisterGIFImage();
+  UnregisterGRAYImage();
+  UnregisterGRADIENTImage();
+  UnregisterHISTOGRAMImage();
+  UnregisterHTMLImage();
+  UnregisterICONImage();
+  UnregisterJBIGImage();
+  UnregisterJPEGImage();
+  UnregisterJP2Image();
+  UnregisterLABELImage();
+  UnregisterLOCALEImage();
+  UnregisterLOGOImage();
+  UnregisterMAPImage();
+  UnregisterMATImage();
+  UnregisterMATTEImage();
+  UnregisterMETAImage();
+  UnregisterMIFFImage();
+  UnregisterMONOImage();
+  UnregisterMPCImage();
+  UnregisterMPEGImage();
+  UnregisterMPRImage();
+  UnregisterMSLImage();
+  UnregisterMTVImage();
+  UnregisterMVGImage();
+  UnregisterNULLImage();
+  UnregisterOTBImage();
+  UnregisterPALMImage();
+  UnregisterPCDImage();
+  UnregisterPCLImage();
+  UnregisterPCXImage();
+  UnregisterPDBImage();
+  UnregisterPDFImage();
+  UnregisterPICTImage();
+  UnregisterPIXImage();
+  UnregisterPLASMAImage();
+  UnregisterPNGImage();
+  UnregisterPNMImage();
+  UnregisterPREVIEWImage();
+  UnregisterPSImage();
+  UnregisterPS2Image();
+  UnregisterPS3Image();
+  UnregisterPSDImage();
+  UnregisterPWPImage();
+  UnregisterRGBImage();
+  UnregisterRLAImage();
+  UnregisterRLEImage();
+  UnregisterSCTImage();
+  UnregisterSFWImage();
+  UnregisterSGIImage();
+  UnregisterSTEGANOImage();
+  UnregisterSUNImage();
+  UnregisterSVGImage();
+  UnregisterTGAImage();
+  UnregisterTIFFImage();
+  UnregisterTILEImage();
+  UnregisterTIMImage();
+  UnregisterTOPOLImage();
+  UnregisterTTFImage();
+  UnregisterTXTImage();
+  UnregisterUILImage();
+  UnregisterURLImage();
+  UnregisterUYVYImage();
+  UnregisterVICARImage();
+  UnregisterVIDImage();
+  UnregisterVIFFImage();
+  UnregisterWBMPImage();
+  UnregisterWMFImage();
+  UnregisterWPGImage();
+  UnregisterXImage();
+  UnregisterXBMImage();
+  UnregisterXCImage();
+  UnregisterXCFImage();
+  UnregisterXPMImage();
+#if defined(_VISUALC_)
+  UnregisterXTRNImage();
+#endif /* defined(_VISUALC_) */
+  UnregisterXWDImage();
+  UnregisterYUVImage();
 #endif /* !defined(BuildMagickModules) */
 }

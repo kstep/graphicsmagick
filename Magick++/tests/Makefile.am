@@ -1,11 +1,11 @@
 #
 # Makefile for Magick++ tests
 #
-# Copyright Bob Friesenhahn, 1999, 2000, 2002
+# Copyright Bob Friesenhahn, 1999, 2000, 2002, 2004
 #
-AUTOMAKE_OPTIONS = 1.7 foreign
+AUTOMAKE_OPTIONS = 1.8 foreign
 
-INCLUDES = -I$(srcdir)/../lib -I../.. -I$(top_srcdir)
+AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)/Magick++/lib -I$(top_srcdir)
 
 #
 # Execute 'make check' to compile and run a test program
@@ -17,6 +17,7 @@ check_PROGRAMS =  \
 	coalesceImages \
 	coderInfo \
 	color \
+	colorHistogram \
 	exceptions \
 	montageImages \
 	morphImages \
@@ -31,34 +32,49 @@ averageImages_SOURCES	= averageImages.cpp
 coalesceImages_SOURCES	= coalesceImages.cpp
 coderInfo_SOURCES	= coderInfo.cpp
 color_SOURCES		= color.cpp
+colorHistogram_SOURCES  = colorHistogram.cpp
 exceptions_SOURCES	= exceptions.cpp
 montageImages_SOURCES	= montageImages.cpp
 morphImages_SOURCES	= morphImages.cpp
 readWriteBlob_SOURCES	= readWriteBlob.cpp
 readWriteImages_SOURCES = readWriteImages.cpp
 
-EXTRA_DIST = \
-	test_image.miff test_image_anim.miff
-
-CLEANFILES = testmagick_anim_out.miff
 
 if WIN32_NATIVE_BUILD
 SRCDIR='$(shell @WinPathScript@ $(srcdir)/)'
 else
-SRCDIR='$(srcdir)/'
+SRCDIR="$(srcdir)/"
 endif
 
-# FIXME: MinGW needs Windows path form of srcdir here (or pass as command argument)
-check:
-	-env SRCDIR=$(SRCDIR) ./exceptions
-	-env SRCDIR=$(SRCDIR) ./attributes
-	-env SRCDIR=$(SRCDIR) ./appendImages
-	-env SRCDIR=$(SRCDIR) ./averageImages
-	-env SRCDIR=$(SRCDIR) ./coalesceImages
-	-env SRCDIR=$(SRCDIR) ./coderInfo
-	-env SRCDIR=$(SRCDIR) ./color
-	-env SRCDIR=$(SRCDIR) ./montageImages
-	-env SRCDIR=$(SRCDIR) ./morphImages
-	-env SRCDIR=$(SRCDIR) ./readWriteBlob
-	-env SRCDIR=$(SRCDIR) ./readWriteImages
+RUNENV = "$(SHELL) $(top_builddir)/rungm.sh"
 
+# Environment parameters to be used during tests
+TESTS_ENVIRONMENT = \
+	RUNENV=$(RUNENV) \
+	SRCDIR=$(SRCDIR)
+
+# Tests to run
+TESTS = \
+	test_exceptions.sh \
+	test_appendImages.sh \
+	test_attributes.sh \
+	test_averageImages.sh \
+	test_coalesceImages.sh \
+	test_coderInfo.sh \
+	test_colorHistogram.sh \
+	test_color.sh \
+	test_montageImages.sh \
+	test_morphImages.sh \
+	test_readWriteBlob.sh \
+	test_readWriteImages.sh
+
+# Tests which are expected to fail
+XFAIL_TESTS = 
+
+# Extra files to distribute
+EXTRA_DIST = \
+	$(TESTS) \
+	test_image.miff \
+	test_image_anim.miff
+
+CLEANFILES = colorHistogram.txt testmagick_anim_out.miff ir.out # SunWS_cache

@@ -12,8 +12,8 @@ A:visited { color: #800080 }
 -->
 </STYLE>
 
-<TITLE>draw - Image Vector Drawing Methods</TITLE>
-<LINK REV="made" HREF="mailto:bfriesen@scooby.simplesystems.org">
+<TITLE>draw - User-friendly methods to draw on an image</TITLE>
+<LINK REV="made" HREF="mailto:bfriesen@shaggy.simplesystems.org">
 </HEAD>
 
 <BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
@@ -36,7 +36,7 @@ A:visited { color: #800080 }
                                 [<A HREF="../books.html">Books</A>] [<A HREF="../links.html">Links</A>]</P>
                         </TD>
                         <TD ROWSPAN=2 WIDTH=19%>
-                                <P ALIGN=CENTER><IMG SRC="../../images/magick_small.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0></P>
+                                <P ALIGN=CENTER><IMG SRC="../../images/gm-188x120t.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=188 HEIGHT=120 BORDER=0></P>
                         </TD>
                 </TR>
                 <TR>
@@ -124,6 +124,7 @@ DESCRIPTIONS</A>
 		<LI><A HREF="#drawpathmovetoabsolute">DrawPathMoveToAbsolute</A>
 		<LI><A HREF="#drawpathmovetorelative">DrawPathMoveToRelative</A>
 		<LI><A HREF="#drawpathstart">DrawPathStart</A>
+		<LI><A HREF="#drawpeekgraphiccontext">DrawPeekGraphicContext</A>
 		<LI><A HREF="#drawpoint">DrawPoint</A>
 		<LI><A HREF="#drawpolygon">DrawPolygon</A>
 		<LI><A HREF="#drawpolyline">DrawPolyline</A>
@@ -183,7 +184,7 @@ DESCRIPTIONS</A>
 <P>
 <H2><A NAME="name">
 NAME</A></H2>
-<P>draw - Image Vector Drawing Methods</P>
+<P>draw - User-friendly methods to draw on an image</P>
 <P>
 <HR>
 <H2><A NAME="synopsis">
@@ -192,7 +193,7 @@ SYNOPSIS</A></H2>
 <P>DrawContext  <STRONG>DrawAllocateContext</STRONG>( const DrawInfo *draw_info, Image *image );</P>
 <P>void  <STRONG>DrawAnnotation</STRONG>( DrawContext context, const double x, const double y, const unsigned char *text );</P>
 <P>void  <STRONG>DrawArc</STRONG>( DrawContext context, const double sx, const double sy, const double ex, const double ey, const double sd, const double ed );</P>
-<P>void  <STRONG>DrawBezier</STRONG>( DrawContext context, const size_t num_coords, const PointInfo *coordinates );</P>
+<P>void  <STRONG>DrawBezier</STRONG>( DrawContext context, const unsigned long num_coords, const PointInfo *coordinates );</P>
 <P>void  <STRONG>DrawCircle</STRONG>( DrawContext context, const double ox, const double oy, const double px, const double py );</P>
 <P>void  <STRONG>DrawColor</STRONG>( DrawContext context, const double x, const double y, const PaintMethod paintMethod );</P>
 <P>void  <STRONG>DrawComment</STRONG>( DrawContext context, const char *comment );</P>
@@ -214,7 +215,7 @@ SYNOPSIS</A></H2>
 <P>GravityType  <STRONG>DrawGetGravity</STRONG>( DrawContext context );</P>
 <P>unsigned int  <STRONG>DrawGetStrokeAntialias</STRONG>( DrawContext context );</P>
 <P>PixelPacket  <STRONG>DrawGetStrokeColor</STRONG>( DrawContext context );</P>
-<P>double * <STRONG>DrawGetStrokeDashArray</STRONG>( DrawContext context, size_t *num_elems );</P>
+<P>double * <STRONG>DrawGetStrokeDashArray</STRONG>( DrawContext context, unsigned long *num_elems );</P>
 <P>double  <STRONG>DrawGetStrokeDashOffset</STRONG>( DrawContext context );</P>
 <P>LineCap  <STRONG>DrawGetStrokeLineCap</STRONG>( DrawContext context );</P>
 <P>LineJoin  <STRONG>DrawGetStrokeLineJoin</STRONG>( DrawContext context );</P>
@@ -244,9 +245,10 @@ SYNOPSIS</A></H2>
 <P>void  <STRONG>DrawPathMoveToAbsolute</STRONG>( DrawContext context, const double x, const double y );</P>
 <P>void  <STRONG>DrawPathMoveToRelative</STRONG>( DrawContext context, const double x, const double y );</P>
 <P>void  <STRONG>DrawPathStart</STRONG>( DrawContext context );</P>
+<P>DrawInfo * <STRONG>DrawPeekGraphicContext</STRONG>( const DrawContext context );</P>
 <P>void  <STRONG>DrawPoint</STRONG>( DrawContext context, const double x, const double y );</P>
-<P>void  <STRONG>DrawPolygon</STRONG>( DrawContext context, const size_t num_coords, const PointInfo *coordinates );</P>
-<P>void  <STRONG>DrawPolyline</STRONG>( DrawContext context, const size_t num_coords, const PointInfo *coordinates );</P>
+<P>void  <STRONG>DrawPolygon</STRONG>( DrawContext context, const unsigned long num_coords, const PointInfo *coordinates );</P>
+<P>void  <STRONG>DrawPolyline</STRONG>( DrawContext context, const unsigned long num_coords, const PointInfo *coordinates );</P>
 <P>void  <STRONG>DrawPopClipPath</STRONG>( DrawContext context );</P>
 <P>void  <STRONG>DrawPopDefs</STRONG>( DrawContext context );</P>
 <P>void  <STRONG>DrawPopGraphicContext</STRONG>( DrawContext context );</P>
@@ -279,7 +281,7 @@ SYNOPSIS</A></H2>
 <P>void  <STRONG>DrawSetStrokeAntialias</STRONG>( DrawContext context, const unsigned int stroke_antialias );</P>
 <P>void  <STRONG>DrawSetStrokeColor</STRONG>( DrawContext context, const PixelPacket *stroke_color );</P>
 <P>void  <STRONG>DrawSetStrokeColorString</STRONG>( DrawContext context, const char *stroke_color );</P>
-<P>void  <STRONG>DrawSetStrokeDashArray</STRONG>( DrawContext context, const size_t num_elems, const double *dasharray );</P>
+<P>void  <STRONG>DrawSetStrokeDashArray</STRONG>( DrawContext context, const unsigned long num_elems, const double *dasharray );</P>
 <P>void  <STRONG>DrawSetStrokeDashOffset</STRONG>( DrawContext context, const double dash_offset );</P>
 <P>void  <STRONG>DrawSetStrokeLineCap</STRONG>( DrawContext context, const LineCap linecap );</P>
 <P>void  <STRONG>DrawSetStrokeLineJoin</STRONG>( DrawContext context, const LineJoin linejoin );</P>
@@ -389,7 +391,7 @@ ending degrees of rotation
 <P>
 <H3><A NAME="drawbezier">DrawBezier</A></H3>
 <blockquote>DrawBezier() draws a bezier curve through a set of points on the image. </blockquote><P>The format of the DrawBezier method is:</P>
-<blockquote>void DrawBezier ( <A HREF="types.html#DrawContext">DrawContext</A> context, const size_t num_coords, const <A HREF="types.html#PointInfo">PointInfo</A> *coordinates ); </blockquote><P>
+<blockquote>void DrawBezier ( <A HREF="types.html#DrawContext">DrawContext</A> context, const unsigned long num_coords, const <A HREF="types.html#PointInfo">PointInfo</A> *coordinates ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>context:</STRONG><BR>
@@ -1391,6 +1393,16 @@ A description of each parameter follows:</P>
 drawing context
 <P></P></DL></DL>
 <P>
+<H3><A NAME="drawpeekgraphiccontext">DrawPeekGraphicContext</A></H3>
+<blockquote>DrawPeekGraphicContext() returns a copy of the the <A HREF="types.html#DrawInfo">DrawInfo</A> structure at the head of the drawing context stack. The user is responsible for deallocating the returned object using DestroyDrawInfo. </blockquote><P>The format of the DrawPeekGraphicContext method is:</P>
+<blockquote><A HREF="types.html#DrawInfo">DrawInfo</A> *DrawPeekGraphicContext ( const <A HREF="types.html#DrawContext">DrawContext</A> context ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>context:</STRONG><BR>
+<DD>
+drawing context
+<P></P></DL></DL>
+<P>
 <H3><A NAME="drawpoint">DrawPoint</A></H3>
 <blockquote>DrawPoint() draws a point using the current stroke color and stroke thickness at the specified coordinates. </blockquote><P>The format of the DrawPoint method is:</P>
 <blockquote>void DrawPoint ( <A HREF="types.html#DrawContext">DrawContext</A> context, const double x, const double y ); </blockquote><P>
@@ -1411,7 +1423,7 @@ target y coordinate
 <P>
 <H3><A NAME="drawpolygon">DrawPolygon</A></H3>
 <blockquote>DrawPolygon() draws a polygon using the current stroke, stroke width, and fill color or texture, using the specified array of coordinates. </blockquote><P>The format of the DrawPolygon method is:</P>
-<blockquote>void DrawPolygon ( <A HREF="types.html#DrawContext">DrawContext</A> context, const size_t num_coords, const <A HREF="types.html#PointInfo">PointInfo</A> *coordinates ); </blockquote><P>
+<blockquote>void DrawPolygon ( <A HREF="types.html#DrawContext">DrawContext</A> context, const unsigned long num_coords, const <A HREF="types.html#PointInfo">PointInfo</A> *coordinates ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>context:</STRONG><BR>
@@ -1429,7 +1441,7 @@ coordinate array
 <P>
 <H3><A NAME="drawpolyline">DrawPolyline</A></H3>
 <blockquote>DrawPolyline() draws a polyline using the current stroke, stroke width, and fill color or texture, using the specified array of coordinates. </blockquote><P>The format of the DrawPolyline method is:</P>
-<blockquote>void DrawPolyline ( <A HREF="types.html#DrawContext">DrawContext</A> context, const size_t num_coords, const <A HREF="types.html#PointInfo">PointInfo</A> *coordinates ); </blockquote><P>
+<blockquote>void DrawPolyline ( <A HREF="types.html#DrawContext">DrawContext</A> context, const unsigned long num_coords, const <A HREF="types.html#PointInfo">PointInfo</A> *coordinates ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>context:</STRONG><BR>
@@ -1773,7 +1785,7 @@ set to false (zero) to disable antialiasing
 <P>
 <H3><A NAME="drawgetstrokedasharray">DrawGetStrokeDashArray</A></H3>
 <blockquote>DrawGetStrokeDashArray() returns an array representing the pattern of dashes and gaps used to stroke paths ( see DrawSetStrokeDashArray ) . The array must be freed once it is no longer required by the user. </blockquote><P>The format of the DrawGetStrokeDashArray method is:</P>
-<blockquote>double *DrawGetStrokeDashArray ( <A HREF="types.html#DrawContext">DrawContext</A> context, size_t *num_elems ); </blockquote><P>
+<blockquote>double *DrawGetStrokeDashArray ( <A HREF="types.html#DrawContext">DrawContext</A> context, unsigned long *num_elems ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>context:</STRONG><BR>
@@ -1788,7 +1800,7 @@ address to place number of elements in dash array
 <H3><A NAME="drawsetstrokedasharray">DrawSetStrokeDashArray</A></H3>
 <P>*/</P>
 <blockquote>DrawSetStrokeDashArray() specifies the pattern of dashes and gaps used to stroke paths. The strokeDashArray represents an array of numbers that specify the lengths of alternating dashes and gaps in pixels. If an odd number of values is provided, then the list of values is repeated to yield an even number of values. To remove an existing dash array, pass a zero num_elems argument and null dasharray. A typical strokeDashArray_ array might contain the members 5 3 2. </blockquote><P>The format of the DrawSetStrokeDashArray method is:</P>
-<blockquote>void DrawSetStrokeDashArray ( <A HREF="types.html#DrawContext">DrawContext</A> context, const size_t num_elems, const double *dasharray ); </blockquote><P>
+<blockquote>void DrawSetStrokeDashArray ( <A HREF="types.html#DrawContext">DrawContext</A> context, const unsigned long num_elems, const double *dasharray ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>context:</STRONG><BR>

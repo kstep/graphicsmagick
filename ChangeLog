@@ -1,24 +1,1168 @@
+2004-03-24  Mike Chiarappa  <mikechiarappa@libero.it>
+
+	* BCBMagick/magick/libMagick.bpr: updated to latest source modifications.
+	* BCBMagick/magick/GM_Magick.bpr: updated to latest source modifications.
+
+2004-03-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/plasma.c (ReadPlasmaImage): srand() is already invoked by
+	InitializeMagick() so don't call it here.
+	* configure.ac: Check for rand_r().
+	* magick/tempfile.c (ComposeTemporaryFileName): The full range of
+	safe characters was not being used, thereby limiting the number of
+	unique temporary file names available.
+
+2004-03-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.c (GetImageStatistics): New function to obtain
+	image statistics (minimum, maximum, mean, variance, and standard
+	deviation).
+	(DescribeImage): Include image channel statistics in verbose
+	output.
+
+2004-03-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/constitute.c (DispatchImage): Removed some unreachable
+	code that was accidentially left in the switch statement.
+	* magick/pixel_iterator.c (PixelIterateDualRead): Extended so that
+	the region in each image may use a different origin.
+	(PixelIterateDualModify): Extended so that
+	the region in each image may use a different origin.
+	* magick/composite.c (CompositeImage): Fix XorCompositeOp overflow
+	condition which occured on non-Intel architectures.
+
+2004-03-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* NEWS: Updated with changes up to today's date.
+	* tests/constitute.c (main): Float type seems to require allowing
+	a bit of error for Q:32.
+	* magick/constitute.c (DispatchImage): Be more careful when
+	rounding pixel intensity.
+	(ConstituteImage): Be more careful when converting float and
+	double to Quantum.
+	* magick/composite.c (CompositeImage): Fix Multiply composite
+	operator for Q:32 build (was all black image).
+	(CompositeImage): Tidied up the documented composite operators so
+	the implementation is easier to understand.
+	* PerlMagick/t/ttf/read.t: Set a desired label size so output
+	image should be the same size as the reference image even if the
+	FreeType type hinter is disabled.
+	* magick/annotate.c (RenderFreetype): Improve outline bounding box
+	computation accuracy.
+
+2004-03-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* PerlMagick/t/x/write.t: Don't test X11 if DISPLAY is not set.
+	* PerlMagick/t/x/read.t: Don't test X11 if DISPLAY is not set.
+
+2004-03-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/Makefile.am: Removed some apparently unnecessary library
+	dependencies.
+	* Makefile.am (windows-src): Added a way to generate a Windows
+	source zip file.
+
+2004-03-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c: The -operator command now supports
+	floating-point and percent of range arguments.
+
+2004-03-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c: Added support for -operator command with
+	syntax "-operator channel operator rvalue" which applies a
+	arithmetic or bitwise operator to a specified image channel
+	or all channels.
+
+2004-03-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* PerlMagick/t/filter.t: Fix Solarize test case.
+	* PerlMagick/t/wmf/read.t: Added another WMF test case.
+	* coders/wmf.c: Resolve WMF rendering bug with black color.
+	* magick/utility.c (StringToArgv): Free argv data prior to error
+	return.
+
+2004-03-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/jpeg.c (WriteJPEGImage): If image_info->colorspace is set
+	to GRAYColorspace then make sure that image is in a gray
+	colorspace.
+	* magick/image.c (TransformRGBImage): If colorspace is already an
+	RGB type (RGBColorspace, GRAYColorspace, or TransparentColorspace),
+	then simply return.  Do *not* set image->colorspace to RGBColorspace
+	since this potentially loses a valuable setting.
+
+2004-03-10  Peter Boos  <pedib@colorfullife.com>
+
+	* magick/annotate.c (RenderFreetype): If DrawAnnotation is called
+	with a string containing only one character and this character is
+	not recognized by the TrueType engine, a crash occured due to the
+	failure of FT_Load_Glyph. The failure caused an uninitialized
+	glyph.image pointer to be used by FT_Done_Glyph() later in the
+	code. The solution is to initialize the glyph.image pointer to
+	null.
+
+2004-03-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.c (QuantumOperatorRegionImage): Properly handle
+	over and underflow of arithmetic operators.
+	* magick/draw.c (DrawGetFillOpacity): Use fill opacity, and invert
+	opacity range so it is 0.0 to 1.0 (was acting like transparency).
+	(DrawSetStrokeOpacity): Validate range of stroke_opacity.
+	(DrawSetFillOpacity): Save value to context->fill.opacity and
+	validate the range of fill_opacity.
+	* magick/image.c (QuantumOperatorImage): New function to apply an
+	arithmetic or bitwise operator to the pixel quantums in an image.
+	(QuantumOperatorRegionImage): New function to apply an arithmetic
+	or bitwise operator to the pixel quantums in an image region.
+	* magick/image.c (IsImagesEqual): Re-implemented using the new
+	pixel iteration functions as a proof of concept.
+	* magick/pixel_iterator.h: Added some pixel iteration functions in
+	order to make it easier to implement algorithms which only need to
+	iteratively access pixels in a region. These functions are not
+	part of the API yet so their interface should be considered
+	unstable.
+	* doc/GNUmakefile: Rename Makefile to GNUmakefile since it relies
+	on GNU make extensions.
+
+2004-03-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/constitute.c (ConstituteImage): Add support for 'T'
+	(transparency) and 'O' (opacity) map types.  Simplify
+	implementation.
+	(DispatchImage): Add support for 'T' (transparency) and 'O'
+	(opacity) map types.  Simplify implementation.
+	* config/delegates.mgk.in: Quote delegate command names so
+	that they can contain embedded spaces.
+	* VisualMagick/bin/delegates.mgk: Quote delegate command names so
+	that they can contain embedded spaces.
+	* coders/tiff.c (WriteTIFFImage): Use the libtiff default endian
+	mode when writing TIFF rather than forcing MSB2LSB bit order.
+	(ReadTIFFImage): Enable reading in MSB2LSB bit order (better for
+	our byte-level parsing), enable memory mapping, and enable strip
+	chopping.  Memory mapping and strip chopping are probably enabled
+	by default.
+	* magick/nt_base.c (NTSystemComman): Use
+	MsgWaitForMultipleObjects() rather than WaitForSingleObject() in
+	order to avoid possible deadlock when application code directly or
+	indirectly creates windows.
+
+2004-02-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/animate.c (XMagickCommand): URL should point to
+	http://graphicsmagick.org/.
+	* magick/display.c (XMagickCommand): URL should point to
+	http://graphicsmagick.org/.
+	* magick/image.c (DisplayImages): Changes to fix memory leaks in
+	X11 commands had bugs which seriously broke DisplayImages.  Now
+	DisplayImages works properly again.
+	* magick/xwindow.c (XDestroyResourceInfo): New function to destroy
+	XResourceInfo.
+	* coders/x.c (WriteXImage): Implement based on DisplayImages().
+	(RegisterXImage): Always register X coder, but with read/write
+	support disabled if X11 not available.
+
+2004-02-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (ImportImageCommand): Eliminate memory leaks.
+	* magick/memory.c (LiberateMemory): Use MagickFreeMemory macro for
+	implementation.
+	(ReacquireMemory): Use MagickReallocMemory macro for
+	implementation.
+	(AcquireMemory): Use MagickAllocateMemory for implementation.
+
+2004-02-26  Vladimir  <lvm@integrum.ru>
+
+	* magick/memory.c (CloneMemory): Fixes to compile under Microsoft
+	Visual C++ 6.0.
+
+2004-02-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/animate.c (XAnimateImages): Memory leak reduction and
+	better integration with gm command.
+	* magick/display.c (XDisplayImage): Display was leaking memory
+	like a sieve.  Now it doesn't.
+	* magick/memory.c (CloneMemory): Computation for when it is safe
+	to use memcpy() was incorrect.  Use memmove() rather than
+	backwards-copy loop.
+	* Makefile.am ($(DIST_ARCHIVE_SRPM)): Added rules to build a
+	source RPM.
+	* configure.ac: Search for 'buildrpm' or 'rpm' programs in order to
+	support creating RPM packages on a system which has RPM installed.
+	* version.sh (PACKAGE_VERSION): Changed snapshot release naming so
+	that there is only one dash in the name and the snapshot date is
+	prefixed with '0' to assure proper directory sorting.  This allows
+	snapshot naming to be acceptable to RPM.  The snapshot package
+	name is now similar to GraphicsMagick-1.1.020040218.tar.bz2
+
+2004-02-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/xwd.c (RegisterXWDImage): Always register XWD, but only
+	register read/write methods if it is supported.
+	* wand/magick_wand.c: Synchronized with latest ImageMagick API
+	changes.
+
+2004-02-16  Lars Ruben Skyum  <lars.skyum@stibo.com>
+
+	* magick/resize.c (HorizontalFilter): Fixed: do process K channel
+	for CMYK images.
+	(VerticalFilter): do process K channel for CMYK images.
+	
+2004-02-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tga.c (ReadTGAImage): Fix matte channel handling. For
+	16-bit packets, use integer rather than floating point. Return
+	gray images as PseudoClass and set is_grayscale flag.  Add
+	logging.
+	* magick/fx.c (WaveImage): Ensure that image is
+	DirectClass. Ensure that matte channel is initialized if
+	necessary. Include background color in is_grayscale evaluation.
+	* magick/gem.c (GenerateNoise): Scale noise to range of quantum.
+
+2004-02-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/jp2.c (WriteJP2Image): Support passing all documented
+	Jasper options using -define.
+
+2004-02-13  Peter Boos  <pedib@colorfullife.com>
+
+	* coders/wmf.c (util_draw_arc): Fixes to improve handling for pie,
+	arc, and chord.  These fixes produce correct output for
+	wmf/examples/fjftest.wmf, but it is not known if they are correct
+	for all cases.
+
+2004-02-12  Tim Hunter  <cyclists@nc.rr.com>
+
+	* magick/profile.c (SetImageProfile): Bug fixes.
+
+2004-02-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/xpm.c (UnregisterXPMImage): Unregister PICON registration.
+
+2004-02-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/Makefile.am (label_la_LDFLAGS): Add a dependency on the
+	math library since floor() is used.
+	* wand/magick_wand.c (MagickRemoveImageProfile): Use C comments in
+	C files.
+	* magick/constitute.c (MapQuantumType): Fix spurious comma in
+	enum definition.
+	* magick/blob.c (GetBlobStreamHandler): Apparently return type can
+	not be const.
+
+2004-02-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Check for Windows fonts under
+	/usr/X11R6/lib/X11/fonts/truetype (XFree86 standard location?).
+	* coders/jp2.c (WriteJP2Image): Support providing a compression
+	rate value (range 0.0 to 1.0) using command line syntax similar to
+	'-define jp2:rate=0.5'.  In Magick++ this option may be accessed
+	similar to image.defineValue("jp2","rate","0.5");
+	* magick/command.c (DisplayImageCommand): Exit status was inverted
+	so 'gm display' was returning 1 for successful commands, and 0 for
+	failures.
+	(AnimateImageCommand): Exit status was inverted so 'gm animate'
+	was returning 1 for successful commands, and 0 for failures.
+
+2004-02-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/utility.h (MagickReallocMemory): Solaris compiler
+	complains about cast so remove it.
+	* coders/xwd.c (WriteXWDImage): Right-size the pixels buffer and
+	tune writer loops a bit.
+	* magick/color.h (VerifyColormapIndex): Improve diagnostics.
+	* coders/pict.c (WritePICTImage): Eliminate use of uninitialized
+	data when writing RGB PICT. Fix OpenBlob assertion when writing
+	JPEG PICT.	
+	(ReadPICTImage): Validate 'tile_image' colormap indexes rather
+	than 'image' colormap indexes. Preserve compression attribute from
+	tile image.
+	* magick/constitute.c (DispatchImage): Don't access image opacity
+	channel unless image->matte is True.
+
+2004-02-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/png.c (UnregisterPNGImage): Destroy PNG semaphore.
+	* magick/image.c (SetImageInfo): Since we don't know what the
+	"IMPLICIT" specifier is supposed to do, support for it is
+	removed. Perhaps by removing support for it, we will be reminded
+	why it exists.
+	* magick/magick.c (DestroyMagickInfo): Invoke
+	UnregisterStaticModules().
+	(GetMagickInfo): Remove registration for "IMPLICIT" format since
+	its purpose is presumed bogus.
+	* magick/static.c (UnregisterStaticModules): New function so we
+	can unregister static modules.
+	* coders/plasma.c (UnregisterPLASMAImage): Unregister FRACTAL.
+	* coders/icon.c (UnregisterICONImage): Unregister CUR.
+	* coders/bmp.c (UnregisterBMPImage): Unregister BMP2 and BMP3.
+	* coders/meta.c (UnregisterMETAImage): Unregister APP1JPEG, IPTC,
+	IPTCTEXT, IPTCWTEXT, and PICON.
+	* coders/miff.c: Check for run-length termination before testing
+	memory and only check opacity channel if matte is valid.
+	* magick/compress.c: Check for run-length termination before
+	testing memory (bad read error).
+
+2004-02-07  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* coders/bmp.c: Fix off-by-one error while initializing padding bytes.
+	* coders/dib.c: Fix off-by-one error while initializing padding bytes.
+	* magick/enhance.c: MaxMap vs MaxRGB error fixed.  Reported by Cristy.
+
+2004-02-04  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* magick/compress.c:  avoid a reference to uninitialized data.
+
+2004-02-04  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* coders/dib.c: initialize padding bytes.
+
+2004-02-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/montage.c (MontageImages): Fix leak of texture image (big
+	leak).
+
+2004-02-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (WriteTIFFImage): Fix detection of when to use a
+	temporary file when writing TIFF.  Writing to TIFF BLOBs was
+	broken by the recent changes to make BlobInfo a private type.
+	* magick/render.c (DestroyEdge): Use memmove for overlapping copy.
+
+2004-02-03  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* coders/bmp.c: initialize padding bytes.
+
+2004-02-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/constitute.c (ConstituteImage): Added map support for 'P',
+	in order to skip over a pad quantum.
+	(DispatchImage): Added map support for 'P', in order to write a pad
+	quantum.
+	* magick/resize.c (HorizontalFilter): Don't process opacity
+	channel unless matte is enabled.
+	(VerticalFilter): Don't process opacity channel unless matte is
+	enabled.
+	* magick/compress.c (Ascii85Initialize): Don't overwrite an
+	existing ascii85 allocation.
+	* magick/utility.c (Strip): Use 'memmove' rather than 'memcpy' to
+	copy overlapping data.
+	* tests/rwfile.c (main): Fix memory leak in test. Only apply size
+	if format requires it.
+	* tests/rwblob.c (main): Fix memory leak in test. Only apply size
+	if format requires it.
+	* coders/mono.c (RegisterMONOImage): Mono is a raw format.
+	* magick/magic.c (GetMagicInfo): Ensure that magic tests are
+	within the range of header data which was read.
+
+2004-02-02  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* coders/bmp.c: fix potential use of uninitialized data.
+	* coders/png.c: fix potential use of uninitialized data.
+
+2004-01-31  Mike Chiarappa  <mikechiarappa@libero.it>
+
+	* magick/studio.h: Fixed problem related to DLL version of BCBMagick.
+	Sometimes was incorrectly checked the presence of VC++ DLL. Thanks 
+	very much to Oliver Bertini for bringing this problem to our attention.
+	* BCBMagick: added libpng delegate library in both static and DLL
+	modes.
+	* BCBMagick: removed all unuseful files from CVS.
+	
+2004-01-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/render.c (CloneDrawInfo): Fixed nasty memory leak which
+	becomes painfully evident when using Magick++.
+	* magick/type.c (ReadTypeConfigureFile): Fix problem with parsing
+	<include> directive.
+	* configure.ac: The type.mgk generated had a syntax error.
+	* magick/effect.c (SpreadImage): Eliminate read from uninitialized
+	memory.
+	* magick/quantize.c (NodeInfo): Store nodes in a list similar to
+	ImageMagick.
+	(DestroyCubeInfo): Eliminate a small memory leak.
+
+2004-01-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/montage.c (MontageImages): Free thumbnails once they are
+	no longer needed (big leak).
+	* magick/blob.c (OpenBlob): Ensure that magick array is
+	fully initialized, even if the fread() is short.
+	* magick/list.c (ImageListToArray): Add a null pointer to the end
+	of the image list to serve as a handy list terminator.
+	* magick/tempfile.c (DestroyTemporaryFiles): Fix memory leak of
+	semaphore.
+	* magick/map.c (MagickMapDeallocateMap): Fix memory leak of
+	semaphore.
+	* coders/png.c (WriteOneJNGImage): Use DestroyBlob.
+	* magick/list.c (SyncNextImageInList): Use DestroyBlob.
+	* magick/image.c (AllocateNextImage): Use DestroyBlob.
+	(DestroyImage): DestroyBlob.
+	* coders/wpg.c (ExtractPostscript): Use DestroyBlob.
+	* magick/blob.c (DestroyBlob): New function. Similar to
+	DestroyBlobInfo except that it requires an Image * argument and
+	zeros the blob pointer. This one is preferred for use over
+	DestroyBlobInfo.
+
+2004-01-27  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* coders/png.c: Add DestroyBlobInfo() calls to stop memory leak when
+	processing JNG datastreams.
+
+2004-01-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/utility.h (MagickReallocMemory): Added a cast required to
+	make C++ Happy.
+	* coders/tiff.c: Adjust for bitstream API function renaming.
+	* magick/bit_stream.h: Rename BitStreamRead() to
+	BitStreamMSBRead() to indicate that it reads most significant bytes
+	first ("big endian" order).  Rename BitStreamWrite() to
+	BitStreamMSBWrite() to indicate that it writes most significant
+	bytes first ("big endian" order).
+	* wand/magick_wand.c: Updated to lastest ImageMagick API.
+
+2004-01-26  Mike Chiarappa  <mikechiarappa@libero.it>
+
+	* magick/stream.c: (SetPixelStream) removed "const" from definition of 
+	local variable [StreamHandler stream]. Borland C++Builder compiler signal
+	error "Cannot modify a const object".
+	
+2004-01-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (TIFFMapBlob): Allow libtiff to access memory
+	mapped file (or BLOB in memory) directly.  This provides a small
+	performance increase.
+	* magick/constitute.c (ReadImage): If a .mpc file is a temporary
+	file, then be sure to remove the associated .cache file when
+	removing the .mpc file.
+	* magick/log.h (LogEventType): ExceptionEventMask now maps to
+	WarningEventMask|ErrorEventMask|FatalErrorEventMask so that
+	'-debug exception' works again.
+	* magick/blob.c (CloseBlob): Allow CloseBlob to be invoked on a
+	blob which is not open (in UndefinedStream state).
+	(BlobInfo): The definition of BlobInfo is now private to blob.c.
+	(StreamType): The StreamType enumeration is now private to blob.c.
+	(GetBlobFileHandle): New function to access the blob file handle.
+	(GetBlobStreamHandler): New function to access the blob stream
+	handler.
+	(GetBlobStreamType): This function is removed entirely.
+	(BlobIsSeekable): New function to test if SeekBlob will work
+	properly for this blob type.
+	(GetBlobClosable): New function to test if the blob is allowed to
+	be closed by the library (may be an externally provided file
+	descriptor).
+	(GetBlobTemporary): New function to test if input file is a
+	temporary file which is to be removed.
+	(SetBlobClosable): New function to support setting the flag which
+	keeps the input file from being closed.
+	(SetBlobTemporary): New function to support setting the flag which
+	indicates that the input file is a temporary file.
+	* coders/jpeg.c (ReadJPEGImage): Invoke CloseBlob even if
+	blob is in UndefinedStream state.
+	* magick/error.h (ThrowReaderException): Ditto.
+	(ThrowWriterException): Ditto.
+	(ThrowWriterException2): Ditto.
+	(ThrowWriterException3): Ditto.
+	* magick/tempfile.h (ThrowReaderTemporaryFileException): Ditto.
+	(ThrowWriterTemporaryFileException): Ditto.
+	* coders/dps.c,coders/jpeg.c, coders/meta.c, coders/mvg.c,
+	coders/png.c, coders/tiff.c, magick/constitute.c, magick/stream.c:
+	Use new blob accessor functions.
+	* magick/cache.c (OpenCache): For Windows, set the sequential
+	access flag in all cases.  Maybe it will make a difference.
+
+2004-01-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/blob.c (GetConfigureBlob): Don't check Windows registry
+	if MagickLibConfigPath or MagickShareConfigPath is defined.
+	* magick/locale.c: Use a Unix-style message database for MinGW.
+	* rungm.sh.in: Translate environment paths to Windows format when
+	running under MinGW.
+	* magick/nt_base.c (mmap): Re-wrote mmap emulation to support
+	64-bit file offsets and to support anonymous mapping.
+	(msync): A crude emulation of Unix msync().
+	* acinclude.m4 (GM_FUNC_MMAP_FILEIO): Change result define from
+	HAVE_MMAP to HAVE_MMAP_FILEIO so that it doesn't conflict with
+	Autoconf standard definition.
+
+2004-01-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/cache.c (OpenCache): While allocating the pixel cache
+	from the heap, reserve enough memory to contain a full PseudoClass
+	image in order to reduce the chance that there will be a memory
+	allocation failure while processing the image. This also avoids
+	the possibility that the image pixels will be block-copied to a
+	new location due to heap memory fragmentation. If there is
+	insufficient heap memory (malloc() fails), then a disk-based pixel
+	cache will be used.
+	* coders/wpg.c: Backed out Jaroslav Fojtik's patch from 2004-01-13
+	because WPG was failing PerlMagick's existing WPG read test.
+
+2004-01-16  Mike Chiarappa  <mikechiarappa@libero.it>
+
+	* BCBMagick: updated to recent Windows delegate libraries.
+	* BCBMagick: modified build procedure. Removed all unused directories
+	and include files.
+	* lcms/include/lcms.h: Modified to achieve BCBMagick compilation.
+	* tiff/libtiff/tiffio.h: Modified to achieve BCBMagick compilation
+	* ttf/include/freetype/config/ftoption.h: Modified to achieve
+	BCBMagick compilation
+	* Magick++/lib/Magick++/Include.h: Modified to achieve BCBMagick compilation.
+		
+2004-01-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/wpg.c: Applied patch from Jaroslav Fojtik to support
+	reading the CTM (current transform matrix).  The CTM is not
+	applied yet (expect later patch).
+
+2004-01-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/sfw.c (ReadSFWImage): Added size_t cast.
+	* coders/msl.c (MSLStartElement): Added size_t cast.
+	* coders/meta.c (convertHTMLcodes): Added size_t cast.
+	* coders/locale.c: Add size_t casts and update to use memory
+	allocation macros.
+	* coders/html.c (WriteHTMLImage): Added size_t cast.
+	* magick/utility.h (MagickAllocateMemory): Added size_t cast.
+	(MagickReallocMemory): Added size_t cast.
+	* coders/bmp.c (WriteBMPImage): Added size_t cast.
+	* coders/art.c (ReadARTImage): Use memory allocation macros.
+	* VisualMagick/configure/configure.cpp: Update to support library
+	.def exports files with Visual C++ 7.0.
+	* Updated Windows delegate libraries: LCMS 1.12, FreeType 2.1.5,
+	BIG-KIT 1.5, libpng 1.2.5, libwmf 0.2.8.2, and zlib 1.2.1.
+	* Verified Windows static and DLL compilation with Visual C++ 6.0.
+	* Makefile.am: Update to automake 1.8.2.
+	* coders/gif.c (WriteGIFImage): Use ColorMatch rather than
+	FuzzyColorMatch when comparing colormap entries.
+
+2004-01-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/profile.c: Needed to include "magick/profile.h" in order
+	to obtain prototypes.
+
+2004-01-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* wand/wandtest.c: Change MagickCloneWand to MagickGetImage since
+	the API name changed.
+	* wand/pixel_wand.c: Synchronized with
+	latest daily ImageMagick updates.
+	* wand/magick_wand.c (MagickRemoveImageProfile): Synchronized with
+	latest daily ImageMagick updates.
+	* magick/profile.c (DeleteImageProfile): New method to make
+	it easier to destroy an image profile.
+	* magick/profile.h: New source file to contain functions for
+	dealing with embedded image profiles.
+	* magick/profile.c: New source file to contain functions for
+	dealing with embedded image profiles.
+	* Makefile.am (DISTDIRS): Distribute TclMagick subdirectory.
+
+2004-01-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* wand/magick_wand.c: Ported over the latest ImageMagick Wand API
+	updates.  Note that a comment now says that the Wand API will not
+	be finished until around 4th quarter of 2004.  This represents a
+	1-1/2 year slip from the original estimate!
+
+2004-01-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.c (IsImagesEqual): Simplified implementation.
+	* magick/magick.c: Removed some unused code.
+	* contrib/win32/ATL7/ImageMagickObject/ImageMagickObject.cpp
+	(IDispatch): Comment out InitializeSemaphore() so code compiles.
+	* libtool.m4: Updated to 2004-01-03 version of CVS libtool. This
+	should fix configure problems under AIX and IRIX.
+
+2004-01-03  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* coders/sgi.c: opacity channel was lost when writing grayscale
+	SGI images.  See bug report in magick-users list.
+
+2003-12-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/annotate.c (RenderFreetype): Ensure that image storage
+	class is set to DirectClass. Text rendering was not working
+	properly on top of PseudoClass images.
+	* magick/map.c (MagickMapRemoveEntry): Logic didn't properly
+	handle removing entry in list.
+	* configure.ac: Added --enable-efence option to enable memory
+	debugging using Electric Fence.
+
+2003-12-27  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* tests/maptest.c (main): Extended test to add an entry to the
+	list after an entry has already been removed.
+	* magick/image.c (ColorspaceTypeToString): Add support for LAB
+	colorspace.
+	* magick/map.c: Added signature members to all structures and
+	added assertions to ensure that the signature == MagickSignature
+	prior to use. MagickMapAllocateObject now initializes the object
+	reference count to one, and MagickMapDestroyObject decrements it
+	in order to be more correct even though the object reference count
+	is not actually used yet.
+	(MagickMapCopyString): Preserve a null argument, and use
+	AcquireString since it doesn't enlarge the string storage.
+	(MagickMapCopyBlob): Preserve null blobs.
+	* configure.ac: Search for the shmctl() function.  Under current
+	Cygwin, this is hiding in -lcygipc.
+
+2003-12-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/composite.c: Fixed the composite operator list in the
+	CompositeImage documentation.
+	* www/api/types.html: Corrected list of composition
+	operators. Sometime prior to the creation of GraphicsMagick, the
+	"Replace" composite operators were renamed to be "Copy" composite
+	operators.  Thanks to David Relson for bringing this problem to
+	our attention.
+	* PerlMagick/Magick.xs: Added "LAB" to colorspace types.
+	* magick/image.h (enum ColorSpace): Add LABColorspace enumeration.
+	* wand/magick_wand.h : Add some compatibility definitions to
+	translate from ImageMagick enumerations to existing GraphicsMagick
+	enumerations.
+
+2003-12-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/annotate.c: Use header synonyms defined by FreeType's
+	ftheader.h (included via <ft2build.h>) to include FreeType headers.
+	This will presumably be more portable in the future.
+	* configure.ac: <ft2build.h> is an optional prerequisite for
+	<freetype/freetype.h> and <libwmf/ipa.h> so include it when
+	testing for these headers.
+	* magick/annotate.c: Include <ft2build.h> if it is available.
+
+2003-12-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* wand/wandtest.c: Ported from latest ImageMagick version.
+	* wand/drawing_wand.c: Adapted to be compatible with latest
+	ImageMagick version.
+	* wand/pixel_wand.c: Adapted to be compatible with latest
+	ImageMagick version.
+	* wand/magick_wand.c: Ported from latest ImageMagick version.
+	* magick/image.h (Image): Members color_profile, iptc_profile,
+	generic_profile, and generic_profiles are now deprecated and
+	private although they continue to work as before. Please migrate
+	existing code to use the GetImageProfile and SetImageProfile
+	functions since these members will eventually be removed.
+	* magick/image.c (GetImageProfile): New function to retrieve an
+	image profile. Return value differs from similarly named
+	ImageMagick method since the ImageMagick approach assumes a
+	particular storage method.
+	(SetImageProfile): New function to add (or remove) an image
+	profile. Does not execute CMS color profiles.
+	* magick/cache.c (SetImageVirtualPixelMethod): Return unsigned int to
+	make the Wand implementation happy.
+	* magick/image.c (TransformColorspace): Return unsigned int to
+	make the Wand implementation happy.
+	(SetImageType): Return unsigned int to make the Wand
+	implementation happy.
+	* magick/draw.h, magick/draw.c: Substitute 'unsigned long' in
+	place of 'size_t' in interfaces so that the draw API is not
+	sensitive to the definition of _LP64.
+	* locale/C.mgk: Added new messages required by Wand library.
+	* magick/error.c (ExceptionSeverityToTag): Add tag translations
+	for the WandWarning, WandError, & WandFatalError enumerations
+	* magick/error.h (enum ExceptionType): Add WandWarning, WandError,
+	& WandFatalError enumerations to ExceptionType for ImageMagick
+	API compatibility.
+	* magick/image.h (enum ChannelType): Add an 'AllChannels'
+	enumeration to the ChannelType enumeration for ImageMagick
+	API compatibility.
+
+2003-12-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* PerlMagick, tests: Adjusted allowed error values for tests based
+	on new error computation arithmatic.  Some tests were left failing
+	since the operation they test provides results which are
+	unreasonably inaccurate, or obviously broken.
+
+2003-12-17  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* coders/jpeg.c: Changed "JPEG:preserve-settings from a key/value
+	pair to a simple flag.  Save and restore attributes when
+	"-define JPEG:preserve-settings" appears on the commandline.  Use
+	"+define JPEG:preserve-settings" to unset the flag.
+
+2003-12-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/wmf.c: Include <ft2build.h> if it is available since some
+	libwmf installs don't work unless it is included before the libwmf
+	API headers.
+	* configure.ac: Check for <ft2build.h>.
+
+2003-12-16  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* coders/jpeg.c: Changed stored jpeg quality attribute from
+	[jpeg-quality] to JPEG-Quality.  Added attributes JPEG-Colorspace
+	and JPEG-Sampling-factors.  Added code to save and restore
+	these attributes when "-define JPEG:preserve-settings=yes" is
+	present in the comandline.  Quality is restored if the input
+	was a JPEG and the quality was preserved.  Sampling factors
+	are restored if the input was a JPEG, sampling factors were
+	preserved, and the colorspace for the output file is the same
+	as that of the input file.
+
+2003-12-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* TclMagick/source/configure.ac: Add an initial TclMagick
+	configure-based build environment based on a template and macros
+	from the Tcl project.  I recall that while the extension does build,
+	it is possible that it is not properly registered as a module to Tcl.
+
+2003-12-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.c (IsImagesEqual): Properly compute error distance
+	vectors. Math was missing the necessary sqrt call.  Also,
+	pre-normalize the error differences to 1.0 in order to reduce the
+	storage size required to store the summation of error values.
+	* PerlMagick/t/composite.t: Update Minus and Xor reference images.
+	* magick/composite.c (CompositeImage): Incorporated fixes from
+	ImageMagick for XorCompositeOp, PlusCompositeOp, and
+	MinusCompositeOp.  Thanks to John Cristy for bringing the need for
+	these fixes to our attention.
+	* magick/image.h (RoundToQuantum): Added missing parenthesis.
+
+2003-12-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* doc/environment.imdoc: Document MAGICK_CODER_MODULE_PATH and
+	MAGICK_FILTER_MODULE_PATH.
+	* rungm.sh.in: Pass MAGICK_CODER_MODULE_PATH and
+	MAGICK_FILTER_MODULE_PATH in the environment so modules build may
+	be tested without first being installed.
+	* magick/module.c (FindMagickModule): Use the
+	MAGICK_CODER_MODULE_PATH environment variable to specify a search
+	path for coder modules.  Use MAGICK_FILTER_MODULE_PATH to specify
+	a search path for filter modules.
+	* Makefile.am: Updated to Automake 1.8.
+	(install-exec-perl): Fixes which achieve a successful
+	'make distcheck' for the first time in *Magick history.
+	* configure.ac: Set scripts to executable.
+
+2003-12-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Makefile.am (uninstall-data-html): Pathnames were computed
+	incorrectly so documentation directories were being left behind.
+	* configure.ac: --without-frozenpaths is now the default.  This
+	helps 'make distcheck' work and makes the package more portable.
+	Path to gm was being incorrectly frozen when --without-frozenpaths
+	was specified.
+	* magick/delegate.c (ReadConfigureFile): Validate delegate paths
+	prior to substitution.
+	* rungm.sh.in (top_builddir): Use a more reliable scheme for
+	computing location of source and build directories.
+	* magick/Makefile.am: Improve include directory computation logic.
+	* configure.ac: Don't override includedir.  Pass user-supplied LIBS
+	to the linker.
+
+2003-12-08  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* coders/jpeg.c: store JPEG quality as "[jpeg_quality]" attribute.
+
+2003-12-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* rungm.sh.in: New script to support executing uninstalled
+	executables.
+	* magick/blob.c (GetConfigureBlob): New MAGICK_CONFIGURE_PATH
+	environment variable allows the user to specify the search path
+	for configuration (.mgk) files.
+
+2003-12-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* index.html: Added a table showing current stable release and
+	development version.
+
+2003-12-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* doc/options.imdoc (use): Describe the syntax of the -process
+	argument.
+	* acinclude.m4 (AC_CHECK_CC_OPT): Add quoting in AC_CHECK_CC_OPT
+	definition.  Change suggested by Patrick Welche
+
+2003-12-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/magick.c (GetMagickInfo): Fix preprocessing logic error
+	which caused moby shared library build to not register static
+	modules.
+
+2003-12-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/module.c (ExecuteModuleProcess): Add some logging.
+	* magick/static.c (ExecuteStaticModuleProcess): Add some logging.
+
+2003-11-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* VisualMagick/installer: Add optional build support for LZW.
+	* wand/Makefile.am: Add AUTOMAKE_OPTIONS.
+	* configure.ac: Update to Autoconf 2.59.
+
+2003-11-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* VisualMagick/installer/inc/tasks-install-perlmagick.isx: Update
+	to reflect that the next release will use ActivePerl 5.8.1 Build
+	807.
+	* VisualMagick/installer/inc/files-configs.isx: Updated the source
+	locations for the .mgk files.  Install modules.mgk into the config
+	directory rather than the modules directory.
+	* configure.ac: Fixes to work with latest CVS libtool.
+	* libtool.m4: Update to latest CVS libtool.
+	* magick/modules.c, magick/static.c (ExecuteStaticModuleProcess):
+	Fix conditional compilation logic so that "moby" shared library
+	build works again.
+	* magick/compress.c, magick/mac.c: Use existing SaveImageText and
+	LoadImageText global constants rather than separate defines.
+
+2003-11-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Update to Autoconf 2.58.
+	* Makefile.am: Update to Automake 1.7.9.
+
+2003-11-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/draw.c (DrawComposite): Base64-encoded image was not
+	being deallocated. Bad memory leak.
+
+2003-11-03  Mike Chiarappa  <mikechiarappa@libero.it>
+
+	* BCBMagick: Updated installation procedure. Please read 
+	BCBMagick/readme.txt for details.
+	
+2003-11-03  Mike Chiarappa  <mikechiarappa@libero.it>
+
+	* BCBMagick: Released DLL Version. Please read BCBMagick/readme.txt
+	for details about installation and/or use.
+
+2003-11-03  Lars Ruben Skyum  <lars.skyum@stibo.com>
+
+	* magick/utility.c (GetPathComponent): Added x, X, and +
+	characters to list of legal characters in subimage
+	specifications. Required by raw RGB image reader which accepts the
+	syntax "image.rgb[100x100+50+50]". Thanks to John Cristy for
+	catching that one.
+
+2003-11-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/locale.c (GetLocaleMessageFromID): Fix ID range checking
+	logic.
+
+2003-10-30  Lars Ruben Skyum  <lars.skyum@stibo.com>
+
+	* coders/jpeg.c: changed to not write gray CMYK images as
+	grayscales. That would not be a valid optimization.
+	* magick/color.c (IsGrayImage, IsMonochromeImage): Changed to
+	never return true for CMYK images. Separated images get wrong
+	colors when optimized to grayscales based on what these two
+	functions return. Gray and CMYK are two different color spaces.
+	* magick/nt_feature.c (NTIsMagickConflict): changed to accept
+	colon as part of the magick string, consistent with the way the
+	function is used.
+	* magick/utility.c, magick/utility.h (ExpandFilenames,
+	GetPathComponent): Fixed filename glob expansion. Added handling
+	of filename prefix-magick and sub-image specification to
+	GetPathComponent. Sub-image specification takes precedence over
+	any filename patterns.
+
+2003-10-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/static.c (ExecuteModuleProcess): Renamed from
+	ExecuteStaticModuleProcess. Only compiled if SupportMagickModules
+	is not defined.
+	* magick/type.c (GetTypeBlob): Eliminated function.
+	(ReadTypeConfigureFile): Use GetConfigureBlob() rather than
+	GetTypeBlob().
+	* magick/module.c (GetModuleBlob): Eliminate this function since
+	modules.mgk is now installed under
+	${prefix}/share/GraphicsMagick-version/config so
+	GetConfigureBlob() may be used.
+	(lt_dlexit, etc.) Eliminate fake libltdl function wrappers used
+	for the static build.
+	(DestroyMagickModules): Added a new destroy function (simply
+	invokes DestroyModuleInfo()).
+	(GetModuleList): Learn where modules live by using
+	FindMagickModule() to locate the LOGO module rather than by using
+	the location of modules.mgk.  This is necessary since now
+	modules.mgk may be seperate from the modules.
+	(GetModuleBlob): Eliminated function.
+	(InitializeMagickModules): New function to safely initialize the
+	module loader.
+	(OpenModule): Added logging messages.
+	(OpenModules): Added logging messages.
+	(ReadModuleConfigureFile): Use GetConfigureBlob() rather than
+	GetModuleBlob().
+	Totally eliminated the rat's-nest of conditional code dependent on
+	SupportMagickModules.  Now all the code in module.c is dependent
+	on #if defined(SupportMagickModules).
+	* magick/magick.c (DestroyMagick): Invoke DestroyMagickModules().
+	(GetMagickInfo): #ifdef chunks of code which exist to support the
+	modules-build rather than forcing the module loader to pretend
+	that modules are being used when they are not. Pass module loading
+	exceptions back to the user rather than discarding them.
+	(GetMagickInfoArray): Don't inspect the exception status since may
+	short-circuits the operation.  Use best-effort instead.
+	(ListMagickInfo): Don't inspect the current exception status so
+	that all the modules which did load successfully will be
+	represented.
+	(InitializeMagick): Invoke InitializeMagickModules().
+	* magick/log.c: (GetLogBlob): Eliminated function.
+	GetConfigureBlob() is safe to use now when configuring logging.
+	(LogToBlob): Simplified function.  Only exists since FileToBlob()
+	may throw exceptions (which are logged, causing deadlock).
+	(ReadLogConfigureFile): Use GetConfigureBlob().
+	* magick/blob.c (GetConfigureBlob): Re-written to use the
+	MagickMap interface and to support the new 'lib' and 'share'
+	config directories.  The directory
+	${prefix}/lib/GraphicsMagick-version/config is scanned before
+	${prefix}/share/GraphicsMagick-version/config.
+	(FileToBlob): Simplified implementation.
+	* config/Makefile.am: New makefile to install .mgk files.
+	* magick/magick_config.h.in: Added MagickLibConfigPath and
+	MagickShareConfigPath defines.
+	* configure.ac: Install configuration files (.mgk files) in
+	${prefix}/lib/GraphicsMagick-version/config and
+	${prefix}/share/GraphicsMagick-version/config.  Architecture
+	independent files to under "share" while architecture dependnet
+	files go under "lib".
+	* Makefile.am: Added 'config' subdirectory to distribution.  All
+	.mgk files are moved from 'coders' & 'magick' into this single
+	directory.
+
+2003-10-21  Mike Chiarappa  <mikechiarappa@libero.it>
+
+	* magick/studio.h: small modifications to achieve DLL
+	compilation of library with Borland C++ Builder.
+	* coders/ps3.c (ZLIBEncode2Image): Fixed bug. Compilation
+	fail when HasZLIB is undefined because parameters 5 and 6,
+	are undefined.
+	
 2003-10-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* configure.ac: Updated to use GNU Automake 1.7.8 and the very
-	latest CVS libtool.
+	* libtool.m4: Updated libtool again to CVS latest version.
+	Libtool required some fixes for building DLLs under MinGW.
+	* magick/resource.c (InitializeMagickResources): Some code is
+	conditional based on HAVE_POPEN.
+	* magick/utility.c (SystemCommand): Improved conditional
+	compilation logic.
+	* magick/blob.c (OpenBlob): Code depending on popen() is
+	conditionally compiled based on HAVE_POPEN.  Code depending on
+	pclose() is conditionally compiled based on HAVE_PCLOSE.
+	* configure.ac: Add test for _pclose(), pclose(), _popen(), and
+	popen().
+	* magick/locale.c (GetLocaleMessage): Add missing MagickExport.
+	(GetLocaleMessageFromID): Add missing MagickExport.
+	* VisualMagick/installer/inc/files-development.isx (Source):
+	Include all of the headers from the magick directory in the
+	development package.  Including them individually is too error
+	prone.
+
+2003-10-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* VisualMagick/magick/magick_config.h.in: Added
+	PREFIX_MAGICK_SYMBOLS as a configuration option.
+	* magick/module.c (_CoderInfo): Added register_function and
+	unregister_function members to record the module's register and
+	unregister function addresses.
+	(OpenModule): Locate the module's register and unregister
+	functions and save their address to the module's CoderInfo record.
+	(UnloadModule): Invoke the module unregister function using the
+	address recorded by OpenModule().
+	(TagToFunctionName): If PREFIX_MAGICK_SYMBOLS is defined, then add
+	a "Gm" prefix to the register and unregister function names.
+	* libtool: Updated libtool files to the latest CVS version.
+	* configure.ac: Changed define name from MAGICK_SYMBOL_PREFIX to
+	PREFIX_MAGICK_SYMBOLS since support is not available for
+	specifying an arbitrary prefix.
+
+2003-10-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Added --enable-symbol-prefix configure option
+	which prepends "Gm" to all GraphicsMagick library symbols using
+	the C pre-processor.  In the future, this may change to support
+	specifying an arbitrary prefix, depending on experience.
+	* magick/studio.h: Include magick/symbols.h.
+	* magick/api.h: Include magick/symbols.h.
+	* magick/symbols.h: New header to support optionally remapping
+	library symbols.  If MAGICK_SYMBOL_PREFIX is defined, then
+	library symbols are remapped.
+
+2003-10-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/api.h: Removed inclusion of <magick/semaphore.h> since it
+	is an implementation header.
+
+2003-10-13  Lars Skyum  <lrs@stibo.dk>
+
+	* www/GraphicsMagick.html, www/animate.html, www/composite.html,
+	www/conjure.html, www/convert.html, www/display.html, www/gm.html,
+	www/identify.html, www/import.html, www/mogrify.html,
+	www/montage.html: added documentation for "-define" command line
+	option.	
+	* doc/brief_options.imdoc, doc/options.imdoc: Added documentation
+	for "-define" command line option.
+	* doc/gmdocselect, doc/imdocselect: Changed "skipform" label in
+	sed scripts to just "skipf". Solaris sed had problems with the
+	long(?) "skipform" label.
+
+2003-10-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* doc/composite.imdoc, doc/options.imdoc, doc/GraphicsMagick.imdoc:
+	Attempted to clarify the meaning of the compose arguments and how
+	composition works, as well as eliminating use of hard-coded values like
+	255.
+	* www/links.html: Added a link to Michael Still's article
+	"Graphics from the command line".
+
+2003-10-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/*.c: Updated module descriptions so that they accurately
+	describe the module rather than saying "Read/Write GraphicsMagick
+	Image Format".
+	* coders/cineon.c: Fix source module description.  Contrary to
+	opinion, ImageMagick did not invent the Cineon X image format so
+	description is now "Read/Write Cineon X Image Format."
+	* magick/magic.mgk: Added a CINEON entry for the Cineon X image
+	format.
+	* magick/static.c (RegisterStaticModules): Invoke
+	RegisterCINEONImage().
+	* coders/modules.mgk: Map "CIN" magick to CINEON module.
+
+2003-10-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* locale/C.mgk: Added message for "UnrecognizedCommand".
+	* magick/command.c (MagickCommand): No error was reported when a
+	subcommand failed to be matched so 'gm foo' would silently return.
+	Now an error message is properly reported.
+
+2003-10-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Makefile.am: Updated to Automake 1.7.8.
+	* various: Edits to eliminate minor issues detected by SGI C compiler.
+	* coders/ps3.c (WritePS3Image): Variable 'value was set but never
+	used so it is removed.
+	* magick/image.c (RGBTransformPacket): Removed inline request
+	since this function is too big to inline.
+	* magick/animate.c (XAnimateBackgroundImage): Fixed a GCC 3.X
+	"type pinning" warning.
+	* magick/display.c (XDisplayBackgroundImage): Fixed a GCC 3.X
+	"type pinning" warning.
+	* magick/render.c (GetPixelOpacity): Removed inline directive.  No
+	one in their right mind could ever imagine this function inlining
+	successfully.	
+	* magick/cache.c (IsNexusInCore): Adjusted so function inlines as
+	requested.
+	* coders/tiff.c (ReadTIFFImage): Improved logging information.
+	(WriteTIFFImage): Changed the way the bilevel/grayscale logic
+	works.  Now bilevel images are treated similar to any other
+	grayscale image unless CCITT FAX3 or FAX4 compression is requested
+	(which selects the MINISWHITE photometric).  The default is now to
+	write uncompressed bilevel images with MINISBLACK photometric.
+	* PerlMagick/t/composite.t: Use some reasonable error values.
+	* magick/image.c (GetImageDepth): Added special cases for
+	colormapped images and monochrome images in order to improve
+	performance.
+
+2003-10-09  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* NEWS: added info about color scaling, sampling-factor, and
+	changed a reference to "-coder-options" to "-define".
+
+2003-10-09  Lars Ruben Skyum  <lars.skyum@stibo.com>
+
+	* VisualMagick/bin/modules.mgk: added EPS3 mapping to PS3 module.
+	* coders/ps3.c, coders/tiff.c, magick/command.c, magick/image.c,
+	magick/image.h, magick/utility.c: Changed -coder-options option to
+	-define. Also renamed functions {Add,Remove,Access}CoderOption(s)
+	to {Add,Remove,Access}Definition(s). Changed ps coder-specific
+	option ps:image=imagemask to just ps:imagemask.
+
+2003-10-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/cineon.c: Imported and adapted Cineon image format coder
+	written by Kelly Bergougnoux <three3@users.sourceforge.net> with
+	assistance from John Cristy.
+
+2003-10-08  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* coders/jpeg.c: Extended -sampling-factor option to allow
+	user to supply full set of sampling factors.  If the full
+	set is not supplied, omitted ones are 1x1 by default, similar
+	to the behavior of "cjpeg -sample".
+	* magick/command.c: Accept multiple pairs of sampling factors.
+
+2003-10-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (WriteTIFFImage): Re-arranged logging for improved
+	output.  Cleaned up evaluation of SAMPLESPERPIXEL and
+	BITSPERSAMPLE.  Provided support for the TIFF coder options
+	tiff:samples-per-pixel and tiff:bits-per-sample for power users.
+	(ReadTIFFImage): Colormap generation for PHOTOMETRIC_MINISBLACK
+	and PHOTOMETRIC_MINISWHITE was inaccurate.  Seems to be accurate
+	now.
+	* PerlMagick/t/reference/read/input.miff: Updated due to Glenn's
+	change to scale macros.
+	* PerlMagick/t/tiff/input_gray_12bit.tiff: Replaced 12 bit image
+	with a different one which is written by GraphicsMagick.
+	* coders/ps3.c (WritePS3Image): Use AccessCoderOption().
+	* magick/image.c (AccessCoderOption): Added a function to use for
+	accessing coder-specific options.
+
+2003-10-08  Lars Ruben Skyum  <lars.skyum@stibo.com>
+
+	* magick/attribute.c (TraceSVGClippingPath): optimized for speed
+	and precision in clipping mask generation by using lines to
+	connect Bezier curve anchor points where applicable.
 
 2003-10-07  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
         * Revised ScaleColor5to8 and ScaleColor6to8 macros again, to
 	fill the low bits correctly.
 
+2003-10-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* PerlMagick/t/tiff/read.t: Added 16-color and 256 color
+	colormapped tests with a matte channel.
+	* PerlMagick/t/tiff/write.t: Added 16-color and 256 color
+	colormapped tests with a matte channel.
+	* coders/tiff.c (WriteTIFFImage): When using LZW compression,
+	apply the horizontal differencing predictor to RGB truecolor and
+	deep gray images since the TIFF spec says that LZW compression is
+	usually improved by using horizontal differencing with continuous
+	tone images.
+	Re-implemented grayscale and colormapped scanline preparation to
+	use the new bit-stream interface.  This is a bit slower, but very
+	flexible, and the implementation is very compact.  Writing of a
+	matte (transparency) channel is now believed to be correct for all
+	depths.
+	* magick/command.c (MogrifyImage): Only transform the colorspace
+	if it has been set (i.e. is not UndefinedColorspace).
+
 2003-10-06  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* coders/png.c (ReadOnePNGImage): PNG decoder would exit too
 	early when reading image.png[0].
 
-2003-10-04  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+2003-10-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-        * Revised ScaleColor5to8 and ScaleColor6to8 macros to fill in
-	the low bytes.
-	* coders/bmp.c (ReadBMPImage): scaling of 5-5-5-bit, 5-6-5-bit
-	and 8-8-8-8-bit images was slightly incorrect.
+	* PerlMagick/t/tiff/write.t: Added TIFF write tests for 4
+	bits-per-sample TIFF images, both with and without a transparency
+	channel.
+	* magick/image.c (DescribeImage): Added -verbose support for
+	displaying individual channel depths.
+
+2003-10-06  Lars Ruben Skyum  <lars.skyum@stibo.com>
+
+	* magick/image.c (SetImageInfo): cleaned up parsing of subimage
+	specification (image.psd[0]). It would fail sometimes due to
+	incorrect reuse of variables. It's a bit strange the code accepts
+	more range syntax-variations than can be stored in ImageInfo.
+
+2003-10-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.c (ChannelImage): The OpacityChannel, MatteChannel,
+	and BlackChannel operations set the matte channel to opaque, so
+	set image->matte to False for those operations.
+	(RGBTransformImage): Add an assertion to prevent passing the
+	colorspace argument 'UndefinedColorspace'.
+	(TransformRGBImage): Add an assertion to prevent passing an image
+	with colorspace set to 'UndefinedColorspace'.
 
 2003-10-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
@@ -27,77 +1171,974 @@
 	used to restore the seek position.  Thanks to John Cristy for
 	bringing this to our attention.
 
-2003-09-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+2003-10-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* magick/render.c (DrawClipPath): Fix memory leak of
-	clone_info->clip_path.  Problem reported by Vladimir
-	<lvm@integrum.ru>.
+	* magick/bit_stream.h: Added a bit-stream writer function.
+	* PerlMagick/t/reference/read/input_tim.miff: Reference image
+	was defective.
+
+2003-10-03  Lars Ruben Skyum  <lars.skyum@stibo.com>
+
+	* magick/image.c, magick/image.h: Updated AddCoderOptions to
+	accept "flag" keys that have no values. They are placed in the
+	coder options map with an empty, zero length string value. Option
+	argument syntax is now: "key1[=[value1]],key2[=[value2]],..."
+
+2003-10-03  Lars Ruben Skyum  <lars.skyum@stibo.com>
+
+	* magick/command.c: Updated +coder-options option to not clear the
+	entire map of coder options, but accept a list of names to remove
+	from the map. Use option argument "*" to clear the entire map of
+	coder options.
+	* magick/image.c, magick/image.h: Added function
+	RemoveCoderOptions. Added cast of signed char to unsigned char and
+	int in calls to isspace and isprint.
+	* magick/utility.c: Added cast of signed char to unsigned char and
+	int in calls to isspace and isprint. Added special handling of
+	+coder-options option in ExpandFilenames function.
+
+2003-10-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* PerlMagick/t/reference/read/input_tim.miff: The TIM read results
+	changed somewhat due to Glenn's ScaleColor5to8 fix.
+
+2003-10-01  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+        * Revised ScaleColor5to8 and ScaleColor6to8 macros to fill in
+	the low bytes.
+	* coders/bmp.c (ReadBMPImage): scaling of 8-8-8-8-bit images was
+	also slightly incorrect.
+
+2003-09-30  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* coders/bmp.c (ReadBMPImage): scaling of 5-5-5-bit and 5-6-5-bit
+	images was slightly incorrect.
+
+2003-09-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (ReadTIFFImage): When using the generic bit-stream
+	marshaller to read colormapped/gray images, the slight performance
+	improvement from creating a special case for matte images did not
+	justify almost doubling the amount of code.  Therefore, the two
+	loops are combined back into one.
+
+2003-09-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (ReadTIFFImage): Fixed reading grayscale TIFFs
+	that have a transparency channel. Now uses a generic bit-stream
+	marshaller to allow reading any grayscale or colormapped TIFF with
+	any bits per sample in the range of 1 to 16.
+	* magick/bit_stream.h: Added a generic implementation for
+	marshalling from a bit-stream into a quantum.  Still needs
+	re-writing for best performance.
+	* PerlMagick/t/tiff/read.t: Added a test case for reading 8-bit
+	grayscale TIFF with matte.  Corrected grayscale 12-bit read
+	signatures.  Added 16 color PseudoClass read test.  Added 4-bit
+	grayscale read test.
+
+2003-09-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (WriteTIFFImage): Add support for writing
+	DirectClass grayscale images at 4 bits per sample, including those
+	with an opacity channel.  This allows writing smaller files
+	(half the size) when the image has 16 (or less) levels of gray.
+        Use "gm convert inimage.tiff -depth 4 outimage.tiff" to quickly
+	create grayscale TIFF file with 16 (or less) levels of
+	gray.
+
+2003-09-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* NEWS: Updated NEWS file with changes since last update.
+	* index.html: Added a link to the www/AUTHORS.html file, as well
+	as text stating that GraphicsMagick is originally derived from
+	ImageMagick 5.5.2, with a link to the ImageMagick site.
+	* Makefile.am: Add rules to generate www/AUTHORS.html.
+	* www/AUTHORS.html: New HTML file based on the AUTHORS file in the
+	source package.  GraphicsMagick has many authors.
+
+2003-09-25  William Radcliffe  <billr@corbis.com>
+	* magick/image.c: Updated DescribeImage to cleanup EXIF data display
+	based on work by Cristy in ImageMagick.
+
+2003-09-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/tiff.c (WriteTIFFImage): Add support for writing
+	colormapped TIFF images with 1, 2, & 4 bits per colormap index.
+	This allows writing smaller files.
+
+2003-09-24  Lars Ruben Skyum  <lars.skyum@stibo.com>
+
+	* coders/ps3.c: Now creates a correct %%BoundingBox for images
+	with resolution stored as pixels per centimeter. Renamed serialize
+	functions. Added comment headers where they were
+	missing. Reformatted code to be in alignment with GraphicsMagick
+	standard formatting.
+	* magick/map.c: Fixed semaphore double locking problem in
+	MagickMapCloneMap.
+
+2003-09-23  Mike Chiarappa  <mikechiarappa@libero.it>
+
+	* BCBMagick/readme.txt : Updated compilation instructions.
+	* BCBMagick/magick/libMagick.bpr : Updated project, now include map.c.
+	* BCBMagick/lcms/Projects/BCB6/lcms.bpr : Updated project, now include 
+	  cmscam02.c and cmsvirt.c.
+	Much thanks to Alex Dvoretsky for bringing this problem to my attention.
+	
+2003-09-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.h (Image): Moved private members to bottom of
+	structure.
+	(_ImageInfo): Moved private members to bottom of
+	structure.
+	* magick/Makefile.am (pkginclude_HEADERS): Don't install
+	semaphore.h.
+	(noinst_HEADERS): Distribute map.h and semaphore.h.
+	* magick/image.h (ImageInfo): Change coder_options member from
+	type 'MagickMap' to type 'void *'.
+	* coders/png.c: include magick/semaphore.h.
+	* magick/blob.c: include magick/semaphore.h.
+	* magick/color.c: include magick/semaphore.h.
+	* magick/constitute.c: include magick/semaphore.h.
+	* magick/delegate.c: include magick/semaphore.h.
+	* magick/log.c: include magick/semaphore.h.
+	* magick/magic.c: include magick/semaphore.h.
+	* magick/magick.c: include magick/semaphore.h.
+	* magick/module.c: include magick/semaphore.h.
+	* magick/semaphore.c: include magick/semaphore.h.
+	* magick/stream.c: include magick/semaphore.h.
+	* magick/tempfile.c: include magick/semaphore.h.
+	* magick/type.c: include magick/semaphore.h.
+	* magick/blob.h (_BlobInfo): Changed 'Semaphore *' to 'void *'.
+	* magick/cache.h (_CacheInfo): Changed 'Semaphore *' to 'void *'.
+	* magick/image.h (_Image): Changed 'Semaphore *' to 'void *'.
+	* magick/command.c: Updated each invokation of MagickMapAddEntry()
+	to add an exception argument.
+	* tests/maptest.c: Updated to pass an exception argument to
+	MagickMapAddEntry.
+	* magick/image.c (AddCoderOptions): Added exception argument
+	and some more error handling.
+	* magick/map.c: Added formal documentation for methods.
+	(MagickMapCloneMap): Added exception argument.
+	(MagickMapAddEntry): Added exception argument and status.
+
+2003-09-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/emf.c: Changed NotAnEMFFile to ImproperImageHeader.
+	* magick/map.h: Changed all size parmeters from type 'unsigned
+	long' to 'size_t'.
+	* magick/map.c (MagickMapCopyBlob): Add new function to support
+	copying a Blob in a MagickMap.
+	(MagickMapDeallocateBlob): Add new function to support
+	deallocating a Blob in MagickMap.
+
+2003-09-23  Lars Ruben Skyum  <lars.skyum@stibo.com>
+
+	* coders/ps3.c: Fixed handling the case when no -coder-options are
+	provided to the PS3 coder.
+
+2003-09-22  Lars Ruben Skyum  <lars.skyum@stibo.com>
+
+	* coders/ps3.c: Changed %%Creator version to use
+	MagickLibVersionText, increased precision in HiResBoundingBox,
+	added a coder specific option for rendering bilevel images with
+	the PS imagemask operator indstead of the image operator.  
+	* magick/command.c: Added "-coder-options" command line argument
+	to all relevant command line utilities. Option argument to
+	-coder-options is a list of comma separated key-value pairs that
+	are saved in a MagickMap in ImageInfo for (de-)coders to use. See
+	PS3 coder for an example that checks for: -coder-options
+	"ps:image=imagemask"
+	* magick/image.c, magick/image.h: Added function AddCoderOptions().
+	* magick/map.c, magick/map.h: removed MS-DOS line terminators.
+
+2003-09-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* tests/maptest.c (main): Test/demo program for key,value map API.
+	* magick/map.c, magick/map.h: Implementation of a key,value map
+	API for internal use.
+
+2003-09-19  William Radcliffe  <billr@corbis.com>
+	* lcms/include/icc34.h lcms.h: Added back the icc34.h header and
+	changes to make lcms compile on Win32" icc34.h lcms.h.
+
+2003-09-19  Lars Ruben Skyum  <lars.skyum@stibo.com>
+
+	* coders/ps3.c: Fixed warnings from Solaris compiler.
+
+2003-09-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* locale/C.mgk: Eliminated the many "NotA" messages since they may
+	all be considered forms of "ImproperImageHeader".  It is useful to
+	provide the origin of such messages in case the wrong coder has
+	been invoked, however, this is expensive to do via the message
+	database since it explodes the number of messages.  The exception
+	logging can help here.  Once the exception reports include the
+	reporting entity, it will be more clear when the software
+	misbehaves.
+	* magick/error.h (ThrowReaderException2): Remove since no longer
+	used.
+	(ThrowReaderException): Simplified implementation so that
+	ThrowException is not expanded twice.
+	* magick/error.h (ThrowReaderException3): Remove since never used.
+	* coders/xtrn.c (ReadXTRNImage): Use ThrowReaderException rather
+	than ThrowReaderException2.
+	* locale/C.mgk (MissingArgument) Updated to include %s so that the
+	description field appears earlier in the message.
+	* magick/error.c (DefaultErrorHandler): Added a hack to allow the
+	'reason' member to include a %s so that it may specify the
+	formating of the message.  Care should be taken to not over-use
+	this hack.
+
+2003-09-18  Lars Ruben Skyum  <lars.skyum@stibo.com>
+
+	* coders/ps3.c: Major update of the PS3 coder. Now ascii85 encodes
+	all binary data. Many printer spoolers don't like the binary
+	data. The coder now creates much smaller files for bilevel, gray,
+	and colormapped images. Compression and image type is now
+	separated so they may be combined independently. Any alpha channel
+	is separated into a separate mask so it's possible to mask
+	bilevel, gray, colormapped, rgb, and CKYK images. You may also
+	mask a JPEG compressed PS file for instance. Clipping masks
+	created from a photoshop clipping path with -clip option is
+	converted to a corresponding postscript clipping path.  New
+	functions need comment headers.
+	* magick/attribute.c: Added TracePSClippingPath for creating a
+	postscript clipping path from a photoshop clipping path.
+	* magick/compress.c, magick/compress.h: Added write-hook based
+	interface to compression functions. Required for ascii encoding
+	compressed, binary data. The interface between blob write
+	functions, compression functions, and encoding functions could
+	benefit from more of this work.
+	* magick/image.c: ClipPathImage now stores the name of the
+	clipping path in the mask image filename so that it is remembered
+	and may be used for creating a postscript clipping path for
+	postscript output.
+	* coders/modules.mgk: Added EPS3 mapping to module PS3.
+
+2003-09-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c: Coalesced various "Missing" error reports into
+	one "MissingArgument" error report in order to reduce the number
+	of messages to be maintained.
+	* locale/C.mgk: Removed almost all "Missing" messages.
+	* magick/gm_messages.mc: Added Microsoft message compiler source
+	file to CVS until which time it may be generated automatically
+	during the build.
+
+2003-09-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* locale/Makefile: Added ability to generate gm_messages.mc
+	(for Windows message compiler) as well as adding 'clean' and
+	'install' targets.
+	* magick/delegate.h: Visual Studio .NET 2003 doesn't like
+	the chaining of GhostscriptVector members which share a
+	common return type. Splitting the definitions solves this
+	problem.
+
+2003-09-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/deprecate.h (MagickSignedType): Compatibility definition
+	to handle ImageMagick API change.
+	(MagickUnsignedType): Compatibility definition to handle
+	ImageMagick API change. The new names are just as useless as the
+	old names, but at least they are shorter.
+	* magick/command.c: Linux's sscanf has the terrible bug that it
+	improperly handles pulling out the first floating value from the
+	string "0x1".  Instead of retrieving the value 0 and returning 1,
+	it returns 0, probably because it rejects the string as a hex
+	constant. As a result, all options which used sscanf to validate
+	this input are now converted to use IsGeometry().
+
+2003-09-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* ltdl/ltdl.c: Update to libltdl current as of today.
+	* ltmain.sh: Update to libtool current as of today.
+	* configure.ac: For HPUX C++ compiler, add -AA to CXXFLAGS rather
+	than CXX.
+
+2003-09-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Decided that the standards conformance
+	defines create more problems than they solve so they are
+	removed.
+	Move the large-file tests to before the libtool configuration
+	since the libtool configuration was causing stdlib.h to be
+	included prior to the large file defines, and this causes
+	header failure with C++ under AIX.
+	* www/api/types.html: Update description of MonitorHandler.
+
+2003-09-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Set CXX to PTHREAD_CXX if necessary (and warn).
+	* acinclude.m4 (ACX_PTHREAD): Add check to see if xlC_r should be
+	used for AIX.
 
 2003-09-10  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* magick/render.c: Fixed handling of arc primitive (see IM-5.5.8).
 
+2003-09-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/log.h: It seems that test programs are using
+	GetMagickModule so make it visible by default.
+	* configure.ac: Use GM_FUNC_MMAP_FILEIO macro to test mmap.
+	* acinclude.m4 (GM_FUNC_MMAP_FILEIO): New macro to test mmap's
+	capability to do coherent file I/O.  The AC_FUNC_MMAP macro
+	was not testing the mmap features that GraphicsMagick uses, and
+	was failing on a number of systems.
+	* magick/blob.c (BlobMapModeToString): Only include this static
+	function if HAVE_MMAP is defined.
+	* coders/locale.c (WriteLOCALEImage): Fix FormatString argument
+	type inconsistencies.
+	* wand/magick_compat.h: Change MagickExport to WandExport.
+	* coders/jpeg.c, coders/locale.c, coders/meta.c, coders/miff.c,
+	coders/palm.c, coders/pict.c, coders/svg.c, coders/tiff.c,
+	coders/topol.c, magick/cache.c, magick/display.c, magick/image.c,
+	magick/widget.c: Removed unused values, changed storage types, or
+	added explicit casts, in order to reduce the number of "REMARK"s
+	when using the SGI IRIX compiler.
+	* magick/render.c (DrawClipPath): Fix memory leak of
+	clone_info->clip_path.  Problem reported by Vladimir
+	<lvm@integrum.ru>.
+	(DestroyDrawInfo): Remove unnecessary checks for non-null prior to
+	invoking MagickFreeMemory. MagickFreeMemory already checks for
+	non-null.
+	* magick/log.h (GetCurrentFunction): Apparently Visual C++ 6.0
+	does not support __FUNCTION__.  Problem reported by Vladimir
+	<lvm@integrum.ru>.
+	* wand/magick_compat.c: All functions in magick_compat.c must use
+	WandExport rather than MagickExport. Fix recommended by Vladimir
+	<lvm@integrum.ru>.
+	* magick/constitute.c (PushImagePixels): number_pixels was always
+	cast to a long during use, so change to store value in a long
+	instead.
+	(PopImagePixels): number_pixels was always
+	cast to a long during use, so change to store value in a long
+	instead.
+
+2003-09-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/psd.c: Eliminated warning regarding unused initialized
+	variable.
+	* magick/log.c: Eliminate type warnings regarding enum assignment.
+	* coders/locale.c (WriteLOCALEImage): Use UndefinedException
+	rather than 0 in severity_list terminating entry in order to avoid
+	a type conversion warning.
+	* magick/image.c (SetImageChannelDepth): Depth parameter was being
+	returned rather than status.  Oops!
+	* magick/effect.c (BlurScanline): Due to automatic casting
+	conventions, computation was being done (at least with SGI
+	compiler) as type 'unsigned long' rather than 'long' as it should
+	have been.
+	* coders/jpeg.c, coders/meta.c, coders/miff.c, coders/msl.c,
+	coders/palm.c, coders/pcd.c, coders/psd.c, coders/svg.c,
+	coders/tiff.c, coders/xcf.c, magick/render.c, : Quench many SGI
+	compiler warnings regarding variables which are initialized but
+	never used.
+	* magick/xwindow.h: Undef gravity defines so that enumerated type
+	is used instead.
+
 2003-09-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/log.c (LogMagickEvent): Windows system logging
+	functionality is not currently ported to work with Cygwin so
+	disable when compiling under Cygwin.
+	* magick/log.c (Win32EventlogOutput): Remove spurious comma in enum.
+	* wand/drawing_wand.h: Remove junk comment marker that I forgot to
+	remove.
+	* magick/studio.h: Provide prototypes for strlcpy and vsnprintf if
+	the system doesn't provide them in the requested compilation
+	environment.
+	* configure.ac: Add necessary standards compilance definitions to
+	magick_config.h.
+	Check for strlcpy and vsnprintf prototypes.
 	* Makefile.am (DOCDIRS): www/api/types does not exist anymore.
 
-2003-09-04  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+2003-09-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* coders/png.c: removed unused "loops_active" variable.
+	* configure.ac: Move multithread tests prior to libtool
+	configuration in case value of CC is changed.  Otherwise libtool
+	gets confused and refuses to run.
+	* acinclude.m4 (ACX_PTHREAD): If using AIX CC 'xlc' use 'xlc_r'
+	for multithread compiler.
+	* coders/jpeg.c: Undef HAVE_STDLIB_H before including the
+	jpeg headers or else we get an already defined error/warning.
 
+2003-09-04  Mike Chiarappa  <mikechiarappa@libero.it>
+
+	* BCBMagick : Updated whole directory tree to achieve correct
+	compilation with Borland C++ Buider 6.0.
+
+2003-09-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.c (ClipPathImage): Remove MS-DOS line terminations
+	(actually, extra carriage returns) which somehow crept into
+	ClipPathImage.
+	* locale/C.mgk: Added message for "PNG library is too old".
+
+2003-09-04  Lars Ruben Skyum  <lars.skyum@stibo.com>
+
+	* magick/transform.c (ProfileImage): Bugfix: conditional
+	compilation based on LCMS being present or not now works as
+	expected. An exception is thrown if LCMS is not present and
+	profile conversion is used.
+
+2003-09-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/txt.c (ReadTXTImage): Fix strlen() pointer type warning.
+	* magick/image.c (TextureImage): Fixed return with no value warning.
+	* magick/color.c (GetColorInfoArray): Decided that the const
+	return value was a bad idea.  Therefore, the return type has been
+	made non-const.
+	* magick/magick.c (GetMagickInfoArray): Decided that the const
+	return value was a bad idea.  Therefore, the return type has been
+	made non-const.	
+	* tests/constitute.c, tests/rwblob.c, tests/rwfile.c : Define
+	MAGICK_IMPLEMENTATION since these test programs using some internal
+	extensions.
+	* configure.ac: Test C++ compiler for __func__ support.
+	* magick/log.h: Added GetCurrentFunction() macro to handle
+	__func__ support determination.  Re-wrote GetMagickModule() macro
+	to use GetCurrentFunction().  Changes should allow compilation of
+	Magick++ when the C compiler supports __func__ but the C++
+	compiler does not.
+	* configure.ac: Changed from using HAS___func__ define to
+	HAS_C__func__ since this feature may be language sensitive.
+	* locale/C.mgk: Added missing JNGCompressionNotSupported message.
+
+2003-09-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/attribute.c (Generate8BIMAttribute): Fix sscanf argument
+	type mis-match.
+	* coders/ps3.c (ZLIBEncodeImage): Fix mis-classified
+	ZipLibraryIsNotAvailable error report.
+	* coders/url.c (RegisterURLImage): Only register URL format
+	support if libxml2 is available.
+	* coders/msl.c (RegisterMSLImage): Only register MSL format
+	support if libxml2 is available.
+
+2003-09-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/histogram.c (WriteHISTOGRAMImage): Remove a useless loop.
+	* coders/wpg.c: Applied patch from Fojtik Jaroslav to support
+	reading WPGs which use the EXT token.
+
+2003-08-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/color.c (HistogramToFile): Renamed static method
+	'Histogram' to 'HistogramToFile' to make it more clear what this
+	function does.
+	(GetColorHistogram): Added new function to support retrieving a
+	color histogram of the image.  A color histogram contains a count
+	of how many times each color occurs in the image.
+	* magick/image.c (GetImageChannelDepth): Return an 'unsigned int'
+	rather than 'long'.
+
+2003-08-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* PerlMagick/Magick.xs: Add support for CopyCyan, CopyMagenta,
+	CopyYellow, and CopyBlack, composition operators.
+	* magick/composite.c (CompositeImage): Added support for
+	CopyCyanCompositeOp, CopyMagentaCompositeOp,
+	CopyYellowCompositeOp, and CopyBlackCompositeOp, composition
+	operators.
+
+2003-08-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* wand/*: Updated to current ImageMagick Wand API (minus a few
+	unimplemented functions).
+	* magick/image.c (TextureImage): Add status return because Wand API
+	wants it.  Inherit is_grayscale status from texture image.
+	* magick/fx.c (SolarizeImage): Add status return because Wand API
+	wants it.
+	* magick/resource.c (SetMagickResourceLimit): Add status return
+	because Wand API wants it.
+	* magick/draw.c (DrawPeekGraphicContext): Now returns a
+	copy of the current DrawInfo context rather than returning
+	a pointer into the context stack. The user must destroy
+	this copy using DestroyDrawInfo() once it is no longer
+	needed.
+
+2003-08-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* VisualMagick/filters/LIBRARY.txt: This file is necessary to
+	incorporate analyze.c into the static build.  Without it the
+	build fails.
+
+2003-08-23  Lars Ruben Skyum  <lars.skyum@stibo.com>
+
+	* magick/transform.c: ProfileImage updated to handle alpha
+	channels and grayscale images. Also optimized color profiling of
+	color mapped images and fixed a few bugs in profiling of CMYK
+	images.
+	* magic/locale_c.h: added MagickExport to prototype declaration of
+	GetLocaleMessageFromID in WriteLOCALEImage again. Please update
+	your locale coder.
+	
 2003-08-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* version.sh (LIBRARY_REVISION): Ensure that library does not
-	overwrite released library from 1.0.3.  Change release date back
-	to "unreleased".
-	* GraphicsMagick 1.0.3 released.
-	* index.html: Changed version to 1.0.3.
-	* NEWS: Updated NEWS to reflect fixes since 1.0.2.
-	* version.sh (PACKAGE_RELEASE_DATE): Updated release date to
-	today's date.
-	* VisualMagick: Incorporate configure/build improvements from the
-	1.1 development version. This fixes build dependency problems and
-	supports building the coders as a static library to improve build
-	times.
+	* coders/wpg.c: Applied patch from Fojtik Jaroslav to use the
+	GetMagicInfo() function to obtain the format of embedded images,
+	and to provide a default WPG palette if the WPG file does not
+	supply a palette.
+
+2003-08-22  William Radcliffe  <billr@corbis.com>
+	* magick\gm_messages.bin locale_c.h transform.c: Fixed missing
+	message problem and added support for new lcms error handler.
+
+2003-08-21  Lars Ruben Skyum  <lars.skyum@stibo.com>
+
+	* magick/attribute.c, magick/image.c, magick/command.c: Added
+	"clippath" option for clipping named Photoshop clipping paths,
+	increased precision in clipping path knots, added comments, and
+	fixed a few bugs resulting from moving TraceClippingPath function
+	from ImageMagick to GraphicsMagick. Still need to update some of
+	the documentation.
+	* magick/locale_c.h, magick/studio.h: added MagickExport to
+	declaration of GetLocaleMessageFromID and moved include of
+	magick/locale_c.h after declaration of MagickExport. This fixes a
+	link error in dynamic, DLL version.
+	* coders/locale.h: added MagickExport to prototype declaration of
+	GetLocaleMessageFromID in WriteLOCALEImage.
 
 2003-08-21  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* PerlMagick/t/subroutines.pl (testRead): Ignore useless TIFF
+	warning so that 12-bit TIFF test passes.
 	* magick/constitute.c (ReadImage): Ensure that the reported image
 	magic string is that of the user-specified input file rather than
 	a temporary file prepared by an external delegate program.
+	* magick/command.c (ImportImageCommand): Since
+	DestroyExceptionInfo() now sets the destroyed exception signature
+	to an invalid value, GetExceptionInfo(exception) must be invoked
+	when the intention is to simply purge the exception.  This fix
+	resolves an abort when executing 'gm import'.
+
+2003-08-18  William Radcliffe  <billr@corbis.com>
+	* magick\gm_messages.bin locale_c.h transform.c: Updates that
+	add latest enhancments by Lars to color management code in
+	ProfileImage.
+
+2003-08-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* coders/wpg.c: Incorporated patch from Fojtik Jaroslav to support
+	rendering embedded WMFs.
 
 2003-08-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
-
+	* magick/image.c (SetImageChannelDepth): New function to transform
+	the specified channel so it fits the specified modulus depth.
 	* magick/blob.c (BlobToImage): Skip calling SetImageInfo() if
 	magick is already set.
 
+2003-08-18  William Radcliffe  <billr@corbis.com>
+	* PerlMagick/Magick.xs: Some fixes to get PerlMagick compiling
+	again due to new ID based error macros.
+
+2003-08-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* magick/error.h (enum): Remove spurious comma.
+
+2003-08-17  William Radcliffe  <billr@corbis.com>
+	* coders\png.c: Had to modify a few exception calls to work with
+	newest macros.
+
+2003-08-17  William Radcliffe  <billr@corbis.com>
+	* coders\locale.c magick/error.h locale.c locale_c.h studio.h:
+	The LOCALEH header file generator now adds an MGK_ prefiix to
+	all the ID defines as part of a fix to support the new error
+	and exception macros cross platform.
+
+2003-08-16  William Radcliffe  <billr@corbis.com>
+	* wand\magick_wand.c pixel_wand.c: The wand api code was totally
+	left out of the large macro conversion below as an oversight.
+
+2003-08-15  William Radcliffe  <billr@corbis.com>
+
+	* .\coders art.c avi.c avs.c bmp.c caption.c clipboard.c cmyk.c
+	cut.c dcm.c dib.c dps.c dpx.c emf.c ept.c fax.c fits.c fpx.c gif.c
+	gradient.c gray.c hdf.c histogram.c html.c icon.c jbig.c jp2.c
+	jpeg.c label.c locale.c logo.c map.c mat.c matte.c meta.c miff.c
+	mono.c mpc.c mpeg.c msl.c mtv.c mvg.c null.c otb.c palm.c pcd.c
+	pcl.c pcx.c pdb.c pdf.c pict.c pix.c png.c pnm.c preview.c ps.c
+	ps2.c ps3.c psd.c pwp.c rgb.c rla.c rle.c sct.c sfw.c sgi.c
+	stegano.c sun.c svg.c tga.c tiff.c tile.c tim.c topol.c ttf.c txt.c
+	uil.c url.c uyvy.c vicar.c vid.c viff.c wbmp.c wmf.c wpg.c x.c xbm.c
+	xc.c xcf.c xpm.c xtrn.c xwd.c yuv.c .\magick\animate.c annotate.c
+	blob.c cache.c cache_view.c color.c color.h command.c compress.c
+	constitute.c decorate.c delegate.c display.c draw.c effect.c
+	enhance.c error.c error.h fx.c gm_messages.bin image.c list.c
+	locale.c locale_c.h log.c mac.c magic.c magick.c module.c montage.c
+	nt_feature.c paint.c quantize.c registry.c render.c resize.c
+	segment.c semaphore.c shear.c signature.c static.c static.h
+	stream.c studio.h tempfile.h transform.c type.c utility.c widget.c
+	xwindow.c : Changes to support ID based message access and checking
+	all message usages. The main thing that was done was to remove all
+	the quotes around the "tags" used to lookup messages defined in
+	the locale\C.XML file. Macros were added to error.h to allow the
+	code to be compiled for either string based access or binary ID
+	based access. Using binary ID's will cause the code to fail to
+	compile if a message does not exist in C.XML, since no ID will be
+	created for a missing message. This change then allowed us to
+	easily track down all the messages that were "missing" or not
+	being accessed properly. The problems were massive and took many
+	days to resolve. I have left the code compiling in ID mode to keep
+	things in sync going forward and also because it makes message
+	lookup instantaneous. An ID is just an index into and array of
+	char *'s. There is still a lot of cleanup work remaining, but this
+	is a very good start. 
+
 2003-08-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/error.c (GetLocaleExceptionMessage): Add check to avoid
+	duplicating severity prefix.
+	* magick/log.c (LogMagickEvent): Incorporated fix from Bill
+	Radcliffe to enable logging control flags to work properly again.
+	* NEWS: Updated news.
 	* magick/blob.c (OpenBlob): Rewind file descriptor so that first
 	read is at zero offset. This fixes reading GIFs via a
 	user-provided file handle.
 
+2003-08-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.c (GetImageDepth): Extend so that the actual
+	minimum depth required to represent the image is
+	returned. Previously only the values 8, 16, and 32 were
+	returned. This means that a value of one is returned for a
+	monochrome image. Also fixed a bug in that the pixels were
+	incremented while the depth was incremented, resulting in the
+	first image pixels not being properly evaluated for depth.
+	(SetImageDepth): Extend to support converting the image to
+	arbitrary modulus depths.
+	(GetImageChannelDepth): New function to obtain the modulus depth
+	for a specified image channel.
+
+2003-08-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/draw.c (MvgAutoWrapPrintf): StreamError reported when
+	DrawError was intended.
+	* coders/logo.c (ReadLOGOImage): Report FileOpenError rather than
+	BlobError if requested image does not exist.
+
+2003-08-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/cache.c (PersistCache): If HAVE_SYSCONF and _SC_PAGE_SIZE
+	are defined, then assume that sysconf works and don't use legacy
+	getpagesize() function.
+	* magick/studio.h (_XOPEN_SOURCE): Should be defined as 600 in
+	order to match _POSIX_C_SOURCE=200112L according to the Single
+	UNIX Specification v3.  This is necessary for the vsnprintf
+	prototype to be visible.
+	* magick/attribute.c (ReadByte): Fix compilation warnings due to
+	casting 'unsigned char *' to 'char *' by changing function
+	definition to accept 'unsigned char *' instead.
+	* magick/error.h (UndefinedException): UndefinedException should
+	be ExceptionType, not ExceptionBaseType.
+	* magick/magick.c (IsValidFilesystemPath): Eliminate warning about
+	unused function when UseInstalledMagick is defined.
+	* magick/error.c (ThrowLoggedException): Fix improper parameters
+	passed to LogMagickEvent() when reason is not available.
+
+003-08-07  William Radcliffe  <billr@corbis.com>
+
+	* magick/log.c, log.h: Added ability to log by either severity
+	or by category of event. Made the defualt on windows to log all
+	fatal errors, errors, and warnings to the event log. This will
+	include anything generated by exceptions currently, but not any
+	normal "informational" logging.
+
+2003-08-07  William Radcliffe  <billr@corbis.com>
+
+	* magick/log.c, log.h: Translation of event codes to mask vals
+	was not working. Code was left out of last update. It is now in.
+
+2003-08-07  William Radcliffe  <billr@corbis.com>
+
+	* magick/error.c: Protect against NULL string passed into the
+	message lookup function.
+
+2003-08-07  William Radcliffe  <billr@corbis.com>
+
+	* magick/locale.c: Switched use of IsAccessible to nonloggging
+	version to prevent recursive problems.
+
+2003-08-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/Makefile.am (noinst_HEADERS): Distribute locale_c.h.
+	* locale/Makefile: Output locale_c.h.
+	* utilities/gm.c (main): Fix typo in Unix InitializeMagick
+	invocation.
+	* configure.ac: Use ACX_PTHREAD pthreads test macro.
+	* magick/(semaphore.c,spinlock.h,studio.h): Change HasPTHREADS
+	conditional define to HAVE_PTHREAD.
+	* magick/Makefile.am (noinst_HEADERS): Include spinlock.h in
+	distribution.
+
+2003-08-06  William Radcliffe  <billr@corbis.com>
+
+	*  contrib\win32\ATL7\ImageMagickObject/ImageMagickObject.cpp, 
+	ImageMagickObject_.h, ImageMagickObject.def, ImageMagickObject.rc
+	gm.rc: Changes to get things compiling again since all windows
+	specific logging support has been eliminated. The special build
+	script BuildImageMagickObject.cmd now compiles the message file
+	for resource based messages. The result is in gm_messages.bin.
+	The script also generates a special version of gm.exe that uses
+	the COM dll as a regular DLL and links to it. This is the long
+	desired Moby DLL build idea.
+	* magick/error.c, magick/error.h, magick/log.c, magick/log.h:
+	Upgrade of logging system to take over previous special logging
+	code for windows in nt_base.c. The new logic provides logging
+	of events to the debug api and the windows event log and also
+	provides a generic text file logging method.
+	* magick/gm_messages.bin, magick/ImageMagick.rc: New compiled
+	message file based on data in locale\C.mgk. RC file modified
+	to include this as a resource.
+	*  magick/locale.c, magick/locale_c.h: locale_c.h is generated by
+	the LOCALEH format of the locale coder. The logic in locale.c
+	uses the tables in the header lookup messages. On windows, all
+	the messages are stored as resources, while on UNIX they remain
+	in a string table.
+	* locale/C.mgk: Removed duplicate messages and added some new
+	default messages that help to create a complete set of severity
+	strings.
+	* magick/command.c, magick/magick.c: Get rid compiler warnings.
+
+2003-08-05  William Radcliffe  <billr@corbis.com>
+
+	* magick/command.c, magick/gm.c: Application level changes to
+	implement the client name - filename changes. The client name
+	can now be anything that the application wants and has nothing
+	to do with the saved filename of the application.
+	* magick/nt_base.c, magick/nt_base.h, magick/magick.c: Ripped
+	out old nt specific debugging and logging logic. Moving to the
+	standard logging. New and major revisions to InitializeMagick
+	to make the code more maintainable, reliable, and reaable. It
+	should be functionally identical, but implements the new split
+	client name and filename methododology.
+	* magick/utility.c, magick/utility.h: Added a couple of new
+	routines to support splitting the overloaded use of the client
+	name and client filename.
+	* coders/xtrn.c: Minor code cleanup
+
+2003-08-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* Copyright.txt: Added missing copyright notice which is required
+	due to copying the rlecomp manual page into ImageMagick.
+	* doc/config_files.imdoc: Started documentation for configuration
+	files.
+	* magick/xwindow.c (XSignalHandler): Ensure that segment_info is
+	non-null before attempting to use it.  Much thanks to John Cristy
+	for bringing this problem to our attention.
+
+2003-08-05  William Radcliffe  <billr@corbis.com>
+
+	* coders/locale.c: Added several new formats to this coder to
+	generate windows message resource format messages and also to
+	generates a new header file format that will support a table based
+	version of the other magick/locale.c.
+	* coders/xtrn.c: Minor code cleanup
+
+2003-08-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Only configure C and C++ libtool tags.
+	* PerlMagick/t/reference/composite/*.miff: Added some composition
+	test reference images.  These reference images will serve as
+	placeholders until better composition tests can be figured out.
+	It is not clear from the documentation what some of the
+	composition operators are supposed to do.
+
 2003-08-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* coders/clipboard.c, coders/emf.c, coders/tiff.c, coders/wmf.c,
-	coders/xcf.c, coders/xtrn.c, magick/magick.c, magick/nt_base.c,
-	magick/resource.c: Use traditional C comments in C source files.
+	* README.txt: Add documentation regarding using TRIO.
+	* configure.ac: Test for TRIO library if vsnprintf is not
+	available.
+	* magick/studio.h: Remap vsnprintf to trio_vsnprintf if TRIO is
+	available.
+	* coders/topol.c, coders/wmf.c, magick/magick.c, magick/nt_base.c,
+	magick/resource.c: Use traditional C comment form in C source
+	files.
+
+2003-07-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/log.h (LogEventType::AllEvents): Increase the value of
+	AllEvents so that it spans the complete positive range of a signed
+	integer.
+	* magick/xwindow.c, magick/xwindow.h: Incorporate patch from John
+	Cristy's ImageMagick to eliminate conditional dependence of
+	magick/xwindow.h on <X11/extensions/XShm.h>.
+	* magick/magick_config_api.h.in: HasSharedMemory define no longer
+	needed.
 
 2003-07-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* www/programming.html: Update Rmagick URL.
+	* GraphicsMagick.spec.in : Update according to instructions from
+	Troy Edwards.
+
+2003-07-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* GraphicsMagick.spec.in: Replaced GraphicsMagick.spec with
+	GraphicsMagick.spec.in, which is configured to produce
+	GraphicsMagick.spec.
+	* configure.ac: Configure GraphicsMagick.spec.
+
+2003-07-29  Troy Edwards  <vallimar@sexorcisto.net>
+
+	* GraphicsMagick.spec: Updated to CVS build. Added the
+	GraphicsMagickWand files to the spec.  Only try to remove the
+	unneeded perl package files if we are using PerlMagick.
 
 2003-07-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* GraphicsMagick.spec: Added RPM spec file authored by Troy
 	Edwards <vallimar@sexorcisto.net>.
+	* NEWS: Add note regarding EXIF fix.
 	* magick/attribute.c (GenerateEXIFAttribute): Look for the profile
 	name "EXIF" rather than "APP1".
 
+2003-07-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/magick_config_api.h.in: XWindowInfo structure in
+	xwindow.h needs HasSharedMemory define.
+	* magick/xwindow.c, magick/xwindow.h: Move inclusion of
+	<X11/extensions/shape.h> to xwindow.c.
+	* coders/dps.c, magick/xwindow.h: Move DPS includes to
+	coders/dps.c
+	* coders/Makefile.am: Substituted values are also set as
+	make variables, so use variables rather than substitutions.
+	* magick/log.c (GetLogBlob): MAGICK_HOME needs to take
+	precedence over the client path for the uninstalled build.
+	* magick/type.c (GetTypeBlob): MAGICK_HOME needs to take
+	precedence over the client path for the uninstalled build.
+	* magick/blob.c (GetConfigureBlob): MAGICK_HOME needs to take
+	precedence over the client path for the uninstalled build.
+	* magick/module.c (FindMagickModule): MAGICK_HOME needs to take
+	precedence over the client path for the uninstalled build.
+
+2003-07-24  Lars Ruben Skyum  <lars.skyum@stibo.com>
+
+	* magick/attribute.c (TraceClippingPath): Improvements to clipping
+	path parsing.
+
 2003-07-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/cache.c: Disable the Windows open() extensions when
+	compiling using Borland C++.
 	* magick/log.c (LogMagickEvent): Unlock semaphore before
 	returning.
+	* ltdl/ltdl.h: Updated to latest CVS version.
+	* ltdl/ltdl.c: Updated to latest CVS version.
+	* Libtool: Updated to use latest CVS libtool.
+
+2003-07-17  Mike Chiarappa  <mikechiarappa@libero.it>
+
+	* BCBMagick: Contributed initial Borland C++ Builder 6.0 build
+	environment.
+
+2003-07-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/color.c (GetColorInfoArray): Added a function to access
+	the color definition list as an array.
+	(GetColorList): Added access locks to ensure that list is not
+	re-ordered while it is being traversed.
+	* www/Magick++/Image.html: Add some more information regarding raw
+	pixel access.
+
+2003-07-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* wand/GraphicsMagickWand.pc.in (Cflags): Remove LFS_CPPFLAGS.
+	* wand/GraphicsMagickWand-config.in: Remove LFS_CPPFLAGS.
+	* magick/GraphicsMagick.pc.in (Cflags): Remove LFS_CPPFLAGS.
+	* magick/GraphicsMagick-config.in: Remove LFS_CPPFLAGS.
+	* configure.ac: Logic for setting LFS_CPPFLAGS was incomplete.
+	* coders/topol.c: Updated topol coder contributed by Jaroslav
+	Fojtik.  Topol is coming to life!
+
+2003-07-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/nt_base.h: Add a typedef for ssize_t
+	* magick/deprecate.h: ExtendedSignedIntegralType and
+	ExtendedUnsignedIntegralType are now deprecated types so they are
+	moved to deprecate.h. Existing code which uses these types should
+	continue to work.
+	* magick/blob.c (MapBlob): Change 'offset' parameter from type
+	off_t to magick_off_t so that it is not LFS dependent.
+	* magick/cache.c (GetPixelCacheArea): Return magick_off_t.
+	(PersistCache): Change 'offset' parameter to type magick_off_t.
+	* magick/cache.h (NexusInfo): Change 'length' type from
+	ExtendedSignedIntegralType to magick_off_t.
+	(CacheInfo): Change 'offset' and 'length' types from
+	ExtendedSignedIntegralType to magick_off_t.
+	* magick/blob.c (BlobToFile): Use ssize_t rather than
+	ExtendedSignedIntegralType for count.
+	(TellBlob): Return magick_off_t rather than
+	ExtendedSignedIntegralType.
+	* configure.ac: Check for a ssize_t type.
+	* magick/blob.h (_BlobInfo): Change 'offset' and'size' members
+	from ExtendedSignedIntegralType to magick_off_t.
+	* magick/blob.c (GetBlobSize): Return magick_off_t rather than
+	ExtendedSignedIntegralType.
+	(SeekBlob): Accept and return magick_off_t rather than
+	ExtendedSignedIntegralType.
+
+2003-07-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/monitor.c (MagickMonitor): Change 'quantum' argument from
+	type ExtendedSignedIntegralType to magick_int64_t. Change 'span'
+	argument from ExtendedUnsignedIntegralType to magick_uint64_t.
+	* magick/xwindow.c (XMagickMonitor): Change 'quantum' argument from
+	type ExtendedSignedIntegralType to magick_int64_t. Change 'span'
+	argument from ExtendedUnsignedIntegralType to magick_uint64_t.
+	* magick/widget.c (XMonitorWidget): Change 'quantum' argument from
+	type ExtendedSignedIntegralType to magick_int64_t. Change 'span'
+	argument from ExtendedUnsignedIntegralType to magick_uint64_t.
+	* magick/studio.h (QuantumTick): Change typecast from
+	ExtendedSignedIntegralType to magick_int64_t.
+	* magick/resource.c (AcquireMagickResource): Change 'size'
+	argument type from ExtendedSignedIntegralType to magick_int64_t.
+	(LiberateMagickResource): Change 'size' argument type from
+	ExtendedSignedIntegralType to magick_int64_t.
+	* magick/utility.c (FormatSize): Change 'size' argument type from
+	ExtendedSignedIntegralType to magick_int64_t.
+	* magick/nt_base.c: Change MagickOffset to magick_off_t.
+	* magick/studio.h (magick_off_t): Change MagickOffset to magick_off_t.
+        * coders/topol.c: Insert dummy member into palettRAS structure
+	since Visual C++ doesn't seem to handle empty structures.
+	* wand/GraphicsMagickWand.pc.in (prefix): Pass LFS CPPFLAGS.
+	* wand/GraphicsMagickWand-config.in: Pass LFS CPPFLAGS.
+	* wand/Makefile.am: Fix include path.
+	* magick/GraphicsMagick.pc.in (prefix): Pass LFS CPPFLAGS.
+	* magick/magick_config_api.h.in: Pass LFS configuration options
+	until the API is fixed so that it is not LFS sensitive anymore.
+	* magick/GraphicsMagick-config.in: Pass LFS CPPFLAGS.
+	* PerlMagick/Makefile.PL.in: Pass LFS CPPFLAGS.
+	* magick/Makefile.am: Install magick_types.h.
+	* magick/api.h: Include magick_types.h.
+	* magick/studio.h: Include magick_types.h rather than integral_types.h.
+	* VisualMagick/magick/magick_types.h.in: New header file (replacing
+	integral_types.h) to contain CPU and system-dependent primitive
+	typedefs.
+	* magick/magick_types.h.in: New header file (replacing
+	integral_types.h) to contain CPU and system-dependent primitive
+	typedefs.
+	* configure.ac: Use AC_SYS_LARGEFILE to test for large file
+	options. Update to determine integral typedefs for current CPU and
+	compiler options. Configure magick_types.h.
+	* magick/attribute.c (TraceClippingPath): Apply patch from Lars
+	Ruben Skyum which fixes clipping path parsing for paths generated
+	by Adobe software which pre-dates the Photoshop file format
+	specification.
+
+2003-07-08  William Radcliffe  <billr@corbis.com>
+
+	* magick/semaphore.c: Modified the way the system handles the
+	initialization of Win32 critical sections to use a spin lock
+	on WIn32 to bootstrap the initialization of all other crtical
+	sections. This is not an issue on UNIX since static init is used.
+	* magick/magic.c module.c magick.c log.c resource.c constitute.c
+	color.c cache.c delegate.c registry.c type.c: Small modifications
+	were made to eliminate the side effect of unlocking semaphores
+	as part of the releasing procedure. This also eliminated the
+	apparent bug of the system double locking certain semaphores.
+	The locked flag should now not be needed, but remains in place
+	for the time being as an added safegaurd.
 
 2003-07-04  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
@@ -105,7 +2146,8 @@
 
 2003-07-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* NEWS: Updated to include current changes since 1.0.2.
+	* NEWS: Updated news to include fixes and enhancements since the
+	1.0 release.
 
 2003-07-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
@@ -113,35 +2155,236 @@
 	the 'locked' flag while still under protection of the lock.
 	This fix is necessary for thread-safety.
 
+2003-07-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/jpeg.c (ReadJPEGImage): Conditionally copy exception.
+	* wand/Makefile.am (noinst_HEADERS): Need to distribute
+	magick_compat.h.
+	(EXTRA_DIST): Need to distribute GraphicsMagickWand-config.1.
+	* coders/wmf.c (ipa_bmp_draw): Use CopyException.
+	(ipa_device_begin): Use CopyException.
+	(lite_font_map): Use CopyException.
+	* coders/jpeg.c (ReadJPEGImage): Use CopyException.
+	* magick/image.c (GetImageException): Use CopyException.
+	* magick/constitute.c (WriteImages): Use CopyException.
+	* Makefile.am (DIST_SUBDIRS): wand needs to be included in
+	distribution.
+
+2003-06-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/static.c (RegisterStaticModules): Invoke
+	RegisterTOPOLImage.
+	* magick/magick.h (MagickInfo): Add member usage comments.
+	* magick/error.c (CatchException): Restore saved errno from
+	exception->error_number.
+	(CopyException): Copy error_number.
+	(DestroyExceptionInfo): Reset error_number to zero.
+	(GetExceptionInfo): Initialize error_number to zero.
+	(ThrowException): Save errno to exception-> error_number.
+	(ThrowLoggedException): Save errno to exception-> error_number.
+	* magick/error.h (ExceptionInfo): Borrow John Cristy's idea and
+	add a error_number member to ExceptionInfo to save the current
+	errno value. Otherwise CatchException may use some random errno.
+	* coders/Makefile.am: Build topol.c.
+	* coders/topol.c: Added initial TOPOL X image coder which is under
+	development by Jaroslav Fojtik. Not working yet.
+
+2003-06-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/pwp.c (ReadPWPImage): Ensure that image is initialized
+	before invoking ThrowReaderException.
+	* magick/image.c (CloneImage): Use CopyException.
+	* magick/error.c (CopyException): Add function to support copying
+	ExceptionInfo structures.
+	* magick/error.h (ExceptionInfo): Replaced recently-added 'whence'
+	member with module, function, and line members in order to keep
+	the information seperate, and match the parameters used by the
+	logging system.
+	(ThrowException): Log thrown exceptions.
+	* magick/error.c (ThrowLoggedException): New function used to
+	throw an exception, while recording and logging the location
+	where the exception is thrown.
+	* doc/options.imdoc (operation): Document TemporaryFile and
+	Exception events.
+	* magick/log.c (LogMagickEvent): Support logging ExceptionEvent.
+	* PerlMagick/Magick.xs: Added "Exception" event type.
+	* magick/log.h (LogEventType): Added ExceptionEvent.
+
+2003-06-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/error.c (ThrowException): Handle 'whence'
+	member. MagickFreeMemory already checks for null pointer so don't
+	check again.
+	(DestroyExceptionInfo): Handle 'whence' member. MagickFreeMemory
+	already checks for null pointer so don't check again.
+	* magick/error.h (ExceptionInfo): Add a 'whence' member to support
+	the ability to record where the exception is was thrown.
+	* VisualMagick/installer: Install Wand files.
+
+2003-06-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/blob.c (GetConfigureBlob): GetConfigureBlob should always
+	return a value.
+	* magick/type.c (GetTypeBlob): GetTypeBlob should always return a
+	value.
+	* magick/log.c (GetLogBlob): GetLogBlob should always return
+	a value.
+	* magick/magick.c (GetMagickInfoArray): Fixed array memory
+	allocation and clearing bug. Eliminate warnings.
+
 2003-06-24  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* VisualMagick/installer/inc/files-configs.isx: For a static
+	build, install the configuration files directly into the
+	application directory.
+	* VisualMagick/installer/inc/uninstallrun-unregister-com.isx
+	(Filename): Change ImageMagickObject.dll path.
+	* VisualMagick/installer/inc/run-register-com.isx (Filename):
+	Change ImageMagickObject.dll path.
+	* VisualMagick/installer/inc/files-com.isx (Source): Install
+	ImageMagickObject.dll and MagickCMD.exe in the application
+	directory alongside gm.exe and the CORE DLLs.
 	* INSTALL-unix.txt: Add additional information regarding LZW.
+	* VisualMagick/magick/magick_config.h.in: Add additional notes
+	regarding UNISYS LZW patent.
+	* PerlMagick/Magick.xs: Applied Dissolve composite operator fix
+	obtained from from John Cristy's ImageMagick which ensures that an
+	unused matte channel is set to Opaque, and uses this knowledge to
+	simplify the math.
+	* VisualMagick/configure/configure.cpp: The 'wand' library has a
+	linkage dependency on the 'magick' library. Also don't include
+	the magick subdirectory so that headers must be included like
+	<magick/api.h> for safety.
+	* coders/xtrn.c: Fix magick header inclusion.
+	* lcms\src\cmserr.c: Fix magick header inclusion.
 
 2003-06-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* doc/options.imdoc: Fix to formatting. Fix spelling of origin.
+	* PerlMagick/t/bzlib/read.t: Add test for reading BZipped file.
+	* PerlMagick/t/subroutines.pl (testRead): Skip testing reads
+	of compressed BLOBs because reading compressed BLOBs is not
+	supported yet.
 	* coders/bmp.c (ReadBMPImage): Only validate the file size value
 	for compressed BMPs.
+	* VisualMagick/wand, wand: First stab at building the Wand API
+	under Visual C++.  Still does not build as a DLL.
+
+2003-06-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/static.h: Add prototypes for RegisterXTRNImage and
+	UnregisterXTRNImage.	
+	* Makefile.am (DISTDIRS): Don't distribute the 'guide'
+	subdirectory. It is available for checkout from CVS.
+	* www: Utilities documentation is updated from <imdoc> masters.
+	Formatting could be improved, but the content seems ok.
+	* doc/environment.imdoc: New file to describe environment
+	variables.
+	* coders/cut.c (ReadCUTImage): Use MagickAllocateMemory and
+	MagickFreeMemory rather than malloc and free.
+	* doc/gmdoc2html: Add GraphicsMagick styling to utility web pages.
+	* doc/Makefile: Additional documentation Makefile enhancements.
+	* AUTHORS: New file to acknowledge significant contributors
+	to the software. If an author is not listed here, please let
+	us know.
+	* configure.ac: test -a is not POSIX compliant.
+
+2003-06-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* doc: Source documentation for 'gm' is now available via a 'doc'
+	CVS module. A Makefile is provided which formats the
+	documentation and installs it into the 'www' and 'utilities'
+	subdirectories.
+
+2003-06-15  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* wand: Added Magick Wand library available via
+	-lGraphicsMagickWand and <wand/wand_api.h>. Use
+	GraphicsMagickWand-config or GraphicsMagickWand.pc to obtain the
+	compilation options required to use the library. Magick Wand is
+	authored by John Cristy. Magick Wand is provided as a separate
+	library from -lGraphicsMagick in order to assure the stability of
+	the core GraphicsMagick library while allowing Magick Wand to
+	to evolve.
+	* images: Replace existing logo images with cleaner ones.
+	* www: Update links to point to updated logo images.
+	* logos: New CVS directory to contain master logos.
+	* scripts/txt2html: Updated inline logo image link.
+	* scripts/format_c_api_docs: Updated inline logo image link.
+	* version.sh: Support versioning all libraries independently.
+	* coders/meta.c: Prefix include paths for safety.
+	* magick/image.h: (TransmitType) Removed unused enumeration.
+	(ProfileType) Removed unused enumeration.
+	(QuantumType) Moved enumeration to constitute.h
+	(StorageType) Moved enumeration to constitute.h
+	* magick/draw.c (DrawPeekGraphicContext): Added function to peek
+	at head of drawing context stack (function added for ImageMagick
+	compatability).
+	* magick/image.c (CycleColormapImage): Change return type from
+	'void' to 'unsigned int' so that error status is returned to user.
+	(DescribeImage): Change return type from
+	'void' to 'unsigned int' so that error status is returned to user.
+	* magick/list.c (ReplaceImageInList): Incorporated function from
+	John Cristy's ImageMagick to replace current image in the list.
+	* coders/sgi.c (ReadSGIImage): Applied patch from John Cristy's
+	ImageMagick to save the compression type for SGI images.
+
+2003-06-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/txt.c (WriteTXTImage): Apply patch from John Cristy's
+	ImageMagick to observe image depth while writing pixel colors.
+	This patch is not applied to the 1.0 branch because it represents
+	an output format change which could break a dependent application.
+	(IsTXT): Recognize files written by the TXT coder.
+	(ReadTXTImage): Reject files written by the TXT coder until support
+	for reading these files is implemented.
+	(IsTXT): Ensure that sscanf doesn't read outside of provided data
+	by using a fixed size buffer.
 
 2003-06-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* version.sh: Update to unreleased 1.0.3 so that development
-	builds from CVS do not interfere with existing 1.0.2 release
-	library.
 	* configure.ac: Don't add -lfpx to LIBS while configuring
 	because the C compiler may fail to link with it in later
 	tests.
 
 2003-06-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* GraphicsMagick 1.0.2 released.
+	* PerlMagick/Magick.xs: RotateImage is documented to take
+	'degrees' argument, not 'degree'.  SwirlImage is documented to
+	take 'degrees' argument, not 'degree'.  SolarizeImage is
+	documented to take a 'threshold' argument, not 'factor'.  Wave is
+	documented to take 'amplitude' and 'wavelength' arguments.  Don't
+	transform colorspace to RGB when retrieving 'pixel' color value.
+	Release memory acquired to store 'length' pointer.  Picked up
+	memory leak fix related to 'SV **reference_vector' variable from
+	John Cristy's ImageMagick.	
+	* configure: Incorporate patch to handle inline better.
+	* magick/utility.c (GetToken): Adjust code to avoid "end-of-loop
+	code not reached" warning.
+	* magick/log.c (GetLogBlob): Eliminate warning regarding
+	unreached code.	
+	* magick/command.c (AnimateImageCommand): Eliminate warning regarding
+	unreached code.	
+	(ConvertImageCommand): Eliminate warning regarding
+	unreached code.	
+	(ImportImageCommand): Eliminate warning regarding
+	unreached code.	
+	* magick/type.c (GetTypeBlob): Eliminate warning regarding
+	unreached code.	
+	* magick/blob.c (GetConfigureBlob): Eliminate warning regarding
+	unreached code.
+	* coders/meta.c (super_fgets): Eliminated warnings regarding
+	comparison and return of incompatible pointer types.
+	(super_fgets_w): Eliminated warnings regarding
+	comparison and return of incompatible pointer types.
 	* magick/command.c (ConvertImageCommand): Eliminate warnings
-	noticed with Sun compiler.	
+	noticed when using Sun's compiler.
+
+2003-06-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
 	* acinclude.m4: Add '#undef inline' in front of C++ tests.
 	* coders/x.c (RegisterXImage): Only register the X coder if HasX11
 	is defined.
-	* libxml/libxml2.def: Since VisualMagick configure is not fixed
-	yet, add "LIBRARY CORE_RL_libxml_.dll" to the top of the file to
-	at least cover the release build case.
 
 2003-06-07  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
@@ -151,18 +2394,42 @@
 
 2003-06-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/utility.c (LocaleNCompare): Documented that comparison is
+	case-insensitive.
+	(LocaleCompare): Documented that comparison is case-insensitive.
+	* magick/log.c (ParseEvents): LocaleNCompare already does
+	case-insensitive compare so lower-casing is not necessary.
+	* Magick++: Updates to cause exceptions to be thrown if a bad
+	geometry specification is supplied.
+
+2003-06-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
 	* magick/log.c (ReadConfigureFile): Move event parsing to
 	ParseEvents funtion.
 	(SetLogEventMask): Move event parsing to
 	ParseEvents funtion.
+	* magick/utility.c (GetGeometry): Validate that the geometry
+	string only contains valid characters.
 	* PerlMagick/t/subroutines.pl (testMontage): It seems that passing
 	an empty set of options to the SetImage method corrupts the image
 	options (surely a PerlMagick bug), so don't invoke SetImage unless
 	there are options to set.
-	* magick/utility.c (GetGeometry): Validate that the geometry
-	string only contains valid characters.
-	* Magick++: Updates to cause exceptions to be thrown if a bad
-	geometry specification is supplied.
+
+2003-06-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/command.c (VersionCommand): Add build information to
+	version output.
+	* configure.ac: Save configure/build parameters for later use in
+	version output.
+
+2003-06-04  William Radcliffe  <billr@corbis.com>
+
+	* coders/meta.c: Added some casts to make things compile better.
+
+2003-06-03  William Radcliffe  <billr@corbis.com>
+
+	* coders/meta.c: Was broken due to editing mistakes as well
+	as inherent incompatability with MagickReallocMemory macro.
 
 2003-06-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
@@ -172,30 +2439,69 @@
 	* coders/psd.c (ReadPSDImage): Applied John Cristy's patch to fix
 	a index calculation bug which is evident when QuantumDepth>8.
 
-2003-06-02  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
-
-	* png.c: Merge bugfixes from 1.1 branch:
-	* MNG encoder failed to set the JNG bit in the simplicity profile.
-	* MNG encoder failed to write FRAM chunks when all images were JNG.
-	* JNG encoder wrote the wrong alpha_sample_depth for opaque images. 
-	* coders/png.c: png.c would dump core when writing a grayscale
-	image in png24 or png32 format.
-
 2003-06-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* magick/version.h.in: Change to be Copyright (C) 2002, 2003.
-	* NEWS: Updated to incorporate changes since the 1.0 release.
-	* version.sh: Bump library revision and release version since code
-	updates have been made.
-	* libxml/libxml2.def: Remove 'LIBRARY libxml2' statement which
-	confuses Visual C++ 6.0.
+	* coders/meta.c: Eliminated some compiler warnings.
+	* magick/transform.c (ProfileImage): Eliminated some compiler
+	warnings.
+	* magick/static.c (RegisterStaticModules): Invoke
+	RegisterXTRNImage if _VISUALC_ is defined.
+
+2003-06-02  William Radcliffe  <billr@corbis.com>
+
+	* utilities/gm.c: made -format work again but had to add off flag
+	to MagickCommand to maintain backward compatability with previous
+	versions of GM.
+	* magick/command.c: Added flag to tell MagickCommand whether GM is
+	expected to process metadata requests. The COM object *always* does.
+	* magick/transform.c: Added error handling, memory leak avoidance
+	and performanc enhancment.
+
+2003-06-01  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* NEWS: Added Bug Fixes item with info about the JNG encoder fix.
+
+2003-06-01  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* NEWS: Listed significant changes (thus far) in version 1.1.
+	* version.sh: Updated LIBRARY_CURRENT and LIBRARY_REVISION since
+	some command.c interfaces have changed, and a new interface has
+	been added. The only user of these interfaces should be 'gm' but
+	it always pays to be careful.
+	* utilities/gm.c (main): Use MagickCommand.
+	* magick/command.c (MagickCommand): New function to provide
+	API-level command access to the command functions provided by the
+	GM utility with an interface similar to ConvertImageCommand.
+	(AnimateImageCommand): Changed function arguments to match
+	ConvertImageCommand.
+	(ConjureImageCommand): Changed function arguments to match
+	ConvertImageCommand.
+	(DisplayImageCommand): Changed function arguments to match
+	ConvertImageCommand.
+	(ImportImageCommand): Changed function arguments to match
+	ConvertImageCommand.
+	* libxml/libxml2.def: Remove LIBRARY line since Visual C++ 6.0
+	doesn't like that the build library doesn't match the name
+	specified by LIBRARY.
 
 2003-05-31  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/magick.c (GetMagickInfoArray): Resolve thread-safety
+	issue by accessing magick_list directly under the protection of a
+	lock rather than using the pointer returned by GetMagickInfo.
+	Added error handling for insufficient memory.
+	* coders/tile.c (RegisterTILEImage): Added a usage note in formats
+	listing.
 	* coders/viff.c (RegisterVIFFImage): Module definition for "XV"
 	was missing.
 	* coders/ps2.c (RegisterPS2Image): Module definition for "PS2" was
 	missing.
+	* coders/wmf.c (RegisterWMFImage): Added usage note in formats
+	listing.
+	* coders/xpm.c (RegisterXPMImage): Hide PM alias for XPM in the
+	formats listing.
+	* coders/logo.c (RegisterLOGOImage): Hide registrations for
+	GRANITE, LOGO, and NETSCAPE in the formats listing.
 	* coders/jpeg.c (RegisterJPEGImage): Module definition for "JPEG"
 	was missing.
 	* coders/html.c (RegisterHTMLImage): Module definition for "HTML"
@@ -203,19 +2509,104 @@
 	* coders/bmp.c (RegisterBMPImage): Module names for "BMP2" and
 	"BMP3" should be "BMP".
 
+2003-05-30  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/magick.c (GetMagickInfoArray): New function to return
+	MagickInfo array.
+	(ListMagickInfo): Updated to use GetMagickInfoArray.
+	(ListModuleMap): New function to list module map to a file.
+	* utilities/gm.c: Centered the file header and made note of this
+	stupendously significant accomplishment.
+	* magick/command.c: Added a '-list modulemap' option. Added plural
+	forms of other list options for people who are are not limited to
+	the singular.  Also '-list font' and '-list fonts' now work for
+	people who think in terms of fonts rather than type.
+
+2003-05-30  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* MNG encoder failed to set the JNG bit in the simplicity profile.
+	* MNG encoder failed to write FRAM chunks when all images were JNG.
+	* JNG encoder wrote the wrong alpha_sample_depth for opaque images. 
+
+2003-05-29  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/magic.c (ReadConfigureFile): Removed bogus embedded magic
+	data and ensured that errors with loading magic.mgk propogate to
+	the top.
+	* magick/constitute.c (ReadImage): When building delegate error
+	report, handle the case where the filename is empty (such as for
+	"LOGO:").
+	* coders/png.c (WritePNGImage): Ensure that most severe exception
+	is reported via exception argument.
+	(ReadMNGImage): Ensure that most severe exception is reported via
+	exception argument.
+	* magick/command.c (ConvertImageCommand): Ensure that most severe
+	exception is reported via exception argument.
+	(CompositeImageList): Ensure that most severe exception is
+	reported via exception argument.
+	(CompositeImageCommand): Ensure that most severe exception is
+	reported via exception argument.
+	* magick/constitute.c (WriteImages): Ensure that most severe
+	exception is reported via exception argument.
+	* utilities/gm.c: Centered file header because I didn't like it.
+	* locale/C.mgk: Removed some defunct messages.
+	* magick/blob.c (PingBlob): Report useful error message.
+	(BlobToImage): Report sensible error message for null blob.
+	* magick/utility.c (AcquireString): Change UnableToAquireString to
+	UnableToAllocateString.
+	* coders/xwd.c (ReadXWDImage): Report CorruptImage rather than
+	CorruptXWDImage.
+	* coders/xpm.c (ReadXPMImage): Report CorruptImage rather than
+	CorruptXPMImage.
+	* coders/xcf.c (load_level): Report CorruptImage rather than
+	CorruptXCFImage.
+	* coders/wbmp.c (ReadWBMPImage): Report CorruptImage rather than
+	CorruptWBMPImage.
+	* coders/pcd.c: Report CorruptImage rather than CorruptPCDImage.
+	* coders/otb.c (ReadOTBImage): Report CorruptImage rather than
+	CorruptOTBImage.
+	* magick/constitute.c (ReadInlineImage): Report CorruptImage
+	rather than CorruptInlineImage.
+	* coders/pdb.c (ReadPDBImage): Incorporated undocumented fix from
+	ImageMagick which obtains the image depth from the image depth
+	attribute, and increases the packet memory allocation. Report
+	CorruptImage rather than CorruptPDBImageFile.
+
 2003-05-28  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* magick/command.c (MogrifyImageCommand): Wrong exception
+	* VisualMagick/bin/modules.mgk: Add mapping from SVGZ to SVG.
+	* coders/modules.mgk: Add mapping from SVGZ to SVG.
+	* coders/svg.c (RegisterSVGImage): Add registration for SVGZ
+	format.
+	* PerlMagick/t/zlib/read.t: Added test to check reading a file
+	with .gz extension. The blob portion of the test currently fails.
+	* coders/wpg.c (ReadWPGImage): Fix reading WPGs with embedded
+	Postscript. Ensure that scene numbers are sane. Bugs remain.
+	* magick/blob.c (OpenBlob): Recognize the .svgz extension as a
+	gzipped format.  Not required in order to read .svgz files since
+	the blob file magic detects gzip files.
+	* magick/command.c (MontageImageCommand): Wrong exception
 	macro was being invoked.  Steps have been taken to ensure that
 	this doesn't happen again.
 	(ImportUsage): Fix spelling of 'type'.
+	* magick/magick.c (DestroyMagick): Decided that initialization
+	state should be tracked via an enum so that DestroyMagick will
+	take effect even if InitializeMagick has never been called.
+
+2003-05-27  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* coders/png.c: png.c would dump core when writing a grayscale
+	image in png24 or png32 format.
 
 2003-05-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* coders/ept.c (WriteEPTImage): Fixed writing EPT preview image and
 	added logging.
+	* magick/enhance.c (NegateImage): If image is in CMYK colorspace,
+	then negate the `K' channel as well.
 	* PerlMagick/Magick.xs: Fix spelling of 'elevation' argument to
 	Shade method.
+	* magick/image.h (ImageInfo): Added more documenting comments.
 	* magick/image.c (CloneImage): Don't clone huffman ascii85
 	encoding support structure since it is not useful outside of the
 	current image context. Cloning a structure via pointer assignment
@@ -230,9 +2621,6 @@
 	* magick/paint.c (ColorFloodfillImage): Fix hang while
 	floodfilling using a pattern image with color similar to the
 	border color.
-	* magick/GraphicsMagick-config.in: Added example
-	usage to the help output.
-	* magick/type.c (GetTypeBlob): Search $MAGICK_HOME for type.mgk.
 	* coders/modules.mgk: Add missing mappings for PNG8,
 	PNG24, and PNG32.
 	* VisualMagick/bin/modules.mgk: Add missing mappings for PNG8,
@@ -240,40 +2628,237 @@
 
 2003-05-23  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/log.c (GetLogBlob): Return an error if log.mgk can not
+	be accessed.
+	* locale/C.mgk: Added UnableToAccessLogFile.
+	* magick/blob.c (GetConfigureBlob): Only return result of
+	NTResourceToBlob if it is non-NULL.
+	* magick/type.c (GetTypeBlob): Search $MAGICK_HOME for
+	type.mgk. Only return result of NTResourceToBlob if it is
+	non-NULL.
+	* magick/magick.c (GetMagickInfo): Return an error if GetModuleInfo
+	reports an error.
+	* magick/module.c (GetModuleInfo): Return an error if modules.txt
+	fails to load.
+	* utility.c (SubstituteString): Fixed a bug which was introduced
+	while updating the code to use the memory allocation macros.
+
+2003-05-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/GraphicsMagick-config.in (usage): Added example
+	usage to the help output.
+	* magick/magick.c (InitializeMagick): Added a static flag to
+	ensure that the Magick library is initialized only one time.
+	(DestroyMagick): Ensure that Magick library resources are only
+	destroyed if it has previously been initialized.
 	* magick/nt_base.c (DllMain): Fix contributed by Achim Domma. For
 	a DLL build, update PATH during Magick DLL initialization to
 	include the directory where the Magick core DLL resides. This
 	allows the loadable modules to find the core DLLs, even if the
 	core DLLs are not already in the PATH.
+	* magick/image.c (TextureImage): Incorporate new implementation
+	authored by John Cristy of ImageMagick Studio.  This
+	implementation is a full 7X (run-time) or 14X (user-time) faster
+	than the original ImageMagick implementation, and is about 2X
+	faster than the speeded-up version I commited on the 19th.
+
+2003-05-20  William Radcliffe  <billr@corbis.com>
+
+	* VisualMagick\configure : Fixed bug with add on (plug-ins) not
+	building automatically in DLL mode.
+
+2003-05-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.c (TextureImage): Creation of tiled image textures
+	is speeded up by 3.7X.
+	* coders/tile.c (ReadTILEImage): Use TextureImage.
+	* VisualMagick/bin/modules.mgk: Map "PATTERN" to "LOGO".
+	* coders/modules.mgk: Map "PATTERN" to "LOGO".
+	* coders/logo.c (ReadLOGOImage): Add "PATTERN" tiling support in
+	order to be compatible with ImageMagick.
+	* magick/image.c (SetImageInfo): Map "MAGICK" magick to "IMAGE" in
+	order to be compatible with ImageMagick.
 
 2003-05-18  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* GraphicsMagick 1.0.1 released.
-	* version.sh (PACKAGE_RELEASE_DATE): Update for 1.0.1 release.
-	* index.html: Adjust width setting for magick.png.
-	* coders/logo.c: Update to use temporary frog logo image
-	until official logo image is available.
-	* magick/magick_config_api.h.in: Add HasX11 so installed
-	xwindow.h works.
-	* images: Replace logo images with temporary frog logo image.
+	* www/Copyright.html: Try to fix formatting of XFig entry.
+	* www/windows.html: Update file names for 1.0.1 release.
+	* index.html: Mention 1.0.1 release as latest release.
+	* magick/magick_config_api.h.in: Add define for HasX11
+	so that it is possible to use functions in the installed
+	xwindow.h
+	* */*.c: Updated to use MagickAllocateMemory macro.
 
 2003-05-17  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
 
 	* coders/png.c: stifled compiler warnings about uninitialized
 	chunk and blob variables.
 
+2003-05-17  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/utility.h (MagickAllocateMemory): New macro to allocate
+	memory.
+	(MagickFreeMemory): New macro to free memory.
+	(MagickReallocMemory): New macro to reallocate memory.
+	* */*.c,*/*.h: Updated to use MagickFreeMemory and
+	MagickReallocMemory. Eliminated warnings when compiling with
+	GCC 3.3 using -Wall.
+	* images: The logo image was determined to have a copyright
+	problem so replace with blank image until a replacement is
+	available.
+
+2003-05-16  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* VisualMagick/magick/magick_config.h.in (HAVE_SYS_TYPES_H): 
+	Moved this define back from nt_base.h since removing it was
+	causing some problems for Magick++.
+
+2003-05-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* magick/image.c: (SetMagickInfo): Don't mask failure to
+	read magic.mgk.
+	* magick/constitute.c (ReadImage): Don't overwrite specific
+	exception info.
+	* magick/nt_base.c (NTResourceToBlob): Add logging similar
+	to that used in IsAccessible() in order to make operation
+	more clear.
+	* magick/module.c (FindMagickModule): Removed extraneous
+	"Searching for module file" log event.
+	(GetModuleBlob): Under Windows, don't clear or overwrite
+	an existing exception.
+	* magick/nt_base.h: Imported some obscure defines from
+	magick\magick_config.h.
+	* VisualMagick/magick/magick_config.h.in: Improved description
+	text and formatting.  Moved some obscure defines to
+	magick/nt_base.h.
+	* locale/C.mgk: Added a "RegistryKeyLookupFailed" error message.
+	* magick/type.c (GetTypeBlob): Report registry key lookup
+	failures. Also ensure correct return value when an error is
+	reported.
+	* magick/log.c (GetLogBlob): Report registry key lookup failures.
+	* magick/delegate.c (ReadConfigureFile): Report registry key
+	lookup failures.	
+	* magick/blob.c (GetConfigureBlob): Report registry key lookup
+	failures. Also ensure correct return value when an error is
+	reported.	
+	* magick/module.c (FindMagickModule): Report registry key lookup
+	failures. Also ensure correct return value when an error is
+	reported.
+	* magick/nt_base.c (NTRegistryKeyLookup): Simplify base key lookup
+	code, and improve coding style.	
+	* coders/logo.c, Copyright.txt, www/Copyright.html: Acknowledge
+	and respect the XFig copyright.
+	* VisualMagick/installer/inc/files-documentation.isx: QuickStart.txt
+	is no longer distributed so it is removed.
+
 2003-05-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* version.sh (CHANGE_DATE): Update to reliable awk-based technique
-	to extract the latest change date from the ChangeLog file.
-	* Makefile.am (EXTRA_DIST): QuickStart.txt and QuickStart.html
-	have not been updated, and are misleading, so they are removed.
+	* magick/image.h (RoundToQuantum): New macro to round positive
+	double to Quantum.
+	* magick/xwindow.c, magick/xwindow.h, magick/studio.h: Use FreeBSD
+	portability fixes from FreeBSD ports collection.
+	* configure.ac: Test for <machine/param.h> as used by some *BSD systems.
+	* QuickStart.txt, www/QuickStart.html: Don't distribute QuickStart.txt or
+	www/QuickStart.html since the content doesn't currently apply to
+	GraphicsMagick.
+
+2003-05-12  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* README.txt: Added text regarding where to obtain dcraw, a simple
+	but useful decoder for the proprietary raw file formats produced
+	by digital cameras (58 supported cameras!).
+	* configure.ac: Added support for finding dcraw.
+	* VisualMagick/bin/delegates.mgk: Added support for dcraw.
+	* coders/delegates.mgk.in: Added support for dcraw.
+	* version.sh (PACKAGE_RELEASE_DATE): Extract the most recent
+	update date from the ChangeLog file using awk.
+
+2003-05-12  William Radcliffe  <billr@corbis.com>
+
+	* modules.mgk, magic.mgk : Sync up both of these for UNIX
+	as well as VisualMagick builds. Includes changes for the
+	meta.c code.
 
 2003-05-11  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
-	* coders/msl.c (MSLStartElement): Don't reset gravity if the
-	user provides an x,y coordinate. Passing coodinates was loosing
-	the gravity setting.
+	* www/formats.html: Documented embedded gray intensity images.
+	* coders/logo.c: Added the embedded dithered gray intensity images
+	gray0, gray5, ..., through gray100 to support bilevel filling and
+	painting with an intensity resolution of 5%.
+	* www/formats.html: Added description of images available via
+	"IMAGE:" format tag, as well as providing a tiled preview.
+	* coders/logo.c: Renamed "transparent" image to "checkerboard"
+	since it is a better description.  Added a set of tiny bilevel
+	images (accessed via IMAGE:) for use when tiling, filling, or for
+	use as a texture image.  The complete set of image names available
+	via the IMAGE: coder are now BRICKS, CIRCLES, CROSSHATCH,
+	CROSSHATCH30, CROSSHATCH45, FISHSCALES, GRANITE, HEXAGONS,
+	HORIZONTAL, HORIZONTALSAW, HS_BDIAGONAL, HS_CROSS, HS_DIAGCROSS,
+	HS_FDIAGONAL, HS_HORIZONTAL, HS_VERTICAL, LEFT30, LEFT45,
+	LEFTSHINGLE, LOGO, NETSCAPE, OCTAGONS, RIGHT30, RIGHT45,
+	RIGHTSHINGLE, ROSE, SMALLFISHSCALES, CHECKERBOARD, VERTICAL,
+	VERTICALBRICKS, VERTICALLEFTSHINGLE, VERTICALRIGHTSHINGLE, &
+	VERTICALSAW.  The HS_* variants are similar to the standard
+	pattern images provided with the Windows GDI.
+	* coders/msl.c (MSLStartElement): Don't reset gravity if the user
+	provides an x,y coordinate. Passing coodinates was loosing the
+	gravity setting.
+
+2003-05-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/modules.mgk: Support the IMAGE: format via the LOGO
+	module.
+	* win2k/IMDisplay/IMDisplayView.cpp (DoDisplayImage):
+	Transparent tile is created by reading "tile:image:transparent".
+	* coders/logo.c (ReadLOGOImage): Add IMAGE: format to front for
+	embedded images so that adding new images doesn't proliferate coder
+	registrations. Legacy logo magick names (GRANITE, LOGO, NETSCAPE,
+	and ROSE) are still supported, but they are also available in the
+	IMAGE file space (e.g. IMAGE:ROSE).
+
+2003-05-09  William Radcliffe  <billr@corbis.com>
+
+	* VisualMagick\configure : Further refinements that support both
+	the new "big" library and the normal dynamic DLL buidling styles.
+
+2003-05-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/logo.c (ReadLOGOImage): Added a "TRANSPARENT" pattern
+	image which can be tiled to form the background of transparent
+	images.
+	* win32/IMDisplay/IMDisplayView.cpp: When displaying images which
+	include an opacity channel, use a checker-board pattern as the
+	image background so non-opaque pixels become evident.
+
+2003-05-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* coders/meta.c : Add or fix commenting of DebugString so that
+	module does not require Windows.
+	* lcms: Updated to release 1.10.
+
+2003-05-07  William Radcliffe  <billr@corbis.com>
+
+	* VisualMagick\bin : Brought the MGK files back into sync with
+	the rest of the package and added types for meta.c.
+	* VisualMagick\bin\win32\ATL : removed config files in order to
+	prevent very old ATL project from being picked up in the config
+
+2003-05-06  William Radcliffe  <billr@corbis.com>
+
+	* VisualMagick\lcms\LIBRARY.txt : a define to prevent popup message
+	box behaviour.
+	* VisualMagick\configure\ : New feature - -t consolidates all the
+	coders into on library for the static build in order to make the
+	build process tolerable.
+	* coders\xtrn.c : new support for BSTR - wdie character data
+	* coders\svg.c : put back logic that allows the -size parameter to
+	control the pixel dimensions of the output image.
+	* coders\meta.c : added support for wide character parsing of iptc
+	and 8BIM formats.
+
+2003-05-06  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* version.sh : Update to reflect development status.
 
 2003-05-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
@@ -3304,3 +5889,10 @@
 	* The compression quality setting is now recognized when creating
 	MPEG images (contributed by Lawrence Livermore National Laboratory
 	(LLNL)).
+
+---------------------------------------------------------------------------
+Copyright (C) 2003 GraphicsMagick Group
+
+This program is covered by multiple licenses, which are described in
+Copyright.txt. You should have received a copy of Copyright.txt with this
+package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.

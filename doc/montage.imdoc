@@ -1,0 +1,408 @@
+<imdoc>
+<utils montage>
+<title>Montage</title>
+<gm>
+<sect NAME="montage">gm montage
+</gm>
+<im>
+<sect NAME=mont-top">NAME
+<p>
+montage - create a composite image by combining several separate images
+</p>
+</sect>
+<format type=html>
+<sect NAME=mont-contents">Contents
+
+<dl>
+<dt>
+<a href="#mont-syno">Synopsis</a>
+</dt>
+
+<dt>
+<a href="#mont-desc">Description</a>
+</dt>
+
+<dt>
+<a href="#mont-exam">Examples</a>
+</dt>
+
+<dt>
+<a href="#mont-opti">Options</a>
+</dt>
+
+<dt>
+<a href="#mont-xres">X Resources</a>
+</dt>
+
+<dt>
+<a href="#mont-envi">Environment</a>
+</dt>
+
+<dt>
+<a href="#mont-file">Configuration File</a>
+</dt>
+
+<dt>
+<a href="#mont-ackn">Acknowledgement</a>
+</dt>
+
+<dt>
+<a href="#mont-auth">Authors</a>
+</dt>
+
+<dt>
+<a href="#mont-copy">Copyright</a>
+</dt>
+</dl>
+</sect>
+</format>
+
+<sect NAME=mont-syno">Synopsis
+<p>
+<s>montage</s> <s>[</s> <i>options</i> <s>...]</s> <i>file</i> <s>[ [</s>
+<i>options</i> <s>...]</s> <i>file</i> <s>...]</s> <i>output_file</i>
+</p>
+</sect>
+
+<sect NAME=mont-desc">Description
+</im>
+
+<p>
+<s>montage</s> creates a composite image by combining several separate
+images. The images are tiled on the composite image with the name of the
+image optionally appearing just below the individual tile.</p>
+
+<p>
+The composite image is constructed in the following manner. First, each
+image specified on the command line, except for the last, is scaled to
+fit the maximum tile size. The maximum tile size by default is 120x120.
+It can be modified with the <s>-geometry</s> command line argument or X
+resource. See
+<format type=man,tex>
+<s>Options</s>
+</format>
+<format type=html>
+<s><a href="#mont-opti">Options</a></s>
+</format>
+for more information on command line arguments. See
+<s>X(1)</s> for more information on X resources.
+Note that the maximum tile size need not be a square.</p>
+
+<p>
+Next the composite image is initialized with the color specified by the
+<s>-background</s>
+command line argument or X resource. The width and height of the composite
+image is determined by the title specified, the maximum tile size, the
+number of tiles per row, the tile border width and height, the image border
+width, and the label height. The number of tiles per row specifies how
+many images are to appear in each row of the composite image. The default
+is to have 5 tiles in each row and 4 tiles in each column of the composite.
+A specific value is specified with <s>-tile</s>. The tile border width
+and height, and the image border width defaults to the value of the X resource
+<s>-borderwidth</s>. It can be changed with the <s>-borderwidth</s> or
+<s>-geometry</s> command line argument or X resource. The label height
+is determined by the font you specify with the <s>-font</s> command line
+argument or X resource. If you do not specify a font, a font is chosen
+that allows the name of the image to fit the maximum width of a tiled area.
+The label colors is determined by the <s>-background</s> and <s>-fill</s>
+command line argument or X resource. Note, that if the background and pen
+colors are the same, labels will not appear.</p>
+
+<p>
+Initially, the composite image title is placed at the top if one is specified
+(refer to <s>-fill</s>). Next, each image is set onto the composite image,
+surrounded by its border color, with its name centered just below it. The
+individual images are left-justified within the width of the tiled area.
+The order of the images is the same as they appear on the command line
+unless the images have a scene keyword. If a scene number is specified
+in each image, then the images are tiled onto the composite in the order
+of their scene number. Finally, the last argument on the command line is
+the name assigned to the composite image. By default, the image is written
+in the <s>MIFF</s> format and can be viewed or printed with
+<format type=man,tex>
+<i>display(1)</i>.
+</format>
+<format type=html>
+<a href="display.html"><i>display(1)</i></a>.
+</format>
+</p>
+
+<p>
+Note, that if the number of tiles exceeds the default number of 20 (5 per
+row, 4 per column), more than one composite image is created. To ensure
+a single image is produced, use <s>-tile</s> to increase the number of
+tiles to meet or exceed the number of input images.</p>
+
+<p>
+Finally, to create one or more empty spaces in the sequence of tiles, use
+the <s>"NULL:"</s> image format.</p>
+
+<p>
+Note, a composite MIFF image displayed to an X server with
+<s>display</s>
+behaves differently than other images. You can think of the composite as
+a visual image directory. Choose a particular tile of the composite and
+press a button to display it. See <s>display(1)</s> and <s>miff(5)</s></p>
+
+</sect>
+<back>
+<sect NAME=mont-exam">Examples
+
+<p>
+To create a montage of a cockatoo, a parrot, and a hummingbird and write
+it to a file called birds, use:</p>
+
+<pre>
+<format type=man,tex>
+    montage cockatoo.miff parrot.miff hummingbird.miff
+            birds.miff
+</format>
+<format type=html>
+    montage cockatoo.miff parrot.miff hummingbird.miff birds.miff
+</format>
+</pre>
+
+<p>
+To tile several bird images so that they are at most 256 pixels in width
+and 192 pixels in height, surrounded by a red border, and separated by
+10 pixels of background color, use:</p>
+
+<pre>
+<format type=man,tex>
+    montage -geometry 256x192+10+10 -bordercolor red
+            birds.* montage.miff
+</format>
+<format type=html>
+    montage -geometry 256x192+10+10 -bordercolor red birds.* montage.miff
+</format>
+</pre>
+
+<p>
+To create an unlabeled parrot image, 640 by 480 pixels, and surrounded
+by a border of black, use:</p>
+
+<pre>
+<format type=man,tex>
+    montage -geometry 640x480 -bordercolor black
+            -label "" parrot.miff bird.miff
+</format>
+<format type=html>
+    montage -geometry 640x480 -bordercolor black -label "" parrot.miff
+bird.miff
+</format>
+</pre>
+
+<p>
+To create an image of an eagle with a textured background, use:</p>
+
+<pre>
+    montage -texture bumps.jpg eagle.jpg eagle.png
+</pre>
+
+<p>
+To join several GIF images together without any extraneous graphics (e.g.
+no label, no shadowing, no surrounding tile frame), use:</p>
+
+<pre>
+<format type=man,tex>
+    montage +frame +shadow +label -tile 5x1
+            -geometry 50x50+0+0 *.png joined.png
+</format>
+<format type=html>
+    montage +frame +shadow +label -tile 5x1 -geometry 50x50+0+0 *.png joined.png
+</format>
+</pre>
+
+</sect>
+<back>
+<sect NAME=mont-opti">Options
+
+<p>
+Any option you specify on the command line remains in effect for the group
+of images following it, until the group is terminated by the appearance of
+any option or <s>-noop</s>.  For example, to make a montage of three images,
+the first with 32 colors, the second with an unlimited number of colors, and
+the third with only 16 colors, use:
+</p>
+<pre>
+<format type=man,tex>
+     montage -colors 32 cockatoo.1 -noop cockatoo.2
+             -colors 16 cockatoo.3 cockatoos.miff
+</format>
+<format type=html>
+     montage -colors 32 cockatoo.1 -noop cockatoo.2 -colors 16 cockatoo.3
+cockatoos.miff
+</format>
+</pre>
+
+<p>
+For a more detailed description of each option, see
+<gm>
+Options, above.
+</gm>
+<im>
+<format type=man,tex>
+<i>GraphicsMagick(1)</i>.
+</format>
+<format type=html>
+<a href="GraphicsMagick.html"><i>GraphicsMagick(1)</i></a>.
+</format>
+</im>
+</p>
+
+</utils>
+<include file=brief_options.imdoc>
+<utils app=montage>
+<p>
+For a more detailed description of each option, see
+<gm>
+Options, above.
+</gm>
+<im>
+<format type=man,tex>
+<i>GraphicsMagick(1)</i>.
+</format>
+<format type=html>
+<a href="GraphicsMagick.html"><i>GraphicsMagick(1)</i></a>.
+</format>
+</im>
+</p>
+
+</sect>
+<back>
+
+<sect NAME=mont-xres">X Resources
+
+<p>
+<s>Montage</s> options can appear on the command line or in your X resource
+file. Options on the command line supersede values specified in your X
+resource file. See <s>X(1)</s> for more information on X resources.</p>
+
+<p>
+All <s>montage</s> options have a corresponding X resource. In addition,
+<s>montage</s>
+uses the following X resources:</p>
+
+<opt>background (class Background)</opt>
+
+<abs>background color</abs>
+
+<p>
+Specifies the preferred color to use for the composite image background.
+The default is #ccc.</p>
+
+<opt>borderColor (class BorderColor)</opt>
+
+<abs>border color</abs>
+
+<p>
+Specifies the preferred color to use for the composite image border. The
+default is #ccc.</p>
+
+<opt>borderWidth (class BorderWidth)</opt>
+
+<abs>border width</abs>
+
+<p>
+Specifies the width in pixels of the composite image border. The default
+is 2.</p>
+
+<opt>font (class Font)</opt>
+
+<abs>font to use</abs>
+
+<p>
+Specifies the name of the preferred font to use when displaying text within
+the composite image. The default is 9x15, fixed, or 5x8 determined by the
+composite image size.</p>
+
+<opt>matteColor (class MatteColor)</opt>
+
+<abs>color of the frame</abs>
+
+<p>
+Specify the color of an image frame. A 3D effect is achieved by using highlight
+and shadow colors derived from this color. The default value is #697B8F.</p>
+
+<opt>pen (class Pen)</opt>
+
+<abs>text color</abs>
+
+<p>
+Specifies the preferred color to use for text within the composite image.
+The default is black.</p>
+
+<opt>title (class Title)</opt>
+
+<abs>composite image title</abs>
+
+<p>
+This resource specifies the title to be placed at the top of the composite
+image. The default is not to place a title at the top of the composite
+image.</p>
+
+</sect>
+<back>
+
+<sect NAME=mont-envi">Environment
+<include file=environment.imdoc>
+</sect>
+<back>
+
+<sect NAME="mont-file">Configuration Files
+<include file=config_files.imdoc>
+</sect>
+<back>
+
+<sect NAME=mont-ackn">Acknowledgements
+
+<p>
+The <s>MIT X Consortium</s> for making network transparent graphics a reality.
+</p>
+
+<p>
+<i>Michael Halle</i>, <s>Spatial Imaging Group at MIT</s>, for the initial
+implementation of Alan Paeth's image rotation algorithm.
+</p>
+
+<p>
+<i>David Pensak</i>, <s>E. I. du Pont de Nemours and Company</s>, for
+providing a computing environment that made this program possible.
+</p>
+
+<gm>
+<p>
+<i>Peder Langlo</i>, <s>Hewlett Packard</s>, Norway, made hundreds of suggestions
+and bug reports. Without Peder, this software would not be nearly
+as useful as it is today.</p>
+
+<p>
+<i>Rod Bogart</i> and <i>John W. Peterson</i>, <s>University of Utah</s>.
+Image compositing is loosely based on rlecomp of the Utah Raster Toolkit.</p>
+
+<p>
+<i>Paul Heckbert</i>, <s>Carnegie Mellon University</s>. Image resizing is
+based on his Zoom program.</p>
+
+<p>
+<i>Paul Raveling</i>, <s>USC Information Sciences Institute</s>. The
+spatial subdivision color reduction algorithm is based on his Img software.</p>
+</gm>
+
+</sect>
+<im>
+<format type=man>
+<sect NAME=mont-also">See also
+<p>
+display(1), animate(1), import(1), mogrify(1), convert(1), composite(1),
+GraphicsMagick(1)
+</p>
+</sect>
+</format>
+<back>
+</im>
+<gm>
+<include file=copyright.imdoc>
+</gm>
+</utils>
+</imdoc>

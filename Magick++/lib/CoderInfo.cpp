@@ -7,6 +7,7 @@
 
 #define MAGICK_IMPLEMENTATION
 
+#include "Magick++/Include.h"
 #include "Magick++/CoderInfo.h"
 #include "Magick++/Exception.h"
 

@@ -185,6 +185,8 @@
 #define CacheShift  (QuantumDepth-6)
 #define ExceptionQueueLength  16
 #define MaxNodes  266817
+#define MaxTreeDepth  8
+#define NodesInAList  1536
 
 #define ColorToNodeId(red,green,blue,index) ((unsigned int) \
             (((ScaleQuantumToChar(red) >> index) & 0x01) << 2 | \
@@ -204,7 +206,7 @@ typedef struct _NodeInfo
 {
   struct _NodeInfo
     *parent,
-    *child[8];
+    *child[MaxTreeDepth];
 
   double
     number_unique;
@@ -222,14 +224,13 @@ typedef struct _NodeInfo
 
   unsigned char
     id,
-    level,
-    census;
+    level;
 } NodeInfo;
 
 typedef struct _Nodes
 {
   NodeInfo
-    nodes[NodesInAList];
+    *nodes;
 
   struct _Nodes
     *next;
@@ -380,8 +381,8 @@ static unsigned int AssignImageColors(CubeInfo *cube_info,Image *image)
     Allocate image colormap.
   */
   if (!AllocateImageColormap(image,cube_info->colors))
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      "UnableToQuantizeImage");
+    ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
+      UnableToQuantizeImage);
   image->colors=0;
   is_grayscale=image->is_grayscale;
   is_monochrome=image->is_monochrome;
@@ -413,7 +414,7 @@ static unsigned int AssignImageColors(CubeInfo *cube_info,Image *image)
         for (index=MaxTreeDepth-1; (long) index > 0; index--)
         {
           id=ColorToNodeId(q->red,q->green,q->blue,index);
-          if ((node_info->census & (1 << id)) == 0)
+          if (node_info->child[id] == (NodeInfo *) NULL)
             break;
           node_info=node_info->child[id];
         }
@@ -611,12 +612,11 @@ static unsigned int ClassifyImageColors(CubeInfo *cube_info,const Image *image,
             /*
               Set colors of new node to contain pixel.
             */
-            node_info->census|=(1 << id);
             node_info->child[id]=GetNodeInfo(cube_info,id,level,node_info);
             if (node_info->child[id] == (NodeInfo *) NULL)
-              ThrowException(exception,ResourceLimitError,
-                "MemoryAllocationFailed","UnableToQuantizeImage");
-            if (level == 8)
+              ThrowException3(exception,ResourceLimitError,
+                MemoryAllocationFailed,UnableToQuantizeImage);
+            if (level == MaxTreeDepth)
               cube_info->colors++;
           }
         /*
@@ -689,11 +689,10 @@ static unsigned int ClassifyImageColors(CubeInfo *cube_info,const Image *image,
             /*
               Set colors of new node to contain pixel.
             */
-            node_info->census|=(1 << id);
             node_info->child[id]=GetNodeInfo(cube_info,id,level,node_info);
             if (node_info->child[id] == (NodeInfo *) NULL)
-              ThrowException(exception,ResourceLimitError,
-                "MemoryAllocationFailed","UnableToQuantizeImage");
+              ThrowException3(exception,ResourceLimitError,
+                MemoryAllocationFailed,UnableToQuantizeImage);
             if (level == cube_info->depth)
               cube_info->colors++;
           }
@@ -757,10 +756,10 @@ MagickExport QuantizeInfo *CloneQuantizeInfo(const QuantizeInfo *quantize_info)
   QuantizeInfo
     *clone_info;
 
-  clone_info=(QuantizeInfo *) AcquireMemory(sizeof(QuantizeInfo));
+  clone_info=MagickAllocateMemory(QuantizeInfo *,sizeof(QuantizeInfo));
   if (clone_info == (QuantizeInfo *) NULL)
-    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "UnableToAllocateQuantizeInfo");
+    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+      UnableToAllocateQuantizeInfo);
   GetQuantizeInfo(clone_info);
   if (quantize_info == (QuantizeInfo *) NULL)
     return(clone_info);
@@ -811,10 +810,9 @@ static void ClosestColor(Image *image,CubeInfo *cube_info,
   /*
     Traverse any children.
   */
-  if (node_info->census != 0)
-    for (id=0; id < MaxTreeDepth; id++)
-      if (node_info->census & (1 << id))
-        ClosestColor(image,cube_info,node_info->child[id]);
+  for (id=0; id < MaxTreeDepth; id++)
+    if (node_info->child[id] != (NodeInfo *) NULL)
+      ClosestColor(image,cube_info,node_info->child[id]);
   if (node_info->number_unique != 0)
     {
       double
@@ -885,7 +883,7 @@ MagickExport void CompressImageColormap(Image *image)
     return;
   GetQuantizeInfo(&quantize_info);
   quantize_info.number_colors=image->colors;
-  quantize_info.tree_depth=8;
+  quantize_info.tree_depth=MaxTreeDepth;
   (void) QuantizeImage(&quantize_info,image);
 }
 
@@ -925,10 +923,9 @@ static void DefineImageColormap(Image *image,NodeInfo *node_info)
   /*
     Traverse any children.
   */
-  if (node_info->census != 0)
-    for (id=0; id < MaxTreeDepth; id++)
-      if (node_info->census & (1 << id))
-        DefineImageColormap(image,node_info->child[id]);
+  for (id=0; id < MaxTreeDepth; id++)
+    if (node_info->child[id] != (NodeInfo *) NULL)
+      DefineImageColormap(image,node_info->child[id]);
   if (node_info->number_unique != 0)
     {
       register double
@@ -982,13 +979,13 @@ static void DestroyCubeInfo(CubeInfo *cube_info)
   do
   {
     nodes=cube_info->node_queue->next;
-    LiberateMemory((void **) &cube_info->node_queue);
+    MagickFreeMemory(cube_info->node_queue->nodes);
+    MagickFreeMemory(cube_info->node_queue);
     cube_info->node_queue=nodes;
   } while (cube_info->node_queue != (Nodes *) NULL);
-  if (!cube_info->quantize_info->dither)
-    return;
-  LiberateMemory((void **) &cube_info->cache);
-  LiberateMemory((void **) &cube_info);
+  if (cube_info->quantize_info->dither)
+    MagickFreeMemory(cube_info->cache);
+  MagickFreeMemory(cube_info);
 }
 
 /*
@@ -1019,7 +1016,7 @@ MagickExport void DestroyQuantizeInfo(QuantizeInfo *quantize_info)
 {
   assert(quantize_info != (QuantizeInfo *) NULL);
   assert(quantize_info->signature == MagickSignature);
-  LiberateMemory((void **) &quantize_info);
+  MagickFreeMemory(quantize_info);
 }
 
 /*
@@ -1119,7 +1116,7 @@ static unsigned int Dither(CubeInfo *cube_info,Image *image,
           for (index=MaxTreeDepth-1; (long) index > 0; index--)
           {
             id=ColorToNodeId(pixel.red,pixel.green,pixel.blue,index);
-            if ((node_info->census & (1 << id)) == 0)
+            if (node_info->child[id] == (NodeInfo *) NULL)
               break;
             node_info=node_info->child[id];
           }
@@ -1199,7 +1196,7 @@ static unsigned int Dither(CubeInfo *cube_info,Image *image,
 */
 static unsigned int DitherImage(CubeInfo *cube_info,Image *image)
 {
-  register long
+  register unsigned long
     i;
 
   unsigned long
@@ -1219,7 +1216,7 @@ static unsigned int DitherImage(CubeInfo *cube_info,Image *image)
   */
   cube_info->x=0;
   cube_info->y=0;
-  i=(long) (image->columns > image->rows ? image->columns : image->rows);
+  i=image->columns > image->rows ? image->columns : image->rows;
   for (depth=1; i != 0; depth++)
     i>>=1;
   HilbertCurve(cube_info,image,depth-1,NorthGravity);
@@ -1278,7 +1275,7 @@ static CubeInfo *GetCubeInfo(const QuantizeInfo *quantize_info,
   /*
     Initialize tree to describe color cube_info.
   */
-  cube_info=(CubeInfo *) AcquireMemory(sizeof(CubeInfo));
+  cube_info=MagickAllocateMemory(CubeInfo *,sizeof(CubeInfo));
   if (cube_info == (CubeInfo *) NULL)
     return((CubeInfo *) NULL);
   (void) memset(cube_info,0,sizeof(CubeInfo));
@@ -1300,7 +1297,7 @@ static CubeInfo *GetCubeInfo(const QuantizeInfo *quantize_info,
   /*
     Initialize dither resources.
   */
-  cube_info->cache=(long *) AcquireMemory((1 << 18)*sizeof(long));
+  cube_info->cache=MagickAllocateMemory(long *,(1 << 18)*sizeof(long));
   if (cube_info->cache == (long *) NULL)
     return((CubeInfo *) NULL);
   /*
@@ -1376,8 +1373,11 @@ static NodeInfo *GetNodeInfo(CubeInfo *cube_info,const unsigned int id,
       /*
         Allocate a new nodes of nodes.
       */
-      nodes=(Nodes *) AcquireMemory(sizeof(Nodes));
+      nodes=MagickAllocateMemory(Nodes *,sizeof(Nodes));
       if (nodes == (Nodes *) NULL)
+        return((NodeInfo *) NULL);
+      nodes->nodes=MagickAllocateMemory(NodeInfo *,(NodesInAList*sizeof(NodeInfo)));
+      if (nodes->nodes == (NodeInfo *) NULL)
         return((NodeInfo *) NULL);
       nodes->next=cube_info->node_queue;
       cube_info->node_queue=nodes;
@@ -1720,10 +1720,10 @@ MagickExport unsigned int MapImage(Image *image,const Image *map_image,
   quantize_info.dither=dither;
   quantize_info.colorspace=
     image->matte ? TransparentColorspace : RGBColorspace;
-  cube_info=GetCubeInfo(&quantize_info,8);
+  cube_info=GetCubeInfo(&quantize_info,MaxTreeDepth);
   if (cube_info == (CubeInfo *) NULL)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      "UnableToMapImage");
+    ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
+      UnableToMapImage);
   status=ClassifyImageColors(cube_info,map_image,&image->exception);
   if (status != False)
     {
@@ -1804,8 +1804,8 @@ MagickExport unsigned int MapImages(Image *images,const Image *map_image,
   */
   cube_info=GetCubeInfo(&quantize_info,8);
   if (cube_info == (CubeInfo *) NULL)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      "UnableToMapImageSequence");
+    ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
+      UnableToMapImageSequence);
   status=ClassifyImageColors(cube_info,map_image,&image->exception);
   if (status != False)
     {
@@ -1889,8 +1889,8 @@ MagickExport unsigned int OrderedDitherImage(Image *image)
   */
   (void) NormalizeImage(image);
   if (!AllocateImageColormap(image,2))
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      "UnableToDitherImage");
+    ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
+      UnableToDitherImage);
   /*
     Dither image with the ordered dithering technique.
   */
@@ -1956,19 +1956,18 @@ static void PruneChild(CubeInfo *cube_info,const NodeInfo *node_info)
   /*
     Traverse any children.
   */
-  if (node_info->census != 0)
-    for (id=0; id < MaxTreeDepth; id++)
-      if (node_info->census & (1 << id))
-        PruneChild(cube_info,node_info->child[id]);
+  for (id=0; id < MaxTreeDepth; id++)
+    if (node_info->child[id] != (NodeInfo *) NULL)
+      PruneChild(cube_info,node_info->child[id]);
   /*
     Merge color statistics into parent.
   */
   parent=node_info->parent;
-  parent->census&=~(1 << node_info->id);
   parent->number_unique+=node_info->number_unique;
   parent->total_red+=node_info->total_red;
   parent->total_green+=node_info->total_green;
   parent->total_blue+=node_info->total_blue;
+  parent->child[node_info->id]=(NodeInfo *) NULL;
   cube_info->nodes--;
 }
 
@@ -2006,10 +2005,9 @@ static void PruneLevel(CubeInfo *cube_info,const NodeInfo *node_info)
   /*
     Traverse any children.
   */
-  if (node_info->census != 0)
-    for (id=0; id < MaxTreeDepth; id++)
-      if (node_info->census & (1 << id))
-        PruneLevel(cube_info,node_info->child[id]);
+  for (id=0; id < MaxTreeDepth; id++)
+    if (node_info->child[id] != (NodeInfo *) NULL)
+      PruneLevel(cube_info,node_info->child[id]);
   if (node_info->level == cube_info->depth)
     PruneChild(cube_info,node_info);
 }
@@ -2049,10 +2047,9 @@ static void PruneToCubeDepth(CubeInfo *cube_info,const NodeInfo *node_info)
   /*
     Traverse any children.
   */
-  if (node_info->census != 0)
-    for (id=0; id < MaxTreeDepth; id++)
-      if (node_info->census & (1 << id))
-        PruneToCubeDepth(cube_info,node_info->child[id]);
+  for (id=0; id < MaxTreeDepth; id++)
+    if (node_info->child[id] != (NodeInfo *) NULL)
+      PruneToCubeDepth(cube_info,node_info->child[id]);
   if (node_info->level > cube_info->depth)
     PruneChild(cube_info,node_info);
 }
@@ -2145,8 +2142,8 @@ MagickExport unsigned int QuantizeImage(const QuantizeInfo *quantize_info,
   */
   cube_info=GetCubeInfo(quantize_info,depth);
   if (cube_info == (CubeInfo *) NULL)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      "UnableToQuantizeImage");
+    ThrowBinaryException3(ResourceLimitError,
+      MemoryAllocationFailed,UnableToQuantizeImage);
   if (quantize_info->colorspace != RGBColorspace)
     TransformColorspace(image,quantize_info->colorspace);
   status=ClassifyImageColors(cube_info,image,&image->exception);
@@ -2265,8 +2262,8 @@ MagickExport unsigned int QuantizeImages(const QuantizeInfo *quantize_info,
   */
   cube_info=GetCubeInfo(quantize_info,depth);
   if (cube_info == (CubeInfo *) NULL)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      "UnableToQuantizeImageSequence");
+    ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
+      UnableToQuantizeImageSequence);
   image=images;
   for (i=0; image != (Image *) NULL; i++)
   {
@@ -2346,10 +2343,9 @@ static void Reduce(CubeInfo *cube_info,const NodeInfo *node_info)
   /*
     Traverse any children.
   */
-  if (node_info->census != 0)
-    for (id=0; id < MaxTreeDepth; id++)
-      if (node_info->census & (1 << id))
-        Reduce(cube_info,node_info->child[id]);
+  for (id=0; id < MaxTreeDepth; id++)
+    if (node_info->child[id] != (NodeInfo *) NULL)
+      Reduce(cube_info,node_info->child[id]);
   if (node_info->quantize_error <= cube_info->pruning_threshold)
     PruneChild(cube_info,node_info);
   else

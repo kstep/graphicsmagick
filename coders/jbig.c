@@ -18,7 +18,7 @@
 %                        JJJ    BBBB   IIIII   GGG                            %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                       Read/Write JBIG Image Format.                         %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -137,7 +137,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   /*
     Initialize JBIG toolkit.
   */
@@ -152,9 +152,9 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
   /*
     Read JBIG file.
   */
-  buffer=(unsigned char *) AcquireMemory(MaxBufferSize);
+  buffer=MagickAllocateMemory(unsigned char *,MaxBufferSize);
   if (buffer == (unsigned char *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   status=JBG_EAGAIN;
   do
   {
@@ -177,8 +177,8 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
   image->rows=jbg_dec_getheight(&jbig_info);
   if (!AllocateImageColormap(image,2))
     {
-      LiberateMemory((void **) &buffer);
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image)
+      MagickFreeMemory(buffer);
+      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image)
     }
   image->colormap[0].red=0;
   image->colormap[0].green=0;
@@ -227,7 +227,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
     Free scale resource.
   */
   jbg_dec_free(&jbig_info);
-  LiberateMemory((void **) &buffer);
+  MagickFreeMemory(buffer);
   CloseBlob(image);
   return(image);
 }
@@ -411,7 +411,7 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   scene=0;
   do
   {
@@ -420,9 +420,9 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
     */
     TransformColorspace(image,RGBColorspace);
     number_packets=((image->columns+7) >> 3)*image->rows;
-    pixels=(unsigned char *) AcquireMemory(number_packets);
+    pixels=MagickAllocateMemory(unsigned char *,number_packets);
     if (pixels == (unsigned char *) NULL)
-      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
+      ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
     /*
       Convert pixels to a bitmap.
     */
@@ -491,7 +491,7 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
     */
     jbg_enc_out(&jbig_info);
     jbg_enc_free(&jbig_info);
-    LiberateMemory((void **) &pixels);
+    MagickFreeMemory(pixels);
     if (image->next == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);

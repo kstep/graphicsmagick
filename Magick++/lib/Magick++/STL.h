@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
+// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003, 2004
 //
 // Definition and implementation of template functions for using
 // Magick::Image with STL containers.
@@ -9,10 +9,13 @@
 #ifndef Magick_STL_header
 #define Magick_STL_header
 
+#include "Magick++/Include.h"
 #include <algorithm>
 #include <functional>
 #include <iterator>
-#include "Magick++/Include.h"
+#include <map>
+#include <utility>
+
 #include "Magick++/CoderInfo.h"
 #include "Magick++/Drawable.h"
 #include "Magick++/Exception.h"
@@ -26,7 +29,7 @@ namespace Magick
 
   // Function objects provide the means to invoke an operation on one
   // or more image objects in an STL-compatable container.  The
-  // arguments to the function object constructor(s) are compatable
+  // arguments to the function object constructor(s) are compatible
   // with the arguments to the equivalent Image class method and
   // provide the means to supply these options when the function
   // object is invoked.
@@ -68,6 +71,18 @@ namespace Magick
 
   private:
     NoiseType _noiseType;
+  };
+
+  // Transform image by specified affine (or free transform) matrix.
+  class MagickDLLDecl affineTransformImage : public std::unary_function<Image&,void>
+  {
+  public:
+    affineTransformImage( const DrawableAffine &affine_ );
+
+    void operator()( Image &image_ ) const;
+
+  private:
+    DrawableAffine _affine;
   };
 
   // Annotate image (draw text on image)
@@ -1203,6 +1218,19 @@ namespace Magick
     Color        _color;
   };
 
+  // Composition operator to be used when composition is implicitly used
+  // (such as for image flattening).
+  class MagickDLLDecl composeImage : public std::unary_function<Image&,void>
+  {
+  public:
+    composeImage( const CompositeOperator compose_ );
+
+    void operator()( Image &image_ ) const;
+
+  private:
+    CompositeOperator _compose;
+  };
+
   // Compression type
   class MagickDLLDecl compressTypeImage : public std::unary_function<Image&,void>
   {
@@ -1811,24 +1839,24 @@ namespace Magick
     // Obtain first entry in MagickInfo list
     MagickLib::ExceptionInfo exceptionInfo;
     MagickLib::GetExceptionInfo( &exceptionInfo );
-    const MagickLib::MagickInfo *magickInfo =
-      MagickLib::GetMagickInfo( "*", &exceptionInfo );
+    MagickLib::MagickInfo **coder_list =
+      MagickLib::GetMagickInfoArray( &exceptionInfo );
     throwException( exceptionInfo );
-    if( !magickInfo )
+    if( !coder_list )
       throwExceptionExplicit(MagickLib::MissingDelegateError,
-                             "Coder list not returned!", 0 );
+                             "Coder array not returned!", 0 );
 
     // Clear out container
     container_->clear();
 
-    for ( ; magickInfo != 0; magickInfo=(const MagickLib::MagickInfo *) magickInfo->next)
+    for ( int i=0; coder_list[i] != 0; i++)
       {
         // Skip stealth coders
-        if ( magickInfo->stealth )
+        if ( coder_list[i]->stealth )
           continue;
 
         try {
-          CoderInfo coderInfo( magickInfo );
+          CoderInfo coderInfo( coder_list[i]->name );
 
           // Test isReadable_
           if ( isReadable_ != CoderInfo::AnyMatch &&
@@ -1851,14 +1879,84 @@ namespace Magick
           // Append matches to container
           container_->push_back( coderInfo );
         }
-        // Intentionally ignore missing delegate errors
-        catch ( Magick::ErrorMissingDelegate )
+        // Intentionally ignore missing module errors
+        catch ( Magick::ErrorModule )
           {
             continue;
           }
       }
+    MagickLib::LiberateMemory((void **)&coder_list);
   }
 
+  //
+  // Fill container with color histogram.
+  // Entries are of type "std::pair<Color,unsigned long>".  Use the pair
+  // "first" member to access the Color and the "second" member to access
+  // the number of times the color occurs in the image.
+  //
+  // For example:
+  //
+  //  Using <map>:
+  //
+  //  Image image("image.miff");
+  //  map<Color,unsigned long> histogram;
+  //  colorHistogram( &histogram, image );
+  //  std::map<Color,unsigned long>::const_iterator p=histogram.begin();
+  //  while (p != histogram.end())
+  //    {
+  //      cout << setw(10) << (int)p->second << ": ("
+  //           << setw(quantum_width) << (int)p->first.redQuantum() << ","
+  //           << setw(quantum_width) << (int)p->first.greenQuantum() << ","
+  //           << setw(quantum_width) << (int)p->first.blueQuantum() << ")"
+  //           << endl;
+  //      p++;
+  //    }
+  //
+  //  Using <vector>:
+  //
+  //  Image image("image.miff");
+  //  std::vector<std::pair<Color,unsigned long> > histogram;
+  //  colorHistogram( &histogram, image );
+  //  std::vector<std::pair<Color,unsigned long> >::const_iterator p=histogram.begin();
+  //  while (p != histogram.end())
+  //    {
+  //      cout << setw(10) << (int)p->second << ": ("
+  //           << setw(quantum_width) << (int)p->first.redQuantum() << ","
+  //           << setw(quantum_width) << (int)p->first.greenQuantum() << ","
+  //           << setw(quantum_width) << (int)p->first.blueQuantum() << ")"
+  //           << endl;
+  //      p++;
+  //    }
+
+  template <class Container >
+  void colorHistogram( Container *histogram_, const Image image)
+  {
+    MagickLib::ExceptionInfo exceptionInfo;
+    MagickLib::GetExceptionInfo( &exceptionInfo );
+
+    // Obtain histogram array
+    unsigned long colors;
+    MagickLib::HistogramColorPacket *histogram_array = 
+      MagickLib::GetColorHistogram( image.constImage(), &colors, &exceptionInfo );
+    throwException( exceptionInfo );
+
+    // Clear out container
+    histogram_->clear();
+
+    // Transfer histogram array to container
+    for ( unsigned long i=0; i < colors; i++)
+      {
+        histogram_->insert(histogram_->end(),std::pair<const Color,unsigned long>
+                           ( Color(histogram_array[i].pixel.red,
+                                   histogram_array[i].pixel.green,
+                                   histogram_array[i].pixel.blue),
+                                   histogram_array[i].count) );
+      }
+    
+    // Deallocate histogram array
+    MagickLib::LiberateMemory((void **)&histogram_array);
+  }
+                      
   // Break down an image sequence into constituent parts.  This is
   // useful for creating GIF or MNG animation sequences.
   template <class InputIterator, class Container >
@@ -2172,7 +2270,7 @@ namespace Magick
 					 first_->image(),
 					 &length,
 					 &exceptionInfo);
-    blob_->updateNoCopy( data, length );
+    blob_->updateNoCopy( data, length, Magick::Blob::MallocAllocator );
 
     unlinkImages( first_, last_ );
 

@@ -1,0 +1,21 @@
+#!/bin/sh
+# imdocinclude
+
+sed "
+    /<!--/d
+    /<include file=/{
+    s/\//\\\\\//g
+    s/<include file=\(.*\)>/\/<include file=\1\/r \1/
+    s/\(r .*\)\\\/\1/
+    s/\(r .*\)\\\/\1/
+    s/\(r .*\)\\\/\1/
+    s/\(r .*\)\\\/\1/
+    s/\(r .*\)\\\/\1/
+    s/\(r .*\)\\\/\1/
+    s/>//
+    p
+    }
+    d" $1 > sed-script
+
+sed -f sed-script $1
+# rm sed-script

@@ -7,10 +7,10 @@
 
 #define MAGICK_IMPLEMENTATION
 
-#include <string.h>
-
 #include "Magick++/Thread.h"
 #include "Magick++/Exception.h"
+
+#include <string.h>
 
 // Default constructor
 Magick::MutexLock::MutexLock(void)
@@ -82,7 +82,8 @@ void Magick::MutexLock::lock(void)
                           strerror(sysError));
 #endif
 #if defined(_MT) && defined(_VISUALC_)
-  if ( WaitForSingleObject(_mutex.id, INFINITE) != WAIT_FAILED )
+  if (MsgWaitForMultipleObjects(1, &_mutex.id, true, INFINITE, QS_ALLEVENTS)
+      != WAIT_FAILED )
     return;
   throwExceptionExplicit( OptionError, "mutex lock failed" );
 #endif

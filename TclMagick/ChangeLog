@@ -1,0 +1,459 @@
+2004-03-19  David N. Welton  <davidw@dedasys.com>
+
+	* doc/index.html: Added CVS login command to CVS instructions.
+	Added information about GM/IM version dependencies.
+
+2004-03-16  David N. Welton  <davidw@dedasys.com>
+
+	* doc/index.html: Add license link.
+
+	* doc/license.txt: Added license to be displayed on the web.  This
+	needs to be kept in sync with the main LICENSE file.
+
+2004-03-12  David N. Welton  <davidw@dedasys.com>
+
+	* doc/index.html: Fixed up HTML pages some.
+
+2004-03-11  David N. Welton  <davidw@dedasys.com>
+
+	* Makefile.am (install-data-local): Added installation
+	instructions for documentation, LICENSE file.
+
+2004-03-10  David N. Welton  <davidw@dedasys.com>
+
+	* Makefile.am: Added target to install the pkgIndex.tcl file.
+
+2004-03-07  David N. Welton  <davidw@dedasys.com>
+
+	* doc/TclMagick.html: Added some credits/copyright notices.
+
+	* doc/TkMagick.html: Added brief TkMagick.html page to document
+	the TkMagick extension.
+
+	* generic/TkMagick.c (MagickToPhoto): Add alpha channel mapping.
+
+	* generic/Makefile.am (libTkMagick_la_CFLAGS): Added GM_LDFLAGS to
+	LDFLAGS for TkMagick compile, added TCL_INCLUDES to CFLAGS for
+	TclMagick.
+
+	* configure.ac: Bumped version here too.
+
+2004-02-27  Rolf Schroedter <rolf.schroedter@dlr.de>
+	* TclMagick version 0.4
+
+	* Fixed ClipImage and ClipPathImage tests
+
+	* [magick library] list now includes -maxrgb
+
+2004-02-25  Rolf Schroedter <rolf.schroedter@dlr.de>
+	* New API
+	    magick library -maxrgb
+
+	* generic/TclMagick.c:
+	    Emtpy borderPix argument allowed for ColorFloodfillImage
+
+	* test/test-wand.tcl
+	    Fixed tests for ColorFloodfillImage, MapImage, TextureImage
+
+2004-02-15  David N. Welton  <davidw@dedasys.com>
+
+	* doc/TclMagick.html: Fixed a few phrases, indented code according
+	to emacs' desires.
+
+2004-02-14  Rolf Schroedter <rolf.schroedter@dlr.de>
+
+	* API changes
+	    wandName FxImage expr ?newName?
+	    wandName FxImageChannel channelType expr ?newName?
+
+	* Added a few words to documentation
+
+2004-02-08  Rolf Schroedter <rolf.schroedter@dlr.de>
+
+	* API renamed:
+	    wandName ChannelImage --> wandName SeparateImageChannel
+
+	* API changes:
+	    wandName FxImageChannel channelType expr
+
+	* new API:
+	    wandName FxImage expr
+
+2004-02-08  David N. Welton  <davidw@dedasys.com>
+
+	* generic/Makefile.am: Added magick libraries to libraries
+	variables.
+
+	* generic/TclMagick.c: Changed format types from int to long int
+	to make compiler happy.
+
+	* INSTALL: Added a bit to the install text.
+
+	* configure.ac: Created some code to grab
+	--with-magick=/path/to/GraphisMagickWand-config script and use
+	that to get information about includes, ldflags and such needed to
+	compile against Image or GraphicsMagick.
+
+2004-01-29  David N. Welton  <davidw@dedasys.com>
+
+	* generic/Makefile.am: Add correct instructions to build
+	libTkMagick shared library.  Requires automake 1.5 or greater.
+
+2004-01-25  David N. Welton  <davidw@dedasys.com>
+
+	* tcl.m4: Moved to top level directory.
+
+	* AUTHORS NEWS README INSTALL COPYING: Added to make automake
+	happy.
+
+	* configure.ac: Added this in the top level directory as it
+	doesn't seem that it will be very happy in unix/.
+
+	* generic/Makefile.am: Tentative addition of Makefile.am governing
+	the building of libTclMagick.so.
+
+2004-01-16  David N. Welton  <davidw@dedasys.com>
+
+	* tests/test-*.tcl: Added "multiplatform" startup code for tests.
+
+2004-01-15  David N. Welton  <davidw@dedasys.com>
+
+	* generic/TclMagick.h: Added findMagickObj and myMagickError to .h
+	file, and made then non-static in the .c file.  They are used in
+	TkMagick.c.
+
+2004-01-09  Rolf Schroedter <rolf.schroedter@dlr.de>
+
+        * API changes:
+		wandName AnnotateImage draw ?x y ? ?angle? text
+        * New API's:
+		magick version            # returns TclMagick version
+		magick library ?-option?  # Returns Magick library attributes
+
+2004-01-09  Rolf Schroedter <rolf.schroedter@dlr.de>
+
+	* generic/TclMagick.c: Fixed types casts of (int *).
+
+2004-01-09  David N. Welton  <davidw@dedasys.com>
+
+	* unix/configure.ac: Added code to fetch GraphicsMagickWand-config
+	--libs information.
+
+	* unix/Makefile.in (SHLIB_LD_FLAGS): Added @LDFLAGS@ so that the
+	GraphicsMagickWand-config information is passed on to the
+	makefile.
+
+2004-01-08  David N. Welton  <davidw@dedasys.com>
+
+	* generic/TclMagick.c: Fixed types of a large number of variables.
+
+2004-01-08  Rolf Schroedter <rolf.schroedter@dlr.de>
+
+	* Fixed DRAW incompatibility between to Wand color settings:
+	  Now the call is [$draw XXXcolor ?pix?]
+	* Updated DRAW documentation
+
+
+2004-01-07  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* unix/INSTALL: Added simple installation instructions.
+
+2004-01-08  David N. Welton  <davidw@dedasys.com>
+
+	* generic/TclMagick.c (drawObjCmd): Sub-switches need 'default'
+	case to avoid warnings caused by options not handled.
+	* generic/TclMagick.c: Cast a few enum's to ints when used as
+	arguments to Tcl_NewIntObj.
+
+2004-01-07  Rolf Schroedter <rolf.schroedter@dlr.de>
+
+	* Fixes for a few GCC warnings:
+
+2004-01-07  David N. Welton  <davidw@dedasys.com>
+
+	* unix/configure.ac: Use configure.ac instead of configure.in.
+
+	* ChangeLog: Undid CRLF line-end formatting.
+
+	* unix/configure.in: Updated configure system from latest Tcl
+	sample extension.  Added a few things to configure.in to pick up
+	flags from GraphicsMagickWand-config, which must be in the PATH.
+
+2004-01-07  Rolf Schroedter <rolf.schroedter@dlr.de>
+
+	* API rename: CloneImage --> GetImage
+	* Added API's
+		SetFillPatternURL url
+		SetStrokePatternURL url
+
+2004-01-06  Rolf Schroedter <rolf.schroedter@dlr.de>
+
+	* Added missing tests for new API's
+	* A few problems reported to ImageMagick
+
+2004-01-05  Rolf Schroedter <rolf.schroedter@dlr.de>
+
+	* Review of ImageMagick-API completeness
+	* API renamed: wandName GetNumberOfImages ==> GetNumberImages
+	* Two cloning methods: CloneMagickWand & MagickCloneImage
+	* Optional argument for [magick fonts|formats ?pattern?]
+
+2003-12-30  Rolf Schroedter <rolf.schroedter@dlr.de>
+
+	* PixelWand: Added support for colors cyan,magenta,yellow,black
+	incl. test-pixel.tcl
+
+	* struct PointInfo (DrawBezier/Polygon/Polyline)
+	may in future contain Z-component, initialize it properly
+	
+	* Updated docs of Set(Get)Fill(Stroke,TextUnder)Color subcommands
+	
+2003-12-29  David N. Welton  <davidw@dedasys.com>
+
+	* Redid directory trees.  Hopefully for the last time this
+	evening:-)
+
+2003-12-29  Rolf Schroedter <rolf.schroedter@dlr.de>
+
+	* Minor header file changes in ImageMagick
+
+        * API changes:
+                wandName SetOption format key value
+
+        * New API's:
+		wandName ProfileImage name ?profile?
+		wandName RemoveProfile name
+
+2003-12-27  David N. Welton  <davidw@dedasys.com>
+
+        * doc/: Moved files over from www directory as doc/ is proper for
+        a Tcl package.
+
+        * src/TclMagick.c: Removed USE_TCL_STUBS - it should not be hard
+        coded in the file, but passed on the command line or in some other
+        fashion.
+
+        * src/: Added src directory for sources to correspond with a
+        regular Tcl package layout.
+
+2003-12-26  David N. Welton  <davidw@dedasys.com>
+
+        * source/TclMagick.c: Removed funny ^M characters.  I hope this
+        isn't a problem with CVS.
+        (magickCmd): Make listlen a long instead of an int.
+
+2003-12-23  Rolf Schroedter <rolf.schroedter@dlr.de>
+
+        * New API's:
+                pixelName SetQuantumColor ?{r g b o}?
+
+        * Test script updated
+                New PixelWand color naming: "rgb(10%,20%,30%)"
+                Updated changed API's 
+
+2003-12-22  Rolf Schroedter <rolf.schroedter@dlr.de>
+
+        * General remarks:
+                MagickGetImageHistogram not implemented: returns array of PixelWand objects ???
+
+        * API changes:
+            Added channelType="index" 
+                Added colorspace="LAB"
+                "wandName CloneWand" renamed to "wandName CloneImage"
+                wandName CompareImages refName metric
+                "wandName fx" renamed to "wandName fxchannel"
+                "wandName Get/SetImagePixels" renamed to "wandName Get/SetPixels"
+                "wandName gamma" renamed to "wandName gammaimage"
+                wandName profile name ?profile?
+
+        * API's removed:
+                wandName SetFuzzyColorDistance
+
+        * New API's:
+                magick resourcelimit resource ?limit?
+                magick fonts pattern
+                magick formats pattern
+        
+                wandName CompareImageChannels refName chan metric
+                wandName Get/SetBackgroundColor bgPix
+                wandName Get/SetBluePrimary ?x y?
+                wandName Get/SetGreenPrimary ?x y?
+                wandName Get/SetRedPrimary ?x y?
+                wandName Get/SetBorderColor ?pixel?
+                wandName Get/SetChannelDepth channelType ?depth?
+                wandName GetChannelExtrema channelType
+                wandName GetChannelMean channelType
+                wandName Get/SetColormapColor index ?pixel?
+                wandName GetColors
+                wandName Get/SetColorspace ?colorspaceType?
+                wandName Get/SetCompose ?opType?
+                wandName Get/SetCompression ?compressType?
+                wandName Get/SetDelay ?delay?
+                wandName Get/SetDepth ?depth?
+                wandName GetExtrema
+                wandName Get/SetDispose ?disposeType?
+                wandName GetFormat 
+                wandName Get/SetGamma ?gamma?
+                wandName GetWidth/Height
+                wandName Get/SetIndex ?index?
+                wandName GetSetInterlaceScheme ?interlaceType?
+                wandName Get/SetIterations ?num?
+                wandName Get/SetMatteColor ?pixel?
+                wandName Get/SetProfile
+                wandName Get/SetRenderingIntent ?renderType?
+                wandName SetScene ?num?
+                wandName GetImageSize
+                wandName Get/SetImageType ?type?
+                wandName Get/SetImageUnits ?unitType?
+                wandName Get/SetVirtualPixelMethod ?methodType?
+                wandName Get/SetWhitePoint ?x y?
+                wandName GetX/YResolution
+                wandName Get/SetSamplingFactors ?factors?
+                wandName PingImage filename
+                wandName QueryFontMetrics draw text
+                wandName QueryFonts pattern
+                wandName ReadImageBlob data
+                wandName SetOption format options
+                wandName SetResolution x y
+                wandName SetPassphrase phrase
+                wandName TintImage tintPixel opacityPixel
+                wandName ThresholdImageChannel channelType threshold
+                wandName TransformImage crop geometry ?newName?
+
+
+2003-12-17  David N. Welton  <davidw@dedasys.com>
+
+        * source/TclMagick.h: Updated to latest working TclMagick.h.
+
+        * source/TkMagick.c: Added TkMagick.c, a bridge between TclMagick
+        and Tk.
+
+        * source/TclMagick.c: Updated to latest file from work done by
+        Rolf and myself.
+
+2003-12-16  David N. Welton  <davidw@dedasys.com>
+
+        * LICENSE: Added BSD style license with Rolf's name in it.
+
+        * README: Added README file.
+
+        * ChangeLog: started adding TclMagick code to GraphicsMagick CVS.
+
+2003-12-04  Rolf Schroedter <rolf.schroedter@dlr.de>
+
+        * Removed subcommands:
+                wandName seek
+
+        * API changes:
+                wandName CompositeImage compWand opType ?x y?
+                wandName GammaImage level
+
+        * New API's:
+                wandName AddImage name
+                wandName AppendImages ?stack? ?newName?
+                wandName AverageImages ?newName?
+                wandName ClipImage pathname ?inside?
+                wandname fxImageChannel fxWand channelType expr 
+                wandName GammaImageChannel channelType level
+                wandName HasNextImage
+                wandName HasPreviousImage
+                wandName LevelImageChannel channelType ?black? ?gamma? ?white?
+                wandName MontageImage draw tileGeom thumbGeom mode frameGeom ?newName?
+                wandName MorphImages num ?newName?
+                wandName MosaicImages ?newName?
+
+2003-12-01  David N. Welton  <davidw@dedasys.com>
+
+        * src/TclMagick.c (wandObjCmd): Added Image width/height commands.
+
+2003-07-02  Rolf Schroedter <rolf.schroedter@dlr.de>
+
+        * API changes:
+                wandName RotateImage background degrees
+                wandName WriteImages filename ?adjoin?
+                wandName CompareImage 
+                   returns {flag pixelMeanError normMeanError normMaxError}
+                       flag: 1=equal, 0=different
+                wandName ContrastImage ?sharpen? 
+                    bool sharpen (default=1)
+
+                drawName path elliptic rx ry rotation large sweep x y
+                        double rx ry rotation x y
+                                bool   large sweep
+
+        * New API's:
+                wandName GammaImage levelPix
+                wandName GetImageSignature
+                wandName ImplodeImage ?amount?
+                wandName LabelImage str
+                wandName LevelImage black gamma white
+                wandName MagnifyImage
+                wandName MapImage mapName ?dither?
+                wandName MatteFloodfillImage opacity ?fuzz? ?borderPix? ?x y?
+                wandName MedianFilterImage ?radius?
+                wandName MinifyImage
+                wandName ModulateImage ?brightness? ?saturation? ?hue?
+                wandName MotionBlurImage ?radius? ?sigma? ?angle?
+                wandName NegateImage ?gray?
+                wandName NormalizeImage
+                wandName OilPaintImage ?radius?
+                wandName OpaqueImage targetPix fillPix ?fuzz?
+                wandName ProfileImage name ?profile?
+                wandName QuantizeImage(s) numColors colorspaceType treedepth dither measureError
+                wandName RaiseImage width height ?x y? ?raise?
+                wandName ReduceNoiseImage ?radius?
+                wandName ResampleImage xRes ?yRes? ?filterType? ?blur?
+                wandName RollImage xOfs yOfs
+                wandName SampleImage x y
+                wandName ScaleImage x y
+                wandName SharpenImage ?radius? ?sigma?
+                wandName ShaveImage x y
+                wandName ShearImage background xShear ?yShear?
+                wandName SolarizeImage ?threshold?
+                wandName SpreadImage ?radius? 
+                wandName SteganoImage watermark ?offset? ?newName?
+                wandName StereoImage anotherWand ?newName?
+                wandName StripImage
+                wandName SwirlImage ?degrees?
+                wandName TextureImage textWand ?newName?
+                wandName ThresholdImage threshold
+                wandName TransparentImage targetPix ?opacity? ?fuzz? 
+                wandName TrimImage ?fuzz?
+                wandName UnsharpMaskImage ?radius? ?sigma? ?amount? ?threshold?
+                wandName WaveImage amplitude wavelength
+                wandName WhiteThresholdImage thresholdPixel 
+
+2003-06-25  Rolf Schroedter <rolf.schroedter@dlr.de>
+
+        * API change:
+                wandName ColorFloodfillImage fillPix ?fuzz? ?borderPix? ?x y?
+
+2003-06-24  Rolf Schroedter <rolf.schroedter@dlr.de>
+
+        * Changed magick objects creation to have a single 'magick' command:
+                magick create type ?name?       # type="wand","drawing","pixel"
+                magick delete name ?name? ...   # Delete TclMagick objects
+                magick names ?type?             # Return all TclMagick objects (of type)
+                magick type name                # Return the type of the object
+                magick types                    # Return valid type names
+        * Replaced Tcl_Alloc(),Tcl_Free() by ckalloc(),ckfree
+
+2003-06-24  Rolf Schroedter <rolf.schroedter@dlr.de>
+
+        * Added MagickDescribeImage() API
+
+        * Free string results for MagickDescribeImage(), MagickGetFilename(), 
+          MagickGetImageFilename()
+
+        * Always use Tcl_Free(), not free()
+
+2003-06-24  Rolf Schroedter <rolf.schroedter@dlr.de>
+
+        * Pre-Release 0.1
+
+        * TclMagick officially announced
+
+2003-05-26  Rolf Schroedter <rolf.schroedter@dlr.de>
+
+        * Created
+

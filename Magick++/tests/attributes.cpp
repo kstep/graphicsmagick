@@ -1,14 +1,13 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
+// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003
 //
 // Tests for setting/getting Magick::Image attributes
 //
 
+#include <Magick++.h>
 #include <string>
 #include <iostream>
-
-#include <Magick++.h>
 
 using namespace std;
 
@@ -590,15 +589,64 @@ int main( int /*argc*/, char ** argv)
     }
 
     //
+    // Format specific defines
+    //
+    if (image.defineSet("foo","bar"))
+      {
+        ++failures;
+        cout << "Line: " << __LINE__
+             << ", define for foo:bar incorrectly reports set."
+             << endl;
+      }
+
+    image.defineSet("foo","bar",true);
+    if (!image.defineSet("foo","bar"))
+      {
+        ++failures;
+        cout << "Line: " << __LINE__
+             << ", define for foo:bar incorrectly reports not set."
+             << endl;
+      }
+
+    image.defineSet("foo","bar",false);
+    if (image.defineSet("foo","bar"))
+      {
+        ++failures;
+        cout << "Line: " << __LINE__
+             << ", define for foo:bar incorrectly reports set."
+             << endl;
+      }
+
+    image.defineValue("foo","bar","value");
+    std::string value = image.defineValue("foo","bar");
+    if (image.defineValue("foo","bar") != "value")
+      {
+        ++failures;
+        cout << "Line: " << __LINE__
+             << ", define for foo:bar incorrectly reports value \""
+             << value << "\""
+             << endl;
+      }
+
+    image.defineSet("foo","bar",false);
+    if (image.defineSet("foo","bar"))
+      {
+        ++failures;
+        cout << "Line: " << __LINE__
+             << ", define for foo:bar incorrectly reports set."
+             << endl;
+      }
+
+    //
     // depth
     //
-    if ( image.depth() != 8 )
+    if ( image.depth() != QuantumDepth )
       {
 	++failures;
 	cout << "Line: " << __LINE__
              << ", depth ("
              << image.depth()
-             << ") is not equal to 8" << endl;
+             << ") is not equal to " << QuantumDepth << endl;
       }
 
     //
@@ -607,12 +655,18 @@ int main( int /*argc*/, char ** argv)
     {
       // Since this is not a montage image, simply verify error report
       bool caughtException = false;
+      cout << "Testing throwing and catching exceptions. A program crash or a message" << endl
+           << "that the exception was not caught indicates a test failure.  A properly" << endl
+           << "formatted exception message indicates success:" << endl;
       try
 	{
-	  image.directory();
+	  //image.directory();
+          Magick::Image bad_image("foo");
 	}
-      catch ( Exception )
+      catch ( Exception exception_)
 	{
+          cout << "Caught exception, good!:" << endl
+               << "  \"" << exception_.what() << "\"" << endl;
 	  caughtException = true;
 	}
       if ( caughtException != true )
@@ -1450,7 +1504,6 @@ int main( int /*argc*/, char ** argv)
              << ", yResolution default (" << image.yResolution()
              << ") is not zero as expected" << endl;
       }
-
   }
   catch( Exception &error_ )
     {

@@ -17,7 +17,7 @@
 %               CCCC  A   A  P        T    IIIII   OOO   N   N                %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                             Read Text Caption.                              %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -107,7 +107,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
   if (image->columns == 0)
-    ThrowReaderException(OptionError,"MustSpecifyImageSize",image);
+    ThrowReaderException(OptionError,MustSpecifyImageSize,image);
   if (*image_info->filename != '@')
     caption=AllocateString(image_info->filename);
   else
@@ -121,9 +121,9 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
       (void) strncpy(image->filename,image_info->filename+1,MaxTextExtent-2);
       status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
       if (status == False)
-        ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+        ThrowReaderException(FileOpenError,UnableToOpenFile,image);
       length=MaxTextExtent;
-      caption=(char *) AcquireMemory(length);
+      caption=MagickAllocateMemory(char *,length);
       p=caption;
       if (caption != (char *) NULL)
         while (ReadBlobString(image,p) != (char *) NULL)
@@ -132,13 +132,13 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
           if ((p-caption+MaxTextExtent+1) < (long) length)
             continue;
           length<<=1;
-          ReacquireMemory((void **) &caption,length);
+          MagickReallocMemory(caption,length);
           if (caption == (char *) NULL)
             break;
           p=caption+strlen(caption);
         }
       if (caption == (char *) NULL)
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+        ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
       CloseBlob(image);
     }
   /*
@@ -155,7 +155,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
     *q='\0';
     status=GetTypeMetrics(image,draw_info,&metrics);
     if (status == False)
-      ThrowReaderException(TypeError,"UnableToGetTypeMetrics",image);
+      ThrowReaderException(TypeError,UnableToGetTypeMetrics,image);
     if ((metrics.width+metrics.max_advance/2) < image->columns)
       continue;
     for (p--; !isspace((int) *p) && (p > caption); p--);
@@ -174,7 +174,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
   draw_info->geometry=AllocateString(geometry);
   (void) AnnotateImage(image,draw_info);
   DestroyDrawInfo(draw_info);
-  LiberateMemory((void **) &caption);
+  MagickFreeMemory(caption);
   return(image);
 }
 

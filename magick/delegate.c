@@ -47,6 +47,7 @@
 #if defined(WIN32) || defined(__CYGWIN__)
 # include "magick/nt_feature.h"
 #endif
+#include "magick/semaphore.h"
 #include "magick/tempfile.h"
 #include "magick/utility.h"
 
@@ -113,16 +114,17 @@ MagickExport void DestroyDelegateInfo(void)
     delegate_info=p;
     p=p->next;
     if (delegate_info->path != (char *) NULL)
-      LiberateMemory((void **) &delegate_info->path);
+      MagickFreeMemory(delegate_info->path);
     if (delegate_info->decode != (char *) NULL)
-      LiberateMemory((void **) &delegate_info->decode);
+      MagickFreeMemory(delegate_info->decode);
     if (delegate_info->encode != (char *) NULL)
-      LiberateMemory((void **) &delegate_info->encode);
+      MagickFreeMemory(delegate_info->encode);
     if (delegate_info->commands != (char *) NULL)
-      LiberateMemory((void **) &delegate_info->commands);
-    LiberateMemory((void **) &delegate_info);
+      MagickFreeMemory(delegate_info->commands);
+    MagickFreeMemory(delegate_info);
   }
   delegate_list=(DelegateInfo *) NULL;
+  LiberateSemaphoreInfo(&delegate_semaphore);
   DestroySemaphoreInfo(&delegate_semaphore);
 }
 
@@ -184,27 +186,27 @@ MagickExport char *GetDelegateCommand(const ImageInfo *image_info,Image *image,
   delegate_info=GetDelegateInfo(decode,encode,exception);
   if (delegate_info == (const DelegateInfo *) NULL)
     {
-      ThrowException(exception,DelegateError,"NoTagFound",
+      ThrowException(exception,DelegateError,NoTagFound,
         decode ? decode : encode);
       return((char *) NULL);
     }
   commands=StringToList(delegate_info->commands);
   if (commands == (char **) NULL)
     {
-      ThrowException(exception,ResourceLimitError,"MemoryAllocationFailed",
+      ThrowException(exception,ResourceLimitError,MemoryAllocationFailed,
         decode ? decode : encode);
       return((char *) NULL);
     }
   command=TranslateText(image_info,image,commands[0]);
   if (command == (char *) NULL)
-    ThrowException(exception,ResourceLimitError,"MemoryAllocationFailed",
+    ThrowException(exception,ResourceLimitError,MemoryAllocationFailed,
       commands[0]);
   /*
     Free resources.
   */
   for (i=0; commands[i] != (char *) NULL; i++)
-    LiberateMemory((void **) &commands[i]);
-  LiberateMemory((void **) &commands);
+    MagickFreeMemory(commands[i]);
+  MagickFreeMemory(commands);
   return(command);
 }
 
@@ -365,8 +367,7 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
       /* Allocate a temporary filename if image is unnamed.  */
       if(!AcquireTemporaryFileName(image->filename))
         {
-          (void) ThrowException(exception,FileOpenError,
-            "UnableToCreateTemporaryFile",image->filename);
+          (void) ThrowException(exception,FileOpenError,UnableToCreateTemporaryFile,image->filename);
           return(False);
         }
     }
@@ -376,7 +377,7 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
     {
       if (temporary_image_filename)
         LiberateTemporaryFile(image->filename);
-      (void) ThrowException(exception,DelegateError,"NoTagFound",
+      (void) ThrowException(exception,DelegateError,NoTagFound,
         decode ? decode : encode);
       return(False);
     }
@@ -391,8 +392,7 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
         {
           if (temporary_image_filename)
             LiberateTemporaryFile(image->filename);
-          (void) ThrowException(exception,FileOpenError,
-            "UnableToCreateTemporaryFile",image_info->filename);
+          (void) ThrowException(exception,FileOpenError,UnableToCreateTemporaryFile,image_info->filename);
           return(False);
         }
       image_info->temporary=True;
@@ -420,8 +420,7 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
         {
           if (temporary_image_filename)
             LiberateTemporaryFile(image->filename);
-          (void) ThrowException(exception,FileOpenError,
-            "UnableToCreateTemporaryFile",image_info->unique);
+          (void) ThrowException(exception,FileOpenError,UnableToCreateTemporaryFile,image_info->unique);
           return(False);
         }
 
@@ -430,8 +429,7 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
           if (temporary_image_filename)
             LiberateTemporaryFile(image->filename);
           LiberateTemporaryFile(image_info->unique);
-          (void) ThrowException(exception,FileOpenError,
-            "UnableToCreateTemporaryFile",image_info->zero);
+          (void) ThrowException(exception,FileOpenError,UnableToCreateTemporaryFile,image_info->zero);
           return(False);
         }
         /* Expand sprintf-style codes in delegate command to command string */
@@ -443,7 +441,7 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
             LiberateTemporaryFile(image_info->zero);
             if (temporary_image_filename)
               LiberateTemporaryFile(image->filename);
-            (void) ThrowException(exception,DelegateError,"DelegateFailed",
+            (void) ThrowException(exception,DelegateError,DelegateFailed,
               decode ? decode : encode);
             return(False);
           }
@@ -451,7 +449,7 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
         clone_info=CloneImageInfo(image_info);
         (void) strncpy((char *) clone_info->magick,magick,MaxTextExtent-1);
         (void) strncpy(image->magick,magick,MaxTextExtent-1);
-        LiberateMemory((void **) &magick);
+        MagickFreeMemory(magick);
         (void) strncpy(filename,image->filename,MaxTextExtent-1);
         FormatString(clone_info->filename,"%.1024s:",delegate_info->decode);
         (void) SetImageInfo(clone_info,True,exception);
@@ -469,7 +467,7 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
               if (temporary_image_filename)
                 LiberateTemporaryFile(image->filename);
               DestroyImageInfo(clone_info);
-              (void) ThrowException(exception,DelegateError,"DelegateFailed",
+              (void) ThrowException(exception,DelegateError,DelegateFailed,
                 decode ? decode : encode);
               return(False);
             }
@@ -489,8 +487,7 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
     {
       if (temporary_image_filename)
         LiberateTemporaryFile(image->filename);
-      (void) ThrowException(exception,ResourceLimitError,
-        "MemoryAllocationFailed",decode ? decode : encode);
+      (void) ThrowException(exception,ResourceLimitError,MemoryAllocationFailed,decode ? decode : encode);
       return(False);
     }
   command=(char *) NULL;
@@ -502,15 +499,13 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
     /* Allocate convenience temporary files */
     if (!AcquireTemporaryFileName(image_info->unique))
     {
-      (void) ThrowException(exception,FileOpenError,
-        "UnableToCreateTemporaryFile",image_info->unique);
+      (void) ThrowException(exception,FileOpenError,UnableToCreateTemporaryFile,image_info->unique);
       status=False;
       goto error_exit;
     }
     if (!AcquireTemporaryFileName(image_info->zero))
     {
-      (void) ThrowException(exception,FileOpenError,
-        "UnableToCreateTemporaryFile",image_info->zero);
+      (void) ThrowException(exception,FileOpenError,UnableToCreateTemporaryFile,image_info->zero);
       LiberateTemporaryFile(image_info->unique);
       status=False;
       goto error_exit;
@@ -524,17 +519,17 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
       (void) ConcatenateString(&command," &");
     /* Execute delegate.  */
     status=SystemCommand(image_info->verbose,command);
-    LiberateMemory((void **) &command);
+    MagickFreeMemory(command);
     /* Liberate convenience temporary files */
     LiberateTemporaryFile(image_info->unique);
     LiberateTemporaryFile(image_info->zero);
     if (status != False)
       {
-        (void) ThrowException(exception,DelegateError,"DelegateFailed",
+        (void) ThrowException(exception,DelegateError,DelegateFailed,
           commands[i]);
         goto error_exit;
       }
-    LiberateMemory((void **) &commands[i]);
+    MagickFreeMemory(commands[i]);
   }
   /*
     Free resources.
@@ -543,8 +538,8 @@ MagickExport unsigned int InvokeDelegate(ImageInfo *image_info,Image *image,
   if (temporary_image_filename)
     LiberateTemporaryFile(image->filename);
   for ( ; commands[i] != (char *) NULL; i++)
-    LiberateMemory((void **) &commands[i]);
-  LiberateMemory((void **) &commands);
+    MagickFreeMemory(commands[i]);
+  MagickFreeMemory(commands);
   return(status != False);
 }
 
@@ -632,6 +627,8 @@ MagickExport unsigned int InvokePostscriptDelegate(const unsigned int verbose,
   if (status < 0)
     return(False);
   argv=StringToArgv(command,&argc);
+  if (argv == (char **) NULL)
+    return(False);
   status=(gs_func->init_with_args)(interpreter,argc-1,argv+1);
   if (status == 0)
     status=(gs_func->run_string)
@@ -639,8 +636,8 @@ MagickExport unsigned int InvokePostscriptDelegate(const unsigned int verbose,
   (gs_func->exit)(interpreter);
   (gs_func->delete_instance)(interpreter);
   for (i=0; i < argc; i++)
-    LiberateMemory((void **) &argv[i]);
-  LiberateMemory((void **) &argv);
+    MagickFreeMemory(argv[i]);
+  MagickFreeMemory(argv);
   if ((status == 0) || (status == -101))
     return(False);
   return(True);
@@ -751,7 +748,7 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
         }
     }
     for (i=0; commands[i] != (char *) NULL; i++)
-      LiberateMemory((void **) &commands[i]);
+      MagickFreeMemory(commands[i]);
   }
   (void) fflush(file);
   LiberateSemaphoreInfo(&delegate_semaphore);
@@ -790,6 +787,20 @@ MagickExport unsigned int ListDelegateInfo(FILE *file,ExceptionInfo *exception)
 %
 %
 */
+#if defined(WIN32)
+static void CatDelegatePath(char *path,
+                               const char *binpath,
+                               const char *command)
+{
+  strcpy(path,binpath);
+  strcat(path,command);
+  if (IsAccessibleNoLogging(path))
+    return;
+
+  strcpy(path,command);
+  return;
+}
+#endif /* defined(WIN32) */
 static unsigned int ReadConfigureFile(const char *basename,
   const unsigned long depth,ExceptionInfo *exception)
 {
@@ -847,8 +858,7 @@ static unsigned int ReadConfigureFile(const char *basename,
               if (LocaleCompare(keyword,"file") == 0)
                 {
                   if (depth > 200)
-                    ThrowException(exception,ConfigureError,
-                                   "IncludeElementNestedTooDeeply",path);
+                    ThrowException(exception,ConfigureError,IncludeElementNestedTooDeeply,path);
                   else
                     {
                       char
@@ -876,10 +886,10 @@ static unsigned int ReadConfigureFile(const char *basename,
           /*
             Allocate memory for the delegate list.
           */
-          delegate_info=(DelegateInfo *) AcquireMemory(sizeof(DelegateInfo));
+          delegate_info=MagickAllocateMemory(DelegateInfo *,sizeof(DelegateInfo));
           if (delegate_info == (DelegateInfo *) NULL)
-            MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-                             "UnableToAllocateDelegateInfo");
+            MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+                             UnableToAllocateDelegateInfo);
           (void) memset(delegate_info,0,sizeof(DelegateInfo));
           delegate_info->path=AcquireString(path);
           delegate_info->signature=MagickSignature;
@@ -914,7 +924,8 @@ static unsigned int ReadConfigureFile(const char *basename,
                     char
                       BinPath[MaxTextExtent],
                       path[MaxTextExtent];
-                
+
+                    BinPath[0]=0;
                     /* Substitute @PSDelegate@ with path to Ghostscript */
                     NTGhostscriptEXE(path,MaxTextExtent-1);
                     SubstituteString((char **) &delegate_list->commands,
@@ -926,13 +937,22 @@ static unsigned int ReadConfigureFile(const char *basename,
 #  else
                     {
                       char
+                        *key,
                         *key_value;
                     
                       /* Obtain installation path from registry */
-                      key_value=NTRegistryKeyLookup("BinPath");
-                      if (key_value)
-                        strcpy(BinPath,key_value);
-                      LiberateMemory((void **) &key_value);
+                      key="BinPath";
+                      key_value=NTRegistryKeyLookup(key);
+                      if (!key_value)
+                        {
+                          ThrowException(exception,ConfigureError,
+                              RegistryKeyLookupFailed,key);
+                        }
+                      else
+                        {
+                          strcpy(BinPath,key_value);
+                          MagickFreeMemory(key_value);
+                        }
                     }
 #  endif /* defined(MagickBinPath) */
 # else
@@ -944,44 +964,36 @@ static unsigned int ReadConfigureFile(const char *basename,
                       strcat(BinPath,DirectorySeparator);
 
                     /* Substitute @GMDelegate@ with path to gm.exe */
-                    strcpy(path,BinPath);
-                    strcat(path,"gm.exe");
+                    CatDelegatePath(path,BinPath,"gm.exe");
                     SubstituteString((char **) &delegate_list->commands,
                                      "@GMDelegate@",path);
 
                     /* Substitute @GMDisplayDelegate@ with path to
                        gmdisplay.exe */
-                    strcpy(path,BinPath);
-                    strcat(path,"gmdisplay.exe");
+                    CatDelegatePath(path,BinPath,"gmdisplay.exe");
                     SubstituteString((char **) &delegate_list->commands,
                                      "@GMDisplayDelegate@",path);
 
                     /* Substitute @MPEGDecodeDelegate@ with path to
                        mpeg2dec.exe */
-                    strcpy(path,BinPath);
-                    strcat(path,"mpeg2dec.exe");
+                    CatDelegatePath(path,BinPath,"mpeg2dec.exe");
                     SubstituteString((char **) &delegate_list->commands,
                                      "@MPEGDecodeDelegate@",path);
 
                     /* Substitute @MPEGEncodeDelegate@ with path to
                        mpeg2enc.exe */
-                    strcpy(path,BinPath);
-                    strcat(path,"mpeg2enc.exe");
+                    CatDelegatePath(path,BinPath,"mpeg2enc.exe");
                     SubstituteString((char **) &delegate_list->commands,
                                      "@MPEGEncodeDelegate@",path);
 
                     /* Substitute @HPGLDecodeDelegate@ with path to
                        hp2xx.exe */
-                    strcpy(path,BinPath);
-                    strcat(path,"hp2xx.exe");
+                    CatDelegatePath(path,BinPath,"hp2xx.exe");
                     SubstituteString((char **) &delegate_list->commands,
                                      "@HPGLDecodeDelegate@",path);
                   }
 #endif /* defined(WIN32) */
               } /* LocaleCompare */
-            break;
-          } /*  case 'c': */
-          {
             break;
           }
         case 'D':
@@ -1040,8 +1052,8 @@ static unsigned int ReadConfigureFile(const char *basename,
           break;
         }
     }
-  LiberateMemory((void **) &token);
-  LiberateMemory((void **) &xml);
+  MagickFreeMemory(token);
+  MagickFreeMemory(xml);
   if (delegate_list == (DelegateInfo *) NULL)
     return(False);
   while (delegate_list->previous != (DelegateInfo *) NULL)
@@ -1091,7 +1103,7 @@ MagickExport DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
   */
   assert(delegate_info != (DelegateInfo *) NULL);
   assert(delegate_info->signature == MagickSignature);
-  delegate=(DelegateInfo *) AcquireMemory(sizeof(DelegateInfo));
+  delegate=MagickAllocateMemory(DelegateInfo *,sizeof(DelegateInfo));
   if (delegate == (DelegateInfo *) NULL)
     return((DelegateInfo *) delegate_list);
   delegate->decode=AcquireString(delegate_info->decode);
@@ -1116,9 +1128,9 @@ MagickExport DelegateInfo *SetDelegateInfo(DelegateInfo *delegate_info)
         /*
           Delegate overrides an existing one with the same tags.
         */
-        LiberateMemory((void **) &p->commands);
+        MagickFreeMemory(p->commands);
         p->commands=delegate->commands;
-        LiberateMemory((void **) &delegate);
+        MagickFreeMemory(delegate);
         return((DelegateInfo *) delegate_list);
       }
     if (p->next == (DelegateInfo *) NULL)

@@ -10,8 +10,8 @@ UNIX/Cygwin/MinGW COMPILATION
 
   Type:
 
-    gzip -dc GraphicsMagick-1.0.tar.gz | tar xvf -
-    cd GraphicsMagick-1.0
+    gzip -dc GraphicsMagick-1.1.tar.gz | tar xvf -
+    cd GraphicsMagick-1.1
 
   If you do not have gzip(1), the source for the gzip package is
   available as a shell archive at
@@ -23,13 +23,13 @@ UNIX/Cygwin/MinGW COMPILATION
     ftp://ftp.gnu.org/gnu/gzip/gzip-1.2.4a.tar
 
   Use 'configure' to automatically configure, build, and install
-  GraphicsMagick. The configure script may be executed from the GraphicsMagick
-  source directory (e.g ./configure) or from a seperate build directory by
-  specifying the full path to configure (e.g.
-  /src/GraphicsMagick-1.0/configure). The advantage of using a seperate
-  build directory is that multiple GraphicsMagick builds may share the same
-  GraphicsMagick source directory while allowing each build to use a unique
-  set of options.
+  GraphicsMagick. The configure script may be executed from the
+  GraphicsMagick source directory (e.g ./configure) or from a seperate
+  build directory by specifying the full path to configure (e.g.
+  /src/GraphicsMagick-1.1/configure). The advantage of using a seperate
+  build directory is that multiple GraphicsMagick builds may share the
+  same GraphicsMagick source directory while allowing each build to use a
+  unique set of options.
 
   If you are willing to accept configure's default options, and build from
   within the source directory, type:
@@ -117,7 +117,7 @@ UNIX/Cygwin/MinGW COMPILATION
    --with-modules          enable support for dynamically loadable modules
    --with-cache            set pixel cache threshhold (defaults to available memory)
    --without-threads       disable threads support
-   --without-frozenpaths   disable frozen delegate paths
+   --with-frozenpaths      enable frozen delegate paths
    --without-magick-plus-plus disable build/install of Magick++
    --without-perl          disable build/install of PerlMagick
         or
@@ -134,6 +134,7 @@ UNIX/Cygwin/MinGW COMPILATION
    --without-lcms          disable LCMS support
    --without-png           disable PNG support
    --without-tiff          disable TIFF support
+   --without-trio          disable TRIO library support
    --without-ttf           disable TrueType support
    --without-wmf           disable WMF support
    --with-fontpath         prepend to default font search path
@@ -301,10 +302,12 @@ UNIX/Cygwin/MinGW COMPILATION
       normally be rejected by configure tests so specifying this option
       should only be necessary if Magick++ fails to compile.
 
-    o --without-frozenpaths: Normally full paths to external programs
-      (based on searching the PATH set when configure is run) will be
-      saved to the delegates.mgk file. Specify this option to disable
-      saving full paths to programs.
+    o --with-frozenpaths: Normally external program names are substituted
+      into the delegates.mgk file without full paths. Specify this option
+      to enable saving full paths to programs using locations determined
+      by configure. This is useful for environments where programs are
+      stored under multiple paths, and users may use different PATH
+      settings than the person who builds GraphicsMagick.
 
     o --without-threads: By default, the GraphicsMagick library is compiled
       with multi-thread support.  If this is undesireable, then specify

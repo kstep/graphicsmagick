@@ -18,7 +18,7 @@
 %                              T    IIIII  M   M                              %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                          Read PSX TIM Image Format.                         %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -139,7 +139,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   /*
     Determine if this is a TIM file.
   */
@@ -150,7 +150,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Verify TIM identifier.
     */
     if (tim_info.id != 0x00000010)
-      ThrowReaderException(CorruptImageError,"NotATIMImageFile",image);
+      ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
     tim_info.flag=ReadBlobLSBLong(image);
     has_clut=!!(tim_info.flag & (1 << 3));
     pixel_mode=tim_info.flag & 0x07;
@@ -176,11 +176,11 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         width=ReadBlobLSBShort(image);
         height=ReadBlobLSBShort(image);
         if (!AllocateImageColormap(image,pixel_mode == 1 ? 256 : 16))
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
-        tim_colormap=(unsigned char *) AcquireMemory(image->colors*2);
+        tim_colormap=MagickAllocateMemory(unsigned char *,image->colors*2);
         if (tim_colormap == (unsigned char *) NULL)
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
         (void) ReadBlob(image,2*image->colors,(char *) tim_colormap);
         p=tim_colormap;
@@ -192,7 +192,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image->colormap[i].green=ScaleCharToQuantum(ScaleColor5to8((word >> 5) & 0x1f));
           image->colormap[i].red=ScaleCharToQuantum(ScaleColor5to8(word & 0x1f));
         }
-        LiberateMemory((void **) &tim_colormap);
+        MagickFreeMemory(tim_colormap);
       }
     if (image_info->ping && (image_info->subrange != 0))
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
@@ -208,9 +208,9 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image_size=2*width*height;
     bytes_per_line=width*2;
     width=(width*16)/bits_per_pixel;
-    tim_data=(unsigned char *) AcquireMemory(image_size);
+    tim_data=MagickAllocateMemory(unsigned char *,image_size);
     if (tim_data == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     (void) ReadBlob(image,image_size,(char *) tim_data);
     tim_pixels=tim_data;
     /*
@@ -347,14 +347,14 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       }
       default:
-        ThrowReaderException(CorruptImageError,"NotATIMImageFile",image)
+        ThrowReaderException(CorruptImageError,ImproperImageHeader,image)
     }
     if (image->storage_class == PseudoClass)
       SyncImage(image);
-    LiberateMemory((void **) &tim_pixels);
+    MagickFreeMemory(tim_pixels);
     if (EOFBlob(image))
       {
-        ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+        ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
           image->filename);
         break;
       }

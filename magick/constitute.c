@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003, 2004 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -17,7 +17,7 @@
 %     CCCC   OOO   N   N  SSSSS    T    IIIII    T     UUU     T    EEEEE     %
 %                                                                             %
 %                                                                             %
-%                       Methods to Consitute an Image                         %
+%                      Methods to Constitute an Image                         %
 %                                                                             %
 %                                                                             %
 %                             Software Design                                 %
@@ -43,6 +43,7 @@
 #include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"
+#include "magick/semaphore.h"
 #include "magick/stream.h"
 #include "magick/tempfile.h"
 #include "magick/utility.h"
@@ -52,11 +53,13 @@
 */
 typedef enum
 {
-  RedMapQuantum,
-  GreenMapQuantum,
   BlueMapQuanum,
-  OpacityMapQuantum,
-  IntensityMapQuantum
+  GreenMapQuantum,
+  IntensityMapQuantum,
+  OpacityInvertedMapQuantum,
+  PadMapQuantum,
+  RedMapQuantum,
+  OpacityMapQuantum
 } MapQuantumType;
 
 static SemaphoreInfo
@@ -79,11 +82,21 @@ static Image
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ConstituteImage() returns an image from the the pixel data you supply.
-%  The pixel data must be in scanline order top-to-bottom.  The data can be
-%  char, short int, int, float, or double.  Float and double require the
-%  pixels to be normalized [0..1], otherwise [0..MaxRGB].  For example, to
-%  create a 640x480 image from unsigned red-green-blue character data, use
+%  ConstituteImage() returns an Image corresponding to an image stored
+%  in a raw memory array format. The pixel data must be in scanline order
+%  top-to-bottom. The data can be unsigned char, unsigned short int, unsigned
+%  int, unsigned long, float, or double.  Float and double require the pixels
+%  to be normalized to the range [0..1], otherwise the range is [0..MaxVal]
+%  where MaxVal is the maximum possible value for that type.
+%
+%  Note that for most 32-bit architectures the size of an unsigned long is
+%  the same as unsigned int, but for 64-bit architectures observing the LP64
+%  standard, an unsigned long is 64 bits, while an unsigned int remains 32
+%  bits. This should be considered when deciding if the data should be
+%  described as "Integer" or "Long".
+%
+%  For example, to create a 640x480 image from unsigned red-green-blue
+%  character data, use
 %
 %      image=ConstituteImage(640,480,"RGB",CharPixel,pixels,&exception);
 %
@@ -101,9 +114,11 @@ static Image
 %
 %    o map: This string reflects the expected ordering of the pixel array.
 %      It can be any combination or order of R = red, G = green, B = blue,
-%      A = alpha, C = cyan, Y = yellow, M = magenta, K = black, or
-%      I = intensity (for grayscale). Creation of an alpha channel for CMYK
-%      images is currently not supported.
+%      A = alpha (same as Transparency), O = Opacity, T = Transparency,
+%      C = cyan, Y = yellow, M = magenta, K = black, or I = intensity
+%      (for grayscale). Specify "P" = pad, to skip over a quantum which is
+%      intentionally ignored. Creation of an alpha channel for CMYK images
+%      is currently not supported.
 %
 %    o type: Define the data type of the pixels.  Float and double types are
 %      expected to be normalized [0..1] otherwise [0..MaxRGB].  Choose from
@@ -132,6 +147,9 @@ MagickExport Image *ConstituteImage(const unsigned long width,
   PixelPacket
     *q;
 
+  register Quantum
+    quantum;
+
   MapQuantumType
     switch_map[MaxTextExtent/sizeof(MapQuantumType)];
 
@@ -156,8 +174,8 @@ MagickExport Image *ConstituteImage(const unsigned long width,
   if (image == (Image *) NULL)
     return((Image *) NULL);
   if ((width == 0) || (height == 0))
-    ThrowBinaryException(OptionError,"UnableToConstituteImage",
-      "NonzeroWidthAndHeightRequired");
+    ThrowBinaryException3(OptionError,UnableToConstituteImage,
+      NonzeroWidthAndHeightRequired);
   image->columns=width;
   image->rows=height;
 
@@ -218,16 +236,32 @@ MagickExport Image *ConstituteImage(const unsigned long width,
         case 'I':
           {
             if (!AllocateImageColormap(image,MaxColormapSize))
-              ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-                "UnableToConstituteImage");
+              ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
+                UnableToConstituteImage);
             switch_map[i]=IntensityMapQuantum;
+            break;
+          }
+        case 'O':
+          {
+            switch_map[i]=OpacityInvertedMapQuantum;
+            image->matte=True;
+            break;
+          }
+        case 'P':
+          {
+            switch_map[i]=PadMapQuantum;
+            break;
+          }
+        case 'T':
+          {
+            switch_map[i]=OpacityMapQuantum;
+            image->matte=True;
             break;
           }
         default:
           {
             DestroyImage(image);
-            ThrowImageException(OptionError,"UnrecognizedPixelMap",map)
-              break;
+            ThrowImageException(OptionError,UnrecognizedPixelMap,map)
           }
         }
     }
@@ -235,398 +269,128 @@ MagickExport Image *ConstituteImage(const unsigned long width,
   /*
     Transfer the pixels from the pixel data array to the image.
   */
-  switch (type)
-  {
-    case CharPixel:
+  for (y=0; y < (long) image->rows; y++)
     {
-      register unsigned char
-        *p;
-
-      p=(unsigned char *) pixels;
-      for (y=0; y < (long) image->rows; y++)
-      {
-        q=SetImagePixels(image,0,y,image->columns,1);
-        if (q == (PixelPacket *) NULL)
-          break;
-        indexes=GetIndexes(image);
-        for (x=0; x < (long) image->columns; x++)
+      q=SetImagePixels(image,0,y,image->columns,1);
+      if (q == (PixelPacket *) NULL)
+        break;
+      indexes=GetIndexes(image);
+      for (x=0; x < (long) image->columns; x++)
         {
 	  q->red=0;
 	  q->green=0;
 	  q->blue=0;
 	  q->opacity=OpaqueOpacity;
           for (i=0; i < (long) length; i++)
-          {
-            switch (switch_map[i])
             {
-              case RedMapQuantum:
-              {
-                q->red=ScaleCharToQuantum(*p++);
-                break;
-              }
-              case GreenMapQuantum:
-              {
-                q->green=ScaleCharToQuantum(*p++);
-                break;
-              }
-              case BlueMapQuanum:
-              {
-                q->blue=ScaleCharToQuantum(*p++);
-                break;
-              }
-              case OpacityMapQuantum:
-              {
-                q->opacity=ScaleCharToQuantum(*p++);
-                break;
-              }
-              case IntensityMapQuantum:
-              {
-                indexes[x]=ScaleQuantumToIndex(ScaleCharToQuantum(*p++));
-                q->red=image->colormap[indexes[x]].red;
-                q->green=image->colormap[indexes[x]].green;
-                q->blue=image->colormap[indexes[x]].blue;
-                break;
-              }
-              default:
-              {
-                DestroyImage(image);
-                ThrowImageException(OptionError,"UnrecognizedPixelMap",map)
-              }
+              /*
+                Input a quantum
+              */
+              quantum=0U;
+              
+              switch (type)
+                {
+                case CharPixel:
+                  {
+                    register const unsigned char *p = pixels;
+                    quantum=ScaleCharToQuantum(*p++);
+                    pixels = (const void *) p;
+                    break;
+                  }
+                case ShortPixel:
+                  {
+                    register const unsigned short *p = pixels;
+                    quantum=ScaleShortToQuantum(*p++);
+                    pixels = (const void *) p;
+                    break;
+                  }
+                case IntegerPixel:
+                  {
+                    register const unsigned int *p = pixels;
+                    quantum=ScaleLongToQuantum(*p++);
+                    pixels = (const void *) p;
+                    break;
+                  }
+                case LongPixel:
+                  {
+                    register const unsigned long *p = pixels;
+                    quantum=ScaleLongToQuantum(*p++);
+                    pixels = (const void *) p;
+                    break;
+                  }
+                case FloatPixel:
+                  {
+                    double quantum_float;
+                    register const float *p = pixels;
+                    quantum_float=(double) MaxRGB*(*p++);
+                    quantum=RoundSignedToQuantum(quantum_float);
+                    pixels = (const void *) p;
+                    break;
+                  }
+                case DoublePixel:
+                  {
+                    double quantum_float;
+                    register const double *p = pixels;
+                    quantum_float=(double) MaxRGB*(*p++);
+                    quantum=RoundSignedToQuantum(quantum_float);
+                    pixels = (const void *) p;
+                    break;
+                  }
+                }
+              
+              /*
+                Transfer quantum to image
+              */
+              switch (switch_map[i])
+                {
+                case RedMapQuantum:
+                  {
+                    q->red=quantum;
+                    break;
+                  }
+                case GreenMapQuantum:
+                  {
+                    q->green=quantum;
+                    break;
+                  }
+                case BlueMapQuanum:
+                  {
+                    q->blue=quantum;
+                    break;
+                  }
+                case OpacityMapQuantum:
+                  {
+                    q->opacity=quantum;
+                    break;
+                  }
+                case OpacityInvertedMapQuantum:
+                  {
+                    q->opacity=MaxRGB-quantum;
+                    break;
+                  }
+                case IntensityMapQuantum:
+                  {
+                    *indexes=ScaleQuantumToIndex(quantum);
+                    VerifyColormapIndex(image,*indexes);
+                    q->red=image->colormap[*indexes].red;
+                    q->green=image->colormap[*indexes].green;
+                    q->blue=image->colormap[*indexes].blue;
+                    break;
+                  }
+                case PadMapQuantum:
+                  {
+                    /* Discard quantum */
+                    break;
+                  }
+                }
             }
-          }
+          indexes++;
           q++;
         }
-        if (!SyncImagePixels(image))
-          break;
-      }
-      break;
+      if (!SyncImagePixels(image))
+        break;
     }
-    case ShortPixel:
-    {
-      register unsigned short
-        *p;
-
-      p=(unsigned short *) pixels;
-      for (y=0; y < (long) image->rows; y++)
-      {
-        q=SetImagePixels(image,0,y,image->columns,1);
-        if (q == (PixelPacket *) NULL)
-          break;
-        indexes=GetIndexes(image);
-        for (x=0; x < (long) image->columns; x++)
-        {
-	  q->red=0;
-	  q->green=0;
-	  q->blue=0;
-	  q->opacity=OpaqueOpacity;
-          for (i=0; i < (long) length; i++)
-          {
-            switch (switch_map[i])
-            {
-              case RedMapQuantum:
-              {
-                q->red=ScaleShortToQuantum(*p++);
-                break;
-              }
-              case GreenMapQuantum:
-              {
-                q->green=ScaleShortToQuantum(*p++);
-                break;
-              }
-              case BlueMapQuanum:
-              {
-                q->blue=ScaleShortToQuantum(*p++);
-                break;
-              }
-              case OpacityMapQuantum:
-              {
-                q->opacity=ScaleShortToQuantum(*p++);
-                break;
-              }
-              case IntensityMapQuantum:
-              {
-                indexes[x]=ScaleQuantumToIndex(ScaleShortToQuantum(*p++));
-                q->red=image->colormap[indexes[x]].red;
-                q->green=image->colormap[indexes[x]].green;
-                q->blue=image->colormap[indexes[x]].blue;
-                break;
-              }
-              default:
-              {
-                DestroyImage(image);
-                ThrowImageException(OptionError,"UnrecognizedPixelMap",map)
-              }
-            }
-          }
-          q++;
-        }
-        if (!SyncImagePixels(image))
-          break;
-      }
-      break;
-    }
-    case IntegerPixel:
-    {
-      register unsigned int
-        *p;
-
-      p=(unsigned int *) pixels;
-      for (y=0; y < (long) image->rows; y++)
-      {
-        q=SetImagePixels(image,0,y,image->columns,1);
-        if (q == (PixelPacket *) NULL)
-          break;
-        indexes=GetIndexes(image);
-        for (x=0; x < (long) image->columns; x++)
-        {
-	  q->red=0;
-	  q->green=0;
-	  q->blue=0;
-	  q->opacity=OpaqueOpacity;
-          for (i=0; i < (long) length; i++)
-          {
-            switch (switch_map[i])
-            {
-              case RedMapQuantum:
-              {
-                q->red=ScaleLongToQuantum(*p++);
-                break;
-              }
-              case GreenMapQuantum:
-              {
-                q->green=ScaleLongToQuantum(*p++);
-                break;
-              }
-              case BlueMapQuanum:
-              {
-                q->blue=ScaleLongToQuantum(*p++);
-                break;
-              }
-              case OpacityMapQuantum:
-              {
-                q->opacity=ScaleLongToQuantum(*p++);
-                break;
-              }
-              case IntensityMapQuantum:
-              {
-                indexes[x]=ScaleQuantumToIndex(ScaleLongToQuantum(*p++));
-                q->red=image->colormap[indexes[x]].red;
-                q->green=image->colormap[indexes[x]].green;
-                q->blue=image->colormap[indexes[x]].blue;
-                break;
-              }
-              default:
-              {
-                DestroyImage(image);
-                ThrowImageException(OptionError,"UnrecognizedPixelMap",map)
-              }
-            }
-          }
-          q++;
-        }
-        if (!SyncImagePixels(image))
-          break;
-      }
-      break;
-    }
-    case LongPixel:
-    {
-      register unsigned long
-        *p;
-
-      p=(unsigned long *) pixels;
-      for (y=0; y < (long) image->rows; y++)
-      {
-        q=SetImagePixels(image,0,y,image->columns,1);
-        if (q == (PixelPacket *) NULL)
-          break;
-        indexes=GetIndexes(image);
-        for (x=0; x < (long) image->columns; x++)
-        {
-	  q->red=0;
-	  q->green=0;
-	  q->blue=0;
-	  q->opacity=OpaqueOpacity;
-          for (i=0; i < (long) length; i++)
-          {
-            switch (switch_map[i])
-            {
-              case RedMapQuantum:
-              {
-                q->red=ScaleLongToQuantum(*p++);
-                break;
-              }
-              case GreenMapQuantum:
-              {
-                q->green=(Quantum) (*p++);
-                break;
-              }
-              case BlueMapQuanum:
-              {
-                q->blue=ScaleLongToQuantum(*p++);
-                break;
-              }
-              case OpacityMapQuantum:
-              {
-                q->opacity=ScaleLongToQuantum(*p++);
-                break;
-              }
-              case IntensityMapQuantum:
-              {
-                indexes[x]=ScaleQuantumToIndex(ScaleLongToQuantum(*p++));
-                q->red=image->colormap[indexes[x]].red;
-                q->green=image->colormap[indexes[x]].green;
-                q->blue=image->colormap[indexes[x]].blue;
-                break;
-              }
-              default:
-              {
-                DestroyImage(image);
-                ThrowImageException(OptionError,"UnrecognizedPixelMap",map)
-              }
-            }
-          }
-          q++;
-        }
-        if (!SyncImagePixels(image))
-          break;
-      }
-      break;
-    }
-    case FloatPixel:
-    {
-      register float
-        *p;
-
-      p=(float *) pixels;
-      for (y=0; y < (long) image->rows; y++)
-      {
-        q=SetImagePixels(image,0,y,image->columns,1);
-        if (q == (PixelPacket *) NULL)
-          break;
-        indexes=GetIndexes(image);
-        for (x=0; x < (long) image->columns; x++)
-        {
-	  q->red=0;
-	  q->green=0;
-	  q->blue=0;
-	  q->opacity=OpaqueOpacity;
-          for (i=0; i < (long) length; i++)
-          {
-            switch (switch_map[i])
-            {
-              case RedMapQuantum:
-              {
-                q->red=(Quantum) ((double) MaxRGB*(*p++)+0.5);
-                break;
-              }
-              case GreenMapQuantum:
-              {
-                q->green=(Quantum) ((double) MaxRGB*(*p++)+0.5);
-                break;
-              }
-              case BlueMapQuanum:
-              {
-                q->blue=(Quantum) ((double) MaxRGB*(*p++)+0.5);
-                break;
-              }
-              case OpacityMapQuantum:
-              {
-                q->opacity=(Quantum) ((double) MaxRGB*(*p++)+0.5);
-                break;
-              }
-              case IntensityMapQuantum:
-              {
-                indexes[x]=(Quantum) ((MaxColormapSize-1)*(*p++)+0.5);
-                q->red=image->colormap[indexes[x]].red;
-                q->green=image->colormap[indexes[x]].green;
-                q->blue=image->colormap[indexes[x]].blue;
-                break;
-              }
-              default:
-              {
-                DestroyImage(image);
-                ThrowImageException(OptionError,"UnrecognizedPixelMap",map)
-              }
-            }
-          }
-          q++;
-        }
-        if (!SyncImagePixels(image))
-          break;
-      }
-      break;
-    }
-    case DoublePixel:
-    {
-      register double
-        *p;
-
-      p=(double *) pixels;
-      for (y=0; y < (long) image->rows; y++)
-      {
-        q=SetImagePixels(image,0,y,image->columns,1);
-        if (q == (PixelPacket *) NULL)
-          break;
-        indexes=GetIndexes(image);
-        for (x=0; x < (long) image->columns; x++)
-        {
-          q->red=0;
-	  q->green=0;
-          q->blue=0;
-          q->opacity=OpaqueOpacity;
-          for (i=0; i < (long) length; i++)
-          {
-            switch (switch_map[i])
-            {
-              case RedMapQuantum:
-              {
-                q->red=(Quantum) ((double) MaxRGB*(*p++)+0.5);
-                break;
-              }
-              case GreenMapQuantum:
-              {
-                q->green=(Quantum) ((double) MaxRGB*(*p++)+0.5);
-                break;
-              }
-              case BlueMapQuanum:
-              {
-                q->blue=(Quantum) ((double) MaxRGB*(*p++)+0.5);
-                break;
-              }
-              case OpacityMapQuantum:
-              {
-                q->opacity=(Quantum) ((double) MaxRGB*(*p++)+0.5);
-                break;
-              }
-              case IntensityMapQuantum:
-              {
-                indexes[x]=(Quantum) ((MaxColormapSize-1)*(*p++)+0.5);
-                q->red=image->colormap[indexes[x]].red;
-                q->green=image->colormap[indexes[x]].green;
-                q->blue=image->colormap[indexes[x]].blue;
-                break;
-              }
-              default:
-              {
-                DestroyImage(image);
-                ThrowImageException(OptionError,"UnrecognizedPixelMap",map)
-              }
-            }
-          }
-          q++;
-        }
-        if (!SyncImagePixels(image))
-          break;
-      }
-      break;
-    }
-    default:
-    {
-      DestroyImage(image);
-      ThrowImageException(OptionError,"UnrecognizedPixelMap",map)
-    }
-  }
+  
   if (image->storage_class == PseudoClass)
     {
       /*
@@ -662,7 +426,14 @@ MagickExport Image *ConstituteImage(const unsigned long width,
 */
 MagickExport void DestroyConstitute(void)
 {
+#if defined(JUST_FOR_DOCUMENTATION)
+  /* The first two calls should bracket any code that deals with the data
+     structurees being released */
   AcquireSemaphoreInfo(&constitute_semaphore);
+  LiberateSemaphoreInfo(&constitute_semaphore);
+#endif
+  /* The final call actually releases the associated mutex used to prevent
+     multiple threads from accessing the data */
   DestroySemaphoreInfo(&constitute_semaphore);
 }
 
@@ -677,10 +448,17 @@ MagickExport void DestroyConstitute(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DispatchImage() extracts pixel data from an image and returns it to you.
+%  DispatchImage() extracts pixel data from an Image into a raw memory array.
+%  The pixel data is written in scanline order top-to-bottom using an 
+%  arbitrary quantum order specified by 'map', and with quantum size
+%  specified by 'type'.
+%
+%  The output array data may be unsigned char, unsigned short int, unsigned
+%  int, unsigned long, float, or double.  Float and double require the pixels
+%  to be normalized to the range [0..1], otherwise the range is [0..MaxVal]
+%  where MaxVal is the maximum possible value for that type.
+%
 %  The method returns False on success or True if an error is encountered.
-%  The data is returned as char, short int, int, long, float, or double in
-%  the order specified by map.
 %
 %  Suppose we want want to extract the first scanline of a 640x480 image as
 %  character data in red-green-blue order:
@@ -701,15 +479,17 @@ MagickExport void DestroyConstitute(void)
 %    o x_offset, y_offset, columns, rows:  These values define the perimeter
 %      of a region of pixels you want to extract.
 %
-%    o map:  This string reflects the expected ordering of the pixel array.
+%    o map: This string reflects the expected ordering of the pixel array.
 %      It can be any combination or order of R = red, G = green, B = blue,
-%      A = alpha, C = cyan, Y = yellow, M = magenta, K = black, or
-%      I = intensity (for grayscale).
+%      A = alpha  (same as Transparency), O = Opacity, T = Transparency,
+%      C = cyan, Y = yellow, M = magenta, K = black, I = intensity (for
+%      grayscale). Specify "P" = pad, to output a pad quantum. Pad quantums
+%      are zero-value.
 %
 %    o type: Define the data type of the pixels.  Float and double types are
-%      normalized to [0..1] otherwise [0..MaxRGB].  Choose from these types:
-%      CharPixel, ShortPixel, IntegerPixel, LongPixel, FloatPixel, or
-%      DoublePixel.
+%      expected to be normalized [0..1] otherwise [0..MaxRGB].  Choose from
+%      these types: CharPixel, ShortPixel, IntegerPixel, LongPixel, FloatPixel,
+%      or DoublePixel.
 %
 %    o pixels: This array of values contain the pixel components as defined by
 %      map and type.  You must preallocate this array where the expected
@@ -733,6 +513,9 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
   register const PixelPacket
     *p;
 
+  register Quantum
+    quantum;
+
   MapQuantumType
     switch_map[MaxTextExtent/sizeof(MapQuantumType)];
 
@@ -747,7 +530,6 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
   /*
     Prepare a validated and more efficient version of the map.
   */
-
   for (i=0; i < (long) length; i++)
     {
       switch ((int) toupper(map[i]))
@@ -768,6 +550,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
             break;
           }
         case 'A':
+        case 'T':
           {
             switch_map[i]=OpacityMapQuantum;
             break;
@@ -777,7 +560,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
             switch_map[i]=RedMapQuantum;
             if (image->colorspace == CMYKColorspace)
               break;
-            ThrowException(exception,OptionError,"ColorSeparatedImageRequired",map);
+            ThrowException(exception,OptionError,ColorSeparatedImageRequired,map);
             return(False);
           }
         case 'M':
@@ -785,7 +568,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
             switch_map[i]=GreenMapQuantum;
             if (image->colorspace == CMYKColorspace)
               break;
-            ThrowException(exception,OptionError,"ColorSeparatedImageRequired",map);
+            ThrowException(exception,OptionError,ColorSeparatedImageRequired,map);
             return(False);
           }
         case 'Y':
@@ -793,7 +576,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
             switch_map[i]=BlueMapQuanum;
             if (image->colorspace == CMYKColorspace)
               break;
-            ThrowException(exception,OptionError,"ColorSeparatedImageRequired",map);
+            ThrowException(exception,OptionError,ColorSeparatedImageRequired,map);
             return(False);
           }
         case 'K':
@@ -801,7 +584,7 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
             switch_map[i]=OpacityMapQuantum;
             if (image->colorspace == CMYKColorspace)
               break;
-            ThrowException(exception,OptionError,"ColorSeparatedImageRequired",map);
+            ThrowException(exception,OptionError,ColorSeparatedImageRequired,map);
             return(False);
           }
         case 'I':
@@ -809,346 +592,139 @@ MagickExport unsigned int DispatchImage(const Image *image,const long x_offset,
             switch_map[i]=IntensityMapQuantum;
             break;
           }
+        case 'O':
+          {
+            switch_map[i]=OpacityInvertedMapQuantum;
+            break;
+          }
+        case 'P':
+          {
+            switch_map[i]=PadMapQuantum;
+            break;
+          }
         default:
           {
-            ThrowException(exception,OptionError,"UnrecognizedPixelMap",map);
+            ThrowException(exception,OptionError,UnrecognizedPixelMap,map);
             return(False);
           }
         }
     }
-
-  switch (type)
-  {
-    case CharPixel:
+  
+  for (y=0; y < (long) rows; y++)
     {
-      register unsigned char
-        *q;
-
-      q=(unsigned char *) pixels;
-      for (y=0; y < (long) rows; y++)
-      {
-        p=AcquireImagePixels(image,x_offset,y_offset+y,columns,1,exception);
-        if (p == (const PixelPacket *) NULL)
-          break;
-        for (x=0; x < (long) columns; x++)
+      p=AcquireImagePixels(image,x_offset,y_offset+y,columns,1,exception);
+      if (p == (const PixelPacket *) NULL)
+        break;
+      for (x=0; x < (long) columns; x++)
         {
           for (i=0; i < (long) length; i++)
-          {
-            switch (switch_map[i])
             {
-              case RedMapQuantum:
-              {
-                *q++=ScaleQuantumToChar(p->red);
-                break;
-              }
-              case GreenMapQuantum:
-              {
-                *q++=ScaleQuantumToChar(p->green);
-                break;
-              }
-              case BlueMapQuanum:
-              {
-                *q++=ScaleQuantumToChar(p->blue);
-                break;
-              }
-              case OpacityMapQuantum:
-              {
-                *q++=ScaleQuantumToChar(p->opacity);
-                break;
-              }
-              case IntensityMapQuantum:
-              {
-                *q++=ScaleQuantumToChar(PixelIntensityToQuantum(p));
-                break;
-              }
-              default:
-              {
-                ThrowException(exception,OptionError,"UnrecognizedPixelMap",map);
-                return(False);
-              }
-            }
-          }
-          p++;
-        }
-      }
-      break;
-    }
-    case ShortPixel:
-    {
-      register unsigned short
-        *q;
+              /*
+                Obtain quantum value
+              */
+              quantum=0U;
+              switch (switch_map[i])
+                {
+                case RedMapQuantum:
+                  {
+                    quantum=p->red;
+                    break;
+                  }
+                case GreenMapQuantum:
+                  {
+                    quantum=p->green;
+                    break;
+                  }
+                case BlueMapQuanum:
+                  {
+                    quantum=p->blue;
+                    break;
+                  }
+                case IntensityMapQuantum:
+                  {
+                    if (image->is_grayscale)
+                      {
+                        quantum=p->red;
+                      }
+                    else
+                      {
+                        double intensity = PixelIntensity(p);
+                        quantum=RoundToQuantum(intensity);
+                      }
+                    break;
+                  }
+                case OpacityInvertedMapQuantum:
+                  {
+                    if (image->matte)
+                      quantum=p->opacity;
+                    quantum=MaxRGB-quantum;
+                    break;
+                  }
+                case OpacityMapQuantum:
+                  {
+                    if (image->matte)
+                      quantum=p->opacity;
+                    break;
+                  }
+                case PadMapQuantum:
+                  {
+                    /* Zero quantum */
+                    break;
+                  }
+                }
 
-      q=(unsigned short *) pixels;
-      for (y=0; y < (long) rows; y++)
-      {
-        p=AcquireImagePixels(image,x_offset,y_offset+y,columns,1,exception);
-        if (p == (const PixelPacket *) NULL)
-          break;
-        for (x=0; x < (long) columns; x++)
-        {
-          for (i=0; i < (long) length; i++)
-          {
-            switch (switch_map[i])
-            {
-              case RedMapQuantum:
-              {
-                *q++=ScaleQuantumToShort(p->red);
-                break;
-              }
-              case GreenMapQuantum:
-              {
-                *q++=ScaleQuantumToShort(p->green);
-                break;
-              }
-              case BlueMapQuanum:
-              {
-                *q++=ScaleQuantumToShort(p->blue);
-                break;
-              }
-              case OpacityMapQuantum:
-              {
-                *q++=ScaleQuantumToShort(p->opacity);
-                break;
-              }
-              case IntensityMapQuantum:
-              {
-                *q++=ScaleQuantumToShort(PixelIntensityToQuantum(p));
-                break;
-              }
-              default:
-              {
-                ThrowException(exception,OptionError,"UnrecognizedPixelMap",map);
-                return(False);
-              }
+              /*
+                Output quantum
+              */
+              switch (type)
+                {
+                case CharPixel:
+                  {
+                    register unsigned char *q = pixels;
+                    *q++=ScaleQuantumToChar(quantum);
+                    pixels=(void *) q;
+                    break;
+                  }
+                case ShortPixel:
+                  {
+                    register unsigned short *q = pixels;
+                    *q++=ScaleQuantumToShort(quantum);
+                    pixels=(void *) q;
+                    break;
+                  }
+                case IntegerPixel:
+                  {
+                    register unsigned int *q = pixels;
+                    *q++=ScaleQuantumToLong(quantum);
+                    pixels=(void *) q;
+                    break;
+                  }
+                case LongPixel:
+                  {
+                    register unsigned long *q = pixels;
+                    *q++=ScaleQuantumToLong(quantum);
+                    pixels=(void *) q;
+                    break;
+                  }
+                case FloatPixel:
+                  {
+                    register float *q = pixels;
+                    *q++=(float) ((double) quantum/MaxRGB);
+                    pixels=(void *) q;
+                    break;
+                  }
+                case DoublePixel:
+                  {
+                    register double *q = pixels;
+                    *q++=(double) quantum/MaxRGB;
+                    pixels=(void *) q;
+                    break;
+                  }
+                }
             }
-          }
           p++;
         }
-      }
-      break;
     }
-    case IntegerPixel:
-    {
-      register unsigned int
-        *q;
-
-      q=(unsigned int *) pixels;
-      for (y=0; y < (long) rows; y++)
-      {
-        p=AcquireImagePixels(image,x_offset,y_offset+y,columns,1,exception);
-        if (p == (const PixelPacket *) NULL)
-          break;
-        for (x=0; x < (long) columns; x++)
-        {
-          for (i=0; i < (long) length; i++)
-          {
-            switch (switch_map[i])
-            {
-              case RedMapQuantum:
-              {
-                *q++=ScaleQuantumToLong(p->red);
-                break;
-              }
-              case GreenMapQuantum:
-              {
-                *q++=ScaleQuantumToLong(p->green);
-                break;
-              }
-              case BlueMapQuanum:
-              {
-                *q++=ScaleQuantumToLong(p->blue);
-                break;
-              }
-              case OpacityMapQuantum:
-              {
-                *q++=ScaleQuantumToLong(p->opacity);
-                break;
-              }
-              case IntensityMapQuantum:
-              {
-                *q++=ScaleQuantumToLong(PixelIntensityToQuantum(p));
-                break;
-              }
-              default:
-              {
-                ThrowException(exception,OptionError,"UnrecognizedPixelMap",map);
-                return(False);
-              }
-            }
-          }
-          p++;
-        }
-      }
-      break;
-    }
-    case LongPixel:
-    {
-      register unsigned long
-        *q;
-
-      q=(unsigned long *) pixels;
-      for (y=0; y < (long) rows; y++)
-      {
-        p=AcquireImagePixels(image,x_offset,y_offset+y,columns,1,exception);
-        if (p == (const PixelPacket *) NULL)
-          break;
-        for (x=0; x < (long) columns; x++)
-        {
-          for (i=0; i < (long) length; i++)
-          {
-            switch (switch_map[i])
-            {
-              case RedMapQuantum:
-              {
-                *q++=ScaleQuantumToLong(p->red);
-                break;
-              }
-              case GreenMapQuantum:
-              {
-                *q++=ScaleQuantumToLong(p->green);
-                break;
-              }
-              case BlueMapQuanum:
-              {
-                *q++=ScaleQuantumToLong(p->blue);
-                break;
-              }
-              case OpacityMapQuantum:
-              {
-                *q++=ScaleQuantumToLong(p->opacity);
-                break;
-              }
-              case IntensityMapQuantum:
-              {
-                *q++=ScaleQuantumToLong(PixelIntensityToQuantum(p));
-                break;
-              }
-              default:
-              {
-                ThrowException(exception,OptionError,"UnrecognizedPixelMap",map);
-                return(False);
-              }
-            }
-          }
-          p++;
-        }
-      }
-      break;
-    }
-    case FloatPixel:
-    {
-      register float
-        *q;
-
-      q=(float *) pixels;
-      for (y=0; y < (long) rows; y++)
-      {
-        p=AcquireImagePixels(image,x_offset,y_offset+y,columns,1,exception);
-        if (p == (const PixelPacket *) NULL)
-          break;
-        for (x=0; x < (long) columns; x++)
-        {
-          for (i=0; i < (long) length; i++)
-          {
-            switch (switch_map[i])
-            {
-              case RedMapQuantum:
-              {
-                *q++=(double) p->red/MaxRGB;
-                break;
-              }
-              case GreenMapQuantum:
-              {
-                *q++=(double) p->green/MaxRGB;
-                break;
-              }
-              case BlueMapQuanum:
-              {
-                *q++=(double) p->blue/MaxRGB;
-                break;
-              }
-              case OpacityMapQuantum:
-              {
-                *q++=(double) p->opacity/MaxRGB;
-                break;
-              }
-              case IntensityMapQuantum:
-              {
-		*q++=(double) PixelIntensity(p)/MaxRGB;
-                break;
-              }
-              default:
-              {
-                ThrowException(exception,OptionError,"UnrecognizedPixelMap",map);
-                return(False);
-              }
-            }
-          }
-          p++;
-        }
-      }
-      break;
-    }
-    case DoublePixel:
-    {
-      register double
-        *q;
-
-      q=(double *) pixels;
-      for (y=0; y < (long) rows; y++)
-      {
-        p=AcquireImagePixels(image,x_offset,y_offset+y,columns,1,exception);
-        if (p == (const PixelPacket *) NULL)
-          break;
-        for (x=0; x < (long) columns; x++)
-        {
-          for (i=0; i < (long) length; i++)
-          {
-            switch (switch_map[i])
-            {
-              case RedMapQuantum:
-              {
-                *q++=(double) p->red/MaxRGB;
-                break;
-              }
-              case GreenMapQuantum:
-              {
-                *q++=(double) p->green/MaxRGB;
-                break;
-              }
-              case BlueMapQuanum:
-              {
-                *q++=(double) p->blue/MaxRGB;
-                break;
-              }
-              case OpacityMapQuantum:
-              {
-                *q++=(double) p->opacity/MaxRGB;
-                break;
-              }
-              case IntensityMapQuantum:
-              {
-                *q++=(double) PixelIntensityToQuantum(p)/MaxRGB;
-                break;
-              }
-              default:
-              {
-                ThrowException(exception,OptionError,"UnrecognizedPixelMap",map);
-                return(False);
-              }
-            }
-          }
-          p++;
-        }
-      }
-      break;
-    }
-    default:
-    {
-      ThrowException(exception,OptionError,"UnrecognizedPixelMap",map);
-      return(False);
-    }
-  }
   return(True);
 }
 
@@ -1267,13 +843,13 @@ MagickExport unsigned int PopImagePixels(const Image *image,
   register unsigned int
     pixel;
 
-  unsigned long
+  long
     number_pixels;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(destination != (unsigned char *) NULL);
-  number_pixels=GetPixelCacheArea(image);
+  number_pixels=(long) GetPixelCacheArea(image);
   p=GetPixels(image);
   indexes=GetIndexes(image);
   q=destination;
@@ -1284,14 +860,14 @@ MagickExport unsigned int PopImagePixels(const Image *image,
       assert(image->colors <= MaxColormapSize);
       if (image->colors <= 256)
         {
-          for (x= (long) number_pixels; x > 0; --x)
+          for (x= number_pixels; x > 0; --x)
             *q++=(unsigned char) *indexes++;
           break;
         }
 #if MaxColormapSize > 256
       if (image->colors <= 65536L)
         {
-          for (x= (long) number_pixels; x > 0; --x)
+          for (x= number_pixels; x > 0; --x)
           {
             *q++=(unsigned char) (*indexes >> 8);
             *q++=(unsigned char) *indexes++;
@@ -1300,7 +876,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         }
 #endif /* MaxColormapSize > 256 */
 #if MaxColormapSize > 65536
-      for (x= (long) number_pixels; x > 0; --x)
+      for (x= number_pixels; x > 0; --x)
       {
         *q++=(unsigned char) (*indexes >> 24);
         *q++=(unsigned char) (*indexes >> 16);
@@ -1315,7 +891,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
       assert(image->colors <= MaxColormapSize);
       if (image->colors <= 256)
         {
-          for (x= (long) number_pixels; x > 0; --x)
+          for (x= number_pixels; x > 0; --x)
           {
             *q++=(unsigned char) *indexes++;
             pixel=ScaleQuantumToChar(MaxRGB-p->opacity);
@@ -1327,7 +903,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
 #if MaxColormapSize > 256
       if (image->colors <= 65536L)
         {
-          for (x= (long) number_pixels; x > 0; --x)
+          for (x= number_pixels; x > 0; --x)
           {
             *q++=(unsigned char) (*indexes >> 8);
             *q++=(unsigned char) *indexes++;
@@ -1340,7 +916,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         }
 #endif /* MaxColormapSize > 256 */
 #if MaxColormapSize > 65536
-      for (x= (long) number_pixels; x > 0; --x)
+      for (x= number_pixels; x > 0; --x)
       {
         *q++=(unsigned char) (*indexes >> 24);
         *q++=(unsigned char) (*indexes >> 16);
@@ -1361,10 +937,10 @@ MagickExport unsigned int PopImagePixels(const Image *image,
       if (image->depth <= 8)
         {
           if (image->is_grayscale)
-            for (x= (long) number_pixels; x > 0; --x)
+            for (x= number_pixels; x > 0; --x)
               *q++=(unsigned char) ScaleQuantumToChar(p++->red);
           else
-            for (x= (long) number_pixels; x > 0; --x)
+            for (x= number_pixels; x > 0; --x)
               {
                 *q++=(unsigned char) ScaleQuantumToChar(PixelIntensityToQuantum(p));
                 p++;
@@ -1375,7 +951,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         {
           if (image->is_grayscale)
             {
-              for (x= (long) number_pixels; x > 0; --x)
+              for (x= number_pixels; x > 0; --x)
                 {
                   pixel=ScaleQuantumToShort(p->red);
                   *q++=(unsigned char) (pixel >> 8);
@@ -1385,7 +961,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
             }
           else
             {
-              for (x= (long) number_pixels; x > 0; --x)
+              for (x= number_pixels; x > 0; --x)
                 {
                   pixel=ScaleQuantumToShort(PixelIntensityToQuantum(p));
                   *q++=(unsigned char) (pixel >> 8);
@@ -1397,7 +973,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         }
       if (image->is_grayscale)
             {
-              for (x= (long) number_pixels; x > 0; --x)
+              for (x= number_pixels; x > 0; --x)
                 {
                   pixel=ScaleQuantumToLong(p->red);
                   *q++=(unsigned char) (pixel >> 24);
@@ -1409,7 +985,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
             }
       else
         {
-          for (x= (long) number_pixels; x > 0; --x)
+          for (x= number_pixels; x > 0; --x)
             {
               pixel=ScaleQuantumToLong(PixelIntensityToQuantum(p));
               *q++=(unsigned char) (pixel >> 24);
@@ -1427,7 +1003,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         {
           if (image->is_grayscale)
             {
-              for (x= (long) number_pixels; x > 0; --x)
+              for (x= number_pixels; x > 0; --x)
                 {
                   pixel=ScaleQuantumToChar(p->red);
                   *q++=(unsigned char) pixel;
@@ -1438,7 +1014,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
             }
           else
             {
-              for (x= (long) number_pixels; x > 0; --x)
+              for (x= number_pixels; x > 0; --x)
                 {
                   pixel=ScaleQuantumToChar(PixelIntensityToQuantum(p));
                   *q++=(unsigned char) pixel;
@@ -1453,7 +1029,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         {
           if (image->is_grayscale)
             {
-              for (x= (long) number_pixels; x > 0; --x)
+              for (x= number_pixels; x > 0; --x)
                 {
                   pixel=ScaleQuantumToShort(p->red);
                   *q++=(unsigned char) (pixel >> 8);
@@ -1466,7 +1042,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
             }
           else
             {
-              for (x= (long) number_pixels; x > 0; --x)
+              for (x= number_pixels; x > 0; --x)
                 {
                   pixel=ScaleQuantumToShort(PixelIntensityToQuantum(p));
                   *q++=(unsigned char) (pixel >> 8);
@@ -1481,7 +1057,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         }
       if (image->is_grayscale)
         {
-          for (x= (long) number_pixels; x > 0; --x)
+          for (x= number_pixels; x > 0; --x)
             {
               pixel=ScaleQuantumToLong(p->red);
               *q++=(unsigned char) (pixel >> 24);
@@ -1498,7 +1074,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         }
       else
         {
-          for (x= (long) number_pixels; x > 0; --x)
+          for (x= number_pixels; x > 0; --x)
             {
               pixel=ScaleQuantumToLong(PixelIntensityToQuantum(p));
               *q++=(unsigned char) (pixel >> 24);
@@ -1520,7 +1096,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
     {
       if (image->depth <= 8)
         {
-          for (x= (long) number_pixels; x > 0; --x)
+          for (x= number_pixels; x > 0; --x)
           {
             pixel=ScaleQuantumToChar(p->red);
             *q++=(unsigned char) pixel;
@@ -1530,7 +1106,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         }
       if (image->depth <= 16)
         {
-         for (x= (long) number_pixels; x > 0; --x)
+         for (x= number_pixels; x > 0; --x)
          {
            pixel=ScaleQuantumToShort(p->red);
            *q++=(unsigned char) (pixel >> 8);
@@ -1539,7 +1115,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
          }
           break;
         }
-      for (x= (long) number_pixels; x > 0; --x)
+      for (x= number_pixels; x > 0; --x)
       {
         pixel=ScaleQuantumToLong(p->red);
         *q++=(unsigned char) (pixel >> 24);
@@ -1555,7 +1131,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
     {
       if (image->depth <= 8)
         {
-          for (x= (long) number_pixels; x > 0; --x)
+          for (x= number_pixels; x > 0; --x)
           {
             pixel=ScaleQuantumToChar(p->green);
             *q++=(unsigned char) pixel;
@@ -1565,7 +1141,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         }
       if (image->depth <= 16)
         {
-          for (x= (long) number_pixels; x > 0; --x)
+          for (x= number_pixels; x > 0; --x)
           {
             pixel=ScaleQuantumToShort(p->green);
             *q++=(unsigned char) (pixel >> 8);
@@ -1574,7 +1150,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
           }
           break;
         }
-      for (x= (long) number_pixels; x > 0; --x)
+      for (x= number_pixels; x > 0; --x)
       {
         pixel=ScaleQuantumToLong(p->green);
         *q++=(unsigned char) (pixel >> 24);
@@ -1590,7 +1166,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
     {
       if (image->depth <= 8)
         {
-          for (x= (long) number_pixels; x > 0; --x)
+          for (x= number_pixels; x > 0; --x)
           {
             pixel=ScaleQuantumToChar(p->blue);
             *q++=(unsigned char) pixel;
@@ -1600,7 +1176,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         }
       if (image->depth <= 16)
         {
-          for (x= (long) number_pixels; x > 0; --x)
+          for (x= number_pixels; x > 0; --x)
           {
             pixel=ScaleQuantumToShort(p->blue);
             *q++=(unsigned char) (pixel >> 8);
@@ -1609,7 +1185,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
           }
           break;
         }
-      for (x= (long) number_pixels; x > 0; --x)
+      for (x= number_pixels; x > 0; --x)
       {
         pixel=ScaleQuantumToLong(p->blue);
         *q++=(unsigned char) (pixel >> 24);
@@ -1626,7 +1202,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         {
           if (image->depth <= 8)
             {
-              for (x= (long) number_pixels; x > 0; --x)
+              for (x= number_pixels; x > 0; --x)
               {
                 pixel=ScaleQuantumToChar(MaxRGB-indexes[x]);
                 *q++=(unsigned char) pixel;
@@ -1636,7 +1212,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
             }
           if (image->depth <= 16)
             {
-              for (x= (long) number_pixels; x > 0; --x)
+              for (x= number_pixels; x > 0; --x)
               {
                 pixel=ScaleQuantumToShort(MaxRGB-indexes[x]);
                 *q++=(unsigned char) (pixel >> 8);
@@ -1645,7 +1221,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
               }
               break;
             }
-          for (x= (long) number_pixels; x > 0; --x)
+          for (x= number_pixels; x > 0; --x)
           {
             pixel=ScaleQuantumToLong(MaxRGB-indexes[x]);
             *q++=(unsigned char) (pixel >> 24);
@@ -1658,7 +1234,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         }
       if (image->depth <= 8)
         {
-          for (x= (long) number_pixels; x > 0; --x)
+          for (x= number_pixels; x > 0; --x)
           {
             pixel=ScaleQuantumToChar(MaxRGB-p->opacity);
             *q++=(unsigned char) pixel;
@@ -1668,7 +1244,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         }
       if (image->depth <= 16)
         {
-          for (x= (long) number_pixels; x > 0; --x)
+          for (x= number_pixels; x > 0; --x)
           {
             pixel=ScaleQuantumToShort(MaxRGB-p->opacity);
             *q++=(unsigned char) (pixel >> 8);
@@ -1677,7 +1253,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
           }
           break;
         }
-      for (x= (long) number_pixels; x > 0; --x)
+      for (x= number_pixels; x > 0; --x)
       {
         pixel=ScaleQuantumToLong(MaxRGB-p->opacity);
         *q++=(unsigned char) (pixel >> 24);
@@ -1692,7 +1268,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
     {
       if (image->depth <= 8)
         {
-          for (x= (long) number_pixels; x > 0; --x)
+          for (x= number_pixels; x > 0; --x)
           {
             pixel=ScaleQuantumToChar(p->opacity);
             *q++=(unsigned char) pixel;
@@ -1702,7 +1278,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         }
       if (image->depth <= 16)
         {
-          for (x= (long) number_pixels; x > 0; --x)
+          for (x= number_pixels; x > 0; --x)
           {
             pixel=ScaleQuantumToShort(p->opacity);
             *q++=(unsigned char) (pixel >> 8);
@@ -1711,7 +1287,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
           }
           break;
         }
-      for (x= (long) number_pixels; x > 0; --x)
+      for (x= number_pixels; x > 0; --x)
       {
         pixel=ScaleQuantumToLong(p->opacity);
         *q++=(unsigned char) (pixel >> 24);
@@ -1727,7 +1303,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
     {
       if (image->depth <= 8)
         {
-          for (x= (long) number_pixels; x > 0; --x)
+          for (x= number_pixels; x > 0; --x)
           {
             pixel=ScaleQuantumToChar(p->red);
             *q++=(unsigned char) pixel;
@@ -1741,7 +1317,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         }
       if (image->depth <= 16)
         {
-          for (x= (long) number_pixels; x > 0; --x)
+          for (x= number_pixels; x > 0; --x)
           {
             pixel=ScaleQuantumToShort(p->red);
             *q++=(unsigned char) (pixel >> 8);
@@ -1756,7 +1332,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
           }
           break;
         }
-      for (x= (long) number_pixels; x > 0; --x)
+      for (x= number_pixels; x > 0; --x)
       {
         pixel=ScaleQuantumToLong(p->red);
         *q++=(unsigned char) (pixel >> 24);
@@ -1781,7 +1357,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
     {
       if (image->depth <= 8)
         {
-          for (x= (long) number_pixels; x > 0; --x)
+          for (x= number_pixels; x > 0; --x)
           {
             pixel=ScaleQuantumToChar(p->red);
             *q++=(unsigned char) pixel;
@@ -1797,7 +1373,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         }
       if (image->depth <= 16)
         {
-          for (x= (long) number_pixels; x > 0; --x)
+          for (x= number_pixels; x > 0; --x)
           {
             pixel=ScaleQuantumToShort(p->red);
             *q++=(unsigned char) (pixel >> 8);
@@ -1815,7 +1391,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
           }
           break;
         }
-      for (x= (long) number_pixels; x > 0; --x)
+      for (x= number_pixels; x > 0; --x)
       {
         pixel=ScaleQuantumToLong(p->red);
         *q++=(unsigned char) (pixel >> 24);
@@ -1845,7 +1421,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
     {
       if (image->depth <= 8)
         {
-          for (x= (long) number_pixels; x > 0; --x)
+          for (x= number_pixels; x > 0; --x)
           {
             pixel=ScaleQuantumToChar(p->red);
             *q++=(unsigned char) pixel;
@@ -1861,7 +1437,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         }
       if (image->depth <= 16)
         {
-          for (x= (long) number_pixels; x > 0; --x)
+          for (x= number_pixels; x > 0; --x)
           {
             pixel=ScaleQuantumToShort(p->red);
             *q++=(unsigned char) (pixel >> 8);
@@ -1879,7 +1455,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
           }
           break;
         }
-      for (x= (long) number_pixels; x > 0; --x)
+      for (x= number_pixels; x > 0; --x)
       {
         pixel=ScaleQuantumToLong(p->red);
         *q++=(unsigned char) (pixel >> 24);
@@ -1909,7 +1485,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
     {
       if (image->depth <= 8)
         {
-          for (x= (long) number_pixels; x > 0; --x)
+          for (x= number_pixels; x > 0; --x)
           {
             pixel=ScaleQuantumToChar(p->red);
             *q++=(unsigned char) pixel;
@@ -1927,7 +1503,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
         }
       if (image->depth <= 16)
         {
-          for (x= (long) number_pixels; x > 0; --x)
+          for (x= number_pixels; x > 0; --x)
           {
             pixel=ScaleQuantumToShort(p->red);
             *q++=(unsigned char) (pixel >> 8);
@@ -1948,7 +1524,7 @@ MagickExport unsigned int PopImagePixels(const Image *image,
           }
           break;
         }
-      for (x= (long) number_pixels; x > 0; --x)
+      for (x= number_pixels; x > 0; --x)
       {
         pixel=ScaleQuantumToLong(p->red);
         *q++=(unsigned char) (pixel >> 24);
@@ -2036,13 +1612,13 @@ MagickExport unsigned int PushImagePixels(Image *image,
   register PixelPacket
     *q;
 
-  unsigned long
+  long
     number_pixels;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(source != (const unsigned char *) NULL);
-  number_pixels=GetPixelCacheArea(image);
+  number_pixels=(long) GetPixelCacheArea(image);
   p=source;
   q=GetPixels(image);
   indexes=GetIndexes(image);
@@ -2053,7 +1629,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
         assert(image->colors <= MaxColormapSize);
         if (image->colors <= 256)
           {
-            for (x = (long) number_pixels; x > 0; --x)
+            for (x = number_pixels; x > 0; --x)
               {
                 index=(*p++);
                 VerifyColormapIndex(image,index);
@@ -2065,7 +1641,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
 #if MaxColormapSize > 256
         if (image->colors <= 65536L)
           {
-            for ( x= (long) number_pixels; x > 0; --x)
+            for ( x= number_pixels; x > 0; --x)
               {
                 index=(*p++ << 8);
                 index|=(*p++);
@@ -2077,7 +1653,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
           }
 #endif /* MaxColormapSize > 256 */
 #if MaxColormapSize > 65536
-        for (x = (long) number_pixels; x > 0; --x)
+        for (x = number_pixels; x > 0; --x)
           {
             index=(*p++ << 24);
             index|=(*p++ << 16);
@@ -2095,7 +1671,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
         assert(image->colors <= MaxColormapSize);
         if (image->colors <= 256)
           {
-            for (x = (long) number_pixels; x > 0; --x)
+            for (x = number_pixels; x > 0; --x)
               {
                 index=(*p++);
                 VerifyColormapIndex(image,index);
@@ -2109,7 +1685,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
 #if MaxColormapSize > 256
         if (image->colors <= 65536L)
           {
-            for (x = (long) number_pixels; x > 0; --x)
+            for (x = number_pixels; x > 0; --x)
               {
                 index=(*p++ << 8);
                 index|=(*p++);
@@ -2125,7 +1701,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
           }
 #endif /* MaxColormapSize > 256 */
 #if MaxColormapSize > 65536
-        for (x = (long) number_pixels; x > 0; --x)
+        for (x = number_pixels; x > 0; --x)
           {
             index=(*p++ << 24);
             index|=(*p++ << 16);
@@ -2148,7 +1724,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
       {
         if (image->depth <= 8)
           {
-            for (x = (long) number_pixels; x > 0; --x)
+            for (x = number_pixels; x > 0; --x)
               {
                 index=(*p++);
                 VerifyColormapIndex(image,index);
@@ -2159,7 +1735,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
           }
         if (image->depth <= 16)
           {
-            for (x = (long) number_pixels; x > 0; --x)
+            for (x = number_pixels; x > 0; --x)
               {
                 index=(*p++ << 8);
                 index|=(*p++);
@@ -2169,7 +1745,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
               }
             break;
           }
-        for (x = (long) number_pixels; x > 0; --x)
+        for (x = number_pixels; x > 0; --x)
           {
             index=(*p++ << 24);
             index|=(*p++ << 16);
@@ -2183,9 +1759,14 @@ MagickExport unsigned int PushImagePixels(Image *image,
       }
     case GrayAlphaQuantum:
       {
+        /*
+          Input is organized as a gray level followed by opacity level
+          Colormap array is pre-stuffed with ascending or descending gray
+          levels according to the gray quantum representation.
+        */
         if (image->depth <= 8)
           {
-            for (x = (long) number_pixels; x > 0; --x)
+            for (x = number_pixels; x > 0; --x)
               {
                 index=(*p++);
                 VerifyColormapIndex(image,index);
@@ -2198,7 +1779,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
           }
         if (image->depth <= 16)
           {
-            for (x = (long) number_pixels; x > 0; --x)
+            for (x = number_pixels; x > 0; --x)
               {
                 index=(*p++ << 8);
                 index|=(*p++);
@@ -2213,7 +1794,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
               }
             break;
           }
-        for (x = (long) number_pixels; x > 0; --x)
+        for (x = number_pixels; x > 0; --x)
           {
             index=(*p++ << 24);
             index|=(*p++ << 16);
@@ -2236,7 +1817,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
       {
         if (image->depth <= 8)
           {
-            for (x = (long) number_pixels; x > 0; --x)
+            for (x = number_pixels; x > 0; --x)
               {
                 q->red=ScaleCharToQuantum(*p++);
                 q++;
@@ -2245,7 +1826,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
           }
         if (image->depth <= 16)
           {
-            for (x = (long) number_pixels; x > 0; --x)
+            for (x = number_pixels; x > 0; --x)
               {
                 quantum=(*p++ << 8);
                 quantum|=(*p++);
@@ -2254,7 +1835,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
               }
             break;
           }
-        for (x = (long) number_pixels; x > 0; --x)
+        for (x = number_pixels; x > 0; --x)
           {
             quantum=(*p++ << 24);
             quantum|=(*p++ << 16);
@@ -2270,7 +1851,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
       {
         if (image->depth <= 8)
           {
-            for (x = (long) number_pixels; x > 0; --x)
+            for (x = number_pixels; x > 0; --x)
               {
                 q->green=ScaleCharToQuantum((*p++));
                 q++;
@@ -2279,7 +1860,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
           }
         if (image->depth <= 16)
           {
-            for (x = (long) number_pixels; x > 0; --x)
+            for (x = number_pixels; x > 0; --x)
               {
                 quantum=(*p++ << 8);
                 quantum|=(*p++);
@@ -2288,7 +1869,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
               }
             break;
           }
-        for (x = (long) number_pixels; x > 0; --x)
+        for (x = number_pixels; x > 0; --x)
           {
             quantum=(*p++ << 24);
             quantum|=(*p++ << 16);
@@ -2304,7 +1885,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
       {
         if (image->depth <= 8)
           {
-            for (x = (long) number_pixels; x > 0; --x)
+            for (x = number_pixels; x > 0; --x)
               {
                 q->blue=ScaleCharToQuantum(*p++);
                 q++;
@@ -2313,7 +1894,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
           }
         if (image->depth <= 16)
           {
-            for (x = (long) number_pixels; x > 0; --x)
+            for (x = number_pixels; x > 0; --x)
               {
                 quantum=(*p++ << 8);
                 quantum|=(*p++);
@@ -2322,7 +1903,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
               }
             break;
           }
-        for (x = (long) number_pixels; x > 0; --x)
+        for (x = number_pixels; x > 0; --x)
           {
             quantum=(*p++ << 24);
             quantum|=(*p++ << 16);
@@ -2339,7 +1920,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
           {
             if (image->depth <= 8)
               {
-                for (x = (long) number_pixels; x > 0; --x)
+                for (x = number_pixels; x > 0; --x)
                   {
                     *indexes++=ScaleCharToQuantum(*p++);
                   }
@@ -2347,7 +1928,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
               }
             if (image->depth <= 16)
               {
-                for (x = (long) number_pixels; x > 0; --x)
+                for (x = number_pixels; x > 0; --x)
                   {
                     quantum=(*p++ << 8);
                     quantum|=(*p++);
@@ -2355,7 +1936,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
                   }
                 break;
               }
-            for (x = (long) number_pixels; x > 0; --x)
+            for (x = number_pixels; x > 0; --x)
               {
                 quantum=(*p++ << 24);
                 quantum|=(*p++ << 16);
@@ -2367,7 +1948,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
           }
         if (image->depth <= 8)
           {
-            for (x = (long) number_pixels; x > 0; --x)
+            for (x = number_pixels; x > 0; --x)
               {
                 q->opacity=ScaleCharToQuantum(255-(*p++));
                 q++;
@@ -2376,7 +1957,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
           }
         if (image->depth <= 16)
           {
-            for (x = (long) number_pixels; x > 0; --x)
+            for (x = number_pixels; x > 0; --x)
               {
                 quantum=(*p++ << 8);
                 quantum|=(*p++);
@@ -2385,7 +1966,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
               }
             break;
           }
-        for (x = (long) number_pixels; x > 0; --x)
+        for (x = number_pixels; x > 0; --x)
           {
             quantum=(*p++ << 24);
             quantum|=(*p++ << 16);
@@ -2400,7 +1981,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
       {
         if (image->depth <= 8)
           {
-            for (x = (long) number_pixels; x > 0; --x)
+            for (x = number_pixels; x > 0; --x)
               {
                 q->opacity=ScaleCharToQuantum(*p++);
                 q++;
@@ -2409,7 +1990,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
           }
         if (image->depth <= 16)
           {
-            for (x = (long) number_pixels; x > 0; --x)
+            for (x = number_pixels; x > 0; --x)
               {
                 quantum=(*p++ << 8);
                 quantum|=(*p++);
@@ -2418,7 +1999,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
               }
             break;
           }
-        for (x = (long) number_pixels; x > 0; --x)
+        for (x = number_pixels; x > 0; --x)
           {
             quantum=(*p++ << 24);
             quantum|=(*p++ << 16);
@@ -2434,18 +2015,19 @@ MagickExport unsigned int PushImagePixels(Image *image,
       {
         if (image->depth <= 8)
           {
-            for (x = (long) number_pixels; x > 0; --x)
+            for (x = number_pixels; x > 0; --x)
               {
                 q->red=ScaleCharToQuantum(*p++);
                 q->green=ScaleCharToQuantum(*p++);
                 q->blue=ScaleCharToQuantum(*p++);
+                /* q->opacity=0U; */
                 q++;
               }
             break;
           }
         if (image->depth <= 16)
           {
-            for (x = (long) number_pixels; x > 0; --x)
+            for (x = number_pixels; x > 0; --x)
               {
                 quantum=(*p++ << 8);
                 quantum|=(*p++);
@@ -2456,11 +2038,12 @@ MagickExport unsigned int PushImagePixels(Image *image,
                 quantum=(*p++ << 8);
                 quantum|=(*p++);
                 q->blue=ScaleShortToQuantum(quantum);
+                /* q->opacity=0U; */
                 q++;
               }
             break;
           }
-        for (x = (long) number_pixels; x > 0; --x)
+        for (x = number_pixels; x > 0; --x)
           {
             quantum=(*p++ << 24);
             quantum|=(*p++ << 16);
@@ -2477,6 +2060,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
             quantum|=(*p++ << 8);
             quantum|=(*p++);
             q->blue=ScaleLongToQuantum(quantum);
+            /* q->opacity=0U; */
             q++;
           }
         break;
@@ -2485,7 +2069,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
       {
         if (image->depth <= 8)
           {
-            for (x = (long) number_pixels; x > 0; --x)
+            for (x = number_pixels; x > 0; --x)
               {
                 q->red=ScaleCharToQuantum(*p++);
                 q->green=ScaleCharToQuantum(*p++);
@@ -2497,7 +2081,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
           }
         if (image->depth <= 16)
           {
-            for (x = (long) number_pixels; x > 0; --x)
+            for (x = number_pixels; x > 0; --x)
               {
                 quantum=(*p++ << 8);
                 quantum|=(*p++);
@@ -2515,7 +2099,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
               }
             break;
           }
-        for (x = (long) number_pixels; x > 0; --x)
+        for (x = number_pixels; x > 0; --x)
           {
             quantum=(*p++ << 24);
             quantum|=(*p++ << 16);
@@ -2545,7 +2129,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
       {
         if (image->depth <= 8)
           {
-            for (x = (long) number_pixels; x > 0; --x)
+            for (x = number_pixels; x > 0; --x)
               {
                 q->red=ScaleCharToQuantum(*p++);
                 q->green=ScaleCharToQuantum(*p++);
@@ -2557,7 +2141,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
           }
         if (image->depth <= 16)
           {
-            for (x = (long) number_pixels; x > 0; --x)
+            for (x = number_pixels; x > 0; --x)
               {
                 quantum=(*p++ << 8);
                 quantum|=(*p++);
@@ -2575,7 +2159,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
               }
             break;
           }
-        for (x = (long) number_pixels; x > 0; --x)
+        for (x = number_pixels; x > 0; --x)
           {
             quantum=(*p++ << 24);
             quantum|=(*p++ << 16);
@@ -2605,7 +2189,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
       {
         if (image->depth <= 8)
           {
-            for (x = (long) number_pixels; x > 0; --x)
+            for (x = number_pixels; x > 0; --x)
               {
                 q->red=ScaleCharToQuantum(*p++);
                 q->green=ScaleCharToQuantum(*p++);
@@ -2618,7 +2202,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
           }
         if (image->depth <= 16)
           {
-            for (x = (long) number_pixels; x > 0; --x)
+            for (x = number_pixels; x > 0; --x)
               {
                 quantum=(*p++ << 8);
                 quantum|=(*p++);
@@ -2639,7 +2223,7 @@ MagickExport unsigned int PushImagePixels(Image *image,
               }
             break;
           }
-        for (x = (long) number_pixels; x > 0; --x)
+        for (x = number_pixels; x > 0; --x)
           {
             quantum=(*p++ << 24);
             quantum|=(*p++ << 16);
@@ -2703,6 +2287,45 @@ MagickExport unsigned int PushImagePixels(Image *image,
 %
 %
 */
+static void RemoveTemporaryInputFile(ImageInfo *image_info)
+{
+  int
+    filename_length;
+
+  /*
+    Remove normal file name.
+  */
+  if(!LiberateTemporaryFile(image_info->filename))
+    remove(image_info->filename);
+
+  /*
+    Remove a .cache file corresponding to a .mpc file.
+    This stupidity is necessary because MPC "files" are comprised of two
+    separate files.
+  */
+  filename_length=strlen(image_info->filename);
+  if ((filename_length > 4) &&
+      (LocaleCompare(image_info->filename+filename_length-4,".mpc") == 0))
+    {
+      char remove_name[MaxTextExtent];
+      strcpy(remove_name,image_info->filename);
+      remove_name[filename_length-4]=0;
+      strcat(remove_name,".cache");
+      printf("removing %s\n", remove_name);
+      remove(remove_name);
+    }
+  else if (LocaleCompare(image_info->magick,"mpc") == 0)
+    {
+      char remove_name[MaxTextExtent];
+      strcpy(remove_name,image_info->filename);
+      strcat(remove_name,".cache");
+      printf("removing %s\n", remove_name);
+      remove(remove_name);
+    }
+
+  errno=0;
+}
+
 MagickExport Image *ReadImage(const ImageInfo *image_info,
   ExceptionInfo *exception)
 {
@@ -2734,6 +2357,10 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
   if (*image_info->filename == '@')
     return(ReadImages(image_info,exception));
   clone_info=CloneImageInfo(image_info);
+
+  /*
+    Obtain file magick from filename
+  */
   (void) SetImageInfo(clone_info,False,exception);
   (void) strncpy(filename,clone_info->filename,MaxTextExtent-1);
   (void) strncpy(magick,clone_info->magick,MaxTextExtent-1);
@@ -2741,6 +2368,8 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     Call appropriate image reader based on image type.
   */
   magick_info=GetMagickInfo(clone_info->magick,exception);
+  if (exception->severity > UndefinedException)
+    return (False);
   if ((magick_info != (const MagickInfo *) NULL) &&
       magick_info->seekable_stream)
     {
@@ -2757,8 +2386,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
           DestroyImage(image);
           return(False);
         }
-      if ((GetBlobStreamType(image) != FileStream) &&
-          (GetBlobStreamType(image) != BlobStream))
+      if (!BlobIsSeekable(image))
         {
           /*
             Coder requires a random access stream.
@@ -2766,7 +2394,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
           if(!AcquireTemporaryFileName(clone_info->filename))
             {
               ThrowException(exception,FileOpenError,
-                "UnableToCreateTemporaryFile",clone_info->filename);
+                UnableToCreateTemporaryFile,clone_info->filename);
               CloseBlob(image);
               DestroyImageInfo(clone_info);
               DestroyImage(image);
@@ -2796,16 +2424,32 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
   else
     {
       delegate_info=GetDelegateInfo(clone_info->magick,(char *) NULL,exception);
-      if (delegate_info == (const DelegateInfo *) NULL)
+      if ((delegate_info == (const DelegateInfo *) NULL) ||
+          (exception->severity != UndefinedException))
         {
-          if (IsAccessibleAndNotEmpty(clone_info->filename))
-            ThrowException(exception,MissingDelegateError,
-              "NoDecodeDelegateForThisImageFormat",clone_info->filename);
-          else
-            ThrowException(exception,FileOpenError,"UnableToOpenFile",
-              clone_info->filename);
+          if (exception->severity == UndefinedException)
+          {
+            /*
+              Try to choose a useful error type
+            */
+            if (clone_info->filename[0] == 0)
+              {
+                ThrowException(exception,MissingDelegateError,
+                  NoDecodeDelegateForThisImageFormat,clone_info->magick);
+              }
+            else if (IsAccessibleAndNotEmpty(clone_info->filename))
+              {
+                ThrowException(exception,MissingDelegateError,
+                   NoDecodeDelegateForThisImageFormat,clone_info->filename);
+              }
+            else
+              {
+                ThrowException(exception,FileOpenError,UnableToOpenFile,
+                  clone_info->filename);
+              }
+            }
           if (clone_info->temporary)
-            LiberateTemporaryFile(clone_info->filename);
+            RemoveTemporaryInputFile(clone_info);
           DestroyImageInfo(clone_info);
           return((Image *) NULL);
         }
@@ -2821,7 +2465,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       (void) strncpy(image->filename,clone_info->filename,MaxTextExtent-1);
       if(!AcquireTemporaryFileName(clone_info->filename))
         {
-          ThrowException(exception,FileOpenError,"UnableToCreateTemporaryFile",
+          ThrowException(exception,FileOpenError,UnableToCreateTemporaryFile,
             clone_info->filename);
           DestroyImageInfo(clone_info);
           return((Image *) NULL);
@@ -2833,20 +2477,32 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       clone_info->temporary=True;
       (void) SetImageInfo(clone_info,False,exception);
       magick_info=GetMagickInfo(clone_info->magick,exception);
+      /*
+        If there is no magick info entry for this format, or there is
+        no decoder for the format, or an error is reported, then
+        attempt to return a reasonable error report.
+      */
       if ((magick_info == (const MagickInfo *) NULL) ||
-          (magick_info->decoder == NULL))
+          (magick_info->decoder == NULL) ||
+          (exception->severity != UndefinedException))
         {
-          if (IsAccessibleAndNotEmpty(clone_info->filename))
-            ThrowException(exception,MissingDelegateError,
-              "NoDecodeDelegateForThisImageFormat",clone_info->filename);
-          else
-            ThrowException(exception,FileOpenError,"UnableToOpenFile",
-              clone_info->filename);
+          if (exception->severity == UndefinedException)
+          {
+            if (IsAccessibleAndNotEmpty(clone_info->filename))
+              ThrowException(exception,MissingDelegateError,
+                NoDecodeDelegateForThisImageFormat,clone_info->filename);
+            else
+              ThrowException(exception,FileOpenError,UnableToOpenFile,
+                clone_info->filename);
+          }
           if (clone_info->temporary)
-            LiberateTemporaryFile(clone_info->filename);
+            RemoveTemporaryInputFile(clone_info);
           DestroyImageInfo(clone_info);
           return((Image *) NULL);
         }
+      /*
+        Invoke decoder for format
+      */
       if (!magick_info->thread_support)
         AcquireSemaphoreInfo(&constitute_semaphore);
       LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -2867,8 +2523,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
     }
   if (clone_info->temporary)
     {
-      if(!LiberateTemporaryFile(clone_info->filename))
-        remove(clone_info->filename); /* Must be user-provided temporary */
+      RemoveTemporaryInputFile(clone_info);
       clone_info->temporary=False;
       if (image != (Image *) NULL)
         (void) strncpy(image->filename,filename,MaxTextExtent-1);
@@ -2878,8 +2533,8 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       DestroyImageInfo(clone_info);
       return(image);
     }
-  if (image->blob->temporary)
-    remove(clone_info->filename); /* Maybe this should be LiberateTemporaryFile? */
+  if (GetBlobTemporary(image))
+    RemoveTemporaryInputFile(clone_info);
   if ((image->next != (Image *) NULL) && IsSubimage(clone_info->tile,False))
     {
       char
@@ -2940,7 +2595,8 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       }
       if (subimages == (Image *) NULL)
         ThrowException(exception,OptionError,
-          "SubimageSpecificationReturnsNoImages",clone_info->filename);
+                       SubimageSpecificationReturnsNoImages,
+                       clone_info->filename);
       else
         {
           while (subimages->previous != (Image *) NULL)
@@ -2949,10 +2605,11 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
           image=subimages;
         }
     }
-  if (image->blob->status)
+  if (GetBlobStatus(image))
     {
       ThrowException(exception,CorruptImageError,
-        "AnErrorHasOccurredReadingFromFile",clone_info->filename);
+                     AnErrorHasOccurredReadingFromFile,
+                     clone_info->filename);
       DestroyImageInfo(clone_info);
       return((Image *) NULL);
     }
@@ -2971,7 +2628,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       }
     next->taint=False;
     (void) strncpy(next->magick_filename,filename,MaxTextExtent-1);
-    if (image->blob->temporary)
+    if (GetBlobTemporary(image))
       (void) strncpy(next->filename,filename,MaxTextExtent-1);
     if (next->magick_columns == 0)
       next->magick_columns=next->columns;
@@ -3048,7 +2705,9 @@ static Image *ReadImages(const ImageInfo *image_info,ExceptionInfo *exception)
     return((Image *) NULL);
   Strip(command);
   images=StringToArgv(command,&number_images);
-  LiberateMemory((void **) &command);
+  if (images == (char **) NULL)
+    return((Image *) NULL);
+  MagickFreeMemory(command);
   /*
     Read the images into a linked list.
   */
@@ -3077,8 +2736,8 @@ static Image *ReadImages(const ImageInfo *image_info,ExceptionInfo *exception)
   }
   DestroyImageInfo(clone_info);
   for (i=1; i < number_images; i++)
-    LiberateMemory((void **) &images[i]);
-  LiberateMemory((void **) &images);
+    MagickFreeMemory(images[i]);
+  MagickFreeMemory(images);
   return(image);
 }
 
@@ -3135,15 +2794,15 @@ MagickExport Image *ReadInlineImage(const ImageInfo *image_info,
   image=(Image *) NULL;
   for (p=content; (*p != ',') && (*p != '\0'); p++);
   if (*p == '\0')
-    ThrowReaderException(CorruptImageWarning,"CorruptInlineImage",image);
+    ThrowReaderException(CorruptImageError,CorruptImage,image);
   p++;
   blob=Base64Decode(p,&length);
   if (length == 0)
-    ThrowReaderException(CorruptImageWarning,"CorruptInlineImage",image);
+    ThrowReaderException(CorruptImageError,CorruptImage,image);
   handler=SetMonitorHandler((MonitorHandler) NULL);
   image=BlobToImage(image_info,blob,length,exception);
   (void) SetMonitorHandler(handler);
-  LiberateMemory((void **) &blob);
+  MagickFreeMemory(blob);
   return(image);
 }
 
@@ -3254,8 +2913,7 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
           */
           if(!AcquireTemporaryFileName(image->filename))
             {
-              ThrowException(&image->exception,FileOpenError,
-                "UnableToCreateTemporaryFile",image->filename);
+              ThrowException(&image->exception,FileOpenError,UnableToCreateTemporaryFile,image->filename);
               DestroyImageInfo(clone_info);
               return(False);
             }
@@ -3273,8 +2931,7 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
           (magick_info->encoder == NULL))
         {
           DestroyImageInfo(clone_info);
-          ThrowBinaryException(MissingDelegateError,
-            "NoEncodeDelegateForThisImageFormat",image->filename)
+          ThrowBinaryException(MissingDelegateError,NoEncodeDelegateForThisImageFormat,image->filename)
         }
       if (!magick_info->thread_support)
         AcquireSemaphoreInfo(&constitute_semaphore);
@@ -3284,8 +2941,8 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
     }
   (void) strncpy(image->magick,clone_info->magick,MaxTextExtent-1);
   DestroyImageInfo(clone_info);
-  if (image->blob->status)
-    ThrowBinaryException(CorruptImageError,"AnErrorHasOccurredWritingToFile",
+  if (GetBlobStatus(image))
+    ThrowBinaryException(CorruptImageError,AnErrorHasOccurredWritingToFile,
       image->filename);
   return(status);
 }
@@ -3349,9 +3006,8 @@ MagickExport unsigned int WriteImages(ImageInfo *image_info,Image *image,
   {
     status&=WriteImage(image_info,p);
     if(p->exception.severity > exception->severity)
-      ThrowException(exception,p->exception.severity,
-        p->exception.reason,p->exception.description);
-    (void) CatchImageException(p);
+      CopyException(exception,&p->exception);
+    GetImageException(p,exception);
     if (image_info->adjoin)
       break;
   }

@@ -17,7 +17,7 @@
 %                        X   X    T    R  R   N   N                           %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                    ImageMagickObject BLOB Interface.                        %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -95,7 +95,7 @@ static unsigned int
 %      reading.  A null image is returned if there is a memory shortage or
 %      if the image cannot be read.
 %
-%    o image_info: Specifies a pointer to a ImageInfo structure.
+%    o image_info: Specifies a pointer to an ImageInfo structure.
 %
 %    o exception: return any errors or warnings in this structure.
 %
@@ -120,13 +120,17 @@ static Image *ReadXTRNImage(const ImageInfo *image_info, ExceptionInfo *exceptio
   if (clone_info->filename == NULL)
     {
       DestroyImageInfo(clone_info);
-      ThrowReaderException(FileOpenWarning,"No filename specified",image);
+      ThrowReaderException(OptionError,MissingAnImageFilename,image);
     }
+  /* DebugString("ReadXTRN CODER: %s\n",clone_info->filename); */
   if (LocaleCompare(image_info->magick,"XTRNFILE") == 0)
     {
       image=ReadImage(clone_info,exception);
+      /* this should not be needed since the upstream code should catch any
+         excetpions thrown by ReadImage
+       */
       if (exception->severity != UndefinedException)
-        MagickWarning(exception->severity,exception->reason,exception->description);
+        MagickWarning2(exception->severity,exception->reason,exception->description);
     }
   else if (LocaleCompare(image_info->magick,"XTRNIMAGE") == 0)
     {
@@ -164,7 +168,7 @@ static Image *ReadXTRNImage(const ImageInfo *image_info, ExceptionInfo *exceptio
       blob_length=(size_t *) param2;
       image=BlobToImage(clone_info,*blob_data,*blob_length,exception);
       if (exception->severity != UndefinedException)
-        MagickWarning(exception->severity,exception->reason,exception->description);
+        MagickWarning2(exception->severity,exception->reason,exception->description);
     }
   else if (LocaleCompare(image_info->magick,"XTRNSTREAM") == 0)
     {
@@ -237,10 +241,52 @@ static Image *ReadXTRNImage(const ImageInfo *image_info, ExceptionInfo *exceptio
                   image=BlobToImage(clone_info,blob_data,blob_length,exception);
                   hr = SafeArrayUnaccessData(pSafeArray);
                   if (exception->severity != UndefinedException)
-                    MagickWarning(exception->severity,exception->reason,
+                    MagickWarning2(exception->severity,exception->reason,
                        exception->description);
                 }
             }
+        }
+    }
+  else if (LocaleCompare(image_info->magick,"XTRNBSTR") == 0)
+    {
+      BSTR
+        bstr;
+
+      char
+        *blob_data;
+
+      size_t
+        blob_length;
+
+      HRESULT
+        hr;
+
+      char
+        filename[MaxTextExtent];
+
+      filename[0] = '\0';
+      (void) sscanf(clone_info->filename,"%lx,%s",&param1,&filename);
+      hr = S_OK;
+      bstr = (BSTR) param1;
+      blob_length = SysStringLen(bstr) * 2;
+      blob_data = (char *)bstr;
+      /* DebugString("XTRN CODER: 0x%04lx (%ld)\n",(unsigned long)blob_data,blob_length); */
+      if ((blob_data != (char *)NULL) && (blob_length>0))
+        {
+          if (filename[0] != '\0')
+            {
+              (void) strcpy(clone_info->filename, filename);
+              (void) strcpy(clone_info->magick, filename);
+            }
+          else
+            {
+              *clone_info->magick = '\0';
+              clone_info->filename[0] = '\0';
+            }
+          image=BlobToImage(clone_info,blob_data,blob_length,exception);
+          if (exception->severity != UndefinedException)
+            MagickWarning2(exception->severity,exception->reason,
+                exception->description);
         }
     }
   DestroyImageInfo(clone_info);
@@ -319,6 +365,15 @@ ModuleExport void RegisterXTRNImage(void)
   entry->description=AllocateString("External transfer via a smart array interface");
   entry->module=AllocateString("XTRN");
   RegisterMagickInfo(entry);
+
+  entry=SetMagickInfo("XTRNBSTR");
+  entry->decoder=ReadXTRNImage;
+  entry->encoder=WriteXTRNImage;
+  entry->adjoin=False;
+  entry->stealth=True;
+  entry->description=AllocateString("External transfer via a smart array interface");
+  entry->module=AllocateString("XTRN");
+  RegisterMagickInfo(entry);
 }
 
 /*
@@ -347,6 +402,7 @@ ModuleExport void UnregisterXTRNImage(void)
   UnregisterMagickInfo("XTRNBLOB");
   UnregisterMagickInfo("XTRNSTREAM");
   UnregisterMagickInfo("XTRNARRAY");
+  UnregisterMagickInfo("XTRNBSTR");
 }
 
 /*
@@ -374,23 +430,23 @@ ModuleExport void UnregisterXTRNImage(void)
 %      False is returned is there is a memory shortage or if the image file
 %      fails to write.
 %
-%    o image_info: Specifies a pointer to a ImageInfo structure.
+%    o image_info: Specifies a pointer to an ImageInfo structure.
 %
-%    o image:  A pointer to an Image structure.
+%    o image:  A pointer to a Image structure.
 %
 %
 */
 
 int SafeArrayFifo(const Image *image,const void *data,const size_t length)
 {
-  SAFEARRAYBOUND NewArrayBounds[1];  /* 1 Dimension */
+  SAFEARRAYBOUND NewArrayBounds[1];  // 1 Dimension
   size_t tlen=length;
   SAFEARRAY *pSafeArray = (SAFEARRAY *)image->client_data;
   if (pSafeArray != NULL)
   {
                 long lBoundl, lBoundu, lCount;
           HRESULT hr = S_OK;
-          /* First see how big the buffer currently is */
+    // First see how big the buffer currently is
                 hr = SafeArrayGetLBound(pSafeArray, 1, &lBoundl);
     if (FAILED(hr))
       return tlen;
@@ -401,9 +457,9 @@ int SafeArrayFifo(const Image *image,const void *data,const size_t length)
 
     if (length>0)
     {
-      unsigned char       *pReturnBuffer = NULL;
-      NewArrayBounds[0].lLbound = 0;   /* Start-Index 0 */
-      NewArrayBounds[0].cElements = length+lCount;  /* # Elemente */
+            unsigned char       *pReturnBuffer = NULL;
+      NewArrayBounds[0].lLbound = 0;   // Start-Index 0
+      NewArrayBounds[0].cElements = length+lCount;  // # Elemente
       hr = SafeArrayRedim(pSafeArray, NewArrayBounds);
       if (FAILED(hr))
         return tlen;
@@ -422,26 +478,6 @@ int SafeArrayFifo(const Image *image,const void *data,const size_t length)
   }
   return(tlen);
 }
-
-/* forcing a format */
-#ifdef STUFF
-{
-  ExceptionInfo
-    exception;
-
-  GetExceptionInfo(&exception);
-  FormatString(info->image_info->filename,"%.1024s:",SvPV(sval,na));
-  SetImageInfo(info->image_info,True,&exception);
-  if (*info->image_info->magick == '\0')
-    MagickWarning(OptionWarning,"Unrecognized image format",
-      info->image_info->filename);
-  else
-    for ( ; image; image=image->next)
-      (void) strncpy(image->magick,info->image_info->magick,
-        MaxTextExtent-1);
-  DestroyExceptionInfo(&exception);
-}
-#endif
 
 static unsigned int WriteXTRNImage(const ImageInfo *image_info,Image *image)
 {

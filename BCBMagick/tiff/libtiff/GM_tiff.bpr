@@ -1,0 +1,168 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.06.00"/>
+    <PROJECT value="GM_tiff.dll"/>
+    <OBJFILES value="GM_tiff.obj tif_aux.obj tif_close.obj tif_codec.obj tif_compress.obj 
+      tif_dir.obj tif_dirinfo.obj tif_dirread.obj tif_dirwrite.obj 
+      tif_dumpmode.obj tif_error.obj tif_fax3.obj fax3sm_winnt.obj 
+      tif_getimage.obj tif_jpeg.obj tif_flush.obj tif_luv.obj tif_lzw.obj 
+      tif_next.obj tif_open.obj tif_packbits.obj tif_pixarlog.obj 
+      tif_predict.obj tif_print.obj tif_read.obj tif_swab.obj tif_strip.obj 
+      tif_thunder.obj tif_tile.obj tif_version.obj tif_warning.obj tif_win32.obj 
+      tif_write.obj tif_zip.obj"/>
+    <RESFILES value="GM_tiff.res"/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES)"/>
+    <LIBFILES value="..\..\jpeg\GM_jpeg.lib ..\..\zlib\contrib\BCB6\GM_zlib.lib"/>
+    <LIBRARIES value=""/>
+    <SPARELIBS value=""/>
+    <PACKAGES value=""/>
+    <PATHCPP value=".;"/>
+    <PATHPAS value=".;"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
+    <RELEASELIBPATH value="$(BCB)\lib\release"/>
+    <LINKER value="ilink32"/>
+    <USERDEFINES value="WIN32;_DLL"/>
+    <SYSDEFINES value="NO_STRICT;_NO_VCL;_RTLDLL"/>
+    <MAINSOURCE value="GM_tiff.c"/>
+    <INCLUDEPATH value="..\..\jpeg;..\..\zlib;$(BCB)\include;$(BCB)\include\vcl"/>
+    <LIBPATH value="&quot;D:\GraphicsMagick-1.1\tiff\libtiff&quot;;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <WARNINGS value="-w-pia -w-par -w-eff -w-csu -w-aus"/>
+    <OTHERFILES value=""/>
+  </MACROS>
+  <OPTIONS>
+    <CFLAG1 value="-WD -O2 -Vx -Ve -X- -a8 -b- -k- -vi -tWD -tWM -c"/>
+    <PFLAGS value="-$Y- -$L- -$D- -$A8 -v -JPHNE -M"/>
+    <RFLAGS value=""/>
+    <AFLAGS value="/mx /w2 /zn"/>
+    <LFLAGS value="-D&quot;&quot; -aa -Tpd -x -Gn -Gi"/>
+    <OTHERFILES value=""/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="c0d32.obj $(OBJFILES)"/>
+    <ALLRES value="$(RESFILES)"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cw32mti.lib"/>
+    <OTHERFILES value=""/>
+  </LINKER>
+  <FILELIST>
+      <FILE FILENAME="GM_tiff.res" FORMNAME="" UNITNAME="GM_tiff.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="GM_tiff.c" FORMNAME="" UNITNAME="GM_tiff" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="tif_aux.c" FORMNAME="" UNITNAME="tif_aux.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="tif_close.c" FORMNAME="" UNITNAME="tif_close.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="tif_codec.c" FORMNAME="" UNITNAME="tif_codec.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="tif_compress.c" FORMNAME="" UNITNAME="tif_compress.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="tif_dir.c" FORMNAME="" UNITNAME="tif_dir.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="tif_dirinfo.c" FORMNAME="" UNITNAME="tif_dirinfo.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="tif_dirread.c" FORMNAME="" UNITNAME="tif_dirread.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="tif_dirwrite.c" FORMNAME="" UNITNAME="tif_dirwrite.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="tif_dumpmode.c" FORMNAME="" UNITNAME="tif_dumpmode.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="tif_error.c" FORMNAME="" UNITNAME="tif_error.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="tif_fax3.c" FORMNAME="" UNITNAME="tif_fax3.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="fax3sm_winnt.c" FORMNAME="" UNITNAME="fax3sm_winnt.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="tif_getimage.c" FORMNAME="" UNITNAME="tif_getimage.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="tif_jpeg.c" FORMNAME="" UNITNAME="tif_jpeg.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="tif_flush.c" FORMNAME="" UNITNAME="tif_flush.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="tif_luv.c" FORMNAME="" UNITNAME="tif_luv.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="tif_lzw.c" FORMNAME="" UNITNAME="tif_lzw.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="tif_next.c" FORMNAME="" UNITNAME="tif_next.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="tif_open.c" FORMNAME="" UNITNAME="tif_open.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="tif_packbits.c" FORMNAME="" UNITNAME="tif_packbits.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="tif_pixarlog.c" FORMNAME="" UNITNAME="tif_pixarlog.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="tif_predict.c" FORMNAME="" UNITNAME="tif_predict.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="tif_print.c" FORMNAME="" UNITNAME="tif_print.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="tif_read.c" FORMNAME="" UNITNAME="tif_read.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="tif_swab.c" FORMNAME="" UNITNAME="tif_swab.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="tif_strip.c" FORMNAME="" UNITNAME="tif_strip.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="tif_thunder.c" FORMNAME="" UNITNAME="tif_thunder.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="tif_tile.c" FORMNAME="" UNITNAME="tif_tile.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="tif_version.c" FORMNAME="" UNITNAME="tif_version.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="tif_warning.c" FORMNAME="" UNITNAME="tif_warning.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="tif_win32.c" FORMNAME="" UNITNAME="tif_win32.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="tif_write.c" FORMNAME="" UNITNAME="tif_write.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="tif_zip.c" FORMNAME="" UNITNAME="tif_zip.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\jpeg\GM_jpeg.lib" FORMNAME="" UNITNAME="GM_jpeg.lib" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\zlib\contrib\BCB6\GM_zlib.lib" FORMNAME="" UNITNAME="GM_zlib.lib" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+  </FILELIST>
+  <BUILDTOOLS>
+  </BUILDTOOLS>
+
+  <IDEOPTIONS>
+[Version Info]
+IncludeVerInfo=1
+AutoIncBuild=0
+MajorVer=3
+MinorVer=5
+Release=7
+Build=1
+Debug=0
+PreRelease=0
+Special=0
+Private=0
+DLL=1
+Locale=1033
+CodePage=1252
+
+[Version Info Keys]
+CompanyName=Copyright © 1988-1997 Sam Leffler and Copyright © 1991-1996 Silicon Graphics, Inc.
+FileDescription=TIFF image file format library
+FileVersion=3.5.7.1
+InternalName=libtiff - Borland C++ porting by Mike Chiarappa, mikechiarappa@libero.it
+LegalCopyright=Copyright © 1988-1997 Sam Leffler and Copyright © 1991-1996 Silicon Graphics, Inc.
+LegalTrademarks=
+OriginalFilename=libtiff
+ProductName=TIFF image file format library
+ProductVersion=3.5.7 (23 Nov 2001)
+Comments=http://www.libtiff.org
+
+[HistoryLists\hlIncludePath]
+Count=1
+Item0=..\..\jpeg;..\..\zlib;$(BCB)\include;$(BCB)\include\vcl
+
+[HistoryLists\hlLibraryPath]
+Count=1
+Item0=$(BCB)\lib\obj;$(BCB)\lib
+
+
+[HistoryLists\hlDebugSourcePath]
+Count=1
+Item0=$(BCB)\source\vcl
+
+[HistoryLists\hlConditionals]
+Count=1
+Item0=WIN32;_DLL
+
+[Debugging]
+DebugSourceDirs=$(BCB)\source\vcl
+
+[Parameters]
+RunParams=
+Launcher=
+UseLauncher=0
+DebugCWD=
+HostApplication=
+RemoteHost=
+RemotePath=
+RemoteLauncher=
+RemoteCWD=
+RemoteDebug=0
+
+[Compiler]
+ShowInfoMsgs=0
+LinkDebugVcl=0
+LinkCGLIB=0
+
+[Language]
+ActiveLang=
+ProjectLang=
+RootDir=
+
+[Linker]
+LibPrefix=
+LibSuffix=
+LibVersion=
+  </IDEOPTIONS>
+</PROJECT>

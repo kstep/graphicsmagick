@@ -1,0 +1,44 @@
+magick.dvi:	*.tex
+	latex magick.tex
+	latex magick.tex
+	makeindex -s Magick.cls -o magick.ind -p odd magick
+
+magick.ps:	magick.dvi
+	dvips -f magick.dvi > magick.ps
+
+magick.pdf:	magick.dvi
+	dvipdf -f magick.dvi
+
+manpages.dvi:	*.tex
+	latex manpages.tex
+	latex manpages.tex
+	makeindex -s Magick.cls -o manpages.ind -p odd manpages
+
+manpages.ps:	manpages.dvi
+	dvips -f manpages.dvi > manpages.ps
+
+manpages.pdf:	manpages.dvi
+	dvipdf -f manpages.dvi
+
+
+magick.html:	magick.dvi
+	latex2html magick
+
+pdf:	magick.pdf manpages.pdf
+
+ps:	magick.ps manpages.ps
+
+html:	magick.html
+
+draft:	magick.dvi magick.pdf
+	acroread magick.pdf
+
+final:	magick.ps
+	print -l -d magick.ps
+
+clean:
+	/bin/rm -f magick.dvi magick.ps magick.txt magick.aux magick.log \
+	magick.ind *.aux magick.idx magick.ilg magick.toc magick.pdf
+	/bin/rm -f manpages.dvi manpages.ps manpages.txt manpages.aux \
+	manpages.log \
+	manpages.ind *.aux manpages.idx manpages.ilg manpages.toc manpages.pdf

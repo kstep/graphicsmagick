@@ -18,7 +18,7 @@
 %              P      R  R   EEEEE    V    IIIII  EEEEE   W W                 %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                           Write A Preview Image.                            %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -227,7 +227,7 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   CloseBlob(image);
   TransformColorspace(image,RGBColorspace);
   clone_info=CloneImageInfo(image_info);
@@ -628,17 +628,17 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
   DestroyMontageInfo(montage_info);
   DestroyImageList(images);
   if (montage_image == (Image *) NULL)
-    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
   if (montage_image->montage != (char *) NULL)
     {
       /*
         Free image directory.
       */
-      LiberateMemory((void **) &montage_image->montage);
+      MagickFreeMemory(montage_image->montage);
       montage_image->montage=(char *) NULL;
       if (image->directory != (char *) NULL)
         {
-          LiberateMemory((void **) &montage_image->directory);
+          MagickFreeMemory(montage_image->directory);
           montage_image->directory=(char *) NULL;
         }
     }

@@ -534,6 +534,7 @@ static void XShearImage(Image *image,const double degrees,
 
   assert(image != (Image *) NULL);
   is_grayscale=image->is_grayscale;
+
   y_offset--;
   for (y=0; y < (long) height; y++)
   {
@@ -952,8 +953,8 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
   */
   integral_image=IntegralRotateImage(image,rotations,exception);
   if (integral_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-      "UnableToRotateImage");
+    ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
+      UnableToRotateImage);
   shear.x=(-tan(DegreesToRadians(angle)/2.0));
   shear.y=sin(DegreesToRadians(angle));
   if ((shear.x == 0.0) || (shear.y == 0.0))
@@ -980,8 +981,8 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
   rotate_image=BorderImage(integral_image,&border_info,exception);
   DestroyImage(integral_image);
   if (rotate_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-      "UnableToRotateImage");
+    ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
+      UnableToRotateImage);
   /*
     Rotate the image.
   */
@@ -1069,18 +1070,20 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   if ((x_shear == 180.0) || (y_shear == 180.0))
-    ThrowImageException(ImageError,"UnableToShearImage","AngleIsDiscontinuous");
+    ThrowImageException3(ImageError,UnableToShearImage,AngleIsDiscontinuous);
+
   /*
     Initialize shear angle.
   */
   integral_image=IntegralRotateImage(image,0,exception);
   if (integral_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-      "UnableToShearImage");
+    ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
+      UnableToShearImage);
   shear.x=(-tan(DegreesToRadians(x_shear)/2.0));
   shear.y=sin(DegreesToRadians(y_shear));
   if ((shear.x == 0.0) || (shear.y == 0.0))
     return(integral_image);
+
   /*
     Compute image size.
   */
@@ -1095,8 +1098,8 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
   border_info.height=y_offset;
   shear_image=BorderImage(integral_image,&border_info,exception);
   if (shear_image == (Image *) NULL)
-    ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-      "UnableToShearImage");
+    ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
+      UnableToShearImage);
   DestroyImage(integral_image);
   /*
     Shear the image.

@@ -10,54 +10,31 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                       GGGG  M   M                                           %
-%                      G      MM MM                                           %
-%                      G GG   M M M (center it yourself if you don't like it) %
-%                      G   G  M   M                                           %
-%                       GGG   M   M                                           %
+%                                  GGGG  M   M                                %
+%                                 G      MM MM                                %
+%                                 G GG   M M M                                %
+%                                 G   G  M   M                                %
+%                                  GGG   M   M                                %
 %                                                                             %
 %                                                                             %
-%               GraphicsMagick Driver                                         %
+%                             GraphicsMagick Driver                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                           Software Design                                   %
-%                        Glenn Randers-Pehrson                                %
-%                            December 2002                                    %
+%                               Software Design                               %
+%                            Glenn Randers-Pehrson                            %
+%                                December 2002                                %
+%                              Header Centered By                             %
+%                               Bob Friesenhahn                               %
+%                                  May 2003                                   %
 %                                                                             %
 %                                                                             %
-%  Copyright (C) 2002 ImageMagick Studio, a non-profit organization dedicated %
-%  to making software imaging solutions freely available.                     %
-%                                                                             %
-%  Permission is hereby granted, free of charge, to any person obtaining a    %
-%  copy of this software and associated documentation files ("ImageMagick"),  %
-%  to deal in ImageMagick without restriction, including without limitation   %
-%  the rights to use, copy, modify, merge, publish, distribute, sublicense,   %
-%  and/or sell copies of ImageMagick, and to permit persons to whom the       %
-%  ImageMagick is furnished to do so, subject to the following conditions:    %
-%                                                                             %
-%  The above copyright notice and this permission notice shall be included in %
-%  all copies or substantial portions of ImageMagick.                         %
-%                                                                             %
-%  The software is provided "as is", without warranty of any kind, express or %
-%  implied, including but not limited to the warranties of merchantability,   %
-%  fitness for a particular purpose and noninfringement.  In no event shall   %
-%  ImageMagick Studio be liable for any claim, damages or other liability,    %
-%  whether in an action of contract, tort or otherwise, arising from, out of  %
-%  or in connection with ImageMagick or the use or other dealings in          %
-%  ImageMagick.                                                               %
-%                                                                             %
-%  Except as contained in this notice, the name of the ImageMagick Studio     %
-%  shall not be used in advertising or otherwise to promote the sale, use or  %
-%  other dealings in ImageMagick without prior written authorization from the %
-%  ImageMagick Studio.                                                        %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Mogrify transforms an image or a sequence of images. These transforms
-%  include image scaling, image rotation, color reduction, and others. The
-%  transmogrified image overwrites the original image.
-%
+%  Gm is a common wrapper around a set of commands, which include animate,
+%  composite, conjure, convert, display, identify, import, mogrify, and
+%  montage. Please see the manual page gm.1 for detailed usage information.
 %
 */
 
@@ -67,39 +44,19 @@
 #include "magick/studio.h"
 #include "magick/attribute.h"
 #include "magick/command.h"
-#include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/utility.h"
 #include "magick/version.h"
 
-static void GMUsage(void)
+static void PrintUsage(void)
 {
-  static const char
-    *options[]=
-    {
-      "-version             print version information",
-      "animate [options]    run the \"animate\" utility",
-      "composite [options]  run the \"composite\" utility",
-      "conjure [options]    run the \"conjure\" utility",
-      "convert [options]    run the \"convert\" utility",
-      "display [options]    run the \"display\" utility",
-      "identify [options]   run the \"identify\" utility",
-      "import [options]     run the \"import\" utility",
-      "mogrify [options]    run the \"mogrify\" utility",
-      "montage [options]    run the \"montage\" utility",
-      (char *) NULL
-    };
-
-  const char
-    **p;
-
   (void) printf("Version: %.1024s\n",GetMagickVersion((unsigned long *) NULL));
   (void) printf("Copyright: %.1024s\n\n",GetMagickCopyright());
-  (void) printf("Usage: %.1024s command [options ...]\n",
-    SetClientName((char *) NULL));
-  (void) printf("\nWhere options include: \n");
-  for (p=options; *p != (char *) NULL; p++)
-    (void) printf("  %.1024s\n",*p);
+  (void) printf("Use:\n\n");
+  (void) printf("  %.1024s help\n\n", SetClientName((char *) NULL));
+  (void) printf("to obtain a list of available subcommands, or\n\n");
+  (void) printf("  %.1024s help 'command'\n\n", SetClientName((char *) NULL));
+  (void) printf("to obtain help information for 'command'\n");
 }
 
 /*
@@ -118,7 +75,6 @@ static void GMUsage(void)
 int main(int argc,char **argv)
 {
   char
-    *option,
     *text;
 
   ExceptionInfo
@@ -127,56 +83,21 @@ int main(int argc,char **argv)
   ImageInfo
     *image_info;
 
-  register int
-    i;
-
   unsigned int
-    help_wanted,
     status=True;
 
-  InitializeMagick(*argv);
-
-  help_wanted=False;
   ReadCommandlLine(argc,&argv);
-  for (i=1; i < argc; i++)
-  {
-    option=argv[i];
-    if ((strlen(option) == 1) || ((*option != '-') && (*option != '+')))
-      continue;
-    if (LocaleCompare("version",option+1) == 0)
-      {
-        (void) fprintf(stdout,"Version: %.1024s\n",
-          GetMagickVersion((unsigned long *) NULL));
-        (void) fprintf(stdout,"Copyright: %.1024s\n\n",GetMagickCopyright());
-        DestroyMagick();
-        Exit(0);
-      }
-    if (LocaleCompare("debug",option+1) == 0)
-      {
-        (void) SetLogEventMask("None");
-        if (*option == '-')
-          {
-            i++;
-            if (i == argc)
-               MagickFatalError(OptionFatalError,"MissingEventMask",option);
-            (void) SetLogEventMask(argv[i]);
-          }
-        break;
-      }
-    if (argc < 3 && (LocaleCompare("help",option+1) == 0 ||
-        LocaleCompare("?",option+1) == 0))
-      {
-        help_wanted=True;
-        GMUsage();
-        DestroyMagick();
-        Exit(0);
-      }
-  }
+#if defined(WIN32)
+  InitializeMagick((char *) NULL);
+#else
+  InitializeMagick(*argv);
+#endif
+
+  SetClientName(*argv);
 
   if (argc < 2)
     {
-      GMUsage();
-      DestroyMagick();
+      PrintUsage();
       Exit(1);
     }
 
@@ -185,115 +106,14 @@ int main(int argc,char **argv)
 
   GetExceptionInfo(&exception);
   image_info=CloneImageInfo((ImageInfo *) NULL);
-
-  option=argv[0];
-
-  if (LocaleCompare("animate",option) == 0 ||
-      LocaleCompare("animate",option+1) == 0)
+  text=(char *) NULL;
+  status=MagickCommand(image_info,argc,argv,&text,&exception);
+  if (text != (char *) NULL)
     {
-      SetClientName("animate");
-      if (help_wanted)
-        AnimateUsage();
-      else
-        status=AnimateImageCommand(argc,argv);
+      (void) fputs(text,stdout);
+      (void) fputc('\n',stdout);
+      MagickFreeMemory(text);
     }
-
-  else if (LocaleCompare("composite",option) == 0 ||
-      LocaleCompare("composite",option+1) == 0)
-    {
-      SetClientName("composite");
-      if (help_wanted)
-        CompositeUsage();
-      else
-        status=CompositeImageCommand(image_info,argc,argv,(char **) NULL,
-          &exception);
-    }
-
-  else if (LocaleCompare("conjure",option) == 0 ||
-      LocaleCompare("conjure",option+1) == 0)
-    {
-      SetClientName("conjure");
-      if (help_wanted)
-        ConjureUsage();
-      else
-        status=ConjureImageCommand(argc,argv);
-    }
-
-  else if (LocaleCompare("convert",option) == 0 ||
-      LocaleCompare("convert",option+1) == 0)
-    {
-      SetClientName("convert");
-      if (help_wanted)
-        ConvertUsage();
-      else
-        status=ConvertImageCommand(image_info,argc,argv,(char **) NULL,
-          &exception);
-    }
-
-  else if (LocaleCompare("display",option) == 0 ||
-      LocaleCompare("display",option+1) == 0)
-    {
-      SetClientName("display");
-      if (help_wanted)
-        DisplayUsage();
-      else
-        status=DisplayImageCommand(argc,argv);
-    }
-
-  else if (LocaleCompare("identify",option) == 0 ||
-      LocaleCompare("identify",option+1) == 0)
-    {
-      SetClientName("identify");
-      if (help_wanted)
-        IdentifyUsage();
-      else
-        {
-          text=(char *) NULL;
-          status=IdentifyImageCommand(image_info,argc,argv,&text,&exception);
-          if (text != (char *) NULL)
-            {
-              (void) fputs(text,stdout);
-              (void) fputc('\n',stdout);
-              LiberateMemory((void **) &text);
-            }
-        }
-    }
-
-  else if (LocaleCompare("import",option) == 0 ||
-      LocaleCompare("import",option+1) == 0)
-    {
-      SetClientName("import");
-      if (help_wanted)
-        ImportUsage();
-      else
-        status=ImportImageCommand(argc,argv);
-    }
-
-  else if (LocaleCompare("mogrify",option) == 0 ||
-      LocaleCompare("mogrify",option+1) == 0)
-    {
-      SetClientName("mogrify");
-      if (help_wanted)
-        MogrifyUsage();
-      else
-        status=MogrifyImageCommand(image_info,argc,argv,(char **) NULL,
-          &exception);
-    }
-
-  else if (LocaleCompare("montage",option) == 0 ||
-      LocaleCompare("montage",option+1) == 0)
-    {
-      SetClientName("montage");
-      if (help_wanted)
-        MontageUsage();
-      else
-        status=MontageImageCommand(image_info,argc,argv,(char **) NULL,
-          &exception);
-    }
-
-  else
-    GMUsage();
-
   if (exception.severity != UndefinedException)
     CatchException(&exception);
   DestroyImageInfo(image_info);

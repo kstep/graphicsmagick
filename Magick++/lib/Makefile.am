@@ -3,11 +3,11 @@
 #
 # Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003
 #
-AUTOMAKE_OPTIONS = 1.7 nostdinc
+AUTOMAKE_OPTIONS = 1.8 nostdinc
 
 SUBDIRS = Magick++
 
-INCLUDES = -I$(srcdir) -I../.. -I$(top_srcdir)
+AM_CPPFLAGS = -I$(srcdir) -I../.. -I$(top_srcdir)
 
 includedir = $(prefix)/include/GraphicsMagick
 pkgdatadir = $(datadir)/Magick++
@@ -16,9 +16,9 @@ pkgincludedir = $(includedir)/Magick++
 
 lib_LTLIBRARIES    = libGraphicsMagick++.la
 
-LIBRARY_CURRENT    = @LIBRARY_CURRENT@
-LIBRARY_REVISION   = @LIBRARY_REVISION@
-LIBRARY_AGE        = @LIBRARY_AGE@
+LIBRARY_CURRENT    = @MAGICK_PLUS_PLUS_LIBRARY_CURRENT@
+LIBRARY_REVISION   = @MAGICK_PLUS_PLUS_LIBRARY_REVISION@
+LIBRARY_AGE        = @MAGICK_PLUS_PLUS_LIBRARY_AGE@
 
 libGraphicsMagick___la_SOURCES = \
 	Blob.cpp BlobRef.cpp CoderInfo.cpp Color.cpp Drawable.cpp \
@@ -29,7 +29,7 @@ libGraphicsMagick___la_SOURCES = \
 libGraphicsMagick___la_LDFLAGS = \
 	-version-info $(LIBRARY_CURRENT):$(LIBRARY_REVISION):$(LIBRARY_AGE)
 
-libGraphicsMagick___la_LIBADD = ../../magick/libGraphicsMagick.la
+libGraphicsMagick___la_LIBADD = $(top_builddir)/magick/libGraphicsMagick.la
 
 include_HEADERS = Magick++.h
 

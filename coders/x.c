@@ -18,7 +18,7 @@
 %                                   X   X                                     %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                    Read/Write Image from/to X11 Server.                     %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -81,14 +81,7 @@ static Image *ReadXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   XGetImportInfo(&ximage_info);
   return(XImportImage(image_info,&ximage_info));
 }
-#else
-static Image *ReadXImage(const ImageInfo *image_info,ExceptionInfo *exception)
-{
-  ThrowException(exception,MissingDelegateError,"XWindowLibraryIsNotAvailable",
-    image_info->filename);
-  return((Image *) NULL);
-}
-#endif
+#endif /* defined(HasX11) */
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -115,18 +108,18 @@ static Image *ReadXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 */
 ModuleExport void RegisterXImage(void)
 {
-#if defined(HasX11)
   MagickInfo
     *entry;
 
   entry=SetMagickInfo("X");
+#if defined(HasX11)
   entry->decoder=(DecoderHandler) ReadXImage;
   entry->encoder=(EncoderHandler) WriteXImage;
+#endif /* defined(HasX11) */
   entry->adjoin=False;
-  entry->description=AcquireString("X Image");
+  entry->description=AcquireString("X Window System");
   entry->module=AcquireString("X");
   (void) RegisterMagickInfo(entry);
-#endif
 }
 
 /*
@@ -150,9 +143,7 @@ ModuleExport void RegisterXImage(void)
 */
 ModuleExport void UnregisterXImage(void)
 {
-#if defined(HasX11)
   (void) UnregisterMagickInfo("X");
-#endif
 }
 
 #if defined(HasX11)
@@ -187,50 +178,6 @@ ModuleExport void UnregisterXImage(void)
 */
 static unsigned int WriteXImage(const ImageInfo *image_info,Image *image)
 {
-  char
-    *client_name;
-
-  Display
-    *display;
-
-  unsigned long
-    state;
-
-  XResourceInfo
-    resource_info;
-
-  XrmDatabase
-    resource_database;
-
-  /*
-    Open X server connection.
-  */
-  display=XOpenDisplay(image_info->server_name);
-  if (display == (Display *) NULL)
-    ThrowWriterException(ResourceLimitError,"UnableToOpenXServer",image);
-  /*
-    Set our forgiving error handler.
-  */
-  (void) XSetErrorHandler(XError);
-  /*
-    Get user defaults from X resource database.
-  */
-  client_name=SetClientName((char *) NULL);
-  resource_database=XGetResourceDatabase(display,client_name);
-  XGetResourceInfo(resource_database,client_name,&resource_info);
-  resource_info.immutable=True;
-  /*
-    Display image.
-  */
-  state=DefaultState;
-  (void) XDisplayImage(display,&resource_info,&client_name,1,&image,&state);
-  (void) XCloseDisplay(display);
-  return(True);
+  return(DisplayImages(image_info,image));
 }
-#else
-static unsigned int WriteXImage(const ImageInfo *image_info,Image *image)
-{
-  ThrowBinaryException(MissingDelegateError,"XWindowLibraryIsNotAvailable",
-    image->filename);
-}
-#endif
+#endif /* defined(HasX11) */

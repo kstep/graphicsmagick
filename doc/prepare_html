@@ -1,0 +1,12 @@
+#!/bin/sh
+#prepare_html
+
+for x in $*
+do
+sed "
+/<\/tr>/a\\
+<tr><td>\&nbsp;</td></tr>
+s/<img SRC=\"right_triangle.png\" ALT=\">\" BORDER=0 height=14 width=15>//
+s/<img SRC=/<image ALT=/
+" < $x > TeX/$x
+done

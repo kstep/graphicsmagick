@@ -12,8 +12,8 @@ A:visited { color: #800080 }
 -->
 </STYLE>
 
-<TITLE>blob - Methods to Read or Write Binary Large OBjects</TITLE>
-<LINK REV="made" HREF="mailto:bfriesen@scooby.simplesystems.org">
+<TITLE>blob - Read or write formatted images in memory</TITLE>
+<LINK REV="made" HREF="mailto:bfriesen@shaggy.simplesystems.org">
 </HEAD>
 
 <BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
@@ -36,7 +36,7 @@ A:visited { color: #800080 }
                                 [<A HREF="../books.html">Books</A>] [<A HREF="../links.html">Links</A>]</P>
                         </TD>
                         <TD ROWSPAN=2 WIDTH=19%>
-                                <P ALIGN=CENTER><IMG SRC="../../images/magick_small.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0></P>
+                                <P ALIGN=CENTER><IMG SRC="../../images/gm-188x120t.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=188 HEIGHT=120 BORDER=0></P>
                         </TD>
                 </TR>
                 <TR>
@@ -67,20 +67,29 @@ DESCRIPTIONS</A>
 	<UL>
 
 		<LI><A HREF="#attachblob">AttachBlob</A>
+		<LI><A HREF="#blobisseekable">BlobIsSeekable</A>
 		<LI><A HREF="#blobtofile">BlobToFile</A>
 		<LI><A HREF="#blobtoimage">BlobToImage</A>
 		<LI><A HREF="#cloneblobinfo">CloneBlobInfo</A>
+		<LI><A HREF="#destroyblob">DestroyBlob</A>
 		<LI><A HREF="#destroyblobinfo">DestroyBlobInfo</A>
 		<LI><A HREF="#detachblob">DetachBlob</A>
 		<LI><A HREF="#filetoblob">FileToBlob</A>
+		<LI><A HREF="#getblobclosable">GetBlobClosable</A>
+		<LI><A HREF="#getblobfilehandle">GetBlobFileHandle</A>
 		<LI><A HREF="#getblobinfo">GetBlobInfo</A>
+		<LI><A HREF="#getblobstatus">GetBlobStatus</A>
 		<LI><A HREF="#getblobstreamdata">GetBlobStreamData</A>
+		<LI><A HREF="#getblobstreamhandler">GetBlobStreamHandler</A>
 		<LI><A HREF="#getblobstreamtype">GetBlobStreamType</A>
+		<LI><A HREF="#getblobtemporary">GetBlobTemporary</A>
 		<LI><A HREF="#getconfigureblob">GetConfigureBlob</A>
 		<LI><A HREF="#imagetoblob">ImageToBlob</A>
 		<LI><A HREF="#imagetofile">ImageToFile</A>
 		<LI><A HREF="#pingblob">PingBlob</A>
 		<LI><A HREF="#referenceblob">ReferenceBlob</A>
+		<LI><A HREF="#setblobclosable">SetBlobClosable</A>
+		<LI><A HREF="#setblobtemporary">SetBlobTemporary</A>
 	</UL>
 
 </UL>
@@ -90,26 +99,36 @@ DESCRIPTIONS</A>
 <P>
 <H2><A NAME="name">
 NAME</A></H2>
-<P>blob - Methods to Read or Write Binary Large OBjects</P>
+<P>blob - Read or write formatted images in memory (BLOBs)</P>
 <P>
 <HR>
 <H2><A NAME="synopsis">
 SYNOPSIS</A></H2>
 <P>void  <STRONG>AttachBlob</STRONG>( BlobInfo *blob_info, const void *blob, const size_t length );</P>
+<P>unsigned int  <STRONG>BlobIsSeekable</STRONG>( const Image *image );</P>
 <P>unsigned int  <STRONG>BlobToFile</STRONG>( const char *filename, const void *blob, const size_t length, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>BlobToImage</STRONG>( const ImageInfo *image_info, const void *blob, const size_t length, ExceptionInfo *exception );</P>
 <P>BlobInfo * <STRONG>CloneBlobInfo</STRONG>( const BlobInfo *blob_info );</P>
+<P>void  <STRONG>DestroyBlob</STRONG>( Image *image );</P>
 <P>void  <STRONG>DestroyBlobInfo</STRONG>( BlobInfo *blob );</P>
 <P>void  <STRONG>DetachBlob</STRONG>( BlobInfo *blob_info );</P>
 <P>void * <STRONG>FileToBlob</STRONG>( const char *filename, size_t *length, ExceptionInfo *exception );</P>
+<P>unsigned int  <STRONG>GetBlobClosable</STRONG>( const Image *image );</P>
+<P>
+FILE * <STRONG>GetBlobFileHandle</STRONG>( const Image *image );</P>
 <P>void  <STRONG>GetBlobInfo</STRONG>( BlobInfo *blob_info );</P>
+<P>int  <STRONG>GetBlobStatus</STRONG>( const Image *image );</P>
 <P>unsigned char * <STRONG>GetBlobStreamData</STRONG>( const Image *image );</P>
+<P>const StreamHandler  <STRONG>GetBlobStreamHandler</STRONG>( const Image *image );</P>
 <P>StreamType  <STRONG>GetBlobStreamType</STRONG>( const Image *image );</P>
+<P>unsigned int  <STRONG>GetBlobTemporary</STRONG>( const Image *image );</P>
 <P>void * <STRONG>GetConfigureBlob</STRONG>( const char *filename, ExceptionInfo *exception );</P>
 <P>void * <STRONG>ImageToBlob</STRONG>( const ImageInfo *image_info, Image *image, size_t *length, ExceptionInfo *exception );</P>
 <P>unsigned int  <STRONG>ImageToFile</STRONG>( Image *image, const char *filename, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>PingBlob</STRONG>( const ImageInfo *image_info, const void *blob, const size_t length, ExceptionInfo *exception );</P>
 <P>BlobInfo  <STRONG>ReferenceBlob</STRONG>( BlobInfo *blob_info );</P>
+<P>void  <STRONG>SetBlobClosable</STRONG>( Image *image, unsigned int closeable );</P>
+<P>void  <STRONG>SetBlobTemporary</STRONG>( Image *image, unsigned int isTemporary );</P>
 <P>
 <HR>
 <H2><A NAME="function descriptions">
@@ -127,11 +146,21 @@ Specifies a pointer to a BlobInfo structure.
 <P></P>
 <DD><P></P><DT><STRONG><A NAME="item_o_blob%3A">blob:</A></STRONG><BR>
 <DD>
-The address of a character stream in one of the image formats understood by ImageMagick.
+The address of a character stream in one of the image formats understood by GraphicsMagick.
 <P></P>
 <DD><P></P><DT><STRONG><A NAME="item_o_length%3A">length:</A></STRONG><BR>
 <DD>
 This size_t integer reflects the length in bytes of the blob.
+<P></P></DL></DL>
+<P>
+<H3><A NAME="blobisseekable">BlobIsSeekable</A></H3>
+<blockquote>BlobIsSeekable() returns True if the blob supports seeks ( SeekBlob ( ) is functional ) . </blockquote><P>The format of the BlobIsSeekable method is:</P>
+<blockquote>unsigned int BlobIsSeekable ( const <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
+<DD>
+Image to query
 <P></P></DL></DL>
 <P>
 <H3><A NAME="blobtofile">BlobToFile</A></H3>
@@ -171,7 +200,7 @@ The image info.
 <P></P>
 <DD><P></P><DT><STRONG>blob:</STRONG><BR>
 <DD>
-The address of a character stream in one of the image formats understood by ImageMagick.
+The address of a character stream in one of the image formats understood by GraphicsMagick.
 <P></P>
 <DD><P></P><DT><STRONG>length:</STRONG><BR>
 <DD>
@@ -197,8 +226,18 @@ NULL a new one.
 a structure of type info.
 <P></P></DL></DL>
 <P>
+<H3><A NAME="destroyblob">DestroyBlob</A></H3>
+<blockquote>DestroyBlob() deallocates memory associated with a blob. </blockquote><P>The format of the DestroyBlob method is:</P>
+<blockquote>void DestroyBlob ( <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
+The image.
+<P></P></DL></DL>
+<P>
 <H3><A NAME="destroyblobinfo">DestroyBlobInfo</A></H3>
-<blockquote>DestroyBlobInfo() deallocates memory associated with an <A HREF="types.html#BlobInfo">BlobInfo</A> structure. </blockquote><P>The format of the DestroyBlobInfo method is:</P>
+<blockquote>DestroyBlobInfo() deallocates memory associated with an <A HREF="types.html#BlobInfo">BlobInfo</A> structure. Use of DestroyBlob is preferred over this function. </blockquote><P>The format of the DestroyBlobInfo method is:</P>
 <blockquote>void DestroyBlobInfo ( <A HREF="types.html#BlobInfo">BlobInfo</A> *blob ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
@@ -240,6 +279,26 @@ This pointer to a size_t integer sets the initial length of the blob.  On return
 Return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
+<H3><A NAME="getblobclosable">GetBlobClosable</A></H3>
+<blockquote>GetBlobClosable() returns True if the blob may be closed, or False if it is exempt from being closed. </blockquote><P>The format of the GetBlobClosable method is:</P>
+<blockquote>unsigned int GetBlobClosable ( const <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
+Image to query
+<P></P></DL></DL>
+<P>
+<H3><A NAME="getblobfilehandle">GetBlobFileHandle</A></H3>
+<blockquote>GetBlobFileHandle() returns the stdio file handle associated with the image blob. If there is no associated file handle, then a null pointer is returned. </blockquote><P>The format of the GetBlobFileHandle method is:</P>
+<blockquote>FILE *GetBlobFileHandle ( const <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
+Image to query
+<P></P></DL></DL>
+<P>
 <H3><A NAME="getblobinfo">GetBlobInfo</A></H3>
 <blockquote>GetBlobInfo() initializes the <A HREF="types.html#BlobInfo">BlobInfo</A> structure. </blockquote><P>The format of the GetBlobInfo method is:</P>
 <blockquote>void GetBlobInfo ( <A HREF="types.html#BlobInfo">BlobInfo</A> *blob_info ); </blockquote><P>
@@ -250,12 +309,32 @@ A description of each parameter follows:</P>
 Specifies a pointer to a BlobInfo structure.
 <P></P></DL></DL>
 <P>
+<H3><A NAME="getblobstatus">GetBlobStatus</A></H3>
+<blockquote>GetBlobStatus() returns the blob error status. </blockquote><P>The format of the GetBlobStatus method is:</P>
+<blockquote>int GetBlobStatus ( const <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
+The image.
+<P></P></DL></DL>
+<P>
 <H3><A NAME="getblobstreamdata">GetBlobStreamData</A></H3>
-<blockquote>GetBlobStreamData() returns the stream data for the image. </blockquote><P>The format of the GetBlobStreamData method is:</P>
+<blockquote>GetBlobStreamData() returns the stream data for the image. The data is only available if the data is stored on the heap, or is memory mapped. otherwise a NULL value is returned. </blockquote><P>The format of the GetBlobStreamData method is:</P>
 <blockquote>unsigned char *GetBlobStreamData ( const <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
-<DD><P></P><DT><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
+The image.
+<P></P></DL></DL>
+<P>
+<H3><A NAME="getblobstreamhandler">GetBlobStreamHandler</A></H3>
+<blockquote>GetBlobStreamHandler() returns the stream handler associated with the image. </blockquote><P>The format of the GetBlobStreamHandler method is:</P>
+<blockquote>const <A HREF="types.html#StreamHandler">StreamHandler</A> GetBlobStreamHandler ( const <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
 <DD>
 The image.
 <P></P></DL></DL>
@@ -268,6 +347,16 @@ A description of each parameter follows:</P>
 <DD><P></P><DT><STRONG>image:</STRONG><BR>
 <DD>
 The image.
+<P></P></DL></DL>
+<P>
+<H3><A NAME="getblobtemporary">GetBlobTemporary</A></H3>
+<blockquote>GetBlobTemporary() returns True if the file associated with the blob is a temporary file and should be removed when the associated image is destroyed. </blockquote><P>The format of the GetBlobTemporary method is:</P>
+<blockquote>unsigned int GetBlobTemporary ( const <A HREF="types.html#Image">Image</A> *image ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
+Image to query
 <P></P></DL></DL>
 <P>
 <H3><A NAME="getconfigureblob">GetConfigureBlob</A></H3>
@@ -347,7 +436,7 @@ The image info.
 <P></P>
 <DD><P></P><DT><STRONG>blob:</STRONG><BR>
 <DD>
-The address of a character stream in one of the image formats understood by ImageMagick.
+The address of a character stream in one of the image formats understood by GraphicsMagick.
 <P></P>
 <DD><P></P><DT><STRONG>length:</STRONG><BR>
 <DD>
@@ -366,6 +455,35 @@ A description of each parameter follows:</P>
 <DD><P></P><DT><STRONG>blob_info:</STRONG><BR>
 <DD>
 The blob_info.
+<P></P></DL></DL>
+<P>
+<H3><A NAME="setblobclosable">SetBlobClosable</A></H3>
+<blockquote>SetBlobClosable() enables closing the blob if True is passed, and exempts the blob from being closed if False is passed. Blobs are closable by default ( default True ) . </blockquote><P>The format of the SetBlobClosable method is:</P>
+<blockquote>void SetBlobClosable ( <A HREF="types.html#Image">Image</A> *image, unsigned int closeable ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
+Image to update
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_closeable%3A">closeable:</A></STRONG><BR>
+<DD>
+Set to 
+FALSE in order to disable closing the blob.
+<P></P></DL></DL>
+<P>
+<H3><A NAME="setblobtemporary">SetBlobTemporary</A></H3>
+<blockquote>SetBlobTemporary() sets a boolean flag ( default False ) to specify if the file associated with the blob is a temporary file and should be removed when the associated image is destroyed. </blockquote><P>The format of the SetBlobTemporary method is:</P>
+<blockquote>void SetBlobTemporary ( <A HREF="types.html#Image">Image</A> *image, unsigned int isTemporary ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
+<DD>
+Image to update
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_isTemporary%3A">isTemporary:</A></STRONG><BR>
+<DD>
+Set to True to indicate that the file associated with the blob is temporary.
 </DL></DL>
 
 </BODY>

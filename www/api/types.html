@@ -1,13 +1,13 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML>
 <HEAD>
-	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=ibm437">
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
 	<TITLE>GraphicsMagick Types</TITLE>
-	<META NAME="GENERATOR" CONTENT="StarOffice 6.0  (Solaris Sparc)">
+	<META NAME="GENERATOR" CONTENT="StarOffice 7  (Solaris Sparc)">
 	<META NAME="AUTHOR" CONTENT="Bob Friesenhahn">
 	<META NAME="CREATED" CONTENT="20030425;13574600">
-	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20030425;18490500">
+	<META NAME="CHANGEDBY" CONTENT="Robert Friesenhahn">
+	<META NAME="CHANGED" CONTENT="20031226;11045700">
 	<META NAME="CLASSIFICATION" CONTENT="Documentation for GraphicsMagick C API Types">
 	<META NAME="DESCRIPTION" CONTENT="Documentation for C structures, typedefs, and enumerations used by GraphicsMagick.">
 	<STYLE>
@@ -22,7 +22,7 @@
 	-->
 	</STYLE>
 </HEAD>
-<BODY LANG="en-US" TEXT="#000000" LINK="#1f00ff" VLINK="#9900dd" BGCOLOR="#ffffff">
+<BODY LANG="en-US" TEXT="#000000" LINK="#1f00ff" VLINK="#9900dd" BGCOLOR="#ffffff" DIR="LTR">
 <H1 ALIGN=CENTER>GraphicsMagick Types</H1>
 <TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
 	<TR>
@@ -137,7 +137,7 @@
     mapped,
     eof;
 
-  ExtendedSignedIntegralType
+  magick_off_t
     offset,
     size;
 
@@ -697,7 +697,7 @@ Specify <I>CompositeOperator</I> to select a different algorithm. <BR>&nbsp;
 	</TR>
 	<TR>
 		<TD>
-			<P>ReplaceCompositeOp</P>
+			<P>CopyCompositeOp</P>
 		</TD>
 		<TD>
 			<P>The resulting <I>image</I> is image replaced with c<I>omposite
@@ -706,7 +706,7 @@ Specify <I>CompositeOperator</I> to select a different algorithm. <BR>&nbsp;
 	</TR>
 	<TR>
 		<TD>
-			<P>ReplaceRedCompositeOp</P>
+			<P>CopyRedCompositeOp</P>
 		</TD>
 		<TD>
 			<P>The resulting image is the red layer in <I>image</I> replaced
@@ -716,7 +716,7 @@ Specify <I>CompositeOperator</I> to select a different algorithm. <BR>&nbsp;
 	</TR>
 	<TR>
 		<TD>
-			<P>ReplaceGreenCompositeOp</P>
+			<P>CopyGreenCompositeOp</P>
 		</TD>
 		<TD>
 			<P>The resulting image is the green layer in <I>image</I> replaced
@@ -726,7 +726,7 @@ Specify <I>CompositeOperator</I> to select a different algorithm. <BR>&nbsp;
 	</TR>
 	<TR>
 		<TD>
-			<P>ReplaceBlueCompositeOp</P>
+			<P>CopyBlueCompositeOp</P>
 		</TD>
 		<TD>
 			<P>The resulting image is the blue layer in <I>image</I> replaced
@@ -736,7 +736,7 @@ Specify <I>CompositeOperator</I> to select a different algorithm. <BR>&nbsp;
 	</TR>
 	<TR>
 		<TD>
-			<P>ReplaceMatteCompositeOp</P>
+			<P>CopyOpacityCompositeOp</P>
 		</TD>
 		<TD>
 			<P>The resulting image is the matte layer in <I>image</I> replaced
@@ -3547,7 +3547,6 @@ may be obtained by calling <A HREF="magick.html#getmagickinfo">GetMagickInfo()</
 Pass the argument NULL to obtain the first member of this list. A
 human-readable list of registered image formats may be printed to a
 file descriptor by calling <A HREF="magick.html#listmagickinfo">ListMagickInfo()</A>.
-
 </P>
 <P>Support for formats may be provided as a module which is part of
 the GraphicsMagick library, provided by a module which is loaded
@@ -3608,7 +3607,6 @@ Sample Application Code</H3>
 not need to implement the RegisterFORMATImage and
 UnregisterFORMATImage call-back routines. Instead, the application
 takes responsibility for the registration itself. An example follows:
-
 </P>
 <PRE>/* Read image */ 
 Image *ReadGIFImage(const ImageInfo *image_info) 
@@ -3808,10 +3806,97 @@ Members</B></P>
 </TABLE>
 <P STYLE="margin-bottom: 0in"><BR>
 </P>
+<P STYLE="margin-bottom: 0in">MonitorHandler is the function type to
+be used for the progress monitor callback. Its definition is as
+follows:</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
 <PRE>typedef unsigned int
-  (*MonitorHandler)(const char *,const ExtendedSignedIntegralType,
-    const ExtendedUnsignedIntegralType,ExceptionInfo *);</PRE><P STYLE="margin-bottom: 0in">
-<BR>
+  (*MonitorHandler)(const char *text, const magick_int64_t quantum,
+    const magick_uint64_t span, ExceptionInfo *exception);</PRE><P STYLE="margin-bottom: 0in">
+The operation of the monitor handler is described in the following
+table:</P>
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=4 CELLSPACING=3>
+	<COL WIDTH=64*>
+	<COL WIDTH=64*>
+	<COL WIDTH=128*>
+	<TR VALIGN=TOP>
+		<TD WIDTH=25% BGCOLOR="#c0c0c0">
+			<P ALIGN=CENTER><B>Parameter</B></P>
+		</TD>
+		<TD WIDTH=25% BGCOLOR="#c0c0c0">
+			<P ALIGN=CENTER><B>Type</B></P>
+		</TD>
+		<TD WIDTH=50% BGCOLOR="#c0c0c0">
+			<P ALIGN=CENTER><B>Description</B></P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=25% BGCOLOR="#c0c0c0">
+			<P>return status</P>
+		</TD>
+		<TD WIDTH=25% BGCOLOR="#c0c0c0">
+			<P>unsigned int</P>
+		</TD>
+		<TD WIDTH=50% BGCOLOR="#c0c0c0">
+			<P>The progress monitor should normally return True (a non-zero
+			value) if the operation is to continue. If the progress monitor
+			returns false, then the operation is will be aborted. This
+			mechanism allows a user to terminate a process which is taking too
+			long to complete.</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=25% BGCOLOR="#c0c0c0">
+			<P>text</P>
+		</TD>
+		<TD WIDTH=25% BGCOLOR="#c0c0c0">
+			<P>const char *</P>
+		</TD>
+		<TD WIDTH=50% BGCOLOR="#c0c0c0">
+			<P>A description of the current operation being performed.</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=25% BGCOLOR="#c0c0c0">
+			<P>quantum</P>
+		</TD>
+		<TD WIDTH=25% BGCOLOR="#c0c0c0">
+			<P>const magick_int64_t</P>
+		</TD>
+		<TD WIDTH=50% BGCOLOR="#c0c0c0">
+			<P>A value within the range of 0 to span which indicates the
+			degree of progress.</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=25% BGCOLOR="#c0c0c0">
+			<P>span</P>
+		</TD>
+		<TD WIDTH=25% BGCOLOR="#c0c0c0">
+			<P>const magick_uint64_t</P>
+		</TD>
+		<TD WIDTH=50% BGCOLOR="#c0c0c0">
+			<P>The total range that quantum will span.</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=25% BGCOLOR="#c0c0c0">
+			<P>exception</P>
+		</TD>
+		<TD WIDTH=25% BGCOLOR="#c0c0c0">
+			<P>exceptionInfo *</P>
+		</TD>
+		<TD WIDTH=50% BGCOLOR="#c0c0c0">
+			<P>If the progress monitor returns False (abort operation), it
+			should also update the structure passed via the exception
+			parameter so that an error message may be reported to the user.</P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in"><BR>
 </P>
 <TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=0>
 	<COL WIDTH=256*>
@@ -4474,7 +4559,7 @@ pixels (&quot;Quantums&quot;) while they are being read, or written
 to, a pixel cache. The validity of these format specifications
 depends on whether the Image pixels are in RGB format, RGBA format,
 or CMYK format. The pixel Quantum size is determined by the Image
-depth (eight or sixteen bits). <BR><BR>
+depth (eight or sixteen bits). 
 </P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>RGB(A) Image Quantums</B></P>
 <TABLE COLS=2 WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">
@@ -4655,7 +4740,7 @@ Quantums</B></P>
 information in GraphicsMagick. 
 </P>
 <P STYLE="margin-bottom: 0in">The members of the RectangleInfo
-structure are shown in the following table: <BR><BR>
+structure are shown in the following table: 
 </P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>RectangleInfo Structure
 Members</B></P>
@@ -4757,7 +4842,7 @@ intent specifies the style of reproduction to be used during the
 evaluation of this profile in a sequence of profiles. It applies
 specifically to that profile in the sequence and not to the entire
 sequence. Typically, the user or application will set the rendering
-intent dynamically at runtime or embedding time.&quot; <BR><BR>
+intent dynamically at runtime or embedding time.&quot; 
 </P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><B>RenderingIntent</B></P>
 <TABLE WIDTH=100% BORDER=1 CELLPADDING=2 CELLSPACING=2 BGCOLOR="#cccccc">

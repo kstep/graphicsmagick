@@ -177,12 +177,12 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
   */
   if (FuzzyColorMatch(&draw_info->fill,&target,image->fuzz))
     return(False);
-  floodplane=(unsigned char *) AcquireMemory(image->columns*image->rows);
-  segment_stack=(SegmentInfo *) AcquireMemory(MaxStacksize*sizeof(SegmentInfo));
+  floodplane=MagickAllocateMemory(unsigned char *,image->columns*image->rows);
+  segment_stack=MagickAllocateMemory(SegmentInfo *,MaxStacksize*sizeof(SegmentInfo));
   if ((floodplane== (unsigned char *) NULL) ||
       (segment_stack == (SegmentInfo *) NULL))
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      "UnableToFloodfillImage");
+    ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
+      UnableToFloodfillImage);
   (void) memset(floodplane,False,image->columns*image->rows);
   /*
     Push initial segment on stack.
@@ -339,8 +339,8 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
           break;
       }
     }
-  LiberateMemory((void **) &segment_stack);
-  LiberateMemory((void **) &floodplane);
+  MagickFreeMemory(segment_stack);
+  MagickFreeMemory(floodplane);
   return(True);
 }
 
@@ -433,10 +433,10 @@ MagickExport unsigned int MatteFloodfillImage(Image *image,
   /*
     Allocate segment stack.
   */
-  segment_stack=(SegmentInfo *) AcquireMemory(MaxStacksize*sizeof(SegmentInfo));
+  segment_stack=MagickAllocateMemory(SegmentInfo *,MaxStacksize*sizeof(SegmentInfo));
   if (segment_stack == (SegmentInfo *) NULL)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      "UnableToFloodfillImage");
+    ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
+      UnableToFloodfillImage);
   /*
     Push initial segment on stack.
   */
@@ -536,7 +536,7 @@ MagickExport unsigned int MatteFloodfillImage(Image *image,
       start=x;
     } while (x <= x2);
   }
-  LiberateMemory((void **) &segment_stack);
+  MagickFreeMemory(segment_stack);
   return(True);
 }
 

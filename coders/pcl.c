@@ -18,7 +18,7 @@
 %                            P       CCCC  LLLLL                              %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                        Write HP PCL Printer Format.                         %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -218,7 +218,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   TransformColorspace(image,RGBColorspace);
   /*
     Initialize the printer.
@@ -288,10 +288,10 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
       /*
         Allocate pixel buffers.
       */
-      pixels=(unsigned char *)
-        AcquireMemory(3*image->columns*sizeof(unsigned char));
+      pixels=MagickAllocateMemory(unsigned char *,
+        3*image->columns*sizeof(unsigned char));
       if (pixels == (unsigned char *) NULL)
-        ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image)
+        ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image)
       /*
         Write PCL color image.
       */
@@ -328,7 +328,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
             break;
       }
       (void) WriteBlobString(image,"\033*r0C");  /* end graphics */
-      LiberateMemory((void **) &pixels);
+      MagickFreeMemory(pixels);
     }
   (void) WriteBlobString(image,"\033E");
   CloseBlob(image);

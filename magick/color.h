@@ -19,17 +19,41 @@ extern "C" {
 { \
   if (index >= image->colors) \
     { \
-      index=0; \
+      char \
+        colormapIndexBuffer[MaxTextExtent]; \
+      \
+      FormatString(colormapIndexBuffer,"index %u >= %lu colors, %.1024s", \
+        (unsigned int) index, image->colors, image->filename); \
+      errno=0; \
+      index=0U; \
       ThrowException(&image->exception,CorruptImageError, \
-                     "InvalidColormapIndex",image->filename); \
+        InvalidColormapIndex,colormapIndexBuffer); \
     } \
 }
+
+/*
+  PixelPacket with usage count, used to support color histograms.
+*/
+typedef struct _HistogramColorPacket
+{
+  PixelPacket
+    pixel;
+
+  unsigned long
+    count;
+} HistogramColorPacket;
 
 extern MagickExport char
   **GetColorList(const char *,unsigned long *);
 
 extern MagickExport const ColorInfo
   *GetColorInfo(const char *,ExceptionInfo *);
+
+extern MagickExport ColorInfo
+  **GetColorInfoArray(ExceptionInfo *exception);
+
+extern MagickExport HistogramColorPacket
+  *GetColorHistogram(const Image *, unsigned long *colors, ExceptionInfo *);
 
 extern MagickExport unsigned int
   FuzzyColorMatch(const PixelPacket *,const PixelPacket *,const double),

@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003, 2004 GraphicsMagick Group
 %
 % This program is covered by multiple licenses, which are described in
 % Copyright.txt. You should have received a copy of Copyright.txt with this
@@ -12,6 +12,7 @@
 #include "magick/studio.h"
 #include "magick/error.h"
 #include "magick/log.h"
+#include "magick/semaphore.h"
 #include "magick/tempfile.h"
 #include "magick/utility.h"
 
@@ -61,7 +62,7 @@ static void AddTemporaryFileToList(const char *filename)
     TempfileInfo
       *info;
 
-    info=(TempfileInfo *) AcquireMemory(sizeof(TempfileInfo));
+    info=MagickAllocateMemory(TempfileInfo *,sizeof(TempfileInfo));
     if (info)
       {
         info->next=0;
@@ -104,7 +105,7 @@ static unsigned int RemoveTemporaryFileFromList(const char *filename)
               previous->next=current->next;
             else
               templist=current->next;
-            LiberateMemory((void **)&current);
+            MagickFreeMemory(current);
             status=True;
             break;
           }
@@ -131,7 +132,14 @@ static void ComposeTemporaryFileName(char *name)
   for (c=name; *c; c++)
     {
       if (*c == 'X')
-        *c=SafeChars[((sizeof(SafeChars)-1)*rand())/RAND_MAX];
+        {
+          unsigned int
+            index;
+
+          index=(unsigned int) (((double) (sizeof(SafeChars)-1)*rand())/
+                                RAND_MAX+0.5);
+          *c=SafeChars[index];
+        }
     }
 }
 
@@ -332,7 +340,7 @@ MagickExport int AcquireTemporaryFileDescriptor(char *filename)
             (void) strncpy(filename,path,MaxTextExtent-1);
           }
 
-        LiberateMemory((void **) &name);
+        MagickFreeMemory(name);
       }
     return (fd);
   }
@@ -442,9 +450,10 @@ MagickExport void DestroyTemporaryFiles(void)
         (void) LogMagickEvent(TemporaryFileEvent,GetMagickModule(),
           "Temporary file removal failed \"%s\"",liberate->filename);
       liberate->next=0;
-      LiberateMemory((void **)&liberate);
+      MagickFreeMemory(liberate);
     }
   LiberateSemaphoreInfo(&templist_semaphore);
+  DestroySemaphoreInfo(&templist_semaphore);
 }
 
 /*

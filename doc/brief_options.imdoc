@@ -1,0 +1,721 @@
+<utils apps=all>
+</utils>
+<utils apps=animate,composite,convert,display,identify,import,mogrify,montage>
+</utils>
+<utils apps=convert,montage>
+<lopt>-adjoin</opt>
+<abs>join images into a single multi-image file</abs>
+</utils>
+<utils apps=convert,mogrify>
+<lopt>-affine <matrix></opt>
+<abs>drawing transform matrix</abs>
+</utils>
+<utils apps=convert,mogrify>
+<lopt>-antialias</opt>
+<abs>remove pixel aliasing</abs>
+</utils>
+<utils apps=convert>
+<lopt>-append</opt>
+<abs>append a set of images</abs>
+</utils>
+<utils apps=animate,composite,convert,display,identify,mogrify,montage>
+<lopt>-authenticate <string></opt>
+<abs>decrypt image with this password</abs>
+</utils>
+<utils apps=convert>
+<lopt>-average</opt>
+<abs>average a set of images</abs>
+</utils>
+<utils apps=animate,display>
+<lopt>-backdrop</opt>
+<abs>display the image centered on a backdrop.</abs>
+</utils>
+<utils apps=animate,composite,convert,display,mogrify,montage>
+<lopt>-background <color></opt>
+<abs>the background color</abs>
+</utils>
+<utils apps=composite,convert,mogrify,montage>
+<lopt>-blue-primary <x>,<y></opt>
+<abs>blue chromaticity primary point</abs>
+</utils>
+<utils apps=convert,mogrify,montage>
+<lopt>-blur <radius>{x<sigma>}</opt>
+<abs>blur the image with a Gaussian operator</abs>
+</utils>
+<utils apps=convert,display,mogrify>
+<lopt>-border <width>x<height></opt>
+<abs>surround the image with a border of color</abs>
+</utils>
+<utils apps=animate,convert,display,import,mogrify,montage>
+<lopt>-bordercolor <color></opt>
+<abs>the border color</abs>
+</utils>
+<utils apps=animate,display,montage>
+<opt>-borderwidth <geometry></opt>
+<abs>the border width</abs>
+</utils>
+<utils apps=convert>
+<lopt>-box <color></opt>
+<abs>set the color of the annotation bounding box</abs>
+</utils>
+<utils apps=animate,composite,convert,display,identify,import,mogrify,montage>
+<lopt>-cache <threshold></opt>
+<abs>(This option has been replaced by the -limit option)</abs>
+</utils>
+<utils apps=convert,mogrify>
+<lopt>-channel <type></opt>
+<abs>the type of channel</abs>
+</utils>
+<utils apps=convert,mogrify>
+<opt>-charcoal <factor></opt>
+<abs>simulate a charcoal drawing</abs>
+</utils>
+<utils apps=animate,convert,montage>
+<lopt>-chop <width>x<height>{+-}<x>{+-}<y>{%}</opt>
+<abs>remove pixels from the interior of an image</abs>
+</utils>
+<utils apps=convert>
+<lopt>-clip</opt>
+<abs>apply the clipping path, if one is present</abs>
+</utils>
+<utils apps=convert>
+<lopt>-coalesce</opt>
+<abs>merge a sequence of images</abs>
+</utils>
+<utils apps=convert,mogrify>
+<lopt>-colorize <value></opt>
+<abs>colorize the image with the pen color</abs>
+</utils>
+<utils apps=animate,display>
+<lopt>-colormap <type></opt>
+<abs>define the colormap type</abs>
+</utils>
+<utils apps=animate,composite,convert,display,import,mogrify,montage>
+<lopt>-colors <value></opt>
+<abs>preferred number of colors in the image</abs>
+</utils>
+<utils apps=animate,composite,convert,display,import,mogrify,montage>
+<lopt>-colorspace <value></opt>
+<abs>the type of colorspace</abs>
+</utils>
+<utils apps=composite,convert,display,import,mogrify,montage>
+<lopt>-comment <string></opt>
+<abs>annotate an image with a comment</abs>
+</utils>
+<utils apps=composite,convert,mogrify,montage>
+<lopt>-compose <operator></opt>
+<abs>the type of image composition</abs>
+</utils>
+<utils apps=composite,convert,display,mogrify,montage>
+<lopt>-compress <type></opt>
+<abs>the type of image compression</abs>
+</utils>
+<utils apps=convert,display,mogrify>
+<lopt>-contrast</opt>
+<abs>enhance or reduce the image contrast</abs>
+</utils>
+<utils apps=convert,mogrify>
+<lopt>-convolve <kernel></opt>
+<abs>convolve image with the specified convolution kernel</abs>
+<utils apps=animate,convert,display,import,mogrify,montage>
+<lopt>-crop <width>x<height>{+-}<x>{+-}<y>{%}</opt>
+<abs>preferred size and location of the cropped image</abs>
+</utils>
+<utils apps=convert,mogrify>
+<lopt>-cycle <amount></opt>
+<abs>displace image colormap by amount</abs>
+</utils>
+<utils apps=animate,composite,conjure,convert,display,identify,import,mogrify,montage>
+<opt>-debug <events></opt>
+<abs>enable debug printout</abs>
+</utils>
+<utils apps=convert>
+<lopt>-deconstruct</opt>
+<abs>break down an image sequence into constituent parts</abs>
+</utils>
+<utils apps=animate,composite,conjure,convert,display,identify,import,mogrify,montage>
+<lopt>-define <key>{=<value>},...</opt>
+<abs>add coder/decoder specific options</abs>
+</utils>
+<utils apps=animate,convert,display,import,mogrify>
+<lopt>-delay <1/100ths of a second></opt>
+<abs>display the next image after pausing</abs>
+</utils>
+<utils apps=animate,composite,convert,display,identify,import,mogrify,montage>
+<lopt>-density <width>x<height></opt>
+<abs>horizontal and vertical resolution in pixels of the image</abs>
+</utils>
+<utils apps=animate,composite,convert,display,identify,import,mogrify,montage>
+<lopt>-depth <value></opt>
+<abs>depth of the image</abs>
+</utils>
+<utils apps=import>
+<opt>-descend</opt>
+<abs>obtain image by descending window hierarchy</abs>
+</utils>
+<utils apps=convert,display,mogrify>
+<opt>-despeckle</opt>
+<abs>reduce the speckles within an image</abs>
+</utils>
+<utils apps=composite>
+<lopt>-displace <horizontal scale>x<vertical scale></opt>
+<abs>shift image pixels as defined by a displacement map</abs>
+</utils>
+<utils apps=animate,composite,convert,display,import,mogrify,montage>
+<lopt>-display <host:display[.screen]></opt>
+<abs>specifies the X server to contact</abs>
+</utils>
+<utils apps=convert>
+</utils>
+<utils apps=animate,composite,convert,display,import,mogrify,montage>
+<lopt>-dispose <method></opt>
+<abs>GIF disposal method</abs>
+</utils>
+<utils apps=composite>
+<lopt>-dissolve <percent></opt>
+<abs>dissolve an image into another by the given percent</abs>
+</utils>
+<utils apps=animate,composite,convert,display,import,mogrify,montage>
+<lopt>-dither</opt>
+<abs>apply Floyd/Steinberg error diffusion to the image</abs>
+</utils>
+<utils apps=convert,mogrify,montage>
+<lopt>-draw <string></opt>
+<abs>annotate an image with one or more graphic primitives</abs>
+</utils>
+<utils apps=convert,display,mogrify>
+<opt>-edge <radius></opt>
+<abs>detect edges within an image</abs>
+</utils>
+<utils apps=convert,mogrify>
+<opt>-emboss <radius></opt>
+<abs>emboss an image</abs>
+</utils>
+<utils apps=composite,convert,import,mogrify,montage>
+<lopt>-encoding <type></opt>
+<abs>specify the text encoding</abs>
+</utils>
+<utils apps=composite,convert,display,import,mogrify,montage>
+<lopt>-endian <type></opt>
+<abs>specify endianness (MSB or LSB) of output image</abs>
+</utils>
+<utils apps=convert,display,mogrify>
+<opt>-enhance</opt>
+<abs>apply a digital filter to enhance a noisy image</abs>
+</utils>
+<utils apps=convert,mogrify>
+<opt>-equalize</opt>
+<abs>perform histogram equalization to the image</abs>
+</utils>
+<utils apps=convert,mogrify,montage>
+<lopt>-fill <color></opt>
+<abs>color to use when filling a graphic primitive</abs>
+</utils>
+<utils apps=composite,convert,display,mogrify,montage>
+<lopt>-filter <type></opt>
+<abs>use this type of filter when resizing an image</abs>
+</utils>
+<utils apps=convert>
+<lopt>-flatten</opt>
+<abs>flatten a sequence of images</abs>
+</utils>
+<utils apps=convert,display,mogrify>
+<lopt>-flip</opt>
+<abs>create a "mirror image"</abs>
+</utils>
+<utils apps=convert,display,mogrify>
+<lopt>-flop</opt>
+<abs>create a "mirror image"</abs>
+</utils>
+<utils apps=animate,composite,convert,display,mogrify,montage>
+<lopt>-font <name></opt>
+<abs>use this font when annotating the image with text</abs>
+</utils>
+<utils apps=animate,display>
+<lopt>-foreground <color></opt>
+<abs>define the foreground color</abs>
+</utils>
+<utils apps=mogrify>
+<lopt>-format <type></opt>
+<abs>the image format type</abs>
+</utils>
+<utils apps=identify>
+<lopt>-format <string></opt>
+<abs>output formatted image characteristics</abs>
+</utils>
+<utils apps=convert,display,mogrify,montage>
+<lopt>-frame <width>x<height>+<outer bevel width>+<inner bevel width></opt>
+<abs>surround the image with an ornamental border</abs>
+</utils>
+<utils apps=import>
+<opt>-frame</opt>
+<abs>include the X window frame in the imported image</abs>
+</utils>
+<utils apps=convert,mogrify>
+<lopt>-fuzz <distance>{%}</opt>
+<abs>colors within this distance are considered equal</abs>
+</utils>
+<utils apps=animate,convert,display,mogrify,montage>
+<lopt>-gamma <value></opt>
+<abs>level of gamma correction</abs>
+</utils>
+<utils apps=convert,mogrify>
+<lopt>-Gaussian <radius>{x<sigma>}</opt>
+<abs>blur the image with a Gaussian operator</abs>
+</utils>
+<utils apps=animate,composite,convert,display,import,mogrify,montage>
+<lopt>-geometry <width>x<height>{+-}<x>{+-}<y>{%}{@} {!}{<}{>}</opt>
+<abs>preferred size and location of the Image window.</abs>
+</utils>
+<utils apps=animate,display>
+</utils>
+<utils apps=composite>
+</utils>
+<utils apps=import,convert,mogrify>
+</utils>
+<utils apps=montage>
+</utils>
+<utils apps=composite,convert,mogrify,montage>
+<lopt>-gravity <type></opt>
+<abs>direction primitive  gravitates to when annotating the image.</abs>
+<utils apps=composite>
+</utils>
+<utils apps=montage>
+</utils>
+<utils apps=composite,convert,mogrify,montage>
+<lopt>-green-primary <x>,<y></opt>
+<abs>green chromaticity primary point</abs>
+</utils>
+<utils apps=animate,composite,conjure,convert,display,identify,import,mogrify,montage>
+<opt>-help</opt>
+<abs>print usage instructions</abs>
+</utils>
+<utils apps=animate,display>
+<lopt>-iconGeometry <geometry></opt>
+<abs>specify the icon geometry</abs>
+</utils>
+<utils apps=animate,display>
+<opt>-iconic</opt>
+<abs>iconic animation</abs>
+</utils>
+<utils apps=display>
+<opt>-immutable</opt>
+<abs>make image immutable</abs>
+</utils>
+<utils apps=convert,mogrify>
+<opt>-implode <factor></opt>
+<abs>implode image pixels about the center</abs>
+</utils>
+<utils apps=convert>
+<lopt>-intent <type></opt>
+<abs>use this type of rendering intent when managing the image color</abs>
+</utils>
+<utils apps=animate,composite,convert,display,identify,import,mogrify,montage>
+<lopt>-interlace <type></opt>
+<abs>the type of interlacing scheme</abs>
+</utils>
+<utils apps=composite,convert,display,import,mogrify,montage>
+</utils>
+<utils apps=composite,convert,display,import,mogrify,montage>
+<lopt>-label <name></opt>
+<abs>assign a label to an image</abs>
+</utils>
+<utils apps=convert,mogrify>
+<opt>-lat <width>x<height>{+-}<offset>{%}</opt>
+<abs>perform local adaptive thresholding</abs>
+</utils>
+<utils apps=convert,mogrify>
+<lopt>-level <black_point>{,<gamma>}{,<white_point>}{%}</opt>
+<abs>adjust the level of image contrast</abs>
+</utils>
+<utils apps=animate,composite,convert,display,identify,import,mogrify,montage>
+<lopt>-limit <type> <value></opt>
+<abs>Disk, File, Map, or Memory resource limit</abs>
+</utils>
+<utils apps=mogrify>
+<opt>-linewidth</opt>
+<abs>the line width for subsequent draw operations</abs>
+</utils>
+<utils apps=convert,identify,mogrify>
+<lopt>-list <type></opt>
+<abs>the type of list</abs>
+</utils>
+<utils apps=animate,composite,conjure,convert,display,identify,import,mogrify,montage>
+<lopt>-log <string></opt>
+<abs>Specify format for debug log</abs>
+</utils>
+<utils apps=convert,mogrify>
+<lopt>-loop <iterations></opt>
+<abs>add Netscape loop extension to your GIF animation</abs>
+</utils>
+<utils apps=display>
+<opt>-magnify <factor></opt>
+<abs>magnify the image</abs>
+</utils>
+<utils apps=convert,mogrify>
+<lopt>-map <filename></opt>
+<abs>choose a particular set of colors from this image</abs>
+</utils>
+<utils apps=animate,display>
+<lopt>-map <type></opt>
+<abs>
+display image using this type.</abs>
+</utils>
+<utils apps=convert,mogrify>
+<lopt>-mask <filename></opt>
+<abs>Specify a clipping mask</abs>
+</utils>
+<utils apps=animate,composite,convert,display,mogrify,montage>
+<lopt>-matte</opt>
+<abs>store matte channel if the image has one</abs>
+</utils>
+<utils apps=animate,convert,display,mogrify,montage>
+<lopt>-mattecolor <color></opt>
+<abs>specify the color to be used with the <s>-frame</s> option</abs>
+</utils>
+<utils apps=convert,mogrify>
+<opt>-median <radius></opt>
+<abs>apply a median filter to the image</abs>
+</utils>
+<utils apps=montage>
+<opt>-mode <value></opt>
+<abs>mode of operation</abs>
+</utils>
+<utils apps=convert,mogrify>
+<lopt>-modulate <value></opt>
+<abs>vary the brightness, saturation, and hue of an image</abs>
+</utils>
+<utils apps=animate,composite,convert,display,import,mogrify,montage>
+<opt>-monochrome</opt>
+<abs>transform the image to black and white</abs>
+</utils>
+<utils apps=convert>
+<lopt>-morph <frames></opt>
+<abs>morphs an image sequence</abs>
+</utils>
+<utils apps=convert>
+<lopt>-mosaic</opt>
+<abs>create a mosaic from an image or an image sequence</abs>
+</utils>
+<utils apps=animate,display>
+<opt>-name</opt>
+<abs>name an image</abs>
+</utils>
+<utils apps=composite,convert,display,import,mogrify>
+<lopt>-negate</opt>
+<abs>replace every pixel with its complementary color</abs>
+</utils>
+<utils apps=convert,mogrify>
+<lopt>-noise <radius|type></opt>
+<abs>add or reduce noise in an image</abs>
+</utils>
+<utils apps=animate,convert,display,mogrify,montage>
+<lopt>-noop</opt>
+<abs>NOOP (no option)</abs>
+</utils>
+<utils apps=convert,mogrify>
+<lopt>-normalize</opt>
+<abs>transform image to span the full range of color values</abs>
+</utils>
+<utils apps=convert,mogrify>
+<lopt>-opaque <color></opt>
+<abs>change this color to the pen color within the image</abs>
+</utils>
+<utils apps=convert,mogrify>
+<lopt>-operator channel operator rvalue[%]</opt>
+<abs>apply a mathematical or bitwise operator to an image channel</abs>
+</utils>
+<utils apps=composite,convert,display,import,mogrify,montage>
+<lopt>-ordered-dither <channeltype> <NxN>
+<abs>ordered dither the image</abs>
+<utils apps=composite,convert,display,import,mogrify,montage>
+<lopt>-page <width>x<height>{+-}<x>{+-}<y>{%}{!}{<}{>}</opt>
+<abs>size and location of an image canvas</abs>
+</utils>
+<utils apps=convert,mogrify>
+<lopt>-paint <radius></opt>
+<abs>simulate an oil painting</abs>
+</utils>
+<utils apps=animate>
+<lopt>-pause <seconds></opt>
+<abs>pause between animation loops [animate]</abs>
+</utils>
+<utils apps=import>
+<lopt>-pause <seconds></opt>
+<abs>pause between snapshots [import]</abs>
+</utils>
+<utils apps=convert,mogrify,montage>
+<lopt>-pen <color></opt>
+<abs>(This option has been replaced by the -fill option)</abs>
+</utils>
+<utils apps=convert,identify,import>
+<opt>-ping</opt>
+<abs>efficiently determine image characteristics</abs>
+</utils>
+<utils apps=convert,import,mogrify,montage>
+<opt>-pointsize <value></opt>
+<abs>pointsize of the PostScript, OPTION1, or TrueType font</abs>
+</utils>
+<utils apps=convert>
+<lopt>-preview <type></opt>
+<abs>image preview type</abs>
+</utils>
+<utils apps=convert>
+<lopt>-process <command></opt>
+<abs>process a sequence of images using a process module</abs>
+</utils>
+<utils apps=composite,convert,mogrify>
+<lopt>-profile <filename></opt>
+<abs>add ICM, IPTC, or generic profile  to image</abs>
+</utils>
+<utils apps=composite,convert,display,import,mogrify,montage>
+<lopt>-quality <value></opt>
+<abs>JPEG/MIFF/PNG compression level</abs>
+</utils>
+<utils apps=convert,display,mogrify>
+<lopt>-raise <width>x<height></opt>
+<abs>lighten or darken image edges</abs>
+</utils>
+<utils apps=composite,convert,display,import,mogrify,montage>
+<lopt>-random-threshold <channeltype> <LOWxHIGH>
+<abs>random threshold the image</abs>
+<utils apps=composite,convert,mogrify,montage>
+<lopt>-red-primary <x>,<y></opt>
+<abs>red chromaticity primary point</abs>
+</utils>
+<utils apps=convert,mogrify>
+<lopt>-region <width>x<height>{+-}<x>{+-}<y></opt>
+<abs>apply options to a portion of the image</abs>
+</utils>
+<utils apps=animate,display>
+<lopt>-remote</opt>
+<abs>perform a remote operation</abs>
+</utils>
+<utils apps=composite,convert,mogrify,montage>
+<lopt>-render</opt>
+<abs>render vector operations</abs>
+</utils>
+<utils apps=convert,mogrify>
+<lopt>-resample <horizontal>x<vertical></opt>
+<abs>Resample image to specified horizontal and vertical resolution</abs>
+<utils apps=composite,convert,import,mogrify,montage>
+<lopt>-resize <width>x<height>{%}{@}{!}{<}{>}</opt>
+<abs>resize an image</abs>
+</utils>
+<utils apps=convert,import,mogrify>
+</utils>
+<utils apps=all>
+</utils>
+<utils apps=composite>
+</utils>
+<utils apps=montage>
+</utils>
+<utils apps=convert,display,mogrify>
+<lopt>-roll {+-}<x>{+-}<y></opt>
+<abs>roll an image vertically or horizontally</abs>
+</utils>
+<utils apps=animate,composite,convert,display,import,mogrify,montage>
+<lopt>-rotate <degrees>{<}{>}</opt>
+<abs>apply Paeth image rotation to the image</abs>
+</utils>
+<utils apps=convert,display,mogrify>
+<lopt>-sample <geometry></opt>
+<abs>scale image using pixel sampling</abs>
+</utils>
+<utils apps=animate,composite,convert,display,identify,import,mogrify,montage>
+<lopt>-sampling-factor <horizontal_factor>x<vertical_factor></opt>
+<abs>sampling factors used by JPEG or MPEG-2 encoder and YUV decoder/encoder.</abs>
+</utils>
+<utils apps=convert,mogrify>
+<lopt>-scale <geometry></opt>
+<abs>scale the image.</abs>
+</utils>
+<utils apps=composite,convert,import,mogrify>
+<lopt>-scene <value></opt>
+<abs>set scene number</abs>
+</utils>
+<utils apps=animate,display,montage>
+<lopt>-scenes <value-value></opt>
+<abs>range of image scene numbers to read</abs>
+</utils>
+<utils apps=import>
+<lopt>-screen</opt>
+<abs>specify the screen to capture</abs>
+</utils>
+<utils apps=convert,display,mogrify>
+<lopt>-segment <cluster threshold>x<smoothing threshold></opt>
+<abs>segment an image</abs>
+</utils>
+<utils apps=convert,mogrify>
+<lopt>-shade <azimuth>x<elevation></opt>
+<abs>shade the image using a distant light source</abs>
+</utils>
+<utils apps=montage>
+<opt>-shadow <radius>{x<sigma>}</opt>
+<abs>shadow the montage</abs>
+</utils>
+<utils apps=animate,display>
+<lopt>-shared-memory</opt>
+<abs>use shared memory</abs>
+</utils>
+<utils apps=composite,convert,display,montage,mogrify>
+<lopt>-sharpen <radius>{x<sigma>}</opt>
+<abs>sharpen the image</abs>
+</utils>
+<utils apps=convert,mogrify>
+<lopt>-shave <width>x<height>{%}</opt>
+<abs>shave pixels from the image edges</abs>
+</utils>
+<utils apps=convert,mogrify>
+<lopt>-shear <x degrees>x<y degrees></opt>
+<abs>shear the image along the X or Y axis</abs>
+</utils>
+<utils apps=import>
+<opt>-silent</opt>
+<abs>operate silently</abs>
+</utils>
+<utils apps=animate,composite,convert,display,identify,mogrify,montage>
+<lopt>-size <width>x<height>{+offset}</opt>
+<abs>width and height of the image</abs>
+</utils>
+<utils apps=import>
+<lopt>-snaps <value></opt>
+<abs>number of screen snapshots</abs>
+</utils>
+<utils apps=convert,mogrify>
+<lopt>-solarize <factor></opt>
+<abs>negate all pixels above the threshold level</abs>
+</utils>
+<utils apps=convert,mogrify>
+<lopt>-spread <amount></opt>
+<abs>displace image pixels by a random amount</abs>
+</utils>
+<utils apps=composite>
+<lopt>-stegano <offset></opt>
+<abs>hide watermark within an image</abs>
+</utils>
+<utils apps=composite>
+<lopt>-stereo</opt>
+<abs>composite two images to create a stereo anaglyph</abs>
+<utils apps=convert,mogrify,montage>
+<lopt>-stroke <color></opt>
+<abs>color to use when stroking a graphic primitive</abs>
+</utils>
+<utils apps=convert,mogrify,montage>
+<lopt>-strokewidth <value></opt>
+<abs>set the stroke width</abs>
+</utils>
+<utils apps=convert,mogrify>
+<lopt>-swirl <degrees></opt>
+<abs>swirl image pixels about the center</abs>
+</utils>
+<utils apps=animate,display>
+<lopt>-text-font <name></opt>
+<abs>font for writing fixed-width text</abs>
+</utils>
+<utils apps=convert,display,mogrify,montage>
+<opt>-texture <filename></opt>
+<abs>name of texture to tile onto the image background</abs>
+</utils>
+<utils apps=convert,mogrify>
+<lopt>-threshold <value>{<green>,<blue>,<opacity>}{%}</opt>
+<abs>threshold the image</abs>
+</utils>
+<utils apps=convert,mogrify>
+<opt>-tile <filename></opt>
+<abs>tile image when filling a graphic primitive</abs>
+</utils>
+<utils apps=montage>
+<opt>-tile <geometry></opt>
+<abs>layout of images [<i>montage</i>]</abs>
+</utils>
+<utils apps=animate,display,montage>
+<lopt>-title <string></opt>
+<abs>assign title to displayed image [<i>animate, display, montage</i>]</abs>
+</utils>
+<utils apps=convert,mogrify>
+<lopt>-transform</opt>
+<abs>transform the image</abs>
+</utils>
+<utils apps=convert,import,mogrify,montage>
+<lopt>-transparent <color></opt>
+<abs>make this color transparent within the image</abs>
+</utils>
+<utils apps=animate,composite,convert,display,mogrify,montage>
+<lopt>-treedepth <value></opt>
+<abs>tree depth for the color reduction algorithm</abs>
+</utils>
+<utils apps=animate,convert,composite,display,import,mogrify,montage>
+<lopt>-trim</opt>
+<abs>trim an image</abs>
+</utils>
+<utils apps=composite,convert,mogrify,montage>
+<lopt>-type <type></opt>
+<abs>the image type</abs>
+</utils>
+<utils apps=display>
+<lopt>-update <seconds></opt>
+<abs>
+detect when image file is modified and redisplay.</abs>
+<utils apps=composite,convert,mogrify>
+<lopt>-units <type></opt>
+<abs>the units of image resolution</abs>
+</utils>
+<utils apps=composite,convert,mogrify>
+<lopt>-unsharp <radius>{x<sigma>}{+<amount>}{+<threshold>}</opt>
+<abs>sharpen the image with an unsharp mask operator</abs>
+</utils>
+<utils apps=display,convert>
+<opt>-use-pixmap</opt>
+<abs>use the pixmap</abs>
+</utils>
+<utils apps=animate,composite,conjure,convert,display,identify,import,mogrify,montage>
+<lopt>-verbose</opt>
+<abs>print detailed information about the image</abs>
+</utils>
+<utils apps=identify>
+</utils>
+<utils apps=animate,composite,conjure,convert,display,identify,import,mogrify,montage>
+<lopt>-version</opt>
+<abs>print GraphicsMagick version string</abs>
+</utils>
+<utils apps=convert,mogrify>
+<opt>-view <string></opt>
+<abs>FlashPix viewing parameters</abs>
+</utils>
+<utils apps=convert,mogrify>
+<lopt>-virtual-pixel <method></opt>
+<abs>specify contents of "virtual pixels"</abs>
+</utils>
+<utils apps=animate,display>
+<lopt>-visual <type></opt>
+<abs>animate images using this X visual type</abs>
+</utils>
+<utils apps=composite>
+<opt>-watermark <brightness>x<saturation></opt>
+<abs>percent brightness and saturation of a watermark</abs>
+</utils>
+<utils apps=convert,mogrify>
+<lopt>-wave <amplitude>x<wavelength></opt>
+<abs>alter an image along a sine wave</abs>
+</utils>
+<utils apps=composite,convert,mogrify,montage>
+<lopt>-white-point <x>,<y></opt>
+<abs>chromaticity white point</abs>
+</utils>
+<utils apps=animate,display>
+<lopt>-window <id></opt>
+<abs>make image the background of a window</abs>
+</utils>
+<utils apps=display>
+<opt>-window-group</opt>
+<abs>specify the window group</abs>
+</utils>
+<utils apps=composite,convert>
+<lopt>-write <filename></opt>
+<abs>write  an image sequence [<i>convert, composite</i>]</abs>
+</utils>
+<utils apps=display>
+<lopt>-write <filename></opt>
+<abs>write the image to a file [<i>display</i>]</abs>
+</utils>

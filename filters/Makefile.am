@@ -9,9 +9,9 @@
 #
 
 # Don't require all the GNU mandated files
-AUTOMAKE_OPTIONS = 1.7 foreign
+AUTOMAKE_OPTIONS = 1.8 foreign
 
-INCLUDES = -I$(top_builddir) -I$(top_srcdir) -I$(top_srcdir)/magick
+AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir) @MODULE_EXTRA_CPPFLAGS@
 
 MAGICK_FILTER_SRCS = \
   analyze.c
@@ -55,9 +55,6 @@ else
 pkg_LTLIBRARIES =
 MODULECOMMONFLAGS     =
 endif # WITH_MODULES
-
-#AM_CFLAGS = @MODULE_EXTRA_CPPFLAGS@
-AM_CPPFLAGS = @MODULE_EXTRA_CPPFLAGS@
 
 # Analyze module
 analyze_la_SOURCES      = analyze.c

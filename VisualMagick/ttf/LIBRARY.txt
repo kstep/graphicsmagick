@@ -6,42 +6,22 @@ DEFINE = HAVE_FREETYPE_FREETYPE_H
 #DEFINE = _LIB
 DEFINE = _MBCS
 SOURCE = ttf.rc
-EXCLUDE = ftapi.c
-EXCLUDE = ftexcept.c
-EXCLUDE = ftgloadr.c
-EXCLUDE = fthash.c
-EXCLUDE = ftobject.c
-EXCLUDE = ftpfr.c
-EXCLUDE = ftstroker.c
-EXCLUDE = ftwinfnt.c
-EXCLUDE = ftsynth.c
-EXCLUDE = ftsysio.c
-EXCLUDE = ftsysmem.c
-EXCLUDE = ftutil.c
-EXCLUDE = t1cmap.c
-EXCLUDE = ttcmap0.c
-EXCLUDE = bdfdrivr.c
-EXCLUDE = bdflib.c
-EXCLUDE = pfrcmap.c
-EXCLUDE = pfrdrivr.c
-EXCLUDE = pfrgload.c
-EXCLUDE = pfrload.c
-EXCLUDE = pfrobjs.c
-EXCLUDE = pfrsbit.c
-EXCLUDE = t42drivr.c
-EXCLUDE = t42objs.c
-EXCLUDE = t42parse.c
 # autohint
 EXCLUDE = ahangles.c
 EXCLUDE = ahglobal.c
 EXCLUDE = ahglyph.c
 EXCLUDE = ahhint.c
 EXCLUDE = ahmodule.c
-EXCLUDE = ahoptim.c
 # base
+EXCLUDE = ftapi.c
 EXCLUDE = ftcalc.c
+EXCLUDE = ftexcept.c
+EXCLUDE = ftgloadr.c
+EXCLUDE = fthash.c
 EXCLUDE = fttrigon.c
+EXCLUDE = ftobject.c
 EXCLUDE = ftobjs.c
+EXCLUDE = ftpfr.c
 EXCLUDE = ftstream.c
 EXCLUDE = ftlist.c
 EXCLUDE = ftoutln.c
@@ -50,14 +30,22 @@ EXCLUDE = ftdbgmem.c
 EXCLUDE = ftextend.c
 EXCLUDE = ftmac.c
 EXCLUDE = ftmac.h
+EXCLUDE = ftsynth.c
+EXCLUDE = ftsysio.c
+EXCLUDE = ftsysmem.c
+EXCLUDE = ftutil.c
+EXCLUDE = ftwinfnt.c
+# bdf
+EXCLUDE = bdfdrivr.c
+EXCLUDE = bdflib.c
 # cache
-EXCLUDE = ftlru.c
-EXCLUDE = ftcmanag.c
 EXCLUDE = ftccache.c
+EXCLUDE = ftccmap.c
 EXCLUDE = ftcglyph.c
 EXCLUDE = ftcimage.c
+EXCLUDE = ftcmanag.c
 EXCLUDE = ftcsbits.c
-EXCLUDE = ftccmap.c
+EXCLUDE = ftlru.c
 # cff
 EXCLUDE = cffcmap.c
 EXCLUDE = cffdrivr.c
@@ -66,11 +54,11 @@ EXCLUDE = cffload.c
 EXCLUDE = cffobjs.c
 EXCLUDE = cffparse.c
 # cid
-EXCLUDE = cidparse.c
+EXCLUDE = cidgload.c
 EXCLUDE = cidload.c
 EXCLUDE = cidobjs.c
+EXCLUDE = cidparse.c
 EXCLUDE = cidriver.c
-EXCLUDE = cidgload.c
 # gzip
 EXCLUDE = adler32.c
 EXCLUDE = infblock.c
@@ -80,12 +68,20 @@ EXCLUDE = inftrees.c
 EXCLUDE = infutil.c
 EXLCUDE = zutil.c
 # pcf
-EXCLUDE = pcfdriver.c
+EXCLUDE = pcfdrivr.c
 EXCLUDE = pcfread.c
 EXCLUDE = pcfutil.c
+# pfr
+EXCLUDE = pfrcmap.c
+EXCLUDE = pfrdrivr.c
+EXCLUDE = pfrgload.c
+EXCLUDE = pfrload.c
+EXCLUDE = pfrobjs.c
+EXCLUDE = pfrsbit.c
 # psaux
 EXCLUDE = psauxmod.c
 EXCLUDE = psobjs.c
+EXCLUDE = t1cmap.c
 EXCLUDE = t1decode.c
 # psnames
 EXCLUDE = psmodule.c
@@ -95,6 +91,7 @@ EXCLUDE = ftrend1.c
 # sfnt
 EXCLUDE = sfdriver.c
 EXCLUDE = sfobjs.c
+EXCLUDE = ttcmap0.c
 EXCLUDE = ttcmap.c
 EXCLUDE = ttload.c
 EXCLUDE = ttpost.c
@@ -109,16 +106,18 @@ EXCLUDE = ttinterp.c
 EXCLUDE = ttobjs.c
 EXCLUDE = ttpload.c
 # type1
-EXCLUDE = t1parse.c
-EXCLUDE = t1load.c
-EXCLUDE = t1objs.c
+EXCLUDE = t1afm.c
 EXCLUDE = t1driver.c
 EXCLUDE = t1gload.c
-EXCLUDE = t1afm.c
+EXCLUDE = t1load.c
+EXCLUDE = t1objs.c
+EXCLUDE = t1parse.c
+# type42
+EXCLUDE = t42drivr.c
+EXCLUDE = t42objs.c
+EXCLUDE = t42parse.c
 # pshinter
 EXCLUDE = pshrec.c
 EXCLUDE = pshglob.c
-EXCLUDE = pshalgo1.c
-EXCLUDE = pshalgo2.c
-EXCLUDE = pshalgo3.c
+EXCLUDE = pshalgo.c
 EXCLUDE = pshmod.c

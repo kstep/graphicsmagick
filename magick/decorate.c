@@ -177,14 +177,14 @@ MagickExport Image *FrameImage(const Image *image,const FrameInfo *frame_info,
   assert(frame_info != (FrameInfo *) NULL);
   is_grayscale=image->is_grayscale;
   if ((frame_info->outer_bevel < 0) || (frame_info->inner_bevel < 0))
-    ThrowImageException(OptionError,"UnableToFrameImage",
-      "BevelWidthIsNegative");
+    ThrowImageException3(OptionError,UnableToFrameImage,
+      BevelWidthIsNegative);
   bevel_width=frame_info->outer_bevel+frame_info->inner_bevel;
   width=(long) (frame_info->width-frame_info->x-bevel_width);
   height=(long) (frame_info->height-frame_info->y-bevel_width);
   if ((width < (long) image->columns) || (height < (long) image->rows))
-    ThrowImageException(OptionError,"UnableToFrameImage",
-      "FrameIsLessThanImageSize");
+    ThrowImageException3(OptionError,UnableToFrameImage,
+      FrameIsLessThanImageSize);
   /*
     Initialize framed image attributes.
   */
@@ -427,8 +427,8 @@ MagickExport unsigned int RaiseImage(Image *image,
   is_grayscale=image->is_grayscale;
   if ((image->columns <= (raise_info->width << 1)) ||
       (image->rows <= (raise_info->height << 1)))
-    ThrowBinaryException(OptionError,"UnableToRaiseImage",
-      "ImageSizeMustExceedBevelWidth");
+    ThrowBinaryException3(OptionError,UnableToRaiseImage,
+      ImageSizeMustExceedBevelWidth);
   foreground=MaxRGB;
   background=0;
   if (!raise)

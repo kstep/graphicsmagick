@@ -9,14 +9,14 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%                             CCC   U   U  TTTTT                              %
-%                            C   C  U   U    T                                %
-%                            C      U   U    T                                %
-%                            C   C  U   U    T                                %
-%                             CCC    UUU     T                                %
+%                              CCC  U   U  TTTTT                              %
+%                             C     U   U    T                                %
+%                             C     U   U    T                                %
+%                             C     U   U    T                                %
+%                              CCC   UUU     T                                %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                         Read DR Halo Image Format.                          %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -301,7 +301,7 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   /*
     Read CUT image.
   */
@@ -312,7 +312,7 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Header.Reserved=ReadBlobLSBShort(image);
 
   if (Header.Width==0 || Header.Height==0 || Header.Reserved!=0)
-    CUT_KO:  ThrowReaderException(CorruptImageError,"NotACUTImageFile",image);
+    CUT_KO:  ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
 
   /*---This code checks first line of image---*/
   EncodedByte=ReadBlobLSBShort(image);
@@ -456,7 +456,7 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (!AllocateImageColormap(image,image->colors))
         {
         NoMemory:
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image)
+          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image)
             }     
    
       for (i=0; i < (long)image->colors; i++)
@@ -469,7 +469,7 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
            
   /* ----- Load RLE compressed raster ----- */
-  BImgBuff=(unsigned char *) malloc(ldblk);  /*Ldblk was set in the check phase*/
+  BImgBuff=MagickAllocateMemory(unsigned char *,ldblk);  /*Ldblk was set in the check phase*/
   if(BImgBuff==NULL) goto NoMemory;
 
   (void) SeekBlob(image,6 /*sizeof(Header)*/,SEEK_SET);
@@ -552,11 +552,11 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     } 
 
  Finish:
-  if(BImgBuff!=NULL) free(BImgBuff);
+  if(BImgBuff!=NULL) MagickFreeMemory(BImgBuff);
   if(palette!=NULL) DestroyImage(palette);
   if(clone_info!=NULL) DestroyImageInfo(clone_info);
   if (EOFBlob(image))
-    ThrowReaderException(CorruptImageError,"UnexpectedEndOfFile",image);
+    ThrowReaderException(CorruptImageError,UnexpectedEndOfFile,image);
   CloseBlob(image);
   return(image);       
 }

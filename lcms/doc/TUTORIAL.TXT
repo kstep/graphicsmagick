@@ -8,7 +8,7 @@
 
                           by Marti Maria
 
-                            Ver 1.11 
+                            Ver 1.12 
 
         ---------------------------------------------------
 
@@ -589,6 +589,7 @@ NOTES:
     - RGB matrix-shaper.
     - Linearization device link
     - Ink-Limiting
+    - Bright/Contrast/Hue/Saturation/White point adjust devicelink.
 
  sRGB, Lab and XYZ are very usefull for tricking & trapping. For example,
  creating a transform from sRGB to Lab could be done without any disk file.
@@ -1087,8 +1088,7 @@ NOTES:
    Of course you must know which tags to include and the meaning of each tag.
    LittleCms does nothing to check the validity of newly created profiles. 
    These functions are only intended to be a low level interface to profile
-   creation. For a higher point of view, please take a look on the profiler
-   construction set, available on lcms site.
+   creation. 
 
    Creating a new profile
    -----------------------
@@ -1140,7 +1140,7 @@ NOTES:
 ============================================================================
 
  LUT stands for L)ook U)p T)ables. This is a generalizad way to handle
- pipelines consisting of a quite complex pipeline. Here is the pipeline 
+ workflows consisting of a quite complex stages. Here is the pipeline 
  scheme, Don't panic!
 
    
@@ -1332,15 +1332,16 @@ double  cmsCIE2000DeltaE(LPcmsCIELab Lab1, LPcmsCIELab Lab2, double Kl, double K
 
  16. PostScript generation
  ============================================================================
- Two functions carry the task of obtaining CRD and CSA. 
+ 3 functions carry the task of obtaining CRD and CSA. 
 
 
-    size_t cmmPostScriptCSA(cmmHPROFILE hProfile, int Intent, 
-                                        char* Buffer, size_t len);
+    DWORD cmsGetPostScriptCSA(cmsHPROFILE hProfile, int Intent, LPVOID Buffer, DWORD dwBufferLen);
+    DWORD cmsGetPostScriptCRD(cmsHPROFILE hProfile, int Intent, LPVOID Buffer, DWORD dwBufferLen);
+    DWORD cmsGetPostScriptCRDEx(cmsHPROFILE hProfile, int Intent, DWORD dwFlags, LPVOID Buffer, DWORD dwBufferLen);
 
-    size_t cmmPostScriptCRD(cmmHPROFILE hProfile, int Intent, 
-                                        char* Buffer, size_t len);
 
+ cmsGetPostScriptCRDEx allows black point compensation using 
+ cmsFLAGS_WHITEBLACKCOMPENSATION in flags field.
 
  PostScrip colorflow is often done in a different way. Insted of creating a 
  transform, it is sometimes desirable to delegate the color management to 
@@ -1372,10 +1373,13 @@ double  cmsCIE2000DeltaE(LPcmsCIELab Lab1, LPcmsCIELab Lab2, double Kl, double K
   be used in conjuntion with cmsCreateMultiprofileTransform(), 
   and cmsTransform2DeviceLink() to embed complex color flow into PostScript.
 
+
+  
   WARNING: Preccision of PostScript is limited to 8 bits per sample. If you 
   can choose between normal transforms and CSA/CRD, normal transforms will 
   give more accurancy. However, there are situations where there is no 
   chance.
+
 
 
  17. CIECAM02

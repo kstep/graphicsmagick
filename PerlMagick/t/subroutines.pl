@@ -41,6 +41,145 @@ elsif ($QuantumDepth == 32)
   }
 
 #
+# Test composite method using comparison with a reference image
+#
+# Usage: testFilterCompare( background image name, background read options,
+#                           composite image name, composite read options,
+#                           composite options,reference image
+#                           normalized_mean_error,
+#                           normalized_maximum_error );
+sub testCompositeCompare {
+  my ($background_name,
+      $background_read_options,
+      $composite_name,
+      $composite_read_options,
+      $composite_options,
+      $refimage_name,
+      $normalized_mean_error_max,
+      $normalized_maximum_error_max) = @_;
+  my ($background,
+      $composite,
+      $errorinfo,
+      $normalized_maximum_error,
+      $normalized_mean_error,
+      $refimage,
+      $status);
+
+  $errorinfo='';
+  $status='';
+
+  # Create images
+  $background=Graphics::Magick->new;
+  $composite=Graphics::Magick->new;
+  $refimage=Graphics::Magick->new;
+
+  # Read background image
+  if ( "$background_read_options" ne "" ) {
+    print("Set($background_read_options) ...\n");
+    eval "\$status=\$background->Set($background_read_options);";
+    if ("$status")
+      {
+        $errorinfo = "Set($background_read_options): $status";
+        goto COMPARE_RUNTIME_ERROR;
+      }
+  }
+  $status=$background->ReadImage($background_name);
+  if ("$status")
+    {
+      $errorinfo = "Readimage ($background_name): $status";
+      goto COMPARE_RUNTIME_ERROR;
+    }
+
+  # Read composite image
+  if ( "$composite_read_options" ne "" ) {
+    print("Set($composite_read_options) ...\n");
+    eval "\$status=\$composite->Set($composite_read_options);";
+    if ("$status")
+      {
+        $errorinfo = "Set($composite_read_options): $status";
+        goto COMPARE_RUNTIME_ERROR;
+      }
+  }
+  $status=$composite->ReadImage($composite_name);
+  if ("$status")
+    {
+      $errorinfo = "Readimage ($composite_name): $status";
+      goto COMPARE_RUNTIME_ERROR;
+    }
+
+  # Do composition
+  print("Composite\($composite_options\) ...\n");
+  eval "\$status=\$background->Composite(image=>\$composite, $composite_options);";
+  if ("$status")
+    {
+      $errorinfo = "Composite ($composite_options): $status";
+      goto COMPARE_RUNTIME_ERROR;
+    }
+
+  $background->set(depth=>8);
+#  if ("$composite_options" =~ /Xor/) {
+#    $background->write(filename=>"$refimage_name", compression=>'None');
+#    $background->Display();
+#  }
+
+  $status=$refimage->ReadImage("$refimage_name");
+  if ("$status")
+    {
+      $errorinfo = "Readimage ($refimage_name): $status";
+      goto COMPARE_RUNTIME_ERROR;
+    }
+
+  $status=$background->Compare($refimage);
+  if ("$status")
+    {
+      $errorinfo = "Compare($refimage_name): $status";
+      print("  Computed:  ", $background->Get('columns'), "x", $background->Get('rows'), "\n");
+      print("  Reference: ", $refimage->Get('columns'), "x", $refimage->Get('rows'), "\n");
+      goto COMPARE_RUNTIME_ERROR;
+    }
+
+  $normalized_mean_error=0;
+  $normalized_mean_error=$background->GetAttribute('mean-error');
+  if ( !defined($normalized_mean_error) )
+    {
+      $errorinfo = "GetAttribute('mean-error') returned undefined value!";
+      goto COMPARE_RUNTIME_ERROR;
+    }
+  $normalized_maximum_error=0;
+  $normalized_maximum_error=$background->GetAttribute('maximum-error');
+  if ( ! defined($normalized_maximum_error) )
+    {
+      $errorinfo = "GetAttribute('maximum-error') returned undefined value!";
+      goto COMPARE_RUNTIME_ERROR;
+    }
+  if ( ($normalized_mean_error > $normalized_mean_error_max) ||
+       ($normalized_maximum_error > $normalized_maximum_error_max) )
+    {
+      print("  mean-error=$normalized_mean_error, maximum-error=$normalized_maximum_error\n");
+      print "not ok $test\n";
+      defined $ENV{'PERL_DEBUG'} && $background->Display();
+      undef $background;
+      undef $composite;
+      undef $refimage;
+      return 1
+    }
+
+  undef $background;
+  undef $composite;
+  undef $refimage;
+  print "ok $test\n";
+  return 0;
+
+ COMPARE_RUNTIME_ERROR:
+  undef $background;
+  undef $composite;
+  undef $refimage;
+  print("  $errorinfo\n");
+  print "not ok $test\n";
+  return 1
+}
+
+#
 # Test reading a 16-bit file in which two signatures are possible,
 # depending on whether 16-bit pixels data has been enabled
 #
@@ -88,10 +227,13 @@ sub testRead {
     $image=Graphics::Magick->new;
     $image->Set(size=>'512x512');
     $status=$image->ReadImage("$infile");
-    if( "$status" && !($status =~ /Exception 315/)) {
-      print "ReadImage $infile: $status";
+    if( "$status" && !($status =~ /Exception ((315)|(350))/)) {
+      print "ReadImage $infile: $status\n";
       ++$failure;
     } else {
+      if( "$status" ) {
+        print "ReadImage $infile: $status\n";
+      }
       undef $status;
       $magick=$image->Get('magick');
       $signature=$image->Get('signature');
@@ -103,7 +245,7 @@ sub testRead {
 	print "     Expected: $ref_signature\n";
         print "     Depth:    $depth\n";
         ++$failure;
-        #$image->Display();
+        defined $ENV{'PERL_DEBUG'} && $image->Display();
       }
     }
     undef $image;
@@ -112,6 +254,7 @@ sub testRead {
   #
   # Test reading from blob
   #
+  if (!($infile =~ /\.bz2$/) && !($infile =~ /\.gz$/) && !($infile =~ /\.Z$/))
   {
     my(@blob, $blob_length, $image, $signature, $status);
 
@@ -125,10 +268,13 @@ sub testRead {
           $image=Graphics::Magick->new(magick=>$magick);
           $status=$image->BlobToImage( $blob );
           undef $blob;
-          if( "$status" && !($status =~ /Exception 315/)) {
-            print "BlobToImage $infile: $status";
+          if( "$status" && !($status =~ /Exception ((315)|(350))/)) {
+            print "BlobToImage $infile: $status\n";
             ++$failure;
           } else {
+            if( "$status" ) {
+              print "ReadImage $infile: $status\n";
+            }
             $signature=$image->Get('signature');
             if ( $signature ne $ref_signature ) {
               print "BlobToImage()\n";
@@ -136,7 +282,7 @@ sub testRead {
               print "     Computed: $signature\n";
               print "     Expected: $ref_signature\n";
               print "     Depth:    $depth\n";
-              #$image->Display();
+              defined $ENV{'PERL_DEBUG'} && $image->Display();
               ++$failure;
             }
           }
@@ -188,7 +334,7 @@ sub testReadCompare {
       goto COMPARE_RUNTIME_ERROR;
     }
 
-#  if ("$srcimage_name" eq "input.wpg") {
+# if ("$srcimage_name" eq "CGM:input.cgm") {
 #    $srcimage->write(filename=>"$refimage_name", compression=>'None');
 #  }
 
@@ -243,7 +389,7 @@ sub testReadCompare {
        ($normalized_maximum_error > $normalized_maximum_error_max) )
     {
       print("mean-error=$normalized_mean_error, maximum-error=$normalized_maximum_error\n");
-      #$srcimage->Display();
+      defined $ENV{'PERL_DEBUG'} && $srcimage->Display();
       print "not ok $test\n";
       return 1
     }
@@ -319,7 +465,7 @@ sub testReadSized {
 	print "     Expected: $ref_signature\n";
         print "     Depth:    $depth\n";
         print "not ok $test\n";
-        #$image->Display();
+        defined $ENV{'PERL_DEBUG'} && $image->Display();
       } else {
         print "ok $test\n";
     }
@@ -407,11 +553,11 @@ sub testReadWrite {
           print "     Expected: $ref_signature\n";
           print "     Depth:    $depth\n";
           print "not ok $test\n";
-          #$image->Display();
+          defined $ENV{'PERL_DEBUG'} && $image->Display();
         } else {
           print "ok $test\n";
           ($file = $outfile) =~ s/.*://g;
-          unlink "$file";
+          #unlink "$file";
         }
       }
     }
@@ -486,8 +632,11 @@ sub testReadWriteCompare {
     }
 
 # eval "\$status=\$image->Set($write_options);";
-#$status=$image->write(filename=>"$refimage_name", compression=>'None');
-# warn "$status" if $status;
+#  if ("$outimage_name" eq "P7:output_p7.p7")
+#    {
+#      $status=$image->write(filename=>"$refimage_name", compression=>'None');
+#      warn "$status" if $status;
+#    }
 
   #
   # Read reference image
@@ -540,6 +689,7 @@ sub testReadWriteCompare {
     {
       print("mean-error=$normalized_mean_error, maximum-error=$normalized_maximum_error\n");
       print "not ok $test\n";
+      defined $ENV{'PERL_DEBUG'} && $image->Display();
       return 1
     }
 
@@ -720,7 +870,7 @@ sub testReadWriteSized {
           print "     Expected: $ref_signature\n";
           print "     Depth:    $depth\n";
           print "not ok $test\n";
-          #$image->Display();
+          defined $ENV{'PERL_DEBUG'} && $image->Display();
         } else {
           print "ok $test\n";
           #$image->Display();
@@ -861,12 +1011,14 @@ sub testMontage {
 
     # Generate image
     $image->Set(size=>'50x50');
+    #print("\$image->ReadImage(xc:$color);\n");
     $status=$image->ReadImage("xc:$color");
-    warn "Readimage: $status" if "$status";
-
-    # Add image to list
-    push( @$images, @$image);
-    
+    if ("$status") {
+      warn "Readimage: $status" if "$status";
+    } else {
+      # Add image to list
+      push( @$images, @$image);
+    }
     undef @$image;
   }
 
@@ -992,7 +1144,7 @@ sub testFilterSignature {
       print "     Computed: $signature\n";
       print "     Expected: $ref_signature\n";
       print "     Depth:    $depth\n";
-      #$image->Display();
+      defined $ENV{'PERL_DEBUG'} && $image->Display();
       print "not ok $test\n";
     } else {
       print "ok $test\n";
@@ -1053,8 +1205,8 @@ sub testFilterCompare {
     }
 
   $srcimage->set(depth=>8);
-#  if ("$filter" eq "Shade") {
-#  $srcimage->Display();
+#  if ("$filter" eq "Shear") {
+#    $srcimage->Display();
 #    $srcimage->write(filename=>"$refimage_name", compression=>'None');
 #  }
 
@@ -1101,14 +1253,20 @@ sub testFilterCompare {
     {
       print("  mean-error=$normalized_mean_error, maximum-error=$normalized_maximum_error\n");
       print "not ok $test\n";
-      #$srcimage->Display();
+      defined $ENV{'PERL_DEBUG'} && $srcimage->Display();
+      undef $srcimage;
+      undef $refimage;
       return 1
     }
 
+  undef $srcimage;
+  undef $refimage;
   print "ok $test\n";
   return 0;
 
  COMPARE_RUNTIME_ERROR:
+  undef $srcimage;
+  undef $refimage;
   print("  $errorinfo\n");
   print "not ok $test\n";
   return 1

@@ -23,6 +23,7 @@ extern ModuleExport void
   RegisterBIEImage(void),
   RegisterBMPImage(void),
   RegisterCAPTIONImage(void),
+  RegisterCINEONImage(void),
   RegisterCLIPBOARDImage(void),
   RegisterCMYKImage(void),
   RegisterCUTImage(void),
@@ -122,6 +123,7 @@ extern ModuleExport void
   RegisterTIFFImage(void),
   RegisterTILEImage(void),
   RegisterTIMImage(void),
+  RegisterTOPOLImage(void),
   RegisterTTFImage(void),
   RegisterTXTImage(void),
   RegisterUILImage(void),
@@ -141,6 +143,9 @@ extern ModuleExport void
   RegisterXCFImage(void),
   RegisterXPMImage(void),
   RegisterXVImage(void),
+#if defined(_VISUALC_)
+  RegisterXTRNImage(void),
+#endif
   RegisterXWDImage(void),
   RegisterYUVImage(void),
   UnregisterARTImage(void),
@@ -149,6 +154,7 @@ extern ModuleExport void
   UnregisterBIEImage(void),
   UnregisterBMPImage(void),
   UnregisterCAPTIONImage(void),
+  UnregisterCINEONImage(void),
   UnregisterCLIPBOARDImage(void),
   UnregisterCMYKImage(void),
   UnregisterCUTImage(void),
@@ -248,6 +254,7 @@ extern ModuleExport void
   UnregisterTIFFImage(void),
   UnregisterTILEImage(void),
   UnregisterTIMImage(void),
+  UnregisterTOPOLImage(void),
   UnregisterTTFImage(void),
   UnregisterTXTImage(void),
   UnregisterUILImage(void),
@@ -267,11 +274,14 @@ extern ModuleExport void
   UnregisterXCFImage(void),
   UnregisterXPMImage(void),
   UnregisterXVImage(void),
+#if defined(_VISUALC_)
+  UnregisterXTRNImage(void),
+#endif
   UnregisterXWDImage(void),
   UnregisterYUVImage(void);
 
 extern unsigned int
-  AnalyzeImage(Image **image,const int,char**);
+  AnalyzeImage(Image **,const int,char**);
 
 #endif /* !defined(BuildMagickModules) */
 

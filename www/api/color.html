@@ -12,8 +12,8 @@ A:visited { color: #800080 }
 -->
 </STYLE>
 
-<TITLE>color - Methods to Count the Colors in an Image</TITLE>
-<LINK REV="made" HREF="mailto:bfriesen@scooby.simplesystems.org">
+<TITLE>color - Color related functions</TITLE>
+<LINK REV="made" HREF="mailto:bfriesen@shaggy.simplesystems.org">
 </HEAD>
 
 <BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
@@ -36,7 +36,7 @@ A:visited { color: #800080 }
                                 [<A HREF="../books.html">Books</A>] [<A HREF="../links.html">Links</A>]</P>
                         </TD>
                         <TD ROWSPAN=2 WIDTH=19%>
-                                <P ALIGN=CENTER><IMG SRC="../../images/magick_small.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0></P>
+                                <P ALIGN=CENTER><IMG SRC="../../images/gm-188x120t.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=188 HEIGHT=120 BORDER=0></P>
                         </TD>
                 </TR>
                 <TR>
@@ -66,6 +66,8 @@ FUNCTION
 DESCRIPTIONS</A>
 	<UL>
 
+		<LI><A HREF="#getcolorinfoarray">GetColorInfoArray</A>
+		<LI><A HREF="#getcolorhistogram">GetColorHistogram</A>
 		<LI><A HREF="#getcolorlist">GetColorlist</A>
 		<LI><A HREF="#getnumbercolors">GetNumberColors</A>
 		<LI><A HREF="#isgrayimage">IsGrayImage</A>
@@ -84,11 +86,13 @@ DESCRIPTIONS</A>
 <P>
 <H2><A NAME="name">
 NAME</A></H2>
-<P>color - Methods to Count the Colors in an Image</P>
+<P>color - Color related functions</P>
 <P>
 <HR>
 <H2><A NAME="synopsis">
 SYNOPSIS</A></H2>
+<P>HistogramColorPacket * <STRONG>GetColorHistogram</STRONG>( const Image *, unsigned long *colors, ExceptionInfo *);</P>
+<P>ColorInfo **  <STRONG>GetColorInfoArray</STRONG>( ExceptionInfo *exception );</P>
 <P>unsigned long  <STRONG>GetNumberColors</STRONG>( const Image *image, 
 FILE *file, ExceptionInfo *exception );</P>
 <P>unsigned int  <STRONG>IsGrayImage</STRONG>( const Image *image, ExceptionInfo *exception );</P>
@@ -104,6 +108,35 @@ FILE *file, ExceptionInfo *exception );</P>
 <H2><A NAME="function descriptions">
 FUNCTION 
 DESCRIPTIONS</A></H2>
+<P>
+<H3><A NAME="getcolorinfoarray">GetColorInfoArray</A></H3>
+<blockquote>GetColorInfoArray() returns a sorted null-terminated array of ColorInfo pointers corresponding to the available color definitions. This function should be used to access the entire list rather than GetColorInfo since the list returned by GetColorInfo may be re-ordered every time it is invoked. GetColorList may be used if only a list of color names is desired. The array should be deallocated by the user once it is no longer needed. Do not attempt to deallocate members of the array. </blockquote><P>The format of the GetMagickList method is:</P>
+<blockquote>ColorInfo **GetColorInfoArray ( <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
+A description of each parameter follows:</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
+<DD>
+Return any errors or warnings in this structure.
+<P></P></DL></DL>
+<P>
+<H3><A NAME="getcolorhistogram">GetColorHistogram</A></H3>
+<P>Method GetColorHistogram returns an array of HistogramColorPacket structures which specify the number of times each unique color occurs in the image.  The referenced colors parameter is updated with the number of unique colors in the image.  The returned array should be deallocated by the user once it is no longer ndded.</P>
+<P>The format of the GetColorHistogram method is:</P>
+<blockquote>HistogramColorPacket *GetColorHistogram ( const <A HREF="types.html#Image">Image</A> *, unsigned long *colors, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *); </blockquote><P>
+A description of each parameter follows.</P>
+<DL><DT><DD><DL>
+<DD><P></P><DT><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
+<DD>
+The image.
+<P></P>
+<DD><P></P><DT><STRONG><A NAME="item_o_colors%3A">colors:</A></STRONG><BR>
+<DD>
+The referenced value is updated with the with the number of unique colors.
+<P></P>
+<DD><P></P><DT><STRONG>exception:</STRONG><BR>
+<DD>
+Return any errors or warnings in this structure.
+<P></P></DL></DL>
 <P>
 <H3><A NAME="getcolorlist">GetColorlist</A></H3>
 <P>Method GetColorList returns any colors that match the specified pattern and color standard.</P>
@@ -132,7 +165,7 @@ This integer returns the number of colors in the list.
 <blockquote>unsigned long GetNumberColors ( const <A HREF="types.html#Image">Image</A> *image, FILE *file, <A HREF="types.html#ExceptionInfo">ExceptionInfo</A> *exception ); </blockquote><P>
 A description of each parameter follows.</P>
 <DL><DT><DD><DL>
-<DD><P></P><DT><STRONG><A NAME="item_o_image%3A">image:</A></STRONG><BR>
+<DD><P></P><DT><STRONG>image:</STRONG><BR>
 <DD>
 The image.
 <P></P>
@@ -140,7 +173,7 @@ The image.
 <DD>
 Write a histogram of the color distribution to this file handle.
 <P></P>
-<DD><P></P><DT><STRONG><A NAME="item_o_exception%3A">exception:</A></STRONG><BR>
+<DD><P></P><DT><STRONG>exception:</STRONG><BR>
 <DD>
 Return any errors or warnings in this structure.
 <P></P></DL></DL>

@@ -3,12 +3,12 @@
 #
 # Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
 #
-AUTOMAKE_OPTIONS = 1.7
+AUTOMAKE_OPTIONS = 1.8
 
-includedir = ${prefix}/include
+includedir = @includedir@/GraphicsMagick
 pkgdatadir = $(datadir)/Magick++
 pkglibdir = $(libdir)/Magick++
-pkgincludedir = $(includedir)/GraphicsMagick/Magick++
+pkgincludedir = $(includedir)/Magick++
 
 pkginclude_HEADERS = Blob.h CoderInfo.h Color.h Drawable.h \
 	Exception.h Geometry.h Image.h Include.h Montage.h \

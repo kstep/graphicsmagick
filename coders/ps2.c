@@ -18,7 +18,7 @@
 %                            P      SSSSS  22222                              %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                     Write Postscript Level II Format.                       %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -141,7 +141,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   if(!AcquireTemporaryFileName(filename))
     {
       DestroyImage(huffman_image);
-      ThrowBinaryException(FileOpenError,"UnableToCreateTemporaryFile",
+      ThrowBinaryException(FileOpenError,UnableToCreateTemporaryFile,
         filename);
     }
   FormatString(huffman_image->filename,"tiff:%s",filename);
@@ -156,7 +156,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   if (tiff == (TIFF *) NULL)
     {
       LiberateTemporaryFile(filename);
-      ThrowBinaryException(FileOpenError,"UnableToOpenFile",
+      ThrowBinaryException(FileOpenError,UnableToOpenFile,
         image_info->filename)
     }
   /*
@@ -167,12 +167,12 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   for (i=1; i < (long) TIFFNumberOfStrips(tiff); i++)
     if (byte_count[i] > strip_size)
       strip_size=byte_count[i];
-  buffer=(unsigned char *) AcquireMemory(strip_size);
+  buffer=MagickAllocateMemory(unsigned char *,strip_size);
   if (buffer == (unsigned char *) NULL)
     {
       TIFFClose(tiff);
       LiberateTemporaryFile(filename);
-      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+      ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
         (char *) NULL)
     }
   /*
@@ -189,7 +189,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
       Ascii85Encode(image,(unsigned long) buffer[j]);
     Ascii85Flush(image);
   }
-  LiberateMemory((void **) &buffer);
+  MagickFreeMemory(buffer);
   TIFFClose(tiff);
   LiberateTemporaryFile(filename);
   return(True);
@@ -200,7 +200,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  ThrowBinaryException(MissingDelegateError,"TIFFLibraryIsNotAvailable",image->filename);
+  ThrowBinaryException(MissingDelegateError,TIFFLibraryIsNotAvailable,image->filename);
 }
 #endif
 
@@ -545,7 +545,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   compression=image->compression;
   if (image_info->compression != UndefinedCompression)
     compression=image_info->compression;
@@ -555,8 +555,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     case JPEGCompression:
     {
       compression=RLECompression;
-      ThrowException(&image->exception,MissingDelegateError,
-        "JPEGLibraryIsNotAvailable",image->filename);
+      ThrowException(&image->exception,MissingDelegateError,JPEGLibraryIsNotAvailable,image->filename);
       break;
     }
 #endif
@@ -564,8 +563,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     case LZWCompression:
     {
       compression=RLECompression;
-      ThrowException(&image->exception,MissingDelegateError,
-        "LZWEncodingNotEnabled",image->filename);
+      ThrowException(&image->exception,MissingDelegateError,LZWEncodingNotEnabled,image->filename);
       break;
     }
 #endif
@@ -573,8 +571,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     case ZipCompression:
     {
       compression=RLECompression;
-      ThrowException(&image->exception,MissingDelegateError,
-        "ZipLibraryIsNotAvailable",image->filename);
+      ThrowException(&image->exception,MissingDelegateError,ZipLibraryIsNotAvailable,image->filename);
       break;
     }
 #endif
@@ -756,9 +753,9 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
         {
           FormatString(buffer,"%.1024s \n",labels[i]);
           (void) WriteBlobString(image,buffer);
-          LiberateMemory((void **) &labels[i]);
+          MagickFreeMemory(labels[i]);
         }
-        LiberateMemory((void **) &labels);
+        MagickFreeMemory(labels);
       }
     number_pixels=image->columns*image->rows;
     if ((compression == FaxCompression) ||
@@ -792,12 +789,12 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
             */
             jpeg_image=CloneImage(image,0,0,True,&image->exception);
             if (jpeg_image == (Image *) NULL)
-              ThrowWriterException(CoderError,image->exception.reason,image);
+              ThrowWriterException2(CoderError,image->exception.reason,image);
             (void) strcpy(jpeg_image->magick,"JPEG");
             blob=ImageToBlob(image_info,jpeg_image,&length,&image->exception);
             (void) WriteBlob(image,length,blob);
             DestroyImage(jpeg_image);
-            LiberateMemory((void **) &blob);
+            MagickFreeMemory(blob);
             break;
           }
           case RLECompression:
@@ -810,9 +807,9 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
               Allocate pixel array.
             */
             length=number_pixels;
-            pixels=(unsigned char *) AcquireMemory(length);
+            pixels=MagickAllocateMemory(unsigned char *,length);
             if (pixels == (unsigned char *) NULL)
-              ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
+              ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
                 image);
             /*
               Dump Runlength encoded pixels.
@@ -842,7 +839,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
               status=LZWEncodeImage(image,length,pixels);
             else
               status=PackbitsEncodeImage(image,length,pixels);
-            LiberateMemory((void **) &pixels);
+            MagickFreeMemory(pixels);
             if (!status)
               {
                 CloseBlob(image);
@@ -900,12 +897,12 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
               */
               jpeg_image=CloneImage(image,0,0,True,&image->exception);
               if (jpeg_image == (Image *) NULL)
-                ThrowWriterException(CoderError,image->exception.reason,image);
+                ThrowWriterException2(CoderError,image->exception.reason,image);
               (void) strcpy(jpeg_image->magick,"JPEG");
               blob=ImageToBlob(image_info,jpeg_image,&length,&image->exception);
               (void) WriteBlob(image,length,blob);
               DestroyImage(jpeg_image);
-              LiberateMemory((void **) &blob);
+              MagickFreeMemory(blob);
               break;
             }
             case RLECompression:
@@ -919,10 +916,9 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
               */
               length=(image->colorspace == CMYKColorspace ? 4 : 3)*
                 number_pixels;
-              pixels=(unsigned char *) AcquireMemory(length);
+              pixels=MagickAllocateMemory(unsigned char *,length);
               if (pixels == (unsigned char *) NULL)
-                ThrowWriterException(ResourceLimitError,
-                  "MemoryAllocationFailed",image);
+                ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
               /*
                 Dump Packbit encoded pixels.
               */
@@ -975,7 +971,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                   CloseBlob(image);
                   return(False);
                 }
-              LiberateMemory((void **) &pixels);
+              MagickFreeMemory(pixels);
               break;
             }
             case NoCompression:
@@ -1060,10 +1056,9 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                 Allocate pixel array.
               */
               length=number_pixels;
-              pixels=(unsigned char *) AcquireMemory(length);
+              pixels=MagickAllocateMemory(unsigned char *,length);
               if (pixels == (unsigned char *) NULL)
-                ThrowWriterException(ResourceLimitError,
-                  "MemoryAllocationFailed",image);
+                ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
               /*
                 Dump Runlength encoded pixels.
               */
@@ -1090,7 +1085,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                 status=LZWEncodeImage(image,length,pixels);
               else
                 status=PackbitsEncodeImage(image,length,pixels);
-              LiberateMemory((void **) &pixels);
+              MagickFreeMemory(pixels);
               if (!status)
                 {
                   CloseBlob(image);

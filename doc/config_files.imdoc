@@ -1,0 +1,104 @@
+<imdoc>
+
+<!-- ----------------------------------------------------------------  -->
+<!-- Options.imdoc: "options" subsection of convert, composite, et al. -->
+<!-- ----------------------------------------------------------------- -->
+<!-- Markup tags in this document are                                  -->
+<!--   imdoc (Identifies file as ImageMagick document source file)     -->
+<!--   im (Identifies included text as ImageMagick)                    -->
+<!--   gm (Identifies included text as GraphicsMagick)                 -->
+<!--   sect name=section_name (section); remainder of line is title    -->
+<!--   opt  (option)                                                   -->
+<!--   abs  (abstract)                                                 -->
+<!--   p    (regular print paragraph, not OK to nest)                  -->
+<!--   pp   (small print paragraph, not OK to nest)                    -->
+<!--   pre  (== HTML pre, not allowed in pp or sp)                     -->
+<!--   sp   (subparagraph, must be inside p or pp, OK to nest          -->
+<!--   ul   (== HTML ul)                                               -->
+<!--   li   (== HTML li)                                               -->
+<!--   dl   (== HTML dl)                                               -->
+<!--   dt   (== HTML dt, dt without a dd is OK)                        -->
+<!--   dd   (== HTML dd, dd without a dt is OK)                        -->
+<!--   i    (== HTML em)                                               -->
+<!--   s    (== HTML strong)                                           -->
+<!--   tt   (== HTML tt)                                               -->
+<!--   utils apps=name ... (which apps the enclosed lines pertain to)  -->
+<!--   !--  (== HTML !--) comment                                      -->
+<!--                                                                   -->
+<!--   All tags must close with </...> form of tag, e.g. <pp>..</pp>   -->
+<!-- ----------------------------------------------------------------- -->
+
+<p>GraphicsMagick uses a number of XML format configuration files:</p>
+<opt>colors.mgk</opt>
+<abs>colors configuration file</abs>
+
+<pre>
+  <?xml version="1.0"?>
+  <colormap>
+    <color name="AliceBlue" red="240" green="248" blue="255"
+           compliance="SVG, X11, XPM" />
+  </colormap>
+</pre>
+
+<opt>delegates.mgk</opt>
+<abs>delegates configuration file</abs>
+
+
+<opt>log.mgk</opt>
+<abs>logging configuration file</abs>
+
+<pre>
+  <?xml version="1.0"?>
+  <magicklog>
+    <log events="None" />
+    <log output="stdout" />
+    <log filename="Magick-%d.log" />
+    <log generations="3" />
+    <log limit="2000" />
+    <log format="%t %r %u %p %m/%f/%l/%d:\n  %e"  />
+  </magicklog>
+</pre>
+
+<opt>magic.mgk</opt>
+<abs>file header magic test configuration file</abs>
+
+<pre>
+  <?xml version="1.0"?>
+  <magicmap>
+    <magic name="AVI" offset="0" target="RIFF" />
+  </magicmap>
+</pre>
+
+<opt>modules.mgk</opt>
+<abs>loadable modules configuration file</abs>
+
+<pre>
+  <?xml version="1.0"?>
+  <modulemap>
+    <module magick="8BIM" name="META" />
+  </modulemap>
+</pre>
+
+<opt>type.mgk</opt>
+<abs>master type (fonts) configuration file</abs>
+
+<pre>
+  <?xml version="1.0"?>
+  <typemap>
+    <<s></s>include file="type-windows.mgk" />
+    <type
+      name="AvantGarde-Book"
+      fullname="AvantGarde Book"
+      family="AvantGarde"
+      foundry="URW"
+      weight="400"
+      style="normal"
+      stretch="normal"
+      format="type1"
+      metrics="/usr/local/share/ghostscript/fonts/a010013l.afm"
+      glyphs="/usr/local/share/ghostscript/fonts/a010013l.pfb"
+    />
+  </typemap>
+</pre>
+
+</imdoc>

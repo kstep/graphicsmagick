@@ -18,7 +18,7 @@
 %                            EEEEE  P        T                                %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%           Read/Write Encapsulated Postscript Format (with preview).         %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -206,7 +206,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   /*
     Open temporary output file.
   */
@@ -298,7 +298,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,
     {
       (void) fclose(file);
       LiberateTemporaryFile(postscript_filename);
-      ThrowReaderException(CorruptImageError,"AnErrorHasOccurredWritingToFile",
+      ThrowReaderException(CorruptImageError,AnErrorHasOccurredWritingToFile,
         image)
     }
   (void) rewind(file);
@@ -334,7 +334,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,
       */
       file=fopen(postscript_filename,"ab");
       if (file == (FILE *) NULL)
-        ThrowReaderException(FileOpenError,"UnableToWriteFile",image);
+        ThrowReaderException(FileOpenError,UnableToWriteFile,image);
       (void) fputs("showpage\n",file);
       (void) fclose(file);
       status=InvokePostscriptDelegate(image_info->verbose,command);
@@ -350,7 +350,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,
       image=ReadImage(image_info,exception);
       if (image != (Image *) NULL)
         return(image);
-      ThrowReaderException(DelegateError,"PostscriptDelegateFailed",image)
+      ThrowReaderException(DelegateError,PostscriptDelegateFailed,image)
     }
   clone_info=CloneImageInfo(image_info);
   clone_info->blob=(void *) NULL;
@@ -359,7 +359,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,
   DestroyImageInfo(clone_info);
   LiberateTemporaryFile((char *) image_info->filename);
   if (image == (Image *) NULL)
-    ThrowReaderException(DelegateError,"PostscriptDelegateFailed",image);
+    ThrowReaderException(DelegateError,PostscriptDelegateFailed,image);
   do
   {
     (void) strcpy(image->magick,"PS");
@@ -600,6 +600,6 @@ static unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
     LiberateTemporaryFile(ps_filename);
   LiberateTemporaryFile(tiff_filename);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   return(True);
 }

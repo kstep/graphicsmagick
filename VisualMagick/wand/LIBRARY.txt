@@ -1,0 +1,5 @@
+#ECF - this file contains additional configuration info.
+DEFINE = _WANDLIB_
+SOURCE = wand.rc
+EXCLUDE = drawtest.c
+EXCLUDE = wandtest.c

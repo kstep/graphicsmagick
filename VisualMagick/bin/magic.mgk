@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <magicmap>
   <magic name="AVI" offset="0" target="RIFF" />
+  <magic name="8BIMWTEXT" offset="0" target="8\000B\000I\000M\000#" />
   <magic name="8BIMTEXT" offset="0" target="8BIM#" />
   <magic name="8BIM" offset="0" target="8BIM" />
   <magic name="BMP" offset="0" target="BA" />
@@ -29,6 +30,8 @@
   <magic name="HTML" offset="1" target="HTML" />
   <magic name="HTML" offset="1" target="html" />
   <magic name="ILBM" offset="8" target="ILBM" />
+  <magic name="IPTCWTEXT" offset="0" target="\062\000#\000\060\000=\000\042\000&\000#\000\060\000;\000&\000#\000\062\000;\000\042\000" />
+  <magic name="IPTCTEXT" offset="0" target="2#0=\042&#0;&#2;\042" />
   <magic name="IPTC" offset="0" target="\034\002" />
   <magic name="JNG" offset="0" target="\213JNG\r\n\032\n" />
   <magic name="JPEG" offset="0" target="\377\330\377" />
@@ -39,7 +42,7 @@
   <magic name="MNG" offset="0" target="\212MNG\r\n\032\n" />
   <magic name="MPC" offset="0" target="id=MagickCache" />
   <magic name="MPEG" offset="0" target="\000\000\001\263" />
-  <magic name="MVG" offset="0" target="viewbox" />
+  <magic name="MVG" offset="0" target="push graphic-context" />
   <magic name="PCD" offset="2048" target="PCD_" />
   <magic name="PCL" offset="0" target="\033E\033" />
   <magic name="PCX" offset="0" target="\012\002" />
@@ -48,6 +51,7 @@
   <magic name="PDF" offset="0" target="%PDF-" />
   <magic name="PFA" offset="0" target="%!PS-AdobeFont-1.0" />
   <magic name="PFB" offset="6" target="%!PS-AdobeFont-1.0" />
+  <magic name="PGX" offset="0" target="\050\107\020\115\046" />
   <magic name="PICT" offset="522" target="\000\021\002\377\014\000" />
   <magic name="PNG" offset="0" target="\211PNG\r\n\032\n" />
   <magic name="PNM" offset="0" target="P1" />
@@ -74,7 +78,7 @@
   <magic name="TIFF" offset="0" target="\111\111\052\000" />
   <magic name="VICAR" offset="0" target="LBLSIZE" />
   <magic name="VICAR" offset="0" target="NJPL1I" />
-  <magic name="VIFF" offset="0" target="\253\1" />
+  <magic name="VIFF" offset="0" target="\253\001" />
   <magic name="WMF" offset="0" target="\327\315\306\232" />
   <magic name="WMF" offset="0" target="\001\000\011\000" />
   <magic name="WPG" offset="0" target="\377WPC" />

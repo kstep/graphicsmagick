@@ -207,15 +207,15 @@ MagickExport unsigned int EqualizeImage(Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   is_grayscale=image->is_grayscale;
-  histogram=(DoublePixelPacket *)
-    AcquireMemory((MaxMap+1)*sizeof(DoublePixelPacket));
-  map=(DoublePixelPacket *) AcquireMemory((MaxMap+1)*sizeof(DoublePixelPacket));
-  equalize_map=(PixelPacket *) AcquireMemory((MaxMap+1)*sizeof(PixelPacket));
+  histogram=MagickAllocateMemory(DoublePixelPacket *,
+    (MaxMap+1)*sizeof(DoublePixelPacket));
+  map=MagickAllocateMemory(DoublePixelPacket *,(MaxMap+1)*sizeof(DoublePixelPacket));
+  equalize_map=MagickAllocateMemory(PixelPacket *,(MaxMap+1)*sizeof(PixelPacket));
   if ((histogram == (DoublePixelPacket *) NULL) ||
       (map == (DoublePixelPacket *) NULL) ||
       (equalize_map == (PixelPacket *) NULL))
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      "UnableToEqualizeImage");
+    ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
+      MagickMsg(OptionError,UnableToEqualizeImage));
   /*
     Form histogram.
   */
@@ -283,8 +283,8 @@ MagickExport unsigned int EqualizeImage(Image *image)
         equalize_map[i].opacity=ScaleMapToQuantum(
          (MaxMap*(map[i].opacity-low.opacity))/(high.opacity-low.opacity));
   }
-  LiberateMemory((void **) &histogram);
-  LiberateMemory((void **) &map);
+  MagickFreeMemory(histogram);
+  MagickFreeMemory(map);
   /*
     Stretch the histogram.
   */
@@ -354,7 +354,7 @@ MagickExport unsigned int EqualizeImage(Image *image)
       break;
     }
   }
-  LiberateMemory((void **) &equalize_map);
+  MagickFreeMemory(equalize_map);
   image->is_grayscale=is_grayscale;
   return(True);
 }
@@ -435,10 +435,10 @@ MagickExport unsigned int GammaImage(Image *image,const char *level)
   /*
     Allocate and initialize gamma maps.
   */
-  gamma_map=(PixelPacket *) AcquireMemory((MaxMap+1)*sizeof(PixelPacket));
+  gamma_map=MagickAllocateMemory(PixelPacket *,(MaxMap+1)*sizeof(PixelPacket));
   if (gamma_map == (PixelPacket *) NULL)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      "UnableToGammaCorrectImage");
+    ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
+      UnableToGammaCorrectImage);
   (void) memset(gamma_map,0,(MaxMap+1)*sizeof(PixelPacket));
   for (i=0; i <= MaxMap; i++)
   {
@@ -500,7 +500,7 @@ MagickExport unsigned int GammaImage(Image *image,const char *level)
   }
   if (image->gamma != 0.0)
     image->gamma*=(gamma.red+gamma.green+gamma.blue)/3.0;
-  LiberateMemory((void **) &gamma_map);
+  MagickFreeMemory(gamma_map);
   image->is_grayscale=is_grayscale;
   return(True);
 }
@@ -585,10 +585,10 @@ MagickExport unsigned int LevelImage(Image *image,const char *levels)
   white_point=ScaleQuantumToMap(white_point);
   if (count == 1)
     white_point=MaxMap-black_point;
-  levels_map=(double *) AcquireMemory((MaxMap+1)*sizeof(double));
+  levels_map=MagickAllocateMemory(double *,(MaxMap+1)*sizeof(double));
   if (levels_map == (double *) NULL)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      "UnableToLevelTheImage");
+    ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
+      UnableToLevelImage);
   for (i=0; i <= MaxMap; i++)
   {
     if (i < black_point)
@@ -650,7 +650,7 @@ MagickExport unsigned int LevelImage(Image *image,const char *levels)
       break;
     }
   }
-  LiberateMemory((void **) &levels_map);
+  MagickFreeMemory(levels_map);
   image->is_grayscale=is_grayscale;
   return(True);
 }
@@ -716,10 +716,10 @@ MagickExport unsigned int LevelImageChannel(Image *image,
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  levels_map=(double *) AcquireMemory((MaxMap+1)*sizeof(double));
+  levels_map=MagickAllocateMemory(double *,(MaxMap+1)*sizeof(double));
   if (levels_map == (double *) NULL)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      "UnableToLevelTheImage");
+    ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
+      UnableToLevelImage);
   black=ScaleQuantumToMap(black_point);
   white=ScaleQuantumToMap(white_point);
   for (i=0; i <= MaxMap; i++)
@@ -846,7 +846,7 @@ MagickExport unsigned int LevelImageChannel(Image *image,
         break;
       }
     }
-  LiberateMemory((void **) &levels_map);
+  MagickFreeMemory(levels_map);
   return(True);
 }
 
@@ -1036,6 +1036,8 @@ MagickExport unsigned int NegateImage(Image *image,const unsigned int grayscale)
               q->red=(~q->red);
               q->green=(~q->green);
               q->blue=(~q->blue);
+              if (image->colorspace == CMYKColorspace)
+                q->opacity=(~q->opacity);
               q++;
             }
         }
@@ -1047,6 +1049,8 @@ MagickExport unsigned int NegateImage(Image *image,const unsigned int grayscale)
               q->red=(~q->red);
               q->green=(~q->green);
               q->blue=(~q->blue);
+              if (image->colorspace == CMYKColorspace)
+                q->opacity=(~q->opacity);
               q++;
             }
         }
@@ -1162,13 +1166,13 @@ MagickExport unsigned int NormalizeImage(Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   is_grayscale=image->is_grayscale;
-  histogram=(DoublePixelPacket *)
-    AcquireMemory((MaxMap+1)*sizeof(DoublePixelPacket));
-  normalize_map=(PixelPacket *) AcquireMemory((MaxMap+1)*sizeof(PixelPacket));
+  histogram=MagickAllocateMemory(DoublePixelPacket *,
+    (MaxMap+1)*sizeof(DoublePixelPacket));
+  normalize_map=MagickAllocateMemory(PixelPacket *,(MaxMap+1)*sizeof(PixelPacket));
   if ((histogram == (DoublePixelPacket *) NULL) ||
       (normalize_map == (PixelPacket *) NULL))
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      "UnableToNormalizeImage");
+    ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
+      UnableToNormalizeImage);
   /*
     Form histogram.
   */
@@ -1343,7 +1347,7 @@ MagickExport unsigned int NormalizeImage(Image *image)
             }
         }
     }
-  LiberateMemory((void **) &histogram);
+  MagickFreeMemory(histogram);
   /*
     Stretch the histogram to create the normalized image mapping.
   */
@@ -1354,7 +1358,7 @@ MagickExport unsigned int NormalizeImage(Image *image)
       normalize_map[i].red=0;
     else
       if (i > (long) high.red)
-        normalize_map[i].red=MaxMap;
+        normalize_map[i].red=MaxRGB;
       else
         if (low.red != high.red)
           normalize_map[i].red=
@@ -1363,7 +1367,7 @@ MagickExport unsigned int NormalizeImage(Image *image)
       normalize_map[i].green=0;
     else
       if (i > (long) high.green)
-        normalize_map[i].green=MaxMap;
+        normalize_map[i].green=MaxRGB;
       else
         if (low.green != high.green)
           normalize_map[i].green=ScaleMapToQuantum((MaxMap*(i-low.green))/
@@ -1372,7 +1376,7 @@ MagickExport unsigned int NormalizeImage(Image *image)
       normalize_map[i].blue=0;
     else
       if (i > (long) high.blue)
-        normalize_map[i].blue=MaxMap;
+        normalize_map[i].blue=MaxRGB;
       else
         if (low.blue != high.blue)
           normalize_map[i].blue=
@@ -1383,7 +1387,7 @@ MagickExport unsigned int NormalizeImage(Image *image)
           normalize_map[i].opacity=0;
         else
           if (i > (long) high.opacity)
-            normalize_map[i].opacity=MaxMap;
+            normalize_map[i].opacity=MaxRGB;
           else
             if (low.opacity != high.opacity)
               normalize_map[i].opacity=ScaleMapToQuantum(
@@ -1463,7 +1467,7 @@ MagickExport unsigned int NormalizeImage(Image *image)
       break;
     }
   }
-  LiberateMemory((void **) &normalize_map);
+  MagickFreeMemory(normalize_map);
   image->is_grayscale=is_grayscale;
   return(True);
 }

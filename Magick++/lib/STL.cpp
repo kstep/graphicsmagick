@@ -34,6 +34,16 @@ void Magick::addNoiseImage::operator()( Magick::Image &image_ ) const
   image_.addNoise( _noiseType );
 }
 
+// Transform image by specified affine (or free transform) matrix.
+Magick::affineTransformImage::affineTransformImage( const DrawableAffine &affine_  )
+  : _affine( affine_ )
+{
+}
+void Magick::affineTransformImage::operator()( Magick::Image &image_ ) const
+{
+  image_.affineTransform( _affine );
+}
+
 // Annotate image (draw text on image)
 
 // Annotate using specified text, and placement location
@@ -1099,6 +1109,17 @@ Magick::colorMapImage::colorMapImage( const unsigned int index_,
 void Magick::colorMapImage::operator()( Magick::Image &image_ ) const
 {
   image_.colorMap( _index, _color );
+}
+
+// Composition operator to be used when composition is implicitly used
+// (such as for image flattening).
+Magick::composeImage::composeImage( const CompositeOperator compose_ )
+  : _compose( compose_ )
+{
+}
+void Magick::composeImage::operator()( Magick::Image &image_ ) const
+{
+  image_.compose( _compose );
 }
 
 // Compression type

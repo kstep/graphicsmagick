@@ -2,33 +2,24 @@
 //  Little cms
 //  Copyright (C) 1998-2003 Marti Maria
 //
-// THIS SOFTWARE IS PROVIDED "AS-IS" AND WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS, IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION, ANY
-// WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+// Permission is hereby granted, free of charge, to any person obtaining 
+// a copy of this software and associated documentation files (the "Software"), 
+// to deal in the Software without restriction, including without limitation 
+// the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+// and/or sell copies of the Software, and to permit persons to whom the Software 
+// is furnished to do so, subject to the following conditions:
 //
-// IN NO EVENT SHALL MARTI MARIA BE LIABLE FOR ANY SPECIAL, INCIDENTAL,
-// INDIRECT OR CONSEQUENTIAL DAMAGES OF ANY KIND,
-// OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
-// WHETHER OR NOT ADVISED OF THE POSSIBILITY OF DAMAGE, AND ON ANY THEORY OF
-// LIABILITY, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
-// OF THIS SOFTWARE.
+// The above copyright notice and this permission notice shall be included in 
+// all copies or substantial portions of the Software.
 //
-//
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the GNU Lesser General Public
-// License as published by the Free Software Foundation; either
-// version 2 of the License, or (at your option) any later version.
-//
-// This library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public
-// License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
-// 1.11a
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO 
+// THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE 
+// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION 
+// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
+// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 
 #include "lcms.h"
 
@@ -282,7 +273,6 @@ cmsHPROFILE LCMSEXPORT cmsTransform2DeviceLink(cmsHTRANSFORM hTransform, DWORD d
        //  1 icSigProfileDescriptionTag
        //  2 icSigMediaWhitePointTag
        //  3 icSigAToB0Tag
-       //  and should store 4 icSigProfileSequenceDescTag, but currently it doesn't
        
                  
        cmsAddTag(hICC, icSigDeviceMfgDescTag,       "LittleCMS");       
@@ -294,12 +284,8 @@ cmsHPROFILE LCMSEXPORT cmsTransform2DeviceLink(cmsHTRANSFORM hTransform, DWORD d
 
        if (cmsGetDeviceClass(hICC) == icSigOutputClass) {
            
-                icSignature Tags[] = { icSigBToA0Tag, 
-                                       icSigBToA1Tag, 
-                                       icSigBToA2Tag, 
-                                       icSigBToA1Tag };
-
-                cmsAddTag(hICC, Tags[v ->Intent], Lut);
+                
+                cmsAddTag(hICC, icSigBToA0Tag, Lut);
        }
 
        else
@@ -599,6 +585,123 @@ cmsHPROFILE LCMSEXPORT cmsCreate_sRGBProfile(void)
        cmsAddTag(hsRGB, icSigProfileDescriptionTag, "sRGB built-in");
         
        return hsRGB;
+}
+
+
+
+typedef struct {
+                double Brightness;
+                double Contrast;
+                double Hue;
+                double Saturation;
+                cmsCIEXYZ WPsrc, WPdest;
+
+} BCHSWADJUSTS, *LPBCHSWADJUSTS;
+
+
+static
+int bchswSampler(register WORD In[], register WORD Out[], register LPVOID Cargo)
+{
+    cmsCIELab LabIn, LabOut;
+    cmsCIELCh LChIn, LChOut;
+    cmsCIEXYZ XYZ;
+    LPBCHSWADJUSTS bchsw = (LPBCHSWADJUSTS) Cargo;
+    
+    cmsLabEncoded2Float(&LabIn, In);
+     
+    cmsLab2LCh(&LChIn, &LabIn);
+
+    // Do some adjusts on LCh
+    
+    LChOut.L = LChIn.L * bchsw ->Contrast + bchsw ->Brightness;
+    LChOut.C = LChIn.C + bchsw -> Saturation;
+    LChOut.h = LChIn.h + bchsw -> Hue;
+    
+    cmsLCh2Lab(&LabOut, &LChOut);
+
+    // Move white point in Lab
+
+    cmsLab2XYZ(&bchsw ->WPsrc,  &XYZ, &LabOut);
+    cmsXYZ2Lab(&bchsw ->WPdest, &LabOut, &XYZ);
+
+    // Back to encoded
+
+    cmsFloat2LabEncoded(Out, &LabOut);
+    
+
+    return TRUE;
+}
+
+
+// Creates an abstract profile operating in Lab space for Brightness,
+// contrast, Saturation and white point displacement
+
+cmsHPROFILE LCMSEXPORT cmsCreateBCHSWabstractProfile(int nLUTPoints,
+                                                     double Bright, 
+                                                     double Contrast,
+                                                     double Hue,
+                                                     double Saturation,
+                                                     int TempSrc, 
+                                                     int TempDest)
+{
+     cmsHPROFILE hICC;
+     LPLUT Lut;
+     BCHSWADJUSTS bchsw;
+     cmsCIExyY WhitePnt;
+
+     bchsw.Brightness = Bright;
+     bchsw.Contrast   = Contrast;
+     bchsw.Hue        = Hue;
+     bchsw.Saturation = Saturation;
+     
+     cmsWhitePointFromTemp(TempSrc,  &WhitePnt);         
+     cmsxyY2XYZ(&bchsw.WPsrc, &WhitePnt);
+
+     cmsWhitePointFromTemp(TempDest, &WhitePnt);
+     cmsxyY2XYZ(&bchsw.WPdest, &WhitePnt);
+    
+      hICC = _cmsCreateProfilePlaceholder();
+       if (!hICC)                          // can't allocate
+            return NULL;
+              
+
+       cmsSetDeviceClass(hICC,      icSigAbstractClass);
+       cmsSetColorSpace(hICC,       icSigLabData);
+       cmsSetPCS(hICC,              icSigLabData);
+
+       cmsSetRenderingIntent(hICC,  INTENT_PERCEPTUAL); 
+
+      
+       // Creates a LUT with 3D grid only
+       Lut = cmsAllocLUT();
+
+
+       cmsAlloc3DGrid(Lut, nLUTPoints, 3, 3);
+
+       if (!cmsSample3DGrid(Lut, bchswSampler, (LPVOID) &bchsw, 0)) {
+
+                // Shouldn't reach here
+                cmsFreeLUT(Lut);
+                cmsCloseProfile(hICC);
+                return NULL;
+       }    
+       
+       // Create tags
+        
+       cmsAddTag(hICC, icSigDeviceMfgDescTag,     "(lcms internal)"); 
+       cmsAddTag(hICC, icSigProfileDescriptionTag, "lcms BCHSW abstract profile");  
+       cmsAddTag(hICC, icSigDeviceModelDescTag,    "BCHSW built-in");      
+       
+       cmsAddTag(hICC, icSigMediaWhitePointTag, cmsD50_XYZ());
+
+       cmsAddTag(hICC, icSigAToB0Tag, Lut);
+       
+       // LUT is already on virtual profile
+       cmsFreeLUT(Lut);
+
+       // Ok, done
+       return hICC;
+
 }
 
 

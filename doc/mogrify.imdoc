@@ -1,0 +1,220 @@
+<imdoc>
+<utils apps=mogrify>
+<title>Mogrify</title>
+<gm>
+<sect NAME="mogrify">gm mogrify
+</gm>
+<im>
+<sect NAME="mog-top">NAME
+mogrify - mogrify an image
+</sect>
+<format type=html>
+<sect NAME="mog-contents">Contents
+
+<dl>
+<dt>
+<a href="#mog-syno">Synopsis</a>
+</dt>
+
+<dt>
+<a href="#mog-desc">Description</a>
+</dt>
+
+<dt>
+<a href="#mog-exam">Examples</a>
+</dt>
+
+<dt>
+<a href="#mog-opti">Options</a>
+</dt>
+
+<dt>
+<a href="#mog-segm">Image Segmentation</a>
+</dt>
+
+<dt>
+<a href="#mog-envi">Environment</a>
+</dt>
+
+<dt>
+<a href="#mog-file">Configuration File</a>
+</dt>
+
+<dt>
+<a href="#mog-auth">Authors</a>
+</dt>
+
+<dt>
+<a href="#mog-copy">Copyright</a>
+</dt>
+</dl>
+</format>
+</sect>
+
+<sect NAME="mog-syno">Synopsis
+<p>
+<s>mogrify</s> <s>[</s> <i>options</i> <s>... ]</s> <i>file ...</i>
+</p>
+</sect>
+<sect NAME="mog-desc">Description
+</im>
+<p>
+<s>Mogrify</s> transforms an image or a sequence of images. These transforms
+include image scaling, image rotation, color reduction, and others. Each
+transmogrified image overwrites the corresponding original image, unless an
+option such as
+<s>-format</s> causes the output filename to be different from the input
+filename.
+</p>
+The graphics formats supported by <s>mogrify</s> are listed in
+<format type=man,tex>
+<i>GraphicsMagick(1)</i>.
+</format>
+<format type=html>
+<a href="GraphicsMagick.html"><i>GraphicsMagick(1)</i></a>.
+</format>
+</sect>
+<back>
+<sect NAME="mog-exam">Examples
+<p>
+To convert all the TIFF files in a particular directory to JPEG, use:</p>
+
+<pre>
+    mogrify -format jpeg *.tiff
+</pre>
+<p>
+To convert a directory full of JPEG images to thumbnails, use:</p>
+<pre>
+    mogrify -size 120x120 *.jpg -resize 120x120 +profile "*"
+</pre>
+<pp>
+In this example, <tt>'-size 120x120'</tt> gives a hint to the JPEG decoder
+that the images are going to be downscaled to 120x120, allowing it to run
+faster by avoiding returning full-resolution images to GraphicsMagick for
+the subsequent resizing operation.  The
+<tt>'-resize 120x120'</tt> specifies the desired dimensions of the
+output images.  It will be scaled so its largest dimension is 120 pixels.  The
+<tt>'+profile "*"'</tt> removes any ICM, EXIF, IPTC, or other profiles
+that might be present in the input and aren't needed in the thumbnails.</pp>
+<p>
+To scale an image of a cockatoo to exactly 640 pixels in width and 480
+pixels in height, use: </p>
+
+<pre>
+    mogrify -resize 640x480! cockatoo.miff
+</pre>
+
+</sect>
+<back>
+
+<sect NAME="mog-opti">Options
+<p>
+Options are processed in command line order. Any option you specify on
+the command line remains in effect for the set of images that follows,
+until the set is terminated by the appearance of any option or <s>-noop</s>.</p>
+
+<p>
+For a more detailed description of each option, see
+<gm>
+Options, above.
+</gm>
+<im>
+<format type=man,tex>
+<i>GraphicsMagick(1)</i>.
+</format>
+<format type=html>
+<a href="GraphicsMagick.html"><i>GraphicsMagick(1)</i></a>.
+</format>
+</im>
+</p>
+
+<include file=brief_options.imdoc>
+
+<p>
+For a more detailed description of each option, see
+<gm>
+Options, above.
+</gm>
+<im>
+<format type=man,tex>
+<i>GraphicsMagick(1)</i>.
+</format>
+<format type=html>
+<a href="GraphicsMagick.html"><i>GraphicsMagick(1)</i></a>.
+</format>
+</im>
+</p>
+</sect>
+<back>
+<im>
+<sect NAME="mog-segm">Image Segmentation
+<p>
+Use <s>-segment</s> to segment an image by analyzing the histograms of
+the color components and identifying units that are homogeneous with the
+fuzzy c-means technique. The scale-space filter analyzes the histograms
+of the three color components of the image and identifies a set of classes.
+The extents of each class is used to coarsely segment the image with thresholding.
+The color associated with each class is determined by the mean color of
+all pixels within the extents of a particular class. Finally, any unclassified
+pixels are assigned to the closest class with the fuzzy c-means technique.</p>
+
+<p>
+The fuzzy c-Means algorithm can be summarized as follows:</p>
+<ul>
+<li>
+Build a histogram, one for each color component of the image.</li>
+
+<li>
+For each histogram, successively apply the scale-space filter and build
+an interval tree of zero crossings in the second derivative at each scale.
+Analyze this scale-space "fingerprint" to determine which peaks or valleys
+in the histogram are most predominant.</li>
+
+<li>
+The fingerprint defines intervals on the axis of the histogram. Each interval
+contains either a minima or a maxima in the original signal. If each color
+component lies within the maxima interval, that pixel is considered "classified"
+and is assigned an unique class number.</li>
+
+<li>
+Any pixel that fails to be classified in the above thresholding pass is
+classified using the fuzzy c-Means technique. It is assigned to one of
+the classes discovered in the histogram analysis phase.</li>
+</ul>
+
+<p>
+The fuzzy c-Means technique attempts to cluster a pixel by finding the
+local minima of the generalized within group sum of squared error objective
+function. A pixel is assigned to the closest class of which the fuzzy membership
+has a maximum value.</p>
+
+<p>
+For additional information see:
+<bq><i>Young Won Lim, Sang Uk Lee</i>, ``<s>On The Color Image Segmentation
+Algorithm Based on the Thresholding and the Fuzzy c-Means Techniques</s>'',
+Pattern Recognition, Volume 23, Number 9, pages 935-952, 1990.</bq></p>
+
+</sect>
+<back>
+<sect NAME="mog-envi">Environment
+<include file=environment.imdoc>
+</sect>
+<back>
+
+<sect NAME="mog-file">Configuration Files
+<include file=config_files.imdoc>
+</sect>
+<back>
+
+<format type=man>
+<sect NAME="mog-also">SEE ALSO
+<p>
+GraphicsMagick(1), display(1), animate(1), identify(1), montage(1), convert(1),
+composite(1), conjure(1)
+</p>
+</sect>
+</format>
+<include file=copyright.imdoc>
+</im>
+</utils>
+</imdoc>

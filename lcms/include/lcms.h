@@ -2,37 +2,27 @@
 //  Little cms
 //  Copyright (C) 1998-2003 Marti Maria
 //
-// THIS SOFTWARE IS PROVIDED "AS-IS" AND WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS, IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION, ANY
-// WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+// Permission is hereby granted, free of charge, to any person obtaining 
+// a copy of this software and associated documentation files (the "Software"), 
+// to deal in the Software without restriction, including without limitation 
+// the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+// and/or sell copies of the Software, and to permit persons to whom the Software 
+// is furnished to do so, subject to the following conditions:
 //
-// IN NO EVENT SHALL MARTI MARIA BE LIABLE FOR ANY SPECIAL, INCIDENTAL,
-// INDIRECT OR CONSEQUENTIAL DAMAGES OF ANY KIND,
-// OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
-// WHETHER OR NOT ADVISED OF THE POSSIBILITY OF DAMAGE, AND ON ANY THEORY OF
-// LIABILITY, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
-// OF THIS SOFTWARE.
+// The above copyright notice and this permission notice shall be included in 
+// all copies or substantial portions of the Software.
 //
-//
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the GNU Lesser General Public
-// License as published by the Free Software Foundation; either
-// version 2 of the License, or (at your option) any later version.
-//
-// This library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public
-// License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO 
+// THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE 
+// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION 
+// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
+// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-// Version 1.11b
+// Version 1.12
 
 #ifndef __cms_H
-
-#define LCMS_VERSION 1011
 
 #ifdef _VISUALC_
 #  if defined(_DLL) && !defined(_LIB)
@@ -85,6 +75,8 @@
 
 
 // ********** End of configuration toggles ******************************
+
+#define LCMS_VERSION        112
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -148,7 +140,7 @@
 #include <string.h>
 
 #if defined(__GNUC__) || defined(__FreeBSD__)
-#   include <sys/unistd.h>
+#   include <unistd.h>
 #endif
 
 typedef unsigned char BYTE, *LPBYTE; 
@@ -180,6 +172,7 @@ typedef void* LCMSHANDLE;
 #define HIWORD(l)    ((WORD)((DWORD)(l) >> 16))
 
 #define MAX_PATH     (256)
+
 #define cdecl
 
 
@@ -215,8 +208,8 @@ typedef HANDLE LCMSHANDLE;
 #define icSigLuvKData                   ((icColorSpaceSignature) 0x4C75764BL)  // 'LuvK'
 #define icSigHexachromeData             ((icColorSpaceSignature) 0x4d434836L)  // MCH6
 
-#define icSigChromaticityTag            ((icTagSignature)     0x6368726dL) // As per Addendum 2 to Spec. ICC.1:1998-09
-#define icSigChromaticAdaptationTag     ((icTagTypeSignature) 0x63686164L) // 'chad'
+#define icSigChromaticityTag            ((icTagSignature) 0x6368726dL) // As per Addendum 2 to Spec. ICC.1:1998-09
+#define icSigChromaticAdaptationTag     ((icTagSignature) 0x63686164L) // 'chad'
 
 #define icSigParametricCurveType        ((icTagTypeSignature) 0x70617261L)  // parametric (ICC 4.0)
 #define icSigMultiLocalizedUnicodeType  ((icTagTypeSignature) 0x6D6C7563L)
@@ -279,16 +272,16 @@ extern "C" {
 #else
 # ifdef LCMS_DLL
 #   ifdef __BORLANDC__
-#      define LCMSEXPORT __stdcall _export
-#      define LCMSAPI
+#       define LCMSEXPORT
 #   else
        // VC++
 #       define LCMSEXPORT  _stdcall
-#       ifdef LCMS_DLL_BUILD
-#           define LCMSAPI     __declspec(dllexport)
-#       else
-#           define LCMSAPI     __declspec(dllimport)
-#       endif
+#   endif
+ 
+#   ifdef LCMS_DLL_BUILD
+#       define LCMSAPI     __declspec(dllexport)
+#   else
+#       define LCMSAPI     __declspec(dllimport)
 #   endif
 # else
 #       define LCMSEXPORT cdecl
@@ -469,6 +462,12 @@ typedef LCMSHANDLE cmsHTRANSFORM;
 
 // HiFi separations, Thanks to Steven Greaves for providing the code,
 // the colorspace is not checked
+#define TYPE_CMYK5_8           (CHANNELS_SH(5)|BYTES_SH(1))
+#define TYPE_CMYK5_16          (CHANNELS_SH(5)|BYTES_SH(2))
+#define TYPE_CMYK5_16_SE       (CHANNELS_SH(5)|BYTES_SH(2)|ENDIAN16_SH(1))
+#define TYPE_KYMC5_8           (CHANNELS_SH(5)|BYTES_SH(1)|DOSWAP_SH(1))
+#define TYPE_KYMC5_16          (CHANNELS_SH(5)|BYTES_SH(2)|DOSWAP_SH(1))
+#define TYPE_KYMC5_16_SE       (CHANNELS_SH(5)|BYTES_SH(2)|DOSWAP_SH(1)|ENDIAN16_SH(1))
 
 #define TYPE_CMYKcm_8          (CHANNELS_SH(6)|BYTES_SH(1))
 #define TYPE_CMYKcm_8_PLANAR   (CHANNELS_SH(6)|BYTES_SH(1)|PLANAR_SH(1))
@@ -733,6 +732,14 @@ LCMSAPI cmsHPROFILE   LCMSEXPORT cmsCreateLabProfile(LPcmsCIExyY WhitePoint);
 LCMSAPI cmsHPROFILE   LCMSEXPORT cmsCreateXYZProfile(void);
 LCMSAPI cmsHPROFILE   LCMSEXPORT cmsCreate_sRGBProfile(void);
 
+LCMSAPI cmsHPROFILE   LCMSEXPORT cmsCreateBCHSWabstractProfile(int nLUTPoints,
+                                                     double Bright, 
+                                                     double Contrast,
+                                                     double Hue,
+                                                     double Saturation,
+                                                     int TempSrc, 
+                                                     int TempDest);
+
 
 // Colorimetric space conversions
 
@@ -833,11 +840,39 @@ LCMSAPI BOOL          LCMSEXPORT cmsTakeColorants(LPcmsCIEXYZTRIPLE Dest, cmsHPR
 LCMSAPI const char*   LCMSEXPORT cmsTakeProductName(cmsHPROFILE hProfile);
 LCMSAPI const char*   LCMSEXPORT cmsTakeProductDesc(cmsHPROFILE hProfile);
 LCMSAPI const char*   LCMSEXPORT cmsTakeProductInfo(cmsHPROFILE hProfile);
+LCMSAPI const char*   LCMSEXPORT cmsTakeManufacturer(cmsHPROFILE hProfile);
+LCMSAPI const char*   LCMSEXPORT cmsTakeModel(cmsHPROFILE hProfile);
+LCMSAPI const LPBYTE  LCMSEXPORT cmsTakeProfileID(cmsHPROFILE hProfile);
+
 LCMSAPI BOOL          LCMSEXPORT cmsIsTag(cmsHPROFILE hProfile, icTagSignature sig);
 LCMSAPI int           LCMSEXPORT cmsTakeRenderingIntent(cmsHPROFILE hProfile);
 
 LCMSAPI BOOL          LCMSEXPORT cmsTakeCharTargetData(cmsHPROFILE hProfile, char** Data, size_t* len);
-                                                   
+                                                  
+
+typedef struct {
+
+            icSignature                 deviceMfg;      
+            icSignature                 deviceModel;                
+            icUInt32Number              attributes[2];     
+            icTechnologySignature       technology;     
+            
+            char Manufacturer[512];
+            char Model[512];
+
+    } cmsPSEQDESC, FAR *LPcmsPSEQDESC;
+
+typedef struct {
+
+            int n;
+            cmsPSEQDESC seq[1];
+
+    } cmsSEQ, FAR *LPcmsSEQ;
+
+
+LCMSAPI LPcmsSEQ LCMSEXPORT cmsReadProfileSequenceDescription(cmsHPROFILE hProfile);
+
+ 
 // Translate form our notation to ICC 
 LCMSAPI icColorSpaceSignature LCMSEXPORT _cmsICCcolorSpace(int OurNotation);
 LCMSAPI                   int LCMSEXPORT _cmsChannelsOf(icColorSpaceSignature ColorSpace);
@@ -857,7 +892,7 @@ LCMSAPI void          LCMSEXPORT cmsSetDeviceClass(cmsHPROFILE hProfile, icProfi
 LCMSAPI void          LCMSEXPORT cmsSetColorSpace(cmsHPROFILE hProfile, icColorSpaceSignature sig);
 LCMSAPI void          LCMSEXPORT cmsSetPCS(cmsHPROFILE hProfile, icColorSpaceSignature pcs);
 LCMSAPI void          LCMSEXPORT cmsSetRenderingIntent(cmsHPROFILE hProfile, int RenderingIntent);
-
+LCMSAPI void          LCMSEXPORT cmsSetProfileID(cmsHPROFILE hProfile, LPBYTE ProfileID);
 
 // Intents
 
@@ -890,6 +925,9 @@ LCMSAPI void          LCMSEXPORT cmsSetRenderingIntent(cmsHPROFILE hProfile, int
 #define cmsFLAGS_SOFTPROOFING             0x4000    // Do softproofing
 
 
+// CRD special
+
+#define cmsFLAGS_NODEFAULTRESOURCEDEF  0x00010000
 
 
 // Transforms
@@ -943,6 +981,9 @@ LCMSAPI BOOL LCMSEXPORT cmsAddTag(cmsHPROFILE hProfile, icTagSignature sig, void
 // Converts a transform to a devicelink profile
 LCMSAPI cmsHPROFILE LCMSEXPORT cmsTransform2DeviceLink(cmsHTRANSFORM hTransform, DWORD dwFlags);
 
+LCMSAPI void LCMSEXPORT _cmsSetLUTdepth(cmsHPROFILE hProfile, int depth);
+
+
 
 // Save profile
 LCMSAPI BOOL LCMSEXPORT _cmsSaveProfile(cmsHPROFILE hProfile, const char* FileName);
@@ -955,6 +996,7 @@ LCMSAPI BOOL LCMSEXPORT _cmsSaveProfileToMem(cmsHPROFILE hProfile, void *MemPtr,
 
 LCMSAPI DWORD LCMSEXPORT cmsGetPostScriptCSA(cmsHPROFILE hProfile, int Intent, LPVOID Buffer, DWORD dwBufferLen);
 LCMSAPI DWORD LCMSEXPORT cmsGetPostScriptCRD(cmsHPROFILE hProfile, int Intent, LPVOID Buffer, DWORD dwBufferLen);
+LCMSAPI DWORD LCMSEXPORT cmsGetPostScriptCRDEx(cmsHPROFILE hProfile, int Intent, DWORD dwFlags, LPVOID Buffer, DWORD dwBufferLen);
 
 
 // Error handling
@@ -1041,6 +1083,7 @@ LCMSAPI BOOL LCMSEXPORT _cmsAddXYZTag(cmsHPROFILE hProfile,   icTagSignature sig
 LCMSAPI BOOL LCMSEXPORT _cmsAddLUTTag(cmsHPROFILE hProfile,   icTagSignature sig, void* lut);
 LCMSAPI BOOL LCMSEXPORT _cmsAddGammaTag(cmsHPROFILE hProfile, icTagSignature sig, LPGAMMATABLE TransferFunction);
 LCMSAPI BOOL LCMSEXPORT _cmsAddChromaticityTag(cmsHPROFILE hProfile, icTagSignature sig, LPcmsCIExyYTRIPLE Chrm);
+LCMSAPI BOOL LCMSEXPORT _cmsAddSequenceDescriptionTag(cmsHPROFILE hProfile, icTagSignature sig, LPcmsSEQ PSeq);
 
 //  -- end of morge
 
@@ -1360,6 +1403,7 @@ typedef struct {
                MAT3                    ChromaticAdaptation;
                cmsCIEXYZ               MediaWhitePoint;
                cmsCIEXYZ               MediaBlackPoint;
+               BYTE                    ProfileID[16];
 
 
                // Dictionary
@@ -1370,10 +1414,10 @@ typedef struct {
                size_t          TagOffsets[MAX_TABLE_TAG];
                LPVOID          TagPtrs[MAX_TABLE_TAG];
 
-
                char            PhysicalFile[MAX_PATH];
                
                BOOL            IsWrite;
+               BOOL            SaveAs8Bits;
 
                // I/O handlers
 
@@ -1537,7 +1581,10 @@ WORD cdecl Clamp_L(Fixed32 in);
 WORD cdecl Clamp_ab(Fixed32 in);
 
 // Detection of black point
-int cdecl cmsDetectBlackPoint(LPcmsCIEXYZ BlackPoint, cmsHPROFILE hProfile, int Intent);
+
+#define LCMS_BPFLAGS_D50_ADAPTED    0x0001
+
+int cdecl cmsDetectBlackPoint(LPcmsCIEXYZ BlackPoint, cmsHPROFILE hProfile, int Intent, DWORD dwFlags);
 
 // choose reasonable resolution
 int cdecl _cmsReasonableGridpointsByColorspace(icColorSpaceSignature Colorspace, DWORD dwFlags);

@@ -1,0 +1,13 @@
+sed "/<opt>/p
+     /<opt>/d
+     s/<dopt>/<lopt>/
+     /<lopt>/p
+     /<lopt>/d
+     /<\/opt>/p
+     /<abs>/p
+     /<abs>/d
+     /<\/abs>/p
+     /<utils/p
+     /<\/utils/p
+     d" $1 > $2
+

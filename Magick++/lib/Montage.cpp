@@ -1,14 +1,14 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
+// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003
 //
 // Implementation of Montage
 //
 
 #define MAGICK_IMPLEMENTATION
 
+#include "Magick++/Include.h"
 #include <string>
-
 #include <string.h>
 
 #include "Magick++/Montage.h"

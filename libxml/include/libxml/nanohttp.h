@@ -20,7 +20,7 @@
 extern "C" {
 #endif
 void	xmlNanoHTTPInit		(void);
-LIBXML_DLL_IMPORT void	xmlNanoHTTPCleanup	(void);
+void	xmlNanoHTTPCleanup	(void);
 void	xmlNanoHTTPScanProxy	(const char *URL);
 int	xmlNanoHTTPFetch	(const char *URL,
 				 const char *filename,
@@ -38,19 +38,19 @@ void *	xmlNanoHTTPMethodRedir	(const char *URL,
 				 char **redir,
 				 const char *headers,
 				 int   ilen);
-LIBXML_DLL_IMPORT void *	xmlNanoHTTPOpen		(const char *URL,
+void *	xmlNanoHTTPOpen		(const char *URL,
 				 char **contentType);
 void *	xmlNanoHTTPOpenRedir	(const char *URL,
 				 char **contentType,
 				 char **redir);
 int	xmlNanoHTTPReturnCode	(void *ctx);
 const char * xmlNanoHTTPAuthHeader(void *ctx);
-LIBXML_DLL_IMPORT int	xmlNanoHTTPRead		(void *ctx,
+int	xmlNanoHTTPRead		(void *ctx,
 				 void *dest,
 				 int len);
 int	xmlNanoHTTPSave		(void *ctxt,
 				 const char *filename);
-LIBXML_DLL_IMPORT void	xmlNanoHTTPClose	(void *ctx);
+void	xmlNanoHTTPClose	(void *ctx);
 #ifdef __cplusplus
 }
 

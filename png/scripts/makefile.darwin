@@ -23,7 +23,7 @@ LDFLAGS=-L. -L$(ZLIBLIB) -lpng12 -lz
 RANLIB=ranlib
 
 PNGMAJ = 0
-PNGMIN = 1.2.4
+PNGMIN = 1.2.5
 PNGVER = $(PNGMAJ).$(PNGMIN)
 LIBNAME = libpng12
 
@@ -71,9 +71,8 @@ libpng.pc:
 libpng-config:
 	( cat scripts/libpng-config-head.in; \
 	echo prefix=\"$(prefix)\"; \
-	echo cppflags=\"-I$(INCPATH)/$(LIBNAME)\"; \
-	echo cflags=\"\"; \
-	echo ldflags=\"-L$(LIBPATH)\"; \
+	echo I_opts=\"-I$(INCPATH)/$(LIBNAME)\"; \
+	echo L_opts=\"-L$(LIBPATH)\"; \
 	echo libs=\"-lpng12 -lz\"; \
 	cat scripts/libpng-config-body.in ) > libpng-config
 	chmod +x libpng-config
@@ -87,9 +86,17 @@ $(LIBNAME).$(PNGMAJ).dylib: $(LIBNAME).$(PNGVER).dylib
 $(LIBNAME).$(PNGVER).dylib: $(OBJSDLL)
 	$(CC) -dynamiclib \
 	 -install_name $(DL)/$(LIBNAME).$(PNGMAJ).dylib \
-	 -current_version $(PNGMIN) -compatibility_version $(PNGMIN) \
+	 -flat_namespace -undefined suppress \
 	 -o $(LIBNAME).$(PNGVER).dylib \
-	 $(OBJSDLL) -L$(ZLIBLIB) -lz
+	 $(OBJSDLL)
+
+libpng.3.$(PNGMIN).dylib: $(OBJSDLL)
+	$(CC) -dynamiclib \
+	 -install_name $(DL)/libpng.3.dylib \
+	 -current_version 3 -compatibility_version 3 \
+	 -flat_namespace -undefined suppress \
+	 -o libpng.3.$(PNGMIN).dylib \
+	 $(OBJSDLL)
 
 pngtest: pngtest.o $(LIBNAME).dylib
 	$(CC) -o pngtest $(CFLAGS) pngtest.o $(LDFLAGS)
@@ -113,19 +120,21 @@ install-static: install-headers libpng.a
 	-@/bin/rm -f $(DL)/libpng.a
 	(cd $(DL); ln -sf $(LIBNAME).a libpng.a)
 
-install-shared: install-headers $(LIBNAME).dylib libpng.pc
+install-shared: install-headers $(LIBNAME).dylib libpng.pc \
+	libpng.3.$(PNGMIN).dylib
 	-@if [ ! -d $(DL) ]; then mkdir $(DL); fi
-	-@/bin/rm -f $(DL)/$(LIBNAME).$(PNGMAJ)*.dylib
+	-@/bin/rm -f $(DL)/$(LIBNAME).$(PNGVER)*.dylib
 	-@/bin/rm -f $(DL)/$(LIBNAME).dylib
 	-@/bin/rm -f $(DL)/libpng.dylib
 	-@/bin/rm -f $(DL)/libpng.3.dylib
-	-@/bin/rm -f $(DL)/libpng.3.*.dylib
+	-@/bin/rm -f $(DL)/libpng.3.$(PNGMIN)*.dylib
 	cp $(LIBNAME).$(PNGVER).dylib $(DL)
+	cp libpng.3.$(PNGMIN).dylib $(DL)
 	chmod 755 $(DL)/$(LIBNAME).$(PNGVER).dylib
+	chmod 755 $(DL)/libpng.3.$(PNGMIN).dylib
 	(cd $(DL); \
-	ln -sf $(LIBNAME).$(PNGVER).dylib libpng.dylib; \
-	ln -sf $(LIBNAME).$(PNGVER).dylib libpng.3.dylib; \
-	ln -sf $(LIBNAME).$(PNGVER).dylib libpng.3.$(PNGMIN).dylib; \
+	ln -sf libpng.3.$(PNGMIN).dylib libpng.3.dylib; \
+	ln -sf libpng.3.dylib libpng.dylib; \
 	ln -sf $(LIBNAME).$(PNGVER).dylib $(LIBNAME).$(PNGMAJ).dylib; \
 	ln -sf $(LIBNAME).$(PNGMAJ).dylib $(LIBNAME).dylib)
 	-@if [ ! -d $(DL)/pkgconfig ]; then mkdir $(DL)/pkgconfig; fi
@@ -161,14 +170,15 @@ install: install-static install-shared install-man install-config
 
 test-installed:
 	$(CC) $(CFLAGS) \
-	   `$(BINPATH)/libpng12-config --cppflags --cflags` pngtest.c \
+	   `$(BINPATH)/libpng12-config --cflags` pngtest.c \
 	   -L$(ZLIBLIB) \
-	   -o pngtesti `$(BINPATH)/libpng12-config --ldflags --libs`
+	   -o pngtesti `$(BINPATH)/libpng12-config --ldflags`
 	./pngtesti pngtest.png
 
 clean:
-	rm -f *.o libpng.a pngtest pngout.png libpng.pc libpng-config \
-	$(LIBNAME).*dylib pngtesti
+	rm -f *.o libpng.a pngtest pngout.png libpng-config \
+	libpng.3.$(PNGMIN).dylib \
+	libpng.pc $(LIBNAME).*dylib pngtesti
 
 DOCS = ANNOUNCE CHANGES INSTALL KNOWNBUG LICENSE README TODO Y2KINFO
 writelock:

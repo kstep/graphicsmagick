@@ -12,8 +12,8 @@ A:visited { color: #800080 }
 -->
 </STYLE>
 
-<TITLE>resource - GraphicsMagick Resource Consumption Methods</TITLE>
-<LINK REV="made" HREF="mailto:bfriesen@scooby.simplesystems.org">
+<TITLE>resource - Set resource consumption limits</TITLE>
+<LINK REV="made" HREF="mailto:bfriesen@shaggy.simplesystems.org">
 </HEAD>
 
 <BODY LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
@@ -36,7 +36,7 @@ A:visited { color: #800080 }
                                 [<A HREF="../books.html">Books</A>] [<A HREF="../links.html">Links</A>]</P>
                         </TD>
                         <TD ROWSPAN=2 WIDTH=19%>
-                                <P ALIGN=CENTER><IMG SRC="../../images/magick_small.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0></P>
+                                <P ALIGN=CENTER><IMG SRC="../../images/gm-188x120t.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=188 HEIGHT=120 BORDER=0></P>
                         </TD>
                 </TR>
                 <TR>
@@ -80,14 +80,14 @@ DESCRIPTIONS</A>
 <P>
 <H2><A NAME="name">
 NAME</A></H2>
-<P>resource - GraphicsMagick Resource Consumption Methods</P>
+<P>resource - Set resource consumption limits (e.g. memory)</P>
 <P>
 <HR>
 <H2><A NAME="synopsis">
 SYNOPSIS</A></H2>
-<P>unsigned int  <STRONG>AcquireMagickResource</STRONG>( const ResourceType type, const ExtendedSignedIntegralType size );</P>
+<P>unsigned int  <STRONG>AcquireMagickResource</STRONG>( const ResourceType type, const magick_int64_t size );</P>
 <P>unsigned long  <STRONG>GetMagickResource</STRONG>( const ResourceType type );</P>
-<P>void  <STRONG>LiberateMagickResource</STRONG>( const ResourceType type, const ExtendedSignedIntegralType size );</P>
+<P>void  <STRONG>LiberateMagickResource</STRONG>( const ResourceType type, const magick_int64_t size );</P>
 <P>unsigned int  <STRONG>ListMagickResourceInfo</STRONG>( 
 FILE *file, ExceptionInfo *exception );</P>
 <P>void  <STRONG>SetMagickResourceLimit</STRONG>( const ResourceType type, const unsigned long limit );</P>
@@ -98,7 +98,7 @@ FUNCTION
 DESCRIPTIONS</A></H2>
 <P>
 <H3><A NAME="acquiremagickresource">AcquireMagickResource</A></H3>
-<blockquote>AcquireMagickResource() acquires resources of the specified type. True is returned if the specified resource is available otherwise False. </blockquote><blockquote>The format of the AcquireMagickResource() method is: </blockquote><blockquote>unsigned int AcquireMagickResource ( const <A HREF="types.html#ResourceType">ResourceType</A> type, const ExtendedSignedIntegralType size ); </blockquote><P>
+<blockquote>AcquireMagickResource() acquires resources of the specified type. True is returned if the specified resource is available otherwise False. </blockquote><blockquote>The format of the AcquireMagickResource() method is: </blockquote><blockquote>unsigned int AcquireMagickResource ( const <A HREF="types.html#ResourceType">ResourceType</A> type, const magick_int64_t size ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG><A NAME="item_o_type%3A">type:</A></STRONG><BR>
@@ -120,7 +120,7 @@ The type of resource.
 <P></P></DL></DL>
 <P>
 <H3><A NAME="liberatemagickresource">LiberateMagickResource</A></H3>
-<blockquote>LiberateMagickResource() liberates resources of the specified type. </blockquote><blockquote>The format of the LiberateMagickResource() method is: </blockquote><blockquote>void LiberateMagickResource ( const <A HREF="types.html#ResourceType">ResourceType</A> type, const ExtendedSignedIntegralType size ); </blockquote><P>
+<blockquote>LiberateMagickResource() liberates resources of the specified type. </blockquote><blockquote>The format of the LiberateMagickResource() method is: </blockquote><blockquote>void LiberateMagickResource ( const <A HREF="types.html#ResourceType">ResourceType</A> type, const magick_int64_t size ); </blockquote><P>
 A description of each parameter follows:</P>
 <DL><DT><DD><DL>
 <DD><P></P><DT><STRONG>type:</STRONG><BR>

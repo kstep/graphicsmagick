@@ -1868,9 +1868,9 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
         else
           {
             for (i=0; i < (long) colors; i++)
-              LiberateMemory((void **) &colorlist[i]);
+              MagickFreeMemory(colorlist[i]);
             if (colorlist != (char **) NULL)
-              LiberateMemory((void **) &colorlist);
+              MagickFreeMemory(colorlist);
             colorlist=checklist;
             colors=number_colors;
           }
@@ -1929,7 +1929,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
           Determine slider id and position.
         */
         if (slider_info.id >= (int) (colors-visible_colors))
-          slider_info.id=colors-visible_colors;
+          slider_info.id=(int) (colors-visible_colors);
         if ((slider_info.id < 0) || (colors <= visible_colors))
           slider_info.id=0;
         slider_info.y=slider_info.min_y;
@@ -2401,7 +2401,7 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
               case XK_End:
               case XK_KP_End:
               {
-                slider_info.id=colors;
+                slider_info.id=(int) colors;
                 break;
               }
             }
@@ -2502,8 +2502,8 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
               slider_info.y=slider_info.max_y;
             slider_info.id=0;
             if (slider_info.y != slider_info.min_y)
-              slider_info.id=(colors*(slider_info.y-slider_info.min_y+1))/
-                (slider_info.max_y-slider_info.min_y+1);
+              slider_info.id=(int) ((colors*(slider_info.y-slider_info.min_y+1))/
+                (slider_info.max_y-slider_info.min_y+1));
             state|=RedrawListState;
             break;
           }
@@ -2638,9 +2638,9 @@ MagickExport void XColorBrowserWidget(Display *display,XWindows *windows,
     Free color list.
   */
   for (i=0; i < (long) colors; i++)
-    LiberateMemory((void **) &colorlist[i]);
+    MagickFreeMemory(colorlist[i]);
   if (colorlist != (char **) NULL)
-    LiberateMemory((void **) &colorlist);
+    MagickFreeMemory(colorlist);
   if ((*reply == '\0') || (strchr(reply,'-') != (char *) NULL))
     return;
   status=XParseColor(display,windows->widget.map_info->colormap,reply,&color);
@@ -2864,13 +2864,13 @@ MagickExport int XCommandWidget(Display *display,XWindows *windows,
         Allocate selection info memory.
       */
       if (selection_info != (XWidgetInfo *) NULL)
-        LiberateMemory((void **) &selection_info);
-      selection_info=(XWidgetInfo *)
-        AcquireMemory(number_selections*sizeof(XWidgetInfo));
+        MagickFreeMemory(selection_info);
+      selection_info=MagickAllocateMemory(XWidgetInfo *,
+        number_selections*sizeof(XWidgetInfo));
       if (selection_info == (XWidgetInfo *) NULL)
         {
-          MagickError(ResourceLimitError,"MemoryAllocationFailed",
-            "UnableToCreateCommandWidget");
+          MagickError3(ResourceLimitError,MemoryAllocationFailed,
+            UnableToCreateCommandWidget);
           return(id);
         }
       state|=UpdateConfigurationState | RedrawWidgetState;
@@ -4440,9 +4440,9 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
             break;
           }
         for (i=0; i < files; i++)
-          LiberateMemory((void **) &filelist[i]);
+          MagickFreeMemory(filelist[i]);
         if (filelist != (char **) NULL)
-          LiberateMemory((void **) &filelist);
+          MagickFreeMemory(filelist);
         filelist=checklist;
         files=number_files;
         /*
@@ -4799,7 +4799,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
           {
             if (!anomaly)
               {
-                const char
+                char
                   **formats;
 
                 const MagickInfo
@@ -4820,7 +4820,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
                 i=0;
                 for (p=magick_info; p != (MagickInfo *) NULL; p=p->next)
                   i++;
-                formats=(const char **) AcquireMemory((i+1)*sizeof(char *));
+                formats=MagickAllocateMemory(char **,(i+1)*sizeof(char *));
                 i=0;
                 for (p=magick_info; p != (MagickInfo *) NULL; p=p->next)
                 {
@@ -4838,7 +4838,7 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
                 windows->popup.x=windows->widget.x+60;
                 windows->popup.y=windows->widget.y+60;
                 XListBrowserWidget(display,windows,&windows->popup,
-                  formats,"Select","Select image format type:",format);
+                  (const char **)formats,"Select","Select image format type:",format);
                 XSetCursorState(display,windows,True);
                 (void) XDefineCursor(display,windows->widget.id,
                   windows->widget.cursor);
@@ -4848,8 +4848,8 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
                 special_info.raised=True;
                 XDrawBeveledButton(display,&windows->widget,&special_info);
                 for (i=0; formats[i] != (char *) NULL; i++)
-                  LiberateMemory((void **) &formats[i]);
-                LiberateMemory((void **) &formats);
+                  MagickFreeMemory(formats[i]);
+                MagickFreeMemory(formats);
                 break;
               }
             if (event.xbutton.window == windows->widget.id)
@@ -5253,9 +5253,9 @@ MagickExport void XFileBrowserWidget(Display *display,XWindows *windows,
     Free file list.
   */
   for (i=0; i < files; i++)
-    LiberateMemory((void **) &filelist[i]);
+    MagickFreeMemory(filelist[i]);
   if (filelist != (char **) NULL)
-    LiberateMemory((void **) &filelist);
+    MagickFreeMemory(filelist);
   if (*reply == '~')
     ExpandFilename(reply);
 }
@@ -5420,7 +5420,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
     Sort font list in ascending order.
   */
   listhead=fontlist;
-  fontlist=(char **) AcquireMemory(fonts*sizeof(char *));
+  fontlist=MagickAllocateMemory(char **,fonts*sizeof(char *));
   if (fontlist == (char **) NULL)
     {
       XNoticeWidget(display,windows,"MemoryAllocationFailed",
@@ -5690,7 +5690,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
           else
             {
               (void) XFreeFontNames(listhead);
-              LiberateMemory((void **) &fontlist);
+              MagickFreeMemory(fontlist);
               fontlist=checklist;
               fonts=number_fonts;
             }
@@ -5698,7 +5698,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
           Sort font list in ascending order.
         */
         listhead=fontlist;
-        fontlist=(char **) AcquireMemory(fonts*sizeof(char *));
+        fontlist=MagickAllocateMemory(char **,fonts*sizeof(char *));
         if (fontlist == (char **) NULL)
           {
             XNoticeWidget(display,windows,"MemoryAllocationFailed",
@@ -6444,7 +6444,7 @@ MagickExport void XFontBrowserWidget(Display *display,XWindows *windows,
     Free font list.
   */
   (void) XFreeFontNames(listhead);
-  LiberateMemory((void **) &fontlist);
+  MagickFreeMemory(fontlist);
 }
 
 /*
@@ -7895,8 +7895,8 @@ MagickExport int XMenuWidget(Display *display,XWindows *windows,
 %  The format of the XMonitorWidget method is:
 %
 %      void XMonitorWidget(Display *display,XWindows *windows,const char *task,
-%        const ExtendedSignedIntegralType quantum,
-%        const ExtendedUnsignedIntegralType span)
+%        const magick_int64_t quantum,
+%        const magick_uint64_t span)
 %
 %  A description of each parameter follows:
 %
@@ -7915,8 +7915,8 @@ MagickExport int XMenuWidget(Display *display,XWindows *windows,
 %
 */
 MagickExport void XMonitorWidget(Display *display,XWindows *windows,
-  const char *task,const ExtendedSignedIntegralType quantum,
-  const ExtendedUnsignedIntegralType span)
+  const char *task,const magick_int64_t quantum,
+  const magick_uint64_t span)
 {
   unsigned int
     width;

@@ -9,7 +9,7 @@
 # GraphicsMagick Configure Script
 #
  
-AC_PREREQ(2.57)
+AC_PREREQ(2.59)
 AC_INIT(magick/magick.h)
 
 # Source file containing package/library versioning information.
@@ -17,18 +17,32 @@ AC_INIT(magick/magick.h)
 
 echo "configuring ${PACKAGE_NAME} ${PACKAGE_VERSION}${PACKAGE_VERSION_ADDENDUM}"
 AC_CANONICAL_SYSTEM
-AC_SUBST(LIBRARY_CURRENT)dnl
-AC_SUBST(LIBRARY_REVISION)dnl
-AC_SUBST(LIBRARY_AGE)dnl
+
+# Substitute Magick library versioning
+AC_SUBST(MAGICK_LIBRARY_CURRENT)dnl
+AC_SUBST(MAGICK_LIBRARY_REVISION)dnl
+AC_SUBST(MAGICK_LIBRARY_AGE)dnl
+
+# Substitute Magick++ library versioning
+AC_SUBST(MAGICK_PLUS_PLUS_LIBRARY_CURRENT)
+AC_SUBST(MAGICK_PLUS_PLUS_LIBRARY_REVISION)
+AC_SUBST(MAGICK_PLUS_PLUS_LIBRARY_AGE)
+
+# Substitute Magick Wand library versioning
+AC_SUBST(MAGICK_WAND_LIBRARY_CURRENT)
+AC_SUBST(MAGICK_WAND_LIBRARY_REVISION)
+AC_SUBST(MAGICK_WAND_LIBRARY_AGE)
+
 AC_SUBST(PACKAGE_NAME)dnl
 AC_SUBST(PACKAGE_VERSION)dnl
 AC_SUBST(PACKAGE_VERSION_ADDENDUM)dnl
+AC_SUBST(PACKAGE_CHANGE_DATE)dnl
 AC_SUBST(PACKAGE_RELEASE_DATE)dnl
 
 # Definition used to define MagickLibVersion in version.h
 # As soon as any of these values exceeds 9, a more sophisticated formatting
 # scheme must be invented for this string.
-MAGICK_LIB_VERSION="0x0${LIBRARY_CURRENT}0${LIBRARY_AGE}0${LIBRARY_REVISION}"
+MAGICK_LIB_VERSION="0x0${MAGICK_LIBRARY_CURRENT}0${MAGICK_LIBRARY_AGE}0${MAGICK_LIBRARY_REVISION}"
 AC_SUBST(MAGICK_LIB_VERSION)
 
 # Definition used to define MagickLibVersionText in version.h
@@ -36,7 +50,7 @@ MAGICK_LIB_VERSION_TEXT="${PACKAGE_VERSION}"
 AC_SUBST(MAGICK_LIB_VERSION_TEXT)
 
 # Definition used to define MagickLibVersionNumber in version.h
-MAGICK_LIB_VERSION_NUMBER="${LIBRARY_CURRENT},${LIBRARY_AGE},${LIBRARY_REVISION}"
+MAGICK_LIB_VERSION_NUMBER="${MAGICK_LIBRARY_CURRENT},${MAGICK_LIBRARY_AGE},${MAGICK_LIBRARY_REVISION}"
 AC_SUBST(MAGICK_LIB_VERSION_NUMBER)
 
 # Ensure that make can run correctly
@@ -56,6 +70,19 @@ CPPFLAGS_INITIAL=$CPPFLAGS
 LDFLAGS_INITIAL=$LDFLAGS
 LIBS_INITIAL=$LIBS
 PERLMAINCC=$CC
+
+MAGICK_API_CFLAGS=''
+MAGICK_API_CPPFLAGS=$CPPFLAGS_INITIAL
+MAGICK_API_LDFLAGS=''
+MAGICK_API_LIBS=''
+
+#
+# Standards compliance definitions
+#
+#AC_DEFINE(_XOPEN_SOURCE,500,[Required X Open interface level (500)])
+#AC_DEFINE(_POSIX_C_SOURCE,199506L,[Required POSIX interface level (199506L)])
+#AC_DEFINE(_ISOC99_SOURCE,1,[Code may make use of ISO C '99 features])
+#AC_DEFINE(__EXTENSIONS__,1,[Enable all API extensions (for Solaris)])
 
 #
 # Evaluate shell variable equivalents to Makefile directory variables
@@ -154,15 +181,91 @@ then
     *-*-hpux* )
       # aCC: HP ANSI C++ B3910B A.03.34
       CFLAGS="${CFLAGS} -Wp,-H30000"
-      CXX="${CXX} -AA"
+      if test -n "${CXXFLAGS}"
+      then
+        CXXFLAGS='-AA'
+      else
+        CXXFLAGS="${CXXFLAGS} -AA"
+      fi
       ;;
     *-dec-osf5.* )
       # Compaq alphaev68-dec-osf5.1 compiler
-      CXXFLAGS="${CXXFLAGS} -std strict_ansi -noimplicit_include"
+      if test -n "${CXXFLAGS}"
+      then
+        CXXFLAGS='-std strict_ansi -noimplicit_include'
+      else
+        CXXFLAGS="${CXXFLAGS} -std strict_ansi -noimplicit_include"
+      fi
   esac
 else
   CFLAGS="${CFLAGS} -Wall"
 fi
+
+#
+# Determine Posix threads settings
+#
+# Enable support for threads
+AC_ARG_WITH(threads,
+	      [  --without-threads       disable threads support],
+	      [with_threads=$withval],
+	      [with_threads='yes'])
+
+have_threads=no
+if test "$with_threads" != 'no'
+then
+
+  ACX_PTHREAD()
+  if test "$acx_pthread_ok" = yes
+  then
+    have_threads=yes
+
+    DEF_THREAD="$PTHREAD_CFLAGS"
+    CFLAGS="$CFLAGS $DEF_THREAD"
+    CXXFLAGS="$CXXFLAGS $DEF_THREAD"
+
+    if test "$CC" != "$PTHREAD_CC"
+    then
+      AC_MSG_WARN([Replacing compiler $CC with compiler $PTHREAD_CC to support pthreads.])
+      CC="$PTHREAD_CC"
+    fi
+    if test "$CXX" != "$PTHREAD_CXX"
+    then
+      AC_MSG_WARN([Replacing compiler $CXX with compiler $PTHREAD_CXX to support pthreads.])
+      CXX="$PTHREAD_CXX"
+    fi
+  fi
+
+fi
+
+########
+#
+# Check for large file support
+#
+# According to the X/Open LFS standard, setting _FILE_OFFSET_BITS to 64
+# remaps standard functions to their 64-bit equivalents.
+#
+########
+AC_SYS_LARGEFILE
+LFS_CPPFLAGS=''
+if test "$enable_largefile" != no
+then
+  if test "$ac_cv_sys_file_offset_bits" != 'no'
+  then
+    LFS_CPPFLAGS="$LFS_CPPFLAGS -D_FILE_OFFSET_BITS=$ac_cv_sys_file_offset_bits"
+  fi
+  if test "$ac_cv_sys_large_files" != 'no'
+  then
+    LFS_CPPFLAGS="$LFS_CPPFLAGS -D_LARGE_FILES=1"
+  fi
+  # If the `fseeko' function is available, define `HAVE_FSEEKO'. Define
+  # `_LARGEFILE_SOURCE' if necessary.
+  AC_FUNC_FSEEKO
+  if  test "$ac_cv_sys_largefile_source" != 'no'
+  then
+    LFS_CPPFLAGS="$LFS_CPPFLAGS -D_LARGEFILE_SOURCE=1"
+  fi
+fi
+AC_SUBST(LFS_CPPFLAGS)
 
 #
 # Configure libtool & libltdl
@@ -179,6 +282,7 @@ AC_SUBST(LIBLTDL)
 # Configure libtool
 AC_DISABLE_SHARED
 AC_ENABLE_STATIC
+AC_LIBTOOL_TAGS([CXX])
 AC_LIBTOOL_WIN32_DLL
 AC_LIBTOOL_DLOPEN
 AC_LIBTOOL_SETUP
@@ -187,14 +291,14 @@ AC_SUBST(LIBTOOL_DEPS)
 
 # Check to see if building shared libraries
 libtool_build_shared_libs='no'
-if ./libtool --config | grep 'build_libtool_libs=yes' > /dev/null
+if test "$enable_shared" = 'yes'
 then
   libtool_build_shared_libs='yes'
 fi
 
 # Check to see if building static libraries
 libtool_build_static_libs='no'
-if ./libtool --config | grep 'build_old_libs=yes' > /dev/null
+if test "$enable_static" = 'yes'
 then
   libtool_build_static_libs='yes'
 fi
@@ -279,6 +383,12 @@ AC_ARG_ENABLE(ccmalloc,
 	      [with_ccmalloc=$enableval],
 	      [with_ccmalloc='no'])
 
+# Enable Electric Fence memory debugging support
+AC_ARG_ENABLE(efence,
+	      [  --enable-efence         enable 'Electric Fence' memory debug support (default disabled)],
+	      [with_efence=$enableval],
+	      [with_efence='no'])
+
 # Enable prof-based profiling support
 AC_ARG_ENABLE(prof,
 	      [  --enable-prof           enable 'prof' profiling support (default disabled)],
@@ -308,12 +418,6 @@ then
   fi
 fi
 
-# Disable support for largefiles
-AC_ARG_ENABLE(largefile,
-	      [  --disable-largefile     disable support for large (64 bit) file offsets],
-	      [with_largefile=$enableval],
-	      [with_largefile='yes'])
-
 # Enable LZW compression.
 AC_ARG_ENABLE(lzw,
 	      [  --enable-lzw            enable LZW support (default disabled)],
@@ -321,6 +425,16 @@ AC_ARG_ENABLE(lzw,
 	      [with_lzw='no'])
 test "$with_lzw" = 'yes' && AC_DEFINE(HasLZW,1,Include LZW compression)
 AM_CONDITIONAL(HasLZW, test "$have_lzw" != 'no')
+
+# Enable prefixing library symbols with a common string
+AC_ARG_ENABLE(symbol-prefix,
+	      [  --enable-symbol-prefix  enable prefixing library symbols with "Gm"],
+	      [with_symbol_prefix=$enableval],
+	      [with_symbol_prefix='no'])
+if test "$with_symbol_prefix" != 'no'
+then
+  AC_DEFINE(PREFIX_MAGICK_SYMBOLS,1,[Prefix Magick library symbols with a common string.])
+fi
 
 # Number of bits in a Quantum
 AC_ARG_WITH(quantum-depth,
@@ -348,25 +462,11 @@ then
   AC_DEFINE_UNQUOTED(PixelCacheThreshold,$with_cache,[Pixel cache threshold in MB (defaults to available memory)])
 fi
 
-# Enable support for threads
-AC_ARG_WITH(threads,
-	      [  --without-threads       disable threads support],
-	      [with_threads=$withval],
-	      [with_threads='yes'])
-
-# Disable/Enable support for full delegate paths
-if test "$native_win32_build" = 'yes'
-then
-  AC_ARG_WITH(frozenpaths,
-	      [  --with-frozenpaths      enable frozen delegate paths],
-	      [with_frozenpaths=$withval],
-	      [with_frozenpaths='no'])
-else
-  AC_ARG_WITH(frozenpaths,
-	      [  --without-frozenpaths   disable frozen delegate paths],
-	      [with_frozenpaths=$withval],
-	      [with_frozenpaths='yes'])
-fi
+# Disable/Enable support for full delegate paths in delegates.mgk
+AC_ARG_WITH(frozenpaths,
+              [  --with-frozenpaths      enable frozen delegate paths],
+              [with_frozenpaths=$withval],
+              [with_frozenpaths='no'])
 
 # Enable build/install of Magick++
 AC_ARG_WITH(magick-plus-plus,
@@ -462,6 +562,12 @@ AC_ARG_WITH(tiff,
 	      [with_tiff=$withval],
 	      [with_tiff='yes'])
 
+# Disable TRIO.
+AC_ARG_WITH(trio,
+	      [  --without-trio          disable TRIO support],
+	      [with_trio=$withval],
+	      [with_trio='yes'])
+
 # Disable TTF.
 AC_ARG_WITH(ttf,
 	      [  --without-ttf           disable TrueType support],
@@ -515,7 +621,7 @@ AC_ARG_WITH(zlib,
 #
 AC_ARG_WITH(libstdc,
   [  --with-libstdc=DIR      use libstdc++ in DIR (for GNU C++)],
-  [if test "$withval" != no -a "$withval" != yes; then
+  [if test "$withval" != no && test "$withval" != yes; then
     if test -d "$withval"; then
       LIBSTDCLDFLAGS="-L$withval"
     fi
@@ -541,6 +647,7 @@ then
   if test "${libtool_build_shared_libs}" = 'yes'
   then
     CPPFLAGS="$CPPFLAGS -D_DLL"
+    MAGICK_API_CPPFLAGS="$MAGICK_API_CPPFLAGS -D_DLL"
     LIBRARY_EXTRA_CPPFLAGS="$LIBRARY_EXTRA_CPPFLAGS -D_MAGICKLIB_"
 
     if test "$with_modules" = 'yes'
@@ -552,56 +659,24 @@ then
 
   else
     CPPFLAGS="$CPPFLAGS -D_LIB"
+    MAGICK_API_CPPFLAGS="$MAGICK_API_CPPFLAGS -D_LIB"
 
   fi
   if test "$with_threads" = 'yes'
   then
      CPPFLAGS="$CPPFLAGS -D_MT"
+     MAGICK_API_CPPFLAGS="$MAGICK_API_CPPFLAGS -D_MT"
   fi
 fi
 AC_SUBST(MODULE_EXTRA_CPPFLAGS)
 AC_SUBST(LIBRARY_EXTRA_CPPFLAGS)
-
-########
-#
-# Check for large file support
-#
-########
-LIB_LF=''
-if test "$with_largefile" = 'yes'
-then
-#  AC_SYS_LARGEFILE
-  AC_MSG_CHECKING(whether large file support needs explicit enabling)
-  result='no'
-  getconf='getconf LFS_CFLAGS'
-  if ($getconf) >/dev/null 2>&1
-  then
-    CPPFLAGS="$CPPFLAGS "`$getconf`
-    result='yes'
-  fi
-  getconf='getconf LFS_LDFLAGS'
-  if ($getconf) >/dev/null 2>&1
-  then
-    LDFLAGS="$LDFLAGS "`$getconf`
-    result='yes'
-  fi
-  getconf='getconf LFS_LIBS'
-  if ($getconf) >/dev/null 2>&1
-  then
-    LIB_LF=`$getconf`
-    LIBS="$LIB_LF $LIBS"
-    result='yes'
-  fi
-  AC_MSG_RESULT($result)
-fi
-AC_SUBST(LIB_LF)
 
 # Check standard headers
 AC_HEADER_STDC
 AC_HEADER_DIRENT
 
 # Check additional headers
-AC_CHECK_HEADERS(sys/times.h sys/types.h)
+AC_CHECK_HEADERS(machine/param.h sys/times.h sys/types.h)
 
 ########
 #
@@ -626,35 +701,35 @@ AC_C_BIGENDIAN
 # or precision than the double type, define HAVE_LONG_DOUBLE.
 AC_C_LONG_DOUBLE
 
-# Obtain size of an 'short' and define as SIZEOF_SHORT
-AC_CHECK_SIZEOF(short)
+# Obtain size of an 'signed short' and define as SIZEOF_SHORT
+AC_CHECK_SIZEOF(signed short)
 
 # Obtain size of an 'unsigned short' and define as SIZEOF_UNSIGNED_SHORT
 AC_CHECK_SIZEOF(unsigned short)
 
-# Obtain size of an 'int' and define as SIZEOF_INT
-AC_CHECK_SIZEOF(int)
+# Obtain size of an 'signed int' and define as SIZEOF_INT
+AC_CHECK_SIZEOF(signed int)
 
 # Obtain size of an 'unsigned int' and define as SIZEOF_UNSIGNED_INT
 AC_CHECK_SIZEOF(unsigned int)
 
-# Obtain size of a 'long' and define as SIZEOF_LONG
-AC_CHECK_SIZEOF(long)
+# Obtain size of a 'signed long' and define as SIZEOF_LONG
+AC_CHECK_SIZEOF(signed long)
 
 # Obtain size of a 'unsigned long' and define as SIZEOF_UNSIGNED_LONG
 AC_CHECK_SIZEOF(unsigned long)
 
 # Obtain size of a 'long long' and define as SIZEOF_LONG_LONG.  If
 # 'long long' is not supported then the value defined is zero.
-AC_CHECK_SIZEOF(long long)
+AC_CHECK_SIZEOF(signed long long)
 
 # Obtain size of a 'unsigned long long' and define as
 # SIZEOF_UNSIGNED_LONG_LONG.  If 'unsigned long long' is not
 # supported then the value defined is zero.
 AC_CHECK_SIZEOF(unsigned long long)
 
-# If the system does not provide a 'mode_t' type, use 'int' instead
-AC_CHECK_TYPE(mode_t, int)
+# If the system does not provide a 'mode_t' type, use 'unsigned int' instead
+AC_CHECK_TYPE(mode_t, unsigned int)
 
 # If the system does not provide a 'off_t' type, use 'long' instead
 AC_CHECK_TYPE(off_t, long)
@@ -663,7 +738,10 @@ AC_CHECK_TYPE(off_t, long)
 AC_CHECK_TYPE(pid_t, int)
 
 # If the system does not provide a 'size_t', use 'unsigned int' instead
-AC_CHECK_TYPE(size_t, unsigned)
+AC_CHECK_TYPE(size_t, unsigned int)
+
+# If the system does not provide a 'ssize_t', use 'int' instead
+AC_CHECK_TYPE(ssize_t, int)
 
 # If `signal.h' declares signal as returning a pointer to a function
 # returning void, define RETSIGTYPE to be void; otherwise, define it
@@ -671,8 +749,8 @@ AC_CHECK_TYPE(size_t, unsigned)
 AC_TYPE_SIGNAL
 
 # Test for C compiler __func__ support
-if test "$ac_cv_have___func__" != 'yes' ; then
-AC_CACHE_CHECK(for C compiler __func__ support, ac_cv_have___func__,
+if test "$ac_cv_have_C__func__" != 'yes' ; then
+AC_CACHE_CHECK(for C compiler __func__ support, ac_cv_have_C__func__,
 [AC_TRY_COMPILE(
 ,
 changequote(<<, >>)dnl
@@ -681,26 +759,114 @@ const char *func=__func__;
 return 0;
 >>,
 changequote([, ])dnl
-ac_cv_have___func__='yes',
-ac_cv_have___func__='no')])
+ac_cv_have_C__func__='yes',
+ac_cv_have_C__func__='no')])
 
-if test "$ac_cv_have___func__" = 'yes' ; then
+if test "$ac_cv_have_C__func__" = 'yes' ; then
  AC_MSG_RESULT(yes)
- AC_DEFINE(HAS___func__,1,Define if C compiler supports __func__)
+ AC_DEFINE(HAS_C__func__,1,Define if C compiler supports __func__)
 else
  AC_MSG_RESULT(no)
 fi
 fi
+
+#
+# Compute sized types for current CPU and compiler options
+#
+
+AC_MSG_CHECKING(for signed 8-bit type)
+INT8_T='signed char'
+AC_MSG_RESULT($INT8_T)
+AC_SUBST(INT8_T)
+
+AC_MSG_CHECKING(for unsigned 8-bit type)
+UINT8_T='unsigned char'
+AC_MSG_RESULT($UINT8_T)
+AC_SUBST(UINT8_T)
+
+AC_MSG_CHECKING(for signed 16-bit type)
+INT16_T='signed short'
+AC_MSG_RESULT($INT16_T)
+AC_SUBST(INT16_T)
+
+AC_MSG_CHECKING(for unsigned 16-bit type)
+UINT16_T='unsigned short'
+AC_MSG_RESULT($UINT16_T)
+AC_SUBST(UINT16_T)
+
+AC_MSG_CHECKING(for signed 32-bit type)
+INT32_T='none'
+if test $ac_cv_sizeof_signed_int -eq 4
+then
+  INT32_T='signed int'
+elif test $ac_cv_sizeof_signed_long -eq 4
+then
+  INT32_T='signed long'
+fi
+AC_MSG_RESULT($INT32_T)
+AC_SUBST(INT32_T)
+
+AC_MSG_CHECKING(for unsigned 32-bit type)
+UINT32_T='none'
+if test $ac_cv_sizeof_unsigned_int -eq 4
+then
+  UINT32_T='unsigned int'
+elif test $ac_cv_sizeof_unsigned_long -eq 4
+then
+  UINT32_T='unsigned long'
+fi
+AC_MSG_RESULT($UINT32_T)
+AC_SUBST(UINT32_T)
+
+AC_MSG_CHECKING(for signed 64-bit type)
+INT64_T='none'
+if test $ac_cv_sizeof_signed_long -eq 8
+then
+  INT64_T='signed long'
+elif test $ac_cv_sizeof_signed_long_long -eq 8
+then
+  INT64_T='signed long long'
+fi
+AC_MSG_RESULT($INT64_T)
+AC_SUBST(INT64_T)
+
+AC_MSG_CHECKING(for unsigned 64-bit type)
+UINT64_T='none'
+if test $ac_cv_sizeof_unsigned_long -eq 8
+then
+  UINT64_T='unsigned long'
+elif test $ac_cv_sizeof_unsigned_long_long -eq 8
+then
+  UINT64_T='unsigned long long'
+fi
+AC_MSG_RESULT($UINT64_T)
+AC_SUBST(UINT64_T)
 
 ########
 #
 # Check for functions
 #
 ########
-AC_FUNC_MMAP
-AC_CHECK_FUNCS([ftime getexecname getc_unlocked getpagesize mkstemp poll \
-  pread pwrite putc_unlocked raise select tempnam times sigemptyset sigaction \
-  strerror sysconf vsprintf vsnprintf])
+GM_FUNC_MMAP_FILEIO
+AC_CHECK_FUNCS([ftime getexecname getc_unlocked getpagesize mkstemp \
+  _pclose pclose poll _popen popen pread pwrite putc_unlocked raise \
+  rand_r select tempnam times sigemptyset sigaction strerror strlcpy \
+  sysconf vsprintf vsnprintf])
+
+########
+#
+# Check for function prototypes
+#
+########
+AC_EGREP_HEADER([strlcpy],[
+#include <stdio.h>
+#include <stdarg.h>],[
+AC_DEFINE(HAVE_STRLCPY_PROTOTYPE, 1, [Headers provide a prototype for strlcpy])])
+
+AC_EGREP_HEADER([vsnprintf],[
+#include <stdio.h>
+#include <stdarg.h>],[
+AC_DEFINE(HAVE_VSNPRINTF_PROTOTYPE, 1, [Headers provide a prototype for vsnprintf])])
 
 ########
 #
@@ -737,6 +903,29 @@ then
  OLIBS="$LIBS"
  LIBS=''
  AC_LANG_PUSH(C++)
+
+  # Test for C++ compiler __func__ support
+ if test "$ac_cv_have_CPP__func__" != 'yes' ; then
+  AC_CACHE_CHECK(for C++ compiler __func__ support, ac_cv_have_CPP__func__,
+  [AC_TRY_COMPILE(
+  ,
+  changequote(<<, >>)dnl
+  <<
+  const char *func=__func__;
+  return 0;
+  >>,
+  changequote([, ])dnl
+  ac_cv_have_CPP__func__='yes',
+  ac_cv_have_CPP__func__='no')])
+
+  if test "$ac_cv_have_CPP__func__" = 'yes' ; then
+   AC_MSG_RESULT(yes)
+   AC_DEFINE(HAS_CPP__func__,1,Define if C++ compiler supports __func__)
+  else
+   AC_MSG_RESULT(no)
+  fi
+ fi
+
 # Full set of headers used ...
 # algorithm cctype cerrno cmath cstdio cstdlib cstring ctime exception
 # functional iomanip iosfwd iostream iterator list string strstream utility
@@ -757,19 +946,19 @@ then
  AC_LANG_POP
 
  AC_MSG_CHECKING(whether C++ compiler is sufficient for Magick++)
- if test \
-  $ac_cv_cxx_bool = 'yes' -a \
-  $ac_cv_cxx_const_cast = 'yes' -a \
-  $ac_cv_cxx_default_template_parameters = 'yes' -a \
-  $ac_cv_cxx_exceptions = 'yes' -a \
-  $ac_cv_cxx_explicit = 'yes' -a \
-  $ac_cv_cxx_have_std = 'yes' -a \
-  $ac_cv_cxx_have_stl = 'yes' -a \
-  $ac_cv_cxx_mutable = 'yes' -a \
-  $ac_cv_cxx_namespaces = 'yes' -a \
-  $ac_cv_cxx_new_for_scoping = 'yes' -a \
-  $ac_cv_cxx_static_cast = 'yes' -a \
-  $ac_cv_cxx_templates = 'yes'
+ if \
+  test $ac_cv_cxx_bool = 'yes' && \
+  test $ac_cv_cxx_const_cast = 'yes' &&
+  test $ac_cv_cxx_default_template_parameters = 'yes' &&
+  test $ac_cv_cxx_exceptions = 'yes' && \
+  test $ac_cv_cxx_explicit = 'yes' && \
+  test $ac_cv_cxx_have_std = 'yes' && \
+  test $ac_cv_cxx_have_stl = 'yes' && \
+  test $ac_cv_cxx_mutable = 'yes' && \
+  test $ac_cv_cxx_namespaces = 'yes' && \
+  test $ac_cv_cxx_new_for_scoping = 'yes' && \
+  test $ac_cv_cxx_static_cast = 'yes' && \
+  test $ac_cv_cxx_templates = 'yes'
  then
   have_magick_plus_plus='yes'
  else
@@ -834,9 +1023,7 @@ fi
 # directory as GraphicsMagick installation prefix.
 #LDFLAGS="$LDFLAGS -L$LIB_DIR"
 #CPPFLAGS="$CPPFLAGS -I$INCLUDE_DIR"
-
-# Extend includedir to include magick subdirectory offset
-includedir="$includedir/magick"
+MAGICK_API_CPPFLAGS="-I$INCLUDE_DIR/GraphicsMagick $MAGICK_API_CPPFLAGS"
 
 #
 # Find the X11 RGB database
@@ -894,6 +1081,33 @@ fi
 AC_DEFINE_UNQUOTED(X11ConfigurePath,"X11ConfigurePath",Location of X11 configure files)
 
 #
+# Find Posix threads library
+#
+LIB_THREAD=''
+if test "$with_threads" != 'no' && test "$have_threads" = 'yes'
+then
+
+  if test "x$PTHREAD_LIBS" = "x"
+  then
+    case "${host_cpu}-${host_os}" in
+      *-freebsd*)
+        MAGICK_CHECK_PTHREAD_LIB(c_r,PTHREAD_LIBS=-lc_r) ;;
+    esac
+  fi
+
+  for lib in pthread pthreads
+  do
+    if test "x$PTHREAD_LIBS" = "x" ; then
+      MAGICK_CHECK_PTHREAD_LIB([$lib],[PTHREAD_LIBS=-l$lib])
+    fi
+  done
+
+  LIB_THREAD="$PTHREAD_LIBS"
+  LIBS="$LIBS $LIB_THREAD"
+fi
+AC_SUBST(LIB_THREAD)
+
+#
 # Add support for ccmalloc memory debugging library if requested
 #
 have_ccmalloc='no'
@@ -920,6 +1134,15 @@ then
 fi
 
 #
+# Add support for Electric Fence debugging library if requested
+#
+if test "$with_efence" = 'yes'
+then
+  LIB_EFENCE='-lefence'
+  LIBS="$LIB_EFENCE $LIBS"
+fi
+
+#
 # Find math library
 #
 LIB_MATH=''
@@ -927,35 +1150,36 @@ AC_CHECK_LIB(m,sqrt,LIB_MATH="-lm",,)
 LIBS="$LIB_MATH $LIBS"
 AC_SUBST(LIB_MATH)
 
+
 #
-# Find Posix threads library
+# If vsnprintf is missing, look for TRIO
 #
-LIB_THREAD=''
-if test "$with_threads" != 'no'
+have_trio='no'
+LIB_TRIO=''
+if test "$ac_cv_func_vsnprintf" != 'yes' && test "$with_trio" != 'no'
 then
-AC_MSG_CHECKING([for POSIX thread support])
-OLIBS=$LIBS
-LIBS="$LIBS -lpthread"
-AC_TRY_LINK([#include <pthread.h>],[(void)pthread_create(0,0,0,0);],[
-  AC_MSG_RESULT([yes])
-  AC_DEFINE(HasPTHREADS, 1, [Define if you have Posix thread methods.])
-  LIB_THREAD="-lpthread"
-  DEF_THREAD="-D_REENTRANT"
-  LIBS="$LIBS $LIB_THREAD"
-  CPPFLAGS="$CPPFLAGS $DEF_THREAD"],[
-  AC_MSG_RESULT([no])
-  LIBS=$OLIBS])
+   AC_MSG_CHECKING(for TRIO vsnprintf replacement)
+   AC_CHECK_LIB(trio,trio_vsnprintf,have_trio='yes',,)
+   if test "$have_trio" == 'yes'
+   then
+     LIB_TRIO="-ltrio"
+     LIBS="$LIB_TRIO $LIBS"
+     AC_DEFINE(HasTRIO,1,Define if you have TRIO vsnprintf replacement library)
+     AC_MSG_RESULT(yes)
+   else
+     AC_MSG_RESULT(no)
+   fi
 fi
-AC_SUBST(LIB_THREAD)
+AC_SUBST(LIB_TRIO)
 
 #
 # Check for ZLIB
 #
 have_zlib='no'
+LIB_ZLIB=''
 dnl PNG requires zlib so enable zlib check if PNG is requested
 if test "$with_zlib" != 'no' || test "$with_png" != 'no'
 then
-  LIB_ZLIB=''
   AC_MSG_CHECKING(for ZLIB support )
   AC_MSG_RESULT()
   failed=0;
@@ -1039,10 +1263,26 @@ then
 
   AC_DEFINE(HasX11,1,Define if you have X11 library)dnl
 
-  AC_CHECK_LIB(Xext,XShmAttach,LIB_XEXT='-lXext',,)
-  AC_CHECK_LIB(Xext,XShmAttach,AC_DEFINE(HasSharedMemory,1,X11 server supports shared memory extension),,)
-  AC_CHECK_LIB(Xext,XShapeCombineMask,LIB_XEXT='-lXext',,)
-  AC_CHECK_LIB(Xext,XShapeCombineMask,AC_DEFINE(HasShape,1,X11 server supports shape extension),,)
+  #
+  # Check for X11 shared memory extension
+  #
+  # shmctl is required to support the shared memory extension
+  LIB_IPC=''
+  AC_CHECK_FUNC([shmctl],[have_shmctl='yes'],[])
+  if test "$have_shmctl" != 'yes'
+  then
+     AC_SEARCH_LIBS([shmctl],[cygipc],[have_shmctl='yes'; LIB_IPC='-lcygipc'],[])
+  fi
+
+  if test "$have_shmctl" = 'yes'
+  then
+    AC_CHECK_LIB([Xext],[XShmAttach],[LIB_XEXT='-lXext' ; AC_DEFINE(HasSharedMemory,1,X11 server supports shared memory extension)],[],[])
+  fi
+
+  #
+  # Check for X11 shape extension
+  #
+  AC_CHECK_LIB([Xext],[XShapeCombineMask],[LIB_XEXT='-lXext' ; AC_DEFINE(HasShape,1,X11 server supports shape extension)],[],[])
 
   LIBS="$LIB_XEXT $LIBS"
 fi
@@ -1431,7 +1671,7 @@ then
 
     OLD_LDFLAGS="$LDFLAGS"
     OLD_CPPFLAGS="$CPPFLAGS"
-    if test "$with_delegate_build" != 'no' -a -d "$builddir/ttf/include"
+    if test "$with_delegate_build" != 'no' && test -d "$builddir/ttf/include"
     then
        :
     else
@@ -1460,8 +1700,11 @@ dnl First see if there is a library
     fi
 
 dnl Now test for the headers
-    AC_CHECK_HEADERS(freetype/freetype.h)
-    if test "$ac_cv_header_freetype_freetype_h" = 'yes'
+    # Some Freetype installs appear to require that <ft2build.h> be
+    # included prior to including <freetype/freetype.h>.  Oops!
+    AC_CHECK_HEADER([ft2build.h],[FT2BUILD_H='#include <ft2build.h>'],[ft2build=''],[])
+    AC_CHECK_HEADER(freetype/freetype.h,[have_freetype_h='yes'],[have_freetype_h='no'],[$FT2BUILD_H])
+    if test "$have_freetype_h" = 'yes'
     then
 	passed=`expr $passed + 1`
     else
@@ -1480,6 +1723,10 @@ dnl Now test for the headers
 	else
 	    LIBS="$LIB_TTF $LIBS"
 	    AC_DEFINE(HasTTF,1,Define if you have FreeType (TrueType font) library)
+            if test "$ac_cv_header_ft2build_h" = 'yes'
+            then
+              AC_DEFINE([HAVE_FT2BUILD_H],[1],[Define to 1 if you have the <ft2build.h> header file.])
+             fi
 	    AC_MSG_RESULT(yes)
 	    have_ttf='yes'
 	fi
@@ -1673,7 +1920,7 @@ then
   have_libwmflite='no'
   have_libwmf_ipa_h='no'
 
-  AC_CHECK_HEADER(libwmf/ipa.h,have_libwmf_ipa_h='yes',)
+  AC_CHECK_HEADER([libwmf/ipa.h],[have_libwmf_ipa_h='yes'],[$FT2BUILD_H])
   if test "$have_libwmf_ipa_h" = 'yes'
   then
 
@@ -1756,10 +2003,22 @@ fi
 AC_DEFINE_UNQUOTED(MagickLibPath,"$MagickLibPathDefine",Directory where architecture-dependent files live.)
 AC_SUBST(MagickLibPath)
 
+# Subdirectory under lib to place GraphicsMagick configuration files
+MagickLibConfigSubDir="${MagickLibSubdir}/config"
+AC_DEFINE_UNQUOTED(MagickLibConfigSubDir,"$MagickLibConfigSubDir",Subdirectory of lib where architecture-dependent configuration files live.)
+MagickLibConfigPath="${LIB_DIR}/${MagickLibConfigSubDir}"
+MagickLibConfigPathDefine="${MagickLibConfigPath}/"
+if test "$native_win32_build" = 'yes'
+then
+  MagickLibConfigPathDefine=`$WinPathScript "$MagickLibConfigPathDefine" 1`
+fi
+AC_DEFINE_UNQUOTED(MagickLibConfigPath,"$MagickLibConfigPathDefine",Directory where architecture-dependent configuration files live.)
+AC_SUBST(MagickLibConfigPath)
+
 #
 # Subdirectory under lib to place GraphicsMagick coder module files
 MagickCoderModulesSubdir="${MagickLibSubdir}/modules-Q${QuantumDepth}/coders"
-AC_DEFINE_UNQUOTED(MagickCoderModulesSubdir,"$MagickCoderModulesSubdir",Subdirectory of lib where GraphicsMagick coder modules are installed)
+AC_DEFINE_UNQUOTED(MagickCoderModulesSubdir,"$MagickCoderModulesSubdir",Subdirectory of lib where coder modules are installed)
 MagickCoderModulesPath="${LIB_DIR}/${MagickCoderModulesSubdir}"
 MagickCoderModulesPathDefine="${MagickCoderModulesPath}/"
 if test "$native_win32_build" = 'yes'
@@ -1772,7 +2031,7 @@ AC_SUBST(MagickCoderModulesPath)
 #
 # Subdirectory under lib to place GraphicsMagick filter module files
 MagickFilterModulesSubdir="${MagickLibSubdir}/modules-Q${QuantumDepth}/filters"
-AC_DEFINE_UNQUOTED(MagickFilterModulesSubdir,"$MagickFilterModulesSubdir",Subdirectory of lib where GraphicsMagick filter modules are installed)
+AC_DEFINE_UNQUOTED(MagickFilterModulesSubdir,"$MagickFilterModulesSubdir",Subdirectory of lib where filter modules are installed)
 MagickFilterModulesPath="${LIB_DIR}/${MagickFilterModulesSubdir}"
 MagickFilterModulesPathDefine="${MagickFilterModulesPath}/"
 if test "$native_win32_build" = 'yes'
@@ -1794,6 +2053,18 @@ fi
 AC_DEFINE_UNQUOTED(MagickSharePath,"$MagickSharePathDefine",Directory where architecture-independent files live.)
 AC_SUBST(MagickSharePath)
 
+# Subdirectory under share to place GraphicsMagick configuration files
+MagickShareConfigSubDir="${MagickLibSubdir}/config"
+AC_DEFINE_UNQUOTED(MagickShareConfigSubDir,"$MagickShareConfigSubDir",Subdirectory of lib where architecture-independent configuration files live.)
+MagickShareConfigPath="${DATA_DIR}/${MagickShareConfigSubDir}"
+MagickShareConfigPathDefine="${MagickShareConfigPath}/"
+if test "$native_win32_build" = 'yes'
+then
+  MagickShareConfigPathDefine=`$WinPathScript "$MagickShareConfigPathDefine" 1`
+fi
+AC_DEFINE_UNQUOTED(MagickShareConfigPath,"$MagickShareConfigPathDefine",Directory where architecture-independent configuration files live.)
+AC_SUBST(MagickShareConfigPath)
+
 #
 # program_transform_name is formed for use in a Makefile, so create a
 # modified version for use in a shell script.
@@ -1805,7 +2076,7 @@ BZIPDelegateDefault='bzip2'
 BrowseDelegateDefault='netscape'
 CGMDecodeDelegateDefault='ralcgm'
 CatDelegateDefault='cat'
-### ConvertDelegateDefault=`echo convert | sed ${configure_transform_name}`
+DCRAWDecodeDelegateDefault='dcraw'
 DOTDecodeDelegateDefault='dot'
 DVIDecodeDelegateDefault='dvips'
 EchoDelegateDefault='echo'
@@ -1826,7 +2097,6 @@ MANDelegateDefault='groff'
 MPEGDecodeDelegateDefault='mpeg2decode'
 MPEGEncodeDelegateDefault='mpeg2encode'
 MVDelegateDefault='mv'
-### MogrifyDelegateDefault=`echo mogrify | sed ${configure_transform_name}`
 PGPDecodeDelegateDefault='pgpv'
 POVDelegateDefault='povray'
 if test "$native_win32_build" = 'yes' ; then
@@ -1838,7 +2108,6 @@ RADDecodeDelegateDefault='ra_ppm'
 RLEEncodeDelegateDefault='rawtorle'
 RMDelegateDefault='rm'
 SCANDecodeDelegateDefault='scanimage'
-### ShowImageDelegateDefault=`echo display | sed ${configure_transform_name}`
 TXTDelegateDefault='enscript'
 WMFDecodeDelegateDefault='wmf2eps'
 WWWDecodeDelegateDefault='wget'
@@ -1850,6 +2119,7 @@ AC_PATH_PROG(BZIPDelegate, "$BZIPDelegateDefault", "$BZIPDelegateDefault")
 AC_PATH_PROG(BrowseDelegate, "$BrowseDelegateDefault", "$BrowseDelegateDefault")
 AC_PATH_PROG(CGMDecodeDelegate, "$CGMDecodeDelegateDefault", "$CGMDecodeDelegateDefault")
 AC_PATH_PROG(CatDelegate, "$CatDelegateDefault", "$CatDelegateDefault")
+AC_PATH_PROG(DCRAWDecodeDelegate, "$DCRAWDecodeDelegateDefault", "$DCRAWDecodeDelegateDefault")
 AC_PATH_PROG(DOTDecodeDelegate, "$DOTDecodeDelegateDefault", "$DOTDecodeDelegateDefault")
 AC_PATH_PROG(DVIDecodeDelegate, "$DVIDecodeDelegateDefault", "$DVIDecodeDelegateDefault")
 AC_PATH_PROG(EchoDelegate, "$EchoDelegateDefault", "$EchoDelegateDefault")
@@ -1893,9 +2163,6 @@ AC_SUBST(PrintDelegate)
 
 # Installed GraphicsMagick utiltity paths
 GMDelegate="${BIN_DIR}/${GMDelegateDefault}"
-### ConvertDelegate="${BIN_DIR}/${ConvertDelegateDefault}"
-### ShowImageDelegate="${BIN_DIR}/${ShowImageDelegateDefault}"
-### MogrifyDelegate="${BIN_DIR}/${MogrifyDelegateDefault}"
 
 # Set delegate booleans
 have_fig2dev='no' ; if test "$FIGDecodeDelegate" != "$FIGDecodeDelegateDefault" ; then have_fig2dev='yes' ; fi
@@ -1923,6 +2190,14 @@ windows_font_dir=''
 if test "$with_windows_font_dir" != "yes" && test -n "$with_windows_font_dir"
 then
    windows_font_dir="${with_windows_font_dir}/"
+fi
+# Sometimes Windows fonts are found under /usr/X11R6/lib/X11/fonts/truetype
+if test -n "$windows_font_dir"
+then
+  if test -f '/usr/X11R6/lib/X11/fonts/truetype/arial.ttf'
+  then
+     windows_font_dir='/usr/X11R6/lib/X11/fonts/truetype/'
+  fi
 fi
 if test -n "$windows_font_dir"
 then
@@ -1974,7 +2249,7 @@ else
 fi
 if test "${ghostscript_font_dir}x" != 'x'
 then
-  type_include_files="${type_include_files} "'<include file="type-ghostscript.mgk"/>'
+  type_include_files="${type_include_files} "'<include file="type-ghostscript.mgk" />'
   AC_MSG_RESULT($ghostscript_font_dir)
 else
   AC_MSG_RESULT(not found!);
@@ -2004,6 +2279,7 @@ then
   EchoDelegate="$EchoDelegateDefault"
   EditorDelegate="$EditorDelegateDefault"
   FIGDecodeDelegate="$FIGDecodeDelegateDefault"
+  GMDelegate="${GMDelegateDefault}"
   GnuplotDecodeDelegate="$GnuplotDecodeDelegateDefault"
   HPGLDecodeDelegate="$HPGLDecodeDelegateDefault"
   HTMLDecodeDelegate="$HTMLDecodeDelegatDefault"
@@ -2070,6 +2346,14 @@ AC_SUBST(TXTDelegate)
 AC_SUBST(WMFDecodeDelegate)
 AC_SUBST(WWWDecodeDelegate)
 AC_SUBST(ZipDelegate)
+
+#
+# RedHat RPM support
+#
+RPM=''
+AC_CHECK_PROGS(RPM,rpmbuild rpm)
+AC_SUBST(RPM)
+AM_CONDITIONAL(HAS_RPM, test "x$RPM" != "x" )
 
 #
 # Ghostscript related configuration.
@@ -2203,7 +2487,7 @@ MAGICKLIB="-L${MAGICKLIBDIR} -lGraphicsMagick"
 if test $with_perl_static = 'yes'
 then
   # Find out where libtool hides its uninstalled libraries (as libtool_objdir)
-  eval `./libtool --config|grep '^objdir='|sed -e 's/^objdir/libtool_objdir/'`
+  libtool_objdir=$objdir
 
   # Find out what extension is applied to static libraries (as libtool_libext)
   #eval `./libtool --config|grep '^libext='|sed -e 's/^libext/libtool_libext/'`
@@ -2286,9 +2570,9 @@ fi
 #
 if test "$with_modules" != 'no'
 then
-  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_X11 $LIB_BZLIB $LIB_ZLIB $LIB_GDI32 $LIB_THREAD $LIB_LF $LIB_MATH $LIB_CCMALLOC"
+  MAGICK_DEP_LIBS="$LIB_LCMS $LIB_TTF $LIB_GS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_BZLIB $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_THREAD $LIBS_INITIAL"
 else
-  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_X11 $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_GDI32 $LIB_THREAD $LIB_LF $LIB_MATH $LIB_CCMALLOC"
+  MAGICK_DEP_LIBS="$LIB_JBIG $LIB_LCMS $LIB_TIFF $LIB_TTF $LIB_JP2 $LIB_JPEG $LIB_GS $LIB_PNG $LIB_FPX $LIB_WMF $LIB_DPS $LIB_XEXT $LIB_IPC $LIB_X11 $LIB_BZLIB $LIB_XML $LIB_ZLIB $LIB_TRIO $LIB_GDI32 $LIB_MATH $LIB_CCMALLOC $LIB_EFENCE $LIB_THREAD $LIBS_INITIAL"
 fi
 AC_SUBST(MAGICK_DEP_LIBS)
 
@@ -2308,6 +2592,19 @@ LDFLAGS=`echo $LDFLAGS | sed -e 's/  */ /g'`
 TESTED_LIBS=`echo $LIBS | sed -e 's/  */ /g'`
 MAGICK_DEP_LIBS=`echo $MAGICK_DEP_LIBS | sed -e 's/  */ /g'`
 #LIBS=`echo $LIBS | sed -e 's/  */ /g'`
+
+# Save configure/build parameters for later reference
+AC_DEFINE_UNQUOTED(GM_BUILD_CONFIGURE_ARGS,"$0 ${ac_configure_args}",[arguments passed to configure])
+AC_DEFINE_UNQUOTED(GM_BUILD_HOST,"${host}",[Host identification triplet])
+AC_DEFINE_UNQUOTED(GM_BUILD_CC,"${CC}",[C compiler used for compilation])
+AC_DEFINE_UNQUOTED(GM_BUILD_CXX,"${CXX}",[C++ compiler used for compilation])
+AC_DEFINE_UNQUOTED(GM_BUILD_CFLAGS,"${CFLAGS}",[CFLAGS used for C compilation])
+AC_DEFINE_UNQUOTED(GM_BUILD_CPPFLAGS,"${CPPFLAGS}",[CPPFLAGS used for preprocessing])
+AC_DEFINE_UNQUOTED(GM_BUILD_CXXFLAGS,"${CXXFLAGS}",[CXXFLAGS used for C++ compilation])
+AC_DEFINE_UNQUOTED(GM_BUILD_LDFLAGS,"${LDFLAGS}",[LDFLAGS used for linking])
+AC_DEFINE_UNQUOTED(GM_BUILD_LIBS,"${MAGICK_DEP_LIBS}",[LIBS used for linking])
+
+# Intentionally over-ride LIBS so that libraries are supplied by makefiles instead.
 LIBS=""
 
 #AC_SUBST(CPPFLAGS)
@@ -2317,32 +2614,55 @@ AC_SUBST(X_CFLAGS)
 #AC_SUBST(X_LIBS)
 #AC_SUBST(X_EXTRA_LIBS)
 
+MAGICK_API_CFLAGS=$CFLAGS
+MAGICK_API_CPPFLAGS=`echo $MAGICK_API_CPPFLAGS | sed -e 's/  */ /g'`
+MAGICK_API_LDFLAGS="-L$LIB_DIR $LDFLAGS"
+MAGICK_API_LIBS="-lGraphicsMagick $MAGICK_DEP_LIBS"
+
+AC_SUBST(MAGICK_API_CFLAGS)
+AC_SUBST(MAGICK_API_CPPFLAGS)
+AC_SUBST(MAGICK_API_LDFLAGS)
+AC_SUBST(MAGICK_API_LIBS)
+
+# Set configured scripts to executable.
+AC_CONFIG_COMMANDS([GraphicsMagick++-config.in],[chmod +x Magick++/bin/GraphicsMagick++-config])
+AC_CONFIG_COMMANDS([GraphicsMagick-config.in],[chmod +x magick/GraphicsMagick-config])
+AC_CONFIG_COMMANDS([GraphicsMagickWand-config.in],[chmod +x wand/GraphicsMagickWand-config])
+AC_CONFIG_COMMANDS([rungm.sh.in],[chmod +x rungm.sh])
+
 AC_OUTPUT( \
-        Makefile \
-        magick/Makefile \
-        coders/delegates.mgk \
-        coders/Makefile \
-        utilities/Makefile \
-        tests/Makefile \
-        coders/type-ghostscript.mgk \
-        coders/type-solaris.mgk \
-        coders/type-windows.mgk \
-        coders/type.mgk \
-        filters/Makefile \
-        ltdl/Makefile \
-        magick/GraphicsMagick-config \
-        magick/GraphicsMagick.pc \
-        magick/version.h \
+        GraphicsMagick.spec \
         Magick++/Makefile \
         Magick++/bin/GraphicsMagick++-config \
         Magick++/bin/Makefile \
         Magick++/demo/Makefile \
         Magick++/lib/GraphicsMagick++.pc \
-        Magick++/lib/Makefile \
         Magick++/lib/Magick++/Makefile \
+        Magick++/lib/Makefile \
         Magick++/tests/Makefile \
+        Makefile \
         PerlMagick/Magick.pm \
-        PerlMagick/Makefile.PL )
+        PerlMagick/Makefile.PL \
+        coders/Makefile \
+        config/Makefile \
+        config/delegates.mgk \
+        config/type-ghostscript.mgk \
+        config/type-solaris.mgk \
+        config/type-windows.mgk \
+        config/type.mgk \
+        filters/Makefile \
+        ltdl/Makefile \
+        magick/GraphicsMagick-config \
+        magick/GraphicsMagick.pc \
+        magick/Makefile \
+        magick/magick_types.h \
+        magick/version.h \
+        rungm.sh \
+        tests/Makefile \
+        utilities/Makefile \
+        wand/GraphicsMagickWand-config \
+        wand/GraphicsMagickWand.pc \
+        wand/Makefile )
 rm -f magick-version
 
 echo ""
@@ -2383,6 +2703,7 @@ echo "Magick++          --with-magick-plus-plus=$with_magick_plus_plus 	$have_ma
 echo "PERL              --with-perl=$with_perl            	$have_perl"
 echo "PNG               --with-png=$with_png          	$have_png"
 echo "TIFF              --with-tiff=$with_tiff        	$have_tiff"
+echo "TRIO              --with-trio=$with_trio        	$have_trio"
 result_windows_font_dir='none'
 if test "${windows_font_dir}x" != 'x'
 then
@@ -2412,6 +2733,7 @@ echo "  CFLAGS   = $CFLAGS"
 echo "  CPPFLAGS = $CPPFLAGS"
 echo "  CXX      = $CXX"
 echo "  CXXFLAGS = $CXXFLAGS"
+echo "  DEFS     = $DEFS"
 echo "  LDFLAGS  = $LDFLAGS"
 #echo "  LIBS     = $TESTED_LIBS"
 echo "  LIBS     = $MAGICK_DEP_LIBS"

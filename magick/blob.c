@@ -45,9 +45,11 @@
 #include "magick/constitute.h"
 #include "magick/delegate.h"
 #include "magick/log.h"
+#include "magick/map.h"
 #include "magick/magick.h"
 #include "magick/module.h"
 #include "magick/resource.h"
+#include "magick/semaphore.h"
 #include "magick/stream.h"
 #include "magick/tempfile.h"
 #include "magick/utility.h"
@@ -62,6 +64,70 @@
   Define declarations.
 */
 #define DefaultBlobQuantum  65541
+
+
+/*
+  Enum declarations.
+*/
+typedef enum
+{
+  UndefinedStream,  /* Closed or open error */
+  FileStream,       /* Opened with stdio fopen() or via image_info->file */
+  StandardStream,   /* Stdin or stdout (filename "-") */
+  PipeStream,       /* Command pipe stream opened via popen() */
+  ZipStream,        /* Opened with zlib's gzopen() */
+  BZipStream,       /* Opened with bzlib's BZ2_bzopen() */
+  FifoStream,       /* Passed via image_info->stream */
+  BlobStream        /* Memory mapped, or in allocated RAM */
+} StreamType;
+
+/*
+  Typedef declarations.
+*/
+struct _BlobInfo
+{
+  size_t
+    length,
+    extent,
+    quantum;
+
+  unsigned int
+    mapped,
+    eof;
+
+  magick_off_t
+    offset,
+    size;
+
+  unsigned int
+    exempt,             /* True if file descriptor should not be closed.*/
+    status,             /* Error status. 0 == good */
+    temporary;          /* Associated file is a temporary file */
+
+  StreamType
+    type;
+
+  FILE
+    *file;
+
+  BlobMode
+    mode;               /* Blob open mode */
+
+  StreamHandler
+    stream;
+
+  unsigned char
+    *data;
+
+  void
+    *semaphore;
+
+  long
+    reference_count;
+
+  unsigned long
+    signature;
+};
 
 /*
   Some systems have unlocked versions of getc & putc which are faster
@@ -78,6 +144,7 @@
 #  define putc putc_unlocked
 #endif
 
+#if defined(HAVE_MMAP_FILEIO)
 static const char *BlobMapModeToString(MapMode map_mode)
 {
   char
@@ -97,6 +164,7 @@ static const char *BlobMapModeToString(MapMode map_mode)
   }
   return mode_string;
 }
+#endif /* defined(HAVE_MMAP_FILEIO) */
 
 static const char *BlobModeToString(BlobMode blob_mode)
 {
@@ -229,7 +297,7 @@ static inline size_t ReadBlobStream(Image *image,const size_t length,void **data
 %    o blob_info: Specifies a pointer to a BlobInfo structure.
 %
 %    o blob: The address of a character stream in one of the image formats
-%      understood by ImageMagick.
+%      understood by GraphicsMagick.
 %
 %    o length: This size_t integer reflects the length in bytes of the blob.
 %
@@ -246,6 +314,39 @@ MagickExport void AttachBlob(BlobInfo *blob_info,const void *blob,
   blob_info->type=BlobStream;
   blob_info->file=(FILE *) NULL;
   blob_info->data=(unsigned char *) blob;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   B l o b I s S e e k a b l e                                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  BlobIsSeekable() returns True if the blob supports seeks (SeekBlob() is
+%  functional).
+%
+%  The format of the BlobIsSeekable method is:
+%
+%      unsigned int BlobIsSeekable(const Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: Image to query
+%
+%
+*/
+MagickExport unsigned int BlobIsSeekable(const Image *image)
+{
+  assert(image != (const Image *) NULL);
+  assert(image->blob != (const BlobInfo *) NULL);
+
+  return ((image->blob->type == FileStream) ||
+          (image->blob->type == BlobStream));
 }
 
 /*
@@ -285,7 +386,7 @@ MagickExport void AttachBlob(BlobInfo *blob_info,const void *blob,
 MagickExport unsigned int BlobToFile(const char *filename,const void *blob,
   const size_t length,ExceptionInfo *exception)
 {
-  ExtendedSignedIntegralType
+  ssize_t
     count;
 
   int
@@ -301,7 +402,7 @@ MagickExport unsigned int BlobToFile(const char *filename,const void *blob,
   file=open(filename,O_WRONLY | O_CREAT | O_TRUNC | O_BINARY,0777);
   if (file == -1)
     {
-      ThrowException(exception,BlobError,"UnableToWriteBlob",filename);
+      ThrowException(exception,BlobError,UnableToWriteBlob,filename);
       return(False);
     }
   for (i=0; i < length; i+=count)
@@ -313,7 +414,7 @@ MagickExport unsigned int BlobToFile(const char *filename,const void *blob,
   (void) close(file);
   if (i < length)
     {
-      ThrowException(exception,BlobError,"UnableToWriteBlob",filename);
+      ThrowException(exception,BlobError,UnableToWriteBlob,filename);
       return(False);
     }
   return(True);
@@ -343,7 +444,7 @@ MagickExport unsigned int BlobToFile(const char *filename,const void *blob,
 %    o image_info: The image info.
 %
 %    o blob: The address of a character stream in one of the image formats
-%      understood by ImageMagick.
+%      understood by GraphicsMagick.
 %
 %    o length: This size_t integer reflects the length in bytes of the blob.
 %
@@ -373,7 +474,7 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
   SetExceptionInfo(exception,UndefinedException);
   if ((blob == (const void *) NULL) || (length == 0))
     {
-      ThrowException(exception,BlobError,"ZeroLengthBlobNotPermitted",
+      ThrowException(exception,OptionError,NullBlobArgument,
         image_info->magick);
       (void) LogMagickEvent(BlobEvent,GetMagickModule(),
         "Leaving BlobToImage");
@@ -417,7 +518,7 @@ MagickExport Image *BlobToImage(const ImageInfo *image_info,const void *blob,
   clone_info->length=0;
   if(!AcquireTemporaryFileName(clone_info->filename))
     {
-      ThrowException(exception,FileOpenError,"UnableToCreateTemporaryFile",
+      ThrowException(exception,FileOpenError,UnableToCreateTemporaryFile,
         clone_info->filename);
       DestroyImageInfo(clone_info);
       return((Image *) NULL);
@@ -471,10 +572,10 @@ MagickExport BlobInfo *CloneBlobInfo(const BlobInfo *blob_info)
   BlobInfo
     *clone_info;
 
-  clone_info=(BlobInfo *) AcquireMemory(sizeof(BlobInfo));
+  clone_info=MagickAllocateMemory(BlobInfo *,sizeof(BlobInfo));
   if (clone_info == (BlobInfo *) NULL)
-    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "UnableToCloneBlobInfo");
+    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+      UnableToCloneBlobInfo);
   GetBlobInfo(clone_info);
   if (blob_info == (BlobInfo *) NULL)
     return(clone_info);
@@ -531,10 +632,16 @@ MagickExport void CloseBlob(Image *image)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(image->blob != (BlobInfo *) NULL);
-  assert(image->blob->type != UndefinedStream);
   (void) LogMagickEvent(BlobEvent,GetMagickModule(),
     "Closing %sStream blob %p",BlobStreamTypeToString(image->blob->type),
       &image->blob);
+
+  /*
+    If blob type is UndefinedStream then it doesn't need to be closed.
+  */
+  if (image->blob->type == UndefinedStream)
+    return;
+
   status=0;
   switch (image->blob->type)
   {
@@ -570,6 +677,7 @@ MagickExport void CloseBlob(Image *image)
   image->blob->size=GetBlobSize(image);
   image->blob->eof=False;
   image->blob->status=status < 0;
+  image->blob->mode=UndefinedBlobMode;
   if (image->blob->exempt)
     return;
   switch (image->blob->type)
@@ -584,9 +692,9 @@ MagickExport void CloseBlob(Image *image)
     }
     case PipeStream:
     {
-#if !defined(vms) && !defined(macintosh)
+#if defined(HAVE_PCLOSE)
       status=pclose(image->blob->file);
-#endif
+#endif /* defined(HAVE_PCLOSE) */
       break;
     }
     case ZipStream:
@@ -616,6 +724,52 @@ MagickExport void CloseBlob(Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   D e s t r o y B l o b                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DestroyBlob() deallocates memory associated with a blob.
+%
+%  The format of the DestroyBlob method is:
+%
+%      void DestroyBlob(Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%
+*/
+MagickExport void DestroyBlob(Image *image)
+{
+  assert(image != (Image *) NULL);
+  assert(image->blob != (BlobInfo *) NULL);
+  assert(image->blob->signature == MagickSignature);
+  AcquireSemaphoreInfo((SemaphoreInfo **) &image->blob->semaphore);
+  image->blob->reference_count--;
+  if (image->blob->reference_count > 0)
+    {
+      LiberateSemaphoreInfo((SemaphoreInfo **) &image->blob->semaphore);
+      return;
+    }
+  LiberateSemaphoreInfo((SemaphoreInfo **) &image->blob->semaphore);
+  if (image->blob->type != UndefinedStream)
+    CloseBlob(image);
+  if (image->blob->mapped)
+    (void) UnmapBlob(image->blob->data,image->blob->length);
+  if (image->blob->semaphore != (SemaphoreInfo **) NULL)
+    DestroySemaphoreInfo((SemaphoreInfo **) &image->blob->semaphore);
+  memset((void *) image->blob,0xbf,sizeof(BlobInfo));
+  MagickFreeMemory(image->blob);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   D e s t r o y B l o b I n f o                                             %
 %                                                                             %
 %                                                                             %
@@ -623,6 +777,7 @@ MagickExport void CloseBlob(Image *image)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  DestroyBlobInfo() deallocates memory associated with an BlobInfo structure.
+%  Use of DestroyBlob is preferred over this function.
 %
 %  The format of the DestroyBlobInfo method is:
 %
@@ -638,20 +793,20 @@ MagickExport void DestroyBlobInfo(BlobInfo *blob)
 {
   assert(blob != (BlobInfo *) NULL);
   assert(blob->signature == MagickSignature);
-  AcquireSemaphoreInfo(&blob->semaphore);
+  AcquireSemaphoreInfo((SemaphoreInfo **) &blob->semaphore);
   blob->reference_count--;
   if (blob->reference_count > 0)
     {
-      LiberateSemaphoreInfo(&blob->semaphore);
+      LiberateSemaphoreInfo((SemaphoreInfo **) &blob->semaphore);
       return;
     }
-  LiberateSemaphoreInfo(&blob->semaphore);
+  LiberateSemaphoreInfo((SemaphoreInfo **) &blob->semaphore);
   if (blob->mapped)
     (void) UnmapBlob(blob->data,blob->length);
-  if (blob->semaphore != (SemaphoreInfo *) NULL)
-    DestroySemaphoreInfo(&blob->semaphore);
+  if (blob->semaphore != (SemaphoreInfo **) NULL)
+    DestroySemaphoreInfo((SemaphoreInfo **) &blob->semaphore);
   memset((void *)blob,0xbf,sizeof(BlobInfo));
-  LiberateMemory((void **) &blob);
+  MagickFreeMemory(blob);
 }
 
 /*
@@ -800,7 +955,7 @@ MagickExport int EOFBlob(const Image *image)
 MagickExport void *FileToBlob(const char *filename,size_t *length,
   ExceptionInfo *exception)
 {
-  ExtendedSignedIntegralType
+  magick_off_t
     offset;
 
   int
@@ -809,70 +964,121 @@ MagickExport void *FileToBlob(const char *filename,size_t *length,
   unsigned char
     *blob;
 
-  void
-    *map;
+  ssize_t
+    count;
+
+  register size_t
+    i;
 
   assert(filename != (const char *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
-  (void) LogMagickEvent(BlobEvent,GetMagickModule(),
-    "Copying file %s to memory BLOB",filename);
   SetExceptionInfo(exception,UndefinedException);
   file=open(filename,O_RDONLY | O_BINARY,0777);
   if (file == -1)
     {
-      ThrowException(exception,BlobError,"UnableToOpenFile",filename);
+      ThrowException(exception,BlobError,UnableToOpenFile,filename);
       return((void *) NULL);
     }
   offset=MagickSeek(file,0,SEEK_END);
   if ((offset < 0) || (offset != (size_t) offset))
     {
       (void) close(file);
-      ThrowException(exception,BlobError,"UnableToSeekToOffset",
-        "UnableToCreateBlob");
+      ThrowException3(exception,BlobError,UnableToSeekToOffset,
+        UnableToCreateBlob);
       return((void *) NULL);
     }
   *length=(size_t) offset;
-  blob=(unsigned char *) AcquireMemory(*length+1);
+  blob=MagickAllocateMemory(unsigned char *,*length+1);
   if (blob == (unsigned char *) NULL)
     {
       (void) close(file);
-      ThrowException(exception,BlobError,"MemoryAllocationFailed",
-        "UnableToCreateBlob");
+      ThrowException(exception,ResourceLimitError,MemoryAllocationFailed,
+        MagickMsg(BlobError,UnableToCreateBlob));
       return((void *) NULL);
     }
-  map=MapBlob(file,ReadMode,0,*length);
-  if (map != (void *) NULL)
-    {
-      (void) memcpy(blob,map,*length);
-      UnmapBlob(map,*length);
-    }
-  else
-    {
-      ExtendedSignedIntegralType
-        count;
 
-      register size_t
-        i;
-
-      (void) MagickSeek(file,0,SEEK_SET);
-      for (i=0; i < *length; i+=count)
-      {
-        count=read(file,blob+i,*length-i);
-        if (count <= 0)
-          break;
-      }
-      if (i < *length)
-        {
-          (void) close(file);
-          LiberateMemory((void **) &blob);
-          ThrowException(exception,BlobError,"UnableToReadToOffset",
-            "UnableToCreateBlob");
-          return((void *) NULL);
-        }
+  (void) MagickSeek(file,0,SEEK_SET);
+  for (i=0; i < *length; i+=count)
+    {
+      count=read(file,blob+i,*length-i);
+      if (count <= 0)
+        break;
     }
+  if (i < *length)
+    {
+      (void) close(file);
+      MagickFreeMemory(blob);
+      ThrowException3(exception,BlobError,UnableToReadToOffset,
+                      UnableToCreateBlob);
+      return((void *) NULL);
+    }
+
   blob[*length]='\0';
   (void) close(file);
   return(blob);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t B l o b C l o s a b l e                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetBlobClosable() returns True if the blob may be closed, or False if it
+%  is exempt from being closed.
+%
+%  The format of the GetBlobClosable method is:
+%
+%      unsigned int GetBlobClosable(const Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: Image to query
+%
+%
+*/
+MagickExport unsigned int GetBlobClosable(const Image *image)
+{
+  assert(image != (const Image *) NULL);
+  assert(image->blob != (const BlobInfo *) NULL);
+  return (image->blob->exempt == 0);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t B l o b F i l e H a n d l e                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetBlobFileHandle() returns the stdio file handle associated with the
+%  image blob.  If there is no associated file handle, then a null pointer
+%  is returned.
+%
+%  The format of the GetBlobFileHandle method is:
+%
+%      FILE *GetBlobFileHandle(const Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: Image to query
+%
+%
+*/
+MagickExport FILE *GetBlobFileHandle(const Image *image)
+{
+  assert(image != (const Image *) NULL);
+  assert(image->blob != (const BlobInfo *) NULL);
+  return (image->blob->file);
 }
 
 /*
@@ -923,7 +1129,7 @@ MagickExport void GetBlobInfo(BlobInfo *blob_info)
 %
 %  The format of the GetBlobSize method is:
 %
-%      ExtendedSignedIntegralType GetBlobSize(const Image *image)
+%      magick_off_t GetBlobSize(const Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -934,12 +1140,12 @@ MagickExport void GetBlobInfo(BlobInfo *blob_info)
 %
 %
 */
-MagickExport ExtendedSignedIntegralType GetBlobSize(const Image *image)
+MagickExport magick_off_t GetBlobSize(const Image *image)
 {
   struct stat
     attributes;
 
-  ExtendedSignedIntegralType
+  magick_off_t
     offset;
 
   assert(image != (Image *) NULL);
@@ -991,13 +1197,45 @@ MagickExport ExtendedSignedIntegralType GetBlobSize(const Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   G e t B l o b S t a t u s                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetBlobStatus() returns the blob error status.
+%
+%  The format of the GetBlobStatus method is:
+%
+%      int GetBlobStatus(const Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%
+*/
+MagickExport int GetBlobStatus(const Image *image)
+{
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickSignature);
+  return(image->blob->status);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   G e t B l o b S t r e a m D a t a                                         %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  GetBlobStreamData() returns the stream data for the image.
+%  GetBlobStreamData() returns the stream data for the image. The data is only
+%  available if the data is stored on the heap, or is memory mapped.
+%  otherwise a NULL value is returned.
 %
 %  The format of the GetBlobStreamData method is:
 %
@@ -1013,7 +1251,39 @@ MagickExport unsigned char *GetBlobStreamData(const Image *image)
 {
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
+  if (image->blob->type != BlobStream)
+    return 0;
   return(image->blob->data);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t B l o b S t r e a m H a n d l e r                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetBlobStreamHandler() returns the stream handler associated with the image.
+%
+%  The format of the GetBlobStreamHandler method is:
+%
+%      const StreamHandler GetBlobStreamHandler(const Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: The image.
+%
+%
+*/
+MagickExport StreamHandler GetBlobStreamHandler(const Image *image)
+{
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickSignature);
+  return (image->blob->stream);
 }
 
 /*
@@ -1039,11 +1309,45 @@ MagickExport unsigned char *GetBlobStreamData(const Image *image)
 %
 %
 */
+#if 0
 MagickExport StreamType GetBlobStreamType(const Image *image)
 {
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
   return(image->blob->type);
+}
+#endif
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t B l o b T e m p o r a r y                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetBlobTemporary() returns True if the file associated with the blob is
+%  a temporary file and should be removed when the associated image is
+%  destroyed.
+%
+%  The format of the GetBlobTemporary method is:
+%
+%      unsigned int GetBlobTemporary(const Image *image)
+%
+%  A description of each parameter follows:
+%
+%    o image: Image to query
+%
+%
+*/
+MagickExport unsigned int GetBlobTemporary(const Image *image)
+{
+  assert(image != (const Image *) NULL);
+  assert(image->blob != (const BlobInfo *) NULL);
+  return (image->blob->temporary != False);
 }
 
 /*
@@ -1100,48 +1404,159 @@ static void ChopPathComponents(char *path,const unsigned long components)
 }
 #endif
 
+static void AddConfigurePath(MagickMap path_map, unsigned int *path_index,
+  const char *path,ExceptionInfo *exception)
+{
+  char
+    key[MaxTextExtent];
+
+  FormatString(key,"%u",*path_index);
+  MagickMapAddEntry(path_map,key,(void *)path,0,exception);
+  (*path_index)++;
+}
+
 MagickExport void *GetConfigureBlob(const char *filename,char *path,
   size_t *length,ExceptionInfo *exception)
 {
+  MagickMap
+    path_map;
+
+  MagickMapIterator
+    path_map_iterator;
+
+  const char
+    *key;
+
+  unsigned char
+    *blob=0;
+
+  unsigned int
+    logging,
+    path_index=0;
+
   assert(filename != (const char *) NULL);
   assert(path != (char *) NULL);
   assert(length != (size_t *) NULL);
   assert(exception != (ExceptionInfo *) NULL);
+
+  logging=((LocaleCompare(filename,MagickLogFilename) != 0) &&
+           (IsEventLogging()));
+
   (void) strncpy(path,filename,MaxTextExtent-1);
-  (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
-    "Searching for configure file \"%s\" ...",filename);
+  path_map=MagickMapAllocateMap(MagickMapCopyString,MagickMapDeallocateString);
+
+  {
+    /*
+      Allow the configuration file search path to be explicitly
+      specified.
+    */
+    const char
+      *magick_configure_path = getenv("MAGICK_CONFIGURE_PATH");
+    if ( magick_configure_path )
+      {
+        const char
+          *end = NULL,
+          *start = magick_configure_path;
+        
+        end=start+strlen(start);
+        while ( start < end )
+          {
+            char
+              buffer[MaxTextExtent];
+            
+            const char
+              *seperator;
+            
+            int
+              length;
+            
+            seperator = strchr(start,DirectoryListSeparator);
+            if (seperator)
+              length=seperator-start;
+            else
+              length=end-start;
+            if (length > MaxTextExtent-1)
+              length = MaxTextExtent-1;
+            strncpy(buffer,start,length);
+            buffer[length]='\0';
+            if (buffer[length-1] != DirectorySeparator[0])
+              strcat(buffer,DirectorySeparator);
+            AddConfigurePath(path_map,&path_index,buffer,exception);
+            start += length+1;
+          }
+      }
+  }
+
 #if defined(UseInstalledMagick)
-#if defined(MagickLibPath)
-  /*
-    Search hard coded paths.
-  */
-  FormatString(path,"%.1024s%.1024s",MagickLibPath,filename);
-  if (!IsAccessible(path))
-    ThrowException(exception,ConfigureError,"UnableToAccessConfigureFile",
-      path);
-  return(FileToBlob(path,length,exception));
-#endif /* defined(MagickLibPath) */
-#if defined(WIN32)
+
+# if defined(MagickLibConfigPath)
+  AddConfigurePath(path_map,&path_index,MagickLibConfigPath,exception);
+# endif /* defined(MagickLibConfigPath) */
+
+# if defined(MagickShareConfigPath)
+  AddConfigurePath(path_map,&path_index,MagickShareConfigPath,exception);
+# endif /* defined(MagickShareConfigPath) */
+
+# if defined(WIN32) && !(defined(MagickLibConfigPath) || defined(MagickShareConfigPath))
   {
     char
+      *registry_key,
       *key_value;
 
     /*
       Locate file via registry key.
     */
-    key_value=NTRegistryKeyLookup("ConfigurePath");
-    if (key_value != (char *) NULL)
+    registry_key="ConfigurePath";
+    key_value=NTRegistryKeyLookup(registry_key);
+    if (key_value == (char *) NULL)
       {
-        FormatString(path,"%.1024s%s%.1024s",key_value,DirectorySeparator,
-          filename);
-        if (!IsAccessible(path))
-          ThrowException(exception,ConfigureError,
-            "UnableToAccessConfigureFile",path);
-        return(FileToBlob(path,length,exception));
+        ThrowException(exception,ConfigureError,RegistryKeyLookupFailed,registry_key);
+        return 0;
       }
+
+    FormatString(path,"%.1024s%s",key_value,DirectorySeparator);
+    AddConfigurePath(path_map,&path_index,path,exception);
   }
-#endif /* defined(WIN32) */
+#  endif /* defined(WIN32) */
+
 #else /* !defined(UseInstalledMagick) */
+
+  {
+    const char
+      *magick_home;
+    
+    /*
+      Search under MAGICK_HOME.
+    */
+    magick_home=getenv("MAGICK_HOME");
+    if (magick_home)
+      {
+#if defined(POSIX)
+        FormatString(path,"%.1024s/lib/%s/",magick_home,
+          MagickLibConfigSubDir);
+        AddConfigurePath(path_map,&path_index,path,exception);
+
+        FormatString(path,"%.1024s/share/%s/",magick_home,
+          MagickShareConfigSubDir);
+        AddConfigurePath(path_map,&path_index,path,exception);
+#else
+        FormatString(path,"%.1024s%s",magick_home,
+          DirectorySeparator);
+        AddConfigurePath(path_map,&path_index,path,exception);
+#endif /* defined(POSIX) */
+      }
+    }
+
+  if (getenv("HOME") != (char *) NULL)
+    {
+      /*
+        Search $HOME/.magick.
+      */
+      FormatString(path,"%.1024s%s%s",getenv("HOME"),
+        *getenv("HOME") == '/' ? "/.magick" : "",DirectorySeparator);
+      AddConfigurePath(path_map,&path_index,path,exception);
+    }
+
   if (*SetClientPath((char *) NULL) != '\0')
     {
 #if defined(POSIX)
@@ -1153,51 +1568,111 @@ MagickExport void *GetConfigureBlob(const char *filename,char *path,
       */
       (void) strncpy(prefix,SetClientPath((char *) NULL),MaxTextExtent-1);
       ChopPathComponents(prefix,1);
-      FormatString(path,"%.1024s/lib/%s/%.1024s",prefix,MagickLibSubdir,
-        filename);
+
+      FormatString(path,"%.1024s/lib/%s/",prefix,MagickLibConfigSubDir);
+      AddConfigurePath(path_map,&path_index,path,exception);
+
+      FormatString(path,"%.1024s/share/%s/",prefix,MagickShareConfigSubDir);
+      AddConfigurePath(path_map,&path_index,path,exception);
 #else /* defined(POSIX) */
-      FormatString(path,"%.1024s%s%.1024s",SetClientPath((char *) NULL),
-        DirectorySeparator,filename);
+      FormatString(path,"%.1024s%s",SetClientPath((char *) NULL),
+        DirectorySeparator);
+      AddConfigurePath(path_map,&path_index,path,exception);
 #endif /* !defined(POSIX) */
-      if (IsAccessible(path))
-        return(FileToBlob(path,length,exception));
     }
-  if (getenv("MAGICK_HOME") != (char *) NULL)
-    {
-      /*
-        Search MAGICK_HOME.
-      */
-#if defined(POSIX)
-      FormatString(path,"%.1024s/lib/%s/%.1024s",getenv("MAGICK_HOME"),
-        MagickLibSubdir,filename);
-#else
-      FormatString(path,"%.1024s%s%.1024s",getenv("MAGICK_HOME"),
-        DirectorySeparator,filename);
-#endif /* defined(POSIX) */
-      if (IsAccessible(path))
-        return(FileToBlob(path,length,exception));
-    }
-  if (getenv("HOME") != (char *) NULL)
-    {
-      /*
-        Search $HOME/.magick.
-      */
-      FormatString(path,"%.1024s%s%s%.1024s",getenv("HOME"),
-        *getenv("HOME") == '/' ? "/.magick" : "",DirectorySeparator,filename);
-      if (IsAccessible(path))
-        return(FileToBlob(path,length,exception));
-    }
+
   /*
     Search current directory.
   */
-  if (IsAccessible(path))
-    return(FileToBlob(path,length,exception));
-#if defined(WIN32)
-  return(NTResourceToBlob(filename));
-#endif /* defined(WIN32) */
+  AddConfigurePath(path_map,&path_index,"",exception);
 #endif /* !defined(UseInstalledMagick) */
-  ThrowException(exception,ConfigureError,"UnableToAccessConfigureFile",path);
-  return((void *) NULL);
+
+  path_map_iterator=MagickMapAllocateIterator(path_map);
+
+  if (logging)
+    {
+      char
+        list_seperator[2],
+        *search_path=0;
+
+      list_seperator[0]=DirectoryListSeparator;
+      list_seperator[1]='\0';
+      while(MagickMapIterateNext(path_map_iterator,&key))
+        {
+          if (search_path)
+            ConcatenateString(&search_path,list_seperator);
+          ConcatenateString(&search_path,
+            MagickMapDereferenceIterator(path_map_iterator,0));
+        }
+      
+      (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+         "Searching for file \"%s\" in path \"%s\"",filename,search_path);
+
+      MagickFreeMemory(search_path);
+      MagickMapIterateToFront(path_map_iterator);
+    }
+
+  while(MagickMapIterateNext(path_map_iterator,&key))
+    {
+      char
+        test_path[MaxTextExtent];
+
+      FILE
+        *file;
+
+      FormatString(test_path,"%.1024s%.256s",
+        (const char *)MagickMapDereferenceIterator(path_map_iterator,0),
+        filename);
+
+      file=fopen(test_path,"rb");
+      if (file )
+        {
+          if (logging)
+            (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+              "Found: %.1024s",test_path);
+          strcpy(path,test_path);
+          (void) fseek(file,0L,SEEK_END);
+          *length=ftell(file);
+          if (*length > 0)
+            {
+              (void) fseek(file,0L,SEEK_SET);
+              blob=MagickAllocateMemory(unsigned char *,(*length)+1);
+              if (blob)
+                {
+                  *length=fread((void  *)blob, 1, *length, file);
+                  blob[*length]='\0';
+                }
+            }
+          (void) fclose(file);
+          if (blob)
+            break;
+        }
+
+      if (logging)
+        (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+          "Tried: %.1024s [%.1024s]",test_path,strerror(errno));
+    }
+  MagickMapDeallocateIterator(path_map_iterator);
+  MagickMapDeallocateMap(path_map);
+
+  if (blob)
+    return(blob);
+
+#if defined(WIN32)
+  {
+    void
+      *resource;
+
+    resource=NTResourceToBlob(filename);
+    if (resource)
+      return resource;
+  }
+#endif /* defined(WIN32) */
+
+  ThrowException(exception,ConfigureError,UnableToAccessConfigureFile,
+    filename);
+
+  return 0;
 }
 
 /*
@@ -1274,11 +1749,11 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
       /*
         Native blob support for this image format.
       */
-      clone_info->blob=(void *) AcquireMemory(65535L);
+      clone_info->blob=MagickAllocateMemory(void *,65535L);
       if (clone_info->blob == (void *) NULL)
         {
-          ThrowException(exception,BlobError,"MemoryAllocationFailed",
-            "UnableToCreateBlob");
+          ThrowException(exception,ResourceLimitError,MemoryAllocationFailed,
+            MagickMsg(BlobError,UnableToCreateBlob));
           DestroyImageInfo(clone_info);
           (void) LogMagickEvent(BlobEvent,GetMagickModule(),
             "Exiting ImageToBlob");
@@ -1290,15 +1765,15 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
       status=WriteImage(clone_info,image);
       if (status == False)
         {
-          ThrowException(exception,BlobError,"UnableToWriteBlob",
+          ThrowException(exception,BlobError,UnableToWriteBlob,
             clone_info->magick);
-          LiberateMemory((void **) &image->blob->data);
+          MagickFreeMemory(image->blob->data);
           DestroyImageInfo(clone_info);
           (void) LogMagickEvent(BlobEvent,GetMagickModule(),
             "Exiting ImageToBlob");
           return((void *) NULL);
         }
-      ReacquireMemory((void **) &image->blob->data,image->blob->length+1);
+      MagickReallocMemory(image->blob->data,image->blob->length+1);
       blob=image->blob->data;
       *length=image->blob->length;
       DetachBlob(image->blob);
@@ -1313,7 +1788,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
   (void) strncpy(filename,image->filename,MaxTextExtent-1);
   if(!AcquireTemporaryFileName(unique))
     {
-      ThrowException(exception,FileOpenError,"UnableToCreateTemporaryFile",
+      ThrowException(exception,FileOpenError,UnableToCreateTemporaryFile,
         unique);
       DestroyImageInfo(clone_info);
       return((void *) NULL);
@@ -1324,7 +1799,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
   if (status == False)
     {
       LiberateTemporaryFile(unique);
-      ThrowException(exception,BlobError,"UnableToWriteBlob",image->filename);
+      ThrowException(exception,BlobError,UnableToWriteBlob,image->filename);
       (void) LogMagickEvent(BlobEvent,GetMagickModule(),
         "Exiting ImageToBlob");
       return((void *) NULL);
@@ -1337,7 +1812,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
   (void) strncpy(image->filename,filename,MaxTextExtent-1);
   if (blob == (unsigned char ) NULL)
     {
-      ThrowException(exception,BlobError,"UnableToReadFile",filename);
+      ThrowException(exception,BlobError,UnableToReadFile,filename);
       (void) LogMagickEvent(BlobEvent,GetMagickModule(),
         "Exiting ImageToBlob");
       return((void *) NULL);
@@ -1390,7 +1865,7 @@ MagickExport unsigned int ImageToFile(Image *image,const char *filename,
   char
     *buffer;
 
-  ExtendedSignedIntegralType
+  ssize_t
     count;
 
   int
@@ -1412,14 +1887,14 @@ MagickExport unsigned int ImageToFile(Image *image,const char *filename,
   file=open(filename,O_WRONLY | O_CREAT | O_TRUNC | O_BINARY,0777);
   if (file == -1)
     {
-      ThrowException(exception,BlobError,"UnableToWriteBlob",filename);
+      ThrowException(exception,BlobError,UnableToWriteBlob,filename);
       return(False);
     }
-  buffer=(char *) AcquireMemory(MaxBufferSize);
+  buffer=MagickAllocateMemory(char *,MaxBufferSize);
   if (buffer == (char *) NULL)
     {
       (void) close(file);
-      ThrowException(exception,ResourceLimitError,"MemoryAllocationError",
+      ThrowException(exception,ResourceLimitError,MemoryAllocationFailed,
         filename);
       return(False);
     }
@@ -1435,7 +1910,7 @@ MagickExport unsigned int ImageToFile(Image *image,const char *filename,
       break;
   }
   (void) close(file);
-  LiberateMemory((void **) &buffer);
+  MagickFreeMemory(buffer);
   return(i < length);
 }
 
@@ -1471,10 +1946,10 @@ MagickExport unsigned int ImageToFile(Image *image,const char *filename,
 %
 %
 */
-MagickExport void *MapBlob(int file,const MapMode mode,off_t offset,
+MagickExport void *MapBlob(int file,const MapMode mode,magick_off_t offset,
   size_t length)
 {
-#if defined(HAVE_MMAP)
+#if defined(HAVE_MMAP_FILEIO)
   void
     *map;
 
@@ -1488,23 +1963,30 @@ MagickExport void *MapBlob(int file,const MapMode mode,off_t offset,
     case ReadMode:
     default:
     {
-      map=(void *) mmap((char *) NULL,length,PROT_READ,MAP_PRIVATE,file,offset);
+      map=(void *) mmap((char *) NULL,length,PROT_READ,MAP_PRIVATE,file,
+        (off_t)offset);
       break;
     }
     case WriteMode:
     {
-      map=(void *) mmap((char *) NULL,length,PROT_WRITE,MAP_SHARED,file,offset);
+      map=(void *) mmap((char *) NULL,length,PROT_WRITE,MAP_SHARED,file,
+        (off_t)offset);
       break;
     }
     case IOMode:
     {
       map=(void *) mmap((char *) NULL,length,(PROT_READ | PROT_WRITE),
-        MAP_SHARED,file,offset);
+        MAP_SHARED,file,(off_t)offset);
       break;
     }
   }
   if (map == (void *) MAP_FAILED)
-    return((void *) NULL);
+    {
+      (void) LogMagickEvent(BlobEvent,GetMagickModule(),
+        "Failed to mmap FD %d using %s mode at offset %lu and length %lu.",
+           file,BlobMapModeToString(mode),(unsigned long)offset,(unsigned long)length);
+      return((void *) NULL);
+    }
   (void) LogMagickEvent(BlobEvent,GetMagickModule(),
     "Mmapped FD %d using %s mode at offset %lu and length %lu to address 0x%p",
     file,BlobMapModeToString(mode),(unsigned long)offset,(unsigned long)length,
@@ -1722,6 +2204,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
       return(True);
     }
   DetachBlob(image->blob);
+  image->blob->mode=mode;
   switch (mode)
   {
     default: type=(char *) "r"; break;
@@ -1778,7 +2261,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
       image->blob->exempt=True;
     }
   else
-#if !defined(vms) && !defined(macintosh)
+#if defined(HAVE_POPEN)
     if (*filename == '|')
       {
         char
@@ -1803,7 +2286,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
         }
       }
     else
-#endif
+#endif /* defined(HAVE_POPEN) */
       {
         if (*type == 'w')
           {
@@ -1818,9 +2301,12 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
 #endif
           }
 #if defined(HasZLIB)
-      if ((strlen(filename) > 3) &&
-          ((LocaleCompare(filename+strlen(filename)-3,".gz") == 0) ||
-           (LocaleCompare(filename+strlen(filename)-2,".Z") == 0)))
+      if (((strlen(filename) > 2) &&
+           (LocaleCompare(filename+strlen(filename)-2,".Z") == 0)) ||
+          ((strlen(filename) > 3) &&
+           (LocaleCompare(filename+strlen(filename)-3,".gz") == 0)) ||
+          ((strlen(filename) > 5) &&
+           (LocaleCompare(filename+strlen(filename)-5,".svgz") == 0)))
         {
           image->blob->file=(FILE *) gzopen(filename,type);
           if (image->blob->file != (FILE *) NULL)
@@ -1866,13 +2352,19 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
                   unsigned char
                     magick[MaxTextExtent];
 
+                  size_t
+                    count;
+
                   setvbuf(image->blob->file,NULL,_IOFBF,16384);
                   image->blob->type=FileStream;
                   (void) LogMagickEvent(BlobEvent,GetMagickModule(),
                     "  opened file %s as FileStream blob %p",
                       filename,&image->blob);
-                  (void) fread(magick,MaxTextExtent,1,image->blob->file);
+                  memset((void *) magick,0,MaxTextExtent);
+                  count=fread(magick,MaxTextExtent,1,image->blob->file);
                   (void) rewind(image->blob->file);
+                  (void) LogMagickEvent(BlobEvent,GetMagickModule(),
+                     "  read %d magic header bytes", count);
 #if defined(HasZLIB)
                   if ((magick[0] == 0x1F) && (magick[1] == 0x8B) &&
                       (magick[2] == 0x08))
@@ -1980,7 +2472,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
 %    o image_info: The image info.
 %
 %    o blob: The address of a character stream in one of the image formats
-%      understood by ImageMagick.
+%      understood by GraphicsMagick.
 %
 %    o length: This size_t integer reflects the length in bytes of the blob.
 %
@@ -2017,9 +2509,9 @@ MagickExport Image *PingBlob(const ImageInfo *image_info,const void *blob,
   assert(image_info->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   SetExceptionInfo(exception,UndefinedException);
-  if ((blob == (const void *) NULL) || (length == 0))
+  if (((blob == (const void *) NULL)) || (length == 0))
     {
-      ThrowException(exception,BlobError,"UnrecognizedImageFormat",
+      ThrowException(exception,OptionError,NullBlobArgument,
         image_info->magick);
       return((Image *) NULL);
     }
@@ -2300,20 +2792,20 @@ MagickExport unsigned long ReadBlobLSBLong(Image *image)
     buffer[4],
     *source;
 
+  void
+    *source_v;
+
   unsigned long
     value;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  source_v=buffer;
   if (image->blob->type == BlobStream)
-    {
-      value=ReadBlobStream(image,4,(void **)&source);
-    }
+    value=ReadBlobStream(image,4,&source_v);
   else
-    {
-      value=ReadBlob(image,4,(void *)buffer);
-      source=buffer;
-    }
+    value=ReadBlob(image,4,source_v);
+  source=source_v;
   if (value < 4)
     return((unsigned long) ~0);
   value=source[3] << 24;
@@ -2356,20 +2848,20 @@ MagickExport unsigned short ReadBlobLSBShort(Image *image)
     buffer[2],
     *source;
 
+  void
+    *source_v;
+
   unsigned short
     value;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  source_v=buffer;
   if (image->blob->type == BlobStream)
-    {
-      value=ReadBlobStream(image,2,(void **)&source);
-    }
+    value=ReadBlobStream(image,2,&source_v);
   else
-    {
-      value=ReadBlob(image,2,(void *)buffer);
-      source=buffer;
-    }
+    value=ReadBlob(image,2,source_v);
+  source=source_v;
   if (value < 2)
     return((unsigned short) ~0);
   value=source[1] << 8;
@@ -2411,20 +2903,20 @@ MagickExport unsigned long ReadBlobMSBLong(Image *image)
     buffer[4],
     *source;
 
+  void
+    *source_v;
+
   unsigned long
     value;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  source_v=buffer;
   if (image->blob->type == BlobStream)
-    {
-      value=ReadBlobStream(image,4,(void **)&source);
-    }
+    value=ReadBlobStream(image,4,&source_v);
   else
-    {
-      value=ReadBlob(image,4,(void *)buffer);
-      source=buffer;
-    }
+    value=ReadBlob(image,4,source_v);
+  source=source_v;
   if (value < 4)
     return((unsigned long) ~0);
   value=source[0] << 24;
@@ -2467,20 +2959,20 @@ MagickExport unsigned short ReadBlobMSBShort(Image *image)
     buffer[2],
     *source;
 
+  void
+    *source_v;
+
   unsigned short
     value;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  source_v=buffer;
   if (image->blob->type == BlobStream)
-    {
-      value=ReadBlobStream(image,2,(void **)&source);
-    }
+    value=ReadBlobStream(image,2,&source_v);
   else
-    {
-      value=ReadBlob(image,2,(void *)buffer);
-      source=buffer;
-    }
+    value=ReadBlob(image,2,source_v);
+  source=source_v;
   if (value < 2)
     return((unsigned short) ~0);
   value=source[0] << 8;
@@ -2572,9 +3064,9 @@ MagickExport BlobInfo *ReferenceBlob(BlobInfo *blob)
 {
   assert(blob != (BlobInfo *) NULL);
   assert(blob->signature == MagickSignature);
-  AcquireSemaphoreInfo(&blob->semaphore);
+  AcquireSemaphoreInfo((SemaphoreInfo **) &blob->semaphore);
   blob->reference_count++;
-  LiberateSemaphoreInfo(&blob->semaphore);
+  LiberateSemaphoreInfo((SemaphoreInfo **) &blob->semaphore);
   return(blob);
 }
 
@@ -2594,8 +3086,8 @@ MagickExport BlobInfo *ReferenceBlob(BlobInfo *blob)
 %
 %  The format of the SeekBlob method is:
 %
-%      ExtendedSignedIntegralType SeekBlob(Image *image,
-%        const ExtendedSignedIntegralType offset,const int whence)
+%      magick_off_t SeekBlob(Image *image,const magick_off_t offset,
+%                            const int whence)
 %
 %  A description of each parameter follows:
 %
@@ -2615,8 +3107,8 @@ MagickExport BlobInfo *ReferenceBlob(BlobInfo *blob)
 %
 %
 */
-MagickExport ExtendedSignedIntegralType SeekBlob(Image *image,
-  const ExtendedSignedIntegralType offset,const int whence)
+MagickExport magick_off_t SeekBlob(Image *image,const magick_off_t offset,
+  const int whence)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -2635,6 +3127,7 @@ MagickExport ExtendedSignedIntegralType SeekBlob(Image *image,
     }
     case StandardStream:
     case PipeStream:
+      return(-1);
     case ZipStream:
     {
 #if defined(HasZLIB)
@@ -2669,15 +3162,14 @@ MagickExport ExtendedSignedIntegralType SeekBlob(Image *image,
         }
         case SEEK_END:
         {
-          if ((ExtendedSignedIntegralType)
+          if ((magick_off_t)
               (image->blob->offset+image->blob->length+offset) < 0)
             return(-1);
           image->blob->offset=image->blob->length+offset;
           break;
         }
       }
-      if (image->blob->offset <= (ExtendedSignedIntegralType)
-          image->blob->length)
+      if (image->blob->offset <= (magick_off_t) image->blob->length)
         image->blob->eof=False;
       else
         if (image->blob->mapped)
@@ -2685,7 +3177,7 @@ MagickExport ExtendedSignedIntegralType SeekBlob(Image *image,
         else
           {
             image->blob->extent=image->blob->offset+image->blob->quantum;
-            ReacquireMemory((void **) &image->blob->data,image->blob->extent+1);
+            MagickReallocMemory(image->blob->data,image->blob->extent+1);
             (void) SyncBlob(image);
             if (image->blob->data == (unsigned char *) NULL)
               {
@@ -2697,6 +3189,73 @@ MagickExport ExtendedSignedIntegralType SeekBlob(Image *image,
     }
   }
   return(image->blob->offset);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t B l o b C l o s a b l e                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetBlobClosable() enables closing the blob if True is passed, and exempts
+%  the blob from being closed if False is passed.  Blobs are closable by
+%  default (default True).
+%
+%  The format of the SetBlobClosable method is:
+%
+%      void SetBlobClosable(Image *image, unsigned int closeable)
+%
+%  A description of each parameter follows:
+%
+%    o image: Image to update
+%
+%    o closeable: Set to FALSE in order to disable closing the blob.
+%
+*/
+MagickExport void SetBlobClosable(Image *image, unsigned int closeable)
+{
+  assert(image != (const Image *) NULL);
+  assert(image->blob != (const BlobInfo *) NULL);
+  image->blob->exempt = (closeable != False);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t B l o b T e m p o r a r y                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetBlobTemporary() sets a boolean flag (default False) to specify if
+%  the file associated with the blob is a temporary file and should be
+%  removed when the associated image is destroyed. 
+%
+%  The format of the SetBlobTemporary method is:
+%
+%      void SetBlobTemporary(Image *image, unsigned int isTemporary)
+%
+%  A description of each parameter follows:
+%
+%    o image: Image to update
+%
+%    o isTemporary: Set to True to indicate that the file associated with
+%        the blob is temporary.
+%
+*/
+MagickExport void SetBlobTemporary(Image *image, unsigned int isTemporary)
+{
+  assert(image != (const Image *) NULL);
+  assert(image->blob != (const BlobInfo *) NULL);
+  image->blob->temporary = isTemporary;
 }
 
 /*
@@ -2789,7 +3348,7 @@ MagickExport int SyncBlob(Image *image)
 %
 %  The format of the TellBlob method is:
 %
-%      ExtendedSignedIntegralType TellBlob(const Image *image)
+%      magick_off_t TellBlob(const Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -2801,9 +3360,9 @@ MagickExport int SyncBlob(Image *image)
 %
 %
 */
-MagickExport ExtendedSignedIntegralType TellBlob(const Image *image)
+MagickExport magick_off_t TellBlob(const Image *image)
 {
-  ExtendedSignedIntegralType
+  magick_off_t
     offset;
 
   assert(image != (Image *) NULL);
@@ -2873,7 +3432,7 @@ MagickExport ExtendedSignedIntegralType TellBlob(const Image *image)
 */
 MagickExport unsigned int UnmapBlob(void *map,const size_t length)
 {
-#if defined(HAVE_MMAP)
+#if defined(HAVE_MMAP_FILEIO)
   int
     status;
 
@@ -2981,7 +3540,7 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
             return(0);
           image->blob->quantum<<=1;
           image->blob->extent+=length+image->blob->quantum;
-          ReacquireMemory((void **) &image->blob->data,image->blob->extent+1);
+          MagickReallocMemory(image->blob->data,image->blob->extent+1);
           (void) SyncBlob(image);
           if (image->blob->data == (unsigned char *) NULL)
             {
@@ -3014,8 +3573,7 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
           (void) memcpy(dest,data,length);
         }
       image->blob->offset+=length;
-      if (image->blob->offset > (ExtendedSignedIntegralType)
-          image->blob->length)
+      if (image->blob->offset > (magick_off_t) image->blob->length)
         image->blob->length=image->blob->offset;
       count=length;
     }

@@ -17,7 +17,7 @@
 %                            X   X   CCCC  F                                  %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                       Read GIMP XCF Image Format.                           %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -294,7 +294,7 @@ static int load_tile (Image* image, Image* tile_image, XCFDocInfo* inDocInfo,
   XCFPixelPacket *xcfdata, *xcfodata;
   unsigned char  *graydata;
 
-  xcfdata = xcfodata = (XCFPixelPacket *) AcquireMemory(data_length);
+  xcfdata = xcfodata = MagickAllocateMemory(XCFPixelPacket *,data_length);
   graydata = (unsigned char *)xcfdata;  /* used by gray and indexed */
   nmemb_read_successfully = ReadBlob(image, data_length, xcfdata);
 
@@ -323,7 +323,7 @@ static int load_tile (Image* image, Image* tile_image, XCFDocInfo* inDocInfo,
     q++;
   }
 
-  LiberateMemory((void**)&xcfodata);
+  MagickFreeMemory(xcfodata);
   return True;
 }
 
@@ -342,7 +342,7 @@ static int load_tile_rle (Image* image, Image* tile_image, XCFDocInfo* inDocInfo
 
   bpp = (int) inDocInfo->bpp;
  
-  xcfdata = xcfodata = (unsigned char *) AcquireMemory(data_length);
+  xcfdata = xcfodata = MagickAllocateMemory(unsigned char *,data_length);
 
   nmemb_read_successfully = ReadBlob(image, data_length, xcfdata);
 
@@ -480,12 +480,12 @@ static int load_tile_rle (Image* image, Image* tile_image, XCFDocInfo* inDocInfo
           }
       }
     }
-  LiberateMemory((void **) &xcfodata);
+  MagickFreeMemory(xcfodata);
   return True;
 
  bogus_rle:
   if (xcfodata)
-  LiberateMemory((void **) &xcfodata);
+  MagickFreeMemory(xcfodata);
   return False;
 }
 
@@ -500,9 +500,7 @@ static int load_level (Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo*
   unsigned long
     ntiles,
     ntile_rows,
-    ntile_cols,
-    junk_width,
-    junk_height;
+    ntile_cols;
 
   int
     i,
@@ -521,8 +519,8 @@ static int load_level (Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo*
     *exception = inDocInfo->exception;
   
   /* start reading the data */
-  junk_width = ReadBlobMSBLong(image);
-  junk_height = ReadBlobMSBLong(image);
+  (void) ReadBlobMSBLong(image); /* width */
+  (void) ReadBlobMSBLong(image); /* height */
 
   /* read in the first tile offset.
    *  if it is '0', then this tile level is empty
@@ -542,7 +540,7 @@ static int load_level (Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo*
       fail = False;
 
       if (offset == 0)
-        ThrowBinaryException(FileOpenError,"NotEnoughTiles",image->filename);
+        ThrowBinaryException(CorruptImageError,NotEnoughTiles,image->filename);
 
       /* save the current position as it is where the
        *  next tile offset is stored.
@@ -588,10 +586,10 @@ static int load_level (Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo*
             fail = True;
           break;
         case COMPRESS_ZLIB:
-          ThrowBinaryException(CoderError,"ZipCompressionNotSupported",
+          ThrowBinaryException(CoderError,ZipCompressionNotSupported,
             image->filename)
         case COMPRESS_FRACTAL:
-          ThrowBinaryException(CoderError,"FractalCompressionNotSupported",
+          ThrowBinaryException(CoderError,FractalCompressionNotSupported,
             image->filename)
       }
 
@@ -622,7 +620,7 @@ static int load_level (Image* image, XCFDocInfo* inDocInfo, XCFLayerInfo*
 
 
   if (offset != 0)
-    ThrowBinaryException(CorruptImageError,"CorruptXCFImage",image->filename)
+    ThrowBinaryException(CorruptImageError,CorruptImage,image->filename)
 
   return 1;
 }
@@ -635,14 +633,9 @@ static int load_hierarchy (Image *image, XCFDocInfo* inDocInfo, XCFLayerInfo*
   offset,
   junk;
 
-  unsigned long
-  junk_width,
-  junk_height,
-  junk_bpp;
-
-  junk_width = ReadBlobMSBLong(image);
-  junk_height = ReadBlobMSBLong(image);
-  junk_bpp = inDocInfo->bpp = ReadBlobMSBLong(image);
+  (void) ReadBlobMSBLong(image); /* width */
+  (void) ReadBlobMSBLong(image); /* height */
+  inDocInfo->bpp = ReadBlobMSBLong(image); /* bpp */
 
   /* load in the levels...we make sure that the number of levels
    *  calculated when the TileManager was created is the same
@@ -916,11 +909,11 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   count=ReadBlob(image,14,(char *) magick);
   if ((count == 0) ||
       (LocaleNCompare((char *) magick,"gimp xcf",8) != 0))
-    ThrowReaderException(CorruptImageError,"NotAXCFImageFile",image);
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   /* clear the docinfo stuff */
   memset( &doc_info, 0, sizeof(XCFDocInfo));
   doc_info.exception = exception;
@@ -938,7 +931,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   } else if ( image_type == GIMP_GRAY ) {
     image->colorspace=GRAYColorspace;
   } else if ( image_type == GIMP_INDEXED )
-    ThrowReaderException(CoderError,"ColormapTypeNotSupported",image);
+    ThrowReaderException(CoderError,ColormapTypeNotSupported,image);
   SetImage(image,OpaqueOpacity);  /* until we know otherwise...*/
   image->matte=True;  /* XCF always has a matte! */
 
@@ -994,7 +987,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (doc_info.compression != COMPRESS_RLE) &&
         (doc_info.compression != COMPRESS_ZLIB) &&
         (doc_info.compression != COMPRESS_FRACTAL))
-          ThrowReaderException(CorruptImageError,"CompressionNotValid",image);
+          ThrowReaderException(CorruptImageWarning,CompressionNotValid,image);
       }
       break;
 
@@ -1023,9 +1016,9 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
       
         /* BOGUS: we don't write these yet because we aren't
-          reading them properly yet :(
-            image->x_resolution = xres;
-            image->y_resolution = yres;
+        //      reading them properly yet :(
+        //image->x_resolution = xres;
+        //image->y_resolution = yres;
         */
       }
       break;
@@ -1137,10 +1130,10 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
 
     /* allocate our array of layer info blocks */
-    layer_info=(XCFLayerInfo *)
-      AcquireMemory(number_layers*sizeof(XCFLayerInfo));
+    layer_info=MagickAllocateMemory(XCFLayerInfo *,
+      number_layers*sizeof(XCFLayerInfo));
     if (layer_info == (XCFLayerInfo *) NULL)
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     (void) memset(layer_info,0,number_layers*sizeof(XCFLayerInfo));
 
     for ( ; ; )
@@ -1174,7 +1167,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
         int j;
         for (j=0; j < current_layer; j++)
           DestroyImage(layer_info[j].image);
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image)
+        ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image)
       }
 
       /* restore the saved position so we'll be ready to
@@ -1268,7 +1261,7 @@ static Image *ReadXCFImage(const ImageInfo *image_info,ExceptionInfo *exception)
 #endif
     }
 
-    LiberateMemory((void **) &layer_info);
+    MagickFreeMemory(layer_info);
 
 #if 0  /* BOGUS: do we need the channels?? */
     while (True)

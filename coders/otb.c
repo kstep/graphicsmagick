@@ -17,7 +17,7 @@
 %                              OOO     T    BBBB                              %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                     Read/Write On-The-Air Image Format.                     %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -117,7 +117,7 @@ static Image *ReadOTBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   /*
     Initialize image structure.
   */
@@ -133,12 +133,12 @@ static Image *ReadOTBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->rows=ReadBlobMSBShort(image);
     }
   if ((image->columns == 0) || (image->rows == 0))
-    ThrowReaderException(CorruptImageError,"NotAOTBImageFile",image);
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   depth=ReadBlobByte(image);
   if (depth != 1)
-    ThrowReaderException(CoderError,"OnlyLevelZerofilesSupported",image);
+    ThrowReaderException(CoderError,OnlyLevelZerofilesSupported,image);
   if (!AllocateImageColormap(image,2))
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   if (image_info->ping)
     {
       CloseBlob(image);
@@ -161,7 +161,7 @@ static Image *ReadOTBImage(const ImageInfo *image_info,ExceptionInfo *exception)
         {
           byte=ReadBlobByte(image);
           if (byte == EOF)
-            ThrowReaderException(CorruptImageError,"CorruptOTBImage",image);
+            ThrowReaderException(CorruptImageError,CorruptImage,image);
         }
       indexes[x]=(byte & (0x01 << (7-bit))) ? 0x01 : 0x00;
       bit++;
@@ -176,7 +176,7 @@ static Image *ReadOTBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   }
   SyncImage(image);
   if (EOFBlob(image))
-    ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+    ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
       image->filename);
   CloseBlob(image);
   return(image);
@@ -308,7 +308,7 @@ static unsigned int WriteOTBImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   TransformColorspace(image,RGBColorspace);
   /*
     Convert image to a bi-level image.

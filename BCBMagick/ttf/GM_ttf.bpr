@@ -1,0 +1,161 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.06.00"/>
+    <PROJECT value="GM_ttf.dll"/>
+    <OBJFILES value="GM_ttf.obj src\base\ftsystem.obj src\base\ftdebug.obj 
+      src\base\ftinit.obj src\base\ftbase.obj src\base\ftglyph.obj 
+      src\base\ftmm.obj src\base\ftbdf.obj src\base\ftpfr.obj  
+      src\base\ftwinfnt.obj src\base\ftbbox.obj src\autohint\autohint.obj 
+      src\bdf\bdf.obj src\cache\ftcache.obj src\cff\cff.obj src\cid\type1cid.obj 
+      src\gzip\ftgzip.obj src\pcf\pcf.obj src\pfr\pfr.obj src\psaux\psaux.obj 
+      objs\pshinter.obj src\psnames\psmodule.obj src\raster\raster.obj 
+      src\sfnt\sfnt.obj src\smooth\smooth.obj src\truetype\truetype.obj 
+      src\type1\type1.obj src\type42\type42.obj src\winfonts\winfnt.obj"/>
+    <RESFILES value="GM_ttf.res"/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES)"/>
+    <LIBFILES value=""/>
+    <LIBRARIES value=""/>
+    <SPARELIBS value=""/>
+    <PACKAGES value=""/>
+    <PATHCPP value=".;src\base;src\autohint;src\bdf;src\cache;src\cff;src\cid;src\gzip;src\pcf;src\pfr;src\psaux;src\pshinter;src\psnames;src\raster;src\sfnt;src\smooth;src\truetype;src\type1;src\type42;src\winfonts"/>
+    <PATHPAS value=".;"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
+    <RELEASELIBPATH value="$(BCB)\lib\release"/>
+    <LINKER value="ilink32"/>
+    <USERDEFINES value="WIN32;_DLL"/>
+    <SYSDEFINES value="NO_STRICT;_NO_VCL;_RTLDLL"/>
+    <MAINSOURCE value="GM_ttf.c"/>
+    <INCLUDEPATH value="include;src\winfonts;src\type42;src\type1;src\truetype;src\smooth;src\sfnt;src\raster;src\psnames;src\pshinter;src\psaux;src\pfr;src\pcf;src\gzip;src\cid;src\cff;src\cache;src\bdf;src\autohint;src\base;$(BCB)\include;$(BCB)\include\vcl"/>
+    <LIBPATH value="src\winfonts;src\type42;src\type1;src\truetype;src\smooth;src\sfnt;src\raster;src\psnames;src\pshinter;src\psaux;src\pfr;src\pcf;src\gzip;src\cid;src\cff;src\cache;src\bdf;src\autohint;src\base;..\..\..\ttf;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <WARNINGS value="-w-par -w-aus -w-csu"/>
+    <OTHERFILES value=""/>
+  </MACROS>
+  <OPTIONS>
+    <CFLAG1 value="-WD -O2 -Vx -Ve -X- -a8 -b- -k- -vi -tWD -tWM -c"/>
+    <PFLAGS value="-$Y- -$L- -$D- -$A8 -v -JPHNE -M"/>
+    <RFLAGS value=""/>
+    <AFLAGS value="/mx /w2 /zn"/>
+    <LFLAGS value="-D&quot;&quot; -aa -Tpd -x -Gn -Gi"/>
+    <OTHERFILES value=""/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="c0d32.obj $(OBJFILES)"/>
+    <ALLRES value="$(RESFILES)"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cw32mti.lib"/>
+    <OTHERFILES value=""/>
+  </LINKER>
+  <FILELIST>
+      <FILE FILENAME="GM_ttf.res" FORMNAME="" UNITNAME="GM_ttf.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="GM_ttf.c" FORMNAME="" UNITNAME="GM_ttf" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\base\ftsystem.c" FORMNAME="" UNITNAME="ftsystem.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\base\ftdebug.c" FORMNAME="" UNITNAME="ftdebug.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\base\ftinit.c" FORMNAME="" UNITNAME="ftinit.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\base\ftbase.c" FORMNAME="" UNITNAME="ftbase.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\base\ftglyph.c" FORMNAME="" UNITNAME="ftglyph.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\base\ftmm.c" FORMNAME="" UNITNAME="ftmm.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\base\ftbdf.c" FORMNAME="" UNITNAME="ftbdf.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\base\ftpfr.c" FORMNAME="" UNITNAME="ftpfr.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\base\ftwinfnt.c" FORMNAME="" UNITNAME="ftwinfnt.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\base\ftbbox.c" FORMNAME="" UNITNAME="ftbbox.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\autohint\autohint.c" FORMNAME="" UNITNAME="autohint" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\bdf\bdf.c" FORMNAME="" UNITNAME="bdf" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\cache\ftcache.c" FORMNAME="" UNITNAME="ftcache" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\cff\cff.c" FORMNAME="" UNITNAME="cff" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\cid\type1cid.c" FORMNAME="" UNITNAME="type1cid" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\gzip\ftgzip.c" FORMNAME="" UNITNAME="ftgzip" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\pcf\pcf.c" FORMNAME="" UNITNAME="pcf" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\pfr\pfr.c" FORMNAME="" UNITNAME="pfr" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\psaux\psaux.c" FORMNAME="" UNITNAME="psaux" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\pshinter\pshinter.c" FORMNAME="" UNITNAME="pshinter" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\psnames\psmodule.c" FORMNAME="" UNITNAME="psmodule" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\raster\raster.c" FORMNAME="" UNITNAME="raster" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\sfnt\sfnt.c" FORMNAME="" UNITNAME="sfnt" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\smooth\smooth.c" FORMNAME="" UNITNAME="smooth" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\truetype\truetype.c" FORMNAME="" UNITNAME="truetype" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\type1\type1.c" FORMNAME="" UNITNAME="type1" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\type42\type42.c" FORMNAME="" UNITNAME="type42" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="src\winfonts\winfnt.c" FORMNAME="" UNITNAME="winfnt" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+  </FILELIST>
+  <BUILDTOOLS>
+  </BUILDTOOLS>
+
+  <IDEOPTIONS>
+[Version Info]
+IncludeVerInfo=1
+AutoIncBuild=0
+MajorVer=2
+MinorVer=1
+Release=4
+Build=1
+Debug=0
+PreRelease=0
+Special=0
+Private=0
+DLL=1
+Locale=1033
+CodePage=1252
+
+[Version Info Keys]
+CompanyName=David Turner, Robert Wilhelm, and Werner Lemberg
+FileDescription=FreeType font library
+FileVersion=2.1.4.1
+InternalName=FreeType 2 - Borland C++Builder porting by Mike Chiarappa, mikechiarappa@libero.it
+LegalCopyright=
+LegalTrademarks=
+OriginalFilename=FreeType
+ProductName=FreeType 2 font rendering library
+ProductVersion=2.1.4 (27 Mar 2003)
+Comments=http://www.freetype.org
+
+[HistoryLists\hlIncludePath]
+Count=1
+Item0=include;src\winfonts;src\type42;src\type1;src\truetype;src\smooth;src\sfnt;src\raster;src\psnames;src\pshinter;src\psaux;src\pfr;src\pcf;src\gzip;src\cid;src\cff;src\cache;src\bdf;src\autohint;src\base;$(BCB)\include;$(BCB)\include\vcl
+
+[HistoryLists\hlLibraryPath]
+Count=1
+Item0=src\winfonts;src\type42;src\type1;src\truetype;src\smooth;src\sfnt;src\raster;src\psnames;src\pshinter;src\psaux;src\pfr;src\pcf;src\gzip;src\cid;src\cff;src\cache;src\bdf;src\autohint;src\base;..\..\..\ttf;$(BCB)\lib\obj;$(BCB)\lib
+
+[HistoryLists\hlDebugSourcePath]
+Count=1
+Item0=$(BCB)\source\vcl
+
+[HistoryLists\hlConditionals]
+Count=1
+Item0=WIN32;_DLL
+
+[Debugging]
+DebugSourceDirs=$(BCB)\source\vcl
+
+[Parameters]
+RunParams=
+Launcher=
+UseLauncher=0
+DebugCWD=
+HostApplication=
+RemoteHost=
+RemotePath=
+RemoteLauncher=
+RemoteCWD=
+RemoteDebug=0
+
+[Compiler]
+ShowInfoMsgs=0
+LinkDebugVcl=0
+LinkCGLIB=0
+
+[Language]
+ActiveLang=
+ProjectLang=
+RootDir=
+
+[Linker]
+LibPrefix=
+LibSuffix=
+LibVersion=
+  </IDEOPTIONS>
+</PROJECT>

@@ -1,27 +1,37 @@
 
- Read.me for release 1.11
+ Read.me for release 1.12
  ========================
 
+ Little cms
+ Copyright (C) 1998-2003 Marti Maria
 
- THIS SOFTWARE IS PROVIDED "AS-IS" AND WITHOUT WARRANTY OF ANY KIND,
- EXPRESS, IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION, ANY
- WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+ Permission is hereby granted, free of charge, to any person
+ obtaining a copy of this software and associated documentation 
+ files (the "Software"), to deal in the Software without restriction, 
+ including without limitation the rights to use, copy, modify, merge, 
+ publish, distribute, sublicense, and/or sell copies of the Software, 
+ and to permit persons to whom the Software is furnished to do so, subject 
+ to the following conditions:
 
- IN NO EVENT SHALL MARTI MARIA BE LIABLE FOR ANY SPECIAL, INCIDENTAL,
- INDIRECT OR CONSEQUENTIAL DAMAGES OF ANY KIND,
- OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
- WHETHER OR NOT ADVISED OF THE POSSIBILITY OF DAMAGE, AND ON ANY THEORY OF
- LIABILITY, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
- OF THIS SOFTWARE.
+ The above copyright notice and this permission notice shall be included 
+ in all copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS 
+ OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
+ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
+ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 
  The lcms library is now distributed under
 
-                GNU LESSER GENERAL PUBLIC LICENSE
+                MIT PUBLIC LICENSE
 
  See file COPYING. for details
 
 
-   This is the 9th. public release the engine. It has been tested 
+   This is the 10th. public release the engine. It has been tested 
    across several versions before, but it is possible some
    bugs still arises. If so, sorry for the inconvenience, and
    please feel free to submit any suggestion/solution (if you can

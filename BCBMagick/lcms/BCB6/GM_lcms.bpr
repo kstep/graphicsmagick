@@ -1,0 +1,156 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.06.00"/>
+    <PROJECT value="GM_lcms.dll"/>
+    <OBJFILES value="GM_lcms.obj ..\src\cmscam02.obj ..\src\cmscam97.obj 
+      ..\src\cmscnvrt.obj ..\src\cmserr.obj ..\src\cmsgamma.obj 
+      ..\src\cmsgmt.obj ..\src\cmsintrp.obj ..\src\cmsio1.obj 
+      ..\src\cmslut.obj ..\src\cmsmatsh.obj ..\src\cmsmtrx.obj 
+      ..\src\cmsnamed.obj ..\src\cmspack.obj ..\src\cmspcs.obj 
+      ..\src\cmsps2.obj ..\src\cmssamp.obj ..\src\cmsvirt.obj 
+      ..\src\cmswtpnt.obj ..\src\cmsxform.obj"/>
+    <RESFILES value="GM_lcms.res"/>
+    <IDLFILES value=""/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES)"/>
+    <LIBFILES value=""/>
+    <LIBRARIES value="rtl.lib"/>
+    <SPARELIBS value="rtl.lib"/>
+    <PACKAGES value=""/>
+    <PATHCPP value=".;..\src"/>
+    <PATHPAS value=".;"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
+    <RELEASELIBPATH value="$(BCB)\lib\release"/>
+    <LINKER value="ilink32"/>
+    <USERDEFINES value="LCMS_DLL;LCMS_DLL_BUILD"/>
+    <SYSDEFINES value="NO_STRICT"/>
+    <MAINSOURCE value="GM_lcms.cpp"/>
+    <INCLUDEPATH value="..\src;..\include;$(BCB)\include;$(BCB)\include\vcl"/>
+    <LIBPATH value="..\src;$(BCB)\lib;$(BCB)\lib\obj"/>
+    <WARNINGS value="-w-rvl -w-rch -w-8065 -w-par -w-8027 -w-8026 -w-aus"/>
+    <WARNOPTSTR value=""/>
+    <OTHERFILES value=""/>
+  </MACROS>
+  <OPTIONS>
+    <CFLAG1 value="-WD -O2 -Vx -Ve -x- -RT- -X- -a8 -5 -b- -d -k- -vi -c -tWM"/>
+    <PFLAGS value="-$Y- -$L- -$D- -$A8 -v -JPHNE -M"/>
+    <RFLAGS value=""/>
+    <AFLAGS value="/mx /w2 /zn"/>
+    <LFLAGS value="-D&quot;&quot; -aa -Tpd -x -Gn -Gi -w"/>
+    <OTHERFILES value=""/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="c0d32.obj sysinit.obj $(OBJFILES)"/>
+    <ALLRES value="$(RESFILES)"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mt.lib"/>
+    <OTHERFILES value=""/>
+  </LINKER>
+  <FILELIST>
+      <FILE FILENAME="GM_lcms.cpp" FORMNAME="" UNITNAME="GM_lcms" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="GM_lcms.res" FORMNAME="" UNITNAME="GM_lcms.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\cmscam02.c" FORMNAME="" UNITNAME="cmscam02" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\cmscam97.c" FORMNAME="" UNITNAME="cmscam97" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\cmscnvrt.c" FORMNAME="" UNITNAME="cmscnvrt" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\cmserr.c" FORMNAME="" UNITNAME="cmserr" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\cmsgamma.c" FORMNAME="" UNITNAME="cmsgamma" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\cmsgmt.c" FORMNAME="" UNITNAME="cmsgmt" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\cmsintrp.c" FORMNAME="" UNITNAME="cmsintrp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\cmsio1.c" FORMNAME="" UNITNAME="cmsio1" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\cmslut.c" FORMNAME="" UNITNAME="cmslut" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\cmsmatsh.c" FORMNAME="" UNITNAME="cmsmatsh" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\cmsmtrx.c" FORMNAME="" UNITNAME="cmsmtrx" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\cmsnamed.c" FORMNAME="" UNITNAME="cmsnamed" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\cmspack.c" FORMNAME="" UNITNAME="cmspack" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\cmspcs.c" FORMNAME="" UNITNAME="cmspcs" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\cmsps2.c" FORMNAME="" UNITNAME="cmsps2" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\cmssamp.c" FORMNAME="" UNITNAME="cmssamp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\cmsvirt.c" FORMNAME="" UNITNAME="cmsvirt" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\cmswtpnt.c" FORMNAME="" UNITNAME="cmswtpnt" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\cmsxform.c" FORMNAME="" UNITNAME="cmsxform" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+  </FILELIST>
+  <BUILDTOOLS>
+  </BUILDTOOLS>
+
+  <IDEOPTIONS>
+[Version Info]
+IncludeVerInfo=1
+AutoIncBuild=0
+MajorVer=1
+MinorVer=11
+Release=0
+Build=1
+Debug=0
+PreRelease=0
+Special=0
+Private=0
+DLL=1
+Locale=1033
+CodePage=1252
+
+[Version Info Keys]
+CompanyName=Little CMS
+FileDescription=Little CMS color engine
+FileVersion=1.11.0.1
+InternalName=lcms - Borland C++ Builder 6.0 porting by Mike Chiarappa, mikechiarappa@libero.it
+LegalCopyright=No copyright, use freely
+LegalTrademarks=Marti' Maria
+OriginalFilename=lcms
+ProductName=Little CMS color engine
+ProductVersion=1.11
+Comments=www.littlecms.com, http://www.lcms.coloraid.de
+
+[HistoryLists\hlIncludePath]
+Count=1
+Item0=..\src;..\include;$(BCB)\include;$(BCB)\include\vcl
+
+[HistoryLists\hlLibraryPath]
+Count=1
+Item0=..\src;$(BCB)\lib;$(BCB)\lib\obj
+
+[HistoryLists\hlDebugSourcePath]
+Count=1
+Item0=$(BCB)\source\vcl
+
+[HistoryLists\hlConditionals]
+Count=1
+Item0=LCMS_DLL;LCMS_DLL_BUILD
+
+[HistoryLists\hlFinalOutputDir]
+Count=1
+Item0=
+
+[Debugging]
+DebugSourceDirs=
+
+[Parameters]
+RunParams=
+Launcher=
+UseLauncher=0
+DebugCWD=
+HostApplication=
+RemoteHost=
+RemotePath=
+RemoteLauncher=
+RemoteCWD=
+RemoteDebug=0
+
+[Compiler]
+ShowInfoMsgs=0
+LinkDebugVcl=0
+LinkCGLIB=0
+
+[Language]
+ActiveLang=
+ProjectLang=
+RootDir=
+
+[Linker]
+LibPrefix=
+LibSuffix=
+LibVersion=
+  </IDEOPTIONS>
+</PROJECT>

@@ -18,7 +18,7 @@
 %                            R  R   LLLLL  EEEEE                              %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                         Read URT RLE Image Format.                          %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -180,13 +180,13 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   /*
     Determine if this is a RLE file.
   */
   count=ReadBlob(image,2,(char *) magick);
   if ((count == 0) || (memcmp(magick,"\122\314",2) != 0))
-    ThrowReaderException(CorruptImageError,"NotARLEImageFile",image);
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   do
   {
     /*
@@ -204,7 +204,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     map_length=1 << ReadBlobByte(image);
     if ((number_planes == 0) || (number_planes == 2) || (bits_per_pixel != 8) ||
         (image->columns == 0))
-      ThrowReaderException(CorruptImageError,"UnsupportedRLEImageFile",image);
+      ThrowReaderException(CoderError,DataEncodingSchemeIsNotSupported,image);
     if (flags & 0x02)
       {
         /*
@@ -231,9 +231,9 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Read image colormaps.
         */
-        colormap=(unsigned char *) AcquireMemory(number_colormaps*map_length);
+        colormap=MagickAllocateMemory(unsigned char *,number_colormaps*map_length);
         if (colormap == (unsigned char *) NULL)
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
         p=colormap;
         for (i=0; i < (long) number_colormaps; i++)
@@ -252,14 +252,14 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Read image comment.
         */
         length=ReadBlobLSBShort(image);
-        comment=(char *) AcquireMemory(length);
+        comment=MagickAllocateMemory(char *,length);
         if (comment == (char *) NULL)
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
         (void) ReadBlob(image,length-1,comment);
         comment[length-1]='\0';
         (void) SetImageAttribute(image,"comment",comment);
-        LiberateMemory((void **) &comment);
+        MagickFreeMemory(comment);
         if ((length & 0x01) == 0)
           (void) ReadBlobByte(image);
       }
@@ -272,9 +272,9 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image->matte)
       number_planes++;
     number_pixels=image->columns*image->rows;
-    rle_pixels=(unsigned char *) AcquireMemory(number_pixels*number_planes);
+    rle_pixels=MagickAllocateMemory(unsigned char *,number_pixels*number_planes);
     if (rle_pixels == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     if ((flags & 0x01) && !(flags & 0x02))
       {
         long
@@ -442,7 +442,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (number_colormaps == 0)
           map_length=256;
         if (!AllocateImageColormap(image,map_length))
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
         p=colormap;
         if (number_colormaps == 1)
@@ -512,18 +512,18 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
                   if (!MagickMonitor(LoadImageText,y,image->rows,exception))
                     break;
             }
-            LiberateMemory((void **) &image->colormap);
+            MagickFreeMemory(image->colormap);
             image->colormap=(PixelPacket *) NULL;
             image->storage_class=DirectClass;
             image->colors=0;
           }
       }
     if (number_colormaps != 0)
-      LiberateMemory((void **) &colormap);
-    LiberateMemory((void **) &rle_pixels);
+      MagickFreeMemory(colormap);
+    MagickFreeMemory(rle_pixels);
     if (EOFBlob(image))
       {
-        ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+        ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
           image->filename);
         break;
       }

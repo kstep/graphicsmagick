@@ -18,7 +18,8 @@
 %                        H   H    T    M   M  LLLLL                           %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                  Write A Client-Side Image Map Using                        %
+%                Image Montage & Directory Information.                       %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -232,7 +233,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   CloseBlob(image);
   TransformColorspace(image,RGBColorspace);
   *url='\0';
@@ -249,7 +250,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
           (void) strncpy(url,image_info->magick,MaxTextExtent-1);
           (void) strcat(url,":");
           url[strlen(url)+p-image->filename]='\0';
-          (void) strncat(url,image->filename,p-image->filename);
+          (void) strncat(url,image->filename,(size_t)(p-image->filename));
           (void) strncpy(image->filename,p,MaxTextExtent-1);
         }
     }
@@ -275,7 +276,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
       */
       status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
       if (status == False)
-        ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+        ThrowWriterException(FileOpenError,UnableToOpenFile,image);
       /*
         Write the HTML image file.
       */
@@ -374,7 +375,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
       for (p=filename+strlen(filename)-1; p > (filename+1); p--)
         if (*p == '.')
           {
-            (void) strncpy(image->filename,filename,p-filename);
+            (void) strncpy(image->filename,filename,(size_t) (p-filename));
             image->filename[p-filename]='\0';
             break;
           }
@@ -385,7 +386,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
   */
   status=OpenBlob(clone_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   DestroyImageInfo(clone_info);
   /*
     Determine the size and location of each image tile.

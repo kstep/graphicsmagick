@@ -1113,7 +1113,7 @@ UTF8ToUTF16BE(unsigned char* outb, int *outlen,
  * 
  * Returns one of the XML_CHAR_ENCODING_... values.
  */
-LIBXML_DLL_IMPORT xmlCharEncoding
+xmlCharEncoding
 xmlDetectCharEncoding(const unsigned char* in, int len)
 {
     if (len >= 4) {

@@ -6,7 +6,7 @@
 	<META NAME="GENERATOR" CONTENT="StarOffice 6.0  (Solaris Sparc)">
 	<META NAME="CREATED" CONTENT="20020823;18090800">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20030421;13500600">
+	<META NAME="CHANGED" CONTENT="20030527;21484100">
 	<META NAME="CLASSIFICATION" CONTENT="Description of the GraphicsMagick development and release processes.">
 	<META NAME="DESCRIPTION" CONTENT="GraphicsMagick is a robust collection of tools and libraries to read, write, and manipulate an image in any of the more popular image formats including GIF, JPEG, PNG, PDF, and Photo CD.  With GraphicsMagick you can create GIFs dynamically making it suitable for Web applications.  You can also resize, rotate,  sharpen, color reduce, or add special effects to an image and save your completed work in the same or differing image format.">
 	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, Image Magick, Image Magic, PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software     development, simulation, image, software, AniMagick, Animagic,    Magick++">
@@ -31,17 +31,17 @@
 		<TR>
 			<TD WIDTH=81%>
 				<P ALIGN=LEFT>[<A HREF="../index.html">Home</A>] [<A HREF="">Mission
-				Statement</A>] [<A HREF="development.html">Development Process</A>] [<A HREF="contribute.html">Contribute</A>] [<A HREF="download.html">Download</A>]
-				[<A HREF="install.html">Installation</A>] [<A HREF="cvs.html">CVS</A>]
-				[<A HREF="http://sourceforge.net/mail/?group_id=73485">Mailing
+				Statement</A>] [<A HREF="">Development Process</A>] [<A HREF="contribute.html">Contribute</A>]
+				[<A HREF="download.html">Download</A>] [<A HREF="install.html">Installation</A>]
+				[<A HREF="cvs.html">CVS</A>] [<A HREF="http://sourceforge.net/mail/?group_id=73485">Mailing
 				Lists</A>] [<A HREF="FAQ.html">FAQ</A>] [<A HREF="formats.html">Formats</A>]
-				[<A HREF="NEWS.html">News</A> ] [<A HREF="Changelog.html"><SPAN LANG="en-US">ChangeLog</SPAN></A>]
+				[<A HREF="NEWS.html">News</A> ] [<A HREF="Changelog.html">ChangeLog</A>]
 				[<A HREF="http://sourceforge.net/projects/graphicsmagick/">Report
 				Bugs</A>] [<A HREF="utilities.html">Utilities</A>] [<A HREF="programming.html">Programming</A>]
 				[<A HREF="books.html">Books</A>] [<A HREF="links.html">Links</A>]</P>
 			</TD>
 			<TD ROWSPAN=2 WIDTH=19%>
-				<P ALIGN=CENTER><IMG SRC="../images/magick_small.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0></P>
+				<P ALIGN=CENTER><IMG SRC="../images/gm-188x120t.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=188 HEIGHT=120 BORDER=0></P>
 			</TD>
 		</TR>
 		<TR>
@@ -109,12 +109,12 @@ three operating environments.</FONT></FONT></P>
 <P><FONT FACE="Verdana, Arial, Helvetica, sans-seri">Beta Phase</FONT></P>
 <P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>The
 Beta phase is entered when the work is feature complete, the package
-passes all tests, and it is considered time for <SPAN LANG="en-US">versioned</SPAN>
-releases. As the first step of entering the beta phase, a release
-branch is created off of the trunk to support all development
-targeting the release. The purpose of the beta phase is to wring out
-any remaining bugs prior to release. When a beta package is prepared,
-a release tag is applied to the associated release branch in CVS.</FONT></FONT></P>
+passes all tests, and it is considered time for versioned releases.
+As the first step of entering the beta phase, a release branch is
+created off of the trunk to support all development targeting the
+release. The purpose of the beta phase is to wring out any remaining
+bugs prior to release. When a beta package is prepared, a release tag
+is applied to the associated release branch in CVS.</FONT></FONT></P>
 <P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>Entry
 Criteria: Code is considered ready for release. The test suite must
 show 100% completion for Q:8 and Q:16 quantum depths on at least
@@ -144,7 +144,7 @@ Criteria: The test suite must show 100% completion for Q:8, Q:16, and
 Q:32 quantum depths on at least three operating environments. The
 current beta package is determined to be sufficiently flawless for a
 final release.</FONT></FONT></P>
-<P STYLE="margin-left: 0.79in"><FONT SIZE=3><FONT FACE="Verdana, Arial, Helvetica, sans-seri">Exit
+<P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>Exit
 Criteria: None</FONT></FONT></P>
 <TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
 	<TR>
@@ -160,21 +160,23 @@ testing is vital to ensure the correct operation of the package.
 GraphicsMagick is compiled, and its entire test suite is executed, in
 the following environments:</FONT></FONT></P>
 <P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>Solaris
-9 (SPARC platform, GCC 3.2, compiled with 32 bits)</FONT></FONT></P>
+9 (SPARC platform, GCC 3.3, compiled with 32 bits)</FONT></FONT></P>
 <P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>Solaris
 9 (SPARC platform, Forte 7, compiled with 32 bits)</FONT></FONT></P>
 <P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>FreeBSD
-5.0 (x686 platform, GCC 3.2)</FONT></FONT></P>
+5.0 (x686 platform, GCC 3.3)</FONT></FONT></P>
+<P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>AIX
+5.1 (IBM xlc vendor compiler)</FONT></FONT></P>
 <P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>HP-UX
 11.00 (HP C/C++ vendor compiler)</FONT></FONT></P>
 <P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>IRIX
-6.5 (using vendor compiler)</FONT></FONT></P>
+6.5 (MIPSpro 7.4 vendor compiler)</FONT></FONT></P>
 <P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>Windows
 XP (built with Visual Studio .net)</FONT></FONT></P>
 <P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>Windows
 XP (built with MINGW)</FONT></FONT></P>
 <P STYLE="margin-left: 0.79in"><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>Windows
-XP (built with <SPAN LANG="en-US">Cygwin</SPAN>)</FONT></FONT></P>
+XP (built with Cygwin)</FONT></FONT></P>
 <P><FONT FACE="Verdana, Arial, Helvetica, sans-seri"><FONT SIZE=3>The
 output of any tests which do not support self-validation (e.g. the
 Magick++ demos) is visually inspected for correctness.</FONT></FONT></P>

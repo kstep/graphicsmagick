@@ -18,7 +18,7 @@
 %                         GGG   R  R   A   A    Y                             %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                    Read/Write RAW Gray Image Format.                        %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -119,19 +119,19 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
   assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
   if ((image->columns == 0) || (image->rows == 0))
-    ThrowReaderException(OptionError,"MustSpecifyImageSize",image);
+    ThrowReaderException(OptionError,MustSpecifyImageSize,image);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   for (i=0; i < image->offset; i++)
     (void) ReadBlobByte(image);
   /*
     Allocate memory for a scanline.
   */
   packet_size=image->depth > 8 ? 2 : 1;
-  scanline=(unsigned char *) AcquireMemory(packet_size*image->tile_info.width);
+  scanline=MagickAllocateMemory(unsigned char *,packet_size*image->tile_info.width);
   if (scanline == (unsigned char *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   if (image_info->subrange != 0)
     while (image->scene < image_info->subimage)
     {
@@ -149,7 +149,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
       Convert raster image to pixel packets.
     */
     if (!AllocateImageColormap(image,1 << image->depth))
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     if (image_info->ping && (image_info->subrange != 0))
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
@@ -175,7 +175,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
       (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
     if (EOFBlob(image))
       {
-        ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+        ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
           image->filename);
         break;
       }
@@ -202,7 +202,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
           break;
       }
   } while (count != 0);
-  LiberateMemory((void **) &scanline);
+  MagickFreeMemory(scanline);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);
@@ -397,7 +397,7 @@ static unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   /*
     Convert image to gray scale PseudoColor class.
   */
@@ -409,9 +409,9 @@ static unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
     */
     TransformColorspace(image,RGBColorspace);
     packet_size=image->depth > 8 ? 2: 1;
-    scanline=(unsigned char *) AcquireMemory(packet_size*image->columns);
+    scanline=MagickAllocateMemory(unsigned char *,packet_size*image->columns);
     if (scanline == (unsigned char *) NULL)
-      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
+      ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
     /*
       Convert MIFF to GRAY raster scanline.
     */
@@ -427,7 +427,7 @@ static unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
           if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
             break;
     }
-    LiberateMemory((void **) &scanline);
+    MagickFreeMemory(scanline);
     if (image->next == (Image *) NULL)
       break;
     image=SyncNextImageInList(image);

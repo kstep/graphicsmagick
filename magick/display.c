@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003, 2004 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 % Copyright 1991-1999 E. I. du Pont de Nemours and Company
 %
@@ -41,7 +41,6 @@
 #include "magick/blob.h"
 #include "magick/cache.h"
 #include "magick/color.h"
-#include "magick/command.h"
 #include "magick/composite.h"
 #include "magick/constitute.h"
 #include "magick/decorate.h"
@@ -199,7 +198,7 @@ static unsigned int XAnnotateEditImage(Display *display,
   /*
     Map Command widget.
   */
-  windows->command.name=(char *) "Annotate";
+  (void) CloneString(&windows->command.name,"Annotate");
   windows->command.data=4;
   (void) XCommandWidget(display,windows,AnnotateMenu,(XEvent *) NULL);
   (void) XMapRaised(display,windows->command.id);
@@ -544,7 +543,7 @@ static unsigned int XAnnotateEditImage(Display *display,
   /*
     Initialize annotate structure.
   */
-  annotate_info=(XAnnotateInfo *) AcquireMemory(sizeof(XAnnotateInfo));
+  annotate_info=MagickAllocateMemory(XAnnotateInfo *,sizeof(XAnnotateInfo));
   if (annotate_info == (XAnnotateInfo *) NULL)
     return(False);
   XGetAnnotateInfo(annotate_info);
@@ -560,8 +559,8 @@ static unsigned int XAnnotateEditImage(Display *display,
   annotate_info->height=font_info->ascent+font_info->descent;
   annotate_info->degrees=degrees;
   annotate_info->font_info=font_info;
-  annotate_info->text=(char *)
-    AcquireMemory(windows->image.width/Max(font_info->min_bounds.width,1)+2);
+  annotate_info->text=MagickAllocateMemory(char *,
+    windows->image.width/Max(font_info->min_bounds.width,1)+2);
   if (annotate_info->text == (char *) NULL)
     return(False);
   /*
@@ -578,7 +577,7 @@ static unsigned int XAnnotateEditImage(Display *display,
   /*
     Begin annotating the image with text.
   */
-  windows->command.name=(char *) "Text";
+  (void) CloneString(&windows->command.name,"Text");
   windows->command.data=0;
   (void) XCommandWidget(display,windows,TextMenu,(XEvent *) NULL);
   state=DefaultState;
@@ -824,14 +823,14 @@ static unsigned int XAnnotateEditImage(Display *display,
                 p=annotate_info->text;
                 break;
               }
-            annotate_info->next=(XAnnotateInfo *)
-              AcquireMemory(sizeof(XAnnotateInfo));
+            annotate_info->next=MagickAllocateMemory(XAnnotateInfo *,
+              sizeof(XAnnotateInfo));
             if (annotate_info->next == (XAnnotateInfo *) NULL)
               return(False);
             *annotate_info->next=(*annotate_info);
             annotate_info->next->previous=annotate_info;
             annotate_info=annotate_info->next;
-            annotate_info->text=(char *) AcquireMemory(windows->image.width/
+            annotate_info->text=MagickAllocateMemory(char *,windows->image.width/
               Max(font_info->min_bounds.width,1)+2);
             if (annotate_info->text == (char *) NULL)
               return(False);
@@ -918,14 +917,14 @@ static unsigned int XAnnotateEditImage(Display *display,
               p=annotate_info->text;
               continue;
             }
-          annotate_info->next=(XAnnotateInfo *)
-            AcquireMemory(sizeof(XAnnotateInfo));
+          annotate_info->next=MagickAllocateMemory(XAnnotateInfo *,
+            sizeof(XAnnotateInfo));
           if (annotate_info->next == (XAnnotateInfo *) NULL)
             return(False);
           *annotate_info->next=(*annotate_info);
           annotate_info->next->previous=annotate_info;
           annotate_info=annotate_info->next;
-          annotate_info->text=(char *) AcquireMemory(windows->image.width/
+          annotate_info->text=MagickAllocateMemory(char *,windows->image.width/
             Max(font_info->min_bounds.width,1)+2);
           if (annotate_info->text == (char *) NULL)
             return(False);
@@ -967,8 +966,8 @@ static unsigned int XAnnotateEditImage(Display *display,
           No text on this line--  go to the next line of text.
         */
         previous_info=annotate_info->previous;
-        LiberateMemory((void **) &annotate_info->text);
-        LiberateMemory((void **) &annotate_info);
+        MagickFreeMemory(annotate_info->text);
+        MagickFreeMemory(annotate_info);
         annotate_info=previous_info;
         continue;
       }
@@ -1014,8 +1013,8 @@ static unsigned int XAnnotateEditImage(Display *display,
       Free up memory.
     */
     previous_info=annotate_info->previous;
-    LiberateMemory((void **) &annotate_info->text);
-    LiberateMemory((void **) &annotate_info);
+    MagickFreeMemory(annotate_info->text);
+    MagickFreeMemory(annotate_info);
     annotate_info=previous_info;
   }
   (void) XSetForeground(display,annotate_context,
@@ -1204,7 +1203,7 @@ static unsigned int XChopImage(Display *display,XResourceInfo *resource_info,
   /*
     Map Command widget.
   */
-  windows->command.name=(char *) "Chop";
+  (void) CloneString(&windows->command.name,"Chop");
   windows->command.data=1;
   (void) XCommandWidget(display,windows,ChopMenu,(XEvent *) NULL);
   (void) XMapRaised(display,windows->command.id);
@@ -1636,7 +1635,7 @@ static unsigned int XColorEditImage(Display *display,
   /*
     Map Command widget.
   */
-  windows->command.name=(char *) "Color Edit";
+  (void) CloneString(&windows->command.name,"Color Edit");
   windows->command.data=4;
   (void) XCommandWidget(display,windows,ColorEditMenu,(XEvent *) NULL);
   (void) XMapRaised(display,windows->command.id);
@@ -2239,7 +2238,7 @@ static unsigned int XCompositeImage(Display *display,
   (void) strncpy(resource_info->image_info->filename,filename,MaxTextExtent-1);
   composite_image=ReadImage(resource_info->image_info,&image->exception);
   if (image->exception.severity != UndefinedException)
-    MagickError(image->exception.severity,image->exception.reason,
+    MagickError2(image->exception.severity,image->exception.reason,
       image->exception.description);
   XSetCursorState(display,windows,False);
   if (composite_image == (Image *) NULL)
@@ -2276,7 +2275,7 @@ static unsigned int XCompositeImage(Display *display,
             composite_image->rows);
           mask_image=ReadImage(image_info,&image->exception);
           if (image->exception.severity != UndefinedException)
-            MagickError(image->exception.severity,image->exception.reason,
+            MagickError2(image->exception.severity,image->exception.reason,
               image->exception.description);
           XSetCursorState(display,windows,False);
           if (mask_image == (Image *) NULL)
@@ -2290,7 +2289,7 @@ static unsigned int XCompositeImage(Display *display,
   /*
     Map Command widget.
   */
-  windows->command.name=(char *) "Composite";
+  (void) CloneString(&windows->command.name,"Composite");
   windows->command.data=1;
   (void) XCommandWidget(display,windows,CompositeMenu,(XEvent *) NULL);
   (void) XMapRaised(display,windows->command.id);
@@ -2951,17 +2950,17 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
   {
     case CopyMode:
     {
-      windows->command.name=(char *) "Copy";
+      (void) CloneString(&windows->command.name,"Copy");
       break;
     }
     case CropMode:
     {
-      windows->command.name=(char *) "Crop";
+      (void) CloneString(&windows->command.name,"Crop");
       break;
     }
     case CutMode:
     {
-      windows->command.name=(char *) "Cut";
+      (void) CloneString(&windows->command.name,"Cut");
       break;
     }
   }
@@ -3217,7 +3216,7 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
           state|=ExitState;
           if (LocaleCompare(windows->command.name,"Rectify") == 0)
             break;
-          windows->command.name=(char *) "Rectify";
+          (void) CloneString(&windows->command.name,"Rectify");
           windows->command.data=0;
           (void) XCommandWidget(display,windows,RectifyModeMenu,
             (XEvent *) NULL);
@@ -3718,17 +3717,17 @@ static unsigned int XDrawEditImage(Display *display,
     Allocate polygon info.
   */
   max_coordinates=2048;
-  coordinate_info=(XPoint *) AcquireMemory(max_coordinates*sizeof(XPoint));
+  coordinate_info=MagickAllocateMemory(XPoint *,max_coordinates*sizeof(XPoint));
   if (coordinate_info == (XPoint *) NULL)
     {
-      MagickError(ResourceLimitError,"MemoryAllocationFailed",
-        "UnableToDrawOnImage");
+      MagickError3(ResourceLimitError,MemoryAllocationFailed,
+        UnableToDrawOnImage);
       return(False);
     }
   /*
     Map Command widget.
   */
-  windows->command.name=(char *) "Draw";
+  (void) CloneString(&windows->command.name,"Draw");
   windows->command.data=4;
   (void) XCommandWidget(display,windows,DrawMenu,(XEvent *) NULL);
   (void) XMapRaised(display,windows->command.id);
@@ -3952,7 +3951,7 @@ static unsigned int XDrawEditImage(Display *display,
               (void) strncpy(image_info->filename,filename,MaxTextExtent-1);
               stipple_image=ReadImage(image_info,&(*image)->exception);
               if ((*image)->exception.severity != UndefinedException)
-                MagickError((*image)->exception.severity,
+                MagickError2((*image)->exception.severity,
                   (*image)->exception.reason,(*image)->exception.description);
               XSetCursorState(display,windows,False);
               if (stipple_image == (Image *) NULL)
@@ -4332,11 +4331,11 @@ static unsigned int XDrawEditImage(Display *display,
               break;
             }
           max_coordinates<<=1;
-          ReacquireMemory((void **) &coordinate_info,
+          MagickReallocMemory(coordinate_info,
             max_coordinates*sizeof(XPoint));
           if (coordinate_info == (XPoint *) NULL)
-            MagickError(ResourceLimitError,"MemoryAllocationFailed",
-              "UnableToDrawOnImage");
+            MagickError3(ResourceLimitError,MemoryAllocationFailed,
+              UnableToDrawOnImage);
           break;
         }
         case Expose:
@@ -4359,11 +4358,11 @@ static unsigned int XDrawEditImage(Display *display,
           if (number_coordinates < (int) max_coordinates)
             break;
           max_coordinates<<=1;
-          ReacquireMemory((void **) &coordinate_info,
+          MagickReallocMemory(coordinate_info,
             max_coordinates*sizeof(XPoint));
           if (coordinate_info == (XPoint *) NULL)
-            MagickError(ResourceLimitError,"MemoryAllocationFailed",
-              "UnableToDrawOnImage");
+            MagickError3(ResourceLimitError,MemoryAllocationFailed,
+              UnableToDrawOnImage);
           break;
         }
         default:
@@ -4536,7 +4535,7 @@ static unsigned int XDrawEditImage(Display *display,
     (void) XConfigureImage(display,resource_info,windows,*image);
   }
   XSetCursorState(display,windows,False);
-  LiberateMemory((void **) &coordinate_info);
+  MagickFreeMemory(coordinate_info);
   return(status);
 }
 
@@ -4673,7 +4672,7 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
       windows->image.window_changes.width=(unsigned int) cache_image->columns;
       windows->image.window_changes.height=(unsigned int) cache_image->rows;
       if (windows->image.crop_geometry != (char *) NULL)
-        LiberateMemory((void **) &windows->image.crop_geometry);
+        MagickFreeMemory(windows->image.crop_geometry);
       windows->image.crop_geometry=cache_image->geometry;
       if (redo_image != (Image *) NULL)
         DestroyImage(redo_image);
@@ -4836,7 +4835,7 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
       windows->image.window_changes.width=(unsigned int) redo_image->columns;
       windows->image.window_changes.height=(unsigned int) redo_image->rows;
       if (windows->image.crop_geometry != (char *) NULL)
-        LiberateMemory((void **) &windows->image.crop_geometry);
+        MagickFreeMemory(windows->image.crop_geometry);
       windows->image.crop_geometry=redo_image->geometry;
       DestroyImage(*image);
       *image=redo_image;
@@ -5316,7 +5315,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
   XWindows *windows,const CommandType command,Image **image)
 {
   char
-    *argv[10],
+    /* *argv[10], */
     filename[MaxTextExtent],
     geometry[MaxTextExtent],
     modulate_factors[MaxTextExtent];
@@ -5347,7 +5346,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
   */
   XCheckRefreshWindows(display,windows);
   XImageCache(display,resource_info,windows,command,image);
-  argv[0]=resource_info->client_name;
+  /* argv[0]=resource_info->client_name; */
   nexus=(Image *) NULL;
   windows->image.window_changes.width=windows->image.ximage->width;
   windows->image.window_changes.height=windows->image.ximage->height;
@@ -5459,7 +5458,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       (void) CloneString(&image_info->size,geometry);
       nexus=ReadImage(image_info,&(*image)->exception);
       if ((*image)->exception.severity != UndefinedException)
-        MagickError((*image)->exception.severity,(*image)->exception.reason,
+        MagickError2((*image)->exception.severity,(*image)->exception.reason,
           (*image)->exception.description);
       XClientMessage(display,windows->image.id,windows->im_protocols,
         windows->im_next_image,CurrentTime);
@@ -5606,7 +5605,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       TransformImage(image,windows->image.crop_geometry,image_geometry);
       if (windows->image.crop_geometry != (char *) NULL)
         {
-          LiberateMemory((void **) &windows->image.crop_geometry);
+          MagickFreeMemory(windows->image.crop_geometry);
           windows->image.crop_geometry=(char *) NULL;
         }
       windows->image.x=0;
@@ -5636,7 +5635,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       windows->image.window_changes.height=(unsigned int) (*image)->rows;
       if (windows->image.crop_geometry != (char *) NULL)
         {
-          LiberateMemory((void **) &windows->image.crop_geometry);
+          MagickFreeMemory(windows->image.crop_geometry);
           windows->image.crop_geometry=(char *) NULL;
           windows->image.x=0;
           windows->image.y=0;
@@ -6859,7 +6858,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
         {
           nexus=ReadImage(resource_info->image_info,&(*image)->exception);
           if ((*image)->exception.severity != UndefinedException)
-            MagickError((*image)->exception.severity,
+            MagickError2((*image)->exception.severity,
               (*image)->exception.reason,(*image)->exception.description);
           XClientMessage(display,windows->image.id,windows->im_protocols,
             windows->im_next_image,CurrentTime);
@@ -7085,7 +7084,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
             Display documentation using Netscape remote control.
           */
           FormatString(command,"openURL(%.1024s,new-window,noraise)",
-            "http://www.imagemagick.org/");
+            "http://www.graphicsmagick.org/");
           mozilla_atom=XInternAtom(display,"_MOZILLA_COMMAND",False);
           (void) XChangeProperty(display,mozilla_window,mozilla_atom,XA_STRING,
             8,PropModeReplace,(unsigned char *) command,(int) strlen(command));
@@ -7415,7 +7414,7 @@ static void XMakePanImage(Display *display,XResourceInfo *resource_info,
   status=XMakeImage(display,resource_info,&windows->pan,image,
     windows->pan.width,windows->pan.height);
   if (status == False)
-    MagickError(XServerError,image->exception.reason,(char *) NULL);
+    MagickError2(XServerError,image->exception.reason,(char *) NULL);
   (void) XSetWindowBackgroundPixmap(display,windows->pan.id,
     windows->pan.pixmap);
   (void) XClearWindow(display,windows->pan.id);
@@ -7527,7 +7526,7 @@ static unsigned int XMatteEditImage(Display *display,
   /*
     Map Command widget.
   */
-  windows->command.name=(char *) "Matte Edit";
+  (void) CloneString(&windows->command.name,"Matte Edit");
   windows->command.data=4;
   (void) XCommandWidget(display,windows,MatteEditMenu,(XEvent *) NULL);
   (void) XMapRaised(display,windows->command.id);
@@ -8056,14 +8055,15 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
       status=XGetCommand(display,windows->image.id,&files,&count);
       if (!status)
         {
-          MagickError(XServerError,"UnableToGetProperty","UnableToSelectImage");
+          MagickError(XServerError,UnableToGetProperty,
+            MagickMsg(ResourceLimitError,UnableToSelectImage));
           return((Image *) NULL);
         }
-      filelist=(char **) AcquireMemory(count*sizeof(char *));
+      filelist=MagickAllocateMemory(char **,count*sizeof(char *));
       if (filelist == (char **) NULL)
         {
-          MagickError(ResourceLimitError,"MemoryAllocationFailed",
-            "UnableToSelectImage");
+          MagickError3(ResourceLimitError,MemoryAllocationFailed,
+            UnableToSelectImage);
           (void) XFreeStringList(files);
           return((Image *) NULL);
         }
@@ -8074,7 +8074,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
       filelist[j]=(char *) NULL;
       XListBrowserWidget(display,windows,&windows->widget,
         (const char **) filelist,"Load","Select Image to Load:",filename);
-      LiberateMemory((void **) &filelist);
+      MagickFreeMemory(filelist);
       (void) XFreeStringList(files);
     }
   if (*filename == '\0')
@@ -8169,10 +8169,10 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
           XTextViewWidget(display,resource_info,windows,True,title,
             (const char **) textlist);
           for (i=0; textlist[i] != (char *) NULL; i++)
-            LiberateMemory((void **) &textlist[i]);
-          LiberateMemory((void **) &textlist);
+            MagickFreeMemory(textlist[i]);
+          MagickFreeMemory(textlist);
         }
-      LiberateMemory((void **) &text);
+      MagickFreeMemory(text);
     }
   DestroyExceptionInfo(&exception);
   DestroyImageInfo(image_info);
@@ -8442,7 +8442,7 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
   /*
     Map Command widget.
   */
-  windows->command.name=(char *) "Paste";
+  (void) CloneString(&windows->command.name,"Paste");
   windows->command.data=1;
   (void) XCommandWidget(display,windows,PasteMenu,(XEvent *) NULL);
   (void) XMapRaised(display,windows->command.id);
@@ -9112,7 +9112,7 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
   /*
     Map Command widget.
   */
-  windows->command.name=(char *) "ROI";
+  (void) CloneString(&windows->command.name,"ROI");
   windows->command.data=0;
   (void) XCommandWidget(display,windows,ROIMenu,(XEvent *) NULL);
   (void) XMapRaised(display,windows->command.id);
@@ -9329,7 +9329,7 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
           state|=ExitState;
           if (LocaleCompare(windows->command.name,"Apply") == 0)
             break;
-          windows->command.name=(char *) "Apply";
+          (void) CloneString(&windows->command.name,"Apply");
           windows->command.data=ApplyMenus;
           (void) XCommandWidget(display,windows,ApplyMenu,(XEvent *) NULL);
           break;
@@ -9802,7 +9802,7 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
       /*
         Map Command widget.
       */
-      windows->command.name=(char *) "Rotate";
+      (void) CloneString(&windows->command.name,"Rotate");
       windows->command.data=2;
       (void) XCommandWidget(display,windows,RotateMenu,(XEvent *) NULL);
       (void) XMapRaised(display,windows->command.id);
@@ -10881,7 +10881,7 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
         MaxTextExtent-1);
       tile_image=ReadImage(resource_info->image_info,&image->exception);
       if (image->exception.severity != UndefinedException)
-        MagickError(image->exception.severity,image->exception.reason,
+        MagickError2(image->exception.severity,image->exception.reason,
           image->exception.description);
       (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
       break;
@@ -11286,7 +11286,6 @@ static unsigned int XTrimImage(Display *display,XResourceInfo *resource_info,
 static Image *XVisualDirectoryImage(Display *display,
   XResourceInfo *resource_info,XWindows *windows)
 {
-#define LoadImageText  "  Load images...  "
 #define TileImageText  "  Scale image tiles...  "
 #define XClientName  "montage"
 
@@ -11341,10 +11340,10 @@ static Image *XVisualDirectoryImage(Display *display,
   /*
     Expand the filenames.
   */
-  filelist=(char **) AcquireMemory(sizeof(char *));
+  filelist=MagickAllocateMemory(char **,sizeof(char *));
   if (filelist == (char **) NULL)
     {
-      MagickError(ResourceLimitError,"MemoryAllocationFailed",(char *) NULL);
+      MagickError(ResourceLimitError,MemoryAllocationFailed,(char *) NULL);
       return((Image *) NULL);
     }
   number_files=1;
@@ -11353,9 +11352,9 @@ static Image *XVisualDirectoryImage(Display *display,
   if ((status == False) || (number_files == 0))
     {
       if (number_files == 0)
-        MagickError(ImageError,"NoImagesWereFound",filenames);
+        MagickError(ImageError,NoImagesWereFound,filenames);
       else
-        MagickError(ResourceLimitError,"MemoryAllocationFailed",filenames);
+        MagickError(ResourceLimitError,MemoryAllocationFailed,filenames);
       return((Image *) NULL);
     }
   /*
@@ -11387,7 +11386,7 @@ static Image *XVisualDirectoryImage(Display *display,
     if (exception.severity != UndefinedException)
       CatchException(&exception);
     if (filelist[i] != filenames)
-      LiberateMemory((void **) &filelist[i]);
+      MagickFreeMemory(filelist[i]);
     if (next_image != (Image *) NULL)
       {
         (void) SetImageAttribute(next_image,"label",(char *) NULL);
@@ -11422,11 +11421,11 @@ static Image *XVisualDirectoryImage(Display *display,
       break;
   }
   DestroyImageInfo(clone_info);
-  LiberateMemory((void **) &filelist);
+  MagickFreeMemory(filelist);
   if (image == (Image *) NULL)
     {
       XSetCursorState(display,windows,False);
-      MagickError(ImageError,"NoImagesWereLoaded",filenames);
+      MagickError(ImageError,NoImagesWereLoaded,filenames);
       return((Image *) NULL);
     }
   while (image->previous != (Image *) NULL)
@@ -11505,7 +11504,7 @@ MagickExport unsigned int XDisplayBackgroundImage(Display *display,
   unsigned int
     status;
 
-  unsigned long
+  unsigned int
     height,
     width;
 
@@ -11542,7 +11541,7 @@ MagickExport unsigned int XDisplayBackgroundImage(Display *display,
     }
   if (window_info.id == (Window) NULL)
     {
-      MagickError(XServerError,"NoWindowWithSpecifiedIDExists",
+      MagickError(XServerError,NoWindowWithSpecifiedIDExists,
         resources.window_id);
       return(False);
     }
@@ -11563,8 +11562,8 @@ MagickExport unsigned int XDisplayBackgroundImage(Display *display,
       */
       map_info=XAllocStandardColormap();
       if (map_info == (XStandardColormap *) NULL)
-        MagickFatalError(XServerFatalError,"MemoryAllocationFailed",
-          "UnableToCreateStandardColormap");
+        MagickFatalError(ResourceLimitError,MemoryAllocationFailed,
+          MagickMsg(XServerFatalError,UnableToCreateStandardColormap));
       map_info->colormap=(Colormap) NULL;
       pixel.pixels=(unsigned long *) NULL;
       /*
@@ -11574,7 +11573,7 @@ MagickExport unsigned int XDisplayBackgroundImage(Display *display,
       resources.visual_type=visual_type;
       visual_info=XBestVisualInfo(display,map_info,&resources);
       if (visual_info == (XVisualInfo *) NULL)
-        MagickFatalError(XServerFatalError,"UnableToGetVisual",
+        MagickFatalError(XServerFatalError,UnableToGetVisual,
           resources.visual_type);
       /*
         Initialize window info.
@@ -11602,7 +11601,7 @@ MagickExport unsigned int XDisplayBackgroundImage(Display *display,
   pixel.annotate_context=XCreateGC(display,window_info.id,GCBackground |
     GCForeground,&context_values);
   if (pixel.annotate_context == (GC) NULL)
-    MagickFatalError(XServerFatalError,"UnableToCreateGraphicContext",
+    MagickFatalError(XServerFatalError,UnableToCreateGraphicContext,
       (char *) NULL);
   /*
     Initialize Image window attributes.
@@ -11620,7 +11619,15 @@ MagickExport unsigned int XDisplayBackgroundImage(Display *display,
   height=window_info.height;
   x=window_info.x;
   y=window_info.y;
-  (void) GetMagickGeometry(geometry,&x,&y,&width,&height);
+  {
+    unsigned long
+      geometry_width=width,
+      geometry_height=height;
+
+    (void) GetMagickGeometry(geometry,&x,&y,&geometry_width,&geometry_height);
+    width=(unsigned int) geometry_width;
+    height=(unsigned int) geometry_height;
+  }
   window_info.width=(unsigned int) width;
   window_info.height=(unsigned int) height;
   window_info.x=(int) x;
@@ -11628,7 +11635,7 @@ MagickExport unsigned int XDisplayBackgroundImage(Display *display,
   status=XMakeImage(display,&resources,&window_info,image,window_info.width,
     window_info.height);
   if (status == False)
-    MagickFatalError(XServerFatalError,"UnableToCreateXImage",(char *) NULL);
+    MagickFatalError(XServerFatalError,UnableToCreateXImage,(char *) NULL);
   window_info.x=0;
   window_info.y=0;
   if (IsEventLogging())
@@ -11674,10 +11681,10 @@ MagickExport unsigned int XDisplayBackgroundImage(Display *display,
       */
       size_hints=XAllocSizeHints();
       if (size_hints == (XSizeHints *) NULL)
-        MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-          "unableToDisplayImage");
+        MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+          UnableToDisplayImage);
       size_hints->flags=(long) NULL;
-      FormatString(default_geometry,"%lux%lu",width,height);
+      FormatString(default_geometry,"%ux%u",width,height);
       flags=XWMGeometry(display,visual_info->screen,resources.image_geometry,
         default_geometry,window_info.border_width,size_hints,&window_info.x,
         &window_info.y,(int *) &width,(int *) &height,&gravity);
@@ -11694,7 +11701,7 @@ MagickExport unsigned int XDisplayBackgroundImage(Display *display,
   window_info.pixmap=XCreatePixmap(display,window_info.id,(unsigned int) width,
     (unsigned int) height,window_info.depth);
   if (window_info.pixmap == (Pixmap) NULL)
-    MagickFatalError(XServerFatalError,"UnableToCreateXPixmap",(char *) NULL);
+    MagickFatalError(XServerFatalError,UnableToCreateXPixmap,(char *) NULL);
   /*
     Display pixmap on the window.
   */
@@ -11752,13 +11759,22 @@ MagickExport unsigned int XDisplayBackgroundImage(Display *display,
 %
 %
 */
+#define MagnifySize  256  /* must be a power of 2 */
+#define MagickMenus  10
+#define MagickTitle  "Commands"
+#define DestroyWindowsImage(windows,subwindow) \
+{ \
+  if ((windows->subwindow.image != (Image *) NULL) && \
+      (windows->subwindow.destroy == True)) \
+    { \
+      DestroyImage(windows->subwindow.image); \
+      windows->subwindow.image=(Image *) NULL;    \
+    } \
+}
+
 MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   char **argv,int argc,Image **image,unsigned long *state)
 {
-#define MagnifySize  256  /* must be a power of 2 */
-#define MagickMenus  10
-#define MaxWindows  10
-#define MagickTitle  "Commands"
 
   static const char
     *CommandMenu[]=
@@ -12135,7 +12151,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     vid_info;
 
   static XWindowInfo
-    *magick_windows[MaxWindows];
+    *magick_windows[MaxXWindows];
 
   static unsigned int
     number_windows;
@@ -12224,8 +12240,8 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       resource_info->colors=display_image->colors;
       windows=XSetWindows(XInitializeWindows(display,resource_info));
       if (windows == (XWindows *) NULL)
-        MagickFatalError(XServerFatalError,"MemoryAllocationFailed",
-          "UnableToCreatexWindow");
+        MagickFatalError3(ResourceLimitError,MemoryAllocationFailed,
+          UnableToCreateXWindow);
       /*
         Initialize window id's.
       */
@@ -12239,6 +12255,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       magick_windows[number_windows++]=(&windows->popup);
       magick_windows[number_windows++]=(&windows->magnify);
       magick_windows[number_windows++]=(&windows->pan);
+      magick_windows[number_windows]=(XWindowInfo *) NULL;
       for (i=0; i < (int) number_windows; i++)
         magick_windows[i]->id=(Window) NULL;
       vid_info.x=0;
@@ -12251,7 +12268,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     (void) XFreeFont(display,windows->font_info);
   windows->font_info=XBestFont(display,resource_info,False);
   if (windows->font_info == (XFontStruct *) NULL)
-    MagickFatalError(XServerFatalError,"UnableToLoadFont",resource_info->font);
+    MagickFatalError(XServerFatalError,UnableToLoadFont,resource_info->font);
   /*
     Initialize Standard Colormap.
   */
@@ -12297,6 +12314,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   if (IsEventLogging())
     (void) LogMagickEvent(X11Event,GetMagickModule(),"Window id: 0x%lx (context)",
       windows->context.id);
+  memset(&context_values,0,sizeof(context_values));
   context_values.background=pixel->background_color.pixel;
   context_values.font=font_info->fid;
   context_values.foreground=pixel->foreground_color.pixel;
@@ -12307,7 +12325,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   pixel->annotate_context=
     XCreateGC(display,windows->context.id,context_mask,&context_values);
   if (pixel->annotate_context == (GC) NULL)
-    MagickFatalError(XServerFatalError,"UnableToCreateGraphicContext",
+    MagickFatalError(XServerFatalError,UnableToCreateGraphicContext,
       (char *) NULL);
   context_values.background=pixel->depth_color.pixel;
   if (pixel->widget_context != (GC) NULL)
@@ -12315,7 +12333,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   pixel->widget_context=
     XCreateGC(display,windows->context.id,context_mask,&context_values);
   if (pixel->widget_context == (GC) NULL)
-    MagickFatalError(XServerFatalError,"UnableToCreateGraphicContext",
+    MagickFatalError(XServerFatalError,UnableToCreateGraphicContext,
       (char *) NULL);
   context_values.background=pixel->foreground_color.pixel;
   context_values.foreground=pixel->background_color.pixel;
@@ -12326,7 +12344,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   pixel->highlight_context=XCreateGC(display,windows->context.id,
     context_mask | GCPlaneMask,&context_values);
   if (pixel->highlight_context == (GC) NULL)
-    MagickFatalError(XServerFatalError,"UnableToCreateGraphicContext",
+    MagickFatalError(XServerFatalError,UnableToCreateGraphicContext,
       (char *) NULL);
   (void) XDestroyWindow(display,windows->context.id);
   /*
@@ -12358,7 +12376,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   icon_pixel->annotate_context=XCreateGC(display,windows->icon.id,
     GCBackground | GCForeground,&context_values);
   if (icon_pixel->annotate_context == (GC) NULL)
-    MagickFatalError(XServerFatalError,"UnableToCreateGraphicContext",
+    MagickFatalError(XServerFatalError,UnableToCreateGraphicContext,
       (char *) NULL);
   windows->icon.annotate_context=icon_pixel->annotate_context;
   /*
@@ -12366,8 +12384,8 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   */
   if (windows->image.id != (Window) NULL)
     {
-      LiberateMemory((void **) &windows->image.name);
-      LiberateMemory((void **) &windows->image.icon_name);
+      (void) CloneString(&windows->image.name,"");
+      (void) CloneString(&windows->image.icon_name,"");
     }
   XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->image);
@@ -12375,8 +12393,10 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   windows->image.shared_memory&=resource_info->use_shared_memory;
   if ((resource_info->title != (char *) NULL) && !(*state & MontageImageState))
     {
+      MagickFreeMemory(windows->image.name);
       windows->image.name=TranslateText(resource_info->image_info,
         display_image,resource_info->title);
+      MagickFreeMemory(windows->image.icon_name);
       windows->image.icon_name=TranslateText(resource_info->image_info,
         display_image,resource_info->title);
     }
@@ -12394,8 +12414,8 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       /*
         Window name is the base of the filename.
       */
-      windows->image.name=AllocateString((char *) NULL);
-      windows->image.icon_name=AllocateString((char *) NULL);
+      (void ) CloneString(&windows->image.name,"");
+      (void ) CloneString(&windows->image.icon_name,"");
       GetPathComponent(display_image->filename,TailPath,filename);
       FormatString(windows->image.name,"GraphicsMagick: %.1024s[%lu]",filename,
         display_image->scene);
@@ -12439,7 +12459,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       */
       windows->backdrop.x=0;
       windows->backdrop.y=0;
-      windows->backdrop.name=(char *) "GraphicsMagick Backdrop";
+      (void) CloneString(&windows->backdrop.name,"GraphicsMagick Backdrop");
       windows->backdrop.flags=USSize | USPosition;
       windows->backdrop.width=XDisplayWidth(display,visual_info->screen);
       windows->backdrop.height=XDisplayHeight(display,visual_info->screen);
@@ -12514,8 +12534,8 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   */
   XGetWindowInfo(display,visual_info,map_info,pixel,font_info,resource_info,
     &windows->info);
-  windows->info.name=(char *) "Info";
-  windows->info.icon_name=(char *) "Info";
+  (void) CloneString(&windows->info.name,"Info");
+  (void) CloneString(&windows->info.icon_name,"Info");
   windows->info.border_width=1;
   windows->info.x=2;
   windows->info.y=2;
@@ -12550,7 +12570,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   FormatString(resource_name,"%.1024s.command",resource_info->client_name);
   windows->command.geometry=XGetResourceClass(resource_info->resource_database,
     resource_name,"geometry",(char *) NULL);
-  windows->command.name=(char *) MagickTitle;
+  (void) CloneString(&windows->command.name,MagickTitle);
   windows->command.border_width=0;
   windows->command.flags|=PPosition;
   windows->command.attributes.event_mask=ButtonMotionMask | ButtonPressMask |
@@ -12575,14 +12595,13 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     Initialize Widget window.
   */
   if (windows->widget.id != (Window) NULL)
-    LiberateMemory((void **) &windows->widget.name);
+    (void) CloneString(&windows->widget.name,"");
   XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->widget);
   FormatString(resource_name,"%.1024s.widget",resource_info->client_name);
   windows->widget.geometry=XGetResourceClass(resource_info->resource_database,
     resource_name,"geometry",(char *) NULL);
-  windows->widget.name=AllocateString((char *) NULL);
-  *windows->widget.name='\0';
+  (void ) CloneString(&windows->widget.name,"");
   windows->widget.border_width=0;
   windows->widget.flags|=PPosition;
   windows->widget.attributes.event_mask=ButtonMotionMask | ButtonPressMask |
@@ -12606,11 +12625,10 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     Initialize popup window.
   */
   if (windows->popup.id != (Window) NULL)
-    LiberateMemory((void **) &windows->popup.name);
+    (void) CloneString(&windows->popup.name,"");
   XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->popup);
-  windows->popup.name=AllocateString((char *) NULL);
-  *windows->popup.name='\0';
+  (void) CloneString(&windows->popup.name,"");
   windows->popup.border_width=0;
   windows->popup.flags|=PPosition;
   windows->popup.attributes.event_mask=ButtonMotionMask | ButtonPressMask |
@@ -12633,20 +12651,20 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     Initialize Magnify window and cursor.
   */
   if (windows->magnify.id != (Window) NULL)
-    LiberateMemory((void **) &windows->magnify.name);
+    (void) CloneString(&windows->magnify.name,"");
   XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->magnify);
   windows->magnify.shared_memory&=resource_info->use_shared_memory;
   FormatString(resource_name,"%.1024s.magnify",resource_info->client_name);
   windows->magnify.geometry=XGetResourceClass(resource_info->resource_database,
     resource_name,"geometry",(char *) NULL);
-  windows->magnify.name=AllocateString((char *) NULL);
+  (void) CloneString(&windows->magnify.name,"");
   FormatString(windows->magnify.name,"Magnify %uX",resource_info->magnify);
   windows->magnify.cursor=XMakeCursor(display,windows->image.id,
     map_info->colormap,resource_info->background_color,
     resource_info->foreground_color);
   if (windows->magnify.cursor == (Cursor) NULL)
-    MagickFatalError(XServerFatalError,"UnableToCreateCursor",(char *) NULL);
+    MagickFatalError(XServerFatalError,UnableToCreateCursor,(char *) NULL);
   windows->magnify.width=MagnifySize;
   windows->magnify.height=MagnifySize;
   windows->magnify.flags|=PPosition;
@@ -12675,7 +12693,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   */
   XGetWindowInfo(display,visual_info,map_info,pixel,font_info,
     resource_info,&windows->pan);
-  windows->pan.name=(char *) "Pan Icon";
+  (void) CloneString(&windows->pan.name,"Pan Icon");
   windows->pan.width=windows->icon.width;
   windows->pan.height=windows->icon.height;
   FormatString(resource_name,"%.1024s.pan",resource_info->client_name);
@@ -12727,7 +12745,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   status=XMakeImage(display,resource_info,&windows->image,display_image,
     (unsigned int) display_image->columns,(unsigned int) display_image->rows);
   if (status == False)
-    MagickFatalError(XServerFatalError,"UnableToCreateXImage",(char *) NULL);
+    MagickFatalError(XServerFatalError,UnableToCreateXImage,(char *) NULL);
   if (windows->image.mapped)
     XRefreshWindow(display,&windows->image,(XEvent *) NULL);
   handler=SetMonitorHandler((MonitorHandler) NULL);
@@ -12735,7 +12753,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     windows->magnify.width,windows->magnify.height);
   (void) SetMonitorHandler(handler);
   if (status == False)
-    MagickFatalError(XServerFatalError,"UnableToCreateXImage",(char *) NULL);
+    MagickFatalError(XServerFatalError,UnableToCreateXImage,(char *) NULL);
   if (windows->magnify.mapped)
     {
       (void) XMapRaised(display,windows->magnify.id);
@@ -12796,7 +12814,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                         &display_image->exception);
                       if (display_image->exception.severity !=
                           UndefinedException)
-                        MagickError(display_image->exception.severity,
+                        MagickError2(display_image->exception.severity,
                           display_image->exception.reason,
                           display_image->exception.description);
                       if (nexus != (Image *) NULL)
@@ -13021,7 +13039,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
           {
             if (*event.xclient.data.l == (long) windows->im_update_widget)
               {
-                windows->command.name=(char *) MagickTitle;
+                (void) CloneString(&windows->command.name,MagickTitle);
                 windows->command.data=MagickMenus;
                 (void) XCommandWidget(display,windows,CommandMenu,
                   (XEvent *) NULL);
@@ -13140,7 +13158,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
             nexus=
               ReadImage(resource_info->image_info,&display_image->exception);
             if (display_image->exception.severity != UndefinedException)
-              MagickError(display_image->exception.severity,
+              MagickError2(display_image->exception.severity,
                 display_image->exception.reason,
                 display_image->exception.description);
             if (nexus != (Image *) NULL)
@@ -13593,7 +13611,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
           MaxTextExtent-1);
         nexus=ReadImage(resource_info->image_info,&display_image->exception);
         if (display_image->exception.severity != UndefinedException)
-          MagickError(display_image->exception.severity,
+          MagickError2(display_image->exception.severity,
             display_image->exception.reason,
             display_image->exception.description);
         if (nexus != (Image *) NULL)
@@ -13739,29 +13757,6 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   if (*state & ExitState)
     {
       /*
-        Destroy X windows.
-      */
-      if (windows->image.mapped)
-        (void) XWithdrawWindow(display,windows->image.id,windows->image.screen);
-      XDelay(display,SuspendTime);
-      for (i=0; i < (int) number_windows; i++)
-      {
-        if (magick_windows[i]->ximage != (XImage *) NULL)
-          {
-            magick_windows[i]->shared_memory=False;
-            (void) XMakeImage(display,resource_info,magick_windows[i],
-              (Image *) NULL,1,1);
-            XDestroyImage(magick_windows[i]->ximage);
-          }
-        if (magick_windows[i]->pixmap != (Pixmap) NULL)
-          (void) XFreePixmap(display,magick_windows[i]->pixmap);
-        if (magick_windows[i]->id != (Window) NULL)
-          (void) XDestroyWindow(display,magick_windows[i]->id);
-        if (magick_windows[i]->destroy)
-          if (magick_windows[i]->image != (Image *) NULL)
-            DestroyImage(magick_windows[i]->image);
-      }
-      /*
         Free Standard Colormap.
       */
       (void) XFreeStandardColormap(display,icon_visual,icon_map,icon_pixel);
@@ -13772,36 +13767,18 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
       */
       if (resource_info->backdrop)
         (void) XFreeCursor(display,windows->backdrop.cursor);
-      if (windows->widget.highlight_stipple != (Pixmap) NULL)
-        (void) XFreePixmap(display,windows->widget.highlight_stipple);
-      if (windows->widget.highlight_stipple != (Pixmap) NULL)
-        (void) XFreePixmap(display,windows->widget.shadow_stipple);
-      (void) XFreeGC(display,pixel->widget_context);
-      (void) XFreeGC(display,pixel->highlight_context);
-      (void) XFreeGC(display,pixel->annotate_context);
-      (void) XFreeGC(display,icon_pixel->annotate_context);
-      (void) XFreeFont(display,font_info);
-      (void) XFree((void *) class_hints);
-      (void) XFree((void *) manager_hints);
-      (void) XFree((void *) icon_visual);
-      (void) XFree((void *) visual_info);
-      (void) XFree((void *) icon_map);
-      (void) XFree((void *) map_info);
-      LiberateMemory((void **) &windows->popup.name);
-      LiberateMemory((void **) &windows->widget.name);
-      LiberateMemory((void **) &windows->magnify.name);
-      LiberateMemory((void **) &windows->image.icon_name);
-      LiberateMemory((void **) &windows->image.name);
       if (resource_info->copy_image != (Image *) NULL)
-        DestroyImage(resource_info->copy_image);
-      LiberateMemory((void **) &windows->icon_resources);
-      LiberateMemory((void **) &windows->icon_pixel);
-      LiberateMemory((void **) &windows->pixel_info);
-      (void) signal(SIGSEGV,SIG_DFL);
-      (void) signal(SIGINT,SIG_DFL);
-      (void) signal(SIGTERM,SIG_DFL);
-      (void) XSetWindows((XWindows *) NULL);
+        {
+          DestroyImage(resource_info->copy_image);
+          resource_info->copy_image=(Image *) NULL;
+        }
+       XDestroyXWindows(windows);
     }
+
+  DestroyWindowsImage(windows,icon);
+  DestroyWindowsImage(windows,pan);
+  DestroyWindowsImage(windows,magnify);
+
   (void) XSync(display,False);
   /*
     Restore our progress monitor and warning handlers.

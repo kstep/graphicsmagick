@@ -18,7 +18,7 @@
 %                          T    IIIII  LLLLL  EEEEE                           %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                    Return A Tiled Image Using Texture.                      %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -84,12 +84,6 @@ static Image *ReadTILEImage(const ImageInfo *image_info,
   ImageInfo
     *clone_info;
 
-  long
-    y;
-
-  register long
-    x;
-
   /*
     Initialize Image structure.
   */
@@ -107,20 +101,15 @@ static Image *ReadTILEImage(const ImageInfo *image_info,
     return((Image *) NULL);
   image=AllocateImage(image_info);
   if ((image->columns == 0) || (image->rows == 0))
-    ThrowReaderException(OptionError,"MustSpecifyImageSize",image);
+    ThrowReaderException(OptionError,MustSpecifyImageSize,image);
   if (*image_info->filename == '\0')
-    ThrowReaderException(OptionError,"MustSpecifyAnImageName",image);
+    ThrowReaderException(OptionError,MustSpecifyAnImageName,image);
   /*
     Tile texture onto image.
   */
   (void) strncpy(image->filename,image_info->filename,MaxTextExtent-1);
-  for (y=0; y < (long) image->rows; y+=tile_image->rows)
-  {
-    for (x=0; x < (long) image->columns; x+=tile_image->columns)
-      (void) CompositeImage(image,CopyCompositeOp,tile_image,x,y);
-    if (!MagickMonitor(LoadImageText,y,image->rows,exception))
-      break;
-  }
+  TextureImage(image,tile_image);
+
   DestroyImage(tile_image);
   return(image);
 }
@@ -153,10 +142,18 @@ ModuleExport void RegisterTILEImage(void)
   MagickInfo
     *entry;
 
+  static const char
+    *TILENote=
+    {
+      "Use the syntax \"-size WIDTHxHEIGHT TILE:imagename\" to tile the\n"
+      "specified tile image over a canvas image of size WIDTHxHEIGHT."
+    };
+
   entry=SetMagickInfo("TILE");
   entry->decoder=(DecoderHandler) ReadTILEImage;
   entry->raw=True;
   entry->description=AcquireString("Tile image with a texture");
+  entry->note=AcquireString(TILENote);
   entry->module=AcquireString("TILE");
   (void) RegisterMagickInfo(entry);
 }

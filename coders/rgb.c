@@ -18,7 +18,7 @@
 %                            R  R    GGG   BBBB                               %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                    Read/Write Raw RGB Image Format.                         %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -113,7 +113,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
   if ((image->columns == 0) || (image->rows == 0))
-    ThrowReaderException(OptionError,"MustSpecifyImageSize",image);
+    ThrowReaderException(OptionError,MustSpecifyImageSize,image);
   if (image_info->interlace != PartitionInterlace)
     {
       /*
@@ -121,7 +121,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
       if (status == False)
-        ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+        ThrowReaderException(FileOpenError,UnableToOpenFile,image);
       for (i=0; i < image->offset; i++)
         (void) ReadBlobByte(image);
     }
@@ -134,10 +134,10 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->matte=True;
       packet_size=image->depth > 8 ? 8 : 4;
     }
-  scanline=(unsigned char *)
-    AcquireMemory(packet_size*image->tile_info.width);
+  scanline=MagickAllocateMemory(unsigned char *,
+    packet_size*image->tile_info.width);
   if (scanline == (unsigned char *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   if (image_info->subrange != 0)
     while (image->scene < image_info->subimage)
     {
@@ -242,7 +242,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             AppendImageFormat("R",image->filename);
             status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
             if (status == False)
-              ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+              ThrowReaderException(FileOpenError,UnableToOpenFile,image);
           }
         packet_size=image->depth > 8 ? 2 : 1;
         for (y=0; y < image->tile_info.y; y++)
@@ -274,7 +274,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             AppendImageFormat("G",image->filename);
             status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
             if (status == False)
-              ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+              ThrowReaderException(FileOpenError,UnableToOpenFile,image);
           }
         for (y=0; y < image->tile_info.y; y++)
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
@@ -302,7 +302,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
             AppendImageFormat("B",image->filename);
             status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
             if (status == False)
-              ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+              ThrowReaderException(FileOpenError,UnableToOpenFile,image);
           }
         for (y=0; y < image->tile_info.y; y++)
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
@@ -335,7 +335,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 AppendImageFormat("A",image->filename);
                 status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
                 if (status == False)
-                  ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+                  ThrowReaderException(FileOpenError,UnableToOpenFile,image);
               }
             for (y=0; y < image->tile_info.y; y++)
               (void) ReadBlob(image,packet_size*image->tile_info.width,
@@ -368,7 +368,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
     if (EOFBlob(image))
       {
-        ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+        ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
           image->filename);
         break;
       }
@@ -397,7 +397,7 @@ static Image *ReadRGBImage(const ImageInfo *image_info,ExceptionInfo *exception)
           break;
       }
   } while (count != 0);
-  LiberateMemory((void **) &scanline);
+  MagickFreeMemory(scanline);
   while (image->previous != (Image *) NULL)
     image=image->previous;
   CloseBlob(image);
@@ -531,9 +531,9 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
   packet_size=image->depth > 8 ? 6 : 3;
   if (LocaleCompare(image_info->magick,"RGBA") == 0)
     packet_size=image->depth > 8 ? 8 : 4;
-  pixels=(unsigned char *) AcquireMemory(packet_size*image->columns);
+  pixels=MagickAllocateMemory(unsigned char *,packet_size*image->columns);
   if (pixels == (unsigned char *) NULL)
-    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
   if (image_info->interlace != PartitionInterlace)
     {
       /*
@@ -541,7 +541,7 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
       */
       status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
       if (status == False)
-        ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+        ThrowWriterException(FileOpenError,UnableToOpenFile,image);
     }
   scene=0;
   do
@@ -621,7 +621,7 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
             AppendImageFormat("R",image->filename);
             status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
             if (status == False)
-              ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+              ThrowWriterException(FileOpenError,UnableToOpenFile,image);
           }
         for (y=0; y < (long) image->rows; y++)
         {
@@ -637,7 +637,7 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
             AppendImageFormat("G",image->filename);
             status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
             if (status == False)
-              ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+              ThrowWriterException(FileOpenError,UnableToOpenFile,image);
           }
         if (!MagickMonitor(SaveImageText,100,400,&image->exception))
           break;
@@ -655,7 +655,7 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
             AppendImageFormat("B",image->filename);
             status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
             if (status == False)
-              ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+              ThrowWriterException(FileOpenError,UnableToOpenFile,image);
           }
         if (!MagickMonitor(SaveImageText,200,400,&image->exception))
           break;
@@ -678,7 +678,7 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
                 status=OpenBlob(image_info,image,WriteBinaryBlobMode,
                   &image->exception);
                 if (status == False)
-                  ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+                  ThrowWriterException(FileOpenError,UnableToOpenFile,image);
               }
             for (y=0; y < (long) image->rows; y++)
             {
@@ -703,7 +703,7 @@ static unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
     if (!MagickMonitor(SaveImagesText,scene++,GetImageListLength(image),&image->exception))
       break;
   } while (image_info->adjoin);
-  LiberateMemory((void **) &pixels);
+  MagickFreeMemory(pixels);
   if (image_info->adjoin)
     while (image->previous != (Image *) NULL)
       image=image->previous;

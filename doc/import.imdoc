@@ -1,0 +1,188 @@
+<imdoc>
+<utils apps=import>
+<title>Import</title>
+<gm>
+<sect NAME="import">gm import
+</gm>
+<im>
+<sect NAME="imp-top">NAME
+import - capture some or all of an X server screen and save the image to
+a file.
+</sect>
+<format type=html>
+<sect NAME="imp-contents">Contents
+
+<dl>
+<dt>
+<a href="#imp-desc">Description</a>
+</dt>
+
+<dt>
+<a href="#imp-exam">Examples</a>
+</dt>
+
+<dt>
+<a href="#imp-opti">Options</a>
+</dt>
+
+<dt>
+<a href="#imp-envi">Environment</a>
+</dt>
+
+<dt>
+<a href="#imp-file">Configuration Files</a>
+</dt>
+
+<dt>
+<a href="#imp-auth">Authors</a>
+</dt>
+
+<dt>
+<a href="#imp-copy">Copyright</a>
+</dt>
+</dl>
+</sect>
+</format>
+
+<sect NAME="imp-syno">Synopsis
+
+<p>
+<s>import</s> <s>[</s> <i>options</i> <s>... ]</s> <i>file</i></p>
+
+</sect>
+
+<sect NAME="imp-desc">Description
+</im>
+
+<p>
+<s>Import</s> reads an image from any visible window on an X server and
+outputs it as an image file. You can capture a single window, the entire
+screen, or any rectangular portion of the screen.
+Use <i><a href="display.html">display</a></i>
+for redisplay, printing, editing, formatting, archiving, image processing,
+etc. of the captured image.</p>
+
+<p>
+The target window can be specified by id, name, or may be selected
+by clicking the mouse in the desired window. If you press a button and
+then drag, a rectangle will form which expands and contracts as the mouse
+moves. To save the portion of the screen defined by the rectangle, just
+release the button. The keyboard bell is rung once at the beginning of
+the screen capture and twice when it completes.</p>
+
+</sect>
+<back>
+
+<sect NAME="imp-exam">Examples
+
+<p>
+To select an X window or an area of the screen with the mouse and save it
+in the MIFF image format to a file entitled window.miff, use:</p>
+
+<pre>
+    import window.miff
+</pre>
+
+<p>
+To select an X window or an area of the screen with the mouse and save it
+in the Encapsulated PostScript format to include in another document, use:</p>
+
+<pre>
+    import figure.eps
+</pre>
+
+<p>
+To capture the entire X server screen in the JPEG image format in a file
+entitled root.jpeg, without using the mouse, use:</p>
+
+<pre>
+    import -window root root.jpeg
+</pre>
+
+<p>
+To capture the 512x256 area at the upper right corner of the X server
+screen in the PNG image format in a well-compressed file entitled corner.png,
+without using the mouse,  use:</p>
+
+<pre>
+    import -window root -crop 512x256-0+0 -quality 90
+           corner.png
+</pre>
+</sect>
+<back>
+
+<sect NAME="imp-opti">Options
+
+<p>
+Options are processed in command line order. Any option you specify on
+the command line remains in effect until it is explicitly changed by specifying
+the option again with a different effect.</p>
+
+<p>
+<s>Import</s> options can appear on the command line or in your
+X resources file. See <i>X(1)</i>. Options on the command line supersede
+values specified in your X resources file.</p>
+
+<p>
+For a more detailed description of each option, see
+<gm>
+Options, above.
+</gm>
+<im>
+<format type=man,tex>
+<i>GraphicsMagick(1)</i>.
+</format>
+<format type=html>
+<a href="GraphicsMagick.html"><i>GraphicsMagick(1)</i></a>.
+</format>
+</im>
+</p>
+
+</utils>
+
+<include file=brief_options.imdoc>
+
+
+<utils apps=import>
+<p>
+For a more detailed description of each option, see
+<gm>
+Options, above.
+</gm>
+<im>
+<format type=man,tex>
+<i>GraphicsMagick(1)</i>.
+</format>
+<format type=html>
+<a href="GraphicsMagick.html"><i>GraphicsMagick(1)</i></a>.
+</format>
+</im>
+</p>
+</sect>
+<im>
+
+<sect NAME="imp-envi">Environment
+<include file=environment.imdoc>
+</sect>
+<back>
+
+<sect NAME="imp-file">Configuration Files
+<include file=config_files.imdoc>
+</sect>
+<back>
+
+<format type=man>
+<sect NAME="imp-also">SEE ALSO
+<p>
+animate(1), display(1), composite(1), conjure(1), convert(1), identify(1),
+mogrify(1), montage(1), GraphicsMagick(1)
+</p>
+</sect>
+</format>
+
+</im>
+</utils>
+<im>
+<include file=copyright.imdoc>
+</im>
+</imdoc>

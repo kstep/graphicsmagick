@@ -2,6 +2,37 @@
 JBIG-KIT revision history
 -------------------------
 
+Changes in version 1.5 (2003-06-11)
+
+  - fixed two minor memory leaks (special thanks to Davide Pizzolato
+    <ing.davide.pizzolato@libero.it> for locating one of these)
+
+  - jbgtopbm does not attempt any more to parse multiple concatenated
+    BIEs (options -m must be used now to enable this feature explicitely),
+    in order to handle BIEs with data after the last expected SDE gracefully
+
+  - various extensions to improve support of JBIG fax applications
+    (ITU-T T.85 profile):
+
+      o support for maximum adaptive template pixel offset increased
+        to MX=127 in both encoder and decoder
+
+      o encoder now has a hook for producing BIEs with a NEWLEN marker
+        segment and VLENGHTH=1, in order to assist in testing decoders
+        for T.85 conformance (see also new pbmtojbg option -Y)
+
+      o a new function jbg_newlen() can be used to scan an
+        entire in-memory BIE for NEWLEN marker segments and update the
+        YD value in the BIE header, which can be applied to BIE data
+        before passing it to the decoder for T.85 compliance
+        (Background: the incremental design of the JBIG-KIT decoder
+        makes it infeasible to look ahead for NEWLEN marker segments
+        that occur after the SDE with the last image line, therefore
+        this second pass is necessary to handle the old-style fax
+        applications permitted by T.85 in which the low-RAM encoder
+        doesn't know the height of the image at the start of
+        transmission)
+
 Changes in version 1.4 (2002-04-09)
 
   - typo fixed in stripe number calculation, which caused encoder and

@@ -18,7 +18,7 @@
 %                            X   X  P      M   M                              %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                 Read/Write X Windows system Pixmap Format.                  %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -216,12 +216,12 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   /*
     Read XPM file.
   */
   length=MaxTextExtent;
-  xpm_buffer=(char *) AcquireMemory(length);
+  xpm_buffer=MagickAllocateMemory(char *,length);
   p=xpm_buffer;
   if (xpm_buffer != (char *) NULL)
     while (ReadBlobString(image,p) != (char *) NULL)
@@ -235,13 +235,13 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if ((p-xpm_buffer+MaxTextExtent+1) < (long) length)
         continue;
       length<<=1;
-      ReacquireMemory((void **) &xpm_buffer,length);
+      MagickReallocMemory(xpm_buffer,length);
       if (xpm_buffer == (char *) NULL)
         break;
       p=xpm_buffer+strlen(xpm_buffer);
     }
   if (xpm_buffer == (char *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   /*
     Remove comments.
   */
@@ -257,7 +257,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   }
   if ((count != 4) || (width > 2) || (image->columns == 0) ||
       (image->rows == 0) || (image->colors == 0))
-    ThrowReaderException(CorruptImageError,"NotAXPMImageFile",image)
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image)
   image->depth=16;
   /*
     Remove unquoted characters.
@@ -277,19 +277,19 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   }
   xpm_buffer[i]='\0';
   textlist=StringToList(xpm_buffer);
-  LiberateMemory((void **) &xpm_buffer);
+  MagickFreeMemory(xpm_buffer);
   if (textlist == (char **) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   /*
     Initialize image structure.
   */
-  keys=(char **) AcquireMemory(image->colors*sizeof(char *));
+  keys=MagickAllocateMemory(char **,image->colors*sizeof(char *));
   if (!AllocateImageColormap(image,image->colors) || (keys == (char **) NULL))
     {
       for (i=0; textlist[i] != (char *) NULL; i++)
-        LiberateMemory((void **) &textlist[i]);
-      LiberateMemory((void **) &textlist);
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image)
+        MagickFreeMemory(textlist[i]);
+      MagickFreeMemory(textlist);
+      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image)
     }
   /*
     Read image colormap.
@@ -301,14 +301,14 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     p=textlist[i++];
     if (p == (char *) NULL)
       break;
-    keys[j]=(char *) AcquireMemory(width+1);
+    keys[j]=MagickAllocateMemory(char *,width+1);
     if (keys[j] == (char *) NULL)
       {
         for (i=0; textlist[i] != (char *) NULL; i++)
-          LiberateMemory((void **) &textlist[i]);
-        LiberateMemory((void **) &textlist);
-        LiberateMemory((void **) &keys);
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image)
+          MagickFreeMemory(textlist[i]);
+        MagickFreeMemory(textlist);
+        MagickFreeMemory(keys);
+        ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image)
       }
     keys[j][width]='\0';
     (void) strncpy(keys[j],p,width);
@@ -340,9 +340,9 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (j < (long) image->colors)
     {
       for (i=0; textlist[i] != (char *) NULL; i++)
-        LiberateMemory((void **) &textlist[i]);
-      LiberateMemory((void **) &textlist);
-      ThrowReaderException(CorruptImageError,"CorruptXPMImage",image)
+        MagickFreeMemory(textlist[i]);
+      MagickFreeMemory(textlist);
+      ThrowReaderException(CorruptImageError,CorruptImage,image)
     }
   j=0;
   key[width]='\0';
@@ -379,17 +379,17 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           break;
       }
       if (y < (long) image->rows)
-        ThrowReaderException(CorruptImageError,"NotenoughPixelData",image);
+        ThrowReaderException(CorruptImageError,InsufficientImageDataInFile,image);
     }
   /*
     Free resources.
   */
   for (i=0; i < (long) image->colors; i++)
-    LiberateMemory((void **) &keys[i]);
-  LiberateMemory((void **) &keys);
+    MagickFreeMemory(keys[i]);
+  MagickFreeMemory(keys);
   for (i=0; textlist[i] != (char *) NULL; i++)
-    LiberateMemory((void **) &textlist[i]);
-  LiberateMemory((void **) &textlist);
+    MagickFreeMemory(textlist[i]);
+  MagickFreeMemory(textlist);
   CloseBlob(image);
   return(image);
 }
@@ -434,6 +434,7 @@ ModuleExport void RegisterXPMImage(void)
   entry->decoder=(DecoderHandler) ReadXPMImage;
   entry->encoder=(EncoderHandler) WriteXPMImage;
   entry->adjoin=False;
+  entry->stealth=True;
   entry->description=AcquireString("X Windows system pixmap (color)");
   entry->module=AcquireString("XPM");
   (void) RegisterMagickInfo(entry);
@@ -469,6 +470,7 @@ ModuleExport void RegisterXPMImage(void)
 */
 ModuleExport void UnregisterXPMImage(void)
 {
+  (void) UnregisterMagickInfo("PICON");
   (void) UnregisterMagickInfo("PM");
   (void) UnregisterMagickInfo("XPM");
 }
@@ -594,7 +596,7 @@ static unsigned int WritePICONImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   TransformColorspace(image,RGBColorspace);
   SetGeometry(image,&geometry);
   (void) GetMagickGeometry(PiconGeometry,&geometry.x,&geometry.y,
@@ -650,7 +652,7 @@ static unsigned int WritePICONImage(const ImageInfo *image_info,Image *image)
   if (transparent)
     {
       colors++;
-      ReacquireMemory((void **) &picon->colormap,colors*sizeof(PixelPacket));
+      MagickReallocMemory(picon->colormap,colors*sizeof(PixelPacket));
       for (y=0; y < (long) picon->rows; y++)
       {
         q=GetImagePixels(picon,0,y,picon->columns,1);
@@ -828,7 +830,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   TransformColorspace(image,RGBColorspace);
   transparent=False;
   if (image->storage_class == PseudoClass)
@@ -870,7 +872,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
   if (transparent)
     {
       colors++;
-      ReacquireMemory((void **) &image->colormap,colors*sizeof(PixelPacket));
+      MagickReallocMemory(image->colormap,colors*sizeof(PixelPacket));
       for (y=0; y < (long) image->rows; y++)
       {
         q=GetImagePixels(image,0,y,image->columns,1);

@@ -1,0 +1,21 @@
+
+for x in *.1
+do
+echo $x
+diff ../CVS/I*/u*/$x $x
+done
+
+
+for x in *.html
+do
+echo $x
+diff ../CVS/I*/www/$x $x
+done
+
+
+for x in *.tex
+do
+echo $x
+diff ../CVS/I*/guide/$x $x
+done
+

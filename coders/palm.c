@@ -17,7 +17,7 @@
 %                        P      A   A  LLLLL  M   M                           %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                          Read/Write Palm Pixmap.                            %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -436,18 +436,11 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
     bytes_per_row,
     flags,
     bits_per_pixel,
-    version,
-    nextDepthOffset,
     transparentIndex,
     compressionType,
     byte,
     count,
     mask,
-    redbits,
-    greenbits,
-    bluebits,
-    pad,
-    size,
     bit;
 
   unsigned short
@@ -456,33 +449,34 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
   /*
     Open image file.
   */
+  lastrow=0;
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   image->columns = ReadBlobMSBShort(image);
   image->rows = ReadBlobMSBShort(image);
   bytes_per_row = ReadBlobMSBShort(image);
   flags = ReadBlobMSBShort(image);
   bits_per_pixel = ReadBlobByte(image);
-  version = ReadBlobByte(image);
-  nextDepthOffset = ReadBlobMSBShort(image);
+  (void) ReadBlobByte(image); /* version */
+  (void) ReadBlobMSBShort(image); /* nextDepthOffset */
   transparentIndex = ReadBlobByte(image);
   compressionType = ReadBlobByte(image);
-  pad = ReadBlobMSBShort(image);
+  (void) ReadBlobMSBShort(image); /* pad */
 
   /*
     Initialize image colormap.
   */
   if (bits_per_pixel < 16 && !AllocateImageColormap(image,1L << bits_per_pixel))
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
 
   if(bits_per_pixel < 8 && flags & PALM_IS_COMPRESSED_FLAG)    /* compressed size */
     {
     if(flags & PALM_HAS_FOUR_BYTE_FIELD)  /* big size */
-      size = ReadBlobMSBLong(image);
+      (void) ReadBlobMSBLong(image); /* size */
     else
-      size = ReadBlobMSBShort(image);
+      (void) ReadBlobMSBShort(image); /* size */
     }
   else  /* is color */
   if(bits_per_pixel == 8)
@@ -503,14 +497,14 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
       {
   if(bits_per_pixel == 16)  /* Direct Color */
     {
-    redbits = ReadBlobByte(image);     /* # of bits of red */
-    greenbits = ReadBlobByte(image);   /* # of bits of green */
-    bluebits = ReadBlobByte(image);    /* # of bits of blue */
+    (void) ReadBlobByte(image);     /* # of bits of red */
+    (void) ReadBlobByte(image);   /* # of bits of green */
+    (void) ReadBlobByte(image);    /* # of bits of blue */
     ReadBlobByte(image);               /* reserved by Palm */
     ReadBlobByte(image);               /* reserved by Palm */
-    transpix.red = ReadBlobByte(image) * MaxRGB / 31;
-    transpix.green = ReadBlobByte(image) * MaxRGB / 63;
-    transpix.blue = ReadBlobByte(image) * MaxRGB / 31;
+    transpix.red = (unsigned char) (ReadBlobByte(image) * MaxRGB / 31);
+    transpix.green = (unsigned char) (ReadBlobByte(image) * MaxRGB / 63);
+    transpix.blue = (unsigned char) (ReadBlobByte(image) * MaxRGB / 31);
     }
       image->colormap[255 - i].red = ScaleCharToQuantum(PalmPalette[i][0]);
       image->colormap[255 - i].green = ScaleCharToQuantum(PalmPalette[i][1]);
@@ -530,11 +524,11 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
     SetImageType(image, TrueColorType);
     }
 
-  one_row = (unsigned char *) AcquireMemory(bytes_per_row);
+  one_row = MagickAllocateMemory(unsigned char *,bytes_per_row);
   if (one_row == (unsigned char *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   if (compressionType == PALM_COMPRESSION_SCANLINE)
-    lastrow = (unsigned char *) AcquireMemory(bytes_per_row);
+    lastrow = MagickAllocateMemory(unsigned char *,bytes_per_row);
 
   mask = (1l << bits_per_pixel) - 1;
 
@@ -589,9 +583,9 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
         {
         color16 = (*ptr++ << 8);
         color16 |= *ptr++;
-        q->red = (((color16 >> 11) & 0x1f) * MaxRGB) / 31;
-        q->green = (((color16 >> 5) & 0x3f) * MaxRGB) / 63;
-        q->blue = ((color16 & 0x1f) * MaxRGB) / 31;
+        q->red = (unsigned char) ((((color16 >> 11) & 0x1f) * MaxRGB) / 31);
+        q->green = (unsigned char) ((((color16 >> 5) & 0x3f) * MaxRGB) / 63);
+        q->blue = (unsigned char) (((color16 & 0x1f) * MaxRGB) / 31);
         q->opacity = 0;
         q++;
         }
@@ -628,9 +622,9 @@ static Image *ReadPALMImage(const ImageInfo *image_info,
                        TransparentOpacity);
     }
 
-  LiberateMemory((void **) &one_row);
+  MagickFreeMemory(one_row);
   if (compressionType == PALM_COMPRESSION_SCANLINE)
-    LiberateMemory((void **) &lastrow);
+    MagickFreeMemory(lastrow);
   CloseBlob(image);
   return(image);
 }
@@ -779,9 +773,10 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
+  lastrow=0;
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   GetExceptionInfo(&exception);
   attribute = GetImageAttribute(image, "Comment");
   if (attribute != (ImageAttribute *)NULL)
@@ -884,10 +879,10 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
     }
 
   if (image->compression == FaxCompression)
-    lastrow = (unsigned char *) AcquireMemory(bytes_per_row);
-  one_row = (unsigned char *) AcquireMemory(bytes_per_row);
+    lastrow = MagickAllocateMemory(unsigned char *,bytes_per_row);
+  one_row = MagickAllocateMemory(unsigned char *,bytes_per_row);
   if (one_row == (unsigned char *) NULL)
-    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
 
   for (y=0; y < (int) image->rows; y++)
     {
@@ -901,9 +896,9 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
       {
       for (x=0; x < (int) image->columns; x++)
         {
-        color16 = ((p->red * 31) / MaxRGB) << 11
+        color16 = (unsigned short) (((p->red * 31) / MaxRGB) << 11
                 | ((p->green * 63) / MaxRGB) << 5
-                | ((p->blue * 31) / MaxRGB);
+                | ((p->blue * 31) / MaxRGB));
         if(p->opacity == TransparentOpacity)
           {
           transpix.red = p->red;
@@ -1013,9 +1008,9 @@ static unsigned int WritePALMImage(const ImageInfo *image_info,Image *image)
     }
 
   CloseBlob(image);
-  LiberateMemory((void **) &one_row);
+  MagickFreeMemory(one_row);
   if (image->compression == FaxCompression)
-    LiberateMemory((void **) &lastrow);
+    MagickFreeMemory(lastrow);
   DestroyExceptionInfo(&exception);
   return(True);
 }

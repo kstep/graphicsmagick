@@ -9,14 +9,14 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%               M   M   AAA   TTTTT  L       AAA   BBBB                       %
-%               MM MM  A   A    T    L      A   A  B   B                      %
-%               M M M  AAAAA    T    L      AAAAA  BBBB                       %
-%               M   M  A   A    T    L      A   A  B   B                      %
-%               M   M  A   A    T    LLLLL  A   A  BBBB                       %
+%                  M   M   AAA   TTTTT  L       AAA   BBBB                    %
+%                  MM MM  A   A    T    L      A   A  B   B                   %
+%                  M M M  AAAAA    T    L      AAAAA  BBBB                    %
+%                  M   M  A   A    T    L      A   A  B   B                   %
+%                  M   M  A   A    T    LLLLL  A   A  BBBB                    %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                        Read MATLAB Image Format.                            %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -40,7 +40,6 @@
 #include "magick/magick.h"
 #include "magick/shear.h"
 #include "magick/transform.h"
-#include "magick/static.h"
 #include "magick/utility.h"
 
 /* Auto coloring method, sorry this creates some artefact inside data
@@ -319,7 +318,7 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
 
   status = OpenBlob(image_info, image, ReadBinaryBlobMode, exception);
   if (status == False)
-    ThrowReaderException(FileOpenError, "UnableToOpenFile", image);
+    ThrowReaderException(FileOpenError, UnableToOpenFile, image);
   /*
      Read MATLAB image.
    */
@@ -339,14 +338,13 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
   MATLAB_HDR.NameFlag = ReadBlobLSBShort(image);
 
   if (strncmp(MATLAB_HDR.identific, "MATLAB", 6))
-  MATLAB_KO:ThrowReaderException(CorruptImageError, "NotAMATLABImageFile",
-                         image);
+  MATLAB_KO:ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   if (strncmp(MATLAB_HDR.idx, "\1IM", 3))
     goto MATLAB_KO;
   if (MATLAB_HDR.unknown0 != 0x0E)
     goto MATLAB_KO;
   if (MATLAB_HDR.DimFlag != 8)
-    ThrowReaderException(CoderError, "MultidimensionalMatricesAreNotSupported",
+    ThrowReaderException(CoderError, MultidimensionalMatricesAreNotSupported,
                          image);
 
   /*printf("MATLAB_HDR.StructureFlag %ld\n",MATLAB_HDR.StructureFlag); */
@@ -391,14 +389,14 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
     case 9:
       image->depth = Min(QuantumDepth,32);        /*double type cell */
       if (sizeof(double) != 8)
-        ThrowReaderException(CoderError, "IncompatibleSizeOfDouble", image);
+        ThrowReaderException(CoderError, IncompatibleSizeOfDouble, image);
       if (MATLAB_HDR.StructureFlag == 0x806)
       {                         /*complex double type cell */
       }
       ldblk = (long) (8 * MATLAB_HDR.SizeX);
       break;
     default:
-  ThrowReaderException(CoderError, "UnsupportedCellTypeInTheMatrix", image)}
+  ThrowReaderException(CoderError, UnsupportedCellTypeInTheMatrix, image)}
 
   image->columns = MATLAB_HDR.SizeX;
   image->rows = MATLAB_HDR.SizeY;
@@ -413,7 +411,7 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
     image->colors = 256;
     if (!AllocateImageColormap(image, image->colors))
     {
-  NoMemory:ThrowReaderException(ResourceLimitError, "MemoryAllocationFailed",
+  NoMemory:ThrowReaderException(ResourceLimitError, MemoryAllocationFailed,
                            image)}
 
     for (i = 0; i < (long) image->colors; i++)
@@ -425,7 +423,7 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
   }
 
   /* ----- Load raster data ----- */
-  BImgBuff = (unsigned char *) AcquireMemory(ldblk);    /*Ldblk was set in the check phase */
+  BImgBuff = MagickAllocateMemory(unsigned char *,ldblk);    /*Ldblk was set in the check phase */
   if (BImgBuff == NULL)
     goto NoMemory;
 
@@ -508,7 +506,7 @@ static Image *ReadMATImage(const ImageInfo * image_info, ExceptionInfo * excepti
 
   if (BImgBuff != NULL)
   {
-    LiberateMemory((void **) &BImgBuff);
+    MagickFreeMemory(BImgBuff);
     BImgBuff = NULL;
   }
   CloseBlob(image);

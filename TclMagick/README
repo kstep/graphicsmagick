@@ -1,0 +1,9 @@
+			      TclMagick
+			      =========
+
+A Tcl binding for the ImageMagick image manipulation library.
+
+Originally by Rolf Schroedter <Rolf.Schroedter@dlr.de>
+
+Updates, new commands and Tk connector by David N. Welton
+<davidw@dedasys.com>

@@ -1,15 +1,14 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2002
+// Copyright Bob Friesenhahn, 1999, 2000, 2002, 2003
 //
 // PerlMagick "piddle" demo re-implemented using Magick++ methods.
 // The PerlMagick "piddle" demo is written by John Cristy
 //
 
+#include <Magick++.h>
 #include <string>
 #include <iostream>
-
-#include <Magick++.h>
 
 using namespace std;
 
@@ -21,14 +20,14 @@ int main( int /*argc*/, char ** argv)
   // Initialize ImageMagick install location for Windows
   InitializeMagick(*argv);
 
-  string srcdir("");
-  if(getenv("SRCDIR") != 0)
-    srcdir = getenv("SRCDIR");
-
-  // Common font to use.
-  string font = "Helvetica";
-
   try {
+
+    string srcdir("");
+    if(getenv("SRCDIR") != 0)
+      srcdir = getenv("SRCDIR");
+
+    // Common font to use.
+    string font = "Helvetica";
 
     //
     // Create a 300x300 white canvas.
@@ -157,7 +156,7 @@ int main( int /*argc*/, char ** argv)
     //    image.debug(true);
     image.draw(drawList);
 
-//     image.write( "piddle.mvg" );
+    //     image.write( "piddle.mvg" );
 
     cout << "Writing image \"piddle_out.miff\" ..." << endl;
     image.compressType( RunlengthEncodedCompression );
@@ -165,8 +164,8 @@ int main( int /*argc*/, char ** argv)
     cout << "Writing MVG metafile \"piddle_out.mvg\" ..." << endl;
     image.write( "piddle_out.mvg" );
 
-//     cout << "Display image..." << endl;
-//     image.display( );
+    //     cout << "Display image..." << endl;
+    //     image.display( );
 
   }
   catch( exception &error_ )

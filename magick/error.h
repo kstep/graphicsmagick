@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 GraphicsMagick Group
+  Copyright (C) 2003, 2004 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
   Copyright 1991-1999 E. I. du Pont de Nemours and Company
  
@@ -14,128 +14,213 @@
 
 #if defined(__cplusplus) || defined(c_plusplus)
 extern "C" {
-#endif
-
-/*
-  Exception define definitions.
-*/
-#if defined(macintosh)
-#define ExceptionInfo MagickExceptionInfo
-#endif
-
-#define ThrowBinaryException(code,reason,description) \
-{ \
-  if (image != (Image *) NULL) \
-    ThrowException(&image->exception,code,reason,description); \
-  return(False); \
-}
-#define ThrowImageException(code,reason,description) \
-{ \
-  ThrowException(exception,code,reason,description); \
-  return((Image *) NULL); \
-}
-#define ThrowReaderException(code,reason,image) \
-{ \
-  if ((image) == (Image *) NULL) \
-    ThrowException(exception,code,reason,(char *) NULL); \
-  else \
-    { \
-      ThrowException(exception,code,reason,(image)->filename); \
-      if (image->blob->type != UndefinedStream) \
-        CloseBlob(image); \
-      DestroyImageList(image); \
-    } \
-  return((Image *) NULL); \
-}
-#define ThrowWriterException(code,reason,image) \
-{ \
-  assert(image != (Image *) NULL); \
-  ThrowException(&(image)->exception,code,reason,(image)->filename); \
-  if (image_info->adjoin) \
-    while ((image)->previous != (Image *) NULL) \
-      (image)=(image)->previous; \
-  if (image->blob->type != UndefinedStream) \
-    CloseBlob(image); \
-  return(False); \
-}
+#endif /* defined(__cplusplus) || defined(c_plusplus) */
 
 /*
   Enum declarations.
 */
 typedef enum
 {
-  UndefinedException,
+  UndefinedExceptionBase = 0,
+  ExceptionBase = 1,
+  ResourceBase = 2,
+  ResourceLimitBase = 2,
+  TypeBase = 5,
+  AnnotateBase = 5,
+  OptionBase = 10,
+  DelegateBase = 15,
+  MissingDelegateBase = 20,
+  CorruptImageBase = 25,
+  FileOpenBase = 30,
+  BlobBase = 35,
+  StreamBase = 40,
+  CacheBase = 45,
+  CoderBase = 50,
+  ModuleBase = 55,
+  DrawBase = 60,
+  RenderBase = 60,
+  ImageBase = 65,
+  WandBase = 67,
+  TemporaryFileBase = 70,
+  TransformBase = 75,
+  XServerBase = 80,
+  X11Base = 81,
+  UserBase = 82,
+  MonitorBase = 85,
+  LocaleBase = 86,
+  DeprecateBase = 87,
+  RegistryBase = 90,
+  ConfigureBase = 95
+} ExceptionBaseType;
+
+typedef enum
+{
+  UndefinedException = 0,
+  EventException = 100,
+  ExceptionEvent = EventException + ExceptionBase,
+  ResourceEvent = EventException + ResourceBase,
+  ResourceLimitEvent = EventException + ResourceLimitBase,
+  TypeEvent = EventException + TypeBase,
+  AnnotateEvent = EventException + AnnotateBase,
+  OptionEvent = EventException + OptionBase,
+  DelegateEvent = EventException + DelegateBase,
+  MissingDelegateEvent = EventException + MissingDelegateBase,
+  CorruptImageEvent = EventException + CorruptImageBase,
+  FileOpenEvent = EventException + FileOpenBase,
+  BlobEvent = EventException + BlobBase,
+  StreamEvent = EventException + StreamBase,
+  CacheEvent = EventException + CacheBase,
+  CoderEvent = EventException + CoderBase,
+  ModuleEvent = EventException + ModuleBase,
+  DrawEvent = EventException + DrawBase,
+  RenderEvent = EventException + RenderBase,
+  ImageEvent = EventException + ImageBase,
+  WandEvent = EventException + WandBase,
+  TemporaryFileEvent = EventException + TemporaryFileBase,
+  TransformEvent = EventException + TransformBase,
+  XServerEvent = EventException + XServerBase,
+  X11Event = EventException + X11Base,
+  UserEvent = EventException + UserBase,
+  MonitorEvent = EventException + MonitorBase,
+  LocaleEvent = EventException + LocaleBase,
+  DeprecateEvent = EventException + DeprecateBase,
+  RegistryEvent = EventException + RegistryBase,
+  ConfigureEvent = EventException + ConfigureBase,
+
   WarningException = 300,
-  ResourceLimitWarning = 300,
-  TypeWarning = 305,
-  OptionWarning = 310,
-  DelegateWarning = 315,
-  MissingDelegateWarning = 320,
-  CorruptImageWarning = 325,
-  FileOpenWarning = 330,
-  BlobWarning = 335,
-  StreamWarning = 340,
-  CacheWarning = 345,
-  CoderWarning = 350,
-  ModuleWarning = 355,
-  DrawWarning = 360,
-  ImageWarning = 365,
-  XServerWarning = 380,
-  MonitorWarning = 385,
-  RegistryWarning = 390,
-  ConfigureWarning = 395,
+  ExceptionWarning = WarningException + ExceptionBase,
+  ResourceWarning = WarningException + ResourceBase,
+  ResourceLimitWarning = WarningException + ResourceLimitBase,
+  TypeWarning = WarningException + TypeBase,
+  AnnotateWarning = WarningException + AnnotateBase,
+  OptionWarning = WarningException + OptionBase,
+  DelegateWarning = WarningException + DelegateBase,
+  MissingDelegateWarning = WarningException + MissingDelegateBase,
+  CorruptImageWarning = WarningException + CorruptImageBase,
+  FileOpenWarning = WarningException + FileOpenBase,
+  BlobWarning = WarningException + BlobBase,
+  StreamWarning = WarningException + StreamBase,
+  CacheWarning = WarningException + CacheBase,
+  CoderWarning = WarningException + CoderBase,
+  ModuleWarning = WarningException + ModuleBase,
+  DrawWarning = WarningException + DrawBase,
+  RenderWarning = WarningException + RenderBase,
+  ImageWarning = WarningException + ImageBase,
+  WandWarning = WarningException + WandBase,
+  TemporaryFileWarning = WarningException + TemporaryFileBase,
+  TransformWarning = WarningException + TransformBase,
+  XServerWarning = WarningException + XServerBase,
+  X11Warning = WarningException + X11Base,
+  UserWarning = WarningException + UserBase,
+  MonitorWarning = WarningException + MonitorBase,
+  LocaleWarning = WarningException + LocaleBase,
+  DeprecateWarning = WarningException + DeprecateBase,
+  RegistryWarning = WarningException + RegistryBase,
+  ConfigureWarning = WarningException + ConfigureBase,
+
   ErrorException = 400,
-  ResourceLimitError = 400,
-  TypeError = 405,
-  OptionError = 410,
-  DelegateError = 415,
-  MissingDelegateError = 420,
-  CorruptImageError = 425,
-  FileOpenError = 430,
-  BlobError = 435,
-  StreamError = 440,
-  CacheError = 445,
-  CoderError = 450,
-  ModuleError = 455,
-  DrawError = 460,
-  ImageError = 465,
-  XServerError = 480,
-  MonitorError = 485,
-  RegistryError = 490,
-  ConfigureError = 495,
+  ExceptionError = ErrorException + ExceptionBase,
+  ResourceError = ErrorException + ResourceBase,
+  ResourceLimitError = ErrorException + ResourceLimitBase,
+  TypeError = ErrorException + TypeBase,
+  AnnotateError = ErrorException + AnnotateBase,
+  OptionError = ErrorException + OptionBase,
+  DelegateError = ErrorException + DelegateBase,
+  MissingDelegateError = ErrorException + MissingDelegateBase,
+  CorruptImageError = ErrorException + CorruptImageBase,
+  FileOpenError = ErrorException + FileOpenBase,
+  BlobError = ErrorException + BlobBase,
+  StreamError = ErrorException + StreamBase,
+  CacheError = ErrorException + CacheBase,
+  CoderError = ErrorException + CoderBase,
+  ModuleError = ErrorException + ModuleBase,
+  DrawError = ErrorException + DrawBase,
+  RenderError = ErrorException + RenderBase,
+  ImageError = ErrorException + ImageBase,
+  WandError = ErrorException + WandBase,
+  TemporaryFileError = ErrorException + TemporaryFileBase,
+  TransformError = ErrorException + TransformBase,
+  XServerError = ErrorException + XServerBase,
+  X11Error = ErrorException + X11Base,
+  UserError = ErrorException + UserBase,
+  MonitorError = ErrorException + MonitorBase,
+  LocaleError = ErrorException + LocaleBase,
+  DeprecateError = ErrorException + DeprecateBase,
+  RegistryError = ErrorException + RegistryBase,
+  ConfigureError = ErrorException + ConfigureBase,
+
   FatalErrorException = 700,
-  ResourceLimitFatalError = 700,
-  TypeFatalError = 705,
-  OptionFatalError = 710,
-  DelegateFatalError = 715,
-  MissingDelegateFatalError = 720,
-  CorruptImageFatalError = 725,
-  FileOpenFatalError = 730,
-  BlobFatalError = 735,
-  StreamFatalError = 740,
-  CacheFatalError = 745,
-  CoderFatalError = 750,
-  ModuleFatalError = 755,
-  DrawFatalError = 760,
-  ImageFatalError = 765,
-  XServerFatalError = 780,
-  MonitorFatalError = 785,
-  RegistryFatalError = 790,
-  ConfigureFatalError = 795
+  ExceptionFatalError = FatalErrorException + ExceptionBase,
+  ResourceFatalError = FatalErrorException + ResourceBase,
+  ResourceLimitFatalError = FatalErrorException + ResourceLimitBase,
+  TypeFatalError = FatalErrorException + TypeBase,
+  AnnotateFatalError = FatalErrorException + AnnotateBase,
+  OptionFatalError = FatalErrorException + OptionBase,
+  DelegateFatalError = FatalErrorException + DelegateBase,
+  MissingDelegateFatalError = FatalErrorException + MissingDelegateBase,
+  CorruptImageFatalError = FatalErrorException + CorruptImageBase,
+  FileOpenFatalError = FatalErrorException + FileOpenBase,
+  BlobFatalError = FatalErrorException + BlobBase,
+  StreamFatalError = FatalErrorException + StreamBase,
+  CacheFatalError = FatalErrorException + CacheBase,
+  CoderFatalError = FatalErrorException + CoderBase,
+  ModuleFatalError = FatalErrorException + ModuleBase,
+  DrawFatalError = FatalErrorException + DrawBase,
+  RenderFatalError = FatalErrorException + RenderBase,
+  ImageFatalError = FatalErrorException + ImageBase,
+  WandFatalError = FatalErrorException + WandBase,
+  TemporaryFileFatalError = FatalErrorException + TemporaryFileBase,
+  TransformFatalError = FatalErrorException + TransformBase,
+  XServerFatalError = FatalErrorException + XServerBase,
+  X11FatalError = FatalErrorException + X11Base,
+  UserFatalError = FatalErrorException + UserBase,
+  MonitorFatalError = FatalErrorException + MonitorBase,
+  LocaleFatalError = FatalErrorException + LocaleBase,
+  DeprecateFatalError = FatalErrorException + DeprecateBase,
+  RegistryFatalError = FatalErrorException + RegistryBase,
+  ConfigureFatalError = FatalErrorException + ConfigureBase
 } ExceptionType;
 
 /*
   Typedef declarations.
 */
+
+/*
+  ExceptionInfo is used to report exceptions to higher level routines,
+  and to the user.
+*/
 typedef struct _ExceptionInfo
 {
+  /*
+    Exception severity, reason, and description
+  */
+  ExceptionType
+    severity;
+
   char
     *reason,
     *description;
 
-  ExceptionType
-    severity;
+  /*
+    Value of errno (or equivalent) when exception was thrown.
+  */
+  int
+    error_number;
 
+  /*
+    Reporting source module, function (if available), and source
+    module line.
+  */
+  char
+    *module,
+    *function;
+
+  unsigned long
+    line;
+
+  /*
+    Structure sanity check
+  */
   unsigned long
     signature;
 } ExceptionInfo;
@@ -167,19 +252,194 @@ extern MagickExport FatalErrorHandler
 
 extern MagickExport void
   CatchException(const ExceptionInfo *),
+  CopyException(ExceptionInfo *copy, const ExceptionInfo *original),
   DestroyExceptionInfo(ExceptionInfo *),
   GetExceptionInfo(ExceptionInfo *),
   MagickError(const ExceptionType,const char *,const char *),
   MagickFatalError(const ExceptionType,const char *,const char *),
   MagickWarning(const ExceptionType,const char *,const char *),
+  _MagickError(const ExceptionType,const char *,const char *),
+  _MagickFatalError(const ExceptionType,const char *,const char *),
+  _MagickWarning(const ExceptionType,const char *,const char *),
   SetExceptionInfo(ExceptionInfo *,ExceptionType),
-  ThrowException(ExceptionInfo *,const ExceptionType,const char *,const char *);
+  ThrowException(ExceptionInfo *,const ExceptionType,const char *,const char *),
+  ThrowLoggedException(ExceptionInfo *exception, const ExceptionType severity,
+    const char *reason,const char *description,const char *module,
+    const char *function,const unsigned long line);
 
 extern MagickExport WarningHandler
   SetWarningHandler(WarningHandler);
 
-#if defined(__cplusplus) || defined(c_plusplus)
-}
+/*
+  Exception define definitions.
+*/
+
+#include <magick/log.h>
+
+#if defined(macintosh)
+#define ExceptionInfo MagickExceptionInfo
 #endif
 
+#if defined(MAGICK_IMPLEMENTATION)
+#if defined(MAGICK_IDBASED_MESSAGES)
+
+#define MagickMsg(severity_,msg_) GetLocaleMessageFromID(MGK_##severity_##msg_)
+
+/* Severity ID translated. */
+#define ThrowException(exception_,severity_,reason_,description_) \
+  (ThrowLoggedException(exception_,severity_,GetLocaleMessageFromID(\
+    MGK_##severity_##reason_),description_,GetMagickModule()))
+/* No IDs translated */
+#define ThrowException2(exception_,severity_,reason_,description_) \
+  (ThrowLoggedException(exception_,severity_,reason_,description_,\
+    GetMagickModule()))
+/* Serverity and description IDs translated */
+#define ThrowException3(exception_,severity_,reason_,description_) \
+  (ThrowLoggedException(exception_,severity_,GetLocaleMessageFromID(\
+    MGK_##severity_##reason_),GetLocaleMessageFromID(\
+    MGK_##severity_##description_),GetMagickModule()))
+
+#define MagickError(severity_,reason_,description_) \
+  (_MagickError(severity_,GetLocaleMessageFromID(MGK_##severity_##reason_),\
+    description_))
+#define MagickFatalError(severity_,reason_,description_) \
+  (_MagickFatalError(severity_,GetLocaleMessageFromID(\
+    MGK_##severity_##reason_),description_))
+#define MagickWarning(severity_,reason_,description_) \
+  (_MagickWarning(severity_,GetLocaleMessageFromID(MGK_##severity_##reason_),\
+    description_))
+
+#define MagickError2(severity_,reason_,description_) \
+  (_MagickError(severity_,reason_,description_))
+#define MagickFatalError2(severity_,reason_,description_) \
+  (_MagickFatalError(severity_,reason_,description_))
+#define MagickWarning2(severity_,reason_,description_) \
+  (_MagickWarning(severity_,reason_,description_))
+
+#define MagickError3(severity_,reason_,description_) \
+  (_MagickError(severity_,GetLocaleMessageFromID(MGK_##severity_##reason_),\
+    GetLocaleMessageFromID(MGK_##severity_##description_)))
+#define MagickFatalError3(severity_,reason_,description_) \
+  (_MagickFatalError(severity_,GetLocaleMessageFromID(MGK_##severity_##reason_),\
+    GetLocaleMessageFromID(MGK_##severity_##description_)))
+#define MagickWarning3(severity_,reason_,description_) \
+  (_MagickWarning(severity_,GetLocaleMessageFromID(MGK_##severity_##reason_),\
+    GetLocaleMessageFromID(MGK_##severity_##description_)))
+#else
+#define MagickMsg(severity_,msg_) GetLocaleExceptionMessage(severity_,#msg_)
+
+#define ThrowException(exception_,severity_,reason_,description_) \
+  (ThrowLoggedException(exception_,severity_,#reason_,description_,GetMagickModule()))
+#define ThrowException2(exception_,severity_,reason_,description_) \
+  (ThrowLoggedException(exception_,severity_,reason_,description_,GetMagickModule()))
+#define ThrowException3(exception_,severity_,reason_,description_) \
+  (ThrowLoggedException(exception_,severity_,#reason_,#description_,GetMagickModule()))
+
+#define MagickError(severity_,reason_,description_) \
+  (_MagickError(severity_,#reason_,description_))
+#define MagickFatalError(severity_,reason_,description_) \
+  (_MagickFatalError(severity_,#reason_,description_))
+#define MagickWarning(severity_,reason_,description_) \
+  (_MagickWarning(severity_,#reason_,description_))
+
+#define MagickError2(severity_,reason_,description_) \
+  (_MagickError(severity_,reason_,description_))
+#define MagickFatalError2(severity_,reason_,description_) \
+  (_MagickFatalError(severity_,reason_,description_))
+#define MagickWarning2(severity_,reason_,description_) \
+  (_MagickWarning(severity_,reason_,description_))
+
+#define MagickError3(severity_,reason_,description_) \
+  (_MagickError(severity_,#reason_,#description_))
+#define MagickFatalError3(severity_,reason_,description_) \
+  (_MagickFatalError(severity_,#reason_,#description_))
+#define MagickWarning3(severity_,reason_,description_) \
+  (_MagickWarning(severity_,#reason_,#description_))
 #endif
+#endif /* defined(MAGICK_IMPLEMENTATION) */
+
+#define ThrowBinaryException(severity_,reason_,description_) \
+{ \
+  if (image != (Image *) NULL) \
+    { \
+      ThrowException(&image->exception,severity_,reason_,description_); \
+    } \
+  return(False); \
+}
+#define ThrowBinaryException2(severity_,reason_,description_) \
+{ \
+  if (image != (Image *) NULL) \
+    { \
+      ThrowException2(&image->exception,severity_,reason_,description_); \
+    } \
+  return(False); \
+}
+#define ThrowBinaryException3(severity_,reason_,description_) \
+{ \
+  if (image != (Image *) NULL) \
+    { \
+      ThrowException3(&image->exception,severity_,reason_,description_); \
+    } \
+  return(False); \
+}
+#define ThrowImageException(code_,reason_,description_) \
+{ \
+  ThrowException(exception,code_,reason_,description_); \
+  return((Image *) NULL); \
+}
+#define ThrowImageException2(code_,reason_,description_) \
+{ \
+  ThrowException2(exception,code_,reason_,description_); \
+  return((Image *) NULL); \
+}
+#define ThrowImageException3(code_,reason_,description_) \
+{ \
+  ThrowException3(exception,code_,reason_,description_); \
+  return((Image *) NULL); \
+}
+#define ThrowReaderException(code_,reason_,image_) \
+{ \
+  ThrowException(exception,code_,reason_,image_ ? (image_)->filename : 0); \
+  if (image_) \
+    { \
+       CloseBlob(image_); \
+       DestroyImageList(image_); \
+    } \
+  return((Image *) NULL); \
+}
+#define ThrowWriterException(code_,reason_,image_) \
+{ \
+  assert(image_ != (Image *) NULL); \
+  ThrowException(&(image_)->exception,code_,reason_,(image_)->filename); \
+  if (image_info->adjoin) \
+    while ((image_)->previous != (Image *) NULL) \
+      (image_)=(image_)->previous; \
+  CloseBlob(image_); \
+  return(False); \
+}
+#define ThrowWriterException2(code_,reason_,image_) \
+{ \
+  assert(image_ != (Image *) NULL); \
+  ThrowException2(&(image_)->exception,code_,reason_,(image_)->filename); \
+  if (image_info->adjoin) \
+    while ((image_)->previous != (Image *) NULL) \
+      (image_)=(image_)->previous; \
+  CloseBlob(image_); \
+  return(False); \
+}
+#define ThrowWriterException3(code_,reason_,image_) \
+{ \
+  assert(image_ != (Image *) NULL); \
+  ThrowException3(&(image_)->exception,code_,reason_,(image_)->filename); \
+  if (image_info->adjoin) \
+    while ((image_)->previous != (Image *) NULL) \
+      (image_)=(image_)->previous; \
+  CloseBlob(image_); \
+  return(False); \
+}
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif /* defined(__cplusplus) || defined(c_plusplus) */
+
+#endif /* !defined(_MAGICK_ERROR_H) */

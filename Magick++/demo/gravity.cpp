@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 2000, 2001
+// Copyright Bob Friesenhahn, 2000, 2001, 2003
 //
 // Demo of text annotation with gravity.  Produces an animation showing
 // the effect of rotated text along with various gravity specifications.
@@ -12,11 +12,10 @@
 // by John Christy.
 //
 
+#include <Magick++.h>
 #include <string>
 #include <iostream>
 #include <list>
-
-#include <Magick++.h>
 
 using namespace std;
 
@@ -28,17 +27,17 @@ int main( int /*argc*/, char ** argv)
   // Initialize ImageMagick install location for Windows
   InitializeMagick(*argv);
 
-  string srcdir("");
-  if(getenv("SRCDIR") != 0)
-    srcdir = getenv("SRCDIR");
-
-  // Common font to use.
-  string font = "Helvetica";
-
-  int x = 100;
-  int y = 100;
-
   try {
+
+    string srcdir("");
+    if(getenv("SRCDIR") != 0)
+      srcdir = getenv("SRCDIR");
+
+    // Common font to use.
+    string font = "Helvetica";
+
+    int x = 100;
+    int y = 100;
 
     list<Image> animation;
 

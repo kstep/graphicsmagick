@@ -1,0 +1,106 @@
+#!/bin/sh
+
+# gmdocselect utility format options.imdoc > file.imdoc
+
+# Selects lines from options.imdoc based on <utils ...> tags.
+# Removes all blank lines.
+
+# To select all utilities, use imdocselect . options.imdoc > all.imdoc
+
+
+/usr/bin/sed "
+       /<gm>/d
+       /<\/gm>/d
+       s/    composite/    gm composite/
+       s/    convert/    gm convert/
+       s/    animate/    gm animate/
+       s/    display/    gm display/
+       s/    conjure/    gm conjure/
+       s/    montage/    gm montage/
+       s/    mogrify/    gm mogrify/
+       s/    identify/    gm identify/
+       s/    import/    gm import/
+       t dummy
+
+     : dummy
+       s/<im>//
+       t skipim
+       b
+
+     : skipim
+       s/<\/im>//
+       t select
+       s/.*/!DELETE!/
+       n
+       b skipim
+ 
+     : select
+       d
+       " $3 | \
+              \
+              \
+/usr/bin/sed "
+     : begin
+
+       /<imdoc>/d
+       /<\/imdoc>/d
+       /!DELETE!/d
+
+       /^ *$/d
+
+       /<.utils>/d
+       s/<utils/<UTIL/
+       t dummy
+
+     : dummy
+
+       s/<UTIL/<utils GraphicsMagick/
+       t inutil
+
+       /<.format>/d
+       s/<format/<FORMAT/
+       t dummy1
+
+     : dummy1
+
+       s/<FORMAT/<format/
+       t inform
+       b
+
+     : inutil
+       s/<$1/<u/
+       t
+       s/$1/found/
+       t select
+       s/<utils/</
+       t skip
+
+     : skip
+       s/<.utils>//
+       t select
+       s/<utils/<UTIL/
+       t inutil
+       s/.*/!DELETE!/
+       n
+       b skip
+
+     : inform
+       s/$2/found/
+       t select
+       s/.*/!DELETE!/
+       t skipf
+
+     : skipf
+       s/<.format>//
+       t select
+       s/<format/<FORMAT/
+       t inform
+       s/.*/!DELETE!/
+       n
+       b skipf
+
+     : select
+       d
+     " |         \
+                    \
+/usr/bin/sed "/!DELETE!/d"

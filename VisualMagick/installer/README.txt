@@ -6,7 +6,7 @@
 
 0) Install prerequisite software
 
-  0a) Download and install the Inno Setup Compiler from
+  0a) Download and install Inno Setup 4 from
       "http://www.jrsoftware.org/isinfo.php".
   0b) Download and install ActiveState ActivePerl from
      "http://www.activestate.com/Products/ActivePerl/Download.html".

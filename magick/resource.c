@@ -37,6 +37,7 @@
 #include "magick/studio.h"
 #include "magick/log.h"
 #include "magick/resource.h"
+#include "magick/semaphore.h"
 #include "magick/utility.h"
 
 /*
@@ -95,7 +96,7 @@ static ResourceInfo
 %  The format of the AcquireMagickResource() method is:
 %
 %      unsigned int AcquireMagickResource(const ResourceType type,
-%        const ExtendedSignedIntegralType size)
+%        const magick_int64_t size)
 %
 %  A description of each parameter follows:
 %
@@ -106,7 +107,7 @@ static ResourceInfo
 %
 */
 MagickExport unsigned int AcquireMagickResource(const ResourceType type,
-  const ExtendedSignedIntegralType size)
+  const magick_int64_t size)
 {
   char
     message[MaxTextExtent];
@@ -194,7 +195,14 @@ MagickExport unsigned int AcquireMagickResource(const ResourceType type,
 */
 MagickExport void DestroyMagickResources(void)
 {
+#if defined(JUST_FOR_DOCUMENTATION)
+  /* The first two calls should bracket any code that deals with the data
+     structurees being released */
   AcquireSemaphoreInfo(&resource_semaphore);
+  LiberateSemaphoreInfo(&resource_semaphore);
+#endif
+  /* The final call actually releases the associated mutex used to prevent
+     multiple threads from accessing the data */
   DestroySemaphoreInfo(&resource_semaphore);
 }
 
@@ -325,7 +333,7 @@ MagickExport void InitializeMagickResources(void)
       "Total physical memory %ld MB (%ld pages and %ld bytes per page)",
         total_memory, pages, pagesize);
     }
-#  elif defined(MAGICK_PHYSICAL_MEMORY_COMMAND)
+#  elif defined(MAGICK_PHYSICAL_MEMORY_COMMAND) && defined(HAVE_POPEN)
     {
       double
         bytes=0;
@@ -443,7 +451,7 @@ MagickExport void InitializeMagickResources(void)
 %  The format of the LiberateMagickResource() method is:
 %
 %      void LiberateMagickResource(const ResourceType type,
-%        const ExtendedSignedIntegralType size)
+%        const magick_int64_t size)
 %
 %  A description of each parameter follows:
 %
@@ -454,7 +462,7 @@ MagickExport void InitializeMagickResources(void)
 %
 */
 MagickExport void LiberateMagickResource(const ResourceType type,
-  const ExtendedSignedIntegralType size)
+  const magick_int64_t size)
 {
   char
     message[MaxTextExtent];
@@ -568,7 +576,7 @@ MagickExport unsigned int ListMagickResourceInfo(FILE *file,
 %
 %
 */
-MagickExport void SetMagickResourceLimit(const ResourceType type,
+MagickExport unsigned int SetMagickResourceLimit(const ResourceType type,
   const unsigned long limit)
 {
   AcquireSemaphoreInfo(&resource_semaphore);
@@ -607,4 +615,5 @@ MagickExport void SetMagickResourceLimit(const ResourceType type,
       break;
   }
   LiberateSemaphoreInfo(&resource_semaphore);
+  return(True);
 }

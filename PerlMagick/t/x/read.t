@@ -25,39 +25,43 @@ chdir 't/x' || die 'Cd failed';
 #
 # 1) Test rendering text using common X11 font
 #
+if ( defined($ENV{'DISPLAY'}) ) {
 
-$font   = '-*-courier-medium-*-*--14-*-*-*-*-*-*-*';
+  $font   = '-*-courier-medium-*-*--14-*-*-*-*-*-*-*';
 
-# Ensure that Ghostscript is out of the picture
-$SAVEDPATH=$ENV{'PATH'};
-$ENV{'PATH'}='';
-
-$image=Graphics::Magick->new;
-$x=$image->Set(font=>"$font", pen=>'#0000FF', dither=>'False');
-if( "$x" ) {
-  print "$x\n";
-  print "not ok $test\n";
-} else {
-  $x=$image->ReadImage('label:The quick brown fox jumps over the lazy dog.');
+  # Ensure that Ghostscript is out of the picture
+  $SAVEDPATH=$ENV{'PATH'};
+  $ENV{'PATH'}='';
+  
+  $image=Graphics::Magick->new;
+  $x=$image->Set(font=>"$font", pen=>'#0000FF', dither=>'False');
   if( "$x" ) {
-    print "ReadImage: $x\n";
-    # If server can't be accessed, ImageMagick returns this warning
-    # Warning 305: Unable to open X server
-    $x =~ /(\d+)/;
-    my $errorCode = $1;
-    if ( $errorCode > 0 ) {
-      print "not ok $test\n";
+    print "$x\n";
+    print "not ok $test\n";
+  } else {
+    $x=$image->ReadImage('label:The quick brown fox jumps over the lazy dog.');
+    if( "$x" ) {
+      print "ReadImage: $x\n";
+      # If server can't be accessed, ImageMagick returns this warning
+      # Warning 305: Unable to open X server
+      $x =~ /(\d+)/;
+      my $errorCode = $1;
+      if ( $errorCode > 0 ) {
+        print "not ok $test\n";
+      } else {
+        print "ok $test\n";
+      }
     } else {
+      #$image->Display();
       print "ok $test\n";
     }
-  } else {
-    #$image->Display();
-    print "ok $test\n";
   }
+  undef $image;
+  
+  $ENV{'PATH'}=$SAVEDPATH;
+} else {
+  print "ok $test\n";
 }
-undef $image;
-
-$ENV{'PATH'}=$SAVEDPATH;
 
 $test = 0;  # Quench PERL compliaint
 

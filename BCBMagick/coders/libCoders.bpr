@@ -1,0 +1,230 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.06.00"/>
+    <PROJECT value="libCoders.lib"/>
+    <OBJFILES value="art.obj avi.obj avs.obj bmp.obj caption.obj cineon.obj
+      clipboard.obj cmyk.obj cut.obj 
+      dcm.obj dib.obj dps.obj dpx.obj emf.obj ept.obj fax.obj fits.obj fpx.obj 
+      gif.obj gradient.obj gray.obj hdf.obj histogram.obj html.obj icon.obj 
+      jbig.obj jp2.obj jpeg.obj label.obj locale.obj logo.obj map.obj mat.obj 
+      matte.obj meta.obj miff.obj mono.obj mpc.obj mpeg.obj mpr.obj msl.obj 
+      mtv.obj mvg.obj null.obj otb.obj palm.obj pcd.obj pcl.obj pcx.obj pdb.obj 
+      pdf.obj pict.obj pix.obj plasma.obj png.obj pnm.obj preview.obj ps.obj 
+      ps2.obj ps3.obj psd.obj pwp.obj rgb.obj rla.obj rle.obj sct.obj sfw.obj 
+      sgi.obj stegano.obj sun.obj svg.obj tga.obj tiff.obj tile.obj tim.obj 
+      topol.obj ttf.obj txt.obj uil.obj url.obj uyvy.obj vicar.obj vid.obj 
+      viff.obj wbmp.obj wmf.obj wpg.obj x.obj xbm.obj xc.obj xcf.obj xpm.obj 
+      xtrn.obj xwd.obj yuv.obj"/>
+    <RESFILES value=""/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES)"/>
+    <LIBFILES value=""/>
+    <LIBRARIES value=""/>
+    <PACKAGES value=""/>
+    <PATHCPP value=".;"/>
+    <PATHPAS value=".;"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <LINKER value="TLib"/>
+    <USERDEFINES value="WIN32;_LIB"/>
+    <SYSDEFINES value="NO_STRICT"/>
+    <MAINSOURCE value="libCoders.bpf"/>
+    <INCLUDEPATH value="..;..\..;..\bzlib;..\coders;..\jpeg;..\magick;..\png;..\tiff\libtiff;..\zlib;$(BCB)\include;$(BCB)\include\vcl"/>
+    <LIBPATH value="$(BCB)\lib\obj;$(BCB)\lib"/>
+    <WARNINGS value="-w-sus -w-spa -w-rch -w-pia -w-pch -w-par -w-csu -w-ccc -w-aus"/>
+    <LISTFILE value="libCoders"/>
+    <OTHERFILES value=""/>
+  </MACROS>
+  <OPTIONS>
+    <CFLAG1 value="-O2 -Vx -Ve -X- -a8 -b- -k- -vi -c -tW -tWM"/>
+    <PFLAGS value="-$Y- -$L- -$D- -$A8 -v -JPHNE -M"/>
+    <AFLAGS value="/mx /w2 /zn"/>
+    <LFLAGS value="/P64 /0"/>
+    <OTHERFILES value=""/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="$(OBJFILES)"/>
+    <ALLLIB value=""/>
+    <OTHERFILES value=""/>
+  </LINKER>
+  <FILELIST>
+      <FILE FILENAME="libCoders.bpf" FORMNAME="" UNITNAME="libCoders" CONTAINERID="BPF" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="art.c" FORMNAME="" UNITNAME="art.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="avi.c" FORMNAME="" UNITNAME="avi.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="avs.c" FORMNAME="" UNITNAME="avs.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="bmp.c" FORMNAME="" UNITNAME="bmp.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="caption.c" FORMNAME="" UNITNAME="caption.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="cineon.c" FORMNAME="" UNITNAME="cineon.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="clipboard.c" FORMNAME="" UNITNAME="clipboard.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="cmyk.c" FORMNAME="" UNITNAME="cmyk.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="cut.c" FORMNAME="" UNITNAME="cut.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="dcm.c" FORMNAME="" UNITNAME="dcm.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="dib.c" FORMNAME="" UNITNAME="dib.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="dps.c" FORMNAME="" UNITNAME="dps.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="dpx.c" FORMNAME="" UNITNAME="dpx.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="emf.c" FORMNAME="" UNITNAME="emf.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="ept.c" FORMNAME="" UNITNAME="ept.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="fax.c" FORMNAME="" UNITNAME="fax.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="fits.c" FORMNAME="" UNITNAME="fits.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="fpx.c" FORMNAME="" UNITNAME="fpx.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="gif.c" FORMNAME="" UNITNAME="gif.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="gradient.c" FORMNAME="" UNITNAME="gradient.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="gray.c" FORMNAME="" UNITNAME="gray.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="hdf.c" FORMNAME="" UNITNAME="hdf" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="histogram.c" FORMNAME="" UNITNAME="histogram.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="html.c" FORMNAME="" UNITNAME="html.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="icon.c" FORMNAME="" UNITNAME="icon.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="jbig.c" FORMNAME="" UNITNAME="jbig.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="jp2.c" FORMNAME="" UNITNAME="jp2.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="jpeg.c" FORMNAME="" UNITNAME="jpeg.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="label.c" FORMNAME="" UNITNAME="label.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="locale.c" FORMNAME="" UNITNAME="locale.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="logo.c" FORMNAME="" UNITNAME="logo.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="map.c" FORMNAME="" UNITNAME="map.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="mat.c" FORMNAME="" UNITNAME="mat.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="matte.c" FORMNAME="" UNITNAME="matte.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="meta.c" FORMNAME="" UNITNAME="meta.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="miff.c" FORMNAME="" UNITNAME="miff.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="mono.c" FORMNAME="" UNITNAME="mono.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="mpc.c" FORMNAME="" UNITNAME="mpc.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="mpeg.c" FORMNAME="" UNITNAME="mpeg.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="mpr.c" FORMNAME="" UNITNAME="mpr.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="msl.c" FORMNAME="" UNITNAME="msl.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="mtv.c" FORMNAME="" UNITNAME="mtv.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="mvg.c" FORMNAME="" UNITNAME="mvg.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="null.c" FORMNAME="" UNITNAME="null.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="otb.c" FORMNAME="" UNITNAME="otb.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="palm.c" FORMNAME="" UNITNAME="palm.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="pcd.c" FORMNAME="" UNITNAME="pcd.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="pcl.c" FORMNAME="" UNITNAME="pcl.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="pcx.c" FORMNAME="" UNITNAME="pcx.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="pdb.c" FORMNAME="" UNITNAME="pdb.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="pdf.c" FORMNAME="" UNITNAME="pdf.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="pict.c" FORMNAME="" UNITNAME="pict.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="pix.c" FORMNAME="" UNITNAME="pix.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="plasma.c" FORMNAME="" UNITNAME="plasma.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="png.c" FORMNAME="" UNITNAME="png.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="pnm.c" FORMNAME="" UNITNAME="pnm.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="preview.c" FORMNAME="" UNITNAME="preview.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="ps.c" FORMNAME="" UNITNAME="ps.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="ps2.c" FORMNAME="" UNITNAME="ps2.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="ps3.c" FORMNAME="" UNITNAME="ps3.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="psd.c" FORMNAME="" UNITNAME="psd.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="pwp.c" FORMNAME="" UNITNAME="pwp.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="rgb.c" FORMNAME="" UNITNAME="rgb.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="rla.c" FORMNAME="" UNITNAME="rla.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="rle.c" FORMNAME="" UNITNAME="rle.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="sct.c" FORMNAME="" UNITNAME="sct.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="sfw.c" FORMNAME="" UNITNAME="sfw.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="sgi.c" FORMNAME="" UNITNAME="sgi.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="stegano.c" FORMNAME="" UNITNAME="stegano.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="sun.c" FORMNAME="" UNITNAME="sun.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="svg.c" FORMNAME="" UNITNAME="svg.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="tga.c" FORMNAME="" UNITNAME="tga.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="tiff.c" FORMNAME="" UNITNAME="tiff.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="tile.c" FORMNAME="" UNITNAME="tile.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="tim.c" FORMNAME="" UNITNAME="tim.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="topol.c" FORMNAME="" UNITNAME="topol" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="ttf.c" FORMNAME="" UNITNAME="ttf.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="txt.c" FORMNAME="" UNITNAME="txt.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uil.c" FORMNAME="" UNITNAME="uil.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="url.c" FORMNAME="" UNITNAME="url.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uyvy.c" FORMNAME="" UNITNAME="uyvy.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="vicar.c" FORMNAME="" UNITNAME="vicar.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="vid.c" FORMNAME="" UNITNAME="vid.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="viff.c" FORMNAME="" UNITNAME="viff.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="wbmp.c" FORMNAME="" UNITNAME="wbmp.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="wmf.c" FORMNAME="" UNITNAME="wmf.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="wpg.c" FORMNAME="" UNITNAME="wpg.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="x.c" FORMNAME="" UNITNAME="x.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="xbm.c" FORMNAME="" UNITNAME="xbm.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="xc.c" FORMNAME="" UNITNAME="xc.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="xcf.c" FORMNAME="" UNITNAME="xcf.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="xpm.c" FORMNAME="" UNITNAME="xpm.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="xtrn.c" FORMNAME="" UNITNAME="xtrn" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="xwd.c" FORMNAME="" UNITNAME="xwd.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="yuv.c" FORMNAME="" UNITNAME="yuv.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+  </FILELIST>
+  <BUILDTOOLS>
+  </BUILDTOOLS>
+
+  <IDEOPTIONS>
+[Version Info]
+IncludeVerInfo=0
+AutoIncBuild=0
+MajorVer=1
+MinorVer=0
+Release=0
+Build=0
+Debug=0
+PreRelease=0
+Special=0
+Private=0
+DLL=0
+Locale=1040
+CodePage=1252
+
+[Version Info Keys]
+CompanyName=
+FileDescription=
+FileVersion=1.0.0.0
+InternalName=
+LegalCopyright=
+LegalTrademarks=
+OriginalFilename=
+ProductName=
+ProductVersion=1.0.0.0
+Comments=
+
+[HistoryLists\hlIncludePath]
+Count=1
+Item0=..;..\..;..\bzlib;..\coders;..\jpeg;..\magick;..\png;..\tiff\libtiff;..\zlib;$(BCB)\include;$(BCB)\include\vcl
+
+[HistoryLists\hlLibraryPath]
+Count=1
+Item0=$(BCB)\lib\obj;$(BCB)\lib
+
+[HistoryLists\hlDebugSourcePath]
+Count=1
+Item0=$(BCB)\source\vcl
+
+[HistoryLists\hlConditionals]
+Count=1
+Item0=WIN32;_LIB
+
+[HistoryLists\hlTlibPageSize]
+Count=1
+Item0=0x0040
+
+[HistoryLists\hlTlibListFile]
+Count=1
+Item0=libCoders
+
+[Debugging]
+DebugSourceDirs=$(BCB)\source\vcl
+
+[Parameters]
+RunParams=
+Launcher=
+UseLauncher=0
+DebugCWD=
+HostApplication=
+RemoteHost=
+RemotePath=
+RemoteLauncher=
+RemoteCWD=
+RemoteDebug=0
+
+[Compiler]
+ShowInfoMsgs=0
+LinkDebugVcl=0
+LinkCGLIB=0
+
+[Language]
+ActiveLang=
+ProjectLang=
+RootDir=coders
+  </IDEOPTIONS>
+</PROJECT>

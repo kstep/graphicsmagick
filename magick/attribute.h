@@ -33,15 +33,15 @@ typedef struct _ImageAttribute
   MagickExported text attribute methods.
 */
 extern MagickExport const ImageAttribute
-  *GetImageAttribute(const Image *,const char *),
-  *GetImageClippingPathAttribute(const Image *),
-  *GetImageInfoAttribute(const ImageInfo *,const Image *,const char *);
+  *GetImageAttribute(const Image *image,const char *key),
+  *GetImageClippingPathAttribute(const Image *image),
+  *GetImageInfoAttribute(const ImageInfo *image_info,const Image *image,const char *key);
 
 extern MagickExport unsigned int
-  SetImageAttribute(Image *,const char *,const char *);
+  SetImageAttribute(Image *image,const char *key,const char *value);
 
 extern MagickExport void
-  DestroyImageAttributes(Image *);
+  DestroyImageAttributes(Image *image);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

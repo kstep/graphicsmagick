@@ -120,7 +120,7 @@ static int proxyType = 0;	/* uses TYPE or a@b ? */
  * and get the hostname
  */
 
-LIBXML_DLL_IMPORT void
+void
 xmlNanoFTPInit(void) {
     const char *env;
 #ifdef _WINSOCKAPI_
@@ -493,7 +493,7 @@ xmlNanoFTPScanProxy(const char *URL) {
  * Returns an FTP context or NULL in case of error.
  */
 
-LIBXML_DLL_IMPORT void*
+void*
 xmlNanoFTPNewCtxt(const char *URL) {
     xmlNanoFTPCtxtPtr ret;
 
@@ -853,7 +853,7 @@ xmlNanoFTPQuit(void *ctx) {
  * Returns -1 in case of error, 0 otherwise
  */
 
-LIBXML_DLL_IMPORT int
+int
 xmlNanoFTPConnect(void *ctx) {
     xmlNanoFTPCtxtPtr ctxt = (xmlNanoFTPCtxtPtr) ctx;
     struct hostent *hp;
@@ -1701,7 +1701,7 @@ xmlNanoFTPGetSocket(void *ctx, const char *filename) {
  * Returns -1 incase of error, 0 otherwise
  */
 
-LIBXML_DLL_IMPORT int
+int
 xmlNanoFTPGet(void *ctx, ftpDataCallback callback, void *userData,
 	      const char *filename) {
     xmlNanoFTPCtxtPtr ctxt = (xmlNanoFTPCtxtPtr) ctx;
@@ -1827,7 +1827,7 @@ xmlNanoFTPOpen(const char *URL) {
  * Returns -1 incase of error, 0 otherwise
  */
 
-LIBXML_DLL_IMPORT int
+int
 xmlNanoFTPClose(void *ctx) {
     xmlNanoFTPCtxtPtr ctxt = (xmlNanoFTPCtxtPtr) ctx;
 

@@ -1,0 +1,40 @@
+
+<p>
+<s>Display</s> is a machine architecture independent
+image processing and display program. It can display an image on any workstation
+display running an <i>X</i> server.</p>
+
+<p>
+<s>Import</s> reads an image from any visible window
+on an <i>X server</i> and outputs it as an image file. You can capture
+a single window, the entire screen, or any rectangular portion of the screen.</p>
+
+<p>
+<s>Montage</s> creates a composite by combining several
+separate images. The images are tiled on the composite image with the name
+of the image optionally appearing just below the individual tile.</p>
+
+<p>
+<s>Convert</s> converts an input file using one image
+format to an output file with a differing image format.</p>
+
+<p>
+<s>Mogrify</s> transforms an image or a sequence of
+images. These transforms include <s>image scaling</s>, <s>image rotation</s>,
+<s>color
+reduction</s>, and others. The transmogrified image
+<s>overwrites</s> the
+original image.</p>
+
+<p>
+<s>Identify</s> describes the format and characteristics
+of one or more image files. It will also report if an image is incomplete
+or corrupt.</p>
+
+<p>
+<s>Composite</s> composites images to create new images.</p>
+
+<p>
+<s>Conjure</s> interprets and executes scripts in
+the Magick Scripting Language (MSL).</p>
+

@@ -28,7 +28,7 @@ extern MagickExport Image
   *SwirlImage(const Image *,double,ExceptionInfo *),
   *WaveImage(const Image *,const double,const double,ExceptionInfo *);
 
-extern MagickExport void
+extern MagickExport unsigned int
   SolarizeImage(Image *,const double);
 
 #if defined(__cplusplus) || defined(c_plusplus)

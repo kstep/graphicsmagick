@@ -2,34 +2,23 @@
 //  Little cms
 //  Copyright (C) 1998-2003 Marti Maria
 //
-// THIS SOFTWARE IS PROVIDED "AS-IS" AND WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS, IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION, ANY
-// WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+// Permission is hereby granted, free of charge, to any person obtaining 
+// a copy of this software and associated documentation files (the "Software"), 
+// to deal in the Software without restriction, including without limitation 
+// the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+// and/or sell copies of the Software, and to permit persons to whom the Software 
+// is furnished to do so, subject to the following conditions:
 //
-// IN NO EVENT SHALL MARTI MARIA BE LIABLE FOR ANY SPECIAL, INCIDENTAL,
-// INDIRECT OR CONSEQUENTIAL DAMAGES OF ANY KIND,
-// OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
-// WHETHER OR NOT ADVISED OF THE POSSIBILITY OF DAMAGE, AND ON ANY THEORY OF
-// LIABILITY, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
-// OF THIS SOFTWARE.
+// The above copyright notice and this permission notice shall be included in 
+// all copies or substantial portions of the Software.
 //
-//
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the GNU Lesser General Public
-// License as published by the Free Software Foundation; either
-// version 2 of the License, or (at your option) any later version.
-//
-// This library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public
-// License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
-// 1.11a
-
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO 
+// THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE 
+// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION 
+// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
+// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 //     Input/Output
 
@@ -47,6 +36,7 @@ cmsHPROFILE   LCMSEXPORT cmsCreateGrayProfile(LPcmsCIExyY WhitePoint,
                                               LPGAMMATABLE TransferFunction);
 
 BOOL          LCMSEXPORT cmsCloseProfile(cmsHPROFILE hProfile);
+
 LPLUT         LCMSEXPORT cmsReadICCLut(cmsHPROFILE hProfile, icTagSignature sig);
 LPGAMMATABLE  LCMSEXPORT cmsReadICCGamma(cmsHPROFILE hProfile, icTagSignature sig);
 LPGAMMATABLE  LCMSEXPORT cmsReadICCGammaReversed(cmsHPROFILE hProfile, icTagSignature sig);
@@ -58,6 +48,11 @@ BOOL          LCMSEXPORT cmsTakeIluminant(LPcmsCIEXYZ Dest, cmsHPROFILE hProfile
 BOOL          LCMSEXPORT cmsTakeColorants(LPcmsCIEXYZTRIPLE Dest, cmsHPROFILE hProfile);
 BOOL          LCMSEXPORT cmsIsTag(cmsHPROFILE hProfile, icTagSignature sig);
 
+const char*   LCMSEXPORT cmsTakeManufacturer(cmsHPROFILE hProfile);
+const char*   LCMSEXPORT cmsTakeModel(cmsHPROFILE hProfile);
+
+void          LCMSEXPORT cmsSetProfileID(cmsHPROFILE hProfile, LPBYTE ProfileID);
+const LPBYTE  LCMSEXPORT cmsTakeProfileID(cmsHPROFILE hProfile);
 
 const char*   LCMSEXPORT cmsTakeProductName(cmsHPROFILE hProfile);
 
@@ -201,7 +196,7 @@ double Convert15Fixed16(icS15Fixed16Number fix32)
     mid     = (double) FracPart / hack;
     floater = (double) Whole + mid;
 
-    return sign*floater;
+    return sign * floater;
 }
 
 
@@ -245,7 +240,7 @@ size_t MemoryRead(LPVOID buffer, size_t size, size_t count, LPVOID f)
 {   
      FILEMEM* ResData = f;
      LPBYTE Ptr;
-     size_t len = size * count;
+     DWORD len = size * count;
      
 
     if (ResData -> Pointer + len > ResData -> Size)
@@ -266,7 +261,7 @@ BOOL MemorySeek(LPVOID f, size_t offset)
 {
     FILEMEM* ResData = f;
 
-    ResData ->Pointer = offset; 
+    ResData ->Pointer = (DWORD) offset; 
     return FALSE; 
 }
 
@@ -323,7 +318,7 @@ size_t FileRead(void *buffer, size_t size, size_t count, LPVOID stream)
 {
     size_t nReaded = fread(buffer, size, count, (FILE*) stream);
     if (nReaded != count) {
-            cmsSignalError(LCMS_ERRC_WARNING, "Read error. Got %d entries, table should be of %d entries", nReaded, count);         
+            cmsSignalError(LCMS_ERRC_WARNING, "Read error. Got %d bytes, block should be of %d bytes", nReaded * size, count * size);         
     }
 
     return nReaded;
@@ -333,7 +328,7 @@ size_t FileRead(void *buffer, size_t size, size_t count, LPVOID stream)
 static
 BOOL FileSeek(LPVOID stream, size_t offset)
 {
-    if (fseek((FILE*) stream, offset, SEEK_SET)) {
+    if (fseek((FILE*) stream, offset, SEEK_SET) != 0) {
 
        cmsSignalError(LCMS_ERRC_ABORTED, "Seek error; probably corrupted file");
        return TRUE;
@@ -504,6 +499,9 @@ LPLCMSICCPROFILE CreateICCProfileHandler(LPVOID ICCfile,
        Icc -> Illuminant.Z    = Convert15Fixed16(Header.illuminant.Z);
        Icc -> Version         = Header.version;
        
+       // The profile ID are 16 raw bytes
+
+       CopyMemory(Icc ->ProfileID, Header.reserved, 16);
 
        // Get rid of possible wrong profiles
 
@@ -1393,39 +1391,18 @@ void LCMSEXPORT cmsSetLanguage(int LanguageCode, int CountryCode)
 
 
 
-// Take an ASCII item
+// Some tags (e.g, 'pseq') can have text tags embedded. This function
+// handles such special case.
 
 static
-int ReadICCAscii(cmsHPROFILE hProfile, icTagSignature sig, char *Name)
+int ReadEmbeddedTextTag(LPLCMSICCPROFILE Icc, size_t size, char* Name)
 {
-    LPLCMSICCPROFILE    Icc = (LPLCMSICCPROFILE) (LPSTR) hProfile;
     icTagBase           Base;
-    size_t              offset, size;
-    int                 n;
+       
 
-    n = SearchTag(Icc, sig);
-    if (n < 0)
-    {
-    cmsSignalError(LCMS_ERRC_ABORTED, "Tag not found");
-    return -1;
-    }
-
-
-    if (!Icc -> stream)
-    {
-    CopyMemory(Name, Icc -> TagPtrs[n],
-                     Icc -> TagSizes[n]);
-
-    return Icc -> TagSizes[n];
-    }
-
-    offset = Icc -> TagOffsets[n];
-    size   = Icc -> TagSizes[n];
-
-    if (Icc -> Seek(Icc ->stream, offset))
-            return -1;
-        
     Icc ->Read(&Base, sizeof(icTagBase), 1, Icc -> stream);
+    size -= sizeof(icTagBase);
+
     AdjustEndianess32((LPBYTE) &Base.sig);
 
     switch (Base.sig) {
@@ -1433,19 +1410,55 @@ int ReadICCAscii(cmsHPROFILE hProfile, icTagSignature sig, char *Name)
     case icSigTextDescriptionType: {
 
            icUInt32Number  AsciiCount;
-
+           icUInt32Number  i, UnicodeCode, UnicodeCount;
+           icUInt16Number  ScriptCodeCode;
+           icUInt8Number   Dummy, ScriptCodeCount;
+           
            Icc ->Read(&AsciiCount, sizeof(icUInt32Number), 1, Icc -> stream);
+           size -= sizeof(icUInt32Number);
+
            AdjustEndianess32((LPBYTE) &AsciiCount);
            Icc ->Read(Name, 1, AsciiCount, Icc -> stream);
-           size = AsciiCount;
+           size -= AsciiCount;
+
+           // Skip Unicode code
+
+           Icc ->Read(&UnicodeCode,  sizeof(icUInt32Number), 1, Icc -> stream);
+           size -= sizeof(icUInt32Number);
+
+           Icc ->Read(&UnicodeCount, sizeof(icUInt32Number), 1, Icc -> stream);
+           size -= sizeof(icUInt32Number);
+
+           AdjustEndianess32((LPBYTE) &UnicodeCount);
+
+           if (UnicodeCount > size) return size;
+
+           for (i=0; i < UnicodeCount; i++) 
+                Icc ->Read(&Dummy, sizeof(icUInt16Number), 1, Icc -> stream);
+           
+           size -= UnicodeCount * sizeof(icUInt16Number);
+            
+          // Skip ScriptCode code
+
+           Icc ->Read(&ScriptCodeCode,  sizeof(icUInt16Number), 1, Icc -> stream);
+           size -= sizeof(icUInt16Number);
+           Icc ->Read(&ScriptCodeCount, sizeof(icUInt8Number), 1, Icc -> stream);
+           size -= sizeof(icUInt8Number);
+
+           if (size < 67) return size;
+
+           for (i=0; i < 67; i++) 
+                Icc ->Read(&Dummy, sizeof(icUInt8Number), 1, Icc -> stream);
+
+           size -= 67;                      
            }
            break;
 
 
     case icSigCopyrightTag:   // Broken profiles from agfa does store copyright info in such type
     case icSigTextType:
-
-           size -= sizeof(icTagBase);
+    
+           
            Icc -> Read(Name, 1, size, Icc -> stream);
            break;
 
@@ -1530,6 +1543,41 @@ int ReadICCAscii(cmsHPROFILE hProfile, icTagSignature sig, char *Name)
     }
 
     return size;
+}
+
+
+// Take an ASCII item
+
+static
+int ReadICCAscii(cmsHPROFILE hProfile, icTagSignature sig, char *Name)
+{
+    LPLCMSICCPROFILE    Icc = (LPLCMSICCPROFILE) (LPSTR) hProfile;
+    size_t              offset, size;
+    int                 n;
+
+    n = SearchTag(Icc, sig);
+    if (n < 0) {
+
+        cmsSignalError(LCMS_ERRC_ABORTED, "Tag not found");
+        return -1;
+    }
+
+    if (!Icc -> stream) {
+
+        CopyMemory(Name, Icc -> TagPtrs[n],
+                             Icc -> TagSizes[n]);
+
+        return Icc -> TagSizes[n];
+    }
+
+    offset = Icc -> TagOffsets[n];
+    size   = Icc -> TagSizes[n];
+
+    if (Icc -> Seek(Icc ->stream, offset))
+            return -1;
+      
+    return ReadEmbeddedTextTag(Icc, size, Name);
+
 }
 
 
@@ -1711,6 +1759,16 @@ void LCMSEXPORT cmsSetRenderingIntent(cmsHPROFILE hProfile, int RenderingIntent)
 }
 
 
+void LCMSEXPORT cmsSetProfileID(cmsHPROFILE hProfile, LPBYTE ProfileID)
+{
+    LPLCMSICCPROFILE  Icc = (LPLCMSICCPROFILE) (LPSTR) hProfile;
+
+    CopyMemory(Icc -> ProfileID, ProfileID, 16);
+
+}
+
+
+
 // Primaries are to be in xyY notation
 
 BOOL LCMSEXPORT cmsTakeColorants(LPcmsCIEXYZTRIPLE Dest, cmsHPROFILE hProfile)
@@ -1784,8 +1842,6 @@ LPGAMMATABLE LCMSEXPORT cmsReadICCGamma(cmsHPROFILE hProfile, icTagSignature sig
             return NULL;
 
        return ReadCurve(Icc);
-
-
      
 }
 
@@ -1990,6 +2046,52 @@ void LCMSEXPORT cmsSetDeviceClass(cmsHPROFILE hProfile, icProfileClassSignature 
        Icc -> DeviceClass = sig;
 }
 
+// Uncooked manufacturer
+
+const char* LCMSEXPORT cmsTakeManufacturer(cmsHPROFILE hProfile)
+{
+
+    static char Manufacturer[512] = "";
+
+       Manufacturer[0] = 0;   
+
+       if (cmsIsTag(hProfile, icSigDeviceMfgDescTag)) {
+
+       ReadICCAscii(hProfile, icSigDeviceMfgDescTag, Manufacturer);
+       }
+
+    return Manufacturer;
+}
+
+// Uncooked model
+
+const char* LCMSEXPORT cmsTakeModel(cmsHPROFILE hProfile)
+{
+
+    static char Model[512] = "";
+
+       Model[0] = 0;   
+
+       if (cmsIsTag(hProfile, icSigDeviceModelDescTag)) {
+
+       ReadICCAscii(hProfile, icSigDeviceModelDescTag, Model);
+       }
+
+    return Model;
+}
+
+// ProfileID (v4) -- take a local copy from header
+
+const LPBYTE LCMSEXPORT cmsTakeProfileID(cmsHPROFILE hProfile)
+{
+    static BYTE ProfileID[16];
+    LPLCMSICCPROFILE  Icc = (LPLCMSICCPROFILE) (LPSTR) hProfile;
+
+    CopyMemory(ProfileID, Icc ->ProfileID, 16);
+
+    return ProfileID;
+}
+
 
 
 // We compute name with model - manufacturer
@@ -2128,6 +2230,7 @@ BOOL LCMSEXPORT cmsTakeCharTargetData(cmsHPROFILE hProfile, char** Data, size_t*
     n = SearchTag(Icc, icSigCharTargetTag);
     if (n < 0) return FALSE;                
 
+
     *len =  Icc -> TagSizes[n];
     *Data = (char*) malloc(*len + 1);
 
@@ -2141,9 +2244,82 @@ BOOL LCMSEXPORT cmsTakeCharTargetData(cmsHPROFILE hProfile, char** Data, size_t*
         return FALSE;
 
     (*Data)[*len] = 0;  // Force a zero marker. Shouldn't be needed, but is 
-                        // here for simplify things.
+                        // here to simplify things.
 
     return TRUE;    
+}
+
+
+
+// PSEQ Tag, used in devicelink profiles
+
+LPcmsSEQ LCMSEXPORT cmsReadProfileSequenceDescription(cmsHPROFILE hProfile)
+{
+    LPLCMSICCPROFILE  Icc = (LPLCMSICCPROFILE) (LPSTR) hProfile;
+    int n;
+    icUInt32Number i, Count;
+    icDescStruct   DescStruct;
+    icTagBase      Base;
+    size_t         size, offset;
+    LPcmsSEQ       OutSeq;
+
+
+    n = SearchTag(Icc, icSigProfileSequenceDescTag);
+    if (n < 0) return NULL;                
+
+    if (!Icc -> stream) {
+            
+            size   = Icc -> TagSizes[n];            
+            OutSeq = (LPcmsSEQ) malloc(size);           
+            CopyMemory(OutSeq, Icc ->TagPtrs[n], size);    
+            return OutSeq;
+    }
+
+    offset = Icc -> TagOffsets[n];
+    size   = Icc -> TagSizes[n];
+
+    if (Icc -> Seek(Icc ->stream, offset))
+            return NULL;
+
+    Icc -> Read(&Base, 1, sizeof(icTagBase), Icc -> stream);
+    AdjustEndianess32((LPBYTE) &Base.sig);
+
+    if (Base.sig != icSigProfileSequenceDescType) return 0;
+
+    Icc ->Read(&Count, sizeof(icUInt32Number), 1, Icc -> stream);
+    AdjustEndianess32((LPBYTE) &Count);
+    
+    size = sizeof(int) + Count * sizeof(cmsPSEQDESC);
+    OutSeq = (LPcmsSEQ) malloc(size);
+
+    OutSeq ->n = Count;
+    
+    // Get structures as well
+
+    for (i=0; i < Count; i++) {
+        
+        LPcmsPSEQDESC sec = &OutSeq -> seq[i];
+
+        Icc -> Read(&DescStruct, sizeof(icDescStruct) - SIZEOF_UINT8_ALIGNED, 1, Icc -> stream);
+
+        AdjustEndianess32((LPBYTE) &DescStruct.deviceMfg);
+        AdjustEndianess32((LPBYTE) &DescStruct.deviceModel);
+        AdjustEndianess32((LPBYTE) &DescStruct.technology);
+        AdjustEndianess32((LPBYTE) &DescStruct.attributes[0]);
+        AdjustEndianess32((LPBYTE) &DescStruct.attributes[1]);
+
+        sec ->attributes[0] = DescStruct.attributes[0];
+        sec ->attributes[1] = DescStruct.attributes[1];
+        sec ->deviceMfg     = DescStruct.deviceMfg;
+        sec ->deviceModel   = DescStruct.deviceModel;
+        sec ->technology    = DescStruct.technology;
+
+        if (ReadEmbeddedTextTag(Icc, size, sec ->Manufacturer) < 0) return NULL;
+        if (ReadEmbeddedTextTag(Icc, size, sec ->Model) < 0) return NULL;
+
+    }
+
+    return OutSeq;
 }
 
 
@@ -2261,6 +2437,11 @@ cmsHPROFILE LCMSEXPORT cmsOpenProfileFromFile(const char *lpFileName, const char
            NewIcc = (LPLCMSICCPROFILE) (LPSTR) hEmpty;
            NewIcc -> IsWrite = TRUE;
            strncpy(NewIcc ->PhysicalFile, lpFileName, MAX_PATH-1);
+
+           // Save LUT as 8 bit
+
+           sAccess++;
+           if (*sAccess == '8') NewIcc ->SaveAs8Bits = TRUE;
 
            return hEmpty;
        }
@@ -2459,9 +2640,12 @@ BOOL SaveHeader(void *OutStream, LPLCMSICCPROFILE Icc)
        Header.illuminant.Z = TransportValue32(DOUBLE_TO_FIXED(Icc -> Illuminant.Z));
 
        Header.creator      = TransportValue32(lcmsSignature);
-
+        
        ZeroMemory(&Header.reserved, sizeof(Header.reserved));
 
+       // Set profile ID
+       CopyMemory(Header.reserved, Icc ->ProfileID, 16);
+      
 
        UsedSpace = 0; // Mark as begin-of-file
 
@@ -2534,29 +2718,44 @@ BOOL SaveGamma(FILE *OutStream, LPGAMMATABLE Gamma, LPLCMSICCPROFILE Icc)
 
 // Save an DESC Tag 
 
+
 static
 BOOL SaveDescription(FILE *OutStream, const char *Text, LPLCMSICCPROFILE Icc)
 {
 
-    size_t len, Count, TotalSize, AlignedSize, FillerSize;
-    char Filler[80];
+    icUInt32Number len, Count, TotalSize, AlignedSize;
+    char Filler[256];
 
     len = strlen(Text) + 1;
 
-    TotalSize = sizeof(icTagBase) + sizeof(size_t) + 71 + len;
-    AlignedSize = ALIGNLONG(TotalSize);
-    FillerSize  = AlignedSize - TotalSize;
+    // * icInt8Number         desc[count]     * NULL terminated ascii string
+    // * icUInt32Number       ucLangCode;     * UniCode language code
+    // * icUInt32Number       ucCount;        * UniCode description length
+    // * icInt16Number        ucDesc[ucCount];* The UniCode description
+    // * icUInt16Number       scCode;         * ScriptCode code
+    // * icUInt8Number        scCount;        * ScriptCode count
+    // * icInt8Number         scDesc[67];     * ScriptCode Description
 
+    TotalSize = sizeof(icTagBase) + sizeof(icUInt32Number) + len + 
+                sizeof(icUInt32Number) + sizeof(icUInt32Number) +
+                sizeof(icUInt16Number) + sizeof(icUInt8Number) + 67; 
+
+    AlignedSize = TotalSize;  // Can be unaligned!!
+    
     if (!SetupBase(OutStream, icSigTextDescriptionType, Icc)) return FALSE;
+    AlignedSize -= sizeof(icTagBase);
 
     Count = TransportValue32(len);
-    if (!Icc ->Write(OutStream, sizeof(size_t), &Count)) return FALSE;
+    if (!Icc ->Write(OutStream, sizeof(icUInt32Number), &Count)) return FALSE;
+    AlignedSize -= sizeof(icUInt32Number);
+
     if (!Icc ->Write(OutStream, len, (LPVOID)Text)) return FALSE;
+    AlignedSize -= len;
 
-    ZeroMemory(Filler, 80);
-    if (!Icc ->Write(OutStream, FillerSize, Filler)) return FALSE;
+    ZeroMemory(Filler, AlignedSize);
+    if (!Icc ->Write(OutStream, AlignedSize, Filler)) return FALSE;
 
-    return Icc ->Write(OutStream, 71, Filler);
+    return TRUE;
 }
 
 // Save an ASCII Tag 
@@ -2610,6 +2809,41 @@ BOOL SaveChromaticities(FILE *OutStream, LPcmsCIExyYTRIPLE chrm, LPLCMSICCPROFIL
        if (!SaveOneChromaticity(OutStream, chrm -> Blue.x, chrm -> Blue.y, Icc)) return FALSE;
 
        return TRUE;
+}
+
+
+static
+BOOL SaveSequenceDescriptionTag(FILE *OutStream, LPcmsSEQ seq, LPLCMSICCPROFILE Icc)
+{
+    icUInt32Number nSeqs;
+    icDescStruct   DescStruct;
+    int i, n = seq ->n;
+    LPcmsPSEQDESC pseq = seq ->seq;
+
+    if (!SetupBase(OutStream, icSigProfileSequenceDescType, Icc)) return FALSE;
+    
+    nSeqs = TransportValue32(n);
+
+    if (!Icc ->Write(OutStream, sizeof(icUInt32Number) , &nSeqs)) return FALSE;
+
+    for (i=0; i < n; i++) {
+        
+        LPcmsPSEQDESC sec = pseq + i;
+
+       
+        DescStruct.deviceMfg    = TransportValue32(sec ->deviceMfg);
+        DescStruct.deviceModel  = TransportValue32(sec ->deviceModel);
+        DescStruct.technology   = TransportValue32(sec ->technology);
+        DescStruct.attributes[0]= TransportValue32(sec ->attributes[0]);
+        DescStruct.attributes[1]= TransportValue32(sec ->attributes[1]);
+
+        if (!Icc ->Write(OutStream, sizeof(icDescStruct) - SIZEOF_UINT8_ALIGNED, &DescStruct)) return FALSE;
+        
+        if (!SaveDescription(OutStream, sec ->Manufacturer, Icc)) return FALSE;
+        if (!SaveDescription(OutStream, sec ->Model, Icc)) return FALSE;        
+    }
+
+    return TRUE;
 }
 
 
@@ -2703,6 +2937,138 @@ BOOL SaveLUT(FILE* OutStream, const LPLUT NewLUT, LPLCMSICCPROFILE Icc)
 
         return TRUE;
 }
+
+
+
+// Special case: Saves a LUT8 ver2 -- This is used only for making smaller profiles
+
+static
+BOOL SaveLUT8(FILE* OutStream, const LPLUT NewLUT, LPLCMSICCPROFILE Icc)
+{
+       icLut8 LUT8;
+       unsigned int i, j;
+       size_t nTabSize;
+       BYTE val;
+
+       // Sanity check
+       
+       if (NewLUT -> wFlags & LUT_HASTL1) {
+
+           if (NewLUT -> InputEntries != 256) {
+                cmsSignalError(LCMS_ERRC_ABORTED, "LUT8 needs 256 entries on prelinearization");
+                return FALSE;
+           }
+
+       }
+
+
+       if (NewLUT -> wFlags & LUT_HASTL2) {
+
+           if (NewLUT -> OutputEntries != 256) {
+                cmsSignalError(LCMS_ERRC_ABORTED, "LUT8 needs 256 entries on postlinearization");
+                return FALSE;
+           }
+       }
+
+       
+
+       if (!SetupBase(OutStream, icSigLut8Type, Icc)) return FALSE;
+
+       LUT8.clutPoints = (icUInt8Number) NewLUT -> cLutPoints;
+       LUT8.inputChan  = (icUInt8Number) NewLUT -> InputChan;
+       LUT8.outputChan = (icUInt8Number) NewLUT -> OutputChan;
+       
+
+       if (NewLUT -> wFlags & LUT_HASMATRIX) {
+
+       LUT8.e00 = TransportValue32(NewLUT -> Matrix.v[0].n[0]);
+       LUT8.e01 = TransportValue32(NewLUT -> Matrix.v[0].n[1]);
+       LUT8.e02 = TransportValue32(NewLUT -> Matrix.v[0].n[2]);
+       LUT8.e10 = TransportValue32(NewLUT -> Matrix.v[1].n[0]);
+       LUT8.e11 = TransportValue32(NewLUT -> Matrix.v[1].n[1]);
+       LUT8.e12 = TransportValue32(NewLUT -> Matrix.v[1].n[2]);
+       LUT8.e20 = TransportValue32(NewLUT -> Matrix.v[2].n[0]);
+       LUT8.e21 = TransportValue32(NewLUT -> Matrix.v[2].n[1]);
+       LUT8.e22 = TransportValue32(NewLUT -> Matrix.v[2].n[2]);
+       }
+       else {
+
+       LUT8.e00 = TransportValue32(DOUBLE_TO_FIXED(1));
+       LUT8.e01 = TransportValue32(DOUBLE_TO_FIXED(0));
+       LUT8.e02 = TransportValue32(DOUBLE_TO_FIXED(0));
+       LUT8.e10 = TransportValue32(DOUBLE_TO_FIXED(0));
+       LUT8.e11 = TransportValue32(DOUBLE_TO_FIXED(1));
+       LUT8.e12 = TransportValue32(DOUBLE_TO_FIXED(0));
+       LUT8.e20 = TransportValue32(DOUBLE_TO_FIXED(0));
+       LUT8.e21 = TransportValue32(DOUBLE_TO_FIXED(0));
+       LUT8.e22 = TransportValue32(DOUBLE_TO_FIXED(1));
+       }
+
+
+       // Save header
+
+       Icc -> Write(OutStream,  sizeof(icLut8)- SIZEOF_UINT8_ALIGNED, &LUT8);
+
+       // The prelinearization table
+
+       for (i=0; i < NewLUT -> InputChan; i++) {
+
+           for (j=0; j < 256; j++) {
+
+               if (NewLUT -> wFlags & LUT_HASTL1)
+                        val = (BYTE) floor(NewLUT ->L1[i][j] / 257.0 + .5);
+               else
+                        val = (BYTE) j;
+
+               Icc ->Write(OutStream, 1, &val);
+           }
+               
+       }
+
+
+       nTabSize = (NewLUT -> OutputChan * uipow(NewLUT->cLutPoints,
+                                                 NewLUT->InputChan));
+       // The 3D CLUT.
+
+       for (j=0; j < nTabSize; j++) {
+
+              val = (BYTE) floor(NewLUT ->T[j] / 257.0 + .5);
+              Icc ->Write(OutStream, 1, &val);
+       }
+
+       // The postlinearization table
+
+       for (i=0; i < NewLUT -> OutputChan; i++) {
+
+           for (j=0; j < 256; j++) {
+
+               if (NewLUT -> wFlags & LUT_HASTL2)
+                    val = (BYTE) floor(NewLUT ->L2[i][j] / 257.0 + .5);
+               else
+                    val = (BYTE) j;
+
+               Icc ->Write(OutStream, 1, &val);
+           }
+
+       }
+
+        return TRUE;
+}
+
+void LCMSEXPORT _cmsSetLUTdepth(cmsHPROFILE hProfile, int depth)
+{
+    LPLCMSICCPROFILE Icc = (LPLCMSICCPROFILE) (LPSTR) hProfile;
+
+    switch (depth) {
+
+    case 8:  Icc ->SaveAs8Bits = TRUE; break;
+    case 16: Icc ->SaveAs8Bits = FALSE; break;      
+        
+    default:
+        cmsSignalError(LCMS_ERRC_ABORTED, "%d is an unsupported as bitdepth, use 8 or 16 only.", depth);
+    }
+}
+
 
 // Saves Tag directory
 
@@ -2816,7 +3182,19 @@ BOOL SaveTags(void *OutStream, LPLCMSICCPROFILE Icc)
        case icSigPreview0Tag:
        case icSigPreview1Tag:
        case icSigPreview2Tag:
-              if (!SaveLUT(OutStream, (LPLUT) Data, Icc)) return FALSE;
+
+                if (Icc ->SaveAs8Bits) {
+
+                        if (!SaveLUT8(OutStream, (LPLUT) Data, Icc)) return FALSE;
+                }
+                else {
+
+                    if (!SaveLUT(OutStream, (LPLUT) Data, Icc)) return FALSE;
+                }
+                break;
+
+       case icSigProfileSequenceDescTag:               
+              if (!SaveSequenceDescriptionTag(OutStream, (LPcmsSEQ) Data, Icc)) return FALSE;              
               break;
 
 
@@ -2904,6 +3282,16 @@ BOOL LCMSEXPORT _cmsAddChromaticityTag(cmsHPROFILE hProfile, icTagSignature sig,
 }
 
 
+BOOL LCMSEXPORT _cmsAddSequenceDescriptionTag(cmsHPROFILE hProfile, icTagSignature sig, LPcmsSEQ pseq)
+{
+    LPLCMSICCPROFILE Icc = (LPLCMSICCPROFILE) (LPSTR) hProfile;
+    
+    InitTag(Icc, sig, sizeof(int) + pseq -> n * sizeof(cmsPSEQDESC), pseq);
+    return TRUE;
+
+}
+
+
 // Add tags to profile structure
 
 BOOL LCMSEXPORT cmsAddTag(cmsHPROFILE hProfile, icTagSignature sig, LPVOID Tag)
@@ -2952,6 +3340,10 @@ BOOL LCMSEXPORT cmsAddTag(cmsHPROFILE hProfile, icTagSignature sig, LPVOID Tag)
               rc =  _cmsAddChromaticityTag(hProfile, sig, (LPcmsCIExyYTRIPLE) Tag);              
               break;
         
+       case icSigProfileSequenceDescTag:
+              rc = _cmsAddSequenceDescriptionTag(hProfile, sig, Tag);
+              break;
+
        default:
             cmsSignalError(LCMS_ERRC_ABORTED, "cmsAddTag: Tag '%x' is unsupported", sig);
             return FALSE;

@@ -1,16 +1,15 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000
+// Copyright Bob Friesenhahn, 1999, 2000, 2003
 //
 // Test STL morphImages function
 //
 
+#include <Magick++.h>
 #include <string>
 #include <iostream>
 #include <list>
 #include <vector>
-
-#include <Magick++.h>
 
 using namespace std;
 
@@ -24,11 +23,11 @@ int main( int /*argc*/, char **argv)
 
   int failures=0;
 
-  string srcdir("");
-  if(getenv("SRCDIR") != 0)
-    srcdir = getenv("SRCDIR");
-
   try {
+
+    string srcdir("");
+    if(getenv("SRCDIR") != 0)
+      srcdir = getenv("SRCDIR");
 
     //
     // Test morphImages

@@ -36,7 +36,7 @@ WriteMakefile
    'VERSION'   => '@PACKAGE_VERSION@',
 
    # Preprocessor defines
-   'DEFINE'	=> '@DEFS@',     # e.g., '-DHAVE_SOMETHING' 
+   'DEFINE'	=> '@LFS_CPPFLAGS@  @DEFS@',     # e.g., '-DHAVE_SOMETHING' 
 
    # Header search specfication and preprocessor flags
    'INC'	=> '-I../ -I@top_srcdir@ @CPPFLAGS@',
@@ -45,7 +45,7 @@ WriteMakefile
    # 'CPPFLAGS'    => "$Config{'cppflags'} @CPPFLAGS@",
 
    # C compiler flags (e.g. -O -g)
-   # 'CCFLAGS'     => "$Config{'ccflags'} @CFLAGS@",
+   'CCFLAGS'     => "$Config{'ccflags'} @CFLAGS@",
 
    # Linker flags for building an executable
    'LDFLAGS'    =>  "-L@MAGICKLIBDIR@ $Config{'ldflags'}",
@@ -77,18 +77,32 @@ WriteMakefile
    ($Config{'archname'} =~ /-object$/i ? ('CAPI' => 'TRUE') : ()),
 );
 
+
 #
-# Stinky ExtUtils::MM_Unix likes to append its own library path to $(CC),
-# prior to any user-specified library path so that an installed library is
-# used rather than the library just built.  This substitution function
-# tries to insert our library path first. Also, use the same compiler used
-# to build perlmain.c to link so that a C++ compiler may be used if
-# necessary.
+# Substitutions for "makeaperl" section.
 #
 sub MY::makeaperl {
      package MY; # so that "SUPER" works right
      my $inherited = shift->SUPER::makeaperl(@_);
 
+     # Stinky ExtUtils::MM_Unix likes to append its own library path to $(CC),
+     # prior to any user-specified library path so that an installed library is
+     # used rather than the library just built.  This substitution function
+     # tries to insert our library path first. Also, use the same compiler used
+     # to build perlmain.c to link so that a C++ compiler may be used if
+     # necessary.
      $inherited =~ s:MAP_LINKCMD\s.*\s*\$\(CC\):MAP_LINKCMD   = \$(PERLMAINCC) -L@MAGICKLIBDIR@: ;
+     $inherited;
+ }
+
+#
+# Substitutions for "test" section.
+#
+sub MY::test {
+     package MY; # so that "SUPER" works right
+     my $inherited = shift->SUPER::test(@_);
+
+     # Run tests in our environment
+     $inherited =~ s:PERL_DL_NONLAZY=1:@SHELL@ ../rungm.sh PERL_DL_NONLAZY=1:g ;
      $inherited;
  }

@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999
+// Copyright Bob Friesenhahn, 1999, 2003
 //
 // Demonstration of unary function-object based operations
 //
@@ -8,12 +8,11 @@
 // flipped and morphed version to "flip_out.miff".
 //
 
+#include <Magick++.h>
 #include <string>
 #include <iostream>
 #include <list>
 #include <algorithm>
-
-#include <Magick++.h>
 
 using namespace std;
 
@@ -25,11 +24,12 @@ int main( int /*argc*/, char ** argv)
   // Initialize ImageMagick install location for Windows
   InitializeMagick(*argv);
 
-  string srcdir("");
-  if(getenv("SRCDIR") != 0)
-    srcdir = getenv("SRCDIR");
 
   try {
+
+    string srcdir("");
+    if(getenv("SRCDIR") != 0)
+      srcdir = getenv("SRCDIR");
 
     // Read images into STL list
     list<Image> imageList;

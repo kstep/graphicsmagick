@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2003 GraphicsMagick Group
+  Copyright (C) 2003, 2004 GraphicsMagick Group
   Copyright (C) 2002 ImageMagick Studio
   Copyright 1991-1999 E. I. du Pont de Nemours and Company
  
@@ -25,7 +25,10 @@ typedef enum
   HeadPath,
   TailPath,
   BasePath,
-  ExtensionPath
+  ExtensionPath,
+  MagickPath,
+  SubImagePath,
+  FullPath
 } PathType;
 
 /*
@@ -49,7 +52,12 @@ typedef struct _TokenInfo
 /*
   Utilities methods.
 */
+#if !defined(__GNUC__) && !defined(__attribute__)
+#  define __attribute__(x) /*nothing*/
+#endif
+
 extern MagickExport char
+  *AcquireString(const char *),
   *AllocateString(const char *),
   *Base64Encode(const unsigned char *,const size_t,size_t *),
   *EscapeString(const char *,const char),
@@ -61,7 +69,10 @@ extern MagickExport char
   *TranslateText(const ImageInfo *,Image *,const char *);
 
 extern MagickExport const char
-  *AcquireString(const char *),
+  *GetClientFilename(void),
+  *SetClientFilename(const char *),
+  *GetClientName(void),
+  *GetClientPath(void),
   *SetClientPath(const char *);
 
 extern MagickExport double
@@ -86,7 +97,9 @@ extern MagickExport unsigned int
   ConcatenateString(char **,const char *),
   ExpandFilenames(int *,char ***),
   GetExecutionPath(char *),
+  GetExecutionPathUsingName(char *),
   IsAccessible(const char *),
+  IsAccessibleNoLogging(const char *),
   IsAccessibleAndNotEmpty(const char *),
   IsGeometry(const char *),
   IsGlob(const char *);
@@ -98,8 +111,10 @@ extern MagickExport void
   *AcquireMemory(const size_t),
   AppendImageFormat(const char *,char *),
   *CloneMemory(void *,const void *,const size_t),
+  DefineClientName(const char *),
+  DefineClientPathAndName(const char *),
   ExpandFilename(char *),
-  FormatSize(const ExtendedSignedIntegralType,char *),
+  FormatSize(const magick_int64_t size,char *format),
   GetPathComponent(const char *,PathType,char *),
   GetToken(const char *,char **,char *),
   LiberateMemory(void **),
@@ -111,11 +126,55 @@ extern MagickExport void
   TemporaryFilename(char *);
 
 extern MagickExport void
-#if defined(__GNUC__)
   FormatString(char *,const char *,...) __attribute__((format (printf,2,3)));
-#else
-  FormatString(char *,const char *,...);
-#endif
+
+#if defined(MAGICK_IMPLEMENTATION)
+
+/*
+  Allocate memory
+*/
+#define MagickAllocateMemory(type,size) ((type) malloc((size_t) (size)))
+
+/*
+  Free memory and set pointer to NULL
+*/
+#define MagickFreeMemory(memory) \
+{ \
+    void *_magick_mp; \
+    if (memory != 0) \
+      { \
+        _magick_mp=memory; \
+        free(_magick_mp); \
+        memory=0; \
+      } \
+}
+
+/*
+  Reallocate memory using provided pointer.  If pointer value is null,
+  then allocate new memory. If reallocation fails then free memory,
+  setting pointer to NULL.
+  C++ does not accept the final memory=_magick_mp without a cast.
+*/
+#define MagickReallocMemory(memory,size) \
+{ \
+    void *_magick_mp; \
+    if (memory == 0) \
+      _magick_mp=malloc((size_t) (size)); \
+    else \
+      { \
+        _magick_mp=realloc(memory,(size_t) (size)); \
+        if (_magick_mp == 0) \
+          free(memory); \
+      } \
+    memory=_magick_mp; \
+}
+
+/*
+  Force argument into range accepted by <ctype.h> functions.
+*/
+#define CTYPE_ARG(value) ((int) ((unsigned char) (value)))
+
+#endif /* defined(MAGICK_IMPLEMENTATION) */
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

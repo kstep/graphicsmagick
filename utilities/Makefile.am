@@ -10,10 +10,10 @@
 #
 
 # Don't require all the GNU mandated files
-AUTOMAKE_OPTIONS = 1.7 foreign
+AUTOMAKE_OPTIONS = 1.8 foreign
 
-MAGICK_LIB	= ../magick/libGraphicsMagick.la # libtool library name
-INCLUDES	=  -I$(top_builddir) -I$(top_srcdir) -I$(top_srcdir)/magick
+MAGICK_LIB	= $(top_builddir)/magick/libGraphicsMagick.la # libtool library name
+AM_CPPFLAGS	=  -I$(top_builddir) -I$(top_srcdir)
 
 STDMANPAGES = gm.1 miff.4 quantize.5
 X11MANPAGES = 
@@ -44,15 +44,18 @@ man_MANS = $(MANPAGES)
 EXTRA_DIST = $(ALLMANPAGES)
 
 clean-local:
-	$(RMDelegate) -f *_out.miff demo.miff gm.core core
+	rm -f *_out.miff demo.miff gm.core core
 
-GM=./gm
+RUNENV = $(SHELL) $(top_builddir)/rungm.sh
+
+GM=@$(RUNENV) $(MEMCHECK) ./gm
+
 MODEL_MIFF=$(top_srcdir)/Magick++/demo/model.miff
 SMILE_MIFF=$(top_srcdir)/Magick++/demo/smile.miff
 GENERIC_TTF=$(top_srcdir)/PerlMagick/demo/Generic.ttf
 
 check:
-	$(RMDelegate) -f demo.miff *_out.miff
+	rm -f demo.miff *_out.miff
 	${GM} convert $(MODEL_MIFF) +noise Laplacian              -label AddNoise AddNoise_out.miff
 	${GM} convert $(MODEL_MIFF) -fill gold \
 	        -pointsize 14 -font $(GENERIC_TTF) \

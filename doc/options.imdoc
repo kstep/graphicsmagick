@@ -1,0 +1,4568 @@
+<imdoc>
+
+<!-- ----------------------------------------------------------------  -->
+<!-- Options.imdoc: "options" subsection of convert, composite, et al. -->
+<!-- ----------------------------------------------------------------- -->
+<!-- Markup tags in this document are                                  -->
+<!--   imdoc (Identifies file as ImageMagick document source file)     -->
+<!--   im (Identifies included text as ImageMagick)                    -->
+<!--   gm (Identifies included text as GraphicsMagick)                 -->
+<!--   sect name=section_name (section); remainder of line is title    -->
+<!--   opt  (option)                                                   -->
+<!--   abs  (abstract)                                                 -->
+<!--   p    (regular print paragraph, not OK to nest)                  -->
+<!--   pp   (small print paragraph, not OK to nest)                    -->
+<!--   pre  (== HTML pre, not allowed in pp or sp)                     -->
+<!--   sp   (subparagraph, must be inside p or pp, OK to nest          -->
+<!--   ul   (== HTML ul)                                               -->
+<!--   li   (== HTML li)                                               -->
+<!--   dl   (== HTML dl)                                               -->
+<!--   dt   (== HTML dt, dt without a dd is OK)                        -->
+<!--   dd   (== HTML dd, dd without a dt is OK)                        -->
+<!--   i    (== HTML em)                                               -->
+<!--   s    (== HTML strong)                                           -->
+<!--   tt   (== HTML tt)                                               -->
+<!--   utils apps=name ... (which apps the enclosed lines pertain to)  -->
+<!--   !--  (== HTML !--) comment                                      -->
+<!--                                                                   -->
+<!--   All tags must close with </...> form of tag, e.g. <pp>..</pp>   -->
+<!-- ----------------------------------------------------------------- -->
+
+<utils apps=all>
+<p>
+This is a combined list of the commandline options used by the GraphicsMagick
+utilities (<i>animate, composite, convert, display, identify,
+import, mogrify</i> and <i>montage</i>).
+</p>
+</utils>
+<utils apps=animate,composite,convert,display,identify,import,mogrify,montage>
+<p>
+In this document, angle brackets ("<>") enclose variables and curly
+brackets ("{}") enclose optional parameters. For example,
+"<s>-fuzz <distance>{%}</s>" means you can use the
+option <tt>"-fuzz 10"</tt>
+or <tt>"-fuzz 2%"</tt>.
+</p>
+</utils>
+
+<!-- ------------ -adjoin ------------------------------------------- -->
+
+<utils apps=convert,montage>
+<dopt>-adjoin</opt>
+
+<abs>join images into a single multi-image file</abs>
+
+<pp>
+By default, all images of an image sequence are stored in the same
+file. However, some formats (e.g. JPEG) do not support more than one image
+and are saved to separate files. Use <s>+adjoin</s> to force this
+behavior.
+</pp>
+
+</utils>
+
+<!-- ------------ -affine ------------------------------------------- -->
+
+<utils apps=convert,mogrify>
+<dopt>-affine <matrix></opt>
+
+<abs>drawing transform matrix</abs>
+
+<pp>
+This option provides a transform matrix <tt>{sx,rx,ry,sy,tx,ty}</tt> for
+use by subsequent <s>-draw</s> or <s>-transform</s> options.
+</pp>
+
+</utils>
+
+<!-- ------------ -antialias ---------------------------------------- -->
+
+<utils apps=convert,mogrify>
+<dopt>-antialias</opt>
+
+<abs>remove pixel aliasing</abs>
+
+<pp>
+By default antialiasing algorithms are used when drawing objects (e.g. lines)
+or rendering vector formats (e.g. WMF and Postscript). Use +antialias to
+disable use of antialiasing algorithms. Reasons to disable antialiasing
+include avoiding increasing colors in the image, or improving rendering speed.
+</pp>
+
+</utils>
+
+<!-- ------------ -append ------------------------------------------- -->
+
+<utils apps=convert>
+<dopt>-append</opt>
+
+<abs>append a set of images</abs>
+
+<pp>
+This option creates a single image where the images in the original set
+are stacked top-to-bottom.  If they are not of the same width,
+any narrow images will be expanded to fit using the background color.
+Use <s>+append</s> to stack images left-to-right.  The set of images
+is terminated by the appearance of any option.
+If the <s>-append</s>
+option appears after all of the input images, all images are appended.
+</pp>
+
+
+</utils>
+
+
+<!-- ------------ -authenticate ------------------------------------- -->
+
+<utils apps=animate,composite,convert,display,identify,mogrify,montage>
+<dopt>-authenticate <string></opt>
+
+<abs>decrypt image with this password</abs>
+
+<pp>
+Use this option to supply a password for decrypting an image or an
+image sequence, if it is being read from a format such as PDF that supports
+encryption.  Encrypting images being written is not supported.</pp>
+</utils>
+
+<!-- ------------ -average ------------------------------------------ -->
+
+<utils apps=convert>
+<dopt>-average</opt>
+
+<abs>average a set of images</abs>
+
+<pp>
+The set of images
+is terminated by the appearance of any option.
+If the <s>-average</s>
+option appears after all of the input images, all images are averaged.</pp>
+
+</utils>
+
+
+
+<!-- ------------ -backdrop ----------------------------------------- -->
+
+<utils apps=animate,display>
+<dopt>-backdrop</opt>
+
+<abs>display the image centered on a backdrop.</abs>
+
+<pp>
+This backdrop covers the entire workstation screen and is useful for hiding
+other X window activity while viewing the image. The color of the backdrop
+is specified as the foreground color (X11 default is black).
+</pp>
+
+<pp>Refer to
+<format type=html>
+<a href="#xres">X Resources</a>
+</format>
+<format type=man>
+"X Resources", below,
+</format>
+<format type=tex>
+"X Resources" in the manual page for <i>display</i>
+</format>
+for details.
+</pp>
+
+</utils>
+
+
+
+<!-- ------------ -background --------------------------------------- -->
+
+<utils apps=animate,composite,convert,display,mogrify,montage>
+<dopt>-background <color></opt>
+
+<abs>the background color</abs>
+
+<pp>
+The color is specified using the format described under the <s>-fill</s>
+option.</pp>
+
+
+</utils>
+
+
+
+<!-- ------------ -blue-primary ------------------------------------- -->
+
+<utils apps=composite,convert,mogrify,montage>
+<dopt>-blue-primary <x>,<y></opt>
+
+<abs>blue chromaticity primary point</abs>
+
+</utils>
+
+
+<!-- ------------ -blur --------------------------------------------- -->
+
+<utils apps=convert,mogrify,montage>
+<dopt>-blur <radius>{x<sigma>}</opt>
+
+<abs>blur the image with a Gaussian operator</abs>
+
+<pp>
+Blur with the given radius and
+standard deviation (sigma).
+</pp>
+
+</utils>
+
+
+<!-- ------------ -border ------------------------------------------- -->
+
+<utils apps=convert,display,mogrify>
+<dopt>-border <width>x<height></opt>
+
+<abs>surround the image with a border of color</abs>
+
+<pp>
+See <s>-geometry</s> for details
+about the geometry specification.
+</pp>
+
+</utils>
+
+
+<!-- ------------ -bordercolor -------------------------------------- -->
+
+<utils apps=animate,convert,display,import,mogrify,montage>
+<dopt>-bordercolor <color></opt>
+
+<abs>the border color</abs>
+
+<pp>
+The color is specified using the format described under the <s>-fill</s>
+option.</pp>
+
+
+</utils>
+
+
+<!-- ------------ -borderwidth -------------------------------------- -->
+
+<utils apps=animate,display,montage>
+<opt>-borderwidth <geometry></opt>
+
+<abs>the border width</abs>
+
+</utils>
+
+<!-- ------------ -box ---------------------------------------------- -->
+
+<utils apps=convert>
+<dopt>-box <color></opt>
+
+<abs>set the color of the annotation bounding box</abs>
+
+<pp>
+The color is specified using the format described under the <s>-fill</s>
+option.</pp>
+
+<pp>
+See <s>-draw</s> for further
+details.
+</pp>
+
+</utils>
+
+
+
+<!-- ------------ -cache -------------------------------------------- -->
+
+<utils apps=animate,composite,convert,display,identify,import,mogrify,montage>
+<dopt>-cache <threshold></opt>
+
+<abs>(This option has been replaced by the -limit option)</abs>
+
+</utils>
+
+
+
+
+
+<!-- ------------ -channel ------------------------------------------ -->
+
+<utils apps=convert,mogrify>
+<dopt>-channel <type></opt>
+
+<abs>the type of channel</abs>
+<pp>
+Choose from: <s>Red</s>, <s>Green</s>, <s>Blue</s>, <s>Opacity</s>,
+<s>Matte</s>, <s>Cyan</s>, <s>Magenta</s>, <s>Yellow</s>, or <s>Black</s>.
+</pp>
+
+<pp>
+Use this option to extract a particular <i>channel</i> from the image.
+<s>Matte</s>,
+for example, is useful for extracting the opacity values from an image.
+</pp>
+
+</utils>
+
+
+
+
+<!-- ------------ -charcoal ----------------------------------------- -->
+
+<utils apps=convert,mogrify>
+<opt>-charcoal <factor></opt>
+
+<abs>simulate a charcoal drawing</abs>
+
+</utils>
+
+
+
+<!-- ------------ -chop --------------------------------------------- -->
+
+<utils apps=animate,convert,montage>
+<dopt>-chop <width>x<height>{+-}<x>{+-}<y>{%}</opt>
+
+<abs>remove pixels from the interior of an image</abs>
+
+<pp>
+<i>Width</i> and <i>height</i> give the number of columns and rows to remove,
+and <i>x</i> and <i>y</i> are offsets that give the location of the
+leftmost column and topmost row to remove.
+</pp>
+
+<pp>
+The <i>x</i> offset normally specifies the leftmost column to remove.
+If the <s>-gravity</s> option is present with <i>NorthEast, East,</i>
+or <i>SouthEast</i>
+gravity, it gives the distance leftward from the right edge
+of the image to the rightmost column to remove.  Similarly, the <i>y</i> offset
+normally specifies the topmost row to remove, but if
+the <s>-gravity</s> option is present with <i>SouthWest, South,</i>
+or <i>SouthEast</i>
+gravity, it specifies the distance upward from the bottom edge of the
+image to the bottom row to remove.</pp>
+
+<pp>
+The <s>-chop</s> option removes entire rows and columns,
+and moves the remaining corner blocks leftward and upward to close the gaps.
+</pp>
+
+</utils>
+
+<!-- ------------ -clip --------------------------------------------- -->
+
+<utils apps=convert>
+<dopt>-clip</opt>
+
+<abs>apply the clipping path, if one is present</abs>
+
+<pp>
+If a clipping path is present, it will be applied to subsequent operations.</pp>
+
+<pp>
+For example, if you type the following command:</pp>
+<pre>
+     convert -clip -negate cockatoo.tif negated.tif
+</pre>
+<pp>
+only the pixels within the clipping path are negated.</pp>
+
+<pp>
+The <s>-clip</s> feature requires the XML library.  If the XML library
+is not present, the option is ignored.</pp>
+
+</utils>
+
+<!-- ------------ -coalesce ----------------------------------------- -->
+
+<utils apps=convert>
+<dopt>-coalesce</opt>
+
+<abs>merge a sequence of images</abs>
+
+<pp>
+Each image N in the sequence after Image 0 is replaced with the image
+created by flattening images 0 through N.</pp>
+<pp>
+The set of images
+is terminated by the appearance of any option.
+If the <s>-coalesce</s>
+option appears after all of the input images, all images are coalesced.</pp>
+
+</utils>
+
+
+
+<!-- ------------ -colorize ----------------------------------------- -->
+
+<utils apps=convert,mogrify>
+<dopt>-colorize <value></opt>
+
+<abs>colorize the image with the pen color</abs>
+
+<pp>
+Specify the amount of colorization as a percentage. You can apply separate
+colorization values to the red, green, and blue channels of the image with
+a colorization value list delimited with slashes (e.g. 0/0/50).
+</pp>
+
+</utils>
+
+
+<!-- ------------ -colormap ----------------------------------------- -->
+
+<utils apps=animate,display>
+<dopt>-colormap <type></opt>
+
+<abs>define the colormap type</abs>
+
+<pp>
+Choose between <s>shared</s> or <s>private</s>.
+</pp>
+
+<pp>
+This option only applies when the default X server visual is <i>PseudoColor</i>
+or <i>GRAYScale</i>. Refer to <s>-visual</s> for more details. By default,
+a shared colormap is allocated. The image shares colors with other X clients.
+Some image colors could be approximated, therefore your image may look
+very different than intended. Choose <s>Private</s> and the image colors
+appear exactly as they are defined. However, other clients may
+go <i>technicolor</i> when the image colormap is installed.</pp>
+
+</utils>
+
+
+
+<!-- ------------ -colors ------------------------------------------- -->
+
+<utils apps=animate,composite,convert,display,import,mogrify,montage>
+<dopt>-colors <value></opt>
+
+<abs>preferred number of colors in the image</abs>
+
+<pp>
+The actual number of colors in the image may be less than your request,
+but never more. Note, this is a color reduction option. Images with less
+unique colors than specified with this option will have any duplicate or
+unused colors removed. The ordering of an existing color palette may be
+altered. When converting an image from color to grayscale, convert the
+image to the gray colorspace before reducing the number of colors since
+doing so is most efficient. Refer to <a
+href="quantize.html">quantize</a> for more details.
+</pp>
+
+<pp>
+Note, options <s>-dither</s>, <s>-colorspace</s>, and <s>-treedepth</s>
+affect the color reduction algorithm.
+</pp>
+
+</utils>
+
+
+
+<!-- ------------ -colorspace --------------------------------------- -->
+
+<utils apps=animate,composite,convert,display,import,mogrify,montage>
+<dopt>-colorspace <value></opt>
+
+
+
+<abs>the type of colorspace</abs>
+<pp>
+Choices are:
+<s>CMYK</s>, <s>GRAY</s>, <s>HSL</s>, <s>HWB</s>, <s>OHTA</s>, <s>RGB</s>,
+<s>Transparent</s>, <s>XYZ</s>, <s>YCbCr</s>, <s>YIQ</s>, <s>YPbPr</s>,
+or
+<s>YUV</s>.
+</pp>
+
+<pp>
+Color reduction, by default, takes place in the RGB color space. Empirical
+evidence suggests that distances in color spaces such as YUV or YIQ correspond
+to perceptual color differences more closely than do distances in RGB space.
+These color spaces may give better results when color reducing an image.
+Refer to <a href="quantize.html">quantize</a> for more details.
+</pp>
+
+<pp>
+The <s>Transparent</s> color space behaves uniquely in that it preserves
+the matte channel of the image if it exists.
+</pp>
+<pp>
+The <s>-colors</s> or <s>-monochrome</s> option, or saving to a file
+format which requires color reduction, is required for this option to
+take effect.
+</pp>
+
+
+
+
+</utils>
+
+<!-- ------------ -comment ------------------------------------------ -->
+
+<utils apps=composite,convert,display,import,mogrify,montage>
+<dopt>-comment <string></opt>
+
+<abs>annotate an image with a comment</abs>
+
+<pp>
+Use this option to assign a specific comment to the image, when writing
+to an image format that supports comments. You can include the
+image filename, type, width, height, or other image attribute by embedding
+special format characters listed under the <s>-format</s> option.
+The comment is not drawn on the image, but is embedded in the image
+datastream via a "Comment" tag or similar mechanism.  If you want the
+comment to be visible on the image itself, use the <s>-draw</s> option.
+</pp>
+
+<pp>
+For example,
+</pp>
+<pre>
+     -comment "%m:%f %wx%h"
+</pre>
+
+<pp>
+produces an image comment of <s>MIFF:bird.miff 512x480</s> for an image
+titled <s>bird.miff</s> and whose width is 512 and height is 480.
+</pp>
+
+<pp>
+If the first character of <i>string</i> is <i>@</i>, the image comment
+is read from a file titled by the remaining characters in the string.
+</pp>
+
+</utils>
+
+
+
+
+<!-- ------------ -compose ------------------------------------------ -->
+
+<utils apps=composite,convert,mogrify,montage>
+<dopt>-compose <operator></opt>
+
+<abs>the type of image composition</abs>
+
+<pp>
+The description of composition uses abstract terminology in order to
+allow the the description to be more clear, while avoiding constant
+values which are specific to a particular build configuration. Each image
+pixel is represented by red, green, and blue levels (which are equal for
+a gray pixel). MaxRGB is the maximum integral value which may be stored
+in the red, green, or blue channels of the image. Each image pixel may
+also optionally (if the image matte channel is enabled) have an
+associated level of opacity (ranging from opaque to transparent), which
+may be used to determine the influence of the pixel color when
+compositing the pixel with another image pixel. If the image matte
+channel is disabled, then all pixels in the image are treated as opaque.
+The color of an <i>opaque</i> pixel is fully visible while the color of a
+<i>transparent</i> pixel color is entirely absent (pixel color is ignored).
+</pp>
+
+<pp>
+By definition, raster images have a rectangular shape. All image rows are
+of equal length, and all image columns have the same number of rows. By
+treating the opacity channel as a visual "mask" the rectangular image may
+be given a "shape" by treating the opacity channel as a cookie-cutter for
+the image. Pixels within the shape are opaque, while pixels outside the
+shape are transparent. Pixels on the boundary of the shape may be between
+opaque and transparent in order to provide antialiasing (visually smooth
+edges). The description of the composition operators use this concept of
+image "shape" in order to make the description of the operators easier to
+understand. While it is convenient to describe the operators in terms of
+"shapes" they are by no means limited to mask-style operations since they
+are based on continuous floating-point mathematics rather than simple
+boolean operations.
+</pp>
+
+<pp>
+By default, the <i>Over</i> composite operator is used. The following
+composite operators are available:
+</pp>
+
+<pre>
+     Over
+     In
+     Out
+     Atop
+     Xor
+     Plus
+     Minus
+     Add
+     Subtract
+     Difference
+     Multiply
+     Bumpmap
+     Copy
+     CopyRed
+     CopyGreen
+     CopyBlue
+     CopyOpacity
+</pre>
+
+<pp>
+The behavior of each operator is described below.
+</pp>
+
+<dl>
+<dt>Over</dt>
+<dd>
+The result will be the union of the two image shapes, with opaque areas
+of <i>change-image</i> obscuring <i>base-image</i> in the region of
+overlap.
+</dd>
+
+<dt>In</dt>
+<dd>
+The result is simply <i>change-image</i> cut by the shape of
+<i>base-image</i>. None of the image data of <i>base-image</i> will be in
+the result.
+</dd>
+
+<dt>Out</dt>
+<dd>
+The resulting image is <i>change-image</i> with the shape of
+<i>base-image</i> cut out.
+</dd>
+
+<dt>Atop</dt>
+<dd>
+The result is the same shape as <i>base-image</i>, with
+<i>change-image</i> obscuring <i>base-image</i> where the image shapes
+overlap. Note this differs from <s>over</s> because the portion of
+<i>change-image</i> outside <i>base-image</i>'s shape does not appear in
+the result.
+</dd>
+
+<dt>Xor</dt>
+<dd>
+The result is the image data from both <i>change-image</i> and
+<i>base-image</i> that is outside the overlap region. The overlap region
+will be blank.
+</dd>
+
+<dt>Plus</dt>
+<dd>
+The result is just the sum of the image data. Output values are cropped
+to MaxRGB (no overflow). This operation is independent of the matte
+channels.
+</dd>
+
+<dt>Minus</dt>
+<dd>
+The result of <i>change-image</i> - <i>base-image</i>, with underflow
+cropped to zero. The matte channel is ignored (set to opaque, full
+coverage).
+</dd>
+
+<dt>Add</dt>
+<dd>
+The result of <i>change-image</i> + <i>base-image</i>, with overflow
+wrapping around (<i>mod</i> MaxRGB+1).
+</dd>
+
+<dt>Subtract</dt>
+<dd>
+The result of <i>change-image</i> - <i>base-image</i>, with underflow
+wrapping around (<i>mod</i> MaxRGB+1). The <s>add</s> and <s>subtract</s>
+operators can be used to perform reversible transformations.
+</dd>
+
+<dt>Difference</dt>
+<dd>
+The result of abs(<i>change-image</i> - <i>base-image</i>). This is
+useful for comparing two very similar images.
+</dd>
+
+<dt>Multiply</dt>
+<dd>
+The result of <i>change-image</i> * <i>base-image</i>. This is useful for
+the creation of drop-shadows.
+</dd>
+
+<dt>Bumpmap</dt>
+<dd>
+The result <i>base-image</i> shaded by <i>change-image</i>.
+</dd>
+
+<dt>Copy</dt>
+<dd>
+The resulting image is <i>base-image</i> replaced with
+<i>change-image</i>. Here the matte information is ignored.
+</dd>
+
+<dt>CopyRed</dt>
+<dd>
+The resulting image is the red channel in <i>base-image</i> replaced with
+the red channel in <i>change-image</i>. The other channels are copied
+untouched.
+</dd>
+
+<dt>CopyGreen</dt>
+<dd>
+The resulting image is the green channel in <i>base-image</i> replaced
+with the green channel in <i>change-image</i>. The other channels are
+copied untouched.
+</dd>
+
+<dt>CopyBlue</dt>
+<dd>
+The resulting image is the blue channel in <i>base-image</i> replaced
+with the blue channel in <i>change-image</i>. The other channels are
+copied untouched.
+</dd>
+
+<dt>CopyOpacity</dt>
+<dd>
+The resulting image is the opacity channel in <i>base-image</i> replaced
+with the opacity channel in <i>change-image</i>. The other channels are
+copied untouched.
+</dd>
+</dl>
+
+</utils>
+
+
+
+<!-- ------------ -compress ----------------------------------------- -->
+
+<utils apps=composite,convert,display,mogrify,montage>
+<dopt>-compress <type></opt>
+
+<abs>the type of image compression</abs>
+<pp>
+Choices are: <i>None</i>, <i>BZip</i>, <i>Fax</i>,
+<i>Group4</i>,
+<i>JPEG</i>, <i>Lossless</i>,
+<i>LZW</i>, <i>RLE</i> or <i>Zip</i>.
+</pp>
+
+<pp>
+Specify <s>+compress</s> to store the binary image in an uncompressed format.
+The default is the compression type of the specified image file.
+</pp>
+
+<pp>
+If <i>LZW</i> compression is specified but LZW compression has not been enabled,
+the image data will be written
+in an uncompressed LZW format that can be read by LZW decoders.  This
+may result in larger-than-expected GIF files.</pp>
+
+<pp>
+<i>"Lossless"</i> refers to lossless JPEG, which is only available if
+the JPEG library has been patched to support it. Use of lossless JPEG is
+generally not recommended.</pp>
+
+<pp>
+Use the <s>-quality</s> option to set the compression level to be used by
+JPEG, PNG, MIFF, and MPEG encoders.  Use the <s>-sampling-factor</s>
+option to set the sampling factor to be used by JPEG, MPEG, and YUV encoders
+for downsampling the chroma channels.</pp>
+
+</utils>
+
+
+
+
+<!-- ------------ -contrast ----------------------------------------- -->
+
+<utils apps=convert,display,mogrify>
+<dopt>-contrast</opt>
+
+<abs>enhance or reduce the image contrast</abs>
+
+<pp>
+This option enhances the intensity differences between the lighter and
+darker elements of the image. Use <s>-contrast</s> to enhance
+the image
+or <s>+contrast</s> to reduce the image contrast.
+</pp>
+<pp>
+For a more pronounced effect you can repeat the option:</pp>
+<pre>
+    convert rose: -contrast -contrast rose_c2.png
+</pre>
+
+</utils>
+
+
+
+<!-- ------------ -convolve ------------------------------------------ -->
+
+<utils apps=convert,mogrify>
+<dopt>-convolve <kernel></opt>
+
+<abs>convolve image with the specified convolution kernel</abs>
+
+<pp>
+The kernel is specified as a comma-separated list of integers, ordered
+left-to right, starting with the top row.
+The order of the kernel is determined by the square root of the
+number of entries.  Presently only square kernels are supported.</pp>
+
+
+
+<!-- ------------ -crop --------------------------------------------- -->
+
+<utils apps=animate,convert,display,import,mogrify,montage>
+<dopt>-crop <width>x<height>{+-}<x>{+-}<y>{%}</opt>
+
+<abs>preferred size and location of the cropped image</abs>
+<pp>
+See <s>-geometry</s> for details
+about the geometry specification.
+</pp>
+
+<pp>
+The width and height give the size of the image that remains after cropping,
+and <i>x</i> and <i>y</i> are offsets that give the location of the top left
+corner of the cropped
+image with respect to the original image.  To specify the amount to be
+removed, use <s>-shave</s> instead.
+</pp>
+
+<pp>
+If the <i>x</i> and <i>y</i> offsets are present, a single image is
+generated, consisting of the pixels from the cropping region.
+The offsets specify the location of the upper left corner of
+the cropping region measured downward and rightward with respect to the
+upper left corner of the image.
+If the <s>-gravity</s> option is present with <i>NorthEast, East,</i>
+or <i>SouthEast</i>
+gravity, it gives the distance leftward from the right edge
+of the image to the right edge of the cropping region.  Similarly, if
+the <s>-gravity</s> option is present with <i>SouthWest, South,</i>
+or <i>SouthEast</i>
+gravity, the distance is measured upward between the bottom
+edges.</pp>
+
+<pp>
+If the <i>x</i> and <i>y</i> offsets are omitted, a set of tiles of the
+specified geometry, covering the entire input image, is generated.  The
+rightmost tiles and the bottom tiles are smaller if the
+specified geometry extends beyond the dimensions of the input image.
+</pp>
+
+</utils>
+
+
+
+<!-- ------------ -cycle -------------------------------------------- -->
+
+<utils apps=convert,mogrify>
+<dopt>-cycle <amount></opt>
+
+<abs>displace image colormap by amount</abs>
+
+<pp>
+<i>Amount</i> defines the number of positions each colormap entry is
+shifted.
+</pp>
+
+</utils>
+
+
+
+
+<!-- ------------ -debug -------------------------------------------- -->
+
+<utils apps=animate,composite,conjure,convert,display,identify,import,mogrify,montage>
+<opt>-debug <events></opt>
+
+<abs>enable debug printout</abs>
+
+<pp>
+The <tt>events</tt> parameter specifies which events are to be logged.  It
+can be either <tt>None</tt>, <tt>All</tt>, or a comma-separated list
+consisting of one or more of the following domains: <tt>Annotate</tt>,
+<tt>Blob</tt>, <tt>Cache</tt>, <tt>Coder</tt>, <tt>Configure</tt>,
+<tt>Deprecate</tt>, <tt>Exception</tt>, <tt>Locale</tt>, <tt>Render</tt>,
+<tt>Resource</tt>, <tt>TemporaryFile</tt>, <tt>Transform</tt>, <tt>X11</tt>,
+or <tt>User</tt>.
+For example, to log cache and blob events, use</pp>
+
+<pre>
+    convert -debug "Cache,Blob" rose: rose.png
+</pre>
+
+<pp>
+The "User" domain is normally empty, but developers can log "User" events
+in their private copy of GraphicsMagick.</pp>
+
+<pp>
+Use the <s>-log</s> option to specify the format for debugging output.</pp>
+
+<pp>
+Use <s>+debug</s> to turn off all logging.</pp>
+
+<pp>
+An alternative to using <s>-debug</s> is to use the <s>MAGICK_DEBUG</s>
+environment variable. The allowed values for the <s>MAGICK_DEBUG</s>
+environment variable are the same as for the <s>-debug</s> option.</pp>
+
+</utils>
+
+
+
+
+<!-- ------------ -deconstruct -------------------------------------- -->
+
+<utils apps=convert>
+<dopt>-deconstruct</opt>
+
+<abs>break down an image sequence into constituent parts</abs>
+
+<pp>
+This option compares each image with the next in a sequence and
+returns the maximum bounding region of any pixel differences it discovers.
+This method can undo a coalesced sequence returned by the
+<s>-coalesce</s> option, and is useful for removing redundant information
+from a GIF or MNG animation.</pp>
+
+<pp>
+The sequence of images
+is terminated by the appearance of any option.
+If the <s>-deconstruct</s>
+option appears after all of the input images, all images are deconstructed.</pp>
+
+</utils>
+
+
+
+
+<!-- ------------ -define ------------------------------------------ -->
+
+<utils apps=animate,composite,conjure,convert,display,identify,import,mogrify,montage>
+<dopt>-define <key>{=<value>},...</opt>
+
+<abs>add coder/decoder specific options</abs>
+
+<pp>This option creates one or more definitions for coders and
+decoders to use while reading and writing image data. Definitions
+may be passed to coders and decoders to control options that are
+specific to certain image formats. If <i>value</i> is missing for a
+definition, an empty-valued definition of a flag will be created with
+that name. This is used to control on/off options. Use <tt>+define
+<key>,...</tt> to remove definitions previously created. Use
+<tt>+define "*"</tt> to remove all existing definitions.</pp>
+
+<pp>
+The following definitions may be created:
+</pp>
+
+<pre>
+    jp2:rate=<value>
+	Specify the compression factor to use while writing JPEG-2000
+	files. The compression factor is the reciprocal of the compression
+	ratio. The valid range is 0.0 to 1.0, with 1.0 indicating lossless
+	compression. If defined, this value overrides the -quality setting.
+	The default quality setting of 75 results in a rate value of 0.06641.
+    jpeg:preserve-settings
+        If the jpeg:preserve-settings flag is defined, the JPEG encoder
+        will use the same "quality" and "sampling-factor" settings that
+        were found in the input file, if the input was in JPEG format.
+        These settings are also preserved if the input is a JPEG file
+        and the output is a JNG file.  If the colorspace of the output
+        file differs from that of the input file, the quality setting is
+        preserved but the sampling-factors are not.
+    ps:imagemask
+        If the ps:imagemask flag is defined, the PS3 and EPS3 coders will
+        create Postscript files that render bilevel images with the Postscript
+        imagemask operator instead of the image operator.
+    tiff:bits-per-sample=<value>
+        If the tiff:bits-per-sample key is defined to a value less than the
+        GraphicsMagick Quantum depth, the TIFF coder will write TIFF images
+        with the defined bits per sample, overriding any value stored in the
+        image.
+    tiff:samples-per-pixel=<value>
+        If the tiff:samples-per-pixel key is defined to a value, the TIFF
+        coder will write TIFF images with the defined samples per pixel,
+        overriding any value stored in the image.
+</pre>
+
+<pp>
+For example, to create a postscript file that will render only the black
+pixels of a bilevel image, use:
+</pp>
+<pre>
+    convert bilevel.tif -define ps:imagemask eps3:stencil.ps
+</pre>
+</utils>
+
+
+
+
+<!-- ------------ -delay -------------------------------------------- -->
+
+<utils apps=animate,convert,display,import,mogrify>
+<dopt>-delay <1/100ths of a second></opt>
+
+<abs>display the next image after pausing</abs>
+
+<pp>
+This option is useful for regulating the animation of image sequences
+<i>Delay/100</i> seconds must expire before the display
+of the next image. The default is no delay between each showing of the
+image sequence. The maximum delay is 65535.
+</pp>
+
+<pp>
+You can specify a delay range (e.g. <i>-delay 10-500</i>) which sets the
+minimum and maximum delay.
+</pp>
+
+</utils>
+
+
+
+
+<!-- ------------ -density ------------------------------------------ -->
+
+<utils apps=animate,composite,convert,display,identify,import,mogrify,montage>
+<dopt>-density <width>x<height></opt>
+
+<abs>horizontal and vertical resolution in pixels of the image</abs>
+
+<pp>This option specifies the image resolution to store while encoding a
+raster image or the canvas resolution while rendering (reading) vector
+formats such as Postscript, PDF, WMF, and SVG into a raster image. Image
+resolution provides the unit of measure to apply when rendering to an
+output device or raster image. The default unit of measure is in dots
+per inch (DPI). The <s>-units</s> option may be used to select dots per
+centimeter instead.</pp>
+
+<pp> The default resolution is 72 dots per inch, which is equivalent to
+one point per pixel (Macintosh and Postscript standard). Computer
+screens are normally 72 or 96 dots per inch while printers typically
+support 150, 300, 600, or 1200 dots per inch. To determine the
+resolution of your display, use a ruler to measure the width of your
+screen in inches, and divide by the number of horizontal pixels (1024 on
+a 1024x768 display).</pp>
+
+<pp>If the file format supports it, this option may be used to update
+the stored image resolution. Note that Photoshop stores and obtains
+image resolution from a proprietary embedded profile. If this profile is
+not stripped from the image, then Photoshop will continue to treat the
+image using its former resolution, ignoring the image resolution
+specified in the standard file header.</pp>
+
+<pp>The density option is an attribute and does not alter the underlying
+raster image. It may be used to adjust the rendered size for desktop
+publishing purposes by adjusting the scale applied to the pixels. To
+resize the image so that it is the same size at a different resolution,
+use the <s>-resample</s> option.</pp>
+
+</utils>
+
+
+
+
+<!-- ------------ -depth -------------------------------------------- -->
+
+<utils apps=animate,composite,convert,display,identify,import,mogrify,montage>
+<dopt>-depth <value></opt>
+
+<abs>depth of the image</abs>
+
+<pp>
+This is the number of bits in a color sample within a pixel. The only
+acceptable values are 8 or 16.  Use this option to specify the depth of
+raw images whose depth is unknown such as GRAY, RGB, or CMYK, or to change
+the depth of any image after it has been read.
+</pp>
+
+</utils>
+
+
+
+<!-- ------------ -descend ------------------------------------------ -->
+
+<utils apps=import>
+<opt>-descend</opt>
+
+<abs>obtain image by descending window hierarchy</abs>
+
+</utils>
+
+
+
+<!-- ------------ -despeckle ---------------------------------------- -->
+
+<utils apps=convert,display,mogrify>
+<opt>-despeckle</opt>
+
+<abs>reduce the speckles within an image</abs>
+
+</utils>
+
+
+
+
+<!-- ------------ -displace ----------------------------------------- -->
+
+<utils apps=composite>
+<dopt>-displace <horizontal scale>x<vertical scale></opt>
+
+<abs>shift image pixels as defined by a displacement map</abs>
+
+<pp>
+With this option, <i>composite image</i> is used as a displacement map.  Black,
+within the displacement map, is a maximum positive displacement.  White is a
+maximum negative displacement and middle gray is neutral.  The displacement
+is scaled to determine the pixel shift.  By default, the displacement applies
+in both the horizontal and vertical directions.  However, if you specify
+<i>mask</i>, <i>composite image</i> is the horizontal X displacement and
+<i>mask</i> the vertical Y displacement.
+</pp>
+
+</utils>
+
+
+<!-- ------------ -display ------------------------------------------ -->
+
+<utils apps=animate,composite,convert,display,import,mogrify,montage>
+<dopt>-display <host:display[.screen]></opt>
+
+<abs>specifies the X server to contact</abs>
+
+</utils>
+<utils apps=convert>
+<pp>
+This option is used with convert for
+obtaining image or font from this X server.  See <i>X(1)</i>.
+</pp>
+
+</utils>
+
+
+
+<!-- ------------ -dispose ------------------------------------------ -->
+
+<utils apps=animate,composite,convert,display,import,mogrify,montage>
+<dopt>-dispose <method></opt>
+
+<abs>GIF disposal method</abs>
+
+<pp>
+The Disposal Method indicates the way in which the graphic is to
+be treated after being displayed.</pp>
+<pp>
+Here are the valid methods:
+</pp>
+
+<pre>
+    Undefined       No disposal specified.
+    None            Do not dispose between frames.
+    Background      Overwrite the image area with
+                    the background color.
+    Previous        Overwrite the image area with
+                    what was there prior to rendering
+                    the image.
+</pre>
+
+</utils>
+
+
+
+
+<!-- ------------ -dissolve ----------------------------------------- -->
+
+<utils apps=composite>
+<dopt>-dissolve <percent></opt>
+
+<abs>dissolve an image into another by the given percent</abs>
+
+<pp>
+The opacity of the composite image is multiplied by the given percent,
+then it is composited over the main image.</pp>
+
+</utils>
+
+
+
+<!-- ------------ -dither ------------------------------------------- -->
+
+<utils apps=animate,composite,convert,display,import,mogrify,montage>
+<dopt>-dither</opt>
+
+<abs>apply Floyd/Steinberg error diffusion to the image</abs>
+
+<pp>
+The basic strategy of dithering is to trade intensity resolution for spatial
+resolution by averaging the intensities of several neighboring pixels.
+Images which suffer from severe contouring when reducing colors can be
+improved with this option.
+</pp>
+
+<pp>
+The <s>-colors</s> or <s>-monochrome</s> option is required for this option
+to take effect.
+</pp>
+
+<pp>
+Use <s>+dither</s> to turn off dithering and to render PostScript
+without text or graphic aliasing. Disabling dithering often (but not
+always) leads to decreased processing time.
+</pp>
+
+</utils>
+
+
+
+
+<!-- ------------ -draw --------------------------------------------- -->
+
+<utils apps=convert,mogrify,montage>
+<dopt>-draw <string></opt>
+
+<abs>annotate an image with one or more graphic primitives</abs>
+
+<pp>
+Use this option to annotate an image with one or more graphic primitives.
+The primitives include shapes, text, transformations,
+and pixel operations.  The shape primitives are
+</pp>
+
+<pre>
+     point           x,y
+     line            x0,y0 x1,y1
+     rectangle       x0,y0 x1,y1
+     roundRectangle  x0,y0 x1,y1 wc,hc
+     arc             x0,y0 x1,y1 a0,a1
+     ellipse         x0,y0 rx,ry a0,a1
+     circle          x0,y0 x1,y1
+     polyline        x0,y0  ...  xn,yn
+     polygon         x0,y0  ...  xn,yn
+     Bezier          x0,y0  ...  xn,yn
+     path            path specification
+     image           operator x0,y0 w,h filename
+</pre>
+
+<pp>
+The text primitive is
+</pp>
+<pre>
+     text            x0,y0 string
+</pre>
+
+<pp>
+The text gravity primitive is</pp>
+<pre>
+     gravity         NorthWest, North, NorthEast, West, Center,
+                     East, SouthWest, South, or SouthEast
+</pre>
+<pp>
+The text gravity primitive only affects the placement of text and
+does not interact with the other primitives.  It is equivalent to
+using the <s>-gravity</s> commandline option, except that it is
+limited in scope to the <s>-draw</s> option in which it appears.</pp>
+
+<pp>
+The transformation primitives are
+</pp>
+<pre>
+     rotate          degrees
+     translate       dx,dy
+     scale           sx,sy
+     skewX           degrees
+     skewY           degrees
+</pre>
+
+<pp>
+The pixel operation primitives are
+</pp>
+<pre>
+     color           x0,y0 method
+     matte           x0,y0 method
+</pre>
+
+<pp>
+The shape primitives are drawn in the color specified in the preceding
+<s>-stroke</s> option. Except for the <s>line</s> and <s>point</s>
+primitives, they are filled with the color specified in the preceding
+<s>-fill</s> option.  For unfilled shapes, use <tt>-fill none</tt></pp>.
+<pp>
+<s>Point</s> requires a single coordinate.</pp>
+<pp>
+<s>Line</s> requires a start and end coordinate.</pp>
+<pp>
+<s>Rectangle</s>
+expects an upper left and lower right coordinate.</pp>
+<pp>
+<s>RoundRectangle</s> has the upper left and lower right coordinates
+and the width and height of the corners.</pp>
+<pp>
+<s>Circle</s> has a center coordinate and a coordinate for
+the outer edge.</pp>
+<pp>
+Use <s>Arc</s> to inscribe an elliptical arc within
+a rectangle.  Arcs require a start and end point as well as the degree
+of rotation (e.g. 130,30 200,100 45,90).</pp>
+<pp>
+Use <s>Ellipse</s> to draw a partial ellipse
+centered at the given point with the x-axis and y-axis radius
+and start and end of arc in degrees (e.g. 100,100 100,150 0,360).</pp>
+<pp>
+Finally, <s>polyline</s> and <s>polygon</s> require
+three or more coordinates to define its boundaries.
+Coordinates are integers separated by an optional comma.  For example,
+to define a circle centered at 100,100
+that extends to 150,150 use:
+</pp>
+
+<pre>
+     -draw 'circle 100,100 150,150'
+</pre>
+
+<pp>
+<s>Paths</s>
+(See <a href="http://www.w3.org/TR/SVG/paths.html">Paths</a>)
+represent an outline of an object which is defined in terms of
+moveto (set a new current point), lineto (draw a straight line),
+curveto (draw a curve using a cubic Bezier), arc (elliptical or
+circular arc) and closepath (close the current shape by drawing a line
+to the last moveto) elements. Compound paths (i.e., a path with
+subpaths, each consisting of a single moveto followed by one or more
+line or curve operations) are possible to allow effects such as
+"donut holes" in objects.
+</pp>
+
+<pp>
+Use <s>image</s> to composite an image with another image. Follow the
+image keyword with the composite operator, image location, image size,
+and filename:
+</pp>
+<pre>
+     -draw 'image Over 100,100 225,225 image.jpg'
+</pre>
+<pp>
+You can use 0,0 for the image size, which means to use the actual
+dimensions found in the image header. Otherwise, it will
+be scaled to the given dimensions.
+See <s>-compose</s> for a description of the composite operators.
+</pp>
+
+
+<pp>
+Use <s>text</s> to annotate an image with text. Follow the text
+coordinates with a string. If the string has embedded spaces, enclose it
+in single or double quotes. Optionally you can include the image
+filename, type, width, height, or other image attribute by embedding
+special format character. See <s>-comment</s> for details.
+</pp>
+
+<pp>
+For example,
+</pp>
+
+<pre>
+     -draw 'text 100,100 "%m:%f %wx%h"'
+</pre>
+
+<pp>
+annotates the image with <tt>MIFF:bird.miff 512x480</tt> for an image titled
+<tt>bird.miff</tt>
+and whose width is 512 and height is 480.
+</pp>
+
+<pp>
+If the first character of <i>string</i> is <i>@</i>, the text is read from
+a file titled by the remaining characters in the string.
+</pp>
+
+<pp>
+<s>Rotate</s> rotates subsequent shape primitives and text primitives about
+the origin of the main image. If the <s>-region</s> option precedes the
+<s>-draw</s> option, the origin for transformations is the upper left
+corner of the region.</pp>
+<pp>
+<s>Translate</s> translates them.</pp>
+<pp>
+<s>Scale</s> scales them.</pp>
+<pp>
+<s>SkewX</s> and <s>SkewY</s> skew them with respect to the origin of
+the main image or the region.</pp>
+<pp>
+The transformations modify the current affine matrix, which is initialized
+from the initial affine matrix defined by the <s>-affine</s> option.
+Transformations are cumulative within the <s>-draw</s> option.
+The initial affine matrix is not affected; that matrix is only changed by the
+appearance of another <s>-affine</s> option.  If another <s>-draw</s>
+option appears, the current affine matrix is reinitialized from
+the initial affine matrix.
+</pp>
+
+<pp>
+Use <s>color</s> to change the color of a pixel to the fill color (see
+<s>-fill</s>). Follow the pixel coordinate
+with a method:
+</pp>
+
+<pre>
+     point
+     replace
+     floodfill
+     filltoborder
+     reset
+</pre>
+
+<pp>
+Consider the target pixel as that specified by your coordinate. The
+<s>point</s>
+method recolors the target pixel. The <s>replace</s> method recolors any
+pixel that matches the color of the target pixel.
+<s>Floodfill</s> recolors
+any pixel that matches the color of the target pixel and is a neighbor,
+whereas <s>filltoborder</s> recolors any neighbor pixel that is not the
+border color. Finally, <s>reset</s> recolors all pixels.
+</pp>
+
+<pp>
+Use <s>matte</s> to the change the pixel matte value to transparent. Follow
+the pixel coordinate with a method (see the <s>color</s> primitive for
+a description of methods). The <s>point</s> method changes the matte value
+of the target pixel. The <s>replace</s> method changes the matte value
+of any pixel that matches the color of the target pixel. <s>Floodfill</s>
+changes the matte value of any pixel that matches the color of the target
+pixel and is a neighbor, whereas
+<s>filltoborder</s> changes the matte
+value of any neighbor pixel that is not the border color (<s>-bordercolor</s>).
+Finally <s>reset</s> changes the matte value of all pixels.
+</pp>
+
+<pp>
+You can set the primitive color, font, and font bounding box
+color with
+<s>-fill</s>, <s>-font</s>, and <s>-box</s> respectively. Options
+are processed in command line order so be sure to use these
+options <i>before</i> the <s>-draw</s> option.
+</pp>
+
+</utils>
+
+
+
+
+<!-- ------------ -edge --------------------------------------------- -->
+
+<utils apps=convert,display,mogrify>
+<opt>-edge <radius></opt>
+
+<abs>detect edges within an image</abs>
+
+</utils>
+
+
+
+<!-- ------------ -emboss ------------------------------------------- -->
+
+<utils apps=convert,mogrify>
+<opt>-emboss <radius></opt>
+
+<abs>emboss an image</abs>
+
+</utils>
+
+<!-- ------------ -encoding ----------------------------------------- -->
+
+<utils apps=composite,convert,import,mogrify,montage>
+<dopt>-encoding <type></opt>
+
+<abs>specify the text encoding</abs>
+
+<pp>
+Choose from <i>AdobeCustom, AdobeExpert, AdobeStandard, AppleRoman,
+BIG5, GB2312, Latin 2, None, SJIScode, Symbol, Unicode, Wansung.</i>
+</pp>
+
+</utils>
+
+
+<!-- ------------ -endian ------------------------------------------- -->
+
+<utils apps=composite,convert,display,import,mogrify,montage>
+<dopt>-endian <type></opt>
+
+<abs>specify endianness (MSB or LSB) of output image</abs>
+
+<pp>
+Use <s>+endian</s> to revert to unspecified endianness.
+</pp>
+</utils>
+
+
+
+
+<!-- ------------ -enhance ------------------------------------------ -->
+
+<utils apps=convert,display,mogrify>
+<opt>-enhance</opt>
+
+<abs>apply a digital filter to enhance a noisy image</abs>
+
+</utils>
+
+
+
+<!-- ------------ -equalize ----------------------------------------- -->
+
+<utils apps=convert,mogrify>
+<opt>-equalize</opt>
+
+<abs>perform histogram equalization to the image</abs>
+
+</utils>
+
+
+
+<!-- ------------ -fill --------------------------------------------- -->
+
+<utils apps=convert,mogrify,montage>
+<dopt>-fill <color></opt>
+
+<abs>color to use when filling a graphic primitive</abs>
+
+<pp>
+Colors are represented in GraphicsMagick in the same form used by SVG:</pp>
+
+<pre>
+    name                 ("convert -list color" to see names)
+    #RGB                 (R,G,B are hex numbers, 4 bits each)
+    #RRGGBB              (8 bits each)
+    #RRRGGGBBB           (12 bits each)
+    #RRRRGGGGBBBB        (16 bits each)
+    #RGBA                (4 bits each)
+    #RRGGBBAA            (8 bits each)
+    #RRRGGGBBBAAA        (12 bits each)
+    #RRRRGGGGBBBBAAAA    (16 bits each)
+    rgb(r,g,b)           (r,g,b are decimal numbers)
+    rgba(r,g,b,a)        (r,g,b,a are decimal numbers)
+</pre>
+<pp>
+Enclose the color specification in quotation marks to prevent the "#"
+or the parentheses from being interpreted by your shell.</pp>
+<pp>
+For example,</pp>
+<pre>
+    convert -fill blue ...
+    convert -fill "#ddddff" ...
+    convert -fill "rgb(65000,65000,65535)" ...
+</pre>
+
+<pp>
+The shorter forms are scaled up, if necessary by replication.  For example, 
+#3af, #33aaff, and #3333aaaaffff are all equivalent.</pp>
+
+<pp>
+See <s>-draw</s> for further
+details.
+</pp>
+
+</utils>
+
+
+
+<!-- ------------ -filter ------------------------------------------- -->
+
+<utils apps=composite,convert,display,mogrify,montage>
+<dopt>-filter <type></opt>
+
+
+
+<abs>use this type of filter when resizing an image</abs>
+
+<pp>
+Use this option to affect the resizing operation of an image (see
+<s>-geometry</s>).
+Choose from these filters:
+</pp>
+
+<pre>
+     Point
+     Box
+     Triangle
+     Hermite
+     Hanning
+     Hamming
+     Blackman
+     Gaussian
+     Quadratic
+     Cubic
+     Catrom
+     Mitchell
+     Lanczos
+     Bessel
+     Sinc
+</pre>
+
+<pp>
+The default filter is automatically selected to provide the best quality
+while consuming a reasonable amount of time. The <s>Mitchell</s> filter
+is used if the image supports a palette, supports a matte channel, or is
+being enlarged, otherwise the <s>Lanczos</s> filter is used.
+</pp>
+
+</utils>
+
+
+
+
+<!-- ------------ -flatten ------------------------------------------ -->
+
+<utils apps=convert>
+<dopt>-flatten</opt>
+
+<abs>flatten a sequence of images</abs>
+
+<pp>
+The sequence of images is replaced by a single image created by composing each
+image after the first over the first image.</pp>
+<pp>
+The sequence of images
+is terminated by the appearance of any option.
+If the <s>-flatten</s>
+option appears after all of the input images, all images are flattened.</pp>
+
+</utils>
+
+
+
+
+<!-- ------------ -flip --------------------------------------------- -->
+
+<utils apps=convert,display,mogrify>
+<dopt>-flip</opt>
+
+<abs>create a "mirror image"</abs>
+
+<pp>
+reflect the scanlines in the vertical direction.
+</pp>
+
+</utils>
+
+
+
+<!-- ------------ -flop --------------------------------------------- -->
+
+<utils apps=convert,display,mogrify>
+<dopt>-flop</opt>
+
+<abs>create a "mirror image"</abs>
+
+<pp>
+reflect the scanlines in the horizontal direction.
+</pp>
+
+</utils>
+
+
+<!-- ------------ -font --------------------------------------------- -->
+
+<utils apps=animate,composite,convert,display,mogrify,montage>
+<dopt>-font <name></opt>
+
+<abs>use this font when annotating the image with text</abs>
+
+<pp>
+You can tag a font to specify whether it is a PostScript, TrueType, or OPTION1
+font.  For example, <tt>Arial.ttf</tt> is a TrueType font, <tt>ps:helvetica</tt>
+is PostScript, and <tt>x:fixed</tt> is OPTION1.
+</pp>
+
+</utils>
+
+
+
+<!-- ------------ -foreground --------------------------------------- -->
+
+<utils apps=animate,display>
+<dopt>-foreground <color></opt>
+
+<abs>define the foreground color</abs>
+
+<pp>
+The color is specified using the format described under the <s>-fill</s>
+option.</pp>
+
+</utils>
+
+
+
+<!-- ------------ -format [mogrify]---------------------------------- -->
+
+<utils apps=mogrify>
+<dopt>-format <type></opt>
+
+<abs>the image format type</abs>
+
+<pp>
+When used with the <s>mogrify</s> utility,
+this option will convert any image to the image format you specify.
+See <i>GraphicsMagick(1)</i> for a list of image format types supported by
+<s>GraphicsMagick</s>, or see the output of 'gm -list format'.
+</pp>
+
+<pp>
+By default the file is written to its original name.  However, if the
+filename extension matches a supported format, the extension is replaced
+with the image format type specified with <s>-format</s>.  For example,
+if you specify <i>tiff</i> as the format type and the input image
+filename is <i>image.gif</i>, the output image filename becomes
+<i>image.tiff</i>.
+</pp>
+
+</utils>
+
+<!-- ------------ -format [identify]--------------------------------- -->
+
+<utils apps=identify>
+<dopt>-format <string></opt>
+
+<abs>output formatted image characteristics</abs>
+
+<pp>
+When used with the <s>identify</s> utility,
+use this option to print information about the image in a format of your
+choosing.  You can include the image filename, type, width, height,
+Exif data, or other image attributes by embedding special format
+characters:</pp>
+
+<pre>
+     %b   file size
+     %c   comment
+     %d   directory
+     %e   filename extension
+     %f   filename
+     %h   height
+     %i   input filename
+     %k   number of unique colors
+     %l   label
+     %m   magick
+     %n   number of scenes
+     %o   output filename
+     %p   page number
+     %q   quantum depth
+     %s   scene number
+     %t   top of filename
+     %u   unique temporary filename
+     %w   width
+     %x   x resolution
+     %y   y resolution
+     %#   signature
+     \n   newline
+     \r   carriage return
+</pre>
+
+<pp>
+For example,</pp>
+
+<pre>
+     -format "%m:%f %wx%h"
+</pre>
+
+<pp>
+displays <s>MIFF:bird.miff 512x480</s> for an image
+titled <s>bird.miff</s> and whose width is 512 and height is 480.</pp>
+
+<pp>
+If the first character of <i>string</i> is <s>@</s>, the format
+is read from a file titled by the remaining characters in the string.</pp>
+
+<pp>
+You can also use the following special formatting syntax to print Exif
+information contained in the file:</pp>
+
+<pre>
+     %[EXIF:<tag>]
+</pre>
+<pp>
+Where "<tag>" can be one of the following:</pp>
+<pre>
+     *  (print all Exif tags, in keyword=data format)
+     !  (print all Exif tags, in tag_number data format)
+     #hhhh (print data for Exif tag #hhhh)
+     ImageWidth
+     ImageLength
+     BitsPerSample
+     Compression
+     PhotometricInterpretation
+     FillOrder
+     DocumentName
+     ImageDescription
+     Make
+     Model
+     StripOffsets
+     Orientation
+     SamplesPerPixel
+     RowsPerStrip
+     StripByteCounts
+     XResolution
+     YResolution
+     PlanarConfiguration
+     ResolutionUnit
+     TransferFunction
+     Software
+     DateTime
+     Artist
+     WhitePoint
+     PrimaryChromaticities
+     TransferRange
+     JPEGProc
+     JPEGInterchangeFormat
+     JPEGInterchangeFormatLength
+     YCbCrCoefficients
+     YCbCrSubSampling
+     YCbCrPositioning
+     ReferenceBlackWhite
+     CFARepeatPatternDim
+     CFAPattern
+     BatteryLevel
+     Copyright
+     ExposureTime
+     FNumber
+     IPTC/NAA
+     ExifOffset
+     InterColorProfile
+     ExposureProgram
+     SpectralSensitivity
+     GPSInfo
+     ISOSpeedRatings
+     OECF
+     ExifVersion
+     DateTimeOriginal
+     DateTimeDigitized
+     ComponentsConfiguration
+     CompressedBitsPerPixel
+     ShutterSpeedValue
+     ApertureValue
+     BrightnessValue
+     ExposureBiasValue
+     MaxApertureValue
+     SubjectDistance
+     MeteringMode
+     LightSource
+     Flash
+     FocalLength
+     MakerNote
+     UserComment
+     SubSecTime
+     SubSecTimeOriginal
+     SubSecTimeDigitized
+     FlashPixVersion
+     ColorSpace
+     ExifImageWidth
+     ExifImageLength
+     InteroperabilityOffset
+     FlashEnergy
+     SpatialFrequencyResponse
+     FocalPlaneXResolution
+     FocalPlaneYResolution
+     FocalPlaneResolutionUnit
+     SubjectLocation
+     ExposureIndex
+     SensingMethod
+     FileSource
+     SceneType
+</pre>
+
+<pp>
+Surround the format specification with quotation marks to prevent your shell
+from misinterpreting any spaces and square brackets.</pp>
+
+</utils>
+
+
+
+
+<!-- ------------ -frame -------------------------------------------- -->
+
+<utils apps=convert,display,mogrify,montage>
+<dopt>-frame <width>x<height>+<outer bevel width>+<inner bevel width></opt>
+
+<abs>surround the image with an ornamental border</abs>
+
+<pp>
+See <s>-geometry</s> for details
+about the geometry specification.
+The <s>-frame</s> option is not affected by the <s>-gravity</s> option.
+</pp>
+
+<pp>
+The color of the border is specified with the
+<s>-mattecolor</s> command
+line option.
+</pp>
+
+</utils>
+
+
+<!-- ------------ -frame [import] ----------------------------------- -->
+
+<utils apps=import>
+<opt>-frame</opt>
+
+<abs>include the X window frame in the imported image</abs>
+
+</utils>
+
+<!-- ------------ -fuzz --------------------------------------------- -->
+
+<utils apps=convert,mogrify>
+<dopt>-fuzz <distance>{%}</opt>
+
+<abs>colors within this distance are considered equal</abs>
+
+<pp>
+A number of algorithms search for a target color. By default the color
+must be exact. Use this option to match colors that are close to the target
+color in RGB space. For example, if you want to automatically trim the
+edges of an image with <s>-trim</s> but the image was scanned and the
+target background color may differ by a small amount. This option can account
+for these differences.
+</pp>
+
+<pp>
+The <i>distance</i> can be in absolute intensity units or, by appending
+<i>"%"</i>, as a percentage of the maximum possible intensity (255,
+65535, or 4294967295).
+</pp>
+
+</utils>
+
+
+
+
+<!-- ------------ -gamma -------------------------------------------- -->
+
+<utils apps=animate,convert,display,mogrify,montage>
+<dopt>-gamma <value></opt>
+
+<abs>level of gamma correction</abs>
+
+<pp>
+The same color image displayed on two different workstations may look
+different due to differences in the display monitor. Use gamma
+correction to adjust for this color difference. Reasonable values extend
+from <s>0.8</s> to <s>2.3</s>. Gamma less than 1.0 darkens the image and
+gamma greater than 1.0 lightens it. Large adjustments to image gamma may
+result in the loss of some image information if the pixel quantum size
+is only eight bits (quantum range 0 to 255).
+</pp>
+
+<pp>
+You can apply separate gamma values to the red, green, and blue channels
+of the image with a gamma value list delimited with slashes
+(e.g., <s>1.7</s>/<s>2.3</s>/<s>1.2</s>).
+</pp>
+
+<pp>
+Use <s>+gamma</s> <i>value</i>
+to set the image gamma level without actually adjusting
+the image pixels. This option is useful if the image is of a known gamma
+but not set as an image attribute (e.g. PNG images).
+</pp>
+
+</utils>
+
+
+
+
+<!-- ------------ -Gaussian ----------------------------------------- -->
+
+<utils apps=convert,mogrify>
+<dopt>-Gaussian <radius>{x<sigma>}</opt>
+
+<abs>blur the image with a Gaussian operator</abs>
+<pp>
+Use the given radius and standard deviation (sigma).
+</pp>
+
+</utils>
+
+
+
+
+<!-- ------------ -geometry ----------------------------------------- -->
+
+<utils apps=animate,composite,convert,display,import,mogrify,montage>
+<!-- -geometry is also accepted, but not used, by identify -->
+<dopt>-geometry <width>x<height>{+-}<x>{+-}<y>{%}{@} {!}{<}{>}</opt>
+
+<abs>preferred size and location of the Image window.</abs>
+<pp>
+By default, the window size is the image
+size and the location is chosen by you when it is mapped.
+</pp>
+
+<pp>
+By default, the width and height are maximum values. That is, the image
+is expanded or contracted to fit the width and height value while maintaining
+the aspect ratio of the image. <i>Append an exclamation point to the geometry
+to force the image size to exactly the size you specify</i>. For example,
+if you specify <tt>640x480!</tt> the image width is set to 640 pixels and
+height to 480.
+</pp>
+
+<pp>
+If only the width is specified, the width assumes the
+value and the height is chosen to maintain the aspect ratio of the image.
+Similarly, if only the height is specified (e.g., <tt>-geometry x256</tt>),
+the width is chosen to maintain the aspect ratio.
+</pp>
+
+
+<pp>
+To specify a percentage width or height instead, append %. The image size
+is multiplied by the width and height percentages to obtain the final image
+dimensions. To increase the size of an image, use a value greater than
+100 (e.g. 125%). To decrease an image's size, use a percentage less than
+100.
+</pp>
+
+<pp>
+Use <tt>@</tt> to specify the maximum area in pixels of an image.
+</pp>
+
+<pp>
+Use <tt>></tt> to change the dimensions of the image <i>only</i> if
+its width or height exceeds the geometry specification. <tt><</tt> resizes
+the image <i>only</i> if both of its dimensions are less than the geometry
+specification. For example,
+if you specify <tt>'640x480>'</tt> and the image size is 256x256, the image
+size does not change. However, if the image is 512x512 or 1024x1024, it is
+resized to 480x480.  Enclose the geometry specification in quotation marks to
+prevent the <tt><</tt> or <tt>></tt> from being interpreted by your shell
+as a file redirection.
+</pp>
+</utils>
+
+<utils apps=animate,display>
+<pp>
+When used with <i>animate</i> and <i>display</i>, offsets are handled in
+the same manner as in <i>X(1)</i> and the <s>-gravity</s> option is not used.
+If the <i>x</i> is negative, the offset is measured leftward
+from the right edge of the
+screen to the right edge of the image being displayed.
+Similarly, negative <i>y</i> is measured between the bottom edges.  The
+offsets are not affected by "%"; they are always measured in pixels.</pp>
+</utils>
+
+<utils apps=composite>
+<pp>
+When used as a <i>composite</i> option, <s>-geometry</s>
+gives the dimensions of the image and its location with respect
+to the composite image.  If the <s>-gravity</s> option is present
+with <i>NorthEast, East,</i> or <i>SouthEast</i> gravity, the <i>x</i>
+represents the distance from the right edge of the image to the right edge of
+the composite image.  Similarly, if the <s>-gravity</s> option is present
+with <i>SouthWest, South,</i> or <i>SouthEast</i> gravity, <i>y</i>
+is measured between the bottom edges. Accordingly, a positive offset will
+never point in the direction outside of the image.  The
+offsets are not affected by "%"; they are always measured in pixels.
+To specify the dimensions of the composite image, use the <s>-resize</s>
+option.
+</pp>
+</utils>
+
+<utils apps=import,convert,mogrify>
+<pp>
+When used as a <i>convert</i>, <i>import</i> or <i>mogrify</i> option,
+<s>-geometry</s> is synonymous with <s>-resize</s> and
+specifies the size of the output image.  The offsets, if present, are ignored.
+</pp>
+</utils>
+
+<utils apps=montage>
+<pp>
+When used as a <i>montage</i> option, <s>-geometry</s> specifies the image
+size and border size for each tile; default is 256x256+0+0.  Negative
+offsets (border dimensions) are meaningless.  The <s>-gravity</s>
+option affects the placement of the image within the tile; the default
+gravity for this purpose is <i>Center</i>.  If the "%" sign appears in
+the geometry specification, the tile size is the specified percentage of
+the original dimensions of the first tile.
+To specify the dimensions of the montage, use the <s>-resize</s>
+option.
+</pp>
+</utils>
+
+
+<!-- ------------ -gravity ------------------------------------------ -->
+
+<utils apps=composite,convert,mogrify,montage>
+<dopt>-gravity <type></opt>
+
+<abs>direction primitive  gravitates to when annotating the image.</abs>
+
+<pp>
+Choices are: NorthWest, North,
+NorthEast, West, Center, East, SouthWest, South, SouthEast.
+</pp>
+
+<pp>
+The direction you choose specifies where to position the text 
+when annotating
+the image. For example <i>Center</i> gravity forces the text to be centered
+within the image. By default, the image gravity is <i>NorthWest</i>.
+See <s>-draw</s> for more details about graphic primitives.  Only the
+text primitive is affected by the <s>-gravity</s> option.
+</pp>
+
+<pp>
+The <s>-gravity</s> option is also used in concert with the <s>-geometry</s>
+option and other options that take <s><geometry></s> as a parameter, such
+as the <s>-crop</s> option.  See <s>-geometry</s> for details of how the
+<s>-gravity</s> option interacts with the
+<s><x></s> and <s><y></s> parameters of a geometry
+specification.</pp>
+
+<utils apps=composite>
+<pp>
+When used as an option to <i>composite</i>, <s>-gravity</s>
+gives the direction that the image gravitates within the composite.
+</pp>
+</utils>
+
+<utils apps=montage>
+<pp>
+When used as an option to <i>montage</i>, <s>-gravity</s> gives the direction
+that an image gravitates within a tile.  The default gravity is <i>Center</i>
+for this purpose.
+</pp>
+</utils>
+
+
+
+<!-- ------------ -green-primary ------------------------------------ -->
+
+<utils apps=composite,convert,mogrify,montage>
+<dopt>-green-primary <x>,<y></opt>
+
+<abs>green chromaticity primary point</abs>
+
+</utils>
+
+
+
+
+<!-- ------------ -help --------------------------------------------- -->
+
+<utils apps=animate,composite,conjure,convert,display,identify,import,mogrify,montage>
+<opt>-help</opt>
+
+<abs>print usage instructions</abs>
+
+</utils>
+
+
+
+
+<!-- ------------ -iconGeometry ------------------------------------- -->
+
+<utils apps=animate,display>
+<dopt>-iconGeometry <geometry></opt>
+
+<abs>specify the icon geometry</abs>
+
+<pp>
+Offsets, if present in the geometry specification, are handled in
+the same manner as the <s>-geometry</s> option, using X11 style to handle
+negative offsets.</pp>
+
+</utils>
+
+
+
+
+<!-- ------------ -iconic ------------------------------------------- -->
+
+<utils apps=animate,display>
+<opt>-iconic</opt>
+
+<abs>iconic animation</abs>
+
+</utils>
+
+
+
+
+<!-- ------------ -immutable ---------------------------------------- -->
+
+<utils apps=display>
+<opt>-immutable</opt>
+
+<abs>make image immutable</abs>
+
+</utils>
+
+
+
+
+<!-- ------------ -implode ------------------------------------------ -->
+
+<utils apps=convert,mogrify>
+<opt>-implode <factor></opt>
+
+<abs>implode image pixels about the center</abs>
+
+</utils>
+
+
+
+
+<!-- ------------ -intent ------------------------------------------- -->
+
+<utils apps=convert>
+<dopt>-intent <type></opt>
+
+<abs>use this type of rendering intent when managing the image color</abs>
+
+<pp>
+Use this option to affect the the color management operation of an image (see
+<s>-profile</s>).
+
+Choose from these intents:
+<s>Absolute, Perceptual, Relative, Saturation</s>
+</pp>
+
+<pp>
+The default intent is undefined.
+</pp>
+
+</utils>
+
+
+
+
+<!-- ------------ -interlace ---------------------------------------- -->
+
+<utils apps=animate,composite,convert,display,identify,import,mogrify,montage>
+<dopt>-interlace <type></opt>
+
+<abs>the type of interlacing scheme</abs>
+<pp>
+Choices are: <s>None, Line, Plane,</s>
+or <s>Partition</s>. The default is <s>None</s>.
+</pp>
+
+<pp>
+This option is used to specify the type of interlacing scheme for raw image
+formats such as <s>RGB</s> or <s>YUV</s>.</pp>
+<pp>
+<s>None</s> means do not interlace
+(RGBRGBRGBRGBRGBRGB...),</pp>
+<pp>
+<s>Line</s> uses scanline interlacing
+(RRR...GGG...BBB...RRR...GGG...BBB...),
+and</pp>
+<pp>
+<s>Plane</s> uses plane interlacing (RRRRRR...GGGGGG...BBBBBB...).</pp>
+<pp>
+<s>Partition</s>
+is like plane except the different planes are saved to individual files
+(e.g. image.R, image.G, and image.B).
+</pp>
+</utils>
+
+<utils apps=composite,convert,display,import,mogrify,montage>
+<pp>
+Use <s>Line</s> or <s>Plane</s> to create an
+<s>interlaced PNG</s> or <s> GIF</s> or
+<s>progressive JPEG</s> image.
+</pp>
+
+</utils>
+
+
+
+
+<!-- ------------ -label -------------------------------------------- -->
+
+<utils apps=composite,convert,display,import,mogrify,montage>
+<dopt>-label <name></opt>
+
+<abs>assign a label to an image</abs>
+
+<pp>
+Use this option to assign a specific label to the image, when writing
+to an image format that supports labels, such as TIFF, PNG, MIFF, or
+PostScript. You can include the the image filename, type, width, height,
+or other image attribute by embedding special format character.  A label
+is not drawn on the image, but is embedded in the image datastream via
+a "Label" tag or similar mechanism.  If you want the
+label to be visible on the image itself, use the <s>-draw</s> option.
+See <s>-comment</s> for details.
+</pp>
+
+<pp>
+For example,
+</pp>
+
+<pre>
+     -label "%m:%f %wx%h"
+</pre>
+
+<pp>
+produces an image label of <s>MIFF:bird.miff 512x480</s> for an image titled
+<s>bird.miff</s>
+and whose width is 512 and height is 480.
+</pp>
+
+<pp>
+If the first character of <i>string</i> is <i>@</i>, the image label is
+read from a file titled by the remaining characters in the string.
+</pp>
+
+<pp>
+When converting to <i>PostScript</i>, use this option to specify a header
+string to print above the image. Specify the label font with
+<s>-font</s>.
+</pp>
+
+<pp>
+When creating a montage, by default the label associated with an image
+is displayed with the corresponding tile in the montage.  Use the
+<s>+label</s> option to suppress this behavior.</pp>
+
+</utils>
+
+
+<!-- ------------ -lat ---------------------------------------------- -->
+
+<utils apps=convert,mogrify>
+<opt>-lat <width>x<height>{+-}<offset>{%}</opt>
+
+<abs>perform local adaptive thresholding</abs>
+
+<pp>
+Perform local adaptive thresholding using the specified width, height,
+and offset.  The offset is a distance in sample space from the mean,
+as an absolute integer ranging from 0 to the maximum sample value or
+as a percentage.</pp>
+
+</utils>
+
+
+
+<!-- ------------ -level -------------------------------------------- -->
+
+<utils apps=convert,mogrify>
+<dopt>-level <black_point>{,<gamma>}{,<white_point>}{%}</opt>
+
+<abs>adjust the level of image contrast</abs>
+
+<pp>
+Give one, two or three values delimited with commas: black-point, gamma,
+white-point (e.g. 10,1.0,250 or 2%,0.5,98%). The black and white
+points range from 0 to MaxRGB or from 0 to 100%; if the white point is
+omitted it is set to MaxRGB-black_point. If a "%" sign is present
+anywhere in the string, the black and white points are percentages of
+MaxRGB. Gamma is an exponent that ranges from 0.1 to 10.; if it is
+omitted, the default of 1.0 (no gamma correction) is assumed. This
+interface works similar to Photoshop's "Image->Adjustments->Levels..."
+"Input Levels" interface.
+</pp>
+
+</utils>
+
+
+
+
+
+<!-- ------------ -limit -------------------------------------------- -->
+
+<utils apps=animate,composite,convert,display,identify,import,mogrify,montage>
+<dopt>-limit <type> <value></opt>
+
+<abs>Disk, File, Map, or Memory resource limit</abs>
+
+<pp>
+The value for File is in number of files and the values for the other
+resources are in Megabytes.  By default the limits are 256 files, 1024MB memory,
+4096MB map, and unlimited disk, but these are adjusted at startup
+time on platforms that can provide information about available resources.
+When the limit is reached, GraphicsMagick will fail in some fashion, or
+take compensating actions if possible.
+For example, <tt>-limit memory 32 -limit map 64</tt> limits memory
+When the pixel cache reaches the memory limit it uses
+memory mapping.  When that limit is reached it goes to disk.  If disk has
+a hard limit, the program will fail.</pp>
+
+<pp>
+Resource limits may also be set using environment variables. The
+environment variables <s>MAGICK_LIMIT_DISK</s>,
+<s>MAGICK_LIMIT_FILES</s>, <s>MAGICK_LIMIT_MEMORY</s>, and
+<s>MAGICK_LIMIT_MAP</s>, may be used to set the limits for disk space,
+open files, heap memory, and memory map size, respectively.</pp>
+
+<pp>
+You can use the option <tt>-list resource</tt> to find out the limits.</pp>
+
+</utils>
+
+
+
+
+
+<!-- ------------ -linewidth ---------------------------------------- -->
+
+<utils apps=mogrify>
+<opt>-linewidth</opt>
+
+<abs>the line width for subsequent draw operations</abs>
+
+</utils>
+
+
+
+
+<!-- ------------ -list --------------------------------------------- -->
+
+<utils apps=convert,identify,mogrify>
+<dopt>-list <type></opt>
+
+<abs>the type of list</abs>
+
+<pp>
+Choices are: <s>Delegate</s>, <s>Format</s>, <s>Magic</s>,
+<s>Module</s>, <s>Resource</s>, or <s>Type</s>.
+</pp>
+
+<pp>
+This option lists information about the GraphicsMagick configuration.
+</pp>
+
+</utils>
+
+
+<!-- ------------ -log  --------------------------------------------- -->
+
+<utils apps=animate,composite,conjure,convert,display,identify,import,mogrify,montage>
+<dopt>-log <string></opt>
+
+<abs>Specify format for debug log</abs>
+
+<pp>
+This option specifies the format for the log printed when the <s>-debug</s>
+option is active.</pp>
+
+<pp>
+You can display the following components by embedding
+special format characters:</pp>
+
+<pre>
+     %d   domain
+     %e   event
+     %f   function
+     %l   line
+     %m   module
+     %p   process ID
+     %r   real CPU time
+     %t   wall clock time
+     %u   user CPU time
+     %%   percent sign
+     \n   newline
+     \r   carriage return
+</pre>
+
+<pp>
+For example:</pp>
+<pre>
+    convert -debug coders -log "%u %m:%l %e" in.gif out.png
+</pre>
+
+<pp>
+The default behavior is to print all of the components.</pp>
+
+</utils>
+
+<!-- ------------ -loop --------------------------------------------- -->
+
+<utils apps=convert,mogrify>
+<dopt>-loop <iterations></opt>
+
+<abs>add Netscape loop extension to your GIF animation</abs>
+
+<pp>
+A value other than zero forces the animation to repeat itself up to
+<i>iterations</i>
+times.
+</pp>
+
+</utils>
+
+
+
+
+<!-- ------------ -magnify ------------------------------------------ -->
+
+<utils apps=display>
+<opt>-magnify <factor></opt>
+
+<abs>magnify the image</abs>
+
+</utils>
+
+
+
+
+<!-- ------------ -map [convert, mogrify ] -------------------------- -->
+
+<utils apps=convert,mogrify>
+<dopt>-map <filename></opt>
+
+<abs>choose a particular set of colors from this image</abs>
+
+<pp>
+[<i>convert</i> or <i>mogrify</i>]</pp>
+
+<pp>
+By default, color reduction chooses an optimal set of colors that best
+represent the original image. Alternatively, you can choose a particular
+set of colors from an image file with this option.</pp>
+
+<pp>
+Use
+<s>+map</s> to reduce
+all images in the image sequence that follows to a single optimal set of colors
+that best represent all the images.  The sequence of images
+is terminated by the appearance of any option.
+If the <s>+map</s>
+option appears after all of the input images, all images are mapped.</pp>
+
+
+</utils>
+
+
+
+
+<!-- ------------ -map [animate, display] --------------------------- -->
+
+<utils apps=animate,display>
+
+<dopt>-map <type></opt>
+
+<abs>
+display image using this type.</abs>
+
+<pp>
+[<i>animate</i> or <i>display</i>]</pp>
+
+<pp>
+Choose from these <i>Standard Colormap</i> types:</pp>
+
+<pre>
+     best
+     default
+     gray
+     red
+     green
+     blue
+</pre>
+
+<pp>
+The <i>X server</i> must support the <i>Standard Colormap</i> you choose,
+otherwise an error occurs. Use <s>list</s> as the type and <s>display</s>
+searches the list of colormap types in <s>top-to-bottom</s> order until
+one is located. See <i>xstdcmap(1)</i> for one way of creating Standard
+Colormaps.</pp>
+
+</utils>
+
+
+<!-- ------------ -mask --------------------------------------------- -->
+
+<utils apps=convert,mogrify>
+<dopt>-mask <filename></opt>
+
+<abs>Specify a clipping mask</abs>
+
+<pp>
+The image read from the file is used as a clipping mask.  It must have
+the same dimensions as the image being masked.</pp>
+
+<pp>
+If the mask image contains an opacity channel, the opacity of each pixel is
+used to define the mask.  Otherwise, the intensity (gray level) of each
+pixel is used.</pp>
+
+<pp>
+Use <s>+mask</s> to remove the clipping mask.</pp>
+
+<pp>
+It is not necessary to use <s>-clip</s> to activate the mask; <s>-clip</s>
+is implied by <s>-mask</s>.</pp>
+
+</utils>
+
+
+
+<!-- ------------ -matte -------------------------------------------- -->
+
+<utils apps=animate,composite,convert,display,mogrify,montage>
+<dopt>-matte</opt>
+
+
+<abs>store matte channel if the image has one</abs>
+
+<pp>
+If the image does not have a matte channel, create an opaque one.
+</pp>
+
+<pp>
+Use <s>+matte</s> to ignore the matte channel and to avoid writing a
+matte channel in the output file.</pp>
+
+</utils>
+
+
+
+
+<!-- ------------ -mattecolor --------------------------------------- -->
+
+<utils apps=animate,convert,display,mogrify,montage>
+<dopt>-mattecolor <color></opt>
+
+<abs>specify the color to be used with the <s>-frame</s> option</abs>
+
+<pp>
+The color is specified using the format described under the <s>-fill</s>
+option.</pp>
+
+</utils>
+
+
+
+
+
+<!-- ------------ -median ------------------------------------------- -->
+
+<utils apps=convert,mogrify>
+<opt>-median <radius></opt>
+
+<abs>apply a median filter to the image</abs>
+
+</utils>
+
+
+
+
+
+<!-- ------------ -mode --------------------------------------------- -->
+
+<utils apps=montage>
+<opt>-mode <value></opt>
+
+<abs>mode of operation</abs>
+
+</utils>
+
+
+
+
+<!-- ------------ -modulate ----------------------------------------- -->
+
+<utils apps=convert,mogrify>
+<dopt>-modulate <value></opt>
+
+<abs>vary the brightness, saturation, and hue of an image</abs>
+
+<pp>
+Specify the percent change in brightness, the color saturation, and the
+hue separated by commas. For example, to increase the color brightness
+by 20% and decrease the color saturation by 10% and leave the hue unchanged,
+use: <s>-modulate 120,90</s>.
+</pp>
+
+</utils>
+
+
+
+
+<!-- ------------ -monochrome --------------------------------------- -->
+
+<utils apps=animate,composite,convert,display,import,mogrify,montage>
+<opt>-monochrome</opt>
+
+<abs>transform the image to black and white</abs>
+
+</utils>
+
+
+
+<!-- ------------ -morph -------------------------------------------- -->
+
+<utils apps=convert>
+<dopt>-morph <frames></opt>
+
+<abs>morphs an image sequence</abs>
+
+<pp>
+Both the image pixels and size are linearly interpolated to give the appearance
+of a meta-morphosis from one image to the next.
+</pp>
+
+<pp>
+The sequence of images
+is terminated by the appearance of any option.
+If the <s>-morph</s>
+option appears after all of the input images, all images are morphed.</pp>
+
+
+</utils>
+
+
+
+<!-- ------------ -mosaic ------------------------------------------- -->
+
+<utils apps=convert>
+<dopt>-mosaic</opt>
+
+<abs>create a mosaic from an image or an image sequence</abs>
+
+<pp>
+The <s>-page</s> option can be used to establish the dimensions of the mosaic
+and to locate the images within the mosaic.</pp>
+
+<pp>
+The sequence of images
+is terminated by the appearance of any option.
+If the <s>-mosaic</s>
+option appears after all of the input images, all images are included
+in the mosaic.</pp>
+
+</utils>
+
+
+
+<!-- ------------ -name --------------------------------------------- -->
+
+<utils apps=animate,display>
+<opt>-name</opt>
+
+<abs>name an image</abs>
+
+</utils>
+
+
+
+<!-- ------------ -negate ------------------------------------------- -->
+
+<utils apps=composite,convert,display,import,mogrify>
+<dopt>-negate</opt>
+
+<abs>replace every pixel with its complementary color</abs>
+
+<pp>
+The red, green, and blue intensities of an image are negated.
+White becomes black,
+yellow becomes blue, etc.
+Use <s>+negate</s>
+to only negate the grayscale pixels of the image.
+</pp>
+
+</utils>
+
+
+
+
+<!-- ------------ -noise -------------------------------------------- -->
+
+<utils apps=convert,mogrify>
+<dopt>-noise <radius|type></opt>
+
+<abs>add or reduce noise in an image</abs>
+
+<pp>
+The principal function of noise peak elimination filter is to smooth the
+objects within an image without losing edge information and without creating
+undesired structures. The central idea of the algorithm is to replace a
+pixel with its next neighbor in value within a pixel window, if this pixel
+has been found to be noise. A pixel is defined as noise if and only if
+this pixel is a maximum or minimum within the pixel window.
+</pp>
+<pp>
+Use <s>radius</s> to specify the width of the neighborhood.
+</pp>
+
+<pp>
+Use <s>+noise</s> followed by a noise type to add noise to an image. Choose
+from these noise types:
+</pp>
+
+<pre>
+     Uniform
+     Gaussian
+     Multiplicative
+     Impulse
+     Laplacian
+     Poisson
+</pre>
+
+</utils>
+
+
+
+
+<!-- ------------ -noop --------------------------------------------- -->
+
+<utils apps=animate,convert,display,mogrify,montage>
+<dopt>-noop</opt>
+
+<abs>NOOP (no option)</abs>
+
+<pp>
+The <s>-noop</s> option can be used to terminate a group of images
+and reset all options to their default values, when no other option is
+desired.</pp>
+
+</utils>
+
+
+
+
+<!-- ------------ -normalize ---------------------------------------- -->
+
+<utils apps=convert,mogrify>
+<dopt>-normalize</opt>
+
+<abs>transform image to span the full range of color values</abs>
+
+<pp>
+This is a contrast enhancement technique.
+</pp>
+
+</utils>
+
+
+
+
+<!-- ------------ -opaque ------------------------------------------- -->
+
+<utils apps=convert,mogrify>
+<dopt>-opaque <color></opt>
+
+<abs>change this color to the pen color within the image</abs>
+
+<pp>
+The color is specified using the format described under the <s>-fill</s>
+option.</pp>
+
+<pp>
+See <s>-fill</s> for more details.
+</pp>
+
+</utils>
+
+
+
+<!-- ------------ -operator ----------------------------------------- -->
+
+<utils apps=convert,mogrify>
+<dopt>-operator channel operator rvalue[%]</opt>
+
+<abs>apply a mathematical or bitwise operator to an image channel</abs>
+
+<pp>
+Apply a low-level mathematical or bitwise operator to a selected image
+channel or all image channels. Operations which result in negative
+results are reset to zero, and operations which overflow the
+available range are reset to the maximum possible value.
+</pp>
+<pp>
+Select a channel from: <s>Red</s>, <s>Green</s>, <s>Blue</s>, <s>Opacity</s>,
+<s>Matte</s>, <s>Cyan</s>, <s>Magenta</s>, <s>Yellow</s>, <s>Black</s>,
+or <s>All</s>.
+</pp>
+<pp>
+Select an operator from <s>Add</s>, <s>And</s>, <s>Divide</s>, <s>LShift</s>,
+<s>Multiply</s>, <s>Or</s>, <s>RShift</s>, <s>Subtract</s>, <s>Xor</s>.
+</pp>
+<pp>
+Rvalue may be any floating point value in the range of 0 to MaxRGB, where
+MaxRGB is the largest quantum value supported by the GraphicsMagick build
+(255, 65535, or 4294967295). If a percent (<s>%</s>) symbol is appended
+to the argument, then the argument has a range of 0 to 100 percent.
+</pp>
+
+</utils>
+
+
+<!-- ------------ -ordered-dither------------------------------------ -->
+
+<utils apps=composite,convert,display,import,mogrify,montage>
+
+<dopt>-ordered-dither <channeltype> <NxN>
+
+<abs>ordered dither the image</abs>
+
+<pp>
+The channel or channels specified in the <channeltype> argument are
+reduced to binary, using an ordered dither method.
+The choices for <s>channeltype</s> are:
+</pp>
+<pre>
+    all
+    intensity
+    opacity
+    matte
+</pre>
+<pp>
+When <s>channeltype</s> is "all", the color samples are dithered into
+a graylevel and then that graylevel is stored in the three color
+channels.  Separately, the opacity channel is dithered into a bilevel
+opacity value which is stored in the opacity channel.
+</pp>
+<pp>
+When <s>channeltype</s> is "intensity", only the color samples are
+dithered.  When <s>channeltype</s> is "opacity" or "matte", only the
+opacity channel is dithered.
+<pp>
+The choices for N are 2, 3, or 4. When N is 2, the image is divided into
+2x2 pixel tiles.  In each tile, 0, 1, 2, 3, or 4 pixels are turned to
+white depending on their intensity.  When N is 3, there are 3x3 tiles
+and 10 levels of gray can be represented.  When N is 4, there are 4x4
+tiles and 17 levels of gray.
+</pp>
+
+
+<!-- ------------ -page --------------------------------------------- -->
+
+<utils apps=composite,convert,display,import,mogrify,montage>
+<dopt>-page <width>x<height>{+-}<x>{+-}<y>{%}{!}{<}{>}</opt>
+
+<abs>size and location of an image canvas</abs>
+
+<pp>
+Use this option to specify the dimensions of the
+<i>PostScript</i> page
+in dots per inch or a TEXT page in pixels. The choices for a PostScript
+page are:
+</pp>
+
+<pre>
+     11x17         792  1224
+     Ledger       1224   792
+     Legal         612  1008
+     Letter        612   792
+     LetterSmall   612   792
+     ArchE        2592  3456
+     ArchD        1728  2592
+     ArchC        1296  1728
+     ArchB         864  1296
+     ArchA         648   864
+     A0           2380  3368
+     A1           1684  2380
+     A2           1190  1684
+     A3            842  1190
+     A4            595   842
+     A4Small       595   842
+     A5            421   595
+     A6            297   421
+     A7            210   297
+     A8            148   210
+     A9            105   148
+     A10            74   105
+     B0           2836  4008
+     B1           2004  2836
+     B2           1418  2004
+     B3           1002  1418
+     B4            709  1002
+     B5            501   709
+     C0           2600  3677
+     C1           1837  2600
+     C2           1298  1837
+     C3            918  1298
+     C4            649   918
+     C5            459   649
+     C6            323   459
+     Flsa          612   936
+     Flse          612   936
+     HalfLetter    396   612
+</pre>
+
+<pp>
+For convenience you can specify the page size by media (e.g. A4, Ledger,
+etc.). Otherwise, <s>-page</s> behaves much like
+<s>-geometry</s> (e.g.  <tt>-page letter+43+43></tt>).
+</pp>
+
+<pp>
+This option is also used to place subimages when writing to a multi-image
+format that supports offsets, such as GIF89 and MNG.  When used for this
+purpose the offsets are always  measured from the
+top left corner of the canvas and are not affected by the <s>-gravity</s>
+option.
+To position a GIF or MNG image, use <s>-page</s><i>{+-}<x>{+-}<y></i>
+(e.g. -page +100+200).  When writing to a MNG file, a <s>-page</s>
+option appearing ahead of the first image in the sequence with nonzero
+width and height defines the width and height values that are written in
+the <s>MHDR</s> chunk.  Otherwise, the MNG width and height are computed
+from the bounding box that contains all images in the sequence.  When
+writing a GIF89 file, only the bounding box method is used to determine its
+dimensions.
+</pp>
+
+<pp>
+For a PostScript page, the image is sized as in <s>-geometry</s> and positioned
+relative to the lower left hand corner of the page by
+{+-}<<s>x</s><i>offset</i>>{+-}<<s>y</s>
+<i>offset></i>. Use
+<tt>-page 612x792></tt>, for example, to center the
+image within the page. If the image size exceeds the PostScript page, it
+is reduced to fit the page.
+
+The default gravity for the <s>-page</s>
+option is <i>NorthWest</i>, i.e., positive <s>x</s> and
+<s>y</s> <i>offset</i> are measured rightward and downward from the top
+left corner of the page, unless the <s>-gravity</s> option is present with
+a value other than <i>NorthWest</i>.
+</pp>
+
+<pp>
+The default page dimensions for a TEXT image is 612x792.
+</pp>
+
+<pp>
+This option is used in concert with <s>-density</s>.
+</pp>
+
+<pp>
+Use <s>+page</s> to remove the page settings for an image.</pp>
+
+</utils>
+
+
+
+
+<!-- ------------ -paint -------------------------------------------- -->
+
+<utils apps=convert,mogrify>
+<dopt>-paint <radius></opt>
+
+<abs>simulate an oil painting</abs>
+
+<pp>
+Each pixel is replaced by the most frequent color in a circular neighborhood
+whose width is specified with <i>radius</i>.
+</pp>
+
+</utils>
+
+
+
+
+<!-- ------------ -pause [animate] ---------------------------------- -->
+
+<utils apps=animate>
+<dopt>-pause <seconds></opt>
+
+<abs>pause between animation loops [animate]</abs>
+
+<pp>
+Pause for the specified number of seconds before repeating the
+animation.</pp>
+
+</utils>
+
+
+
+
+<!-- ------------ -pause [import] ----------------------------------- -->
+
+<utils apps=import>
+<dopt>-pause <seconds></opt>
+
+<abs>pause between snapshots [import]</abs>
+
+<pp>
+Pause for the specified number of seconds before taking the next
+snapshot.</pp>
+
+</utils>
+
+
+
+<!-- ------------ -pen ---------------------------------------------- -->
+
+<utils apps=convert,mogrify,montage>
+<dopt>-pen <color></opt>
+
+<abs>(This option has been replaced by the -fill option)</abs>
+
+</utils>
+
+
+
+<!-- ------------ -ping --------------------------------------------- -->
+
+<utils apps=convert,identify,import>
+<opt>-ping</opt>
+
+<abs>efficiently determine image characteristics</abs>
+
+</utils>
+
+
+
+
+
+<!-- ------------ -pointsize ---------------------------------------- -->
+
+<utils apps=convert,import,mogrify,montage>
+<opt>-pointsize <value></opt>
+
+<abs>pointsize of the PostScript, OPTION1, or TrueType font</abs>
+
+</utils>
+
+
+
+
+
+<!-- ------------ -preview ------------------------------------------ -->
+
+<utils apps=convert>
+<dopt>-preview <type></opt>
+
+<abs>image preview type</abs>
+
+<pp>
+Use this option to affect the preview operation of an image (e.g.
+<tt>convert file.png
+-preview Gamma Preview:gamma.png</tt>). Choose from these previews:
+</pp>
+
+<pre>
+     Rotate
+     Shear
+     Roll
+     Hue
+     Saturation
+     Brightness
+     Gamma
+     Spiff
+     Dull
+     Grayscale
+     Quantize
+     Despeckle
+     ReduceNoise
+     Add Noise
+     Sharpen
+     Blur
+     Threshold
+     EdgeDetect
+     Spread
+     Shade
+     Raise
+     Segment
+     Solarize
+     Swirl
+     Implode
+     Wave
+     OilPaint
+     CharcoalDrawing
+     JPEG
+</pre>
+
+<pp>
+The default preview is <s>JPEG</s>.
+</pp>
+
+</utils>
+
+
+
+
+<!-- ------------ -process ------------------------------------------ -->
+
+<utils apps=convert>
+<dopt>-process <command></opt>
+
+<abs>process a sequence of images using a process module</abs>
+
+<pp>
+The command argument has the form <s>module=arg1,arg2,arg3,...,argN</s>
+where <s>module</s> is the name of the module to invoke (e.g. "analyze")
+and arg1,arg2,arg3,...,argN are an arbitrary number of arguments to
+pass to the process module.</pp>
+<pp>
+The sequence of images
+is terminated by the appearance of any option.</pp>
+<pp>
+If the <s>-process</s>
+option appears after all of the input images, all images are processed.</pp>
+
+</utils>
+
+
+
+<!-- ------------ -profile ------------------------------------------ -->
+
+<utils apps=composite,convert,mogrify>
+<dopt>-profile <filename></opt>
+
+<abs>add ICM, IPTC, or generic profile  to image</abs>
+
+<pp>
+<tt>-profile filename</tt> adds an ICM (ICC color management), IPTC
+(newswire information), or a generic profile to the image</pp>.
+
+<pp>
+Use <tt>+profile icm</tt>, <tt>+profile iptc</tt>,
+or <tt>+profile profile_name</tt> to remove the respective
+profile.  Use <tt>identify -verbose</tt> to find out what profiles are in the
+image file.  Use <tt>+profile "*"</tt> to remove all profiles.
+</pp>
+<pp>
+To extract a profile, the <s>-profile</s> option is not used.  Instead,
+simply write the file to an image
+format such as <i>APP1, 8BIM, ICM,</i> or <i>IPTC</i>.</pp>
+<pp>
+For example, to extract the Exif data (which is stored in JPEG files
+in the <i>APP1</i> profile), use
+</pp>
+<pre>
+    convert cockatoo.jpg exifdata.app1
+</pre>
+
+</utils>
+
+
+
+
+<!-- ------------ -quality ------------------------------------------ -->
+
+<utils apps=composite,convert,display,import,mogrify,montage>
+<dopt>-quality <value></opt>
+
+<abs>JPEG/MIFF/PNG compression level</abs>
+
+<pp>
+For the JPEG and MPEG image formats, quality is 0 (lowest image quality
+and highest
+compression) to 100 (best quality but least effective compression). The default
+quality is 75.  Use the <s>-sampling-factor</s> option to specify the factors
+for chroma downsampling.
+To use the same quality value as that found by the JPEG decoder,
+use the <tt>-define jpeg:preserve-settings</tt> flag.
+</pp>
+
+<pp>
+For the MIFF image format, quality/10 is the zlib compression level, which
+is 0 (worst but fastest compression) to 9 (best but slowest).  It has no
+effect on the image appearance, since the compression is always lossless.</pp>
+
+<pp>
+For the JPEG-2000 image format, quality is mapped using a non-linear
+equation to the compression ratio required by the Jasper library. This
+non-linear equation is intended to loosely approximate the quality
+provided by the JPEG v1 format. The default quality value 75 results in
+a request for 16:1 compression. The quality value 100 results in
+a request for non-lossy compression.</pp>
+
+<pp>
+For the MNG and PNG image formats, the quality value sets the zlib compression
+level (quality / 10) and filter-type (quality % 10). Compression levels
+range from 0 (fastest compression) to 100 (best but slowest). For compression
+level 0, the Huffman-only strategy is used, which is fastest but not
+necessarily the worst compression.</pp>
+<pp>
+If
+filter-type is 4 or less, the specified filter-type is used for all scanlines:
+</pp>
+
+<pre>
+     0: none
+     1: sub
+     2: up
+     3: average
+     4: Paeth
+</pre>
+
+<pp>
+If filter-type is 5, adaptive filtering is used when quality is greater
+than 50 and the image does not have a color map, otherwise no filtering
+is used.
+</pp>
+
+<pp>
+If filter-type is 6, adaptive filtering
+with <i>minimum-sum-of-absolute-values</i>
+is used.
+</pp>
+
+<pp>
+Only if the output is MNG, if filter-type is 7, the LOCO color transformation
+and adaptive filtering with <i>minimum-sum-of-absolute-values</i>
+are used.
+</pp>
+
+<pp>
+The default is quality is 75, which means nearly the best compression with
+adaptive filtering.  The quality setting has no effect on the appearance
+of PNG and MNG images, since the compression is always lossless.
+</pp>
+
+<pp>
+For further information, see the <a href="http://www.w3.org/pub/WWW/TR">PNG</a>
+specification.
+</pp>
+
+<pp>
+When writing a JNG image with transparency, two quality values are required,
+one for the main image and one for the grayscale image that conveys the
+opacity channel.  These are written as a single integer equal to the main
+image quality plus 1000 times the opacity quality.  For example, if you
+want to use quality 75 for the main image and quality 90 to compress 
+the opacity data, use <tt>-quality 90075</tt>.</pp>
+
+
+</utils>
+
+
+
+
+<!-- ------------ -raise -------------------------------------------- -->
+
+<utils apps=convert,display,mogrify>
+<dopt>-raise <width>x<height></opt>
+
+<abs>lighten or darken image edges</abs>
+
+<pp>
+This will create a 3-D effect.
+See <s>-geometry</s> for details
+details about the geometry specification.
+Offsets are not used.
+</pp>
+
+<pp>
+Use <s>-raise</s> to create a raised effect, otherwise use <s>+raise</s>.
+</pp>
+
+</utils>
+
+
+<!-- ------------ -random-threshold --------------------------------- -->
+
+<utils apps=composite,convert,display,import,mogrify,montage>
+
+<dopt>-random-threshold <channeltype> <LOWxHIGH>
+
+<abs>random threshold the image</abs>
+
+<pp>
+The channel or channels specified in the <channeltype> argument are
+reduced to binary, using an random-threshold method.
+The choices for <s>channeltype</s> are:
+</pp>
+<pre>
+    all
+    intensity
+    opacity
+    matte
+</pre>
+<pp>
+When <s>channeltype</s> is "all", the color samples are thresholded into
+a graylevel and then that graylevel is stored in the three color
+channels.  Separately, the opacity channel is thresholded into a bilevel
+opacity value which is stored in the opacity channel.  For each pixel,
+a new random number is used to establish the threshold to be used.  The
+threshold never exceeds the specified maximum (HIGH) and is never less
+than the specified minimum (LOW).
+</pp>
+<pp>
+When <s>channeltype</s> is "intensity", only the color samples are
+thresholded.  When <s>channeltype</s> is "opacity" or "matte", only the
+opacity channel is thresholded.
+<pp>
+
+
+<!-- ------------ -red-primary -------------------------------------- -->
+
+<utils apps=composite,convert,mogrify,montage>
+<dopt>-red-primary <x>,<y></opt>
+
+<abs>red chromaticity primary point</abs>
+
+</utils>
+
+<!-- ------------ -region ------------------------------------------- -->
+
+<utils apps=convert,mogrify>
+<dopt>-region <width>x<height>{+-}<x>{+-}<y></opt>
+
+<abs>apply options to a portion of the image</abs>
+
+<pp>
+The <i>x</i> and <i>y</i> offsets are treated in the same manner as in <s>-crop</s></pp>.
+
+</utils>
+
+
+<!-- ------------ -remote ------------------------------------------- -->
+
+<utils apps=animate,display>
+<dopt>-remote</opt>
+
+<abs>perform a remote operation</abs>
+
+<pp>
+The only command recognized at this time is the name of
+an image file to load.
+</pp>
+
+</utils>
+
+
+
+
+
+
+<!-- ------------ -render ------------------------------------------- -->
+
+<utils apps=composite,convert,mogrify,montage>
+<dopt>-render</opt>
+
+<abs>render vector operations</abs>
+
+<pp>
+Use <s>+render</s> to turn off rendering vector operations. This is
+useful when saving the result to vector formats such as MVG or SVG.
+</pp>
+
+</utils>
+
+
+
+<!-- ------------ -resample ------------------------------------------ -->
+
+
+<utils apps=convert,mogrify>
+<dopt>-resample <horizontal>x<vertical></opt>
+
+<abs>Resample image to specified horizontal and vertical resolution</abs>
+
+<pp>
+Resize the image so that its rendered size remains the same as the
+original at the specified target resolution. For example, if a 300 DPI
+image renders at 3 inches by 2 inches on a 300 DPI device, when the
+image has been resampled to 72 DPI, it will render at 3 inches by 2
+inches on a 72 DPI device. Note that only a small number of image
+formats (e.g. JPEG, PNG, and TIFF) are capable of storing the image
+resolution. For formats which do not support an image resolution, the
+original resolution of the image must be specified via <s>-density</s>
+on the command line prior to specifying the resample resolution.</pp>
+
+<pp>
+Note that Photoshop stores and obtains image resolution from a
+proprietary embedded profile. If this profile exists in the image, then
+Photoshop will continue to treat the image using its former resolution,
+ignoring the image resolution specified in the standard file header.</pp>
+
+
+<!-- ------------ -resize ------------------------------------------ -->
+
+<utils apps=composite,convert,import,mogrify,montage>
+<dopt>-resize <width>x<height>{%}{@}{!}{<}{>}</opt>
+
+<abs>resize an image</abs>
+
+</utils>
+
+<utils apps=convert,import,mogrify>
+<pp>
+This is an alias for the <s>-geometry</s> option and it behaves in the
+same manner. If the <s>-filter</s> option precedes the <s>-resize</s>
+option, the specified filter is used.</pp>
+
+</utils>
+
+<utils apps=all>
+<pp>
+There are some exceptions:</pp>
+</utils>
+
+<utils apps=composite>
+<pp>
+When used as a <i>composite</i> option, <s>-resize</s> conveys the preferred
+size of the output image, while <s>-geometry</s> conveys
+the size and placement of the <i>composite image</i> within the main
+image.</pp>
+</utils>
+
+<utils apps=montage>
+<pp>
+When used as a <i>montage</i> option, <s>-resize</s> conveys the preferred
+size of the montage, while <s>-geometry</s> conveys
+information about the tiles.</pp>
+
+</utils>
+
+
+
+<!-- ------------ -roll --------------------------------------------- -->
+
+<utils apps=convert,display,mogrify>
+<dopt>-roll {+-}<x>{+-}<y></opt>
+
+<abs>roll an image vertically or horizontally</abs>
+
+<pp>
+See <s>-geometry</s> for details
+the geometry specification.
+The <i>x</i> and <i>y</i> offsets are not affected
+by the <s>-gravity</s> option.
+</pp>
+
+<pp>
+A negative <i>x</i>  offset rolls the image left-to-right. A negative <i>y</i>
+offset rolls the image top-to-bottom.
+</pp>
+
+</utils>
+
+
+
+
+<!-- ------------ -rotate ------------------------------------------- -->
+
+<utils apps=animate,composite,convert,display,import,mogrify,montage>
+<dopt>-rotate <degrees>{<}{>}</opt>
+
+<abs>apply Paeth image rotation to the image</abs>
+
+<pp>
+Use <tt>></tt> to rotate the image only if its width exceeds the height.
+<tt><</tt> rotates the image <i>only</i> if its width is less than the
+height. For example, if you specify <tt>-rotate "-90>"</tt> and the image
+size is 480x640, the image is not rotated.  However, if the
+image is 640x480, it is rotated by -90 degrees.  If you use <tt>></tt> or
+<tt><</tt>, enclose it in quotation marks to prevent it from being
+misinterpreted as a file redirection.
+</pp>
+
+<pp>
+Empty triangles left over from rotating the image are filled with the color
+defined as <s>background</s> (class <s>backgroundColor</s>).
+The color is specified using the format described under the <s>-fill</s>
+option.</pp>
+
+</utils>
+
+
+
+
+<!-- ------------ -sample ------------------------------------------- -->
+
+<utils apps=convert,display,mogrify>
+<dopt>-sample <geometry></opt>
+
+<abs>scale image using pixel sampling</abs>
+
+<pp>
+See <s>-geometry</s> for details about
+the geometry specification.
+<s>-sample</s> ignores the <s>-filter</s> selection if the <s>-filter</s> option
+is present.  Offsets, if present in the geometry string, are ignored, and
+the <s>-gravity</s> option has no effect.
+</pp>
+
+</utils>
+
+
+
+
+
+<!-- ------------ -sampling-factor ---------------------------------- -->
+
+<utils apps=animate,composite,convert,display,identify,import,mogrify,montage>
+<dopt>-sampling-factor <horizontal_factor>x<vertical_factor></opt>
+
+<abs>sampling factors used by JPEG or MPEG-2 encoder and YUV decoder/encoder.</abs>
+
+<pp>
+This option specifies the sampling factors to be used by the JPEG encoder for
+chroma downsampling.  If this option is omitted, the JPEG library
+will use its own default values.  When reading or writing the YUV format
+and when writing the M2V (MPEG-2) format, use
+<s>-sampling-factor 2x1</s> to specify the 4:2:2 downsampling method.</pp>
+
+To use the same sampling factors as those found by the JPEG decoder, use
+the <tt>-define jpeg:preserve-settings</tt> flag.
+</utils>
+
+
+<!-- ------------ -scale -------------------------------------------- -->
+
+<utils apps=convert,mogrify>
+<dopt>-scale <geometry></opt>
+
+<abs>scale the image.</abs>
+
+<pp>
+See <s>-geometry</s> for details about
+the geometry specification.  <s>-scale</s> uses a simpler, faster algorithm,
+and it ignores the <s>-filter</s> selection if the <s>-filter</s> option
+is present.  Offsets, if present in the geometry string, are ignored, and
+the <s>-gravity</s> option has no effect.
+</pp>
+
+</utils>
+
+
+
+
+
+
+<!-- ------------ -scene -------------------------------------------- -->
+<utils apps=composite,convert,import,mogrify>
+<dopt>-scene <value></opt>
+
+<abs>set scene number</abs>
+
+<pp>
+This option sets the scene number of an image or the first image in
+an image sequence.</pp>
+</utils>
+
+<!-- ------------ -scenes ------------------------------------------- -->
+<utils apps=animate,display,montage>
+<dopt>-scenes <value-value></opt>
+
+<abs>range of image scene numbers to read</abs>
+
+<pp>
+Each image in the range is read
+with the filename followed by a period (<s>.</s>) and the decimal scene
+number.  You
+can change this behavior by embedding a <s>%d, %0Nd, %o, %0No, %x, or %0Nx
+printf</s> format specification in the file name. For example,</pp>
+<pre>
+    montage -scenes 5-7 image.miff
+</pre>
+<pp>
+makes a montage of files image.miff.5, image.miff.6, and image.miff.7, and</pp>
+<pre>
+    animate -scenes 0-12 image%02d.miff
+</pre>
+<pp>
+animates files image00.miff, image01.miff, through image12.miff.</pp>
+
+</utils>
+
+<!-- ------------ -screen ------------------------------------------- -->
+
+<utils apps=import>
+<dopt>-screen</opt>
+
+<abs>specify the screen to capture</abs>
+
+<pp>
+This option indicates that the GetImage request used to obtain the image
+should be done on the root window, rather than directly on the specified
+window.  In this way, you can obtain pieces of other windows that overlap
+the specified window, and more importantly, you can capture menus or other
+popups that are independent windows but appear over the specified window.</pp>
+
+</utils>
+
+
+
+
+<!-- ------------ -segment ------------------------------------------ -->
+
+<utils apps=convert,display,mogrify>
+
+<dopt>-segment <cluster threshold>x<smoothing threshold></opt>
+
+<abs>segment an image</abs>
+
+<pp>
+Segment an image by analyzing the histograms of the color components and
+identifying units that are homogeneous with the fuzzy c-means technique.
+</pp>
+
+<pp>
+Specify <i>cluster threshold</i> as the number of pixels in each cluster
+must exceed the the cluster threshold to be considered valid. <i>Smoothing
+threshold</i> eliminates noise in the second derivative of the histogram.
+As the value is increased, you can expect a smoother second derivative.
+The default is 1.5. See
+<format type=html>
+<a href="#segm">"Image Segmentation"</a>
+</format>
+<format type=man>
+"Image Segmentation", below,
+</format>
+<format type=tex>
+"Image Segmentation" in the manual page for <i>display</i>
+</format>
+for details.
+</pp>
+
+</utils>
+
+
+
+
+<!-- ------------ -shade -------------------------------------------- -->
+
+<utils apps=convert,mogrify>
+<dopt>-shade <azimuth>x<elevation></opt>
+
+<abs>shade the image using a distant light source</abs>
+
+<pp>
+Specify <i>azimuth</i> and <i>elevation</i> as the position of the light
+source. Use <s>+shade</s> to return the shading results as a grayscale
+image.
+</pp>
+
+</utils>
+
+
+<!-- ------------ -shadow ------------------------------------------- -->
+
+<utils apps=montage>
+<opt>-shadow <radius>{x<sigma>}</opt>
+
+<abs>shadow the montage</abs>
+
+</utils>
+
+
+
+<!-- ------------ -shared-memory ------------------------------------ -->
+
+<utils apps=animate,display>
+<dopt>-shared-memory</opt>
+
+<abs>use shared memory</abs>
+
+<pp>
+This option specifies whether the utility should attempt to use shared memory
+for pixmaps.  GraphicsMagick must be compiled with shared memory support,
+and the display must support the <i>MIT-SHM</i> extension.  Otherwise, this
+option is ignored.  The default is <s>True</s>.
+</pp>
+
+</utils>
+
+
+
+<!-- ------------ -sharpen ------------------------------------------ -->
+
+<utils apps=composite,convert,display,montage,mogrify>
+<dopt>-sharpen <radius>{x<sigma>}</opt>
+
+<abs>sharpen the image</abs>
+
+<pp>
+Use a Gaussian operator of the given radius and standard deviation
+(sigma).</pp>
+
+</utils>
+
+
+
+
+
+<!-- ------------ -shave -------------------------------------------- -->
+
+<utils apps=convert,mogrify>
+<dopt>-shave <width>x<height>{%}</opt>
+
+<abs>shave pixels from the image edges</abs>
+
+<pp>
+Specify the width of the region to be removed from both
+sides of the image and the height of the regions to be removed from
+top and bottom.
+</pp>
+
+</utils>
+
+
+
+
+<!-- ------------ -shear -------------------------------------------- -->
+
+<utils apps=convert,mogrify>
+<dopt>-shear <x degrees>x<y degrees></opt>
+
+<abs>shear the image along the X or Y axis</abs>
+
+<pp>
+Use the specified positive or negative shear angle.
+</pp>
+
+<pp>
+Shearing slides one edge of an image along the X or Y axis, creating a
+parallelogram. An X direction shear slides an edge along the X axis, while
+a Y direction shear slides an edge along the Y axis. The amount of the
+shear is controlled by a shear angle. For X direction shears, <i>x degrees</i>
+is measured relative to the Y axis, and similarly, for Y direction shears
+<i>y
+degrees</i> is measured relative to the X axis.
+</pp>
+
+<pp>
+Empty triangles left over from shearing the image are filled with the color
+defined as <s>background</s> (class <s>backgroundColor</s>).
+The color is specified using the format described under the <s>-fill</s>
+option.</pp>
+
+
+
+</utils>
+
+<!-- ------------ -silent ------------------------------------------- -->
+
+<utils apps=import>
+<opt>-silent</opt>
+
+<abs>operate silently</abs>
+
+</utils>
+
+
+
+
+<!-- ------------ -size --------------------------------------------- -->
+
+<utils apps=animate,composite,convert,display,identify,mogrify,montage>
+<dopt>-size <width>x<height>{+offset}</opt>
+
+<abs>width and height of the image</abs>
+
+<pp>
+Use this option to specify the width and height of raw images whose dimensions
+are unknown such as <s>GRAY</s>,
+<s>RGB</s>, or <s>CMYK</s>. In addition
+to width and height, use
+<s>-size</s> with an offset to skip any header information in
+the image or tell the number of colors in a <s>MAP</s> image
+file, (e.g. -size 640x512+256).
+</pp>
+
+<pp>
+For Photo CD images, choose from these sizes:</pp>
+
+<pre>
+     192x128
+     384x256
+     768x512
+     1536x1024
+     3072x2048
+</pre>
+
+<pp>
+Finally, use this option to choose a particular resolution layer of a JBIG
+or JPEG image (e.g. -size 1024x768).
+</pp>
+
+</utils>
+
+
+<!-- ------------ -snaps [import ] ---------------------------------- -->
+
+<utils apps=import>
+<dopt>-snaps <value></opt>
+
+<abs>number of screen snapshots</abs>
+
+<pp>
+Use this option
+to grab more than one image from the X server screen, to create
+an animation sequence.</pp>
+
+</utils>
+
+
+
+
+
+
+<!-- ------------ -solarize ----------------------------------------- -->
+
+<utils apps=convert,mogrify>
+<dopt>-solarize <factor></opt>
+
+<abs>negate all pixels above the threshold level</abs>
+<pp>
+Specify <i>factor</i> as the
+percent threshold of the intensity (0 - 99.9%).
+</pp>
+
+<pp>
+This option produces a <i>solarization</i> effect seen when exposing a
+photographic film to light during the development process.
+</pp>
+
+</utils>
+
+
+
+
+<!-- ------------ -spread ------------------------------------------- -->
+
+<utils apps=convert,mogrify>
+<dopt>-spread <amount></opt>
+
+
+
+<abs>displace image pixels by a random amount</abs>
+<pp>
+<i>Amount</i> defines the size of the neighborhood around each pixel to
+choose a candidate pixel to swap.
+</pp>
+
+</utils>
+
+
+
+<!-- ------------ -stegano ------------------------------------------ -->
+
+<utils apps=composite>
+<dopt>-stegano <offset></opt>
+
+<abs>hide watermark within an image</abs>
+
+<pp>
+Use an offset to start the image hiding some number of pixels from the
+beginning of the image.  Note this offset and the image size.  You will
+need this information to recover the steganographic image
+(e.g. display -size 320x256+35 stegano:image.png).
+</pp>
+
+</utils>
+
+
+
+<!-- ------------ -stereo ------------------------------------------- -->
+
+<utils apps=composite>
+<dopt>-stereo</opt>
+
+<abs>composite two images to create a stereo anaglyph</abs>
+
+<pp>
+The left side of the stereo pair is saved as the red channel of the output
+image.  The right side is saved as the green channel.  Red-green stereo
+glasses are required to properly view the stereo image.
+</pp>
+
+
+
+<!-- ------------ -stroke ------------------------------------------- -->
+
+<utils apps=convert,mogrify,montage>
+<dopt>-stroke <color></opt>
+
+<abs>color to use when stroking a graphic primitive</abs>
+
+<pp>
+The color is specified using the format described under the <s>-fill</s>
+option.</pp>
+<pp>
+See <s>-draw</s> for further
+details.
+</pp>
+
+</utils>
+
+
+
+
+<!-- ------------ -strokewidth -------------------------------------- -->
+
+<utils apps=convert,mogrify,montage>
+<dopt>-strokewidth <value></opt>
+
+
+
+<abs>set the stroke width</abs>
+<pp>
+See <s>-draw</s> for further details.
+</pp>
+
+</utils>
+
+
+
+
+<!-- ------------ -swirl -------------------------------------------- -->
+
+<utils apps=convert,mogrify>
+<dopt>-swirl <degrees></opt>
+
+<abs>swirl image pixels about the center</abs>
+<pp>
+<i>Degrees</i> defines the tightness of the swirl.
+</pp>
+
+</utils>
+
+
+
+<!-- ------------ -text-font ---------------------------------------- -->
+
+<utils apps=animate,display>
+<dopt>-text-font <name></opt>
+
+<abs>font for writing fixed-width text</abs>
+
+<pp>
+Specifies the name of the preferred font to use in fixed (typewriter style)
+formatted text.  The default is 14 point <i>Courier</i>.
+</pp>
+
+<pp>
+You can tag a font to specify whether it is a PostScript, TrueType, or
+OPTION1 font.  For example, <tt>Courier.ttf</tt> is a TrueType font
+and <tt>x:fixed</tt> is OPTION1.
+</pp>
+
+</utils>
+
+
+
+
+<!-- ------------ -texture ------------------------------------------ -->
+
+<utils apps=convert,display,mogrify,montage>
+<opt>-texture <filename></opt>
+
+<abs>name of texture to tile onto the image background</abs>
+
+</utils>
+
+
+<!-- ------------ -threshold ---------------------------------------- -->
+
+<utils apps=convert,mogrify>
+<dopt>-threshold <value>{<green>,<blue>,<opacity>}{%}</opt>
+
+<abs>threshold the image</abs>
+
+<pp>
+Create an image such that any pixel sample that is equal to, or exceeds
+the threshold, is reassigned the maximum intensity otherwise the minimum
+intensity.
+</pp>
+
+<pp>
+If the green or blue value is omitted, these channels use the same value
+as the first one provided.  If all three color values are the same,
+the result is a bi-level image.  If the opacity threshold is omitted,
+OpaqueOpacity will be used and any partially transparent pixel will
+become fully transparent.  If only a single 0 is provided,
+auto-thresholding will be performed.
+</pp>
+
+<pp>
+To generate an all-black or all-white image with the same dimensions as
+the input image, you can use</pp>
+<pre>
+    convert -threshold 65535 in.png black.png
+    convert -threshold 0,0 in.png white.png
+</pre>
+
+</utils>
+
+
+
+<!-- ------------ -tile [convert, mogrify] -------------------------- -->
+
+<utils apps=convert,mogrify>
+<opt>-tile <filename></opt>
+
+<abs>tile image when filling a graphic primitive</abs>
+
+</utils>
+
+
+
+
+<!-- ------------ -tile [montage] ----------------------------------- -->
+
+<utils apps=montage>
+<opt>-tile <geometry></opt>
+
+<abs>layout of images [<i>montage</i>]</abs>
+
+</utils>
+
+
+<!-- ------------ -title -------------------------------------------- -->
+
+<utils apps=animate,display,montage>
+<dopt>-title <string></opt>
+
+<abs>assign title to displayed image [<i>animate, display, montage</i>]</abs>
+
+<pp>
+Use this option to assign a specific title to the image. This is assigned
+to the image window and is typically displayed in the window title bar.
+Optionally you can include the image filename, type, width, height,
+Exif data, or
+other image attribute by embedding special format characters described
+under the <s>-format</s> option.</pp>
+
+<pp>
+For example,
+</pp>
+
+<pre>
+     -title "%m:%f %wx%h"
+</pre>
+
+<pp>
+produces an image title of <tt>MIFF:bird.miff 512x480</tt> for an image
+titled <tt>bird.miff</tt> and whose width is 512 and height is 480.
+</pp>
+
+</utils>
+
+
+
+
+
+<!-- ------------ -transform ---------------------------------------- -->
+
+<utils apps=convert,mogrify>
+<dopt>-transform</opt>
+
+<abs>transform the image</abs>
+
+<pp>
+This option applies the transformation matrix from a previous
+<s>-affine</s> option.
+</pp>
+<pre>
+    convert -affine 2,2,-2,2,0,0 -transform bird.ppm bird.jpg
+</pre>
+
+
+</utils>
+
+<!-- ------------ -transparent -------------------------------------- -->
+
+<utils apps=convert,import,mogrify,montage>
+<dopt>-transparent <color></opt>
+
+<abs>make this color transparent within the image</abs>
+
+<pp>
+The color is specified using the format described under the <s>-fill</s>
+option.</pp>
+
+</utils>
+
+
+
+
+<!-- ------------ -treedepth ---------------------------------------- -->
+
+<utils apps=animate,composite,convert,display,mogrify,montage>
+<dopt>-treedepth <value></opt>
+
+<abs>tree depth for the color reduction algorithm</abs>
+
+<pp>
+Normally, this integer value is zero or one. A value of zero or one
+causes the use of an optimal tree depth for the color reduction
+algorithm</pp>
+
+<pp>
+An optimal depth generally allows the best representation of the source
+image with the fastest computational speed and the least amount of memory.
+However, the default depth is inappropriate for some images. To assure
+the best representation, try values between 2 and 8 for this parameter.
+Refer to
+<a href="quantize.html">quantize</a> for more details.
+</pp>
+<pp>
+The <s>-colors</s> or <s>-monochrome</s> option, or writing to an image
+format which requires color reduction, is required for this option to
+take effect.
+</pp>
+
+</utils>
+
+
+<!-- ------------ -trim --------------------------------------------- -->
+
+<utils apps=animate,convert,composite,display,import,mogrify,montage>
+<dopt>-trim</opt>
+
+<abs>trim an image</abs>
+
+<pp>
+This option removes any edges that are exactly the same color as the
+corner pixels.  Use <s>-fuzz</s> to make <s>-trim</s> remove edges that
+are nearly the same color as the corner pixels.</pp>
+
+</utils>
+
+
+<!-- ------------ -type --------------------------------------------- -->
+
+<utils apps=composite,convert,mogrify,montage>
+<dopt>-type <type></opt>
+
+<abs>the image type</abs>
+<pp>
+Choose from:
+<s>Bilevel</s>, <s>Grayscale</s>, <s>Palette</s>,
+<s>PaletteMatte</s>, <s>TrueColor</s>, <s>TrueColorMatte</s>,
+<s>ColorSeparation</s>, <s>ColorSeparationMatte</s>, or <s>Optimize</s>.
+</pp>
+
+<pp>
+Normally, when a format supports different subformats such as grayscale
+and truecolor, the encoder will try to choose an efficient subformat.
+The <s>-type</s> option can be used to overrride this behavior.  For
+example, to prevent a JPEG from being written in grayscale format even
+though only gray pixels are present, use
+</pp>
+<pre>
+    convert bird.pgm -type TrueColor bird.jpg
+</pre>
+<pp>
+Similarly, using <tt>-type TrueColorMatte</tt> will force the encoder
+to write an alpha channel even though the image is opaque, if the
+output format supports transparency.
+</pp>
+
+</utils>
+
+
+<!-- ------------ -update ------------------------------------------- -->
+
+<utils apps=display>
+<dopt>-update <seconds></opt>
+
+<abs>
+detect when image file is modified and redisplay.</abs>
+
+<pp>
+Suppose that while you are displaying an image the file that is currently
+displayed is over-written.
+<s>display</s> will automatically detect that
+the input file has been changed and update the displayed image accordingly.
+</pp>
+
+
+
+<!-- ------------ -units -------------------------------------------- -->
+
+<utils apps=composite,convert,mogrify>
+<dopt>-units <type></opt>
+
+<abs>the units of image resolution</abs>
+<pp>
+Choose from: <s>Undefined</s>, <s>PixelsPerInch</s>, or
+<s>PixelsPerCentimeter</s>. This option is normally used in conjunction
+with the <s>-density</s> option.
+</pp>
+
+</utils>
+
+
+
+
+<!-- ------------ -unsharp ------------------------------------------ -->
+
+<utils apps=composite,convert,mogrify>
+<dopt>-unsharp <radius>{x<sigma>}{+<amount>}{+<threshold>}</opt>
+
+<abs>sharpen the image with an unsharp mask operator</abs>
+
+<pp>
+The <s>-unsharp</s> option sharpens an image. The image is convolved
+with a Gaussian operator of the given radius and standard deviation
+(sigma). For reasonable results, radius should be larger than sigma. Use
+a radius of 0 to have the method select a suitable radius.</pp>
+
+<pp>
+The parameters are:
+</pp>
+
+<pre>
+    radius:    The radius of the Gaussian, in pixels,  not
+               counting the center pixel (default 0).
+    sigma:     The standard deviation of the Gaussian, in
+               pixels (default 1.0).
+    amount:    The percentage of the difference between the
+               original and the blur image that is added back
+               into the original (default 1.0).
+    threshold: The threshold, as a fraction of MaxRGB, needed
+               to apply the difference amount (default 0.05).
+</pre>
+
+</utils>
+
+
+
+
+<!-- ------------ -use-pixmap --------------------------------------- -->
+
+<utils apps=display,convert>
+<opt>-use-pixmap</opt>
+
+<abs>use the pixmap</abs>
+
+</utils>
+
+
+
+
+<!-- ------------ -verbose ------------------------------------------ -->
+
+<utils apps=animate,composite,conjure,convert,display,identify,import,mogrify,montage>
+<dopt>-verbose</opt>
+
+<abs>print detailed information about the image</abs>
+
+</utils>
+<utils apps=identify>
+<pp>
+This information is printed: image scene number; image name; image size;
+the image class (<i>DirectClass</i> or <i>PseudoClass</i>); the total number
+of unique colors; and the number of seconds to read and transform the image.
+Refer to <a href="miff.html">miff</a> for a description of the image class.
+</pp>
+
+<pp>
+If <s>-colors</s> is also specified, the total unique colors in the image
+and color reduction error values are printed. Refer to <a href="quantize.html">quantize</a>
+for a description of these values.
+</pp>
+
+</utils>
+
+
+<!-- ------------ -version ------------------------------------------ -->
+
+<utils apps=animate,composite,conjure,convert,display,identify,import,mogrify,montage>
+<dopt>-version</opt>
+
+<abs>print GraphicsMagick version string</abs>
+
+</utils>
+
+<!-- ------------ -view --------------------------------------------- -->
+
+<utils apps=convert,mogrify>
+<opt>-view <string></opt>
+
+<abs>FlashPix viewing parameters</abs>
+
+</utils>
+
+
+
+<!-- ------------ -virtual-pixel ------------------------------------ -->
+
+<utils apps=convert,mogrify>
+<dopt>-virtual-pixel <method></opt>
+
+<abs>specify contents of "virtual pixels"</abs>
+
+<pp>
+This option 
+defines "virtual pixels" for use in operations that can access pixels outside
+the boundaries of an image.</pp>
+<pp>
+Choose from these methods:
+</pp>
+
+<pre>
+    Constant:  Use the image background color.
+    Edge:      Extend the edge pixel toward infinity (default).
+    Mirror:    Mirror the image.
+    Tile:      Tile the image.
+</pre>
+
+<pp>
+This option affects operations that use
+virtual pixels such as <s>-blur</s>, <s>-sharpen</s>, <s>-wave</s>, etc.</pp>
+
+</utils>
+<!-- ------------ -visual ------------------------------------------- -->
+
+<utils apps=animate,display>
+<dopt>-visual <type></opt>
+
+<abs>animate images using this X visual type</abs>
+
+<pp>
+Choose from these visual classes:
+</pp>
+
+<pre>
+     StaticGray
+     GrayScale
+     StaticColor
+     PseudoColor
+     TrueColor
+     DirectColor
+     default
+     visual id
+</pre>
+
+<pp>
+The X server must support the visual you choose, otherwise an error occurs.
+If a visual is not specified, the visual class that can display the most
+simultaneous colors on the default screen is chosen.
+</pp>
+
+</utils>
+
+
+<!-- ------------ -watermark ---------------------------------------- -->
+
+<utils apps=composite>
+<opt>-watermark <brightness>x<saturation></opt>
+
+<abs>percent brightness and saturation of a watermark</abs>
+
+</utils>
+
+
+
+<!-- ------------ -wave --------------------------------------------- -->
+
+<utils apps=convert,mogrify>
+<dopt>-wave <amplitude>x<wavelength></opt>
+
+<abs>alter an image along a sine wave</abs>
+
+<pp>
+Specify <i>amplitude</i> and <i>wavelength</i>
+of the wave.
+</pp>
+
+</utils>
+
+
+<!-- ------------ -white-point -------------------------------------- -->
+
+<utils apps=composite,convert,mogrify,montage>
+<dopt>-white-point <x>,<y></opt>
+
+<abs>chromaticity white point</abs>
+
+</utils>
+
+
+
+
+<!-- ------------ -window ------------------------------------------- -->
+
+<utils apps=animate,display>
+<dopt>-window <id></opt>
+
+<abs>make image the background of a window</abs>
+
+<pp>
+<i>id</i> can be a window id or name.  Specify <s>root</s> to
+select X's root window as the target window.
+</pp>
+
+<pp>
+By default the image is tiled onto the background of the target
+window.   If <s>backdrop</s> or <s>-geometry</s> are
+specified, the image is surrounded by the background color.  Refer to
+<s>X RESOURCES</s> for details.
+</pp>
+
+<pp>
+The image will not display on the root window if the image has more
+unique colors than the target window colormap allows.  Use
+<s>-colors</s> to reduce the number of colors.
+</pp>
+
+</utils>
+
+
+<!-- ------------ -window-group ------------------------------------- -->
+
+<utils apps=display>
+<opt>-window-group</opt>
+
+<abs>specify the window group</abs>
+
+</utils>
+
+
+
+<!-- ------------ -write [convert]----------------------------------- -->
+
+<utils apps=composite,convert>
+<dopt>-write <filename></opt>
+
+<abs>write  an image sequence [<i>convert, composite</i>]</abs>
+
+<pp>
+The image sequence following the <s>-write</s> <i>filename</i>option is
+written out, and then processing continues with the
+same image in its current state if there are additional options.  To
+restore the image to its original state after writing it, use
+the <s>+write</s> <i>filename</i> option.</pp>
+
+</utils>
+
+
+
+
+<!-- ------------ -write [display] ---------------------------------- -->
+
+<utils apps=display>
+<dopt>-write <filename></opt>
+
+<abs>write the image to a file [<i>display</i>]</abs>
+
+<pp>
+If <i>filename</i> already exists, you will be prompted as to whether it should
+be overwritten.</pp>
+
+<pp>
+By default, the image is written in the format that it was read in as.
+To specify a particular image format, prefix <i>filename</i> with the image
+type and a colon (e.g., ps:image) or specify the image type as the filename
+suffix (e.g., image.ps). See convert(1) for a list of valid image formats.
+Specify file as - for standard output. If file has the
+extension <s>.Z</s> or
+<s>.gz</s>, the file size is <s>compressed</s> using compress or
+<s>gzip</s>
+respectively. Precede the image file name with | to pipe to a system command.
+</pp>
+
+<pp>
+Use <s>-compress</s> to specify the type of image compression.</pp>
+
+<pp>
+The equivalent X resource for this option is
+<s>writeFilename</s> (class <s>WriteFilename</s>).
+See
+<format type=html>
+<a href="#xres">X Resources</a>
+</format>
+<format type=man>
+"X Resources", below,
+</format>
+<format type=tex>
+"X Resources" in the manual page for <i>display</i>
+</format>
+for details.</pp>
+
+</utils>
+</imdoc>

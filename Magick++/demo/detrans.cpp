@@ -5,7 +5,7 @@
 // background color, or to create a similar looking effect without
 // transparency.
 //
-// Written by Bob Friesenhahn <bfriesen@simple.dallas.tx.us>, 2000
+// Copyright Bob Friesenhahn, 2000
 //
 // Usage: detrans color file...
 //
@@ -25,34 +25,36 @@ int main(int argc,char **argv)
   // Initialize ImageMagick install location for Windows
   InitializeMagick(*argv);
 
-  Color color;
-  try {
-    color = Color(argv[1]);
-  }
-  catch ( Exception error_ )
-    {
-      cout << error_.what() << endl;
-      cout.flush();
-      exit(1);
+  {
+    Color color;
+    try {
+      color = Color(argv[1]);
     }
-
-  char **arg = &argv[2];
-  while ( *arg )
-    {
-      string fname(*arg);
-      try {
-	Image overlay( fname );
-	Image base( overlay.size(), color );
-	base.composite( overlay, 0, 0, OverCompositeOp );
-	base.matte( false );
-	base.write( fname );
+    catch ( Exception error_ )
+      {
+        cout << error_.what() << endl;
+        cout.flush();
+        exit(1);
       }
-      catch( Exception &error_ ) 
-	{ 
-	  cout << error_.what() << endl; 
-	}
-      ++arg;
-    }
+
+    char **arg = &argv[2];
+    while ( *arg )
+      {
+        string fname(*arg);
+        try {
+          Image overlay( fname );
+          Image base( overlay.size(), color );
+          base.composite( overlay, 0, 0, OverCompositeOp );
+          base.matte( false );
+          base.write( fname );
+        }
+        catch( Exception &error_ ) 
+          { 
+            cout << error_.what() << endl; 
+          }
+        ++arg;
+      }
+  }
 
   return 0; 
 }

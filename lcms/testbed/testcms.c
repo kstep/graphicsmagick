@@ -1,37 +1,29 @@
 //
 //  Little cms
-//  Copyright (C) 1998-2002 Marti Maria
+//  Copyright (C) 1998-2003 Marti Maria
 //
-// THIS SOFTWARE IS PROVIDED "AS-IS" AND WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS, IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION, ANY
-// WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+// Permission is hereby granted, free of charge, to any person obtaining 
+// a copy of this software and associated documentation files (the "Software"), 
+// to deal in the Software without restriction, including without limitation 
+// the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+// and/or sell copies of the Software, and to permit persons to whom the Software 
+// is furnished to do so, subject to the following conditions:
 //
-// IN NO EVENT SHALL MARTI MARIA BE LIABLE FOR ANY SPECIAL, INCIDENTAL,
-// INDIRECT OR CONSEQUENTIAL DAMAGES OF ANY KIND,
-// OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
-// WHETHER OR NOT ADVISED OF THE POSSIBILITY OF DAMAGE, AND ON ANY THEORY OF
-// LIABILITY, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
-// OF THIS SOFTWARE.
+// The above copyright notice and this permission notice shall be included in 
+// all copies or substantial portions of the Software.
 //
-//
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the GNU Lesser General Public
-// License as published by the Free Software Foundation; either
-// version 2 of the License, or (at your option) any later version.
-//
-// This library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public
-// License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO 
+// THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE 
+// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION 
+// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
+// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // Test Suite for Little cms
 
-// #define ICM_COMPARATIVE		1
-// #define CHECK_SPEED			1
+// #define ICM_COMPARATIVE      1
+// #define CHECK_SPEED          1
 
 #include "lcms.h"
 #include <time.h>
@@ -97,26 +89,26 @@ int CheckEndianess(void)
 static
 int CheckSwab(void)
 {
-	unsigned char Test[] = { 1, 2, 3, 4, 5, 6};
+    unsigned char Test[] = { 1, 2, 3, 4, 5, 6};
 
 #ifdef USE_CUSTOM_SWAB
-		return 1;
+        return 1;
 #endif
 
 #ifdef USE_BIG_ENDIAN
-		return 1;
+        return 1;
 #endif
 
-	swab(Test, Test, 6);
+    swab(Test, Test, 6);
 
-	if (strncmp(Test, "\x2\x1\x4\x3\x6\x5", 6) != 0)
-	{
+    if (strncmp(Test, "\x2\x1\x4\x3\x6\x5", 6) != 0)
+    {
             printf("\nOOOPPSS! swab() does not work as expected in your machine!\n\n");
             printf("Please, edit lcms.h and uncomment the USE_CUSTOM_SWAB toggle.\n");
             return 0;
 
-	}
-	return 1;
+    }
+    return 1;
 }
 
 typedef struct _Stats {
@@ -295,9 +287,9 @@ int TestReversingOfCurves(void)
 
     PrintStatistics(0, &Stats); 
     printf(" pass.\n");
-	cmsFreeGamma(Gamma);
-	cmsFreeGamma(Reverse);
-	cmsFreeGamma(Computed);
+    cmsFreeGamma(Gamma);
+    cmsFreeGamma(Reverse);
+    cmsFreeGamma(Computed);
     return 1;
 }
 
@@ -930,8 +922,8 @@ int TestFullSpectrum(cmsHTRANSFORM xform, int nRedInterv, int MaxErr)
                                           printf("Coarse error! : In=(%x,%x,%x) Out=(%x,%x,%x)\n",
                                                         bin[b].r, bin[b].g, bin[b].b,
                                                         bout[b].r, bout[b].g, bout[b].b);
-										  free(bin);
-										  free(bout);
+                                          free(bin);
+                                          free(bout);
                                           return 0;
                                    }
                             }
@@ -1386,136 +1378,86 @@ int TestMultiprofile(void)
 static
 int TestLinearizationDevicelink()
 {
-	LPGAMMATABLE Transfer[3];
-	cmsHPROFILE hLin1, hLin2;
+    LPGAMMATABLE Transfer[3];
+    cmsHPROFILE hLin1, hLin2;
     cmsHTRANSFORM hXForm;
     cmsHPROFILE Profiles[10];
     int nMaxErr;
 
-	printf("Checking linearization devicelink");
+    printf("Checking linearization devicelink");
 
-	Transfer[0] = cmsBuildGamma(256, 1./2.2);
-	Transfer[1] = cmsBuildGamma(256, 1./2.2);
-	Transfer[2] = cmsBuildGamma(256, 1./2.2);
+    Transfer[0] = cmsBuildGamma(256, 1./2.2);
+    Transfer[1] = cmsBuildGamma(256, 1./2.2);
+    Transfer[2] = cmsBuildGamma(256, 1./2.2);
 
-	hLin1 = cmsCreateLinearizationDeviceLink(icSigRgbData, Transfer);
+    hLin1 = cmsCreateLinearizationDeviceLink(icSigRgbData, Transfer);
 
-	cmsFreeGammaTriple(Transfer);
-	
-
-
-	Transfer[0] = cmsBuildGamma(256, 2.2);
-	Transfer[1] = cmsBuildGamma(256, 2.2);
-	Transfer[2] = cmsBuildGamma(256, 2.2);
-
-	hLin2 = cmsCreateLinearizationDeviceLink(icSigRgbData, Transfer);
-
-	cmsFreeGammaTriple(Transfer);
-
-	Profiles[0] = hLin1;
-	Profiles[1] = hLin2;
-
-	hXForm = cmsCreateMultiprofileTransform(Profiles, 2, TYPE_RGBA_16, TYPE_RGBA_16, INTENT_RELATIVE_COLORIMETRIC, cmsFLAGS_HIGHRESPRECALC);
-	if (!hXForm) {
-
-		printf("Error!\n");
-		return 1;
-	}
-	
-
-    nMaxErr = TestFullSpectrum(hXForm, 31, 0x1000L);
-
-	cmsDeleteTransform(hXForm);
-    cmsCloseProfile(hLin1);
-    cmsCloseProfile(hLin2);
-
-	printf("\n");
-
-    return nMaxErr;
-}
-
-static
-int TestInkLimiting()
-{
-    cmsHPROFILE hIL;
-    cmsHTRANSFORM hXForm;
-    BYTE In[4], Out[4];
-    int i, j, k, l;
-
-    printf("Testing ink limiting ");
+    cmsFreeGammaTriple(Transfer);
     
-    hIL = cmsCreateInkLimitingDeviceLink(icSigCmykData, 100);
 
-    
-    hXForm = cmsCreateTransform(hIL, TYPE_CMYK_8, NULL, TYPE_CMYK_8, INTENT_RELATIVE_COLORIMETRIC, 0);
+
+    Transfer[0] = cmsBuildGamma(256, 2.2);
+    Transfer[1] = cmsBuildGamma(256, 2.2);
+    Transfer[2] = cmsBuildGamma(256, 2.2);
+
+    hLin2 = cmsCreateLinearizationDeviceLink(icSigRgbData, Transfer);
+
+    cmsFreeGammaTriple(Transfer);
+
+    Profiles[0] = hLin1;
+    Profiles[1] = hLin2;
+
+    hXForm = cmsCreateMultiprofileTransform(Profiles, 2, TYPE_RGBA_16, TYPE_RGBA_16, INTENT_RELATIVE_COLORIMETRIC, cmsFLAGS_HIGHRESPRECALC);
     if (!hXForm) {
 
         printf("Error!\n");
-        return 0;
+        return 1;
     }
     
-    for (l=0; l < 255; l += 8) {
-        Dot();      
-        for (k=0; k < 255; k += 8) 
-            for (j=0; j < 255; j += 8) 
-                for (i=0; i < 255; i += 8) {
 
-                    In[0] = i; In[1] = j; In[2] = k; In[3] = l;
-
-                    cmsDoTransform(hXForm, In, Out, 1);
-
-                    if (Out[0] + Out[1] + Out[2] + Out[3] > 0x100) {
-            
-                        printf("Failed!\n");
-                        return 0;   
-                    }
-        }
-    }
+    nMaxErr = TestFullSpectrum(hXForm, 31, 0x1000L);
 
     cmsDeleteTransform(hXForm);
-    cmsCloseProfile(hIL);
-    printf("pass.\n");
+    cmsCloseProfile(hLin1);
+    cmsCloseProfile(hLin2);
 
-    return 1;
+    printf("\n");
+
+    return nMaxErr;
 }
-
 
 
 static
 int TestDeviceLinkGeneration()
 {
     cmsHTRANSFORM hXForm, hIdentity;
-	cmsHPROFILE hDevLink, hsRGB;
+    cmsHPROFILE hDevLink, hsRGB;
     int nMaxErr;
 
 
-	printf("Checking devicelink generation");
+    printf("Checking devicelink generation");
 
-	hsRGB	  = cmsOpenProfileFromFile("sRGB Color Space Profile.icm", "r");
-	hIdentity = cmsCreateTransform(hsRGB, TYPE_RGBA_16, hsRGB, TYPE_RGBA_16, INTENT_RELATIVE_COLORIMETRIC, 0);
-	hDevLink  = cmsTransform2DeviceLink(hIdentity, 0);
-	_cmsSaveProfile(hDevLink, "devicelink.icm");
+    hsRGB     = cmsOpenProfileFromFile("sRGB Color Space Profile.icm", "r");
+    hIdentity = cmsCreateTransform(hsRGB, TYPE_RGBA_16, hsRGB, TYPE_RGBA_16, INTENT_RELATIVE_COLORIMETRIC, 0);
+    hDevLink  = cmsTransform2DeviceLink(hIdentity, 0);
+    _cmsSaveProfile(hDevLink, "devicelink.icm");
 
-	cmsCloseProfile(hDevLink);
-	cmsCloseProfile(hsRGB);
-	cmsDeleteTransform(hIdentity);
+    cmsCloseProfile(hDevLink);
+    cmsCloseProfile(hsRGB);
+    cmsDeleteTransform(hIdentity);
 
-	hDevLink = cmsOpenProfileFromFile("devicelink.icm", "r");
-	hXForm   = cmsCreateTransform(hDevLink, TYPE_RGBA_16, NULL, TYPE_RGBA_16, INTENT_RELATIVE_COLORIMETRIC, 0);	
+    hDevLink = cmsOpenProfileFromFile("devicelink.icm", "r");
+    hXForm   = cmsCreateTransform(hDevLink, TYPE_RGBA_16, NULL, TYPE_RGBA_16, INTENT_RELATIVE_COLORIMETRIC, 0); 
     nMaxErr  = TestFullSpectrum(hXForm, 31, 0x1000L);
 
-	cmsDeleteTransform(hXForm);	
+    cmsDeleteTransform(hXForm); 
     cmsCloseProfile(hDevLink);
     
-	printf("\n");
-	unlink("devicelink.icm");
+    printf("\n");
+    unlink("devicelink.icm");
 
     return nMaxErr;
 }
-
-
-
-
 
 
 static
@@ -1657,10 +1599,10 @@ void SpeedTest(void)
     double seconds, diff;
     cmsHPROFILE hlcmsProfileIn, hlcmsProfileOut;
     cmsHTRANSFORM hlcmsxform;
-	COLOR In, Out;
+    COLOR In, Out;
    
    
-	printf("\n\nRaw speed check:\n");
+    printf("\n\nRaw speed check:\n");
 
     hlcmsProfileIn  = cmsOpenProfileFromFile("sRGB Color Space Profile.ICM", "r");
     hlcmsProfileOut = cmsOpenProfileFromFile("sRGB Color Space Profile.ICM", "r");
@@ -1684,7 +1626,7 @@ void SpeedTest(void)
 
     diff = clock() - atime;
     seconds = (double) diff / CLOCKS_PER_SEC;
-	
+    
     printf("done.\n[%d tics, %g sec, %g Mb/sec.]\n", (int) diff, seconds, 32. / seconds );
 
     cmsDeleteTransform(hlcmsxform);
@@ -1696,26 +1638,30 @@ void SpeedTest(void)
 #endif
 
 
+
+
+
+
 int main(int argc, char *argv[])
 {
-       int lExhaustive = 0;	  
+       int lExhaustive = 0;   
 
-       printf("little cms testbed. Ver 1.11 [build %s %s]\n\n", __DATE__, __TIME__);
-      
+       printf("little cms testbed. Ver %1.2f [build %s %s]\n\n", LCMS_VERSION / 100., __DATE__, __TIME__);
+
 #ifndef LCMS_DLL
 
        if (!CheckEndianess()) return 1;
-	   if (!CheckSwab()) return 1;
+       if (!CheckSwab()) return 1;
 
        TestFixedPoint();
-	 
-       if (!TestFixedScaling()) return 1;     	   
+     
+       if (!TestFixedScaling()) return 1;          
        if (!TestJointCurves()) return 1;
-	   if (!TestReversingOfCurves()) return 1;
+       if (!TestReversingOfCurves()) return 1;
        if (!TestLinearInterpolation(lExhaustive)) return 1;
        if (!TestReverseLinearInterpolation()) return 1;
 
-	   
+       
 
        if (!Test3D()) return 1;
        if (!TestMatrixCreation()) return 1;
@@ -1729,9 +1675,8 @@ int main(int argc, char *argv[])
 
        if (!TestPreview()) return 1;
        if (!TestMultiprofile()) return 1;
-	   if (!TestLinearizationDevicelink()) return 1;
-       if (!TestInkLimiting()) return 1;
-	   if (!TestDeviceLinkGeneration()) return 1;
+       if (!TestLinearizationDevicelink()) return 1;
+       if (!TestDeviceLinkGeneration()) return 0;
 
 #ifdef ICM_COMPARATIVE
 #ifndef NON_WINDOWS
@@ -1739,8 +1684,8 @@ int main(int argc, char *argv[])
 #endif
 #endif
 
-#ifdef CHECK_SPEED 	  
-	   SpeedTest();
+#ifdef CHECK_SPEED    
+       SpeedTest();
 #endif
 
        printf("\nSuccess.\n");

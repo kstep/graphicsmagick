@@ -1,5 +1,5 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003, 2004 GraphicsMagick Group
 % Copyright (C) 2002 ImageMagick Studio
 %
 % This program is covered by multiple licenses, which are described in
@@ -16,7 +16,7 @@
 %                            M   M   V V   G   G                              %
 %                            M   M    V     GGG                               %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                 Read/Write Magick Vector Graphics Metafiles.                %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -142,7 +142,7 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   if ((image->columns == 0) || (image->rows == 0))
     {
       char
@@ -170,14 +170,14 @@ static Image *ReadMVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     }
   if ((image->columns == 0) || (image->rows == 0))
-    ThrowReaderException(OptionError,"MustSpecifyImageSize",image);
+    ThrowReaderException(OptionError,MustSpecifyImageSize,image);
   /*
     Render drawing.
   */
   SetImage(image,OpaqueOpacity);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   draw_info->fill=image_info->pen;
-  if (GetBlobStreamType(image) == BlobStream)
+  if (GetBlobStreamData(image))
     draw_info->primitive=AllocateString((char *) GetBlobStreamData(image));
   else
     draw_info->primitive=FileToBlob(image->filename,&length,exception);
@@ -298,10 +298,10 @@ static unsigned int WriteMVGImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   attribute=GetImageAttribute(image,"[MVG]");
   if (attribute == (ImageAttribute *) NULL)
-    ThrowWriterException(OptionError,"NoImageVectorGraphics",image);
+    ThrowWriterException(CoderError,NoImageVectorGraphics,image);
   status=OpenBlob(image_info,image,WriteBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   (void) WriteBlob(image,strlen(attribute->value),attribute->value);
   CloseBlob(image);
   return(True);

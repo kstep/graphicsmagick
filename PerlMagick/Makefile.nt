@@ -25,6 +25,9 @@ use Config;
 #  Visual Studio 7.0 default install:
 #   libpth='"C:\Program Files\Microsoft Visual Studio .NET\vc7\lib" "C:\Perl\lib\CORE"'
 #
+#  Visual Studio 7.1 default install:
+#   libpth='"C:\Program Files\Microsoft Visual Studio .NET 2003\Vc7\lib" "C:\Perl\lib\CORE"'
+#
 WriteMakefile(
     'ABSTRACT'  => 'GraphicsMagick PERL Extension',
     'AUTHOR'    => 'GraphicsMagick Group',

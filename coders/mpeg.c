@@ -17,7 +17,7 @@
 %                        M   M  P      EEEEE   GGGG                           %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                          Write MPEG Image Format.                           %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -441,7 +441,7 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
   logging=LogMagickEvent(CoderEvent,GetMagickModule(),"enter");
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   CloseBlob(image);
   /*
     Determine if the sequence of images have identical page info.
@@ -487,7 +487,7 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
           FormatString(filename,"%.1024s.niq",basename);
           (void) remove(filename);
         }
-      ThrowWriterException(CoderError,"UnableToWriteMPEGParameters",image)
+      ThrowWriterException(CoderError,UnableToWriteMPEGParameters,image)
     }
   count=0;
   clone_info->interlace=PlaneInterlace;
@@ -546,7 +546,7 @@ static unsigned int WriteMPEGImage(const ImageInfo *image_info,Image *image)
     }
     p->scene=scene;
     if (blob != (unsigned char *) NULL)
-      LiberateMemory((void **) &blob);
+      MagickFreeMemory(blob);
     if (status == False)
       break;
   }

@@ -313,13 +313,13 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
   /*
     Allocate image buffer and scanline buffer for 4 rows of the image.
   */
-  scanline=(PixelPacket *)
-    AcquireMemory(magnify_image->columns*sizeof(PixelPacket));
+  scanline=MagickAllocateMemory(PixelPacket *,
+    magnify_image->columns*sizeof(PixelPacket));
   if (scanline == (PixelPacket *) NULL)
     {
       DestroyImage(magnify_image);
-      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-        "UnableToMagnifyImage")
+      ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
+        UnableToMagnifyImage)
     }
   /*
     Initialize magnify image pixels.
@@ -422,7 +422,7 @@ MagickExport Image *MagnifyImage(const Image *image,ExceptionInfo *exception)
   if (q != (PixelPacket *) NULL)
     (void) memcpy(q,scanline,magnify_image->columns*sizeof(PixelPacket));
   (void) SyncImagePixels(magnify_image);
-  LiberateMemory((void **) &scanline);
+  MagickFreeMemory(scanline);
   magnify_image->is_grayscale=image->is_grayscale;
   return(magnify_image);
 }
@@ -840,7 +840,8 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
         pixel.red+=contribution[i].weight*(p+j)->red;
         pixel.green+=contribution[i].weight*(p+j)->green;
         pixel.blue+=contribution[i].weight*(p+j)->blue;
-        pixel.opacity+=contribution[i].weight*(p+j)->opacity;
+	if ((source->matte) || (source->colorspace == CMYKColorspace))
+          pixel.opacity+=contribution[i].weight*(p+j)->opacity;
       }
       if ((indexes != (IndexPacket *) NULL) &&
           (source_indexes != (IndexPacket *) NULL))
@@ -856,8 +857,9 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
         (pixel.green > MaxRGB) ? MaxRGB : pixel.green+0.5);
       q->blue=(Quantum) ((pixel.blue < 0) ? 0 :
         (pixel.blue > MaxRGB) ? MaxRGB : pixel.blue+0.5);
-      q->opacity=(Quantum) ((pixel.opacity < 0) ? 0 :
-        (pixel.opacity > MaxRGB) ? MaxRGB : pixel.opacity+0.5);
+      if ((destination->matte) || (destination->colorspace == CMYKColorspace))
+        q->opacity=(Quantum) ((pixel.opacity < 0) ? 0 :
+          (pixel.opacity > MaxRGB) ? MaxRGB : pixel.opacity+0.5);
       q++;
     }
     if (!SyncImagePixels(destination))
@@ -963,7 +965,8 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
         pixel.red+=contribution[i].weight*(p+j)->red;
         pixel.green+=contribution[i].weight*(p+j)->green;
         pixel.blue+=contribution[i].weight*(p+j)->blue;
-        pixel.opacity+=contribution[i].weight*(p+j)->opacity;
+        if ((source->matte) || (source->colorspace == CMYKColorspace))
+          pixel.opacity+=contribution[i].weight*(p+j)->opacity;
       }
       if ((indexes != (IndexPacket *) NULL) &&
           (source_indexes != (IndexPacket *) NULL))
@@ -979,8 +982,9 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
         (pixel.green > MaxRGB) ? MaxRGB : pixel.green+0.5);
       q->blue=(Quantum) ((pixel.blue < 0) ? 0 :
         (pixel.blue > MaxRGB) ? MaxRGB : pixel.blue+0.5);
-      q->opacity=(Quantum) ((pixel.opacity < 0) ? 0 :
-        (pixel.opacity > MaxRGB) ? MaxRGB : pixel.opacity+0.5);
+      if ((destination->matte) || (destination->colorspace == CMYKColorspace))
+        q->opacity=(Quantum) ((pixel.opacity < 0) ? 0 :
+          (pixel.opacity > MaxRGB) ? MaxRGB : pixel.opacity+0.5);
       q++;
     }
     if (!SyncImagePixels(destination))
@@ -1113,8 +1117,8 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
   assert(exception->signature == MagickSignature);
   assert((filter >= 0) && (filter <= SincFilter));
   if ((columns == 0) || (rows == 0))
-    ThrowImageException(ImageError,"UnableToResizeImage",
-      "NegativeOrZeroImageSize");
+    ThrowImageException(ImageError,UnableToResizeImage,
+      MagickMsg(CorruptImageError,NegativeOrZeroImageSize));
   if ((columns == image->columns) && (rows == image->rows) && (blur == 1.0))
     return(CloneImage(image,0,0,True,exception));
   resize_image=CloneImage(image,columns,rows,True,exception);
@@ -1143,13 +1147,13 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
   support=Max(x_support,y_support);
   if (support < filters[i].support)
     support=filters[i].support;
-  contribution=(ContributionInfo *)
-    AcquireMemory((size_t) (2.0*Max(support,0.5)+3)*sizeof(ContributionInfo));
+  contribution=MagickAllocateMemory(ContributionInfo *,
+    (size_t) (2.0*Max(support,0.5)+3)*sizeof(ContributionInfo));
   if (contribution == (ContributionInfo *) NULL)
     {
       DestroyImage(resize_image);
-      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-        "UnableToResizeImage")
+      ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
+        UnableToResizeImage)
     }
 
   /*
@@ -1162,7 +1166,7 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
       source_image=CloneImage(resize_image,columns,image->rows,True,exception);
       if (source_image == (Image *) NULL)
         {
-          LiberateMemory((void **) &contribution);
+          MagickFreeMemory(contribution);
           DestroyImage(resize_image);
           return((Image *) NULL);
         }
@@ -1177,7 +1181,7 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
       source_image=CloneImage(resize_image,image->columns,rows,True,exception);
       if (source_image == (Image *) NULL)
         {
-          LiberateMemory((void **) &contribution);
+          MagickFreeMemory(contribution);
           DestroyImage(resize_image);
           return((Image *) NULL);
         }
@@ -1190,13 +1194,13 @@ MagickExport Image *ResizeImage(const Image *image,const unsigned long columns,
   /*
     Free allocated memory.
   */
-  LiberateMemory((void **) &contribution);
+  MagickFreeMemory(contribution);
   DestroyImage(source_image);
   if (status == False)
     {
       DestroyImage(resize_image);
-      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-        "UnableToResizeImage")
+      ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
+        UnableToResizeImage)
     }
   resize_image->is_grayscale=image->is_grayscale;
   return(resize_image);
@@ -1274,8 +1278,8 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   if ((columns == 0) || (rows == 0))
-    ThrowImageException(ImageError,"UnableToResizeImage",
-      "NegativeOrZeroImageSize");
+    ThrowImageException(ImageError,UnableToResizeImage,
+      MagickMsg(CorruptImageError,NegativeOrZeroImageSize));
   if ((columns == image->columns) && (rows == image->rows))
     return(CloneImage(image,0,0,True,exception));
   sample_image=CloneImage(image,columns,rows,True,exception);
@@ -1289,15 +1293,15 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
   /*
     Allocate scan line buffer and column offset buffers.
   */
-  pixels=(PixelPacket *) AcquireMemory(image->columns*sizeof(PixelPacket));
-  x_offset=(double *) AcquireMemory(sample_image->columns*sizeof(double));
-  y_offset=(double *) AcquireMemory(sample_image->rows*sizeof(double));
+  pixels=MagickAllocateMemory(PixelPacket *,image->columns*sizeof(PixelPacket));
+  x_offset=MagickAllocateMemory(double *,sample_image->columns*sizeof(double));
+  y_offset=MagickAllocateMemory(double *,sample_image->rows*sizeof(double));
   if ((pixels == (PixelPacket *) NULL) || (x_offset == (double *) NULL) ||
       (y_offset == (double *) NULL))
     {
       DestroyImage(sample_image);
-      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-        "UnableToSampleImage")
+      ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
+        UnableToSampleImage)
     }
   /*
     Initialize pixel offsets.
@@ -1343,9 +1347,9 @@ MagickExport Image *SampleImage(const Image *image,const unsigned long columns,
       if (!MagickMonitor(SampleImageText,y,sample_image->rows,exception))
         break;
   }
-  LiberateMemory((void **) &y_offset);
-  LiberateMemory((void **) &x_offset);
-  LiberateMemory((void **) &pixels);
+  MagickFreeMemory(y_offset);
+  MagickFreeMemory(x_offset);
+  MagickFreeMemory(pixels);
   /*
     Sampling does not change the image properties.
   */
@@ -1449,24 +1453,24 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
   /*
     Allocate memory.
   */
-  x_vector=(DoublePixelPacket *)
-    AcquireMemory(image->columns*sizeof(DoublePixelPacket));
+  x_vector=MagickAllocateMemory(DoublePixelPacket *,
+    image->columns*sizeof(DoublePixelPacket));
   scanline=x_vector;
   if (image->rows != scale_image->rows)
-    scanline=(DoublePixelPacket *)
-      AcquireMemory(image->columns*sizeof(DoublePixelPacket));
-  scale_scanline=(DoublePixelPacket *)
-    AcquireMemory(scale_image->columns*sizeof(DoublePixelPacket));
-  y_vector=(DoublePixelPacket *)
-    AcquireMemory(image->columns*sizeof(DoublePixelPacket));
+    scanline=MagickAllocateMemory(DoublePixelPacket *,
+      image->columns*sizeof(DoublePixelPacket));
+  scale_scanline=MagickAllocateMemory(DoublePixelPacket *,
+    scale_image->columns*sizeof(DoublePixelPacket));
+  y_vector=MagickAllocateMemory(DoublePixelPacket *,
+    image->columns*sizeof(DoublePixelPacket));
   if ((scanline == (DoublePixelPacket *) NULL) ||
       (scale_scanline == (DoublePixelPacket *) NULL) ||
       (x_vector == (DoublePixelPacket *) NULL) ||
       (y_vector == (DoublePixelPacket *) NULL))
     {
       DestroyImage(scale_image);
-      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-        "UnableToScaleImage")
+      ThrowImageException3(ResourceLimitError,MemoryAllocationFailed,
+        UnableToScaleImage)
     }
   /*
     Scale image.
@@ -1682,11 +1686,11 @@ MagickExport Image *ScaleImage(const Image *image,const unsigned long columns,
   /*
     Free allocated memory.
   */
-  LiberateMemory((void **) &y_vector);
-  LiberateMemory((void **) &scale_scanline);
+  MagickFreeMemory(y_vector);
+  MagickFreeMemory(scale_scanline);
   if (scale_image->rows != image->rows)
-    LiberateMemory((void **) &scanline);
-  LiberateMemory((void **) &x_vector);
+    MagickFreeMemory(scanline);
+  MagickFreeMemory(x_vector);
   scale_image->is_grayscale=image->is_grayscale;
   return(scale_image);
 }

@@ -18,7 +18,7 @@
 %                 P      LLLLL  A   A  SSSSS  M   M  A   A                    %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                          Read a Plasma Image.                               %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -147,7 +147,6 @@ static Image *ReadPlasmaImage(const ImageInfo *image_info,
   segment_info.y1=0;
   segment_info.x2=image->columns-1;
   segment_info.y2=image->rows-1;
-  srand((unsigned int) time(0));
   if (LocaleCompare(image_info->filename,"fractal") == 0)
     {
       /*
@@ -240,5 +239,6 @@ ModuleExport void RegisterPLASMAImage(void)
 */
 ModuleExport void UnregisterPLASMAImage(void)
 {
+  (void) UnregisterMagickInfo("FRACTAL");
   (void) UnregisterMagickInfo("PLASMA");
 }

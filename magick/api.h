@@ -98,9 +98,21 @@ extern "C" {
 #define MaxTextExtent  2053
 #define MagickSignature  0xabacadabUL
 
+#define MagickPassFail unsigned int
+#define MagickPass     1
+#define MagickFail     0
+
+#define MagickBool     unsigned int
+#define MagickTrue     1
+#define MagickFalse    0
+
 #if !defined(vms) && !defined(macintosh)
-# include "magick/semaphore.h"
+# if defined(PREFIX_MAGICK_SYMBOLS)
+#  include "magick/symbols.h"
+# endif /* defined(PREFIX_MAGICK_SYMBOLS) */
+# include "magick/magick_types.h"
 # include "magick/error.h"
+# include "magick/log.h"
 # include "magick/timer.h"
 # include "magick/image.h"
 # include "magick/list.h"
@@ -114,6 +126,7 @@ extern "C" {
 # include "magick/command.h"
 # include "magick/utility.h"
 # include "magick/signature.h"
+# include "magick/deprecate.h"
 # include "magick/blob.h"
 # include "magick/cache.h"
 # include "magick/cache_view.h"
@@ -136,14 +149,17 @@ extern "C" {
 # include "magick/delegate.h"
 # include "magick/module.h"
 # include "magick/monitor.h"
+# include "magick/profile.h"
 # include "magick/resource.h"
-# include "magick/log.h"
 # include "magick/version.h"
-# include "magick/deprecate.h"
 #else
-# include "semaphore.h"
+# if defined(PREFIX_MAGICK_SYMBOLS)
+#  include "symbols.h"
+# endif /* defined(PREFIX_MAGICK_SYMBOLS) */
+# include "magick_types.h"
 # include "timer.h"
 # include "error.h"
+# include "log.h"
 # include "image.h"
 # include "list.h"
 # include "paint.h"
@@ -156,6 +172,7 @@ extern "C" {
 # include "command.h"
 # include "utility.h"
 # include "signature.h"
+# include "deprecate.h"
 # include "blob.h"
 # include "cache.h"
 # include "cache_view.h"
@@ -178,10 +195,9 @@ extern "C" {
 # include "delegate.h"
 # include "module.h"
 # include "monitor.h"
+# include "profile.h"
 # include "resource.h"
-# include "log.h"
 # include "version.h"
-# include "deprecate.h"
 #endif
 
 #if defined(__cplusplus) || defined(c_plusplus)

@@ -21,51 +21,56 @@ extern "C" {
 #undef True
 #define XLIB_ILLEGAL_ACCESS  1
 #if !defined(macintosh)
-#include <X11/Xos.h>
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-#include <X11/Xresource.h>
-#include <X11/Xproto.h>
-#include <X11/Xatom.h>
-#include <X11/Xlocale.h>
-#include <X11/cursorfont.h>
-#include <X11/keysym.h>
-#if !defined(vms)
-#include <X11/XWDFile.h>
+# include <X11/Xos.h>
+# include <X11/Xlib.h>
+# include <X11/Xutil.h>
+# include <X11/Xresource.h>
+# include <X11/Xproto.h>
+# include <X11/Xatom.h>
+# include <X11/Xlocale.h>
+# include <X11/cursorfont.h>
+# include <X11/keysym.h>
+# if !defined(vms)
+#  include <X11/XWDFile.h>
+# else
+#  include "XWDFile.h"
+# endif
 #else
-#include "XWDFile.h"
+# include <Xos.h>
+# include <Xlib.h>
+# include <Xutil.h>
+# include <Xresource.h>
+# include <Xproto.h>
+# include <Xatom.h>
+# include <cursorfont.h>
+# include <keysym.h>
+# include <XWDFile.h>
 #endif
-#else
-#include <Xos.h>
-#include <Xlib.h>
-#include <Xutil.h>
-#include <Xresource.h>
-#include <Xproto.h>
-#include <Xatom.h>
-#include <cursorfont.h>
-#include <keysym.h>
-#include <XWDFile.h>
-#endif
-#if defined(HasShape)
-#include <X11/extensions/shape.h>
-#endif
-#if defined(HasSharedMemory)
-#include <sys/ipc.h>
-#include <sys/shm.h>
-#include <X11/extensions/XShm.h>
-#endif
-#if defined(HasDPS)
-# include <DPS/dpsXclient.h>
-# include <DPS/dpsXpreview.h>
-#endif
+
+
+/*
+  Remove X11 defines so enums are used
+*/
+#undef ForgetGravity
+#undef NorthWestGravity
+#undef NorthGravity
+#undef NorthEastGravity
+#undef WestGravity
+#undef CenterGravity
+#undef EastGravity
+#undef SouthWestGravity
+#undef SouthGravity
+#undef SouthEastGravity
+#undef StaticGravity
+
 #include "magick/quantize.h"
 #include "magick/PreRvIcccm.h"
 
 #undef index
 #if defined(hpux9)
-#define XFD_SET  int
+# define XFD_SET  int
 #else
-#define XFD_SET  fd_set
+# define XFD_SET  fd_set
 #endif
 
 /*
@@ -74,6 +79,7 @@ extern "C" {
 #define MaxNumberPens  11
 #define MaxNumberFonts  11
 #define MaxIconSize  96
+#define MaxXWindows  10
 
 /*
   Enumeration declarations.
@@ -449,10 +455,8 @@ typedef struct _XWindowInfo
   XWindowChanges
     window_changes;
 
-#if defined(HasSharedMemory)
-  XShmSegmentInfo
-    segment_info[2];
-#endif
+  void
+    *segment_info;
 
   int
     mask;
@@ -466,7 +470,7 @@ typedef struct _XWindowInfo
     *image;
 
   unsigned int
-    destroy;
+    destroy;    /* If True, then destroy image */
 } XWindowInfo;
 
 typedef struct _XWindows
@@ -554,8 +558,8 @@ extern MagickExport unsigned int
   XGetWindowColor(Display *,XWindows *,char *),
   XMakeImage(Display *,const XResourceInfo *,XWindowInfo *,Image *,
     unsigned int,unsigned int),
-  XMagickMonitor(const char *,const ExtendedSignedIntegralType,
-    const ExtendedUnsignedIntegralType,ExceptionInfo *),
+  XMagickMonitor(const char *task,const magick_int64_t quantum,
+    const magick_uint64_t span,ExceptionInfo *exception),
   XQueryColorDatabase(const char *,XColor *),
   XRemoteCommand(Display *,const char *,const char *);
 
@@ -568,6 +572,10 @@ extern MagickExport void
   XConfigureImageColormap(Display *,XResourceInfo *,XWindows *,Image *),
   XConstrainWindowPosition(Display *,XWindowInfo *),
   XDelay(Display *,const unsigned long),
+  XDestroyResourceInfo(XResourceInfo *resource_info),
+  XDestroyX11Resources(void),
+  XDestroyXWindows(XWindows *windows),
+  XDestroyXWindowInfo(Display *display,XWindowInfo *window),
   XDestroyWindowColors(Display *,Window),
   XDisplayImageInfo(Display *,const XResourceInfo *,XWindows *,Image *,Image *),
   XFreeResources(Display *,XVisualInfo *,XStandardColormap *,XPixelInfo *,

@@ -32,11 +32,22 @@ extern "C" {
 /*
   Define declarations.
 */
-#define PROT_READ  1
-#define PROT_WRITE  2
-#define PROT_READWRITE  3
-#define MAP_SHARED  1
-#define MAP_PRIVATE  2
+
+/* Memory mapping support */
+#define PROT_NONE       0x0  // pages can not be accessed
+#define PROT_READ       0x1  // pages can be read
+#define PROT_WRITE      0x2  // pages can be written
+#define MAP_SHARED      0x1  // share changes
+#define MAP_PRIVATE     0x2  // changes are private
+#define MAP_NORESERVE   0x4  // do not reserve paging space
+#define MAP_ANON        0x8  // anonymous mapping
+#if !defined(MAP_FAILED)
+#  define MAP_FAILED      ((void *) -1) // returned on error by mmap
+#endif
+#define MS_ASYNC        0x0  // asynchronous page sync
+#define MS_SYNC         0x1  // synchronous page sync
+
+
 #define F_OK 0
 #define R_OK 4
 #define W_OK 2
@@ -44,6 +55,12 @@ extern "C" {
 #define HAVE_VSNPRINTF 1
 #define HAVE_TEMPNAM 1
 #define HAVE_RAISE 1
+
+// Define to support memory mapping files for improved performance
+#define HAVE_MMAP_FILEIO 1
+
+// Use Visual C++ C inline method extension to improve performance
+#define inline __inline
 
 #if !defined(chsize)
 # if defined(__BORLANDC__)
@@ -62,7 +79,16 @@ extern "C" {
 #else
 #define SAFE_GLOBAL
 #endif
+
+/*
+  With Visual C++, Popen and pclose are available via _popen and _pclose.
+  These are documented to work for console applications only.
+*/
+#define HAVE_POPEN 1
+#define HAVE__POPEN 1
 #define popen  _popen
+#define HAVE_PCLOSE 1
+#define HAVE__PCLOSE 1
 #define pclose  _pclose
 /*
   Typedef declarations.
@@ -78,6 +104,11 @@ struct dirent
   int
     d_namlen;
 };
+
+/* ssize_t is the type returned by _read and _write */
+#if !defined(ssize_t)
+typedef int ssize_t;
+#endif
 
 typedef struct _DIR
 {
@@ -133,7 +164,8 @@ extern MagickExport int
   lt_dlinit(void),
   lt_dlsetsearchpath(const char *),
 #endif /* !HasLTDL */
-  munmap(void *,size_t);
+  msync(void *addr, size_t len, int flags),
+  munmap(void *addr, size_t len);
 
 extern MagickExport long
   telldir(DIR *);
@@ -154,12 +186,8 @@ extern MagickExport unsigned int
 
 extern MagickExport void
   closedir(DIR *),
-  DebugString(char *, ...),
-  DebugFilePath(const char *s),
-  DebugLevel(const int),
-  DestroyTracingCriticalSection(void),
-  InitializeTracingCriticalSection(void),
-  *mmap(char *,size_t,int,int,int,off_t),
+  *mmap(char *address,size_t length,int protection,int access,int file,
+    magick_off_t offset),
   NTErrorHandler(const ExceptionType,const char *,const char *),
   NTWarningHandler(const ExceptionType,const char *,const char *),
   seekdir(DIR *,long)

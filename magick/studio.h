@@ -20,22 +20,10 @@ extern "C" {
 #endif
 
 /*
-  Private functions and types should only be exposed by the
-  headers when MAGICK_IMPLEMENTATION is defined.
+  Private functions and types which are not part of the published API
+  should only be exposed when MAGICK_IMPLEMENTATION is defined.
 */
 #define MAGICK_IMPLEMENTATION 1
-
-/*
-  System include declarations.
-*/
-#define __EXTENSIONS__  1
-#define _GNU_SOURCE  1
-#if !defined(__FreeBSD__)
-# define _ISOC99_SOURCE  1
-# define _POSIX_C_SOURCE  199506L
-# define _XOPEN_SOURCE  500
-#endif
-#define _LARGEFILE64_SOURCE  1
 
 #if !defined(_MAGICK_CONFIG_H)
 # define _MAGICK_CONFIG_H
@@ -49,6 +37,13 @@ extern "C" {
 # endif
 #endif
 
+/*
+  Support library symbol prefixing
+*/
+#if defined(PREFIX_MAGICK_SYMBOLS)
+#  include "magick/symbols.h"
+#endif /* defined(PREFIX_MAGICK_SYMBOLS) */
+
 #if !defined(const)
   /*
     For some stupid reason the zlib headers define 'const' to nothing
@@ -56,6 +51,17 @@ extern "C" {
   */
 #  define STDC
 #endif
+
+/**
+ ** Borland C++ Builder DLL compilation defines
+ **/
+#if defined(__BORLANDC__) && defined(_DLL)
+#  pragma message("BCBMagick lib DLL export interface")
+#  define _MAGICKDLL_
+#  define _MAGICKLIB_
+#  undef BuildMagickModules
+#  define SupportMagickModules
+#endif 
 
 #if defined(WIN32) && !defined(__CYGWIN__)
 # if defined(_MT) && defined(_DLL) && !defined(_MAGICKDLL_) && !defined(_LIB)
@@ -115,6 +121,11 @@ extern "C" {
 # define storage_class  class
 #endif
 
+#define MAGICK_IDBASED_MESSAGES 1
+#if defined(MAGICK_IDBASED_MESSAGES)
+#include "magick/locale_c.h"
+#endif
+
 #define MagickSignature  0xabacadabUL
 #define MaxTextExtent  2053
 
@@ -137,6 +148,21 @@ extern "C" {
 # define fseek  fseeko
 # define ftell  ftello
 #endif
+
+#if !defined(ExtendedSignedIntegralType)
+# define ExtendedSignedIntegralType magick_int64_t
+#endif
+#if !defined(ExtendedUnsignedIntegralType)
+# define ExtendedUnsignedIntegralType magick_uint64_t
+#endif
+
+#define MagickPassFail unsigned int
+#define MagickPass     1
+#define MagickFail     0
+
+#define MagickBool     unsigned int
+#define MagickTrue     1
+#define MagickFalse    0
 
 #include <string.h>
 #include <ctype.h>
@@ -180,7 +206,7 @@ extern "C" {
 # if !defined(S_ISREG)
 #  define S_ISREG(mode) (((mode) & S_IFMT) == S_IFREG)
 # endif
-# include "magick/integral_types.h"
+# include "magick/magick_types.h"
 # include "magick/image.h"
 # include "magick/list.h"
 # if !defined(WIN32)
@@ -197,7 +223,7 @@ extern "C" {
 #  include <console.h>
 #  include <unix.h>
 # endif
-# include "magick/integral_types.h"
+# include "magick/magick_types.h"
 # include "magick/image.h"
 # include "magick/list.h"
 #endif
@@ -211,10 +237,10 @@ extern "C" {
 #if defined(vms)
 # include "magick/vms.h"
 #endif
-#if defined(HAVE_MMAP) && !defined(WIN32)
+#if defined(HAVE_MMAP_FILEIO) && !defined(WIN32)
 # include <sys/mman.h>
 #endif
-#if defined(HasPTHREADS)
+#if defined(HAVE_PTHREAD)
 # include <pthread.h>
 #endif
 #if defined(HAVE_POLL)
@@ -223,6 +249,30 @@ extern "C" {
 
 #undef index
 #undef pipe
+
+/*
+  If TRIO library is used, remap snprintf and vsnprintf to TRIO equivalents.
+*/
+#if defined(HasTRIO)
+#  include <trio.h>
+#  define snprintf trio_snprintf
+#  define HAVE_SNPRINTF 1
+#  define vsnprintf trio_vsnprintf
+#  define HAVE_VSNPRINTF 1
+#endif
+
+/*
+  Provide prototypes for several functions which are detected to be
+  available, but which do not provide a prototype due to interface
+  standards conformace.
+*/
+#if defined(HAVE_STRLCPY) && !defined(HAVE_STRLCPY_PROTOTYPE)
+extern size_t strlcpy(char *dst, const char *src, size_t dstsize);
+#endif
+
+#if defined(HAVE_VSNPRINTF) && !defined(HAVE_VSNPRINTF_PROTOTYPE)
+extern int vsnprintf(char *s, size_t n, const char *format, va_list ap);
+#endif
 
 /*
   Review these platform specific definitions.
@@ -310,12 +360,15 @@ extern "C" {
 #define Max(x,y)  (((x) > (y)) ? (x) : (y))
 #define Min(x,y)  (((x) < (y)) ? (x) : (y))
 #define QuantumTick(i,span) \
-  ((((i) & 0xff) == 0) || (i == ((ExtendedSignedIntegralType) (span)-1)))
+  ((((i) & 0xff) == 0) || (i == ((magick_int64_t) (span)-1)))
 #define RadiansToDegrees(x) (180.0*(x)/MagickPI)
 #define ScaleColor5to8(x)  (((x) << 3) | ((x) >> 2))
 #define ScaleColor6to8(x)  (((x) << 2) | ((x) >> 4))
 #define Swap(x,y) ((x)^=(y), (y)^=(x), (x)^=(y))
 #define True  1
+
+#define DefineNameToString(value) #value
+#define DefineValueToString(define) DefineNameToString(define)
 
 /*
   3D effects.
@@ -358,11 +411,19 @@ extern "C" {
   /* Windows '95 and Borland C do not support _lseeki64 */
 #  define MagickSeek(file,offset,whence)  _lseeki64(file,offset,whence)
 #  define MagickTell(file) _telli64(file)
-#  define MagickOffset ExtendedSignedIntegralType
 #else
 #  define MagickSeek(file,offset,whence)  lseek(file,offset,whence)
 #  define MagickTell(file) tell(file)
-#  define MagickOffset off_t
+#endif
+
+#if !defined(HAVE_POPEN) && defined(HAVE__POPEN)
+# define HAVE_POPEN 1
+# define popen _popen
+#endif
+
+#if !defined(HAVE_PCLOSE) && defined(HAVE__PCLOSE)
+# define HAVE_PCLOSE 1
+# define pclose _pclose
 #endif
 
 #if defined(__cplusplus) || defined(c_plusplus)

@@ -6,44 +6,89 @@
 # Copyright.txt. You should have received a copy of Copyright.txt with this
 # package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
 #
-#  Makefile for building ImageMagick library
+# Makefile for building GraphicsMagick library
 #
 #
 
 # Don't require all the GNU mandated files
-AUTOMAKE_OPTIONS = 1.7 foreign
+AUTOMAKE_OPTIONS = 1.8 foreign
 
-includedir = ${prefix}/include
-pkgincludedir = $(includedir)/GraphicsMagick/magick
+includedir = @includedir@/GraphicsMagick
+pkgincludedir = $(includedir)/magick
 
 # Shared libraries built in this directory
 lib_LTLIBRARIES = libGraphicsMagick.la
 
-LIBRARY_CURRENT    = @LIBRARY_CURRENT@
-LIBRARY_REVISION   = @LIBRARY_REVISION@
-LIBRARY_AGE        = @LIBRARY_AGE@
+LIBRARY_CURRENT    = $(MAGICK_LIBRARY_CURRENT)
+LIBRARY_REVISION   = $(MAGICK_LIBRARY_REVISION)
+LIBRARY_AGE        = $(MAGICK_LIBRARY_AGE)
 
 BUILT_SOURCES = magick_config.h magick_config_api.h
-
-INCLUDES = -I$(top_srcdir) $(INCLTDL)
 
 ALLMANPAGES = GraphicsMagick-config.1
 
 libGraphicsMagick_la_LDFLAGS = -no-undefined \
 	-version-info $(LIBRARY_CURRENT):$(LIBRARY_REVISION):$(LIBRARY_AGE)
 
-#AM_CFLAGS = @LIBRARY_EXTRA_CPPFLAGS@
-AM_CPPFLAGS = @LIBRARY_EXTRA_CPPFLAGS@
+AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir) $(INCLTDL) $(LIBRARY_EXTRA_CPPFLAGS)
 
 # Library base sources
-MAGICK_BASE_SRCS = memory.c blob.c cache.c locale.c error.c monitor.c \
-	constitute.c image.c composite.c list.c color.c quantize.c segment.c \
-	resize.c transform.c shear.c enhance.c effect.c fx.c decorate.c \
-	annotate.c type.c draw.c render.c paint.c montage.c semaphore.c attribute.c \
-	signature.c compress.c command.c gem.c registry.c magic.c magick.c \
-	delegate.c module.c static.c resource.c log.c timer.c utility.c cache_view.c \
-	stream.c version.c animate.c display.c widget.c xwindow.c PreRvIcccm.c \
-	deprecate.c tempfile.c
+MAGICK_BASE_SRCS = \
+	animate.c \
+	annotate.c \
+	attribute.c \
+	blob.c \
+	cache.c \
+	cache_view.c \
+	color.c \
+	command.c \
+	composite.c \
+	compress.c \
+	constitute.c \
+	decorate.c \
+	delegate.c \
+	deprecate.c \
+	display.c \
+	draw.c \
+	effect.c \
+	enhance.c \
+	error.c \
+	fx.c \
+	gem.c \
+	image.c \
+	list.c \
+	locale.c \
+	log.c \
+	magic.c \
+	magick.c \
+	map.c \
+	memory.c \
+	module.c \
+	monitor.c \
+	montage.c \
+	paint.c \
+	pixel_iterator.c \
+	profile.c \
+	PreRvIcccm.c \
+	quantize.c \
+	registry.c \
+	render.c \
+	resize.c \
+	resource.c \
+	segment.c \
+	semaphore.c \
+	shear.c \
+	signature.c \
+	static.c \
+	stream.c \
+	tempfile.c \
+	timer.c \
+	transform.c \
+	type.c \
+	utility.c \
+	version.c \
+	widget.c \
+	xwindow.c
 
 # Platform specific source files that may appear in the library
 EXTRA_libGraphicsMagick_la_SOURCES = nt_base.c nt_feature.c
@@ -69,10 +114,10 @@ endif
 
 if WITH_MODULES
 libGraphicsMagick_la_SOURCES = $(MAGICK_BASE_SRCS) $(MAGICK_PLATFORM_SRCS)
-libGraphicsMagick_la_LIBADD = @MAGICK_DEP_LIBS@ $(LIB_LTDL)
+libGraphicsMagick_la_LIBADD = $(MAGICK_DEP_LIBS) $(LIB_LTDL)
 else
 libGraphicsMagick_la_SOURCES = $(MAGICK_BASE_SRCS) $(MAGICK_PLATFORM_SRCS)
-libGraphicsMagick_la_LIBADD = ../coders/libCoders.la ../filters/libFilters.la @MAGICK_DEP_LIBS@ $(LIB_LTDL)
+libGraphicsMagick_la_LIBADD = ../coders/libCoders.la ../filters/libFilters.la $(MAGICK_DEP_LIBS) $(LIB_LTDL)
 endif # WITH_MODULES
 
 # Binary scripts
@@ -107,20 +152,21 @@ pkginclude_HEADERS = \
 	log.h \
 	magic.h \
 	magick.h \
-	magick.h \
+	magick_types.h \
 	module.h \
 	monitor.h \
 	montage.h \
 	paint.h \
+	profile.h \
 	quantize.h \
 	registry.h \
 	render.h \
 	resize.h \
 	resource.h \
-	semaphore.h \
 	shear.h \
 	signature.h \
 	stream.h \
+	symbols.h \
 	timer.h \
 	transform.h \
 	utility.h \
@@ -132,11 +178,16 @@ pkginclude_HEADERS = \
 # Headers which are not installed but which are distributed
 noinst_HEADERS = \
 	animate.h \
+	bit_stream.h \
 	display.h \
-	integral_types.h \
+	locale_c.h \
 	mac.h \
+	map.h \
 	nt_base.h \
 	nt_feature.h \
+	pixel_iterator.h \
+	semaphore.h \
+	spinlock.h \
 	static.h \
 	studio.h \
 	tempfile.h \
@@ -151,16 +202,23 @@ uninstall-hook:
 	rm -f $(DESTDIR)$(pkgincludedir)/magick_config.h
 
 # Additional files to distribute
-EXTRA_DIST = $(ALLMANPAGES) colors.mgk log.mgk magic.mgk GraphicsMagick-config.in \
-  GraphicsMagick.pc.in Make.com mac.c nt_base.c nt_feature.c vms.c $(MAGICK_BASE_SRCS)
+EXTRA_DIST = \
+	$(ALLMANPAGES) \
+	GraphicsMagick-config.in \
+	GraphicsMagick.pc.in \
+	Make.com mac.c \
+	nt_base.c \
+	nt_feature.c \
+	vms.c \
+	$(MAGICK_BASE_SRCS)
 
 # Where configuration files get installed
-pkgdir = @MagickLibPath@
+pkgdir = $(MagickLibPath)
 
-# Architecture-dependent data files installed into ImageMagick/lib
-pkg_DATA = colors.mgk log.mgk magic.mgk
+# Architecture-dependent data files installed into GraphicsMagick/lib
+pkg_DATA = 
 
-# Architecture independent data files installed into ImageMagick/share
+# Architecture independent data files installed into GraphicsMagick/share
 pkgdata_DATA = 
 
 # Pkgconfig directory
@@ -174,7 +232,7 @@ man_MANS = $(ALLMANPAGES)
 
 # Ensure that configuration header is not distributed
 dist-hook:
-	-rm $(distdir)/magick_config.h
-	-rm $(distdir)/magick_config_api.h
+	-rm -f $(distdir)/magick_config.h
+	-rm -f $(distdir)/magick_config_api.h
 
 DEFS = @DEFS@ -I../

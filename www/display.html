@@ -1,38 +1,79 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
   "http://www.w3.org/TR/html4/loose.dtd">
-<HTML>
-<HEAD>
-   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <title>display: GraphicsMagick - Image Processing and Display Package</title>
-   <meta name="description" content="GraphicsMagick is a robust collection of
-   tools and libraries to read, write, and manipulate an image in any of the
-   more popular image formats including GIF, JPEG, PNG, PDF, and Photo CD.
-   With GraphicsMagick you can create GIFs dynamically making it suitable for
-   Web applications.  You can also resize, rotate, sharpen, color reduce, or
-   add special effects to an image and save your completed work in the same
-   or  differing image format.">
-   <meta name="keywords" content="conjure, GraphicsMagick, Image Magick, Image Magic,
-   PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,
-   WebMagick, Web Magic, visualization, image processing, software development,
-   simulation, image, software, AniMagick, Animagic, Magick++">
-   <link rel="StyleSheet" href="magick.css" type="text/css">
-<style type="text/css">
-  PRE {font-size: x-small}
-</style>
-</head>
-<body bgcolor="#FFFFFF" text="#000000" link="#0085c0" vlink="#800080" alink="#0085c0" >
+<html>
+<head>
+	<meta HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=ibm437">
+	<title>GraphicsMagick GM Utility</title>
+	<style>
+	<!--
+		@page { size: 8.5in 11in }
+		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 14pt }
+		A:link { color: #0085c0 }
+		A:visited { color: #800080 }
+	-->
+	</style>
 
-<center>
-<img SRC="../images/magick_small.png" alt="" width=114 height=118>
-</center>
+</head>
+<body LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
+<form ACTION="http://www.google.com/search">
+	<input TYPE=HIDDEN NAME="domains" VALUE="www.graphicsmagick.org">
+	<input TYPE=HIDDEN NAME="sitesearch" VALUE="www.graphicsmagick.org">
+	<table WIDTH=100% BORDER=1 BORDERCOLOR="#000000" CELLPADDING=4 CELLSPACING=0 RULES=NONE STYLE="page-break-before: always">
+		<col WIDTH=208*>
+		<col WIDTH=48*>
+
+		<tr>
+			<td WIDTH=81%>
+				<p ALIGN=LEFT>[<a HREF="../">Home</a>] [<a HREF="mission.html">Mission
+				Statement</a>] [<a HREF="development.html">Development
+				Process</a>] [<a HREF="contribute.html">Contribute</a>]
+				[<a HREF="download.html">Download</a>] [<a HREF="install.html">Installation</a>]
+				[<a HREF="cvs.html">CVS</a>] [<a HREF="http://sourceforge.net/mail/?group_id=73485">Mailing
+				Lists</a>] [<a HREF="FAQ.html">FAQ</a>] [<a HREF="formats.html">Formats</a>]
+				[<a HREF="NEWS.html">News</a> ] [<a HREF="Changelog.html">ChangeLog</a>]
+				[<a HREF="http://sourceforge.net/projects/graphicsmagick/">Report
+				Bugs</a>] [<a HREF="www/utilities.html">Utilities</a>]
+				[<a HREF="programming.html">Programming</a>] [<a HREF="books.html">Books</a>]
+				[<a HREF="links.html">Links</a>]</p>
+
+			</td>
+			<td ROWSPAN=2 WIDTH=19%>
+				<p ALIGN=CENTER><img SRC="../images/gm-188x120t.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=188 HEIGHT=120 BORDER=0></p>
+			</td>
+		</tr>
+		<tr>
+			<td WIDTH=81%>
+				<div ALIGN=CENTER>
+					<p><font SIZE=4><i>Search GraphicsMagick site <input TYPE=TEXT NAME="q" SIZE=25 MAXLENGTH=255>
+
+					<input TYPE=SUBMIT NAME="sa" VALUE="Search"> </i></font>
+					</p>
+				</div>
+			</td>
+		</tr>
+	</table>
+</form>
+<a name="top"></a>
+<table border=0 cellpadding=10 cellspacing=0 style="margin-top:-17px" width="100%"><tr><td>
 <br>&nbsp;<br>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
-<td ALIGN=LEFT BGCOLOR="#52799E"><img 
+<td ALIGN=LEFT bgcolor="#52799E"><img 
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="top"></a>NAME
+<a NAME="display"></a>gm display
+</font></font></font></b></td></tr></table>
+<table width="94%" border="0" cellspacing="0" cellpadding="8">
+<tr><td width="3%"><br></td><td>
+<table BORDER=0 WIDTH="100%"> 
+<tr> 
+<td ALIGN=LEFT bgcolor="#52799E"><img 
+SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
+height=14 width=15><b><font face="Helvetica, Arial"><font 
+color="#FFFFFF"><font size="+1">
+<a NAME="disp-top"></a>NAME
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -42,82 +83,84 @@ display - display an image on any workstation running X
 </td></tr></table>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
-<td ALIGN=LEFT BGCOLOR="#52799E"><img 
+<td ALIGN=LEFT bgcolor="#52799E"><img 
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="contents"></a>Contents
+<a NAME="disp-contents"></a>Contents
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <ul>
 <li>
-<a href="#syno">Synopsis</a>
+<a href="#disp-syno">Synopsis</a>
 <li>
-<a href="#desc">Description</a>
+<a href="#disp-desc">Description</a>
 <li>
-<a href="#exam">Examples</a>
+<a href="#disp-exam">Examples</a>
 <li>
-<a href="#opti">Options</a>
+<a href="#disp-opti">Options</a>
 <li>
-<a href="#mous">Mouse Buttons</a>
+<a href="#disp-mous">Mouse Buttons</a>
 <li>
-<a href="#comm">Command Widget</a>
+<a href="#disp-comm">Command Widget</a>
 <li>
-<a href="#keyb">Keyboard Accelerators</a>
+<a href="#disp-keyb">Keyboard Accelerators</a>
 <li>
-<a href="#xres">X Resources</a>
+<a href="#disp-xres">X Resources</a>
 <li>
-<a href="#imlo">Image Loading</a>
+<a href="#disp-imlo">Image Loading</a>
 <li>
-<a href="#visu">Visual Image Directory</a>
+<a href="#disp-visu">Visual Image Directory</a>
 <li>
-<a href="#imcu">Image Cutting</a>
+<a href="#disp-imcu">Image Cutting</a>
 <li>
-<a href="#imco">Image Copying</a>
+<a href="#disp-imco">Image Copying</a>
 <li>
-<a href="#impas">Image Pasting</a>
+<a href="#disp-impas">Image Pasting</a>
 <li>
-<a href="#imcr">Image Cropping</a>
+<a href="#disp-imcr">Image Cropping</a>
 <li>
-<a href="#imch">Image Chopping</a>
+<a href="#disp-imch">Image Chopping</a>
 <li>
-<a href="#imro">Image Rotation</a>
+<a href="#disp-imro">Image Rotation</a>
 <li>
-<a href="#segm">Image Segmentation</a>
+<a href="#disp-segm">Image Segmentation</a>
 <li>
-<a href="#iman">Image Annotation</a>
+<a href="#disp-iman">Image Annotation</a>
 <li>
-<a href="#imcomp">Image Compositing</a>
+<a href="#disp-imcomp">Image Compositing</a>
 <li>
-<a href="#cole">Color Editing</a>
+<a href="#disp-cole">Color Editing</a>
 <li>
-<a href="#matt">Matte (Transparent Channel) Editing</a>
+<a href="#disp-matt">Matte (Transparent Channel) Editing</a>
 <li>
-<a href="#imdr">Image Drawing</a>
+<a href="#disp-imdr">Image Drawing</a>
 <li>
-<a href="#regi">Region of Interest</a>
+<a href="#disp-regi">Region of Interest</a>
 <li>
-<a href="#impa">Image Panning</a>
+<a href="#disp-impa">Image Panning</a>
 <li>
-<a href="#impa">User Preferences</a>
+<a href="#disp-impa">User Preferences</a>
 <li>
-<a href="#envi">Environment</a>
+<a href="#disp-envi">Environment</a>
 <li>
-<a href="#ackn">Acknowledgement</a>
+<a href="#disp-file">Configuration Files</a>
 <li>
-<a href="#auth">Authors</a>
+<a href="#disp-ackn">Acknowledgement</a>
 <li>
-<a href="#copy">Copyright</a>
+<a href="#disp-auth">Authors</a>
+<li>
+<a href="#disp-copy">Copyright</a>
 </ul>
 </td></tr></table>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
-<td ALIGN=LEFT BGCOLOR="#52799E"><img 
+<td ALIGN=LEFT bgcolor="#52799E"><img 
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="syno"></a>Synopsis
+<a NAME="disp-syno"></a>Synopsis
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -127,11 +170,11 @@ color="#FFFFFF"><font size="+1">
 </td></tr></table>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
-<td ALIGN=LEFT BGCOLOR="#52799E"><img 
+<td ALIGN=LEFT bgcolor="#52799E"><img 
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="desc"></a>Description
+<a NAME="disp-desc"></a>Description
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -218,11 +261,11 @@ With <strong>display</strong>, you can perform these functions on an image:
 &nbsp;</p>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
-<td ALIGN=LEFT BGCOLOR="#52799E"><img 
+<td ALIGN=LEFT bgcolor="#52799E"><img 
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="exam"></a>Examples
+<a NAME="disp-exam"></a>Examples
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -230,40 +273,40 @@ color="#FFFFFF"><font size="+1">
 To scale an image of a cockatoo to exactly 640 pixels in width and 480
 pixels in height and position the window at location (200,200), use:
 <pre>
-    display -geometry 640x480+200+200! cockatoo.miff
+    gm display -geometry 640x480+200+200! cockatoo.miff
 </pre>
 <p>
 To display an image of a cockatoo without a border centered on a backdrop,
 use:
 <pre>
-    display +borderwidth -backdrop cockatoo.miff
+    gm display +borderwidth -backdrop cockatoo.miff
 </pre>
 <p>
 To tile a slate texture onto the root window, use:
 <pre>
-    display -size 1280x1024 -window root slate.png
+    gm display -size 1280x1024 -window root slate.png
 </pre>
 <p>
 To display a visual image directory of all your JPEG images, use:
 <pre>
-    display 'vid:*.jpg'
+    gm display 'vid:*.jpg'
 </pre>
 <p>
 To display a MAP image that is 640 pixels in width and 480 pixels in height
 with 256 colors, use:
 <pre>
-    display -size 640x480+256 cockatoo.map
+    gm display -size 640x480+256 cockatoo.map
 </pre>
 <p>
 To display an image of a cockatoo specified with a <strong>World Wide Web (WWW)</strong>
 uniform resource locator <strong>(URL)</strong>, use:
 <pre>
-    display ftp://imagemagick.org/images/cockatoo.jpg
+    gm display ftp://wizards.dupont.com/images/cockatoo.jpg
 </pre>
 <p>
 To display histogram of an image, use:
 <pre>
-    convert file.jpg HISTOGRAM:- | display -
+    gm convert file.jpg HISTOGRAM:- | display -
 </pre>
 </td></tr></table>
      <p>
@@ -271,11 +314,11 @@ To display histogram of an image, use:
 &nbsp;</p>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
-<td ALIGN=LEFT BGCOLOR="#52799E"><img 
+<td ALIGN=LEFT bgcolor="#52799E"><img 
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="opti"></a>Options
+<a NAME="disp-opti"></a>Options
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -286,7 +329,7 @@ the option again with a different effect. For example to display three images,
 the first with 32 colors, the second with an unlimited number of colors,
 and the third with only 16 colors, use:
 <pre>
-      display -colors 32 cockatoo.miff -noop duck.miff -colors 16 macaw.miff
+      gm display -colors 32 cockatoo.miff -noop duck.miff -colors 16 macaw.miff
 </pre>
 <p>
 <strong>Display</strong> options can appear on the command line or in your X resources
@@ -294,6 +337,7 @@ file. See <em>X(1)</em>. Options on the command line supersede values specified
 in your X resources file.
 <p>
 For a more detailed description of each option, see
+Options, above.
 <a href="GraphicsMagick.html"><em>GraphicsMagick(1)</em></a>.
 <br>&nbsp;<br>
 <table BORDER=0 WIDTH="94%">
@@ -315,7 +359,7 @@ width=15><b><font face="Helvetica, Arial"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a href="GraphicsMagick.html#details-backdrop">-backdrop</a> <i>&lt;color&gt;</i>
+    <a href="GraphicsMagick.html#details-backdrop">-backdrop</a>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>display the image centered on a backdrop.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
@@ -372,7 +416,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a href="GraphicsMagick.html#details-cache">-cache</a> <i>&lt;threshold&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>megabytes of memory available to the pixel cache</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>(This option has been replaced by the -limit option)</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -469,6 +513,17 @@ width=15><b><font face="Helvetica, Arial"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
+    <a href="GraphicsMagick.html#details-define">-define</a> <i>&lt;key&gt;</i>{<i>=&lt;value&gt;</i>}<i>,...</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>add coder/decoder specific options</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
     <a href="GraphicsMagick.html#details-delay">-delay</a> <i>&lt;1/100ths of a second&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>display the next image after pausing</td></tr></table>
@@ -482,7 +537,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a href="GraphicsMagick.html#details-density">-density</a> <i>&lt;width&gt;x&lt;height&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>vertical and horizontal resolution in pixels of the image</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>horizontal and vertical resolution in pixels of the image</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -735,7 +790,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a href="GraphicsMagick.html#details-limit">-limit</a> <i>&lt;type&gt; &lt;value&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, Map, or Memory resource limit</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Disk, File, Map, or Memory resource limit</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -746,6 +801,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a href="GraphicsMagick.html#details-log">-log</a> <i>&lt;string&gt;</i>
 </font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Specify format for debug log</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -843,6 +899,16 @@ width=15><b><font face="Helvetica, Arial"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
+    <a href="GraphicsMagick.html#details-ordered-dither">-ordered-dither</a> &lt;channeltype&gt; &lt;NxN&gt;
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>ordered dither the image</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
     <a href="GraphicsMagick.html#details-page">-page</a> <i>&lt;width&gt;x&lt;height&gt;</i>{<i>+-</i>}<i>&lt;x&gt;</i>{<i>+-</i>}<i>&lt;y&gt;</i>{<i>%</i>}<i></i>{<i>!</i>}<i></i>{<i>&lt;</i>}<i></i>{<i>&gt;</i>}<i></i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>size and location of an image canvas</td></tr></table>
@@ -868,6 +934,16 @@ width=15><b><font face="Helvetica, Arial"
     <a href="GraphicsMagick.html#details-raise">-raise</a> <i>&lt;width&gt;x&lt;height&gt;</i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>lighten or darken image edges</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    <a href="GraphicsMagick.html#details-random-threshold">-random-threshold</a> &lt;channeltype&gt; &lt;LOWxHIGH&gt;
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>random threshold the image</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -911,7 +987,7 @@ width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
     <a href="GraphicsMagick.html#details-sample">-sample</a> <i>&lt;geometry&gt;</i>
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>scale image with pixel sampling</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>scale image using pixel sampling</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -964,7 +1040,7 @@ width=15><b><font face="Helvetica, Arial"
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
-    <a href="GraphicsMagick.html#details-sharpen">-sharpen</a> <i>&lt;radius&gt;x&lt;sigma&gt;</i>
+    <a href="GraphicsMagick.html#details-sharpen">-sharpen</a> <i>&lt;radius&gt;</i>{<i>x&lt;sigma&gt;</i>}<i></i>
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>sharpen the image</td></tr></table>
 <table BORDER=0 WIDTH="94%">
@@ -1124,6 +1200,7 @@ width=15><b><font face="Helvetica, Arial"
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>write the image to a file [<em>display</em>]</td></tr></table>
 <p>
 For a more detailed description of each option, see
+Options, above.
 <a href="GraphicsMagick.html"><em>GraphicsMagick(1)</em></a>.
 <br>&nbsp;<br>
 </td></tr></table>
@@ -1132,11 +1209,11 @@ For a more detailed description of each option, see
 &nbsp;</p>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
-<td ALIGN=LEFT BGCOLOR="#52799E"><img 
+<td ALIGN=LEFT bgcolor="#52799E"><img 
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="mous"></a>Mouse Buttons
+<a NAME="disp-mous"></a>Mouse Buttons
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -1155,7 +1232,7 @@ width=15><b><font face="Helvetica, Arial"
     1
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>
-Press this button to map or unmap the <a href="#comm">Command
+Press this button to map or unmap the <a href="#disp-comm">Command
 widget</a> . See the next section for more information about the Command
 widget.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
@@ -1196,7 +1273,7 @@ Choose from these menu items:</td></tr></table>
 <p>
 If you choose <strong>Open</strong>, the image represented by the tile is displayed.
 To return to the visual image directory, choose <strong>Next</strong> from the Command
-widget (refer to <a href="#comm">Command Widget</a>).
+widget (refer to <a href="#disp-comm">Command Widget</a>).
 <strong>Next</strong> and <strong>Former</strong>
 moves to the next or former image respectively. Choose <strong>Delete</strong> to
 delete a particular image tile. Finally, choose <strong>Update</strong> to synchronize
@@ -1210,11 +1287,11 @@ and
 &nbsp;</p>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
-<td ALIGN=LEFT BGCOLOR="#52799E"><img 
+<td ALIGN=LEFT bgcolor="#52799E"><img 
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="comm"></a>Command Widget
+<a NAME="disp-comm"></a>Command Widget
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -1365,11 +1442,11 @@ particular command.
 &nbsp;</p>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
-<td ALIGN=LEFT BGCOLOR="#52799E"><img 
+<td ALIGN=LEFT bgcolor="#52799E"><img 
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="keyb"></a>Keyboard Accelerators
+<a NAME="disp-keyb"></a>Keyboard Accelerators
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -1378,7 +1455,7 @@ Accelerators are one or two key presses that effect a particular command.
 The keyboard accelerators that
 <strong>display</strong> understands is:
 <pre>
-    Ctl+O     Press to <a href="#imlo">load</a> an image from a file.
+    Ctl+O     Press to <a href="#disp-imlo">load</a> an image from a file.
     space     Press to display the next image.
 </pre>
 <p>
@@ -1405,11 +1482,11 @@ For example to display the fourth page preceding the current page, press
     Ctl-Q    Press to discard all images and exit program.
     Ctl+Z    Press to undo last image transformation.
     Ctl+R    Press to redo last image transformation.
-    Ctl-X    Press to <a href="#imcu">cut</a> a region of
+    Ctl-X    Press to <a href="#disp-imcu">cut</a> a region of
              the image.
-    Ctl-C    Press to <a href="#imco">copy</a> a region of
+    Ctl-C    Press to <a href="#disp-imco">copy</a> a region of
              the image.
-    Ctl-V    Press to <a href="#impa">paste</a> a region to
+    Ctl-V    Press to <a href="#disp-impa">paste</a> a region to
              the image.
     &lt;        Press to halve the image size.
     .        Press to return to the original image size.
@@ -1419,7 +1496,7 @@ For example to display the fourth page preceding the current page, press
     Cmd-A    Press to make any image transformations permanent.
              By default, any image size transformations are
              applied to the original image to create the image
-             displayed on the X server.  However, the
+             gm displayed on the X server.  However, the
              transformations are not permanent (i.e. the original
              image does not change size only the X image does).
              For example, if you press "&gt;" the X image will
@@ -1428,14 +1505,14 @@ For example to display the fourth page preceding the current page, press
              original image to double in size, press "&gt;" followed
              by "Cmd-A".
     @        Press to refresh the image window.
-    C        Press to <a href="#imcr">crop</a> the image.
-    [        Press to <a href="#imch">chop</a> the image.
+    C        Press to <a href="#disp-imcr">crop</a> the image.
+    [        Press to <a href="#disp-imch">chop</a> the image.
     H        Press to flop image in the horizontal direction.
     V        Press to flip image in the vertical direction.
     /        Press to rotate the image 90 degrees clockwise.
     \        Press to rotate the image 90 degrees
              counter-clockwise.
-    *        Press to <a href="#imro">rotate</a> the image
+    *        Press to <a href="#disp-imro">rotate</a> the image
              the number of degrees you specify.
     S        Press to shear the image the number of degrees
              you specify.
@@ -1474,13 +1551,13 @@ For example to display the fourth page preceding the current page, press
     Meta-W   Press to alter an image along a sine wave.
     Meta-P   Press to simulate an oil painting.
     Meta-C   Press to simulate a charcoal drawing.
-    Alt-X    Press to <a href="#imcomp">composite</a> the image
+    Alt-X    Press to <a href="#disp-imcomp">composite</a> the image
              with another.
-    Alt-A    Press to <a href="#iman">annotate</a> the image with text.
-    Alt-D    Press to <a href="#imdr">draw</a> a line on the image.
-    Alt-P    Press to <a href="#cole">edit an image pixel color</a>.
-    Alt-M    Press to <a href="#matt">edit the image matte</a> information.
-    Alt-X    Press to <a href="#imcomp">composite</a> the image with another.
+    Alt-A    Press to <a href="#disp-iman">annotate</a> the image with text.
+    Alt-D    Press to <a href="#disp-imdr">draw</a> a line on the image.
+    Alt-P    Press to <a href="#disp-cole">edit an image pixel color</a>.
+    Alt-M    Press to <a href="#disp-matt">edit the image matte</a> information.
+    Alt-X    Press to <a href="#disp-imcomp">composite</a> the image with another.
     Alt-A    Press to add a border to the image.
     Alt-F    Press to add a ornamental frame to the image.
     Alt-Shft-!   Press to add an image comment.
@@ -1508,11 +1585,11 @@ of the image.
 &nbsp;</p>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
-<td ALIGN=LEFT BGCOLOR="#52799E"><img 
+<td ALIGN=LEFT bgcolor="#52799E"><img 
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="xres"></a>X Resources
+<a NAME="disp-xres"></a>X Resources
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -1737,7 +1814,7 @@ specifies an integral factor by which the image should be enlarged. The
 default is 3.</td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>
 This value only affects the magnification window which is invoked with
-<a href="#mous">button</a>
+<a href="#disp-mous">button</a>
 number 3 after the image is displayed.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
@@ -1780,7 +1857,7 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>
 Specifies the color of the preferred font to use when
-<a href="#iman">annotating</a>
+<a href="#disp-iman">annotating</a>
 the image window with text. The default colors are black, blue, green,
 cyan, gray, red, magenta, yellow, and white.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
@@ -1809,9 +1886,9 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>
 This resource specifies whether display should attempt use shared memory
-for pixmaps. GraphicsMagick must be compiled with shared memory support, and
-the display must support the MIT-SHM extension. Otherwise, this resource
-is ignored. The default is True.</td></tr></table>
+for pixmaps. GraphicsMagick must be compiled with shared memory support,
+and the display must support the MIT-SHM extension. Otherwise, this
+resource is ignored. The default is True.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -1874,7 +1951,7 @@ are considered a precious resource, use them with discretion.</td></tr></table>
 To set the geometry of the Magnify or Pan or window, use the geometry resource.
 For example, to set the Pan window geometry to 256x256, use:
 <pre>
-    display.pan.geometry: 256x256
+    gm display.pan.geometry: 256x256
 </pre>
 </td></tr></table>
      <p>
@@ -1882,17 +1959,17 @@ For example, to set the Pan window geometry to 256x256, use:
 &nbsp;</p>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
-<td ALIGN=LEFT BGCOLOR="#52799E"><img 
+<td ALIGN=LEFT bgcolor="#52799E"><img 
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="imlo"></a>Image Loading
+<a NAME="disp-imlo"></a>Image Loading
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
 To select an image to display, choose <strong>Open</strong> of the <strong>File</strong> sub-menu
-from the <a href="#comm">Command widget</a>. A file browser is displayed.
+from the <a href="#disp-comm">Command widget</a>. A file browser is displayed.
 To choose a particular image file, move the pointer to the filename and
 press any button. The filename is copied to the text window. Next, press
 <strong>Open</strong>
@@ -1914,17 +1991,17 @@ To select your image from the X server screen instead of from a file, Choose
 &nbsp;</p>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
-<td ALIGN=LEFT BGCOLOR="#52799E"><img 
+<td ALIGN=LEFT bgcolor="#52799E"><img 
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="visu"></a>Visual Image Directory
+<a NAME="disp-visu"></a>Visual Image Directory
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
 To create a Visual Image Directory, choose Visual Directory of the <strong>File</strong>
-sub-menu from the <a href="#comm">Command widget</a> . A file browser is
+sub-menu from the <a href="#disp-comm">Command widget</a> . A file browser is
 displayed. To create a Visual Image Directory from all the images in the
 current directory, press <strong>Directory</strong> or press the <strong>RETURN key</strong>.
 Alternatively, you can select a set of image names by using shell globbing
@@ -1946,11 +2023,11 @@ Image Directory.
 &nbsp;</p>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
-<td ALIGN=LEFT BGCOLOR="#52799E"><img 
+<td ALIGN=LEFT bgcolor="#52799E"><img 
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="imcu"></a>Image Cutting
+<a NAME="disp-imcu"></a>Image Cutting
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -1963,7 +2040,7 @@ Correct cutting behavior may require a <em>TrueColor</em> or <em>DirectColor</em
 visual or a <em>Standard Colormap</em>.
 <p>
 To begin, press choose <strong>Cut</strong> of the <strong>Edit</strong> sub-menu from the
-<a href="#comm">Command
+<a href="#disp-comm">Command
 widget</a>. Alternatively, press
 <strong>F3</strong> in the image window.
 <p>
@@ -1995,17 +2072,17 @@ your copy region. To exit without cutting the image, press Dismiss.
 &nbsp;</p>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
-<td ALIGN=LEFT BGCOLOR="#52799E"><img 
+<td ALIGN=LEFT bgcolor="#52799E"><img 
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="imco"></a>Image Copying
+<a NAME="disp-imco"></a>Image Copying
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
 To begin, press choose <strong>Copy</strong> of the <strong>Edit</strong> sub-menu from the
-<a href="#comm">Command
+<a href="#disp-comm">Command
 widget</a>. Alternatively, press
 <strong>F4</strong> in the image window.
 <p>
@@ -2037,17 +2114,17 @@ your copy region. To exit without copying the image, press Dismiss.
 &nbsp;</p>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
-<td ALIGN=LEFT BGCOLOR="#52799E"><img 
+<td ALIGN=LEFT bgcolor="#52799E"><img 
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="impas"></a>Image Pasting
+<a NAME="disp-impas"></a>Image Pasting
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
 To begin, press choose <strong>Paste</strong> of the <strong>Edit</strong> sub-menu from the
-<a href="#comm">Command
+<a href="#disp-comm">Command
 widget</a>. Alternatively, press
 <strong>F5</strong> in the image window.
 <p>
@@ -2076,7 +2153,7 @@ In Paste mode, the Command widget has these options:
 </ul>
 <p>
 Choose a composite operation from the <strong>Operators</strong> sub-menu of the
-<a href="#comm">Command
+<a href="#disp-comm">Command
 widget</a>. How each operator behaves is described below. <em>image window</em>
 is the image currently displayed on your X server and <em>image</em> is the
 image obtained with the File Browser widget.
@@ -2165,7 +2242,8 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>
 The result is just the sum of the image data. Output values are cropped
-to 255 (no overflow). This operation is independent of the matte channels.</td></tr></table>
+to the maximum value (no overflow). This operation is independent of the
+matte channels.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -2178,7 +2256,7 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>
 The result of <em>image</em> - <em>image window</em>, with underflow cropped
-to zero. The matte channel is ignored (set to 255, full coverage).</td></tr></table>
+to zero. The matte channel is ignored (set to opaque, full coverage).</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -2191,7 +2269,7 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>
 The result of <em>image</em> + <em>image window</em>, with overflow wrapping
-around (mod 256).</td></tr></table>
+around (mod MaxRGB+1).</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
 <td width="3%"><br></td> 
@@ -2204,7 +2282,7 @@ width=15><b><font face="Helvetica, Arial"
 </font></font></font></b></td></tr></table>
 <table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>
 The result of <em>image</em> - <em>image window</em>, with underflow wrapping
-around (mod 256). The add and subtract operators can be used to perform
+around (mod MaxRGB+1). The add and subtract operators can be used to perform
 reversible transformations.</td></tr></table>
 <table BORDER=0 WIDTH="94%">
 <tr>
@@ -2264,7 +2342,7 @@ a sort of a cookie-cutter for the image. This is the case when matte is
 255 (full coverage) for pixels inside the shape, zero outside, and between
 zero and 255 on the boundary. If image does not have a matte channel, it
 is initialized with 0 for any pixel matching in color to pixel location
-(0,0), otherwise 255. See <a href="#matt">Matte Editing</a> for a method
+(0,0), otherwise 255. See <a href="#disp-matt">Matte Editing</a> for a method
 of defining a matte channel.
 <p>
 Note that matte information for image window is not retained for colormapped
@@ -2293,18 +2371,18 @@ use <strong>-colors</strong>.
 &nbsp;</p>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
-<td ALIGN=LEFT BGCOLOR="#52799E"><img 
+<td ALIGN=LEFT bgcolor="#52799E"><img 
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="imcr"></a>Image Cropping
+<a NAME="disp-imcr"></a>Image Cropping
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
 To begin, press choose <strong>Crop</strong> of the <strong>Transform</strong> submenu from
-the <a href="#comm">Command widget</a>. Alternatively,
-<a href="#keyb">press</a> [ in the image window.
+the <a href="#disp-comm">Command widget</a>. Alternatively,
+<a href="#disp-keyb">press</a> [ in the image window.
 <p>
 A small window appears showing the location of the cursor in the image
 window. You are now in crop mode. In crop mode, the Command widget has
@@ -2334,19 +2412,19 @@ your cropping region. To exit without cropping the image, press Dismiss.
 &nbsp;</p>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
-<td ALIGN=LEFT BGCOLOR="#52799E"><img 
+<td ALIGN=LEFT bgcolor="#52799E"><img 
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="imch"></a>Image Chopping
+<a NAME="disp-imch"></a>Image Chopping
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
 An image is chopped interactively. There is no command line argument to
 chop an image. To begin, choose <strong>Chop</strong> of the <strong>Transform</strong> sub-menu
-from the <a href="#comm">Command widget</a>. Alternatively,
-<a href="#keyb">press</a> ] in the Image window.
+from the <a href="#disp-comm">Command widget</a>. Alternatively,
+<a href="#disp-keyb">press</a> ] in the Image window.
 <p>
 You are now in <strong>Chop</strong> mode. To exit immediately, press
 <strong>Dismiss</strong>.
@@ -2380,11 +2458,11 @@ of the line and release the button.
 &nbsp;</p>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
-<td ALIGN=LEFT BGCOLOR="#52799E"><img 
+<td ALIGN=LEFT bgcolor="#52799E"><img 
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="imro"></a>Image Rotation
+<a NAME="disp-imro"></a>Image Rotation
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -2392,8 +2470,8 @@ color="#FFFFFF"><font size="+1">
 Press the / key to rotate the image 90 degrees or \ to rotate -90 degrees.
 To interactively choose the degree of rotation, choose
 <strong>Rotate...</strong>
-of the <strong>Transform</strong> submenu from the <a href="#comm">Command Widget</a>.
-Alternatively, <a href="#keyb">press</a> * in the image window.
+of the <strong>Transform</strong> submenu from the <a href="#disp-comm">Command Widget</a>.
+Alternatively, <a href="#disp-keyb">press</a> * in the image window.
 <p>
 A small horizontal line is drawn next to the pointer. You are now in rotate
 mode. To exit immediately, press Dismiss. In rotate mode, the Command widget
@@ -2423,7 +2501,7 @@ has these options:
 <p>
 Choose a background color from the Pixel Color sub-menu. Additional background
 colors can be specified with the color browser. You can change the menu
-colors by setting the <a href="#xres">X resources</a> pen1 through pen9.
+colors by setting the <a href="#disp-xres">X resources</a> pen1 through pen9.
 <p>
 If you choose the color browser and press <strong>Grab</strong>, you can select the
 background color by moving the pointer to the desired color on the screen
@@ -2444,11 +2522,11 @@ of the line and release the button.
 &nbsp;</p>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
-<td ALIGN=LEFT BGCOLOR="#52799E"><img 
+<td ALIGN=LEFT bgcolor="#52799E"><img 
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="segm"></a>Image Segmentation
+<a NAME="disp-segm"></a>Image Segmentation
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -2497,11 +2575,11 @@ Pattern Recognition, Volume 23, Number 9, pages 935-952, 1990.</blockquote>
 &nbsp;</p>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
-<td ALIGN=LEFT BGCOLOR="#52799E"><img 
+<td ALIGN=LEFT bgcolor="#52799E"><img 
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="iman"></a>Image Annotation
+<a NAME="disp-iman"></a>Image Annotation
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -2509,8 +2587,8 @@ color="#FFFFFF"><font size="+1">
 An image is annotated interactively. There is no command line argument
 to annotate an image. To begin, choose
 <strong>Annotate</strong> of the <strong>Image
-Edit</strong> sub-menu from the <a href="#comm">Command widget</a>. Alternatively,
-<a href="#keyb">press</a> a in the image window.
+Edit</strong> sub-menu from the <a href="#disp-comm">Command widget</a>. Alternatively,
+<a href="#disp-keyb">press</a> a in the image window.
 <p>
 A small window appears showing the location of the cursor in the image
 window. You are now in annotate mode. To exit immediately, press Dismiss.
@@ -2622,11 +2700,11 @@ Dialog...
 <p>
 Choose a font name from the <strong>Font Name</strong> sub-menu. Additional font
 names can be specified with the font browser. You can change the menu names
-by setting the <a href="#xres">X resources</a> font1 through font9.
+by setting the <a href="#disp-xres">X resources</a> font1 through font9.
 <p>
 Choose a font color from the <strong>Font Color</strong> sub-menu. Additional font
 colors can be specified with the color browser. You can change the menu
-colors by setting the <a href="#xres">X resources</a> pen1 through pen9.
+colors by setting the <a href="#disp-xres">X resources</a> pen1 through pen9.
 <p>
 If you select the color browser and press <strong>Grab</strong>, you can choose the
 font color by moving the pointer to the desired color on the screen and
@@ -2666,19 +2744,19 @@ to remain
 &nbsp;</p>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
-<td ALIGN=LEFT BGCOLOR="#52799E"><img 
+<td ALIGN=LEFT bgcolor="#52799E"><img 
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="imcomp"></a>Image Compositing
+<a NAME="disp-imcomp"></a>Image Compositing
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
 An image composite is created interactively. <strong>There is no command line
 argument to composite an image</strong>. To begin, choose <strong>Composite</strong> of
-the <strong>Image Edit</strong> from the <a href="#comm">Command widget</a>. Alternatively,
-<a href="#keyb">press</a> x in the Image window.
+the <strong>Image Edit</strong> from the <a href="#disp-comm">Command widget</a>. Alternatively,
+<a href="#disp-keyb">press</a> x in the Image window.
 <p>
 First a popup window is displayed requesting you to enter an image name.
 Press <strong>Composite</strong>, <strong>Grab</strong> or type a file name. Press <strong>Cancel</strong>
@@ -2908,7 +2986,7 @@ a sort of a cookie-cutter for the image. This is the case when matte is
 255 (full coverage) for pixels inside the shape, zero outside, and between
 zero and 255 on the boundary. If image does not have a matte channel, it
 is initialized with 0 for any pixel matching in color to pixel location
-(0,0), otherwise 255. See <a href="#matt">Matte Editing</a> for a method
+(0,0), otherwise 255. See <a href="#disp-matt">Matte Editing</a> for a method
 of defining a matte channel.
 <p>
 If you choose <strong>blend</strong>, the composite operator becomes <strong>over</strong>.
@@ -2954,19 +3032,19 @@ use <strong>-colors</strong>.
 &nbsp;</p>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
-<td ALIGN=LEFT BGCOLOR="#52799E"><img 
+<td ALIGN=LEFT bgcolor="#52799E"><img 
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="cole"></a>Color Editing
+<a NAME="disp-cole"></a>Color Editing
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
 Changing the the color of a set of pixels is performed interactively. There
 is no command line argument to edit a pixel. To begin, choose <strong>Color</strong>
-from the <strong>Image Edit</strong> submenu of the <a href="#comm">Command widget</a>.
-Alternatively, <a href="#keyb">press</a> c in the image window.
+from the <strong>Image Edit</strong> submenu of the <a href="#disp-comm">Command widget</a>.
+Alternatively, <a href="#disp-keyb">press</a> c in the image window.
 <p>
 A small window appears showing the location of the cursor in the image
 window. You are now in color edit mode. To exit immediately, press <strong>Dismiss</strong>.
@@ -3057,7 +3135,7 @@ Browser...
 </ul>
 <p>
 Choose a color editing method from the <strong>Method</strong> sub-menu of
-the <a href="#comm">Command
+the <a href="#disp-comm">Command
 widget</a>. The <strong>point method</strong> recolors any pixel selected with the
 pointer unless the button is released. The <strong>replace method</strong> recolors
 any pixel that matches the color of the pixel you select with a button
@@ -3069,7 +3147,7 @@ Finally <strong>reset</strong> changes the entire image to the designated color.
 <p>
 Next, choose a pixel color from the <strong>Pixel Color</strong> sub-menu. Additional
 pixel colors can be specified with the color browser. You can change the
-menu colors by setting the <a href="#xres">X resources</a> pen1 through
+menu colors by setting the <a href="#disp-xres">X resources</a> pen1 through
 pen9.
 <p>
 Now press button 1 to select a pixel within the Image window to change
@@ -3098,26 +3176,26 @@ To force a <em>PseudoClass</em> image to remain
 &nbsp;</p>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
-<td ALIGN=LEFT BGCOLOR="#52799E"><img 
+<td ALIGN=LEFT bgcolor="#52799E"><img 
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="matt"></a>Matte Editing
+<a NAME="disp-matt"></a>Matte Editing
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
 Matte information within an image is useful for some operations such as
-image <a href="#imcomp">compositing</a>. This extra channel usually defines
+image <a href="#disp-imcomp">compositing</a>. This extra channel usually defines
 a mask which represents a sort of a cookie-cutter for the image. This is
 the case when matte is 255 (full coverage) for pixels inside the shape,
 zero outside, and between zero and 255 on the boundary.
 <p>
 Setting the matte information in an image is done interactively. There
 is no command line argument to edit a pixel. To begin, and choose <strong>Matte</strong>
-of the <strong>Image Edit</strong> sub-menu from the <a href="#comm">Command widget</a>.
+of the <strong>Image Edit</strong> sub-menu from the <a href="#disp-comm">Command widget</a>.
 <p>
-Alternatively, <a href="#keyb">press</a> m in the image window.
+Alternatively, <a href="#disp-keyb">press</a> m in the image window.
 <p>
 A small window appears showing the location of the cursor in the image
 window. You are now in matte edit mode. To exit immediately, press Dismiss.
@@ -3183,7 +3261,7 @@ Browser...
 <li>
 <strong>Dismiss</strong>
 </ul>
-Choose a matte editing method from the <strong>Method</strong> sub-menu of the <a href="#comm">Command
+Choose a matte editing method from the <strong>Method</strong> sub-menu of the <a href="#disp-comm">Command
 widget</a>. The <strong>point method</strong> changes the matte value of the any
 pixel selected with the pointer until the button is released. The <strong>replace
 method</strong> changes the matte value of any pixel that matches the color
@@ -3222,19 +3300,19 @@ visual or a <em>Standard Colormap</em>.
 &nbsp;</p>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
-<td ALIGN=LEFT BGCOLOR="#52799E"><img 
+<td ALIGN=LEFT bgcolor="#52799E"><img 
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="imdr"></a>Image Drawing
+<a NAME="disp-imdr"></a>Image Drawing
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
 An image is drawn upon interactively. <strong>There is no command line argument
 to draw on an image</strong>. To begin, choose <strong>Draw</strong> of the Image <strong>Edit</strong>
-sub-menu from the <a href="#comm">Command widget</a>.
-Alternatively, <a href="#keyb">press</a> d in the image window.
+sub-menu from the <a href="#disp-comm">Command widget</a>.
+Alternatively, <a href="#disp-keyb">press</a> d in the image window.
 <p>
 The cursor changes to a crosshair to indicate you are in draw mode. To
 exit immediately, press Dismiss. In draw mode, the Command widget has these
@@ -3336,7 +3414,7 @@ Choose a drawing primitive from the <strong>Primitive</strong> sub-menu.
 <p>
 Next, choose a color from the <strong>Color</strong> sub-menu. Additional colors
 can be specified with the color browser. You can change the menu colors
-by setting the <a href="#xres">X resources</a> pen1 through pen9. The transparent
+by setting the <a href="#disp-xres">X resources</a> pen1 through pen9. The transparent
 color updates the image matte channel and is useful for image compositing.
 <p>
 If you choose the color browser and press <strong>Grab</strong>, you can select the
@@ -3365,18 +3443,18 @@ the line and release the button.
 &nbsp;</p>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
-<td ALIGN=LEFT BGCOLOR="#52799E"><img 
+<td ALIGN=LEFT bgcolor="#52799E"><img 
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="regi"></a>Region of Interest
+<a NAME="disp-regi"></a>Region of Interest
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
 To begin, press choose Region of Interest of the Pixel Transform sub-menu
-from the <a href="#comm">Command widget</a>.
-Alternatively, <a href="#keyb">press</a> R in the image window.
+from the <a href="#disp-comm">Command widget</a>.
+Alternatively, <a href="#disp-keyb">press</a> R in the image window.
 <p>
 A small window appears showing the location of the cursor in the image
 window. You are now in region of interest mode. In region of interest mode,
@@ -3528,11 +3606,11 @@ technique. To exit, press Dismiss.
 &nbsp;</p>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
-<td ALIGN=LEFT BGCOLOR="#52799E"><img 
+<td ALIGN=LEFT bgcolor="#52799E"><img 
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="impa"></a>Image Panning
+<a NAME="disp-impa"></a>Image Panning
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -3556,11 +3634,11 @@ of the X server screen.
 &nbsp;</p>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
-<td ALIGN=LEFT BGCOLOR="#52799E"><img 
+<td ALIGN=LEFT bgcolor="#52799E"><img 
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="pref"></a>User Preferences
+<a NAME="disp-pref"></a>User Preferences
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -3574,7 +3652,7 @@ as <tt>.displayrc</tt>:
 <dd>
 This backdrop covers the entire workstation screen and is useful for hiding
 other X window activity while viewing the image. The color of the backdrop
-is specified as the background color. Refer to <a href="#xres">X Resources</a>
+is specified as the background color. Refer to <a href="#disp-xres">X Resources</a>
 for details.</dd>
 <dt>
 <strong>confirm on program exit</strong></dt>
@@ -3584,7 +3662,11 @@ Ask for a confirmation before exiting the <strong>display(1)</strong> program.</
 <strong>correct image for display gamma</strong></dt>
 <dd>
 If the image has a known gamma, the gamma is corrected to match that of
-the X server (see the <a href="#xres">X Resource</a><strong> displayGamma</strong>).</dd>
+the X server (see the <a href="#disp-xres">X Resource</a><strong> displayGamma</strong>).</dd>
+<dt>
+<strong>display warning messages</strong></dt>
+<dd>
+Display any warning messages.</dd>
 <dt>
 <strong>apply Floyd/Steinberg error diffusion to image</strong></dt>
 <dd>
@@ -3618,11 +3700,11 @@ are considered a precious resource, use them with discretion.</dd>
 &nbsp;</p>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
-<td ALIGN=LEFT BGCOLOR="#52799E"><img 
+<td ALIGN=LEFT bgcolor="#52799E"><img 
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="envi"></a>Environment
+<a NAME="disp-envi"></a>Environment
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -3634,20 +3716,349 @@ color="#FFFFFF"><font size="+1">
 ALT=">" BORDER=0 height=14
 width=15><b><font face="Helvetica, Arial"
 ><font color="#FFFFFF"><font size="+1">
+    COLUMNS
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Output screen width. Used when formatting text for the screen. Many
+Unix systems keep this shell variable up to date, but it may need to be
+explicitly exported in order for GraphicsMagick to see it.</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
     DISPLAY
 </font></font></font></b></td></tr></table>
-<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>To get the default host, display number, and screen.</td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>X11 display ID (host, display number, and screen in the form
+hostname:display.screen).</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    HOME
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Location of user's home directory. GraphicsMagick searches for
+configuration files in $HOME/.magick if the directory exists. See
+<strong>MAGICK_CODER_MODULE_PATH</strong>, <strong>MAGICK_CONFIGURE_PATH</strong>, and
+<strong>MAGICK_FILTER_MODULE_PATH</strong> if more flexibility is needed.</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    MAGICK_CODER_MODULE_PATH
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Search path to use when searching for image format coder modules.
+This path allows the user to arbitrarily extend the image formats
+supported by GraphicsMagick by adding loadable modules to an arbitrary
+location rather than copying them into the GraphicsMagick installation
+directory. The formatting of the search path is similar to operating
+system search paths (i.e. colon delimited for Unix, and semi-colon
+delimited for Microsoft Windows). This user specified search path is used
+before trying the default search path.</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    MAGICK_CONFIGURE_PATH
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Search path to use when searching for configuration (.mgk) files.
+The formatting of the search path is similar to operating system search
+paths (i.e. colon delimited for Unix, and semi-colon delimited for
+Microsoft Windows). This user specified search path is used before trying
+the default search path.</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    MAGICK_DEBUG
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Debug options (see <strong>-debug</strong> for details)</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    MAGICK_FILTER_MODULE_PATH
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Search path to use when searching for filter process modules
+(invoked via <strong>-process</strong>). This path allows the user to arbitrarily
+extend GraphicsMagick's image processing functionality by adding loadable
+modules to an arbitrary location rather than copying them into the
+GraphicsMagick installation directory. The formatting of the search path
+is similar to operating system search paths (i.e. colon delimited for
+Unix, and semi-colon delimited for Microsoft Windows). This user
+specified search path is used before trying the default search path.</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    MAGICK_FONT_PATH
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Directory where GraphicsMagick should look for TrueType and
+Postscript Type1 font files if the font file is not found in the current
+directory. It is preferred to define the available fonts via type.mgk
+rather than use <strong>MAGICK_FONT_PATH</strong>.</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    MAGICK_HOME
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Path to top of GraphicsMagick installation directory. Only observed
+by "uninstalled" builds of GraphicsMagick which do not have their location
+hard-coded or set by an installer.</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    MAGICK_LIMIT_DISK
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Maximum amount of disk space allowed for use by the pixel cache.</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    MAGICK_LIMIT_FILES
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Maximum number of open files.</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    MAGICK_LIMIT_MAP
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Maximum size of a memory map.</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    MAGICK_LIMIT_MEMORY
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Maximum amount of memory to allocate from the heap.</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    MAGICK_TMPDIR
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>Path to directory where GraphicsMagick should write temporary
+files. The default is to use the system default, or the location set by
+<strong>TMPDIR</strong>.</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    TMPDIR
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>For POSIX-compatible systems (Unix-compatible), the path to the
+directory where all applications should write temporary files.
+Overridden by <strong>MAGICK_TMPDIR</strong> if it is set.</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    TMP <i>or TEMP</i>
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>For Microsoft Windows, the path to the directory where applications
+should write temporary files. Overridden by <strong>MAGICK_TMPDIR</strong> if it
+is set.</td></tr></table>
 </td></tr></table>
      <p>
 <i><a href="#top">Back to Contents</a></i> 
 &nbsp;</p>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
-<td ALIGN=LEFT BGCOLOR="#52799E"><img 
+<td ALIGN=LEFT bgcolor="#52799E"><img 
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
-<a NAME="ackn"></a>Acknowledgements
+<a NAME="disp-file"></a>Configuration Files
+</font></font></font></b></td></tr></table>
+<table width="94%" border="0" cellspacing="0" cellpadding="8">
+<tr><td width="3%"><br></td><td>
+<p>GraphicsMagick uses a number of XML format configuration files:
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    colors.mgk
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>colors configuration file</td></tr></table>
+<pre>
+  &lt;?xml version="1.0"?&gt;
+  &lt;colormap&gt;
+    &lt;color name="AliceBlue" red="240" green="248" blue="255"
+           compliance="SVG, X11, XPM" /&gt;
+  &lt;/colormap&gt;
+</pre>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    delegates.mgk
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>delegates configuration file</td></tr></table>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    log.mgk
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>logging configuration file</td></tr></table>
+<pre>
+  &lt;?xml version="1.0"?&gt;
+  &lt;magicklog&gt;
+    &lt;log events="None" /&gt;
+    &lt;log output="stdout" /&gt;
+    &lt;log filename="Magick-%d.log" /&gt;
+    &lt;log generations="3" /&gt;
+    &lt;log limit="2000" /&gt;
+    &lt;log format="%t %r %u %p %m/%f/%l/%d:\n  %e"  /&gt;
+  &lt;/magicklog&gt;
+</pre>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    magic.mgk
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>file header magic test configuration file</td></tr></table>
+<pre>
+  &lt;?xml version="1.0"?&gt;
+  &lt;magicmap&gt;
+    &lt;magic name="AVI" offset="0" target="RIFF" /&gt;
+  &lt;/magicmap&gt;
+</pre>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    modules.mgk
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>loadable modules configuration file</td></tr></table>
+<pre>
+  &lt;?xml version="1.0"?&gt;
+  &lt;modulemap&gt;
+    &lt;module magick="8BIM" name="META" /&gt;
+  &lt;/modulemap&gt;
+</pre>
+<table BORDER=0 WIDTH="94%">
+<tr>
+<td width="3%"><br></td> 
+<td ALIGN=LEFT BGCOLOR="#9EBAC6">
+<img SRC="../images/right_triangle_option.png"
+ALT=">" BORDER=0 height=14
+width=15><b><font face="Helvetica, Arial"
+><font color="#FFFFFF"><font size="+1">
+    type.mgk
+</font></font></font></b></td></tr></table>
+<table width="90%" border="0" cellspacing="0"              cellpadding="8">              <tr><td width="6%"><br></td><td>master type (fonts) configuration file</td></tr></table>
+<pre>
+  &lt;?xml version="1.0"?&gt;
+  &lt;typemap&gt;
+    &lt;<strong></strong>include file="type-windows.mgk" /&gt;
+    &lt;type
+      name="AvantGarde-Book"
+      fullname="AvantGarde Book"
+      family="AvantGarde"
+      foundry="URW"
+      weight="400"
+      style="normal"
+      stretch="normal"
+      format="type1"
+      metrics="/usr/local/share/ghostscript/fonts/a010013l.afm"
+      glyphs="/usr/local/share/ghostscript/fonts/a010013l.pfb"
+    /&gt;
+  &lt;/typemap&gt;
+</pre>
+</td></tr></table>
+     <p>
+<i><a href="#top">Back to Contents</a></i> 
+&nbsp;</p>
+<table BORDER=0 WIDTH="100%"> 
+<tr> 
+<td ALIGN=LEFT bgcolor="#52799E"><img 
+SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
+height=14 width=15><b><font face="Helvetica, Arial"><font 
+color="#FFFFFF"><font size="+1">
+<a NAME="disp-ackn"></a>Acknowledgements
 </font></font></font></b></td></tr></table>
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
@@ -3665,8 +4076,8 @@ Image compositing is loosely based on rlecomp of the Utah Raster Toolkit.
 <em>Michael Halle</em>, <strong>Spatial Imaging Group at MIT</strong>, for the initial
 implementation of Alan Paeth's image rotation algorithm.
 <p>
-<em>David Pensak</em>, <strong>GraphicsMagick Group</strong>, for providing a computing
-environment that made this program possible.
+<em>David Pensak</em>, <strong>E. I. du Pont de Nemours and Company</strong>, for
+providing a computing environment that made this program possible.
 <p>
 <em>Paul Raveling</em>, <strong>USC Information Sciences Institute</strong>. The
 spatial subdivision color reduction algorithm is based on his Img software.
@@ -3676,7 +4087,7 @@ spatial subdivision color reduction algorithm is based on his Img software.
 &nbsp;</p>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
-<td ALIGN=LEFT BGCOLOR="#52799E"><img 
+<td ALIGN=LEFT bgcolor="#52799E"><img 
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
@@ -3686,12 +4097,11 @@ color="#FFFFFF"><font size="+1">
 <tr><td width="3%"><br></td><td>
 <p>
 <em>
-John Cristy,
-<a href="mailto:magick-users@graphicsmagick.org">magick-users@graphicsmagick.org</a>,
-GraphicsMagick Group,<br>
-Glenn Randers-Pehrson,
-<a href="mailto:randeg@alum.rpi.edu">randeg@alum.rpi.edu</a>,
-GraphicsMagick Group.
+John Cristy,<br>
+Bob Friesenhahn,<br>
+Glenn Randers-Pehrson,<br>
+William Radcliff,<br>
+Leonard Rosenthol.
 </em>
 <br>&nbsp;<br>
 </td></tr></table>
@@ -3700,7 +4110,7 @@ GraphicsMagick Group.
 &nbsp;</p>
 <table BORDER=0 WIDTH="100%"> 
 <tr> 
-<td ALIGN=LEFT BGCOLOR="#52799E"><img 
+<td ALIGN=LEFT bgcolor="#52799E"><img 
 SRC="../images/right_triangle.png"  ALT=">" BORDER=0 
 height=14 width=15><b><font face="Helvetica, Arial"><font 
 color="#FFFFFF"><font size="+1">
@@ -3709,40 +4119,45 @@ color="#FFFFFF"><font size="+1">
 <table width="94%" border="0" cellspacing="0" cellpadding="8">
 <tr><td width="3%"><br></td><td>
 <p>
-<strong>Copyright (C) 2002 GraphicsMagick Group</strong>
+<strong>Copyright (C) 2002, 2003 GraphicsMagick Group, an organization
+dedicated to making software imaging solutions freely available.</strong>
 <p>
-<strong>Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files ("GraphicsMagick"),
-to deal in GraphicsMagick without restriction, including without limitation
-the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of GraphicsMagick, and to permit persons to whom the GraphicsMagick
-is furnished to do so, subject to the following conditions:</strong>
+<strong>Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files
+("GraphicsMagick"), to deal in GraphicsMagick without restriction,
+including without limitation the rights to use, copy, modify, merge,
+publish, distribute, sublicense, and/or sell copies of GraphicsMagick,
+and to permit persons to whom GraphicsMagick is furnished to do so,
+subject to the following conditions:</strong>
 <p>
 <strong>The above copyright notice and this permission notice shall be included
 in all copies or substantial portions of GraphicsMagick.</strong>
 <p>
-<strong>The software is provided "as is", without warranty of any kind, express
-or implied, including but not limited to the warranties of merchantability,
-fitness for a particular purpose and noninfringement.In no event shall
-GraphicsMagick Group be liable for any claim, damages or other liability,
-whether in an action of contract, tort or otherwise, arising from, out
-of or in connection with GraphicsMagick or the use or other dealings in
-GraphicsMagick.</strong>
+<strong>The software is provided "as is", without warranty of any kind,
+express or implied, including but not limited to the warranties of
+merchantability, fitness for a particular purpose and noninfringement.
+In no event shall GraphicsMagick Group be liable for any claim, damages
+or other liability, whether in an action of contract, tort or otherwise,
+arising from, out of or in connection with GraphicsMagick or the use or
+other dealings in GraphicsMagick.</strong>
 <p>
-<strong>Except as contained in this notice, the name of the
-GraphicsMagick Group shall not be used in advertising or otherwise to
-promote the sale, use or other dealings in GraphicsMagick without prior written
+<strong>Except as contained in this notice, the name of the GraphicsMagick
+Group shall not be used in advertising or otherwise to promote the sale,
+use or other dealings in GraphicsMagick without prior written
 authorization from the GraphicsMagick Group.</strong>
+<p>
+<strong>Additional copyrights and licenses apply to this software. You should
+have received a copy of Copyright.txt with this package, which describes
+additional copyrights and licenses which apply to this software;
+otherwise see http://www.graphicsmagick.org/www/Copyright.html.<strong>
 </td></tr></table>
      <p>
 <i><a href="#top">Back to Contents</a></i> 
 &nbsp;</p>
-<hr>
-<p><a href="../index.html"><img SRC="../images/home.png"
-ALT="GraphicsMagick Home Page" BORDER=0 height=40 width=40
-align=MIDDLE></a><a 
-href="mailto:webmaster@graphicsmagick.org"><img SRC="../images/mail.png"
-ALT="GraphicsMagick Home Page" BORDER=0 height=40 width=40
-align=MIDDLE></a><font size="-2">
-Image manipulation software that works like magic.</font>
+<HR>
+
+[<a href="../index.html">Home</a>] [<a href="utilities.html">Utilities Index</a>]
+<BR>
+<p align=center <a href="Copyright.html">Copyright © GraphicsMagick Group 2002, 2003</a></p></td>
+</tr></table>
 </body></html>

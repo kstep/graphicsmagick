@@ -5,12 +5,11 @@
 // Test STL coalesceImages function
 //
 
+#include <Magick++.h>
 #include <string>
 #include <iostream>
 #include <list>
 #include <vector>
-
-#include <Magick++.h>
 
 using namespace std;
 
@@ -24,11 +23,11 @@ int main( int /*argc*/, char ** argv)
 
   int failures=0;
 
-  string srcdir("");
-  if(getenv("SRCDIR") != 0)
-    srcdir = getenv("SRCDIR");
-
   try {
+
+    string srcdir("");
+    if(getenv("SRCDIR") != 0)
+      srcdir = getenv("SRCDIR");
 
     //
     // Test coalesceImages

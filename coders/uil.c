@@ -18,7 +18,7 @@
 %                             UUU   IIIII  LLLLL                              %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                         Write X-Motif UIL Table                             %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -188,7 +188,7 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   TransformColorspace(image,RGBColorspace);
   transparent=False;
   i=0;
@@ -210,9 +210,9 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
             Map all the transparent pixels.
           */
           number_pixels=image->columns*image->rows;
-          matte_image=(unsigned char *) AcquireMemory(number_pixels);
+          matte_image=MagickAllocateMemory(unsigned char *,number_pixels);
           if (matte_image == (unsigned char *) NULL)
-            ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
+            ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
               image);
           for (y=0; y < (long) image->rows; y++)
           {
@@ -249,7 +249,7 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
           }
         }
       if (matte_image != (unsigned char *) NULL)
-        LiberateMemory((void **) &matte_image);
+        MagickFreeMemory(matte_image);
     }
   /*
     Compute the character per pixel.

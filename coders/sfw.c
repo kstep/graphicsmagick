@@ -229,16 +229,16 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   /*
     Read image into a buffer.
   */
-  buffer=(unsigned char *) AcquireMemory((size_t) GetBlobSize(image));
+  buffer=MagickAllocateMemory(unsigned char *,(size_t) GetBlobSize(image));
   if (buffer == (unsigned char *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   count=ReadBlob(image,(size_t) GetBlobSize(image),(char *) buffer);
   if ((count == 0) || (LocaleNCompare((char *) buffer,"SFW",3) != 0))
-    ThrowReaderException(CorruptImageError,"NotASFWImageFile",image);
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   CloseBlob(image);
   DestroyImage(image);
   /*
@@ -248,8 +248,8 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
     "\377\310\377\320",4);
   if (header == (unsigned char *) NULL)
     {
-      LiberateMemory((void **) &buffer);
-      ThrowReaderException(CorruptImageError,"NotASFWImageFile",image)
+      MagickFreeMemory(buffer);
+      ThrowReaderException(CorruptImageError,ImproperImageHeader,image)
     }
   TranslateSFWMarker(header);  /* translate soi and app tags */
   TranslateSFWMarker(header+2);
@@ -271,8 +271,8 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (unsigned char *) "\377\311",2);
   if (data == (unsigned char *) NULL)
     {
-      LiberateMemory((void **) &buffer);
-      ThrowReaderException(CorruptImageError,"NotASFWImageFile",image)
+      MagickFreeMemory(buffer);
+      ThrowReaderException(CorruptImageError,ImproperImageHeader,image)
     }
   TranslateSFWMarker(data++);  /* translate eoi marker */
   /*
@@ -288,21 +288,21 @@ static Image *ReadSFWImage(const ImageInfo *image_info,ExceptionInfo *exception)
         filename[MaxTextExtent];
 
       strcpy(filename,clone_info->filename);
-      LiberateMemory((void **) &buffer);
+      MagickFreeMemory(buffer);
       DestroyImageInfo(clone_info);
       ThrowReaderTemporaryFileException(filename)
     }
-  (void) fwrite(header,offset-header+1,1,file);
+  (void) fwrite(header,(size_t) (offset-header+1),1,file);
   (void) fwrite(HuffmanTable,1,sizeof(HuffmanTable)/sizeof(*HuffmanTable),file);
-  (void) fwrite(offset+1,data-offset,1,file);
+  (void) fwrite(offset+1,(size_t) (data-offset),1,file);
   status=ferror(file);
   (void) fclose(file);
-  LiberateMemory((void **) &buffer);
+  MagickFreeMemory(buffer);
   if (status)
     {
       LiberateTemporaryFile(clone_info->filename);
       DestroyImageInfo(clone_info);
-      ThrowReaderException(FileOpenError,"UnableToWriteFile",image)
+      ThrowReaderException(FileOpenError,UnableToWriteFile,image)
     }
   /*
     Read JPEG image.

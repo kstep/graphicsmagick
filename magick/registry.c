@@ -36,6 +36,7 @@
 */
 #include "magick/studio.h"
 #include "magick/registry.h"
+#include "magick/semaphore.h"
 #include "magick/utility.h"
 
 /*
@@ -103,7 +104,7 @@ MagickExport unsigned int DeleteMagickRegistry(const long id)
       }
       default:
       {
-        LiberateMemory((void **) &registry_info->blob);
+        MagickFreeMemory(registry_info->blob);
         break;
       }
     }
@@ -113,7 +114,7 @@ MagickExport unsigned int DeleteMagickRegistry(const long id)
       registry_info->previous->next=registry_info->next;
     if (registry_info->next != (RegistryInfo *) NULL)
       registry_info->next->previous=registry_info->previous;
-    LiberateMemory((void **) &registry_info);
+    MagickFreeMemory(registry_info);
     registry_info=(RegistryInfo *) NULL;
     break;
   }
@@ -167,13 +168,14 @@ MagickExport void DestroyMagickRegistry(void)
       }
       default:
       {
-        LiberateMemory((void **) &registry_info->blob);
+        MagickFreeMemory(registry_info->blob);
         break;
       }
     }
-    LiberateMemory((void **) &registry_info);
+    MagickFreeMemory(registry_info);
   }
   registry_list=(RegistryInfo *) NULL;
+  LiberateSemaphoreInfo(&registry_semaphore);
   DestroySemaphoreInfo(&registry_semaphore);
 }
 
@@ -231,7 +233,7 @@ MagickExport Image *GetImageFromMagickRegistry(const char *name,long *id,
   }
   LiberateSemaphoreInfo(&registry_semaphore);
   if (image == (Image *) NULL)
-    ThrowException(exception,RegistryError,"UnableToLocateImage",name);
+    ThrowException(exception,RegistryError,UnableToLocateImage,name);
   return(image);
 }
 
@@ -309,11 +311,11 @@ MagickExport void *GetMagickRegistry(const long id,RegistryType *type,
       }
       default:
       {
-        blob=(void *) AcquireMemory(registry_info->length);
+        blob=MagickAllocateMemory(void *,registry_info->length);
         if (blob == (void *) NULL)
           {
-            ThrowException(exception,ResourceLimitError,
-              "MemoryAllocationFailed","UnableToGetFromRegistry");
+            ThrowException3(exception,ResourceLimitError,
+              MemoryAllocationFailed,UnableToGetFromRegistry);
             break;
           }
         (void) memcpy(blob,registry_info->blob,registry_info->length);
@@ -331,7 +333,7 @@ MagickExport void *GetMagickRegistry(const long id,RegistryType *type,
         description[MaxTextExtent];
 
       FormatString(description,"id=%ld",id);
-      ThrowException(exception,RegistryError,"UnableToLocateRegistryID",
+      ThrowException(exception,RegistryError,UnableToLocateImage,
         description);
     }
   return(blob);
@@ -388,14 +390,14 @@ MagickExport long SetMagickRegistry(const RegistryType type,const void *blob,
       image=(Image *) blob;
       if (length != sizeof(Image))
         {
-          ThrowException(exception,RegistryError,"UnableToSetRegistry",
-            "StructureSizeMismatch");
+          ThrowException3(exception,RegistryError,UnableToSetRegistry,
+            StructureSizeMismatch);
           return(-1);
         }
       if (image->signature != MagickSignature)
         {
-          ThrowException(exception,RegistryError,"UnableToSetRegistry",
-            "ImageExpected");
+          ThrowException3(exception,RegistryError,UnableToSetRegistry,
+            ImageExpected);
           return(-1);
         }
       clone_blob=(void *) CloneImageList(image,exception);
@@ -411,14 +413,14 @@ MagickExport long SetMagickRegistry(const RegistryType type,const void *blob,
       image_info=(ImageInfo *) blob;
       if (length != sizeof(ImageInfo))
         {
-          ThrowException(exception,RegistryError,"UnableToSetRegistry",
-            "StructureSizeMismatch");
+          ThrowException3(exception,RegistryError,UnableToSetRegistry,
+            StructureSizeMismatch);
           return(-1);
         }
       if (image_info->signature != MagickSignature)
         {
-          ThrowException(exception,RegistryError,"UnableToSetRegistry",
-            "ImageInfoExpected");
+          ThrowException3(exception,RegistryError,UnableToSetRegistry,
+            ImageInfoExpected);
           return(-1);
         }
       clone_blob=(void *) CloneImageInfo(image_info);
@@ -428,16 +430,16 @@ MagickExport long SetMagickRegistry(const RegistryType type,const void *blob,
     }
     default:
     {
-      clone_blob=(void *) AcquireMemory(length);
+      clone_blob=MagickAllocateMemory(void *,length);
       if (clone_blob == (void *) NULL)
         return(-1);
       (void) memcpy(clone_blob,blob,length);
     }
   }
-  registry_info=(RegistryInfo *) AcquireMemory(sizeof(RegistryInfo));
+  registry_info=MagickAllocateMemory(RegistryInfo *,sizeof(RegistryInfo));
   if (registry_info == (RegistryInfo *) NULL)
-    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "UnableToAllocateRegistryInfo");
+    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+      UnableToAllocateRegistryInfo);
   (void) memset(registry_info,0,sizeof(RegistryInfo));
   registry_info->type=type;
   registry_info->blob=clone_blob;

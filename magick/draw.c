@@ -57,6 +57,12 @@
     ThrowException(&context->image->exception,code,reason,description); \
   return; \
 }
+#define ThrowDrawException3(code,reason,description) \
+{ \
+  if (context->image->exception.severity > (long)code) \
+    ThrowException3(&context->image->exception,code,reason,description); \
+  return; \
+}
 
 #define CurrentContext (context->graphic_context[context->index])
 #define PixelPacketMatch(p,q) (((p)->red == (q)->red) && \
@@ -151,7 +157,7 @@ struct _DrawVTable
     (DrawContext context, const double sx, const double sy,
      const double ex, const double ey, const double sd, const double ed);
   void (*DrawBezier)
-    (DrawContext context, const size_t num_coords, const PointInfo *coordinates);
+    (DrawContext context, const unsigned long num_coords, const PointInfo *coordinates);
   void (*DrawCircle)
     (DrawContext context, const double ox, const double oy,
      const double px, const double py);
@@ -230,9 +236,9 @@ struct _DrawVTable
   void (*DrawPoint)
     (DrawContext context, const double x, const double y);
   void (*DrawPolygon)
-    (DrawContext context, const size_t num_coords, const PointInfo * coordinates);
+    (DrawContext context, const unsigned long num_coords, const PointInfo * coordinates);
   void (*DrawPolyline)
-    (DrawContext context, const size_t num_coords, const PointInfo * coordinates);
+    (DrawContext context, const unsigned long num_coords, const PointInfo * coordinates);
   void (*DrawPopClipPath)
     (DrawContext context);
   void (*DrawPopDefs)
@@ -359,11 +365,11 @@ static int MvgPrintf(DrawContext context, const char *format, ...)
   /* Allocate initial memory */
   if (context->mvg == (char*) NULL)
     {
-      context->mvg = (char *) AcquireMemory(alloc_size);
+      context->mvg = MagickAllocateMemory(char *,alloc_size);
       if( context->mvg == (char*) NULL )
         {
-          ThrowException(&context->image->exception,ResourceLimitError,
-             "MemoryAllocationFailed","UnableToDrawOnImage");
+          ThrowException3(&context->image->exception,ResourceLimitError,
+            MemoryAllocationFailed,UnableToDrawOnImage);
           return -1;
         }
 
@@ -371,8 +377,8 @@ static int MvgPrintf(DrawContext context, const char *format, ...)
       context->mvg_length = 0;
       if (context->mvg == 0)
         {
-          ThrowException(&context->image->exception,ResourceLimitError,
-            "MemoryAllocationFailed","UnableToDrawOnImage");
+          ThrowException3(&context->image->exception,ResourceLimitError,
+            MemoryAllocationFailed,UnableToDrawOnImage);
           return -1;
         }
     }
@@ -382,11 +388,11 @@ static int MvgPrintf(DrawContext context, const char *format, ...)
     {
       size_t realloc_size = context->mvg_alloc + alloc_size;
 
-      ReacquireMemory((void **) &context->mvg, realloc_size);
+      MagickReallocMemory(context->mvg, realloc_size);
       if (context->mvg == NULL)
         {
-          ThrowException(&context->image->exception,ResourceLimitError,
-            "MemoryAllocationFailed","UnableToDrawOnImage");
+          ThrowException3(&context->image->exception,ResourceLimitError,
+            MemoryAllocationFailed,UnableToDrawOnImage);
           return -1;
         }
       context->mvg_alloc = realloc_size;
@@ -425,7 +431,7 @@ static int MvgPrintf(DrawContext context, const char *format, ...)
 
     if (formatted_length < 0)
       {
-        ThrowException(&context->image->exception,DrawError,"UnableToPrint",
+        ThrowException(&context->image->exception,DrawError,UnableToPrint,
           format);
       }
     else
@@ -473,7 +479,7 @@ static int MvgAutoWrapPrintf(DrawContext context, const char *format, ...)
 
   if (formatted_length < 0)
     {
-      ThrowException(&context->image->exception,StreamError,"UnableToPrint",
+      ThrowException(&context->image->exception,DrawError,UnableToPrint,
         format);
     }
   else
@@ -507,7 +513,7 @@ static void MvgAppendColor(DrawContext context, const PixelPacket *color)
 }
 
 static void MvgAppendPointsCommand(DrawContext context, const char* command,
-                                   const size_t num_coords,
+                                   const unsigned long num_coords,
                                    const PointInfo * coordinates)
 {
   const PointInfo
@@ -590,7 +596,7 @@ MagickExport void DrawAnnotation(DrawContext context,
 
   escaped_text=EscapeString((const char*)text,'\'');
   MvgPrintf(context, "text %.4g,%.4g '%.1024s'\n", x, y, escaped_text);
-  LiberateMemory((void**)&escaped_text);
+  MagickFreeMemory(escaped_text);
 }
 
 /*
@@ -666,10 +672,10 @@ MagickExport DrawContext DrawAllocateContext(const DrawInfo *draw_info,
     context;
 
   /* Allocate initial drawing context */
-  context = (DrawContext) AcquireMemory(sizeof(struct _DrawContext));
+  context = MagickAllocateMemory(DrawContext,sizeof(struct _DrawContext));
   if(context == (DrawContext) NULL)
-    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "UnableToAllocateDrawContext");
+    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+      UnableToAllocateDrawContext);
 
   /* Support structures */
   context->image = image;
@@ -691,18 +697,18 @@ MagickExport DrawContext DrawAllocateContext(const DrawInfo *draw_info,
 
   /* Graphic context */
   context->index = 0;
-  context->graphic_context=(DrawInfo **) AcquireMemory(sizeof(DrawInfo *));
+  context->graphic_context=MagickAllocateMemory(DrawInfo **,sizeof(DrawInfo *));
   if(context->graphic_context == (DrawInfo **) NULL)
     {
-      ThrowException(&context->image->exception,ResourceLimitError,
-        "MemoryAllocationFailed","UnableToDrawOnImage");
+      ThrowException3(&context->image->exception,ResourceLimitError,
+        MemoryAllocationFailed,UnableToDrawOnImage);
       return (DrawContext) NULL;
     }
   CurrentContext=CloneDrawInfo((ImageInfo*)NULL,draw_info);
   if(CurrentContext == (DrawInfo*) NULL)
     {
-      ThrowException(&context->image->exception,ResourceLimitError,
-        "MemoryAllocationFailed","UnableToDrawOnImage");
+      ThrowException3(&context->image->exception,ResourceLimitError,
+        MemoryAllocationFailed,UnableToDrawOnImage);
       return (DrawContext) NULL;
     }
 
@@ -786,7 +792,7 @@ MagickExport void DrawArc(DrawContext context,
 %
 %  The format of the DrawBezier method is:
 %
-%      void DrawBezier(DrawContext context, const size_t num_coords,
+%      void DrawBezier(DrawContext context, const unsigned long num_coords,
 %                      const PointInfo *coordinates)
 %
 %  A description of each parameter follows:
@@ -798,7 +804,7 @@ MagickExport void DrawArc(DrawContext context,
 %    o coordinates: coordinates
 %
 */
-MagickExport void DrawBezier(DrawContext context, const size_t num_coords,
+MagickExport void DrawBezier(DrawContext context, const unsigned long num_coords,
                              const PointInfo *coordinates)
 {
   assert(context != (DrawContext)NULL);
@@ -919,8 +925,8 @@ MagickExport void DrawSetClipPath(DrawContext context, const char *clip_path)
     {
       CloneString(&CurrentContext->clip_path,clip_path);
       if(CurrentContext->clip_path == (char*)NULL)
-        ThrowDrawException(ResourceLimitError,"MemoryAllocationFailed",
-          "UnableToDrawOnImage");
+        ThrowDrawException3(ResourceLimitError,MemoryAllocationFailed,
+          UnableToDrawOnImage);
 
 #if DRAW_BINARY_IMPLEMENTATION
       (void) DrawClipPath(context->image,CurrentContext,CurrentContext->clip_path);
@@ -1263,10 +1269,10 @@ MagickExport void DrawDestroyContext(DrawContext context)
     }
   DestroyDrawInfo(CurrentContext);
   CurrentContext = (DrawInfo*) NULL;
-  LiberateMemory((void **) &context->graphic_context);
+  MagickFreeMemory(context->graphic_context);
 
   /* Pattern support */
-  LiberateMemory((void **) &context->pattern_id);
+  MagickFreeMemory(context->pattern_id);
   context->pattern_offset = 0;
 
   context->pattern_bounds.x = 0;
@@ -1275,7 +1281,7 @@ MagickExport void DrawDestroyContext(DrawContext context)
   context->pattern_bounds.height = 0;
 
   /* MVG output string and housekeeping */
-  LiberateMemory((void **) &context->mvg);
+  MagickFreeMemory(context->mvg);
   context->mvg_alloc = 0;
   context->mvg_length = 0;
 
@@ -1284,7 +1290,7 @@ MagickExport void DrawDestroyContext(DrawContext context)
 
   /* Context itself */
   context->signature = 0;
-  LiberateMemory((void **) &context);
+  MagickFreeMemory(context);
 }
 
 /*
@@ -1402,7 +1408,9 @@ MagickExport void DrawSetFillColor(DrawContext context,
   assert(fill_color != (const PixelPacket *) NULL);
 
   new_fill = *fill_color;
-  if(new_fill.opacity != TransparentOpacity)
+
+  /* Inherit base opacity */
+  if(new_fill.opacity == OpaqueOpacity)
     new_fill.opacity = CurrentContext->opacity;
 
   current_fill = &CurrentContext->fill;
@@ -1488,13 +1496,13 @@ MagickExport void DrawSetFillPatternURL(DrawContext context, const char* fill_ur
   assert(fill_url != NULL);
 
   if(fill_url[0] != '#')
-    ThrowDrawException(DrawWarning,"NotARelativeuRL", fill_url);
+    ThrowDrawException(DrawWarning,NotARelativeURL, fill_url);
 
   FormatString(pattern,"[%.1024s]",fill_url+1);
 
   if (GetImageAttribute(context->image,pattern) == (ImageAttribute *) NULL)
     {
-      ThrowDrawException(DrawWarning,"URLNotFound", fill_url)
+      ThrowDrawException(DrawWarning,URLNotFound, fill_url)
     }
   else
     {
@@ -1505,6 +1513,7 @@ MagickExport void DrawSetFillPatternURL(DrawContext context, const char* fill_ur
 #if DRAW_BINARY_IMPLEMENTATION
       DrawPatternPath(context->image,CurrentContext,pattern_spec,&CurrentContext->fill_pattern);
 #endif
+      /* Inherit base opacity */
       if (CurrentContext->fill.opacity != TransparentOpacity)
         CurrentContext->fill.opacity=CurrentContext->opacity;
 
@@ -1540,7 +1549,7 @@ MagickExport double DrawGetFillOpacity(DrawContext context)
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  return ((double)CurrentContext->opacity/MaxRGB);
+  return (((double)(MaxRGB-CurrentContext->fill.opacity))/MaxRGB);
 }
 
 /*
@@ -1572,17 +1581,21 @@ MagickExport void DrawSetFillOpacity(DrawContext context,
                                      const double fill_opacity)
 {
   Quantum
-    opacity;
+    quantum_opacity;
+
+  double
+    validated_opacity;
 
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  opacity = (Quantum)((double) MaxRGB*(1.0-(fill_opacity <= 1.0 ? fill_opacity : 1.0 ))+0.5);
+  validated_opacity=(fill_opacity < 0.0 ? 0.0 : (fill_opacity > 1.0 ? 1.0 : fill_opacity));
+  quantum_opacity = (Quantum) (((double) MaxRGB*(1.0-validated_opacity))+0.5);
 
-  if (context->filter_off || (CurrentContext->opacity != opacity))
+  if (context->filter_off || (CurrentContext->fill.opacity != quantum_opacity))
     {
-      CurrentContext->opacity = opacity;
-      MvgPrintf(context, "fill-opacity %.4g\n", fill_opacity);
+      CurrentContext->fill.opacity = quantum_opacity;
+      MvgPrintf(context, "fill-opacity %.4g\n", validated_opacity);
     }
 }
 
@@ -1739,8 +1752,8 @@ MagickExport void DrawSetFont(DrawContext context, const char *font_name)
     {
       (void) CloneString(&CurrentContext->font,font_name);
       if(CurrentContext->font == (char*)NULL)
-        ThrowDrawException(ResourceLimitError,"MemoryAllocationFailed",
-          "UnableToDrawOnImage");
+        ThrowDrawException3(ResourceLimitError,MemoryAllocationFailed,
+          UnableToDrawOnImage);
       MvgPrintf(context, "font '%s'\n", font_name);
     }
 }
@@ -1814,8 +1827,8 @@ MagickExport void DrawSetFontFamily(DrawContext context,
     {
       (void) CloneString(&CurrentContext->family,font_family);
       if(CurrentContext->family == (char*)NULL)
-        ThrowDrawException(ResourceLimitError,"MemoryAllocationFailed",
-          "UnableToDrawOnImage");
+        ThrowDrawException3(ResourceLimitError,MemoryAllocationFailed,
+          UnableToDrawOnImage);
       MvgPrintf(context, "font-family '%s'\n", font_family);
     }
 }
@@ -2352,8 +2365,8 @@ MagickExport void DrawComposite(DrawContext context,
 
   image_info = CloneImageInfo((ImageInfo*)NULL);
   if(!image_info)
-    ThrowDrawException(ResourceLimitError,"MemoryAllocationFailed",
-      "UnableToDrawOnImage");
+    ThrowDrawException3(ResourceLimitError,MemoryAllocationFailed,
+      UnableToDrawOnImage);
   handler=SetMonitorHandler((MonitorHandler) NULL);
   blob = (unsigned char*)ImageToBlob( image_info, clone_image, &blob_length,
                                       &context->image->exception );
@@ -2364,14 +2377,14 @@ MagickExport void DrawComposite(DrawContext context,
     return;
 
   base64 = Base64Encode(blob,blob_length,&encoded_length);
-  LiberateMemory((void**)&blob);
+  MagickFreeMemory(blob);
   if(!base64)
     {
       char
         buffer[MaxTextExtent];
 
       FormatString(buffer,"%ld bytes", (4L*blob_length/3L+4L));
-      ThrowDrawException(ResourceLimitWarning,"UnableToAllocateMemory",buffer)
+      ThrowDrawException(ResourceLimitWarning,MemoryAllocationFailed,buffer)
     }
 
   mode = "copy";
@@ -2501,7 +2514,8 @@ MagickExport void DrawComposite(DrawContext context,
       MvgPrintf(context,"'\n");
     }
 
-  LiberateMemory((void**)&media_type);
+  MagickFreeMemory(base64);
+  MagickFreeMemory(media_type);
 }
 
 /*
@@ -3720,6 +3734,43 @@ MagickExport void DrawPathStart(DrawContext context)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   D r a w P e e k G r a p h i c C o n t e x t                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DrawPeekGraphicContext() returns a copy of the the DrawInfo structure at
+%  the head of the drawing context stack. The user is responsible for
+%  deallocating the returned object using DestroyDrawInfo.
+%
+%  The format of the DrawPeekGraphicContext method is:
+%
+%      DrawInfo *DrawPeekGraphicContext(const DrawContext context)
+%
+%  A description of each parameter follows:
+%
+%    o context: drawing context
+%
+*/
+MagickExport DrawInfo *DrawPeekGraphicContext(const DrawContext context)
+{
+  DrawInfo
+    *draw_info;
+
+  assert(context != (DrawContext)NULL);
+  assert(context->signature == MagickSignature);
+  draw_info=CloneDrawInfo((ImageInfo *) NULL,CurrentContext);
+  CloneString(&draw_info->primitive,context->mvg);
+  CurrentContext->primitive=context->mvg;
+  return(draw_info);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   D r a w P o i n t                                                         %
 %                                                                             %
 %                                                                             %
@@ -3768,7 +3819,7 @@ MagickExport void DrawPoint(DrawContext context,
 %  The format of the DrawPolygon method is:
 %
 %      void DrawPolygon(DrawContext context,
-%                       const size_t num_coords,
+%                       const unsigned long num_coords,
 %                       const PointInfo * coordinates)
 %
 %  A description of each parameter follows:
@@ -3781,7 +3832,7 @@ MagickExport void DrawPoint(DrawContext context,
 %
 */
 MagickExport void DrawPolygon(DrawContext context,
-                              const size_t num_coords,
+                              const unsigned long num_coords,
                               const PointInfo * coordinates)
 {
   assert(context != (DrawContext)NULL);
@@ -3807,7 +3858,7 @@ MagickExport void DrawPolygon(DrawContext context,
 %  The format of the DrawPolyline method is:
 %
 %      void DrawPolyline(DrawContext context,
-%                        const size_t num_coords,
+%                        const unsigned long num_coords,
 %                        const PointInfo * coordinates)
 %
 %  A description of each parameter follows:
@@ -3820,7 +3871,7 @@ MagickExport void DrawPolygon(DrawContext context,
 %
 */
 MagickExport void DrawPolyline(DrawContext context,
-                               const size_t num_coords,
+                               const unsigned long num_coords,
                                const PointInfo * coordinates)
 {
   assert(context != (DrawContext)NULL);
@@ -3943,7 +3994,7 @@ MagickExport void DrawPopGraphicContext(DrawContext context)
     }
   else
     {
-      ThrowDrawException(DrawError,"UnbalancedGraphicContextPushPop",NULL)
+      ThrowDrawException(DrawError,UnbalancedGraphicContextPushPop,NULL)
     }
 }
 
@@ -3979,7 +4030,7 @@ MagickExport void DrawPopPattern(DrawContext context)
   assert(context->signature == MagickSignature);
 
   if( context->pattern_id == NULL )
-    ThrowDrawException(DrawWarning,"NotCurrentlyPushingPatternDefinition",NULL);
+    ThrowDrawException(DrawWarning,NotCurrentlyPushingPatternDefinition,NULL);
 
   FormatString(key,"[%.1024s]",context->pattern_id);
 
@@ -3989,7 +4040,7 @@ MagickExport void DrawPopPattern(DrawContext context)
                context->pattern_bounds.x,context->pattern_bounds.y);
   (void) SetImageAttribute(context->image,key,geometry);
 
-  LiberateMemory( (void**)&context->pattern_id );
+  MagickFreeMemory(context->pattern_id);
   context->pattern_offset = 0;
 
   context->pattern_bounds.x = 0;
@@ -4106,12 +4157,12 @@ MagickExport void DrawPushGraphicContext(DrawContext context)
   assert(context->signature == MagickSignature);
 
   context->index++;
-  ReacquireMemory((void **) &context->graphic_context,
+  MagickReallocMemory(context->graphic_context,
                   (context->index+1)*sizeof(DrawInfo *));
   if (context->graphic_context == (DrawInfo **) NULL)
     {
-      ThrowDrawException(ResourceLimitError,"MemoryAllocationFailed",
-        "UnableToDrawOnImage")
+      ThrowDrawException3(ResourceLimitError,MemoryAllocationFailed,
+        UnableToDrawOnImage)
     }
   CurrentContext=
     CloneDrawInfo((ImageInfo *) NULL,context->graphic_context[context->index-1]);
@@ -4169,7 +4220,7 @@ MagickExport void DrawPushPattern(DrawContext context,
   assert(pattern_id != (const char *) NULL);
 
   if( context->pattern_id != NULL )
-    ThrowDrawException(DrawError,"AlreadyPushingPatternDefinition",
+    ThrowDrawException(DrawError,AlreadyPushingPatternDefinition,
       context->pattern_id);
 
   context->filter_off = True;
@@ -4593,7 +4644,9 @@ MagickExport void DrawSetStrokeColor(DrawContext context,
   assert(stroke_color != (const PixelPacket *) NULL);
 
   new_stroke = *stroke_color;
-  if(new_stroke.opacity != TransparentOpacity)
+
+  /* Inherit base opacity */
+  if(new_stroke.opacity == OpaqueOpacity)
     new_stroke.opacity = CurrentContext->opacity;
 
   current_stroke = &CurrentContext->stroke;
@@ -4677,13 +4730,13 @@ MagickExport void DrawSetStrokePatternURL(DrawContext context,
   assert(stroke_url != NULL);
 
   if(stroke_url[0] != '#')
-    ThrowDrawException(OptionWarning, "NotARelativeURL", stroke_url);
+    ThrowDrawException(DrawWarning, NotARelativeURL, stroke_url);
 
   FormatString(pattern,"[%.1024s]",stroke_url+1);
 
   if (GetImageAttribute(context->image,pattern) == (ImageAttribute *) NULL)
     {
-      ThrowDrawException(OptionWarning, "URLNotFound", stroke_url)
+      ThrowDrawException(DrawWarning, URLNotFound, stroke_url)
     }
   else
     {
@@ -4694,7 +4747,8 @@ MagickExport void DrawSetStrokePatternURL(DrawContext context,
 #if DRAW_BINARY_IMPLEMENTATION
       DrawPatternPath(context->image,CurrentContext,pattern_spec,&CurrentContext->stroke_pattern);
 #endif
-      if (CurrentContext->stroke.opacity != TransparentOpacity)
+      /* Inherit base opacity */
+      if (CurrentContext->stroke.opacity == OpaqueOpacity)
         CurrentContext->stroke.opacity=CurrentContext->opacity;
 
       MvgPrintf(context, "stroke %s\n",pattern_spec);
@@ -4792,7 +4846,7 @@ MagickExport void DrawSetStrokeAntialias(DrawContext context,
 %
 %  The format of the DrawGetStrokeDashArray method is:
 %
-%      double *DrawGetStrokeDashArray(DrawContext context,size_t *num_elems)
+%      double *DrawGetStrokeDashArray(DrawContext context,unsigned long *num_elems)
 %
 %  A description of each parameter follows:
 %
@@ -4802,7 +4856,7 @@ MagickExport void DrawSetStrokeAntialias(DrawContext context,
 %
 % */
 MagickExport double *DrawGetStrokeDashArray(DrawContext context,
-                                            size_t *num_elems)
+                                            unsigned long *num_elems)
 {
   register const double
     *p;
@@ -4819,7 +4873,7 @@ MagickExport double *DrawGetStrokeDashArray(DrawContext context,
 
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
-  assert(num_elems != (size_t *)NULL);
+  assert(num_elems != (unsigned long *)NULL);
 
   p = CurrentContext->dash_pattern;
   if( p != (const double *) NULL )
@@ -4830,7 +4884,7 @@ MagickExport double *DrawGetStrokeDashArray(DrawContext context,
   dasharray = (double *)NULL;
   if (n != 0)
     {
-      dasharray = (double *)AcquireMemory(n*sizeof(double));
+      dasharray = MagickAllocateMemory(double *, n*sizeof(double));
       p = CurrentContext->dash_pattern;
       q = dasharray;
       i = n;
@@ -4862,7 +4916,7 @@ MagickExport double *DrawGetStrokeDashArray(DrawContext context,
 %  The format of the DrawSetStrokeDashArray method is:
 %
 %      void DrawSetStrokeDashArray(DrawContext context,
-%                                  const size_t num_elems,
+%                                  const unsigned long num_elems,
 %                                  const double *dasharray)
 %
 %  A description of each parameter follows:
@@ -4875,7 +4929,7 @@ MagickExport double *DrawGetStrokeDashArray(DrawContext context,
 %
 % */
 MagickExport void DrawSetStrokeDashArray(DrawContext context,
-                                         const size_t num_elems,
+                                         const unsigned long num_elems,
                                          const double *dasharray)
 {
   register const double
@@ -4927,12 +4981,12 @@ MagickExport void DrawSetStrokeDashArray(DrawContext context,
   if( context->filter_off || updated )
     {
       if(CurrentContext->dash_pattern != (double*)NULL)
-        LiberateMemory((void **) &CurrentContext->dash_pattern);
+        MagickFreeMemory(CurrentContext->dash_pattern);
 
       if( n_new != 0)
         {
-          CurrentContext->dash_pattern = (double *)
-            AcquireMemory((n_new+1)*sizeof(double));
+          CurrentContext->dash_pattern = MagickAllocateMemory(double *,
+            (n_new+1)*sizeof(double));
           if(CurrentContext->dash_pattern)
             {
               q=CurrentContext->dash_pattern;
@@ -4943,8 +4997,8 @@ MagickExport void DrawSetStrokeDashArray(DrawContext context,
             }
           else
             {
-              ThrowDrawException(ResourceLimitError,"MemoryAllocationFailed",
-                "UnableToDrawOnImage")
+              ThrowDrawException3(ResourceLimitError,MemoryAllocationFailed,
+                UnableToDrawOnImage)
             }
         }
 
@@ -5323,7 +5377,7 @@ MagickExport double DrawGetStrokeOpacity(DrawContext context)
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  return (1.0-(((double)CurrentContext->stroke.opacity)/MaxRGB));
+  return (((double)(MaxRGB-CurrentContext->stroke.opacity))/MaxRGB);
 }
 
 /*
@@ -5354,18 +5408,22 @@ MagickExport double DrawGetStrokeOpacity(DrawContext context)
 MagickExport void DrawSetStrokeOpacity(DrawContext context,
                                        const double stroke_opacity)
 {
+  Quantum
+    quantum_opacity;
+
   double
-    opacity;
+    validated_opacity;
 
   assert(context != (DrawContext)NULL);
   assert(context->signature == MagickSignature);
 
-  opacity = (Quantum)((double) MaxRGB*(1.0-(stroke_opacity <= 1.0 ? stroke_opacity : 1.0 ))+0.5);
+  validated_opacity=(stroke_opacity < 0.0 ? 0.0 : (stroke_opacity > 1.0 ? 1.0 : stroke_opacity));
+  quantum_opacity = (Quantum) (((double) MaxRGB*(1.0-validated_opacity))+0.5);
 
-  if (context->filter_off || (CurrentContext->stroke.opacity != opacity))
+  if (context->filter_off || (CurrentContext->stroke.opacity != quantum_opacity))
     {
-      CurrentContext->stroke.opacity = (Quantum) ceil(opacity);
-      MvgPrintf(context, "stroke-opacity %.4g\n", stroke_opacity);
+      CurrentContext->stroke.opacity = quantum_opacity;
+      MvgPrintf(context, "stroke-opacity %.4g\n", validated_opacity);
     }
 }
 

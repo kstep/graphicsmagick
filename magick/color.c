@@ -34,11 +34,12 @@
   Include declarations.
 */
 #include "magick/studio.h"
-#include "magick/color.h"
-#include "magick/cache.h"
 #include "magick/blob.h"
-#include "magick/quantize.h"
+#include "magick/cache.h"
+#include "magick/color.h"
 #include "magick/monitor.h"
+#include "magick/quantize.h"
+#include "magick/semaphore.h"
 #include "magick/utility.h"
 
 /*
@@ -138,15 +139,140 @@ static ColorInfo
 /*
   Forward declarations.
 */
+static CubeInfo
+  *ComputeCubeInfo(const Image *image,ExceptionInfo *exception),
+  *GetCubeInfo(void);
+
 static NodeInfo
   *GetNodeInfo(CubeInfo *,const unsigned int);
 
 static unsigned int
-  ReadConfigureFile(const char *,const unsigned long,ExceptionInfo *);
+  ReadColorConfigureFile(const char *,const unsigned long,ExceptionInfo *);
 
 static void
-  DestroyColorList(const NodeInfo *),
-  Histogram(const Image *,CubeInfo *,const NodeInfo *,FILE *,ExceptionInfo *);
+  DestroyColorList(NodeInfo *node_info),
+  HistogramToFile(const Image *,CubeInfo *,const NodeInfo *,FILE *,ExceptionInfo *);
+
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++   C o m p u t e C u b e I n f o                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ComputeCubeInfo builds a populated CubeInfo tree for the specified
+%  image.  The returned tree should be deallocated using DestroyCubeInfo()
+%  once it is no longer needed.
+%
+%  The format of the ComputeCubeInfo method is:
+%
+%      CubeInfo *ComputeCubeInfo(const Image *image,ExceptionInfo *exception)
+%
+%
+*/
+static CubeInfo *ComputeCubeInfo(const Image *image,ExceptionInfo *exception)
+{
+#define ComputeImageColorsText  "  Compute image colors...  "
+
+  CubeInfo
+    *cube_info;
+  
+  long
+    y;
+  
+  NodeInfo
+    *node_info;
+  
+  register const PixelPacket
+    *p;
+  
+  register long
+    i,
+    x;
+
+  register unsigned int
+    id,
+    index,
+    level;
+
+  /*
+    Initialize color description tree.
+  */
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickSignature);
+  cube_info=GetCubeInfo();
+  if (cube_info == (CubeInfo *) NULL)
+    {
+      ThrowException3(exception,ResourceLimitError,MemoryAllocationFailed,
+        UnableToDetermineTheNumberOfImageColors);
+      return(0);
+    }
+  for (y=0; y < (long) image->rows; y++)
+  {
+    p=AcquireImagePixels(image,0,y,image->columns,1,exception);
+    if (p == (const PixelPacket *) NULL)
+      return(0);
+    for (x=0; x < (long) image->columns; x++)
+    {
+      /*
+        Start at the root and proceed level by level.
+      */
+      node_info=cube_info->root;
+      index=MaxTreeDepth-1;
+      for (level=1; level <= MaxTreeDepth; level++)
+      {
+        id=ColorToNodeId(p->red,p->green,p->blue,index);
+        if (node_info->child[id] == (NodeInfo *) NULL)
+          {
+            node_info->child[id]=GetNodeInfo(cube_info,level);
+            if (node_info->child[id] == (NodeInfo *) NULL)
+              {
+                ThrowException3(exception,ResourceLimitError,MemoryAllocationFailed,
+                  UnableToDetermineTheNumberOfImageColors);
+                return(0);
+              }
+          }
+        node_info=node_info->child[id];
+        index--;
+        if (level != MaxTreeDepth)
+          continue;
+        for (i=0; i < (long) node_info->number_unique; i++)
+          if (ColorMatch(p,&node_info->list[i].pixel))
+            break;
+        if (i < (long) node_info->number_unique)
+          {
+            node_info->list[i].count++;
+            continue;
+          }
+        if (node_info->number_unique == 0)
+          node_info->list=MagickAllocateMemory(ColorPacket *,sizeof(ColorPacket));
+        else
+          MagickReallocMemory(node_info->list,
+            (i+1)*sizeof(ColorPacket));
+        if (node_info->list == (ColorPacket *) NULL)
+          {
+            ThrowException3(exception,ResourceLimitError,MemoryAllocationFailed,
+              UnableToDetermineTheNumberOfImageColors);
+            return(0);
+          }
+        node_info->list[i].pixel=(*p);
+        node_info->list[i].count=1;
+        node_info->number_unique++;
+        cube_info->colors++;
+      }
+      p++;
+    }
+    if (QuantumTick(y,image->rows))
+      if (!MagickMonitor(ComputeImageColorsText,y,image->rows,exception))
+        break;
+  }
+  return (cube_info);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -181,12 +307,13 @@ MagickExport void DestroyColorInfo(void)
     color_info=p;
     p=p->next;
     if (color_info->path != (char *) NULL)
-      LiberateMemory((void **) &color_info->path);
+      MagickFreeMemory(color_info->path);
     if (color_info->name != (char *) NULL)
-      LiberateMemory((void **) &color_info->name);
-    LiberateMemory((void **) &color_info);
+      MagickFreeMemory(color_info->name);
+    MagickFreeMemory(color_info);
   }
   color_list=(ColorInfo *) NULL;
+  LiberateSemaphoreInfo(&color_semaphore);
   DestroySemaphoreInfo(&color_semaphore);
 }
 
@@ -225,10 +352,10 @@ static void DestroyCubeInfo(CubeInfo *cube_info)
   do
   {
     nodes=cube_info->node_queue->next;
-    LiberateMemory((void **) &cube_info->node_queue);
+    MagickFreeMemory(cube_info->node_queue);
     cube_info->node_queue=nodes;
   } while (cube_info->node_queue != (Nodes *) NULL);
-  LiberateMemory((void **) &cube_info);
+  MagickFreeMemory(cube_info);
 }
 
 /*
@@ -256,7 +383,7 @@ static void DestroyCubeInfo(CubeInfo *cube_info)
 %
 %
 */
-static void DestroyColorList(const NodeInfo *node_info)
+static void DestroyColorList(NodeInfo *node_info)
 {
   register unsigned int
     id;
@@ -268,7 +395,7 @@ static void DestroyColorList(const NodeInfo *node_info)
     if (node_info->child[id] != (NodeInfo *) NULL)
       DestroyColorList(node_info->child[id]);
   if (node_info->list != (ColorPacket *) NULL)
-    LiberateMemory((void **) &node_info->list);
+    MagickFreeMemory(node_info->list);
 }
 
 /*
@@ -282,7 +409,10 @@ static void DestroyColorList(const NodeInfo *node_info)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  FuzzyColorMatch() returns true if two pixels are identical in color.
+%  FuzzyColorMatch() returns true if the distance between two colors is
+%  less than the specified distance in a linear three dimensional color space.
+%  This function is used by ColorFloodFill and other algorithms which
+%  compare two colors.
 %
 %  The format of the ColorMatch method is:
 %
@@ -295,8 +425,8 @@ static void DestroyColorList(const NodeInfo *node_info)
 %
 %    o q: Pixel q.
 %
-%    o distance:  Define how much tolerance is acceptable to consider
-%      two colors as the same.
+%    o fuzz:  Define how much difference is acceptable in order to
+%      consider two colors to be the same.
 %
 %
 */
@@ -376,7 +506,7 @@ MagickExport const ColorInfo *GetColorInfo(const char *name,
     {
       AcquireSemaphoreInfo(&color_semaphore);
       if (color_list == (ColorInfo *) NULL)
-        (void) ReadConfigureFile(ColorFilename,0,exception);
+        (void) ReadColorConfigureFile(ColorFilename,0,exception);
       LiberateSemaphoreInfo(&color_semaphore);
     }
   if ((name == (const char *) NULL) || (LocaleCompare(name,"*") == 0))
@@ -397,7 +527,7 @@ MagickExport const ColorInfo *GetColorInfo(const char *name,
     if (LocaleCompare(colorname,p->name) == 0)
       break;
   if (p == (ColorInfo *) NULL)
-    ThrowException(exception,OptionWarning,"UnrecognizedColor",name);
+    ThrowException(exception,OptionWarning,UnrecognizedColor,name);
   else
     if (p != color_list)
       {
@@ -415,6 +545,212 @@ MagickExport const ColorInfo *GetColorInfo(const char *name,
       }
   LiberateSemaphoreInfo(&color_semaphore);
   return((const ColorInfo *) p);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   G e t C o l o r I n f o A r r a y                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  GetColorInfoArray() returns a sorted null-terminated array of ColorInfo
+%  pointers corresponding to the available color definitions. This function
+%  should be used to access the entire list rather than GetColorInfo since
+%  the list returned by GetColorInfo may be re-ordered every time it is
+%  invoked. GetColorList may be used if only a list of color names is desired.
+%  The array should be deallocated by the user once it is no longer needed.
+%  Do not attempt to deallocate members of the array.
+%
+%  The format of the GetMagickList method is:
+%
+%      ColorInfo **GetColorInfoArray(ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+/*
+  Compare two ColorInfo structures based on their name
+*/
+static int ColorInfoCompare(const void *x, const void *y)
+{
+  const ColorInfo
+    *xx=*((const ColorInfo **) x),
+    *yy=*((const ColorInfo **) y);
+
+  return (strcmp(xx->name, yy->name));
+}
+MagickExport ColorInfo **GetColorInfoArray(ExceptionInfo *exception)
+{
+  ColorInfo
+    **array;
+
+  ColorInfo
+    *p;
+
+  ColorInfo
+    *list;
+
+  size_t
+    entries=0;
+
+  int
+    i;
+
+  /*
+    Load color list
+  */
+  GetColorInfo("*",exception);
+  if ((!color_list) || (exception->severity > UndefinedException))
+    return 0;
+
+  AcquireSemaphoreInfo(&color_semaphore);
+
+  list=color_list;
+
+  /*
+    Count number of list entries
+  */
+  for (p=list; p != 0; p=p->next)
+    entries++;
+
+  /*
+    Allocate array memory
+  */
+  array=MagickAllocateMemory(ColorInfo **,sizeof(ColorInfo *)*(entries+1));
+  if (!array)
+    {
+      ThrowException(exception,ResourceLimitError,MemoryAllocationFailed,0);
+      return False;
+    }
+  memset((void **)array,0,sizeof(ColorInfo *)*(entries+1));
+
+  /*
+    Add entries to array
+  */
+  i=0;
+  for (p=list; p != 0; p=p->next)
+    array[i++]=p;
+
+  LiberateSemaphoreInfo(&color_semaphore);
+
+  /*
+    Sort array entries
+  */
+  qsort((void *) array, entries, sizeof(ColorInfo *), ColorInfoCompare);
+
+  return (array);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  G e t C o l o r H i s t o g r a m                                          %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method GetColorHistogram returns an array of HistogramColorPacket structures
+%  which specify the number of times each unique color occurs in the image.
+%  The referenced colors parameter is updated with the number of unique colors
+%  in the image. The returned array should be deallocated by the user once it
+%  is no longer ndded.
+%
+%  The format of the GetColorHistogram method is:
+%
+%      HistogramColorPacket *GetColorHistogram(const Image *,
+%                          unsigned long *colors, ExceptionInfo *)
+%
+%  A description of each parameter follows.
+%
+%    o image: The image.
+%
+%    o colors:  The referenced value is updated with the with the number of
+%               unique colors.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+static void HistogramToPacket(const Image *image,CubeInfo *cube_info,
+  const NodeInfo *node_info,HistogramColorPacket **histogram_packet,
+  ExceptionInfo *exception)
+{
+  register unsigned int
+    id;
+
+  /*
+    Traverse any children.
+  */
+  for (id=0; id < 8; id++)
+    if (node_info->child[id] != (NodeInfo *) NULL)
+      HistogramToPacket(image,cube_info,node_info->child[id],histogram_packet,
+                        exception);
+  if (node_info->level == MaxTreeDepth)
+    {
+      register ColorPacket
+        *p;
+
+      register long
+        i;
+
+      p=node_info->list;
+      for (i=0; i < (long) node_info->number_unique; i++)
+        {
+          (*histogram_packet)->pixel=p->pixel;
+          (*histogram_packet)->count=p->count;
+          (*histogram_packet)++;
+          p++;
+        }
+    }
+}
+MagickExport HistogramColorPacket *GetColorHistogram(const Image *image,
+  unsigned long *colors, ExceptionInfo *exception)
+{
+  CubeInfo
+    *cube_info;
+
+  HistogramColorPacket
+    *current_packet,
+    *histogram;
+
+  unsigned long
+    number_colors;
+
+  /*
+    Initialize color description tree.
+  */
+  assert(image != (const Image *) NULL);
+  assert(image->signature == MagickSignature);
+  *colors=0;
+  cube_info=ComputeCubeInfo(image,exception);
+  if (cube_info == (CubeInfo *) NULL)
+    return(0);
+
+  number_colors=cube_info->colors;
+  histogram=MagickAllocateMemory(HistogramColorPacket *,
+    number_colors*sizeof(HistogramColorPacket));
+  if (histogram == 0)
+    {
+      ThrowException3(exception,ResourceLimitError,MemoryAllocationFailed,
+                      UnableToDetermineTheNumberOfImageColors);
+      return 0;
+    }
+  *colors=number_colors;
+  current_packet=histogram;
+  HistogramToPacket(image,cube_info,cube_info->root,&current_packet,exception);
+  DestroyCubeInfo(cube_info);
+  return(histogram);
 }
 
 /*
@@ -461,9 +797,7 @@ MagickExport char **GetColorList(const char *pattern,
   register const ColorInfo
     *p;
 
-  /*
-    Allocate color list.
-  */
+
   assert(pattern != (char *) NULL);
   assert(number_colors != (unsigned long *) NULL);
   *number_colors=0;
@@ -472,12 +806,27 @@ MagickExport char **GetColorList(const char *pattern,
   DestroyExceptionInfo(&exception);
   if (p == (const ColorInfo *) NULL)
     return((char **) NULL);
+
+  /*
+    Determine color list size
+  */
+  AcquireSemaphoreInfo(&color_semaphore);
   i=0;
   for (p=color_list; p != (const ColorInfo *) NULL; p=p->next)
     i++;
-  colorlist=(char **) AcquireMemory(i*sizeof(char *));
+  LiberateSemaphoreInfo(&color_semaphore);
+
+  /*
+    Allocate color list.
+  */
+  colorlist=MagickAllocateMemory(char **,i*sizeof(char *));
   if (colorlist == (char **) NULL)
     return((char **) NULL);
+
+  /*
+    Add colors matching glob specification to list
+  */
+  AcquireSemaphoreInfo(&color_semaphore);
   i=0;
   for (p=color_list; p != (const ColorInfo *) NULL; p=p->next)
   {
@@ -486,6 +835,8 @@ MagickExport char **GetColorList(const char *pattern,
     if (GlobExpression(p->name,pattern))
       colorlist[i++]=AllocateString(p->name);
   }
+  LiberateSemaphoreInfo(&color_semaphore);
+
   *number_colors=i;
   return(colorlist);
 }
@@ -602,7 +953,7 @@ static CubeInfo *GetCubeInfo(void)
   /*
     Initialize tree to describe color cube.
   */
-  cube_info=(CubeInfo *) AcquireMemory(sizeof(CubeInfo));
+  cube_info=MagickAllocateMemory(CubeInfo *,sizeof(CubeInfo));
   if (cube_info == (CubeInfo *) NULL)
     return((CubeInfo *) NULL);
   (void) memset(cube_info,0,sizeof(CubeInfo));
@@ -654,7 +1005,7 @@ static NodeInfo *GetNodeInfo(CubeInfo *cube_info,const unsigned int level)
       /*
         Allocate a new nodes of nodes.
       */
-      nodes=(Nodes *) AcquireMemory(sizeof(Nodes));
+      nodes=MagickAllocateMemory(Nodes *,sizeof(Nodes));
       if (nodes == (Nodes *) NULL)
         return((NodeInfo *) NULL);
       nodes->next=cube_info->node_queue;
@@ -700,28 +1051,8 @@ static NodeInfo *GetNodeInfo(CubeInfo *cube_info,const unsigned int level)
 MagickExport unsigned long GetNumberColors(const Image *image,FILE *file,
   ExceptionInfo *exception)
 {
-#define ComputeImageColorsText  "  Compute image colors...  "
-
   CubeInfo
     *cube_info;
-
-  long
-    y;
-
-  NodeInfo
-    *node_info;
-
-  register const PixelPacket
-    *p;
-
-  register long
-    i,
-    x;
-
-  register unsigned int
-    id,
-    index,
-    level;
 
   unsigned long
     number_colors;
@@ -731,78 +1062,14 @@ MagickExport unsigned long GetNumberColors(const Image *image,FILE *file,
   */
   assert(image != (const Image *) NULL);
   assert(image->signature == MagickSignature);
-  cube_info=GetCubeInfo();
+  cube_info=ComputeCubeInfo(image,exception);
   if (cube_info == (CubeInfo *) NULL)
-    {
-      ThrowException(exception,ResourceLimitError,"MemoryAllocationFailed",
-        "UnableToDetermineTheNumberOfImageColors");
-      return(0);
-    }
-  for (y=0; y < (long) image->rows; y++)
-  {
-    p=AcquireImagePixels(image,0,y,image->columns,1,exception);
-    if (p == (const PixelPacket *) NULL)
-      return(False);
-    for (x=0; x < (long) image->columns; x++)
-    {
-      /*
-        Start at the root and proceed level by level.
-      */
-      node_info=cube_info->root;
-      index=MaxTreeDepth-1;
-      for (level=1; level <= MaxTreeDepth; level++)
-      {
-        id=ColorToNodeId(p->red,p->green,p->blue,index);
-        if (node_info->child[id] == (NodeInfo *) NULL)
-          {
-            node_info->child[id]=GetNodeInfo(cube_info,level);
-            if (node_info->child[id] == (NodeInfo *) NULL)
-              {
-                ThrowException(exception,ResourceLimitError,
-                  "MemoryAllocationFailed",
-                  "UnableToDetermineTheNumberOfImageColors");
-                return(0);
-              }
-          }
-        node_info=node_info->child[id];
-        index--;
-        if (level != MaxTreeDepth)
-          continue;
-        for (i=0; i < (long) node_info->number_unique; i++)
-          if (ColorMatch(p,&node_info->list[i].pixel))
-            break;
-        if (i < (long) node_info->number_unique)
-          {
-            node_info->list[i].count++;
-            continue;
-          }
-        if (node_info->number_unique == 0)
-          node_info->list=(ColorPacket *) AcquireMemory(sizeof(ColorPacket));
-        else
-          ReacquireMemory((void **) &node_info->list,
-            (i+1)*sizeof(ColorPacket));
-        if (node_info->list == (ColorPacket *) NULL)
-          {
-            ThrowException(exception,ResourceLimitError,
-              "MemoryAllocationFailed",
-              "UnableToDetermineTheNumberOfImageColors");
-            return(0);
-          }
-        node_info->list[i].pixel=(*p);
-        node_info->list[i].count=1;
-        node_info->number_unique++;
-        cube_info->colors++;
-      }
-      p++;
-    }
-    if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(ComputeImageColorsText,y,image->rows,exception))
-        break;
-  }
+    return(0);
+
   if (file != (FILE *) NULL)
     {
       (void) fprintf(file,"\n");
-      Histogram(image,cube_info,cube_info->root,file,exception);
+      HistogramToFile(image,cube_info,cube_info->root,file,exception);
       (void) fflush(file);
     }
   number_colors=cube_info->colors;
@@ -815,18 +1082,18 @@ MagickExport unsigned long GetNumberColors(const Image *image,FILE *file,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+  H i s t o g r a m                                                          %
++  H i s t o g r a m T o F i l e                                              %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method Histogram traverses the color cube tree and produces a list of
+%  Method HistogramToFile traverses the color cube tree and produces a list of
 %  unique pixel field values and the number of times each occurs in the image.
 %
-%  The format of the Histogram method is:
+%  The format of the HistogramToFile method is:
 %
-%      void Histogram(const Image *image,CubeInfo *cube_info,
+%      void HistogramToFile(const Image *image,CubeInfo *cube_info,
 %        const NodeInfo *node_info,FILE *file,ExceptionInfo *exception
 %
 %  A description of each parameter follows.
@@ -838,10 +1105,10 @@ MagickExport unsigned long GetNumberColors(const Image *image,FILE *file,
 %
 %
 */
-static void Histogram(const Image *image,CubeInfo *cube_info,
+static void HistogramToFile(const Image *image,CubeInfo *cube_info,
   const NodeInfo *node_info,FILE *file,ExceptionInfo *exception)
 {
-#define HistogramImageText  "  Compute image histogram...  "
+#define HistogramToFileImageText  "  Compute image histogram...  "
 
   register unsigned int
     id;
@@ -851,7 +1118,7 @@ static void Histogram(const Image *image,CubeInfo *cube_info,
   */
   for (id=0; id < 8; id++)
     if (node_info->child[id] != (NodeInfo *) NULL)
-      Histogram(image,cube_info,node_info->child[id],file,exception);
+      HistogramToFile(image,cube_info,node_info->child[id],file,exception);
   if (node_info->level == MaxTreeDepth)
     {
       char
@@ -876,7 +1143,7 @@ static void Histogram(const Image *image,CubeInfo *cube_info,
         p++;
       }
       if (QuantumTick(cube_info->progress,cube_info->colors))
-        (void) MagickMonitor(HistogramImageText,cube_info->progress,
+        (void) MagickMonitor(HistogramToFileImageText,cube_info->progress,
           cube_info->colors,exception);
       cube_info->progress++;
     }
@@ -924,6 +1191,8 @@ MagickExport unsigned int IsGrayImage(const Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  if (image->colorspace == CMYKColorspace)
+    return(False);
   if (image->is_grayscale)
     return(True);
   switch (image->storage_class)
@@ -1002,6 +1271,8 @@ MagickExport unsigned int IsMonochromeImage(const Image *image,
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  if (image->colorspace == CMYKColorspace)
+    return(False);
   if (image->is_monochrome)
     return(True);
   switch (image->storage_class)
@@ -1172,8 +1443,8 @@ MagickExport unsigned int IsPaletteImage(const Image *image,
   cube_info=GetCubeInfo();
   if (cube_info == (CubeInfo *) NULL)
     {
-      ThrowException(exception,ResourceLimitError,"MemoryAllocationFailed",
-        "UnableToDetermineImageClass");
+      ThrowException3(exception,ResourceLimitError,MemoryAllocationFailed,
+        UnableToDetermineImageClass);
       return(False);
     }
   for (y=0; y < (long) image->rows; y++)
@@ -1196,8 +1467,8 @@ MagickExport unsigned int IsPaletteImage(const Image *image,
             node_info->child[id]=GetNodeInfo(cube_info,level);
             if (node_info->child[id] == (NodeInfo *) NULL)
               {
-                ThrowException(exception,ResourceLimitError,
-                  "MemoryAllocationFailed","UnableToDetermineImageClass");
+                ThrowException3(exception,ResourceLimitError,
+                  MemoryAllocationFailed,UnableToDetermineImageClass);
                 return(False);
               }
           }
@@ -1213,14 +1484,14 @@ MagickExport unsigned int IsPaletteImage(const Image *image,
             Add this unique color to the color list.
           */
           if (node_info->number_unique == 0)
-            node_info->list=(ColorPacket *) AcquireMemory(sizeof(ColorPacket));
+            node_info->list=MagickAllocateMemory(ColorPacket *,sizeof(ColorPacket));
           else
-            ReacquireMemory((void **) &node_info->list,
+            MagickReallocMemory(node_info->list,
               (i+1)*sizeof(ColorPacket));
           if (node_info->list == (ColorPacket *) NULL)
             {
-              ThrowException(exception,ResourceLimitError,
-                "MemoryAllocationFailed","UnableToDetermineImageClass");
+              ThrowException3(exception,ResourceLimitError,
+                MemoryAllocationFailed,UnableToDetermineImageClass);
               return(False);
             }
           node_info->list[i].pixel=(*p);
@@ -1410,8 +1681,7 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
                     pixel.blue|=c-('a'-10);
                   else
                     {
-                      ThrowException(exception,OptionWarning,
-                        "UnrecognizedColor",name);
+                      ThrowException(exception,OptionWarning,UnrecognizedColor,name);
                       return(False);
                     }
             }
@@ -1420,8 +1690,7 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
       else
         if ((n != 4) && (n != 8) && (n != 16) && (n != 32))
           {
-            ThrowException(exception,OptionWarning,
-              "UnrecognizedColor",name);
+            ThrowException(exception,OptionWarning,UnrecognizedColor,name);
             return(False);
           }
         else
@@ -1450,8 +1719,7 @@ MagickExport unsigned int QueryColorDatabase(const char *name,
                       pixel.opacity|=c-('a'-10);
                     else
                       {
-                        ThrowException(exception,OptionWarning,
-                          "UnrecognizedColor",name);
+                        ThrowException(exception,OptionWarning,UnrecognizedColor,name);
                         return(False);
                       }
               }
@@ -1590,17 +1858,17 @@ MagickExport unsigned int QueryColorname(const Image *image,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method ReadConfigureFile reads the color configuration file which maps
+%  Method ReadColorConfigureFile reads the color configuration file which maps
 %  color strings with a particular image format.
 %
-%  The format of the ReadConfigureFile method is:
+%  The format of the ReadColorConfigureFile method is:
 %
-%      unsigned int ReadConfigureFile(const char *basename,
+%      unsigned int ReadColorConfigureFile(const char *basename,
 %        const unsigned long depth,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o status: Method ReadConfigureFile returns True if at least one color
+%    o status: Method ReadColorConfigureFile returns True if at least one color
 %      is defined otherwise False.
 %
 %    o basename:  The color configuration filename.
@@ -1611,7 +1879,7 @@ MagickExport unsigned int QueryColorname(const Image *image,
 %
 %
 */
-static unsigned int ReadConfigureFile(const char *basename,
+static unsigned int ReadColorConfigureFile(const char *basename,
   const unsigned long depth,ExceptionInfo *exception)
 {
   char
@@ -1668,8 +1936,7 @@ static unsigned int ReadConfigureFile(const char *basename,
           if (LocaleCompare(keyword,"file") == 0)
             {
               if (depth > 200)
-                ThrowException(exception,ConfigureError,
-                  "IncludeElementNestedTooDeeply",path);
+                ThrowException(exception,ConfigureError,IncludeElementNestedTooDeeply,path);
               else
                 {
                   char
@@ -1680,7 +1947,7 @@ static unsigned int ReadConfigureFile(const char *basename,
                     (void) strcat(filename,DirectorySeparator);
                   (void) strncat(filename,token,MaxTextExtent-
                     strlen(filename)-1);
-                  (void) ReadConfigureFile(filename,depth+1,exception);
+                  (void) ReadColorConfigureFile(filename,depth+1,exception);
                 }
               if (color_list != (ColorInfo *) NULL)
                 while (color_list->next != (ColorInfo *) NULL)
@@ -1697,10 +1964,10 @@ static unsigned int ReadConfigureFile(const char *basename,
         /*
           Allocate memory for the color list.
         */
-        color_info=(ColorInfo *) AcquireMemory(sizeof(ColorInfo));
+        color_info=MagickAllocateMemory(ColorInfo *,sizeof(ColorInfo));
         if (color_info == (ColorInfo *) NULL)
-          MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-            "UnableToAllocateColorInfo");
+          MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+            UnableToAllocateColorInfo);
         (void) memset(color_info,0,sizeof(ColorInfo));
         color_info->path=AcquireString(path);
         color_info->signature=MagickSignature;
@@ -1807,8 +2074,8 @@ static unsigned int ReadConfigureFile(const char *basename,
         break;
     }
   }
-  LiberateMemory((void **) &token);
-  LiberateMemory((void **) &xml);
+  MagickFreeMemory(token);
+  MagickFreeMemory(xml);
   if (color_list == (ColorInfo *) NULL)
     return(False);
   while (color_list->previous != (ColorInfo *) NULL)

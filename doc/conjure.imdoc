@@ -1,0 +1,331 @@
+<imdoc>
+<utils apps=conjure>
+<title>Conjure</title>
+<gm>
+<sect NAME="conjure">gm conjure
+</gm>
+<im>
+<sect NAME="conj-top">NAME
+conjure - process a Magick Scripting Language (MSL) script
+<p>
+<s>WARNING: Conjure and MSL are in very early development and the
+syntax is subject to change!</s>
+</p>
+</sect>
+<format type=html>
+<sect NAME="conj-contents">Contents
+<dl>
+<dt>
+<a href="#conj-syno">Synopsis</a>
+</dt>
+<dt>
+<a href="#conj-desc">Description</a>
+</dt>
+<dt>
+<a href="#conj-opti">Options</a>
+</dt>
+<dt>
+<a href="#conj-msl">Magick Scripting Language</a>
+</dt>
+<dt>
+<a href="#conj-auth">Authors</a>
+</dt>
+<dt>
+<a href="#conj-copy">Copyright</a>
+</dt>
+</dl>
+</sect>
+</format>
+
+<sect NAME="conj-syno">Synopsis
+<p>
+<s>conjure</s> <s>[</s> <i>options</i> <s>]</s> <i>script.msl</i>
+<s>[ [</s> <i>options</i> <s>]</s> <i>script.msl</i> <s>]</s>
+</p>
+</sect>
+<sect NAME="conj-desc">Description
+</im>
+<p>
+The Magick scripting language (MSL) will primarily
+benefit those that want to accomplish custom image processing tasks but
+do not wish to program, or those that do not have access to a Perl
+interpreter or a compiler.  The interpreter is called conjure and here
+is an example script:
+</p>
+<pre>
+    <?xml version="1.0" encoding="UTF-8"?>
+    <image size="400x400" >
+      <read filename="image.gif" />
+      <get width="base-width" height="base-height" />
+      <resize geometry="%[dimensions]" />
+      <get width="width" height="height" />
+      <print output=
+        "Image sized from %[base-width]x%[base-height]
+         to %[width]x%[height].\n" />
+      <write filename="image.png" />
+    </image>
+</pre>
+<p>
+invoked with
+</p>
+<pre>
+    conjure -dimensions 400x400 incantation.msl
+</pre>
+<p>
+All operations will closely follow the key/value pairs defined in
+PerlMagick, unless otherwise noted.
+</p>
+<p>
+<s>Conjure</s> is in the early stages of development as of
+April 2002.
+</p>
+<p>
+This early announcement is to allow GraphicsMagick users to contribute
+ideas early in the process so when the scripting language is released it
+will be useful/stable from the get-go! If you want to contribute
+suggestions about the Magick scripting language (MSL), post them to the
+GraphicsMagick tools list at graphicsmagick-tools @ lists.sourceforge.net.
+</p>
+</sect>
+<back>
+<sect NAME="conj-opti">Options
+<p>
+Options are processed in command line order. Any option you specify on
+the command line remains in effect until it is explicitly changed by specifying
+the option again with a different effect, or if it is changed by a statement
+in the scripting language.
+</p>
+<p>
+You can define your own keyword/value pairs on the command line.
+The script can then use this information when setting values by including
+%[keyword] in the string.  For example, if you included
+"-dimensions 400x400" on the command line, as illustrated above,
+then any string
+containing "%[dimensions]" would have 400x400 substituted.
+The "%[string]" can be used either an entire string, such as
+geometry="%[dimensions]" or as a part of a string such as
+filename="%[basename].png".
+<p>
+The keyword can be any string except for the following reserved
+strings (in any upper, lower, or mixed case variant): <s>debug</s>,
+<s>help</s>, and <s>verbose</s>, whose usage is described below.
+
+<p>
+The value can be any string.  If
+either the keyword or the value contains white space or any
+symbols that have special meanings to your shell such as "#",
+"|",
+or
+"%", enclose the string in quotation marks or use "\" to escape the white
+space and special symbols.
+<p>
+Keywords and values are case dependent.  "Key",
+"key",
+and "KEY" would
+be three different keywords.
+</p>
+<p>
+For a more detailed description of each option, see
+<gm>
+Options, above.
+</gm>
+<im>
+<format type=man,tex>
+<i>GraphicsMagick(1)</i>.
+</format>
+<format type=html>
+<a href="GraphicsMagick.html"><i>GraphicsMagick(1)</i></a>.
+</format>
+</im>
+</p>
+</utils>
+
+<include file=brief_options.imdoc>
+
+<utils apps=conjure>
+</sect>
+<back>
+<sect NAME="conj-msl">Magick Scripting Language
+
+The Magick Scripting Language (MSL) presently defines the following
+elements and their attributes:
+
+<dl>
+<dt><image></dt>
+<dd>Define a new image object.
+<s></image></s> destroys it. Because of this, if you wish
+to reference multiple "subimages" (aka pages or layers),
+you can embed one <s>image</s> element inside of
+another. For example:
+</dd>
+<dd>
+<pre>
+    <image>
+    <read filename="input.png" />
+    <get width="base-width" height="base-height" />
+    <image height="base-height" width="base-width">
+    <image />
+    <write filename="output.mng" />
+    </image>
+</pre>
+</dd>
+<dd>
+<pre>
+    <image size="400x400" />
+</pre>
+</dd>
+
+
+<dt><group></dt>
+<dd>Define a new group of image objects.
+By default, images are only valid for the life of
+their <s><image></s>element.
+</dd>
+<dd>
+<pre>
+    <image>   -- creates the image
+    .....     -- do stuff with it
+    </image>  -- dispose of the image
+</pre>
+</dd>
+
+<dd>
+However, in a group, all images in that group will stay 
+around for the life of the group:
+</dd>
+
+<dd>
+<pre>
+    <group>                           -- start a group
+        <image>                       -- create an image
+        ....                          -- do stuff
+        </image>                      -- NOOP
+        <image>                       -- create another image
+        ....                          -- do more stuff
+        </image>                      -- NOOP
+        <write filename="image.mng" />  -- output
+    </group>                          -- dispose of both images
+</pre>
+</dd>
+
+
+
+<dt><read></dt>
+<dd>Read a new image from a disk file.
+</dd>
+<dd>
+<pre>
+    <read filename="image.gif" />
+</pre>
+</dd>
+<dd>To read two images use
+</dd>
+<dd>
+<pre>
+    <read filename="image.gif" />
+    <read filename="image.png />
+</pre>
+</dd>
+<dt><write></dt>
+<dd>Write the image(s) to disk, either as
+a single multiple-image file or multiple ones if necessary.
+</dd>
+<dd>
+<pre>
+     <write filename=image.tiff" />
+</pre>
+<dt><get></dt>
+<dd>Get any attribute recognized by
+PerlMagick's GetAttribute() and stores it as an image attribute for later
+use. Currently only <i>width</i> and <i>height</i> are supported.</dd>
+
+<dd>
+<pre>
+    <get width="base-width" height="base-height" />
+    <print output="Image size is %[base-width]x%[base-height].\n" />
+</pre>
+</dd>
+
+<dt><set></dt>
+<dd>background, bordercolor, clip-mask, colorspace, density,
+magick, mattecolor, opacity.  Set an attribute recognized by
+PerlMagick's GetAttribute().</dd>
+
+<dt><border></dt>
+    <dd>fill, geometry, height, width</dd>
+<dt><blur></dt>
+    <dd>radius, sigma</dd>
+<dt><charcoal></dt>
+    <dd>radius, sigma</dd>
+<dt><chop></dt>
+    <dd>geometry, height, width, x, y</dd>
+<dt><crop></dt>
+    <dd>geometry, height, width, x, y</dd>
+<dt><despeckle></dt>
+<dt><emboss></dt>
+    <dd>radius, sigma</dd>
+<dt><enhance></dt>
+<dt><equalize></dt>
+<dt><flip></dt>
+<dt><flop></dt>
+<dt><frame></dt>
+    <dd>fill, geometry, height, width, x, y, inner, outer</dd>
+<dt><get></dt>
+    <dd>height, width</dd>
+<dt><image></dt>
+    <dd>background, color, id, size</dd>
+<dt><magnify></dt>
+<dt><minify></dt>
+<dt><normalize></dt>
+<dt><print></dt>
+    <dd>output</dd>
+<dt><read></dt>
+<dt><resize></dt>
+    <dd>blur, filter, geometry, height, width</dd>
+<dt><roll></dt>
+    <dd>geometry, x, y</dd>
+<dt><rotate></dt>
+    <dd>degrees</dd>
+<dt><sample></dt>
+    <dd>geometry, height, width</dd>
+<dt><scale></dt>
+    <dd>geometry, height, width</dd>
+<dt><sharpen></dt>
+    <dd>radius, sigma</dd>
+<dt><shave></dt>
+    <dd>geometry, height, width</dd>
+<dt><shear></dt>
+    <dd>x, y</dd>
+<dt><solarize></dt>
+    <dd>threshold</dd>
+<dt><spread></dt>
+    <dd>radius</dd>
+<dt><stegano></dt>
+    <dd>image</dd>
+<dt><stereo></dt>
+    <dd>image</dd>
+<dt><swirl></dt>
+    <dd>degrees</dd>
+<dt><texture></dt>
+    <dd>image</dd>
+<dt><threshold></dt>
+    <dd>threshold</dd>
+<dt><transparent></dt>
+    <dd>color</dd>
+<dt><trim></dt>
+</dl>
+</sect>
+
+<im>
+<format type=man>
+<sect NAME="conj-also">SEE ALSO
+<p>
+animate(1), display(1), composite(1), convert(1), identify(1),
+import(1), mogrify(1), montage(1)
+</p>
+</sect>
+</format>
+<include file=conjure_copyright.imdoc>
+</im>
+</utils>
+</imdoc>

@@ -18,7 +18,7 @@
 %       H   H  IIIII  SSSSS    T     OOO    GGG   R  R   A   A  M   M         %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                          Write A Histogram Image.                           %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -213,20 +213,20 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   histogram_image=CloneImage(image,geometry.width,geometry.height,True,
     &image->exception);
   if (histogram_image == (Image *) NULL)
-    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
   SetImageType(histogram_image,TrueColorType);
   /*
     Allocate histogram count arrays.
   */
   length=Max(ScaleQuantumToChar(MaxRGB)+1,histogram_image->columns);
-  red=(long *) AcquireMemory(length*sizeof(long));
-  green=(long *) AcquireMemory(length*sizeof(long));
-  blue=(long *) AcquireMemory(length*sizeof(long));
+  red=MagickAllocateMemory(long *,length*sizeof(long));
+  green=MagickAllocateMemory(long *,length*sizeof(long));
+  blue=MagickAllocateMemory(long *,length*sizeof(long));
   if ((red == (long *) NULL) || (green == (long *) NULL) ||
       (blue == (long *) NULL))
     {
       DestroyImage(histogram_image);
-      ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image)
+      ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image)
     }
   memset(red,0,length*sizeof(long));
   memset(green,0,length*sizeof(long));
@@ -256,15 +256,6 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
       maximum=green[x];
     if (maximum < blue[x])
       maximum=blue[x];
-  }
-  for (x=0; x < (long) histogram_image->columns; x++)
-  {
-    if (red[x] > maximum)
-      red[x]=maximum;
-    if (green[x] > maximum)
-      green[x]=maximum;
-    if (blue[x] > maximum)
-      blue[x]=maximum;
   }
   scale=(double) histogram_image->rows/maximum;
   /*
@@ -308,9 +299,9 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   /*
     Free memory resources.
   */
-  LiberateMemory((void **) &blue);
-  LiberateMemory((void **) &green);
-  LiberateMemory((void **) &red);
+  MagickFreeMemory(blue);
+  MagickFreeMemory(green);
+  MagickFreeMemory(red);
   file=AcquireTemporaryFileStream(filename,BinaryFileIOMode);
   if (file == (FILE *) NULL)
     {

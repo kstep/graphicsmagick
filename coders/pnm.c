@@ -18,7 +18,7 @@
 %                            P      N   N  M   M                              %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%              Read/Write PBMPlus Portable Anymap Image Format.               %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -157,7 +157,7 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
           Read comment.
         */
         length=MaxTextExtent;
-        comment=(char *) AcquireMemory(length+strlen(P7Comment)+1);
+        comment=MagickAllocateMemory(char *,length+strlen(P7Comment)+1);
         p=comment;
         offset=p-comment;
         if (comment != (char *) NULL)
@@ -167,7 +167,7 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
               {
                 length<<=1;
                 length+=MaxTextExtent;
-                ReacquireMemory((void **) &comment,length+strlen(P7Comment)+1);
+                MagickReallocMemory(comment,length+strlen(P7Comment)+1);
                 if (comment == (char *) NULL)
                   break;
                 p=comment+strlen(comment);
@@ -182,7 +182,7 @@ static unsigned int PNMInteger(Image *image,const unsigned int base)
         if (LocaleCompare(q,P7Comment) == 0)
           *q='\0';
         (void) SetImageAttribute(image,"comment",comment);
-        LiberateMemory((void **) &comment);
+        MagickFreeMemory(comment);
         continue;
       }
   } while (!isdigit(c));
@@ -262,7 +262,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   /*
     Read PNM image.
   */
@@ -273,7 +273,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Initialize image structure.
     */
     if ((count == 0) || (format != 'P'))
-      ThrowReaderException(CorruptImageError,"NotAPNMImageFile",image);
+      ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
     format=ReadBlobByte(image);
     if (format == '7')
       (void) PNMInteger(image,10);
@@ -292,7 +292,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     number_pixels=image->columns*image->rows;
     if (number_pixels == 0)
-      ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize",image);
+      ThrowReaderException(CorruptImageError,NegativeOrZeroImageSize,image);
     scale=(unsigned long *) NULL;
     if (image->storage_class == PseudoClass)
       {
@@ -300,7 +300,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Create colormap.
         */
         if (!AllocateImageColormap(image,image->colors))
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
         if (format == '7')
           {
@@ -327,10 +327,10 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Compute pixel scaling table.
         */
-        scale=(unsigned long *)
-          AcquireMemory((max_value+1)*sizeof(unsigned long));
+        scale=MagickAllocateMemory(unsigned long *,
+          (max_value+1)*sizeof(unsigned long));
         if (scale == (unsigned long *) NULL)
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
         for (i=0; i <= (long) max_value; i++)
           scale[i]=(unsigned long) (((double) MaxRGB*i)/max_value);
@@ -475,7 +475,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 break;
         }
         if (EOFBlob(image))
-          ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+          ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
             image->filename);
         break;
       }
@@ -486,15 +486,15 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Convert PGM raw image to pixel packets.
         */
         packets=image->depth <= 8 ? 1 : 2;
-        pixels=(unsigned char *) AcquireMemory(packets*image->columns);
+        pixels=MagickAllocateMemory(unsigned char *,packets*image->columns);
         if (pixels == (unsigned char *) NULL)
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
         for (y=0; y < (long) image->rows; y++)
         {
           count=ReadBlob(image,packets*image->columns,pixels);
           if (count == 0)
-            ThrowReaderException(CorruptImageError,"UnableToReadImageData",
+            ThrowReaderException(CorruptImageError,UnableToReadImageData,
               image);
           p=pixels;
           q=SetImagePixels(image,0,y,image->columns,1);
@@ -508,7 +508,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (index >= image->colors)
                 {
                   ThrowException(&image->exception,CorruptImageError,
-                    "invalid colormap index",image->filename);
+                    InvalidColormapIndex,image->filename);
                   index=0;
                 }
               indexes[x]=index;
@@ -530,27 +530,27 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (!MagickMonitor(LoadImageText,y,image->rows,exception))
                 break;
         }
-        LiberateMemory((void **) &pixels);
+        MagickFreeMemory(pixels);
         if (EOFBlob(image))
-          ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+          ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
             image->filename);
         break;
       }
       case '6':
       {
         /*
-          Convert PNM raster image to pixel packets.
+          Convert PPM raw raster image to pixel packets.
         */
         packets=image->depth <= 8 ? 3 : 6;
-        pixels=(unsigned char *) AcquireMemory(packets*image->columns);
+        pixels=MagickAllocateMemory(unsigned char *,packets*image->columns);
         if (pixels == (unsigned char *) NULL)
-          ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+          ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
             image);
         for (y=0; y < (long) image->rows; y++)
         {
           count=ReadBlob(image,packets*image->columns,pixels);
           if (count == 0)
-            ThrowReaderException(CorruptImageError,"UnableToReadImageData",
+            ThrowReaderException(CorruptImageError,UnableToReadImageData,
               image);
           p=pixels;
           q=SetImagePixels(image,0,y,image->columns,1);
@@ -600,19 +600,19 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (!MagickMonitor(LoadImageText,y,image->rows,exception))
                 break;
         }
-        LiberateMemory((void **) &pixels);
+        MagickFreeMemory(pixels);
         handler=SetMonitorHandler((MonitorHandler) NULL);
         (void) SetMonitorHandler(handler);
         if (EOFBlob(image))
-          ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+          ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
             image->filename);
         break;
       }
       default:
-        ThrowReaderException(CorruptImageError,"NotAPNMImageFile",image)
+        ThrowReaderException(CorruptImageError,ImproperImageHeader,image)
     }
     if (scale != (unsigned long *) NULL)
-      LiberateMemory((void **) &scale);
+      MagickFreeMemory(scale);
     /*
       Proceed to next image.
     */
@@ -812,7 +812,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   scene=0;
   do
   {
@@ -1090,9 +1090,9 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           Allocate memory for pixels.
         */
         packets=image->depth <= 8 ? 3 : 6;
-        pixels=(unsigned char *) AcquireMemory(packets*image->columns);
+        pixels=MagickAllocateMemory(unsigned char *,packets*image->columns);
         if (pixels == (unsigned char *) NULL)
-          ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
+          ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
             image);
         /*
           Convert image to a PNM image.
@@ -1132,7 +1132,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
               if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
                 break;
         }
-        LiberateMemory((void **) &pixels);
+        MagickFreeMemory(pixels);
         break;
       }
       case 7:
@@ -1171,16 +1171,16 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         for (i=0; i < 2; i++)
           for (j=0; j < 16; j++)
           {
-            red_map[i][j]=(unsigned short *)
-              AcquireMemory(256*sizeof(unsigned short));
-            green_map[i][j]=(unsigned short *)
-              AcquireMemory(256*sizeof(unsigned short));
-            blue_map[i][j]=(unsigned short *)
-              AcquireMemory(256*sizeof(unsigned short));
+            red_map[i][j]=MagickAllocateMemory(unsigned short *,
+              256*sizeof(unsigned short));
+            green_map[i][j]=MagickAllocateMemory(unsigned short *,
+              256*sizeof(unsigned short));
+            blue_map[i][j]=MagickAllocateMemory(unsigned short *,
+              256*sizeof(unsigned short));
             if ((red_map[i][j] == (unsigned short *) NULL) ||
                 (green_map[i][j] == (unsigned short *) NULL) ||
                 (blue_map[i][j] == (unsigned short *) NULL))
-              ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
+              ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
                 image);
           }
         /*
@@ -1252,9 +1252,9 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         for (i=0; i < 2; i++)
           for (j=0; j < 16; j++)
           {
-            LiberateMemory((void **) &green_map[i][j]);
-            LiberateMemory((void **) &blue_map[i][j]);
-            LiberateMemory((void **) &red_map[i][j]);
+            MagickFreeMemory(green_map[i][j]);
+            MagickFreeMemory(blue_map[i][j]);
+            MagickFreeMemory(red_map[i][j]);
           }
         break;
       }

@@ -314,11 +314,11 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
   assert(exception->signature == MagickSignature);
   width=(long) order;
   if ((width % 2) == 0)
-    ThrowImageException(OptionError,"UnableToConvolveImage",
-      "KernelWidthMustBeAnOddNumber");
+    ThrowImageException3(OptionError,UnableToConvolveImage,
+      KernelWidthMustBeAnOddNumber);
   if (((long) image->columns < width) || ((long) image->rows < width))
-    ThrowImageException(OptionError,"UnableToConvolveImage",
-      "ImageSmallerThanKernelWidth");
+    ThrowImageException3(OptionError,UnableToConvolveImage,
+      ImageSmallerThanKernelWidth);
   convolve_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (convolve_image == (Image *) NULL)
     return((Image *) NULL);
@@ -326,12 +326,12 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
   /*
     Convolve image.
   */
-  normal_kernel=(double *) AcquireMemory(width*width*sizeof(double));
+  normal_kernel=MagickAllocateMemory(double *,width*width*sizeof(double));
   if (normal_kernel == (double *) NULL)
     {
       DestroyImage(convolve_image);
-      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-        "UnableToConvolveImage")
+      ThrowImageException(ResourceLimitError,MemoryAllocationFailed,
+        MagickMsg(OptionError,UnableToConvolveImage));
     }
   normalize=0.0;
   for (i=0; i < (width*width); i++)
@@ -457,7 +457,7 @@ MagickExport Image *ConvolveImage(const Image *image,const unsigned int order,
       if (!MagickMonitor(ConvolveImageText,y,convolve_image->rows,exception))
         break;
   }
-  LiberateMemory((void **) &normal_kernel);
+  MagickFreeMemory(normal_kernel);
   convolve_image->is_grayscale=image->is_grayscale;
   return(convolve_image);
 }
@@ -837,8 +837,8 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth(radius,0.5);
   if (((long) image->columns < width) || ((long) image->rows < width))
-    ThrowImageException(OptionError,"UnableToPaintImage",
-      "ImageSmallerThanRadius");
+    ThrowImageException3(OptionError,UnableToPaintImage,
+      ImageSmallerThanRadius);
   paint_image=CloneImage(image,image->columns,image->rows,True,exception);
   if (paint_image == (Image *) NULL)
     return((Image *) NULL);
@@ -846,12 +846,12 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
   /*
     Allocate histogram and scanline.
   */
-  histogram=(unsigned long *) AcquireMemory((PaintHistSize)*sizeof(unsigned long));
+  histogram=MagickAllocateMemory(unsigned long *,(PaintHistSize)*sizeof(unsigned long));
   if (histogram == (unsigned long *) NULL)
     {
       DestroyImage(paint_image);
-      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-        "UnableToOilPaintImage")
+      ThrowImageException(ResourceLimitError,MemoryAllocationFailed,
+        MagickMsg(OptionError,UnableToOilPaintImage));
     }
   /*
     Paint each row of the image.
@@ -908,7 +908,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
       if (!MagickMonitor(OilPaintImageTag,y,image->rows,exception))
         break;
   }
-  LiberateMemory((void **) &histogram);
+  MagickFreeMemory(histogram);
   paint_image->is_grayscale=image->is_grayscale;
   return(paint_image);
 }
@@ -926,11 +926,12 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
 %  SolarizeImage() applies a special effect to the image, similar to the effect
 %  achieved in a photo darkroom by selectively exposing areas of photo
 %  sensitive paper to light.  Threshold ranges from 0 to MaxRGB and is a
-%  measure of the extent of the solarization.
+%  measure of the extent of the solarization. False is returned if an error
+%  is encountered.
 %
 %  The format of the SolarizeImage method is:
 %
-%      void SolarizeImage(Image *image,const double threshold)
+%      unsigned int SolarizeImage(Image *image,const double threshold)
 %
 %  A description of each parameter follows:
 %
@@ -940,7 +941,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
 %
 %
 */
-MagickExport void SolarizeImage(Image *image,const double threshold)
+MagickExport unsigned int SolarizeImage(Image *image,const double threshold)
 {
 #define SolarizeImageText  "  Solarize the image colors...  "
 
@@ -952,7 +953,8 @@ MagickExport void SolarizeImage(Image *image,const double threshold)
     x;
 
   unsigned int
-    is_grayscale;
+    is_grayscale,
+    status;
 
   register PixelPacket
     *q;
@@ -960,6 +962,7 @@ MagickExport void SolarizeImage(Image *image,const double threshold)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   is_grayscale=image->is_grayscale;
+  status=True;
   switch (image->storage_class)
   {
     case DirectClass:
@@ -972,7 +975,10 @@ MagickExport void SolarizeImage(Image *image,const double threshold)
       {
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
-          break;
+          {
+            status=False;
+            break;
+          }
         for (x=0; x < (long) image->columns; x++)
         {
           q->red=(Quantum) (q->red > threshold ? MaxRGB-q->red : q->red);
@@ -982,10 +988,16 @@ MagickExport void SolarizeImage(Image *image,const double threshold)
           q++;
         }
         if (!SyncImagePixels(image))
-          break;
+          {
+            status=False;
+            break;
+          }
         if (QuantumTick(y,image->rows))
           if (!MagickMonitor(SolarizeImageText,y,image->rows,&image->exception))
-            break;
+            {
+              status=False;
+              break;
+            }
       }
       break;
     }
@@ -1008,6 +1020,7 @@ MagickExport void SolarizeImage(Image *image,const double threshold)
     }
   }
   image->is_grayscale=is_grayscale;
+  return (status);
 }
 
 /*
@@ -1204,8 +1217,8 @@ MagickExport Image *StereoImage(const Image *image,const Image *offset_image,
   assert(offset_image != (const Image *) NULL);
   if ((image->columns != offset_image->columns) ||
       (image->rows != offset_image->rows))
-    ThrowImageException(ImageError,"UnableToCreateStereoImage",
-      "LeftAndRightImageSizesDiffer");
+    ThrowImageException3(ImageError,UnableToCreateStereoImage,
+      LeftAndRightImageSizesDiffer);
   /*
     Initialize stereo image attributes.
   */
@@ -1434,17 +1447,25 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
     (image->rows+2.0*fabs(amplitude)),False,exception);
   if (wave_image == (Image *) NULL)
     return((Image *) NULL);
-  SetImageType(wave_image,wave_image->background_color.opacity !=
-    OpaqueOpacity ? TrueColorMatteType : TrueColorType);
+
+  wave_image->storage_class=DirectClass;
+
+  /*
+    If background color is non-opaque, then initialize matte channel.
+  */
+  if ((wave_image->background_color.opacity != OpaqueOpacity) &&
+      (!wave_image->matte))
+    SetImageOpacity(wave_image,OpaqueOpacity);
+
   /*
     Allocate sine map.
   */
-  sine_map=(double *) AcquireMemory(wave_image->columns*sizeof(double));
+  sine_map=MagickAllocateMemory(double *,wave_image->columns*sizeof(double));
   if (sine_map == (double *) NULL)
     {
       DestroyImage(wave_image);
-      ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-        "UnableToWaveImage")
+      ThrowImageException(ResourceLimitError,MemoryAllocationFailed,
+        MagickMsg(OptionError,UnableToWaveImage))
     }
   for (x=0; x < (long) wave_image->columns; x++)
     sine_map[x]=fabs(amplitude)+amplitude*sin((2*MagickPI*x)/wave_length);
@@ -1471,7 +1492,7 @@ MagickExport Image *WaveImage(const Image *image,const double amplitude,
         break;
   }
   SetImageVirtualPixelMethod(image,virtual_pixel_method);
-  LiberateMemory((void **) &sine_map);
-  wave_image->is_grayscale=image->is_grayscale;
+  MagickFreeMemory(sine_map);
+  wave_image->is_grayscale=(image->is_grayscale && IsGray(wave_image->background_color));
   return(wave_image);
 }

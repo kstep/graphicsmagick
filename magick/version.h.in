@@ -34,10 +34,11 @@ extern "C" {
   identifying the release.
 */
 #define MagickPackageName "@PACKAGE_NAME@"
-#define MagickCopyright  "Copyright (C) 2002, 2003 " MagickPackageName " Group"
+#define MagickCopyright  "Copyright (C) 2002, 2003, 2004 " MagickPackageName " Group"
 #define MagickLibVersion  @MAGICK_LIB_VERSION@
 #define MagickLibVersionText  "@MAGICK_LIB_VERSION_TEXT@"
 #define MagickLibVersionNumber @MAGICK_LIB_VERSION_NUMBER@
+#define MagickChangeDate   "@PACKAGE_CHANGE_DATE@"
 #define MagickReleaseDate  "@PACKAGE_RELEASE_DATE@"
 
 

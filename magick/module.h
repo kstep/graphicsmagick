@@ -23,7 +23,7 @@ extern "C" {
 */
 typedef struct _ModuleInfo
 {
-  const char
+  char
     *path,		/* Path to modules.mgk which created alias */
     *magick,		/* Format name */
     *name;		/* Name of module supporting format. */
@@ -60,7 +60,10 @@ extern MagickExport unsigned int
 
 extern MagickExport void
   DestroyModuleInfo(void),
-  RegisterStaticModules(void);
+  DestroyMagickModules(void),
+  InitializeMagickModules(void),
+  RegisterStaticModules(void),
+  UnregisterStaticModules(void);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

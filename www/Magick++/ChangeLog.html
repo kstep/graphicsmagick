@@ -1,8 +1,365 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+  "http://www.w3.org/TR/html4/loose.dtd">
 <HTML>
 <HEAD>
 <TITLE>Magick++ ChangeLog</TITLE>
+	<STYLE>
+	<!--
+		@page { size: 8.5in 11in }
+		TD P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
+		P { color: #000000; font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size: 12pt }
+		A:link { color: #0085c0 }
+		A:visited { color: #800080 }
+	-->
+	</STYLE>
 </HEAD>
-<BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#0000EE" VLINK="#551A8B" ALINK="#FF0000">
+<body LANG="en-US" TEXT="#000000" LINK="#0085c0" VLINK="#800080" BGCOLOR="#ffffff">
+<FORM ACTION="http://www.google.com/search">
+	<INPUT TYPE=HIDDEN NAME="domains" VALUE="www.graphicsmagick.org">
+	<INPUT TYPE=HIDDEN NAME="sitesearch" VALUE="www.graphicsmagick.org">
+	<TABLE WIDTH=100% BORDER=1 BORDERCOLOR="#000000" CELLPADDING=4 CELLSPACING=0 RULES=NONE STYLE="page-break-before: always">
+		<COL WIDTH=208*>
+		<COL WIDTH=48*>
+		<TR>
+			<TD WIDTH=81%>
+				<P ALIGN=LEFT>[<A HREF="../index.html">Home</A>] [<A HREF="mission.html">Mission Statement</A>]
+				[<A HREF="download.html">Download</A>] [<A HREF="install.html">Installation</A>]
+				[<A HREF="cvs.html">CVS</A>] [<A HREF="http://sourceforge.net/mail/?group_id=73485">Mailing
+				Lists</A>] [<A HREF="FAQ.html">FAQ</A>] [<A HREF="">Formats</A>]
+				[<A HREF="NEWS.html">News</A> ] [<A HREF="Changelog.html">ChangeLog</A>]
+				[<A HREF="http://sourceforge.net/projects/graphicsmagick/">Report
+				Bugs</A>] [<A HREF="utilities.html">Utilities</A>] [<A HREF="programming.html">Programming</A>]
+				[<A HREF="books.html">Books</A>] [<A HREF="links.html">Links</A>]</P>
+			</TD>
+			<TD ROWSPAN=2 WIDTH=19%>
+				<P ALIGN=CENTER><IMG SRC="../images/gm-188x120t.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=188 HEIGHT=120 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=81%>
+				<DIV ALIGN=CENTER>
+					<P><I>Search GraphicsMagick site <INPUT TYPE=TEXT NAME="q" SIZE=25 MAXLENGTH=255>
+					<INPUT TYPE=SUBMIT NAME="sa" VALUE="Search"> </I>
+					</P>
+				</DIV>
+			</TD>
+		</TR>
+	</TABLE>
+</FORM>
+<table BORDER=0 WIDTH="100%" >
+<tr>
+<td BGCOLOR="#52799E"><img SRC="../images/right_triangle.png" ALT=">" height=14 width=15>
+<b><font face="Helvetica, Arial"><font color="#FFFFFF"><font size="+1">Magick++ ChangeLog</font></font></font></b></td>
+</tr>
+</table>
+<p>
+2004-03-22  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (statistics): New method to obtain image
+        statistics (minimum, maximum, mean, variance, and standard
+        deviation).
+
+</UL>
+<p>
+2004-03-08  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (quantumOperator): New image method to apply an
+        arithmetic or bitwise operator to the pixel quantums in an image.
+        Still needs documentation.<BR>
+        (quantumOperator): New image method to apply an arithmetic or
+        bitwise operator to the pixel quantums in an image region.
+
+</UL>
+<p>
+2004-03-06  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> Makefile.am (../www/Magick++/ChangeLog.html): Fix execution of
+        txt2html.<BR>
+  <LI> lib/STL.cpp (composeImage): Added a function object to set/get
+        the Image composition option.<BR>
+  <LI> lib/Image.cpp (compose): Added a method to set/get the Image
+        composition option.
+
+</UL>
+<p>
+2004-03-06  Vladimir Lukianov  &lt;lvm@integrum.ru&gt;
+
+<UL>
+  <LI> lib/Thread.cpp (lock): Use MsgWaitForMultipleObjects() rather than
+        WaitForSingleObject() in order to avoid possible deadlock when
+        application code directly or indirectly creates windows.
+
+</UL>
+<p>
+2004-02-18  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (interlaceType): Retrieve interlace setting from
+        Image rather than ImageInfo.
+
+</UL>
+<p>
+2004-02-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (Image): Delete the allocated image reference
+        object if a Magick::Error is thrown by the Image constructor.
+        Otherwise the image reference object becomes a memory leak.
+
+</UL>
+<p>
+2004-01-27  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/STL.h (WriteImages): Pass Blob::MallocAllocator to
+        updateNoCopy() in order to ensure that correct deallocator is
+        used.<BR>
+  <LI> tests/readWriteBlob.cpp (main): Needed to delete character array
+        using array [] reference.
+
+</UL>
+<p>
+2004-01-18  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> demo/analyze.cpp (main): Fix a GNU C++ library portability
+        problem noticed under MinGW. The 'left' iostream manipulator seems
+        to be missing.
+
+</UL>
+<p>
+2004-01-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> tests/Makefile.am: coderInfo test is expected to fail for moby
+        builds when the package is not yet installed since a .la file
+        exists in the coders directory, but there is no associated .so
+        file.  Therefore failures of the coderInfo test are now ignored.
+
+</UL>
+<p>
+2003-12-27  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (defineValue): New method to support setting
+        format-specific defines.<BR>
+        (defineSet): New method to support setting or testing for
+        format-specific flags.
+
+</UL>
+<p>
+2003-12-21  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (iccColorProfile): Implementation now uses the
+        profile method with profile name "ICM".  Note that this now
+        invokes the color profile if the image already has one.
+        (iccColorProfile): Reimplement using new GetImageProfile function.
+        (iptcProfile): Reimplement using the new GetImageProfile and
+        SetImageProfile functions.<BR>
+        (profile): Reimplement using new GetImageProfile function.
+
+</UL>
+<p>
+2003-12-08  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/Makefile.am (pkglibdir): Improve header file
+        install location logic.
+
+</UL>
+<p>
+2003-12-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> demo/analyze.cpp (main): New program to demonstrate using the
+        'analyze' process module.<BR>
+  <LI> demo/Makefile.am: Add rules to build analyze program.
+  <LI> lib/Image.cpp (process): New method to execute process modules.
+  <LI> lib/Image.cpp (attribute): New method to get and set named image
+        attributes.
+
+</UL>
+<p>
+2003-10-01  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Color.cpp: Ensure that all non-default constructors set
+        opacity to opaque.
+
+</UL>
+<p>
+2003-09-17  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/STL.h (colorHistogram): If map key is not const,
+        then implicit type conversion occurs.  Sun's C++ compiler doesn't
+        seem to handle that.  The map key is now defined as const in
+        the insert arguments.
+
+</UL>
+<p>
+2003-09-01  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> tests/Makefile.am: Add build support for colorHistogram.cpp.
+  <LI> tests/colorHistogram.cpp: New test program to test retrieving
+        color histograms from the image using colorHistogram().
+  <LI> lib/Magick++/STL.h (colorHistogram): Added new template function
+        to retrieve a color histogram into a user-provided container.
+        Verified to work when using STL &lt;vector&gt; and &lt;map&gt; as the target
+        container types.  When &lt;map&gt; is used, a user-specified color may
+        be used to perform lookups in the map to obtain the usage count for
+        that color.<BR>
+  <LI> lib/Color.cpp (operator &gt;=): Insufficient resolution was being
+        provided in order to reliably sort color objects in STL
+        containers.  The updated algorithm should be fail-safe.
+
+</UL>
+<p>
+2003-08-31  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (channelDepth): New method to set or get the
+        modulus depth for a specified channel.
+
+</UL>
+<p>
+2003-08-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/Include.h (Magick): Added support for
+        CopyCyanCompositeOp, CopyMagentaCompositeOp,
+        CopyYellowCompositeOp, and CopyBlackCompositeOp, composition
+        operators.
+
+</UL>
+<p>
+2003-08-12  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (depth): Method now only updates the
+        Image/ImageInfo depth member and retrieves the value of the Image
+        depth member.<BR>
+        (modulusDepth): New method to inspect the pixels for actual
+        modulus depth, or update/reduce the pixels to a specified modulus
+        depth.  The depth method was performing this function so any code
+        which depended on the depth method to compute or set the modulus
+        depth should be updated to use modulusDepth() instead.
+
+</UL>
+<p>
+2003-08-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Image.cpp (matte): If a new matte channel is created,
+        initialize it to opaque.  Likewise, if the matte channel is
+        eliminated, initialize the unused channel to opaque.
+
+</UL>
+<p>
+2003-07-09  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> demo/demo.cpp (main): Don't crop logo image.  *
+  <LI> *.h, *.cpp: Include "Magick++/Include.h" before including any
+        compiler or system header in order to ensure that LFS defines are
+        properly applied. Inspired by patch from Albert Chin-A-Young.
+
+</UL>
+<p>
+2003-06-29  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/Include.h: Needed to import ThrowLoggedException.
+  <LI> lib/Exception.cpp (throwException): Add originating source
+        module, source line, and function name (if available) to exception
+        report. This is useful in order to determine the exact conditions
+        that lead to the exception being thrown.
+  <LI> lib/Magick++/Exception.h: Added ErrorCoder, WarningCoder,
+        ErrorConfigure, WarningConfigure, ErrorDraw, WarningDraw,
+        ErrorImage, WarningImage, ErrorMonitor, WarningMonitor,
+        ErrorRegistry, WarningRegistry, ErrorStream, WarningStream,
+        ErrorType, and WarningType, exception classes to support the full
+        set of exceptions that GraphicsMagick can throw.
+
+</UL>
+<p>
+2003-06-22  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/CoderInfo.cpp (CoderInfo): Applied compilation fix from
+        Mike Chiarappa to compile using Borland C++.
+
+</UL>
+<p>
+2003-06-06  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Geometry.cpp (string): Throw an exception if a string is
+        requested from an invalid geometry object.
+
+</UL>
+<p>
+2003-06-05  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Geometry.cpp (operator =): If GetGeometry returns NoValue,
+        then assign an invalid geometry object to cause an exception if
+        the geometry is then used.
+
+</UL>
+<p>
+2003-06-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/Exception.h (ErrorModule): Added class to handle
+        module errors.<BR>
+  <LI> lib/Magick++/Exception.h (WarningModule) Added class to handle
+        module warnings.
+
+</UL>
+<p>
+2003-05-30  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/STL.h (coderInfoList): Use GetMagickInfoArray to
+        access coder list.
+
+</UL>
+<p>
+2003-05-22  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/STL.h (affineTransformImage): Add function object
+        contributed by Vladimir Lukianov to apply an affine transform to
+        the image.<BR>
+  <LI> lib/Image.cpp (affineTransform): Added method contributed by
+        Vladimir Lukianov to apply an affine transform to the image.
+
+</UL>
+<p>
+2003-05-16  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/Include.h: Decided to back out change
+        which used the _VISUALC_ define to trigger inclusion of
+        &lt;sys/types.h&gt;.
+
+</UL>
+<p>
+2003-05-14  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> lib/Magick++/Include.h: If _VISUALC_ is defined,
+        include &lt;sys/types.h&gt;. This ensures that this necessary
+        header is included even if HAVE_SYS_TYPES_H is not defined
+        in magick_config.h.
+
+</UL>
 <p>
 2003-05-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
@@ -1886,5 +2243,8 @@
 
 </UL>
 
+<hr>
+<p><a href="../index.html"><img SRC="../images/home.png" ALT="Home Page" BORDER=0 height=40 width=40 align=MIDDLE></a><font size="-2">
+Image manipulation software that works like magic.</font>
 </BODY>
 </HTML>

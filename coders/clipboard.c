@@ -12,7 +12,7 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                        Read/Write Windows Clipboard.                        %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -40,7 +40,7 @@
 #  if defined(__CYGWIN__)
 #    include <windows.h>
 #  else
-     /* All MinGW needs ... */
+     // All MinGW needs ...
 #    include <wingdi.h>
 #  endif
 #endif
@@ -126,7 +126,7 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,ExceptionInfo *exce
           *pBits,
           *ppBits;
 
-        /* create an offscreen DC for the source */
+        // create an offscreen DC for the source
         hMemDC = CreateCompatibleDC( NULL );
         hOldBitmap = SelectObject( hMemDC, bitmapH );
         GetObject( bitmapH, sizeof( BITMAP ), (LPSTR) &bitmap );
@@ -149,31 +149,31 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,ExceptionInfo *exce
         DIBinfo.bmiHeader.biCompression=BI_RGB;
         hDC=GetDC(NULL);
         if (!hDC)
-          ThrowReaderException(CoderError,"UnableToCreateADC",image);
+          ThrowReaderException(CoderError,UnableToCreateADC,image);
         hBitmap= CreateDIBSection(hDC,&DIBinfo,DIB_RGB_COLORS,(void **) &ppBits,NULL,0);
         ReleaseDC(NULL,hDC);
         if (!hBitmap)
-          ThrowReaderException(CoderError,"UnableToCreateBitmap",image);
+          ThrowReaderException(CoderError,UnableToCreateBitmap,image);
 
-        /* create an offscreen DC */
+        // create an offscreen DC
         hDC=CreateCompatibleDC(NULL);
         if (!hDC)
           {
             DeleteObject(hBitmap);
-            ThrowReaderException(CoderError,"UnableToCreateADC",image);
+            ThrowReaderException(CoderError,UnableToCreateADC,image);
           }
         hOldBitmap=(HBITMAP) SelectObject(hDC,hBitmap);
         if (!hOldBitmap)
           {
             DeleteDC(hDC);
             DeleteObject(hBitmap);
-            ThrowReaderException(CoderError,"UnableToCreateBitmap",image);
+            ThrowReaderException(CoderError,UnableToCreateBitmap,image);
           }
 
-        /* bitblt from the memory to the DIB-based one */
+        // bitblt from the memory to the DIB-based one
         BitBlt( hDC, 0, 0, image->columns, image->rows, hMemDC, 0, 0, SRCCOPY );
 
-        /* finally copy the pixels! */
+        // finally copy the pixels!
         pBits=ppBits;
         for (y=0; y < (long) image->rows; y++)
           {
@@ -193,7 +193,7 @@ static Image *ReadCLIPBOARDImage(const ImageInfo *image_info,ExceptionInfo *exce
               break;
           }
       } else
-        ThrowReaderException(CoderError,"NoBitmapOnClipboard",image);
+        ThrowReaderException(CoderError,NoBitmapOnClipboard,image);
   }
 
   CloseBlob(image);

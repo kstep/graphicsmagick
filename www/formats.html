@@ -6,7 +6,7 @@
 	<META NAME="GENERATOR" CONTENT="StarOffice 6.0  (Solaris Sparc)">
 	<META NAME="CREATED" CONTENT="20020810;12535100">
 	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20030503;11410100">
+	<META NAME="CHANGED" CONTENT="20030617;13550600">
 	<META NAME="CLASSIFICATION" CONTENT="Describes the file formats supported by GraphicsMagick.">
 	<META NAME="DESCRIPTION" CONTENT="GraphicsMagick is a    robust collection of tools and libraries to read, write, and manipulate    an image in any of the more popular image formats including GIF, JPEG,    PNG, PDF, and Photo CD.  With GraphicsMagick you can create GIFs dynamically    making it suitable for Web applications.  You can also resize, rotate,    sharpen, color reduce, or add special effects to an image and save your    completed work in the same or  differing image format.">
 	<META NAME="KEYWORDS" CONTENT="GraphicsMagick, Image Magick, Image Magic,    PerlMagick, Perl Magick, Perl Magic, CineMagick, PixelMagick, Pixel Magic,    WebMagick, Web Magic, visualization, image processing, software    development, simulation, image, software, AniMagick, Animagic,    Magick++">
@@ -43,7 +43,7 @@
 				[<A HREF="books.html">Books</A>] [<A HREF="links.html">Links</A>]</P>
 			</TD>
 			<TD ROWSPAN=2 WIDTH=19%>
-				<P ALIGN=CENTER><IMG SRC="../images/magick_small.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=114 HEIGHT=118 BORDER=0></P>
+				<P ALIGN=CENTER><IMG SRC="../images/gm-188x120t.png" NAME="Graphic2" ALIGN=BOTTOM WIDTH=188 HEIGHT=120 BORDER=0></P>
 			</TD>
 		</TR>
 		<TR>
@@ -60,7 +60,26 @@
 <P STYLE="margin-bottom: 0in"><FONT SIZE=3>GraphicsMagick uses an
 ASCII string known as &quot;magick&quot; (e.g. &quot;GIF&quot;) to
 identify file formats, algorithms acting as formats, built-in images,
-and embedded profile types.</FONT></P>
+and embedded profile types. After a file has been read or &quot;pinged&quot;,
+the associated magick string is stored in the &quot;magick&quot;
+member of the Image structure, and is reported in the default output
+of 'gm identify'.</FONT></P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in"><FONT SIZE=3>Several formats optionally
+rely on the LZW algorithm, which is </FONT><A HREF="http://www.unisys.com/about__unisys/lzw/"><FONT SIZE=3>patented
+by the UNISYS corporation</FONT></A><FONT SIZE=3>. The U.S. LZW
+patent expires June 20, 2003, the counterpart Canadian patent expires
+July 7, 2004, the counterpart patents in the United Kingdom, France,
+Germany and Italy expire June 18, 2004, and the Japanese counterpart
+patents expire June 20, 2004. It is illegal to use LZW in a country
+where the patent is in effect unless a license is obtained from
+UNISYS. GraphicsMagick provides optional compilation-time  support
+for LZW. When LZW support is disabled, GIF files are encoded in an
+uncompressed format which is accepted by LZW decoders. The TIFF
+library supports LZW via an optional patch. If the TIFF library is
+not patched to support LZW, then an error is returned if there is an
+attempt to save the image in a LZW-compressed TIFF format.</FONT></P>
 <P STYLE="margin-bottom: 0in"><FONT SIZE=3><BR>GraphicsMagick
 supports reading over 88 major file formats (not including
 sub-formats). The following table provides a summary of the supported
@@ -2501,94 +2520,793 @@ Image Formats</B></FONT></P>
 		</TR>
 	</TABLE>
 </CENTER>
-<P><BR><FONT SIZE=3>GraphicsMagick includes several built-in images
-which may be referenced when reading as if they were an image format
-(e.g. &ldquo;<FONT FACE="Cumberland">GRANITE:</FONT>&rdquo;);</FONT></P>
+<P><BR><FONT SIZE=3>GraphicsMagick includes a number of built-in
+(embedded) images which may be referenced as if they were an image
+file. The &ldquo;<FONT SIZE=3><FONT FACE="Cumberland">IMAGE:</FONT>&rdquo;
+format tag may be used via the syntax &quot;<FONT FACE="Cumberland">IMAGE:name</FONT>&quot;
+to request an embedded</FONT> image (e.g. &ldquo;<FONT FACE="Cumberland">IMAGE:LOGO</FONT>&rdquo;).
+For backwards compatibility, the image specifications &ldquo;<FONT FACE="Cumberland">GRANITE:</FONT>&rdquo;,
+&ldquo;<FONT SIZE=3><FONT FACE="Cumberland">LOGO:</FONT>&rdquo;,</FONT>
+&ldquo;<FONT SIZE=3><FONT FACE="Cumberland">NETSCAPE:</FONT>&rdquo;,
+and</FONT> &ldquo;<FONT FACE="Cumberland">ROSE:</FONT>&rdquo; may
+also be used to request images with those names.</FONT></P>
 <P ALIGN=CENTER STYLE="margin-bottom: 0in"><FONT SIZE=4><B>Built-In
-Images</B></FONT></P>
+Images And Patterns</B></FONT></P>
 <CENTER>
 	<TABLE WIDTH=95% BORDER=1 BORDERCOLOR="#000000" CELLPADDING=4 CELLSPACING=0 BGCOLOR="#99ccff">
-		<COL WIDTH=43*>
-		<COL WIDTH=91*>
-		<COL WIDTH=121*>
+		<COL WIDTH=70*>
+		<COL WIDTH=85*>
+		<COL WIDTH=101*>
 		<TR>
-			<TH WIDTH=17% BGCOLOR="#52799e">
+			<TH WIDTH=27% BGCOLOR="#52799e">
 				<P ALIGN=CENTER STYLE="font-style: normal; text-decoration: none">
-				<FONT COLOR="#ffffff"><FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3><B>Tag</B></FONT></FONT></FONT></P>
+				<FONT COLOR="#ffffff"><FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3><B>Name</B></FONT></FONT></FONT></P>
 			</TH>
-			<TH WIDTH=36% BGCOLOR="#52799e">
+			<TH WIDTH=33% BGCOLOR="#52799e">
 				<P ALIGN=CENTER STYLE="font-style: normal; text-decoration: none">
 				<FONT COLOR="#ffffff"><FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3><B>Description</B></FONT></FONT></FONT></P>
 			</TH>
-			<TH WIDTH=47% BGCOLOR="#52799e">
+			<TH WIDTH=39% BGCOLOR="#52799e">
 				<P ALIGN=CENTER STYLE="font-style: normal; text-decoration: none">
-				<FONT COLOR="#ffffff"><FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3><B>Notes</B></FONT></FONT></FONT></P>
+				<FONT COLOR="#ffffff"><FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3><B>Notes/Sample</B></FONT></FONT></FONT></P>
 			</TH>
 		</TR>
 		<TR>
-			<TD WIDTH=17% BGCOLOR="#ffffff">
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>BRICKS</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>16x16
+				brick pattern</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/bricks.png" NAME="Graphic1" ALIGN=BOTTOM WIDTH=100 HEIGHT=26 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>CIRCLES</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>16x16
+				circles pattern</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/circles.png" NAME="Graphic4" ALIGN=BOTTOM WIDTH=100 HEIGHT=26 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>CROSSHATCH</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>8x4
+				crosshatch pattern</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/crosshatch.png" NAME="Graphic5" ALIGN=BOTTOM WIDTH=100 HEIGHT=26 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>CROSSHATCH30</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>8x4
+				crosshatch pattern with lines at 30 degrees.</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/crosshatch30.png" NAME="Graphic6" ALIGN=BOTTOM WIDTH=100 HEIGHT=26 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>CROSSHATCH45</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>8x4
+				crosshatch pattern with lines at 45 degrees.</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/crosshatch45.png" NAME="Graphic7" ALIGN=BOTTOM WIDTH=100 HEIGHT=26 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>FISHSCALES</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>16x8
+				fish scales pattern</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/fishscales.png" NAME="Graphic8" ALIGN=BOTTOM WIDTH=100 HEIGHT=26 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
 				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
 				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>GRANITE</FONT></FONT></P>
 			</TD>
-			<TD WIDTH=36% BGCOLOR="#ffffff">
+			<TD WIDTH=33% BGCOLOR="#ffffff">
 				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
-				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>Granite
-				texture.</FONT></FONT></P>
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>128x128
+				granite texture pattern</FONT></FONT></P>
 			</TD>
-			<TD WIDTH=47% BGCOLOR="#ffffff">
-				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
-				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>Usually
-				used as a texture image.</FONT></FONT></P>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/granite.png" NAME="Graphic9" ALIGN=BOTTOM WIDTH=100 HEIGHT=26 BORDER=0></P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=17% BGCOLOR="#ffffff">
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>GRAY0</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>32x32
+				0% intensity gray</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/gray0.png" NAME="Graphic35" ALIGN=BOTTOM WIDTH=100 HEIGHT=32 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>GRAY5</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>32x32
+				5% intensity gray</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/gray5.png" NAME="Graphic36" ALIGN=BOTTOM WIDTH=100 HEIGHT=32 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>GRAY10</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>32x32
+				10% intensity gray</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/gray10.png" NAME="Graphic37" ALIGN=BOTTOM WIDTH=100 HEIGHT=32 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>GRAY15</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>32x32
+				15% intensity gray</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/gray15.png" NAME="Graphic38" ALIGN=BOTTOM WIDTH=100 HEIGHT=32 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>GRAY20</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>32x32
+				20% intensity gray</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/gray20.png" NAME="Graphic39" ALIGN=BOTTOM WIDTH=100 HEIGHT=32 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>GRAY25</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>32x32
+				25% intensity gray</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/gray25.png" NAME="Graphic40" ALIGN=BOTTOM WIDTH=100 HEIGHT=32 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>GRAY30</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>32x32
+				30% intensity gray</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/gray30.png" NAME="Graphic41" ALIGN=BOTTOM WIDTH=100 HEIGHT=32 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>GRAY35</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>32x32
+				35% intensity gray</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/gray35.png" NAME="Graphic42" ALIGN=BOTTOM WIDTH=100 HEIGHT=32 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>GRAY40</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>32x32
+				40% intensity gray</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/gray40.png" NAME="Graphic43" ALIGN=BOTTOM WIDTH=100 HEIGHT=32 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>GRAY45</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>32x32
+				45% intensity gray</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/gray45.png" NAME="Graphic44" ALIGN=BOTTOM WIDTH=100 HEIGHT=32 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>GRAY50</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>32x32
+				50% intensity gray</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/gray50.png" NAME="Graphic45" ALIGN=BOTTOM WIDTH=100 HEIGHT=32 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>GRAY55</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>32x32
+				55% intensity gray</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/gray55.png" NAME="Graphic46" ALIGN=BOTTOM WIDTH=100 HEIGHT=32 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>GRAY60</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>32x32
+				60% intensity gray</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/gray60.png" NAME="Graphic47" ALIGN=BOTTOM WIDTH=100 HEIGHT=32 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>GRAY65</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>32x32
+				65% intensity gray</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/gray65.png" NAME="Graphic48" ALIGN=BOTTOM WIDTH=100 HEIGHT=32 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>GRAY70</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>32x32
+				70% intensity gray</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/gray70.png" NAME="Graphic49" ALIGN=BOTTOM WIDTH=100 HEIGHT=32 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>GRAY75</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>32x32
+				75% intensity gray</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/gray75.png" NAME="Graphic50" ALIGN=BOTTOM WIDTH=100 HEIGHT=32 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>GRAY80</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>32x32
+				80% intensity gray</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/gray80.png" NAME="Graphic51" ALIGN=BOTTOM WIDTH=100 HEIGHT=32 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>GRAY85</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>32x32
+				85% intensity gray</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/gray85.png" NAME="Graphic52" ALIGN=BOTTOM WIDTH=100 HEIGHT=32 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>GRAY90</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>32x32
+				90% intensity gray</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/gray90.png" NAME="Graphic53" ALIGN=BOTTOM WIDTH=100 HEIGHT=32 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>GRAY95</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>32x32
+				95% intensity gray</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/gray95.png" NAME="Graphic54" ALIGN=BOTTOM WIDTH=100 HEIGHT=32 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>GRAY100</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>32x32
+				100% intensity gray</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/gray100.png" NAME="Graphic55" ALIGN=BOTTOM WIDTH=100 HEIGHT=32 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>HEXAGONS</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>30x18
+				hexagon pattern</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/hexagons.png" NAME="Graphic10" ALIGN=BOTTOM WIDTH=100 HEIGHT=26 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>HORIZONTAL</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>8x4
+				horizontal line pattern</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/horizontal.png" NAME="Graphic11" ALIGN=BOTTOM WIDTH=100 HEIGHT=26 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>HORIZONTALSAW</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>16x8
+				horizontal saw-tooth pattern</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/horizontalsaw.png" NAME="Graphic12" ALIGN=BOTTOM WIDTH=100 HEIGHT=26 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>HS_BDIAGONAL</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>8x8
+				backward diagonal line pattern (45 degrees slope)</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/hs_bdiagonal.png" NAME="Graphic13" ALIGN=BOTTOM WIDTH=100 HEIGHT=26 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>HS_CROSS</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>8x8
+				cross line pattern</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/hs_cross.png" NAME="Graphic14" ALIGN=BOTTOM WIDTH=100 HEIGHT=26 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>HS_DIAGCROSS</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>8x8
+				diagonal line cross pattern (45 degrees slope)</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/hs_diagcross.png" NAME="Graphic15" ALIGN=BOTTOM WIDTH=100 HEIGHT=26 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>HS_FDIAGONAL</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>8x8
+				forward diagonal line pattern (45 degrees slope)</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/hs_fdiagonal.png" NAME="Graphic16" ALIGN=BOTTOM WIDTH=100 HEIGHT=26 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>HS_HORIZONTAL</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>8x8
+				horizontal line pattern</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/hs_horizontal.png" NAME="Graphic17" ALIGN=BOTTOM WIDTH=100 HEIGHT=26 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>HS_VERTICAL</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>8x8
+				vertical line pattern</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/hs_vertical.png" NAME="Graphic18" ALIGN=BOTTOM WIDTH=100 HEIGHT=26 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>LEFT30</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>8x4
+				forward diagonal pattern (30 degrees slope)</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/left30.png" NAME="Graphic19" ALIGN=BOTTOM WIDTH=100 HEIGHT=26 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>LEFT45</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>8x8
+				forward diagonal line pattern (45 degrees slope)</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/left45.png" NAME="Graphic20" ALIGN=BOTTOM WIDTH=100 HEIGHT=26 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>LEFTSHINGLE</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>24x24
+				left shingle pattern</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/leftshingle.png" NAME="Graphic21" ALIGN=BOTTOM WIDTH=100 HEIGHT=26 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
 				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
 				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>LOGO</FONT></FONT></P>
 			</TD>
-			<TD WIDTH=36% BGCOLOR="#ffffff">
+			<TD WIDTH=33% BGCOLOR="#ffffff">
 				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
-				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>Open
-				ImageMagick Logo</FONT></FONT></P>
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>640x480,
+				GraphicsMagick Logo</FONT></FONT></P>
 			</TD>
-			<TD WIDTH=47% BGCOLOR="#ffffff">
-				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
-				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>The
-				famous wizard.</FONT></FONT></P>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/gm-125x80t.png" NAME="Graphic34" ALIGN=BOTTOM WIDTH=125 HEIGHT=80 BORDER=0></P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=17% BGCOLOR="#ffffff">
+			<TD WIDTH=27% BGCOLOR="#ffffff">
 				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
 				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>NETSCAPE</FONT></FONT></P>
 			</TD>
-			<TD WIDTH=36% BGCOLOR="#ffffff">
+			<TD WIDTH=33% BGCOLOR="#ffffff">
 				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
-				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>Netscape
-				216 color cube.</FONT></FONT></P>
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>216x144
+				image using colors in Netscape 216 (6x6x6 ) color cube.</FONT></FONT></P>
 			</TD>
-			<TD WIDTH=47% BGCOLOR="#ffffff">
-				<P ALIGN=LEFT><SPAN STYLE="text-decoration: none"><FONT SIZE=3>Built-in
-				image which returns an image containing the colors in the 6x6x6
-				color cube used to render colors on 256 color displays by the
-				Netscape 2.0 browser. Most commonly used with the <A HREF="convert.html">convert</A>/<A HREF="mogrify.html">mogrify</A>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT><SPAN STYLE="text-decoration: none"><FONT SIZE=3>Most
+				commonly used with the <A HREF="convert.html">convert</A>/<A HREF="mogrify.html">mogrify</A>
 				-map option to create &ldquo;web safe&rdquo; images.</FONT></SPAN></P>
 			</TD>
 		</TR>
 		<TR>
-			<TD WIDTH=17% BGCOLOR="#ffffff">
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>OCTAGONS</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>16x16
+				octagons pattern</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER><IMG SRC="../images/patterns/octagons.png" NAME="Graphic22" ALIGN=BOTTOM WIDTH=100 HEIGHT=26 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>RIGHT30</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>8x4
+				backward diagonal line pattern (30 degrees)</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER><IMG SRC="../images/patterns/right30.png" NAME="Graphic23" ALIGN=BOTTOM WIDTH=100 HEIGHT=26 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>RIGHT45</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>8x8
+				backward diagonal line pattern (30 degrees)</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER><IMG SRC="../images/patterns/right45.png" NAME="Graphic24" ALIGN=BOTTOM WIDTH=100 HEIGHT=26 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>RIGHTSHINGLE</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>24x24
+				right shingle pattern</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER><IMG SRC="../images/patterns/rightshingle.png" NAME="Graphic25" ALIGN=BOTTOM WIDTH=100 HEIGHT=26 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
 				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
 				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>ROSE</FONT></FONT></P>
 			</TD>
-			<TD WIDTH=36% BGCOLOR="#ffffff">
+			<TD WIDTH=33% BGCOLOR="#ffffff">
 				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
-				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>Picture
-				of a rose.</FONT></FONT></P>
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>70x46,
+				Picture of a rose.</FONT></FONT></P>
 			</TD>
-			<TD WIDTH=47% BGCOLOR="#ffffff">
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/rose.png" NAME="Graphic26" ALIGN=BOTTOM WIDTH=70 HEIGHT=46 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
 				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
-				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>Photo
-				taken by Cristy.</FONT></FONT></P>
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>SMALLFISHSCALES</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>8x8
+				small fish scales pattern</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/smallfishscales.png" NAME="Graphic27" ALIGN=BOTTOM WIDTH=100 HEIGHT=26 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>CHECKERBOARD</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>30x30
+				checkerboard pattern</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/checkerboard.png" NAME="Graphic28" ALIGN=BOTTOM WIDTH=100 HEIGHT=26 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>VERTICAL</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>8x8
+				vertical line pattern</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/vertical.png" NAME="Graphic29" ALIGN=BOTTOM WIDTH=100 HEIGHT=26 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>VERTICALBRICKS</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>16x16
+				vertical brick pattern</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/verticalbricks.png" NAME="Graphic30" ALIGN=BOTTOM WIDTH=100 HEIGHT=26 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>VERTICALLEFTSHINGLE</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>24x24
+				vertical left shingle pattern</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/verticalleftshingle.png" NAME="Graphic31" ALIGN=BOTTOM WIDTH=100 HEIGHT=26 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>VERTICALRIGHTSHINGLE</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>24x24
+				vertical right shingle pattern</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/verticalrightshingle.png" NAME="Graphic32" ALIGN=BOTTOM WIDTH=100 HEIGHT=26 BORDER=0></P>
+			</TD>
+		</TR>
+		<TR>
+			<TD WIDTH=27% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>VERTICALSAW</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=33% BGCOLOR="#ffffff">
+				<P ALIGN=LEFT STYLE="font-style: normal; font-weight: medium; text-decoration: none">
+				<FONT FACE="Verdana, Arial, Helvetica, sans-serif"><FONT SIZE=3>8x16
+				vertical saw-tooth pattern</FONT></FONT></P>
+			</TD>
+			<TD WIDTH=39% BGCOLOR="#ffffff">
+				<P ALIGN=CENTER STYLE="text-decoration: none"><IMG SRC="../images/patterns/verticalsaw.png" NAME="Graphic33" ALIGN=BOTTOM WIDTH=100 HEIGHT=26 BORDER=0></P>
 			</TD>
 		</TR>
 	</TABLE>

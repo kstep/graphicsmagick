@@ -2,7 +2,7 @@
 //
 // Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
 //
-// Inclusion of ImageMagick headers (with namespace magic)
+// Inclusion of GraphicsMagick headers (with namespace magic)
 
 #ifndef Magick_Include_header
 #define Magick_Include_header
@@ -41,8 +41,8 @@
 #endif // defined(__BORLANDC__)
 
 //
-// Include ImageMagick headers into namespace "MagickLib". If
-// MAGICK_IMPLEMENTATION is defined, include ImageMagick development
+// Include GraphicsMagick headers into namespace "MagickLib". If
+// MAGICK_IMPLEMENTATION is defined, include GraphicsMagick development
 // headers.  This scheme minimizes the possibility of conflict with
 // user code.
 //
@@ -55,7 +55,8 @@ namespace MagickLib
 }
 
 //
-// Provide appropriate DLL imports/exports for Visual C++ and MinGW builds
+// Provide appropriate DLL imports/exports for Visual C++,
+// Borland C++Builder and MinGW builds
 //
 #if defined(WIN32) && !defined(__CYGWIN__)
 # define MagickWIN32
@@ -71,8 +72,14 @@ namespace MagickLib
 #        pragma message( "Magick++ lib DLL import" )
 #      endif
 #    else
-#      define MagickDLLDecl __declspec(dllexport)
-#      define MagickDLLDeclExtern extern __declspec(dllexport)
+#      if defined(__BORLANDC__)
+#        define MagickDLLDecl __declspec(dllexport)
+#        define MagickDLLDeclExtern __declspec(dllexport)
+#        pragma message( "BCBMagick++ lib DLL export" )
+#      else
+#        define MagickDLLDecl __declspec(dllexport)
+#        define MagickDLLDeclExtern extern __declspec(dllexport)
+#      endif
 #      if defined(_VISUALC_)
 #        pragma message( "Magick++ lib DLL export" )
 #      endif
@@ -89,8 +96,9 @@ namespace MagickLib
 #  define MagickDLLDeclExtern
 #endif
 
+
 //
-// Import ImageMagick symbols and types which are used as part of the
+// Import GraphicsMagick symbols and types which are used as part of the
 // Magick++ API definition into namespace "Magick".
 //
 namespace Magick
@@ -169,6 +177,10 @@ namespace Magick
   using MagickLib::ThresholdCompositeOp;
   using MagickLib::UndefinedCompositeOp;
   using MagickLib::XorCompositeOp;
+  using MagickLib::CopyCyanCompositeOp;
+  using MagickLib::CopyMagentaCompositeOp;
+  using MagickLib::CopyYellowCompositeOp;
+  using MagickLib::CopyBlackCompositeOp;
   
   // Compression algorithms
   using MagickLib::CompressionType;
@@ -286,6 +298,18 @@ namespace Magick
   using MagickLib::FillToBorderMethod;
   using MagickLib::ResetMethod;
 
+  // Arithmetic and bitwise operators
+  using MagickLib::AddQuantumOp;
+  using MagickLib::AndQuantumOp;
+  using MagickLib::DivideQuantumOp;
+  using MagickLib::LShiftQuantumOp;
+  using MagickLib::MultiplyQuantumOp;
+  using MagickLib::OrQuantumOp;
+  using MagickLib::RShiftQuantumOp;
+  using MagickLib::SubtractQuantumOp;
+  using MagickLib::XorQuantumOp;
+  using MagickLib::QuantumOperator;
+
   // Preview types.  Not currently used by Magick++
   using MagickLib::PreviewType;
   using MagickLib::UndefinedPreview;
@@ -357,6 +381,9 @@ namespace Magick
   // IndexPacket type
   using MagickLib::IndexPacket;
 
+  // ImageStatistics type
+  using MagickLib::ImageStatistics;
+
   // StorageType type
   using MagickLib::StorageType;
   using MagickLib::CharPixel;
@@ -394,25 +421,30 @@ namespace Magick
 
 #if defined(MAGICK_IMPLEMENTATION)
   //
-  // ImageMagick symbols used in implementation code
+  // GraphicsMagick symbols used in implementation code
   //
+  using MagickLib::AccessDefinition;
   using MagickLib::AcquireCacheView;
   using MagickLib::AcquireImagePixels;
   using MagickLib::AcquireMemory;
   using MagickLib::AdaptiveThresholdImage;
+  using MagickLib::AddDefinitions;
   using MagickLib::AddNoiseImage;
   using MagickLib::AffineMatrix;
+  using MagickLib::AffineTransformImage;
   using MagickLib::AllocateImage;
   using MagickLib::AnnotateImage;
   using MagickLib::AspectValue;
   using MagickLib::Base64Decode;
   using MagickLib::Base64Encode;
   using MagickLib::BlobError;
+  using MagickLib::BlobFatalError;
   using MagickLib::BlobToImage;
   using MagickLib::BlobWarning;
   using MagickLib::BlurImage;
   using MagickLib::BorderImage;
   using MagickLib::CacheError;
+  using MagickLib::CacheFatalError;
   using MagickLib::CacheWarning;
   using MagickLib::ChannelImage;
   using MagickLib::CharcoalImage;
@@ -422,17 +454,26 @@ namespace Magick
   using MagickLib::CloneImageInfo;
   using MagickLib::CloneQuantizeInfo;
   using MagickLib::CloseCacheView;
+  using MagickLib::CoderError;
+  using MagickLib::CoderFatalError;
+  using MagickLib::CoderWarning;
   using MagickLib::ColorFloodfillImage;
   using MagickLib::ColorizeImage;
   using MagickLib::CompositeImage;
+  using MagickLib::ConfigureError;
+  using MagickLib::ConfigureFatalError;
+  using MagickLib::ConfigureWarning;
   using MagickLib::ConstituteImage;
   using MagickLib::ContrastImage;
   using MagickLib::ConvolveImage;
+  using MagickLib::CopyException;
   using MagickLib::CorruptImageError;
+  using MagickLib::CorruptImageFatalError;
   using MagickLib::CorruptImageWarning;
   using MagickLib::CropImage;
   using MagickLib::CycleColormapImage;
   using MagickLib::DelegateError;
+  using MagickLib::DelegateFatalError;
   using MagickLib::DelegateWarning;
   using MagickLib::DeleteMagickRegistry;
   using MagickLib::DespeckleImage;
@@ -456,6 +497,8 @@ namespace Magick
   using MagickLib::DrawContext;
   using MagickLib::DrawDestroyContext;
   using MagickLib::DrawEllipse;
+  using MagickLib::DrawError;
+  using MagickLib::DrawFatalError;
   using MagickLib::DrawImage;
   using MagickLib::DrawInfo;
   using MagickLib::DrawLine;
@@ -532,13 +575,16 @@ namespace Magick
   using MagickLib::DrawSkewX;
   using MagickLib::DrawSkewY;
   using MagickLib::DrawTranslate;
+  using MagickLib::DrawWarning;
   using MagickLib::EdgeImage;
   using MagickLib::EmbossImage;
   using MagickLib::EnhanceImage;
+  using MagickLib::ExecuteModuleProcess;
   using MagickLib::EqualizeImage;
   using MagickLib::ExceptionInfo;
   using MagickLib::ExceptionType;
   using MagickLib::FileOpenError;
+  using MagickLib::FileOpenFatalError;
   using MagickLib::FileOpenWarning;
   using MagickLib::FlattenImages;
   using MagickLib::FlipImage;
@@ -556,16 +602,19 @@ namespace Magick
   using MagickLib::GetExceptionInfo;
   using MagickLib::GetGeometry;
   using MagickLib::GetImageAttribute;
-  using MagickLib::GetImageAttribute;
   using MagickLib::GetImageBoundingBox;
+  using MagickLib::GetImageChannelDepth;
   using MagickLib::GetImageDepth;
   using MagickLib::GetImageInfo;
   using MagickLib::GetImagePixels;
+  using MagickLib::GetImageProfile;
   using MagickLib::GetImageQuantizeError;
+  using MagickLib::GetImageStatistics;
   using MagickLib::GetImageType;
   using MagickLib::GetIndexes;
   using MagickLib::GetMagickGeometry;
   using MagickLib::GetMagickInfo;
+  using MagickLib::GetMagickInfoArray;
   using MagickLib::GetMagickRegistry;
   using MagickLib::GetNumberColors;
   using MagickLib::GetPageGeometry;
@@ -578,10 +627,13 @@ namespace Magick
   using MagickLib::HeightValue;
   using MagickLib::IdentityAffine;
   using MagickLib::ImageAttribute;
+  using MagickLib::ImageError;
+  using MagickLib::ImageFatalError;
   using MagickLib::ImageInfo;
   using MagickLib::ImageInfoRegistryType;
   using MagickLib::ImageRegistryType;
   using MagickLib::ImageToBlob;
+  using MagickLib::ImageWarning;
   using MagickLib::ImplodeImage;
   using MagickLib::IsEventLogging;
   using MagickLib::IsGeometry;
@@ -599,17 +651,25 @@ namespace Magick
   using MagickLib::MedianFilterImage;
   using MagickLib::MinifyImage;
   using MagickLib::MissingDelegateError;
+  using MagickLib::MissingDelegateFatalError;
   using MagickLib::MissingDelegateWarning;
   using MagickLib::ModulateImage;
+  using MagickLib::ModuleError;
+  using MagickLib::ModuleFatalError;
+  using MagickLib::ModuleWarning;
+  using MagickLib::MonitorError;
+  using MagickLib::MonitorFatalError;
+  using MagickLib::MonitorWarning;
   using MagickLib::MontageInfo;
   using MagickLib::NegateImage;
+  using MagickLib::NoValue;
   using MagickLib::NoiseType;
   using MagickLib::NormalizeImage;
-  using MagickLib::NoValue;
   using MagickLib::OilPaintImage;
   using MagickLib::OpaqueImage;
   using MagickLib::OpenCacheView;
   using MagickLib::OptionError;
+  using MagickLib::OptionFatalError;
   using MagickLib::OptionWarning;
   using MagickLib::PercentValue;
   using MagickLib::PingBlob;
@@ -621,6 +681,8 @@ namespace Magick
   using MagickLib::PushImagePixels;
   using MagickLib::QuantizeImage;
   using MagickLib::QuantizeInfo;
+  using MagickLib::QuantumOperatorImage;
+  using MagickLib::QuantumOperatorRegionImage;
   using MagickLib::QueryColorDatabase;
   using MagickLib::RGBTransformImage;
   using MagickLib::RaiseImage;
@@ -630,8 +692,13 @@ namespace Magick
   using MagickLib::RectangleInfo;
   using MagickLib::ReduceNoiseImage;
   using MagickLib::RegisterMagickInfo;
+  using MagickLib::RegistryError;
+  using MagickLib::RegistryFatalError;
   using MagickLib::RegistryType;
+  using MagickLib::RegistryWarning;
+  using MagickLib::RemoveDefinitions;
   using MagickLib::ResourceLimitError;
+  using MagickLib::ResourceLimitFatalError;
   using MagickLib::ResourceLimitWarning;
   using MagickLib::RollImage;
   using MagickLib::RotateImage;
@@ -643,11 +710,13 @@ namespace Magick
   using MagickLib::SetClientName;
   using MagickLib::SetImage;
   using MagickLib::SetImageAttribute;
+  using MagickLib::SetImageChannelDepth;
   using MagickLib::SetImageClipMask;
   using MagickLib::SetImageDepth;
   using MagickLib::SetImageInfo;
   using MagickLib::SetImageOpacity;
   using MagickLib::SetImagePixels;
+  using MagickLib::SetImageProfile;
   using MagickLib::SetImageType;
   using MagickLib::SetLogEventMask;
   using MagickLib::SetMagickInfo;
@@ -662,6 +731,9 @@ namespace Magick
   using MagickLib::SpreadImage;
   using MagickLib::SteganoImage;
   using MagickLib::StereoImage;
+  using MagickLib::StreamError;
+  using MagickLib::StreamFatalError;
+  using MagickLib::StreamWarning;
   using MagickLib::SwirlImage;
   using MagickLib::SyncCacheView;
   using MagickLib::SyncImage;
@@ -669,10 +741,14 @@ namespace Magick
   using MagickLib::TextureImage;
   using MagickLib::ThresholdImage;
   using MagickLib::ThrowException;
+  using MagickLib::ThrowLoggedException;
   using MagickLib::TransformHSL;
   using MagickLib::TransformImage;
   using MagickLib::TransformRGBImage;
   using MagickLib::TransparentImage;
+  using MagickLib::TypeError;
+  using MagickLib::TypeFatalError;
+  using MagickLib::TypeWarning;
   using MagickLib::UndefinedException;
   using MagickLib::UndefinedRegistryType;
   using MagickLib::UnregisterMagickInfo;
@@ -683,6 +759,7 @@ namespace Magick
   using MagickLib::WriteImage;
   using MagickLib::XNegative;
   using MagickLib::XServerError;
+  using MagickLib::XServerFatalError;
   using MagickLib::XServerWarning;
   using MagickLib::XValue;
   using MagickLib::YNegative;

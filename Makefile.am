@@ -1,4 +1,4 @@
-# Copyright (C) 2003 GraphicsMagick Group
+# Copyright (C) 2003, 2004 GraphicsMagick Group
 # Copyright (C) 2002 ImageMagick Studio
 # Copyright (C) 1999 E. I. du Pont de Nemours and Company
 #
@@ -11,7 +11,7 @@
 #
 
 # Don't require all the GNU mandated files
-AUTOMAKE_OPTIONS = 1.7.2 dist-zip dist-bzip2 foreign
+AUTOMAKE_OPTIONS = 1.8.2 dist-zip dist-bzip2 foreign
 
 PACKAGE_NAME = @PACKAGE_NAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
@@ -22,7 +22,7 @@ MAGICK_PLUS_PLUS=Magick++
 endif # WITH_MAGICK_PLUS_PLUS
 
 # Directories to include in distribution
-DIST_SUBDIRS=ltdl coders filters magick utilities tests Magick++
+DIST_SUBDIRS=ltdl config coders filters magick utilities tests Magick++ wand
 
 if WITH_LTDL
 LTDL=ltdl
@@ -31,9 +31,9 @@ LTDL=
 endif
 
 if WITH_MODULES
-SUBDIRS = $(LTDL) magick coders filters $(MAGICK_PLUS_PLUS) utilities tests
+SUBDIRS = $(LTDL) config magick coders filters wand $(MAGICK_PLUS_PLUS) utilities tests
 else
-SUBDIRS = $(LTDL) coders filters magick $(MAGICK_PLUS_PLUS) utilities tests
+SUBDIRS = $(LTDL) config coders filters magick wand $(MAGICK_PLUS_PLUS) utilities tests
 endif # WITH_MODULES
 
 # Architecture independent data files installed in the package's data directory
@@ -41,13 +41,13 @@ pkgdatadir = @MagickSharePath@
 pkgdata_DATA = Copyright.txt
 
 # Additional files to distribute
-EXTRA_DIST = ChangeLog Copyright.txt GraphicsMagick.spec INSTALL-mac.txt \
+EXTRA_DIST = ChangeLog Copyright.txt INSTALL-mac.txt \
 	INSTALL-unix.txt INSTALL-vms.txt INSTALL-windows.txt TODO.txt \
 	index.html Magickshr.opt Make.com NEWS PLATFORMS.txt \
 	README.txt lndir.sh version.sh winpath.sh
 
 # Non-Automake subdirectories to distribute
-DISTDIRS = guide images locale scenes scripts www PerlMagick
+DISTDIRS = images locale scenes scripts www PerlMagick TclMagick
 dist-hook:
 	( \
 	  builddir=`pwd` ; \
@@ -82,7 +82,7 @@ install-data-html:
 uninstall-data-html:
 	rm -f $(DESTDIR)$(pkgdocdir)/index.html
 	for dir in $(DOCDIRS) ; do \
-	  rm -rf $(DESTDIR)$(pkgdocdir)$$dir ; \
+	  rm -f -r $(DESTDIR)$(pkgdocdir)/$$dir ; \
 	done
 
 # Ensure that version.h at $(srcdir)/magick/version.h is kept up to date.
@@ -147,11 +147,21 @@ $(PERLMAGICK)/$(PERLSTATICNAME): $(PERLMAKEFILE) magick/libGraphicsMagick.la
 all-perl: $(PERLMAGICK)/$(PERLSTATICNAME)
 
 install-exec-perl: $(PERLMAGICK)/$(PERLSTATICNAME)
-	( cd $(PERLMAGICK) && \
-	$(MAKE) -f Makefile.aperl CC='@CC@' inst_perl MAP_TARGET=$(PERLSTATICNAME) )
+	rm -f "$(DESTDIR)$(BIN_DIR)/$(PERLSTATICNAME)"
+	if test "x$(DESTDIR)" = "x" ; then \
+	  ( cd $(PERLMAGICK) && \
+	    $(MAKE) -f Makefile.aperl CC='@CC@' inst_perl MAP_TARGET=$(PERLSTATICNAME) \
+	    INSTALLBIN="$(DESTDIR)$(BIN_DIR)" \
+	  ) ; \
+	else \
+	  ( cd $(PERLMAGICK) && \
+	    $(MAKE) -f Makefile.aperl CC='@CC@' inst_perl MAP_TARGET=$(PERLSTATICNAME) \
+	    INSTALLBIN="$(DESTDIR)$(BIN_DIR)" PREFIX="$(DESTDIR)$(prefix)" \
+	  ) ; \
+	fi
 
 uninstall-exec-perl:
-	rm -f '@BIN_DIR@/$(PERLSTATICNAME)'
+	rm -f '$(DESTDIR)$(BIN_DIR)/$(PERLSTATICNAME)'
 
 check-perl: $(PERLMAGICK)/$(PERLSTATICNAME)
 	cd $(PERLMAGICK) && $(MAKE) -f Makefile.aperl CC='@CC@' test
@@ -161,7 +171,10 @@ endif # WTIH_PERL_DYNAMIC
 
 
 clean-perl: $(PERLMAKEFILE)
-	cd $(PERLMAGICK) && $(MAKE) CC='@CC@' clean && rm -f Makefile.old PerlMagick
+	(cd $(PERLMAGICK) && \
+	$(MAKE) CC='@CC@' clean && \
+	rm -f Makefile.old PerlMagick && \
+	rm -f t/output* t/jng/*_tmp.jng t/*/output* )
 	rm -f perl-sources
 
 distclean-perl: clean-perl
@@ -179,6 +192,7 @@ endif # WITH_PERL
 if WITH_PERL
 # txt2html requires perl.
 TXT2HTMLTARGETS= \
+	$(top_srcdir)/www/AUTHORS.html \
 	$(top_srcdir)/www/Changelog.html \
 	$(top_srcdir)/www/INSTALL-mac.html \
 	$(top_srcdir)/www/INSTALL-unix.html \
@@ -197,7 +211,7 @@ install-exec-local: install-exec-perl
 install-data-local: install-data-html
 
 # Uninstall arch-independent package data
-uninstall-local: uninstall-data-html
+uninstall-local: uninstall-data-html uninstall-exec-perl
 
 # Do a make clean in PerlMagick directory 
 clean-local: clean-perl
@@ -216,17 +230,14 @@ LIBTOOL_DEPS = @LIBTOOL_DEPS@
 libtool: $(LIBTOOL_DEPS)
 	$(SHELL) ./config.status --recheck
 
+
+# Build HTML version of AUTHORS
+$(top_srcdir)/www/AUTHORS.html: $(top_srcdir)/AUTHORS
+	@PERL@ $(top_srcdir)/scripts/txt2html -p 4 -pb 1 -t $(PACKAGE_NAME)' Authors' < $(top_srcdir)/AUTHORS > $(top_srcdir)/www/AUTHORS.html
+
 # Build HTML version of ChangeLog
 $(top_srcdir)/www/Changelog.html: $(top_srcdir)/ChangeLog
 	@PERL@ $(top_srcdir)/scripts/txt2html  -t $(PACKAGE_NAME)' '$(PACKAGE_VERSION)' ChangeLog' < $(top_srcdir)/ChangeLog > $(top_srcdir)/www/Changelog.html
-
-# Build HTML version of news
-$(top_srcdir)/www/NEWS.html: $(top_srcdir)/NEWS
-	@PERL@ $(top_srcdir)/scripts/txt2html -t $(PACKAGE_NAME)' '$(PACKAGE_VERSION)' News' < $(top_srcdir)/NEWS  > $(top_srcdir)/www/NEWS.html
-
-# Build HTML version of README
-$(top_srcdir)/www/README.html: $(top_srcdir)/README.txt
-	@PERL@ $(top_srcdir)/scripts/txt2html -p 4 -pb 1 -t $(PACKAGE_NAME)' Install README' < $(top_srcdir)/README.txt > $(top_srcdir)/www/README.html
 
 # Build HTML version of INSTALL-mac.txt
 $(top_srcdir)/www/INSTALL-mac.html: $(top_srcdir)/INSTALL-unix.txt
@@ -244,5 +255,77 @@ $(top_srcdir)/www/INSTALL-vms.html: $(top_srcdir)/INSTALL-vms.txt
 $(top_srcdir)/www/INSTALL-windows.html: $(top_srcdir)/INSTALL-windows.txt
 	@PERL@ $(top_srcdir)/scripts/txt2html -s 55 -p 4 -pb 1 -t $(PACKAGE_NAME)' Windows Installation' < $(top_srcdir)/INSTALL-windows.txt > $(top_srcdir)/www/INSTALL-windows.html
 
+# Build HTML version of news
+$(top_srcdir)/www/NEWS.html: $(top_srcdir)/NEWS
+	@PERL@ $(top_srcdir)/scripts/txt2html -t $(PACKAGE_NAME)' '$(PACKAGE_VERSION)' News' < $(top_srcdir)/NEWS  > $(top_srcdir)/www/NEWS.html
+
+# Build HTML version of README
+$(top_srcdir)/www/README.html: $(top_srcdir)/README.txt
+	@PERL@ $(top_srcdir)/scripts/txt2html -p 4 -pb 1 -t $(PACKAGE_NAME)' Install README' < $(top_srcdir)/README.txt > $(top_srcdir)/www/README.html
+
 format_c_api_docs:
 	@PERL@ $(top_srcdir)/scripts/format_c_api_docs -format html --srcdir $(top_srcdir)/magick --outdir $(top_srcdir)/www/api
+
+#
+# Build a Windows source Zip-ball
+#
+ZIP_FILES= \
+	acinclude.m4 configure.ac aclocal.m4 GraphicsMagick.spec.in \
+	Makefile.am Makefile.in rungm.sh.in configure $(EXTRA_DIST) \
+	 BCBMagick CVS CVSROOT Magick++ PerlMagick TclMagick \
+	VisualMagick bzlib coders config contrib doc filters fpx images \
+	jbig jp2 jpeg lcms libxml licenses locale ltdl magick png scenes scripts \
+	tests tiff ttf utilities wand win2k wmf www xlib zlib
+DIST_WINDOWS_SRC_ZIP=$(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-windows.zip
+$(DIST_WINDOWS_SRC_ZIP) windows-src:
+	rm -f $(DIST_WINDOWS_SRC_ZIP)
+	builddir=`pwd` ; cd $(top_srcdir) && zip -r -9 -q $$builddir/$(DIST_WINDOWS_SRC_ZIP) $(ZIP_FILES) -x '*~' -x '*.o' -x autom4te.cache -x CVS -x '*.so' -x '.libs' -x '.deps' -x '.#*' -x core -x '*.core'
+
+#
+# RPM build support
+#
+if HAS_RPM
+
+DIST_ARCHIVE_SRPM=$(distdir)-1.src.rpm
+PHONY: srpm
+$(DIST_ARCHIVE_SRPM) srpm: $(distdir).tar.bz2
+	rm -f $(DIST_ARCHIVE_SRPM)
+	$(RPM) --define="_sourcedir `pwd`" --define="_srcrpmdir `pwd`" --nodeps -bs GraphicsMagick.spec
+	@echo ==============================================================
+	@echo $(DIST_ARCHIVE_SRPM) is ready for distribution.
+	@echo ==============================================================
+
+RPMDIR=redhat
+RPMARCH=i386
+
+DIST_ARCHIVE_RPM= \
+	$(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-1.$(RPMARCH).rpm \
+	$(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-c++-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-1.$(RPMARCH).rpm \
+	$(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-c++-devel-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-1.$(RPMARCH).rpm \
+	$(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-devel-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-1.$(RPMARCH).rpm \
+	$(RPMDIR)/$(RPMARCH)/$(PACKAGE_NAME)-perl-$(PACKAGE_VERSION)$(PACKAGE_VERSION_ADDENDUM)-1.$(RPMARCH).rpm
+
+PHONY: rpm
+rpm:
+	rm -rf $(RPMDIR)
+	mkdir $(RPMDIR)
+	mkdir $(RPMDIR)/BUILD
+	mkdir $(RPMDIR)/RPMS
+	$(MAKE) distcheck
+	$(RPM) --define="_sourcedir `pwd`" --define="_rpmdir `pwd`/$(RPMDIR)/RPMS" --define="_builddir `pwd`/$(RPMDIR)/BUILD" --nodeps -bb GraphicsMagick.spec
+	rm -rf rpmbuild
+	@echo ==============================================================
+	@echo $(DIST_ARCHIVE_RPM) is ready for distribution.
+	@echo ==============================================================
+
+else
+DIST_ARCHIVE_RPM=
+endif # HAS_RPM
+
+#
+# Build a validated snapshot release and move to the snapshots directory.
+#
+snapshot: distcheck
+	$(MAKE) $(DIST_ARCHIVE_SRPM)
+	$(MAKE) $(DIST_WINDOWS_SRC_ZIP)
+	mv $(DIST_ARCHIVES) $(DIST_WINDOWS_SRC_ZIP) $(DIST_ARCHIVE_SRPM) /ftp/pub/GraphicsMagick/snapshots/

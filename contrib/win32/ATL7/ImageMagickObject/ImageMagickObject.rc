@@ -95,6 +95,7 @@ MAGIC.MGK               IMAGEMAGICK DISCARDABLE "magic.mgk"
 MODULES.MGK             IMAGEMAGICK DISCARDABLE "modules.mgk"
 TYPE.MGK                IMAGEMAGICK DISCARDABLE "type.mgk"
 TYPE-GHOSTSCRIPT.MGK    IMAGEMAGICK DISCARDABLE "type-ghostscript.mgk"
+LOG.MGK                 IMAGEMAGICK DISCARDABLE "log.mgk"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -113,5 +114,6 @@ END
 
 #ifndef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
+1 11 gm_messages.bin
 #endif    // not APSTUDIO_INVOKED
 

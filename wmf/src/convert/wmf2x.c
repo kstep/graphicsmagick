@@ -64,6 +64,7 @@ int wmf2x_draw (PlotData* pdata)
 {	int status = 0;
 	int redraw;
 	int setmask;
+	int length;
 
 	float wmf_width  = 0;
 	float wmf_height = 0;
@@ -75,6 +76,8 @@ int wmf2x_draw (PlotData* pdata)
 
 	unsigned int root_width  = 800; /* Unfortunately, need these before we open the display... */
 	unsigned int root_height = 600;
+	unsigned int disp_width  = 0;
+	unsigned int disp_height = 0;
 
 	unsigned long flags;
 
@@ -121,7 +124,20 @@ int wmf2x_draw (PlotData* pdata)
 	ddata->window_name = pdata->wmf_filename;
 	ddata->icon_name = icon_name;
 
+	length = strlen (pdata->wmf_filename);
+#if defined (HAVE_EXPAT) || defined (HAVE_LIBXML2)
+	if (length > 4)
+	{
+		if ((strcmp (pdata->wmf_filename + length - 4, ".xml") == 0) ||
+		    (strcmp (pdata->wmf_filename + length - 4, ".XML") == 0))
+		{	err = wmf_wmfxml_import (API,pdata->wmf_filename);
+		}
+		else err = wmf_file_open (API,pdata->wmf_filename);
+	}
+	else err = wmf_file_open (API,pdata->wmf_filename);
+#else
 	err = wmf_file_open (API,pdata->wmf_filename);
+#endif
 	status = explicit_wmf_error ("wmf_file_open",err);
 
 	if (status)
@@ -141,7 +157,10 @@ int wmf2x_draw (PlotData* pdata)
  */
 	ddata->bbox = pdata->options.bbox;
 
-	wmf_size (API,&wmf_width,&wmf_height);
+	wmf_display_size (API,&disp_width,&disp_height,72,72);
+
+	wmf_width  = (float) disp_width;
+	wmf_height = (float) disp_height;
 
 	if (pdata->options.x_width > 0)
 	{	wmf_width  = pdata->options.x_width;

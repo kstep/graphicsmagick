@@ -37,6 +37,7 @@
   Include declarations.
 */
 #include "magick/studio.h"
+#include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/utility.h"
 #include "magick/version.h"
@@ -94,168 +95,7 @@ MagickExport void closedir(DIR *entry)
 {
   assert(entry != (DIR *) NULL);
   FindClose(entry->hSearch);
-  LiberateMemory((void **) &entry);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   D e b u g S t r i n g                                                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  Method DebugString formats and sends a prtinf like message to the NT
-%  debug trace API, a file, or to the Event Log
-%
-%  The format of the DebugString method is:
-%
-%      void DebugString(const char *format,...)
-%
-%  A description of each parameter follows.
-%
-%   o  format:  A string describing the format to use to write the
-%      remaining arguments.
-%
-*/
-
-#define IM_DEBUG_WIN32  1
-#define IM_DEBUG_FILE   2
-#define IM_DEBUG_EVENT  4
-
-static CRITICAL_SECTION
-  critical_section;
-
-static unsigned int
-  critical_section_exists = False;
-
-static int
-  tracings_level = 0;
-
-static unsigned int
-  tracings_sequence = 0,
-  tracings_counter = 0;
-
-static char
-  tracings_filepath[MaxTextExtent] =
-    "C:\\";
-
-static TimerInfo
-  tracings_timer;
-
-FILE
-  *trace_file = (FILE *) NULL;
-
-MagickExport void DestroyTracingCriticalSection(void)
-{
-  if (critical_section_exists)
-    DeleteCriticalSection(&critical_section);
-}
-
-MagickExport void InitializeTracingCriticalSection(void)
-{
-  char
-    *debug = getenv("MAGICK_DEBUG");
-
-  if (debug)
-    tracings_level |= atoi(debug);
-  GetTimerInfo(&tracings_timer);
-  if (!critical_section_exists)
-    InitializeCriticalSection(&critical_section);
-  critical_section_exists=True;
-}
-
-static void EnterTracingCriticalSection(void)
-{
-  if (critical_section_exists)
-    EnterCriticalSection(&critical_section);
-}
-
-static void LeaveTracingCriticalSection(void)
-{
-  if (critical_section_exists)
-    LeaveCriticalSection(&critical_section);
-}
-
-MagickExport void DebugLevel(const int level)
-{
-  if (critical_section_exists)
-    {
-      EnterTracingCriticalSection();
-      if (level > 0)
-        tracings_level = level;
-      LeaveTracingCriticalSection();
-    }
-}
-
-MagickExport void DebugFilePath(const char *s)
-{
-  if (critical_section_exists)
-    {
-      EnterTracingCriticalSection();
-      (void) strncpy(tracings_filepath,s,MaxTextExtent-1);
-      LeaveTracingCriticalSection();
-    }
-}
-
-MagickExport void DebugString(char *format,...)
-{
-  va_list
-    operands;
-
-  char
-    string[MaxTextExtent],
-    trace_name[MaxTextExtent];
-
-  va_start(operands, format);
-
-  if (tracings_level <= 0)
-    return;
-
-  if (critical_section_exists)
-    EnterTracingCriticalSection();
-
-  (void) _snprintf(string,MaxTextExtent-1,"%08d - %010.1fu  ",
-    (int) GetCurrentThreadId(), GetElapsedTime(&tracings_timer));
-  (void) ContinueTimer(&tracings_timer);
-  (void) _vsnprintf(&string[24],MaxTextExtent-25,format,operands);
-
-  if (tracings_level & IM_DEBUG_WIN32)
-    OutputDebugString(string);
-  if (tracings_level & IM_DEBUG_FILE)
-    {
-      /* we send the data to files, and keep the number of items
-         down to less the 0x2000 to that they are managable */
-      if (trace_file == (FILE *) NULL)
-        {
-          tracings_counter=0;
-          (void) _snprintf(trace_name, MaxTextExtent-1,
-            "%sIM_%08X.log",tracings_filepath,tracings_sequence);
-          trace_file=fopen(trace_name,"wS");
-        }
-      if (trace_file != (FILE *) NULL)
-        {
-          fputs(string, trace_file);
-          fflush(trace_file);
-          tracings_counter++;
-          if (tracings_counter > 0x2000)
-            {
-              fclose(trace_file);
-              trace_file = (FILE *) NULL;
-              tracings_sequence++;
-            }
-        }
-    }
-  if (tracings_level & IM_DEBUG_EVENT)
-    {
-    }
-
-  if (critical_section_exists)
-    LeaveTracingCriticalSection();
-  va_end(operands);
+  MagickFreeMemory(entry);
 }
 
 /*
@@ -428,7 +268,7 @@ MagickExport int ftruncate(int filedes, off_t length)
   int
     status;
 
-  MagickOffset
+  magick_off_t
     current_pos;
 
   status=0;
@@ -443,7 +283,11 @@ MagickExport int ftruncate(int filedes, off_t length)
     A way to support more than 2GB is to use SetFilePointerEx()
     to set the file position followed by SetEndOfFile() to set
     the file EOF to the current file position. This approach does
-    not ensure that bytes in the extended portion are null
+    not ensure that bytes in the extended portion are null.
+
+    The CreateFileMapping() function may also be used to extend a
+    file's length. The filler byte values are not defined in the
+    documentation.
   */ 
   status=chsize(filedes,length);
 
@@ -557,7 +401,7 @@ const char *lt_dlerror(void)
   error=NTGetLastError();
   if (error)
     strncpy(last_error,error,MaxTextExtent-1);
-  LiberateMemory((void **) &error);
+  MagickFreeMemory(error);
   return (last_error);
 }
 
@@ -714,7 +558,7 @@ int lt_dlsetsearchpath(const char *path)
 {
   if (lt_slsearchpath)
     {
-      (void) LiberateMemory((void **) &lt_slsearchpath);
+      MagickFreeMemory(lt_slsearchpath);
       lt_slsearchpath=(char *) NULL;
     }
   if (path != (char *) NULL)
@@ -770,63 +614,130 @@ void *lt_dlsym(void *h,const char *s)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method mmap emulates the Unix method of the same name.
+%  Method mmap emulates the Unix method of the same name. Supports PROT_READ,
+%  PROT_WRITE protection options, and MAP_SHARED, MAP_PRIVATE, MAP_ANON flags.
+%  Passing a file descriptor of -1 along with the MAP_ANON flag option returns
+%  a memory allocation from the system page file with the specified allocated
+%  length.
 %
 %  The format of the mmap method is:
 %
-%    MagickExport void *mmap(char *address,size_t length,int protection,
-%      int access,int file,off_t offset)
+%    MagickExport void *mmap(char *address, size_t length, int protection,
+%      int flags, int file, magick_off_t offset)
 %
 %
 */
-MagickExport void *mmap(char *address,size_t length,int protection,int access,
-  int file,off_t offset)
+MagickExport void *mmap(char *address,size_t length,int protection,int flags,
+  int file,magick_off_t offset)
 {
   void
     *map;
 
   HANDLE
-    handle;
+    file_handle,
+    shmem_handle;
+
+  DWORD
+    length_low,
+    length_high,
+    offset_low,
+    offset_high;
+
+  DWORD
+    access_mode=0,
+    protection_mode=0;
 
   map=(void *) NULL;
-  handle=INVALID_HANDLE_VALUE;
-  switch (protection)
-  {
-    case PROT_READ:
-    default:
+  shmem_handle=INVALID_HANDLE_VALUE;
+  file_handle=INVALID_HANDLE_VALUE;
+
+  offset_low=(DWORD) (offset & 0xFFFFFFFFUL);
+  offset_high=(DWORD) ((offset >> 32) & 0xFFFFFFFFUL);
+
+  length_low=(DWORD) (length & 0xFFFFFFFFUL);
+  length_high=(DWORD) ((((magick_off_t) length) >> 32) & 0xFFFFFFFFUL);
+
+  if (protection & PROT_WRITE)
     {
-      handle=CreateFileMapping((HANDLE) _get_osfhandle(file),0,PAGE_READONLY,0,
-        length,0);
-      if (!handle)
-        break;
-      map=(void *) MapViewOfFile(handle,FILE_MAP_READ,0,offset,length);
-      CloseHandle(handle);
-      break;
+      access_mode=FILE_MAP_WRITE;
+      if (flags & MAP_PRIVATE)
+        {
+          // Copy on write (updates are private)
+          access_mode=FILE_MAP_COPY;
+          protection_mode=PAGE_WRITECOPY;
+        }
+      else
+        {
+          // Updates are shared
+          protection_mode=PAGE_READWRITE;
+        }
     }
-    case PROT_WRITE:
+  else if (protection & PROT_READ)
     {
-      handle=CreateFileMapping((HANDLE) _get_osfhandle(file),0,PAGE_READWRITE,0,
-        length,0);
-      if (!handle)
-        break;
-      map=(void *) MapViewOfFile(handle,FILE_MAP_WRITE,0,offset,length);
-      CloseHandle(handle);
-      break;
+      access_mode=FILE_MAP_READ;
+      protection_mode=PAGE_READONLY;
     }
-    case PROT_READWRITE:
+
+  if ((file == -1) && (flags & MAP_ANON))
+    // Similar to using mmap on /dev/zero to allocate memory from paging area.
+    file_handle=INVALID_HANDLE_VALUE;
+  else
+    file_handle=(HANDLE) _get_osfhandle(file);
+
+  shmem_handle=CreateFileMapping(file_handle,0,protection_mode,length_high,
+                                 length_low,0);
+  if (shmem_handle)
     {
-      handle=CreateFileMapping((HANDLE) _get_osfhandle(file),0,PAGE_READWRITE,0,
-        length,0);
-      if (!handle)
-        break;
-      map=(void *) MapViewOfFile(handle,FILE_MAP_ALL_ACCESS,0,offset,length);
-      CloseHandle(handle);
-      break;
+      map=(void *) MapViewOfFile(shmem_handle,access_mode,offset_high,
+                                 offset_low,length);
+      CloseHandle(shmem_handle);
     }
-  }
+
   if (map == (void *) NULL)
     return((void *) MAP_FAILED);
   return((void *) ((char *) map));
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++  m s y n c                                                                  %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method msync emulates the Unix msync function except that the flags
+%  argument is ignored. Windows page sync behaves mostly like MS_SYNC
+%  except that if the file is accessed over a network, the updates are not
+%  fully synchronous unless a special flag is provided when the file is
+%  opened.  It is not clear if flushing a range invalidates copy pages
+%  like Unix msync does.
+%
+%  The format of the msync method is:
+%
+%      int msync(void *addr, size_t len, int flags)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method munmap returns 0 on success; otherwise, it
+%      returns -1 and sets errno to indicate the error.
+%
+%    o addr: The address of the binary large object.
+%
+%    o len: The length of the binary large object.
+%
+%    o flags: Option flags (ignored for Windows)
+%
+%
+*/
+MagickExport int msync(void *addr, size_t len, int flags)
+{
+  if (!FlushViewOfFile(addr,len))
+    return(-1);
+  return(0);
 }
 
 /*
@@ -946,17 +857,17 @@ MagickExport void NTErrorHandler(const ExceptionType error,const char *reason,
     }
   if ((description != (char *) NULL) && errno)
     FormatString(buffer,"%.1024s: %.1024s (%.1024s) [%.1024s].\n",
-      SetClientName((char *) NULL),reason,description,strerror(errno));
+      GetClientName(),reason,description,strerror(errno));
   else
     if (description != (char *) NULL)
       FormatString(buffer,"%.1024s: %.1024s (%.1024s).\n",
-        SetClientName((char *) NULL),reason,description);
+        GetClientName(),reason,description);
     else
       if (errno)
         FormatString(buffer,"%.1024s: %.1024s [%.1024s].\n",
-          SetClientName((char *) NULL),reason,strerror(errno));
+          GetClientName(),reason,strerror(errno));
       else
-        FormatString(buffer,"%.1024s: %.1024s.\n",SetClientName((char *) NULL),
+        FormatString(buffer,"%.1024s: %.1024s.\n",GetClientName(),
           reason);
   (void) MessageBox(NULL,buffer,"GraphicsMagick Exception",MB_OK | MB_TASKMODAL |
     MB_SETFOREGROUND | MB_ICONEXCLAMATION);
@@ -1528,11 +1439,16 @@ MagickExport int NTGhostscriptLoadDLL(void)
 
   memset((void*)&gs_vectors, 0, sizeof(GhostscriptVectors));
 
-  gs_vectors.exit=(int (MagickDLLCall *)(gs_main_instance*))lt_dlsym(gs_dll_handle,"gsapi_exit");
-  gs_vectors.init_with_args=(int (MagickDLLCall *)(gs_main_instance *, int, char **))(lt_dlsym(gs_dll_handle,"gsapi_init_with_args"));
-  gs_vectors.new_instance=(int (MagickDLLCall *)(gs_main_instance **, void *))(lt_dlsym(gs_dll_handle,"gsapi_new_instance"));
-  gs_vectors.run_string=(int (MagickDLLCall *)(gs_main_instance *, const char *, int, int *))(lt_dlsym(gs_dll_handle,"gsapi_run_string"));
-  gs_vectors.delete_instance=(void (MagickDLLCall *)(gs_main_instance *))(lt_dlsym(gs_dll_handle,"gsapi_delete_instance"));
+  gs_vectors.exit=(int (MagickDLLCall *)(gs_main_instance*))
+    lt_dlsym(gs_dll_handle,"gsapi_exit");
+  gs_vectors.init_with_args=(int (MagickDLLCall *)(gs_main_instance *, int, char **))
+    (lt_dlsym(gs_dll_handle,"gsapi_init_with_args"));
+  gs_vectors.new_instance=(int (MagickDLLCall *)(gs_main_instance **, void *))
+    (lt_dlsym(gs_dll_handle,"gsapi_new_instance"));
+  gs_vectors.run_string=(int (MagickDLLCall *)(gs_main_instance *, const char *, int, int *))
+    (lt_dlsym(gs_dll_handle,"gsapi_run_string"));
+  gs_vectors.delete_instance=(void (MagickDLLCall *)(gs_main_instance *))
+    (lt_dlsym(gs_dll_handle,"gsapi_delete_instance"));
 
   if ((gs_vectors.exit==NULL) ||
       (gs_vectors.init_with_args==NULL) ||
@@ -1587,80 +1503,90 @@ MagickExport int NTGhostscriptUnLoadDLL(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method NTRegistryKeyLookup returns GraphicsMagick installation path settings
-%  stored in the Windows Registry. Path settings are specific to the installed
-%  GraphicsMagick version so that multiple Graphics Magick installations may
+%  Method NTRegistryKeyLookup returns package installation path settings
+%  stored in the Windows Registry. Path settings are specific to the
+%  installed package version so that multiple package installations may
 %  coexist.
 %
-%  Values are stored in the registry under a path path similar to
-%  "HKEY_LOCAL_MACHINE/SOFTWARE/GraphicsMagick/1.0.0/LibPath".
+%  Values are stored in the registry under a base path path similar to
+%  "HKEY_LOCAL_MACHINE/SOFTWARE\GraphicsMagick\1.0\Q:8". The provided subkey
+%  is appended to this base path to form the full key.
 %
 %  The format of the NTRegistryKeyLookup method is:
 %
-%      char *NTRegistryKeyLookup(const char *key)
+%      char *NTRegistryKeyLookup(const char *subkey)
 %
 %  A description of each parameter follows:
 %
+%    o return: Returns an allocated string containing the value of the key.
+%           This allocation should be freed by the user once it is no longer
+%           needed.
+%
 %    o key: Specifies a string that identifies the registry object.
-%           Currently supported keys include: "ApplicationDefaultsPath",
-%           "BinPath", "LibPath", "ModulesPath", and "SharePath".
+%           Currently supported sub-keys include: "BinPath", "ConfigurePath",
+%           "LibPath", "CoderModulesPath", "FilterModulesPath", "SharePath".
 %
 */
-MagickExport char *NTRegistryKeyLookup(const char *key)
+MagickExport char *NTRegistryKeyLookup(const char *subkey)
 {
   static HKEY
     reg_key = (HKEY) INVALID_HANDLE_VALUE;
 
-  char
-    *dst;
+  /*
+    Look-up base-key for first access only
+  */
+  if (reg_key == (HKEY) INVALID_HANDLE_VALUE)
+    {
+      char
+        package_key[MaxTextExtent];
 
-  DWORD
-    size,
-    type;
+      LONG
+        res;
+      
+      FormatString(package_key,"SOFTWARE\\%s\\%s\\Q:%d", MagickPackageName,
+                   MagickLibVersionText,QuantumDepth);
 
-  LONG
-    res;
+      res = RegOpenKeyExA (HKEY_LOCAL_MACHINE, package_key, 0, KEY_READ,
+                           &reg_key);
 
-  /* Can probably append MagickLibVersionText to string for efficiency */
-  if (reg_key == (HKEY) INVALID_HANDLE_VALUE) {
-    res = RegOpenKeyExA (HKEY_LOCAL_MACHINE, "SOFTWARE\\GraphicsMagick", 0, KEY_READ, &reg_key);
-
-    if (res == ERROR_SUCCESS)
-      res = RegOpenKeyExA (reg_key, MagickLibVersionText, 0, KEY_READ, &reg_key);
-
-    if (res == ERROR_SUCCESS)
-      {
-#if QuantumDepth == 8
-        res = RegOpenKeyExA (reg_key, "Q:8", 0, KEY_READ, &reg_key);
-#elif QuantumDepth == 16
-        res = RegOpenKeyExA (reg_key, "Q:16", 0, KEY_READ, &reg_key);
-#elif QuantumDepth == 32
-        res = RegOpenKeyExA (reg_key, "Q:32", 0, KEY_READ, &reg_key);
-#else
-# error "Specified value of QuantumDepth is not supported"
-#endif
-      }
-
-    if (res != ERROR_SUCCESS) {
-      reg_key = (HKEY) INVALID_HANDLE_VALUE;
-      return 0;
+      if (res != ERROR_SUCCESS)
+        {
+          reg_key = (HKEY) INVALID_HANDLE_VALUE;
+          return 0;
+        }
     }
+
+  /*
+    Look-up sub-key
+  */
+  {
+    char
+      *dest;
+    
+    DWORD
+      size,
+      type;
+
+    LONG
+      res;
+    
+    size = 32;
+    dest = MagickAllocateMemory(char *,size);
+    
+    res = RegQueryValueExA (reg_key, subkey, 0, &type, dest, &size);
+    if (res == ERROR_MORE_DATA && type == REG_SZ)
+      {
+        MagickReallocMemory(dest,size);
+        res = RegQueryValueExA (reg_key, subkey, 0, &type, dest, &size);
+      }
+    
+    if (type != REG_SZ || res != ERROR_SUCCESS)
+      {
+        MagickFreeMemory(dest);
+      }
+    
+    return dest;
   }
-
-  size = 32;
-  dst = (char *) AcquireMemory(size);
-
-  res = RegQueryValueExA (reg_key, key, 0, &type, dst, &size);
-  if (res == ERROR_MORE_DATA && type == REG_SZ) {
-    ReacquireMemory((void**) &dst,size);
-    res = RegQueryValueExA (reg_key, key, 0, &type, dst, &size);
-  }
-
-  if (type != REG_SZ || res != ERROR_SUCCESS) {
-    LiberateMemory((void**) &dst);
-  }
-
-  return dst;
 }
 
 /*
@@ -1711,35 +1637,54 @@ MagickExport unsigned char *NTResourceToBlob(const char *id)
     *value;
 
   assert(id != (const char *) NULL);
-  FormatString(directory,"%.1024s%.1024s%.1024s",SetClientPath((char *) NULL),
-    DirectorySeparator,SetClientName((char *) NULL));
+  FormatString(directory,"%.1024s%.1024s%.1024s",GetClientPath(),
+    DirectorySeparator,GetClientFilename());
   if (IsAccessible(directory))
     handle=GetModuleHandle(directory);
   else
     handle=GetModuleHandle(0);
   if (!handle)
     return((char *) NULL);
+  /*
+    Locate a resource matching the specified type and name in the
+    specified module.
+  */
   resource=FindResource(handle,id,"IMAGEMAGICK");
   if (!resource)
+  {
+    (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+      "Tried: windows resource \"%.1024s\"",id);
     return((char *) NULL);
+  }
+  (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
+    "Found: windows resource \"%.1024s\"",id);
+  /*
+    Load resource into global memory.
+  */
   global=LoadResource(handle,resource);
   if (!global)
     return((char *) NULL);
+  /*
+    Obtain the size (in bytes) of the specified resource.
+  */
   length=SizeofResource(handle,resource);
+  /*
+    Lock the resource in memory.
+  */
   value=(unsigned char *) LockResource(global);
   if (!value)
     {
-      FreeResource(global);
+      FreeResource(global); /* Obsolete 16 bit API */
       return((char *) NULL);
     }
-  blob=(unsigned char *) AcquireMemory(length+1);
+  blob=MagickAllocateMemory(unsigned char *,length+1);
   if (blob != (unsigned char *) NULL)
     {
       (void) memcpy(blob,value,length);
       blob[length]='\0';
     }
-  UnlockResource(global);
-  FreeResource(global);
+  UnlockResource(global); /* Obsolete 16 bit API with no replacement */
+  FreeResource(global); /* Obsolete 16 bit API */
   return(blob);
 }
 
@@ -1808,7 +1753,8 @@ MagickExport int NTSystemComman(const char *command)
     return(-1);
   if (background_process)
     return(status == 0);
-  status=WaitForSingleObject(process_info.hProcess,INFINITE);
+  status=MsgWaitForMultipleObjects(1, &process_info.hProcess, TRUE, INFINITE,
+                                   QS_ALLEVENTS);
   if (status != WAIT_OBJECT_0)
     return(status);
   status=GetExitCodeProcess(process_info.hProcess,&child_status);
@@ -1919,10 +1865,10 @@ MagickExport void NTWarningHandler(const ExceptionType warning,
     return;
   if (description == (char *) NULL)
     FormatString(buffer,"%.1024s: %.1024s.\n",
-      SetClientName((char *) NULL),reason);
+      GetClientName(),reason);
   else
     FormatString(buffer,"%.1024s: %.1024s (%.1024s).\n",
-      SetClientName((char *) NULL),reason,description);
+      GetClientName(),reason,description);
   (void) MessageBox(NULL,buffer,"GraphicsMagick Warning",MB_OK | MB_TASKMODAL |
     MB_SETFOREGROUND | MB_ICONINFORMATION);
 }
@@ -1962,7 +1908,7 @@ MagickExport DIR *opendir(char *path)
   assert(path != (char *) NULL);
   (void) strncpy(file_specification,path,MaxTextExtent-1);
   (void) strcat(file_specification,DirectorySeparator);
-  entry=(DIR *) AcquireMemory(sizeof(DIR));
+  entry=MagickAllocateMemory(DIR *,sizeof(DIR));
   if (entry != (DIR *) NULL)
     {
       entry->firsttime=TRUE;
@@ -1974,7 +1920,7 @@ MagickExport DIR *opendir(char *path)
       entry->hSearch=FindFirstFile(file_specification,&entry->Win32FindData);
       if (entry->hSearch == INVALID_HANDLE_VALUE)
         {
-          LiberateMemory((void **) &entry);
+          MagickFreeMemory(entry);
           return (DIR *)NULL;
         }
     }

@@ -1,0 +1,21 @@
+			      TclMagick
+			      =========
+
+TclMagick install instructions.
+
+Installing TclMagick in a separate directory from ImageMagick or
+GraphicsMagick.
+
+1) Run the ./configure script.  The following arguments are
+   recommended:
+
+./configure \
+  --with-tcl=/usr/lib/tcl8.4/ \
+  --with-tk=/usr/lib/tk8.4/ \
+  --with-magick=/home/davidw/install/bin/GraphicsMagickWand-config \
+
+--with-tcl tells it where to find Tcl, and --with-tk the Tk toolkit.
+The --with-magick option is necessary to tell the configure script where
+to get information about the GraphicsMagick or ImageMagick install.
+
+2) Run make - this should build the libraries.

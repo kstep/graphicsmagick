@@ -1,11 +1,11 @@
-.TH gm 1 "Date: 2003/01/01 01:00:00" "GraphicsMagick"
+.TH gm 1 "Date: 2003/01/01 01:00:00" "ImageMagick"
 .TP
 .in 15
 .in 15
 .in 20
 .SH NAME
 
-gm - GraphicsMagick commandline utilities to create, edit, or convert images
+gm - GraphicsMagick command-line utilities to create, edit, or convert images
 
 .SH SYNOPSIS
 
@@ -13,16 +13,16 @@ gm - GraphicsMagick commandline utilities to create, edit, or convert images
 \fIoptions ...\fP \fB]\fP \fIfile ...\fP \fB]\fP
 
 
-\fBgm composite\fP \fB[\fP \fIoptions ...\fP \fB]\fP \fIimage composite\fP
-\fB[\fP \fImask\fP \fB]\fP \fIcomposited\fP
+\fBgm composite\fP \fB[\fP \fIoptions ...\fP \fB]\fP \fIchange-image base-image\fP
+\fB[\fP \fImask-image\fP \fB]\fP \fIoutput-image\fP
 
 
 \fBgm conjure\fP \fB[\fP \fIoptions\fP \fB]\fP \fIscript.msl\fP
 \fB[ [\fP \fIoptions\fP \fB]\fP \fIscript.msl\fP \fB]\fP
 
 
-\fBgm convert\fP \fB[ [\fP \fIoptions ...\fP \fB] [\fP \fIinput_file ...\fP
-\fB]\fP \fI...\fP \fB[\fP \fIoutput_file\fP \fB] ]\fP
+\fBgm convert\fP \fB[ [\fP \fIoptions ...\fP \fB] [\fP \fIinput-file ...\fP
+\fB]\fP \fI...\fP \fB[\fP \fIoutput-file\fP \fB] ]\fP
 
 
 \fBgm display\fP \fB[\fP \fIoptions ...\fP \fB]\fP \fIfile ...\fP
@@ -39,17 +39,17 @@ gm - GraphicsMagick commandline utilities to create, edit, or convert images
 
 
 \fBgm montage\fP \fB[\fP \fIoptions ...\fP \fB]\fP \fIfile\fP \fB[ [\fP
-\fIoptions ...\fP \fB]\fP \fIfile ...\fP \fB]\fP \fIoutput_file\fP
+\fIoptions ...\fP \fB]\fP \fIfile ...\fP \fB]\fP \fIoutput-file\fP
 
 .SH DESCRIPTION
 
-GraphicsMagick's \fBgm\fP provides a suite of commandline utilities for
+GraphicsMagick's \fBgm\fP provides a suite of command-line utilities for
 creating,
 converting, editing, and displaying images:
 
 \fBGm display\fP
 is a machine architecture independent
-image processing and display program. It can display an image on any workstation
+image processing and display facility. It can display an image on any workstation
 display running an \fIX\fP server.
 
 \fBGm import\fP
@@ -64,7 +64,8 @@ of the image optionally appearing just below the individual tile.
 
 \fBGm convert\fP
 converts an input file using one image
-format to an output file with a differing image format.
+format to an output file with the same or differing image format while applying
+an arbitrary number of image transformations.
 
 \fBGm mogrify\fP
 transforms an image or a sequence of
@@ -80,7 +81,7 @@ of one or more image files. It will also report if an image is incomplete
 or corrupt.
 
 \fBGm composite\fP
-composites images to create new images.
+composites images (blends or merges images together) to create new images.
 
 \fBGm conjure\fP
 interprets and executes scripts in
@@ -150,7 +151,6 @@ The \fBGraphicsMagick\fP utilities recognize the following image formats:
  o  ICM       *rw- ICC Color Profile
  o  ICO       *r-- Microsoft icon
  o  ICON      *r-- Microsoft icon
- o  IMPLICIT  *--- 
  o  IPTC      *rw- IPTC Newsphoto
  o  JBG       *rw+ Joint Bi-level Image experts Group
                    interchange format
@@ -287,7 +287,7 @@ is compiled in 16-bit mode or in 32-bit mode. Here, the raw data
 is expected to be stored two or four
 bytes per pixel, respectively, in most-significant-byte-first order.
 You can tell if \fBgm\fP was compiled in 16-bit mode by typing
-"gm convert" without any options, and looking for "Q:16" in the first line of
+"gm version" without any options, and looking for "Q:16" in the first line of
 output.
 .SH FILES AND FORMATS
 
@@ -383,36 +383,11 @@ behavior.
 
 .TP
 .B "-affine \fI<matrix>"\fP
-\fRdrawing transformation matrix
+\fRdrawing transform matrix
 
-This option provides a transformation matrix {sx,rx,ry,sy,tx,ty} for
+This option provides a transform matrix {sx,rx,ry,sy,tx,ty} for
 use by subsequent \fB-draw\fP or \fB-transform\fP options.
 
-
-The transformation matrix has 3x3 elements, but three of them are omitted
-from the input because they are constant.  The complete matrix is
-
-
-     sx rx  0
-     ry sy  0
-     tx ty  1
-
-Scaling by the factor s is accomplished with the matrix
-
-    {s,0,0,s,0,0}
-
-Translation by a displacement {dx,dy} is
-accomplished with the matrix
-
-    {1,0,0,1,dx,dy}
-
-Rotation counterclockwise about the origin by an angle a is
-accomplished with the matrix
-
-    {cos(a),sin(a),-sin(a),cos(a),0,0}
-
-A series of operations can be accomplished by using a matrix
-that is the multiple of the matrices for each operation.
 .TP
 .B "-antialias"
 \fRremove pixel aliasing
@@ -420,8 +395,8 @@ that is the multiple of the matrices for each operation.
 By default antialiasing algorithms are used when drawing objects (e.g. lines)
 or rendering vector formats (e.g. WMF and Postscript). Use +antialias to
 disable use of antialiasing algorithms. Reasons to disable antialiasing
-
 include avoiding increasing colors in the image, or improving rendering speed.
+
 .TP
 .B "-append"
 \fRappend a set of images
@@ -450,14 +425,13 @@ is terminated by the appearance of any option.
 If the \fB-average\fP
 option appears after all of the input images, all images are averaged.
 .TP
-.B "-backdrop \fI<color>"\fP
+.B "-backdrop"
 \fRdisplay the image centered on a backdrop.
 
 This backdrop covers the entire workstation screen and is useful for hiding
 other X window activity while viewing the image. The color of the backdrop
-is specified as the background color.
-The color is specified using the format described under the \fB-fill\fP
-option.
+is specified as the foreground color (X11 default is black).
+
 Refer to
 "X Resources", below,
 for details.
@@ -599,8 +573,11 @@ go \fItechnicolor\fP when the image colormap is installed.
 The actual number of colors in the image may be less than your request,
 but never more. Note, this is a color reduction option. Images with less
 unique colors than specified with this option will have any duplicate or
-unused colors removed. Refer to quantize for
-more details.
+unused colors removed. The ordering of an existing color palette may be
+altered. When converting an image from color to grayscale, convert the
+image to the gray colorspace before reducing the number of colors since
+doing so is most efficient. Refer to <a
+href="quantize.html">quantize for more details.
 
 
 Note, options \fB-dither\fP, \fB-colorspace\fP, and \fB-treedepth\fP
@@ -610,11 +587,11 @@ affect the color reduction algorithm.
 .B "-colorspace \fI<value>"\fP
 \fRthe type of colorspace
 
-Choices are: \fBGRAY\fP, \fBOHTA\fP, \fBRGB\fP,
-\fBTransparent\fP,
-\fBXYZ\fP,
-\fBYCbCr\fP, \fBYIQ\fP, \fBYPbPr\fP,
-\fBYUV\fP, or \fBCMYK\fP.
+Choices are:
+\fBCMYK\fP, \fBGRAY\fP, \fBHSL\fP, \fBHWB\fP, \fBOHTA\fP, \fBRGB\fP,
+\fBTransparent\fP, \fBXYZ\fP, \fBYCbCr\fP, \fBYIQ\fP, \fBYPbPr\fP,
+or
+\fBYUV\fP.
 
 
 Color reduction, by default, takes place in the RGB color space. Empirical
@@ -628,8 +605,9 @@ The \fBTransparent\fP color space behaves uniquely in that it preserves
 the matte channel of the image if it exists.
 
 
-The \fB-colors\fP or \fB-monochrome\fP option is required for this
-option to take effect.
+The \fB-colors\fP or \fB-monochrome\fP option, or saving to a file
+format which requires color reduction, is required for this option to
+take effect.
 
 .TP
 .B "-comment \fI<string>"\fP
@@ -660,9 +638,38 @@ is read from a file titled by the remaining characters in the string.
 .B "-compose \fI<operator>"\fP
 \fRthe type of image composition
 
-By default, each of the composite image pixels are replaced by the
-corresponding image tile pixel. You can choose an alternate composite
-operation:
+The description of composition uses abstract terminology in order to
+allow the the description to be more clear, while avoiding constant
+values which are specific to a particular build configuration. Each image
+pixel is represented by red, green, and blue levels (which are equal for
+a gray pixel). MaxRGB is the maximum integral value which may be stored
+in the red, green, or blue channels of the image. Each image pixel may
+also optionally (if the image matte channel is enabled) have an
+associated level of opacity (ranging from opaque to transparent), which
+may be used to determine the influence of the pixel color when
+compositing the pixel with another image pixel. If the image matte
+channel is disabled, then all pixels in the image are treated as opaque.
+The color of an \fIopaque\fP pixel is fully visible while the color of a
+\fItransparent\fP pixel color is entirely absent (pixel color is ignored).
+
+
+By definition, raster images have a rectangular shape. All image rows are
+of equal length, and all image columns have the same number of rows. By
+treating the opacity channel as a visual "mask" the rectangular image may
+be given a "shape" by treating the opacity channel as a cookie-cutter for
+the image. Pixels within the shape are opaque, while pixels outside the
+shape are transparent. Pixels on the boundary of the shape may be between
+opaque and transparent in order to provide antialiasing (visually smooth
+edges). The description of the composition operators use this concept of
+image "shape" in order to make the description of the operators easier to
+understand. While it is convenient to describe the operators in terms of
+"shapes" they are by no means limited to mask-style operations since they
+are based on continuous floating-point mathematics rather than simple
+boolean operations.
+
+
+By default, the \fIOver\fP composite operator is used. The following
+composite operators are available:
 
 
      Over
@@ -683,7 +690,7 @@ operation:
      CopyBlue
      CopyOpacity
 
-How each operator behaves is described below.
+The behavior of each operator is described below.
 
 .in 15
 
@@ -693,8 +700,9 @@ How each operator behaves is described below.
  \fR
 .in 20
 
-The result will be the union of the two image shapes, with opaque areas of
-\fIcomposite image\fP obscuring \fIimage\fP in the region of overlap.
+The result will be the union of the two image shapes, with opaque areas
+of \fIchange-image\fP obscuring \fIbase-image\fP in the region of
+overlap.
 
 .in 15
 .in 15
@@ -703,9 +711,9 @@ The result will be the union of the two image shapes, with opaque areas of
  \fR
 .in 20
 
-The result is simply \fIcomposite image\fP cut by the shape
-of \fIimage\fP.
-None of the image data of \fIimage\fP will be in the result.
+The result is simply \fIchange-image\fP cut by the shape of
+\fIbase-image\fP. None of the image data of \fIbase-image\fP will be in
+the result.
 
 .in 15
 .in 15
@@ -714,8 +722,8 @@ None of the image data of \fIimage\fP will be in the result.
  \fR
 .in 20
 
-The resulting image is \fIcomposite image\fP with the shape
-of \fIimage\fP cut out.
+The resulting image is \fIchange-image\fP with the shape of
+\fIbase-image\fP cut out.
 
 .in 15
 .in 15
@@ -724,11 +732,11 @@ of \fIimage\fP cut out.
  \fR
 .in 20
 
-The result is the same shape as image \fIimage\fP,
-with \fIcomposite image\fP
-obscuring \fIimage\fP where the image shapes overlap.  Note this differs
-from \fBover\fP because the portion of \fIcomposite image\fP outside
-\fIimage\fP's shape does not appear in the result.
+The result is the same shape as \fIbase-image\fP, with
+\fIchange-image\fP obscuring \fIbase-image\fP where the image shapes
+overlap. Note this differs from \fBover\fP because the portion of
+\fIchange-image\fP outside \fIbase-image\fP's shape does not appear in
+the result.
 
 .in 15
 .in 15
@@ -737,9 +745,9 @@ from \fBover\fP because the portion of \fIcomposite image\fP outside
  \fR
 .in 20
 
-The result is the image data from both \fIcomposite image\fP and
-\fIimage\fP
-that is outside the overlap region.  The overlap region will be blank.
+The result is the image data from both \fIchange-image\fP and
+\fIbase-image\fP that is outside the overlap region. The overlap region
+will be blank.
 
 .in 15
 .in 15
@@ -748,9 +756,9 @@ that is outside the overlap region.  The overlap region will be blank.
  \fR
 .in 20
 
-The result is just the sum of the image data.  Output values are
-cropped to 255 (no overflow).  This operation is independent of the
-matte channels.
+The result is just the sum of the image data. Output values are cropped
+to MaxRGB (no overflow). This operation is independent of the matte
+channels.
 
 .in 15
 .in 15
@@ -759,9 +767,9 @@ matte channels.
  \fR
 .in 20
 
-The result of \fIcomposite image\fP - \fIimage\fP, with underflow
-cropped to
-zero.  The matte channel is ignored (set to 255, full coverage).
+The result of \fIchange-image\fP - \fIbase-image\fP, with underflow
+cropped to zero. The matte channel is ignored (set to opaque, full
+coverage).
 
 .in 15
 .in 15
@@ -770,8 +778,8 @@ zero.  The matte channel is ignored (set to 255, full coverage).
  \fR
 .in 20
 
-The result of \fIcomposite image\fP + \fIimage\fP, with overflow wrapping
-around (\fImod\fP 256).
+The result of \fIchange-image\fP + \fIbase-image\fP, with overflow
+wrapping around (\fImod\fP MaxRGB+1).
 
 .in 15
 .in 15
@@ -780,9 +788,9 @@ around (\fImod\fP 256).
  \fR
 .in 20
 
-The result of \fIcomposite image\fP - \fIimage\fP, with underflow wrapping
-around (\fImod\fP 256).  The \fBadd\fP and \fBsubtract\fP operators can be
-used to perform reversible transformations.
+The result of \fIchange-image\fP - \fIbase-image\fP, with underflow
+wrapping around (\fImod\fP MaxRGB+1). The \fBadd\fP and \fBsubtract\fP
+operators can be used to perform reversible transformations.
 
 .in 15
 .in 15
@@ -791,8 +799,8 @@ used to perform reversible transformations.
  \fR
 .in 20
 
-The result of abs(\fIcomposite image\fP - \fIimage\fP).  This is useful
-for comparing two very similar images.
+The result of abs(\fIchange-image\fP - \fIbase-image\fP). This is
+useful for comparing two very similar images.
 
 .in 15
 .in 15
@@ -801,7 +809,7 @@ for comparing two very similar images.
  \fR
 .in 20
 
-The result of \fIcomposite image\fP * \fIimage\fP.  This is useful for
+The result of \fIchange-image\fP * \fIbase-image\fP. This is useful for
 the creation of drop-shadows.
 
 .in 15
@@ -811,7 +819,7 @@ the creation of drop-shadows.
  \fR
 .in 20
 
-The result \fIimage\fP shaded by \fIcomposite image\fP.
+The result \fIbase-image\fP shaded by \fIchange-image\fP.
 
 .in 15
 .in 15
@@ -820,8 +828,8 @@ The result \fIimage\fP shaded by \fIcomposite image\fP.
  \fR
 .in 20
 
-The resulting image is \fIimage\fP replaced with \fIcomposite image\fP.
-Here the matte information is ignored.
+The resulting image is \fIbase-image\fP replaced with
+\fIchange-image\fP. Here the matte information is ignored.
 
 .in 15
 .in 15
@@ -830,8 +838,9 @@ Here the matte information is ignored.
  \fR
 .in 20
 
-The resulting image is the red layer in \fIimage\fP replaced with the red
-layer in \fIcomposite image\fP.  The other layers are copied untouched.
+The resulting image is the red channel in \fIbase-image\fP replaced with
+the red channel in \fIchange-image\fP. The other channels are copied
+untouched.
 
 .in 15
 .in 15
@@ -840,8 +849,9 @@ layer in \fIcomposite image\fP.  The other layers are copied untouched.
  \fR
 .in 20
 
-The resulting image is the green layer in \fIimage\fP replaced with the green
-layer in \fIcomposite image\fP.  The other layers are copied untouched.
+The resulting image is the green channel in \fIbase-image\fP replaced
+with the green channel in \fIchange-image\fP. The other channels are
+copied untouched.
 
 .in 15
 .in 15
@@ -850,8 +860,9 @@ layer in \fIcomposite image\fP.  The other layers are copied untouched.
  \fR
 .in 20
 
-The resulting image is the blue layer in \fIimage\fP replaced with the blue
-layer in \fIcomposite image\fP.  The other layers are copied untouched.
+The resulting image is the blue channel in \fIbase-image\fP replaced
+with the blue channel in \fIchange-image\fP. The other channels are
+copied untouched.
 
 .in 15
 .in 15
@@ -860,20 +871,11 @@ layer in \fIcomposite image\fP.  The other layers are copied untouched.
  \fR
 .in 20
 
-The resulting image is the matte layer in \fIimage\fP replaced with the matte
-layer in \fIcomposite image\fP.  The other layers are copied untouched.
+The resulting image is the opacity channel in \fIbase-image\fP replaced
+with the opacity channel in \fIchange-image\fP. The other channels are
+copied untouched.
 
 .in 15
-
-
-The image compositor requires a matte, or alpha channel in the image
-for some operations.  This extra channel usually defines a mask which
-represents a sort of a cookie-cutter for the image.  This is the case
-when matte is 255 (full coverage) for pixels inside the shape, zero
-outside, and between zero and 255 on the boundary.  For certain
-operations, if \fIimage\fP does not have a matte channel, it is initialized
-with 0 for any pixel matching in color to pixel location (0,0), otherwise
-255 (to work properly \fBborderwidth\fP must be 0).
 
 .TP
 .B "-compress \fI<type>"\fP
@@ -895,7 +897,8 @@ in an uncompressed LZW format that can be read by LZW decoders.  This
 may result in larger-than-expected GIF files.
 
 \fI"Lossless"\fP refers to lossless JPEG, which is only available if
-the JPEG library has been patched to support it.
+the JPEG library has been patched to support it. Use of lossless JPEG is
+generally not recommended.
 
 Use the \fB-quality\fP option to set the compression level to be used by
 JPEG, PNG, MIFF, and MPEG encoders.  Use the \fB-sampling-factor\fP
@@ -971,8 +974,9 @@ The events parameter specifies which events are to be logged.  It
 can be either None, All, or a comma-separated list
 consisting of one or more of the following domains: Annotate,
 Blob, Cache, Coder, Configure,
-Locale, Render, Resource, Transform,
-X11, or User.
+Deprecate, Exception, Locale, Render,
+Resource, TemporaryFile, Transform, X11,
+or User.
 For example, to log cache and blob events, use
 
     gm convert -debug "Cache,Blob" rose: rose.png
@@ -983,6 +987,10 @@ in their private copy of GraphicsMagick.
 Use the \fB-log\fP option to specify the format for debugging output.
 
 Use \fB+debug\fP to turn off all logging.
+
+An alternative to using \fB-debug\fP is to use the \fBMAGICK_DEBUG\fP
+environment variable. The allowed values for the \fBMAGICK_DEBUG\fP
+environment variable are the same as for the \fB-debug\fP option.
 .TP
 .B "-deconstruct"
 \fRbreak down an image sequence into constituent parts
@@ -998,6 +1006,54 @@ is terminated by the appearance of any option.
 If the \fB-deconstruct\fP
 option appears after all of the input images, all images are deconstructed.
 .TP
+.B "-define \fI<key>{=<value>},..."\fP
+\fRadd coder/decoder specific options
+This option creates one or more definitions for coders and
+decoders to use while reading and writing image data. Definitions
+may be passed to coders and decoders to control options that are
+specific to certain image formats. If \fIvalue\fP is missing for a
+definition, an empty-valued definition of a flag will be created with
+that name. This is used to control on/off options. Use +define
+<key>,... to remove definitions previously created. Use
++define "*" to remove all existing definitions.
+
+The following definitions may be created:
+
+
+    jp2:rate=<value>
+	Specify the compression factor to use while writing JPEG-2000
+	files. The compression factor is the reciprocal of the compression
+	ratio. The valid range is 0.0 to 1.0, with 1.0 indicating lossless
+	compression. If defined, this value overrides the -quality setting.
+	The default quality setting of 75 results in a rate value of 0.06641.
+    jpeg:preserve-settings
+        If the jpeg:preserve-settings flag is defined, the JPEG encoder
+        will use the same "quality" and "sampling-factor" settings that
+        were found in the input file, if the input was in JPEG format.
+        These settings are also preserved if the input is a JPEG file
+        and the output is a JNG file.  If the colorspace of the output
+        file differs from that of the input file, the quality setting is
+        preserved but the sampling-factors are not.
+    ps:imagemask
+        If the ps:imagemask flag is defined, the PS3 and EPS3 coders will
+        create Postscript files that render bilevel images with the Postscript
+        imagemask operator instead of the image operator.
+    tiff:bits-per-sample=<value>
+        If the tiff:bits-per-sample key is defined to a value less than the
+        GraphicsMagick Quantum depth, the TIFF coder will write TIFF images
+        with the defined bits per sample, overriding any value stored in the
+        image.
+    tiff:samples-per-pixel=<value>
+        If the tiff:samples-per-pixel key is defined to a value, the TIFF
+        coder will write TIFF images with the defined samples per pixel,
+        overriding any value stored in the image.
+
+For example, to create a postscript file that will render only the black
+pixels of a bilevel image, use:
+
+
+    gm convert bilevel.tif -define ps:imagemask eps3:stencil.ps
+.TP
 .B "-delay \fI<1/100ths of a second>"\fP
 \fRdisplay the next image after pausing
 
@@ -1012,12 +1068,32 @@ minimum and maximum delay.
 
 .TP
 .B "-density \fI<width>x<height>"\fP
-\fRvertical and horizontal resolution in pixels of the image
-
-This option specifies an image density when decoding a \fIPostScript\fP
-or Portable Document page. The default is 72 dots per inch in the horizontal
-and vertical direction. This option is used in concert with \fB-page\fP.
-
+\fRhorizontal and vertical resolution in pixels of the image
+This option specifies the image resolution to store while encoding a
+raster image or the canvas resolution while rendering (reading) vector
+formats such as Postscript, PDF, WMF, and SVG into a raster image. Image
+resolution provides the unit of measure to apply when rendering to an
+output device or raster image. The default unit of measure is in dots
+per inch (DPI). The \fB-units\fP option may be used to select dots per
+centimeter instead.
+ The default resolution is 72 dots per inch, which is equivalent to
+one point per pixel (Macintosh and Postscript standard). Computer
+screens are normally 72 or 96 dots per inch while printers typically
+support 150, 300, 600, or 1200 dots per inch. To determine the
+resolution of your display, use a ruler to measure the width of your
+screen in inches, and divide by the number of horizontal pixels (1024 on
+a 1024x768 display).
+If the file format supports it, this option may be used to update
+the stored image resolution. Note that Photoshop stores and obtains
+image resolution from a proprietary embedded profile. If this profile is
+not stripped from the image, then Photoshop will continue to treat the
+image using its former resolution, ignoring the image resolution
+specified in the standard file header.
+The density option is an attribute and does not alter the underlying
+raster image. It may be used to adjust the rendered size for desktop
+publishing purposes by adjusting the scale applied to the pixels. To
+resize the image so that it is the same size at a different resolution,
+use the \fB-resample\fP option.
 .TP
 .B "-depth \fI<value>"\fP
 \fRdepth of the image
@@ -1089,8 +1165,9 @@ The \fB-colors\fP or \fB-monochrome\fP option is required for this option
 to take effect.
 
 
-Use \fB+dither\fP to turn off dithering and to render PostScript without
-text or graphic aliasing.
+Use \fB+dither\fP to turn off dithering and to render PostScript
+without text or graphic aliasing. Disabling dithering often (but not
+always) leads to decreased processing time.
 
 .TP
 .B "-draw \fI<string>"\fP
@@ -1162,7 +1239,7 @@ and the width and height of the corners.
 \fBCircle\fP has a center coordinate and a coordinate for
 the outer edge.
 
-Use \fBArc\fP to circumscribe an arc within
+Use \fBArc\fP to inscribe an elliptical arc within
 a rectangle.  Arcs require a start and end point as well as the degree
 of rotation (e.g. 130,30 200,100 45,90).
 
@@ -1204,11 +1281,11 @@ be scaled to the given dimensions.
 See \fB-compose\fP for a description of the composite operators.
 
 
-Use \fBtext\fP to annotate an image with text. Follow the text coordinates
-with a string. If the string has embedded spaces, enclose it in double
-quotes. Optionally you can include the image filename, type, width, height,
-or other image attribute by embedding special format character.
-See \fB-comment\fP for details.
+Use \fBtext\fP to annotate an image with text. Follow the text
+coordinates with a string. If the string has embedded spaces, enclose it
+in single or double quotes. Optionally you can include the image
+filename, type, width, height, or other image attribute by embedding
+special format character. See \fB-comment\fP for details.
 
 
 For example,
@@ -1226,15 +1303,15 @@ a file titled by the remaining characters in the string.
 
 
 \fBRotate\fP rotates subsequent shape primitives and text primitives about
-the origen of the main image. If the \fB-region\fP option precedes the
-\fB-draw\fP option, the origen for transformations is the upper left
+the origin of the main image. If the \fB-region\fP option precedes the
+\fB-draw\fP option, the origin for transformations is the upper left
 corner of the region.
 
 \fBTranslate\fP translates them.
 
 \fBScale\fP scales them.
 
-\fBSkewX\fP and \fBSkewY\fP skew them with respect to the origen of
+\fBSkewX\fP and \fBSkewY\fP skew them with respect to the origin of
 the main image or the region.
 
 The transformations modify the current affine matrix, which is initialized
@@ -1311,9 +1388,6 @@ Use \fB+endian\fP to revert to unspecified endianness.
 .B "-equalize"
 \fRperform histogram equalization to the image
 .TP
-.B "-extract \fI<width>x<height>{+-}<x>{+-}<y>{%}{@} {!}{<}{>}"\fP
-\fRextract an area from the image while decoding
-.TP
 .B "-fill \fI<color>"\fP
 \fRcolor to use when filling a graphic primitive
 
@@ -1371,7 +1445,10 @@ Choose from these filters:
      Bessel
      Sinc
 
-The default filter is \fBLanczos\fP
+The default filter is automatically selected to provide the best quality
+while consuming a reasonable amount of time. The \fBMitchell\fP filter
+is used if the image supports a palette, supports a matte channel, or is
+being enlarged, otherwise the \fBLanczos\fP filter is used.
 
 .TP
 .B "-flatten"
@@ -1416,8 +1493,8 @@ option.
 
 When used with the \fBmogrify\fP utility,
 this option will convert any image to the image format you specify.
-See above for a list of image format types supported by
-\fBGraphicsMagick\fP.
+See \fIGraphicsMagick(1)\fP for a list of image format types supported by
+\fBGraphicsMagick\fP, or see the output of 'gm -list format'.
 
 
 By default the file is written to its original name.  However, if the
@@ -1458,7 +1535,6 @@ characters:
      %x   x resolution
      %y   y resolution
      %#   signature
-     %%   percent sign
      \\n   newline
      \\r   carriage return
 
@@ -1596,17 +1672,20 @@ for these differences.
 
 
 The \fIdistance\fP can be in absolute intensity units or, by appending
-\fI"%"\fP, as a percentage of the maximum possible intensity (255 or 65535).
+\fI"%"\fP, as a percentage of the maximum possible intensity (255,
+65535, or 4294967295).
 
 .TP
 .B "-gamma \fI<value>"\fP
 \fRlevel of gamma correction
 
-The same color image displayed on two different workstations may look different
-due to differences in the display monitor. Use gamma correction to adjust
-for this color difference. Reasonable values extend from \fB0.8\fP to
-\fB2.3\fP.  Gamma less than 1.0 darkens the image and gamma greater than
-1.0 lightens it.
+The same color image displayed on two different workstations may look
+different due to differences in the display monitor. Use gamma
+correction to adjust for this color difference. Reasonable values extend
+from \fB0.8\fP to \fB2.3\fP. Gamma less than 1.0 darkens the image and
+gamma greater than 1.0 lightens it. Large adjustments to image gamma may
+result in the loss of some image information if the pixel quantum size
+is only eight bits (quantum range 0 to 255).
 
 
 You can apply separate gamma values to the red, green, and blue channels
@@ -1844,24 +1923,26 @@ and offset.  The offset is a distance in sample space from the mean,
 as an absolute integer ranging from 0 to the maximum sample value or
 as a percentage.
 .TP
-.B "-level \fI<black_point>{,<white_point>}{%}{,<gamma>}"\fP
+.B "-level \fI<black_point>{,<gamma>}{,<white_point>}{%}"\fP
 \fRadjust the level of image contrast
 
-Give one, two or three values delimited with commas: black, white, and gamma
-(e.g. 10,65000,1.0 or 2%,98%,0.5).  The black and white points range from
-0 to MaxRGB or from 0 to 100%; if the white point is omitted it is
-set to MaxRGB-black_point.  If a "%" sign is present anywhere in the
-string, the black and white points are percentages of MaxRGB.
-Gamma is an exponent that ranges from 0.1 to 10.; if it is omitted,
-the default of 1.0 (no gamma correction) is assumed.
+Give one, two or three values delimited with commas: black-point, gamma,
+white-point (e.g. 10,1.0,250 or 2%,0.5,98%). The black and white
+points range from 0 to MaxRGB or from 0 to 100%; if the white point is
+omitted it is set to MaxRGB-black_point. If a "%" sign is present
+anywhere in the string, the black and white points are percentages of
+MaxRGB. Gamma is an exponent that ranges from 0.1 to 10.; if it is
+omitted, the default of 1.0 (no gamma correction) is assumed. This
+interface works similar to Photoshop's "Image->Adjustments->Levels..."
+"Input Levels" interface.
 
 .TP
 .B "-limit \fI<type> <value>"\fP
 \fRDisk, File, Map, or Memory resource limit
 
 The value for File is in number of files and the values for the other
-resources are in Megabytes.  By default the limits are 64 files, 512MB memory,
-1024MB map, and unlimited disk, but these are adjusted at startup
+resources are in Megabytes.  By default the limits are 256 files, 1024MB memory,
+4096MB map, and unlimited disk, but these are adjusted at startup
 time on platforms that can provide information about available resources.
 When the limit is reached, GraphicsMagick will fail in some fashion, or
 take compensating actions if possible.
@@ -1869,6 +1950,12 @@ For example, -limit memory 32 -limit map 64 limits memory
 When the pixel cache reaches the memory limit it uses
 memory mapping.  When that limit is reached it goes to disk.  If disk has
 a hard limit, the program will fail.
+
+Resource limits may also be set using environment variables. The
+environment variables \fBMAGICK_LIMIT_DISK\fP,
+\fBMAGICK_LIMIT_FILES\fP, \fBMAGICK_LIMIT_MEMORY\fP, and
+\fBMAGICK_LIMIT_MAP\fP, may be used to set the limits for disk space,
+open files, heap memory, and memory map size, respectively.
 
 You can use the option -list resource to find out the limits.
 .TP
@@ -1886,6 +1973,7 @@ This option lists information about the GraphicsMagick configuration.
 
 .TP
 .B "-log \fI<string>"\fP
+\fRSpecify format for debug log
 
 This option specifies the format for the log printed when the \fB-debug\fP
 option is active.
@@ -2093,6 +2181,60 @@ option.
 See \fB-fill\fP for more details.
 
 .TP
+.B "-operator \fIchannel operator rvalue[%]"\fP
+\fRapply a mathematical or bitwise operator to an image channel
+
+Apply a low-level mathematical or bitwise operator to a selected image
+channel or all image channels. Operations which result in negative
+results are reset to zero, and operations which overflow the
+available range are reset to the maximum possible value.
+
+
+Select a channel from: \fBRed\fP, \fBGreen\fP, \fBBlue\fP, \fBOpacity\fP,
+\fBMatte\fP, \fBCyan\fP, \fBMagenta\fP, \fBYellow\fP, \fBBlack\fP,
+or \fBAll\fP.
+
+
+Select an operator from \fBAdd\fP, \fBAnd\fP, \fBDivide\fP, \fBLShift\fP,
+\fBMultiply\fP, \fBOr\fP, \fBRShift\fP, \fBSubtract\fP, \fBXor\fP.
+
+
+Rvalue may be any floating point value in the range of 0 to MaxRGB, where
+MaxRGB is the largest quantum value supported by the GraphicsMagick build
+(255, 65535, or 4294967295). If a percent (\fB%\fP) symbol is appended
+to the argument, then the argument has a range of 0 to 100 percent.
+
+.TP
+.B "-ordered-dither \fI<channeltype> <NxN>
+\fRordered dither the image
+
+The channel or channels specified in the <channeltype> argument are
+reduced to binary, using an ordered dither method.
+The choices for \fBchanneltype\fP are:
+
+
+    all
+    intensity
+    opacity
+    matte
+
+When \fBchanneltype\fP is "all", the color samples are dithered into
+a graylevel and then that graylevel is stored in the three color
+channels.  Separately, the opacity channel is dithered into a bilevel
+opacity value which is stored in the opacity channel.
+
+
+When \fBchanneltype\fP is "intensity", only the color samples are
+dithered.  When \fBchanneltype\fP is "opacity" or "matte", only the
+opacity channel is dithered.
+
+The choices for N are 2, 3, or 4. When N is 2, the image is divided into
+2x2 pixel tiles.  In each tile, 0, 1, 2, 3, or 4 pixels are turned to
+white depending on their intensity.  When N is 3, there are 3x3 tiles
+and 10 levels of gray can be represented.  When N is 4, there are 4x4
+tiles and 17 levels of gray.
+
+.TP
 .B "-page \fI<width>x<height>{+-}<x>{+-}<y>{%}{!}{<}{>}"\fP
 \fRsize and location of an image canvas
 
@@ -2253,7 +2395,12 @@ The default preview is \fBJPEG\fP.
 
 .TP
 .B "-process \fI<command>"\fP
-\fRprocess a sequence of images
+\fRprocess a sequence of images using a process module
+
+The command argument has the form \fBmodule=arg1,arg2,arg3,...,argN\fP
+where \fBmodule\fP is the name of the module to invoke (e.g. "analyze")
+and arg1,arg2,arg3,...,argN are an arbitrary number of arguments to
+pass to the process module.
 
 The sequence of images
 is terminated by the appearance of any option.
@@ -2291,11 +2438,20 @@ and highest
 compression) to 100 (best quality but least effective compression). The default
 quality is 75.  Use the \fB-sampling-factor\fP option to specify the factors
 for chroma downsampling.
+To use the same quality value as that found by the JPEG decoder,
+use the -define jpeg:preserve-settings flag.
 
 
 For the MIFF image format, quality/10 is the zlib compression level, which
 is 0 (worst but fastest compression) to 9 (best but slowest).  It has no
 effect on the image appearance, since the compression is always lossless.
+
+For the JPEG-2000 image format, quality is mapped using a non-linear
+equation to the compression ratio required by the Jasper library. This
+non-linear equation is intended to loosely approximate the quality
+provided by the JPEG v1 format. The default quality value 75 results in
+a request for 16:1 compression. The quality value 100 results in
+a request for non-lossy compression.
 
 For the MNG and PNG image formats, the quality value sets the zlib compression
 level (quality / 10) and filter-type (quality % 10). Compression levels
@@ -2356,6 +2512,33 @@ Offsets are not used.
 Use \fB-raise\fP to create a raised effect, otherwise use \fB+raise\fP.
 
 .TP
+.B "-random-threshold \fI<channeltype> <LOWxHIGH>
+\fRrandom threshold the image
+
+The channel or channels specified in the <channeltype> argument are
+reduced to binary, using an random-threshold method.
+The choices for \fBchanneltype\fP are:
+
+
+    all
+    intensity
+    opacity
+    matte
+
+When \fBchanneltype\fP is "all", the color samples are thresholded into
+a graylevel and then that graylevel is stored in the three color
+channels.  Separately, the opacity channel is thresholded into a bilevel
+opacity value which is stored in the opacity channel.  For each pixel,
+a new random number is used to establish the threshold to be used.  The
+threshold never exceeds the specified maximum (HIGH) and is never less
+than the specified minimum (LOW).
+
+
+When \fBchanneltype\fP is "intensity", only the color samples are
+thresholded.  When \fBchanneltype\fP is "opacity" or "matte", only the
+opacity channel is thresholded.
+
+.TP
 .B "-red-primary \fI<x>,<y>"\fP
 \fRred chromaticity primary point
 .TP
@@ -2374,8 +2557,27 @@ an image file to load.
 .B "-render"
 \fRrender vector operations
 
-Use \fB+render\fP to turn off rendering vector operations.
+Use \fB+render\fP to turn off rendering vector operations. This is
+useful when saving the result to vector formats such as MVG or SVG.
 
+.TP
+.B "-resample \fI<horizontal>x<vertical>"\fP
+\fRResample image to specified horizontal and vertical resolution
+
+Resize the image so that its rendered size remains the same as the
+original at the specified target resolution. For example, if a 300 DPI
+image renders at 3 inches by 2 inches on a 300 DPI device, when the
+image has been resampled to 72 DPI, it will render at 3 inches by 2
+inches on a 72 DPI device. Note that only a small number of image
+formats (e.g. JPEG, PNG, and TIFF) are capable of storing the image
+resolution. For formats which do not support an image resolution, the
+original resolution of the image must be specified via \fB-density\fP
+on the command line prior to specifying the resample resolution.
+
+Note that Photoshop stores and obtains image resolution from a
+proprietary embedded profile. If this profile exists in the image, then
+Photoshop will continue to treat the image using its former resolution,
+ignoring the image resolution specified in the standard file header.
 .TP
 .B "-resize \fI<width>x<height>{%}{@}{!}{<}{>}"\fP
 \fRresize an image
@@ -2426,7 +2628,7 @@ The color is specified using the format described under the \fB-fill\fP
 option.
 .TP
 .B "-sample \fI<geometry>"\fP
-\fRscale image with pixel sampling
+\fRscale image using pixel sampling
 
 See \fB-geometry\fP for details about
 the geometry specification.
@@ -2443,6 +2645,8 @@ chroma downsampling.  If this option is omitted, the JPEG library
 will use its own default values.  When reading or writing the YUV format
 and when writing the M2V (MPEG-2) format, use
 \fB-sampling-factor 2x1\fP to specify the 4:2:2 downsampling method.
+To use the same sampling factors as those found by the JPEG decoder, use
+the -define jpeg:preserve-settings flag.
 .TP
 .B "-scale \fI<geometry>"\fP
 \fRscale the image.
@@ -2486,17 +2690,6 @@ window.  In this way, you can obtain pieces of other windows that overlap
 the specified window, and more importantly, you can capture menus or other
 popups that are independent windows but appear over the specified window.
 .TP
-.B "-seed \fI<value>"\fP
-\fRpseudo-random number generator seed value
-
-The value can be any integer in the range 1 to 2**31-1.  Successive
-runs with a particular seed will generate the same sequence of
-pseudo-random numbers. If the \fB-seed\fP option is not present,
-GraphicsMagick will generate a random seed from system timers, clocks,
-etc., so that successive runs will generate different sequences.
-The pseudo-random numbers are used by options such as \fB-noise\fP,
-\fB-spread\fP, and the \fBplasma\fP format.
-.TP
 .B "-segment \fI<cluster threshold>x<smoothing threshold>"\fP
 \fRsegment an image
 
@@ -2527,7 +2720,7 @@ image.
 .B "-shared-memory"
 \fRuse shared memory
 
-This option specifies whether the utility should attempt use shared memory
+This option specifies whether the utility should attempt to use shared memory
 for pixmaps.  GraphicsMagick must be compiled with shared memory support,
 and the display must support the \fIMIT-SHM\fP extension.  Otherwise, this
 option is ignored.  The default is \fBTrue\fP.
@@ -2536,9 +2729,8 @@ option is ignored.  The default is \fBTrue\fP.
 .B "-sharpen \fI<radius>{x<sigma>}"\fP
 \fRsharpen the image
 
-Use a Gaussian operator of the given radius and
-standard deviation (sigma).
-
+Use a Gaussian operator of the given radius and standard deviation
+(sigma).
 .TP
 .B "-shave \fI<width>x<height>{%}"\fP
 \fRshave pixels from the image edges
@@ -2677,9 +2869,9 @@ and x:fixed is OPTION1.
 .B "-threshold \fI<value>{<green>,<blue>,<opacity>}{%}"\fP
 \fRthreshold the image
 
-Create an image such that any pixel sample that is equal or
-exceeds the threshold is reassigned the maximum intensity otherwise the
-minimum intensity.
+Create an image such that any pixel sample that is equal to, or exceeds
+the threshold, is reassigned the maximum intensity otherwise the minimum
+intensity.
 
 
 If the green or blue value is omitted, these channels use the same value
@@ -2739,8 +2931,9 @@ option.
 .B "-treedepth \fI<value>"\fP
 \fRtree depth for the color reduction algorithm
 
-Normally, this integer value is zero or one. A zero or one tells display
-to choose an optimal tree depth for the color reduction algorithm
+Normally, this integer value is zero or one. A value of zero or one
+causes the use of an optimal tree depth for the color reduction
+algorithm
 
 An optimal depth generally allows the best representation of the source
 image with the fastest computational speed and the least amount of memory.
@@ -2750,8 +2943,9 @@ Refer to
 quantize for more details.
 
 
-The \fB-colors\fP or \fB-monochrome\fP option is required for this option
-to take effect.
+The \fB-colors\fP or \fB-monochrome\fP option, or writing to an image
+format which requires color reduction, is required for this option to
+take effect.
 
 .TP
 .B "-trim"
@@ -2795,19 +2989,20 @@ the input file has been changed and update the displayed image accordingly.
 
 .TP
 .B "-units \fI<type>"\fP
-\fRthe type of image resolution
+\fRthe units of image resolution
 
 Choose from: \fBUndefined\fP, \fBPixelsPerInch\fP, or
-\fBPixelsPerCentimeter\fP.
+\fBPixelsPerCentimeter\fP. This option is normally used in conjunction
+with the \fB-density\fP option.
 
 .TP
 .B "-unsharp \fI<radius>{x<sigma>}{+<amount>}{+<threshold>}"\fP
 \fRsharpen the image with an unsharp mask operator
 
-The \fB-unsharp\fP option sharpens an image.  We convolve the image with a
-Gaussian operator of the given radius and standard deviation (sigma).
-For reasonable results, radius should be larger than sigma.  Use a radius
-of 0 to have the method select a suitable radius.
+The \fB-unsharp\fP option sharpens an image. The image is convolved
+with a Gaussian operator of the given radius and standard deviation
+(sigma). For reasonable results, radius should be larger than sigma. Use
+a radius of 0 to have the method select a suitable radius.
 
 The parameters are:
 
@@ -3003,7 +3198,7 @@ Options, above.
 .B "-authenticate \fI<string>"\fP
 \fRdecrypt image with this password
 .TP
-.B "-backdrop \fI<color>"\fP
+.B "-backdrop"
 \fRdisplay the image centered on a backdrop.
 .TP
 .B "-background \fI<color>"\fP
@@ -3036,11 +3231,14 @@ Options, above.
 .B "-debug \fI<events>"\fP
 \fRenable debug printout
 .TP
+.B "-define \fI<key>{=<value>},..."\fP
+\fRadd coder/decoder specific options
+.TP
 .B "-delay \fI<1/100ths of a second>"\fP
 \fRdisplay the next image after pausing
 .TP
 .B "-density \fI<width>x<height>"\fP
-\fRvertical and horizontal resolution in pixels of the image
+\fRhorizontal and vertical resolution in pixels of the image
 .TP
 .B "-depth \fI<value>"\fP
 \fRdepth of the image
@@ -3053,9 +3251,6 @@ Options, above.
 .TP
 .B "-dither"
 \fRapply Floyd/Steinberg error diffusion to the image
-.TP
-.B "-extract \fI<width>x<height>{+-}<x>{+-}<y>{%}{@} {!}{<}{>}"\fP
-\fRextract an area from the image while decoding
 .TP
 .B "-font \fI<name>"\fP
 \fRuse this font when annotating the image with text
@@ -3085,6 +3280,7 @@ Options, above.
 \fRDisk, File, Map, or Memory resource limit
 .TP
 .B "-log \fI<string>"\fP
+\fRSpecify format for debug log
 .TP
 .B "-map \fI<type>"\fP
 \fR
@@ -3385,7 +3581,7 @@ to alter the executable file name. The default is the application name.
 .in 20
 
 This resource specifies whether animate should attempt use shared memory
-for pixmaps. GraphicsMagick must be compiled with shared memory support, and
+for pixmaps. ImageMagick must be compiled with shared memory support, and
 the display must support the MIT-SHM extension. Otherwise, this resource
 is ignored. The default is True.
 .in 15
@@ -3411,19 +3607,18 @@ of header identifying the window. The default is the image file name.
 
 .SH GM COMPOSITE
 
-\fBcomposite\fP composite images to create new images.
-\fIcomposite\fP is the base image and \fIimage\fP contains the changes.
-\fIcomposited\fP is the result, and normally has the same dimensions
-as \fIcomposite\fP.
+\fBcomposite\fP composites (combines) images to create new images.
+\fIbase-image\fP is the base image and \fIchange-image\fP contains the changes.
+\fIouput-image\fP is the result, and normally has the same dimensions
+as \fIbase-image\fP.
 
 
-The optional \fImask\fP can be used to provide matte information for
-\fIcomposite\fP
-when it has none or if you want a different mask. A mask image is typically
-grayscale and the same size as \fBcomposite\fP. If \fImask\fP is
-not grayscale,
-it is converted to grayscale and the resulting intensities are used as
-matte information.
+The optional \fImask-image\fP can be used to provide opacity information
+for \fIchange-image\fP when it has none or if you want a different mask.
+A mask image is typically grayscale and the same size as
+\fBbase-image\fP. If \fImask-image\fP is not grayscale, it is converted
+to grayscale and the resulting intensities are used as opacity
+information.
 .SH EXAMPLES
 
 To composite an image of a cockatoo with a perch, use:
@@ -3494,8 +3689,11 @@ Options, above.
 .B "-debug \fI<events>"\fP
 \fRenable debug printout
 .TP
+.B "-define \fI<key>{=<value>},..."\fP
+\fRadd coder/decoder specific options
+.TP
 .B "-density \fI<width>x<height>"\fP
-\fRvertical and horizontal resolution in pixels of the image
+\fRhorizontal and vertical resolution in pixels of the image
 .TP
 .B "-depth \fI<value>"\fP
 \fRdepth of the image
@@ -3520,9 +3718,6 @@ Options, above.
 .TP
 .B "-endian \fI<type>"\fP
 \fRspecify endianness (MSB or LSB) of output image
-.TP
-.B "-extract \fI<width>x<height>{+-}<x>{+-}<y>{%}{@} {!}{<}{>}"\fP
-\fRextract an area from the image while decoding
 .TP
 .B "-filter \fI<type>"\fP
 \fRuse this type of filter when resizing an image
@@ -3552,6 +3747,7 @@ Options, above.
 \fRDisk, File, Map, or Memory resource limit
 .TP
 .B "-log \fI<string>"\fP
+\fRSpecify format for debug log
 .TP
 .B "-matte"
 \fRstore matte channel if the image has one
@@ -3562,6 +3758,9 @@ Options, above.
 .B "-negate"
 \fRreplace every pixel with its complementary color
 .TP
+.B "-ordered-dither \fI<channeltype> <NxN>
+\fRordered dither the image
+.TP
 .B "-page \fI<width>x<height>{+-}<x>{+-}<y>{%}{!}{<}{>}"\fP
 \fRsize and location of an image canvas
 .TP
@@ -3570,6 +3769,9 @@ Options, above.
 .TP
 .B "-quality \fI<value>"\fP
 \fRJPEG/MIFF/PNG compression level
+.TP
+.B "-random-threshold \fI<channeltype> <LOWxHIGH>
+\fRrandom threshold the image
 .TP
 .B "-red-primary \fI<x>,<y>"\fP
 \fRred chromaticity primary point
@@ -3611,7 +3813,7 @@ Options, above.
 \fRthe image type
 .TP
 .B "-units \fI<type>"\fP
-\fRthe type of image resolution
+\fRthe units of image resolution
 .TP
 .B "-unsharp \fI<radius>{x<sigma>}{+<amount>}{+<threshold>}"\fP
 \fRsharpen the image with an unsharp mask operator
@@ -3668,11 +3870,11 @@ PerlMagick, unless otherwise noted.
 April 2002.
 
 
-This early announcement is to allow GraphicsMagick users to contribute ideas 
-early in the process so when the scripting language is released it will
-be useful/stable from the get-go!  If you want to contribute suggestions
-about the Magick scripting language (MSL), post them to
-magick-developers@imagemagick.org.
+This early announcement is to allow GraphicsMagick users to contribute
+ideas early in the process so when the scripting language is released it
+will be useful/stable from the get-go! If you want to contribute
+suggestions about the Magick scripting language (MSL), post them to the
+GraphicsMagick tools list at graphicsmagick-tools @ lists.sourceforge.net.
 
 .SH OPTIONS
 
@@ -3717,10 +3919,14 @@ Options, above.
 .B "-debug \fI<events>"\fP
 \fRenable debug printout
 .TP
+.B "-define \fI<key>{=<value>},..."\fP
+\fRadd coder/decoder specific options
+.TP
 .B "-help"
 \fRprint usage instructions
 .TP
 .B "-log \fI<string>"\fP
+\fRSpecify format for debug log
 .TP
 .B "-verbose"
 \fRprint detailed information about the image
@@ -4096,7 +4302,7 @@ PerlMagick's GetAttribute().
 file with a differing image format. In addition, various types of image
 processing can be performed on the converted image during the conversion
 process. \fBConvert\fP recognizes the image formats listed in
-above.
+\fIGraphicsMagick(1)\fP.
 
 .SH EXAMPLES
 
@@ -4184,7 +4390,7 @@ Options, above.
 \fRjoin images into a single multi-image file
 .TP
 .B "-affine \fI<matrix>"\fP
-\fRdrawing transformation matrix
+\fRdrawing transform matrix
 .TP
 .B "-antialias"
 \fRremove pixel aliasing
@@ -4270,11 +4476,14 @@ Options, above.
 .B "-deconstruct"
 \fRbreak down an image sequence into constituent parts
 .TP
+.B "-define \fI<key>{=<value>},..."\fP
+\fRadd coder/decoder specific options
+.TP
 .B "-delay \fI<1/100ths of a second>"\fP
 \fRdisplay the next image after pausing
 .TP
 .B "-density \fI<width>x<height>"\fP
-\fRvertical and horizontal resolution in pixels of the image
+\fRhorizontal and vertical resolution in pixels of the image
 .TP
 .B "-depth \fI<value>"\fP
 \fRdepth of the image
@@ -4311,9 +4520,6 @@ Options, above.
 .TP
 .B "-equalize"
 \fRperform histogram equalization to the image
-.TP
-.B "-extract \fI<width>x<height>{+-}<x>{+-}<y>{%}{@} {!}{<}{>}"\fP
-\fRextract an area from the image while decoding
 .TP
 .B "-fill \fI<color>"\fP
 \fRcolor to use when filling a graphic primitive
@@ -4372,7 +4578,7 @@ Options, above.
 .B "-lat \fI<width>x<height>{+-}<offset>{%}"\fP
 \fRperform local adaptive thresholding
 .TP
-.B "-level \fI<black_point>{,<white_point>}{%}{,<gamma>}"\fP
+.B "-level \fI<black_point>{,<gamma>}{,<white_point>}{%}"\fP
 \fRadjust the level of image contrast
 .TP
 .B "-limit \fI<type> <value>"\fP
@@ -4382,6 +4588,7 @@ Options, above.
 \fRthe type of list
 .TP
 .B "-log \fI<string>"\fP
+\fRSpecify format for debug log
 .TP
 .B "-loop \fI<iterations>"\fP
 \fRadd Netscape loop extension to your GIF animation
@@ -4428,6 +4635,12 @@ Options, above.
 .B "-opaque \fI<color>"\fP
 \fRchange this color to the pen color within the image
 .TP
+.B "-operator \fIchannel operator rvalue[%]"\fP
+\fRapply a mathematical or bitwise operator to an image channel
+.TP
+.B "-ordered-dither \fI<channeltype> <NxN>
+\fRordered dither the image
+.TP
 .B "-page \fI<width>x<height>{+-}<x>{+-}<y>{%}{!}{<}{>}"\fP
 \fRsize and location of an image canvas
 .TP
@@ -4447,7 +4660,7 @@ Options, above.
 \fRimage preview type
 .TP
 .B "-process \fI<command>"\fP
-\fRprocess a sequence of images
+\fRprocess a sequence of images using a process module
 .TP
 .B "-profile \fI<filename>"\fP
 \fRadd ICM, IPTC, or generic profile  to image
@@ -4458,6 +4671,9 @@ Options, above.
 .B "-raise \fI<width>x<height>"\fP
 \fRlighten or darken image edges
 .TP
+.B "-random-threshold \fI<channeltype> <LOWxHIGH>
+\fRrandom threshold the image
+.TP
 .B "-red-primary \fI<x>,<y>"\fP
 \fRred chromaticity primary point
 .TP
@@ -4466,6 +4682,9 @@ Options, above.
 .TP
 .B "-render"
 \fRrender vector operations
+.TP
+.B "-resample \fI<horizontal>x<vertical>"\fP
+\fRResample image to specified horizontal and vertical resolution
 .TP
 .B "-resize \fI<width>x<height>{%}{@}{!}{<}{>}"\fP
 \fRresize an image
@@ -4477,7 +4696,7 @@ Options, above.
 \fRapply Paeth image rotation to the image
 .TP
 .B "-sample \fI<geometry>"\fP
-\fRscale image with pixel sampling
+\fRscale image using pixel sampling
 .TP
 .B "-sampling-factor \fI<horizontal_factor>x<vertical_factor>"\fP
 \fRsampling factors used by JPEG or MPEG-2 encoder and YUV decoder/encoder.
@@ -4487,9 +4706,6 @@ Options, above.
 .TP
 .B "-scene \fI<value>"\fP
 \fRset scene number
-.TP
-.B "-seed \fI<value>"\fP
-\fRpseudo-random number generator seed value
 .TP
 .B "-segment \fI<cluster threshold>x<smoothing threshold>"\fP
 \fRsegment an image
@@ -4549,7 +4765,7 @@ Options, above.
 \fRthe image type
 .TP
 .B "-units \fI<type>"\fP
-\fRthe type of image resolution
+\fRthe units of image resolution
 .TP
 .B "-unsharp \fI<radius>{x<sigma>}{+<amount>}{+<threshold>}"\fP
 \fRsharpen the image with an unsharp mask operator
@@ -4714,7 +4930,7 @@ Options, above.
 .B "-authenticate \fI<string>"\fP
 \fRdecrypt image with this password
 .TP
-.B "-backdrop \fI<color>"\fP
+.B "-backdrop"
 \fRdisplay the image centered on a backdrop.
 .TP
 .B "-background \fI<color>"\fP
@@ -4756,11 +4972,14 @@ Options, above.
 .B "-debug \fI<events>"\fP
 \fRenable debug printout
 .TP
+.B "-define \fI<key>{=<value>},..."\fP
+\fRadd coder/decoder specific options
+.TP
 .B "-delay \fI<1/100ths of a second>"\fP
 \fRdisplay the next image after pausing
 .TP
 .B "-density \fI<width>x<height>"\fP
-\fRvertical and horizontal resolution in pixels of the image
+\fRhorizontal and vertical resolution in pixels of the image
 .TP
 .B "-depth \fI<value>"\fP
 \fRdepth of the image
@@ -4785,9 +5004,6 @@ Options, above.
 .TP
 .B "-enhance"
 \fRapply a digital filter to enhance a noisy image
-.TP
-.B "-extract \fI<width>x<height>{+-}<x>{+-}<y>{%}{@} {!}{<}{>}"\fP
-\fRextract an area from the image while decoding
 .TP
 .B "-filter \fI<type>"\fP
 \fRuse this type of filter when resizing an image
@@ -4835,6 +5051,7 @@ Options, above.
 \fRDisk, File, Map, or Memory resource limit
 .TP
 .B "-log \fI<string>"\fP
+\fRSpecify format for debug log
 .TP
 .B "-magnify \fI<factor>"\fP
 \fRmagnify the image
@@ -4861,6 +5078,9 @@ display image using this type.
 .B "-noop"
 \fRNOOP (no option)
 .TP
+.B "-ordered-dither \fI<channeltype> <NxN>
+\fRordered dither the image
+.TP
 .B "-page \fI<width>x<height>{+-}<x>{+-}<y>{%}{!}{<}{>}"\fP
 \fRsize and location of an image canvas
 .TP
@@ -4869,6 +5089,9 @@ display image using this type.
 .TP
 .B "-raise \fI<width>x<height>"\fP
 \fRlighten or darken image edges
+.TP
+.B "-random-threshold \fI<channeltype> <LOWxHIGH>
+\fRrandom threshold the image
 .TP
 .B "-remote"
 \fRperform a remote operation
@@ -4880,7 +5103,7 @@ display image using this type.
 \fRapply Paeth image rotation to the image
 .TP
 .B "-sample \fI<geometry>"\fP
-\fRscale image with pixel sampling
+\fRscale image using pixel sampling
 .TP
 .B "-sampling-factor \fI<horizontal_factor>x<vertical_factor>"\fP
 \fRsampling factors used by JPEG or MPEG-2 encoder and YUV decoder/encoder.
@@ -5387,9 +5610,9 @@ command to print \fIPostScript\fP to your printer. Default value: lp
 .B "sharedMemory \fI(class SharedMemory)"\fP
 \fR
 This resource specifies whether display should attempt use shared memory
-for pixmaps. GraphicsMagick must be compiled with shared memory support, and
-the display must support the MIT-SHM extension. Otherwise, this resource
-is ignored. The default is True.
+for pixmaps. GraphicsMagick must be compiled with shared memory support,
+and the display must support the MIT-SHM extension. Otherwise, this
+resource is ignored. The default is True.
 .TP
 .B "textFont \fI(class textFont)"\fP
 \fR
@@ -5597,22 +5820,23 @@ that is outside the overlap region. The overlap region is blank.
 .B "plus"
 \fR
 The result is just the sum of the image data. Output values are cropped
-to 255 (no overflow). This operation is independent of the matte channels.
+to the maximum value (no overflow). This operation is independent of the
+matte channels.
 .TP
 .B "minus"
 \fR
 The result of \fIimage\fP - \fIimage window\fP, with underflow cropped
-to zero. The matte channel is ignored (set to 255, full coverage).
+to zero. The matte channel is ignored (set to opaque, full coverage).
 .TP
 .B "add"
 \fR
 The result of \fIimage\fP + \fIimage window\fP, with overflow wrapping
-around (mod 256).
+around (mod MaxRGB+1).
 .TP
 .B "subtract"
 \fR
 The result of \fIimage\fP - \fIimage window\fP, with underflow wrapping
-around (mod 256). The add and subtract operators can be used to perform
+around (mod MaxRGB+1). The add and subtract operators can be used to perform
 reversible transformations.
 .TP
 .B "difference"
@@ -6789,14 +7013,14 @@ Options, above.
 .B "-debug \fI<events>"\fP
 \fRenable debug printout
 .TP
+.B "-define \fI<key>{=<value>},..."\fP
+\fRadd coder/decoder specific options
+.TP
 .B "-density \fI<width>x<height>"\fP
-\fRvertical and horizontal resolution in pixels of the image
+\fRhorizontal and vertical resolution in pixels of the image
 .TP
 .B "-depth \fI<value>"\fP
 \fRdepth of the image
-.TP
-.B "-extract \fI<width>x<height>{+-}<x>{+-}<y>{%}{@} {!}{<}{>}"\fP
-\fRextract an area from the image while decoding
 .TP
 .B "-format \fI<string>"\fP
 \fRoutput formatted image characteristics
@@ -6814,6 +7038,7 @@ Options, above.
 \fRthe type of list
 .TP
 .B "-log \fI<string>"\fP
+\fRSpecify format for debug log
 .TP
 .B "-ping"
 \fRefficiently determine image characteristics
@@ -6906,11 +7131,14 @@ Options, above.
 .B "-debug \fI<events>"\fP
 \fRenable debug printout
 .TP
+.B "-define \fI<key>{=<value>},..."\fP
+\fRadd coder/decoder specific options
+.TP
 .B "-delay \fI<1/100ths of a second>"\fP
 \fRdisplay the next image after pausing
 .TP
 .B "-density \fI<width>x<height>"\fP
-\fRvertical and horizontal resolution in pixels of the image
+\fRhorizontal and vertical resolution in pixels of the image
 .TP
 .B "-depth \fI<value>"\fP
 \fRdepth of the image
@@ -6933,9 +7161,6 @@ Options, above.
 .B "-endian \fI<type>"\fP
 \fRspecify endianness (MSB or LSB) of output image
 .TP
-.B "-extract \fI<width>x<height>{+-}<x>{+-}<y>{%}{@} {!}{<}{>}"\fP
-\fRextract an area from the image while decoding
-.TP
 .B "-frame"
 \fRinclude the X window frame in the imported image
 .TP
@@ -6955,12 +7180,16 @@ Options, above.
 \fRDisk, File, Map, or Memory resource limit
 .TP
 .B "-log \fI<string>"\fP
+\fRSpecify format for debug log
 .TP
 .B "-monochrome"
 \fRtransform the image to black and white
 .TP
 .B "-negate"
 \fRreplace every pixel with its complementary color
+.TP
+.B "-ordered-dither \fI<channeltype> <NxN>
+\fRordered dither the image
 .TP
 .B "-page \fI<width>x<height>{+-}<x>{+-}<y>{%}{!}{<}{>}"\fP
 \fRsize and location of an image canvas
@@ -6976,6 +7205,9 @@ Options, above.
 .TP
 .B "-quality \fI<value>"\fP
 \fRJPEG/MIFF/PNG compression level
+.TP
+.B "-random-threshold \fI<channeltype> <LOWxHIGH>
+\fRrandom threshold the image
 .TP
 .B "-resize \fI<width>x<height>{%}{@}{!}{<}{>}"\fP
 \fRresize an image
@@ -7023,7 +7255,7 @@ option such as
 filename.
 
 The graphics formats supported by \fBmogrify\fP are listed in
-above.
+\fIGraphicsMagick(1)\fP.
 .SH EXAMPLES
 
 To convert all the TIFF files in a particular directory to JPEG, use:
@@ -7058,7 +7290,7 @@ Options, above.
 
 .TP
 .B "-affine \fI<matrix>"\fP
-\fRdrawing transformation matrix
+\fRdrawing transform matrix
 .TP
 .B "-antialias"
 \fRremove pixel aliasing
@@ -7123,11 +7355,14 @@ Options, above.
 .B "-debug \fI<events>"\fP
 \fRenable debug printout
 .TP
+.B "-define \fI<key>{=<value>},..."\fP
+\fRadd coder/decoder specific options
+.TP
 .B "-delay \fI<1/100ths of a second>"\fP
 \fRdisplay the next image after pausing
 .TP
 .B "-density \fI<width>x<height>"\fP
-\fRvertical and horizontal resolution in pixels of the image
+\fRhorizontal and vertical resolution in pixels of the image
 .TP
 .B "-depth \fI<value>"\fP
 \fRdepth of the image
@@ -7164,9 +7399,6 @@ Options, above.
 .TP
 .B "-equalize"
 \fRperform histogram equalization to the image
-.TP
-.B "-extract \fI<width>x<height>{+-}<x>{+-}<y>{%}{@} {!}{<}{>}"\fP
-\fRextract an area from the image while decoding
 .TP
 .B "-fill \fI<color>"\fP
 \fRcolor to use when filling a graphic primitive
@@ -7222,7 +7454,7 @@ Options, above.
 .B "-lat \fI<width>x<height>{+-}<offset>{%}"\fP
 \fRperform local adaptive thresholding
 .TP
-.B "-level \fI<black_point>{,<white_point>}{%}{,<gamma>}"\fP
+.B "-level \fI<black_point>{,<gamma>}{,<white_point>}{%}"\fP
 \fRadjust the level of image contrast
 .TP
 .B "-limit \fI<type> <value>"\fP
@@ -7235,6 +7467,7 @@ Options, above.
 \fRthe type of list
 .TP
 .B "-log \fI<string>"\fP
+\fRSpecify format for debug log
 .TP
 .B "-loop \fI<iterations>"\fP
 \fRadd Netscape loop extension to your GIF animation
@@ -7275,6 +7508,12 @@ Options, above.
 .B "-opaque \fI<color>"\fP
 \fRchange this color to the pen color within the image
 .TP
+.B "-operator \fIchannel operator rvalue[%]"\fP
+\fRapply a mathematical or bitwise operator to an image channel
+.TP
+.B "-ordered-dither \fI<channeltype> <NxN>
+\fRordered dither the image
+.TP
 .B "-page \fI<width>x<height>{+-}<x>{+-}<y>{%}{!}{<}{>}"\fP
 \fRsize and location of an image canvas
 .TP
@@ -7296,6 +7535,9 @@ Options, above.
 .B "-raise \fI<width>x<height>"\fP
 \fRlighten or darken image edges
 .TP
+.B "-random-threshold \fI<channeltype> <LOWxHIGH>
+\fRrandom threshold the image
+.TP
 .B "-red-primary \fI<x>,<y>"\fP
 \fRred chromaticity primary point
 .TP
@@ -7304,6 +7546,9 @@ Options, above.
 .TP
 .B "-render"
 \fRrender vector operations
+.TP
+.B "-resample \fI<horizontal>x<vertical>"\fP
+\fRResample image to specified horizontal and vertical resolution
 .TP
 .B "-resize \fI<width>x<height>{%}{@}{!}{<}{>}"\fP
 \fRresize an image
@@ -7315,7 +7560,7 @@ Options, above.
 \fRapply Paeth image rotation to the image
 .TP
 .B "-sample \fI<geometry>"\fP
-\fRscale image with pixel sampling
+\fRscale image using pixel sampling
 .TP
 .B "-sampling-factor \fI<horizontal_factor>x<vertical_factor>"\fP
 \fRsampling factors used by JPEG or MPEG-2 encoder and YUV decoder/encoder.
@@ -7325,9 +7570,6 @@ Options, above.
 .TP
 .B "-scene \fI<value>"\fP
 \fRset scene number
-.TP
-.B "-seed \fI<value>"\fP
-\fRpseudo-random number generator seed value
 .TP
 .B "-segment \fI<cluster threshold>x<smoothing threshold>"\fP
 \fRsegment an image
@@ -7387,7 +7629,7 @@ Options, above.
 \fRthe image type
 .TP
 .B "-units \fI<type>"\fP
-\fRthe type of image resolution
+\fRthe units of image resolution
 .TP
 .B "-unsharp \fI<radius>{x<sigma>}{+<amount>}{+<threshold>}"\fP
 \fRsharpen the image with an unsharp mask operator
@@ -7568,8 +7810,11 @@ Options, above.
 .B "-debug \fI<events>"\fP
 \fRenable debug printout
 .TP
+.B "-define \fI<key>{=<value>},..."\fP
+\fRadd coder/decoder specific options
+.TP
 .B "-density \fI<width>x<height>"\fP
-\fRvertical and horizontal resolution in pixels of the image
+\fRhorizontal and vertical resolution in pixels of the image
 .TP
 .B "-depth \fI<value>"\fP
 \fRdepth of the image
@@ -7591,9 +7836,6 @@ Options, above.
 .TP
 .B "-endian \fI<type>"\fP
 \fRspecify endianness (MSB or LSB) of output image
-.TP
-.B "-extract \fI<width>x<height>{+-}<x>{+-}<y>{%}{@} {!}{<}{>}"\fP
-\fRextract an area from the image while decoding
 .TP
 .B "-fill \fI<color>"\fP
 \fRcolor to use when filling a graphic primitive
@@ -7632,6 +7874,7 @@ Options, above.
 \fRDisk, File, Map, or Memory resource limit
 .TP
 .B "-log \fI<string>"\fP
+\fRSpecify format for debug log
 .TP
 .B "-matte"
 \fRstore matte channel if the image has one
@@ -7648,6 +7891,9 @@ Options, above.
 .B "-noop"
 \fRNOOP (no option)
 .TP
+.B "-ordered-dither \fI<channeltype> <NxN>
+\fRordered dither the image
+.TP
 .B "-page \fI<width>x<height>{+-}<x>{+-}<y>{%}{!}{<}{>}"\fP
 \fRsize and location of an image canvas
 .TP
@@ -7659,6 +7905,9 @@ Options, above.
 .TP
 .B "-quality \fI<value>"\fP
 \fRJPEG/MIFF/PNG compression level
+.TP
+.B "-random-threshold \fI<channeltype> <LOWxHIGH>
+\fRrandom threshold the image
 .TP
 .B "-red-primary \fI<x>,<y>"\fP
 \fRred chromaticity primary point
@@ -7781,8 +8030,151 @@ image. The default is not to place a title at the top of the composite
 image.
 .SH ENVIRONMENT
 .TP
+.B "COLUMNS"
+\fROutput screen width. Used when formatting text for the screen. Many
+Unix systems keep this shell variable up to date, but it may need to be
+explicitly exported in order for GraphicsMagick to see it.
+.TP
 .B "DISPLAY"
-\fRTo get the default host, display number, and screen.
+\fRX11 display ID (host, display number, and screen in the form
+hostname:display.screen).
+.TP
+.B "HOME"
+\fRLocation of user's home directory. GraphicsMagick searches for
+configuration files in $HOME/.magick if the directory exists. See
+\fBMAGICK_CODER_MODULE_PATH\fP, \fBMAGICK_CONFIGURE_PATH\fP, and
+\fBMAGICK_FILTER_MODULE_PATH\fP if more flexibility is needed.
+.TP
+.B "MAGICK_CODER_MODULE_PATH"
+\fRSearch path to use when searching for image format coder modules.
+This path allows the user to arbitrarily extend the image formats
+supported by GraphicsMagick by adding loadable modules to an arbitrary
+location rather than copying them into the GraphicsMagick installation
+directory. The formatting of the search path is similar to operating
+system search paths (i.e. colon delimited for Unix, and semi-colon
+delimited for Microsoft Windows). This user specified search path is used
+before trying the default search path.
+.TP
+.B "MAGICK_CONFIGURE_PATH"
+\fRSearch path to use when searching for configuration (.mgk) files.
+The formatting of the search path is similar to operating system search
+paths (i.e. colon delimited for Unix, and semi-colon delimited for
+Microsoft Windows). This user specified search path is used before trying
+the default search path.
+.TP
+.B "MAGICK_DEBUG"
+\fRDebug options (see \fB-debug\fP for details)
+.TP
+.B "MAGICK_FILTER_MODULE_PATH"
+\fRSearch path to use when searching for filter process modules
+(invoked via \fB-process\fP). This path allows the user to arbitrarily
+extend GraphicsMagick's image processing functionality by adding loadable
+modules to an arbitrary location rather than copying them into the
+GraphicsMagick installation directory. The formatting of the search path
+is similar to operating system search paths (i.e. colon delimited for
+Unix, and semi-colon delimited for Microsoft Windows). This user
+specified search path is used before trying the default search path.
+.TP
+.B "MAGICK_FONT_PATH"
+\fRDirectory where GraphicsMagick should look for TrueType and
+Postscript Type1 font files if the font file is not found in the current
+directory. It is preferred to define the available fonts via type.mgk
+rather than use \fBMAGICK_FONT_PATH\fP.
+.TP
+.B "MAGICK_HOME"
+\fRPath to top of GraphicsMagick installation directory. Only observed
+by "uninstalled" builds of GraphicsMagick which do not have their location
+hard-coded or set by an installer.
+.TP
+.B "MAGICK_LIMIT_DISK"
+\fRMaximum amount of disk space allowed for use by the pixel cache.
+.TP
+.B "MAGICK_LIMIT_FILES"
+\fRMaximum number of open files.
+.TP
+.B "MAGICK_LIMIT_MAP"
+\fRMaximum size of a memory map.
+.TP
+.B "MAGICK_LIMIT_MEMORY"
+\fRMaximum amount of memory to allocate from the heap.
+.TP
+.B "MAGICK_TMPDIR"
+\fRPath to directory where GraphicsMagick should write temporary
+files. The default is to use the system default, or the location set by
+\fBTMPDIR\fP.
+.TP
+.B "TMPDIR"
+\fRFor POSIX-compatible systems (Unix-compatible), the path to the
+directory where all applications should write temporary files.
+Overridden by \fBMAGICK_TMPDIR\fP if it is set.
+.TP
+.B "TMP \fIor TEMP"\fP
+\fRFor Microsoft Windows, the path to the directory where applications
+should write temporary files. Overridden by \fBMAGICK_TMPDIR\fP if it
+is set.
+.SH CONFIGURATION FILES
+GraphicsMagick uses a number of XML format configuration files:
+.TP
+.B "colors.mgk"
+\fRcolors configuration file
+
+  <?xml version="1.0"?>
+  <colormap>
+    <color name="AliceBlue" red="240" green="248" blue="255"
+           compliance="SVG, X11, XPM" />
+  </colormap>
+.TP
+.B "delegates.mgk"
+\fRdelegates configuration file
+.TP
+.B "log.mgk"
+\fRlogging configuration file
+
+  <?xml version="1.0"?>
+  <magicklog>
+    <log events="None" />
+    <log output="stdout" />
+    <log filename="Magick-%d.log" />
+    <log generations="3" />
+    <log limit="2000" />
+    <log format="%t %r %u %p %m/%f/%l/%d:\\n  %e"  />
+  </magicklog>
+.TP
+.B "magic.mgk"
+\fRfile header magic test configuration file
+
+  <?xml version="1.0"?>
+  <magicmap>
+    <magic name="AVI" offset="0" target="RIFF" />
+  </magicmap>
+.TP
+.B "modules.mgk"
+\fRloadable modules configuration file
+
+  <?xml version="1.0"?>
+  <modulemap>
+    <module magick="8BIM" name="META" />
+  </modulemap>
+.TP
+.B "type.mgk"
+\fRmaster type (fonts) configuration file
+
+  <?xml version="1.0"?>
+  <typemap>
+    <\fB\fPinclude file="type-windows.mgk" />
+    <type
+      name="AvantGarde-Book"
+      fullname="AvantGarde Book"
+      family="AvantGarde"
+      foundry="URW"
+      weight="400"
+      style="normal"
+      stretch="normal"
+      format="type1"
+      metrics="/usr/local/share/ghostscript/fonts/a010013l.afm"
+      glyphs="/usr/local/share/ghostscript/fonts/a010013l.pfb"
+    />
+  </typemap>
 .SH ACKNOWLEDGEMENTS
 
 The \fBMIT X Consortium\fP for making network transparent graphics a reality.
@@ -7792,8 +8184,8 @@ The \fBMIT X Consortium\fP for making network transparent graphics a reality.
 implementation of Alan Paeth's image rotation algorithm.
 
 
-\fIDavid Pensak\fP, \fBImageMagick Studio\fP, for providing a computing
-environment that made this program possible.
+\fIDavid Pensak\fP, \fBE. I. du Pont de Nemours and Company\fP, for
+providing a computing environment that made this program possible.
 
 
 \fIPeder Langlo\fP, \fBHewlett Packard\fP, Norway, made hundreds of suggestions
@@ -7810,35 +8202,34 @@ based on his Zoom program.
 spatial subdivision color reduction algorithm is based on his Img software.
 .SH COPYRIGHT
 
-\fBCopyright (C) 2003 GraphicsMagick Development Group\fP
+\fBCopyright (C) 2002, 2003 GraphicsMagick Group, an organization
+dedicated to making software imaging solutions freely available.\fP
 
-\fBPermission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files ("GraphicsMagick"),
-to deal in GraphicsMagick without restriction, including without limitation
-the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of GraphicsMagick, and to permit persons to whom GraphicsMagick
-is furnished to do so, subject to the following conditions:\fP
+\fBPermission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files
+("GraphicsMagick"), to deal in GraphicsMagick without restriction,
+including without limitation the rights to use, copy, modify, merge,
+publish, distribute, sublicense, and/or sell copies of GraphicsMagick,
+and to permit persons to whom GraphicsMagick is furnished to do so,
+subject to the following conditions:\fP
 
 \fBThe above copyright notice and this permission notice shall be included
 in all copies or substantial portions of GraphicsMagick.\fP
 
-\fBThe software is provided "as is", without warranty of any kind, express
-or implied, including but not limited to the warranties of merchantability,
-fitness for a particular purpose and noninfringement. In no event shall
-GraphicsMagick Development Group be liable for any claim, damages or other liability,
-whether in an action of contract, tort or otherwise, arising from, out
-of or in connection with GraphicsMagick or the use or other dealings in
-GraphicsMagick.\fP
+\fBThe software is provided "as is", without warranty of any kind,
+express or implied, including but not limited to the warranties of
+merchantability, fitness for a particular purpose and noninfringement.
+In no event shall GraphicsMagick Group be liable for any claim, damages
+or other liability, whether in an action of contract, tort or otherwise,
+arising from, out of or in connection with GraphicsMagick or the use or
+other dealings in GraphicsMagick.\fP
 
-\fBExcept as contained in this notice, the name of the
-GraphicsMagick Development Group shall not be used in advertising or otherwise to
-promote the sale, use or other dealings in GraphicsMagick without prior written
-authorization from the GraphicsMagick Development Group.\fP
-.SH AUTHORS
+\fBExcept as contained in this notice, the name of the GraphicsMagick
+Group shall not be used in advertising or otherwise to promote the sale,
+use or other dealings in GraphicsMagick without prior written
+authorization from the GraphicsMagick Group.\fP
 
-\fI
-John Cristy, ImageMagick Studio LLC,
-.in 7
-Glenn Randers-Pehrson, GraphicsMagick Development Group.
-\fP
-
+\fBAdditional copyrights and licenses apply to this software. You should
+have received a copy of Copyright.txt with this package, which describes
+additional copyrights and licenses which apply to this software;
+otherwise see http://www.graphicsmagick.org/www/Copyright.html.\fB

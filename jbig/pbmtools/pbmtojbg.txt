@@ -1,25 +1,23 @@
-
-
-
 PBMTOJBG(1)                                           PBMTOJBG(1)
 
 
+
 NAME
-       pbmtojbg - portable bitmap to JBIG file converter
+       pbmtojbg - portable bitmap to JBIG1 file converter
 
 SYNOPSIS
        pbmtojbg [ options ] [ input-file | -  [ output-file ]]
 
 DESCRIPTION
        Reads  in  a portable bitmap (PBM) from a file or standard
-       input, compresses it, and outputs the image as a JBIG  bi-
+       input, compresses it, and outputs the image as a JBIG1 bi-
        level image entity (BIE) file.
 
-       JBIG  is a highly effective lossless compression algorithm
+       JBIG1 is a highly effective lossless compression algorithm
        for bi-level images (one bit per pixel), which is particu-
        larly suitable for scanned document pages.
 
-       A  JBIG encoded image can be stored in several resolutions
+       A JBIG1 encoded image can be stored in several resolutions
        (progressive mode).  These resolution layers can be stored
        all  in  one  single  BIE or they can be stored in several
        separate BIE files.  All resolution layers except the low-
@@ -27,10 +25,10 @@ DESCRIPTION
        resolution layer, because this requires  less  space  than
        encoding  the full image completely every time. Each reso-
        lution layer has twice the number of horizontal and verti-
-       cal pixels than the next lower layer.  JBIG files can also
-       store several bits per pixel as  separate  bitmap  planes,
-       and  pbmtojbg  can read a PGM file and transform it into a
-       multi-bitplane BIE.
+       cal  pixels  than  the  next lower layer.  JBIG1 files can
+       also store several  bits  per  pixel  as  separate  bitmap
+       planes,  and pbmtojbg can read a PGM file and transform it
+       into a multi-bitplane BIE.
 
 
 OPTIONS
@@ -57,25 +55,13 @@ OPTIONS
        -l number     Select the lowest resolution layer that will
                      be  written  to  the  BIE. It is possible to
                      store the various  resolution  layers  of  a
-                     JBIG   image   in   progressive   mode  into
-
-
-
-                            1998-04-10                          1
-
-
-
-
-
-PBMTOJBG(1)                                           PBMTOJBG(1)
-
-
-                     different BIEs. Options -l and -h  allow  to
-                     select  the  resolution-layer  interval that
-                     will appear in the created BIE.  The  lowest
-                     resolution  layer  has  number 0 and this is
-                     also the default value. By default all  lay-
-                     ers will be written.
+                     JBIG1 image in progressive mode into differ-
+                     ent BIEs. Options -l and -h allow to  select
+                     the   resolution-layer  interval  that  will
+                     appear in the created BIE. The lowest  reso-
+                     lution  layer  has number 0 and this is also
+                     the default value.  By  default  all  layers
+                     will be written.
 
        -h number     Select  the  highest  resolution  layer that
                      will be written to the BIE. By  default  all
@@ -99,7 +85,7 @@ PBMTOJBG(1)                                           PBMTOJBG(1)
                      more comfortable way of selecting the number
                      of resolution layers.
 
-       -s number     The  JBIG algorithm splits each image into a
+       -s number     The JBIG1 algorithm splits each image into a
                      number of horizontal  stripes.  This  option
                      specifies that each stripe shall have number
                      lines in  layer  0.  The  default  value  is
@@ -107,7 +93,7 @@ PBMTOJBG(1)                                           PBMTOJBG(1)
                      will be used for the whole image.
 
        -m number     Select the maximum horizontal offset of  the
-                     adaptive  template  pixel.  The JBIG encoder
+                     adaptive  template pixel.  The JBIG1 encoder
                      uses a number of neighbour pixels  in  order
                      to get statistical a priori knowledge of the
                      probability, whether the next pixel will  be
@@ -123,22 +109,10 @@ PBMTOJBG(1)                                           PBMTOJBG(1)
                      decoders are only  required  to  support  at
                      least  a  distance of 16 pixels by the stan-
                      dard, no higher value than 16 for number  is
-                     recommended    in    order    to    maintain
-
-
-
-                            1998-04-10                          2
-
-
-
-
-
-PBMTOJBG(1)                                           PBMTOJBG(1)
-
-
-                     interoperability with other JBIG implementa-
-                     tions.  The  maximal  vertical offset of the
-                     adaptive template pixel is always zero.
+                     recommended  in order to maintain interoper-
+                     ability with  other  JBIG1  implementations.
+                     The  maximal vertical offset of the adaptive
+                     template pixel is always zero.
 
        -t number     Encode only the  specified  number  of  most
                      significant  bit  planes. This option allows
@@ -146,7 +120,7 @@ PBMTOJBG(1)                                           PBMTOJBG(1)
                      not  all  bits  per  pixel are needed in the
                      output.
 
-       -o number     JBIG separates an image into  several  hori-
+       -o number     JBIG1 separates an image into several  hori-
                      zontal   stripes,   resolution   layers  and
                      planes, were each plane contains one bit per
                      pixel.  One  single  stripe in one plane and
@@ -156,9 +130,9 @@ PBMTOJBG(1)                                           PBMTOJBG(1)
                      which  the SDEs can be stored inside the BIE
                      and number selects which one shall be  used.
                      The  order  of the SDEs is only relevant for
-                     applications that want to decode a JBIG file
-                     which  has  not  yet completely arrived from
-                     e.g.  a  slow   network   connection.    For
+                     applications that want  to  decode  a  JBIG1
+                     file  which  has  not yet completely arrived
+                     from e.g. a slow  network  connection.   For
                      instance  some  applications prefer that the
                      outermost of the three loops (stripes,  lay-
                      ers,  planes) is over all layers so that all
@@ -187,20 +161,9 @@ PBMTOJBG(1)                                           PBMTOJBG(1)
 
        -p number     This option allows to activate or deactivate
                      various optional algorithms defined  in  the
-                     JBIG  standard.  Just add the numbers of the
+                     JBIG1  standard. Just add the numbers of the
                      following options which you want to activate
                      in order to get the number value:
-
-
-
-                            1998-04-10                          3
-
-
-
-
-
-PBMTOJBG(1)                                           PBMTOJBG(1)
-
 
                         4      deterministic prediction (DPON)
                         8      layer 0 typical prediction (TPBON)
@@ -208,23 +171,45 @@ PBMTOJBG(1)                                           PBMTOJBG(1)
                        64      layer 0 two-line template (LRLTWO)
 
                      Except for special applications (like commu-
-                     nication with JBIG  subset  implementations)
+                     nication with JBIG1 subset  implementations)
                      and for debugging purposes you will normally
                      not  want  to  change  anything  here.   The
                      default  is 28, which provides the best com-
                      pression result.
 
-       -c            The  adaptive  template  pixel  movement  is
-                     determined  as  suggested  in annex C of the
-                     standard. By  default  the  template  change
-                     takes  place directly in the next line which
-                     is most effective. However a few conformance
+       -c            Determine the adaptive template pixel  move-
+                     ment  as  suggested  in annex C of the stan-
+                     dard. By default the template  change  takes
+                     place  directly  in  the next line, which is
+                     most effective. However, a  few  conformance
                      test  examples  in  the standard require the
                      adaptive template change to be delayed until
                      the  first  line  of  the  next stripe. This
                      option selects this special behavior,  which
                      is  normally not required except in order to
-                     pass some conformance test suite.
+                     pass some conformance tests.
+
+       -Y number     A long time ago,  there  were  fax  machines
+                     that  couldn't  even  hold  a single page in
+                     memory. They had to start transmitting  data
+                     before  the  page  was scanned in completely
+                     and the length of the image was known.   The
+                     authors  of the standard added a rather ugly
+                     hack to the otherwise beautiful JBIG1 format
+                     to  support  this. The NEWLEN marker segment
+                     can override the image height stated in  the
+                     BIE   header  anywhere  later  in  the  data
+                     stream. Normally  pbmtojbg  never  generates
+                     NEWLEN marker segments, as it knows the cor-
+                     rect  image  height  when  it  outputs   the
+                     header.  This  option is solely intended for
+                     the purpose of generating  test  files  with
+                     NEWLEN  marker  segments.  It can be used to
+                     specify a higher initial  image  height  for
+                     use  in  the  BIE  header, and pbmtojbg will
+                     then add a NEWLEN marker segment at the lat-
+                     est  possible opportunity to the data stream
+                     to signal the correct final height.
 
        -v            After the BIE has been created, a few  tech-
                      nical  details  of  the created file will be
@@ -239,26 +224,18 @@ BUGS
        or deleted and this will damage the binary data.
 
 STANDARDS
-       This program implements the JBIG image coding algorithm as
-       specified in ISO/IEC 11544:1993 and ITU-T T.82(1993).
+       This  program  implements the JBIG1 image coding algorithm
+       as specified in ISO/IEC 11544:1993 and ITU-T T.82(1993).
 
 AUTHOR
        The pbmtojbg program is  part  of  the  JBIG-KIT  package,
        which  has been developed by Markus Kuhn.  The most recent
-       version of this portable JBIG library  and  tools  set  is
-       freely available on the Internet from anonymous ftp server
-       ftp.informatik.uni-erlangen.de        in         directory
-       pub/doc/ISO/JBIG/.   Bug   reports   should   be  sent  to
-       <mkuhn@acm.org>.
+       version of this portable JBIG1 library and  tools  set  is
+       available  from <http://www.cl.cam.ac.uk/~mgk25/jbigkit/>.
 
 SEE ALSO
        pbm(5), pgm(5), jbgtopbm(1)
 
 
 
-
-
-
-                            1998-04-10                          4
-
-
+                            2003-06-04                PBMTOJBG(1)

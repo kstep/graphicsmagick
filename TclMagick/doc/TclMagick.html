@@ -1,0 +1,4002 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+  <head>
+    <title>TclMagick</title>
+    <meta http-equiv="Content-Type" content="text/html;
+      charset=iso-8859-1">
+    <link rel="stylesheet" href="style.css">
+    <!-- $Id$ -->
+  </head>
+
+  <body>
+
+    <table>
+      <tbody>
+	<tr>
+	  <td style="background-color: #ff6666; padding: 1ex; font-weight: bold;"><a href="index.html">Main</a></td>
+	  <td style="background-color: #66ff66; padding: 1ex; font-weight: bold;"><a href="TclMagick.html">TclMagick</a></td>
+	  <td style="background-color: #6666ff; padding: 1ex; font-weight: bold;"><a href="TkMagick.html">TkMagick</a></td>
+	  <td width="100%"></td>
+	  <td>
+		<a href="http://sourceforge.net/projects/tclmagick">
+		<img src="http://sourceforge.net/sflogo.php?group_id=96922&amp;type=2" width="125" height="37" border="0" 
+			alt="SourceForge.net Logo"></a>
+	  </td>
+	</tr>
+      </tbody>
+    </table>
+
+
+    <h2>A Tcl interface to ImageMagick & GraphicsMagick</h2>
+    <p>
+      TclMagick is a Tcl wrapper for ImageMagick's high-level Wand
+      interface.  It lets you convert and manipulate a large variety
+      of image formats, and importantly, does not require the Tk
+      toolkit or an active windowing system!
+    </p>
+    <p>
+      There is also a <a href="TkMagick.html">TkMagick</a> module, which exists to bridge
+      TclMagick and Tk.  It lets you use make Tk images from data
+      loaded with TclMagick, and vice versa.
+    </p>
+    <p>
+      <a href="http://www.imagemagick.org"
+	target="http://www.imagemagick.org">http://www.imagemagick.org</a><br>
+      <a href="http://www.graphicsmagick.org"
+	target="http://www.graphicsmagick.org">http://www.graphicsmagick.org</a>
+    </p>
+    <p>
+      TclMagick doesn't add any intelligence to ImageMagick, except
+      some Tclification with optional command arguments.  The wrapping
+      of ImageMagick's Wand-API should be mostly obvious, so there is
+      no need for extensive, separate TclMagick documentation.  For a
+      more detailed description of methods refer to the <a
+	href="http://www.imagemagick.org/www/api.html"
+	target="http://www.imagemagick.org/www/api.html">Wand-API
+	documentation</a>.
+    </p>
+    <p>
+      There are three different ImageMagick object types: MagickWand,
+      DrawingWand and PixelWand.  In TclMagick these objects are
+      called <i>wand</i>, <i>drawing</i> and <i>pixel</i>.  They are
+      created and deleted with the <i>magick</i> command similar to
+      Tcl's <i>image</i>command.  Wand-API methods are then called as
+      subcommands of the created TclMagick object.<br>
+
+      If an ImageMagick-API allows a NULL object argument, it can be
+      specified as an empty string {} or "".
+    </p>
+    <h2>General design:</h2>
+
+    <p>
+      There is one main command: <b>magick</b> - Create/delete Magick
+      &quot;wand&quot;, &quot;drawing&quot;, and &quot;pixel&quot;
+      objects
+    </p>
+    <p>
+      Creating a Magick object creates a command of the same name:
+      <code><i>magickName</i> subcmd ?args?</code>
+    </p>
+    <p>
+      Deleting the Magick object also deletes the associated command.
+    </p>
+  </pre>
+    <h2>"magick" command</h2>
+    <table width="669" border="1">
+	<tr>
+	  <th colspan="2" scope="col"><div align="left">magick subcmd ?args?</div></th>
+	</tr>
+	<tr>
+	  <td scope="col"><div align="left">magick create type ?name?</div></td>
+	  <td width="278" scope="col"><div align="left"># Create a TclMagick object of type</div></td>
+	</tr>
+	<tr>
+	  <td width="305"><div align="left">
+	      <ul>
+		<li>type=&quot;wand&quot;, &quot;drawing&quot;, &quot;pixel&quot;</li>
+		<li>returns: object name</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>      <div align="left">magick delete name ?name? ... </div></td>
+	  <td><div align="left"># Delete TclMagick objects</div></td>
+	</tr>
+	<tr>
+	  <td>magick names ?type?</td>
+	  <td># Return all TclMagick objects (of type)</td>
+	</tr>
+	<tr>
+	  <td>magick type name</td>
+	  <td># Return the type of the object</td>
+	</tr>
+	<tr>
+	  <td>magick types</td>
+	  <td># Return valid type names</td>
+	</tr>
+	<tr>
+	  <td>magick resourcelimit resource ?limit?</td>
+	  <td>MagickGet/SetResourceLimits</td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>resource=&quot;undefined&quot;, &quot;area&quot;, &quot;disk&quot;, &quot;file&quot;, &quot;map&quot;, &quot;memory&quot;</li>
+		<li>unsigned limit</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">magick fonts ?pattern? <br>
+	    </div></td>
+	  <td><div align="left">MagickQueryFonts</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>string pattern (default="*")</li>
+		<li>returns stringList (all matching fonts)</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">magick formats ?pattern? <br>
+	    </div></td>
+	  <td><div align="left">MagickQueryFormats</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>string pattern (default="*")</li>
+		<li>returns stringList (all matching image formats)</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td>magick library<br>
+	    magick library -copyright<br>
+	    magick library -date<br>
+	    magick library -maxrgb<br>
+	    magick library -name<br>
+	    magick library -quantumdepth<br>
+		magick library -url<br>
+	    magick library -version<br>
+	    magick library -versionstr</td>
+	  <td># Returns all options <br>
+	    MagickGetCopyright<br>
+	    MagickGetReleaseDate<br>
+	    MagickGetQuantumDepth<br>
+	    MagickGetPackageName<br>
+	    MagickGetQuantumDepth<br>
+	    MagickGetHomeURL<br>
+	    MagickGetVersion<br>
+	    MagickGetVersion</td>
+	</tr>
+	<tr>
+	  <td><ul>
+	      <li>Without -option the return is a list of all -option value ... pairs</li>
+	      <li> -quantumdepth returns an integer</li>
+	      <li>-version returns a string like &quot;5.5.8&quot;</li>
+	      <li>-versionstr returns the complete MagickGetVersion()</li>
+	      <li>all others return a string  </li>
+	    </ul></td>
+	  <td>&nbsp;</td>
+	</tr>
+	<tr>
+	  <td>magick version </td>
+	  <td><p># Return TclMagick version</p>    </td>
+	</tr>
+	<tr>
+	  <td><ul>
+	      <li>return string version </li>
+	    </ul></td>
+	  <td>&nbsp;</td>
+	</tr>
+    </table>
+    <h2>MagickWand object subcommands </h2>
+    <table width="800" border="1">
+	<tr>
+	  <th scope="col"><div align="left"></div>      <div align="left">
+	      <div align="left"></div>
+	      <div align="left">wandName subcmd ?args?</div>
+	    </div></th>
+	  <th width="246" scope="col"><div align="left">ImageMagick API </div></th>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>      <div align="left">wandName adaptivethreshold ?width? ?height? ?ofs?<br>
+	      wandName AdaptiveThresholdImage ?width? ?height? ?ofs?      <br>
+	    </div></td>
+	  <td><div align="left">MagickAdaptiveThresholdImage<br>
+	      MagickAdaptiveThresholdImage<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td width="538"><div align="left">
+	      <ul>
+		<li>integer width,height,ofs<br>
+		  (default: width=2, height=width, ofs=0)</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>      <div align="left">wandName add wandName <br>
+	      wandName AddImage wandName <br>
+	    </div></td>
+	  <td><div align="left">MagickAddImage<br>
+	      MagickAddImage      <br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>MagickWand wandName</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>      <div align="left">wandName addnoise ?noiseType? <br>
+	      wandName AddNoiseImage ?noiseType? <br>
+	    </div></td>
+	  <td><div align="left">MagickAddNoiseImage<br>
+	      MagickAddNoiseImage    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>string noiseType
+		  = &quot;uniform&quot;, &quot;gaussian&quot;, &quot;multiplicativegaussian&quot;, &quot;impulse&quot;, &quot;laplacian&quot;, &quot;poisson&quot;<br>
+		  (default: noisetype=&quot;uniform&quot;)</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>      <div align="left">wandName affinetransform draw <br>
+	      wandName AffineTransformImage draw <br>
+	    </div></td>
+	  <td><div align="left">MagickAffineTransformImage<br>
+	      MagickAffineTransformImage</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>DrawingWand draw</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName annotate draw ?x y? ?angle? text<br>
+	      wandName AnnotateImage draw ?x y? ?angle? text<br>
+	    </div></td>
+	  <td><div align="left">MagickAnnotateImage<br>
+	      MagickAnnotateImage</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>DrawingWand draw</li>
+		<li>double x, y (default=0.0)</li>
+		<li>double angle (default=0.0) </li>
+		<li>string text </li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>      <div align="left">wandName append ?stack? ?newName? <br>
+	      wandName AppendImages ?stack? ?newName? <br>
+	    </div></td>
+	  <td><div align="left">MagickAppendImages<br>
+	      MagickAppendImages    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>bool stack (default=0)</li>
+		<li> string newName</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>      <div align="left">wandName average ?newName? <br>
+	      wandName AverageImages ?newName? <br>
+	    </div></td>
+	  <td><div align="left">MagickAverageImages<br>
+	      MagickAverageImages      <br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>string newName</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName blackthreshold thresholdPixel <br>
+	      wandName BlackThresholdImage thresholdPixel<br>
+	    </div></td>
+	  <td><div align="left">MagickBlackThresholdImage<br>
+	      MagickBlackThresholdImage<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>PixelWand thresholdPixel</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName blur ?radius? ?sigma? <br>
+	      wandName BlurImage ?radius? ?sigma?<br>
+	    </div></td>
+	  <td><div align="left">MagickBlurImage<br>
+	      MagickBlurImage<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>double radius,sigma<br>
+		  (default: radius=0.0, sigma=1.0)</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName border borderPixel ?width? ?height? <br>
+	      wandName BorderImage borderPixel ?width? ?height?<br>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>PixelWand borderPixel</li>
+		<li>integer width,height<br>
+		  (default: width=1, height=width)</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left">MagickBorderImage<br>
+	      MagickBorderImage<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName charcoal ?radius? ?sigma? <br>
+	      wandName CharcoalImage ?radius? ?sigma? <br>
+	    </div></td>
+	  <td><div align="left">MagickCharcoalImage<br>
+	      MagickCharcoalImage<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>double radius,sigma (default: radius=0.0, sigma=1.0)</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName chop width height ?x y? <br>
+	      wandName ChopImage width height ?x y? <br>
+	    </div></td>
+	  <td><div align="left">MagickChopImage<br>
+	      MagickChopImage<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>integer width,height,x,y (default: x=y=0)</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"><br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName clip <br>
+	      wandName ClipImage <br>
+	    </div></td>
+	  <td><div align="left">MagickClipImage<br>
+	      MagickClipImage</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>&lt;none&gt;</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName clippath pathname ?inside? <br>
+	      wandName ClipPathImage pathname ?inside?<br>
+	    </div></td>
+	  <td><div align="left">MagickClipPathImage<br>
+	      MagickClipPathImage<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>string pathname</li>
+		<li>bool inside (default=0)</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName clone ?newName? <br>
+	      wandName CloneWand ?newName? <br>
+	    </div></td>
+	  <td><div align="left">CloneMagickWand<br>
+	      CloneMagickWand<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>string newName</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName coalesce ?newName? <br>
+	      wandName CoalesceImages ?newName?<br>
+	    </div></td>
+	  <td><div align="left">MagickCoalesceImages<br>
+	      MagickCoalesceImages<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul><li>string newNam</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName colorfloodfill fillPix ?fuzz? ?borderPix? ?x y? <br>
+	      wandName ColorFloodfillImage fillPix ?fuzz? ?borderPix? ?x y?<br>
+	    </div></td>
+	  <td><div align="left">MagickColorFloodfillImage<br>
+	      MagickColorFloodfillImage<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>PixelWand fillPix,borderPix
+		  (default: borderPix=""=>NULL)</li>
+		<li>double fuzz (default=0.0)</li>
+		<li>integer x,y
+		  (default: x=y=0)</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName colorize fillPix opacityPix <br>
+	      wandName ColorizeImage fillPix opacityPix<br>
+	    </div></td>
+	  <td><div align="left">MagickColorizeImage<br>
+	      MagickColorizeImage<br>
+	      <br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>PixelWand fillPix,opacityPix</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName comment str <br>
+	      wandName CommentImage str<br>
+	    </div></td>
+	  <td><div align="left">MagickCommentImage<br>
+	      MagickCommentImage<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>string str</li>
+	      </ul>
+
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName compare refName <br>
+	      wandName CompareImages refName metric <br>
+	    </div></td>
+	  <td><div align="left">MagickCompareImages<br>
+	      MagickCompareImages<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>MagickWand refName</li>
+		<li> string metricType =<br>
+		  &quot;meanabsoluteerror&quot;, &quot;meansquarederror&quot;, &quot;peakabsoluteerror&quot;, &quot;peaksignaltonoiseratio&quot;, &quot;rootmeansquarederror&quot;</li>
+		<li> returns double distortion              </li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName comparechannels  refName chan metric <br>
+	      wandName CompareImageChannels refName chan metric<br>
+	    </div></td>
+	  <td><div align="left">MagickCompareImageChannels<br>
+	      MagickCompareImageChannels<br>
+	      <br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>MagickWand refName</li>
+		<li>string channelType = &quot;undefined&quot;, &quot;red&quot;, &quot;cyan&quot;, &quot;green&quot;, &quot;magenta&quot;, &quot;blue&quot;, &quot;yellow, &quot;opacity, &quot;black, &quot;matte&quot;, &quot;index&quot;</li>
+		<li> string metricType =&quot;meanabsoluteerror&quot;, &quot;meansquarederror&quot;, &quot;peakabsoluteerror&quot;, &quot;peaksignaltonoiseratio&quot;, &quot;rootmeansquarederror&quot;</li>
+		<li>            returns double distortion</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName composite compWand opType ?x y? <br>
+	      wandName CompositeImage compWand opType ?x y?<br>
+	    </div></td>
+	  <td><div align="left">MagickCompositeImage<br>
+	      MagickCompositeImage<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>string opType
+		  = &quot;undefined&quot;, &quot;over&quot;, &quot;in&quot;, &quot;out&quot;, &quot;atop&quot;, &quot;xor&quot;, &quot;plus&quot;, &quot;minus&quot;, &quot;add&quot;, &quot;subtract&quot;, &quot;difference&quot;, &quot;multiply&quot;, &quot;bumpmap&quot;, &quot;copy&quot;, &quot;copyred&quot;, &quot;copygreen&quot;, &quot;copyblue&quot;, &quot;copyopacity&quot;, &quot;clear&quot;, &quot;dissolve&quot;, &quot;displace&quot;, &quot;modulate&quot;, &quot;threshold&quot;, &quot;no&quot;, &quot;darken&quot;, &quot;lighten&quot;, &quot;hue&quot;, &quot;saturate&quot;, &quot;colorize&quot;, &quot;luminize&quot;, &quot;screen&quot;, &quot;overlay&quot;, &quot;copycyan&quot;, &quot;copymagenta&quot;, &quot;copyyellow&quot;, &quot;copyblack&quot;, &quot;replace&quot;</li>
+		<li>MagickWand compWand</li>
+		<li>integer x,y (default: x=y=0)</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName contrast ?sharpen? <br>
+	      wandName ContrastImage ?sharpen? <br>
+	    </div></td>
+	  <td><div align="left">MagickContrastImage<br>
+	      MagickContrastImage<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul><li>bool sharpen
+		  (default: sharpen=yes)</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName convolve order kernelData <br>
+	      wandName ConvolveImage order kernelData <br>
+	    </div></td>
+	  <td><div align="left">MagickConvolveImage<br>
+	      MagickConvolveImage<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>integer order=odd</li>
+		<li> kernelData = list of doubles with (order x order) elements</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName crop width height ?x y? <br>
+	      wandName CropImage width height ?x y?<br>
+	    </div></td>
+	  <td><div align="left">MagickCropImage<br>
+	      MagickCropImage<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>integer width,height,x,y
+		  (default: x=y=0)</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName cyclecolormap ?displace? <br>
+	      wandName CycleColormapImage ?displace? <br>
+	    </div></td>
+	  <td><div align="left">MagickCycleColormapImage<br>
+	      MagickCycleColormapImage<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>integer displace
+		  (default: displace=1)</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName deconstruct ?newName? <br>
+	      wandName DeconstructImages ?newName?<br>
+	    </div></td>
+	  <td><div align="left">MagickDeconstructImages<br>
+	      MagickDeconstructImages<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>string newName</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName describe <br>
+	      wandName DescribeImage<br>
+	    </div></td>
+	  <td><div align="left">MagickDescribeImage<br>
+	      MagickDescribeImage<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>&lt;none&gt;</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName despeckle <br>
+	      wandName DespeckleImage <br>
+	    </div></td>
+	  <td><div align="left">MagickDespeckleImage<br>
+	      MagickDespeckleImage<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>&lt;none&gt;</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName draw draw <br>
+	      wandName DrawImage draw<br>
+	    </div></td>
+	  <td><div align="left">MagickDrawImage<br>
+	      MagickDrawImage<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>DrawingWand draw</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName edge ?radius? <br>
+	      wandName EdgeImage ?radius?<br>
+	    </div></td>
+	  <td><div align="left">MagickEdgeImage<br>
+	      MagickEdgeImage<br>
+	      <br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>double radius (default: radius=0.0)</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName emboss ?radius? ?sigma? <br>
+	      wandName EmbossImage ?radius? ?sigma?<br>
+	    </div></td>
+	  <td><div align="left">MagickEmbossImage<br>
+	      MagickEmbossImage<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>double radius,sigma (default: radius=0.0, sigma=1.0)</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName enhance <br>
+	      wandName EnhanceImage<br>
+	    </div></td>
+	  <td><div align="left">MagickEnhanceImage<br>
+	      MagickEnhanceImage<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>&lt;none&gt;</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName equalize <br>
+	      wandName EqualizeImage <br>
+	    </div></td>
+	  <td><div align="left">MagickEqualizeImage<br>
+	      MagickEqualizeImage<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>&lt;none&gt;</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName flatten ?newName? <br>
+	      wandName FlattenImages ?newName?<br>
+	    </div></td>
+	  <td><div align="left">MagickFlattenImages<br>
+	      MagickFlattenImages<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>string newName</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName flip <br>
+	      wandName FlipImage<br>
+	    </div></td>
+	  <td><div align="left">MagickFlipImage<br>
+	      MagickFlipImage<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>&lt;none&gt;</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName flop <br>
+	      wandName FlopImage <br>
+	    </div></td>
+	  <td><div align="left">MagickFlopImage<br>
+	      MagickFlopImage<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>&lt;none&gt;</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">wandName frame framePix ?width? ?height? ?inner? ?outer? <br>
+	      wandName FrameImage framePix ?width? ?height? ?inner? ?outer?<br>
+	    </div>        </td>
+	  <td><div align="left">MagickFrameImage<br>
+	      MagickFrameImage<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>PixelWand framePix</li>
+		<li> integer witdh,height,innerBevel,outerBevel<br>
+		  (default: width=1, height=width, inner=0, outer=inner)</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandname fx expr ?newName?<br>
+	      wandname fxImage expr ?newName?<br>
+	    </div></td>
+	  <td><div align="left">MagickFxImage<br>
+	      MagickFxImage<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li> string expr</li>
+		<li> string newName</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandname fxchannel channelType expr ?newName?<br>
+	      wandname fxImageChannel channelType expr ?newName?<br>
+	    </div></td>
+	  <td><div align="left">MagickFxImageChannel<br>
+	      MagickFxImageChannel<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>string channelType = &quot;undefined&quot;, &quot;red&quot;, &quot;cyan&quot;, &quot;green&quot;, &quot;magenta&quot;, &quot;blue&quot;, &quot;yellow, &quot;opacity, &quot;black, &quot;matte&quot;, &quot;index&quot;</li>
+		<li> string expr</li>
+		<li> string newName</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName gamma level <br>
+	      wandName GammaImage level<br>
+	    </div></td>
+	  <td><div align="left">MagickGammaImage<br>
+	      MagickGammaImage<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>double level</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName gammachannel channelType level <br>
+	      wandName GammaImageChannel channelType level<br>
+	    </div></td>
+	  <td><div align="left">MagickGammaImageChannel<br>
+	      MagickGammaImageChannel<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>string channelType
+		  = &quot;undefined&quot;, &quot;red&quot;, &quot;cyan&quot;, &quot;green&quot;, &quot;magenta&quot;, &quot;blue&quot;, &quot;yellow, &quot;opacity, &quot;black, &quot;matte&quot;, &quot;index&quot;</li>
+		<li>double level</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName filename ?name? <br>
+	      wandName GetFilename <br>
+	      wandName SetFilename name<br>
+	    </div></td>
+	  <td><div align="left">MagickGet/SetFilename<br>
+	      MagickGetFilename<br>
+	      MagickSetFilename<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>string name</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName backgroundcolor ?pixel? <br>
+	      wandName GetBackgroundColor ?pixel?<br>
+	      wandName SetBackgroundColor pixel <br>
+	    </div></td>
+	  <td><div align="left">MagickGet/SetBackgroundColor<br>
+	      MagickGetImageBackgroundColor<br>
+	      MagickSetImageBackgroundColor<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>PixelWand pixel</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName blueprimary ?x y? <br>
+	      wandName GetBluePrimary <br>
+	      wandName SetBluePrimary x y<br>
+	    </div></td>
+	  <td><div align="left">MagickGet/SetBluePrimary<br>
+	      MagickGetBluePrimary<br>
+	      MagickSetBluePrimary<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>double x, y </li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName bordercolor ?pixel? <br>
+	      wandName GetBorderColor ?pixel? <br>
+	      wandName SetBorderColor pixel <br>
+	    </div></td>
+	  <td><div align="left">MagickGet/SetBorderColor<br>
+	      MagickGetImageBorderColor<br>
+	      MagickSetImageBorderColor<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>PixelWand pixel</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName channeldepth channelType depth <br>
+	      wandName GetChannelDepth channelType <br>
+	      wandName SetChannelDepth channelType depth<br>
+	    </div></td>
+	  <td><div align="left">MagickGet/SetImageChannelDepth<br>
+	      MagickGetImageChannelDepth<br>
+	      MagickSetImageChannelDepth<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>string channelType
+		  = &quot;undefined&quot;, &quot;red&quot;, &quot;cyan&quot;, &quot;green&quot;, &quot;magenta&quot;, &quot;blue&quot;, &quot;yellow, &quot;opacity, &quot;black, &quot;matte&quot;, &quot;index&quot;</li>
+		<li> int depth          </li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName channelextrema channelType <br>
+	      wandName GetChannelExtrema channelType<br>
+	    </div></td>
+	  <td><div align="left">MagickGetImageChannelExtrema<br>
+	      MagickGetImageChannelExtrema<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li> string channelType
+		  = &quot;undefined&quot;, &quot;red&quot;, &quot;cyan&quot;, &quot;green&quot;, &quot;magenta&quot;, &quot;blue&quot;, &quot;yellow, &quot;opacity, &quot;black, &quot;matte&quot;, &quot;index&quot;</li>
+		<li>            returns intList {min max}          </li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName channelmean channelType <br>
+	      wandName GetChannelMean channelType<br>
+	    </div></td>
+	  <td><div align="left">MagickGetImageChannelMean<br>
+	      MagickGetImageChannelMean<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>string channelType
+		  = &quot;undefined&quot;, &quot;red&quot;, &quot;cyan&quot;, &quot;green&quot;, &quot;magenta&quot;, &quot;blue&quot;, &quot;yellow, &quot;opacity, &quot;black, &quot;matte&quot;, &quot;index&quot;</li>
+		<li>returns doubleList {mean deviation}</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName colormapcolor index ?pixel? <br>
+	      wandName GetColormapColor index ?pixel?<br>
+	      wandName SetColormapColor index pixel <br>
+	    </div></td>
+	  <td><div align="left">MagickGet/SetColormapColor<br>
+	      MagickGetImageColormapColor<br>
+	      MagickSetImageColormapColor<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>int index</li>
+		<li> PixelWand pixel</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName colors <br>
+	      wandName GetColors<br>
+	    </div></td>
+	  <td><div align="left">MagickGetImageColors<br>
+	      MagickGetImageColors<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>returns int numColors</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName colorspace ?colorspaceType?<br>
+	      wandName GetColorspace <br>
+	      wandName SetColorspace colorspaceType<br>
+	    </div></td>
+	  <td><div align="left">MagickGet/SetImageColorspace<br>
+	      MagickGetImageColorspace<br>
+	      MagickSetImageColorspace<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>string colorspaceType (default=&quot;RGB&quot;) =&quot;undefined&quot;, &quot;RGB&quot;, &quot;GRAY&quot;, &quot;transparent&quot;, &quot;OHTA&quot;, &quot;LAB&quot;, &quot;XYZ&quot;, &quot;YCbCr&quot;, &quot;YCC&quot;, &quot;YIQ&quot;, &quot;YPbPr&quot;, &quot;YUV&quot;, &quot;CMYK&quot;, &quot;sRGB&quot;, &quot;HSL&quot;, &quot;HWB&quot;</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName compose ?opType?<br>
+	      wandName GetCompose <br>
+	      wandName SetCompose opType<br>
+	    </div></td>
+	  <td><div align="left">MagickGet/SetImageCompose<br>
+	      MagickGetImageCompose<br>
+	      MagickSetImageCompose<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>string opType
+		  = &quot;undefined&quot;, &quot;over&quot;, &quot;in&quot;, &quot;out&quot;, &quot;atop&quot;, &quot;xor&quot;, &quot;plus&quot;, &quot;minus&quot;, &quot;add&quot;, &quot;subtract&quot;, &quot;difference&quot;, &quot;multiply&quot;, &quot;bumpmap&quot;, &quot;copy&quot;, &quot;copyred&quot;, &quot;copygreen&quot;, &quot;copyblue&quot;, &quot;copyopacity&quot;, &quot;clear&quot;, &quot;dissolve&quot;, &quot;displace&quot;, &quot;modulate&quot;, &quot;threshold&quot;, &quot;no&quot;, &quot;darken&quot;, &quot;lighten&quot;, &quot;hue&quot;, &quot;saturate&quot;, &quot;colorize&quot;, &quot;luminize&quot;, &quot;screen&quot;, &quot;overlay&quot;, &quot;copycyan&quot;, &quot;copymagenta&quot;, &quot;copyyellow&quot;, &quot;copyblack&quot;, &quot;replace&quot;
+		</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName compression ?compressType?<br>
+	      wandName GetCompression <br>
+	      wandName SetCompression compressType<br>
+	    </div></td>
+	  <td><div align="left"> MagickGet/SetImageCompression<br>
+	      MagickGetImageCompression<br>
+	      MagickSetImageCompression<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>string compressType =&quot;undefined&quot;, &quot;none&quot;, &quot;bzip&quot;, &quot;fax&quot;, &quot;group4&quot;, &quot;jpeg&quot;, &quot;jpeg-ls&quot;, &quot;lzw&quot;, &quot;rle&quot;, &quot;zip&quot;
+		</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName delay ?delay? <br>
+	      wandName GetDelay <br>
+	      wandName SetDelay delay <br>
+	    </div></td>
+	  <td><div align="left">MagickGet/SetImageDelay<br>
+	      MagickGetImageDelay<br>
+	      MagickSetImageDelay<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>int delay (1/100 sec)</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName depth ?depth? <br>
+	      wandName GetDepth <br>
+	      wandName SetDepth depth <br>
+	    </div></td>
+	  <td><div align="left">MagickGet/SetImageDepth<br>
+	      MagickGetImageDepth<br>
+	      MagickSetImageDepth<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>int depth (bits)</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName dispose ?disposeType? <br>
+	      wandName GetDispose <br>
+	      wandName SetDispose disposeType <br>
+	    </div></td>
+	  <td><div align="left">MagickGet/SetImageDispose<br>
+	      MagickGetImageDispose<br>
+	      MagickSetImageDispose<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>string disposeType = &quot;undefined&quot;, &quot;none&quot;, &quot;background&quot;, &quot;previous&quot;</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName extrema <br>
+	      wandName GetExtrema <br>
+	    </div></td>
+	  <td><div align="left"> MagickGetImageExtrema<br>
+	      MagickGetImageExtrema<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>returns intList {min max}</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName format <br>
+	      wandName GetFormat <br>
+	    </div></td>
+	  <td><div align="left">MagickGetImageFormat<br>
+	      MagickGetImageFormat<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>returns string format</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName gamma ?gamma? <br>
+	      wandName GetGamma <br>
+	      wandName SetGamma gamma<br>
+	    </div></td>
+	  <td><div align="left">MagickGet/SetImageGamma<br>
+	      MagickGetImageGamma<br>
+	      MagickSetImageGamma<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>double gamma</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName greenprimary ?x y? <br>
+	      wandName GetGreenPrimary <br>
+	      wandName SetGreenPrimary x y<br>
+	    </div></td>
+	  <td><div align="left">MagickGet/SetGreenPrimary<br>
+	      MagickGetGreenPrimary<br>
+	      MagickSetGreenPrimary<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>double x, y </li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName heigth <br>
+	      wandName GetHeight <br>
+	    </div></td>
+	  <td><div align="left">MagickGetImageHeight<br>
+	      MagickGetImageHeight<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>returns int height</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName index ?index? <br>
+	      wandName GetIndex <br>
+	      wandName SetIndex index <br>
+	    </div></td>
+	  <td><div align="left">MagickGet/SetImageIndex<br>
+	      MagickGetImageIndex<br>
+	      MagickSetImageIndex<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>int index</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName interlace ?interlaceType? <br>
+	      wandName GetInterlaceScheme <br>
+	      wandName SetInterlaceScheme interlaceType<br>
+	    </div></td>
+	  <td><div align="left"> MagickGet/SetImageInterlaceScheme<br>
+	      MagickGetImageInterlaceScheme<br>
+	      MagickSetImageInterlaceScheme<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>string interlaceType = &quot;undefined&quot;, &quot;none&quot;, &quot;line&quot;, &quot;plane&quot;, &quot;partition&quot;</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName iterations ?num?<br>
+	      wandName GetIterations <br>
+	      wandName SetIterations num<br>
+	    </div></td>
+	  <td><div align="left">MagickGet/SetImageIterations<br>
+	      MagickGetImageIterations<br>
+	      MagickSetImageIterations<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>int num</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName mattecolor ?pixel? <br>
+	      wandName GetMatteColor ?pixel? <br>
+	      wandName SetMatteColor pixel <br>
+	    </div></td>
+	  <td><div align="left">MagickGet/SetMatteColor<br>
+	      MagickGetImageMatteColor<br>
+	      MagickSetImageMatteColor<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>PixelWand pixel</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <p>wandName getimage ?newName?<br>
+		wandName GetImage ?newName?<br>
+		wandName setimage name<br>
+		wandName SetImage name</p>
+	    </div></td>
+	  <td><div align="left">
+	      <p>MagickGetImage<br>
+		MagickGetImage<br>
+		MagickSetImage<br>
+		MagickSetImage      </p>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>string newName</li>
+		<li>MagickWand name</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName imagefilename ?name? <br>
+	      wandName GetImageFilename <br>
+	      wandName SetImageFilename name<br>
+	    </div></td>
+	  <td><div align="left">MagickGet/SetImageFilename<br>
+	      MagickGetImageFilename<br>
+	      MagickSetImageFilename<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>string name</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName pixels x0 y0 cols rows map storageType ?data? <br>
+	      wandName GetPixels x0 .. storageType <br>
+	      wandName SetPixels x0 .. storageType data <br>
+	    </div></td>
+	  <td><div align="left">MagickGet/SetImagePixels<br>
+	      MagickGetImagePixels<br>
+	      MagickSetImagePixels<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>storageType =&quot;char&quot;, &quot;short&quot;, &quot;integer&quot;, &quot;long&quot;, &quot;float&quot;, &quot;double&quot;
+		</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName ProfileImage name ?profile?<br>
+	      wandName RemoveProfile name <br>
+	    </div></td>
+	  <td><div align="left">MagickProfileImage<br>
+	      MagickRemoveImageProfile<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>string name=&quot;*&quot;,&quot;icc&quot;,&quot;icm&quot;,&quot;cptc&quot;,&quot;8bim&quot;,genericProfiles</li>
+		<li> binary profile</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName profile name ?profile? <br>
+	      wandName GetProfile name <br>
+	      wandName SetProfile name profile<br>
+	    </div></td>
+	  <td><div align="left">MagickGet/SetImageProfile<br>
+	      MagickGetImageProfile<br>
+	      MagickSetImageProfile<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>string name=&quot;*&quot;,&quot;icc&quot;,&quot;icm&quot;,&quot;cptc&quot;,&quot;8bim&quot;,genericProfiles</li>
+		<li> binary profile</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName redprimary ?x y? <br>
+	      wandName GetRedPrimary <br>
+	      wandName SetRedPrimary x y<br>
+	    </div></td>
+	  <td><div align="left">MagickGet/SetRedPrimary<br>
+	      MagickGetRedPrimary<br>
+	      MagickSetRedPrimary<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>double x, y </li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName rendering ?renderType? <br>
+	      wandName GetRenderingIntent <br>
+	      wandName SetRenderingIntent renderType<br>
+	    </div></td>
+	  <td><div align="left">MagickGet/SetImageRenderingIntent<br>
+	      MagickGetImageRenderingIntent<br>
+	      MagickSetImageRenderingIntent<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>string renderType = &quot;undefined&quot;, &quot;saturation&quot;, &quot;perceptual&quot;, &quot;absolute&quot;, &quot;relative&quot;</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName resolution ?x? ?y? <br>
+	      wandName GetResolution <br>
+	      wandName SetResolution x ?y?<br>
+	    </div></td>
+	  <td><div align="left">MagickSetImageResolution<br>
+	      MagickGetImageResolution<br>
+	      MagickSetImageResolution<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>double x,y (default y=x)</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName scene ?num?<br>
+	      wandName GetScene <br>
+	      wandName SetScene num<br>
+	    </div></td>
+	  <td><div align="left">MagickGet/SetImageScene<br>
+	      MagickGetImageScene<br>
+	      MagickSetImageScene<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>int num</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName imagesize<br>
+	      wandName GetImageSize </div></td>
+	  <td><div align="left">
+	      <p>MagickGetImageSize<br>
+		MagickGetImageSize<br>
+	      </p>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>returns wideInt size</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName signature <br>
+	      wandName GetSignature<br>
+	    </div></td>
+	  <td><div align="left">MagickGetImageSignature<br>
+	      MagickGetImageSignature<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>returns string signature</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName imagetype ?type?<br>
+	      wandName GetImageType <br>
+	      wandName SetImageType type<br>
+	    </div></td>
+	  <td><div align="left">MagickGet/SetImageType<br>
+	      MagickGetImageType<br>
+	      MagickSetImageType<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>string type =&quot;undefined&quot;,&quot;bilevel&quot;,&quot;grayscale&quot;,<br>
+		  &quot;grayscalematte&quot;,&quot;palette&quot;,&quot;palettematte&quot;,<br>
+		  &quot;truecolor&quot;,&quot;truecolormatte&quot;,&quot;colorseparation&quot;,<br>
+		  &quot;colorseparationmatte&quot;,&quot;optimize&quot;</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName imageunits ?unitType? <br>
+	      wandName GetImageUnits <br>
+	      wandName SetImageUnits unitType<br>
+	    </div></td>
+	  <td><div align="left">MagickGet/SetImageUnits<br>
+	      MagickGetImageUnits<br>
+	      MagickSetImageUnits<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>string unitType = &quot;undefined&quot;, &quot;ppi&quot;, &quot;ppcm&quot;,</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName virtualpixelmethod ?methodType?<br>
+	      wandName GetVirtualPixelMethod <br>
+	      wandName SetVirtualPixelMethod methodType<br>
+	    </div></td>
+	  <td><div align="left">MagickGet/SetImageVirtualPixelMethod<br>
+	      MagickGetImageVirtualPixelMethod<br>
+	      MagickSetImageVirtualPixelMethod<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>string methodType =&quot;undefined&quot;, &quot;constant&quot;, &quot;edge&quot;,
+		  &quot;mirror&quot;, &quot;tile&quot;</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName whitepoint ?x y? <br>
+	      wandName GetWhitePoint <br>
+	      wandName SetWhitePoint x y <br>
+	    </div></td>
+	  <td><div align="left">MagickGet/SetWhitePoint<br>
+	      MagickGetWhitePoint<br>
+	      MagickSetWhitePoint<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>double x, y </li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName width <br>
+	      wandName GetWidth<br>
+	    </div></td>
+	  <td><div align="left">MagickGetImageWidth<br>
+	      MagickGetImageWidth<br>
+	    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	      <ul>
+		<li>returns int width</li>
+	      </ul>
+	    </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName number <br>
+	      wandName GetNumberImages <br>
+	    </div></td>
+	  <td><div align="left">MagickGetNumberImages<br>
+	    MagickGetNumberImages</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>returns int number </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName samplingfactors ?factors? <br>
+	      wandName GetSamplingFactors <br>
+	      wandName SetSamplingFactors factors<br>
+	    </div></td>
+	  <td><div align="left">MagickGet/SetSamplingFactors<br>
+	    MagickGetSamplingFactors<br>
+	    MagickSetSamplingFactors<br>
+	  </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>doubleList factors</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName size ?x y? <br>
+	      wandName GetSize <br>
+	      wandName SetSize x y<br>
+	    </div></td>
+	  <td><div align="left">MagickGet/SetSize<br>
+	    MagickGetSize<br>
+	    MagickSetSize<br>
+	  </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>int x,y</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName hasnext <br>
+	      wandName HasNextImage<br>
+	    </div></td>
+	  <td><div align="left">MagickHasNextImage<br>
+	    MagickHasNextImage<br>
+	  </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>returns boolean </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName hasprevious <br>
+	      wandName HasPreviousImage<br>
+	    </div></td>
+	  <td><div align="left">MagickHasPreviousImage<br>
+	    MagickHasPreviousImage<br>
+	  </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>returns boolean </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName implode ?amount? <br>
+	      wandName ImplodeImage ?amount?<br>
+	    </div></td>
+	  <td><div align="left">MagickImplodeImage<br>
+	    MagickImplodeImage<br>
+	  </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double amount (default=0.0)</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName label str <br>
+	      wandName LabelImage str<br>
+	    </div></td>
+	  <td><div align="left">MagickLabelImage<br>
+	    MagickLabelImage</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>string str</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName level ?black? ?gamma? ?white? <br>
+	      wandName LevelImage ?black? ?gamma? ?white?<br>
+	    </div></td>
+	  <td><div align="left">MagickLevelImage<br>
+	    MagickLevelImage</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double black,gamma,white<br>
+		(default: black=0.0, gama=1.0, white=MaxRGB)</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName levelchannel channelType ?black? ?gamma? ?white? <br>
+	      wandName LevelImageChannel channelType ?black? ?gamma? ?white?<br>
+	    </div></td>
+	  <td><div align="left"> MagickLevelImageChannel<br>
+	    MagickLevelImageChannel</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>string channelType
+		= &quot;undefined&quot;, &quot;red&quot;, &quot;cyan&quot;, &quot;green&quot;, &quot;magenta&quot;,
+		&quot;blue&quot;, &quot;yellow, &quot;opacity, &quot;black, &quot;matte&quot;, &quot;index&quot;</li>
+	      <li> double black,gamma,white<br>
+		(default: black=0.0, gama=1.0, white=MaxRGB)</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName magnify <br>
+	      wandName MagnifyImage<br>
+	    </div></td>
+	  <td><div align="left">MagnifyImage<br>
+	    MagnifyImage</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>&lt;none&gt;</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName map mapName ?dither? <br>
+	      wandName MapImage mapName ?dither?<br>
+	    </div></td>
+	  <td><div align="left">MagickMapImage<br>
+	    MagickMapImage</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>MagickWand mapName</li>
+	      <li>bool dither (default=no)</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName mattefloodfill opacity ?fuzz? ?borderPix? ?x y? <br>
+	      wandName MatteFloodfillImage opacity ?fuzz? ?borderPix? ?x y?<br>
+	    </div></td>
+	  <td><div align="left">MagickMatteFloodfillImage<br>
+	    MagickMatteFloodfillImage</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>int opacity</li>
+	      <li> double fuzz (default=0.0)</li>
+	      <li> PixelWand borderPix
+		(default: borderPix=none)</li>
+	      <li> integer x,y
+		(default: x=y=0)</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName medianfilter ?radius? <br>
+	      wandName MedianFilterImage ?radius?<br>
+	    </div></td>
+	  <td><div align="left">MagickMedianFilterImage<br>
+	    MagickMedianFilterImage</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double radius
+		(default: radius=0.0)</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName minify <br>
+	      wandName MinifyImage <br>
+	    </div></td>
+	  <td><div align="left">MagickMinifyImage<br>
+	    MagickMinifyImage</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>&lt;none&gt;</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName modulate ?brightness? ?saturation? ?hue? <br>
+	      wandName ModulateImage ?brightness? ?saturation? ?hue?<br>
+	    </div></td>
+	  <td><div align="left">MagickModulateImage<br>
+	    MagickModulateImage</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double brightness,saturation,hue (default=0.0)</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName montage draw tileGeom thumbGeom mode frameGeom ?newName? <br>
+	      wandName MontageImage draw tileGeom thumbGeom mode frameGeom ?newName?<br>
+	    </div></td>
+	  <td><div align="left">MagickMontageImage<br>
+	    MagickMontageImage</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>DrawingWand draw</li>
+	      <li> string tileGeom, thumbGeom, frameGeom</li>
+	      <li> string mode
+		= &quot;frame&quot;, &quot;unframe&quot;, &quot;concatenate&quot;
+	      </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName morph num ?newName? <br>
+	      wandName MorphImages num ?newName?<br>
+	    </div></td>
+	  <td><div align="left"> MagickMorphImages<br>
+	    MagickMorphImages
+	  </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li> integer num</li>
+	      <li> string newName</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName mosaic ?newName? <br>
+	      wandName MosaicImages ?newName?<br>
+	    </div></td>
+	  <td><div align="left">MagickMosaicImages<br>
+	    MagickMosaicImages</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>string newName</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName motionblur ?radius? ?sigma? ?angle? <br>
+	      wandName MotionBlurImage ?radius? ?sigma? ?angle?<br>
+	    </div></td>
+	  <td><div align="left">MagickMotionBlurImage<br>
+	    MagickMotionBlurImage</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double radius,sigma,angle (default=0.0)</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName negate ?gray? <br>
+	      wandName NegateImage ?gray?<br>
+	    </div></td>
+	  <td><div align="left">MagickNegateImage<br>
+	    MagickNegateImage</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>bool gray (default=no)</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName next ?offset? <br>
+	      wandName NextImage ?offset?<br>
+	    </div></td>
+	  <td><div align="left">MagickNextImage<br>
+	    MagickNextImage<br>
+	  </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>int offset (default = 1)</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName normalize <br>
+	      wandName NormalizeImage <br>
+	    </div></td>
+	  <td><div align="left">MagickNormalizeImage<br>
+	    MagickNormalizeImage</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>&lt;none&gt;</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName oilpaint ?radius? <br>
+	      wandName OilPaintImage ?radius?<br>
+	    </div></td>
+	  <td><div align="left">MagickOilPaintImage<br>
+	    MagickOilPaintImage</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double radius
+		(default: radius=0.0)</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName opaque targetPix fillPix ?fuzz? <br>
+	      wandName OpaqueImage targetPix fillPix ?fuzz?<br>
+	    </div></td>
+	  <td><div align="left">MagickOpaqueImage<br>
+	    MagickOpaqueImage</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>PixelWand targetPix,fillPix</li>
+	      <li>            double fuzz (default=0.0)</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName ping filename <br>
+	      wandName PingImage filename <br>
+	    </div></td>
+	  <td><div align="left">MagickPingImage<br>
+	    MagickPingImage</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>string filename</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName preview previewType ?newName? <br>
+	      wandName PreviewImages previewType ?newName?<br>
+	    </div></td>
+	  <td><div align="left"> MagickPreviewImages<br>
+	    MagickPreviewImages</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li> integer previewType =&quot;undefined&quot;, &quot;rotate&quot;, &quot;shear&quot;, &quot;roll&quot;,
+		&quot;hue&quot;, &quot;saturation&quot;, &quot;brightness&quot;, &quot;gamma&quot;,
+		&quot;spiff&quot;, &quot;dull&quot;, &quot;grayscale&quot;, &quot;quantize&quot;,
+		&quot;despeckle&quot;, &quot;reducenoise&quot;, &quot;addnoise&quot;, &quot;sharpen&quot;,
+		&quot;blur&quot;, &quot;threshold&quot;, &quot;edgedetect&quot;, &quot;spread&quot;,<br>
+		&quot;solarize&quot;, &quot;shade&quot;, &quot;raise&quot;, &quot;segment&quot;,
+		&quot;swirl&quot;, &quot;implode&quot;, &quot;wave&quot;, &quot;oilpaint&quot;,<br>
+		&quot;charcoal&quot;, &quot;jpeg&quot;,</li>
+	      <li>string newName          </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName previous ?offset? <br>
+	      wandName PreviousImage ?offset?<br>
+	    </div></td>
+	  <td><div align="left">MagickPreviousImage<br>
+	    MagickPreviousImage</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>int offset (default = 1) </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">wandName quantize numColors ?colorspaceType? ?treedepth? ?dither? ?measureError?<br>
+	    wandName QuantizeImage numColors colorspaceType treedepth dither measureError<br>
+	    wandName QuantizeImages numColors colorspaceType treedepth dither measureError<br>
+	  </div>
+	    <div align="left"></div></td>
+	  <td><div align="left">MagickQuantizeImage<br>
+	    MagickQuantizeImage<br>
+	    MagickQuantizeImages    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>int numColors</li>
+	      <li> string colorspaceType (default=&quot;RGB&quot;) =&quot;undefined&quot;,&quot;RGB&quot;,&quot;GRAY&quot;,&quot;transparent&quot;,&quot;OHTA&quot;,
+		&quot;LAB&quot;,&quot;XYZ&quot;,&quot;YCbCr&quot;,&quot;YCC&quot;,&quot;YIQ&quot;,&quot;YPbPr&quot;,&quot;YUV&quot;,
+		&quot;CMYK&quot;,&quot;sRGB&quot;,&quot;HSL&quot;,&quot;HWB&quot;</li>
+	      <li>int treedepth</li>
+	      <li> bool dither, measureError (default=no)          </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName queryfontmetrics draw text<br>
+	      wandName QueryFontMetrics draw text<br>
+	    </div></td>
+	  <td><div align="left">MagickQueryFontMetrics<br>
+	    MagickQueryFontMetrics</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li> DrawingWand draw</li>
+	      <li> string text</li>
+	      <li> returns intList(7)</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">wandName raise width height ?x y? ?raise? <br>
+	    wandName RaiseImage width height ?x y? ?raise?</div></td>
+	  <td><div align="left">MagickRaiseImage<br>
+	    MagickRaiseImage</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>int width,height</li>
+	      <li> int x,y (default=0)</li>
+	      <li> bool raise (default=no)</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">wandName read filename <br>
+	    wandName ReadImage filename </div></td>
+	  <td><div align="left">MagickReadImage<br>
+	    MagickReadImage</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>string filename</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">wandName readblob data <br>
+	    wandName ReadImageBlob data</div></td>
+	  <td><div align="left">MagickReadImageBlob<br>
+	    MagickReadImageBlob</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>binary data</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">wandName reducenoise ?radius? <br>
+	    wandName ReduceNoiseImage ?radius?</div></td>
+	  <td><div align="left">MagickReduceNoiseImage<br>
+	    MagickReduceNoiseImage</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double radius
+		(default: radius=0.0)</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">wandName remove <br>
+	    wandName RemoveImage</div></td>
+	  <td><div align="left">MagickRemoveImage<br>
+	    MagickRemoveImage</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>&lt;none&gt;</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">wandName resetiterator <br>
+	    wandName ResetIterator </div></td>
+	  <td><div align="left">MagickResetIterator<br>
+	    MagickResetIterator<br>
+	  </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>&lt;none&gt;</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">wandName resample xRes ?yRes? ?filterType? ?blur? <br>
+	    wandName ResampleImage xRes ?yRes? ?filterType? ?blur?</div></td>
+	  <td><div align="left">MagickResampleImage<br>
+	    MagickResampleImage</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double xRes, yRes, blur (default: yRes=xRes, blur=0.0)</li>
+	      <li> filter = &quot;undefined&quot;, &quot;point&quot;, &quot;box&quot;, &quot;triangle&quot;, &quot;hermite&quot;,
+		&quot;hanning&quot;, &quot;hamming&quot;, &quot;blackman&quot;, &quot;gaussian&quot;, &quot;quadratic&quot;,
+		&quot;cubic&quot;, &quot;catrom&quot;, &quot;mitchell&quot;, &quot;lanczos&quot;, &quot;bessel&quot;,
+		&quot;sinc&quot;
+		(default=&quot;undefined&quot;)</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">wandName resize x y ?filterType? ?blur? <br>
+	    wandName ResizeImage x y ?filterType? ?blur?</div></td>
+	  <td><div align="left">MagickResizeImage<br>
+	    MagickResizeImage</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>int x, y </li>
+	      <li> filter = &quot;undefined&quot;, &quot;point&quot;, &quot;box&quot;, &quot;triangle&quot;, &quot;hermite&quot;,<br>
+		&quot;hanning&quot;, &quot;hamming&quot;, &quot;blackman&quot;, &quot;gaussian&quot;, &quot;quadratic&quot;,<br>
+		&quot;cubic&quot;, &quot;catrom&quot;, &quot;mitchell&quot;, &quot;lanczos&quot;, &quot;bessel&quot;,<br>
+		&quot;sinc&quot;
+		(default=&quot;undefined&quot;)</li>
+	      <li>double blur (default =0.0)</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">wandName roll xOfs yOfs <br>
+	    wandName RollImage xOfs yOfs</div></td>
+	  <td><div align="left"> MagickRollImage<br>
+	    MagickRollImage</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>int xOfs,yOfs</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">wandName rotate background degrees <br>
+	    wandName RotateImage background degrees</div></td>
+	  <td><div align="left">MagickRotateImage<br>
+	    MagickRotateImage</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>PixelWand background</li>
+	      <li>double degrees          </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">wandName sample x y <br>
+	    wandName SampleImage x y</div></td>
+	  <td><div align="left">MagickSampleImage<br>
+	    MagickSampleImage</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>int x,y</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div>
+	    <div align="left">wandName separate channelType <br>
+	      wandName SeparateImageChannel channelType<br>
+	    </div></td>
+	  <td><div align="left">MagickSeparateImageChannel<br>
+	    MagickSeparateImageChannel<br>
+	  </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul><li>string channelType
+		= &quot;undefined&quot;, &quot;red&quot;, &quot;cyan&quot;, &quot;green&quot;, &quot;magenta&quot;, &quot;blue&quot;, &quot;yellow, &quot;opacity, &quot;black, &quot;matte&quot;, &quot;index&quot;</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">wandName scale x y <br>
+	    wandName ScaleImage x y</div></td>
+	  <td><div align="left">MagickScaleImage<br>
+	    MagickScaleImage</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>int x,y</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">wandName setoption format key value<br>
+	    wandName SetOption format key value</div></td>
+	  <td><div align="left">MagickSetImageOption<br>
+	    MagickSetImageOption</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>string format, key, value</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">wandName passphrase phrase <br>
+	    wandName SetPassphrase phrase</div></td>
+	  <td><div align="left">MagickSetPassphrase<br>
+	    MagickSetPassphrase</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>string phrase</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">wandName sharpen ?radius? ?sigma? <br>
+	    wandName SharpenImage ?radius? ?sigma?
+	  </div></td>
+	  <td><div align="left">MagickSharpenImage<br>
+	    MagickSharpenImage</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double radius,sigma
+		(default: radius=0.0, sigma=1.0)</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">wandName shave x y <br>
+	    wandName ShaveImage x y</div></td>
+	  <td><div align="left">MagickShaveImage<br>
+	    MagickShaveImage</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>int x,y</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">wandName shear background xShear ?yShear? <br>
+	    wandName ShearImage background xShear ?yShear?</div></td>
+	  <td><div align="left">MagickShearImage<br>
+	    MagickShearImage</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>PixelWand borderPixel</li>
+	      <li> double xShear, yShear (default: yShear=xShear)</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">wandName solarize ?threshold? <br>
+	    wandName SolarizeImage ?threshold?</div></td>
+	  <td><div align="left">MagickSolarizeImage<br>
+	    MagickSolarizeImage</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double threshold (default=0.0)</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">wandName spread ?radius? <br>
+	    wandName SpreadImage ?radius?</div></td>
+	  <td><div align="left">MagickSpreadImage<br>
+	    MagickSpreadImage</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double radius (default=0.0)</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">wandName stegano watermark ?offset? ?newName? <br>
+	    wandName SteganoImage watermark ?offset? ?newName?</div></td>
+	  <td><div align="left">MagickSteganoImage<br>
+	    MagickSteganoImage</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>MagickWand watermark</li>
+	      <li> int offset (default=0)</li>
+	      <li> string newName</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">wandName stereo anotherWand ?newName? <br>
+	    wandName StereoImage anotherWand ?newName?</div></td>
+	  <td><div align="left">MagickStereoImage<br>
+	    MagickStereoImage</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>MagickWand anotherWand</li>
+	      <li>            string newName</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">wandName strip <br>
+	    wandName StripImage</div></td>
+	  <td><div align="left">MagickStripImage<br>
+	    MagickStripImage</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>&lt;none&gt;</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">      wandName swirl ?degrees? <br>
+	    wandName SwirlImage ?degrees? </div></td>
+	  <td><div align="left">MagickSwirlImage<br>
+	    MagickSwirlImage</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double degrees (default=0.0)</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">wandName texture textWand ?newName? <br>
+	    wandName TextureImage textWand ?newName?</div></td>
+	  <td><div align="left">MagickTextureImage<br>
+	    MagickTextureImage<br>
+	  </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>MagickWand textWand</li>
+	      <li>            string newName</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">wandName threshold threshold <br>
+	    wandName ThresholdImage threshold</div></td>
+	  <td><div align="left">MagickThresholdImage<br>
+	    MagickThresholdImage</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double threshold</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">wandName thresholdchannel channelType threshold <br>
+	    wandName ThresholdImageChannel channelType threshold</div></td>
+	  <td><div align="left">MagickThresholdImageChannel<br>
+	    MagickThresholdImageChannel</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>string channelType
+		= &quot;undefined&quot;, &quot;red&quot;, &quot;cyan&quot;, &quot;green&quot;, &quot;magenta&quot;,
+		&quot;blue&quot;, &quot;yellow, &quot;opacity, &quot;black, &quot;matte&quot;, &quot;index&quot;</li>
+	      <li> double threshold</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">wandName tint tintPixel opacityPixel <br>
+	    wandName TintImage tintPixel opacityPixel<br>
+	  </div></td>
+	  <td><div align="left">MagickTintImage<br>
+	    MagickTintImage</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>PixelWand tintPixel, opacityPixel</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">wandName transform crop geometry ?newName? <br>
+	    wandName TransformImage crop geometry ?newName?</div></td>
+	  <td><div align="left">MagickTransformImage<br>
+	    MagickTransformImage</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>string crop, geometry</li>
+	      <li>            string newName</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">wandName transparent targetPix ?opacity? ?fuzz? <br>
+	    wandName TransparentImage targetPix ?opacity? ?fuzz?</div></td>
+	  <td><div align="left">MagickTransparentImage<br>
+	    MagickTransparentImage</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>PixelWand targetPix</li>
+	      <li> int opacity (default=0)</li>
+	      <li> double fuzz (default=0.0)</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">wandName trim ?fuzz? <br>
+	    wandName TrimImage ?fuzz?</div></td>
+	  <td><div align="left">MagickTrimImage<br>
+	    MagickTrimImage</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double fuzz (default=0.0)</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">wandName unsharpmask ?radius? ?sigma? ?amount? ?threshold? <br>
+	    wandName UnsharpMaskImage ?radius? ?sigma? ?amount? ?threshold?</div></td>
+	  <td><div align="left">MagickUnsharpMaskImage<br>
+	    MagickUnsharpMaskImage    </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double radius,sigma,amount,threshold<br>
+		(default: radius=0.0,sigma=1.0,amount=0.0,threshold=0.0)</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">wandName wave amplitude wavelength <br>
+	    wandName WaveImage amplitude wavelength</div></td>
+	  <td><div align="left">MagickWaveImage<br>
+	    MagickWaveImage</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double amplitude,wavelength</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">wandName whitethreshold thresholdPixel <br>
+	    wandName WhiteThresholdImage thresholdPixel</div></td>
+	  <td><div align="left">MagickWhiteThresholdImage<br>
+	    MagickWhiteThresholdImage</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>PixelWand thresholdPixel</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">wandName write filename <br>
+	    wandName WriteImage filename <br>
+	    wandName WriteImages filename ?adjoin?</div></td>
+	  <td><div align="left">
+	    <p>MagickWriteImage<br>
+	      MagickWriteImage<br>
+	      MagickWriteImages</p>
+	  </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>string filename</li>
+	      <li> bool adjoin (default=no)</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+    </table>
+
+    <p>&nbsp;</p>
+    <table width="798" border="1">
+	<tr>
+	  <th width="312" scope="col"><div align="left">Not implemented MagickWand API's</div></th>
+	  <th width="428" scope="col"><div align="left">Comment</div></th>
+	</tr>
+	<tr>
+	  <td><div align="left">MagickAnimateImages</div></td>
+	  <td><div align="left">Image display, depends on X</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">MagickDisplayImage</div></td>
+	  <td><div align="left">Image display, depends on X</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">MagickDisplayImages</div></td>
+	  <td><div align="left">Image display, depends on X</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">MagickGetImageHistogram</div></td>
+	  <td><div align="left">Creates &amp; Returns array of PixelWand objects, how to implement ???</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">MagickReadImageFile</div></td>
+	  <td><div align="left">Could be implemented via TclChannel</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">MagickWriteImageFile</div></td>
+	  <td><div align="left">Could be implemented via TclChannel</div></td>
+	</tr>
+    </table>
+    <h2>PixelWand object subcommands</h2>
+    <table width="800" border="1">
+	<tr>
+	  <th scope="col"><div align="left"></div>
+	    <div align="left">
+	      <div align="left"></div>
+		<div align="left">pixelName subcmd ?args?</div>
+	      </div></th>
+	  <th scope="col"><div align="left">ImageMagick API </div></th>
+	</tr>
+	<tr>
+	  <td scope="col"><div align="left">pixelName set ?-quant? color val color val ...<br>
+	    pixelName get ?-quant? color color ... <br>
+	  </div></td>
+	  <td scope="col"><div align="left">PixelSetXXX<br>
+	    PixelGetXXX</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>color = &quot;black&quot;, &quot;blue&quot;, &quot;cyan&quot;, &quot;green&quot;, &quot;magenta&quot;, &quot;opacity&quot;, &quot;red&quot;, &quot;yellow&quot; </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">pixelName color <br>
+	    pixelName color string <br>
+	    pixelName GetColor <br>
+	    pixelName SetColor string <br>
+	    pixelName GetColorAsString
+	  </div></td>
+	  <td><div align="left">PixelGetColorAsString<br>
+	    PixelSetColor <br>
+	    PixelGetColorAsString<br>
+	    PixelSetColor<br>
+	    PixelGetColorAsString
+	  </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>string string </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">pixelName GetBlack<br>
+	    pixelName GetBlackQuantum<br>
+	    pixelName SetBlack val<br>
+	    pixelName SetBlackQuantum val </div></td>
+	  <td><div align="left">PixelGetBlack<br>
+	    PixelGetBlackQuantum<br>
+	    PixelSetBlack<br>
+	    PixelSetBlackQuantum </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double value </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">pixelName GetBlue<br>
+	    pixelName GetBlueQuantum<br>
+	    pixelName SetBlue val<br>
+	    pixelName SetBlueQuantum val
+	  </div></td>
+	  <td><div align="left">PixelGetBlue<br>
+	    PixelGetBlueQuantum<br>
+	    PixelSetBlue<br>
+	    PixelSetBlueQuantum
+	  </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double value </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">pixelName GetCyan<br>
+	    pixelName GetCyanQuantum<br>
+	    pixelName SetCyan val<br>
+	    pixelName SetCyanQuantum val </div></td>
+	  <td><div align="left">PixelGetCyan<br>
+	    PixelGetCyanQuantum<br>
+	    PixelSetCyan<br>
+	    PixelSetCyanQuantum </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double value </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">pixelName GetGreen<br>
+	    pixelName GetGreenQuantum<br>
+	    pixelName SetGreen val<br>
+	    pixelName SetGreenQuantum val </div></td>
+	  <td><div align="left">PixelGetGreen<br>
+	    PixelGetGreenQuantum<br>
+	    PixelSetGreen<br>
+	    PixelSetGreenQuantum </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double value </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">pixelName GetMagenta<br>
+	    pixelName GetMagentaQuantum<br>
+	    pixelName SetMagenta val<br>
+	    pixelName SetMagentaQuantum val </div></td>
+	  <td><div align="left">PixelGetMagenta<br>
+	    PixelGetMagentaQuantum<br>
+	    PixelSetMagenta<br>
+	    PixelSetMagentaQuantum </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double value </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">pixelName GetOpacity<br>
+	    pixelName GetOpacityQuantum<br>
+	    pixelName SetOpacity val<br>
+	    pixelName SetOpacityQuantum val </div></td>
+	  <td><div align="left">PixelGetOpacity<br>
+	    PixelGetOpacityQuantum<br>
+	    PixelSetOpacity<br>
+	    PixelSetOpacityQuantum </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double value </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">pixelName GetRed<br>
+	    pixelName GetRedQuantum<br>
+	    pixelName SetRed val<br>
+	    pixelName SetRedQuantum val </div></td>
+	  <td><div align="left">PixelGetRed<br>
+	    PixelGetRedQuantum<br>
+	    PixelSetRed<br>
+	    PixelSetRedQuantum </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double value </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">pixelName GetYellow<br>
+	    pixelName GetYellowQuantum<br>
+	    pixelName SetYellow val<br>
+	    pixelName SetYellowQuantum val </div></td>
+	  <td><div align="left">PixelGetYellow<br>
+	    PixelGetYellowQuantum<br>
+	    PixelSetYellow<br>
+	    PixelSetYellowQuantum </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double value </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">pixelName colorcount ?cnt? <br>
+	    pixelName GetColorCount<br>
+	    pixelName SetColorCount ?cnt?</div></td>
+	  <td><div align="left">
+	    <p>PixelGet/SetColorCount<br>
+	      PixelGetColorCount<br>
+	      PixelSetColorCount
+	    </p>
+	  </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>unsigned cnt </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left"></div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+    </table>
+    <h2>DrawingWand object subcommands </h2>
+    <table width="829" border="1">
+	<tr>
+	  <th width="442" scope="col"><div align="left">drawName subcmd ?args?</div></th>
+	  <th width="329" scope="col"><div align="left">ImageMagick API </div></th>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName affine sx rx ry sy tx ty<br>
+	      drawName Affine sx rx ry sy tx ty</p>
+	  </div></td>
+	  <td><div align="left">DrawAffine<br>
+	    DrawAffine<br>
+	  </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double sx, rx, ry, sy, tx, ty </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName annotation x y text <br>
+	      drawName Annotation x y text <br>
+	    </p>
+	  </div></td>
+	  <td><div align="left">DrawAnnotation<br>
+	    DrawAnnotation</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double x, y</li>
+	      <li>string text  </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName arc sx sy ex ey sd ed<br>
+	      drawName Arc sx sy ex ey sd ed</p>
+	  </div></td>
+	  <td><div align="left">DrawArc<br>
+	    DrawArc</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double arc, sx, sy, ex. ey. sd, ed </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName bezier x y x y ...<br>
+	      drawName Bezier x y x y ...</p>
+	  </div></td>
+	  <td><div align="left">DrawBezier<br>
+	    DrawBezier</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double x, y </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName circle ox oy px py<br>
+	      drawName Circle ox oy px py<br>
+	    </p>
+	  </div></td>
+	  <td><div align="left">DrawCircle<br>
+	    DrawCircle</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double oy, oy, px, py </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName clippath ?name? <br>
+	      drawName GetClipPath <br>
+	      drawName SetClipPath name</p>
+	  </div></td>
+	  <td><div align="left">DrawGet/SetClipPath<br>
+	    DrawGetClipPath<br>
+	    DrawSetClipPath</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>string name </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName cliprule ?rule?<br>
+	      drawName GetClipRule <br>
+	      drawName SetClipRule rule</p>
+	  </div></td>
+	  <td><div align="left">DrawGet/SetClipRule<br>
+	    DrawGetClipRule<br>
+	    DrawSetClipRule</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>rule = &quot;undefined&quot;, &quot;evenodd&quot;, &quot;nonzero&quot;</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName clipunits ?unit? <br>
+	      drawName GetClipUnits <br>
+	      drawName SetClipUnits unit</p>
+	  </div></td>
+	  <td><div align="left">DrawGet/SetClipUnits<br>
+	    DrawGetClipUnits<br>
+	    DrawSetClipUnits</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>units = &quot;userspace&quot;, &quot;userspaceonuse&quot;, &quot;objectboundingbox&quot;</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName color x y paintMethod <br>
+	      drawName Color x y paintMethod </p>
+	  </div></td>
+	  <td><div align="left">DrawColor<br>
+	    DrawColor</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double x, y</li>
+	      <li>paintMethod = &quot;point&quot;, &quot;replace&quot;, &quot;floodfill&quot;, &quot;filltoborder&quot;, &quot;reset&quot;</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName comment text<br>
+	      drawName comment text</p>
+	  </div></td>
+	  <td><div align="left">DrawComment<br>
+	    DrawComment</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>string text </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName ellipse ox oy rx ry start end<br>
+	      drawName Ellipse ox oy rx ry start end</p>
+	  </div></td>
+	  <td><div align="left">DrawEllipse<br>
+	    DrawEllipse</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double ox, oy, rx, ry, start, end </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>          drawName fillcolor ?pixelName?<br>
+	      drawName GetFillColor <br>
+	      drawName SetFillColor pixelName</p>
+	  </div></td>
+	  <td><div align="left">DrawGet/SetFillColor<br>
+	    DrawGetFillColor<br>
+	    DrawSetFillColor<br>
+	  </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>string pixelName</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName fillopacity ?value? <br>
+	      drawName GetFillOpacity <br>
+	      drawName SetFillOpacity value </p>
+	  </div></td>
+	  <td><div align="left">DrawGet/SetFillOpacity<br>
+	    DrawGetFillOpacity<br>
+	    DrawSetFillOpacity</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double value </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td>drawName fillpatternurl url <br>
+	    drawName SetFillPatternURL url </td>
+	  <td>DrawSetFillPatternURL<br>
+	    DrawSetFillPatternURL</td>
+	</tr>
+	<tr>
+	  <td><ul>
+	    <li>string url (e.g. &quot;#pattern_id&quot; from [push pattern]) </li>
+	  </ul></td>
+	  <td>&nbsp;</td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName fillrule ?rule? <br>
+	      drawName GetFillRule <br>
+	      drawName SetFillRule rule </p>
+	  </div></td>
+	  <td><div align="left">DrawGet/SetFillRule<br>
+	    DrawGetFillRule<br>
+	    DrawSetFillRule</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>rule = &quot;undefined&quot;, &quot;evenodd&quot;, &quot;nonzero&quot;</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName font ?fontname? <br>
+	      drawName GetFont <br>
+	      drawName SetFont fontname </p>
+	  </div></td>
+	  <td><div align="left">DrawGet/SetFont<br>
+	    DrawGetFont<br>
+	    DrawSetFont</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>string fontname </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName fontfamily ?name? <br>
+	      drawName GetFontFamily <br>
+	      drawName SetFontFamily name </p>
+	  </div></td>
+	  <td><div align="left"> DrawGet/SetFontFamily<br>
+	    DrawGetFontFamily<br>
+	    DrawSetFontFamily</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>string name </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName fontsize ?value? <br>
+	      drawName GetFontSize <br>
+	      drawName SetFontSize value </p>
+	  </div></td>
+	  <td><div align="left">DrawGet/SetFontSize<br>
+	    DrawGetFontSize<br>
+	    DrawSetFontSize</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double value </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName fontstretch ?stretchType? <br>
+	      drawName GetFontStretch <br>
+	      drawName SetFontStretch stretchType</p>
+	  </div></td>
+	  <td><div align="left">DrawGet/SetFontStretch<br>
+	    DrawGetFontStretch<br>
+	    DrawSetFontStretch</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>stretchType = &quot;normal&quot;, &quot;ultracondensed&quot;, &quot;extracondensed&quot;, &quot;condensed&quot;, &quot;semicondensed&quot;, &quot;semiexpanded&quot;, &quot;expanded&quot;, &quot;extraexpanded&quot;, &quot;ultraexpanded&quot;, &quot;any&quot;</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName fontstyle ?style? <br>
+	      drawName GetFontStyle <br>
+	      drawName SetFontStyle style </p>
+	  </div></td>
+	  <td><div align="left">DrawGet/SetFontStyle<br>
+	    DrawGetFontStyle<br>
+	    DrawSetFontStyle</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>style = &quot;normal&quot;, &quot;italic&quot;, &quot;oblique&quot;, &quot;any&quot;</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName fontweight ?value? <br>
+	      drawName GetFontWeight <br>
+	      drawName SetFontWeight value </p>
+	  </div></td>
+	  <td><div align="left">DrawGet/SetFontWeight<br>
+	    DrawGetFontWeight<br>
+	    DrawSetFontWeight</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>unsigned value </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName gravity ?gravityType <br>
+	      drawName GetGravity <br>
+	      drawName SetGravity gravityType </p>
+	  </div></td>
+	  <td><div align="left">DrawGet/SetGravity<br>
+	    DrawGetGravity<br>
+	    DrawSetGravity</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>gravityType = &quot;forget&quot;, &quot;northwest&quot;, &quot;north&quot;, &quot;northeast&quot;, &quot;west&quot;, &quot;center&quot;, &quot;east&quot;, &quot;southwest&quot;, &quot;south&quot;, &quot;southeast&quot;, &quot;static&quot;
+	      </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName line sx sy ex ey<br>
+	      drawName Line sx sy ex ey</p>
+	  </div></td>
+	  <td><div align="left">DrawLine<br>
+	    DrawLine</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double sx, sy, ex, ey </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName matte x y paintMethod <br>
+	      drawName Matte x y paintMethod </p>
+	  </div></td>
+	  <td><div align="left">DrawMatte<br>
+	    DrawMatte</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double x,y </li>
+	      <li>paintMethod = &quot;point&quot;, &quot;replace&quot;, &quot;floodfill&quot;, &quot;filltoborder&quot;, &quot;reset&quot;</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName point x y <br>
+	      drawName Point x y </p>
+	  </div></td>
+	  <td><div align="left">DrawPoint<br>
+	    DrawPoint</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double x, y </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName polygon x y x y ... <br>
+	      drawName Polygon x y x y ... </p>
+	  </div></td>
+	  <td><div align="left">DrawPolygon<br>
+	    DrawPolygon</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double x, y </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName polyline x y x y ...<br>
+	      drawName Polyline x y x y ...</p>
+	  </div></td>
+	  <td><div align="left">DrawPolyline<br>
+	    DrawPolyline</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double x, y </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName path opt|cmd ?args? opt|cmd ?args? ... </p>
+	  </div></td>
+	  <td><div align="left">DrawPathXXX</div></td>
+	</tr>
+	<tr>
+	  <td><ul>
+	    <li>opt ?args? = <br>
+	      -relative bool (Switch relative/absolute mode)<br>
+	      -smooth bool (Smooth bezier, x1,y1 taken from previous curve)<br>
+	      -scale double (Scale all positions by a factor)</li>
+	  </ul></td>
+	  <td>&nbsp;</td>
+	</tr>
+	<tr>
+	  <td><ul>
+	    <li>cmd ?args? =<br>
+	      # &quot;comment in a single argument&quot;<br>
+	      start <br>
+	      finish <br>
+	      close <br>
+	      move x y <br>
+	      line x y <br>
+	      horizontal x <br>
+	      vertical y <br>
+	      -smooth 0 quadratic x1 y1 x y <br>
+	      -smooth 1 quadratic x y <br>
+	      -smooth 0 cubic x1 y1 x2 y2 x y <br>
+	      -smooth 1 cubic x2 y2 x y <br>
+	      elliptic rx ry rotation large sweep x y </li>
+	  </ul></td>
+	  <td><br>
+	    <br>
+	    DrawPathStart<br>
+	    DrawPathFinish <br>
+	    DrawPathClose<br>
+	    DrawPathMoveToAbs/Rel <br>
+	    DrawPathLineLineToAbs/Rel<br>
+	    DrawPathLineLineToHorizontalAbs/Rel <br>
+	    DrawPathLineLineToVerticalAbs/Rel<br>
+	    DrawPathCurveToQuadraticBezierAbs/Rel <br>
+	    DrawPathCurveToQuadraticBezierSmoothAbs/Rel<br>
+	    DrawPathCurveToAbs/Rel <br>
+	    DrawPathCurveToSmoothAbs/Rel<br>
+	    DrawPathEllipticArcAbs/Rel </td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul><li>double x, y, rx, ry , rotation</li>
+	      <li>int large, sweep </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"><br>
+	  </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName path cmdList</p>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>If 'drawName path' is called with a single argument then it's intepreted <br>
+		as a list of path options&quot;, &quot;commands with its arguments.</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName push what ?args? <br>
+	      drawName pop what </p>
+	  </div></td>
+	  <td><div align="left">DrawPushXXX<br>
+	    DrawPopXXX</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>what = &quot;clippath &quot;, &quot; defs &quot;, &quot;graphiccontext&quot;, &quot;pattern&quot;</li>
+	      <li> args = see below<br>
+	      </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName PushClipPath id <br>
+	      drawName PopClipPath <br>
+	      drawName PushDefs <br>
+	      drawName PopDefs <br>
+	      drawName PushGraphicContext <br>
+	      drawName PopGraphicContext <br>
+	      drawName PushPattern id x y width height<br>
+	      drawName PopPattern </p>
+	  </div></td>
+	  <td><div align="left">DrawPushClipPath<br>
+	    DrawPopClipPath<br>
+	    DrawPushDefs<br>
+	    DrawPopDefs<br>
+	    DrawPushGraphicContext<br>
+	    DrawPopGraphicContext<br>
+	    DrawPushPattern<br>
+	    DrawPopPattern</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>string id</li>
+	      <li>double x, y, width, height  </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName rectangle x1 y1 x2 y2 <br>
+	      drawName Rectangle x1 y1 x2 y2 </p>
+	  </div></td>
+	  <td><div align="left">DrawRectangle<br>
+	    DrawRectangle</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double x1, y1, x2, y2 </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName render <br>
+	      drawName Render </p>
+	  </div></td>
+	  <td><div align="left">DrawRender<br>
+	    DrawRender</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>&lt;none&gt;</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName rotate degrees <br>
+	      drawName Rotate degrees </p>
+	  </div></td>
+	  <td><div align="left">DrawRotate<br>
+	    DrawRotate</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double degrees </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName round x1 y1 x2 y2 rx ry <br>
+	      drawName RoundRectangle x1 y1 x2 y2 rx ry</p>
+	  </div></td>
+	  <td><div align="left"> DrawRoundRectangle<br>
+	    DrawRoundRectangle<br>
+	  </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double x1, y1, x2, y2, rx, ry </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName scale x ?y? <br>
+	      drawName Scale x ?y? </p>
+	  </div></td>
+	  <td><div align="left">DrawScale<br>
+	    DrawScale</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double x, y (default: y=x)</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName skewx degrees<br>
+	      drawName SkewX degrees<br>
+	      drawName skewy degrees<br>
+	      drawName SkewY degrees</p>
+	  </div></td>
+	  <td><div align="left">DrawSkewX<br>
+	    DrawSkewX<br>
+	    DrawSkewY<br>
+	    DrawSkewY</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double degrees</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName strokecolor ?pixelName?<br>
+	      drawName GetStrokeColor <br>
+	      drawName SetStrokeColor pixelName<br>
+	    </p>
+	  </div></td>
+	  <td><div align="left">DrawGet/SetStrokeColor<br>
+	    DrawGetStrokeColor<br>
+	    DrawSetStrokeColor<br>
+	  </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>string pixelName</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName strokeantialias ?flag?<br>
+	      drawName GetStrokeAntialias <br>
+	      drawName SetStrokeAntialias flag</p>
+	  </div></td>
+	  <td><div align="left">DrawGet/SetStrokeAntialias<br>
+	    DrawGetStrokeAntialias<br>
+	    DrawSetStrokeAntialias</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>int flag </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName strokedasharray <br>
+	      drawName strokedasharray {} <br>
+	      drawName strokedasharray val val ... <br>
+	      drawName GetStrokeDasharray <br>
+	      drawName SetStrokeDashArray <br>
+	      drawName SetStrokeDashArray val val ...</p>
+	  </div></td>
+	  <td><div align="left">DrawGetStrokeDashArray<br>
+	    DrawSetStrokeDashArray<br>
+	    DrawSetStrokeDashArray<br>
+	    DrawGetStrokeDashArray<br>
+	    DrawSetStrokeDashArray<br>
+	    DrawSetStrokeDashArray</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double val </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName strokedashoffset ?val? <br>
+	      drawName GetStrokeDashOffset <br>
+	      drawName SetStrokeDashOffset val</p>
+	  </div></td>
+	  <td><div align="left">DrawGet/SetStrokeDashOffset<br>
+	    DrawGetStrokeDashOffset<br>
+	    DrawSetStrokeDashOffset</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double val </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName strokelinecap ?linecapType? <br>
+	      drawName GetStrokeLineCap <br>
+	      drawName SetStrokeLineCap linecapType</p>
+	  </div></td>
+	  <td><div align="left">DrawGet/SetStrokeLineCap<br>
+	    DrawGetStrokeLineCap<br>
+	    DrawSetStrokeLineCap</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>linecapType = &quot;undefined&quot;, &quot;butt&quot;, &quot;round&quot;, &quot;square&quot;</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName strokelinejoin ?linejoinType? <br>
+	      drawName GetStrokeLineJoin <br>
+	      drawName SetStrokeLineJoin linejoinType</p>
+	  </div></td>
+	  <td><div align="left">DrawGet/SetStrokeLineJoin<br>
+	    DrawGetStrokeLineJoin<br>
+	    DrawSetStrokeLineJoin</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>linejoinType = &quot;undefined&quot;, &quot;miter&quot;, &quot;round&quot;, &quot;bevel&quot;</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName strokemiterlimit ?val? <br>
+	      drawName GetStrokeMiterLimit <br>
+	      drawName SetStrokeMiterLimit val</p>
+	  </div></td>
+	  <td><div align="left">DrawGet/SetStrokeMiterLimit<br>
+	    DrawGetStrokeMiterLimit<br>
+	    DrawSetStrokeMiterLimit</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>unsigned val </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName strokeopacity ?val? <br>
+	      drawName GetStrokeOpacity <br>
+	      drawName SetStrokeOpacity val</p>
+	  </div></td>
+	  <td><div align="left">DrawGet/SetStrokeOpacity<br>
+	    DrawGetStrokeOpacity<br>
+	    DrawSetStrokeOpacity</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double val </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td>drawName strokepatternurl url <br>
+	    drawName SetStrokePatternURL url </td>
+	  <td>DrawSetStrokePatternURL<br>
+	    DrawSetStrokePatternURL</td>
+	</tr>
+	<tr>
+	  <td><ul>
+	    <li>string url (e.g. &quot;#pattern_id&quot; from [push pattern]) </li>
+	  </ul></td>
+	  <td>&nbsp;</td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName strokewidth ?val? <br>
+	      drawName GetStrokeWidth <br>
+	      drawName SetStrokeWidth val</p>
+	  </div></td>
+	  <td><div align="left">DrawGet/SetStrokeWidth<br>
+	    DrawGetStrokeWidth<br>
+	    DrawSetStrokeWidth</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double val</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName textantialias ?flag? <br>
+	      drawName GetTextAntialias <br>
+	      drawName SetTextAntialias flag </p>
+	  </div></td>
+	  <td><div align="left">DrawGet/SetTextAntialias<br>
+	    DrawGetTextAntialias<br>
+	    DrawSetTextAntialias</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>int flag </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName textdecoration ?decorationType? <br>
+	      drawName GeTextDecoration <br>
+	      drawName SetTextDecoration decorationType</p>
+	  </div></td>
+	  <td><div align="left">DrawGet/SetTextDecoration<br>
+	    DrawGetTextDecoration<br>
+	    DrawSetTextDecoration</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>string decorationType = &quot;none&quot;, &quot;underline&quot;, &quot;overline&quot;, &quot;linethrough&quot;</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName textencoding ?string <br>
+	      drawName GetTextEncoding <br>
+	      drawName SetTextEncoding string</p>
+	  </div></td>
+	  <td><div align="left"> DrawGet/SetTextEncoding<br>
+	    DrawGetTextEncoding<br>
+	    DrawSetTextEncoding</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>string string </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName textundercolor ?pixelName?<br>
+	      drawName GetTextUnderColor <br>
+	      drawName SetTextUnderColor pixelName</p>
+	  </div></td>
+	  <td><div align="left">DrawGet/SetTextUnderColor<br>
+	    DrawGetTextUnderColor<br>
+	    DrawSetTextUnderColor</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>string pixelName</li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName translate x y <br>
+	      drawName Translate x y</p>
+	  </div></td>
+	  <td><div align="left">DrawTranslate<br>
+	    DrawTranslate</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>double x, y </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <p>drawName viewbox x1 y1 x2 y2 <br>
+	      drawName SetViewbox x1 y1 x2 y2</p>
+	  </div></td>
+	  <td><div align="left">DrawSetViewbox<br>
+	    DrawSetViewbox</div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">
+	    <ul>
+	      <li>unsigned x1, y1, x2, y2 </li>
+	    </ul>
+	  </div></td>
+	  <td><div align="left"></div></td>
+	</tr>
+    </table>
+    <p>&nbsp;</p>
+    <table width="798" border="1">
+	<tr>
+	  <th width="312" scope="col"><div align="left">Not implemented MagickWand API's</div></th>
+	  <th width="428" scope="col"><div align="left">Comment</div></th>
+	</tr>
+	<tr>
+	  <td><div align="left">DrawAllocateWand</div></td>
+	  <td><div align="left">For legacy application only, outside Wand-API </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">DrawComposite</div></td>
+	  <td><div align="left">For legacy application only, outside Wand-API </div></td>
+	</tr>
+	<tr>
+	  <td><div align="left">DrawSetStopColor</div></td>
+	  <td><div align="left">???</div></td>
+	</tr>
+    </table>
+    <p>&nbsp;  </p>
+    <hr>
+    <small>Copyright 2004 Rolf Schr&ouml;dter and David N. Welton</small>
+  </body>
+</html>

@@ -1,0 +1,2811 @@
+<imdoc>
+<utils display>
+<title>Display</title>
+<gm>
+<sect NAME="display">gm display
+</gm>
+<im>
+<sect NAME="disp-top">NAME
+<p>
+display - display an image on any workstation running X
+</p>
+</sect>
+
+<format type=html>
+<sect NAME="disp-contents">Contents
+
+<ul>
+<li>
+<a href="#disp-syno">Synopsis</a></li>
+
+<li>
+<a href="#disp-desc">Description</a></li>
+
+<li>
+<a href="#disp-exam">Examples</a></li>
+
+<li>
+<a href="#disp-opti">Options</a></li>
+
+<li>
+<a href="#disp-mous">Mouse Buttons</a></li>
+
+<li>
+<a href="#disp-comm">Command Widget</a></li>
+
+<li>
+<a href="#disp-keyb">Keyboard Accelerators</a></li>
+
+<li>
+<a href="#disp-xres">X Resources</a></li>
+
+<li>
+<a href="#disp-imlo">Image Loading</a></li>
+
+<li>
+<a href="#disp-visu">Visual Image Directory</a></li>
+
+<li>
+<a href="#disp-imcu">Image Cutting</a></li>
+
+<li>
+<a href="#disp-imco">Image Copying</a></li>
+
+<li>
+<a href="#disp-impas">Image Pasting</a></li>
+
+<li>
+<a href="#disp-imcr">Image Cropping</a></li>
+
+<li>
+<a href="#disp-imch">Image Chopping</a></li>
+
+<li>
+<a href="#disp-imro">Image Rotation</a></li>
+
+<li>
+<a href="#disp-segm">Image Segmentation</a></li>
+
+<li>
+<a href="#disp-iman">Image Annotation</a></li>
+
+<li>
+<a href="#disp-imcomp">Image Compositing</a></li>
+
+<li>
+<a href="#disp-cole">Color Editing</a></li>
+
+<li>
+<a href="#disp-matt">Matte (Transparent Channel) Editing</a></li>
+
+<li>
+<a href="#disp-imdr">Image Drawing</a></li>
+
+<li>
+<a href="#disp-regi">Region of Interest</a></li>
+
+<li>
+<a href="#disp-impa">Image Panning</a></li>
+
+<li>
+<a href="#disp-impa">User Preferences</a></li>
+
+<li>
+<a href="#disp-envi">Environment</a></li>
+
+<li>
+<a href="#disp-file">Configuration Files</a></li>
+
+<li>
+<a href="#disp-ackn">Acknowledgement</a></li>
+
+<li>
+<a href="#disp-auth">Authors</a></li>
+
+<li>
+<a href="#disp-copy">Copyright</a></li>
+</ul>
+
+</sect>
+</format>
+
+<sect NAME="disp-syno">Synopsis
+
+<p>
+<s>display</s> <s>[</s> <i>options</i> <s>...]</s> <i>file</i>
+<s>[</s><i>options</i><s>...]</s><i>file</i></p>
+
+</sect>
+
+<sect NAME="disp-desc">Description
+</im>
+<p>
+<a href="../images/screen.png">Display</a> is a machine architecture independent
+image processing and display program. It can display an image on any workstation
+screen running an X server. <s>Display</s> can read and write
+<s>many</s>
+of the more popular image <a href="formats.html">formats</a> (e.g. <s>JPEG</s>,
+<s>TIFF</s>,
+<s>PNM</s>,
+<s>Photo
+CD</s>, etc.).</p>
+
+<p>
+With <s>display</s>, you can perform these functions on an image:</p>
+
+<dl>
+
+<o>load an image from a file
+
+<o>display the next image
+
+<o>display the former image
+
+<o>display a sequence of images as a slide show
+
+<o>write the image to a file
+
+<o>print the image to a <i>PostScript</i> printer
+
+<o>delete the image file
+
+<o>create a Visual Image Directory
+
+<o>select the image to display by its thumbnail rather than name
+
+<o>undo last image transformation
+
+<o>copy a region of the image
+
+<o>paste a region to the image
+
+<o>restore the image to its original size
+
+<o>refresh the image
+
+<o>half the image size
+
+<o>double the image size
+
+<o>resize the image
+
+<o>crop the image
+
+<o>cut the image
+
+<o>flop image in the horizontal direction
+
+<o>flip image in the vertical direction
+
+<o>rotate the image 90 degrees clockwise
+
+<o>rotate the image 90 degrees counter-clockwise
+
+<o>rotate the image
+
+<o>shear the image
+
+<o>roll the image
+
+<o>trim the image edges
+
+<o>invert the colors of the image
+
+<o>vary the color brightness
+
+<o>vary the color saturation
+
+<o>vary the image hue
+
+<o>gamma correct the image
+
+<o>sharpen the image contrast
+
+<o>dull the image contrast
+
+<o>perform histogram equalization on the image
+
+<o>perform histogram normalization on the image
+
+<o>negate the image colors
+
+<o>convert the image to grayscale
+
+<o>set the maximum number of unique colors in the image
+
+<o>reduce the speckles within an image
+
+<o>eliminate peak noise from an image
+
+<o>detect edges within the image
+
+<o>emboss an image
+
+<o>segment the image by color
+
+<o>simulate an oil painting
+
+<o>simulate a charcoal drawing
+
+<o>annotate the image with text
+
+<o>draw on the image
+
+<o>edit an image pixel color
+
+<o>edit the image matte information
+
+<o>composite an image with another
+
+<o>add a border to the image
+
+<o>surround image with an ornamental border
+
+<o>apply image processing techniques to a region of interest
+
+<o>display information about the image
+
+<o>zoom a portion of the image
+
+<o>show a histogram of the image
+
+<o>display image to background of a window
+
+<o>set user preferences
+
+<o>display information about this program
+
+<o>discard all images and exit program
+
+<o>change the level of magnification
+
+<o>display images specified by a World Wide Web (WWW) uniform resource locator (URL)
+
+</dl>
+
+</sect>
+<back>
+
+<sect NAME="disp-exam">Examples
+
+<p>
+To scale an image of a cockatoo to exactly 640 pixels in width and 480
+pixels in height and position the window at location (200,200), use:</p>
+
+<pre>
+    display -geometry 640x480+200+200! cockatoo.miff
+</pre>
+
+<p>
+To display an image of a cockatoo without a border centered on a backdrop,
+use:</p>
+
+<pre>
+    display +borderwidth -backdrop cockatoo.miff
+</pre>
+
+<p>
+To tile a slate texture onto the root window, use:</p>
+
+<pre>
+    display -size 1280x1024 -window root slate.png
+</pre>
+
+<p>
+To display a visual image directory of all your JPEG images, use:</p>
+
+<pre>
+    display 'vid:*.jpg'
+</pre>
+
+<p>
+To display a MAP image that is 640 pixels in width and 480 pixels in height
+with 256 colors, use:</p>
+
+<pre>
+    display -size 640x480+256 cockatoo.map
+</pre>
+
+<p>
+To display an image of a cockatoo specified with a <s>World Wide Web (WWW)</s>
+uniform resource locator <s>(URL)</s>, use:</p>
+
+<pre>
+    display ftp://wizards.dupont.com/images/cockatoo.jpg
+</pre>
+
+<p>
+To display histogram of an image, use:</p>
+
+<pre>
+    convert file.jpg HISTOGRAM:- | display -
+</pre>
+
+</sect>
+<back>
+
+<sect NAME="disp-opti">Options
+
+<p>
+Options are processed in command line order. Any option you specify on
+the command line remains in effect until it is explicitly changed by specifying
+the option again with a different effect. For example to display three images,
+the first with 32 colors, the second with an unlimited number of colors,
+and the third with only 16 colors, use:</p>
+
+<pre>
+<format type=man,tex>
+      display -colors 32 cockatoo.miff -noop duck.miff
+              -colors 16 macaw.miff
+</format>
+<format type=html>
+      display -colors 32 cockatoo.miff -noop duck.miff -colors 16 macaw.miff
+</format>
+</pre>
+
+<p>
+<s>Display</s> options can appear on the command line or in your X resources
+file. See <i>X(1)</i>. Options on the command line supersede values specified
+in your X resources file.</p>
+
+<p>
+For a more detailed description of each option, see
+<gm>
+Options, above.
+</gm>
+<im>
+<format type=man,tex>
+<i>GraphicsMagick(1)</i>.
+</format>
+<format type=html>
+<a href="GraphicsMagick.html"><i>GraphicsMagick(1)</i></a>.
+</format>
+</im>
+</p>
+
+<include file=brief_options.imdoc>
+
+<utils apps=display>
+<p>
+For a more detailed description of each option, see
+<gm>
+Options, above.
+</gm>
+<im>
+<format type=man,tex>
+<i>GraphicsMagick(1)</i>.
+</format>
+<format type=html>
+<a href="GraphicsMagick.html"><i>GraphicsMagick(1)</i></a>.
+</format>
+</im>
+</p>
+</sect>
+<back>
+
+<sect NAME="disp-mous">Mouse Buttons
+
+<p>
+The effects of each button press is described below. Three buttons are
+required. If you have a two button mouse, button 1 and 3 are returned.
+Press <s>ALT</s> and button 3 to simulate button 2.</p>
+
+<opt>1</opt>
+
+<abs>
+Press this button to map or unmap the <a href="#disp-comm">Command
+widget</a> . See the next section for more information about the Command
+widget.</abs>
+
+<opt>2</opt>
+
+<abs>
+Press and drag to define a region of the image to magnify.</abs>
+
+<opt>3</opt>
+
+<abs>
+Press and drag to choose from a select set of <s>display(1)</s>
+commands. This button behaves differently if the image being displayed
+is a visual image directory. Choose a particular tile of the directory
+and press this button and drag to select a command from a pop-up menu.
+Choose from these menu items:</abs>
+
+<ul>
+<li>Open</li>
+
+<li>Next</li>
+
+<li>Former</li>
+
+<li>Delete</li>
+
+<li>Update</li>
+</ul>
+
+<p>
+If you choose <s>Open</s>, the image represented by the tile is displayed.
+To return to the visual image directory, choose <s>Next</s> from the Command
+widget (refer to <a href="#disp-comm">Command Widget</a>).
+<s>Next</s> and <s>Former</s>
+moves to the next or former image respectively. Choose <s>Delete</s> to
+delete a particular image tile. Finally, choose <s>Update</s> to synchronize
+all the image tiles with their respective images. See
+<a href="montage.html">montage</a>
+and
+<a href="miff.html">miff</a> for more details.</p>
+
+</sect>
+<back>
+
+
+<sect NAME="disp-comm">Command Widget
+
+<p>
+The Command widget lists a number of sub-menus and commands. They are</p>
+
+<ul>
+<li><s>File</s>
+
+<ul>
+<li>Open...</li>
+
+<li>Next</li>
+
+<li>Former</li>
+
+<li>Select...</li>
+
+<li>Save...</li>
+
+<li>Print...</li>
+
+<li>Delete...</li>
+
+<li>Canvas...</li>
+
+<li>Visual Directory...</li>
+
+<li>Quit</li>
+</ul></li>
+</ul>
+
+<ul>
+<li><s>Edit</s>
+
+<ul>
+<li>Undo</li>
+
+<li>Redo</li>
+
+<li>Cut</li>
+
+<li>Copy</li>
+
+<li>Paste</li>
+</ul></li>
+</ul>
+
+<ul>
+<li><s>View</s>
+
+<ul>
+<li>Half Size</li>
+
+<li>Original Size</li>
+
+<li>Double Size</li>
+
+<li>Resize...</li>
+
+<li>Apply</li>
+
+<li>Refresh</li>
+
+<li>Restore</li>
+</ul></li>
+</ul>
+
+<ul>
+<li><s>Transform</s>
+
+<ul>
+<li>Crop</li>
+
+<li>Chop</li>
+
+<li>Flop</li>
+
+<li>Flip</li>
+
+<li>Rotate Right</li>
+
+<li>Rotate Left</li>
+
+<li>Rotate...</li>
+
+<li>Shear...</li>
+
+<li>Roll...</li>
+
+<li>Trim Edges</li>
+</ul></li>
+</ul>
+
+<ul>
+<li><s>Enhance</s>
+
+<ul>
+<li>Hue...</li>
+
+<li>Saturation...</li>
+
+<li>Brightness...</li>
+
+<li>Gamma...</li>
+
+<li>Spiff...</li>
+
+<li>Dull</li>
+
+<li>Equalize</li>
+
+<li>Normalize</li>
+
+<li>Negate</li>
+
+<li>GRAYscale</li>
+
+<li>Quantize...</li>
+</ul></li>
+</ul>
+
+<ul>
+<li><s>Effects</s>
+
+<ul>
+<li>Despeckle</li>
+
+<li>Emboss</li>
+
+<li>Reduce Noise</li>
+
+<li>Add Noise</li>
+
+<li>Sharpen...</li>
+
+<li>Blur...</li>
+
+<li>Threshold...</li>
+
+<li>Edge Detect...</li>
+
+<li>Spread...</li>
+
+<li>Shade...</li>
+
+<li>Raise...</li>
+
+<li>Segment...</li>
+</ul></li>
+</ul>
+
+<ul>
+<li><s>F/X</s>
+
+<ul>
+<li>Solarize...</li>
+
+<li>Swirl...</li>
+
+<li>Implode...</li>
+
+<li>Wave...</li>
+
+<li>Oil Paint...</li>
+
+<li>Charcoal Draw...</li>
+</ul></li>
+</ul>
+
+<ul>
+<li><s>Image Edit</s>
+
+<ul>
+<li>Annotate...</li>
+
+<li>Draw...</li>
+
+<li>Color...</li>
+
+<li>Matte...</li>
+
+<li>Composite...</li>
+
+<li>Add Border...</li>
+
+<li>Add Frame...</li>
+
+<li>Comment...</li>
+
+<li>Launch...</li>
+
+<li>Region of Interest...</li>
+</ul></li>
+</ul>
+
+<ul>
+<li><s>Miscellany</s>
+
+<ul>
+<li>Image Info</li>
+
+<li>Zoom Image</li>
+
+<li>Show Preview...</li>
+
+<li>Show Histogram</li>
+
+<li>Show Matte</li>
+
+<li>Background...</li>
+
+<li>Slide Show</li>
+
+<li>Preferences...</li>
+</ul></li>
+</ul>
+
+<ul>
+<li><s>Help</s></li>
+
+<ul>
+<li>Overview</li>
+
+<li>Browse Documentation</li>
+
+<li>About Display</li>
+</ul>
+</ul>
+
+<p>
+Menu items with a indented triangle have a sub-menu. They are represented
+above as the indented items. To access a sub-menu item, move the pointer
+to the appropriate menu and press button 1 and drag. When you find the
+desired sub-menu item, release the button and the command is executed.
+Move the pointer away from the sub-menu if you decide not to execute a
+particular command.</p>
+
+
+</sect>
+<back>
+
+<sect NAME="disp-keyb">Keyboard Accelerators
+
+<p>
+Accelerators are one or two key presses that effect a particular command.
+The keyboard accelerators that
+<s>display</s> understands is:</p>
+
+<pre>
+    Ctl+O     Press to <a href="#disp-imlo">load</a> an image from a file.
+    space     Press to display the next image.
+</pre>
+
+<p>
+If the image is a multi-paged document such as a
+<i>PostScript</i> document,
+you can skip ahead several pages by preceding this command with a number.
+For example to display the fourth page beyond the current page,
+press <tt>4space</tt>.</p>
+
+<pre>
+    backspace Press to display the former image.
+</pre>
+
+<p>
+If the image is a multi-paged document such as a
+<i>PostScript</i> document,
+you can skip behind several pages by preceding this command with a number.
+For example to display the fourth page preceding the current page, press
+4n.</p>
+
+<pre>
+    Ctl-S    Press to save the image to a file.
+    Ctl-P    Press to print the image to a
+             <i>PostScript</i> printer.
+    Ctl-D    Press to delete an image file.
+    Ctl-N    Press to create a blank canvas.
+    Ctl-Q    Press to discard all images and exit program.
+    Ctl+Z    Press to undo last image transformation.
+    Ctl+R    Press to redo last image transformation.
+    Ctl-X    Press to <a href="#disp-imcu">cut</a> a region of
+             the image.
+    Ctl-C    Press to <a href="#disp-imco">copy</a> a region of
+             the image.
+    Ctl-V    Press to <a href="#disp-impa">paste</a> a region to
+             the image.
+    <        Press to halve the image size.
+    .        Press to return to the original image size.
+    >        Press to double the image size.
+    %        Press to resize the image to a width and height
+             you specify.
+    Cmd-A    Press to make any image transformations permanent.
+     
+             By default, any image size transformations are
+             applied to the original image to create the image
+             displayed on the X server.  However, the
+             transformations are not permanent (i.e. the original
+             image does not change size only the X image does).
+             For example, if you press ">" the X image will
+             appear to double in size, but the original image
+             will in fact remain the same size.  To force the
+             original image to double in size, press ">" followed
+             by "Cmd-A".
+
+    @        Press to refresh the image window.
+    C        Press to <a href="#disp-imcr">crop</a> the image.
+    [        Press to <a href="#disp-imch">chop</a> the image.
+    H        Press to flop image in the horizontal direction.
+    V        Press to flip image in the vertical direction.
+    /        Press to rotate the image 90 degrees clockwise.
+    \        Press to rotate the image 90 degrees
+             counter-clockwise.
+    *        Press to <a href="#disp-imro">rotate</a> the image
+             the number of degrees you specify.
+    S        Press to shear the image the number of degrees
+             you specify.
+    R        Press to roll the image.
+    T        Press to trim the image edges.
+    Shft-H   Press to vary the color hue.
+    Shft-S   Press to vary the color saturation.
+    Shft-L   Press to vary the image brightness.
+    Shft-G   Press to gamma correct the image.
+    Shft-C   Press to spiff up the image contrast.
+    Shft-Z   Press to dull the image contrast.
+    =        Press to perform histogram equalization on
+             the image.
+    Shft-N   Press to perform histogram normalization on
+             the image.
+    Shft-~   Press to negate the colors of the image.
+    .        Press to convert the image colors to gray.
+    Shft-#   Press to set the maximum number of unique
+             colors in the image.
+    F2       Press to reduce the speckles in an image.
+    F2       Press to emboss an image.
+    F4       Press to eliminate peak noise from an image.
+    F5       Press to add noise to an image.
+    F6       Press to sharpen an image.
+    F7       Press to blur image an image.
+    F8       Press to threshold the image.
+    F9       Press to detect edges within an image.
+    F10      Press to displace pixels by a random amount.
+    F11      Press to shade the image using a distant light
+             source.
+    F12      Press to lighten or darken image edges to create
+             a 3-D effect.
+    F13      Press to segment the image by color.
+    Meta-S   Press to swirl image pixels about the center.
+    Meta-I   Press to implode image pixels about the center.
+    Meta-W   Press to alter an image along a sine wave.
+    Meta-P   Press to simulate an oil painting.
+    Meta-C   Press to simulate a charcoal drawing.
+    Alt-X    Press to <a href="#disp-imcomp">composite</a> the image
+             with another.
+    Alt-A    Press to <a href="#disp-iman">annotate</a> the image with text.
+    Alt-D    Press to <a href="#disp-imdr">draw</a> a line on the image.
+    Alt-P    Press to <a href="#disp-cole">edit an image pixel color</a>.
+    Alt-M    Press to <a href="#disp-matt">edit the image matte</a> information.
+    Alt-X    Press to <a href="#disp-imcomp">composite</a> the image with another.
+    Alt-A    Press to add a border to the image.
+    Alt-F    Press to add a ornamental frame to the image.
+    Alt-Shft-!   Press to add an image comment.
+    Ctl-A    Press to apply image processing techniques to a
+             region of interest.
+    Shft-?   Press to display information about the image.
+    Shft-+   Press to map the zoom image window.
+    Shft-P   Press to preview an image enhancement, effect,
+             or f/x.
+    F1       Press to display helpful information about
+             the "display" utility.
+    Find     Press to browse documentation about GraphicsMagick.
+    1-9      Press to change the level of magnification.
+</pre>
+
+<p>
+Use the arrow keys to move the image one pixel up, down, left, or right
+within the magnify window. Be sure to first map the magnify window by pressing
+button 2.</p>
+
+<p>
+Press ALT and one of the arrow keys to trim off one pixel from any side
+of the image.</p>
+
+</sect>
+<back>
+
+<sect NAME="disp-xres">X Resources
+
+<p>
+<s>Display</s> options can appear on the command line or in your X resource
+file. Options on the command line supersede values specified in your X
+resource file. See <i>X(1)</i> for more information on X resources.</p>
+
+<p>
+Most <s>display</s> options have a corresponding X resource. In addition,
+<s>display</s>
+uses the following X resources:</p>
+
+<opt>background (class Background)</opt>
+<abs>
+Specifies the preferred color to use for the Image window background. The
+default is #ccc.</abs>
+
+<opt>borderColor (class BorderColor)</opt>
+<abs>
+Specifies the preferred color to use for the Image window border. The default
+is #ccc.</abs>
+
+<opt>borderWidth (class BorderWidth)</opt>
+<abs>
+Specifies the width in pixels of the image window border. The default is
+2.</abs>
+
+<opt>browseCommand (class browseCommand)</opt>
+<abs>
+Specifies the name of the preferred browser when displaying GraphicsMagick
+documentation. The default is <tt>netscape %s</tt>.</abs>
+
+<opt>confirmExit (class ConfirmExit)</opt>
+<abs>
+<s>Display</s> pops up a dialog box to confirm exiting the program when
+exiting the program. Set this resource to <tt>False</tt> to exit without
+a confirmation.</abs>
+
+<opt>displayGamma (class DisplayGamma)</opt>
+<abs>
+Specifies the gamma of the X server.</abs>
+
+<abs>
+You can apply separate gamma values to the red, green, and blue channels
+of the image with a gamma value list delineated with slashes (i.e. 1.7/2.3/1.2).</abs>
+
+<abs>
+The default is 2.2.</abs>
+
+<opt>displayWarnings (class DisplayWarnings)</opt>
+<abs>
+<s>Display</s> pops up a dialog box whenever a warning message occurs.
+Set this resource to <tt>False</tt> to ignore warning messages.</abs>
+
+<opt>font (class FontList)</opt>
+<abs>
+Specifies the name of the preferred font to use in normal formatted text.
+The default is 14 point Helvetica.</abs>
+
+<opt>font[1-9] (class Font[1-9])</opt>
+<abs>
+Specifies the name of the preferred font to use when
+<a href="#iman">annotating</a>
+the image window with text. The default fonts are fixed, variable, 5x8,
+6x10, 7x13bold, 8x13bold, 9x15bold, 10x20, and 12x24.</abs>
+
+<opt>foreground (class Foreground)</opt>
+<abs>
+Specifies the preferred color to use for text within the image window.
+The default is black.</abs>
+
+<opt>gammaCorrect (class gammaCorrect)</opt>
+<abs>
+This resource, if true, will lighten or darken an image of known gamma
+to match the gamma of the display (see resource <s>displayGamma</s>). The
+default is True.</abs>
+
+<opt>geometry (class Geometry)</opt>
+<abs>
+Specifies the preferred size and position of the image window. It is not
+necessarily obeyed by all window managers.</abs>
+
+<pp>
+Offsets, if present, are handled in <i>X(1)</i> style.  A negative x offset is
+measured from the right edge of the screen to the right edge of the icon,
+and a negative y offset is measured from the bottom edge of the screen
+to the bottom edge of the icon.</pp>
+
+<opt>iconGeometry (class IconGeometry)</opt>
+<abs>
+Specifies the preferred size and position of the application when iconified.
+It is not necessarily obeyed by all window managers.</abs>
+
+<pp>
+Offsets, if present, are handled in the same manner as in class Geometry.</pp>
+
+<opt>iconic (class Iconic)</opt>
+<abs>
+This resource indicates that you would prefer that the application's windows
+initially not be visible as if the windows had be immediately iconified
+by you. Window managers may choose not to honor the application's request.</abs>
+
+<opt>magnify (class Magnify)</opt>
+<abs>
+specifies an integral factor by which the image should be enlarged. The
+default is 3.</abs>
+
+<abs>
+This value only affects the magnification window which is invoked with
+<a href="#disp-mous">button</a>
+number 3 after the image is displayed.</abs>
+
+<opt>matteColor (class MatteColor)</opt>
+<abs>
+Specify the color of windows. It is used for the backgrounds of windows,
+menus, and notices. A 3D effect is achieved by using highlight and shadow
+colors derived from this color. Default value: #697B8F.</abs>
+
+<opt>name (class Name)</opt>
+<abs>
+This resource specifies the name under which resources for the application
+should be found. This resource is useful in shell aliases to distinguish
+between invocations of an application, without resorting to creating links
+to alter the executable file name. The default is the application name.</abs>
+
+<opt>pen[1-9] (class Pen[1-9])</opt>
+<abs>
+Specifies the color of the preferred font to use when
+<a href="#disp-iman">annotating</a>
+the image window with text. The default colors are black, blue, green,
+cyan, gray, red, magenta, yellow, and white.</abs>
+
+<opt>printCommand (class PrintCommand)</opt>
+<abs>
+This command is executed whenever Print is issued.  In general, it is the
+command to print <i>PostScript</i> to your printer. Default value: <tt>lp
+-c -s %i</tt>.</abs>
+
+<opt>sharedMemory (class SharedMemory)</opt>
+<abs>
+This resource specifies whether display should attempt use shared memory
+for pixmaps. GraphicsMagick must be compiled with shared memory support,
+and the display must support the MIT-SHM extension. Otherwise, this
+resource is ignored. The default is True.</abs>
+
+<opt>textFont (class textFont)</opt>
+<abs>
+Specifies the name of the preferred font to use in fixed (typewriter style)
+formatted text. The default is 14 point Courier.</abs>
+
+<opt>title (class Title)</opt>
+<abs>
+This resource specifies the title to be used for the image window. This
+information is sometimes used by a window manager to provide a header identifying
+the window. The default is the image file name.</abs>
+
+<opt>undoCache (class UndoCache)</opt>
+<abs>
+Specifies, in mega-bytes, the amount of memory in the undo edit cache.
+Each time you modify the image it is saved in the undo edit cache as long
+as memory is available. You can subsequently <i>undo</i> one or more of
+these transformations. The default is 16 Megabytes.</abs>
+
+<opt>usePixmap (class UsePixmap)</opt>
+<abs>
+Images are maintained as a XImage by default. Set this resource to True
+to utilize a server Pixmap instead. This option is useful if your image
+exceeds the dimensions of your server screen and you intend to pan the
+image. Panning is much faster with Pixmaps than with a XImage. Pixmaps
+are considered a precious resource, use them with discretion.</abs>
+
+<p>
+To set the geometry of the Magnify or Pan or window, use the geometry resource.
+For example, to set the Pan window geometry to 256x256, use:</p>
+
+<pre>
+    display.pan.geometry: 256x256
+</pre>
+
+</sect>
+<back>
+
+<sect NAME="disp-imlo">Image Loading
+
+<p>
+To select an image to display, choose <s>Open</s> of the <s>File</s> sub-menu
+from the <a href="#disp-comm">Command widget</a>. A file browser is displayed.
+To choose a particular image file, move the pointer to the filename and
+press any button. The filename is copied to the text window. Next, press
+<s>Open</s>
+or press the <s>RETURN</s> key. Alternatively, you can type the image file
+name directly into the text window. To descend directories, choose a directory
+name and press the button twice quickly. A scrollbar allows a large list
+of filenames to be moved through the viewing area if it exceeds the size
+of the list area.</p>
+
+<p>
+You can trim the list of file names by using shell globbing characters.
+For example, type <tt>*.jpg</tt> to list only files that end
+with <tt>.jpg</tt>.</p>
+
+<p>
+To select your image from the X server screen instead of from a file, Choose
+<s>Grab</s> of the <s>Open</s> widget.</p>
+</sect>
+<back>
+
+<sect NAME="disp-visu">Visual Image Directory
+
+<p>
+To create a Visual Image Directory, choose Visual Directory of the <s>File</s>
+sub-menu from the <a href="#disp-comm">Command widget</a> . A file browser is
+displayed. To create a Visual Image Directory from all the images in the
+current directory, press <s>Directory</s> or press the <s>RETURN key</s>.
+Alternatively, you can select a set of image names by using shell globbing
+characters. For example, type <tt>*.jpg</tt> to include only files that
+end with <tt>.jpg</tt>. To descend directories, choose a directory name
+and press the button twice quickly. A scrollbar allows a large list of
+filenames to be moved through the viewing area if it exceeds the size of
+the list area.</p>
+
+<p>
+After you select a set of files, they are turned into thumbnails and tiled
+onto a single image. Now move the pointer to a particular thumbnail and
+press <s>button 3</s> and drag. Finally, select Open. The image represented
+by the thumbnail is displayed at its full size. Choose <s>Next</s> from
+the <s>File</s> sub-menu of the Command widget to return to the Visual
+Image Directory.</p>
+</sect>
+<back>
+
+<sect NAME="disp-imcu">Image Cutting
+
+<p>
+Note that cut information for image window is not retained for colormapped
+X server visuals (e.g. <i>StaticColor</i>,
+<i>StaticColor</i>, <i>GRAYScale</i>,
+<i>PseudoColor</i>).
+Correct cutting behavior may require a <i>TrueColor</i> or <i>DirectColor</i>
+visual or a <i>Standard Colormap</i>.</p>
+
+<p>
+To begin, press choose <s>Cut</s> of the <s>Edit</s> sub-menu from the
+<a href="#disp-comm">Command
+widget</a>. Alternatively, press
+<s>F3</s> in the image window.</p>
+
+<p>
+A small window appears showing the location of the cursor in the image
+window. You are now in cut mode. In cut mode, the Command widget has these
+options:</p>
+
+<ul>
+<li><s>Help</s></li>
+
+<li><s>Dismiss</s></li>
+</ul>
+
+<p>
+To define a cut region, press button 1 and drag. The cut region is defined
+by a highlighted rectangle that expands or contracts as it follows the
+pointer. Once you are satisfied with the cut region, release the button.
+You are now in rectify mode. In rectify mode, the Command widget has these
+options:</p>
+
+<ul>
+<li><s>Cut</s></li>
+
+<li><s>Help</s></li>
+
+<li><s>Dismiss</s></li>
+</ul>
+
+<p>
+You can make adjustments by moving the pointer to one of the cut rectangle
+corners, pressing a button, and dragging. Finally, press Cut to commit
+your copy region. To exit without cutting the image, press Dismiss.</p>
+</sect>
+<back>
+
+<sect NAME="disp-imco">Image Copying
+
+<p>
+To begin, press choose <s>Copy</s> of the <s>Edit</s> sub-menu from the
+<a href="#disp-comm">Command
+widget</a>. Alternatively, press
+<s>F4</s> in the image window.</p>
+
+<p>
+A small window appears showing the location of the cursor in the image
+window. You are now in copy mode. In copy mode, the Command widget has
+these options:</p>
+
+<ul>
+<li>Help</li>
+
+<li>Dismiss</li>
+</ul>
+
+<p>
+To define a copy region, press button 1 and drag. The copy region is defined
+by a highlighted rectangle that expands or contracts as it follows the
+pointer. Once you are satisfied with the copy region, release the button.
+You are now in rectify mode. In rectify mode, the Command widget has these
+options:</p>
+
+<ul>
+<li>Copy</li>
+
+<li>Help</li>
+
+<li>Dismiss</li>
+</ul>
+
+<p>
+You can make adjustments by moving the pointer to one of the copy rectangle
+corners, pressing a button, and dragging. Finally, press Copy to commit
+your copy region. To exit without copying the image, press Dismiss.</p>
+</sect>
+<back>
+
+<sect NAME="disp-impas">Image Pasting
+
+<p>
+To begin, press choose <s>Paste</s> of the <s>Edit</s> sub-menu from the
+<a href="#disp-comm">Command
+widget</a>. Alternatively, press
+<s>F5</s> in the image window.</p>
+
+<p>
+A small window appears showing the location of the cursor in the image
+window. You are now in Paste mode. To exit immediately, press Dismiss.
+In Paste mode, the Command widget has these options:</p>
+
+<ul>
+<li><s>Operators</s>
+
+<ul>
+<li>over</li>
+
+<li>in</li>
+
+<li>out</li>
+
+<li>atop</li>
+
+<li>xor</li>
+
+<li>plus</li>
+
+<li>minus</li>
+
+<li>add</li>
+
+<li>subtract</li>
+
+<li>difference</li>
+
+<li>multiply</li>
+
+<li>bumpmap</li>
+
+<li>replace</li>
+</ul></li>
+
+<li><s>Help</s></li>
+
+<li><s>Dismiss</s></li>
+</ul>
+
+<p>
+Choose a composite operation from the <s>Operators</s> sub-menu of the
+<a href="#disp-comm">Command
+widget</a>. How each operator behaves is described below. <i>image window</i>
+is the image currently displayed on your X server and <i>image</i> is the
+image obtained with the File Browser widget.</p>
+
+<opt>over</opt>
+<abs>
+The result is the union of the two image shapes, with <i>image</i> obscuring
+<i>image
+window</i> in the region of overlap.</abs>
+
+<opt>in</opt>
+<abs>
+The result is simply <i>image</i> cut by the shape of
+<i>image window</i>.
+None of the image data of image window is in the result.</abs>
+
+<opt>out</opt>
+<abs>
+The resulting image is <i>image</i> with the shape of
+<i>image window</i>
+cut out.</abs>
+
+<opt>atop</opt>
+<abs>
+The result is the same shape as <i>image window</i>, with
+<i>image</i>
+obscuring <i>image window</i> where the image shapes overlap. Note this
+differs from over because the portion of image outside
+<i>image window</i>'s
+shape does not appear in the result.</abs>
+
+<opt>xor</opt>
+<abs>
+The result is the image data from both <i>image</i> and
+<i>image window</i>
+that is outside the overlap region. The overlap region is blank.</abs>
+
+<opt>plus</opt>
+<abs>
+The result is just the sum of the image data. Output values are cropped
+to the maximum value (no overflow). This operation is independent of the
+matte channels.</abs>
+
+<opt>minus</opt>
+<abs>
+The result of <i>image</i> - <i>image window</i>, with underflow cropped
+to zero. The matte channel is ignored (set to opaque, full coverage).</abs>
+
+<opt>add</opt>
+<abs>
+The result of <i>image</i> + <i>image window</i>, with overflow wrapping
+around (mod MaxRGB+1).</abs>
+
+<opt>subtract</opt>
+<abs>
+The result of <i>image</i> - <i>image window</i>, with underflow wrapping
+around (mod MaxRGB+1). The add and subtract operators can be used to perform
+reversible transformations.</abs>
+
+<opt>difference</opt>
+<abs>
+The result of abs(<i>image</i> - <i>image window</i>). This is useful for
+comparing two very similar images.</abs>
+
+<opt>multiply</opt>
+<abs>
+The result of <i>image</i> * <i>image window</i>. This is useful for
+the creation of drop-shadows.</abs>
+
+<opt>bumpmap</opt>
+<abs>
+The result of <i>image window</i> shaded by <i>window</i>.</abs>
+
+<opt>replace</opt>
+
+<abs>The resulting image is <i>image window</i> replaced with
+<i>image</i>.
+Here the matte information is ignored.</abs>
+
+<p>
+The image compositor requires a matte, or alpha channel in the image for
+some operations. This extra channel usually defines a mask which represents
+a sort of a cookie-cutter for the image. This is the case when matte is
+255 (full coverage) for pixels inside the shape, zero outside, and between
+zero and 255 on the boundary. If image does not have a matte channel, it
+is initialized with 0 for any pixel matching in color to pixel location
+(0,0), otherwise 255. See <a href="#disp-matt">Matte Editing</a> for a method
+of defining a matte channel.</p>
+
+<p>
+Note that matte information for image window is not retained for colormapped
+X server visuals (e.g. <i>StaticColor, StaticColor, GrayScale, PseudoColor</i>).
+Correct compositing behavior may require a
+<i>TrueColor</i> or <i>DirectColor</i>
+visual or a <i>Standard Colormap</i>.</p>
+
+<p>
+Choosing a composite operator is optional. The default operator is replace.
+However, you must choose a location to composite your image and press button
+1. Press and hold the button before releasing and an outline of the image
+will appear to help you identify your location.</p>
+
+<p>
+The actual colors of the pasted image is saved. However, the color that
+appears in image window may be different. For example, on a monochrome
+screen image window will appear black or white even though your pasted
+image may have many colors. If the image is saved to a file it is written
+with the correct colors. To assure the correct colors are saved in the
+final image, any <i>PseudoClass</i> image is promoted to <i>DirectClass</i>.
+To force a
+<i>PseudoClass</i> image to remain <i>PseudoClass</i>,
+use <s>-colors</s>.</p>
+</sect>
+<back>
+
+<sect NAME="disp-imcr">Image Cropping
+
+<p>
+To begin, press choose <s>Crop</s> of the <s>Transform</s> submenu from
+the <a href="#disp-comm">Command widget</a>. Alternatively,
+<a href="#disp-keyb">press</a> [ in the image window.</p>
+
+<p>
+A small window appears showing the location of the cursor in the image
+window. You are now in crop mode. In crop mode, the Command widget has
+these options:</p>
+<ul>
+<li><s>Help</s></li>
+
+<li><s>Dismiss</s></li>
+</ul>
+
+<p>
+To define a cropping region, press button 1 and drag. The cropping region
+is defined by a highlighted rectangle that expands or contracts as it follows
+the pointer. Once you are satisfied with the cropping region, release the
+button. You are now in rectify mode. In rectify mode, the Command widget
+has these options:</p>
+
+<ul>
+<li><s>Crop</s></li>
+
+<li><s>Help</s></li>
+
+<li><s>Dismiss</s></li>
+</ul>
+
+<p>
+You can make adjustments by moving the pointer to one of the cropping rectangle
+corners, pressing a button, and dragging. Finally, press Crop to commit
+your cropping region. To exit without cropping the image, press Dismiss.</p>
+</sect>
+<back>
+<sect NAME="disp-imch">Image Chopping
+
+<p>
+An image is chopped interactively. There is no command line argument to
+chop an image. To begin, choose <s>Chop</s> of the <s>Transform</s> sub-menu
+from the <a href="#disp-comm">Command widget</a>. Alternatively,
+<a href="#disp-keyb">press</a> ] in the Image window.</p>
+
+<p>
+You are now in <s>Chop</s> mode. To exit immediately, press
+<s>Dismiss</s>.
+In Chop mode, the Command widget has these options:</p>
+
+<ul>
+<li><s>Direction</s>
+
+<ul>
+<li>horizontal</li>
+
+<li>vertical</li>
+</ul></li>
+
+<li><s>Help</s></li>
+
+<li><s>Dismiss</s></li>
+</ul>
+
+<p>
+If the you choose the horizontal direction (this is the default), the area
+of the image between the two horizontal endpoints of the chop line is removed.
+Otherwise, the area of the image between the two vertical endpoints of
+the chop line is removed.</p>
+
+<p>
+Select a location within the image window to begin your chop, press and
+hold any button. Next, move the pointer to another location in the image.
+As you move a line will connect the initial location and the pointer. When
+you release the button, the area within the image to chop is determined
+by which direction you choose from the Command widget.</p>
+
+<p>
+To cancel the image chopping, move the pointer back to the starting point
+of the line and release the button.</p>
+</sect>
+<back>
+
+<sect NAME="disp-imro">Image Rotation
+
+<p>
+Press the / key to rotate the image 90 degrees or \ to rotate -90 degrees.
+To interactively choose the degree of rotation, choose
+<s>Rotate...</s>
+of the <s>Transform</s> submenu from the <a href="#disp-comm">Command Widget</a>.
+Alternatively, <a href="#disp-keyb">press</a> * in the image window.</p>
+
+<p>
+A small horizontal line is drawn next to the pointer. You are now in rotate
+mode. To exit immediately, press Dismiss. In rotate mode, the Command widget
+has these options:</p>
+
+<ul>
+<li><s>Pixel Color</s>
+
+<ul>
+<li>black</li>
+
+<li>blue</li>
+
+<li>cyan</li>
+
+<li>green</li>
+
+<li>gray</li>
+
+<li>red</li>
+
+<li>magenta</li>
+
+<li>yellow</li>
+
+<li>white</li>
+
+<li>Browser...</li>
+</ul></li>
+
+<li><s>Direction</s>
+
+<ul>
+<li>horizontal</li>
+
+<li>vertical</li>
+</ul></li>
+
+<li><s>Help</s></li>
+
+<li><s>Dismiss</s></li>
+</ul>
+
+<p>
+Choose a background color from the Pixel Color sub-menu. Additional background
+colors can be specified with the color browser. You can change the menu
+colors by setting the <a href="#disp-xres">X resources</a> pen1 through pen9.</p>
+
+<p>
+If you choose the color browser and press <s>Grab</s>, you can select the
+background color by moving the pointer to the desired color on the screen
+and press any button.</p>
+
+<p>
+Choose a point in the image window and press this button and hold. Next,
+move the pointer to another location in the image. As you move a line connects
+the initial location and the pointer. When you release the button, the
+degree of image rotation is determined by the slope of the line you just
+drew. The slope is relative to the direction you choose from the Direction
+sub-menu of the Command widget.</p>
+
+<p>
+To cancel the image rotation, move the pointer back to the starting point
+of the line and release the button.</p>
+</sect>
+<back>
+
+<im>
+<sect NAME="disp-segm">Image Segmentation
+
+<p>
+Choose <s>Effects->Segment</s> to segment an image by analyzing the histograms
+of the color components and identifying units that are homogeneous with
+the fuzzy c-means technique. The scale-space filter analyzes the histograms
+of the three color components of the image and identifies a set of classes.
+The extents of each class is used to coarsely segment the image with thresholding.
+The color associated with each class is determined by the mean color of
+all pixels within the extents of a particular class. Finally, any unclassified
+pixels are assigned to the closest class with the fuzzy c-means technique.</p>
+
+<p>The fuzzy c-Means algorithm can be summarized as follows:
+
+<ul>
+<li>
+Build a histogram, one for each color component of the image.</li>
+
+<li>
+For each histogram, successively apply the scale-space filter and build
+an interval tree of zero crossings in the second derivative at each scale.
+Analyze this scale-space "fingerprint" to determine which peaks or valleys
+in the histogram are most predominant.</li>
+
+<li>
+The fingerprint defines intervals on the axis of the histogram. Each interval
+contains either a minima or a maxima in the original signal. If each color
+component lies within the maxima interval, that pixel is considered "classified"
+and is assigned an unique class number.</li>
+
+<li>
+Any pixel that fails to be classified in the above thresholding pass is
+classified using the fuzzy c-Means technique. It is assigned to one of
+the classes discovered in the histogram analysis phase.</li>
+</ul>
+
+<p>
+The fuzzy c-Means technique attempts to cluster a pixel by finding the
+local minima of the generalized within group sum of squared error objective
+function. A pixel is assigned to the closest class of which the fuzzy membership
+has a maximum value.</p>
+
+<p>
+For additional information see:
+<bq><i>Young Won Lim, Sang Uk Lee</i>, "<s>On The Color Image Segmentation
+Algorithm Based on the Thresholding and the Fuzzy c-Means Techniques</s>",
+Pattern Recognition, Volume 23, Number 9, pages 935-952, 1990.</bq>
+</p>
+
+</sect>
+</im>
+<back>
+
+<sect NAME="disp-iman">Image Annotation
+
+<p>
+An image is annotated interactively. There is no command line argument
+to annotate an image. To begin, choose
+<s>Annotate</s> of the <s>Image
+Edit</s> sub-menu from the <a href="#disp-comm">Command widget</a>. Alternatively,
+<a href="#disp-keyb">press</a> a in the image window.</p>
+
+<p>
+A small window appears showing the location of the cursor in the image
+window. You are now in annotate mode. To exit immediately, press Dismiss.
+In annotate mode, the Command widget has these options:</p>
+
+<ul>
+<li>
+<s>Font Name</s>
+
+<ul>
+<li>
+fixed</li>
+
+<li>
+variable</li>
+
+<li>
+5x8</li>
+
+<li>
+6x10</li>
+
+<li>
+7x13bold</li>
+
+<li>
+8x13bold</li>
+
+<li>
+9x15bold</li>
+
+<li>
+10x20</li>
+
+<li>
+12x24</li>
+
+<li>
+Browser...</li>
+</ul></li>
+
+<li>
+<s>Font Color</s>
+
+<ul>
+<li>
+black</li>
+
+<li>
+blue</li>
+
+<li>
+cyan</li>
+
+<li>
+green</li>
+
+<li>
+gray</li>
+
+<li>
+red</li>
+
+<li>
+magenta</li>
+
+<li>
+yellow</li>
+
+<li>
+white</li>
+
+<li>
+transparent</li>
+
+<li>
+Browser...</li>
+</ul></li>
+
+<li>
+<s>Box Color</s>
+
+<ul>
+<li>
+black</li>
+
+<li>
+blue</li>
+
+<li>
+cyan</li>
+
+<li>
+green</li>
+
+<li>
+gray</li>
+
+<li>
+red</li>
+
+<li>
+magenta</li>
+
+<li>
+yellow</li>
+
+<li>
+white</li>
+
+<li>
+transparent</li>
+
+<li>
+Browser...</li>
+</ul></li>
+
+<li>
+<s>Rotate Text</s>
+
+<ul>
+<li>
+-90</li>
+
+<li>
+-45</li>
+
+<li>
+-30</li>
+
+<li>
+0</li>
+
+<li>
+30</li>
+
+<li>
+45</li>
+
+<li>
+90</li>
+
+<li>
+180</li>
+
+<li>
+Dialog...</li>
+</ul></li>
+
+<li>
+<s>Help</s></li>
+
+<li>
+<s>Dismiss</s></li>
+</ul>
+
+<p>
+Choose a font name from the <s>Font Name</s> sub-menu. Additional font
+names can be specified with the font browser. You can change the menu names
+by setting the <a href="#disp-xres">X resources</a> font1 through font9.</p>
+
+<p>
+Choose a font color from the <s>Font Color</s> sub-menu. Additional font
+colors can be specified with the color browser. You can change the menu
+colors by setting the <a href="#disp-xres">X resources</a> pen1 through pen9.</p>
+
+<p>
+If you select the color browser and press <s>Grab</s>, you can choose the
+font color by moving the pointer to the desired color on the screen and
+press any button.</p>
+
+<p>
+If you choose to rotate the text, choose <s>Rotate Text</s> from the menu
+and select an angle. Typically you will only want to rotate one line of
+text at a time. Depending on the angle you choose, subsequent lines may
+end up overwriting each other.</p>
+
+<p>
+Choosing a font and its color is optional. The default font is fixed and
+the default color is black. However, you must choose a location to begin
+entering text and press a button. An underscore character will appear at
+the location of the pointer. The cursor changes to a pencil to indicate
+you are in text mode. To exit immediately, press Dismiss.</p>
+
+<p>
+In text mode, any key presses will display the character at the location
+of the underscore and advance the underscore cursor. Enter your text and
+once completed press Apply to finish your image annotation. To correct
+errors press <s>BACK SPACE</s>. To delete an entire line of text, press
+<s>DELETE</s>.
+Any text that exceeds the boundaries of the image window is automatically
+continued onto the next line.</p>
+
+<p>
+The actual color you request for the font is saved in the image. However,
+the color that appears in your Image window may be different. For example,
+on a monochrome screen the text will appear black or white even if you
+choose the color red as the font color. However, the image saved to a file
+with <s>-write</s> is written with red lettering. To assure the correct
+color text in the final image, any <i>PseudoClass</i> image is promoted
+to <i>DirectClass</i> (see miff(5)). To force a <i>PseudoClass</i> image
+to remain
+<i>PseudoClass</i>, use <s>-colors</s>.</p>
+</sect>
+<back>
+<sect NAME="disp-imcomp">Image Compositing
+
+<p>
+An image composite is created interactively. <s>There is no command line
+argument to composite an image</s>. To begin, choose <s>Composite</s> of
+the <s>Image Edit</s> from the <a href="#disp-comm">Command widget</a>. Alternatively,
+<a href="#disp-keyb">press</a> x in the Image window.</p>
+
+<p>
+First a popup window is displayed requesting you to enter an image name.
+Press <s>Composite</s>, <s>Grab</s> or type a file name. Press <s>Cancel</s>
+if you choose not to create a composite image. When you choose <s>Grab</s>,
+move the pointer to the desired window and press any button.</p>
+
+<p>
+If the <s>Composite</s> image does not have any matte information, you
+are informed and the file browser is displayed again. Enter the name of
+a mask image. The image is typically grayscale and the same size as the
+composite image. If the image is not grayscale, it is converted to grayscale
+and the resulting intensities are used as matte information.</p>
+
+<p>
+A small window appears showing the location of the cursor in the image
+window. You are now in composite mode. To exit immediately, press Dismiss.
+In composite mode, the Command widget has these options:</p>
+
+<ul>
+<li>
+<s>Operators</s>
+
+<ul>
+<li>
+over</li>
+
+<li>
+in</li>
+
+<li>
+out</li>
+
+<li>
+atop</li>
+
+<li>
+xor</li>
+
+<li>
+plus</li>
+
+<li>
+minus</li>
+
+<li>
+add</li>
+
+<li>
+subtract</li>
+
+<li>
+difference</li>
+
+<li>
+bumpmap</li>
+
+<li>
+replace</li>
+</ul></li>
+
+<li>
+<s>Blend</s></li>
+
+<li>
+<s>Displace</s></li>
+
+<li>
+<s>Help</s></li>
+
+<li>
+<s>Dismiss</s></li>
+</ul>
+
+<p>
+Choose a composite operation from the Operators sub-menu of the Command
+widget. How each operator behaves is described below. image window is the
+image currently displayed on your X server and image is the image obtained</p>
+
+<opt>over</opt>
+<abs>
+The result is the union of the two image shapes, with <i>image</i> obscuring
+<i>image
+window</i> in the region of overlap.</abs>
+
+<opt>in</opt>
+<abs>
+The result is simply <i>image</i> cut by the shape of
+<i>image window</i>.
+None of the image data of image window is in the result.</abs>
+
+<opt>out</opt>
+<abs>
+The resulting image is <i>image</i> with the shape of
+<i>image window</i>
+cut out.</abs>
+
+<opt>atop</opt>
+<abs>
+The result is the same shape as <i>image window</i>, with
+<i>image</i>
+obscuring <i>image window</i> where the image shapes overlap. Note this
+differs from over because the portion of image outside
+<i>image window</i>'s
+shape does not appear in the result.</abs>
+
+<opt>xor</opt>
+<abs>
+The result is the image data from both <i>image</i> and
+<i>image window</i>
+that is outside the overlap region. The overlap region is blank.</abs>
+
+<opt>plus</opt>
+<abs>
+The result is just the sum of the image data. Output values are cropped
+to 255 (no overflow). This operation is independent of the matte channels.</abs>
+
+<opt>minus</opt>
+<abs>
+The result of <i>image</i> - <i>image window</i>, with underflow cropped
+to zero. The matte channel is ignored (set to 255, full coverage).</abs>
+
+<opt>add</opt>
+<abs>
+The result of <i>image</i> + <i>image window</i>, with overflow wrapping
+around (mod 256).</abs>
+
+<opt>subtract</opt>
+<abs>
+The result of <i>image</i> - <i>image window</i>, with underflow wrapping
+around (mod 256). The add and subtract operators can be used to perform
+reversible transformations.</abs>
+
+<opt>difference</opt>
+<abs>
+The result of abs(<i>image</i> - <i>image window</i>). This is useful for
+comparing two very similar images.</abs>
+
+<opt>bumpmap</opt>
+<abs>
+The result of <i>image window</i> shaded by <i>window</i>.</abs>
+
+<opt>replace</opt>
+<abs>
+The resulting image is <i>image window</i> replaced with
+<i>image</i>.
+Here the matte information is ignored.</abs>
+
+<p>
+The image compositor requires a matte, or alpha channel in the image for
+some operations. This extra channel usually defines a mask which represents
+a sort of a cookie-cutter for the image. This is the case when matte is
+255 (full coverage) for pixels inside the shape, zero outside, and between
+zero and 255 on the boundary. If image does not have a matte channel, it
+is initialized with 0 for any pixel matching in color to pixel location
+(0,0), otherwise 255. See <a href="#disp-matt">Matte Editing</a> for a method
+of defining a matte channel.</p>
+
+<p>
+If you choose <s>blend</s>, the composite operator becomes <s>over</s>.
+The image matte channel percent transparency is initialized to factor.
+The image window is initialized to (100-factor). Where factor is the value
+you specify in the Dialog widget.</p>
+
+<p>
+<s>Displace</s> shifts the image pixels as defined by a displacement map.
+With this option, <i>image</i> is used as a displacement map. Black, within
+the displacement map, is a maximum positive displacement. White is a maximum
+negative displacement and middle gray is neutral. The displacement is scaled
+to determine the pixel shift. By default, the displacement applies in both
+the horizontal and vertical directions. However, if you specify
+<i>mask</i>,
+<i>image</i>
+is the horizontal X displacement and
+<i>mask</i> the vertical Y displacement.</p>
+
+<p>
+Note that matte information for image window is not retained for colormapped
+X server visuals (e.g.
+<i>StaticColor, StaticColor, GrayScale, PseudoColor</i>).
+Correct compositing behavior may require a <i>TrueColor</i> or
+<i>DirectColor</i>
+visual or a <i>Standard Colormap</i>.</p>
+
+<p>
+Choosing a composite operator is optional. The default operator is replace.
+However, you must choose a location to composite your image and press button
+1. Press and hold the button before releasing and an outline of the image
+will appear to help you identify your location.</p>
+
+<p>
+The actual colors of the composite image is saved. However, the color that
+appears in image window may be different. For example, on a monochrome
+screen Image window will appear black or white even though your composited
+image may have many colors. If the image is saved to a file it is written
+with the correct colors. To assure the correct colors are saved in the
+final image, any PseudoClass image is promoted to <i>DirectClass</i> (see
+<a href="miff.html">miff</a>).
+To force a <i>PseudoClass</i> image to remain <i>PseudoClass</i>,
+use <s>-colors</s>.</p>
+</sect>
+<back>
+
+<sect NAME="disp-cole">Color Editing
+
+<p>
+Changing the the color of a set of pixels is performed interactively. There
+is no command line argument to edit a pixel. To begin, choose <s>Color</s>
+from the <s>Image Edit</s> submenu of the <a href="#disp-comm">Command widget</a>.
+Alternatively, <a href="#disp-keyb">press</a> c in the image window.</p>
+
+<p>
+A small window appears showing the location of the cursor in the image
+window. You are now in color edit mode. To exit immediately, press <s>Dismiss</s>.
+In color edit mode, the
+<s>Command widget</s> has these options:</p>
+
+<ul>
+<li>
+<s>Method</s>
+
+<ul>
+<li>
+point</li>
+
+<li>
+replace</li>
+
+<li>
+floodfill</li>
+
+<li>
+reset</li>
+</ul></li>
+
+<li>
+<s>Pixel Color</s>
+
+<ul>
+<li>
+black</li>
+
+<li>
+blue</li>
+
+<li>
+cyan</li>
+
+<li>
+green</li>
+
+<li>
+gray</li>
+
+<li>
+red</li>
+
+<li>
+magenta</li>
+
+<li>
+yellow</li>
+
+<li>
+white</li>
+
+<li>
+Browser...</li>
+</ul></li>
+
+<li>
+<s>Border Color</s>
+
+<ul>
+<li>
+black</li>
+
+<li>
+blue</li>
+
+<li>
+cyan</li>
+
+<li>
+green</li>
+
+<li>
+gray</li>
+
+<li>
+red</li>
+
+<li>
+magenta</li>
+
+<li>
+yellow</li>
+
+<li>
+white</li>
+
+<li>
+Browser...</li>
+</ul></li>
+
+<li>
+<s>Fuzz</s>
+
+<ul>
+<li>
+0</li>
+
+<li>
+2</li>
+
+<li>
+4</li>
+
+<li>
+8</li>
+
+<li>
+16</li>
+
+<li>Dialog...</li>
+</ul></li>
+
+<li>
+<s>Undo</s></li>
+
+<li>
+<s>Help</s></li>
+
+<li>
+<s>Dismiss</s></li>
+</ul>
+
+<p>
+Choose a color editing method from the <s>Method</s> sub-menu of
+the <a href="#disp-comm">Command
+widget</a>. The <s>point method</s> recolors any pixel selected with the
+pointer unless the button is released. The <s>replace method</s> recolors
+any pixel that matches the color of the pixel you select with a button
+press. <s>Floodfill</s> recolors any pixel that matches the color of the
+pixel you select with a button press and is a neighbor.
+Whereas <s>filltoborder</s>
+changes the matte value of any neighbor pixel that is not the border color.
+Finally <s>reset</s> changes the entire image to the designated color.
+
+<p>
+Next, choose a pixel color from the <s>Pixel Color</s> sub-menu. Additional
+pixel colors can be specified with the color browser. You can change the
+menu colors by setting the <a href="#disp-xres">X resources</a> pen1 through
+pen9.
+
+<p>
+Now press button 1 to select a pixel within the Image window to change
+its color. Additional pixels may be recolored as prescribed by the method
+you choose. additional pixels by increasing the Delta value.
+
+<p>
+If the <s>Magnify widget</s> is mapped, it can be helpful in positioning
+your pointer within the image (refer to button 2). Alternatively you can
+select a pixel to recolor from within the <s>Magnify widget</s>. Move the
+pointer to the <s>Magnify widget</s> and position the pixel with the cursor
+control keys. Finally, press a button to recolor the selected pixel (or
+pixels).
+
+<p>
+The actual color you request for the pixels is saved in the image. However,
+the color that appears in your Image window may be different. For example,
+on a monochrome screen the pixel will appear black or white even if you
+choose the color red as the pixel color. However, the image saved to a
+file with -write is written with red pixels. To assure the correct color
+text in the final image, any <i>PseudoClass</i> image is promoted
+to <i>DirectClass</i>
+To force a <i>PseudoClass</i> image to remain
+<i>PseudoClass</i>, use <s>-colors</s>.
+</sect>
+<back>
+<sect NAME="disp-matt">Matte Editing
+
+<p>
+Matte information within an image is useful for some operations such as
+image <a href="#disp-imcomp">compositing</a>. This extra channel usually defines
+a mask which represents a sort of a cookie-cutter for the image. This is
+the case when matte is 255 (full coverage) for pixels inside the shape,
+zero outside, and between zero and 255 on the boundary.</p>
+
+<p>
+Setting the matte information in an image is done interactively. There
+is no command line argument to edit a pixel. To begin, and choose <s>Matte</s>
+of the <s>Image Edit</s> sub-menu from the <a href="#disp-comm">Command widget</a>.</p>
+
+<p>
+Alternatively, <a href="#disp-keyb">press</a> m in the image window.</p>
+
+<p>
+A small window appears showing the location of the cursor in the image
+window. You are now in matte edit mode. To exit immediately, press Dismiss.
+In matte edit mode, the Command widget has these options:</p>
+
+<ul>
+<li>
+<s>Method</s>
+
+<ul>
+<li>
+point</li>
+
+<li>
+replace</li>
+
+<li>
+floodfill</li>
+
+<li>
+reset</li>
+</ul></li>
+
+<li>
+<s>Border Color</s>
+
+<ul>
+<li>
+black</li>
+
+<li>
+blue</li>
+
+<li>
+cyan</li>
+
+<li>
+green</li>
+
+<li>
+gray</li>
+
+<li>
+red</li>
+
+<li>
+magenta</li>
+
+<li>
+yellow</li>
+
+<li>
+white</li>
+
+<li>
+Browser...</li>
+</ul></li>
+
+<li>
+<s>Fuzz</s>
+
+<ul>
+<li>
+0</li>
+
+<li>
+2</li>
+
+<li>
+4</li>
+
+<li>
+8</li>
+
+<li>
+16</li>
+
+<li>Dialog...</li>
+</ul></li>
+
+<li>
+<s>Matte</s></li>
+
+<li>
+<s>Undo</s></li>
+
+<li>
+<s>Help</s></li>
+
+<li>
+<s>Dismiss</s></li>
+</ul>
+Choose a matte editing method from the <s>Method</s> sub-menu of the <a href="#disp-comm">Command
+widget</a>. The <s>point method</s> changes the matte value of the any
+pixel selected with the pointer until the button is released. The <s>replace
+method</s> changes the matte value of any pixel that matches the color
+of the pixel you select with a button press. <s>Floodfill</s> changes the
+matte value of any pixel that matches the color of the pixel you select
+with a button press and is a neighbor. Whereas
+<s>filltoborder</s> recolors
+any neighbor pixel that is not the border color. Finally <s>reset</s> changes
+the entire image to the designated matte value.
+<p>Choose <s>Matte Value</s> and a dialog appears requesting a matte value.
+Enter a value between <s>0 and 255</s>. This value is assigned as the matte
+value of the selected pixel or pixels.
+<p>Now, press any button to select a pixel within the Image window to change
+its matte value. You can change the matte value of additional pixels by
+increasing the Delta value. The Delta value is first added then subtracted
+from the red, green, and blue of the target color. Any pixels within the
+range also have their matte value updated.
+<p>If the <s>Magnify widget</s> is mapped, it can be helpful in positioning
+your pointer within the image (refer to button 2). Alternatively you can
+select a pixel to change the matte value from within the
+<s>Magnify widget</s>.
+Move the pointer to the <s>Magnify widget</s> and position the pixel with
+the cursor control keys. Finally, press a button to change the matte value
+of the selected pixel (or pixels).
+<p>Matte information is only valid in a <i>DirectClass image</i>. Therefore,
+any <i>PseudoClass</i> image is promoted to
+<i>DirectClass</i>. Note that
+matte information for <i>PseudoClass</i> is not retained for colormapped
+X server visuals (e.g. <i>StaticColor, StaticColor, GrayScale, PseudoColor</i>)
+unless you immediately save your image to a file (refer to Write). Correct
+matte editing behavior may require a <i>TrueColor</i> or <i>DirectColor</i>
+visual or a <i>Standard Colormap</i>.
+</sect>
+<back>
+
+<sect NAME="disp-imdr">Image Drawing
+
+<p>
+An image is drawn upon interactively. <s>There is no command line argument
+to draw on an image</s>. To begin, choose <s>Draw</s> of the Image <s>Edit</s>
+sub-menu from the <a href="#disp-comm">Command widget</a>.
+Alternatively, <a href="#disp-keyb">press</a> d in the image window.</p>
+
+<p>
+The cursor changes to a crosshair to indicate you are in draw mode. To
+exit immediately, press Dismiss. In draw mode, the Command widget has these
+options:</p>
+
+<ul>
+<li>
+<s>Primitive</s>
+
+<ul>
+<li>
+point</li>
+
+<li>
+line</li>
+
+<li>
+rectangle</li>
+
+<li>
+fill rectangle</li>
+
+<li>
+circle</li>
+
+<li>
+fill circle</li>
+
+<li>
+ellipse</li>
+
+<li>
+fill ellipse</li>
+
+<li>
+polygon</li>
+
+<li>
+fill polygon</li>
+</ul></li>
+
+<li>
+<s>Color</s>
+
+<ul>
+<li>
+black</li>
+
+<li>
+blue</li>
+
+<li>
+cyan</li>
+
+<li>
+green</li>
+
+<li>
+gray</li>
+
+<li>
+red</li>
+
+<li>
+magenta</li>
+
+<li>
+yellow</li>
+
+<li>
+white</li>
+
+<li>
+transparent</li>
+
+<li>
+Browser...</li>
+</ul></li>
+
+<li>
+<s>Stipple</s>
+
+<ul>
+<li>
+Brick</li>
+
+<li>
+Diagonal</li>
+
+<li>
+Scales</li>
+
+<li>
+Vertical</li>
+
+<li>
+Wavy</li>
+
+<li>
+Translucent</li>
+
+<li>
+Opaque</li>
+
+<li>
+Open...</li>
+</ul></li>
+
+<li>
+<s>Width</s>
+
+<ul>
+<li>
+1</li>
+
+<li>
+2</li>
+
+<li>
+4</li>
+
+<li>
+8</li>
+
+<li>
+16</li>
+
+<li>Dialog...</li>
+</ul></li>
+
+<li>
+<s>Undo</s></li>
+
+<li>
+<s>Help</s></li>
+
+<li>
+<s>Dismiss</s></li>
+</ul>
+Choose a drawing primitive from the <s>Primitive</s> sub-menu.
+
+<p>
+Next, choose a color from the <s>Color</s> sub-menu. Additional colors
+can be specified with the color browser. You can change the menu colors
+by setting the <a href="#disp-xres">X resources</a> pen1 through pen9. The transparent
+color updates the image matte channel and is useful for image compositing.</p>
+
+<p>
+If you choose the color browser and press <s>Grab</s>, you can select the
+primitive color by moving the pointer to the desired color on the screen
+and press any button. The transparent color updates the image matte channel
+and is useful for image compositing.</p>
+
+<p>
+Choose a stipple, if appropriate, from the <s>Stipple</s> sub-menu. Additional
+stipples can be specified with the file browser. Stipples obtained from
+the file browser must be on disk in the X11 bitmap format.</p>
+
+<p>
+Choose a line width, if appropriate, from the <s>Width</s> sub-menu. To
+choose a specific width select the <s>Dialog</s> widget.</p>
+
+<p>
+Choose a point in the image window and press button 1 and hold. Next, move
+the pointer to another location in the image. As you move, a line connects
+the initial location and the pointer. When you release the button, the
+image is updated with the primitive you just drew. For polygons, the image
+is updated when you press and release the button without moving the pointer.</p>
+
+<p>
+To cancel image drawing, move the pointer back to the starting point of
+the line and release the button.</p>
+</sect>
+<back>
+
+<sect NAME="disp-regi">Region of Interest
+
+<p>
+To begin, press choose Region of Interest of the Pixel Transform sub-menu
+from the <a href="#disp-comm">Command widget</a>.
+Alternatively, <a href="#disp-keyb">press</a> R in the image window.</p>
+
+<p>
+A small window appears showing the location of the cursor in the image
+window. You are now in region of interest mode. In region of interest mode,
+the Command widget has these options:</p>
+
+<ul>
+<li>
+<s>Help</s></li>
+
+<li>
+<s>Dismiss</s></li>
+</ul>
+
+<p>
+To define a region of interest, press button 1 and drag. The region of
+interest is defined by a highlighted rectangle that expands or contracts
+as it follows the pointer. Once you are satisfied with the region of interest,
+release the button. You are now in apply mode. In apply mode the Command
+widget has these options:</p>
+
+<ul>
+<li>
+<s>File</s>
+
+<ul>
+<li>
+Save...</li>
+
+<li>
+Print...</li>
+</ul></li>
+
+<li>
+<s>Edit</s>
+
+<ul>
+<li>
+Undo</li>
+
+<li>
+Redo</li>
+</ul></li>
+
+<li>
+<s>Transform</s>
+
+<ul>
+<li>
+Flip</li>
+
+<li>
+Flop</li>
+
+<li>
+Rotate Right</li>
+
+<li>
+Rotate Left</li>
+</ul></li>
+
+<li>
+<s>Enhance</s>
+
+<ul>
+<li>
+Hue...</li>
+
+<li>
+Saturation...</li>
+
+<li>
+Brightness...</li>
+
+<li>
+Gamma...</li>
+
+<li>
+Spiff</li>
+
+<li>
+Dull</li>
+
+<li>
+Equalize</li>
+
+<li>
+Normalize</li>
+
+<li>
+Negate</li>
+
+<li>
+GRAYscale</li>
+
+<li>
+Quantize...</li>
+</ul></li>
+
+<li>
+<s>Effects</s>
+
+<ul>
+<li>
+Despeckle</li>
+
+<li>
+Emboss</li>
+
+<li>
+Reduce Noise</li>
+
+<li>
+Add Noise</li>
+
+<li>
+Sharpen...</li>
+
+<li>
+Blur...</li>
+
+<li>
+Threshold...</li>
+
+<li>
+Edge Detect...</li>
+
+<li>
+Spread...</li>
+
+<li>
+Shade...</li>
+
+<li>
+Raise...</li>
+
+<li>
+Segment...</li>
+</ul></li>
+</ul>
+
+<ul>
+<li>
+<s>F/X</s>
+
+<ul>
+<li>
+Solarize...</li>
+
+<li>
+Swirl...</li>
+
+<li>
+Implode...</li>
+
+<li>
+Wave...</li>
+
+<li>
+Oil Paint</li>
+
+<li>
+Charcoal Draw...</li>
+</ul></li>
+</ul>
+
+<ul>
+<li>
+<s>Miscellany</s>
+
+<ul>
+<li>
+Image Info</li>
+
+<li>
+Zoom Image</li>
+
+<li>
+Show Preview...</li>
+
+<li>
+Show Histogram</li>
+
+<li>
+Show Matte</li>
+</ul></li>
+
+<li>
+<s>Help</s></li>
+
+<li>
+<s>Dismiss</s></li>
+</ul>
+
+<p>
+You can make adjustments to the region of interest by moving the pointer
+to one of the rectangle corners, pressing a button, and dragging. Finally,
+choose an image processing technique from the Command widget. You can choose
+more than one image processing technique to apply to an area. Alternatively,
+you can move the region of interest before applying another image processing
+technique. To exit, press Dismiss.</p>
+</sect>
+<back>
+
+<sect NAME="disp-impa">Image Panning
+
+<p>
+When an image exceeds the width or height of the X server screen, display
+maps a small panning icon. The rectangle within the panning icon shows
+the area that is currently displayed in the the image window. To pan about
+the image, press any button and drag the pointer within the panning icon.
+The pan rectangle moves with the pointer and the image window is updated
+to reflect the location of the rectangle within the panning icon. When
+you have selected the area of the image you wish to view, release the button.</p>
+
+<p>
+Use the arrow keys to pan the image one pixel up, down, left, or right
+within the image window.</p>
+
+<p>
+The panning icon is withdrawn if the image becomes smaller than the dimensions
+of the X server screen.</p>
+</sect>
+<back>
+
+<sect NAME="disp-pref">User Preferences
+
+<p>
+Preferences affect the default behavior of <s>display(1)</s>. The preferences
+are either true or false and are stored in your home directory
+as <tt>.displayrc</tt>:</p>
+
+<dl>
+<dt>
+<s>display image centered on a backdrop</s></dt>
+
+<dd>
+This backdrop covers the entire workstation screen and is useful for hiding
+other X window activity while viewing the image. The color of the backdrop
+is specified as the background color. Refer to <a href="#disp-xres">X Resources</a>
+for details.</dd>
+
+<dt>
+<s>confirm on program exit</s></dt>
+
+<dd>
+Ask for a confirmation before exiting the <s>display(1)</s> program.</dd>
+
+<dt>
+<s>correct image for display gamma</s></dt>
+
+<dd>
+If the image has a known gamma, the gamma is corrected to match that of
+the X server (see the <a href="#disp-xres">X Resource</a><s> displayGamma</s>).</dd>
+<dt>
+
+<s>display warning messages</s></dt>
+
+<dd>
+Display any warning messages.</dd>
+
+<dt>
+<s>apply Floyd/Steinberg error diffusion to image</s></dt>
+
+<dd>
+The basic strategy of dithering is to trade intensity resolution for spatial
+resolution by averaging the intensities of several neighboring pixels.
+Images which suffer from severe contouring when reducing colors can be
+improved with this preference.</dd>
+
+<dt>
+<s>use a shared colormap for colormapped X visuals</s></dt>
+
+<dd>
+This option only applies when the default X server visual is
+<i>PseudoColor</i>
+or <i>GRAYScale</i>. Refer to <s>-visual</s> for more details. By default,
+a shared colormap is allocated. The image shares colors with other X clients.
+Some image colors could be approximated, therefore your image may look
+very different than intended. Otherwise the image colors appear exactly
+as they are defined. However, other clients may go technicolor when the
+image colormap is installed.</dd>
+
+<dt>
+<s>display images as an X server pixmap</s></dt>
+
+<dd>
+Images are maintained as a XImage by default. Set this resource to True
+to utilize a server Pixmap instead. This option is useful if your image
+exceeds the dimensions of your server screen and you intend to pan the
+image. Panning is much faster with Pixmaps than with a XImage. Pixmaps
+are considered a precious resource, use them with discretion.</dd>
+</dl>
+
+</sect>
+<back>
+
+<im>
+
+<sect NAME="disp-envi">Environment
+<include file=environment.imdoc>
+</sect>
+<back>
+
+<sect NAME="disp-file">Configuration Files
+<include file=config_files.imdoc>
+</sect>
+<back>
+
+<sect NAME="disp-ackn">Acknowledgements
+
+<p>
+The <s>MIT X Consortium</s> for making network transparent graphics a
+reality.</p>
+
+<p>
+<i>Peder Langlo</i>, <s>Hewlett Packard</s>, Norway, made hundreds of suggestions
+and bug reports. Without Peder, <s>GraphicsMagick</s> would not be nearly
+as useful as it is today.</p>
+
+<p>
+<i>Rod Bogart</i> and <i>John W. Peterson</i>, <s>University of Utah</s>.
+Image compositing is loosely based on rlecomp of the Utah Raster Toolkit.</p>
+
+<p>
+<i>Michael Halle</i>, <s>Spatial Imaging Group at MIT</s>, for the initial
+implementation of Alan Paeth's image rotation algorithm.</p>
+
+<p>
+<i>David Pensak</i>, <s>E. I. du Pont de Nemours and Company</s>, for
+providing a computing environment that made this program possible.</p>
+
+<p>
+<i>Paul Raveling</i>, <s>USC Information Sciences Institute</s>. The
+spatial subdivision color reduction algorithm is based on his Img software.</p>
+</sect>
+<back>
+<format type=man>
+<sect NAME="disp-also">SEE ALSO
+<p>
+animate(1), composite(1), conjure(1), convert(1), identify(1), GraphicsMagick(1),
+import(1), mogrify(1), montage(1)
+</p>
+</sect>
+<include file=copyright.imdoc>
+</im>
+</utils>
+</imdoc>

@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001
+// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2003
 //
 // Definition of types and classes to support threads
 //
@@ -9,6 +9,8 @@
 // 
 #if !defined (Magick_Thread_header)
 #define Magick_Thread_header
+
+#include "Magick++/Include.h"
 
 #if defined(_VISUALC_)
 #include <windows.h>
@@ -21,8 +23,6 @@ struct win32_mutex {
 #define MAXSEMLEN	1
 #endif // defined(_MT)
 #endif // defined(_VISUALC_)
-
-#include "Magick++/Include.h"
 
 #if defined(HasPTHREADS)
 # include <pthread.h>

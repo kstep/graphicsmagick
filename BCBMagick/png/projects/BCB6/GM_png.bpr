@@ -1,0 +1,135 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.06.00"/>
+    <PROJECT value="GM_png.dll"/>
+    <OBJFILES value="GM_png.obj ..\..\pngget.obj ..\..\pngerror.obj ..\..\png.obj 
+      ..\..\pngmem.obj ..\..\pngpread.obj ..\..\pngread.obj ..\..\pngrio.obj 
+      ..\..\pngrtran.obj ..\..\pngrutil.obj ..\..\pngset.obj ..\..\pngtrans.obj 
+      ..\..\pngwio.obj ..\..\pngwrite.obj ..\..\pngwtran.obj ..\..\pngwutil.obj"/>
+    <RESFILES value="GM_png.res"/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES)"/>
+    <LIBFILES value="..\..\..\zlib\contrib\BCB6\GM_zlib.lib"/>
+    <LIBRARIES value=""/>
+    <SPARELIBS value=""/>
+    <PACKAGES value=""/>
+    <PATHCPP value=".;..\.."/>
+    <PATHPAS value=".;"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
+    <RELEASELIBPATH value="$(BCB)\lib\release"/>
+    <LINKER value="ilink32"/>
+    <USERDEFINES value="ZLIB_DLL;PNG_BUILD_DLL;PNG_NO_MODULEDEF"/>
+    <SYSDEFINES value="NO_STRICT;_NO_VCL;_RTLDLL"/>
+    <MAINSOURCE value="GM_png.cpp"/>
+    <INCLUDEPATH value="..\..;..\BCB6;..\..\..\zlib;$(BCB)\include"/>
+    <LIBPATH value="..\..;..\BCB6;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <WARNINGS value="-w-par -w-eff -w-aus"/>
+    <OTHERFILES value=""/>
+  </MACROS>
+  <OPTIONS>
+    <CFLAG1 value="-WD -O2 -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -a8 -b- -k- -vi -tWD -tWM -c"/>
+    <PFLAGS value="-$Y- -$L- -$D- -$A8 -v -JPHNE -M"/>
+    <RFLAGS value=""/>
+    <AFLAGS value="/mx /w2 /zn"/>
+    <LFLAGS value="-D&quot;&quot; -aa -Tpd -x -Gn -Gi"/>
+    <OTHERFILES value=""/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="c0d32.obj $(OBJFILES)"/>
+    <ALLRES value="$(RESFILES)"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cw32mti.lib"/>
+    <OTHERFILES value=""/>
+  </LINKER>
+  <FILELIST>
+      <FILE FILENAME="GM_png.cpp" FORMNAME="" UNITNAME="GM_png" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="GM_png.res" FORMNAME="" UNITNAME="GM_png.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\pngget.c" FORMNAME="" UNITNAME="pngget.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\pngerror.c" FORMNAME="" UNITNAME="pngerror.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\png.c" FORMNAME="" UNITNAME="png.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\pngmem.c" FORMNAME="" UNITNAME="pngmem.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\pngpread.c" FORMNAME="" UNITNAME="pngpread.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\pngread.c" FORMNAME="" UNITNAME="pngread.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\pngrio.c" FORMNAME="" UNITNAME="pngrio.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\pngrtran.c" FORMNAME="" UNITNAME="pngrtran.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\pngrutil.c" FORMNAME="" UNITNAME="pngrutil.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\pngset.c" FORMNAME="" UNITNAME="pngset.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\pngtrans.c" FORMNAME="" UNITNAME="pngtrans.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\pngwio.c" FORMNAME="" UNITNAME="pngwio.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\pngwrite.c" FORMNAME="" UNITNAME="pngwrite.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\pngwtran.c" FORMNAME="" UNITNAME="pngwtran.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\pngwutil.c" FORMNAME="" UNITNAME="pngwutil.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\..\zlib\contrib\BCB6\GM_zlib.lib" FORMNAME="" UNITNAME="GM_zlib.lib" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+  </FILELIST>
+  <BUILDTOOLS>
+  </BUILDTOOLS>
+
+  <IDEOPTIONS>
+[Version Info]
+IncludeVerInfo=0
+AutoIncBuild=0
+MajorVer=1
+MinorVer=0
+Release=0
+Build=0
+Debug=0
+PreRelease=0
+Special=0
+Private=0
+DLL=0
+Locale=1033
+CodePage=1252
+
+[Version Info Keys]
+CompanyName=Glenn Randers-Pehrson
+FileDescription=libpng version 1.2.5 - October 3, 2002
+FileVersion=1.2.5.1
+InternalName=libpng - Borland C++ Builder 6.0 porting by Mike Chiarappa, mikechiarappa@libero.it
+LegalCopyright=Copyright (c) 1998-2002 Glenn Randers-Pehrson
+LegalTrademarks=
+OriginalFilename=libpng
+ProductName=libpng - Portable Network Graphics library 
+ProductVersion=1.2.5 - October 3, 2002
+Comments=
+
+[HistoryLists\hlIncludePath]
+Count=1
+Item0=..\..;..\BCB6;..\..\..\zlib;$(BCB)\include;$(BCB)\include\vcl
+
+[HistoryLists\hlLibraryPath]
+Count=1
+Item0=..\..;..\BCB6;$(BCB)\lib\obj;$(BCB)\lib
+
+[HistoryLists\hlConditionals]
+Count=1
+Item0=ZLIB_DLL;PNG_BUILD_DLL;PNG_NO_MODULEDEF
+
+[Debugging]
+DebugSourceDirs=
+
+[Parameters]
+RunParams=
+Launcher=
+UseLauncher=0
+DebugCWD=
+HostApplication=
+RemoteHost=
+RemotePath=
+RemoteLauncher=
+RemoteCWD=
+RemoteDebug=0
+
+[Compiler]
+ShowInfoMsgs=0
+LinkDebugVcl=0
+LinkCGLIB=0
+
+[Linker]
+LibPrefix=
+LibSuffix=
+LibVersion=
+  </IDEOPTIONS>
+</PROJECT>

@@ -18,7 +18,7 @@
 %                            M   M  A   A  P                                  %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                 Read/Write Image Colormaps As An Image File                 %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -122,23 +122,23 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
   if ((image->columns == 0) || (image->rows == 0))
-    ThrowReaderException(OptionError,"MustSpecifyImageSize",image);
+    ThrowReaderException(OptionError,MustSpecifyImageSize,image);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   /*
     Initialize image structure.
   */
   image->storage_class=PseudoClass;
   if (!AllocateImageColormap(image,image->offset ? image->offset : 256))
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   packet_size=image->depth > 8 ? 2 : 1;
-  pixels=(unsigned char *) AcquireMemory(packet_size*image->columns);
+  pixels=MagickAllocateMemory(unsigned char *,packet_size*image->columns);
   packet_size=image->colors > 256 ? 6 : 3;
-  colormap=(unsigned char *) AcquireMemory(packet_size*image->colors);
+  colormap=MagickAllocateMemory(unsigned char *,packet_size*image->colors);
   if ((pixels == (unsigned char *) NULL) ||
       (colormap == (unsigned char *) NULL))
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   /*
     Read image colormap.
   */
@@ -161,7 +161,7 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       image->colormap[i].blue=(*p++ << 8);
       image->colormap[i].blue|=(*p++);
     }
-  LiberateMemory((void **) &colormap);
+  MagickFreeMemory(colormap);
   if (image_info->ping)
     {
       CloseBlob(image);
@@ -194,9 +194,9 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (!SyncImagePixels(image))
       break;
   }
-  LiberateMemory((void **) &pixels);
+  MagickFreeMemory(pixels);
   if (EOFBlob(image))
-    ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+    ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
       image->filename);
   CloseBlob(image);
   return(image);
@@ -331,7 +331,7 @@ static unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   TransformColorspace(image,RGBColorspace);
   /*
     Allocate colormap.
@@ -339,12 +339,12 @@ static unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
   if (!IsPaletteImage(image,&image->exception))
     SetImageType(image,PaletteType);
   packet_size=image->depth > 8 ? 2 : 1;
-  pixels=(unsigned char *) AcquireMemory(image->columns*packet_size);
+  pixels=MagickAllocateMemory(unsigned char *,image->columns*packet_size);
   packet_size=image->colors > 256 ? 6 : 3;
-  colormap=(unsigned char *) AcquireMemory(packet_size*image->colors);
+  colormap=MagickAllocateMemory(unsigned char *,packet_size*image->colors);
   if ((pixels == (unsigned char *) NULL) ||
       (colormap == (unsigned char *) NULL))
-    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
   /*
     Write colormap to file.
   */
@@ -367,7 +367,7 @@ static unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
       *q++=image->colormap[i].blue & 0xff;
     }
   (void) WriteBlob(image,packet_size*image->colors,(char *) colormap);
-  LiberateMemory((void **) &colormap);
+  MagickFreeMemory(colormap);
   /*
     Write image pixels to file.
   */
@@ -386,7 +386,7 @@ static unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
     }
     (void) WriteBlob(image,q-pixels,(char *) pixels);
   }
-  LiberateMemory((void **) &pixels);
+  MagickFreeMemory(pixels);
   CloseBlob(image);
   return(status);
 }

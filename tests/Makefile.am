@@ -5,24 +5,28 @@
 # Copyright.txt. You should have received a copy of Copyright.txt with this
 # package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
 #
-# Makefile for ImageMagick tests invoked via the C API
+# Makefile for GraphicsMagick tests invoked via the C API
 #
 
-AUTOMAKE_OPTIONS = 1.6 foreign
+AUTOMAKE_OPTIONS = 1.8 foreign
 
 INCLUDES = -I$(top_builddir) -I$(top_srcdir) -I$(top_srcdir)/magick
 #INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/magick
 # ../magick/config.h is needed.
 
+RUNENV = $(SHELL) $(top_builddir)/rungm.sh
+
 #
 # Execute 'make check' to compile and run a test program
 #
-check_PROGRAMS = constitute drawtest rwblob rwfile
+check_PROGRAMS = constitute drawtest maptest rwblob rwfile
 
 LDADD = ../magick/libGraphicsMagick.la
 LDFLAGS	= @LDFLAGS@
 
 constitute_SOURCES = constitute.c
+
+maptest_SOURCES = maptest.c
 
 rwblob_SOURCES = rwblob.c
 
@@ -231,13 +235,13 @@ CHECK_SIZED_FILE_FORMATS = \
 	YUV
 
 CHECK_CONSTITUTE_MAPS = \
-	RGB \
 	rgb \
 	rgba \
+	rgbt \
+	rgbo \
+	prgb \
 	cmy \
 	cmyk \
-	bGr \
-	Gbr \
 	i
 
 CHECK_CONSTITUTE_STORAGETYPES = \
@@ -249,14 +253,14 @@ CHECK_CONSTITUTE_STORAGETYPES = \
 	double
 
 check-constitute: constitute$(EXEEXT)
-	-@status=0 ; \
+	@status=0 ; \
 	storage_type='' ; \
 	for storage_type in $(CHECK_CONSTITUTE_STORAGETYPES) ; \
 	do \
 	  storage_type_failed=0 ; \
 	  for map in $(CHECK_CONSTITUTE_MAPS) ; \
 	  do \
-	    if env MAGICK_MODULE_PATH=`pwd`/../coders/.libs ./constitute -storagetype $$storage_type $(srcdir)/input_truecolor.miff $$map ; \
+	    if $(RUNENV) $(MEMCHECK) ./constitute -storagetype $$storage_type $(srcdir)/input_truecolor.miff $$map ; \
 	    then \
 	      : ; \
 	    else \
@@ -276,14 +280,14 @@ check-constitute: constitute$(EXEEXT)
 	exit $$status
 
 check-rwblob: rwblob$(EXEEXT)
-	-@status=0 ; \
+	@status=0 ; \
 	format='' ; \
 	for format in $(CHECK_BLOB_FORMATS) ; \
 	do \
 	  format_failed=0 ; \
 	  for file in $(CHECK_FILES) ; \
 	  do \
-	    if env MAGICK_MODULE_PATH=`pwd`/../coders/.libs ./rwblob $$file $$format ; \
+	    if $(RUNENV) $(MEMCHECK) ./rwblob $$file $$format ; \
 	    then \
 	      : ; \
 	    else \
@@ -303,14 +307,14 @@ check-rwblob: rwblob$(EXEEXT)
 	exit $$status
 
 check-rwfile: rwfile$(EXEEXT)
-	-@status=0 ; \
+	@status=0 ; \
 	format='' ; \
 	for format in $(CHECK_FILE_FORMATS) ; \
 	do \
 	  format_failed=0 ; \
 	  for file in  $(CHECK_FILES) ; \
 	  do \
-	    if env MAGICK_MODULE_PATH=`pwd`/../coders/.libs ./rwfile $$file $$format ; \
+	    if $(RUNENV) $(MEMCHECK) ./rwfile $$file $$format ; \
 	    then \
 	      : ; \
 	    else \
@@ -330,14 +334,14 @@ check-rwfile: rwfile$(EXEEXT)
 	exit $$status
 
 check-rwblob-sized: rwblob$(EXEEXT)
-	-@status=0 ; \
+	@status=0 ; \
 	format='' ; \
 	for format in $(CHECK_SIZED_BLOB_FORMATS) ; \
 	do \
 	  format_failed=0 ; \
 	  for file in $(CHECK_FILES) ; \
 	  do \
-	    if env MAGICK_MODULE_PATH=`pwd`/../coders/.libs ./rwblob -size 70x46 $$file $$format ; \
+	    if $(RUNENV) $(MEMCHECK) ./rwblob -size 70x46 $$file $$format ; \
 	    then \
 	      : ; \
 	    else \
@@ -357,14 +361,14 @@ check-rwblob-sized: rwblob$(EXEEXT)
 	exit $$status
 
 check-rwfile-sized: rwfile$(EXEEXT)
-	-@status=0 ; \
+	@status=0 ; \
 	format='' ; \
 	for format in $(CHECK_SIZED_FILE_FORMATS) ; \
 	do \
 	  format_failed=0 ; \
 	  for file in $(CHECK_FILES) ; \
 	  do \
-	    if env MAGICK_MODULE_PATH=`pwd`/../coders/.libs ./rwfile -size 70x46 $$file $$format ; \
+	    if $(RUNENV) $(MEMCHECK) ./rwfile -size 70x46 $$file $$format ; \
 	    then \
 	      : ; \
 	    else \
@@ -384,8 +388,8 @@ check-rwfile-sized: rwfile$(EXEEXT)
 	exit $$status
 
 check-drawtest: drawtest$(EXEEXT)
-	-./drawtest drawtest_out.miff
-	-./drawtest drawtest_out.mvg
+	$(RUNENV) ./drawtest drawtest_out.miff
+	$(RUNENV) ./drawtest rawtest_out.mvg
 
 CHECK_MIFF_FILE_COMPRESS= \
 	$(NOCOMPRESS) \
@@ -394,14 +398,14 @@ CHECK_MIFF_FILE_COMPRESS= \
 	$(RLECOMPRESS)
 
 check-miff: rwfile$(EXEEXT)
-	-@status=0 ; \
+	@status=0 ; \
 	compress='' ; \
 	for compress in $(CHECK_MIFF_FILE_COMPRESS) ; \
 	do \
 	  test_failed=0 ; \
 	  for file in $(CHECK_FILES) ; \
 	  do \
-	    if env MAGICK_MODULE_PATH=`pwd`/../coders/.libs ./rwfile -compress $$compress $$file MIFF ; \
+	    if $(RUNENV) $(MEMCHECK) ./rwfile -compress $$compress $$file MIFF ; \
 	    then \
 	      : ; \
 	    else \
@@ -420,7 +424,7 @@ check-miff: rwfile$(EXEEXT)
 	fi ; \
 	exit $$status
 
-check: check-constitute \
+check:	check-constitute \
 	check-drawtest \
 	check-rwfile \
 	check-miff \

@@ -51,24 +51,26 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  CompositeImage() returns the second image composited onto the first at the
-%  specified offsets.
+%  CompositeImage() returns the second image (composite_image) composited
+%  onto the first (canvas_image) at the specified offsets.
 %
 %  The format of the CompositeImage method is:
 %
-%      unsigned int CompositeImage(Image *image,const CompositeOperator compose,
-%        const Image *composite_image,const long x_offset,const long y_offset)
+%      unsigned int CompositeImage(Image *canvas_image,
+%        const CompositeOperator compose,const Image *composite_image,
+%        const long x_offset,const long y_offset)
 %
 %  A description of each parameter follows:
 %
-%    o image: The image.
+%    o canvas_image: The image to be updated.
 %
 %    o compose: This operator affects how the composite is applied to
 %      the image.  The default is Over.  Choose from one of these
 %      operators: OverCompositeOp, InCompositeOp, OutCompositeOP,
 %      AtopCompositeOP, XorCompositeOP, PlusCompositeOP, MinusCompositeOP,
 %      AddCompositeOP, SubtractCompositeOP, DifferenceCompositeOP,
-%      BumpmapCompositeOP, CopyCompositeOP, DisplaceCompositeOP.
+%      BumpmapCompositeOP, CopyCompositeOP, CopyRedCompositeOP,
+%      CopyGreenCompositeOP, CopyBlueCompositeOP, CopyOpacityCompositeOP.
 %
 %    o composite_image: The composite image.
 %
@@ -102,7 +104,7 @@ static inline PixelPacket AlphaComposite(const PixelPacket *p,
   return(composite);
 }
 
-MagickExport unsigned int CompositeImage(Image *image,
+MagickExport unsigned int CompositeImage(Image *canvas_image,
   const CompositeOperator compose,const Image *composite_image,
   const long x_offset,const long y_offset)
 {
@@ -146,13 +148,13 @@ MagickExport unsigned int CompositeImage(Image *image,
   /*
     Prepare composite image.
   */
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
+  assert(canvas_image != (Image *) NULL);
+  assert(canvas_image->signature == MagickSignature);
   assert(composite_image != (Image *) NULL);
   assert(composite_image->signature == MagickSignature);
   if (compose == NoCompositeOp)
     return(True);
-  SetImageType(image,TrueColorType);
+  SetImageType(canvas_image,TrueColorType);
   switch (compose)
   {
     case DisplaceCompositeOp:
@@ -174,7 +176,7 @@ MagickExport unsigned int CompositeImage(Image *image,
       /*
         Allocate the displace image.
       */
-      displace_image=CloneImage(composite_image,0,0,True,&image->exception);
+      displace_image=CloneImage(composite_image,0,0,True,&canvas_image->exception);
       if (displace_image == (Image *) NULL)
         return(False);
       horizontal_scale=20.0;
@@ -197,11 +199,11 @@ MagickExport unsigned int CompositeImage(Image *image,
       */
       for (y=0; y < (long) composite_image->rows; y++)
       {
-        if (((y+y_offset) < 0) || ((y+y_offset) >= (long) image->rows))
+        if (((y+y_offset) < 0) || ((y+y_offset) >= (long) canvas_image->rows))
           continue;
         p=AcquireImagePixels(composite_image,0,y,composite_image->columns,1,
-          &image->exception);
-        q=GetImagePixels(image,0,y+y_offset,image->columns,1);
+          &canvas_image->exception);
+        q=GetImagePixels(canvas_image,0,y+y_offset,canvas_image->columns,1);
         r=GetImagePixels(displace_image,0,y,displace_image->columns,1);
         if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL) ||
             (r == (PixelPacket *) NULL))
@@ -209,7 +211,7 @@ MagickExport unsigned int CompositeImage(Image *image,
         q+=x_offset;
         for (x=0; x < (long) composite_image->columns; x++)
         {
-          if (((x_offset+x) < 0) || ((x_offset+x) >= (long) image->columns))
+          if (((x_offset+x) < 0) || ((x_offset+x) >= (long) canvas_image->columns))
             {
               p++;
               q++;
@@ -221,8 +223,8 @@ MagickExport unsigned int CompositeImage(Image *image,
           if (composite_image->matte)
             y_displace=(vertical_scale*(p->opacity-
               (((double) MaxRGB+1.0)/2)))/(((double) MaxRGB+1.0)/2);
-          *r=InterpolateColor(image,x_offset+x+x_displace,y_offset+y+y_displace,
-            &image->exception);
+          *r=InterpolateColor(canvas_image,x_offset+x+x_displace,y_offset+y+y_displace,
+            &canvas_image->exception);
           p++;
           q++;
           r++;
@@ -273,23 +275,23 @@ MagickExport unsigned int CompositeImage(Image *image,
     Composite image.
   */
   midpoint=((double) MaxRGB+1.0)/2;
-  for (y=0; y < (long) image->rows; y++)
+  for (y=0; y < (long) canvas_image->rows; y++)
   {
     if (y < y_offset)
       continue;
     if ((y-y_offset) >= (long) composite_image->rows)
       break;
     p=AcquireImagePixels(composite_image,0,y-y_offset,composite_image->columns,
-      1,&image->exception);
-    q=GetImagePixels(image,0,y,image->columns,1);
+      1,&canvas_image->exception);
+    q=GetImagePixels(canvas_image,0,y,canvas_image->columns,1);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     pixels=p;
     if (x_offset < 0)
       p-=x_offset;
-    indexes=GetIndexes(image);
+    indexes=GetIndexes(canvas_image);
     composite_indexes=GetIndexes(composite_image);
-    for (x=0; x < (long) image->columns; x++)
+    for (x=0; x < (long) canvas_image->columns; x++)
     {
       if (x < x_offset)
         {
@@ -305,21 +307,31 @@ MagickExport unsigned int CompositeImage(Image *image,
         if (composite_image->colorspace == CMYKColorspace)
           source.opacity=composite_indexes[x];
       destination=(*q);
-      if (!image->matte)
+      if (!canvas_image->matte)
         destination.opacity=OpaqueOpacity;
       else
-        if (image->colorspace == CMYKColorspace)
+        if (canvas_image->colorspace == CMYKColorspace)
           destination.opacity=indexes[x];
       switch (compose)
       {
         case OverCompositeOp:
         {
+          /*
+            The result will be the union of the two image shapes, with
+            opaque areas of change-image obscuring base-image in the
+            region of overlap.
+          */
           destination=AlphaComposite(&source,source.opacity,&destination,
             destination.opacity);
           break;
         }
         case InCompositeOp:
         {
+          /*
+            The result is simply change-image cut by the shape of
+            base-image. None of the image data of base-image will be
+            in the result.
+          */
           if (source.opacity == TransparentOpacity)
             {
               destination=source;
@@ -327,19 +339,28 @@ MagickExport unsigned int CompositeImage(Image *image,
             }
           if (destination.opacity == TransparentOpacity)
             break;
+
           pixel.opacity=(double) (((double) MaxRGB-source.opacity)*
             (MaxRGB-destination.opacity)/MaxRGB);
+
           destination.red=(Quantum) (((double) MaxRGB-source.opacity)*
             (MaxRGB-destination.opacity)*source.red/MaxRGB/pixel.opacity+0.5);
+
           destination.green=(Quantum) (((double) MaxRGB-source.opacity)*
             (MaxRGB-destination.opacity)*source.green/MaxRGB/pixel.opacity+0.5);
+
           destination.blue=(Quantum) (((double) MaxRGB-source.opacity)*
             (MaxRGB-destination.opacity)*source.blue/MaxRGB/pixel.opacity+0.5);
+
           destination.opacity=(Quantum) (MaxRGB-pixel.opacity+0.5);
           break;
         }
         case OutCompositeOp:
         {
+          /*
+            The resulting image is change-image with the shape of
+            base-image cut out.
+          */
           if (source.opacity == TransparentOpacity)
             {
               destination=source;
@@ -352,192 +373,302 @@ MagickExport unsigned int CompositeImage(Image *image,
             }
           pixel.opacity=(double)
             (MaxRGB-source.opacity)*destination.opacity/MaxRGB;
+
           destination.red=(Quantum) (((double) MaxRGB-source.opacity)*
             destination.opacity*source.red/MaxRGB/pixel.opacity+0.5);
+
           destination.green=(Quantum) (((double) MaxRGB-source.opacity)*
             destination.opacity*source.green/MaxRGB/pixel.opacity+0.5);
+
           destination.blue=(Quantum) (((double) MaxRGB-source.opacity)*
             destination.opacity*source.blue/MaxRGB/pixel.opacity+0.5);
+
           destination.opacity=(Quantum) (MaxRGB-pixel.opacity+0.5);
           break;
         }
         case AtopCompositeOp:
         {
+          /*
+            The result is the same shape as base-image, with
+            change-image obscuring base-image where the image shapes
+            overlap. Note this differs from over because the portion
+            of change-image outside base-image's shape does not appear
+            in the result.
+          */
           pixel.opacity=((double)(MaxRGB-source.opacity)*
             (MaxRGB-destination.opacity)+(double) source.opacity*
             (MaxRGB-destination.opacity))/MaxRGB;
+
           pixel.red=((double) (MaxRGB-source.opacity)*(MaxRGB-
             destination.opacity)*source.red/MaxRGB+(double)
             source.opacity*(MaxRGB-destination.opacity)*
             destination.red/MaxRGB)/pixel.opacity;
-          destination.red=(Quantum)
-            (pixel.red > MaxRGB ? MaxRGB : pixel.red+0.5);
+          destination.red=RoundToQuantum(pixel.red);
+
           pixel.green=((double) (MaxRGB-source.opacity)*(MaxRGB-
             destination.opacity)*source.green/MaxRGB+(double)
             source.opacity*(MaxRGB-destination.opacity)*
             destination.green/MaxRGB)/pixel.opacity;
-          destination.green=(Quantum)
-            (pixel.green > MaxRGB ? MaxRGB : pixel.green+0.5);
+          destination.green=RoundToQuantum(pixel.green);
+
           pixel.blue=((double) (MaxRGB-source.opacity)*(MaxRGB-
             destination.opacity)*source.blue/MaxRGB+(double)
             source.opacity*(MaxRGB-destination.opacity)*
             destination.blue/MaxRGB)/pixel.opacity;
-          destination.blue=(Quantum)
-            (pixel.blue > MaxRGB ? MaxRGB : pixel.blue+0.5);
-          destination.opacity=(Quantum)
-            (MaxRGB-(pixel.opacity > MaxRGB ? MaxRGB : pixel.opacity)+0.5);
+          destination.blue=RoundToQuantum(pixel.blue);
+
+          destination.opacity=MaxRGB-RoundToQuantum(pixel.opacity);
           break;
         }
         case XorCompositeOp:
         {
-          pixel.opacity=((double) (MaxRGB-destination.opacity)*source.opacity/
-            MaxRGB+(MaxRGB-source.opacity)*destination.opacity/MaxRGB)/MaxRGB;
-          pixel.red=((double) (MaxRGB-destination.opacity)*source.red/
-            MaxRGB+(MaxRGB-source.opacity)*destination.red/MaxRGB)/
-            pixel.opacity;
-          destination.red=(Quantum)
-            (pixel.red > MaxRGB ? MaxRGB : pixel.red+0.5);
-          pixel.green=((double) (MaxRGB-destination.opacity)*source.green/
-            MaxRGB+(MaxRGB-source.opacity)*destination.green/MaxRGB)/
-            pixel.opacity;
-          destination.green=(Quantum)
-            (pixel.green > MaxRGB ? MaxRGB : pixel.green+0.5);
-          pixel.blue=((double) (MaxRGB-destination.opacity)*source.blue/
-            MaxRGB+(MaxRGB-source.opacity)*destination.blue/MaxRGB)/
-            pixel.opacity;
-          destination.blue=(Quantum)
-            (pixel.blue > MaxRGB ? MaxRGB : pixel.blue+0.5);
-          pixel.opacity=((double) (MaxRGB-destination.opacity)*source.opacity/
-            MaxRGB+(MaxRGB-source.opacity)*destination.opacity/MaxRGB)/
-            pixel.opacity;
-          destination.opacity=(Quantum)
-            (MaxRGB-(pixel.opacity > MaxRGB ? MaxRGB : pixel.opacity)+0.5);
+          /*
+            The result is the image data from both change-image and
+            base-image that is outside the overlap region. The overlap
+            region will be blank.
+          */
+          double gamma;
+          double source_alpha;
+          double dest_alpha;
+          double composite;
+          source_alpha=(double) source.opacity/MaxRGB;
+          dest_alpha=(double) destination.opacity/MaxRGB;
+          
+          gamma=(1.0-source_alpha)+(1.0-dest_alpha)-
+            2.0*(1.0-source_alpha)*(1.0-dest_alpha);
+          
+          composite=MaxRGB*(1.0-gamma);
+          destination.opacity=RoundToQuantum(composite);
+          
+          gamma=1.0/(gamma <= MagickEpsilon ? 1.0 : gamma);
+          
+          composite=((1.0-source_alpha)*source.red*dest_alpha+
+                     (1.0-dest_alpha)*destination.red*source_alpha)*gamma;
+          destination.red=RoundToQuantum(composite);
+          
+          composite=((1.0-source_alpha)*source.green*dest_alpha+
+                     (1.0-dest_alpha)*destination.green*source_alpha)*gamma;
+          destination.green=RoundToQuantum(composite);
+          
+          composite=((1.0-source_alpha)*source.blue*dest_alpha+
+                     (1.0-dest_alpha)*destination.blue*source_alpha)*gamma;
+          destination.blue=RoundToQuantum(composite);
           break;
         }
         case PlusCompositeOp:
         {
-          pixel.red=((double) (MaxRGB-source.opacity)*source.red+
-            (double) (MaxRGB-destination.opacity)*destination.red)/MaxRGB;
-          destination.red=(Quantum)
-            (pixel.red > MaxRGB ? MaxRGB : pixel.red+0.5);
-          pixel.green=((double) (MaxRGB-source.opacity)*source.green+
-            (double) (MaxRGB-destination.opacity)*destination.green)/MaxRGB;
-          destination.green=(Quantum)
-            (pixel.green > MaxRGB ? MaxRGB : pixel.green+0.5);
-          pixel.blue=((double) (MaxRGB-source.opacity)*source.blue+
-            (double) (MaxRGB-destination.opacity)*destination.blue)/MaxRGB;
-          destination.blue=(Quantum)
-            (pixel.blue > MaxRGB ? MaxRGB : pixel.blue+0.5);
-          pixel.opacity=MaxRGB-((double) (MaxRGB-source.opacity)+
-            (MaxRGB-destination.opacity));
-          destination.opacity=(Quantum)
-            (pixel.opacity > MaxRGB ? MaxRGB : pixel.opacity+0.5);
+          /*
+            The result is just the sum of the image data. Output
+            values are cropped to MaxRGB (no overflow). This operation
+            is independent of the matte channels.
+          */
+          pixel.red=((double) (MaxRGB-source.opacity)*source.red+(double)
+            (MaxRGB-destination.opacity)*destination.red)/MaxRGB;
+          destination.red=RoundSignedToQuantum(pixel.red);
+
+          pixel.green=((double) (MaxRGB-source.opacity)*source.green+(double)
+            (MaxRGB-destination.opacity)*destination.green)/MaxRGB;
+          destination.green=RoundSignedToQuantum(pixel.green);
+
+          pixel.blue=((double) (MaxRGB-source.opacity)*source.blue+(double)
+            (MaxRGB-destination.opacity)*destination.blue)/MaxRGB;
+          destination.blue=RoundSignedToQuantum(pixel.blue);
+
+          pixel.opacity=((double) (MaxRGB-source.opacity)+
+            (double) (MaxRGB-destination.opacity))/MaxRGB;
+          destination.opacity=MaxRGB-RoundSignedToQuantum(pixel.opacity);
           break;
         }
         case MinusCompositeOp:
         {
-          pixel.red=((double) (MaxRGB-source.opacity)*source.red-
-            (double) (MaxRGB-destination.opacity)*destination.red)/MaxRGB;
-          destination.red=(Quantum) (pixel.red < 0 ? 0 : pixel.red+0.5);
-          pixel.green=((double) (MaxRGB-source.opacity)*source.green-
-            (double) (MaxRGB-destination.opacity)*destination.green)/MaxRGB;
-          destination.green=(Quantum) (pixel.green < 0 ? 0 : pixel.green+0.5);
-          pixel.blue=((double) (MaxRGB-source.opacity)*source.blue-
-            (double) (MaxRGB-destination.opacity)*destination.blue)/MaxRGB;
-          destination.blue=(Quantum) (pixel.blue < 0 ? 0 : pixel.blue+0.5);
-          pixel.opacity=MaxRGB-((double) (MaxRGB-source.opacity)-
-            (MaxRGB-destination.opacity));
-          destination.opacity=(Quantum)
-            (pixel.opacity < 0 ? 0 : pixel.opacity+0.5);
+          /*
+            The result of change-image - base-image, with underflow
+            cropped to zero. The matte channel is ignored (set to
+            opaque, full coverage).
+          */
+          double composite;
+
+          composite=((double) (MaxRGB-destination.opacity)*destination.red-
+            (double) (MaxRGB-source.opacity)*source.red)/MaxRGB;
+          destination.red=RoundSignedToQuantum(composite);
+
+          composite=((double) (MaxRGB-destination.opacity)*destination.green-
+            (double) (MaxRGB-source.opacity)*source.green)/MaxRGB;
+          destination.green=RoundSignedToQuantum(composite);
+
+          composite=((double) (MaxRGB-destination.opacity)*destination.blue-
+            (double) (MaxRGB-source.opacity)*source.blue)/MaxRGB;
+          destination.blue=RoundSignedToQuantum(composite);
+
+          composite=((double) (MaxRGB-destination.opacity)-
+            (double) (MaxRGB-source.opacity))/MaxRGB;
+          destination.opacity=MaxRGB-RoundSignedToQuantum(composite);
           break;
         }
         case AddCompositeOp:
         {
-          pixel.red=(double) source.red+destination.red;
-          destination.red=(Quantum)
-            (pixel.red > MaxRGB ? pixel.red-=MaxRGB : pixel.red+0.5);
-          pixel.green=(double) source.green+destination.green;
-          destination.green=(Quantum)
-            (pixel.green > MaxRGB ? pixel.green-=MaxRGB : pixel.green+0.5);
-          pixel.blue=(double) source.blue+destination.blue;
-          destination.blue=(Quantum)
-            (pixel.blue > MaxRGB ? pixel.blue-=MaxRGB : pixel.blue+0.5);
+          /*
+            The result of change-image + base-image, with overflow
+            wrapping around (mod MaxRGB+1).
+          */
+          double composite;
+
+          composite=(double) source.red+destination.red;
+          if (composite > MaxRGB) composite -= ((double) MaxRGB+1.0);
+          destination.red=RoundToQuantum(composite);
+
+          composite=(double) source.green+destination.green;
+          if (composite > MaxRGB) composite -= ((double) MaxRGB+1.0);
+          destination.green=RoundToQuantum(composite);
+
+          composite=(double) source.blue+destination.blue;
+          if (composite > MaxRGB) composite -= ((double) MaxRGB+1.0);
+          destination.blue=RoundToQuantum(composite);
+
           destination.opacity=OpaqueOpacity;
           break;
         }
         case SubtractCompositeOp:
         {
-          pixel.red=(double) source.red-destination.red;
-          destination.red=(Quantum)
-            (pixel.red < 0 ? pixel.red+=MaxRGB : pixel.red+0.5);
-          pixel.green=(double) source.green-destination.green;
-          destination.green=(Quantum)
-            (pixel.green < 0 ? pixel.green+=MaxRGB : pixel.green+0.5);
-          pixel.blue=(double) source.blue-destination.blue;
-          destination.blue=(Quantum)
-            (pixel.blue < 0 ? pixel.blue+=MaxRGB : pixel.blue+0.5);
+          /*
+            The result of change-image - base-image, with underflow
+            wrapping around (mod MaxRGB+1). The add and subtract
+            operators can be used to perform reversible
+            transformations.
+          */
+          double composite;
+
+          composite=(double) source.red-destination.red;
+          if (composite < 0) composite += ((double) MaxRGB+1.0);
+          destination.red=RoundToQuantum(composite);
+
+          composite=(double) source.green-destination.green;
+          if (composite < 0) composite += ((double) MaxRGB+1.0);
+          destination.green=RoundToQuantum(composite);
+
+          composite=(double) source.blue-destination.blue;
+          if (composite < 0) composite += ((double) MaxRGB+1.0);
+          destination.blue=RoundToQuantum(composite);
+
           destination.opacity=OpaqueOpacity;
           break;
         }
         case MultiplyCompositeOp:
         {
-          destination.red=(Quantum)
-            ((double) (source.red*destination.red/MaxRGB));
-          destination.green=(Quantum)
-            ((unsigned long) (source.green*destination.green/MaxRGB));
-          destination.blue=(Quantum)
-            ((double) (source.blue*destination.blue/MaxRGB));
-          destination.opacity=(Quantum)
-            ((double) (source.opacity*destination.opacity/MaxRGB+0.5));
+          /*
+            The result of change-image * base-image. This is useful
+            for the creation of drop-shadows.
+          */
+          double composite;
+
+          composite=((double) source.red*destination.red)/MaxRGB;
+          destination.red=RoundToQuantum(composite);
+
+          composite=((double) source.green*destination.green)/MaxRGB;
+          destination.green=RoundToQuantum(composite);
+
+          composite=((double) source.blue*destination.blue)/MaxRGB;
+          destination.blue=RoundToQuantum(composite);
+
+          composite=((double) source.opacity*destination.opacity)/MaxRGB;
+          destination.opacity=RoundToQuantum(composite);
           break;
         }
         case DifferenceCompositeOp:
         {
-          destination.red=(Quantum)
-            AbsoluteValue(source.red-(double) destination.red);
-          destination.green=(Quantum)
-            AbsoluteValue(source.green-(double) destination.green);
-          destination.blue=(Quantum)
-            AbsoluteValue(source.blue-(double) destination.blue);
-          destination.opacity=(Quantum)
-            AbsoluteValue(source.opacity-(double) destination.opacity);
+          /*
+            The result of abs(change-image - base-image). This is
+            useful for comparing two very similar images.
+          */
+          double composite;
+
+          composite=source.red-(double) destination.red;
+          destination.red=(Quantum) AbsoluteValue(composite);
+
+          composite=source.green-(double) destination.green;
+          destination.green=(Quantum) AbsoluteValue(composite);
+
+          composite=source.blue-(double) destination.blue;
+          destination.blue=(Quantum) AbsoluteValue(composite);
+
+          composite=source.opacity-(double) destination.opacity;
+          destination.opacity=(Quantum) AbsoluteValue(composite);
           break;
         }
         case BumpmapCompositeOp:
         {
-          destination.red=(Quantum) (((double)
-            PixelIntensityToQuantum(&source)*destination.red)/MaxRGB+0.5);
-          destination.green=(Quantum) (((double)
-            PixelIntensityToQuantum(&source)*destination.green)/MaxRGB+0.5);
-          destination.blue=(Quantum) (((double)
-            PixelIntensityToQuantum(&source)*destination.blue)/MaxRGB+0.5);
-          destination.opacity=(Quantum) (((double)
-            PixelIntensityToQuantum(&source)*destination.opacity)/MaxRGB+0.5);
+          /*
+            The result base-image shaded by change-image.
+          */
+          double composite;
+          double source_intensity;
+
+          source_intensity=(double) PixelIntensity(&source)/MaxRGB;
+
+          composite=source_intensity*destination.red;
+          destination.red=RoundToQuantum(composite);
+
+          composite=source_intensity*destination.green;
+          destination.green=RoundToQuantum(composite);
+
+          composite=source_intensity*destination.blue;
+          destination.blue=RoundToQuantum(composite);
+
+          composite=source_intensity*destination.opacity;
+          destination.opacity=RoundToQuantum(composite);
+
           break;
         }
         case CopyCompositeOp:
         {
+          /*
+            The resulting image is base-image replaced with
+            change-image. Here the matte information is ignored.
+          */
           destination=source;
           break;
         }
         case CopyRedCompositeOp:
+        case CopyCyanCompositeOp:
         {
+          /*
+            The resulting image is the red channel in base-image
+            replaced with the red channel in change-image. The other
+            channels are copied untouched.
+          */
           destination.red=source.red;
           break;
         }
         case CopyGreenCompositeOp:
+        case CopyMagentaCompositeOp:
         {
+          /*
+            The resulting image is the green channel in base-image
+            replaced with the green channel in change-image. The other
+            channels are copied untouched.
+          */
           destination.green=source.green;
           break;
         }
         case CopyBlueCompositeOp:
+        case CopyYellowCompositeOp:
         {
+          /*
+            The resulting image is the blue channel in base-image
+            replaced with the blue channel in change-image. The other
+            channels are copied untouched.
+          */
           destination.blue=source.blue;
           break;
         }
         case CopyOpacityCompositeOp:
         default:
         {
+          /*
+            The resulting image is the opacity channel in base-image
+            replaced with the opacity channel in change-image.  The
+            other channels are copied untouched.
+          */
           if (!composite_image->matte)
             {
               destination.opacity=(Quantum)
@@ -547,8 +678,21 @@ MagickExport unsigned int CompositeImage(Image *image,
           destination.opacity=source.opacity;
           break;
         }
+        case CopyBlackCompositeOp:
+        {
+          /*
+            Copy the CMYK Black (K) channel into the image.
+          */
+          if ((canvas_image->colorspace == CMYKColorspace) &&
+              (composite_image->colorspace == CMYKColorspace))
+            indexes[x]=(*composite_indexes++);
+          break;
+        }
         case ClearCompositeOp:
         {
+          /*
+            Set destination pixels to transparent.
+          */
           destination.opacity=TransparentOpacity;
           break;
         }
@@ -737,7 +881,7 @@ MagickExport unsigned int CompositeImage(Image *image,
       q->red=destination.red;
       q->green=destination.green;
       q->blue=destination.blue;
-      if (image->colorspace != CMYKColorspace)
+      if (canvas_image->colorspace != CMYKColorspace)
         q->opacity=destination.opacity;
       else
         {
@@ -749,7 +893,7 @@ MagickExport unsigned int CompositeImage(Image *image,
         p=pixels;
       q++;
     }
-    if (!SyncImagePixels(image))
+    if (!SyncImagePixels(canvas_image))
       break;
   }
   return(True);

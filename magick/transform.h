@@ -27,10 +27,6 @@ extern MagickExport Image
   *RollImage(const Image *,const long,const long,ExceptionInfo *),
   *ShaveImage(const Image *,const RectangleInfo *,ExceptionInfo *);
 
-extern MagickExport unsigned int
-  ProfileImage(Image *,const char *,const unsigned char *,const size_t,
-    unsigned int);
-
 extern MagickExport void
   TransformImage(Image **,const char *,const char *);
 

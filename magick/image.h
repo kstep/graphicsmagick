@@ -19,7 +19,6 @@ extern "C" {
 /*
   Include declarations.
 */
-#include "magick/semaphore.h"
 #include "magick/error.h"
 #include "magick/timer.h"
 
@@ -121,12 +120,16 @@ typedef unsigned int Quantum;
 
 #define ColorMatch(p,q) (((p)->red == (q)->red) && \
   ((p)->green == (q)->green) && ((p)->blue == (q)->blue))
-#define PixelIntensityToQuantum(pixel) ((Quantum)PixelIntensity(pixel))
-#define PixelIntensityToDouble(pixel) ((double)PixelIntensity(pixel))
 #define OpaqueOpacity  0UL
 #define TransparentOpacity  MaxRGB
 #define RoundSignedToQuantum(value) ((Quantum) (value < 0 ? 0 : \
   (value > MaxRGB) ? MaxRGB : value + 0.5))
+#define RoundToQuantum(value) ((Quantum) (value > MaxRGB ? MaxRGB : \
+  value + 0.5))
+
+#define PixelIntensityToDouble(pixel) ((double)PixelIntensity(pixel))
+#define PixelIntensityToQuantum(pixel) ((Quantum)PixelIntensity(pixel))
+
 /*
   Deprecated defines.
 */
@@ -151,7 +154,8 @@ typedef enum
   YellowChannel,
   OpacityChannel,
   BlackChannel,
-  MatteChannel
+  MatteChannel,
+  AllChannels
 } ChannelType;
 
 typedef enum
@@ -177,7 +181,8 @@ typedef enum
   CMYKColorspace,
   sRGBColorspace,
   HSLColorspace,
-  HWBColorspace
+  HWBColorspace,
+  LABColorspace
 } ColorspaceType;
 
 typedef enum
@@ -223,7 +228,11 @@ typedef enum
   ColorizeCompositeOp,
   LuminizeCompositeOp,
   ScreenCompositeOp,
-  OverlayCompositeOp
+  OverlayCompositeOp,
+  CopyCyanCompositeOp,
+  CopyMagentaCompositeOp,
+  CopyYellowCompositeOp,
+  CopyBlackCompositeOp
 } CompositeOperator;
 
 typedef enum
@@ -370,13 +379,6 @@ typedef enum
 
 typedef enum
 {
-  UndefinedProfile,
-  ICMProfile,
-  IPTCProfile
-} ProfileType;
-
-typedef enum
-{
   UndefinedPreview = 0,
   RotatePreview,
   ShearPreview,
@@ -411,23 +413,17 @@ typedef enum
 
 typedef enum
 {
-  IndexQuantum,
-  GrayQuantum,
-  IndexAlphaQuantum,
-  GrayAlphaQuantum,
-  RedQuantum,
-  CyanQuantum,
-  GreenQuantum,
-  YellowQuantum,
-  BlueQuantum,
-  MagentaQuantum,
-  AlphaQuantum,
-  BlackQuantum,
-  RGBQuantum,
-  RGBAQuantum,
-  CMYKQuantum,
-  CMYKAQuantum
-} QuantumType;
+  UndefinedQuantumOp = 0,
+  AddQuantumOp,
+  AndQuantumOp,
+  DivideQuantumOp,
+  LShiftQuantumOp,
+  MultiplyQuantumOp,
+  OrQuantumOp,
+  RShiftQuantumOp,
+  SubtractQuantumOp,
+  XorQuantumOp
+ } QuantumOperator;
 
 typedef enum
 {
@@ -444,25 +440,6 @@ typedef enum
   PixelsPerInchResolution,
   PixelsPerCentimeterResolution
 } ResolutionType;
-
-typedef enum
-{
-  CharPixel,
-  ShortPixel,
-  IntegerPixel,
-  LongPixel,
-  FloatPixel,
-  DoublePixel
-} StorageType;
-
-typedef enum
-{
-  UndefinedTransmitType,
-  FileTransmitType,
-  BlobTransmitType,
-  StreamTransmitType,
-  ImageTransmitType
-} TransmitType;
 
 /*
   Typedef declarations.
@@ -522,7 +499,7 @@ typedef struct _PixelPacket
 
 typedef struct _ColorInfo
 {
-  const char
+  char
     *path,
     *name;
 
@@ -559,14 +536,6 @@ typedef struct _ErrorInfo
     normalized_mean_error,
     normalized_maximum_error;
 } ErrorInfo;
-
-#if !defined(WIN32)
-typedef off_t ExtendedSignedIntegralType;
-typedef size_t ExtendedUnsignedIntegralType;
-#else
-typedef __int64 ExtendedSignedIntegralType;
-typedef unsigned __int64 ExtendedUnsignedIntegralType;
-#endif
 
 typedef struct _FrameInfo
 {
@@ -660,6 +629,28 @@ typedef struct _SegmentInfo
     y2;
 } SegmentInfo;
 
+typedef struct _ImageChannelStatistics
+ {
+   /* Minimum value observed */
+   double maximum;
+   /* Maximum value observed */
+   double minimum;
+   /* Average (mean) value observed */
+   double mean;
+   /* Standard deviation, sqrt(variance) */
+   double standard_deviation;
+   /* Variance */
+   double variance;
+ } ImageChannelStatistics;
+
+typedef struct _ImageStatistics
+ {
+   ImageChannelStatistics red;
+   ImageChannelStatistics green;
+   ImageChannelStatistics blue;
+   ImageChannelStatistics opacity;
+ } ImageStatistics;
+
 typedef struct _Ascii85Info _Ascii85Info_;
 
 typedef struct _BlobInfo _BlobInfo_;
@@ -679,9 +670,6 @@ typedef struct _Image
 
   unsigned int
     dither,             /* True if image is to be dithered */
-    is_monochrome,      /* Private, True if image is known to be monochrome */
-    is_grayscale,       /* Private, True if image is known to be grayscale */
-    taint,              /* Private, True if image has not been modifed */
     matte;              /* True if image has an opacity channel */ 
 
   unsigned long
@@ -705,14 +693,6 @@ typedef struct _Image
 
   ChromaticityInfo
     chromaticity;       /* Red, green, blue, and white chromaticity values */
-
-  ProfileInfo
-    color_profile,      /* ICC color profile */
-    iptc_profile,       /* IPTC newsphoto profile */
-    *generic_profile;   /* List of additional profiles */
-
-  unsigned long
-    generic_profiles;   /* Number of additional generic profiles */
 
   RenderingIntent
     rendering_intent;   /* Rendering intent */
@@ -758,9 +738,6 @@ typedef struct _Image
   DisposeType
     dispose;            /* GIF disposal option */
 
-  struct _Image
-    *clip_mask;         /* Private, Clipping mask to apply when updating pixels */
-
   unsigned long
     scene,              /* Animation frame scene number */
     delay,              /* Animation frame scene delay */
@@ -779,6 +756,75 @@ typedef struct _Image
   void
     *client_data;       /* User specified opaque data pointer */
 
+  /*
+    Output file name.
+
+    A colon delimited format identifier may be prepended to the file
+    name in order to force a particular output format. Otherwise the
+    file extension is used. If no format prefix or file extension is
+    present, then the output format is determined by the 'magick'
+    field.
+  */
+  char
+    filename[MaxTextExtent];
+
+  /*
+    Original file name (name of input image file)
+  */
+  char
+    magick_filename[MaxTextExtent];
+
+  /*
+    File format of the input file, and the default output format.
+
+    The precedence when selecting the output format is:
+      1) magick prefix to file name (e.g. "jpeg:foo).
+      2) file name extension. (e.g. "foo.jpg")
+      3) content of this magick field.
+
+  */
+  char
+    magick[MaxTextExtent];
+
+  /*
+    Original image width (before transformations)
+  */
+  unsigned long
+    magick_columns;
+
+  /*
+    Original image height (before transformations)
+  */
+  unsigned long
+    magick_rows;
+
+  ExceptionInfo
+    exception;          /* Any error associated with this image frame */
+
+  struct _Image
+    *previous,          /* Pointer to previous frame */
+    *next;              /* Pointer to next frame */
+
+  /*
+    Only private members appear past this point
+  */
+
+  ProfileInfo
+    color_profile,      /* ICC color profile */
+    iptc_profile,       /* IPTC newsphoto profile */
+    *generic_profile;   /* List of additional profiles */
+
+  unsigned long
+    generic_profiles;   /* Number of additional generic profiles */
+
+  unsigned int
+    is_monochrome,      /* Private, True if image is known to be monochrome */
+    is_grayscale,       /* Private, True if image is known to be grayscale */
+    taint;              /* Private, True if image has not been modifed */
+
+  struct _Image
+    *clip_mask;         /* Private, Clipping mask to apply when updating pixels */
+
   void
     *cache;             /* Private, image pixel cache */
 
@@ -791,31 +837,20 @@ typedef struct _Image
   _BlobInfo_
     *blob;              /* Private, file I/O object */
 
-  char
-    filename[MaxTextExtent], /* Output filename */
-    magick_filename[MaxTextExtent], /* Original image filename */
-    magick[MaxTextExtent];   /* Output format */
-
-  unsigned long
-    magick_columns,     /* Base image width (before transformations) */
-    magick_rows;        /* Base image height (before transformations) */
-
-  ExceptionInfo
-    exception;          /* Any error associated with this image frame */
-
   long
     reference_count;    /* Private, Image reference count */
 
-  SemaphoreInfo
+  void
     *semaphore;         /* Private, Per image lock (for reference count) */
+
+  unsigned int
+    logging;            /* Private, True if logging is enabled */
+
+  struct _Image
+    *list;              /* Private, used only by display */
 
   unsigned long
     signature;          /* Private, Unique code to validate structure */
-
-  struct _Image
-    *previous,          /* Pointer to previous frame */
-    *list,              /* Private, used only by display */
-    *next;              /* Pointer to next frame */
 } Image;
 
 typedef unsigned int
@@ -827,39 +862,38 @@ typedef struct _ImageInfo
     compression;             /* Image compression to use while decoding */
 
   unsigned int
-    temporary,               /* Filename refers to a temporary file to remove */
+    temporary,               /* Remove file "filename" once it has been read. */
     adjoin,                  /* If True, join multiple frames into one file */
-    affirm,
     antialias;               /* If True, antialias while rendering */
 
   unsigned long
-    subimage,
-    subrange,
+    subimage,                /* Starting image scene ID to select */
+    subrange,                /* Span of image scene IDs (from starting scene) to select */
     depth;                   /* Number of quantum bits to preserve while encoding */
 
   char
     *size,                   /* Desired/known dimensions to use when decoding image */
-    *tile,
-    *page;
+    *tile,                   /* Deprecated, name of image to tile on background */
+    *page;                   /* Output page size & offset */
 
   InterlaceType
     interlace;               /* Interlace scheme to use when decoding image */
 
   EndianType
-    endian;
+    endian;                  /* Select MSB/LSB endian output for TIFF format */
 
   ResolutionType
-    units;
+    units;                   /* Units to apply when evaluating the density option */
 
   unsigned long
-    quality;
+    quality;                 /* Compression quality factor (format specific) */
 
   char
-    *sampling_factor,
-    *server_name,
-    *font,
-    *texture,
-    *density;
+    *sampling_factor,        /* JPEG, MPEG, and YUV chroma downsample factor */
+    *server_name,            /* X11 server display specification */
+    *font,                   /* Font name to use for text annotations */
+    *texture,                /* Name of texture image to use for background fills */
+    *density;                /* Image resolution (also see units) */
 
   double
     pointsize;               /* Font pointsize */
@@ -869,60 +903,76 @@ typedef struct _ImageInfo
 
   PixelPacket
     pen,                     /* Stroke or fill color while drawing */
-    background_color,
-    border_color,
-    matte_color;
+    background_color,        /* Background color */
+    border_color,            /* Border color (color surrounding frame) */
+    matte_color;             /* Matte color (frame color) */
 
   unsigned int
     dither,                  /* If true, dither image while writing */
     monochrome;              /* If true, use monochrome format */
 
   ColorspaceType
-    colorspace;
+    colorspace;              /* Colorspace representations of image pixels */
 
   ImageType
-    type;
-
-  PreviewType
-    preview_type;            /* Private, used by PreviewImage */
+    type;                    /* Desired image type (used while writing) */
 
   long
-    group;
+    group;                   /* X11 window group ID */
 
   unsigned int
-    ping,                    /* Private, if true, read file header only */
     verbose;                 /* If true, display high-level processing */
 
   char
-    *view,
+    *view,                   /* FlashPIX view specification */
     *authenticate;           /* Password used to decrypt file */
-
-  Image
-    *attributes;             /* Private. Image attribute list */
 
   void
     *client_data;            /* User-specified data to pass to coder */
 
-  void
-    *cache;
-
   StreamHandler
-    stream;
+    stream;                  /* Pass in open blob stream handler for read/write */
 
   FILE
-  *file;                     /* If not null, stdio FILE to read image from */
+    *file;                   /* If not null, stdio FILE to read image from */
+
+  char
+    magick[MaxTextExtent],   /* File format to read. Overrides file extension */
+    filename[MaxTextExtent]; /* File name to read */
+
+  /*
+    Only private members appear past this point
+  */
+
+  void
+    *cache;                  /* Private. Used to pass image via open cache */
+
+  void
+    *definitions;            /* Private. Map of coder specific options passed by user.
+                                Use AddDefinitions, RemoveDefinitions, & AccessDefinition
+                                to access and manipulate this data. */
+
+  Image
+    *attributes;             /* Private. Image attribute list */
+
+  unsigned int
+    ping;                    /* Private, if true, read file header only */
+
+  PreviewType
+    preview_type;            /* Private, used by PreviewImage */
+
+  unsigned int
+    affirm;                  /* Private, when true do not intuit image format */
 
   void
     *blob;                   /* Private, used to pass in open blob */
 
   size_t
-    length;
+    length;                  /* Private, used to pass in open blob length */
 
   char
-    magick[MaxTextExtent],   /* File format to read. Overrides file extension */
-    unique[MaxTextExtent],   /* Private, passes temporary to TranslateText */
-    zero[MaxTextExtent],     /* Private, passes temporary to TranslateText */
-    filename[MaxTextExtent]; /* File name to read */
+    unique[MaxTextExtent],   /* Private, passes temporary filename to TranslateText */
+    zero[MaxTextExtent];     /* Private, passes temporary filename to TranslateText */
 
   unsigned long
     signature;               /* Private, used to validate structure */
@@ -970,39 +1020,64 @@ extern MagickExport ImageInfo
 extern MagickExport ImageType
   GetImageType(const Image *,ExceptionInfo *);
 
+extern MagickExport const char
+  *AccessDefinition(const ImageInfo *image_info,const char *magick,
+   const char *key);
+
 extern MagickExport int
   GetImageGeometry(const Image *,const char *,const unsigned int,
   RectangleInfo *);
-
 
 extern MagickExport RectangleInfo
   GetImageBoundingBox(const Image *,ExceptionInfo *exception);
 
 extern MagickExport unsigned int
+  AddDefinitions(ImageInfo *image_info,const char *options,
+    ExceptionInfo *exception),
   AllocateImageColormap(Image *,const unsigned long),
   AnimateImages(const ImageInfo *image_info,Image *image),
   ChannelImage(Image *,const ChannelType),
   ClipImage(Image *),
+  ClipPathImage(Image *,const char *,const unsigned int),
+  CycleColormapImage(Image *image,const int amount),
+  DescribeImage(Image *image,FILE *file,const unsigned int verbose),
   DisplayImages(const ImageInfo *image_info,Image *image),
+  GetImageChannelDepth(const Image *image,
+    const ChannelType channel, ExceptionInfo *exception),
   GradientImage(Image *,const PixelPacket *,const PixelPacket *),
   IsImagesEqual(Image *,const Image *),
   IsTaintImage(const Image *),
   IsSubimage(const char *,const unsigned int),
   PlasmaImage(Image *,const SegmentInfo *,unsigned long,unsigned long),
+  RemoveDefinitions(const ImageInfo *image_info,const char *options),
   RGBTransformImage(Image *,const ColorspaceType),
-  SetImageClipMask(Image *,Image *),
+  SetImageChannelDepth(Image *image,
+    const ChannelType channel, const unsigned int depth),
+  SetImageClipMask(Image *image,Image *clip_mask),
   SetImageDepth(Image *,const unsigned long),
   SetImageInfo(ImageInfo *,const unsigned int,ExceptionInfo *),
+  SetImageType(Image *,const ImageType),
   SortColormapByIntensity(Image *),
+  TextureImage(Image *,const Image *),
+  TransformColorspace(Image *,const ColorspaceType),
   TransformRGBImage(Image *,const ColorspaceType);
+
+extern MagickExport MagickPassFail
+  GetImageStatistics(const Image *image,ImageStatistics *statistics,
+    ExceptionInfo *exception),
+  QuantumOperatorImage(Image *image,const ChannelType channel,
+    const QuantumOperator quantum_operator,const double rvalue,
+    ExceptionInfo *exception),
+  QuantumOperatorRegionImage(Image *image,const long x,const long y,
+    const unsigned long columns,const unsigned long rows,
+    const ChannelType channel,const QuantumOperator quantum_operator,
+    const double rvalue,ExceptionInfo *exception);
 
 extern MagickExport unsigned long
   GetImageDepth(const Image *,ExceptionInfo *);
 
 extern MagickExport void
   AllocateNextImage(const ImageInfo *,Image *),
-  CycleColormapImage(Image *,const int),
-  DescribeImage(Image *,FILE *,const unsigned int),
   DestroyImage(Image *),
   DestroyImageInfo(ImageInfo *),
   GetImageException(Image *,ExceptionInfo *),
@@ -1011,10 +1086,7 @@ extern MagickExport void
   ModifyImage(Image **,ExceptionInfo *),
   SetImage(Image *,const Quantum),
   SetImageOpacity(Image *,const unsigned int),
-  SetImageType(Image *,const ImageType),
-  SyncImage(Image *),
-  TextureImage(Image *,const Image *),
-  TransformColorspace(Image *,const ColorspaceType);
+  SyncImage(Image *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

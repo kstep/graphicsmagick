@@ -200,10 +200,10 @@ MagickExport unsigned int SignatureImage(Image *image)
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  message=(unsigned char *) AcquireMemory(20*image->columns);
+  message=MagickAllocateMemory(unsigned char *,20*image->columns);
   if (message == (unsigned char *) NULL)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-      "UnableToComputeImageSignature");
+    ThrowBinaryException3(ResourceLimitError,MemoryAllocationFailed,
+      UnableToComputeImageSignature);
   /*
     Compute image digital signature.
   */
@@ -269,7 +269,7 @@ MagickExport unsigned int SignatureImage(Image *image)
     UpdateSignature(&signature_info,message,q-message);
   }
   FinalizeSignature(&signature_info);
-  LiberateMemory((void **) &message);
+  MagickFreeMemory(message);
   /*
     Convert digital signature to a 64 character hex string.
   */

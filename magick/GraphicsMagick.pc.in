@@ -8,5 +8,5 @@ Name: GraphicsMagick
 Version: @PACKAGE_VERSION@
 Description: GraphicsMagick image processing library
 Requires:
-Libs: -L${libdir} @LDFLAGS@ -lGraphicsMagick @MAGICK_DEP_LIBS@
-Cflags: -I${includedir}/GraphicsMagick @CPPFLAGS@
+Libs: @MAGICK_API_LDFLAGS@ @MAGICK_API_LIBS@
+Cflags: @MAGICK_API_CPPFLAGS@

@@ -18,7 +18,7 @@
 %                            P       CCCC  DDDD                               %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                     Read/Write Photo CD Image Format.                       %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -157,7 +157,6 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
   unsigned long
     bits,
     plane,
-    number_pixels,
     pcd_length[3],
     row,
     sum;
@@ -169,9 +168,9 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
   assert(luma != (unsigned char *) NULL);
   assert(chroma1 != (unsigned char *) NULL);
   assert(chroma2 != (unsigned char *) NULL);
-  buffer=(unsigned char *) AcquireMemory(0x800);
+  buffer=MagickAllocateMemory(unsigned char *,0x800);
   if (buffer == (unsigned char *) NULL)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+    ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
       (char *) NULL);
   sum=0;
   bits=32;
@@ -180,11 +179,11 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
   {
     PCDGetBits(8);
     length=(sum & 0xff)+1;
-    pcd_table[i]=(PCDTable *) AcquireMemory(length*sizeof(PCDTable));
+    pcd_table[i]=MagickAllocateMemory(PCDTable *,length*sizeof(PCDTable));
     if (pcd_table[i] == (PCDTable *) NULL)
       {
-        LiberateMemory((void **) &buffer);
-        ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+        MagickFreeMemory(buffer);
+        ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
           (char *) NULL)
       }
     r=pcd_table[i];
@@ -194,7 +193,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
       r->length=(sum & 0xff)+1;
       if (r->length > 16)
         {
-          LiberateMemory((void **) &buffer);
+          MagickFreeMemory(buffer);
           return(False);
         }
       PCDGetBits(16);
@@ -222,7 +221,6 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
   */
   count=0;
   length=0;
-  number_pixels=image->columns*image->rows;
   plane=0;
   row=0;
   q=luma;
@@ -264,7 +262,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
           }
           default:
           {
-            ThrowBinaryException(CorruptImageError,"CorruptPCDImage",
+            ThrowBinaryException(CorruptImageError,CorruptImage,
               image->filename)
           }
         }
@@ -282,7 +280,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
       r++;
     if ((row > image->rows) || (r == (PCDTable *) NULL))
       {
-        ThrowException(&image->exception,CorruptImageWarning,"SkipToSyncByte",
+        ThrowException(&image->exception,CorruptImageWarning,SkipToSyncByte,
           image->filename);
         while ((sum & 0x00fff000) != 0x00fff000)
           PCDGetBits(8);
@@ -303,8 +301,8 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
     Free memory.
   */
   for (i=0; i < (image->columns > 1536 ? 3 : 1); i++)
-    LiberateMemory((void **) &pcd_table[i]);
-  LiberateMemory((void **) &buffer);
+    MagickFreeMemory(pcd_table[i]);
+  MagickFreeMemory(buffer);
   return(True);
 }
 
@@ -408,7 +406,7 @@ static Image *OverviewImage(const ImageInfo *image_info,Image *image,
   montage_image=MontageImages(image,montage_info,exception);
   DestroyMontageInfo(montage_info);
   if (montage_image == (Image *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   DestroyImage(image);
   return(montage_image);
 }
@@ -469,21 +467,21 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   /*
     Determine if this is a PCD file.
   */
-  header=(unsigned char *) AcquireMemory(3*0x800);
+  header=MagickAllocateMemory(unsigned char *,3*0x800);
   if (header == (unsigned char *) NULL)
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   count=ReadBlob(image,3*0x800,(char *) header);
   overview=LocaleNCompare((char *) header,"PCD_OPA",7) == 0;
   if ((count == 0) ||
       ((LocaleNCompare((char *) header+0x800,"PCD",3) != 0) && !overview))
-    ThrowReaderException(CorruptImageError,"NotAPCDImageFile",image);
+    ThrowReaderException(CorruptImageError,ImproperImageHeader,image);
   rotate=header[0x0e02] & 0x03;
   number_images=(header[10] << 8) | header[11];
-  LiberateMemory((void **) &header);
+  MagickFreeMemory(header);
   /*
     Determine resolution by subimage specification.
   */
@@ -528,12 +526,12 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Allocate luma and chroma memory.
   */
   number_pixels=image->columns*image->rows;
-  chroma1=(unsigned char *) AcquireMemory(number_pixels+1);
-  chroma2=(unsigned char *) AcquireMemory(number_pixels+1);
-  luma=(unsigned char *) AcquireMemory(number_pixels+1);
+  chroma1=MagickAllocateMemory(unsigned char *,number_pixels+1);
+  chroma2=MagickAllocateMemory(unsigned char *,number_pixels+1);
+  luma=MagickAllocateMemory(unsigned char *,number_pixels+1);
   if ((chroma1 == (unsigned char *) NULL) ||
       (chroma2 == (unsigned char *) NULL) || (luma == (unsigned char *) NULL))
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   /*
     Advance to image data.
   */
@@ -630,9 +628,9 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (!MagickMonitor(LoadImageText,j-1,number_images,&image->exception))
           break;
       }
-      LiberateMemory((void **) &chroma2);
-      LiberateMemory((void **) &chroma1);
-      LiberateMemory((void **) &luma);
+      MagickFreeMemory(chroma2);
+      MagickFreeMemory(chroma1);
+      MagickFreeMemory(luma);
       while (image->previous != (Image *) NULL)
         image=image->previous;
       overview_image=OverviewImage(image_info,image,exception);
@@ -717,16 +715,16 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (!MagickMonitor(LoadImageText,y,image->rows,exception))
         break;
   }
-  LiberateMemory((void **) &chroma2);
-  LiberateMemory((void **) &chroma1);
-  LiberateMemory((void **) &luma);
+  MagickFreeMemory(chroma2);
+  MagickFreeMemory(chroma1);
+  MagickFreeMemory(luma);
   if (LocaleCompare(image_info->magick,"PCDS") == 0)
     image->colorspace=sRGBColorspace;
   else
     image->colorspace=YCCColorspace;
   TransformColorspace(image,RGBColorspace);
   if (EOFBlob(image))
-    ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+    ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
       image->filename);
   CloseBlob(image);
   if ((rotate == 1) || (rotate == 3))
@@ -1003,7 +1001,7 @@ static unsigned int WritePCDImage(const ImageInfo *image_info,Image *image)
   */
   status=OpenBlob(image_info,pcd_image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",pcd_image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,pcd_image);
   TransformColorspace(pcd_image,RGBColorspace);
   /*
     Write PCD image header.

@@ -68,7 +68,7 @@
 MagickExport void Contrast(const int sign,Quantum *red,Quantum *green,
   Quantum *blue)
 {
-  const static double
+  static const double
     alpha=0.5+MagickEpsilon;
 
   double
@@ -158,18 +158,19 @@ MagickExport double ExpandAffine(const AffineMatrix *affine)
 %
 %
 */
+#define NoiseScale     ((double) MaxRGB/255)
+#define NoiseEpsilon   1.0e-5
+#define SigmaUniform   4.0*NoiseScale
+#define SigmaGaussian  4.0*NoiseScale
+#define SigmaImpulse   0.10
+#define SigmaLaplacian 10.0*NoiseScale
+#define SigmaMultiplicativeGaussian  0.5*NoiseScale
+#define SigmaPoisson   0.05
+#define TauGaussian    20.0*NoiseScale
+
 MagickExport Quantum GenerateNoise(const Quantum pixel,
   const NoiseType noise_type)
 {
-#define NoiseEpsilon  1.0e-5
-#define SigmaUniform  4.0
-#define SigmaGaussian  4.0
-#define SigmaImpulse  0.10
-#define SigmaLaplacian 10.0
-#define SigmaMultiplicativeGaussian  0.5
-#define SigmaPoisson  0.05
-#define TauGaussian  20.0
-
   double
     alpha,
     beta,
@@ -248,15 +249,11 @@ MagickExport Quantum GenerateNoise(const Quantum pixel,
         beta=(double) rand()/RAND_MAX;
         alpha=alpha*beta;
       }
-      value=i/SigmaPoisson;
+      value=(i/SigmaPoisson)*NoiseScale;
       break;
     }
   }
-  if (value < 0.0)
-    return(0);
-  if (value > MaxRGB)
-    return(MaxRGB);
-  return((Quantum) (value+0.5));
+  return (RoundSignedToQuantum(value));
 }
 
 /*

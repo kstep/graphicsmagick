@@ -18,7 +18,7 @@
 %                     LLLLL  A   A  BBBB   EEEEE  LLLLL                       %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                      Read ASCII String As An Image                          %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -107,7 +107,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   draw_info->fill=image_info->pen;
   draw_info->text=TranslateText(image_info,image,image_info->filename);
   if (draw_info->text == (char *) NULL)
-    ThrowReaderException(CoderError,"UnableToTranslateText",image);
+    ThrowReaderException(CoderError,UnableToTranslateText,image);
   if ((image->columns != 0) || (image->rows != 0))
     {
       /*
@@ -137,7 +137,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
     }
   status=GetTypeMetrics(image,draw_info,&metrics);
   if (status == False)
-    ThrowReaderException(TypeError,"UnableToGetTypeMetrics",image);
+    ThrowReaderException(TypeError,UnableToGetTypeMetrics,image);
   FormatString(geometry,"+%g+%g",metrics.max_advance/4,metrics.ascent);
   if (image->columns == 0)
     image->columns=(unsigned long)

@@ -18,7 +18,7 @@
 %                              T    X   X    T                                %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                      Render Text Onto A Canvas Image.                       %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -50,6 +50,108 @@
 */
 static unsigned int
   WriteTXTImage(const ImageInfo *,Image *);
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   I s T X T                                                                 %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method IsTXT returns True if the image format type, identified by the
+%  magick string, is TXT.
+%
+%  The format of the IsTXT method is:
+%
+%      unsigned int IsTXT(const unsigned char *magick,const size_t length)
+%
+%  A description of each parameter follows:
+%
+%    o status:  Method IsTXT returns True if the image format type is TXT.
+%
+%    o magick: This string is generally the first few bytes of an image file
+%      or blob.
+%
+%    o length: Specifies the length of the magick string.
+%
+%
+*/
+static unsigned int IsTXT(const unsigned char *magick,const size_t length)
+{
+  if (length < 22)
+    return(False);
+  {
+    unsigned long
+      column,
+      row;
+
+    unsigned int
+      red,
+      green,
+      blue,
+      opacity,
+      hex_red,
+      hex_green,
+      hex_blue,
+      hex_opacity;
+
+    int
+      count;
+
+    char
+      buffer[MaxTextExtent];
+
+    memset((void *)buffer,0,MaxTextExtent);
+    memcpy((void *)buffer,(const void *)magick,Min(MaxTextExtent,length));
+
+    count=sscanf(buffer,"%lu,%lu: (%u, %u, %u) #%02X%02X%02X",
+                 &column, &row, &red, &green, &blue, &hex_red, &hex_green,
+                 &hex_blue);
+    if ((count == 8) && (column == 0) && (row == 0) && (red == hex_red) &&
+        (green == hex_green) && (blue == hex_blue))
+      return(True);
+
+    count=sscanf(buffer,"%lu,%lu: (%u, %u, %u) #%04X%04X%04X",
+                 &column, &row, &red, &green, &blue, &hex_red, &hex_green,
+                 &hex_blue);
+    if ((count == 8) && (column == 0) && (row == 0) && (red == hex_red) &&
+        (green == hex_green) && (blue == hex_blue))
+      return(True);
+
+    count=sscanf(buffer,"%lu,%lu: (%u, %u, %u) #%08X%08X%08X",
+                 &column, &row, &red, &green, &blue, &hex_red, &hex_green,
+                 &hex_blue);
+    if ((count == 8) && (column == 0) && (row == 0) && (red == hex_red) &&
+        (green == hex_green) && (blue == hex_blue))
+      return(True);
+
+    count=sscanf(buffer,"%lu,%lu: (%u, %u, %u, %u) #%02X%02X%02X%02X",
+                 &column, &row, &red, &green, &blue, &opacity, &hex_red,
+                 &hex_green, &hex_blue, &hex_opacity);
+    if ((count == 10) && (column == 0) && (row == 0) && (red == hex_red) &&
+        (green == hex_green) && (blue == hex_blue) && (opacity == hex_opacity))
+      return(True);
+
+    count=sscanf(buffer,"%lu,%lu: (%u, %u, %u, %u) #%04X%04X%04X%04X",
+                 &column, &row, &red, &green, &blue, &opacity, &hex_red,
+                 &hex_green, &hex_blue, &hex_opacity);
+    if ((count == 10) && (column == 0) && (row == 0) && (red == hex_red) &&
+        (green == hex_green) && (blue == hex_blue) && (opacity == hex_opacity))
+      return(True);
+
+    count=sscanf(buffer,"%lu,%lu: (%u, %u, %u, %u) #%08X%08X%08X%08X",
+                 &column, &row, &red, &green, &blue, &opacity, &hex_red,
+                 &hex_green, &hex_blue, &hex_opacity);
+    if ((count == 10) && (column == 0) && (row == 0) && (red == hex_red) &&
+        (green == hex_green) && (blue == hex_blue) && (opacity == hex_opacity))
+      return(True);
+  }
+  return(False);
+}
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -124,7 +226,7 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   /*
     Set the page geometry.
   */
@@ -179,11 +281,17 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) CloneString(&draw_info->geometry,geometry);
   status=GetTypeMetrics(image,draw_info,&metrics);
   if (status == False)
-    ThrowReaderException(TypeError,"UnableToGetTypeMetrics",image);
+    ThrowReaderException(TypeError,UnableToGetTypeMetrics,image);
   (void) strncpy(filename,image_info->filename,MaxTextExtent-1);
   if (draw_info->text != '\0')
     *draw_info->text='\0';
   p=ReadBlobString(image,text);
+
+  if (IsTXT((unsigned char *)p,strlen(p)))
+    {
+      ThrowReaderException(CoderError,ImageTypeNotSupported,image);
+    }
+
   for (offset=2*page.y; p != (char *) NULL; )
   {
     /*
@@ -284,6 +392,7 @@ ModuleExport void RegisterTXTImage(void)
   entry->description=AcquireString("Text");
   entry->module=AcquireString("TXT");
   (void) RegisterMagickInfo(entry);
+
   entry=SetMagickInfo("TXT");
   entry->decoder=(DecoderHandler) ReadTXTImage;
   entry->encoder=(EncoderHandler) WriteTXTImage;
@@ -349,7 +458,8 @@ ModuleExport void UnregisterTXTImage(void)
 static unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
 {
   char
-    buffer[MaxTextExtent];
+    buffer[MaxTextExtent],
+    tuple[MaxTextExtent];
 
   long
     y;
@@ -375,7 +485,7 @@ static unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   scene=0;
   do
   {
@@ -390,26 +500,14 @@ static unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
         break;
       for (x=0; x < (long) image->columns; x++)
       {
-        if (image->matte)
-          {
-            FormatString(buffer,"%ld,%ld: %u,%u,%u,%u ",x,y,
-              p->red,p->green,p->blue,p->opacity);
-            (void) WriteBlobString(image,buffer);
-          }
-        else
-          {
-            FormatString(buffer,"%ld,%ld: %u,%u,%u ",x,y,
-              p->red,p->green,p->blue);
-            (void) WriteBlobString(image,buffer);
-            (void) QueryColorname(image,p,SVGCompliance,buffer,
-              &image->exception);
-            (void) WriteBlobString(image,buffer);
-          }
-        (void) WriteBlobByte(image,'\n');
-        if (image->previous == (Image *) NULL)
-          if (QuantumTick(y,image->rows))
-            if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
-              break;
+        FormatString(buffer,"%ld,%ld: ",x,y);
+        (void) WriteBlobString(image,buffer);
+        GetColorTuple(p,image->depth,image->matte,False,tuple);
+        (void) strcat(tuple," ");
+        (void) WriteBlobString(image,tuple);
+        (void) QueryColorname(image,p,SVGCompliance,tuple,&image->exception);
+        (void) WriteBlobString(image,tuple);
+        (void) WriteBlobString(image,"\n");
         p++;
       }
     }

@@ -40,19 +40,38 @@
 #endif
 #include "magick/blob.h"
 #include "magick/log.h"
+#include "magick/semaphore.h"
 #include "magick/utility.h"
 
 /*
   Define declarations.
 */
-#define LogFilename  "log.mgk"
+#define MagickLogFilename  "log.mgk"
 
 /*
   Typedef declarations.
 */
+typedef enum
+{ 
+  DisabledOutput = 0x0000,
+  UndefinedOutput = 0x0000,
+  StdoutOutput = 0x0001,
+  StderrOutput = 0x0002,
+  XMLFileOutput = 0x0004,
+  TXTFileOutput = 0x0008,
+  Win32DebugOutput = 0x0010,
+  Win32EventlogOutput = 0x0020
+} LogOutputType;
+
+typedef struct _OutputInfo
+{
+  char *name;
+  LogOutputType mask;
+} OutputInfo;
+
 typedef struct _LogInfo
 {
-  const char
+  char
     *path,
     *filename;
 
@@ -60,16 +79,21 @@ typedef struct _LogInfo
     generations,
     limit;
 
-  const char
+  char
     *format;
 
   FILE
     *file;
 
   unsigned long
-    events,
     generation,
     count;
+
+  LogEventType
+    events;
+
+  LogOutputType
+    output_type;
 
   TimerInfo
     timer;
@@ -77,8 +101,10 @@ typedef struct _LogInfo
 
 typedef struct _EventInfo
 {
-  char         *name;
-  LogEventType type;
+  char *name;
+  LogEventType mask;
+  int start_type;
+  int end_type;
 } EventInfo;
 
 /*
@@ -89,31 +115,71 @@ static const char
     "<?xml version=\"1.0\"?>"
     "<magicklog>"
     "  <log events=\"None\" />"
+#if defined(WIN32)
+    "  <log output=\"win32eventlog\" />"
+#else
     "  <log output=\"stdout\" />"
+#endif
     "  <log filename=\"Magick-%d.log\" />"
     "  <log generations=\"3\" />"
     "  <log limit=\"2000\" />"
-    "  <log format=\"%t %r %u %p %m/%f/%l/%d:\n  %e\" />"
+    "  <log format=\"%t %r %u %p %m/%f/%l/%d/%s:\n  %e\" />"
     "</magicklog>";
 
-static const EventInfo event_map[] =
+/* This table maps between masks and the various event id's that can occur
+   This following id's are not represented in this table yet, since each of
+   them would require a bit in the bitmask and none of these are actually
+   used in the code at this point.
+
+     DelegateBase
+     MissingDelegateBase
+     CorruptImageBase
+     FileOpenBase
+     StreamBase
+     ModuleBase
+     ImageBase
+     MonitorBase
+     RegistryBase
+
+ */
+static const EventInfo eventmask_map[] =
   {
-    { "none", NoEvents },
-    { "configure", ConfigureEvent },
-    { "annotate", AnnotateEvent },
-    { "render", RenderEvent },
-    { "transform", TransformEvent },
-    { "locale", LocaleEvent },
-    { "coder", CoderEvent },
-    { "x11", X11Event },
-    { "cache", CacheEvent },
-    { "blob", BlobEvent },
-    { "deprecate", DeprecateEvent },
-    { "user", UserEvent },
-    { "resource", ResourceEvent },
-    { "temporaryfile", TemporaryFileEvent },
-    { "all", AllEvents },
-    { 0, 0 }
+    { "none", NoEventsMask, 0 },
+    { "information", InformationEventMask, EventException, EventException+99 },
+    { "warning", WarningEventMask, WarningException, WarningException+99 },
+    { "error", ErrorEventMask, ErrorException, ErrorException+99 },
+    { "fatalerror", FatalErrorEventMask, FatalErrorException, FatalErrorException+99 },
+    { "configure", ConfigureEventMask, ConfigureBase, ConfigureBase },
+    { "annotate", AnnotateEventMask, AnnotateBase, AnnotateBase },
+    { "render", RenderEventMask, RenderBase, RenderBase },
+    { "transform", TransformEventMask, TransformBase, TransformBase },
+    { "locale", LocaleEventMask, LocaleBase, LocaleBase },
+    { "coder", CoderEventMask, CoderBase, CoderBase },
+    { "x11", X11EventMask, X11Base, UserBase },
+    { "cache", CacheEventMask, CacheBase, CacheBase },
+    { "blob", BlobEventMask, BlobBase, BlobBase },
+    { "deprecate", DeprecateEventMask, DeprecateBase, DeprecateBase },
+    { "user", UserEventMask, UserBase, UserBase },
+    { "resource", ResourceEventMask, ResourceBase, ResourceBase },
+    { "temporaryfile", TemporaryFileEventMask, TemporaryFileBase, TemporaryFileBase },
+    /* this one is actually not used anymore */
+    { "exception", ExceptionEventMask, ExceptionBase, ExceptionBase },
+    { "option", OptionEventMask, OptionBase, OptionBase },
+    { "all", AllEventsMask, 0 },
+    { 0, NoEventsMask }
+  };
+
+static const OutputInfo output_map[] =
+  {
+    { "none", UndefinedOutput },
+    { "disabled", DisabledOutput },
+    { "stdout", StdoutOutput },
+    { "stderr", StderrOutput },
+    { "xmlfile", XMLFileOutput },
+    { "txtfile", TXTFileOutput },
+    { "win32debug", Win32DebugOutput },
+    { "win32eventlog", Win32EventlogOutput },
+    { 0, UndefinedOutput }
   };
 
 /*
@@ -132,7 +198,7 @@ static SemaphoreInfo
   Forward declarations.
 */
 static unsigned int
-  ReadConfigureFile(const char *,const unsigned long,ExceptionInfo *);
+  ReadLogConfigureFile(const char *,const unsigned long,ExceptionInfo *);
 
 static void
   *LogToBlob(const char *,size_t *,ExceptionInfo *);
@@ -140,7 +206,7 @@ static void
 /*
   Parse an event specification string and return the equivalent bits.
 */
-static unsigned long ParseEvents(const char *event_string)
+static LogEventType ParseEvents(const char *event_string)
 {
   const char
     *p;
@@ -148,19 +214,20 @@ static unsigned long ParseEvents(const char *event_string)
   int
     i;
 
-  unsigned long
-    events=0;
+  LogEventType
+    events=NoEventsMask;
 
   for (p=event_string; p != 0; p=strchr(p,','))
     {
       while ((*p != 0) && (isspace((int)(*p)) || *p == ','))
         p++;
 
-      for (i=0; event_map[i].name != 0; i++)
+      for (i=0; eventmask_map[i].name != 0; i++)
         {
-          if (LocaleNCompare(p,event_map[i].name,strlen(event_map[i].name)) == 0)
+          if (LocaleNCompare(p,eventmask_map[i].name,
+                             strlen(eventmask_map[i].name)) == 0)
             {
-              events|=event_map[i].type;
+              events|=eventmask_map[i].mask;
               break;
             }
         }
@@ -190,172 +257,26 @@ static unsigned long ParseEvents(const char *event_string)
 MagickExport void DestroyLogInfo(void)
 {
   AcquireSemaphoreInfo(&log_semaphore);
-  if (log_info == (LogInfo *) NULL)
+  if (log_info != (LogInfo *) NULL)
     {
-      DestroySemaphoreInfo(&log_semaphore);
-      return;
+      if (log_info->file != (FILE *) NULL)
+        if ((log_info->file != stdout) && (log_info->file != stderr))
+          {
+            (void) fprintf(log_info->file,"</log>\n");
+            (void) fclose(log_info->file);
+          }
+      if (log_info->filename != (char *) NULL)
+        MagickFreeMemory(log_info->filename);
+      if (log_info->path != (char *) NULL)
+        MagickFreeMemory(log_info->path);
+      if (log_info->format != (char *) NULL)
+        MagickFreeMemory(log_info->format);
+      MagickFreeMemory(log_info);
     }
-  if (log_info->file != (FILE *) NULL)
-    if ((log_info->file != stdout) && (log_info->file != stderr))
-      {
-        (void) fprintf(log_info->file,"</log>\n");
-        (void) fclose(log_info->file);
-      }
-  if (log_info->filename != (char *) NULL)
-    LiberateMemory((void **) &log_info->filename);
-  if (log_info->path != (char *) NULL)
-    LiberateMemory((void **) &log_info->path);
-  if (log_info->format != (char *) NULL)
-    LiberateMemory((void **) &log_info->format);
-  LiberateMemory((void **) &log_info);
-  DestroySemaphoreInfo(&log_semaphore);
+  log_info=(LogInfo *) NULL;
   log_initialize=True;
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-+  G e t L o g B l o b                                                        %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  GetLogBlob() returns the specified configure file as a blob.
-%
-%  The format of the GetLogBlob method is:
-%
-%      void *GetLogBlob(const char *filename,ExceptionInfo *exception)
-%
-%  A description of each parameter follows:
-%
-%    o filename: The configure file name.
-%
-%    o path: return the full path information of the configure file.
-%
-%    o length: This pointer to a size_t integer sets the initial length of the
-%      blob.  On return, it reflects the actual length of the blob.
-%
-%    o exception: Return any errors or warnings in this structure.
-%
-%
-*/
-
-#if !defined(UseInstalledMagick) && defined(POSIX)
-static void ChopPathComponents(char *path,const unsigned long components)
-{
-  long
-    count;
-
-  register char
-    *p;
-
-  if (*path == '\0')
-    return;
-  p=path+strlen(path);
-  if (*p == *DirectorySeparator)
-    *p='\0';
-  for (count=0; (count < (long) components) && (p > path); p--)
-    if (*p == *DirectorySeparator)
-      {
-        *p='\0';
-        count++;
-      }
-}
-#endif
-
-static void *GetLogBlob(const char *filename,char *path,size_t *length,
-  ExceptionInfo *exception)
-{
-  assert(filename != (const char *) NULL);
-  assert(path != (char *) NULL);
-  assert(length != (size_t *) NULL);
-  assert(exception != (ExceptionInfo *) NULL);
-  (void) strncpy(path,filename,MaxTextExtent-1);
-#if defined(UseInstalledMagick)
-#if defined(MagickLibPath)
-  /*
-    Search hard coded paths.
-  */
-  FormatString(path,"%.1024s%.1024s",MagickLibPath,filename);
-  return(LogToBlob(path,length,exception));
-#endif
-#if defined(WIN32)
-  {
-    char
-      *key_value;
-
-    /*
-      Locate file via registry key.
-    */
-    key_value=NTRegistryKeyLookup("ConfigurePath");
-    if (key_value != (char *) NULL)
-      {
-        FormatString(path,"%.1024s%s%.1024s",key_value,DirectorySeparator,
-          filename);
-        return(LogToBlob(path,length,exception));
-      }
-  }
-#endif
-#else
-  if (*SetClientPath((char *) NULL) != '\0')
-    {
-#if defined(POSIX)
-      char
-        prefix[MaxTextExtent];
-
-      /*
-        Search based on executable directory if directory is known.
-      */
-      (void) strncpy(prefix,SetClientPath((char *) NULL),MaxTextExtent-1);
-      ChopPathComponents(prefix,1);
-      FormatString(path,"%.1024s/lib/%s/%.1024s",prefix,MagickLibSubdir,
-        filename);
-#else
-      FormatString(path,"%.1024s%s%.1024s",SetClientPath((char *) NULL),
-        DirectorySeparator,filename);
-#endif
-      if (IsAccessible(path))
-        return(LogToBlob(path,length,exception));
-    }
-  if (getenv("MAGICK_HOME") != (char *) NULL)
-    {
-      /*
-        Search MAGICK_HOME.
-      */
-#if defined(POSIX)
-      FormatString(path,"%.1024s/lib/%s/%.1024s",getenv("MAGICK_HOME"),
-        MagickLibSubdir,filename);
-#else
-      FormatString(path,"%.1024s%s%.1024s",getenv("MAGICK_HOME"),
-        DirectorySeparator,filename);
-#endif
-      if (IsAccessible(path))
-        return(LogToBlob(path,length,exception));
-    }
-  if (getenv("HOME") != (char *) NULL)
-    {
-      /*
-        Search $HOME/.magick.
-      */
-      FormatString(path,"%.1024s%s%s%.1024s",getenv("HOME"),
-        *getenv("HOME") == '/' ? "/.magick" : "",DirectorySeparator,filename);
-      if (IsAccessible(path))
-        return(LogToBlob(path,length,exception));
-    }
-  /*
-    Search current directory.
-  */
-  (void) strncpy(path,filename,MaxTextExtent-1);
-  if (IsAccessible(path))
-    return(LogToBlob(path,length,exception));
-#if defined(WIN32)
-  return(NTResourceToBlob(filename));
-#endif
-#endif
-  return((void *) NULL);
+  LiberateSemaphoreInfo(&log_semaphore);
+  DestroySemaphoreInfo(&log_semaphore);
 }
 
 /*
@@ -407,7 +328,7 @@ MagickExport unsigned int InitializeLogInfo(ExceptionInfo *exception)
       LiberateSemaphoreInfo(&log_semaphore);
 
       if (initialize == True)
-        (void) ReadConfigureFile(LogFilename,0,exception);
+        (void) ReadLogConfigureFile(MagickLogFilename,0,exception);
     }
   return(log_info != (LogInfo *) NULL);
 }
@@ -443,7 +364,7 @@ MagickExport unsigned int IsEventLogging(void)
       (void) InitializeLogInfo(&exception);
       DestroyExceptionInfo(&exception);
     }
-  return ((log_info != (LogInfo *) NULL) && (log_info->events != NoEvents));
+  return ((log_info != (LogInfo *) NULL) && (log_info->events != NoEventsMask));
 }
 
 /*
@@ -482,69 +403,32 @@ MagickExport unsigned int IsEventLogging(void)
 static void *LogToBlob(const char *filename,size_t *length,
   ExceptionInfo *exception)
 {
-  int
-    file;
-
-  ExtendedSignedIntegralType
-    offset;
-
   unsigned char
-    *blob;
+    *blob=0;
 
-  void
-    *map;
+  FILE
+    *file;
 
-  assert(filename != (const char *) NULL);
-  assert(exception != (ExceptionInfo *) NULL);
+  *length=0;
   SetExceptionInfo(exception,UndefinedException);
-  file=open(filename,O_RDONLY | O_BINARY,0777);
-  if (file == -1)
-    return((void *) NULL);
-  offset=MagickSeek(file,0,SEEK_END);
-  if ((offset < 0) || (offset != (size_t) offset))
+  file=fopen(filename,"rb");
+  if (file )
     {
-      (void) close(file);
-      return((void *) NULL);
-    }
-  (void) MagickSeek(file,0,SEEK_SET);
-  *length=(size_t) offset;
-  blob=(unsigned char *) AcquireMemory(*length+1);
-  if (blob == (unsigned char *) NULL)
-    {
-      (void) close(file);
-      return((void *) NULL);
-    }
-  map=MapBlob(file,ReadMode,0,*length);
-  if (map != (void *) NULL)
-    {
-      (void) memcpy(blob,map,*length);
-      UnmapBlob(map,*length);
-    }
-  else
-    {
-      ExtendedSignedIntegralType
-        count;
-
-      register size_t
-        i;
-
-      count=0;
-      for (i=0; i < *length; i+=count)
-      {
-        count=read(file,blob+i,*length-i);
-        if (count <= 0)
-          break;
-      }
-      if (i < *length)
+      (void) fseek(file,0L,SEEK_END);
+      *length=ftell(file);
+      if (*length > 0)
         {
-          (void) close(file);
-          LiberateMemory((void **) &blob);
-          return((void *) NULL);
+          (void) fseek(file,0L,SEEK_SET);
+          blob=MagickAllocateMemory(unsigned char *,*length+1);
+          if (blob)
+            {
+              *length=fread((void  *)blob, 1, *length, file);
+              blob[*length]='\0';
+            }
         }
+      (void) fclose(file);
     }
-  blob[*length]='\0';
-  (void) close(file);
-  return(blob);
+  return (blob);
 }
 
 /*
@@ -580,13 +464,18 @@ static void *LogToBlob(const char *filename,size_t *length,
 %
 %
 */
-MagickExport unsigned int LogMagickEvent(const LogEventType type,
+MagickExport unsigned int LogMagickEvent(const ExceptionType type,
   const char *module,const char *function,const unsigned long line,
   const char *format,...)
 {
   char
     *domain,
+    *severity,
+#if defined(WIN32)
+    nteventtype,
+#endif
     event[MaxTextExtent],
+    srcname[MaxTextExtent],
     timestamp[MaxTextExtent];
 
   double
@@ -607,26 +496,112 @@ MagickExport unsigned int LogMagickEvent(const LogEventType type,
 
   if (!IsEventLogging())
     return(False);
-  if (!(log_info->events & type))
-    return(True);
+
+  if (log_info->events != AllEventsMask)
+    {
+      int
+        i;
+      
+      unsigned int
+        enabled;
+      
+      /* first translate the base type of the event to a mask */
+      enabled=False;
+      for (i=0; eventmask_map[i].name != 0; i++)
+        {
+          /* if the range in the table is above 100 it represents raw
+             event id's. These entry types are to look for specific
+             severity codes.
+          */
+          if (eventmask_map[i].start_type > 99)
+            {
+              if ((type >= eventmask_map[i].start_type) &&
+                  (type <= eventmask_map[i].end_type))
+                {
+                  if (log_info->events & eventmask_map[i].mask)
+                    {
+                      enabled=True;
+                      break;
+                    }
+                }
+            }
+          else
+            {
+              /* these ranges are for id's with the severity stripped
+                 off and represent a category instead.
+              */
+              if (((type % 100) >= eventmask_map[i].start_type) &&
+                  ((type % 100) <= eventmask_map[i].end_type))
+                {
+                  if (log_info->events & eventmask_map[i].mask)
+                    {
+                      enabled=True;
+                      break;
+                    }
+                }
+            }
+        }
+      if (!enabled)
+        return(True);
+    }
+
+  /* fixup module info to just include the filename - and not the
+     whole path to the file. This makes the log huge for no good
+     reason */
+  GetPathComponent(module,TailPath,srcname);
+
   AcquireSemaphoreInfo(&log_semaphore);
-  switch (type)
+  switch (type % 100)
   {
-    case ConfigureEvent: domain=(char *) "Configure"; break;
-    case AnnotateEvent: domain=(char *) "Annotate"; break;
-    case RenderEvent: domain=(char *) "Render"; break;
-    case TransformEvent: domain=(char *) "Transform"; break;
-    case LocaleEvent: domain=(char *) "Locale"; break;
-    case CoderEvent: domain=(char *) "Coder"; break;
-    case X11Event: domain=(char *) "X11"; break;
-    case CacheEvent: domain=(char *) "Cache"; break;
-    case BlobEvent: domain=(char *) "Blob"; break;
-    case DeprecateEvent: domain=(char *) "Deprecate"; break;
-    case UserEvent: domain=(char *) "User"; break;
-    case ResourceEvent: domain=(char *) "Resource"; break;
-    case TemporaryFileEvent: domain=(char *) "TemporaryFile"; break;
+    case UndefinedException: domain=(char *) "Undefined"; break;
+    case ExceptionBase: domain=(char *) "Exception"; break;
+    case ResourceBase: domain=(char *) "Resource"; break;
+    /* case ResourceLimitBase: domain=(char *) "ResourceLimit"; break; */
+    case TypeBase: domain=(char *) "Type"; break;
+    /* case AnnotateBase: domain=(char *) "Annotate"; break; */
+    case OptionBase: domain=(char *) "Option"; break;
+    case DelegateBase: domain=(char *) "Delegate"; break;
+    case MissingDelegateBase: domain=(char *) "MissingDelegate"; break;
+    case CorruptImageBase: domain=(char *) "CorruptImage"; break;
+    case FileOpenBase: domain=(char *) "FileOpen"; break;
+    case BlobBase: domain=(char *) "Blob"; break;
+    case StreamBase: domain=(char *) "Stream"; break;
+    case CacheBase: domain=(char *) "Cache"; break;
+    case CoderBase: domain=(char *) "Coder"; break;
+    case ModuleBase: domain=(char *) "Module"; break;
+    case DrawBase: domain=(char *) "Draw"; break;
+    /* case RenderBase: domain=(char *) "Render"; break; */
+    case ImageBase: domain=(char *) "image"; break;
+    case TemporaryFileBase: domain=(char *) "TemporaryFile"; break;
+    case TransformBase: domain=(char *) "Transform"; break;
+    case XServerBase: domain=(char *) "XServer"; break;
+    case X11Base: domain=(char *) "X11"; break;
+    case UserBase: domain=(char *) "User"; break;
+    case MonitorBase: domain=(char *) "Monitor"; break;
+    case LocaleBase: domain=(char *) "Locale"; break;
+    case DeprecateBase: domain=(char *) "Deprecate"; break;
+    case RegistryBase: domain=(char *) "Registry"; break;
+    case ConfigureBase: domain=(char *) "Configure"; break;
     default: domain=(char *) "UnknownEvent"; break;
   }
+  switch ((type / 100) * 100)
+  {
+    case EventException: severity=(char *) "Event"; break;
+    case WarningException: severity=(char *) "Warning"; break;
+    case ErrorException: severity=(char *) "Error"; break;
+    case FatalErrorException: severity=(char *) "FatalError"; break;
+    default: severity=(char *) "Unknown"; break;
+  }
+#if defined(WIN32)
+  switch ((type / 100) * 100)
+  {
+    case EventException: nteventtype=EVENTLOG_INFORMATION_TYPE; break;
+    case WarningException: nteventtype=EVENTLOG_WARNING_TYPE; break;
+    case ErrorException: nteventtype=EVENTLOG_ERROR_TYPE; break;
+    case FatalErrorException: nteventtype=EVENTLOG_ERROR_TYPE; break;
+    default: nteventtype=EVENTLOG_INFORMATION_TYPE; break;
+  }
+#endif
   va_start(operands,format);
 #if defined(HAVE_VSNPRINTF)
   (void) vsnprintf(event,MaxTextExtent,format,operands);
@@ -642,17 +617,22 @@ MagickExport unsigned int LogMagickEvent(const LogEventType type,
   time_meridian=localtime(&seconds);
   elapsed_time=GetElapsedTime(&log_info->timer);
   user_time=GetUserTime(&log_info->timer);
-  if ((log_info->file != stdout) && (log_info->file != stderr))
+  ContinueTimer((TimerInfo *) &log_info->timer);
+  FormatString(timestamp,"%04d%02d%02d%02d%02d%02d",time_meridian->tm_year+
+    1900,time_meridian->tm_mon+1,time_meridian->tm_mday,
+    time_meridian->tm_hour,time_meridian->tm_min,time_meridian->tm_sec);
+  if (log_info->output_type & XMLFileOutput)
     {
       /*
         Log to a file in the XML format.
       */
       log_info->count++;
-      if (log_info->count == log_info->limit)
+      if (log_info->count >= log_info->limit)
         {
           (void) fprintf(log_info->file,"</log>\n");
           (void) fclose(log_info->file);
           log_info->file=(FILE *) NULL;
+          log_info->count=0;
         }
       if (log_info->file == (FILE *) NULL)
         {
@@ -660,20 +640,19 @@ MagickExport unsigned int LogMagickEvent(const LogEventType type,
             filename[MaxTextExtent];
 
           FormatString(filename,log_info->filename,
-            log_info->generation % log_info->generations);
+            log_info->generation);
           log_info->file=fopen(filename,"w");
           if (log_info->file == (FILE *) NULL)
             {
               LiberateSemaphoreInfo(&log_semaphore);
               return(False);
             }
-          log_info->generation++;
           (void) fprintf(log_info->file,"<?xml version=\"1.0\"?>\n");
           (void) fprintf(log_info->file,"<log>\n");
+          log_info->generation++;
+          if (log_info->generation >= log_info->generations)
+            log_info->generation=0;
         }
-      FormatString(timestamp,"%04d%02d%02d%02d%02d%02d",time_meridian->tm_year+
-        1900,time_meridian->tm_mon+1,time_meridian->tm_mday,
-        time_meridian->tm_hour,time_meridian->tm_min,time_meridian->tm_sec);
       (void) fprintf(log_info->file,"<record>\n");
       (void) fprintf(log_info->file,"  <timestamp>%.1024s</timestamp>\n",
         timestamp);
@@ -683,113 +662,197 @@ MagickExport unsigned int LogMagickEvent(const LogEventType type,
       (void) fprintf(log_info->file,"  <user-time>%0.3f</user-time>\n",
         user_time);
       (void) fprintf(log_info->file,"  <pid>%ld</pid>\n",(long) getpid());
-      (void) fprintf(log_info->file,"  <module>%.1024s</module>\n",module);
+      (void) fprintf(log_info->file,"  <module>%.1024s</module>\n",srcname);
       (void) fprintf(log_info->file,"  <function>%.1024s</function>\n",
         function);
       (void) fprintf(log_info->file,"  <line>%lu</line>\n",line);
       (void) fprintf(log_info->file,"  <domain>%.1024s</domain>\n",domain);
+      (void) fprintf(log_info->file,"  <severity>%.1024s</severity>\n",severity);
       (void) fprintf(log_info->file,"  <event>%.1024s</event>\n",event);
       (void) fprintf(log_info->file,"</record>\n");
       (void) fflush(log_info->file);
-      ContinueTimer((TimerInfo *) &log_info->timer);
       LiberateSemaphoreInfo(&log_semaphore);
       return(True);
     }
-  /*
-    Log to stdout in a "human readable" format.
-  */
-  for (p=log_info->format; *p != '\0'; p++)
-  {
-    /*
-      Process formatting characters in text.
-    */
-    if ((*p == '\\') && (*(p+1) == 'r'))
-      {
-        (void) fprintf(stdout,"\r");
-        p++;
-        continue;
-      }
-    if ((*p == '\\') && (*(p+1) == 'n'))
-      {
-        (void) fprintf(stdout,"\n");
-        p++;
-        continue;
-      }
-    if (*p != '%')
-      {
-        (void) fprintf(stdout,"%c",*p);
-        continue;
-      }
-    p++;
-    switch (*p)
+  if (log_info->output_type & TXTFileOutput)
     {
-      case 'd':
-      {
-        (void) fprintf(stdout,"%.1024s",domain);
-        break;
-      }
-      case 'e':
-      {
-        (void) fprintf(stdout,"%.1024s",event);
-        break;
-      }
-      case 'f':
-      {
-        (void) fprintf(stdout,"%.1024s",function);
-        break;
-      }
-      case 'l':
-      {
-        (void) fprintf(stdout,"%lu",line);
-        break;
-      }
-      case 'm':
-      {
-        register const char
-          *p;
+      /*
+        Log to a file in the TXT format.
+      */
+      log_info->count++;
+      if (log_info->count >= log_info->limit)
+        {
+          (void) fclose(log_info->file);
+          log_info->file=(FILE *) NULL;
+          log_info->count=0;
+        }
+      if (log_info->file == (FILE *) NULL)
+        {
+          char
+            filename[MaxTextExtent];
 
-        for (p=module+strlen(module)-1; p > module; p--)
-          if (*p == *DirectorySeparator)
+          FormatString(filename,log_info->filename,
+            log_info->generation);
+          log_info->file=fopen(filename,"w");
+          if (log_info->file == (FILE *) NULL)
             {
-              p++;
-              break;
+              LiberateSemaphoreInfo(&log_semaphore);
+              return(False);
             }
-        (void) fprintf(stdout,"%.1024s",p);
-        break;
-      }
-      case 'p':
-      {
-        (void) fprintf(stdout,"%ld",(long) getpid());
-        break;
-      }
-      case 'r':
-      {
-        (void) fprintf(stdout,"%ld:%02ld",(long) (elapsed_time/60.0),
-          (long) ceil(fmod(elapsed_time,60.0)));
-        break;
-      }
-      case 't':
-      {
-        (void) fprintf(stdout,"%02d:%02d:%02d",time_meridian->tm_hour,
-          time_meridian->tm_min,time_meridian->tm_sec);
-        break;
-      }
-      case 'u':
-      {
-        (void) fprintf(stdout,"%0.3fu",user_time);
-        break;
-      }
-      default:
-      {
-        (void) fprintf(stdout,"%%");
-        (void) fprintf(stdout,"%c",*p);
-        break;
-      }
+          log_info->generation++;
+          if (log_info->generation >= log_info->generations)
+            log_info->generation=0;
+        }
+        (void) fprintf(log_info->file,
+          "%.1024s %ld:%02ld %0.3f %ld %.1024s %.1024s %lu %.1024s %.1024s %.1024s\n",
+            timestamp, (long) (elapsed_time/60.0), (long) ceil(fmod(elapsed_time,60.0)),
+              user_time, (long) getpid(), srcname, function, line, domain, severity, event);
+      (void) fflush(log_info->file);
+      LiberateSemaphoreInfo(&log_semaphore);
+      return(True);
     }
-  }
-  (void) fprintf(stdout,"\n");
-  (void) fflush(stdout);
-  ContinueTimer((TimerInfo *) &log_info->timer);
+#if defined(WIN32)
+  if (log_info->output_type & Win32DebugOutput)
+    {
+      char
+        buffer[MaxTextExtent];
+
+      FormatString(buffer,
+        "%.1024s %ld:%02ld %0.3f %ld %.1024s %.1024s %lu %.1024s %.1024s %.1024s\n",
+          timestamp, (long) (elapsed_time/60.0), (long) ceil(fmod(elapsed_time,60.0)),
+            user_time, (long) getpid(), srcname, function, line, domain, severity, event);
+      OutputDebugString(buffer);
+    }
+  if (log_info->output_type & Win32EventlogOutput)
+    {
+#define LOGGING_ERROR_CODE 0
+      char
+        buffer[MaxTextExtent],
+        *szList[1];
+
+      HANDLE
+        hSource;
+
+      FormatString(buffer,
+        "%.1024s %ld:%02ld %0.3f %ld %.1024s %.1024s %lu %.1024s %.1024s %.1024s\n",
+          timestamp, (long) (elapsed_time/60.0), (long) ceil(fmod(elapsed_time,60.0)),
+            user_time, (long) getpid(), srcname, function, line, domain, severity, event);
+      hSource = RegisterEventSource(NULL, "GraphicsMagick");
+      if (hSource != NULL)
+        {
+          szList[0]=buffer;
+          ReportEvent(hSource,nteventtype,0,LOGGING_ERROR_CODE,NULL,1,0,szList,NULL);
+          DeregisterEventSource(hSource);
+        }
+    }
+#endif
+  if ((log_info->output_type & StdoutOutput) || (log_info->output_type & StderrOutput))
+    {
+      FILE
+        *file;
+      /*
+        Log to stdout in a "human readable" format.
+      */
+      file = stdout;
+      if (log_info->output_type & StderrOutput)
+        file = stderr;
+      for (p=log_info->format; *p != '\0'; p++)
+      {
+        /*
+          Process formatting characters in text.
+        */
+        if ((*p == '\\') && (*(p+1) == 'r'))
+          {
+            (void) fprintf(file,"\r");
+            p++;
+            continue;
+          }
+        if ((*p == '\\') && (*(p+1) == 'n'))
+          {
+            (void) fprintf(file,"\n");
+            p++;
+            continue;
+          }
+        if (*p != '%')
+          {
+            (void) fprintf(file,"%c",*p);
+            continue;
+          }
+        p++;
+        switch (*p)
+        {
+          case 'd':
+          {
+            (void) fprintf(file,"%.1024s",domain);
+            break;
+          }
+          case 'e':
+          {
+            (void) fprintf(file,"%.1024s",event);
+            break;
+          }
+          case 'f':
+          {
+            (void) fprintf(file,"%.1024s",function);
+            break;
+          }
+          case 'l':
+          {
+            (void) fprintf(file,"%lu",line);
+            break;
+          }
+          case 'm':
+          {
+            register const char
+              *p;
+
+            for (p=srcname+strlen(srcname)-1; p > srcname; p--)
+              if (*p == *DirectorySeparator)
+                {
+                  p++;
+                  break;
+                }
+            (void) fprintf(file,"%.1024s",p);
+            break;
+          }
+          case 'p':
+          {
+            (void) fprintf(file,"%ld",(long) getpid());
+            break;
+          }
+          case 'r':
+          {
+            (void) fprintf(file,"%ld:%02ld",(long) (elapsed_time/60.0),
+              (long) ceil(fmod(elapsed_time,60.0)));
+            break;
+          }
+          case 's':
+          {
+            (void) fprintf(file,"%.1024s",severity);
+            break;
+          }
+          case 't':
+          {
+            (void) fprintf(file,"%02d:%02d:%02d",time_meridian->tm_hour,
+              time_meridian->tm_min,time_meridian->tm_sec);
+            break;
+          }
+          case 'u':
+          {
+            (void) fprintf(file,"%0.3fu",user_time);
+            break;
+          }
+          default:
+          {
+            (void) fprintf(file,"%%");
+            (void) fprintf(file,"%c",*p);
+            break;
+          }
+        }
+      }
+      (void) fprintf(file,"\n");
+      (void) fflush(file);
+    }
   LiberateSemaphoreInfo(&log_semaphore);
   return(True);
 }
@@ -805,16 +868,16 @@ MagickExport unsigned int LogMagickEvent(const LogEventType type,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  ReadConfigureFile() reads the log configuration file.
+%  ReadLogConfigureFile() reads the log configuration file.
 %
-%  The format of the ReadConfigureFile method is:
+%  The format of the ReadLogConfigureFile method is:
 %
-%      unsigned int ReadConfigureFile(const char *basename,
+%      unsigned int ReadLogConfigureFile(const char *basename,
 %        const unsigned long depth,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
-%    o status: ReadConfigureFile() returns True if at least one log entry
+%    o status: ReadLogConfigureFile() returns True if at least one log entry
 %      is defined otherwise False.
 %
 %    o basename:  The log configuration filename.
@@ -825,7 +888,7 @@ MagickExport unsigned int LogMagickEvent(const LogEventType type,
 %
 %
 */
-static unsigned int ReadConfigureFile(const char *basename,
+static unsigned int ReadLogConfigureFile(const char *basename,
   const unsigned long depth,ExceptionInfo *exception)
 {
   char
@@ -843,7 +906,7 @@ static unsigned int ReadConfigureFile(const char *basename,
   */
   (void) strcpy(path,basename);
   if (depth == 0)
-    xml=(char *) GetLogBlob(basename,path,&length,exception);
+    xml=(char *) GetConfigureBlob(basename,path,&length,exception);
   else
     xml=(char *) LogToBlob(basename,&length,exception);
   if (xml == (char *) NULL)
@@ -894,7 +957,7 @@ static unsigned int ReadConfigureFile(const char *basename,
                     (void) strcat(filename,DirectorySeparator);
                   (void) strncat(filename,token,MaxTextExtent-
                     strlen(filename)-1);
-                  (void) ReadConfigureFile(filename,depth+1,exception);
+                  (void) ReadLogConfigureFile(filename,depth+1,exception);
                 }
             }
         }
@@ -905,10 +968,10 @@ static unsigned int ReadConfigureFile(const char *basename,
         /*
           Allocate memory for the log list.
         */
-        log_info=(LogInfo *) AcquireMemory(sizeof(LogInfo));
+        log_info=MagickAllocateMemory(LogInfo *,sizeof(LogInfo));
         if (log_info == (LogInfo *) NULL)
-          MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-            "UnableToAllocateLogInfo");
+          MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+            UnableToAllocateLogInfo);
         (void) memset((void *) log_info,0,sizeof(LogInfo));
         log_info->path=AcquireString(path);
         GetTimerInfo((TimerInfo *) &log_info->timer);
@@ -968,18 +1031,22 @@ static unsigned int ReadConfigureFile(const char *basename,
       case 'O':
       case 'o':
       {
-        if (LocaleCompare((char *) keyword,"output") == 0)
+       if (LocaleCompare((char *) keyword,"output") == 0)
           {
-            if (LocaleCompare(token,"stderr") == 0)
-              {
-                log_info->file=stderr;
-                break;
-              }
-            if (LocaleCompare(token,"stdout") == 0)
-              {
-                log_info->file=stdout;
-                break;
-              }
+            int i;
+
+            for (i=0; output_map[i].name != 0; i++)
+            {
+              if (LocaleNCompare(token,output_map[i].name,strlen(output_map[i].name)) == 0)
+                {
+                  /* We do not OR these flags despite the fact that they are bit masks
+                     because they are still mutually exclusive implementations. Asking for
+                     XML and TXT format files each use the file handle field and others to
+                     do their work, so they can not be used together */
+                  log_info->output_type=output_map[i].mask;
+                  break;
+                }
+            }
             break;
           }
         break;
@@ -988,8 +1055,8 @@ static unsigned int ReadConfigureFile(const char *basename,
         break;
     }
   }
-  LiberateMemory((void **) &token);
-  LiberateMemory((void **) &xml);
+  MagickFreeMemory(token);
+  MagickFreeMemory(xml);
   if (log_info == (LogInfo *) NULL)
     return(False);
   return(True);
@@ -1036,9 +1103,9 @@ MagickExport unsigned long SetLogEventMask(const char *events)
   if (log_info == (LogInfo *) NULL)
     {
       LiberateSemaphoreInfo(&log_semaphore);
-      return(NoEvents);
+      return(NoEventsMask);
     }
-  log_info->events=NoEvents;
+  log_info->events=NoEventsMask;
   if (events == (const char *) NULL)
     {
       LiberateSemaphoreInfo(&log_semaphore);
@@ -1077,7 +1144,7 @@ MagickExport void SetLogFormat(const char *format)
 {
   AcquireSemaphoreInfo(&log_semaphore);
   if (log_info->format != (char *) NULL)
-    LiberateMemory((void **) &log_info->format);
+    MagickFreeMemory(log_info->format);
   log_info->format=AcquireString(format);
   LiberateSemaphoreInfo(&log_semaphore);
 }

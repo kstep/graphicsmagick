@@ -18,7 +18,7 @@
 %                            P      DDDD   F                                  %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                  Read/Write Portable Document Format.                       %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -139,7 +139,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if(!AcquireTemporaryFileName(filename))
-    ThrowBinaryException(FileOpenError,"UnableToCreateTemporaryFile",
+    ThrowBinaryException(FileOpenError,UnableToCreateTemporaryFile,
       filename);
   huffman_image=CloneImage(image,0,0,True,&image->exception);
   if (huffman_image == (Image *) NULL)
@@ -157,7 +157,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   if (tiff == (TIFF *) NULL)
     {
       LiberateTemporaryFile(filename);
-      ThrowBinaryException(FileOpenError,"UnableToOpenFile",
+      ThrowBinaryException(FileOpenError,UnableToOpenFile,
         image_info->filename)
     }
   /*
@@ -168,12 +168,12 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
   for (i=1; i < (long) TIFFNumberOfStrips(tiff); i++)
     if (byte_count[i] > strip_size)
       strip_size=byte_count[i];
-  buffer=(unsigned char *) AcquireMemory(strip_size);
+  buffer=MagickAllocateMemory(unsigned char *,strip_size);
   if (buffer == (unsigned char *) NULL)
     {
       TIFFClose(tiff);
       LiberateTemporaryFile(filename);
-      ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+      ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
         (char *) NULL)
     }
   /*
@@ -186,7 +186,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
     if (fillorder == FILLORDER_LSB2MSB)
       TIFFReverseBits(buffer,count);
   }
-  LiberateMemory((void **) &buffer);
+  MagickFreeMemory(buffer);
   TIFFClose(tiff);
   LiberateTemporaryFile(filename);
   return(True);
@@ -197,7 +197,7 @@ static unsigned int Huffman2DEncodeImage(const ImageInfo *image_info,
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  ThrowBinaryException(MissingDelegateError,"TIFFLibraryIsNotAvailable",image->filename);
+  ThrowBinaryException(MissingDelegateError,TIFFLibraryIsNotAvailable,image->filename);
 }
 #endif
 
@@ -347,7 +347,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   /*
     Open temporary output file.
   */
@@ -427,7 +427,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (ferror(file))
     {
       (void) fclose(file);
-      ThrowReaderException(CorruptImageError,"AnErrorHasOccurredWritingToFile",
+      ThrowReaderException(CorruptImageError,AnErrorHasOccurredWritingToFile,
         image)
     }
   (void) fclose(file);
@@ -459,7 +459,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       DestroyImageInfo(clone_info);
       LiberateTemporaryFile(postscript_filename);
-      ThrowReaderException(DelegateError,"PostscriptDelegateFailed",image)
+      ThrowReaderException(DelegateError,PostscriptDelegateFailed,image)
     }
   DestroyImage(image);
   clone_info->blob=(void *) NULL;
@@ -469,7 +469,7 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) remove(clone_info->filename);
   DestroyImageInfo(clone_info);
   if (image == (Image *) NULL)
-    ThrowReaderException(DelegateError,"DelegateFailed",image);
+    ThrowReaderException(DelegateError,DelegateFailed,image);
   do
   {
     (void) strcpy(image->magick,"PDF");
@@ -721,7 +721,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   compression=image->compression;
   if (image_info->compression != UndefinedCompression)
     compression=image_info->compression;
@@ -731,8 +731,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     case JPEGCompression:
     {
       compression=RLECompression;
-      ThrowException(&image->exception,MissingDelegateError,
-        "JPEGLibraryIsNotAvailable",image->filename);
+      ThrowException(&image->exception,MissingDelegateError,JPEGLibraryIsNotAvailable,image->filename);
       break;
     }
 #endif
@@ -740,8 +739,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     case LZWCompression:
     {
       compression=RLECompression;
-      ThrowException(&image->exception,MissingDelegateError,
-        "LZWEncodingNotEnabled",image->filename);
+      ThrowException(&image->exception,MissingDelegateError,LZWEncodingNotEnabled,image->filename);
       break;
     }
 #endif
@@ -749,8 +747,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     case ZipCompression:
     {
       compression=RLECompression;
-      ThrowException(&image->exception,MissingDelegateError,
-        "ZipLibraryIsNotAvailable",image->filename);
+      ThrowException(&image->exception,MissingDelegateError,ZipLibraryIsNotAvailable,image->filename);
       break;
     }
 #endif
@@ -760,10 +757,10 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   /*
     Allocate X ref memory.
   */
-  xref=(ExtendedSignedIntegralType *)
-    AcquireMemory(2048*sizeof(ExtendedSignedIntegralType));
+  xref=MagickAllocateMemory(ExtendedSignedIntegralType *,
+    2048*sizeof(ExtendedSignedIntegralType));
   if (xref == (ExtendedSignedIntegralType *) NULL)
-    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
   memset(xref,0,2048*sizeof(ExtendedSignedIntegralType));
   /*
     Write Info object.
@@ -829,10 +826,10 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlobString(image,buffer);
         kid_image=kid_image->next;
       }
-      ReacquireMemory((void **) &xref,
+      MagickReallocMemory(xref,
         (count+2048)*sizeof(ExtendedSignedIntegralType));
       if (xref == (ExtendedSignedIntegralType *) NULL)
-        ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
+        ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
     }
   (void) WriteBlobString(image,"]\n");
   FormatString(buffer,"/Count %lu\n",(count-pages_id)/ObjectsPerImage);
@@ -947,9 +944,9 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
           FormatString(buffer,"(%.1024s) Tj\n",labels[i]);
           (void) WriteBlobString(image,buffer);
           (void) WriteBlobString(image,"ET\n");
-          LiberateMemory((void **) &labels[i]);
+          MagickFreeMemory(labels[i]);
         }
-        LiberateMemory((void **) &labels);
+        MagickFreeMemory(labels);
       }
     FormatString(buffer,"%g 0 0 %g %ld %ld cm\n",x_scale,y_scale,geometry.x,
       geometry.y);
@@ -1084,12 +1081,12 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             */
             jpeg_image=CloneImage(image,0,0,True,&image->exception);
             if (jpeg_image == (Image *) NULL)
-              ThrowWriterException(CoderError,image->exception.reason,image);
+              ThrowWriterException2(CoderError,image->exception.reason,image);
             (void) strcpy(jpeg_image->magick,"JPEG");
             blob=ImageToBlob(image_info,jpeg_image,&length,&image->exception);
             (void) WriteBlob(image,length,blob);
             DestroyImage(jpeg_image);
-            LiberateMemory((void **) &blob);
+            MagickFreeMemory(blob);
             break;
           }
           case RLECompression:
@@ -1099,9 +1096,9 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               Allocate pixel array.
             */
             length=number_pixels;
-            pixels=(unsigned char *) AcquireMemory(length);
+            pixels=MagickAllocateMemory(unsigned char *,length);
             if (pixels == (unsigned char *) NULL)
-              ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
+              ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
                 image);
             /*
               Dump Runlength encoded pixels.
@@ -1134,7 +1131,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 status=LZWEncodeImage(image,length,pixels);
               else
                 status=PackbitsEncodeImage(image,length,pixels);
-            LiberateMemory((void **) &pixels);
+            MagickFreeMemory(pixels);
             if (!status)
               {
                 CloseBlob(image);
@@ -1195,12 +1192,12 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             */
             jpeg_image=CloneImage(image,0,0,True,&image->exception);
             if (jpeg_image == (Image *) NULL)
-              ThrowWriterException(CoderError,image->exception.reason,image);
+              ThrowWriterException2(CoderError,image->exception.reason,image);
             (void) strcpy(jpeg_image->magick,"JPEG");
             blob=ImageToBlob(image_info,jpeg_image,&length,&image->exception);
             (void) WriteBlob(image,length,blob);
             DestroyImage(jpeg_image);
-            LiberateMemory((void **) &blob);
+            MagickFreeMemory(blob);
             break;
           }
           case RLECompression:
@@ -1210,9 +1207,9 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               Allocate pixel array.
             */
             length=(image->colorspace == CMYKColorspace ? 4 : 3)*number_pixels;
-            pixels=(unsigned char *) AcquireMemory(length);
+            pixels=MagickAllocateMemory(unsigned char *,length);
             if (pixels == (unsigned char *) NULL)
-              ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",
+              ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,
                 image);
             /*
               Dump runoffset encoded pixels.
@@ -1257,7 +1254,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 status=LZWEncodeImage(image,length,pixels);
               else
                 status=PackbitsEncodeImage(image,length,pixels);
-            LiberateMemory((void **) &pixels);
+            MagickFreeMemory(pixels);
             if (!status)
               {
                 CloseBlob(image);
@@ -1320,10 +1317,9 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 Allocate pixel array.
               */
               length=number_pixels;
-              pixels=(unsigned char *) AcquireMemory(length);
+              pixels=MagickAllocateMemory(unsigned char *,length);
               if (pixels == (unsigned char *) NULL)
-                ThrowWriterException(ResourceLimitError,
-                  "MemoryAllocationFailed",image);
+                ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
               /*
                 Dump Runlength encoded pixels.
               */
@@ -1353,7 +1349,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                   status=LZWEncodeImage(image,length,pixels);
                 else
                   status=PackbitsEncodeImage(image,length,pixels);
-              LiberateMemory((void **) &pixels);
+              MagickFreeMemory(pixels);
               if (!status)
                 {
                   CloseBlob(image);
@@ -1433,7 +1429,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     tile_image=ResizeImage(image,geometry.width,geometry.height,TriangleFilter,
       1.0,&image->exception);
     if (tile_image == (Image *) NULL)
-      ThrowWriterException(ResourceLimitError,image->exception.reason,image);
+      ThrowWriterException2(ResourceLimitError,image->exception.reason,image);
     xref[object++]=TellBlob(image);
     FormatString(buffer,"%lu 0 obj\n",object);
     (void) WriteBlobString(image,buffer);
@@ -1509,11 +1505,11 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             */
             jpeg_image=CloneImage(tile_image,0,0,True,&image->exception);
             if (jpeg_image == (Image *) NULL)
-              ThrowWriterException(CoderError,image->exception.reason,image);
+              ThrowWriterException2(CoderError,image->exception.reason,image);
             blob=ImageToBlob(image_info,jpeg_image,&length,&image->exception);
             (void) WriteBlob(image,length,blob);
             DestroyImage(jpeg_image);
-            LiberateMemory((void **) &blob);
+            MagickFreeMemory(blob);
             break;
           }
           case RLECompression:
@@ -1523,12 +1519,11 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               Allocate pixel array.
             */
             length=number_pixels;
-            pixels=(unsigned char *) AcquireMemory(length);
+            pixels=MagickAllocateMemory(unsigned char *,length);
             if (pixels == (unsigned char *) NULL)
               {
                 DestroyImage(tile_image);
-                ThrowWriterException(ResourceLimitError,
-                  "MemoryAllocationFailed",image)
+                ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image)
               }
             /*
               Dump Runlength encoded pixels.
@@ -1553,7 +1548,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 status=LZWEncodeImage(image,length,pixels);
               else
                 status=PackbitsEncodeImage(image,length,pixels);
-            LiberateMemory((void **) &pixels);
+            MagickFreeMemory(pixels);
             if (!status)
               {
                 CloseBlob(image);
@@ -1606,11 +1601,11 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             */
             jpeg_image=CloneImage(tile_image,0,0,True,&image->exception);
             if (jpeg_image == (Image *) NULL)
-              ThrowWriterException(CoderError,image->exception.reason,image);
+              ThrowWriterException2(CoderError,image->exception.reason,image);
             blob=ImageToBlob(image_info,jpeg_image,&length,&image->exception);
             (void) WriteBlob(image,length,blob);
             DestroyImage(jpeg_image);
-            LiberateMemory((void **) &blob);
+            MagickFreeMemory(blob);
             break;
           }
           case RLECompression:
@@ -1621,12 +1616,11 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
             */
             length=(tile_image->colorspace == CMYKColorspace ? 4 : 3)*
               number_pixels;
-            pixels=(unsigned char *) AcquireMemory(length);
+            pixels=MagickAllocateMemory(unsigned char *,length);
             if (pixels == (unsigned char *) NULL)
               {
                 DestroyImage(tile_image);
-                ThrowWriterException(ResourceLimitError,
-                  "MemoryAllocationFailed",image)
+                ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image)
               }
             /*
               Dump runoffset encoded pixels.
@@ -1662,7 +1656,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 status=LZWEncodeImage(image,length,pixels);
               else
                 status=PackbitsEncodeImage(image,length,pixels);
-            LiberateMemory((void **) &pixels);
+            MagickFreeMemory(pixels);
             if (!status)
               {
                 CloseBlob(image);
@@ -1717,12 +1711,11 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 Allocate pixel array.
               */
               length=number_pixels;
-              pixels=(unsigned char *) AcquireMemory(length);
+              pixels=MagickAllocateMemory(unsigned char *,length);
               if (pixels == (unsigned char *) NULL)
                 {
                   DestroyImage(tile_image);
-                  ThrowWriterException(ResourceLimitError,
-                    "MemoryAllocationFailed",image)
+                  ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image)
                 }
               /*
                 Dump Runlength encoded pixels.
@@ -1745,7 +1738,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                   status=LZWEncodeImage(image,length,pixels);
                 else
                   status=PackbitsEncodeImage(image,length,pixels);
-              LiberateMemory((void **) &pixels);
+              MagickFreeMemory(pixels);
               if (!status)
                 {
                   CloseBlob(image);
@@ -1879,7 +1872,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   FormatString(buffer,"%lu\n",(unsigned long) offset);
   (void) WriteBlobString(image,buffer);
   (void) WriteBlobString(image,"%%EOF\n");
-  LiberateMemory((void **) &xref);
+  MagickFreeMemory(xref);
   CloseBlob(image);
   return(True);
 }
@@ -1944,9 +1937,9 @@ static unsigned int ZLIBEncodeImage(Image *image,const size_t length,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   compressed_packets=(unsigned long) (1.001*length+12);
-  compressed_pixels=(unsigned char *) AcquireMemory(compressed_packets);
+  compressed_pixels=MagickAllocateMemory(unsigned char *,compressed_packets);
   if (compressed_pixels == (unsigned char *) NULL)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+    ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
       (char *) NULL);
   stream.next_in=pixels;
   stream.avail_in=(unsigned int) length;
@@ -1966,11 +1959,11 @@ static unsigned int ZLIBEncodeImage(Image *image,const size_t length,
       compressed_packets=stream.total_out;
     }
   if (status)
-    ThrowBinaryException(CoderError,"UnableToZipCompressImage",(char *) NULL)
+    ThrowBinaryException(CoderError,UnableToZipCompressImage,(char *) NULL)
   else
     for (i=0; i < (long) compressed_packets; i++)
       (void) WriteBlobByte(image,compressed_pixels[i]);
-  LiberateMemory((void **) &compressed_pixels);
+  MagickFreeMemory(compressed_pixels);
   return(!status);
 }
 #else
@@ -1979,7 +1972,7 @@ static unsigned int ZLIBEncodeImage(Image *image,const size_t length,
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  ThrowBinaryException(MissingDelegateError,"ZipLibraryIsNotAvailable",
+  ThrowBinaryException(MissingDelegateError,ZipLibraryIsNotAvailable,
     image->filename);
   return(False);
 }

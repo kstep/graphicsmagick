@@ -43,7 +43,9 @@
 #include "magick/monitor.h"
 #include "magick/resize.h"
 #include "magick/transform.h"
+#include "magick/quantize.h"
 #include "magick/utility.h"
+#include "magick/log.h"
 #if defined(HasLCMS)
 #if defined(HAVE_LCMS_LCMS_H)
 #include <lcms/lcms.h>
@@ -122,8 +124,8 @@ MagickExport Image *ChopImage(const Image *image,const RectangleInfo *chop_info,
       ((chop_info->y+(long) chop_info->height) < 0) ||
       (chop_info->x > (long) image->columns) ||
       (chop_info->y > (long) image->rows))
-    ThrowImageException(OptionError,"GeometryDoesNotContainImage",
-      "UnableToChopImage");
+    ThrowImageException3(OptionError,GeometryDoesNotContainImage,
+      UnableToChopImage);
   clone_info=(*chop_info);
   if ((clone_info.x+(long) clone_info.width) > (long) image->columns)
     clone_info.width=(unsigned long) ((long) image->columns-clone_info.x);
@@ -256,8 +258,8 @@ MagickExport Image *CoalesceImages(const Image *image,ExceptionInfo *exception)
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   if (image->next == (Image *) NULL)
-    ThrowImageException(ImageError,"ImageSequenceIsRequired",
-      "UnableToCoalesceImage");
+    ThrowImageException3(ImageError,ImageSequenceIsRequired,
+      UnableToCoalesceImage);
   /*
     Clone first image in sequence.
   */
@@ -380,8 +382,8 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
           ((geometry->y+(long) geometry->height) < 0) ||
           (geometry->x >= (long) image->columns) ||
           (geometry->y >= (long) image->rows))
-        ThrowImageException(OptionError,"GeometryDoesNotContainImage",
-          "UnableToCropImage");
+        ThrowImageException(OptionError,GeometryDoesNotContainImage,
+          MagickMsg(ResourceLimitError,UnableToCropImage));
     }
   page=(*geometry);
   if ((page.width != 0) || (page.height != 0))
@@ -417,12 +419,12 @@ MagickExport Image *CropImage(const Image *image,const RectangleInfo *geometry,
         page.y=0;
       if ((((long) page.width+page.x) > (long) image->columns) ||
           (((long) page.height+page.y) > (long) image->rows))
-        ThrowImageException(OptionError,"GeometryDoesNotContainImage",
-          "UnableToCropImage");
+        ThrowImageException(OptionError,GeometryDoesNotContainImage,
+          MagickMsg(ResourceLimitError,UnableToCropImage));
     }
   if ((page.width == 0) || (page.height == 0))
-    ThrowImageException(OptionError,"GeometryDimensionsAreZero",
-      "UnableToCropImage");
+    ThrowImageException(OptionError,GeometryDimensionsAreZero,
+      MagickMsg(ResourceLimitError,UnableToCropImage));
   if ((page.width == image->columns) && (page.height == image->rows) &&
       (page.x == 0) && (page.y == 0))
     return(CloneImage(image,0,0,True,exception));
@@ -523,25 +525,25 @@ MagickExport Image *DeconstructImages(const Image *image,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   if (image->next == (Image *) NULL)
-    ThrowImageException(ImageError,"ImageSequenceIsRequired",
-      "UnableToDeconstructImageSequence");
+    ThrowImageException3(ImageError,ImageSequenceIsRequired,
+      UnableToDeconstructImageSequence);
   /*
     Ensure the image are the same size.
   */
   for (next=image; next != (Image *) NULL; next=next->next)
   {
     if ((next->columns != image->columns) || (next->rows != image->rows))
-      ThrowImageException(OptionError,"ImagesAreNotTheSameSize",
-        "UnableToDeconstructImageSequence");
+      ThrowImageException(OptionError,ImagesAreNotTheSameSize,
+        MagickMsg(ImageError,UnableToDeconstructImageSequence));
   }
   /*
     Allocate memory.
   */
-  bounds=(RectangleInfo *)
-    AcquireMemory(GetImageListLength(image)*sizeof(RectangleInfo));
+  bounds=MagickAllocateMemory(RectangleInfo *,
+    GetImageListLength(image)*sizeof(RectangleInfo));
   if (bounds == (RectangleInfo *) NULL)
-    ThrowImageException(ResourceLimitError,"MemoryAllocationFailed",
-      "UnableToDeconstructImageSequence");
+    ThrowImageException(ResourceLimitError,MemoryAllocationFailed,
+      MagickMsg(ImageError,UnableToDeconstructImageSequence));
   /*
     Compute the bounding box for each next in the sequence.
   */
@@ -627,7 +629,7 @@ MagickExport Image *DeconstructImages(const Image *image,
   deconstruct_image=CloneImage(image,0,0,True,exception);
   if (deconstruct_image == (Image *) NULL)
     {
-      LiberateMemory((void **) &bounds);
+      MagickFreeMemory(bounds);
       return((Image *) NULL);
     }
   /*
@@ -647,7 +649,7 @@ MagickExport Image *DeconstructImages(const Image *image,
     crop_next->previous=deconstruct_image;
     deconstruct_image=deconstruct_image->next;
   }
-  LiberateMemory((void **) &bounds);
+  MagickFreeMemory(bounds);
   while (deconstruct_image->previous != (Image *) NULL)
     deconstruct_image=deconstruct_image->previous;
   if (next != (Image *) NULL)
@@ -698,8 +700,8 @@ MagickExport Image *FlattenImages(const Image *image,ExceptionInfo *exception)
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   if (image->next == (Image *) NULL)
-    ThrowImageException(ImageError,"ImageSequenceIsRequired",
-      "UnableToFlattenImage");
+    ThrowImageException3(ImageError,ImageSequenceIsRequired,
+      UnableToFlattenImage);
   /*
     Clone first image in sequence.
   */
@@ -899,6 +901,7 @@ MagickExport Image *FlopImage(const Image *image,ExceptionInfo *exception)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
+%                                                                             %
 %     M o s a i c I m a g e s                                                 %
 %                                                                             %
 %                                                                             %
@@ -946,8 +949,8 @@ MagickExport Image *MosaicImages(const Image *image,ExceptionInfo *exception)
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   if (image->next == (Image *) NULL)
-    ThrowImageException(ImageError,"ImageSequenceIsRequired",
-      "UnableToCreateImageMosaic");
+    ThrowImageException3(ImageError,ImageSequenceIsRequired,
+      UnableToCreateImageMosaic);
   page.width=image->columns;
   page.height=image->rows;
   page.x=0;
@@ -988,287 +991,6 @@ MagickExport Image *MosaicImages(const Image *image,ExceptionInfo *exception)
       break;
   }
   return(mosaic_image);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   P r o f i l e I m a g e                                                   %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  ProfileImage() adds or removes a ICM, IPTC, or generic profile from an
-%  image.  If the profile is NULL, it is removed from the image otherwise
-%  added.  Use a name of '*' and a profile of NULL to remove all profiles
-%  from the image. Ownership of the profile is transferred to GraphicsMagick
-%  (it should not be altered or deallocated) unless the clone option is set
-%  to True.
-%
-%  The format of the ProfileImage method is:
-%
-%      unsigned int ProfileImage(Image *image,const char *name,
-%        const unsigned char *profile,const size_t length,unsigned int clone)
-%
-%  A description of each parameter follows:
-%
-%    o image: The image.
-%
-%    o name: Name of profile to add or remove: ICM, IPTC, or generic profile.
-%
-%    o profile: The profile.
-%
-%    o length: The length of the profile.
-%
-%    o clone: If set True, then copy the profile rather than taking
-%             ownership of it.
-%
-%
-*/
-MagickExport unsigned int ProfileImage(Image *image,const char *name,
-  const unsigned char *profile,const size_t length,unsigned int clone)
-{
-  register long
-    i,
-    j;
-
-  assert(image != (Image *) NULL);
-  assert(image->signature == MagickSignature);
-  if (name == (const char *) NULL)
-    ThrowBinaryException(OptionError,"NoProfileNameWasGiven",
-      "UnableToAddOrRemoveProfile");
-  if ((profile == (const unsigned char *) NULL) || (length == 0))
-    {
-      /*
-        Remove an ICM, IPTC, or generic profile from the image.
-      */
-      if (GlobExpression("8bim",name) || GlobExpression("iptc",name))
-        {
-          if (image->iptc_profile.length != 0)
-            LiberateMemory((void **) &image->iptc_profile.info);
-          image->iptc_profile.length=0;
-          image->iptc_profile.info=(unsigned char *) NULL;
-        }
-      if (GlobExpression("icm",name))
-        {
-          if (image->color_profile.length != 0)
-            LiberateMemory((void **) &image->color_profile.info);
-          image->color_profile.length=0;
-          image->color_profile.info=(unsigned char *) NULL;
-        }
-      for (i=0; i < (long) image->generic_profiles; i++)
-      {
-        if (!GlobExpression(image->generic_profile[i].name,name))
-          continue;
-        if (image->generic_profile[i].name != (char *) NULL)
-          LiberateMemory((void **) &image->generic_profile[i].name);
-        if (image->generic_profile[i].length != 0)
-          LiberateMemory((void **) &image->generic_profile[i].info);
-        image->generic_profiles--;
-        for (j=i; j < (long) image->generic_profiles; j++)
-          image->generic_profile[j]=image->generic_profile[j+1];
-        i--;
-      }
-      return(True);
-    }
-  /*
-    Add a ICM, IPTC, or generic profile to the image.
-  */
-  if ((LocaleCompare("8bim",name) == 0) || (LocaleCompare("iptc",name) == 0))
-    {
-      if (image->iptc_profile.length != 0)
-        LiberateMemory((void **) &image->iptc_profile.info);
-      if (clone)
-        {
-          image->iptc_profile.info=(unsigned char *) AcquireMemory(length);
-          if (image->iptc_profile.info == (unsigned char *) NULL)
-            ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-              "UnableToAddIPTCProfile");
-          image->iptc_profile.length=length;
-          (void) memcpy(image->iptc_profile.info,profile,length);
-        }
-      else
-        {
-          image->iptc_profile.length=length;
-          image->iptc_profile.info=(unsigned char *) profile;
-        }
-      return(True);
-    }
-  if (LocaleCompare("icm",name) == 0)
-    {
-      if (image->color_profile.length != 0)
-        {
-#if defined(HasLCMS)
-          typedef struct _ProfilePacket
-          {
-            unsigned short
-              red,
-              green,
-              blue,
-              opacity;
-          } ProfilePacket;
-
-          ColorspaceType
-            colorspace;
-
-          cmsHPROFILE
-            image_profile,
-            transform_profile;
-
-          cmsHTRANSFORM
-            transform;
-
-          int
-            intent;
-
-          long
-            y;
-
-          ProfilePacket
-            alpha,
-            beta;
-
-          register long
-            x;
-
-          register PixelPacket
-            *q;
-
-          /*
-            Transform pixel colors as defined by the color profiles.
-          */
-          image_profile=cmsOpenProfileFromMem(image->color_profile.info,
-            image->color_profile.length);
-          transform_profile=
-            cmsOpenProfileFromMem((unsigned char *) profile,length);
-          if ((image_profile == (cmsHPROFILE) NULL) ||
-              (transform_profile == (cmsHPROFILE) NULL))
-            ThrowBinaryException(ResourceLimitError,"UnableToManageColor",
-              "UnableToOpenColorProfile");
-          switch (cmsGetColorSpace(transform_profile))
-          {
-            case icSigCmykData: colorspace=CMYKColorspace; break;
-            case icSigYCbCrData: colorspace=YCbCrColorspace; break;
-            case icSigLuvData: colorspace=YUVColorspace; break;
-            case icSigGrayData: colorspace=GRAYColorspace; break;
-            case icSigRgbData: colorspace=RGBColorspace; break;
-            default: colorspace=RGBColorspace; break;
-          }
-          switch (image->rendering_intent)
-          {
-            case AbsoluteIntent: intent=INTENT_ABSOLUTE_COLORIMETRIC; break;
-            case PerceptualIntent: intent=INTENT_PERCEPTUAL; break;
-            case RelativeIntent: intent=INTENT_RELATIVE_COLORIMETRIC; break;
-            case SaturationIntent: intent=INTENT_SATURATION; break;
-            default: intent=INTENT_PERCEPTUAL; break;
-          }
-          if (image->colorspace == CMYKColorspace)
-            {
-              if (colorspace == CMYKColorspace)
-                transform=cmsCreateTransform(image_profile,TYPE_CMYK_16,
-                  transform_profile,TYPE_CMYK_16,intent,0);
-              else
-                transform=cmsCreateTransform(image_profile,TYPE_CMYK_16,
-                  transform_profile,TYPE_RGBA_16,intent,0);
-            }
-          else
-            {
-              if (colorspace == CMYKColorspace)
-                transform=cmsCreateTransform(image_profile,TYPE_RGBA_16,
-                  transform_profile,TYPE_CMYK_16,intent,0);
-              else
-                transform=cmsCreateTransform(image_profile,TYPE_RGBA_16,
-                  transform_profile,TYPE_RGBA_16,intent,0);
-            }
-          if (transform == (cmsHTRANSFORM) NULL)
-            ThrowBinaryException(ResourceLimitError,"UnableToManageColor",
-              "UnableToCreateColorTransform");
-          for (y=0; y < (long) image->rows; y++)
-          {
-            q=GetImagePixels(image,0,y,image->columns,1);
-            if (q == (PixelPacket *) NULL)
-              break;
-            for (x=0; x < (long) image->columns; x++)
-            {
-              alpha.red=ScaleQuantumToShort(q->red);
-              alpha.green=ScaleQuantumToShort(q->green);
-              alpha.blue=ScaleQuantumToShort(q->blue);
-              alpha.opacity=ScaleQuantumToShort(q->opacity);
-              cmsDoTransform(transform,&alpha,&beta,1);
-              q->red=ScaleShortToQuantum(beta.red);
-              q->green=ScaleShortToQuantum(beta.green);
-              q->blue=ScaleShortToQuantum(beta.blue);
-              q->opacity=ScaleShortToQuantum(beta.opacity);
-              q++;
-            }
-            if (!SyncImagePixels(image))
-              break;
-          }
-          cmsDeleteTransform(transform);
-          cmsCloseProfile(image_profile);
-          cmsCloseProfile(transform_profile);
-          if (colorspace == CMYKColorspace)
-            image->colorspace=CMYKColorspace;
-          else
-            image->colorspace=RGBColorspace;
-#endif
-          LiberateMemory((void **) &image->color_profile.info);
-        }
-      if (clone)
-        {
-          image->color_profile.info=(unsigned char *) AcquireMemory(length);
-          if (image->color_profile.info == (unsigned char *) NULL)
-            ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-              "UnableToAddICMProfile");
-          image->color_profile.length=length;
-          (void) memcpy(image->color_profile.info,profile,length);
-        }
-      else
-        {
-          image->color_profile.length=length;
-          image->color_profile.info=(unsigned char *) profile;
-        }
-      return(True);
-    }
-  for (i=0; i < (long) image->generic_profiles; i++)
-    if (LocaleCompare(image->generic_profile[i].name,name) == 0)
-      break;
-  if (i == (long) image->generic_profiles)
-    {
-      if (image->generic_profile == (ProfileInfo *) NULL)
-        image->generic_profile=(ProfileInfo *)
-          AcquireMemory((i+1)*sizeof(ProfileInfo));
-      else
-        ReacquireMemory((void **) &image->generic_profile,
-          (i+1)*sizeof(ProfileInfo));
-      if (image->generic_profile == (ProfileInfo *) NULL)
-        ThrowBinaryException(ResourceLimitWarning,"MemoryAllocationFailed",
-          (char *) NULL)
-      image->generic_profiles++;
-      image->generic_profile[i].length=0;
-      image->generic_profile[i].info=(unsigned char *) NULL;
-      image->generic_profile[i].name=AllocateString(name);
-    }
-  if (image->generic_profile[i].length != 0)
-    LiberateMemory((void **) &image->generic_profile[i].info);
-  if (clone)
-    {
-      image->generic_profile[i].info=(unsigned char *) AcquireMemory(length);
-      if (image->generic_profile[i].info == (unsigned char *) NULL)
-        ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
-          "UnableToAddGenericProfile");
-      image->generic_profile[i].length=length;
-      (void) memcpy(image->generic_profile[i].info,profile,length);
-    }
-  else
-    {
-      image->generic_profile[i].length=length;
-      image->generic_profile[i].info=(unsigned char *) profile;
-    }
-  return(True);
 }
 
 /*
@@ -1426,8 +1148,8 @@ MagickExport Image *ShaveImage(const Image *image,
 
   if (((2*shave_info->width) >= image->columns) ||
       ((2*shave_info->height) >= image->rows))
-    ThrowImageException(OptionError,"GeometryDoesNotContainImage",
-      "UnableToShaveImage");
+    ThrowImageException(OptionError,GeometryDoesNotContainImage,
+      MagickMsg(ResourceLimitError,UnableToShaveImage));
   SetGeometry(image,&geometry);
   geometry.width-=2*shave_info->width;
   geometry.height-=2*shave_info->height;

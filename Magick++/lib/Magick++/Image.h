@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
+// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003, 2004
 //
 // Definition of Image, the representation of a single image in Magick++
 //
@@ -8,10 +8,9 @@
 #if !defined(Magick_Image_header)
 #define Magick_Image_header
 
+#include "Magick++/Include.h"
 #include <string>
 #include <list>
-
-#include "Magick++/Include.h"
 #include "Magick++/Blob.h"
 #include "Magick++/Color.h"
 #include "Magick++/Drawable.h"
@@ -25,9 +24,12 @@ namespace Magick
   class Options;
   class ImageRef;
 
-  extern MagickDLLDecl const std::string borderGeometryDefault;
-  extern MagickDLLDecl const std::string frameGeometryDefault;
-  extern MagickDLLDecl const std::string raiseGeometryDefault;
+//   extern MagickDLLDecl const std::string borderGeometryDefault;
+//   extern MagickDLLDecl const std::string frameGeometryDefault;
+//   extern MagickDLLDecl const std::string raiseGeometryDefault;
+  extern MagickDLLDecl const char *borderGeometryDefault;
+  extern MagickDLLDecl const char *frameGeometryDefault;
+  extern MagickDLLDecl const char *raiseGeometryDefault;
 
   // Compare two Image objects regardless of LHS/RHS
   // Image sizes and signatures are used as basis of comparison
@@ -118,6 +120,9 @@ namespace Magick
     // Add noise to image with specified noise type
     void            addNoise ( const NoiseType noiseType_ );
 
+    // Transform image by specified affine (or free transform) matrix.
+    void            affineTransform ( const DrawableAffine &affine );
+
     //
     // Annotate image (draw text on image)
     //
@@ -165,6 +170,11 @@ namespace Magick
 
     // Extract channel from image
     void            channel ( const ChannelType channel_ );
+
+    // Set or obtain modulus channel depth
+    void            channelDepth ( const ChannelType channel_,
+                                   const unsigned int depth_ );
+    unsigned int    channelDepth ( const ChannelType channel_ );
 
     // Charcoal effect image (looks like charcoal sketch)
     // The radius_ parameter specifies the radius of the Gaussian, in
@@ -400,7 +410,26 @@ namespace Magick
 
     // Quantize image (reduce number of colors)
     void            quantize ( const bool measureError_ = false );
-    
+
+    // Apply an arithmetic or bitwise operator to the image pixel quantums.
+    void            quantumOperator ( const ChannelType channel_,
+                                      const QuantumOperator operator_,
+                                      Quantum rvalue_);
+    void            quantumOperator ( const int x_,const int y_,
+                                      const unsigned int columns_,
+                                      const unsigned int rows_,
+                                      const ChannelType channel_,
+                                      const QuantumOperator operator_,
+                                      const Quantum rvalue_);
+
+    // Execute a named process module using an argc/argv syntax similar to
+    // that accepted by a C 'main' routine. An exception is thrown if the
+    // requested process module doesn't exist, fails to load, or fails during
+    // execution.
+    void            process ( std::string name_,
+                              const int argc_,
+                              char **argv_ );
+
     // Raise image (lighten or darken the edges of an image to give a
     // 3-D raised or lowered effect)
     void            raise ( const Geometry &geometry_ = raiseGeometryDefault,
@@ -606,6 +635,11 @@ namespace Magick
     // extension) for.
     void            animationIterations ( const unsigned int iterations_ );
     unsigned int    animationIterations ( void ) const;
+
+    // Access/Update a named image attribute
+    void            attribute ( const std::string name_,
+                                const std::string value_ );
+    std::string     attribute ( const std::string name_ );
     
     // Image background color
     void            backgroundColor ( const Color &color_ );
@@ -695,6 +729,11 @@ namespace Magick
     
     // Image comment
     std::string     comment ( void ) const;
+
+    // Composition operator to be used when composition is implicitly
+    // used (such as for image flattening).
+    void            compose (const CompositeOperator compose_);
+    CompositeOperator compose ( void ) const;
     
     // Compression type
     void            compressType ( const CompressionType compressType_ );
@@ -703,6 +742,28 @@ namespace Magick
     // Enable printing of debug messages from ImageMagick
     void            debug ( const bool flag_ );
     bool            debug ( void ) const;
+
+    // Tagged image format define (set/access coder-specific option) The
+    // magick_ option specifies the coder the define applies to.  The key_
+    // option provides the key specific to that coder.  The value_ option
+    // provides the value to set (if any). See the defineSet() method if the
+    // key must be removed entirely.
+    void            defineValue ( const std::string &magick_,
+                                  const std::string &key_,
+                                  const std::string &value_ );
+    std::string     defineValue ( const std::string &magick_,
+                                  const std::string &key_ ) const;
+
+    // Tagged image format define. Similar to the defineValue() method
+    // except that passing the flag_ value 'true' creates a value-less
+    // define with that format and key. Passing the flag_ value 'false'
+    // removes any existing matching definition. The method returns 'true'
+    // if a matching key exists, and 'false' if no matching key exists.
+    void            defineSet ( const std::string &magick_,
+                                const std::string &key_,
+                                bool flag_ );
+    bool            defineSet ( const std::string &magick_,
+                                const std::string &key_ ) const;
 
     // Vertical and horizontal resolution in pixels of the image
     void            density ( const Geometry &geomery_ );
@@ -808,6 +869,11 @@ namespace Magick
     // The mean error per pixel computed when an image is color reduced
     double          meanErrorPerPixel ( void ) const;
 
+    // Image modulus depth (minimum number of bits required to support
+    // red/green/blue components without loss of accuracy)
+    void            modulusDepth ( const unsigned int modulusDepth_ );
+    unsigned int    modulusDepth ( void ) const;
+
     // Tile size and offset within an image montage
     Geometry        montageGeometry ( void ) const;
 
@@ -896,6 +962,11 @@ namespace Magick
     // Width and height of a raw image 
     void            size ( const Geometry &geometry_ );
     Geometry        size ( void ) const;
+
+    // Obtain image statistics. Statistics are normalized to the range
+    // of 0.0 to 1.0 and are output to the specified ImageStatistics
+    // structure.
+    void            statistics ( ImageStatistics *statistics ) const;
 
     // enabled/disable stroke anti-aliasing
     void            strokeAntiAlias( const bool flag_ );

@@ -18,7 +18,7 @@
 %                       V    IIIII   CCCC  A   A  R  R                        %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                   Read/Write VICAR Rasterfile Format.                       %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -158,7 +158,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   /*
     Decode image header.
   */
@@ -243,10 +243,10 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
     count++;
   }
   if ((image->columns == 0) || (image->rows == 0))
-    ThrowReaderException(CorruptImageError,"NegativeOrZeroImageSize",image);
+    ThrowReaderException(CorruptImageError,NegativeOrZeroImageSize,image);
   image->depth=8;
   if (!AllocateImageColormap(image,256))
-    ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
   if (image_info->ping)
     {
       CloseBlob(image);
@@ -255,9 +255,9 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
   /*
     Read VICAR pixels.
   */
-  scanline=(unsigned char *) AcquireMemory(image->columns);
+  scanline=MagickAllocateMemory(unsigned char *,image->columns);
   if (scanline == (unsigned char *) NULL)
-    ThrowReaderException(CorruptImageError,"UnableToReadImageData",image);
+    ThrowReaderException(CorruptImageError,UnableToReadImageData,image);
   for (y=0; y < (long) image->rows; y++)
   {
     if (!SetImagePixels(image,0,y,image->columns,1))
@@ -270,9 +270,9 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
       if (!MagickMonitor(LoadImageText,y,image->rows,exception))
         break;
   }
-  LiberateMemory((void **) &scanline);
+  MagickFreeMemory(scanline);
   if (EOFBlob(image))
-    ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+    ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
       image->filename);
   CloseBlob(image);
   return(image);
@@ -399,7 +399,7 @@ static unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   TransformColorspace(image,RGBColorspace);
   /*
     Write header.
@@ -413,9 +413,9 @@ static unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
   /*
     Allocate memory for scanline.
   */
-  scanline=(unsigned char *) AcquireMemory(image->columns);
+  scanline=MagickAllocateMemory(unsigned char *,image->columns);
   if (scanline == (unsigned char *) NULL)
-    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
   /*
     Write VICAR scanline.
   */
@@ -431,7 +431,7 @@ static unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
         if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
           break;
   }
-  LiberateMemory((void **) &scanline);
+  MagickFreeMemory(scanline);
   CloseBlob(image);
   return(True);
 }

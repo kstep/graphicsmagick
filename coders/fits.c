@@ -18,7 +18,7 @@
 %                        F      IIIII    T    SSSSS                           %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%            Read/Write Flexible Image Transport System Images.               %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -213,7 +213,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   /*
     Initialize image header.
   */
@@ -310,7 +310,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
   number_pixels=fits_info.columns*fits_info.rows;
   if ((!fits_info.simple) || (fits_info.number_axes < 1) ||
       (fits_info.number_axes > 4) || (number_pixels == 0))
-    ThrowReaderException(CorruptImageError,"ImageTypeNotSupported",image);
+    ThrowReaderException(CorruptImageError,ImageTypeNotSupported,image);
   if (fits_info.bits_per_pixel == -32)
     {
       exponential[150]=1.0;
@@ -338,7 +338,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     image->storage_class=PseudoClass;
     image->scene=scene;
     if (!AllocateImageColormap(image,1 << image->depth))
-      ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+      ThrowReaderException(FileOpenError,UnableToOpenFile,image);
     if (image_info->ping && (image_info->subrange != 0))
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
@@ -349,15 +349,15 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     if (packet_size < 0)
       packet_size=(-packet_size);
     number_pixels=image->columns*image->rows;
-    fits_pixels=(unsigned char *) AcquireMemory(packet_size*number_pixels);
+    fits_pixels=MagickAllocateMemory(unsigned char *,packet_size*number_pixels);
     if (fits_pixels == (unsigned char *) NULL)
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     /*
       Convert FITS pixels to pixel packets.
     */
     count=ReadBlob(image,packet_size*number_pixels,fits_pixels);
     if (count == 0)
-      ThrowReaderException(CorruptImageError,"InsufficientImageDataInFile",
+      ThrowReaderException(CorruptImageError,InsufficientImageDataInFile,
         image);
     if ((fits_info.min_data == 0.0) && (fits_info.max_data == 0.0))
       {
@@ -537,10 +537,10 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
         if (!MagickMonitor(LoadImageText,y,image->rows,exception))
           break;
     }
-    LiberateMemory((void **) &fits_pixels);
+    MagickFreeMemory(fits_pixels);
     if (EOFBlob(image))
       {
-        ThrowException(exception,CorruptImageError,"UnexpectedEndOfFile",
+        ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,
           image->filename);
         break;
       }
@@ -697,16 +697,16 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   TransformColorspace(image,RGBColorspace);
   /*
     Allocate image memory.
   */
   packet_size=image->depth > 8 ? 2 : 1;
-  fits_info=(char *) AcquireMemory(2880);
-  pixels=(unsigned char *) AcquireMemory(packet_size*image->columns);
+  fits_info=MagickAllocateMemory(char *,2880);
+  pixels=MagickAllocateMemory(unsigned char *,packet_size*image->columns);
   if ((fits_info == (char *) NULL) || (pixels == (unsigned char *) NULL))
-    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
   /*
     Initialize image header.
   */
@@ -731,7 +731,7 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
   (void) strcpy(buffer,"END");
   (void) strncpy(fits_info+640,buffer,strlen(buffer));
   (void) WriteBlob(image,2880,(char *) fits_info);
-  LiberateMemory((void **) &fits_info);
+  MagickFreeMemory(fits_info);
   /*
     Convert image to fits scale PseudoColor class.
   */
@@ -750,7 +750,7 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
           break;
       }
   }
-  LiberateMemory((void **) &pixels);
+  MagickFreeMemory(pixels);
   CloseBlob(image);
   return(True);
 }

@@ -17,7 +17,7 @@
 %                             W   W   M   M  F                                %
 %                                                                             %
 %                                                                             %
-%                     Read Windows Metafile Format.                        %
+%                     Read Windows Metafile Format.                           %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -60,6 +60,11 @@
 #define XC(x) ((double)x)
 #define YC(y) ((double)y)
 
+#if defined(HAVE_FT2BUILD_H)
+   /* Some libwmf/FreeType installs are broken in that the libwmf
+     headers don't work without including <ft2build.h> first */
+#  include <ft2build.h>
+#endif /* defined(HAVE_FT2BUILD_H) */
 #include "libwmf/fund.h"
 #include "libwmf/types.h"
 #include "libwmf/api.h"
@@ -433,9 +438,8 @@ static void ipa_bmp_draw(wmfAPI *API, wmfBMP_Draw_t *bmp_draw)
   image = (Image*)bmp_draw->bmp.data;
   if(!image)
     {
-       ThrowException(&ddata->image->exception,exception.severity,
-         exception.reason,exception.description);
-       return;
+      CopyException(&ddata->image->exception,&exception);
+      return;
     }
 
   if(bmp_draw->crop.x || bmp_draw->crop.y ||
@@ -464,8 +468,7 @@ static void ipa_bmp_draw(wmfAPI *API, wmfBMP_Draw_t *bmp_draw)
           bmp_draw->bmp.data = (void*)image;
         }
       else
-        ThrowException(&ddata->image->exception,exception.severity,
-          exception.reason,exception.description);
+        CopyException(&ddata->image->exception,&exception);
     }
 
   QueryColorDatabase( "white", &white, &exception );
@@ -545,7 +548,7 @@ static void ipa_bmp_read(wmfAPI * API, wmfBMP_Read_t * bmp_read) {
         description[MaxTextExtent];
 
       FormatString(description,"packed DIB at offset %ld", bmp_read->offset);
-      ThrowException(&ddata->image->exception,CorruptImageError,
+      ThrowException2(&ddata->image->exception,CorruptImageError,
         exception.reason,exception.description);
     }
   else
@@ -684,14 +687,12 @@ static void ipa_device_begin(wmfAPI * API)
       else
         {
           LogMagickEvent(CoderEvent,GetMagickModule(),"reading texture image failed!");
-          ThrowException(&ddata->image->exception,exception.severity,
-            exception.reason,exception.description);
+          CopyException(&ddata->image->exception,&exception);
         }
     }
 
   DrawSetClipRule(WmfDrawContext,EvenOddRule); /* Default for WMF is ALTERNATE polygon fill mode */
   DrawSetFillColorString(WmfDrawContext,"none"); /* Default brush is WHITE_BRUSH */
-  DrawSetFillOpacity(WmfDrawContext,1.0); /* Default background mode is OPAQUE */
   DrawSetStrokeColorString(WmfDrawContext,"none"); /* Default pen is BLACK_PEN */
   DrawSetStrokeLineCap(WmfDrawContext,ButtCap); /* Default linecap is PS_ENDCAP_FLAT */
   DrawSetStrokeLineJoin(WmfDrawContext,MiterJoin); /* Default linejoin is PS_JOIN_MITER */
@@ -787,7 +788,8 @@ static void ipa_draw_ellipse(wmfAPI * API, wmfDrawArc_t * draw_arc)
 }
 
 static void util_draw_arc(wmfAPI * API,
-          wmfDrawArc_t * draw_arc, magick_arc_t finish)
+                          wmfDrawArc_t * draw_arc,
+                          magick_arc_t finish)
 {
   wmfD_Coord
     BR,
@@ -860,14 +862,30 @@ static void util_draw_arc(wmfAPI * API,
       if (finish == magick_arc_ellipse)
         DrawEllipse(WmfDrawContext, XC(O.x), YC(O.y), Rx, Ry, 0, 360);
       else if (finish == magick_arc_pie)
-        DrawEllipse(WmfDrawContext, XC(O.x), YC(O.y), Rx, Ry, phi_s, phi_e);
+        {
+          DrawPathStart(WmfDrawContext);
+          DrawPathMoveToAbsolute(WmfDrawContext,
+                                 XC(O.x+start.x),YC(O.y+start.y));
+          DrawPathEllipticArcAbsolute(WmfDrawContext, Rx, Ry, 0, 0, 1,
+                                      XC(O.x+end.x),YC(O.y+end.y));
+          DrawPathLineToAbsolute(WmfDrawContext, XC(O.x), YC(O.y));
+          DrawPathClose(WmfDrawContext);
+          DrawPathFinish(WmfDrawContext);
+        }
       else if (finish == magick_arc_chord)
         {
-          DrawArc(WmfDrawContext, XC(O.x), YC(O.y), Rx, Ry, phi_s, phi_e);
-          DrawLine(WmfDrawContext, XC(start.x), YC(start.y), XC(end.x), YC(end.y));
+          DrawArc(WmfDrawContext,
+                  XC(draw_arc->TL.x), YC(draw_arc->TL.y),
+                  XC(draw_arc->BR.x), XC(draw_arc->BR.y),
+                  phi_s, phi_e);
+          DrawLine(WmfDrawContext,
+                   XC(draw_arc->BR.x-start.x), YC(draw_arc->BR.y-start.y),
+                   XC(draw_arc->BR.x-end.x), YC(draw_arc->BR.y-end.y));
         }
       else      /* if (finish == magick_arc_open) */
-        DrawArc(WmfDrawContext, XC(O.x), YC(O.y), Rx, Ry, phi_s, phi_e);
+        DrawArc(WmfDrawContext,
+                XC(draw_arc->TL.x), YC(draw_arc->TL.y),
+                XC(draw_arc->BR.x), XC(draw_arc->BR.y), phi_s, phi_e);
     }
 
   /* Restore graphic context */
@@ -1187,18 +1205,22 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
 {
   double    
     angle = 0,      /* text rotation angle */
-    bbox_height,    /* bounding box height */
-    bbox_width,      /* bounding box width */
-    pointsize = 0;    /* pointsize to output font with desired height */
+    pointsize = 0;  /* pointsize to output font with desired height */
 
   TypeMetric
     metrics;
+
+#if !defined(HasWMFlite)
+  double
+    bbox_height,   /* bounding box height */
+    bbox_width     /* bounding box width */
 
   wmfD_Coord
     BL,        /* bottom left of bounding box */
     BR,        /* bottom right of bounding box */
     TL,        /* top left of bounding box */
     TR;        /* top right of bounding box */
+#endif
 
   wmfD_Coord
     point;      /* text placement point */
@@ -1212,8 +1234,10 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
   point = draw_text->pt;
 
   /* Choose bounding box and calculate its width and height */
+#if !defined(HasWMFlite)
   {
-    double dx,
+    double
+      dx,
       dy;
 
     if( draw_text->flags)
@@ -1232,13 +1256,16 @@ static void ipa_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
         TR = draw_text->bbox.TR;
         BL = draw_text->bbox.BL;
       }
-    dx = ((TR.x - TL.x) + (BR.x - BL.x)) / 2;
-    dy = ((TR.y - TL.y) + (BR.y - BL.y)) / 2;
-    bbox_width = sqrt(dx * dx + dy * dy);
-    dx = ((BL.x - TL.x) + (BR.x - TR.x)) / 2;
-    dy = ((BL.y - TL.y) + (BR.y - TR.y)) / 2;
-    bbox_height = sqrt(dx * dx + dy * dy);
+
+      dx = ((TR.x - TL.x) + (BR.x - BL.x)) / 2;
+      dy = ((TR.y - TL.y) + (BR.y - BL.y)) / 2;
+      bbox_width = sqrt(dx * dx + dy * dy);
+      dx = ((BL.x - TL.x) + (BR.x - TR.x)) / 2;
+      dy = ((BL.y - TL.y) + (BR.y - TR.y)) / 2;
+      bbox_height = sqrt(dx * dx + dy * dy);
+    }
   }
+#endif
 
   font = WMF_DC_FONT(draw_text->dc);
 
@@ -1733,8 +1760,10 @@ static void util_set_pen(wmfAPI * API, wmfDC * dc)
     pixel_width;
 
   unsigned int
-    pen_style,
-    pen_type;
+    pen_style;
+
+/*   unsigned int */
+/*     pen_type; */
 
   pen = WMF_DC_PEN(dc);
 
@@ -1749,7 +1778,7 @@ static void util_set_pen(wmfAPI * API, wmfDC * dc)
   pen_width = Max(pen_width, pixel_width*0.8);
 
   pen_style = (unsigned int) WMF_PEN_STYLE(pen);
-  pen_type = (unsigned int) WMF_PEN_TYPE(pen);
+  /* pen_type = (unsigned int) WMF_PEN_TYPE(pen); */
 
   /* Pen style specified? */
   if (pen_style == PS_NULL)
@@ -2099,14 +2128,13 @@ static void lite_font_map( wmfAPI* API, wmfFont* font)
   magick_font = (wmf_magick_font_t*)font->user_data;
   wmf_font_name = WMF_FONT_NAME(font);
 
-  LiberateMemory((void**)&magick_font->ps_name);
+  MagickFreeMemory(magick_font->ps_name);
 
   GetExceptionInfo(&exception);
   type_info_base=GetTypeInfo("*",&exception);
   if(type_info_base == 0)
     {
-      ThrowException(&ddata->image->exception,exception.severity,
-        exception.reason,exception.description);
+      CopyException(&ddata->image->exception,&exception);
       return;
     }
 
@@ -2328,7 +2356,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  OpenBlob failed");
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"leave ReadWMFImage()");
         }
-      ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+      ThrowReaderException(FileOpenError,UnableToOpenFile,image);
     }
   
   /*
@@ -2354,7 +2382,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  wmf_api_create failed");
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"leave ReadWMFImage()");
         }
-      ThrowReaderException(DelegateError,"UnableToInitializeWMFLibrary",image);
+      ThrowReaderException(DelegateError,UnableToInitializeWMFLibrary,image);
     }
 
   /* Register progress monitor */
@@ -2385,7 +2413,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  wmf_bbuf_input failed");
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"leave ReadWMFImage()");
         }
-      ThrowReaderException(FileOpenError,"UnableToOpenFile", image);
+      ThrowReaderException(FileOpenError,UnableToOpenFile, image);
     }
 
   /*
@@ -2403,7 +2431,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  wmf_scan failed with wmf_error %d", wmf_error);
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"leave ReadWMFImage()");
         }
-      ThrowReaderException(DelegateError,"FailedToScanFile",image);
+      ThrowReaderException(DelegateError,FailedToScanFile,image);
     }
 
   /*
@@ -2440,7 +2468,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  wmf_size failed with wmf_error %d", wmf_error);
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"leave ReadWMFImage()");
         }
-      ThrowReaderException(DelegateError,"FailedToComputeOutputSize",image);
+      ThrowReaderException(DelegateError,FailedToComputeOutputSize,image);
     }
 
   /* Obtain (or guess) metafile units */
@@ -2618,7 +2646,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  Playing WMF failed with wmf_error %d", wmf_error);
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"leave ReadWMFImage()");
         }
-      ThrowReaderException(DelegateError,"FailedToRenderFile",image);
+      ThrowReaderException(DelegateError,FailedToRenderFile,image);
     }
 
   /*
@@ -2636,7 +2664,7 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
 
   /* Check for and report any rendering error */
   if(image->exception.severity != UndefinedException)
-    ThrowException(exception,
+    ThrowException2(exception,
                    CoderWarning,
                    ddata->image->exception.reason,
                    ddata->image->exception.description);
@@ -2679,9 +2707,17 @@ ModuleExport void RegisterWMFImage(void)
   MagickInfo
     *entry;
 
+  static const char
+    *WMFNote = 
+    {
+      "Use density to adjust scale (default 72DPI). Use background or\n"
+      "texture to apply a background color or texture under the image."
+    };
+
   entry = SetMagickInfo("WMF");
   entry->decoder = ReadWMFImage;
   entry->description = AcquireString("Windows Meta File");
+  entry->note=AcquireString(WMFNote);
   entry->blob_support = True;
   entry->seekable_stream=True;
   entry->module = AcquireString("WMF");

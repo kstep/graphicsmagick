@@ -14,7 +14,7 @@ $x=$null->ReadImage('NULL:black');
 warn "$x" if "$x";
 
 $model=Graphics::Magick->new();
-$x=$model->ReadImage('model.gif');
+$x=$model->ReadImage('model.miff');
 warn "$x" if "$x";
 $model->Label('Magick');
 $model->Set(bordercolor=>'black');

@@ -118,8 +118,8 @@ MagickExport void *CropImageToHBITMAP(Image *image,
       ((geometry->y+(long) geometry->height) < 0) ||
       (geometry->x >= (long) image->columns) ||
       (geometry->y >= (long) image->rows))
-    ThrowImageException(OptionError,"GeometryDoesNotContainImage",
-      "UnableToCropImage");
+    ThrowImageException(OptionError,GeometryDoesNotContainImage,
+      MagickMsg(ResourceLimitError,UnableToCropImage));
   page=(*geometry);
   if ((page.x+(long) page.width) > (long) image->columns)
     page.width=image->columns-page.x;
@@ -137,8 +137,8 @@ MagickExport void *CropImageToHBITMAP(Image *image,
     }
 
   if ((page.width == 0) || (page.height == 0))
-    ThrowImageException(OptionError,"GeometryDimensionsAreZero",
-      "UnableToCropImage");
+    ThrowImageException(OptionError,GeometryDimensionsAreZero,
+      MagickMsg(ResourceLimitError,UnableToCropImage));
   /*
     Initialize crop image attributes.
   */
@@ -245,7 +245,9 @@ MagickExport void *CropImageToHBITMAP(Image *image,
 MagickExport unsigned int NTIsMagickConflict(const char *magick)
 {
   assert(magick != (char *) NULL);
-  if (strlen(magick) > 1)
+  if (strlen(magick) > 2)
+    return(False);
+  if ((strlen(magick) > 1) && (magick[1] != ':'))
     return(False);
   return((GetLogicalDrives()) & (1 << ((toupper((int) (*magick)))-'A')));
 }
@@ -366,10 +368,10 @@ MagickExport TypeInfo* NTGetTypeList( void )
           continue;
         *pos='\0'; /* Remove (TrueType) from string */
 
-        type_info=(TypeInfo *) AcquireMemory(sizeof(TypeInfo));
+        type_info=MagickAllocateMemory(TypeInfo *,sizeof(TypeInfo));
         if (type_info == (TypeInfo *) NULL)
-          MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-            "UnableToAllocateTypeInfo");
+          MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+            UnableToAllocateTypeInfo);
         (void) memset(type_info,0,sizeof(TypeInfo));
 
         type_info->path=AcquireString("Windows Fonts");
@@ -552,7 +554,7 @@ MagickExport TypeInfo* NTGetTypeList( void )
     int
       array_index = 0;
 
-    type_array = (TypeInfo**) AcquireMemory(sizeof(TypeInfo*)*list_entries);
+    type_array = MagickAllocateMemory(TypeInfo**,sizeof(TypeInfo*)*list_entries);
 
     while (type_list->previous != (TypeInfo *) NULL)
       type_list=type_list->previous;
@@ -574,7 +576,7 @@ MagickExport TypeInfo* NTGetTypeList( void )
         type_array[array_index]->next=(TypeInfo *) NULL;
       }
 
-    LiberateMemory((void**) &type_array);
+    MagickFreeMemory(type_array);
   }
 
   return (TypeInfo *) type_list;

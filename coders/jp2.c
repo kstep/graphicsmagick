@@ -17,7 +17,7 @@
 %                             JJ    P      22222                              %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                    Read/Write JPEG-2000 Image Format.                       %
 %                                                                             %
 %                                                                             %
 %                                John Cristy                                  %
@@ -246,12 +246,12 @@ static jas_stream_t *JP2StreamManager(Image *image)
   StreamManager
     *source;
 
-  stream=(jas_stream_t *) AcquireMemory(sizeof(jas_stream_t));
+  stream=MagickAllocateMemory(jas_stream_t *,sizeof(jas_stream_t));
   if (stream == (jas_stream_t *) NULL)
     return((jas_stream_t *) NULL);
   (void) memset(stream,0,sizeof(jas_stream_t));
   stream->rwlimit_=(-1);
-  stream->obj_=(jas_stream_obj_t *) AcquireMemory(sizeof(StreamManager));
+  stream->obj_=MagickAllocateMemory(jas_stream_obj_t *,sizeof(StreamManager));
   if (stream->obj_ == (jas_stream_obj_t *) NULL)
     return((jas_stream_t *) NULL);
   stream->ops_=(&StreamOperators);
@@ -312,19 +312,19 @@ static Image *ReadJP2Image(const ImageInfo *image_info,
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   /*
     Initialize JPEG 2000 API.
   */
   jas_init();
   jp2_stream=JP2StreamManager(image);
   if (jp2_stream == (jas_stream_t *) NULL)
-    ThrowReaderException(DelegateError,"UnableToManageJP2Stream",image);
+    ThrowReaderException(DelegateError,UnableToManageJP2Stream,image);
   jp2_image=jas_image_decode(jp2_stream,-1,0);
   if (jp2_image == (jas_image_t *) NULL)
     {
       (void) jas_stream_close(jp2_stream);
-      ThrowReaderException(DelegateError,"UnableToDecodeImageFile",image);
+      ThrowReaderException(DelegateError,UnableToDecodeImageFile,image);
     }
 
   /*
@@ -344,7 +344,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,
           {
             (void) jas_stream_close(jp2_stream);
             jas_image_destroy(jp2_image);
-            ThrowReaderException(CorruptImageError,"MissingImageChannel",image);
+            ThrowReaderException(CorruptImageError,MissingImageChannel,image);
           }
         number_components=3;
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -370,7 +370,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,
           {
             (void) jas_stream_close(jp2_stream);
             jas_image_destroy(jp2_image);
-            ThrowReaderException(CorruptImageError,"MissingImageChannel",image);
+            ThrowReaderException(CorruptImageError,MissingImageChannel,image);
           }
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
            "Image is in GRAY colorspace family");
@@ -387,7 +387,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,
       {
         (void) jas_stream_close(jp2_stream);
         jas_image_destroy(jp2_image);
-        ThrowReaderException(CoderError,"ColorspaceModelIsNotSupported",image);
+        ThrowReaderException(CoderError,ColorspaceModelIsNotSupported,image);
       }
     }
   image->columns=jas_image_width(jp2_image);
@@ -407,8 +407,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,
         {
           (void) jas_stream_close(jp2_stream);
           jas_image_destroy(jp2_image);
-          ThrowReaderException(CoderError,
-            "IrregularChannelGeometryNotSupported",image);
+          ThrowReaderException(CoderError,IrregularChannelGeometryNotSupported,image);
         }
     }
   /*
@@ -431,7 +430,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,
     if (pixels[i] == (jas_matrix_t *) NULL)
       {
         jas_image_destroy(jp2_image);
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image)
+        ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image)
       }
   }
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -467,7 +466,7 @@ static Image *ReadJP2Image(const ImageInfo *image_info,
       image->storage_class=PseudoClass;
       image->colors=(image->depth == 8 ? 256 : MaxColormapSize);
       if (!AllocateImageColormap(image,image->colors))
-        ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",
+        ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,
                              image);
       (void) LogMagickEvent(CoderEvent,GetMagickModule(),
         "PseudoClass image colors %lu",image->colors);
@@ -694,7 +693,8 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
 {
   char
     magick[MaxTextExtent],
-    options[MaxTextExtent];
+    option_keyval[MaxTextExtent],
+    *options = NULL;
 
   int
     format;
@@ -722,6 +722,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
     x;
 
   unsigned int
+    rate_specified=False,
     status;
 
   unsigned int
@@ -736,7 +737,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   assert(image->signature == MagickSignature);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   /*
     Intialize JPEG 2000 API.
   */
@@ -744,7 +745,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   jas_init();
   jp2_stream=JP2StreamManager(image);
   if (jp2_stream == (jas_stream_t *) NULL)
-    ThrowWriterException(DelegateError,"UnableToManageJP2Stream",image);
+    ThrowWriterException(DelegateError,UnableToManageJP2Stream,image);
   number_components=image->matte ? 4 : 3;
   if ((image_info->type != TrueColorType) &&
       IsGrayImage(image,&image->exception))
@@ -752,7 +753,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
 
   jp2_image=jas_image_create0();
   if (jp2_image == (jas_image_t *) NULL)
-    ThrowWriterException(DelegateError,"UnableToCreateImage",image);
+    ThrowWriterException(DelegateError,UnableToCreateImage,image);
 
   for (i=0; i < (long) number_components; i++)
   {
@@ -768,7 +769,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
 
     if (jas_image_addcmpt(jp2_image, i,&component_info)) {
       jas_image_destroy(jp2_image);
-      ThrowWriterException(DelegateError,"UnableToCreateImageComponent",image);
+      ThrowWriterException(DelegateError,UnableToCreateImageComponent,image);
     }
   }
 
@@ -827,7 +828,7 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
         for (x=0; x < i; x++)
           jas_matrix_destroy(pixels[x]);
         jas_image_destroy(jp2_image);
-        ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image)
+        ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image)
       }
   }
   for (y=0; y < (long) image->rows; y++)
@@ -881,46 +882,107 @@ static unsigned int WriteJP2Image(const ImageInfo *image_info,Image *image)
   (void) strncpy(magick,image_info->magick,MaxTextExtent-1);
   LocaleLower(magick);
   format=jas_image_strtofmt(magick);
+
   /*
-    A rough approximation to JPEG v1 quality using JPEG-2000.
-    Default "quality" 75 results in a request for 16:1 compression, which
-    results in image sizes approximating that of JPEG v1.
+    Support passing Jasper options.
   */
   {
-    double
-      rate=1.0;
+    const char
+      **option_name;
 
-    if ((image_info->quality < 99.5) && (image->rows*image->columns > 2500))
+    static const char *jasper_options[] =
       {
-        double
-          header_size,
-          current_size,
-          target_size,
-          d;
-        
-        d=115-image_info->quality;  /* Best number is 110-115 */
-        rate=100.0/(d*d);
-        header_size=550.0; /* Base file size. */
-        header_size+=(number_components-1)*142; /* Additional components */
-        /* FIXME: Need to account for any ICC profiles here */
+        "imgareatlx",
+        "imgareatly",
+        "tilegrdtlx",
+        "tilegrdtly",
+        "tilewidth",
+        "tileheight",
+        "prcwidth",
+        "prcheight",
+        "cblkwidth",
+        "cblkheight",
+        "mode",
+        "ilyrrates",
+        "prg",
+        "nomct",
+        "numrlvls",
+        "sop",
+        "eph",
+        "lazy",
+        "rate",
+        "termall",
+        "segsym",
+        "vcausal",
+        "pterm",
+        "resetprob",
+        "numgbits",
+        NULL
+      };
+    for (option_name = jasper_options; *option_name != NULL; option_name++)
+      {
+        const char
+          *value;
 
-        current_size=(double)image->rows*image->columns*(image->depth/8)*
-          number_components;
-        target_size=(current_size*rate)+header_size;
-        rate=target_size/current_size;
+        if ((value=AccessDefinition(image_info,"jp2",*option_name)) != NULL)
+          {
+            if(LocaleCompare(*option_name,"rate") == 0)
+              rate_specified=True;
+            FormatString(option_keyval,"%s=%.1024s ",*option_name,value);
+            ConcatenateString(&options,option_keyval);
+          }
       }
-    FormatString(options,"rate=%g",rate);
-    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
-      "Compression rate: %g (%3.2f:1)",rate,(double)1/rate);
   }
+  /*
+    Provide an emulation of IJG JPEG "quality" by default.
+  */
+  if (rate_specified == False)
+    {
+      double
+        rate=1.0;
+      
+      /*
+        A rough approximation to JPEG v1 quality using JPEG-2000.
+        Default "quality" 75 results in a request for 16:1 compression, which
+        results in image sizes approximating that of JPEG v1.
+      */
+      if ((image_info->quality < 99.5) && (image->rows*image->columns > 2500))
+        {
+          double
+            header_size,
+            current_size,
+            target_size,
+            d;
+          
+          d=115-image_info->quality;  /* Best number is 110-115 */
+          rate=100.0/(d*d);
+          header_size=550.0; /* Base file size. */
+          header_size+=(number_components-1)*142; /* Additional components */
+          /* FIXME: Need to account for any ICC profiles here */
+          
+          current_size=(double)image->rows*image->columns*(image->depth/8)*
+            number_components;
+          target_size=(current_size*rate)+header_size;
+          rate=target_size/current_size;
+        }
+      FormatString(option_keyval,"%s=%g ","rate",rate);
+      ConcatenateString(&options,option_keyval);
+      (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+        "Compression rate: %g (%3.2f:1)",rate,(double)1/rate);
+    }
+  if (options)
+    (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+       "Jasper options: \"%s\"", options);
+
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"Encoding image");
   status=jas_image_encode(jp2_image,jp2_stream,format,options);
   (void) jas_stream_close(jp2_stream);
+  MagickFreeMemory(options);
   for (i=0; i < (long) number_components; i++)
     jas_matrix_destroy(pixels[i]);
   jas_image_destroy(jp2_image);
   if (status)
-    ThrowWriterException(DelegateError,"UnableToEncodeImageFile",image);
+    ThrowWriterException(DelegateError,UnableToEncodeImageFile,image);
   return(True);
 }
 #endif

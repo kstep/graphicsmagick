@@ -17,7 +17,7 @@
 %                             M   M  SSSSS  LLLLL                             %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                    Execute Magick Scripting Language Scripts.               %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -37,6 +37,7 @@
   Include declarations.
 */
 #include "magick/studio.h"
+#if defined(HasXML)
 #include "magick/attribute.h"
 #include "magick/blob.h"
 #include "magick/color.h"
@@ -55,18 +56,16 @@
 #include "magick/shear.h"
 #include "magick/transform.h"
 #include "magick/utility.h"
-#if defined(HasXML)
-#  if defined(WIN32)
-#    if defined(__MINGW32__)
-#      define _MSC_VER
-#    endif
-#    include <win32config.h>
+#if defined(WIN32)
+#  if defined(__MINGW32__)
+#    define _MSC_VER
 #  endif
-#  include <libxml/parser.h>
-#  include <libxml/xmlmemory.h>
-#  include <libxml/parserInternals.h>
-#  include <libxml/xmlerror.h>
+#  include <win32config.h>
 #endif
+#include <libxml/parser.h>
+#include <libxml/xmlmemory.h>
+#include <libxml/parserInternals.h>
+#include <libxml/xmlerror.h>
 
 /*
   Typedef declaractions.
@@ -100,13 +99,11 @@ typedef struct _MSLInfo
   MSLGroupInfo
     *group_info;
 
-#if defined(HasXML)
   xmlParserCtxtPtr
     parser;
 
   xmlDocPtr
     document;
-#endif
 } MSLInfo;
 
 /*
@@ -115,7 +112,6 @@ typedef struct _MSLInfo
 static unsigned int
   WriteMSLImage(const ImageInfo *,Image *);
 
-#if defined(HasXML)
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
@@ -393,14 +389,14 @@ static void MSLUnparsedEntityDeclaration(void *context,const xmlChar *name,
 
 static void MSLSetDocumentLocator(void *context,xmlSAXLocatorPtr location)
 {
-  MSLInfo
-    *msl_info;
+/*   MSLInfo */
+/*     *msl_info; */
 
   /*
     Receive the document locator at startup, actually xmlDefaultSAXLocator.
   */
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  SAX.setDocumentLocator()\n");
-  msl_info=(MSLInfo *) context;
+/*   msl_info=(MSLInfo *) context; */
 }
 
 static void MSLStartDocument(void *context)
@@ -429,13 +425,13 @@ static void MSLStartDocument(void *context)
 
 static void MSLEndDocument(void *context)
 {
-  MSLInfo
-    *msl_info;
+/*   MSLInfo */
+/*     *msl_info; */
 
   /*
     Called when the document end has been detected.
   */
-  msl_info=(MSLInfo *) context;
+/*   msl_info=(MSLInfo *) context; */
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  SAX.endDocument()");
 }
 
@@ -450,16 +446,16 @@ static void MSLPushImage(MSLInfo *msl_info,Image *image)
   assert(msl_info != (MSLInfo *) NULL);
   msl_info->n++;
   n=msl_info->n;
-  ReacquireMemory((void **) &msl_info->image_info,(n+1)*sizeof(ImageInfo *));
-  ReacquireMemory((void **) &msl_info->draw_info,(n+1)*sizeof(DrawInfo *));
-  ReacquireMemory((void **) &msl_info->attributes,(n+1)*sizeof(Image *));
-  ReacquireMemory((void **) &msl_info->image,(n+1)*sizeof(Image *));
+  MagickReallocMemory(msl_info->image_info,(n+1)*sizeof(ImageInfo *));
+  MagickReallocMemory(msl_info->draw_info,(n+1)*sizeof(DrawInfo *));
+  MagickReallocMemory(msl_info->attributes,(n+1)*sizeof(Image *));
+  MagickReallocMemory(msl_info->image,(n+1)*sizeof(Image *));
   if ((msl_info->image_info == (ImageInfo **) NULL) ||
     (msl_info->draw_info == (DrawInfo **) NULL) ||
     (msl_info->attributes == (Image **) NULL) ||
     (msl_info->image == (Image **) NULL))
-      ThrowException(msl_info->exception,ResourceLimitFatalError,
-        "MemoryAllocationFailed","UnableToAllocateImage");
+      ThrowException3(msl_info->exception,ResourceLimitFatalError,
+        MemoryAllocationFailed,UnableToAllocateImage);
   msl_info->image_info[n]=CloneImageInfo(msl_info->image_info[n-1]);
   msl_info->draw_info[n]=
     CloneDrawInfo(msl_info->image_info[n-1], msl_info->draw_info[n-1]);
@@ -467,8 +463,8 @@ static void MSLPushImage(MSLInfo *msl_info,Image *image)
   msl_info->image[n]=(Image *) image;
   if ((msl_info->image_info[n] == (ImageInfo *) NULL) ||
     (msl_info->attributes[n] == (Image *) NULL))
-    ThrowException(msl_info->exception,ResourceLimitFatalError,
-      "MemoryAllocationFailed","UnableToAllocateImage");
+    ThrowException3(msl_info->exception,ResourceLimitFatalError,
+      MemoryAllocationFailed,UnableToAllocateImage);
   if ( msl_info->nGroups )
     msl_info->group_info[msl_info->nGroups-1].numImages++;
   attribute=GetImageAttribute(msl_info->attributes[n-1],(char *) NULL);
@@ -543,7 +539,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
         if (msl_info->image[n] == (Image *) NULL)
         {
-          ThrowException(msl_info->exception,OptionError,"NoImagesDefined",
+          ThrowException(msl_info->exception,OptionError,NoImagesDefined,
             (char *) name);
           break;
         }
@@ -567,8 +563,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
                 radius = atof( value );
                 break;
               }
-              ThrowException(msl_info->exception,OptionError,
-                "UnrecognizedAttribute",keyword);
+              ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
               break;
             }
             case 'S':
@@ -579,14 +574,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
                 sigma = atoi( value );
                 break;
               }
-              ThrowException(msl_info->exception,OptionError,
-                "UnrecognizedAttribute",keyword);
+              ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
               break;
             }
             default:
             {
-              ThrowException(msl_info->exception,OptionError,
-                "UnrecognizedAttribute",keyword);
+              ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
               break;
             }
           }
@@ -616,7 +609,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
         if (msl_info->image[n] == (Image *) NULL)
         {
-          ThrowException(msl_info->exception,OptionError,"NoImagesDefined",
+          ThrowException(msl_info->exception,OptionError,NoImagesDefined,
             (char *) name);
           break;
         }
@@ -641,8 +634,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
                   &msl_info->image[n]->border_color,&exception);
                 break;
               }
-              ThrowException(msl_info->exception,OptionError,
-                "UnrecognizedAttribute",keyword);
+              ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
               break;
             }
             case 'G':
@@ -653,8 +645,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
               (void) GetMagickGeometry(value,&x,&y,&width,&height);
               break;
               }
-            ThrowException(msl_info->exception,OptionError,
-              "UnrecognizedAttribute",keyword);
+            ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
             break;
             }
             case 'H':
@@ -665,8 +656,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
               height = atoi( value );
               break;
               }
-            ThrowException(msl_info->exception,OptionError,
-              "UnrecognizedAttribute",keyword);
+            ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
             break;
             }
             case 'W':
@@ -677,14 +667,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
               width = atoi( value );
               break;
               }
-            ThrowException(msl_info->exception,OptionError,
-              "UnrecognizedAttribute",keyword);
+            ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
             break;
             }
             default:
             {
-            ThrowException(msl_info->exception,OptionError,
-              "UnrecognizedAttribute",keyword);
+            ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
             break;
             }
           }
@@ -714,8 +702,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
         break;
       }
-      ThrowException(msl_info->exception,OptionError,
-      "UnrecognizedElement",(const char *) name);
+      ThrowException(msl_info->exception,OptionError,UnrecognizedElement,(const char *) name);
     }
   case 'C':
   case 'c':
@@ -727,8 +714,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
         if (msl_info->image[n] == (Image *) NULL)
         {
-          ThrowException(msl_info->exception,OptionError,
-          "NoImagesDefined",(char *) name);
+          ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
           break;
         }
         /*
@@ -751,8 +737,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
                 radius = atof( value );
                 break;
               }
-              ThrowException(msl_info->exception,OptionError,
-                "UnrecognizedAttribute",keyword);
+              ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
               break;
             }
             case 'S':
@@ -763,14 +748,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
                 sigma = atoi( value );
                 break;
               }
-              ThrowException(msl_info->exception,OptionError,
-                "UnrecognizedAttribute",keyword);
+              ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
               break;
             }
             default:
             {
-              ThrowException(msl_info->exception,OptionError,
-                "UnrecognizedAttribute",keyword);
+              ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
               break;
             }
           }
@@ -801,8 +784,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
         if (msl_info->image[n] == (Image *) NULL)
         {
-          ThrowException(msl_info->exception,OptionError,
-          "NoImagesDefined",(char *) name);
+          ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
           break;
         }
         if (attributes == (const xmlChar **) NULL)
@@ -822,8 +804,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
             (void) GetMagickGeometry(value,&x,&y,&width,&height);
             break;
             }
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
           case 'H':
@@ -834,8 +815,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
             height = atoi( value );
             break;
             }
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
           case 'W':
@@ -846,8 +826,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
             width = atoi( value );
             break;
             }
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
           case 'X':
@@ -858,8 +837,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
             x = atoi( value );
             break;
             }
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
           case 'Y':
@@ -870,14 +848,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
             y = atoi( value );
             break;
             }
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
           default:
           {
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
         }
@@ -919,8 +895,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
         if (msl_info->image[n] == (Image *) NULL)
         {
-          ThrowException(msl_info->exception,OptionError,
-                  "NoImagesDefined",(char *) name);
+          ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
           break;
         }
         if (attributes == (const xmlChar **) NULL)
@@ -999,8 +974,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
                   compositeOp = OverlayCompositeOp;
                 break;
               }
-              ThrowException(msl_info->exception,OptionError,
-                      "UnrecognizedAttribute",keyword);
+              ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
               break;
             }
             case 'G':
@@ -1033,8 +1007,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
                   gravity = SouthEastGravity;
                 break;
               }
-              ThrowException(msl_info->exception,OptionError,
-                      "UnrecognizedAttribute",keyword);
+              ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
               break;
             }
             case 'I':
@@ -1054,8 +1027,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
                 }
                 break;
               }
-              ThrowException(msl_info->exception,OptionError,
-                      "UnrecognizedAttribute",keyword);
+              ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
               break;
             }
             case 'X':
@@ -1066,8 +1038,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
                 x = atoi( value );
                 break;
               }
-              ThrowException(msl_info->exception,OptionError,
-                      "UnrecognizedAttribute",keyword);
+              ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
               break;
             }
             case 'Y':
@@ -1078,14 +1049,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
                 y = atoi( value );
                 break;
               }
-              ThrowException(msl_info->exception,OptionError,
-                      "UnrecognizedAttribute",keyword);
+              ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
               break;
             }
             default:
             {
-              ThrowException(msl_info->exception,OptionError,
-                      "UnrecognizedAttribute",keyword);
+              ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
               break;
             }
           }
@@ -1096,9 +1065,6 @@ static void MSLStartElement(void *context,const xmlChar *name,
         */
         if (srcImage != (Image*)NULL)
         {
-          unsigned int
-              result;
-
           switch (gravity)
           {
             case ForgetGravity:
@@ -1163,11 +1129,10 @@ static void MSLStartElement(void *context,const xmlChar *name,
             }
           }
 
-          result = CompositeImage(msl_info->image[n], compositeOp, srcImage, x, y);
+          CompositeImage(msl_info->image[n], compositeOp, srcImage, x, y);
           break;
         } else
-          ThrowException(msl_info->exception,OptionError,
-                  "no composite image defined",(char *) name);
+          ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
 
         break;
       }
@@ -1180,8 +1145,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
         if (msl_info->image[n] == (Image *) NULL)
         {
-          ThrowException(msl_info->exception,OptionError,
-          "NoImagesDefined",(char *) name);
+          ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
           break;
         }
         if (attributes == (const xmlChar **) NULL)
@@ -1201,8 +1165,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
             (void) GetMagickGeometry(value,&x,&y,&width,&height);
             break;
             }
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
           case 'H':
@@ -1213,8 +1176,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
             height = atoi( value );
             break;
             }
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
           case 'W':
@@ -1225,8 +1187,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
             width = atoi( value );
             break;
             }
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
           case 'X':
@@ -1237,8 +1198,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
             x = atoi( value );
             break;
             }
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
           case 'Y':
@@ -1249,14 +1209,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
             y = atoi( value );
             break;
             }
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
           default:
           {
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
         }
@@ -1285,8 +1243,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
         break;
       }
-      ThrowException(msl_info->exception,OptionError,
-      "UnrecognizedElement",(const char *) name);
+      ThrowException(msl_info->exception,OptionError,UnrecognizedElement,(const char *) name);
     }
   case 'D':
   case 'd':
@@ -1295,8 +1252,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
       {
         if (msl_info->image[n] == (Image *) NULL)
         {
-          ThrowException(msl_info->exception,OptionError,
-                  "NoImagesDefined",(char *) name);
+          ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
           break;
         }
 
@@ -1315,8 +1271,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           break;
         }
       }
-      ThrowException(msl_info->exception,OptionError,
-              "UnrecognizedElement",(const char *) name);
+      ThrowException(msl_info->exception,OptionError,UnrecognizedElement,(const char *) name);
     }
   case 'E':
   case 'e':
@@ -1327,8 +1282,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
         if (msl_info->image[n] == (Image *) NULL)
         {
-          ThrowException(msl_info->exception,OptionError,
-            "NoImagesDefined",(char *) name);
+          ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
           break;
         }
         /*
@@ -1351,14 +1305,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
                 radius = atof( value );
                 break;
               }
-              ThrowException(msl_info->exception,OptionError,
-                "UnrecognizedAttribute",keyword);
+              ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
               break;
             }
             default:
             {
-              ThrowException(msl_info->exception,OptionError,
-                "UnrecognizedAttribute",keyword);
+              ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
               break;
             }
           }
@@ -1387,8 +1339,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
         if (msl_info->image[n] == (Image *) NULL)
         {
-          ThrowException(msl_info->exception,OptionError,
-          "NoImagesDefined",(char *) name);
+          ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
           break;
         }
         /*
@@ -1411,8 +1362,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
                 radius = atof( value );
                 break;
               }
-              ThrowException(msl_info->exception,OptionError,
-                "UnrecognizedAttribute",keyword);
+              ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
               break;
             }
             case 'S':
@@ -1423,14 +1373,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
                 sigma = atoi( value );
                 break;
               }
-              ThrowException(msl_info->exception,OptionError,
-                "UnrecognizedAttribute",keyword);
+              ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
               break;
             }
             default:
             {
-              ThrowException(msl_info->exception,OptionError,
-                "UnrecognizedAttribute",keyword);
+              ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
               break;
             }
           }
@@ -1456,8 +1404,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
       {
         if (msl_info->image[n] == (Image *) NULL)
         {
-          ThrowException(msl_info->exception,OptionError,
-                  "NoImagesDefined",(char *) name);
+          ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
           break;
         }
 
@@ -1480,8 +1427,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
       {
         if (msl_info->image[n] == (Image *) NULL)
         {
-          ThrowException(msl_info->exception,OptionError,
-                  "NoImagesDefined",(char *) name);
+          ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
           break;
         }
 
@@ -1493,8 +1439,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           break;
         }
       }
-      ThrowException(msl_info->exception,OptionError,
-              "UnrecognizedElement",(const char *) name);
+      ThrowException(msl_info->exception,OptionError,UnrecognizedElement,(const char *) name);
     }
   case 'F':
   case 'f':
@@ -1503,8 +1448,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
       {
         if (msl_info->image[n] == (Image *) NULL)
         {
-          ThrowException(msl_info->exception,OptionError,
-                  "NoImagesDefined",(char *) name);
+          ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
           break;
         }
 
@@ -1527,8 +1471,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
       {
         if (msl_info->image[n] == (Image *) NULL)
         {
-          ThrowException(msl_info->exception,OptionError,
-                  "NoImagesDefined",(char *) name);
+          ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
           break;
         }
 
@@ -1551,8 +1494,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
       {
         if (msl_info->image[n] == (Image *) NULL)
         {
-          ThrowException(msl_info->exception,OptionError,
-                  "NoImagesDefined",(char *) name);
+          ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
           break;
         }
 
@@ -1579,8 +1521,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
         if (msl_info->image[n] == (Image *) NULL)
         {
-          ThrowException(msl_info->exception,OptionError,
-          "NoImagesDefined",(char *) name);
+          ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
           break;
         }
         /*
@@ -1604,8 +1545,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
                   &msl_info->image[n]->matte_color,&exception);
                 break;
               }
-              ThrowException(msl_info->exception,OptionError,
-                "UnrecognizedAttribute",keyword);
+              ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
             }
             case 'G':
             case 'g':
@@ -1615,8 +1555,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
               (void) GetMagickGeometry(value,&x,&y,&width,&height);
               break;
               }
-            ThrowException(msl_info->exception,OptionError,
-              "UnrecognizedAttribute",keyword);
+            ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
             break;
             }
             case 'H':
@@ -1627,8 +1566,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
               height = atoi( value );
               break;
               }
-            ThrowException(msl_info->exception,OptionError,
-              "UnrecognizedAttribute",keyword);
+            ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
             break;
             }
             case 'I':
@@ -1639,8 +1577,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
               y = atoi( value );
               break;
               }
-            ThrowException(msl_info->exception,OptionError,
-              "UnrecognizedAttribute",keyword);
+            ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
             break;
             }
             case 'O':
@@ -1651,8 +1588,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
               x = atoi( value );
               break;
               }
-            ThrowException(msl_info->exception,OptionError,
-              "UnrecognizedAttribute",keyword);
+            ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
             break;
             }
             case 'W':
@@ -1663,8 +1599,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
               width = atoi( value );
               break;
               }
-            ThrowException(msl_info->exception,OptionError,
-              "UnrecognizedAttribute",keyword);
+            ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
             break;
             }
             case 'X':
@@ -1675,8 +1610,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
               x = atoi( value );
               break;
               }
-            ThrowException(msl_info->exception,OptionError,
-              "UnrecognizedAttribute",keyword);
+            ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
             break;
             }
             case 'Y':
@@ -1687,14 +1621,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
               y = atoi( value );
               break;
               }
-            ThrowException(msl_info->exception,OptionError,
-              "UnrecognizedAttribute",keyword);
+            ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
             break;
             }
             default:
             {
-            ThrowException(msl_info->exception,OptionError,
-              "UnrecognizedAttribute",keyword);
+            ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
             break;
             }
           }
@@ -1726,8 +1658,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
         break;
       }
-      ThrowException(msl_info->exception,OptionError,
-              "UnrecognizedElement",(const char *) name);
+      ThrowException(msl_info->exception,OptionError,UnrecognizedElement,(const char *) name);
     }
     case 'G':
     case 'g':
@@ -1739,8 +1670,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
       if (msl_info->image[n] == (Image *) NULL)
       {
-        ThrowException(msl_info->exception,OptionError,
-                "NoImagesDefined",(char *) name);
+        ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
         break;
       }
       if (attributes == (const xmlChar **) NULL)
@@ -1760,8 +1690,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
               gammaBlue = atof( value );
               break;
             }
-            ThrowException(msl_info->exception,OptionError,
-                    "UnrecognizedAttribute",keyword);
+            ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
             break;
           }
           case 'G':
@@ -1772,8 +1701,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
               gammaGreen = atof( value );
               break;
             }
-            ThrowException(msl_info->exception,OptionError,
-                    "UnrecognizedAttribute",keyword);
+            ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
             break;
           }
           case 'R':
@@ -1784,14 +1712,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
               gammaRed = atof( value );
               break;
             }
-            ThrowException(msl_info->exception,OptionError,
-                    "UnrecognizedAttribute",keyword);
+            ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
             break;
           }
           default:
           {
-            ThrowException(msl_info->exception,OptionError,
-                    "UnrecognizedAttribute",keyword);
+            ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
             break;
           }
         }
@@ -1810,8 +1736,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         {
           if (msl_info->image[n] == (Image *) NULL)
             {
-              ThrowException(msl_info->exception,OptionError,
-                "NoImagesDefined",(char *) name);
+              ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
               break;
             }
           if (attributes == (const xmlChar **) NULL)
@@ -1832,8 +1757,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
                     (void) SetImageAttribute(msl_info->attributes[n],key,value);
                     break;
                   }
-                ThrowException(msl_info->exception,OptionError,
-                  "UnrecognizedAttribute",keyword);
+                ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
               }
               case 'W':
               case 'w':
@@ -1844,13 +1768,11 @@ static void MSLStartElement(void *context,const xmlChar *name,
                     (void) SetImageAttribute(msl_info->attributes[n],key,value);
                     break;
                   }
-                ThrowException(msl_info->exception,OptionError,
-                  "UnrecognizedAttribute",keyword);
+                ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
               }
               default:
               {
-                ThrowException(msl_info->exception,OptionError,
-                  "UnrecognizedAttribute",keyword);
+                ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
                 break;
               }
             }
@@ -1863,8 +1785,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
       ReacquireMemory((void**) &msl_info->group_info, (msl_info->nGroups+1)*sizeof(MSLGroupInfo));
       break;
     }
-      ThrowException(msl_info->exception,OptionError,
-        "UnrecognizedElement",(const char *) name);
+      ThrowException(msl_info->exception,OptionError,UnrecognizedElement,(const char *) name);
     }
     case 'I':
     case 'i':
@@ -1894,8 +1815,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
               &msl_info->image_info[n]->background_color,&exception);
             break;
           }
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
         }
 
@@ -1931,8 +1851,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
               }
             break;
           }
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
         }
 
@@ -1945,8 +1864,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
             (void) SetImageAttribute(msl_info->attributes[n],keyword,value);
             break;
           }
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
         }
               case 'S':
@@ -1957,14 +1875,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
           CloneString(&msl_info->image_info[n]->size,value);
           break;
         }
-                ThrowException(msl_info->exception,OptionError,
-                  "UnrecognizedAttribute",keyword);
+                ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
                 break;
               }
               default:
               {
-                ThrowException(msl_info->exception,OptionError,
-                  "UnrecognizedAttribute",keyword);
+                ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
                 break;
               }
             }
@@ -1978,8 +1894,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
         if (msl_info->image[n] == (Image *) NULL)
         {
-          ThrowException(msl_info->exception,OptionError,
-          "NoImagesDefined",(char *) name);
+          ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
           break;
         }
         if (attributes == (const xmlChar **) NULL)
@@ -1999,14 +1914,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
             amount = atof( value );
             break;
             }
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
           default:
           {
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
         }
@@ -2027,8 +1940,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         break;
         }
       }
-      ThrowException(msl_info->exception,OptionError,
-        "UnrecognizedElement",(const char *) name);
+      ThrowException(msl_info->exception,OptionError,UnrecognizedElement,(const char *) name);
     }
   case 'M':
   case 'm':
@@ -2037,8 +1949,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
       {
         if (msl_info->image[n] == (Image *) NULL)
         {
-          ThrowException(msl_info->exception,OptionError,
-                  "NoImagesDefined",(char *) name);
+          ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
           break;
         }
 
@@ -2064,8 +1975,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
         if (msl_info->image[n] == (Image *) NULL)
         {
-          ThrowException(msl_info->exception,OptionError,
-          "NoImagesDefined",(char *) name);
+          ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
           break;
         }
         if (attributes == (const xmlChar **) NULL)
@@ -2085,14 +1995,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
             radius = atoi( value );
             break;
             }
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
           default:
           {
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
         }
@@ -2117,8 +2025,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
       {
         if (msl_info->image[n] == (Image *) NULL)
         {
-          ThrowException(msl_info->exception,OptionError,
-                  "NoImagesDefined",(char *) name);
+          ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
           break;
         }
 
@@ -2146,8 +2053,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         */
         break;
       }
-      ThrowException(msl_info->exception,OptionError,
-              "UnrecognizedElement",(const char *) name);
+      ThrowException(msl_info->exception,OptionError,UnrecognizedElement,(const char *) name);
     }
   case 'N':
   case 'n':
@@ -2156,8 +2062,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
       {
         if (msl_info->image[n] == (Image *) NULL)
         {
-          ThrowException(msl_info->exception,OptionError,
-                  "NoImagesDefined",(char *) name);
+          ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
           break;
         }
 
@@ -2169,8 +2074,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           break;
         }
       }
-      ThrowException(msl_info->exception,OptionError,
-              "UnrecognizedElement",(const char *) name);
+      ThrowException(msl_info->exception,OptionError,UnrecognizedElement,(const char *) name);
     }
   case 'O':
   case 'o':
@@ -2182,8 +2086,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
         if (msl_info->image[n] == (Image *) NULL)
         {
-          ThrowException(msl_info->exception,OptionError,
-          "NoImagesDefined",(char *) name);
+          ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
           break;
         }
         if (attributes == (const xmlChar **) NULL)
@@ -2203,14 +2106,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
             radius = atoi( value );
             break;
             }
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
           default:
           {
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
         }
@@ -2231,8 +2132,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         break;
         }
       }
-      ThrowException(msl_info->exception,OptionError,
-              "UnrecognizedElement",(const char *) name);
+      ThrowException(msl_info->exception,OptionError,UnrecognizedElement,(const char *) name);
     }
     case 'P':
     case 'p':
@@ -2258,22 +2158,19 @@ static void MSLStartElement(void *context,const xmlChar *name,
           (void) LogMagickEvent(CoderEvent,GetMagickModule(),"%s",value);
           break;
         }
-                ThrowException(msl_info->exception,OptionError,
-                  "UnrecognizedAttribute",keyword);
+        ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
         break;
               }
               default:
               {
-                ThrowException(msl_info->exception,OptionError,
-                  "UnrecognizedAttribute",keyword);
+                ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
                 break;
               }
             }
           }
           break;
         }
-      ThrowException(msl_info->exception,OptionError,
-        "UnrecognizedElement",(const char *) name);
+      ThrowException(msl_info->exception,OptionError,UnrecognizedElement,(const char *) name);
     }
     case 'R':
     case 'r':
@@ -2320,8 +2217,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
                       }
                     break;
                   }
-                ThrowException(msl_info->exception,OptionError,
-                  "UnrecognizedAttribute",keyword);
+                ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
                 break;
               }
               case 'S':
@@ -2332,14 +2228,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
                     msl_info->image_info[n]->size=AllocateString(value);
                     break;
                   }
-                ThrowException(msl_info->exception,OptionError,
-                  "UnrecognizedAttribute",keyword);
+                ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
                 break;
               }
               default:
               {
-                ThrowException(msl_info->exception,OptionError,
-                  "UnrecognizedAttribute",keyword);
+                ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
                 break;
               }
             }
@@ -2353,8 +2247,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
         if (msl_info->image[n] == (Image *) NULL)
         {
-          ThrowException(msl_info->exception,OptionError,
-          "NoImagesDefined",(char *) name);
+          ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
           break;
         }
         if (attributes == (const xmlChar **) NULL)
@@ -2374,14 +2267,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
             radius = atoi( value );
             break;
             }
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
           default:
           {
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
         }
@@ -2412,8 +2303,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
           if (msl_info->image[n] == (Image *) NULL)
             {
-              ThrowException(msl_info->exception,OptionError,
-                "NoImagesDefined",(char *) name);
+              ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
               break;
             }
           if (attributes == (const xmlChar **) NULL)
@@ -2433,8 +2323,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
             msl_info->image[n]->blur = atof( value );
             break;
             }
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
         case 'F':
@@ -2477,8 +2366,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
             msl_info->image[n]->filter = newFilter;
             break;
           }
-                ThrowException(msl_info->exception,OptionError,
-                  "UnrecognizedAttribute",keyword);
+                ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
                 break;
           }
               case 'G':
@@ -2489,8 +2377,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
                     (void) GetMagickGeometry(value,&x,&y,&width,&height);
                     break;
                   }
-                ThrowException(msl_info->exception,OptionError,
-                  "UnrecognizedAttribute",keyword);
+                ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
                 break;
               }
               case 'H':
@@ -2501,8 +2388,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           height = atoi( value );
           break;
                   }
-                ThrowException(msl_info->exception,OptionError,
-                  "UnrecognizedAttribute",keyword);
+                ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
                 break;
               }
               case 'W':
@@ -2513,14 +2399,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
           width = atoi( value );
           break;
                   }
-                ThrowException(msl_info->exception,OptionError,
-                  "UnrecognizedAttribute",keyword);
+                ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
                 break;
               }
               default:
               {
-                ThrowException(msl_info->exception,OptionError,
-                  "UnrecognizedAttribute",keyword);
+                ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
                 break;
               }
             }
@@ -2555,8 +2439,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
         if (msl_info->image[n] == (Image *) NULL)
         {
-          ThrowException(msl_info->exception,OptionError,
-          "NoImagesDefined",(char *) name);
+          ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
           break;
         }
         if (attributes == (const xmlChar **) NULL)
@@ -2576,8 +2459,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
             (void) GetMagickGeometry(value,&x,&y,&width,&height);
             break;
             }
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
           case 'X':
@@ -2588,8 +2470,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
             x = atoi( value );
             break;
             }
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
           case 'Y':
@@ -2600,14 +2481,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
             y = atoi( value );
             break;
             }
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
           default:
           {
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
         }
@@ -2636,8 +2515,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
         if (msl_info->image[n] == (Image *) NULL)
         {
-          ThrowException(msl_info->exception,OptionError,
-          "NoImagesDefined",(char *) name);
+          ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
           break;
         }
         if (attributes == (const xmlChar **) NULL)
@@ -2657,14 +2535,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
             degrees = atof( value );
             break;
             }
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
           default:
           {
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
         }
@@ -2686,8 +2562,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
         break;
       }
-      ThrowException(msl_info->exception,OptionError,
-      "UnrecognizedElement",(const char *) name);
+      ThrowException(msl_info->exception,OptionError,UnrecognizedElement,(const char *) name);
     }
   case 'S':
   case 's':
@@ -2701,8 +2576,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
         if (msl_info->image[n] == (Image *) NULL)
         {
-          ThrowException(msl_info->exception,OptionError,
-          "NoImagesDefined",(char *) name);
+          ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
           break;
         }
         if (attributes == (const xmlChar **) NULL)
@@ -2722,8 +2596,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
             (void) GetMagickGeometry(value,&x,&y,&width,&height);
             break;
             }
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
           case 'H':
@@ -2734,8 +2607,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
             height = atoi( value );
             break;
             }
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
           case 'W':
@@ -2746,14 +2618,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
             width = atoi( value );
             break;
             }
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
           default:
           {
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
         }
@@ -2784,8 +2654,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
         if (msl_info->image[n] == (Image *) NULL)
         {
-          ThrowException(msl_info->exception,OptionError,
-          "NoImagesDefined",(char *) name);
+          ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
           break;
         }
         if (attributes == (const xmlChar **) NULL)
@@ -2805,8 +2674,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
             (void) GetMagickGeometry(value,&x,&y,&width,&height);
             break;
             }
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
           case 'H':
@@ -2817,8 +2685,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
             height = atoi( value );
             break;
             }
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
           case 'W':
@@ -2829,14 +2696,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
             width = atoi( value );
             break;
             }
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
           default:
           {
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
         }
@@ -2862,8 +2727,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
       {
         if (msl_info->image[n] == (Image *) NULL)
         {
-          ThrowException(msl_info->exception,OptionError,
-                  "NoImagesDefined",(char *) name);
+          ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
           break;
         }
 
@@ -2891,8 +2755,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
                   &msl_info->image_info[n]->border_color,&exception);
                 break;
               }
-              ThrowException(msl_info->exception,OptionError,
-                "UnrecognizedAttribute",keyword);
+              ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
               break;
             }
             case 'C':
@@ -2921,12 +2784,10 @@ static void MSLStartElement(void *context,const xmlChar *name,
                 else if (LocaleCompare(value, "RGB") == 0)
                   SetImageType( msl_info->image[n], TrueColorType );
                 else
-                  ThrowException(msl_info->exception,OptionError,
-                          "Unrecognized colorspace",keyword);
+                  ThrowException(msl_info->exception,OptionError,UnrecognizedColorspace,keyword);
                 break;
               }
-              ThrowException(msl_info->exception,OptionError,
-                "UnrecognizedAttribute",keyword);
+              ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
               break;
             }
             case 'D':
@@ -2945,8 +2806,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
                   msl_info->image[n]->y_resolution = msl_info->image[n]->x_resolution;
                 break;
               }
-              ThrowException(msl_info->exception,OptionError,
-                "UnrecognizedAttribute",keyword);
+              ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
               break;
             }
             case 'M':
@@ -2963,8 +2823,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
                   &msl_info->image_info[n]->matte_color,&exception);
                 break;
               }
-              ThrowException(msl_info->exception,OptionError,
-                "UnrecognizedAttribute",keyword);
+              ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
               break;
             }
             case 'O':
@@ -2977,7 +2836,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
                 if (value[len-1] == '%') {
                   char  tmp[100];
-                  strncpy(tmp, value, len-1);
+                  strncpy(tmp, value, (size_t) (len-1));
                   opac = atoi( tmp );
                   opac = (int)(MaxRGB * ((float)opac/100));
                 } else
@@ -2986,14 +2845,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
                 break;
               }
 
-              ThrowException(msl_info->exception,OptionError,
-                      "UnrecognizedAttribute",keyword);
+              ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
               break;
             }
             default:
             {
-              ThrowException(msl_info->exception,OptionError,
-                      "UnrecognizedAttribute",keyword);
+              ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
               break;
             }
           }
@@ -3007,8 +2864,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
         if (msl_info->image[n] == (Image *) NULL)
         {
-          ThrowException(msl_info->exception,OptionError,
-          "NoImagesDefined",(char *) name);
+          ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
           break;
         }
         /*
@@ -3031,8 +2887,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
                 radius = atof( value );
                 break;
               }
-              ThrowException(msl_info->exception,OptionError,
-                "UnrecognizedAttribute",keyword);
+              ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
               break;
             }
             case 'S':
@@ -3043,14 +2898,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
                 sigma = atoi( value );
                 break;
               }
-              ThrowException(msl_info->exception,OptionError,
-                "UnrecognizedAttribute",keyword);
+              ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
               break;
             }
             default:
             {
-              ThrowException(msl_info->exception,OptionError,
-                "UnrecognizedAttribute",keyword);
+              ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
               break;
             }
           }
@@ -3080,8 +2933,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
         if (msl_info->image[n] == (Image *) NULL)
         {
-          ThrowException(msl_info->exception,OptionError,
-          "NoImagesDefined",(char *) name);
+          ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
           break;
         }
         if (attributes == (const xmlChar **) NULL)
@@ -3101,8 +2953,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
             (void) GetMagickGeometry(value,&x,&y,&width,&height);
             break;
             }
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
           case 'H':
@@ -3113,8 +2964,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
             height = atoi( value );
             break;
             }
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
           case 'W':
@@ -3125,14 +2975,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
             width = atoi( value );
             break;
             }
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
           default:
           {
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
         }
@@ -3171,8 +3019,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
         if (msl_info->image[n] == (Image *) NULL)
         {
-          ThrowException(msl_info->exception,OptionError,
-          "NoImagesDefined",(char *) name);
+          ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
           break;
         }
         if (attributes == (const xmlChar **) NULL)
@@ -3192,8 +3039,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
             x = atoi( value );
             break;
             }
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
           case 'Y':
@@ -3204,14 +3050,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
             y = atoi( value );
             break;
             }
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
           default:
           {
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
         }
@@ -3240,8 +3084,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
         if (msl_info->image[n] == (Image *) NULL)
         {
-          ThrowException(msl_info->exception,OptionError,
-          "NoImagesDefined",(char *) name);
+          ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
           break;
         }
         if (attributes == (const xmlChar **) NULL)
@@ -3261,14 +3104,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
             threshold = atof( value );
             break;
             }
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
           default:
           {
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
         }
@@ -3289,8 +3130,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
         if (msl_info->image[n] == (Image *) NULL)
         {
-          ThrowException(msl_info->exception,OptionError,
-          "NoImagesDefined",(char *) name);
+          ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
           break;
         }
         if (attributes == (const xmlChar **) NULL)
@@ -3310,14 +3150,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
             radius = atoi( value );
             break;
             }
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
           default:
           {
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
         }
@@ -3345,8 +3183,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
         if (msl_info->image[n] == (Image *) NULL)
         {
-          ThrowException(msl_info->exception,OptionError,
-          "NoImagesDefined",(char *) name);
+          ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
           break;
         }
         if (attributes == (const xmlChar **) NULL)
@@ -3375,14 +3212,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
             }
             break;
             }
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
           default:
           {
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
         }
@@ -3403,8 +3238,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         msl_info->image[n]=newImage;
         break;
         } else
-          ThrowException(msl_info->exception,OptionError,
-            "Missing watermark image",keyword);
+          ThrowException(msl_info->exception,OptionError,MissingAnImageFilename,keyword);
       }
       else if (LocaleCompare((char *) name,"stereo") == 0)
       {
@@ -3413,8 +3247,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
         if (msl_info->image[n] == (Image *) NULL)
         {
-          ThrowException(msl_info->exception,OptionError,
-          "NoImagesDefined",(char *) name);
+          ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
           break;
         }
         if (attributes == (const xmlChar **) NULL)
@@ -3443,14 +3276,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
             }
             break;
             }
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
           default:
           {
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
         }
@@ -3471,8 +3302,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         msl_info->image[n]=newImage;
         break;
         } else
-          ThrowException(msl_info->exception,OptionError,
-            "Missing stereo image",keyword);
+          ThrowException(msl_info->exception,OptionError,MissingAnImageFilename,keyword);
       }
       else if (LocaleCompare((char *) name,"swirl") == 0)
       {
@@ -3481,8 +3311,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
         if (msl_info->image[n] == (Image *) NULL)
         {
-          ThrowException(msl_info->exception,OptionError,
-          "NoImagesDefined",(char *) name);
+          ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
           break;
         }
         if (attributes == (const xmlChar **) NULL)
@@ -3502,14 +3331,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
             degrees = atof( value );
             break;
             }
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
           default:
           {
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
         }
@@ -3531,8 +3358,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
         break;
       }
-      ThrowException(msl_info->exception,OptionError,
-              "UnrecognizedElement",(const char *) name);
+      ThrowException(msl_info->exception,OptionError,UnrecognizedElement,(const char *) name);
     }
   case 'T':
   case 't':
@@ -3598,14 +3424,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
             }
             break;
             }
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
           default:
           {
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
         }
@@ -3619,8 +3443,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         TextureImage(msl_info->image[n], textureImage);
         break;
         } else
-          ThrowException(msl_info->exception,OptionError,
-            "Missing texture image",keyword);
+          ThrowException(msl_info->exception,OptionError,MissingAnImageFilename,keyword);
       }
       else if (LocaleCompare((char *) name,"threshold") == 0)
       {
@@ -3629,8 +3452,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
 
         if (msl_info->image[n] == (Image *) NULL)
         {
-          ThrowException(msl_info->exception,OptionError,
-          "NoImagesDefined",(char *) name);
+          ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
           break;
         }
         if (attributes == (const xmlChar **) NULL)
@@ -3650,14 +3472,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
             threshold = atof( value );
             break;
             }
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
           default:
           {
-          ThrowException(msl_info->exception,OptionError,
-            "UnrecognizedAttribute",keyword);
+          ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
           break;
           }
         }
@@ -3678,8 +3498,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
       {
         if (msl_info->image[n] == (Image *) NULL)
         {
-          ThrowException(msl_info->exception,OptionError,
-                  "NoImagesDefined",(char *) name);
+          ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
           break;
         }
         if (attributes == (const xmlChar **) NULL)
@@ -3704,14 +3523,12 @@ static void MSLStartElement(void *context,const xmlChar *name,
                 (void) TransparentImage(msl_info->image[n],target,TransparentOpacity);
                 break;
               }
-              ThrowException(msl_info->exception,OptionError,
-                      "UnrecognizedAttribute",keyword);
+              ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
               break;
             }
             default:
             {
-              ThrowException(msl_info->exception,OptionError,
-                      "UnrecognizedAttribute",keyword);
+              ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
             break;
             }
           }
@@ -3722,8 +3539,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
       {
         if (msl_info->image[n] == (Image *) NULL)
         {
-          ThrowException(msl_info->exception,OptionError,
-                  "NoImagesDefined",(char *) name);
+          ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
           break;
         }
 
@@ -3748,8 +3564,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
           break;
         }
       }
-      ThrowException(msl_info->exception,OptionError,
-              "UnrecognizedElement",(const char *) name);
+      ThrowException(msl_info->exception,OptionError,UnrecognizedElement,(const char *) name);
     }
     case 'W':
     case 'w':
@@ -3758,8 +3573,7 @@ static void MSLStartElement(void *context,const xmlChar *name,
         {
           if (msl_info->image[n] == (Image *) NULL)
             {
-              ThrowException(msl_info->exception,OptionError,
-                "NoImagesDefined",(char *) name);
+              ThrowException(msl_info->exception,OptionError,NoImagesDefined,(char *) name);
               break;
             }
           if (attributes == (const xmlChar **) NULL)
@@ -3782,31 +3596,27 @@ static void MSLStartElement(void *context,const xmlChar *name,
                       msl_info->image[n]);
                     break;
                   }
-                ThrowException(msl_info->exception,OptionError,
-                  "UnrecognizedAttribute",keyword);
+                ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
               }
               default:
               {
-                ThrowException(msl_info->exception,OptionError,
-                  "UnrecognizedAttribute",keyword);
+                ThrowException(msl_info->exception,OptionError,UnrecognizedAttribute,keyword);
                 break;
               }
             }
           }
           break;
         }
-      ThrowException(msl_info->exception,OptionError,
-        "UnrecognizedElement",(const char *) name);
+      ThrowException(msl_info->exception,OptionError,UnrecognizedElement,(const char *) name);
     }
     default:
     {
-      ThrowException(msl_info->exception,OptionError,
-        "UnrecognizedElement",(const char *) name);
+      ThrowException(msl_info->exception,OptionError,UnrecognizedElement,(const char *) name);
       break;
     }
   }
   if ( value != NULL )
-  LiberateMemory((void **) &value);
+  MagickFreeMemory(value);
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  )");
 }
 
@@ -3874,14 +3684,14 @@ static void MSLEndElement(void *context,const xmlChar *name)
 
 static void MSLCharacters(void *context,const xmlChar *c,int length)
 {
-  MSLInfo
-    *msl_info;
+/*   MSLInfo */
+/*     *msl_info; */
 
   /*
     Receiving some characters from the parser.
   */
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  SAX.characters(%.1024s,%d)",c,length);
-  msl_info=(MSLInfo *) context;
+/*   msl_info=(MSLInfo *) context; */
 }
 
 static void MSLReference(void *context,const xmlChar *name)
@@ -3906,40 +3716,41 @@ static void MSLReference(void *context,const xmlChar *name)
 
 static void MSLIgnorableWhitespace(void *context,const xmlChar *c,int length)
 {
-  MSLInfo
-    *msl_info;
+/*   MSLInfo */
+/*     *msl_info; */
 
   /*
     Receiving some ignorable whitespaces from the parser.
   */
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  SAX.ignorableWhitespace(%.30s, %d)",c,length);
-  msl_info=(MSLInfo *) context;
+/*   msl_info=(MSLInfo *) context; */
 }
 
 static void MSLProcessingInstructions(void *context,const xmlChar *target,
   const xmlChar *data)
 {
-  MSLInfo
-    *msl_info;
+/*   MSLInfo */
+/*     *msl_info; */
 
   /*
     A processing instruction has been parsed.
   */
-  (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  SAX.processingInstruction(%.1024s, %.1024s)",
+  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+    "  SAX.processingInstruction(%.1024s, %.1024s)",
     target,data);
-  msl_info=(MSLInfo *) context;
+/*   msl_info=(MSLInfo *) context; */
 }
 
 static void MSLComment(void *context,const xmlChar *value)
 {
-  MSLInfo
-    *msl_info;
+/*   MSLInfo */
+/*     *msl_info; */
 
   /*
     A comment has been parsed.
   */
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  SAX.comment(%.1024s)",value);
-  msl_info=(MSLInfo *) context;
+/*   msl_info=(MSLInfo *) context; */
 }
 
 static void MSLWarning(void *context,const char *format,...)
@@ -3966,7 +3777,7 @@ static void MSLWarning(void *context,const char *format,...)
 #else
   (void) vsnprintf(reason,MaxTextExtent,format,operands);
 #endif
-  ThrowException(msl_info->exception,CoderError,reason,(char *) NULL);
+  ThrowException2(msl_info->exception,CoderError,reason,(char *) NULL);
   va_end(operands);
 }
 
@@ -3994,7 +3805,7 @@ static void MSLError(void *context,const char *format,...)
 #else
   (void) vsnprintf(reason,MaxTextExtent,format,operands);
 #endif
-  ThrowException(msl_info->exception,DelegateFatalError,reason,"some text");
+  ThrowException2(msl_info->exception,DelegateFatalError,reason,"some text");
   va_end(operands);
 }
 
@@ -4156,7 +3967,7 @@ static unsigned int ProcessMSLScript(const ImageInfo *image_info,Image **image,
   status=OpenBlob(image_info,msl_image,ReadBinaryBlobMode,exception);
   if (status == False)
     {
-      ThrowException(exception,FileOpenError,"UnableToOpenFile",
+      ThrowException(exception,FileOpenError,UnableToOpenFile,
         msl_image->filename);
       return(False);
     }
@@ -4166,18 +3977,18 @@ static unsigned int ProcessMSLScript(const ImageInfo *image_info,Image **image,
   */
   (void) memset(&msl_info,0,sizeof(MSLInfo));
   msl_info.exception=exception;
-  msl_info.image_info=(ImageInfo **) AcquireMemory(sizeof(ImageInfo *));
-  msl_info.draw_info=(DrawInfo **) AcquireMemory(sizeof(DrawInfo *));
+  msl_info.image_info=MagickAllocateMemory(ImageInfo **,sizeof(ImageInfo *));
+  msl_info.draw_info=MagickAllocateMemory(DrawInfo **,sizeof(DrawInfo *));
   /* top of the stack is the MSL file itself */
-  msl_info.image=(Image **) AcquireMemory(sizeof(Image *));
-  msl_info.attributes=(Image **) AcquireMemory(sizeof(Image *));
-  msl_info.group_info=(MSLGroupInfo *) AcquireMemory(sizeof(MSLGroupInfo));
+  msl_info.image=MagickAllocateMemory(Image **,sizeof(Image *));
+  msl_info.attributes=MagickAllocateMemory(Image **,sizeof(Image *));
+  msl_info.group_info=MagickAllocateMemory(MSLGroupInfo *,sizeof(MSLGroupInfo));
   if ((msl_info.image_info == (ImageInfo **) NULL) ||
       (msl_info.image == (Image **) NULL) ||
       (msl_info.attributes == (Image **) NULL) ||
       (msl_info.group_info == (MSLGroupInfo *) NULL))
-    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "UnableToInterpretMSLImage");
+    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+      UnableToInterpretMSLImage);
   *msl_info.image_info=CloneImageInfo(image_info);
   *msl_info.draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
   *msl_info.attributes=CloneImage(image_info->attributes,0,0,True,exception);
@@ -4207,7 +4018,7 @@ static unsigned int ProcessMSLScript(const ImageInfo *image_info,Image **image,
   xmlFreeParserCtxt(msl_info.parser);
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"end SAX");
   xmlCleanupParser();
-  LiberateMemory((void **) &msl_info.group_info);
+  MagickFreeMemory(msl_info.group_info);
   if (*image == (Image *) NULL)
     *image=*msl_info.image;
   return((*msl_info.image)->exception.severity == UndefinedException);
@@ -4229,14 +4040,7 @@ static Image *ReadMSLImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) ProcessMSLScript(image_info,&image,exception);
   return(image);
 }
-#else
-static Image *ReadMSLImage(const ImageInfo *image_info,ExceptionInfo *exception)
-{
-  ThrowException(exception,CoderError,
-    "XMLLibraryIsNotAvailable",image_info->filename);
-  return((Image *) NULL);
-}
-#endif
+#endif /* defined(HasXML) */
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -4263,6 +4067,7 @@ static Image *ReadMSLImage(const ImageInfo *image_info,ExceptionInfo *exception)
 */
 ModuleExport void RegisterMSLImage(void)
 {
+#if defined(HasXML)
   MagickInfo
     *entry;
 
@@ -4272,6 +4077,7 @@ ModuleExport void RegisterMSLImage(void)
   entry->description=AcquireString("Magick Scripting Language");
   entry->module=AcquireString("MSL");
   (void) RegisterMagickInfo(entry);
+#endif /* defined(HasXML) */
 }
 
 /*
@@ -4295,7 +4101,9 @@ ModuleExport void RegisterMSLImage(void)
 */
 ModuleExport void UnregisterMSLImage(void)
 {
+#if defined(HasXML)
   (void) UnregisterMagickInfo("MSL");
+#endif /* defined(HasXML) */
 }
 
 /*
@@ -4309,7 +4117,7 @@ ModuleExport void UnregisterMSLImage(void)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method WriteMSLImage writes an image to a file in MVG image format.
+%  Method WriteMSLImage processes the image via a MSL script.
 %
 %  The format of the WriteMSLImage method is:
 %
@@ -4338,10 +4146,4 @@ static unsigned int WriteMSLImage(const ImageInfo *image_info,Image *image)
   (void) ProcessMSLScript(image_info,&image,&image->exception);
   return(True);
 }
-#else
-static unsigned int WriteMSLImage(const ImageInfo *image_info,Image *image)
-{
-  ThrowBinaryException(MissingDelegateError,"XMLLibraryIsNotAvailable",
-    image->filename);
-}
-#endif
+#endif /* defined(HasXML) */

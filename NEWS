@@ -1,61 +1,220 @@
-Major changes associated with GraphicsMagick 1.0.3 (Released August 23, 2003)
+Significant changes associated with GraphicsMagick 1.1 (Under development)
 
-  Bug Fixes:
-    * Configure script fix to ensure that -lfpx is not supplied to C
-    compiler during subsequent tests since this fails on some systems.
-    * BMP reader fix to avoid unnecessary rejection of some old
-    uncompressed Windows 2.X and OS/2 BMPs.
+This file was last updated on March 20, 2004.
+
+  We sincerly apologize for such an absurdly long list of fixes and
+  enhancements.
+
+  Bug fixes:
     * Semaphore fix which is necessary for proper multi-threaded operation.
-    * EXIF attributes were failing to be retrieved.
-    * Image magick string is that of the user-specified input file rather
-    than (possibly) a temporary file.
-    * BLOB file header tests are only performed if the user has not
-    specified the BLOB format (magick).
-    * Fixed a problem with reading images via a user provided file
-    descriptor. The coder was sometimes being passed a file descriptor
-    with a non-zero seek position. Note that reading from non-seekable
-    file streams may still be unreliable since the header magic tests
-    must read part of the input data and the seek position must be rewound.
-    * A locking problem was fixed in the logging code.
-    * JNG support can now be removed while continuing to support PNG and
-    MNG.  This is neccessary if libjpeg is not available.
-    * VisualMagick configure is updated to eliminate a build dependency
-    problem and to enable fast static builds.
+    * Configure script fix to ensure that -lfpx is not supplied to the C
+    compiler during subsequent tests since this fails on some systems.
+    * Fix for East and West gravity computations.
+    * System error reports (errno) associated with an exception are now
+    correctly obtained from the context existing when the exception was
+    thrown rather than the context of the reporting function.
+    * JNG encoder fix. Files were being written with incorrect
+    alpha_sample_value in the header. These can be repaired by reading
+    them into GM 1.1 and rewriting them.
+    * XPM fix to module registration.
+    * PSD fix for index calculation when QuantumDepth>8.
+    * Validate that geometry specifications only include allowed
+    characters.
+    * SGI fix to save compression type while writing.
+    * EXIF attributes were not being retrieved when requested.
+    * Fix for bug when reading an image via a user-provided file
+    descriptor.
+    * The reported image magick string is now always that of the original
+    input file (it was sometimes being reported as the format produced by
+    an intermediate delegate program).
+    * Fixes to color profiling of CMYK images.
+    * Memory leak fixed in DrawClipPath().
+    * Arc drawing is fixed.
+    * Command-line parsing bug under Linux due to Linux's sscanfs
+    inability to parse strings like "0x1" as "%fx%f" is fixed.
+    * Scaling of 5 and 6-bit colors was slightly incorrect in BMP, AVI,
+    DIB, and TIM datastreams.
+    * GM utility now reports an error rather than silently returning if
+    an unsupported sub-command is provided.
 
-Major changes associated with GraphicsMagick 1.0.2 (Released June 6, 2003)
+  Performance improvements:
+    * Texture tiling is now 7X faster.
+    * Color profile processing speed improvements for colormapped images.
 
-  Bug Fixes:
-    * Under Windows, extend PATH to include directory where CORE DLLs
-    reside so that module loading works reliably.
-    * Added missing module mappings for PNG8, PNG24, and PNG32.
-    * Search for type.mgk in $MAGICK_HOME.
-    * Fix hang while floodfilling image using a pattern.
-    * Incorporated shear fixes from ImageMagick.
-    * Minor memory leak fixed.
-    * Fixed PerlMagick Shade 'elevation' argument.
-    * Fixed EPT writing.
-    * PNG, MNG, and JNG writer fixes.
-    * PSD reader fix for color indexed images.
-    * Fixed an error handling path in mogrify command.
-    * Added missing module mappings for a number of coders.
-    * Fixed problem with libxml/libxml2.def & Visual C++ 6.0.
-    * GetImageGeometry was incorrectly handling EastGravity and
-    WestGravity.
-    * Log event option processing is now handled consistently.
-    * GetGeometry now performs some validation of geometry argument.
-    * Magick++ throws an exception if GetGeometry rejects the geometry
-    argument.
+  Utilities enhancements:
+    * For Unix, 'gm version' now includes a dump of the configure and
+    build parameters.
+    * Logging of thrown exceptions is now supported. Use '-debug
+    exception'. This is useful to learn when and where errors are
+    reported.
+    * The -define option is added in order to support supplying
+    additional options to coders without needing to add additional
+    command line options or structure members.
+    * The output of 'gm identify -verbose' now provides a nice dump
+    of EXIF data.
+    * The -sampling-factor option now accepts as many HxV pairs as
+    there are JPEG components.  Omitted ones default to 1x1.
+    * The convert and montage commands now support an -operator command to
+    perform arithmetic and bitwise operations on specified image channels.
 
-Major changes associated with GraphicsMagick 1.0.1 (Released May 18, 2003)
+  Coder additions/improvments
+    * The META coder supports wide characters for the IPTC and 8BIM
+    formats.
+    * The XTRN coder now supports wide characters.
+    * An "IMAGE" coder is provided which provides access to a large
+    number of images (derived from XFig) suitable for use as patterns,
+    or as test images.
+    * The "PATTERN" coder now returns an image pattern tiled to size
+    (equivalent results to TILE:IMAGE:pattern). This is for ImageMagick
+    compatibility.
+    * The CINEON coder now supports reading and writing images in CINEON
+    "CIN" linear gray and RGB formats. The read support is still very
+    weak, but it works for common images.
+    * The JPEG coder now estimates the original JPEG quality and sampling
+    factors and will reuse these options when writing JPEG if the image
+    is of the same type and the option "-define JPEG:preserve-settings"
+    is supplied.
+    * The JPEG-2000 coder now supports all Jasper library arguments using
+    command line syntax similar to '-define jp2:rate=0.5'.
+    * Reading and writting compressed SVG (SVGZ) is now supported.
+    * The TXT coder now observes depth when writing.
+    * The TIFF coder now outputs colormapped images with 1, 2, 4, and 8
+    bits per sample in order to provide much smaller file sizes for
+    images with very few colors.
+    * Many TIFF coder enhancements. Now reads colormapped and grayscale
+    images at arbitrary (even odd) bits-per-sample sizes. Now properly
+    supports an opacity channel (at any bits-per-sample value) for
+    grayscale images. Bilevel grayscale images are treated similar to any
+    other grayscale image unless CCITT FAX3/FAX4 compression is
+    requested. Now allows the user to specify an arbitrary
+    bits-per-sample value for grayscale images (even odd values) using
+    "-define tiff:bits-per-sample=value". Now automatically stores the
+    image as TrueColor RGB pixels if the image compression is set to JPEG.
+    TIFF files are now written in using the TIFF library's default endian
+    order rather than always big endian.
+    * The WPG coder now renders embedded WMFs.
+    * The PS3 coder is completely re-written to work much better and
+    support more features (see ChangeLog).
 
-  Bug Fixes:
-    * Gravity works in conjunction with coordinates in MSL.
-    * Include HasX11 in installed magick_config.h so xwindow.h works.
+  Code structure enhancements:
+    * Error handling has been improved and validated through testing.
+    Some errors were being lost, unnecessarily ignored, or reported as
+    something else entirely.
+    * The number of error text messages to be maintained has been reduced
+    by consolidating similar messages.
+    * The memory allocator functions have been replaced with similar
+    macros in order to eliminate warnings with GCC 3.3, avoid
+    accidentally casting away const, and allow memory debuggers to
+    report memory allocations and frees against the correct functions.
+    The previously-used functions remain in the library for the purpose
+    of compatibility.
+    * <magick/xwindow.h> no longer depends on magick_config.h defines.
+    * The text string localization code has been replaced with a simpler
+    version written by Bill Radcliffe.
+    * Added key,value "map" APIs (somewhat similar to C++'s <map>) for
+    internal use.
 
-  Other Changes:
-    * New logo image.
+  API enhancements:
+    * Incorporated John Cristy's Wand API's in a new GraphicsMagickWand
+    library.
+    * API definition is no longer dependent on types which vary in size
+    (e.g. size_t) depending on large file compilation options.  This means
+    that applications may now be compiled without any special large file
+    options and still work properly with the library.
+    * Thrown exceptions (ExceptionInfo structure) now include source
+    file, source line, function name, and current system error number.
+    * The GetMagickInfoArray() function is added to replace use of
+    GetMagickInfo() for code which needs to access the coder list. This
+    is necessary since invoking GetMagickInfo() may re-order the coder
+    list, causing problems for code which traverses the list. Using
+    GetMagickInfo() to access individual list elements is safe.
+    * Added the CopyException function to support copying exception info
+    from one structure to another.
+    * Added the ReplaceImageInList function to replace an image in an
+    image list.
+    * Added the DrawPeekGraphicContext function to access the current
+    DrawInfo structure in the drawing context stack. Use of this
+    function is not recommended since it voilates proper programming
+    practices. It is added to support the Wand API's.
+    * GetImageDepth() now returns an integral value between 1 and
+    QuantumDepth and is no longer limited to the values 8, 16, and 32.
+    * SetImageDepth() supports setting the image modulus depth to any
+    integral value between 1 and QuantumDepth. This effects the effective
+    numeric precision, not the storage depth, since the quantum storage
+    type is still a Quantum.
+    * GetImageChannelDepth() supports retrieving the modulus depth for a
+    specified channel.
+    * SetImageChannelDepth() supports setting the modulus depth for a
+    specified channel.
+    * ProfileImage is updated to handle alpha channels and grayscale
+    images.
+    * Added GetImageProfile() to retrieve a CMS profile from an image.
+    * Added SetImageProfile() to attach a CMS profile to an image without
+    adjusting the image pixels.
+    * Added DeleteImageProfile() to remove a CMS profile from an image.
+    * ConstituteImage() and DispatchImage() now support 'T' (transparency),
+    'O' (opacity), and 'P' (pad) options.
+    * CompositeImage() now supports CopyCyanCompositeOp,
+    CopyMagentaCompositeOp, CopyYellowCompositeOp, and
+    CopyBlackCompositeOp, composition operators.
+    * GetColorHistogram() obtains a color histogram for the image.
+    * QuantumOperatorImage() and QuantumOperatorRegionImage() support
+    arithmetic and bitwise operations on specified image channels.
+    * The semaphore.h header is no longer installed or included in the
+    API headers since these functions are private interfaces.
+    * Configure using --enable-symbol-prefix or define
+    PREFIX_MAGICK_SYMBOLS to use the C preprocessor to prefix all library
+    symbols with "Gm". This prevents library symbol conflicts with other
+    libraries.
 
-Major changes associated with GraphicsMagick 1.0 (Released May 5, 2003)
+  PerlMagick fixes:
+    * Adjusted a number of function option names so that they match the
+    documentation.
+    * Memory leak fixed.
+    * Reading files (e.g. GIF) via a file descriptor is fixed.
+
+  Build improvements:
+
+    * The TRIO library may be used to provide a replacement for vsnprintf
+    if the C library doesn't provide it.  This improves security on old
+    systems.
+    * Configure only configures for C & C++ languages.
+    * Configure now does a better job of figuring out how to build a
+    thread-safe library across multiple operating systems.
+    * Configure incorporates a new mmap() test which tests the
+    functionality which is needed so that mmap() is not unnecessarily
+    rejected on a number of systems. This improves performance for large
+    files on those systems.
+    * Configure/build fixes for IBM's AIX operating system.
+
+  Windows-specific improvements:
+    * The static install package now uses the "uninstalled"
+    configuration so that it does not depend on the Windows registry in
+    order to run. This allows files from the static install package to
+    be copied to another computer without running an installer.
+    * The executable search path is extended at run-time to include the
+    directory where the CORE DLLs reside in order to ensure that they
+    are found.
+    * Adding the -t option to VisualMagick configure enables building
+    all of the coders into one library in order to save build time and
+    simplify linkage.
+    * The XTRN coder now supports wide characters.
+    * LCMS library updated to version 1.10.
+    * GMDisplay displays a checkerboard pattern behind transparent images.
+    * Support is provided for issuing log messages to the Windows standard
+    logging system.
+    * Project files are now provided for use with Borland C++ Builder 6.0.
+    * Updated LCMS version to 1.12.
+    * Updated FreeType version to 2.1.5.
+    * Updated JBIG-KIT to version 1.5.
+    * Updated libpng to version 1.2.5.
+    * Updated libwmf to version 0.2.8.2.
+    * Updates zlib to version 1.2.1.
+    * ActivePerl 5.8.1 Build 807 now supported.
+    * GraphicsMagick now compiles using Visual Studio .NET 2003.
+
+---------------------------------------------------------------------------
+Significant changes associated with GraphicsMagick 1.0 (Released in May, 2003)
 
   GraphicsMagick support services:
     * Master web site at "http://www.GraphicsMagick.org/".

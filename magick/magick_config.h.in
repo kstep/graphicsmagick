@@ -3,8 +3,38 @@
 /* Define if coders and filters are to be built as modules. */
 #undef BuildMagickModules
 
+/* C compiler used for compilation */
+#undef GM_BUILD_CC
+
+/* CFLAGS used for C compilation */
+#undef GM_BUILD_CFLAGS
+
+/* arguments passed to configure */
+#undef GM_BUILD_CONFIGURE_ARGS
+
+/* CPPFLAGS used for preprocessing */
+#undef GM_BUILD_CPPFLAGS
+
+/* C++ compiler used for compilation */
+#undef GM_BUILD_CXX
+
+/* CXXFLAGS used for C++ compilation */
+#undef GM_BUILD_CXXFLAGS
+
+/* Host identification triplet */
+#undef GM_BUILD_HOST
+
+/* LDFLAGS used for linking */
+#undef GM_BUILD_LDFLAGS
+
+/* LIBS used for linking */
+#undef GM_BUILD_LIBS
+
+/* Define if C++ compiler supports __func__ */
+#undef HAS_CPP__func__
+
 /* Define if C compiler supports __func__ */
-#undef HAS___func__
+#undef HAS_C__func__
 
 /* Define to 1 if you have the `argz_append' function. */
 #undef HAVE_ARGZ_APPEND
@@ -79,8 +109,11 @@
 /* define if the compiler supports the explicit keyword */
 #undef HAVE_EXPLICIT
 
-/* Define to 1 if you have the <freetype/freetype.h> header file. */
-#undef HAVE_FREETYPE_FREETYPE_H
+/* Define to 1 if fseeko (and presumably ftello) exists and is declared. */
+#undef HAVE_FSEEKO
+
+/* Define to 1 if you have the <ft2build.h> header file. */
+#undef HAVE_FT2BUILD_H
 
 /* Define to 1 if you have the `ftime' function. */
 #undef HAVE_FTIME
@@ -113,6 +146,9 @@
    double. */
 #undef HAVE_LONG_DOUBLE
 
+/* Define to 1 if you have the <machine/param.h> header file. */
+#undef HAVE_MACHINE_PARAM_H
+
 /* Define to 1 if you have the <mach-o/dyld.h> header file. */
 #undef HAVE_MACH_O_DYLD_H
 
@@ -131,8 +167,9 @@
 /* Define to 1 if you have the `mkstemp' function. */
 #undef HAVE_MKSTEMP
 
-/* Define to 1 if you have a working `mmap' system call. */
-#undef HAVE_MMAP
+/* Define to 1 if you have a `mmap' system call which handles coherent file
+   I/O. */
+#undef HAVE_MMAP_FILEIO
 
 /* define if the compiler supports the mutable keyword */
 #undef HAVE_MUTABLE
@@ -149,14 +186,23 @@
 /* Define to 1 if you have the `opendir' function. */
 #undef HAVE_OPENDIR
 
+/* Define to 1 if you have the `pclose' function. */
+#undef HAVE_PCLOSE
+
 /* Define to 1 if you have the `poll' function. */
 #undef HAVE_POLL
+
+/* Define to 1 if you have the `popen' function. */
+#undef HAVE_POPEN
 
 /* Define to 1 if you have the `pread' function. */
 #undef HAVE_PREAD
 
 /* Define if libtool can extract symbol lists from object files. */
 #undef HAVE_PRELOADED_SYMBOLS
+
+/* Define if you have POSIX threads libraries and header files. */
+#undef HAVE_PTHREAD
 
 /* Define to 1 if you have the `putc_unlocked' function. */
 #undef HAVE_PUTC_UNLOCKED
@@ -166,6 +212,9 @@
 
 /* Define to 1 if you have the `raise' function. */
 #undef HAVE_RAISE
+
+/* Define to 1 if you have the `rand_r' function. */
+#undef HAVE_RAND_R
 
 /* Define to 1 if you have the `readdir' function. */
 #undef HAVE_READDIR
@@ -218,6 +267,12 @@
 /* Define to 1 if you have the <string.h> header file. */
 #undef HAVE_STRING_H
 
+/* Define to 1 if you have the `strlcpy' function. */
+#undef HAVE_STRLCPY
+
+/* Headers provide a prototype for strlcpy */
+#undef HAVE_STRLCPY_PROTOTYPE
+
 /* Define to 1 if you have the `strrchr' function. */
 #undef HAVE_STRRCHR
 
@@ -262,8 +317,17 @@
 /* Define to 1 if you have the `vsnprintf' function. */
 #undef HAVE_VSNPRINTF
 
+/* Headers provide a prototype for vsnprintf */
+#undef HAVE_VSNPRINTF_PROTOTYPE
+
 /* Define to 1 if you have the `vsprintf' function. */
 #undef HAVE_VSPRINTF
+
+/* Define to 1 if you have the `_pclose' function. */
+#undef HAVE__PCLOSE
+
+/* Define to 1 if you have the `_popen' function. */
+#undef HAVE__POPEN
 
 /* Define if you have the bzip2 library */
 #undef HasBZLIB
@@ -298,9 +362,6 @@
 /* Define if you have PNG library */
 #undef HasPNG
 
-/* Define if you have Posix thread methods. */
-#undef HasPTHREADS
-
 /* X11 server supports shape extension */
 #undef HasShape
 
@@ -309,6 +370,9 @@
 
 /* Define if you have TIFF library */
 #undef HasTIFF
+
+/* Define if you have TRIO vsnprintf replacement library */
+#undef HasTRIO
 
 /* Define if you have FreeType (TrueType font) library */
 #undef HasTTF
@@ -360,14 +424,21 @@
 /* Location of coder modules */
 #undef MagickCoderModulesPath
 
-/* Subdirectory of lib where GraphicsMagick coder modules are installed */
+/* Subdirectory of lib where coder modules are installed */
 #undef MagickCoderModulesSubdir
 
 /* Location of filter modules */
 #undef MagickFilterModulesPath
 
-/* Subdirectory of lib where GraphicsMagick filter modules are installed */
+/* Subdirectory of lib where filter modules are installed */
 #undef MagickFilterModulesSubdir
+
+/* Directory where architecture-dependent configuration files live. */
+#undef MagickLibConfigPath
+
+/* Subdirectory of lib where architecture-dependent configuration files live.
+   */
+#undef MagickLibConfigSubDir
 
 /* Directory where architecture-dependent files live. */
 #undef MagickLibPath
@@ -375,6 +446,13 @@
 /* Subdirectory of lib where GraphicsMagick architecture dependent files are
    installed */
 #undef MagickLibSubdir
+
+/* Directory where architecture-independent configuration files live. */
+#undef MagickShareConfigPath
+
+/* Subdirectory of lib where architecture-independent configuration files
+   live. */
+#undef MagickShareConfigSubDir
 
 /* Directory where architecture-independent files live. */
 #undef MagickSharePath
@@ -397,6 +475,13 @@
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
 
+/* Prefix Magick library symbols with a common string. */
+#undef PREFIX_MAGICK_SYMBOLS
+
+/* Define to the necessary symbol if this constant uses a non-standard name on
+   your system. */
+#undef PTHREAD_CREATE_JOINABLE
+
 /* Pixel cache threshold in MB (defaults to available memory) */
 #undef PixelCacheThreshold
 
@@ -406,17 +491,17 @@
 /* Define as the return type of signal handlers (`int' or `void'). */
 #undef RETSIGTYPE
 
-/* The size of a `int', as computed by sizeof. */
-#undef SIZEOF_INT
+/* The size of a `signed int', as computed by sizeof. */
+#undef SIZEOF_SIGNED_INT
 
-/* The size of a `long', as computed by sizeof. */
-#undef SIZEOF_LONG
+/* The size of a `signed long', as computed by sizeof. */
+#undef SIZEOF_SIGNED_LONG
 
-/* The size of a `long long', as computed by sizeof. */
-#undef SIZEOF_LONG_LONG
+/* The size of a `signed long long', as computed by sizeof. */
+#undef SIZEOF_SIGNED_LONG_LONG
 
-/* The size of a `short', as computed by sizeof. */
-#undef SIZEOF_SHORT
+/* The size of a `signed short', as computed by sizeof. */
+#undef SIZEOF_SIGNED_SHORT
 
 /* The size of a `unsigned int', as computed by sizeof. */
 #undef SIZEOF_UNSIGNED_INT
@@ -446,25 +531,28 @@
 /* Define to 1 if the X Window System is missing or not being used. */
 #undef X_DISPLAY_MISSING
 
+/* Number of bits in a file offset, on hosts where this is settable. */
+#undef _FILE_OFFSET_BITS
+
+/* Define to 1 to make fseeko visible on some hosts (e.g. glibc 2.2). */
+#undef _LARGEFILE_SOURCE
+
+/* Define for large files, on AIX-style hosts. */
+#undef _LARGE_FILES
+
 /* Define to empty if `const' does not conform to ANSI C. */
 #undef const
 
 /* Define to a type to use for `error_t' if it is not otherwise available. */
 #undef error_t
 
-
+/* Define to `__inline__' or `__inline' if that's what the C compiler
+   calls it, or to nothing if 'inline' is not supported under any name.  */
 #ifndef __cplusplus
-
-
-/* Define as `__inline' if that's what the C compiler calls it, or to nothing
-   if it is not supported. */
 #undef inline
+#endif
 
-
-#endif /* __cplusplus */
-
-
-/* Define to `int' if <sys/types.h> does not define. */
+/* Define to `unsigned int' if <sys/types.h> does not define. */
 #undef mode_t
 
 /* Define to `long' if <sys/types.h> does not define. */
@@ -473,5 +561,8 @@
 /* Define to `int' if <sys/types.h> does not define. */
 #undef pid_t
 
-/* Define to `unsigned' if <sys/types.h> does not define. */
+/* Define to `unsigned int' if <sys/types.h> does not define. */
 #undef size_t
+
+/* Define to `int' if <sys/types.h> does not define. */
+#undef ssize_t

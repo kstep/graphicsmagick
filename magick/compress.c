@@ -46,8 +46,7 @@
 /*
   Define declarations.
 */
-#define LoadImageText  "  Load image...  "
-#define SaveImageText  "  Save image...  "
+
 
 /*
   Typedef declarations.
@@ -241,10 +240,13 @@ MagickExport void Ascii85Initialize(Image *image)
   /*
     Allocate image structure.
   */
-  image->ascii85=(Ascii85Info *) AcquireMemory(sizeof(Ascii85Info));
   if (image->ascii85 == (Ascii85Info *) NULL)
-    MagickFatalError(ResourceLimitFatalError,"MemoryAllocationFailed",
-      "UnableToAllocateAscii85Info");
+    {
+      image->ascii85=MagickAllocateMemory(Ascii85Info *,sizeof(Ascii85Info));
+      if (image->ascii85 == (Ascii85Info *) NULL)
+        MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+                          UnableToAllocateAscii85Info);
+    }
   (void) memset(image->ascii85,0,sizeof(Ascii85Info));
   image->ascii85->line_break=MaxLineExtent << 1;
   image->ascii85->offset=0;
@@ -309,6 +311,19 @@ MagickExport void Ascii85Encode(Image *image,const unsigned long code)
   p-=4;
   for (n=0; n < 4; n++)
     image->ascii85->buffer[n]=(*p++);
+}
+
+MagickExport unsigned int Ascii85WriteByteHook(Image *image, 
+  const magick_uint8_t code, void *info)
+{
+  Ascii85Encode(image,(unsigned long)code);
+  return(True);
+}
+
+MagickExport unsigned int BlobWriteByteHook(Image *image,
+  const magick_uint8_t code, void *info)
+{
+  return(WriteBlobByte(image,(unsigned long)code));
 }
 
 /*
@@ -417,13 +432,13 @@ MagickExport unsigned int HuffmanDecodeImage(Image *image)
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  mb_hash=(HuffmanTable **) AcquireMemory(HashSize*sizeof(HuffmanTable *));
-  mw_hash=(HuffmanTable **) AcquireMemory(HashSize*sizeof(HuffmanTable *));
-  scanline=(unsigned char *) AcquireMemory(image->columns);
+  mb_hash=MagickAllocateMemory(HuffmanTable **,HashSize*sizeof(HuffmanTable *));
+  mw_hash=MagickAllocateMemory(HuffmanTable **,HashSize*sizeof(HuffmanTable *));
+  scanline=MagickAllocateMemory(unsigned char *,image->columns);
   if ((mb_hash == (HuffmanTable **) NULL) ||
       (mw_hash == (HuffmanTable **) NULL) ||
       (scanline == (unsigned char *) NULL))
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+    ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
       (char *) NULL);
   /*
     Initialize Huffman tables.
@@ -586,9 +601,9 @@ MagickExport unsigned int HuffmanDecodeImage(Image *image)
   /*
     Free decoder memory.
   */
-  LiberateMemory((void **) &mw_hash);
-  LiberateMemory((void **) &mb_hash);
-  LiberateMemory((void **) &scanline);
+  MagickFreeMemory(mw_hash);
+  MagickFreeMemory(mb_hash);
+  MagickFreeMemory(scanline);
   return(True);
 }
 
@@ -619,8 +634,8 @@ MagickExport unsigned int HuffmanDecodeImage(Image *image)
 %    o image: The image.
 %
 */
-MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
-  Image *image)
+MagickExport unsigned int HuffmanEncode2Image(const ImageInfo *image_info,
+  Image *image, WriteByteHook write_byte, void *info)
 {
 #define HuffmanOutputCode(entry)  \
 {  \
@@ -639,10 +654,7 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
   bit>>=1;  \
   if ((bit & 0xff) == 0)   \
     {  \
-      if (is_fax == True) \
-        (void) WriteBlobByte(image,byte);  \
-      else \
-        Ascii85Encode(image,(unsigned long) byte); \
+      (*write_byte)(image,(magick_uint8_t)byte,info);  \
       byte=0;  \
       bit=0x80;  \
     }  \
@@ -699,9 +711,9 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
   width=image->columns;
   if (is_fax == True)
     width=Max(image->columns,1728);
-  scanline=(unsigned char *) AcquireMemory(width+1);
+  scanline=MagickAllocateMemory(unsigned char *,width+1);
   if (scanline == (unsigned char *) NULL)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+    ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
       (char *) NULL);
   huffman_image=CloneImage(image,0,0,True,&image->exception);
   if (huffman_image == (Image *) NULL)
@@ -709,9 +721,7 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
   SetImageType(huffman_image,BilevelType);
   byte=0;
   bit=0x80;
-  if (is_fax == False)
-    Ascii85Initialize(image);
-  else
+  if (is_fax == True)
     {
       /*
         End of line.
@@ -752,7 +762,7 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
       /*
         Output white run.
       */
-      for (runlength=0; ((*q == polarity) && (n > 0)); n--)
+      for (runlength=0; ((n > 0) && (*q == polarity)); n--)
       {
         q++;
         runlength++;
@@ -814,17 +824,28 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
     Flush bits.
   */
   if (bit != 0x80)
-    {
-      if (is_fax == True)
-        (void) WriteBlobByte(image,byte);
-      else
-        Ascii85Encode(image,(unsigned long) byte);
-    }
-  if (is_fax == False)
-    Ascii85Flush(image);
+    (*write_byte)(image,(magick_uint8_t)byte,info);
   DestroyImage(huffman_image);
-  LiberateMemory((void **) &scanline);
+  MagickFreeMemory(scanline);
   return(True);
+}
+
+MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
+  Image *image)
+{
+  if (LocaleCompare(image_info->magick,"FAX") == 0)
+  {
+    return(HuffmanEncode2Image(image_info,image,BlobWriteByteHook,(void *)NULL));
+  }
+  else
+  {
+    unsigned int
+      status;
+    Ascii85Initialize(image);
+    status=HuffmanEncode2Image(image_info,image,Ascii85WriteByteHook,(void *)NULL);
+    Ascii85Flush(image);
+    return(status);
+  }
 }
 
 #if defined(HasLZW)
@@ -862,8 +883,8 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
 %
 %
 */
-MagickExport unsigned int LZWEncodeImage(Image *image,const size_t length,
-  unsigned char *pixels)
+MagickExport unsigned int LZWEncode2Image(Image *image,
+  const size_t length,unsigned char *pixels,WriteByteHook write_byte,void *info)
 {
 #define LZWClr  256  /* Clear Table Marker */
 #define LZWEod  257  /* End of Data marker */
@@ -873,7 +894,7 @@ MagickExport unsigned int LZWEncodeImage(Image *image,const size_t length,
     number_bits+=code_width; \
     while (number_bits >= 8) \
     { \
-        (void) WriteBlobByte(image,(unsigned long) (accumulator >> 24)); \
+        (void) (*write_byte)(image,(magick_uint8_t) (accumulator >> 24),info); \
         accumulator=accumulator << 8; \
         number_bits-=8; \
     } \
@@ -911,7 +932,7 @@ MagickExport unsigned int LZWEncodeImage(Image *image,const size_t length,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(pixels != (unsigned char *) NULL);
-  table=(TableType *) AcquireMemory((1 << 12)*sizeof(TableType));
+  table=MagickAllocateMemory(TableType *,(1 << 12)*sizeof(TableType));
   if (table == (TableType *) NULL)
     return(False);
   /*
@@ -989,17 +1010,32 @@ MagickExport unsigned int LZWEncodeImage(Image *image,const size_t length,
   OutputCode(last_code);
   OutputCode(LZWEod);
   if (number_bits != 0)
-    (void) WriteBlobByte(image,accumulator >> 24);
-  LiberateMemory((void **) &table);
+    (void) (*write_byte)(image,(magick_uint8_t)(accumulator >> 24),info);
+  MagickFreeMemory(table);
   return(True);
 }
+
+MagickExport unsigned int LZWEncodeImage(Image *image, const size_t length,
+  unsigned char *pixels)
+{
+  return(LZWEncode2Image(image,length,pixels,BlobWriteByteHook,(void *)NULL));
+}
+
 #else
+MagickExport unsigned int LZWEncode2Image(Image *image,const size_t length,
+  unsigned char *pixels,WriteByteHook write_byte,void *info)
+{
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  ThrowBinaryException(MissingDelegateError,LZWEncodingNotEnabled,(char *) NULL)
+}
+
 MagickExport unsigned int LZWEncodeImage(Image *image,const size_t length,
   unsigned char *pixels)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  ThrowBinaryException(DelegateError,"LZWEncodingNotEnabled",(char *) NULL)
+  ThrowBinaryException(MissingDelegateError,LZWEncodingNotEnabled,(char *) NULL)
 }
 #endif
 
@@ -1037,8 +1073,9 @@ MagickExport unsigned int LZWEncodeImage(Image *image,const size_t length,
 %
 %
 */
-MagickExport unsigned int PackbitsEncodeImage(Image *image,const size_t length,
-  unsigned char *pixels)
+MagickExport unsigned int PackbitsEncode2Image(Image *image,
+  const size_t length,unsigned char *pixels,WriteByteHook write_byte, 
+  void *info)
 {
   int
     count;
@@ -1056,9 +1093,9 @@ MagickExport unsigned int PackbitsEncodeImage(Image *image,const size_t length,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(pixels != (unsigned char *) NULL);
-  packbits=(unsigned char *) AcquireMemory(128);
+  packbits=MagickAllocateMemory(unsigned char *,128);
   if (packbits == (unsigned char *) NULL)
-    ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
+    ThrowBinaryException(ResourceLimitError,MemoryAllocationFailed,
       (char *) NULL);
   i=(long) length;
   while (i != 0)
@@ -1068,16 +1105,16 @@ MagickExport unsigned int PackbitsEncodeImage(Image *image,const size_t length,
       case 1:
       {
         i--;
-        (void) WriteBlobByte(image,0);
-        (void) WriteBlobByte(image,*pixels);
+        (void) (*write_byte)(image,(magick_uint8_t)0,info);
+        (void) (*write_byte)(image,(magick_uint8_t)*pixels,info);
         break;
       }
       case 2:
       {
         i-=2;
-        (void) WriteBlobByte(image,1);
-        (void) WriteBlobByte(image,*pixels);
-        (void) WriteBlobByte(image,pixels[1]);
+        (void) (*write_byte)(image,(magick_uint8_t)1,info);
+        (void) (*write_byte)(image,(magick_uint8_t)*pixels,info);
+        (void) (*write_byte)(image,(magick_uint8_t)pixels[1],info);
         break;
       }
       case 3:
@@ -1085,14 +1122,14 @@ MagickExport unsigned int PackbitsEncodeImage(Image *image,const size_t length,
         i-=3;
         if ((*pixels == *(pixels+1)) && (*(pixels+1) == *(pixels+2)))
           {
-            (void) WriteBlobByte(image,(256-3)+1);
-            (void) WriteBlobByte(image,*pixels);
+            (void) (*write_byte)(image,(magick_uint8_t)((256-3)+1),info);
+            (void) (*write_byte)(image,(magick_uint8_t)*pixels,info);
             break;
           }
-        (void) WriteBlobByte(image,2);
-        (void) WriteBlobByte(image,*pixels);
-        (void) WriteBlobByte(image,pixels[1]);
-        (void) WriteBlobByte(image,pixels[2]);
+        (void) (*write_byte)(image,(magick_uint8_t)2,info);
+        (void) (*write_byte)(image,(magick_uint8_t)*pixels,info);
+        (void) (*write_byte)(image,(magick_uint8_t)pixels[1],info);
+        (void) (*write_byte)(image,(magick_uint8_t)pixels[2],info);
         break;
       }
       default:
@@ -1110,8 +1147,8 @@ MagickExport unsigned int PackbitsEncodeImage(Image *image,const size_t length,
                 break;
             }
             i-=count;
-            (void) WriteBlobByte(image,(long) ((256-count)+1));
-            (void) WriteBlobByte(image,*pixels);
+            (void) (*write_byte)(image,(magick_uint8_t)((256-count)+1),info);
+            (void) (*write_byte)(image,(magick_uint8_t)*pixels,info);
             pixels+=count;
             break;
           }
@@ -1130,13 +1167,19 @@ MagickExport unsigned int PackbitsEncodeImage(Image *image,const size_t length,
         i-=count;
         *packbits=count-1;
         for (j=0; j <= (long) count; j++)
-          (void) WriteBlobByte(image,packbits[j]);
+          (void) (*write_byte)(image,(magick_uint8_t)packbits[j],info);
         pixels+=count;
         break;
       }
     }
   }
-  (void) WriteBlobByte(image,128);  /* EOD marker */
-  LiberateMemory((void **) &packbits);
+  (void) (*write_byte)(image,(magick_uint8_t)128,info);  /* EOD marker */
+  MagickFreeMemory(packbits);
   return(True);
+}
+
+MagickExport unsigned int PackbitsEncodeImage(Image *image,const size_t length,
+  unsigned char *pixels)
+{
+  return(PackbitsEncode2Image(image,length,pixels,BlobWriteByteHook,(void *)NULL));
 }

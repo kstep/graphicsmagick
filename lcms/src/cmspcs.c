@@ -2,31 +2,23 @@
 //  Little cms
 //  Copyright (C) 1998-2003 Marti Maria
 //
-// THIS SOFTWARE IS PROVIDED "AS-IS" AND WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS, IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION, ANY
-// WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+// Permission is hereby granted, free of charge, to any person obtaining 
+// a copy of this software and associated documentation files (the "Software"), 
+// to deal in the Software without restriction, including without limitation 
+// the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+// and/or sell copies of the Software, and to permit persons to whom the Software 
+// is furnished to do so, subject to the following conditions:
 //
-// IN NO EVENT SHALL MARTI MARIA BE LIABLE FOR ANY SPECIAL, INCIDENTAL,
-// INDIRECT OR CONSEQUENTIAL DAMAGES OF ANY KIND,
-// OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
-// WHETHER OR NOT ADVISED OF THE POSSIBILITY OF DAMAGE, AND ON ANY THEORY OF
-// LIABILITY, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
-// OF THIS SOFTWARE.
+// The above copyright notice and this permission notice shall be included in 
+// all copies or substantial portions of the Software.
 //
-//
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the GNU Lesser General Public
-// License as published by the Free Software Foundation; either
-// version 2 of the License, or (at your option) any later version.
-//
-// This library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public
-// License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO 
+// THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE 
+// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION 
+// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
+// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 //      inter PCS conversions XYZ <-> CIE L* a* b*
 
@@ -78,9 +70,20 @@ CIE XYZ             X             0 -> 1.99997        0x0000 -> 0xffff
 CIE XYZ             Y             0 -> 1.99997        0x0000 -> 0xffff
 CIE XYZ             Z             0 -> 1.99997        0x0000 -> 0xffff
 
+Version 2,3
+-----------
+
 CIELAB (16 bit)     L*            0 -> 100.0          0x0000 -> 0xff00
-CIELAB (16 bit)     a*            -128.0 -> +127.996  0x0000 -> 0xffff
-CIELAB (16 bit)     b*            -128.0 -> +127.996  0x0000 -> 0xffff
+CIELAB (16 bit)     a*            -128.0 -> +127.996  0x0000 -> 0x8000 -> 0xffff
+CIELAB (16 bit)     b*            -128.0 -> +127.996  0x0000 -> 0x8000 -> 0xffff
+
+
+Version 4
+---------
+
+CIELAB (16 bit)     L*            0 -> 100.0          0x0000 -> 0xffff
+CIELAB (16 bit)     a*            -128.0 -> +127      0x0000 -> 0x8080 -> 0xffff
+CIELAB (16 bit)     b*            -128.0 -> +127      0x0000 -> 0x8080 -> 0xffff
 
 */
 
@@ -420,36 +423,67 @@ void LCMSEXPORT cmsFloat2LabEncoded(WORD wLab[3], const LPcmsCIELab fLab)
 void LCMSEXPORT cmsLab2LCh(LPcmsCIELCh LCh, const LPcmsCIELab Lab)
 {
 
-
     LCh -> L = Lab -> L;
     LCh -> C = pow(Lab -> a * Lab -> a + Lab -> b * Lab -> b, 0.5);
 
-    if (Lab -> a == 0)
-            LCh -> h   = 0;
-    else
-            LCh -> h = atan2(Lab -> b, Lab -> a);
+    LCh -> h = atan2(Lab -> b, Lab -> a);
 
     LCh -> h *= (180. / M_PI);
 
-    while (LCh -> h > 360.)         // Not necessary, but included as a check.
+    
+    while (LCh -> h >= 360.)         // Not necessary, but included as a check.
                 LCh -> h -= 360.;
 
     while (LCh -> h < 0)
-        LCh -> h += 360.;
+                LCh -> h += 360.;    
 
 }
 
 void LCMSEXPORT cmsLCh2Lab(LPcmsCIELab Lab, const LPcmsCIELCh LCh)
 {
-        double h = LCh -> h;
+    double h = LCh -> h;        
+    double tanh = tan((h * M_PI) / 180.0);       
 
+
+    while (h > 360.)         
+                h -= 360.;
+
+    while (h < 0)
+                h += 360.;
+    
+    Lab -> L = LCh -> L;
+
+    if (h <= 90.0 || h >= 270.0) {
+        
+        Lab -> a = LCh -> C / sqrt((tanh * tanh ) + 1 );        
+    }
+    else {
+
+        Lab -> a = - LCh -> C / sqrt((tanh * tanh ) + 1 );        
+    }
+
+
+    if (h <= 180) {
+
+        Lab -> b = sqrt(LCh -> C * LCh -> C - Lab -> a * Lab -> a);
+    }
+    else {
+        Lab -> b = - sqrt(LCh -> C * LCh -> C - Lab -> a * Lab -> a);
+    }
+    
+
+    
+
+    
+    /*
     h *= (M_PI /180.0);
 
-
-        Lab -> L = LCh -> L;
+    Lab -> L = LCh -> L;
 
     Lab -> a = LCh -> C * cos(h);
     Lab -> b = LCh -> C * sin(h);
+    */
+    
 }
 
 

@@ -1,12 +1,13 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
+// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003
 //
 // Implementation of Image
 //
 
 #define MAGICK_IMPLEMENTATION
 
+#include "Magick++/Include.h"
 #include <string>
 #include <string.h>
 #include <errno.h>
@@ -22,9 +23,13 @@ using namespace std;
 
 #define AbsoluteValue(x)  ((x) < 0 ? -(x) : (x))
 
-MagickDLLDeclExtern const std::string Magick::borderGeometryDefault = "6x6+0+0";
-MagickDLLDeclExtern const std::string Magick::frameGeometryDefault  = "25x25+6+6";
-MagickDLLDeclExtern const std::string Magick::raiseGeometryDefault  = "6x6+0+0";
+// MagickDLLDeclExtern const std::string Magick::borderGeometryDefault = "6x6+0+0";
+// MagickDLLDeclExtern const std::string Magick::frameGeometryDefault  = "25x25+6+6";
+// MagickDLLDeclExtern const std::string Magick::raiseGeometryDefault  = "6x6+0+0";
+
+MagickDLLDeclExtern const char *Magick::borderGeometryDefault = "6x6+0+0";
+MagickDLLDeclExtern const char *Magick::frameGeometryDefault  = "25x25+6+6";
+MagickDLLDeclExtern const char *Magick::raiseGeometryDefault  = "6x6+0+0";
 
 static bool magick_initialized=false;
 
@@ -91,6 +96,12 @@ Magick::Image::Image( const std::string &imageSpec_ )
     {
       // FIXME: need a way to report warnings in constructor
     }
+  catch ( const Error & error_ )
+    {
+      // Release resources
+      delete _imgRef;
+      throw;
+    }
 }
 
 // Construct a blank image canvas of specified size and color
@@ -114,6 +125,12 @@ Magick::Image::Image( const Geometry &size_,
     {
       // FIXME: need a way to report warnings in constructor
     }
+  catch ( const Error & error_ )
+    {
+      // Release resources
+      delete _imgRef;
+      throw;
+    }
 }
 
 // Construct Image from in-memory BLOB
@@ -128,6 +145,12 @@ Magick::Image::Image ( const Blob &blob_ )
   catch ( const Warning & /*warning_*/ )
     {
       // FIXME: need a way to report warnings in constructor
+    }
+  catch ( const Error & error_ )
+    {
+      // Release resources
+      delete _imgRef;
+      throw;
     }
 }
 
@@ -145,6 +168,12 @@ Magick::Image::Image ( const Blob &blob_,
     {
       // FIXME: need a way to report warnings in constructor
     }
+  catch ( const Error & error_ )
+    {
+      // Release resources
+      delete _imgRef;
+      throw;
+    }
 }
 
 // Construct Image of specified size and depth from in-memory BLOB
@@ -161,6 +190,12 @@ Magick::Image::Image ( const Blob &blob_,
   catch ( const Warning & /*warning_*/ )
     {
       // FIXME: need a way to report warnings in constructor
+    }
+  catch ( const Error & error_ )
+    {
+      // Release resources
+      delete _imgRef;
+      throw;
     }
 }
 
@@ -180,6 +215,12 @@ Magick::Image::Image ( const Blob &blob_,
     {
       // FIXME: need a way to report warnings in constructor
     }
+  catch ( const Error & error_ )
+    {
+      // Release resources
+      delete _imgRef;
+      throw;
+    }
 }
 
 // Construct Image of specified size, and format from in-memory BLOB
@@ -196,6 +237,12 @@ Magick::Image::Image ( const Blob &blob_,
   catch ( const Warning & /*warning_*/ )
     {
       // FIXME: need a way to report warnings in constructor
+    }
+  catch ( const Error & error_ )
+    {
+      // Release resources
+      delete _imgRef;
+      throw;
     }
 }
 
@@ -215,6 +262,12 @@ Magick::Image::Image ( const unsigned int width_,
   catch ( const Warning & /*warning_*/ )
     {
       // FIXME: need a way to report warnings in constructor
+    }
+  catch ( const Error & error_ )
+    {
+      // Release resources
+      delete _imgRef;
+      throw;
     }
 }
 
@@ -267,6 +320,26 @@ void Magick::Image::addNoise( const NoiseType noiseType_ )
     AddNoiseImage ( image(),
 		    noiseType_,
 		    &exceptionInfo );
+  replaceImage( newImage );
+  throwException( exceptionInfo );
+}
+
+// Affine Transform image
+void Magick::Image::affineTransform ( const DrawableAffine &affine_ )
+{
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  
+  AffineMatrix _affine;
+  _affine.sx = affine_.sx();
+  _affine.sy = affine_.sy();
+  _affine.rx = affine_.rx();
+  _affine.ry = affine_.ry();
+  _affine.tx = affine_.tx();  
+  _affine.ty = affine_.ty();
+  
+  MagickLib::Image* newImage =
+    AffineTransformImage( image(), &_affine, &exceptionInfo);     
   replaceImage( newImage );
   throwException( exceptionInfo );
 }
@@ -403,6 +476,27 @@ void Magick::Image::channel ( const ChannelType channel_ )
   ChannelImage ( image(), channel_ );
   throwImageException();
 }
+
+// Set or obtain modulus channel depth
+void Magick::Image::channelDepth ( const ChannelType channel_,
+                                   const unsigned int depth_)
+{
+  modifyImage();
+  SetImageChannelDepth( image(), channel_, depth_);
+  throwImageException();
+}
+unsigned int Magick::Image::channelDepth ( const ChannelType channel_ )
+{
+  unsigned int channel_depth;
+
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  channel_depth=GetImageChannelDepth( constImage(), channel_,
+                                      &exceptionInfo );
+  throwException( exceptionInfo );
+  return channel_depth;
+}
+
 
 // Charcoal-effect image
 void Magick::Image::charcoal( const double radius_, const double sigma_ )
@@ -1118,6 +1212,21 @@ void Magick::Image::ping ( const Blob& blob_ )
   throwException( exceptionInfo );
 }
 
+// Execute a named process module using an argc/argv syntax similar to
+// that accepted by a C 'main' routine. An exception is thrown if the
+// requested process module doesn't exist, fails to load, or fails during
+// execution.
+void Magick::Image::process( std::string name_, const int argc, char **argv )
+{
+  modifyImage();
+
+  unsigned int status = 
+    ExecuteModuleProcess( name_.c_str(), &image(), argc, argv );
+
+  if (status == false)
+    throwException( image()->exception );
+}
+
 // Quantize colors in image using current quantization settings
 // Set measureError_ to true in order to measure quantization error
 void Magick::Image::quantize ( const bool measureError_  )
@@ -1133,6 +1242,30 @@ void Magick::Image::quantize ( const bool measureError_  )
   // Udate DirectClass representation of pixels
   SyncImage( image() );
   throwImageException();
+}
+
+// Apply an arithmetic or bitwise operator to the image pixel quantums.
+void Magick::Image::quantumOperator ( const ChannelType channel_,
+                                      const QuantumOperator operator_,
+                                      Quantum rvalue_)
+{
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  QuantumOperatorImage( image(), channel_, operator_, rvalue_, &exceptionInfo);
+  throwException( exceptionInfo );
+}
+void Magick::Image::quantumOperator ( const int x_,const int y_,
+                                      const unsigned int columns_,
+                                      const unsigned int rows_,
+                                      const ChannelType channel_,
+                                      const QuantumOperator operator_,
+                                      const Quantum rvalue_)
+{
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  QuantumOperatorRegionImage( image(), x_, y_, columns_, rows_, channel_,
+                              operator_, rvalue_, &exceptionInfo);
+  throwException( exceptionInfo );
 }
 
 // Raise image (lighten or darken the edges of an image to give a 3-D
@@ -1748,6 +1881,23 @@ unsigned int Magick::Image::animationIterations ( void ) const
   return constImage()->iterations;
 }
 
+// Access/Update a named image attribute
+void Magick::Image::attribute ( const std::string name_,
+                                const std::string value_ )
+{
+  SetImageAttribute( image(), name_.c_str(), value_.c_str() );
+}
+std::string Magick::Image::attribute ( const std::string name_ )
+{
+  const ImageAttribute * image_attribute =
+    GetImageAttribute( constImage(), name_.c_str() );
+
+  if ( image_attribute )
+    return std::string( image_attribute->value );
+
+  return std::string(); // Intentionally no exception
+}
+
 // Background color
 void Magick::Image::backgroundColor ( const Color &color_ )
 {
@@ -2118,13 +2268,24 @@ void Magick::Image::comment ( const std::string &comment_ )
 }
 std::string Magick::Image::comment ( void ) const
 {
-  const ImageAttribute * attribute =
+  const ImageAttribute * image_attribute =
     GetImageAttribute( constImage(), "Comment" );
 
-  if ( attribute )
-    return std::string( attribute->value );
+  if ( image_attribute )
+    return std::string( image_attribute->value );
 
   return std::string(); // Intentionally no exception
+}
+
+// Composition operator to be used when composition is implicitly used
+// (such as for image flattening).
+void Magick::Image::compose (const CompositeOperator compose_)
+{
+  image()->compose=compose_;
+}
+Magick::CompositeOperator Magick::Image::compose ( void ) const
+{
+  return constImage()->compose;
 }
 
 // Compression algorithm
@@ -2148,6 +2309,66 @@ void Magick::Image::debug ( const bool flag_ )
 bool Magick::Image::debug ( void ) const
 {
   return constOptions()->debug();
+}
+
+// Tagged image format define (set/access coder-specific option) The
+// magick_ option specifies the coder the define applies to.  The key_
+// option provides the key specific to that coder.  The value_ option
+// provides the value to set (if any). See the defineSet() method if the
+// key must be removed entirely.
+void Magick::Image::defineValue ( const std::string &magick_,
+                                  const std::string &key_,
+                                  const std::string &value_ )
+{
+  modifyImage();
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  std::string definition = magick_ + ":" + key_ + "=" + value_;
+  AddDefinitions ( imageInfo(), definition.c_str(), &exceptionInfo );
+  throwException( exceptionInfo );
+}
+std::string Magick::Image::defineValue ( const std::string &magick_,
+                                         const std::string &key_ ) const
+{
+  const char *definition =
+    AccessDefinition ( constImageInfo(), magick_.c_str(), key_.c_str() );
+  if (definition)
+    return std::string( definition );
+  return std::string( );
+}
+
+// Tagged image format define. Similar to the defineValue() method
+// except that passing the flag_ value 'true' creates a value-less
+// define with that format and key. Passing the flag_ value 'false'
+// removes any existing matching definition. The method returns 'true'
+// if a matching key exists, and 'false' if no matching key exists.
+void Magick::Image::defineSet ( const std::string &magick_,
+                                const std::string &key_,
+                                bool flag_ )
+{
+  modifyImage();
+  if (flag_)
+    {
+      ExceptionInfo exceptionInfo;
+      GetExceptionInfo( &exceptionInfo );
+      std::string options = magick_ + ":" + key_ + "=";
+      AddDefinitions ( imageInfo(), options.c_str(), &exceptionInfo );
+      throwException( exceptionInfo );
+    }
+  else
+    {
+      std::string definition = magick_ + ":" + key_;
+      RemoveDefinitions( imageInfo(), definition.c_str() );
+    }
+}
+bool Magick::Image::defineSet ( const std::string &magick_,
+                                const std::string &key_ ) const
+{
+  const char *definition =
+    AccessDefinition ( constImageInfo(), magick_.c_str(), key_.c_str() );
+  if (definition)
+    return true;
+  return false;
 }
 
 // Pixel resolution
@@ -2193,20 +2414,28 @@ Magick::Geometry Magick::Image::density ( void ) const
   return constOptions()->density( );
 }
 
-// Image depth (8 or 16)
+// Image depth (bits allocated to red/green/blue components)
 void Magick::Image::depth ( const unsigned int depth_ )
 {
+  unsigned int depth = depth_;
+
+  if (depth > QuantumDepth)
+    depth=QuantumDepth;
+
+  if (depth < 8)
+    depth=8;
+  else if (depth > 8 && depth < 16)
+    depth=16;
+  else if (depth > 16 && depth < 32)
+    depth=32;
+
   modifyImage();
-  SetImageDepth( image(), depth_ );
-  options()->depth( depth_ );
+  image()->depth=depth;
+  options()->depth( depth );
 }
 unsigned int Magick::Image::depth ( void ) const
 {
-  ExceptionInfo exceptionInfo;
-  GetExceptionInfo( &exceptionInfo );
-  unsigned int depth=GetImageDepth( constImage(), &exceptionInfo );
-  throwException( exceptionInfo );
-  return depth;
+  return constImage()->depth;
 }
 
 std::string Magick::Image::directory ( void ) const
@@ -2401,25 +2630,16 @@ unsigned int Magick::Image::gifDisposeMethod ( void ) const
   return constImage()->dispose;
 }
 
-// ICC color profile (BLOB)
+// ICC ICM color profile (BLOB)
 void Magick::Image::iccColorProfile( const Magick::Blob &colorProfile_ )
 {
-  ProfileInfo * color_profile = &(image()->color_profile);
-  LiberateMemory( reinterpret_cast<void**>(&color_profile->info) );
-  color_profile->length = 0;
-
-  if ( colorProfile_.data() != 0 )
-    {
-      color_profile->info = new unsigned char[colorProfile_.length()];
-      memcpy( color_profile->info, colorProfile_.data(),
-              colorProfile_.length());
-      color_profile->length = colorProfile_.length();
-    }
+  profile("ICM",colorProfile_);
 }
 Magick::Blob Magick::Image::iccColorProfile( void ) const
 {
-  const ProfileInfo * color_profile = &(constImage()->color_profile);
-  return Blob( color_profile->info, color_profile->length );
+  size_t length=0;
+  const void *data= (const void *) GetImageProfile(constImage(),"ICM",&length);
+  return Blob(data, length);
 }
 
 void Magick::Image::interlaceType ( const Magick::InterlaceType interlace_ )
@@ -2430,29 +2650,21 @@ void Magick::Image::interlaceType ( const Magick::InterlaceType interlace_ )
 }
 Magick::InterlaceType Magick::Image::interlaceType ( void ) const
 {
-  return constOptions()->interlaceType ( );
+  return constImage()->interlace;
 }
 
 // IPTC profile (BLOB)
 void Magick::Image::iptcProfile( const Magick::Blob &iptcProfile_ )
 {
-  ProfileInfo * iptc_profile = &(image()->iptc_profile);
-  LiberateMemory( reinterpret_cast<void**>(&iptc_profile->info) );
-  iptc_profile->length = 0;
-
-  if ( iptcProfile_.data() != 0 )
-    {
-      iptc_profile->info = new unsigned char[iptcProfile_.length()];
-      memcpy( iptc_profile->info, iptcProfile_.data(),
-              iptcProfile_.length());
-
-      iptc_profile->length = iptcProfile_.length();
-    }
+  modifyImage();
+  SetImageProfile(image(),"IPTC",(const unsigned char*)iptcProfile_.data(),
+                  iptcProfile_.length());
 }
 Magick::Blob Magick::Image::iptcProfile( void ) const
 {
-  const ProfileInfo * iptc_profile = &(constImage()->iptc_profile);
-  return Blob( iptc_profile->info, iptc_profile->length );
+  size_t length=0;
+  const void *data=(const void *) GetImageProfile(constImage(),"IPTC",&length);
+  return Blob(data, length);
 }
 
 // Does object contain valid image?
@@ -2521,6 +2733,15 @@ std::string Magick::Image::magick ( void ) const
 void Magick::Image::matte ( const bool matteFlag_ )
 {
   modifyImage();
+
+  // If matte channel is requested, but image doesn't already have a
+  // matte channel, then create an opaque matte channel.  Likewise, if
+  // the image already has a matte channel but a matte channel is not
+  // desired, then set the matte channel to opaque.
+  if ((matteFlag_ && !constImage()->matte) ||
+      (constImage()->matte && !matteFlag_))
+    SetImageOpacity(image(),OpaqueOpacity);
+
   image()->matte = matteFlag_;
 }
 bool Magick::Image::matte ( void ) const
@@ -2564,6 +2785,23 @@ Magick::Color Magick::Image::matteColor ( void ) const
 double Magick::Image::meanErrorPerPixel ( void ) const
 {
   return(constImage()->error.mean_error_per_pixel);
+}
+
+// Image modulus depth (minimum number of bits required to support
+// red/green/blue components without loss of accuracy)
+void Magick::Image::modulusDepth ( const unsigned int depth_ )
+{
+  modifyImage();
+  SetImageDepth( image(), depth_ );
+  options()->depth( depth_ );
+}
+unsigned int Magick::Image::modulusDepth ( void ) const
+{
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  unsigned int depth=GetImageDepth( constImage(), &exceptionInfo );
+  throwException( exceptionInfo );
+  return depth;
 }
 
 void Magick::Image::monochrome ( const bool monochromeFlag_ )
@@ -2733,16 +2971,12 @@ void Magick::Image::profile( const std::string name_,
 // an existing generic profile name.
 Magick::Blob Magick::Image::profile( const std::string name_ ) const
 {
-  const MagickLib::Image* image = constImage();
+  size_t length=0;
+  const void *data=(const void *)
+    GetImageProfile(constImage(),name_.c_str(),&length);
 
-  for (long i=0; i < (long) image->generic_profiles; i++)
-    {
-      if (!GlobExpression(image->generic_profile[i].name,name_.c_str()))
-        continue;      
-      
-      return Blob( (void*)image->generic_profile[i].info,
-                   image->generic_profile[i].length );
-    }
+  if (data)
+    return Blob(data, length);
   
   Blob blob;
   Image temp_image = *this;
@@ -2862,6 +3096,17 @@ void Magick::Image::size ( const Geometry &geometry_ )
 Magick::Geometry Magick::Image::size ( void ) const
 {
   return Magick::Geometry( constImage()->columns, constImage()->rows );
+}
+
+// Obtain image statistics. Statistics are normalized to the range of
+// 0.0 to 1.0 and are output to the specified ImageStatistics
+// structure.
+void Magick::Image::statistics ( ImageStatistics *statistics ) const
+{
+  ExceptionInfo exceptionInfo;
+  GetExceptionInfo( &exceptionInfo );
+  GetImageStatistics( constImage(), statistics, &exceptionInfo );
+  throwException( exceptionInfo );
 }
 
 // enabled/disable stroke anti-aliasing

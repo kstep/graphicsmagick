@@ -10,14 +10,14 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                           M   M  PPPP   RRRR                                %
-%                           MM MM  P   P  R   R                               %
-%                           M M M  PPPP   RRRR                                %
-%                           M   M  P      R R                                 %
-%                           M   M  P      R  R                                %
+%                            M   M  PPPP   RRRR                               %
+%                            MM MM  P   P  R   R                              %
+%                            M M M  PPPP   RRRR                               %
+%                            M   M  P      R R                                %
+%                            M   M  P      R  R                               %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                  Read/Write the Magick Persistent Registry.                 %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %

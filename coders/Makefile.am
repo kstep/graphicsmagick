@@ -6,14 +6,14 @@
 # Copyright.txt. You should have received a copy of Copyright.txt with this
 # package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
 #
-#  Makefile for building GraphicsMagick coder modules
+# Makefile for building GraphicsMagick coder modules
 #
 #
 
 # Don't require all the GNU mandated files
-AUTOMAKE_OPTIONS = 1.7 foreign
+AUTOMAKE_OPTIONS = 1.8 foreign
 
-INCLUDES = -I$(top_builddir) -I$(top_srcdir) -I$(top_srcdir)/magick
+AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir) @MODULE_EXTRA_CPPFLAGS@
 
 if HasWINGDI32
 MAGICK_GDI32_MODULES = clipboard.la emf.la
@@ -22,14 +22,14 @@ MAGICK_GDI32_MODULES =
 endif
 
 MAGICK_CODER_SRCS = \
-  art.c avi.c avs.c bmp.c caption.c clipboard.c cmyk.c cut.c dcm.c \
+  art.c avi.c avs.c bmp.c caption.c cineon.c clipboard.c cmyk.c cut.c dcm.c \
   dib.c dps.c dpx.c emf.c ept.c fax.c fits.c fpx.c gif.c gradient.c \
   gray.c histogram.c html.c icon.c jbig.c jp2.c jpeg.c label.c \
   locale.c logo.c map.c mat.c matte.c meta.c miff.c mono.c mpc.c mpeg.c \
   mpr.c msl.c mtv.c mvg.c null.c otb.c palm.c pcd.c pcl.c pcx.c pdb.c pdf.c \
   pict.c pix.c plasma.c png.c pnm.c preview.c ps.c ps2.c ps3.c psd.c \
   pwp.c rgb.c rla.c rle.c sct.c sfw.c sgi.c stegano.c sun.c svg.c \
-  tga.c tiff.c tile.c tim.c ttf.c txt.c uil.c url.c uyvy.c vicar.c \
+  tga.c tiff.c tile.c tim.c topol.c ttf.c txt.c uil.c url.c uyvy.c vicar.c \
   vid.c viff.c wbmp.c wmf.c wpg.c x.c xbm.c xc.c xcf.c xpm.c xwd.c \
   yuv.c
 
@@ -42,22 +42,22 @@ EXTRA_libCoders_la_SOURCES = clipboard.c emf.c
 endif # WITH_MODULES
 
 # Additional files to distribute
-EXTRA_DIST = modules.mgk delegates.mgk.in type.mgk.in
+EXTRA_DIST = 
 
 # Headers which are not installed but which are distributed
 noinst_HEADERS = 
 
 # Location of libGraphicsMagick.la
-LIBMAGICK = ../magick/libGraphicsMagick.la
+LIBMAGICK = $(top_builddir)/magick/libGraphicsMagick.la
 
 # Where coder modules are installed
-pkgdir = @MagickCoderModulesPath@
+pkgdir = $(MagickCoderModulesPath)
 
 # Where config files get installed
-pkglibdir = @MagickLibPath@
+pkglibdir = $(MagickLibPath)
 
 # Architecture-dependent data files installed with modules
-pkg_DATA = modules.mgk
+pkg_DATA = 
 
 # Architecture independent data files installed into GraphicsMagick/share
 pkgdata_DATA =
@@ -66,14 +66,14 @@ if WITH_MODULES
 
 # Modules which are to be built
 pkg_LTLIBRARIES = \
-  art.la avi.la avs.la bmp.la caption.la cmyk.la cut.la dcm.la dib.la dps.la \
+  art.la avi.la avs.la bmp.la caption.la cineon.la cmyk.la cut.la dcm.la dib.la dps.la \
   dpx.la ept.la fax.la fits.la fpx.la gif.la gradient.la gray.la \
   histogram.la html.la icon.la jbig.la jp2.la jpeg.la label.la locale.la \
   logo.la map.la mat.la matte.la meta.la miff.la mono.la mpc.la mpeg.la mpr.la \
   msl.la mtv.la mvg.la null.la otb.la palm.la pcd.la pcl.la pcx.la pdb.la \
   pdf.la pict.la pix.la plasma.la png.la pnm.la preview.la ps.la ps2.la ps3.la \
   psd.la pwp.la rgb.la rla.la rle.la sct.la sfw.la sgi.la stegano.la sun.la \
-  svg.la tga.la tiff.la tile.la tim.la ttf.la txt.la uil.la url.la uyvy.la \
+  svg.la tga.la tiff.la tile.la tim.la topol.la ttf.la txt.la uil.la url.la uyvy.la \
   vicar.la vid.la viff.la wbmp.la wmf.la wpg.la x.la xbm.la xc.la xcf.la \
   xpm.la xwd.la yuv.la $(MAGICK_GDI32_MODULES)
 MODULECOMMONFLAGS = -no-undefined -module -avoid-version
@@ -81,9 +81,6 @@ else
 pkg_LTLIBRARIES =
 MODULECOMMONFLAGS     =
 endif # WITH_MODULES
-
-#AM_CFLAGS = @MODULE_EXTRA_CPPFLAGS@
-AM_CPPFLAGS = @MODULE_EXTRA_CPPFLAGS@
 
 # ART module
 art_la_SOURCES      = art.c
@@ -110,10 +107,15 @@ caption_la_SOURCES  = caption.c
 caption_la_LDFLAGS  = $(MODULECOMMONFLAGS)
 caption_la_LIBADD   = $(LIBMAGICK)
 
+# CINEON module
+cineon_la_SOURCES  = cineon.c
+cineon_la_LDFLAGS  = $(MODULECOMMONFLAGS)
+cineon_la_LIBADD   = $(LIBMAGICK)
+
 # CLIPBOARD module
 clipboard_la_SOURCES= clipboard.c
 clipboard_la_LDFLAGS= $(MODULECOMMONFLAGS)
-clipboard_la_LIBADD = $(LIBMAGICK) @LIB_GDI32@
+clipboard_la_LIBADD = $(LIBMAGICK) $(LIB_GDI32)
 
 # CMYK module
 cmyk_la_SOURCES     = cmyk.c
@@ -138,7 +140,7 @@ dib_la_LIBADD       = $(LIBMAGICK)
 # DPS module
 dps_la_SOURCES      = dps.c
 dps_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-dps_la_LIBADD       = $(LIBMAGICK) @LIB_DPS@ @LIB_XEXT@ @LIB_X11@
+dps_la_LIBADD       = $(LIBMAGICK) $(LIB_DPS) $(LIB_XEXT) $(LIB_X11)
 
 # DPX module
 dpx_la_SOURCES      = dpx.c
@@ -148,12 +150,12 @@ dpx_la_LIBADD       = $(LIBMAGICK)
 # EMF module
 emf_la_SOURCES      = emf.c
 emf_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-emf_la_LIBADD       = $(LIBMAGICK) @LIB_GDI32@
+emf_la_LIBADD       = $(LIBMAGICK) $(LIB_GDI32)
 
 # EPT module
 ept_la_SOURCES      = ept.c
 ept_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-ept_la_LIBADD       = $(LIBMAGICK) @LIB_GS@ $(LIB_MATH)
+ept_la_LIBADD       = $(LIBMAGICK) $(LIB_GS) $(LIB_MATH)
 
 # FAX module
 fax_la_SOURCES      = fax.c
@@ -168,7 +170,7 @@ fits_la_LIBADD      = $(LIBMAGICK)
 # FPX module
 fpx_la_SOURCES      = fpx.c
 fpx_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-fpx_la_LIBADD       = $(LIBMAGICK) @LIB_FPX@
+fpx_la_LIBADD       = $(LIBMAGICK) $(LIB_FPX)
 
 # GIF module
 gif_la_SOURCES      = gif.c
@@ -203,27 +205,27 @@ icon_la_LIBADD      = $(LIBMAGICK)
 # JBIG module
 jbig_la_SOURCES     = jbig.c
 jbig_la_LDFLAGS     = $(MODULECOMMONFLAGS)
-jbig_la_LIBADD      = $(LIBMAGICK) @LIB_JBIG@
+jbig_la_LIBADD      = $(LIBMAGICK) $(LIB_JBIG)
 
 # JPEG module
 jpeg_la_SOURCES     = jpeg.c
 jpeg_la_LDFLAGS     = $(MODULECOMMONFLAGS)
-jpeg_la_LIBADD      = $(LIBMAGICK) @LIB_JPEG@
+jpeg_la_LIBADD      = $(LIBMAGICK) $(LIB_JPEG)
 
 # JPEG 2000 module
 jp2_la_SOURCES      = jp2.c
 jp2_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-jp2_la_LIBADD       = $(LIBMAGICK) @LIB_JP2@  @LIB_JPEG@ $(LIB_MATH)
+jp2_la_LIBADD       = $(LIBMAGICK) $(LIB_JP2) $(LIB_JPEG) $(LIB_MATH)
 
 # LABEL module
 label_la_SOURCES    = label.c
-label_la_LDFLAGS    = $(MODULECOMMONFLAGS)
+label_la_LDFLAGS    = $(MODULECOMMONFLAGS) $(LIB_MATH)
 label_la_LIBADD     = $(LIBMAGICK)
 
 # LOCALE module
-locale_la_SOURCES     = locale.c
-locale_la_LDFLAGS     = $(MODULECOMMONFLAGS)
-locale_la_LIBADD      = $(LIBMAGICK)
+locale_la_SOURCES   = locale.c
+locale_la_LDFLAGS   = $(MODULECOMMONFLAGS)
+locale_la_LIBADD    = $(LIBMAGICK)
 
 # LOGO module
 logo_la_SOURCES     = logo.c
@@ -253,7 +255,7 @@ meta_la_LIBADD      = $(LIBMAGICK)
 # MIFF module
 miff_la_SOURCES     = miff.c
 miff_la_LDFLAGS     = $(MODULECOMMONFLAGS)
-miff_la_LIBADD      = $(LIBMAGICK) @LIB_ZLIB@  @LIB_BZLIB@
+miff_la_LIBADD      = $(LIBMAGICK) $(LIB_ZLIB)  $(LIB_BZLIB)
 
 # MONO module
 mono_la_SOURCES     = mono.c
@@ -273,12 +275,12 @@ mpeg_la_LIBADD      = $(LIBMAGICK)
 # MPR module
 mpr_la_SOURCES      = mpr.c
 mpr_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-mpr_la_LIBADD       = $(LIBMAGICK) @LIB_XML@ @LIB_ZLIB@ @LIB_X11@ $(LIB_MATH)
+mpr_la_LIBADD       = $(LIBMAGICK)
 
 # MSL module
 msl_la_SOURCES      = msl.c
 msl_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-msl_la_LIBADD       = $(LIBMAGICK) @LIB_XML@ @LIB_ZLIB@ @LIB_X11@ $(LIB_MATH)
+msl_la_LIBADD       = $(LIBMAGICK) $(LIB_XML) $(LIB_ZLIB) $(LIB_MATH)
 
 # MTV module
 mtv_la_SOURCES      = mtv.c
@@ -328,7 +330,7 @@ pdb_la_LIBADD       = $(LIBMAGICK)
 # PDF module
 pdf_la_SOURCES      = pdf.c
 pdf_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-pdf_la_LIBADD       = $(LIBMAGICK) @LIB_TIFF@ @LIB_JPEG@ @LIB_ZLIB@ @LIB_GS@ $(LIB_MATH)
+pdf_la_LIBADD       = $(LIBMAGICK) $(LIB_TIFF) $(LIB_JPEG) $(LIB_ZLIB) $(LIB_GS) $(LIB_MATH)
 
 # PICT module
 pict_la_SOURCES     = pict.c
@@ -343,7 +345,7 @@ pix_la_LIBADD       = $(LIBMAGICK)
 # PNG module
 png_la_SOURCES      = png.c
 png_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-png_la_LIBADD       = $(LIBMAGICK) @LIB_PNG@ @LIB_JPEG@ @LIB_ZLIB@ $(LIB_MATH)
+png_la_LIBADD       = $(LIBMAGICK) $(LIB_PNG) $(LIB_JPEG) $(LIB_ZLIB) $(LIB_MATH)
 
 # PLASMA module
 plasma_la_SOURCES   = plasma.c
@@ -363,17 +365,17 @@ preview_la_LIBADD   = $(LIBMAGICK)
 # PS module
 ps_la_SOURCES       = ps.c
 ps_la_LDFLAGS       = $(MODULECOMMONFLAGS)
-ps_la_LIBADD        = $(LIBMAGICK) @LIB_GS@ $(LIB_MATH)
+ps_la_LIBADD        = $(LIBMAGICK) $(LIB_GS) $(LIB_MATH)
 
 # PS2 module
 ps2_la_SOURCES      = ps2.c
 ps2_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-ps2_la_LIBADD       = $(LIBMAGICK) @LIB_TIFF@ @LIB_JPEG@ @LIB_ZLIB@ $(LIB_MATH)
+ps2_la_LIBADD       = $(LIBMAGICK) $(LIB_TIFF) $(LIB_JPEG) $(LIB_ZLIB) $(LIB_MATH)
 
 # PS3 module
 ps3_la_SOURCES      = ps3.c
 ps3_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-ps3_la_LIBADD       = $(LIBMAGICK) @LIB_TIFF@ @LIB_JPEG@ @LIB_ZLIB@ $(LIB_MATH)
+ps3_la_LIBADD       = $(LIBMAGICK) $(LIB_TIFF) $(LIB_JPEG) $(LIB_ZLIB) $(LIB_MATH)
 
 # PSD module
 psd_la_SOURCES      = psd.c
@@ -428,7 +430,7 @@ sun_la_LIBADD       = $(LIBMAGICK)
 # SVG module
 svg_la_SOURCES      = svg.c
 svg_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-svg_la_LIBADD       = $(LIBMAGICK) @LIB_XML@ @LIB_ZLIB@ @LIB_X11@ $(LIB_MATH)
+svg_la_LIBADD       = $(LIBMAGICK) $(LIB_XML) $(LIB_ZLIB) $(LIB_MATH)
 
 # TGA module
 tga_la_SOURCES      = tga.c
@@ -438,7 +440,7 @@ tga_la_LIBADD       = $(LIBMAGICK)
 # TIFF module
 tiff_la_SOURCES     = tiff.c
 tiff_la_LDFLAGS     = $(MODULECOMMONFLAGS)
-tiff_la_LIBADD      = $(LIBMAGICK) @LIB_TIFF@ @LIB_JPEG@ @LIB_ZLIB@
+tiff_la_LIBADD      = $(LIBMAGICK) $(LIB_TIFF) $(LIB_JPEG) $(LIB_ZLIB)
 
 # TILE module
 tile_la_SOURCES     = tile.c
@@ -449,6 +451,11 @@ tile_la_LIBADD      = $(LIBMAGICK)
 tim_la_SOURCES      = tim.c
 tim_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 tim_la_LIBADD       = $(LIBMAGICK)
+
+# TOPOL module
+topol_la_SOURCES    = topol.c
+topol_la_LDFLAGS    = $(MODULECOMMONFLAGS)
+topol_la_LIBADD     = $(LIBMAGICK)
 
 # TTF module
 ttf_la_SOURCES      = ttf.c
@@ -468,7 +475,7 @@ uil_la_LIBADD       = $(LIBMAGICK)
 # URL module
 url_la_SOURCES      = url.c
 url_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-url_la_LIBADD       = $(LIBMAGICK) @LIB_XML@ @LIB_ZLIB@ @LIB_X11@ $(LIB_MATH)
+url_la_LIBADD       = $(LIBMAGICK) $(LIB_XML) $(LIB_ZLIB) $(LIB_MATH)
 
 # UYVY module
 uyvy_la_SOURCES     = uyvy.c
@@ -498,7 +505,7 @@ wbmp_la_LIBADD      = $(LIBMAGICK)
 # WMF module
 wmf_la_SOURCES      = wmf.c
 wmf_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-wmf_la_LIBADD       = $(LIBMAGICK) @LIB_WMF@ @LIB_WMF_DEPS@ $(LIB_MATH)
+wmf_la_LIBADD       = $(LIBMAGICK) $(LIB_WMF) $(LIB_WMF_DEPS) $(LIB_MATH)
 
 # WPG module
 wpg_la_SOURCES      = wpg.c
@@ -508,7 +515,7 @@ wpg_la_LIBADD       = $(LIBMAGICK)
 # X module
 x_la_SOURCES        = x.c
 x_la_LDFLAGS        = $(MODULECOMMONFLAGS)
-x_la_LIBADD         = $(LIBMAGICK) @LIB_X11@
+x_la_LIBADD         = $(LIBMAGICK)
 
 # XBM module
 xbm_la_SOURCES      = xbm.c
@@ -533,36 +540,9 @@ xpm_la_LIBADD       = $(LIBMAGICK)
 # XWD module
 xwd_la_SOURCES      = xwd.c
 xwd_la_LDFLAGS      = $(MODULECOMMONFLAGS)
-xwd_la_LIBADD       = $(LIBMAGICK) @LIB_X11@
+xwd_la_LIBADD       = $(LIBMAGICK)
 
 # YUV module
 yuv_la_SOURCES      = yuv.c
 yuv_la_LDFLAGS      = $(MODULECOMMONFLAGS)
 yuv_la_LIBADD       = $(LIBMAGICK)
-
-DEFS = @DEFS@ -I../
-
-# Install delegates files
-DATADELEGATES = \
-	delegates.mgk \
-	type-ghostscript.mgk \
-	type-windows.mgk \
-	type-solaris.mgk \
-	type.mgk
-
-install-data-delegates: 
-	$(mkinstalldirs) $(DESTDIR)$(pkglibdir)
-	for file in $(DATADELEGATES) ; do  \
-	  $(INSTALL_DATA) $$file $(DESTDIR)$(pkglibdir) ; \
-	done
-
-# Uninstall delegates files
-uninstall-data-delegates:
-	for file in $(DATADELEGATES) ; do \
-	  rm -f $(DESTDIR)$(pkglibdir)/$$file ; \
-	done
-
-
-install-exec-local: install-data-delegates
-
-uninstall-local: uninstall-data-delegates

@@ -41,6 +41,7 @@ extern MagickExport void
   DestroyImageList(Image *),
   InsertImageInList(Image **,Image *),
   PrependImageToList(Image **,Image *),
+  ReplaceImageInList(Image **images,Image *image),
   ReverseImageList(Image **),
   SpliceImageIntoList(Image **,const unsigned long,Image *);
 

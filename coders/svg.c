@@ -17,7 +17,7 @@
 %                            SSSSS    V     GGG                               %
 %                                                                             %
 %                                                                             %
-%                   Read/Write GraphicsMagick Image Format.                   %
+%                 Read/Write Scalable Vector Graphics Format.                 %
 %                                                                             %
 %                                                                             %
 %                              Software Design                                %
@@ -263,11 +263,11 @@ static char **GetStyleTokens(void *context,const char *text,int *number_tokens)
   for (p=text; *p != '\0'; p++)
     if (*p == ':')
       (*number_tokens)+=2;
-  tokens=(char **) AcquireMemory((*number_tokens+2)*sizeof(char *));
+  tokens=MagickAllocateMemory(char **,(*number_tokens+2)*sizeof(char *));
   if (tokens == (char **) NULL)
     {
-      ThrowException(svg_info->exception,ResourceLimitError,
-        "MemoryAllocationFailed","UnableToConvertStringToTokens");
+      ThrowException3(svg_info->exception,ResourceLimitError,
+        MemoryAllocationFailed,UnableToConvertStringToTokens);
       return((char **) NULL);
     }
   /*
@@ -321,11 +321,11 @@ static char **GetTransformTokens(void *context,const char *text,
     if (*p == '(')
       (*number_tokens)+=2;
   }
-  tokens=(char **) AcquireMemory((*number_tokens+2)*sizeof(char *));
+  tokens=MagickAllocateMemory(char **,(*number_tokens+2)*sizeof(char *));
   if (tokens == (char **) NULL)
     {
-      ThrowException(svg_info->exception,ResourceLimitError,
-        "MemoryAllocationFailed","UnableToConvertStringToTokens");
+      ThrowException3(svg_info->exception,ResourceLimitError,
+        MemoryAllocationFailed,UnableToConvertStringToTokens);
       return((char **) NULL);
     }
   /*
@@ -602,14 +602,14 @@ static void SVGUnparsedEntityDeclaration(void *context,const xmlChar *name,
 
 static void SVGSetDocumentLocator(void *context,xmlSAXLocatorPtr location)
 {
-  SVGInfo
-    *svg_info;
+/*   SVGInfo */
+/*     *svg_info; */
 
   /*
     Receive the document locator at startup, actually xmlDefaultSAXLocator.
   */
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  SAX.setDocumentLocator()");
-  svg_info=(SVGInfo *) context;
+/*   svg_info=(SVGInfo *) context; */
 }
 
 static void SVGStartDocument(void *context)
@@ -648,17 +648,17 @@ static void SVGEndDocument(void *context)
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  SAX.endDocument()");
   svg_info=(SVGInfo *) context;
   if (svg_info->offset != (char *) NULL)
-    LiberateMemory((void **) &svg_info->offset);
+    MagickFreeMemory(svg_info->offset);
   if (svg_info->stop_color != (char *) NULL)
-    LiberateMemory((void **) &svg_info->stop_color);
+    MagickFreeMemory(svg_info->stop_color);
   if (svg_info->scale != (double *) NULL)
-    LiberateMemory((void **) &svg_info->scale);
+    MagickFreeMemory(svg_info->scale);
   if (svg_info->text != (char *) NULL)
-    LiberateMemory((void **) &svg_info->text);
+    MagickFreeMemory(svg_info->text);
   if (svg_info->vertices != (char *) NULL)
-    LiberateMemory((void **) &svg_info->vertices);
+    MagickFreeMemory(svg_info->vertices);
   if (svg_info->url != (char *) NULL)
-    LiberateMemory((void **) &svg_info->url);
+    MagickFreeMemory(svg_info->url);
 }
 
 static void SVGStartElement(void *context,const xmlChar *name,
@@ -693,11 +693,11 @@ static void SVGStartElement(void *context,const xmlChar *name,
     "  SAX.startElement(%.1024s",name);
   svg_info=(SVGInfo *) context;
   svg_info->n++;
-  ReacquireMemory((void **) &svg_info->scale,(svg_info->n+1)*sizeof(double));
+  MagickReallocMemory(svg_info->scale,(svg_info->n+1)*sizeof(double));
   if (svg_info->scale == (double *) NULL)
     {
       ThrowException(svg_info->exception,ResourceLimitError,
-        "MemoryAllocationFailed","unable to convert SVG image");
+        MemoryAllocationFailed,"unable to convert SVG image");
       return;
     }
   svg_info->scale[svg_info->n]=svg_info->scale[svg_info->n-1];
@@ -990,7 +990,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
               text=EscapeString(svg_info->text,'\'');
               MVGPrintf(svg_info->file,"text %g,%g '%s'\n",svg_info->bounds.x,
                 svg_info->bounds.y,text);
-              LiberateMemory((void **) &text);
+              MagickFreeMemory(text);
               draw_info=CloneDrawInfo(svg_info->image_info,(DrawInfo *) NULL);
               draw_info->pointsize=svg_info->pointsize;
               draw_info->text=AllocateString(svg_info->text);
@@ -1286,8 +1286,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
                 transform.sx,transform.rx,transform.ry,transform.sy,
                 transform.tx,transform.ty);
               for (j=0; j < number_tokens; j++)
-                LiberateMemory((void **) &tokens[j]);
-              LiberateMemory((void **) &tokens);
+                MagickFreeMemory(tokens[j]);
+              MagickFreeMemory(tokens);
               break;
             }
           if (LocaleCompare(keyword,"gradientUnits") == 0)
@@ -1680,8 +1680,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
                 }
               }
               for (j=0; j < number_tokens; j++)
-                LiberateMemory((void **) &tokens[j]);
-              LiberateMemory((void **) &tokens);
+                MagickFreeMemory(tokens[j]);
+              MagickFreeMemory(tokens);
               break;
             }
           break;
@@ -1853,8 +1853,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
                 transform.sx,transform.rx,transform.ry,transform.sy,
                 transform.tx,transform.ty);
               for (j=0; j < number_tokens; j++)
-                LiberateMemory((void **) &tokens[j]);
-              LiberateMemory((void **) &tokens);
+                MagickFreeMemory(tokens[j]);
+              MagickFreeMemory(tokens);
               break;
             }
           break;
@@ -1956,6 +1956,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
           break;
       }
     }
+#ifdef BROKEN_SIZE_OPTION
   if (LocaleCompare((char *) name,"svg") == 0)
     {
       if (svg_info->document->encoding != (const xmlChar *) NULL)
@@ -1996,10 +1997,73 @@ static void SVGStartElement(void *context,const xmlChar *name,
             -sx*svg_info->view_box.x,-sy*svg_info->view_box.y);
         }
     }
+#else
+  if (LocaleCompare((char *) name,"svg") == 0)
+    {
+      if (svg_info->document->encoding != (const xmlChar *) NULL)
+        (void) fprintf(svg_info->file,"encoding %.1024s\n",
+          (char *) svg_info->document->encoding);
+      if (attributes != (const xmlChar **) NULL)
+        {
+          char
+            *geometry,
+            *p;
+
+          RectangleInfo
+            page;
+
+          double
+            sx,
+            sy;
+
+          if ((svg_info->view_box.width == 0.0) ||
+              (svg_info->view_box.height == 0.0))
+            svg_info->view_box=svg_info->bounds;
+          SetGeometry(svg_info->image,&page);
+          page.width=(unsigned long) svg_info->bounds.width;
+          page.height=(unsigned long) svg_info->bounds.height;
+          geometry=(char *) NULL;
+          /* at one point we use to try to use either page geometry
+             or size to set the dimensions of the output page, but
+             now we only look for size
+           */
+#ifdef PARSE_PAGE_FIRST
+          if (svg_info->page != (char *) NULL)
+            geometry=GetPageGeometry(svg_info->page);
+          else
+#endif
+            if (svg_info->size != (char *) NULL)
+              geometry=GetPageGeometry(svg_info->size);
+          if (geometry != (char *) NULL)
+            {
+              p=strchr(geometry,'>');
+              if (p != (char *) NULL)
+                *p='\0';
+              (void) GetMagickGeometry(geometry,&page.x,&page.y,
+                &page.width,&page.height);
+              MagickFreeMemory(geometry);
+            }
+          if (svg_info->affine.sx != 1.0)
+            page.width=(unsigned long)
+              ceil(ExpandAffine(&svg_info->affine)*page.width-0.5);
+          if (svg_info->affine.sy != 0.0)
+            page.height=(unsigned long)
+              ceil(ExpandAffine(&svg_info->affine)*page.height-0.5);
+          (void) MVGPrintf(svg_info->file,"viewbox 0 0 %g %g\n",
+            svg_info->view_box.width,svg_info->view_box.height);
+          sx=(double) page.width/svg_info->view_box.width;
+          sy=(double) page.height/svg_info->view_box.height;
+          MVGPrintf(svg_info->file,"affine %g 0 0 %g %g %g\n",sx,sy,
+            -sx*svg_info->view_box.x,-sy*svg_info->view_box.y);
+          svg_info->width=page.width;
+          svg_info->height=page.height;
+        }
+    }
+#endif
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),"  )");
-  LiberateMemory((void **) &units);
+  MagickFreeMemory(units);
   if (color != (char *) NULL)
-    LiberateMemory((void **) &color);
+    MagickFreeMemory(color);
 }
 
 static void SVGEndElement(void *context,const xmlChar *name)
@@ -2212,7 +2276,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
               text=EscapeString(svg_info->text,'\'');
               MVGPrintf(svg_info->file,"text %g,%g '%s'\n",svg_info->bounds.x,
                 svg_info->bounds.y,text);
-              LiberateMemory((void **) &text);
+              MagickFreeMemory(text);
               *svg_info->text='\0';
             }
           MVGPrintf(svg_info->file,"pop graphic-context\n");
@@ -2235,7 +2299,7 @@ static void SVGEndElement(void *context,const xmlChar *name)
               text=EscapeString(svg_info->text,'\'');
               MVGPrintf(svg_info->file,"text %g,%g '%s'\n",svg_info->bounds.x,
                 svg_info->bounds.y,text);
-              LiberateMemory((void **) &text);
+              MagickFreeMemory(text);
               draw_info=CloneDrawInfo(svg_info->image_info,(DrawInfo *) NULL);
               draw_info->pointsize=svg_info->pointsize;
               draw_info->text=AllocateString(svg_info->text);
@@ -2283,10 +2347,12 @@ static void SVGCharacters(void *context,const xmlChar *c,int length)
     "  SAX.characters(%.1024s,%d)",c,length);
   svg_info=(SVGInfo *) context;
   if (svg_info->text != (char *) NULL)
-    ReacquireMemory((void **) &svg_info->text,strlen(svg_info->text)+length+1);
+    {
+      MagickReallocMemory(svg_info->text,strlen(svg_info->text)+length+1);
+    }
   else
     {
-      svg_info->text=(char *) AcquireMemory(length+1);
+      svg_info->text=MagickAllocateMemory(char *,length+1);
       if (svg_info->text != (char *) NULL)
         *svg_info->text='\0';
     }
@@ -2321,22 +2387,22 @@ static void SVGReference(void *context,const xmlChar *name)
 
 static void SVGIgnorableWhitespace(void *context,const xmlChar *c,int length)
 {
-  SVGInfo
-    *svg_info;
+/*   SVGInfo */
+/*     *svg_info; */
 
   /*
     Receiving some ignorable whitespaces from the parser.
   */
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
     "  SAX.ignorableWhitespace(%.30s, %d)",c,length);
-  svg_info=(SVGInfo *) context;
+/*   svg_info=(SVGInfo *) context; */
 }
 
 static void SVGProcessingInstructions(void *context,const xmlChar *target,
   const xmlChar *data)
 {
-  SVGInfo
-    *svg_info;
+/*   SVGInfo */
+/*     *svg_info; */
 
   /*
     A processing instruction has been parsed.
@@ -2344,7 +2410,7 @@ static void SVGProcessingInstructions(void *context,const xmlChar *target,
   (void) LogMagickEvent(CoderEvent,GetMagickModule(),
     "  SAX.processingInstruction(%.1024s, %.1024s)",
     target,data);
-  svg_info=(SVGInfo *) context;
+/*   svg_info=(SVGInfo *) context; */
 }
 
 static void SVGComment(void *context,const xmlChar *value)
@@ -2387,7 +2453,7 @@ static void SVGWarning(void *context,const char *format,...)
 #else
   (void) vsnprintf(reason,MaxTextExtent,format,operands);
 #endif
-  ThrowException(svg_info->exception,DelegateWarning,reason,(char *) NULL);
+  ThrowException2(svg_info->exception,DelegateWarning,reason,(char *) NULL);
   va_end(operands);
 }
 
@@ -2415,7 +2481,7 @@ static void SVGError(void *context,const char *format,...)
 #else
   (void) vsnprintf(reason,MaxTextExtent,format,operands);
 #endif
-  ThrowException(svg_info->exception,CoderError,reason,(char *) NULL);
+  ThrowException2(svg_info->exception,CoderError,reason,(char *) NULL);
   va_end(operands);
 }
 
@@ -2560,7 +2626,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
-  long
+  size_t
     n;
 
   SVGInfo
@@ -2582,7 +2648,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image=AllocateImage(image_info);
   status=OpenBlob(image_info,image,ReadBinaryBlobMode,exception);
   if (status == False)
-    ThrowReaderException(FileOpenError,"UnableToOpenFile",image);
+    ThrowReaderException(FileOpenError,UnableToOpenFile,image);
   /*
     Open draw file.
   */
@@ -2598,12 +2664,12 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
   svg_info.image=image;
   svg_info.image_info=image_info;
   svg_info.text=AllocateString("");
-  svg_info.scale=(double *) AcquireMemory(sizeof(double));
+  svg_info.scale=MagickAllocateMemory(double *,sizeof(double));
   if (svg_info.scale == (double *) NULL)
     {
       (void) fclose(file);
       LiberateTemporaryFile(filename);
-      ThrowReaderException(ResourceLimitError,"MemoryAllocationFailed",image);
+      ThrowReaderException(ResourceLimitError,MemoryAllocationFailed,image);
     }
   IdentityAffine(&svg_info.affine);
   svg_info.affine.sx=
@@ -2649,7 +2715,7 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) CloneString(&clone_info->size,geometry);
       FormatString(clone_info->filename,"mvg:%.1024s",filename);
       if (clone_info->density != (char *) NULL)
-        LiberateMemory((void **) &clone_info->density);
+        MagickFreeMemory(clone_info->density);
       image=ReadImage(clone_info,exception);
       DestroyImageInfo(clone_info);
       if (image != (Image *) NULL)
@@ -2662,13 +2728,13 @@ static Image *ReadSVGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     {
       if (image != (Image *) NULL)
        (void) SetImageAttribute(image,"title",svg_info.title);
-      LiberateMemory((void **) &svg_info.title);
+      MagickFreeMemory(svg_info.title);
     }
   if (svg_info.comment != (char *) NULL)
     {
       if (image != (Image *) NULL)
         (void) SetImageAttribute(image,"comment",svg_info.comment);
-      LiberateMemory((void **) &svg_info.comment);
+      MagickFreeMemory(svg_info.comment);
     }
   LiberateTemporaryFile(filename);
   return(image);
@@ -2720,6 +2786,17 @@ ModuleExport void RegisterSVGImage(void)
     entry->version=AcquireString(version);
   entry->module=AcquireString("SVG");
   (void) RegisterMagickInfo(entry);
+
+  entry=SetMagickInfo("SVGZ");
+#if defined(HasXML)
+  entry->decoder=(DecoderHandler) ReadSVGImage;
+#endif
+  entry->encoder=(EncoderHandler) WriteSVGImage;
+  entry->description=AcquireString("Scalable Vector Gaphics (ZIP compressed)");
+  if (*version != '\0')
+    entry->version=AcquireString(version);
+  entry->module=AcquireString("SVG");
+  (void) RegisterMagickInfo(entry);
 }
 
 /*
@@ -2744,7 +2821,7 @@ ModuleExport void RegisterSVGImage(void)
 ModuleExport void UnregisterSVGImage(void)
 {
   (void) UnregisterMagickInfo("SVG");
-  (void) UnregisterMagickInfo("XML");
+  (void) UnregisterMagickInfo("SVGZ");
 }
 
 /*
@@ -2832,7 +2909,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   fit_info=new_fitting_opts();
   output_writer=output_get_handler("svg");
   if (output_writer == NULL)
-    ThrowWriterException(DelegateError,"UnableToWriteSVGFormat",image);
+    ThrowWriterException(DelegateError,UnableToWriteSVGFormat,image);
   image_type=GetImageType(image);
   number_planes=3;
   if ((image_type == BilevelType) || (image_type == GrayscaleType))
@@ -2841,9 +2918,9 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   bitmap.dimensions.width=image->columns;
   bitmap.dimensions.height=image->rows;
   number_pixels=image->columns*image->rows;
-  bitmap.bitmap=(unsigned char *) AcquireMemory(number_planes*number_pixels);
+  bitmap.bitmap=MagickAllocateMemory(unsigned char *,number_planes*number_pixels);
   if (bitmap.bitmap == (unsigned char *) NULL)
-    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
   point=0;
   for (j=0; j < image->rows; j++)
   {
@@ -2867,11 +2944,11 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   if (thin)
     thin_image(&bitmap);
   pixels=find_outline_pixels (bitmap);
-  LiberateMemory((void **) &(bitmap.bitmap));
+  MagickFreeMemory((bitmap.bitmap));
   splines=fitted_splines(pixels,&fit_info);
   output_file=fopen(image->filename,"w");
   if (output_file == (FILE *) NULL)
-    ThrowWriterException(FileOpenError,"UnableOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableOpenFile,image);
   output_writer(output_file,image->filename,0,0,image_header.width,
     image_header.height,splines);
   return(True);
@@ -3005,10 +3082,10 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   attribute=GetImageAttribute(image,"[MVG]");
   if ((attribute == (ImageAttribute *) NULL) ||
       (attribute->value == (char *) NULL))
-    ThrowWriterException(CoderError,"NoImageVectorGraphics",image);
+    ThrowWriterException(CoderError,NoImageVectorGraphics,image);
   status=OpenBlob(image_info,image,WriteBinaryBlobMode,&image->exception);
   if (status == False)
-    ThrowWriterException(FileOpenError,"UnableToOpenFile",image);
+    ThrowWriterException(FileOpenError,UnableToOpenFile,image);
   /*
     Write SVG header.
   */
@@ -3024,10 +3101,10 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
     Allocate primitive info memory.
   */
   number_points=2047;
-  primitive_info=(PrimitiveInfo *)
-    AcquireMemory(number_points*sizeof(PrimitiveInfo));
+  primitive_info=MagickAllocateMemory(PrimitiveInfo *,
+    number_points*sizeof(PrimitiveInfo));
   if (primitive_info == (PrimitiveInfo *) NULL)
-    ThrowWriterException(ResourceLimitError,"MemoryAllocationFailed",image);
+    ThrowWriterException(ResourceLimitError,MemoryAllocationFailed,image);
   IdentityAffine(&affine);
   token=AllocateString(attribute->value);
   active=False;
@@ -3366,7 +3443,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
                 n--;
                 if (n < 0)
                   ThrowWriterException(DrawError,
-                    "UnbalancedGraphicContextPushPop",image);
+                    UnbalancedGraphicContextPushPop,image);
                 (void) WriteBlobString(image,"</g>\n");
               }
             if (LocaleCompare("pattern",token) == 0)
@@ -3717,12 +3794,12 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
       if (i < (long) (number_points-6*BezierQuantum-360))
         continue;
       number_points+=6*BezierQuantum+360;
-      ReacquireMemory((void **) &primitive_info,
+      MagickReallocMemory(primitive_info,
         number_points*sizeof(PrimitiveInfo));
       if (primitive_info == (PrimitiveInfo *) NULL)
         {
-          ThrowException(&image->exception,ResourceLimitError,
-            "MemoryAllocationFailed","UnableToDrawImage");
+          ThrowException3(&image->exception,ResourceLimitError,
+            MemoryAllocationFailed,UnableToDrawOnImage);
           break;
         }
     }
@@ -3911,12 +3988,12 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
         if (i > (long) (number_points-6*BezierQuantum*number_attributes-1))
           {
             number_points+=6*BezierQuantum*number_attributes;
-            ReacquireMemory((void **) &primitive_info,
+            MagickReallocMemory(primitive_info,
               number_points*sizeof(PrimitiveInfo));
             if (primitive_info == (PrimitiveInfo *) NULL)
               {
-                ThrowException(&image->exception,ResourceLimitError,
-                  "MemoryAllocationFailed","UnableToDrawImage");
+                ThrowException3(&image->exception,ResourceLimitError,
+                  MemoryAllocationFailed,UnableToDrawOnImage);
                 break;
               }
           }
@@ -3997,9 +4074,9 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   /*
     Free resources.
   */
-  LiberateMemory((void **) &token);
+  MagickFreeMemory(token);
   if (primitive_info != (PrimitiveInfo *) NULL)
-    LiberateMemory((void **) &primitive_info);
+    MagickFreeMemory(primitive_info);
   CloseBlob(image);
   return(status);
 }
