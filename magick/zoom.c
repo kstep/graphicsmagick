@@ -770,8 +770,7 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
     opacity,
     red,
     scale,
-    support,
-		weight;
+    support;
 
   long
     j,
@@ -830,14 +829,8 @@ static unsigned int HorizontalFilter(const Image *source,Image *destination,
           Normalize.
         */
         density=1.0/density;
-        weight=0.0;
         for (i=0; i < n; i++)
-        {
           contribution[i].weight*=density;
-          weight+=contribution[i].weight;
-        }
-        i=Min(Max((long) (center+0.5),start),stop-1);
-        contribution[i-start].weight+=1.0-weight;
       }
     p=AcquireImagePixels(source,contribution[0].pixel,0,
       contribution[n-1].pixel-contribution[0].pixel+1,source->rows,exception);
@@ -898,8 +891,7 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
     opacity,
     red,
     scale,
-    support,
-    weight;
+    support;
 
   long
     j,
@@ -958,14 +950,8 @@ static unsigned int VerticalFilter(const Image *source,Image *destination,
           Normalize.
         */
         density=1.0/density;
-        weight=0.0;
         for (i=0; i < n; i++)
-        {
           contribution[i].weight*=density;
-          weight+=contribution[i].weight;
-        }
-        i=Min(Max((long) (center+0.5),start),stop-1);
-        contribution[i-start].weight+=1.0-weight;
       }
     p=AcquireImagePixels(source,0,contribution[0].pixel,source->columns,
       contribution[n-1].pixel-contribution[0].pixel+1,exception);
