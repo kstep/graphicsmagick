@@ -1448,11 +1448,13 @@ static unsigned int ReadConfigurationFile(const char *basename,
   /*
     Read the color configuration file.
   */
+  FormatString(filename,"%.1024s",basename);
   path=GetMagickConfigurePath(basename);
-  if (path == (char *) NULL)
-    return(False);
-  FormatString(filename,"%.1024s",path);
-  LiberateMemory((void **) &path);
+  if (path != (char *) NULL)
+    {
+      FormatString(filename,"%.1024s",path);
+      LiberateMemory((void **) &path);
+    }
   xml=(char *) FileToBlob(filename,&length,exception);
   if (xml == (char *) NULL)
     xml=ColorMap;
