@@ -1,9 +1,9 @@
 /**********************************************************************
  * Tcl Image Magick - a Tcl-only wrapper of imageMagick's Wand-API
  **********************************************************************
- * For a brief command description see "TclMagick.txt"
+ * For a brief command description see "doc/TclMagick.txt"
  *
- * For a list of changes see "Changes.txt"
+ * For a list of changes see "ChangeLog"
  **********************************************************************/
 
 /* $Id$ */
@@ -212,11 +212,15 @@ static char *newWandObj(Tcl_Interp  *interp, MagickWand *wandPtr, char *name)
     TclMagickObj *mPtr = newMagickObj(interp, TM_TYPE_WAND, wandPtr, name);
     return getMagickObjName(mPtr);
 }
+
+#if 0     /* Currently not referenced, avoid gcc warnings */
 static char *newDrawingObj(Tcl_Interp  *interp, DrawingWand *wandPtr, char *name)
 {
     TclMagickObj *mPtr = newMagickObj(interp, TM_TYPE_DRAWING, wandPtr, name);
     return getMagickObjName(mPtr);
 }
+#endif
+
 static char *newPixelObj(Tcl_Interp  *interp, PixelWand *wandPtr, char *name)
 {
     TclMagickObj *mPtr = newMagickObj(interp, TM_TYPE_PIXEL, wandPtr, name);
@@ -5128,6 +5132,17 @@ static int wandObjCmd(
 	break;
     }
 
+    /*
+     * All subcommands should be matched
+     * A DEFAULT or TM_END_OF_TABLE would be a serious fault
+     */
+    case TM_END_OF_TABLE:
+    default:
+    {
+	Tcl_AppendResult(interp, "TclMagick wandObjCmd: Unmatched subcommand table entry", NULL);
+	return TCL_ERROR;
+    }
+
     } /* switch(index) */
 
     return(TCL_OK);
@@ -5766,6 +5781,16 @@ static int pixelObjCmd(
             Tcl_SetObjResult(interp, listPtr);
 	}
 	break;
+    }
+    /*
+     * All subcommands should be matched
+     * A DEFAULT or TM_END_OF_TABLE would be a serious fault
+     */
+    case TM_END_OF_TABLE:
+    default:
+    {
+	Tcl_AppendResult(interp, "TclMagick pixelObjCmd: Unmatched subcommand table entry", NULL);
+	return TCL_ERROR;
     }
 
     } /* switch(index) */
@@ -7811,6 +7836,16 @@ static int drawObjCmd(
 	break; /* path */
     }
 
+    /*
+     * All subcommands should be matched
+     * A DEFAULT or TM_END_OF_TABLE would be a serious fault
+     */
+    case TM_END_OF_TABLE:
+    default:
+    {
+	Tcl_AppendResult(interp, "TclMagick drawObjCmd: Unmatched subcommand table entry", NULL);
+	return TCL_ERROR;
+    }
     } /* switch(index) */
 
     return(TCL_OK);

@@ -1,3 +1,7 @@
+2004-01-07  Rolf Schroedter <rolf.schroedter@dlr.de>
+
+	* Fixes for a few GCC warnings:
+
 2004-01-07  David N. Welton  <davidw@dedasys.com>
 
 	* ChangeLog: Undid CRLF line-end formatting.
