@@ -302,9 +302,13 @@ MAGICK DELEGATES
       Digital Imaging Group in order to support the FlashPIX format. The
       FlashPIX library may be obtained from GraphicsMagick anonymous CVS by
       checking out the 'fpx' module, or retrieving the file
-      libfpx-1.2.0.5.tar.gz from the ftp directory.
+      libfpx-1.2.0.9.tar.gz from the ftp directory.
 
          ftp://ftp.imagemagick.org/pub/GraphicsMagick/delegates/.
+
+      Please note that this library is not very portable. It is known to
+      work properly under SPARC Solaris and Windows, but exhibits severe
+      problems under FreeBSD and Linux.
 
     o GraphicsMagick requires an X server for the 'display', 'animate', and
       'import' functions to work properly. Unix systems usually provide an X

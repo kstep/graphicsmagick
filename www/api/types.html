@@ -1,13 +1,13 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML>
 <HEAD>
-	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=ibm437">
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
 	<TITLE>GraphicsMagick Types</TITLE>
-	<META NAME="GENERATOR" CONTENT="StarOffice 6.0  (Solaris Sparc)">
+	<META NAME="GENERATOR" CONTENT="StarOffice 7  (Solaris Sparc)">
 	<META NAME="AUTHOR" CONTENT="Bob Friesenhahn">
 	<META NAME="CREATED" CONTENT="20030425;13574600">
-	<META NAME="CHANGEDBY" CONTENT="Bob Friesenhahn">
-	<META NAME="CHANGED" CONTENT="20030912;13253900">
+	<META NAME="CHANGEDBY" CONTENT="Robert Friesenhahn">
+	<META NAME="CHANGED" CONTENT="20031226;11045700">
 	<META NAME="CLASSIFICATION" CONTENT="Documentation for GraphicsMagick C API Types">
 	<META NAME="DESCRIPTION" CONTENT="Documentation for C structures, typedefs, and enumerations used by GraphicsMagick.">
 	<STYLE>
@@ -22,7 +22,7 @@
 	-->
 	</STYLE>
 </HEAD>
-<BODY LANG="en-US" TEXT="#000000" LINK="#1f00ff" VLINK="#9900dd" BGCOLOR="#ffffff">
+<BODY LANG="en-US" TEXT="#000000" LINK="#1f00ff" VLINK="#9900dd" BGCOLOR="#ffffff" DIR="LTR">
 <H1 ALIGN=CENTER>GraphicsMagick Types</H1>
 <TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=2>
 	<TR>
@@ -697,7 +697,7 @@ Specify <I>CompositeOperator</I> to select a different algorithm. <BR>&nbsp;
 	</TR>
 	<TR>
 		<TD>
-			<P>ReplaceCompositeOp</P>
+			<P>CopyCompositeOp</P>
 		</TD>
 		<TD>
 			<P>The resulting <I>image</I> is image replaced with c<I>omposite
@@ -706,7 +706,7 @@ Specify <I>CompositeOperator</I> to select a different algorithm. <BR>&nbsp;
 	</TR>
 	<TR>
 		<TD>
-			<P>ReplaceRedCompositeOp</P>
+			<P>CopyRedCompositeOp</P>
 		</TD>
 		<TD>
 			<P>The resulting image is the red layer in <I>image</I> replaced
@@ -716,7 +716,7 @@ Specify <I>CompositeOperator</I> to select a different algorithm. <BR>&nbsp;
 	</TR>
 	<TR>
 		<TD>
-			<P>ReplaceGreenCompositeOp</P>
+			<P>CopyGreenCompositeOp</P>
 		</TD>
 		<TD>
 			<P>The resulting image is the green layer in <I>image</I> replaced
@@ -726,7 +726,7 @@ Specify <I>CompositeOperator</I> to select a different algorithm. <BR>&nbsp;
 	</TR>
 	<TR>
 		<TD>
-			<P>ReplaceBlueCompositeOp</P>
+			<P>CopyBlueCompositeOp</P>
 		</TD>
 		<TD>
 			<P>The resulting image is the blue layer in <I>image</I> replaced
@@ -736,7 +736,7 @@ Specify <I>CompositeOperator</I> to select a different algorithm. <BR>&nbsp;
 	</TR>
 	<TR>
 		<TD>
-			<P>ReplaceMatteCompositeOp</P>
+			<P>CopyOpacityCompositeOp</P>
 		</TD>
 		<TD>
 			<P>The resulting image is the matte layer in <I>image</I> replaced
@@ -3547,7 +3547,6 @@ may be obtained by calling <A HREF="magick.html#getmagickinfo">GetMagickInfo()</
 Pass the argument NULL to obtain the first member of this list. A
 human-readable list of registered image formats may be printed to a
 file descriptor by calling <A HREF="magick.html#listmagickinfo">ListMagickInfo()</A>.
-
 </P>
 <P>Support for formats may be provided as a module which is part of
 the GraphicsMagick library, provided by a module which is loaded
@@ -3608,7 +3607,6 @@ Sample Application Code</H3>
 not need to implement the RegisterFORMATImage and
 UnregisterFORMATImage call-back routines. Instead, the application
 takes responsibility for the registration itself. An example follows:
-
 </P>
 <PRE>/* Read image */ 
 Image *ReadGIFImage(const ImageInfo *image_info) 

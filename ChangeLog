@@ -1,5 +1,10 @@
 2003-12-26  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* www/api/types.html: Corrected list of composition
+	operators. Sometime prior to the creation of GraphicsMagick, the
+	"Replace" composite operators were renamed to be "Copy" composite
+	operators.  Thanks to David Relson for bringing this problem to
+	our attention.
 	* PerlMagick/Magick.xs: Added "LAB" to colorspace types.
 	* magick/image.h (enum ColorSpace): Add LABColorspace enumeration.
 	* wand/magick_wand.h : Add some compatibility definitions to
