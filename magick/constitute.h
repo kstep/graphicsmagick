@@ -72,9 +72,12 @@ typedef struct _ExportPixelAreaOptions
   QuantumSampleType
     sample_type;          /* Quantum sample type */
 
+  unsigned int
+    sample_bits;          /* Valid bits in unsigned quantum (e.g. 12 bits in 16 bit quantum) */
+
   double
-    double_minvalue,      /* Minimum value for floating point samples */
-    double_maxvalue;      /* Maximum value for floating point samples */
+    double_minvalue,      /* Minimum value for linear floating point samples */
+    double_maxvalue;      /* Maximum value for linear floating point samples */
 
   MagickBool
     grayscale_miniswhite; /* Grayscale minimum value is white rather than black */
@@ -91,9 +94,12 @@ typedef struct _ImportPixelAreaOptions
   QuantumSampleType
     sample_type;          /* Quantum sample type */
 
+  unsigned int
+    sample_bits;          /* Valid bits in unsigned quantum (e.g. 12 bits in 16 bit quantum) */
+
   double
-    double_minvalue,      /* Minimum value for floating point samples */
-    double_maxvalue;      /* Maximum value for floating point samples */
+    double_minvalue,      /* Minimum value for linear floating point samples */
+    double_maxvalue;      /* Maximum value for linear floating point samples */
 
   MagickBool
     grayscale_miniswhite; /* Grayscale minimum value is white rather than black */

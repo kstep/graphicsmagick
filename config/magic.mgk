@@ -67,6 +67,7 @@
   <magic name="PSD" offset="0" target="8BPS" />
   <magic name="PWP" offset="0" target="SFW95" />
   <magic name="RAD" offset="0" target="#?RADIANCE" />
+  <magic name="RAD" offset="0" target="VIEW= " />
   <magic name="RLE" offset="0" target="\122\314" />
   <magic name="SCT" offset="0" target="CT" />
   <magic name="SFW" offset="0" target="SFW94" />

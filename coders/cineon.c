@@ -23,6 +23,7 @@
 %                              Software Design                                %
 %                                John Cristy                                  %
 %                             Kelly Bergougnoux                               %
+%                      <three3@users.sourceforge.net>                         %
 %                               October 2003                                  %
 %                                                                             %
 %                                                                             %
@@ -71,6 +72,7 @@
 */
 #include "magick/studio.h"
 #include "magick/blob.h"
+#include "magick/bit_stream.h"
 #include "magick/cache.h"
 #include "magick/error.h"
 #include "magick/list.h"
@@ -182,8 +184,19 @@ static Image *ReadCINEONImage(const ImageInfo *image_info,
     status;
 
   unsigned long
-    headersize,
-    pixel;
+    headersize;
+
+  unsigned char
+    *scandata;
+  
+  void
+    *scanline;
+  
+  size_t
+    scandata_bytes;
+  
+  BitStreamReadHandle
+    bit_stream;
 
   /*
     Open image file.
@@ -226,55 +239,93 @@ static Image *ReadCINEONImage(const ImageInfo *image_info,
     Convert CINEON raster image to pixel packets.
   */
   switch ((int) colortype)
-  {
+    {
     case (MonoColorType):
-    {
-      q=SetImagePixels(image,0,0,image->columns,image->rows);
-      for (x=0; x < (long) ((image->columns*image->rows)/3); x++)
       {
-        pixel=ReadBlobMSBLong(image);
-        q->red=(Quantum) ((double) MaxRGB*((pixel >> 0) & 0x3ff)/1023+0.5);
-        q->green=q->red;
-        q->blue=q->red;
-        q++;
-        q->red=(Quantum) ((double) MaxRGB*((pixel >> 10) & 0x3ff)/1023+0.5);
-        q->green=q->red;
-        q->blue=q->red;
-        q++;
-        q->red=(Quantum) ((double) MaxRGB*((pixel >> 20) & 0x3ff)/1023+0.5);
-        q->green=q->red;
-        q->blue=q->red;
-        q++;
-      }
-      break;
-    }
-    case (RGBColorType):
-    {
-      for (y=0; y < (long) image->rows; y++)
-      {
-        q=SetImagePixels(image,0,y,image->columns,1);
-        if (q == (PixelPacket *) NULL)
-          break;
-        for (x=0; x < (long) image->columns; x++)
-        {
-          pixel=ReadBlobMSBLong(image);
-          q->red=(Quantum) ((double) MaxRGB*((pixel >> 22) & 0x3ff)/1023+0.5);
-          q->green=(Quantum) ((double) MaxRGB*((pixel >> 12) & 0x3ff)/1023+0.5);
-          q->blue=(Quantum) ((double) MaxRGB*((pixel >> 2) & 0x3ff)/1023+0.5);
-          q++;
-        }
-        if (!SyncImagePixels(image))
-          break;
-        if (image->previous == (Image *) NULL)
-          if (QuantumTick(y,image->rows))
-            if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+        scandata_bytes=4;
+        scandata=MagickAllocateMemory(unsigned char *,scandata_bytes);
+        for (y=0; y < (long) image->rows; y++)
+          {
+            q=SetImagePixels(image,0,y,image->columns,1);
+            if (q == (PixelPacket *) NULL)
               break;
+            /*
+              Packed 10 bit samples with 2 bit pad at end of 32-bit word.
+            */
+            scanline=(void *) scandata;
+            i=3;
+            for (x=(long) image->columns; x > 0; x--, i++)
+              {
+                if (i > 2)
+                  {
+                    scanline=(void *) scandata;
+                    if (ReadBlobZC(image,scandata_bytes,&scanline) !=
+                        scandata_bytes)
+                      break;
+                    BitStreamInitializeRead(&bit_stream,scanline);
+                    i=0;
+                  }
+                q->red=q->green=q->blue=
+                  ScaleShortToQuantum(BitStreamMSBRead(&bit_stream,10)*64);
+                q->opacity=0U;
+                q++;
+              }
+            if (!SyncImagePixels(image))
+              break;
+            if (image->previous == (Image *) NULL)
+              if (QuantumTick(y,image->rows))
+                if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+                  break;
+          }
+        MagickFreeMemory(scandata);
+        break;
       }
-      break;
-    }
+    case (RGBColorType):
+      {
+        scandata_bytes=image->columns*4;
+        scandata=MagickAllocateMemory(unsigned char *,scandata_bytes);
+        for (y=0; y < (long) image->rows; y++)
+          {
+            q=SetImagePixels(image,0,y,image->columns,1);
+            if (q == (PixelPacket *) NULL)
+              break;
+            scanline=(void *) scandata;
+            if (ReadBlobZC(image,scandata_bytes,&scanline) != scandata_bytes)
+              break;
+            for (x=0 ; x < (long) image->columns; x++)
+              {
+                /*
+                  Packed 10 bit samples with 2 bit pad at end of 32-bit word.
+                */
+                if ((x == 0) && (y == 0))
+                  {
+                    printf("%x %x %x %x\n",
+                           ((unsigned char *)scanline)[0],
+                           ((unsigned char *)scanline)[1],
+                           ((unsigned char *)scanline)[2],
+                           ((unsigned char *)scanline)[3]);
+                  }
+                BitStreamInitializeRead(&bit_stream,scanline);
+                q->red=ScaleShortToQuantum(BitStreamMSBRead(&bit_stream,10)*64);
+                q->green=ScaleShortToQuantum(BitStreamMSBRead(&bit_stream,10)*64);
+                q->blue=ScaleShortToQuantum(BitStreamMSBRead(&bit_stream,10)*64);
+                q->opacity=0U;
+                scanline += 4;
+                q++;
+              }
+            if (!SyncImagePixels(image))
+              break;
+            if (image->previous == (Image *) NULL)
+              if (QuantumTick(y,image->rows))
+                if (!MagickMonitor(LoadImageText,y,image->rows,exception))
+                  break;
+          }
+        MagickFreeMemory(scandata);
+        break;
+      }
     default:
       ThrowReaderException(CorruptImageError,ImageTypeNotSupported,image);
-  }
+    }
   if (EOFBlob(image))
     ThrowException(exception,CorruptImageError,UnexpectedEndOfFile,image->filename);
   CloseBlob(image);
@@ -385,7 +436,10 @@ static unsigned int WriteCINEONImage(const ImageInfo *image_info,Image *image)
   unsigned long
     pixel;
 
-  unsigned long
+  unsigned char
+    packet[4];
+
+  unsigned int
     maxr,
     maxg,
     maxb,
@@ -393,36 +447,40 @@ static unsigned int WriteCINEONImage(const ImageInfo *image_info,Image *image)
     ming,
     minb;
 
+  BitStreamWriteHandle
+    bit_stream;
+
   /* 
-    Get the max values for each component... I guess it "needs" it...
+     Get the max values for each component... I guess it "needs" it...
   */
   maxr=maxg=maxb=0;
   minr=ming=minb=MaxRGB;
   for (y=0; y < (long) image->rows; y++)
-  {
-    p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
-    if (p == (const PixelPacket *) NULL)
-      break;
-    for (x=0; x < (long) image->columns; x++)
     {
-      if ( p->red > maxr ) maxr = p->red;
-      if ( p->green > maxg ) maxg = p->green;
-      if ( p->blue > maxb ) maxb = p->blue;
-      if ( p->red < minr ) minr = p->red;
-      if ( p->green < ming ) ming = p->green;
-      if ( p->blue < minb ) minb = p->blue;
-      p++;
+      p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+      if (p == (const PixelPacket *) NULL)
+        break;
+      for (x=0; x < (long) image->columns; x++)
+        {
+          if ( p->red > maxr ) maxr = p->red;
+          if ( p->green > maxg ) maxg = p->green;
+          if ( p->blue > maxb ) maxb = p->blue;
+          if ( p->red < minr ) minr = p->red;
+          if ( p->green < ming ) ming = p->green;
+          if ( p->blue < minb ) minb = p->blue;
+          p++;
+        }
     }
-  }
   /*
     Div by 64 to get 10bit values since that's all I'll do right now.
   */
-  maxr/=64;
-  maxg/=64;
-  maxb/=64;
-  minr/=64;
-  ming/=64;
-  minb/=64;
+  maxr=ScaleQuantumToShort(maxr)/64;
+  maxg=ScaleQuantumToShort(maxg)/64;
+  maxb=ScaleQuantumToShort(maxb)/64;
+  minr=ScaleQuantumToShort(minr)/64;
+  ming=ScaleQuantumToShort(ming)/64;
+  minb=ScaleQuantumToShort(minb)/64;
+
   /*
     Open output image file.
   */
@@ -602,19 +660,30 @@ static unsigned int WriteCINEONImage(const ImageInfo *image_info,Image *image)
     Convert pixel packets to CINEON raster image.
   */
   for (y=0; y < (long) image->rows; y++)
-  {
-    p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
-    if (p == (const PixelPacket *) NULL)
-      break;
-    for (x=0; x < (long) image->columns; x++)
     {
-      pixel=(((long) ((1023L*p->red+MaxRGB/2)/MaxRGB) & 0x3ff) << 22) |
-        (((long) ((1023L*p->green+MaxRGB/2)/MaxRGB) &0x3ff) << 12) |
-        (((long) ((1023L*p->blue+MaxRGB/2)/MaxRGB) &0x3ff) << 2);
-      (void) WriteBlobMSBLong(image,pixel);
-      p++;
+      p=AcquireImagePixels(image,0,y,image->columns,1,&image->exception);
+      if (p == (const PixelPacket *) NULL)
+        break;
+      for (x=0; x < (long) image->columns; x++)
+        {
+#if 1
+          BitStreamInitializeWrite(&bit_stream,packet);
+          BitStreamMSBWrite(&bit_stream,10,(unsigned int) ScaleQuantumToShort(p->red)/64U);
+          BitStreamMSBWrite(&bit_stream,10,(unsigned int) ScaleQuantumToShort(p->green)/64U);
+          BitStreamMSBWrite(&bit_stream,10,(unsigned int) ScaleQuantumToShort(p->blue)/64U);
+          if ((x == 0) && (y == 0))
+            printf("%x %x %x %x\n",packet[0],packet[1],packet[2],packet[3]);
+          (void) WriteBlob(image,4,packet);
+#else
+          pixel=(unsigned long)
+            (((long) ((1023L*p->red+MaxRGB/2)/MaxRGB) & 0x3ff) << 22) |
+            (((long) ((1023L*p->green+MaxRGB/2)/MaxRGB) & 0x3ff) << 12) |
+            (((long) ((1023L*p->blue+MaxRGB/2)/MaxRGB) & 0x3ff) << 2);
+          (void) WriteBlobMSBLong(image,pixel);
+#endif
+          p++;
+        }
     }
-  }
   CloseBlob(image);  
   return(status);
 }

@@ -1092,7 +1092,8 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
     sample_type = UnsignedQuantumSampleType;
 
   unsigned int
-    unsigned_maxvalue=MaxRGB;
+    unsigned_maxvalue=MaxRGB,
+    sample_bits;
 
   long
     number_pixels;
@@ -1109,15 +1110,19 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(destination != (unsigned char *) NULL);
+  assert(((quantum_size > 0U) && (quantum_size <= 32U)) || (quantum_size == 64U));
   assert((options == (const ExportPixelAreaOptions *) NULL) ||
          (options->signature == MagickSignature));
 
   /*
     Transfer any special options.
   */
+  sample_bits=quantum_size;
   if (options)
     {
       sample_type=options->sample_type;
+      if (options->sample_bits != 0U)
+        sample_bits=options->sample_bits;
       double_minvalue=options->double_minvalue;
       double_maxvalue=options->double_maxvalue;
       grayscale_miniswhite=options->grayscale_miniswhite;
@@ -1129,17 +1134,17 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
   if (sample_type != FloatQuantumSampleType)
     {
       /* Maximum value which may be represented by a sample */
-      unsigned_maxvalue=MaxValueGivenBits(quantum_size);
+      unsigned_maxvalue=MaxValueGivenBits(sample_bits);
       
-      if (QuantumDepth == quantum_size)
+      if (QuantumDepth == sample_bits)
         {
         }
-      else if (QuantumDepth > quantum_size)
+      else if (QuantumDepth > sample_bits)
         {
           /* Divide to scale down */
-          unsigned_scale=(MaxRGB / (MaxRGB >> (QuantumDepth-quantum_size)));
+          unsigned_scale=(MaxRGB / (MaxRGB >> (QuantumDepth-sample_bits)));
         }
-      else if (QuantumDepth < quantum_size)
+      else if (QuantumDepth < sample_bits)
         {
           /* Multiply to scale up */
           unsigned_scale=(unsigned_maxvalue/MaxRGB);
@@ -1243,7 +1248,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 /*
                   Modulo-8 sample sizes
                 */
-                if( QuantumDepth == quantum_size)
+                if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
                     for (x = number_pixels; x > 0; --x)
@@ -1258,7 +1263,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                         p++;
                       }
                   }
-                else if (QuantumDepth >  quantum_size)
+                else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale down */
                     for (x = number_pixels; x > 0; --x)
@@ -1335,7 +1340,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                   stream;
 
                 BitStreamInitializeWrite(&stream,q);
-                if( QuantumDepth == quantum_size)
+                if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
                     for (x = number_pixels; x > 0; --x)
@@ -1350,7 +1355,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                         p++;
                       }
                   }
-                else if (QuantumDepth >  quantum_size)
+                else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale down */
                     for (x = number_pixels; x > 0; --x)
@@ -1423,7 +1428,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 /*
                   Modulo-8 sample sizes
                 */
-                if( QuantumDepth == quantum_size)
+                if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
                     for (x = number_pixels; x > 0; --x)
@@ -1440,7 +1445,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                         p++;
                       }
                   }
-                else if (QuantumDepth >  quantum_size)
+                else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale down */
                     for (x = number_pixels; x > 0; --x)
@@ -1486,7 +1491,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                   stream;
             
                 BitStreamInitializeWrite(&stream,q);
-                if( QuantumDepth == quantum_size)
+                if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
                     for (x = number_pixels; x > 0; --x)
@@ -1502,7 +1507,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                         p++;
                       }
                   }
-                else if (QuantumDepth >  quantum_size)
+                else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale down */
                     for (x = number_pixels; x > 0; --x)
@@ -1585,7 +1590,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 /*
                   Modulo-8 sample sizes
                 */
-                if( QuantumDepth == quantum_size)
+                if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
                     for (x = number_pixels; x > 0; --x)
@@ -1594,7 +1599,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                         p++;
                       }
                   }
-                else if (QuantumDepth >  quantum_size)
+                else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale down */
                     for (x = number_pixels; x > 0; --x)
@@ -1624,7 +1629,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                   stream;
 
                 BitStreamInitializeWrite(&stream,q);
-                if( QuantumDepth == quantum_size)
+                if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
                     for (x = number_pixels; x > 0; --x)
@@ -1634,7 +1639,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                         p++;
                       }
                   }
-                else if (QuantumDepth >  quantum_size)
+                else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale down */
                     for (x = number_pixels; x > 0; --x)
@@ -1696,7 +1701,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 /*
                   Modulo-8 sample sizes
                 */
-                if( QuantumDepth == quantum_size)
+                if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
                     for (x = number_pixels; x > 0; --x)
@@ -1705,7 +1710,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                         p++;
                       }
                   }
-                else if (QuantumDepth >  quantum_size)
+                else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale down */
                     for (x = number_pixels; x > 0; --x)
@@ -1735,7 +1740,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                   stream;
 
                 BitStreamInitializeWrite(&stream,q);
-                if( QuantumDepth == quantum_size)
+                if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
                     for (x = number_pixels; x > 0; --x)
@@ -1745,7 +1750,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                         p++;
                       }
                   }
-                else if (QuantumDepth >  quantum_size)
+                else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale down */
                     for (x = number_pixels; x > 0; --x)
@@ -1807,7 +1812,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 /*
                   Modulo-8 sample sizes
                 */
-                if( QuantumDepth == quantum_size)
+                if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
                     for (x = number_pixels; x > 0; --x)
@@ -1816,7 +1821,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                         p++;
                       }
                   }
-                else if (QuantumDepth >  quantum_size)
+                else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale down */
                     for (x = number_pixels; x > 0; --x)
@@ -1846,7 +1851,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                   stream;
 
                 BitStreamInitializeWrite(&stream,q);
-                if( QuantumDepth == quantum_size)
+                if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
                     for (x = number_pixels; x > 0; --x)
@@ -1856,7 +1861,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                         p++;
                       }
                   }
-                else if (QuantumDepth >  quantum_size)
+                else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale down */
                     for (x = number_pixels; x > 0; --x)
@@ -1919,7 +1924,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                     /*
                       Modulo-8 sample sizes
                     */
-                    if( QuantumDepth == quantum_size)
+                    if( QuantumDepth == sample_bits)
                       {
                         /* Unity scale */
                         for (x = number_pixels; x > 0; --x)
@@ -1929,7 +1934,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                             indexes++;
                           }
                       }
-                    else if (QuantumDepth >  quantum_size)
+                    else if (QuantumDepth >  sample_bits)
                       {
                         /* Scale down */
                         for (x = number_pixels; x > 0; --x)
@@ -1959,7 +1964,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                       stream;
 
                     BitStreamInitializeWrite(&stream,q);
-                    if( QuantumDepth == quantum_size)
+                    if( QuantumDepth == sample_bits)
                       {
                         /* Unity scale */
                         for (x = number_pixels; x > 0; --x)
@@ -1969,7 +1974,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                             indexes++;
                           }
                       }
-                    else if (QuantumDepth >  quantum_size)
+                    else if (QuantumDepth >  sample_bits)
                       {
                         /* Scale down */
                         for (x = number_pixels; x > 0; --x)
@@ -2029,7 +2034,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 /*
                   Modulo-8 sample sizes
                 */
-                if( QuantumDepth == quantum_size)
+                if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
                     for (x = number_pixels; x > 0; --x)
@@ -2038,7 +2043,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                         p++;
                       }
                   }
-                else if (QuantumDepth >  quantum_size)
+                else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale down */
                     for (x = number_pixels; x > 0; --x)
@@ -2068,7 +2073,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                   stream;
 
                 BitStreamInitializeWrite(&stream,q);
-                if( QuantumDepth == quantum_size)
+                if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
                     for (x = number_pixels; x > 0; --x)
@@ -2078,7 +2083,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                         p++;
                       }
                   }
-                else if (QuantumDepth >  quantum_size)
+                else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale down */
                     for (x = number_pixels; x > 0; --x)
@@ -2139,7 +2144,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 /*
                   Modulo-8 sample sizes
                 */
-                if( QuantumDepth == quantum_size)
+                if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
                     for (x = number_pixels; x > 0; --x)
@@ -2148,7 +2153,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                         p++;
                       }
                   }
-                else if (QuantumDepth >  quantum_size)
+                else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale down */
                     for (x = number_pixels; x > 0; --x)
@@ -2178,7 +2183,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                   stream;
 
                 BitStreamInitializeWrite(&stream,q);
-                if( QuantumDepth == quantum_size)
+                if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
                     for (x = number_pixels; x > 0; --x)
@@ -2188,7 +2193,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                         p++;
                       }
                   }
-                else if (QuantumDepth >  quantum_size)
+                else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale down */
                     for (x = number_pixels; x > 0; --x)
@@ -2250,7 +2255,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 /*
                   Modulo-8 sample sizes
                 */
-                if( QuantumDepth == quantum_size)
+                if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
                     for (x = number_pixels; x > 0; --x)
@@ -2261,7 +2266,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                         p++;
                       }
                   }
-                else if (QuantumDepth >  quantum_size)
+                else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale down */
                     for (x = number_pixels; x > 0; --x)
@@ -2299,7 +2304,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                   stream;
 
                 BitStreamInitializeWrite(&stream,q);
-                if( QuantumDepth == quantum_size)
+                if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
                     for (x = number_pixels; x > 0; --x)
@@ -2310,7 +2315,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                         p++;
                       }
                   }
-                else if (QuantumDepth >  quantum_size)
+                else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale down */
                     for (x = number_pixels; x > 0; --x)
@@ -2381,7 +2386,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 /*
                   Modulo-8 sample sizes
                 */
-                if( QuantumDepth == quantum_size)
+                if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
                     for (x = number_pixels; x > 0; --x)
@@ -2394,7 +2399,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                         p++;
                       }
                   }
-                else if (QuantumDepth >  quantum_size)
+                else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale down */
                     for (x = number_pixels; x > 0; --x)
@@ -2436,7 +2441,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                   stream;
 
                 BitStreamInitializeWrite(&stream,q);
-                if( QuantumDepth == quantum_size)
+                if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
                     for (x = number_pixels; x > 0; --x)
@@ -2448,7 +2453,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                         p++;
                       }
                   }
-                else if (QuantumDepth >  quantum_size)
+                else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale down */
                     for (x = number_pixels; x > 0; --x)
@@ -2529,7 +2534,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 /*
                   Modulo-8 sample sizes
                 */
-                if( QuantumDepth == quantum_size)
+                if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
                     for (x = number_pixels; x > 0; --x)
@@ -2541,7 +2546,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                         p++;
                       }
                   }
-                else if (QuantumDepth >  quantum_size)
+                else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale down */
                     for (x = number_pixels; x > 0; --x)
@@ -2583,7 +2588,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                   stream;
 
                 BitStreamInitializeWrite(&stream,q);
-                if( QuantumDepth == quantum_size)
+                if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
                     for (x = number_pixels; x > 0; --x)
@@ -2595,7 +2600,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                         p++;
                       }
                   }
-                else if (QuantumDepth >  quantum_size)
+                else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale down */
                     for (x = number_pixels; x > 0; --x)
@@ -2672,7 +2677,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                 /*
                   Modulo-8 sample sizes
                 */
-                if( QuantumDepth == quantum_size)
+                if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
                     for (x = number_pixels; x > 0; --x)
@@ -2687,7 +2692,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                         p++;
                       }
                   }
-                else if (QuantumDepth >  quantum_size)
+                else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale down */
                     for (x = number_pixels; x > 0; --x)
@@ -2735,7 +2740,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                   stream;
 
                 BitStreamInitializeWrite(&stream,q);
-                if( QuantumDepth == quantum_size)
+                if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
                     for (x = number_pixels; x > 0; --x)
@@ -2749,7 +2754,7 @@ MagickExport MagickPassFail ExportImagePixelArea(const Image *image,
                         p++;
                       }
                   }
-                else if (QuantumDepth >  quantum_size)
+                else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale down */
                     for (x = number_pixels; x > 0; --x)
@@ -2859,6 +2864,7 @@ MagickExport void ExportPixelAreaOptionsInit(ExportPixelAreaOptions *options)
   assert(options != (ExportPixelAreaOptions *) NULL);
   memset((void *) options, 0, sizeof(ExportPixelAreaOptions));
   options->sample_type=UnsignedQuantumSampleType;
+  options->sample_bits=0; /* Run-time default to quantum size */
   options->double_minvalue=0.0;
   options->double_maxvalue=1.0;
   options->grayscale_miniswhite=MagickFalse;
@@ -2963,7 +2969,8 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
     sample_type = UnsignedQuantumSampleType;
 
   unsigned int
-    unsigned_maxvalue=MaxRGB;
+    unsigned_maxvalue=MaxRGB,
+    sample_bits;
 
   long
     number_pixels;
@@ -2980,15 +2987,19 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(source != (const unsigned char *) NULL);
+  assert(((quantum_size > 0U) && (quantum_size <= 32U)) || (quantum_size == 64U));
   assert((options == (const ImportPixelAreaOptions *) NULL) ||
          (options->signature == MagickSignature));
 
   /*
     Transfer any special options.
   */
+  sample_bits=quantum_size;
   if (options)
     {
       sample_type=options->sample_type;
+      if ((options->sample_bits != 0U) && (options->sample_bits < quantum_size))
+       sample_bits=options->sample_bits;
       double_minvalue=options->double_minvalue;
       double_maxvalue=options->double_maxvalue;
       grayscale_miniswhite=options->grayscale_miniswhite;
@@ -3000,17 +3011,17 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
   if (sample_type != FloatQuantumSampleType)
     {
       /* Maximum value which may be represented by a sample */
-      unsigned_maxvalue=MaxValueGivenBits(quantum_size);
+      unsigned_maxvalue=MaxValueGivenBits(sample_bits);
       
-      if (QuantumDepth == quantum_size)
+      if (QuantumDepth == sample_bits)
         {
         }
-      else if (QuantumDepth > quantum_size)
+      else if (QuantumDepth > sample_bits)
         {
           /* Multiply to scale up */
-          unsigned_scale=(MaxRGB / (MaxRGB >> (QuantumDepth-quantum_size)));
+          unsigned_scale=(MaxRGB / (MaxRGB >> (QuantumDepth-sample_bits)));
         }
-      else if (QuantumDepth < quantum_size)
+      else if (QuantumDepth < sample_bits)
         {
           /* Divide to scale down */
           unsigned_scale=(unsigned_maxvalue/MaxRGB);
@@ -3100,9 +3111,9 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     *q=image->colormap[index];
 
                     ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                    if (QuantumDepth >  quantum_size)
+                    if (QuantumDepth >  sample_bits)
                       unsigned_value *= unsigned_scale;
-                    else if (QuantumDepth <  quantum_size)
+                    else if (QuantumDepth <  sample_bits)
                       unsigned_value /= unsigned_scale;
                     q->opacity=MaxRGB-unsigned_value;
                     q++;
@@ -3125,9 +3136,9 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     *q=image->colormap[index];
 
                     unsigned_value=BitStreamMSBRead(&stream,quantum_size);
-                    if (QuantumDepth >  quantum_size)
+                    if (QuantumDepth >  sample_bits)
                       unsigned_value *= unsigned_scale;
-                    else if (QuantumDepth <  quantum_size)
+                    else if (QuantumDepth <  sample_bits)
                       unsigned_value /= unsigned_scale;
                     q->opacity=MaxRGB-unsigned_value;
                     q++;
@@ -3150,7 +3161,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     /*
                       Modulo-8 sample sizes
                     */
-                    if( QuantumDepth == quantum_size)
+                    if( QuantumDepth == sample_bits)
                       {
                         /* Unity scale */
                         for (x = number_pixels; x > 0; --x)
@@ -3163,7 +3174,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                             q++;
                           }
                       }
-                    else if (QuantumDepth >  quantum_size)
+                    else if (QuantumDepth >  sample_bits)
                       {
                         /* Scale up */
                         for (x = number_pixels; x > 0; --x)
@@ -3198,7 +3209,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       stream;
 
                     BitStreamInitializeRead(&stream,p);
-                    if (QuantumDepth >=  quantum_size)
+                    if (QuantumDepth >=  sample_bits)
                       {
                         /* Scale up */
                         for (x = number_pixels; x > 0; --x)
@@ -3363,7 +3374,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     /*
                       Modulo-8 sample sizes
                     */
-                    if( QuantumDepth == quantum_size)
+                    if( QuantumDepth == sample_bits)
                       {
                         /* Unity scale */
                         for (x = number_pixels; x > 0; --x)
@@ -3378,7 +3389,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                             q++;
                           }
                       }
-                    else if (QuantumDepth >  quantum_size)
+                    else if (QuantumDepth >  sample_bits)
                       {
                         /* Scale up */
                         for (x = number_pixels; x > 0; --x)
@@ -3419,7 +3430,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       stream;
 
                     BitStreamInitializeRead(&stream,p);
-                    if (QuantumDepth >=  quantum_size)
+                    if (QuantumDepth >=  sample_bits)
                       {
                         /* Scale up */
                         for (x = number_pixels; x > 0; --x)
@@ -3488,9 +3499,9 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                             *q=image->colormap[index];
                     
                             ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                            if (QuantumDepth >  quantum_size)
+                            if (QuantumDepth >  sample_bits)
                               unsigned_value *= unsigned_scale;
-                            else if (QuantumDepth <  quantum_size)
+                            else if (QuantumDepth <  sample_bits)
                               unsigned_value /= unsigned_scale;
                             q->opacity=MaxRGB-unsigned_value;
                             q++;
@@ -3509,9 +3520,9 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                             *q=image->colormap[index];
                     
                             ImportModulo8Quantum(unsigned_value,quantum_size,p);
-                            if (QuantumDepth >  quantum_size)
+                            if (QuantumDepth >  sample_bits)
                               unsigned_value *= unsigned_scale;
-                            else if (QuantumDepth <  quantum_size)
+                            else if (QuantumDepth <  sample_bits)
                               unsigned_value /= unsigned_scale;
                             q->opacity=MaxRGB-unsigned_value;
                             q++;
@@ -3538,9 +3549,9 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                         *q=image->colormap[index];
 
                         unsigned_value=BitStreamMSBRead(&stream,quantum_size);
-                        if (QuantumDepth >  quantum_size)
+                        if (QuantumDepth >  sample_bits)
                           unsigned_value *= unsigned_scale;
-                        else if (QuantumDepth <  quantum_size)
+                        else if (QuantumDepth <  sample_bits)
                           unsigned_value /= unsigned_scale;
                         q->opacity=MaxRGB-unsigned_value;
                         q++;
@@ -3600,7 +3611,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 /*
                   Modulo-8 sample sizes
                 */
-                if( QuantumDepth == quantum_size)
+                if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
                     for (x = number_pixels; x > 0; --x)
@@ -3610,7 +3621,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                         q++;
                       }
                   }
-                else if (QuantumDepth >  quantum_size)
+                else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale up */
                     for (x = number_pixels; x > 0; --x)
@@ -3640,7 +3651,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                   stream;
 
                 BitStreamInitializeRead(&stream,p);
-                if (QuantumDepth >=  quantum_size)
+                if (QuantumDepth >=  sample_bits)
                   {
                     /* Scale up */
                     for (x = number_pixels; x > 0; --x)
@@ -3704,7 +3715,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 /*
                   Modulo-8 sample sizes
                 */
-                if( QuantumDepth == quantum_size)
+                if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
                     for (x = number_pixels; x > 0; --x)
@@ -3714,7 +3725,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                         q++;
                       }
                   }
-                else if (QuantumDepth >  quantum_size)
+                else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale up */
                     for (x = number_pixels; x > 0; --x)
@@ -3744,7 +3755,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                   stream;
 
                 BitStreamInitializeRead(&stream,p);
-                if (QuantumDepth >=  quantum_size)
+                if (QuantumDepth >=  sample_bits)
                   {
                     /* Scale up */
                     for (x = number_pixels; x > 0; --x)
@@ -3808,7 +3819,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 /*
                   Modulo-8 sample sizes
                 */
-                if( QuantumDepth == quantum_size)
+                if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
                     for (x = number_pixels; x > 0; --x)
@@ -3818,7 +3829,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                         q++;
                       }
                   }
-                else if (QuantumDepth >  quantum_size)
+                else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale up */
                     for (x = number_pixels; x > 0; --x)
@@ -3848,7 +3859,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                   stream;
 
                 BitStreamInitializeRead(&stream,p);
-                if (QuantumDepth >=  quantum_size)
+                if (QuantumDepth >=  sample_bits)
                   {
                     /* Scale up */
                     for (x = number_pixels; x > 0; --x)
@@ -3913,7 +3924,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                     /*
                       Modulo-8 sample sizes
                     */
-                    if( QuantumDepth == quantum_size)
+                    if( QuantumDepth == sample_bits)
                       {
                         /* Unity scale */
                         for (x = number_pixels; x > 0; --x)
@@ -3922,7 +3933,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                             *indexes++=(IndexPacket) MaxRGB-unsigned_value;
                           }
                       }
-                    else if (QuantumDepth >  quantum_size)
+                    else if (QuantumDepth >  sample_bits)
                       {
                         /* Scale up */
                         for (x = number_pixels; x > 0; --x)
@@ -3950,7 +3961,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                       stream;
                 
                     BitStreamInitializeRead(&stream,p);
-                    if (QuantumDepth >=  quantum_size)
+                    if (QuantumDepth >=  sample_bits)
                       {
                         /* Scale up */
                         for (x = number_pixels; x > 0; --x)
@@ -4008,7 +4019,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 /*
                   Modulo-8 sample sizes
                 */
-                if( QuantumDepth == quantum_size)
+                if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
                     for (x = number_pixels; x > 0; --x)
@@ -4018,7 +4029,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                         q++;
                       }
                   }
-                else if (QuantumDepth >  quantum_size)
+                else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale up */
                     for (x = number_pixels; x > 0; --x)
@@ -4048,7 +4059,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                   stream;
 
                 BitStreamInitializeRead(&stream,p);
-                if (QuantumDepth >=  quantum_size)
+                if (QuantumDepth >=  sample_bits)
                   {
                     /* Scale up */
                     for (x = number_pixels; x > 0; --x)
@@ -4111,7 +4122,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 /*
                   Modulo-8 sample sizes
                 */
-                if( QuantumDepth == quantum_size)
+                if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
                     for (x = number_pixels; x > 0; --x)
@@ -4121,7 +4132,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                         q++;
                       }
                   }
-                else if (QuantumDepth >  quantum_size)
+                else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale up */
                     for (x = number_pixels; x > 0; --x)
@@ -4151,7 +4162,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                   stream;
 
                 BitStreamInitializeRead(&stream,p);
-                if (QuantumDepth >=  quantum_size)
+                if (QuantumDepth >=  sample_bits)
                   {
                     /* Scale up */
                     for (x = number_pixels; x > 0; --x)
@@ -4215,7 +4226,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 /*
                   Modulo-8 sample sizes
                 */
-                if( QuantumDepth == quantum_size)
+                if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
                     for (x = number_pixels; x > 0; --x)
@@ -4230,7 +4241,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                         q++;
                       }
                   }
-                else if (QuantumDepth >  quantum_size)
+                else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale up */
                     for (x = number_pixels; x > 0; --x)
@@ -4270,7 +4281,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                   stream;
 
                 BitStreamInitializeRead(&stream,p);
-                if (QuantumDepth >=  quantum_size)
+                if (QuantumDepth >=  sample_bits)
                   {
                     /* Scale up */
                     for (x = number_pixels; x > 0; --x)
@@ -4282,7 +4293,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                         q++;
                       }
                   }
-                else if (QuantumDepth <  quantum_size)
+                else if (QuantumDepth <  sample_bits)
                   {
                     /* Scale down */
                     for (x = number_pixels; x > 0; --x)
@@ -4357,7 +4368,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 /*
                   Modulo-8 sample sizes
                 */
-                if( QuantumDepth == quantum_size)
+                if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
                     for (x = number_pixels; x > 0; --x)
@@ -4373,7 +4384,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                         q++;
                       }
                   }
-                else if (QuantumDepth >  quantum_size)
+                else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale up */
                     for (x = number_pixels; x > 0; --x)
@@ -4415,7 +4426,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                   stream;
 
                 BitStreamInitializeRead(&stream,p);
-                if (QuantumDepth >=  quantum_size)
+                if (QuantumDepth >=  sample_bits)
                   {
                     /* Scale up */
                     for (x = number_pixels; x > 0; --x)
@@ -4427,7 +4438,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                         q++;
                       }
                   }
-                else if (QuantumDepth <  quantum_size)
+                else if (QuantumDepth <  sample_bits)
                   {
                     /* Scale down */
                     for (x = number_pixels; x > 0; --x)
@@ -4508,7 +4519,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 /*
                   Modulo-8 sample sizes
                 */
-                if( QuantumDepth == quantum_size)
+                if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
                     for (x = number_pixels; x > 0; --x)
@@ -4524,7 +4535,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                         q++;
                       }
                   }
-                else if (QuantumDepth >  quantum_size)
+                else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale up */
                     for (x = number_pixels; x > 0; --x)
@@ -4566,7 +4577,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                   stream;
 
                 BitStreamInitializeRead(&stream,p);
-                if (QuantumDepth >=  quantum_size)
+                if (QuantumDepth >=  sample_bits)
                   {
                     /* Scale up */
                     for (x = number_pixels; x > 0; --x)
@@ -4578,7 +4589,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                         q++;
                       }
                   }
-                else if (QuantumDepth <  quantum_size)
+                else if (QuantumDepth <  sample_bits)
                   {
                     /* Scale down */
                     for (x = number_pixels; x > 0; --x)
@@ -4659,7 +4670,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                 /*
                   Modulo-8 sample sizes
                 */
-                if( QuantumDepth == quantum_size)
+                if( QuantumDepth == sample_bits)
                   {
                     /* Unity scale */
                     for (x = number_pixels; x > 0; --x)
@@ -4677,7 +4688,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                         q++;
                       }
                   }
-                else if (QuantumDepth >  quantum_size)
+                else if (QuantumDepth >  sample_bits)
                   {
                     /* Scale up */
                     for (x = number_pixels; x > 0; --x)
@@ -4723,7 +4734,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                   stream;
 
                 BitStreamInitializeRead(&stream,p);
-                if (QuantumDepth >=  quantum_size)
+                if (QuantumDepth >=  sample_bits)
                   {
                     /* Scale up */
                     for (x = number_pixels; x > 0; --x)
@@ -4736,7 +4747,7 @@ MagickExport MagickPassFail ImportImagePixelArea(Image *image,
                         q++;
                       }
                   }
-                else if (QuantumDepth <  quantum_size)
+                else if (QuantumDepth <  sample_bits)
                   {
                     /* Scale down */
                     for (x = number_pixels; x > 0; --x)
@@ -4849,6 +4860,7 @@ MagickExport void ImportPixelAreaOptionsInit(ImportPixelAreaOptions *options)
   assert(options != (ImportPixelAreaOptions *) NULL);
   memset((void *) options, 0, sizeof(ImportPixelAreaOptions));
   options->sample_type=UnsignedQuantumSampleType;
+  options->sample_bits=0; /* Run-time default to quantum size */
   options->double_minvalue=0.0;
   options->double_maxvalue=1.0;
   options->grayscale_miniswhite=MagickFalse;

@@ -62,6 +62,16 @@
 #  if !defined(COMPRESSION_ADOBE_DEFLATE)
 #    define COMPRESSION_ADOBE_DEFLATE  8
 #  endif  /* !defined(COMPRESSION_ADOBE_DEFLATE) */
+/*
+  Pull in some libjpeg headers in order to learn sample depth.
+*/
+#if defined(HasJPEG)
+# if defined(__MINGW32__)
+#  define XMD_H 1
+# endif
+# undef HAVE_STDLIB_H
+# include "jpeglib.h"
+#endif
 
 /*
   Global declarations.
@@ -661,15 +671,18 @@ static MagickPassFail QuantumTransferMode(const Image *image,
           }
         case PHOTOMETRIC_PALETTE:
           {
-            if (image->matte)
+            if (sample_format == SAMPLEFORMAT_UINT)
               {
-                *quantum_type=IndexAlphaQuantum;
-                *quantum_samples=2;
-              }
-            else
-              {
-                *quantum_type=IndexQuantum;
-                *quantum_samples=1;
+                if (image->matte)
+                  {
+                    *quantum_type=IndexAlphaQuantum;
+                    *quantum_samples=2;
+                  }
+                else
+                  {
+                    *quantum_type=IndexQuantum;
+                    *quantum_samples=1;
+                  }
               }
             break;
           }
@@ -896,6 +909,9 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
   char
     filename[MaxTextExtent],
     *text;
+
+  const char *
+    definition_value;
 
   float
     *chromaticity,
@@ -1206,19 +1222,16 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
 
           if (extra_samples > 0)
             {
-              const char *
-                value;
-
               alpha_type=AssociatedAlpha;
               image->matte=True;
 
-              if ((value=AccessDefinition(image_info,"tiff","alpha")))
+              if ((definition_value=AccessDefinition(image_info,"tiff","alpha")))
                 {
-                  if (LocaleCompare(value,"unspecified") == 0)
+                  if (LocaleCompare(definition_value,"unspecified") == 0)
                     alpha_type=UnspecifiedAlpha;
-                  else if (LocaleCompare(value,"associated") == 0)
+                  else if (LocaleCompare(definition_value,"associated") == 0)
                     alpha_type=AssociatedAlpha;
-                  else if (LocaleCompare(value,"unassociated") == 0)
+                  else if (LocaleCompare(definition_value,"unassociated") == 0)
                     alpha_type=UnassociatedAlpha;
                 }
               else if (sample_info[0] == EXTRASAMPLE_UNSPECIFIED)
@@ -1397,6 +1410,27 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
       }
 
       /*
+        Set extra import options for unsigned samples.
+      */
+      if (sample_format == SAMPLEFORMAT_UINT)
+        {
+          if ((definition_value=AccessDefinition(image_info,"tiff",
+                                                 "bits-per-sample")))
+            {
+              unsigned int
+                sample_bits=atoi(definition_value);
+
+              if ((sample_bits != 0) || (sample_bits <= bits_per_sample))
+                {
+                  import_options.sample_bits=sample_bits;
+                  (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                        "Bits per sample override (sub-sample): %u",
+                                        import_options.sample_bits);
+                }
+            }
+        }
+
+      /*
         Set extra import options for floating point.
       */
       if (sample_format == SAMPLEFORMAT_IEEEFP)
@@ -1404,9 +1438,6 @@ static Image *ReadTIFFImage(const ImageInfo *image_info,
           double
             value;
 
-          const char *
-            definition_value;
-          
           import_options.sample_type=FloatQuantumSampleType;
           if (TIFFGetField(tiff,TIFFTAG_SMINSAMPLEVALUE,&value) == 1)
             import_options.double_minvalue=value;
@@ -2609,6 +2640,12 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
     sample_format,
     samples_per_pixel;
 
+  uint32
+    rows_per_strip;
+
+  tsize_t
+    scanline_size;
+
   AlphaType
     alpha_type;
 
@@ -2627,8 +2664,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
 
   unsigned long
     depth,
-    scene,
-    strip_size;
+    scene;
 
   /*
     Open TIFF file.
@@ -2785,8 +2821,13 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
             JPEG compression can only use size specified by BITS_IN_JSAMPLE.
             FIXME
           */
+#if BITS_IN_JSAMPLE == 12
+          depth=12;
+          bits_per_sample=12;
+#else
           depth=8;
           bits_per_sample=8;
+#endif
         }
       else
         {
@@ -2992,13 +3033,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                                     "User override (samples-per-pixel): %u samples per pixel (was %u)",
                                     (unsigned int) samples_per_pixel, old_value);
           }
-
-
       }
-
-      (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,samples_per_pixel);
-      (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,bits_per_sample);
-      (void) TIFFSetField(tiff,TIFFTAG_SAMPLEFORMAT,sample_format);
 
       if (logging)
         (void) LogMagickEvent(CoderEvent,GetMagickModule(),
@@ -3009,9 +3044,6 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                               sample_format == SAMPLEFORMAT_UINT ? "Unsigned" :
                               sample_format == SAMPLEFORMAT_IEEEFP ? "IEEEFP" :
                               "unknown");
-
-      (void) TIFFSetField(tiff,TIFFTAG_PHOTOMETRIC,photometric);
-      (void) TIFFSetField(tiff,TIFFTAG_COMPRESSION,compress_tag);
 
       /*
         Determine bit ordering in a byte.
@@ -3037,21 +3069,32 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
             break;
           }
         }
-      (void) TIFFSetField(tiff,TIFFTAG_FILLORDER,fill_order);
-
-      (void) TIFFSetField(tiff,TIFFTAG_ORIENTATION,ORIENTATION_TOPLEFT);
       /*
         Determine planar configuration.
       */
       planar_config=PLANARCONFIG_CONTIG;
-      if ((photometric == PHOTOMETRIC_RGB) ||
-          (photometric == PHOTOMETRIC_SEPARATED))
+      if (samples_per_pixel > 1)
         if ((image_info->interlace == PlaneInterlace) ||
             (image_info->interlace == PartitionInterlace))
           planar_config=PLANARCONFIG_SEPARATE;
-      (void) TIFFSetField(tiff,TIFFTAG_PLANARCONFIG,planar_config);
 
-      strip_size=Max(TIFFDefaultStripSize(tiff,-1),1);
+      (void) TIFFSetField(tiff,TIFFTAG_FILLORDER,fill_order);
+      (void) TIFFSetField(tiff,TIFFTAG_ORIENTATION,ORIENTATION_TOPLEFT);
+      (void) TIFFSetField(tiff,TIFFTAG_PHOTOMETRIC,photometric);
+      (void) TIFFSetField(tiff,TIFFTAG_BITSPERSAMPLE,bits_per_sample);
+      (void) TIFFSetField(tiff,TIFFTAG_SAMPLESPERPIXEL,samples_per_pixel);
+      (void) TIFFSetField(tiff,TIFFTAG_SAMPLEFORMAT,sample_format);
+      (void) TIFFSetField(tiff,TIFFTAG_PLANARCONFIG,planar_config);
+      (void) TIFFSetField(tiff,TIFFTAG_COMPRESSION,compress_tag);
+
+      /*
+        Obtain recommended rows per strip given current image width,
+        bits per sample, samples per pixel, tags, and compression
+        specific requirements.  Tries to create strips with 8K of
+        uncompressed data.
+      */
+      scanline_size=TIFFScanlineSize(tiff);
+      rows_per_strip=Max(TIFFDefaultStripSize(tiff,0),1);
 
       switch (compress_tag)
         {
@@ -3060,14 +3103,26 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
             /*
               RowsPerStrip must be multiple of 8 for JPEG.
             */
-            (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,
-                                strip_size+(8-(strip_size % 8)));
+            rows_per_strip=rows_per_strip+(8-(rows_per_strip % 8));
+            (void) TIFFSetField(tiff,TIFFTAG_JPEGQUALITY,image_info->quality);
+            (void) TIFFSetField(tiff,TIFFTAG_JPEGCOLORMODE,JPEGCOLORMODE_RGB);
+            if (bits_per_sample == 12)
+              (void) TIFFSetField(tiff,TIFFTAG_JPEGTABLESMODE,JPEGTABLESMODE_QUANT);
             break;
           }
         case COMPRESSION_ADOBE_DEFLATE:
           {
-            (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,image->rows);
-
+            /*
+              Deflate strips compress better up to 32K of data.
+            */
+            rows_per_strip = (uint32) (32*1024) / Max(scanline_size,1);
+            if (rows_per_strip < 1)
+              rows_per_strip=1;
+            /*
+              Use horizontal differencing (type 2) for images which are
+              likely to be continuous tone.  The TIFF spec says that this
+              usually leads to better compression.
+            */
             if (((photometric == PHOTOMETRIC_RGB) ||
                  (photometric == PHOTOMETRIC_MINISBLACK)) &&
                 ((bits_per_sample == 8) || (bits_per_sample == 16)))
@@ -3077,12 +3132,11 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
           }
         case COMPRESSION_CCITTFAX4:
           {
-            (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,image->rows);
+            rows_per_strip=(uint32) image->rows;
             break;
           }
         case COMPRESSION_LZW:
           {
-            (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,strip_size);
             /*
               Use horizontal differencing (type 2) for images which are
               likely to be continuous tone.  The TIFF spec says that this
@@ -3096,10 +3150,19 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
           }
         default:
           {
-            (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,strip_size);
             break;
           }
         }
+      if (method != TiledMethod)
+        {
+          (void) LogMagickEvent(CoderEvent,GetMagickModule(),
+                                "Rows per strip: %u (%lu bytes/strip)",
+                                (unsigned int) rows_per_strip,
+                                (unsigned long) scanline_size*rows_per_strip);
+          (void) TIFFSetField(tiff,TIFFTAG_ROWSPERSTRIP,rows_per_strip);
+        }
+
+
       if ((image->x_resolution != 0) && (image->y_resolution != 0))
         {
           unsigned short
@@ -3123,7 +3186,8 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
             chromaticity[6];
 
           /*
-            Set image chromaticity.
+            Set image primary chromaticities (x,y coordinates of RGB
+            colorants and white point).
           */
           chromaticity[0]=image->chromaticity.red_primary.x;
           chromaticity[1]=image->chromaticity.red_primary.y;
@@ -3308,6 +3372,7 @@ static MagickPassFail WriteTIFFImage(const ImageInfo *image_info,Image *image)
                                 export_options.double_minvalue,
                                 export_options.double_maxvalue);
         }
+
       /*
         Export pixels to TIFF.
       */

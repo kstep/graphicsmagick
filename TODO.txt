@@ -6,6 +6,7 @@ See website for "wish list".
 For 1.2 Branch
 ==============
 
+  o Fix "gm convert logo: logo%n.png" --> Segmentation fault
 
   o Fix PerlMagick BLOB reading (disable header magic checking if already
     specified).

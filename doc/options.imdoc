@@ -934,8 +934,7 @@ The following definitions may be created:</pp>
 
 <dl>
 <dt>jp2:rate=<value></dt>
-<dd>
-Specify the compression factor to use while writing JPEG-2000
+<dd>Specify the compression factor to use while writing JPEG-2000
 files. The compression factor is the reciprocal of the compression
 ratio. The valid range is 0.0 to 1.0, with 1.0 indicating lossless
 compression. If defined, this value overrides the -quality
@@ -944,8 +943,7 @@ setting. The default quality setting of 75 results in a rate value of
 </dd>
 
 <dt>jpeg:preserve-settings</dt>
-<dd>
-If the jpeg:preserve-settings flag is defined, the JPEG encoder will
+<dd>If the jpeg:preserve-settings flag is defined, the JPEG encoder will
 use the same "quality" and "sampling-factor" settings that were found
 in the input file, if the input was in JPEG format. These settings are
 also preserved if the input is a JPEG file and the output is a JNG
@@ -955,15 +953,13 @@ are not.
 </dd>
 
 <dt>ps:imagemask</dt>
-<dd>
-If the ps:imagemask flag is defined, the PS3 and EPS3 coders will
+<dd>If the ps:imagemask flag is defined, the PS3 and EPS3 coders will
 create Postscript files that render bilevel images with the Postscript
 imagemask operator instead of the image operator.
 </dd>
 
 <dt>tiff:alpha={unspecified|associated|unassociated}</dt>
-<dd>
-Specify the TIFF alpha channel type when reading or writing TIFF files,
+<dd>Specify the TIFF alpha channel type when reading or writing TIFF files,
 overriding the normal value. The default alpha channel type for new files
 is associated alpha. Existing alpha settings are preserved when
 converting from one TIFF file to another. When a TIFF file uses
@@ -980,8 +976,7 @@ the pixels.
 </dd>
 
 <dt>tiff:sample-format={unsigned|ieeefp}</dt>
-<dd>
-If the tiff:sample-format key is defined, GraphicsMagick will use it to
+<dd>If the tiff:sample-format key is defined, GraphicsMagick will use it to
 determine the sample format used while writing TIFF files. The default is
 "unsigned". Specifify "ieeefp" in order to write floating-point TIFF
 files with float (32-bit) or double (64-bit) values. Use the
@@ -990,8 +985,7 @@ to use.
 </dd>
 
 <dt>tiff:max-sample-value=<value></dt>
-<dd>
-If the tiff:max-sample-value key is defined, GraphicsMagick will use the
+<dd>If the tiff:max-sample-value key is defined, GraphicsMagick will use the
 assigned value as the maximum floating point value while reading or
 writing IEEE floating point TIFFs. Otherwise the maximum value is 1.0 or
 the value obtained from the file's SMaxSampleValue tag (if present). The
@@ -1002,66 +996,56 @@ SMaxSampleValue tag is not present, it may be necessary to
 </dd>
 
 <dt>tiff:min-sample-value=<value></dt>
-<dd>
-If the tiff:min-sample-value key is defined, GraphicsMagick will use the
+<dd>If the tiff:min-sample-value key is defined, GraphicsMagick will use the
 assigned value as the minimum floating point value while reading or
 writing IEEE floating point TIFFs. Otherwise the minimum value is 0.0 or
 the value obtained from the file's SMinSampleValue tag (if present).
 </dd>
 
 <dt>tiff:bits-per-sample=<value></dt>
-<dd>
-If the tiff:bits-per-sample key is defined, GraphicsMagick will write
-TIFF images using unsigned integral samples with the specified bits per
-sample, overriding any value stored in the image. The range of the value
-is 1 to 32 when the default 'unsigned' format is written, or 32/64 if
-IEEEFP format is written. Please note that the baseline TIFF 6.0
-specification only requires readers to handle certain powers of two, and
-the values to be handled depend on the nature of the image (e.g.
-colormapped, grayscale, RGB, CMYK).
+<dd>If the tiff:bits-per-sample key is defined, GraphicsMagick will write
+images with the specified bits per sample, overriding any existing depth
+value. The range of the value is 1 to 32 when the default 'unsigned'
+format is written, or 32/64 if IEEEFP format is written. If an image to
+be read contains smaller unsigned samples stored in larger samples (e.g.
+12 bits in a 16 bit sample) then this option may be used to specify the
+sub-sample size so the image has the correct contrast. Please note that
+the baseline TIFF 6.0 specification only requires readers to handle
+certain powers of two, and the values to be handled depend on the nature
+of the image (e.g. colormapped, grayscale, RGB, CMYK).
 </dd>
 
 <dt>tiff:samples-per-pixel=<value></dt>
-<dd>
-If the tiff:samples-per-pixel key is defined to a value, the TIFF coder
+<dd>If the tiff:samples-per-pixel key is defined to a value, the TIFF coder
 will write TIFF images with the defined samples per pixel, overriding any
 value stored in the image. This option should not normally be used.
 </dd>
-</dl>
 
 <dt>tiff:tile</dt>
-<dd>
-Enable writing tiled TIFF (rather than stripped) using the default tile
+<dd>Enable writing tiled TIFF (rather than stripped) using the default tile
 size. Tiled TIFF organizes the image as an array of smaller images
 (tiles) in order to enable random access.
 </dd>
-</dl>
 
 <dt>tiff:tile-geometry=<width>x<height></dt>
-<dd>
-Specify the tile size to use while writing tiled TIFF. Width and height
+<dd>Specify the tile size to use while writing tiled TIFF. Width and height
 should be a multiple of 16. If the value is not a multiple of 16, then it
 will be rounded down. Enables tiled TIFF if it has not already been
 enabled.
 </dd>
-</dl>
 
 <dt>tiff:tile-width=<width></dt>
-<dd>
-Specify the tile width to use while writing tiled TIFF. The tile height
+<dd>Specify the tile width to use while writing tiled TIFF. The tile height
 is then defaulted to an appropriate size. Width should be a multiple of
 16. If the value is not a multiple of 16, then it will be rounded down.
 Enables tiled TIFF if it has not already been enabled.
 </dd>
-</dl>
 
 <dt>tiff:tile-height=<height></dt>
-<dd>
-Specify the tile height to use while writing tiled TIFF. The tile width
+<dd>Specify the tile height to use while writing tiled TIFF. The tile width
 is then defaulted to an appropriate size. Height should be a multiple of
 16. If the value is not a multiple of 16, then it will be rounded down.
-Enables tiled TIFF if it has not already been enabled.
-</dd>
+Enables tiled TIFF if it has not already been enabled.</dd>
 </dl>
 
 <pp>

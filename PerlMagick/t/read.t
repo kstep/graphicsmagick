@@ -13,7 +13,7 @@
 # Whenever a new test is added/removed, be sure to update the
 # 1..n ouput.
 #
-BEGIN { $| = 1; $test=1; print "1..47\n"; }
+BEGIN { $| = 1; $test=1; print "1..49\n"; }
 END {print "not ok $test\n" unless $loaded;}
 use Graphics::Magick;
 $loaded=1;
@@ -32,6 +32,14 @@ testReadCompare('input.bmp', 'reference/read/input_bmp.miff', q//, 0, 0);
 print("Microsoft Windows 24-bit bitmap image file ...\n");
 ++$test;
 testReadCompare('input.bmp24', 'reference/read/input_bmp24.miff', q//, 0, 0);
+
+print("Cineon Gray image file ...\n");
+++$test;
+testReadCompare('input_gray.cin', 'reference/read/input_gray_cin.miff', q//, 0, 0);
+
+print("Cineon RGB image file ...\n");
+++$test;
+testReadCompare('input_rgb.cin', 'reference/read/input_rgb_cin.miff', q//, 0, 0);
 
 print("ZSoft IBM PC multi-page Paintbrush file ...\n");
 ++$test;

@@ -21,6 +21,23 @@
 </tr>
 </table>
 <p>
+2005-03-06  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> coders/tiff.c (ReadTIFFImage): Support reading TIFF images which
+        fail to properly scale the samples to the sample size (e.g. 12
+        bits in a 16-bit sample).<BR>
+        (WriteTIFFImage): Adjustments to strip-size (rows-per-strip)
+        estimation.<BR>
+  <LI> magick/constitute.c (ExportImagePixelArea): Support exporting
+        unsigned samples with values which span only part of the range.
+        For example, 12 bit data may be exported within 16 bit samples,
+        with a value range of 0 to 4095.
+        (ImportImagePixelArea): Support importing unsigned samples with
+        values which span only part of the range.
+
+</UL>
+<p>
 2005-02-26  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>
