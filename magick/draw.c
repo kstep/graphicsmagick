@@ -208,7 +208,8 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
   if (draw_info->density != (char *) NULL)
     clone_info->density=AllocateString(draw_info->density);
   if (draw_info->tile != (Image *) NULL)
-    clone_info->tile=ReferenceImage(draw_info->tile);
+    clone_info->tile=
+      CloneImage(draw_info->tile,0,0,True,&draw_info->tile->exception);
   if (draw_info->server_name != (char *) NULL)
     clone_info->server_name=AllocateString(draw_info->server_name);
   if (draw_info->dash_pattern != (unsigned int *) NULL)

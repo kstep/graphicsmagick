@@ -961,7 +961,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
       if (image->directory != (char *) NULL)
         (void) CloneString(&clone_image->directory,image->directory);
       if (clone_image->clip_mask != (Image *) NULL)
-        clone_image->clip_mask=ReferenceImage(image->clip_mask);
+        clone_image->clip_mask=CloneImage(image->clip_mask,0,0,True,exception);
       clone_image->cache=ReferenceCache(image->cache);
     }
   clone_image->blob=CloneBlobInfo((BlobInfo *) NULL);
@@ -4646,7 +4646,8 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             tile_image=ReadImage(clone_info,&exception);
             if (tile_image == (Image *) NULL)
               continue;
-            draw_info->tile=ReferenceImage(tile_image);
+            draw_info->tile=
+              CloneImage(tile_image,0,0,True,&tile_image->exception);
             DestroyImage(tile_image);
             continue;
           }
@@ -5744,7 +5745,7 @@ MagickExport unsigned int SetImageClipMask(Image *image,Image *clip_mask)
       image->clip_mask=(Image *) NULL;
       return(True);
     }
-  image->clip_mask=ReferenceImage(clip_mask);
+  image->clip_mask=CloneImage(clip_mask,0,0,True,&clip_mask->exception);
   return(True);
 }
 
