@@ -2131,7 +2131,7 @@ static void lite_font_map( wmfAPI* API, wmfFont* font)
         target_weight = WMF_FONT_WEIGHT(font);
 
       /* printf("Desired weight  = %i\n", WMF_FONT_WEIGHT(font)); */
-      for ( type_info=type_info_base; type_info != 0; type_info=type_info->next )
+      for ( type_info=(TypeInfo *) type_info_base; type_info != 0; type_info=type_info->next )
         {
           if(LocaleCompare(wmf_font_name,type_info->family) == 0)
             {
@@ -2159,7 +2159,7 @@ static void lite_font_map( wmfAPI* API, wmfFont* font)
   /* Look for exact full match */
   if(!magick_font->ps_name)
     {
-      for ( type_info=type_info_base; type_info != 0; type_info=type_info->next)
+      for ( type_info=(TypeInfo *) type_info_base; type_info != 0; type_info=type_info->next)
         {
           if(LocaleCompare(wmf_font_name,type_info->description) == 0)
             {
