@@ -1101,12 +1101,6 @@ Export void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   ExceptionInfo
     error;
 
-  ImageAttribute
-    *attribute;
-
-  Image
-    *draw_image;
-
   ImageInfo
     *clone_info;
 

@@ -948,7 +948,6 @@ Export Image *EnhanceImage(Image *image,ExceptionInfo *exception)
     red;
 
   register int
-    i,
     x;
 
   register PixelPacket
@@ -1999,10 +1998,9 @@ Export unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
           q=SetImagePixels(image,(int) segment->x2,(int) y_mid,1,1);
           if (q != (PixelPacket *) NULL)
             {
-              q->red=PlasmaPixel((int) (pixel_1.red+pixel_2.red)/2,plasma);
-              q->green=
-                PlasmaPixel((int) (pixel_1.green+pixel_2.green)/2,plasma);
-              q->blue=PlasmaPixel((int) (pixel_1.blue+pixel_2.blue)/2,plasma);
+              q->red=PlasmaPixel((pixel_1.red+pixel_2.red)/2.0,plasma);
+              q->green=PlasmaPixel((pixel_1.green+pixel_2.green)/2.0,plasma);
+              q->blue=PlasmaPixel((pixel_1.blue+pixel_2.blue)/2.0,plasma);
               (void) SyncImagePixels(image);
             }
         }
@@ -2019,10 +2017,9 @@ Export unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
           q=SetImagePixels(image,(int) x_mid,(int) segment->y2,1,1);
           if (q != (PixelPacket *) NULL)
             {
-              q->red=PlasmaPixel((int) (pixel_1.red+pixel_2.red)/2,plasma);
-              q->green=
-                PlasmaPixel((int) (pixel_1.green+pixel_2.green)/2,plasma);
-              q->blue=PlasmaPixel((int) (pixel_1.blue+pixel_2.blue)/2,plasma);
+              q->red=PlasmaPixel((pixel_1.red+pixel_2.red)/2.0,plasma);
+              q->green=PlasmaPixel((pixel_1.green+pixel_2.green)/2.0,plasma);
+              q->blue=PlasmaPixel((pixel_1.blue+pixel_2.blue)/2.0,plasma);
               (void) SyncImagePixels(image);
             }
         }
@@ -2036,10 +2033,9 @@ Export unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
           q=SetImagePixels(image,(int) x_mid,(int) segment->y1,1,1);
           if (q != (PixelPacket *) NULL)
             {
-              q->red=PlasmaPixel((int) (pixel_1.red+pixel_2.red)/2,plasma);
-              q->green=
-                PlasmaPixel((int) (pixel_1.green+pixel_2.green)/2,plasma);
-              q->blue=PlasmaPixel((int) (pixel_1.blue+pixel_2.blue)/2,plasma);
+              q->red=PlasmaPixel((pixel_1.red+pixel_2.red)/2.0,plasma);
+              q->green=PlasmaPixel((pixel_1.green+pixel_2.green)/2.0,plasma);
+              q->blue=PlasmaPixel((pixel_1.blue+pixel_2.blue)/2.0,plasma);
               (void) SyncImagePixels(image);
             }
         }
@@ -2055,9 +2051,9 @@ Export unsigned int PlasmaImage(Image *image,const SegmentInfo *segment,
       q=SetImagePixels(image,(int) x_mid,(int) y_mid,1,1);
       if (q != (PixelPacket *) NULL)
         {
-          q->red=PlasmaPixel((int) (pixel_1.red+pixel_2.red)/2,plasma);
-          q->green=PlasmaPixel((int) (pixel_1.green+pixel_2.green)/2,plasma);
-          q->blue=PlasmaPixel((int) (pixel_1.blue+pixel_2.blue)/2,plasma);
+          q->red=PlasmaPixel((pixel_1.red+pixel_2.red)/2.0,plasma);
+          q->green=PlasmaPixel((pixel_1.green+pixel_2.green)/2.0,plasma);
+          q->blue=PlasmaPixel((pixel_1.blue+pixel_2.blue)/2.0,plasma);
         }
       (void) SyncImagePixels(image);
     }

@@ -484,10 +484,10 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
 */
 Export void RegisterFPXImage(void)
 {
+#if defined(HasFPX)
   MagickInfo
     *entry;
 
-#if defined(HasFPX)
   entry=SetMagickInfo("FPX");
   entry->encoder=WriteFPXImage;
   entry->adjoin=False;

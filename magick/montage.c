@@ -92,9 +92,6 @@ Export MontageInfo *CloneMontageInfo(const ImageInfo *image_info,
   MontageInfo
     *cloned_info;
 
-  ExceptionInfo
-    exception;
-
   cloned_info=(MontageInfo *) AllocateMemory(sizeof(MontageInfo));
   if (cloned_info == (MontageInfo *) NULL)
     MagickError(ResourceLimitError,"Unable to clone montage info",
