@@ -1,6 +1,6 @@
 The ImageMagick Studio LLC development group announces the release of
-ImageMagick 5.4.9.  Version 5.4.9 is a feature release but also resolves
-bugs reported against 5.4.8.
+ImageMagick 5.5.1.  Version 5.5.1 is a feature release but also resolves
+bugs reported against 5.4.9.
 
 ImageMagick is a robust collection of tools and libraries to read,
 write, and manipulate an image in many image formats (over 72 major
@@ -19,7 +19,7 @@ dedicated to making software imaging solutions freely available.
 ImageMagick is available for free, may be used to support both open and
 proprietary applications, and may be redistributed without fee.
 
-Significant changes from the 5.4.8 release (see release ChangeLog for
+Significant changes from the 5.4.9 release (see release ChangeLog for
 details):
 
   o General:
@@ -84,13 +84,13 @@ The ImageMagick WWW page is
 
   http://www.imagemagick.org/
  
-The ImageMagick 5.4.9 source code is available via ftp as
+The ImageMagick 5.5.1 source code is available via ftp as
 
-  ftp://ftp.imagemagick.org/pub/ImageMagick/ImageMagick-5.4.9.tar.gz
+  ftp://ftp.imagemagick.org/pub/ImageMagick/ImageMagick-5.5.1.tar.gz
 
-The ImageMagick 5.4.9 Windows install package is available via ftp as
+The ImageMagick 5.5.1 Windows install package is available via ftp as
 
- ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-5.4.9-win2k.exe
+ ftp://ftp.imagemagick.org/pub/ImageMagick/binaries/ImageMagick-5.5.1-xp.exe
 
 If ftp.imagemagick.org is overloaded, check the list of mirrors at
 http://www.imagemagick.org/www/archives.html for other mirrors.

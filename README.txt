@@ -24,7 +24,7 @@ AVAILABILITY
 
   ImageMagick is available as
 
-    ftp://ftp.imagemagick.org/pub/ImageMagick/ImageMagick-5.4.8.tar.gz
+    ftp://ftp.imagemagick.org/pub/ImageMagick/ImageMagick-5.5.1.tar.gz
 
   ImageMagick client executables are available for some platforms. See
 
@@ -81,8 +81,8 @@ UNIX/Cygwin/MinGW COMPILATION
 
   Type:
 
-    gzip -dc ImageMagick-5.4.8.tar.gz | tar xvf -
-    cd ImageMagick-5.4.8
+    gzip -dc ImageMagick-5.5.1.tar.gz | tar xvf -
+    cd ImageMagick-5.5.1
 
   If you do not have gzip(1), the source for the gzip package is
   available as a shell archive at
@@ -97,7 +97,7 @@ UNIX/Cygwin/MinGW COMPILATION
   ImageMagick. The configure script may be executed from the ImageMagick
   source directory (e.g ./configure) or from a seperate build directory by
   specifying the full path to configure (e.g.
-  /src/ImageMagick-5.4.8/configure). The advantage of using a seperate
+  /src/ImageMagick-5.5.1/configure). The advantage of using a seperate
   build directory is that multiple ImageMagick builds may share the same
   ImageMagick source directory while allowing each build to use a unique
   set of options.
@@ -836,7 +836,7 @@ VMS COMPILATION
 
   Type
 
-      unzip ImageMagick-5.4.8.zip set default [.imagemagick] @make set
+      unzip ImageMagick-5.5.1.zip set default [.imagemagick] @make set
       display/create/node=node_name::
 
   where node_name is the DECNET X server to contact.
@@ -848,7 +848,7 @@ VMS COMPILATION
   Alternatively, get a zipped distribution (with JPEG, PNG, TIFF, TTF)
   from
 
-      ftp://ftp.imagemagick.org/pub/ImageMagick/vms/ImageMagick-5.4.8.zip
+      ftp://ftp.imagemagick.org/pub/ImageMagick/vms/ImageMagick-5.5.1.zip
 
   Thanks to pmoreau@cenaath.cena.dgac.fr for supplying invaluable help
   as well as the VMS versions of the JPEG, PNG, TTF, and TIFF
