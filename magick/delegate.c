@@ -44,6 +44,9 @@
 #include "blob.h"
 #include "constitute.h"
 #include "delegate.h"
+#if defined(WIN32) || defined(__CYGWIN__)
+# include "nt_feature.h"
+#endif
 #include "tempfile.h"
 #include "utility.h"
 
