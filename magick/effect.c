@@ -60,6 +60,7 @@
 #include "enhance.h"
 #include "fx.h"
 #include "gem.h"
+#include "log.h"
 #include "monitor.h"
 #include "render.h"
 #include "utility.h"
@@ -709,14 +710,29 @@ MagickExport unsigned int ChannelThresholdImage(Image *image,
     q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    for (x=(long) image->columns; x > 0; x--)
-      {
-        q->red=q->red <= red_threshold_quantum ? 0 : MaxRGB;
-        q->green=q->green <= green_threshold_quantum ? 0 : MaxRGB;
-        q->blue=q->blue <= blue_threshold_quantum ? 0 : MaxRGB;
-        q->opacity=q->opacity <= opacity_threshold_quantum ? 0 : MaxRGB;
-        q++;
-      }
+    if (red_threshold < 0.0 || blue_threshold < 0.0 || green_threshold < 0.0 ||
+        opacity_threshold < 0.0)
+      for (x=(long) image->columns; x > 0; x--)
+        {
+          q->red=q->red <= red_threshold_quantum ? 0 : MaxRGB;
+          q->green=q->green <= green_threshold_quantum ? 0 : MaxRGB;
+          q->blue=q->blue <= blue_threshold_quantum ? 0 : MaxRGB;
+          q->opacity=q->opacity <= opacity_threshold_quantum ? 0 : MaxRGB;
+          q++;
+        }
+    else
+      for (x=(long) image->columns; x > 0; x--)
+        {
+          if (red_threshold >= 0.0)
+            q->red=q->red <= red_threshold_quantum ? 0 : MaxRGB;
+          if (green_threshold >= 0.0)
+            q->green=q->green <= green_threshold_quantum ? 0 : MaxRGB;
+          if (blue_threshold >= 0.0)
+            q->blue=q->blue <= blue_threshold_quantum ? 0 : MaxRGB;
+          if (opacity_threshold >= 0.0)
+            q->opacity=q->opacity <= opacity_threshold_quantum ? 0 : MaxRGB;
+          q++;
+        }
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
@@ -1827,36 +1843,48 @@ MagickExport Image *MotionBlurImage(const Image *image,const double radius,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
-%     R a n d o m T h r e s h o l d I m a g e                                 %
+%     R a n d o m C h a n n e l T h r e s h o l d I m a g e                   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  RandomThresholdImage() changes the value of individual pixels based on
-%  the intensity of each pixel compared to a random threshold.  The result
+%  RandomChannelThresholdImage() changes the value of individual pixels based
+%  on the intensity of each pixel compared to a random threshold.  The result
 %  is a low-contrast, two color image.
 %
-%  The format of the RandomThresholdImage method is:
+%  The format of the RandomChannelThresholdImage method is:
 %
-%      unsigned int ThresholdImage(Image *image)
+%      unsigned int RandomChannelThresholdImage(Image *image,
+%         const char *channel, const char *thresholds,
+%         ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
 %    o image: The image.
 %
+%    o channel: The channel or channels to be thresholded.
+%
+%    o thresholds: a geometry string containing LOWxHIGH thresholds.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
 */
-MagickExport unsigned int RandomThresholdImage(Image *image)
+MagickExport unsigned int RandomChannelThresholdImage(Image *image,const char
+    *channel,const char *thresholds,ExceptionInfo *exception)
 {
-#define RandomThresholdImageText  "  RandomThreshold the image...  "
+#define RandomChannelThresholdImageText  "  RandomChannelThreshold image...  "
 
   double
-    threshold;
+    threshold,
+    lower_threshold,
+    upper_threshold;
 
   register IndexPacket
     index;
 
   long
+    count,
     y;
 
   register IndexPacket
@@ -1868,49 +1896,116 @@ MagickExport unsigned int RandomThresholdImage(Image *image)
   register PixelPacket
     *q;
 
+  unsigned long
+    logging;
+
   /*
     Threshold image.
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+
   if (image->is_monochrome)
     return(True);
+  if (thresholds == (const char *) NULL)
+    return(True);
+  lower_threshold=0;
+  upper_threshold=0;
+  count=sscanf(thresholds,"%lf[/x%%]%lf",
+    &lower_threshold,&upper_threshold);
+
+  if (strchr(thresholds,'%') != (char *) NULL)
+    {
+      upper_threshold*=MaxRGB/100.0;
+      lower_threshold*=MaxRGB/100.0;
+    }
+  if (count == 1)
+    upper_threshold=MaxRGB-lower_threshold;
+
+  logging=LogMagickEvent(TransformEvent,GetMagickModule(),
+     "  RandomChannelThresholdImage with %s (%lfx%lf) thresholds",
+     thresholds,lower_threshold,upper_threshold);
+  if (logging)
+    (void) LogMagickEvent(TransformEvent,GetMagickModule(),
+        "  channel type=%s",channel);
+
   if (!AllocateImageColormap(image,2))
     ThrowBinaryException(ResourceLimitError,"MemoryAllocationFailed",
       "UnableToThresholdImage");
+
   for (y=0; y < (long) image->rows; y++)
   {
     q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
-    if (image->is_grayscale)
+    if (LocaleCompare(channel,"all") == 0 ||
+        LocaleCompare(channel,"intensity") == 0)
+      {
+      if (image->is_grayscale)
+        {
+          for (x=(long) image->columns; x > 0; x--)
+            {
+              if (q->red < lower_threshold)
+                threshold=lower_threshold;
+              else if (q->red > upper_threshold)
+                threshold=upper_threshold;
+              else
+                threshold=(double) (MaxRGB*rand()/(double) RAND_MAX);
+              index=q->red <= threshold ? 0 : 1;
+              *indexes++=index;
+              q->red=q->green=q->blue=image->colormap[index].red;
+              q++;
+            }
+        }
+      else
+        {
+          for (x=(long) image->columns; x > 0; x--)
+            {
+              Quantum
+                intensity;
+
+              intensity=PixelIntensityToQuantum(q);
+              if (intensity < lower_threshold)
+                threshold=lower_threshold;
+              else if (intensity > upper_threshold)
+                threshold=upper_threshold;
+              else
+                threshold=(double) (MaxRGB*rand()/(double) RAND_MAX);
+              q->red=q->green=q->blue=intensity <= threshold ? 0 : MaxRGB;
+              q++;
+            }
+        }
+      }
+    else if (LocaleCompare(channel,"opacity") == 0 ||
+        LocaleCompare(channel,"matte") == 0)
       {
         for (x=(long) image->columns; x > 0; x--)
           {
-            threshold=(double) (MaxRGB*rand()/(double) RAND_MAX);
-            index=q->red <= threshold ? 0 : 1;
-            *indexes++=index;
-            q->red=q->green=q->blue=image->colormap[index].red;
+            if (q->opacity < lower_threshold)
+              threshold=lower_threshold;
+            else if (q->opacity > upper_threshold)
+              threshold=upper_threshold;
+            else
+              threshold=(double) (MaxRGB*rand()/(double) RAND_MAX);
+            q->opacity=q->opacity <= threshold ? 0 : MaxRGB;
             q++;
           }
       }
     else
       {
-        for (x=(long) image->columns; x > 0; x--)
-          {
-            threshold=(double) (MaxRGB*rand()/(double) RAND_MAX);
-            index=PixelIntensityToQuantum(q) <= threshold ? 0 : 1;
-            *indexes++=index;
-            q->red=q->green=q->blue=image->colormap[index].red;
-            q++;
-          }
+        /* To Do: red, green, blue, cyan, magenta, yellow, black */
+        ThrowBinaryException(OptionError, "UnableToThresholdimage",
+            "UnrecognizedChannelType");
       }
+
     if (!SyncImagePixels(image))
       break;
     if (QuantumTick(y,image->rows))
-      if (!MagickMonitor(RandomThresholdImageText,y,image->rows,
-         &image->exception))
+      if (!MagickMonitor(RandomChannelThresholdImageText,y,image->rows,
+          exception))
         break;
   }
   image->is_monochrome=True;

@@ -30,7 +30,8 @@ extern MagickExport Image
 
 extern MagickExport unsigned int
   ChannelThresholdImage(Image *,const char *),
-  RandomThresholdImage(Image *),
+  RandomChannelThresholdImage(Image *,const char *,const char *,
+      ExceptionInfo *exception),
   ThresholdImage(Image *,const double);
 
 #if defined(__cplusplus) || defined(c_plusplus)

@@ -1,3 +1,9 @@
+2003-03-22  Glenn Randers-Pehrson <randeg@alum.rpi.edu>
+
+	* magick/effect.h, effect.c, command.c: Revised -random-dither
+	to require parameters: channel LOWxHIGH.  Channel can presently
+	be "intensity" or "opacity".
+
 2003-03-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* ltdl/ltdl.c: Updated to latest CVS version.  Claimed to
