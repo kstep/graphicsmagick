@@ -251,8 +251,12 @@ An image sequence.
 <P></P></DL></DL>
 <P>
 <H3><A NAME="channelimage">ChannelImage</A></H3>
-<P>Extract a channel from the image.  
-A channel is a particular color component of each pixel in the image.</P>
+<P>Transform an image so that the resulting image is a grayscale image based on a specified image channel.  The resulting image is returned in the 
+RGB colorspace.  This function does not force or assume an input image colorspace so it may be used to extract channels from images in colorspaces other than 
+RGB or 
+CMYK.  For example, if the image is currently transformed to the 
+HWB colorspace, the 
+'B' channel may be extracted by specifying RedChannel as the ChannelType argument.</P>
 <P>The format of the ChannelImage method is:</P>
 <blockquote>unsigned int ChannelImage ( <A HREF="types.html#Image">Image</A> *image, const <A HREF="types.html#ChannelType">ChannelType</A> channel ); </blockquote><P>
 A description of each parameter follows:</P>

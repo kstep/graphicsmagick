@@ -1449,6 +1449,8 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       int
         count;
 
+      /* FIXME: density should not be set via image_info->density
+         but removing this support may break some applications. */
       count=sscanf(image_info->density,"%lfx%lf",&image->x_resolution,
         &image->y_resolution);
       if (count == 1 )

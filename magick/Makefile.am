@@ -23,7 +23,7 @@ LIBRARY_CURRENT    = @LIBRARY_CURRENT@
 LIBRARY_REVISION   = @LIBRARY_REVISION@
 LIBRARY_AGE        = @LIBRARY_AGE@
 
-BUILT_SOURCES = magick_config.h
+BUILT_SOURCES = magick_config.h magick_config_api.h
 
 INCLUDES = -I$(top_srcdir) $(INCLTDL)
 
@@ -174,5 +174,6 @@ man_MANS = $(ALLMANPAGES)
 # Ensure that configuration header is not distributed
 dist-hook:
 	-rm $(distdir)/magick_config.h
+	-rm $(distdir)/magick_config_api.h
 
 DEFS = @DEFS@ -I../

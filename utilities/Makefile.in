@@ -823,7 +823,7 @@ clean-local:
 	$(RMDelegate) -f *_out.miff demo.miff gm.core core
 
 check:
-	$(RMDelegate) -f *_out.miff
+	$(RMDelegate) -f demo.miff *_out.miff
 	${GM} convert $(MODEL_MIFF) +noise Laplacian              -label AddNoise AddNoise_out.miff
 	${GM} convert $(MODEL_MIFF) -fill gold \
 	        -pointsize 14 -font $(GENERIC_TTF) \

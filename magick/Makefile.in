@@ -346,7 +346,7 @@ AUTOMAKE_OPTIONS = 1.7 foreign
 # Shared libraries built in this directory
 lib_LTLIBRARIES = libGraphicsMagick.la
 
-BUILT_SOURCES = magick_config.h
+BUILT_SOURCES = magick_config.h magick_config_api.h
 
 INCLUDES = -I$(top_srcdir) $(INCLTDL)
 
@@ -1109,6 +1109,7 @@ uninstall-hook:
 # Ensure that configuration header is not distributed
 dist-hook:
 	-rm $(distdir)/magick_config.h
+	-rm $(distdir)/magick_config_api.h
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

@@ -712,8 +712,13 @@ MagickExport ExceptionType CatchImageException(Image *image)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Extract a channel from the image.  A channel is a particular color
-%  component of each pixel in the image.
+%  Transform an image so that the resulting image is a grayscale image
+%  based on a specified image channel. The resulting image is returned in
+%  the RGB colorspace. This function does not force or assume an input
+%  image colorspace so it may be used to extract channels from images in
+%  colorspaces other than RGB or CMYK. For example, if the image is currently
+%  transformed to the HWB colorspace, the 'B' channel may be extracted by
+%  specifying RedChannel as the ChannelType argument.
 %
 %  The format of the ChannelImage method is:
 %
@@ -759,7 +764,6 @@ MagickExport unsigned int ChannelImage(Image *image,const ChannelType channel)
     q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    indexes=GetIndexes(image);
     switch (channel)
       {
       case RedChannel:
@@ -799,29 +803,45 @@ MagickExport unsigned int ChannelImage(Image *image,const ChannelType channel)
         {
           if (image->colorspace == CMYKColorspace)
             {
+              indexes=GetIndexes(image);
               for (x=(long) image->columns; x > 0; x--)
                 {
                   q->red=*indexes;
                   q->green=*indexes;
                   q->blue=*indexes;
+                  q->opacity=OpaqueOpacity;
                   q++;
                   indexes++;
                 }
-              break;
             }
+          else
+            {
+              for (x=(long) image->columns; x > 0; x--)
+                {
+                  q->red=q->opacity;
+                  q->green=q->opacity;
+                  q->blue=q->opacity;
+                  q->opacity=OpaqueOpacity;
+                  q++;
+                }
+            }
+          break;
         }
       case MatteChannel:
       case BlackChannel:
-      default:
         {
           for (x=(long) image->columns; x > 0; x--)
             {
               q->red=q->opacity;
               q->green=q->opacity;
               q->blue=q->opacity;
+              q->opacity=OpaqueOpacity;
               q++;
             }
           break;
+        }
+      default:
+        {
         }
       }
     if (!SyncImagePixels(image))
@@ -830,6 +850,7 @@ MagickExport unsigned int ChannelImage(Image *image,const ChannelType channel)
       if (!MagickMonitor(ChannelImageText,y,image->rows,&image->exception))
         break;
   }
+  image->colorspace=RGBColorspace;
   image->is_grayscale=True;
   return(True);
 }
@@ -3715,6 +3736,7 @@ MagickExport unsigned int RGBTransformImage(Image *image,
                     q->red=(Quantum) RndToInt(p1*MaxRGB);
                     q->green=(Quantum) RndToInt(p2*MaxRGB);
                     q->blue=(Quantum) RndToInt(p3*MaxRGB);
+                    /* printf("Luminosity=%.07lf %u\n", p3, (unsigned int)q->blue); */
                     q++;
                   }
                 if (!SyncImagePixels(image))
