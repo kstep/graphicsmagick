@@ -236,9 +236,8 @@ void CNtMagickView::DoDisplayImage()
       pDC->FillSolidRect(rectClient,pDC->GetBkColor());
 
       // Set up the Windows bitmap header
-      BITMAPINFO bmi;
-      memset(&bmi, 0, sizeof(BITMAPINFO));
-      bmi.biSize = sizeof(BITMAPINFO);
+      BITMAPINFOHEADER bmi;
+      bmi.biSize = sizeof(BITMAPINFOHEADER);
       bmi.biWidth = m_pImage->columns();
       bmi.biHeight = (-1)*m_pImage->rows();
       bmi.biPlanes = 1;
@@ -267,7 +266,6 @@ void CNtMagickView::DoDisplayImage()
       SetStretchBltMode(pDC->m_hDC,COLORONCOLOR);
 
       StretchDIBits
-grun!on
         (
          pDC->m_hDC,		// handle of device context 
          nImageX,		// x-coordinate of upper-left corner of dest. rect. 
@@ -279,7 +277,7 @@ grun!on
          m_pImage->columns(),	// width of source rectangle 
          m_pImage->rows(),	// height of source rectangle 
          pPixels,		// address of bitmap bits
-         &bmi,			// address of bitmap data 
+         (BITMAPINFO *)&bmi,	// address of bitmap data 
          DIB_RGB_COLORS,	// usage 
          SRCCOPY		// raster operation code
          );
@@ -292,7 +290,7 @@ grun!on
       HBITMAP hBitmap = CreateDIBSection
         (
          pDC->m_hDC,		// handle to device context 
-         &bmi,			// pointer to structure containing bitmap size, format, and color data
+         (BITMAPINFO *)&bmi,	// pointer to structure containing bitmap size, format, and color data
          DIB_RGB_COLORS,	// color data type indicator: RGB values or palette indices 
          (void**)&prgbaDIB,	// pointer to variable to receive a pointer to the bitmap's bit values
          NULL,			// optional handle to a file mapping object 
