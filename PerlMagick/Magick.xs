@@ -206,9 +206,8 @@ static char
   },
   *ImageTypes[] =
   {
-    "Undefined", "bilevel", "grayscale", "palette", "palette with transparency",
-    "true color", "true color with transparency", "color separated",
-    (char *) NULL
+    "Undefined", "Bilevel", "Grayscale", "Palette", "PaletteMatte", "TrueColor",
+    "TrueColorMatte", "ColorSeparation", (char *) NULL
   },
   *IntentTypes[] =
   {
@@ -1563,6 +1562,18 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
         {
           if (info)
             (void) CloneString(&info->image_info->texture,SvPV(sval,na));
+          return;
+        }
+      if (strEQcase(attribute,"type"))
+        {
+          sp=SvPOK(sval) ? LookupStr(ImageTypes,SvPV(sval,na)) : SvIV(sval);
+          if (sp < 0)
+            {
+              MagickWarning(OptionWarning,"Invalid image type",SvPV(sval,na));
+              return;
+            }
+          for ( ; image; image=image->next)
+            SetImageType(image,(ImageType) sp);
           return;
         }
       break;

@@ -4447,57 +4447,25 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           {
             if (*option == '-')
               {
+                ImageType
+                  image_type;
+
                 option=argv[++i];
                 if (LocaleCompare("Bilevel",option) == 0)
-                  {
-                    clone_info->monochrome=True;
-                    quantize_info.number_colors=2;
-                    quantize_info.tree_depth=8;
-                    quantize_info.colorspace=GRAYColorspace;
-                    break;
-                  }
-                if (LocaleCompare("Gray",option) == 0)
-                  {
-                    quantize_info.number_colors=256;
-                    quantize_info.tree_depth=8;
-                    quantize_info.colorspace=GRAYColorspace;
-                    break;
-                  }
+                  image_type=BilevelType;
+                if (LocaleCompare("Grayscale",option) == 0)
+                  image_type=GrayscaleType;
                 if (LocaleCompare("Palette",option) == 0)
-                  {
-                    quantize_info.number_colors=256;
-                    quantize_info.tree_depth=8;
-                    break;
-                  }
+                  image_type=PaletteType;
                 if (LocaleCompare("PaletteMatte",option) == 0)
-                  {
-                    if (!(*image)->matte)
-                      SetImageOpacity(*image,OpaqueOpacity);
-                    (*image)->matte=True;
-                    quantize_info.number_colors=256;
-                    quantize_info.tree_depth=8;
-                    quantize_info.colorspace=TransparentColorspace;
-                    break;
-                  }
+                  image_type=PaletteMatteType;
                 if (LocaleCompare("TrueColor",option) == 0)
-                  {
-                    (*image)->storage_class=DirectClass;
-                    break;
-                  }
+                  image_type=TrueColorType;
                 if (LocaleCompare("TrueColorMatte",option) == 0)
-                  {
-                    (*image)->storage_class=DirectClass;
-                    if (!(*image)->matte)
-                      SetImageOpacity(*image,OpaqueOpacity);
-                    (*image)->matte=True;
-                    break;
-                  }
+                  image_type=TrueColorMatteType;
                 if (LocaleCompare("ColorSeparation",option) == 0)
-                  {
-                    if ((*image)->colorspace != CMYKColorspace)
-                      RGBTransformImage(*image,CMYKColorspace);
-                    break;
-                  }
+                  image_type=ColorSeparationType;
+                SetImageType(*image,image_type);
               }
             continue;
           }
@@ -5889,6 +5857,101 @@ MagickExport void SetImageOpacity(Image *image,const unsigned int opacity)
     }
     if (!SyncImagePixels(image))
       break;
+  }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t I m a g e T y p e                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method SetImageType sets the type of the image.
+%
+%  The format of the SetImageType method is:
+%
+%      SetImageType(Image *image,const ImageType image_type)
+%
+%  A description of each parameter follows:
+%
+%    o status: Method SetImageDepth returns True if the image depth is set.
+%
+%    o image: The address of a structure of type Image.
+%
+%    o image_type: specified the image type.
+%
+%
+*/
+MagickExport void SetImageType(Image *image,const ImageType image_type)
+{
+  QuantizeInfo
+    quantize_info;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  switch (image_type)
+  {
+    BilevelType:
+    {
+      GetQuantizeInfo(&quantize_info);
+      quantize_info.number_colors=2;
+      quantize_info.tree_depth=8;
+      quantize_info.colorspace=GRAYColorspace;
+      (void) QuantizeImage(&quantize_info,image);
+      break;
+    }
+    GrayscaleType:
+    {
+      GetQuantizeInfo(&quantize_info);
+      quantize_info.number_colors=2;
+      quantize_info.tree_depth=8;
+      quantize_info.colorspace=GRAYColorspace;
+      (void) QuantizeImage(&quantize_info,image);
+      break;
+    }
+    PaletteType:
+    {
+      GetQuantizeInfo(&quantize_info);
+      quantize_info.number_colors=256;
+      quantize_info.tree_depth=8;
+      (void) QuantizeImage(&quantize_info,image);
+      break;
+    }
+    PaletteMatteType:
+    {
+      if (!image->matte)
+        SetImageOpacity(image,OpaqueOpacity);
+      image->matte=True;
+      GetQuantizeInfo(&quantize_info);
+      quantize_info.number_colors=256;
+      quantize_info.colorspace=TransparentColorspace;
+      (void) QuantizeImage(&quantize_info,image);
+      break;
+    }
+    TrueColorType:
+    {
+      image->storage_class=DirectClass;
+      break;
+    }
+    TrueColorMatteType:
+    {
+      image->storage_class=DirectClass;
+      if (!image->matte)
+        SetImageOpacity(image,OpaqueOpacity);
+      image->matte=True;
+      break;
+    }
+    ColorSeparationType:
+    {
+      if (image->colorspace != CMYKColorspace)
+        RGBTransformImage(image,CMYKColorspace);
+      break;
+    }
   }
 }
 

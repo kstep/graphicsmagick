@@ -895,6 +895,7 @@ extern MagickExport void
   RegisterYUVImage(void),
   SetImage(Image *,Quantum),
   SetImageOpacity(Image *,const unsigned int),
+  SetImageType(Image *,const ImageType),
   SolarizeImage(Image *,const double),
   SyncImage(Image *),
   TextureImage(Image *,Image *),

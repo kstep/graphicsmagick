@@ -58,6 +58,7 @@
 		<LI><A HREF="#setimagedepth">SetImageDepth</A></LI>
 		<LI><A HREF="#setimageinfo">SetImageInfo</A></LI>
 		<LI><A HREF="#setimageopacity">SetImageOpacity</A></LI>
+		<LI><A HREF="#setimagetype">SetImageType</A></LI>
 		<LI><A HREF="#sortcolormapbyintentsity">SortColormapByIntentsity</A></LI>
 		<LI><A HREF="#syncimage">SyncImage</A></LI>
 		<LI><A HREF="#textureimage">TextureImage</A></LI>
@@ -116,6 +117,7 @@
 <P>unsigned int  <STRONG>SetImageDepth</STRONG>( Image *image, const unsigned int );</P>
 <P>unsigned int  <STRONG>SetImageInfo</STRONG>( ImageInfo *image_info, const unsigned int rectify );</P>
 <P>void  <STRONG>SetImageOpacity</STRONG>( Image *image, const unsigned int opacity );</P>
+<P><STRONG>SetImageType</STRONG>( Image *image, const ImageType image_type );</P>
 <P>void  <STRONG>SyncImage</STRONG>( Image *image );</P>
 <P>void  <STRONG>TextureImage</STRONG>( Image *image, Image *texture );</P>
 <P>unsigned int  <STRONG>TransformRGBImage</STRONG>( Image *image, const ColorspaceType colorspace );</P>
@@ -789,6 +791,25 @@ The address of a structure of type Image; returned from ReadImage.
 <p><dt><STRONG>opacity:</STRONG><BR>
 <DD>
 The level of transparency.
+<P></P></DL></DL>
+<P>
+<H2><A NAME="setimagetype">SetImageType</A></H2>
+<P>Method SetImageType sets the type of the image.</P>
+<P>The format of the SetImageType method is:</P>
+<blockquote>SetImageType ( <A HREF="types/Image.html">Image</A> *image, const <A HREF="types/Enumerations.html#ImageType">ImageType</A> image_type ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG>status:</STRONG><BR>
+<DD>
+Method SetImageDepth returns True if the image depth is set.
+<P></P>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
+The address of a structure of type Image.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_image_type%3A">image_type:</A></STRONG><BR>
+<DD>
+specified the image type.
 <P></P></DL></DL>
 <P>
 <H2><A NAME="sortcolormapbyintentsity">SortColormapByIntentsity</A></H2>
