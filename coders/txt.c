@@ -159,9 +159,9 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Initialize Image structure.
   */
   image->columns=(unsigned int)
-    ceil(((page.width*image->x_resolution)/dx_resolution)-0.5);
+    ceil(((page.width*image->x_resolution)/dx_resolution)+0.5);
   image->rows=(unsigned int)
-    ceil(((page.height*image->y_resolution)/dy_resolution)-0.5);
+    ceil(((page.height*image->y_resolution)/dy_resolution)+0.5);
   (void) QueryColorDatabase("#c0c0c0",&image->background_color);
   texture=(Image *) NULL;
   if (image_info->texture != (char *) NULL)

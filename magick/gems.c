@@ -333,11 +333,14 @@ MagickExport PixelPacket AlphaComposite(const CompositeOperator compose,
     }
     case DissolveCompositeOp:
     {
-      color.red=(unsigned long) ((alpha*p->red+(MaxRGB-beta)*q->red)/MaxRGB);
+      color.red=(unsigned long)
+        (((MaxRGB-alpha)*p->red+(MaxRGB-beta)*q->red)/MaxRGB);
       color.green=(unsigned long)
-        ((alpha*p->green+(MaxRGB-beta)*q->green)/MaxRGB);
-      color.blue=(unsigned long) ((alpha*p->blue+(MaxRGB-beta)*q->blue)/MaxRGB);
-      color.opacity=(unsigned long) ((alpha*alpha+(MaxRGB-beta)*beta)/MaxRGB);
+        (((MaxRGB-alpha)*p->green+(MaxRGB-beta)*q->green)/MaxRGB);
+      color.blue=(unsigned long)
+        (((MaxRGB-alpha)*p->blue+(MaxRGB-beta)*q->blue)/MaxRGB);
+      color.opacity=(unsigned long)
+        (((MaxRGB-alpha)*alpha+(MaxRGB-beta)*beta)/MaxRGB);
       return(color);
     }
     case DisplaceCompositeOp:
@@ -720,8 +723,8 @@ MagickExport void HSLTransform(const double hue,const double saturation,
       return;
     }
   y=2.0*luminosity-v;
-  x=y+(v-y)*(6.0*hue-floor(6.0*hue-0.5));
-  z=v-(v-y)*(6.0*hue-floor(6.0*hue-0.5));
+  x=y+(v-y)*(6.0*hue-floor(6.0*hue));
+  z=v-(v-y)*(6.0*hue-floor(6.0*hue));
   switch ((int) (6.0*hue))
   {
     case 0: r=v; g=x; b=y; break;
@@ -967,8 +970,8 @@ MagickExport PixelPacket InterpolateColor(Image *image,const double x_offset,
   s=image->background_color;
   if (((x+1.0) < image->columns) && ((y+1.0) < image->rows))
     s=GetOnePixel(image,(int) (x+1.0),(int) (y+1.0));
-  x-=floor(x-0.5);
-  y-=floor(y-0.5);
+  x-=floor(x);
+  y-=floor(y);
   alpha=1.0-x;
   beta=1.0-y;
   color.red=(Quantum)

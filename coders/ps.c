@@ -313,8 +313,8 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     (void) ParseImageGeometry(image_info->page,&page.x,&page.y,
       &page.width,&page.height);
   FormatString(geometry,"%ux%u",
-    (unsigned int) ceil(page.width*image->x_resolution/dx_resolution-0.5),
-    (unsigned int) ceil(page.height*image->y_resolution/dy_resolution-0.5));
+    (unsigned int) ceil(page.width*image->x_resolution/dx_resolution),
+    (unsigned int) ceil(page.height*image->y_resolution/dy_resolution));
   if (ferror(file))
     {
       (void) fclose(file);
@@ -932,8 +932,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
           (void) strcpy(buffer,"%%%%BoundingBox: (atend)\n");
         else
           FormatString(buffer,"%%%%BoundingBox: %g %g %g %g\n",
-            floor(bounds.x1+0.5),floor(bounds.y1+0.5),ceil(bounds.x2-0.5),
-            ceil(bounds.y2-0.5));
+            floor(bounds.x1),floor(bounds.y1),ceil(bounds.x2),ceil(bounds.y2));
         (void) WriteBlobString(image,buffer);
         attribute=GetImageAttribute(image,"Label");
         if (attribute != (ImageAttribute *) NULL)
@@ -1422,8 +1421,8 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobString(image,"%%Trailer\n");
   if (page > 2)
     {
-      FormatString(buffer,"%%%%BoundingBox: %g %g %g %g\n",floor(bounds.x1+0.5),
-        floor(bounds.y1+0.5),ceil(bounds.x2-0.5),ceil(bounds.y2-0.5));
+      FormatString(buffer,"%%%%BoundingBox: %g %g %g %g\n",
+        floor(bounds.x1),floor(bounds.y1),ceil(bounds.x2),ceil(bounds.y2));
       (void) WriteBlobString(image,buffer);
     }
   (void) WriteBlobString(image,"%%EOF\n");
