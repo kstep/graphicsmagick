@@ -178,7 +178,7 @@ static void GetFontInfo(TT_Face face,TT_Face_Properties *face_properties,
 }
 
 static void RenderGlyph(TT_Raster_Map *canvas,TT_Raster_Map *character,
-  TT_Glyph glyph,int x_off,int y_off,TT_Glyph_Metrics *glyph_metrics)
+  TT_Glyph glyph,int x_offset,int y_offset,TT_Glyph_Metrics *glyph_metrics)
 {
   int
     y;
@@ -205,14 +205,14 @@ static void RenderGlyph(TT_Raster_Map *canvas,TT_Raster_Map *character,
   /*
     Composite character on canvas.
   */
-  x_off=((glyph_metrics->bbox.xMin & -64)/64)+x_off;
-  y_off=(-(glyph_metrics->bbox.yMin & -64)/64)-y_off;
-  bounds.x1=x_off < 0 ? -x_off : 0;
-  bounds.y1=y_off < 0 ? -y_off : 0;
-  bounds.x2=(int) canvas->cols-x_off;
+  x_offset+=(glyph_metrics->bbox.xMin & -64)/64;
+  y_offset=(-(glyph_metrics->bbox.yMin & -64)/64)-y_offset;
+  bounds.x1=x_offset < 0 ? -x_offset : 0;
+  bounds.y1=y_offset < 0 ? -y_offset : 0;
+  bounds.x2=canvas->cols-x_offset;
   if (bounds.x2 > character->cols)
     bounds.x2=character->cols;
-  bounds.y2=(int) canvas->rows-y_off;
+  bounds.y2=canvas->rows-y_offset;
   if (bounds.y2 > character->rows)
     bounds.y2=character->rows;
   if (bounds.x1 >= bounds.x2)
@@ -220,8 +220,8 @@ static void RenderGlyph(TT_Raster_Map *canvas,TT_Raster_Map *character,
   for (y=(int) bounds.y1; y < (int) bounds.y2; y++)
   {
     p=((unsigned char *) character->bitmap)+y*character->cols+(int) bounds.x1;
-    q=((unsigned char *) canvas->bitmap)+(y+y_off)*canvas->cols+
-      (int) bounds.x1+x_off;
+    q=((unsigned char *) canvas->bitmap)+(y+y_offset)*canvas->cols+
+      (int) bounds.x1+x_offset;
     for (x=(int) bounds.x1; x < bounds.x2; x++)
       *q++|=(*p++);
   }
@@ -490,10 +490,9 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
         canvas.width+=glyph_metrics.advance/64;
       }
       canvas.width=(canvas.width+3) & -4;
-      canvas.rows=((int) (face_properties.horizontal->Ascender*
-        instance_metrics.y_ppem)/(int) face_properties.header->Units_Per_EM)-
-        ((int) (face_properties.horizontal->Descender*instance_metrics.y_ppem)/
-        (int) face_properties.header->Units_Per_EM);
+      canvas.rows=instance_metrics.y_ppem*(face_properties.horizontal->Ascender-
+        face_properties.horizontal->Descender)/
+        face_properties.header->Units_Per_EM;
       canvas.flow=TT_Flow_Down;
       canvas.cols=canvas.width;
       canvas.size=canvas.rows*canvas.width;
@@ -512,8 +511,8 @@ Export Image *ReadLABELImage(const ImageInfo *image_info)
       if (!character.bitmap)
         ReaderExit(DelegateWarning,"Memory allocation failed",image);
       x=0;
-      y=((int) -(face_properties.horizontal->Descender*instance_metrics.y_ppem)/
-        (int) face_properties.header->Units_Per_EM);
+      y=(-instance_metrics.y_ppem*face_properties.horizontal->Descender)/
+        face_properties.header->Units_Per_EM+1;
       for (i=0; i < length; i++)
       {
         if (glyphs[unicode[i]].z == (TT_Glyph *) NULL)
