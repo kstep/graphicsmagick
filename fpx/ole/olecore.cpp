@@ -585,7 +585,7 @@ OLEBlob::OLEBlob(BLOB* inputBlob)
 OLEBlob::~OLEBlob()
 {
   if (blob.cbSize) 
-    delete buffer;
+    delete[] buffer;
 }
 
 // Assign a blob 
@@ -946,7 +946,7 @@ List::List(void* thePtr, const char *theName)
 // Delete a list
 List::~List()
 {
-  delete name; 
+  delete[] name; 
 }
 
 void List::AddRef()

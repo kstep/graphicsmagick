@@ -1,3 +1,21 @@
+2005-01-25  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* configure.ac: Bumped package version to 1.2.0.10.
+	* Makefile.am: Fixed build environment so that all files are
+	included.  Many files were mysteriously missing in the previous
+	version.
+	* Updated to automake 1.9.3
+	* Updated to autoconf 2.59
+
+2005-01-25  amantia  <amantia@kdewebdev.org>
+
+	* ole/olecore.cpp, ole/oleprops.cpp, oless/refilb.cxx: Use array
+	syntax when deleting arrays.
+
+2005-01-22  Martin Becker  <becker@hlrs.de>
+
+	* ri_image/ph_image.cpp: Fixes to compile with Visual Studio 8.0.
+
 2003-06-10  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* configure.ac: Bumped package version to 1.2.0.9.

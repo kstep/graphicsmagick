@@ -1,5 +1,11 @@
+This package is currently maintained by the GraphicsMagick Group,
+http:://www.GraphicsMagick.org/. It is available from
+ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/delegates/ as well as via
+the 'fpx' module from GraphicsMagick CVS. All change history, starting
+with the original distribution is available in GraphicsMagick CVS.
+
 This package is the Flashpix OpenSource Toolkit and is based on source code
-obtained from the Digital Imaging Group Inc. (http://www.digitalimaging.org/).
+obtained from the Digital Imaging Group Inc and the Eastman Kodak Company.
 
 The package currently compiles under Windows using Visual C++, and should
 compile under many different Unix versions.

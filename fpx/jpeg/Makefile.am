@@ -16,7 +16,7 @@ libJpeg_la_SOURCES = \
   huffman.c mcu2rast.c process.c public.c tables.c win_dct.c winograd.c
 
 # Additional files to distribute
-EXTRA_DIST = 
+EXTRA_DIST = makefile.gcc
 
 # Headers which are not installed but which are distributed
 noinst_HEADERS = \

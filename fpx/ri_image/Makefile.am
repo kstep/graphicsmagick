@@ -16,7 +16,7 @@ libRiImage_la_SOURCES = \
   ri_sys.cpp viewimg.cpp
 
 # Additional files to distribute
-EXTRA_DIST = 
+EXTRA_DIST = wchar.c
 
 # Headers which are not installed but which are distributed
 noinst_HEADERS = \

@@ -308,7 +308,7 @@ Boolean OLEPropertySection::Renew( OLEProperty* newProp, short propCount)
     temp[propCount-1] = newProp;
     
     // Delete the old array and assign the temporary one
-    delete ppOLEProp;  
+    delete[] ppOLEProp;  
     ppOLEProp = temp; 
   }
   else
@@ -423,8 +423,8 @@ Boolean OLEPropertySection::Read()
       return false; 
   }
   // DAG PURE1 
-  delete pProperID;
-  delete pProperOffset;
+  delete[] pProperID;
+  delete[] pProperOffset;
   return true; 
 }
 

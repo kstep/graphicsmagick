@@ -168,7 +168,7 @@ CFileILB::~CFileILB()
          // since the ref impl. is not multi-thread safe
         _unlink(_pszName);
     }
-    delete _pszName;
+    delete[] _pszName;
 }
 
 STDMETHODIMP CFileILB::QueryInterface(REFIID riid, LPVOID FAR* ppvObj)

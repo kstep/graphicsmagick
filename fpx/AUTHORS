@@ -1,6 +1,11 @@
-This package, the Flashpix OpenSource Toolkit, is based on source code
-obtained from the Digital Imaging Group Inc.
-(http://www.digitalimaging.org/), and includes a sample FlashPIX library
+This package is currently maintained by the GraphicsMagick Group,
+http:://www.GraphicsMagick.org/. It is available from
+ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/delegates/ as well as via
+the 'fpx' module from GraphicsMagick CVS. All change history, starting
+with the original distribution is available in GraphicsMagick CVS.
+
+The Flashpix OpenSource Toolkit, is based on source code obtained from
+the Digital Imaging Group Inc., and includes a sample FlashPIX library
 implementation contributed by the Eastman Kodak Company.
 
 The package was extended and modified by gurupix@hotmail.com to compile under
