@@ -433,7 +433,8 @@ Export unsigned int InitializePixelCache(CacheHandle cache_handle,
           if (cache_info->pixels != (PixelPacket *) NULL)
             {
               SetCacheClassType(cache_handle,DirectClass);
-              (void) GetCacheMemory(-number_pixels*sizeof(PixelPacket));
+              offset=(off_t) number_pixels*sizeof(PixelPacket);
+              (void) GetCacheMemory(-offset);
               if (type == PseudoClass)
                 {
                   cache_info->indexes=(IndexPacket *)
@@ -441,7 +442,8 @@ Export unsigned int InitializePixelCache(CacheHandle cache_handle,
                   if (cache_info->indexes != (IndexPacket *) NULL)
                     {
                       SetCacheClassType(cache_handle,PseudoClass);
-                      (void) GetCacheMemory(-number_pixels*sizeof(IndexPacket));
+                      offset=(off_t) number_pixels*sizeof(IndexPacket);
+                      (void) GetCacheMemory(-offset);
                     }
                 }
             }
@@ -506,7 +508,8 @@ Export unsigned int InitializePixelCache(CacheHandle cache_handle,
               if (cache_info->indexes != (IndexPacket *) NULL)
                 {
                   SetCacheClassType(cache_handle,PseudoClass);
-                  (void) GetCacheMemory(-number_pixels*sizeof(IndexPacket));
+                  offset=(off_t) number_pixels*sizeof(IndexPacket);
+                  (void) GetCacheMemory(-offset);
                 }
             }
           else
@@ -771,7 +774,11 @@ Export void SetCacheClassType(CacheHandle cache_handle,ClassType type)
 */
 Export void SetCacheThreshold(off_t threshold)
 {
-  (void) GetCacheMemory(-1024*1024*(cache_threshold-threshold));
+  off_t
+    offset;
+
+  offset=1024*1024*(cache_threshold-threshold);
+  (void) GetCacheMemory(-offset);
   cache_threshold=threshold;
 }
 
