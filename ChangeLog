@@ -1,3 +1,7 @@
+2003-09-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* locale/C.mgk: Added missing JNGCompressionNotSupported message.
+
 2003-09-02  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/attribute.c (Generate8BIMAttribute): Fix sscanf argument

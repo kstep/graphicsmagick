@@ -1,48 +1,29 @@
 /*
+% Copyright (C) 2003 GraphicsMagick Group
+% Copyright (C) 2003 ImageMagick Studio
+%
+% This program is covered by multiple licenses, which are described in
+% Copyright.txt. You should have received a copy of Copyright.txt with this
+% package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%           GGGG   EEEEE   OOO   M   M  EEEEE  TTTTT  RRRR   Y   Y            %
-%           G      E      O   O  MM MM  E        T    R   R   Y Y             %
-%           G  GG  EEE    O   O  M M M  EEE      T    RRRR     Y              %
-%           G   G  E      O   O  M   M  E        T    R R      Y              %
-%            GGGG  EEEEE   OOO   M   M  EEEEE    T    R  R     Y              %
+%         IIIII  M   M       CCCC    OOO   M   M  PPPP    AAA   TTTTT         %
+%           I    MM MM      C       O   O  MM MM  P   P  A   A    T           %
+%           I    M M M      C       O   O  M M M  PPPP   AAAAA    T           %
+%           I    M   M      C       O   O  M   M  P      A   A    T           %
+%         IIIII  M   M       CCCC    OOO   M   M  P      A   A    T           %
 %                                                                             %
 %                                                                             %
-%                       ImageMagick Geometry Methods                          %
+%                     ImageMagick Compatability Methods                       %
 %                                                                             %
 %                                                                             %
 %                             Software Design                                 %
 %                               John Cristy                                   %
 %                              January 2003                                   %
 %                                                                             %
-%                                                                             %
-%  Copyright (C) 2003 ImageMagick Studio, a non-profit organization dedicated %
-%  to making software imaging solutions freely available.                     %
-%                                                                             %
-%  Permission is hereby granted, free of charge, to any person obtaining a    %
-%  copy of this software and associated documentation files ("ImageMagick"),  %
-%  to deal in ImageMagick without restriction, including without limitation   %
-%  the rights to use, copy, modify, merge, publish, distribute, sublicense,   %
-%  and/or sell copies of ImageMagick, and to permit persons to whom the       %
-%  ImageMagick is furnished to do so, subject to the following conditions:    %
-%                                                                             %
-%  The above copyright notice and this permission notice shall be included in %
-%  all copies or substantial portions of ImageMagick.                         %
-%                                                                             %
-%  The software is provided "as is", without warranty of any kind, express or %
-%  implied, including but not limited to the warranties of merchantability,   %
-%  fitness for a particular purpose and noninfringement.  In no event shall   %
-%  ImageMagick Studio be liable for any claim, damages or other liability,    %
-%  whether in an action of contract, tort or otherwise, arising from, out of  %
-%  or in connection with ImageMagick or the use or other dealings in          %
-%  ImageMagick.                                                               %
-%                                                                             %
-%  Except as contained in this notice, the name of the ImageMagick Studio     %
-%  shall not be used in advertising or otherwise to promote the sale, use or  %
-%  other dealings in ImageMagick without prior written authorization from the %
-%  ImageMagick Studio.                                                        %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %

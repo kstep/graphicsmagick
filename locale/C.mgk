@@ -114,6 +114,9 @@
       <Message name="ZipCompressionNotSupported">
         ZIP compression is not supported
       </Message>
+      <Message name="JNGCompressionNotSupported">
+        JNG compression is not supported
+      </Message>
       <Message name="JPEGCompressionNotSupported">
         JPEG compression is not supported
       </Message>

@@ -696,7 +696,8 @@ static void SVGStartElement(void *context,const xmlChar *name,
   MagickReallocMemory(svg_info->scale,(svg_info->n+1)*sizeof(double));
   if (svg_info->scale == (double *) NULL)
     {
-      ThrowException(svg_info->exception,ResourceLimitError,MemoryAllocationFailed,"unable to convert SVG image");
+      ThrowException(svg_info->exception,ResourceLimitError,
+        MemoryAllocationFailed,"unable to convert SVG image");
       return;
     }
   svg_info->scale[svg_info->n]=svg_info->scale[svg_info->n-1];
@@ -3441,7 +3442,8 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
               {
                 n--;
                 if (n < 0)
-                  ThrowWriterException(DrawError,UnbalancedGraphicContextPushPop,image);
+                  ThrowWriterException(DrawError,
+                    UnbalancedGraphicContextPushPop,image);
                 (void) WriteBlobString(image,"</g>\n");
               }
             if (LocaleCompare("pattern",token) == 0)
@@ -3796,8 +3798,8 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
         number_points*sizeof(PrimitiveInfo));
       if (primitive_info == (PrimitiveInfo *) NULL)
         {
-          ThrowException3(&image->exception,ResourceLimitError,MemoryAllocationFailed,
-            UnableToDrawOnImage);
+          ThrowException3(&image->exception,ResourceLimitError,
+            MemoryAllocationFailed,UnableToDrawOnImage);
           break;
         }
     }
