@@ -109,7 +109,8 @@ Export Image *ReadGRAYImage(const ImageInfo *image_info)
     *scanline;
 
   unsigned int
-    packet_size;
+    packet_size,
+    status;
 
   unsigned short
     index,
@@ -126,8 +127,8 @@ Export Image *ReadGRAYImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  OpenImage(image_info,image,ReadBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,ReadBinaryType);
+  if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   for (i=0; i < image->offset; i++)
     (void) ReadByte(image);
@@ -296,7 +297,8 @@ Export unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
     *pixels;
 
   unsigned int
-    scene;
+    scene,
+    status;
 
   unsigned short
     value;
@@ -304,8 +306,8 @@ Export unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
-  OpenImage(image_info,image,WriteBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,WriteBinaryType);
+  if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   /*
     Convert image to gray scale PseudoColor class.

@@ -399,6 +399,7 @@ Export Image *ReadXPMImage(const ImageInfo *image_info)
     *r;
 
   unsigned int
+    status,
     width;
 
   /*
@@ -410,8 +411,8 @@ Export Image *ReadXPMImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  OpenImage(image_info,image,"r");
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,"r");
+  if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   /*
     Read XPM file.
@@ -697,13 +698,14 @@ Export unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
   unsigned int
     characters_per_pixel,
     colors,
+    status,
     transparent;
 
   /*
     Open output image file.
   */
-  OpenImage(image_info,image,WriteBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,WriteBinaryType);
+  if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   TransformRGBImage(image,RGBColorspace);
   transparent=False;

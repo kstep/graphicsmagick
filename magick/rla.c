@@ -177,6 +177,9 @@ Export Image *ReadRLAImage(const ImageInfo *image_info)
   unsigned char
     byte;
 
+  unsigned int
+    status;
+
   /*
     Allocate image structure.
   */
@@ -186,8 +189,8 @@ Export Image *ReadRLAImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  OpenImage(image_info,image,ReadBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,ReadBinaryType);
+  if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   rla_header.window.left=MSBFirstReadShort(image);
   rla_header.window.right=MSBFirstReadShort(image);

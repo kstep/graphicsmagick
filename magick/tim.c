@@ -129,6 +129,7 @@ Export Image *ReadTIMImage(const ImageInfo *image_info)
     bytes_per_line,
     height,
     image_size,
+    status,
     width;
 
   /*
@@ -140,8 +141,8 @@ Export Image *ReadTIMImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  OpenImage(image_info,image,ReadBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,ReadBinaryType);
+  if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   /*
     Determine if this is a TIM file.

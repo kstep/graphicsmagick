@@ -151,7 +151,7 @@ static const MagickInfo
     { "MAP", ReadMAPImage, WriteMAPImage, False, False,
       "Colormap intensities and indices" },
     { "MATTE", ReadMIFFImage, WriteMATTEImage, True, False, "Matte format" },
-    { "MIFF", ReadMIFFImage, WriteMIFFImage, True, False,
+    { "MIFF", ReadMIFFImage, WriteMIFFImage, True, True,
       "Magick image format" },
 #if defined(HasPNG)
     { "MNG", ReadPNGImage, WritePNGImage, True, False,

@@ -160,8 +160,8 @@ Export Image *ReadFPXImage(const ImageInfo *image_info)
   /*
     Open image.
   */
-  OpenImage(image_info,image,ReadBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,ReadBinaryType);
+  if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   if ((image->file == stdin) || image->pipe)
     {
@@ -748,8 +748,8 @@ Export unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   /*
     Open input file.
   */
-  OpenImage(image_info,image,WriteBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,WriteBinaryType);
+  if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   if ((image->file != stdout) && !image->pipe)
     (void) remove(image->filename);

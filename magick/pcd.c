@@ -437,8 +437,8 @@ Export Image *ReadPCDImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  OpenImage(image_info,image,ReadBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,ReadBinaryType);
+  if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   /*
     Determine if this is a PCD file.
@@ -903,7 +903,7 @@ Export unsigned int WritePCDImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
-  OpenImage(image_info,pcd_image,WriteBinaryType);
+  status=OpenImage(image_info,pcd_image,WriteBinaryType);
   if (pcd_image->file == (FILE *) NULL)
     WriterExit(FileOpenWarning,"Unable to open file",pcd_image);
   TransformRGBImage(image,RGBColorspace);

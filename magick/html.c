@@ -112,8 +112,8 @@ Export unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
   /*
     Open image.
   */
-  OpenImage(image_info,image,WriteBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,WriteBinaryType);
+  if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   CloseImage(image);
   TransformRGBImage(image,RGBColorspace);
@@ -153,8 +153,8 @@ Export unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
       /*
         Open output image file.
       */
-      OpenImage(image_info,image,WriteBinaryType);
-      if (image->file == (FILE *) NULL)
+      status=OpenImage(image_info,image,WriteBinaryType);
+      if (status == False)
         WriterExit(FileOpenWarning,"Unable to open file",image);
       /*
         Write the HTML image file.
@@ -274,8 +274,8 @@ Export unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
   /*
     Open image map.
   */
-  OpenImage(local_info,image,WriteBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(local_info,image,WriteBinaryType);
+  if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   DestroyImageInfo(local_info);
   /*

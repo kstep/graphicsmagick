@@ -1070,8 +1070,8 @@ Image *ReadPICTImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  OpenImage(image_info,image,ReadBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,ReadBinaryType);
+  if (status == False)
     PrematureExit(FileOpenWarning,"Unable to open file",image);
   picture_handle=(PicHandle)
     NewHandle(Max(image->filesize-PICTHeaderSize,PICTHeaderSize));

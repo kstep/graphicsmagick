@@ -160,6 +160,9 @@ Export Image *ReadSGIImage(const ImageInfo *image_info)
   unsigned char
     *iris_pixels;
 
+  unsigned int
+    status;
+
   /*
     Allocate image structure.
   */
@@ -169,8 +172,8 @@ Export Image *ReadSGIImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  OpenImage(image_info,image,ReadBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,ReadBinaryType);
+  if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   /*
     Read SGI raster header.
@@ -561,14 +564,17 @@ Export unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
 
   unsigned char
     *iris_pixels,
-    *packets,
-    scene;
+    *packets;
+
+  unsigned int
+    scene,
+    status;
 
   /*
     Open output image file.
   */
-  OpenImage(image_info,image,WriteBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,WriteBinaryType);
+  if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   scene=0;
   do

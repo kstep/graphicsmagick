@@ -159,8 +159,8 @@ Export Image *ReadFITSImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  OpenImage(image_info,image,ReadBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,ReadBinaryType);
+  if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   /*
     Initialize image header.
@@ -489,13 +489,16 @@ Export unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
   unsigned char
     *pixels;
 
+  unsigned int
+    status;
+
   if (!UncondenseImage(image))
     return(False);
   /*
     Open output image file.
   */
-  OpenImage(image_info,image,WriteBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,WriteBinaryType);
+  if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   TransformRGBImage(image,RGBColorspace);
   /*

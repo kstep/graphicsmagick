@@ -216,12 +216,12 @@ static void RenderGlyph(TT_Raster_Map *canvas,TT_Raster_Map *character,
     bounds.y2=character->rows;
   if (bounds.x1 >= bounds.x2)
     return;
-  for (y=bounds.y1; y < (int) bounds.y2; y++)
+  for (y=(int) bounds.y1; y < (int) bounds.y2; y++)
   {
     p=((unsigned char *) character->bitmap)+y*character->cols+(int) bounds.x1;
     q=((unsigned char *) canvas->bitmap)+(y+y_off)*canvas->cols+
       (int) bounds.x1+x_off;
-    for (x=bounds.x1; x < bounds.x2; x++)
+    for (x=(int) bounds.x1; x < bounds.x2; x++)
       *q++|=(*p++);
   }
 }

@@ -132,8 +132,8 @@ Export Image *ReadXWDImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  OpenImage(image_info,image,ReadBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,ReadBinaryType);
+  if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   /*
      Read in header information.
@@ -517,7 +517,8 @@ Export unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
   unsigned int
     bits_per_pixel,
     bytes_per_line,
-    scanline_pad;
+    scanline_pad,
+    status;
 
   unsigned long
     lsb_first;
@@ -531,8 +532,8 @@ Export unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
-  OpenImage(image_info,image,WriteBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,WriteBinaryType);
+  if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   TransformRGBImage(image,RGBColorspace);
   /*

@@ -170,8 +170,8 @@ Export Image *ReadPCXImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  OpenImage(image_info,image,ReadBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,ReadBinaryType);
+  if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   /*
     Determine if this is a PCX file.
@@ -641,7 +641,8 @@ Export unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
 
   unsigned int
     packets,
-    scene;
+    scene,
+    status;
 
   unsigned long
     *page_table;
@@ -649,8 +650,8 @@ Export unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
-  OpenImage(image_info,image,WriteBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,WriteBinaryType);
+  if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   TransformRGBImage(image,RGBColorspace);
   page_table=(unsigned long *) NULL;

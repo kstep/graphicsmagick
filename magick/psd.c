@@ -337,8 +337,8 @@ Export Image *ReadPSDImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  OpenImage(image_info,image,ReadBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,ReadBinaryType);
+  if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   /*
     Read image header.
@@ -741,11 +741,14 @@ Export unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
   register RunlengthPacket
     *p;
 
+  unsigned int
+    status;
+
   /*
     Open output image file.
   */
-  OpenImage(image_info,image,WriteBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,WriteBinaryType);
+  if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   (void) WriteBlob(image,4,"8BPS");
   MSBFirstWriteShort(image,1);  /* version */

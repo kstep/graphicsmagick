@@ -145,14 +145,15 @@ Export unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
     density,
     height,
     page_size,
+    status,
     text_size,
     width;
 
   /*
     Open output image file.
   */
-  OpenImage(image_info,image,WriteBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,WriteBinaryType);
+  if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   TransformRGBImage(image,RGBColorspace);
   /*

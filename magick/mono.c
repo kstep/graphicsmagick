@@ -105,6 +105,9 @@ Export Image *ReadMONOImage(const ImageInfo *image_info)
     bit,
     byte;
 
+  unsigned int
+    status;
+
   unsigned long
     max_packets;
 
@@ -120,8 +123,8 @@ Export Image *ReadMONOImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  OpenImage(image_info,image,ReadBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,ReadBinaryType);
+  if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   for (i=0; i < image->offset; i++)
     (void) ReadByte(image);
@@ -245,11 +248,14 @@ Export unsigned int WriteMONOImage(const ImageInfo *image_info,Image *image)
   register RunlengthPacket
     *p;
 
+  unsigned int
+    status;
+
   /*
     Open output image file.
   */
-  OpenImage(image_info,image,WriteBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,WriteBinaryType);
+  if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   TransformRGBImage(image,RGBColorspace);
   /*

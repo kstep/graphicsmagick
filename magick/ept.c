@@ -125,8 +125,8 @@ Export unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
       status=WritePSImage(image_info,image);
       if (status == False)
         return(status);
-      OpenImage(image_info,image,ReadBinaryType);
-      if (image->file == (FILE *) NULL)
+      status=OpenImage(image_info,image,ReadBinaryType);
+      if (status == False)
         WriterExit(FileOpenWarning,"Unable to open file",image);
       (void) remove(image->filename);
       eps_length=image->filesize;
@@ -140,8 +140,8 @@ Export unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
   status=WriteTIFFImage(image_info,image);
   if (status == False)
     return(status);
-  OpenImage(image_info,image,ReadBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,ReadBinaryType);
+  if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   (void) remove(image->filename);
   tiff_length=image->filesize;
@@ -151,8 +151,8 @@ Export unsigned int WriteEPTImage(const ImageInfo *image_info,Image *image)
     Write EPT image.
   */
   (void) strcpy(image->filename,filename);
-  OpenImage(image_info,image,WriteBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,WriteBinaryType);
+  if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   LSBFirstWriteLong(image,0xc6d3d0c5ul);
   LSBFirstWriteLong(image,30);

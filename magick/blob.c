@@ -103,7 +103,15 @@ Export Image *BlobToImage(const ImageInfo *image_info,const char *blob,
     *magick_info;
 
   local_info=CloneImageInfo(image_info);
-  magick_info=(MagickInfo *) GetMagickInfo(image->magick);
+  SetImageInfo(local_info,False);
+  magick_info=(MagickInfo *) GetMagickInfo(local_info->magick);
+  if (magick_info == (MagickInfo *) NULL)
+    {
+      MagickWarning(FileOpenWarning,"Unrecognized image format",
+        image_info->magick);
+      DestroyImageInfo(local_info);
+      return((Image *) NULL);
+    }
   if (magick_info->blob_support)
     {
       /*
@@ -362,9 +370,42 @@ Export unsigned long ReadBlob(Image *image,const unsigned long number_bytes,
 %
 %
 */
-Export int SeekBlob(Image *image,const long offset,const unsigned long whence)
+Export int SeekBlob(Image *image,const long offset,const int whence)
 {
-  return(fseek(image->file,offset,whence));
+  if (image->blob.data == (char *) NULL)
+    return(fseek(image->file,offset,whence));
+  switch(whence)
+  {
+    case SEEK_SET:
+    default:
+    {
+      if (offset < 0)
+        return(-1);
+      if (offset >= image->blob.length)
+        return(-1);
+      image->blob.offset=offset;
+      break;
+    }
+    case SEEK_CUR:
+    {
+      if ((image->blob.offset+offset) < 0)
+        return(-1);
+      if ((image->blob.offset+offset) >= (long) image->blob.length)
+        return(-1);
+      image->blob.offset+=offset;
+      break;
+    }
+    case SEEK_END:
+    {
+      if ((image->blob.offset+image->blob.length+offset) < 0)
+        return(-1);
+      if ((image->blob.offset+image->blob.length+offset) >= image->blob.length)
+        return(-1);
+      image->blob.offset+=image->blob.length+offset;
+      break;
+    }
+  }
+  return(0);
 }
 
 /*
@@ -393,9 +434,11 @@ Export int SeekBlob(Image *image,const long offset,const unsigned long whence)
 %
 %
 */
-Export int TellBlob(Image *image)
+Export int TellBlob(const Image *image)
 {
-  return(ftell(image->file));
+  if (image->blob.data == (char *) NULL)
+    return(ftell(image->file));
+  return(image->blob.offset);
 }
 
 /*

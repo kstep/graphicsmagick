@@ -328,6 +328,9 @@ Export Image *ReadJPEGImage(const ImageInfo *image_info)
   struct jpeg_error_mgr
     jpeg_error;
 
+  unsigned int
+    status;
+
   unsigned short
     index;
 
@@ -340,8 +343,8 @@ Export Image *ReadJPEGImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  OpenImage(image_info,image,ReadBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,ReadBinaryType);
+  if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   /*
     Initialize image structure.
@@ -645,7 +648,7 @@ static void WriteNewsProfile(j_compress_ptr jpeg_info,Image *image)
   /*
     Save IPTC profile as a APP marker.
   */
-  for (i=0; i < image->iptc_profile.length; i+=65500)
+  for (i=0; i < (int) image->iptc_profile.length; i+=65500)
   {
     length=Min(image->iptc_profile.length-i,65500);
     roundup=(length & 0x01); /* round up for Photoshop */
@@ -657,7 +660,7 @@ static void WriteNewsProfile(j_compress_ptr jpeg_info,Image *image)
     profile[13]=0x00;
     profile[24]=length >> 8;
     profile[25]=length & 0xff;
-    for (j=0; j < length; j++)
+    for (j=0; j < (int) length; j++)
       profile[j+26]=image->iptc_profile.info[j];
     if (roundup)
       profile[length+roundup+25]=0;
@@ -699,14 +702,15 @@ Export unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
 
   unsigned int
     packets,
+    status,
     x_resolution,
     y_resolution;
 
   /*
     Open image file.
   */
-  OpenImage(image_info,image,WriteBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,WriteBinaryType);
+  if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   /*
     Initialize JPEG parameters.

@@ -156,8 +156,8 @@ Export Image *ReadPDFImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  OpenImage(image_info,image,ReadBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,ReadBinaryType);
+  if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   /*
     Open temporary output file.
@@ -412,8 +412,8 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
-  OpenImage(image_info,image,WriteBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,WriteBinaryType);
+  if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   if ((image->file == stdout) || image->pipe)
     {
@@ -423,8 +423,8 @@ Export unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       encode_image=(*image);
       TemporaryFilename(image->filename);
       image->temporary=True;
-      OpenImage(image_info,image,WriteBinaryType);
-      if (image->file == (FILE *) NULL)
+      status=OpenImage(image_info,image,WriteBinaryType);
+      if (status == False)
         WriterExit(FileOpenWarning,"Unable to open file",image);
     }
   compression=image_info->compression;

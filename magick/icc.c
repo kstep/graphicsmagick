@@ -97,7 +97,8 @@ Export Image *ReadICCImage(const ImageInfo *image_info)
     *q;
 
   unsigned int
-    length;
+    length,
+    status;
 
   /*
     Allocate image structure.
@@ -108,8 +109,8 @@ Export Image *ReadICCImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  OpenImage(image_info,image,ReadBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,ReadBinaryType);
+  if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   /*
     Read ICC image.
@@ -172,13 +173,16 @@ Export Image *ReadICCImage(const ImageInfo *image_info)
 */
 Export unsigned int WriteICCImage(const ImageInfo *image_info,Image *image)
 {
+  unsigned int
+    status;
+
   if (image->color_profile.length == 0)
     WriterExit(FileOpenWarning,"No color profile available",image);
   /*
     Open image file.
   */
-  OpenImage(image_info,image,WriteBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,WriteBinaryType);
+  if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   (void) WriteBlob(image,(int) image->color_profile.length,
     (char *) image->color_profile.info);

@@ -97,7 +97,8 @@ Export Image *ReadIPTCImage(const ImageInfo *image_info)
     *q;
 
   unsigned int
-    length;
+    length,
+    status;
 
   /*
     Allocate image structure.
@@ -108,8 +109,8 @@ Export Image *ReadIPTCImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  OpenImage(image_info,image,ReadBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,ReadBinaryType);
+  if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   /*
     Read IPTC image.
@@ -172,13 +173,16 @@ Export Image *ReadIPTCImage(const ImageInfo *image_info)
 */
 Export unsigned int WriteIPTCImage(const ImageInfo *image_info,Image *image)
 {
+  unsigned int
+    status;
+
   if (image->iptc_profile.length == 0)
     WriterExit(FileOpenWarning,"No IPTC profile available",image);
   /*
     Open image file.
   */
-  OpenImage(image_info,image,WriteBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,WriteBinaryType);
+  if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   (void) WriteBlob(image,(int) image->iptc_profile.length,
     (char *) image->iptc_profile.info);

@@ -126,8 +126,8 @@ Export Image *ReadMIFFImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  OpenImage(image_info,image,ReadBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,ReadBinaryType);
+  if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   image->depth=8;
   /*
@@ -698,7 +698,8 @@ Export unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     i;
 
   unsigned int
-    scene;
+    scene,
+    status;
 
   unsigned long
     packets;
@@ -706,8 +707,8 @@ Export unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
-  OpenImage(image_info,image,WriteBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,WriteBinaryType);
+  if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   CondenseImage(image);
   if (image->class == DirectClass)

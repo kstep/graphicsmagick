@@ -100,6 +100,9 @@ Export Image *ReadUYVYImage(const ImageInfo *image_info)
   unsigned char
     *uyvy_pixels;
 
+  unsigned int
+    status;
+
   /*
     Allocate image structure.
   */
@@ -112,8 +115,8 @@ Export Image *ReadUYVYImage(const ImageInfo *image_info)
     Open image file.
   */
   (void) strcpy(image->filename,image_info->filename);
-  OpenImage(image_info,image,ReadBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,ReadBinaryType);
+  if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image)
   for (i=0; i < image->offset; i++)
     (void) ReadByte(image);
@@ -202,17 +205,18 @@ Export unsigned int WriteUYVYImage(const ImageInfo *image_info,Image *image)
 
   unsigned int
     full,
-    y,
+    status,
     u,
-    v;
+    v,
+    y;
 
   /*
     Open output image file.
   */
   if (!UncondenseImage(image))
     return(False);
-  OpenImage(image_info,image,WriteBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,WriteBinaryType);
+  if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   TransformRGBImage(image,RGBColorspace);
   /*

@@ -720,6 +720,9 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
   register RunlengthPacket
     *q;
 
+  unsigned int
+    status;
+
   /*
     Allocate image structure.
   */
@@ -729,8 +732,8 @@ Export Image *ReadPICTImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  OpenImage(image_info,image,ReadBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,ReadBinaryType);
+  if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   /*
     Read PICT header.
@@ -1308,7 +1311,8 @@ Export unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
     *scanline;
 
   unsigned int
-    bytes_per_line;
+    bytes_per_line,
+    status;
 
   unsigned long
     horizontal_resolution,
@@ -1322,8 +1326,8 @@ Export unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
-  OpenImage(image_info,image,WriteBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,WriteBinaryType);
+  if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   TransformRGBImage(image,RGBColorspace);
   /*

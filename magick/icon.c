@@ -162,7 +162,8 @@ Export Image *ReadICONImage(const ImageInfo *image_info)
 
   unsigned int
     bytes_per_line,
-    offset;
+    offset,
+    status;
 
   /*
     Allocate image structure.
@@ -173,8 +174,8 @@ Export Image *ReadICONImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  OpenImage(image_info,image,ReadBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,ReadBinaryType);
+  if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   icon_file.reserved=LSBFirstReadShort(image);
   icon_file.resource_type=LSBFirstReadShort(image);

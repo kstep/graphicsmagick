@@ -1019,6 +1019,11 @@ Export void CloseImage(Image *image)
     Close image file.
   */
   assert(image != (Image *) NULL);
+  if (image->blob.data != (char *) NULL)
+    {
+      image->filesize=image->blob.length;
+      return;
+    }
   if (image->file == (FILE *) NULL)
     return;
   (void) fflush(image->file);
@@ -4752,9 +4757,12 @@ Export void MogrifyImages(const ImageInfo *image_info,const int argc,
 %
 %  The format of the OpenImage routine is:
 %
-%      OpenImage(image_info,image,type)
+%      status=OpenImage(image_info,image,type)
 %
 %  A description of each parameter follows:
+%
+%    o status:  Method OpenImage returns True if the file is successfully
+%      opened otherwise False.
 %
 %    o image_info: Specifies a pointer to an ImageInfo structure.
 %
@@ -4763,7 +4771,8 @@ Export void MogrifyImages(const ImageInfo *image_info,const int argc,
 %    o type: 'r' for reading; 'w' for writing.
 %
 */
-Export void OpenImage(const ImageInfo *image_info,Image *image,const char *type)
+Export unsigned int OpenImage(const ImageInfo *image_info,Image *image,
+  const char *type)
 {
   char
     filename[MaxTextExtent];
@@ -4774,6 +4783,11 @@ Export void OpenImage(const ImageInfo *image_info,Image *image,const char *type)
   assert(image_info != (ImageInfo *) NULL);
   assert(image != (Image *) NULL);
   assert(type != (char *) NULL);
+  if (image_info->blob.data != (char *) NULL)
+    {
+      image->blob=image_info->blob;
+      return(True);
+    }
   image->exempt=False;
   if (image_info->file != (FILE *) NULL)
     {
@@ -4782,7 +4796,7 @@ Export void OpenImage(const ImageInfo *image_info,Image *image,const char *type)
       */
       image->file=image_info->file;
       image->exempt=True;
-      return;
+      return(True);
     }
   (void) strcpy(filename,image->filename);
   p=(char *) NULL;
@@ -4908,7 +4922,7 @@ Export void OpenImage(const ImageInfo *image_info,Image *image,const char *type)
       image->next=(Image *) NULL;
       image->previous=(Image *) NULL;
     }
-  return;
+  return(image->file != (FILE *) NULL);
 }
 
 /*
@@ -5077,16 +5091,16 @@ Export int ParseImageGeometry(const char *geometry,int *x,int *y,
     {
       if ((*width+((*x) << 1)) > media_info.width)
         {
-          if (*width > ((*x) << 1))
+          if ((int) *width > ((*x) << 1))
             *width-=(*x) << 1;
-          if (*height > ((*y) << 1))
+          if ((int) *height > ((*y) << 1))
             *height-=(*y) << 1;
         }
       if ((*height+((*y) << 1)) > media_info.height)
         {
-          if (*width > ((*x) << 1))
+          if ((int) *width > ((*x) << 1))
             *width-=(*x) << 1;
-          if (*height > ((*y) << 1))
+          if ((int) *height > ((*y) << 1))
             *height-=(*y) << 1;
         }
     }
@@ -6061,11 +6075,14 @@ Export void SetImageInfo(ImageInfo *image_info,const unsigned int rectify)
     magick[MaxTextExtent];
 
   Image
-    image;
+    *image;
 
   register char
     *p,
     *q;
+
+  unsigned int
+    status;
 
   /*
     Look for 'image.format' in filename.
@@ -6204,14 +6221,20 @@ Export void SetImageInfo(ImageInfo *image_info,const unsigned int rectify)
   if (image_info->affirm)
     return;
   /*
+    Allocate image structure.
+  */
+  image=AllocateImage(image_info);
+  if (image == (Image *) NULL)
+    return;
+  /*
     Determine the image format from the first few bytes of the file.
   */
-  (void) strcpy(image.filename,image_info->filename);
-  OpenImage(image_info,&image,ReadBinaryType);
-  if (image.file == (FILE *) NULL)
+  (void) strcpy(image->filename,image_info->filename);
+  status=OpenImage(image_info,image,ReadBinaryType);
+  if (status == False)
     return;
-  if (!image.exempt)
-    (void) ReadBlob(&image,MaxTextExtent,magick);
+  if ((image->blob.data != (char *) NULL)  || !image->exempt)
+    (void) ReadBlob(image,MaxTextExtent,magick);
   else
     {
       FILE
@@ -6225,17 +6248,17 @@ Export void SetImageInfo(ImageInfo *image_info,const unsigned int rectify)
         Copy standard input or pipe to temporary file.
       */
       image_info->file=(FILE *) NULL;
-      TemporaryFilename(image.filename);
+      TemporaryFilename(image->filename);
       image_info->temporary=True;
-      FormatString(image_info->filename,"%.1024s",image.filename);
-      file=fopen(image.filename,WriteBinaryType);
+      FormatString(image_info->filename,"%.1024s",image->filename);
+      file=fopen(image->filename,WriteBinaryType);
       if (file == (FILE *) NULL)
         {
-          MagickWarning(FileOpenWarning,"Unable to write file",image.filename);
+          MagickWarning(FileOpenWarning,"Unable to write file",image->filename);
           return;
         }
       i=0;
-      for (c=fgetc(image.file); c != EOF; c=fgetc(image.file))
+      for (c=fgetc(image->file); c != EOF; c=fgetc(image->file))
       {
         if (i < MaxTextExtent)
           magick[i++]=c;
@@ -6243,7 +6266,7 @@ Export void SetImageInfo(ImageInfo *image_info,const unsigned int rectify)
       }
       (void) fclose(file);
     }
-  (void) fclose(image.file);
+  DestroyImage(image);
   magick[MaxTextExtent-1]='\0';
   if (strncmp(magick,"BM",2) == 0)
     (void) strcpy(image_info->magick,"BMP");

@@ -91,7 +91,6 @@ Export Image *ReadTXTImage(const ImageInfo *image_info)
   char
     filename[MaxTextExtent],
     geometry[MaxTextExtent],
-    *status,
     text[MaxTextExtent];
 
   ColorPacket
@@ -112,11 +111,17 @@ Export Image *ReadTXTImage(const ImageInfo *image_info)
   RectangleInfo
     page_info;
 
+  register char
+    *p;
+
   register int
     i;
 
   register RunlengthPacket
     *q;
+
+  unsigned int
+    status;
 
   /*
     Allocate image structure.
@@ -127,8 +132,8 @@ Export Image *ReadTXTImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  OpenImage(image_info,image,"r");
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,"r");
+  if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   /*
     Set the page geometry.
@@ -197,8 +202,8 @@ Export Image *ReadTXTImage(const ImageInfo *image_info)
     /*
       Annotate image with text.
     */
-    status=fgets(text,MaxTextExtent,image->file);
-    if (status == (char *) NULL)
+    p=fgets(text,MaxTextExtent,image->file);
+    if (p == (char *) NULL)
       break;
     if (Extent(text) > 0)
       text[Extent(text)-1]='\0';
@@ -314,13 +319,14 @@ Export unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
     *p;
 
   unsigned int
-    scene;
+    scene,
+    status;
 
   /*
     Open output image file.
   */
-  OpenImage(image_info,image,WriteBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,WriteBinaryType);
+  if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   scene=0;
   do

@@ -297,8 +297,8 @@ Export Image *ReadTIFFImage(const ImageInfo *image_info)
   /*
     Open image.
   */
-  OpenImage(image_info,image,ReadBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,ReadBinaryType);
+  if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   if ((image->file == stdin) || image->pipe)
     {
@@ -1121,7 +1121,8 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
     *scanline;
 
   unsigned int
-    scene;
+    scene,
+    status;
 
   unsigned long
     strip_size;
@@ -1181,8 +1182,8 @@ Export unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
   /*
     Open TIFF file.
   */
-  OpenImage(image_info,image,WriteBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,WriteBinaryType);
+  if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   if ((image->file != stdout) && !image->pipe)
     (void) remove(image->filename);

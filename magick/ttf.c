@@ -110,6 +110,9 @@ Export Image *ReadTTFImage(const ImageInfo *image_info)
   ImageInfo
     *local_info;
 
+  unsigned int
+    status;
+
   /*
     Allocate image structure.
   */
@@ -119,8 +122,8 @@ Export Image *ReadTTFImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  OpenImage(image_info,image,ReadBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,ReadBinaryType);
+  if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   magick=MSBFirstReadLong(image);
   if ((magick != 256) && (magick != 65536))

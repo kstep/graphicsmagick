@@ -18,8 +18,8 @@ extern Export Image
   *BlobToImage(const ImageInfo *,const char *,const unsigned long);
 
 extern Export int
-  SeekBlob(Image *,const long,const unsigned long),
-  TellBlob(Image *image);
+  SeekBlob(Image *,const long,const int),
+  TellBlob(const Image *image);
 
 extern Export unsigned long
   ReadBlob(Image *,const unsigned long,char *),

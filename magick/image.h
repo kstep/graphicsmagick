@@ -55,7 +55,7 @@ typedef struct _BlobInfo
   char
     *data;
 
-  unsigned long
+  long
     offset,
     length;
 } BlobInfo;
@@ -707,6 +707,7 @@ extern Export unsigned int
   IsPseudoClass(Image *),
   IsSubimage(const char *,const unsigned int),
   IsTainted(const Image *),
+  OpenImage(const ImageInfo *,Image *,const char *),
   PlasmaImage(Image *,const SegmentInfo *,int,int),
   QueryColorDatabase(const char *,ColorPacket *),
   UncondenseImage(Image *),
@@ -802,7 +803,6 @@ extern Export void
   NegateImage(Image *,const unsigned int),
   NormalizeImage(Image *),
   OpaqueImage(Image *,const char *,const char *),
-  OpenImage(const ImageInfo *,Image *,const char *),
   RaiseImage(Image *,const RectangleInfo *,const int),
   RGBTransformImage(Image *,const ColorspaceType),
   SetImage(Image *),

@@ -437,7 +437,7 @@ mng_get_data(png_structp png_ptr, png_bytep data, png_size_t length)
 #endif
   if (length)
     {
-      check = (png_size_t)ReadBlob(image,length,(char *)data+1);
+      check = (png_size_t)ReadBlob(image,length,(char *)data);
       if (check != length)
         png_error(png_ptr,"Read Error");
 #ifndef PNG_READ_EMPTY_PLTE_SUPPORTED
@@ -838,8 +838,8 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  OpenImage(image_info,image,ReadBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,ReadBinaryType);
+  if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
 
 
@@ -1123,7 +1123,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                     image->iterations=iterations;
                 term_chunk_found = True;
                 if (m->verbose)
-                   printf("TERM: final_delay=%d, iterations=%d\n",
+                   printf("TERM: final_delay=%ld, iterations=%ld\n",
                       final_delay, iterations);
               }
             FreeMemory((char *) chunk);
@@ -1298,7 +1298,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
             /* read global tRNS */
 
             if (length < 257)
-              for (i=0; i<length; i++)
+              for (i=0; i<(int) length; i++)
                 m->global_trns[i]=p[i];
 
 #ifdef MNG_LOOSE
@@ -1387,10 +1387,10 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                   Note the delay and frame clipping boundaries.
                 */
                 p++; /* framing mode */
-                while (*p && ((p-chunk) < length))
+                while (*p && ((p-chunk) < (int) length))
                   p++;  /* frame name */
                 p++;    /* frame name terminator */
-                if ((p-chunk) < (length-4))
+                if ((p-chunk) < ((int) length-4))
                   {
                     int change_delay    = *p++;
                     int change_timeout  = *p++;
@@ -1501,7 +1501,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                printf("CLIP: first_object=%u, last_object=%u\n",
                  first_object, last_object);
 
-            for(i=first_object; i<=last_object; i++)
+            for(i=(int) first_object; i<=(int) last_object; i++)
               {
                 if (m->exists[i] && !m->frozen[i])
                   {
@@ -1555,7 +1555,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                 register int
                   j;
 
-                for (j=0; j<length; j+=2)
+                for (j=0; j<(int) length; j+=2)
                   {
                     i=p[j]<<8 | p[j+1];
                     MngDiscardObject(m, i);
@@ -1649,7 +1649,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                     m->loop_iteration[loop_level]++;
                     if (m->loop_count[loop_level] == 0)
                       {
-                        unsigned int last_level;
+                        int last_level;
                         /* finished loop */
                         loops_active--;
                         m->loop_active[loop_level]=0;
@@ -2819,7 +2819,7 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
   else
      image->delay=final_delay;
   if (image_info->verbose)
-     printf("terminal delay=%d (final_delay=%d, tps=%d)\n",image->delay,
+     printf("terminal delay=%d (final_delay=%ld, tps=%ld)\n",image->delay,
        final_delay, ticks_per_second);
   while (image->previous != (Image *) NULL)
     {
@@ -3045,18 +3045,19 @@ Export unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
     matte,
     mng_level,
     scene,
+    status,
     ticks_per_second;
 
   unsigned short
     value;
 
-  mng_level=MNG_LEVEL;
 
   /*
     Open image file.
   */
-  OpenImage(image_info,image,WriteBinaryType);
-  if (image->file == (FILE *) NULL)
+  mng_level=MNG_LEVEL;
+  status=OpenImage(image_info,image,WriteBinaryType);
+  if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   if (image_info->verbose)
     printf("Writing PNG image\n");

@@ -166,8 +166,8 @@ Export Image *ReadPSImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  OpenImage(image_info,image,ReadBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,ReadBinaryType);
+  if (status == False)
     ReaderExit(FileOpenWarning,"Unable to open file",image);
   /*
     Open temporary output file.
@@ -692,14 +692,15 @@ Export unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     page,
     polarity,
     scene,
+    status,
     text_size,
     width;
 
   /*
     Open output image file.
   */
-  OpenImage(image_info,image,WriteBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,WriteBinaryType);
+  if (status == False)
     WriterExit(FileOpenWarning,"Unable to open file",image);
   page=1;
   scene=0;

@@ -106,7 +106,8 @@ Export Image *ReadRGBImage(const ImageInfo *image_info)
     *scanline;
 
   unsigned int
-    packet_size;
+    packet_size,
+    status;
 
   unsigned short
     value;
@@ -124,8 +125,8 @@ Export Image *ReadRGBImage(const ImageInfo *image_info)
       /*
         Open image file.
       */
-      OpenImage(image_info,image,ReadBinaryType);
-      if (image->file == (FILE *) NULL)
+      status=OpenImage(image_info,image,ReadBinaryType);
+      if (status == False)
         ReaderExit(FileOpenWarning,"Unable to open file",image);
       for (i=0; i < image->offset; i++)
         (void) ReadByte(image);
@@ -282,8 +283,8 @@ Export Image *ReadRGBImage(const ImageInfo *image_info)
         if (image_info->interlace == PartitionInterlace)
           {
             AppendImageFormat("R",image->filename);
-            OpenImage(image_info,image,ReadBinaryType);
-            if (image->file == (FILE *) NULL)
+            status=OpenImage(image_info,image,ReadBinaryType);
+            if (status == False)
               ReaderExit(FileOpenWarning,"Unable to open file",image);
           }
         packet_size=image->depth >> 3;
@@ -319,8 +320,8 @@ Export Image *ReadRGBImage(const ImageInfo *image_info)
           {
             CloseImage(image);
             AppendImageFormat("G",image->filename);
-            OpenImage(image_info,image,ReadBinaryType);
-            if (image->file == (FILE *) NULL)
+            status=OpenImage(image_info,image,ReadBinaryType);
+            if (status == False)
               ReaderExit(FileOpenWarning,"Unable to open file",image);
           }
         q=image->pixels;
@@ -350,8 +351,8 @@ Export Image *ReadRGBImage(const ImageInfo *image_info)
           {
             CloseImage(image);
             AppendImageFormat("B",image->filename);
-            OpenImage(image_info,image,ReadBinaryType);
-            if (image->file == (FILE *) NULL)
+            status=OpenImage(image_info,image,ReadBinaryType);
+            if (status == False)
               ReaderExit(FileOpenWarning,"Unable to open file",image);
           }
         q=image->pixels;
@@ -386,8 +387,8 @@ Export Image *ReadRGBImage(const ImageInfo *image_info)
               {
                 CloseImage(image);
                 AppendImageFormat("A",image->filename);
-                OpenImage(image_info,image,ReadBinaryType);
-                if (image->file == (FILE *) NULL)
+                status=OpenImage(image_info,image,ReadBinaryType);
+                if (status == False)
                   ReaderExit(FileOpenWarning,"Unable to open file",image);
               }
             q=image->pixels;
@@ -496,7 +497,8 @@ Export unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
     *p;
 
   unsigned int
-    scene;
+    scene,
+    status;
 
   image->depth=QuantumDepth;
   if (image_info->interlace != PartitionInterlace)
@@ -504,8 +506,8 @@ Export unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
       /*
         Open output image file.
       */
-      OpenImage(image_info,image,WriteBinaryType);
-      if (image->file == (FILE *) NULL)
+      status=OpenImage(image_info,image,WriteBinaryType);
+      if (status == False)
         WriterExit(FileOpenWarning,"Unable to open file",image);
     }
   scene=0;
@@ -617,8 +619,8 @@ Export unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
         if (image_info->interlace == PartitionInterlace)
           {
             AppendImageFormat("R",image->filename);
-            OpenImage(image_info,image,WriteBinaryType);
-            if (image->file == (FILE *) NULL)
+            status=OpenImage(image_info,image,WriteBinaryType);
+            if (status == False)
               WriterExit(FileOpenWarning,"Unable to open file",image);
           }
         p=image->pixels;
@@ -632,8 +634,8 @@ Export unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
           {
             CloseImage(image);
             AppendImageFormat("G",image->filename);
-            OpenImage(image_info,image,WriteBinaryType);
-            if (image->file == (FILE *) NULL)
+            status=OpenImage(image_info,image,WriteBinaryType);
+            if (status == False)
               WriterExit(FileOpenWarning,"Unable to open file",image);
           }
         ProgressMonitor(SaveImageText,100,400);
@@ -648,8 +650,8 @@ Export unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
           {
             CloseImage(image);
             AppendImageFormat("B",image->filename);
-            OpenImage(image_info,image,WriteBinaryType);
-            if (image->file == (FILE *) NULL)
+            status=OpenImage(image_info,image,WriteBinaryType);
+            if (status == False)
               WriterExit(FileOpenWarning,"Unable to open file",image);
           }
         ProgressMonitor(SaveImageText,200,400);
@@ -668,8 +670,8 @@ Export unsigned int WriteRGBImage(const ImageInfo *image_info,Image *image)
               {
                 CloseImage(image);
                 AppendImageFormat("A",image->filename);
-                OpenImage(image_info,image,WriteBinaryType);
-                if (image->file == (FILE *) NULL)
+                status=OpenImage(image_info,image,WriteBinaryType);
+                if (status == False)
                   WriterExit(FileOpenWarning,"Unable to open file",image);
               }
             for (i=0; i < (int) image->packets; i++)

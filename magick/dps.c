@@ -163,8 +163,8 @@ Export Image *ReadDPSImage(const ImageInfo *image_info)
   /*
     Open image file.
   */
-  OpenImage(image_info,image,ReadBinaryType);
-  if (image->file == (FILE *) NULL)
+  status=OpenImage(image_info,image,ReadBinaryType);
+  if (status == False)
     return((Image *) NULL);
   /*
     Get user defaults from X resource database.
