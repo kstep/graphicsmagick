@@ -134,8 +134,14 @@ extern "C" {
   For the Windows Visual C++ DLL build, use a Windows resource based
   message lookup table (i.e. use FormatMessage()).
  */
-#if ((defined(WIN32) && defined(_DLL)) && !defined(__MINGW32__))
-#  define MAGICK_WINDOWS_MESSAGE_TABLES 1
+#if 0
+  /*
+    Currently disabled since feature only seems to work from
+    a DLL
+  */
+#  if ((defined(WIN32) && defined(_DLL)) && !defined(__MINGW32__))
+#    define MAGICK_WINDOWS_MESSAGE_TABLES 1
+#  endif
 #endif
 
 #define MagickSignature  0xabacadabUL

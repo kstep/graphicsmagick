@@ -5,8 +5,6 @@ Items large and small which remain to be worked on.
 Immediate Bugs
 ==============
 
- o Under Windows (static build only), 'convert -list delegate' prints
-   infinite blank lines after displaying a correct list.
  o SegmentImage is producing black images in some cases.
  o Double free observed with 'gm display -geometry "1280x1024!" image.tiff'.
 

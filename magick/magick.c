@@ -643,13 +643,16 @@ MagickExport void InitializeMagickClientPathAndName(const char *path)
   *execution_path='\0';
   if (!IsValidFilesystemPath(path))
     {
-      /* If the path passed is NULL or invalid then we try to ask the OS
-        what the name of the executable is. Callers will often pass NULL
-        in order to invoke this functionality.
+      /*
+        If the path passed is NULL or invalid then we try to ask the
+        OS what the name of the executable is. Callers will often pass
+        NULL in order to invoke this functionality.
       */
       if (GetExecutionPath(execution_path))
         {
-          /* The call to the OS worked so we can do all the settings */
+          /*
+            The call to the OS worked so we can do all the settings
+          */
           (void) DefineClientPathAndName(execution_path);
           (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
             "Invalid path \"%s\" passed - asking OS worked: \"%s\"",spath,
@@ -657,9 +660,11 @@ MagickExport void InitializeMagickClientPathAndName(const char *path)
         }
       else
         {
-          /* The call to the OS failed so we try one last kludgy thing -
-             we call getcwd and sling whatever seems to be a filename
-             passed by the caller onto the end and see if that works */
+          /*
+            The call to the OS failed so we try one last kludgy thing
+            - we call getcwd and sling whatever seems to be a filename
+            passed by the caller onto the end and see if that works
+          */
           (void) strncpy(execution_path,path,MaxTextExtent-1);
           if (GetExecutionPathUsingName(execution_path))
             {
@@ -670,8 +675,10 @@ MagickExport void InitializeMagickClientPathAndName(const char *path)
             }
           else
             {
-              /* At this point we are totally hosed and have nothing to
-                 go on for the path, so all we can do is log the error */
+              /*
+                At this point we are totally hosed and have nothing to
+                go on for the path, so all we can do is log the error
+              */
               (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),
                 "Invalid path \"%s\" passed - asking OS failed, getcwd also failed",spath);
             }
@@ -679,8 +686,10 @@ MagickExport void InitializeMagickClientPathAndName(const char *path)
     }
   else
     {
-      /* This is the easy one. The caller gave us the correct and
-         working path to the application, so we just use it */
+      /*
+        This is the easy one. The caller gave us the correct and
+        working path to the application, so we just use it
+      */
       (void) strncpy(execution_path,path,MaxTextExtent-1);
       (void) DefineClientPathAndName(execution_path);
       (void) LogMagickEvent(ConfigureEvent,GetMagickModule(),"Valid path \"%s\"",spath);

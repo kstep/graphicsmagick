@@ -53,6 +53,17 @@
 </tr>
 </table>
 <p>
+2004-04-04  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> magick/studio.h: Disabled use of Windows message lookups
+        entirely since this doesn't seem to work for programs.  It
+        probably only works for DLLs like ImageMagickObject.
+  <LI> magick/delegate.c (ListDelegateInfo): Don't get stuck in a loop
+        if fprintf() returns zero.
+
+</UL>
+<p>
 2004-04-03  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

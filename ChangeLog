@@ -1,5 +1,8 @@
 2004-04-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* magick/studio.h: Disabled use of Windows message lookups
+	entirely since this doesn't seem to work for programs.  It
+	probably only works for DLLs like ImageMagickObject.
 	* magick/delegate.c (ListDelegateInfo): Don't get stuck in a loop
 	if fprintf() returns zero.
 
