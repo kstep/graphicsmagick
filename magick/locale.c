@@ -1190,6 +1190,9 @@ const char *GetLocaleMessage(const char *tag)
       if (p - tp == 12 && !LocaleNCompare(tp, "MissingLevel", 12))
         return *np ? tag : "Missing level";
       else
+      if (p - tp == 16 && !LocaleNCompare(tp, "MissingLogFormat", 16))
+        return *np ? tag : "Missing log format";
+      else
       if (p - tp == 14 && !LocaleNCompare(tp, "MissingMapType", 14))
         return *np ? tag : "Missing map type";
       else
@@ -1456,6 +1459,9 @@ const char *GetLocaleMessage(const char *tag)
             else
             if (p - tp == 15 && !LocaleNCompare(tp, "MissingListName", 15))
               return *np ? tag : "Missing list name";
+            else
+            if (p - tp == 16 && !LocaleNCompare(tp, "MissingLogFormat", 16))
+              return *np ? tag : "Missing log format";
             else
             if (p - tp == 17 && !LocaleNCompare(tp, "MissingMatteColor", 17))
               return *np ? tag : "Missing matte color";
@@ -1733,6 +1739,9 @@ const char *GetLocaleMessage(const char *tag)
                   return tag;
 
               case 'u':  case 'U':
+                if (p - tp == 21 && !LocaleNCompare(tp, "UnableToAcquireString", 21))
+                  return *np ? tag : "unable to acquire string";
+                else
                 if (p - tp == 25 && !LocaleNCompare(tp, "UnableToAddGenericProfile", 25))
                   return *np ? tag : "unable to add generic profile";
                 else
@@ -1744,6 +1753,9 @@ const char *GetLocaleMessage(const char *tag)
                 else
                 if (p - tp == 24 && !LocaleNCompare(tp, "UnableToAllocateColormap", 24))
                   return *np ? tag : "Unable to allocate colormap";
+                else
+                if (p - tp == 22 && !LocaleNCompare(tp, "UnableToAllocateString", 22))
+                  return *np ? tag : "unable to allocate string";
                 else
                 if (p - tp == 21 && !LocaleNCompare(tp, "UnableToAnnotateImage", 21))
                   return *np ? tag : "Unable to annotate image";
@@ -1801,6 +1813,9 @@ const char *GetLocaleMessage(const char *tag)
                 else
                 if (p - tp == 39 && !LocaleNCompare(tp, "UnableToDetermineTheNumberOfImageColors", 39))
                   return *np ? tag : "unable to determine the number of image colors";
+                else
+                if (p - tp == 26 && !LocaleNCompare(tp, "UnableToDistillRandomEvent", 26))
+                  return *np ? tag : "unable to distill random event";
                 else
                 if (p - tp == 19 && !LocaleNCompare(tp, "UnableToDitherImage", 19))
                   return *np ? tag : "unable to dither image";

@@ -126,6 +126,7 @@ static void AnimateUsage(void)
       "-help                print program options",
       "-interlace type      None, Line, Plane, or Partition",
       "-limit type value    Disk, Map, or Memory resource limit",
+      "-log format          format of debugging information",
       "-matte               store matte channel if the image has one",
       "-map type            display image using this Standard Colormap",
       "-monochrome          transform image to black and white",
@@ -801,6 +802,17 @@ int main(int argc,char **argv)
                     else
                       MagickFatalError(OptionFatalError,
                         "UnrecognizedResourceType",type);
+              }
+            break;
+          }
+        if (LocaleCompare("log",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingLogFormat",option);
+                (void) SetLogFormat(argv[i]);
               }
             break;
           }

@@ -120,6 +120,7 @@ static void ImportUsage(void)
       "-help                print program options",
       "-label name          assign a label to an image",
       "-limit type value    Disk, Map, or Memory resource limit",
+      "-log format          format of debugging information",
       "-monochrome          transform image to black and white",
       "-negate              replace every pixel with its complementary color ",
       "-page geometry       size and location of an image canvas",
@@ -737,6 +738,17 @@ int main(int argc,char **argv)
                     else
                       MagickFatalError(OptionFatalError,
                         "UnrecognizedResourceType",type);
+              }
+            break;
+          }
+        if (LocaleCompare("log",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingLogFormat",option);
+                (void) SetLogFormat(argv[i]);
               }
             break;
           }

@@ -884,6 +884,9 @@
       <Message name="MissingListName">
         Missing list name
       </Message>
+      <Message name="MissingLogFormat">
+        Missing log format
+      </Message>
       <Message name="MissingMatteColor">
         Missing matte color
       </Message>
@@ -1137,6 +1140,9 @@
       </Message>
       <Message name="MissingLevel">
         Missing level
+      </Message>
+      <Message name="MissingLogFormat">
+        Missing log format
       </Message>
       <Message name="MissingMapType">
         Missing map type

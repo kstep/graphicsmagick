@@ -48,7 +48,7 @@ extern MagickExport unsigned long
 
 extern MagickExport void
   DestroyLogInfo(void),
-  LogMagickFormat(const char *);
+  SetLogFormat(const char *);
 
 #if defined(__cplusplus) || defined(c_plusplus)
 }

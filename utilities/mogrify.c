@@ -141,6 +141,7 @@ static void MogrifyUsage(void)
       "-level value         adjust the level of image contrast",
       "-limit type value    Disk, Map, or Memory resource limit",
       "-list type           Color, Delegate, Format, Magic, Module, or Type",
+      "-log format          format of debugging information",
       "-loop iterations     add Netscape loop extension to your GIF animation",
       "-map filename        transform image colors to match this set of colors",
       "-mask filename       set the image clip mask",

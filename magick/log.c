@@ -732,39 +732,6 @@ MagickExport unsigned int LogMagickEvent(const LogEventType type,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   L o g M a g i c k F o r m a t                                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  LogMagickFormat() sets the format for the "human readable" log record.
-%
-%  The format of the LogMagickFormat method is:
-%
-%      LogMagickFormat(const char *format)
-%
-%  A description of each parameter follows:
-%
-%    o format: The log record format.
-%
-%
-*/
-MagickExport void LogMagickFormat(const char *format)
-{
-  AcquireSemaphoreInfo(&log_semaphore);
-  if (log_info->format != (char *) NULL)
-    LiberateMemory((void **) &log_info->format);
-  log_info->format=AcquireString(format);
-  LiberateSemaphoreInfo(&log_semaphore);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
 +   R e a d C o n f i g u r e F i l e                                         %
 %                                                                             %
 %                                                                             %
@@ -1055,4 +1022,37 @@ MagickExport unsigned long SetLogEventMask(const char *events)
     log_info->events|=X11Event;
   LiberateSemaphoreInfo(&log_semaphore);
   return(log_info->events);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   S e t L o g F o r m a t                                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SetLogFormat() sets the format for the "human readable" log record.
+%
+%  The format of the LogMagickFormat method is:
+%
+%      SetLogFormat(const char *format)
+%
+%  A description of each parameter follows:
+%
+%    o format: The log record format.
+%
+%
+*/
+MagickExport void SetLogFormat(const char *format)
+{
+  AcquireSemaphoreInfo(&log_semaphore);
+  if (log_info->format != (char *) NULL)
+    LiberateMemory((void **) &log_info->format);
+  log_info->format=AcquireString(format);
+  LiberateSemaphoreInfo(&log_semaphore);
 }

@@ -971,6 +971,18 @@ MagickExport unsigned int CompositeImageCommand(ImageInfo *image_info,
               }
             break;
           }
+        if (LocaleCompare("log",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  ThrowCompositeException(OptionError,"MissingLogFormat",
+                    option);
+                (void) SetLogFormat(argv[i]);
+              }
+            break;
+          }
         ThrowCompositeException(OptionError,"UnrecognizedOption",option)
       }
       case 'm':
@@ -1998,7 +2010,8 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
                 if (LocaleCompare("MSB",option) == 0)
                   image_info->endian=MSBEndian;
                 if (image_info->endian == UndefinedEndian)
-                  ThrowConvertException(OptionError,"UnrecognizedEndianType",option);
+                  ThrowConvertException(OptionError,"UnrecognizedEndianType",
+                    option);
               }
             break;
           }
@@ -2415,6 +2428,17 @@ MagickExport unsigned int ConvertImageCommand(ImageInfo *image_info,
                       option)
                 }
                 return(True);
+              }
+            break;
+          }
+        if (LocaleCompare("log",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  ThrowConvertException(OptionError,"MissingLogFormat",option);
+                (void) SetLogFormat(argv[i]);
               }
             break;
           }
@@ -3443,6 +3467,21 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
                 if (image_info->interlace == UndefinedInterlace)
                   ThrowIdentifyException(OptionError,
                     "UnrecognizedImageInterlace",option);
+              }
+            break;
+          }
+        ThrowIdentifyException(OptionError,"UnrecognizedOption",option)
+      }
+      case 'l':
+      {
+        if (LocaleCompare("log",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  ThrowIdentifyException(OptionError,"MissingLogFormat",option);
+                (void) SetLogFormat(argv[i]);
               }
             break;
           }
@@ -4543,6 +4582,17 @@ MagickExport unsigned int MogrifyImageCommand(ImageInfo *image_info,
                       option)
                 }
                 return(True);
+              }
+            break;
+          }
+        if (LocaleCompare("log",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  ThrowMogrifyException(OptionError,"MissingLogFormat",option);
+                (void) SetLogFormat(argv[i]);
               }
             break;
           }
@@ -6000,6 +6050,17 @@ MagickExport unsigned int MontageImageCommand(ImageInfo *image_info,
                     else
                       ThrowMontageException(OptionError,
                         "UnrecognizedResourceType",type);
+              }
+            break;
+          }
+        if (LocaleCompare("log",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  ThrowMontageException(OptionError,"MissingLogFormat",option);
+                (void) SetLogFormat(argv[i]);
               }
             break;
           }

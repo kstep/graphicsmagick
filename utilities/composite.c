@@ -115,6 +115,7 @@ static void CompositeUsage(void)
       "-interlace type      None, Line, Plane, or Partition",
       "-label name          ssign a label to an image",
       "-limit type value    Disk, Map, or Memory resource limit",
+      "-log format          format of debugging information",
       "-matte               store matte channel if the image has one",
       "-monochrome          transform image to black and white",
       "-negate              replace every pixel with its complementary color ",

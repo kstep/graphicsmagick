@@ -123,6 +123,7 @@ static void MontageUsage(void)
       "-help                print program options",
       "-label name          assign a label to an image",
       "-limit type value    Disk, Map, or Memory resource limit",
+      "-log format          format of debugging information",
       "-matte               store matte channel if the image has one",
       "-mode type           Frame, Unframe, or Concatenate",
       "-monochrome          transform image to black and white",

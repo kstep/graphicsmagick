@@ -97,6 +97,7 @@ static void IdentifyUsage(void)
       "-help                print program options",
       "-interlace type      None, Line, Plane, or Partition",
       "-limit type value    Disk, Map, or Memory resource limit",
+      "-log format          format of debugging information",
       "-size geometry       width and height of image",
       "-sampling-factor geometry",
       "                     horizontal and vertical sampling factor",

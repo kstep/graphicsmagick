@@ -100,6 +100,7 @@ static void ConjureUsage(void)
     {
       "-debug events        display copious debugging information",
       "-help                print program options",
+      "-log format          format of debugging information",
       "-verbose             print detailed information about the image",
       "-version             print version information",
       (char *) NULL
@@ -186,6 +187,17 @@ int main(int argc,char **argv)
           {
             if (*option == '-')
               ConjureUsage();
+            continue;
+          }
+        if (LocaleCompare("log",option+1) == 0)
+          {
+            if (*option == '-')
+              {
+                i++;
+                if (i == argc)
+                  MagickFatalError(OptionFatalError,"MissingLogFormat",option);
+                (void) SetLogFormat(argv[i]);
+              }
             continue;
           }
         if (LocaleCompare("verbose",option+1) == 0)
