@@ -341,12 +341,12 @@ static unsigned int DecodeImage(Image *image,const long opacity)
       if (QuantumTick(y,image->rows))
         MagickMonitor(LoadImageText,y,image->rows);
   }
-  if (y < (long) image->rows)
-    ThrowBinaryException(CorruptImageError,"Corrupt GIF image",image->filename);
   LiberateMemory((void **) &pixel_stack);
   LiberateMemory((void **) &suffix);
   LiberateMemory((void **) &prefix);
   LiberateMemory((void **) &packet);
+  if (y < (long) image->rows)
+    ThrowBinaryException(CorruptImageError,"Corrupt GIF image",image->filename);
   return(True);
 }
 
