@@ -3206,7 +3206,9 @@ MagickExport unsigned int IdentifyImageCommand(ImageInfo *image_info,
       }
     }
   }
-  if ((i != argc) || (number_images == 0))
+  if (number_images == 0)
+    return(False);
+  if (i != (argc-1))
     ThrowIdentifyException(OptionError,"Missing an image file name",
       (char *) NULL);
   if (format != (char *) NULL)
