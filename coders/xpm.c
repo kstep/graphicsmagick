@@ -741,11 +741,13 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
     */
     (void) QueryColorName(image->colormap+i,name);
     if (transparent)
-      if (i == (int) (colors-1))
-        if (LocaleCompare(image_info->magick,"PICON") == 0)
-          (void) strcpy(name,"grey75");
-        else
-          (void) strcpy(name,"None");
+      {
+        if (i == (int) (colors-1))
+          if (LocaleCompare(image_info->magick,"PICON") == 0)
+            (void) strcpy(name,"grey75");
+          else
+            (void) strcpy(name,"None");
+      }
     /*
       Write XPM color.
     */
