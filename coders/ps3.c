@@ -58,6 +58,7 @@
 #include "compress.h"
 #include "magick.h"
 #include "monitor.h"
+#include "static.h"
 #include "utility.h"
 #if defined(HasTIFF)
 #define CCITTParam  "-1"
@@ -569,6 +570,7 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
         jpeg_image=CloneImage(image,0,0,True,&image->exception);
         if (jpeg_image == (Image *) NULL)
           ThrowWriterException(CoderError,image->exception.reason,image);
+        (void) strcpy(jpeg_image->magick,"JPEG");
         blob=ImageToBlob(image_info,jpeg_image,&length,&image->exception);
         (void) WriteBlob(image,length,blob);
         DestroyImage(jpeg_image);

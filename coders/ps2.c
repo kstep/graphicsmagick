@@ -58,6 +58,7 @@
 #include "compress.h"
 #include "magick.h"
 #include "monitor.h"
+#include "static.h"
 #include "utility.h"
 #if defined(HasTIFF)
 #define CCITTParam  "-1"
@@ -402,6 +403,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
       "    %%",
       "    /colormap colors 3 mul string def",
       "    currentfile colormap readhexstring pop pop",
+      "    currentfile buffer readline pop",
       "    [ /Indexed /DeviceRGB colors 1 sub colormap ] setcolorspace",
       "    <<",
       "      /ImageType 1",
@@ -494,6 +496,9 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     start,
     stop;
 
+  Image
+    *jpeg_image;
+
   int
     count,
     status;
@@ -534,6 +539,9 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     page,
     scene,
     text_size;
+
+  void
+    *blob;
 
   /*
     Open output image file.
@@ -786,18 +794,13 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
           }
           case JPEGCompression:
           {
-            Image
-              *jpeg_image;
-
-            void
-              *blob;
-
             /*
               Write image in JPEG format.
             */
             jpeg_image=CloneImage(image,0,0,True,&image->exception);
             if (jpeg_image == (Image *) NULL)
               ThrowWriterException(CoderError,image->exception.reason,image);
+            (void) strcpy(jpeg_image->magick,"JPEG");
             blob=ImageToBlob(image_info,jpeg_image,&length,&image->exception);
             (void) WriteBlob(image,length,blob);
             DestroyImage(jpeg_image);
@@ -835,8 +838,12 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
               }
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
-                    break;
+                  {
+                    status=MagickMonitor(SaveImageText,y,image->rows,
+                      &image->exception);
+                    if (status == False)
+                      break;
+                  }
             }
             if (compression == LZWCompression)
               status=LZWEncodeImage(image,length,pixels);
@@ -870,8 +877,12 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
               }
               if (image->previous == (Image *) NULL)
                 if (QuantumTick(y,image->rows))
-                  if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
-                    break;
+                  {
+                    status=MagickMonitor(SaveImageText,y,image->rows,
+                      &image->exception);
+                    if (status == False)
+                      break;
+                  }
             }
             Ascii85Flush(image);
             break;
@@ -879,7 +890,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
         }
       }
     else
-      if ((image->storage_class == DirectClass) ||
+      if ((image->storage_class == DirectClass) || (image->colors > 256) ||
           (compression == JPEGCompression))
         {
           FormatString(buffer,"%lu %lu\n0\n%d\n",image->columns,image->rows,
@@ -891,18 +902,13 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
           {
             case JPEGCompression:
             {
-              Image
-                *jpeg_image;
-
-              void
-                *blob;
-
               /*
                 Write image in JPEG format.
               */
               jpeg_image=CloneImage(image,0,0,True,&image->exception);
               if (jpeg_image == (Image *) NULL)
                 ThrowWriterException(CoderError,image->exception.reason,image);
+              (void) strcpy(jpeg_image->magick,"JPEG");
               blob=ImageToBlob(image_info,jpeg_image,&length,&image->exception);
               (void) WriteBlob(image,length,blob);
               DestroyImage(jpeg_image);
@@ -960,8 +966,12 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                 }
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
-                    if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
-                      break;
+                    {
+                      status=MagickMonitor(SaveImageText,y,image->rows,
+                        &image->exception);
+                      if (status == False)
+                        break;
+                    }
               }
               if (compression == LZWCompression)
                 status=LZWEncodeImage(image,length,pixels);
@@ -1013,8 +1023,12 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                 }
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
-                    if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
-                      break;
+                    {
+                      status=MagickMonitor(SaveImageText,y,image->rows,
+                        &image->exception);
+                      if (status == False)
+                        break;
+                    }
               }
               Ascii85Flush(image);
               break;
@@ -1072,8 +1086,12 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                   *q++=indexes[x];
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
-                    if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
-                      break;
+                    {
+                      status=MagickMonitor(SaveImageText,y,image->rows,
+                        &image->exception);
+                      if (status == False)
+                        break;
+                    }
               }
               if (compression == LZWCompression)
                 status=LZWEncodeImage(image,length,pixels);
@@ -1104,8 +1122,12 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                   Ascii85Encode(image,indexes[x]);
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
-                    if (!MagickMonitor(SaveImageText,y,image->rows,&image->exception))
-                      break;
+                    {
+                      status=MagickMonitor(SaveImageText,y,image->rows,
+                        &image->exception);
+                      if (status == False)
+                        break;
+                    }
               }
               Ascii85Flush(image);
               break;
