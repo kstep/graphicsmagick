@@ -382,8 +382,8 @@ ErasePalette:
    if(strncmp(PalHeader.FileId,"AH",2)) goto ErasePalette;
    PalHeader.Version=LSBFirstReadShort(palette);
    PalHeader.Size=LSBFirstReadShort(palette);
-   PalHeader.FileType=ReadByte(palette);
-   PalHeader.SubType=ReadByte(palette);
+   PalHeader.FileType=ReadByte(palette);
+   PalHeader.SubType=ReadByte(palette);
    PalHeader.BoardID=LSBFirstReadShort(palette);
    PalHeader.GraphicsMode=LSBFirstReadShort(palette);
    PalHeader.MaxIndex=LSBFirstReadShort(palette);
