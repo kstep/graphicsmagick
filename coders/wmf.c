@@ -93,6 +93,17 @@
 #if defined(HasWMFlite)
 # define wmf_api_create(api,flags,options) wmf_lite_create(api,flags,options)
 # define wmf_api_destroy(api) wmf_lite_destroy(api)
+# undef WMF_FONT_PSNAME
+# define WMF_FONT_PSNAME(F) ((F)->user_data ? ((wmf_magick_font_t*) (F)->user_data)->ps_name : 0)
+
+typedef struct _wmf_magick_font_t wmf_magick_font_t;
+
+struct _wmf_magick_font_t
+{
+  char*  ps_name;
+  double pointsize;
+};
+
 #endif
 
 typedef struct _wmf_magick_t wmf_magick_t;
@@ -156,6 +167,12 @@ typedef enum
 }
 magick_arc_t;
 
+#if defined(HasWMFlite)
+static void  magick_font_init (wmfAPI* API, wmfAPI_Options* options);
+static void  magick_font_map(wmfAPI* API,wmfFont* font);
+static float magick_font_stringwidth(wmfAPI* API, wmfFont* font, char* str);
+#endif
+
 static int  magick_mvg_printf(wmfAPI * API, char *format, ...);
 static int  wmf_magick_read(void* context);
 static int  wmf_magick_seek(void* context,long position);
@@ -163,6 +180,7 @@ static long wmf_magick_tell(void* context);
 static void magick_brush(wmfAPI * API, wmfDC * dc);
 static void magick_draw_arc(wmfAPI * API, wmfDrawArc_t * draw_arc,magick_arc_t finish);
 static void magick_pen(wmfAPI * API, wmfDC * dc);
+static double magick_font_pointsize( wmfAPI* API, wmfFont* font, char* str, double font_height);
 static void magick_render_mvg(wmfAPI * API);
 static void wmf_magick_bmp_draw(wmfAPI * API, wmfBMP_Draw_t * bmp_draw);
 static void wmf_magick_bmp_free(wmfAPI * API, wmfBMP * bmp);
@@ -473,7 +491,7 @@ static void wmf_magick_device_begin(wmfAPI * API)
     }
   else
     {
-      /* FIXME: Draw rectangle with texture image */
+      /* FIXME: Draw rectangle with texture image the SVG way */
     }
 
   magick_mvg_printf(API, "fill-opacity 1\n");
@@ -916,15 +934,10 @@ static void wmf_magick_function(wmfAPI *API)
 
 static void wmf_magick_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
 {
-  char
-    *font_name = 0;		/* final font name */
-
   double		
     angle = 0,			/* text rotation angle */
     bbox_height,		/* bounding box height */
     bbox_width,			/* bounding box width */
-    font_height_points,		/* font height in points */
-    font_width_points,		/* font width in points */
     pointsize = 0;		/* pointsize to output font with desired height */
 
   TypeMetric
@@ -953,21 +966,21 @@ static void wmf_magick_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
       dy;
 
     if ((draw_text->BR.x > draw_text->TL.x) && (draw_text->BR.y > draw_text->TL.y))
-    {
-      TL = draw_text->TL;
-      BR = draw_text->BR;
-      TR.x = draw_text->BR.x;
-      TR.y = draw_text->TL.y;
-      BL.x = draw_text->TL.x;
-      BL.y = draw_text->BR.y;
-    }
+      {
+        TL = draw_text->TL;
+        BR = draw_text->BR;
+        TR.x = draw_text->BR.x;
+        TR.y = draw_text->TL.y;
+        BL.x = draw_text->TL.x;
+        BL.y = draw_text->BR.y;
+      }
     else
-    {
-      TL = draw_text->bbox.TL;
-      BR = draw_text->bbox.BR;
-      TR = draw_text->bbox.TR;
-      BL = draw_text->bbox.BL;
-    }
+      {
+        TL = draw_text->bbox.TL;
+        BR = draw_text->bbox.BR;
+        TR = draw_text->bbox.TR;
+        BL = draw_text->bbox.BL;
+      }
     dx = ((TR.x - TL.x) + (BR.x - BL.x)) / 2;
     dy = ((TR.y - TL.y) + (BR.y - BL.y)) / 2;
     bbox_width = sqrt(dx * dx + dy * dy);
@@ -977,86 +990,63 @@ static void wmf_magick_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
   }
 
   font = WMF_DC_FONT(draw_text->dc);
-  font_name = WMF_FONT_PSNAME(font);
 
-  /* pixel_height and pixel_width provide the conversion factor from
-     WMF_FONT_HEIGHT & WMF_FONT_WIDTH units to points */
-  font_height_points = AbsoluteValue(WMF_FONT_HEIGHT(font) * draw_text->dc->pixel_height);
-  font_width_points = AbsoluteValue(WMF_FONT_WIDTH(font) * draw_text->dc->pixel_width);
+  /* Convert font_height to equivalent pointsize */
+  pointsize = magick_font_pointsize( API, font, draw_text->str, draw_text->font_height);
 
   /* Save graphic context */
   magick_mvg_printf(API, "push graphic-context\n");
 
 #if 0
-  printf("\nText                    = \"%s\"\n", draw_text->str);
-  /* printf("WMF_FONT_NAME:          = %s\n", WMF_FONT_NAME(font)); */
-  /* printf("Postscript font         = \"%s\"\n", font_name); */
+  printf("\nwmf_magick_draw_text\n");
+  printf("Text                    = \"%s\"\n", draw_text->str);
+  /* printf("WMF_FONT_NAME:          = \"%s\"\n", WMF_FONT_NAME(font)); */
+  printf("WMF_FONT_PSNAME:        = \"%s\"\n", WMF_FONT_PSNAME(font));
   /* printf("Text box                = %.10gx%.10g\n", bbox_width, bbox_height); */
   /* printf("WMF_FONT_HEIGHT         = %i\n", (int)WMF_FONT_HEIGHT(font)); */
-  /* printf("font height (points)    = %.10g\n", font_height_points); */
-  /* printf("WMF_FONT_WIDTH          = %i\n", (int)WMF_FONT_WIDTH(font)); */
-  /* printf("font width (points)     = %.10g\n", font_width_points); */
-  /* printf("font ratio              = %.10g\n", draw_text->font_ratio ); */
+  printf("Pointsize               = %.10g\n", pointsize);
+  fflush(stdout);
 #endif
 
   /*
-   * Correct font pointsize based on font metrics
+   * Obtain font metrics if required
    *
    */
-  {
-    Image * image = ddata->image;
-
-    DrawInfo draw_info;
-
-    ImageInfo * image_info;
-
-    image_info = CloneImageInfo((ImageInfo *) NULL);
-    CloneString(&image_info->font, font_name);
-    image_info->pointsize = font_height_points;
-    GetDrawInfo(image_info, &draw_info);
-    CloneString(&draw_info.text, draw_text->str);
-
-    if (GetTypeMetrics(image, &draw_info, &metrics) != False)
+  if ((WMF_DC_TEXTALIGN(draw_text->dc) & TA_CENTER) ||
+      (WMF_TEXT_UNDERLINE(font)) || (WMF_TEXT_STRIKEOUT(font)))
     {
-      if (strlen(draw_text->str) <= 1)
-      {
-	/* For individual characters, FONT_HEIGHT appears to
-	   specify the hight of the ascent only so calculate final
-	   pointsize based on ratio of ascent to ascent+descent */
-	pointsize = font_height_points *
-	  ((double) font_height_points /
-	   (metrics.ascent + AbsoluteValue(metrics.descent)));
-	draw_info.pointsize = pointsize;
-      }
-      else
-      {
-	/* For multi-character strings, the height metric seems to
-	   offer the best pointsize estimation */
-	pointsize =
-	  font_height_points * ((double) font_height_points / (metrics.height));
-	draw_info.pointsize = pointsize;
-
-	if ((WMF_DC_TEXTALIGN(draw_text->dc) & TA_CENTER) ||
-	    (WMF_TEXT_UNDERLINE(font)) || (WMF_TEXT_STRIKEOUT(font)))
-	{
-	  GetTypeMetrics(image, &draw_info, &metrics);
-
-	  /* Center the text if it is not yet centered and should be */
-	  if ((WMF_DC_TEXTALIGN(draw_text->dc) & TA_CENTER) &&
-	      (point.x < (BL.x + 1)))
-	  {
-	    double
-              text_width;
-
-	    text_width = metrics.width
-	      * (ddata->scale_y / ddata->scale_x);
-
-	    point.x += bbox_width / 2 - text_width / 2;
-	  }
-	}
-      }
+      Image
+        *image = ddata->image;
+      
+      DrawInfo
+        draw_info;
+      
+      ImageInfo
+        *image_info;
+      
+      double
+        text_width;
+      
+      image_info = CloneImageInfo((ImageInfo *) NULL);
+      CloneString(&image_info->font, WMF_FONT_PSNAME(font));
+      image_info->pointsize = pointsize;
+      GetDrawInfo(image_info, &draw_info);
+      CloneString(&draw_info.text, draw_text->str);
+      
+      if (GetTypeMetrics(image, &draw_info, &metrics) != False)
+        {
+          /* Center the text if it is not yet centered and should be */
+          if ((WMF_DC_TEXTALIGN(draw_text->dc) & TA_CENTER) &&
+              (point.x < (BL.x + 1)))
+            {
+              
+              text_width = metrics.width
+                * (ddata->scale_y / ddata->scale_x);
+              
+              point.x += bbox_width / 2 - text_width / 2;
+            }
+        }
     }
-  }
 
   /* Set stroke color */
   magick_mvg_printf(API, "stroke none\n");
@@ -1072,13 +1062,13 @@ static void wmf_magick_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
 
   /* Set under-box color */
   if (WMF_DC_OPAQUE(draw_text->dc))
-  {
-    wmfRGB
-      *box = WMF_DC_BACKGROUND(draw_text->dc);
+    {
+      wmfRGB
+        *box = WMF_DC_BACKGROUND(draw_text->dc);
 
-    magick_mvg_printf(API, "decorate #%02x%02x%02x\n",
-		      (int) box->r, (int) box->g, (int) box->b);
-  }
+      magick_mvg_printf(API, "decorate #%02x%02x%02x\n",
+                        (int) box->r, (int) box->g, (int) box->b);
+    }
   else
     magick_mvg_printf(API, "decorate none\n");
 
@@ -1086,7 +1076,7 @@ static void wmf_magick_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
   magick_mvg_printf(API, "font-size %.10g\n", pointsize);
 
   /* Output Postscript font name */
-  magick_mvg_printf(API, "font '%s'\n", font_name);
+  magick_mvg_printf(API, "font '%s'\n", WMF_FONT_PSNAME(font));
 
   /* Translate coordinates so target is 0,0 */
   magick_mvg_printf(API, "translate %.10g,%.10g\n", XC(point.x), YC(point.y));
@@ -1112,8 +1102,8 @@ static void wmf_magick_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
   {
     char
       escaped_string[MaxTextExtent],
-     *p,
-     *q;
+      *p,
+      *q;
 
     int string_length;
 
@@ -1122,19 +1112,19 @@ static void wmf_magick_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
      */
     for (p = draw_text->str, q = escaped_string, string_length = 0;
 	 *p != 0 && string_length < (sizeof(escaped_string) - 3); ++p)
-    {
-      if (*p == '\'')
       {
-	*q++ = '\\';
-	*q++ = '\\';
-	string_length += 2;
+        if (*p == '\'')
+          {
+            *q++ = '\\';
+            *q++ = '\\';
+            string_length += 2;
+          }
+        else
+          {
+            *q++ = (*p);
+            ++string_length;
+          }
       }
-      else
-      {
-	*q++ = (*p);
-	++string_length;
-      }
-    }
     *q = 0;
 
     /* Output string */
@@ -1142,48 +1132,48 @@ static void wmf_magick_draw_text(wmfAPI * API, wmfDrawText_t * draw_text)
 
     /* Underline text the Windows way (at the bottom) */
     if (WMF_TEXT_UNDERLINE(font))
-    {
-      double
-        line_height;
+      {
+        double
+          line_height;
 
-      wmfD_Coord
-        ulBR,			/* bottom right of underline rectangle */
-	ulTL;			/* top left of underline rectangle */
+        wmfD_Coord
+          ulBR,			/* bottom right of underline rectangle */
+          ulTL;			/* top left of underline rectangle */
 
-      line_height =
-	Max(((double) 1 / (ddata->scale_x)),
-	    ((double) AbsoluteValue(metrics.descent)) * 0.5);
-      ulTL.x = 0;
-      ulTL.y = AbsoluteValue(metrics.descent) - line_height;
-      ulBR.x = metrics.width;
-      ulBR.y = AbsoluteValue(metrics.descent);
+        line_height =
+          Max(((double) 1 / (ddata->scale_x)),
+              ((double) AbsoluteValue(metrics.descent)) * 0.5);
+        ulTL.x = 0;
+        ulTL.y = AbsoluteValue(metrics.descent) - line_height;
+        ulBR.x = metrics.width;
+        ulBR.y = AbsoluteValue(metrics.descent);
 
-      magick_mvg_printf(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
-			XC(ulTL.x), YC(ulTL.y), XC(ulBR.x), YC(ulBR.y));
+        magick_mvg_printf(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
+                          XC(ulTL.x), YC(ulTL.y), XC(ulBR.x), YC(ulBR.y));
 
-    }
+      }
 
     /* Strikeout text the Windows way */
     if (WMF_TEXT_STRIKEOUT(font))
-    {
-      double line_height;
+      {
+        double line_height;
 
-      wmfD_Coord
-        ulBR,			/* bottom right of strikeout rectangle */
-	ulTL;			/* top left of strikeout rectangle */
+        wmfD_Coord
+          ulBR,			/* bottom right of strikeout rectangle */
+          ulTL;			/* top left of strikeout rectangle */
 
-      line_height =
-	Max(((double) 1 / (ddata->scale_x)),
-	    ((double) AbsoluteValue(metrics.descent)) * 0.5);
-      ulTL.x = 0;
-      ulTL.y = -(((double) metrics.ascent) / 2 + line_height / 2);
-      ulBR.x = metrics.width;
-      ulBR.y = -(((double) metrics.ascent) / 2 - line_height / 2);
+        line_height =
+          Max(((double) 1 / (ddata->scale_x)),
+              ((double) AbsoluteValue(metrics.descent)) * 0.5);
+        ulTL.x = 0;
+        ulTL.y = -(((double) metrics.ascent) / 2 + line_height / 2);
+        ulBR.x = metrics.width;
+        ulBR.y = -(((double) metrics.ascent) / 2 - line_height / 2);
 
-      magick_mvg_printf(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
-			XC(ulTL.x), YC(ulTL.y), XC(ulBR.x), YC(ulBR.y));
+        magick_mvg_printf(API, "rectangle %.10g,%.10g %.10g,%.10g\n",
+                          XC(ulTL.x), YC(ulTL.y), XC(ulBR.x), YC(ulBR.y));
 
-    }
+      }
   }
 
   /* Restore graphic context */
@@ -1265,13 +1255,15 @@ static void magick_brush(wmfAPI * API, wmfDC * dc)
 	 * FIXME: this is probably totally bogus.
 	 */
 	if (fill_opaque)
-	  magick_mvg_printf(API, "fill-opacity 1.0\n");
-	else
-	  magick_mvg_printf(API, "fill-opacity 0.5\n");	/* semi-transparent?? */
+          {
+	  /* magick_mvg_printf(API, "fill-opacity 1.0\n"); */
+	/* else */
+/* 	  magick_mvg_printf(API, "fill-opacity 0.5\n"); */	/* semi-transparent?? */
 
-	magick_mvg_printf(API, "fill #%02x%02x%02x\n",
-			  (int) brush_color->r,
-			  (int) brush_color->g, (int) brush_color->b);
+          magick_mvg_printf(API, "fill #%02x%02x%02x\n",
+                            (int) brush_color->r,
+                            (int) brush_color->g, (int) brush_color->b);
+          }
 	break;
       }
     case BS_HATCHED:
@@ -1285,11 +1277,11 @@ static void magick_brush(wmfAPI * API, wmfDC * dc)
 	magick_mvg_printf(API, "push graphic-context\n");
 
 	if (fill_opaque)
-	{
-	  magick_mvg_printf(API, "fill #%02x%02x%02x\n",
-			    (int) bg_color->r, (int) bg_color->g, (int) bg_color->b);
-	  magick_mvg_printf(API, "rectangle 0,0 7,7\n");
-	}
+          {
+            magick_mvg_printf(API, "fill #%02x%02x%02x\n",
+                              (int) bg_color->r, (int) bg_color->g, (int) bg_color->b);
+            magick_mvg_printf(API, "rectangle 0,0 7,7\n");
+          }
 
 	magick_mvg_printf(API, "stroke-antialias 0\n");
 	magick_mvg_printf(API, "stroke-width 1\n");
@@ -1602,6 +1594,356 @@ static void magick_pen(wmfAPI * API, wmfDC * dc)
 		    (int) pen_color->r, (int) pen_color->g, (int) pen_color->b);
 }
 
+/* Estimate font pointsize based on Windows font parameters */
+static double magick_font_pointsize( wmfAPI* API, wmfFont* font, char* str, double font_height)
+{
+  wmf_magick_t
+    *ddata = WMF_MAGICK_GetData(API);
+
+  Image
+    *image = ddata->image;
+
+  TypeMetric
+    metrics;
+
+  DrawInfo
+    draw_info;
+
+  ImageInfo
+    *image_info;
+
+  double
+    pointsize = 0;
+
+  image_info = CloneImageInfo((ImageInfo *) NULL);
+  CloneString(&image_info->font, WMF_FONT_PSNAME(font));
+  image_info->pointsize = font_height;
+  GetDrawInfo(image_info, &draw_info);
+  CloneString(&draw_info.text, str);
+
+  if (GetTypeMetrics(image, &draw_info, &metrics) != False)
+    {
+      if (strlen(str) <= 1)
+        {
+          /* For individual characters, FONT_HEIGHT appears to
+             specify the hight of the ascent only so calculate final
+	   pointsize based on ratio of ascent to ascent+descent */
+          pointsize = font_height *
+            ((double) font_height /
+             (metrics.ascent + AbsoluteValue(metrics.descent)));
+          draw_info.pointsize = pointsize;
+        }
+      else
+        {
+          /* For multi-character strings, the height metric seems to
+             offer the best pointsize estimation */
+          pointsize =
+            font_height * ((double) font_height / (metrics.height));
+          draw_info.pointsize = pointsize;
+        }
+    }
+
+  return pointsize;
+}
+
+#if defined(HasWMFlite)
+/*
+ * Returns width of string in points, assuming (unstretched) font size of 1pt
+ * (similar to wmf_ipa_font_stringwidth)
+ *
+ * This is extremely odd at best, particularly since player/meta.h has access
+ * to the corrected font_height (as drawtext.font_height) when it invokes the
+ * stringwidth callback.  It should be possible to compute the real stringwidth!
+ */
+static float magick_font_stringwidth( wmfAPI* API, wmfFont* font, char* str)
+{
+  wmf_magick_t
+    *ddata = WMF_MAGICK_GetData(API);
+
+  Image
+    *image = ddata->image;
+
+  DrawInfo
+    draw_info;
+
+  ImageInfo
+    *image_info;
+
+  TypeMetric
+    metrics;
+
+  float
+    stringwidth = 0;
+
+  double
+    orig_x_resolution,
+    orig_y_resolution;
+
+  ResolutionType
+    orig_resolution_units;
+
+  orig_x_resolution = image->x_resolution;
+  orig_y_resolution = image->y_resolution;
+  orig_resolution_units = image->units;
+
+  image_info = CloneImageInfo((ImageInfo *) NULL);
+  CloneString(&image_info->font, WMF_FONT_PSNAME(font));
+  image_info->pointsize = 12;
+  GetDrawInfo(image_info, &draw_info);
+  CloneString(&draw_info.text, str);
+  image->x_resolution = 72;
+  image->y_resolution = 72;
+  image->units = PixelsPerInchResolution;
+
+  if (GetTypeMetrics(image, &draw_info, &metrics) != False)
+    stringwidth = ((metrics.width * 72)/(image->x_resolution * image_info->pointsize)); /* *0.916348; */
+
+#if 0
+  printf("\nmagick_font_stringwidth\n");
+  printf("WMF_FONT_NAME           = \"%s\"\n", WMF_FONT_NAME(font));
+  printf("WMF_FONT_PSNAME         = \"%s\"\n", WMF_FONT_PSNAME(font));
+  printf("stringwidth             = %.10g\n", stringwidth);
+  /* printf("WMF_FONT_HEIGHT         = %i\n", (int)WMF_FONT_HEIGHT(font)); */
+  /* printf("WMF_FONT_WIDTH          = %i\n", (int)WMF_FONT_WIDTH(font)); */
+  fflush(stdout);
+#endif
+
+  image->x_resolution = orig_x_resolution;
+  image->y_resolution = orig_y_resolution;
+  image->units = orig_resolution_units;
+
+  return 0;
+}
+
+/* Map font (similar to wmf_ipa_font_map) */
+
+/* Mappings to Ghostscript fonts: family, normal, italic, bold, bolditalic */
+static wmfFontMap WMFFontMap[] = {
+  { "Courier",            "Courier",     "Courier-Oblique",   "Courier-Bold",   "Courier-BoldOblique"   },
+  { "Helvetica",          "Helvetica",   "Helvetica-Oblique", "Helvetica-Bold", "Helvetica-BoldOblique" },
+  { "Modern",             "Courier",     "Courier-Oblique",   "Courier-Bold",   "Courier-BoldOblique"   },
+  { "Monotype Corsiva",   "Courier",     "Courier-Oblique",   "Courier-Bold",   "Courier-BoldOblique"   },
+  { "News Gothic",        "Helvetica",   "Helvetica-Oblique", "Helvetica-Bold", "Helvetica-BoldOblique" },
+  { "Symbol",             "Symbol",      "Symbol",            "Symbol",         "Symbol"                },
+  { "System",             "Courier",     "Courier-Oblique",   "Courier-Bold",   "Courier-BoldOblique"   },
+  { "Times",              "Times-Roman", "Times-Italic",      "Times-Bold",     "Times-BoldItalic"      },
+  {  NULL,		   NULL,          NULL,                NULL,             NULL                   }
+};
+
+/* Mapping between base name and Ghostscript family name */
+static wmfMapping SubFontMap[] = {
+  { "Arial",		"Helvetica" },
+  { "Courier",		"Courier"   },
+  { "Fixed",		"Courier"   },
+  { "Helvetica",	"Helvetica" },
+  { "Sans",		"Helvetica" },
+  { "Sym",		"Symbol"    },
+  { "Terminal",		"Courier"   },
+  { "Times",		"Times"     },
+  { "Wingdings",	"Symbol"    },
+  {  NULL,	         NULL       }
+};
+
+/* Estimate weight based on font name */
+static double font_weight( const char* font )
+{
+  double
+    weight;
+
+  weight = 400;
+  if((strstr(font,"Normal") || strstr(font,"Regular")))
+    weight = 400;
+  else if( strstr(font,"Bold") )
+    {
+      weight = 700;
+      if((strstr(font,"Semi") || strstr(font,"Demi")))
+        weight = 600;
+      if( (strstr(font,"Extra") || strstr(font,"Ultra")))
+        weight = 800;
+    }
+  else if( strstr(font,"Light") )
+    {
+      weight = 300;
+      if( (strstr(font,"Extra") || strstr(font,"Ultra")))
+        weight = 200;
+    }
+  else if((strstr(font,"Heavy") || strstr(font,"Black")))
+    weight = 900;
+  else if( strstr(font,"Thin") )
+    weight = 100;
+  return weight;
+}
+
+static void magick_font_map( wmfAPI* API, wmfFont* font)
+{
+  wmfFontData
+    *font_data;
+
+  wmf_magick_font_t
+    *magick_font;
+
+  wmf_magick_t
+    *ddata = WMF_MAGICK_GetData(API);
+
+  ExceptionInfo
+    exception;
+
+  const TypeInfo
+    *type_info,
+    *type_info_base;
+
+  if (font == 0)
+    return;
+
+  font_data = (wmfFontData*)API->font_data;
+  font->user_data = font_data->user_data;
+  magick_font = (wmf_magick_font_t*)font->user_data;
+
+  LiberateMemory((void**)&magick_font->ps_name);
+
+  GetExceptionInfo(&exception);
+  type_info_base=GetTypeInfo("*",&exception);
+  if(type_info_base == 0)
+    {
+      if (ddata->image->exception.severity < exception.severity)
+        ddata->image->exception = exception;
+      return;
+    }
+
+  /* Look for exact full match first */
+  for ( type_info=type_info_base; type_info != 0; type_info=type_info->next)
+    {
+      if(LocaleCompare(WMF_FONT_NAME(font),type_info->description) == 0)
+        {
+          CloneString(&magick_font->ps_name,type_info->name);
+          break;
+        }
+    }
+
+  /* Look for a family-based best-match next */
+  if(!magick_font->ps_name)
+    {
+      double
+        target_weight,
+        best_weight = 0;
+
+      if( WMF_FONT_WEIGHT(font) == 0 )
+        target_weight = 400;
+      else
+        target_weight = WMF_FONT_WEIGHT(font);
+
+      for ( type_info=type_info_base; type_info != 0; type_info=type_info->next )
+        {
+          if(LocaleCompare(WMF_FONT_NAME(font),type_info->family) == 0)
+            {
+              double
+                weight;
+              
+              if( WMF_FONT_ITALIC(font) && !(strstr(type_info->description,"Italic") ||
+                                             strstr(type_info->description,"Oblique")) )
+                continue;
+
+              weight = font_weight( type_info->description );
+
+              if( abs(weight - target_weight) < abs(best_weight - target_weight) )
+                {
+                  best_weight = weight;
+                  CloneString(&magick_font->ps_name,type_info->name);
+                }
+            }
+        }
+    }
+
+  /* Now let's try simple substitution mappings from WMFFontMap */
+  if(!magick_font->ps_name)
+    {
+      char
+        target[MaxTextExtent];
+
+      int
+        target_weight = 400,
+        want_italic = False,
+        want_bold = False,
+        i;
+
+      if( WMF_FONT_WEIGHT(font) != 0 )
+        target_weight = WMF_FONT_WEIGHT(font);
+
+      if( (target_weight > 550) || ((strstr(WMF_FONT_NAME(font),"Bold") ||
+                                     strstr(WMF_FONT_NAME(font),"Heavy") ||
+                                     strstr(WMF_FONT_NAME(font),"Black"))) )
+        want_bold = True;
+
+      if( (WMF_FONT_ITALIC(font)) || ((strstr(WMF_FONT_NAME(font),"Italic") ||
+                                       strstr(WMF_FONT_NAME(font),"Oblique"))) )
+        want_italic = True;
+
+      strcpy(target,"Times");
+      for( i=0; SubFontMap[i].name != NULL; i++ )
+        {
+          if(LocaleCompare(WMF_FONT_NAME(font), SubFontMap[i].name) == 0)
+            {
+              strcpy(target,SubFontMap[i].mapping);
+              break;
+            }
+        }
+
+      for( i=0; WMFFontMap[i].name != NULL; i++ )
+        {
+          if(LocaleNCompare(WMFFontMap[i].name,target,strlen(WMFFontMap[i].name)) == 0)
+            {
+              if(want_bold && want_italic)
+                CloneString(&magick_font->ps_name,WMFFontMap[i].bolditalic);
+              else if(want_italic)
+                CloneString(&magick_font->ps_name,WMFFontMap[i].italic);
+              else if(want_bold)
+                CloneString(&magick_font->ps_name,WMFFontMap[i].bold);
+              else
+                CloneString(&magick_font->ps_name,WMFFontMap[i].normal);
+            }
+        }
+    }
+
+#if 0
+  printf("\nmagick_font_map\n");
+  printf("WMF_FONT_NAME:          = \"%s\"\n", WMF_FONT_NAME(font));
+  printf("WMF_FONT_PSNAME         = \"%s\"\n", WMF_FONT_PSNAME(font));
+  fflush(stdout);
+#endif
+  
+}
+
+/* Initialize API font structures */
+static void magick_font_init( wmfAPI* API, wmfAPI_Options* options)
+{
+  wmfFontData
+    *font_data;
+
+  API->fonts = 0;
+
+  /* Allocate wmfFontData data structure */
+  API->font_data = wmf_malloc(API,sizeof(wmfFontData));
+  if (ERR (API))
+    return;
+
+  font_data = (wmfFontData*)API->font_data;
+
+  /* Assign function to map font (type wmfMap) */
+  font_data->map = magick_font_map;
+
+  /* Assign function to return string width in points (type wmfStringWidth) */
+  font_data->stringwidth = magick_font_stringwidth;
+
+  /* Assign user data, not used by libwmflite (type void*) */
+  font_data->user_data = wmf_malloc(API,sizeof(wmf_magick_font_t));
+  if(ERR(API))
+    return;
+  ((wmf_magick_font_t*)font_data->user_data)->ps_name = 0;
+  ((wmf_magick_font_t*)font_data->user_data)->pointsize = 0;
+}
+
+#endif /* HasWMFlite */
+
 /* Extend MVG, printf style */
 static int magick_mvg_printf(wmfAPI * API, char *format, ...)
 {
@@ -1711,9 +2053,6 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
   Image
     *image;
 
-  char
-    font_map_path[MaxTextExtent];
-
   float
     wmf_width,
     wmf_height;
@@ -1764,23 +2103,6 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
   /* Ignore non-fatal errors */
   wmf_options_flags |= WMF_OPT_IGNORE_NONFATAL;
 
-  /* Use ImageMagick's font map file */
-  {
-    char
-      *p = GetMagickConfigurePath(TypeFilename, exception );
-
-    if (p != NULL)
-      {
-        strcpy(font_map_path, p);
-        wmf_options_flags |= WMF_OPT_XTRA_FONTS;
-        wmf_options_flags |= WMF_OPT_XTRA_FONTMAP;
-        wmf_api_options.xtra_fontmap_file = font_map_path;
-      }
-  }
-
-#if defined(HasWMFlite)
-#endif
-
   wmf_error = wmf_api_create(&API, wmf_options_flags, &wmf_api_options);
   if (wmf_error != wmf_E_None)
     {
@@ -1788,6 +2110,18 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
         wmf_api_destroy(API);
       ThrowReaderException(DelegateError, "Failed to intialize libwmf", image);
     }
+
+  ddata = WMF_MAGICK_GetData(API);
+  ddata->image = image;
+  ddata->image_info = image_info;
+
+#if defined(HasWMFlite)
+  /* Must initialize font subystem for WMFlite interface */
+
+  magick_font_init (API,&wmf_api_options); /* similar to wmf_ipa_font_init in src/font.c */
+  /* wmf_arg_fontdirs (API,options); */ /* similar to wmf_arg_fontdirs in src/wmf.c */
+
+#endif
 
   /*
    * Open BLOB input via libwmf API
@@ -1817,7 +2151,6 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
    *
    */
 
-  ddata = WMF_MAGICK_GetData(API);
   ddata->bbox = bbox;
 
   /* User specified resolution */
@@ -2020,15 +2353,11 @@ static Image *ReadWMFImage(const ImageInfo * image_info, ExceptionInfo * excepti
       DestroyImage(tile_image);
     }
 
-  ddata->image = image;
-  ddata->image_info = image_info;
-
   /*
    * Play file to generate MVG drawing commands
    *
    */
   ddata->mvg = AcquireMemory(MaxTextExtent);
-
   wmf_error = wmf_play(API, 0, &bbox);
   if (wmf_error != wmf_E_None)
     {
