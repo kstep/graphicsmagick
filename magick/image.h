@@ -45,7 +45,7 @@ typedef unsigned short Quantum;
 #define ScaleQuantumToChar(quantum)  ((unsigned char) ((quantum)/16843009))
 #define ScaleQuantumToLong(quantum)  ((unsigned long) (quantum))
 #define ScaleQuantumToShort(quantum)  ((unsigned short) ((quantum)/65537))
-#define ScaleShortToQuantum(value)  ((Quantum) (65537*(value)))
+#define ScaleShortToQuantum(value)  ((Quantum) (65537UL*(value)))
 #define ScaleToQuantum(value)  ((unsigned long) (16843009UL*(value)))
 
 typedef unsigned int Quantum;
