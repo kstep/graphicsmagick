@@ -1561,64 +1561,94 @@ MagickExport unsigned int CompositeImage(Image *image,
         }
         case DarkenCompositeOp:
         {
-          if (pixel.red < q->red)
-            q->red=pixel.red;
-          if (pixel.green < q->green)
-            q->green=pixel.green;
-          if (pixel.blue < q->blue)
-            q->blue=pixel.blue;
-          if (pixel.opacity < q->opacity)
-            q->opacity=pixel.opacity;
+			if ( pixel.opacity != TransparentOpacity ) {	/* don't bother on transparent ones! */
+				if ( q->opacity != TransparentOpacity ) {
+				  if (pixel.red < q->red)
+					q->red=pixel.red;
+				  if (pixel.green < q->green)
+					q->green=pixel.green;
+				  if (pixel.blue < q->blue)
+					q->blue=pixel.blue;
+				  if (pixel.opacity < q->opacity)
+					q->opacity=pixel.opacity;
+				} else 
+					*q = pixel;	/* we just copy if there is nothing underneath! */
+			}
           break;
         }
         case LightenCompositeOp:
         {
-          if (pixel.red > q->red)
-            q->red=pixel.red;
-          if (pixel.green > q->green)
-            q->green=pixel.green;
-          if (pixel.blue > q->blue)
-            q->blue=pixel.blue;
-          if (pixel.opacity > q->opacity)
-            q->opacity=pixel.opacity;
+			if ( pixel.opacity != TransparentOpacity ) {	/* don't bother on transparent ones! */
+				if ( q->opacity != TransparentOpacity ) {
+				  if (pixel.red > q->red)
+					q->red=pixel.red;
+				  if (pixel.green > q->green)
+					q->green=pixel.green;
+				  if (pixel.blue > q->blue)
+					q->blue=pixel.blue;
+				  if (pixel.opacity > q->opacity)
+					q->opacity=pixel.opacity;
+				} else 
+					*q = pixel;	/* we just copy if there is nothing underneath! */
+			}
           break;
         }
         case HueCompositeOp:
         {
-          TransformHSL(q->red,q->green,q->blue,&hue,&saturation,&brightness);
-          TransformHSL(pixel.red,pixel.green,pixel.blue,&hue,&sans,&sans);
-          HSLTransform(hue,saturation,brightness,&q->red,&q->green,&q->blue);
-          if (pixel.opacity < q->opacity)
-            q->opacity=pixel.opacity;
+			if ( pixel.opacity != TransparentOpacity ) {	/* don't bother on transparent ones! */
+				if ( q->opacity != TransparentOpacity ) {
+				  TransformHSL(q->red,q->green,q->blue,&hue,&saturation,&brightness);
+				  TransformHSL(pixel.red,pixel.green,pixel.blue,&hue,&sans,&sans);
+				  HSLTransform(hue,saturation,brightness,&q->red,&q->green,&q->blue);
+				  if (pixel.opacity < q->opacity)
+					q->opacity=pixel.opacity;
+				} else 
+					*q = pixel;	/* we just copy if there is nothing underneath! */
+			}
           break;
         }
         case SaturateCompositeOp:
         {
-          TransformHSL(q->red,q->green,q->blue,&hue,&saturation,&brightness);
-          TransformHSL(pixel.red,pixel.green,pixel.blue,&sans,&saturation,
-            &sans);
-          HSLTransform(hue,saturation,brightness,&q->red,&q->green,&q->blue);
-          if (pixel.opacity < q->opacity)
-            q->opacity=pixel.opacity;
+			if ( pixel.opacity != TransparentOpacity ) {	/* don't bother on transparent ones! */
+				if ( q->opacity != TransparentOpacity ) {
+				  TransformHSL(q->red,q->green,q->blue,&hue,&saturation,&brightness);
+				  TransformHSL(pixel.red,pixel.green,pixel.blue,&sans,&saturation,
+					&sans);
+				  HSLTransform(hue,saturation,brightness,&q->red,&q->green,&q->blue);
+				  if (pixel.opacity < q->opacity)
+					q->opacity=pixel.opacity;
+				} else 
+					*q = pixel;	/* we just copy if there is nothing underneath! */
+			}
           break;
         }
         case LuminizeCompositeOp:
         {
-          TransformHSL(q->red,q->green,q->blue,&hue,&saturation,&brightness);
-          TransformHSL(pixel.red,pixel.green,pixel.blue,&sans,&sans,
-            &brightness);
-          HSLTransform(hue,saturation,brightness,&q->red,&q->green,&q->blue);
-          if (pixel.opacity < q->opacity)
-            q->opacity=pixel.opacity;
+			if ( pixel.opacity != TransparentOpacity ) {	/* don't bother on transparent ones! */
+				if ( q->opacity != TransparentOpacity ) {
+				  TransformHSL(q->red,q->green,q->blue,&hue,&saturation,&brightness);
+				  TransformHSL(pixel.red,pixel.green,pixel.blue,&sans,&sans,
+					&brightness);
+				  HSLTransform(hue,saturation,brightness,&q->red,&q->green,&q->blue);
+				  if (pixel.opacity < q->opacity)
+					q->opacity=pixel.opacity;
+				} else 
+					*q = pixel;	/* we just copy if there is nothing underneath! */
+			}
           break;
         }
         case ColorizeCompositeOp:
         {
-          TransformHSL(q->red,q->green,q->blue,&sans,&sans,&brightness);
-          TransformHSL(pixel.red,pixel.green,pixel.blue,&hue,&saturation,&sans);
-          HSLTransform(hue,saturation,brightness,&q->red,&q->green,&q->blue);
-          if (pixel.opacity < q->opacity)
-            q->opacity=pixel.opacity;
+			if ( pixel.opacity != TransparentOpacity ) {	/* don't bother on transparent ones! */
+				if ( q->opacity != TransparentOpacity ) {
+				  TransformHSL(q->red,q->green,q->blue,&sans,&sans,&brightness);
+				  TransformHSL(pixel.red,pixel.green,pixel.blue,&hue,&saturation,&sans);
+				  HSLTransform(hue,saturation,brightness,&q->red,&q->green,&q->blue);
+				  if (pixel.opacity < q->opacity)
+					q->opacity=pixel.opacity;
+				} else 
+					*q = pixel;	/* we just copy if there is nothing underneath! */
+			}
           break;
         }
         case ScreenCompositeOp:
