@@ -180,7 +180,9 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
     *blue,
     *green,
     maximum,
-    *red,
+    *red;
+
+  long
     sans_offset,
     y;
 
@@ -188,12 +190,14 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
     *p,
     *q;
 
-  register int
+  register long
     x;
 
   unsigned int
+    status;
+
+  unsigned long
     height,
-    status,
     width;
 
   /*
@@ -228,18 +232,18 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   /*
     Initialize histogram count arrays.
   */
-  for (x=0; x < (int) histogram_image->columns; x++)
+  for (x=0; x < (long) histogram_image->columns; x++)
   {
     red[x]=0;
     green[x]=0;
     blue[x]=0;
   }
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       red[DownScale(p->red)]++;
       green[DownScale(p->green)]++;
@@ -248,7 +252,7 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
     }
   }
   maximum=0;
-  for (x=0; x < (int) histogram_image->columns; x++)
+  for (x=0; x < (long) histogram_image->columns; x++)
   {
     if (maximum < red[x])
       maximum=red[x];
@@ -257,7 +261,7 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
     if (maximum < blue[x])
       maximum=blue[x];
   }
-  for (x=0; x < (int) histogram_image->columns; x++)
+  for (x=0; x < (long) histogram_image->columns; x++)
   {
     if (red[x] > maximum)
       red[x]=maximum;
@@ -272,28 +276,28 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   */
   (void) QueryColorDatabase("black",&histogram_image->background_color);
   SetImage(histogram_image,OpaqueOpacity);
-  for (x=0; x < (int) histogram_image->columns; x++)
+  for (x=0; x < (long) histogram_image->columns; x++)
   {
     q=GetImagePixels(histogram_image,x,0,1,histogram_image->rows);
     if (q == (PixelPacket *) NULL)
       break;
     y=histogram_image->rows-(int) (scale*red[x]);
     p=q+y;
-    for ( ; y < (int) histogram_image->rows; y++)
+    for ( ; y < (long) histogram_image->rows; y++)
     {
       p->red=MaxRGB;
       p++;
     }
     y=histogram_image->rows-(int) (scale*green[x]);
     p=q+y;
-    for ( ; y < (int) histogram_image->rows; y++)
+    for ( ; y < (long) histogram_image->rows; y++)
     {
       p->green=MaxRGB;
       p++;
     }
     y=histogram_image->rows-(int) (scale*blue[x]);
     p=q+y;
-    for ( ; y < (int) histogram_image->rows; y++)
+    for ( ; y < (long) histogram_image->rows; y++)
     {
       p->blue=MaxRGB;
       p++;

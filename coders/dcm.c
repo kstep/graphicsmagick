@@ -2687,11 +2687,11 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     green,
     group,
     red,
-    scene,
-    y;
+    scene;
 
   long
-    datum;
+    datum,
+    y;
 
   Quantum
     *scale;
@@ -2699,7 +2699,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -2719,20 +2719,20 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *data;
 
   unsigned int
+    mask;
+
+  unsigned long
     bits_allocated,
     bytes_per_pixel,
     height,
-    mask,
+    max_value,
     msb_first,
     number_scenes,
     quantum,
+    samples_per_pixel,
     significant_bits,
     status,
     width;
-
-  unsigned long
-    max_value,
-    samples_per_pixel;
 
   unsigned short
     *graymap,
@@ -2990,7 +2990,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Image rows.
             */
-            height=(unsigned int) datum;
+            height=datum;
             break;
           }
           case 0x0011:
@@ -2998,7 +2998,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Image columns.
             */
-            width=(unsigned int) datum;
+            width=datum;
             break;
           }
           case 0x0100:
@@ -3006,7 +3006,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Bits allocated.
             */
-            bits_allocated=(unsigned int) datum;
+            bits_allocated=datum;
             bytes_per_pixel=1;
             if (datum > 8)
               bytes_per_pixel=2;
@@ -3018,7 +3018,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Bits stored.
             */
-            significant_bits=(unsigned int) datum;
+            significant_bits=datum;
             bytes_per_pixel=1;
             if (significant_bits > 8)
               bytes_per_pixel=2;
@@ -3037,7 +3037,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Pixel representation.
             */
-            msb_first=(unsigned int) datum;
+            msb_first=datum;
             break;
           }
           case 0x1200:
@@ -3195,7 +3195,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for (i=0; i <= (long) max_value; i++)
         scale[i]=((unsigned long) (MaxRGB*i)/max_value);
     }
-  for (scene=0; scene < (int) number_scenes; scene++)
+  for (scene=0; scene < (long) number_scenes; scene++)
   {
     /*
       Initialize image structure.
@@ -3213,12 +3213,12 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         for (i=0; i < (long) samples_per_pixel; i++)
         {
-          for (y=0; y < (int) image->rows; y++)
+          for (y=0; y < (long) image->rows; y++)
           {
             q=GetImagePixels(image,0,y,image->columns,1);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (int) image->columns; x++)
+            for (x=0; x < (long) image->columns; x++)
             {
               switch (i)
               {
@@ -3251,13 +3251,13 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         blue=0;
         i=0;
         byte=0;
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
           {
             if (samples_per_pixel == 1)
               {
@@ -3355,7 +3355,7 @@ static Image *ReadDCMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
-    if (scene < (int) (number_scenes-1))
+    if (scene < (long) (number_scenes-1))
       {
         /*
           Allocate next image structure.

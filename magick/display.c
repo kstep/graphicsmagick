@@ -500,8 +500,8 @@ static unsigned int XAnnotateEditImage(Display *display,
         y=event.xmotion.y;
         if (windows->info.mapped)
           {
-            if ((x < (int) (windows->info.x+windows->info.width)) &&
-                (y < (int) (windows->info.y+windows->info.height)))
+            if ((x < (long) (windows->info.x+windows->info.width)) &&
+                (y < (long) (windows->info.y+windows->info.height)))
               (void) XWithdrawWindow(display,windows->info.id,
                 windows->info.screen);
           }
@@ -532,7 +532,7 @@ static unsigned int XAnnotateEditImage(Display *display,
     }
   if ((x+font_info->max_bounds.width) >= (int) windows->image.width)
     x=windows->image.width-font_info->max_bounds.width;
-  if (y < (int) (font_info->ascent+font_info->descent))
+  if (y < (long) (font_info->ascent+font_info->descent))
     y=font_info->ascent+font_info->descent;
   if ((font_info->max_bounds.width > (int) windows->image.width) ||
       ((font_info->ascent+font_info->descent) >= (int) windows->image.height))
@@ -944,8 +944,8 @@ static unsigned int XAnnotateEditImage(Display *display,
   /*
     Annotation is relative to image configuration.
   */
-  width=image->columns;
-  height=image->rows;
+  width=(unsigned int) image->columns;
+  height=(unsigned int) image->rows;
   x=0;
   y=0;
   if (windows->image.crop_geometry != (char *) NULL)
@@ -1356,8 +1356,8 @@ static unsigned int XChopImage(Display *display,XResourceInfo *resource_info,
         y=event.xmotion.y;
         if (windows->info.mapped)
           {
-            if ((x < (int) (windows->info.x+windows->info.width)) &&
-                (y < (int) (windows->info.y+windows->info.height)))
+            if ((x < (long) (windows->info.x+windows->info.width)) &&
+                (y < (long) (windows->info.y+windows->info.height)))
               (void) XWithdrawWindow(display,windows->info.id,
                 windows->info.screen);
           }
@@ -1491,11 +1491,11 @@ static unsigned int XChopImage(Display *display,XResourceInfo *resource_info,
   XSetCursorState(display,windows,True);
   XCheckRefreshWindows(display,windows);
   windows->image.window_changes.width=
-    windows->image.ximage->width-chop_info.width;
+    windows->image.ximage->width-(unsigned int) chop_info.width;
   windows->image.window_changes.height=
-    windows->image.ximage->height-chop_info.height;
-  width=(*image)->columns;
-  height=(*image)->rows;
+    windows->image.ximage->height-(unsigned int) chop_info.height;
+  width=(unsigned int) (*image)->columns;
+  height=(unsigned int) (*image)->rows;
   x=0;
   y=0;
   if (windows->image.crop_geometry != (char *) NULL)
@@ -1816,7 +1816,7 @@ static unsigned int XColorEditImage(Display *display,
               break;
             if (entry != 5)
               {
-                (*image)->fuzz=atoi(FuzzMenu[entry]);
+                (*image)->fuzz=atol(FuzzMenu[entry]);
                 break;
               }
             FormatString(fuzz,"%d",(*image)->fuzz);
@@ -1824,7 +1824,7 @@ static unsigned int XColorEditImage(Display *display,
               fuzz);
             if (*fuzz == '\0')
               break;
-            (*image)->fuzz=atoi(fuzz);
+            (*image)->fuzz=atol(fuzz);
             break;
           }
           case ColorEditUndoCommand:
@@ -1948,8 +1948,8 @@ static unsigned int XColorEditImage(Display *display,
         y=event.xmotion.y;
         if (windows->info.mapped)
           {
-            if ((x < (int) (windows->info.x+windows->info.width)) &&
-                (y < (int) (windows->info.y+windows->info.height)))
+            if ((x < (long) (windows->info.x+windows->info.width)) &&
+                (y < (long) (windows->info.y+windows->info.height)))
               (void) XWithdrawWindow(display,windows->info.id,
                 windows->info.screen);
           }
@@ -1981,8 +1981,8 @@ static unsigned int XColorEditImage(Display *display,
         (void) XClearArea(display,windows->image.id,x_offset,y_offset,1,1,True);
         color=windows->pixel_info->pen_colors[pen_id];
         XPutPixel(windows->image.ximage,x_offset,y_offset,color.pixel);
-        width=(*image)->columns;
-        height=(*image)->rows;
+        width=(unsigned int) (*image)->columns;
+        height=(unsigned int) (*image)->rows;
         x=0;
         y=0;
         if (windows->image.crop_geometry != (char *) NULL)
@@ -1994,8 +1994,8 @@ static unsigned int XColorEditImage(Display *display,
           height*(windows->image.y+y_offset)/windows->image.ximage->height+y;
         if ((x_offset < 0) || (y_offset < 0))
           continue;
-        if ((x_offset >= (int) (*image)->columns) ||
-            (y_offset >= (int) (*image)->rows))
+        if ((x_offset >= (long) (*image)->columns) ||
+            (y_offset >= (long) (*image)->rows))
           continue;
         switch (method)
         {
@@ -2026,12 +2026,12 @@ static unsigned int XColorEditImage(Display *display,
             target=GetOnePixel(*image,x_offset,y_offset);
             if ((*image)->storage_class == DirectClass)
               {
-                for (y=0; y < (int) (*image)->rows; y++)
+                for (y=0; y < (long) (*image)->rows; y++)
                 {
                   q=GetImagePixels(*image,0,y,(*image)->columns,1);
                   if (q == (PixelPacket *) NULL)
                     break;
-                  for (x=0; x < (int) (*image)->columns; x++)
+                  for (x=0; x < (long) (*image)->columns; x++)
                   {
                     if (ColorMatch(*q,target,(*image)->fuzz))
                       {
@@ -2092,12 +2092,12 @@ static unsigned int XColorEditImage(Display *display,
               Update color information using reset algorithm.
             */
             (*image)->storage_class=DirectClass;
-            for (y=0; y < (int) (*image)->rows; y++)
+            for (y=0; y < (long) (*image)->rows; y++)
             {
               q=SetImagePixels(*image,0,y,(*image)->columns,1);
               if (q == (PixelPacket *) NULL)
                 break;
-              for (x=0; x < (int) (*image)->columns; x++)
+              for (x=0; x < (long) (*image)->columns; x++)
               {
                 q->red=XDownScale(color.red);
                 q->green=XDownScale(color.green);
@@ -2545,8 +2545,8 @@ static unsigned int XCompositeImage(Display *display,
         y=event.xmotion.y;
         if (windows->info.mapped)
           {
-            if ((x < (int) (windows->info.x+windows->info.width)) &&
-                (y < (int) (windows->info.y+windows->info.height)))
+            if ((x < (long) (windows->info.x+windows->info.width)) &&
+                (y < (long) (windows->info.y+windows->info.height)))
               (void) XWithdrawWindow(display,windows->info.id,
                 windows->info.screen);
           }
@@ -2578,8 +2578,8 @@ static unsigned int XCompositeImage(Display *display,
   */
   XSetCursorState(display,windows,True);
   XCheckRefreshWindows(display,windows);
-  width=image->columns;
-  height=image->rows;
+  width=(unsigned int) image->columns;
+  height=(unsigned int) image->rows;
   x=0;
   y=0;
   if (windows->image.crop_geometry != (char *) NULL)
@@ -2634,12 +2634,12 @@ static unsigned int XCompositeImage(Display *display,
       opacity=(Quantum) (DownScale(MaxRGB)-(DownScale(MaxRGB)*blend)/100);
       image->storage_class=DirectClass;
       image->matte=True;
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (long) image->rows; y++)
       {
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (int) image->columns; x++)
+        for (x=0; x < (long) image->columns; x++)
         {
           q->opacity=opacity;
           q++;
@@ -2706,14 +2706,16 @@ static unsigned int XConfigureImage(Display *display,
   char
     geometry[MaxTextExtent];
 
-  int
+  long
     x,
     y;
 
   unsigned int
-    height,
     mask,
-    status,
+    status;
+
+  unsigned long
+    height,
     width;
 
   XSizeHints
@@ -2728,7 +2730,7 @@ static unsigned int XConfigureImage(Display *display,
   width=windows->image.window_changes.width;
   height=windows->image.window_changes.height;
   if (resource_info->debug)
-    (void) fprintf(stderr,"Configure Image: %dx%d=>%ux%u\n",
+    (void) fprintf(stderr,"Configure Image: %dx%d=>%lux%lu\n",
       windows->image.ximage->width,windows->image.ximage->height,width,height);
   if ((width*height) == 0)
     return(True);
@@ -2740,11 +2742,14 @@ static unsigned int XConfigureImage(Display *display,
   if (((int) width != windows->image.ximage->width) ||
       ((int) height != windows->image.ximage->height))
     image->taint=True;
-  windows->magnify.x=width*windows->magnify.x/windows->image.ximage->width;
-  windows->magnify.y=height*windows->magnify.y/windows->image.ximage->height;
-  windows->image.x=width*windows->image.x/windows->image.ximage->width;
-  windows->image.y=height*windows->image.y/windows->image.ximage->height;
-  status=XMakeImage(display,resource_info,&windows->image,image,width,height);
+  windows->magnify.x=(unsigned int)
+    width*windows->magnify.x/windows->image.ximage->width;
+  windows->magnify.y=(unsigned int) 
+    height*windows->magnify.y/windows->image.ximage->height;
+  windows->image.x=(int) width*windows->image.x/windows->image.ximage->width;
+  windows->image.y=(int) height*windows->image.y/windows->image.ximage->height;
+  status=XMakeImage(display,resource_info,&windows->image,image,
+    (unsigned int) width,(unsigned int) height);
   if (status == False)
     XNoticeWidget(display,windows,"Unable to configure X image:",
       windows->image.name);
@@ -2755,16 +2760,16 @@ static unsigned int XConfigureImage(Display *display,
     XDisplayWidth(display,windows->image.screen),
     XDisplayHeight(display,windows->image.screen));
   (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
-  window_changes.width=width;
-  window_changes.height=height;
+  window_changes.width=(unsigned int) width;
+  window_changes.height=(unsigned int) height;
   mask=CWWidth | CWHeight;
   if (resource_info->backdrop)
     {
       mask|=CWX | CWY;
-      window_changes.x=
-        (XDisplayWidth(display,windows->image.screen)/2)-(width/2);
-      window_changes.y=
-        (XDisplayHeight(display,windows->image.screen)/2)-(height/2);
+      window_changes.x=(int)
+        ((XDisplayWidth(display,windows->image.screen)/2)-(width/2));
+      window_changes.y=(int)
+        ((XDisplayHeight(display,windows->image.screen)/2)-(height/2));
     }
   (void) XReconfigureWMWindow(display,windows->image.id,windows->image.screen,
     mask,&window_changes);
@@ -3122,8 +3127,8 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
         y=event.xmotion.y;
         if (windows->info.mapped)
           {
-            if ((x < (int) (windows->info.x+windows->info.width)) &&
-                (y < (int) (windows->info.y+windows->info.height)))
+            if ((x < (long) (windows->info.x+windows->info.width)) &&
+                (y < (long) (windows->info.y+windows->info.height)))
               (void) XWithdrawWindow(display,windows->info.id,
                 windows->info.screen);
           }
@@ -3156,8 +3161,8 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
     /*
       Size rectangle as pointer moves until the mouse button is released.
     */
-    x=crop_info.x;
-    y=crop_info.y;
+    x=(int) crop_info.x;
+    y=(int) crop_info.y;
     crop_info.width=0;
     crop_info.height=0;
     state=DefaultState;
@@ -3224,7 +3229,8 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
         default:
           break;
       }
-      if (((crop_info.x != x) && (crop_info.y != y)) || (state & ExitState))
+      if ((((int) crop_info.x != x) && ((int) crop_info.y != y)) ||
+          (state & ExitState))
         {
           /*
             Check boundary conditions.
@@ -3232,9 +3238,9 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
           if (crop_info.x < 0)
             crop_info.x=0;
           else
-            if (crop_info.x > windows->image.ximage->width)
+            if (crop_info.x > (int) windows->image.ximage->width)
               crop_info.x=windows->image.ximage->width;
-          if (crop_info.x < x)
+          if ((int) crop_info.x < x)
             crop_info.width=(unsigned int) (x-crop_info.x);
           else
             {
@@ -3244,9 +3250,9 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
           if (crop_info.y < 0)
             crop_info.y=0;
           else
-            if (crop_info.y > windows->image.ximage->height)
+            if (crop_info.y > (int) windows->image.ximage->height)
               crop_info.y=windows->image.ximage->height;
-          if (crop_info.y < y)
+          if ((int) crop_info.y < y)
             crop_info.height=(unsigned int) (y-crop_info.y);
           else
             {
@@ -3356,9 +3362,9 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
             break;
           x=windows->image.x+event.xbutton.x;
           y=windows->image.y+event.xbutton.y;
-          if ((x < (int) (crop_info.x+RoiDelta)) &&
+          if ((x < (long) (crop_info.x+RoiDelta)) &&
               (x > (int) (crop_info.x-RoiDelta)) &&
-              (y < (int) (crop_info.y+RoiDelta)) &&
+              (y < (long) (crop_info.y+RoiDelta)) &&
               (y > (int) (crop_info.y-RoiDelta)))
             {
               crop_info.x=crop_info.x+crop_info.width;
@@ -3366,27 +3372,27 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
               state|=UpdateConfigurationState;
               break;
             }
-          if ((x < (int) (crop_info.x+RoiDelta)) &&
+          if ((x < (long) (crop_info.x+RoiDelta)) &&
               (x > (int) (crop_info.x-RoiDelta)) &&
-              (y < (int) (crop_info.y+crop_info.height+RoiDelta)) &&
+              (y < (long) (crop_info.y+crop_info.height+RoiDelta)) &&
               (y > (int) (crop_info.y+crop_info.height-RoiDelta)))
             {
               crop_info.x=crop_info.x+crop_info.width;
               state|=UpdateConfigurationState;
               break;
             }
-          if ((x < (int) (crop_info.x+crop_info.width+RoiDelta)) &&
+          if ((x < (long) (crop_info.x+crop_info.width+RoiDelta)) &&
               (x > (int) (crop_info.x+crop_info.width-RoiDelta)) &&
-              (y < (int) (crop_info.y+RoiDelta)) &&
+              (y < (long) (crop_info.y+RoiDelta)) &&
               (y > (int) (crop_info.y-RoiDelta)))
             {
               crop_info.y=crop_info.y+crop_info.height;
               state|=UpdateConfigurationState;
               break;
             }
-          if ((x < (int) (crop_info.x+crop_info.width+RoiDelta)) &&
+          if ((x < (long) (crop_info.x+crop_info.width+RoiDelta)) &&
               (x > (int) (crop_info.x+crop_info.width-RoiDelta)) &&
-              (y < (int) (crop_info.y+crop_info.height+RoiDelta)) &&
+              (y < (long) (crop_info.y+crop_info.height+RoiDelta)) &&
               (y > (int) (crop_info.y+crop_info.height-RoiDelta)))
             {
               state|=UpdateConfigurationState;
@@ -3407,10 +3413,10 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
           if (event.xexpose.window == windows->image.id)
             if (event.xexpose.count == 0)
               {
-                event.xexpose.x=highlight_info.x;
-                event.xexpose.y=highlight_info.y;
-                event.xexpose.width=highlight_info.width;
-                event.xexpose.height=highlight_info.height;
+                event.xexpose.x=(int) highlight_info.x;
+                event.xexpose.y=(int) highlight_info.y;
+                event.xexpose.width=(unsigned int) highlight_info.width;
+                event.xexpose.height=(unsigned int) highlight_info.height;
                 XRefreshWindow(display,&windows->image,&event);
               }
           if (event.xexpose.window == windows->info.id)
@@ -3486,8 +3492,8 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
           y=event.xmotion.y;
           if (windows->info.mapped)
             {
-              if ((x < (int) (windows->info.x+windows->info.width)) &&
-                  (y < (int) (windows->info.y+windows->info.height)))
+              if ((x < (long) (windows->info.x+windows->info.width)) &&
+                  (y < (long) (windows->info.y+windows->info.height)))
                 (void) XWithdrawWindow(display,windows->info.id,
                   windows->info.screen);
             }
@@ -3520,8 +3526,8 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
           Reconfigure Image window as defined by cropping rectangle.
         */
         XSetCropGeometry(display,windows,&crop_info,image);
-        windows->image.window_changes.width=crop_info.width;
-        windows->image.window_changes.height=crop_info.height;
+        windows->image.window_changes.width=(unsigned int) crop_info.width;
+        windows->image.window_changes.height=(unsigned int) crop_info.height;
         (void) XConfigureImage(display,resource_info,windows,image);
         return(True);
       }
@@ -3530,8 +3536,8 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
   */
   XSetCursorState(display,windows,True);
   XCheckRefreshWindows(display,windows);
-  width=image->columns;
-  height=image->rows;
+  width=(unsigned int) image->columns;
+  height=(unsigned int) image->rows;
   x=0;
   y=0;
   if (windows->image.crop_geometry != (char *) NULL)
@@ -3562,12 +3568,12 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
   image->storage_class=DirectClass;
   if (!image->matte)
     SetImageOpacity(image,OpaqueOpacity);
-  for (y=0; y < (int) crop_info.height; y++)
+  for (y=0; y < (long) crop_info.height; y++)
   {
     q=GetImagePixels(image,crop_info.x,y+crop_info.y,crop_info.width,1);
     if (q == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (int) crop_info.width; x++)
+    for (x=0; x < (long) crop_info.width; x++)
     {
       q->opacity=TransparentOpacity;
       q++;
@@ -4098,8 +4104,8 @@ static unsigned int XDrawEditImage(Display *display,
           y=event.xmotion.y;
           if (windows->info.mapped)
             {
-              if ((x < (int) (windows->info.x+windows->info.width)) &&
-                  (y < (int) (windows->info.y+windows->info.height)))
+              if ((x < (long) (windows->info.x+windows->info.width)) &&
+                  (y < (long) (windows->info.y+windows->info.height)))
                 (void) XWithdrawWindow(display,windows->info.id,
                   windows->info.screen);
             }
@@ -4376,7 +4382,7 @@ static unsigned int XDrawEditImage(Display *display,
       distance=
         ((line_info.x2-line_info.x1+1)*(line_info.x2-line_info.x1+1))+
         ((line_info.y2-line_info.y1+1)*(line_info.y2-line_info.y1+1));
-      if (((rectangle_info.x != x) && (rectangle_info.y != y)) ||
+      if ((((int) rectangle_info.x != x) && ((int) rectangle_info.y != y)) ||
           (state & ExitState))
         {
           if (rectangle_info.x < 0)
@@ -4384,7 +4390,7 @@ static unsigned int XDrawEditImage(Display *display,
           else
             if (rectangle_info.x > (int) windows->image.width)
               rectangle_info.x=windows->image.width;
-          if (rectangle_info.x < x)
+          if ((int) rectangle_info.x < x)
             rectangle_info.width=(unsigned int) (x-rectangle_info.x);
           else
             {
@@ -4396,7 +4402,7 @@ static unsigned int XDrawEditImage(Display *display,
           else
             if (rectangle_info.y > (int) windows->image.height)
               rectangle_info.y=windows->image.height;
-          if (rectangle_info.y < y)
+          if ((int) rectangle_info.y < y)
             rectangle_info.height=(unsigned int) (y-rectangle_info.y);
           else
             {
@@ -4448,12 +4454,12 @@ static unsigned int XDrawEditImage(Display *display,
     /*
       Drawing is relative to image configuration.
     */
-    draw_info.x=rectangle_info.x;
-    draw_info.y=rectangle_info.y;
+    draw_info.x=(int) rectangle_info.x;
+    draw_info.y=(int) rectangle_info.y;
     (void) XMagickCommand(display,resource_info,windows,SaveToUndoBufferCommand,
       image);
-    width=(*image)->columns;
-    height=(*image)->rows;
+    width=(unsigned int) (*image)->columns;
+    height=(unsigned int) (*image)->rows;
     x=0;
     y=0;
     if (windows->image.crop_geometry != (char *) NULL)
@@ -4466,12 +4472,12 @@ static unsigned int XDrawEditImage(Display *display,
     if (draw_info.y < 0)
       draw_info.y=0;
     draw_info.y=height*draw_info.y/windows->image.ximage->height;
-    draw_info.width=rectangle_info.width+(line_width << 1);
-    if (draw_info.width > (*image)->columns)
-      draw_info.width=(*image)->columns;
-    draw_info.height=rectangle_info.height+(line_width << 1);
-    if (draw_info.height > (*image)->rows)
-      draw_info.height=(*image)->rows;
+    draw_info.width=(unsigned int) rectangle_info.width+(line_width << 1);
+    if (draw_info.width > (unsigned int) (*image)->columns)
+      draw_info.width=(unsigned int) (*image)->columns;
+    draw_info.height=(unsigned int) rectangle_info.height+(line_width << 1);
+    if (draw_info.height > (unsigned int) (*image)->rows)
+      draw_info.height=(unsigned int) (*image)->rows;
     FormatString(draw_info.geometry,"%ux%u%+d%+d",
       width*draw_info.width/windows->image.ximage->width,
       height*draw_info.height/windows->image.ximage->height,
@@ -4661,8 +4667,8 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
         }
       cache_image=undo_image;
       undo_image=undo_image->previous;
-      windows->image.window_changes.width=cache_image->columns;
-      windows->image.window_changes.height=cache_image->rows;
+      windows->image.window_changes.width=(unsigned int) cache_image->columns;
+      windows->image.window_changes.height=(unsigned int) cache_image->rows;
       if (windows->image.crop_geometry != (char *) NULL)
         LiberateMemory((void **) &windows->image.crop_geometry);
       windows->image.crop_geometry=cache_image->geometry;
@@ -4824,8 +4830,8 @@ static void XImageCache(Display *display,XResourceInfo *resource_info,
           (void) XBell(display,0);
           return;
         }
-      windows->image.window_changes.width=redo_image->columns;
-      windows->image.window_changes.height=redo_image->rows;
+      windows->image.window_changes.width=(unsigned int) redo_image->columns;
+      windows->image.window_changes.height=(unsigned int) redo_image->rows;
       if (windows->image.crop_geometry != (char *) NULL)
         LiberateMemory((void **) &windows->image.crop_geometry);
       windows->image.crop_geometry=redo_image->geometry;
@@ -5205,38 +5211,40 @@ static CommandType XImageWindowCommand(Display *display,
           if ((key_symbol == XK_Up) || (key_symbol == XK_KP_Up))
             {
               if (resource_info->quantum >= (int) crop_info.height)
-                resource_info->quantum=crop_info.height-1;
+                resource_info->quantum=(unsigned int) crop_info.height-1;
               crop_info.height-=resource_info->quantum;
             }
           if ((key_symbol == XK_Down) || (key_symbol == XK_KP_Down))
             {
               if (resource_info->quantum >= (int) (crop_info.height-crop_info.y))
-                resource_info->quantum=crop_info.height-crop_info.y-1;
+                resource_info->quantum=(unsigned int)
+                  (crop_info.height-crop_info.y-1);
               crop_info.y+=resource_info->quantum;
               crop_info.height-=resource_info->quantum;
             }
           if ((key_symbol == XK_Left) || (key_symbol == XK_KP_Left))
             {
               if (resource_info->quantum >= (int) crop_info.width)
-                resource_info->quantum=crop_info.width-1;
+                resource_info->quantum=(int) crop_info.width-1;
               crop_info.width-=resource_info->quantum;
             }
           if ((key_symbol == XK_Right) || (key_symbol == XK_KP_Right))
             {
               if (resource_info->quantum >= (int) (crop_info.width-crop_info.x))
-                resource_info->quantum=crop_info.width-crop_info.x-1;
+                resource_info->quantum=(unsigned int)
+                  (crop_info.width-crop_info.x-1);
               crop_info.x+=resource_info->quantum;
               crop_info.width-=resource_info->quantum;
             }
           if ((int) (windows->image.x+windows->image.width) >
               (int) crop_info.width)
-            windows->image.x=crop_info.width-windows->image.width;
+            windows->image.x=(int) (crop_info.width-windows->image.width);
           if ((int) (windows->image.y+windows->image.height) >
               (int) crop_info.height)
-            windows->image.y=crop_info.height-windows->image.height;
+            windows->image.y=(int) (crop_info.height-windows->image.height);
           XSetCropGeometry(display,windows,&crop_info,*image);
-          windows->image.window_changes.width=crop_info.width;
-          windows->image.window_changes.height=crop_info.height;
+          windows->image.window_changes.width=(unsigned int) crop_info.width;
+          windows->image.window_changes.height=(unsigned int) crop_info.height;
           (void) XSetWindowBackgroundPixmap(display,windows->image.id,None);
           (void) XConfigureImage(display,resource_info,windows,*image);
           return(NullCommand);
@@ -5519,8 +5527,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Original image size.
       */
-      windows->image.window_changes.width=(*image)->columns;
-      windows->image.window_changes.height=(*image)->rows;
+      windows->image.window_changes.width=(unsigned int) (*image)->columns;
+      windows->image.window_changes.height=(unsigned int) (*image)->rows;
       (void) XConfigureImage(display,resource_info,windows,*image);
       break;
     }
@@ -5536,7 +5544,11 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
     }
     case ResizeCommand:
     {
-      unsigned int
+      long
+        x,
+        y;
+
+      unsigned long
         height,
         width;
 
@@ -5555,8 +5567,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       if (!status)
         (void) strcat(geometry,"!");
       (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
-      windows->image.window_changes.width=width;
-      windows->image.window_changes.height=height;
+      windows->image.window_changes.width=(unsigned int) width;
+      windows->image.window_changes.height=(unsigned int) height;
       (void) XConfigureImage(display,resource_info,windows,*image);
       break;
     }
@@ -5601,15 +5613,15 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       /*
         Restore Image window to its original size.
       */
-      if ((windows->image.width == (*image)->columns) &&
-          (windows->image.height == (*image)->rows) &&
+      if ((windows->image.width == (unsigned int) (*image)->columns) &&
+          (windows->image.height == (unsigned int) (*image)->rows) &&
           (windows->image.crop_geometry == (char *) NULL))
         {
           (void) XBell(display,0);
           break;
         }
-      windows->image.window_changes.width=(*image)->columns;
-      windows->image.window_changes.height=(*image)->rows;
+      windows->image.window_changes.width=(unsigned int) (*image)->columns;
+      windows->image.window_changes.height=(unsigned int) (*image)->rows;
       if (windows->image.crop_geometry != (char *) NULL)
         {
           LiberateMemory((void **) &windows->image.crop_geometry);
@@ -5658,8 +5670,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           /*
             Flop crop geometry.
           */
-          width=(*image)->columns;
-          height=(*image)->rows;
+          width=(unsigned int) (*image)->columns;
+          height=(unsigned int) (*image)->rows;
           (void) XParseGeometry(windows->image.crop_geometry,&x,&y,
             &width,&height);
           FormatString(windows->image.crop_geometry,"%ux%u%+d%+d",width,
@@ -5685,8 +5697,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           /*
             Flip crop geometry.
           */
-          width=(*image)->columns;
-          height=(*image)->rows;
+          width=(unsigned int) (*image)->columns;
+          height=(unsigned int) (*image)->rows;
           (void) XParseGeometry(windows->image.crop_geometry,&x,&y,
             &width,&height);
           FormatString(windows->image.crop_geometry,"%ux%u%+d%+d",width,
@@ -5768,8 +5780,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
-      windows->image.window_changes.width=(*image)->columns;
-      windows->image.window_changes.height=(*image)->rows;
+      windows->image.window_changes.width=(unsigned int) (*image)->columns;
+      windows->image.window_changes.height=(unsigned int) (*image)->rows;
       XConfigureImageColormap(display,resource_info,windows,*image);
       (void) XConfigureImage(display,resource_info,windows,*image);
       break;
@@ -5798,8 +5810,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
-      windows->image.window_changes.width=(*image)->columns;
-      windows->image.window_changes.height=(*image)->rows;
+      windows->image.window_changes.width=(unsigned int) (*image)->columns;
+      windows->image.window_changes.height=(unsigned int) (*image)->rows;
       XConfigureImageColormap(display,resource_info,windows,*image);
       (void) XConfigureImage(display,resource_info,windows,*image);
       break;
@@ -6654,8 +6666,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
-      windows->image.window_changes.width=(*image)->columns;
-      windows->image.window_changes.height=(*image)->rows;
+      windows->image.window_changes.width=(unsigned int) (*image)->columns;
+      windows->image.window_changes.height=(unsigned int) (*image)->rows;
       XConfigureImageColormap(display,resource_info,windows,*image);
       (void) XConfigureImage(display,resource_info,windows,*image);
       break;
@@ -6689,8 +6701,8 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
       XSetCursorState(display,windows,False);
       if (windows->image.orphan)
         break;
-      windows->image.window_changes.width=(*image)->columns;
-      windows->image.window_changes.height=(*image)->rows;
+      windows->image.window_changes.width=(unsigned int) (*image)->columns;
+      windows->image.window_changes.height=(unsigned int) (*image)->rows;
       XConfigureImageColormap(display,resource_info,windows,*image);
       (void) XConfigureImage(display,resource_info,windows,*image);
       break;
@@ -7060,8 +7072,8 @@ static void XMagnifyImage(Display *display,XWindows *windows,XEvent *event)
     */
     if (windows->info.mapped)
       {
-        if ((x < (int) (windows->info.x+windows->info.width)) &&
-            (y < (int) (windows->info.y+windows->info.height)))
+        if ((x < (long) (windows->info.x+windows->info.width)) &&
+            (y < (long) (windows->info.y+windows->info.height)))
           (void) XWithdrawWindow(display,windows->info.id,windows->info.screen);
       }
     else
@@ -7202,14 +7214,14 @@ static void XMagnifyWindowCommand(Display *display,XWindows *windows,
     case XK_Right:
     case XK_KP_Right:
     {
-      if (windows->magnify.x < (int) (windows->image.ximage->width-1))
+      if (windows->magnify.x < (long) (windows->image.ximage->width-1))
         windows->magnify.x+=quantum;
       break;
     }
     case XK_Down:
     case XK_KP_Down:
     {
-      if (windows->magnify.y < (int) (windows->image.ximage->height-1))
+      if (windows->magnify.y < (long) (windows->image.ximage->height-1))
         windows->magnify.y+=quantum;
       break;
     }
@@ -7546,7 +7558,7 @@ static unsigned int XMatteEditImage(Display *display,
               break;
             if (entry != 5)
               {
-                (*image)->fuzz=atoi(FuzzMenu[entry]);
+                (*image)->fuzz=atol(FuzzMenu[entry]);
                 break;
               }
             FormatString(fuzz,"%d",(*image)->fuzz);
@@ -7554,7 +7566,7 @@ static unsigned int XMatteEditImage(Display *display,
               fuzz);
             if (*fuzz == '\0')
               break;
-            (*image)->fuzz=atoi(fuzz);
+            (*image)->fuzz=atol(fuzz);
             break;
           }
           case MatteEditValueCommand:
@@ -7691,8 +7703,8 @@ static unsigned int XMatteEditImage(Display *display,
         y=event.xmotion.y;
         if (windows->info.mapped)
           {
-            if ((x < (int) (windows->info.x+windows->info.width)) &&
-                (y < (int) (windows->info.y+windows->info.height)))
+            if ((x < (long) (windows->info.x+windows->info.width)) &&
+                (y < (long) (windows->info.y+windows->info.height)))
               (void) XWithdrawWindow(display,windows->info.id,
                 windows->info.screen);
           }
@@ -7724,8 +7736,8 @@ static unsigned int XMatteEditImage(Display *display,
         (void) XClearArea(display,windows->image.id,x_offset,y_offset,1,1,True);
         XPutPixel(windows->image.ximage,x_offset,y_offset,
           windows->pixel_info->background_color.pixel);
-        width=(*image)->columns;
-        height=(*image)->rows;
+        width=(unsigned int) (*image)->columns;
+        height=(unsigned int) (*image)->rows;
         x=0;
         y=0;
         if (windows->image.crop_geometry != (char *) NULL)
@@ -7754,7 +7766,7 @@ static unsigned int XMatteEditImage(Display *display,
             q=GetImagePixels(*image,x_offset,y_offset,1,1);
             if (q == (PixelPacket *) NULL)
               break;
-            q->opacity=atoi(matte);
+            q->opacity=atol(matte);
             (void) SyncImagePixels(*image);
             break;
           }
@@ -7767,15 +7779,15 @@ static unsigned int XMatteEditImage(Display *display,
               Update matte information using replace algorithm.
             */
             target=GetOnePixel(*image,x_offset,y_offset);
-            for (y=0; y < (int) (*image)->rows; y++)
+            for (y=0; y < (long) (*image)->rows; y++)
             {
               q=GetImagePixels(*image,0,y,(*image)->columns,1);
               if (q == (PixelPacket *) NULL)
                 break;
-              for (x=0; x < (int) (*image)->columns; x++)
+              for (x=0; x < (long) (*image)->columns; x++)
               {
                 if (ColorMatch(*q,target,(*image)->fuzz))
-                  q->opacity=atoi(matte);
+                  q->opacity=atol(matte);
                 q++;
               }
               if (!SyncImagePixels(*image))
@@ -7809,20 +7821,20 @@ static unsigned int XMatteEditImage(Display *display,
               Update matte information using reset algorithm.
             */
             (*image)->storage_class=DirectClass;
-            for (y=0; y < (int) (*image)->rows; y++)
+            for (y=0; y < (long) (*image)->rows; y++)
             {
               q=SetImagePixels(*image,0,y,(*image)->columns,1);
               if (q == (PixelPacket *) NULL)
                 break;
-              for (x=0; x < (int) (*image)->columns; x++)
+              for (x=0; x < (long) (*image)->columns; x++)
               {
-                q->opacity=atoi(matte);
+                q->opacity=atol(matte);
                 q++;
               }
               if (!SyncImagePixels(*image))
                 break;
             }
-            if (atoi(matte) == OpaqueOpacity)
+            if (atol(matte) == OpaqueOpacity)
               (*image)->matte=False;
             break;
           }
@@ -7955,7 +7967,7 @@ static Image *XOpenImage(Display *display,XResourceInfo *resource_info,
         seconds);
       if (*seconds == '\0')
         return((Image *) NULL);
-      XDelay(display,1000*atoi(seconds));
+      XDelay(display,1000*atol(seconds));
     }
   if ((LocaleCompare(image_info->magick,"CMYK") == 0) ||
       (LocaleCompare(image_info->magick,"GRAY") == 0) ||
@@ -8146,7 +8158,7 @@ static void XPanImage(Display *display,XWindows *windows,XEvent *event)
         /*
           Check boundary conditions.
         */
-        if (pan_info.x < (int) (pan_info.width/2))
+        if (pan_info.x < (long) (pan_info.width/2))
           pan_info.x=0;
         else
           pan_info.x=(int) (x_factor*(pan_info.x-(pan_info.width/2)));
@@ -8156,7 +8168,7 @@ static void XPanImage(Display *display,XWindows *windows,XEvent *event)
           if ((int) (pan_info.x+windows->image.width) >
               windows->image.ximage->width)
             pan_info.x=windows->image.ximage->width-windows->image.width;
-        if (pan_info.y < (int) (pan_info.height/2))
+        if (pan_info.y < (long) (pan_info.height/2))
           pan_info.y=0;
         else
           pan_info.y=(int) (y_factor*(pan_info.y-(pan_info.height/2)));
@@ -8166,14 +8178,14 @@ static void XPanImage(Display *display,XWindows *windows,XEvent *event)
           if ((int) (pan_info.y+windows->image.height) >
               windows->image.ximage->height)
             pan_info.y=windows->image.ximage->height-windows->image.height;
-        if ((windows->image.x != pan_info.x) ||
-            (windows->image.y != pan_info.y))
+        if ((windows->image.x != (int) pan_info.x) ||
+            (windows->image.y != (int) pan_info.y))
           {
             /*
               Display image pan offset.
             */
-            windows->image.x=pan_info.x;
-            windows->image.y=pan_info.y;
+            windows->image.x=(int) pan_info.x;
+            windows->image.y=(int) pan_info.y;
             FormatString(text," %ux%u%+d%+d ",windows->image.width,
               windows->image.height,windows->image.x,windows->image.y);
             XInfoWidget(display,windows,text);
@@ -8420,8 +8432,8 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
         /*
           Paste rectangle is relative to image configuration.
         */
-        width=image->columns;
-        height=image->rows;
+        width=(unsigned int) (unsigned int) image->columns;
+        height=(unsigned int) (unsigned int) image->rows;
         x=0;
         y=0;
         if (windows->image.crop_geometry != (char *) NULL)
@@ -8522,8 +8534,8 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
         y=event.xmotion.y;
         if (windows->info.mapped)
           {
-            if ((x < (int) (windows->info.x+windows->info.width)) &&
-                (y < (int) (windows->info.y+windows->info.height)))
+            if ((x < (long) (windows->info.x+windows->info.width)) &&
+                (y < (long) (windows->info.y+windows->info.height)))
               (void) XWithdrawWindow(display,windows->info.id,
                 windows->info.screen);
           }
@@ -8555,8 +8567,8 @@ static unsigned int XPasteImage(Display *display,XResourceInfo *resource_info,
   */
   XSetCursorState(display,windows,True);
   XCheckRefreshWindows(display,windows);
-  width=image->columns;
-  height=image->rows;
+  width=(unsigned int) image->columns;
+  height=(unsigned int) image->rows;
   x=0;
   y=0;
   if (windows->image.crop_geometry != (char *) NULL)
@@ -9085,8 +9097,8 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
         y=event.xmotion.y;
         if (windows->info.mapped)
           {
-            if ((x < (int) (windows->info.x+windows->info.width)) &&
-                (y < (int) (windows->info.y+windows->info.height)))
+            if ((x < (long) (windows->info.x+windows->info.width)) &&
+                (y < (long) (windows->info.y+windows->info.height)))
               (void) XWithdrawWindow(display,windows->info.id,
                 windows->info.screen);
           }
@@ -9119,8 +9131,8 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
     /*
       Size rectangle as pointer moves until the mouse button is released.
     */
-    x=roi_info.x;
-    y=roi_info.y;
+    x=(int) roi_info.x;
+    y=(int) roi_info.y;
     roi_info.width=0;
     roi_info.height=0;
     state=DefaultState;
@@ -9186,7 +9198,8 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
         default:
           break;
       }
-      if (((roi_info.x != x) && (roi_info.y != y)) || (state & ExitState))
+      if ((((int) roi_info.x != x) && ((int) roi_info.y != y)) ||
+          (state & ExitState))
         {
           /*
             Check boundary conditions.
@@ -9194,9 +9207,9 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
           if (roi_info.x < 0)
             roi_info.x=0;
           else
-            if (roi_info.x > windows->image.ximage->width)
+            if (roi_info.x > (int) windows->image.ximage->width)
               roi_info.x=windows->image.ximage->width;
-          if (roi_info.x < x)
+          if ((int) roi_info.x < x)
             roi_info.width=(unsigned int) (x-roi_info.x);
           else
             {
@@ -9206,9 +9219,9 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
           if (roi_info.y < 0)
             roi_info.y=0;
           else
-            if (roi_info.y > windows->image.ximage->height)
+            if (roi_info.y > (int) windows->image.ximage->height)
               roi_info.y=windows->image.ximage->height;
-          if (roi_info.y < y)
+          if ((int) roi_info.y < y)
             roi_info.height=(unsigned int) (y-roi_info.y);
           else
             {
@@ -9261,8 +9274,8 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
               */
               handler=SetMonitorHandler((MonitorHandler) NULL);
               crop_info=roi_info;
-              width=(*image)->columns;
-              height=(*image)->rows;
+              width=(unsigned int) (*image)->columns;
+              height=(unsigned int) (*image)->rows;
               x=0;
               y=0;
               if (windows->image.crop_geometry != (char *) NULL)
@@ -9379,9 +9392,9 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
             break;
           x=windows->image.x+event.xbutton.x;
           y=windows->image.y+event.xbutton.y;
-          if ((x < (int) (roi_info.x+RoiDelta)) &&
+          if ((x < (long) (roi_info.x+RoiDelta)) &&
               (x > (int) (roi_info.x-RoiDelta)) &&
-              (y < (int) (roi_info.y+RoiDelta)) &&
+              (y < (long) (roi_info.y+RoiDelta)) &&
               (y > (int) (roi_info.y-RoiDelta)))
             {
               roi_info.x=roi_info.x+roi_info.width;
@@ -9389,27 +9402,27 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
               state|=UpdateConfigurationState;
               break;
             }
-          if ((x < (int) (roi_info.x+RoiDelta)) &&
+          if ((x < (long) (roi_info.x+RoiDelta)) &&
               (x > (int) (roi_info.x-RoiDelta)) &&
-              (y < (int) (roi_info.y+roi_info.height+RoiDelta)) &&
+              (y < (long) (roi_info.y+roi_info.height+RoiDelta)) &&
               (y > (int) (roi_info.y+roi_info.height-RoiDelta)))
             {
               roi_info.x=roi_info.x+roi_info.width;
               state|=UpdateConfigurationState;
               break;
             }
-          if ((x < (int) (roi_info.x+roi_info.width+RoiDelta)) &&
+          if ((x < (long) (roi_info.x+roi_info.width+RoiDelta)) &&
               (x > (int) (roi_info.x+roi_info.width-RoiDelta)) &&
-              (y < (int) (roi_info.y+RoiDelta)) &&
+              (y < (long) (roi_info.y+RoiDelta)) &&
               (y > (int) (roi_info.y-RoiDelta)))
             {
               roi_info.y=roi_info.y+roi_info.height;
               state|=UpdateConfigurationState;
               break;
             }
-          if ((x < (int) (roi_info.x+roi_info.width+RoiDelta)) &&
+          if ((x < (long) (roi_info.x+roi_info.width+RoiDelta)) &&
               (x > (int) (roi_info.x+roi_info.width-RoiDelta)) &&
-              (y < (int) (roi_info.y+roi_info.height+RoiDelta)) &&
+              (y < (long) (roi_info.y+roi_info.height+RoiDelta)) &&
               (y > (int) (roi_info.y+roi_info.height-RoiDelta)))
             {
               state|=UpdateConfigurationState;
@@ -9430,10 +9443,10 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
           if (event.xexpose.window == windows->image.id)
             if (event.xexpose.count == 0)
               {
-                event.xexpose.x=highlight_info.x;
-                event.xexpose.y=highlight_info.y;
-                event.xexpose.width=highlight_info.width;
-                event.xexpose.height=highlight_info.height;
+                event.xexpose.x=(int) highlight_info.x;
+                event.xexpose.y=(int) highlight_info.y;
+                event.xexpose.width=(unsigned int) highlight_info.width;
+                event.xexpose.height=(unsigned int) highlight_info.height;
                 XRefreshWindow(display,&windows->image,&event);
               }
           if (event.xexpose.window == windows->info.id)
@@ -9501,8 +9514,8 @@ static unsigned int XROIImage(Display *display,XResourceInfo *resource_info,
           y=event.xmotion.y;
           if (windows->info.mapped)
             {
-              if ((x < (int) (windows->info.x+windows->info.width)) &&
-                  (y < (int) (windows->info.y+windows->info.height)))
+              if ((x < (long) (windows->info.x+windows->info.width)) &&
+                  (y < (long) (windows->info.y+windows->info.height)))
                 (void) XWithdrawWindow(display,windows->info.id,
                   windows->info.screen);
             }
@@ -9975,8 +9988,8 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
       /*
         Rotate crop geometry.
       */
-      width=(*image)->columns;
-      height=(*image)->rows;
+      width=(unsigned int) (*image)->columns;
+      height=(unsigned int) (*image)->rows;
       (void) XParseGeometry(windows->image.crop_geometry,&x,&y,&width,&height);
       switch (rotations % 4)
       {
@@ -10019,8 +10032,8 @@ static unsigned int XRotateImage(Display *display,XResourceInfo *resource_info,
       /*
         Update image colormap.
       */
-      windows->image.window_changes.width=(*image)->columns;
-      windows->image.window_changes.height=(*image)->rows;
+      windows->image.window_changes.width=(unsigned int) (*image)->columns;
+      windows->image.window_changes.height=(unsigned int) (*image)->rows;
       if (windows->image.crop_geometry != (char *) NULL)
         {
           /*
@@ -10141,7 +10154,7 @@ static unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
         quality);
       if (*quality == '\0')
         return(True);
-      image_info->quality=atoi(quality);
+      image_info->quality=atol(quality);
       image_info->interlace=status ? NoInterlace : PlaneInterlace;
     }
   if ((LocaleCompare(image_info->magick,"EPS") == 0) ||
@@ -10527,8 +10540,8 @@ static void XSetCropGeometry(Display *display,XWindows *windows,
   */
   x=0;
   y=0;
-  width=image->columns;
-  height=image->rows;
+  width=(unsigned int) image->columns;
+  height=(unsigned int) image->rows;
   if (windows->image.crop_geometry != (char *) NULL)
     (void) XParseGeometry(windows->image.crop_geometry,&x,&y,&width,&height);
   else
@@ -10647,8 +10660,8 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
   */
   x=0;
   y=0;
-  width=image->columns;
-  height=image->rows;
+  width=(unsigned int) image->columns;
+  height=(unsigned int) image->rows;
   if (windows->image.crop_geometry != (char *) NULL)
     (void) XParseGeometry(windows->image.crop_geometry,&x,&y,&width,&height);
   scale_factor=(double) width/windows->image.ximage->width;
@@ -10660,12 +10673,12 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
   /*
     Determine size and location of each tile in the visual image directory.
   */
-  width=image->columns;
-  height=image->rows;
+  width=(unsigned int) image->columns;
+  height=(unsigned int) image->rows;
   x=0;
   y=0;
   (void) XParseGeometry(image->montage,&x,&y,&width,&height);
-  tile=((event->xbutton.y-y)/height)*((image->columns-x)/width)+
+  tile=((event->xbutton.y-y)/height)*(((int) image->columns-x)/width)+
     (event->xbutton.x-x)/width;
   if (tile < 0)
     {
@@ -10804,8 +10817,8 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
         /*
           Overwrite tile with background color.
         */
-        x_offset=width*(tile % ((image->columns-x)/width))+x;
-        y_offset=height*(tile/((image->columns-x)/width))+y;
+        x_offset=width*(tile % (((int) image->columns-x)/width))+x;
+        y_offset=height*(tile/(((int) image->columns-x)/width))+y;
         pixel=GetOnePixel(image,0,0);
         for (i=0; i < (int) height; i++)
         {
@@ -10819,8 +10832,8 @@ static Image *XTileImage(Display *display,XResourceInfo *resource_info,
         }
         tile++;
       }
-      windows->image.window_changes.width=image->columns;
-      windows->image.window_changes.height=image->rows;
+      windows->image.window_changes.width=(unsigned int) image->columns;
+      windows->image.window_changes.height=(unsigned int) image->rows;
       XConfigureImageColormap(display,resource_info,windows,image);
       (void) XConfigureImage(display,resource_info,windows,image);
       break;
@@ -11025,7 +11038,7 @@ static unsigned int XTrimImage(Display *display,XResourceInfo *resource_info,
       break;
   }
   trim_info.x=x;
-  if (trim_info.x == windows->image.ximage->width)
+  if (trim_info.x == (int) windows->image.ximage->width)
     {
       XSetCursorState(display,windows,False);
       return(False);
@@ -11079,15 +11092,15 @@ static unsigned int XTrimImage(Display *display,XResourceInfo *resource_info,
       break;
   }
   trim_info.height=y-trim_info.y+1;
-  if ((trim_info.width != windows->image.width) ||
-      (trim_info.height != windows->image.height))
+  if (((unsigned int) trim_info.width != windows->image.width) ||
+      ((unsigned int) trim_info.height != windows->image.height))
     {
       /*
         Reconfigure Image window as defined by the trimming rectangle.
       */
       XSetCropGeometry(display,windows,&trim_info,image);
-      windows->image.window_changes.width=trim_info.width;
-      windows->image.window_changes.height=trim_info.height;
+      windows->image.window_changes.width=(unsigned int) trim_info.width;
+      windows->image.window_changes.height=(unsigned int) trim_info.height;
       (void) XConfigureImage(display,resource_info,windows,image);
     }
   XSetCursorState(display,windows,False);
@@ -11321,6 +11334,10 @@ MagickExport unsigned int XDisplayBackgroundImage(Display *display,
     geometry[MaxTextExtent],
     visual_type[MaxTextExtent];
 
+  long
+    x,
+    y;
+
   static XPixelInfo
     pixel;
 
@@ -11334,8 +11351,10 @@ MagickExport unsigned int XDisplayBackgroundImage(Display *display,
     window_info;
 
   unsigned int
+    status;
+
+  unsigned long
     height,
-    status,
     width;
 
   Window
@@ -11440,12 +11459,19 @@ MagickExport unsigned int XDisplayBackgroundImage(Display *display,
   /*
     Create the X image.
   */
-  window_info.width=image->columns;
-  window_info.height=image->rows;
+  window_info.width=(unsigned int) image->columns;
+  window_info.height=(unsigned int) image->rows;
   FormatString(geometry,"%ux%u+0+0>",window_attributes.width,
     window_attributes.height);
-  (void) ParseImageGeometry(geometry,&window_info.x,&window_info.y,
-    &window_info.width,&window_info.height);
+  width=window_info.width;
+  height=window_info.height;
+  x=window_info.x;
+  y=window_info.y;
+  (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
+  window_info.width=(unsigned int) width;
+  window_info.height=(unsigned int) height;
+  window_info.x=(int) x;
+  window_info.y=(int) y;
   status=XMakeImage(display,&resources,&window_info,image,window_info.width,
     window_info.height);
   if (status == False)
@@ -11454,7 +11480,7 @@ MagickExport unsigned int XDisplayBackgroundImage(Display *display,
   window_info.y=0;
   if (resources.debug)
     {
-      (void) fprintf(stderr,"Image: %.1024s[%lu] %ux%u ",image->filename,
+      (void) fprintf(stderr,"Image: %.1024s[%lu] %lux%lu ",image->filename,
         image->scene,image->columns,image->rows);
       if (image->colors != 0)
         (void) fprintf(stderr,"%luc ",image->colors);
@@ -11932,6 +11958,10 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     id,
     status;
 
+  long
+    x,
+    y;
+
   KeySym
     key_symbol;
 
@@ -11964,6 +11994,10 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
 
   unsigned int
     context_mask;
+
+  unsigned long
+    height,
+    width;
 
   WarningHandler
     warning_handler;
@@ -12077,7 +12111,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   nexus=(Image *) NULL;
   if (resource_info->debug)
     {
-      (void) fprintf(stderr,"Image: %.1024s[%lu] %ux%u ",
+      (void) fprintf(stderr,"Image: %.1024s[%lu] %lux%lu ",
         display_image->filename,display_image->scene,display_image->columns,
         display_image->rows);
       if (display_image->colors != 0)
@@ -12216,13 +12250,20 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
     windows->image.immutable=True;
   windows->image.use_pixmap=resource_info->use_pixmap;
   windows->image.geometry=resource_info->image_geometry;
-  windows->image.width=display_image->columns;
-  windows->image.height=display_image->rows;
+  windows->image.width=(unsigned int) display_image->columns;
+  windows->image.height=(unsigned int) display_image->rows;
   FormatString(geometry,"%ux%u+0+0>!",
     XDisplayWidth(display,visual_info->screen),
     XDisplayHeight(display,visual_info->screen));
-  (void) ParseImageGeometry(geometry,&windows->image.x,&windows->image.y,
-    &windows->image.width,&windows->image.height);
+  width=windows->image.width;
+  height=windows->image.height;
+  x=windows->image.x;
+  y=windows->image.y;
+  (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
+  windows->image.width=(unsigned int) width;
+  windows->image.height=(unsigned int) height;
+  windows->image.x=(int) x;
+  windows->image.y=(int) y;
   windows->image.attributes.event_mask=ButtonMotionMask | ButtonPressMask |
     ButtonReleaseMask | EnterWindowMask | ExposureMask | KeyPressMask |
     KeyReleaseMask | LeaveWindowMask | OwnerGrabButtonMask |
@@ -12514,7 +12555,7 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
   windows->image.x=0;
   windows->image.y=0;
   status=XMakeImage(display,resource_info,&windows->image,display_image,
-    display_image->columns,display_image->rows);
+    (unsigned int) display_image->columns,(unsigned int) display_image->rows);
   if (status == False)
     MagickError(XServerError,"Unable to create X image",(char *) NULL);
   if (windows->image.mapped)

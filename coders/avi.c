@@ -153,12 +153,12 @@ typedef struct _StreamInfo
 static unsigned int DecodeImage(Image *image,const unsigned int compression,
   unsigned char *pixels)
 {
-  int
+  long
     byte,
     count,
     y;
 
-  register int
+  register long
     i,
     x;
 
@@ -171,7 +171,7 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
   byte=0;
   x=0;
   q=pixels;
-  for (y=0; y < (int) image->rows; )
+  for (y=0; y < (long) image->rows; )
   {
     count=ReadBlobByte(image);
     if (count == EOF)
@@ -348,7 +348,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
   IndexPacket
     index;
 
-  int
+  long
     bit,
     y;
 
@@ -358,7 +358,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -417,8 +417,8 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Initialize image structure.
         */
-        image->columns=(unsigned int) avi_info.width;
-        image->rows=(unsigned int) avi_info.height;
+        image->columns= avi_info.width;
+        image->rows= avi_info.height;
         image->units=PixelsPerCentimeterResolution;
         image->x_resolution=bmp_info.x_pixels/100.0;
         image->y_resolution=bmp_info.y_pixels/100.0;
@@ -455,7 +455,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (q == (PixelPacket *) NULL)
                 break;
               indexes=GetIndexes(image);
-              for (x=0; x < ((int) image->columns-7); x+=8)
+              for (x=0; x < ((long) image->columns-7); x+=8)
               {
                 for (bit=0; bit < 8; bit++)
                 {
@@ -467,7 +467,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               }
               if ((image->columns % 8) != 0)
                 {
-                  for (bit=0; bit < (int) (image->columns % 8); bit++)
+                  for (bit=0; bit < (long) (image->columns % 8); bit++)
                   {
                     index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
                     indexes[x+bit]=index;
@@ -495,7 +495,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (q == (PixelPacket *) NULL)
                 break;
               indexes=GetIndexes(image);
-              for (x=0; x < ((int) image->columns-1); x+=2)
+              for (x=0; x < ((long) image->columns-1); x+=2)
               {
                 index=ValidateColormapIndex(image,(*p >> 4) & 0xf);
                 indexes[x]=index;
@@ -533,7 +533,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               if (q == (PixelPacket *) NULL)
                 break;
               indexes=GetIndexes(image);
-              for (x=0; x < (int) image->columns; x++)
+              for (x=0; x < (long) image->columns; x++)
               {
                 index=ValidateColormapIndex(image,*p);
                 indexes[x]=index;
@@ -566,7 +566,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               q=SetImagePixels(image,0,y,image->columns,1);
               if (q == (PixelPacket *) NULL)
                 break;
-              for (x=0; x < (int) image->columns; x++)
+              for (x=0; x < (long) image->columns; x++)
               {
                 word=(*p++);
                 word|=(*p++ << 8);
@@ -596,7 +596,7 @@ static Image *ReadAVIImage(const ImageInfo *image_info,ExceptionInfo *exception)
               q=SetImagePixels(image,0,y,image->columns,1);
               if (q == (PixelPacket *) NULL)
                 break;
-              for (x=0; x < (int) image->columns; x++)
+              for (x=0; x < (long) image->columns; x++)
               {
                 q->blue=UpScale(*p++);
                 q->green=UpScale(*p++);

@@ -99,10 +99,10 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,
   Image
     *image;
 
-  int
+  long
     y;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -136,12 +136,12 @@ static Image *ReadUYVYImage(const ImageInfo *image_info,
     Accumulate UYVY, then unpack into two pixels.
   */
   image->depth=8;
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     q=SetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (int) (image->columns >> 1); x++)
+    for (x=0; x < (long) (image->columns >> 1); x++)
     {
       u=ReadBlobByte(image);
       y1=ReadBlobByte(image);
@@ -272,10 +272,10 @@ ModuleExport void UnregisterUYVYImage(void)
 */
 static unsigned int WriteUYVYImage(const ImageInfo *image_info,Image *image)
 {
-  int
+  long
     y;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -307,12 +307,12 @@ static unsigned int WriteUYVYImage(const ImageInfo *image_info,Image *image)
   v=0;
   y1=0;
   full=False;
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       if (full)
         {

@@ -249,11 +249,9 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   IndexPacket
     index;
 
-  int
-    y;
-
   long
-    offset;
+    offset,
+    y;
 
   PDBInfo
     pdb_info;
@@ -264,7 +262,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -386,13 +384,13 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Read 1-bit PDB image.
       */
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (long) image->rows; y++)
       {
         q=SetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
         indexes=GetIndexes(image);
-        for (x=0; x < ((int) image->columns-7); x+=8)
+        for (x=0; x < ((long) image->columns-7); x+=8)
         {
           for (bit=0; bit < 8; bit++)
           {
@@ -414,13 +412,13 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Read 2-bit PDB image.
       */
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (long) image->rows; y++)
       {
         q=SetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
         indexes=GetIndexes(image);
-        for (x=0; x < (int) image->columns; x+=4)
+        for (x=0; x < (long) image->columns; x+=4)
         {
           index=ValidateColormapIndex(image,3-((*p >> 6) & 0x03));
           indexes[x]=index;
@@ -448,13 +446,13 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Read 4-bit PDB image.
       */
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (long) image->rows; y++)
       {
         q=SetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
         indexes=GetIndexes(image);
-        for (x=0; x < (int) image->columns; x+=2)
+        for (x=0; x < (long) image->columns; x+=2)
         {
           index=ValidateColormapIndex(image,15-((*p >> 4) & 0x0f));
           indexes[x]=index;

@@ -444,6 +444,10 @@ MagickExport void XAnimateBackgroundImage(Display *display,
     geometry[MaxTextExtent],
     visual_type[MaxTextExtent];
 
+  long
+    x,
+    y;
+
   static XPixelInfo
     pixel;
 
@@ -468,10 +472,14 @@ MagickExport void XAnimateBackgroundImage(Display *display,
     i;
 
   unsigned int
+    status;
+
+  unsigned long
     height,
-    number_scenes,
-    status,
     width;
+
+  unsigned long
+    number_scenes;
 
   Window
     root_window;
@@ -667,12 +675,19 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   /*
     Create the X image.
   */
-  window_info.width=images[0]->columns;
-  window_info.height=images[0]->rows;
+  window_info.width=(unsigned int) images[0]->columns;
+  window_info.height=(unsigned int) images[0]->rows;
   FormatString(geometry,"%ux%u+0+0>",window_attributes.width,
     window_attributes.height);
-  (void) ParseImageGeometry(geometry,&window_info.x,&window_info.y,
-    &window_info.width,&window_info.height);
+  width=window_info.width;
+  height=window_info.height;
+  x=window_info.x;
+  y=window_info.y;
+  (void) ParseImageGeometry(geometry,&x,&y,&width,&height);
+  window_info.width=(unsigned int) height;
+  window_info.height=(unsigned int) height;
+  window_info.x=(int) x;
+  window_info.y=(int) y;
   status=XMakeImage(display,&resources,&window_info,images[0],window_info.width,
     window_info.height);
   if (status == False)
@@ -681,7 +696,7 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   window_info.y=0;
   if (resources.debug)
     {
-      (void) fprintf(stderr,"Image: %.1024s[%lu] %ux%u ",images[0]->filename,
+      (void) fprintf(stderr,"Image: %.1024s[%lu] %lux%lu ",images[0]->filename,
         images[0]->scene,images[0]->columns,images[0]->rows);
       if (images[0]->colors != 0)
         (void) fprintf(stderr,"%luc ",images[0]->colors);
@@ -738,16 +753,18 @@ MagickExport void XAnimateBackgroundImage(Display *display,
   /*
     Create the X pixmap.
   */
-  window_info.pixmap=
-    XCreatePixmap(display,window_info.id,width,height,window_info.depth);
+  window_info.pixmap=XCreatePixmap(display,window_info.id,(unsigned int) width,
+    (unsigned int) height,window_info.depth);
   if (window_info.pixmap == (Pixmap) NULL)
     MagickError(XServerError,"Unable to create X pixmap",(char *) NULL);
   /*
     Display pixmap on the window.
   */
-  if ((width > window_info.width) || (height > window_info.height))
+  if (((unsigned int) width > window_info.width) ||
+      ((unsigned int) height > window_info.height))
     (void) XFillRectangle(display,window_info.pixmap,
-      window_info.annotate_context,0,0,width,height);
+      window_info.annotate_context,0,0,(unsigned int) width,
+      (unsigned int) height);
   (void) XPutImage(display,window_info.pixmap,window_info.annotate_context,
     window_info.ximage,0,0,window_info.x,window_info.y,window_info.width,
     window_info.height);
@@ -787,12 +804,12 @@ MagickExport void XAnimateBackgroundImage(Display *display,
           window_info.pixel_info=(&scene_info);
         }
     status=XMakeImage(display,&resources,&window_info,images[scene],
-      images[scene]->columns,images[scene]->rows);
+      (unsigned int) images[scene]->columns,(unsigned int) images[scene]->rows);
     if (status == False)
       MagickError(XServerError,"Unable to create X image",(char *) NULL);
     if (resources.debug)
       {
-        (void) fprintf(stderr,"Image: [%lu] %.1024s %ux%u ",
+        (void) fprintf(stderr,"Image: [%lu] %.1024s %lux%lu ",
           images[scene]->scene,images[scene]->filename,images[scene]->columns,
           images[scene]->rows);
         if (images[scene]->colors != 0)
@@ -802,16 +819,18 @@ MagickExport void XAnimateBackgroundImage(Display *display,
     /*
       Create the X pixmap.
     */
-    window_info.pixmap=
-      XCreatePixmap(display,window_info.id,width,height,window_info.depth);
+    window_info.pixmap=XCreatePixmap(display,window_info.id,
+      (unsigned int) width,(unsigned int) height,window_info.depth);
     if (window_info.pixmap == (Pixmap) NULL)
       MagickError(XServerError,"Unable to create X pixmap",(char *) NULL);
     /*
       Display pixmap on the window.
     */
-    if ((width > window_info.width) || (height > window_info.height))
+    if (((unsigned int) width > window_info.width) ||
+        ((unsigned int) height > window_info.height))
       (void) XFillRectangle(display,window_info.pixmap,
-        window_info.annotate_context,0,0,width,height);
+        window_info.annotate_context,0,0,(unsigned int) width,
+        (unsigned int) height);
     (void) XPutImage(display,window_info.pixmap,window_info.annotate_context,
       window_info.ximage,0,0,window_info.x,window_info.y,window_info.width,
       window_info.height);
@@ -1004,9 +1023,11 @@ MagickExport Image *XAnimateImages(Display *display,
     *nexus;
 
   int
-    first_scene,
-    scene,
     status;
+
+  long
+    first_scene,
+    scene;
 
   KeySym
     key_symbol;
@@ -1034,8 +1055,10 @@ MagickExport Image *XAnimateImages(Display *display,
 
   unsigned int
     context_mask,
-    number_scenes,
     state;
+
+  unsigned long
+    number_scenes;
 
   WarningHandler
     warning_handler;
@@ -1241,7 +1264,7 @@ MagickExport Image *XAnimateImages(Display *display,
   }
   if (resource_info->debug)
     {
-      (void) fprintf(stderr,"Image: %.1024s[%lu] %ux%u ",
+      (void) fprintf(stderr,"Image: %.1024s[%lu] %lux%lu ",
         display_image->filename,display_image->scene,
         display_image->columns,display_image->rows);
       if (display_image->colors != 0)
@@ -1362,10 +1385,10 @@ MagickExport Image *XAnimateImages(Display *display,
     windows->image.immutable=True;
   windows->image.shape=True;
   windows->image.geometry=resource_info->image_geometry;
-  windows->image.width=display_image->columns;
+  windows->image.width=(unsigned int) display_image->columns;
   if ((int) windows->image.width > XDisplayWidth(display,visual_info->screen))
     windows->image.width=XDisplayWidth(display,visual_info->screen);
-  windows->image.height=display_image->rows;
+  windows->image.height=(unsigned int) display_image->rows;
   if ((int) windows->image.height > XDisplayHeight(display,visual_info->screen))
     windows->image.height=XDisplayHeight(display,visual_info->screen);
   windows->image.attributes.event_mask=ButtonMotionMask | ButtonPressMask |
@@ -1587,7 +1610,7 @@ MagickExport Image *XAnimateImages(Display *display,
   windows->image.x=0;
   windows->image.y=0;
   status=XMakeImage(display,resource_info,&windows->image,display_image,
-    display_image->columns,display_image->rows);
+    (unsigned int) display_image->columns,(unsigned int) display_image->rows);
   if (status == False)
     MagickError(XServerError,"Unable to create X image",(char *) NULL);
   if (windows->image.mapped)
@@ -1628,12 +1651,12 @@ MagickExport Image *XAnimateImages(Display *display,
           windows->image.pixel_info=(&scene_info);
         }
     status=XMakeImage(display,resource_info,&windows->image,images[scene],
-      images[scene]->columns,images[scene]->rows);
+      (unsigned int) images[scene]->columns,(unsigned int) images[scene]->rows);
     if (status == False)
       MagickError(XServerError,"Unable to create X image",(char *) NULL);
     if (resource_info->debug)
       {
-        (void) fprintf(stderr,"Image: [%lu] %.1024s %ux%u ",
+        (void) fprintf(stderr,"Image: [%lu] %.1024s %lux%lu ",
           images[scene]->scene,images[scene]->filename,images[scene]->columns,
           images[scene]->rows);
         if (images[scene]->colors != 0)
@@ -1664,8 +1687,8 @@ MagickExport Image *XAnimateImages(Display *display,
     windows->image.matte_pixmaps[scene]=windows->image.matte_pixmap;
     event.xexpose.x=0;
     event.xexpose.y=0;
-    event.xexpose.width=images[scene]->columns;
-    event.xexpose.height=images[scene]->rows;
+    event.xexpose.width=(unsigned int) images[scene]->columns;
+    event.xexpose.height=(unsigned int) images[scene]->rows;
     XRefreshWindow(display,&windows->image,&event);
     XDelay(display,(unsigned long) resource_info->delay*10*Max(image->delay,1));
   }
@@ -1691,7 +1714,7 @@ MagickExport Image *XAnimateImages(Display *display,
               /*
                 Forward animation:  increment scene number.
               */
-              if (scene < ((int) number_scenes-1))
+              if (scene < ((long) number_scenes-1))
                 scene++;
               else
                 if (state & AutoReverseAnimationState)
@@ -1759,14 +1782,14 @@ MagickExport Image *XAnimateImages(Display *display,
           XGetPixelPacket(display,visual_info,map_info,resource_info,
             images[scene],&scene_info);
           windows->image.pixel_info=(&scene_info);
-          windows->image.ximage->width=image->columns;
-          windows->image.ximage->height=image->rows;
+          windows->image.ximage->width=(unsigned int) image->columns;
+          windows->image.ximage->height=(unsigned int) image->rows;
           windows->image.pixmap=windows->image.pixmaps[scene];
           windows->image.matte_pixmap=windows->image.matte_pixmaps[scene];
           event.xexpose.x=0;
           event.xexpose.y=0;
-          event.xexpose.width=image->columns;
-          event.xexpose.height=image->rows;
+          event.xexpose.width=(unsigned int) image->columns;
+          event.xexpose.height=(unsigned int) image->rows;
           XRefreshWindow(display,&windows->image,&event);
           (void) XSync(display,False);
           state&=(~StepAnimationState);
@@ -2409,7 +2432,7 @@ MagickExport Image *XAnimateImages(Display *display,
       }
   XSetCursorState(display,windows,True);
   XCheckRefreshWindows(display,windows);
-  for (scene=1; scene < (int) number_scenes; scene++)
+  for (scene=1; scene < (long) number_scenes; scene++)
   {
     if (windows->image.pixmaps[scene] != (Pixmap) NULL)
       (void) XFreePixmap(display,windows->image.pixmaps[scene]);

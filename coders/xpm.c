@@ -186,12 +186,12 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *image;
 
   int
-    count,
-    y;
+    count;
 
   long
     j,
-    none;
+    none,
+    y;
 
   register char
     *p,
@@ -200,7 +200,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -210,10 +210,12 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     i;
 
   unsigned int
-    colors,
     length,
     status,
     width;
+
+  unsigned long
+    colors;
 
   /*
     Open image file.
@@ -299,7 +301,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read hints.
   */
-  count=sscanf(textlist[0],"%u %u %u %u",&image->columns,&image->rows,
+  count=sscanf(textlist[0],"%lu %lu %lu %u",&image->columns,&image->rows,
     &colors,&width);
   image->colors=colors;
   if ((count != 4) || (width > 2) || (image->columns == 0) ||
@@ -381,7 +383,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   j=0;
   key[width]='\0';
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     p=textlist[i++];
     if (p == (char *) NULL)
@@ -390,7 +392,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (r == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       (void) strncpy(key,p,width);
       if (strcmp(key,keys[j]) != 0)
@@ -566,13 +568,15 @@ static unsigned int WritePICONImage(const ImageInfo *image_info,Image *image)
     *picon,
     *map;
 
-  int
+  long
     x,
     y;
 
   unsigned int
+    status;
+
+  unsigned long
     height,
-    status,
     width;
 
   width=image->columns;
@@ -635,23 +639,21 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
     symbol[MaxTextExtent];
 
   int
-    j,
-    y;
+    j;
 
   long
-    k;
+    k,
+    y;
 
   register IndexPacket
     *indexes;
 
-  register int
+  register long
+    i,
     x;
 
   register PixelPacket
     *p;
-
-  register long
-    i;
 
   unsigned int
     characters_per_pixel,
@@ -688,12 +690,12 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
           /*
             Map all the transparent pixels.
           */
-          for (y=0; y < (int) image->rows; y++)
+          for (y=0; y < (long) image->rows; y++)
           {
             p=GetImagePixels(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (int) image->columns; x++)
+            for (x=0; x < (long) image->columns; x++)
             {
               if (p->opacity == TransparentOpacity)
                 transparent=True;
@@ -714,13 +716,13 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
     {
       colors++;
       ReacquireMemory((void **) &image->colormap,colors*sizeof(PixelPacket));
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (long) image->rows; y++)
       {
         p=GetImagePixels(image,0,y,image->columns,1);
         if (p == (PixelPacket *) NULL)
           break;
         indexes=GetIndexes(image);
-        for (x=0; x < (int) image->columns; x++)
+        for (x=0; x < (long) image->columns; x++)
         {
           if (p->opacity == TransparentOpacity)
             indexes[x]=image->colors;
@@ -742,7 +744,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobString(image,"/* XPM */\n");
   (void) WriteBlobString(image,"static char *magick[] = {\n");
   (void) WriteBlobString(image,"/* columns rows colors chars-per-pixel */\n");
-  FormatString(buffer,"\"%u %u %lu %d\",\n",image->columns,
+  FormatString(buffer,"\"%lu %lu %lu %d\",\n",image->columns,
     image->rows,colors,characters_per_pixel);
   (void) WriteBlobString(image,buffer);
   for (i=0; i < (long) colors; i++)
@@ -780,14 +782,14 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
     Define XPM pixels.
   */
   (void) WriteBlobString(image,"/* pixels */\n");
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
     (void) WriteBlobString(image,"\"");
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       k=indexes[x] % MaxCixels;
       symbol[0]=Cixel[k];
@@ -802,7 +804,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
       p++;
     }
     FormatString(buffer,"\"%.1024s\n",
-      (y == (int) (image->rows-1) ? "" : ","));
+      (y == (long) (image->rows-1) ? "" : ","));
     (void) WriteBlobString(image,buffer);
     if (QuantumTick(y,image->rows))
       MagickMonitor(SaveImageText,y,image->rows);

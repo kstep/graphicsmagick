@@ -99,10 +99,10 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *image,
     *resize_image;
 
-  int
+  long
     y;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -160,7 +160,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (status == False)
           ThrowReaderException(FileOpenWarning,"Unable to open file",image);
       }
-    for (y=0; y < (int) image->rows; y++)
+    for (y=0; y < (long) image->rows; y++)
     {
       if ((y > 0) || (image->previous == (Image *) NULL))
         (void) ReadBlob(image,image->columns,scanline);
@@ -168,7 +168,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       q=SetImagePixels(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
-      for (x=0; x < (int) image->columns; x++)
+      for (x=0; x < (long) image->columns; x++)
       {
         q->red=UpScale(*p++);
         q->green=0;
@@ -192,14 +192,14 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       exception);
     if (chroma_image == (Image *) NULL)
       return((Image *) NULL);
-    for (y=0; y < (int) chroma_image->rows; y++)
+    for (y=0; y < (long) chroma_image->rows; y++)
     {
       (void) ReadBlob(image,chroma_image->columns,scanline);
       p=scanline;
       q=SetImagePixels(chroma_image,0,y,chroma_image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
-      for (x=0; x < (int) chroma_image->columns; x++)
+      for (x=0; x < (long) chroma_image->columns; x++)
       {
         q->red=0;
         q->green=UpScale(*p++);
@@ -217,14 +217,14 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (status == False)
           ThrowReaderException(FileOpenWarning,"Unable to open file",image);
       }
-    for (y=0; y < (int) chroma_image->rows; y++)
+    for (y=0; y < (long) chroma_image->rows; y++)
     {
       (void) ReadBlob(image,chroma_image->columns,scanline);
       p=scanline;
       q=GetImagePixels(chroma_image,0,y,chroma_image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
-      for (x=0; x < (int) chroma_image->columns; x++)
+      for (x=0; x < (long) chroma_image->columns; x++)
       {
         q->blue=UpScale(*p++);
         q++;
@@ -242,13 +242,13 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (resize_image == (Image *) NULL)
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
         image);
-    for (y=0; y < (int) image->rows; y++)
+    for (y=0; y < (long) image->rows; y++)
     {
       q=GetImagePixels(image,0,y,image->columns,1);
       r=GetImagePixels(resize_image,0,y,resize_image->columns,1);
       if ((q == (PixelPacket *) NULL) || (r == (PixelPacket *) NULL))
         break;
-      for (x=0; x < (int) image->columns; x++)
+      for (x=0; x < (long) image->columns; x++)
       {
         q->green=r->green;
         q->blue=r->blue;
@@ -391,19 +391,21 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
     *chroma_image,
     *yuv_image;
 
-  int
+  long
     y;
 
-  register int
+  register long
     x;
 
   register PixelPacket
     *p;
 
   unsigned int
-    height,
+    status;
+
+  unsigned long
     scene,
-    status,
+    height,
     width;
 
   if (image_info->interlace != PartitionInterlace)
@@ -442,12 +444,12 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
     /*
       Initialize Y channel.
     */
-    for (y=0; y < (int) yuv_image->rows; y++)
+    for (y=0; y < (long) yuv_image->rows; y++)
     {
       p=GetImagePixels(yuv_image,0,y,yuv_image->columns,1);
       if (p == (PixelPacket *) NULL)
         break;
-      for (x=0; x < (int) yuv_image->columns; x++)
+      for (x=0; x < (long) yuv_image->columns; x++)
       {
         (void) WriteBlobByte(image,DownScale(p->red));
         p++;
@@ -478,12 +480,12 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
         if (status == False)
           ThrowWriterException(FileOpenWarning,"Unable to open file",image);
       }
-    for (y=0; y < (int) chroma_image->rows; y++)
+    for (y=0; y < (long) chroma_image->rows; y++)
     {
       p=GetImagePixels(chroma_image,0,y,chroma_image->columns,1);
       if (p == (PixelPacket *) NULL)
         break;
-      for (x=0; x < (int) chroma_image->columns; x++)
+      for (x=0; x < (long) chroma_image->columns; x++)
       {
         (void) WriteBlobByte(image,DownScale(p->green));
         p++;
@@ -500,12 +502,12 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
         if (status == False)
           ThrowWriterException(FileOpenWarning,"Unable to open file",image);
       }
-    for (y=0; y < (int) chroma_image->rows; y++)
+    for (y=0; y < (long) chroma_image->rows; y++)
     {
       p=GetImagePixels(chroma_image,0,y,chroma_image->columns,1);
       if (p == (PixelPacket *) NULL)
         break;
-      for (x=0; x < (int) chroma_image->columns; x++)
+      for (x=0; x < (long) chroma_image->columns; x++)
       {
         (void) WriteBlobByte(image,DownScale(p->blue));
         p++;

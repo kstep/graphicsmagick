@@ -962,8 +962,8 @@ static unsigned int WriteMPEGParameterFiles(const ImageInfo *image_info,
     (void) fprintf(file,"3\n");
   (void) fprintf(file,"%d\n",mpeg ? 1 : 0);  /* ISO/IEC 11172-2 stream */
   (void) fprintf(file,"0\n");  /* select frame picture coding */
-  (void) fprintf(file,"%u\n",image->columns+(image->columns & 0x01 ? 1 : 0));
-  (void) fprintf(file,"%u\n",image->rows+(image->rows & 0x01 ? 1 : 0));
+  (void) fprintf(file,"%lu\n",image->columns+(image->columns & 0x01 ? 1 : 0));
+  (void) fprintf(file,"%lu\n",image->rows+(image->rows & 0x01 ? 1 : 0));
   (void) fprintf(file,"%d\n",mpeg ? 8 : 2);  /* aspect ratio */
   (void) fprintf(file,"%d\n",mpeg ? 3 : 5);  /* frame rate code */
   (void) fprintf(file,"%.1f\n",mpeg ? 1152000.0 : 5000000.0);  /* bit rate */
@@ -978,8 +978,8 @@ static unsigned int WriteMPEGParameterFiles(const ImageInfo *image_info,
   (void) fprintf(file,"5\n");  /* color primaries */
   (void) fprintf(file,"5\n");  /* transfer characteristics */
   (void) fprintf(file,"%d\n",mpeg ? 5 : 4);  /* matrix coefficients */
-  (void) fprintf(file,"%u\n",image->columns+(image->columns & 0x01 ? 1 : 0));
-  (void) fprintf(file,"%u\n",image->rows+(image->rows & 0x01 ? 1 : 0));
+  (void) fprintf(file,"%lu\n",image->columns+(image->columns & 0x01 ? 1 : 0));
+  (void) fprintf(file,"%lu\n",image->rows+(image->rows & 0x01 ? 1 : 0));
   (void) fprintf(file,"0\n");  /* intra dc precision */
   (void) fprintf(file,"%d\n",mpeg ? 0 : 1);  /* top field */
   (void) fprintf(file,"%d %d %d\n",mpeg ? 1 : 0,mpeg ? 1 : 0, mpeg ? 1 : 0);

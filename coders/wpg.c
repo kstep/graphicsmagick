@@ -113,9 +113,9 @@ static void Rd_WP_DWORD(Image *image,unsigned long *d)
   return;
 }
 
-static void InsertRow(unsigned char *p,int y,Image *image)
+static void InsertRow(unsigned char *p,long y,Image *image)
 {
-int bit,x;
+int bit; long x;
 register PixelPacket *q;
 IndexPacket index;
 register IndexPacket *indexes;
@@ -129,7 +129,7 @@ register IndexPacket *indexes;
              if (q == (PixelPacket *) NULL)
                    break;
              indexes=GetIndexes(image);
-             for (x=0; x < ((int) image->columns-7); x+=8)
+             for (x=0; x < ((long) image->columns-7); x+=8)
                 {
                 for (bit=0; bit < 8; bit++)
                    {
@@ -141,7 +141,7 @@ register IndexPacket *indexes;
                 }
              if ((image->columns % 8) != 0)
                  {
-                 for (bit=0; bit < (int) (image->columns % 8); bit++)
+                 for (bit=0; bit < (long) (image->columns % 8); bit++)
                      {
                      index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
                      indexes[x+bit]=index;
@@ -162,7 +162,7 @@ register IndexPacket *indexes;
            if (q == (PixelPacket *) NULL)
                  break;
            indexes=GetIndexes(image);
-           for (x=0; x < ((int) image->columns-1); x+=2)
+           for (x=0; x < ((long) image->columns-1); x+=2)
                  {
                  index=ValidateColormapIndex(image,(*p >> 6) & 0x3);
                  indexes[x]=index;
@@ -213,7 +213,7 @@ register IndexPacket *indexes;
            if (q == (PixelPacket *) NULL)
                  break;
            indexes=GetIndexes(image);
-           for (x=0; x < ((int) image->columns-1); x+=2)
+           for (x=0; x < ((long) image->columns-1); x+=2)
                  {
                  index=ValidateColormapIndex(image,(*p >> 4) & 0xf);
                  indexes[x]=index;
@@ -243,7 +243,7 @@ register IndexPacket *indexes;
            if (q == (PixelPacket *) NULL) break;
            indexes=GetIndexes(image);
 
-	   for (x=0; x < (int) image->columns; x++)
+	   for (x=0; x < (long) image->columns; x++)
                 {
                 index=ValidateColormapIndex(image,*p++);
                 indexes[x]=index;
@@ -261,7 +261,7 @@ register IndexPacket *indexes;
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
 	    break;
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
              {
              q->red=UpScale(*p++);
              q->green=UpScale(*p++);
@@ -293,7 +293,7 @@ long ldblk;
  BImgBuff=(unsigned char *) malloc(ldblk);
  if(BImgBuff==NULL) return(-2);
 
- while(y<(int) image->rows)
+ while(y<(long) image->rows)
      {
      bbuf=ReadBlobByte(image);
 
@@ -336,7 +336,7 @@ long ldblk;
 			x=0;
 			y++;    /* Here I need to duplicate previous row RUNCOUNT* */
 			if(y<2) continue;
-			if(y>(int) image->rows)
+			if(y>(long) image->rows)
 				 {
 				 free(BImgBuff);
 				 return(-4);
@@ -367,7 +367,7 @@ char SampleSize=1;
  BImgBuff=(unsigned char *) malloc(ldblk);
  if(BImgBuff==NULL) return(-2);
 
- while(y<(int) image->rows)
+ while(y<(long) image->rows)
      {
      bbuf=ReadBlobByte(image);
 
@@ -808,7 +808,7 @@ DecompressionFailed: ThrowReaderException(ResourceLimitWarning,"Cannot decompres
 		   ldblk=((long)image->depth*image->columns+7)/8;
 		   if( (BImgBuff=(unsigned char *) malloc(ldblk))==NULL) goto NoMemory;
 
-		   for(i=0;i<(int) image->rows;i++)
+		   for(i=0;i<(long) image->rows;i++)
 		      {
 		      (void) ReadBlob(image,ldblk,(char *)BImgBuff);
 		      InsertRow(BImgBuff,i,image);

@@ -54,7 +54,7 @@
 
 static void InsertRow(unsigned char *p,int y,Image *image)
 {
-int bit,x;
+int bit; long x;
 register PixelPacket *q;
 IndexPacket index;
 register IndexPacket *indexes;
@@ -68,7 +68,7 @@ register IndexPacket *indexes;
 	     if (q == (PixelPacket *) NULL)
 		   break;
 	     indexes=GetIndexes(image);
-	     for (x=0; x < ((int) image->columns-7); x+=8)
+	     for (x=0; x < ((long) image->columns-7); x+=8)
 		{
 		for (bit=0; bit < 8; bit++)
 		   {
@@ -80,7 +80,7 @@ register IndexPacket *indexes;
 		}
 	     if ((image->columns % 8) != 0)
 		 {
-		 for (bit=0; bit < (int) (image->columns % 8); bit++)
+		 for (bit=0; bit < (long) (image->columns % 8); bit++)
 		     {
 		     index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
 		     indexes[x+bit]=index;

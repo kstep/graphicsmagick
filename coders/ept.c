@@ -183,12 +183,10 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   size_t
     count;
 
-  unsigned int
+  unsigned long
+    filesize,
     height,
     width;
-
-  unsigned long
-    filesize;
 
   if (image_info->monochrome)
     {
@@ -300,9 +298,9 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   if (image_info->page != (char *) NULL)
     (void) ParseImageGeometry(image_info->page,&page.x,&page.y,
       &page.width,&page.height);
-  FormatString(geometry,"%ux%u",
-    (unsigned int) ceil(page.width*image->x_resolution/dx_resolution-0.5),
-    (unsigned int) ceil(page.height*image->y_resolution/dy_resolution-0.5));
+  FormatString(geometry,"%lux%lu",
+    (unsigned long) ceil(page.width*image->x_resolution/dx_resolution-0.5),
+    (unsigned long) ceil(page.height*image->y_resolution/dy_resolution-0.5));
   if (ferror(file))
     {
       (void) fclose(file);
@@ -320,7 +318,7 @@ static Image *ReadEPTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   *options='\0';
   if (image_info->subrange != 0)
-    FormatString(options,"-dFirstPage=%u -dLastPage=%u",
+    FormatString(options,"-dFirstPage=%lu -dLastPage=%lu",
       image_info->subimage+1,image_info->subimage+image_info->subrange);
   (void) strcpy(filename,image_info->filename);
   TemporaryFilename((char *) image_info->filename);

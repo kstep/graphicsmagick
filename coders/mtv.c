@@ -100,13 +100,11 @@ static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
-  int
+  long
+    count,
     y;
 
-  long
-    count;
-
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -152,7 +150,7 @@ static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (pixels == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitWarning,"Unable to allocate memory",
         image);
-    for (y=0; y < (int) image->rows; y++)
+    for (y=0; y < (long) image->rows; y++)
     {
       count=ReadBlob(image,3*image->columns,pixels);
       if (count == 0)
@@ -162,7 +160,7 @@ static Image *ReadMTVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       q=SetImagePixels(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
-      for (x=0; x < (int) image->columns; x++)
+      for (x=0; x < (long) image->columns; x++)
       {
         q->red=UpScale(*p++);
         q->green=UpScale(*p++);
@@ -343,15 +341,15 @@ static unsigned int WriteMTVImage(const ImageInfo *image_info,Image *image)
     /*
       Initialize raster file header.
     */
-    FormatString(buffer,"%u %u\n",image->columns,image->rows);
+    FormatString(buffer,"%lu %lu\n",image->columns,image->rows);
     (void) WriteBlobString(image,buffer);
-    for (y=0; y < (int) image->rows; y++)
+    for (y=0; y < (long) image->rows; y++)
     {
       p=GetImagePixels(image,0,y,image->columns,1);
       if (p == (PixelPacket *) NULL)
         break;
       q=pixels;
-      for (x=0; x < (int) image->columns; x++)
+      for (x=0; x < (long) image->columns; x++)
       {
         *q++=DownScale(p->red);
         *q++=DownScale(p->green);

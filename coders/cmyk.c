@@ -99,14 +99,12 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
   Image
     *image;
 
-  int
+  long
     y;
 
-  register int
-    x;
-
   register long
-    i;
+    i,
+    x;
 
   size_t
     count;
@@ -152,7 +150,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
         Skip to next image.
       */
       image->scene++;
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (long) image->rows; y++)
         (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
     }
   x=packet_size*image->tile_info.x;
@@ -172,7 +170,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
         */
         for (y=0; y < image->tile_info.y; y++)
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           if ((y > 0) || (image->previous == (Image *) NULL))
             (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
@@ -201,7 +199,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
         packet_size=image->depth > 8 ? 2 : 1;
         for (y=0; y < image->tile_info.y; y++)
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           if ((y > 0) || (image->previous == (Image *) NULL))
             (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
@@ -234,7 +232,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
       case PlaneInterlace:
       case PartitionInterlace:
       {
-        unsigned int
+        unsigned long
           span;
 
         /*
@@ -252,7 +250,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
         i=0;
         span=image->rows*(image->matte ? 5 : 4);
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           if ((y > 0) || (image->previous == (Image *) NULL))
             (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
@@ -279,7 +277,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
           }
         for (y=0; y < image->tile_info.y; y++)
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
           if (!GetImagePixels(image,0,y,image->columns,1))
@@ -305,7 +303,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
           }
         for (y=0; y < image->tile_info.y; y++)
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
           if (!GetImagePixels(image,0,y,image->columns,1))
@@ -331,7 +329,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
           }
         for (y=0; y < image->tile_info.y; y++)
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
           if (!GetImagePixels(image,0,y,image->columns,1))
@@ -364,7 +362,7 @@ static Image *ReadCMYKImage(const ImageInfo *image_info,
             for (y=0; y < image->tile_info.y; y++)
               (void) ReadBlob(image,packet_size*image->tile_info.width,
                 scanline);
-            for (y=0; y < (int) image->rows; y++)
+            for (y=0; y < (long) image->rows; y++)
             {
               (void) ReadBlob(image,packet_size*image->tile_info.width,
                 scanline);
@@ -569,7 +567,7 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
         /*
           No interlacing:  CMYKCMYKCMYKCMYKCMYKCMYK...
         */
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           if (!GetImagePixels(image,0,y,image->columns,1))
             break;
@@ -594,7 +592,7 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
         /*
           Line interlacing:  CCC...MMM...YYY...KKK...CCC...MMM...YYY...KKK...
         */
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           if (!GetImagePixels(image,0,y,image->columns,1))
             break;
@@ -629,7 +627,7 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
             if (status == False)
               ThrowWriterException(FileOpenWarning,"Unable to open file",image);
           }
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           if (!GetImagePixels(image,0,y,image->columns,1))
             break;
@@ -645,7 +643,7 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
               ThrowWriterException(FileOpenWarning,"Unable to open file",image);
           }
         MagickMonitor(SaveImageText,100,400);
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           if (!GetImagePixels(image,0,y,image->columns,1))
             break;
@@ -661,7 +659,7 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
               ThrowWriterException(FileOpenWarning,"Unable to open file",image);
           }
         MagickMonitor(SaveImageText,200,400);
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           if (!GetImagePixels(image,0,y,image->columns,1))
             break;
@@ -677,7 +675,7 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
               ThrowWriterException(FileOpenWarning,"Unable to open file",image);
           }
         MagickMonitor(SaveImageText,200,400);
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           if (!GetImagePixels(image,0,y,image->columns,1))
             break;
@@ -696,7 +694,7 @@ static unsigned int WriteCMYKImage(const ImageInfo *image_info,Image *image)
                   ThrowWriterException(FileOpenWarning,"Unable to open file",
                     image);
               }
-            for (y=0; y < (int) image->rows; y++)
+            for (y=0; y < (long) image->rows; y++)
             {
               if (!GetImagePixels(image,0,y,image->columns,1))
                 break;

@@ -136,10 +136,8 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
       key;
   } PCDTable;
 
-  int
-    count;
-
   long
+    count,
     quantum;
 
   PCDTable
@@ -156,19 +154,21 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
     *p,
     *q;
 
+  size_t
+    length;
+
   unsigned char
     *buffer;
 
   unsigned int
     bits,
-    length,
-    pcd_length[3],
     plane,
-    row,
     sum;
 
   unsigned long
-    number_pixels;
+    number_pixels,
+    pcd_length[3],
+    row;
 
   /*
     Initialize Huffman tables.
@@ -196,7 +196,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
           (char *) NULL)
       }
     r=pcd_table[i];
-    for (j=0; j < (int) length; j++)
+    for (j=0; j < (long) length; j++)
     {
       PCDGetBits(8);
       r->length=(sum & 0xff)+1;
@@ -282,7 +282,7 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
       Decode luminance or chrominance deltas.
     */
     r=pcd_table[plane];
-    for (i=0; ((i < (int) length) && ((sum & r->mask) != r->sequence)); i++)
+    for (i=0; ((i < (long) length) && ((sum & r->mask) != r->sequence)); i++)
       r++;
     if (((unsigned long) (q-luma) > number_pixels) || (r == (PCDTable *) NULL))
       {
@@ -427,10 +427,10 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
-  int
+  long
     x;
 
-  register int
+  register long
     y;
 
   register PixelPacket
@@ -454,17 +454,17 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *luma;
 
   unsigned int
-    height,
     overview,
     rotate,
-    status,
-    width;
+    status;
 
   unsigned long
+    height,
     offset,
     number_images,
     number_pixels,
-    subimage;
+    subimage,
+    width;
 
   /*
     Open image file.
@@ -577,7 +577,7 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         yy=luma;
         c1=chroma1;
         c2=chroma2;
-        for (y=0; y < (int) height; y+=2)
+        for (y=0; y < (long) height; y+=2)
         {
           (void) ReadBlob(image,width,(char *) yy);
           yy+=image->columns;
@@ -596,12 +596,12 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         yy=luma;
         c1=chroma1;
         c2=chroma2;
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
           {
             q->red=UpScale(*yy++);
             q->green=UpScale(*c1++);
@@ -700,12 +700,12 @@ static Image *ReadPCDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   yy=luma;
   c1=chroma1;
   c2=chroma2;
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     q=SetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       q->red=UpScale(*yy++);
       q->green=UpScale(*c1++);
@@ -870,7 +870,7 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
     *downsampled_image,
     *tile_image;
 
-  int
+  long
     x,
     y;
 
@@ -881,7 +881,7 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
     *p,
     *q;
 
-  unsigned int
+  unsigned long
     height,
     width;
 
@@ -901,7 +901,7 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
   tile_image=ZoomImage(image,width,height,&image->exception);
   if (tile_image == (Image *) NULL)
     return(False);
-  (void) sscanf(geometry,"%ux%u",&width,&height);
+  (void) sscanf(geometry,"%lux%lu",&width,&height);
   if ((tile_image->columns != width) || (tile_image->rows != height))
     {
       Image
@@ -930,12 +930,12 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
   /*
     Write tile to PCD file.
   */
-  for (y=0; y < (int) tile_image->rows; y+=2)
+  for (y=0; y < (long) tile_image->rows; y+=2)
   {
     p=GetImagePixels(tile_image,0,y,tile_image->columns,2);
     if (p == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (int) (tile_image->columns << 1); x++)
+    for (x=0; x < (long) (tile_image->columns << 1); x++)
     {
       (void) WriteBlobByte(image,DownScale(p->red));
       p++;
@@ -943,7 +943,7 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
     q=GetImagePixels(downsampled_image,0,y >> 1,downsampled_image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (int) downsampled_image->columns; x++)
+    for (x=0; x < (long) downsampled_image->columns; x++)
     {
       (void) WriteBlobByte(image,DownScale(q->green));
       q++;
@@ -951,7 +951,7 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
     q=GetImagePixels(downsampled_image,0,y >> 1,downsampled_image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (int) downsampled_image->columns; x++)
+    for (x=0; x < (long) downsampled_image->columns; x++)
     {
       (void) WriteBlobByte(image,DownScale(q->blue));
       q++;

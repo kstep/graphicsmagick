@@ -133,10 +133,10 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
-  int
+  long
     y;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -176,21 +176,21 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   (void) ReadBlob(image,32,(char *) buffer);
   (void) ReadBlob(image,14,(char *) buffer);
-  image->rows=atoi(buffer);
+  image->rows=atol(buffer);
   (void) ReadBlob(image,14,(char *) buffer);
-  image->columns=atoi(buffer);
+  image->columns=atol(buffer);
   (void) ReadBlob(image,196,(char *) buffer);
   (void) ReadBlob(image,768,(char *) buffer);
   /*
     Convert SCT raster image to pixel packets.
   */
   image->colorspace=CMYKColorspace;
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     q=SetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       q->red=MaxRGB-UpScale(ReadBlobByte(image));
       q++;
@@ -200,7 +200,7 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       q->green=MaxRGB-UpScale(ReadBlobByte(image));
       q++;
@@ -210,7 +210,7 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       q->blue=MaxRGB-UpScale(ReadBlobByte(image));
       q++;
@@ -220,7 +220,7 @@ static Image *ReadSCTImage(const ImageInfo *image_info,ExceptionInfo *exception)
     q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       q->opacity=MaxRGB-UpScale(ReadBlobByte(image));
       q++;

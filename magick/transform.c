@@ -101,7 +101,7 @@ MagickExport Image *ChopImage(Image *image,const RectangleInfo *chop_info,
   Image
     *chop_image;
 
-  int
+  long
     j,
     y;
 
@@ -112,7 +112,7 @@ MagickExport Image *ChopImage(Image *image,const RectangleInfo *chop_info,
     *chop_indexes,
     *indexes;
 
-  register int
+  register long
     i,
     x;
 
@@ -128,25 +128,25 @@ MagickExport Image *ChopImage(Image *image,const RectangleInfo *chop_info,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   assert(chop_info != (RectangleInfo *) NULL);
-  if (((chop_info->x+(int) chop_info->width) < 0) ||
-      ((chop_info->y+(int) chop_info->height) < 0) ||
-      (chop_info->x >= (int) image->columns) ||
-      (chop_info->y >= (int) image->rows))
+  if (((chop_info->x+(long) chop_info->width) < 0) ||
+      ((chop_info->y+(long) chop_info->height) < 0) ||
+      (chop_info->x >= (long) image->columns) ||
+      (chop_info->y >= (long) image->rows))
     ThrowImageException(OptionWarning,"Unable to chop image",
       "geometry does not contain image");
   clone_info=(*chop_info);
-  if ((clone_info.x+(int) clone_info.width) > (int) image->columns)
-    clone_info.width=(unsigned int) ((int) image->columns-clone_info.x);
-  if ((clone_info.y+(int) clone_info.height) > (int) image->rows)
-    clone_info.height=(unsigned int) ((int) image->rows-clone_info.y);
+  if ((clone_info.x+(long) clone_info.width) > (long) image->columns)
+    clone_info.width=(unsigned long) ((long) image->columns-clone_info.x);
+  if ((clone_info.y+(long) clone_info.height) > (long) image->rows)
+    clone_info.height=(unsigned long) ((long) image->rows-clone_info.y);
   if (clone_info.x < 0)
     {
-      clone_info.width-=(unsigned int) (-clone_info.x);
+      clone_info.width-=(unsigned long) (-clone_info.x);
       clone_info.x=0;
     }
   if (clone_info.y < 0)
     {
-      clone_info.height-=(unsigned int) (-clone_info.y);
+      clone_info.height-=(unsigned long) (-clone_info.y);
       clone_info.y=0;
     }
   /*
@@ -161,7 +161,7 @@ MagickExport Image *ChopImage(Image *image,const RectangleInfo *chop_info,
   */
   i=0;
   j=0;
-  for (y=0; y < clone_info.y; y++)
+  for (y=0; y < (long) clone_info.y; y++)
   {
     p=GetImagePixels(image,0,i++,image->columns,1);
     q=SetImagePixels(chop_image,0,j++,chop_image->columns,1);
@@ -169,9 +169,9 @@ MagickExport Image *ChopImage(Image *image,const RectangleInfo *chop_info,
       break;
     indexes=GetIndexes(image);
     chop_indexes=GetIndexes(chop_image);
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
-      if ((x < clone_info.x) || (x >= (int) (clone_info.x+clone_info.width)))
+      if ((x < clone_info.x) || (x >= (long) (clone_info.x+clone_info.width)))
         {
           if (indexes != (IndexPacket *) NULL)
             *chop_indexes++=indexes[x];
@@ -189,7 +189,7 @@ MagickExport Image *ChopImage(Image *image,const RectangleInfo *chop_info,
     Extract chop image.
   */
   i+=clone_info.height;
-  for (y=0; y < (int) (image->rows-(clone_info.y+clone_info.height)); y++)
+  for (y=0; y < (long) (image->rows-(clone_info.y+clone_info.height)); y++)
   {
     p=GetImagePixels(image,0,i++,image->columns,1);
     q=SetImagePixels(chop_image,0,j++,chop_image->columns,1);
@@ -197,9 +197,9 @@ MagickExport Image *ChopImage(Image *image,const RectangleInfo *chop_info,
       break;
     indexes=GetIndexes(image);
     chop_indexes=GetIndexes(chop_image);
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
-      if ((x < clone_info.x) || (x >= (int) (clone_info.x+clone_info.width)))
+      if ((x < clone_info.x) || (x >= (long) (clone_info.x+clone_info.width)))
         {
           if (indexes != (IndexPacket *) NULL)
             *chop_indexes++=indexes[x];
@@ -333,7 +333,7 @@ MagickExport Image *CropImage(Image *image,const RectangleInfo *crop_info,
   Image
     *crop_image;
 
-  int
+  long
     y;
 
   RectangleInfo
@@ -356,19 +356,19 @@ MagickExport Image *CropImage(Image *image,const RectangleInfo *crop_info,
   assert(exception->signature == MagickSignature);
   if ((crop_info->width != 0) || (crop_info->height != 0))
     {
-      if (((crop_info->x+(int) crop_info->width) < 0) ||
-          ((crop_info->y+(int) crop_info->height) < 0) ||
-          (crop_info->x >= (int) image->columns) ||
-          (crop_info->y >= (int) image->rows))
+      if (((crop_info->x+(long) crop_info->width) < 0) ||
+          ((crop_info->y+(long) crop_info->height) < 0) ||
+          (crop_info->x >= (long) image->columns) ||
+          (crop_info->y >= (long) image->rows))
         ThrowImageException(OptionWarning,"Unable to crop image",
           "geometry does not contain any part of the image");
     }
   page=(*crop_info);
   if ((page.width != 0) || (page.height != 0))
     {
-      if ((page.x+(int) page.width) > (int) image->columns)
+      if ((page.x+(long) page.width) > (long) image->columns)
         page.width=image->columns-page.x;
-      if ((page.y+(int) page.height) > (int) image->rows)
+      if ((page.y+(long) page.height) > (long) image->rows)
         page.height=image->rows-page.y;
       if (page.x < 0)
         {
@@ -395,8 +395,8 @@ MagickExport Image *CropImage(Image *image,const RectangleInfo *crop_info,
       page.y-=crop_info->y;
       if (page.y < 0)
         page.y=0;
-      if ((((int) page.width+page.x) > (int) image->columns) ||
-          (((int) page.height+page.y) > (int) image->rows))
+      if ((((long) page.width+page.x) > (long) image->columns) ||
+          (((long) page.height+page.y) > (long) image->rows))
         ThrowImageException(OptionWarning,"Unable to crop image",
           "geometry does not contain image");
     }
@@ -416,7 +416,7 @@ MagickExport Image *CropImage(Image *image,const RectangleInfo *crop_info,
     Extract crop image.
   */
   crop_image->page=page;
-  for (y=0; y < (int) crop_image->rows; y++)
+  for (y=0; y < (long) crop_image->rows; y++)
   {
     p=GetImagePixels(image,page.x,page.y+y,crop_image->columns,1);
     q=SetImagePixels(crop_image,0,y,crop_image->columns,1);
@@ -432,7 +432,7 @@ MagickExport Image *CropImage(Image *image,const RectangleInfo *crop_info,
     if (QuantumTick(y,crop_image->rows))
       MagickMonitor(CropImageText,y,crop_image->rows-1);
   }
-  if (y < (int) crop_image->rows)
+  if (y < (long) crop_image->rows)
     {
       DestroyImage(crop_image);
       return((Image *) NULL);
@@ -473,7 +473,7 @@ MagickExport Image *DeconstructImages(Image *image,ExceptionInfo *exception)
     *crop_next,
     *deconstruct_image;
 
-  int
+  long
     y;
 
   RectangleInfo
@@ -482,7 +482,7 @@ MagickExport Image *DeconstructImages(Image *image,ExceptionInfo *exception)
   register Image
     *next;
 
-  register int
+  register long
     i,
     x;
 
@@ -523,37 +523,37 @@ MagickExport Image *DeconstructImages(Image *image,ExceptionInfo *exception)
     /*
       Set bounding box to the next dimensions.
     */
-    for (x=0; x < (int) next->columns; x++)
+    for (x=0; x < (long) next->columns; x++)
     {
       p=GetImagePixels(next,x,0,1,next->rows);
       q=GetImagePixels(next->previous,x,0,1,next->previous->rows);
       if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
         break;
-      for (y=0; y < (int) next->rows; y++)
+      for (y=0; y < (long) next->rows; y++)
       {
         if (!ColorMatch(*p,*q,next->fuzz))
           break;
         p++;
         q++;
       }
-      if (y < (int) next->rows)
+      if (y < (long) next->rows)
         break;
     }
     bounds[i].x=x;
-    for (y=0; y < (int) next->rows; y++)
+    for (y=0; y < (long) next->rows; y++)
     {
       p=GetImagePixels(next,0,y,next->columns,1);
       q=GetImagePixels(next->previous,0,y,next->previous->columns,1);
       if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
         break;
-      for (x=0; x < (int) next->columns; x++)
+      for (x=0; x < (long) next->columns; x++)
       {
         if (!ColorMatch(*p,*q,next->fuzz))
           break;
         p++;
         q++;
       }
-      if (x < (int) next->columns)
+      if (x < (long) next->columns)
         break;
     }
     bounds[i].y=y;
@@ -563,14 +563,14 @@ MagickExport Image *DeconstructImages(Image *image,ExceptionInfo *exception)
       q=GetImagePixels(next->previous,x,0,1,next->previous->rows);
       if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
         break;
-      for (y=0; y < (int) next->rows; y++)
+      for (y=0; y < (long) next->rows; y++)
       {
         if (!ColorMatch(*p,*q,next->fuzz))
           break;
         p++;
         q++;
       }
-      if (y < (int) next->rows)
+      if (y < (long) next->rows)
         break;
     }
     bounds[i].width=x-bounds[i].x+1;
@@ -580,14 +580,14 @@ MagickExport Image *DeconstructImages(Image *image,ExceptionInfo *exception)
       q=GetImagePixels(next->previous,0,y,next->previous->columns,1);
       if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
         break;
-      for (x=0; x < (int) next->columns; x++)
+      for (x=0; x < (long) next->columns; x++)
       {
         if (!ColorMatch(*p,*q,next->fuzz))
           break;
         p++;
         q++;
       }
-      if (x < (int) next->columns)
+      if (x < (long) next->columns)
         break;
     }
     bounds[i].height=y-bounds[i].y+1;
@@ -716,7 +716,7 @@ MagickExport Image *FlipImage(Image *image,ExceptionInfo *exception)
   Image
     *flip_image;
 
-  int
+  long
     y;
 
   register IndexPacket
@@ -742,7 +742,7 @@ MagickExport Image *FlipImage(Image *image,ExceptionInfo *exception)
   /*
     Flip each row.
   */
-  for (y=0; y < (int) flip_image->rows; y++)
+  for (y=0; y < (long) flip_image->rows; y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
     q=SetImagePixels(flip_image,0,flip_image->rows-y-1,flip_image->columns,1);
@@ -797,14 +797,14 @@ MagickExport Image *FlopImage(Image *image,ExceptionInfo *exception)
   Image
     *flop_image;
 
-  int
+  long
     y;
 
   register IndexPacket
     *flop_indexes,
     *indexes;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -827,7 +827,7 @@ MagickExport Image *FlopImage(Image *image,ExceptionInfo *exception)
   /*
     Flop each row.
   */
-  for (y=0; y < (int) flop_image->rows; y++)
+  for (y=0; y < (long) flop_image->rows; y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
     q=SetImagePixels(flop_image,0,y,flop_image->columns,1);
@@ -836,7 +836,7 @@ MagickExport Image *FlopImage(Image *image,ExceptionInfo *exception)
     indexes=GetIndexes(image);
     flop_indexes=GetIndexes(flop_image);
     q+=flop_image->columns;
-    for (x=0; x < (int) flop_image->columns; x++)
+    for (x=0; x < (long) flop_image->columns; x++)
     {
       if (flop_image->storage_class == PseudoClass)
         flop_indexes[flop_image->columns-x-1]=indexes[x];
@@ -888,7 +888,7 @@ MagickExport Image *MosaicImages(Image *image,ExceptionInfo *exception)
   Image
     *mosaic_image;
 
-  int
+  long
     y;
 
   RectangleInfo
@@ -897,7 +897,7 @@ MagickExport Image *MosaicImages(Image *image,ExceptionInfo *exception)
   register Image
     *next;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -940,12 +940,12 @@ MagickExport Image *MosaicImages(Image *image,ExceptionInfo *exception)
   */
   mosaic_image->columns=page.width;
   mosaic_image->rows=page.height;
-  for (y=0; y < (int) mosaic_image->rows; y++)
+  for (y=0; y < (long) mosaic_image->rows; y++)
   {
     q=SetImagePixels(mosaic_image,0,y,mosaic_image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (int) mosaic_image->columns; x++)
+    for (x=0; x < (long) mosaic_image->columns; x++)
     {
       *q=mosaic_image->background_color;
       q++;
@@ -1091,14 +1091,16 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
             transform;
 
           int
-            intent,
+            intent;
+
+          long
             y;
 
           ProfilePacket
             alpha,
             beta;
 
-          register int
+          register long
             x;
 
           register PixelPacket
@@ -1157,12 +1159,12 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
               "failed to create color transform");
           if (image->colorspace == CMYKColorspace)
             image->matte=True;
-          for (y=0; y < (int) image->rows; y++)
+          for (y=0; y < (long) image->rows; y++)
           {
             q=GetImagePixels(image,0,y,image->columns,1);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (int) image->columns; x++)
+            for (x=0; x < (long) image->columns; x++)
             {
               alpha.red=XUpScale(q->red);
               alpha.green=XUpScale(q->green);
@@ -1245,7 +1247,7 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
 %
 %  The format of the RollImage method is:
 %
-%      Image *RollImage(Image *image,const int x_offset,const int y_offset,
+%      Image *RollImage(Image *image,const long x_offset,const long y_offset,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -1260,22 +1262,22 @@ MagickExport unsigned int ProfileImage(Image *image,const char *profile_name,
 %
 %
 */
-MagickExport Image *RollImage(Image *image,const int x_offset,
-  const int y_offset,ExceptionInfo *exception)
+MagickExport Image *RollImage(Image *image,const long x_offset,
+  const long y_offset,ExceptionInfo *exception)
 {
 #define RollImageText  "  Roll image...  "
 
   Image
     *roll_image;
 
-  int
+  long
     y;
 
   register IndexPacket
     *indexes,
     *roll_indexes;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -1304,7 +1306,7 @@ MagickExport Image *RollImage(Image *image,const int x_offset,
     offset.x+=image->columns;
   if (offset.y < 0)
     offset.y+=image->rows;
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     /*
       Transfer scanline.
@@ -1313,7 +1315,7 @@ MagickExport Image *RollImage(Image *image,const int x_offset,
     if (p == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       q=SetImagePixels(roll_image,((int) offset.x+x) % image->columns,
         ((int) offset.y+y) % image->rows,1,1);
@@ -1420,11 +1422,13 @@ MagickExport void TransformImage(Image **image,const char *crop_geometry,
     *transform_image;
 
   int
-    flags,
+    flags;
+
+  long
     x,
     y;
 
-  unsigned int
+  unsigned long
     height,
     width;
 
@@ -1449,9 +1453,9 @@ MagickExport void TransformImage(Image **image,const char *crop_geometry,
       flags=ParseGeometry((char *) crop_geometry,&crop_info.x,&crop_info.y,
         &width,&height);
       if ((flags & WidthValue) == 0)
-        width=(unsigned int) ((int) transform_image->columns-crop_info.x);
+        width=(unsigned long) ((long) transform_image->columns-crop_info.x);
       if ((flags & HeightValue) == 0)
-        height=(unsigned int) ((int) transform_image->rows-crop_info.y);
+        height=(unsigned long) ((long) transform_image->rows-crop_info.y);
       if (strchr(crop_geometry,'%') != (char *) NULL)
         {
           /*
@@ -1484,9 +1488,9 @@ MagickExport void TransformImage(Image **image,const char *crop_geometry,
               Crop repeatedly to create uniform subimages.
             */
             next_image=(Image *) NULL;
-            for (y=0; y < (int) transform_image->rows; y+=height)
+            for (y=0; y < (long) transform_image->rows; y+=height)
             {
-              for (x=0; x < (int) transform_image->columns; x+=width)
+              for (x=0; x < (long) transform_image->columns; x+=width)
               {
                 crop_info.width=width;
                 crop_info.height=height;

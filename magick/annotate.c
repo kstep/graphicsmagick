@@ -120,10 +120,7 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
     *annotate,
     *clone_info;
 
-  TypeMetric
-    metrics;
-
-  int
+  long
     x,
     y;
 
@@ -136,10 +133,15 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
   size_t
     length;
 
+  TypeMetric
+    metrics;
+
   unsigned int
-    height,
     matte,
-    status,
+    status;
+
+  unsigned long
+    height,
     width;
 
   /*
@@ -185,11 +187,11 @@ MagickExport unsigned int AnnotateImage(Image *image,const DrawInfo *draw_info)
       if ((flags & XNegative) != 0)
         x+=image->columns;
       if ((flags & WidthValue) == 0)
-        width-=2*x > (int) width ? width : 2*x;
+        width-=2*x > (long) width ? width : 2*x;
       if ((flags & YNegative) != 0)
         y+=image->rows;
       if ((flags & HeightValue) == 0)
-        height-=2*y > (int) height ? height : 2*y;
+        height-=2*y > (long) height ? height : 2*y;
     }
   annotate=CloneDrawInfo((ImageInfo *) NULL,draw_info);
   if ((annotate->fill.opacity == TransparentOpacity) &&
@@ -713,7 +715,7 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
   ImageInfo
     *clone_info;
 
-  int
+  long
     y;
 
   PointInfo
@@ -721,7 +723,7 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
     point,
     resolution;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -853,12 +855,12 @@ static unsigned int RenderPostscript(Image *image,const DrawInfo *draw_info,
       */
       annotate_image->matte=True;
       fill_color=draw_info->fill;
-      for (y=0; y < (int) annotate_image->rows; y++)
+      for (y=0; y < (long) annotate_image->rows; y++)
       {
         q=GetImagePixels(annotate_image,0,y,annotate_image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (int) annotate_image->columns; x++)
+        for (x=0; x < (long) annotate_image->columns; x++)
         {
           q->opacity=MaxRGB-((unsigned long) ((MaxRGB-Intensity(*q))*
             (MaxRGB-fill_color.opacity))/MaxRGB);
@@ -1009,7 +1011,7 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
     glyph,
     last_glyph;
 
-  int
+  long
     y;
 
   PointInfo
@@ -1019,14 +1021,12 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
   Quantum
     opacity;
 
-  register int
+  register long
+    i,
     x;
 
   register PixelPacket
     *q;
-
-  register long
-    i;
 
   register unsigned char
     *p;
@@ -1196,7 +1196,7 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
         point.x=offset->x+bitmap->left;
         point.y=offset->y-bitmap->top;
         p=bitmap->bitmap.buffer;
-        for (y=0; y < bitmap->bitmap.rows; y++)
+        for (y=0; y < (long)bitmap->bitmap.rows; y++)
         {
           if (ceil(point.y+y-0.5) >= image->rows)
             break;
@@ -1208,7 +1208,7 @@ static unsigned int RenderTruetype(Image *image,const DrawInfo *draw_info,
           q=GetImagePixels(image,(int) ceil(point.x-0.5),
             (int) ceil(point.y+y-0.5),bitmap->bitmap.width,1);
           active=q != (PixelPacket *) NULL;
-          for (x=0; x < bitmap->bitmap.width; x++)
+          for (x=0; x < (long)bitmap->bitmap.width; x++)
           {
             if ((ceil(point.x+x-0.5) < 0) || (*p == 0) ||
                 (ceil(point.x+x-0.5) >= image->columns))

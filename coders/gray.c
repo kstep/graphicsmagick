@@ -99,17 +99,13 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
   Image
     *image;
 
-  int
+  long
+    j,
     y;
 
-  long
-    j;
-
-  register int
-    x;
-
   register long
-    i;
+    i,
+    x;
 
   size_t
     count;
@@ -146,7 +142,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
         Skip to next image.
       */
       image->scene++;
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (long) image->rows; y++)
         (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
     }
   x=packet_size*image->tile_info.x;
@@ -160,7 +156,7 @@ static Image *ReadGRAYImage(const ImageInfo *image_info,
         image);
     for (y=0; y < image->tile_info.y; y++)
       (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
-    for (y=0; y < (int) image->rows; y++)
+    for (y=0; y < (long) image->rows; y++)
     {
       if ((y > 0) || (image->previous == (Image *) NULL))
         (void) ReadBlob(image,packet_size*image->tile_info.width,scanline);
@@ -335,7 +331,7 @@ static unsigned int WriteGRAYImage(const ImageInfo *image_info,Image *image)
     /*
       Convert MIFF to GRAY raster scanline.
     */
-    for (y=0; y < (int) image->rows; y++)
+    for (y=0; y < (long) image->rows; y++)
     {
       if (!GetImagePixels(image,0,y,image->columns,1))
         break;

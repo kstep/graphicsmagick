@@ -115,7 +115,7 @@ typedef struct _SVGInfo
   AffineMatrix
     affine;
 
-  int
+  unsigned long
     width,
     height;
 
@@ -2666,7 +2666,7 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   PrimitiveType
     primitive_type;
 
-  register int
+  register long
     x;
 
   register long

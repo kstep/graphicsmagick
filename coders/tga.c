@@ -132,7 +132,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   IndexPacket
     index;
 
-  int
+  long
     y;
 
   PixelPacket
@@ -141,14 +141,12 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register IndexPacket
     *indexes;
 
-  register int
+  register long
+    i,
     x;
 
   register PixelPacket
     *q;
-
-  register long
-    i;
 
   size_t
     count;
@@ -162,13 +160,15 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     runlength;
 
   unsigned int
+    status;
+
+  unsigned long
     base,
     flag,
     offset,
     real,
-    skip,
-    status;
-
+    skip;
+    
   /*
     Open image file.
   */
@@ -291,7 +291,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
     index=0;
     runlength=0;
     offset=0;
-    for (y=0; y < (int) image->rows; y++)
+    for (y=0; y < (long) image->rows; y++)
     {
       real=offset;
       if (((unsigned char) (tga_info.attributes & 0x20) >> 5) == 0)
@@ -300,7 +300,7 @@ static Image *ReadTGAImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (q == (PixelPacket *) NULL)
         break;
       indexes=GetIndexes(image);
-      for (x=0; x < (int) image->columns; x++)
+      for (x=0; x < (long) image->columns; x++)
       {
         if ((tga_info.image_type == TGARLEColormap) ||
             (tga_info.image_type == TGARLERGB) ||
@@ -578,14 +578,14 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
   ImageAttribute
     *attribute;
 
-  int
+  long
     count,
     y;
 
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -702,14 +702,14 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
     if (targa_pixels == (unsigned char *) NULL)
       ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
         image);
-    for (y=(int) (image->rows-1); y >= 0; y--)
+    for (y=(long) (image->rows-1); y >= 0; y--)
     {
       p=GetImagePixels(image,0,y,image->columns,1);
       if (p == (PixelPacket *) NULL)
         break;
       q=targa_pixels;
       indexes=GetIndexes(image);
-      for (x=0; x < (int) image->columns; x++)
+      for (x=0; x < (long) image->columns; x++)
       {
         if (targa_info.image_type == TargaColormap)
           *q++=indexes[x];

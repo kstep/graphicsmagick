@@ -20,7 +20,7 @@ typedef IndexPacket
 
 typedef struct _NexusInfo
 {
-  int
+  long
     x,
     y;
 
@@ -34,10 +34,12 @@ typedef struct _NexusInfo
   IndexPacket
     *indexes;
 
-  unsigned int
-    available,
+  unsigned long
     columns,
     rows;
+
+  unsigned int
+    available;
 } NexusInfo;
 
 typedef struct _CacheInfo
@@ -58,7 +60,9 @@ typedef struct _CacheInfo
     type;
 
   unsigned int
-    persist,
+    persist;
+
+  unsigned long
     columns,
     rows;
 
@@ -80,12 +84,12 @@ typedef struct _CacheInfo
 } CacheInfo;
 
 typedef PixelPacket
-  *(*GetPixelHandler)(Image *,const int,const int,const unsigned int,
-    const unsigned int),
-  (*GetOnePixelFromHandler)(Image *,const int,const int),
+  *(*GetPixelHandler)(Image *,const long,const long,const unsigned long,
+    const unsigned long),
+  (*GetOnePixelFromHandler)(Image *,const long,const long),
   *(*GetPixelsFromHandler)(const Image *),
-  *(*SetPixelHandler)(Image *,const int,const int,const unsigned int,
-    const unsigned int);
+  *(*SetPixelHandler)(Image *,const long,const long,const unsigned long,
+    const unsigned long);
 
 typedef unsigned int
   (*SyncPixelHandler)(Image *);
@@ -105,24 +109,26 @@ extern MagickExport ColorspaceType
   GetCacheColorspace(const Cache);
 
 extern MagickExport IndexPacket
-  *GetNexusIndexes(const Cache,const unsigned int);
+  *GetNexusIndexes(const Cache,const unsigned long);
 
 extern MagickExport PixelPacket
-  *GetCacheNexus(Image *,const int,const int,const unsigned int,
-    const unsigned int,const unsigned int),
-  *GetNexusPixels(const Cache,const unsigned int),
-  *SetCacheNexus(Image *,const int,const int,const unsigned int,
-    const unsigned int,const unsigned int);
+  *GetCacheNexus(Image *,const long,const long,const unsigned long,
+    const unsigned long,const unsigned long),
+  *GetNexusPixels(const Cache,const unsigned long),
+  *SetCacheNexus(Image *,const long,const long,const unsigned long,
+    const unsigned long,const unsigned long);
 
 extern MagickExport unsigned int
-  GetNexus(Cache),
   OpenCache(Image *),
-  SyncCacheNexus(Image *,const unsigned int);
+  SyncCacheNexus(Image *,const unsigned long);
+
+extern MagickExport unsigned long
+  GetNexus(Cache);
 
 extern MagickExport void
   AllocateCacheNexus(CacheInfo *),
   DestroyCache(void),
-  DestroyCacheNexus(Cache,const unsigned int),
+  DestroyCacheNexus(Cache,const unsigned long),
   GetCacheInfo(Cache *),
   ResetPixelCacheMethods(void),
   SetCacheThreshold(const long),

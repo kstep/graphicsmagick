@@ -222,7 +222,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
   ImageInfo
     *clone_info;
 
-  int
+  long
     x,
     y;
 
@@ -230,8 +230,10 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
     *p;
 
   unsigned int
+    status;
+
+  unsigned long
     height,
-    status,
     width;
 
   /*
@@ -339,8 +341,8 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
             (void) WriteBlobByte(image,*p);
           else
             {
-              FormatString(buffer,"\" shape=rect coords=%d,%d,%d,%d>\n",
-                x,y,x+(int) width-1,y+(int) height-1);
+              FormatString(buffer,"\" shape=rect coords=%ld,%ld,%ld,%ld>\n",
+                x,y,x+(long) width-1,y+(long) height-1);
               (void) WriteBlobString(image,buffer);
               if (*(p+1) != '\0')
                 {
@@ -348,7 +350,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
                   (void) WriteBlobString(image,buffer);
                 }
               x+=width;
-              if (x >= (int) image->columns)
+              if (x >= (long) image->columns)
                 {
                   x=0;
                   y+=height;
@@ -421,7 +423,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
       else
         {
           FormatString(buffer," shape=rect coords=%d,%d,%d,%d>\n",x,y,
-            x+(int) width-1,y+(int) height-1);
+            x+(long) width-1,y+(long) height-1);
           (void) WriteBlobString(image,buffer);
           if (*(p+1) != '\0')
             {
@@ -429,7 +431,7 @@ static unsigned int WriteHTMLImage(const ImageInfo *image_info,Image *image)
               (void) WriteBlobString(image,buffer);
             }
           x+=width;
-          if (x >= (int) image->columns)
+          if (x >= (long) image->columns)
             {
               x=0;
               y+=height;

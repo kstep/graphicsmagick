@@ -76,7 +76,8 @@ static unsigned int
 %
 %  The format of the IsAPP1 method is:
 %
-%      unsigned int IsAPP1(const unsigned char *magick,const size_t length)
+%      unsigned int IsAPP1(const unsigned char *magick,
+%        const unsigned int length)
 %
 %  A description of each parameter follows:
 %
@@ -89,7 +90,8 @@ static unsigned int
 %
 %
 */
-static unsigned int IsAPP1(const unsigned char *magick,const size_t length)
+static unsigned int IsAPP1(const unsigned char *magick,
+  const unsigned int length)
 {
   if (length < 4)
     return(False);
@@ -303,7 +305,7 @@ static unsigned int WriteAPP1Image(const ImageInfo *image_info,Image *image)
   for (i=0; i < (int) image->generic_profiles; i++)
   {
     if ((LocaleCompare(image->generic_profile[i].name,"APP1") == 0) &&
-      (image->generic_profile[i].length != 0))
+      (image->generic_profile[i].length > 0))
       {
         /*
           Open image file.
@@ -317,6 +319,6 @@ static unsigned int WriteAPP1Image(const ImageInfo *image_info,Image *image)
         return(True);
       }
   }
-  ThrowWriterException(FileOpenWarning,"No APP1 data is available",image)
+  ThrowWriterException(FileOpenWarning,"No APP1 data is available",image);
   return(True);
 }

@@ -108,10 +108,10 @@ static Image *ReadPlasmaImage(const ImageInfo *image_info,
   ImageInfo
     *clone_info;
 
-  int
+  long
     y;
 
-  register int
+  register long
     i,
     x;
 
@@ -137,12 +137,12 @@ static Image *ReadPlasmaImage(const ImageInfo *image_info,
   if (image == (Image *) NULL)
     return(image);
   image->storage_class=DirectClass;
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       q->opacity=MaxRGB >> 1;
       q++;

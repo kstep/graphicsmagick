@@ -100,13 +100,13 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   IndexPacket
     index;
 
-  int
+  long
     y;
 
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -175,7 +175,7 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Read image pixels.
   */
   packet_size=image->depth > 8 ? 2 : 1;
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     p=pixels;
     q=SetImagePixels(image,0,y,image->columns,1);
@@ -183,7 +183,7 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
       break;
     indexes=GetIndexes(image);
     (void) ReadBlob(image,packet_size*image->columns,(char *) pixels);
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       index=ValidateColormapIndex(image,*p++);
       if (image->colors > 256)
@@ -295,13 +295,14 @@ ModuleExport void UnregisterMAPImage(void)
 */
 static unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
 {
-  int
+  long
     y;
 
   register IndexPacket
     *indexes;
 
-  register int
+  register long
+    i,
     x;
 
   register PixelPacket
@@ -309,9 +310,6 @@ static unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
 
   register unsigned char
     *q;
-
-  register long
-    i;
 
   unsigned char
     *colormap,
@@ -377,14 +375,14 @@ static unsigned int WriteMAPImage(const ImageInfo *image_info,Image *image)
   /*
     Write image pixels to file.
   */
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
     q=pixels;
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       if (image->colors > 256)
         *q++=indexes[x] >> 8;

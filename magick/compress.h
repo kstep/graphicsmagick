@@ -17,7 +17,7 @@ extern MagickExport unsigned int
   ZLIBEncodeImage(Image *,const size_t,const unsigned long,unsigned char *);
 
 extern MagickExport void
-  Ascii85Encode(Image *,const unsigned int),
+  Ascii85Encode(Image *,const unsigned long),
   Ascii85Flush(Image *),
   Ascii85Initialize(Image *);
 

@@ -63,20 +63,20 @@
 */
 #define AreaIsActive(matte_info,position)  \
   ((position.y >= (int) (matte_info.y-matte_info.bevel_width)) &&  \
-   (position.y < (int) (matte_info.y+matte_info.height+matte_info.bevel_width)))
+   (position.y < (long) (matte_info.y+matte_info.height+matte_info.bevel_width)))
 #define Extent(s)  ((int) strlen(s))
 #define MatteIsActive(matte_info,position)  \
   ((position.x >= (int) (matte_info.x-matte_info.bevel_width)) && \
    (position.y >= (int) (matte_info.y-matte_info.bevel_width)) &&  \
-   (position.x < (int) (matte_info.x+matte_info.width+matte_info.bevel_width)) &&  \
-   (position.y < (int) (matte_info.y+matte_info.height+matte_info.bevel_width)))
+   (position.x < (long) (matte_info.x+matte_info.width+matte_info.bevel_width)) &&  \
+   (position.y < (long) (matte_info.y+matte_info.height+matte_info.bevel_width)))
 #define MaxTextWidth  (255*XTextWidth(font_info,"_",1))
 #define MinTextWidth  (26*XTextWidth(font_info,"_",1))
 #define QuantumMargin   Max(font_info->max_bounds.width,12)
 #define WindowIsActive(window_info,position)  \
   ((position.x >= 0) && (position.y >= 0) &&  \
-   (position.x < (int) window_info.width) &&  \
-   (position.y < (int) window_info.height))
+   (position.x < (long) window_info.width) &&  \
+   (position.y < (long) window_info.height))
 
 /*
   Variable declarations.

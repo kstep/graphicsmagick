@@ -230,14 +230,14 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
-  int
+  long
     y,
     z;
 
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     i,
     x;
 
@@ -322,19 +322,19 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (z=0; z < (int) iris_info.depth; z++)
         {
           p=iris_pixels+bytes_per_pixel*z;
-          for (y=0; y < (int) iris_info.rows; y++)
+          for (y=0; y < (long) iris_info.rows; y++)
           {
             (void) ReadBlob(image,bytes_per_pixel*iris_info.columns,
               (char *) scanline);
             if (bytes_per_pixel == 2)
-              for (x=0; x < (int) iris_info.columns; x++)
+              for (x=0; x < (long) iris_info.columns; x++)
               {
                 *p=scanline[2*x];
                 *(p+1)=scanline[2*x+1];
                 p+=8;
               }
             else
-              for (x=0; x < (int) iris_info.columns; x++)
+              for (x=0; x < (long) iris_info.columns; x++)
               {
                 *p=scanline[x];
                 p+=4;
@@ -378,7 +378,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         offset=0;
         data_order=0;
-        for (y=0; ((y < (int) iris_info.rows) && !data_order); y++)
+        for (y=0; ((y < (long) iris_info.rows) && !data_order); y++)
           for (z=0; ((z < (int) iris_info.depth) && !data_order); z++)
           {
             if (offsets[y+z*iris_info.rows] < offset)
@@ -391,7 +391,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
             for (z=0; z < (int) iris_info.depth; z++)
             {
               p=iris_pixels;
-              for (y=0; y < (int) iris_info.rows; y++)
+              for (y=0; y < (long) iris_info.rows; y++)
               {
                 if (offset != offsets[y+z*iris_info.rows])
                   {
@@ -409,7 +409,7 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         else
           {
             p=iris_pixels;
-            for (y=0; y < (int) iris_info.rows; y++)
+            for (y=0; y < (long) iris_info.rows; y++)
             {
               for (z=0; z < (int) iris_info.depth; z++)
               {
@@ -446,13 +446,13 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         if (bytes_per_pixel == 2)
           {
-            for (y=0; y < (int) image->rows; y++)
+            for (y=0; y < (long) image->rows; y++)
             {
               p=iris_pixels+(image->rows-y-1)*8*image->columns;
               q=SetImagePixels(image,0,y,image->columns,1);
               if (q == (PixelPacket *) NULL)
                 break;
-              for (x=0; x < (int) image->columns; x++)
+              for (x=0; x < (long) image->columns; x++)
               {
                 q->red=XDownScale((*(p+0) << 8) | (*(p+1)));
                 q->green=XDownScale((*(p+2) << 8) | (*(p+3)));
@@ -469,13 +469,13 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
           }
         else
-          for (y=0; y < (int) image->rows; y++)
+          for (y=0; y < (long) image->rows; y++)
           {
             p=iris_pixels+(image->rows-y-1)*4*image->columns;
             q=SetImagePixels(image,0,y,image->columns,1);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (int) image->columns; x++)
+            for (x=0; x < (long) image->columns; x++)
             {
               q->red=UpScale(*p);
               q->green=UpScale(*(p+1));
@@ -504,14 +504,14 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
         */
         if (bytes_per_pixel == 2)
           {
-            for (y=0; y < (int) image->rows; y++)
+            for (y=0; y < (long) image->rows; y++)
             {
               p=iris_pixels+(image->rows-y-1)*8*image->columns;
               q=SetImagePixels(image,0,y,image->columns,1);
               if (q == (PixelPacket *) NULL)
                 break;
               indexes=GetIndexes(image);
-              for (x=0; x < (int) image->columns; x++)
+              for (x=0; x < (long) image->columns; x++)
               {
                 indexes[x]=(*p << 8);
                 indexes[x]|=(*(p+1));
@@ -526,14 +526,14 @@ static Image *ReadSGIImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
           }
         else
-          for (y=0; y < (int) image->rows; y++)
+          for (y=0; y < (long) image->rows; y++)
           {
             p=iris_pixels+(image->rows-y-1)*4*image->columns;
             q=SetImagePixels(image,0,y,image->columns,1);
             if (q == (PixelPacket *) NULL)
               break;
             indexes=GetIndexes(image);
-            for (x=0; x < (int) image->columns; x++)
+            for (x=0; x < (long) image->columns; x++)
             {
               indexes[x]=(*p);
               p+=4;
@@ -724,14 +724,14 @@ static size_t SGIEncode(unsigned char *pixels,size_t count,
 
 static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
 {
-  int
+  long
     y,
     z;
 
   SGIInfo
     iris_info;
 
-  register int
+  register long
     i,
     x;
 
@@ -755,6 +755,9 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
+  if ((image->columns > 65535L) || (image->rows > 65535L))
+    ThrowWriterException(ResourceLimitWarning,
+      "Width or height limit exceeded",image);
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
@@ -772,8 +775,8 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
       iris_info.storage=0x01;
     iris_info.bytes_per_pixel=1;  /* one byte per pixel */
     iris_info.dimension=3;
-    iris_info.columns=image->columns;
-    iris_info.rows=image->rows;
+    iris_info.columns=(unsigned short) image->columns;
+    iris_info.rows=(unsigned short) image->rows;
     iris_info.depth=image->matte ? 4 : 3;
     if (image->storage_class != DirectClass)
       if (IsGrayImage(image))
@@ -810,13 +813,13 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
     /*
       Convert image pixels to uncompressed SGI pixels.
     */
-    for (y=0; y < (int) image->rows; y++)
+    for (y=0; y < (long) image->rows; y++)
     {
       p=GetImagePixels(image,0,y,image->columns,1);
       if (p == (PixelPacket *) NULL)
         break;
       q=iris_pixels+((iris_info.rows-1)-y)*(iris_info.columns*4);
-      for (x=0; x < (int) image->columns; x++)
+      for (x=0; x < (long) image->columns; x++)
       {
         *q++=DownScale(p->red);
         *q++=DownScale(p->green);
@@ -843,9 +846,9 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
         for (z=0; z < (int) iris_info.depth; z++)
         {
           q=iris_pixels+z;
-          for (y=0; y < (int) iris_info.rows; y++)
+          for (y=0; y < (long) iris_info.rows; y++)
           {
-            for (x=0; x < (int) iris_info.columns; x++)
+            for (x=0; x < (long) iris_info.columns; x++)
             {
               scanline[x]=(*q);
               q+=4;
@@ -881,7 +884,7 @@ static unsigned int WriteSGIImage(const ImageInfo *image_info,Image *image)
         offset=512+4*2*(iris_info.rows*iris_info.depth);
         number_packets=0;
         q=iris_pixels;
-        for (y=0; y < (int) iris_info.rows; y++)
+        for (y=0; y < (long) iris_info.rows; y++)
         {
           for (z=0; z < (int) iris_info.depth; z++)
           {

@@ -153,10 +153,10 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   (void) strcpy(allocate_image->magick,image_info->magick);
   if (image_info->size != (char *) NULL)
     {
-      int
+      long
         offset;
 
-      (void) sscanf(image_info->size,"%ux%u",&allocate_image->columns,
+      (void) sscanf(image_info->size,"%lux%lu",&allocate_image->columns,
         &allocate_image->rows);
       offset=0;
       flags=ParseGeometry(image_info->size,&offset,&offset,
@@ -170,7 +170,7 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   if (image_info->tile != (char *) NULL)
     if (!IsSubimage(image_info->tile,False))
       {
-        (void) sscanf(image_info->tile,"%ux%u",&allocate_image->columns,
+        (void) sscanf(image_info->tile,"%lux%lu",&allocate_image->columns,
           &allocate_image->rows);
         flags=ParseGeometry(image_info->tile,&allocate_image->tile_info.x,
           &allocate_image->tile_info.y,&allocate_image->columns,
@@ -446,7 +446,7 @@ MagickExport Image *AppendImages(Image *image,const unsigned int stack,
   register long
     i;
 
-  unsigned int
+  unsigned long
     height,
     scene,
     width;
@@ -485,7 +485,7 @@ MagickExport Image *AppendImages(Image *image,const unsigned int stack,
   scene=0;
   if ((image->columns != image->next->columns) || !stack)
     {
-      register int
+      register long
         x;
 
       /*
@@ -503,7 +503,7 @@ MagickExport Image *AppendImages(Image *image,const unsigned int stack,
     }
   else
     {
-      register int
+      register long
         y;
 
       /*
@@ -595,17 +595,15 @@ MagickExport Image *AverageImages(Image *image,ExceptionInfo *exception)
   Image
     *average_image;
 
-  int
+  long
     y;
 
   register Image
     *next;
 
-  register int
-    x;
-
   register long
-    i;
+    i,
+    x;
 
   register PixelPacket
     *p,
@@ -662,12 +660,12 @@ MagickExport Image *AverageImages(Image *image,ExceptionInfo *exception)
   for (next=image; next != (Image *) NULL; next=next->next)
   {
     i=0;
-    for (y=0; y < (int) next->rows; y++)
+    for (y=0; y < (long) next->rows; y++)
     {
       p=GetImagePixels(next,0,y,next->columns,1);
       if (p == (PixelPacket *) NULL)
         break;
-      for (x=0; x < (int) next->columns; x++)
+      for (x=0; x < (long) next->columns; x++)
       {
         sum[i].red+=p->red;
         sum[i].green+=p->green;
@@ -683,12 +681,12 @@ MagickExport Image *AverageImages(Image *image,ExceptionInfo *exception)
     Average next pixels.
   */
   i=0;
-  for (y=0; y < (int) average_image->rows; y++)
+  for (y=0; y < (long) average_image->rows; y++)
   {
     q=SetImagePixels(average_image,0,y,average_image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (int) average_image->columns; x++)
+    for (x=0; x < (long) average_image->columns; x++)
     {
       q->red=(Quantum) ((sum[i].red+number_scenes/2.0)/number_scenes);
       q->green=(Quantum) ((sum[i].green+number_scenes/2.0)/number_scenes);
@@ -736,10 +734,10 @@ MagickExport unsigned int ChannelImage(Image *image,const ChannelType channel)
 {
 #define ChannelImageText  "  Extract a channel from the image...  "
 
-  int
+  long
     y;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -755,12 +753,12 @@ MagickExport unsigned int ChannelImage(Image *image,const ChannelType channel)
   */
   image->storage_class=DirectClass;
   image->matte=False;
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       switch (channel)
       {
@@ -822,8 +820,8 @@ MagickExport unsigned int ChannelImage(Image *image,const ChannelType channel)
 %
 %  The format of the CloneImage method is:
 %
-%      Image *CloneImage(Image *image,const unsigned int columns,
-%        const unsigned int rows,const unsigned int orphan,
+%      Image *CloneImage(Image *image,const unsigned long columns,
+%        const unsigned long rows,const unsigned int orphan,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -843,8 +841,8 @@ MagickExport unsigned int ChannelImage(Image *image,const ChannelType channel)
 %
 %
 */
-MagickExport Image *CloneImage(Image *image,const unsigned int columns,
-  const unsigned int rows,const unsigned int orphan,ExceptionInfo *exception)
+MagickExport Image *CloneImage(Image *image,const unsigned long columns,
+  const unsigned long rows,const unsigned int orphan,ExceptionInfo *exception)
 {
   Image
     *clone_image;
@@ -970,7 +968,7 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
       /*
         Clone pixel cache.
       */
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (long) image->rows; y++)
       {
         p=GetImagePixels(image,0,y,image->columns,1);
         q=SetImagePixels(clone_image,0,y,clone_image->columns,1);
@@ -984,7 +982,7 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
         if (!SyncImagePixels(clone_image))
           break;
       }
-      if (y < (int) image->rows)
+      if (y < (long) image->rows)
         ThrowImageException(CacheWarning,"Unable to clone image",
           "could not get image cache");
       if (image->montage != (char *) NULL)
@@ -1092,7 +1090,7 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
 %  The format of the CompositeImage method is:
 %
 %      unsigned int CompositeImage(Image *image,const CompositeOperator compose,
-%        Image *composite_image,const int x_offset,const int y_offset)
+%        Image *composite_image,const long x_offset,const long y_offset)
 %
 %  A description of each parameter follows:
 %
@@ -1116,8 +1114,8 @@ MagickExport ImageInfo *CloneImageInfo(const ImageInfo *image_info)
 %
 */
 MagickExport unsigned int CompositeImage(Image *image,
-  const CompositeOperator compose,Image *composite_image,const int x_offset,
-  const int y_offset)
+  const CompositeOperator compose,Image *composite_image,const long x_offset,
+  const long y_offset)
 {
   double
     amount,
@@ -1137,10 +1135,10 @@ MagickExport unsigned int CompositeImage(Image *image,
     *composite_indexes,
     *indexes;
 
-  int
+  long
     y;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -1202,9 +1200,9 @@ MagickExport unsigned int CompositeImage(Image *image,
       /*
         Shift image pixels as defined by a displacement map.
       */
-      for (y=0; y < (int) composite_image->rows; y++)
+      for (y=0; y < (long) composite_image->rows; y++)
       {
-        if (((y+y_offset) < 0) || ((y+y_offset) >= (int) image->rows))
+        if (((y+y_offset) < 0) || ((y+y_offset) >= (long) image->rows))
           continue;
         p=GetImagePixels(composite_image,0,y,composite_image->columns,1);
         q=GetImagePixels(image,0,y+y_offset,image->columns,1);
@@ -1213,9 +1211,9 @@ MagickExport unsigned int CompositeImage(Image *image,
             (r == (PixelPacket *) NULL))
           break;
         q+=x_offset;
-        for (x=0; x < (int) composite_image->columns; x++)
+        for (x=0; x < (long) composite_image->columns; x++)
         {
-          if (((x_offset+x) < 0) || ((x_offset+x) >= (int) image->columns))
+          if (((x_offset+x) < 0) || ((x_offset+x) >= (long) image->columns))
             {
               p++;
               q++;
@@ -1280,24 +1278,24 @@ MagickExport unsigned int CompositeImage(Image *image,
     Composite image.
   */
   midpoint=0x80;
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     if (y < y_offset)
       continue;
-    if ((y-y_offset) >= (int) composite_image->rows)
+    if ((y-y_offset) >= (long) composite_image->rows)
       break;
     q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       if (x < x_offset)
         {
           q++;
           continue;
         }
-      if ((x-x_offset) >= (int) composite_image->columns)
+      if ((x-x_offset) >= (long) composite_image->columns)
         break;
       p=GetImagePixels(composite_image,x-x_offset,y-y_offset,1,1);
       if (p == (PixelPacket *) NULL)
@@ -1601,16 +1599,14 @@ MagickExport void CycleColormapImage(Image *image,const int amount)
 {
 #define CycleColormapImageText  "  Cycle image colormap...  "
 
-  int
-    y;
-
   long
-    index;
+    index,
+    y;
 
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -1627,13 +1623,13 @@ MagickExport void CycleColormapImage(Image *image,const int amount)
       quantize_info.number_colors=MaxRGB+1;
       (void) QuantizeImage(&quantize_info,image);
     }
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       index=(indexes[x]+amount) % image->colors;
       if (index < 0)
@@ -1697,17 +1693,15 @@ MagickExport void DescribeImage(Image *image,FILE *file,
   ImageAttribute
     *attribute;
 
-  int
+  long
     y;
 
   MagickInfo
     *magick_info;
 
-  register int
-    x;
-
   register long
-    i;
+    i,
+    x;
 
   unsigned int
     count;
@@ -1735,12 +1729,12 @@ MagickExport void DescribeImage(Image *image,FILE *file,
       if ((image->magick_columns != 0) || (image->magick_rows != 0))
         if ((image->magick_columns != image->columns) ||
             (image->magick_rows != image->rows))
-          (void) fprintf(file,"%ux%u=>",image->magick_columns,
+          (void) fprintf(file,"%lux%lu=>",image->magick_columns,
             image->magick_rows);
       if ((image->page.width <= 1) || (image->page.height <= 1))
-        (void) fprintf(file,"%ux%u ",image->columns,image->rows);
+        (void) fprintf(file,"%lux%lu ",image->columns,image->rows);
       else
-        (void) fprintf(file,"%ux%u%+d%+d ",image->page.width,
+        (void) fprintf(file,"%lux%lu%+ld%+ld ",image->page.width,
           image->page.height,image->page.x,image->page.y);
       if (image->storage_class == DirectClass)
         {
@@ -1763,8 +1757,8 @@ MagickExport void DescribeImage(Image *image,FILE *file,
           {
             (void) fprintf(file,"PseudoClass %lu=>%luc ",image->total_colors,
               image->colors);
-            (void) fprintf(file,"%d/%.6f/%.6fe ",
-              (int) image->mean_error_per_pixel,image->normalized_mean_error,
+            (void) fprintf(file,"%ld/%.6f/%.6fe ",
+              (long) image->mean_error_per_pixel,image->normalized_mean_error,
               image->normalized_maximum_error);
           }
       (void) fprintf(file,"%lu-bit ",image->depth);
@@ -1798,7 +1792,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
   else
     (void) fprintf(file,"  Format: %.1024s (%.1024s)\n",image->magick,
       magick_info->description);
-  (void) fprintf(file,"  Geometry: %ux%u\n",image->columns,image->rows);
+  (void) fprintf(file,"  Geometry: %lux%lu\n",image->columns,image->rows);
   if (image->storage_class == DirectClass)
     (void) fprintf(file,"  Class: DirectClass\n");
   else
@@ -1806,7 +1800,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
   if ((image->magick_columns != 0) || (image->magick_rows != 0))
     if ((image->magick_columns != image->columns) ||
         (image->magick_rows != image->rows))
-      (void) fprintf(file,"  Base Geometry: %ux%u\n",image->magick_columns,
+      (void) fprintf(file,"  Base Geometry: %lux%lu\n",image->magick_columns,
         image->magick_rows);
   (void) fprintf(file,"  Type: ");
   switch (GetImageType(image))
@@ -1836,21 +1830,21 @@ MagickExport void DescribeImage(Image *image,FILE *file,
         *p;
 
       p=(PixelPacket *) NULL;
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (long) image->rows; y++)
       {
         p=GetImagePixels(image,0,y,image->columns,1);
         if (p == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (int) image->columns; x++)
+        for (x=0; x < (long) image->columns; x++)
         {
           if (p->opacity == TransparentOpacity)
             break;
           p++;
         }
-        if (x < (int) image->columns)
+        if (x < (long) image->columns)
           break;
       }
-      if ((x < (int) image->columns) || (y < (int) image->rows))
+      if ((x < (long) image->columns) || (y < (long) image->rows))
         (void) fprintf(file,"  Opacity: (%5d,%5d,%5d)\t#%04x%04x%04x\n",
           p->red,p->green,p->blue,p->red,p->green,p->blue);
     }
@@ -1890,8 +1884,8 @@ MagickExport void DescribeImage(Image *image,FILE *file,
       }
     }
   if (image->mean_error_per_pixel != 0.0)
-    (void) fprintf(file,"  Mean Exception Per Pixel: %d\n",
-      (int) image->mean_error_per_pixel);
+    (void) fprintf(file,"  Mean Exception Per Pixel: %ld\n",
+      (long) image->mean_error_per_pixel);
   if (image->normalized_mean_error != 0.0)
     (void) fprintf(file,"  Normalized Mean Exception: %g\n",
       image->normalized_mean_error);
@@ -2019,7 +2013,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
             char
               **textlist;
 
-            register int
+            register long
               j;
 
             (void) strncpy(text,(char *) image->iptc_profile.info+i,length);
@@ -2049,8 +2043,9 @@ MagickExport void DescribeImage(Image *image,FILE *file,
       image->generic_profile[i].length);
   }
   if ((image->tile_info.width*image->tile_info.height) != 0)
-    (void) fprintf(file,"  Tile Geometry: %ux%u%+d%+d\n",image->tile_info.width,
-      image->tile_info.height,image->tile_info.x,image->tile_info.y);
+    (void) fprintf(file,"  Tile Geometry: %lux%lu%+ld%+ld\n",
+      image->tile_info.width,image->tile_info.height,image->tile_info.x,
+      image->tile_info.y);
   if ((image->x_resolution != 0.0) && (image->y_resolution != 0.0))
     {
       /*
@@ -2096,7 +2091,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
   (void) QueryColorname(image,&image->matte_color,AllCompliance,color);
   (void) fprintf(file,"  Matte Color: %.1024s\n",color);
   if ((image->page.width != 0) && (image->page.height != 0))
-    (void) fprintf(file,"  Page Geometry: %ux%u%+d%+d\n",image->page.width,
+    (void) fprintf(file,"  Page Geometry: %lux%lu%+ld%+ld\n",image->page.width,
       image->page.height,image->page.x,image->page.y);
   if (image->dispose != 0)
     (void) fprintf(file,"  Dispose Method: %lu\n",image->dispose);
@@ -2176,7 +2171,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
             (void) fprintf(file,"\n");
             continue;
           }
-        (void) fprintf(file," %ux%u %.1024s\n",tile->magick_columns,
+        (void) fprintf(file," %lux%lu %.1024s\n",tile->magick_columns,
           tile->magick_rows,tile->magick);
         (void) SignatureImage(tile);
         attribute=GetImageAttribute(tile,(char *) NULL);
@@ -2528,7 +2523,7 @@ MagickExport unsigned int DisplayImages(const ImageInfo *image_info,
 */
 MagickExport RectangleInfo GetImageBoundingBox(Image *image)
 {
-  int
+  long
     y;
 
   PixelPacket
@@ -2537,7 +2532,7 @@ MagickExport RectangleInfo GetImageBoundingBox(Image *image)
   RectangleInfo
     bounds;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -2552,42 +2547,42 @@ MagickExport RectangleInfo GetImageBoundingBox(Image *image)
   corners[0]=GetOnePixel(image,0,0);
   corners[1]=GetOnePixel(image,image->columns-1,0);
   corners[2]=GetOnePixel(image,0,image->rows-1);
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
     if (image->matte)
-      for (x=0; x < (int) image->columns; x++)
+      for (x=0; x < (long) image->columns; x++)
       {
         if (p->opacity != corners[0].opacity)
           if (x < bounds.x)
             bounds.x=x;
         if (p->opacity != corners[1].opacity)
-          if (x > (int) bounds.width)
+          if (x > (long) bounds.width)
             bounds.width=x;
         if (p->opacity != corners[0].opacity)
           if (y < bounds.y)
             bounds.y=y;
         if (p->opacity != corners[2].opacity)
-          if (y > (int) bounds.height)
+          if (y > (long) bounds.height)
             bounds.height=y;
         p++;
       }
     else
-      for (x=0; x < (int) image->columns; x++)
+      for (x=0; x < (long) image->columns; x++)
       {
         if (!ColorMatch(*p,corners[0],image->fuzz))
           if (x < bounds.x)
             bounds.x=x;
         if (!ColorMatch(*p,corners[1],image->fuzz))
-          if (x > (int) bounds.width)
+          if (x > (long) bounds.width)
             bounds.width=x;
         if (!ColorMatch(*p,corners[0],image->fuzz))
           if (y < bounds.y)
             bounds.y=y;
         if (!ColorMatch(*p,corners[2],image->fuzz))
-          if (y > (int) bounds.height)
+          if (y > (long) bounds.height)
             bounds.height=y;
         p++;
       }
@@ -2633,10 +2628,10 @@ MagickExport RectangleInfo GetImageBoundingBox(Image *image)
 */
 MagickExport unsigned long GetImageDepth(Image *image)
 {
-  int
+  long
     y;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -2648,12 +2643,12 @@ MagickExport unsigned long GetImageDepth(Image *image)
   if (QuantumDepth == 8)
     return(image->depth);
   image->depth=16;
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       if (p->red != UpScale(DownScale(p->red)))
         return(image->depth);
@@ -2880,12 +2875,14 @@ MagickExport unsigned int IsGeometry(const char *geometry)
   double
     value;
 
-  int
+  long
     x,
     y;
 
   unsigned int
-    flags,
+    flags;
+
+  unsigned long
     height,
     width;
 
@@ -2950,7 +2947,7 @@ MagickExport unsigned int IsImagesEqual(Image *image,Image *reference)
     normalize,
     total_error;
 
-  int
+  long
     y;
 
   register double
@@ -2959,7 +2956,7 @@ MagickExport unsigned int IsImagesEqual(Image *image,Image *reference)
     opacity,
     red;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -2989,13 +2986,13 @@ MagickExport unsigned int IsImagesEqual(Image *image,Image *reference)
   maximum_error_per_pixel=0;
   total_error=0;
   opacity=0;
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
     q=GetImagePixels(reference,0,y,reference->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       red=(double) (p->red-q->red);
       green=(double) (p->green-q->green);
@@ -3102,12 +3099,14 @@ MagickExport unsigned int IsImageTainted(const Image *image)
 MagickExport unsigned int IsSubimage(const char *geometry,
   const unsigned int pedantic)
 {
-  int
+  long
     x,
     y;
 
   unsigned int
-    flags,
+    flags;
+
+  unsigned long
     height,
     width;
 
@@ -3138,7 +3137,7 @@ MagickExport unsigned int IsSubimage(const char *geometry,
 %
 %  The format of the ListToGroupImage method is:
 %
-%      Image **ListToGroupImage(Image *image,unsigned int *number_images)
+%      Image **ListToGroupImage(Image *image,unsigned long *number_images)
 %
 %  A description of each parameter follows:
 %
@@ -3148,13 +3147,13 @@ MagickExport unsigned int IsSubimage(const char *geometry,
 %
 %
 */
-MagickExport Image **ListToGroupImage(Image *image,unsigned int *number_images)
+MagickExport Image **ListToGroupImage(Image *image,unsigned long *number_images)
 {
   Image
     **images,
     *next;
 
-  register int
+  register long
     i;
 
   /*
@@ -3162,7 +3161,7 @@ MagickExport Image **ListToGroupImage(Image *image,unsigned int *number_images)
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  assert(number_images != (unsigned int *) NULL);
+  assert(number_images != (unsigned long *) NULL);
   next=(Image *) image;
   for (i=0; next != (Image *) NULL; i++)
     next=next->next;
@@ -3290,7 +3289,9 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
 
   int
     count,
-    flags,
+    flags;
+
+  long
     x,
     y;
 
@@ -3304,7 +3305,9 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
     i;
 
   unsigned int
-    matte,
+    matte;
+
+  unsigned long
     height,
     width;
 
@@ -3559,7 +3562,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           }
         if (LocaleCompare("-colors",option) == 0)
           {
-            quantize_info.number_colors=atoi(argv[++i]);
+            quantize_info.number_colors=atol(argv[++i]);
             continue;
           }
         if (LocaleNCompare("colorspace",option+1,7) == 0)
@@ -3680,7 +3683,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           }
         if (LocaleNCompare("-depth",option,4) == 0)
           {
-            (void) SetImageDepth(*image,atoi(argv[++i]));
+            (void) SetImageDepth(*image,atol(argv[++i]));
             continue;
           }
         if (LocaleNCompare("-despeckle",option,4) == 0)
@@ -3709,7 +3712,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Set image dispose.
             */
-            (*image)->dispose=atoi(argv[++i]);
+            (*image)->dispose=atol(argv[++i]);
             continue;
           }
         if (LocaleNCompare("dither",option+1,3) == 0)
@@ -4076,7 +4079,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Set image iterations.
             */
-            (*image)->iterations=atoi(argv[++i]);
+            (*image)->iterations=atol(argv[++i]);
             continue;
           }
         break;
@@ -4118,7 +4121,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               Median filter image.
             */
             median_image=
-              MedianFilterImage(*image,atoi(argv[++i]),&(*image)->exception);
+              MedianFilterImage(*image,atol(argv[++i]),&(*image)->exception);
             if (median_image == (Image *) NULL)
               break;
             DestroyImage(*image);
@@ -4155,7 +4158,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             option=argv[++i];
             if (*option == '-')
               noisy_image=
-                ReduceNoiseImage(*image,atoi(option),&(*image)->exception);
+                ReduceNoiseImage(*image,atol(option),&(*image)->exception);
             else
               {
                 NoiseType
@@ -4215,7 +4218,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             /*
               Oil paint image.
             */
-            paint_image=OilPaintImage(*image,atoi(argv[++i]),
+            paint_image=OilPaintImage(*image,atol(argv[++i]),
               &(*image)->exception);
             if (paint_image == (Image *) NULL)
               break;
@@ -4258,7 +4261,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
               continue;
             next=0;
             arguments=argv[i];
-            status=Tokenizer(&token_info,0,token,(int) length,arguments,
+            status=Tokenizer(&token_info,0,token,length,arguments,
               (char *) "",(char *) "=",(char *) "\"",0,&breaker,&next,&quote);
             if (status == 0)
               {
@@ -4340,9 +4343,9 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
             flags=ParseGeometry(argv[++i],&region_info.x,&region_info.y,
               &width,&height);
             if ((flags & WidthValue) == 0)
-              width=(unsigned int) ((int) (*image)->columns-region_info.x);
+              width=(unsigned long) ((long) (*image)->columns-region_info.x);
             if ((flags & HeightValue) == 0)
-              height=(unsigned int) ((int) (*image)->rows-region_info.y);
+              height=(unsigned long) ((long) (*image)->rows-region_info.y);
             if ((width != 0) || (height != 0))
               {
                 if ((flags & XNegative) != 0)
@@ -4474,7 +4477,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
           }
         if (LocaleCompare("-scene",option) == 0)
           {
-            (*image)->scene=atoi(argv[++i]);
+            (*image)->scene=atol(argv[++i]);
             continue;
           }
         if (LocaleNCompare("-segment",option,4) == 0)
@@ -4949,8 +4952,8 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
 %
 %  The format of the ParseImageGeometry method is:
 %
-%      int ParseImageGeometry(const char *geometry,int *x,int *y,
-%        unsigned int *width,unsigned int *height)
+%      int ParseImageGeometry(const char *geometry,long *x,long *y,
+%        unsigned long *width,unsigned long *height)
 %
 %  A description of each parameter follows:
 %
@@ -4968,28 +4971,30 @@ MagickExport unsigned int MogrifyImages(const ImageInfo *image_info,
 %
 %
 */
-MagickExport int ParseImageGeometry(const char *geometry,int *x,int *y,
-  unsigned int *width,unsigned int *height)
+MagickExport int ParseImageGeometry(const char *geometry,long *x,long *y,
+  unsigned long *width,unsigned long *height)
 {
   int
     count,
-    delta,
     flags;
+
+  long
+    delta;
 
   RectangleInfo
     media_info;
 
-  unsigned int
+  unsigned long
     former_height,
     former_width;
 
   /*
     Ensure the image geometry is valid.
   */
-  assert(x != (int *) NULL);
-  assert(y != (int *) NULL);
-  assert(width != (unsigned int *) NULL);
-  assert(height != (unsigned int *) NULL);
+  assert(x != (long *) NULL);
+  assert(y != (long *) NULL);
+  assert(width != (unsigned long *) NULL);
+  assert(height != (unsigned long *) NULL);
   if ((geometry == (char *) NULL) || (*geometry == '\0'))
     return(NoValue);
   /*
@@ -5120,16 +5125,16 @@ MagickExport int ParseImageGeometry(const char *geometry,int *x,int *y,
     {
       if ((*width+((*x) << 1)) > media_info.width)
         {
-          if ((int) *width > ((*x) << 1))
+          if ((long) *width > ((*x) << 1))
             *width-=(*x) << 1;
-          if ((int) *height > ((*y) << 1))
+          if ((long) *height > ((*y) << 1))
             *height-=(*y) << 1;
         }
       if ((*height+((*y) << 1)) > media_info.height)
         {
-          if ((int) *width > ((*x) << 1))
+          if ((long) *width > ((*x) << 1))
             *width-=(*x) << 1;
-          if ((int) *height > ((*y) << 1))
+          if ((long) *height > ((*y) << 1))
             *height-=(*y) << 1;
         }
     }
@@ -5220,10 +5225,10 @@ MagickExport unsigned int RGBTransformImage(Image *image,
     *y_map,
     *z_map;
 
-  int
+  long
     y;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -5253,13 +5258,13 @@ MagickExport unsigned int RGBTransformImage(Image *image,
       */
       image->storage_class=DirectClass;
       image->colorspace=CMYKColorspace;
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (long) image->rows; y++)
       {
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
         indexes=GetIndexes(image);
-        for (x=0; x < (int) image->columns; x++)
+        for (x=0; x < (long) image->columns; x++)
         {
           cyan=MaxRGB-q->red;
           magenta=MaxRGB-q->green;
@@ -5288,21 +5293,21 @@ MagickExport unsigned int RGBTransformImage(Image *image,
       /*
         Return if the image is already grayscale.
       */
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (long) image->rows; y++)
       {
         p=GetImagePixels(image,0,y,image->columns,1);
         if (p == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (int) image->columns; x++)
+        for (x=0; x < (long) image->columns; x++)
         {
           if ((p->red != p->green) || (p->green != p->blue))
             break;
           p++;
         }
-        if (x < (int) image->columns)
+        if (x < (long) image->columns)
           break;
       }
-      if ((x == (int) image->columns) && (y == (int) image->rows))
+      if ((x == (long) image->columns) && (y == (long) image->rows))
         return(True);
     }
   /*
@@ -5595,12 +5600,12 @@ MagickExport unsigned int RGBTransformImage(Image *image,
       /*
         Convert DirectClass image.
       */
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (long) image->rows; y++)
       {
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (int) image->columns; x++)
+        for (x=0; x < (long) image->columns; x++)
         {
           red=x_map[q->red+X]+y_map[q->green+X]+z_map[q->blue+X]+tx;
           green=x_map[q->red+Y]+y_map[q->green+Y]+z_map[q->blue+Y]+ty;
@@ -5682,7 +5687,7 @@ MagickExport unsigned int RGBTransformImage(Image *image,
 */
 MagickExport void SetImage(Image *image,const Quantum opacity)
 {
-  int
+  long
     y;
 
   PixelPacket
@@ -5691,7 +5696,7 @@ MagickExport void SetImage(Image *image,const Quantum opacity)
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -5704,13 +5709,13 @@ MagickExport void SetImage(Image *image,const Quantum opacity)
     background_color.opacity=opacity;
   if (background_color.opacity != OpaqueOpacity)
     image->matte=True;
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     q=SetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       if (image->storage_class == PseudoClass)
         indexes[x]=0;
@@ -5797,10 +5802,10 @@ MagickExport unsigned int SetImageClipMask(Image *image,Image *clip_mask)
 */
 MagickExport unsigned int SetImageDepth(Image *image,const unsigned long depth)
 {
-  int
+  long
     y;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -5814,12 +5819,12 @@ MagickExport unsigned int SetImageDepth(Image *image,const unsigned long depth)
   if (GetImageDepth(image) == depth)
     return(True);
   image->depth=8;
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       p->red=UpScale(DownScale(p->red));
       p->green=UpScale(DownScale(p->green));
@@ -5878,13 +5883,13 @@ MagickExport unsigned int SetImageDepth(Image *image,const unsigned long depth)
 */
 MagickExport void SetImageOpacity(Image *image,const unsigned int opacity)
 {
-  int
+  long
     y;
 
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -5894,13 +5899,13 @@ MagickExport void SetImageOpacity(Image *image,const unsigned int opacity)
   assert(image->signature == MagickSignature);
   if (image->matte)
     {
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (long) image->rows; y++)
       {
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
         indexes=GetIndexes(image);
-        for (x=0; x < (int) image->columns; x++)
+        for (x=0; x < (long) image->columns; x++)
         {
           if (image->colorspace != CMYKColorspace)
             q->opacity=((unsigned long) (opacity*q->opacity)/MaxRGB);
@@ -5914,13 +5919,13 @@ MagickExport void SetImageOpacity(Image *image,const unsigned int opacity)
       return;
     }
   image->matte=True;
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       if (image->colorspace != CMYKColorspace)
         q->opacity=opacity;
@@ -6102,10 +6107,10 @@ MagickExport unsigned int SortColormapByIntensity(Image *image)
   IndexPacket
     index;
 
-  int
+  long
     y;
 
-  register int
+  register long
     x;
 
   register IndexPacket
@@ -6146,13 +6151,13 @@ MagickExport unsigned int SortColormapByIntensity(Image *image)
   */
   for (i=0; i < (long) image->colors; i++)
     pixels[image->colormap[i].opacity]=(unsigned short) i;
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       index=pixels[indexes[x]];
       indexes[x]=index;
@@ -6192,13 +6197,13 @@ MagickExport void SyncImage(Image *image)
   IndexPacket
     index;
 
-  int
+  long
     y;
 
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -6208,13 +6213,13 @@ MagickExport void SyncImage(Image *image)
   assert(image->signature == MagickSignature);
   if (image->storage_class == DirectClass)
     return;
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       index=indexes[x];
       q->red=image->colormap[index].red;
@@ -6256,7 +6261,7 @@ MagickExport void TextureImage(Image *image,Image *texture)
 {
 #define TextureImageText  "  Apply image texture...  "
 
-  int
+  long
     x,
     y;
 
@@ -6267,9 +6272,9 @@ MagickExport void TextureImage(Image *image,Image *texture)
   /*
     Tile texture onto the image background.
   */
-  for (y=0; y < (int) image->rows; y+=texture->rows)
+  for (y=0; y < (long) image->rows; y+=texture->rows)
   {
-    for (x=0; x < (int) image->columns; x+=texture->columns)
+    for (x=0; x < (long) image->columns; x+=texture->columns)
       (void) CompositeImage(image,CopyCompositeOp,texture,x,y);
     if (QuantumTick(y,image->rows))
       MagickMonitor(TextureImageText,y,image->rows);
@@ -6470,7 +6475,7 @@ MagickExport unsigned int TransformRGBImage(Image *image,
     *green_map,
     *red_map;
 
-  int
+  long
     y;
 
   register double
@@ -6478,7 +6483,7 @@ MagickExport unsigned int TransformRGBImage(Image *image,
     green,
     red;
 
-  register int
+  register long
     x;
 
   register long
@@ -6497,13 +6502,13 @@ MagickExport unsigned int TransformRGBImage(Image *image,
       /*
         Transform image from CMYK to RGB.
       */
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (long) image->rows; y++)
       {
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
         indexes=GetIndexes(image);
-        for (x=0; x < (int) image->columns; x++)
+        for (x=0; x < (long) image->columns; x++)
         {
           q->red=(unsigned long) ((MaxRGB-q->red)*(MaxRGB-q->opacity))/MaxRGB;
           q->green=(unsigned long)
@@ -6750,12 +6755,12 @@ MagickExport unsigned int TransformRGBImage(Image *image,
       /*
         Convert DirectClass image.
       */
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (long) image->rows; y++)
       {
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (int) image->columns; x++)
+        for (x=0; x < (long) image->columns; x++)
         {
           red=red_map[q->red+R]+green_map[q->green+R]+blue_map[q->blue+R];
           green=red_map[q->red+G]+green_map[q->green+G]+blue_map[q->blue+G];

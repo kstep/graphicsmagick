@@ -69,12 +69,12 @@ static IndexPacket
   *GetIndexesFromStream(const Image *);
 
 static PixelPacket
-  GetOnePixelFromStream(Image *,const int,const int),
+  GetOnePixelFromStream(Image *,const long,const long),
   *GetPixelsFromStream(const Image *),
-  *GetPixelStream(Image *,const int,const int,const unsigned int,
-    const unsigned int),
-  *SetPixelStream(Image *,const int,const int,const unsigned int,
-    const unsigned int);
+  *GetPixelStream(Image *,const long,const long,const unsigned long,
+    const unsigned long),
+  *SetPixelStream(Image *,const long,const long,const unsigned long,
+    const unsigned long);
 
 static unsigned int
   SyncPixelStream(Image *);
@@ -208,8 +208,8 @@ static IndexPacket *GetIndexesFromStream(const Image *image)
 %
 %  The format of the GetOnePixelFromStream() method is:
 %
-%      PixelPacket *GetOnePixelFromStream(const Image image,const int x,
-%        const int y)
+%      PixelPacket *GetOnePixelFromStream(const Image image,const long x,
+%        const long y)
 %
 %  A description of each parameter follows:
 %
@@ -221,7 +221,7 @@ static IndexPacket *GetIndexesFromStream(const Image *image)
 %    o x,y:  These values define the location of the pixel to return.
 %
 */
-static PixelPacket GetOnePixelFromStream(Image *image,const int x,const int y)
+static PixelPacket GetOnePixelFromStream(Image *image,const long x,const long y)
 {
   register PixelPacket
     *pixel;
@@ -252,8 +252,8 @@ static PixelPacket GetOnePixelFromStream(Image *image,const int x,const int y)
 %
 %  The format of the GetPixelStream() method is:
 %
-%      PixelPacket *GetPixelStream(Image *image,const int x,const int y,
-%        const unsigned int columns,const unsigned int rows)
+%      PixelPacket *GetPixelStream(Image *image,const long x,const long y,
+%        const unsigned long columns,const unsigned long rows)
 %
 %  A description of each parameter follows:
 %
@@ -267,8 +267,8 @@ static PixelPacket GetOnePixelFromStream(Image *image,const int x,const int y)
 %
 %
 */
-static PixelPacket *GetPixelStream(Image *image,const int x,const int y,
-  const unsigned int columns,const unsigned int rows)
+static PixelPacket *GetPixelStream(Image *image,const long x,const long y,
+  const unsigned long columns,const unsigned long rows)
 {
   PixelPacket
     *pixels;
@@ -400,8 +400,8 @@ MagickExport Image *ReadStream(const ImageInfo *image_info,
 %
 %  The format of the SetPixelStream() method is:
 %
-%      PixelPacket *SetPixelStream(Image *image,const int x,const int y,
-%        const unsigned int columns,const unsigned int rows)
+%      PixelPacket *SetPixelStream(Image *image,const long x,const long y,
+%        const unsigned long columns,const unsigned long rows)
 %
 %  A description of each parameter follows:
 %
@@ -415,8 +415,8 @@ MagickExport Image *ReadStream(const ImageInfo *image_info,
 %
 %
 */
-static PixelPacket *SetPixelStream(Image *image,const int x,const int y,
-  const unsigned int columns,const unsigned int rows)
+static PixelPacket *SetPixelStream(Image *image,const long x,const long y,
+  const unsigned long columns,const unsigned long rows)
 {
   StreamInfo
     *stream_info;
@@ -431,8 +431,8 @@ static PixelPacket *SetPixelStream(Image *image,const int x,const int y,
     Validate pixel cache geometry.
   */
   assert(image != (Image *) NULL);
-  if ((x < 0) || (y < 0) || ((x+(int) columns) > (int) image->columns) ||
-      ((y+(int) rows) > (int) image->rows) || (columns == 0) || (rows == 0))
+  if ((x < 0) || (y < 0) || ((x+(long) columns) > (long) image->columns) ||
+      ((y+(long) rows) > (long) image->rows) || (columns == 0) || (rows == 0))
     {
       ThrowException(&image->exception,StreamWarning,
         "Unable to set pixel stream",

@@ -69,7 +69,7 @@
 #define MaxStacksize  (1 << 15)
 #define Push(up,left,right,delta) \
   if ((s < (segment_stack+MaxStacksize)) && (((up)+(delta)) >= 0) && \
-      (((up)+(delta)) < (int) image->rows)) \
+      (((up)+(delta)) < (long) image->rows)) \
     { \
       s->y1=(up); \
       s->x1=(left); \
@@ -213,7 +213,7 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
     clone_info->server_name=AllocateString(draw_info->server_name);
   if (draw_info->dash_pattern != (unsigned int *) NULL)
     {
-      register int
+      register long
         x;
 
       for (x=0; draw_info->dash_pattern[x]; x++);
@@ -256,7 +256,7 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
 %  The format of the ColorFloodfillImage method is:
 %
 %      unsigned int ColorFloodfillImage(Image *image,const DrawInfo *draw_info,
-%        const PixelPacket target,const int x_offset,const int y_offset,
+%        const PixelPacket target,const long x_offset,const long y_offset,
 %        const PaintMethod method)
 %
 %  A description of each parameter follows:
@@ -274,12 +274,14 @@ MagickExport DrawInfo *CloneDrawInfo(const ImageInfo *image_info,
 %
 */
 MagickExport unsigned int ColorFloodfillImage(Image *image,
-  const DrawInfo *draw_info,const PixelPacket target,const int x_offset,
-  const int y_offset,const PaintMethod method)
+  const DrawInfo *draw_info,const PixelPacket target,const long x_offset,
+  const long y_offset,const PaintMethod method)
 {
   int
     offset,
-    skip,
+    skip;
+
+  long
     start,
     x1,
     x2,
@@ -291,7 +293,7 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     i,
     x;
 
@@ -312,9 +314,9 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
   assert(image->signature == MagickSignature);
   assert(draw_info != (DrawInfo *) NULL);
   assert(draw_info->signature == MagickSignature);
-  if ((x_offset < 0) || (x_offset >= (int) image->columns))
+  if ((x_offset < 0) || (x_offset >= (long) image->columns))
     return(False);
-  if ((y_offset < 0) || (y_offset >= (int) image->rows))
+  if ((y_offset < 0) || (y_offset >= (long) image->rows))
     return(False);
   /*
     Set floodfill color.
@@ -329,13 +331,13 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
     Track "hot" pixels with the image index packets.
   */
   image->storage_class=PseudoClass;
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
       indexes[x]=False;
     if (!SyncImagePixels(image))
       break;
@@ -396,13 +398,13 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
     {
       if (!skip)
         {
-          if (x < (int) image->columns)
+          if (x < (long) image->columns)
             {
               q=GetImagePixels(image,x,y,image->columns-x+1,1);
               if (q == (PixelPacket *) NULL)
                 break;
               indexes=GetIndexes(image);
-              for (i=0; x < (int) image->columns; x++)
+              for (i=0; x < (long) image->columns; x++)
               {
                 if (method == FloodfillMethod)
                   {
@@ -449,7 +451,7 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
     } while (x <= x2);
   }
   if (draw_info->tile == (Image *) NULL)
-    for (y=0; y < (int) image->rows; y++)
+    for (y=0; y < (long) image->rows; y++)
     {
       /*
         Tile fill color onto floodplane.
@@ -458,7 +460,7 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
       if (q == (PixelPacket *) NULL)
         break;
       indexes=GetIndexes(image);
-      for (x=0; x < (int) image->columns; x++)
+      for (x=0; x < (long) image->columns; x++)
       {
         if (indexes[x])
           *q=draw_info->fill;
@@ -472,13 +474,13 @@ MagickExport unsigned int ColorFloodfillImage(Image *image,
       /*
         Tile image onto floodplane.
       */
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (long) image->rows; y++)
       {
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
         indexes=GetIndexes(image);
-        for (x=0; x < (int) image->columns; x++)
+        for (x=0; x < (long) image->columns; x++)
         {
           if (indexes[x])
             {
@@ -1464,7 +1466,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
   DrawInfo
     **graphic_context;
 
-  int
+  long
     j,
     n;
 
@@ -1480,11 +1482,9 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
   register char
     *p;
 
-  register int
-    x;
-
   register long
-    i;
+    i,
+    x;
 
   size_t
     length;
@@ -2232,7 +2232,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
         if (LocaleCompare("stroke-dashoffset",keyword) == 0)
           {
             GetToken(q,&q,token);
-            graphic_context[n]->dash_offset=atoi(token);
+            graphic_context[n]->dash_offset=atol(token);
             break;
           }
         if (LocaleCompare("stroke-linecap",keyword) == 0)
@@ -2285,7 +2285,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
         if (LocaleCompare("stroke-miterlimit",keyword) == 0)
           {
             GetToken(q,&q,token);
-            graphic_context[n]->miterlimit=atoi(token);
+            graphic_context[n]->miterlimit=atol(token);
             break;
           }
         if (LocaleCompare("stroke-opacity",keyword) == 0)
@@ -2695,7 +2695,7 @@ MagickExport unsigned int DrawImage(Image *image,DrawInfo *draw_info)
 */
 
 static inline double GetPixelOpacity(PolygonInfo *polygon_info,const double mid,
-  const unsigned int fill,const FillRule fill_rule,const int x,const int y,
+  const unsigned int fill,const FillRule fill_rule,const long x,const long y,
   double *stroke_opacity)
 {
   double
@@ -2894,8 +2894,7 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
     mid,
     stroke_opacity;
 
-  int
-    fill,
+  long
     y;
 
   PathInfo
@@ -2911,7 +2910,7 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
   register EdgeInfo
     *p;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -2925,6 +2924,9 @@ static unsigned int DrawPolygonPrimitive(Image *image,const DrawInfo *draw_info,
 
   TimerInfo
     timer;
+
+  unsigned int
+    fill;
 
   /*
     Compute bounding box.
@@ -3087,18 +3089,16 @@ static void PrintPrimitiveInfo(const PrimitiveInfo *primitive_info)
       (char *) "?"
     };
 
-  int
-    y;
-
   long
-    coordinates;
+    coordinates,
+    y;
 
   PointInfo
     p,
     q,
     point;
 
-  register int
+  register long
     i,
     x;
 
@@ -3108,30 +3108,30 @@ static void PrintPrimitiveInfo(const PrimitiveInfo *primitive_info)
   {
     case PointPrimitive:
     {
-      (void) fprintf(stdout,"PointPrimitive %d,%d %s\n",x,y,
+      (void) fprintf(stdout,"PointPrimitive %ld,%ld %s\n",x,y,
         methods[primitive_info->method]);
       return;
     }
     case ColorPrimitive:
     {
-      (void) fprintf(stdout,"ColorPrimitive %d,%d %s\n",x,y,
+      (void) fprintf(stdout,"ColorPrimitive %ld,%ld %s\n",x,y,
         methods[primitive_info->method]);
       return;
     }
     case MattePrimitive:
     {
-      (void) fprintf(stdout,"MattePrimitive %d,%d %s\n",x,y,
+      (void) fprintf(stdout,"MattePrimitive %ld,%ld %s\n",x,y,
         methods[primitive_info->method]);
       return;
     }
     case TextPrimitive:
     {
-      (void) fprintf(stdout,"TextPrimitive %d,%d\n",x,y);
+      (void) fprintf(stdout,"TextPrimitive %ld,%ld\n",x,y);
       return;
     }
     case ImagePrimitive:
     {
-      (void) fprintf(stdout,"ImagePrimitive %d,%d\n",x,y);
+      (void) fprintf(stdout,"ImagePrimitive %ld,%ld\n",x,y);
       return;
     }
     default:
@@ -3171,17 +3171,15 @@ static void PrintPrimitiveInfo(const PrimitiveInfo *primitive_info)
 static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
   const PrimitiveInfo *primitive_info)
 {
-  int
+  long
     y;
 
-  register int
+  register long
+    i,
     x;
 
   register PixelPacket
     *q;
-
-  register long
-    i;
 
   TimerInfo
     timer;
@@ -3230,12 +3228,12 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
 
           color=draw_info->fill;
           target=GetOnePixel(image,x,y);
-          for (y=0; y < (int) image->rows; y++)
+          for (y=0; y < (long) image->rows; y++)
           {
             q=GetImagePixels(image,0,y,image->columns,1);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (int) image->columns; x++)
+            for (x=0; x < (long) image->columns; x++)
             {
               if (!ColorMatch(*q,target,image->fuzz))
                 {
@@ -3276,12 +3274,12 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
         }
         case ResetMethod:
         {
-          for (y=0; y < (int) image->rows; y++)
+          for (y=0; y < (long) image->rows; y++)
           {
             q=GetImagePixels(image,0,y,image->columns,1);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (int) image->columns; x++)
+            for (x=0; x < (long) image->columns; x++)
             {
               *q=draw_info->fill;
               q++;
@@ -3338,12 +3336,12 @@ static unsigned int DrawPrimitive(Image *image,const DrawInfo *draw_info,
         }
         case ResetMethod:
         {
-          for (y=0; y < (int) image->rows; y++)
+          for (y=0; y < (long) image->rows; y++)
           {
             q=GetImagePixels(image,0,y,image->columns,1);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (int) image->columns; x++)
+            for (x=0; x < (long) image->columns; x++)
             {
               q->opacity=draw_info->fill.opacity;
               q++;
@@ -3703,7 +3701,7 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
 %  The format of the MatteFloodfillImage method is:
 %
 %      unsigned int MatteFloodfillImage(Image *image,const PixelPacket target,
-%        const unsigned int opacity,const int x_offset,const int y_offset,
+%        const unsigned int opacity,const long x_offset,const long y_offset,
 %        const PaintMethod method)
 %
 %  A description of each parameter follows:
@@ -3722,18 +3720,20 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
 %
 */
 MagickExport unsigned int MatteFloodfillImage(Image *image,
-  const PixelPacket target,const unsigned int opacity,const int x_offset,
-  const int y_offset,const PaintMethod method)
+  const PixelPacket target,const unsigned int opacity,const long x_offset,
+  const long y_offset,const PaintMethod method)
 {
   int
     offset,
-    skip,
+    skip;
+
+  long
     start,
     x1,
     x2,
     y;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -3750,9 +3750,9 @@ MagickExport unsigned int MatteFloodfillImage(Image *image,
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if ((x_offset < 0) || (x_offset >= (int) image->columns))
+  if ((x_offset < 0) || (x_offset >= (long) image->columns))
     return(False);
-  if ((y_offset < 0) || (y_offset >= (int) image->rows))
+  if ((y_offset < 0) || (y_offset >= (long) image->rows))
     return(False);
   if (target.opacity == opacity)
     return(False);
@@ -3828,7 +3828,7 @@ MagickExport unsigned int MatteFloodfillImage(Image *image,
           if (q == (PixelPacket *) NULL)
             break;
           q+=x;
-          for ( ; x < (int) image->columns; x++)
+          for ( ; x < (long) image->columns; x++)
           {
             if (method == FloodfillMethod)
               {
@@ -3910,10 +3910,10 @@ MagickExport unsigned int OpaqueImage(Image *image,const PixelPacket target,
 {
 #define OpaqueImageText  "  Setting opaque color in the image...  "
 
-  int
+  long
     y;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -3935,12 +3935,12 @@ MagickExport unsigned int OpaqueImage(Image *image,const PixelPacket target,
       /*
         Make DirectClass image opaque.
       */
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (long) image->rows; y++)
       {
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (int) image->columns; x++)
+        for (x=0; x < (long) image->columns; x++)
         {
           if (ColorMatch(*q,target,image->fuzz))
             *q=fill;
@@ -5175,10 +5175,10 @@ MagickExport unsigned int TransparentImage(Image *image,
 {
 #define TransparentImageText  "  Setting transparent color in the image...  "
 
-  int
+  long
     y;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -5191,12 +5191,12 @@ MagickExport unsigned int TransparentImage(Image *image,
   assert(image->signature == MagickSignature);
   if (!image->matte)
     SetImageOpacity(image,OpaqueOpacity);
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       if (ColorMatch(*q,target,image->fuzz))
         q->opacity=opacity;

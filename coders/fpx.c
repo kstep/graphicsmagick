@@ -133,13 +133,15 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     index;
 
   int
-    c,
+    c;
+
+  long
     y;
 
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     i,
     x;
 
@@ -370,7 +372,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Initialize image pixels.
   */
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     q=SetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
@@ -405,7 +407,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     g=green_component->theData+(y % tile_height)*green_component->lineStride;
     b=blue_component->theData+(y % tile_height)*blue_component->lineStride;
     a=alpha_component->theData+(y % tile_height)*alpha_component->lineStride;
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       if (fpx_info.numberOfComponents > 2)
         {
@@ -932,7 +934,7 @@ static unsigned int WriteFPXImage(const ImageInfo *image_info,Image *image)
   /*
     Write image scanlines.
   */
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     if (!GetImagePixels(image,0,y,image->columns,1))
       break;

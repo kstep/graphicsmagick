@@ -93,13 +93,13 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   DrawInfo
     *draw_info;
 
-  int
+  long
     y;
 
   Image
     *image;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -122,18 +122,18 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   status=GetTypeMetrics(image,draw_info,&metrics);
   if (status == False)
     ThrowReaderException(DelegateWarning,"Unable to get type metrics",image);
-  image->columns=(unsigned int) metrics.width;
-  image->rows=(unsigned int) metrics.height;
+  image->columns= metrics.width;
+  image->rows= metrics.height;
   (void) QueryColorDatabase("white",&image->background_color);
   SetImage(image,OpaqueOpacity);
   (void) AnnotateImage(image,draw_info);
   image->matte=True;
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       q->opacity=(Quantum) (Intensity(*q));
       q->red=image_info->pen.red;

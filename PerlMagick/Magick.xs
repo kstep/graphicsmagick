@@ -1282,7 +1282,9 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
       if (LocaleNCompare(attribute,"index",5) == 0)
         {
           int
-            index,
+            index;
+
+          long
             x,
             y;
 
@@ -1421,7 +1423,7 @@ static void SetAttribute(struct PackageInfo *info,Image *image,char *attribute,
         }
       if (LocaleNCompare(attribute,"pixel",5) == 0)
         {
-          int
+          long
             x,
             y;
 
@@ -3220,12 +3222,12 @@ Get(ref,...)
               char
                 name[MaxTextExtent];
 
-              int
-                x,
-                y;
-
               IndexPacket
                 *indexes;
+
+              long
+                x,
+                y;
 
               if (!image)
                 break;
@@ -3374,7 +3376,7 @@ Get(ref,...)
               char
                 name[MaxTextExtent];
 
-              int
+              long
                 x,
                 y;
 
@@ -4757,11 +4759,13 @@ Mogrify(ref,...)
             *rotate_image;
 
           int
-            status,
+            status;
+
+          long
             x,
             y;
 
-          unsigned int
+          unsigned long
             height,
             width;
 
@@ -4785,13 +4789,13 @@ Mogrify(ref,...)
               register PixelPacket
                 *q;
 
-              for (y=0; y < (int) composite_image->rows; y++)
+              for (y=0; y < (long) composite_image->rows; y++)
               {
                 q=GetImagePixels(composite_image,0,y,
                   composite_image->columns,1);
                 if (q == (PixelPacket *) NULL)
                   break;
-                for (x=0; x < (int) composite_image->columns; x++)
+                for (x=0; x < (long) composite_image->columns; x++)
                 {
                   if (composite_image->matte)
                     q->opacity=((MaxRGB-q->opacity)*opacity)/100;
@@ -4819,8 +4823,8 @@ Mogrify(ref,...)
               /*
                 Tile image on background.
               */
-              for (y=0; y < (int) image->rows; y+=composite_image->rows)
-                for (x=0; x < (int) image->columns; x+=composite_image->columns)
+              for (y=0; y < (long) image->rows; y+=composite_image->rows)
+                for (x=0; x < (long) image->columns; x+=composite_image->columns)
                 {
                   if (attribute_flag[8])
                     status=CompositeImage(image,compose,rotate_image,x,y);

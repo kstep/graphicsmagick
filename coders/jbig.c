@@ -107,16 +107,16 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
     index;
 
   int
-    status,
-    y;
+    status;
 
   long
-    length;
+    length,
+    y;
 
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -151,8 +151,8 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
   jbg_dec_init(&jbig_info);
   jbg_dec_maxsize(&jbig_info,(unsigned long) image->columns,
     (unsigned long) image->rows);
-  image->columns=(unsigned int) jbg_dec_getwidth(&jbig_info);
-  image->rows=(unsigned int) jbg_dec_getheight(&jbig_info);
+  image->columns= jbg_dec_getwidth(&jbig_info);
+  image->rows= jbg_dec_getheight(&jbig_info);
   image->depth=8;
   image->storage_class=PseudoClass;
   image->colors=2;
@@ -180,8 +180,8 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
   /*
     Create colormap.
   */
-  image->columns=(unsigned int) jbg_dec_getwidth(&jbig_info);
-  image->rows=(unsigned int) jbg_dec_getheight(&jbig_info);
+  image->columns= jbg_dec_getwidth(&jbig_info);
+  image->rows= jbg_dec_getheight(&jbig_info);
   if (!AllocateImageColormap(image,2))
     {
       LiberateMemory((void **) &buffer);
@@ -200,7 +200,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
     Convert X bitmap image to pixel packets.
   */
   p=jbg_dec_getimage(&jbig_info,0);
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     q=SetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
@@ -208,7 +208,7 @@ static Image *ReadJBIGImage(const ImageInfo *image_info,
     indexes=GetIndexes(image);
     bit=0;
     byte=0;
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       if (bit == 0)
         byte=(*p++);
@@ -363,14 +363,14 @@ static void JBIGEncode(unsigned char *pixels,size_t length,void *data)
 
 static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
 {
-  int
+  long
     sans_offset,
     y;
 
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -431,7 +431,7 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
     if (image->colors == 2)
       polarity=Intensity(image->colormap[0]) > Intensity(image->colormap[1]);
     q=pixels;
-    for (y=0; y < (int) image->rows; y++)
+    for (y=0; y < (long) image->rows; y++)
     {
       p=GetImagePixels(image,0,y,image->columns,1);
       if (p == (PixelPacket *) NULL)
@@ -439,7 +439,7 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
       indexes=GetIndexes(image);
       bit=0;
       byte=0;
-      for (x=0; x < (int) image->columns; x++)
+      for (x=0; x < (long) image->columns; x++)
       {
         byte<<=1;
         if (indexes[x] == polarity)
@@ -466,7 +466,7 @@ static unsigned int WriteJBIGImage(const ImageInfo *image_info,Image *image)
       jbg_enc_layers(&jbig_info,(int) image_info->subimage);
     else
       {
-        unsigned int
+        unsigned long
           x_resolution,
           y_resolution;
 

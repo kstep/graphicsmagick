@@ -107,10 +107,10 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   ImageInfo
     *clone_info;
 
-  int
+  long
     y;
 
-  register int
+  register long
     i;
 
   unsigned int
@@ -133,16 +133,16 @@ static Image *ReadTTFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   y=20;
   (void) fprintf(file,"font %.1024s\n",image_info->filename);
   (void) fprintf(file,"font-size 18\n");
-  (void) fprintf(file,"text +10%+d \"%s\"\n",y,Text);
+  (void) fprintf(file,"text +10%+ld \"%s\"\n",y,Text);
   y+=20*MultilineCensus(Text)+20;
   for (i=12; i <= 72; i+=6)
   {
     y+=i+12;
     (void) fprintf(file,"font-size 18\n");
-    (void) fprintf(file,"text +10+%d '%d'\n",y,i);
-    (void) fprintf(file,"font-size %d",i);
+    (void) fprintf(file,"text +10+%ld '%ld'\n",y,i);
+    (void) fprintf(file,"font-size %ld",i);
     (void) fprintf(file,
-      "text +50+%d 'That which does not destroy me, only makes me stronger.'\n",
+      "text +50+%ld 'That which does not destroy me, only makes me stronger.'\n",
       y);
     if (i >= 24)
       i+=6;

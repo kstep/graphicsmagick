@@ -100,7 +100,7 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
   Image
     *rotate_image;
 
-  int
+  long
     y;
 
   RectangleInfo
@@ -109,7 +109,7 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -138,7 +138,7 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
       /*
         Rotate 0 degrees.
       */
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (long) image->rows; y++)
       {
         p=GetImagePixels(image,0,y,image->columns,1);
         q=SetImagePixels(rotate_image,0,y,rotate_image->columns,1);
@@ -161,7 +161,7 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
       /*
         Rotate 90 degrees.
       */
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (long) image->rows; y++)
       {
         p=GetImagePixels(image,0,y,image->columns,1);
         q=SetImagePixels(rotate_image,image->rows-y-1,0,1,rotate_image->rows);
@@ -187,7 +187,7 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
       /*
         Rotate 180 degrees.
       */
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (long) image->rows; y++)
       {
         p=GetImagePixels(image,0,y,image->columns,1);
         q=SetImagePixels(rotate_image,0,image->rows-y-1,image->columns,1);
@@ -196,9 +196,9 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
         q+=image->columns;
         indexes=GetIndexes(rotate_image);
         if (indexes != (IndexPacket *) NULL)
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
             indexes[image->columns-x-1]=(GetIndexes(image))[x];
-        for (x=0; x < (int) image->columns; x++)
+        for (x=0; x < (long) image->columns; x++)
           *--q=(*p++);
         if (!SyncImagePixels(rotate_image))
           break;
@@ -214,18 +214,18 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
       /*
         Rotate 270 degrees.
       */
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (long) image->rows; y++)
       {
         p=GetImagePixels(image,0,y,image->columns,1);
         q=SetImagePixels(rotate_image,y,0,1,rotate_image->rows);
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
         q+=image->columns;
-        for (x=0; x < (int) image->columns; x++)
+        for (x=0; x < (long) image->columns; x++)
           *--q=(*p++);
         indexes=GetIndexes(rotate_image);
         if (indexes != (IndexPacket *) NULL)
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
             indexes[image->columns-x-1]=(GetIndexes(image))[x];
         if (!SyncImagePixels(rotate_image))
           break;
@@ -262,8 +262,8 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
 %  The format of the XShearImage method is:
 %
 %      void XShearImage(Image *image,const double degrees,
-%        const unsigned int width,const unsigned int height,const int x_offset,
-%        int y_offset)
+%        const unsigned long width,const unsigned long height,
+%        const long x_offset,long y_offset)
 %
 %  A description of each parameter follows.
 %
@@ -276,8 +276,8 @@ static Image *IntegralRotateImage(Image *image,unsigned int rotations,
 %
 */
 static void XShearImage(Image *image,const double degrees,
-  const unsigned int width,const unsigned int height,const int x_offset,
-  int y_offset)
+  const unsigned long width,const unsigned long height,const long x_offset,
+  long y_offset)
 {
 #define XShearImageText  "  X Shear image...  "
 
@@ -292,7 +292,7 @@ static void XShearImage(Image *image,const double degrees,
   enum {LEFT,RIGHT}
     direction;
 
-  int
+  long
     step,
     y;
 
@@ -300,7 +300,7 @@ static void XShearImage(Image *image,const double degrees,
     *p,
     *q;
 
-  register int
+  register long
     i;
 
   PixelPacket
@@ -308,7 +308,7 @@ static void XShearImage(Image *image,const double degrees,
 
   assert(image != (Image *) NULL);
   y_offset--;
-  for (y=0; y < (int) height; y++)
+  for (y=0; y < (long) height; y++)
   {
     y_offset++;
     displacement=degrees*(y-height/2.0);
@@ -347,7 +347,7 @@ static void XShearImage(Image *image,const double degrees,
               Set old row to border color.
             */
             q+=width;
-            for (i=0; i < (int) step; i++)
+            for (i=0; i < (long) step; i++)
               *q++=image->border_color;
             break;
           }
@@ -361,12 +361,12 @@ static void XShearImage(Image *image,const double degrees,
               break;
             p+=x_offset+width;
             q=p+step;
-            for (i=0; i < (int) width; i++)
+            for (i=0; i < (long) width; i++)
               *--q=(*--p);
             /*
               Set old row to border color.
             */
-            for (i=0; i < (int) step; i++)
+            for (i=0; i < (long) step; i++)
               *--q=image->border_color;
             break;
           }
@@ -394,7 +394,7 @@ static void XShearImage(Image *image,const double degrees,
           break;
         p+=x_offset;
         q=p-step;
-        for (i=0; i < (int) width; i++)
+        for (i=0; i < (long) width; i++)
         {
           if ((x_offset+i) < step)
             {
@@ -450,7 +450,7 @@ static void XShearImage(Image *image,const double degrees,
           break;
         p+=x_offset+width;
         q=p+step;
-        for (i=0; i < (int) width; i++)
+        for (i=0; i < (long) width; i++)
         {
           p--;
           q--;
@@ -521,8 +521,8 @@ static void XShearImage(Image *image,const double degrees,
 %  The format of the YShearImage method is:
 %
 %      void YShearImage(Image *image,const double degrees,
-%        const unsigned int width,const unsigned int height,int x_offset,
-%        const int y_offset)
+%        const unsigned long width,const unsigned long height,long x_offset,
+%        const long y_offset)
 %
 %  A description of each parameter follows.
 %
@@ -536,8 +536,8 @@ static void XShearImage(Image *image,const double degrees,
 %
 */
 static void YShearImage(Image *image,const double degrees,
-  const unsigned int width,const unsigned int height,int x_offset,
-  const int y_offset)
+  const unsigned long width,const unsigned long height,long x_offset,
+  const long y_offset)
 {
 #define YShearImageText  "  Y Shear image...  "
 
@@ -552,7 +552,7 @@ static void YShearImage(Image *image,const double degrees,
   enum {UP,DOWN}
     direction;
 
-  int
+  long
     step,
     y;
 
@@ -560,7 +560,7 @@ static void YShearImage(Image *image,const double degrees,
     *p,
     *q;
 
-  register int
+  register long
     i;
 
   PixelPacket
@@ -568,7 +568,7 @@ static void YShearImage(Image *image,const double degrees,
 
   assert(image != (Image *) NULL);
   x_offset--;
-  for (y=0; y < (int) width; y++)
+  for (y=0; y < (long) width; y++)
   {
     x_offset++;
     displacement=degrees*(y-width/2.0);
@@ -607,7 +607,7 @@ static void YShearImage(Image *image,const double degrees,
               Set old column to border color.
             */
             q+=height;
-            for (i=0; i < (int) step; i++)
+            for (i=0; i < (long) step; i++)
               *q++=image->border_color;
             break;
           }
@@ -621,12 +621,12 @@ static void YShearImage(Image *image,const double degrees,
               break;
             p+=y_offset+height;
             q=p+step;
-            for (i=0; i < (int) height; i++)
+            for (i=0; i < (long) height; i++)
               *--q=(*--p);
             /*
               Set old column to border color.
             */
-            for (i=0; i < (int) step; i++)
+            for (i=0; i < (long) step; i++)
               *--q=image->border_color;
             break;
           }
@@ -654,7 +654,7 @@ static void YShearImage(Image *image,const double degrees,
           break;
         p+=y_offset;
         q=p-step;
-        for (i=0; i < (int) height; i++)
+        for (i=0; i < (long) height; i++)
         {
           red=(pixel.red*(MaxRGB-alpha)+p->red*alpha)/MaxRGB;
           green=(pixel.green*(MaxRGB-alpha)+p->green*alpha)/MaxRGB;
@@ -704,7 +704,7 @@ static void YShearImage(Image *image,const double degrees,
           break;
         p+=y_offset+height;
         q=p+step;
-        for (i=0; i < (int) height; i++)
+        for (i=0; i < (long) height; i++)
         {
           p--;
           q--;
@@ -820,10 +820,12 @@ MagickExport Image *RotateImage(Image *image,const double degrees,
     border_info;
 
   unsigned int
-    height,
     rotations,
-    width,
     y_width;
+
+  unsigned long
+    height,
+    width;
 
   /*
     Adjust rotation angle.

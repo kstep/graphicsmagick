@@ -215,7 +215,9 @@ int main(int argc,char **argv)
     *image_info;
 
   int
-    gravity,
+    gravity;
+
+  long
     x,
     y;
 
@@ -357,7 +359,7 @@ int main(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing colors",option);
                 }
               break;
@@ -518,7 +520,7 @@ int main(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing image depth",option);
                   image_info->depth=atoi(argv[i]);
                 }
@@ -554,7 +556,7 @@ int main(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing method",option);
                 }
               break;
@@ -565,7 +567,7 @@ int main(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing value",option);
                   dissolve=atof(argv[i]);
                   compose=DissolveCompositeOp;
@@ -737,7 +739,7 @@ int main(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing quality",option);
                   image_info->quality=atoi(argv[i]);
                 }
@@ -768,7 +770,7 @@ int main(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing scene number",option);
                 }
               break;
@@ -791,7 +793,7 @@ int main(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing offset",option);
                   stegano=atoi(argv[i])+1;
                 }
@@ -817,7 +819,7 @@ int main(int argc,char **argv)
               if (*option == '-')
                 {
                   i++;
-                  if ((i == argc) || !sscanf(argv[i],"%d",&x))
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing depth",option);
                 }
               break;
@@ -989,7 +991,7 @@ int main(int argc,char **argv)
           int
             flags;
 
-          unsigned int
+          unsigned long
             height,
             width;
 

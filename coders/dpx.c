@@ -142,10 +142,10 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
-  int
+  long
     y;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -184,8 +184,8 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   headersize=ReadBlobMSBLong(image); 
   for (i=0; i < 764; i++)
     (void) ReadBlobByte(image);
-  image->columns=(unsigned int) ReadBlobMSBLong(image);
-  image->rows=(unsigned int) ReadBlobMSBLong(image);
+  image->columns= ReadBlobMSBLong(image);
+  image->rows= ReadBlobMSBLong(image);
   for (i=0; i < 20; i++)
     (void) ReadBlobByte(image);
   colortype=ReadBlobByte(image);
@@ -202,7 +202,7 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     case (MonoColorType):
     {
       q=SetImagePixels(image,0,0,image->columns,image->rows);
-      for (x=0; x < (int) ((image->columns*image->rows)/3); x++)
+      for (x=0; x < (long) ((image->columns*image->rows)/3); x++)
       {
         pixel=ReadBlobMSBLong(image);
         q->red=MaxRGB*((pixel >> 0) & 0x3ff)/1023;
@@ -222,12 +222,12 @@ static Image *ReadDPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     }
     case (RGBColorType):
     {
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (long) image->rows; y++)
       {
         q=SetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (int) image->columns; x++)
+        for (x=0; x < (long) image->columns; x++)
         {
           pixel=ReadBlobMSBLong(image);
           q->red=MaxRGB*((pixel >> 22) & 0x3ff)/1023;
@@ -345,10 +345,10 @@ ModuleExport void UnregisterDPXImage(void)
 */
 static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
 {
-  int
+  long
     y;
 
-  register int
+  register long
     i,
     x;
 
@@ -397,12 +397,12 @@ static unsigned int WriteDPXImage(const ImageInfo *image_info,Image *image)
   /*
     Convert pixel packets to DPX raster image .
   */
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     q=SetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       pixel=((1023*XUpScale(q->red)/MaxRGB) << 22) |
         ((1023*XUpScale(q->green)/MaxRGB) << 12) |

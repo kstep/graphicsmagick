@@ -400,10 +400,10 @@ void Magick::Image::composite ( const Image &compositeImage_,
   // results in updating current image.
   modifyImage();
 
-  int x = xOffset_;
-  int y = yOffset_;
-  unsigned int width = columns();
-  unsigned int height = rows();
+  long x = xOffset_;
+  long y = yOffset_;
+  unsigned long width = columns();
+  unsigned long height = rows();
 
   Geometry offset( 0, 0, xOffset_, yOffset_ );
 
@@ -423,10 +423,10 @@ void Magick::Image::composite ( const Image &compositeImage_,
 {
   modifyImage();
 
-  int x = offset_.xOff();
-  int y = offset_.yOff();
-  unsigned int width = columns();
-  unsigned int height = rows();
+  long x = offset_.xOff();
+  long y = offset_.yOff();
+  unsigned long width = columns();
+  unsigned long height = rows();
 
   ParseImageGeometry (static_cast<std::string>(offset_).c_str(),
 		      &x, &y,
@@ -1276,10 +1276,10 @@ void Magick::Image::rotate ( double degrees_ )
 // Sample image
 void Magick::Image::sample ( const Geometry &geometry_ )
 {
-  int x = 0;
-  int y = 0;
-  unsigned int width = columns();
-  unsigned int height = rows();
+  long x = 0;
+  long y = 0;
+  unsigned long width = columns();
+  unsigned long height = rows();
 
   ParseImageGeometry (static_cast<std::string>(geometry_).c_str(),
 		      &x, &y,
@@ -1296,10 +1296,10 @@ void Magick::Image::sample ( const Geometry &geometry_ )
 // Scale image
 void Magick::Image::scale ( const Geometry &geometry_ )
 {
-  int x = 0;
-  int y = 0;
-  unsigned int width = columns();
-  unsigned int height = rows();
+  long x = 0;
+  long y = 0;
+  unsigned long width = columns();
+  unsigned long height = rows();
 
   ParseImageGeometry (static_cast<std::string>(geometry_).c_str(),
 		      &x, &y,
@@ -1640,10 +1640,10 @@ void Magick::Image::zoom( const Geometry &geometry_ )
 {
   // Calculate new size.  This code should be supported using binary arguments
   // in the ImageMagick library.
-  int x = 0;
-  int y = 0;
-  unsigned int width = columns();
-  unsigned int height = rows();
+  long x = 0;
+  long y = 0;
+  unsigned long width = columns();
+  unsigned long height = rows();
 
   ParseImageGeometry (static_cast<std::string>(geometry_).c_str(),
 		      &x, &y,

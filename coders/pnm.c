@@ -229,7 +229,9 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   int
     blue,
     green,
-    red,
+    red;
+
+  long
     y;
 
   MonitorHandler
@@ -241,7 +243,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -357,13 +359,13 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert PBM image to pixel packets.
         */
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
           {
             index=ValidateColormapIndex(image,!PNMInteger(image,2));
             indexes[x]=index;
@@ -382,13 +384,13 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert PGM image to pixel packets.
         */
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
           {
             index=ValidateColormapIndex(image,PNMInteger(image,10));
             indexes[x]=index;
@@ -407,12 +409,12 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert PNM image to pixel packets.
         */
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
           {
             red=PNMInteger(image,10);
             green=PNMInteger(image,10);
@@ -445,7 +447,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert PBM raw image to pixel packets.
         */
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
@@ -453,7 +455,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           indexes=GetIndexes(image);
           bit=0;
           byte=0;
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
           {
             if (bit == 0)
               byte=ReadBlobByte(image);
@@ -484,7 +486,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (pixels == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitWarning,"Unable to allocate memory",
             image);
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           count=ReadBlob(image,packets*image->columns,pixels);
           if (count == 0)
@@ -495,7 +497,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (q == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
           {
             if (image->depth <= 8)
               index=ValidateColormapIndex(image,*p++);
@@ -526,7 +528,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         if (pixels == (unsigned char *) NULL)
           ThrowReaderException(ResourceLimitWarning,"Unable to allocate memory",
             image);
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           count=ReadBlob(image,packets*image->columns,pixels);
           if (count == 0)
@@ -536,7 +538,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
           {
             if (image->depth <= 8)
               {
@@ -748,14 +750,14 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
   ImageAttribute
     *attribute;
 
-  int
+  long
     j,
     y;
 
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     i,
     x;
 
@@ -868,7 +870,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
       }
     if (format != '7')
       {
-        FormatString(buffer,"%u %u\n",image->columns,image->rows);
+        FormatString(buffer,"%lu %lu\n",image->columns,image->rows);
         (void) WriteBlobString(image,buffer);
       }
     /*
@@ -889,13 +891,13 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           polarity=
             Intensity(image->colormap[0]) > Intensity(image->colormap[1]);
         i=0;
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           p=GetImagePixels(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
           {
             FormatString(buffer,"%d ",(int) (indexes[x] == polarity));
             (void) WriteBlobString(image,buffer);
@@ -920,12 +922,12 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         FormatString(buffer,"%ld\n",MaxRGB);
         (void) WriteBlobString(image,buffer);
         i=0;
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           p=GetImagePixels(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
             break;
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
           {
             index=Intensity(*p);
             FormatString(buffer,"%d ",index);
@@ -952,12 +954,12 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         FormatString(buffer,"%ld\n",MaxRGB);
         (void) WriteBlobString(image,buffer);
         i=0;
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           p=GetImagePixels(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
             break;
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
           {
             FormatString(buffer,"%d %d %d ",p->red,p->green,p->blue);
             (void) WriteBlobString(image,buffer);
@@ -989,7 +991,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         if (image->colors == 2)
           polarity=
             Intensity(image->colormap[0]) > Intensity(image->colormap[1]);
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           p=GetImagePixels(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
@@ -997,7 +999,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           indexes=GetIndexes(image);
           bit=0;
           byte=0;
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
           {
             byte<<=1;
             if (indexes[x] == polarity)
@@ -1026,12 +1028,12 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         */
         FormatString(buffer,"%lu\n",DownScale(MaxRGB));
         (void) WriteBlobString(image,buffer);
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           p=GetImagePixels(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
             break;
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
           {
             index=(short unsigned int) DownScale(Intensity(*p)+0.5);
             (void) WriteBlobByte(image,index);
@@ -1067,13 +1069,13 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         */
         FormatString(buffer,"%lu\n",DownScale(MaxRGB));
         (void) WriteBlobString(image,buffer);
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           p=GetImagePixels(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
             break;
           q=pixels;
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
           {
             *q++=DownScale(p->red);
             *q++=DownScale(p->green);
@@ -1107,7 +1109,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
             {  2,-10, 12, -8,  0,-12, 14, -6,  3, -9, 13, -7,  1,-11, 15, -5}
           };
 
-        int
+        long
           value;
 
         Quantum
@@ -1166,16 +1168,16 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
           Convert image to a P7 image.
         */
         (void) WriteBlobString(image,"#END_OF_COMMENTS\n");
-        FormatString(buffer,"%u %u 255\n",image->columns,image->rows);
+        FormatString(buffer,"%lu %lu 255\n",image->columns,image->rows);
         (void) WriteBlobString(image,buffer);
         i=0;
         j=0;
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           p=GetImagePixels(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
             break;
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
           {
             if (!image_info->dither)
               pixel=((DownScale(p->red) & 0xe0) |

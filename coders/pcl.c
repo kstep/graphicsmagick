@@ -202,7 +202,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
   ImageAttribute
     *attribute;
 
-  int
+  long
     sans_offset,
     x,
     y;
@@ -217,11 +217,13 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
     media_info;
 
   unsigned int
-    density,
-    height,
     page_size,
     status,
-    text_size,
+    text_size;
+
+  unsigned long
+    density,
+    height,
     width;
 
   /*
@@ -249,7 +251,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
   height=image->rows;
   x=0;
   y=text_size;
-  FormatString(geometry,"%ux%u",image->columns,image->rows);
+  FormatString(geometry,"%lux%lu",image->columns,image->rows);
   if (image_info->page != (char *) NULL)
     (void) strcpy(geometry,image_info->page);
   else
@@ -312,7 +314,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
       /*
         Write PCL color image.
       */
-      FormatString(buffer,"\033*r%us%uT",image->columns,image->rows);
+      FormatString(buffer,"\033*r%lus%luT",image->columns,image->rows);
       (void) WriteBlobString(image,buffer);
       FormatString(buffer,"\033*t%uh%uV",width,height);
       (void) WriteBlobString(image,buffer);
@@ -325,21 +327,21 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
       (void) WriteBlobByte(image,'\010');  /* bits blue */
       (void) WriteBlobString(image,"\033*r2A");   /* start graphics */
       (void) WriteBlobString(image,"\033*b0M");  /* no compression */
-      FormatString(buffer,"\033*b%uW",3*image->columns);
+      FormatString(buffer,"\033*b%luW",3*image->columns);
       (void) WriteBlobString(image,buffer);
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (long) image->rows; y++)
       {
         p=GetImagePixels(image,0,y,image->columns,1);
         if (p == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (int) image->columns; x++)
+        for (x=0; x < (long) image->columns; x++)
         {
           FormatString(buffer,"%c%c%c",(int) DownScale(p->red),
             (int) DownScale(p->green),(int) DownScale(p->blue));
           (void) WriteBlobString(image,buffer);
           p++;
         }
-        FormatString(buffer,"\033*b%uW",3*image->columns);
+        FormatString(buffer,"\033*b%luW",3*image->columns);
         (void) WriteBlobString(image,buffer);
         if (QuantumTick(y,image->rows))
           MagickMonitor(SaveImageText,y,image->rows);
@@ -386,14 +388,14 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
       if (monochrome_image->colors == 2)
         polarity=Intensity(monochrome_image->colormap[0]) >
           Intensity(monochrome_image->colormap[1]);
-      FormatString(buffer,"\033*r%us%uT",monochrome_image->columns,
+      FormatString(buffer,"\033*r%lus%luT",monochrome_image->columns,
         monochrome_image->rows);
       (void) WriteBlobString(image,buffer);
       (void) WriteBlobString(image,"\033*r1A");  /* start graphics */
       (void) WriteBlobString(image,"\033*b0M");  /* no compression */
-      FormatString(buffer,"\033*b%uW",(image->columns+7)/8);
+      FormatString(buffer,"\033*b%luW",(image->columns+7)/8);
       (void) WriteBlobString(image,buffer);
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (long) image->rows; y++)
       {
         p=GetImagePixels(image,0,y,image->columns,1);
         if (p == (PixelPacket *) NULL)
@@ -401,7 +403,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
         indexes=GetIndexes(image);
         bit=0;
         byte=0;
-        for (x=0; x < (int) image->columns; x++)
+        for (x=0; x < (long) image->columns; x++)
         {
           byte<<=1;
           if (indexes[x] == polarity)
@@ -416,7 +418,7 @@ static unsigned int WritePCLImage(const ImageInfo *image_info,Image *image)
         }
         if (bit != 0)
           (void) WriteBlobByte(image,byte << (8-bit));
-        if (y < (int) monochrome_image->rows)
+        if (y < (long) monochrome_image->rows)
           {
             FormatString(buffer,"\033*b%uW",
               (monochrome_image->columns+7)/8);

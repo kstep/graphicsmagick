@@ -94,7 +94,7 @@ static unsigned int
 %
 */
 
-static unsigned int WBMPReadInteger(Image *image,unsigned int *value)
+static unsigned int WBMPReadInteger(Image *image,unsigned long *value)
 {
   int
     byte;
@@ -118,13 +118,15 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
     *image;
 
   int
-    y,
     byte;
+
+  long
+    y;
 
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -171,7 +173,7 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
   /*
     Convert bi-level image to pixel packets.
   */
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     q=SetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
@@ -179,7 +181,7 @@ static Image *ReadWBMPImage(const ImageInfo *image_info,
     indexes=GetIndexes(image);
     bit=0;
     byte=0;
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       if (bit == 0)
         {
@@ -299,7 +301,7 @@ ModuleExport void UnregisterWBMPImage(void)
 %
 */
 
-static void WBMPWriteInteger(Image *image,const unsigned int value)
+static void WBMPWriteInteger(Image *image,const unsigned long value)
 {
   int
     bits,
@@ -332,13 +334,13 @@ static void WBMPWriteInteger(Image *image,const unsigned int value)
 
 static unsigned int WriteWBMPImage(const ImageInfo *image_info,Image *image)
 {
-  int
+  long
     y;
 
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -379,7 +381,7 @@ static unsigned int WriteWBMPImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobMSBShort(image,0);
   WBMPWriteInteger(image,image->columns);
   WBMPWriteInteger(image,image->rows);
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
@@ -387,7 +389,7 @@ static unsigned int WriteWBMPImage(const ImageInfo *image_info,Image *image)
     indexes=GetIndexes(image);
     bit=0;
     byte=0;
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       if (indexes[x] == polarity)
         byte|=0x1 << (7-bit);

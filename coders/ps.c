@@ -185,12 +185,10 @@ static Image *ReadPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   size_t
     count;
 
-  unsigned int
-    height,
-    width;
-
   unsigned long
-    filesize;
+    height,
+    filesize,
+    width;
 
   if (image_info->monochrome)
     {
@@ -809,7 +807,9 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     index;
 
   int
-    length,
+    length;
+
+  long
     x,
     y;
 
@@ -838,12 +838,14 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     bit,
     byte,
     count,
-    height,
     page,
     polarity,
     scene,
     status,
-    text_size,
+    text_size;
+
+  unsigned long
+    height,
     width;
 
   /*
@@ -869,7 +871,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
     height=image->rows;
     x=0;
     y=text_size;
-    FormatString(geometry,"%ux%u",image->columns,image->rows);
+    FormatString(geometry,"%lux%lu",image->columns,image->rows);
     if (image_info->page != (char *) NULL)
       (void) strcpy(geometry,image_info->page);
     else
@@ -960,10 +962,10 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
             Image
               *preview_image;
 
-            int
+            long
               y;
 
-            register int
+            register long
               x;
 
             /*
@@ -996,7 +998,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               (((preview_image->columns+7) >> 3)*preview_image->rows+35)/36);
             (void) WriteBlobString(image,buffer);
             count=0;
-            for (y=0; y < (int) image->rows; y++)
+            for (y=0; y < (long) image->rows; y++)
             {
               p=GetImagePixels(preview_image,0,y,preview_image->columns,1);
               if (p == (PixelPacket *) NULL)
@@ -1004,7 +1006,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               indexes=GetIndexes(preview_image);
               bit=0;
               byte=0;
-              for (x=0; x < (int) preview_image->columns; x++)
+              for (x=0; x < (long) preview_image->columns; x++)
               {
                 byte<<=1;
                 if (indexes[x] == polarity)
@@ -1070,16 +1072,16 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
       }
     FormatString(buffer,"%%%%Page:  1 %u\n",page++);
     (void) WriteBlobString(image,buffer);
-    FormatString(buffer,"%%%%PageBoundingBox: %d %d %d %d\n",x,y,
-      x+(int) width,y+(int) (height+text_size));
+    FormatString(buffer,"%%%%PageBoundingBox: %ld %ld %ld %ld\n",x,y,
+      x+(long) width,y+(long) (height+text_size));
     (void) WriteBlobString(image,buffer);
     if (x < bounds.x1)
       bounds.x1=x;
     if (y < bounds.y1)
       bounds.y1=y;
-    if ((x+(int) width-1) > bounds.x2)
+    if ((x+(long) width-1) > bounds.x2)
       bounds.x2=x+width-1;
-    if ((y+(int) (height+text_size)-1) > bounds.y2)
+    if ((y+(long) (height+text_size)-1) > bounds.y2)
       bounds.y2=y+(height+text_size)-1;
     attribute=GetImageAttribute(image,"label");
     if (attribute != (ImageAttribute *) NULL)
@@ -1117,7 +1119,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
         /*
           Dump DirectClass image.
         */
-        FormatString(buffer,"%u %u\n%d\n%d\n",image->columns,image->rows,
+        FormatString(buffer,"%lu %lu\n%d\n%d\n",image->columns,image->rows,
           (int) (image->storage_class == PseudoClass),
           (int) (image_info->compression == RunlengthEncodedCompression));
         (void) WriteBlobString(image,buffer);
@@ -1128,18 +1130,18 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
             /*
               Dump runlength-encoded DirectColor packets.
             */
-            for (y=0; y < (int) image->rows; y++)
+            for (y=0; y < (long) image->rows; y++)
             {
               p=GetImagePixels(image,0,y,image->columns,1);
               if (p == (PixelPacket *) NULL)
                 break;
               pixel=(*p);
               length=255;
-              for (x=0; x < (int) image->columns; x++)
+              for (x=0; x < (long) image->columns; x++)
               {
                 if ((p->red == pixel.red) && (p->green == pixel.green) &&
                     (p->blue == pixel.blue) && (p->opacity == pixel.opacity) &&
-                    (length < 255) && (x < (int) (image->columns-1)))
+                    (length < 255) && (x < (long) (image->columns-1)))
                   length++;
                 else
                   {
@@ -1172,12 +1174,12 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
               Dump uncompressed DirectColor packets.
             */
             i=0;
-            for (y=0; y < (int) image->rows; y++)
+            for (y=0; y < (long) image->rows; y++)
             {
               p=GetImagePixels(image,0,y,image->columns,1);
               if (p == (PixelPacket *) NULL)
                 break;
-              for (x=0; x < (int) image->columns; x++)
+              for (x=0; x < (long) image->columns; x++)
               {
                 if (image->matte && (p->opacity == TransparentOpacity))
                   (void) strcpy(buffer,"ffffff");
@@ -1214,12 +1216,12 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 Dump image as grayscale.
               */
               i++;
-              for (y=0; y < (int) image->rows; y++)
+              for (y=0; y < (long) image->rows; y++)
               {
                 p=GetImagePixels(image,0,y,image->columns,1);
                 if (p == (PixelPacket *) NULL)
                   break;
-                for (x=0; x < (int) image->columns; x++)
+                for (x=0; x < (long) image->columns; x++)
                 {
                   FormatString(buffer,"%02lx",DownScale(Intensity(*p)));
                   (void) WriteBlobString(image,buffer);
@@ -1249,7 +1251,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 polarity=
                   Intensity(image->colormap[1]) > Intensity(image->colormap[0]);
               count=0;
-              for (y=0; y < (int) image->rows; y++)
+              for (y=0; y < (long) image->rows; y++)
               {
                 p=GetImagePixels(image,0,y,image->columns,1);
                 if (p == (PixelPacket *) NULL)
@@ -1257,7 +1259,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 indexes=GetIndexes(image);
                 bit=0;
                 byte=0;
-                for (x=0; x < (int) image->columns; x++)
+                for (x=0; x < (long) image->columns; x++)
                 {
                   byte<<=1;
                   if (indexes[x] == polarity)
@@ -1303,7 +1305,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
           /*
             Dump PseudoClass image.
           */
-          FormatString(buffer,"%u %u\n%d\n%d\n0\n",image->columns,image->rows,
+          FormatString(buffer,"%lu %lu\n%d\n%d\n0\n",image->columns,image->rows,
             (int) (image->storage_class == PseudoClass),
             (int) (image_info->compression == RunlengthEncodedCompression));
           (void) WriteBlobString(image,buffer);
@@ -1328,7 +1330,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 Dump runlength-encoded PseudoColor packets.
               */
               i=0;
-              for (y=0; y < (int) image->rows; y++)
+              for (y=0; y < (long) image->rows; y++)
               {
                 p=GetImagePixels(image,0,y,image->columns,1);
                 if (p == (PixelPacket *) NULL)
@@ -1336,10 +1338,10 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 indexes=GetIndexes(image);
                 index=(*indexes);
                 length=255;
-                for (x=0; x < (int) image->columns; x++)
+                for (x=0; x < (long) image->columns; x++)
                 {
                   if ((index == indexes[x]) && (length < 255) &&
-                      (x < ((int) image->columns-1)))
+                      (x < ((long) image->columns-1)))
                     length++;
                   else
                     {
@@ -1377,13 +1379,13 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 Dump uncompressed PseudoColor packets.
               */
               i=0;
-              for (y=0; y < (int) image->rows; y++)
+              for (y=0; y < (long) image->rows; y++)
               {
                 p=GetImagePixels(image,0,y,image->columns,1);
                 if (p == (PixelPacket *) NULL)
                   break;
                 indexes=GetIndexes(image);
-                for (x=0; x < (int) image->columns; x++)
+                for (x=0; x < (long) image->columns; x++)
                 {
                   FormatString(buffer,"%02x",indexes[x]);
                   (void) WriteBlobString(image,buffer);

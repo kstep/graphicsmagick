@@ -158,9 +158,9 @@ static Image *ReadTXTImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Initialize Image structure.
   */
-  image->columns=(unsigned int)
+  image->columns=
     ceil(((page.width*image->x_resolution)/dx_resolution)-0.5);
-  image->rows=(unsigned int)
+  image->rows=
     ceil(((page.height*image->y_resolution)/dy_resolution)-0.5);
   (void) QueryColorDatabase("#c0c0c0",&image->background_color);
   texture=(Image *) NULL;
@@ -344,10 +344,10 @@ static unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
   char
     buffer[MaxTextExtent];
 
-  int
+  long
     y;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -370,12 +370,12 @@ static unsigned int WriteTXTImage(const ImageInfo *image_info,Image *image)
       Convert MIFF to TXT raster pixels.
     */
     (void) TransformRGBImage(image,RGBColorspace);
-    for (y=0; y < (int) image->rows; y++)
+    for (y=0; y < (long) image->rows; y++)
     {
       p=GetImagePixels(image,0,y,image->columns,1);
       if (p == (PixelPacket *) NULL)
         break;
-      for (x=0; x < (int) image->columns; x++)
+      for (x=0; x < (long) image->columns; x++)
       {
         if (image->matte)
           {

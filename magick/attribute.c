@@ -245,8 +245,8 @@ static int ReadMSBShort(char **p,size_t *length)
   return(value);
 }
 
-static char *TraceClippingPath(char *blob,size_t length,unsigned int columns,
-  unsigned int rows)
+static char *TraceClippingPath(char *blob,size_t length,unsigned long columns,
+  unsigned long rows)
 {
   char
     *path,
@@ -600,15 +600,17 @@ static int GenerateEXIFAttribute(Image *image,const char *spec)
     *final;
 
   int
-    i,
     id,
-    index,
     level,
     morder,
     all;
 
   long
+    index,
     tag;
+
+  register long
+    i;
 
   size_t
     length;
@@ -631,7 +633,7 @@ static int GenerateEXIFAttribute(Image *image,const char *spec)
   final=AllocateString("");
   /* first see if there is any EXIF data available in the image */
   index=-1;
-  for (i=0; i < (int) image->generic_profiles; i++)
+  for (i=0; i < (long) image->generic_profiles; i++)
   {
     if ((LocaleCompare(image->generic_profile[i].name,"APP1") == 0) &&
       (image->generic_profile[i].length != 0))
@@ -686,7 +688,7 @@ static int GenerateEXIFAttribute(Image *image,const char *spec)
           n/=4;
           do
           {
-            for (i=(int) n-1; i >= 0; i--)
+            for (i=(long) n-1; i >= 0; i--)
             {
               c=(*key++);
               tag<<=4;

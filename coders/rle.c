@@ -142,13 +142,15 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
   int
     opcode,
     operand,
-    status,
+    status;
+
+  long
     y;
 
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -244,7 +246,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
             image);
         p=colormap;
         for (i=0; i < (long) number_colormaps; i++)
-          for (x=0; x < (int) map_length; x++)
+          for (x=0; x < (long) map_length; x++)
             *p++=XDownScale(ReadBlobLSBShort(image));
       }
     if (flags & 0x08)
@@ -350,7 +352,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
           for (i=0; i < (long) operand; i++)
           {
             pixel=ReadBlobByte(image);
-            if ((y < (int) image->rows) && ((x+i) < (long) image->columns))
+            if ((y < (long) image->rows) && ((x+i) < (long) image->columns))
               *p=pixel;
             p+=number_planes;
           }
@@ -371,7 +373,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
             x*number_planes+plane;
           for (i=0; i < (long) operand; i++)
           {
-            if ((y < (int) image->rows) && ((x+i) < (long) image->columns))
+            if ((y < (long) image->rows) && ((x+i) < (long) image->columns))
               *p=pixel;
             p+=number_planes;
           }
@@ -402,7 +404,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
         else
           if ((number_planes >= 3) && (number_colormaps >= 3))
             for (i=0; i < (long) number_pixels; i++)
-              for (x=0; x < (int) number_planes; x++)
+              for (x=0; x < (long) number_planes; x++)
               {
                 *p=colormap[x*map_length+(*p & mask)];
                 p++;
@@ -417,12 +419,12 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
           Convert raster image to DirectClass pixel packets.
         */
         p=rle_pixels;
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
           {
             q->red=UpScale(*p++);
             q->green=UpScale(*p++);
@@ -474,13 +476,13 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Convert raster image to PseudoClass pixel packets.
             */
-            for (y=0; y < (int) image->rows; y++)
+            for (y=0; y < (long) image->rows; y++)
             {
               q=SetImagePixels(image,0,y,image->columns,1);
               if (q == (PixelPacket *) NULL)
                 break;
               indexes=GetIndexes(image);
-              for (x=0; x < (int) image->columns; x++)
+              for (x=0; x < (long) image->columns; x++)
                 indexes[x]=(*p++);
               if (!SyncImagePixels(image))
                 break;
@@ -495,12 +497,12 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Image has a matte channel-- promote to DirectClass.
             */
-            for (y=0; y < (int) image->rows; y++)
+            for (y=0; y < (long) image->rows; y++)
             {
               q=SetImagePixels(image,0,y,image->columns,1);
               if (q == (PixelPacket *) NULL)
                 break;
-              for (x=0; x < (int) image->columns; x++)
+              for (x=0; x < (long) image->columns; x++)
               {
                 q->red=image->colormap[*p++].red;
                 q->green=image->colormap[*p++].green;

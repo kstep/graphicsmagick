@@ -661,8 +661,8 @@ MagickExport char *GetExecutionPath(const char *path)
 %
 %
 */
-MagickExport int GetGeometry(const char *image_geometry,int *x,int *y,
-  unsigned int *width,unsigned int *height)
+MagickExport int GetGeometry(const char *image_geometry,long *x,long *y,
+  unsigned long *width,unsigned long *height)
 {
   char
     geometry[MaxTextExtent];
@@ -676,10 +676,10 @@ MagickExport int GetGeometry(const char *image_geometry,int *x,int *y,
   /*
     Ensure the image geometry is valid.
   */
-  assert(x != (int *) NULL);
-  assert(y != (int *) NULL);
-  assert(width != (unsigned int *) NULL);
-  assert(height != (unsigned int *) NULL);
+  assert(x != (long *) NULL);
+  assert(y != (long *) NULL);
+  assert(width != (unsigned long *) NULL);
+  assert(height != (unsigned long *) NULL);
   if ((image_geometry == (char *) NULL) || (*image_geometry == '\0'))
     return(NoValue);
   /*
@@ -1680,7 +1680,7 @@ MagickExport void LocaleUpper(char *string)
 %
 %  The format of the MultilineCenus method is:
 %
-%      int MultilineCensus(const char *label)
+%      unsigned long MultilineCensus(const char *label)
 %
 %  A description of each parameter follows.
 %
@@ -1688,9 +1688,9 @@ MagickExport void LocaleUpper(char *string)
 %
 %
 */
-MagickExport int MultilineCensus(const char *label)
+MagickExport unsigned long MultilineCensus(const char *label)
 {
-  int
+  long
     number_lines;
 
   /*
@@ -1723,8 +1723,8 @@ MagickExport int MultilineCensus(const char *label)
 %
 %  The format of the ParseGeometry method is:
 %
-%      int ParseGeometry(const char *geometry,int *x,int *y,unsigned int *width,
-%        unsigned int *height)
+%      int ParseGeometry(const char *geometry,long *x,long *y,
+%        unsigned long *width,unsigned long *height)
 %
 %  A description of each parameter follows:
 %
@@ -1742,8 +1742,8 @@ MagickExport int MultilineCensus(const char *label)
 %
 %
 */
-MagickExport int ParseGeometry(const char *geometry,int *x,int *y,
-  unsigned int *width,unsigned int *height)
+MagickExport int ParseGeometry(const char *geometry,long *x,long *y,
+  unsigned long *width,unsigned long *height)
 {
   char
     *p;
@@ -1754,6 +1754,18 @@ MagickExport int ParseGeometry(const char *geometry,int *x,int *y,
   RectangleInfo
     bounds;
 
+  /*
+    Ensure the geometry is valid.
+  */
+  assert(x != (long *) NULL);
+  assert(y != (long *) NULL);
+  assert(width != (unsigned long *) NULL);
+  assert(height != (unsigned long *) NULL);
+  if ((geometry == (char *) NULL) || (*geometry == '\0'))
+    return(NoValue);
+  /*
+    Parse widthxheight{+-}x{+-}y
+  */
   mask=NoValue;
   if (geometry == (const char *) NULL)
     return(mask);
@@ -1772,11 +1784,11 @@ MagickExport int ParseGeometry(const char *geometry,int *x,int *y,
       /*
         Parse width.
       */
-      bounds.width=(unsigned int) strtol(p,&q,10);
+      bounds.width=(unsigned long) strtol(p,&q,10);
       if ((*q == 'x') || (*q == 'X'))
         p=q;
       else
-        bounds.width=(unsigned int) strtod(p,&p);
+        bounds.width=(unsigned long) strtod(p,&p);
       mask|=WidthValue;
     }
   if ((*p == 'x') || (*p == 'X'))
@@ -1796,13 +1808,13 @@ MagickExport int ParseGeometry(const char *geometry,int *x,int *y,
       if (*p == '-')
         {
           p++;
-          bounds.x=(int) -strtod(p,&p);
+          bounds.x=(-strtod(p,&p));
           mask|=XNegative;
         }
       else
         {
           p++;
-          bounds.x=(int) strtod(p,&p);
+          bounds.x=strtod(p,&p);
         }
       mask|=XValue;
       if ((*p == '+') || (*p == '-'))
@@ -1813,13 +1825,13 @@ MagickExport int ParseGeometry(const char *geometry,int *x,int *y,
           if (*p == '-')
             {
               p++;
-              bounds.y=(int) -strtod(p,&p);
+              bounds.y=(-strtod(p,&p));
               mask|=YNegative;
             }
           else
             {
               p++;
-              bounds.y=(int) strtod(p,&p);
+              bounds.y=strtod(p,&p);
             }
           mask|=YValue;
         }
@@ -2650,7 +2662,7 @@ static void StoreToken(TokenInfo *token_info,char *string,long max_token_length,
 }
 
 MagickExport int Tokenizer(TokenInfo *token_info,unsigned flag,char *token,
-  int max_token_length,char *line,char *white,char *break_set,char *quote,
+  long max_token_length,char *line,char *white,char *break_set,char *quote,
   char escape,char *breaker,int *next,char *quoted)
 {
   char

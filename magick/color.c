@@ -548,13 +548,13 @@ MagickExport unsigned long GetNumberColors(Image *image,FILE *file)
   CubeInfo
     *cube_info;
 
-  int
+  long
     y;
 
   NodeInfo
     *node_info;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -584,12 +584,12 @@ MagickExport unsigned long GetNumberColors(Image *image,FILE *file)
         "Memory allocation failed");
       return(0);
     }
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       return(False);
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       /*
         Start at the root and proceed level by level.
@@ -862,10 +862,10 @@ MagickExport unsigned int IsMonochromeImage(Image *image)
 */
 MagickExport unsigned int IsOpaqueImage(Image *image)
 {
-  int
+  long
     y;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -878,12 +878,12 @@ MagickExport unsigned int IsOpaqueImage(Image *image)
   assert(image->signature == MagickSignature);
   if (!image->matte)
     return(True);
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       return(True);
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       if (p->opacity != OpaqueOpacity)
         return(False);
@@ -927,13 +927,13 @@ MagickExport unsigned int IsPseudoClass(Image *image)
   CubeInfo
     *cube_info;
 
-  int
+  long
     y;
 
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     x;
 
   register NodeInfo
@@ -966,12 +966,12 @@ MagickExport unsigned int IsPseudoClass(Image *image)
   if (cube_info == (CubeInfo *) NULL)
     ThrowBinaryException(ResourceLimitWarning,"Unable to determine image class",
       "Memory allocation failed");
-  for (y=0; (y < (int) image->rows) && (cube_info->colors <= 256); y++)
+  for (y=0; (y < (long) image->rows) && (cube_info->colors <= 256); y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       return(False);
-    for (x=0; (x < (int) image->columns) && (cube_info->colors <= 256); x++)
+    for (x=0; (x < (long) image->columns) && (cube_info->colors <= 256); x++)
     {
       /*
         Start at the root and proceed level by level.
@@ -1037,13 +1037,13 @@ MagickExport unsigned int IsPseudoClass(Image *image)
       if (image->colormap == (PixelPacket *) NULL)
         ThrowBinaryException(ResourceLimitWarning,
           "Unable to determine image class","Memory allocation failed");
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (long) image->rows; y++)
       {
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
         indexes=GetIndexes(image);
-        for (x=0; x < (int) image->columns; x++)
+        for (x=0; x < (long) image->columns; x++)
         {
           /*
             Start at the root and proceed level by level.
@@ -1516,7 +1516,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
       {
         if (LocaleCompare((char *) keyword,"blue") == 0)
           {
-            color_list->color.blue=UpScale(atoi(token));
+            color_list->color.blue=UpScale(atol(token));
             break;
           }
         break;
@@ -1542,7 +1542,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
       {
         if (LocaleCompare((char *) keyword,"green") == 0)
           {
-            color_list->color.green=UpScale(atoi(token));
+            color_list->color.green=UpScale(atol(token));
             break;
           }
         break;
@@ -1562,7 +1562,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
       {
         if (LocaleCompare((char *) keyword,"opacity") == 0)
           {
-            color_list->color.opacity=UpScale(atoi(token));
+            color_list->color.opacity=UpScale(atol(token));
             break;
           }
         break;
@@ -1572,7 +1572,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
       {
         if (LocaleCompare((char *) keyword,"red") == 0)
           {
-            color_list->color.red=UpScale(atoi(token));
+            color_list->color.red=UpScale(atol(token));
             break;
           }
         break;
@@ -1621,11 +1621,11 @@ static unsigned int ReadConfigurationFile(const char *basename,
 %
 */
 MagickExport IndexPacket ValidateColormapIndex(Image *image,
-  const unsigned int index)
+  const unsigned long index)
 {
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  if ((unsigned long) index < image->colors)
+  if (index < image->colors)
     return((IndexPacket) index);
   ThrowException(&image->exception,CorruptImageWarning,
     "invalid colormap index",image->filename);

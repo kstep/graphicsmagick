@@ -1061,7 +1061,7 @@ MagickExport Image *ReadPICTImage(const ImageInfo *image_info,
   Image
     *image;
 
-  int
+  long
     depth,
     status,
     y;
@@ -1081,7 +1081,7 @@ MagickExport Image *ReadPICTImage(const ImageInfo *image_info,
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     x;
 
   register PixelPacket

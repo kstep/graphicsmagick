@@ -249,12 +249,13 @@ static unsigned int Classify(Image *image,short **extrema,
     red;
 
   int
-    count,
-    y;
+    count;
 
   long
     j,
-    k;
+    k,
+    y;
+
 
   PixelPacket
     *colormap;
@@ -265,11 +266,9 @@ static unsigned int Classify(Image *image,short **extrema,
   register IndexPacket
     *indexes;
 
-  register int
-    x;
-
   register long
-    i;
+    i,
+    x;
 
   register PixelPacket
     *p,
@@ -342,12 +341,12 @@ static unsigned int Classify(Image *image,short **extrema,
     Count the pixels for each cluster.
   */
   count=0;
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
         if (((int) DownScale(p->red) >= (cluster->red.left-SafeMargin)) &&
@@ -493,13 +492,13 @@ static unsigned int Classify(Image *image,short **extrema,
   /*
     Do course grain storage_class.
   */
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       for (cluster=head; cluster != (Cluster *) NULL; cluster=cluster->next)
         if (((int) DownScale(q->red) >= (cluster->red.left-SafeMargin)) &&
@@ -828,10 +827,10 @@ static void DerivativeHistogram(const double *histogram,double *derivative)
 */
 static void InitializeHistogram(Image *image,long **histogram)
 {
-  int
+  long
     y;
 
-  register int
+  register long
     i,
     x;
 
@@ -847,12 +846,12 @@ static void InitializeHistogram(Image *image,long **histogram)
     histogram[Green][i]=0;
     histogram[Blue][i]=0;
   }
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       histogram[Red][DownScale(p->red)]++;
       histogram[Green][DownScale(p->green)]++;
@@ -916,7 +915,7 @@ static void MeanStability(register IntervalTree *node)
       register double
         sum;
 
-      register int
+      register long
         count;
 
       sum=0.0;

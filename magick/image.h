@@ -73,11 +73,11 @@ typedef struct _PixelPacket
 
 typedef struct _RectangleInfo
 {
-  unsigned int
+  unsigned long
     width,
     height;
 
-  int
+  long
     x,
     y;
 } RectangleInfo;
@@ -155,11 +155,11 @@ typedef struct _ExceptionInfo
 
 typedef struct _FrameInfo
 {
-  unsigned int
+  unsigned long
     width,
     height;
 
-  int
+  long
     x,
     y,
     inner_bevel,
@@ -201,8 +201,10 @@ typedef struct _MontageInfo
   GravityType
     gravity;
 
+  unsigned long
+    border_width;
+
   unsigned int
-    border_width,
     shadow;
 
   CompositeOperator
@@ -288,7 +290,9 @@ typedef struct _Image
   unsigned int
     orphan,
     taint,
-    matte,
+    matte;
+
+  unsigned long
     columns,
     rows;
 
@@ -411,7 +415,7 @@ typedef struct _Image
   BlobInfo
     *blob;
 
-  unsigned int
+  unsigned long
     magick_columns,
     magick_rows;
 
@@ -595,8 +599,8 @@ extern MagickExport Image
   *BorderImage(Image *,const RectangleInfo *,ExceptionInfo *),
   *CharcoalImage(Image *,const double,const double,ExceptionInfo *),
   *ChopImage(Image *,const RectangleInfo *,ExceptionInfo *),
-  *CloneImage(Image *,const unsigned int,const unsigned int,const unsigned int,
-    ExceptionInfo *),
+  *CloneImage(Image *,const unsigned long,const unsigned long,
+    const unsigned int,ExceptionInfo *),
   *CoalesceImages(Image *,ExceptionInfo *),
   *ColorizeImage(Image *,const char *,const PixelPacket,ExceptionInfo *),
   *ConstituteImage(const unsigned int,const unsigned int,const char *,
@@ -615,7 +619,7 @@ extern MagickExport Image
   *GetNextImage(Image *),
   *GaussianBlurImage(Image *,const double,const double,ExceptionInfo *),
   *ImplodeImage(Image *,const double,ExceptionInfo *),
-  **ListToGroupImage(Image *,unsigned int *),
+  **ListToGroupImage(Image *,unsigned long *),
   *MagnifyImage(Image *,ExceptionInfo *),
   *MedianFilterImage(Image *,const double,ExceptionInfo *),
   *MinifyImage(Image *,ExceptionInfo *),
@@ -631,12 +635,12 @@ extern MagickExport Image
     int (*)(const Image *,const void *,const size_t),ExceptionInfo *),
   *ReduceNoiseImage(Image *,const double,ExceptionInfo *),
   *ReferenceImage(Image *),
-  *ResizeImage(Image *,const unsigned int,const unsigned int,const FilterTypes,
-    const double,ExceptionInfo *),
-  *RollImage(Image *,const int,const int,ExceptionInfo *),
+  *ResizeImage(Image *,const unsigned long,const unsigned long,
+    const FilterTypes,const double,ExceptionInfo *),
+  *RollImage(Image *,const long,const long,ExceptionInfo *),
   *RotateImage(Image *,const double,ExceptionInfo *),
-  *SampleImage(Image *,const unsigned int,const unsigned int,ExceptionInfo *),
-  *ScaleImage(Image *,const unsigned int,const unsigned int,ExceptionInfo *),
+  *SampleImage(Image *,const unsigned long,const unsigned long,ExceptionInfo *),
+  *ScaleImage(Image *,const unsigned long,const unsigned long,ExceptionInfo *),
   *ShadeImage(Image *,const unsigned int,double,double,ExceptionInfo *),
   *SharpenImage(Image *,const double,const double,ExceptionInfo *),
   *ShaveImage(Image *,const RectangleInfo *,ExceptionInfo *),
@@ -648,7 +652,7 @@ extern MagickExport Image
   *UnsharpMaskImage(Image *,const double,const double,const double,const double,
     ExceptionInfo *),
   *WaveImage(Image *,const double,const double,ExceptionInfo *),
-  *ZoomImage(Image *,const unsigned int,const unsigned int,ExceptionInfo *);
+  *ZoomImage(Image *,const unsigned long,const unsigned long,ExceptionInfo *);
 
 extern MagickExport ImageInfo
   *CloneImageInfo(const ImageInfo *);
@@ -658,10 +662,11 @@ extern MagickExport ImageType
 
 extern MagickExport IndexPacket
   *GetIndexes(const Image *),
-  ValidateColormapIndex(Image *,const unsigned int);
+  ValidateColormapIndex(Image *,const unsigned long);
 
 extern MagickExport int
-  ParseImageGeometry(const char *,int *,int *,unsigned int *,unsigned int *);
+  ParseImageGeometry(const char *,long *,long *,unsigned long *,
+    unsigned long *);
 
 extern MagickExport MagickInfo
   *GetMagickInfo(const char *,ExceptionInfo *exception),
@@ -672,12 +677,12 @@ extern MagickExport MontageInfo
   *CloneMontageInfo(const ImageInfo *,const MontageInfo *);
 
 extern MagickExport PixelPacket
-  *GetImagePixels(Image *,const int,const int,const unsigned int,
-    const unsigned int),
-  GetOnePixel(Image *,const int,const int),
+  *GetImagePixels(Image *,const long,const long,const unsigned long,
+    const unsigned long),
+  GetOnePixel(Image *,const long,const long),
   *GetPixels(const Image *),
-  *SetImagePixels(Image *,const int,const int,const unsigned int,
-    const unsigned int);
+  *SetImagePixels(Image *,const long,const long,const unsigned long,
+    const unsigned long);
 
 extern MagickExport RectangleInfo
   GetImageBoundingBox(Image *);
@@ -686,10 +691,10 @@ extern MagickExport unsigned int
   AllocateImageColormap(Image *,const unsigned long),
   AnimateImages(const ImageInfo *image_info,Image *image),
   ChannelImage(Image *,const ChannelType),
-  CompositeImage(Image *,const CompositeOperator,Image *,const int,const int),
+  CompositeImage(Image *,const CompositeOperator,Image *,const long,const long),
   ContrastImage(Image *,const unsigned int),
-  DispatchImage(Image *,const int,const int,const unsigned int,
-    const unsigned int,const char *,const StorageType,void *),
+  DispatchImage(Image *,const long,const long,const unsigned long,
+    const unsigned long,const char *,const StorageType,void *),
   DisplayImages(const ImageInfo *image_info,Image *image),
   EqualizeImage(Image *),
   GammaImage(Image *,const char *),

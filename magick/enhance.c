@@ -89,17 +89,17 @@ MagickExport unsigned int ContrastImage(Image *image,const unsigned int sharpen)
 #define SharpenContrastImageText  "  Sharpening image contrast...  "
 
   int
-    sign,
+    sign;
+
+  long
     y;
 
-  register int
+  register long
+    i,
     x;
 
   register PixelPacket
     *q;
-
-  register long
-    i;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -112,12 +112,12 @@ MagickExport unsigned int ContrastImage(Image *image,const unsigned int sharpen)
       /*
         Contrast enhance DirectClass image.
       */
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (long) image->rows; y++)
       {
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (int) image->columns; x++)
+        for (x=0; x < (long) image->columns; x++)
         {
           Contrast(sign,&q->red,&q->green,&q->blue);
           q++;
@@ -178,21 +178,21 @@ MagickExport unsigned int EqualizeImage(Image *image)
 #define EqualizeImageText  "  Equalizing image...  "
 
   int
-    j,
+    j;
+
+  long
     y;
 
   Quantum
     *equalize_map;
 
-  register int
+  register long
+    i,
     x;
 
   register PixelPacket
     *p,
     *q;
-
-  register long
-    i;
 
   unsigned int
     high,
@@ -217,14 +217,14 @@ MagickExport unsigned int EqualizeImage(Image *image)
   */
   for (i=0; i <= MaxRGB; i++)
     histogram[i]=0;
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
-      histogram[(int) Intensity(*p)]++;
+      histogram[Intensity(*p)]++;
       p++;
     }
   }
@@ -264,12 +264,12 @@ MagickExport unsigned int EqualizeImage(Image *image)
       /*
         Equalize DirectClass packets.
       */
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (long) image->rows; y++)
       {
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (int) image->columns; x++)
+        for (x=0; x < (long) image->columns; x++)
         {
           q->red=equalize_map[q->red];
           q->green=equalize_map[q->green];
@@ -337,18 +337,16 @@ MagickExport unsigned int GammaImage(Image *image,const char *gamma)
     opacity_gamma,
     red_gamma;
 
-  int
+  long
     count,
     y;
 
-  register int
+  register long
+    i,
     x;
 
   register PixelPacket
     *q;
-
-  register long
-    i;
 
   PixelPacket
     *gamma_map;
@@ -412,12 +410,12 @@ MagickExport unsigned int GammaImage(Image *image,const char *gamma)
       /*
         Gamma-correct DirectClass image.
       */
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (long) image->rows; y++)
       {
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (int) image->columns; x++)
+        for (x=0; x < (long) image->columns; x++)
         {
           q->red=gamma_map[q->red].red;
           q->green=gamma_map[q->green].green;
@@ -490,17 +488,15 @@ MagickExport unsigned int ModulateImage(Image *image,const char *modulate)
     percent_hue,
     percent_saturation;
 
-  int
+  long
     y;
 
-  register int
+  register long
+    i,
     x;
 
   register PixelPacket
     *q;
-
-  register long
-    i;
 
   /*
     Initialize gamma table.
@@ -524,12 +520,12 @@ MagickExport unsigned int ModulateImage(Image *image,const char *modulate)
       /*
         Modulate the color for a DirectClass image.
       */
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (long) image->rows; y++)
       {
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (int) image->columns; x++)
+        for (x=0; x < (long) image->columns; x++)
         {
           Modulate(percent_hue,percent_saturation,percent_brightness,
             &q->red,&q->green,&q->blue);
@@ -587,10 +583,10 @@ MagickExport unsigned int NegateImage(Image *image,const unsigned int grayscale)
 {
 #define NegateImageText  "  Negating the image colors...  "
 
-  int
+  long
     y;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -609,12 +605,12 @@ MagickExport unsigned int NegateImage(Image *image,const unsigned int grayscale)
       /*
         Negate DirectClass packets.
       */
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (long) image->rows; y++)
       {
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (int) image->columns; x++)
+        for (x=0; x < (long) image->columns; x++)
         {
           if (grayscale)
             if ((q->red != q->green) || (q->green != q->blue))
@@ -686,18 +682,18 @@ MagickExport unsigned int NormalizeImage(Image *image)
 #define NormalizeImageText  "  Normalizing image...  "
 
   int
-    *histogram,
-    y;
+    *histogram;
 
   long
     intensity,
-    threshold_intensity;
+    threshold_intensity,
+    y;
 
   Quantum
     gray_value,
     *normalize_map;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -726,12 +722,12 @@ MagickExport unsigned int NormalizeImage(Image *image)
   */
   for (i=0; i <= MaxRGB; i++)
     histogram[i]=0;
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       gray_value=(Quantum) Intensity(*p);
       histogram[gray_value]++;
@@ -801,12 +797,12 @@ MagickExport unsigned int NormalizeImage(Image *image)
       /*
         Normalize DirectClass image.
       */
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (long) image->rows; y++)
       {
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (int) image->columns; x++)
+        for (x=0; x < (long) image->columns; x++)
         {
           q->red=normalize_map[q->red];
           q->green=normalize_map[q->green];

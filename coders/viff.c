@@ -209,13 +209,15 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     *image;
 
   int
-    bit,
+    bit;
+
+  long
     y;
 
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -327,8 +329,8 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
       }
     for (i=0; i < 420; i++)
       (void) ReadBlobByte(image);
-    image->columns=(unsigned int) viff_info.rows;
-    image->rows=(unsigned int) viff_info.columns;
+    image->columns= viff_info.rows;
+    image->rows= viff_info.columns;
     image->depth=viff_info.x_bits_per_pixel <= 8 ? 8 : QuantumDepth;
     /*
       Verify that we can read this VIFF image.
@@ -406,7 +408,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
           case VFF_MAPTYP_DOUBLE: bytes_per_pixel=8; break;
           default: bytes_per_pixel=1; break;
         }
-        image->colors=(unsigned int) viff_info.map_columns;
+        image->colors=viff_info.map_columns;
         if (!AllocateImageColormap(image,image->colors))
           ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
             image);
@@ -428,15 +430,15 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
           {
             case VFF_MAPTYP_2_BYTE:
             {
-              MSBOrderShort((char *) viff_colormap,(unsigned int)
-                (bytes_per_pixel*image->colors*viff_info.map_rows));
+              MSBOrderShort((char *) viff_colormap,(bytes_per_pixel*
+                image->colors*viff_info.map_rows));
               break;
             }
             case VFF_MAPTYP_4_BYTE:
             case VFF_MAPTYP_FLOAT:
             {
-              MSBOrderLong((char *) viff_colormap,(unsigned int)
-                (bytes_per_pixel*image->colors*viff_info.map_rows));
+              MSBOrderLong((char *) viff_colormap,(bytes_per_pixel*
+                image->colors*viff_info.map_rows));
               break;
             }
             default: break;
@@ -502,15 +504,13 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
       {
         case VFF_TYP_2_BYTE:
         {
-          MSBOrderShort((char *) viff_pixels,(unsigned int)
-            (bytes_per_pixel*max_packets));
+          MSBOrderShort((char *) viff_pixels,bytes_per_pixel*max_packets);
           break;
         }
         case VFF_TYP_4_BYTE:
         case VFF_TYP_FLOAT:
         {
-          MSBOrderLong((char *) viff_pixels,(unsigned int)
-            (bytes_per_pixel*max_packets));
+          MSBOrderLong((char *) viff_pixels,bytes_per_pixel*max_packets);
           break;
         }
         default: break;
@@ -595,8 +595,8 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
     image->matte=(viff_info.number_data_bands == 4);
     image->storage_class=
       (viff_info.number_data_bands < 3 ? PseudoClass : DirectClass);
-    image->columns=(unsigned int) viff_info.rows;
-    image->rows=(unsigned int) viff_info.columns;
+    image->columns= viff_info.rows;
+    image->rows= viff_info.columns;
     /*
       Convert VIFF raster image to pixel packets.
     */
@@ -613,13 +613,13 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
         if (image->colors >= 2)
           polarity=Intensity(image->colormap[0]) <
             Intensity(image->colormap[1]);
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
-          for (x=0; x < (int) (image->columns-7); x+=8)
+          for (x=0; x < (long) (image->columns-7); x+=8)
           {
             for (bit=0; bit < 8; bit++)
               indexes[x+bit]=(IndexPacket)
@@ -642,13 +642,13 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
       }
     else
       if (image->storage_class == PseudoClass)
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
             indexes[x]=(*p++);
           if (!SyncImagePixels(image))
             break;
@@ -662,12 +662,12 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
             Convert DirectColor scanline.
           */
           number_pixels=image->columns*image->rows;
-          for (y=0; y < (int) image->rows; y++)
+          for (y=0; y < (long) image->rows; y++)
           {
             q=SetImagePixels(image,0,y,image->columns,1);
             if (q == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (int) image->columns; x++)
+            for (x=0; x < (long) image->columns; x++)
             {
               q->red=UpScale(*p);
               q->green=UpScale(*(p+number_pixels));
@@ -877,13 +877,13 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
   ImageAttribute
     *attribute;
 
-  int
+  long
     y;
 
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -1043,12 +1043,12 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
           Convert DirectClass packet to VIFF RGB pixel.
         */
         number_pixels=image->columns*image->rows;
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           p=GetImagePixels(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
             break;
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
           {
             *q=DownScale(p->red);
             *(q+number_pixels)=DownScale(p->green);
@@ -1089,13 +1089,13 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
             Convert PseudoClass packet to VIFF colormapped pixels.
           */
           q=viff_pixels;
-          for (y=0; y < (int) image->rows; y++)
+          for (y=0; y < (long) image->rows; y++)
           {
             p=GetImagePixels(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
             indexes=GetIndexes(image);
-            for (x=0; x < (int) image->columns; x++)
+            for (x=0; x < (long) image->columns; x++)
               *q++=indexes[x];
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
@@ -1121,7 +1121,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
             if (image->colors == 2)
               polarity=
                 Intensity(image->colormap[0]) > Intensity(image->colormap[1]);
-            for (y=0; y < (int) image->rows; y++)
+            for (y=0; y < (long) image->rows; y++)
             {
               p=GetImagePixels(image,0,y,image->columns,1);
               if (p == (PixelPacket *) NULL)
@@ -1129,7 +1129,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
               indexes=GetIndexes(image);
               bit=0;
               byte=0;
-              for (x=0; x < (int) image->columns; x++)
+              for (x=0; x < (long) image->columns; x++)
               {
                 byte>>=1;
                 if (indexes[x] == polarity)
@@ -1154,12 +1154,12 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
             /*
               Convert PseudoClass packet to VIFF grayscale pixel.
             */
-            for (y=0; y < (int) image->rows; y++)
+            for (y=0; y < (long) image->rows; y++)
             {
               p=GetImagePixels(image,0,y,image->columns,1);
               if (p == (PixelPacket *) NULL)
                 break;
-              for (x=0; x < (int) image->columns; x++)
+              for (x=0; x < (long) image->columns; x++)
               {
                 *q++=(unsigned char) Intensity(*p);
                 p++;

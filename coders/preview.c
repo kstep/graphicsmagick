@@ -186,7 +186,9 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
     *clone_info;
 
   int
-    argc,
+    argc;
+
+  long
     x,
     y;
 
@@ -196,13 +198,15 @@ static unsigned int WritePreviewImage(const ImageInfo *image_info,Image *image)
   MontageInfo
     *montage_info;
 
-  register int
+  register long
     i;
 
   unsigned int
     colors,
+    status;
+
+  unsigned long
     height,
-    status,
     width;
 
   /*

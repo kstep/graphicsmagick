@@ -74,9 +74,9 @@ typedef struct
 	}CUTPalHeader;
 
 
-static void InsertRow(unsigned char *p,int y,Image *image)
+static void InsertRow(unsigned char *p,long y,Image *image)
 {
-int bit,x;
+int bit; long x;
 register PixelPacket *q;
 IndexPacket index;
 register IndexPacket *indexes;
@@ -90,7 +90,7 @@ register IndexPacket *indexes;
              if (q == (PixelPacket *) NULL)
                    break;
              indexes=GetIndexes(image);
-             for (x=0; x < ((int) image->columns-7); x+=8)
+             for (x=0; x < ((long) image->columns-7); x+=8)
                 {
                 for (bit=0; bit < 8; bit++)
                    {
@@ -102,7 +102,7 @@ register IndexPacket *indexes;
                 }
              if ((image->columns % 8) != 0)
                  {
-                 for (bit=0; bit < (int) (image->columns % 8); bit++)
+                 for (bit=0; bit < (long) (image->columns % 8); bit++)
                      {
                      index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
                      indexes[x+bit]=index;
@@ -123,7 +123,7 @@ register IndexPacket *indexes;
            if (q == (PixelPacket *) NULL)
                  break;
            indexes=GetIndexes(image);
-           for (x=0; x < ((int) image->columns-1); x+=2)
+           for (x=0; x < ((long) image->columns-1); x+=2)
                  {
                  index=ValidateColormapIndex(image,(*p >> 6) & 0x3);
                  indexes[x]=index;
@@ -174,7 +174,7 @@ register IndexPacket *indexes;
            if (q == (PixelPacket *) NULL)
                  break;
            indexes=GetIndexes(image);
-           for (x=0; x < ((int) image->columns-1); x+=2)
+           for (x=0; x < ((long) image->columns-1); x+=2)
                  {
                  index=ValidateColormapIndex(image,(*p >> 4) & 0xf);
 		 indexes[x]=index;
@@ -204,7 +204,7 @@ register IndexPacket *indexes;
            if (q == (PixelPacket *) NULL) break;
            indexes=GetIndexes(image);
 
-	   for (x=0; x < (int) image->columns; x++)
+	   for (x=0; x < (long) image->columns; x++)
                 {
                 index=ValidateColormapIndex(image,*p);
                 indexes[x]=index;
@@ -231,10 +231,10 @@ int UpScale16;
 /*This procedure computes number of colors in Grayed R[i]=G[i]=B[i] image*/
 UpScale16=UpScale(16);
 MaxColor=0;
- for (y=0; y < (int)image->rows; y++)  
+ for (y=0; y < (long)image->rows; y++)  
 	{
 	q=SetImagePixels(image,0,y,image->columns,1);  
-	for (x=0; x < (int)image->columns; x++)  
+	for (x=0; x < (long)image->columns; x++)  
              {  	   
 	     if(MaxColor<q->red) MaxColor=q->red;
 	     if(MaxColor>=UpScale16) return(255);	
@@ -281,11 +281,12 @@ static Image *ReadCUTImage(const ImageInfo *image_info,ExceptionInfo *exception)
 {
   Image *image,*palette;
   ImageInfo *clone_info;
-  unsigned int status,EncodedByte;
+  unsigned int status;
+  unsigned long EncodedByte;
   unsigned char RunCount,RunValue,RunCountMasked;
   CUTHeader  Header;
   CUTPalHeader PalHeader;
-  int i,j;
+  long i,j;
   long ldblk;
   unsigned char *BImgBuff=NULL,*ptrB;
   PixelPacket *q;
@@ -345,7 +346,7 @@ CUT_KO:  ThrowReaderException(CorruptImageWarning,"Not a CUT image file",image);
  if ((clone_info=CloneImageInfo(image_info)) == NULL) goto NoPalette;
  
  
- i=(int) strlen(clone_info->filename);
+ i=(long) strlen(clone_info->filename);
  j=i;
  while(--i>0)
         {
@@ -414,7 +415,7 @@ ErasePalette:
    
    for(i=0;i<=(int) PalHeader.MaxIndex;i++)
            {      /*this may be wrong- I don't know why is palette such strange*/
-	   j=(int) TellBlob(palette);
+	   j=(long) TellBlob(palette);
 	   if((j % 512)>512-6)
 	       {
 	       j=((j / 512)+1)*512;
@@ -455,7 +456,7 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
 				image)
            }	   
    
-   for (i=0; i < (int)image->colors; i++)
+   for (i=0; i < (long)image->colors; i++)
 	   {
 	   image->colormap[i].red=UpScale(i);
 	   image->colormap[i].green=UpScale(i);
@@ -474,7 +475,7 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
       EncodedByte=ReadBlobLSBShort(image);
 
       ptrB=BImgBuff;
-      j=(int) ldblk;
+      j=ldblk;
 
       RunCount=ReadBlobByte(image);
       RunCountMasked=RunCount & 0x7F;
@@ -519,7 +520,7 @@ if(palette==NULL)
       {
       if(GetCutColors(image)==2)
          {
-	 for (i=0; i < (int)image->colors; i++)
+	 for (i=0; i < (long)image->colors; i++)
 	   {
 	   j=UpScale(i);
 	   if(image->colormap[i].red!=j) goto Finish;
@@ -528,10 +529,10 @@ if(palette==NULL)
 	   }
      
 	 image->colormap[1].red=image->colormap[1].green=image->colormap[1].blue=MaxRGB;
-	 for (i=0; i < (int)image->rows; i++)  
+	 for (i=0; i < (long)image->rows; i++)  
 	   {
 	   q=SetImagePixels(image,0,i,image->columns,1);  
-	   for (j=0; j < (int)image->columns; j++)  
+	   for (j=0; j < (long)image->columns; j++)  
              {  	   
 	     if(q->red==UpScale(1))
 	        {

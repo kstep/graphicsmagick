@@ -182,8 +182,10 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     bounds;
 
   unsigned int
+    portrait;
+
+  unsigned long
     height,
-    portrait,
     width;
 
   if (image_info->monochrome)
@@ -505,12 +507,10 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   ImageAttribute
     *attribute;
 
-  int
+  long
+    count,
     x,
     y;
-
-  long
-    count;
 
   Image
     encode_image,
@@ -547,11 +547,9 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     *pixels;
 
   unsigned int
-    height,
     scene,
     status,
-    text_size,
-    width;
+    text_size;
 
   unsigned long
     info_id,
@@ -559,6 +557,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     object,
     pages_id,
     root_id,
+    height,
+    width,
     *xref;
 
   /*
@@ -725,7 +725,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     height=image->rows;
     x=0;
     y=text_size;
-    FormatString(geometry,"%ux%u",image->columns,image->rows);
+    FormatString(geometry,"%lux%lu",image->columns,image->rows);
     if (image_info->page != (char *) NULL)
       (void) strcpy(geometry,image_info->page);
     else
@@ -898,9 +898,9 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       default: FormatString(buffer,CFormat,"RunLengthDecode"); break;
     }
     (void) WriteBlobString(image,buffer);
-    FormatString(buffer,"/Width %u\n",image->columns);
+    FormatString(buffer,"/Width %lu\n",image->columns);
     (void) WriteBlobString(image,buffer);
-    FormatString(buffer,"/Height %u\n",image->rows);
+    FormatString(buffer,"/Height %lu\n",image->rows);
     (void) WriteBlobString(image,buffer);
     FormatString(buffer,"/ColorSpace %u 0 R\n",object+2);
     (void) WriteBlobString(image,buffer);
@@ -976,12 +976,12 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               Dump runoffset encoded pixels.
             */
             q=pixels;
-            for (y=0; y < (int) image->rows; y++)
+            for (y=0; y < (long) image->rows; y++)
             {
               p=GetImagePixels(image,0,y,image->columns,1);
               if (p == (PixelPacket *) NULL)
                 break;
-              for (x=0; x < (int) image->columns; x++)
+              for (x=0; x < (long) image->columns; x++)
               {
                 if (image->matte && (p->opacity == TransparentOpacity))
                   {
@@ -1023,12 +1023,12 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               Dump uncompressed DirectColor packets.
             */
             Ascii85Initialize(image);
-            for (y=0; y < (int) image->rows; y++)
+            for (y=0; y < (long) image->rows; y++)
             {
               p=GetImagePixels(image,0,y,image->columns,1);
               if (p == (PixelPacket *) NULL)
                 break;
-              for (x=0; x < (int) image->columns; x++)
+              for (x=0; x < (long) image->columns; x++)
               {
                 if (image->matte && (p->opacity == TransparentOpacity))
                   {
@@ -1074,13 +1074,13 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 Dump Runlength encoded pixels.
               */
               q=pixels;
-              for (y=0; y < (int) image->rows; y++)
+              for (y=0; y < (long) image->rows; y++)
               {
                 p=GetImagePixels(image,0,y,image->columns,1);
                 if (p == (PixelPacket *) NULL)
                   break;
                 indexes=GetIndexes(image);
-                for (x=0; x < (int) image->columns; x++)
+                for (x=0; x < (long) image->columns; x++)
                   *q++=indexes[x];
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
@@ -1107,13 +1107,13 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 Dump uncompressed PseudoColor packets.
               */
               Ascii85Initialize(image);
-              for (y=0; y < (int) image->rows; y++)
+              for (y=0; y < (long) image->rows; y++)
               {
                 p=GetImagePixels(image,0,y,image->columns,1);
                 if (p == (PixelPacket *) NULL)
                   break;
                 indexes=GetIndexes(image);
-                for (x=0; x < (int) image->columns; x++)
+                for (x=0; x < (long) image->columns; x++)
                   Ascii85Encode(image,indexes[x]);
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))
@@ -1192,9 +1192,9 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
       default: FormatString(buffer,CFormat,"RunLengthDecode"); break;
     }
     (void) WriteBlobString(image,buffer);
-    FormatString(buffer,"/Width %u\n",tile_image->columns);
+    FormatString(buffer,"/Width %lu\n",tile_image->columns);
     (void) WriteBlobString(image,buffer);
-    FormatString(buffer,"/Height %u\n",tile_image->rows);
+    FormatString(buffer,"/Height %lu\n",tile_image->rows);
     (void) WriteBlobString(image,buffer);
     FormatString(buffer,"/ColorSpace %u 0 R\n",object-1);
     (void) WriteBlobString(image,buffer);
@@ -1277,12 +1277,12 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               Dump runoffset encoded pixels.
             */
             q=pixels;
-            for (y=0; y < (int) tile_image->rows; y++)
+            for (y=0; y < (long) tile_image->rows; y++)
             {
               p=GetImagePixels(tile_image,0,y,tile_image->columns,1);
               if (p == (PixelPacket *) NULL)
                 break;
-              for (x=0; x < (int) tile_image->columns; x++)
+              for (x=0; x < (long) tile_image->columns; x++)
               {
                 if (tile_image->matte && (p->opacity == TransparentOpacity))
                   {
@@ -1320,12 +1320,12 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
               Dump uncompressed DirectColor packets.
             */
             Ascii85Initialize(image);
-            for (y=0; y < (int) tile_image->rows; y++)
+            for (y=0; y < (long) tile_image->rows; y++)
             {
               p=GetImagePixels(tile_image,0,y,tile_image->columns,1);
               if (p == (PixelPacket *) NULL)
                 break;
-              for (x=0; x < (int) tile_image->columns; x++)
+              for (x=0; x < (long) tile_image->columns; x++)
               {
                 if (tile_image->matte && (p->opacity == TransparentOpacity))
                   {
@@ -1371,13 +1371,13 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 Dump Runlength encoded pixels.
               */
               q=pixels;
-              for (y=0; y < (int) tile_image->rows; y++)
+              for (y=0; y < (long) tile_image->rows; y++)
               {
                 p=GetImagePixels(tile_image,0,y,tile_image->columns,1);
                 if (p == (PixelPacket *) NULL)
                   break;
                 indexes=GetIndexes(tile_image);
-                for (x=0; x < (int) tile_image->columns; x++)
+                for (x=0; x < (long) tile_image->columns; x++)
                   *q++=indexes[x];
               }
               if (compression == ZipCompression)
@@ -1401,13 +1401,13 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
                 Dump uncompressed PseudoColor packets.
               */
               Ascii85Initialize(image);
-              for (y=0; y < (int) tile_image->rows; y++)
+              for (y=0; y < (long) tile_image->rows; y++)
               {
                 p=GetImagePixels(tile_image,0,y,tile_image->columns,1);
                 if (p == (PixelPacket *) NULL)
                   break;
                 indexes=GetIndexes(tile_image);
-                for (x=0; x < (int) tile_image->columns; x++)
+                for (x=0; x < (long) tile_image->columns; x++)
                   Ascii85Encode(image,indexes[x]);
               }
               Ascii85Flush(image);

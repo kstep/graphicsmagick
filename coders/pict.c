@@ -336,7 +336,7 @@ static unsigned int
 */
 
 static unsigned char *ExpandBuffer(unsigned char *pixels,
-  unsigned long *bytes_per_line,const int bits_per_pixel)
+  unsigned long *bytes_per_line,const long bits_per_pixel)
 {
   register long
     i;
@@ -404,15 +404,11 @@ static unsigned char *ExpandBuffer(unsigned char *pixels,
 }
 
 static unsigned char *DecodeImage(const ImageInfo *image_info,Image *blob,
-  Image *image,int bytes_per_line,const int bits_per_pixel)
+  Image *image,unsigned long bytes_per_line,const long bits_per_pixel)
 {
-  int
-    bytes_per_pixel,
-    width,
-    y;
-
   long
-    j;
+    j,
+    y;
 
   register long
     i;
@@ -432,8 +428,10 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *blob,
     row_bytes;
 
   unsigned long
+    bytes_per_pixel,
     number_pixels,
-    scanline_length;
+    scanline_length,
+    width;
 
   /*
     Determine pixel buffer size.
@@ -469,7 +467,7 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *blob,
       /*
         Pixels are already uncompressed.
       */
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (long) image->rows; y++)
       {
         q=pixels+y*width;
         number_pixels=bytes_per_line;
@@ -483,7 +481,7 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *blob,
   /*
     Uncompress RLE pixels into uncompressed pixel buffer.
   */
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     q=pixels+y*width;
     if ((bytes_per_line > 250) || (bits_per_pixel > 8))
@@ -573,7 +571,7 @@ static size_t EncodeImage(Image *image,const unsigned char *scanline,
     *q;
 
   size_t
-    packets;
+    length;
 
   unsigned char
     index;
@@ -657,25 +655,25 @@ static size_t EncodeImage(Image *image,const unsigned char *scanline,
   if (count > 0)
     *q++=count-1;
   /*
-    Write the number of and the packed packets.
+    Write the number of and the packed length.
   */
-  packets=(q-pixels);
+  length=(q-pixels);
   if (bytes_per_line > 250)
     {
-      (void) WriteBlobMSBShort(image,(unsigned short) packets);
-      packets+=2;
+      (void) WriteBlobMSBShort(image,length);
+      length+=2;
     }
   else
     {
-      (void) WriteBlobByte(image,(int) packets);
-      packets++;
+      (void) WriteBlobByte(image,length);
+      length++;
     }
   while (q != pixels)
   {
     q--;
     (void) WriteBlobByte(image,*q);
   }
-  return(packets);
+  return(length);
 }
 
 #if !defined(macintosh)
@@ -728,7 +726,9 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
     code,
     flags,
     j,
-    version,
+    version;
+
+  long
     y;
 
   PICTRectangle
@@ -740,7 +740,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -963,8 +963,8 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             */
             tile_image=image;
             if ((frame.left != 0) || (frame.top != 0) ||
-                (frame.right != (int) image->columns) ||
-                (frame.bottom != (int) image->rows) || jpeg)
+                (frame.right != (long) image->columns) ||
+                (frame.bottom != (long) image->rows) || jpeg)
               tile_image=CloneImage(image,frame.right-frame.left,
                 frame.bottom-frame.top,True,exception);
             if (tile_image == (Image *) NULL)
@@ -1048,13 +1048,13 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               Convert PICT tile image to pixel packets.
             */
             p=pixels;
-            for (y=0; y < (int) tile_image->rows; y++)
+            for (y=0; y < (long) tile_image->rows; y++)
             {
               q=SetImagePixels(tile_image,0,y,tile_image->columns,1);
               if (q == (PixelPacket *) NULL)
                 break;
               indexes=GetIndexes(tile_image);
-              for (x=0; x < (int) tile_image->columns; x++)
+              for (x=0; x < (long) tile_image->columns; x++)
               {
                 if (tile_image->storage_class == PseudoClass)
                   {
@@ -1097,7 +1097,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
               if ((tile_image->storage_class == DirectClass) &&
                   (pixmap.bits_per_pixel != 16))
                 p+=(pixmap.component_count-1)*tile_image->columns;
-              if (destination.bottom == (int) image->rows)
+              if (destination.bottom == (long) image->rows)
                 if (QuantumTick(y,tile_image->rows))
                   MagickMonitor(LoadImageText,y,tile_image->rows);
             }
@@ -1111,7 +1111,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
                       destination.left,destination.top);
                 DestroyImage(tile_image);
               }
-            if (destination.bottom != (int) image->rows)
+            if (destination.bottom != (long) image->rows)
               MagickMonitor(LoadImageText,destination.bottom,image->rows);
             break;
           }
@@ -1231,7 +1231,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
         (void) remove(clone_info->filename);
         if (tile_image == (Image *) NULL)
           continue;
-        FormatString(geometry,"%ux%u",Max(image->columns,tile_image->columns),
+        FormatString(geometry,"%lux%lu",Max(image->columns,tile_image->columns),
           Max(image->rows,tile_image->rows));
         (void) TransformImage(&image,(char *) NULL,geometry);
         (void) CompositeImage(image,CopyCompositeOp,tile_image,frame.left,
@@ -1385,7 +1385,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
     x_resolution,
     y_resolution;
 
-  int
+  long
     y;
 
   PICTPixmap
@@ -1402,11 +1402,9 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   register IndexPacket
     *indexes;
 
-  register int
-    x;
-
   register long
-    i;
+    i,
+    x;
 
   register PixelPacket
     *p;
@@ -1421,9 +1419,11 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
     *scanline;
 
   unsigned int
-    bytes_per_line,
     status,
     storage_class;
+
+  unsigned long
+    bytes_per_line;
 
   unsigned short
     base_address,
@@ -1433,6 +1433,9 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   /*
     Open output image file.
   */
+  if ((image->columns > 65535L) || (image->rows > 65535L))
+    ThrowWriterException(ResourceLimitWarning,
+      "Width or height limit exceeded",image);
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
@@ -1523,15 +1526,16 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
     {
       (void) WriteBlobMSBShort(image,0xa1);
       (void) WriteBlobMSBShort(image,0x1f2);
-      (void) WriteBlobMSBShort(image,(int) (image->iptc_profile.length+4));
+      (void) WriteBlobMSBShort(image,image->iptc_profile.length+4);
       (void) WriteBlobString(image,"8BIM");
-      (void) WriteBlob(image,image->iptc_profile.length,image->iptc_profile.info);
+      (void) WriteBlob(image,image->iptc_profile.length,
+        image->iptc_profile.info);
     }
   if (image->color_profile.info != (unsigned char *) NULL)
     {
       (void) WriteBlobMSBShort(image,0xa1);
       (void) WriteBlobMSBShort(image,0xe0);
-      (void) WriteBlobMSBShort(image,(int) (image->color_profile.length+4));
+      (void) WriteBlobMSBShort(image,image->color_profile.length+4);
       (void) WriteBlobMSBLong(image,0x00000000UL);
       (void) WriteBlob(image,image->color_profile.length,
         image->color_profile.info);
@@ -1667,7 +1671,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
         red=((unsigned long) (image->colormap[i].red*65535L)/MaxRGB);
         green=((unsigned long) (image->colormap[i].green*65535L)/MaxRGB);
         blue=((unsigned long) (image->colormap[i].blue*65535L)/MaxRGB);
-        (void) WriteBlobMSBShort(image,(int) i);
+        (void) WriteBlobMSBShort(image,i);
         (void) WriteBlobMSBShort(image,red);
         (void) WriteBlobMSBShort(image,green);
         (void) WriteBlobMSBShort(image,blue);
@@ -1690,13 +1694,13 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   */
   count=0;
   if (storage_class == PseudoClass)
-    for (y=0; y < (int) image->rows; y++)
+    for (y=0; y < (long) image->rows; y++)
     {
       p=GetImagePixels(image,0,y,image->columns,1);
       if (p == (PixelPacket *) NULL)
         break;
       indexes=GetIndexes(image);
-      for (x=0; x < (int) image->columns; x++)
+      for (x=0; x < (long) image->columns; x++)
         scanline[x]=indexes[x];
       count+=EncodeImage(image,scanline,row_bytes & 0x7FFF,packed_scanline);
       if (QuantumTick(y,image->rows))
@@ -1706,7 +1710,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
     if (image->compression == JPEGCompression)
       {
         (void) memset(scanline,0,row_bytes);
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
           count+=EncodeImage(image,scanline,row_bytes & 0x7FFF,packed_scanline);
       }
     else
@@ -1721,7 +1725,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
         green=scanline+image->columns;
         blue=scanline+2*image->columns;
         opacity=scanline+3*image->columns;
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           p=GetImagePixels(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
@@ -1736,7 +1740,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
               green=scanline+2*image->columns;
               blue=scanline+3*image->columns;
             }
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
           {
             *red++=DownScale(p->red);
             *green++=DownScale(p->green);
@@ -1755,7 +1759,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobMSBShort(image,PictEndOfPictureOp);
   offset=TellBlob(image);
   (void) SeekBlob(image,512,SEEK_SET);
-  (void) WriteBlobMSBShort(image,(int) offset);
+  (void) WriteBlobMSBShort(image,offset);
   LiberateMemory((void **) &scanline);
   LiberateMemory((void **) &packed_scanline);
   LiberateMemory((void **) &buffer);

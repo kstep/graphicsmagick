@@ -189,7 +189,9 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
 
   int
     count,
-    status,
+    status;
+
+  long
     x,
     y;
 
@@ -206,10 +208,12 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
     *pixels;
 
   unsigned int
-    height,
     page,
     scene,
-    text_size,
+    text_size;
+
+  unsigned long
+    height,
     width;
 
   /*
@@ -372,16 +376,16 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
       }
     FormatString(buffer,"%%%%Page:  1 %u\n",page++);
     (void) WriteBlobString(image,buffer);
-    FormatString(buffer,"%%%%PageBoundingBox: %d %d %d %d\n",x,y,
-      x+(int) width,y+(int) (height+text_size));
+    FormatString(buffer,"%%%%PageBoundingBox: %ld %ld %ld %ld\n",x,y,
+      x+(long) width,y+(long) (height+text_size));
     (void) WriteBlobString(image,buffer);
     if (x < bounds.x1)
       bounds.x1=x;
     if (y < bounds.y1)
       bounds.y1=y;
-    if ((x+(int) width-1) > bounds.x2)
+    if ((x+(long) width-1) > bounds.x2)
       bounds.x2=x+width-1;
-    if ((y+(int) (height+text_size)-1) > bounds.y2)
+    if ((y+(long) (height+text_size)-1) > bounds.y2)
       bounds.y2=y+(height+text_size)-1;
     attribute=GetImageAttribute(image,"label");
     if (attribute != (ImageAttribute *) NULL)
@@ -470,12 +474,12 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
           Dump Packbit encoded pixels.
         */
         q=pixels;
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           p=GetImagePixels(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
             break;
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
           {
             *q++=MaxRGB-DownScale(p->opacity);
             *q++=DownScale(p->red);
@@ -516,14 +520,14 @@ static unsigned int WritePS3Image(const ImageInfo *image_info,Image *image)
           Dump uncompressed DirectColor packets.
         */
         Ascii85Initialize(image);
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           p=GetImagePixels(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
             break;
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
           {
-            Ascii85Encode(image,(int) (MaxRGB-DownScale(p->opacity)));
+            Ascii85Encode(image,MaxRGB-DownScale(p->opacity));
             Ascii85Encode(image,DownScale(p->red));
             Ascii85Encode(image,DownScale(p->green));
             Ascii85Encode(image,DownScale(p->blue));

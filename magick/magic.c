@@ -364,7 +364,7 @@ static unsigned int ReadConfigurationFile(const char *basename,
       {
         if (LocaleCompare((char *) keyword,"offset") == 0)
           {
-            magic_list->offset=atoi(token);
+            magic_list->offset=atol(token);
             break;
           }
         break;

@@ -64,7 +64,7 @@ typedef struct _ContributionInfo
   double
     weight;
 
-  int
+  long
     pixel;
 } ContributionInfo;
 
@@ -295,14 +295,14 @@ MagickExport Image *MagnifyImage(Image *image,ExceptionInfo *exception)
   Image
     *magnify_image;
 
-  int
+  long
     rows,
     y;
 
   PixelPacket
     *scanline;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -336,7 +336,7 @@ MagickExport Image *MagnifyImage(Image *image,ExceptionInfo *exception)
   /*
     Initialize zoom image pixels.
   */
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
     q=SetImagePixels(magnify_image,0,y,magnify_image->columns,1);
@@ -349,7 +349,7 @@ MagickExport Image *MagnifyImage(Image *image,ExceptionInfo *exception)
   /*
     Magnify each row.
   */
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     p=GetImagePixels(magnify_image,0,image->rows-1-y,magnify_image->columns,1);
     if (p == (PixelPacket *) NULL)
@@ -363,7 +363,7 @@ MagickExport Image *MagnifyImage(Image *image,ExceptionInfo *exception)
     q+=2*(image->columns-1);
     *q=(*p);
     *(q+1)=(*(p));
-    for (x=1; x < (int) image->columns; x++)
+    for (x=1; x < (long) image->columns; x++)
     {
       p--;
       q-=2;
@@ -376,7 +376,7 @@ MagickExport Image *MagnifyImage(Image *image,ExceptionInfo *exception)
     if (!SyncImagePixels(magnify_image))
       break;
   }
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     rows=Min(image->rows-y,3);
     p=GetImagePixels(magnify_image,0,2*y,magnify_image->columns,rows);
@@ -388,7 +388,7 @@ MagickExport Image *MagnifyImage(Image *image,ExceptionInfo *exception)
     s=p;
     if (rows > 2)
       s=q+magnify_image->columns;
-    for (x=0; x < (int) (image->columns-1); x++)
+    for (x=0; x < (long) (image->columns-1); x++)
     {
       q->red=(((int) p->red)+((int) s->red)+1)/2;
       q->green=(((int) p->green)+((int) s->green)+1)/2;
@@ -473,10 +473,10 @@ MagickExport Image *MinifyImage(Image *image,ExceptionInfo *exception)
   Image
     *minify_image;
 
-  int
+  long
     y;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -506,14 +506,14 @@ MagickExport Image *MinifyImage(Image *image,ExceptionInfo *exception)
   /*
     Reduce each row.
   */
-  for (y=0; y < (int) minify_image->rows; y++)
+  for (y=0; y < (long) minify_image->rows; y++)
   {
-    p=GetImagePixels(image,0,Min(2*y,(int) image->rows-4),
-      (int) image->columns,4);
+    p=GetImagePixels(image,0,Min(2*y,(long) image->rows-4),
+      (long) image->columns,4);
     q=SetImagePixels(minify_image,0,y,minify_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    for (x=0; x < (int) (minify_image->columns-1); x++)
+    for (x=0; x < (long) (minify_image->columns-1); x++)
     {
       /*
         Compute weighted average of target pixel color components.
@@ -572,8 +572,8 @@ MagickExport Image *MinifyImage(Image *image,ExceptionInfo *exception)
 %
 %  The format of the ResizeImage method is:
 %
-%      Image *ResizeImage(Image *image,const unsigned int columns,
-%        const unsigned int rows,const FilterType filter,const double blur,
+%      Image *ResizeImage(Image *image,const unsigned long columns,
+%        const unsigned long rows,const FilterType filter,const double blur,
 %        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
@@ -741,14 +741,14 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
     scale,
     support;
 
-  int
+  long
     end,
     j,
     n,
     start,
     y;
 
-  register int
+  register long
     i,
     x;
 
@@ -766,7 +766,7 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
       /*
         Equal width and height-- just copy pixels.
       */
-      for (y=0; y < (int) destination->rows; y++)
+      for (y=0; y < (long) destination->rows; y++)
       {
         p=SetImagePixels(source,0,y,source->columns,1);
         q=SetImagePixels(destination,0,y,destination->columns,1);
@@ -783,7 +783,7 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
           MagickMonitor(ResizeImageText,*quantum,span);
         (*quantum)++;
       }
-      return(y == (int) destination->rows);
+      return(y == (long) destination->rows);
     }
   /*
     Apply filter to resize horizontally from source to destination.
@@ -800,7 +800,7 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
       support=0.5+MagickEpsilon;
       scale=1.0;
     }
-  for (x=0; x < (int) destination->columns; x++)
+  for (x=0; x < (long) destination->columns; x++)
   {
     density=0.0;
     n=0;
@@ -824,7 +824,7 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     indexes=GetIndexes(destination);
-    for (y=0; y < (int) destination->rows; y++)
+    for (y=0; y < (long) destination->rows; y++)
     {
       j=0;
       blue=0.0;
@@ -858,7 +858,7 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
       MagickMonitor(ResizeImageText,*quantum,span);
     (*quantum)++;
   }
-  return(x == (int) destination->columns);
+  return(x == (long) destination->columns);
 }
 
 static unsigned int VerticalFilter(Image *source,Image *destination,
@@ -875,14 +875,14 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
     scale,
     support;
 
-  int
+  long
     end,
     j,
     n,
     start,
     x;
 
-  register int
+  register long
     i,
     y;
 
@@ -900,7 +900,7 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
       /*
         Equal width and height-- just copy pixels.
       */
-      for (y=0; y < (int) destination->rows; y++)
+      for (y=0; y < (long) destination->rows; y++)
       {
         p=SetImagePixels(source,0,y,source->columns,1);
         q=SetImagePixels(destination,0,y,destination->columns,1);
@@ -917,7 +917,7 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
           MagickMonitor(ResizeImageText,*quantum,span);
         (*quantum)++;
       }
-      return(y == (int) destination->rows);
+      return(y == (long) destination->rows);
     }
   /*
     Apply filter to resize vertically from source to destination.
@@ -934,7 +934,7 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
       support=0.5+MagickEpsilon;
       scale=1.0;
     }
-  for (y=0; y < (int) destination->rows; y++)
+  for (y=0; y < (long) destination->rows; y++)
   {
     density=0.0;
     n=0;
@@ -958,7 +958,7 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     indexes=GetIndexes(destination);
-    for (x=0; x < (int) destination->columns; x++)
+    for (x=0; x < (long) destination->columns; x++)
     {
       j=0;
       blue=0.0;
@@ -991,11 +991,11 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
       MagickMonitor(ResizeImageText,*quantum,span);
     (*quantum)++;
   }
-  return(y == (int) destination->rows);
+  return(y == (long) destination->rows);
 }
 
-MagickExport Image *ResizeImage(Image *image,const unsigned int columns,
-  const unsigned int rows,const FilterTypes filter,const double blur,
+MagickExport Image *ResizeImage(Image *image,const unsigned long columns,
+  const unsigned long rows,const FilterTypes filter,const double blur,
   ExceptionInfo *exception)
 {
   ContributionInfo
@@ -1143,8 +1143,8 @@ MagickExport Image *ResizeImage(Image *image,const unsigned int columns,
 %
 %  The format of the SampleImage method is:
 %
-%      Image *SampleImage(Image *image,const unsigned int columns,
-%        const unsigned int rows,ExceptionInfo *exception)
+%      Image *SampleImage(Image *image,const unsigned long columns,
+%        const unsigned long rows,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1158,8 +1158,8 @@ MagickExport Image *ResizeImage(Image *image,const unsigned int columns,
 %
 %
 */
-MagickExport Image *SampleImage(Image *image,const unsigned int columns,
-  const unsigned int rows,ExceptionInfo *exception)
+MagickExport Image *SampleImage(Image *image,const unsigned long columns,
+  const unsigned long rows,ExceptionInfo *exception)
 {
 #define SampleImageText  "  Sample image...  "
 
@@ -1170,7 +1170,7 @@ MagickExport Image *SampleImage(Image *image,const unsigned int columns,
   Image
     *sample_image;
 
-  int
+  long
     j,
     y;
 
@@ -1180,7 +1180,7 @@ MagickExport Image *SampleImage(Image *image,const unsigned int columns,
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -1218,15 +1218,15 @@ MagickExport Image *SampleImage(Image *image,const unsigned int columns,
   /*
     Initialize pixel offsets.
   */
-  for (x=0; x < (int) sample_image->columns; x++)
+  for (x=0; x < (long) sample_image->columns; x++)
     x_offset[x]=x*image->columns/(double) sample_image->columns;
-  for (y=0; y < (int) sample_image->rows; y++)
+  for (y=0; y < (long) sample_image->rows; y++)
     y_offset[y]=y*image->rows/(double) sample_image->rows;
   /*
     Sample each row.
   */
   j=(-1);
-  for (y=0; y < (int) sample_image->rows; y++)
+  for (y=0; y < (long) sample_image->rows; y++)
   {
     q=SetImagePixels(sample_image,0,y,sample_image->columns,1);
     if (q == (PixelPacket *) NULL)
@@ -1245,11 +1245,11 @@ MagickExport Image *SampleImage(Image *image,const unsigned int columns,
     /*
       Sample each column.
     */
-    for (x=0; x < (int) sample_image->columns; x++)
+    for (x=0; x < (long) sample_image->columns; x++)
       *q++=pixels[(int) x_offset[x]];
     indexes=GetIndexes(sample_image);
     if (indexes != (IndexPacket *) NULL)
-      for (x=0; x < (int) sample_image->columns; x++)
+      for (x=0; x < (long) sample_image->columns; x++)
         indexes[x]=(GetIndexes(image))[(int) x_offset[x]];
     if (!SyncImagePixels(sample_image))
       break;
@@ -1279,8 +1279,8 @@ MagickExport Image *SampleImage(Image *image,const unsigned int columns,
 %
 %  The format of the ScaleImage method is:
 %
-%      Image *ScaleImage(Image *image,const unsigned int columns,
-%        const unsigned int rows,ExceptionInfo *exception)
+%      Image *ScaleImage(Image *image,const unsigned long columns,
+%        const unsigned long rows,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1294,8 +1294,8 @@ MagickExport Image *SampleImage(Image *image,const unsigned int columns,
 %
 %
 */
-MagickExport Image *ScaleImage(Image *image,const unsigned int columns,
-  const unsigned int rows,ExceptionInfo *exception)
+MagickExport Image *ScaleImage(Image *image,const unsigned long columns,
+  const unsigned long rows,ExceptionInfo *exception)
 {
 #define ScaleImageText  "  Scale image...  "
 
@@ -1321,11 +1321,11 @@ MagickExport Image *ScaleImage(Image *image,const unsigned int columns,
   Image
     *scale_image;
 
-  int
+  long
     number_rows,
     y;
 
-  register int
+  register long
     i,
     x;
 
@@ -1386,7 +1386,7 @@ MagickExport Image *ScaleImage(Image *image,const unsigned int columns,
   next_row=True;
   y_span=1.0;
   y_scale=(double) scale_image->rows/image->rows;
-  for (x=0; x < (int) image->columns; x++)
+  for (x=0; x < (long) image->columns; x++)
   {
     y_vector[x].red=0;
     y_vector[x].green=0;
@@ -1394,7 +1394,7 @@ MagickExport Image *ScaleImage(Image *image,const unsigned int columns,
     y_vector[x].opacity=0;
   }
   i=0;
-  for (y=0; y < (int) scale_image->rows; y++)
+  for (y=0; y < (long) scale_image->rows; y++)
   {
     q=SetImagePixels(scale_image,0,y,scale_image->columns,1);
     if (q == (PixelPacket *) NULL)
@@ -1407,7 +1407,7 @@ MagickExport Image *ScaleImage(Image *image,const unsigned int columns,
         p=GetImagePixels(image,0,i++,image->columns,1);
         if (p == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (int) image->columns; x++)
+        for (x=0; x < (long) image->columns; x++)
         {
           x_vector[x].red=p->red;
           x_vector[x].green=p->green;
@@ -1423,7 +1423,7 @@ MagickExport Image *ScaleImage(Image *image,const unsigned int columns,
         */
         while (y_scale < y_span)
         {
-          if (next_row && (number_rows < (int) image->rows))
+          if (next_row && (number_rows < (long) image->rows))
             {
               /*
                 Read a new scanline.
@@ -1431,7 +1431,7 @@ MagickExport Image *ScaleImage(Image *image,const unsigned int columns,
               p=GetImagePixels(image,0,i++,image->columns,1);
               if (p == (PixelPacket *) NULL)
                 break;
-              for (x=0; x < (int) image->columns; x++)
+              for (x=0; x < (long) image->columns; x++)
               {
                 x_vector[x].red=p->red;
                 x_vector[x].green=p->green;
@@ -1441,7 +1441,7 @@ MagickExport Image *ScaleImage(Image *image,const unsigned int columns,
               }
               number_rows++;
             }
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
           {
             y_vector[x].red+=y_scale*x_vector[x].red;
             y_vector[x].green+=y_scale*x_vector[x].green;
@@ -1452,7 +1452,7 @@ MagickExport Image *ScaleImage(Image *image,const unsigned int columns,
           y_scale=(double) scale_image->rows/image->rows;
           next_row=True;
         }
-        if (next_row && (number_rows < (int) image->rows))
+        if (next_row && (number_rows < (long) image->rows))
           {
             /*
               Read a new scanline.
@@ -1460,7 +1460,7 @@ MagickExport Image *ScaleImage(Image *image,const unsigned int columns,
             p=GetImagePixels(image,0,i++,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (int) image->columns; x++)
+            for (x=0; x < (long) image->columns; x++)
             {
               x_vector[x].red=p->red;
               x_vector[x].green=p->green;
@@ -1472,7 +1472,7 @@ MagickExport Image *ScaleImage(Image *image,const unsigned int columns,
             next_row=False;
           }
         s=scanline;
-        for (x=0; x < (int) image->columns; x++)
+        for (x=0; x < (long) image->columns; x++)
         {
           red=y_vector[x].red+y_span*x_vector[x].red;
           green=y_vector[x].green+y_span*x_vector[x].green;
@@ -1502,7 +1502,7 @@ MagickExport Image *ScaleImage(Image *image,const unsigned int columns,
           Transfer scanline to scaled image.
         */
         s=scanline;
-        for (x=0; x < (int) scale_image->columns; x++)
+        for (x=0; x < (long) scale_image->columns; x++)
         {
           q->red=(Quantum) s->red;
           q->green=(Quantum) s->green;
@@ -1525,7 +1525,7 @@ MagickExport Image *ScaleImage(Image *image,const unsigned int columns,
         x_span=1.0;
         s=scanline;
         t=scale_scanline;
-        for (x=0; x < (int) image->columns; x++)
+        for (x=0; x < (long) image->columns; x++)
         {
           x_scale=(double) scale_image->columns/image->columns;
           while (x_scale >= x_span)
@@ -1577,7 +1577,7 @@ MagickExport Image *ScaleImage(Image *image,const unsigned int columns,
           blue+=x_span*s->blue;
           opacity+=x_span*s->opacity;
         }
-      if (!next_column && ((t-scale_scanline) < (int) scale_image->columns))
+      if (!next_column && ((t-scale_scanline) < (long) scale_image->columns))
         {
           t->red=red > MaxRGB ? MaxRGB : red+0.5;
           t->green=green > MaxRGB ? MaxRGB : green+0.5;
@@ -1588,7 +1588,7 @@ MagickExport Image *ScaleImage(Image *image,const unsigned int columns,
         Transfer scanline to scaled image.
       */
       t=scale_scanline;
-      for (x=0; x < (int) scale_image->columns; x++)
+      for (x=0; x < (long) scale_image->columns; x++)
       {
         q->red=(Quantum) t->red;
         q->green=(Quantum) t->green;
@@ -1637,8 +1637,8 @@ MagickExport Image *ScaleImage(Image *image,const unsigned int columns,
 %
 %  The format of the ZoomImage method is:
 %
-%      Image *ZoomImage(Image *image,const unsigned int columns,
-%        const unsigned int rows,ExceptionInfo *exception)
+%      Image *ZoomImage(Image *image,const unsigned long columns,
+%        const unsigned long rows,ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -1657,8 +1657,8 @@ MagickExport Image *ScaleImage(Image *image,const unsigned int columns,
 %
 %
 */
-MagickExport Image *ZoomImage(Image *image,const unsigned int columns,
-  const unsigned int rows,ExceptionInfo *exception)
+MagickExport Image *ZoomImage(Image *image,const unsigned long columns,
+  const unsigned long rows,ExceptionInfo *exception)
 {
   Image
     *zoom_image;

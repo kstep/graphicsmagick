@@ -98,13 +98,13 @@ static Image *ReadMONOImage(const ImageInfo *image_info,
   Image
     *image;
 
-  int
+  long
     y;
 
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -139,7 +139,7 @@ static Image *ReadMONOImage(const ImageInfo *image_info,
   /*
     Convert bi-level image to pixel packets.
   */
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     q=SetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
@@ -147,7 +147,7 @@ static Image *ReadMONOImage(const ImageInfo *image_info,
     indexes=GetIndexes(image);
     bit=0;
     byte=0;
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       if (bit == 0)
         byte=ReadBlobByte(image);
@@ -262,13 +262,13 @@ ModuleExport void UnregisterMONOImage(void)
 */
 static unsigned int WriteMONOImage(const ImageInfo *image_info,Image *image)
 {
-  int
+  long
     y;
 
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -306,7 +306,7 @@ static unsigned int WriteMONOImage(const ImageInfo *image_info,Image *image)
   polarity=Intensity(image->colormap[0]) > (0.5*MaxRGB);
   if (image->colors == 2)
     polarity=Intensity(image->colormap[0]) > Intensity(image->colormap[1]);
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
@@ -314,7 +314,7 @@ static unsigned int WriteMONOImage(const ImageInfo *image_info,Image *image)
     indexes=GetIndexes(image);
     bit=0;
     byte=0;
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       byte>>=1;
       if (indexes[x] == polarity)

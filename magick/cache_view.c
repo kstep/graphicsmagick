@@ -108,8 +108,8 @@ MagickExport void CloseCacheView(ViewInfo *view)
 %
 %  The format of the GetCacheView method is:
 %
-%      PixelPacket *GetCacheView(ViewInfo *view,const int x,const int y,
-%        const unsigned int columns,const unsigned int rows)
+%      PixelPacket *GetCacheView(ViewInfo *view,const long x,const long y,
+%        const unsigned long columns,const unsigned long rows)
 %
 %  A description of each parameter follows:
 %
@@ -123,8 +123,8 @@ MagickExport void CloseCacheView(ViewInfo *view)
 %
 %
 */
-MagickExport PixelPacket *GetCacheView(ViewInfo *view,const int x,const int y,
-  const unsigned int columns,const unsigned int rows)
+MagickExport PixelPacket *GetCacheView(ViewInfo *view,const long x,const long y,
+  const unsigned long columns,const unsigned long rows)
 {
   assert(view != (ViewInfo *) NULL);
   assert(view->signature == MagickSignature);
@@ -262,8 +262,8 @@ MagickExport ViewInfo *OpenCacheView(Image *image)
 %
 %  The format of the SetCacheView method is:
 %
-%      PixelPacket *SetCacheView(ViewInfo *view,const int x,const int y,
-%        const unsigned int columns,const unsigned int rows)
+%      PixelPacket *SetCacheView(ViewInfo *view,const long x,const long y,
+%        const unsigned long columns,const unsigned long rows)
 %
 %  A description of each parameter follows:
 %
@@ -277,8 +277,8 @@ MagickExport ViewInfo *OpenCacheView(Image *image)
 %
 %
 */
-MagickExport PixelPacket *SetCacheView(ViewInfo *view,const int x,const int y,
-  const unsigned int columns,const unsigned int rows)
+MagickExport PixelPacket *SetCacheView(ViewInfo *view,const long x,const long y,
+  const unsigned long columns,const unsigned long rows)
 {
   assert(view != (ViewInfo *) NULL);
   assert(view->signature == MagickSignature);

@@ -104,7 +104,9 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   int
     sans,
-    status,
+    status;
+
+  long
     x,
     y;
 
@@ -347,12 +349,12 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       */
       if ((visual_info->colormap_size > 0) &&
           (visual_info->storage_class == DirectColor))
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
           {
             pixel=XGetPixel(dps_image,x,y);
             index=(pixel >> red_shift) & red_mask;
@@ -369,12 +371,12 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
             MagickMonitor(LoadImageText,y,image->rows);
         }
       else
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
           {
             pixel=XGetPixel(dps_image,x,y);
             color=(pixel >> red_shift) & red_mask;
@@ -406,7 +408,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
             (XFontStruct *) NULL,&resource_info,(XWindowInfo *) NULL);
           return((Image *) NULL);
         }
-      for (i=0; i < (int) image->colors; i++)
+      for (i=0; i < (long) image->colors; i++)
       {
         image->colormap[colors[i].pixel].red=XDownScale(colors[i].red);
         image->colormap[colors[i].pixel].green=XDownScale(colors[i].green);
@@ -415,13 +417,13 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Convert X image to PseudoClass packets.
       */
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (long) image->rows; y++)
       {
         q=SetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
         indexes=GetIndexes(image);
-        for (x=0; x < (int) image->columns; x++)
+        for (x=0; x < (long) image->columns; x++)
           indexes[x]=(unsigned short) XGetPixel(dps_image,x,y);
         if (!SyncImagePixels(image))
           break;
@@ -460,12 +462,12 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               image->storage_class=DirectClass;
               image->matte=True;
-              for (y=0; y < (int) image->rows; y++)
+              for (y=0; y < (long) image->rows; y++)
               {
                 q=SetImagePixels(image,0,y,image->columns,1);
                 if (q == (PixelPacket *) NULL)
                   break;
-                for (x=0; x < (int) image->columns; x++)
+                for (x=0; x < (long) image->columns; x++)
                 {
                   q->opacity=OpaqueOpacity;
                   if (!XGetPixel(matte_image,x,y))

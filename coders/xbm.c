@@ -171,13 +171,15 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *image;
 
   int
-    bit,
+    bit;
+
+  long
     y;
 
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     i,
     x;
 
@@ -195,11 +197,13 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
   unsigned int
     byte,
-    bytes_per_line,
     padding,
     status,
     value,
     version;
+
+  unsigned long
+    bytes_per_line;
 
   /*
     Open image file.
@@ -212,12 +216,12 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Read X bitmap header.
   */
   while (ReadBlobString(image,buffer) != (char *) NULL)
-    if (sscanf(buffer,"#define %s %u",name,&image->columns) == 2)
+    if (sscanf(buffer,"#define %s %lu",name,&image->columns) == 2)
       if ((strlen(name) >= 6) &&
           (LocaleCompare(name+strlen(name)-6,"_width") == 0))
           break;
   while (ReadBlobString(image,buffer) != (char *) NULL)
-    if (sscanf(buffer,"#define %s %u",name,&image->rows) == 2)
+    if (sscanf(buffer,"#define %s %lu",name,&image->rows) == 2)
       if ((strlen(name) >= 7) &&
           (LocaleCompare(name+strlen(name)-7,"_height") == 0))
           break;
@@ -308,7 +312,7 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   p=data;
   if (version == 10)
-    for (i=0; i < (int) (bytes_per_line*image->rows); (i+=2))
+    for (i=0; i < (long) (bytes_per_line*image->rows); (i+=2))
     {
       value=XBMInteger(image,hex_digits);
       *p++=value;
@@ -316,7 +320,7 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         *p++=value >> 8;
     }
   else
-    for (i=0; i < (int) (bytes_per_line*image->rows); i++)
+    for (i=0; i < (long) (bytes_per_line*image->rows); i++)
     {
       value=XBMInteger(image,hex_digits);
       *p++=value;
@@ -325,7 +329,7 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Convert X bitmap image to pixel packets.
   */
   p=data;
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     q=SetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
@@ -333,7 +337,7 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     indexes=GetIndexes(image);
     bit=0;
     byte=0;
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       if (bit == 0)
         byte=(*p++);
@@ -484,9 +488,9 @@ static unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
     Write X bitmap header.
   */
   GetPathComponent(image->filename,BasePath,basename);
-  FormatString(buffer,"#define %.1024s_width %u\n",basename,image->columns);
+  FormatString(buffer,"#define %.1024s_width %lu\n",basename,image->columns);
   (void) WriteBlob(image,strlen(buffer),buffer);
-  FormatString(buffer,"#define %.1024s_height %u\n",basename,image->rows);
+  FormatString(buffer,"#define %.1024s_height %lu\n",basename,image->rows);
   (void) WriteBlob(image,strlen(buffer),buffer);
   FormatString(buffer,"static char %.1024s_bits[] = {\n",basename);
   (void) WriteBlob(image,strlen(buffer),buffer);
@@ -516,13 +520,13 @@ static unsigned int WriteXBMImage(const ImageInfo *image_info,Image *image)
   y=0;
   (void) strcpy(buffer," ");
   (void) WriteBlob(image,strlen(buffer),buffer);
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       byte>>=1;
       if (indexes[x] == polarity)

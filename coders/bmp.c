@@ -120,7 +120,7 @@ static unsigned int
 %
 %  The format of the DecodeImage method is:
 %
-%      unsigned int DecodeImage(Image *image,const unsigned int compression,
+%      unsigned int DecodeImage(Image *image,const unsigned long compression,
 %        unsigned char *pixels)
 %
 %  A description of each parameter follows:
@@ -138,15 +138,15 @@ static unsigned int
 %
 %
 */
-static unsigned int DecodeImage(Image *image,const unsigned int compression,
+static unsigned int DecodeImage(Image *image,const unsigned long compression,
   unsigned char *pixels)
 {
-  int
+  long
     byte,
     count,
     y;
 
-  register int
+  register long
     i,
     x;
 
@@ -159,7 +159,7 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
   byte=0;
   x=0;
   q=pixels;
-  for (y=0; y < (int) image->rows; )
+  for (y=0; y < (long) image->rows; )
   {
     count=ReadBlobByte(image);
     if (count == EOF)
@@ -265,7 +265,7 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
 %  The format of the EncodeImage method is:
 %
 %    static unsigned int EncodeImage(Image *image,
-%      const unsigned int bytes_per_line,const unsigned char *pixels,
+%      const unsigned long bytes_per_line,const unsigned char *pixels,
 %      unsigned char *compressed_pixels)
 %
 %  A description of each parameter follows:
@@ -283,16 +283,16 @@ static unsigned int DecodeImage(Image *image,const unsigned int compression,
 %
 %
 */
-static size_t EncodeImage(Image *image,const unsigned int bytes_per_line,
+static size_t EncodeImage(Image *image,const unsigned long bytes_per_line,
   const unsigned char *pixels,unsigned char *compressed_pixels)
 {
-  int
+  long
     y;
 
   register const unsigned char
     *p;
 
-  register int
+  register long
     i,
     x;
 
@@ -308,14 +308,14 @@ static size_t EncodeImage(Image *image,const unsigned int bytes_per_line,
   p=pixels;
   q=compressed_pixels;
   i=0;
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
-    for (x=0; x < (int) bytes_per_line; x+=i)
+    for (x=0; x < (long) bytes_per_line; x+=i)
     {
       /*
         Determine runlength.
       */
-      for (i=1; ((x+i) < (int) bytes_per_line); i++)
+      for (i=1; ((x+i) < (long) bytes_per_line); i++)
         if ((*(p+i) != *p) || (i == 255))
           break;
       *q++=(unsigned char) i;
@@ -428,17 +428,15 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   IndexPacket
     index;
 
-  int
-    bit,
-    y;
-
   long
-    start_position;
+    bit,
+    start_position,
+    y;
 
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -451,16 +449,18 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *p;
 
   size_t
-    count;
+    count,
+    length;
 
   unsigned char
     magick[12],
     *pixels;
 
   unsigned int
-    bytes_per_line,
-    image_size,
     status;
+
+  unsigned long
+    bytes_per_line;
 
   /*
     Open image file.
@@ -560,8 +560,8 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
       }
     image->matte=bmp_info.bits_per_pixel == 32;
-    image->columns=(unsigned int) bmp_info.width;
-    image->rows=(unsigned int) AbsoluteValue(bmp_info.height);
+    image->columns= bmp_info.width;
+    image->rows= AbsoluteValue(bmp_info.height);
     image->depth=8;
     if ((bmp_info.number_colors != 0) || (bmp_info.bits_per_pixel < 16))
       {
@@ -610,19 +610,19 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     if (bmp_info.compression == 2)
       bmp_info.bits_per_pixel<<=1;
     bytes_per_line=4*((image->columns*bmp_info.bits_per_pixel+31)/32);
-    image_size=bytes_per_line*image->rows;
-    pixels=(unsigned char *) AcquireMemory(image_size);
+    length=bytes_per_line*image->rows;
+    pixels=(unsigned char *) AcquireMemory(length);
     if (pixels == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
         image);
     if ((bmp_info.compression == 0) || (bmp_info.compression == 3))
-      (void) ReadBlob(image,image_size,(char *) pixels);
+      (void) ReadBlob(image,length,(char *) pixels);
     else
       {
         /*
           Convert run-length encoded raster pixels.
         */
-        status=DecodeImage(image,(unsigned int) bmp_info.compression,pixels);
+        status=DecodeImage(image,bmp_info.compression,pixels);
         if (status == False)
           ThrowReaderException(CorruptImageWarning,"runlength decoding failed",
             image);
@@ -650,7 +650,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (q == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
-          for (x=0; x < ((int) image->columns-7); x+=8)
+          for (x=0; x < ((long) image->columns-7); x+=8)
           {
             for (bit=0; bit < 8; bit++)
             {
@@ -662,7 +662,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
           if ((image->columns % 8) != 0)
             {
-              for (bit=0; bit < (int) (image->columns % 8); bit++)
+              for (bit=0; bit < (long) (image->columns % 8); bit++)
               {
                 index=((*p) & (0x80 >> bit) ? 0x01 : 0x00);
                 indexes[x+bit]=index;
@@ -690,7 +690,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (q == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
-          for (x=0; x < ((int) image->columns-1); x+=2)
+          for (x=0; x < ((long) image->columns-1); x+=2)
           {
             index=ValidateColormapIndex(image,(*p >> 4) & 0xf);
             indexes[x]=index;
@@ -729,7 +729,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (q == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
           {
             index=ValidateColormapIndex(image,*p);
             indexes[x]=index;
@@ -762,7 +762,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
           {
             word=(*p++);
             word|=(*p++ << 8);
@@ -800,7 +800,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
           {
             q->blue=UpScale(*p++);
             q->green=UpScale(*p++);
@@ -974,20 +974,18 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
   BMPInfo
     bmp_info;
 
-  int
+  long
     y;
 
   register IndexPacket
     *indexes;
 
-  register int
+  register long
+    i,
     x;
 
   register PixelPacket
     *p;
-
-  register long
-    i;
 
   register unsigned char
     *q;
@@ -997,9 +995,11 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
     *pixels;
 
   unsigned int
-    bytes_per_line,
     scene,
     status;
+
+  unsigned long
+    bytes_per_line;
 
   /*
     Open output image file.
@@ -1081,7 +1081,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         if (image->colors == 2)
           polarity=
             Intensity(image->colormap[1]) > Intensity(image->colormap[0]);
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           p=GetImagePixels(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
@@ -1090,7 +1090,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
           q=pixels+(image->rows-y-1)*bytes_per_line;
           bit=0;
           byte=0;
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
           {
             byte<<=1;
             if (indexes[x] == polarity)
@@ -1117,14 +1117,14 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         /*
           Convert PseudoClass packet to BMP pixel.
         */
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           p=GetImagePixels(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
           q=pixels+(image->rows-y-1)*bytes_per_line;
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
           {
             *q++=indexes[x];
             p++;
@@ -1141,13 +1141,13 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         /*
           Convert DirectClass packet to BMP RGB pixel.
         */
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           p=GetImagePixels(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
             break;
           q=pixels+(image->rows-y-1)*bytes_per_line;
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
           {
             *q++=DownScale(p->blue);
             *q++=DownScale(p->green);
@@ -1166,14 +1166,14 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
     if (bmp_info.bits_per_pixel == 8)
       if (image_info->compression != NoCompression)
         {
-          unsigned int
-            packets;
+          size_t
+            length;
 
           /*
             Convert run-length encoded raster pixels.
           */
-          packets=(unsigned int) 2*(bytes_per_line+2)*(image->rows+2)+2;
-          bmp_data=(unsigned char *) AcquireMemory(packets);
+          length=2*(bytes_per_line+2)*(image->rows+2)+2;
+          bmp_data=(unsigned char *) AcquireMemory(length);
           if (pixels == (unsigned char *) NULL)
             {
               LiberateMemory((void **) &pixels);

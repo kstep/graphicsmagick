@@ -284,7 +284,7 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
   ImageInfo
     *image_info;
 
-  int
+  long
     x,
     x_offset,
     y,
@@ -307,9 +307,12 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
     tile_info;
 
   unsigned int
-    border_width,
+    concatenate;
+
+  unsigned long
     bevel_width,
-    concatenate,
+    border_width,
+    count,
     font_height,
     height,
     images_per_page,
@@ -319,14 +322,11 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
     tile,
     tiles,
     tiles_per_column,
-    tiles_per_row,
     tiles_per_page,
+    tiles_per_row,
     title_offset,
     total_tiles,
     width;
-
-  unsigned long
-    count;
 
   /*
     Create next tiles.
@@ -351,7 +351,7 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
     tile_next=ZoomImage(next_list[tile],width,height,exception);
     if (tile_next == (Image *) NULL)
       {
-        for (i=0; i < (int) tile; i++)
+        for (i=0; i < (long) tile; i++)
           DestroyImage(next_list[i]);
         (void) SetMonitorHandler(handler);
         return((Image *) NULL);
@@ -482,7 +482,7 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
     attribute=GetImageAttribute(next_list[tile],"label");
     if (attribute == (ImageAttribute *) NULL)
       continue;
-    if (MultilineCensus(attribute->value) > (int) number_lines)
+    if (MultilineCensus(attribute->value) > number_lines)
       number_lines=MultilineCensus(attribute->value);
   }
   /*
@@ -493,7 +493,7 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
   images_per_page=(number_images-1)/(tiles_per_row*tiles_per_column)+1;
   tiles=0;
   total_tiles=number_images;
-  for (i=0; i < (int) images_per_page; i++)
+  for (i=0; i < (long) images_per_page; i++)
   {
     /*
       Determine bounding box.
@@ -508,7 +508,7 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
     {
       width=concatenate ? next_list[tile]->columns : tile_info.width;
       x_offset+=width+(tile_info.x+border_width)*2;
-      if (x_offset > (int) bounds.width)
+      if (x_offset > (long) bounds.width)
         bounds.width=x_offset;
       if (next_list[tile]->rows > max_height)
         max_height=next_list[tile]->rows;
@@ -518,7 +518,7 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
           height=concatenate ? max_height : tile_info.height;
           y_offset+=height+(tile_info.y+border_width)*2+(font_height+4)*
             number_lines+(montage_info->shadow ? 4 : 0)+(concatenate ? 0 : 2);
-          if (y_offset > (int) bounds.height)
+          if (y_offset > (long) bounds.height)
             bounds.height=y_offset;
           max_height=0;
         }
@@ -548,9 +548,9 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
       }
     x_offset=0;
     y_offset=title_offset;
-    FormatString(montage_next->montage,"%dx%d%+d%+d",
-      (int) (tile_info.width+(tile_info.x+border_width)*2),
-      (int) (tile_info.height+(tile_info.y+border_width)*2+(font_height+4)*
+    FormatString(montage_next->montage,"%ldx%ld%+ld%+ld",
+      (long) (tile_info.width+(tile_info.x+border_width)*2),
+      (long) (tile_info.height+(tile_info.y+border_width)*2+(font_height+4)*
       number_lines+(montage_info->shadow ? 4 : 0)),x_offset,y_offset);
     *montage_next->directory='\0';
     for (tile=0; tile < tiles_per_page; tile++)
@@ -629,20 +629,20 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
         }
         case NorthGravity:
         {
-          x=((width+2*border_width)-(int) next->columns)/2;
+          x=((width+2*border_width)-(long) next->columns)/2;
           y=0;
           break;
         }
         case NorthEastGravity:
         {
-          x=(width+2*border_width)-(int) next->columns;
+          x=(width+2*border_width)-(long) next->columns;
           y=0;
           break;
         }
         case WestGravity:
         {
           x=0;
-          y=((height+2*border_width)-(int) next->rows)/2;
+          y=((height+2*border_width)-(long) next->rows)/2;
           break;
         }
         case ForgetGravity:
@@ -650,32 +650,32 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
         case CenterGravity:
         default:
         {
-          x=((width+2*border_width)-(int) next->columns)/2;
-          y=((height+2*border_width)-(int) next->rows)/2;
+          x=((width+2*border_width)-(long) next->columns)/2;
+          y=((height+2*border_width)-(long) next->rows)/2;
           break;
         }
         case EastGravity:
         {
-          x=(width+2*border_width)-(int) next->columns;
-          y=((height+2*border_width)-(int) next->rows)/2;
+          x=(width+2*border_width)-(long) next->columns;
+          y=((height+2*border_width)-(long) next->rows)/2;
           break;
         }
         case SouthWestGravity:
         {
           x=0;
-          y=(height+2*border_width)-(int) next->rows;
+          y=(height+2*border_width)-(long) next->rows;
           break;
         }
         case SouthGravity:
         {
-          x=((width+2*border_width)-(int) next->columns)/2;
-          y=(height+2*border_width)-(int) next->rows;
+          x=((width+2*border_width)-(long) next->columns)/2;
+          y=(height+2*border_width)-(long) next->rows;
           break;
         }
         case SouthEastGravity:
         {
-          x=(width+2*border_width)-(int) next->columns;
-          y=(height+2*border_width)-(int) next->rows;
+          x=(width+2*border_width)-(long) next->columns;
+          y=(height+2*border_width)-(long) next->rows;
           break;
         }
       }
@@ -715,14 +715,14 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
             x_offset+x,y_offset+y);
           if (montage_info->shadow)
             {
-              register int
+              register long
                 columns,
                 rows;
 
               /*
                 Put a shadow under the tile to show depth.
               */
-              for (rows=0; rows < ((int) next->rows-4); rows++)
+              for (rows=0; rows < ((long) next->rows-4); rows++)
               {
                 q=GetImagePixels(montage_next,x+x_offset+next->columns,
                   y_offset+y+rows+4,Min(tile_info.x,4),1);
@@ -742,7 +742,7 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
                   next->rows+rows,next->columns,1);
                 if (q == (PixelPacket *) NULL)
                   break;
-                for (columns=0; columns < (int) next->columns; columns++)
+                for (columns=0; columns < (long) next->columns; columns++)
                 {
                   Modulate(0.0,0.0,-25.0+4*rows,&q->red,&q->green,&q->blue);
                   q++;
@@ -757,10 +757,10 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
               /*
                 Annotate composite next tile with label.
               */
-              FormatString(geometry,"%ux%u%+d%+d",
+              FormatString(geometry,"%lux%lu%+ld%+ld",
                 (montage_info->frame ? next->columns : width)-
-                2*border_width,font_height,(int) (x_offset+border_width),
-                (int) (montage_info->frame ? y_offset+height+
+                2*border_width,font_height,(long) (x_offset+border_width),
+                (long) (montage_info->frame ? y_offset+height+
                 2*border_width-bevel_width-2 : y_offset+tile_info.height+
                 2*border_width+(montage_info->shadow ? 4 : 0)));
               (void) CloneString(&draw_info->geometry,geometry);
@@ -783,7 +783,7 @@ MagickExport Image *MontageImages(Image *image,const MontageInfo *montage_info,
       tiles++;
     }
     montage_next->matte=False;
-    if ((i+1) < (int) images_per_page)
+    if ((i+1) < (long) images_per_page)
       {
         /*
           Allocate next next structure.

@@ -106,13 +106,15 @@ static unsigned int DecodeImage(Image *image,const long opacity)
     in_code,
     offset,
     old_code,
-    pass,
+    pass;
+
+  long
     y;
 
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -182,13 +184,13 @@ static unsigned int DecodeImage(Image *image,const long opacity)
   offset=0;
   pass=0;
   top_stack=pixel_stack;
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     q=SetImagePixels(image,0,offset,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
-    for (x=0; x < (int) image->columns; )
+    for (x=0; x < (long) image->columns; )
     {
       if (top_stack == pixel_stack)
         {
@@ -290,7 +292,7 @@ static unsigned int DecodeImage(Image *image,const long opacity)
         default:
         {
           offset+=8;
-          if (offset >= (int) image->rows)
+          if (offset >= (long) image->rows)
             {
               pass++;
               offset=4;
@@ -300,7 +302,7 @@ static unsigned int DecodeImage(Image *image,const long opacity)
         case 1:
         {
           offset+=8;
-          if (offset >= (int) image->rows)
+          if (offset >= (long) image->rows)
             {
               pass++;
               offset=2;
@@ -310,7 +312,7 @@ static unsigned int DecodeImage(Image *image,const long opacity)
         case 2:
         {
           offset+=4;
-          if (offset >= (int) image->rows)
+          if (offset >= (long) image->rows)
             {
               pass++;
               offset=1;
@@ -325,13 +327,13 @@ static unsigned int DecodeImage(Image *image,const long opacity)
       }
     if (!SyncImagePixels(image))
       break;
-    if (x < (int) image->columns)
+    if (x < (long) image->columns)
       break;
     if (image->previous == (Image *) NULL)
       if (QuantumTick(y,image->rows))
         MagickMonitor(LoadImageText,y,image->rows);
   }
-  if (y < (int) image->rows)
+  if (y < (long) image->rows)
     ThrowBinaryException(CorruptImageWarning,"Corrupt GIF image",
       image->filename);
   LiberateMemory((void **) &pixel_stack);
@@ -428,16 +430,16 @@ static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
     k,
     number_bits,
     offset,
-    pass,
-    y;
+    pass;
 
   long
-    datum;
+    datum,
+    y;
 
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     i,
     x;
 
@@ -490,7 +492,7 @@ static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
   offset=0;
   pass=0;
   waiting_code=0;
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     p=GetImagePixels(image,0,offset,image->columns,1);
     if (p == (PixelPacket *) NULL)
@@ -498,7 +500,7 @@ static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
     indexes=GetIndexes(image);
     if (y == 0)
       waiting_code=(*indexes);
-    for (x=(y == 0) ? 1 : 0; x < (int) image->columns; x++)
+    for (x=(y == 0) ? 1 : 0; x < (long) image->columns; x++)
     {
       /*
         Probe hash table.
@@ -571,7 +573,7 @@ static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
         default:
         {
           offset+=8;
-          if (offset >= (int) image->rows)
+          if (offset >= (long) image->rows)
             {
               pass++;
               offset=4;
@@ -581,7 +583,7 @@ static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
         case 1:
         {
           offset+=8;
-          if (offset >= (int) image->rows)
+          if (offset >= (long) image->rows)
             {
               pass++;
               offset=2;
@@ -591,7 +593,7 @@ static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
         case 2:
         {
           offset+=4;
-          if (offset >= (int) image->rows)
+          if (offset >= (long) image->rows)
             {
               pass++;
               offset=1;
@@ -1200,13 +1202,13 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
                   "Memory allocation failed",image)
               }
             image->colormap[opacity]=image->background_color;
-            for (y=0; y < (int) image->rows; y++)
+            for (y=0; y < (long) image->rows; y++)
             {
               p=GetImagePixels(image,0,y,image->columns,1);
               if (p == (PixelPacket *) NULL)
                 break;
               indexes=GetIndexes(image);
-              for (x=0; x < (int) image->columns; x++)
+              for (x=0; x < (long) image->columns; x++)
               {
                 if (p->opacity == TransparentOpacity)
                   indexes[x]=(IndexPacket) opacity;
@@ -1223,13 +1225,13 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
           /*
             Identify transparent pixel index.
           */
-          for (y=0; y < (int) image->rows; y++)
+          for (y=0; y < (long) image->rows; y++)
           {
             p=GetImagePixels(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
             indexes=GetIndexes(image);
-            for (x=0; x < (int) image->columns; x++)
+            for (x=0; x < (long) image->columns; x++)
             {
               if (p->opacity == TransparentOpacity)
                 {
@@ -1238,7 +1240,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
                 }
               p++;
             }
-            if (x < (int) image->columns)
+            if (x < (long) image->columns)
               break;
           }
         }
@@ -1272,7 +1274,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
         for (j=0; j < Max(image->colors-1,1); j++)
           if (ColorMatch(image->background_color,image->colormap[j],0))
             break;
-        (void) WriteBlobByte(image,(int) j);  /* background color */
+        (void) WriteBlobByte(image,j);  /* background color */
         (void) WriteBlobByte(image,0x0);  /* reserved */
         (void) WriteBlob(image,3*(1 << bits_per_pixel),(char *) colormap);
         for (j=0; j < 768; j++)
@@ -1290,8 +1292,8 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
         if (image->matte)
           c|=0x01;
         (void) WriteBlobByte(image,c);
-        (void) WriteBlobLSBShort(image,(unsigned int) image->delay);
-        (void) WriteBlobByte(image,(int) opacity);
+        (void) WriteBlobLSBShort(image,image->delay);
+        (void) WriteBlobByte(image,opacity);
         (void) WriteBlobByte(image,0x00);
         if (GetImageAttribute(image,"comment") != (ImageAttribute *) NULL)
           {
@@ -1314,7 +1316,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
             while (strlen(p) != 0)
             {
               count=Min(strlen(p),255);
-              (void) WriteBlobByte(image,(int) count);
+              (void) WriteBlobByte(image,count);
               for (i=0; i < (long) count; i++)
                 (void) WriteBlobByte(image,*p++);
             }
@@ -1332,7 +1334,7 @@ static unsigned int WriteGIFImage(const ImageInfo *image_info,Image *image)
             (void) WriteBlob(image,11,"NETSCAPE2.0");
             (void) WriteBlobByte(image,0x03);
             (void) WriteBlobByte(image,0x01);
-            (void) WriteBlobLSBShort(image,(unsigned int) image->iterations);
+            (void) WriteBlobLSBShort(image,image->iterations);
             (void) WriteBlobByte(image,0x00);
           }
       }

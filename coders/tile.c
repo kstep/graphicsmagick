@@ -97,10 +97,10 @@ static Image *ReadTILEImage(const ImageInfo *image_info,
   ImageInfo
     *clone_info;
 
-  int
+  long
     y;
 
-  register int
+  register long
     x;
 
   /*
@@ -127,9 +127,9 @@ static Image *ReadTILEImage(const ImageInfo *image_info,
   /*
     Tile texture onto image.
   */
-  for (y=0; y < (int) image->rows; y+=tiled_image->rows)
+  for (y=0; y < (long) image->rows; y+=tiled_image->rows)
   {
-    for (x=0; x < (int) image->columns; x+=tiled_image->columns)
+    for (x=0; x < (long) image->columns; x+=tiled_image->columns)
       (void) CompositeImage(image,CopyCompositeOp,tiled_image,x,y);
     MagickMonitor(LoadImageText,y,image->rows);
   }

@@ -156,13 +156,13 @@ static unsigned int WriteMATTEImage(const ImageInfo *image_info,Image *image)
   Image
     *matte_image;
 
-  int
+  long
     y;
 
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -185,14 +185,14 @@ static unsigned int WriteMATTEImage(const ImageInfo *image_info,Image *image)
     Convert image to matte pixels.
   */
   matte_image->matte=False;
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
     q=SetImagePixels(matte_image,0,y,matte_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
     indexes=GetIndexes(matte_image);
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       indexes[x]=p->opacity;
       *q=matte_image->colormap[p->opacity];

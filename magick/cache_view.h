@@ -19,7 +19,7 @@ typedef struct _ViewInfo
   Image
     *image;
 
-  unsigned int
+  unsigned long
     id;
 } ViewInfo;
 
@@ -31,10 +31,10 @@ extern MagickExport IndexPacket
 
 extern MagickExport PixelPacket
   *GetCacheViewPixels(const ViewInfo *),
-  *GetCacheView(ViewInfo *,const int,const int,const unsigned int,
-    const unsigned int),
-  *SetCacheView(ViewInfo *,const int,const int,const unsigned int,
-    const unsigned int);
+  *GetCacheView(ViewInfo *,const long,const long,const unsigned long,
+    const unsigned long),
+  *SetCacheView(ViewInfo *,const long,const long,const unsigned long,
+    const unsigned long);
 
 extern MagickExport unsigned int
   SyncCacheView(ViewInfo *);

@@ -280,7 +280,7 @@ typedef struct _CubeInfo
   const QuantizeInfo
     *quantize_info;
 
-  int
+  long
     x,
     y;
 
@@ -354,14 +354,14 @@ static unsigned int Assignment(CubeInfo *cube_info,Image *image)
   IndexPacket
     index;
 
-  int
+  long
     count,
     y;
 
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     i,
     x;
 
@@ -400,18 +400,18 @@ static unsigned int Assignment(CubeInfo *cube_info,Image *image)
   if (dither)
     dither=DitherImage(cube_info,image);
   if (!dither)
-    for (y=0; y < (int) image->rows; y++)
+    for (y=0; y < (long) image->rows; y++)
     {
       q=GetImagePixels(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
       indexes=GetIndexes(image);
-      for (x=0; x < (int) image->columns; x+=count)
+      for (x=0; x < (long) image->columns; x+=count)
       {
         /*
           Identify the deepest node containing the pixel's color.
         */
-        for (count=1; (x+count) < (int) image->columns; count++)
+        for (count=1; (x+count) < (long) image->columns; count++)
           if (!ColorMatch(*q,*(q+count),0))
             break;
         node_info=cube_info->root;
@@ -547,7 +547,7 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
     mid_green,
     mid_blue;
 
-  int
+  long
     count,
     y;
 
@@ -559,7 +559,7 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
     green,
     red;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -570,7 +570,7 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
     level,
     id;
 
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
@@ -583,12 +583,12 @@ static unsigned int Classification(CubeInfo *cube_info,Image *image)
         PruneLevel(cube_info,cube_info->root);
         cube_info->depth--;
       }
-    for (x=0; x < (int) image->columns; x+=count)
+    for (x=0; x < (long) image->columns; x+=count)
     {
       /*
         Start at the root and descend the color cube tree.
       */
-      for (count=1; (x+count) < (int) image->columns; count++)
+      for (count=1; (x+count) < (long) image->columns; count++)
         if (!ColorMatch(*p,*(p+count),0))
           break;
       index=MaxTreeDepth-1;
@@ -994,8 +994,8 @@ static unsigned int Dither(CubeInfo *cube_info,Image *image,
     *q;
 
   p=cube_info;
-  if ((p->x >= 0) && (p->x < (int) image->columns) &&
-      (p->y >= 0) && (p->y < (int) image->rows))
+  if ((p->x >= 0) && (p->x < (long) image->columns) &&
+      (p->y >= 0) && (p->y < (long) image->rows))
     {
       /*
         Distribute error.
@@ -1119,7 +1119,7 @@ static unsigned int Dither(CubeInfo *cube_info,Image *image,
 */
 static unsigned int DitherImage(CubeInfo *cube_info,Image *image)
 {
-  register int
+  register long
     i;
 
   unsigned int
@@ -1686,13 +1686,13 @@ MagickExport unsigned int OrderedDitherImage(Image *image)
   IndexPacket
     index;
 
-  int
+  long
     y;
 
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -1708,13 +1708,13 @@ MagickExport unsigned int OrderedDitherImage(Image *image)
   /*
     Dither image with the ordered dithering technique.
   */
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       index=Intensity(*q) > DitherMatrix[y & 0x07][x & 0x07] ? 1 : 0;
       indexes[x]=index;
@@ -1878,7 +1878,7 @@ MagickExport unsigned int QuantizationError(Image *image)
   IndexPacket
     index;
 
-  int
+  long
     count,
     y;
 
@@ -1890,7 +1890,7 @@ MagickExport unsigned int QuantizationError(Image *image)
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -1912,15 +1912,15 @@ MagickExport unsigned int QuantizationError(Image *image)
   */
   maximum_error_per_pixel=0;
   total_error=0;
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
-    for (x=0; x < (int) image->columns; x+=count)
+    for (x=0; x < (long) image->columns; x+=count)
     {
-      for (count=1; (x+count) < (int) image->columns; count++)
+      for (count=1; (x+count) < (long) image->columns; count++)
         if (!ColorMatch(*p,*(p+count),0))
           break;
       index=indexes[x];

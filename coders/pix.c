@@ -94,7 +94,7 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   IndexPacket
     index;
 
-  int
+  long
     y;
 
   Quantum
@@ -105,7 +105,7 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -143,8 +143,8 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Initialize image structure.
     */
-    image->columns=(unsigned int) width;
-    image->rows=(unsigned int) height;
+    image->columns= width;
+    image->rows= height;
     if (bits_per_pixel == 8)
       if (!AllocateImageColormap(image,MaxRGB+1))
         ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
@@ -157,13 +157,13 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     blue=0;
     index=0;
     length=0;
-    for (y=0; y < (int) image->rows; y++)
+    for (y=0; y < (long) image->rows; y++)
     {
       q=SetImagePixels(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
       indexes=GetIndexes(image);
-      for (x=0; x < (int) image->columns; x++)
+      for (x=0; x < (long) image->columns; x++)
       {
         if (length == 0)
           {

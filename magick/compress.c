@@ -280,7 +280,7 @@ MagickExport void Ascii85Flush(Image *image)
   (void) WriteBlobByte(image,'\n');
 }
 
-MagickExport void Ascii85Encode(Image *image,const unsigned int code)
+MagickExport void Ascii85Encode(Image *image,const unsigned long code)
 {
   long
     n;
@@ -393,16 +393,18 @@ MagickExport unsigned int HuffmanDecodeImage(Image *image)
     byte,
     code,
     color,
-    count,
     length,
     null_lines,
-    runlength,
+    runlength;
+
+  long
+    count,
     y;
 
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     i,
     x;
 
@@ -457,13 +459,13 @@ MagickExport unsigned int HuffmanDecodeImage(Image *image)
   image->x_resolution=204.0;
   image->y_resolution=196.0;
   image->units=PixelsPerInchResolution;
-  for (y=0; ((y < (int) image->rows) && (null_lines < 3)); )
+  for (y=0; ((y < (long) image->rows) && (null_lines < 3)); )
   {
     /*
       Initialize scanline to white.
     */
     p=scanline;
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
       *p++=0;
     /*
       Decode Huffman encoded scanline.
@@ -478,7 +480,7 @@ MagickExport unsigned int HuffmanDecodeImage(Image *image)
     {
       if (byte == EOF)
         break;
-      if (x >= (int) image->columns)
+      if (x >= (long) image->columns)
         {
           while (runlength < 11)
             InputBit(bit);
@@ -536,7 +538,7 @@ MagickExport unsigned int HuffmanDecodeImage(Image *image)
         case TBId:
         {
           count+=entry->count;
-          if ((x+count) > (int) image->columns)
+          if ((x+count) > (long) image->columns)
             count=image->columns-x;
           if (count > 0)
             {
@@ -573,7 +575,7 @@ MagickExport unsigned int HuffmanDecodeImage(Image *image)
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       index=(unsigned short) (*p++);
       indexes[x]=index;
@@ -657,8 +659,10 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
 
   int
     k,
+    runlength;
+
+  long
     n,
-    runlength,
     y;
 
   Image
@@ -667,7 +671,7 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     i,
     x;
 
@@ -686,7 +690,9 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
     *scanline;
 
   unsigned int
-    mask,
+    mask;
+
+  unsigned long
     width;
 
   /*
@@ -740,16 +746,16 @@ MagickExport unsigned int HuffmanEncodeImage(const ImageInfo *image_info,
     polarity=(Intensity(huffman_image->colormap[0]) >
       Intensity(huffman_image->colormap[1]) ? 0 : 1);
   q=scanline;
-  for (i=0; i < (int) width; i++)
+  for (i=0; i < (long) width; i++)
     *q++=(unsigned char) polarity;
   q=scanline;
-  for (y=0; y < (int) huffman_image->rows; y++)
+  for (y=0; y < (long) huffman_image->rows; y++)
   {
     p=GetImagePixels(huffman_image,0,y,huffman_image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(huffman_image);
-    for (x=0; x < (int) huffman_image->columns; x++)
+    for (x=0; x < (long) huffman_image->columns; x++)
     {
       *q=(indexes[x] == polarity ? (int) polarity : (int) !polarity);
       q++;
@@ -1204,7 +1210,7 @@ MagickExport unsigned int LZWEncodeImage(Image *image,const size_t length,
 MagickExport unsigned int PackbitsEncodeImage(Image *image,const size_t length,
   unsigned char *pixels)
 {
-  long
+  int
     count;
 
   register long
@@ -1267,7 +1273,7 @@ MagickExport unsigned int PackbitsEncodeImage(Image *image,const size_t length,
               Packed run.
             */
             count=3;
-            while ((count < i) && (*pixels == *(pixels+count)))
+            while (((long) count < i) && (*pixels == *(pixels+count)))
             {
               count++;
               if (count >= 127)
@@ -1288,12 +1294,12 @@ MagickExport unsigned int PackbitsEncodeImage(Image *image,const size_t length,
         {
           packbits[count+1]=pixels[count];
           count++;
-          if ((count >= (i-3)) || (count >= 127))
+          if (((long) count >= (i-3)) || (count >= 127))
             break;
         }
         i-=count;
         *packbits=count-1;
-        for (j=0; j <= count; j++)
+        for (j=0; j <= (long) count; j++)
           (void) WriteBlobByte(image,packbits[j]);
         pixels+=count;
         break;

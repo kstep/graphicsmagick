@@ -166,23 +166,21 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
     symbol[MaxTextExtent];
 
   int
-    j,
-    y;
+    j;
 
   long
-    k;
+    k,
+    y;
 
   register IndexPacket
     *indexes;
 
-  register int
+  register long
+    i,
     x;
 
   register PixelPacket
     *p;
-
-  register long
-    i;
 
   unsigned int
     characters_per_pixel,
@@ -227,12 +225,12 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
           if (matte_image == (unsigned char *) NULL)
             ThrowWriterException(ResourceLimitWarning,
               "Memory allocation failed",image);
-          for (y=0; y < (int) image->rows; y++)
+          for (y=0; y < (long) image->rows; y++)
           {
             p=GetImagePixels(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (int) image->columns; x++)
+            for (x=0; x < (long) image->columns; x++)
             {
               matte_image[i]=p->opacity == TransparentOpacity;
               if (matte_image[i])
@@ -249,13 +247,13 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
       if (transparent)
         {
           colors++;
-          for (y=0; y < (int) image->rows; y++)
+          for (y=0; y < (long) image->rows; y++)
           {
             p=GetImagePixels(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
             indexes=GetIndexes(image);
-            for (x=0; x < (int) image->columns; x++)
+            for (x=0; x < (long) image->columns; x++)
             {
               if (matte_image[i])
                 indexes[x]=image->colors;
@@ -316,14 +314,14 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
   FormatString(buffer,
     "  %.1024s_icon : icon(color_table = %.1024s_ct,\n",basename,basename);
   (void) WriteBlobString(image,buffer);
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
     (void) WriteBlobString(image,"    \"");
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       k=indexes[x] % MaxCixels;
       symbol[0]=Cixel[k];
@@ -338,7 +336,7 @@ static unsigned int WriteUILImage(const ImageInfo *image_info,Image *image)
       p++;
     }
     FormatString(buffer,"\"%.1024s\n",
-      (y == (int) (image->rows-1) ? ");" : ","));
+      (y == (long) (image->rows-1) ? ");" : ","));
     (void) WriteBlobString(image,buffer);
     if (QuantumTick(y,image->rows))
       MagickMonitor(SaveImageText,y,image->rows);

@@ -294,10 +294,12 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
 
   int
     **pixels,
-    status,
+    status;
+
+  long
     y;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -328,13 +330,13 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
     dataspace=H5Screate_simple(2,dimensions,NULL);
     dataset=H5Dcreate(file,"IntArray",H5T_STD_U8BE,dataspace,H5P_DEFAULT);
     pixels=(int **) AcquireMemory(image->rows*sizeof(int *));
-    for (y=0; y < (int) image->rows; y++)
+    for (y=0; y < (long) image->rows; y++)
     {
       pixels[y]=(int *) AcquireMemory(image->columns*sizeof(int));
       q=SetImagePixels(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
-      for (x=0; x < (int) image->columns; x++)
+      for (x=0; x < (long) image->columns; x++)
       {
         pixels[y][x]=Intensity(*q);
         q++;

@@ -97,10 +97,10 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *image;
 
-  int
+  long
     y;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -141,14 +141,14 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Convert AVS raster image to pixel packets.
     */
-    image->columns=(unsigned int) width;
-    image->rows=(unsigned int) height;
+    image->columns= width;
+    image->rows= height;
     image->depth=8;
     pixels=(unsigned char *) AcquireMemory(4*image->columns);
     if (pixels == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitWarning,"Unable to allocate memory",
         image);
-    for (y=0; y < (int) image->rows; y++)
+    for (y=0; y < (long) image->rows; y++)
     {
       count=ReadBlob(image,4*image->columns,pixels);
       if (count == 0)
@@ -158,7 +158,7 @@ static Image *ReadAVSImage(const ImageInfo *image_info,ExceptionInfo *exception)
       q=SetImagePixels(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
-      for (x=0; x < (int) image->columns; x++)
+      for (x=0; x < (long) image->columns; x++)
       {
         q->opacity=(Quantum) (MaxRGB-UpScale(*p++));
         q->red=UpScale(*p++);
@@ -296,7 +296,7 @@ ModuleExport void UnregisterAVSImage(void)
 */
 static unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
 {
-  register int
+  register long
     x,
     y;
 
@@ -338,13 +338,13 @@ static unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
     /*
       Convert MIFF to AVS raster pixels.
     */
-    for (y=0; y < (int) image->rows; y++)
+    for (y=0; y < (long) image->rows; y++)
     {
       p=GetImagePixels(image,0,y,image->columns,1);
       if (p == (PixelPacket *) NULL)
         break;
       q=pixels;
-      for (x=0; x < (int) image->columns; x++)
+      for (x=0; x < (long) image->columns; x++)
       {
         *q++=MaxRGB-DownScale((image->matte ? p->opacity : OpaqueOpacity));
         *q++=DownScale(p->red);

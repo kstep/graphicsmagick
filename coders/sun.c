@@ -235,13 +235,15 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
     *image;
 
   int
-    bit,
+    bit;
+
+  long
     y;
 
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -294,8 +296,8 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
     sun_info.type=ReadBlobMSBLong(image);
     sun_info.maptype=ReadBlobMSBLong(image);
     sun_info.maplength=ReadBlobMSBLong(image);
-    image->columns=(unsigned int) sun_info.width;
-    image->rows=(unsigned int) sun_info.height;
+    image->columns= sun_info.width;
+    image->rows= sun_info.height;
     image->depth=sun_info.depth <= 8 ? 8 : QuantumDepth;
     if (sun_info.depth < 24)
       {
@@ -398,20 +400,20 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Initialize image structure.
     */
     image->matte=(sun_info.depth == 32);
-    image->columns=(unsigned int) sun_info.width;
-    image->rows=(unsigned int) sun_info.height;
+    image->columns= sun_info.width;
+    image->rows= sun_info.height;
     /*
       Convert SUN raster image to pixel packets.
     */
     p=sun_pixels;
     if (sun_info.depth == 1)
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (long) image->rows; y++)
       {
         q=SetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
         indexes=GetIndexes(image);
-        for (x=0; x < ((int) image->columns-7); x+=8)
+        for (x=0; x < ((long) image->columns-7); x+=8)
         {
           for (bit=7; bit >= 0; bit--)
             indexes[x+7-bit]=((*p) & (0x01 << bit) ? 0x00 : 0x01);
@@ -419,7 +421,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
         if ((image->columns % 8) != 0)
           {
-            for (bit=7; bit >= (int) (8-(image->columns % 8)); bit--)
+            for (bit=7; bit >= (long) (8-(image->columns % 8)); bit--)
               indexes[x+7-bit]=((*p) & (0x01 << bit) ? 0x00 : 0x01);
             p++;
           }
@@ -433,13 +435,13 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
       }
     else
       if (image->storage_class == PseudoClass)
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
             indexes[x]=(*p++);
           if ((image->columns % 2) != 0)
             p++;
@@ -450,12 +452,12 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
               MagickMonitor(LoadImageText,y,image->rows);
         }
       else
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
           {
             if (image->matte)
               q->opacity=MaxRGB-UpScale(*p++);
@@ -638,13 +640,13 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
       maplength;
   } SUNInfo;
 
-  int
+  long
     y;
 
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -753,13 +755,13 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
         /*
           Convert DirectClass packet to SUN RGB pixel.
         */
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           p=GetImagePixels(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
             break;
           q=pixels;
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
           {
             if (image->matte)
               *q++=MaxRGB-DownScale(p->opacity);
@@ -792,7 +794,7 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
           if (image->colors == 2)
             polarity=
               Intensity(image->colormap[0]) > Intensity(image->colormap[1]);
-          for (y=0; y < (int) image->rows; y++)
+          for (y=0; y < (long) image->rows; y++)
           {
             p=GetImagePixels(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
@@ -800,7 +802,7 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
             indexes=GetIndexes(image);
             bit=0;
             byte=0;
-            for (x=0; x < (int) image->columns; x++)
+            for (x=0; x < (long) image->columns; x++)
             {
               byte<<=1;
               if (indexes[x] == polarity)
@@ -838,13 +840,13 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
           /*
             Convert PseudoClass packet to SUN colormapped pixel.
           */
-          for (y=0; y < (int) image->rows; y++)
+          for (y=0; y < (long) image->rows; y++)
           {
             p=GetImagePixels(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
             indexes=GetIndexes(image);
-            for (x=0; x < (int) image->columns; x++)
+            for (x=0; x < (long) image->columns; x++)
             {
               (void) WriteBlobByte(image,indexes[x]);
               p++;

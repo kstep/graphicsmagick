@@ -440,10 +440,10 @@ MagickExport unsigned int SignatureImage(Image *image)
   IndexPacket
     *indexes;
 
-  int
+  long
     y;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -471,14 +471,14 @@ MagickExport unsigned int SignatureImage(Image *image)
     Compute image digital signature.
   */
   GetSignatureInfo(&signature_info);
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
     q=message;
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       *q++=XUpScale(p->red) >> 8;
       *q++=XUpScale(p->red);

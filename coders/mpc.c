@@ -316,7 +316,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 }
               if (LocaleCompare(keyword,"colors") == 0)
                 {
-                  image->colors=(unsigned int) atoi(values);
+                  image->colors=atol(values);
                   break;
                 }
               if (LocaleCompare(keyword,"colorspace") == 0)
@@ -357,7 +357,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 }
               if (LocaleCompare(keyword,"columns") == 0)
                 {
-                  image->columns=(unsigned int) atoi(values);
+                  image->columns= atol(values);
                   break;
                 }
               (void) SetImageAttribute(image,keyword,
@@ -369,17 +369,17 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               if (LocaleCompare(keyword,"delay") == 0)
                 {
-                  image->delay=atoi(values);
+                  image->delay=atol(values);
                   break;
                 }
               if (LocaleCompare(keyword,"depth") == 0)
                 {
-                  image->depth=atoi(values) <= 8 ? 8 : 16;
+                  image->depth=atol(values) <= 8 ? 8 : 16;
                   break;
                 }
               if (LocaleCompare(keyword,"dispose") == 0)
                 {
-                  image->dispose=atoi(values);
+                  image->dispose=atol(values);
                   break;
                 }
               (void) SetImageAttribute(image,keyword,
@@ -427,7 +427,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 }
               if (LocaleCompare(keyword,"iterations") == 0)
                 {
-                  image->iterations=atoi(values);
+                  image->iterations=atol(values);
                   break;
                 }
               (void) SetImageAttribute(image,keyword,
@@ -485,12 +485,12 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 {
                   if (LocaleCompare(keyword,"profile-icc") == 0)
                     {
-                      image->color_profile.length=atoi(values);
+                      image->color_profile.length=atol(values);
                       break;
                     }
                   if (LocaleCompare(keyword,"profile-iptc") == 0)
                     {
-                      image->iptc_profile.length=atoi(values);
+                      image->iptc_profile.length=atol(values);
                       break;
                     }
                   i=image->generic_profiles;
@@ -504,7 +504,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                     ThrowReaderException(ResourceLimitWarning,
                       "Memory allocation failed",image);
                   image->generic_profile[i].name=AllocateString(keyword+8);
-                  image->generic_profile[i].length=atoi(values);
+                  image->generic_profile[i].length=atol(values);
                   image->generic_profile[i].info=(unsigned char *) NULL;
                   image->generic_profiles++;
                   break;
@@ -531,7 +531,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               if (LocaleCompare(keyword,"quantum-depth") == 0)
                 {
-                  quantum_depth=atoi(values) <= 8 ? 8 : 16;
+                  quantum_depth=atol(values) <= 8 ? 8 : 16;
                   break;
                 }
               (void) SetImageAttribute(image,keyword,
@@ -573,7 +573,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 }
               if (LocaleCompare(keyword,"rows") == 0)
                 {
-                  image->rows=(unsigned int) atoi(values);
+                  image->rows=atol(values);
                   break;
                 }
               (void) SetImageAttribute(image,keyword,
@@ -585,7 +585,7 @@ static Image *ReadMPCImage(const ImageInfo *image_info,ExceptionInfo *exception)
             {
               if (LocaleCompare(keyword,"scene") == 0)
                 {
-                  image->scene=(unsigned int) atoi(values);
+                  image->scene=atol(values);
                   break;
                 }
               (void) SetImageAttribute(image,keyword,
@@ -901,7 +901,7 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     y;
 
   register PixelPacket
@@ -935,7 +935,7 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
   status=OpenCache(clone_image);
   if (status == False)
     ThrowWriterException(CacheWarning,"Unable to open pixel cache",image);
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
     q=SetImagePixels(clone_image,0,y,clone_image->columns,1);
@@ -948,7 +948,7 @@ static unsigned int WriteMPCImage(const ImageInfo *image_info,Image *image)
     if (!SyncImagePixels(clone_image))
       break;
   }
-  if (y < (int) image->rows)
+  if (y < (long) image->rows)
     ThrowWriterException(CacheWarning,"Unable to clone image",image);
   /*
     Free resources.

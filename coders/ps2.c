@@ -342,12 +342,12 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
 
   int
     count,
-    status,
-    x,
-    y;
+    status;
 
   long
-    j;
+    j,
+    x,
+    y;
 
   register IndexPacket
     *indexes;
@@ -371,14 +371,14 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     *pixels;
 
   unsigned int
-    height,
     page,
     scene,
-    text_size,
-    width;
+    text_size;
 
   unsigned long
-    number_pixels;
+    height,
+    number_pixels,
+    width;
 
   /*
     Open output image file.
@@ -457,7 +457,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
     height=image->rows;
     x=0;
     y=text_size;
-    FormatString(geometry,"%ux%u",image->columns,image->rows);
+    FormatString(geometry,"%lux%lu",image->columns,image->rows);
     if (image_info->page != (char *) NULL)
       (void) strcpy(geometry,image_info->page);
     else
@@ -577,16 +577,16 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
       }
     FormatString(buffer,"%%%%Page:  1 %u\n",page++);
     (void) WriteBlobString(image,buffer);
-    FormatString(buffer,"%%%%PageBoundingBox: %d %d %d %d\n",x,y,
-      x+(int) width,y+(int) (height+text_size));
+    FormatString(buffer,"%%%%PageBoundingBox: %ld %ld %ld %ld\n",x,y,
+      x+(long) width,y+(long) (height+text_size));
     (void) WriteBlobString(image,buffer);
     if (x < bounds.x1)
       bounds.x1=x;
     if (y < bounds.y1)
       bounds.y1=y;
-    if ((x+(int) width-1) > bounds.x2)
+    if ((x+(long) width-1) > bounds.x2)
       bounds.x2=x+width-1;
-    if ((y+(int) (height+text_size)-1) > bounds.y2)
+    if ((y+(long) (height+text_size)-1) > bounds.y2)
       bounds.y2=y+(height+text_size)-1;
     attribute=GetImageAttribute(image,"label");
     if (attribute != (ImageAttribute *) NULL)
@@ -615,7 +615,7 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
         }
         LiberateMemory((void **) &labels);
       }
-    FormatString(buffer,"%u %u\n%u\n%d\n%d\n",image->columns,image->rows,
+    FormatString(buffer,"%lu %lu\n%u\n%d\n%d\n",image->columns,image->rows,
       (int) (image->storage_class == PseudoClass),
       (int) (image->colorspace == CMYKColorspace),
       (int) (compression == NoCompression));
@@ -689,12 +689,12 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
               Dump Packbit encoded pixels.
             */
             q=pixels;
-            for (y=0; y < (int) image->rows; y++)
+            for (y=0; y < (long) image->rows; y++)
             {
               p=GetImagePixels(image,0,y,image->columns,1);
               if (p == (PixelPacket *) NULL)
                 break;
-              for (x=0; x < (int) image->columns; x++)
+              for (x=0; x < (long) image->columns; x++)
               {
                 if (image->matte && (p->opacity == TransparentOpacity))
                   {
@@ -740,12 +740,12 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
               Dump uncompressed DirectColor packets.
             */
             Ascii85Initialize(image);
-            for (y=0; y < (int) image->rows; y++)
+            for (y=0; y < (long) image->rows; y++)
             {
               p=GetImagePixels(image,0,y,image->columns,1);
               if (p == (PixelPacket *) NULL)
                 break;
-              for (x=0; x < (int) image->columns; x++)
+              for (x=0; x < (long) image->columns; x++)
               {
                 if (image->matte && (p->opacity == TransparentOpacity))
                   {
@@ -812,13 +812,13 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                 Dump Runlength encoded pixels.
               */
               q=pixels;
-              for (y=0; y < (int) image->rows; y++)
+              for (y=0; y < (long) image->rows; y++)
               {
                 p=GetImagePixels(image,0,y,image->columns,1);
                 if (p == (PixelPacket *) NULL)
                   break;
                 indexes=GetIndexes(image);
-                for (x=0; x < (int) image->columns; x++)
+                for (x=0; x < (long) image->columns; x++)
                 {
                   *q++=indexes[x];
                   p++;
@@ -845,13 +845,13 @@ static unsigned int WritePS2Image(const ImageInfo *image_info,Image *image)
                 Dump uncompressed PseudoColor packets.
               */
               Ascii85Initialize(image);
-              for (y=0; y < (int) image->rows; y++)
+              for (y=0; y < (long) image->rows; y++)
               {
                 p=GetImagePixels(image,0,y,image->columns,1);
                 if (p == (PixelPacket *) NULL)
                   break;
                 indexes=GetIndexes(image);
-                for (x=0; x < (int) image->columns; x++)
+                for (x=0; x < (long) image->columns; x++)
                   Ascii85Encode(image,indexes[x]);
                 if (image->previous == (Image *) NULL)
                   if (QuantumTick(y,image->rows))

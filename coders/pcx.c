@@ -209,8 +209,9 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   int
     bits,
     id,
-    mask,
-    pcx_packets,
+    mask;
+
+  long
     y;
 
   PCXInfo
@@ -219,7 +220,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -245,7 +246,8 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     status;
 
   unsigned long
-    *page_table;
+    *page_table,
+    pcx_packets;
 
   /*
     Open image file.
@@ -413,7 +415,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Convert PCX raster image to pixel packets.
     */
-    for (y=0; y < (int) image->rows; y++)
+    for (y=0; y < (long) image->rows; y++)
     {
       p=pcx_pixels+(y*pcx_info.bytes_per_line*pcx_info.planes);
       q=SetImagePixels(image,0,y,image->columns,1);
@@ -457,7 +459,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       else
         if (pcx_info.planes > 1)
           {
-            for (x=0; x < (int) image->columns; x++)
+            for (x=0; x < (long) image->columns; x++)
               *r++=0;
             for (i=0; i < pcx_info.planes; i++)
             {
@@ -482,7 +484,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
               register int
                 bit;
 
-              for (x=0; x < ((int) image->columns-7); x+=8)
+              for (x=0; x < ((long) image->columns-7); x+=8)
               {
                 for (bit=7; bit >= 0; bit--)
                   *r++=((*p) & (0x01 << bit) ? 0x01 : 0x00);
@@ -490,7 +492,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
               }
               if ((image->columns % 8) != 0)
                 {
-                  for (bit=7; bit >= (int) (8-(image->columns % 8)); bit--)
+                  for (bit=7; bit >= (long) (8-(image->columns % 8)); bit--)
                     *r++=((*p) & (0x01 << bit) ? 0x01 : 0x00);
                   p++;
                 }
@@ -498,7 +500,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
             case 2:
             {
-              for (x=0; x < ((int) image->columns-3); x+=4)
+              for (x=0; x < ((long) image->columns-3); x+=4)
               {
                 *r++=(*p >> 6) & 0x3;
                 *r++=(*p >> 4) & 0x3;
@@ -516,7 +518,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
             case 4:
             {
-              for (x=0; x < ((int) image->columns-1); x+=2)
+              for (x=0; x < ((long) image->columns-1); x+=2)
               {
                 *r++=(*p >> 4) & 0xf;
                 *r++=(*p) & 0xf;
@@ -538,7 +540,7 @@ static Image *ReadPCXImage(const ImageInfo *image_info,ExceptionInfo *exception)
         Transfer image scanline.
       */
       r=scanline;
-      for (x=0; x < (int) image->columns; x++)
+      for (x=0; x < (long) image->columns; x++)
       {
         if (image->storage_class == PseudoClass)
           indexes[x]=(*r++);
@@ -701,7 +703,7 @@ ModuleExport void UnregisterPCXImage(void)
 */
 static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
 {
-  int
+  long
     y;
 
   PCXInfo
@@ -710,17 +712,18 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
   register IndexPacket
     *indexes;
 
-  register int
+  register long
+    i,
     x;
 
   register PixelPacket
     *p;
 
-  register long
-    i;
-
   register unsigned char
     *q;
+
+  size_t
+    length;
 
   unsigned char
     count,
@@ -730,7 +733,6 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     previous;
 
   unsigned int
-    packets,
     status;
 
   unsigned long
@@ -837,8 +839,8 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlobLSBShort(image,(unsigned int) pcx_info.palette_info);
     for (i=0; i < 58; i++)
       (void) WriteBlobByte(image,'\0');
-    packets=image->rows*pcx_info.bytes_per_line*pcx_info.planes;
-    pcx_pixels=(unsigned char *) AcquireMemory(packets);
+    length=image->rows*pcx_info.bytes_per_line*pcx_info.planes;
+    pcx_pixels=(unsigned char *) AcquireMemory(length);
     if (pcx_pixels == (unsigned char *) NULL)
       ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
         image);
@@ -848,7 +850,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
         /*
           Convert DirectClass image to PCX raster pixels.
         */
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           q=pcx_pixels+(y*pcx_info.bytes_per_line*pcx_info.planes);
           for (i=0; i < pcx_info.planes; i++)
@@ -891,14 +893,14 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
       }
     else
       if (pcx_info.bits_per_pixel > 1)
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           p=GetImagePixels(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
           q=pcx_pixels+y*pcx_info.bytes_per_line;
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
             *q++=indexes[x];
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
@@ -918,7 +920,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
           if (image->colors == 2)
             polarity=Intensity(image->colormap[0]) <
               Intensity(image->colormap[1]);
-          for (y=0; y < (int) image->rows; y++)
+          for (y=0; y < (long) image->rows; y++)
           {
             p=GetImagePixels(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
@@ -927,7 +929,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
             bit=0;
             byte=0;
             q=pcx_pixels+y*pcx_info.bytes_per_line;
-            for (x=0; x < (int) image->columns; x++)
+            for (x=0; x < (long) image->columns; x++)
             {
               byte<<=1;
               if (indexes[x] == polarity)
@@ -951,14 +953,14 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
     /*
       Runlength-encoded PCX pixels.
     */
-    for (y=0; y < (int) image->rows; y++)
+    for (y=0; y < (long) image->rows; y++)
     {
       q=pcx_pixels+(y*pcx_info.bytes_per_line*pcx_info.planes);
       for (i=0; i < pcx_info.planes; i++)
       {
         previous=(*q++);
         count=1;
-        for (x=0; x < (pcx_info.bytes_per_line-1); x++)
+        for (x=0; x < (long) (pcx_info.bytes_per_line-1); x++)
         {
           packet=(*q++);
           if ((packet == previous) && (count < 63))

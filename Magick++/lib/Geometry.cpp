@@ -203,10 +203,10 @@ Magick::Geometry::operator = ( const std::string &geometry_ )
 	}
     }
 
-  int x = 0;
-  int y = 0;
-  unsigned int width_val = 0;
-  unsigned int height_val = 0;
+  long x = 0;
+  long y = 0;
+  unsigned long width_val = 0;
+  unsigned long height_val = 0;
   int flags = GetGeometry ( geom,
 			    &x, &y, &width_val, &height_val );
 

@@ -96,21 +96,21 @@ static unsigned int DecodeImage(Image *image,const long channel)
   int
     count;
 
+  long
+    number_pixels;
+
   Quantum
     pixel;
 
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     i,
     x;
 
   register PixelPacket
     *q;
-
-  long
-    number_pixels;
 
   x=0;
   number_pixels=image->columns*image->rows;
@@ -375,7 +375,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     unsigned char
       reserved[6];
 
-    unsigned int
+    unsigned long
       rows,
       columns;
 
@@ -393,15 +393,13 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   IndexPacket
     *indexes;
 
-  int
-    y;
-
   LayerInfo
     *layer_info;
 
   long
     j,
-    number_layers;
+    number_layers,
+    y;
 
   PSDInfo
     psd_info;
@@ -409,7 +407,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Quantum
     pixel;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -450,8 +448,8 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     ThrowReaderException(CorruptImageWarning,"Not a PSD image file",image);
   (void) ReadBlob(image,6,(char *) psd_info.reserved);
   psd_info.channels=ReadBlobMSBShort(image);
-  psd_info.rows=(unsigned int) ReadBlobMSBLong(image);
-  psd_info.columns=(unsigned int) ReadBlobMSBLong(image);
+  psd_info.rows=ReadBlobMSBLong(image);
+  psd_info.columns= ReadBlobMSBLong(image);
   psd_info.depth=ReadBlobMSBShort(image);
   psd_info.mode=ReadBlobMSBShort(image);
   /*
@@ -530,12 +528,10 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       (void) memset(layer_info,0,number_layers*sizeof(LayerInfo));
       for (i=0; i < number_layers; i++)
       {
-        layer_info[i].page.y=(int) ReadBlobMSBLong(image);
-        layer_info[i].page.x=(int) ReadBlobMSBLong(image);
-        layer_info[i].page.height=(unsigned int)
-	  (ReadBlobMSBLong(image)-layer_info[i].page.y);
-        layer_info[i].page.width=(unsigned int)
-	  (ReadBlobMSBLong(image)-layer_info[i].page.x);
+        layer_info[i].page.y=ReadBlobMSBLong(image);
+        layer_info[i].page.x=ReadBlobMSBLong(image);
+        layer_info[i].page.height=(ReadBlobMSBLong(image)-layer_info[i].page.y);
+        layer_info[i].page.width=(ReadBlobMSBLong(image)-layer_info[i].page.x);
         layer_info[i].channels=ReadBlobMSBShort(image);
         for (j=0; j < layer_info[i].channels; j++)
         {
@@ -560,11 +556,11 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 /*
                   Layer mask info.
                 */
-                layer_info[i].mask.y=(int) ReadBlobMSBLong(image);
-                layer_info[i].mask.x=(int) ReadBlobMSBLong(image);
-                layer_info[i].mask.height=(unsigned int)
+                layer_info[i].mask.y=ReadBlobMSBLong(image);
+                layer_info[i].mask.x=ReadBlobMSBLong(image);
+                layer_info[i].mask.height=
                   (ReadBlobMSBLong(image)-layer_info[i].mask.y);
-                layer_info[i].mask.width=(unsigned int)
+                layer_info[i].mask.width=
                   (ReadBlobMSBLong(image)-layer_info[i].mask.x);
                 for (j=0; j < (long) (length-16); j++)
                   (void) ReadBlobByte(image);
@@ -619,7 +615,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
               /*
                 Read RLE compressed data.
               */
-              for (y=0; y < (int) layer_info[i].image->rows; y++)
+              for (y=0; y < (long) layer_info[i].image->rows; y++)
                 (void) ReadBlobMSBShort(layer_info[i].image);
               (void) DecodeImage(layer_info[i].image,
                 layer_info[i].channel_info[j].type);
@@ -642,7 +638,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           if (scanline == (unsigned char *) NULL)
             ThrowReaderException(ResourceLimitWarning,
               "Memory allocation failed",image);
-          for (y=0; y < (int) layer_info[i].image->rows; y++)
+          for (y=0; y < (long) layer_info[i].image->rows; y++)
           {
             q=GetImagePixels(layer_info[i].image,0,y,
               layer_info[i].image->columns,1);
@@ -652,7 +648,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             (void) ReadBlob(layer_info[i].image,packet_size*
               layer_info[i].image->columns,(char *) scanline);
             indexes=GetIndexes(layer_info[i].image);
-            for (x=0; x < (int) layer_info[i].image->columns; x++)
+            for (x=0; x < (long) layer_info[i].image->columns; x++)
             {
               pixel=scanline[x];
               switch (layer_info[i].channel_info[j].type)
@@ -713,14 +709,14 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Correct for opacity level.
             */
-            for (y=0; y < (int) layer_info[i].image->rows; y++)
+            for (y=0; y < (long) layer_info[i].image->rows; y++)
             {
               q=GetImagePixels(layer_info[i].image,0,y,
                 layer_info[i].image->columns,1);
               if (q == (PixelPacket *) NULL)
                 break;
               indexes=GetIndexes(image);
-              for (x=0; x < (int) layer_info[i].image->columns; x++)
+              for (x=0; x < (long) layer_info[i].image->columns; x++)
               {
                 q->opacity=((unsigned long)
                   (q->opacity*layer_info[i].opacity)/MaxRGB);
@@ -738,13 +734,13 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             /*
               Correct CMYK levels.
             */
-            for (y=0; y < (int) layer_info[i].image->rows; y++)
+            for (y=0; y < (long) layer_info[i].image->rows; y++)
             {
               q=GetImagePixels(layer_info[i].image,0,y,
                 layer_info[i].image->columns,1);
               if (q == (PixelPacket *) NULL)
                 break;
-              for (x=0; x < (int) layer_info[i].image->columns; x++)
+              for (x=0; x < (long) layer_info[i].image->columns; x++)
               {
                 q->red=MaxRGB-q->red;
                 q->green=MaxRGB-q->green;
@@ -807,20 +803,20 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           image);
       for (i=0; i < psd_info.channels; i++)
       {
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           q=GetImagePixels(image,0,y,image->columns,1);
           count=ReadBlob(image,packet_size*image->columns,(char *) scanline);
           if ((count == 0) || (q == (PixelPacket *) NULL))
             break;
           indexes=GetIndexes(image);
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
           {
-            int
+            long
               channel;
 
             pixel=scanline[x];
-            channel=(int) i;
+            channel=i;
             switch (image->matte ? channel-1 : channel)
             {
               case -1:
@@ -878,12 +874,12 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       /*
         Correct CMYK levels.
       */
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (long) image->rows; y++)
       {
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (int) image->columns; x++)
+        for (x=0; x < (long) image->columns; x++)
         {
           q->red=MaxRGB-q->red;
           q->green=MaxRGB-q->green;
@@ -1037,13 +1033,14 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobMSBLong(image,image->rows);
   (void) WriteBlobMSBLong(image,image->columns);
   (void) WriteBlobMSBShort(image,
-    (unsigned int) (image->storage_class == PseudoClass ? 8 : image->depth));
+    (image->storage_class == PseudoClass ? 8 : image->depth));
   if (((image_info->colorspace != UndefinedColorspace) ||
        (image->colorspace != CMYKColorspace)) &&
        (image_info->colorspace != CMYKColorspace))
     {
       (void) TransformRGBImage(image,RGBColorspace);
-      (void) WriteBlobMSBShort(image,image->storage_class == PseudoClass ? 2 : 3);
+      (void) WriteBlobMSBShort(image,
+        image->storage_class == PseudoClass ? 2 : 3);
     }
   else
     {
@@ -1079,7 +1076,7 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
     Write uncompressed pixel data as separate planes.
   */
   if (image->storage_class == PseudoClass)
-    for (y=0; y < (int) image->rows; y++)
+    for (y=0; y < (long) image->rows; y++)
     {
       if (!GetImagePixels(image,0,y,image->columns,1))
         break;
@@ -1092,21 +1089,21 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
   else
     {
       packet_size=image->depth > 8 ? 2 : 1;
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (long) image->rows; y++)
       {
         if (!GetImagePixels(image,0,y,image->columns,1))
           break;
         (void) PopImagePixels(image,RedQuantum,pixels);
         (void) WriteBlob(image,packet_size*image->columns,pixels);
       }
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (long) image->rows; y++)
       {
         if (!GetImagePixels(image,0,y,image->columns,1))
           break;
         (void) PopImagePixels(image,GreenQuantum,pixels);
         (void) WriteBlob(image,packet_size*image->columns,pixels);
       }
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (long) image->rows; y++)
       {
         if (!GetImagePixels(image,0,y,image->columns,1))
           break;
@@ -1114,7 +1111,7 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
         (void) WriteBlob(image,packet_size*image->columns,pixels);
       }
       if (image->colorspace == CMYKColorspace)
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           if (!GetImagePixels(image,0,y,image->columns,1))
             break;
@@ -1122,7 +1119,7 @@ static unsigned int WritePSDImage(const ImageInfo *image_info,Image *image)
           (void) WriteBlob(image,packet_size*image->columns,pixels);
         }
       if (image->matte)
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           if (!GetImagePixels(image,0,y,image->columns,1))
             break;

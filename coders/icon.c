@@ -151,13 +151,15 @@ static Image *ReadIconImage(const ImageInfo *image_info,
 
   int
     bit,
-    byte,
+    byte;
+
+  long
     y;
  
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     i,
     x;
 
@@ -212,8 +214,8 @@ static Image *ReadIconImage(const ImageInfo *image_info,
     icon_info.number_colors=ReadBlobLSBLong(image);
     icon_info.colors_important=ReadBlobLSBLong(image);
     image->matte=icon_info.bits_per_pixel == 32;
-    image->columns=(unsigned int) icon_info.width;
-    image->rows=(unsigned int) icon_info.height;
+    image->columns= icon_info.width;
+    image->rows= icon_info.height;
     image->depth=8;
     if ((icon_info.number_colors != 0) || (icon_info.bits_per_pixel < 16))
       {
@@ -269,7 +271,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
           if (q == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
-          for (x=0; x < ((int) image->columns-7); x+=8)
+          for (x=0; x < ((long) image->columns-7); x+=8)
           {
             byte=ReadBlobByte(image);
             for (bit=0; bit < 8; bit++)
@@ -278,7 +280,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
           if ((image->columns % 8) != 0)
             {
               byte=ReadBlobByte(image);
-              for (bit=0; bit < (int) (image->columns % 8); bit++)
+              for (bit=0; bit < (long) (image->columns % 8); bit++)
                 indexes[x+bit]=((byte) & (0x80 >> bit) ? 0x01 : 0x00);
             }
           if (!SyncImagePixels(image))
@@ -300,7 +302,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
           if (q == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
-          for (x=0; x < ((int) image->columns-1); x+=2)
+          for (x=0; x < ((long) image->columns-1); x+=2)
           {
             byte=ReadBlobByte(image);
             indexes[x]=(byte >> 4) & 0xf;
@@ -330,7 +332,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
           if (q == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
           {
             byte=ReadBlobByte(image);
             indexes[x]=(IndexPacket) byte;
@@ -354,7 +356,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
           if (q == (PixelPacket *) NULL)
             break;
           indexes=GetIndexes(image);
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
           {
             byte=ReadBlobByte(image);
             indexes[x]=(IndexPacket) byte;
@@ -380,7 +382,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
           {
             q->blue=UpScale(ReadBlobByte(image));
             q->green=UpScale(ReadBlobByte(image));
@@ -411,7 +413,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
       q=GetImagePixels(image,0,y,image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
-      for (x=0; x < ((int) image->columns-7); x+=8)
+      for (x=0; x < ((long) image->columns-7); x+=8)
       {
         byte=ReadBlobByte(image);
         for (bit=0; bit < 8; bit++)
@@ -421,7 +423,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
       if ((image->columns % 8) != 0)
         {
           byte=ReadBlobByte(image);
-          for (bit=0; bit < (int) (image->columns % 8); bit++)
+          for (bit=0; bit < (long) (image->columns % 8); bit++)
             q[x+bit].opacity=
               (byte & (0x80 >> bit) ? TransparentOpacity : OpaqueOpacity);
         }
@@ -439,7 +441,7 @@ static Image *ReadIconImage(const ImageInfo *image_info,
     if (image_info->subrange != 0)
       if (image->scene >= (image_info->subimage+image_info->subrange-1))
         break;
-    if (i < (icon_file.count-1))
+    if (i < (long) (icon_file.count-1))
       {
         /*
           Allocate next image structure.

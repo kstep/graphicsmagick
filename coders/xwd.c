@@ -149,13 +149,15 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
     index;
 
   int
-    status,
+    status;
+
+  long
     y;
 
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -356,14 +358,14 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         Convert X image to DirectClass packets.
       */
       if (image->colors != 0)
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
           {
-            pixel=XGetPixel(ximage,x,y);
+            pixel=XGetPixel(ximage,(int) x,(int) y);
             index=(unsigned short) ((pixel >> red_shift) & red_mask);
             q->red=XDownScale(colors[index].red);
             index=(unsigned short) ((pixel >> green_shift) & green_mask);
@@ -378,14 +380,14 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
             MagickMonitor(LoadImageText,y,image->rows);
         }
       else
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           q=SetImagePixels(image,0,y,image->columns,1);
           if (q == (PixelPacket *) NULL)
             break;
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
           {
-            pixel=XGetPixel(ximage,x,y);
+            pixel=XGetPixel(ximage,(int) x,(int) y);
             color=(pixel >> red_shift) & red_mask;
             q->red=XDownScale((color*65535L)/red_mask);
             color=(pixel >> green_shift) & green_mask;
@@ -415,16 +417,15 @@ static Image *ReadXWDImage(const ImageInfo *image_info,ExceptionInfo *exception)
         image->colormap[i].green=XDownScale(colors[i].green);
         image->colormap[i].blue=XDownScale(colors[i].blue);
       }
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (long) image->rows; y++)
       {
         q=SetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
         indexes=GetIndexes(image);
-        for (x=0; x < (int) image->columns; x++)
+        for (x=0; x < (long) image->columns; x++)
         {
-          index=ValidateColormapIndex(image,
-            (unsigned int) XGetPixel(ximage,x,y));
+          index=ValidateColormapIndex(image,XGetPixel(ximage,(int) x,(int) y));
           indexes[x]=index;
           *q++=image->colormap[index];
         }
@@ -576,13 +577,13 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
     *pixels;
 
   unsigned int
-    bits_per_pixel,
-    bytes_per_line,
-    scanline_pad,
     status;
 
   unsigned long
-    lsb_first;
+    bits_per_pixel,
+    bytes_per_line,
+    lsb_first,
+    scanline_pad;
 
   XWDFileHeader
     xwd_info;
@@ -689,16 +690,15 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
   /*
     Convert MIFF to XWD raster pixels.
   */
-  scanline_pad=(unsigned int)
-    (bytes_per_line-((image->columns*bits_per_pixel) >> 3));
-  for (y=0; y < (int) image->rows; y++)
+  scanline_pad=(bytes_per_line-((image->columns*bits_per_pixel) >> 3));
+  for (y=0; y < (long) image->rows; y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
     q=pixels;
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       if (image->storage_class == PseudoClass)
         *q++=indexes[x];
@@ -710,7 +710,7 @@ static unsigned int WriteXWDImage(const ImageInfo *image_info,Image *image)
         }
       p++;
     }
-    for (x=0; x < (int) scanline_pad; x++)
+    for (x=0; x < (long) scanline_pad; x++)
       *q++=0;
     (void) WriteBlob(image,q-pixels,(char *) pixels);
     if (image->previous == (Image *) NULL)

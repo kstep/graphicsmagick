@@ -108,10 +108,10 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
   Image
     *image;
 
-  int
+  long
     y;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -150,12 +150,12 @@ static Image *ReadGRADIENTImage(const ImageInfo *image_info,
   /*
     Initialize image pixels.
   */
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     q=SetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       HSLTransform(hue,saturation,brightness,&q->red,&q->green,&q->blue);
       q++;

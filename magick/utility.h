@@ -42,14 +42,13 @@ extern MagickExport char
   *TranslateText(const ImageInfo *,Image *,const char *);
 
 extern MagickExport int
-  GetGeometry(const char *,int *,int *,unsigned int *,unsigned int *),
+  GetGeometry(const char *,long *,long *,unsigned long *,unsigned long *),
   GlobExpression(const char *,const char *),
   LocaleNCompare(const char *,const char *,size_t),
   LocaleCompare(const char *,const char *),
-  MultilineCensus(const char *),
-  ParseGeometry(const char *,int *,int *,unsigned int *,unsigned int *),
+  ParseGeometry(const char *,long *,long *,unsigned long *,unsigned long *),
   SystemCommand(const unsigned int,const char *),
-  Tokenizer(TokenInfo *,unsigned,char *,int,char *,char *,char *,char *,
+  Tokenizer(TokenInfo *,unsigned,char *,long,char *,char *,char *,char *,
     char,char *,int *,char *);
 
 extern MagickExport unsigned int
@@ -58,6 +57,9 @@ extern MagickExport unsigned int
   ExecutePostscriptInterpreter(const unsigned int,const char *),
   ExpandFilenames(int *,char ***),
   IsAccessible(const char *);
+
+extern MagickExport unsigned long
+  MultilineCensus(const char *);
 
 extern MagickExport void
   *AcquireMemory(const size_t),

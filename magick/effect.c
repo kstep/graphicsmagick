@@ -110,10 +110,10 @@ MagickExport Image *AddNoiseImage(Image *image,const NoiseType noise_type,
   Image
     *noise_image;
 
-  int
+  long
     y;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -134,13 +134,13 @@ MagickExport Image *AddNoiseImage(Image *image,const NoiseType noise_type,
   /*
     Add noise in each row.
   */
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
     q=SetImagePixels(noise_image,0,y,noise_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       q->red=GenerateNoise(p->red,noise_type);
       q->green=GenerateNoise(p->green,noise_type);
@@ -238,7 +238,8 @@ MagickExport Image *AddNoiseImage(Image *image,const NoiseType noise_type,
 */
 
 static void BlurScanline(const double *kernel,const int width,
-  const PixelPacket *source,PixelPacket *destination,const unsigned int columns)
+  const PixelPacket *source,PixelPacket *destination,
+  const unsigned long columns)
 {
   AggregatePacket
     aggregate;
@@ -252,19 +253,19 @@ static void BlurScanline(const double *kernel,const int width,
   register const PixelPacket
     *q;
 
-  register int
+  register long
     i,
     x;
 
-  if (width > columns)
+  if ((unsigned long) width > columns)
     {
-      for (x=0; x < (int) columns; x++)
+      for (x=0; x < (long) columns; x++)
       {
         (void) memset(&aggregate,0,sizeof(AggregatePacket));
         scale=0.0;
         p=kernel;
         q=source;
-        for (i=0; i < (int) columns; i++)
+        for (i=0; i < (long) columns; i++)
         {
           if ((i >= (x-width/2)) && (i <= (x+width/2)))
             {
@@ -273,7 +274,7 @@ static void BlurScanline(const double *kernel,const int width,
               aggregate.blue+=(*p)*q->blue;
               aggregate.opacity+=(*p)*q->opacity;
             }
-          if (((i+width/2-x) >= 0) && ((i+width/2-x) < width))
+          if (((i+width/2-x) >= 0) && ((i+width/2-x) < (long) width))
             scale+=kernel[i+width/2-x];
           p++;
           q++;
@@ -289,13 +290,13 @@ static void BlurScanline(const double *kernel,const int width,
   /*
     Blur scanline.
   */
-  for (x=0; x < (width/2); x++)
+  for (x=0; x < (long) (width/2); x++)
   {
     (void) memset(&aggregate,0,sizeof(AggregatePacket));
     scale=0.0;
     p=kernel+width/2-x;
     q=source;
-    for (i=width/2-x; i < width; i++)
+    for (i=width/2-x; i < (long) width; i++)
     {
       aggregate.red+=(*p)*q->red;
       aggregate.green+=(*p)*q->green;
@@ -311,12 +312,12 @@ static void BlurScanline(const double *kernel,const int width,
     destination[x].blue=(Quantum) (scale*(aggregate.blue+0.5));
     destination[x].opacity=(Quantum) (scale*(aggregate.opacity+0.5));
   }
-  for ( ; x < (int) (columns-width/2); x++)
+  for ( ; x < (long) (columns-width/2); x++)
   {
     (void) memset(&aggregate,0,sizeof(AggregatePacket));
     p=kernel;
     q=source+(x-width/2);
-    for (i=0; i < width; i++)
+    for (i=0; i < (long) width; i++)
     {
       aggregate.red+=(*p)*q->red;
       aggregate.green+=(*p)*q->green;
@@ -330,13 +331,13 @@ static void BlurScanline(const double *kernel,const int width,
     destination[x].blue=(Quantum) (aggregate.blue+0.5);
     destination[x].opacity=(Quantum) (aggregate.opacity+0.5);
   }
-  for ( ; x < (int) columns; x++)
+  for ( ; x < (long) columns; x++)
   {
     (void) memset(&aggregate,0,sizeof(AggregatePacket));
     scale=0;
     p=kernel;
     q=source+(x-width/2);
-    for (i=0; i < (columns-x+width/2); i++)
+    for (i=0; i < (long) (columns-x+width/2); i++)
     {
       aggregate.red+=(*p)*q->red;
       aggregate.green+=(*p)*q->green;
@@ -403,7 +404,9 @@ MagickExport Image *BlurImage(Image *image,const double radius,
     *blur_image;
 
   int
-    width,
+    width;
+
+  long
     y;
 
   PixelPacket
@@ -411,7 +414,7 @@ MagickExport Image *BlurImage(Image *image,const double radius,
     *q,
     *scanline;
 
-  register int
+  register long
     x;
 
   /*
@@ -469,7 +472,7 @@ MagickExport Image *BlurImage(Image *image,const double radius,
   /*
     Blur the image rows.
   */
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
     q=SetImagePixels(blur_image,0,y,image->columns,1);
@@ -484,7 +487,7 @@ MagickExport Image *BlurImage(Image *image,const double radius,
   /*
     Blur the image columns.
   */
-  for (x=0; x < (int) image->columns; x++)
+  for (x=0; x < (long) image->columns; x++)
   {
     q=GetImagePixels(blur_image,x,0,1,image->rows);
     if (q == (PixelPacket *) NULL)
@@ -612,13 +615,11 @@ MagickExport Image *ColorizeImage(Image *image,const char *opacity,
   Image
     *colorize_image;
 
-  int
+  long
+    count,
     y;
 
-  long
-    count;
-
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -653,13 +654,13 @@ MagickExport Image *ColorizeImage(Image *image,const char *opacity,
   /*
     Colorize DirectClass image.
   */
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
     q=SetImagePixels(colorize_image,0,y,colorize_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       q->red=(Quantum) ((p->red*(100.0-red)+target.red*red)/100.0);
       q->green=(Quantum) ((p->green*(100.0-green)+target.green*green)/100.0);
@@ -715,10 +716,10 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int order,
   const double *kernel,ExceptionInfo *exception)
 {
 #define ConvolveImageText  "  Convolving image...  "
-#define Cx(x) (x) < 0 ? (x)+(int) image->columns : \
-  (x) >= (int) image->columns ? (x)-image->columns : x
-#define Cy(y) (y) < 0 ? (y)+(int) image->rows : \
-  (y) >= (int) image->rows ? (y)-image->rows : y
+#define Cx(x) (x) < 0 ? (x)+(long) image->columns : \
+  (x) >= (long) image->columns ? (x)-image->columns : x
+#define Cy(y) (y) < 0 ? (y)+(long) image->rows : \
+  (y) >= (long) image->rows ? (y)-image->rows : y
 
   AggregatePacket
     aggregate;
@@ -729,7 +730,7 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int order,
   Image
     *convolve_image;
 
-  int
+  long
     width,
     y;
 
@@ -740,7 +741,7 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int order,
   register const double
     *k;
 
-  register int
+  register long
     i,
     u,
     v,
@@ -761,7 +762,7 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int order,
   if ((width % 2) == 0)
     ThrowImageException(OptionWarning,"Unable to convolve image",
       "kernel width must be an odd number");
-  if (((int) image->columns < width) || ((int) image->rows < width))
+  if (((long) image->columns < width) || ((long) image->rows < width))
     ThrowImageException(OptionWarning,"Unable to convolve image",
       "image smaller than kernel width");
   convolve_image=CloneImage(image,image->columns,image->rows,False,exception);
@@ -774,18 +775,18 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int order,
   normalize=0.0;
   for (i=0; i < (width*width); i++)
     normalize+=kernel[i];
-  for (y=0; y < (int) convolve_image->rows; y++)
+  for (y=0; y < (long) convolve_image->rows; y++)
   {
     p=(PixelPacket *) NULL;
     q=SetImagePixels(convolve_image,0,y,convolve_image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (int) convolve_image->columns; x++)
+    for (x=0; x < (long) convolve_image->columns; x++)
     {
       (void) memset(&aggregate,0,sizeof(AggregatePacket));
       k=kernel;
-      if ((x < (width/2)) || (x >= (int) (image->columns-width/2)) ||
-          (y < (width/2)) || (y >= (int) (image->rows-width/2)))
+      if ((x < (width/2)) || (x >= (long) (image->columns-width/2)) ||
+          (y < (width/2)) || (y >= (long) (image->rows-width/2)))
         {
           for (v=(-width/2); v <= (width/2); v++)
           {
@@ -889,15 +890,17 @@ MagickExport Image *DespeckleImage(Image *image,ExceptionInfo *exception)
     *despeckle_image;
 
   int
+    layer;
+
+  long
     j,
-    layer,
     y;
 
   Quantum
     *buffer,
     *pixels;
 
-  register int
+  register long
     i,
     x;
 
@@ -943,13 +946,13 @@ MagickExport Image *DespeckleImage(Image *image,ExceptionInfo *exception)
     (void) memset(buffer,0,length);
     (void) memset(pixels,0,length);
     j=image->columns+2;
-    for (y=0; y < (int) image->rows; y++)
+    for (y=0; y < (long) image->rows; y++)
     {
       p=GetImagePixels(image,0,y,image->columns,1);
       if (p == (PixelPacket *) NULL)
         break;
       j++;
-      for (x=0; x < (int) image->columns; x++)
+      for (x=0; x < (long) image->columns; x++)
       {
         switch (layer)
         {
@@ -967,19 +970,19 @@ MagickExport Image *DespeckleImage(Image *image,ExceptionInfo *exception)
     for (i=0; i < 4; i++)
     {
       MagickMonitor(DespeckleImageText,4*layer+i,15);
-      Hull(X[i],Y[i],1,image->columns,image->rows,pixels,buffer);
-      Hull(-X[i],-Y[i],1,image->columns,image->rows,pixels,buffer);
-      Hull(-X[i],-Y[i],-1,image->columns,image->rows,pixels,buffer);
-      Hull(X[i],Y[i],-1,image->columns,image->rows,pixels,buffer);
+      Hull(X[i],Y[i],image->columns,image->rows,pixels,buffer,1);
+      Hull(-X[i],-Y[i],image->columns,image->rows,pixels,buffer,1);
+      Hull(-X[i],-Y[i],image->columns,image->rows,pixels,buffer,-1);
+      Hull(X[i],Y[i],image->columns,image->rows,pixels,buffer,-1);
     }
     j=image->columns+2;
-    for (y=0; y < (int) image->rows; y++)
+    for (y=0; y < (long) image->rows; y++)
     {
       q=GetImagePixels(despeckle_image,0,y,despeckle_image->columns,1);
       if (q == (PixelPacket *) NULL)
         break;
       j++;
-      for (x=0; x < (int) image->columns; x++)
+      for (x=0; x < (long) image->columns; x++)
       {
         switch (layer)
         {
@@ -1059,7 +1062,7 @@ MagickExport Image *EdgeImage(Image *image,const double radius,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth(radius,0.5);
-  if (((int) image->columns < width) || ((int) image->rows < width))
+  if (((long) image->columns < width) || ((long) image->rows < width))
     ThrowImageException(OptionWarning,"Unable to edge image",
       "image is smaller than radius");
   kernel=(double *) AcquireMemory(width*width*sizeof(double));
@@ -1239,16 +1242,14 @@ MagickExport Image *EnhanceImage(Image *image,ExceptionInfo *exception)
   Image
     *enhance_image;
 
-  int
-    y;
-
   long
-    distance;
+    distance,
+    y;
 
   PixelPacket
     pixel;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -1272,12 +1273,12 @@ MagickExport Image *EnhanceImage(Image *image,ExceptionInfo *exception)
   /*
     Enhance image.
   */
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     /*
       Read another scan line.
     */
-    p=GetImagePixels(image,0,Min(Max(y-2,0),(int) image->rows-5),
+    p=GetImagePixels(image,0,Min(Max(y-2,0),(long) image->rows-5),
       image->columns,5);
     q=SetImagePixels(enhance_image,0,y,enhance_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
@@ -1287,7 +1288,7 @@ MagickExport Image *EnhanceImage(Image *image,ExceptionInfo *exception)
     */
     *q++=(*(p+2*image->columns));
     *q++=(*(p+2*image->columns+1));
-    for (x=2; x < (int) (image->columns-2); x++)
+    for (x=2; x < (long) (image->columns-2); x++)
     {
       /*
         Compute weighted average of target pixel color components.
@@ -1381,7 +1382,7 @@ MagickExport Image *GaussianBlurImage(Image *image,const double radius,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth2D(radius,sigma);
-  if (((int) image->columns < width) || ((int) image->rows < width))
+  if (((long) image->columns < width) || ((long) image->rows < width))
     ThrowImageException(OptionWarning,"Unable to Gaussian blur image",
       "image is smaller than radius");
   kernel=(double *) AcquireMemory(width*width*sizeof(double));
@@ -1454,10 +1455,10 @@ MagickExport Image *ImplodeImage(Image *image,const double amount,
   Image
     *implode_image;
 
-  int
+  long
     y;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -1495,13 +1496,13 @@ MagickExport Image *ImplodeImage(Image *image,const double amount,
   /*
     Implode each row.
   */
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     q=SetImagePixels(implode_image,0,y,implode_image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     y_distance=y_scale*(y-y_center);
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       /*
         Determine if the pixel is within an ellipse.
@@ -1630,7 +1631,7 @@ MagickExport Image *MedianFilterImage(Image *image,const double radius,
   Image
     *median_image;
 
-  int
+  long
     center,
     width,
     y;
@@ -1640,7 +1641,7 @@ MagickExport Image *MedianFilterImage(Image *image,const double radius,
     *p,
     *w;
 
-  register int
+  register long
     u,
     v,
     x;
@@ -1657,7 +1658,7 @@ MagickExport Image *MedianFilterImage(Image *image,const double radius,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth(radius,0.5);
-  if (((int) image->columns < width) || ((int) image->rows < width))
+  if (((long) image->columns < width) || ((long) image->rows < width))
     ThrowImageException(OptionWarning,"Unable to median filter image",
       "image smaller than kernel radius");
   median_image=CloneImage(image,image->columns,image->rows,False,exception);
@@ -1678,17 +1679,17 @@ MagickExport Image *MedianFilterImage(Image *image,const double radius,
     Median filter each image row.
   */
   center=width*width/2;
-  for (y=0; y < (int) median_image->rows; y++)
+  for (y=0; y < (long) median_image->rows; y++)
   {
-    v=Min(Max(y-width/2,0),(int) image->rows-width);
+    v=Min(Max(y-width/2,0),(long) image->rows-width);
     p=GetImagePixels(image,0,v,image->columns,width);
     q=SetImagePixels(median_image,0,y,median_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    for (x=0; x < (int) median_image->columns; x++)
+    for (x=0; x < (long) median_image->columns; x++)
     {
       w=window;
-      s=p+Min(Max(x-width/2,0),(int) image->columns-width);
+      s=p+Min(Max(x-width/2,0),(long) image->columns-width);
       for (v=0; v < width; v++)
       {
         for (u=0; u < width; u++)
@@ -1761,7 +1762,7 @@ MagickExport Image *MorphImages(Image *image,const unsigned long number_frames,
     *morph_image,
     *morph_images;
 
-  int
+  long
     y;
 
   MonitorHandler
@@ -1770,7 +1771,7 @@ MagickExport Image *MorphImages(Image *image,const unsigned long number_frames,
   register Image
     *next;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -1845,13 +1846,13 @@ MagickExport Image *MorphImages(Image *image,const unsigned long number_frames,
           return((Image *) NULL);
         }
       morph_images->storage_class=DirectClass;
-      for (y=0; y < (int) morph_images->rows; y++)
+      for (y=0; y < (long) morph_images->rows; y++)
       {
         p=GetImagePixels(morph_image,0,y,morph_image->columns,1);
         q=GetImagePixels(morph_images,0,y,morph_images->columns,1);
         if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
           break;
-        for (x=0; x < (int) morph_images->columns; x++)
+        for (x=0; x < (long) morph_images->columns; x++)
         {
           q->red=(Quantum) (alpha*q->red+beta*p->red+0.5);
           q->green=(Quantum) (alpha*q->green+beta*p->green+0.5);
@@ -1978,7 +1979,9 @@ MagickExport Image *MotionBlurImage(Image *image,const double radius,
     *blur_image;
 
   int
-    width,
+    width;
+
+  long
     y;
 
   PixelPacket
@@ -1988,10 +1991,12 @@ MagickExport Image *MotionBlurImage(Image *image,const double radius,
     *offsets;
 
   register int
-    i,
+    i;
+
+  register long
+    x,
     u,
-    v,
-    x;
+    v;
 
   register PixelPacket
     *q;
@@ -2049,20 +2054,20 @@ MagickExport Image *MotionBlurImage(Image *image,const double radius,
     offsets[i].x=i*x/sqrt(x*x+y*y);
     offsets[i].y=i*y/sqrt(x*x+y*y);
   }
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     q=GetImagePixels(blur_image,0,y,blur_image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       (void) memset(&aggregate,0,sizeof(AggregatePacket));
       for (i=0; i < width; i++)
       {
-        u=x+(int) offsets[i].x;
-        v=y+(int) offsets[i].y;
-        if ((u < 0) || (u >= (int) image->columns) ||
-            (v < 0) || (v >= (int) image->rows))
+        u=x+(long) offsets[i].x;
+        v=y+(long) offsets[i].y;
+        if ((u < 0) || (u >= (long) image->columns) ||
+            (v < 0) || (v >= (long) image->rows))
           continue;
         pixel=GetOnePixel(image,u,v);
         aggregate.red+=kernel[i]*pixel.red;
@@ -2127,16 +2132,14 @@ MagickExport Image *OilPaintImage(Image *image,const double radius,
   Image
     *paint_image;
 
-  int
+  long
     count,
     j,
+    k,
     width,
     y;
 
-  long
-    k;
-
-  register int
+  register long
     i,
     x;
 
@@ -2156,7 +2159,7 @@ MagickExport Image *OilPaintImage(Image *image,const double radius,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth(radius,0.5);
-  if (((int) image->columns < width) || ((int) image->rows < width))
+  if (((long) image->columns < width) || ((long) image->rows < width))
     ThrowImageException(OptionWarning,"Unable to oil paint",
       "image smaller than radius");
   paint_image=CloneImage(image,0,0,False,exception);
@@ -2177,7 +2180,7 @@ MagickExport Image *OilPaintImage(Image *image,const double radius,
     Paint each row of the image.
   */
   k=0;
-  for (y=width; y < (int) (image->rows-width-1); y++)
+  for (y=width; y < (long) (image->rows-width-1); y++)
   {
     p=GetImagePixels(image,0,y-width,image->columns,2*width+1);
     q=GetImagePixels(paint_image,0,y,paint_image->columns,1);
@@ -2185,7 +2188,7 @@ MagickExport Image *OilPaintImage(Image *image,const double radius,
       break;
     p+=width*image->columns+width;
     q+=width;
-    for (x=width; x < (int) (image->columns-width-1); x++)
+    for (x=width; x < (long) (image->columns-width-1); x++)
     {
       /*
         Determine most frequent color.
@@ -2484,7 +2487,7 @@ MagickExport Image *ReduceNoiseImage(Image *image,const double radius,
   Image
     *noise_image;
 
-  int
+  long
     center,
     width,
     y;
@@ -2495,7 +2498,7 @@ MagickExport Image *ReduceNoiseImage(Image *image,const double radius,
     *w,
     *window;
 
-  register int
+  register long
     i,
     u,
     v,
@@ -2513,7 +2516,7 @@ MagickExport Image *ReduceNoiseImage(Image *image,const double radius,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth(radius,0.5);
-  if (((int) image->columns < width) || ((int) image->rows < width))
+  if (((long) image->columns < width) || ((long) image->rows < width))
     ThrowImageException(OptionWarning,"Unable to noise filter image",
       "image smaller than kernel radius");
   noise_image=CloneImage(image,image->columns,image->rows,False,exception);
@@ -2534,17 +2537,17 @@ MagickExport Image *ReduceNoiseImage(Image *image,const double radius,
     Median filter each image row.
   */
   center=width*width/2;
-  for (y=0; y < (int) noise_image->rows; y++)
+  for (y=0; y < (long) noise_image->rows; y++)
   {
-    i=Min(Max(y-width/2,0),(int) image->rows-width);
+    i=Min(Max(y-width/2,0),(long) image->rows-width);
     p=GetImagePixels(image,0,i,image->columns,width);
     q=SetImagePixels(noise_image,0,y,noise_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    for (x=0; x < (int) noise_image->columns; x++)
+    for (x=0; x < (long) noise_image->columns; x++)
     {
       w=window;
-      s=p+Min(Max(x-width/2,0),(int) image->columns-width);
+      s=p+Min(Max(x-width/2,0),(long) image->columns-width);
       for (v=0; v < width; v++)
       {
         for (u=0; u < width; u++)
@@ -2685,7 +2688,7 @@ MagickExport Image *ShadeImage(Image *image,const unsigned int color_shading,
   Image
     *shade_image;
 
-  int
+  long
     dx,
     dy,
     y;
@@ -2694,7 +2697,7 @@ MagickExport Image *ShadeImage(Image *image,const unsigned int color_shading,
     light,
     normal;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -2727,10 +2730,10 @@ MagickExport Image *ShadeImage(Image *image,const unsigned int color_shading,
   /*
     Shade image.
   */
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
-    p=GetImagePixels(image,0,Min(Max(y-1,0),(int) image->rows-3),
-      (int) image->columns,3);
+    p=GetImagePixels(image,0,Min(Max(y-1,0),(long) image->rows-3),
+      (long) image->columns,3);
     q=SetImagePixels(shade_image,0,y,shade_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
@@ -2740,13 +2743,13 @@ MagickExport Image *ShadeImage(Image *image,const unsigned int color_shading,
     s0=p;
     s1=s0+image->columns;
     s2=s1+image->columns;
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       /*
         Determine the surface normal and compute shading.
       */
       dx=(x > 0) ? 1 : -1;
-      dy=(x < ((int) image->columns-1)) ? 1 : -1;
+      dy=(x < ((long) image->columns-1)) ? 1 : -1;
       normal.x=Intensity(*(s0-dx))+Intensity(*(s1-dx))+Intensity(*(s2-dx))-
         Intensity(*(s0+dy))-Intensity(*(s1+dy))-Intensity(*(s2+dy));
       normal.y=Intensity(*(s2-dx))+Intensity(*s2)+Intensity(*(s2+dy))-
@@ -2847,7 +2850,7 @@ MagickExport Image *SharpenImage(Image *image,const double radius,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   width=GetOptimalKernelWidth(radius,sigma);
-  if (((int) image->columns < width) || ((int) image->rows < width))
+  if (((long) image->columns < width) || ((long) image->rows < width))
     ThrowImageException(OptionWarning,"Unable to sharpen image",
       "image is smaller than radius");
   kernel=(double *) AcquireMemory(width*width*sizeof(double));
@@ -2901,17 +2904,15 @@ MagickExport void SolarizeImage(Image *image,const double threshold)
 {
 #define SolarizeImageText  "  Solarize the image colors...  "
 
-  int
+  long
     y;
 
-  register int
+  register long
+    i,
     x;
 
   register PixelPacket
     *q;
-
-  register long
-    i;
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
@@ -2923,12 +2924,12 @@ MagickExport void SolarizeImage(Image *image,const double threshold)
       /*
         Solarize DirectClass packets.
       */
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (long) image->rows; y++)
       {
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (int) image->columns; x++)
+        for (x=0; x < (long) image->columns; x++)
         {
           q->red=q->red > threshold ? MaxRGB-q->red : q->red;
           q->green=q->green > threshold ? MaxRGB-q->green : q->green;
@@ -3005,15 +3006,13 @@ MagickExport Image *SpreadImage(Image *image,const unsigned int amount,
   Image
     *spread_image;
 
-  int
+  long
     quantum,
-    y;
-
-  int
     x_distance,
+    y,
     y_distance;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -3036,20 +3035,20 @@ MagickExport Image *SpreadImage(Image *image,const unsigned int amount,
     Convolve each row.
   */
   quantum=(amount+1) >> 1;
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     q=SetImagePixels(spread_image,0,y,spread_image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       do
       {
         x_distance=(rand() & (amount+1))-quantum;
         y_distance=(rand() & (amount+1))-quantum;
       } while (((x+x_distance) < 0) || ((y+y_distance) < 0) ||
-               ((x+x_distance) >= (int) image->columns) ||
-               ((y+y_distance) >= (int) image->rows));
+               ((x+x_distance) >= (long) image->columns) ||
+               ((y+y_distance) >= (long) image->rows));
       *q++=GetOnePixel(image,x+x_distance,y+y_distance);
     }
     if (!SyncImagePixels(spread_image))
@@ -3097,12 +3096,12 @@ MagickExport Image *SteganoImage(Image *image,Image *watermark,
 {
 #define EmbedBit(byte) \
 { \
-  p=GetImagePixels(watermark,(int) (j % watermark->columns), \
-    (int) (j/watermark->columns),1,1); \
+  p=GetImagePixels(watermark,(long) (j % watermark->columns), \
+    (long) (j/watermark->columns),1,1); \
   if (p == (PixelPacket *) NULL) \
     break;  \
   (byte)&=(~0x01); \
-  (byte)|=((unsigned int) Intensity(*p) >> shift) & 0x01; \
+  (byte)|=((unsigned long) Intensity(*p) >> shift) & 0x01; \
   j++; \
   if (j == (long) (watermark->columns*watermark->rows)) \
     { \
@@ -3117,23 +3116,21 @@ MagickExport Image *SteganoImage(Image *image,Image *watermark,
   Image
     *stegano_image;
 
-  int
+  long
+    i,
+    j,
+    shift,
     y;
 
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     x;
 
   register PixelPacket
     *p,
     *q;
-
-  long
-    i,
-    j,
-    shift;
 
   /*
     Initialize steganographic image attributes.
@@ -3169,13 +3166,13 @@ MagickExport Image *SteganoImage(Image *image,Image *watermark,
             }
           for (i=stegano_image->colors-1; i >= 0; i--)
             stegano_image->colormap[i]=stegano_image->colormap[i >> 1];
-          for (y=0; y < (int) stegano_image->rows; y++)
+          for (y=0; y < (long) stegano_image->rows; y++)
           {
             q=GetImagePixels(stegano_image,0,y,stegano_image->columns,1);
             if (q == (PixelPacket *) NULL)
               break;
             indexes=GetIndexes(stegano_image);
-            for (x=0; x < (int) stegano_image->columns; x++)
+            for (x=0; x < (long) stegano_image->columns; x++)
               indexes[x]*=2;
             if (!SyncImagePixels(stegano_image))
               break;
@@ -3188,14 +3185,14 @@ MagickExport Image *SteganoImage(Image *image,Image *watermark,
   i=image->offset;
   j=0;
   shift=image->depth-1;
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       if (i == (long) (stegano_image->columns*stegano_image->rows))
         i=0;
-      q=GetImagePixels(stegano_image,(int) (i % stegano_image->columns),
-        (int) (i/stegano_image->columns),1,1);
+      q=GetImagePixels(stegano_image,(long) (i % stegano_image->columns),
+        (long) (i/stegano_image->columns),1,1);
       if (q == (PixelPacket *) NULL)
         break;
       indexes=GetIndexes(image);
@@ -3265,10 +3262,10 @@ MagickExport Image *StereoImage(Image *image,Image *offset_image,
   Image
     *stereo_image;
 
-  int
+  long
     y;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -3295,7 +3292,7 @@ MagickExport Image *StereoImage(Image *image,Image *offset_image,
   /*
     Copy left image to red channel and right image to blue channel.
   */
-  for (y=0; y < (int) stereo_image->rows; y++)
+  for (y=0; y < (long) stereo_image->rows; y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
     q=GetImagePixels(offset_image,0,y,offset_image->columns,1);
@@ -3303,7 +3300,7 @@ MagickExport Image *StereoImage(Image *image,Image *offset_image,
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL) ||
         (r == (PixelPacket *) NULL))
       break;
-    for (x=0; x < (int) stereo_image->columns; x++)
+    for (x=0; x < (long) stereo_image->columns; x++)
     {
       r->red=p->red;
       r->green=q->green;
@@ -3372,13 +3369,13 @@ MagickExport Image *SwirlImage(Image *image,double degrees,
     y_distance,
     y_scale;
 
-  int
+  long
     y;
 
   Image
     *swirl_image;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -3414,13 +3411,13 @@ MagickExport Image *SwirlImage(Image *image,double degrees,
   /*
     Swirl each row.
   */
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     q=SetImagePixels(swirl_image,0,y,swirl_image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     y_distance=y_scale*(y-y_center);
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       /*
         Determine if the pixel is within an ellipse.
@@ -3483,13 +3480,13 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
   IndexPacket
     index;
 
-  int
+  long
     y;
 
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -3503,13 +3500,13 @@ MagickExport unsigned int ThresholdImage(Image *image,const double threshold)
   if (!AllocateImageColormap(image,2))
     ThrowBinaryException(ResourceLimitWarning,"Unable to threshold image",
       "Memory allocation failed");
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     q=GetImagePixels(image,0,y,image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
     indexes=GetIndexes(image);
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       index=Intensity(*q) < threshold ? 0 : 1;
       indexes[x]=index;
@@ -3577,10 +3574,10 @@ MagickExport Image *UnsharpMaskImage(Image *image,const double radius,
   Image
     *sharp_image;
 
-  int
+  long
     y;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -3593,13 +3590,13 @@ MagickExport Image *UnsharpMaskImage(Image *image,const double radius,
   sharp_image=GaussianBlurImage(image,radius,sigma,&(image->exception));
   if (sharp_image == (Image *) NULL)
     return((Image *) NULL);
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
     q=GetImagePixels(sharp_image,0,y,sharp_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       red=p->red-(int) q->red;
       if (AbsoluteValue(2.0*red) < (MaxRGB*threshold))
@@ -3683,10 +3680,10 @@ MagickExport Image *WaveImage(Image *image,const double amplitude,
   Image
     *wave_image;
 
-  int
+  long
     y;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -3716,17 +3713,17 @@ MagickExport Image *WaveImage(Image *image,const double amplitude,
       ThrowImageException(ResourceLimitWarning,"Unable to wave image",
         "Memory allocation failed")
     }
-  for (x=0; x < (int) wave_image->columns; x++)
+  for (x=0; x < (long) wave_image->columns; x++)
     sine_map[x]=fabs(amplitude)+amplitude*sin((2*MagickPI*x)/wave_length);
   /*
     Wave image.
   */
-  for (y=0; y < (int) wave_image->rows; y++)
+  for (y=0; y < (long) wave_image->rows; y++)
   {
     q=SetImagePixels(wave_image,0,y,wave_image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (int) wave_image->columns; x++)
+    for (x=0; x < (long) wave_image->columns; x++)
     {
       *q=InterpolateColor(image,(double) x,(double) y-sine_map[x]);
       q++;

@@ -162,7 +162,9 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   int
     channel,
     length,
-    runlength,
+    runlength;
+
+  long
     y;
 
   long
@@ -171,7 +173,7 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     i,
     x;
 
@@ -251,14 +253,14 @@ static Image *ReadRLAImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Read offsets to each scanline data.
   */
-  for (i=0; i < (int) image->rows; i++)
+  for (i=0; i < (long) image->rows; i++)
     scanlines[i]=(long) ReadBlobMSBLong(image);
   /*
     Read image data.
   */
   x=0;
   indexes=(IndexPacket *) NULL;
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     (void) SeekBlob(image,scanlines[image->rows-y-1],SEEK_SET);
     for (channel=0; channel < (int) rla_info.number_channels; channel++)

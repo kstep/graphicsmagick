@@ -167,13 +167,13 @@ extern MagickExport TypeInfo
 
 extern MagickExport unsigned int
   AnnotateImage(Image *,const DrawInfo *),
-  ColorFloodfillImage(Image *,const DrawInfo *,const PixelPacket,const int x,
-    const int y,const PaintMethod),
+  ColorFloodfillImage(Image *,const DrawInfo *,const PixelPacket,const long,
+    const long,const PaintMethod),
   DrawImage(Image *,DrawInfo *),
   GetTypeMetrics(Image *,const DrawInfo *,TypeMetric *),
   ListTypeInfo(FILE *,ExceptionInfo *),
-  MatteFloodfillImage(Image *,const PixelPacket,const unsigned int,const int x,
-    const int y,const PaintMethod);
+  MatteFloodfillImage(Image *,const PixelPacket,const unsigned int,const long,
+    const long,const PaintMethod);
 
 extern MagickExport void
   DestroyDrawInfo(DrawInfo *),

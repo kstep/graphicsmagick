@@ -154,9 +154,11 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
     *scanline;
 
   unsigned int
-    length,
     status,
     value_expected;
+
+  unsigned long
+    length;
 
   /*
     Open image file.
@@ -225,17 +227,17 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
           Assign a value to the specified keyword.
         */
         if (LocaleCompare(keyword,"Label_RECORDS") == 0)
-          length=(unsigned int) atoi(value);
+          length=atol(value);
         if (LocaleCompare(keyword,"LBLSIZE") == 0)
-          length=(unsigned int) atoi(value);
+          length=atol(value);
         if (LocaleCompare(keyword,"RECORD_BYTES") == 0)
-          image->columns=(unsigned int) atoi(value);
+          image->columns= atol(value);
         if (LocaleCompare(keyword,"NS") == 0)
-          image->columns=(unsigned int) atoi(value);
+          image->columns= atol(value);
         if (LocaleCompare(keyword,"LINES") == 0)
-          image->rows=(unsigned int) atoi(value);
+          image->rows= atol(value);
         if (LocaleCompare(keyword,"NL") == 0)
-          image->rows=(unsigned int) atoi(value);
+          image->rows= atol(value);
       }
     while (isspace(c))
     {
@@ -243,7 +245,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
       count++;
     }
   }
-  while (count < (int) length)
+  while (count < (long) length)
   {
     c=ReadBlobByte(image);
     count++;
@@ -262,7 +264,7 @@ static Image *ReadVICARImage(const ImageInfo *image_info,
   /*
     Read VICAR pixels.
   */
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     if (!SetImagePixels(image,0,y,image->columns,1))
       break;
@@ -418,7 +420,7 @@ static unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
     Write VICAR scanline.
   */
   image->depth=8;
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     if (!GetImagePixels(image,0,y,image->columns,1))
       break;

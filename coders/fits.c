@@ -138,13 +138,9 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
 {
   typedef struct _FITSInfo
   {
-    unsigned int
-      simple;
-
     int
-      bits_per_pixel;
-
-    unsigned int
+      simple,
+      bits_per_pixel,
       columns,
       rows,
       number_axes,
@@ -179,16 +175,16 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
   int
     c,
     j,
-    packet_size,
-    y;
+    packet_size;
 
   long
-    quantum;
+    quantum,
+    y;
 
   register IndexPacket
     *indexes;
 
-  register int
+  register long
     x;
 
   register PixelPacket
@@ -294,15 +290,15 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
         if (LocaleCompare(keyword,"SIMPLE") == 0)
           fits_info.simple=(*value == 'T') || (*value == 't');
         if (LocaleCompare(keyword,"BITPIX") == 0)
-          fits_info.bits_per_pixel=(unsigned int) atoi(value);
+          fits_info.bits_per_pixel=atoi(value);
         if (LocaleCompare(keyword,"NAXIS") == 0)
-          fits_info.number_axes=(unsigned int) atoi(value);
+          fits_info.number_axes=atoi(value);
         if (LocaleCompare(keyword,"NAXIS1") == 0)
-          fits_info.columns=(unsigned int) atoi(value);
+          fits_info.columns= atoi(value);
         if (LocaleCompare(keyword,"NAXIS2") == 0)
-          fits_info.rows=(unsigned int) atoi(value);
+          fits_info.rows= atoi(value);
         if (LocaleCompare(keyword,"NAXIS3") == 0)
-          fits_info.number_scenes=(unsigned int) atoi(value);
+          fits_info.number_scenes=atoi(value);
         if (LocaleCompare(keyword,"DATAMAX") == 0)
           fits_info.max_data=atof(value);
         if (LocaleCompare(keyword,"DATAMIN") == 0)
@@ -420,7 +416,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
       if (q == (PixelPacket *) NULL)
         break;
       indexes=GetIndexes(image);
-      for (x=0; x < (int) image->columns; x++)
+      for (x=0; x < (long) image->columns; x++)
       {
         long_quantum[0]=(*p);
         quantum=(*p++);
@@ -579,7 +575,7 @@ static unsigned int WriteFITSImage(const ImageInfo *image_info,Image *image)
     buffer[81],
     *fits_info;
 
-  int
+  long
     y;
 
   register int

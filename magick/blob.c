@@ -1829,7 +1829,7 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
 %
 %  The format of the WriteBlobByte method is:
 %
-%      size_t WriteBlobByte(Image *image,const int value)
+%      size_t WriteBlobByte(Image *image,const long value)
 %
 %  A description of each parameter follows.
 %
@@ -1841,14 +1841,14 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
 %
 %
 */
-MagickExport size_t WriteBlobByte(Image *image,const int value)
+MagickExport size_t WriteBlobByte(Image *image,const long value)
 {
   unsigned char
     buffer[1];
 
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
-  buffer[0]=value;
+  buffer[0]=(unsigned char) value;
   return(WriteBlob(image,1,buffer));
 }
 
@@ -1911,7 +1911,7 @@ MagickExport size_t WriteBlobLSBLong(Image *image,const unsigned long value)
 %
 %  The format of the WriteBlobLSBShort method is:
 %
-%      size_t WriteBlobLSBShort(Image *image,const unsigned int value)
+%      size_t WriteBlobLSBShort(Image *image,const unsigned long value)
 %
 %  A description of each parameter follows.
 %
@@ -1924,7 +1924,7 @@ MagickExport size_t WriteBlobLSBLong(Image *image,const unsigned long value)
 %
 %
 */
-MagickExport size_t WriteBlobLSBShort(Image *image,const unsigned int value)
+MagickExport size_t WriteBlobLSBShort(Image *image,const unsigned long value)
 {
   unsigned char
     buffer[2];
@@ -1995,7 +1995,7 @@ MagickExport size_t WriteBlobMSBLong(Image *image,const unsigned long value)
 %
 %  The format of the WriteBlobMSBShort method is:
 %
-%      size_t WriteBlobMSBShort(Image *image,const unsigned short value)
+%      size_t WriteBlobMSBShort(Image *image,const unsigned long value)
 %
 %  A description of each parameter follows.
 %
@@ -2005,7 +2005,7 @@ MagickExport size_t WriteBlobMSBLong(Image *image,const unsigned long value)
 %
 %
 */
-MagickExport size_t WriteBlobMSBShort(Image *image,const unsigned int value)
+MagickExport size_t WriteBlobMSBShort(Image *image,const unsigned long value)
 {
   unsigned char
     buffer[2];

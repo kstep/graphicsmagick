@@ -256,7 +256,7 @@ MagickExport Quantum GenerateNoise(const Quantum pixel,
     }
     case PoissonNoise:
     {
-      register int
+      register long
         i;
 
       for (i=0; alpha > exp(-SigmaPoisson*pixel); i++)
@@ -464,30 +464,31 @@ MagickExport void HSLTransform(const double hue,const double saturation,
 %
 %  The format of the Hull method is:
 %
-%      void Hull(const int x_offset,const int y_offset,const int polarity,
-%        const unsigned int columns,const unsigned int rows,Quantum *f,
-%        Quantum *g)
+%      void Hull(const long x_offset,const long y_offset,
+%        const unsigned long columns,const unsigned long rows,Quantum *f,
+%        Quantum *g,const int polarity)
 %
 %  A description of each parameter follows:
 %
 %    o x_offset, y_offset: An integer value representing the offset of the
 %      current pixel within the image.
 %
-%    o polarity: An integer value declaring the polarity (+,-).
-%
 %    o columns, rows: Specifies the number of rows and columns in the image.
+%
+%    o polarity: An integer value declaring the polarity (+,-).
 %
 %    o f, g: A pointer to an image pixel and one of it's neighbor.
 %
 %
 */
-MagickExport void Hull(const int x_offset,const int y_offset,const int polarity,
-  const unsigned int columns,const unsigned int rows,Quantum *f,Quantum *g)
+MagickExport void Hull(const long x_offset,const long y_offset,
+  const unsigned long columns,const unsigned long rows,Quantum *f,Quantum *g,
+  const int polarity)
 {
-  int
+  long
     y;
 
-  register int
+  register long
     x;
 
   register Quantum
@@ -503,14 +504,14 @@ MagickExport void Hull(const int x_offset,const int y_offset,const int polarity,
   assert(g != (Quantum *) NULL);
   p=f+(columns+2);
   q=g+(columns+2);
-  r=p+(y_offset*((int) columns+2)+x_offset);
-  for (y=0; y < (int) rows; y++)
+  r=p+(y_offset*((long) columns+2)+x_offset);
+  for (y=0; y < (long) rows; y++)
   {
     p++;
     q++;
     r++;
     if (polarity > 0)
-      for (x=0; x < (int) columns; x++)
+      for (x=0; x < (long) columns; x++)
       {
         v=(*p);
         if (*r > v)
@@ -521,7 +522,7 @@ MagickExport void Hull(const int x_offset,const int y_offset,const int polarity,
         r++;
       }
     else
-      for (x=0; x < (int) columns; x++)
+      for (x=0; x < (long) columns; x++)
       {
         v=(*p);
         if (v > (Quantum) (*r+1))
@@ -537,16 +538,16 @@ MagickExport void Hull(const int x_offset,const int y_offset,const int polarity,
   }
   p=f+(columns+2);
   q=g+(columns+2);
-  r=q+(y_offset*((int) columns+2)+x_offset);
-  s=q-(y_offset*((int) columns+2)+x_offset);
-  for (y=0; y < (int) rows; y++)
+  r=q+(y_offset*((long) columns+2)+x_offset);
+  s=q-(y_offset*((long) columns+2)+x_offset);
+  for (y=0; y < (long) rows; y++)
   {
     p++;
     q++;
     r++;
     s++;
     if (polarity > 0)
-      for (x=0; x < (int) columns; x++)
+      for (x=0; x < (long) columns; x++)
       {
         v=(*q);
         if (((Quantum) (*s+1) > v) && (*r > v))
@@ -558,7 +559,7 @@ MagickExport void Hull(const int x_offset,const int y_offset,const int polarity,
         s++;
       }
     else
-      for (x=0; x < (int) columns; x++)
+      for (x=0; x < (long) columns; x++)
       {
         v=(*q);
         if (((Quantum) (*s+1) < v) && (*r < v))
@@ -882,8 +883,8 @@ MagickExport void TransformHSL(const Quantum red,const Quantum green,
 %
 %  The format of the UpSample method is:
 %
-%      void Upsample(const unsigned int width,const unsigned int height,
-%        const unsigned int scaled_width,unsigned char *pixels)
+%      void Upsample(const unsigned long width,const unsigned long height,
+%        const unsigned long scaled_width,unsigned char *pixels)
 %
 %  A description of each parameter follows:
 %
@@ -897,10 +898,10 @@ MagickExport void TransformHSL(const Quantum red,const Quantum green,
 %
 %
 */
-MagickExport void Upsample(const unsigned int width,const unsigned int height,
-  const unsigned int scaled_width,unsigned char *pixels)
+MagickExport void Upsample(const unsigned long width,const unsigned long height,
+  const unsigned long scaled_width,unsigned char *pixels)
 {
-  register int
+  register long
     x,
     y;
 
@@ -913,13 +914,13 @@ MagickExport void Upsample(const unsigned int width,const unsigned int height,
     Create a new image that is a integral size greater than an existing one.
   */
   assert(pixels != (unsigned char *) NULL);
-  for (y=0; y < (int) height; y++)
+  for (y=0; y < (long) height; y++)
   {
     p=pixels+(height-1-y)*scaled_width+(width-1);
     q=pixels+((height-1-y) << 1)*scaled_width+((width-1) << 1);
     *q=(*p);
     *(q+1)=(*(p));
-    for (x=1; x < (int) width; x++)
+    for (x=1; x < (long) width; x++)
     {
       p--;
       q-=2;
@@ -927,12 +928,12 @@ MagickExport void Upsample(const unsigned int width,const unsigned int height,
       *(q+1)=(((int) *p)+((int) *(p+1))+1) >> 1;
     }
   }
-  for (y=0; y < (int) (height-1); y++)
+  for (y=0; y < (long) (height-1); y++)
   {
     p=pixels+(y << 1)*scaled_width;
     q=p+scaled_width;
     r=q+scaled_width;
-    for (x=0; x < (int) (width-1); x++)
+    for (x=0; x < (long) (width-1); x++)
     {
       *q=(((int) *p)+((int) *r)+1) >> 1;
       *(q+1)=(((int) *p)+((int) *(p+2))+((int) *r)+((int) *(r+2))+2) >> 2;

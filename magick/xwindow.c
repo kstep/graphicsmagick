@@ -258,19 +258,19 @@ MagickExport unsigned int XAnnotateImage(Display *display,
   /*
     Transfer annotated X image to image.
   */
-  width=image->columns;
-  height=image->rows;
+  width=(unsigned int) image->columns;
+  height=(unsigned int) image->rows;
   x=0;
   y=0;
   (void) XParseGeometry(annotate_info->geometry,&x,&y,&width,&height);
   annotate_image->background_color=GetOnePixel(image,x,y);
   annotate_image->matte=annotate_info->stencil == ForegroundStencil;
-  for (y=0; y < (int) annotate_image->rows; y++)
+  for (y=0; y < (long) annotate_image->rows; y++)
   {
     q=GetImagePixels(annotate_image,0,y,annotate_image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (int) annotate_image->columns; x++)
+    for (x=0; x < (long) annotate_image->columns; x++)
     {
       q->opacity=OpaqueOpacity;
       if (XGetPixel(annotate_ximage,x,y) == 0)
@@ -306,7 +306,8 @@ MagickExport unsigned int XAnnotateImage(Display *display,
     Determine annotate geometry.
   */
   (void) XParseGeometry(annotate_info->geometry,&x,&y,&width,&height);
-  if ((width != annotate_image->columns) || (height != annotate_image->rows))
+  if ((width != (unsigned int) annotate_image->columns) ||
+      (height != (unsigned int) annotate_image->rows))
     {
       char
         image_geometry[MaxTextExtent];
@@ -355,8 +356,8 @@ MagickExport unsigned int XAnnotateImage(Display *display,
           /*
             Rotate 90 degrees.
           */
-          x-=annotate_image->columns/2;
-          y+=annotate_image->columns/2;
+          x-=(int) annotate_image->columns/2;
+          y+=(int) annotate_image->columns/2;
           break;
         }
         case 2:
@@ -364,7 +365,7 @@ MagickExport unsigned int XAnnotateImage(Display *display,
           /*
             Rotate 180 degrees.
           */
-          x-=annotate_image->columns;
+          x=x-(int) annotate_image->columns;
           break;
         }
         case 3:
@@ -372,8 +373,8 @@ MagickExport unsigned int XAnnotateImage(Display *display,
           /*
             Rotate 270 degrees.
           */
-          x-=annotate_image->columns/2;
-          y-=annotate_image->rows-(annotate_image->columns/2);
+          x=x-(int) annotate_image->columns/2;
+          y=y-(int) (annotate_image->rows-(annotate_image->columns/2));
           break;
         }
       }
@@ -642,8 +643,8 @@ MagickExport void XBestIconSize(Display *display,XWindowInfo *window,Image *imag
   /*
     Determine aspect ratio of image.
   */
-  width=image->columns;
-  height=image->rows;
+  width=(unsigned int) image->columns;
+  height=(unsigned int) image->rows;
   i=0;
   if (window->crop_geometry)
     (void) XParseGeometry(window->crop_geometry,&i,&i,&width,&height);
@@ -1790,12 +1791,12 @@ static void XDitherImage(Image *image,XImage *ximage)
   i=0;
   j=0;
   q=ximage->data;
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     p=GetImagePixels(image,0,y,image->columns,1);
     if (p == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (int) image->columns; x++)
+    for (x=0; x < (long) image->columns; x++)
     {
       color.red=red_map[i][j][p->red];
       color.green=green_map[i][j][p->green];
@@ -1953,33 +1954,35 @@ MagickExport unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
     case RectangleElement:
     {
       (void) XDrawRectangle(display,draw_pixmap,draw_context,
-        draw_info->rectangle_info.x,draw_info->rectangle_info.y,
-        draw_info->rectangle_info.width,draw_info->rectangle_info.height);
+        (int) draw_info->rectangle_info.x,(int) draw_info->rectangle_info.y,
+        (unsigned int) draw_info->rectangle_info.width,
+        (unsigned int) draw_info->rectangle_info.height);
       break;
     }
     case FillRectangleElement:
     {
       (void) XFillRectangle(display,draw_pixmap,draw_context,
-        draw_info->rectangle_info.x,draw_info->rectangle_info.y,
-        draw_info->rectangle_info.width,draw_info->rectangle_info.height);
+        (int) draw_info->rectangle_info.x,(int) draw_info->rectangle_info.y,
+        (unsigned int) draw_info->rectangle_info.width,
+        (unsigned int) draw_info->rectangle_info.height);
       break;
     }
     case CircleElement:
     case EllipseElement:
     {
       (void) XDrawArc(display,draw_pixmap,draw_context,
-        draw_info->rectangle_info.x,draw_info->rectangle_info.y,
-        draw_info->rectangle_info.width,draw_info->rectangle_info.height,
-        0,360*64);
+        (int) draw_info->rectangle_info.x,(int) draw_info->rectangle_info.y,
+        (unsigned int) draw_info->rectangle_info.width,
+        (unsigned int) draw_info->rectangle_info.height,0,360*64);
       break;
     }
     case FillCircleElement:
     case FillEllipseElement:
     {
       (void) XFillArc(display,draw_pixmap,draw_context,
-        draw_info->rectangle_info.x,draw_info->rectangle_info.y,
-        draw_info->rectangle_info.width,draw_info->rectangle_info.height,
-        0,360*64);
+        (int) draw_info->rectangle_info.x,(int) draw_info->rectangle_info.y,
+        (unsigned int) draw_info->rectangle_info.width,
+        (unsigned int) draw_info->rectangle_info.height,0,360*64);
       break;
     }
     case PolygonElement:
@@ -2024,19 +2027,19 @@ MagickExport unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
   /*
     Transfer drawn X image to image.
   */
-  width=image->columns;
-  height=image->rows;
+  width=(unsigned int) image->columns;
+  height=(unsigned int) image->rows;
   x=0;
   y=0;
   (void) XParseGeometry(draw_info->geometry,&x,&y,&width,&height);
   draw_image->background_color=GetOnePixel(image,x,y);
   draw_image->matte=True;
-  for (y=0; y < (int) draw_image->rows; y++)
+  for (y=0; y < (long) draw_image->rows; y++)
   {
     q=SetImagePixels(draw_image,0,y,draw_image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (int) draw_image->columns; x++)
+    for (x=0; x < (long) draw_image->columns; x++)
     {
       if (XGetPixel(draw_ximage,x,y) == 0)
         {
@@ -2068,7 +2071,8 @@ MagickExport unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
     Determine draw geometry.
   */
   (void) XParseGeometry(draw_info->geometry,&x,&y,&width,&height);
-  if ((width != draw_image->columns) || (height != draw_image->rows))
+  if ((width != (unsigned int) draw_image->columns) ||
+      (height != (unsigned int) draw_image->rows))
     {
       char
         image_geometry[MaxTextExtent];
@@ -2116,8 +2120,8 @@ MagickExport unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
           /*
             Rotate 90 degrees.
           */
-          x-=draw_image->columns/2;
-          y+=draw_image->columns/2;
+          x=x-(int) draw_image->columns/2;
+          y=y+(int) draw_image->columns/2;
           break;
         }
         case 2:
@@ -2125,7 +2129,7 @@ MagickExport unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
           /*
             Rotate 180 degrees.
           */
-          x-=draw_image->columns;
+          x=x-(int) draw_image->columns;
           break;
         }
         case 3:
@@ -2133,8 +2137,8 @@ MagickExport unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
           /*
             Rotate 270 degrees.
           */
-          x-=draw_image->columns/2;
-          y-=draw_image->rows-(draw_image->columns/2);
+          x=x-(int) draw_image->columns/2;
+          y=y-(int) (draw_image->rows-(draw_image->columns/2));
           break;
         }
       }
@@ -2142,12 +2146,12 @@ MagickExport unsigned int XDrawImage(Display *display,const XPixelInfo *pixel,
   /*
     Composite text onto the image.
   */
-  for (y=0; y < (int) draw_image->rows; y++)
+  for (y=0; y < (long) draw_image->rows; y++)
   {
     q=GetImagePixels(draw_image,0,y,draw_image->columns,1);
     if (q == (PixelPacket *) NULL)
       break;
-    for (x=0; x < (int) draw_image->columns; x++)
+    for (x=0; x < (long) draw_image->columns; x++)
     {
       if (q->opacity != TransparentOpacity)
         q->opacity=OpaqueOpacity;
@@ -2827,7 +2831,7 @@ MagickExport void XGetPixelPacket(Display *display,
             Initialize pixel array for images of type PseudoClass.
           */
           gamma_map=pixel->gamma_map;
-          for (i=0; i < (int) image->colors; i++)
+          for (i=0; i < (long) image->colors; i++)
             pixel->pixels[i]=
               XGammaPixel(map_info,gamma_map,image->colormap+i,QuantumDepth);
           for (i=0; i < MaxNumberPens; i++)
@@ -3233,7 +3237,7 @@ MagickExport void XGetResourceInfo(XrmDatabase database,char *client_name,
     (char *) NULL);
   resource_value=XGetResourceClass(database,client_name,(char *) "undoCache",
     (char *) "16");
-  resource_info->undo_cache=atoi(resource_value);
+  resource_info->undo_cache=atol(resource_value);
   resource_value=XGetResourceClass(database,client_name,(char *) "update",
     (char *) "False");
   resource_info->update=IsTrue(resource_value);
@@ -3373,7 +3377,7 @@ MagickExport char *XGetScreenDensity(Display *display)
   height=XDisplayHeight(display,XDefaultScreen(display));
   x=0;
   y=0;
-  (void) GetGeometry(geometry,&x,&y,&width,&height);
+  (void) XParseGeometry(geometry,&x,&y,&width,&height);
   FormatString(density,"%d",(int) (Min(x_density,y_density)*
     (XDisplayHeight(display,XDefaultScreen(display))-40)/(double) height));
   return(PostscriptGeometry(density));
@@ -3551,8 +3555,8 @@ MagickExport unsigned int XGetWindowColor(Display *display,char *name)
   /*
     Get window X image.
   */
-  (void) XTranslateCoordinates(display,root_window,target_window,crop_info.x,
-    crop_info.y,&x,&y,&child);
+  (void) XTranslateCoordinates(display,root_window,target_window,
+    (int) crop_info.x,(int) crop_info.y,&x,&y,&child);
   ximage=XGetImage(display,target_window,x,y,1,1,AllPlanes,ZPixmap);
   if (ximage == (XImage *) NULL)
     return(False);
@@ -3743,10 +3747,10 @@ MagickExport Image *XGetWindowImage(Display *display,const Window window,
       crop_info.y=0;
     }
   display_width=XDisplayWidth(display,XDefaultScreen(display));
-  if ((crop_info.x+(int) crop_info.width) > display_width)
+  if ((int) (crop_info.x+crop_info.width) > display_width)
     crop_info.width=display_width-crop_info.x;
   display_height=XDisplayHeight(display,XDefaultScreen(display));
-  if ((crop_info.y+(int) crop_info.height) > display_height)
+  if ((int) (crop_info.y+crop_info.height) > display_height)
     crop_info.height=display_height-crop_info.y;
   /*
     Initialize window info attributes.
@@ -3885,9 +3889,9 @@ MagickExport Image *XGetWindowImage(Display *display,const Window window,
           Get X image.
         */
         ximage=XGetImage(display,window_info[id].window,
-          window_info[id].crop_info.x,window_info[id].crop_info.y,
-          window_info[id].crop_info.width,window_info[id].crop_info.height,
-          AllPlanes,ZPixmap);
+          (int) window_info[id].crop_info.x,(int) window_info[id].crop_info.y,
+          (unsigned int) window_info[id].crop_info.width,
+          (unsigned int) window_info[id].crop_info.height,AllPlanes,ZPixmap);
         if (ximage == (XImage *) NULL)
           continue;
         /*
@@ -4040,12 +4044,12 @@ MagickExport Image *XGetWindowImage(Display *display,const Window window,
             */
             if ((number_colors != 0) &&
                 (window_info[id].visual->storage_class == DirectColor))
-              for (y=0; y < (int) composite_image->rows; y++)
+              for (y=0; y < (long) composite_image->rows; y++)
               {
                 q=SetImagePixels(composite_image,0,y,composite_image->columns,1);
                 if (q == (PixelPacket *) NULL)
                   break;
-                for (x=0; x < (int) composite_image->columns; x++)
+                for (x=0; x < (long) composite_image->columns; x++)
                 {
                   pixel=XGetPixel(ximage,x,y);
                   index=(pixel >> red_shift) & red_mask;
@@ -4060,12 +4064,12 @@ MagickExport Image *XGetWindowImage(Display *display,const Window window,
                   break;
               }
             else
-              for (y=0; y < (int) composite_image->rows; y++)
+              for (y=0; y < (long) composite_image->rows; y++)
               {
                 q=SetImagePixels(composite_image,0,y,composite_image->columns,1);
                 if (q == (PixelPacket *) NULL)
                   break;
-                for (x=0; x < (int) composite_image->columns; x++)
+                for (x=0; x < (long) composite_image->columns; x++)
                 {
                   pixel=XGetPixel(ximage,x,y);
                   color=(pixel >> red_shift) & red_mask;
@@ -4104,13 +4108,13 @@ MagickExport Image *XGetWindowImage(Display *display,const Window window,
             /*
               Convert X image to PseudoClass packets.
             */
-            for (y=0; y < (int) composite_image->rows; y++)
+            for (y=0; y < (long) composite_image->rows; y++)
             {
               q=SetImagePixels(composite_image,0,y,composite_image->columns,1);
               if (q == (PixelPacket *) NULL)
                 break;
               indexes=GetIndexes(composite_image);
-              for (x=0; x < (int) composite_image->columns; x++)
+              for (x=0; x < (long) composite_image->columns; x++)
               {
                 index=XGetPixel(ximage,x,y);
                 indexes[x]=index;
@@ -4133,10 +4137,10 @@ MagickExport Image *XGetWindowImage(Display *display,const Window window,
         */
         (void) XTranslateCoordinates(display,window_info[id].window,window,0,0,
           &x_offset,&y_offset,&child);
-        x_offset-=crop_info.x;
+        x_offset-=(int) crop_info.x;
         if (x_offset < 0)
           x_offset=0;
-        y_offset-=crop_info.y;
+        y_offset-=(int) crop_info.y;
         if (y_offset < 0)
           y_offset=0;
         (void) CompositeImage(image,CopyCompositeOp,composite_image,
@@ -4342,12 +4346,12 @@ MagickExport void XHighlightEllipse(Display *display,Window window,
   assert(highlight_info != (RectangleInfo *) NULL);
   if ((highlight_info->width < 4) || (highlight_info->height < 4))
     return;
-  (void) XDrawArc(display,window,annotate_context,highlight_info->x,
-    highlight_info->y,highlight_info->width-1,highlight_info->height-1,
-    0,360*64);
-  (void) XDrawArc(display,window,annotate_context,highlight_info->x+1,
-    highlight_info->y+1,highlight_info->width-3,highlight_info->height-3,
-    0,360*64);
+  (void) XDrawArc(display,window,annotate_context,(int) highlight_info->x,
+    (int) highlight_info->y,(unsigned int) highlight_info->width-1,
+    (unsigned int) highlight_info->height-1,0,360*64);
+  (void) XDrawArc(display,window,annotate_context,(int) highlight_info->x+1,
+    (int) highlight_info->y+1,(unsigned int) highlight_info->width-3,
+    (unsigned int) highlight_info->height-3,0,360*64);
 }
 
 /*
@@ -4436,10 +4440,12 @@ MagickExport void XHighlightRectangle(Display *display,Window window,
   assert(highlight_info != (RectangleInfo *) NULL);
   if ((highlight_info->width < 4) || (highlight_info->height < 4))
     return;
-  (void) XDrawRectangle(display,window,annotate_context,highlight_info->x,
-    highlight_info->y,highlight_info->width-1,highlight_info->height-1);
-  (void) XDrawRectangle(display,window,annotate_context,highlight_info->x+1,
-    highlight_info->y+1,highlight_info->width-3,highlight_info->height-3);
+  (void) XDrawRectangle(display,window,annotate_context,(int) highlight_info->x,
+    (int) highlight_info->y,(unsigned int) highlight_info->width-1,
+    (unsigned int) highlight_info->height-1);
+  (void) XDrawRectangle(display,window,annotate_context,(int) highlight_info->x+
+    1,(int) highlight_info->y+1,(unsigned int) highlight_info->width-3,
+    (unsigned int) highlight_info->height-3);
 }
 
 /*
@@ -5075,7 +5081,7 @@ MagickExport unsigned int XMakeImage(Display *display,
           crop_info.height=window->image->rows;
           crop_info.x=0;
           crop_info.y=0;
-          (void) XParseGeometry(window->crop_geometry,&crop_info.x,
+          (void) ParseGeometry(window->crop_geometry,&crop_info.x,
             &crop_info.y,&crop_info.width,&crop_info.height);
           window->image->orphan=True;
           crop_image=CropImage(window->image,&crop_info,&image->exception);
@@ -5087,8 +5093,8 @@ MagickExport unsigned int XMakeImage(Display *display,
               window->destroy=True;
             }
         }
-      if ((width != window->image->columns) ||
-          (height != window->image->rows))
+      if ((width != (unsigned int) window->image->columns) ||
+          (height != (unsigned int) window->image->rows))
         {
           Image
             *resize_image;
@@ -5118,8 +5124,8 @@ MagickExport unsigned int XMakeImage(Display *display,
       if (window->immutable)
         if (IsMonochromeImage(window->image))
           depth=1;
-      width=window->image->columns;
-      height=window->image->rows;
+      width=(unsigned int) window->image->columns;
+      height=(unsigned int) window->image->rows;
     }
   /*
     Create X image.
@@ -5436,7 +5442,7 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
       polarity=Intensity(image->colormap[0]) < (0.5*MaxRGB);
       if (image->colors == 2)
         polarity=Intensity(image->colormap[0]) < Intensity(image->colormap[1]);
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (long) image->rows; y++)
       {
         p=GetImagePixels(image,0,y,image->columns,1);
         if (p == (PixelPacket *) NULL)
@@ -5444,7 +5450,7 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
         indexes=GetIndexes(image);
         bit=0;
         byte=0;
-        for (x=0; x < (int) image->columns; x++)
+        for (x=0; x < (long) image->columns; x++)
         {
           byte>>=1;
           if (indexes[x] == polarity)
@@ -5476,14 +5482,14 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
           /*
             Convert to 2 bit color-mapped X image.
           */
-          for (y=0; y < (int) image->rows; y++)
+          for (y=0; y < (long) image->rows; y++)
           {
             p=GetImagePixels(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
             indexes=GetIndexes(image);
             nibble=0;
-            for (x=0; x < (int) image->columns; x++)
+            for (x=0; x < (long) image->columns; x++)
             {
               pixel=pixels[indexes[x]] & 0x0f;
               switch (nibble)
@@ -5527,14 +5533,14 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
           /*
             Convert to 4 bit color-mapped X image.
           */
-          for (y=0; y < (int) image->rows; y++)
+          for (y=0; y < (long) image->rows; y++)
           {
             p=GetImagePixels(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
             indexes=GetIndexes(image);
             nibble=0;
-            for (x=0; x < (int) image->columns; x++)
+            for (x=0; x < (long) image->columns; x++)
             {
               pixel=pixels[indexes[x]] & 0xf;
               switch (nibble)
@@ -5570,13 +5576,13 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
               XDitherImage(image,ximage);
               break;
             }
-          for (y=0; y < (int) image->rows; y++)
+          for (y=0; y < (long) image->rows; y++)
           {
             p=GetImagePixels(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
             indexes=GetIndexes(image);
-            for (x=0; x < (int) image->columns; x++)
+            for (x=0; x < (long) image->columns; x++)
             {
               pixel=pixels[indexes[x]];
               *q++=(unsigned char) pixel;
@@ -5600,13 +5606,13 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
             Convert to multi-byte color-mapped X image.
           */
           bytes_per_pixel=ximage->bits_per_pixel >> 3;
-          for (y=0; y < (int) image->rows; y++)
+          for (y=0; y < (long) image->rows; y++)
           {
             p=GetImagePixels(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
             indexes=GetIndexes(image);
-            for (x=0; x < (int) image->columns; x++)
+            for (x=0; x < (long) image->columns; x++)
             {
               pixel=pixels[indexes[x]];
               for (k=0; k < (int) bytes_per_pixel; k++)
@@ -5633,13 +5639,13 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
           /*
             Convert to contiguous 2 bit continuous-tone X image.
           */
-          for (y=0; y < (int) image->rows; y++)
+          for (y=0; y < (long) image->rows; y++)
           {
             nibble=0;
             p=GetImagePixels(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (int) image->columns; x++)
+            for (x=0; x < (long) image->columns; x++)
             {
               pixel=XGammaPixel(map_info,gamma_map,p,QuantumDepth);
               pixel&=0xf;
@@ -5685,13 +5691,13 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
           /*
             Convert to contiguous 4 bit continuous-tone X image.
           */
-          for (y=0; y < (int) image->rows; y++)
+          for (y=0; y < (long) image->rows; y++)
           {
             p=GetImagePixels(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
             nibble=0;
-            for (x=0; x < (int) image->columns; x++)
+            for (x=0; x < (long) image->columns; x++)
             {
               pixel=XGammaPixel(map_info,gamma_map,p,QuantumDepth);
               pixel&=0xf;
@@ -5729,12 +5735,12 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
               XDitherImage(image,ximage);
               break;
             }
-          for (y=0; y < (int) image->rows; y++)
+          for (y=0; y < (long) image->rows; y++)
           {
             p=GetImagePixels(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (int) image->columns; x++)
+            for (x=0; x < (long) image->columns; x++)
             {
               pixel=XGammaPixel(map_info,gamma_map,p,QuantumDepth);
               *q++=(unsigned char) pixel;
@@ -5754,12 +5760,12 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
               /*
                 Convert to 32 bit continuous-tone X image.
               */
-              for (y=0; y < (int) image->rows; y++)
+              for (y=0; y < (long) image->rows; y++)
               {
                 p=GetImagePixels(image,0,y,image->columns,1);
                 if (p == (PixelPacket *) NULL)
                   break;
-                for (x=0; x < (int) image->columns; x++)
+                for (x=0; x < (long) image->columns; x++)
                 {
                   *q++=DownScale(gamma_map[p->blue].blue);
                   *q++=DownScale(gamma_map[p->green].green);
@@ -5778,12 +5784,12 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
                 /*
                   Convert to 32 bit continuous-tone X image.
                 */
-                for (y=0; y < (int) image->rows; y++)
+                for (y=0; y < (long) image->rows; y++)
                 {
                   p=GetImagePixels(image,0,y,image->columns,1);
                   if (p == (PixelPacket *) NULL)
                     break;
-                  for (x=0; x < (int) image->columns; x++)
+                  for (x=0; x < (long) image->columns; x++)
                   {
                     *q++=DownScale(gamma_map[p->red].red);
                     *q++=DownScale(gamma_map[p->green].green);
@@ -5808,12 +5814,12 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
                   Convert to multi-byte continuous-tone X image.
                 */
                 bytes_per_pixel=ximage->bits_per_pixel >> 3;
-                for (y=0; y < (int) image->rows; y++)
+                for (y=0; y < (long) image->rows; y++)
                 {
                   p=GetImagePixels(image,0,y,image->columns,1);
                   if (p == (PixelPacket *) NULL)
                     break;
-                  for (x=0; x < (int) image->columns; x++)
+                  for (x=0; x < (long) image->columns; x++)
                   {
                     pixel=XGammaPixel(map_info,gamma_map,p,QuantumDepth);
                     for (k=0; k < (int) bytes_per_pixel; k++)
@@ -5839,14 +5845,14 @@ static void XMakeImageLSBFirst(const XResourceInfo *resource_info,
       scanline_pad=matte_image->bytes_per_line-
         ((matte_image->width*matte_image->bits_per_pixel) >> 3);
       q=(unsigned char *) matte_image->data;
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (long) image->rows; y++)
       {
         p=GetImagePixels(image,0,y,image->columns,1);
         if (p == (PixelPacket *) NULL)
           break;
         bit=0;
         byte=0;
-        for (x=0; x < (int) image->columns; x++)
+        for (x=0; x < (long) image->columns; x++)
         {
           byte>>=1;
           if (p->opacity == TransparentOpacity)
@@ -5969,7 +5975,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
       polarity=Intensity(image->colormap[0]) < (0.5*MaxRGB);
       if (image->colors == 2)
         polarity=Intensity(image->colormap[0]) < Intensity(image->colormap[1]);
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (long) image->rows; y++)
       {
         p=GetImagePixels(image,0,y,image->columns,1);
         if (p == (PixelPacket *) NULL)
@@ -5977,7 +5983,7 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
         indexes=GetIndexes(image);
         bit=0;
         byte=0;
-        for (x=0; x < (int) image->columns; x++)
+        for (x=0; x < (long) image->columns; x++)
         {
           byte<<=1;
           if (indexes[x] == polarity)
@@ -6009,14 +6015,14 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
           /*
             Convert to 2 bit color-mapped X image.
           */
-          for (y=0; y < (int) image->rows; y++)
+          for (y=0; y < (long) image->rows; y++)
           {
             p=GetImagePixels(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
             indexes=GetIndexes(image);
             nibble=0;
-            for (x=0; x < (int) image->columns; x++)
+            for (x=0; x < (long) image->columns; x++)
             {
               pixel=pixels[indexes[x]] & 0xf;
               switch (nibble)
@@ -6060,14 +6066,14 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
           /*
             Convert to 4 bit color-mapped X image.
           */
-          for (y=0; y < (int) image->rows; y++)
+          for (y=0; y < (long) image->rows; y++)
           {
             p=GetImagePixels(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
             indexes=GetIndexes(image);
             nibble=0;
-            for (x=0; x < (int) image->columns; x++)
+            for (x=0; x < (long) image->columns; x++)
             {
               pixel=pixels[indexes[x]] & 0xf;
               switch (nibble)
@@ -6103,13 +6109,13 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
               XDitherImage(image,ximage);
               break;
             }
-          for (y=0; y < (int) image->rows; y++)
+          for (y=0; y < (long) image->rows; y++)
           {
             p=GetImagePixels(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
             indexes=GetIndexes(image);
-            for (x=0; x < (int) image->columns; x++)
+            for (x=0; x < (long) image->columns; x++)
             {
               pixel=pixels[indexes[x]];
               *q++=(unsigned char) pixel;
@@ -6133,13 +6139,13 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
             Convert to 8 bit color-mapped X image.
           */
           bytes_per_pixel=ximage->bits_per_pixel >> 3;
-          for (y=0; y < (int) image->rows; y++)
+          for (y=0; y < (long) image->rows; y++)
           {
             p=GetImagePixels(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
             indexes=GetIndexes(image);
-            for (x=0; x < (int) image->columns; x++)
+            for (x=0; x < (long) image->columns; x++)
             {
               pixel=pixels[indexes[x]];
               for (k=bytes_per_pixel-1; k >= 0; k--)
@@ -6166,13 +6172,13 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
           /*
             Convert to 4 bit continuous-tone X image.
           */
-          for (y=0; y < (int) image->rows; y++)
+          for (y=0; y < (long) image->rows; y++)
           {
             p=GetImagePixels(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
             nibble=0;
-            for (x=0; x < (int) image->columns; x++)
+            for (x=0; x < (long) image->columns; x++)
             {
               pixel=XGammaPixel(map_info,gamma_map,p,QuantumDepth);
               pixel&=0xf;
@@ -6218,13 +6224,13 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
           /*
             Convert to 4 bit continuous-tone X image.
           */
-          for (y=0; y < (int) image->rows; y++)
+          for (y=0; y < (long) image->rows; y++)
           {
             p=GetImagePixels(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
             nibble=0;
-            for (x=0; x < (int) image->columns; x++)
+            for (x=0; x < (long) image->columns; x++)
             {
               pixel=XGammaPixel(map_info,gamma_map,p,QuantumDepth);
               pixel&=0xf;
@@ -6262,12 +6268,12 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
               XDitherImage(image,ximage);
               break;
             }
-          for (y=0; y < (int) image->rows; y++)
+          for (y=0; y < (long) image->rows; y++)
           {
             p=GetImagePixels(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
-            for (x=0; x < (int) image->columns; x++)
+            for (x=0; x < (long) image->columns; x++)
             {
               pixel=XGammaPixel(map_info,gamma_map,p,QuantumDepth);
               *q++=(unsigned char) pixel;
@@ -6287,12 +6293,12 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
               /*
                 Convert to 32 bit continuous-tone X image.
               */
-              for (y=0; y < (int) image->rows; y++)
+              for (y=0; y < (long) image->rows; y++)
               {
                 p=GetImagePixels(image,0,y,image->columns,1);
                 if (p == (PixelPacket *) NULL)
                   break;
-                for (x=0; x < (int) image->columns; x++)
+                for (x=0; x < (long) image->columns; x++)
                 {
                   *q++=0;
                   *q++=DownScale(gamma_map[p->red].red);
@@ -6311,12 +6317,12 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
                 /*
                   Convert to 32 bit continuous-tone X image.
                 */
-                for (y=0; y < (int) image->rows; y++)
+                for (y=0; y < (long) image->rows; y++)
                 {
                   p=GetImagePixels(image,0,y,image->columns,1);
                   if (p == (PixelPacket *) NULL)
                     break;
-                  for (x=0; x < (int) image->columns; x++)
+                  for (x=0; x < (long) image->columns; x++)
                   {
                     *q++=0;
                     *q++=DownScale(gamma_map[p->blue].blue);
@@ -6341,12 +6347,12 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
                   Convert to multi-byte continuous-tone X image.
                 */
                 bytes_per_pixel=ximage->bits_per_pixel >> 3;
-                for (y=0; y < (int) image->rows; y++)
+                for (y=0; y < (long) image->rows; y++)
                 {
                   p=GetImagePixels(image,0,y,image->columns,1);
                   if (p == (PixelPacket *) NULL)
                     break;
-                  for (x=0; x < (int) image->columns; x++)
+                  for (x=0; x < (long) image->columns; x++)
                   {
                     pixel=XGammaPixel(map_info,gamma_map,p,QuantumDepth);
                     for (k=bytes_per_pixel-1; k >= 0; k--)
@@ -6372,14 +6378,14 @@ static void XMakeImageMSBFirst(const XResourceInfo *resource_info,
       scanline_pad=matte_image->bytes_per_line-
         ((matte_image->width*matte_image->bits_per_pixel) >> 3);
       q=(unsigned char *) matte_image->data;
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (long) image->rows; y++)
       {
         p=GetImagePixels(image,0,y,image->columns,1);
         if (p == (PixelPacket *) NULL)
           break;
         bit=0;
         byte=0;
-        for (x=0; x < (int) image->columns; x++)
+        for (x=0; x < (long) image->columns; x++)
         {
           byte<<=1;
           if (p->opacity == TransparentOpacity)
@@ -6799,12 +6805,14 @@ MagickExport void XMakeMagnifyImage(Display *display,XWindows *windows)
       highlight_info.width=magnify;
       highlight_info.height=magnify;
       (void) XDrawRectangle(display,windows->magnify.pixmap,
-        windows->magnify.highlight_context,highlight_info.x,highlight_info.y,
-        highlight_info.width-1,highlight_info.height-1);
+        windows->magnify.highlight_context,(int) highlight_info.x,
+        (int) highlight_info.y,(unsigned int) highlight_info.width-1,
+        (unsigned int) highlight_info.height-1);
       if (magnify > 2)
         (void) XDrawRectangle(display,windows->magnify.pixmap,
-          windows->magnify.annotate_context,highlight_info.x+1,
-          highlight_info.y+1,highlight_info.width-3,highlight_info.height-3);
+          windows->magnify.annotate_context,(int) highlight_info.x+1,
+          (int) highlight_info.y+1,(unsigned int) highlight_info.width-3,
+          (unsigned int) highlight_info.height-3);
     }
   /*
     Show center pixel color.
@@ -7067,7 +7075,7 @@ MagickExport void XMakeStandardColormap(Display *display,
             if (map_image == (Image *) NULL)
               MagickError(ResourceLimitError,"Unable to dither image",
                 "Memory allocation failed");
-            map_image->columns=(unsigned int) number_colors;
+            map_image->columns=number_colors;
             map_image->rows=1;
             /*
               Initialize colormap image.
@@ -7266,13 +7274,13 @@ MagickExport void XMakeStandardColormap(Display *display,
             diversity[i].index=(unsigned short) i;
             diversity[i].count=0;
           }
-          for (y=0; y < (int) image->rows; y++)
+          for (y=0; y < (long) image->rows; y++)
           {
             q=GetImagePixels(image,0,y,image->columns,1);
             if (q == (PixelPacket *) NULL)
               break;
             indexes=GetIndexes(image);
-            for (x=0; x < (int) image->columns; x++)
+            for (x=0; x < (long) image->columns; x++)
               diversity[indexes[x]].count++;
           }
           /*
@@ -8334,17 +8342,19 @@ static Window XSelectWindow(Display *display,RectangleInfo *crop_info)
   do
   {
     if ((crop_info->width*crop_info->height) >= MinimumCropArea)
-      (void) XDrawRectangle(display,root_window,annotate_context,crop_info->x,
-        crop_info->y,crop_info->width-1,crop_info->height-1);
+      (void) XDrawRectangle(display,root_window,annotate_context,
+	(int) crop_info->x,(int) crop_info->y,(unsigned int) crop_info->width-1,
+        (unsigned int) crop_info->height-1);
     /*
       Allow another event.
     */
     (void) XAllowEvents(display,SyncPointer,CurrentTime);
-    (void) XWindowEvent(display,root_window,ButtonPressMask | ButtonReleaseMask |
-      ButtonMotionMask,&event);
+    (void) XWindowEvent(display,root_window,ButtonPressMask |
+      ButtonReleaseMask | ButtonMotionMask,&event);
     if ((crop_info->width*crop_info->height) >= MinimumCropArea)
-      (void) XDrawRectangle(display,root_window,annotate_context,crop_info->x,
-        crop_info->y,crop_info->width-1,crop_info->height-1);
+      (void) XDrawRectangle(display,root_window,annotate_context,
+        (int) crop_info->x,(int) crop_info->y,(unsigned int) crop_info->width-1,
+        (unsigned int) crop_info->height-1);
     switch (event.type)
     {
       case ButtonPress:
@@ -8378,14 +8388,14 @@ static Window XSelectWindow(Display *display,RectangleInfo *crop_info)
         /*
           Check boundary conditions.
         */
-        if (crop_info->x < x_offset)
+        if ((int) crop_info->x < x_offset)
           crop_info->width=(unsigned int) (x_offset-crop_info->x);
         else
           {
             crop_info->width=(unsigned int) (crop_info->x-x_offset);
             crop_info->x=x_offset;
           }
-        if (crop_info->y < y_offset)
+        if ((int) crop_info->y < y_offset)
           crop_info->height=(unsigned int) (y_offset-crop_info->y);
         else
           {

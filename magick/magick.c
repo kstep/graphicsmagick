@@ -671,7 +671,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
   assert(image_info != (ImageInfo *) NULL);
   assert(image_info->signature == MagickSignature);
   *magic='\0';
-  p=image_info->filename+Max((int) strlen(image_info->filename)-1,0);
+  p=image_info->filename+Max((long) strlen(image_info->filename)-1,0);
   if (*p == ']')
     for (q=p-1; q > image_info->filename; q--)
     {
@@ -699,8 +699,8 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
       /*
         Determine sub-image range.
       */
-      image_info->subimage=atoi(image_info->tile);
-      image_info->subrange=atoi(image_info->tile);
+      image_info->subimage=atol(image_info->tile);
+      image_info->subrange=atol(image_info->tile);
       (void) sscanf(image_info->tile,"%lu-%lu",&image_info->subimage,
         &image_info->subrange);
       if (image_info->subrange < image_info->subimage)

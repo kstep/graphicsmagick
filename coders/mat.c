@@ -90,7 +90,7 @@ register IndexPacket *indexes;
            if (q == (PixelPacket *) NULL) break;
            indexes=GetIndexes(image);
 
-           for (x=0; x < (int) image->columns; x++)
+           for (x=0; x < (long) image->columns; x++)
                 {
                 index=ValidateColormapIndex(image,*p);
                 indexes[x]=index;
@@ -238,7 +238,7 @@ MATLAB_KO:  ThrowReaderException(CorruptImageWarning,"Not a MATLAB image file",i
    else if(MATLAB_HDR.NameFlag==0)
         {
         (void) ReadBlob(image,4,&size); /*Object name string*/
-        size=4*(int)((size+3+1)/4);
+        size=4*(long)((size+3+1)/4);
         (void) SeekBlob(image,size,SEEK_CUR);
         }
    else goto MATLAB_KO;
@@ -247,8 +247,8 @@ MATLAB_KO:  ThrowReaderException(CorruptImageWarning,"Not a MATLAB image file",i
    if(size!=2) goto MATLAB_KO;
    (void) ReadBlob(image,4,&size);        /*data size*/
 
-   image->columns=(unsigned int) MATLAB_HDR.SizeX;
-   image->rows=(unsigned int) MATLAB_HDR.SizeY;
+   image->columns= MATLAB_HDR.SizeX;
+   image->rows= MATLAB_HDR.SizeY;
    image->depth=8;
    image->colors=1l >> 8;
    if(image->columns==0 || image->rows==0) goto MATLAB_KO;
@@ -264,7 +264,7 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
                                 image)
            }           
    
-   for (i=0; i < (int)image->colors; i++)
+   for (i=0; i < (long)image->colors; i++)
            {
            image->colormap[i].red=UpScale(i);
            image->colormap[i].green=UpScale(i);
@@ -276,7 +276,7 @@ NoMemory:  ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
    BImgBuff=(unsigned char *) malloc(ldblk);  /*Ldblk was set in the check phase*/
    if(BImgBuff==NULL) goto NoMemory;
 
-   for(i=0;i<MATLAB_HDR.SizeY;i++)
+   for(i=0;i<(long) MATLAB_HDR.SizeY;i++)
         {
         (void) ReadBlob(image,ldblk,(char *)BImgBuff);
         InsertRow(BImgBuff,i,image);

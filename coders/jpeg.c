@@ -554,7 +554,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
   IndexPacket
     index;
 
-  int
+  long
     x,
     y;
 
@@ -698,7 +698,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     Convert JPEG pixels to pixel packets.
   */
   scanline[0]=(JSAMPROW) jpeg_pixels;
-  for (y=0; y < (int) image->rows; y++)
+  for (y=0; y < (long) image->rows; y++)
   {
     (void) jpeg_read_scanlines(&jpeg_info,scanline,1);
     p=jpeg_pixels;
@@ -710,7 +710,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       {
         if (jpeg_info.out_color_space == JCS_GRAYSCALE)
           {
-            for (x=0; x < (int) image->columns; x++)
+            for (x=0; x < (long) image->columns; x++)
             {
               index=ValidateColormapIndex(image,GETJSAMPLE(*p++)/16);
               indexes[x]=index;
@@ -719,7 +719,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
           }
         else
           {
-            for (x=0; x < (int) image->columns; x++)
+            for (x=0; x < (long) image->columns; x++)
             {
               q->red=(Quantum) (GETJSAMPLE(*p++)/16);
               q->green=(Quantum) (GETJSAMPLE(*p++)/16);
@@ -733,7 +733,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
     else
       if (jpeg_info.out_color_space == JCS_GRAYSCALE)
         {
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
           {
             index=ValidateColormapIndex(image,GETJSAMPLE(*p++));
             indexes[x]=index;
@@ -742,7 +742,7 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
         }
       else
         {
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
           {
             q->red=(Quantum) UpScale(GETJSAMPLE(*p++));
             q->green=(Quantum) UpScale(GETJSAMPLE(*p++));
@@ -762,12 +762,12 @@ static Image *ReadJPEGImage(const ImageInfo *image_info,
       /*
         Correct CMYK levels.
       */
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (long) image->rows; y++)
       {
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
           break;
-        for (x=0; x < (int) image->columns; x++)
+        for (x=0; x < (long) image->columns; x++)
         {
           q->red=(Quantum) (MaxRGB-q->red);
           q->green=(Quantum) (MaxRGB-q->green);
@@ -1077,7 +1077,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   ImageAttribute
     *attribute;
 
-  int
+  long
     y;
 
   JSAMPLE
@@ -1086,7 +1086,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   JSAMPROW
     scanline[1];
 
-  register int
+  register long
     x;
 
   register JSAMPLE
@@ -1121,8 +1121,8 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   jpeg_info.err->emit_message=(void (*)(j_common_ptr,int)) JPEGWarningHandler;
   jpeg_create_compress(&jpeg_info);
   JPEGDestinationManager(&jpeg_info,image);
-  jpeg_info.image_width=image->columns;
-  jpeg_info.image_height=image->rows;
+  jpeg_info.image_width=(unsigned int) image->columns;
+  jpeg_info.image_height=(unsigned int) image->rows;
   jpeg_info.input_components=3;
   jpeg_info.data_precision=(int) Min(image->depth,BITS_IN_JSAMPLE);
   jpeg_info.in_color_space=JCS_RGB;
@@ -1236,7 +1236,7 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   if ((attribute != (ImageAttribute *) NULL) && (attribute->value != NULL))
     for (i=0; i < strlen(attribute->value); i+=65533)
       jpeg_write_marker(&jpeg_info,JPEG_COM,(unsigned char *) attribute->value+
-        i,(unsigned int) Min(strlen(attribute->value+i),65533));
+        i,(int) Min(strlen(attribute->value+i),65533));
   if (image->color_profile.length != 0)
     WriteICCProfile(&jpeg_info,image);
   if (image->iptc_profile.length != 0)
@@ -1248,10 +1248,11 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
 
     if (LocaleNCompare(image->generic_profile[i].name,"APP",3) != 0)
       continue;
-    x=atoi(image->generic_profile[i].name+3);
+    x=atol(image->generic_profile[i].name+3);
     for (j=0; j < image->generic_profile[i].length; j+=65533)
-      jpeg_write_marker(&jpeg_info,JPEG_APP0+x,image->generic_profile[i].info+j,
-        (int) Min(image->generic_profile[i].length-j,65533));
+      jpeg_write_marker(&jpeg_info,JPEG_APP0+(int) x,
+        image->generic_profile[i].info+j,(int)
+        Min(image->generic_profile[i].length-j,65533));
   }
   /*
     Convert MIFF to JPEG raster pixels.
@@ -1264,13 +1265,13 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   if (jpeg_info.data_precision > 8)
     {
       if (jpeg_info.in_color_space == JCS_GRAYSCALE)
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           p=GetImagePixels(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
             break;
           q=jpeg_pixels;
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
           {
             *q++=(JSAMPLE) (Intensity(*p)/16);
             p++;
@@ -1282,13 +1283,13 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
       else
         if ((jpeg_info.in_color_space == JCS_RGB) ||
             (jpeg_info.in_color_space == JCS_YCbCr))
-          for (y=0; y < (int) image->rows; y++)
+          for (y=0; y < (long) image->rows; y++)
           {
             p=GetImagePixels(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
             q=jpeg_pixels;
-            for (x=0; x < (int) image->columns; x++)
+            for (x=0; x < (long) image->columns; x++)
             {
               *q++=(JSAMPLE) (p->red/16);
               *q++=(JSAMPLE) (p->green/16);
@@ -1300,13 +1301,13 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
               MagickMonitor(SaveImageText,y,image->rows);
           }
         else
-          for (y=0; y < (int) image->rows; y++)
+          for (y=0; y < (long) image->rows; y++)
           {
             p=GetImagePixels(image,0,y,image->columns,1);
             if (p == (PixelPacket *) NULL)
               break;
             q=jpeg_pixels;
-            for (x=0; x < (int) image->columns; x++)
+            for (x=0; x < (long) image->columns; x++)
             {
               /*
                 Convert DirectClass packets to contiguous CMYK scanlines.
@@ -1324,13 +1325,13 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     }
   else
     if (jpeg_info.in_color_space == JCS_GRAYSCALE)
-      for (y=0; y < (int) image->rows; y++)
+      for (y=0; y < (long) image->rows; y++)
       {
         p=GetImagePixels(image,0,y,image->columns,1);
         if (p == (PixelPacket *) NULL)
           break;
         q=jpeg_pixels;
-        for (x=0; x < (int) image->columns; x++)
+        for (x=0; x < (long) image->columns; x++)
         {
           *q++=(JSAMPLE) DownScale(Intensity(*p));
           p++;
@@ -1342,13 +1343,13 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
     else
       if ((jpeg_info.in_color_space == JCS_RGB) ||
           (jpeg_info.in_color_space == JCS_YCbCr))
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           p=GetImagePixels(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
             break;
           q=jpeg_pixels;
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
           {
             *q++=(JSAMPLE) DownScale(p->red);
             *q++=(JSAMPLE) DownScale(p->green);
@@ -1360,13 +1361,13 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
             MagickMonitor(SaveImageText,y,image->rows);
         }
       else
-        for (y=0; y < (int) image->rows; y++)
+        for (y=0; y < (long) image->rows; y++)
         {
           p=GetImagePixels(image,0,y,image->columns,1);
           if (p == (PixelPacket *) NULL)
             break;
           q=jpeg_pixels;
-          for (x=0; x < (int) image->columns; x++)
+          for (x=0; x < (long) image->columns; x++)
           {
             /*
               Convert DirectClass packets to contiguous CMYK scanlines.
