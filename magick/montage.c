@@ -530,7 +530,7 @@ MagickExport Image *MontageImages(const Image *images,
           max_height=0;
         }
     }
-    bounds.height-=(concatenate ? 0 : 4);
+    bounds.height-=(concatenate ? 0 : 2);
     /*
       Initialize montage image.
     */
