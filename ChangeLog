@@ -1,3 +1,6 @@
+2002-01-13  Leonard Rosenthol  <leonardr@lazerware.com>
+  * More bug fixes and improvements in PSD writer
+
 2002-01-13  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/magic.mgk: Added entries for detecting PFA and PFB
@@ -15,8 +18,8 @@
     on the operating system used, and the font files available.
 
 2002-01-11  Leonard Rosenthol  <leonardr@lazerware.com>
-  * PSD now supports writing layered images and IPTC data.
-  * Fixed some bugs in XCF.
+  * PSD now supports writing layered images and IPTC data
+  * Fixed some bugs in XCF
 
 2002-01-11  Cristy  <cristy@mystic.es.dupont.com>
   * Added image list methods to the API.
