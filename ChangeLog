@@ -1,3 +1,7 @@
+2002-12-20  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+	* magick/command.c: Update MogrifyImage() so that gm is 9X
+	faster when transforming a color image to grayscale.
+
 2002-12-19  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 	* Updated coders to use VerifyColormapIndex macro rather
 	than slow ConstrainColormapIndex() function.

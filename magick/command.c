@@ -5515,19 +5515,39 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       *image=region_image;
       (*image)->matte=matte;
     }
-  if ((quantize_info.number_colors != 0) ||
-      (quantize_info.colorspace == GRAYColorspace))
+
+  if ( quantize_info.colorspace == GRAYColorspace )
     {
       /*
-        Reduce the number of colors in the image.
+        If color reduction is requested, then quantize to the requested
+        number of colors in the gray colorspace, otherwise simply
+        transform the image to the gray colorspace.
       */
-      if (((*image)->storage_class == DirectClass) ||
-          ((*image)->colors > quantize_info.number_colors) ||
-          (quantize_info.colorspace == GRAYColorspace))
+
+      if ( quantize_info.number_colors != 0 )
         (void) QuantizeImage(&quantize_info,*image);
       else
-        CompressImageColormap(*image);
+        (void) RGBTransformImage(*image,GRAYColorspace);
     }
+  else
+    {
+      /*
+        If color reduction is requested, and the image is DirectClass,
+        or the image is PseudoClass and the number of colors exceeds
+        the number requesed, then quantize the image colors. Otherwise
+        compress an existing colormap.
+      */
+
+      if ( quantize_info.number_colors != 0 )
+        {
+          if (((*image)->storage_class == DirectClass) ||
+              ((*image)->colors > quantize_info.number_colors))
+            (void) QuantizeImage(&quantize_info,*image);
+          else
+            CompressImageColormap(*image);
+        }
+    }
+
   if (map_image != (Image *) NULL)
     {
       (void) MapImage(*image,map_image,quantize_info.dither);
