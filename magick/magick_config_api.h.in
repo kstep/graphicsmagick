@@ -1,5 +1,8 @@
 /* Defines required by <magick/api.h> */
 
+/* Define if you have X11 library */
+#undef HasX11
+
 /* Number of bits in a pixel Quantum (8/16/32) */
 #undef QuantumDepth
 
