@@ -1250,7 +1250,6 @@ then
       testlib="-l${lib}"
       echo "$WMF_CONFIG_LIBS" | grep -- "$testlib" > /dev/null && LIB_WMF_DEPS="$LIB_WMF_DEPS $testlib"
     done
-    extra_libs=`libwmf-config --libs`
     AC_CHECK_LIB(wmflite,wmf_play,LIBS="-lwmflite $LIBS";LIB_WMF="-lwmflite $LIB_WMF",$LIB_WMF_DEPS)
     AC_CHECK_LIB(wmf,wmf_api_create,LIBS="-lwmf $LIBS";LIB_WMF="-lwmf $LIB_WMF"; passed=`expr $passed + 1`,failed=`expr $failed + 1`,$LIB_WMF_DEPS)
     AC_MSG_CHECKING(if WMF package is complete)

@@ -43,7 +43,8 @@ INCLUDES = -I$(top_srcdir)
 
 ALLMANPAGES = Magick-config.1
 
-libMagick_la_LDFLAGS = -version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VERSION):0
+libMagick_la_LDFLAGS = -no-undefined \
+	-version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VERSION):0
 
 # Library base sources
 MAGICK_BASE_SRCS = memory.c blob.c cache.c error.c monitor.c constitute.c \
