@@ -661,13 +661,13 @@ static size_t EncodeImage(Image *image,const unsigned char *scanline,
     }
   else
     {
-      (void) WriteByte(image,packets);
+      (void) WriteBlobByte(image,packets);
       packets++;
     }
   while (q != pixels)
   {
     q--;
-    (void) WriteByte(image,*q);
+    (void) WriteBlobByte(image,*q);
   }
   return(packets);
 }
@@ -1617,7 +1617,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
       }
     }
   if (count & 0x1)
-    (void) WriteByte(image,'\0');
+    (void) WriteBlobByte(image,'\0');
   MSBFirstWriteShort(image,PictEndOfPictureOp);
   LiberateMemory((void **) &scanline);
   LiberateMemory((void **) &packed_scanline);

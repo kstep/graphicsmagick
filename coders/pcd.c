@@ -936,7 +936,7 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
       break;
     for (x=0; x < (int) (tile_image->columns << 1); x++)
     {
-      (void) WriteByte(image,DownScale(p->red));
+      (void) WriteBlobByte(image,DownScale(p->red));
       p++;
     }
     q=GetImagePixels(downsampled_image,0,y >> 1,downsampled_image->columns,1);
@@ -944,7 +944,7 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
       break;
     for (x=0; x < (int) downsampled_image->columns; x++)
     {
-      (void) WriteByte(image,DownScale(q->green));
+      (void) WriteBlobByte(image,DownScale(q->green));
       q++;
     }
     q=GetImagePixels(downsampled_image,0,y >> 1,downsampled_image->columns,1);
@@ -952,14 +952,14 @@ static unsigned int WritePCDTile(const ImageInfo *image_info,Image *image,
       break;
     for (x=0; x < (int) downsampled_image->columns; x++)
     {
-      (void) WriteByte(image,DownScale(q->blue));
+      (void) WriteBlobByte(image,DownScale(q->blue));
       q++;
     }
     if (QuantumTick(y,tile_image->rows))
       MagickMonitor(SaveImageText,y,tile_image->rows);
   }
   for (i=0; i < 0x800; i++)
-    (void) WriteByte(image,'\0');
+    (void) WriteBlobByte(image,'\0');
   DestroyImage(downsampled_image);
   DestroyImage(tile_image);
   return(True);
@@ -1002,35 +1002,35 @@ static unsigned int WritePCDImage(const ImageInfo *image_info,Image *image)
     Write PCD image header.
   */
   for (i=0; i < 32; i++)
-    (void) WriteByte(pcd_image,0xff);
+    (void) WriteBlobByte(pcd_image,0xff);
   for (i=0; i < 4; i++)
-    (void) WriteByte(pcd_image,0x0e);
+    (void) WriteBlobByte(pcd_image,0x0e);
   for (i=0; i < 8; i++)
-    (void) WriteByte(pcd_image,'\0');
+    (void) WriteBlobByte(pcd_image,'\0');
   for (i=0; i < 4; i++)
-    (void) WriteByte(pcd_image,0x01);
+    (void) WriteBlobByte(pcd_image,0x01);
   for (i=0; i < 4; i++)
-    (void) WriteByte(pcd_image,0x05);
+    (void) WriteBlobByte(pcd_image,0x05);
   for (i=0; i < 8; i++)
-    (void) WriteByte(pcd_image,'\0');
+    (void) WriteBlobByte(pcd_image,'\0');
   for (i=0; i < 4; i++)
-    (void) WriteByte(pcd_image,0x0A);
+    (void) WriteBlobByte(pcd_image,0x0A);
   for (i=0; i < 36; i++)
-    (void) WriteByte(pcd_image,'\0');
+    (void) WriteBlobByte(pcd_image,'\0');
   for (i=0; i < 4; i++)
-    (void) WriteByte(pcd_image,0x01);
+    (void) WriteBlobByte(pcd_image,0x01);
   for (i=0; i < 1944; i++)
-    (void) WriteByte(pcd_image,'\0');
+    (void) WriteBlobByte(pcd_image,'\0');
   (void) WriteBlob(pcd_image,7,"PCD_IPI");
-  (void) WriteByte(pcd_image,0x06);
+  (void) WriteBlobByte(pcd_image,0x06);
   for (i=0; i < 1530; i++)
-    (void) WriteByte(pcd_image,'\0');
+    (void) WriteBlobByte(pcd_image,'\0');
   if (image->columns < image->rows)
-    (void) WriteByte(pcd_image,'\1');
+    (void) WriteBlobByte(pcd_image,'\1');
   else
-    (void) WriteByte(pcd_image,'\0');
+    (void) WriteBlobByte(pcd_image,'\0');
   for (i=0; i < 3*0x800-1539; i++)
-    (void) WriteByte(pcd_image,'\0');
+    (void) WriteBlobByte(pcd_image,'\0');
   /*
     Write PCD tiles.
   */

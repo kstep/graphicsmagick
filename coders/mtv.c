@@ -345,7 +345,7 @@ static unsigned int WriteMTVImage(const ImageInfo *image_info,Image *image)
       Initialize raster file header.
     */
     FormatString(buffer,"%u %u\n",image->columns,image->rows);
-    (void) WriteBlob(image,strlen(buffer),buffer);
+    (void) WriteBlobString(image,buffer);
     for (y=0; y < (int) image->rows; y++)
     {
       p=GetImagePixels(image,0,y,image->columns,1);

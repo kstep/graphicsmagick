@@ -1796,22 +1796,22 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+  W r i t e B y t e                                                          %
++  W r i t e B l o b B y t e                                                  %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  Method WriteByte write an integer to a file.  It returns the number of
+%  Method WriteBlobByte write an integer to a blob.  It returns the number of
 %  bytes written (either 0 or 1);
 %
-%  The format of the WriteByte method is:
+%  The format of the WriteBlobByte method is:
 %
-%      size_t WriteByte(Image *image,const int value)
+%      size_t WriteBlobByte(Image *image,const int value)
 %
 %  A description of each parameter follows.
 %
-%    o count:  Method WriteByte returns the number of bytes written.
+%    o count:  Method WriteBlobByte returns the number of bytes written.
 %
 %    o image: The address of a structure of type Image.
 %
@@ -1819,7 +1819,7 @@ MagickExport size_t WriteBlob(Image *image,const size_t length,const void *data)
 %
 %
 */
-MagickExport size_t WriteByte(Image *image,const int value)
+MagickExport size_t WriteBlobByte(Image *image,const int value)
 {
   char
     c;
@@ -1831,5 +1831,45 @@ MagickExport size_t WriteByte(Image *image,const int value)
   assert(image->signature == MagickSignature);
   c=value;
   count=WriteBlob(image,1,&c);
+  return(count);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
++  W r i t e B l o b S t r i n g                                              %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method WriteBlobString write a string to a blob.  It returns the number of
+%  characters written.
+%
+%  The format of the WriteBlobString method is:
+%
+%      size_t WriteBlobString(Image *image,const char *string)
+%
+%  A description of each parameter follows.
+%
+%    o count:  Method WriteBlobString returns the number of characters written.
+%
+%    o image: The address of a structure of type Image.
+%
+%    o string: Specifies the string to write.
+%
+%
+*/
+MagickExport size_t WriteBlobString(Image *image,const char *string)
+{
+  size_t
+    count;
+
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(string != (const char *) NULL);
+  count=WriteBlob(image,Extent(string),string);
   return(count);
 }

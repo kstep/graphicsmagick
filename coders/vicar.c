@@ -475,7 +475,7 @@ static unsigned int WriteVICARImage(const ImageInfo *image_info,Image *image)
     Print the header and enough spaces to pad to label size.
   */
   FormatString(buffer, "%-*s",label_size,header);
-  (void) WriteBlob(image,strlen(buffer),buffer);
+  (void) WriteBlobString(image,buffer);
   /*
     Allocate memory for pixels.
   */

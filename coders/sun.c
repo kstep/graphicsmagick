@@ -801,17 +801,17 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
               bit++;
               if (bit == 8)
                 {
-                  (void) WriteByte(image,byte);
+                  (void) WriteBlobByte(image,byte);
                   bit=0;
                   byte=0;
                 }
               p++;
             }
             if (bit != 0)
-              (void) WriteByte(image,byte << (8-bit));
+              (void) WriteBlobByte(image,byte << (8-bit));
             if ((((image->columns/8)+
                 (image->columns % 8 ? 1 : 0)) % 2) != 0)
-              (void) WriteByte(image,0);  /* pad scanline */
+              (void) WriteBlobByte(image,0);  /* pad scanline */
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
                 MagickMonitor(SaveImageText,y,image->rows);
@@ -823,11 +823,11 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
             Dump colormap to file.
           */
           for (i=0; i < (int) image->colors; i++)
-            (void) WriteByte(image,DownScale(image->colormap[i].red));
+            (void) WriteBlobByte(image,DownScale(image->colormap[i].red));
           for (i=0; i < (int) image->colors; i++)
-            (void) WriteByte(image,DownScale(image->colormap[i].green));
+            (void) WriteBlobByte(image,DownScale(image->colormap[i].green));
           for (i=0; i < (int) image->colors; i++)
-            (void) WriteByte(image,DownScale(image->colormap[i].blue));
+            (void) WriteBlobByte(image,DownScale(image->colormap[i].blue));
           /*
             Convert PseudoClass packet to SUN colormapped pixel.
           */
@@ -839,11 +839,11 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
             indexes=GetIndexes(image);
             for (x=0; x < (int) image->columns; x++)
             {
-              (void) WriteByte(image,indexes[x]);
+              (void) WriteBlobByte(image,indexes[x]);
               p++;
             }
             if (image->columns & 0x01)
-              (void) WriteByte(image,0);  /* pad scanline */
+              (void) WriteBlobByte(image,0);  /* pad scanline */
             if (image->previous == (Image *) NULL)
               if (QuantumTick(y,image->rows))
                 MagickMonitor(SaveImageText,y,image->rows);

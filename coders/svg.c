@@ -2356,10 +2356,51 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
 #else
 static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
 {
+#define BezierQuantum  200
+
+  AffineMatrix
+    affine,
+    current;
+
+  char
+    buffer[MaxTextExtent],
+    keyword[MaxTextExtent],
+    *primitive,
+    *q,
+    value[MaxTextExtent];
+
+  double
+    angle;
+
+  DrawInfo
+    **graphic_context;
+
   ImageAttribute
     *attribute;
 
+  int
+    j,
+    n,
+    number_points;
+
+  PointInfo
+    point;
+
+  PrimitiveInfo
+    *primitive_info;
+
+  PrimitiveType
+    primitive_type;
+
+  register char
+    *p;
+
+  register int
+    i,
+    x;
+
   unsigned int
+    length,
     status;
 
   /*
@@ -2371,8 +2412,969 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryType);
   if (status == False)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
-  (void) WriteBlob(image,Extent(attribute->value),attribute->value);
+  n=0;
+  graphic_context=(DrawInfo **) AcquireMemory(sizeof(DrawInfo *));
+  if (graphic_context == (DrawInfo **) NULL)
+    MagickError(ResourceLimitWarning,"Unable to draw image",
+      "Memory allocation failed");
+  graphic_context[n]=CloneDrawInfo(image_info,(DrawInfo *) NULL);
+  primitive=graphic_context[n]->primitive;
+  /*
+    Allocate primitive info memory.
+  */
+  number_points=2047;
+  primitive_info=(PrimitiveInfo *)
+    AcquireMemory(number_points*sizeof(PrimitiveInfo));
+  if (primitive_info == (PrimitiveInfo *) NULL)
+    {
+      for ( ; n >= 0; n--)
+        DestroyDrawInfo(graphic_context[n]);
+      LiberateMemory((void **) &graphic_context);
+      ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
+        image);
+    }
+  (void) WriteBlobString(image,"<?xml version=\"1.0\" standalone=\"no\"?>\n");
+  (void) WriteBlobString(image,
+    "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 20000802//EN\"\n");
+  (void) WriteBlobString(image,
+    "\"http://www.w3.org/TR/2000/CR-SVG-20000802/DTD/svg-20000802.dtd\">\n");
+  (void) FormatString(buffer,"<svg width=%u height=%u>\n",
+    image->columns,image->rows);
+  (void) WriteBlobString(image,buffer);
+  status=True;
+  if (graphic_context[n]->debug)
+    (void) fprintf(stdout,"begin vector-graphics\n");
+  for (q=attribute->value; *q != '\0'; )
+  {
+    /*
+      Define primitive.
+    */
+    while (isspace((int) (*q)) && (*q != '\0'))
+      q++;
+    p=q;
+    for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
+      keyword[x]=(*q++);
+    keyword[x]='\0';
+    if (*keyword == '\0')
+      break;
+    while (isspace((int) (*q)) && (*q != '\0'))
+      q++;
+    primitive_type=UndefinedPrimitive;
+    current=graphic_context[n]->affine;
+    IdentityAffine(&affine);
+    switch (*keyword)
+    {
+      case ';':
+        break;
+      case 'a':
+      case 'A':
+      {
+        if (LocaleCompare("affine",keyword) == 0)
+          {
+            affine.sx=strtod(q,&q);
+            if (*q == ',')
+              q++;
+            affine.rx=strtod(q,&q);
+            if (*q == ',')
+              q++;
+            affine.ry=strtod(q,&q);
+            if (*q == ',')
+              q++;
+            affine.sy=strtod(q,&q);
+            if (*q == ',')
+              q++;
+            affine.tx=strtod(q,&q);
+            if (*q == ',')
+              q++;
+            affine.ty=strtod(q,&q);
+            break;
+          }
+        if (LocaleCompare("angle",keyword) == 0)
+          {
+            (void) strtod(q,&q);
+            break;
+          }
+        if (LocaleCompare("arc",keyword) == 0)
+          {
+            primitive_type=ArcPrimitive;
+            break;
+          }
+        status=False;
+        break;
+      }
+      case 'b':
+      case 'B':
+      {
+        if (LocaleCompare("bezier",keyword) == 0)
+          {
+            primitive_type=BezierPrimitive;
+            break;
+          }
+        status=False;
+        break;
+      }
+      case 'c':
+      case 'C':
+      {
+        if (LocaleCompare("clip-path",keyword) == 0)
+          {
+            if ((LocaleNCompare(q,"url(",4) == 0))
+              for (x=0; (*(q-1) != ')') && (*q != '\0'); x++)
+                value[x]=(*q++);
+            else
+              for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
+                value[x]=(*q++);
+            value[x]='\0';
+            break;
+          }
+        if (LocaleCompare("circle",keyword) == 0)
+          {
+            primitive_type=CirclePrimitive;
+            break;
+          }
+        if (LocaleCompare("color",keyword) == 0)
+          {
+            primitive_type=ColorPrimitive;
+            break;
+          }
+        status=False;
+        break;
+      }
+      case 'd':
+      case 'D':
+      {
+        if (LocaleCompare("decorate",keyword) == 0)
+          {
+            for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
+              value[x]=(*q++);
+            value[x]='\0';
+            if (LocaleCompare("none",value) == 0)
+              graphic_context[n]->decorate=NoDecoration;
+            if (LocaleCompare("underline",value) == 0)
+              graphic_context[n]->decorate=UnderlineDecoration;
+            if (LocaleCompare("overline",value) == 0)
+              graphic_context[n]->decorate=OverlineDecoration;
+            if (LocaleCompare("line-through",value) == 0)
+              graphic_context[n]->decorate=LineThroughDecoration;
+            break;
+          }
+        status=False;
+        break;
+      }
+      case 'e':
+      case 'E':
+      {
+        if (LocaleCompare("ellipse",keyword) == 0)
+          {
+            primitive_type=EllipsePrimitive;
+            break;
+          }
+        status=False;
+        break;
+      }
+      case 'f':
+      case 'F':
+      {
+        if (LocaleCompare("fill",keyword) == 0)
+          {
+            if ((LocaleNCompare(q,"rgb(",4) == 0))
+              for (x=0; (*(q-1) != ')') && (*q != '\0'); x++)
+                value[x]=(*q++);
+            else
+              for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
+                value[x]=(*q++);
+            value[x]='\0';
+            (void) QueryColorDatabase(value,&graphic_context[n]->fill);
+            if (graphic_context[n]->fill.opacity != TransparentOpacity)
+              graphic_context[n]->fill.opacity=graphic_context[n]->opacity;
+            break;
+          }
+        if (LocaleCompare("fill-rule",keyword) == 0)
+          {
+            for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
+              value[x]=(*q++);
+            value[x]='\0';
+            if (LocaleCompare("evenodd",value) == 0)
+              graphic_context[n]->fill_rule=EvenOddRule;
+            if (LocaleCompare("nonzero",value) == 0)
+              graphic_context[n]->fill_rule=NonZeroRule;
+            break;
+          }
+        if (LocaleCompare("fill-opacity",keyword) == 0)
+          {
+            graphic_context[n]->fill.opacity=(Quantum)
+              ceil(MaxRGB*strtod(q,&q)/100.0-0.5);
+            break;
+          }
+        if (LocaleCompare("font",keyword) == 0)
+          {
+            for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
+              value[x]=(*q++);
+            value[x]='\0';
+            CloneString(&graphic_context[n]->font,value);
+            break;
+          }
+        status=False;
+        break;
+      }
+      case 'g':
+      case 'G':
+      {
+        if (LocaleCompare("gravity",keyword) == 0)
+          {
+            for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
+              value[x]=(*q++);
+            value[x]='\0';
+            if (LocaleCompare("NorthWest",value) == 0)
+              graphic_context[n]->gravity=NorthWestGravity;
+            if (LocaleCompare("North",value) == 0)
+              graphic_context[n]->gravity=NorthGravity;
+            if (LocaleCompare("NorthEast",value) == 0)
+              graphic_context[n]->gravity=NorthEastGravity;
+            if (LocaleCompare("West",value) == 0)
+              graphic_context[n]->gravity=WestGravity;
+            if (LocaleCompare("Center",value) == 0)
+              graphic_context[n]->gravity=CenterGravity;
+            if (LocaleCompare("East",value) == 0)
+              graphic_context[n]->gravity=EastGravity;
+            if (LocaleCompare("SouthWest",value) == 0)
+              graphic_context[n]->gravity=SouthWestGravity;
+            if (LocaleCompare("South",value) == 0)
+              graphic_context[n]->gravity=SouthGravity;
+            if (LocaleCompare("SouthEast",value) == 0)
+              graphic_context[n]->gravity=SouthEastGravity;
+            break;
+          }
+        status=False;
+        break;
+      }
+      case 'i':
+      case 'I':
+      {
+        if (LocaleCompare("image",keyword) == 0)
+          {
+            for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
+              value[x]=(*q++);
+            value[x]='\0';
+            if (LocaleCompare("Over",value) == 0)
+              graphic_context[n]->compose=OverCompositeOp;
+            if (LocaleCompare("In",value) == 0)
+              graphic_context[n]->compose=InCompositeOp;
+            if (LocaleCompare("Out",value) == 0)
+              graphic_context[n]->compose=OutCompositeOp;
+            if (LocaleCompare("Atop",value) == 0)
+              graphic_context[n]->compose=AtopCompositeOp;
+            if (LocaleCompare("Xor",value) == 0)
+              graphic_context[n]->compose=XorCompositeOp;
+            if (LocaleCompare("Plus",value) == 0)
+              graphic_context[n]->compose=PlusCompositeOp;
+            if (LocaleCompare("Minus",value) == 0)
+              graphic_context[n]->compose=MinusCompositeOp;
+            if (LocaleCompare("Add",value) == 0)
+              graphic_context[n]->compose=AddCompositeOp;
+            if (LocaleCompare("Subtract",value) == 0)
+              graphic_context[n]->compose=SubtractCompositeOp;
+            if (LocaleCompare("Difference",value) == 0)
+              graphic_context[n]->compose=DifferenceCompositeOp;
+            if (LocaleCompare("Multiply",value) == 0)
+              graphic_context[n]->compose=MultiplyCompositeOp;
+            if (LocaleCompare("Bumpmap",value) == 0)
+              graphic_context[n]->compose=BumpmapCompositeOp;
+            if (LocaleCompare("Replace",value) == 0)
+              graphic_context[n]->compose=ReplaceCompositeOp;
+            if (LocaleCompare("ReplaceRed",value) == 0)
+              graphic_context[n]->compose=ReplaceRedCompositeOp;
+            if (LocaleCompare("ReplaceGreen",value) == 0)
+              graphic_context[n]->compose=ReplaceGreenCompositeOp;
+            if (LocaleCompare("ReplaceBlue",value) == 0)
+              graphic_context[n]->compose=ReplaceBlueCompositeOp;
+            if (LocaleCompare("ReplaceMatte",value) == 0)
+              graphic_context[n]->compose=ReplaceMatteCompositeOp;
+            primitive_type=ImagePrimitive;
+            break;
+          }
+        status=False;
+        break;
+      }
+      case 'l':
+      case 'L':
+      {
+        if (LocaleCompare("line",keyword) == 0)
+          {
+            primitive_type=LinePrimitive;
+            break;
+          }
+        status=False;
+        break;
+      }
+      case 'm':
+      case 'M':
+      {
+        if (LocaleCompare("matte",keyword) == 0)
+          {
+            primitive_type=MattePrimitive;
+            break;
+          }
+        status=False;
+        break;
+      }
+      case 'o':
+      case 'O':
+      {
+        if (LocaleCompare("opacity",keyword) == 0)
+          {
+            graphic_context[n]->opacity=(Quantum)
+              ceil(MaxRGB*strtod(q,&q)/100.0-0.5);
+            graphic_context[n]->fill.opacity=graphic_context[n]->opacity;
+            graphic_context[n]->stroke.opacity=graphic_context[n]->opacity;
+            break;
+          }
+        status=False;
+        break;
+      }
+      case 'p':
+      case 'P':
+      {
+        if (LocaleCompare("path",keyword) == 0)
+          {
+            primitive_type=PathPrimitive;
+            break;
+          }
+        if (LocaleCompare("point",keyword) == 0)
+          {
+            primitive_type=PointPrimitive;
+            break;
+          }
+        if (LocaleCompare("pointsize",keyword) == 0)
+          {
+            graphic_context[n]->pointsize=strtod(q,&q);
+            break;
+          }
+        if (LocaleCompare("polyline",keyword) == 0)
+          {
+            primitive_type=PolylinePrimitive;
+            break;
+          }
+        if (LocaleCompare("polygon",keyword) == 0)
+          {
+            primitive_type=PolygonPrimitive;
+            break;
+          }
+        if (LocaleCompare("pop",keyword) == 0)
+          {
+            for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
+              value[x]=(*q++);
+            value[x]='\0';
+            if (LocaleCompare("clip-path",value) == 0)
+              break;
+            if (LocaleCompare("graphic-context",value) == 0)
+              {
+                DestroyDrawInfo(graphic_context[n]);
+                n--;
+                if (n < 0)
+                  ThrowWriterException(CorruptImageWarning,
+                    "unbalanced graphic context push/pop",image);
+              }
+            break;
+          }
+        if (LocaleCompare("push",keyword) == 0)
+          {
+            for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
+              value[x]=(*q++);
+            value[x]='\0';
+            if (LocaleNCompare("clip-path-",value,10) == 0)
+              {
+                while (isspace((int) (*q)) && (*q != '\0'))
+                  q++;
+                for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
+                  value[x]=(*q++);
+                value[x]='\0';
+                break;
+              }
+            if (LocaleCompare("graphic-context",value) == 0)
+              {
+                n++;
+                ReacquireMemory((void **) &graphic_context,
+                  (n+1)*sizeof(DrawInfo *));
+                if (graphic_context == (DrawInfo **) NULL)
+                  MagickError(ResourceLimitWarning,"Unable to draw image",
+                    "Memory allocation failed");
+                graphic_context[n]=
+                  CloneDrawInfo((ImageInfo *) NULL,graphic_context[n-1]);
+              }
+            break;
+          }
+        status=False;
+        break;
+      }
+      case 'r':
+      case 'R':
+      {
+        if (LocaleNCompare("rect",keyword,4) == 0)
+          {
+            primitive_type=RectanglePrimitive;
+            break;
+          }
+        if (LocaleCompare("roundRectangle",keyword) == 0)
+          {
+            primitive_type=RoundRectanglePrimitive;
+            break;
+          }
+        if (LocaleCompare("rotate",keyword) == 0)
+          {
+            angle=strtod(q,&q);
+            affine.sx=cos(DegreesToRadians(fmod(angle,360.0)));
+            affine.rx=sin(DegreesToRadians(fmod(angle,360.0)));
+            affine.ry=(-sin(DegreesToRadians(fmod(angle,360.0))));
+            affine.sy=cos(DegreesToRadians(fmod(angle,360.0)));
+            break;
+          }
+        status=False;
+        break;
+      }
+      case 's':
+      case 'S':
+      {
+        if (LocaleCompare("scale",keyword) == 0)
+          {
+            affine.sx=strtod(q,&q);
+            if (*q == ',')
+              q++;
+            affine.sy=strtod(q,&q);
+            break;
+          }
+        if (LocaleCompare("skewX",keyword) == 0)
+          {
+            angle=strtod(q,&q);
+            affine.ry=tan(DegreesToRadians(fmod(angle,360.0)));
+            break;
+          }
+        if (LocaleCompare("skewY",keyword) == 0)
+          {
+            angle=strtod(q,&q);
+            affine.rx=tan(DegreesToRadians(fmod(angle,360.0)));
+            break;
+          }
+        if (LocaleCompare("stroke",keyword) == 0)
+          {
+            if ((LocaleNCompare(q,"rgb(",4) == 0))
+              for (x=0; (*(q-1) != ')') && (*q != '\0'); x++)
+                value[x]=(*q++);
+            else
+              for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
+                value[x]=(*q++);
+            value[x]='\0';
+            (void) QueryColorDatabase(value,&graphic_context[n]->stroke);
+            if (graphic_context[n]->stroke.opacity != TransparentOpacity)
+              graphic_context[n]->stroke.opacity=graphic_context[n]->opacity;
+            break;
+          }
+        if (LocaleCompare("stroke-antialias",keyword) == 0)
+          {
+            graphic_context[n]->stroke_antialias=(unsigned int) strtod(q,&q);
+            break;
+          }
+        if (LocaleCompare("stroke-dasharray",keyword) == 0)
+          {
+            if (IsGeometry(q))
+              {
+                char
+                  *r;
+
+                r=q;
+                for (x=0; IsGeometry(r); x++)
+                  (void) strtod(r,&r);
+                graphic_context[n]->dash_pattern=(unsigned int *)
+                  AcquireMemory((x+1)*sizeof(unsigned int));
+                if (graphic_context[n]->dash_pattern == (unsigned int *) NULL)
+                  {
+                    ThrowException(&image->exception,ResourceLimitWarning,
+                      "Unable to draw image","Memory allocation failed");
+                    break;
+                  }
+                for (x=0; IsGeometry(q); x++)
+                  graphic_context[n]->dash_pattern[x]=
+                    (unsigned int) strtod(q,&q);
+                graphic_context[n]->dash_pattern[x]=0;
+                break;
+              }
+            for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
+              value[x]=(*q++);
+            value[x]='\0';
+            if (LocaleCompare(value,"none") != 0)
+              break;
+            if (graphic_context[n]->dash_pattern != (unsigned int *) NULL)
+              LiberateMemory((void **) &graphic_context[n]->dash_pattern);
+            graphic_context[n]->dash_pattern=(unsigned int *) NULL;
+            break;
+          }
+        if (LocaleCompare("stroke-dashoffset",keyword) == 0)
+          {
+            graphic_context[n]->dash_offset=(unsigned int) strtod(q,&q);
+            break;
+          }
+        if (LocaleCompare("stroke-linecap",keyword) == 0)
+          {
+            for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
+              value[x]=(*q++);
+            value[x]='\0';
+            if (LocaleCompare("butt",value) == 0)
+              graphic_context[n]->linecap=ButtCap;
+            if (LocaleCompare("round",value) == 0)
+              graphic_context[n]->linecap=RoundCap;
+            if (LocaleCompare("square",value) == 0)
+              graphic_context[n]->linecap=SquareCap;
+            break;
+          }
+        if (LocaleCompare("stroke-linejoin",keyword) == 0)
+          {
+            for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
+              value[x]=(*q++);
+            value[x]='\0';
+            if (LocaleCompare("butt",value) == 0)
+              graphic_context[n]->linejoin=MiterJoin;
+            if (LocaleCompare("round",value) == 0)
+              graphic_context[n]->linejoin=RoundJoin;
+            if (LocaleCompare("square",value) == 0)
+              graphic_context[n]->linejoin=BevelJoin;
+            break;
+          }
+        if (LocaleCompare("stroke-miterlimit",keyword) == 0)
+          {
+            graphic_context[n]->miterlimit=(unsigned int) strtod(q,&q);
+            break;
+          }
+        if (LocaleCompare("stroke-opacity",keyword) == 0)
+          {
+            graphic_context[n]->stroke.opacity=(Quantum)
+              ceil(MaxRGB*strtod(q,&q)/100.0-0.5);
+            break;
+          }
+        if (LocaleCompare("stroke-width",keyword) == 0)
+          {
+            graphic_context[n]->stroke_width=strtod(q,&q);
+            continue;
+          }
+        status=False;
+        break;
+      }
+      case 't':
+      case 'T':
+      {
+        if (LocaleCompare("text",keyword) == 0)
+          {
+            primitive_type=TextPrimitive;
+            break;
+          }
+        if (LocaleCompare("text-antialias",keyword) == 0)
+          {
+            graphic_context[n]->text_antialias=(unsigned int) strtod(q,&q);
+            break;
+          }
+        if (LocaleCompare("translate",keyword) == 0)
+          {
+            affine.tx=strtod(q,&q);
+            if (*q == ',')
+              q++;
+            affine.ty=strtod(q,&q);
+            break;
+          }
+        status=False;
+        break;
+      }
+      case 'v':
+      case 'V':
+      {
+        if (LocaleCompare("viewbox",keyword) == 0)
+          {
+            (void) strtod(q,&q);
+            if (*q == ',')
+              q++;
+            (void) strtod(q,&q);
+            if (*q == ',')
+              q++;
+            (void) strtod(q,&q);
+            if (*q == ',')
+              q++;
+            (void) strtod(q,&q);
+            break;
+          }
+        status=False;
+        break;
+      }
+      default:
+      {
+        status=False;
+        break;
+      }
+    }
+    if (status == False)
+      break;
+    if ((affine.sx != 1.0) || (affine.rx != 0.0) || (affine.ry != 0.0) ||
+        (affine.sy != 1.0) || (affine.tx != 0.0) || (affine.ty != 0.0))
+      {
+        graphic_context[n]->affine.sx=current.sx*affine.sx+current.ry*affine.rx;
+        graphic_context[n]->affine.rx=current.rx*affine.sx+current.sy*affine.rx;
+        graphic_context[n]->affine.ry=current.sx*affine.ry+current.ry*affine.sy;
+        graphic_context[n]->affine.sy=current.rx*affine.ry+current.sy*affine.sy;
+        graphic_context[n]->affine.tx=
+          current.sx*affine.tx+current.ry*affine.ty+current.tx;
+        graphic_context[n]->affine.ty=
+          current.rx*affine.tx+current.sy*affine.ty+current.ty;
+      }
+    if (primitive_type == UndefinedPrimitive)
+      {
+        if (graphic_context[n]->debug)
+          (void) fprintf(stdout,"  %.*s\n",q-p,p);
+        continue;
+      }
+    /*
+      Parse the primitive attributes.
+    */
+    i=0;
+    j=0;
+    for (x=0; *q != '\0'; x++)
+    {
+      /*
+        Define points.
+      */
+      while (isspace((int) (*q)) && (*q != '\0'))
+        q++;
+      if (!IsGeometry(q))
+        break;
+      point.x=strtod(q,&q);
+      if (*q == ',')
+        q++;
+      point.y=strtod(q,&q);
+      if (*q == ',')
+        q++;
+      primitive_info[i].primitive=primitive_type;
+      primitive_info[i].point=point;
+      primitive_info[i].coordinates=0;
+      primitive_info[i].method=FloodfillMethod;
+      while ((isspace((int) (*q)) || (*q == ',')) && (*q != '\0'))
+        q++;
+      i++;
+      if (i < (int) (number_points-6*BezierQuantum-360))
+        continue;
+      number_points+=6*BezierQuantum+360;
+      ReacquireMemory((void **) &primitive_info,
+        number_points*sizeof(PrimitiveInfo));
+      if (primitive_info == (PrimitiveInfo *) NULL)
+        {
+          ThrowException(&image->exception,ResourceLimitWarning,
+            "Unable to draw image","Memory allocation failed");
+          break;
+        }
+    }
+    while (isspace((int) (*q)) && (*q != '\0'))
+      q++;
+    primitive_info[j].primitive=primitive_type;
+    primitive_info[j].coordinates=x;
+    primitive_info[j].method=FloodfillMethod;
+    primitive_info[j].text=(char *) NULL;
+    switch (primitive_type)
+    {
+      case PointPrimitive:
+      default:
+      {
+        if (primitive_info[j].coordinates != 1)
+          {
+            status=False;
+            break;
+          }
+        break;
+      }
+      case LinePrimitive:
+      {
+        if (primitive_info[j].coordinates != 2)
+          {
+            status=False;
+            break;
+          }
+        break;
+      }
+      case RectanglePrimitive:
+      {
+        if (primitive_info[j].coordinates != 2)
+          {
+            status=False;
+            break;
+          }
+        break;
+      }
+      case RoundRectanglePrimitive:
+      {
+        if (primitive_info[j].coordinates != 3)
+          {
+            status=False;
+            break;
+          }
+        break;
+      }
+      case ArcPrimitive:
+      {
+        if (primitive_info[j].coordinates != 3)
+          {
+            status=False;
+            break;
+          }
+        break;
+      }
+      case EllipsePrimitive:
+      {
+        if (primitive_info[j].coordinates != 3)
+          {
+            status=False;
+            break;
+          }
+        break;
+      }
+      case CirclePrimitive:
+      {
+        if (primitive_info[j].coordinates != 2)
+          {
+            status=False;
+            break;
+          }
+        break;
+      }
+      case PolylinePrimitive:
+      {
+        if (primitive_info[j].coordinates < 2)
+          {
+            status=False;
+            break;
+          }
+        break;
+      }
+      case PolygonPrimitive:
+      {
+        if (primitive_info[j].coordinates < 3)
+          {
+            status=False;
+            break;
+          }
+        primitive_info[i]=primitive_info[j];
+        primitive_info[i].coordinates=0;
+        primitive_info[j].coordinates++;
+        i++;
+        break;
+      }
+      case BezierPrimitive:
+      {
+        if (primitive_info[j].coordinates < 3)
+          {
+            status=False;
+            break;
+          }
+        break;
+      }
+      case PathPrimitive:
+      {
+        char
+          *path;
+
+        int
+          number_attributes;
+
+        if (*q == '\0')
+          break;
+        number_attributes=1;
+        p=q;
+        if (*q == '"')
+          {
+            p++;
+            for (q++; *q != '\0'; q++)
+            {
+              if (isalpha((int) *q))
+                number_attributes++;
+              if ((*q == '"') && (*(q-1) != '\\'))
+                break;
+            }
+          }
+        else
+          if (*q == '\'')
+            {
+              p++;
+              for (q++; *q != '\0'; q++)
+              {
+                if (isalpha((int) *q))
+                  number_attributes++;
+                if ((*q == '\'') && (*(q-1) != '\\'))
+                  break;
+              }
+            }
+          else
+            for (q++;  *q != '\0'; q++)
+            {
+              if (isalpha((int) *q))
+                number_attributes++;
+              if (isspace((int) *q) && (*(q-1) != '\\') && (*q != '\0'))
+                break;
+            }
+        path=(char *) AcquireMemory(q-p+1);
+        if (i > (number_points-6*BezierQuantum*number_attributes-1))
+          {
+            number_points+=6*BezierQuantum*number_attributes;
+            ReacquireMemory((void **) &primitive_info,
+              number_points*sizeof(PrimitiveInfo));
+          }
+        if ((path == (char *) NULL) ||
+            (primitive_info == (PrimitiveInfo *) NULL))
+          {
+            ThrowException(&image->exception,ResourceLimitWarning,
+              "Unable to draw image","Memory allocation failed");
+            break;
+          }
+        (void) strncpy(path,p,q-p+1);
+        path[q-p]='\0';
+        LiberateMemory((void **) &path);
+        break;
+      }
+      case ColorPrimitive:
+      case MattePrimitive:
+      {
+        if (primitive_info[j].coordinates != 1)
+          {
+            status=False;
+            break;
+          }
+        /*
+          Define method.
+        */
+        for (x=0; !isspace((int) (*q)) && (*q != '\0'); x++)
+          keyword[x]=(*q++);
+        keyword[x]='\0';
+        if (*keyword == '\0')
+          break;
+        if (LocaleCompare("point",keyword) == 0)
+          primitive_info[j].method=PointMethod;
+        else
+          if (LocaleCompare("replace",keyword) == 0)
+            primitive_info[j].method=ReplaceMethod;
+          else
+            if (LocaleCompare("floodfill",keyword) == 0)
+              primitive_info[j].method=FloodfillMethod;
+            else
+              if (LocaleCompare("filltoborder",keyword) == 0)
+                primitive_info[j].method=FillToBorderMethod;
+              else
+                if (LocaleCompare("reset",keyword) == 0)
+                  primitive_info[j].method=ResetMethod;
+                else
+                  status=False;
+        break;
+      }
+      case TextPrimitive:
+      {
+        register char
+          *p;
+
+        if (primitive_info[j].coordinates != 1)
+          {
+            status=False;
+            break;
+          }
+        if (*q == '\0')
+          break;
+        p=q;
+        if (*q == '"')
+          {
+            p++;
+            for (q++; *q != '\0'; q++)
+              if ((*q == '"') && (*(q-1) != '\\'))
+                break;
+          }
+        else
+          if (*q == '\'')
+            {
+              p++;
+              for (q++; *q != '\0'; q++)
+                if ((*q == '\'') && (*(q-1) != '\\'))
+                  break;
+            }
+          else
+            for (q++;  *q != '\0'; q++)
+              if (isspace((int) *q) && (*(q-1) != '\\') && (*q != '\0'))
+                break;
+        primitive_info[j].text=(char *) AcquireMemory(q-p+1);
+        if (primitive_info[j].text != (char *) NULL)
+          {
+            (void) strncpy(primitive_info[j].text,p,q-p+1);
+            primitive_info[j].text[q-p]='\0';
+          }
+        break;
+      }
+      case ImagePrimitive:
+      {
+        register char
+          *p;
+
+        if (primitive_info[j].coordinates != 2)
+          {
+            status=False;
+            break;
+          }
+        if (*q == '\0')
+          break;
+        p=q;
+        if (*p == '"')
+          {
+            p++;
+            for (q++; *q != '\0'; q++)
+              if ((*q == '"') && (*(q-1) != '\\'))
+                break;
+          }
+        else
+          if (*p == '\'')
+            {
+              p++;
+              for (q++; *q != '\0'; q++)
+                if ((*q == '\'') && (*(q-1) != '\\'))
+                  break;
+            }
+          else
+            for (q++;  *q != '\0'; q++)
+              if (isspace((int) *q) && (*(q-1) != '\\') && (*q != '\0'))
+                break;
+        primitive_info[j].text=(char *) AcquireMemory(q-p+1);
+        if (primitive_info[j].text != (char *) NULL)
+          {
+            (void) strncpy(primitive_info[j].text,p,q-p);
+            primitive_info[j].text[q-p]='\0';
+          }
+        break;
+      }
+    }
+    if (primitive_info == (PrimitiveInfo *) NULL)
+      break;
+    if (graphic_context[n]->debug)
+      (void) fprintf(stdout,"  %.*s\n",q-p,p);
+    if (status == False)
+      break;
+    if ((*q == '"') || (*q == '\''))
+      q++;
+    while (isspace((int) (*q)) && (*q != '\0'))
+      q++;
+    primitive_info[i].primitive=UndefinedPrimitive;
+    if (primitive_info->text != (char *) NULL)
+      LiberateMemory((void **) &primitive_info->text);
+    if (status == False)
+      break;
+  }
+  if (graphic_context[n]->debug)
+    (void) fprintf(stdout,"end vector-graphics\n");
+  (void) WriteBlobString(image,"</svg>");
+  /*
+    Free resources.
+  */
+  if (primitive_info != (PrimitiveInfo *) NULL)
+    LiberateMemory((void **) &primitive_info);
+  for ( ; n >= 0; n--)
+    DestroyDrawInfo(graphic_context[n]);
+  LiberateMemory((void **) &graphic_context);
   CloseBlob(image);
-  return(True);
+  return(status);
 }
 #endif

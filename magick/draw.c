@@ -858,7 +858,9 @@ static PathInfo *ConvertPrimitiveToPath(const DrawInfo *draw_info,
   q.x=(-1.0);
   q.y=(-1.0);
   path_length=0;
-  path_info=(PathInfo *) NULL;
+  path_info=(PathInfo *) AcquireMemory((path_length+3)*sizeof(PathInfo));
+  if (path_info == (PathInfo *) NULL)
+    return((PathInfo *) NULL);
   for (i=0; primitive_info[i].primitive != UndefinedPrimitive; i++)
   {
     point=primitive_info[i].point;
@@ -866,11 +868,8 @@ static PathInfo *ConvertPrimitiveToPath(const DrawInfo *draw_info,
     if (coordinates <= 0)
       {
         coordinates=primitive_info[i].coordinates;
-        path_length+=coordinates+3;
-        if (path_info == (PathInfo *) NULL)
-          path_info=(PathInfo *) AcquireMemory(path_length*sizeof(PathInfo));
-        else
-          ReacquireMemory((void **) &path_info,path_length*sizeof(PathInfo));
+        path_length+=coordinates;
+        ReacquireMemory((void **) &path_info,(path_length+3)*sizeof(PathInfo));
         if (path_info == (PathInfo *) NULL)
           return((PathInfo *) NULL);
         start=n;
@@ -3884,7 +3883,6 @@ MagickExport void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
   draw_info->linecap=ButtCap;
   draw_info->linejoin=MiterJoin;
   draw_info->miterlimit=10;
-  draw_info->dash_offset=0;
   draw_info->decorate=NoDecoration;
   if (clone_info->font != (char *) NULL)
     draw_info->font=AllocateString(clone_info->font);
