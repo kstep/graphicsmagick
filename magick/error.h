@@ -11,6 +11,10 @@ extern "C" {
 /*
   Exception define definitions.
 */
+#if defined(macintosh)
+#define ExceptionInfo MagickExceptionInfo
+#endif
+
 #define ThrowBinaryException(code,reason,description) \
 { \
   if (image != (Image *) NULL) \
