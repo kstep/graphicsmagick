@@ -11,7 +11,7 @@ extern "C" {
 #define MagickCopyright  "Copyright (C) 2002 ImageMagick Studio LLC"
 #define MagickLibVersion  0x0544
 #define MagickLibVersionText  "5.4.4"
-#define MagickLibVersionNumber  5.4.4,0
+#define MagickLibVersionNumber  5,4,4,0
 #if QuantumDepth == 8
 #define MagickVersion \
   "@(#)ImageMagick 5.4.4 04/15/02 Q:8 http://www.imagemagick.org"
