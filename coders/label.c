@@ -111,7 +111,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   assert(exception->signature == MagickSignature);
   image=AllocateImage(image_info);
   draw_info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
-  draw_info->gravity=WestGravity;
+  draw_info->gravity=CenterGravity;
   draw_info->text=AllocateString(image_info->filename);
   status=GetTypeMetrics(image,draw_info,&metrics);
   if (status == False)
