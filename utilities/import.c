@@ -69,7 +69,7 @@
 %    -compress type      type of image compression
 %    -crop geometry      preferred size and location of the cropped image
 %    -debug              display copious debugging information
-%    -delay value        pause before selecting target window
+%    -delay value        display the next image after pausing
 %    -density geometry   vertical and horizontal density of the image
 %    -depth value        depth of the image
 %    -descend            obtain image by descending window hierarchy
@@ -84,6 +84,7 @@
 %    -monochrome         transform image to black and white
 %    -negate             replace every pixel with its complementary color
 %    -page geometry      size and location of an image canvas
+%    -pause value        seconds delay between snapshots
 %    -pointsize value    pointsize of Postscript font
 %    -quality value      JPEG/MIFF/PNG compression level
 %    -resize geometry    resize the image
@@ -166,6 +167,7 @@ static void ImportUsage(void)
       "-monochrome         transform image to black and white",
       "-negate             replace every pixel with its complementary color ",
       "-page geometry      size and location of an image canvas",
+      "-pause value        seconds delay between snapshots",
       "-pointsize value    pointsize of Postscript font",
       "-quality value      JPEG/MIFF/PNG compression level",
       "-resize geometry    resize the image",
@@ -322,12 +324,9 @@ int main(int argc,char **argv)
   resource_value=
     XGetResourceInstance(resource_database,client_name,"border","False");
   ximage_info.borders=IsTrue(resource_value);
-  resource_info.delay=0;
-  resource_info.pause=0;
   resource_value=
-    XGetResourceInstance(resource_database,client_name,"delay","6");
-  (void) XParseGeometry(resource_value,&z,&z,&resource_info.delay,
-    &resource_info.pause);
+    XGetResourceInstance(resource_database,client_name,"delay","0");
+  resource_info.delay=atol(resource_value);
   image_info->density=XGetResourceInstance(resource_database,client_name,
     "density",(char *) NULL);
   resource_value=
@@ -351,6 +350,9 @@ int main(int argc,char **argv)
     MagickWarning(OptionWarning,"Unrecognized interlace type",resource_value);
   image_info->page=XGetResourceInstance(resource_database,client_name,
     "pageGeometry",(char *) NULL);
+  resource_value=
+    XGetResourceInstance(resource_database,client_name,"pause","0");
+  resource_info.pause=atol(resource_value);
   resource_value=
     XGetResourceInstance(resource_database,client_name,"quality","85");
   image_info->quality=atol(resource_value);
@@ -546,15 +548,11 @@ int main(int argc,char **argv)
             }
           if (LocaleCompare("delay",option+1) == 0)
             {
-              resource_info.delay=0;
-              resource_info.pause=0;
               if (*option == '-')
                 {
                   i++;
                   if ((i == argc) || !sscanf(argv[i],"%ld",&x))
                     MagickError(OptionError,"Missing seconds",option);
-                  (void) XParseGeometry(argv[i],&z,&z,
-                    &resource_info.delay,&resource_info.pause);
                 }
               break;
             }
@@ -730,6 +728,18 @@ int main(int argc,char **argv)
                   if (i == argc)
                     MagickError(OptionError,"Missing page geometry",option);
                   image_info->page=GetPageGeometry(argv[i]);
+                }
+              break;
+            }
+          if (LocaleCompare("pause",option+1) == 0)
+            {
+              resource_info.pause=0;
+              if (*option == '-')
+                {
+                  i++;
+                  if ((i == argc) || !sscanf(argv[i],"%ld",&x))
+                    MagickError(OptionError,"Missing seconds",option);
+                  resource_info.pause=atoi(argv[i]);
                 }
               break;
             }
@@ -938,12 +948,12 @@ int main(int argc,char **argv)
   */
   if (target_window != (char *) NULL)
     (void) strncpy(image_info->filename,target_window,MaxTextExtent-1);
-  (void) sleep(resource_info.pause);
   image_info->colorspace=quantize_info->colorspace;
   image_info->dither=quantize_info->dither;
   image=(Image *) NULL;
   for (i=0; i < (long) Max(snapshots,1); i++)
   {
+    (void) sleep(resource_info.pause);
     next_image=XImportImage(image_info,&ximage_info);
     status&=next_image != (Image *) NULL;
     if (next_image == (Image *) NULL)
@@ -955,7 +965,6 @@ int main(int argc,char **argv)
     if (image != (Image *) NULL)
       image->next=next_image;
     image=next_image;
-    XDelay(display,(unsigned long) resource_info.delay*10);
   }
   if (image == (Image *) NULL)
     MagickError(OptionError,"Missing an image file name",(char *) NULL);
