@@ -23,10 +23,11 @@ EXCLUDE = ftmac.h
 # cache
 EXCLUDE = ftlru.c
 EXCLUDE = ftcmanag.c
+EXCLUDE = ftccache.c
 EXCLUDE = ftcglyph.c
-EXCLUDE = ftcchunk.c
 EXCLUDE = ftcimage.c
 EXCLUDE = ftcsbits.c
+EXCLUDE = ftccmap.c
 # cff
 EXCLUDE = cffdrivr.c
 EXCLUDE = cffgload.c
@@ -75,4 +76,9 @@ EXCLUDE = t1objs.c
 EXCLUDE = t1driver.c
 EXCLUDE = t1gload.c
 EXCLUDE = t1afm.c
-
+# pshinter
+EXCLUDE = pshrec.c
+EXCLUDE = pshglob.c
+EXCLUDE = pshalgo1.c
+EXCLUDE = pshalgo2.c
+EXCLUDE = pshmod.c
