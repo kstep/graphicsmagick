@@ -1,6 +1,7 @@
 2003-03-09  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* magick/blob.c: Fix some erroneous log printf specifications.
+	Improved blob log messages a bit. 
 	* magick/log.c (IsEventLogging): Use  InitializeLogInfo().
 	(InitializeLogInfo): New function to intelligently initialize
 	logging subsystem.  Only locks when initialization may be required,

@@ -141,6 +141,12 @@ const char *GetLocaleMessage(const char *tag)
             if (p - tp == 16 && !LocaleNCompare(tp, "UnableToReadFile", 16))
               return *np ? tag : "Unable to read file";
             else
+            if (p - tp == 20 && !LocaleNCompare(tp, "UnableToReadToOffset", 20))
+              return *np ? tag : "Unable to read to offset";
+            else
+            if (p - tp == 20 && !LocaleNCompare(tp, "UnableToSeekToOffset", 20))
+              return *np ? tag : "Unable to seek to offset";
+            else
             if (p - tp == 17 && !LocaleNCompare(tp, "UnableToWriteBlob", 17))
               return *np ? tag : "Unable to write blob";
             else
@@ -1270,6 +1276,12 @@ const char *GetLocaleMessage(const char *tag)
             {
             default:
               return tag;
+
+            case 'f':  case 'F':
+              if (p - tp == 18 && !LocaleNCompare(tp, "FailedToFindSymbol", 18))
+                return *np ? tag : "Failed to find symbol";
+              else
+                return tag;
 
             case 'u':  case 'U':
               if (p - tp == 18 && !LocaleNCompare(tp, "UnableToLoadModule", 18))

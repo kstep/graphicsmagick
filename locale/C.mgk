@@ -14,6 +14,12 @@
       <Message name="UnableToReadFile">
         Unable to read file
       </Message>
+      <Message name="UnableToReadToOffset">
+        Unable to read to offset
+      </Message>
+      <Message name="UnableToSeekToOffset">
+        Unable to seek to offset
+      </Message>
       <Message name="UnableToWriteBlob">
         Unable to write blob
       </Message>
@@ -734,7 +740,7 @@
   </Missing>
   <Module>
     <Error>
-      <Message name="FailedToFindSymbol"">
+      <Message name="FailedToFindSymbol">
         Failed to find symbol
       </Message>
       <Message name="UnableToLoadModule">
