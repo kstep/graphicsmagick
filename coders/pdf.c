@@ -552,8 +552,8 @@ static Image *ReadPDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
   (void) remove(clone_info->filename);
   DestroyImageInfo(clone_info);
   if (image == (Image *) NULL)
-    ThrowReaderException(CorruptImageError,
-      "Portable Document delegate failed",image);
+    ThrowReaderException(CorruptImageError,"Portable Document delegate failed",
+      image);
   do
   {
     (void) strcpy(image->magick,"PDF");
