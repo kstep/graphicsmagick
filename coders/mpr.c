@@ -119,10 +119,7 @@ static Image *ReadMPRImage(const ImageInfo *image_info,
     return(GetImageFromMagickRegistry(image_info->filename,exception));
   id=strtol(image_info->filename,&p,0);
   image=(Image *) GetMagickRegistry(id,&type,&length,exception);
-  if ((image == (Image *) NULL) || (type != ImageRegistryType))
-    ThrowReaderException(RegistryWarning,"Image not found in registry",image);
-  if (length != sizeof(Image))
-    ThrowReaderException(RegistryWarning,"Image structure size mismatch",image);  return(image);
+	return(image);
 }
 
 /*
