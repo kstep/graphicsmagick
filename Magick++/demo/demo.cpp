@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000
+// Copyright Bob Friesenhahn, 1999, 2000, 2001
 //
 // Simple demo program for Magick++
 //
@@ -88,12 +88,12 @@ int main( int /*argc*/, char ** argv)
     example.gaussianBlur( 2, 2 );
     images.push_back( example );
 
-    cout << "  border ..." << endl;
-    example = model;
-    example.label( "Border" );
-    example.borderColor( "gold" );
-    example.border( );
-    images.push_back( example );
+//     cout << "  border ..." << endl;
+//     example = model;
+//     example.label( "Border" );
+//     example.borderColor( "gold" );
+//     example.border( );
+//     images.push_back( example );
 
     cout << "  charcoal ..." << endl;
     example = model;
@@ -157,11 +157,11 @@ int main( int /*argc*/, char ** argv)
     example.flop();
     images.push_back( example );
 
-    cout << "  frame ..." << endl;
-    example = model;
-    example.label( "Frame" );
-    example.frame( );
-    images.push_back( example );
+//     cout << "  frame ..." << endl;
+//     example = model;
+//     example.label( "Frame" );
+//     example.frame( );
+//     images.push_back( example );
 
     cout << "  gamma ..." << endl;
     example = model;
@@ -321,10 +321,10 @@ int main( int /*argc*/, char ** argv)
     title.strokeColor( "white" );
     title.fillColor( "white" );
     title.annotate( "Magick++", "+1+1", CenterGravity );
-
     title.strokeColor( "black" );
     title.draw( DrawableMatte( 0, 0, ReplaceMethod ) );
-    title.composite( background, 0, 0, AddCompositeOp );
+
+    title.composite( background, 0, 0, InCompositeOp ); // Was AddCompositeOp
 
     //
     // Create image montage.

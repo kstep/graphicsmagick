@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000
+// Copyright Bob Friesenhahn, 1999, 2000, 2001
 //
 // Definition of Image, the representation of a single image in Magick++
 //
@@ -135,7 +135,7 @@ namespace Magick
     // The radius_ parameter specifies the radius of the Gaussian, in
     // pixels, not counting the center pixel.  The sigma_ parameter
     // specifies the standard deviation of the Laplacian, in pixels.
-    void            blur ( const double radius_ = 1, const double sigma_ = 0.5  );
+    void            blur ( const double radius_ = 0.0, const double sigma_ = 1.0  );
     
     // Border image (add border to image)
     void            border ( const Geometry &geometry_ = borderGeometryDefault );
@@ -144,7 +144,7 @@ namespace Magick
     // The radius_ parameter specifies the radius of the Gaussian, in
     // pixels, not counting the center pixel.  The sigma_ parameter
     // specifies the standard deviation of the Laplacian, in pixels.
-    void            charcoal ( const double radius_ = 1, const double sigma_ = 0.5 );
+    void            charcoal ( const double radius_ = 0.0, const double sigma_ = 1.0 );
     
     // Chop image (remove vertical or horizontal subregion of image)
     // FIXME: describe how geometry argument is used to select either horizontal or
@@ -210,7 +210,7 @@ namespace Magick
     // The radius_ parameter specifies the radius of the Gaussian, in
     // pixels, not counting the center pixel.  The sigma_ parameter
     // specifies the standard deviation of the Laplacian, in pixels.
-    void            emboss ( const double radius_ = 1, const double sigma_ = 0.5);
+    void            emboss ( const double radius_ = 0.0, const double sigma_ = 1.0);
     
     // Enhance image (minimize noise)
     void            enhance ( void );
@@ -416,7 +416,7 @@ namespace Magick
     // The radius_ parameter specifies the radius of the Gaussian, in
     // pixels, not counting the center pixel.  The sigma_ parameter
     // specifies the standard deviation of the Laplacian, in pixels.
-    void            sharpen ( const double radius_ = 1, const double sigma_ = 0.5 );
+    void            sharpen ( const double radius_ = 0.0, const double sigma_ = 1.0 );
     
     // Shear image (create parallelogram by sliding image by X or Y axis)
     void            shear ( double xShearAngle_,

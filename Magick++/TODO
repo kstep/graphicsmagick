@@ -2,6 +2,8 @@
 Items large and small which remain to be worked on.
 --------------------------------------------------------------------
 
+* Add support for ShaveImage().
+
 * Add support for FlattenImage() and OrderedDitherImage().
 
 * Add support for specifying a CMS color profile (ImageInfo

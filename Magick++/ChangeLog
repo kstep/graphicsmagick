@@ -1,3 +1,8 @@
+2001-06-14  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Magick++/Image.h (blur,charcoal,emboss,sharpen): Changed
+ 	radius and sigma parameters to match current ImageMagick defaults.
+
 2001-02-22  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Options.cpp (updateDrawInfo): The updateDrawInfo() method

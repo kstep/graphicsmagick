@@ -325,6 +325,7 @@ void Magick::Image::charcoal( const double radius_, const double sigma_ )
   blur( radius_, sigma_ );
   normalize( );
   negate( true );
+  quantize( );
 }
 
 // Chop image
@@ -2924,7 +2925,12 @@ MagickLib::Image * Magick::Image::replaceImage( MagickLib::Image* replacement_ )
       if( replacement_ )
         _imgRef->image(replacement_);
       else
-        _imgRef->image(AllocateImage(_imgRef->_options->imageInfo()));
+        {
+          // If replacement is null, substitute an uninitialized image
+          // so that Image is sane yet fails the isValid() test.
+          _imgRef->image(AllocateImage(_imgRef->_options->imageInfo()));
+//           cout << "Warning: image is invalid" << endl;
+        }
     }
   else
     {
@@ -2933,7 +2939,12 @@ MagickLib::Image * Magick::Image::replaceImage( MagickLib::Image* replacement_ )
       if( replacement_ )
         _imgRef = new ImageRef( replacement_, _imgRef->_options );
       else
-        _imgRef = new ImageRef;
+        {
+          // If replacement is null, substitute an uninitialized image
+          // so that Image is sane yet fails the isValid() test.
+          _imgRef = new ImageRef;
+//           cout << "Warning: image is invalid" << endl;
+        }
     }
 
   return _imgRef->_image;
