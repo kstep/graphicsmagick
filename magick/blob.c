@@ -58,7 +58,7 @@
 /*
   Define declarations.
 */
-#define DefaultBlobQuantum  65540
+#define DefaultBlobQuantum  65541
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
