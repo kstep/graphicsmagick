@@ -750,7 +750,7 @@ int main(int argc,char **argv)
             }
           if (LocaleCompare("append",option+1) == 0)
             {
-              option_info.append=(*option) == '-' ? 1 : -1;
+              option_info.append=(*option) == '-' ? -1 : 1;
               break;
             }
           if (LocaleCompare("average",option+1) == 0)
