@@ -335,6 +335,7 @@ MagickExport ModuleAlias *GetModuleAlias(const char *name,
       if (lt_dlinit() != 0)
         MagickError(DelegateError,"unable to initialize module loader",
           lt_dlerror());
+      OpenStaticModules();
       /*
         Read modules.
       */
@@ -739,10 +740,7 @@ MagickExport unsigned int OpenModules(ExceptionInfo *exception)
   (void) GetMagickInfo((char *) NULL,exception);
   modules=GetModuleList();
   if (modules == (char **) NULL)
-    {
-      OpenStaticModules();
-      return(False);
-    }
+    return(False);
   for (p=modules; p != (char **) NULL; p++)
     OpenModule(*p,exception);
   /*
