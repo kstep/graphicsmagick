@@ -141,11 +141,11 @@ html=>
 	html2ps -o "%o" "%i"
 
 mpg=>
-	mpeg2decode -q -b "%i" -f -r -o3 "%o"%%05d
+	mpeg2decode -q -b "%i" -f -r -o3 "%o%%05d"
 	convert -concatenate "%o*.ppm" "%o"
 
 m2v=>
-	mpeg2decode -q -b "%i" -f -r -o3 "%o"%%05d
+	mpeg2decode -q -b "%i" -f -r -o3 "%o%%05d"
 	convert -concatenate "%o*.ppm" "%o"
 
 pcl<=print

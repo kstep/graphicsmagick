@@ -149,15 +149,15 @@ man=>
 	@MANDelegate@ -man -Tps "%i" > "%o"
 
 mpeg=>
-	@MPEGDecodeDelegate@ -q -b "%i" -f -r -o3 "%o"%%05d
+	@MPEGDecodeDelegate@ -q -b "%i" -f -r -o3 "%o%%05d"
 	@ConvertDelegate@ -concatenate "%o*.ppm" "%o"
 
 mpg=>
-	@MPEGDecodeDelegate@ -q -b "%i" -f -r -o3 "%o"%%05d
+	@MPEGDecodeDelegate@ -q -b "%i" -f -r -o3 "%o%%05d"
 	@ConvertDelegate@ -concatenate "%o*.ppm" "%o"
 
 m2v=>
-	@MPEGDecodeDelegate@ -q -b "%i" -f -r -o3 "%o"%%05d
+	@MPEGDecodeDelegate@ -q -b "%i" -f -r -o3 "%o%%05d"
 	@ConvertDelegate@ -concatenate "%o*.ppm" "%o"
 
 pdf<=>eps
