@@ -171,7 +171,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
     status=GetTypeMetrics(image,draw_info,&metrics);
     if (status == False)
       ThrowReaderException(DelegateWarning,"Unable to get type metrics",image);
-    if ((metrics.width+metrics.max_advance) < image->columns)
+    if ((metrics.width+metrics.max_advance/2) < image->columns)
       continue;
     for (p--; !isspace(*p) && (p > caption); p--);
     *p++='\n';
@@ -185,7 +185,7 @@ static Image *ReadCAPTIONImage(const ImageInfo *image_info,
     Draw caption.
   */
   (void) strcpy(draw_info->text,caption);
-  FormatString(geometry,"+%g+%g",0.5*metrics.max_advance,metrics.ascent);
+  FormatString(geometry,"+%g+%g",metrics.max_advance/4,metrics.ascent);
   draw_info->geometry=AllocateString(geometry);
   (void) AnnotateImage(image,draw_info);
   DestroyDrawInfo(draw_info);

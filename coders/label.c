@@ -126,7 +126,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
       */
       for ( ; GetTypeMetrics(image,draw_info,&metrics); draw_info->pointsize*=2)
       {
-        width=(unsigned long) floor(metrics.width+metrics.max_advance+0.5);
+        width=(unsigned long) floor(metrics.width+metrics.max_advance/2+0.5);
         height=(unsigned long) floor(metrics.height+0.5);
         if (((image->columns != 0) && (width >= image->columns)) ||
             ((image->rows != 0) && (height >= image->rows)))
@@ -134,7 +134,7 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
       }
       for ( ; GetTypeMetrics(image,draw_info,&metrics); draw_info->pointsize--)
       {
-        width=(unsigned long) floor(metrics.width+metrics.max_advance+0.5);
+        width=(unsigned long) floor(metrics.width+metrics.max_advance/2+0.5);
         height=(unsigned long) floor(metrics.height+0.5);
         if ((image->columns != 0) && (width <= image->columns) &&
            ((image->rows == 0) || (height <= image->rows)))
@@ -149,9 +149,10 @@ static Image *ReadLABELImage(const ImageInfo *image_info,
   status=GetTypeMetrics(image,draw_info,&metrics);
   if (status == False)
     ThrowReaderException(DelegateWarning,"Unable to get type metrics",image);
-  FormatString(geometry,"+%g+%g",0.5*metrics.max_advance,metrics.ascent);
+  FormatString(geometry,"+%g+%g",metrics.max_advance/4,metrics.ascent);
   if (image->columns == 0)
-    image->columns=(unsigned long) floor(metrics.width+metrics.max_advance+0.5);
+    image->columns=(unsigned long)
+      floor(metrics.width+metrics.max_advance/2+0.5);
   if (image->rows == 0)
     {
       image->rows=(unsigned long) floor(metrics.height+0.5);
