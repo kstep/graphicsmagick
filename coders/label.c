@@ -249,7 +249,6 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
 {
 #if defined(HasTTF)
 #if FREETYPE_MAJOR > 1
-#define NumberGrays  256
 
   typedef struct TGlyph_
   {
@@ -287,9 +286,6 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
 
   FT_Matrix
     affine;
-
-  FT_Raster_Funcs
-    std_raster;
 
   FT_Vector
     bitmap_origin,
@@ -333,7 +329,6 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
       /*
         Search for Freetype font filename.
       */
-      (void) FT_Get_Raster(library,ft_glyph_format_outline,&std_raster);
       status=True;
       p=getenv("TT_FONT_PATH");
       if (p != (char *) NULL)
@@ -423,34 +418,30 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
   affine.yx=(-65536.0*image_info->affine[1]);
   affine.xy=(-65536.0*image_info->affine[2]);
   affine.yy=65536.0*image_info->affine[3];
-  FT_Set_Transform(face,&affine,0);
   for (i=0; i < length; i++)
   {
     glyphs[i].id=FT_Get_Char_Index(face,unicode[i]);
     if (i > 0)
       {
-        FT_Get_Kerning(face,glyphs[i-1].id,glyphs[i].id,&kern);
-        kern.x=FT_MulFix(kern.x,face->size->metrics.x_scale);
-        kern.x=(kern.x+32) & -64;
+        FT_Get_Kerning(face,glyphs[i-1].id,glyphs[i].id,ft_kerning_default,
+          &kern);
         origin.x+=kern.x;
       }
-    bitmap_origin=origin;
-    bitmap_origin.y=0;
-    FT_Vector_Transform(&bitmap_origin,&affine);
-    status=FT_Get_Glyph_Bitmap(face,glyphs[i].id,FT_LOAD_DEFAULT,
-      image_info->antialias ? NumberGrays : 0,&bitmap_origin,(FT_BitmapGlyph *)
-      &glyphs[i].image);
+    origin.y=0;
+    status=FT_Load_Glyph(face,glyphs[i].id,FT_LOAD_DEFAULT);
+    status|=FT_Get_Glyph(face->glyph,&glyphs[i].image);
     if (status)
       continue;
-    glyphs[i].origin=bitmap_origin;
-    origin.x+=glyphs[i].image->advance;
-    FT_Glyph_Get_Box(glyphs[i].image,&bounding_box);
-    x=glyphs[i].origin.x >> 6;
-    y=glyphs[i].origin.y >> 6;
-    bounding_box.xMin+=x;
-    bounding_box.yMin+=y;
-    bounding_box.xMax+=x;
-    bounding_box.yMax+=y;
+    glyphs[i].origin=origin;
+    bitmap_origin=origin;
+    FT_Vector_Transform(&bitmap_origin,&affine);
+    (void) FT_Glyph_Transform(glyphs[i].image,&affine,&bitmap_origin);
+    FT_Glyph_Get_CBox(glyphs[i].image,ft_glyph_bbox_pixels,&bounding_box);
+    status=FT_Glyph_To_Bitmap(&glyphs[i].image,
+      image_info->antialias ? ft_render_mode_normal : ft_render_mode_mono,
+      False,False);
+    if (status)
+      continue;
     if (bounding_box.xMin < image->bounding_box.x1)
       image->bounding_box.x1=bounding_box.xMin;
     if (bounding_box.xMax > image->bounding_box.x2)
@@ -459,9 +450,10 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
       image->bounding_box.y1=bounding_box.yMin;
     if (bounding_box.yMax > image->bounding_box.y2)
       image->bounding_box.y2=bounding_box.yMax;
+    origin.x+=face->glyph->advance.x;
   }
-  image->columns=(int) (image->bounding_box.x2-image->bounding_box.x1+3) & -4;
-  image->rows=image->bounding_box.y2-image->bounding_box.y1;
+  image->columns=image->bounding_box.x2-image->bounding_box.x1+1.0;
+  image->rows=image->bounding_box.y2-image->bounding_box.y1+1.0;
   SetImage(image,TransparentOpacity);
   if (face->family_name != (char *) NULL)
     {
@@ -484,11 +476,11 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
     glyph=(&bitmap->bitmap);
     if ((glyph->width == 0) || (glyph->rows == 0))
       continue;
-    x=bitmap->left+(glyphs[i].origin.x/64)-image->bounding_box.x1;
-    y=image->rows-bitmap->top-(glyphs[i].origin.y/64)+image->bounding_box.y1;
+    x=bitmap->left-image->bounding_box.x1+0.5;
+    y=image->rows-bitmap->top+image->bounding_box.y1+0.5;
     q=GetImagePixels(image,x,y,glyph->width,glyph->rows);
     if (q == (PixelPacket *) NULL)
-      break;
+      continue;
     p=glyph->buffer;
     for (y=0; y < glyph->rows; y++)
     {
@@ -498,18 +490,16 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
           {
             *q=image_info->fill;
             if (image_info->stroke.opacity != TransparentOpacity)
-              if (*p < (NumberGrays-1))
+              if (*p < 255)
                 *q=image_info->stroke;
-            q->opacity=MaxRGB-(MaxRGB*(*p+1))/NumberGrays;
+            q->opacity=UpScale(DownScale(MaxRGB)-(*p));
           }
         p++;
         q++;
       }
-      if ((glyph->width % 4) != 0)
-        p+=4-(glyph->width % 4);
     }
     if (!SyncImagePixels(image))
-      break;
+      continue;
   }
   /*
     Free resources.
