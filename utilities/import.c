@@ -89,7 +89,7 @@
 %    -screen             select image from root window
 %    -silent             operate silently, i.e. don't ring any bells 
 %    -transparent color  make this color transparent within the image
-%    -treedepth value    depth of the color color_class tree
+%    -treedepth value    depth of the color storage_class tree
 %    -verbose            print detailed information about the image
 %    -window id          select window with this id or name
 %
@@ -165,7 +165,7 @@ static void Usage(const char *client_name)
       "-quality value      JPEG/MIFF/PNG compression level",
       "-rotate degrees     apply Paeth rotation to the image",
       "-scene value        number of screen snapshots",
-      "-treedepth value    depth of the color color_class tree",
+      "-treedepth value    depth of the color storage_class tree",
       "-transparent color  make this color transparent within the image",
       "-silent             operate silently, i.e. don't ring any bells ",
       "-screen             select image from root window",

@@ -1,5 +1,5 @@
 /*
-  ImageMagick image and error color_classs.
+  ImageMagick image and error storage_classs.
 */
 #ifndef _CLASSIFY_H
 #define _CLASSIFY_H

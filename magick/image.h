@@ -317,11 +317,8 @@ typedef struct _Image
   char
     magick[MaxTextExtent];
 
-  ImageAttribute
-    *attributes;
-
   ClassType
-    color_class;
+    storage_class;
 
   unsigned int
     matte;
@@ -428,17 +425,20 @@ typedef struct _Image
   SegmentInfo
     bounding_box;
 
-  Ascii85Info
-    ascii85;
+  TimerInfo
+    timer;
 
   ExceptionInfo
     exception;
 
-  TimerInfo
-    timer;
+  Ascii85Info
+    ascii85;
 
   BlobInfo
     blob;
+
+  ImageAttribute
+    *attributes;
 
   void
     *cache;

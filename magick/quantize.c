@@ -89,14 +89,14 @@
 %  description tree for the image.  Reduction collapses the tree until
 %  the number it represents, at most, the number of colors desired in the
 %  output image.  Assignment defines the output image's color map and
-%  sets each pixel's color by recolor_class in the reduced tree.
+%  sets each pixel's color by restorage_class in the reduced tree.
 %  Our goal is to minimize the numerical discrepancies between the original
 %  colors and quantized colors (quantization error).
 %
 %  Classification begins by initializing a color description tree of
 %  sufficient depth to represent each possible input color in a leaf.
 %  However, it is impractical to generate a fully-formed color
-%  description tree in the color_class phase for realistic values of
+%  description tree in the storage_class phase for realistic values of
 %  cmax.  If colors components in the input image are quantized to k-bit
 %  precision, so that cmax= 2k-1, the tree would need k levels below the
 %  root node to allow representing each possible input color in a leaf.
@@ -109,7 +109,7 @@
 %  Chooses a maximum depth for the tree as a function of the desired
 %  number of colors in the output image (currently log2(colormap size)).
 %
-%  For each pixel in the input image, color_class scans downward from
+%  For each pixel in the input image, storage_class scans downward from
 %  the root of the color description tree.  At each level of the tree it
 %  identifies the single node which represents a cube in RGB space
 %  containing the pixel's color.  It updates the following data for each
@@ -390,7 +390,7 @@ static unsigned int Assignment(CubeInfo *cube_info,Image *image)
   DefineColormap(cube_info,cube_info->root);
   if ((cube_info->quantize_info->colorspace != TransparentColorspace) &&
       (image->colorspace != CMYKColorspace))
-    image->color_class=PseudoClass;
+    image->storage_class=PseudoClass;
   image->colors=cube_info->colors;
   /*
     Create a reduced color image.
@@ -429,7 +429,7 @@ static unsigned int Assignment(CubeInfo *cube_info,Image *image)
         cube_info->distance=3.0*(MaxRGB+1)*(MaxRGB+1);
         ClosestColor(cube_info,node_info->parent);
         index=cube_info->color_number;
-        if (image->color_class == PseudoClass)
+        if (image->storage_class == PseudoClass)
           indexes[x]=index;
         if (!cube_info->quantize_info->measure_error)
           {
@@ -483,7 +483,7 @@ static unsigned int Assignment(CubeInfo *cube_info,Image *image)
 %  Method Classification begins by initializing a color description tree
 %  of sufficient depth to represent each possible input color in a leaf.
 %  However, it is impractical to generate a fully-formed color
-%  description tree in the color_class phase for realistic values of
+%  description tree in the storage_class phase for realistic values of
 %  cmax.  If colors components in the input image are quantized to k-bit
 %  precision, so that cmax= 2k-1, the tree would need k levels below the
 %  root node to allow representing each possible input color in a leaf.
@@ -496,7 +496,7 @@ static unsigned int Assignment(CubeInfo *cube_info,Image *image)
 %  Chooses a maximum depth for the tree as a function of the desired
 %  number of colors in the output image (currently log2(colormap size)).
 %
-%  For each pixel in the input image, color_class scans downward from
+%  For each pixel in the input image, storage_class scans downward from
 %  the root of the color description tree.  At each level of the tree it
 %  identifies the single node which represents a cube in RGB space
 %  containing It updates the following data for each such node:
@@ -1010,7 +1010,7 @@ static unsigned int Dither(CubeInfo *cube_info,Image *image,
         Assign pixel to closest colormap entry.
       */
       index=p->cache[i];
-      if (image->color_class == PseudoClass)
+      if (image->storage_class == PseudoClass)
         *indexes=index;
       if (!cube_info->quantize_info->measure_error)
         {
@@ -1233,7 +1233,7 @@ static unsigned int GetCubeInfo(CubeInfo *cube_info,
 %
 %    o id: Specifies the child number of the node.
 %
-%    o level: Specifies the level in the color_class the node resides.
+%    o level: Specifies the level in the storage_class the node resides.
 %
 %
 */
@@ -1674,7 +1674,7 @@ static unsigned int OrderedDitherImage(Image *image)
     Initialize colormap.
   */
   NormalizeImage(image);
-  image->color_class=PseudoClass;
+  image->storage_class=PseudoClass;
   image->colors=2;
   colormap=(PixelPacket *) AllocateMemory(image->colors*sizeof(PixelPacket));
   if (colormap == (PixelPacket *) NULL)
@@ -1891,7 +1891,7 @@ MagickExport unsigned int QuantizationError(Image *image)
   image->mean_error_per_pixel=0;
   image->normalized_mean_error=0.0;
   image->normalized_maximum_error=0.0;
-  if (image->color_class == DirectClass)
+  if (image->storage_class == DirectClass)
     return(True);
   cube_info.squares=(double *) AllocateMemory((MaxRGB+MaxRGB+1)*sizeof(double));
   if (cube_info.squares == (double *) NULL)
@@ -1997,14 +1997,14 @@ MagickExport unsigned int QuantizeImage(const QuantizeInfo *quantize_info,
         colors;
 
       /*
-        Depth of color color_class tree is: Log4(colormap size)+2.
+        Depth of color storage_class tree is: Log4(colormap size)+2.
       */
       colors=number_colors;
       for (depth=1; colors != 0; depth++)
         colors>>=2;
       if (quantize_info->dither)
         depth--;
-      if (image->color_class == PseudoClass)
+      if (image->storage_class == PseudoClass)
         depth+=2;
     }
   /*
@@ -2108,7 +2108,7 @@ MagickExport unsigned int QuantizeImages(const QuantizeInfo *quantize_info,
         colors;
 
       /*
-        Depth of color color_class tree is: Log4(colormap size)+2.
+        Depth of color storage_class tree is: Log4(colormap size)+2.
       */
       colors=number_colors;
       for (depth=1; colors != 0; depth++)
@@ -2117,7 +2117,7 @@ MagickExport unsigned int QuantizeImages(const QuantizeInfo *quantize_info,
         depth--;
       pseudo_class=True;
       for (image=images; image != (Image *) NULL; image=image->next)
-        pseudo_class|=(image->color_class == PseudoClass);
+        pseudo_class|=(image->storage_class == PseudoClass);
       if (pseudo_class)
         depth+=2;
     }

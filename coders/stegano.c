@@ -173,7 +173,7 @@ static Image *ReadSTEGANOImage(const ImageInfo *image_info,
       if (p == (PixelPacket *) NULL)
         break;
       stegano_indexes=GetIndexes(stegano_image);
-      if (stegano_image->color_class == PseudoClass)
+      if (stegano_image->storage_class == PseudoClass)
         UnembedBit(*stegano_indexes)
       else
         {

@@ -101,7 +101,7 @@ MagickExport unsigned int ContrastImage(Image *image,const unsigned int sharpen)
 
   assert(image != (Image *) NULL);
   sign=sharpen ? 1 : -1;
-  switch (image->color_class)
+  switch (image->storage_class)
   {
     case DirectClass:
     default:
@@ -262,7 +262,7 @@ MagickExport unsigned int EqualizeImage(Image *image)
   /*
     Stretch the histogram.
   */
-  switch (image->color_class)
+  switch (image->storage_class)
   {
     case DirectClass:
     default:
@@ -407,7 +407,7 @@ MagickExport unsigned int GammaImage(Image *image,const char *gamma)
       gamma_map[i].opacity=(Quantum)
         ((pow((double) i/MaxRGB,1.0/opacity_gamma)*MaxRGB)+0.5);
   }
-  switch (image->color_class)
+  switch (image->storage_class)
   {
     case DirectClass:
     default:
@@ -516,7 +516,7 @@ MagickExport unsigned int ModulateImage(Image *image,const char *modulate)
     &percent_hue);
   (void) sscanf(modulate,"%lf/%lf/%lf",&percent_brightness,&percent_saturation,
     &percent_hue);
-  switch (image->color_class)
+  switch (image->storage_class)
   {
     case DirectClass:
     default:
@@ -610,7 +610,7 @@ MagickExport unsigned int NegateImage(Image *image,const unsigned int grayscale)
     *q;
 
   assert(image != (Image *) NULL);
-  switch (image->color_class)
+  switch (image->storage_class)
   {
     case DirectClass:
     default:
@@ -797,7 +797,7 @@ MagickExport unsigned int NormalizeImage(Image *image)
   /*
     Normalize the image.
   */
-  switch (image->color_class)
+  switch (image->storage_class)
   {
     case DirectClass:
     default:

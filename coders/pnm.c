@@ -291,7 +291,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->depth=max_value < 256 ? 8 : QuantumDepth;
     if ((format != '3') && (format != '6'))
       {
-        image->color_class=PseudoClass;
+        image->storage_class=PseudoClass;
         image->colors=max_value+1;
       }
     if (image_info->ping)
@@ -303,7 +303,7 @@ static Image *ReadPNMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       ThrowReaderException(CorruptImageWarning,
         "Unable to read image: image dimensions are zero",image);
     scale=(Quantum *) NULL;
-    if (image->color_class == PseudoClass)
+    if (image->storage_class == PseudoClass)
       {
         /*
           Create colormap.
@@ -785,7 +785,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
     TransformRGBImage(image,RGBColorspace);
     (void) IsPseudoClass(image);
     if (LocaleCompare(image_info->magick,"PPM") == 0)
-      image->color_class=DirectClass;
+      image->storage_class=DirectClass;
     magick=(char *) image_info->magick;
     if (((LocaleCompare(magick,"PGM") == 0) && !IsGrayImage(image)) ||
         ((LocaleCompare(magick,"PBM") == 0) && !IsMonochromeImage(image)))

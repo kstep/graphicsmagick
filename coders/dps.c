@@ -298,10 +298,10 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   */
   if ((visual_info->class != TrueColor) &&
       (visual_info->class != DirectColor))
-    image->color_class=PseudoClass;
+    image->storage_class=PseudoClass;
   image->columns=dps_image->width;
   image->rows=dps_image->height;
-  switch (image->color_class)
+  switch (image->storage_class)
   {
     case DirectClass:
     default:
@@ -433,7 +433,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
   }
   FreeMemory((void **) &colors);
   XDestroyImage(dps_image);
-  if (image->color_class == PseudoClass)
+  if (image->storage_class == PseudoClass)
     SyncImage(image);
   /*
     Rasterize matte image.
@@ -458,7 +458,7 @@ static Image *ReadDPSImage(const ImageInfo *image_info,ExceptionInfo *exception)
           XFreePixmap(display,pixmap);
           if (matte_image != (XImage *) NULL)
             {
-              image->color_class=DirectClass;
+              image->storage_class=DirectClass;
               image->matte=True;
               for (y=0; y < (int) image->rows; y++)
               {

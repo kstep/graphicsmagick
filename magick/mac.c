@@ -1134,7 +1134,7 @@ MagickExport Image *ReadPICTImage(const ImageInfo *image_info,
       /*
         Colormapped PICT image.
       */
-      image->color_class=PseudoClass;
+      image->storage_class=PseudoClass;
       image->colors=(*(picture_info.theColorTable))->ctSize;
       image->colormap=(PixelPacket *)
         AllocateMemory(image->colors*sizeof(PixelPacket));
@@ -1184,7 +1184,7 @@ MagickExport Image *ReadPICTImage(const ImageInfo *image_info,
       q->red=UpScale(Pixel.red & 0xff);
       q->green=UpScale(Pixel.green & 0xff);
       q->blue=UpScale(Pixel.blue & 0xff);
-      if (image->color_class == PseudoClass)
+      if (image->storage_class == PseudoClass)
         indexes[x]=Color2Index(&Pixel);
       q++;
     }

@@ -359,7 +359,7 @@ static Image *ReadPDBImage(const ImageInfo *image_info,ExceptionInfo *exception)
   image->columns=pdb_image.width;
   image->rows=pdb_image.height;
   image->depth=8;
-  image->color_class=PseudoClass;
+  image->storage_class=PseudoClass;
   bits_per_pixel=pdb_image.type == 0 ? 2 : pdb_image.type == 2 ? 4 : 1;
   if (!AllocateImageColormap(image,1 << bits_per_pixel))
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);

@@ -1206,7 +1206,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     y=0;
     (void) ParseImageGeometry("106x106+0+0>",&x,&y,&width,&height);
     image->orphan=True;
-    if (image->color_class == PseudoClass)
+    if (image->storage_class == PseudoClass)
       tile_image=SampleImage(image,width,height,&image->exception);
     else
       tile_image=ZoomImage(image,width,height,&image->exception);
@@ -1557,7 +1557,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlob(image,strlen(buffer),buffer);
     (void) strcpy(buffer,"endobj\n");
     (void) WriteBlob(image,strlen(buffer),buffer);
-    if ((image->color_class == DirectClass) || IsFaxImage(image))
+    if ((image->storage_class == DirectClass) || IsFaxImage(image))
       {
         xref[object++]=0;
         xref[object++]=0;

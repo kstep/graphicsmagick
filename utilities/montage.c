@@ -125,7 +125,7 @@
 %    -texture filename   name of texture to tile onto the image background
 %    -tile geometry      number of tiles per row and column
 %    -transparent color  make this color transparent within the image
-%    -treedepth value    depth of the color color_class tree
+%    -treedepth value    depth of the color storage_class tree
 %    -verbose            print detailed information about the image
 %
 %  In addition to those listed above, you can specify these standard X
@@ -213,7 +213,7 @@ static void Usage(const char *client_name)
       "-texture filename   name of texture to tile onto the image background",
       "-tile geometry      number of tiles per row and column",
       "-transparent color  make this color transparent within the image",
-      "-treedepth value    depth of the color color_class tree",
+      "-treedepth value    depth of the color storage_class tree",
       "-verbose            print detailed information about the image",
       (char *) NULL
     };
@@ -1202,7 +1202,7 @@ int main(int argc,char **argv)
         /*
           Reduce the number of colors in the image.
         */
-        if ((p->color_class == DirectClass) ||
+        if ((p->storage_class == DirectClass) ||
             (p->colors > quantize_info.number_colors) ||
             (quantize_info.colorspace == GRAYColorspace))
           (void) QuantizeImage(&quantize_info,p);

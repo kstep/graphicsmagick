@@ -206,24 +206,24 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Initialize image structure.
     */
-    image->color_class=class;
+    image->storage_class=class;
     image->columns=width;
     image->rows=height;
     image->depth=8;
-    if (image->color_class == PseudoClass)
+    if (image->storage_class == PseudoClass)
       image->colors=256;
     if (image_info->ping)
       {
         CloseBlob(image);
         return(image);
       }
-    packet_size=image->color_class == DirectClass ? 3 : 1;
+    packet_size=image->storage_class == DirectClass ? 3 : 1;
     hdf_pixels=(unsigned char *)
       AllocateMemory(packet_size*image->columns*image->rows);
     if (hdf_pixels == (unsigned char *) NULL)
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
         image);
-    if (image->color_class == PseudoClass)
+    if (image->storage_class == PseudoClass)
       {
         unsigned char
           *hdf_palette;
@@ -342,7 +342,7 @@ static Image *ReadHDFImage(const ImageInfo *image_info,ExceptionInfo *exception)
           }
       }
     FreeMemory((void **) &hdf_pixels);
-    if (image->color_class == PseudoClass)
+    if (image->storage_class == PseudoClass)
       SyncImage(image);
     /*
       Proceed to next image.
@@ -528,7 +528,7 @@ static unsigned int WriteHDFImage(const ImageInfo *image_info,Image *image)
       Initialize raster file header.
     */
     TransformRGBImage(image,RGBColorspace);
-    packet_size=image->color_class == DirectClass ? 3 : 11;
+    packet_size=image->storage_class == DirectClass ? 3 : 11;
     hdf_pixels=(unsigned char *)
       AllocateMemory(packet_size*image->columns*image->rows);
     if (hdf_pixels == (unsigned char *) NULL)

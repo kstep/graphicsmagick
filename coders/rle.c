@@ -511,7 +511,7 @@ static Image *ReadRLEImage(const ImageInfo *image_info,ExceptionInfo *exception)
             }
             FreeMemory((void **) &image->colormap);
             image->colormap=(PixelPacket *) NULL;
-            image->color_class=DirectClass;
+            image->storage_class=DirectClass;
             image->colors=0;
           }
       }

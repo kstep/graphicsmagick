@@ -332,7 +332,7 @@ static Image *ReadFITSImage(const ImageInfo *image_info,
     image->columns=fits_header.columns;
     image->rows=fits_header.rows;
     image->depth=fits_header.bits_per_pixel <= 8 ? 8 : QuantumDepth;
-    image->color_class=PseudoClass;
+    image->storage_class=PseudoClass;
     image->scene=scene;
     if (!AllocateImageColormap(image,MaxRGB+1))
       ThrowReaderException(FileOpenWarning,"Unable to open file",image);

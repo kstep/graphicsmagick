@@ -1159,7 +1159,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
           Dump DirectClass image.
         */
         FormatString(buffer,"%u %u\n%d\n%d\n",
-          image->columns,image->rows,(int) (image->color_class == PseudoClass),
+          image->columns,image->rows,(int) (image->storage_class == PseudoClass),
           (int) (image_info->compression == NoCompression));
         (void) WriteBlob(image,strlen(buffer),buffer);
         switch (image_info->compression)
@@ -1349,7 +1349,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
             Dump PseudoClass image.
           */
           FormatString(buffer,"%u %u\n%d\n%d\n0\n",
-            image->columns,image->rows,(int) (image->color_class == PseudoClass),
+            image->columns,image->rows,(int) (image->storage_class == PseudoClass),
             (int) (image_info->compression == NoCompression));
           (void) WriteBlob(image,strlen(buffer),buffer);
           /*

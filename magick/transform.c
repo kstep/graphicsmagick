@@ -171,7 +171,7 @@ MagickExport Image *ChopImage(Image *image,const RectangleInfo *chop_info,
     {
       if ((x < clone_info.x) || (x >= (int) (clone_info.x+clone_info.width)))
         {
-          if (image->color_class == PseudoClass)
+          if (image->storage_class == PseudoClass)
             chop_indexes[x]=indexes[x];
           *q=(*p);
           q++;
@@ -199,7 +199,7 @@ MagickExport Image *ChopImage(Image *image,const RectangleInfo *chop_info,
     {
       if ((x < clone_info.x) || (x >= (int) (clone_info.x+clone_info.width)))
         {
-          if (image->color_class == PseudoClass)
+          if (image->storage_class == PseudoClass)
             chop_indexes[x]=indexes[x];
           *q=(*p);
           q++;
@@ -485,7 +485,7 @@ MagickExport Image *CropImage(Image *image,const RectangleInfo *crop_info,
       break;
     indexes=GetIndexes(image);
     crop_indexes=GetIndexes(crop_image);
-    if (image->color_class == PseudoClass)
+    if (image->storage_class == PseudoClass)
       memcpy(crop_indexes,indexes,crop_image->columns*sizeof(IndexPacket));
     memcpy(q,p,crop_image->columns*sizeof(PixelPacket));
     if (!SyncImagePixels(crop_image))
@@ -761,7 +761,7 @@ MagickExport Image *FlipImage(Image *image,ExceptionInfo *exception)
       p++;
       q++;
     }
-    if (flip_image->color_class == PseudoClass)
+    if (flip_image->storage_class == PseudoClass)
       memcpy(flip_indexes,indexes,flip_image->columns*sizeof(IndexPacket));
     status=SyncImagePixels(flip_image);
     if (status == False)
@@ -848,7 +848,7 @@ MagickExport Image *FlopImage(Image *image,ExceptionInfo *exception)
     q+=flop_image->columns;
     for (x=0; x < (int) flop_image->columns; x++)
     {
-      if (flop_image->color_class == PseudoClass)
+      if (flop_image->storage_class == PseudoClass)
         flop_indexes[flop_image->columns-x-1]=indexes[x];
       q--;
       *q=(*p);
@@ -1146,7 +1146,7 @@ MagickExport Image *RollImage(Image *image,const int x_offset,
       if (q == (PixelPacket *) NULL)
         break;
       roll_indexes=GetIndexes(roll_image);
-      if (image->color_class == PseudoClass)
+      if (image->storage_class == PseudoClass)
         *roll_indexes=indexes[x];
       *q=(*p);
       p++;

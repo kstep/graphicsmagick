@@ -182,7 +182,7 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 red=UpScale(ReadByte(image));
               }
           }
-        if (image->color_class == PseudoClass)
+        if (image->storage_class == PseudoClass)
           indexes[x]=index;
         q->blue=blue;
         q->green=green;
@@ -195,7 +195,7 @@ static Image *ReadPIXImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (image->previous == (Image *) NULL)
         ProgressMonitor(LoadImageText,y,image->rows);
     }
-    if (image->color_class == PseudoClass)
+    if (image->storage_class == PseudoClass)
       SyncImage(image);
     /*
       Proceed to next image.

@@ -859,7 +859,7 @@ static Image *ReadGIFImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Read image attributes.
     */
-    image->color_class=PseudoClass;
+    image->storage_class=PseudoClass;
     page.x=LSBFirstReadShort(image);
     page.y=LSBFirstReadShort(image);
     image->columns=LSBFirstReadShort(image);

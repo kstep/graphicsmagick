@@ -842,7 +842,7 @@ MagickExport XVisualInfo *XBestVisualInfo(Display *display,
 {
 #define MaxStandardColormaps  7
 #define XVisualColormapSize(visual_info) Min( (int) (\
-  (visual_info->color_class == TrueColor) || (visual_info->color_class == DirectColor) ? \
+  (visual_info->storage_class == TrueColor) || (visual_info->storage_class == DirectColor) ? \
    visual_info->red_mask | visual_info->green_mask | visual_info->blue_mask : \
    visual_info->colormap_size),1 << visual_info->depth)
 
@@ -958,7 +958,7 @@ MagickExport XVisualInfo *XBestVisualInfo(Display *display,
       if ((number_visuals == 0) || (visual_list == (XVisualInfo *) NULL))
         return((XVisualInfo *) NULL);
       MagickWarning(XServerWarning,"Using default visual",
-        XVisualClassName(visual_list->color_class));
+        XVisualClassName(visual_list->storage_class));
     }
   resource_info->color_recovery=False;
   if ((map_info != (XStandardColormap *) NULL) && (map_type != (char *) NULL))
@@ -1091,7 +1091,7 @@ MagickExport XVisualInfo *XBestVisualInfo(Display *display,
           visual_info=p;
         else
           if (XVisualColormapSize(p) == XVisualColormapSize(visual_info))
-            if (rank[p->color_class] > rank[visual_info->color_class])
+            if (rank[p->storage_class] > rank[visual_info->storage_class])
               visual_info=p;
       }
       visual_template.visualid=XVisualIDFromVisual(visual_info->visual);
@@ -2399,8 +2399,8 @@ MagickExport void XFreeStandardColormap(Display *display,
         XFreeColormap(display,map_info->colormap);
       else
         if (pixel != (XPixelInfo *) NULL)
-          if ((visual_info->color_class != TrueColor) &&
-              (visual_info->color_class != DirectColor))
+          if ((visual_info->storage_class != TrueColor) &&
+              (visual_info->storage_class != DirectColor))
             XFreeColors(display,map_info->colormap,pixel->pixels,
               (int) pixel->colors,0);
     }
@@ -2642,7 +2642,7 @@ MagickExport void XGetPixelPacket(Display *display,
   assert(pixel != (XPixelInfo *) NULL);
   pixel->colors=0;
   if (image != (Image *) NULL)
-    if (image->color_class == PseudoClass)
+    if (image->storage_class == PseudoClass)
       pixel->colors=image->colors;
   packets=Max((int) pixel->colors,visual_info->colormap_size)+
     MaxNumberPens;
@@ -2836,7 +2836,7 @@ MagickExport void XGetPixelPacket(Display *display,
               ((pow((double) i/MaxRGB,1.0/blue_gamma)*MaxRGB)+0.5);
           }
         }
-      if (image->color_class == PseudoClass)
+      if (image->storage_class == PseudoClass)
         {
           register XColor
             *gamma_map;
@@ -3921,8 +3921,8 @@ MagickExport Image *XGetWindowImage(Display *display,const Window window,
                     XDestroyImage(ximage);
                     return((Image *) NULL);
                   }
-                if ((window_info[id].visual->color_class != DirectColor) &&
-                    (window_info[id].visual->color_class != TrueColor))
+                if ((window_info[id].visual->storage_class != DirectColor) &&
+                    (window_info[id].visual->storage_class != TrueColor))
                   for (i=0; i < (int) number_colors; i++)
                   {
                     colors[i].pixel=i;
@@ -3992,12 +3992,12 @@ MagickExport Image *XGetWindowImage(Display *display,const Window window,
         /*
           Convert X image to MIFF format.
         */
-        if ((window_info[id].visual->color_class != TrueColor) &&
-            (window_info[id].visual->color_class != DirectColor))
-          composite_image->color_class=PseudoClass;
+        if ((window_info[id].visual->storage_class != TrueColor) &&
+            (window_info[id].visual->storage_class != DirectColor))
+          composite_image->storage_class=PseudoClass;
         composite_image->columns=ximage->width;
         composite_image->rows=ximage->height;
-        switch (composite_image->color_class)
+        switch (composite_image->storage_class)
         {
           case DirectClass:
           default:
@@ -4042,7 +4042,7 @@ MagickExport Image *XGetWindowImage(Display *display,const Window window,
               Convert X image to DirectClass packets.
             */
             if ((number_colors != 0) &&
-                (window_info[id].visual->color_class == DirectColor))
+                (window_info[id].visual->storage_class == DirectColor))
               for (y=0; y < (int) composite_image->rows; y++)
               {
                 q=SetImagePixels(composite_image,0,y,composite_image->columns,1);
@@ -4121,7 +4121,7 @@ MagickExport Image *XGetWindowImage(Display *display,const Window window,
               for (x=0; x < (int) composite_image->columns; x++)
               {
                 index=XGetPixel(ximage,x,y);
-                if (composite_image->color_class == PseudoClass)
+                if (composite_image->storage_class == PseudoClass)
                   indexes[x]=index;
                 *q++=composite_image->colormap[index];
               }
@@ -4260,7 +4260,7 @@ MagickExport void XGetWindowInfo(Display *display,XVisualInfo *visual_info,
   window->screen=visual_info->screen;
   window->root=XRootWindow(display,visual_info->screen);
   window->visual=visual_info->visual;
-  window->color_class=visual_info->color_class;
+  window->storage_class=visual_info->storage_class;
   window->depth=visual_info->depth;
   window->visual_info=visual_info;
   window->map_info=map_info;
@@ -4862,7 +4862,7 @@ MagickExport XWindows *XInitializeWindows(Display *display,
       (void) fprintf(stderr,"  visual id: 0x%lx\n",
         windows->visual_info->visualid);
       (void) fprintf(stderr,"  class: %.1024s\n",
-        XVisualClassName(windows->visual_info->color_class));
+        XVisualClassName(windows->visual_info->storage_class));
       (void) fprintf(stderr,"  depth: %d planes\n",
         windows->visual_info->depth);
       (void) fprintf(stderr,"  size of colormap: %d entries\n",
@@ -7100,7 +7100,7 @@ MagickExport void XMakeStandardColormap(Display *display,
               }
             XGetPixelPacket(display,visual_info,map_info,resource_info,image,
               pixel);
-            image->color_class=DirectClass;
+            image->storage_class=DirectClass;
             DestroyImage(map_image);
           }
       if (resource_info->debug)
@@ -7115,9 +7115,9 @@ MagickExport void XMakeStandardColormap(Display *display,
         }
       return;
     }
-  if ((visual_info->color_class != DirectColor) &&
-      (visual_info->color_class != TrueColor))
-    if ((image->color_class == DirectClass) ||
+  if ((visual_info->storage_class != DirectColor) &&
+      (visual_info->storage_class != TrueColor))
+    if ((image->storage_class == DirectClass) ||
         ((int) image->colors > visual_info->colormap_size))
       {
         QuantizeInfo
@@ -7137,7 +7137,7 @@ MagickExport void XMakeStandardColormap(Display *display,
   colormap=XDefaultColormap(display,visual_info->screen);
   if (visual_info->visual != XDefaultVisual(display,visual_info->screen))
     colormap=XCreateColormap(display,XRootWindow(display,visual_info->screen),
-      visual_info->visual,visual_info->color_class == DirectColor ?
+      visual_info->visual,visual_info->storage_class == DirectColor ?
       AllocAll : AllocNone);
   if (colormap == (Colormap) NULL)
     MagickError(XServerError,"Unable to create colormap",(char *) NULL);
@@ -7150,7 +7150,7 @@ MagickExport void XMakeStandardColormap(Display *display,
   /*
     Allocating colors in server colormap is based on visual class.
   */
-  switch (visual_info->color_class)
+  switch (visual_info->storage_class)
   {
     case StaticGray:
     case StaticColor:
@@ -7166,7 +7166,7 @@ MagickExport void XMakeStandardColormap(Display *display,
           "Memory allocation failed");
       p=colors;
       color.flags=DoRed | DoGreen | DoBlue;
-      if (visual_info->color_class == StaticColor)
+      if (visual_info->storage_class == StaticColor)
         for (i=0; i < (int) image->colors; i++)
         {
           color.red=XUpScale(gamma_map[image->colormap[i].red].red);
@@ -7292,7 +7292,7 @@ MagickExport void XMakeStandardColormap(Display *display,
           */
           p=colors;
           color.flags=DoRed | DoGreen | DoBlue;
-          if (visual_info->color_class == PseudoColor)
+          if (visual_info->storage_class == PseudoColor)
             for (i=0; i < (int) image->colors; i++)
             {
               index=diversity[i].index;
@@ -7336,7 +7336,7 @@ MagickExport void XMakeStandardColormap(Display *display,
           /*
             Select remaining colors from X server colormap.
           */
-          if (visual_info->color_class == PseudoColor)
+          if (visual_info->storage_class == PseudoColor)
             for (; i < (int) image->colors; i++)
             {
               index=diversity[i].index;
@@ -7430,7 +7430,7 @@ MagickExport void XMakeStandardColormap(Display *display,
       */
       p=colors;
       color.flags=DoRed | DoGreen | DoBlue;
-      if (visual_info->color_class == PseudoColor)
+      if (visual_info->storage_class == PseudoColor)
         for (i=0; i < (int) image->colors; i++)
         {
           color.red=XUpScale(gamma_map[image->colormap[i].red].red);
@@ -7513,7 +7513,7 @@ MagickExport void XMakeStandardColormap(Display *display,
           color.pixel=XStandardPixel(map_info,color,16);
           *p++=color;
         }
-      if ((visual_info->color_class == DirectColor) &&
+      if ((visual_info->storage_class == DirectColor) &&
           (colormap != XDefaultColormap(display,visual_info->screen)))
         XStoreColors(display,colormap,colors,number_colors);
       else
@@ -7522,7 +7522,7 @@ MagickExport void XMakeStandardColormap(Display *display,
       break;
     }
   }
-  if ((visual_info->color_class != DirectColor) && (visual_info->color_class != TrueColor))
+  if ((visual_info->storage_class != DirectColor) && (visual_info->storage_class != TrueColor))
     {
       /*
         Set foreground, background, border, etc. pixels.

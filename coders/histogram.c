@@ -211,7 +211,7 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   if (histogram_image == (Image *) NULL)
       ThrowWriterException(ResourceLimitWarning,
         "Memory allocation failed",image);
-  histogram_image->color_class=DirectClass;
+  histogram_image->storage_class=DirectClass;
   /*
     Allocate histogram count arrays.
   */

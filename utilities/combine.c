@@ -79,7 +79,7 @@
 %    -stegano offset     hide watermark within an image
 %    -stereo             combine two image to create a stereo anaglyph
 %    -tile               repeat composite operation across image
-%    -treedepth value    depth of the color color_class tree
+%    -treedepth value    depth of the color storage_class tree
 %    -verbose            print detailed information about the image
 %
 %
@@ -148,7 +148,7 @@ static void Usage(const char *client_name)
       "-stegano offset     hide watermark within an image",
       "-stereo             combine two image to create a stereo anaglyph",
       "-tile               repeat composite operation across image",
-      "-treedepth value    depth of the color color_class tree",
+      "-treedepth value    depth of the color storage_class tree",
       "-verbose            print detailed information about the image",
       (char *) NULL
     };
@@ -830,7 +830,7 @@ int main(int argc,char **argv)
         Create mattes for blending.
       */
       opacity=OpaqueOpacity-(OpaqueOpacity*blend)/100;
-      image->color_class=DirectClass;
+      image->storage_class=DirectClass;
       image->matte=True;
       for (y=0; y < (int) image->rows; y++)
       {
@@ -845,7 +845,7 @@ int main(int argc,char **argv)
         if (!SyncImagePixels(image))
           break;
       }
-      composite_image->color_class=DirectClass;
+      composite_image->storage_class=DirectClass;
       composite_image->matte=True;
       for (y=0; y < (int) composite_image->rows; y++)
       {

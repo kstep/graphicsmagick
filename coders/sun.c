@@ -298,7 +298,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->depth=sun_header.depth <= 8 ? 8 : QuantumDepth;
     if (sun_header.depth < 24)
       {
-        image->color_class=PseudoClass;
+        image->storage_class=PseudoClass;
         image->colors=sun_header.maplength;
         if (sun_header.maptype == RMT_NONE)
           image->colors=1 << sun_header.depth;
@@ -437,7 +437,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
             ProgressMonitor(LoadImageText,y,image->rows);
       }
     else
-      if (image->color_class == PseudoClass)
+      if (image->storage_class == PseudoClass)
         for (y=0; y < (int) image->rows; y++)
         {
           q=SetImagePixels(image,0,y,image->columns,1);
@@ -492,7 +492,7 @@ static Image *ReadSUNImage(const ImageInfo *image_info,ExceptionInfo *exception)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(LoadImageText,y,image->rows);
         }
-    if (image->color_class == PseudoClass)
+    if (image->storage_class == PseudoClass)
       SyncImage(image);
     FreeMemory((void **) &sun_pixels);
     /*
@@ -677,7 +677,7 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
     sun_header.magic=0x59a66a95;
     sun_header.width=image->columns;
     sun_header.height=image->rows;
-    sun_header.type=(image->color_class == DirectClass ? RT_FORMAT_RGB : RT_STANDARD);
+    sun_header.type=(image->storage_class == DirectClass ? RT_FORMAT_RGB : RT_STANDARD);
     sun_header.maptype=RMT_NONE;
     sun_header.maplength=0;
     if (!IsPseudoClass(image) && !IsGrayImage(image))

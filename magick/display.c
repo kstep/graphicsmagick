@@ -1995,7 +1995,7 @@ static unsigned int XColorEditImage(Display *display,
             /*
               Update color information using point algorithm.
             */
-            (*image)->color_class=DirectClass;
+            (*image)->storage_class=DirectClass;
             p=GetImagePixels(*image,x_offset,y_offset,1,1);
             if (p == (PixelPacket *) NULL)
               break;
@@ -2014,7 +2014,7 @@ static unsigned int XColorEditImage(Display *display,
               Update color information using replace algorithm.
             */
             target=GetOnePixel(*image,x_offset,y_offset);
-            if ((*image)->color_class == DirectClass)
+            if ((*image)->storage_class == DirectClass)
               {
                 for (y=0; y < (int) (*image)->rows; y++)
                 {
@@ -2081,7 +2081,7 @@ static unsigned int XColorEditImage(Display *display,
             /*
               Update color information using reset algorithm.
             */
-            (*image)->color_class=DirectClass;
+            (*image)->storage_class=DirectClass;
             for (y=0; y < (int) (*image)->rows; y++)
             {
               q=SetImagePixels(*image,0,y,(*image)->columns,1);
@@ -2605,7 +2605,7 @@ static unsigned int XCompositeImage(Display *display,
       opacity=((int) DownScale(MaxRGB)*blend)/100;
       MatteImage(composite_image,OpaqueOpacity);
       opacity=(int) DownScale(MaxRGB)-((int) DownScale(MaxRGB)*blend)/100;
-      image->color_class=DirectClass;
+      image->storage_class=DirectClass;
       image->matte=True;
       for (y=0; y < (int) image->rows; y++)
       {
@@ -3525,7 +3525,7 @@ static unsigned int XCropImage(Display *display,XResourceInfo *resource_info,
   /*
     Cut image.
   */
-  image->color_class=DirectClass;
+  image->storage_class=DirectClass;
   if (!image->matte)
     MatteImage(image,OpaqueOpacity);
   for (y=0; y < (int) crop_info.height; y++)
@@ -5545,7 +5545,7 @@ static Image *XMagickCommand(Display *display,XResourceInfo *resource_info,
           /*
             Reduce the number of colors in the image.
           */
-          if (((*image)->color_class == DirectClass) ||
+          if (((*image)->storage_class == DirectClass) ||
               ((*image)->colors > resource_info->quantize_info->number_colors) ||
               (resource_info->quantize_info->colorspace == GRAYColorspace))
             (void) QuantizeImage(resource_info->quantize_info,*image);
@@ -7699,7 +7699,7 @@ static unsigned int XMatteEditImage(Display *display,
         if ((x_offset >= (int) (*image)->columns) ||
             (y_offset >= (int) (*image)->rows))
           continue;
-        (*image)->color_class=DirectClass;
+        (*image)->storage_class=DirectClass;
         if (!(*image)->matte)
           MatteImage(*image,OpaqueOpacity);
         switch (method)
@@ -7767,7 +7767,7 @@ static unsigned int XMatteEditImage(Display *display,
             /*
               Update matte information using reset algorithm.
             */
-            (*image)->color_class=DirectClass;
+            (*image)->storage_class=DirectClass;
             for (y=0; y < (int) (*image)->rows; y++)
             {
               q=SetImagePixels(*image,0,y,(*image)->columns,1);
@@ -8645,7 +8645,7 @@ static unsigned int XPrintImage(Display *display,XResourceInfo *resource_info,
       /*
         Reduce the number of colors in the image.
       */
-      if ((print_image->color_class == DirectClass) ||
+      if ((print_image->storage_class == DirectClass) ||
           (print_image->colors > resource_info->quantize_info->number_colors) ||
           (resource_info->quantize_info->colorspace == GRAYColorspace))
         (void) QuantizeImage(resource_info->quantize_info,print_image);
@@ -10166,7 +10166,7 @@ static unsigned int XSaveImage(Display *display,XResourceInfo *resource_info,
       /*
         Reduce the number of colors in the image.
       */
-      if ((save_image->color_class == DirectClass) ||
+      if ((save_image->storage_class == DirectClass) ||
           (save_image->colors > resource_info->quantize_info->number_colors) ||
           (resource_info->quantize_info->colorspace == GRAYColorspace))
         (void) QuantizeImage(resource_info->quantize_info,save_image);
@@ -11206,8 +11206,8 @@ static Image *XVisualDirectoryImage(Display *display,
   /*
     Read each image and convert them to a tile.
   */
-  backdrop=(windows->visual_info->color_class == TrueColor) ||
-   (windows->visual_info->color_class == DirectColor);
+  backdrop=(windows->visual_info->storage_class == TrueColor) ||
+   (windows->visual_info->storage_class == DirectColor);
   clone_info=CloneImageInfo(resource_info->image_info);
   if (clone_info == (ImageInfo *) NULL)
     return((Image *) NULL);
@@ -13470,9 +13470,9 @@ MagickExport Image *XDisplayImage(Display *display,XResourceInfo *resource_info,
                 &display_image);
         }
     }
-  if ((windows->visual_info->color_class == GrayScale) ||
-      (windows->visual_info->color_class == PseudoColor) ||
-      (windows->visual_info->color_class == DirectColor))
+  if ((windows->visual_info->storage_class == GrayScale) ||
+      (windows->visual_info->storage_class == PseudoColor) ||
+      (windows->visual_info->storage_class == DirectColor))
     {
       /*
         Withdraw pan and Magnify window.

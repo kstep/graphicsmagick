@@ -448,7 +448,7 @@ static unsigned char *DecodeImage(const ImageInfo *image_info,Image *image,
     bytes_per_line=width;
   row_bytes=image->columns | 0x8000;
   if ((LocaleCompare(image_info->magick,"PICT24") == 0) ||
-      (image->color_class == DirectClass))
+      (image->storage_class == DirectClass))
     row_bytes=(4*image->columns) | 0x8000;
   /*
     Allocate pixel and scanline buffer.
@@ -1037,7 +1037,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             indexes=GetIndexes(tile_image);
             for (x=0; x < (int) tile_image->columns; x++)
             {
-              if (tile_image->color_class == PseudoClass)
+              if (tile_image->storage_class == PseudoClass)
                 {
                   index=(*p);
                   indexes[x]=index;
@@ -1075,7 +1075,7 @@ static Image *ReadPICTImage(const ImageInfo *image_info,
             }
             if (!SyncImagePixels(tile_image))
               break;
-            if ((tile_image->color_class == DirectClass) &&
+            if ((tile_image->storage_class == DirectClass) &&
                 (pixmap.bits_per_pixel != 16))
               p+=(pixmap.component_count-1)*tile_image->columns;
             if (destination.bottom == (int) image->rows)
@@ -1429,7 +1429,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
     Allocate memory.
   */
   bytes_per_line=image->columns;
-  if ((image->color_class == DirectClass) ||
+  if ((image->storage_class == DirectClass) ||
       (LocaleCompare(image_info->magick,"PICT24") == 0))
     bytes_per_line*=image->matte ? 4 : 3;
   buffer=(unsigned char *) AllocateMemory(PictHeaderSize);
@@ -1477,7 +1477,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
     Write picture opcode, row bytes, and picture bounding box, and version.
   */
   if ((LocaleCompare(image_info->magick,"PICT24") != 0) &&
-      (image->color_class == PseudoClass))
+      (image->storage_class == PseudoClass))
     MSBFirstWriteShort(image,PictPICTOp);
   else
     {
@@ -1508,7 +1508,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   MSBFirstWriteLong(image,(unsigned long) pixmap.table);
   MSBFirstWriteLong(image,(unsigned long) pixmap.reserved);
   if ((LocaleCompare(image_info->magick,"PICT24") != 0) &&
-      (image->color_class == PseudoClass))
+      (image->storage_class == PseudoClass))
     {
       unsigned short
         red,
@@ -1549,7 +1549,7 @@ static unsigned int WritePICTImage(const ImageInfo *image_info,Image *image)
   */
   count=0;
   if ((LocaleCompare(image_info->magick,"PICT24") != 0) &&
-      (image->color_class == PseudoClass))
+      (image->storage_class == PseudoClass))
     for (y=0; y < (int) image->rows; y++)
     {
       p=GetImagePixels(image,0,y,image->columns,1);

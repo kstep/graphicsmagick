@@ -136,7 +136,7 @@ static Image *ReadMAPImage(const ImageInfo *image_info,ExceptionInfo *exception)
   /*
     Initialize image structure.
   */
-  image->color_class=PseudoClass;
+  image->storage_class=PseudoClass;
   if (!AllocateImageColormap(image,image->offset ? image->offset : 256))
     ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",image);
   packet_size=image->depth > 8 ? 2 : 1;

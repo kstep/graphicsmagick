@@ -333,12 +333,12 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
                 if (LocaleCompare(keyword,"Class") == 0)
                   {
                     if (LocaleCompare(values,"PseudoClass") == 0)
-                      image->color_class=PseudoClass;
+                      image->storage_class=PseudoClass;
                     else
                       if (LocaleCompare(values,"DirectClass") == 0)
-                        image->color_class=DirectClass;
+                        image->storage_class=DirectClass;
                       else
-                        image->color_class=UndefinedClass;
+                        image->storage_class=UndefinedClass;
                     break;
                   }
                 if (LocaleCompare(keyword,"Colors") == 0)
@@ -581,7 +581,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
     /*
       Verify that required image information is defined.
     */
-    if ((strcmp(id,"ImageMagick") != 0) || (image->color_class == UndefinedClass) ||
+    if ((strcmp(id,"ImageMagick") != 0) || (image->storage_class == UndefinedClass) ||
         (image->compression == UndefinedCompression) || (image->columns == 0) ||
         (image->rows == 0))
       ThrowReaderException(CorruptImageWarning,
@@ -649,7 +649,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
         (void) ReadBlob(image,image->iptc_profile.length,
           image->iptc_profile.info);
       }
-    if (image->color_class == PseudoClass)
+    if (image->storage_class == PseudoClass)
       {
         /*
           Create image colormap.
@@ -707,7 +707,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
     /*
       Allocate image pixels.
     */
-    if (image->color_class == DirectClass)
+    if (image->storage_class == DirectClass)
       packet_size=image->depth > 8 ? 6 : 3;
     else
       packet_size=image->colors > 256 ? 2 : 1;
@@ -802,7 +802,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
             (void) ReadBlob(image,packet_size*image->columns,pixels);
       if (image->compression != RunlengthEncodedCompression)
         {
-          if (image->color_class == PseudoClass)
+          if (image->storage_class == PseudoClass)
             {
               if (!image->matte)
                 (void) PushImagePixels(image,IndexQuantum,pixels);
@@ -827,7 +827,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
           {
             if (length == 0)
               {
-                if (image->color_class != DirectClass)
+                if (image->storage_class != DirectClass)
                   {
                     index=ReadByte(image);
                     if (image->colors > 256)
@@ -865,7 +865,7 @@ static Image *ReadMIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
                 length=ReadByte(image)+1;
               }
             length--;
-            if (image->color_class == PseudoClass)
+            if (image->storage_class == PseudoClass)
               indexes[x]=index;
             *q++=pixel;
           }
@@ -1079,7 +1079,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     /*
       Allocate image pixels.
     */
-    if (image->color_class == DirectClass)
+    if (image->storage_class == DirectClass)
       packet_size=image->depth > 8 ? 6 : 3;
     else
       packet_size=image->colors > 256 ? 2 : 1;
@@ -1106,7 +1106,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         RGBTransformImage(image,CMYKColorspace);
     (void) strcpy(buffer,"Id=ImageMagick\n");
     (void) WriteBlob(image,strlen(buffer),buffer);
-    if (image->color_class == PseudoClass)
+    if (image->storage_class == PseudoClass)
       FormatString(buffer,"Class=PseudoClass  Colors=%u  Matte=%s\n",
         image->colors,image->matte ? "True" : "False");
     else
@@ -1276,7 +1276,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
     if (image->iptc_profile.length > 0)
       (void) WriteBlob(image,(int) image->iptc_profile.length,
         (char *) image->iptc_profile.info);
-    if (image->color_class == PseudoClass)
+    if (image->storage_class == PseudoClass)
       {
         register unsigned char
           *q;
@@ -1332,7 +1332,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
       q=pixels;
       if (compression != RunlengthEncodedCompression)
         {
-          if (image->color_class == PseudoClass)
+          if (image->storage_class == PseudoClass)
             {
               if (!image->matte)
                 (void) PopImagePixels(image,IndexQuantum,pixels);
@@ -1352,7 +1352,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
         {
           pixel=(*p);
           index=0;
-          if (image->color_class == PseudoClass)
+          if (image->storage_class == PseudoClass)
             index=(*indexes);
           length=0;
           for (x=0; x < (int) image->columns; x++)
@@ -1363,7 +1363,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
               length++;
             else
               {
-                if (image->color_class != DirectClass)
+                if (image->storage_class != DirectClass)
                   {
                     if (image->colors > 256)
                       *q++=index >> 8;
@@ -1411,7 +1411,7 @@ static unsigned int WriteMIFFImage(const ImageInfo *image_info,Image *image)
                 *q++=(unsigned char) length;
                 length=0;
               }
-            if (image->color_class == PseudoClass)
+            if (image->storage_class == PseudoClass)
               index=indexes[x];
             pixel=(*p);
             p++;

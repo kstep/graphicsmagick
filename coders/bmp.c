@@ -565,7 +565,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
     image->depth=8;
     if ((bmp_header.number_colors != 0) || (bmp_header.bits_per_pixel < 16))
       {
-        image->color_class=PseudoClass;
+        image->storage_class=PseudoClass;
         image->colors=(unsigned int) bmp_header.number_colors;
         if (image->colors == 0)
           image->colors=1 << bmp_header.bits_per_pixel;
@@ -575,7 +575,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         CloseBlob(image);
         return(image);
       }
-    if (image->color_class == PseudoClass)
+    if (image->storage_class == PseudoClass)
       {
         unsigned char
           *bmp_colormap;
@@ -760,7 +760,7 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         /*
           Convert PseudoColor scanline.
         */
-        image->color_class=DirectClass;
+        image->storage_class=DirectClass;
         if (bmp_header.compression == 1)
           bytes_per_line=image->columns << 1;
         for (y=image->rows-1; y >= 0; y--)
@@ -1049,7 +1049,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
         /*
           Full color BMP raster.
         */
-        image->color_class=DirectClass;
+        image->storage_class=DirectClass;
         bmp_header.number_colors=0;
         bmp_header.bit_count=image->matte ? 32 : 24;
         bytes_per_line=4*((image->columns*bmp_header.bit_count+31)/32);
@@ -1251,7 +1251,7 @@ static unsigned int WriteBMPImage(const ImageInfo *image_info,Image *image)
     (void) LSBFirstWriteLong(image,bmp_header.y_pixels);
     (void) LSBFirstWriteLong(image,bmp_header.number_colors);
     (void) LSBFirstWriteLong(image,bmp_header.colors_important);
-    if (image->color_class == PseudoClass)
+    if (image->storage_class == PseudoClass)
       {
         unsigned char
           *bmp_colormap;

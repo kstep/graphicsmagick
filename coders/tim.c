@@ -331,7 +331,7 @@ static Image *ReadTIMImage(const ImageInfo *image_info,ExceptionInfo *exception)
       default:
         ThrowReaderException(CorruptImageWarning,"Not a TIM image file",image);
     }
-    if (image->color_class == PseudoClass)
+    if (image->storage_class == PseudoClass)
       SyncImage(image);
     FreeMemory((void **) &tim_pixels);
     /*

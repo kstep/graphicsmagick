@@ -356,7 +356,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Strip(target);
     if (LocaleCompare(target,"none") == 0)
       {
-        image->color_class=DirectClass;
+        image->storage_class=DirectClass;
         image->matte=True;
         none=x;
         (void) strcpy(target,"black");
@@ -396,7 +396,7 @@ static Image *ReadXPMImage(const ImageInfo *image_info,ExceptionInfo *exception)
         for (j=0; j < (int) Max(image->colors-1,1); j++)
           if (strcmp(key,keys[j]) == 0)
             break;
-      if (image->color_class == PseudoClass)
+      if (image->storage_class == PseudoClass)
         indexes[x]=(IndexPacket) j;
       *r=image->colormap[j];
       r->opacity=j == none ? TransparentOpacity : OpaqueOpacity;
@@ -571,7 +571,7 @@ static unsigned int WriteXPMImage(const ImageInfo *image_info,Image *image)
     ThrowWriterException(FileOpenWarning,"Unable to open file",image);
   TransformRGBImage(image,RGBColorspace);
   transparent=False;
-  if (image->color_class == PseudoClass)
+  if (image->storage_class == PseudoClass)
     colors=image->colors;
   else
     {

@@ -317,12 +317,12 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
                 if (LocaleCompare(keyword,"Class") == 0)
                   {
                     if (LocaleCompare(values,"PseudoClass") == 0)
-                      image->color_class=PseudoClass;
+                      image->storage_class=PseudoClass;
                     else
                       if (LocaleCompare(values,"DirectClass") == 0)
-                        image->color_class=DirectClass;
+                        image->storage_class=DirectClass;
                       else
-                        image->color_class=UndefinedClass;
+                        image->storage_class=UndefinedClass;
                     break;
                   }
                 if (LocaleCompare(keyword,"Colors") == 0)
@@ -560,7 +560,7 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
     /*
       Verify that required image information is defined.
     */
-    if ((strcmp(id,"MagickCache") != 0) || (image->color_class == UndefinedClass) ||
+    if ((strcmp(id,"MagickCache") != 0) || (image->storage_class == UndefinedClass) ||
         (image->compression == UndefinedCompression) || (image->columns == 0) ||
         (image->rows == 0) || (*cache_info->filename == '\0'))
       ThrowReaderException(CorruptImageWarning,
@@ -615,7 +615,7 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
         (void) ReadBlob(image,image->color_profile.length,
           image->color_profile.info);
       }
-    if (image->color_class == PseudoClass)
+    if (image->storage_class == PseudoClass)
       {
         /*
           Create image colormap.
@@ -673,7 +673,7 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
     /*
       Initialize cache.
     */
-    cache_info->color_class=image->color_class;
+    cache_info->storage_class=image->storage_class;
     cache_info->type=DiskCache;
     cache_info->rows=image->rows;
     cache_info->columns=image->columns;
@@ -686,7 +686,7 @@ static Image *ReadCACHEImage(const ImageInfo *image_info,
         */
         cache_info->type=MemoryMappedCache;
         cache_info->pixels=(PixelPacket *) allocation;
-        if (cache_info->color_class == PseudoClass)
+        if (cache_info->storage_class == PseudoClass)
           cache_info->indexes=(IndexPacket *)
             (cache_info->pixels+cache_info->columns*cache_info->rows);
       }
@@ -892,7 +892,7 @@ static unsigned int WriteCACHEImage(const ImageInfo *image_info,Image *image)
     (void) WriteBlob(image,strlen(buffer),buffer);
     FormatString(buffer,"Cache=%.1024s\n",cache_info->filename);
     (void) WriteBlob(image,strlen(buffer),buffer);
-    if (image->color_class == PseudoClass)
+    if (image->storage_class == PseudoClass)
       FormatString(buffer,"Class=PseudoClass  Colors=%u  Matte=%s\n",
         image->colors,image->matte ? "True" : "False");
     else
@@ -1057,7 +1057,7 @@ static unsigned int WriteCACHEImage(const ImageInfo *image_info,Image *image)
     if (image->color_profile.length > 0)
       (void) WriteBlob(image,(int) image->color_profile.length,
         (char *) image->color_profile.info);
-    if (image->color_class == PseudoClass)
+    if (image->storage_class == PseudoClass)
       {
         unsigned char
           *colormap;

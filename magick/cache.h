@@ -44,7 +44,7 @@ typedef struct _NexusInfo
 typedef struct _CacheInfo
 {
   ClassType
-    color_class;
+    storage_class;
 
   CacheType
     type;

@@ -139,7 +139,7 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   allocate_image->pipe=False;
   (void) strcpy(allocate_image->magick,"MIFF");
   allocate_image->attributes=(ImageAttribute *) NULL;
-  allocate_image->color_class=DirectClass;
+  allocate_image->storage_class=DirectClass;
   allocate_image->matte=False;
   allocate_image->compression=UndefinedCompression;
   allocate_image->columns=0;
@@ -317,7 +317,7 @@ MagickExport unsigned int AllocateImageColormap(Image *image,
   */
   assert(image != (Image *) NULL);
   assert(colors != 0);
-  image->color_class=PseudoClass;
+  image->storage_class=PseudoClass;
   image->colors=colors;
   image->colormap=(PixelPacket *)
     AllocateMemory(Max(colors,256)*sizeof(PixelPacket));
@@ -541,8 +541,8 @@ MagickExport Image *AppendImages(Image *image,const unsigned int stack,
       x=0;
       for (next=image; next != (Image *) NULL; next=next->next)
       {
-        if (next->color_class == DirectClass)
-          append_image->color_class=DirectClass;
+        if (next->storage_class == DirectClass)
+          append_image->storage_class=DirectClass;
         CompositeImage(append_image,ReplaceCompositeOp,next,x,0);
         x+=next->columns;
         ProgressMonitor(AppendImageText,scene++,GetNumberScenes(image));
@@ -559,15 +559,15 @@ MagickExport Image *AppendImages(Image *image,const unsigned int stack,
       y=0;
       for (next=image; next != (Image *) NULL; next=next->next)
       {
-        if (next->color_class == DirectClass)
-          append_image->color_class=DirectClass;
+        if (next->storage_class == DirectClass)
+          append_image->storage_class=DirectClass;
         CompositeImage(append_image,ReplaceCompositeOp,next,0,y);
         y+=next->rows;
         ProgressMonitor(AppendImageText,scene,GetNumberScenes(image));
         scene++;
       }
     }
-  if (append_image->color_class == PseudoClass)
+  if (append_image->storage_class == PseudoClass)
     {
       unsigned int
         global_colormap;
@@ -578,7 +578,7 @@ MagickExport Image *AppendImages(Image *image,const unsigned int stack,
       global_colormap=True;
       for (next=image; next != (Image *) NULL; next=next->next)
       {
-        if ((next->color_class == DirectClass) ||
+        if ((next->storage_class == DirectClass) ||
             (next->colors != image->colors))
           {
             global_colormap=False;
@@ -592,7 +592,7 @@ MagickExport Image *AppendImages(Image *image,const unsigned int stack,
             }
       }
       if (!global_colormap)
-        append_image->color_class=DirectClass;
+        append_image->storage_class=DirectClass;
     }
   return(append_image);
 }
@@ -699,7 +699,7 @@ MagickExport Image *AverageImages(Image *image,ExceptionInfo *exception)
       FreeMemory((void **) &sum);
       return((Image *) NULL);
     }
-  average_image->color_class=DirectClass;
+  average_image->storage_class=DirectClass;
   /*
     Compute sum over each pixel color component.
   */
@@ -887,7 +887,7 @@ MagickExport Image *CloneImage(Image *image,const unsigned int columns,
         memcpy(q,p,image->columns*sizeof(PixelPacket));
         indexes=GetIndexes(image);
         clone_indexes=GetIndexes(clone_image);
-        if (image->color_class == PseudoClass)
+        if (image->storage_class == PseudoClass)
           memcpy(clone_indexes,indexes,image->columns*sizeof(IndexPacket));
         if (!SyncImagePixels(clone_image))
           break;
@@ -1093,7 +1093,7 @@ MagickExport unsigned int CompositeImage(Image *image,
     case ReplaceGreenCompositeOp:
     case ReplaceBlueCompositeOp:
     {
-      image->color_class=DirectClass;
+      image->storage_class=DirectClass;
       break;
     }
     case ReplaceMatteCompositeOp:
@@ -1207,18 +1207,18 @@ MagickExport unsigned int CompositeImage(Image *image,
       /*
         Promote image to DirectClass if colormaps differ.
       */
-      if (image->color_class == PseudoClass)
+      if (image->storage_class == PseudoClass)
         {
-          if ((composite_image->color_class == DirectClass) ||
+          if ((composite_image->storage_class == DirectClass) ||
               (composite_image->colors != image->colors))
-            image->color_class=DirectClass;
+            image->storage_class=DirectClass;
           else
             {
               for (x=0; x < (int) image->colors; x++)
                 if (!ColorMatch(image->colormap[x],
                      composite_image->colormap[x],0))
                   {
-                    image->color_class=DirectClass;
+                    image->storage_class=DirectClass;
                     break;
                   }
             }
@@ -1233,7 +1233,7 @@ MagickExport unsigned int CompositeImage(Image *image,
       /*
         Initialize image matte data.
       */
-      image->color_class=DirectClass;
+      image->storage_class=DirectClass;
       if (!image->matte)
         MatteImage(image,OpaqueOpacity);
       if (!composite_image->matte)
@@ -1267,7 +1267,7 @@ MagickExport unsigned int CompositeImage(Image *image,
             if (!SyncImagePixels(composite_image))
               break;
           }
-          composite_image->color_class=DirectClass;
+          composite_image->storage_class=DirectClass;
           composite_image->matte=True;
         }
       break;
@@ -1531,8 +1531,8 @@ MagickExport unsigned int CompositeImage(Image *image,
           break;
         }
       }
-      if (image->color_class == PseudoClass)
-        if (image->color_class == composite_image->color_class)
+      if (image->storage_class == PseudoClass)
+        if (image->storage_class == composite_image->storage_class)
           indexes[x]=composite_indexes[x-x_offset];
       q->red=(red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5;
       q->green=(green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5;
@@ -1593,7 +1593,7 @@ MagickExport void CycleColormapImage(Image *image,const int amount)
     *q;
 
   assert(image != (Image *) NULL);
-  if (image->color_class == DirectClass)
+  if (image->storage_class == DirectClass)
     {
       QuantizeInfo
         quantize_info;
@@ -1713,7 +1713,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
       else
         (void) fprintf(file,"%ux%u%+d%+d ",image->page.width,
           image->page.height,image->page.x,image->page.y);
-      if (image->color_class == DirectClass)
+      if (image->storage_class == DirectClass)
         {
           (void) fprintf(file,"DirectClass ");
           if (image->total_colors != 0)
@@ -1771,7 +1771,7 @@ MagickExport void DescribeImage(Image *image,FILE *file,
     default: (void) fprintf(file,"undefined"); break;
   }
   (void) fprintf(file,"\n");
-  if (image->color_class == DirectClass)
+  if (image->storage_class == DirectClass)
     (void) fprintf(file,"  Class: DirectClass\n");
   else
     (void) fprintf(file,"  Class: PseudoClass\n");
@@ -1819,14 +1819,14 @@ MagickExport void DescribeImage(Image *image,FILE *file,
                 p->red,p->green,p->blue,p->red,p->green,p->blue);
           }
       }
-  if (image->color_class == DirectClass)
+  if (image->storage_class == DirectClass)
     (void) fprintf(file,"  Colors: %lu\n",number_colors);
   else
     if (number_colors <= image->colors)
       (void) fprintf(file,"  Colors: %u\n",image->colors);
     else
       (void) fprintf(file,"  Colors: %lu=>%u\n",number_colors,image->colors);
-  if (image->color_class == DirectClass)
+  if (image->storage_class == DirectClass)
     {
       if (number_colors < 1024)
         (void) GetNumberColors(image,file);
@@ -2907,7 +2907,7 @@ MagickExport unsigned int LayerImage(Image *image,const LayerType layer)
   /*
     Layer DirectClass packets.
   */
-  image->color_class=DirectClass;
+  image->storage_class=DirectClass;
   image->matte=False;
   for (y=0; y < (int) image->rows; y++)
   {
@@ -3058,7 +3058,7 @@ MagickExport void MatteImage(Image *image,Quantum opacity)
     *q;
 
   assert(image != (Image *) NULL);
-  image->color_class=DirectClass;
+  image->storage_class=DirectClass;
   image->matte=True;
   for (y=0; y < (int) image->rows; y++)
   {
@@ -3254,7 +3254,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
         if (border_image == (Image *) NULL)
           break;
         DestroyImage(*image);
-        border_image->color_class=DirectClass;
+        border_image->storage_class=DirectClass;
         *image=border_image;
         continue;
       }
@@ -3638,7 +3638,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
         if (frame_image == (Image *) NULL)
           break;
         DestroyImage(*image);
-        frame_image->color_class=DirectClass;
+        frame_image->storage_class=DirectClass;
         *image=frame_image;
         continue;
       }
@@ -4231,7 +4231,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
         if (shear_image == (Image *) NULL)
           break;
         DestroyImage(*image);
-        shear_image->color_class=DirectClass;
+        shear_image->storage_class=DirectClass;
         *image=shear_image;
         continue;
       }
@@ -4373,7 +4373,7 @@ MagickExport unsigned int MogrifyImage(const ImageInfo *image_info,
       /*
         Reduce the number of colors in the image.
       */
-      if (((*image)->color_class == DirectClass) ||
+      if (((*image)->storage_class == DirectClass) ||
           ((*image)->colors > quantize_info.number_colors) ||
           (quantize_info.colorspace == GRAYColorspace))
         (void) QuantizeImage(&quantize_info,*image);
@@ -5179,7 +5179,7 @@ MagickExport unsigned int RGBTransformImage(Image *image,
   /*
     Convert from RGB.
   */
-  switch (image->color_class)
+  switch (image->storage_class)
   {
     case DirectClass:
     default:
@@ -5297,7 +5297,7 @@ MagickExport void SetImage(Image *image,Quantum opacity)
     indexes=GetIndexes(image);
     for (x=0; x < (int) image->columns; x++)
     {
-      if (image->color_class == PseudoClass)
+      if (image->storage_class == PseudoClass)
         indexes[x]=0;
       *q++=background_color;
     }
@@ -5607,7 +5607,7 @@ MagickExport unsigned int SortColormapByIntensity(Image *image)
     *pixels;
 
   assert(image != (Image *) NULL);
-  if (image->color_class != PseudoClass)
+  if (image->storage_class != PseudoClass)
     return(True);
   /*
     Allocate memory for pixel indexes.
@@ -5691,7 +5691,7 @@ MagickExport void SyncImage(Image *image)
     *q;
 
   assert(image != (Image *) NULL);
-  if (image->color_class == DirectClass)
+  if (image->storage_class == DirectClass)
     return;
   for (y=0; y < (int) image->rows; y++)
   {
@@ -6233,7 +6233,7 @@ MagickExport unsigned int TransformRGBImage(Image *image,
   /*
     Convert to RGB.
   */
-  switch (image->color_class)
+  switch (image->storage_class)
   {
     case DirectClass:
     default:

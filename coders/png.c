@@ -125,7 +125,7 @@ static unsigned int CompressColormapTransFirst(Image *image)
     Determine if colormap can be compressed.
   */
   assert(image != (Image *) NULL);
-  if (image->color_class != PseudoClass)
+  if (image->storage_class != PseudoClass)
     return(True);
   marker=(unsigned char *) AllocateMemory(image->colors);
   if (marker == (unsigned char *) NULL)
@@ -2177,7 +2177,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (ping_info->color_type == PNG_COLOR_TYPE_GRAY_ALPHA) ||
         (ping_info->color_type == PNG_COLOR_TYPE_GRAY))
       {
-        image->color_class=PseudoClass;
+        image->storage_class=PseudoClass;
         image->colors=1 << ping_info->bit_depth;
         if (ping_info->color_type == PNG_COLOR_TYPE_PALETTE)
           {
@@ -2206,7 +2206,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         (scanlines == (unsigned char **) NULL))
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
         image);
-    if (image->color_class == PseudoClass)
+    if (image->storage_class == PseudoClass)
       {
         /*
           Initialize image colormap.
@@ -2241,7 +2241,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
     /*
       Convert PNG pixels to pixel packets.
     */
-    if (image->color_class == DirectClass)
+    if (image->storage_class == DirectClass)
       {
         /*
           Convert image to DirectClass pixel packets.
@@ -2414,7 +2414,7 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
         }
         FreeMemory((void **) &quantum_scanline);
       }
-      if (image->color_class == PseudoClass)
+      if (image->storage_class == PseudoClass)
         SyncImage(image);
       if (ping_info->valid & PNG_INFO_tRNS)
         {
@@ -2424,12 +2424,12 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
           /*
             Image has a transparent background.
           */
-          image->color_class=DirectClass;
+          image->storage_class=DirectClass;
           image->matte=True;
-          class=image->color_class;
+          class=image->storage_class;
           for (y=0; y < (int) image->rows; y++)
           {
-            image->color_class=class;
+            image->storage_class=class;
             q=GetImagePixels(image,0,y,image->columns,1);
             if (q == (PixelPacket *) NULL)
               break;
