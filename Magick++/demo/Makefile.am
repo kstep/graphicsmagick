@@ -1,16 +1,17 @@
 #
 # Makefile for Magick++ demo programs
 #
-# Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
+# Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003
 #
 AUTOMAKE_OPTIONS = 1.7 foreign
 
 AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)/Magick++/lib -I$(top_srcdir)
 
-check_PROGRAMS = button demo detrans flip gravity piddle shapes zoom
+check_PROGRAMS = analyze button demo detrans flip gravity piddle shapes zoom
 
 LDADD = ../lib/libGraphicsMagick++.la
 
+analyze_SOURCES = analyze.cpp
 button_SOURCES  = button.cpp
 demo_SOURCES    = demo.cpp
 detrans_SOURCES = detrans.cpp
@@ -36,6 +37,7 @@ endif
 
 # FIXME: MinGW needs Windows path form of srcdir here (or pass as command argument)
 check:
+	-env SRCDIR=$(SRCDIR) ./analyze '$(srcdir)/model.miff'
 	-env SRCDIR=$(SRCDIR) ./button
 	-env SRCDIR=$(SRCDIR) ./demo
 	-env SRCDIR=$(SRCDIR) ./flip

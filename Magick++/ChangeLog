@@ -1,5 +1,8 @@
 2003-12-04  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* demo/analyze.cpp (main): New program to demonstrate using the
+	'analyze' process module.
+	* demo/Makefile.am: Add rules to build analyze program.
 	* lib/Image.cpp (process): New method to execute process modules.
 	* lib/Image.cpp (attribute): New method to get and set named image
 	attributes.

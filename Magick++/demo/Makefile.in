@@ -354,16 +354,17 @@ xml2_config = @xml2_config@
 #
 # Makefile for Magick++ demo programs
 #
-# Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
+# Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002, 2003
 #
 AUTOMAKE_OPTIONS = 1.7 foreign
 
 AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)/Magick++/lib -I$(top_srcdir)
 
-check_PROGRAMS = button demo detrans flip gravity piddle shapes zoom
+check_PROGRAMS = analyze button demo detrans flip gravity piddle shapes zoom
 
 LDADD = ../lib/libGraphicsMagick++.la
 
+analyze_SOURCES = analyze.cpp
 button_SOURCES = button.cpp
 demo_SOURCES = demo.cpp
 detrans_SOURCES = detrans.cpp
@@ -390,9 +391,14 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/magick/magick_config.h \
 	$(top_builddir)/magick/magick_config_api.h
 CONFIG_CLEAN_FILES =
-check_PROGRAMS = button$(EXEEXT) demo$(EXEEXT) detrans$(EXEEXT) \
-	flip$(EXEEXT) gravity$(EXEEXT) piddle$(EXEEXT) shapes$(EXEEXT) \
-	zoom$(EXEEXT)
+check_PROGRAMS = analyze$(EXEEXT) button$(EXEEXT) demo$(EXEEXT) \
+	detrans$(EXEEXT) flip$(EXEEXT) gravity$(EXEEXT) piddle$(EXEEXT) \
+	shapes$(EXEEXT) zoom$(EXEEXT)
+am_analyze_OBJECTS = analyze.$(OBJEXT)
+analyze_OBJECTS = $(am_analyze_OBJECTS)
+analyze_LDADD = $(LDADD)
+analyze_DEPENDENCIES = ../lib/libGraphicsMagick++.la
+analyze_LDFLAGS =
 am_button_OBJECTS = button.$(OBJEXT)
 button_OBJECTS = $(am_button_OBJECTS)
 button_LDADD = $(LDADD)
@@ -437,10 +443,11 @@ zoom_LDFLAGS =
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)/magick -I$(top_builddir)/magick
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/button.Po ./$(DEPDIR)/demo.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/detrans.Po ./$(DEPDIR)/flip.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/gravity.Po ./$(DEPDIR)/piddle.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/shapes.Po ./$(DEPDIR)/zoom.Po
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/analyze.Po ./$(DEPDIR)/button.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/demo.Po ./$(DEPDIR)/detrans.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/flip.Po ./$(DEPDIR)/gravity.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/piddle.Po ./$(DEPDIR)/shapes.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/zoom.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
@@ -449,11 +456,11 @@ LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-DIST_SOURCES = $(button_SOURCES) $(demo_SOURCES) $(detrans_SOURCES) \
-	$(flip_SOURCES) $(gravity_SOURCES) $(piddle_SOURCES) \
-	$(shapes_SOURCES) $(zoom_SOURCES)
+DIST_SOURCES = $(analyze_SOURCES) $(button_SOURCES) $(demo_SOURCES) \
+	$(detrans_SOURCES) $(flip_SOURCES) $(gravity_SOURCES) \
+	$(piddle_SOURCES) $(shapes_SOURCES) $(zoom_SOURCES)
 DIST_COMMON = $(srcdir)/Makefile.in Makefile.am
-SOURCES = $(button_SOURCES) $(demo_SOURCES) $(detrans_SOURCES) $(flip_SOURCES) $(gravity_SOURCES) $(piddle_SOURCES) $(shapes_SOURCES) $(zoom_SOURCES)
+SOURCES = $(analyze_SOURCES) $(button_SOURCES) $(demo_SOURCES) $(detrans_SOURCES) $(flip_SOURCES) $(gravity_SOURCES) $(piddle_SOURCES) $(shapes_SOURCES) $(zoom_SOURCES)
 
 all: all-am
 
@@ -471,6 +478,9 @@ clean-checkPROGRAMS:
 	  echo " rm -f $$p $$f"; \
 	  rm -f $$p $$f ; \
 	done
+analyze$(EXEEXT): $(analyze_OBJECTS) $(analyze_DEPENDENCIES) 
+	@rm -f analyze$(EXEEXT)
+	$(CXXLINK) $(analyze_LDFLAGS) $(analyze_OBJECTS) $(analyze_LDADD) $(LIBS)
 button$(EXEEXT): $(button_OBJECTS) $(button_DEPENDENCIES) 
 	@rm -f button$(EXEEXT)
 	$(CXXLINK) $(button_LDFLAGS) $(button_OBJECTS) $(button_LDADD) $(LIBS)
@@ -502,6 +512,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/analyze.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/button.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/demo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/detrans.Po@am__quote@
@@ -732,6 +743,7 @@ uninstall-am: uninstall-info-am
 
 # FIXME: MinGW needs Windows path form of srcdir here (or pass as command argument)
 check:
+	-env SRCDIR=$(SRCDIR) ./analyze '$(srcdir)/model.miff'
 	-env SRCDIR=$(SRCDIR) ./button
 	-env SRCDIR=$(SRCDIR) ./demo
 	-env SRCDIR=$(SRCDIR) ./flip
