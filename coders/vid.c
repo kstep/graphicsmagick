@@ -177,8 +177,8 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           y;
 
         unsigned long
-          final_height,
-          final_width;
+          height,
+          width;
 
         Image
           *thumbnail;
@@ -187,15 +187,15 @@ static Image *ReadVIDImage(const ImageInfo *image_info,ExceptionInfo *exception)
                        next_image->columns, next_image->rows);
 
         (void) SetImageAttribute(next_image,"label",DefaultTileLabel);
-        final_width=next_image->columns;
-        final_height=next_image->rows;
-        GetMagickGeometry(clone_info->size,&x,&y,&final_width,&final_height);
+        width=next_image->columns;
+        height=next_image->rows;
+        GetMagickGeometry(clone_info->size,&x,&y,&width,&height);
 
         next_image->filter=BoxFilter;
         LogMagickEvent(CoderEvent,"(ReadVIDImage) zooming to %ldx%ld",
-                       (long)final_width,(long)final_height);
+                       (long)width,(long)height);
 
-        thumbnail=ResizeImage(next_image,final_width,final_height,BoxFilter,1.0,exception);
+        thumbnail=ResizeImage(next_image,width,height,BoxFilter,1.0,exception);
         if (thumbnail != (Image *) NULL)
           {
             DestroyImage(next_image);
