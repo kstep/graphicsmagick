@@ -64,6 +64,16 @@ sub new
     return $self;
 }
 
+sub New
+{
+    my $this = shift;
+    my $class = ref($this) || $this || "Image::Magick";
+    my $self = [ ];
+    bless $self, $class;
+    $self->set(@_) if @_;
+    return $self;
+}
+
 # Autoload methods go after =cut, and are processed by the autosplit program.
 
 1;
