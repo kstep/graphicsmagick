@@ -213,12 +213,12 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
     Read X bitmap header.
   */
   while (ReadBlobString(image,buffer) != (char *) NULL)
-    if (sscanf(buffer,"#define %.1024s %u",name,&image->columns) == 2)
+    if (sscanf(buffer,"#define %s %u",name,&image->columns) == 2)
       if ((Extent(name) >= 6) &&
           (LocaleCompare(name+Extent(name)-6,"_width") == 0))
           break;
   while (ReadBlobString(image,buffer) != (char *) NULL)
-    if (sscanf(buffer,"#define %.1024s %u",name,&image->rows) == 2)
+    if (sscanf(buffer,"#define %s %u",name,&image->rows) == 2)
       if ((Extent(name) >= 7) &&
           (LocaleCompare(name+Extent(name)-7,"_height") == 0))
           break;
@@ -236,13 +236,13 @@ static Image *ReadXBMImage(const ImageInfo *image_info,ExceptionInfo *exception)
   version=11;
   while (ReadBlobString(image,buffer) != (char *) NULL)
   {
-    if (sscanf(buffer,"static short %.1024s = {",name) == 1)
+    if (sscanf(buffer,"static short %s = {",name) == 1)
       version=10;
     else
       if (sscanf(buffer,"static unsigned char %.1024s = {",name) == 1)
         version=11;
       else
-        if (sscanf(buffer,"static char %.1024s = {",name) == 1)
+        if (sscanf(buffer,"static char %s = {",name) == 1)
           version=11;
         else
           continue;
