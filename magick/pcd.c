@@ -139,6 +139,9 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
   int
     count;
 
+  long
+    quantum;
+
   PCDTable
     *pcd_table[3];
 
@@ -148,9 +151,6 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
 
   register PCDTable
     *r;
-
-  register Quantum
-    *range_limit;
 
   register unsigned char
     *p,
@@ -215,24 +215,6 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
     }
     pcd_length[i]=length;
   }
-  /*
-    Initialize range limits.
-  */
-  range_limit=(Quantum *) AllocateMemory(3*(MaxRGB+1)*sizeof(Quantum));
-  if (range_limit == (Quantum *) NULL)
-    {
-      MagickWarning(ResourceLimitWarning,"Memory allocation failed",
-        (char *) NULL);
-      FreeMemory(buffer);
-      return(False);
-    }
-  for (i=0; i <= MaxRGB; i++)
-  {
-    range_limit[i]=0;
-    range_limit[i+(MaxRGB+1)]=(Quantum) i;
-    range_limit[i+(MaxRGB+1)*2]=MaxRGB;
-  }
-  range_limit+=(MaxRGB+1);
   /*
     Search for Sync byte.
   */
@@ -314,9 +296,10 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
         continue;
       }
     if (r->key < 128)
-      *q=range_limit[(int) *q+(int) r->key];
+      quantum=(long) (*q)+r->key;
     else
-      *q=range_limit[(int) *q+(int) r->key-256];
+      quantum=(long) (*q)+r->key-256;
+    *q=(quantum < 0) ? 0 : (quantum > MaxRGB) ? MaxRGB : quantum;
     q++;
     PCDGetBits(r->length);
     count--;
@@ -326,8 +309,6 @@ static unsigned int DecodeImage(Image *image,unsigned char *luma,
   */
   for (i=0; i < (image->columns > 1536 ? 3 : 1); i++)
     FreeMemory(pcd_table[i]);
-  range_limit-=(MaxRGB+1);
-  FreeMemory(range_limit);
   FreeMemory(buffer);
   return(True);
 }

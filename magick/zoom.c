@@ -1258,8 +1258,7 @@ static double Triangle(double x)
 #endif
 
 static unsigned int HorizontalFilter(Image *source,Image *destination,
-  double x_factor,const FilterInfo *filter_info,
-  ContributionInfo *contribution_info,const Quantum *range_limit,
+  double x_factor,const FilterInfo *filter_info,ContributionInfo *contribution,
   const unsigned int span,unsigned int *quantum)
 {
   double
@@ -1313,18 +1312,18 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
     end=(int) (center+support+0.5);
     for (i=Max(start,0); i < Min(end,(int) source->columns); i++)
     {
-      contribution_info[n].pixel=i;
-      contribution_info[n].weight=
+      contribution[n].pixel=i;
+      contribution[n].weight=
         filter_info->function(((double) i-center+0.5)/scale_factor);
-      contribution_info[n].weight/=scale_factor;
-      density+=contribution_info[n].weight;
+      contribution[n].weight/=scale_factor;
+      density+=contribution[n].weight;
       n++;
     }
     if ((density != 0.0) && (density != 1.0))
       for (i=0; i < n; i++)
-        contribution_info[i].weight/=density;  /* normalize */
-    p=GetPixelCache(source,contribution_info[0].pixel,0,
-      contribution_info[n-1].pixel-contribution_info[0].pixel+1,source->rows);
+        contribution[i].weight/=density;  /* normalize */
+    p=GetPixelCache(source,contribution[0].pixel,0,
+      contribution[n-1].pixel-contribution[0].pixel+1,source->rows);
     q=SetPixelCache(destination,x,0,1,destination->rows);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
@@ -1337,17 +1336,21 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
       opacity_weight=0.0;
       for (i=0; i < n; i++)
       {
-        j=y*(contribution_info[n-1].pixel-contribution_info[0].pixel+1)+
-          (contribution_info[i].pixel-contribution_info[0].pixel);
-        red_weight+=contribution_info[i].weight*(p+j)->red;
-        green_weight+=contribution_info[i].weight*(p+j)->green;
-        blue_weight+=contribution_info[i].weight*(p+j)->blue;
-        opacity_weight+=contribution_info[i].weight*(p+j)->opacity;
+        j=y*(contribution[n-1].pixel-contribution[0].pixel+1)+
+          (contribution[i].pixel-contribution[0].pixel);
+        red_weight+=contribution[i].weight*(p+j)->red;
+        green_weight+=contribution[i].weight*(p+j)->green;
+        blue_weight+=contribution[i].weight*(p+j)->blue;
+        opacity_weight+=contribution[i].weight*(p+j)->opacity;
       }
-      q->red=range_limit[(int) (red_weight+0.5)];
-      q->green=range_limit[(int) (green_weight+0.5)];
-      q->blue=range_limit[(int) (blue_weight+0.5)];
-      q->opacity=range_limit[(int) (opacity_weight+0.5)];
+      q->red=(red_weight < 0) ? 0 :
+        (red_weight > MaxRGB) ? MaxRGB : red_weight+0.5;
+      q->green=(green_weight < 0) ? 0 :
+        (green_weight > MaxRGB) ? MaxRGB : green_weight+0.5;
+      q->blue=(blue_weight < 0) ? 0 :
+        (blue_weight > MaxRGB) ? MaxRGB : blue_weight+0.5;
+      q->opacity=(opacity_weight < 0) ? 0 :
+        (opacity_weight > MaxRGB) ? MaxRGB : opacity_weight+0.5;
       if (destination->class == PseudoClass)
         destination->indexes[y]=source->indexes[j];
       q++;
@@ -1362,8 +1365,7 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
 }
 
 static unsigned int VerticalFilter(Image *source,Image *destination,
-  double y_factor,const FilterInfo *filter_info,
-  ContributionInfo *contribution_info,const Quantum *range_limit,
+  double y_factor,const FilterInfo *filter_info,ContributionInfo *contribution,
   const unsigned int span,unsigned int *quantum)
 {
   double
@@ -1417,18 +1419,18 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
     end=(int) (center+support+0.5);
     for (i=Max(start,0); i < Min(end,(int) source->rows); i++)
     {
-      contribution_info[n].pixel=i;
-      contribution_info[n].weight=
+      contribution[n].pixel=i;
+      contribution[n].weight=
         filter_info->function(((double) i-center+0.5)/scale_factor);
-      contribution_info[n].weight/=scale_factor;
-      density+=contribution_info[n].weight;
+      contribution[n].weight/=scale_factor;
+      density+=contribution[n].weight;
       n++;
     }
     if ((density != 0.0) && (density != 1.0))
       for (i=0; i < n; i++)
-        contribution_info[i].weight/=density;  /* normalize */
-    p=GetPixelCache(source,0,contribution_info[0].pixel,source->columns,
-      contribution_info[n-1].pixel-contribution_info[0].pixel+1);
+        contribution[i].weight/=density;  /* normalize */
+    p=GetPixelCache(source,0,contribution[0].pixel,source->columns,
+      contribution[n-1].pixel-contribution[0].pixel+1);
     q=SetPixelCache(destination,0,y,destination->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
@@ -1441,17 +1443,20 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
       opacity_weight=0.0;
       for (i=0; i < n; i++)
       {
-        j=(contribution_info[i].pixel-contribution_info[0].pixel)*
-          source->columns+x;
-        red_weight+=contribution_info[i].weight*(p+j)->red;
-        green_weight+=contribution_info[i].weight*(p+j)->green;
-        blue_weight+=contribution_info[i].weight*(p+j)->blue;
-        opacity_weight+=contribution_info[i].weight*(p+j)->opacity;
+        j=(contribution[i].pixel-contribution[0].pixel)*source->columns+x;
+        red_weight+=contribution[i].weight*(p+j)->red;
+        green_weight+=contribution[i].weight*(p+j)->green;
+        blue_weight+=contribution[i].weight*(p+j)->blue;
+        opacity_weight+=contribution[i].weight*(p+j)->opacity;
       }
-      q->red=range_limit[(int) (red_weight+0.5)];
-      q->green=range_limit[(int) (green_weight+0.5)];
-      q->blue=range_limit[(int) (blue_weight+0.5)];
-      q->opacity=range_limit[(int) (opacity_weight+0.5)];
+      q->red=(red_weight < 0) ? 0 :
+        (red_weight > MaxRGB) ? MaxRGB : red_weight+0.5;
+      q->green=(green_weight < 0) ? 0 :
+        (green_weight > MaxRGB) ? MaxRGB : green_weight+0.5;
+      q->blue=(blue_weight < 0) ? 0 :
+        (blue_weight > MaxRGB) ? MaxRGB : blue_weight+0.5;
+      q->opacity=(opacity_weight < 0) ? 0 :
+        (opacity_weight > MaxRGB) ? MaxRGB : opacity_weight+0.5;
       if (destination->class == PseudoClass)
         destination->indexes[x]=source->indexes[j];
       q++;
@@ -1469,7 +1474,7 @@ Export Image *ZoomImage(Image *image,const unsigned int columns,
   const unsigned int rows)
 {
   ContributionInfo
-    *contribution_info;
+    *contribution;
 
   double
     support,
@@ -1480,14 +1485,8 @@ Export Image *ZoomImage(Image *image,const unsigned int columns,
     *source_image,
     *zoom_image;
 
-  Quantum
-    *range_table;
-
   register int
      i;
-
-  register Quantum
-    *range_limit;
 
   static const FilterInfo
     filters[SincFilter+1] =
@@ -1518,7 +1517,8 @@ Export Image *ZoomImage(Image *image,const unsigned int columns,
   assert(image != (Image *) NULL);
   assert((image->filter >= 0) && (image->filter <= SincFilter));
   if ((columns == 0) || (rows == 0))
-    ThrowImageException(OptionWarning,"Unable to zoom image","image dimensions are zero");
+    ThrowImageException(OptionWarning,"Unable to zoom image",
+      "image dimensions are zero");
   if ((columns == image->columns) && (rows == image->rows))
     return(CloneImage(image,columns,rows,False));
   /*
@@ -1539,27 +1539,6 @@ Export Image *ZoomImage(Image *image,const unsigned int columns,
         "Memory allocation failed");
     }
   /*
-    Allocate the range table.
-  */
-  range_table=(Quantum *) AllocateMemory(3*(MaxRGB+1)*sizeof(Quantum));
-  if (range_table == (Quantum *) NULL)
-    {
-      DestroyImage(source_image);
-      DestroyImage(zoom_image);
-      ThrowImageException(ResourceLimitWarning,"Unable to zoom image",
-        "Memory allocation failed");
-    }
-  /*
-    Pre-compute conversion tables.
-  */
-  for (i=0; i <= MaxRGB; i++)
-  {
-    range_table[i]=0;
-    range_table[i+(MaxRGB+1)]=i;
-    range_table[i+(MaxRGB+1)*2]=MaxRGB;
-  }
-  range_limit=range_table+(MaxRGB+1);
-  /*
     Allocate filter info list.
   */
   x_factor=(double) zoom_image->columns/(double) image->columns;
@@ -1568,13 +1547,12 @@ Export Image *ZoomImage(Image *image,const unsigned int columns,
     filters[image->filter].support/y_factor);
   if (support < filters[image->filter].support)
     support=filters[image->filter].support;
-  contribution_info=(ContributionInfo *)
+  contribution=(ContributionInfo *)
     AllocateMemory((int) (support*2+3)*sizeof(ContributionInfo));
-  if (contribution_info == (ContributionInfo *) NULL)
+  if (contribution == (ContributionInfo *) NULL)
     {
       DestroyImage(source_image);
       DestroyImage(zoom_image);
-      FreeMemory(range_table);
       ThrowImageException(ResourceLimitWarning,"Unable to zoom image",
         "Memory allocation failed");
     }
@@ -1586,25 +1564,24 @@ Export Image *ZoomImage(Image *image,const unsigned int columns,
     {
       span=source_image->columns+zoom_image->rows;
       status=HorizontalFilter(image,source_image,x_factor,
-        &filters[image->filter],contribution_info,range_limit,span,&quantum);
+        &filters[image->filter],contribution,span,&quantum);
       status|=VerticalFilter(source_image,zoom_image,y_factor,
-        &filters[image->filter],contribution_info,range_limit,span,&quantum);
+        &filters[image->filter],contribution,span,&quantum);
     }
   else
     {
       span=zoom_image->columns+source_image->columns;
       status=VerticalFilter(image,source_image,y_factor,&filters[image->filter],
-        contribution_info,range_limit,span,&quantum);
+        contribution,span,&quantum);
       status|=HorizontalFilter(source_image,zoom_image,x_factor,
-        &filters[image->filter],contribution_info,range_limit,span,&quantum);
+        &filters[image->filter],contribution,span,&quantum);
     }
   if (status == False)
     ThrowImageException(CacheWarning,"Unable to zoom image",(char *) NULL);
   /*
     Free allocated memory.
   */
-  FreeMemory(contribution_info);
-  FreeMemory(range_table);
+  FreeMemory(contribution);
   DestroyImage(source_image);
   return(zoom_image);
 }

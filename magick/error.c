@@ -85,6 +85,52 @@ static WarningHandler
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   C a t c h I m a g e E x c e p t i o n                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method CatchImageException traverses an image sequence and calls
+%  methods MagickWarning() or MagickError() if it discovers any thrown
+%  exceptions.
+%
+%  The format of the CatchImageException method is:
+%
+%      CatchImageException(Image *images)
+%
+%  A description of each parameter follows:
+%
+%    o images: Specifies a pointer to a list of one or more images.
+%
+%
+*/
+Export void CatchImageException(Image *images)
+{
+  register Image
+    *image;
+
+  assert(image != (Image *) NULL);
+  for (image=images; image != (Image *) NULL; image=image->next)
+  {
+    if (image->exception.type == UndefinedException)
+      continue;
+    if (image->exception.type < ResourceLimitError)
+      {
+        MagickWarning(image->exception.type,image->exception.message,
+          image->exception.qualifier);
+        continue;
+      }
+    MagickError(image->exception.type,image->exception.message,
+      image->exception.qualifier);
+  }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 +   D e f a u l t E r r o r H a n d l e r                                     %
 %                                                                             %
 %                                                                             %

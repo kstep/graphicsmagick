@@ -267,7 +267,8 @@ int main(int argc,char **argv)
           {
             image=ReadImage(image_info,&exception);
             if (image == (Image *) NULL)
-              MagickWarning(exception.type,exception.message,exception.qualifier);
+              MagickWarning(exception.type,exception.message,
+                exception.qualifier);
             continue;
           }
         if (mask_image != (Image *) NULL)
@@ -276,7 +277,8 @@ int main(int argc,char **argv)
           {
             composite_image=ReadImage(image_info,&exception);
             if (composite_image == (Image *) NULL)
-              MagickWarning(exception.type,exception.message,exception.qualifier);
+              MagickWarning(exception.type,exception.message,
+                exception.qualifier);
             continue;
           }
         mask_image=ReadImage(image_info,&exception);
@@ -803,7 +805,10 @@ int main(int argc,char **argv)
     Usage(client_name);
   if (mask_image != (Image *) NULL)
     {
-      CompositeImage(composite_image,ReplaceMatteCompositeOp,mask_image,0,0);
+      status=CompositeImage(composite_image,ReplaceMatteCompositeOp,
+        mask_image,0,0);
+      if (status == False)
+        CatchImageException(composite_image);
       DestroyImage(mask_image);
     }
   if (compose == BlendCompositeOp)
@@ -872,7 +877,11 @@ int main(int argc,char **argv)
           */
           for (y=0; y < (int) image->rows; y+=composite_image->rows)
             for (x=0; x < (int) image->columns; x+=composite_image->columns)
-              CompositeImage(image,compose,composite_image,x,y);
+            {
+              status=CompositeImage(image,compose,composite_image,x,y);
+              if (status == False)
+                CatchImageException(image);
+            }
           combined_image=image;
         }
       else
@@ -951,7 +960,9 @@ int main(int argc,char **argv)
               break;
             }
           }
-          CompositeImage(image,compose,composite_image,x,y);
+          status=CompositeImage(image,compose,composite_image,x,y);
+          if (status == False)
+            CatchImageException(image);
           combined_image=image;
         }
   if (combined_image == (Image *) NULL)
@@ -959,7 +970,9 @@ int main(int argc,char **argv)
   /*
     Transmogrify image as defined by the image processing options.
   */
-  MogrifyImage(image_info,argc,argv,&combined_image);
+  status=MogrifyImage(image_info,argc,argv,&combined_image);
+  if (status == False)
+    CatchImageException(combined_image);
   /*
     Write image.
   */
@@ -967,8 +980,7 @@ int main(int argc,char **argv)
   SetImageInfo(image_info,True);
   status=WriteImage(image_info,combined_image);
   if (status == False)
-    MagickWarning(image->exception.type,image->exception.message,
-      image->exception.qualifier);
+    CatchImageException(combined_image);
   if (image_info->verbose)
     DescribeImage(combined_image,stderr,False);
   DestroyImages(combined_image);

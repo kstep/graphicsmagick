@@ -933,13 +933,16 @@ int main(int argc,char **argv)
           next_image=ReadImage(image_info,&exception);
           if (next_image == (Image *) NULL)
             {
-              MagickWarning(exception.type,exception.message,exception.qualifier);
+              MagickWarning(exception.type,exception.message,
+                exception.qualifier);
               if (*option == '-')
                 break;
               else
                 continue;
             }
-          MogrifyImages(image_info,i,argv,&next_image);
+          status=MogrifyImages(image_info,i,argv,&next_image);
+          if (status == False)
+            CatchImageException(next_image);
           if (image == (Image *) NULL)
             image=next_image;
           else
@@ -969,7 +972,9 @@ int main(int argc,char **argv)
       while (loaded_image != (Image *) NULL)
       {
         image=loaded_image;
-        MogrifyImage(image_info,argc-1,argv,&image);
+        status=MogrifyImage(image_info,argc-1,argv,&image);
+        if (status == False)
+          CatchImageException(image);
         loaded_image=XAnimateImages(display,&resource_info,argv,argc,image);
       }
     }

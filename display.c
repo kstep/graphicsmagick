@@ -1336,7 +1336,8 @@ int main(int argc,char **argv)
           image=ReadImage(image_info,&exception);
           if (image == (Image *) NULL)
             {
-              MagickWarning(exception.type,exception.message,exception.qualifier);
+              MagickWarning(exception.type,exception.message,
+                exception.qualifier);
               if ((i < (argc-1)) || (scene < last_scene))
                 continue;
               else
@@ -1351,7 +1352,9 @@ int main(int argc,char **argv)
               Transmogrify image as defined by the image processing options.
             */
             resource_info.quantum=1;
-            MogrifyImage(image_info,i,argv,&image);
+            status=MogrifyImage(image_info,i,argv,&image);
+            if (status == False)
+              CatchImageException(image);
             if (first_scene != last_scene)
               image->scene=scene;
             /*
@@ -1393,7 +1396,9 @@ int main(int argc,char **argv)
                       image=loaded_image;
                       break;
                     }
-                  MogrifyImage(image_info,i,argv,&loaded_image);
+                  status=MogrifyImage(image_info,i,argv,&loaded_image);
+                  if (status == False)
+                    CatchImageException(loaded_image);
                   if (first_scene != last_scene)
                     image->scene=scene;
                   next_image=XDisplayImage(display,&resource_info,argv,argc,
@@ -1422,8 +1427,7 @@ int main(int argc,char **argv)
                 SetImageInfo(image_info,True);
                 status=WriteImage(image_info,image);
                 if (status == False)
-                  MagickWarning(image->exception.type,image->exception.message,
-                    image->exception.qualifier);
+                  CatchImageException(image);
               }
             if (image_info->verbose)
               DescribeImage(image,stderr,False);

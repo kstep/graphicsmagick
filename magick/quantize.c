@@ -280,9 +280,6 @@ typedef struct _CubeInfo
     y,
     *cache;
 
-  Quantum
-    *range_limit;
-
   ExceptionPacket
     error[ExceptionQueueLength];
 
@@ -862,8 +859,6 @@ static void DestroyCubeInfo(CubeInfo *cube_info)
   /*
     Free memory resources.
   */
-  cube_info->range_limit-=(MaxRGB+1);
-  FreeMemory(cube_info->range_limit);
   FreeMemory(cube_info->cache);
 }
 
@@ -915,7 +910,8 @@ Export void DestroyQuantizeInfo(QuantizeInfo *quantize_info)
 %
 %  The format of the Dither method is:
 %
-%      Dither(CubeInfo *cube_info,Image *image,const unsigned int direction)
+%      unsigned int Dither(CubeInfo *cube_info,Image *image,
+%        const unsigned int direction)
 %
 %  A description of each parameter follows.
 %
@@ -928,7 +924,7 @@ Export void DestroyQuantizeInfo(QuantizeInfo *quantize_info)
 %      to move to next to follow the Hilbert curve.
 %
 */
-static void Dither(CubeInfo *cube_info,Image *image,
+static unsigned int Dither(CubeInfo *cube_info,Image *image,
   const unsigned int direction)
 {
   double
@@ -960,21 +956,24 @@ static void Dither(CubeInfo *cube_info,Image *image,
       /*
         Distribute error.
       */
-      red_error=0.0;
-      green_error=0.0;
-      blue_error=0.0;
+      q=GetPixelCache(image,p->x,p->y,1,1);
+      if (q == (PixelPacket *) NULL)
+        return(False);
+      red_error=q->red;
+      green_error=q->green;
+      blue_error=q->blue;
       for (i=0; i < ExceptionQueueLength; i++)
       {
         red_error+=p->error[i].red*p->weights[i];
         green_error+=p->error[i].green*p->weights[i];
         blue_error+=p->error[i].blue*p->weights[i];
       }
-      q=GetPixelCache(image,p->x,p->y,1,1);
-      if (q == (PixelPacket *) NULL)
-        return;
-      red=p->range_limit[(int) (q->red+red_error)];
-      green=p->range_limit[(int) (q->green+green_error)];
-      blue=p->range_limit[(int) (q->blue+blue_error)];
+      red=(red_error < 0) ? 0 :
+        (red_error > MaxRGB) ? MaxRGB : red_error+0.5;
+      green=(green_error < 0) ? 0 :
+        (green_error > MaxRGB) ? MaxRGB : green_error+0.5;
+      blue=(blue_error < 0) ? 0 :
+	(blue_error > MaxRGB) ? MaxRGB : blue_error+0.5;
       i=(blue >> CacheShift) << 12 | (green >> CacheShift) << 6 |
         (red >> CacheShift);
       if (p->cache[i] < 0)
@@ -1038,6 +1037,7 @@ static void Dither(CubeInfo *cube_info,Image *image,
     case NorthGravity: p->y--; break;
     case SouthGravity: p->y++; break;
   }
+  return(True);
 }
 
 /*
@@ -1098,7 +1098,7 @@ static unsigned int DitherImage(CubeInfo *cube_info,Image *image)
   for (depth=1; i != 0; depth++)
     i>>=1;
   HilbertCurve(cube_info,image,depth-1,NorthGravity);
-  Dither(cube_info,image,ForgetGravity);
+  (void) Dither(cube_info,image,ForgetGravity);
   return(True);
 }
 
@@ -1179,21 +1179,8 @@ static unsigned int GetCubeInfo(CubeInfo *cube_info,
     Initialize dither resources.
   */
   cube_info->cache=(int *) AllocateMemory((1 << 18)*sizeof(int));
-  cube_info->range_limit=(Quantum *)
-    AllocateMemory(3*(MaxRGB+1)*sizeof(Quantum));
-  if ((cube_info->cache == (int *) NULL) ||
-      (cube_info->range_limit == (Quantum *) NULL))
+  if (cube_info->cache == (int *) NULL)
     return(False);
-  /*
-    Initialize range tables.
-  */
-  for (i=0; i <= MaxRGB; i++)
-  {
-    cube_info->range_limit[i]=0;
-    cube_info->range_limit[i+(MaxRGB+1)]=i;
-    cube_info->range_limit[i+(MaxRGB+1)*2]=MaxRGB;
-  }
-  cube_info->range_limit+=(MaxRGB+1);
   /*
     Initialize color cache.
   */

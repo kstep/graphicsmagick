@@ -1119,6 +1119,7 @@ Export unsigned long GetNumberColors(Image *image,FILE *file)
   }
   if (file != (FILE *) NULL)
     {
+      (void) fputs("\n",file);
       Histogram(&color_cube,color_cube.root,file);
       (void) fflush(file);
     }

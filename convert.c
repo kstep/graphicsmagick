@@ -469,7 +469,9 @@ int main(int argc,char **argv)
             MagickWarning(exception.type,exception.message,exception.qualifier);
             continue;
           }
-        MogrifyImages(image_info,i,argv,&next_image);
+        status=MogrifyImages(image_info,i,argv,&next_image);
+        if (status == False)
+          CatchImageException(next_image);
         if (image == (Image *) NULL)
           image=next_image;
         else
@@ -1642,7 +1644,11 @@ int main(int argc,char **argv)
     Write images.
   */
   if ((Extent(option) > 2) && ((*option == '-') || (*option == '+')))
-    MogrifyImages(image_info,i,argv,&image);
+    {
+      status=MogrifyImages(image_info,i,argv,&image);
+      if (status == False)
+        CatchImageException(image);
+    }
   while (image->previous != (Image *) NULL)
     image=image->previous;
   if (append != 0)
@@ -1654,7 +1660,9 @@ int main(int argc,char **argv)
         Append an image sequence.
       */
       appended_image=AppendImages(image,append == 1);
-      if (appended_image != (Image *) NULL)
+      if (appended_image == (Image *) NULL)
+        CatchImageException(image);
+      else
         {
           DestroyImages(image);
           image=appended_image;
@@ -1669,7 +1677,9 @@ int main(int argc,char **argv)
         Average an image sequence.
       */
       averaged_image=AverageImages(image);
-      if (averaged_image != (Image *) NULL)
+      if (averaged_image == (Image *) NULL)
+        CatchImageException(image);
+      else
         {
           DestroyImages(image);
           image=averaged_image;
@@ -1681,10 +1691,12 @@ int main(int argc,char **argv)
         *coalesced_image;
 
       /*
-        Average an image sequence.
+        Coalesce an image sequence.
       */
       coalesced_image=CoalesceImages(image);
-      if (coalesced_image != (Image *) NULL)
+      if (coalesced_image == (Image *) NULL)
+        CatchImageException(image);
+      else
         {
           DestroyImages(image);
           image=coalesced_image;
@@ -1696,10 +1708,12 @@ int main(int argc,char **argv)
         *deconstructed_image;
 
       /*
-        Average an image sequence.
+        Deconstruct an image sequence.
       */
       deconstructed_image=DeconstructImages(image);
-      if (deconstructed_image != (Image *) NULL)
+      if (deconstructed_image == (Image *) NULL)
+        CatchImageException(image);
+      else
         {
           DestroyImages(image);
           image=deconstructed_image;
@@ -1714,7 +1728,9 @@ int main(int argc,char **argv)
         Morph an image sequence.
       */
       morphed_image=MorphImages(image,morph);
-      if (morphed_image != (Image *) NULL)
+      if (morphed_image == (Image *) NULL)
+        CatchImageException(image);
+      else
         {
           DestroyImages(image);
           image=morphed_image;
@@ -1726,10 +1742,12 @@ int main(int argc,char **argv)
         *mosaic_image;
 
       /*
-        Average an image sequence.
+        Create an image mosaic.
       */
       mosaic_image=MosaicImages(image);
-      if (mosaic_image != (Image *) NULL)
+      if (mosaic_image == (Image *) NULL)
+        CatchImageException(image);
+      else
         {
           DestroyImages(image);
           image=mosaic_image;
@@ -1747,13 +1765,11 @@ int main(int argc,char **argv)
     p->scene=scene++;
   }
   SetImageInfo(image_info,True);
-  status=0;
   for (p=image; p != (Image *) NULL; p=p->next)
   {
     status=WriteImage(image_info,p);
     if (status == False)
-      MagickWarning(image->exception.type,image->exception.message,
-        image->exception.qualifier);
+      CatchImageException(p);
     if (image_info->adjoin)
       break;
   }

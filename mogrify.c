@@ -1433,7 +1433,9 @@ int main(int argc,char **argv)
         /*
           Transmogrify image as defined by the image processing options.
         */
-        MogrifyImages(image_info,i,argv,&image);
+        status=MogrifyImages(image_info,i,argv,&image);
+        if (status == False)
+          CatchImageException(image);
         if (global_colormap)
           (void) MapImages(image,(Image *) NULL,image_info->dither);
         /*
@@ -1457,8 +1459,7 @@ int main(int argc,char **argv)
         {
           status=WriteImage(image_info,p);
           if (status == False)
-            MagickWarning(image->exception.type,image->exception.message,
-              image->exception.qualifier);
+            CatchImageException(p);
           if (image_info->adjoin)
             break;
         }

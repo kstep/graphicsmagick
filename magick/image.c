@@ -5112,7 +5112,7 @@ Export unsigned int MogrifyImage(const ImageInfo *image_info,const int argc,
     FreeMemory(geometry);
   DestroyImageInfo(clone_info);
   CloseCache((*image)->cache);
-  return(True);
+  return((*image)->exception.type == UndefinedException);
 }
 
 /*

@@ -1132,7 +1132,9 @@ int main(int argc,char **argv)
             else
               continue;
           }
-        MogrifyImages(image_info,i,argv,&next_image);
+        status=MogrifyImages(image_info,i,argv,&next_image);
+        if (status == False)
+          CatchImageException(next_image);
         if (image == (Image *) NULL)
           image=next_image;
         else
@@ -1186,8 +1188,7 @@ int main(int argc,char **argv)
   {
     status=WriteImage(image_info,p);
     if (status == False)
-      MagickWarning(image->exception.type,image->exception.message,
-        image->exception.qualifier);
+      CatchImageException(p);
     if (image_info->adjoin)
       break;
   }

@@ -289,15 +289,9 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
       char
         command[MaxTextExtent];
 
-      ImageAttribute
-        *attribute;
-
       /*
         Add a histogram as an image comment.
       */
-      attribute=GetImageAttribute(image,"Comment");
-      if (attribute != (ImageAttribute *) NULL)
-        (void) fprintf(file,"%s\n",attribute->value);
       (void) GetNumberColors(image,file);
       (void) fclose(file);
       FormatString(command,"@%.1024s",filename);
@@ -307,7 +301,8 @@ static unsigned int WriteHISTOGRAMImage(const ImageInfo *image_info,
   /*
     Write HISTOGRAM image as MIFF.
   */
-  (void) strcpy(histogram_image->magick,"MIFF");
+  (void) strcpy(filename,histogram_image->filename);
+  (void) FormatString(histogram_image->filename,"miff:%s",filename);
   status=WriteImage(image_info,histogram_image);
   DestroyImage(histogram_image);
   return(status);
