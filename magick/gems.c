@@ -612,7 +612,7 @@ MagickExport int GetOptimalKernelWidth1D(const double radius,const double sigma)
     u;
 
   if (radius > 0.0)
-    return((int) (2.0*ceil(radius-0.5)+1.0));
+    return((int) (2.0*ceil(radius)+1.0));
   for (width=5; ;)
   {
     normalize=0.0;
@@ -641,7 +641,7 @@ MagickExport int GetOptimalKernelWidth2D(const double radius,const double sigma)
     v;
 
   if (radius > 0.0)
-    return((int) (2.0*ceil(radius-0.5)+1.0));
+    return((int) (2.0*ceil(radius)+1.0));
   for (width=5; ;)
   {
     normalize=0.0;
