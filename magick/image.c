@@ -1344,7 +1344,6 @@ MagickExport unsigned int CompositeImage(Image *image,
   /*
     Composite image.
   */
-image->class=DirectClass;
   for (y=0; y < image->rows; y++)
   {
     if (y < y_offset)

@@ -121,7 +121,6 @@ static unsigned int DecodeImage(Image *image,const int opacity,
     *indexes;
 
   register int
-    i,
     x;
 
   register PixelPacket
@@ -440,7 +439,6 @@ static unsigned int EncodeImage(const ImageInfo *image_info,Image *image,
     *indexes;
 
   register int
-    i,
     x;
 
   register PixelPacket
