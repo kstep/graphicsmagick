@@ -524,8 +524,8 @@ MagickExport unsigned int ListMagickInfo(FILE *file,ExceptionInfo *exception)
 #if defined(HasLTDL) || defined(_MAGICKMOD_)
   OpenModules(exception);
 #endif
-  p=GetMagickInfo((char *) NULL,exception);
-  if (p == (MagickInfo *) NULL)
+  (void) GetMagickInfo((char *) NULL,exception);
+  if (magick_list == (MagickInfo *) NULL)
     return(False);
   AcquireSemaphore(&magick_semaphore);
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)

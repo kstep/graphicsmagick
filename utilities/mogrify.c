@@ -98,7 +98,7 @@
 %    -implode amount      implode image pixels about the center
 %    -interlace type      None, Line, Plane, or Partition
 %    -label name          assign a label to an image
-%    -list type           Color, Delegate, Format, Font, or Magic
+%    -list type           Color, Delegate, Format, Font, Magic, or Module
 %    -loop iterations     add Netscape loop extension to your GIF animation
 %    -map filename        transform image colors to match this set of colors
 %    -matte               store matte channel if the image has one
@@ -225,7 +225,7 @@ static void Usage()
       "-implode amount      implode image pixels about the center",
       "-interlace type      None, Line, Plane, or Partition",
       "-label name          assign a label to an image",
-      "-list type           Color, Delegate, Format, Font, or Magic",
+      "-list type           Color, Delegate, Format, Font, Magic, or Module",
       "-loop iterations     add Netscape loop extension to your GIF animation",
       "-map filename        transform image colors to match this set of colors",
       "-matte               store matte channel if the image has one",
@@ -998,22 +998,61 @@ int main(int argc,char **argv)
                   if (i == argc)
                     MagickError(OptionError,"Missing list name",option);
                   option=argv[i];
-                  if (LocaleCompare("Color",option) == 0)
-                    (void) ListColorInfo((FILE *) NULL,&exception);
-                  else
-                    if (LocaleCompare("Delegate",option) == 0)
-                      (void) ListDelegateInfo((FILE *) NULL,&exception);
-                    else
+                  switch (*option)
+                  {
+                    case 'C':
+                    case 'c':
+                    {
+                      if (LocaleCompare("Color",option) == 0)
+                        {
+                          (void) ListColorInfo((FILE *) NULL,&exception);
+                          break;
+                        }
+                      MagickError(OptionError,"Invalid list type",option);
+                    }
+                    case 'D':
+                    case 'd':
+                    {
+                      if (LocaleCompare("Delegate",option) == 0)
+                        {
+                          (void) ListDelegateInfo((FILE *) NULL,&exception);
+                          break;
+                        }
+                      MagickError(OptionError,"Invalid list type",option);
+                    }
+                    case 'F':
+                    case 'f':
+                    {
                       if (LocaleCompare("Font",option) == 0)
-                        (void) ListFontInfo((FILE *) NULL,&exception);
-                      else
-                        if (LocaleCompare("Format",option) == 0)
+                        {
+                          (void) ListFontInfo((FILE *) NULL,&exception);
+                          break;
+                        }
+                      if (LocaleCompare("Format",option) == 0)
+                        {
                           (void) ListMagickInfo((FILE *) NULL,&exception);
-                        else
-                          if (LocaleCompare("Magic",option) == 0)
-                            (void) ListMagicInfo((FILE *) NULL,&exception);
-                          else
-                            MagickError(OptionError,"Invalid list type",option);
+                          break;
+                        }
+                      MagickError(OptionError,"Invalid list type",option);
+                    }
+                    case 'M':
+                    case 'm':
+                    {
+                      if (LocaleCompare("Magic",option) == 0)
+                        {
+                          (void) ListMagicInfo((FILE *) NULL,&exception);
+                          break;
+                        }
+                      if (LocaleCompare("Module",option) == 0)
+                        {
+                          (void) ListModuleAliases((FILE *) NULL,&exception);
+                          break;
+                        }
+                      MagickError(OptionError,"Invalid list type",option);
+                    }
+                    default:
+                      MagickError(OptionError,"Invalid list type",option);
+                  }
                   if (exception.severity != UndefinedException)
                     MagickError(exception.severity,exception.reason,
                       exception.description);

@@ -56,12 +56,6 @@
 #include "defines.h"
 
 /*
-  Forward declarations.
-*/
-static unsigned int
-  WriteDPXImage(const ImageInfo *,Image *);
-
-/*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %

@@ -43,6 +43,7 @@ extern MagickExport ModuleInfo
 
 extern MagickExport unsigned int
   ExecuteModuleProcess(const char *,Image *,const int,char **),
+  ListModuleAliases(FILE *,ExceptionInfo *),
   OpenModule(const char *,ExceptionInfo *),
   OpenModules(ExceptionInfo *);
 

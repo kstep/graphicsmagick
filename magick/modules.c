@@ -80,6 +80,7 @@
 typedef struct _ModuleAlias
 {
   char
+    *filename,
     *name,
     *alias;
 
@@ -324,7 +325,7 @@ MagickExport ModuleInfo *GetModuleInfo(const char *tag,ExceptionInfo *exception)
   LiberateSemaphore(&module_semaphore);
   if (module_list == (ModuleInfo *) NULL)
     return((ModuleInfo *) NULL);
-  if (tag == (char *) NULL)
+  if (tag == (const char *) NULL)
     return(module_list);
   for (p=module_list; p != (ModuleInfo *) NULL; p=p->next)
     if (LocaleCompare(p->tag,tag) == 0)
@@ -421,6 +422,63 @@ static char **GetModuleList(void)
   }
   (void) closedir(directory);
   return(modules);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  L i s t M o d u l e A l i a s e s                                          %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ListModuleAliases lists the module info to a file.
+%
+%  The format of the ListModuleAliases method is:
+%
+%      unsigned int ListModuleAliases(FILE *file,ExceptionInfo *exception)
+%
+%  A description of each parameter follows.
+%
+%    o file:  An pointer to a FILE.
+%
+%    o exception: Return any errors or warnings in this structure.
+%
+%
+*/
+MagickExport unsigned int ListModuleAliases(FILE *file,ExceptionInfo *exception)
+{
+  register ModuleAlias
+    *p;
+
+  register int
+    i;
+
+  if (file == (const FILE *) NULL)
+    file=stdout;
+  (void) fprintf(file,"ImageMagick understands these module aliases.\n");
+  (void) GetModuleInfo((const char *) NULL,exception);
+  if (module_aliases == (ModuleAlias *) NULL)
+    return(False);
+  if (module_aliases->filename != (char *) NULL)
+    (void) fprintf(file,"\nFilename: %.1024s\n\n",module_aliases->filename);
+  (void) fprintf(file,"Name      Alias\n");
+  (void) fprintf(file,"-------------------------------------------------------"
+    "------------------------\n");
+  for (p=module_aliases; p != (ModuleAlias *) NULL; p=p->next)
+  {
+    (void) fprintf(file,"%.1024s",p->name);
+    for (i=Extent(p->name); i <= 9; i++)
+      (void) fprintf(file," ");
+    if (p->alias != (char *) NULL)
+      (void) fprintf(file,"%.1024s",p->alias);
+    (void) fprintf(file,"\n");
+  }
+  (void) fflush(file);
+  return(True);
 }
 
 /*
@@ -647,20 +705,21 @@ MagickExport unsigned int OpenModules(ExceptionInfo *exception)
 %
 %  The format of the ReadConfigurationFile method is:
 %
-%      unsigned int ReadConfigurationFile(const char *filename)
+%      unsigned int ReadConfigurationFile(const char *basename)
 %
 %  A description of each parameter follows:
 %
 %    o status: Method ReadConfigurationFile returns True if at least one font
 %      is defined otherwise False.
 %
-%    o filename:  The font configuration filename.
+%    o basename:  The font configuration filename.
 %
 %
 */
-static unsigned int ReadConfigurationFile(const char *filename)
+static unsigned int ReadConfigurationFile(const char *basename)
 {
   char
+    filename[MaxTextExtent],
     keyword[MaxTextExtent],
     *path,
     value[MaxTextExtent];
@@ -683,11 +742,12 @@ static unsigned int ReadConfigurationFile(const char *filename)
   /*
     Read the module configuration file.
   */
-  path=GetMagickConfigurePath(filename);
+  path=GetMagickConfigurePath(basename);
   if (path == (char *) NULL)
     return(False);
-  file=fopen(path,"r");
+  FormatString(filename,"%.1024s",path);
   LiberateMemory((void **) &path);
+  file=fopen(filename,"r");
   if (file == (FILE *) NULL)
     return(False);
   for (c=fgetc(file); c != EOF; c=fgetc(file))
@@ -715,11 +775,14 @@ static unsigned int ReadConfigurationFile(const char *filename)
         */
         alias_info=(ModuleAlias *) AcquireMemory(sizeof(ModuleAlias));
         if (alias_info == (ModuleAlias *) NULL)
-          MagickError(ResourceLimitError,"Unable to allocate fonts",
+          MagickError(ResourceLimitError,"Unable to allocate module aliases",
             "Memory allocation failed");
         memset(alias_info,0,sizeof(ModuleAlias));
         if (module_aliases == (ModuleAlias *) NULL)
-          module_aliases=alias_info;
+          {
+            alias_info->filename=AllocateString(filename);
+            module_aliases=alias_info;
+          }
         else
           {
             module_aliases->next=alias_info;

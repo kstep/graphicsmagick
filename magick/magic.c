@@ -229,8 +229,8 @@ MagickExport unsigned int ListMagicInfo(FILE *file,ExceptionInfo *exception)
   if (file == (const FILE *) NULL)
     file=stdout;
   (void) fprintf(file,"ImageMagick understands these magic strings.\n");
-  p=GetMagicInfo((unsigned char *) NULL,0,exception);
-  if (p == (MagicInfo *) NULL)
+  (void) GetMagicInfo((unsigned char *) NULL,0,exception);
+  if (magic_list == (MagicInfo *) NULL)
     return(False);
   if (magic_list->filename != (char *) NULL)
     (void) fprintf(file,"\nFilename: %.1024s\n\n",magic_list->filename);
