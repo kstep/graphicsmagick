@@ -196,6 +196,8 @@ namespace Magick
       {
       }
 
+    ~DrawableAffine( void );
+
     // Operator to invoke equivalent draw API call
     void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -284,6 +286,8 @@ namespace Magick
         _endDegrees(endDegrees_)
       { }
 
+    ~DrawableArc( void );
+
     // Operator to invoke equivalent draw API call
     void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -366,6 +370,9 @@ namespace Magick
     // Copy constructor
     DrawableBezier ( const DrawableBezier& original_ );
 
+    // Destructor
+    ~DrawableBezier ( void );
+
     // Operator to invoke equivalent draw API call
     void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -391,6 +398,8 @@ namespace Magick
         _perimY(perimY_)
       {
       }
+
+    ~DrawableCircle ( void );
     
     // Operator to invoke equivalent draw API call
     void operator()( MagickLib::DrawContext context_ ) const;
@@ -455,6 +464,8 @@ namespace Magick
         _y(y_),
         _paintMethod(paintMethod_)
       { }
+
+    ~DrawableColor ( void );
 
     // Operator to invoke equivalent draw API call
     void operator()( MagickLib::DrawContext context_ ) const;
@@ -611,37 +622,6 @@ namespace Magick
     Image*             _image;
   };
 
-  // Decoration (text decoration)
-  class DrawableTextDecoration : public DrawableBase
-  {
-  public:
-    DrawableTextDecoration ( DecorationType decoration_ )
-      : _decoration(decoration_)
-      { }
-
-    // Operator to invoke equivalent draw API call
-    void operator()( MagickLib::DrawContext context_ ) const;
-
-    // Return polymorphic copy of object
-    /*virtual*/
-    DrawableBase* copy() const
-      {
-        return new DrawableTextDecoration(*this);
-      }
-
-    void decoration( DecorationType decoration_ )
-      {
-        _decoration = decoration_;
-      }
-    DecorationType decoration( void ) const
-      {
-        return _decoration;
-      }
-
-  private:
-    DecorationType _decoration;
-  };
-
   // Ellipse
   class DrawableEllipse : public DrawableBase
   {
@@ -656,6 +636,8 @@ namespace Magick
         _arcStart(arcStart_),
         _arcEnd(arcEnd_)
       { }
+
+    ~DrawableEllipse( void );
 
     // Operator to invoke equivalent draw API call
     void operator()( MagickLib::DrawContext context_ ) const;
@@ -738,6 +720,8 @@ namespace Magick
 
     DrawableFillColor ( const DrawableFillColor& original_ );
 
+    ~DrawableFillColor( void );
+
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -768,6 +752,8 @@ namespace Magick
       : _fillRule(fillRule_)
       {
       }
+
+    ~DrawableFillRule ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -800,6 +786,8 @@ namespace Magick
       : _opacity(opacity_)
       {
       }
+
+    ~DrawableFillOpacity ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -835,6 +823,8 @@ namespace Magick
                    const unsigned long weight_,
                    StretchType stretch_ );
     DrawableFont ( const DrawableFont& original_ );
+
+    ~DrawableFont ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -872,6 +862,8 @@ namespace Magick
       {
       }
 
+    ~DrawableGravity ( void );
+
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -906,6 +898,8 @@ namespace Magick
         _endX(endX_),
         _endY(endY_)
       { }
+
+    ~DrawableLine ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -970,6 +964,8 @@ namespace Magick
         _paintMethod(paintMethod_)
       { }
 
+    ~DrawableMatte ( void );
+
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -1021,6 +1017,8 @@ namespace Magick
 
     DrawablePath ( const DrawablePath& original_ );
 
+    ~DrawablePath ( void );
+
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -1043,6 +1041,8 @@ namespace Magick
       : _x(x_),
         _y(y_)
       { }
+
+    ~DrawablePoint ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -1085,6 +1085,8 @@ namespace Magick
       : _pointSize(pointSize_)
       { }
 
+    ~DrawablePointSize ( void );
+
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -1116,6 +1118,8 @@ namespace Magick
 
     DrawablePolygon ( const DrawablePolygon& original_ );
 
+    ~DrawablePolygon ( void );
+
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -1138,6 +1142,8 @@ namespace Magick
 
     DrawablePolyline ( const DrawablePolyline& original_ );
 
+    ~DrawablePolyline ( void );
+
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -1159,6 +1165,8 @@ namespace Magick
     DrawablePopGraphicContext ( void )
       { }
 
+    ~DrawablePopGraphicContext ( void );
+
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -1178,6 +1186,8 @@ namespace Magick
     DrawablePushGraphicContext ( void )
       { }
 
+    ~DrawablePushGraphicContext ( void );
+
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -1196,6 +1206,8 @@ namespace Magick
   public:
     DrawablePopPattern ( void )
       { }
+
+    ~DrawablePopPattern ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -1217,6 +1229,8 @@ namespace Magick
                           long width_, long height_ );
 
     DrawablePushPattern ( const DrawablePushPattern& original_ );
+
+    ~DrawablePushPattern ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -1246,6 +1260,8 @@ namespace Magick
         _lowerRightX(lowerRightX_),
         _lowerRightY(lowerRightY_)
       { }
+
+    ~DrawableRectangle ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -1308,6 +1324,8 @@ namespace Magick
       : _angle( angle_ )
       { }
 
+    ~DrawableRotation ( void );
+
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -1345,6 +1363,8 @@ namespace Magick
         _cornerWidth(cornerWidth_),
         _cornerHeight(cornerHeight_)
       { }
+
+    ~DrawableRoundRectangle ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -1428,6 +1448,8 @@ namespace Magick
         _y(y_)
       { }
 
+    ~DrawableScaling ( void );
+
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -1469,6 +1491,8 @@ namespace Magick
       : _angle(angle_)
       { }
 
+    ~DrawableSkewX ( void );
+
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -1500,6 +1524,8 @@ namespace Magick
       : _angle(angle_)
       { }
 
+    ~DrawableSkewY ( void );
+
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -1530,6 +1556,8 @@ namespace Magick
     DrawableDashArray( const double* dasharray_ );
     DrawableDashArray( const unsigned int* dasharray_ ); // Deprecated
     DrawableDashArray( const Magick::DrawableDashArray &original_ );
+
+    ~DrawableDashArray( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -1563,6 +1591,8 @@ namespace Magick
       : _offset(offset_)
       { }
 
+    ~DrawableDashOffset ( void );
+
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -1593,6 +1623,8 @@ namespace Magick
     DrawableStrokeLineCap ( LineCap linecap_ )
       : _linecap(linecap_)
       { }
+
+    ~DrawableStrokeLineCap ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -1625,6 +1657,8 @@ namespace Magick
       : _linejoin(linejoin_)
       { }
 
+    ~DrawableStrokeLineJoin ( void );
+
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -1655,6 +1689,8 @@ namespace Magick
     DrawableMiterLimit ( unsigned int miterlimit_ )
       : _miterlimit(miterlimit_)
       { }
+
+    ~DrawableMiterLimit ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -1688,6 +1724,8 @@ namespace Magick
       : _flag(flag_)
       { }
 
+    ~DrawableStrokeAntialias ( void );
+
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -1718,6 +1756,8 @@ namespace Magick
     DrawableStrokeColor ( const Color &color_ );
 
     DrawableStrokeColor ( const DrawableStrokeColor& original_ );
+
+    ~DrawableStrokeColor ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -1751,6 +1791,8 @@ namespace Magick
       {
       }
 
+    ~DrawableStrokeOpacity ( void );
+
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -1782,6 +1824,8 @@ namespace Magick
       : _width(width_)
       { }
 
+    ~DrawableStrokeWidth ( void );
+
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -1812,6 +1856,8 @@ namespace Magick
     DrawableText ( const double x_, const double y_, const std::string &text_ );
 
     DrawableText ( const DrawableText& original_ );
+
+    ~DrawableText ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -1856,6 +1902,71 @@ namespace Magick
     std::string _text;
   };
 
+  // Text antialias
+  class DrawableTextAntialias : public DrawableBase
+  {
+  public:
+    DrawableTextAntialias ( bool flag_ )
+      : _flag(flag_) { }
+
+    ~DrawableTextAntialias ( void );
+
+    // Operator to invoke equivalent draw API call
+    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
+
+    // Return polymorphic copy of object
+    /*virtual*/
+    DrawableBase* copy() const
+      {
+        return new DrawableTextAntialias(*this);
+      }
+
+    void flag( bool flag_ )
+      {
+        _flag = flag_;
+      }
+    bool flag( void ) const
+      {
+        return _flag;
+      }
+
+  private:
+    bool _flag;
+  };
+
+  // Decoration (text decoration)
+  class DrawableTextDecoration : public DrawableBase
+  {
+  public:
+    DrawableTextDecoration ( DecorationType decoration_ )
+      : _decoration(decoration_)
+      { }
+
+    ~DrawableTextDecoration( void );
+
+    // Operator to invoke equivalent draw API call
+    void operator()( MagickLib::DrawContext context_ ) const;
+
+    // Return polymorphic copy of object
+    /*virtual*/
+    DrawableBase* copy() const
+      {
+        return new DrawableTextDecoration(*this);
+      }
+
+    void decoration( DecorationType decoration_ )
+      {
+        _decoration = decoration_;
+      }
+    DecorationType decoration( void ) const
+      {
+        return _decoration;
+      }
+
+  private:
+    DecorationType _decoration;
+  };
+
   // Apply Translation
   class DrawableTranslation : public DrawableBase
   {
@@ -1864,6 +1975,8 @@ namespace Magick
       : _x(x_),
         _y(y_)
       { }
+
+    ~DrawableTranslation ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -1898,36 +2011,6 @@ namespace Magick
     double _y;
   };
 
-  // Text antialias
-  class DrawableTextAntialias : public DrawableBase
-  {
-  public:
-    DrawableTextAntialias ( bool flag_ )
-      : _flag(flag_) { }
-
-    // Operator to invoke equivalent draw API call
-    /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
-
-    // Return polymorphic copy of object
-    /*virtual*/
-    DrawableBase* copy() const
-      {
-        return new DrawableTextAntialias(*this);
-      }
-
-    void flag( bool flag_ )
-      {
-        _flag = flag_;
-      }
-    bool flag( void ) const
-      {
-        return _flag;
-      }
-
-  private:
-    bool _flag;
-  };
-
   // Set the size of the viewbox
   class DrawableViewbox : public DrawableBase
   {
@@ -1938,6 +2021,8 @@ namespace Magick
         _y1(y1_),
         _x2(x2_),
         _y2(y2_) { }
+
+    ~DrawableViewbox ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -2008,6 +2093,9 @@ namespace Magick
         _sweepFlag(sweepFlag_),
         _x(x_),
         _y(y_) { }
+
+    ~PathArcArgs ( void )
+      { }
 
     void radiusX( double radiusX_ )
       {
@@ -2095,6 +2183,9 @@ namespace Magick
     // Copy constructor
     PathArcAbs ( const PathArcAbs& original_ );
 
+    // Destructor
+    ~PathArcAbs ( void );
+
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -2119,6 +2210,8 @@ namespace Magick
 
     PathArcRel ( const PathArcRel& original_ );
 
+    ~PathArcRel ( void );
+
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -2137,6 +2230,8 @@ namespace Magick
   public:
     PathClosePath ( void )
       { }
+
+    ~PathClosePath ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -2167,6 +2262,9 @@ namespace Magick
         _y(y_)
       {
       }
+
+    ~PathCurvetoArgs ( void )
+      { }
 
     void x1( double x1_ )
       {
@@ -2239,7 +2337,11 @@ namespace Magick
     // Draw multiple curves
     PathCurvetoAbs ( const std::list<Magick::PathCurvetoArgs> &args_ );
 
+    // Copy constructor
     PathCurvetoAbs ( const PathCurvetoAbs& original_ );
+
+    // Destructor
+    ~PathCurvetoAbs ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -2266,6 +2368,8 @@ namespace Magick
     // Copy constructor
     PathCurvetoRel ( const PathCurvetoRel& original_ );
 
+    ~PathCurvetoRel ( void );
+
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -2291,6 +2395,8 @@ namespace Magick
     // Copy constructor
     PathSmoothCurvetoAbs ( const PathSmoothCurvetoAbs& original_ );
 
+    ~PathSmoothCurvetoAbs ( void );
+
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -2315,6 +2421,9 @@ namespace Magick
 
     // Copy constructor
     PathSmoothCurvetoRel ( const PathSmoothCurvetoRel& original_ );
+
+    // Destructor
+    ~PathSmoothCurvetoRel ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -2342,6 +2451,10 @@ namespace Magick
         _y1(y1_),
         _x(x_),
         _y(y_)
+      {
+      }
+
+    ~PathQuadraticCurvetoArgs ( void )
       {
       }
 
@@ -2399,6 +2512,9 @@ namespace Magick
     // Copy constructor
     PathQuadraticCurvetoAbs ( const PathQuadraticCurvetoAbs& original_ );
 
+    // Destructor
+    ~PathQuadraticCurvetoAbs ( void );
+
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -2423,6 +2539,9 @@ namespace Magick
 
     // Copy constructor
     PathQuadraticCurvetoRel ( const PathQuadraticCurvetoRel& original_ );
+
+    // Destructor
+    ~PathQuadraticCurvetoRel ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -2449,6 +2568,9 @@ namespace Magick
     // Copy constructor
     PathSmoothQuadraticCurvetoAbs ( const PathSmoothQuadraticCurvetoAbs& original_ );
 
+    // Destructor
+    ~PathSmoothQuadraticCurvetoAbs ( void );
+
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -2473,6 +2595,9 @@ namespace Magick
 
     // Copy constructor
     PathSmoothQuadraticCurvetoRel ( const PathSmoothQuadraticCurvetoRel& original_ );
+
+    // Destructor
+    ~PathSmoothQuadraticCurvetoRel ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -2503,6 +2628,9 @@ namespace Magick
     // Copy constructor
     PathLinetoAbs ( const PathLinetoAbs& original_ );
 
+    // Destructor
+    ~PathLinetoAbs ( void );
+
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -2526,6 +2654,9 @@ namespace Magick
     // Copy constructor
     PathLinetoRel ( const PathLinetoRel& original_ );
 
+    // Destructor
+    ~PathLinetoRel ( void );
+
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -2543,7 +2674,11 @@ namespace Magick
   {
   public:
     PathLinetoHorizontalAbs ( double x_ )
-      : _x(x_) { }
+      : _x(x_)
+      {
+      }
+
+    ~PathLinetoHorizontalAbs ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -2569,7 +2704,11 @@ namespace Magick
   {
   public:
     PathLinetoHorizontalRel ( double x_ )
-      : _x(x_) { }
+      : _x(x_)
+      {
+      }
+
+    ~PathLinetoHorizontalRel ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -2597,7 +2736,11 @@ namespace Magick
   {
   public:
     PathLinetoVerticalAbs ( double y_ )
-      : _y(y_) { }
+      : _y(y_)
+      {
+      }
+
+    ~PathLinetoVerticalAbs ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -2623,7 +2766,11 @@ namespace Magick
   {
   public:
     PathLinetoVerticalRel ( double y_ )
-      : _y(y_) { }
+      : _y(y_)
+      {
+      }
+
+    ~PathLinetoVerticalRel ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
@@ -2659,6 +2806,9 @@ namespace Magick
     // Copy constructor
     PathMovetoAbs ( const PathMovetoAbs& original_ );
 
+    // Destructor
+    ~PathMovetoAbs ( void );
+
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;
 
@@ -2681,6 +2831,9 @@ namespace Magick
 
     // Copy constructor
     PathMovetoRel ( const PathMovetoRel& original_ );
+
+    // Destructor
+    ~PathMovetoRel ( void );
 
     // Operator to invoke equivalent draw API call
     /*virtual*/ void operator()( MagickLib::DrawContext context_ ) const;

@@ -70,6 +70,7 @@ Magick::Drawable::Drawable ( const Magick::DrawableBase& original_ )
 Magick::Drawable::~Drawable ( void )
 {
   delete dp;
+  dp = 0;
 }
 
 // Copy constructor
@@ -92,7 +93,8 @@ Magick::Drawable& Magick::Drawable::operator= (const Magick::Drawable& original_
 // Operator to invoke contained object
 void Magick::Drawable::operator()( MagickLib::DrawContext context_ ) const
 {
-  dp->operator()( context_ );
+  if(dp)
+    dp->operator()( context_ );
 }
 
 // Constructor
@@ -111,6 +113,7 @@ Magick::VPath::VPath ( const Magick::VPathBase& original_ )
 /* virtual */ Magick::VPath::~VPath ( void )
 {
   delete dp;
+  dp = 0;
 }
 
 // Copy constructor
@@ -133,7 +136,8 @@ Magick::VPath& Magick::VPath::operator= (const Magick::VPath& original_ )
 // Operator to invoke contained object
 void Magick::VPath::operator()( MagickLib::DrawContext context_ ) const
 {
-  dp->operator()( context_ );
+  if(dp)
+    dp->operator()( context_ );
 }
 
 //
@@ -141,6 +145,9 @@ void Magick::VPath::operator()( MagickLib::DrawContext context_ ) const
 //
 
 // Affine (scaling, rotation, and translation)
+Magick::DrawableAffine::~DrawableAffine( void )
+{
+}
 void Magick::DrawableAffine::operator()( MagickLib::DrawContext context_ ) const
 {
   AffineMatrix
@@ -156,6 +163,9 @@ void Magick::DrawableAffine::operator()( MagickLib::DrawContext context_ ) const
 }
 
 // Arc
+Magick::DrawableArc::~DrawableArc( void )
+{
+}
 void Magick::DrawableArc::operator()( MagickLib::DrawContext context_ ) const
 {
   DrawArc( context_, _startX, _startY, _endX, _endY, _startDegrees, _endDegrees );
@@ -172,6 +182,10 @@ Magick::DrawableBezier::DrawableBezier ( const std::list<Magick::Coordinate> &co
 // Copy constructor
 Magick::DrawableBezier::DrawableBezier( const Magick::DrawableBezier& original_ )
   : _coordinates(original_._coordinates)
+{
+}
+// Destructor
+Magick::DrawableBezier::~DrawableBezier( void )
 {
 }
 void Magick::DrawableBezier::operator()( MagickLib::DrawContext context_ ) const
@@ -195,89 +209,21 @@ void Magick::DrawableBezier::operator()( MagickLib::DrawContext context_ ) const
 }
 
 // Circle
+Magick::DrawableCircle::~DrawableCircle ( void )
+{
+}
 void Magick::DrawableCircle::operator()( MagickLib::DrawContext context_ ) const
 {
   DrawCircle( context_, _originX, _originY, _perimX, _perimY );
 }
 
 // Colorize at point using PaintMethod
+Magick::DrawableColor::~DrawableColor( void )
+{
+}
 void Magick::DrawableColor::operator()( MagickLib::DrawContext context_ ) const
 {
   DrawColor( context_, _x, _y, _paintMethod );
-}
-
-// Drawable Path
-void Magick::DrawablePath::operator()( MagickLib::DrawContext context_ ) const
-{
-  DrawPathStart( context_ );
-
-  for( std::list<Magick::VPath>::const_iterator p = _path.begin();
-       p != _path.end(); p++ )
-    p->operator()( context_ );
-
-  DrawPathFinish( context_ );
-}
-
-// Decoration (text decoration)
-void Magick::DrawableTextDecoration::operator()( MagickLib::DrawContext context_ ) const
-{
-  DrawSetTextDecoration( context_, _decoration );
-}
-
-// Ellipse
-void Magick::DrawableEllipse::operator()( MagickLib::DrawContext context_ ) const
-{
-  DrawEllipse( context_, _originX, _originY, _radiusX, _radiusY, _arcStart, _arcEnd );
-}
-
-// Specify drawing fill color
-void Magick::DrawableFillColor::operator()( MagickLib::DrawContext context_ ) const
-{
-  PixelPacket color = static_cast<PixelPacket>(_color);
-  DrawSetFillColor( context_, &color );
-}
-
-// Specify drawing fill fule
-void Magick::DrawableFillRule::operator()( MagickLib::DrawContext context_ ) const
-{
-  DrawSetFillRule( context_, _fillRule );
-}
-
-// Specify drawing fill opacity
-void Magick::DrawableFillOpacity::operator()( MagickLib::DrawContext context_ ) const
-{
-  DrawSetFillOpacity( context_, _opacity );
-}
-
-// Specify text font
-void Magick::DrawableFont::operator()( MagickLib::DrawContext context_ ) const
-{
-  // font
-  if(_font.length())
-    {
-      DrawSetFont( context_, _font.c_str() );
-    }
-
-  if(_family.length())
-    {
-      // font-family
-      DrawSetFontFamily( context_, _family.c_str() );
-
-      // font-style
-      DrawSetFontStyle( context_, _style );
-
-      // font-weight
-      DrawSetFontWeight( context_, _weight );
-
-      // font-stretch
-      DrawSetFontStretch( context_, _stretch );
-    }
-}
-
-// Specify text positioning gravity
-void Magick::DrawableGravity::operator()( MagickLib::DrawContext context_ ) const
-{
-  DrawSetGravity( context_, _gravity );
 }
 
 // Draw image at point
@@ -417,6 +363,27 @@ void Magick::DrawableCompositeImage::operator()( MagickLib::DrawContext context_
   DrawComposite( context_, _composition, _x, _y, _width, _height, _image->constImage() );
 }
 
+// Drawable Path
+void Magick::DrawablePath::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawPathStart( context_ );
+
+  for( std::list<Magick::VPath>::const_iterator p = _path.begin();
+       p != _path.end(); p++ )
+    p->operator()( context_ );
+
+  DrawPathFinish( context_ );
+}
+
+// Ellipse
+Magick::DrawableEllipse::~DrawableEllipse( void )
+{
+}
+void Magick::DrawableEllipse::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawEllipse( context_, _originX, _originY, _radiusX, _radiusY, _arcStart, _arcEnd );
+}
+
 // Specify drawing fill color
 Magick::DrawableFillColor::DrawableFillColor( const Magick::Color &color_ )
   : _color(color_)
@@ -425,6 +392,60 @@ Magick::DrawableFillColor::DrawableFillColor( const Magick::Color &color_ )
 Magick::DrawableFillColor::DrawableFillColor( const Magick::DrawableFillColor& original_ )
   : _color(original_._color)
 {
+}
+Magick::DrawableFillColor::~DrawableFillColor( void )
+{
+}
+void Magick::DrawableFillColor::operator()( MagickLib::DrawContext context_ ) const
+{
+  PixelPacket color = static_cast<PixelPacket>(_color);
+  DrawSetFillColor( context_, &color );
+}
+
+// Specify drawing fill fule
+Magick::DrawableFillRule::~DrawableFillRule ( void )
+{
+}
+void Magick::DrawableFillRule::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawSetFillRule( context_, _fillRule );
+}
+
+// Specify drawing fill opacity
+Magick::DrawableFillOpacity::~DrawableFillOpacity ( void )
+{
+}
+void Magick::DrawableFillOpacity::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawSetFillOpacity( context_, _opacity );
+}
+
+// Specify text font
+Magick::DrawableFont::~DrawableFont ( void )
+{
+}
+void Magick::DrawableFont::operator()( MagickLib::DrawContext context_ ) const
+{
+  // font
+  if(_font.length())
+    {
+      DrawSetFont( context_, _font.c_str() );
+    }
+
+  if(_family.length())
+    {
+      // font-family
+      DrawSetFontFamily( context_, _family.c_str() );
+
+      // font-style
+      DrawSetFontStyle( context_, _style );
+
+      // font-weight
+      DrawSetFontWeight( context_, _weight );
+
+      // font-stretch
+      DrawSetFontStretch( context_, _stretch );
+    }
 }
 
 // Specify text font
@@ -456,13 +477,28 @@ Magick::DrawableFont::DrawableFont ( const Magick::DrawableFont& original_ )
 {
 }
 
+// Specify text positioning gravity
+Magick::DrawableGravity::~DrawableGravity ( void )
+{
+}
+void Magick::DrawableGravity::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawSetGravity( context_, _gravity );
+}
+
 // Line
+Magick::DrawableLine::~DrawableLine ( void )
+{
+}
 void Magick::DrawableLine::operator()( MagickLib::DrawContext context_ ) const
 {
   DrawLine( context_, _startX, _startY, _endX, _endY );
 }
 
 // Change pixel matte value to transparent using PaintMethod
+Magick::DrawableMatte::~DrawableMatte ( void )
+{
+}
 void Magick::DrawableMatte::operator()( MagickLib::DrawContext context_ ) const
 {
   DrawMatte( context_, _x, _y, _paintMethod );
@@ -477,14 +513,23 @@ Magick::DrawablePath::DrawablePath ( const Magick::DrawablePath& original_ )
   : _path(original_._path)
 {
 }
+Magick::DrawablePath::~DrawablePath ( void )
+{
+}
 
 // Point
+Magick::DrawablePoint::~DrawablePoint ( void )
+{
+}
 void Magick::DrawablePoint::operator()( MagickLib::DrawContext context_ ) const
 {
   DrawPoint( context_, _x, _y );
 }
 
 // Text pointsize
+Magick::DrawablePointSize::~DrawablePointSize ( void )
+{
+}
 void Magick::DrawablePointSize::operator()( MagickLib::DrawContext context_ ) const
 {
   DrawSetFontSize( context_, _pointSize );
@@ -497,6 +542,9 @@ Magick::DrawablePolygon::DrawablePolygon ( const std::list<Magick::Coordinate> &
 }
 Magick::DrawablePolygon::DrawablePolygon ( const Magick::DrawablePolygon& original_ )
   : _coordinates(original_._coordinates)
+{
+}
+Magick::DrawablePolygon::~DrawablePolygon ( void )
 {
 }
 void Magick::DrawablePolygon::operator()( MagickLib::DrawContext context_ ) const
@@ -528,6 +576,9 @@ Magick::DrawablePolyline::DrawablePolyline ( const Magick::DrawablePolyline& ori
   : _coordinates(original_._coordinates)
 {
 }
+Magick::DrawablePolyline::~DrawablePolyline ( void )
+{
+}
 void Magick::DrawablePolyline::operator()( MagickLib::DrawContext context_ ) const
 {
   size_t num_coords = _coordinates.size();
@@ -549,18 +600,27 @@ void Magick::DrawablePolyline::operator()( MagickLib::DrawContext context_ ) con
 }
 
 // Pop Graphic Context
+Magick::DrawablePopGraphicContext::~DrawablePopGraphicContext ( void )
+{
+}
 void Magick::DrawablePopGraphicContext::operator()( MagickLib::DrawContext context_ ) const
 {
   DrawPopGraphicContext( context_ );
 }
 
 // Push Graphic Context
+Magick::DrawablePushGraphicContext::~DrawablePushGraphicContext ( void )
+{
+}
 void Magick::DrawablePushGraphicContext::operator()( MagickLib::DrawContext context_ ) const
 {
   DrawPushGraphicContext( context_ );
 }
 
 // Pop (terminate) Pattern definition
+Magick::DrawablePopPattern::~DrawablePopPattern ( void )
+{
+}
 void Magick::DrawablePopPattern::operator()( MagickLib::DrawContext context_ ) const
 {
   DrawPopPattern( context_ );
@@ -584,24 +644,36 @@ Magick::DrawablePushPattern::DrawablePushPattern ( const Magick::DrawablePushPat
     _height(original_._height)
 {
 }
+Magick::DrawablePushPattern::~DrawablePushPattern ( void )
+{
+}
 void Magick::DrawablePushPattern::operator()( MagickLib::DrawContext context_ ) const
 {
   DrawPushPattern( context_, _id.c_str(), _x, _y, _width, _height );
 }
 
 // Rectangle
+Magick::DrawableRectangle::~DrawableRectangle ( void )
+{
+}
 void Magick::DrawableRectangle::operator()( MagickLib::DrawContext context_ ) const
 {
   DrawRectangle( context_, _upperLeftX, _upperLeftY, _lowerRightX, _lowerRightY );
 }
 
 // Apply Rotation
+Magick::DrawableRotation::~DrawableRotation ( void )
+{
+}
 void Magick::DrawableRotation::operator()( MagickLib::DrawContext context_ ) const
 {
   DrawSetRotate( context_, _angle );
 }
 
 // Round Rectangle
+Magick::DrawableRoundRectangle::~DrawableRoundRectangle ( void )
+{
+}
 void Magick::DrawableRoundRectangle::operator()( MagickLib::DrawContext context_ ) const
 {
   DrawRoundRectangle( context_, _centerX,_centerY, _width,_hight,
@@ -609,18 +681,27 @@ void Magick::DrawableRoundRectangle::operator()( MagickLib::DrawContext context_
 }
 
 // Apply Scaling
+Magick::DrawableScaling::~DrawableScaling ( void )
+{
+}
 void Magick::DrawableScaling::operator()( MagickLib::DrawContext context_ ) const
 {
   DrawSetScale( context_, _x, _y );
 }
 
 // Apply Skew in the X direction
+Magick::DrawableSkewX::~DrawableSkewX ( void )
+{
+}
 void Magick::DrawableSkewX::operator()( MagickLib::DrawContext context_ ) const
 {
   DrawSetSkewX( context_, _angle );
 }
 
 // Apply Skew in the Y direction
+Magick::DrawableSkewY::~DrawableSkewY ( void )
+{
+}
 void Magick::DrawableSkewY::operator()( MagickLib::DrawContext context_ ) const
 {
   DrawSetSkewY( context_, _angle );
@@ -650,6 +731,11 @@ Magick::DrawableDashArray& Magick::DrawableDashArray::operator=(const Magick::Dr
       dasharray( original_._dasharray );
     }
   return *this;
+}
+Magick::DrawableDashArray::~DrawableDashArray( void )
+{
+  delete _dasharray;
+  _dasharray = 0;
 }
 void Magick::DrawableDashArray::dasharray ( const double* dasharray_ )
 {
@@ -711,27 +797,48 @@ void Magick::DrawableDashArray::operator()( MagickLib::DrawContext context_ ) co
 }
 
 // Stroke dashoffset
+Magick::DrawableDashOffset::~DrawableDashOffset ( void )
+{
+}
 void Magick::DrawableDashOffset::operator()( MagickLib::DrawContext context_ ) const
 {
   DrawSetStrokeDashOffset( context_, _offset );
 }
 
 // Stroke linecap
+Magick::DrawableStrokeLineCap::~DrawableStrokeLineCap ( void )
+{
+}
 void Magick::DrawableStrokeLineCap::operator()( MagickLib::DrawContext context_ ) const
 {
   DrawSetStrokeLineCap( context_, _linecap );
 }
 
 // Stroke linejoin
+Magick::DrawableStrokeLineJoin::~DrawableStrokeLineJoin ( void )
+{
+}
 void Magick::DrawableStrokeLineJoin::operator()( MagickLib::DrawContext context_ ) const
 {
   DrawSetStrokeLineJoin( context_, _linejoin );
 }
 
 // Stroke miterlimit
+Magick::DrawableMiterLimit::~DrawableMiterLimit ( void )
+{
+}
 void Magick::DrawableMiterLimit::operator()( MagickLib::DrawContext context_ ) const
 {
   DrawSetStrokeMiterLimit( context_, _miterlimit );
+}
+
+// Stroke antialias
+Magick::DrawableStrokeAntialias::~DrawableStrokeAntialias ( void )
+{
+}
+void Magick::DrawableStrokeAntialias::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawSetStrokeAntialias( context_, static_cast<int>(_flag) );
 }
 
 // Stroke color
@@ -743,25 +850,28 @@ Magick::DrawableStrokeColor::DrawableStrokeColor ( const Magick::DrawableStrokeC
   : _color(original_._color)
 {
 }
+Magick::DrawableStrokeColor::~DrawableStrokeColor ( void )
+{
+}
 void Magick::DrawableStrokeColor::operator()( MagickLib::DrawContext context_ ) const
 {
   PixelPacket color = static_cast<PixelPacket>(_color);
   DrawSetStrokeColor( context_, &color );
 }
 
-// Stroke antialias
-void Magick::DrawableStrokeAntialias::operator()( MagickLib::DrawContext context_ ) const
-{
-  DrawSetStrokeAntialias( context_, static_cast<int>(_flag) );
-}
-
 // Stroke opacity
+Magick::DrawableStrokeOpacity::~DrawableStrokeOpacity ( void )
+{
+}
 void Magick::DrawableStrokeOpacity::operator()( MagickLib::DrawContext context_ ) const
 {
   DrawSetStrokeOpacity( context_, _opacity );
 }
 
 // Stroke width
+Magick::DrawableStrokeWidth::~DrawableStrokeWidth ( void )
+{
+}
 void Magick::DrawableStrokeWidth::operator()( MagickLib::DrawContext context_ ) const
 {
   DrawSetStrokeWidth( context_, _width );
@@ -781,24 +891,45 @@ Magick::DrawableText::DrawableText( const Magick::DrawableText& original_ )
     _text(original_._text)
 {
 }
+Magick::DrawableText::~DrawableText ( void )
+{
+}
 void Magick::DrawableText::operator()( MagickLib::DrawContext context_ ) const
 {
   DrawAnnotation( context_, _x, _y, reinterpret_cast<const unsigned char*>(_text.c_str()) );
 }
 
-// Apply Translation
-void Magick::DrawableTranslation::operator()( MagickLib::DrawContext context_ ) const
-{
-  DrawSetTranslate( context_, _x, _y );
-}
-
 // Text antialias
+Magick::DrawableTextAntialias::~DrawableTextAntialias ( void )
+{
+}
 void Magick::DrawableTextAntialias::operator()( MagickLib::DrawContext context_ ) const
 {
   DrawSetTextAntialias( context_, static_cast<int>(_flag) );
 }
 
+// Decoration (text decoration)
+Magick::DrawableTextDecoration::~DrawableTextDecoration( void )
+{
+}
+void Magick::DrawableTextDecoration::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawSetTextDecoration( context_, _decoration );
+}
+
+// Apply Translation
+Magick::DrawableTranslation::~DrawableTranslation ( void )
+{
+}
+void Magick::DrawableTranslation::operator()( MagickLib::DrawContext context_ ) const
+{
+  DrawSetTranslate( context_, _x, _y );
+}
+
 // Set the size of the viewbox
+Magick::DrawableViewbox::~DrawableViewbox ( void )
+{
+}
 void Magick::DrawableViewbox::operator()( MagickLib::DrawContext context_ ) const
 {
   DrawSetViewbox( context_, _x1, _y1, _x2, _y2 );
@@ -819,6 +950,9 @@ Magick::PathArcAbs::PathArcAbs ( const std::list<Magick::PathArcArgs> &coordinat
 }
 Magick::PathArcAbs::PathArcAbs ( const Magick::PathArcAbs& original_ )
   : _coordinates(original_._coordinates)
+{
+}
+Magick::PathArcAbs::~PathArcAbs ( void )
 {
 }
 void Magick::PathArcAbs::operator()( MagickLib::DrawContext context_ ) const
@@ -844,6 +978,9 @@ Magick::PathArcRel::PathArcRel ( const Magick::PathArcRel& original_ )
   : _coordinates(original_._coordinates)
 {
 }
+Magick::PathArcRel::~PathArcRel ( void )
+{
+}
 void Magick::PathArcRel::operator()( MagickLib::DrawContext context_ ) const
 {
   for( std::list<Magick::PathArcArgs>::const_iterator p = _coordinates.begin();
@@ -858,6 +995,9 @@ void Magick::PathArcRel::operator()( MagickLib::DrawContext context_ ) const
 //
 // Path Closepath
 //
+Magick::PathClosePath::~PathClosePath ( void )
+{
+}
 void Magick::PathClosePath::operator()( MagickLib::DrawContext context_ ) const
 {
   DrawPathClose( context_ );
@@ -876,6 +1016,9 @@ Magick::PathCurvetoAbs::PathCurvetoAbs ( const std::list<Magick::PathCurvetoArgs
 }
 Magick::PathCurvetoAbs::PathCurvetoAbs ( const Magick::PathCurvetoAbs& original_ )
  : _args(original_._args)
+{
+}
+Magick::PathCurvetoAbs::~PathCurvetoAbs ( void )
 {
 }
 void Magick::PathCurvetoAbs::operator()( MagickLib::DrawContext context_ ) const
@@ -899,6 +1042,9 @@ Magick::PathCurvetoRel::PathCurvetoRel ( const Magick::PathCurvetoRel& original_
   : _args(original_._args)
 {
 }
+Magick::PathCurvetoRel::~PathCurvetoRel ( void )
+{
+}
 void Magick::PathCurvetoRel::operator()( MagickLib::DrawContext context_ ) const
 {
   for( std::list<Magick::PathCurvetoArgs>::const_iterator p = _args.begin();
@@ -918,6 +1064,9 @@ Magick::PathSmoothCurvetoAbs::PathSmoothCurvetoAbs ( const std::list<Magick::Coo
 }
 Magick::PathSmoothCurvetoAbs::PathSmoothCurvetoAbs ( const Magick::PathSmoothCurvetoAbs& original_ )
   : _coordinates(original_._coordinates)
+{
+}
+Magick::PathSmoothCurvetoAbs::~PathSmoothCurvetoAbs ( void )
 {
 }
 void Magick::PathSmoothCurvetoAbs::operator()( MagickLib::DrawContext context_ ) const
@@ -942,6 +1091,9 @@ Magick::PathSmoothCurvetoRel::PathSmoothCurvetoRel ( const std::list<Magick::Coo
 }
 Magick::PathSmoothCurvetoRel::PathSmoothCurvetoRel ( const Magick::PathSmoothCurvetoRel& original_ )
   : _coordinates(original_._coordinates)
+{
+}
+Magick::PathSmoothCurvetoRel::~PathSmoothCurvetoRel ( void )
 {
 }
 void Magick::PathSmoothCurvetoRel::operator()( MagickLib::DrawContext context_ ) const
@@ -972,6 +1124,9 @@ Magick::PathQuadraticCurvetoAbs::PathQuadraticCurvetoAbs ( const Magick::PathQua
   : _args(original_._args)
 {
 }
+Magick::PathQuadraticCurvetoAbs::~PathQuadraticCurvetoAbs ( void )
+{
+}
 void Magick::PathQuadraticCurvetoAbs::operator()( MagickLib::DrawContext context_ ) const
 {
   for( std::list<Magick::PathQuadraticCurvetoArgs>::const_iterator p = _args.begin();
@@ -991,6 +1146,9 @@ Magick::PathQuadraticCurvetoRel::PathQuadraticCurvetoRel ( const std::list<Magic
 }
 Magick::PathQuadraticCurvetoRel::PathQuadraticCurvetoRel ( const Magick::PathQuadraticCurvetoRel& original_ )
   : _args(original_._args)
+{
+}
+Magick::PathQuadraticCurvetoRel::~PathQuadraticCurvetoRel ( void )
 {
 }
 void Magick::PathQuadraticCurvetoRel::operator()( MagickLib::DrawContext context_ ) const
@@ -1013,6 +1171,9 @@ Magick::PathSmoothQuadraticCurvetoAbs::PathSmoothQuadraticCurvetoAbs ( const Mag
   : _coordinates(original_._coordinates)
 {
 }
+Magick::PathSmoothQuadraticCurvetoAbs::~PathSmoothQuadraticCurvetoAbs ( void )
+{
+}
 void Magick::PathSmoothQuadraticCurvetoAbs::operator()( MagickLib::DrawContext context_ ) const
 {
   for( std::list<Magick::Coordinate>::const_iterator p = _coordinates.begin();
@@ -1031,6 +1192,9 @@ Magick::PathSmoothQuadraticCurvetoRel::PathSmoothQuadraticCurvetoRel ( const std
 }
 Magick::PathSmoothQuadraticCurvetoRel::PathSmoothQuadraticCurvetoRel ( const PathSmoothQuadraticCurvetoRel& original_ )
   : _coordinates(original_._coordinates)
+{
+}
+Magick::PathSmoothQuadraticCurvetoRel::~PathSmoothQuadraticCurvetoRel ( void )
 {
 }
 void Magick::PathSmoothQuadraticCurvetoRel::operator()( MagickLib::DrawContext context_ ) const
@@ -1057,6 +1221,9 @@ Magick::PathLinetoAbs::PathLinetoAbs ( const Magick::PathLinetoAbs& original_ )
   : _coordinates(original_._coordinates)
 {
 }
+Magick::PathLinetoAbs::~PathLinetoAbs ( void )
+{
+}
 void Magick::PathLinetoAbs::operator()( MagickLib::DrawContext context_ ) const
 {
   for( std::list<Magick::Coordinate>::const_iterator p = _coordinates.begin();
@@ -1077,6 +1244,9 @@ Magick::PathLinetoRel::PathLinetoRel ( const Magick::PathLinetoRel& original_ )
   : _coordinates(original_._coordinates)
 {
 }
+Magick::PathLinetoRel::~PathLinetoRel ( void )
+{
+}
 void Magick::PathLinetoRel::operator()( MagickLib::DrawContext context_ ) const
 {
   for( std::list<Magick::Coordinate>::const_iterator p = _coordinates.begin();
@@ -1090,9 +1260,15 @@ void Magick::PathLinetoRel::operator()( MagickLib::DrawContext context_ ) const
 // Path Horizontal Lineto
 //
 
+Magick::PathLinetoHorizontalAbs::~PathLinetoHorizontalAbs ( void )
+{
+}
 void Magick::PathLinetoHorizontalAbs::operator()( MagickLib::DrawContext context_ ) const
 {
   DrawPathLineToHorizontalAbsolute( context_, _x );
+}
+Magick::PathLinetoHorizontalRel::~PathLinetoHorizontalRel ( void )
+{
 }
 void Magick::PathLinetoHorizontalRel::operator()( MagickLib::DrawContext context_ ) const
 {
@@ -1102,10 +1278,15 @@ void Magick::PathLinetoHorizontalRel::operator()( MagickLib::DrawContext context
 //
 // Path Vertical Lineto
 //
-
+Magick::PathLinetoVerticalAbs::~PathLinetoVerticalAbs ( void )
+{
+}
 void Magick::PathLinetoVerticalAbs::operator()( MagickLib::DrawContext context_ ) const
 {
   DrawPathLineToVerticalAbsolute( context_, _y );
+}
+Magick::PathLinetoVerticalRel::~PathLinetoVerticalRel ( void )
+{
 }
 void Magick::PathLinetoVerticalRel::operator()( MagickLib::DrawContext context_ ) const
 {
@@ -1128,6 +1309,9 @@ Magick::PathMovetoAbs::PathMovetoAbs ( const Magick::PathMovetoAbs& original_ )
   : _coordinates(original_._coordinates)
 {
 }
+Magick::PathMovetoAbs::~PathMovetoAbs ( void )
+{
+}
 void Magick::PathMovetoAbs::operator()( MagickLib::DrawContext context_ ) const
 {
   for( std::list<Magick::Coordinate>::const_iterator p = _coordinates.begin();
@@ -1146,6 +1330,9 @@ Magick::PathMovetoRel::PathMovetoRel ( const std::list<Magick::Coordinate> &coor
 }
 Magick::PathMovetoRel::PathMovetoRel ( const Magick::PathMovetoRel& original_ )
   : _coordinates(original_._coordinates)
+{
+}
+Magick::PathMovetoRel::~PathMovetoRel ( void )
 {
 }
 void Magick::PathMovetoRel::operator()( MagickLib::DrawContext context_ ) const
