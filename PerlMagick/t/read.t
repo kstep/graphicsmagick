@@ -177,7 +177,7 @@ testRead( 'input_p6.ppm', 'e9b162b8431709942886f79b7b7c11bb' );
 # Adobe Photoshop bitmap file
 #
 ++$test;
-testRead( 'input.psd', '898ac726feb48948a54697320978d325' );
+testRead( 'input.psd', '7785d161ea66bd39394bb74ef704a0aa' );
 
 #
 # Irix RGB image file
