@@ -3769,7 +3769,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
 
                 length=image->columns;
 
-                clone_image->orphan=True;
                 DestroyImage(clone_image);
                 image=large_image;
 
@@ -3891,15 +3890,11 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                 image->page.height=image->rows;
                 image->page.x=0;
                 image->page.y=0;
-                image->orphan=True;
                 p=CropImage(image,&crop_info,exception);
                 if (p != (Image *) NULL)
                   {
-                    p->orphan=True;
                     image->columns=p->columns;
                     image->rows=p->rows;
-                    p->orphan=True;
-                    p->exempt=True;
                     DestroyImage(p);
                     image->page.width=image->columns;
                     image->page.height=image->rows;
@@ -4109,8 +4104,6 @@ static Image *ReadPNGImage(const ImageInfo *image_info,ExceptionInfo *exception)
                image=next_image;
              else
                next->previous->next=next_image;
-             next->orphan=True;
-             next->exempt=True;
              DestroyImage(next);
            }
       }

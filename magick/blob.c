@@ -296,6 +296,10 @@ MagickExport BlobInfo *CloneBlobInfo(const BlobInfo *blob_info)
     return(clone_info);
   clone_info->fifo=blob_info->fifo;
   clone_info->file=blob_info->file;
+  clone_info->exempt=blob_info->exempt;
+  clone_info->status=blob_info->status;
+  clone_info->temporary=blob_info->temporary;
+  clone_info->pipet=blob_info->pipet;
   clone_info->length=blob_info->length;
   clone_info->extent=blob_info->extent;
   clone_info->quantum=blob_info->quantum;
@@ -349,17 +353,17 @@ MagickExport void CloseBlob(Image *image)
       return;
     }
   image->blob->eof=False;
-  if (!image->exempt)
+  if (!image->blob->exempt)
     DetachBlob(image->blob);
   if (image->blob->file == (FILE *) NULL)
     return;
   image->blob->size=GetBlobSize(image);
-  image->status=ferror(image->blob->file);
+  image->blob->status=ferror(image->blob->file);
   errno=0;
-  if (image->exempt)
+  if (image->blob->exempt)
     return;
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)
-  if (image->pipet)
+  if (image->blob->pipet)
     (void) pclose(image->blob->file);
   else
 #endif
@@ -753,7 +757,7 @@ MagickExport void *ImageToBlob(const ImageInfo *image_info,Image *image,
           return((void *) NULL);
         }
       clone_info->length=0;
-      image->exempt=True;
+      image->blob->exempt=True;
       *image->filename='\0';
       status=WriteImage(clone_info,image);
       if (status == False)
@@ -1093,7 +1097,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
   /*
     Open image file.
   */
-  image->pipet=False;
+  image->blob->pipet=False;
   if (LocaleCompare(filename,"-") == 0)
     {
       image->blob->file=(*type == 'r') ? stdin : stdout;
@@ -1101,7 +1105,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
       if (strchr(type,'b') != (char *) NULL)
         _setmode(_fileno(image->blob->file),_O_BINARY);
 #endif
-      image->exempt=True;
+      image->blob->exempt=True;
     }
   else
 #if !defined(vms) && !defined(macintosh) && !defined(WIN32)
@@ -1118,7 +1122,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
         (void) strncpy(mode,type,1);
         mode[1]='\0';
         image->blob->file=(FILE *) popen(filename+1,mode);
-        image->pipet=True;
+        image->blob->pipet=True;
       }
     else
 #endif
@@ -1175,7 +1179,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
               Use previously opened filehandle.
             */
             image->blob->file=image_info->file;
-            image->exempt=True;
+            image->blob->exempt=True;
           }
         if ((image->blob->file != (FILE *) NULL) && (*type == 'r'))
           {
@@ -1205,7 +1209,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
                         Format supports blobs-- use memory-mapped I/O.
                       */
                       if (image_info->file != (FILE *) NULL)
-                        image->exempt=False;
+                        image->blob->exempt=False;
                       else
                         (void) fclose(image->blob->file);
                       image->blob->file=(FILE *) NULL;
@@ -1216,7 +1220,7 @@ MagickExport unsigned int OpenBlob(const ImageInfo *image_info,Image *image,
           }
         image->blob->size=GetBlobSize(image);
       }
-  image->status=False;
+  image->blob->status=False;
   if (*type == 'r')
     {
       image->next=(Image *) NULL;

@@ -3713,13 +3713,6 @@ Get(ref,...)
               PUSHs(s ? sv_2mortal(s) : &sv_undef);
               continue;
             }
-          if (LocaleCompare(attribute,"temporary") == 0)
-            {
-              if (image)
-                s=newSViv((long) image->temporary);
-              PUSHs(s ? sv_2mortal(s) : &sv_undef);
-              continue;
-            }
           if (LocaleCompare(attribute,"tile") == 0)
             {
               if (info && info->image_info->tile)

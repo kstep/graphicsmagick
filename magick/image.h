@@ -119,6 +119,12 @@ typedef struct _BlobInfo
   FILE
     *file;
 
+  unsigned int
+    exempt,
+    status,
+    temporary,
+    pipet;
+
   size_t
     length,
     extent,
@@ -431,20 +437,11 @@ typedef struct _Image
   long
     start_loop;
 
-  void
-    *cache;
-
-  long
-    reference_count;
-
   Ascii85Info
     ascii85;
 
-  unsigned int
-    exempt,
-    status,
-    temporary,
-    pipet;
+  void
+    *cache;
 
   BlobInfo
     *blob;
@@ -457,6 +454,9 @@ typedef struct _Image
     magick_filename[MaxTextExtent],
     magick[MaxTextExtent],
     filename[MaxTextExtent];
+
+  long
+    reference_count;
 
   unsigned long
     signature;

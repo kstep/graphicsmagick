@@ -803,14 +803,14 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
   if (status == False)
     ThrowWriterException(FileOpenError,"Unable to open file",image);
-  if ((image->blob->file == stdout) || image->pipet)
+  if ((image->blob->file == stdout) || image->blob->pipet)
     {
       /*
         Write standard output or pipe to temporary file.
       */
       encode_image=(*image);
       TemporaryFilename(image->filename);
-      image->temporary=True;
+      image->blob->temporary=True;
       status=OpenBlob(image_info,image,WriteBinaryType,&image->exception);
       if (status == False)
         ThrowWriterException(FileOpenError,"Unable to open file",image);
@@ -1989,7 +1989,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
   (void) WriteBlobString(image,"%%EOF\n");
   LiberateMemory((void **) &xref);
   CloseBlob(image);
-  if (image->temporary)
+  if (image->blob->temporary)
     {
       FILE
         *file;
@@ -2007,7 +2007,7 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
         (void) fputc(c,encode_image.blob->file);
       (void) fclose(file);
       (void) remove(image->filename);
-      image->temporary=False;
+      image->blob->temporary=False;
       CloseBlob(&encode_image);
     }
   return(True);

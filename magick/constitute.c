@@ -2109,7 +2109,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
       DestroyImageInfo(clone_info);
       return(image);
     }
-  if (image->temporary)
+  if (image->blob->temporary)
     (void) remove(clone_info->filename);
   if (IsSubimage(clone_info->tile,False))
     {
@@ -2169,7 +2169,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
           image=subimages;
         }
     }
-  if (image->status)
+  if (image->blob->status)
     {
       ThrowException(exception,CorruptImageError,
         "An error has occurred reading file",clone_info->filename);
@@ -2180,7 +2180,7 @@ MagickExport Image *ReadImage(const ImageInfo *image_info,
   {
     next->taint=False;
     (void) strncpy(next->magick_filename,filename,MaxTextExtent-1);
-    if (image->temporary)
+    if (image->blob->temporary)
       (void) strncpy(next->filename,filename,MaxTextExtent-1);
     if (next->magick_columns == 0)
       next->magick_columns=next->columns;
@@ -2476,7 +2476,7 @@ MagickExport unsigned int WriteImage(const ImageInfo *image_info,Image *image)
     }
   (void) strncpy(image->magick,clone_info->magick,MaxTextExtent-1);
   DestroyImageInfo(clone_info);
-  if (image->status)
+  if (image->blob->status)
     ThrowBinaryException(CorruptImageError,
       "An error has occurred writing to file",image->filename);
   return(status);

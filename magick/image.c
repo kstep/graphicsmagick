@@ -144,7 +144,7 @@ MagickExport Image *AllocateImage(const ImageInfo *image_info)
   /*
     Transfer image info.
   */
-  allocate_image->exempt=image_info->file != (FILE *) NULL;
+  allocate_image->blob->exempt=image_info->file != (FILE *) NULL;
   (void) strncpy(allocate_image->filename,image_info->filename,MaxTextExtent-1);
   (void) strncpy(allocate_image->magick_filename,image_info->filename,
     MaxTextExtent-1);
@@ -1005,12 +1005,7 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
   clone_image->client_data=image->client_data;
   clone_image->start_loop=image->start_loop;
   GetCacheInfo(&clone_image->cache);
-  clone_image->reference_count=1;
   clone_image->ascii85=image->ascii85;
-  clone_image->exempt=image->exempt;
-  clone_image->status=image->status;
-  clone_image->temporary=image->temporary;
-  clone_image->pipet=image->pipet;
   clone_image->blob=ReferenceBlob(image->blob);
   clone_image->magick_columns=image->magick_columns;
   clone_image->magick_rows=image->magick_rows;
@@ -1018,11 +1013,12 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
     MaxTextExtent-1);
   (void) strncpy(clone_image->magick,image->magick,MaxTextExtent-1);
   (void) strncpy(clone_image->filename,image->filename,MaxTextExtent-1);
+  clone_image->reference_count=1;
   clone_image->previous=(Image *) NULL;
   clone_image->list=(Image *) NULL;
   clone_image->next=(Image *) NULL;
   if (orphan)
-    clone_image->exempt=True;
+    clone_image->blob->exempt=True;
   else
     {
       if (image->previous != (Image *) NULL)
@@ -6432,7 +6428,7 @@ MagickExport unsigned int SetImageInfo(ImageInfo *image_info,
       return(False);
     }
   *magick='\0';
-  if ((image->blob->data != (unsigned char *) NULL) || !image->exempt)
+  if ((image->blob->data != (unsigned char *) NULL) || !image->blob->exempt)
     (void) ReadBlob(image,2*MaxTextExtent,magick);
   else
     {
