@@ -2191,27 +2191,24 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
                 q->blue=blue;
                 q->index=index;
                 q->length=0;
+#if (QuantumDepth == 8)
+                if (!reduction_warning && ping_info->bit_depth > 8)
+                  if ((*(p-1) != *(p-2)) ||
+                      ((ping_info->color_type != PNG_COLOR_TYPE_GRAY) &&
+                      (*(p-3) != *(p-4))) ||
+                      ((ping_info->color_type == PNG_COLOR_TYPE_RGB) &&
+                      (*(p-5) != *(p-6))) ||
+                      ((ping_info->color_type == PNG_COLOR_TYPE_RGB_ALPHA) &&
+                      (*(p-5) != *(p-6)) || (*(p-7) != *(p-8))))
+                    {
+                      MagickWarning(DelegateWarning,
+                          "Lossy reduction of 16-bit PNG image to 8-bit",
+                          image->filename);
+                      reduction_warning=True;
+                    }
+#endif
               }
           }
-#if (QuantumDepth == 8)
-        if (!reduction_warning && png_info->bit_depth > 8)
-          {
-            p=scanlines[y];
-            for (x=0; x < (int) image->columns; x++)
-            {
-              if ((((p->green >> 8) & 0xff) != (p->green & 0xff)) ||
-                 (((p->index >> 8) & 0xff) != (p->index & 0xff)))
-                {
-                  MagickWarning(DelegateWarning,
-                      "Lossy reduction of 16-bit PNG image to 8-bit",
-                      image->filename);
-                  reduction_warning=True;
-                  break;
-                }
-              p++;
-            }
-          }
-#endif
           if (image->previous == (Image *) NULL)
             if (QuantumTick(y,image->rows))
               ProgressMonitor(LoadImageText,y,image->rows);
@@ -2300,28 +2297,19 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
               {
                 ReadQuantum(*r,p);
                 r++;
-              }
 #if (QuantumDepth == 8)
-              if (!reduction_warning)
-                {
-                  p=scanlines[y];
-                  for (x=0; x < (int) image->columns; x++)
+                if (!reduction_warning)
                   {
-                    if ((((p->red >> 8) & 0xff) != (p->red & 0xff)) ||
-                       (((p->green >> 8) & 0xff) != (p->green & 0xff)) ||
-                       (((p->blue >> 8) & 0xff) != (p->blue & 0xff)) ||
-                       (((p->index >> 8) & 0xff) != (p->index & 0xff)))
+                    if(*(p-1) != *(p-2))
                       {
                         MagickWarning(DelegateWarning,
                             "Lossy reduction of 16-bit PNG image to 8-bit",
                             image->filename);
                         reduction_warning=True;
-                        break;
                       }
-                    p++;
                   }
-                }
 #endif
+              }
               break;
             }
             default:
@@ -2379,6 +2367,10 @@ Export Image *ReadPNGImage(const ImageInfo *image_info)
               }
           }
       }
+#if (QuantumDepth == 8)
+    if (image->depth > 8)
+      image->depth = 8;
+#endif
     if (ping_info->num_text > 0)
       for (i=0; i < ping_info->num_text; i++)
         {
