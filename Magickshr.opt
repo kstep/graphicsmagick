@@ -239,4 +239,7 @@ symbol_vector=(MogrifyImageCommand=PROCEDURE)
 symbol_vector=(ConvertImageCommand=PROCEDURE)
 symbol_vector=(IdentifyImageCommand=PROCEDURE)
 symbol_vector=(CompositeImageCommand=PROCEDURE)
+symbol_vector=(GetMagickCopyright=PROCEDURE)
+symbol_vector=(SetLogEventMask=PROCEDURE)
+symbol_vector=(SetMagickResourceLimit=PROCEDURE)
 sys$share:decw$xlibshr.exe/share

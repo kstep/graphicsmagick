@@ -241,7 +241,7 @@ $  endif
 $  if (object_file .eqs. "")
 $  then
 $    write sys$output "Compiling ",p1
-$    cc'compile_options'/include_directory=[.magick] 'source_file'
+$    cc'compile_options'/include_directory=[-.magick] 'source_file'
 $  endif
 $endif
 $exit
