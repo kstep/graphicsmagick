@@ -802,19 +802,19 @@ MagickExport void Modulate(const double percent_hue,
   assert(green != (Quantum *) NULL);
   assert(blue != (Quantum *) NULL);
   TransformHSL(*red,*green,*blue,&hue,&saturation,&brightness);
-  brightness*=(0.01+MagickEpsilon)*percent_brightness;
+  brightness*=percent_brightness/100.0;
   if (brightness < 0.0)
     brightness=0.0;
   else
     if (brightness > 1.0)
       brightness=1.0;
-  saturation*=(0.01+MagickEpsilon)*percent_saturation;
+  saturation*=percent_saturation/100.0;
   if (saturation < 0.0)
     saturation=0.0;
   else
     if (saturation > 1.0)
       saturation=1.0;
-  hue*=(0.01+MagickEpsilon)*percent_hue;
+  hue*=percent_hue/100.0;
   if (hue < 0.0)
     hue+=1.0;
   else
