@@ -1041,7 +1041,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a PGM image.
         */
-        FormatString(buffer,"%lu\n",ScaleQuantumToChar(MaxRGB));
+        FormatString(buffer,"%u\n",ScaleQuantumToChar(MaxRGB));
         (void) WriteBlobString(image,buffer);
         for (y=0; y < (long) image->rows; y++)
         {
@@ -1082,7 +1082,7 @@ static unsigned int WritePNMImage(const ImageInfo *image_info,Image *image)
         /*
           Convert image to a PNM image.
         */
-        FormatString(buffer,"%lu\n",ScaleQuantumToChar(MaxRGB));
+        FormatString(buffer,"%u\n",ScaleQuantumToChar(MaxRGB));
         (void) WriteBlobString(image,buffer);
         for (y=0; y < (long) image->rows; y++)
         {

@@ -599,7 +599,7 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
   if (image->matte && (p->opacity == TransparentOpacity)) \
     FormatString(buffer,"ffffff%02lX",Min(length,0xff)); \
   else \
-    FormatString(buffer,"%02lX%02lX%02lX%02lX",ScaleQuantumToChar(pixel.red), \
+    FormatString(buffer,"%02X%02X%02X%02lX",ScaleQuantumToChar(pixel.red), \
       ScaleQuantumToChar(pixel.green),ScaleQuantumToChar(pixel.blue), \
       Min(length,0xff)); \
   (void) WriteBlobString(image,buffer); \
@@ -1212,7 +1212,8 @@ static unsigned int WritePSImage(const ImageInfo *image_info,Image *image)
                 break;
               for (x=0; x < (long) image->columns; x++)
               {
-                FormatString(buffer,"%02lX",ScaleQuantumToChar(ScaleIntensityToQuantum(p)));
+                FormatString(buffer,"%02X",
+                  ScaleQuantumToChar(ScaleIntensityToQuantum(p)));
                 (void) WriteBlobString(image,buffer);
                 i++;
                 if (i == 36)
