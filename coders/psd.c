@@ -134,31 +134,31 @@ static unsigned int DecodeImage(Image *image,const int channel)
           {
             case 0:
             {
-              q->red=pixel;
+              q->red=UpScale(pixel);
               if (image->storage_class == PseudoClass)
                 {
-                  *indexes=pixel;
+                  *indexes=UpScale(pixel);
                   *q=image->colormap[pixel];
                 }
               break;
             }
             case 1:
             {
-              q->green=pixel;
+              q->green=UpScale(pixel);
               break;
             }
             case 2:
             {
-              q->blue=pixel;
+              q->blue=UpScale(pixel);
               break;
             }
             case 3:
             default:
             {
               if (image->colorspace == CMYKColorspace)
-                q->opacity=pixel;
+                q->opacity=UpScale(pixel);
               else
-                q->opacity=MaxRGB-pixel;
+                q->opacity=MaxRGB-UpScale(pixel);
               break;
             }
           }
@@ -181,31 +181,31 @@ static unsigned int DecodeImage(Image *image,const int channel)
       {
         case 0:
         {
-          q->red=pixel;
+          q->red=UpScale(pixel);
           if (image->storage_class == PseudoClass)
             {
-              *indexes=pixel;
+              *indexes=UpScale(pixel);
               *q=image->colormap[pixel];
             }
           break;
         }
         case 1:
         {
-          q->green=pixel;
+          q->green=UpScale(pixel);
           break;
         }
         case 2:
         {
-          q->blue=pixel;
+          q->blue=UpScale(pixel);
           break;
         }
         case 3:
         default:
         {
           if (image->colorspace == CMYKColorspace)
-            q->opacity=pixel;
+            q->opacity=UpScale(pixel);
           else
-            q->opacity=MaxRGB-pixel;
+            q->opacity=MaxRGB-UpScale(pixel);
           break;
         }
       }
@@ -516,7 +516,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           ThrowReaderException(CorruptImageWarning,"Not a PSD image file",
             image);
         (void) ReadBlob(image,4,(char *) layer_info[i].blendkey);
-        layer_info[i].opacity=MaxRGB-ReadByte(image);
+        layer_info[i].opacity=MaxRGB-UpScale(ReadByte(image));
         layer_info[i].clipping=ReadByte(image);
         layer_info[i].flags=ReadByte(image);
         (void) ReadByte(image);  /* filler */
@@ -678,9 +678,6 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
       for (i=0; i < 4; i++)
         (void) ReadByte(image);
     }
-  /*
-    Convert pixels to Runlength encoded.
-  */
   compression=MSBFirstReadShort(image);
   SetImage(image,OpaqueOpacity);
   if (compression != 0)
@@ -779,6 +776,7 @@ static Image *ReadPSDImage(const ImageInfo *image_info,ExceptionInfo *exception)
           break;
       }
     }
+  (void) IsMatteImage(image);
   for (i=0; i < number_layers; i++)
   {
     /*
