@@ -1352,7 +1352,7 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
       /*
         Reduce to point sampling.
       */
-      support=0.5;
+      support=0.50000000001;
       scale_factor=1.0;
     }
   for (x=0; x < (int) destination->columns; x++)
@@ -1360,9 +1360,9 @@ static unsigned int HorizontalFilter(Image *source,Image *destination,
     density=0.0;
     n=0;
     center=(double) x/x_factor;
-    start=center-support+0.5;
-    end=center+support+0.5;
-    for (i=(int) Max(start,0); i < (int) Min(end,source->columns); i++)
+    start=center-support;
+    end=center+support;
+    for (i=(int) Max(start+0.5,0); i < (int) Min(end+0.5,source->columns); i++)
     {
       contribution[n].pixel=i;
       contribution[n].weight=
@@ -1494,7 +1494,7 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
       /*
         Reduce to point sampling.
       */
-      support=0.5;
+      support=0.50000000001;
       scale_factor=1.0;
     }
   for (y=0; y < (int) destination->rows; y++)
@@ -1502,9 +1502,9 @@ static unsigned int VerticalFilter(Image *source,Image *destination,
     density=0.0;
     n=0;
     center=(double) y/y_factor;
-    start=center-support+0.5;
-    end=center+support+0.5;
-    for (i=(int) Max(start,0); i < (int) Min(end,source->rows); i++)
+    start=center-support;
+    end=center+support;
+    for (i=(int) Max(start+0.5,0); i < (int) Min(end+0.5,source->rows); i++)
     {
       contribution[n].pixel=i;
       contribution[n].weight=
