@@ -489,7 +489,7 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int order,
       q->blue=(Quantum)
         ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
       q->opacity=(Quantum)
-	((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
+        ((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
       q++;
     }
     if (!SyncImagePixels(convolve_image))
@@ -1124,7 +1124,7 @@ MagickExport Image *GaussianBlurImage(Image *image,const double width,
     x;
 
   register PixelPacket
-    *p;
+    *q;
 
   /*
     Initialize blurred image attributes.
@@ -1133,6 +1133,9 @@ MagickExport Image *GaussianBlurImage(Image *image,const double width,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
+  if ((image->columns < radius) || (image->rows < radius))
+    ThrowImageException(ResourceLimitWarning,"Unable to gaussian blur image",
+      "image is smaller than radius");
   blur_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (blur_image == (Image *) NULL)
     return((Image *) NULL);
@@ -1167,19 +1170,19 @@ MagickExport Image *GaussianBlurImage(Image *image,const double width,
   */
   for (y=0; y < (int) blur_image->rows; y++)
   {
-    p=GetImagePixels(blur_image,0,y,blur_image->columns,1);
-    if (p == (PixelPacket *) NULL)
+    q=GetImagePixels(blur_image,0,y,blur_image->columns,1);
+    if (q == (PixelPacket *) NULL)
       break;
     j=0;
-    (void) memset(scanline,0,radius*sizeof(PixelPacket));
+    memcpy(scanline,q,radius*sizeof(PixelPacket));
     for (x=0; x < (int) blur_image->columns; x++)
     {
       /*
         Convolve this pixel.
       */
-      red=kernel[0]*p->red;
-      green=kernel[0]*p->green;
-      blue=kernel[0]*p->blue;
+      red=kernel[0]*q->red;
+      green=kernel[0]*q->green;
+      blue=kernel[0]*q->blue;
       k=j-1;
       if (k < 0)
         k+=radius;
@@ -1192,22 +1195,24 @@ MagickExport Image *GaussianBlurImage(Image *image,const double width,
         if (k < 0)
           k+=radius;
       }
+      k=1;
       for (i=1; i < (radius+1); i++)
       {
-        if ((x+i) >= blur_image->columns)
-          break;
-        red+=kernel[i]*p[i].red;
-        green+=kernel[i]*p[i].green;
-        blue+=kernel[i]*p[i].blue;
+        if ((x+k) >= blur_image->columns)
+          k-=radius;
+        red+=kernel[i]*q[k].red;
+        green+=kernel[i]*q[k].green;
+        blue+=kernel[i]*q[k].blue;
+        k++;
       }
-      scanline[j]=(*p);
+      scanline[j]=(*q);
       j++;
       if (j >= radius)
         j-=radius;
-      p->red=(Quantum) (red+0.5);
-      p->green=(Quantum) (green+0.5);
-      p->blue=(Quantum) (blue+0.5);
-      p++;
+      q->red=(Quantum) (red+0.5);
+      q->green=(Quantum) (green+0.5);
+      q->blue=(Quantum) (blue+0.5);
+      q++;
     }
     if (!SyncImagePixels(blur_image))
       break;
@@ -1220,19 +1225,19 @@ MagickExport Image *GaussianBlurImage(Image *image,const double width,
   */
   for (x=0; x < (int) blur_image->columns; x++)
   {
-    p=GetImagePixels(blur_image,x,0,1,blur_image->rows);
-    if (p == (PixelPacket *) NULL)
+    q=GetImagePixels(blur_image,x,0,1,blur_image->rows);
+    if (q == (PixelPacket *) NULL)
       break;
     j=0;
-    (void) memset(scanline,0,radius*sizeof(PixelPacket));
+    memcpy(scanline,q,radius*sizeof(PixelPacket));
     for (y=0; y < (int) blur_image->rows; y++)
     {
       /*
         Convolve this pixel.
       */
-      red=kernel[0]*p->red;
-      green=kernel[0]*p->green;
-      blue=kernel[0]*p->blue;
+      red=kernel[0]*q->red;
+      green=kernel[0]*q->green;
+      blue=kernel[0]*q->blue;
       k=j-1;
       if (k < 0)
         k+=radius;
@@ -1245,22 +1250,24 @@ MagickExport Image *GaussianBlurImage(Image *image,const double width,
         if (k < 0)
           k+=radius;
       }
+      k=1;
       for (i=1; i < (radius+1); i++)
       {
-        if ((y+i) >= blur_image->rows)
-          break;
-        red+=kernel[i]*p[i].red;
-        green+=kernel[i]*p[i].green;
-        blue+=kernel[i]*p[i].blue;
+        if ((y+k) >= blur_image->rows)
+          k-=radius;
+        red+=kernel[i]*q[k].red;
+        green+=kernel[i]*q[k].green;
+        blue+=kernel[i]*q[k].blue;
+        k++;
       }
-      scanline[j]=(*p);
+      scanline[j]=(*q);
       j++;
       if (j >= radius)
         j-=radius;
-      p->red=(Quantum) (red+0.5);
-      p->green=(Quantum) (green+0.5);
-      p->blue=(Quantum) (blue+0.5);
-      p++;
+      q->red=(Quantum) (red+0.5);
+      q->green=(Quantum) (green+0.5);
+      q->blue=(Quantum) (blue+0.5);
+      q++;
     }
     if (!SyncImagePixels(blur_image))
       break;

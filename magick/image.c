@@ -1344,6 +1344,7 @@ MagickExport unsigned int CompositeImage(Image *image,
   /*
     Composite image.
   */
+image->class=DirectClass;
   for (y=0; y < image->rows; y++)
   {
     if (y < y_offset)
@@ -1624,7 +1625,7 @@ MagickExport unsigned int CompositeImage(Image *image,
       }
       if (image->storage_class == PseudoClass)
         if (image->storage_class == composite_image->storage_class)
-          indexes[x]=composite_indexes[x-x_offset];
+          indexes[x]=(*composite_indexes);
       q->red=(Quantum)
         ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
       q->green=(Quantum)

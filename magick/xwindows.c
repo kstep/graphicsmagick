@@ -4067,7 +4067,6 @@ MagickExport Image *XGetWindowImage(Display *display,const Window window,
                   q->green=XDownScale(colors[index].green);
                   index=(pixel >> blue_shift) & blue_mask;
                   q->blue=XDownScale(colors[index].blue);
-                  q->opacity=TransparentOpacity;
                   q++;
                 }
                 if (!SyncImagePixels(composite_image))
@@ -4088,7 +4087,6 @@ MagickExport Image *XGetWindowImage(Display *display,const Window window,
                   q->green=XDownScale((color*65535L)/green_mask);
                   color=(pixel >> blue_shift) & blue_mask;
                   q->blue=XDownScale((color*65535L)/blue_mask);
-                  q->opacity=TransparentOpacity;
                   q++;
                 }
                 if (!SyncImagePixels(composite_image))
@@ -4101,10 +4099,7 @@ MagickExport Image *XGetWindowImage(Display *display,const Window window,
             /*
               Create colormap.
             */
-            composite_image->colors=number_colors;
-            composite_image->colormap=(PixelPacket *)
-              AcquireMemory(composite_image->colors*sizeof(PixelPacket));
-            if (composite_image->colormap == (PixelPacket *) NULL)
+            if (!AllocateImageColormap(composite_image,number_colors))
               {
                 XDestroyImage(ximage);
                 DestroyImage(composite_image);
@@ -4131,8 +4126,7 @@ MagickExport Image *XGetWindowImage(Display *display,const Window window,
               for (x=0; x < (int) composite_image->columns; x++)
               {
                 index=XGetPixel(ximage,x,y);
-                if (composite_image->storage_class == PseudoClass)
-                  indexes[x]=index;
+                indexes[x]=index;
                 *q++=composite_image->colormap[index];
               }
               if (!SyncImagePixels(composite_image))
@@ -4142,6 +4136,12 @@ MagickExport Image *XGetWindowImage(Display *display,const Window window,
           }
         }
         XDestroyImage(ximage);
+{
+ImageInfo *image_info;
+image_info=CloneImageInfo((ImageInfo *) NULL);
+FormatString(composite_image->filename,"miff:test.%d",id);
+WriteImage(image_info,composite_image);
+}
         if (image == (Image *) NULL)
           {
             image=composite_image;
