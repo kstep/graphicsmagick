@@ -1183,8 +1183,8 @@ MagickExport unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
                   (clone_info->affine[0]*composite_image->columns);
                 height=(unsigned int)
                   (clone_info->affine[3]*composite_image->rows);
-                scale_image=
-                  ZoomImage(composite_image,width,height,&image->exception);
+                scale_image=ResizeImage(composite_image,width,height,
+                  LanczosFilter,1.0,&image->exception);
                 if (scale_image != (Image *) NULL)
                   {
                     DestroyImage(composite_image);

@@ -1210,7 +1210,8 @@ static unsigned int WritePDFImage(const ImageInfo *image_info,Image *image)
     if (image->storage_class == PseudoClass)
       tile_image=SampleImage(image,width,height,&image->exception);
     else
-      tile_image=ZoomImage(image,width,height,&image->exception);
+      tile_image=ResizeImage(image,width,height,MitchellFilter,1.0,
+        &image->exception);
     if (tile_image == (Image *) NULL)
       ThrowWriterException(ResourceLimitWarning,"Memory allocation failed",
         image);

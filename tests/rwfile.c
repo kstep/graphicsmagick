@@ -72,7 +72,6 @@ static float CompareImage( int fuzz, Image *original, Image *final )
       /* Get row from final */
       if (!(final_p= GetCacheView(final_view,0,y,final->columns,1)))
 	return 1;
-
       /* Compare pixels in row */
       for ( x = 0; x < (int) original->columns; x++ )
 	{
@@ -244,7 +243,7 @@ int main ( int argc, char **argv )
     fuzz_factor = 1;
 
   if ( !strcmp( "YUV", format ) )
-    fuzz_factor = 3;
+    fuzz_factor = 1;
 
   if ( (diff = CompareImage( fuzz_factor, original, final )) )
     {

@@ -731,6 +731,8 @@ extern MagickExport Image
   *ReadImage(const ImageInfo *,ExceptionInfo *),
   *ReadImages(const ImageInfo *,ExceptionInfo *),
   *ReduceNoiseImage(Image *,const double,ExceptionInfo *),
+  *ResizeImage(Image *,const unsigned int,const unsigned int,const FilterTypes,
+    const double,ExceptionInfo *),
   *RollImage(Image *,const int,const int,ExceptionInfo *),
   *RotateImage(Image *,const double,ExceptionInfo *),
   *SampleImage(Image *,const unsigned int,const unsigned int,ExceptionInfo *),

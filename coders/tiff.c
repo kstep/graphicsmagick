@@ -1259,7 +1259,8 @@ static unsigned int WriteTIFFImage(const ImageInfo *image_info,Image *image)
       do
       {
         image->orphan=True;
-        next_image=ZoomImage(image,width,height,&image->exception);
+        next_image=ResizeImage(image,width,height,MitchellFilter,1.0,
+          &image->exception);
         if (next_image == (Image *) NULL)
           ThrowWriterException(FileOpenWarning,
             "Unable to pyramid encode image",image);

@@ -175,6 +175,10 @@ $example->Label('Reduce Noise');
 $example->ReduceNoise();
 push(@$images,$example);
 $example=$model->Clone();
+$example->Label('Resize');
+$example->Resize('50%');
+push(@$images,$example);
+$example=$model->Clone();
 $example=$model->Clone();
 $example->Label('Roll');
 $example->Roll(geometry=>'+20+10');
@@ -222,10 +226,6 @@ $example=$model->Clone();
 $example->Label('Wave');
 $example->Set(background=>'#00000000');
 $example->Wave('25x150');
-push(@$images,$example);
-$example=$model->Clone();
-$example->Label('Zoom');
-$example->Zoom('50%');
 push(@$images,$example);
 #
 # Create image montage.

@@ -5108,27 +5108,27 @@ MagickExport unsigned int XMakeImage(Display *display,
           (height != transform_image->rows))
         {
           Image
-            *zoom_image;
+            *resize_image;
 
           /*
             Scale image.
           */
           transform_image->orphan=True;
           if ((window->pixel_info->colors != 0) || transform_image->matte)
-            zoom_image=
+            resize_image=
               SampleImage(transform_image,width,height,&image->exception);
           else
             if ((width <= 160) && (height <= 160))
-              zoom_image=
+              resize_image=
                 ScaleImage(transform_image,width,height,&image->exception);
             else
-              zoom_image=
-                ZoomImage(transform_image,width,height,&image->exception);
-          if (zoom_image != (Image *) NULL)
+              resize_image=ResizeImage(transform_image,width,height,
+                LanczosFilter,1.0,&image->exception);
+          if (resize_image != (Image *) NULL)
             {
               if (transform_image != image)
                 DestroyImage(transform_image);
-              transform_image=zoom_image;
+              transform_image=resize_image;
             }
         }
       if (window->immutable)

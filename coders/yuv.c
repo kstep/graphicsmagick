@@ -97,7 +97,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
   Image
     *chroma_image,
     *image,
-    *zoom_image;
+    *resize_image;
 
   int
     count,
@@ -232,15 +232,16 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       Scale image.
     */
     chroma_image->orphan=True;
-    zoom_image=ZoomImage(chroma_image,image->columns,image->rows,exception);
+    resize_image=ResizeImage(chroma_image,image->columns,image->rows,
+      TriangleFilter,1.0,exception);
     DestroyImage(chroma_image);
-    if (zoom_image == (Image *) NULL)
+    if (resize_image == (Image *) NULL)
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
         image);
     for (y=0; y < (int) image->rows; y++)
     {
       q=GetImagePixels(image,0,y,image->columns,1);
-      r=GetImagePixels(zoom_image,0,y,zoom_image->columns,1);
+      r=GetImagePixels(resize_image,0,y,resize_image->columns,1);
       if ((q == (PixelPacket *) NULL) || (r == (PixelPacket *) NULL))
         break;
       for (x=0; x < (int) image->columns; x++)
@@ -253,7 +254,7 @@ static Image *ReadYUVImage(const ImageInfo *image_info,ExceptionInfo *exception)
       if (!SyncImagePixels(image))
         break;
     }
-    DestroyImage(zoom_image);
+    DestroyImage(resize_image);
     TransformRGBImage(image,YCbCrColorspace);
     if (image_info->interlace == PartitionInterlace)
       (void) strcpy(image->filename,image_info->filename);
@@ -419,15 +420,16 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
   do
   {
     /*
-      Zoom image to an even width and height.
+      Sample image to an even width and height.
     */
     TransformRGBImage(image,RGBColorspace);
     width=image->columns+(image->columns & 0x01);
     height=image->rows+(image->rows & 0x01);
     image->orphan=True;
-    yuv_image=ZoomImage(image,width,height,&image->exception);
+    yuv_image=ResizeImage(image,width,height,TriangleFilter,1.0,
+      &image->exception);
     if (yuv_image == (Image *) NULL)
-      ThrowWriterException(ResourceLimitWarning,"Unable to zoom image",image);
+      ThrowWriterException(ResourceLimitWarning,"Unable to resize image",image);
     RGBTransformImage(yuv_image,YCbCrColorspace);
     /*
       Initialize Y channel.
@@ -451,9 +453,10 @@ static unsigned int WriteYUVImage(const ImageInfo *image_info,Image *image)
       Downsample image.
     */
     image->orphan=True;
-    chroma_image=ZoomImage(image,width/2,height/2,&image->exception);
+    chroma_image=ResizeImage(image,width/2,height/2,TriangleFilter,1.0,
+      &image->exception);
     if (chroma_image == (Image *) NULL)
-      ThrowWriterException(ResourceLimitWarning,"Unable to zoom image",image);
+      ThrowWriterException(ResourceLimitWarning,"Unable to resize image",image);
     RGBTransformImage(chroma_image,YCbCrColorspace);
     /*
       Initialize U channel.

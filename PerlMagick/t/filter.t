@@ -174,6 +174,12 @@ testFilter('input.miff', 'Raise',
   '1bc9ae340eef6cc6257b0e2bfb5a0ab0');
 
 ++$test;
+testFilter('input.miff', 'Resize',
+  q/50%/,
+  'b3a770742494edc995abc2b6e6a7faec',
+  '9e78d6fcaf019530500dff7078a23efc');
+
+++$test;
 testFilter('input.miff', 'Roll',
   q/+10+10/,
   '5b5165d9bfda88340e0095ca4ac190dc');
@@ -255,12 +261,6 @@ testFilter('input.miff', 'Wave',
   q/25x157/,
   '8972b0a8441091394e0b91acc85a2192',
   '59444de9684faa8ef8a8287c2c17f7f3');
-
-++$test;
-testFilter('input.miff', 'Zoom',
-  q/50%/,
-  'b3a770742494edc995abc2b6e6a7faec',
-  '9e78d6fcaf019530500dff7078a23efc');
 
 ++$test;
 

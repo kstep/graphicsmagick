@@ -22,6 +22,7 @@
 
 		<LI><A HREF="#magnifyimage">MagnifyImage</A></LI>
 		<LI><A HREF="#minifyimage">MinifyImage</A></LI>
+		<LI><A HREF="#resizeimage">ResizeImage</A></LI>
 		<LI><A HREF="#sampleimage">SampleImage</A></LI>
 		<LI><A HREF="#scaleimage">ScaleImage</A></LI>
 		<LI><A HREF="#zoomimage">ZoomImage</A></LI>
@@ -41,6 +42,7 @@
 <FONT SIZE=-1>SYNOPSIS</FONT></A></H1>
 <P>magnify_image= <STRONG>MagnifyImage</STRONG>( image, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>MinifyImage</STRONG>( Image *image, ExceptionInfo *exception );</P>
+<P>Image * <STRONG>ResizeImage</STRONG>( Image *image, const unsigned int columns, const unsigned int rows, const FilterType filter, const double blur, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>SampleImage</STRONG>( Image *image, const unsigned int columns, const unsigned int rows, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>ScaleImage</STRONG>( Image *image, const unsigned int columns, const unsigned int rows, ExceptionInfo *exception );</P>
 <P>Image * <STRONG>ZoomImage</STRONG>( Image *image, const unsigned int columns, const unsigned int rows, ExceptionInfo *exception );</P>
@@ -100,6 +102,43 @@ The address of a structur of type Image.
 return any errors or warnings in this structure.
 <P></P></DL></DL>
 <P>
+<H2><A NAME="resizeimage">ResizeImage</A></H2>
+<P>Method ResizeImage creates a new image that is a scaled size of an existing one.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.  The Point filter gives fast pixel replication, Triangle is equivalent to bi-linear interpolation, and Mitchel giver slower, very high-quality results.  See Graphic Gems 
+<FONT SIZE=-1>III</FONT> for details on this algorithm.</P>
+<P>The format of the ResizeImage method is:</P>
+<blockquote><A HREF="types/Image.html">Image</A> *ResizeImage ( <A HREF="types/Image.html">Image</A> *image, const unsigned int columns, const unsigned int rows, const <A HREF="types/Enumerations.html#FilterType">FilterType</A> filter, const double blur, <A HREF="types/ExceptionInfo.html">ExceptionInfo</A> *exception ); </blockquote><P>
+<FONT SIZE=-1>A</FONT> description of each parameter follows:</P>
+<DL><DL>
+<p><dt><STRONG><A NAME="item_o_resize_image%3A">resize_image:</A></STRONG><BR>
+<DD>
+Method ResizeImage returns a pointer to the image after scaling.  
+<FONT SIZE=-1>A</FONT> null image is returned if there is a memory shortage.
+<P></P>
+<p><dt><STRONG>image:</STRONG><BR>
+<DD>
+the address of a structure of type Image.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_columns%3A">columns:</A></STRONG><BR>
+<DD>
+an integer that specifies the number of columns in the zoom image.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_rows%3A">rows:</A></STRONG><BR>
+<DD>
+an integer that specifies the number of rows in the scaled image.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_filter%3A">filter:</A></STRONG><BR>
+<DD>
+specifies which image filter to use.
+<P></P>
+<p><dt><STRONG><A NAME="item_o_blur%3A">blur:</A></STRONG><BR>
+<DD>
+specifies the blur factor where &gt; 1 is blurry, &lt; 1 is sharp.
+<P></P>
+<p><dt><STRONG>exception:</STRONG><BR>
+<DD>
+return any errors or warnings in this structure.
+<P></P></DL></DL>
+<P>
 <H2><A NAME="sampleimage">SampleImage</A></H2>
 <P>Method SampleImage creates a new image that is a scaled size of an existing one using pixel sampling.  It allocates the memory necessary for the new Image structure and returns a pointer to the new image.</P>
 <P>The format of the SampleImage method is:</P>
@@ -115,11 +154,11 @@ Method SampleImage returns a pointer to the image after scaling.
 <DD>
 The address of a structure of type Image.
 <P></P>
-<p><dt><STRONG><A NAME="item_o_columns%3A">columns:</A></STRONG><BR>
+<p><dt><STRONG>columns:</STRONG><BR>
 <DD>
 An integer that specifies the number of columns in the sampled image.
 <P></P>
-<p><dt><STRONG><A NAME="item_o_rows%3A">rows:</A></STRONG><BR>
+<p><dt><STRONG>rows:</STRONG><BR>
 <DD>
 An integer that specifies the number of rows in the sampled image.
 <P></P>

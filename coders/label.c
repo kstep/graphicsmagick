@@ -806,7 +806,8 @@ static Image *RenderFreetype(const ImageInfo *image_info,const char *text,
 
           width=image_info->affine[0]*image->columns;
           height=image_info->affine[3]*image->rows;
-          scale_image=ZoomImage(image,width,height,exception);
+          scale_image=ResizeImage(image,width,height,MitchellFilter,1.0,
+            exception);
           if (scale_image != (Image *) NULL)
             {
               DestroyImage(image);
@@ -1200,7 +1201,8 @@ static Image *RenderX11(const ImageInfo *image_info,const char *text,
 
           width=(unsigned int) (image_info->affine[0]*image->columns);
           height=(unsigned int) (image_info->affine[3]*image->rows);
-          scale_image=ZoomImage(image,width,height,exception);
+          scale_image=ResizeImage(image,width,height,MitchellFilter,1.0,
+            exception);
           if (scale_image != (Image *) NULL)
             {
               DestroyImage(image);

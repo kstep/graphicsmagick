@@ -580,6 +580,599 @@ MagickExport Image *MinifyImage(Image *image,ExceptionInfo *exception)
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   R e s i z e I m a g e                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method ResizeImage creates a new image that is a scaled size of an
+%  existing one.  It allocates the memory necessary for the new Image
+%  structure and returns a pointer to the new image.  The Point filter gives
+%  fast pixel replication, Triangle is equivalent to bi-linear interpolation,
+%  and Mitchel giver slower, very high-quality results.  See Graphic Gems III
+%  for details on this algorithm.
+%
+%  The format of the ResizeImage method is:
+%
+%      Image *ResizeImage(Image *image,const unsigned int columns,
+%        const unsigned int rows,const FilterType filter,const double blur,
+%        ExceptionInfo *exception)
+%
+%  A description of each parameter follows:
+%
+%    o resize_image: Method ResizeImage returns a pointer to the image after
+%      scaling.  A null image is returned if there is a memory shortage.
+%
+%    o image: the address of a structure of type Image.
+%
+%    o columns: an integer that specifies the number of columns in the zoom
+%      image.
+%
+%    o rows: an integer that specifies the number of rows in the scaled
+%      image.
+%
+%    o filter: specifies which image filter to use.
+%
+%    o blur: specifies the blur factor where > 1 is blurry, < 1 is sharp.
+%
+%    o exception: return any errors or warnings in this structure.
+%
+%
+*/
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
+static double Box(double x)
+{
+  if ((x >= -0.5) && (x < 0.5))
+    return(1.0);
+  return(0.0);
+}
+
+static double Bessel(double x)
+{
+  if (x == 0.0)
+    return(M_PI/4.0);
+  return(BesselOrderOne(M_PI*x)/(2.0*x));
+}
+
+static double Blackman(double x)
+{
+  return(0.42+0.50*cos(M_PI*x)+0.08*cos(2.0*M_PI*x));
+}
+
+static double Catrom(double x)
+{
+  if (x < 0)
+    x=(-x);
+  if (x < 1.0)
+    return(0.5*(2.0+x*x*(-5.0+x*3.0)));
+  if (x < 2.0)
+    return(0.5*(4.0+x*(-8.0+x*(5.0-x))));
+  return(0.0);
+}
+
+static double Cubic(double x)
+{
+  if (x < 0)
+    x=(-x);
+  if (x < 1.0)
+    return((0.5*x*x*x)-x*x+(2.0/3.0));
+  if (x < 2.0)
+    {
+      x=2.0-x;
+      return((1.0/6.0)*x*x*x);
+    }
+  return(0.0);
+}
+
+static double Gaussian(double x)
+{
+  return(exp(-2.0*x*x)*sqrt(2.0/M_PI));
+}
+
+static double Hanning(double x)
+{
+  return(0.5+0.5*cos(M_PI*x));
+}
+
+static double Hamming(double x)
+{
+  return(0.54+0.46*cos(M_PI*x));
+}
+
+static double Hermite(double x)
+{
+  if (x < 0)
+    x=(-x);
+  if (x < 1.0)
+    return((2.0*x-3.0)*x*x+1.0);
+  return(0.0);
+}
+
+static double Sinc(double x)
+{
+  x*=M_PI;
+  if (x != 0.0)
+    return(sin(x)/x);
+  return(1.0);
+}
+
+static double Lanczos(double x)
+{
+  if (x < 0)
+    x=(-x);
+  if (x < 3.0)
+    return(Sinc(x)*Sinc(x/3.0));
+  return(0.0);
+}
+
+static double Mitchell(double x)
+{
+  double
+    b,
+    c;
+
+  b=1.0/3.0;
+  c=1.0/3.0;
+  if (x < 0)
+    x=(-x);
+  if (x < 1.0)
+    {
+      x=((12.0-9.0*b-6.0*c)*(x*x*x))+((-18.0+12.0*b+6.0*c)*x*x)+(6.0-2.0*b);
+      return(x/6.0);
+    }
+ if (x < 2.0)
+   {
+     x=((-1.0*b-6.0*c)*(x*x*x))+((6.0*b+30.0*c)*x*x)+((-12.0*b-48.0*c)*x)+
+       (8.0*b+24.0*c);
+     return(x/6.0);
+   }
+  return(0.0);
+}
+
+static double Quadratic(double x)
+{
+  if (x < 0)
+    x=(-x);
+  if (x < 0.5)
+    return(0.75-x*x);
+  if (x < 1.5)
+    {
+      x-=1.5;
+      return(0.5*x*x);
+    }
+  return(0.0);
+}
+
+static double Triangle(double x)
+{
+  if (x < 0.0)
+    x=(-x);
+  if (x < 1.0)
+    return(1.0-x);
+  return(0.0);
+}
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif
+
+static unsigned int HorizontalFilter(Image *source,Image *destination,
+  double x_factor,const FilterInfo *filter_info,const double blur,
+  ContributionInfo *contribution,const unsigned int span,unsigned int *quantum)
+{
+#define ResizeImageText  "  Resize image...  "
+
+  double
+    blue,
+    center,
+    density,
+    end,
+    green,
+    opacity,
+    red,
+    scale_factor,
+    start,
+    support;
+
+  IndexPacket
+    index;
+
+  int
+    j,
+    n,
+    y;
+
+  register int
+    i,
+    x;
+
+  register IndexPacket
+    *destination_indexes,
+    *source_indexes;
+
+  register PixelPacket
+    *p,
+    *q;
+
+  destination->storage_class=source->storage_class;
+  if ((source->columns == destination->columns) &&
+      (source->rows == destination->rows))
+    {
+      /*
+        Equal width and height-- just copy pixels.
+      */
+      for (y=0; y < (int) destination->rows; y++)
+      {
+        p=SetImagePixels(source,0,y,source->columns,1);
+        q=SetImagePixels(destination,0,y,destination->columns,1);
+        if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+          break;
+        memcpy(q,p,source->columns*sizeof(PixelPacket));
+        source_indexes=GetIndexes(source);
+        destination_indexes=GetIndexes(destination);
+        if (source->storage_class == PseudoClass)
+          memcpy(destination_indexes,source_indexes,
+            source->columns*sizeof(IndexPacket));
+        if (!SyncImagePixels(destination))
+          break;
+        if (QuantumTick(*quantum,span))
+          ProgressMonitor(ResizeImageText,*quantum,span);
+        (*quantum)++;
+      }
+      return(y == (int) destination->rows);
+    }
+  /*
+    Apply filter to zoom horizontally from source to destination.
+  */
+  scale_factor=blur*Max(1.0/x_factor,1.0);
+  support=Max(scale_factor*filter_info->support,0.5);
+  if (support > 0.5)
+    destination->storage_class=DirectClass;
+  else
+    {
+      /*
+        Reduce to point sampling.
+      */
+      support=0.5+MagickEpsilon;
+      scale_factor=1.0;
+    }
+  for (x=0; x < (int) destination->columns; x++)
+  {
+    density=0.0;
+    n=0;
+    center=(double) x/x_factor;
+    start=center-support;
+    end=center+support;
+    for (i=(int) Max(start+0.5,0); i < (int) Min(end+0.5,source->columns); i++)
+    {
+      contribution[n].pixel=i;
+      contribution[n].weight=
+        filter_info->function((i-center+0.5)/scale_factor);
+      contribution[n].weight/=scale_factor;
+      density+=contribution[n].weight;
+      n++;
+    }
+    density=density == 0.0 ? 1.0 : 1.0/density;
+    for (i=0; i < n; i++)
+      contribution[i].weight*=density;  /* normalize */
+    p=GetImagePixels(source,contribution[0].pixel,0,
+      contribution[n-1].pixel-contribution[0].pixel+1,source->rows);
+    q=SetImagePixels(destination,x,0,1,destination->rows);
+    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+      break;
+    source_indexes=GetIndexes(source);
+    destination_indexes=GetIndexes(destination);
+    for (y=0; y < (int) destination->rows; y++)
+    {
+      blue=0.0;
+      green=0.0;
+      red=0.0;
+      opacity=0.0;
+      for (i=0; i < n; i++)
+      {
+        j=y*(contribution[n-1].pixel-contribution[0].pixel+1)+
+          (contribution[i].pixel-contribution[0].pixel);
+        red+=contribution[i].weight*(p+j)->red;
+        green+=contribution[i].weight*(p+j)->green;
+        blue+=contribution[i].weight*(p+j)->blue;
+        opacity+=contribution[i].weight*(p+j)->opacity;
+      }
+      if (destination->storage_class == PseudoClass)
+        {
+          index=source_indexes[j];
+          destination_indexes[y]=index;
+        }
+      q->red=(Quantum)
+        ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
+      q->green=(Quantum)
+        ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
+      q->blue=(Quantum)
+        ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
+      q->opacity=(Quantum)
+        ((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
+      q++;
+    }
+    if (!SyncImagePixels(destination))
+      break;
+    if (QuantumTick(*quantum,span))
+      ProgressMonitor(ResizeImageText,*quantum,span);
+    (*quantum)++;
+  }
+  return(x == (int) destination->columns);
+}
+
+static unsigned int VerticalFilter(Image *source,Image *destination,
+  double y_factor,const FilterInfo *filter_info,const double blur,
+  ContributionInfo *contribution,const unsigned int span,unsigned int *quantum)
+{
+  double
+    blue,
+    center,
+    density,
+    green,
+    end,
+    opacity,
+    red,
+    scale_factor,
+    start,
+    support;
+
+  IndexPacket
+    index;
+
+  int
+    j,
+    n,
+    x;
+
+  register int
+    i,
+    y;
+
+  register IndexPacket
+    *destination_indexes,
+    *source_indexes;
+
+  register PixelPacket
+    *p,
+    *q;
+
+  destination->storage_class=source->storage_class;
+  if ((source->columns == destination->columns) &&
+      (source->rows == destination->rows))
+    {
+      /*
+        Equal width and height-- just copy pixels.
+      */
+      for (y=0; y < (int) destination->rows; y++)
+      {
+        p=SetImagePixels(source,0,y,source->columns,1);
+        q=SetImagePixels(destination,0,y,destination->columns,1);
+        if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+          break;
+        memcpy(q,p,source->columns*sizeof(PixelPacket));
+        source_indexes=GetIndexes(source);
+        destination_indexes=GetIndexes(destination);
+        if (source->storage_class == PseudoClass)
+          memcpy(destination_indexes,source_indexes,
+            source->columns*sizeof(IndexPacket));
+        if (!SyncImagePixels(destination))
+          break;
+        if (QuantumTick(*quantum,span))
+          ProgressMonitor(ResizeImageText,*quantum,span);
+        (*quantum)++;
+      }
+      return(y == (int) destination->rows);
+    }
+  /*
+    Apply filter to zoom vertically from source to destination.
+  */
+  scale_factor=blur*Max(1.0/y_factor,1.0);
+  support=Max(scale_factor*filter_info->support,0.5);
+  if (support > 0.5)
+    destination->storage_class=DirectClass;
+  else
+    {
+      /*
+        Reduce to point sampling.
+      */
+      support=0.5+MagickEpsilon;
+      scale_factor=1.0;
+    }
+  for (y=0; y < (int) destination->rows; y++)
+  {
+    density=0.0;
+    n=0;
+    center=(double) y/y_factor;
+    start=center-support;
+    end=center+support;
+    for (i=(int) Max(start+0.5,0); i < (int) Min(end+0.5,source->rows); i++)
+    {
+      contribution[n].pixel=i;
+      contribution[n].weight=
+        filter_info->function((i-center+0.5)/scale_factor);
+      contribution[n].weight/=scale_factor;
+      density+=contribution[n].weight;
+      n++;
+    }
+    density=density == 0.0 ? 1.0 : 1.0/density;
+    for (i=0; i < n; i++)
+      contribution[i].weight*=density;  /* normalize */
+    p=GetImagePixels(source,0,contribution[0].pixel,source->columns,
+      contribution[n-1].pixel-contribution[0].pixel+1);
+    q=SetImagePixels(destination,0,y,destination->columns,1);
+    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
+      break;
+    source_indexes=GetIndexes(source);
+    destination_indexes=GetIndexes(destination);
+    for (x=0; x < (int) destination->columns; x++)
+    {
+      blue=0.0;
+      green=0.0;
+      red=0.0;
+      opacity=0.0;
+      for (i=0; i < n; i++)
+      {
+        j=(contribution[i].pixel-contribution[0].pixel)*source->columns+x;
+        red+=contribution[i].weight*(p+j)->red;
+        green+=contribution[i].weight*(p+j)->green;
+        blue+=contribution[i].weight*(p+j)->blue;
+        opacity+=contribution[i].weight*(p+j)->opacity;
+      }
+      if (destination->storage_class == PseudoClass)
+        {
+          index=source_indexes[j];
+          destination_indexes[x]=index;
+        }
+      q->red=(Quantum)
+        ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
+      q->green=(Quantum)
+        ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
+      q->blue=(Quantum)
+        ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
+      q->opacity=(Quantum)
+        ((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
+      q++;
+    }
+    if (!SyncImagePixels(destination))
+      break;
+    if (QuantumTick(*quantum,span))
+      ProgressMonitor(ResizeImageText,*quantum,span);
+    (*quantum)++;
+  }
+  return(y == (int) destination->rows);
+}
+
+MagickExport Image *ResizeImage(Image *image,const unsigned int columns,
+  const unsigned int rows,const FilterTypes filter,const double blur,
+  ExceptionInfo *exception)
+{
+  ContributionInfo
+    *contribution;
+
+  double
+    support,
+    x_factor,
+    y_factor;
+
+  Image
+    *source_image,
+    *zoom_image;
+
+  static const FilterInfo
+    filters[SincFilter+1] =
+    {
+      { Box, 0.0 },
+      { Box, 0.0 },
+      { Box, 0.5 },
+      { Triangle, 1.0 },
+      { Hermite, 1.0 },
+      { Hanning, 1.0 },
+      { Hamming, 1.0 },
+      { Blackman, 1.0 },
+      { Gaussian, 1.25 },
+      { Quadratic, 1.5 },
+      { Cubic, 2.0 },
+      { Catrom, 2.0 },
+      { Mitchell, 2.0 },
+      { Lanczos, 3.0 },
+      { Bessel, 3.2383 },
+      { Sinc, 4.0 }
+    };
+
+  unsigned int
+    quantum,
+    span,
+    status;
+
+  /*
+    Initialize zoom image attributes.
+  */
+  assert(image != (Image *) NULL);
+  assert(image->signature == MagickSignature);
+  assert(exception != (ExceptionInfo *) NULL);
+  assert(exception->signature == MagickSignature);
+  assert((filter >= 0) && (filter <= SincFilter));
+  if ((columns == 0) || (rows == 0))
+    ThrowImageException(OptionWarning,"Unable to zoom image",
+      "image dimensions are zero");
+  if ((columns == image->columns) && (rows == image->rows))
+    return(CloneImage(image,columns,rows,False,exception));
+  zoom_image=CloneImage(image,columns,rows,False,exception);
+  if (zoom_image == (Image *) NULL)
+    return((Image *) NULL);
+  if (zoom_image->rows >= image->rows)
+    source_image=
+      CloneImage(image,zoom_image->columns,image->rows,True,exception);
+  else
+    source_image=
+      CloneImage(image,image->columns,zoom_image->rows,True,exception);
+  if (source_image == (Image *) NULL)
+    {
+      DestroyImage(zoom_image);
+      return((Image *) NULL);
+    }
+  /*
+    Allocate filter info list.
+  */
+  x_factor=(double) zoom_image->columns/image->columns;
+  y_factor=(double) zoom_image->rows/image->rows;
+  support=Max(filters[filter].support/x_factor,
+    filters[filter].support/y_factor);
+  if (support < filters[filter].support)
+    support=filters[filter].support;
+  contribution=(ContributionInfo *)
+    AcquireMemory((int) (support*2+3)*sizeof(ContributionInfo));
+  if (contribution == (ContributionInfo *) NULL)
+    {
+      DestroyImage(source_image);
+      DestroyImage(zoom_image);
+      ThrowImageException(ResourceLimitWarning,"Unable to zoom image",
+        "Memory allocation failed");
+    }
+  /*
+    Resize image.
+  */
+  quantum=0;
+  if (zoom_image->rows >= image->rows)
+    {
+      span=source_image->columns+zoom_image->rows;
+      status=HorizontalFilter(image,source_image,x_factor,&filters[filter],blur,
+	contribution,span,&quantum);
+      status|=VerticalFilter(source_image,zoom_image,y_factor,&filters[filter],
+        blur,contribution,span,&quantum);
+    }
+  else
+    {
+      span=zoom_image->columns+source_image->columns;
+      status=VerticalFilter(image,source_image,y_factor,&filters[filter],blur,
+        contribution,span,&quantum);
+      status|=HorizontalFilter(source_image,zoom_image,x_factor,
+        &filters[filter],blur,contribution,span,&quantum);
+    }
+  /*
+    Free allocated memory.
+  */
+  LiberateMemory((void **) &contribution);
+  DestroyImage(source_image);
+  if (status == False)
+    {
+      DestroyImage(zoom_image);
+      ThrowImageException(CacheWarning,"Unable to resize image",(char *) NULL);
+    }
+  return(zoom_image);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   S a m p l e I m a g e                                                     %
 %                                                                             %
 %                                                                             %
@@ -704,10 +1297,7 @@ MagickExport Image *SampleImage(Image *image,const unsigned int columns,
       Sample each column.
     */
     for (x=0; x < (int) sample_image->columns; x++)
-    {
-      k=(int) (x_offset[x]+0.5);
-      *q++=pixels[k];
-    }
+      *q++=pixels[(int) x_offset[x]];
     if (sample_image->storage_class == PseudoClass)
       {
         register IndexPacket
@@ -721,10 +1311,7 @@ MagickExport Image *SampleImage(Image *image,const unsigned int columns,
         memcpy(index,indexes,image->columns*sizeof(IndexPacket));
         sample_indexes=GetIndexes(sample_image);
         for (x=0; x < (int) sample_image->columns; x++)
-        {
-          k=(int) (x_offset[x]+0.5);
-          sample_indexes[x]=index[k];
-        }
+          sample_indexes[x]=index[(int) x_offset[x]];
       }
     if (!SyncImagePixels(sample_image))
       break;
@@ -1146,549 +1733,17 @@ MagickExport Image *ScaleImage(Image *image,const unsigned int columns,
 %
 %
 */
-
-#define ZoomImageText  "  Zoom image...  "
-
-#if defined(__cplusplus) || defined(c_plusplus)
-extern "C" {
-#endif
-
-static double Box(double x)
-{
-  if ((x >= -0.5) && (x < 0.5))
-    return(1.0);
-  return(0.0);
-}
-
-static double Bessel(double x)
-{
-  if (x == 0.0)
-    return(M_PI/4.0);
-  return(BesselOrderOne(M_PI*x)/(2.0*x));
-}
-
-static double Blackman(double x)
-{
-  return(0.42+0.50*cos(M_PI*x)+0.08*cos(2.0*M_PI*x));
-}
-
-static double Catrom(double x)
-{
-  if (x < 0)
-    x=(-x);
-  if (x < 1.0)
-    return(0.5*(2.0+x*x*(-5.0+x*3.0)));
-  if (x < 2.0)
-    return(0.5*(4.0+x*(-8.0+x*(5.0-x))));
-  return(0.0);
-}
-
-static double Cubic(double x)
-{
-  if (x < 0)
-    x=(-x);
-  if (x < 1.0)
-    return((0.5*x*x*x)-x*x+(2.0/3.0));
-  if (x < 2.0)
-    {
-      x=2.0-x;
-      return((1.0/6.0)*x*x*x);
-    }
-  return(0.0);
-}
-
-static double Gaussian(double x)
-{
-  return(exp(-2.0*x*x)*sqrt(2.0/M_PI));
-}
-
-static double Hanning(double x)
-{
-  return(0.5+0.5*cos(M_PI*x));
-}
-
-static double Hamming(double x)
-{
-  return(0.54+0.46*cos(M_PI*x));
-}
-
-static double Hermite(double x)
-{
-  if (x < 0)
-    x=(-x);
-  if (x < 1.0)
-    return((2.0*x-3.0)*x*x+1.0);
-  return(0.0);
-}
-
-static double Sinc(double x)
-{
-  x*=M_PI;
-  if (x != 0.0)
-    return(sin(x)/x);
-  return(1.0);
-}
-
-static double Lanczos(double x)
-{
-  if (x < 0)
-    x=(-x);
-  if (x < 3.0)
-    return(Sinc(x)*Sinc(x/3.0));
-  return(0.0);
-}
-
-static double Mitchell(double x)
-{
-  double
-    b,
-    c;
-
-  b=1.0/3.0;
-  c=1.0/3.0;
-  if (x < 0)
-    x=(-x);
-  if (x < 1.0)
-    {
-      x=((12.0-9.0*b-6.0*c)*(x*x*x))+((-18.0+12.0*b+6.0*c)*x*x)+(6.0-2.0*b);
-      return(x/6.0);
-    }
- if (x < 2.0)
-   {
-     x=((-1.0*b-6.0*c)*(x*x*x))+((6.0*b+30.0*c)*x*x)+((-12.0*b-48.0*c)*x)+
-       (8.0*b+24.0*c);
-     return(x/6.0);
-   }
-  return(0.0);
-}
-
-static double Quadratic(double x)
-{
-  if (x < 0)
-    x=(-x);
-  if (x < 0.5)
-    return(0.75-x*x);
-  if (x < 1.5)
-    {
-      x-=1.5;
-      return(0.5*x*x);
-    }
-  return(0.0);
-}
-
-static double Triangle(double x)
-{
-  if (x < 0.0)
-    x=(-x);
-  if (x < 1.0)
-    return(1.0-x);
-  return(0.0);
-}
-
-#if defined(__cplusplus) || defined(c_plusplus)
-}
-#endif
-
-static unsigned int HorizontalFilter(Image *source,Image *destination,
-  double x_factor,const FilterInfo *filter_info,ContributionInfo *contribution,
-  const unsigned int span,unsigned int *quantum)
-{
-  double
-    blue,
-    center,
-    density,
-    end,
-    green,
-    opacity,
-    red,
-    scale_factor,
-    start,
-    support;
-
-  IndexPacket
-    index;
-
-  int
-    j,
-    n,
-    y;
-
-  register int
-    i,
-    x;
-
-  register IndexPacket
-    *destination_indexes,
-    *source_indexes;
-
-  register PixelPacket
-    *p,
-    *q;
-
-  destination->storage_class=source->storage_class;
-  if ((source->columns == destination->columns) &&
-      (source->rows == destination->rows))
-    {
-      /*
-        Equal width and height-- just copy pixels.
-      */
-      for (y=0; y < (int) destination->rows; y++)
-      {
-        p=SetImagePixels(source,0,y,source->columns,1);
-        q=SetImagePixels(destination,0,y,destination->columns,1);
-        if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-          break;
-        memcpy(q,p,source->columns*sizeof(PixelPacket));
-        source_indexes=GetIndexes(source);
-        destination_indexes=GetIndexes(destination);
-        if (source->storage_class == PseudoClass)
-          memcpy(destination_indexes,source_indexes,
-            source->columns*sizeof(IndexPacket));
-        if (!SyncImagePixels(destination))
-          break;
-        if (QuantumTick(*quantum,span))
-          ProgressMonitor(ZoomImageText,*quantum,span);
-        (*quantum)++;
-      }
-      return(y == (int) destination->rows);
-    }
-  /*
-    Apply filter to zoom horizontally from source to destination.
-  */
-  scale_factor=source->blur*Max(1.0/x_factor,1.0);
-  support=Max(scale_factor*filter_info->support,0.5);
-  if (support > 0.5)
-    destination->storage_class=DirectClass;
-  else
-    {
-      /*
-        Reduce to point sampling.
-      */
-      support=0.5+MagickEpsilon;
-      scale_factor=1.0;
-    }
-  for (x=0; x < (int) destination->columns; x++)
-  {
-    density=0.0;
-    n=0;
-    center=(double) x/x_factor;
-    start=center-support;
-    end=center+support;
-    for (i=(int) Max(start+0.5,0); i < (int) Min(end+0.5,source->columns); i++)
-    {
-      contribution[n].pixel=i;
-      contribution[n].weight=
-        filter_info->function((i-center+0.5)/scale_factor);
-      contribution[n].weight/=scale_factor;
-      density+=contribution[n].weight;
-      n++;
-    }
-    density=density == 0.0 ? 1.0 : 1.0/density;
-    for (i=0; i < n; i++)
-      contribution[i].weight*=density;  /* normalize */
-    p=GetImagePixels(source,contribution[0].pixel,0,
-      contribution[n-1].pixel-contribution[0].pixel+1,source->rows);
-    q=SetImagePixels(destination,x,0,1,destination->rows);
-    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-      break;
-    source_indexes=GetIndexes(source);
-    destination_indexes=GetIndexes(destination);
-    for (y=0; y < (int) destination->rows; y++)
-    {
-      blue=0.0;
-      green=0.0;
-      red=0.0;
-      opacity=0.0;
-      for (i=0; i < n; i++)
-      {
-        j=y*(contribution[n-1].pixel-contribution[0].pixel+1)+
-          (contribution[i].pixel-contribution[0].pixel);
-        red+=contribution[i].weight*(p+j)->red;
-        green+=contribution[i].weight*(p+j)->green;
-        blue+=contribution[i].weight*(p+j)->blue;
-        opacity+=contribution[i].weight*(p+j)->opacity;
-      }
-      if (destination->storage_class == PseudoClass)
-        {
-          index=source_indexes[j];
-          destination_indexes[y]=index;
-        }
-      q->red=(Quantum)
-        ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
-      q->green=(Quantum)
-        ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
-      q->blue=(Quantum)
-        ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
-      q->opacity=(Quantum)
-        ((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
-      q++;
-    }
-    if (!SyncImagePixels(destination))
-      break;
-    if (QuantumTick(*quantum,span))
-      ProgressMonitor(ZoomImageText,*quantum,span);
-    (*quantum)++;
-  }
-  return(x == (int) destination->columns);
-}
-
-static unsigned int VerticalFilter(Image *source,Image *destination,
-  double y_factor,const FilterInfo *filter_info,ContributionInfo *contribution,
-  const unsigned int span,unsigned int *quantum)
-{
-  double
-    blue,
-    center,
-    density,
-    green,
-    end,
-    opacity,
-    red,
-    scale_factor,
-    start,
-    support;
-
-  IndexPacket
-    index;
-
-  int
-    j,
-    n,
-    x;
-
-  register int
-    i,
-    y;
-
-  register IndexPacket
-    *destination_indexes,
-    *source_indexes;
-
-  register PixelPacket
-    *p,
-    *q;
-
-  destination->storage_class=source->storage_class;
-  if ((source->columns == destination->columns) &&
-      (source->rows == destination->rows))
-    {
-      /*
-        Equal width and height-- just copy pixels.
-      */
-      for (y=0; y < (int) destination->rows; y++)
-      {
-        p=SetImagePixels(source,0,y,source->columns,1);
-        q=SetImagePixels(destination,0,y,destination->columns,1);
-        if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-          break;
-        memcpy(q,p,source->columns*sizeof(PixelPacket));
-        source_indexes=GetIndexes(source);
-        destination_indexes=GetIndexes(destination);
-        if (source->storage_class == PseudoClass)
-          memcpy(destination_indexes,source_indexes,
-            source->columns*sizeof(IndexPacket));
-        if (!SyncImagePixels(destination))
-          break;
-        if (QuantumTick(*quantum,span))
-          ProgressMonitor(ZoomImageText,*quantum,span);
-        (*quantum)++;
-      }
-      return(y == (int) destination->rows);
-    }
-  /*
-    Apply filter to zoom vertically from source to destination.
-  */
-  scale_factor=source->blur*Max(1.0/y_factor,1.0);
-  support=Max(scale_factor*filter_info->support,0.5);
-  if (support > 0.5)
-    destination->storage_class=DirectClass;
-  else
-    {
-      /*
-        Reduce to point sampling.
-      */
-      support=0.5+MagickEpsilon;
-      scale_factor=1.0;
-    }
-  for (y=0; y < (int) destination->rows; y++)
-  {
-    density=0.0;
-    n=0;
-    center=(double) y/y_factor;
-    start=center-support;
-    end=center+support;
-    for (i=(int) Max(start+0.5,0); i < (int) Min(end+0.5,source->rows); i++)
-    {
-      contribution[n].pixel=i;
-      contribution[n].weight=
-        filter_info->function((i-center+0.5)/scale_factor);
-      contribution[n].weight/=scale_factor;
-      density+=contribution[n].weight;
-      n++;
-    }
-    density=density == 0.0 ? 1.0 : 1.0/density;
-    for (i=0; i < n; i++)
-      contribution[i].weight*=density;  /* normalize */
-    p=GetImagePixels(source,0,contribution[0].pixel,source->columns,
-      contribution[n-1].pixel-contribution[0].pixel+1);
-    q=SetImagePixels(destination,0,y,destination->columns,1);
-    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-      break;
-    source_indexes=GetIndexes(source);
-    destination_indexes=GetIndexes(destination);
-    for (x=0; x < (int) destination->columns; x++)
-    {
-      blue=0.0;
-      green=0.0;
-      red=0.0;
-      opacity=0.0;
-      for (i=0; i < n; i++)
-      {
-        j=(contribution[i].pixel-contribution[0].pixel)*source->columns+x;
-        red+=contribution[i].weight*(p+j)->red;
-        green+=contribution[i].weight*(p+j)->green;
-        blue+=contribution[i].weight*(p+j)->blue;
-        opacity+=contribution[i].weight*(p+j)->opacity;
-      }
-      if (destination->storage_class == PseudoClass)
-        {
-          index=source_indexes[j];
-          destination_indexes[x]=index;
-        }
-      q->red=(Quantum)
-        ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
-      q->green=(Quantum)
-        ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
-      q->blue=(Quantum)
-        ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
-      q->opacity=(Quantum)
-        ((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
-      q++;
-    }
-    if (!SyncImagePixels(destination))
-      break;
-    if (QuantumTick(*quantum,span))
-      ProgressMonitor(ZoomImageText,*quantum,span);
-    (*quantum)++;
-  }
-  return(y == (int) destination->rows);
-}
-
 MagickExport Image *ZoomImage(Image *image,const unsigned int columns,
   const unsigned int rows,ExceptionInfo *exception)
 {
-  ContributionInfo
-    *contribution;
-
-  double
-    support,
-    x_factor,
-    y_factor;
-
   Image
-    *source_image,
     *zoom_image;
 
-  static const FilterInfo
-    filters[SincFilter+1] =
-    {
-      { Box, 0.0 },
-      { Box, 0.0 },
-      { Box, 0.5 },
-      { Triangle, 1.0 },
-      { Hermite, 1.0 },
-      { Hanning, 1.0 },
-      { Hamming, 1.0 },
-      { Blackman, 1.0 },
-      { Gaussian, 1.25 },
-      { Quadratic, 1.5 },
-      { Cubic, 2.0 },
-      { Catrom, 2.0 },
-      { Mitchell, 2.0 },
-      { Lanczos, 3.0 },
-      { Bessel, 3.2383 },
-      { Sinc, 4.0 }
-    };
-
-  unsigned int
-    quantum,
-    span,
-    status;
-
-  /*
-    Initialize zoom image attributes.
-  */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  assert((image->filter >= 0) && (image->filter <= SincFilter));
-  if ((columns == 0) || (rows == 0))
-    ThrowImageException(OptionWarning,"Unable to zoom image",
-      "image dimensions are zero");
-  if ((columns == image->columns) && (rows == image->rows))
-    return(CloneImage(image,columns,rows,False,exception));
-  zoom_image=CloneImage(image,columns,rows,False,exception);
-  if (zoom_image == (Image *) NULL)
-    return((Image *) NULL);
-  if (zoom_image->rows >= image->rows)
-    source_image=
-      CloneImage(image,zoom_image->columns,image->rows,True,exception);
-  else
-    source_image=
-      CloneImage(image,image->columns,zoom_image->rows,True,exception);
-  if (source_image == (Image *) NULL)
-    {
-      DestroyImage(zoom_image);
-      return((Image *) NULL);
-    }
-  /*
-    Allocate filter info list.
-  */
-  x_factor=(double) zoom_image->columns/image->columns;
-  y_factor=(double) zoom_image->rows/image->rows;
-  support=Max(filters[image->filter].support/x_factor,
-    filters[image->filter].support/y_factor);
-  if (support < filters[image->filter].support)
-    support=filters[image->filter].support;
-  contribution=(ContributionInfo *)
-    AcquireMemory((int) (support*2+3)*sizeof(ContributionInfo));
-  if (contribution == (ContributionInfo *) NULL)
-    {
-      DestroyImage(source_image);
-      DestroyImage(zoom_image);
-      ThrowImageException(ResourceLimitWarning,"Unable to zoom image",
-        "Memory allocation failed");
-    }
-  /*
-    Zoom image.
-  */
-  quantum=0;
-  if (zoom_image->rows >= image->rows)
-    {
-      span=source_image->columns+zoom_image->rows;
-      status=HorizontalFilter(image,source_image,x_factor,
-        &filters[image->filter],contribution,span,&quantum);
-      status|=VerticalFilter(source_image,zoom_image,y_factor,
-        &filters[image->filter],contribution,span,&quantum);
-    }
-  else
-    {
-      span=zoom_image->columns+source_image->columns;
-      status=VerticalFilter(image,source_image,y_factor,&filters[image->filter],
-        contribution,span,&quantum);
-      status|=HorizontalFilter(source_image,zoom_image,x_factor,
-        &filters[image->filter],contribution,span,&quantum);
-    }
-  /*
-    Free allocated memory.
-  */
-  LiberateMemory((void **) &contribution);
-  DestroyImage(source_image);
-  if (status == False)
-    {
-      DestroyImage(zoom_image);
-      ThrowImageException(CacheWarning,"Unable to zoom image",(char *) NULL);
-    }
+  zoom_image=ResizeImage(image,image->columns,image->rows,image->filter,
+    image->blur,exception);
   return(zoom_image);
 }

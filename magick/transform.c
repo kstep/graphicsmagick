@@ -1352,16 +1352,17 @@ MagickExport void TransformImage(Image **image,const char *crop_geometry,
   if ((transform_image->columns != width) || (transform_image->rows != height))
     {
       Image
-        *zoom_image;
+        *resize_image;
 
       /*
         Zoom image.
       */
-      zoom_image=ZoomImage(transform_image,width,height,&(*image)->exception);
-      if (zoom_image != (Image *) NULL)
+      resize_image=ResizeImage(transform_image,width,height,LanczosFilter,
+        1.0,&(*image)->exception);
+      if (resize_image != (Image *) NULL)
         {
           DestroyImage(transform_image);
-          transform_image=zoom_image;
+          transform_image=resize_image;
         }
     }
   *image=transform_image;

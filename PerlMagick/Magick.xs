@@ -323,10 +323,12 @@ static struct
       {"y", DoubleReference} } },
     { "Spread", { {"amount", IntegerReference} } },
     { "Swirl", { {"degree", DoubleReference} } },
+    { "Resize", { {"geom", StringReference}, {"width", IntegerReference},
+      {"height", IntegerReference}, {"filter", FilterTypess},
+      {"blur", DoubleReference } } },
     { "Zoom", { {"geom", StringReference}, {"width", IntegerReference},
       {"height", IntegerReference}, {"filter", FilterTypess},
       {"blur", DoubleReference } } },
-    { "IsGrayImage", },
     { "Annotate", { {"text", StringReference}, {"font", StringReference},
       {"point", DoubleReference}, {"density", StringReference},
       {"box", StringReference}, {"stroke", StringReference},
@@ -3613,10 +3615,10 @@ Mogrify(ref,...)
     SpreadImage        =  58
     Swirl              =  59
     SwirlImage         =  60
-    Zoom               =  61
-    ZoomImage          =  62
-    IsGray             =  63
-    IsGrayImage        =  64
+    Resize             =  61
+    ResizeImage        =  62
+    Zoom               =  63
+    ZoomImage          =  64
     Annotate           =  65
     AnnotateImage      =  66
     ColorFloodfill     =  67
@@ -4291,7 +4293,8 @@ Mogrify(ref,...)
           image=SwirlImage(image,argument_list[0].double_reference,&exception);
           break;
         }
-        case 31:  /* Zoom */
+        case 31:  /* Resize */
+        case 32:  /* Zoom */
         {
           if (attribute_flag[1])
             rectangle_info.width=argument_list[1].int_reference;
@@ -4301,16 +4304,15 @@ Mogrify(ref,...)
             (void) ParseImageGeometry(argument_list[0].string_reference,
               &rectangle_info.x,&rectangle_info.y,&rectangle_info.width,
               &rectangle_info.height);
-          if (attribute_flag[3])
-            image->filter=(FilterTypes) argument_list[3].int_reference;
-          if (attribute_flag[4])
-            image->blur=argument_list[4].double_reference;
-          image=ZoomImage(image,rectangle_info.width,rectangle_info.height,
-            &exception);
+          if (!attribute_flag[3])
+            argument_list[3].int_reference=(int) LanczosFilter;
+          if (!attribute_flag[4])
+            argument_list[4].double_reference=1.0;
+          image=ResizeImage(image,rectangle_info.width,rectangle_info.height,
+            (FilterTypes) argument_list[3].int_reference,
+            argument_list[4].double_reference,&exception);
           break;
         }
-        case 32:  /* IsGrayImage */
-          break;
         case 33:  /* Annotate */
         {
           AnnotateInfo

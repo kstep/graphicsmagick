@@ -804,6 +804,17 @@ x=><i>integer</i>, y=><i>integer</i>, raise=>{True, False}</td>
 </tr>
 
 <tr>
+<td>Resize</td>
+
+<td>geometry=><i>geometry</i>, width=><i>integer</i>, height=><i>integer</i>,
+filter=>{Point, Box, Triangle, Hermite, Hanning, Hamming, Blackman, Gaussian,
+Quadratic, Cubic, Catrom, Mitchell, Lanczos, Bessel, Sinc}, blur=><i>double</i></td>
+
+<td>scale image to desired size. Specify <tt>blur</tt> > 1 for blurry or
+&lt; 1 for sharp</td>
+</tr>
+
+<tr>
 <td>Roll</td>
 
 <td>geometry=><i>geometry</i>, x=><i>integer</i>, y=><i>integer</i></td>
@@ -981,17 +992,6 @@ Catrom, Mitchell, Lanczos, Bessel, Sinc}</td>
 <td>geometry=><i>geometry</i>, amplitude=><i>double</i>, wavelength=><i>double</i></td>
 
 <td>alter an image along a sine wave</td>
-</tr>
-
-<tr>
-<td>Zoom</td>
-
-<td>geometry=><i>geometry</i>, width=><i>integer</i>, height=><i>integer</i>,
-filter=>{Point, Box, Triangle, Hermite, Hanning, Hamming, Blackman, Gaussian,
-Quadratic, Cubic, Catrom, Mitchell, Lanczos, Bessel, Sinc}, blur=><i>double</i></td>
-
-<td>scale image to desired size. Specify <tt>blur</tt> > 1 for blurry or
-&lt; 1 for sharp</td>
 </tr>
 </table>
 
@@ -2000,7 +2000,7 @@ Methods which return a number (e.g. <tt>Read</tt>, <tt>Write</tt>):</li>
 &nbsp;&nbsp;&nbsp; print 0+$x;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # print the number of images read</pre>
 
 <li>
-Methods which operate on an image (e.g. <tt>Zoom</tt>, <tt>Crop</tt>):</li>
+Methods which operate on an image (e.g. <tt>Resize</tt>, <tt>Crop</tt>):</li>
 
 <pre>&nbsp;&nbsp;&nbsp; $x = $image->Crop(...);
 &nbsp;&nbsp;&nbsp; warn "$x" if "$x";&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # print the error message

@@ -487,9 +487,7 @@ MagickExport MagickInfo *RegisterMagickInfo(MagickInfo *entry)
       if (LocaleCompare(p->tag,entry->tag) == 0)
         {
           p=p->previous;
-          LiberateSemaphore(magick_semaphore);
           UnregisterMagickInfo(entry->tag);
-          AcquireSemaphore(magick_semaphore);
         }
     }
   if (magick_list == (MagickInfo *) NULL)
@@ -601,8 +599,8 @@ MagickExport unsigned int UnregisterMagickInfo(const char *tag)
     status;
 
   assert(tag != (const char *) NULL);
-  status=False;
   AcquireSemaphore(magick_semaphore);
+  status=False;
   for (p=magick_list; p != (MagickInfo *) NULL; p=p->next)
   {
     if (LocaleCompare(p->tag,tag) != 0)

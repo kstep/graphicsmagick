@@ -1712,9 +1712,10 @@ MagickExport Image *MorphImages(Image *image,const unsigned int number_frames,
       beta=(double) (i+1.0)/(number_frames+1.0);
       alpha=1.0-beta;
       next->orphan=True;
-      morph_images->next=ZoomImage(next,
+      morph_images->next=ResizeImage(next,
         (unsigned int) (alpha*next->columns+beta*next->next->columns+0.5),
-        (unsigned int) (alpha*next->rows+beta*next->next->rows+0.5),exception);
+        (unsigned int) (alpha*next->rows+beta*next->next->rows+0.5),
+        LanczosFilter,1.0,exception);
       if (morph_images->next == (Image *) NULL)
         {
           DestroyImages(morph_images);
@@ -1723,8 +1724,8 @@ MagickExport Image *MorphImages(Image *image,const unsigned int number_frames,
       morph_images->next->previous=morph_images;
       morph_images=morph_images->next;
       next->next->orphan=True;
-      morph_image=ZoomImage(next->next,morph_images->columns,
-        morph_images->rows,exception);
+      morph_image=ResizeImage(next->next,morph_images->columns,
+        morph_images->rows,LanczosFilter,1.0,exception);
       if (morph_image == (Image *) NULL)
         {
           DestroyImages(morph_images);

@@ -2568,20 +2568,20 @@ static unsigned int XCompositeImage(Display *display,
       (composite_info.height != composite_image->rows))
     {
       Image
-        *zoom_image;
+        *resize_image;
 
       /*
         Scale composite image.
       */
-      zoom_image=ZoomImage(composite_image,composite_info.width,
-        composite_info.height,&image->exception);
+      resize_image=ResizeImage(composite_image,composite_info.width,
+        composite_info.height,LanczosFilter,1.0,&image->exception);
       DestroyImage(composite_image);
-      if (zoom_image == (Image *) NULL)
+      if (resize_image == (Image *) NULL)
         {
           XSetCursorState(display,windows,False);
           return(False);
         }
-      composite_image=zoom_image;
+      composite_image=resize_image;
     }
   if (compose == DisplaceCompositeOp)
     composite_image->geometry=displacement_geometry;
