@@ -61,11 +61,15 @@ MAGICK_BASE_SRCS = memory.c blob.c cache.c error.c monitor.c constitute.c \
 # Platform specific source files that may appear in the library
 EXTRA_libMagick_la_SOURCES = ntbase.c ntfeature.c
 
-if WIN32_NATIVE
+if WIN32_NATIVE_BUILD
 MAGICK_PLATFORM_SRCS = ntbase.c ntfeature.c
 else
+if CYGWIN_BUILD
+MAGICK_PLATFORM_SRCS = ntfeature.c
+else
 MAGICK_PLATFORM_SRCS =
-endif
+endif # if CYGWIN_BUILD
+endif # if WIN32_NATIVE_BUILD
 
 # Library sources
 if WITH_MODULES
@@ -87,7 +91,7 @@ include_HEADERS = PreRvIcccm.h api.h attribute.h blob.h cache.h \
   xwindow.h
 
 # Headers which are not installed but which are distributed
-noinst_HEADERS = animate.h display.h mac.h nt.h studio.h vms.h
+noinst_HEADERS = animate.h display.h mac.h ntbase.h ntfeature.h studio.h vms.h
 
 # Additional files to distribute
 EXTRA_DIST = $(ALLMANPAGES) colors.mgk magic.mgk Magick-config.in \

@@ -99,8 +99,10 @@ AC_OBJEXT
 
 LIB_GDI32=''
 native_win32_build='no'
+cygwin_build='no'
 case "${host_os}" in
   cygwin* )
+    cygwin_build='yes'
     LIB_GDI32='-lgdi32'
     ;;
   mingw* )
@@ -114,7 +116,8 @@ then
 fi
 AC_SUBST(LIB_GDI32)
 AM_CONDITIONAL(HasWINGDI32, test "${LIB_GDI32}x" != 'x' )
-AM_CONDITIONAL(WIN32_NATIVE, test "${native_win32_build}" = 'yes' )
+AM_CONDITIONAL(WIN32_NATIVE_BUILD, test "${native_win32_build}" = 'yes' )
+AM_CONDITIONAL(CYGWIN_BUILD, test "${cygwin_build}" = 'yes' )
 
 #
 # Compiler flags tweaks

@@ -1,0 +1,41 @@
+/*
+  Windows NT Utility Methods for ImageMagick.
+*/
+#ifndef _MAGICK_NT_H
+#define _MAGICK_NT_H
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
+
+/*
+  Define declarations.
+*/
+
+/*
+  Typedef declarations.
+*/
+
+
+/*
+  NT features routines.
+*/
+extern MagickExport char
+  *NTRegistryKeyLookup(const char *key);
+
+#if !defined(XS_VERSION)
+
+extern MagickExport unsigned int
+  NTIsMagickConflict(const char *);
+
+extern MagickExport TypeInfo
+  * NTGetTypeList( void );
+
+#endif /* !XS_VERSION */
+
+#if defined(__cplusplus) || defined(c_plusplus)
+}
+#endif /* !C++ */
+
+#endif /* !_MAGICK_NT_H */

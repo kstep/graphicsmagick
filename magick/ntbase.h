@@ -76,8 +76,7 @@ typedef struct _DIR
 */
 extern MagickExport char
   *NTGetExecutionPath(void),
-  *NTGetLastError(void),
-  *NTRegistryKeyLookup(const char *key);
+  *NTGetLastError(void);
 
 extern MagickExport int
   Exit(int),
@@ -108,9 +107,6 @@ extern MagickExport struct dirent
 extern MagickExport unsigned char
   *NTResourceToBlob(const char *);
 
-extern MagickExport unsigned int
-  NTIsMagickConflict(const char *);
-
 extern MagickExport void
   closedir(DIR *),
   DebugString(char *, ...),
@@ -128,9 +124,6 @@ extern MagickExport void
   *lt_dlsym(void *, char *)
 #endif /* !HasLTDL */
   ;
-
-extern MagickExport TypeInfo
-  * NTGetTypeList( void );
 
 #endif /* !XS_VERSION */
 

@@ -780,10 +780,14 @@ namespace Magick
 				 const Color &color_ );
     Color           pixelColor ( const unsigned int x_, const unsigned int y_ ) const;
 
-    // Add or remove a named profile to/from the image
+    // Add or remove a named profile to/from the image. Remove the
+    // profile by passing an empty Blob (e.g. Blob()). Valid names are
+    // "*", "8BIM", "ICM", "IPTC", or a user/format-defined profile name.
     void            profile( const std::string name_, const Blob &colorProfile_ );
 
-    // Retrieve a named profile from the image.
+    // Retrieve a named profile from the image. Valid names are:
+    // "8BIM", "8BIMTEXT", "APP1", "APP1JPEG", "ICC", "ICM", & "IPTC"
+    // or an existing user/format-defined profile name.
     Blob            profile( const std::string name_ ) const;
 
     // JPEG/MIFF/PNG compression level (default 75).

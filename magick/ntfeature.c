@@ -49,12 +49,15 @@
 %
 */
 
-#if defined(WIN32)
+#if defined(WIN32) || defined(__CYGWIN__)
 /*
   Include declarations.
 */
 #include "studio.h"
-#include "nt.h"
+#include "ntfeature.h"
+#define WIN32_LEAN_AND_MEAN
+#define VC_EXTRALEAN
+#include <windows.h>
 
 /*
   Static declarations.

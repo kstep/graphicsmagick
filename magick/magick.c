@@ -626,7 +626,7 @@ MagickExport int unsigned IsMagickConflict(const char *magick)
 #if defined(vms)
   return(VMSIsMagickConflict(magick));
 #endif
-#if defined(WIN32)
+#if defined(WIN32) || defined(__CYGWIN__)
   return(NTIsMagickConflict(magick));
 #endif
   return(False);

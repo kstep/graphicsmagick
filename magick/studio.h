@@ -99,7 +99,10 @@ extern "C" {
 #endif
 
 #if defined(WIN32)
-# include "nt.h"
+# include "ntbase.h"
+#endif
+#if defined(WIN32) || defined(__CYGWIN__)
+# include "ntfeature.h"
 #endif
 #if defined(macintosh)
 # include "mac.h"
