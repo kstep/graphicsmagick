@@ -137,7 +137,25 @@ Export unsigned int GetMagic(char* magic,
   return False;
 }
 
-/* Free any memory allocated by this source module */
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   Q u i t M a g i c                                                         %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Method QuitMagic deallocates memory associated with the MagicTest list
+%
+%  The format of the QuitMagic method is:
+%
+%      void QuitMagic()
+%
+*/
 Export void QuitMagic(void)
 {
   int
@@ -222,7 +240,7 @@ static void InitializeMagic(void)
             goto eol_error;
           magic_test_list[list_index]=
             (MagicTest*)AllocateMemory(sizeof(MagicTest));
-          if(magic_test_list[list_index]==(MagicTest*)NULL)
+          if(magic_test_list[list_index] == (MagicTest*)NULL)
             MagickError(ResourceLimitError,"Unable to allocate image",
                         "Memory allocation failed");
           magic_test_list[list_index]->tag=AllocateString(tag);
@@ -240,7 +258,7 @@ static void InitializeMagic(void)
               /* intialize test_member */
               test_member=
                 (MagicTestMember*)AllocateMemory(sizeof(MagicTestMember));
-              if(test_member==(MagicTestMember*)NULL)
+              if(test_member == (MagicTestMember*)NULL)
                 MagickError(ResourceLimitError,"Unable to allocate image",
                             "Memory allocation failed");
               test_member->method=UndefinedMagicMethod;
@@ -271,7 +289,7 @@ static void InitializeMagic(void)
 
                   string_argument=
                     (StringMethodArgument*)AllocateMemory(sizeof(StringMethodArgument));
-                  if(string_argument==(StringMethodArgument*)NULL)
+                  if(string_argument == (StringMethodArgument*)NULL)
                     MagickError(ResourceLimitError,"Unable to allocate image",
                                 "Memory allocation failed");
                   test_member->argument=(void*)string_argument;
