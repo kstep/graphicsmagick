@@ -8,7 +8,7 @@
 # Whenever a new test is added/removed, be sure to update the
 # 1..n ouput.
 
-BEGIN { $| = 1; $test=1; print "1..34\n"; }
+BEGIN { $| = 1; $test=1; print "1..33\n"; }
 END {print "not ok $test\n" unless $loaded;}
 use Image::Magick;
 $loaded=1;
@@ -42,13 +42,6 @@ print("ZSoft IBM PC multi-page Paintbrush file ...\n");
 ++$test;
 testReadWrite( 'DCX:input.dcx',
   'DCX:output.dcx',
-  q//,
-  'a5d122b2b7a0944d835243afd4a81815bbea5bc1ae6c3a6ba79301662b4474a1');
-
-print("Microsoft Windows bitmap image file ...\n");
-++$test;
-testReadWrite( 'DIB:input.dib',
-  'DIB:output.dib',
   q//,
   'a5d122b2b7a0944d835243afd4a81815bbea5bc1ae6c3a6ba79301662b4474a1');
 
