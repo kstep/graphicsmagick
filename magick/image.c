@@ -5628,16 +5628,6 @@ MagickExport void SetImage(Image *image,const Quantum opacity)
 */
 MagickExport unsigned int SetImageClipMask(Image *image,Image *clip_mask)
 {
-  int
-    y;
-
-  register int
-    x;
-
-  register PixelPacket
-    *p,
-    *q;
-
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   if (clip_mask == (Image *) NULL)
@@ -5649,30 +5639,11 @@ MagickExport unsigned int SetImageClipMask(Image *image,Image *clip_mask)
     }
   if ((clip_mask->columns != image->columns) ||
       (clip_mask->rows != image->rows))
-    ThrowBinaryException(OptionWarning,"Unable to associate clip mask",
+    ThrowBinaryException(OptionWarning,"Unable to set clip mask",
       "image widths or heights differ");
-  if (image->clip_mask == (Image *) NULL)
-    {
-      image->clip_mask=clip_mask;
-      return(True);
-    }
-  for (y=0; y < (int) image->rows; y++)
-  {
-    p=GetImagePixels(clip_mask,0,y,image->columns,1);
-    q=GetImagePixels(image,0,y,image->columns,1);
-    if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-      break;
-    for (x=0; x < (int) image->columns; x++)
-    {
-      if (p->opacity != TransparentOpacity)
-        *q=(*p);
-      p++;
-      q++;
-    }
-    if (!SyncImagePixels(image))
-      break;
-  }
-  DestroyImage(clip_mask);
+  if (image->clip_mask != (Image *) NULL)
+    DestroyImage(image->clip_mask);
+  image->clip_mask=clip_mask;
   return(True);
 }
 
