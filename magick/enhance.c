@@ -1064,7 +1064,8 @@ MagickExport unsigned int NormalizeImage(Image *image)
   /*
     Stretch the histogram to create the normalized image mapping.
   */
-  memset(normalize_map,0,(ScaleQuantumToShort(MaxRGB)+1)*sizeof(PixelPacket));
+  memset(normalize_map,0,
+    (ScaleQuantumToShort(MaxRGB)+1)*sizeof(ShortPixelPacket));
   for (i=0; i <= ScaleQuantumToShort(MaxRGB); i++)
   {
     if (i < (long) low.red)
