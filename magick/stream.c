@@ -208,7 +208,7 @@ static IndexPacket *GetIndexesFromStream(const Image *image)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-+   G e t One P i x e l F r o m S t r e a m                                   %
++   G e t O n e P i x e l F r o m S t r e a m                                 %
 %                                                                             %
 %                                                                             %
 %                                                                             %

@@ -118,7 +118,8 @@ static unsigned int IsVIFF(const unsigned char *magick,
 %
 %  The format of the ReadVIFFImage method is:
 %
-%      Image *ReadVIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
+%      Image *ReadVIFFImage(const ImageInfo *image_info,
+%        ExceptionInfo *exception)
 %
 %  A description of each parameter follows:
 %
@@ -132,7 +133,8 @@ static unsigned int IsVIFF(const unsigned char *magick,
 %
 %
 */
-static Image *ReadVIFFImage(const ImageInfo *image_info,ExceptionInfo *exception)
+static Image *ReadVIFFImage(const ImageInfo *image_info,
+  ExceptionInfo *exception)
 {
 #define VFF_CM_genericRGB  15
 #define VFF_CM_ntscRGB  1
@@ -234,6 +236,7 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
     status;
 
   unsigned long
+    lsb_first,
     max_packets;
 
   ViffHeader
@@ -485,8 +488,10 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,ExceptionInfo *exception
       ThrowReaderException(ResourceLimitWarning,"Memory allocation failed",
         image);
     (void) ReadBlob(image,bytes_per_pixel*max_packets,(char *) viff_pixels);
-    if ((viff_header.machine_dependency == VFF_DEP_DECORDER) ||
-        (viff_header.machine_dependency == VFF_DEP_NSORDER))
+    lsb_first=1;
+    if (*(char *) &lsb_first &&
+        ((viff_header.machine_dependency != VFF_DEP_DECORDER) &&
+         (viff_header.machine_dependency != VFF_DEP_NSORDER)))
       switch (viff_header.data_storage_type)
       {
         case VFF_TYP_2_BYTE:

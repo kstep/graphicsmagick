@@ -244,6 +244,10 @@ int main(int argc,char **argv)
   gravity=NorthWestGravity;
   image=(Image *) NULL;
   image_info=CloneImageInfo((ImageInfo *) NULL);
+  (void) strcpy(image_info->filename,argv[argc-1]);
+  SetImageInfo(image_info,True);
+  if (strcmp(image_info->magick,"CACHE") == 0)
+    SetCacheThreshold(0);
   mask_image=(Image *) NULL;
   stegano=0;
   stereo=False;

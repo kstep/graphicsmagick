@@ -60,7 +60,7 @@
   Global declarations.
 */
 static off_t
-  cache_threshold = 0;
+  cache_threshold = ~0;
 
 /*
   Declare pixel cache interfaces.
@@ -867,7 +867,7 @@ MagickExport unsigned int OpenCache(Cache cache,const ClassType class_type,
     *allocation;
 
   assert(cache != (Cache) NULL);
-  if (cache_threshold == 0)
+  if (cache_threshold == ~0)
     {
       off_t
         threshold;
@@ -1221,6 +1221,8 @@ MagickExport void SetCacheThreshold(const off_t threshold)
   off_t
     offset;
 
+  if (cache_threshold == ~0)
+    cache_threshold=0;
   offset=1048576*(cache_threshold-threshold);
   (void) GetCacheMemory(-offset);
   cache_threshold=threshold;
