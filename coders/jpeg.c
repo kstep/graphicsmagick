@@ -1106,7 +1106,6 @@ static unsigned int WriteJPEGImage(const ImageInfo *image_info,Image *image)
   jpeg_info.input_components=3;
   jpeg_info.data_precision=image->depth <= 8 ? 8 : 12;
   jpeg_info.in_color_space=JCS_RGB;
-  colorspace=image_info->colorspace;
   switch (image_info->colorspace)
   {
     case CMYKColorspace:
