@@ -1,5 +1,8 @@
 2005-01-08  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
+	* coders/jp2.c (ReadJP2Image): Handle images in YCBCR colorspace.
+	(ReadJP2Image): Retrieve and store an ICC ICM color profile if
+	present.
 	* PerlMagick/t/tiff/read.t: Added test for reading truecolor
 	planar TIFF image.
 	Added test for reading 32-bit TrueColor TIFF image.
