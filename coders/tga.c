@@ -745,7 +745,7 @@ static unsigned int WriteTGAImage(const ImageInfo *image_info,Image *image)
               *q++=ScaleQuantumToChar(p->opacity);
             else
               if (image->matte)
-                *q++=255-ScaleQuantumToChar(p->opacity);
+                *q++=ScaleQuantumToChar(MaxRGB-p->opacity);
           }
         p++;
       }

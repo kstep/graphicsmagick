@@ -896,7 +896,7 @@ static unsigned int WritePCXImage(const ImageInfo *image_info,Image *image)
                 case 3:
                 default:
                 {
-                  *q++=255-ScaleQuantumToChar(p->opacity);
+                  *q++=ScaleQuantumToChar(MaxRGB-p->opacity);
                   break;
                 }
               }

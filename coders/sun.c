@@ -773,7 +773,7 @@ static unsigned int WriteSUNImage(const ImageInfo *image_info,Image *image)
           for (x=0; x < (long) image->columns; x++)
           {
             if (image->matte)
-              *q++=255-ScaleQuantumToChar(p->opacity);
+              *q++=ScaleQuantumToChar(MaxRGB-p->opacity);
             *q++=ScaleQuantumToChar(p->red);
             *q++=ScaleQuantumToChar(p->green);
             *q++=ScaleQuantumToChar(p->blue);

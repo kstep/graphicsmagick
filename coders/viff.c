@@ -683,8 +683,8 @@ static Image *ReadVIFFImage(const ImageInfo *image_info,
                   q->green=image->colormap[q->green].green;
                   q->blue=image->colormap[q->blue].blue;
                 }
-              q->opacity=ScaleCharToQuantum(image->matte ?
-                255-(*(p+number_pixels*3)) : 0);
+              q->opacity=image->matte ? MaxRGB-
+                ScaleCharToQuantum(*(p+number_pixels*3)) : OpaqueOpacity;
               p++;
               q++;
             }
@@ -1063,7 +1063,7 @@ static unsigned int WriteVIFFImage(const ImageInfo *image_info,Image *image)
             *(q+number_pixels)=ScaleQuantumToChar(p->green);
             *(q+number_pixels*2)=ScaleQuantumToChar(p->blue);
             if (image->matte)
-              *(q+number_pixels*3)=255-ScaleQuantumToChar(p->opacity);
+              *(q+number_pixels*3)=ScaleQuantumToChar(MaxRGB-p->opacity);
             p++;
             q++;
           }

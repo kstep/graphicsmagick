@@ -5395,7 +5395,7 @@ static unsigned int WritePNGImage(const ImageInfo *image_info,Image *image)
             ping_info->trans_values.gray=
                (png_uint_16) ScaleQuantumToShort(PixelIntensity(p))&mask;
             ping_info->trans_values.index=(unsigned char)
-               (255-ScaleQuantumToChar(p->opacity));
+               (ScaleQuantumToChar(MaxRGB-p->opacity));
           }
         if (ping_info->valid & PNG_INFO_tRNS)
           {

@@ -475,7 +475,7 @@ static Image *ReadFPXImage(const ImageInfo *image_info,ExceptionInfo *exception)
           q->blue=index;
         }
       if (image->matte)
-        q->opacity=255-ScaleCharToQuantum(*a);
+        q->opacity=ScaleCharToQuantum(255-*a);
       q++;
       r+=red_component->columnStride;
       g+=green_component->columnStride;

@@ -358,7 +358,7 @@ static unsigned int WriteAVSImage(const ImageInfo *image_info,Image *image)
       q=pixels;
       for (x=0; x < (long) image->columns; x++)
       {
-        *q++=255-ScaleQuantumToChar((image->matte ? p->opacity : OpaqueOpacity));
+        *q++=ScaleQuantumToChar(MaxRGB-(image->matte ? p->opacity : OpaqueOpacity));
         *q++=ScaleQuantumToChar(p->red);
         *q++=ScaleQuantumToChar(p->green);
         *q++=ScaleQuantumToChar(p->blue);
