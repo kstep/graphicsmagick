@@ -689,13 +689,13 @@ static Image *ReadBMPImage(const ImageInfo *image_info,ExceptionInfo *exception)
         break;
       case BI_JPEG:
         ThrowReaderException(CorruptImageWarning,
-          "JPEG compression not supported",image);
+          "JPEG compression not supported",image)
       case BI_PNG:
         ThrowReaderException(CorruptImageWarning,
-          "PNG compression not supported",image);
+          "PNG compression not supported",image)
       default:
         ThrowReaderException(CorruptImageWarning,
-          "Unrecognized compression method",image);
+          "Unrecognized compression method",image)
     }
     image->columns=bmp_info.width;
     image->rows=AbsoluteValue(bmp_info.height);
