@@ -1778,7 +1778,7 @@ namespace Magick
     // Obtain first entry in MagickInfo list
     MagickLib::ExceptionInfo exceptionInfo;
     MagickLib::GetExceptionInfo( &exceptionInfo );
-    volatile const MagickLib::MagickInfo *magickInfo =
+    const MagickLib::MagickInfo *magickInfo =
       MagickLib::GetMagickInfo( "*", &exceptionInfo );
     throwException( exceptionInfo );
     if( !magickInfo )
@@ -1795,7 +1795,7 @@ namespace Magick
           continue;
 
         try {
-          volatile CoderInfo coderInfo( magickInfo );
+          CoderInfo coderInfo( magickInfo );
 
           // Test isReadable_
           if ( isReadable_ != CoderInfo::AnyMatch &&
