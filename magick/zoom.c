@@ -511,7 +511,7 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
   */
   for (y=0; y < (long) minify_image->rows; y++)
   {
-    p=AcquireImagePixels(image,0,2*y,image->columns+4,4,exception);
+    p=AcquireImagePixels(image,-2,2*(y-1),image->columns+4,4,exception);
     q=SetImagePixels(minify_image,0,y,minify_image->columns,1);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
       break;
@@ -526,7 +526,7 @@ MagickExport Image *MinifyImage(const Image *image,ExceptionInfo *exception)
       total_opacity=0;
       r=p;
       Minify(3L); Minify(7L);  Minify(7L);  Minify(3L);
-      r=p+image->columns+4;
+      r=p+(image->columns+4);
       Minify(7L); Minify(15L); Minify(15L); Minify(7L);
       r=p+2*(image->columns+4);
       Minify(7L); Minify(15L); Minify(15L); Minify(7L);
