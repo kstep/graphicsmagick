@@ -5061,7 +5061,7 @@ Mogrify(ref,...)
         case 58:  /* Charcoal */
         {
           if (!attribute_flag[0])
-            argument_list[0].string_reference="3";
+            argument_list[0].string_reference="1";
           commands[0]=client_name;
           commands[1]="-charcoal";
           commands[2]=argument_list[0].string_reference;

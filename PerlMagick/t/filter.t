@@ -50,7 +50,7 @@ testFilter('input.miff', 'Contrast',
 ++$test;
 testFilter('input.miff', 'Convolve',
   [1, 2, 1, 2, 4, 2, 1, 2, 1],
-  'eade44acbbda7dc3155778286e77f954',
+  '7b8a78e07c46b64396a2dc9955996c82',
   '78da2d7c584ffd74b41137ea23460abb');
 
 ++$test;
@@ -67,13 +67,13 @@ testFilter('input.miff', 'Despeckle',
 ++$test;
 testFilter('input.miff', 'Edge',
   q/3/,
-  '29c6f3e24fb5dbae9468efd7b4b391ae',
+  'cb968877e88b67b28a15da3796698eb0',
   '89457006d11b4d9ea348d90f2fa75ec7');
 
 ++$test;
 testFilter('input.miff', 'Emboss',
   q/3/,
-  '4a84d8bcd2c7c494cc913a845caf7b9a',
+  '08f4ee64dcf16fb7ce9be112d535379c',
   'e8e5eb03ca6563f34db3692747a8d9f8');
 
 ++$test;
@@ -209,7 +209,7 @@ testFilter('input.miff', 'Shade',
 ++$test;
 testFilter('input.miff', 'Sharpen',
   q/0.0x1.5/,
-  'bef1ddd9a7f66b5e3c0c66f4ca63ca22',
+  '5ea5f0c03bbe84f9640e808d3f8dd325',
   'd2a0063811738be757a6d427499a6187');
 
 ++$test;

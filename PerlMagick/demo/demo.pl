@@ -172,7 +172,7 @@ $example->Raise();
 push(@$images,$example);
 $example=$model->Clone();
 $example->Label('Reduce Noise');
-$example->ReduceNoise()
+$example->ReduceNoise();
 push(@$images,$example);
 $example=$model->Clone();
 $example=$model->Clone();

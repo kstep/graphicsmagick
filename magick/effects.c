@@ -296,8 +296,8 @@ MagickExport Image *BlurImage(Image *image,const double radius,
       "Memory allocation failed");
   for (i=0; i < (width+1); i++)
     kernel[i]=exp((double) (-i*i)/(sigma*sigma));
-  if ((radius > 0.0) && ((2*radius+1) < width))
-    kernel[width]*=((2*radius+1)-width+1.0);
+  if ((radius > 0.0) && ((2.0*radius+1.0) < width))
+    kernel[width]*=((2.0*radius+1.0)-width+1.0);
   normalize=0.0;
   for (i=0; i < (width+1); i++)
     normalize+=kernel[i];
@@ -591,6 +591,7 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int order,
 
   int
     i,
+    width,
     y;
 
   PixelPacket
@@ -616,12 +617,13 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int order,
   assert(image->signature == MagickSignature);
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
-  if ((order % 2) == 0)
+  width=order;
+  if ((width % 2) == 0)
     ThrowImageException(ResourceLimitWarning,"Unable to convolve image",
-      "kernel order must be an odd number");
-  if ((image->columns < order) || (image->rows < order))
+      "kernel width must be an odd number");
+  if ((image->columns < width) || (image->rows < width))
     ThrowImageException(ResourceLimitWarning,"Unable to convolve image",
-      "image smaller than kernel order");
+      "image smaller than kernel width");
   convolve_image=CloneImage(image,image->columns,image->rows,False,exception);
   if (convolve_image == (Image *) NULL)
     return((Image *) NULL);
@@ -630,7 +632,7 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int order,
     Convolve image.
   */
   normalize=0.0;
-  for (i=0; i < (order*order); i++)
+  for (i=0; i < (width*width); i++)
     normalize+=kernel[i];
   for (y=0; y < (int) convolve_image->rows; y++)
   {
@@ -645,12 +647,12 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int order,
       blue=0.0;
       opacity=0.0;
       k=kernel;
-      if ((x < ((int) order/2)) || (x >= (image->columns-(int) order/2)) ||
-          (y < ((int) order/2)) || (y >= (image->rows-(int) order/2)))
+      if ((x < (width/2)) || (x >= (int) (image->columns-width/2)) ||
+          (y < (width/2)) || (y >= (int) (image->rows-width/2)))
         {
-          for (v=(-(int) order/2); v <= (int) order/2; v++)
+          for (v=(-width/2); v <= (width/2); v++)
           {
-            for (u=(-(int) order/2); u <= (int) order/2; u++)
+            for (u=(-width/2); u <= (width/2); u++)
             {
               pixel=GetOnePixel(image,Cx(x+u),Cy(y+v));
               red+=(*k)*pixel.red;
@@ -664,11 +666,11 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int order,
       else
         {
           if (p == (PixelPacket *) NULL)
-            p=GetImagePixels(image,0,y-(int) order/2,image->columns,order);
+            p=GetImagePixels(image,0,y-width/2,image->columns,width);
           s=p+x;
-          for (v=(-(int) order/2); v <= (int) order/2; v++)
+          for (v=(-width/2); v <= (width/2); v++)
           {
-            for (u=(-(int) order/2); u <= (int) order/2; u++)
+            for (u=(-width/2); u <= (width/2); u++)
             {
               red+=(*k)*s[u].red;
               green+=(*k)*s[u].green;
@@ -689,8 +691,7 @@ MagickExport Image *ConvolveImage(Image *image,const unsigned int order,
       q->red=(Quantum) ((red < 0) ? 0 : (red > MaxRGB) ? MaxRGB : red+0.5);
       q->green=(Quantum)
         ((green < 0) ? 0 : (green > MaxRGB) ? MaxRGB : green+0.5);
-      q->blue=(Quantum)
-        ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
+      q->blue=(Quantum) ((blue < 0) ? 0 : (blue > MaxRGB) ? MaxRGB : blue+0.5);
       q->opacity=(Quantum)
 	((opacity < 0) ? 0 : (opacity > MaxRGB) ? MaxRGB : opacity+0.5);
       q++;
@@ -946,7 +947,9 @@ MagickExport Image *EdgeImage(Image *image,const double radius,
     *edge_image;
 
   int
-    width,
+    width;
+
+  register int
     i;
 
   assert(image != (Image *) NULL);
@@ -960,7 +963,7 @@ MagickExport Image *EdgeImage(Image *image,const double radius,
       "Memory allocation failed");
   for (i=0; i < (width*width); i++)
     kernel[i]=(-1.0);
-  kernel[i/2]=width*width-1.0;
+  kernel[i/2]=width*width-1;
   edge_image=ConvolveImage(image,width,kernel,exception);
   LiberateMemory((void **) &kernel);
   return(edge_image);
@@ -1010,11 +1013,11 @@ MagickExport Image *EmbossImage(Image *image,const double radius,
     *emboss_image;
 
   int
-    i,
     j,
     width;
 
   register int
+    i,
     u,
     v;
 
@@ -1028,10 +1031,10 @@ MagickExport Image *EmbossImage(Image *image,const double radius,
     ThrowImageException(ResourceLimitWarning,"Unable to emboss image",
       "Memory allocation failed");
   i=0;
-  j=(int) width/2;
-  for (v=(int) (-0.5*width); v <= (int) (0.5*width); v++)
+  j=width/2;
+  for (v=(-width/2); v <= (width/2); v++)
   {
-    for (u=(int) (0.5*width); u <= (int) (0.5*width); u++)
+    for (u=(-width/2); u <= (width/2); u++)
     {
       kernel[i]=(int) ((u < 0 || v < 0 ? -8.0 : 8.0)*exp((double) -(u*u+v*v)));
       if (u == j)
@@ -1294,9 +1297,9 @@ MagickExport Image *GaussianBlurImage(Image *image,const double radius,
       "Memory allocation failed");
   i=0;
   normalize=0.0;
-  for (v=(int) (-0.5*width); v <= (int) (0.5*width); v++)
+  for (v=(-width/2); v <= (width/2); v++)
   {
-    for (u=(int) (-0.5*width); u <= (int) (0.5*width); u++)
+    for (u=(-width/2); u <= (width/2); u++)
     {
       kernel[i]=exp((double) -(u*u+v*v)/(sigma*sigma));
       normalize+=kernel[i];
@@ -1582,10 +1585,10 @@ MagickExport Image *MedianFilterImage(Image *image,const double radius,
   /*
     Median filter each image row.
   */
-  center=0.5*width*width;
+  center=width*width/2;
   for (y=0; y < (int) median_image->rows; y++)
   {
-    v=Min(Max(y-0.5*width,0),image->rows-width);
+    v=Min(Max(y-width/2,0),image->rows-width);
     p=GetImagePixels(image,0,v,image->columns,width);
     q=SetImagePixels(median_image,0,y,median_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
@@ -1849,7 +1852,7 @@ MagickExport Image *OilPaintImage(Image *image,const double radius,
   assert(exception != (ExceptionInfo *) NULL);
   assert(exception->signature == MagickSignature);
   width=2*ceil(radius)+1;
-  if ((image->columns < (2*width+1)) || (image->rows < (2*width+1)))
+  if ((image->columns < width) || (image->rows < width))
     ThrowImageException(ResourceLimitWarning,"Unable to oil paint",
       "image smaller than radius");
   paint_image=CloneImage(image,image->columns,image->rows,False,exception);
@@ -2184,7 +2187,6 @@ MagickExport Image *ReduceNoiseImage(Image *image,const double radius,
 
   int
     center,
-    i,
     width,
     y;
 
@@ -2195,6 +2197,7 @@ MagickExport Image *ReduceNoiseImage(Image *image,const double radius,
     *window;
 
   register int
+    i,
     u,
     v,
     x;
@@ -2234,7 +2237,7 @@ MagickExport Image *ReduceNoiseImage(Image *image,const double radius,
   center=width*width/2;
   for (y=0; y < (int) noise_image->rows; y++)
   {
-    i=Min(Max(y-(int) width/2,0),image->rows-width);
+    i=Min(Max(y-width/2,0),image->rows-width);
     p=GetImagePixels(image,0,i,image->columns,width);
     q=SetImagePixels(noise_image,0,y,noise_image->columns,1);
     if ((p == (PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
@@ -2242,7 +2245,7 @@ MagickExport Image *ReduceNoiseImage(Image *image,const double radius,
     for (x=0; x < (int) noise_image->columns; x++)
     {
       w=window;
-      s=p+Min(Max(x-(int) width/2,0),image->columns-width);
+      s=p+Min(Max(x-width/2,0),image->columns-width);
       for (v=0; v < width; v++)
       {
         for (u=0; u < width; u++)
