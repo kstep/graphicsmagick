@@ -979,7 +979,7 @@ MagickExport Image *RotateImage(const Image *image,const double degrees,
       height=image->columns;
     }
   y_width=(unsigned long) (width+ceil(fabs(shear.x)*height-0.5));
-  x_offset=(long) ceil(2*fabs(shear.y)*height-0.5);
+  x_offset=(long) ceil(2*fabs(shear.x)*height-0.5);
   y_offset=(long) ceil(fabs(shear.y)*y_width-0.5);
   /*
     Surround image with a border.
@@ -1095,7 +1095,7 @@ MagickExport Image *ShearImage(const Image *image,const double x_shear,
     Compute image size.
   */
   y_width=(unsigned long) (image->columns+ceil(fabs(shear.x)*image->rows-0.5));
-  x_offset=(long) ceil(2*fabs(shear.y)*image->rows-0.5);
+  x_offset=(long) ceil(2*fabs(shear.x)*image->rows-0.5);
   y_offset=(long) ceil(fabs(shear.y)*y_width-0.5);
   /*
     Surround image with border.
