@@ -779,8 +779,9 @@ Export unsigned int GIFDecodeImage(Image *image)
   }
   if (i < (int) (image->columns*image->rows))
     {
+      for ( ; i < (int) (image->columns*image->rows); i++)
+        *p++=0;
       MagickWarning(CorruptImageWarning,"Corrupt GIF image",image->filename);
-      return(False);
     }
   /*
     Free decoder memory.

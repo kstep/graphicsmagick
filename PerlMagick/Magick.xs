@@ -72,8 +72,8 @@ extern "C" {
 #endif
 
 #include "EXTERN.h"
-#include "XSUB.h"
 #include "perl.h"
+#include "XSUB.h"
 #include "magick.h"
 #include "defines.h"
 #include <setjmp.h>

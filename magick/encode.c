@@ -11437,7 +11437,7 @@ static int TIFFWritePixels(TIFF *tiff,tdata_t scanline,uint32 row,
     Fill scanlines to tile height.
   */
   i=(row % image->tile_info.height)*TIFFScanlineSize(tiff);
-  (void) memcpy(scanlines+i,(unsigned char *) scanline,TIFFScanlineSize(tiff));
+  (void) memcpy((char *) scanlines+i,(char *) scanline,TIFFScanlineSize(tiff));
   if (((row % image->tile_info.height) != (image->tile_info.height-1)) &&
       (row != image->rows-1))
     return(0);
