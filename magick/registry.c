@@ -183,7 +183,7 @@ MagickExport void DestroyMagickRegistry(void)
       }
       case ImageInfoRegistryType:
       {
-        DestroyImageInfo((Image *) p->blob);
+        DestroyImageInfo((ImageInfo *) p->blob);
         break;
       }
       default:
