@@ -226,7 +226,7 @@ of a sequence. The next example illustrates how this is done: <pre>&nbsp;&nbsp;&
 Suppose you want to start out with a 100 by 100 pixel white canvas with a
 red pixel in the center. Try <pre>&nbsp;&nbsp;&nbsp; $image = Image::Magick-&gt;new;<br>&nbsp;&nbsp;&nbsp; $image-&gt;Set(size=&gt;'100x100');<br>&nbsp;&nbsp;&nbsp; $image-&gt;ReadImage('xc:white');<br>&nbsp;&nbsp;&nbsp; $image-&gt;Set('pixel[49,49]'=&gt;'red');</pre>
 Or suppose you want to convert your color image to grayscale: <pre>&nbsp;&nbsp;&nbsp; $image-&gt;Quantize(colorspace=&gt;'gray');</pre>
-Here we annotate an image with a Taipai TrueType font: <pre>&nbsp;&nbsp;&nbsp; $text = '\0x17ef\0x30ec\0x25ec\0x23ef\0x17ec';<br>&nbsp;&nbsp;&nbsp; $image-&gt;Annotate(font=&gt;'kai.ttf', pointsize=&gt;40, stroke=&gt;'green', text=&gt;$text);</pre>
+Here we annotate an image with a Taipai TrueType font: <pre>&nbsp;&nbsp;&nbsp; $text = 'Works like magick!';<br>&nbsp;&nbsp;&nbsp; $image-&gt;Annotate(font=&gt;'kai.ttf', pointsize=&gt;40, stroke=&gt;'green', text=&gt;$text);</pre>
 Other clever things you can do with a <b>PerlMagick</b> objects include <pre>&nbsp;&nbsp;&nbsp; $i = $#$p"+1";&nbsp;&nbsp; # return the number of images associated with object p<br>&nbsp;&nbsp;&nbsp; push(@$q, @$p);&nbsp; # push the images from object p onto object q<br>&nbsp;&nbsp;&nbsp; @$p = ();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # delete the images but not the object p<br>&nbsp;&nbsp;&nbsp; p-&gt;Convolve([1, 2, 1, 2, 4, 2, 1, 2, 1]);&nbsp;&nbsp; # 3x3 Gaussian kernel</pre>
                 </dl>
                 </blockquote>
