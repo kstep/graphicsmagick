@@ -8,7 +8,6 @@
  
   GraphicsMagick Pixel Wand Methods.
 */
-
 #ifndef _MAGICK_PIXEL_WAND_H
 #define _MAGICK_PIXEL_WAND_H
 
@@ -48,6 +47,7 @@ extern WandExport void
   PixelSetGreenQuantum(PixelWand *,const Quantum),
   PixelSetOpacity(PixelWand *,const double),
   PixelSetOpacityQuantum(PixelWand *,const Quantum),
+  PixelSetQuantumColor(PixelWand *,PixelPacket *),
   PixelSetRed(PixelWand *,const double),
   PixelSetRedQuantum(PixelWand *,const Quantum);
 

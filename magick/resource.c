@@ -575,7 +575,7 @@ MagickExport unsigned int ListMagickResourceInfo(FILE *file,
 %
 %
 */
-MagickExport void SetMagickResourceLimit(const ResourceType type,
+MagickExport unsigned int SetMagickResourceLimit(const ResourceType type,
   const unsigned long limit)
 {
   AcquireSemaphoreInfo(&resource_semaphore);
@@ -614,4 +614,5 @@ MagickExport void SetMagickResourceLimit(const ResourceType type,
       break;
   }
   LiberateSemaphoreInfo(&resource_semaphore);
+  return(True);
 }

@@ -5655,11 +5655,11 @@ MagickExport void SyncImage(Image *image)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  TextureImage() repeatedly tiles the texture image across and down the image
-%  canvas.
+%  canvas. False is returned if an error is encountered.
 %
 %  The format of the TextureImage method is:
 %
-%      void TextureImage(Image *image,const Image *texture)
+%      unsigned int TextureImage(Image *image,const Image *texture)
 %
 %  A description of each parameter follows:
 %
@@ -5670,7 +5670,7 @@ MagickExport void SyncImage(Image *image)
 %
 */
 
-MagickExport void TextureImage(Image *image,const Image *texture)
+MagickExport unsigned int TextureImage(Image *image,const Image *texture)
 {
 #define TextureImageText  "  Apply image texture...  "
 
@@ -5690,6 +5690,9 @@ MagickExport void TextureImage(Image *image,const Image *texture)
   register PixelPacket
     *q;
 
+  unsigned int
+    status;
+
   unsigned long
     width;
 
@@ -5698,16 +5701,21 @@ MagickExport void TextureImage(Image *image,const Image *texture)
   */
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
+  status=False;
   if (texture == (const Image *) NULL)
     return;
   image->storage_class=DirectClass;
+  status=True;
   for (y=0; y < (long) image->rows; y++)
   {
     p=AcquireImagePixels(texture,0,y % texture->rows,texture->columns,1,
       &image->exception);
     q=GetImagePixels(image,0,y,image->columns,1);
     if ((p == (const PixelPacket *) NULL) || (q == (PixelPacket *) NULL))
-      break;
+      {
+        status=False;
+        break;
+      }
     pixels=p;
     for (x=0; x < (long) image->columns; x+=texture->columns)
     {
@@ -5723,11 +5731,19 @@ MagickExport void TextureImage(Image *image,const Image *texture)
       }
     }
     if (!SyncImagePixels(image))
-      break;
+      {
+        status=False;
+        break;
+      }
     if (QuantumTick(y,image->rows))
       if (!MagickMonitor(TextureImageText,y,image->rows,&image->exception))
-        break;
+        {
+          status=False;
+          break;
+        }
   }
+  image->is_grayscale=texture->is_grayscale;
+  return (status);
 }
 
 /*

@@ -17,7 +17,7 @@
 #include <sys\types.h>
 #endif
 #include <time.h>
-#include <wand/wand_api.h>
+#include <wand/magick_wand.h>
 
 #if !defined(True)
 # define True 1
@@ -26,25 +26,29 @@
 #if !defined(False)
 # define False 0
 #endif
-static void ScribbleImage ( Image *image)
+static void ScribbleImage (Image *image)
 {
   DrawingWand
     *draw_wand;
 
-/* SetLogEventMask("Render"); */
-  draw_wand = DrawAllocateWand((DrawInfo*)NULL, image);
-  
+  PixelWand
+    *color;
+
+  draw_wand=DrawAllocateWand((DrawInfo*) NULL,image);
+  color=NewPixelWand();
   DrawPushGraphicContext(draw_wand);
   {
     DrawSetViewbox(draw_wand,0,0,image->columns,image->rows);
     DrawScale(draw_wand,1.101,1.08);
     DrawTranslate(draw_wand,-23.69,-22.97);
     DrawRotate(draw_wand,0);
-    DrawSetFillColorString(draw_wand,"#ffffff");
+    PixelSetColor(color,"#ffffff");
+    DrawSetFillColor(draw_wand,color);
     DrawRectangle(draw_wand,23.69,22.97,564.6,802.2);
     DrawSetFillOpacity(draw_wand,1.0);
-    DrawSetFillColorString(draw_wand,"none");
-    DrawSetStrokeColorString(draw_wand,"none");
+    PixelSetColor(color,"none");
+    DrawSetFillColor(draw_wand,color);
+    DrawSetStrokeColor(draw_wand,color);
 
     DrawSetStrokeAntialias(draw_wand,True);
     DrawSetStrokeLineCap(draw_wand,RoundCap);
@@ -75,9 +79,11 @@ static void ScribbleImage ( Image *image)
         DrawSetStrokeLineCap(draw_wand,RoundCap);
         DrawSetStrokeLineJoin(draw_wand,RoundJoin);
         DrawSetStrokeDashArray(draw_wand,0,(const double *)NULL);
-        DrawSetStrokeColorString(draw_wand,"#ff0000");
+        PixelSetColor(color,"#ff0000");
+        DrawSetStrokeColor(draw_wand,color);
         DrawSetFillRule(draw_wand,EvenOddRule);
-        DrawSetFillColorString(draw_wand,"#ff00ff");
+        PixelSetColor(color,"#ff00ff");
+        DrawSetFillColor(draw_wand,color);
         DrawRectangle(draw_wand,72,72,144,144);
       }
       DrawPopGraphicContext(draw_wand);
@@ -89,9 +95,11 @@ static void ScribbleImage ( Image *image)
         DrawSetStrokeLineCap(draw_wand,RoundCap);
         DrawSetStrokeLineJoin(draw_wand,RoundJoin);
         DrawSetStrokeDashArray(draw_wand,0,(const double *)NULL);
-        DrawSetStrokeColorString(draw_wand,"#00ff00");
+        PixelSetColor(color,"#00ff00");
+        DrawSetStrokeColor(draw_wand,color);
         DrawSetFillRule(draw_wand,EvenOddRule);
-        DrawSetFillColorString(draw_wand,"#0080ff");
+        PixelSetColor(color,"#0080ff");
+        DrawSetFillColor(draw_wand,color);
         DrawRoundRectangle(draw_wand,72,216,360,432,9,9);
       }
       DrawPopGraphicContext(draw_wand);
@@ -117,9 +125,11 @@ static void ScribbleImage ( Image *image)
         DrawSetStrokeLineCap(draw_wand,RoundCap);
         DrawSetStrokeLineJoin(draw_wand,RoundJoin);
         DrawSetStrokeDashArray(draw_wand,0,(const double *)NULL);
-        DrawSetStrokeColorString(draw_wand,"#000080");
+        PixelSetColor(color,"#000080");
+        DrawSetStrokeColor(draw_wand,color);
         DrawSetFillRule(draw_wand,EvenOddRule);
-        DrawSetFillColorString(draw_wand,"#c2c280");
+        PixelSetColor(color,"#c2c280");
+        DrawSetFillColor(draw_wand,color);
         DrawPolygon(draw_wand,37,points);
       }
       DrawPopGraphicContext(draw_wand);
@@ -131,9 +141,11 @@ static void ScribbleImage ( Image *image)
         DrawSetStrokeLineCap(draw_wand,RoundCap);
         DrawSetStrokeLineJoin(draw_wand,RoundJoin);
         DrawSetStrokeDashArray(draw_wand,0,(const double *)NULL);
-        DrawSetStrokeColorString(draw_wand,"#000080");
+        PixelSetColor(color,"#000080");
+        DrawSetStrokeColor(draw_wand,color);
         DrawSetFillRule(draw_wand,EvenOddRule);
-        DrawSetFillColorString(draw_wand,"#00ffff");
+        PixelSetColor(color,"#000080");
+        DrawSetFillColor(draw_wand,color);
         DrawEllipse(draw_wand,489.6,424.8,72,129.6,0,360);
       }
       DrawPopGraphicContext(draw_wand);
@@ -161,9 +173,11 @@ static void ScribbleImage ( Image *image)
         DrawSetStrokeLineCap(draw_wand,RoundCap);
         DrawSetStrokeLineJoin(draw_wand,RoundJoin);
         DrawSetStrokeDashArray(draw_wand,0,(const double *)NULL);
-        DrawSetStrokeColorString(draw_wand,"#ff8000");
+        PixelSetColor(color,"#ff8000");
+        DrawSetStrokeColor(draw_wand,color);
         DrawSetFillRule(draw_wand,EvenOddRule);
-        DrawSetFillColorString(draw_wand,"#00ffff");
+        PixelSetColor(color,"#00ffff");
+        DrawSetFillColor(draw_wand,color);
         DrawPolygon(draw_wand,48,points);
       }
       DrawPopGraphicContext(draw_wand);
@@ -175,8 +189,10 @@ static void ScribbleImage ( Image *image)
         DrawSetStrokeLineCap(draw_wand,RoundCap);
         DrawSetStrokeLineJoin(draw_wand,RoundJoin);
         DrawSetStrokeDashArray(draw_wand,0,(const double *)NULL);
-        DrawSetStrokeColorString(draw_wand,"#4000c2");
-        DrawSetFillColorString(draw_wand,"none");
+        PixelSetColor(color,"#4000c2");
+        DrawSetStrokeColor(draw_wand,color);
+        PixelSetColor(color,"none");
+        DrawSetFillColor(draw_wand,color);
         DrawArc(draw_wand,360,554.4,187.2,237.6,0,90);
       }
       DrawPopGraphicContext(draw_wand);
@@ -188,9 +204,11 @@ static void ScribbleImage ( Image *image)
         DrawSetStrokeLineCap(draw_wand,RoundCap);
         DrawSetStrokeLineJoin(draw_wand,RoundJoin);
         DrawSetStrokeDashArray(draw_wand,0,(const double *)NULL);
-        DrawSetStrokeColorString(draw_wand,"#4000c2");
+        PixelSetColor(color,"#4000c2");
+        DrawSetStrokeColor(draw_wand,color);
         DrawSetFillRule(draw_wand,EvenOddRule);
-        DrawSetFillColorString(draw_wand,"#800000");
+        PixelSetColor(color,"#4000c2");
+        DrawSetFillColor(draw_wand,color);
         DrawEllipse(draw_wand,388.8,626.4,100.8,122.4,0,90);
       }
       DrawPopGraphicContext(draw_wand);
@@ -208,9 +226,11 @@ static void ScribbleImage ( Image *image)
         DrawSetStrokeLineCap(draw_wand,RoundCap);
         DrawSetStrokeLineJoin(draw_wand,RoundJoin);
         DrawSetStrokeDashArray(draw_wand,0,(const double *)NULL);
-        DrawSetStrokeColorString(draw_wand,"#4000c2");
+        PixelSetColor(color,"#4000c2");
+        DrawSetStrokeColor(draw_wand,color);
         DrawSetFillRule(draw_wand,EvenOddRule);
-        DrawSetFillColorString(draw_wand,"#800000");
+        PixelSetColor(color,"#800000");
+        DrawSetFillColor(draw_wand,color);
         DrawPolygon(draw_wand,6,points);
       }
       DrawPopGraphicContext(draw_wand);
@@ -229,9 +249,11 @@ static void ScribbleImage ( Image *image)
         DrawSetStrokeLineCap(draw_wand,RoundCap);
         DrawSetStrokeLineJoin(draw_wand,RoundJoin);
         DrawSetStrokeDashArray(draw_wand,0,(const double *)NULL);
-        DrawSetStrokeColorString(draw_wand,"#4000c2");
+        PixelSetColor(color,"#4000c2");
+        DrawSetStrokeColor(draw_wand,color);
         DrawSetFillRule(draw_wand,EvenOddRule);
-        DrawSetFillColorString(draw_wand,"#800000");
+        PixelSetColor(color,"#800000");
+        DrawSetFillColor(draw_wand,color);
         DrawPolygon(draw_wand,11,points);
       }
       DrawPopGraphicContext(draw_wand);
@@ -251,9 +273,11 @@ static void ScribbleImage ( Image *image)
         DrawSetStrokeLineCap(draw_wand,RoundCap);
         DrawSetStrokeLineJoin(draw_wand,RoundJoin);
         DrawSetStrokeDashArray(draw_wand,0,(const double *)NULL);
-        DrawSetStrokeColorString(draw_wand,"#4000c2");
+        PixelSetColor(color,"#4000c2");
+        DrawSetStrokeColor(draw_wand,color);
         DrawSetFillRule(draw_wand,EvenOddRule);
-        DrawSetFillColorString(draw_wand,"#ffff00");
+        PixelSetColor(color,"#ffff00");
+        DrawSetFillColor(draw_wand,color);
         DrawPolygon(draw_wand,15,points);
       }
       DrawPopGraphicContext(draw_wand);
@@ -271,9 +295,11 @@ static void ScribbleImage ( Image *image)
         DrawSetStrokeLineCap(draw_wand,RoundCap);
         DrawSetStrokeLineJoin(draw_wand,RoundJoin);
         DrawSetStrokeDashArray(draw_wand,0,(const double *)NULL);
-        DrawSetStrokeColorString(draw_wand,"#4000c2");
+        PixelSetColor(color,"#4000c2");
+        DrawSetStrokeColor(draw_wand,color);
         DrawSetFillRule(draw_wand,EvenOddRule);
-        DrawSetFillColorString(draw_wand,"#ffff00");
+        PixelSetColor(color,"#ffff00");
+        DrawSetFillColor(draw_wand,color);
         DrawPolygon(draw_wand,7,points);
       }
       DrawPopGraphicContext(draw_wand);
@@ -338,9 +364,11 @@ static void ScribbleImage ( Image *image)
         DrawSetStrokeLineCap(draw_wand,RoundCap);
         DrawSetStrokeLineJoin(draw_wand,RoundJoin);
         DrawSetStrokeDashArray(draw_wand,0,(const double *)NULL);
-        DrawSetStrokeColorString(draw_wand,"#4000c2");
+        PixelSetColor(color,"#4000c2");
+        DrawSetStrokeColor(draw_wand,color);
         DrawSetFillRule(draw_wand,EvenOddRule);
-        DrawSetFillColorString(draw_wand,"#ffff00");
+        PixelSetColor(color,"#ffff00");
+        DrawSetFillColor(draw_wand,color);
         DrawPolygon(draw_wand,193,points);
       }
       DrawPopGraphicContext(draw_wand);
@@ -348,8 +376,8 @@ static void ScribbleImage ( Image *image)
     DrawPopGraphicContext(draw_wand);
   }
   DrawPopGraphicContext(draw_wand);
-
   DrawRender(draw_wand);
+  DestroyPixelWand(color);
   DestroyDrawingWand(draw_wand);
 }
 
@@ -368,7 +396,7 @@ int main ( int argc, char **argv )
       exit( 1 );
     }
 
-  strncpy( outfile, argv[1], MaxTextExtent-1 );
+  CopyMagickString( outfile, argv[1], MaxTextExtent );
 
   if (LocaleNCompare("drawtest",argv[0],7) == 0)
     InitializeMagick((char *) NULL);
@@ -382,7 +410,7 @@ int main ( int argc, char **argv )
   rows=842;
   image_info=CloneImageInfo((ImageInfo*)NULL);
   GetExceptionInfo( &exception );
-  FormatString(size, "%dx%d", columns, rows);
+  FormatMagickString(size, MaxTextExtent, "%dx%d", columns, rows);
   CloneString(&image_info->size, size);
   strcpy( image_info->filename, "xc:white");
   canvas = ReadImage ( image_info, &exception );
@@ -402,7 +430,7 @@ int main ( int argc, char **argv )
   /*
    * Save image to file
    */
-  strncpy( canvas->filename, outfile, sizeof(image_info->filename)-1);
+  CopyMagickString( canvas->filename, outfile, sizeof(image_info->filename));
   WriteImage ( image_info, canvas );
 
   DestroyExceptionInfo( &exception );

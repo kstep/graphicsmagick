@@ -364,7 +364,9 @@ LIBRARY_AGE = @MAGICK_WAND_LIBRARY_AGE@
 
 AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)
 
-libGraphicsMagickWand_la_SOURCES = magick_wand.c pixel_wand.c magick_compat.c
+libGraphicsMagickWand_la_SOURCES = drawing_wand.c magick_wand.c pixel_wand.c \
+	magick_compat.c
+
 
 libGraphicsMagickWand_la_LDFLAGS = -no-undefined \
 	-version-info $(LIBRARY_CURRENT):$(LIBRARY_REVISION):$(LIBRARY_AGE)
@@ -415,8 +417,8 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 
 libGraphicsMagickWand_la_DEPENDENCIES = \
 	$(top_builddir)/magick/libGraphicsMagick.la
-am_libGraphicsMagickWand_la_OBJECTS = magick_wand.lo pixel_wand.lo \
-	magick_compat.lo
+am_libGraphicsMagickWand_la_OBJECTS = drawing_wand.lo magick_wand.lo \
+	pixel_wand.lo magick_compat.lo
 libGraphicsMagickWand_la_OBJECTS = \
 	$(am_libGraphicsMagickWand_la_OBJECTS)
 check_PROGRAMS = drawtest$(EXEEXT) wandtest$(EXEEXT)
@@ -432,7 +434,8 @@ SCRIPTS = $(bin_SCRIPTS)
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)/magick -I$(top_builddir)/magick
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/drawtest.Po \
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/drawing_wand.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/drawtest.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/magick_compat.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/magick_wand.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/pixel_wand.Plo ./$(DEPDIR)/wandtest.Po
@@ -540,6 +543,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drawing_wand.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drawtest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/magick_compat.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/magick_wand.Plo@am__quote@

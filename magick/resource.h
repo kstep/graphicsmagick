@@ -32,7 +32,8 @@ typedef enum
 */
 extern MagickExport unsigned int
   AcquireMagickResource(const ResourceType type,const magick_int64_t size),
-  ListMagickResourceInfo(FILE *file,ExceptionInfo *exception);
+  ListMagickResourceInfo(FILE *file,ExceptionInfo *exception),
+  SetMagickResourceLimit(const ResourceType type,const unsigned long limit);
 
 extern MagickExport unsigned long
   GetMagickResource(const ResourceType type);
@@ -40,8 +41,7 @@ extern MagickExport unsigned long
 extern MagickExport void
   DestroyMagickResources(void),
   InitializeMagickResources(void),
-  LiberateMagickResource(const ResourceType type,const magick_int64_t size),
-  SetMagickResourceLimit(const ResourceType type,const unsigned long limit);
+  LiberateMagickResource(const ResourceType type,const magick_int64_t size);
 
 
 #if defined(__cplusplus) || defined(c_plusplus)

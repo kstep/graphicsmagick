@@ -926,11 +926,12 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
 %  SolarizeImage() applies a special effect to the image, similar to the effect
 %  achieved in a photo darkroom by selectively exposing areas of photo
 %  sensitive paper to light.  Threshold ranges from 0 to MaxRGB and is a
-%  measure of the extent of the solarization.
+%  measure of the extent of the solarization. False is returned if an error
+%  is encountered.
 %
 %  The format of the SolarizeImage method is:
 %
-%      void SolarizeImage(Image *image,const double threshold)
+%      unsigned int SolarizeImage(Image *image,const double threshold)
 %
 %  A description of each parameter follows:
 %
@@ -940,7 +941,7 @@ MagickExport Image *OilPaintImage(const Image *image,const double radius,
 %
 %
 */
-MagickExport void SolarizeImage(Image *image,const double threshold)
+MagickExport unsigned int SolarizeImage(Image *image,const double threshold)
 {
 #define SolarizeImageText  "  Solarize the image colors...  "
 
@@ -952,7 +953,8 @@ MagickExport void SolarizeImage(Image *image,const double threshold)
     x;
 
   unsigned int
-    is_grayscale;
+    is_grayscale,
+    status;
 
   register PixelPacket
     *q;
@@ -960,6 +962,7 @@ MagickExport void SolarizeImage(Image *image,const double threshold)
   assert(image != (Image *) NULL);
   assert(image->signature == MagickSignature);
   is_grayscale=image->is_grayscale;
+  status=True;
   switch (image->storage_class)
   {
     case DirectClass:
@@ -972,7 +975,10 @@ MagickExport void SolarizeImage(Image *image,const double threshold)
       {
         q=GetImagePixels(image,0,y,image->columns,1);
         if (q == (PixelPacket *) NULL)
-          break;
+          {
+            status=False;
+            break;
+          }
         for (x=0; x < (long) image->columns; x++)
         {
           q->red=(Quantum) (q->red > threshold ? MaxRGB-q->red : q->red);
@@ -982,10 +988,16 @@ MagickExport void SolarizeImage(Image *image,const double threshold)
           q++;
         }
         if (!SyncImagePixels(image))
-          break;
+          {
+            status=False;
+            break;
+          }
         if (QuantumTick(y,image->rows))
           if (!MagickMonitor(SolarizeImageText,y,image->rows,&image->exception))
-            break;
+            {
+              status=False;
+              break;
+            }
       }
       break;
     }
@@ -1008,6 +1020,7 @@ MagickExport void SolarizeImage(Image *image,const double threshold)
     }
   }
   image->is_grayscale=is_grayscale;
+  return (status);
 }
 
 /*

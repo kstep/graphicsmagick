@@ -793,7 +793,7 @@ AC_SUBST(UINT64_T)
 AC_FUNC_MMAP
 AC_CHECK_FUNCS([ftime getexecname getc_unlocked getpagesize mkstemp poll \
   pread pwrite putc_unlocked raise select tempnam times sigemptyset sigaction \
-  strerror sysconf vsprintf vsnprintf])
+  strerror strlcpy sysconf vsprintf vsnprintf])
 
 ########
 #

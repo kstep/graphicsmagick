@@ -671,7 +671,7 @@ static Image *ExtractPostscript(Image *image,const ImageInfo *image_info,
     /* Detect file format - Check magic.mgk configuration file. */
   magic_info=GetMagicInfo(magick,2*MaxTextExtent,exception);
   if(magic_info == (const MagicInfo *) NULL) goto FINISH_UNL;
-/*     printf("Detected:%s  \n",magic_info->name); /**/
+  /*     printf("Detected:%s  \n",magic_info->name); */
   if(exception->severity != UndefinedException) goto FINISH_UNL;     
   if(magic_info->name == (char *) NULL) goto FINISH_UNL;
     

@@ -49,6 +49,10 @@ typedef struct _TokenInfo
 /*
   Utilities methods.
 */
+#if !defined(__GNUC__) && !defined(__attribute__)
+#  define __attribute__(x) /*nothing*/
+#endif
+
 extern MagickExport char
   *AcquireString(const char *),
   *AllocateString(const char *),
@@ -119,11 +123,7 @@ extern MagickExport void
   TemporaryFilename(char *);
 
 extern MagickExport void
-#if defined(__GNUC__)
   FormatString(char *,const char *,...) __attribute__((format (printf,2,3)));
-#else
-  FormatString(char *,const char *,...);
-#endif
 
 #if defined(MAGICK_IMPLEMENTATION)
 

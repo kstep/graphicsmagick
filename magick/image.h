@@ -947,6 +947,7 @@ extern MagickExport unsigned int
   SetImageDepth(Image *,const unsigned long),
   SetImageInfo(ImageInfo *,const unsigned int,ExceptionInfo *),
   SortColormapByIntensity(Image *),
+  TextureImage(Image *,const Image *),
   TransformRGBImage(Image *,const ColorspaceType);
 
 extern MagickExport unsigned long
@@ -966,7 +967,6 @@ extern MagickExport void
   SetImageOpacity(Image *,const unsigned int),
   SetImageType(Image *,const ImageType),
   SyncImage(Image *),
-  TextureImage(Image *,const Image *),
   TransformColorspace(Image *,const ColorspaceType);
 
 #if defined(__cplusplus) || defined(c_plusplus)

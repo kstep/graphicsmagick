@@ -15,6 +15,10 @@
 extern "C" {
 #endif
 
+#if !defined(__GNUC__) && !defined(__attribute__)
+#  define __attribute__(x) /*nothing*/
+#endif
+
 #if !defined(GetMagickModule)
 #  if defined(HAS___func__)
 #    define GetMagickModule()  __FILE__,__func__,__LINE__
@@ -60,14 +64,8 @@ typedef enum
 extern MagickExport unsigned int
   InitializeLogInfo(ExceptionInfo *exception),
   IsEventLogging(void),
-#if defined(__GNUC__)
   LogMagickEvent(const ExceptionType,const char *,const char *,
     const unsigned long,const char *,...) __attribute__((format (printf,5,6)));
-#else
-  LogMagickEvent(const ExceptionType,const char *,const char *,
-    const unsigned long,const char *,...);
-#endif
-
 
 extern MagickExport unsigned long
   SetLogEventMask(const char *);

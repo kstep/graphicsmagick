@@ -64,6 +64,193 @@
 %                                                                             %
 %                                                                             %
 %                                                                             %
+%   C o p y M a g i c k S t r i n g                                           %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  CopyMagickString() copies the source string to the destination string.  The
+%  destination buffer is always null-terminated even if the string must be
+%  truncated.
+%
+%  The format of the CopyMagickString method is:
+%
+%      size_t CopyMagickString(const char *destination,char *source,
+%        const size_t length)
+%
+%  A description of each parameter follows:
+%
+%    o destination: The destination string.
+%
+%    o source: The source string.
+%
+%    o length: The length of the destination string.
+%
+%
+*/
+MagickExport size_t CopyMagickString(char *destination,const char *source,
+  const size_t length)
+{
+#if defined(HAVE_STRLCPY)
+  return(strlcpy(destination,source,length));
+#else
+  {
+    register char
+      *q;
+
+    register const char
+      *p;
+
+    register size_t
+      i;
+
+    p=source;
+    q=destination;
+    i=length;
+    if ((i != 0) && (--i != 0))
+      do
+      {
+        if ((*q++=(*p++)) == '\0')
+          break;
+      } while (--i != 0);
+    if (i == 0)
+      {
+        if (length != 0)
+          *q='\0';
+        while (*p++ != '\0');
+      }
+    return(p-source-1);
+  }
+#endif
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%  F o r m a t M a g i c k S t r i n g                                        %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  FormatMagickString() prints formatted output of a variable argument list.
+%
+%  The format of the FormatMagickString method is:
+%
+%      void FormatMagickString(char *string,const size_t length,
+%        const char *format,...)
+%
+%  A description of each parameter follows.
+%
+%   o string:  FormatMagickString() returns the formatted string in this
+%     character buffer.
+%
+%   o length: The maximum length of the string.
+%
+%   o format:  A string describing the format to use to write the remaining
+%     arguments.
+%
+%
+*/
+MagickExport int FormatMagickString(char *string,const size_t length,
+  const char *format,...)
+{
+  int
+    count;
+
+  va_list
+    operands;
+
+  va_start(operands,format);
+#if defined(HAVE_VSNPRINTF)
+  count=vsnprintf(string,length,format,operands);
+#else
+  count=vsprintf(string,format,operands);
+#endif
+  va_end(operands);
+  return(count);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   C o n c a t e n a t e M a g i c k S t r i n g                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ConcatenateMagickString() concatenates the source string to the destination
+%  string.  The destination buffer is always null-terminated even if the
+%  string must be truncated.
+%
+%  The format of the ConcatenateMagickString method is:
+%
+%      size_t ConcatenateMagickString(char *destination,const char *source,
+%        const size_t length)
+%
+%  A description of each parameter follows:
+%
+%    o destination: The destination string.
+%
+%    o source: The source string.
+%
+%    o length: The length of the destination string.
+%
+%
+*/
+MagickExport size_t ConcatenateMagickString(char *destination,
+  const char *source,const size_t length)
+{
+#if defined(HAVE_STRLCAT)
+  return(strlcat(destination,source,length));
+#else
+  {
+    register char
+      *q;
+
+    register const char
+      *p;
+
+    register size_t
+      i;
+
+    size_t
+      count;
+
+    p=source;
+    q=destination;
+    i=length;
+    while ((i-- != 0) && (*q != '\0'))
+      q++;
+    count=q-destination;
+    i=length-count;
+    if (i == 0)
+      return(count+strlen(p));
+    while (*p != '\0')
+    {
+      if (i != 1)
+        {
+          *q++=(*p);
+          i--;
+        }
+      p++;
+    }
+    *q='\0';
+    return(count+(p-source));
+  }
+#endif
+}
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
 %   I m p o r t I m a g e P i x e l s                                         %
 %                                                                             %
 %                                                                             %
@@ -376,6 +563,38 @@ WandExport unsigned int ParseGeometry(const char *geometry,
         }
     }
   return(flags);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   R e l i n q u i s h M a g i c k M e m o r y                               %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  RelinquishMagickMemory() frees memory that has already been allocated with
+%  AcquireMagickMemory().
+%
+%  The format of the RelinquishMagickMemory method is:
+%
+%      void *RelinquishMagickMemory(void *memory)
+%
+%  A description of each parameter follows:
+%
+%    o memory: A pointer to a block of memory to free for reuse.
+%
+%
+*/
+MagickExport void *RelinquishMagickMemory(void *memory)
+{
+  if (memory == (void *) NULL)
+    return((void *) NULL);
+  free(memory);
+  return((void *) NULL);
 }
 
 /*

@@ -18,7 +18,6 @@
 %                                                                             %
 %                   ImageMagick Image Pixel Wand Methods                      %
 %                                                                             %
-%                                                                             %
 %                              Software Design                                %
 %                                John Cristy                                  %
 %                                March 2003                                   %
@@ -61,8 +60,7 @@
 */
 #include "magick/studio.h"
 #include "magick/error.h"
-#include "magick/utility.h"
-#include "wand/wand_api.h"
+#include "wand/magick_wand.h"
 #include "wand/magick_compat.h"
 
 /*
@@ -107,7 +105,7 @@ WandExport void DestroyPixelWand(PixelWand *wand)
 {
   assert(wand != (void *) NULL);
   assert(wand->signature == MagickSignature);
-  RelinquishMagickMemory(wand);
+  wand=(PixelWand *) RelinquishMagickMemory(wand);
 }
 
 /*
@@ -136,7 +134,8 @@ WandExport PixelWand *NewPixelWand(void)
 
   wand=(struct _PixelWand *) AcquireMagickMemory(sizeof(struct _PixelWand));
   if (wand == (PixelWand *) NULL)
-    return((PixelWand *) NULL);
+    MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
+      UnableToAllocateImage);
   (void) memset(wand,0,sizeof(PixelWand));
   GetExceptionInfo(&wand->exception);
   wand->signature=MagickSignature;
@@ -191,22 +190,21 @@ WandExport unsigned int PixelGetException(PixelWand *wand,char **description)
       UnableToAllocateString);
   **description='\0';
   if (wand->exception.reason != (char *) NULL)
-    (void) strncpy(*description,GetLocaleExceptionMessage(
-      wand->exception.severity,wand->exception.reason),MaxTextExtent-1);
+    (void) CopyMagickString(*description,GetLocaleExceptionMessage(
+      wand->exception.severity,wand->exception.reason),MaxTextExtent);
   if (wand->exception.description != (char *) NULL)
     {
-      (void) strcat(*description," (");
-      (void) strncat(*description,GetLocaleExceptionMessage(
-        wand->exception.severity,wand->exception.description),
-        MaxTextExtent-strlen(*description)-1);
-      (void) strcat(*description,")");
+      (void) ConcatenateMagickString(*description," (",MaxTextExtent);
+      (void) ConcatenateMagickString(*description,GetLocaleExceptionMessage(
+        wand->exception.severity,wand->exception.description),MaxTextExtent);
+      (void) ConcatenateMagickString(*description,")",MaxTextExtent);
     }
   if ((wand->exception.severity != OptionError) && errno)
     {
-      (void) strcat(*description," [");
-      (void) strncat(*description,GetErrorMessageString(errno),
-        MaxTextExtent-strlen(*description)-1);
-      (void) strcat(*description,"]");
+      (void) ConcatenateMagickString(*description," [",MaxTextExtent);
+      (void) ConcatenateMagickString(*description,GetErrorMessageString(errno),
+        MaxTextExtent);
+      (void) ConcatenateMagickString(*description,"]",MaxTextExtent);
     }
   return(wand->exception.severity);
 }
@@ -297,12 +295,14 @@ WandExport char *PixelGetColorAsString(const PixelWand *wand)
   char
     color[MaxTextExtent];
 
-  FormatString(color,"%u,%u,%u,%u",
+  assert(wand != (void *) NULL);
+  assert(wand->signature == MagickSignature);
+  (void) FormatMagickString(color,MaxTextExtent,"%u,%u,%u,%u",
     (Quantum) (MaxRGB*wand->pixel.red+0.5),
     (Quantum) (MaxRGB*wand->pixel.green+0.5),
     (Quantum) (MaxRGB*wand->pixel.blue+0.5),
     (Quantum) (MaxRGB*wand->pixel.opacity+0.5));
-  return(AllocateString(color));
+  return(AcquireString(color));
 }
 
 /*
@@ -464,8 +464,8 @@ WandExport double PixelGetRed(const PixelWand *wand)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  PixelGetRedQuantum(const ) returns the red color of the pixel wand.  The color is
-%  in the range of [0..MaxRGB]
+%  PixelGetRedQuantum(const ) returns the red color of the pixel wand.  The
+%  color is in the range of [0..MaxRGB]
 %
 %  The format of the PixelGetRedQuantum method is:
 %
@@ -509,6 +509,9 @@ WandExport Quantum PixelGetRedQuantum(const PixelWand *wand)
 */
 WandExport void PixelGetQuantumColor(const PixelWand *wand,PixelPacket *color)
 {
+  assert(wand != (void *) NULL);
+  assert(wand->signature == MagickSignature);
+  assert(color != (PixelPacket *) NULL);
   color->red=(Quantum) (MaxRGB*wand->pixel.red+0.5);
   color->green=(Quantum) (MaxRGB*wand->pixel.green+0.5);
   color->blue=(Quantum) (MaxRGB*wand->pixel.blue+0.5);
@@ -526,7 +529,8 @@ WandExport void PixelGetQuantumColor(const PixelWand *wand,PixelPacket *color)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  PixelSetColor() sets the color of the pixel wand.
+%  PixelSetColor() sets the color of the pixel wand with a string (e.g.
+%  "blue", "#0000ff", "rgb(0,0,255)", etc.).
 %
 %  The format of the PixelSetColor method is:
 %
@@ -542,33 +546,18 @@ WandExport void PixelGetQuantumColor(const PixelWand *wand,PixelPacket *color)
 */
 WandExport unsigned int PixelSetColor(PixelWand *wand,const char *color)
 {
-  GeometryInfo
-    geometry_info;
+  PixelPacket
+    pixel;
 
   unsigned int
-    flags;
+    status;
 
   assert(wand != (void *) NULL);
   assert(wand->signature == MagickSignature);
-  flags=ParseGeometry(color,&geometry_info);
-  wand->pixel.red=geometry_info.rho/MaxRGB;
-  wand->pixel.green=geometry_info.sigma/MaxRGB;
-  if (!(flags & SigmaValue))
-    wand->pixel.green=wand->pixel.red;
-  wand->pixel.blue=geometry_info.xi/MaxRGB;
-  if (!(flags & XiValue))
-    wand->pixel.blue=wand->pixel.red;
-  wand->pixel.opacity=geometry_info.psi/MaxRGB;
-  if (!(flags & PsiValue))
-    wand->pixel.opacity=(double) OpaqueOpacity/MaxRGB;
-  if (flags & PercentValue)
-    {
-      wand->pixel.red*=MaxRGB/100.0;
-      wand->pixel.green*=MaxRGB/100.0;
-      wand->pixel.blue*=MaxRGB/100.0;
-      wand->pixel.opacity*=MaxRGB/100.0;
-    }
-  return(True);
+  status=QueryColorDatabase(color,&pixel,&wand->exception);
+  if (status != False)
+    PixelSetQuantumColor(wand,&pixel);
+  return(status);
 }
 
 /*
@@ -784,7 +773,42 @@ WandExport void PixelSetOpacityQuantum(PixelWand *wand,const Quantum opacity)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   P i x e l S e t O p a c i t y                                             %
+%   P i x e l S e t Q u a n t u m C o l o r                                   %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  PixelSetQuantumColor() sets the color of the pixel wand.
+%
+%  The format of the PixelSetQuantumColor method is:
+%
+%      PixelSetQuantumColor(PixelWand *wand,PixelPacket *color)
+%
+%  A description of each parameter follows:
+%
+%    o wand: The pixel wand.
+%
+%    o color: Return the pixel wand color here.
+%
+*/
+WandExport void PixelSetQuantumColor(PixelWand *wand,PixelPacket *color)
+{
+  assert(wand != (void *) NULL);
+  assert(wand->signature == MagickSignature);
+  assert(color != (PixelPacket *) NULL);
+  wand->pixel.red=(double) color->red/MaxRGB;
+  wand->pixel.green=(double) color->green/MaxRGB;
+  wand->pixel.blue=(double) color->blue/MaxRGB;
+  wand->pixel.opacity=(double) color->opacity/MaxRGB;
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   P i x e l S e t R e d                                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %

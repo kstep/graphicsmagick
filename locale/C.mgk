@@ -697,6 +697,9 @@
       <Message name="ColorspaceColorProfileMismatch">
         Colorspace color profile mismatch
       </Message>
+      <Message name="InvalidColormapIndex">
+         Invalid colormap index
+      </Message>
       <Message name="ImageColorspaceDiffers">
         image colorspace differs
       </Message>
@@ -1713,6 +1716,9 @@
         </Message>
         <Message name="UnableToAllocateDrawContext">
           unable to allocate draw context
+        </Message>
+        <Message name="UnableToAllocateDrawingWand">
+          unable to allocate drawing wand
         </Message>
         <Message name="UnableToAllocateDrawInfo">
           unable to allocate draw info

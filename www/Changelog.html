@@ -53,6 +53,47 @@
 </tr>
 </table>
 <p>
+2003-08-28  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> wand/*: Updated to current ImageMagick Wand API (minus a few
+        unimplemented functions).<BR>
+  <LI> magick/image.c (TextureImage): Add status return because Wand API
+        wants it.  Inherit is_grayscale status from texture image.
+  <LI> magick/fx.c (SolarizeImage): Add status return because Wand API
+        wants it.<BR>
+  <LI> magick/resource.c (SetMagickResourceLimit): Add status return
+        because Wand API wants it.<BR>
+  <LI> magick/draw.c (DrawPeekGraphicContext): Now returns a
+        copy of the current DrawInfo context rather than returning
+        a pointer into the context stack. The user must destroy
+        this copy using DestroyDrawInfo() once it is no longer
+        needed.
+
+</UL>
+<p>
+2003-08-25  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
+
+<UL>
+  <LI> VisualMagick/filters/LIBRARY.txt: This file is necessary to
+        incorporate analyze.c into the static build.  Without it the
+        build fails.
+
+</UL>
+<p>
+2003-08-23  Lars Ruben Skyum  &lt;lars.skyum@stibo.com&gt;
+
+<UL>
+  <LI> magick/transform.c: ProfileImage updated to handle alpha
+        channels and grayscale images. Also optimized color profiling of
+        color mapped images and fixed a few bugs in profiling of CMYK
+        images.<BR>
+  <LI> magic/locale_c.h: added MagickExport to prototype declaration of
+        GetLocaleMessageFromID in WriteLOCALEImage again. Please update
+        your locale coder.
+
+</UL>
+<p>
 2003-08-23  Bob Friesenhahn  &lt;bfriesen@simple.dallas.tx.us&gt;
 
 <UL>

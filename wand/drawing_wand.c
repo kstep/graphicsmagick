@@ -1,34 +1,55 @@
 /*
-% Copyright (C) 2003 GraphicsMagick Group
-% Copyright (C) 2002 ImageMagick Studio
-% Copyright 1991-1999 E. I. du Pont de Nemours and Company
-%
-% This program is covered by multiple licenses, which are described in
-% Copyright.txt. You should have received a copy of Copyright.txt with this
-% package; otherwise see http://www.graphicsmagick.org/www/Copyright.html.
-%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%                        DDDD   RRRR    AAA   W   W                           %
-%                        D   D  R   R  A   A  W   W                           %
-%                        D   D  RRRR   AAAAA  W   W                           %
-%                        D   D  R R    A   A  W W W                           %
-%                        DDDD   R  R   A   A   W W                            %
+%               DDDD   RRRR    AAA   W   W  IIIII  N   N    GGGG              %
+%               D   D  R   R  A   A  W   W    I    NN  N   G                  %
+%               D   D  RRRR   AAAAA  W   W    I    N N N   G  GG              %
+%               D   D  R R    A   A  W W W    I    N  NN   G   G              %
+%               DDDD   R  R   A   A   W W   IIIII  N   N    GGG               %
+%                                                                             %
+%                         W   W   AAA   N   N  DDDD                           %
+%                         W   W  A   A  NN  N  D   D                          %
+%                         W W W  AAAAA  N N N  D   D                          %
+%                         WW WW  A   A  N  NN  D   D                          %
+%                         W   W  A   A  N   N  DDDD                           %
 %                                                                             %
 %                                                                             %
-%                 GraphicsMagick Image Vector Drawing Methods                 %
-%                                                                             %
+%                   ImageMagick Image Vector Drawing Methods                  %
 %                                                                             %
 %                              Software Design                                %
 %                              Bob Friesenhahn                                %
 %                                March 2002                                   %
 %                                                                             %
 %                                                                             %
+%  Copyright (C) 2003 ImageMagick Studio, a non-profit organization dedicated %
+%  to making software imaging solutions freely available.                     %
+%                                                                             %
+%  Permission is hereby granted, free of charge, to any person obtaining a    %
+%  copy of this software and associated documentation files ("ImageMagick"),  %
+%  to deal in ImageMagick without restriction, including without limitation   %
+%  the rights to use, copy, modify, merge, publish, distribute, sublicense,   %
+%  and/or sell copies of ImageMagick, and to permit persons to whom the       %
+%  ImageMagick is furnished to do so, subject to the following conditions:    %
+%                                                                             %
+%  The above copyright notice and this permission notice shall be included in %
+%  all copies or substantial portions of ImageMagick.                         %
+%                                                                             %
+%  The software is provided "as is", without warranty of any kind, express or %
+%  implied, including but not limited to the warranties of merchantability,   %
+%  fitness for a particular purpose and noninfringement.  In no event shall   %
+%  ImageMagick Studio be liable for any claim, damages or other liability,    %
+%  whether in an action of contract, tort or otherwise, arising from, out of  %
+%  or in connection with ImageMagick or the use or other dealings in          %
+%  ImageMagick.                                                               %
+%                                                                             %
+%  Except as contained in this notice, the name of the ImageMagick Studio     %
+%  shall not be used in advertising or otherwise to promote the sale, use or  %
+%  other dealings in ImageMagick without prior written authorization from the %
+%  ImageMagick Studio.                                                        %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
 %
 */
 
@@ -38,34 +59,22 @@
 #include "magick/studio.h"
 #include "magick/attribute.h"
 #include "magick/blob.h"
-#include "magick/color.h"
-#include "magick/draw.h"
+#include "magick/error.h"
 #include "magick/gem.h"
+#include "magick/list.h"
 #include "magick/log.h"
 #include "magick/magick.h"
 #include "magick/monitor.h"
-#include "magick/utility.h"
+#include "wand/magick_wand.h"
+#include "wand/magick_compat.h"
 
 /*
   Define declarations.
 */
 #define DRAW_BINARY_IMPLEMENTATION 0
 
-#define ThrowDrawException(code,reason,description) \
-{ \
-  if (context->image->exception.severity > (long)code) \
-    ThrowException(&context->image->exception,code,reason,description); \
-  return; \
-}
-#define ThrowDrawException3(code,reason,description) \
-{ \
-  if (context->image->exception.severity > (long)code) \
-    ThrowException3(&context->image->exception,code,reason,description); \
-  return; \
-}
-
-#define CurrentContext (context->graphic_context[context->index])
-#define PixelPacketMatch(p,q) (((p)->red == (q)->red) && \
+#define CurrentContext  (drawing_wand->graphic_context[drawing_wand->index])
+#define WandColorMatch(p,q) (((p)->red == (q)->red) && \
   ((p)->green == (q)->green) && ((p)->blue == (q)->blue) && \
   ((p)->opacity == (q)->opacity))
 
@@ -75,16 +84,16 @@
 typedef enum
 {
   PathDefaultOperation,
-  PathCloseOperation,                           /* Z|z (none) */
-  PathCurveToOperation,                         /* C|c (x1 y1 x2 y2 x y)+ */
-  PathCurveToQuadraticBezierOperation,          /* Q|q (x1 y1 x y)+ */
-  PathCurveToQuadraticBezierSmoothOperation,    /* T|t (x y)+ */
-  PathCurveToSmoothOperation,                   /* S|s (x2 y2 x y)+ */
-  PathEllipticArcOperation,                     /* A|a (rx ry x-axis-rotation large-arc-flag sweep-flag x y)+ */
-  PathLineToHorizontalOperation,                /* H|h x+ */
-  PathLineToOperation,                          /* L|l (x y)+ */
-  PathLineToVerticalOperation,                  /* V|v y+ */
-  PathMoveToOperation                           /* M|m (x y)+ */
+  PathCloseOperation,                        /* Z|z (none) */
+  PathCurveToOperation,                      /* C|c (x1 y1 x2 y2 x y)+ */
+  PathCurveToQuadraticBezierOperation,       /* Q|q (x1 y1 x y)+ */
+  PathCurveToQuadraticBezierSmoothOperation, /* T|t (x y)+ */
+  PathCurveToSmoothOperation,                /* S|s (x2 y2 x y)+ */
+  PathEllipticArcOperation,                  /* A|a (rx ry x-axis-rotation large-arc-flag sweep-flag x y)+ */
+  PathLineToHorizontalOperation,             /* H|h x+ */
+  PathLineToOperation,                       /* L|l (x y)+ */
+  PathLineToVerticalOperation,               /* V|v y+ */
+  PathMoveToOperation                        /* M|m (x y)+ */
 } PathOperation;
 
 typedef enum
@@ -94,7 +103,7 @@ typedef enum
   RelativePathMode
 } PathMode;
 
-struct _DrawContext
+struct _DrawingWand
 {
   /* Support structures */
   Image
@@ -121,7 +130,7 @@ struct _DrawContext
   size_t
     pattern_offset;
 
-  /* Graphic context */
+  /* Graphic drawing_wand */
   unsigned int
     index;              /* array index */
 
@@ -150,371 +159,261 @@ struct _DrawContext
 /* Vector table for invoking subordinate renderers */
 struct _DrawVTable
 {
-  void (*DrawAnnotation)
-    (DrawContext context, const double x, const double y,
-     const unsigned char *text);
-  void (*DrawArc)
-    (DrawContext context, const double sx, const double sy,
-     const double ex, const double ey, const double sd, const double ed);
-  void (*DrawBezier)
-    (DrawContext context, const size_t num_coords, const PointInfo *coordinates);
-  void (*DrawCircle)
-    (DrawContext context, const double ox, const double oy,
-     const double px, const double py);
-  void (*DrawColor)
-    (DrawContext context, const double x, const double y,
-     const PaintMethod paintMethod);
-  void (*DrawComment)
-    (DrawContext context,const char* comment);
-  void (*DrawDestroyContext)
-    (DrawContext context);
-  void (*DrawEllipse)
-    (DrawContext context, const double ox, const double oy,
-     const double rx, const double ry, const double start, const double end);
-  void (*DrawComposite)
-    (DrawContext context, const CompositeOperator composite_operator,
-     const double x, const double y, const double width, const double height,
-     const Image * image );
-  void (*DrawLine)
-    (DrawContext context, const double sx, const double sy,
-     const double ex, const double ey);
-  void (*DrawMatte)
-    (DrawContext context, const double x, const double y,
-     const PaintMethod paint_method);
-  void (*DrawPathClose)
-    (DrawContext context);
-  void (*DrawPathCurveToAbsolute)
-    (DrawContext context, const double x1, const double y1,
-     const double x2, const double y2, const double x, const double y);
-  void (*DrawPathCurveToRelative)
-    (DrawContext context, const double x1, const double y1,
-     const double x2, const double y2, const double x, const double y);
-  void (*DrawPathCurveToQuadraticBezierAbsolute)
-    (DrawContext context, const double x1, const double y1,
-     const double x, const double y);
-  void (*DrawPathCurveToQuadraticBezierRelative)
-    (DrawContext context, const double x1, const double y1,
-     const double x, const double y);
-  void (*DrawPathCurveToQuadraticBezierSmoothAbsolute)
-    (DrawContext context, const double x, const double y);
-  void (*DrawPathCurveToQuadraticBezierSmoothRelative)
-    (DrawContext context, const double x, const double y);
-  void (*DrawPathCurveToSmoothAbsolute)
-    (DrawContext context, const double x2, const double y2,
-     const double x, const double y);
-  void (*DrawPathCurveToSmoothRelative)
-    (DrawContext context, const double x2, const double y2,
-     const double x, const double y);
-  void (*DrawPathEllipticArcAbsolute)
-    (DrawContext context, const double rx, const double ry,
-     const double x_axis_rotation, unsigned int large_arc_flag,
-     unsigned int sweep_flag, const double x, const double y);
-  void (*DrawPathEllipticArcRelative)
-    (DrawContext context, const double rx, const double ry,
-     const double x_axis_rotation, unsigned int large_arc_flag,
-     unsigned int sweep_flag, const double x, const double y);
-  void (*DrawPathFinish)
-    (DrawContext context);
-  void (*DrawPathLineToAbsolute)
-    (DrawContext context, const double x, const double y);
-  void (*DrawPathLineToRelative)
-    (DrawContext context, const double x, const double y);
-  void (*DrawPathLineToHorizontalAbsolute)
-    (DrawContext context, const double x);
-  void (*DrawPathLineToHorizontalRelative)
-    (DrawContext context, const double x);
-  void (*DrawPathLineToVerticalAbsolute)
-    (DrawContext context, const double y);
-  void (*DrawPathLineToVerticalRelative)
-    (DrawContext context, const double y);
-  void (*DrawPathMoveToAbsolute)
-    (DrawContext context, const double x, const double y);
-  void (*DrawPathMoveToRelative)
-    (DrawContext context, const double x, const double y);
-  void (*DrawPathStart)
-    (DrawContext context);
-  void (*DrawPoint)
-    (DrawContext context, const double x, const double y);
-  void (*DrawPolygon)
-    (DrawContext context, const size_t num_coords, const PointInfo * coordinates);
-  void (*DrawPolyline)
-    (DrawContext context, const size_t num_coords, const PointInfo * coordinates);
-  void (*DrawPopClipPath)
-    (DrawContext context);
-  void (*DrawPopDefs)
-    (DrawContext context);
-  void (*DrawPopGraphicContext)
-    (DrawContext context);
-  void (*DrawPopPattern)
-    (DrawContext context);
-  void (*DrawPushClipPath)
-    (DrawContext context, const char *clip_path_id);
-  void (*DrawPushDefs)
-    (DrawContext context);
-  void (*DrawPushGraphicContext)
-    (DrawContext context);
-  void (*DrawPushPattern)
-    (DrawContext context, const char *pattern_id,
-     const double x, const double y, const double width, const double height);
-  void (*DrawRectangle)
-    (DrawContext context, const double x1, const double y1,
-     const double x2, const double y2);
-  void (*DrawRoundRectangle)
-    (DrawContext context, double x1, double y1,
-     double x2, double y2, double rx, double ry);
-  void (*DrawAffine)
-    (DrawContext context, const AffineMatrix *affine);
-  void (*DrawSetClipPath)
-    (DrawContext context, const char *clip_path);
-  void (*DrawSetClipRule)
-    (DrawContext context, const FillRule fill_rule);
-  void (*DrawSetClipUnits)
-    (DrawContext context, const ClipPathUnits clip_units);
-  void (*DrawSetFillColor)
-    (DrawContext context, const PixelPacket * fill_color);
-  void (*DrawSetFillOpacity)
-    (DrawContext context, const double fill_opacity);
-  void (*DrawSetFillRule)
-    (DrawContext context, const FillRule fill_rule);
-  void (*DrawSetFillPatternURL)
-    (DrawContext context, const char* fill_url);
-  void (*DrawSetFont)
-    (DrawContext context, const char *font_name);
-  void (*DrawSetFontFamily)
-    (DrawContext context, const char *font_family);
-  void (*DrawSetFontSize)
-    (DrawContext context, const double font_pointsize);
-  void (*DrawSetFontStretch)
-    (DrawContext context, const StretchType font_stretch);
-  void (*DrawSetFontStyle)
-    (DrawContext context, const StyleType font_style);
-  void (*DrawSetFontWeight)
-    (DrawContext context, const unsigned long font_weight);
-  void (*DrawSetGravity)
-    (DrawContext context, const GravityType gravity);
-  void (*DrawRotate)
-    (DrawContext context, const double degrees);
-  void (*DrawScale)
-    (DrawContext context, const double x, const double y);
-  void (*DrawSkewX)
-    (DrawContext context, const double degrees);
-  void (*DrawSkewY)
-    (DrawContext context, const double degrees);
-/*   void (*DrawSetStopColor) */
-/*     (DrawContext context, const PixelPacket * color, const double offset); */
-  void (*DrawSetStrokeAntialias)
-    (DrawContext context, const unsigned int true_false);
-  void (*DrawSetStrokeColor)
-    (DrawContext context, const PixelPacket * stroke_color);
-  void (*DrawSetStrokeDashArray)
-    (DrawContext context,const double *dasharray);
-  void (*DrawSetStrokeDashOffset)
-    (DrawContext context,const double dashoffset);
-  void (*DrawSetStrokeLineCap)
-    (DrawContext context, const LineCap linecap);
-  void (*DrawSetStrokeLineJoin)
-    (DrawContext context, const LineJoin linejoin);
-  void (*DrawSetStrokeMiterLimit)
-    (DrawContext context,const unsigned long miterlimit);
-  void (*DrawSetStrokeOpacity)
-    (DrawContext context, const double opacity);
-  void (*DrawSetStrokePatternURL)
-    (DrawContext context, const char* stroke_url);
-  void (*DrawSetStrokeWidth)
-    (DrawContext context, const double width);
-  void (*DrawSetTextAntialias)
-    (DrawContext context, const unsigned int true_false);
-  void (*DrawSetTextDecoration)
-    (DrawContext context, const DecorationType decoration);
-  void (*DrawSetTextUnderColor)
-    (DrawContext context, const PixelPacket * color);
-  void (*DrawTranslate)
-    (DrawContext context, const double x, const double y);
-  void (*DrawSetViewbox)
-    (DrawContext context, unsigned long x1, unsigned long y1,
-     unsigned long x2, unsigned long y2);
+  void (*DestroyDrawingWand) (DrawingWand *drawing_wand);
+  void (*DrawAnnotation)(DrawingWand *,const double,const double,
+    const unsigned char *);
+  void (*DrawArc)(DrawingWand *,const double,const double,const double,
+    const double,const double,const double);
+  void (*DrawBezier)(DrawingWand *,const size_t,const PointInfo *);
+  void (*DrawCircle)(DrawingWand *,const double,const double,const double,
+    const double);
+  void (*DrawColor)(DrawingWand *,const double,const double,const PaintMethod);
+  void (*DrawComment)(DrawingWand *,const char *);
+  void (*DrawDestroyContext) (DrawContext context);
+  void (*DrawEllipse)(DrawingWand *,const double,const double,const double,
+    const double,const double,const double);
+  void (*DrawComposite)(DrawingWand *,const CompositeOperator,const double,
+    const double,const double,const double,const Image *);
+  void (*DrawLine)(DrawingWand *,const double,const double,const double,
+    const double);
+  void (*DrawMatte)(DrawingWand *,const double,const double,const PaintMethod);
+  void (*DrawPathClose)(DrawingWand *);
+  void (*DrawPathCurveToAbsolute)(DrawingWand *,const double,const double,
+    const double,const double,const double,const double);
+  void (*DrawPathCurveToRelative)(DrawingWand *,const double,const double,
+    const double,const double,const double,const double);
+  void (*DrawPathCurveToQuadraticBezierAbsolute)(DrawingWand *,const double,
+    const double,const double,const double);
+  void (*DrawPathCurveToQuadraticBezierRelative)(DrawingWand *,const double,
+    const double,const double,const double);
+  void (*DrawPathCurveToQuadraticBezierSmoothAbsolute)(DrawingWand *,
+    const double,const double);
+  void (*DrawPathCurveToQuadraticBezierSmoothRelative)(DrawingWand *,
+    const double,const double);
+  void (*DrawPathCurveToSmoothAbsolute)(DrawingWand *,const double,
+    const double,const double,const double);
+  void (*DrawPathCurveToSmoothRelative)(DrawingWand *,const double,
+    const double,const double,const double);
+  void (*DrawPathEllipticArcAbsolute)(DrawingWand *,const double,const double,
+    const double,unsigned int,unsigned int,const double,const double);
+  void (*DrawPathEllipticArcRelative)(DrawingWand *,const double,const double,
+    const double,unsigned int,unsigned int,const double,const double);
+  void (*DrawPathFinish)(DrawingWand *);
+  void (*DrawPathLineToAbsolute)(DrawingWand *,const double,const double);
+  void (*DrawPathLineToRelative)(DrawingWand *,const double,const double);
+  void (*DrawPathLineToHorizontalAbsolute)(DrawingWand *,const double);
+  void (*DrawPathLineToHorizontalRelative)(DrawingWand *,const double);
+  void (*DrawPathLineToVerticalAbsolute)(DrawingWand *,const double);
+  void (*DrawPathLineToVerticalRelative)(DrawingWand *,const double);
+  void (*DrawPathMoveToAbsolute)(DrawingWand *,const double,const double);
+  void (*DrawPathMoveToRelative)(DrawingWand *,const double,const double);
+  void (*DrawPathStart)(DrawingWand *);
+  void (*DrawPoint)(DrawingWand *,const double,const double);
+  void (*DrawPolygon)(DrawingWand *,const size_t,const PointInfo *);
+  void (*DrawPolyline)(DrawingWand *,const size_t,const PointInfo *);
+  void (*DrawPopClipPath)(DrawingWand *);
+  void (*DrawPopDefs)(DrawingWand *);
+  void (*DrawPopGraphicContext)(DrawingWand *);
+  void (*DrawPopPattern)(DrawingWand *);
+  void (*DrawPushClipPath)(DrawingWand *,const char *);
+  void (*DrawPushDefs)(DrawingWand *);
+  void (*DrawPushGraphicContext)(DrawingWand *);
+  void (*DrawPushPattern)(DrawingWand *,const char *,const double,const double,
+    const double,const double);
+  void (*DrawRectangle)(DrawingWand *,const double,const double,const double,
+    const double);
+  void (*DrawRoundRectangle)(DrawingWand *,double,double,double,double,
+    double,double);
+  void (*DrawAffine)(DrawingWand *,const AffineMatrix *);
+  void (*DrawSetClipPath)(DrawingWand *,const char *);
+  void (*DrawSetClipRule)(DrawingWand *,const FillRule);
+  void (*DrawSetClipUnits)(DrawingWand *,const ClipPathUnits);
+  void (*DrawSetFillColor)(DrawingWand *,const PixelWand *);
+  void (*DrawSetFillOpacity)(DrawingWand *,const double);
+  void (*DrawSetFillRule)(DrawingWand *,const FillRule);
+  void (*DrawSetFillPatternURL)(DrawingWand *,const char *);
+  void (*DrawSetFont)(DrawingWand *,const char *);
+  void (*DrawSetFontFamily)(DrawingWand *,const char *);
+  void (*DrawSetFontSize)(DrawingWand *,const double);
+  void (*DrawSetFontStretch)(DrawingWand *,const StretchType);
+  void (*DrawSetFontStyle)(DrawingWand *,const StyleType);
+  void (*DrawSetFontWeight)(DrawingWand *,const unsigned long);
+  void (*DrawSetGravity)(DrawingWand *,const GravityType);
+  void (*DrawRotate)(DrawingWand *,const double);
+  void (*DrawScale)(DrawingWand *,const double,const double);
+  void (*DrawSkewX)(DrawingWand *,const double);
+  void (*DrawSkewY)(DrawingWand *,const double);
+  void (*DrawSetStrokeAntialias)(DrawingWand *,const unsigned int);
+  void (*DrawSetStrokeColor)(DrawingWand *,const PixelWand *);
+  void (*DrawSetStrokeDashArray)(DrawingWand *,const double *);
+  void (*DrawSetStrokeDashOffset)(DrawingWand *,const double);
+  void (*DrawSetStrokeLineCap)(DrawingWand *,const LineCap);
+  void (*DrawSetStrokeLineJoin)(DrawingWand *,const LineJoin);
+  void (*DrawSetStrokeMiterLimit)(DrawingWand *,const unsigned long);
+  void (*DrawSetStrokeOpacity)(DrawingWand *,const double);
+  void (*DrawSetStrokePatternURL)(DrawingWand *,const char *);
+  void (*DrawSetStrokeWidth)(DrawingWand *,const double);
+  void (*DrawSetTextAntialias)(DrawingWand *,const unsigned int);
+  void (*DrawSetTextDecoration)(DrawingWand *,const DecorationType);
+  void (*DrawSetTextUnderColor)(DrawingWand *,const PixelWand *);
+  void (*DrawTranslate)(DrawingWand *,const double,const double);
+  void (*DrawSetViewbox)(DrawingWand *,unsigned long,unsigned long,
+    unsigned long,unsigned long);
 };
 
 /*
   Forward declarations.
 */
 static int
-  MvgPrintf(DrawContext context, const char *format, ...)
+  MvgPrintf(DrawingWand *drawing_wand, const char *format, ...)
 #if defined(__GNUC__)
 __attribute__ ((format (printf, 2, 3)))
 #endif
 ,
-  MvgAutoWrapPrintf(DrawContext context, const char *format, ...)
+  MvgAutoWrapPrintf(DrawingWand *drawing_wand, const char *format, ...)
 #if defined(__GNUC__)
 __attribute__ ((format (printf, 2, 3)))
 #endif
 ;
 static void
-  MvgAppendColor(DrawContext context, const PixelPacket *color);
+  MvgAppendColor(DrawingWand *drawing_wand, const PixelPacket *color);
 
 
 /* "Printf" for MVG commands */
-static int MvgPrintf(DrawContext context, const char *format, ...)
+static int MvgPrintf(DrawingWand *drawing_wand,const char *format,...)
 {
   const size_t
-    alloc_size = MaxTextExtent * 20; /* 40K */
+    alloc_size=20*MaxTextExtent; /* 40K */
 
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  /* Allocate initial memory */
-  if (context->mvg == (char*) NULL)
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  if (drawing_wand->mvg == (char*) NULL)
     {
-      context->mvg = MagickAllocateMemory(char *,alloc_size);
-      if( context->mvg == (char*) NULL )
+      drawing_wand->mvg=(char *) AcquireMagickMemory(alloc_size);
+      if ( drawing_wand->mvg == (char*) NULL )
         {
-          ThrowException3(&context->image->exception,ResourceLimitError,
-            MemoryAllocationFailed,UnableToDrawOnImage);
-          return -1;
+          ThrowException3(&drawing_wand->image->exception,
+            ResourceLimitError,MemoryAllocationFailed,UnableToDrawOnImage);
+          return(-1);
         }
 
-      context->mvg_alloc = alloc_size;
-      context->mvg_length = 0;
-      if (context->mvg == 0)
+      drawing_wand->mvg_alloc=alloc_size;
+      drawing_wand->mvg_length=0;
+      if (drawing_wand->mvg == 0)
         {
-          ThrowException3(&context->image->exception,ResourceLimitError,
-            MemoryAllocationFailed,UnableToDrawOnImage);
-          return -1;
+          ThrowException3(&drawing_wand->image->exception,
+            ResourceLimitError,MemoryAllocationFailed,UnableToDrawOnImage);
+          return(-1);
         }
     }
-
-  /* Re-allocate additional memory if necessary (ensure 20K unused) */
-  if (context->mvg_alloc < (context->mvg_length + MaxTextExtent * 10))
+  if (drawing_wand->mvg_alloc < (drawing_wand->mvg_length + MaxTextExtent * 10))
     {
-      size_t realloc_size = context->mvg_alloc + alloc_size;
+      size_t realloc_size=drawing_wand->mvg_alloc + alloc_size;
 
-      MagickReallocMemory(context->mvg, realloc_size);
-      if (context->mvg == NULL)
+      drawing_wand->mvg=(char *)
+        ResizeMagickMemory(drawing_wand->mvg,realloc_size);
+      if (drawing_wand->mvg == NULL)
         {
-          ThrowException3(&context->image->exception,ResourceLimitError,
-            MemoryAllocationFailed,UnableToDrawOnImage);
+          ThrowException3(&drawing_wand->image->exception,
+            ResourceLimitError,MemoryAllocationFailed,UnableToDrawOnImage);
           return -1;
         }
-      context->mvg_alloc = realloc_size;
+      drawing_wand->mvg_alloc=realloc_size;
     }
-
-  /* Write to end of existing MVG string */
   {
     int
-      formatted_length; /* must be a signed type! */
+      formatted_length;
 
     va_list
       argp;
 
-    /* Pretty-print indentation */
-    while(context->mvg_width < context->indent_depth)
-      {
-        context->mvg[context->mvg_length] = ' ';
-        ++context->mvg_length;
-        ++context->mvg_width;
-      }
-    context->mvg[context->mvg_length] = 0;
-
+    while (drawing_wand->mvg_width < drawing_wand->indent_depth)
+    {
+      drawing_wand->mvg[drawing_wand->mvg_length]=' ';
+      drawing_wand->mvg_length++;
+      drawing_wand->mvg_width++;
+    }
+    drawing_wand->mvg[drawing_wand->mvg_length]=0;
     va_start(argp, format);
 #if defined(HAVE_VSNPRINTF)
-    formatted_length =
-      vsnprintf(context->mvg + context->mvg_length,
-                context->mvg_alloc - context->mvg_length - 1, format, argp);
+    formatted_length=vsnprintf(drawing_wand->mvg+drawing_wand->mvg_length,
+      drawing_wand->mvg_alloc-drawing_wand->mvg_length-1,format,argp);
 #else
-#  if defined(HAVE_VSPRINTF)
-    formatted_length = vsprintf(context->mvg + context->mvg_length, format, argp);
-#  else
-#    error Neither vsnprintf or vsprintf is available.
-#  endif
+    formatted_length=vsprintf(drawing_wand->mvg+drawing_wand->mvg_length,
+      format,argp);
 #endif
     va_end(argp);
-
     if (formatted_length < 0)
       {
-        ThrowException(&context->image->exception,DrawError,UnableToPrint,
-          format);
+        ThrowException(&drawing_wand->image->exception,DrawError,
+          UnableToPrint,format);
       }
     else
       {
-        context->mvg_length += formatted_length;
-        context->mvg_width += formatted_length;
+        drawing_wand->mvg_length+=formatted_length;
+        drawing_wand->mvg_width+=formatted_length;
       }
-    context->mvg[context->mvg_length] = 0;
-
-    /* Re-evaluate mvg_width */
-    if( (context->mvg_length > 1) &&
-        (context->mvg[context->mvg_length-1] == '\n') )
-      context->mvg_width = 0;
-
-    assert(context->mvg_length + 1 < context->mvg_alloc);
-
+    drawing_wand->mvg[drawing_wand->mvg_length]=0;
+    if ((drawing_wand->mvg_length > 1) &&
+        (drawing_wand->mvg[drawing_wand->mvg_length-1] == '\n'))
+      drawing_wand->mvg_width=0;
+    assert((drawing_wand->mvg_length+1) < drawing_wand->mvg_alloc);
     return formatted_length;
   }
 }
 
-/* "Printf" for MVG commands, with autowrap at 78 characters */
-static int MvgAutoWrapPrintf(DrawContext context, const char *format, ...)
+static int MvgAutoWrapPrintf(DrawingWand *drawing_wand,const char *format,...)
 {
-  va_list
-    argp;
+  char
+    buffer[MaxTextExtent];
 
   int
     formatted_length;
 
-  char
-    buffer[MaxTextExtent];
+  va_list
+    argp;
 
-  va_start(argp, format);
+  va_start(argp,format);
 #if defined(HAVE_VSNPRINTF)
-  formatted_length = vsnprintf(buffer, sizeof(buffer) - 1, format, argp);
+  formatted_length=vsnprintf(buffer,sizeof(buffer)-1,format,argp);
 #else
-#  if defined(HAVE_VSPRINTF)
-  formatted_length = vsprintf(buffer, format, argp);
-#  else
-#    error Neither vsnprintf or vsprintf is available.
-#  endif
+  formatted_length=vsprintf(buffer,format,argp);
 #endif
   va_end(argp);
   *(buffer+sizeof(buffer)-1)=0;
-
   if (formatted_length < 0)
     {
-      ThrowException(&context->image->exception,DrawError,UnableToPrint,
-        format);
+    ThrowException(&drawing_wand->image->exception,DrawError,
+      UnableToPrint,format);
     }
   else
     {
-      if( ((context->mvg_width + formatted_length) > 78) &&
-          buffer[formatted_length-1] != '\n' )
-        MvgPrintf(context, "\n");
-
-      MvgPrintf(context, "%s", buffer);
+      if (((drawing_wand->mvg_width + formatted_length) > 78) &&
+          (buffer[formatted_length-1] != '\n'))
+        MvgPrintf(drawing_wand, "\n");
+      MvgPrintf(drawing_wand,"%s",buffer);
     }
-
-  return formatted_length;
+  return(formatted_length);
 }
 
-static void MvgAppendColor(DrawContext context, const PixelPacket *color)
+static void MvgAppendColor(DrawingWand *drawing_wand, const PixelPacket *color)
 {
-  if(color->red == 0 && color->green == 0 && color->blue == 0 &&
+  if (color->red == 0 && color->green == 0 && color->blue == 0 &&
      color->opacity == TransparentOpacity)
-    {
-      MvgPrintf(context,"none");
-    }
+    MvgPrintf(drawing_wand,"none");
   else
     {
       char
         tuple[MaxTextExtent];
 
-      GetColorTuple(color,context->image->depth,context->image->matte,True,
-                    tuple);
-      MvgPrintf(context,"%.1024s",tuple);
+      GetColorTuple(color,drawing_wand->image->depth,drawing_wand->image->matte,
+        True,tuple);
+      MvgPrintf(drawing_wand,"%.1024s",tuple);
     }
 }
 
-static void MvgAppendPointsCommand(DrawContext context, const char* command,
-                                   const size_t num_coords,
-                                   const PointInfo * coordinates)
+static void MvgAppendPointsCommand(DrawingWand *drawing_wand,
+  char *command,const size_t number_coordinates,const PointInfo *coordinates)
 {
   const PointInfo
     *coordinate;
@@ -522,35 +421,91 @@ static void MvgAppendPointsCommand(DrawContext context, const char* command,
   size_t
     i;
 
-  MvgPrintf(context, command);
-  for (i = num_coords, coordinate = coordinates; i; i--)
+  MvgPrintf(drawing_wand, command);
+  for (i=number_coordinates, coordinate=coordinates; i; i--)
     {
-      MvgAutoWrapPrintf(context," %.4g,%.4g", coordinate->x, coordinate->y);
-      ++coordinate;
+      MvgAutoWrapPrintf(drawing_wand," %.4g,%.4g",coordinate->x,coordinate->y);
+      coordinate++;
     }
-
-  MvgPrintf(context, "\n");
+  MvgPrintf(drawing_wand, "\n");
 }
 
-static void AdjustAffine(DrawContext context, const AffineMatrix *affine)
+static void AdjustAffine(DrawingWand *drawing_wand,const AffineMatrix *affine)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
   if ((affine->sx != 1.0) || (affine->rx != 0.0) || (affine->ry != 0.0) ||
       (affine->sy != 1.0) || (affine->tx != 0.0) || (affine->ty != 0.0))
     {
       AffineMatrix
         current;
 
-      current = CurrentContext->affine;
+      current=CurrentContext->affine;
       CurrentContext->affine.sx=current.sx*affine->sx+current.ry*affine->rx;
       CurrentContext->affine.rx=current.rx*affine->sx+current.sy*affine->rx;
       CurrentContext->affine.ry=current.sx*affine->ry+current.ry*affine->sy;
       CurrentContext->affine.sy=current.rx*affine->ry+current.sy*affine->sy;
-      CurrentContext->affine.tx=current.sx*affine->tx+current.ry*affine->ty+current.tx;
-      CurrentContext->affine.ty=current.rx*affine->tx+current.sy*affine->ty+current.ty;
+      CurrentContext->affine.tx=current.sx*affine->tx+current.ry*affine->ty+
+        current.tx;
+      CurrentContext->affine.ty=current.rx*affine->tx+current.sy*affine->ty+
+        current.ty;
     }
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   D e s t r o y D r a w W a n d                                             %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  DestroyDrawingWand() frees all resources associated with the drawing
+%  wand. Once the drawing wand has been freed, it should not be used
+%  any further unless it re-allocated.
+%
+%  The format of the DestroyDrawingWand method is:
+%
+%      void DestroyDrawingWand(DrawingWand *drawing_wand)
+%
+%  A description of each parameter follows:
+%
+%    o drawing_wand: The drawing wand. to destroy
+%
+*/
+WandExport void DestroyDrawingWand(DrawingWand *drawing_wand)
+{
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  drawing_wand->path_operation=PathDefaultOperation;
+  drawing_wand->path_mode=DefaultPathMode;
+  drawing_wand->indent_depth=0;
+  for ( ; drawing_wand->index > 0; drawing_wand->index--)
+  {
+    DestroyDrawInfo(CurrentContext);
+    CurrentContext=(DrawInfo*) NULL;
+  }
+  DestroyDrawInfo(CurrentContext);
+  CurrentContext=(DrawInfo*) NULL;
+  drawing_wand->graphic_context=(DrawInfo **)
+    RelinquishMagickMemory(drawing_wand->graphic_context);
+  if (drawing_wand->pattern_id != (char *) NULL)
+    drawing_wand->pattern_id=(char *)
+      RelinquishMagickMemory(drawing_wand->pattern_id);
+  drawing_wand->pattern_offset=0;
+  drawing_wand->pattern_bounds.x=0;
+  drawing_wand->pattern_bounds.y=0;
+  drawing_wand->pattern_bounds.width=0;
+  drawing_wand->pattern_bounds.height=0;
+  drawing_wand->mvg=(char *) RelinquishMagickMemory(drawing_wand->mvg);
+  drawing_wand->mvg_alloc=0;
+  drawing_wand->mvg_length=0;
+  drawing_wand->image=(Image*)NULL;
+  drawing_wand->signature=0;
+  drawing_wand=(DrawingWand *) RelinquishMagickMemory(drawing_wand);
 }
 
 /*
@@ -568,13 +523,12 @@ static void AdjustAffine(DrawContext context, const AffineMatrix *affine)
 %
 %  The format of the DrawAnnotation method is:
 %
-%      void DrawAnnotation(DrawContext context,
-%                          const double x, const double y,
-%                          const unsigned char *text)
+%      void DrawAnnotation(DrawingWand *drawing_wand,const double x,
+%        const double y,const unsigned char *text)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o x: x ordinate to left of text
 %
@@ -583,20 +537,18 @@ static void AdjustAffine(DrawContext context, const AffineMatrix *affine)
 %    o text: text to draw
 %
 */
-MagickExport void DrawAnnotation(DrawContext context,
-                                 const double x, const double y,
-                                 const unsigned char *text)
+WandExport void DrawAnnotation(DrawingWand *drawing_wand,const double x,
+  const double y,const unsigned char *text)
 {
   char
     *escaped_text;
 
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
   assert(text != (const unsigned char *) NULL);
-
   escaped_text=EscapeString((const char*)text,'\'');
-  MvgPrintf(context, "text %.4g,%.4g '%.1024s'\n", x, y, escaped_text);
-  MagickFreeMemory(escaped_text);
+  MvgPrintf(drawing_wand,"text %.4g,%.4g '%.1024s'\n",x,y,escaped_text);
+  escaped_text=(char *) RelinquishMagickMemory(escaped_text);
 }
 
 /*
@@ -616,26 +568,24 @@ MagickExport void DrawAnnotation(DrawContext context,
 %
 %  The format of the DrawAffine method is:
 %
-%      void DrawAffine(DrawContext context, const AffineMatrix *affine)
+%      void DrawAffine(DrawingWand *drawing_wand,const AffineMatrix *affine)
 %
 %  A description of each parameter follows:
 %
-%    o context: Drawing context
+%    o drawing_wand: Drawing drawing_wand
 %
 %    o affine: Affine matrix parameters
 %
 */
-MagickExport void DrawAffine(DrawContext context, const AffineMatrix *affine)
+WandExport void DrawAffine(DrawingWand *drawing_wand,
+  const AffineMatrix *affine)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
   assert(affine != (const AffineMatrix *)NULL);
-
-  AdjustAffine( context, affine );
-
-  MvgPrintf(context, "affine %.6g,%.6g,%.6g,%.6g,%.6g,%.6g\n",
-            affine->sx, affine->rx, affine->ry, affine->sy,
-            affine->tx, affine->ty);
+  AdjustAffine(drawing_wand,affine );
+  MvgPrintf(drawing_wand,"affine %.6g,%.6g,%.6g,%.6g,%.6g,%.6g\n",affine->sx,
+    affine->rx,affine->ry,affine->sy,affine->tx,affine->ty);
 }
 
 /*
@@ -643,88 +593,69 @@ MagickExport void DrawAffine(DrawContext context, const AffineMatrix *affine)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D r a w A l l o c a t e C o n t e x t                                     %
+%   D r a w A l l o c a t e W a n d                                           %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DrawAllocateContext() allocates an initial drawing context which is an
+%  DrawAllocateWand() allocates an initial drawing wand which is an
 %  opaque handle required by the remaining drawing methods.
 %
-%  The format of the DrawAllocateContext method is:
+%  The format of the DrawAllocateWand method is:
 %
-%      DrawContext DrawAllocateContext(const DrawInfo *draw_info,
-%                                      Image *image)
+%      DrawingWand DrawAllocateWand(const DrawInfo *draw_info,Image *image)
 %
 %  A description of each parameter follows:
 %
 %    o draw_info: Initial drawing defaults. Set to NULL to use
-%                 GraphicsMagick defaults.
+%                 ImageMagick defaults.
 %
 %    o image: The image to draw on.
 %
 */
-MagickExport DrawContext DrawAllocateContext(const DrawInfo *draw_info,
-                                             Image *image)
+WandExport DrawingWand *DrawAllocateWand(const DrawInfo *draw_info,Image *image)
 {
-  DrawContext
-    context;
+  DrawingWand
+    *drawing_wand;
 
-  /* Allocate initial drawing context */
-  context = MagickAllocateMemory(DrawContext,sizeof(struct _DrawContext));
-  if(context == (DrawContext) NULL)
+  drawing_wand=(DrawingWand *) AcquireMagickMemory(sizeof(struct _DrawingWand));
+  if (drawing_wand == (DrawingWand *) NULL)
     MagickFatalError3(ResourceLimitFatalError,MemoryAllocationFailed,
-      UnableToAllocateDrawContext);
-
-  /* Support structures */
-  context->image = image;
-
-  /* MVG output string and housekeeping */
-  context->mvg = NULL;
-  context->mvg_alloc = 0;
-  context->mvg_length = 0;
-  context->mvg_width = 0;
-
-  /* Pattern support */
-  context->pattern_id = NULL;
-  context->pattern_offset = 0;
-
-  context->pattern_bounds.x = 0;
-  context->pattern_bounds.y = 0;
-  context->pattern_bounds.width = 0;
-  context->pattern_bounds.height = 0;
-
-  /* Graphic context */
-  context->index = 0;
-  context->graphic_context=MagickAllocateMemory(DrawInfo **,sizeof(DrawInfo *));
-  if(context->graphic_context == (DrawInfo **) NULL)
+      UnableToAllocateDrawingWand);
+  drawing_wand->image=image;
+  drawing_wand->mvg=NULL;
+  drawing_wand->mvg_alloc=0;
+  drawing_wand->mvg_length=0;
+  drawing_wand->mvg_width=0;
+  drawing_wand->pattern_id=NULL;
+  drawing_wand->pattern_offset=0;
+  drawing_wand->pattern_bounds.x=0;
+  drawing_wand->pattern_bounds.y=0;
+  drawing_wand->pattern_bounds.width=0;
+  drawing_wand->pattern_bounds.height=0;
+  drawing_wand->index=0;
+  drawing_wand->graphic_context=(DrawInfo **)
+    AcquireMagickMemory(sizeof(DrawInfo *));
+  if (drawing_wand->graphic_context == (DrawInfo **) NULL)
     {
-      ThrowException3(&context->image->exception,ResourceLimitError,
+      ThrowException3(&drawing_wand->image->exception,ResourceLimitError,
         MemoryAllocationFailed,UnableToDrawOnImage);
-      return (DrawContext) NULL;
+      return (DrawingWand *) NULL;
     }
   CurrentContext=CloneDrawInfo((ImageInfo*)NULL,draw_info);
-  if(CurrentContext == (DrawInfo*) NULL)
+  if (CurrentContext == (DrawInfo*) NULL)
     {
-      ThrowException3(&context->image->exception,ResourceLimitError,
+      ThrowException3(&drawing_wand->image->exception,ResourceLimitError,
         MemoryAllocationFailed,UnableToDrawOnImage);
-      return (DrawContext) NULL;
+      return (DrawingWand *) NULL;
     }
-
-  context->filter_off = False;
-
-  /* Pretty-printing depth */
-  context->indent_depth = 0;
-
-  /* Path operation support */
-  context->path_operation = PathDefaultOperation;
-  context->path_mode = DefaultPathMode;
-
-  /* Structure unique signature */
-  context->signature = MagickSignature;
-
-  return context;
+  drawing_wand->filter_off=False;
+  drawing_wand->indent_depth=0;
+  drawing_wand->path_operation=PathDefaultOperation;
+  drawing_wand->path_mode=DefaultPathMode;
+  drawing_wand->signature=MagickSignature;
+  return(drawing_wand);
 }
 
 /*
@@ -743,14 +674,12 @@ MagickExport DrawContext DrawAllocateContext(const DrawInfo *draw_info,
 %
 %  The format of the DrawArc method is:
 %
-%      void DrawArc(DrawContext context,
-%                   const double sx, const double sy,
-%                   const double ex, const double ey,
-%                   const double sd, const double ed)
+%      void DrawArc(DrawingWand *drawing_wand,const double sx,const double sy,
+%        const double ex,const double ey,const double sd,const double ed)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o sx: starting x ordinate of bounding rectangle
 %
@@ -765,16 +694,14 @@ MagickExport DrawContext DrawAllocateContext(const DrawInfo *draw_info,
 %    o ed: ending degrees of rotation
 %
 */
-MagickExport void DrawArc(DrawContext context,
-                          const double sx, const double sy,
-                          const double ex, const double ey,
-                          const double sd, const double ed)
+WandExport void DrawArc(DrawingWand *drawing_wand,const double sx,
+  const double sy,const double ex,const double ey,const double sd,
+  const double ed)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  MvgPrintf(context, "arc %.4g,%.4g %.4g,%.4g %.4g,%.4g\n",
-            sx, sy, ex, ey, sd, ed);
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  MvgPrintf(drawing_wand,"arc %.4g,%.4g %.4g,%.4g %.4g,%.4g\n",sx,sy,ex,ey,
+    sd,ed);
 }
 
 /*
@@ -792,26 +719,25 @@ MagickExport void DrawArc(DrawContext context,
 %
 %  The format of the DrawBezier method is:
 %
-%      void DrawBezier(DrawContext context, const size_t num_coords,
-%                      const PointInfo *coordinates)
+%      void DrawBezier(DrawingWand *drawing_wand,
+%        const size_t number_coordinates,const PointInfo *coordinates)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
-%    o num_coords: number of coordinates
+%    o number_coordinates: number of coordinates
 %
 %    o coordinates: coordinates
 %
 */
-MagickExport void DrawBezier(DrawContext context, const size_t num_coords,
-                             const PointInfo *coordinates)
+WandExport void DrawBezier(DrawingWand *drawing_wand,
+  const size_t number_coordinates,const PointInfo *coordinates)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
   assert(coordinates != (const PointInfo *) NULL);
-
-  MvgAppendPointsCommand(context,"bezier",num_coords,coordinates);
+  MvgAppendPointsCommand(drawing_wand,"bezier",number_coordinates,coordinates);
 }
 
 /*
@@ -829,12 +755,12 @@ MagickExport void DrawBezier(DrawContext context, const size_t num_coords,
 %
 %  The format of the DrawCircle method is:
 %
-%      void DrawCircle(DrawContext context, const double ox,
-%                      const double oy, const double px, const double py)
+%      void DrawCircle(DrawingWand *drawing_wand,const double ox,
+%        const double oy,const double px, const double py)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o ox: origin x ordinate
 %
@@ -845,13 +771,12 @@ MagickExport void DrawBezier(DrawContext context, const size_t num_coords,
 %    o py: perimeter y ordinate
 %
 */
-MagickExport void DrawCircle(DrawContext context, const double ox,
-                             const double oy, const double px, const double py)
+WandExport void DrawCircle(DrawingWand *drawing_wand,const double ox,
+  const double oy,const double px,const double py)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  MvgPrintf(context, "circle %.4g,%.4g %.4g,%.4g\n", ox, oy, px, py);
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  MvgPrintf(drawing_wand, "circle %.4g,%.4g %.4g,%.4g\n",ox,oy,px,py);
 }
 
 /*
@@ -870,22 +795,20 @@ MagickExport void DrawCircle(DrawContext context, const double ox,
 %
 %  The format of the DrawGetClipPath method is:
 %
-%      char *DrawGetClipPath(DrawContext context)
+%      char *DrawGetClipPath(const DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 */
-MagickExport char *DrawGetClipPath(DrawContext context)
+WandExport char *DrawGetClipPath(const DrawingWand *drawing_wand)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
+  assert(drawing_wand != (const DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
   if (CurrentContext->clip_path != (char *) NULL)
-    return (char *)AllocateString(CurrentContext->clip_path);
-  else
-    return (char *) NULL;
+    return((char *) AcquireString(CurrentContext->clip_path));
+  return((char *) NULL);
 }
 
 /*
@@ -905,34 +828,33 @@ MagickExport char *DrawGetClipPath(DrawContext context)
 %
 %  The format of the DrawSetClipPath method is:
 %
-%      void DrawSetClipPath(DrawContext context, const char *clip_path)
+%      void DrawSetClipPath(DrawingWand *drawing_wand,const char *clip_path)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o clip_path: name of clipping path to associate with image
 %
 */
-MagickExport void DrawSetClipPath(DrawContext context, const char *clip_path)
+WandExport void DrawSetClipPath(DrawingWand *drawing_wand,
+  const char *clip_path)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
   assert(clip_path != (const char *) NULL);
-
-  if( CurrentContext->clip_path == NULL || context->filter_off ||
+  if ((CurrentContext->clip_path == NULL) || drawing_wand->filter_off ||
       LocaleCompare(CurrentContext->clip_path,clip_path) != 0)
     {
       CloneString(&CurrentContext->clip_path,clip_path);
-      if(CurrentContext->clip_path == (char*)NULL)
-        ThrowDrawException3(ResourceLimitError,MemoryAllocationFailed,
-          UnableToDrawOnImage);
-
+      if (CurrentContext->clip_path == (char*)NULL)
+        ThrowException3(&drawing_wand->image->exception,ResourceLimitError,
+          MemoryAllocationFailed,UnableToDrawOnImage);
 #if DRAW_BINARY_IMPLEMENTATION
-      (void) DrawClipPath(context->image,CurrentContext,CurrentContext->clip_path);
+      (void) DrawClipPath(drawing_wand->image,CurrentContext,
+        CurrentContext->clip_path);
 #endif
-
-      MvgPrintf(context, "clip-path url(#%s)\n", clip_path);
+      MvgPrintf(drawing_wand,"clip-path url(#%s)\n",clip_path);
     }
 }
 
@@ -952,19 +874,18 @@ MagickExport void DrawSetClipPath(DrawContext context, const char *clip_path)
 %
 %  The format of the DrawGetClipRule method is:
 %
-%     FillRule DrawGetClipRule(DrawContext context)
+%     FillRule DrawGetClipRule(const DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 */
-MagickExport FillRule DrawGetClipRule(DrawContext context)
+WandExport FillRule DrawGetClipRule(const DrawingWand *drawing_wand)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  return CurrentContext->fill_rule;
+  assert(drawing_wand != (const DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  return(CurrentContext->fill_rule);
 }
 
 /*
@@ -982,43 +903,39 @@ MagickExport FillRule DrawGetClipRule(DrawContext context)
 %
 %  The format of the DrawSetClipRule method is:
 %
-%      void DrawSetClipRule(DrawContext context,
-%                           const FillRule fill_rule)
+%      void DrawSetClipRule(DrawingWand *drawing_wand,const FillRule fill_rule)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o fill_rule: fill rule (EvenOddRule or NonZeroRule)
 %
 */
-MagickExport void DrawSetClipRule(DrawContext context,
-                                  const FillRule fill_rule)
+WandExport void DrawSetClipRule(DrawingWand *drawing_wand,
+  const FillRule fill_rule)
 {
   const char
-    *p = NULL;
+    *p=NULL;
 
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  if(context->filter_off || (CurrentContext->fill_rule != fill_rule))
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  if (drawing_wand->filter_off || (CurrentContext->fill_rule != fill_rule))
     {
-      CurrentContext->fill_rule = fill_rule;
-
+      CurrentContext->fill_rule=fill_rule;
       switch (fill_rule)
-        {
+      {
         case EvenOddRule:
-          p = "evenodd";
+          p="evenodd";
           break;
         case NonZeroRule:
-          p = "nonzero";
+          p="nonzero";
           break;
         default:
           break;
-        }
-
+      }
       if (p != NULL)
-        MvgPrintf(context, "clip-rule %s\n", p);
+        MvgPrintf(drawing_wand, "clip-rule %s\n", p);
     }
 }
 
@@ -1037,19 +954,18 @@ MagickExport void DrawSetClipRule(DrawContext context,
 %
 %  The format of the DrawGetClipUnits method is:
 %
-%      ClipPathUnits DrawGetClipUnits(DrawContext context)
+%      ClipPathUnits DrawGetClipUnits(const DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 */
-MagickExport ClipPathUnits DrawGetClipUnits(DrawContext context)
+WandExport ClipPathUnits DrawGetClipUnits(const DrawingWand *drawing_wand)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  return CurrentContext->clip_units;
+  assert(drawing_wand != (const DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  return(CurrentContext->clip_units);
 }
 
 /*
@@ -1067,59 +983,54 @@ MagickExport ClipPathUnits DrawGetClipUnits(DrawContext context)
 %
 %  The format of the DrawSetClipUnits method is:
 %
-%      void DrawSetClipUnits(DrawContext context,
-%                            const ClipPathUnits clip_units)
+%      void DrawSetClipUnits(DrawingWand *drawing_wand,
+%        const ClipPathUnits clip_units)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o clip_units: units to use (UserSpace, UserSpaceOnUse, or ObjectBoundingBox)
 %
 */
-MagickExport void DrawSetClipUnits(DrawContext context,
-                                   const ClipPathUnits clip_units)
+WandExport void DrawSetClipUnits(DrawingWand *drawing_wand,
+  const ClipPathUnits clip_units)
 {
   const char
-    *p = NULL;
+    *p=NULL;
 
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  if(context->filter_off || (CurrentContext->clip_units != clip_units))
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  if (drawing_wand->filter_off || (CurrentContext->clip_units != clip_units))
     {
-      CurrentContext->clip_units = clip_units;
-
+      CurrentContext->clip_units=clip_units;
       if ( clip_units == ObjectBoundingBox )
         {
           AffineMatrix
             affine;
 
-          IdentityAffine(&affine);
-
+          GetAffineMatrix(&affine);
           affine.sx=CurrentContext->bounds.x2;
           affine.sy=CurrentContext->bounds.y2;
           affine.tx=CurrentContext->bounds.x1;
           affine.ty=CurrentContext->bounds.y1;
-
-          AdjustAffine( context, &affine );
+          AdjustAffine( drawing_wand, &affine );
         }
 
       switch (clip_units)
-        {
+      {
         case UserSpace:
-          p = "userSpace";
+          p="userSpace";
           break;
         case UserSpaceOnUse:
-          p = "userSpaceOnUse";
+          p="userSpaceOnUse";
           break;
         case ObjectBoundingBox:
-          p = "objectBoundingBox";
+          p="objectBoundingBox";
           break;
-        }
-
+      }
       if (p != NULL)
-        MvgPrintf(context, "clip-units %s\n", p);
+        MvgPrintf(drawing_wand, "clip-units %s\n", p);
     }
 }
 
@@ -1141,18 +1052,18 @@ MagickExport void DrawSetClipUnits(DrawContext context,
 %    PointMethod: Recolors the target pixel
 %    ReplaceMethod: Recolor any pixel that matches the target pixel.
 %    FloodfillMethod: Recolors target pixels and matching neighbors.
-%    FillToBorderMethod: Recolor target pixels and neighbors not matching border color.
+%    FillToBorderMethod: Recolor target pixels and neighbors not matching
+$      border color.
 %    ResetMethod: Recolor all pixels.
 %
 %  The format of the DrawColor method is:
 %
-%      void DrawColor(DrawContext context,
-%                     const double x, const double y,
-%                     const PaintMethod paintMethod)
+%      void DrawColor(DrawingWand *drawing_wand,const double x,const double y,
+%        const PaintMethod paintMethod)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o x: x ordinate
 %
@@ -1161,37 +1072,34 @@ MagickExport void DrawSetClipUnits(DrawContext context,
 %    o paintMethod: paint method
 %
 */
-MagickExport void DrawColor(DrawContext context,
-                            const double x, const double y,
-                            const PaintMethod paintMethod)
+WandExport void DrawColor(DrawingWand *drawing_wand,const double x,
+  const double y,const PaintMethod paintMethod)
 {
   const char
-    *p = NULL;
+    *p=NULL;
 
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
   switch (paintMethod)
-    {
+  {
     case PointMethod:
-      p = "point";
+      p="point";
       break;
     case ReplaceMethod:
-      p = "replace";
+      p="replace";
       break;
     case FloodfillMethod:
-      p = "floodfill";
+      p="floodfill";
       break;
     case FillToBorderMethod:
-      p = "filltoborder";
+      p="filltoborder";
       break;
     case ResetMethod:
-      p = "reset";
+      p="reset";
       break;
-    }
-
+  }
   if (p != NULL)
-    MvgPrintf(context, "color %.4g,%.4g %s\n", x, y, p);
+    MvgPrintf(drawing_wand, "color %.4g,%.4g %s\n", x, y, p);
 }
 
 /*
@@ -1209,88 +1117,18 @@ MagickExport void DrawColor(DrawContext context,
 %
 %  The format of the DrawComment method is:
 %
-%      void DrawComment(DrawContext context,const char* comment)
+%      void DrawComment(DrawingWand *drawing_wand,const char *comment)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o comment: comment text
 %
 */
-MagickExport void DrawComment(DrawContext context,const char* comment)
+WandExport void DrawComment(DrawingWand *drawing_wand,const char* comment)
 {
-  /* FIXME: should handle multi-line comments by inserting # before
-     new lines */
-  MvgPrintf(context, "#%s\n", comment);
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   D r a w D e s t r o y C o n t e x t                                       %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  DrawDestroyContext() frees all resources associated with the drawing
-%  context. Once the drawing context has been freed, it should not be used
-%  any further unless it re-allocated.
-%
-%  The format of the DrawDestroyContext method is:
-%
-%      void DrawDestroyContext(DrawContext context)
-%
-%  A description of each parameter follows:
-%
-%    o context: drawing context to destroy
-%
-*/
-MagickExport void DrawDestroyContext(DrawContext context)
-{
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  /* Path operation support */
-  context->path_operation = PathDefaultOperation;
-  context->path_mode = DefaultPathMode;
-
-  /* Pretty-printing depth */
-  context->indent_depth = 0;
-
-  /* Graphic context */
-  for ( ; context->index > 0; context->index--)
-    {
-      DestroyDrawInfo(CurrentContext);
-      CurrentContext = (DrawInfo*) NULL;
-    }
-  DestroyDrawInfo(CurrentContext);
-  CurrentContext = (DrawInfo*) NULL;
-  MagickFreeMemory(context->graphic_context);
-
-  /* Pattern support */
-  MagickFreeMemory(context->pattern_id);
-  context->pattern_offset = 0;
-
-  context->pattern_bounds.x = 0;
-  context->pattern_bounds.y = 0;
-  context->pattern_bounds.width = 0;
-  context->pattern_bounds.height = 0;
-
-  /* MVG output string and housekeeping */
-  MagickFreeMemory(context->mvg);
-  context->mvg_alloc = 0;
-  context->mvg_length = 0;
-
-  /* Support structures */
-  context->image = (Image*)NULL;
-
-  /* Context itself */
-  context->signature = 0;
-  MagickFreeMemory(context);
+  MvgPrintf(drawing_wand,"#%s\n",comment);
 }
 
 /*
@@ -1308,14 +1146,13 @@ MagickExport void DrawDestroyContext(DrawContext context)
 %
 %  The format of the DrawEllipse method is:
 %
-%       void DrawEllipse(DrawContext context,
-%                        const double ox, const double oy,
-%                        const double rx, const double ry,
-%                        const double start, const double end)
+%       void DrawEllipse(DrawingWand *drawing_wand,const double ox,
+%         const double oy,const double rx,const double ry,const double start,
+%         const double end)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o ox: origin x ordinate
 %
@@ -1330,16 +1167,14 @@ MagickExport void DrawDestroyContext(DrawContext context)
 %    o end: ending rotation in degrees
 %
 */
-MagickExport void DrawEllipse(DrawContext context,
-                              const double ox, const double oy,
-                              const double rx, const double ry,
-                              const double start, const double end)
+WandExport void DrawEllipse(DrawingWand *drawing_wand,const double ox,
+  const double oy,const double rx,const double ry,const double start,
+  const double end)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  MvgPrintf(context, "ellipse %.4g,%.4g %.4g,%.4g %.4g,%.4g\n",
-            ox, oy, rx, ry, start, end);
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  MvgPrintf(drawing_wand,"ellipse %.4g,%.4g %.4g,%.4g %.4g,%.4g\n",ox,oy,rx,ry,
+    start,end);
 }
 
 /*
@@ -1357,18 +1192,22 @@ MagickExport void DrawEllipse(DrawContext context,
 %
 %  The format of the DrawGetFillColor method is:
 %
-%      PixelPacket DrawGetFillColor(DrawContext context)
+%      void DrawGetFillColor(const DrawingWand *drawing_wand,
+%        PixelWand *fill_color)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
+%
+%    o fill_color: Return the fill color.
+%
 */
-MagickExport PixelPacket DrawGetFillColor(DrawContext context)
+WandExport void DrawGetFillColor(const DrawingWand *drawing_wand,
+  PixelWand *fill_color)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  return CurrentContext->fill;
+  assert(drawing_wand != (const DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  PixelSetQuantumColor(fill_color,&CurrentContext->fill);
 }
 
 /*
@@ -1386,75 +1225,39 @@ MagickExport PixelPacket DrawGetFillColor(DrawContext context)
 %
 %  The format of the DrawSetFillColor method is:
 %
-%      void DrawSetFillColor(DrawContext context,
-%                            const PixelPacket * fill_color)
+%      void DrawSetFillColor(DrawingWand *drawing_wand,
+%        const PixelWand *fill_wand)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
-%    o fill_color: fill color
+%    o fill_wand: fill wand.
 %
 */
-MagickExport void DrawSetFillColor(DrawContext context,
-                                   const PixelPacket *fill_color)
+WandExport void DrawSetFillColor(DrawingWand *drawing_wand,
+  const PixelWand *fill_wand)
 {
   PixelPacket
     *current_fill,
+    fill_color,
     new_fill;
 
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-  assert(fill_color != (const PixelPacket *) NULL);
-
-  new_fill = *fill_color;
-  if(new_fill.opacity != TransparentOpacity)
-    new_fill.opacity = CurrentContext->opacity;
-
-  current_fill = &CurrentContext->fill;
-  if( context->filter_off || !(PixelPacketMatch(current_fill,&new_fill)) )
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  assert(fill_wand != (const PixelWand *) NULL);
+  PixelGetQuantumColor(fill_wand,&fill_color);
+  new_fill=fill_color;
+  if (new_fill.opacity != TransparentOpacity)
+    new_fill.opacity=CurrentContext->opacity;
+  current_fill=&CurrentContext->fill;
+  if (drawing_wand->filter_off || !WandColorMatch(current_fill,&new_fill))
     {
-      CurrentContext->fill = new_fill;
-
-      MvgPrintf(context, "fill '");
-      MvgAppendColor(context, fill_color);
-      MvgPrintf(context, "'\n");
+      CurrentContext->fill=new_fill;
+      MvgPrintf(drawing_wand,"fill '");
+      MvgAppendColor(drawing_wand,&fill_color);
+      MvgPrintf(drawing_wand,"'\n");
     }
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   D r a w S e t F i l l C o l o r S t r i n g                               %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  DrawSetFillColorString() sets the fill color to be used for drawing filled
-%  objects.
-%
-%  The format of the DrawSetFillColorString method is:
-%
-%      void DrawSetFillColorString(DrawContext context, const char* fill_color)
-%
-%  A description of each parameter follows:
-%
-%    o context: drawing context
-%
-%    o fill_color: fill color
-%
-*/
-MagickExport void DrawSetFillColorString(DrawContext context,
-                                         const char* fill_color)
-{
-  PixelPacket
-    pixel_packet;
-
-  if(QueryColorDatabase(fill_color,&pixel_packet,&context->image->exception))
-    DrawSetFillColor(context,&pixel_packet);
 }
 
 /*
@@ -1475,46 +1278,47 @@ MagickExport void DrawSetFillColorString(DrawContext context,
 %
 %  The format of the DrawSetFillPatternURL method is:
 %
-%      void DrawSetFillPatternURL(DrawContext context, const char* fill_url)
+%      void DrawSetFillPatternURL(DrawingWand *drawing_wand,
+%        const char *fill_url)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o fill_url: URL to use to obtain fill pattern.
 %
 */
-MagickExport void DrawSetFillPatternURL(DrawContext context, const char* fill_url)
+WandExport void DrawSetFillPatternURL(DrawingWand *drawing_wand,
+  const char* fill_url)
 {
   char
     pattern[MaxTextExtent];
 
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
   assert(fill_url != NULL);
-
-  if(fill_url[0] != '#')
-    ThrowDrawException(DrawWarning,NotARelativeURL, fill_url);
-
-  FormatString(pattern,"[%.1024s]",fill_url+1);
-
-  if (GetImageAttribute(context->image,pattern) == (ImageAttribute *) NULL)
+  if (fill_url[0] != '#')
+    ThrowException(&drawing_wand->image->exception,DrawWarning,
+      NotARelativeURL,fill_url);
+  (void) FormatMagickString(pattern,MaxTextExtent,"[%.1024s]",fill_url+1);
+  if (GetImageAttribute(drawing_wand->image,pattern) == (ImageAttribute *) NULL)
     {
-      ThrowDrawException(DrawWarning,URLNotFound, fill_url)
+      ThrowException(&drawing_wand->image->exception,DrawWarning,
+        URLNotFound,fill_url);
     }
   else
     {
       char
         pattern_spec[MaxTextExtent];
 
-      FormatString(pattern_spec,"url(%.1024s)",fill_url);
+      (void) FormatMagickString(pattern_spec,MaxTextExtent,"url(%.1024s)",
+        fill_url);
 #if DRAW_BINARY_IMPLEMENTATION
-      DrawPatternPath(context->image,CurrentContext,pattern_spec,&CurrentContext->fill_pattern);
+      DrawPatternPath(drawing_wand->image,CurrentContext,pattern_spec,&CurrentContext->fill_pattern);
 #endif
       if (CurrentContext->fill.opacity != TransparentOpacity)
         CurrentContext->fill.opacity=CurrentContext->opacity;
-
-      MvgPrintf(context, "fill %s\n",pattern_spec);
+      MvgPrintf(drawing_wand,"fill %s\n",pattern_spec);
     }
 }
 
@@ -1534,19 +1338,18 @@ MagickExport void DrawSetFillPatternURL(DrawContext context, const char* fill_ur
 %
 %  The format of the DrawGetFillOpacity method is:
 %
-%      double DrawGetFillOpacity(DrawContext context)
+%      double DrawGetFillOpacity(const DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 */
-MagickExport double DrawGetFillOpacity(DrawContext context)
+WandExport double DrawGetFillOpacity(const DrawingWand *drawing_wand)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  return ((double)CurrentContext->opacity/MaxRGB);
+  assert(drawing_wand != (const DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  return((double) CurrentContext->opacity/MaxRGB);
 }
 
 /*
@@ -1565,30 +1368,30 @@ MagickExport double DrawGetFillOpacity(DrawContext context)
 %
 %  The format of the DrawSetFillOpacity method is:
 %
-%      void DrawSetFillOpacity(DrawContext context, const double fill_opacity)
+%      void DrawSetFillOpacity(DrawingWand *drawing_wand,
+%        const double fill_opacity)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o fill_opacity: fill opacity
 %
 */
-MagickExport void DrawSetFillOpacity(DrawContext context,
-                                     const double fill_opacity)
+WandExport void DrawSetFillOpacity(DrawingWand *drawing_wand,
+  const double fill_opacity)
 {
   Quantum
     opacity;
 
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  opacity = (Quantum)((double) MaxRGB*(1.0-(fill_opacity <= 1.0 ? fill_opacity : 1.0 ))+0.5);
-
-  if (context->filter_off || (CurrentContext->opacity != opacity))
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  opacity=(Quantum)
+    ((double) MaxRGB*(1.0-(fill_opacity <= 1.0 ? fill_opacity : 1.0 ))+0.5);
+  if (drawing_wand->filter_off || (CurrentContext->opacity != opacity))
     {
-      CurrentContext->opacity = opacity;
-      MvgPrintf(context, "fill-opacity %.4g\n", fill_opacity);
+      CurrentContext->opacity=opacity;
+      MvgPrintf(drawing_wand,"fill-opacity %.4g\n",fill_opacity);
     }
 }
 
@@ -1607,18 +1410,17 @@ MagickExport void DrawSetFillOpacity(DrawContext context,
 %
 %  The format of the DrawGetFillRule method is:
 %
-%      FillRule DrawGetFillRule(DrawContext context)
+%      FillRule DrawGetFillRule(const DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 */
-MagickExport FillRule DrawGetFillRule(DrawContext context)
+WandExport FillRule DrawGetFillRule(const DrawingWand *drawing_wand)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  return CurrentContext->fill_rule;
+  assert(drawing_wand != (const DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  return(CurrentContext->fill_rule);
 }
 
 /*
@@ -1636,42 +1438,39 @@ MagickExport FillRule DrawGetFillRule(DrawContext context)
 %
 %  The format of the DrawSetFillRule method is:
 %
-%      void DrawSetFillRule(DrawContext context, const FillRule fill_rule)
+%      void DrawSetFillRule(DrawingWand *drawing_wand,const FillRule fill_rule)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o fill_rule: fill rule (EvenOddRule or NonZeroRule)
 %
 */
-MagickExport void DrawSetFillRule(DrawContext context,
-                                  const FillRule fill_rule)
+WandExport void DrawSetFillRule(DrawingWand *drawing_wand,
+  const FillRule fill_rule)
 {
   const char
-    *p = NULL;
+    *p=NULL;
 
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  if(context->filter_off || (CurrentContext->fill_rule != fill_rule))
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  if (drawing_wand->filter_off || (CurrentContext->fill_rule != fill_rule))
     {
-      CurrentContext->fill_rule = fill_rule;
-
+      CurrentContext->fill_rule=fill_rule;
       switch (fill_rule)
-        {
+      {
         case EvenOddRule:
-          p = "evenodd";
+          p="evenodd";
           break;
         case NonZeroRule:
-          p = "nonzero";
+          p="nonzero";
           break;
         default:
           break;
-        }
-
+      }
       if (p != NULL)
-        MvgPrintf(context, "fill-rule %s\n", p);
+        MvgPrintf(drawing_wand,"fill-rule %s\n",p);
     }
 }
 
@@ -1692,21 +1491,19 @@ MagickExport void DrawSetFillRule(DrawContext context,
 %
 %  The format of the DrawGetFont method is:
 %
-%      char *DrawGetFont(DrawContext context)
+%      char *DrawGetFont(const DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 */
-MagickExport char *DrawGetFont(DrawContext context)
+WandExport char *DrawGetFont(const DrawingWand *drawing_wand)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
+  assert(drawing_wand != (const DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
   if (CurrentContext->font != (char *) NULL)
-    return AllocateString(CurrentContext->font);
-  else
-    return (char *) NULL;
+    return(AcquireString(CurrentContext->font));
+  return((char *) NULL);
 }
 
 /*
@@ -1725,29 +1522,28 @@ MagickExport char *DrawGetFont(DrawContext context)
 %
 %  The format of the DrawSetFont method is:
 %
-%      void DrawSetFont(DrawContext context, const char *font_name)
+%      void DrawSetFont(DrawingWand *drawing_wand,const char *font_name)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o font_name: font name
 %
 */
-MagickExport void DrawSetFont(DrawContext context, const char *font_name)
+WandExport void DrawSetFont(DrawingWand *drawing_wand,const char *font_name)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
   assert(font_name != (const char *) NULL);
-
-  if(context->filter_off || (CurrentContext->font == NULL) ||
+  if (drawing_wand->filter_off || (CurrentContext->font == NULL) ||
      LocaleCompare(CurrentContext->font,font_name) != 0)
     {
       (void) CloneString(&CurrentContext->font,font_name);
-      if(CurrentContext->font == (char*)NULL)
-        ThrowDrawException3(ResourceLimitError,MemoryAllocationFailed,
-          UnableToDrawOnImage);
-      MvgPrintf(context, "font '%s'\n", font_name);
+      if (CurrentContext->font == (char*)NULL)
+        ThrowException3(&drawing_wand->image->exception,ResourceLimitError,
+          MemoryAllocationFailed,UnableToDrawOnImage);
+      MvgPrintf(drawing_wand,"font '%s'\n",font_name);
     }
 }
 
@@ -1767,21 +1563,19 @@ MagickExport void DrawSetFont(DrawContext context, const char *font_name)
 %
 %  The format of the DrawGetFontFamily method is:
 %
-%      char *DrawGetFontFamily(DrawContext context)
+%      char *DrawGetFontFamily(const DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 */
-MagickExport char *DrawGetFontFamily(DrawContext context)
+WandExport char *DrawGetFontFamily(const DrawingWand *drawing_wand)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
+  assert(drawing_wand != (const DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
   if (CurrentContext->family != NULL)
-    return AllocateString(CurrentContext->family);
-  else
-    return (char *) NULL;
+    return(AcquireString(CurrentContext->family));
+  return((char *) NULL);
 }
 
 /*
@@ -1799,30 +1593,29 @@ MagickExport char *DrawGetFontFamily(DrawContext context)
 %
 %  The format of the DrawSetFontFamily method is:
 %
-%      void DrawSetFontFamily(DrawContext context, const char *font_family)
+%      void DrawSetFontFamily(DrawingWand *drawing_wand,const char *font_family)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o font_family: font family
 %
 */
-MagickExport void DrawSetFontFamily(DrawContext context,
-                                    const char *font_family)
+WandExport void DrawSetFontFamily(DrawingWand *drawing_wand,
+  const char *font_family)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
   assert(font_family != (const char *) NULL);
-
-  if(context->filter_off || (CurrentContext->family == NULL) ||
+  if (drawing_wand->filter_off || (CurrentContext->family == NULL) ||
      LocaleCompare(CurrentContext->family,font_family) != 0)
     {
       (void) CloneString(&CurrentContext->family,font_family);
-      if(CurrentContext->family == (char*)NULL)
-        ThrowDrawException3(ResourceLimitError,MemoryAllocationFailed,
-          UnableToDrawOnImage);
-      MvgPrintf(context, "font-family '%s'\n", font_family);
+      if (CurrentContext->family == (char *) NULL)
+        ThrowException3(&drawing_wand->image->exception,ResourceLimitError,
+          MemoryAllocationFailed,UnableToDrawOnImage);
+      MvgPrintf(drawing_wand,"font-family '%s'\n",font_family);
     }
 }
 
@@ -1841,18 +1634,17 @@ MagickExport void DrawSetFontFamily(DrawContext context,
 %
 %  The format of the DrawGetFontSize method is:
 %
-%      double DrawGetFontSize(DrawContext context)
+%      double DrawGetFontSize(const DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 */
-MagickExport double DrawGetFontSize(DrawContext context)
+WandExport double DrawGetFontSize(const DrawingWand *drawing_wand)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  return CurrentContext->pointsize;
+  assert(drawing_wand != (const DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  return(CurrentContext->pointsize);
 }
 
 /*
@@ -1870,27 +1662,25 @@ MagickExport double DrawGetFontSize(DrawContext context)
 %
 %  The format of the DrawSetFontSize method is:
 %
-%      void DrawSetFontSize(DrawContext context, const double pointsize)
+%      void DrawSetFontSize(DrawingWand *drawing_wand,const double pointsize)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o pointsize: text pointsize
 %
 */
-MagickExport void DrawSetFontSize(DrawContext context,
-                                  const double pointsize)
+WandExport void DrawSetFontSize(DrawingWand *drawing_wand,
+  const double pointsize)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  if(context->filter_off ||
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  if (drawing_wand->filter_off ||
      (AbsoluteValue(CurrentContext->pointsize-pointsize) > MagickEpsilon))
     {
       CurrentContext->pointsize=pointsize;
-
-      MvgPrintf(context, "font-size %.4g\n", pointsize);
+      MvgPrintf(drawing_wand,"font-size %.4g\n",pointsize);
     }
 }
 
@@ -1909,18 +1699,17 @@ MagickExport void DrawSetFontSize(DrawContext context,
 %
 %  The format of the DrawGetFontStretch method is:
 %
-%      StretchType DrawGetFontStretch(DrawContext context)
+%      StretchType DrawGetFontStretch(const DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 */
-MagickExport StretchType DrawGetFontStretch(DrawContext context)
+WandExport StretchType DrawGetFontStretch(const DrawingWand *drawing_wand)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  return CurrentContext->stretch;
+  assert(drawing_wand != (const DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  return(CurrentContext->stretch);
 }
 
 /*
@@ -1939,12 +1728,12 @@ MagickExport StretchType DrawGetFontStretch(DrawContext context)
 %
 %  The format of the DrawSetFontStretch method is:
 %
-%      void DrawSetFontStretch(DrawContext context,
-%                              const StretchType font_stretch)
+%      void DrawSetFontStretch(DrawingWand *drawing_wand,
+%        const StretchType font_stretch)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o font_stretch: font stretch (NormalStretch, UltraCondensedStretch,
 %                    CondensedStretch, SemiCondensedStretch,
@@ -1952,55 +1741,52 @@ MagickExport StretchType DrawGetFontStretch(DrawContext context)
 %                    ExtraExpandedStretch, UltraExpandedStretch, AnyStretch)
 %
 */
-MagickExport void DrawSetFontStretch(DrawContext context,
-                                     const StretchType font_stretch)
+WandExport void DrawSetFontStretch(DrawingWand *drawing_wand,
+  const StretchType font_stretch)
 {
   const char
-    *p = NULL;
+    *p=NULL;
 
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  if(context->filter_off || (CurrentContext->stretch != font_stretch))
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  if (drawing_wand->filter_off || (CurrentContext->stretch != font_stretch))
     {
       CurrentContext->stretch=font_stretch;
-
       switch (font_stretch)
-        {
+      {
         case NormalStretch:
-          p = "normal";
+          p="normal";
           break;
         case UltraCondensedStretch:
-          p = "ultra-condensed";
+          p="ultra-condensed";
           break;
         case ExtraCondensedStretch:
-          p = "extra-condensed";
+          p="extra-condensed";
           break;
         case CondensedStretch:
-          p = "condensed";
+          p="condensed";
           break;
         case SemiCondensedStretch:
-          p = "semi-condensed";
+          p="semi-condensed";
           break;
         case SemiExpandedStretch:
-          p = "semi-expanded";
+          p="semi-expanded";
           break;
         case ExpandedStretch:
-          p = "expanded";
+          p="expanded";
           break;
         case ExtraExpandedStretch:
-          p = "extra-expanded";
+          p="extra-expanded";
           break;
         case UltraExpandedStretch:
-          p = "ultra-expanded";
+          p="ultra-expanded";
           break;
         case AnyStretch:
-          p = "all";
+          p="all";
           break;
-        }
-
+      }
       if (p != NULL)
-        MvgPrintf(context, "font-stretch '%s'\n", p);
+        MvgPrintf(drawing_wand,"font-stretch '%s'\n",p);
     }
 }
 
@@ -2019,18 +1805,17 @@ MagickExport void DrawSetFontStretch(DrawContext context,
 %
 %  The format of the DrawGetFontStyle method is:
 %
-%      StyleType DrawGetFontStyle(DrawContext context)
+%      StyleType DrawGetFontStyle(const DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 */
-MagickExport StyleType DrawGetFontStyle(DrawContext context)
+WandExport StyleType DrawGetFontStyle(const DrawingWand *drawing_wand)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  return CurrentContext->style;
+  assert(drawing_wand != (const DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  return(CurrentContext->style);
 }
 
 /*
@@ -2049,46 +1834,43 @@ MagickExport StyleType DrawGetFontStyle(DrawContext context)
 %
 %  The format of the DrawSetFontStyle method is:
 %
-%      void DrawSetFontStyle(DrawContext context, const StyleType style)
+%      void DrawSetFontStyle(DrawingWand *drawing_wand,const StyleType style)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o style: font style (NormalStyle, ItalicStyle, ObliqueStyle, AnyStyle)
 %
 */
-MagickExport void DrawSetFontStyle(DrawContext context,
-                                   const StyleType style)
+WandExport void DrawSetFontStyle(DrawingWand *drawing_wand,
+  const StyleType style)
 {
   const char
-    *p = NULL;
+    *p=NULL;
 
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  if(context->filter_off || (CurrentContext->style != style))
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  if (drawing_wand->filter_off || (CurrentContext->style != style))
     {
       CurrentContext->style=style;
-
       switch (style)
-        {
+      {
         case NormalStyle:
-          p = "normal";
+          p="normal";
           break;
         case ItalicStyle:
-          p = "italic";
+          p="italic";
           break;
         case ObliqueStyle:
-          p = "oblique";
+          p="oblique";
           break;
         case AnyStyle:
-          p = "all";
+          p="all";
           break;
-        }
-
+      }
       if (p != NULL)
-        MvgPrintf(context, "font-style '%s'\n", p);
+        MvgPrintf(drawing_wand, "font-style '%s'\n", p);
     }
 }
 
@@ -2107,18 +1889,17 @@ MagickExport void DrawSetFontStyle(DrawContext context,
 %
 %  The format of the DrawGetFontWeight method is:
 %
-%      unsigned long DrawGetFontWeight(DrawContext context)
+%      unsigned long DrawGetFontWeight(const DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 */
-MagickExport unsigned long DrawGetFontWeight(DrawContext context)
+WandExport unsigned long DrawGetFontWeight(const DrawingWand *drawing_wand)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  return CurrentContext->weight;
+  assert(drawing_wand != (const DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  return(CurrentContext->weight);
 }
 
 /*
@@ -2136,26 +1917,25 @@ MagickExport unsigned long DrawGetFontWeight(DrawContext context)
 %
 %  The format of the DrawSetFontWeight method is:
 %
-%      void DrawSetFontWeight(DrawContext context,
-%                             const unsigned long font_weight)
+%      void DrawSetFontWeight(DrawingWand *drawing_wand,
+%        const unsigned long font_weight)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o font_weight: font weight (valid range 100-900)
 %
 */
-MagickExport void DrawSetFontWeight(DrawContext context,
-                                    const unsigned long font_weight)
+WandExport void DrawSetFontWeight(DrawingWand *drawing_wand,
+  const unsigned long font_weight)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  if(context->filter_off || (CurrentContext->weight != font_weight))
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  if (drawing_wand->filter_off || (CurrentContext->weight != font_weight))
     {
       CurrentContext->weight=font_weight;
-      MvgPrintf(context, "font-weight %lu\n", font_weight);
+      MvgPrintf(drawing_wand,"font-weight %lu\n",font_weight);
     }
 }
 
@@ -2175,18 +1955,17 @@ MagickExport void DrawSetFontWeight(DrawContext context,
 %
 %  The format of the DrawGetGravity method is:
 %
-%      GravityType DrawGetGravity(DrawContext context)
+%      GravityType DrawGetGravity(const DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 */
-MagickExport GravityType DrawGetGravity(DrawContext context)
+WandExport GravityType DrawGetGravity(const DrawingWand *drawing_wand)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  return CurrentContext->gravity;
+  assert(drawing_wand != (const DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  return(CurrentContext->gravity);
 }
 
 /*
@@ -2205,11 +1984,11 @@ MagickExport GravityType DrawGetGravity(DrawContext context)
 %
 %  The format of the DrawSetGravity method is:
 %
-%      void DrawSetGravity(DrawContext context, const GravityType gravity)
+%      void DrawSetGravity(DrawingWand *drawing_wand,const GravityType gravity)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o gravity: positioning gravity (NorthWestGravity, NorthGravity,
 %               NorthEastGravity, WestGravity, CenterGravity,
@@ -2217,57 +1996,54 @@ MagickExport GravityType DrawGetGravity(DrawContext context)
 %               SouthEastGravity)
 %
 */
-MagickExport void DrawSetGravity(DrawContext context,
-                                 const GravityType gravity)
+WandExport void DrawSetGravity(DrawingWand *drawing_wand,
+  const GravityType gravity)
 {
   const char
-    *p = NULL;
+    *p=NULL;
 
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  if(context->filter_off || (CurrentContext->gravity != gravity))
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  if (drawing_wand->filter_off || (CurrentContext->gravity != gravity))
     {
       CurrentContext->gravity=gravity;
-
       switch (gravity)
-        {
+      {
         case NorthWestGravity:
-          p = "NorthWest";
+          p="NorthWest";
           break;
         case NorthGravity:
-          p = "North";
+          p="North";
           break;
         case NorthEastGravity:
-          p = "NorthEast";
+          p="NorthEast";
           break;
         case WestGravity:
-          p = "West";
+          p="West";
           break;
         case CenterGravity:
-          p = "Center";
+          p="Center";
           break;
         case EastGravity:
-          p = "East";
+          p="East";
           break;
         case SouthWestGravity:
-          p = "SouthWest";
+          p="SouthWest";
           break;
         case SouthGravity:
-          p = "South";
+          p="South";
           break;
         case SouthEastGravity:
-          p = "SouthEast";
+          p="SouthEast";
           break;
         case StaticGravity:
         case ForgetGravity:
           {
           }
           break;
-        }
-
+      }
       if (p != NULL)
-        MvgPrintf(context, "gravity %s\n", p);
+        MvgPrintf(drawing_wand,"gravity %s\n",p);
     }
 }
 
@@ -2288,15 +2064,14 @@ MagickExport void DrawSetGravity(DrawContext context,
 %
 %  The format of the DrawComposite method is:
 %
-%      void DrawComposite(DrawContext context,
-%                         const CompositeOperator composite_operator,
-%                         const double x, const double y,
-%                         const double width, const double height,
-%                         const Image * image )
+%      void DrawComposite(DrawingWand *drawing_wand,
+%        const CompositeOperator composite_operator,const double x,
+%        const double y,const double width,const double height,
+%        const Image *image)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o composite_operator: composition operator
 %
@@ -2313,11 +2088,9 @@ MagickExport void DrawSetGravity(DrawContext context,
 %    o image: Image to composite
 %
 */
-MagickExport void DrawComposite(DrawContext context,
-                                const CompositeOperator composite_operator,
-                                const double x, const double y,
-                                const double width, const double height,
-                                const Image * image )
+WandExport void DrawComposite(DrawingWand *drawing_wand,
+  const CompositeOperator composite_operator,const double x,const double y,
+  const double width,const double height,const Image *image)
 
 {
   ImageInfo
@@ -2327,162 +2100,155 @@ MagickExport void DrawComposite(DrawContext context,
     *clone_image;
 
   char
-    *media_type = NULL,
-    *base64 = NULL;
+    *media_type=NULL,
+    *base64=NULL;
 
   const char
-    *mode = NULL;
+    *mode=NULL;
 
   unsigned char
-    *blob = (unsigned char*)NULL;
+    *blob=(unsigned char *) NULL;
 
   size_t
-    blob_length = 2048,
-    encoded_length = 0;
+    blob_length=2048,
+    encoded_length=0;
 
   MonitorHandler
     handler;
 
-  assert(context != (DrawContext)NULL);
+  assert(drawing_wand != (DrawingWand *) NULL);
   assert(image != (Image *) NULL);
   assert(width != 0);
   assert(height != 0);
   assert(*image->magick != '\0');
-  
-/*   LogMagickEvent(CoderEvent,GetMagickModule(),"DrawComposite columns=%ld rows=%ld magick=%s ", */
-/*                  image->columns, image->rows, image->magick ); */
-
-  clone_image = CloneImage(image,0,0,True,&context->image->exception);
-  if(!clone_image)
+  clone_image=CloneImage(image,0,0,True,&drawing_wand->image->exception);
+  if (!clone_image)
     return;
-
-  image_info = CloneImageInfo((ImageInfo*)NULL);
-  if(!image_info)
-    ThrowDrawException3(ResourceLimitError,MemoryAllocationFailed,
-      UnableToDrawOnImage);
+  image_info=CloneImageInfo((ImageInfo*)NULL);
+  if (!image_info)
+    ThrowException3(&drawing_wand->image->exception,ResourceLimitError,
+      MemoryAllocationFailed,UnableToDrawOnImage);
   handler=SetMonitorHandler((MonitorHandler) NULL);
-  blob = (unsigned char*)ImageToBlob( image_info, clone_image, &blob_length,
-                                      &context->image->exception );
+  blob=(unsigned char*) ImageToBlob( image_info,clone_image,&blob_length,
+    &drawing_wand->image->exception);
   (void) SetMonitorHandler(handler);
   DestroyImageInfo(image_info);
   DestroyImageList(clone_image);
-  if(!blob)
+  if (!blob)
     return;
-
-  base64 = Base64Encode(blob,blob_length,&encoded_length);
-  MagickFreeMemory(blob);
-  if(!base64)
+  base64=Base64Encode(blob,blob_length,&encoded_length);
+  blob=(unsigned char *) RelinquishMagickMemory(blob);
+  if (!base64)
     {
       char
         buffer[MaxTextExtent];
 
-      FormatString(buffer,"%ld bytes", (4L*blob_length/3L+4L));
-      ThrowDrawException(ResourceLimitWarning,MemoryAllocationFailed,buffer)
+      (void) FormatMagickString(buffer,MaxTextExtent,"%ld bytes",
+        (4L*blob_length/3L+4L));
+      ThrowException(&drawing_wand->image->exception,ResourceLimitWarning,
+        MemoryAllocationFailed,buffer);
     }
-
-  mode = "copy";
+  mode="copy";
   switch (composite_operator)
-    {
+  {
     case AddCompositeOp:
-      mode = "add";
+      mode="add";
       break;
     case AtopCompositeOp:
-      mode = "atop";
+      mode="atop";
       break;
     case BumpmapCompositeOp:
-      mode = "bumpmap";
+      mode="bumpmap";
       break;
     case ClearCompositeOp:
-      mode = "clear";
+      mode="clear";
       break;
     case ColorizeCompositeOp:
-      mode = "colorize_not_supported";
+      mode="colorize_not_supported";
       break;
     case CopyBlueCompositeOp:
-      mode = "copyblue";
+      mode="copyblue";
       break;
     case CopyCompositeOp:
-      mode = "copy";
+      mode="copy";
       break;
     case CopyGreenCompositeOp:
-      mode = "copygreen";
+      mode="copygreen";
       break;
     case CopyOpacityCompositeOp:
-      mode = "copyopacity";
+      mode="copyopacity";
       break;
     case CopyRedCompositeOp:
-      mode = "copyred";
+      mode="copyred";
       break;
     case DarkenCompositeOp:
-      mode = "darken_not_supported";
+      mode="darken_not_supported";
       break;
     case DifferenceCompositeOp:
-      mode = "difference";
+      mode="difference";
       break;
     case DisplaceCompositeOp:
-      mode = "displace_not_supported";
+      mode="displace_not_supported";
       break;
     case DissolveCompositeOp:
-      mode = "dissolve_not_supported";
+      mode="dissolve_not_supported";
       break;
     case HueCompositeOp:
-      mode = "hue_not_supported";
+      mode="hue_not_supported";
       break;
     case InCompositeOp:
-      mode = "in";
+      mode="in";
       break;
     case LightenCompositeOp:
-      mode = "lighten_not_supported";
+      mode="lighten_not_supported";
       break;
     case LuminizeCompositeOp:
-      mode = "luminize_not_supported";
+      mode="luminize_not_supported";
       break;
     case MinusCompositeOp:
-      mode = "minus";
+      mode="minus";
       break;
     case ModulateCompositeOp:
-      mode = "modulate_not_supported";
+      mode="modulate_not_supported";
       break;
     case MultiplyCompositeOp:
-      mode = "multiply";
+      mode="multiply";
       break;
     case NoCompositeOp:
-      mode = "no_not_supported";
+      mode="no_not_supported";
       break;
     case OutCompositeOp:
-      mode = "out";
+      mode="out";
       break;
     case OverCompositeOp:
-      mode = "over";
+      mode="over";
       break;
     case OverlayCompositeOp:
-      mode = "overlay_not_supported";
+      mode="overlay_not_supported";
       break;
     case PlusCompositeOp:
-      mode = "plus";
+      mode="plus";
       break;
     case SaturateCompositeOp:
-      mode = "saturate_not_supported";
+      mode="saturate_not_supported";
       break;
     case ScreenCompositeOp:
-      mode = "screen_not_supported";
+      mode="screen_not_supported";
       break;
     case SubtractCompositeOp:
-      mode = "subtract";
+      mode="subtract";
       break;
     case ThresholdCompositeOp:
-      mode = "threshold";
+      mode="threshold";
       break;
     case XorCompositeOp:
-      mode = "xor";
+      mode="xor";
       break;
     default:
       break;
-    }
-
-  media_type = MagickToMime( image->magick );
-
-  if( media_type != NULL )
+  }
+  media_type=MagickToMime(image->magick);
+  if (media_type != NULL)
     {
       char
         *str;
@@ -2490,24 +2256,21 @@ MagickExport void DrawComposite(DrawContext context,
       int
         remaining;
 
-      MvgPrintf(context, "image %s %.4g,%.4g %.4g,%.4g 'data:%s;base64,\n",
-                mode, x, y, width, height, media_type);
-
-      remaining = (int)encoded_length;
-      str = base64;
-      while( remaining > 0 )
-        {
-          MvgPrintf(context,"%.76s", str);
-          remaining -= 76;
-          str += 76;
-          if(remaining > 0)
-            MvgPrintf(context,"\n");
-        }
-
-      MvgPrintf(context,"'\n");
+      MvgPrintf(drawing_wand,"image %s %.4g,%.4g %.4g,%.4g 'data:%s;base64,\n",
+        mode,x,y,width,height,media_type);
+      remaining=(int) encoded_length;
+      str=base64;
+      while ( remaining > 0 )
+      {
+        MvgPrintf(drawing_wand,"%.76s", str);
+        remaining -= 76;
+        str += 76;
+        if (remaining > 0)
+          MvgPrintf(drawing_wand,"\n");
+      }
+      MvgPrintf(drawing_wand,"'\n");
     }
-
-  MagickFreeMemory(media_type);
+  media_type=(char *) RelinquishMagickMemory(media_type);
 }
 
 /*
@@ -2526,13 +2289,12 @@ MagickExport void DrawComposite(DrawContext context,
 %
 %  The format of the DrawLine method is:
 %
-%      void DrawLine(DrawContext context,
-%                    const double sx, const double sy,
-%                    const double ex, const double ey)
+%      void DrawLine(DrawingWand *drawing_wand,const double sx,const double sy,
+%        const double ex,const double ey)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o sx: starting x ordinate
 %
@@ -2543,14 +2305,12 @@ MagickExport void DrawComposite(DrawContext context,
 %    o ey: ending y ordinate
 %
 */
-MagickExport void DrawLine(DrawContext context,
-                           const double sx, const double sy,
-                           const double ex, const double ey)
+WandExport void DrawLine(DrawingWand *drawing_wand,const double sx,
+  const double sy,const double ex,const double ey)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  MvgPrintf(context, "line %.4g,%.4g %.4g,%.4g\n", sx, sy, ex, ey);
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  MvgPrintf(drawing_wand,"line %.4g,%.4g %.4g,%.4g\n",sx,sy,ex,ey);
 }
 
 /*
@@ -2578,13 +2338,12 @@ MagickExport void DrawLine(DrawContext context,
 %
 %  The format of the DrawMatte method is:
 %
-%      void DrawMatte(DrawContext context,
-%                     const double x, const double y,
-%                     const PaintMethod paint_method)
+%      void DrawMatte(DrawingWand *drawing_wand,const double x,const double y,
+%        const PaintMethod paint_method)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o x: x ordinate
 %
@@ -2593,37 +2352,34 @@ MagickExport void DrawLine(DrawContext context,
 %    o paint_method:
 %
 */
-MagickExport void DrawMatte(DrawContext context,
-                            const double x, const double y,
-                            const PaintMethod paint_method)
+WandExport void DrawMatte(DrawingWand *drawing_wand,const double x,
+  const double y,const PaintMethod paint_method)
 {
   const char
-    *p = NULL;
+    *p=NULL;
 
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
   switch (paint_method)
-    {
+  {
     case PointMethod:
-      p = "point";
+      p="point";
       break;
     case ReplaceMethod:
-      p = "replace";
+      p="replace";
       break;
     case FloodfillMethod:
-      p = "floodfill";
+      p="floodfill";
       break;
     case FillToBorderMethod:
-      p = "filltoborder";
+      p="filltoborder";
       break;
     case ResetMethod:
-      p = "reset";
+      p="reset";
       break;
-    }
-
+  }
   if (p != NULL)
-    MvgPrintf(context, "matte %.4g,%.4g %s\n", x, y, p);
+    MvgPrintf(drawing_wand,"matte %.4g,%.4g %s\n",x,y,p);
 }
 
 /*
@@ -2644,19 +2400,19 @@ MagickExport void DrawMatte(DrawContext context,
 %
 %  The format of the DrawPathClose method is:
 %
-%      void DrawPathClose(DrawContext context)
+%      void DrawPathClose(DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 */
-MagickExport void DrawPathClose(DrawContext context)
+WandExport void DrawPathClose(DrawingWand *drawing_wand)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  MvgAutoWrapPrintf(context, "%s", context->path_mode == AbsolutePathMode ? "Z" : "z");
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  MvgAutoWrapPrintf(drawing_wand,"%s",
+    drawing_wand->path_mode == AbsolutePathMode ? "Z" : "z");
 }
 
 /*
@@ -2670,7 +2426,7 @@ MagickExport void DrawPathClose(DrawContext context)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DrawPathCurveToAbsolute() draws a cubic Bézier curve from the current
+%  DrawPathCurveToAbsolute() draws a cubic Bezier curve from the current
 %  point to (x,y) using (x1,y1) as the control point at the beginning of
 %  the curve and (x2,y2) as the control point at the end of the curve using
 %  absolute coordinates. At the end of the command, the new current point
@@ -2678,14 +2434,13 @@ MagickExport void DrawPathClose(DrawContext context)
 %
 %  The format of the DrawPathCurveToAbsolute method is:
 %
-%      void DrawPathCurveToAbsolute(DrawContext context,
-%                                   const double x1, const double y1,
-%                                   const double x2, const double y2,
-%                                   const double x, const double y)
+%      void DrawPathCurveToAbsolute(DrawingWand *drawing_wand,const double x1,
+%        const double y1,const double x2,const double y2,const double x,
+%        const double y)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o x1: x ordinate of control point for curve beginning
 %
@@ -2700,37 +2455,33 @@ MagickExport void DrawPathClose(DrawContext context)
 %    o y: y ordinate of the end of the curve
 %
 */
-static void DrawPathCurveTo(DrawContext context,
-                            const PathMode mode,
-                            const double x1, const double y1,
-                            const double x2, const double y2,
-                            const double x, const double y)
-{
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
 
-  if ((context->path_operation != PathCurveToOperation)
-      || (context->path_mode != mode))
+static void DrawPathCurveTo(DrawingWand *drawing_wand,const PathMode mode,
+  const double x1,const double y1,const double x2,const double y2,
+  const double x,const double y)
+{
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  if ((drawing_wand->path_operation != PathCurveToOperation) ||
+      (drawing_wand->path_mode != mode))
     {
-      context->path_operation = PathCurveToOperation;
-      context->path_mode = mode;
-      MvgAutoWrapPrintf(context, "%c%.4g,%.4g %.4g,%.4g %.4g,%.4g",
-                        mode == AbsolutePathMode ? 'C' : 'c',
-                        x1, y1, x2, y2, x, y);
+      drawing_wand->path_operation=PathCurveToOperation;
+      drawing_wand->path_mode=mode;
+      MvgAutoWrapPrintf(drawing_wand, "%c%.4g,%.4g %.4g,%.4g %.4g,%.4g",
+        mode == AbsolutePathMode ? 'C' : 'c',x1,y1,x2,y2,x,y);
     }
   else
-    MvgAutoWrapPrintf(context, " %.4g,%.4g %.4g,%.4g %.4g,%.4g",
-                      x1, y1, x2, y2, x, y);
+    MvgAutoWrapPrintf(drawing_wand," %.4g,%.4g %.4g,%.4g %.4g,%.4g",
+      x1,y1,x2,y2,x,y);
 }
-MagickExport void DrawPathCurveToAbsolute(DrawContext context,
-                                          const double x1, const double y1,
-                                          const double x2, const double y2,
-                                          const double x, const double y)
-{
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
 
-  DrawPathCurveTo(context, AbsolutePathMode, x1, y1, x2, y2, x, y);
+WandExport void DrawPathCurveToAbsolute(DrawingWand *drawing_wand,
+  const double x1,const double y1,const double x2,const double y2,
+  const double x,const double y)
+{
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  DrawPathCurveTo(drawing_wand,AbsolutePathMode,x1,y1,x2,y2,x,y);
 }
 
 /*
@@ -2744,7 +2495,7 @@ MagickExport void DrawPathCurveToAbsolute(DrawContext context,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DrawPathCurveToRelative() draws a cubic Bézier curve from the current
+%  DrawPathCurveToRelative() draws a cubic Bezier curve from the current
 %  point to (x,y) using (x1,y1) as the control point at the beginning of
 %  the curve and (x2,y2) as the control point at the end of the curve using
 %  relative coordinates. At the end of the command, the new current point
@@ -2752,14 +2503,13 @@ MagickExport void DrawPathCurveToAbsolute(DrawContext context,
 %
 %  The format of the DrawPathCurveToRelative method is:
 %
-%      void DrawPathCurveToRelative(DrawContext context,
-%                                   const double x1, const double y1,
-%                                   const double x2, const double y2,
-%                                   const double x, const double y)
+%      void DrawPathCurveToRelative(DrawingWand *drawing_wand,const double x1,
+%        const double y1,const double x2,const double y2,const double x,
+%        const double y)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o x1: x ordinate of control point for curve beginning
 %
@@ -2774,15 +2524,13 @@ MagickExport void DrawPathCurveToAbsolute(DrawContext context,
 %    o y: y ordinate of the end of the curve
 %
 */
-MagickExport void DrawPathCurveToRelative(DrawContext context,
-                                          const double x1, const double y1,
-                                          const double x2, const double y2,
-                                          const double x, const double y)
+WandExport void DrawPathCurveToRelative(DrawingWand *drawing_wand,
+  const double x1,const double y1,const double x2,const double y2,
+  const double x,const double y)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  DrawPathCurveTo(context, RelativePathMode, x1, y1, x2, y2, x, y);
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  DrawPathCurveTo(drawing_wand,RelativePathMode,x1,y1,x2,y2,x,y);
 }
 
 /*
@@ -2796,22 +2544,19 @@ MagickExport void DrawPathCurveToRelative(DrawContext context,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DrawPathCurveToQuadraticBezierAbsolute() draws a quadratic Bézier curve
+%  DrawPathCurveToQuadraticBezierAbsolute() draws a quadratic Bezier curve
 %  from the current point to (x,y) using (x1,y1) as the control point using
 %  absolute coordinates. At the end of the command, the new current point
 %  becomes the final (x,y) coordinate pair used in the polybezier.
 %
 %  The format of the DrawPathCurveToQuadraticBezierAbsolute method is:
 %
-%      void DrawPathCurveToQuadraticBezierAbsolute(DrawContext context,
-%                                                  const double x1,
-%                                                  const double y1,
-%                                                  const double x,
-%                                                  const double y)
+%      void DrawPathCurveToQuadraticBezierAbsolute(DrawingWand *drawing_wand,
+%        const double x1,const double y1,onst double x,const double y)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o x1: x ordinate of the control point
 %
@@ -2822,35 +2567,31 @@ MagickExport void DrawPathCurveToRelative(DrawContext context,
 %    o y: y ordinate of final point
 %
 */
-static void DrawPathCurveToQuadraticBezier(DrawContext context,
-                                           const PathMode mode,
-                                           const double x1, double y1,
-                                           const double x, const double y)
-{
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
 
-  if ((context->path_operation != PathCurveToQuadraticBezierOperation)
-      || (context->path_mode != mode))
+static void DrawPathCurveToQuadraticBezier(DrawingWand *drawing_wand,
+  const PathMode mode,const double x1,double y1,const double x,const double y)
+{
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  if ((drawing_wand->path_operation != PathCurveToQuadraticBezierOperation) ||
+      (drawing_wand->path_mode != mode))
     {
-      context->path_operation = PathCurveToQuadraticBezierOperation;
-      context->path_mode = mode;
-      MvgAutoWrapPrintf(context, "%c%.4g,%.4g %.4g,%.4g",
-                        mode == AbsolutePathMode ? 'Q' : 'q', x1, y1, x, y);
+      drawing_wand->path_operation=PathCurveToQuadraticBezierOperation;
+      drawing_wand->path_mode=mode;
+      MvgAutoWrapPrintf(drawing_wand, "%c%.4g,%.4g %.4g,%.4g",
+        mode == AbsolutePathMode ? 'Q' : 'q',x1,y1,x,y);
     }
   else
-    MvgAutoWrapPrintf(context, " %.4g,%.4g %.4g,%.4g", x1, y1, x, y);
+    MvgAutoWrapPrintf(drawing_wand," %.4g,%.4g %.4g,%.4g",x1,y1,x,y);
 }
-MagickExport void DrawPathCurveToQuadraticBezierAbsolute(DrawContext context,
-                                                         const double x1,
-                                                         const double y1,
-                                                         const double x,
-                                                         const double y)
-{
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
 
-  DrawPathCurveToQuadraticBezier(context, AbsolutePathMode, x1, y1, x, y);
+WandExport void DrawPathCurveToQuadraticBezierAbsolute(
+  DrawingWand *drawing_wand,const double x1,const double y1,const double x,
+  const double y)
+{
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  DrawPathCurveToQuadraticBezier(drawing_wand,AbsolutePathMode,x1,y1,x,y);
 }
 
 /*
@@ -2858,28 +2599,25 @@ MagickExport void DrawPathCurveToQuadraticBezierAbsolute(DrawContext context,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D r a w P a t h C u r v e T o Q u a d r a t i c B e z i e r R e l a t i v e %
+%   D r a w P a t h C u r v e T o Q u a d r a t i c B e z i e r R e l a t i v %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DrawPathCurveToQuadraticBezierRelative() draws a quadratic Bézier curve
+%  DrawPathCurveToQuadraticBezierRelative() draws a quadratic Bezier curve
 %  from the current point to (x,y) using (x1,y1) as the control point using
 %  relative coordinates. At the end of the command, the new current point
 %  becomes the final (x,y) coordinate pair used in the polybezier.
 %
 %  The format of the DrawPathCurveToQuadraticBezierRelative method is:
 %
-%      void DrawPathCurveToQuadraticBezierRelative(DrawContext context,
-%                                                  const double x1,
-%                                                  const double y1,
-%                                                  const double x,
-%                                                  const double y)
+%      void DrawPathCurveToQuadraticBezierRelative(DrawingWand *drawing_wand,
+%        const double x1,const double y1,const double x,const double y)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o x1: x ordinate of the control point
 %
@@ -2890,16 +2628,13 @@ MagickExport void DrawPathCurveToQuadraticBezierAbsolute(DrawContext context,
 %    o y: y ordinate of final point
 %
 */
-MagickExport void DrawPathCurveToQuadraticBezierRelative(DrawContext context,
-                                                         const double x1,
-                                                         const double y1,
-                                                         const double x,
-                                                         const double y)
+WandExport void DrawPathCurveToQuadraticBezierRelative(
+  DrawingWand *drawing_wand,const double x1,const double y1,const double x,
+  const double y)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  DrawPathCurveToQuadraticBezier(context, RelativePathMode, x1, y1, x, y);
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  DrawPathCurveToQuadraticBezier(drawing_wand,RelativePathMode,x1,y1,x,y);
 }
 
 /*
@@ -2907,14 +2642,14 @@ MagickExport void DrawPathCurveToQuadraticBezierRelative(DrawContext context,
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D r a w P a t h C u r v e T o Q u a d r a t i c B e z i e r S m o o t h A b s o l u t e %
+%   D r a w P a t h C u r v e T o Q u a d r a t i c B e z i e r S m o o t h   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  DrawPathCurveToQuadraticBezierSmoothAbsolute() draws a quadratic
-%  Bézier curve (using absolute coordinates) from the current point to
+%  Bezier curve (using absolute coordinates) from the current point to
 %  (x,y). The control point is assumed to be the reflection of the
 %  control point on the previous command relative to the current
 %  point. (If there is no previous command or if the previous command was
@@ -2928,47 +2663,42 @@ MagickExport void DrawPathCurveToQuadraticBezierRelative(DrawContext context,
 %
 %  The format of the DrawPathCurveToQuadraticBezierSmoothAbsolute method is:
 %
-%      void DrawPathCurveToQuadraticBezierSmoothAbsolute(DrawContext
-%                                                        context,
-%                                                        const double x,
-%                                                        const double y)
+%      void DrawPathCurveToQuadraticBezierSmoothAbsolute(
+%        DrawingWand *drawing_wand,const double x,const double y)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o x: x ordinate of final point
 %
 %    o y: y ordinate of final point
 %
 */
-static void DrawPathCurveToQuadraticBezierSmooth(DrawContext context,
-                                                 const PathMode mode,
-                                                 const double x, const double y)
-{
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
 
-  if ((context->path_operation != PathCurveToQuadraticBezierSmoothOperation)
-      || (context->path_mode != mode))
+static void DrawPathCurveToQuadraticBezierSmooth(DrawingWand *drawing_wand,
+  const PathMode mode,const double x,const double y)
+{
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  if ((drawing_wand->path_operation != PathCurveToQuadraticBezierSmoothOperation) ||
+      (drawing_wand->path_mode != mode))
     {
-      context->path_operation = PathCurveToQuadraticBezierSmoothOperation;
-      context->path_mode = mode;
-      MvgAutoWrapPrintf(context, "%c%.4g,%.4g",
-                        mode == AbsolutePathMode ? 'T' : 't', x, y);
+      drawing_wand->path_operation=PathCurveToQuadraticBezierSmoothOperation;
+      drawing_wand->path_mode=mode;
+      MvgAutoWrapPrintf(drawing_wand, "%c%.4g,%.4g",
+        mode == AbsolutePathMode ? 'T' : 't',x,y);
     }
   else
-    MvgAutoWrapPrintf(context, " %.4g,%.4g", x, y);
+    MvgAutoWrapPrintf(drawing_wand," %.4g,%.4g",x,y);
 }
-MagickExport void DrawPathCurveToQuadraticBezierSmoothAbsolute(DrawContext
-                                                               context,
-                                                               const double x,
-                                                               const double y)
-{
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
 
-  DrawPathCurveToQuadraticBezierSmooth(context, AbsolutePathMode, x, y);
+WandExport void DrawPathCurveToQuadraticBezierSmoothAbsolute(
+  DrawingWand *drawing_wand,const double x,const double y)
+{
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  DrawPathCurveToQuadraticBezierSmooth(drawing_wand,AbsolutePathMode,x,y);
 }
 
 /*
@@ -2976,14 +2706,14 @@ MagickExport void DrawPathCurveToQuadraticBezierSmoothAbsolute(DrawContext
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D r a w P a t h C u r v e T o Q u a d r a t i c B e z i e r S m o o t h R e l a t i v e %
+%   D r a w P a t h C u r v e T o Q u a d r a t i c B e z i e r S m o o t h   %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %  DrawPathCurveToQuadraticBezierSmoothAbsolute() draws a quadratic
-%  Bézier curve (using relative coordinates) from the current point to
+%  Bezier curve (using relative coordinates) from the current point to
 %  (x,y). The control point is assumed to be the reflection of the
 %  control point on the previous command relative to the current
 %  point. (If there is no previous command or if the previous command was
@@ -2997,14 +2727,12 @@ MagickExport void DrawPathCurveToQuadraticBezierSmoothAbsolute(DrawContext
 %
 %  The format of the DrawPathCurveToQuadraticBezierSmoothRelative method is:
 %
-%      void DrawPathCurveToQuadraticBezierSmoothRelative(DrawContext
-%                                                        context,
-%                                                        const double x,
-%                                                        const double y)
+%      void DrawPathCurveToQuadraticBezierSmoothRelative(
+%        DrawingWand *drawing_wand,const double x,const double y)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o x: x ordinate of final point
 %
@@ -3012,12 +2740,10 @@ MagickExport void DrawPathCurveToQuadraticBezierSmoothAbsolute(DrawContext
 %
 %
 */
-MagickExport void DrawPathCurveToQuadraticBezierSmoothRelative(DrawContext
-                                                               context,
-                                                               const double x,
-                                                               const double y)
+WandExport void DrawPathCurveToQuadraticBezierSmoothRelative(
+  DrawingWand *drawing_wand,const double x,const double y)
 {
-  DrawPathCurveToQuadraticBezierSmooth(context, RelativePathMode, x, y);
+  DrawPathCurveToQuadraticBezierSmooth(drawing_wand,RelativePathMode,x,y);
 }
 
 /*
@@ -3031,7 +2757,7 @@ MagickExport void DrawPathCurveToQuadraticBezierSmoothRelative(DrawContext
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DrawPathCurveToSmoothAbsolute() draws a cubic Bézier curve from the
+%  DrawPathCurveToSmoothAbsolute() draws a cubic Bezier curve from the
 %  current point to (x,y) using absolute coordinates. The first control
 %  point is assumed to be the reflection of the second control point on
 %  the previous command relative to the current point. (If there is no
@@ -3045,13 +2771,12 @@ MagickExport void DrawPathCurveToQuadraticBezierSmoothRelative(DrawContext
 %
 %  The format of the DrawPathCurveToSmoothAbsolute method is:
 %
-%      void DrawPathCurveToSmoothAbsolute(DrawContext context,
-%                                         const double x2, const double y2,
-%                                         const double x, const double y)
+%      void DrawPathCurveToSmoothAbsolute(DrawingWand *drawing_wand,
+%        const double x2const double y2,const double x,const double y)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o x2: x ordinate of second control point
 %
@@ -3063,32 +2788,29 @@ MagickExport void DrawPathCurveToQuadraticBezierSmoothRelative(DrawContext
 %
 %
 */
-static void DrawPathCurveToSmooth(DrawContext context, const PathMode mode,
-                                  const double x2, const double y2,
-                                  const double x, const double y)
+static void DrawPathCurveToSmooth(DrawingWand *drawing_wand,const PathMode mode,
+  const double x2,const double y2,const double x,const double y)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  if ((context->path_operation != PathCurveToSmoothOperation)
-      || (context->path_mode != mode))
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  if ((drawing_wand->path_operation != PathCurveToSmoothOperation) ||
+      (drawing_wand->path_mode != mode))
     {
-      context->path_operation = PathCurveToSmoothOperation;
-      context->path_mode = mode;
-      MvgAutoWrapPrintf(context, "%c%.4g,%.4g %.4g,%.4g",
-                        mode == AbsolutePathMode ? 'S' : 's', x2, y2, x, y);
+      drawing_wand->path_operation=PathCurveToSmoothOperation;
+      drawing_wand->path_mode=mode;
+      MvgAutoWrapPrintf(drawing_wand,"%c%.4g,%.4g %.4g,%.4g",
+        mode == AbsolutePathMode ? 'S' : 's',x2,y2,x,y);
     }
   else
-    MvgAutoWrapPrintf(context, " %.4g,%.4g %.4g,%.4g", x2, y2, x, y);
+    MvgAutoWrapPrintf(drawing_wand," %.4g,%.4g %.4g,%.4g",x2,y2,x,y);
 }
-MagickExport void DrawPathCurveToSmoothAbsolute(DrawContext context,
-                                                const double x2, const double y2,
-                                                const double x, const double y)
-{
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
 
-  DrawPathCurveToSmooth(context, AbsolutePathMode, x2, y2, x, y);
+WandExport void DrawPathCurveToSmoothAbsolute(DrawingWand *drawing_wand,
+  const double x2,const double y2,const double x,const double y)
+{
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  DrawPathCurveToSmooth(drawing_wand,AbsolutePathMode,x2,y2,x,y);
 }
 
 /*
@@ -3102,7 +2824,7 @@ MagickExport void DrawPathCurveToSmoothAbsolute(DrawContext context,
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DrawPathCurveToSmoothRelative() draws a cubic Bézier curve from the
+%  DrawPathCurveToSmoothRelative() draws a cubic Bezier curve from the
 %  current point to (x,y) using relative coordinates. The first control
 %  point is assumed to be the reflection of the second control point on
 %  the previous command relative to the current point. (If there is no
@@ -3116,13 +2838,12 @@ MagickExport void DrawPathCurveToSmoothAbsolute(DrawContext context,
 %
 %  The format of the DrawPathCurveToSmoothRelative method is:
 %
-%      void DrawPathCurveToSmoothRelative(DrawContext context,
-%                                         const double x2, const double y2,
-%                                         const double x, const double y)
+%      void DrawPathCurveToSmoothRelative(DrawingWand *drawing_wand,
+%        const double x2,const double y2,const double x,const double y)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o x2: x ordinate of second control point
 %
@@ -3134,14 +2855,12 @@ MagickExport void DrawPathCurveToSmoothAbsolute(DrawContext context,
 %
 %
 */
-MagickExport void DrawPathCurveToSmoothRelative(DrawContext context,
-                                                const double x2, const double y2,
-                                                const double x, const double y)
+WandExport void DrawPathCurveToSmoothRelative(DrawingWand *drawing_wand,
+  const double x2,const double y2,const double x,const double y)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  DrawPathCurveToSmooth(context, RelativePathMode, x2, y2, x, y);
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  DrawPathCurveToSmooth(drawing_wand,RelativePathMode,x2,y2,x,y);
 }
 
 /*
@@ -3168,16 +2887,14 @@ MagickExport void DrawPathCurveToSmoothRelative(DrawContext context,
 %
 %  The format of the DrawPathEllipticArcAbsolute method is:
 %
-%      void DrawPathEllipticArcAbsolute(DrawContext context,
-%                                       const double rx, const double ry,
-%                                       const double x_axis_rotation,
-%                                       unsigned int large_arc_flag,
-%                                       unsigned int sweep_flag,
-%                                       const double x, const double y)
+%      void DrawPathEllipticArcAbsolute(DrawingWand *drawing_wand,
+%        const double rx,const double ry,const double x_axis_rotation,
+%        unsigned int large_arc_flag,unsigned int sweep_flag,const double x,
+%        const double y)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o rx: x radius
 %
@@ -3194,41 +2911,37 @@ MagickExport void DrawPathCurveToSmoothRelative(DrawContext context,
 %
 %
 */
-static void DrawPathEllipticArc(DrawContext context, const PathMode mode,
-                                const double rx, const double ry,
-                                const double x_axis_rotation,
-                                unsigned int large_arc_flag,
-                                unsigned int sweep_flag,
-                                const double x, const double y)
-{
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
 
-  if ((context->path_operation != PathEllipticArcOperation)
-      || (context->path_mode != mode))
+static void DrawPathEllipticArc(DrawingWand *drawing_wand, const PathMode mode,
+  const double rx,const double ry,const double x_axis_rotation,
+  unsigned int large_arc_flag,unsigned int sweep_flag,const double x,
+  const double y)
+{
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  if ((drawing_wand->path_operation != PathEllipticArcOperation) ||
+      (drawing_wand->path_mode != mode))
     {
-      context->path_operation = PathEllipticArcOperation;
-      context->path_mode = mode;
-      MvgAutoWrapPrintf(context, "%c%.4g,%.4g %.4g %u %u %.4g,%.4g",
-                        mode == AbsolutePathMode ? 'A' : 'a', rx, ry, x_axis_rotation,
-                        large_arc_flag, sweep_flag, x, y);
+      drawing_wand->path_operation=PathEllipticArcOperation;
+      drawing_wand->path_mode=mode;
+      MvgAutoWrapPrintf(drawing_wand, "%c%.4g,%.4g %.4g %u %u %.4g,%.4g",
+        mode == AbsolutePathMode ? 'A' : 'a',rx,ry,x_axis_rotation,
+        large_arc_flag,sweep_flag,x,y);
     }
   else
-    MvgAutoWrapPrintf(context, " %.4g,%.4g %.4g %u %u %.4g,%.4g", rx, ry,
-                      x_axis_rotation, large_arc_flag, sweep_flag, x, y);
+    MvgAutoWrapPrintf(drawing_wand," %.4g,%.4g %.4g %u %u %.4g,%.4g",rx,ry,
+      x_axis_rotation,large_arc_flag,sweep_flag,x,y);
 }
-MagickExport void DrawPathEllipticArcAbsolute(DrawContext context,
-                                              const double rx, const double ry,
-                                              const double x_axis_rotation,
-                                              unsigned int large_arc_flag,
-                                              unsigned int sweep_flag,
-                                              const double x, const double y)
-{
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
 
-  DrawPathEllipticArc(context, AbsolutePathMode, rx, ry, x_axis_rotation,
-                      large_arc_flag, sweep_flag, x, y);
+WandExport void DrawPathEllipticArcAbsolute(DrawingWand *drawing_wand,
+  const double rx,const double ry,const double x_axis_rotation,
+  unsigned int large_arc_flag,unsigned int sweep_flag,const double x,
+  const double y)
+{
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  DrawPathEllipticArc(drawing_wand,AbsolutePathMode,rx,ry,x_axis_rotation,
+    large_arc_flag,sweep_flag,x,y);
 }
 
 /*
@@ -3255,16 +2968,14 @@ MagickExport void DrawPathEllipticArcAbsolute(DrawContext context,
 %
 %  The format of the DrawPathEllipticArcRelative method is:
 %
-%      void DrawPathEllipticArcRelative(DrawContext context,
-%                                       const double rx, const double ry,
-%                                       const double x_axis_rotation,
-%                                       unsigned int large_arc_flag,
-%                                       unsigned int sweep_flag,
-%                                       const double x, const double y)
+%      void DrawPathEllipticArcRelative(DrawingWand *drawing_wand,
+%        const double rx,const double ry,const double x_axis_rotation,
+%        unsigned int large_arc_flag,unsigned int sweep_flag,const double x,
+%        const double y)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o rx: x radius
 %
@@ -3280,15 +2991,13 @@ MagickExport void DrawPathEllipticArcAbsolute(DrawContext context,
 %                  clock-wise rotation
 %
 */
-MagickExport void DrawPathEllipticArcRelative(DrawContext context,
-                                              const double rx, const double ry,
-                                              const double x_axis_rotation,
-                                              unsigned int large_arc_flag,
-                                              unsigned int sweep_flag,
-                                              const double x, const double y)
+WandExport void DrawPathEllipticArcRelative(DrawingWand *drawing_wand,
+  const double rx,const double ry,const double x_axis_rotation,
+  unsigned int large_arc_flag,unsigned int sweep_flag,const double x,
+  const double y)
 {
-  DrawPathEllipticArc(context, RelativePathMode, rx, ry, x_axis_rotation,
-                      large_arc_flag, sweep_flag, x, y);
+  DrawPathEllipticArc(drawing_wand,RelativePathMode,rx,ry,x_axis_rotation,
+    large_arc_flag,sweep_flag,x,y);
 }
 
 /*
@@ -3306,21 +3015,20 @@ MagickExport void DrawPathEllipticArcRelative(DrawContext context,
 %
 %  The format of the DrawPathFinish method is:
 %
-%      void DrawPathFinish(DrawContext context)
+%      void DrawPathFinish(DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 */
-MagickExport void DrawPathFinish(DrawContext context)
+WandExport void DrawPathFinish(DrawingWand *drawing_wand)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  MvgPrintf(context, "'\n");
-  context->path_operation = PathDefaultOperation;
-  context->path_mode = DefaultPathMode;
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  MvgPrintf(drawing_wand,"'\n");
+  drawing_wand->path_operation=PathDefaultOperation;
+  drawing_wand->path_mode=DefaultPathMode;
 }
 
 /*
@@ -3340,43 +3048,41 @@ MagickExport void DrawPathFinish(DrawContext context)
 %
 %  The format of the DrawPathLineToAbsolute method is:
 %
-%      void DrawPathLineToAbsolute(DrawContext context,
-%                                  const double x, const double y)
+%      void DrawPathLineToAbsolute(DrawingWand *drawing_wand,const double x,const double y)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o x: target x ordinate
 %
 %    o y: target y ordinate
 %
 */
-static void DrawPathLineTo(DrawContext context,
-                           const PathMode mode,
-                           const double x, const double y)
+static void DrawPathLineTo(DrawingWand *drawing_wand,const PathMode mode,
+  const double x,const double y)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
 
-  if ((context->path_operation != PathLineToOperation)
-      || (context->path_mode != mode))
+  if ((drawing_wand->path_operation != PathLineToOperation) ||
+      (drawing_wand->path_mode != mode))
     {
-      context->path_operation = PathLineToOperation;
-      context->path_mode = mode;
-      MvgAutoWrapPrintf(context, "%c%.4g,%.4g",
-                        mode == AbsolutePathMode ? 'L' : 'l', x, y);
+      drawing_wand->path_operation=PathLineToOperation;
+      drawing_wand->path_mode=mode;
+      MvgAutoWrapPrintf(drawing_wand,"%c%.4g,%.4g",
+        mode == AbsolutePathMode ? 'L' : 'l',x,y);
     }
   else
-    MvgAutoWrapPrintf(context, " %.4g,%.4g", x, y);
+    MvgAutoWrapPrintf(drawing_wand," %.4g,%.4g",x,y);
 }
-MagickExport void DrawPathLineToAbsolute(DrawContext context,
-                                         const double x, const double y)
-{
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
 
-  DrawPathLineTo(context, AbsolutePathMode, x, y);
+WandExport void DrawPathLineToAbsolute(DrawingWand *drawing_wand,
+  const double x,const double y)
+{
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  DrawPathLineTo(drawing_wand,AbsolutePathMode,x,y);
 }
 
 /*
@@ -3396,25 +3102,24 @@ MagickExport void DrawPathLineToAbsolute(DrawContext context,
 %
 %  The format of the DrawPathLineToRelative method is:
 %
-%      void DrawPathLineToRelative(DrawContext context,
-%                                  const double x, const double y)
+%      void DrawPathLineToRelative(DrawingWand *drawing_wand,const double x,
+%        const double y)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o x: target x ordinate
 %
 %    o y: target y ordinate
 %
 */
-MagickExport void DrawPathLineToRelative(DrawContext context,
-                                         const double x, const double y)
+WandExport void DrawPathLineToRelative(DrawingWand *drawing_wand,
+  const double x,const double y)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  DrawPathLineTo(context, RelativePathMode, x, y);
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  DrawPathLineTo(drawing_wand,RelativePathMode,x,y);
 }
 
 /*
@@ -3434,41 +3139,40 @@ MagickExport void DrawPathLineToRelative(DrawContext context,
 %
 %  The format of the DrawPathLineToHorizontalAbsolute method is:
 %
-%      void DrawPathLineToHorizontalAbsolute(DrawContext context,
-%                                            const double x)
+%      void DrawPathLineToHorizontalAbsolute(DrawingWand *drawing_wand,
+%        const PathMode mode,const double x)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o x: target x ordinate
 %
 */
 
-static void DrawPathLineToHorizontal(DrawContext context,
-                                     const PathMode mode, const double x)
+static void DrawPathLineToHorizontal(DrawingWand *drawing_wand,
+  const PathMode mode,const double x)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  if ((context->path_operation != PathLineToHorizontalOperation)
-      || (context->path_mode != mode))
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  if ((drawing_wand->path_operation != PathLineToHorizontalOperation) ||
+      (drawing_wand->path_mode != mode))
     {
-      context->path_operation = PathLineToHorizontalOperation;
-      context->path_mode = mode;
-      MvgAutoWrapPrintf(context, "%c%.4g",
-                        mode == AbsolutePathMode ? 'H' : 'h', x);
+      drawing_wand->path_operation=PathLineToHorizontalOperation;
+      drawing_wand->path_mode=mode;
+      MvgAutoWrapPrintf(drawing_wand,"%c%.4g",
+        mode == AbsolutePathMode ? 'H' : 'h',x);
     }
   else
-    MvgAutoWrapPrintf(context, " %.4g", x);
+    MvgAutoWrapPrintf(drawing_wand," %.4g",x);
 }
-MagickExport void DrawPathLineToHorizontalAbsolute(DrawContext context,
-                                                   const double x)
-{
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
 
-  DrawPathLineToHorizontal(context, AbsolutePathMode, x);
+WandExport void DrawPathLineToHorizontalAbsolute(DrawingWand *drawing_wand,
+  const double x)
+{
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  DrawPathLineToHorizontal(drawing_wand,AbsolutePathMode,x);
 }
 
 /*
@@ -3488,19 +3192,20 @@ MagickExport void DrawPathLineToHorizontalAbsolute(DrawContext context,
 %
 %  The format of the DrawPathLineToHorizontalRelative method is:
 %
-%      void DrawPathLineToHorizontalRelative(DrawContext context, const double x)
+%      void DrawPathLineToHorizontalRelative(DrawingWand *drawing_wand,
+%        const double x)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o x: target x ordinate
 %
 */
-MagickExport void DrawPathLineToHorizontalRelative(DrawContext context,
-                                                   const double x)
+WandExport void DrawPathLineToHorizontalRelative(DrawingWand *drawing_wand,
+  const double x)
 {
-  DrawPathLineToHorizontal(context, RelativePathMode, x);
+  DrawPathLineToHorizontal(drawing_wand,RelativePathMode,x);
 }
 
 /*
@@ -3520,40 +3225,40 @@ MagickExport void DrawPathLineToHorizontalRelative(DrawContext context,
 %
 %  The format of the DrawPathLineToVerticalAbsolute method is:
 %
-%      void DrawPathLineToVerticalAbsolute(DrawContext context,
-%                                          const double y)
+%      void DrawPathLineToVerticalAbsolute(DrawingWand *drawing_wand,
+%        const double y)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o y: target y ordinate
 %
 */
-static void DrawPathLineToVertical(DrawContext context, const PathMode mode,
-                                   const double y)
-{
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
 
-  if ((context->path_operation != PathLineToVerticalOperation)
-      || (context->path_mode != mode))
+static void DrawPathLineToVertical(DrawingWand *drawing_wand,
+  const PathMode mode,const double y)
+{
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  if ((drawing_wand->path_operation != PathLineToVerticalOperation) ||
+      (drawing_wand->path_mode != mode))
     {
-      context->path_operation = PathLineToVerticalOperation;
-      context->path_mode = mode;
-      MvgAutoWrapPrintf(context, "%c%.4g",
-                        mode == AbsolutePathMode ? 'V' : 'v', y);
+      drawing_wand->path_operation=PathLineToVerticalOperation;
+      drawing_wand->path_mode=mode;
+      MvgAutoWrapPrintf(drawing_wand,"%c%.4g",
+        mode == AbsolutePathMode ? 'V' : 'v',y);
     }
   else
-    MvgAutoWrapPrintf(context, " %.4g", y);
+    MvgAutoWrapPrintf(drawing_wand," %.4g",y);
 }
-MagickExport void DrawPathLineToVerticalAbsolute(DrawContext context,
-                                                 const double y)
-{
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
 
-  DrawPathLineToVertical(context, AbsolutePathMode, y);
+WandExport void DrawPathLineToVerticalAbsolute(DrawingWand *drawing_wand,
+  const double y)
+{
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  DrawPathLineToVertical(drawing_wand,AbsolutePathMode,y);
 }
 
 /*
@@ -3573,23 +3278,22 @@ MagickExport void DrawPathLineToVerticalAbsolute(DrawContext context,
 %
 %  The format of the DrawPathLineToVerticalRelative method is:
 %
-%      void DrawPathLineToVerticalRelative(DrawContext context,
-%                                          const double y)
+%      void DrawPathLineToVerticalRelative(DrawingWand *drawing_wand,
+%        const double y)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o y: target y ordinate
 %
 */
-MagickExport void DrawPathLineToVerticalRelative(DrawContext context,
-                                                 const double y)
+WandExport void DrawPathLineToVerticalRelative(DrawingWand *drawing_wand,
+  const double y)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  DrawPathLineToVertical(context, RelativePathMode, y);
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  DrawPathLineToVertical(drawing_wand,RelativePathMode,y);
 }
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -3608,43 +3312,41 @@ MagickExport void DrawPathLineToVerticalRelative(DrawContext context,
 %
 %  The format of the DrawPathMoveToAbsolute method is:
 %
-%      void DrawPathMoveToAbsolute(DrawContext context, const double x,
-%                                  const double y)
+%      void DrawPathMoveToAbsolute(DrawingWand *drawing_wand,const double x,
+%        const double y)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o x: target x ordinate
 %
 %    o y: target y ordinate
 %
 */
- static void DrawPathMoveTo(DrawContext context, const PathMode mode,
-                           const double x, const double y)
+static void DrawPathMoveTo(DrawingWand *drawing_wand,const PathMode mode,
+  const double x,const double y)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  if ((context->path_operation != PathMoveToOperation)
-      || (context->path_mode != mode))
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  if ((drawing_wand->path_operation != PathMoveToOperation) ||
+      (drawing_wand->path_mode != mode))
     {
-      context->path_operation = PathMoveToOperation;
-      context->path_mode = mode;
-      MvgAutoWrapPrintf(context, "%c%.4g,%.4g",
-                        mode == AbsolutePathMode ? 'M' : 'm', x, y);
+      drawing_wand->path_operation=PathMoveToOperation;
+      drawing_wand->path_mode=mode;
+      MvgAutoWrapPrintf(drawing_wand,"%c%.4g,%.4g",
+        mode == AbsolutePathMode ? 'M' : 'm',x,y);
     }
   else
-    MvgAutoWrapPrintf(context, " %.4g,%.4g", x, y);
+    MvgAutoWrapPrintf(drawing_wand," %.4g,%.4g",x,y);
 }
 
-MagickExport void DrawPathMoveToAbsolute(DrawContext context, const double x,
-                                         const double y)
+WandExport void DrawPathMoveToAbsolute(DrawingWand *drawing_wand,
+  const double x,const double y)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  DrawPathMoveTo(context, AbsolutePathMode, x, y);
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  DrawPathMoveTo(drawing_wand,AbsolutePathMode,x,y);
 }
 
 /*
@@ -3664,25 +3366,24 @@ MagickExport void DrawPathMoveToAbsolute(DrawContext context, const double x,
 %
 %  The format of the DrawPathMoveToRelative method is:
 %
-%      void DrawPathMoveToRelative(DrawContext context,
-%                                  const double x, const double y)
+%      void DrawPathMoveToRelative(DrawingWand *drawing_wand,const double x,
+%        const double y)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o x: target x ordinate
 %
 %    o y: target y ordinate
 %
 */
-MagickExport void DrawPathMoveToRelative(DrawContext context,
-                                         const double x, const double y)
+WandExport void DrawPathMoveToRelative(DrawingWand *drawing_wand,
+  const double x,const double y)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  DrawPathMoveTo(context, RelativePathMode, x, y);
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  DrawPathMoveTo(drawing_wand,RelativePathMode,x,y);
 }
 
 /*
@@ -3704,21 +3405,20 @@ MagickExport void DrawPathMoveToRelative(DrawContext context,
 %
 %  The format of the DrawPathStart method is:
 %
-%      void DrawPathStart(DrawContext context)
+%      void DrawPathStart(DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 */
-MagickExport void DrawPathStart(DrawContext context)
+WandExport void DrawPathStart(DrawingWand *drawing_wand)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  MvgPrintf(context, "path '");
-  context->path_operation = PathDefaultOperation;
-  context->path_mode = DefaultPathMode;
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  MvgPrintf(drawing_wand,"path '");
+  drawing_wand->path_operation=PathDefaultOperation;
+  drawing_wand->path_mode=DefaultPathMode;
 }
 
 /*
@@ -3726,35 +3426,32 @@ MagickExport void DrawPathStart(DrawContext context)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D r a w P e e k G r a p h i c C o n t e x t                               %
+%   D r a w P e e k G r a p h i c W a n d                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DrawPeekGraphicContext() returns a copy of the the DrawInfo structure at
-%  the head of the drawing context stack. The user is responsible for
-%  deallocating the returned object using DestroyDrawInfo.
+%  DrawPeekGraphicContext() returns the current graphic drawing_wand.
 %
 %  The format of the DrawPeekGraphicContext method is:
 %
-%      DrawInfo *DrawPeekGraphicContext(const DrawContext context)
+%      DrawInfo *DrawPeekGraphicContext(const DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 */
-MagickExport DrawInfo *DrawPeekGraphicContext(const DrawContext context)
+WandExport DrawInfo *DrawPeekGraphicContext(const DrawingWand *drawing_wand)
 {
   DrawInfo
     *draw_info;
 
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
+  assert(drawing_wand != (const DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
   draw_info=CloneDrawInfo((ImageInfo *) NULL,CurrentContext);
-  CloneString(&draw_info->primitive,context->mvg);
-  CurrentContext->primitive=context->mvg;
+  CloneString(&draw_info->primitive,drawing_wand->mvg);
   return(draw_info);
 }
 
@@ -3774,24 +3471,23 @@ MagickExport DrawInfo *DrawPeekGraphicContext(const DrawContext context)
 %
 %  The format of the DrawPoint method is:
 %
-%      void DrawPoint(DrawContext context, const double x, const double y)
+%      void DrawPoint(DrawingWand *drawing_wand,const double x,const double y)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o x: target x coordinate
 %
 %    o y: target y coordinate
 %
 */
-MagickExport void DrawPoint(DrawContext context,
-                            const double x, const double y)
+WandExport void DrawPoint(DrawingWand *drawing_wand,const double x,
+  const double y)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  MvgPrintf(context, "point %.4g,%.4g\n", x, y);
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  MvgPrintf(drawing_wand,"point %.4g,%.4g\n",x,y);
 }
 
 /*
@@ -3810,27 +3506,24 @@ MagickExport void DrawPoint(DrawContext context,
 %
 %  The format of the DrawPolygon method is:
 %
-%      void DrawPolygon(DrawContext context,
-%                       const size_t num_coords,
-%                       const PointInfo * coordinates)
+%      void DrawPolygon(DrawingWand *drawing_wand,
+%        const size_t number_coordinates,const PointInfo *coordinates)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
-%    o num_coords: number of coordinates
+%    o number_coordinates: number of coordinates
 %
 %    o coordinates: coordinate array
 %
 */
-MagickExport void DrawPolygon(DrawContext context,
-                              const size_t num_coords,
-                              const PointInfo * coordinates)
+WandExport void DrawPolygon(DrawingWand *drawing_wand,
+  const size_t number_coordinates,const PointInfo *coordinates)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  MvgAppendPointsCommand(context,"polygon",num_coords,coordinates);
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  MvgAppendPointsCommand(drawing_wand,"polygon",number_coordinates,coordinates);
 }
 
 /*
@@ -3849,27 +3542,25 @@ MagickExport void DrawPolygon(DrawContext context,
 %
 %  The format of the DrawPolyline method is:
 %
-%      void DrawPolyline(DrawContext context,
-%                        const size_t num_coords,
-%                        const PointInfo * coordinates)
+%      void DrawPolyline(DrawingWand *drawing_wand,
+%        const size_t number_coordinates,const PointInfo *coordinates)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
-%    o num_coords: number of coordinates
+%    o number_coordinates: number of coordinates
 %
 %    o coordinates: coordinate array
 %
 */
-MagickExport void DrawPolyline(DrawContext context,
-                               const size_t num_coords,
-                               const PointInfo * coordinates)
+WandExport void DrawPolyline(DrawingWand *drawing_wand,
+  const size_t number_coordinates,const PointInfo *coordinates)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  MvgAppendPointsCommand(context,"polyline",num_coords,coordinates);
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  MvgAppendPointsCommand(drawing_wand,"polyline",number_coordinates,
+    coordinates);
 }
 
 /*
@@ -3887,21 +3578,20 @@ MagickExport void DrawPolyline(DrawContext context,
 %
 %  The format of the DrawPopClipPath method is:
 %
-%      void DrawPopClipPath(DrawContext context)
+%      void DrawPopClipPath(DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 */
-MagickExport void DrawPopClipPath(DrawContext context)
+WandExport void DrawPopClipPath(DrawingWand *drawing_wand)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  if(context->indent_depth > 0)
-    context->indent_depth--;
-  MvgPrintf(context, "pop clip-path\n");
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  if (drawing_wand->indent_depth > 0)
+    drawing_wand->indent_depth--;
+  MvgPrintf(drawing_wand,"pop clip-path\n");
 }
 
 /*
@@ -3919,21 +3609,20 @@ MagickExport void DrawPopClipPath(DrawContext context)
 %
 %  The format of the DrawPopDefs method is:
 %
-%      void DrawPopDefs(DrawContext context)
+%      void DrawPopDefs(DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 */
-MagickExport void DrawPopDefs(DrawContext context)
+WandExport void DrawPopDefs(DrawingWand *drawing_wand)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  if(context->indent_depth > 0)
-    context->indent_depth--;
-  MvgPrintf(context, "pop defs\n");
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  if (drawing_wand->indent_depth > 0)
+    drawing_wand->indent_depth--;
+  MvgPrintf(drawing_wand,"pop defs\n");
 }
 
 /*
@@ -3941,52 +3630,51 @@ MagickExport void DrawPopDefs(DrawContext context)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D r a w P o p G r a p h i c C o n t e x t                                 %
+%   D r a w P o p G r a p h i c W a n d                                       %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DrawPopGraphicContext() destroys the current context returning to the
-%  previously pushed context. Multiple contexts may exist. It is an error
-%  to attempt to pop more contexts than have been pushed, and it is proper
-%  form to pop all contexts which have been pushed.
+%  DrawPopGraphicContext() destroys the current drawing_wand returning to the
+%  previously pushed drawing wand. Multiple drawing wand  may exist. It is an
+%  error to attempt to pop more drawing_wands than have been pushed, and it is
+%  proper form to pop all drawing_wands which have been pushed.
 %
 %  The format of the DrawPopGraphicContext method is:
 %
-%      void DrawPopGraphicContext(DrawContext context)
+%      void DrawPopGraphicContext(DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 */
-MagickExport void DrawPopGraphicContext(DrawContext context)
+WandExport void DrawPopGraphicContext(DrawingWand *drawing_wand)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  if(context->index > 0)
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  if (drawing_wand->index <= 0)
     {
-      /* Destroy clip path if not same in preceding context */
+      ThrowException(&drawing_wand->image->exception,DrawError,
+        UnbalancedGraphicContextPushPop,NULL);
+    }
+  else
+    {
+      /* Destroy clip path if not same in preceding drawing_wand */
 #if DRAW_BINARY_IMPLEMENTATION
       if (CurrentContext->clip_path != (char *) NULL)
         if (LocaleCompare(CurrentContext->clip_path,
-                          context->graphic_context[context->index-1]->clip_path) != 0)
-          (void) SetImageClipMask(context->image,(Image *) NULL);
+            drawing_wand->graphic_context[drawing_wand->index-1]->clip_path) != 0)
+          (void) SetImageClipMask(drawing_wand->image,(Image *) NULL);
 #endif
 
       DestroyDrawInfo(CurrentContext);
       CurrentContext=(DrawInfo*)NULL;
-      context->index--;
-
-      if(context->indent_depth > 0)
-        context->indent_depth--;
-      MvgPrintf(context, "pop graphic-context\n");
-    }
-  else
-    {
-      ThrowDrawException(DrawError,UnbalancedGraphicContextPushPop,NULL)
+      drawing_wand->index--;
+      if (drawing_wand->indent_depth > 0)
+        drawing_wand->indent_depth--;
+      MvgPrintf(drawing_wand,"pop graphic-context\n");
     }
 }
 
@@ -4005,46 +3693,43 @@ MagickExport void DrawPopGraphicContext(DrawContext context)
 %
 %  The format of the DrawPopPattern method is:
 %
-%      void DrawPopPattern(DrawContext context)
+%      void DrawPopPattern(DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 */
-MagickExport void DrawPopPattern(DrawContext context)
+WandExport void DrawPopPattern(DrawingWand *drawing_wand)
 {
   char
     geometry[MaxTextExtent],
     key[MaxTextExtent];
 
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  if( context->pattern_id == NULL )
-    ThrowDrawException(DrawWarning,NotCurrentlyPushingPatternDefinition,NULL);
-
-  FormatString(key,"[%.1024s]",context->pattern_id);
-
-  (void) SetImageAttribute(context->image,key,context->mvg+context->pattern_offset);
-  FormatString(geometry,"%lux%lu%+ld%+ld",
-               context->pattern_bounds.width,context->pattern_bounds.height,
-               context->pattern_bounds.x,context->pattern_bounds.y);
-  (void) SetImageAttribute(context->image,key,geometry);
-
-  MagickFreeMemory(context->pattern_id);
-  context->pattern_offset = 0;
-
-  context->pattern_bounds.x = 0;
-  context->pattern_bounds.y = 0;
-  context->pattern_bounds.width = 0;
-  context->pattern_bounds.height = 0;
-
-  context->filter_off = False;
-
-  if(context->indent_depth > 0)
-    context->indent_depth--;
-  MvgPrintf(context, "pop pattern\n");
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  if (drawing_wand->pattern_id == NULL)
+    ThrowException(&drawing_wand->image->exception,DrawWarning,
+      NotCurrentlyPushingPatternDefinition,NULL);
+  (void) FormatMagickString(key,MaxTextExtent,"[%.1024s]",
+    drawing_wand->pattern_id);
+  (void) SetImageAttribute(drawing_wand->image,key,
+    drawing_wand->mvg+drawing_wand->pattern_offset);
+  (void) FormatMagickString(geometry,MaxTextExtent,"%lux%lu%+ld%+ld",
+    drawing_wand->pattern_bounds.width,drawing_wand->pattern_bounds.height,
+    drawing_wand->pattern_bounds.x,drawing_wand->pattern_bounds.y);
+  (void) SetImageAttribute(drawing_wand->image,key,geometry);
+  drawing_wand->pattern_id=(char *) RelinquishMagickMemory(drawing_wand->pattern_id);
+  drawing_wand->pattern_id=NULL;
+  drawing_wand->pattern_offset=0;
+  drawing_wand->pattern_bounds.x=0;
+  drawing_wand->pattern_bounds.y=0;
+  drawing_wand->pattern_bounds.width=0;
+  drawing_wand->pattern_bounds.height=0;
+  drawing_wand->filter_off=False;
+  if (drawing_wand->indent_depth > 0)
+    drawing_wand->indent_depth--;
+  MvgPrintf(drawing_wand,"pop pattern\n");
 }
 
 /*
@@ -4064,25 +3749,24 @@ MagickExport void DrawPopPattern(DrawContext context)
 %
 %  The format of the DrawPushClipPath method is:
 %
-%      void DrawPushClipPath(DrawContext context, const char *clip_path_id)
+%      void DrawPushClipPath(DrawingWand *drawing_wand,const char *clip_path_id)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o clip_path_id: string identifier to associate with the clip path for
 %      later use.
 %
 */
-MagickExport void DrawPushClipPath(DrawContext context,
-                                   const char *clip_path_id)
+WandExport void DrawPushClipPath(DrawingWand *drawing_wand,
+  const char *clip_path_id)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
   assert(clip_path_id != (const char *) NULL);
-
-  MvgPrintf(context, "push clip-path %s\n", clip_path_id);
-  context->indent_depth++;
+  MvgPrintf(drawing_wand,"push clip-path %s\n",clip_path_id);
+  drawing_wand->indent_depth++;
 }
 
 /*
@@ -4102,20 +3786,19 @@ MagickExport void DrawPushClipPath(DrawContext context,
 %
 %  The format of the DrawPushDefs method is:
 %
-%      void DrawPushDefs(DrawContext context)
+%      void DrawPushDefs(DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 */
-MagickExport void DrawPushDefs(DrawContext context)
+WandExport void DrawPushDefs(DrawingWand *drawing_wand)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  MvgPrintf(context, "push defs\n");
-  context->indent_depth++;
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  MvgPrintf(drawing_wand,"push defs\n");
+  drawing_wand->indent_depth++;
 }
 
 /*
@@ -4123,43 +3806,41 @@ MagickExport void DrawPushDefs(DrawContext context)
 %                                                                             %
 %                                                                             %
 %                                                                             %
-%   D r a w P u s h G r a p h i c C o n t e x t                               %
+%   D r a w P u s h G r a p h i c W a n d                                     %
 %                                                                             %
 %                                                                             %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DrawPushGraphicContext() clones the current drawing context to create a
-%  new drawing context. The original drawing context(s) may be returned to
-%  by invoking DrawPopGraphicContext().  The contexts are stored on a context
-%  stack.  For every Pop there must have already been an equivalent Push.
+%  DrawPushGraphicContext() clones the current drawing wand to create a
+%  new drawing wand. The original drawing drawing_wand(s) may be returned to
+%  by invoking DrawPopGraphicContext().  The drawing wands are stored on a
+%  drawing wand stack.  For every Pop there must have already been an
+%  equivalent Push.
 %
 %  The format of the DrawPushGraphicContext method is:
 %
-%      void DrawPushGraphicContext(DrawContext context)
+%      void DrawPushGraphicContext(DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 */
-MagickExport void DrawPushGraphicContext(DrawContext context)
+WandExport void DrawPushGraphicContext(DrawingWand *drawing_wand)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  context->index++;
-  MagickReallocMemory(context->graphic_context,
-                  (context->index+1)*sizeof(DrawInfo *));
-  if (context->graphic_context == (DrawInfo **) NULL)
-    {
-      ThrowDrawException3(ResourceLimitError,MemoryAllocationFailed,
-        UnableToDrawOnImage)
-    }
-  CurrentContext=
-    CloneDrawInfo((ImageInfo *) NULL,context->graphic_context[context->index-1]);
-  MvgPrintf(context, "push graphic-context\n");
-  context->indent_depth++;
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  drawing_wand->index++;
+  drawing_wand->graphic_context=(DrawInfo **) ResizeMagickMemory(
+    drawing_wand->graphic_context,(drawing_wand->index+1)*sizeof(DrawInfo *));
+  if (drawing_wand->graphic_context == (DrawInfo **) NULL)
+    ThrowException3(&drawing_wand->image->exception,ResourceLimitError,
+      MemoryAllocationFailed,UnableToDrawOnImage);
+  CurrentContext=CloneDrawInfo((ImageInfo *) NULL,
+    drawing_wand->graphic_context[drawing_wand->index-1]);
+  MvgPrintf(drawing_wand,"push graphic-context\n");
+  drawing_wand->indent_depth++;
 }
 
 /*
@@ -4182,14 +3863,12 @@ MagickExport void DrawPushGraphicContext(DrawContext context)
 %
 %  The format of the DrawPushPattern method is:
 %
-%      void DrawPushPattern(DrawContext context,
-%                           const char *pattern_id,
-%                           const double x, const double y,
-%                           const double width, const double height)
+%      void DrawPushPattern(DrawingWand *drawing_wand,const char *pattern_id,
+%        const double x,const double y,const double width,const double height)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o pattern_id: pattern identification for later reference
 %
@@ -4202,32 +3881,26 @@ MagickExport void DrawPushGraphicContext(DrawContext context)
 %    o height: height of pattern space
 %
 */
-MagickExport void DrawPushPattern(DrawContext context,
-                                  const char *pattern_id,
-                                  const double x, const double y,
-                                  const double width, const double height)
+WandExport void DrawPushPattern(DrawingWand *drawing_wand,
+  const char *pattern_id,const double x,const double y,const double width,
+  const double height)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
   assert(pattern_id != (const char *) NULL);
-
-  if( context->pattern_id != NULL )
-    ThrowDrawException(DrawError,AlreadyPushingPatternDefinition,
-      context->pattern_id);
-
-  context->filter_off = True;
-
-  MvgPrintf(context, "push pattern %s %.4g,%.4g %.4g,%.4g\n",
-            pattern_id, x, y, width, height);
-  context->indent_depth++;
-
-  /* Record current pattern ID, bounds, and start position in MVG */
-  context->pattern_id = AllocateString(pattern_id);
-  context->pattern_bounds.x = (long) ceil(x-0.5);
-  context->pattern_bounds.y = (long) ceil(y-0.5);
-  context->pattern_bounds.width = (unsigned long) floor(width+0.5);
-  context->pattern_bounds.height = (unsigned long) floor(height+0.5);
-  context->pattern_offset = context->mvg_length;
+  if (drawing_wand->pattern_id != NULL)
+    ThrowException(&drawing_wand->image->exception,DrawError,
+      AlreadyPushingPatternDefinition,drawing_wand->pattern_id);
+  drawing_wand->filter_off=True;
+  MvgPrintf(drawing_wand,"push pattern %s %.4g,%.4g %.4g,%.4g\n",pattern_id,
+    x,y,width,height);
+  drawing_wand->indent_depth++;
+  drawing_wand->pattern_id=AcquireString(pattern_id);
+  drawing_wand->pattern_bounds.x=(long) ceil(x-0.5);
+  drawing_wand->pattern_bounds.y=(long) ceil(y-0.5);
+  drawing_wand->pattern_bounds.width=(unsigned long) (width+0.5);
+  drawing_wand->pattern_bounds.height=(unsigned long) (height+0.5);
+  drawing_wand->pattern_offset=drawing_wand->mvg_length;
 }
 
 /*
@@ -4246,9 +3919,8 @@ MagickExport void DrawPushPattern(DrawContext context,
 %
 %  The format of the DrawRectangle method is:
 %
-%      void DrawRectangle(DrawContext context,
-%                         const double x1, const double y1,
-%                         const double x2, const double y2)
+%      void DrawRectangle(DrawingWand *drawing_wand,const double x1,
+%        const double y1,const double x2,const double y2)
 %
 %  A description of each parameter follows:
 %
@@ -4261,13 +3933,12 @@ MagickExport void DrawPushPattern(DrawContext context,
 %    o y2: y ordinate of second coordinate
 %
 */
-MagickExport void DrawRectangle(DrawContext context,
-                                const double x1, const double y1,
-                                const double x2, const double y2)
+WandExport void DrawRectangle(DrawingWand *drawing_wand,const double x1,
+  const double y1,const double x2,const double y2)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-  MvgPrintf(context, "rectangle %.4g,%.4g %.4g,%.4g\n", x1, y1, x2, y2);
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  MvgPrintf(drawing_wand,"rectangle %.4g,%.4g %.4g,%.4g\n",x1,y1,x2,y2);
 }
 
 /*
@@ -4285,24 +3956,23 @@ MagickExport void DrawRectangle(DrawContext context,
 %
 %  The format of the DrawRender method is:
 %
-%      int DrawRender(const DrawContext context)
+%      unsigned int DrawRender(const DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 */
-MagickExport int DrawRender(const DrawContext context)
+WandExport unsigned int DrawRender(const DrawingWand *drawing_wand)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  CurrentContext->primitive = context->mvg;
-  (void) LogMagickEvent(RenderEvent,GetMagickModule(),"MVG:\n'%s'\n",context->mvg);
-  DrawImage(context->image, CurrentContext);
-  CurrentContext->primitive = (char *) NULL;
-
-  return True;
+  assert(drawing_wand != (const DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  CurrentContext->primitive=drawing_wand->mvg;
+  (void) LogMagickEvent(DrawEvent,GetMagickModule(),"MVG:\n'%s'\n",
+    drawing_wand->mvg);
+  DrawImage(drawing_wand->image, CurrentContext);
+  CurrentContext->primitive=(char *) NULL;
+  return(True);
 }
 
 /*
@@ -4316,36 +3986,33 @@ MagickExport int DrawRender(const DrawContext context)
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-%  DrawRotate() applies the specified rotation to the current coordinate
-%  space.
+%  DrawRotate() applies the specified rotation to the current coordinate space.
 %
 %  The format of the DrawRotate method is:
 %
-%      void DrawRotate(DrawContext context, const double degrees)
+%      void DrawRotate(DrawingWand *drawing_wand,const double degrees)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o degrees: degrees of rotation
 %
 */
-MagickExport void DrawRotate(DrawContext context, const double degrees)
+WandExport void DrawRotate(DrawingWand *drawing_wand,const double degrees)
 {
   AffineMatrix
     affine;
 
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  IdentityAffine(&affine);
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  GetAffineMatrix(&affine);
   affine.sx=cos(DegreesToRadians(fmod(degrees,360.0)));
   affine.rx=sin(DegreesToRadians(fmod(degrees,360.0)));
   affine.ry=(-sin(DegreesToRadians(fmod(degrees,360.0))));
   affine.sy=cos(DegreesToRadians(fmod(degrees,360.0)));
-  AdjustAffine( context, &affine );
-
-  MvgPrintf(context, "rotate %.4g\n", degrees);
+  AdjustAffine(drawing_wand,&affine);
+  MvgPrintf(drawing_wand,"rotate %.4g\n",degrees);
 }
 
 /*
@@ -4365,14 +4032,12 @@ MagickExport void DrawRotate(DrawContext context, const double degrees)
 %
 %  The format of the DrawRoundRectangle method is:
 %
-%      void DrawRoundRectangle(DrawContext context,
-%                              double x1, double y1,
-%                              double x2, double y2,
-%                              double rx, double ry)
+%      void DrawRoundRectangle(DrawingWand *drawing_wand,double x1,double y1,
+%        double x2,double y2,double rx,double ry)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o x1: x ordinate of first coordinate
 %
@@ -4387,16 +4052,13 @@ MagickExport void DrawRotate(DrawContext context, const double degrees)
 %    o ry: radius of corner in vertical direction
 %
 */
-MagickExport void DrawRoundRectangle(DrawContext context,
-                                     double x1, double y1,
-                                     double x2, double y2,
-                                     double rx, double ry)
+WandExport void DrawRoundRectangle(DrawingWand *drawing_wand,double x1,
+  double y1,double x2,double y2,double rx,double ry)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  MvgPrintf(context, "roundrectangle %.4g,%.4g %.4g,%.4g %.4g,%.4g\n",
-            x1, y1, x2, y2, rx, ry);
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  MvgPrintf(drawing_wand,"roundrectangle %.4g,%.4g %.4g,%.4g %.4g,%.4g\n",
+    x1,y1,x2,y2,rx,ry);
 }
 
 /*
@@ -4415,32 +4077,30 @@ MagickExport void DrawRoundRectangle(DrawContext context,
 %
 %  The format of the DrawScale method is:
 %
-%      void DrawScale(DrawContext context, const double x, const double y)
+%      void DrawScale(DrawingWand *drawing_wand,const double x,const double y)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o x: horizontal scale factor
 %
 %    o y: vertical scale factor
 %
 */
-MagickExport void DrawScale(DrawContext context,
-                               const double x, const double y)
+WandExport void DrawScale(DrawingWand *drawing_wand,const double x,
+  const double y)
 {
   AffineMatrix
     affine;
 
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  IdentityAffine(&affine);
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  GetAffineMatrix(&affine);
   affine.sx=x;
   affine.sy=y;
-  AdjustAffine( context, &affine );
-
-  MvgPrintf(context, "scale %.4g,%.4g\n", x, y);
+  AdjustAffine( drawing_wand, &affine );
+  MvgPrintf(drawing_wand,"scale %.4g,%.4g\n",x,y);
 }
 
 /*
@@ -4459,28 +4119,26 @@ MagickExport void DrawScale(DrawContext context,
 %
 %  The format of the DrawSkewX method is:
 %
-%      void DrawSkewX(DrawContext context, const double degrees)
+%      void DrawSkewX(DrawingWand *drawing_wand,const double degrees)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o degrees: number of degrees to skew the coordinates
 %
 */
-MagickExport void DrawSkewX(DrawContext context, const double degrees)
+WandExport void DrawSkewX(DrawingWand *drawing_wand,const double degrees)
 {
   AffineMatrix
     affine;
 
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  IdentityAffine(&affine);
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  GetAffineMatrix(&affine);
   affine.ry=tan(DegreesToRadians(fmod(degrees,360.0)));
-  AdjustAffine(context,&affine);
-
-  MvgPrintf(context, "skewX %.4g\n", degrees);
+  AdjustAffine(drawing_wand,&affine);
+  MvgPrintf(drawing_wand,"skewX %.4g\n",degrees);
 }
 
 /*
@@ -4499,30 +4157,27 @@ MagickExport void DrawSkewX(DrawContext context, const double degrees)
 %
 %  The format of the DrawSkewY method is:
 %
-%      void DrawSkewY(DrawContext context, const double degrees)
+%      void DrawSkewY(DrawingWand *drawing_wand,const double degrees)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o degrees: number of degrees to skew the coordinates
 %
 */
-MagickExport void DrawSkewY(DrawContext context, const double degrees)
+WandExport void DrawSkewY(DrawingWand *drawing_wand,const double degrees)
 {
   AffineMatrix
     affine;
 
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  IdentityAffine(&affine);
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  GetAffineMatrix(&affine);
   affine.rx=tan(DegreesToRadians(fmod(degrees,360.0)));
-  DrawAffine(context,&affine);
-
-  MvgPrintf(context, "skewY %.4g\n", degrees);
+  DrawAffine(drawing_wand,&affine);
+  MvgPrintf(drawing_wand,"skewY %.4g\n",degrees);
 }
-
 #if 0
 
 /*
@@ -4540,13 +4195,12 @@ MagickExport void DrawSkewY(DrawContext context, const double degrees)
 %
 %  The format of the DrawSetStopColor method is:
 %
-%      void DrawSetStopColor(DrawContext context,
-%                            const PixelPacket * stop_color,
-%                            const double offset)
+%      void DrawSetStopColor(DrawingWand *drawing_wand,
+%        const PixelPacket *stop_color,const double offset)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o stop_color:
 %
@@ -4554,18 +4208,15 @@ MagickExport void DrawSkewY(DrawContext context, const double degrees)
 %
 */
 /* This is gradient stuff so it shouldn't be supported yet */
-MagickExport void DrawSetStopColor(DrawContext context,
-                                   const PixelPacket * stop_color,
-                                   const double offset)
+WandExport void DrawSetStopColor(DrawingWand *drawing_wand,
+  const PixelPacket * stop_color,const double offset)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
   assert(stop_color != (const PixelPacket *) NULL);
-
-
-  MvgPrintf(context, "stop-color ");
-  MvgAppendColor(context, stop_color);
-  MvgPrintf(context, "\n");
+  MvgPrintf(drawing_wand,"stop-color ");
+  MvgAppendColor(drawing_wand,stop_color);
+  MvgPrintf(drawing_wand,"\n");
 }
 #endif
 
@@ -4584,19 +4235,22 @@ MagickExport void DrawSetStopColor(DrawContext context,
 %
 %  The format of the DrawGetStrokeColor method is:
 %
-%      PixelPacket DrawGetStrokeColor(DrawContext context)
+%      void DrawGetStrokeColor(const DrawingWand *drawing_wand,
+$        PixelWand *stroke_color)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
+%
+%    o stroke_color: Return the stroke color.
 %
 */
-MagickExport PixelPacket DrawGetStrokeColor(DrawContext context)
+WandExport void DrawGetStrokeColor(const DrawingWand *drawing_wand,
+  PixelWand *stroke_color)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  return CurrentContext->stroke;
+  assert(drawing_wand != (const DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  PixelSetQuantumColor(stroke_color,&CurrentContext->stroke);
 }
 
 /*
@@ -4614,75 +4268,40 @@ MagickExport PixelPacket DrawGetStrokeColor(DrawContext context)
 %
 %  The format of the DrawSetStrokeColor method is:
 %
-%      void DrawSetStrokeColor(DrawContext context,
-%                              const PixelPacket * stroke_color)
+%      void DrawSetStrokeColor(DrawingWand *drawing_wand,
+%        const PixelWand *stroke_wand)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
-%    o stroke_color: stroke color
+%    o stroke_wand: stroke wand.
 %
 */
-MagickExport void DrawSetStrokeColor(DrawContext context,
-                                     const PixelPacket * stroke_color)
+WandExport void DrawSetStrokeColor(DrawingWand *drawing_wand,
+  const PixelWand *stroke_wand)
 {
   PixelPacket
     *current_stroke,
-    new_stroke;
+    new_stroke,
+    stroke_color;
 
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-  assert(stroke_color != (const PixelPacket *) NULL);
-
-  new_stroke = *stroke_color;
-  if(new_stroke.opacity != TransparentOpacity)
-    new_stroke.opacity = CurrentContext->opacity;
-
-  current_stroke = &CurrentContext->stroke;
-  if( context->filter_off || !(PixelPacketMatch(current_stroke,&new_stroke)) )
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  assert(stroke_wand != (const PixelWand *) NULL);
+  PixelGetQuantumColor(stroke_wand,&stroke_color);
+  new_stroke=stroke_color;
+  if (new_stroke.opacity != TransparentOpacity)
+    new_stroke.opacity=CurrentContext->opacity;
+  current_stroke=&CurrentContext->stroke;
+  if (drawing_wand->filter_off ||
+      !WandColorMatch(current_stroke,&new_stroke))
     {
-      CurrentContext->stroke = new_stroke;
-
-      MvgPrintf(context, "stroke '");
-      MvgAppendColor(context, stroke_color);
-      MvgPrintf(context, "'\n");
+      CurrentContext->stroke=new_stroke;
+      MvgPrintf(drawing_wand,"stroke '");
+      MvgAppendColor(drawing_wand,&stroke_color);
+      MvgPrintf(drawing_wand,"'\n");
     }
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   D r a w S e t S t r o k e C o l o r S t r i n g                           %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  DrawSetStrokeColorString() sets the color used for stroking object outlines.
-%
-%  The format of the DrawSetStrokeColorString method is:
-%
-%      void DrawSetStrokeColorString(DrawContext context,
-%                                    const char* stroke_color)
-%
-%  A description of each parameter follows:
-%
-%    o context: drawing context
-%
-%    o stroke_color: stroke color
-%
-*/
-MagickExport void DrawSetStrokeColorString(DrawContext context,
-                                           const char* stroke_color)
-{
-  PixelPacket
-    pixel_packet;
-
-  if(QueryColorDatabase(stroke_color,&pixel_packet,&context->image->exception))
-    DrawSetStrokeColor(context,&pixel_packet);
 }
 
 /*
@@ -4700,47 +4319,47 @@ MagickExport void DrawSetStrokeColorString(DrawContext context,
 %
 %  The format of the DrawSetStrokePatternURL method is:
 %
-%      void DrawSetStrokePatternURL(DrawContext context, const char* stroke_url)
+%      void DrawSetStrokePatternURL(DrawingWand *drawing_wand,
+%        const char *stroke_url)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o stroke_url: URL specifying pattern ID (e.g. "#pattern_id")
 %
 */
-MagickExport void DrawSetStrokePatternURL(DrawContext context,
-                                          const char* stroke_url)
+WandExport void DrawSetStrokePatternURL(DrawingWand *drawing_wand,
+  const char *stroke_url)
 {
   char
     pattern[MaxTextExtent];
 
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
   assert(stroke_url != NULL);
-
-  if(stroke_url[0] != '#')
-    ThrowDrawException(DrawWarning, NotARelativeURL, stroke_url);
-
-  FormatString(pattern,"[%.1024s]",stroke_url+1);
-
-  if (GetImageAttribute(context->image,pattern) == (ImageAttribute *) NULL)
+  if (stroke_url[0] != '#')
+    ThrowException(&drawing_wand->image->exception,DrawWarning,
+      NotARelativeURL,stroke_url);
+  (void) FormatMagickString(pattern,MaxTextExtent,"[%.1024s]",stroke_url+1);
+  if (GetImageAttribute(drawing_wand->image,pattern) == (ImageAttribute *) NULL)
     {
-      ThrowDrawException(DrawWarning, URLNotFound, stroke_url)
+      ThrowException(&drawing_wand->image->exception,DrawWarning,
+        URLNotFound,stroke_url);
     }
   else
     {
       char
         pattern_spec[MaxTextExtent];
 
-      FormatString(pattern_spec,"url(%.1024s)",stroke_url);
+      (void) FormatMagickString(pattern_spec,MaxTextExtent,"url(%.1024s)",
+        stroke_url);
 #if DRAW_BINARY_IMPLEMENTATION
-      DrawPatternPath(context->image,CurrentContext,pattern_spec,&CurrentContext->stroke_pattern);
+      DrawPatternPath(drawing_wand->image,CurrentContext,pattern_spec,&CurrentContext->stroke_pattern);
 #endif
       if (CurrentContext->stroke.opacity != TransparentOpacity)
         CurrentContext->stroke.opacity=CurrentContext->opacity;
-
-      MvgPrintf(context, "stroke %s\n",pattern_spec);
+      MvgPrintf(drawing_wand,"stroke %s\n",pattern_spec);
     }
 }
 
@@ -4762,18 +4381,17 @@ MagickExport void DrawSetStrokePatternURL(DrawContext context,
 %
 %  The format of the DrawGetStrokeAntialias method is:
 %
-%      unsigned int DrawGetStrokeAntialias(DrawContext context)
+%      unsigned int DrawGetStrokeAntialias(const DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 */
-MagickExport unsigned int DrawGetStrokeAntialias(DrawContext context)
+WandExport unsigned int DrawGetStrokeAntialias(const DrawingWand *drawing_wand)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  return CurrentContext->stroke_antialias;
+  assert(drawing_wand != (const DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  return(CurrentContext->stroke_antialias);
 }
 
 /*
@@ -4794,27 +4412,26 @@ MagickExport unsigned int DrawGetStrokeAntialias(DrawContext context)
 %
 %  The format of the DrawSetStrokeAntialias method is:
 %
-%      void DrawSetStrokeAntialias(DrawContext context,
-%                                  const unsigned int stroke_antialias)
+%      void DrawSetStrokeAntialias(DrawingWand *drawing_wand,
+%        const unsigned int stroke_antialias)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o stroke_antialias: set to false (zero) to disable antialiasing
 %
 */
-MagickExport void DrawSetStrokeAntialias(DrawContext context,
-                                         const unsigned int stroke_antialias)
+WandExport void DrawSetStrokeAntialias(DrawingWand *drawing_wand,
+  const unsigned int stroke_antialias)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  if(context->filter_off || (CurrentContext->stroke_antialias != stroke_antialias))
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  if (drawing_wand->filter_off ||
+     (CurrentContext->stroke_antialias != stroke_antialias))
     {
-      CurrentContext->stroke_antialias = stroke_antialias;
-
-      MvgPrintf(context, "stroke-antialias %i\n", stroke_antialias ? 1 : 0);
+      CurrentContext->stroke_antialias=stroke_antialias;
+      MvgPrintf(drawing_wand,"stroke-antialias %i\n",stroke_antialias ? 1 : 0);
     }
 }
 
@@ -4835,17 +4452,18 @@ MagickExport void DrawSetStrokeAntialias(DrawContext context,
 %
 %  The format of the DrawGetStrokeDashArray method is:
 %
-%      double *DrawGetStrokeDashArray(DrawContext context,size_t *num_elems)
+%      double *DrawGetStrokeDashArray(const DrawingWand *drawing_wand,
+%        size_t *number_elements)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
-%    o num_elems: address to place number of elements in dash array
+%    o number_elements: address to place number of elements in dash array
 %
 % */
-MagickExport double *DrawGetStrokeDashArray(DrawContext context,
-                                            size_t *num_elems)
+WandExport double *DrawGetStrokeDashArray(const DrawingWand *drawing_wand,
+  size_t *number_elements)
 {
   register const double
     *p;
@@ -4854,33 +4472,31 @@ MagickExport double *DrawGetStrokeDashArray(DrawContext context,
     *q;
 
   double
-    *dasharray;
+    *dash_array;
 
   unsigned int
     i,
-    n = 0;
+    n=0;
 
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-  assert(num_elems != (size_t *)NULL);
-
-  p = CurrentContext->dash_pattern;
-  if( p != (const double *) NULL )
-    while( *p++ != 0)
+  assert(drawing_wand != (const DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  assert(number_elements != (size_t *)NULL);
+  p=CurrentContext->dash_pattern;
+  if ( p != (const double *) NULL )
+    while (*p++ != 0)
       n++;
-
-  *num_elems = n;
-  dasharray = (double *)NULL;
+  *number_elements=n;
+  dash_array=(double *)NULL;
   if (n != 0)
     {
-      dasharray = MagickAllocateMemory(double *, n*sizeof(double));
-      p = CurrentContext->dash_pattern;
-      q = dasharray;
-      i = n;
-      while( i-- )
-        *q++ = *p++;
+      dash_array=(double *) AcquireMagickMemory(n*sizeof(double));
+      p=CurrentContext->dash_pattern;
+      q=dash_array;
+      i=n;
+      while (i--)
+        *q++=(*p++);
     }
-  return dasharray;
+  return(dash_array);
 }
 
 /*
@@ -4899,27 +4515,25 @@ MagickExport double *DrawGetStrokeDashArray(DrawContext context,
 %  specify the lengths of alternating dashes and gaps in pixels. If an odd
 %  number of values is provided, then the list of values is repeated to yield
 %  an even number of values. To remove an existing dash array, pass a zero
-%  num_elems argument and null dasharray.
+%  number_elements argument and null dash_array.
 %  A typical strokeDashArray_ array might contain the members 5 3 2.
 %
 %  The format of the DrawSetStrokeDashArray method is:
 %
-%      void DrawSetStrokeDashArray(DrawContext context,
-%                                  const size_t num_elems,
-%                                  const double *dasharray)
+%      void DrawSetStrokeDashArray(DrawingWand *drawing_wand,
+%        const size_t number_elements,const double *dash_array)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
-%    o num_elems: number of elements in dash array
+%    o number_elements: number of elements in dash array
 %
-%    o dasharray: dash array values
+%    o dash_array: dash array values
 %
 % */
-MagickExport void DrawSetStrokeDashArray(DrawContext context,
-                                         const size_t num_elems,
-                                         const double *dasharray)
+WandExport void DrawSetStrokeDashArray(DrawingWand *drawing_wand,
+  const size_t number_elements,const double *dash_array)
 {
   register const double
     *p;
@@ -4929,80 +4543,76 @@ MagickExport void DrawSetStrokeDashArray(DrawContext context,
 
   unsigned int
     i,
-    updated = False,
-    n_new = num_elems,
-    n_old = 0;
+    updated=False,
+    n_new=number_elements,
+    n_old=0;
 
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  q = CurrentContext->dash_pattern;
-  if( q != (const double *) NULL )
-    while( *q++ != 0)
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  q=CurrentContext->dash_pattern;
+  if (q != (const double *) NULL)
+    while (*q++ != 0)
       n_old++;
-
-  if( (n_old == 0) && (n_new == 0) )
+  if ((n_old == 0) && (n_new == 0))
     {
-      updated = False;
+      updated=False;
     }
-  else if( n_old != n_new )
+  else if ( n_old != n_new )
     {
-      updated = True;
+      updated=True;
     }
-  else if((CurrentContext->dash_pattern != (double*)NULL)
-          && (dasharray != (double*)NULL))
+  else if ((CurrentContext->dash_pattern != (double *) NULL) &&
+           (dash_array != (double *) NULL))
     {
-      p = dasharray;
-      q = CurrentContext->dash_pattern;
-      i = n_new;
-      while( i-- )
+      p=dash_array;
+      q=CurrentContext->dash_pattern;
+      i=n_new;
+      while ( i-- )
+      {
+        if (AbsoluteValue(*p - *q) > MagickEpsilon)
+          {
+            updated=True;
+            break;
+          }
+        p++;
+        q++;
+      }
+    }
+  if (drawing_wand->filter_off || updated)
+    {
+      if (CurrentContext->dash_pattern != (double *) NULL)
+        CurrentContext->dash_pattern=(double *)
+          RelinquishMagickMemory(CurrentContext->dash_pattern);
+      if (n_new != 0)
         {
-          if(AbsoluteValue(*p - *q) > MagickEpsilon)
+          CurrentContext->dash_pattern=(double *)
+            AcquireMagickMemory((n_new+1)*sizeof(double));
+          if (!CurrentContext->dash_pattern)
             {
-              updated = True;
-              break;
-            }
-          ++p;
-          ++q;
-        }
-    }
-
-  if( context->filter_off || updated )
-    {
-      if(CurrentContext->dash_pattern != (double*)NULL)
-        MagickFreeMemory(CurrentContext->dash_pattern);
-
-      if( n_new != 0)
-        {
-          CurrentContext->dash_pattern = MagickAllocateMemory(double *,
-            (n_new+1)*sizeof(double));
-          if(CurrentContext->dash_pattern)
-            {
-              q=CurrentContext->dash_pattern;
-              p=dasharray;
-              while( *p )
-                *q++=*p++;
-              *q=0;
+              ThrowException3(&drawing_wand->image->exception,
+                ResourceLimitError,MemoryAllocationFailed,UnableToDrawOnImage);
             }
           else
             {
-              ThrowDrawException3(ResourceLimitError,MemoryAllocationFailed,
-                UnableToDrawOnImage)
+              q=CurrentContext->dash_pattern;
+              p=dash_array;
+              while (*p)
+                *q++=*p++;
+              *q=0;
             }
         }
-
-      MvgPrintf(context, "stroke-dasharray ");
+      MvgPrintf(drawing_wand,"stroke-dash_array ");
       if ( n_new == 0 )
-        MvgPrintf(context, "none");
+        MvgPrintf(drawing_wand, "none");
       else
         {
-          p = dasharray;
-          i = n_new;
-          MvgPrintf(context, "%.4g", *p++);
+          p=dash_array;
+          i=n_new;
+          MvgPrintf(drawing_wand,"%.4g",*p++);
           while (i--)
-            MvgPrintf(context, ",%.4g", *p++);
+            MvgPrintf(drawing_wand,",%.4g",*p++);
         }
-      MvgPrintf(context, "0 \n");
+      MvgPrintf(drawing_wand,"0 \n");
     }
 }
 
@@ -5022,19 +4632,18 @@ MagickExport void DrawSetStrokeDashArray(DrawContext context,
 %
 %  The format of the DrawGetStrokeDashOffset method is:
 %
-%      double DrawGetStrokeDashOffset(DrawContext context)
+%      double DrawGetStrokeDashOffset(const DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 */
-MagickExport double DrawGetStrokeDashOffset(DrawContext context)
+WandExport double DrawGetStrokeDashOffset(const DrawingWand *drawing_wand)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  return CurrentContext->dash_offset;
+  assert(drawing_wand != (const DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  return(CurrentContext->dash_offset);
 }
 
 /*
@@ -5053,28 +4662,27 @@ MagickExport double DrawGetStrokeDashOffset(DrawContext context)
 %
 %  The format of the DrawSetStrokeDashOffset method is:
 %
-%      void DrawSetStrokeDashOffset(DrawContext context,
-%                                   const double dash_offset)
+%      void DrawSetStrokeDashOffset(DrawingWand *drawing_wand,
+%        const double dash_offset)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o dash_offset: dash offset
 %
 */
-MagickExport void DrawSetStrokeDashOffset(DrawContext context,
-                                          const double dash_offset)
+WandExport void DrawSetStrokeDashOffset(DrawingWand *drawing_wand,
+  const double dash_offset)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
 
-  if(context->filter_off ||
+  if (drawing_wand->filter_off ||
      (AbsoluteValue(CurrentContext->dash_offset-dash_offset) > MagickEpsilon))
     {
-      CurrentContext->dash_offset = dash_offset;
-
-      MvgPrintf(context, "stroke-dashoffset %.4g\n", dash_offset);
+      CurrentContext->dash_offset=dash_offset;
+      MvgPrintf(drawing_wand,"stroke-dashoffset %.4g\n",dash_offset);
     }
 }
 
@@ -5095,19 +4703,18 @@ MagickExport void DrawSetStrokeDashOffset(DrawContext context,
 %
 %  The format of the DrawGetStrokeLineCap method is:
 %
-%      LineCap DrawGetStrokeLineCap(DrawContext context)
+%      LineCap DrawGetStrokeLineCap(const DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 % */
-MagickExport LineCap DrawGetStrokeLineCap(DrawContext context)
+WandExport LineCap DrawGetStrokeLineCap(const DrawingWand *drawing_wand)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  return CurrentContext->linecap;
+  assert(drawing_wand != (const DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  return(CurrentContext->linecap);
 }
 
 /*
@@ -5127,46 +4734,44 @@ MagickExport LineCap DrawGetStrokeLineCap(DrawContext context)
 %
 %  The format of the DrawSetStrokeLineCap method is:
 %
-%      void DrawSetStrokeLineCap(DrawContext context,
-%                                const LineCap linecap)
+%      void DrawSetStrokeLineCap(DrawingWand *drawing_wand,
+%        const LineCap linecap)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o linecap: linecap style
 %
 % */
-MagickExport void DrawSetStrokeLineCap(DrawContext context,
-                                       const LineCap linecap)
+WandExport void DrawSetStrokeLineCap(DrawingWand *drawing_wand,
+  const LineCap linecap)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
 
-  if(context->filter_off || (CurrentContext->linecap != linecap))
+  if (drawing_wand->filter_off || (CurrentContext->linecap != linecap))
     {
       const char
-        *p = NULL;
+        *p=NULL;
 
-      CurrentContext->linecap = linecap;
-
+      CurrentContext->linecap=linecap;
       switch (linecap)
-        {
+      {
         case ButtCap:
-          p = "butt";
+          p="butt";
           break;
         case RoundCap:
-          p = "round";
+          p="round";
           break;
         case SquareCap:
-          p = "square";
+          p="square";
           break;
         default:
           break;
-        }
-
+      }
       if (p != NULL)
-        MvgPrintf(context, "stroke-linecap %s\n", p);
+        MvgPrintf(drawing_wand,"stroke-linecap %s\n",p);
     }
 }
 
@@ -5188,19 +4793,18 @@ MagickExport void DrawSetStrokeLineCap(DrawContext context,
 %
 %  The format of the DrawGetStrokeLineJoin method is:
 %
-%      LineJoin DrawGetStrokeLineJoin(DrawContext context)
+%      LineJoin DrawGetStrokeLineJoin(const DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 % */
-MagickExport LineJoin DrawGetStrokeLineJoin(DrawContext context)
+WandExport LineJoin DrawGetStrokeLineJoin(const DrawingWand *drawing_wand)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  return CurrentContext->linejoin;
+  assert(drawing_wand != (const DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  return(CurrentContext->linejoin);
 }
 
 /*
@@ -5221,45 +4825,45 @@ MagickExport LineJoin DrawGetStrokeLineJoin(DrawContext context)
 %
 %  The format of the DrawSetStrokeLineJoin method is:
 %
-%      void DrawSetStrokeLineJoin(DrawContext context, const LineJoin linejoin)
+%      void DrawSetStrokeLineJoin(DrawingWand *drawing_wand,
+%        const LineJoin linejoin)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o linejoin: line join style
 %
-% */
-MagickExport void DrawSetStrokeLineJoin(DrawContext context,
-                                        const LineJoin linejoin)
+%
+*/
+WandExport void DrawSetStrokeLineJoin(DrawingWand *drawing_wand,
+  const LineJoin linejoin)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  if(context->filter_off || (CurrentContext->linejoin != linejoin))
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  if (drawing_wand->filter_off || (CurrentContext->linejoin != linejoin))
     {
       const char
-        *p = NULL;
+        *p=NULL;
 
-      CurrentContext->linejoin = linejoin;
+      CurrentContext->linejoin=linejoin;
 
       switch (linejoin)
-        {
+      {
         case MiterJoin:
-          p = "miter";
+          p="miter";
           break;
         case RoundJoin:
-          p = "round";
+          p="round";
           break;
         case BevelJoin:
-          p = "square";
+          p="square";
           break;
         default:
           break;
-        }
-
+      }
       if (p != NULL)
-        MvgPrintf(context, "stroke-linejoin %s\n", p);
+        MvgPrintf(drawing_wand,"stroke-linejoin %s\n",p);
     }
 }
 
@@ -5282,18 +4886,17 @@ MagickExport void DrawSetStrokeLineJoin(DrawContext context,
 %
 %  The format of the DrawGetStrokeMiterLimit method is:
 %
-%      unsigned long DrawGetStrokeMiterLimit(DrawContext context)
+%      unsigned long DrawGetStrokeMiterLimit(const DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 % */
-MagickExport unsigned long DrawGetStrokeMiterLimit(DrawContext context)
+WandExport unsigned long DrawGetStrokeMiterLimit(const DrawingWand *drawing_wand)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
+  assert(drawing_wand != (const DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
   return CurrentContext->miterlimit;
 }
 
@@ -5316,27 +4919,25 @@ MagickExport unsigned long DrawGetStrokeMiterLimit(DrawContext context)
 %
 %  The format of the DrawSetStrokeMiterLimit method is:
 %
-%      void DrawSetStrokeMiterLimit(DrawContext context,
-%                                   const unsigned long miterlimit)
+%      void DrawSetStrokeMiterLimit(DrawingWand *drawing_wand,
+%        const unsigned long miterlimit)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o miterlimit: miter limit
 %
 % */
-MagickExport void DrawSetStrokeMiterLimit(DrawContext context,
-                                          const unsigned long miterlimit)
+WandExport void DrawSetStrokeMiterLimit(DrawingWand *drawing_wand,
+  const unsigned long miterlimit)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  if(CurrentContext->miterlimit != miterlimit)
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  if (CurrentContext->miterlimit != miterlimit)
     {
-      CurrentContext->miterlimit = miterlimit;
-
-      MvgPrintf(context, "stroke-miterlimit %lu\n", miterlimit);
+      CurrentContext->miterlimit=miterlimit;
+      MvgPrintf(drawing_wand,"stroke-miterlimit %lu\n",miterlimit);
     }
 }
 
@@ -5355,18 +4956,17 @@ MagickExport void DrawSetStrokeMiterLimit(DrawContext context,
 %
 %  The format of the DrawGetStrokeOpacity method is:
 %
-%      double DrawGetStrokeOpacity(DrawContext context)
+%      double DrawGetStrokeOpacity(const DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 */
-MagickExport double DrawGetStrokeOpacity(DrawContext context)
+WandExport double DrawGetStrokeOpacity(const DrawingWand *drawing_wand)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  return (1.0-(((double)CurrentContext->stroke.opacity)/MaxRGB));
+  assert(drawing_wand != (const DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  return(1.0-(((double)CurrentContext->stroke.opacity)/MaxRGB));
 }
 
 /*
@@ -5384,31 +4984,30 @@ MagickExport double DrawGetStrokeOpacity(DrawContext context)
 %
 %  The format of the DrawSetStrokeOpacity method is:
 %
-%      void DrawSetStrokeOpacity(DrawContext context,
-%                                const double stroke_opacity)
+%      void DrawSetStrokeOpacity(DrawingWand *drawing_wand,
+%        const double stroke_opacity)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o stroke_opacity: stroke opacity.  The value 1.0 is opaque.
 %
 */
-MagickExport void DrawSetStrokeOpacity(DrawContext context,
-                                       const double stroke_opacity)
+WandExport void DrawSetStrokeOpacity(DrawingWand *drawing_wand,
+  const double stroke_opacity)
 {
   double
     opacity;
 
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  opacity = (Quantum)((double) MaxRGB*(1.0-(stroke_opacity <= 1.0 ? stroke_opacity : 1.0 ))+0.5);
-
-  if (context->filter_off || (CurrentContext->stroke.opacity != opacity))
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  opacity=(Quantum) ((double) MaxRGB*
+    (1.0-(stroke_opacity <= 1.0 ? stroke_opacity : 1.0 ))+0.5);
+  if (drawing_wand->filter_off || (CurrentContext->stroke.opacity != opacity))
     {
-      CurrentContext->stroke.opacity = (Quantum) ceil(opacity);
-      MvgPrintf(context, "stroke-opacity %.4g\n", stroke_opacity);
+      CurrentContext->stroke.opacity=(Quantum) (opacity+0.5);
+      MvgPrintf(drawing_wand,"stroke-opacity %.4g\n",stroke_opacity);
     }
 }
 
@@ -5428,19 +5027,18 @@ MagickExport void DrawSetStrokeOpacity(DrawContext context,
 %
 %  The format of the DrawGetStrokeWidth method is:
 %
-%      double DrawGetStrokeWidth(DrawContext context)
+%      double DrawGetStrokeWidth(const DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 */
-MagickExport double DrawGetStrokeWidth(DrawContext context)
+WandExport double DrawGetStrokeWidth(const DrawingWand *drawing_wand)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  return CurrentContext->stroke_width;
+  assert(drawing_wand != (const DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  return(CurrentContext->stroke_width);
 }
 
 /*
@@ -5459,27 +5057,26 @@ MagickExport double DrawGetStrokeWidth(DrawContext context)
 %
 %  The format of the DrawSetStrokeWidth method is:
 %
-%      void DrawSetStrokeWidth(DrawContext context, const double stroke_width)
+%      void DrawSetStrokeWidth(DrawingWand *drawing_wand,
+%        const double stroke_width)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o stroke_width: stroke width
 %
 */
-MagickExport void DrawSetStrokeWidth(DrawContext context,
-                                     const double stroke_width)
+WandExport void DrawSetStrokeWidth(DrawingWand *drawing_wand,
+  const double stroke_width)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  if (context->filter_off ||
-      (AbsoluteValue(CurrentContext->stroke_width-stroke_width) > MagickEpsilon))
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  if (drawing_wand->filter_off ||
+     (AbsoluteValue(CurrentContext->stroke_width-stroke_width) > MagickEpsilon))
     {
-      CurrentContext->stroke_width = stroke_width;
-
-      MvgPrintf(context, "stroke-width %.4g\n", stroke_width);
+      CurrentContext->stroke_width=stroke_width;
+      MvgPrintf(drawing_wand,"stroke-width %.4g\n",stroke_width);
     }
 }
 
@@ -5499,19 +5096,18 @@ MagickExport void DrawSetStrokeWidth(DrawContext context,
 %
 %  The format of the DrawGetTextAntialias method is:
 %
-%      unsigned int DrawGetTextAntialias(DrawContext context)
+%      unsigned int DrawGetTextAntialias(const DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 */
-MagickExport unsigned int DrawGetTextAntialias(DrawContext context)
+WandExport unsigned int DrawGetTextAntialias(const DrawingWand *drawing_wand)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  return CurrentContext->text_antialias;
+  assert(drawing_wand != (const DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  return(CurrentContext->text_antialias);
 }
 
 /*
@@ -5530,28 +5126,27 @@ MagickExport unsigned int DrawGetTextAntialias(DrawContext context)
 %
 %  The format of the DrawSetTextAntialias method is:
 %
-%      void DrawSetTextAntialias(DrawContext context,
-%                                const unsigned int text_antialias)
+%      void DrawSetTextAntialias(DrawingWand *drawing_wand,
+%        const unsigned int text_antialias)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o text_antialias: antialias boolean. Set to false (0) to disable
-%                      antialiasing.
+%      antialiasing.
 %
 */
-MagickExport void DrawSetTextAntialias(DrawContext context,
-                                       const unsigned int text_antialias)
+WandExport void DrawSetTextAntialias(DrawingWand *drawing_wand,
+  const unsigned int text_antialias)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  if (context->filter_off || (CurrentContext->text_antialias != text_antialias))
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  if (drawing_wand->filter_off ||
+      (CurrentContext->text_antialias != text_antialias))
     {
-      CurrentContext->text_antialias = text_antialias;
-
-      MvgPrintf(context, "text-antialias %i\n", text_antialias ? 1 : 0);
+      CurrentContext->text_antialias=text_antialias;
+      MvgPrintf(drawing_wand,"text-antialias %i\n",text_antialias ? 1 : 0);
     }
 }
 
@@ -5571,19 +5166,18 @@ MagickExport void DrawSetTextAntialias(DrawContext context,
 %
 %  The format of the DrawGetTextDecoration method is:
 %
-%      DecorationType DrawGetTextDecoration(DrawContext context)
+%      DecorationType DrawGetTextDecoration(DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 */
-MagickExport DecorationType DrawGetTextDecoration(DrawContext context)
+WandExport DecorationType DrawGetTextDecoration(const DrawingWand *drawing_wand)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-  
-  return CurrentContext->decorate;
+  assert(drawing_wand != (const DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  return(CurrentContext->decorate);
 }
 
 /*
@@ -5602,48 +5196,45 @@ MagickExport DecorationType DrawGetTextDecoration(DrawContext context)
 %
 %  The format of the DrawSetTextDecoration method is:
 %
-%      void DrawSetTextDecoration(DrawContext context,
-%                                 const DecorationType decoration)
+%      void DrawSetTextDecoration(DrawingWand *drawing_wand,
+%        const DecorationType decoration)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o decoration: text decoration.  One of NoDecoration, UnderlineDecoration,
-%                                    OverlineDecoration, or LineThroughDecoration
+%      OverlineDecoration, or LineThroughDecoration
 %
 */
-MagickExport void DrawSetTextDecoration(DrawContext context,
-                                        const DecorationType decoration)
+WandExport void DrawSetTextDecoration(DrawingWand *drawing_wand,
+  const DecorationType decoration)
 {
   const char
-    *p = NULL;
+    *p=NULL;
 
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  if (context->filter_off || (CurrentContext->decorate != decoration))
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  if (drawing_wand->filter_off || (CurrentContext->decorate != decoration))
     {
-      CurrentContext->decorate = decoration;
-
+      CurrentContext->decorate=decoration;
       switch (decoration)
-        {
+      {
         case NoDecoration:
-          p = "none";
+          p="none";
           break;
         case UnderlineDecoration:
-          p = "underline";
+          p="underline";
           break;
         case OverlineDecoration:
-          p = "overline";
+          p="overline";
           break;
         case LineThroughDecoration:
-          p = "line-through";
+          p="line-through";
           break;
-        }
-
+      }
       if (p != NULL)
-        MvgPrintf(context, "decorate %s\n", p);
+        MvgPrintf(drawing_wand,"decorate %s\n",p);
     }
 }
 
@@ -5664,22 +5255,20 @@ MagickExport void DrawSetTextDecoration(DrawContext context,
 %
 %  The format of the DrawGetTextEncoding method is:
 %
-%      char *DrawGetTextEncoding(DrawContext context)
+%      char *DrawGetTextEncoding(const DrawingWand *drawing_wand)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 % */
-MagickExport char *DrawGetTextEncoding(DrawContext context)
+WandExport char *DrawGetTextEncoding(const DrawingWand *drawing_wand)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
+  assert(drawing_wand != (const DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
   if (CurrentContext->encoding != (char *)NULL)
-    return (char *) AllocateString(CurrentContext->encoding);
-  else
-    return (char *) NULL;
+    return((char *) AcquireString(CurrentContext->encoding));
+  return((char *) NULL);
 }
 
 /*
@@ -5702,27 +5291,26 @@ MagickExport char *DrawGetTextEncoding(DrawContext context)
 %
 %  The format of the DrawSetTextEncoding method is:
 %
-%      void DrawSetTextEncoding(DrawContext context, const char* encoding)
+%      void DrawSetTextEncoding(DrawingWand *drawing_wand,const char *encoding)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o encoding: character string specifying text encoding
 %
-*/
-MagickExport void DrawSetTextEncoding(DrawContext context, const char* encoding)
+% */
+WandExport void DrawSetTextEncoding(DrawingWand *drawing_wand,
+  const char *encoding)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
   assert(encoding != (char *) NULL);
-
-  if (context->filter_off || (CurrentContext->encoding == (char *) NULL) ||
+  if (drawing_wand->filter_off || (CurrentContext->encoding == (char *) NULL) ||
       (LocaleCompare(CurrentContext->encoding,encoding) != 0))
     {
-        CloneString(&CurrentContext->encoding,encoding);
-
-      MvgPrintf(context, "encoding '%s'\n", encoding);
+      CloneString(&CurrentContext->encoding,encoding);
+      MvgPrintf(drawing_wand,"encoding '%s'\n",encoding);
     }
 }
 
@@ -5742,19 +5330,22 @@ MagickExport void DrawSetTextEncoding(DrawContext context, const char* encoding)
 %
 %  The format of the DrawGetTextUnderColor method is:
 %
-%      PixelPacket DrawGetTextUnderColor(DrawContext context)
+%      void DrawGetTextUnderColor(const DrawingWand *drawing_wand,
+%        PixelWand *under_color)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
+%
+%    o under_color: Return the under color.
 %
 */
-MagickExport PixelPacket DrawGetTextUnderColor(DrawContext context)
+WandExport void DrawGetTextUnderColor(const DrawingWand *drawing_wand,
+  PixelWand *under_color)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  return CurrentContext->undercolor;
+  assert(drawing_wand != (const DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  PixelSetQuantumColor(under_color,&CurrentContext->undercolor);
 }
 
 /*
@@ -5773,66 +5364,34 @@ MagickExport PixelPacket DrawGetTextUnderColor(DrawContext context)
 %
 %  The format of the DrawSetTextUnderColor method is:
 %
-%      void DrawSetTextUnderColor(DrawContext context,
-%                                 const PixelPacket *under_color)
+%      void DrawSetTextUnderColor(DrawingWand *drawing_wand,
+%        const PixelWand *under_wand)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
-%    o under_color: text under color
-%
-*/
-MagickExport void DrawSetTextUnderColor(DrawContext context,
-                                        const PixelPacket *under_color)
-{
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-  assert(under_color != (const PixelPacket *)NULL);
-
-  if (context->filter_off || !(PixelPacketMatch(&CurrentContext->undercolor, under_color)))
-    {
-      CurrentContext->undercolor = *under_color;
-      MvgPrintf(context, "text-undercolor '");
-      MvgAppendColor(context, under_color);
-      MvgPrintf(context, "'\n");
-    }
-}
-
-/*
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%   D r a w S e t T e x t U n d e r C o l o r S t r i n g                     %
-%                                                                             %
-%                                                                             %
-%                                                                             %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%  DrawSetTextUnderColorString() specifies the color of a background rectangle
-%  to place under text annotations.
-%
-%  The format of the DrawSetTextUnderColorString method is:
-%
-%      void DrawSetTextUnderColorString(DrawContext context,
-%                                       const char* under_color)
-%
-%  A description of each parameter follows:
-%
-%    o context: drawing context
-%
-%    o under_color: text under color
+%    o under_wand.: text under wand.
 %
 */
-MagickExport void DrawSetTextUnderColorString(DrawContext context,
-                                              const char* under_color)
+WandExport void DrawSetTextUnderColor(DrawingWand *drawing_wand,
+  const PixelWand *under_wand)
 {
   PixelPacket
-    pixel_packet;
+    under_color;
 
-  if(QueryColorDatabase(under_color,&pixel_packet,&context->image->exception))
-    DrawSetTextUnderColor(context,&pixel_packet);
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  assert(under_wand != (const PixelWand *) NULL);
+  PixelGetQuantumColor(under_wand,&under_color);
+  if (drawing_wand->filter_off ||
+      !WandColorMatch(&CurrentContext->undercolor,&under_color))
+    {
+      CurrentContext->undercolor=under_color;
+      MvgPrintf(drawing_wand,"text-undercolor '");
+      MvgAppendColor(drawing_wand,&under_color);
+      MvgPrintf(drawing_wand,"'\n");
+    }
 }
 
 /*
@@ -5852,33 +5411,31 @@ MagickExport void DrawSetTextUnderColorString(DrawContext context,
 %
 %  The format of the DrawTranslate method is:
 %
-%      void DrawTranslate(DrawContext context,
-%                            const double x, const double y)
+%      void DrawTranslate(DrawingWand *drawing_wand,const double x,
+%        const double y)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o x: new x ordinate for coordinate system origin
 %
 %    o y: new y ordinate for coordinate system origin
 %
 */
-MagickExport void DrawTranslate(DrawContext context,
-                                   const double x, const double y)
+WandExport void DrawTranslate(DrawingWand *drawing_wand,const double x,
+  const double y)
 {
   AffineMatrix
     affine;
 
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
-
-  IdentityAffine(&affine);
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  GetAffineMatrix(&affine);
   affine.tx=x;
   affine.ty=y;
-  AdjustAffine( context, &affine );
-
-  MvgPrintf(context, "translate %.4g,%.4g\n", x, y);
+  AdjustAffine(drawing_wand,&affine );
+  MvgPrintf(drawing_wand,"translate %.4g,%.4g\n",x,y);
 }
 
 /*
@@ -5900,13 +5457,12 @@ MagickExport void DrawTranslate(DrawContext context,
 %
 %  The format of the DrawSetViewbox method is:
 %
-%      void DrawSetViewbox(DrawContext context,
-%                          unsigned long x1, unsigned long y1,
-%                          unsigned long x2, unsigned long y2)
+%      void DrawSetViewbox(DrawingWand *drawing_wand,unsigned long x1,
+%        unsigned long y1,unsigned long x2,unsigned long y2)
 %
 %  A description of each parameter follows:
 %
-%    o context: drawing context
+%    o drawing_wand: The drawing wand.
 %
 %    o x1: left x ordinate
 %
@@ -5917,12 +5473,39 @@ MagickExport void DrawTranslate(DrawContext context,
 %    o y2: bottom y ordinate
 %
 */
-MagickExport void DrawSetViewbox(DrawContext context,
-                                 unsigned long x1, unsigned long y1,
-                                 unsigned long x2, unsigned long y2)
+WandExport void DrawSetViewbox(DrawingWand *drawing_wand,unsigned long x1,
+  unsigned long y1,unsigned long x2,unsigned long y2)
 {
-  assert(context != (DrawContext)NULL);
-  assert(context->signature == MagickSignature);
+  assert(drawing_wand != (DrawingWand *) NULL);
+  assert(drawing_wand->signature == MagickSignature);
+  MvgPrintf(drawing_wand,"viewbox %lu %lu %lu %lu\n",x1,y1,x2,y2);
+}
+
+/*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%   N e w D r a w W a n d                                                     %
+%                                                                             %
+%                                                                             %
+%                                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  NewDrawingWand() returns a draw wand required for all other methods in
+%  the API.
+%
+%  The format of the NewDrawingWand method is:
+%
+%      DrawingWand NewDrawingWand(void)
+%
+%
+*/
+WandExport DrawingWand *NewDrawingWand(void)
+{
+  Image
+    *image;
 
-  MvgPrintf(context, "viewbox %lu %lu %lu %lu\n", x1, y1, x2, y2);
+  image=AllocateImage((const ImageInfo *) NULL);
+  return(DrawAllocateWand((const DrawInfo *) NULL,image));
 }

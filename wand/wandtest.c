@@ -58,19 +58,10 @@
 /*
   Include declarations.
 */
-#if !defined(_VISUALC_)
-#include <magick_config.h>
-#endif
+#include <stdlib.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
-#include <sys/types.h>
-#if defined(_VISUALC_)
-#include <stdlib.h>
-#include <sys\types.h>
-#endif
-#include <time.h>
-#include <wand/wand_api.h>
+#include <wand/magick_wand.h>
 
 #define False  0
 #define True  1
@@ -79,7 +70,7 @@ int main(int argc,char **argv)
 {
 #define ThrowAPIException(wand) \
 { \
-  severity=MagickGetException(wand,&description); \
+  description=MagickGetException(wand,&severity); \
   (void) fprintf(stderr,"%s %s %d %.1024s\n",GetMagickModule(),description); \
   free(description); \
   exit(-1); \
@@ -91,14 +82,20 @@ int main(int argc,char **argv)
   DrawingWand
     *drawing_wand;
 
+  ExceptionType
+    severity;
+
   MagickWand
     *magick_wand;
+ 
+  PixelWand
+    *background,
+    *fill;
 
   register long
     i;
 
   unsigned int
-    severity,
     status;
 
   unsigned long
@@ -106,11 +103,6 @@ int main(int argc,char **argv)
     rows;
 
   magick_wand=NewMagickWand();
-  if (magick_wand == (MagickWand *) NULL)
-    {
-      (void) fprintf(stderr,"Unable to create new magick wand\n");
-      exit(1);
-    }
   MagickSetSize(magick_wand,640,480);
   MagickGetSize(magick_wand,&columns,&rows);
   if ((columns != 640) || (rows != 480))
@@ -142,19 +134,20 @@ int main(int argc,char **argv)
   if (status == False)
     ThrowAPIException(magick_wand);
   (void) MagickSetImage(magick_wand,0);
-  status=MagickRotateImage(magick_wand,90.0);
+  background=NewPixelWand();
+  PixelSetColor(background,"#000000");
+  status=MagickRotateImage(magick_wand,background,90.0);
+  DestroyPixelWand(background);
   if (status == False)
     ThrowAPIException(magick_wand);
   drawing_wand=NewDrawingWand();
-  if (drawing_wand == (DrawingWand *) NULL)
-    {
-      (void) fprintf(stderr,"Unable to create new draw wand\n");
-      exit(1);
-    }
   (void) DrawPushGraphicContext(drawing_wand);
   (void) DrawRotate(drawing_wand,45);
   (void) DrawSetFontSize(drawing_wand,18);
-  (void) DrawSetFillColorString(drawing_wand,"green");
+  fill=NewPixelWand();
+  PixelSetColor(fill,"green");
+  (void) DrawSetFillColor(drawing_wand,fill);
+  DestroyPixelWand(fill);
   (void) DrawAnnotation(drawing_wand,15,5,(const unsigned char *) "Magick");
   (void) DrawPopGraphicContext(drawing_wand);
   (void) MagickSetImage(magick_wand,1);
@@ -197,7 +190,7 @@ int main(int argc,char **argv)
   status=MagickResizeImage(magick_wand,50,50,UndefinedFilter,1.0);
   if (status == False)
     ThrowAPIException(magick_wand);
-  status=MagickWriteImages(magick_wand,"image.miff");
+  status=MagickWriteImages(magick_wand,"image.miff",True);
   if (status == False)
     ThrowAPIException(magick_wand);
   DestroyMagickWand(magick_wand);
