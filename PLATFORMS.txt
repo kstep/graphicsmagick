@@ -3,6 +3,32 @@ belong in README.txt. Usually ImageMagick compiles fine according to the
 procedures described in README.txt, but sometimes a platform related
 oddity causes a failure.
 
+Linux 6.1
+=========
+
+  Problem
+
+    When '-rpath /somedir' is added to LDFLAGS in order to tell the
+    linker to apply a run-time linker path, configure fails.
+
+  Indications
+
+    The configure script prints the error message
+
+      checking for executable suffix...
+                                  configure: error: cannot compute EXEEXT:
+
+    and the error message
+
+      gcc: unrecognized option `-rpath'
+
+    is written to config.log
+
+  Solution
+
+    Use 'LDFLAGS=-Wl,-rpath,/somedir' instead to pass the options through
+    to the linker.
+
 FreeBSD 3.X and 4.X
 ===================
 
