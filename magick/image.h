@@ -308,7 +308,7 @@ typedef struct _Image
     compression;
 
   unsigned int
-    orphan,
+    orphan,  /* deprecated */
     taint,
     matte;
 

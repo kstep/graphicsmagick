@@ -988,17 +988,15 @@ MagickExport Image *CloneImage(const Image *image,const unsigned long columns,
       clone_image->exempt=True;
       clone_image->previous=(Image *) NULL;
       clone_image->next=(Image *) NULL;
+      return(clone_image);
     }
-  else
-    {
-      /*
-        Link image into image list.
-      */
-      if (clone_image->previous != (Image *) NULL)
-        clone_image->previous->next=clone_image;
-      if (clone_image->next != (Image *) NULL)
-        clone_image->next->previous=clone_image;
-    }
+  /*
+    Link image into image list.
+  */
+  if (clone_image->previous != (Image *) NULL)
+    clone_image->previous->next=clone_image;
+  if (clone_image->next != (Image *) NULL)
+    clone_image->next->previous=clone_image;
   return(clone_image);
 }
 
