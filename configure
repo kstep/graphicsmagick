@@ -8647,12 +8647,17 @@ fi
 
 
 # Figure out what drivers Ghostscript supports (if available)
+GSColorDevice=ppmraw
+GSMonoDevice=pbmraw
+GSPDFDevice=pdfwrite
+GSPSDevice=pswrite
+GSEPSDevice=epswrite
 if test $have_gs = 'yes'
 then
 
   # GSColorDevice
   echo $ac_n "checking for gs color device""... $ac_c" 1>&6
-echo "configure:8656: checking for gs color device" >&5
+echo "configure:8661: checking for gs color device" >&5
   if $PSDelegate -q -dBATCH -sDEVICE=pnmraw -sOutputFile=/dev/null < /dev/null 2> /dev/null
   then
     GSColorDevice=pnmraw
@@ -8664,58 +8669,59 @@ echo "configure:8656: checking for gs color device" >&5
       GSColorDevice=ppmraw
     fi
   fi
-  
   echo "$ac_t""$GSColorDevice" 1>&6
 
   # GSMonoDevice
   echo $ac_n "checking for gs mono device""... $ac_c" 1>&6
-echo "configure:8673: checking for gs mono device" >&5
+echo "configure:8677: checking for gs mono device" >&5
   if $PSDelegate -q -dBATCH -sDEVICE=pbmraw -sOutputFile=/dev/null < /dev/null 2> /dev/null
   then
     GSMonoDevice=pbmraw
   else
     GSMonoDevice=ppmraw
   fi
-  
   echo "$ac_t""$GSMonoDevice" 1>&6
 
   # GSPDFDevice
   echo $ac_n "checking for gs PDF writing device""... $ac_c" 1>&6
-echo "configure:8685: checking for gs PDF writing device" >&5
+echo "configure:8688: checking for gs PDF writing device" >&5
   if $PSDelegate -q -dBATCH -sDEVICE=pdfwrite -sOutputFile=/dev/null < /dev/null 2> /dev/null
   then
     GSPDFDevice=pdfwrite
   else
     GSPDFDevice=nodevice
   fi
-  
   echo "$ac_t""$GSPDFDevice" 1>&6
 
   # GSPSDevice
   echo $ac_n "checking for gs PS writing device""... $ac_c" 1>&6
-echo "configure:8697: checking for gs PS writing device" >&5
+echo "configure:8699: checking for gs PS writing device" >&5
   if $PSDelegate -q -dBATCH -sDEVICE=pswrite -sOutputFile=/dev/null < /dev/null 2> /dev/null
   then
     GSPSDevice=pswrite
   else
     GSPSDevice=nodevice
   fi
-  
   echo "$ac_t""$GSPSDevice" 1>&6
 
   # GSEPSDevice
   echo $ac_n "checking for gs EPS writing device""... $ac_c" 1>&6
-echo "configure:8709: checking for gs EPS writing device" >&5
+echo "configure:8710: checking for gs EPS writing device" >&5
   if $PSDelegate -q -dBATCH -sDEVICE=epswrite -sOutputFile=/dev/null < /dev/null 2> /dev/null
   then
     GSEPSDevice=epswrite
   else
     GSEPSDevice=nodevice
   fi
-  
   echo "$ac_t""$GSEPSDevice" 1>&6
 
 fi
+
+
+
+
+
+
 
 #
 # PerlMagick-related configuration
@@ -8729,7 +8735,7 @@ then
     if test "$with_perl" != 'yes'
     then
 	echo $ac_n "checking for perl""... $ac_c" 1>&6
-echo "configure:8733: checking for perl" >&5
+echo "configure:8739: checking for perl" >&5
 if eval "test \"\${ac_cv_path_PERL+set}\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -8745,7 +8751,7 @@ do
 # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:8749: checking for $ac_word" >&5
+echo "configure:8755: checking for $ac_word" >&5
 if eval "test \"\${ac_cv_path_PERL+set}\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -9112,10 +9118,10 @@ s%@ZipDelegate@%$ZipDelegate%g
 s%@ConvertDelegate@%$ConvertDelegate%g
 s%@MogrifyDelegate@%$MogrifyDelegate%g
 s%@ShowImageDelegate@%$ShowImageDelegate%g
-s%@GSColorDevice@%$GSColorDevice%g
 s%@GSMonoDevice@%$GSMonoDevice%g
 s%@GSPDFDevice@%$GSPDFDevice%g
 s%@GSPSDevice@%$GSPSDevice%g
+s%@GSColorDevice@%$GSColorDevice%g
 s%@GSEPSDevice@%$GSEPSDevice%g
 s%@PERL@%$PERL%g
 s%@MAGICKLIB@%$MAGICKLIB%g

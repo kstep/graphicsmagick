@@ -1054,7 +1054,6 @@ Export Image *ScaleImage(Image *image,const unsigned int columns,
         }
       if (!next_column)
         {
-          t--;
           t->red=red > MaxRGB ? MaxRGB : red;
           t->green=green > MaxRGB ? MaxRGB : green;
           t->blue=blue > MaxRGB ? MaxRGB : blue;
