@@ -948,7 +948,7 @@ int main(int argc,char **argv)
   DestroyImageList(image);
   DestroyMagick();
   LiberateMemory((void **) &argv);
-  Exit(0);
+  Exit(!status);
 #endif
   return(False);
 }

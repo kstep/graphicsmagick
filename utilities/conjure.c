@@ -213,6 +213,6 @@ int main(int argc,char **argv)
   DestroyImageInfo(image_info);
   DestroyMagick();
   LiberateMemory((void **) &argv);
-  Exit(0);
+  Exit(!status);
   return(False);
 }

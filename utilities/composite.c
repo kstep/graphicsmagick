@@ -1380,6 +1380,6 @@ int main(int argc,char **argv)
     return(True);
   DestroyMagick();
   LiberateMemory((void **) &argv);
-  Exit(0);
+  Exit(!status);
   return(False);
 }

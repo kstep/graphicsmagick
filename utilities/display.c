@@ -1512,7 +1512,7 @@ int main(int argc,char **argv)
     }
   DestroyMagick();
   LiberateMemory((void **) &argv);
-  Exit(0);
+  Exit(!status);
 #endif
   return(False);
 }

@@ -1015,7 +1015,7 @@ int main(int argc,char **argv)
     }
   LiberateMemory((void **) &argv);
   DestroyMagick();
-  Exit(0);
+  Exit(!status);
 #endif
   return(False);
 }
