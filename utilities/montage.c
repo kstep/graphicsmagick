@@ -640,12 +640,12 @@ static unsigned int MontageUtility(int argc,char **argv)
                 if (i == argc)
                   MagickError(OptionError,"Missing type",option);
                 option=argv[i];
-                image_info->endian=EndianInterlace;
+                image_info->endian=UndefinedEndian;
                 if (LocaleCompare("LSB",option) == 0)
                   image_info->endian=LSBEndian;
                 if (LocaleCompare("MSB",option) == 0)
                   image_info->endian=MSBEndian;
-                if (image_info->endian == EndianInterlace)
+                if (image_info->endian == UndefinedEndian)
                   MagickError(OptionError,"Invalid endian type",option);
               }
             break;
