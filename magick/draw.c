@@ -102,8 +102,8 @@ static double
   GenerateCircle(PrimitiveInfo *,PointInfo,PointInfo);
 
 static Quantum
-  InsidePrimitive(PrimitiveInfo *,const DrawInfo *,const PointInfo *,Image *,
-    unsigned int *);
+  InsidePrimitive(PrimitiveInfo *,const DrawInfo *,const PointInfo *,const int,
+    Image *);
 
 static void
   GenerateArc(PrimitiveInfo *,PointInfo,PointInfo,PointInfo),
@@ -1168,53 +1168,81 @@ Export unsigned int DrawImage(Image *image,const DrawInfo *draw_info)
       /*
         Fill the primitive on the image.
       */
-      target.x=bounds.x2-bounds.x1+1.0;
+      n=bounds.x2-bounds.x1+1.0;
       target.y=y;
-      q=GetImagePixels(image,(int) bounds.x1,y,(int) target.x,1);
+      q=GetImagePixels(image,(int) bounds.x1,y,n,1);
       if (q == (PixelPacket *) NULL)
         break;
       for (x=(int) bounds.x1; x <= (int) bounds.x2; x++)
       {
         target.x=x;
-        opacity=
-          InsidePrimitive(primitive_info,clone_info,&target,image,&interior);
-        if (!clone_info->antialias)
-          if (opacity != Transparent)
-            opacity=Opaque;
-        if (opacity != Transparent)
+        switch (primitive_info->primitive)
+        {
+          case ArcPrimitive:
+          case BezierPrimitive:
+          case CirclePrimitive:
+          case EllipsePrimitive:
+          case PathPrimitive:
+          case PolylinePrimitive:
+          case PolygonPrimitive:
+          case RectanglePrimitive:
+          case RoundRectanglePrimitive:
           {
-            color=clone_info->stroke;
-            if (interior)
-              if (clone_info->tile != (Image *) NULL)
-                color=GetOnePixel(clone_info->tile,
-                  x % clone_info->tile->columns,y % clone_info->tile->rows);
-              else
-                if ((clone_info->fill.opacity != Transparent))
-                  color=clone_info->fill;
-                else
-                  {
-                    q++;
-                    continue;
-                  }
-            color.opacity=Opaque*clone_info->opacity/100;
+            opacity=
+              InsidePrimitive(primitive_info,clone_info,&target,True,image);
+            color=clone_info->fill;
+            if (clone_info->tile != (Image *) NULL)
+              color=GetOnePixel(clone_info->tile,x % clone_info->tile->columns,
+                y % clone_info->tile->rows);
+            color.opacity*=clone_info->opacity/100;
+            if ((opacity == Transparent) || (color.opacity == Transparent))
+              break;
+            if (!clone_info->antialias)
+              opacity=Opaque;
             if (clone_info->opacity == 100)
               {
                 q->red=alpha*(color.red*opacity+q->red*(Opaque-opacity));
                 q->green=alpha*(color.green*opacity+q->green*(Opaque-opacity));
                 q->blue=alpha*(color.blue*opacity+q->blue*(Opaque-opacity));
+                break;
               }
-            else
-              {
-                q->red=alpha*(color.red*color.opacity+
-                  q->red*(Opaque-color.opacity));
-                q->green=alpha*(color.green*color.opacity+
-                  q->green*(Opaque-color.opacity));
-                q->blue=alpha*(color.blue*color.opacity+
-                  q->blue*(Opaque-color.opacity));
-                q->opacity=alpha*(color.opacity*color.opacity+
-                  q->opacity*(Opaque-color.opacity));
-              }
+            q->red=alpha*(color.red*color.opacity+
+              q->red*(Opaque-color.opacity));
+            q->green=alpha*(color.green*color.opacity+
+              q->green*(Opaque-color.opacity));
+            q->blue=alpha*(color.blue*color.opacity+
+              q->blue*(Opaque-color.opacity));
+            q->opacity=alpha*(color.opacity*color.opacity+
+              q->opacity*(Opaque-color.opacity));
+            break;
           }
+          default:
+            break;
+        }
+        opacity=InsidePrimitive(primitive_info,clone_info,&target,False,image);
+        color=clone_info->stroke;
+        color.opacity*=clone_info->opacity/100;
+        if ((opacity == Transparent) || (color.opacity == Transparent))
+          {
+            q++;
+            continue;
+          }
+        if (!clone_info->antialias)
+          opacity=Opaque;
+        if (clone_info->opacity == 100)
+          {
+            q->red=alpha*(color.red*opacity+q->red*(Opaque-opacity));
+            q->green=alpha*(color.green*opacity+q->green*(Opaque-opacity));
+            q->blue=alpha*(color.blue*opacity+q->blue*(Opaque-opacity));
+            q++;
+            continue;
+          }
+        q->red=alpha*(color.red*color.opacity+q->red*(Opaque-color.opacity));
+        q->green=
+          alpha*(color.green*color.opacity+q->green*(Opaque-color.opacity));
+        q->blue=alpha*(color.blue*color.opacity+q->blue*(Opaque-color.opacity));
+        q->opacity=
+          alpha*(color.opacity*color.opacity+q->opacity*(Opaque-color.opacity));
         q++;
       }
       if (!SyncImagePixels(image))
@@ -1269,7 +1297,6 @@ static void GenerateArc(PrimitiveInfo *primitive_info,PointInfo start,
     *p;
 
   p=primitive_info;
-  p->primitive=PolygonPrimitive;
   scale.x=AbsoluteValue((end.x-start.x)/2.0);
   scale.y=AbsoluteValue((end.y-start.y)/2.0);
   x=Min(start.x,end.x)+scale.x;
@@ -1323,7 +1350,6 @@ static void GenerateBezier(PrimitiveInfo *primitive_info)
     Allocate coeficients.
   */
   p=primitive_info;
-  p->primitive=PolygonPrimitive;
   control_points=BezierQuantum*p->coordinates;
   coefficients=(double *)
     AllocateMemory(p->coordinates*sizeof(double));
@@ -1387,7 +1413,6 @@ static double GenerateCircle(PrimitiveInfo *primitive_info,PointInfo start,
     *q;
 
   p=primitive_info;
-  p->primitive=CirclePrimitive;
   p->coordinates=2;
   p->pixel=start;
   q=p+1;
@@ -1414,7 +1439,6 @@ static void GenerateEllipse(PrimitiveInfo *primitive_info,PointInfo start,
     Arc's are just short segmented polys.
   */
   p=primitive_info;
-  p->primitive=PolygonPrimitive;
   end.x/=2.0;
   end.y/=2.0;
   while (degrees.y < degrees.x)
@@ -1439,7 +1463,6 @@ static void GenerateLine(PrimitiveInfo *primitive_info,PointInfo start,
     *q;
 
   p=primitive_info;
-  p->primitive=LinePrimitive;
   p->coordinates=2;
   p->pixel=start;
   q=p+1;
@@ -1767,7 +1790,6 @@ static void GenerateRectangle(PrimitiveInfo *primitive_info,PointInfo start,
     *q;
 
   p=primitive_info;
-  p->primitive=RectanglePrimitive;
   p->coordinates=2;
   p->pixel=start;
   q=p+1;
@@ -1787,7 +1809,6 @@ static void GenerateRoundRectangle(PrimitiveInfo *primitive_info,
     *p;
 
   p=primitive_info;
-  p->primitive=PolygonPrimitive;
   start.x-=end.x/2;
   start.y-=end.y/2;
   end.x+=start.x-1;
@@ -1936,8 +1957,8 @@ Export void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
 %  The format of the InsidePrimitive method is:
 %
 %      unsigned int InsidePrimitive(PrimitiveInfo *primitive_info,
-%        const DrawInfo *draw_info,const PointInfo *pixel,Image *image,
-%        unsigned int *interior)
+%        const DrawInfo *draw_info,const PointInfo *pixel,const int fill,
+%        Image *image)
 %
 %  A description of each parameter follows:
 %
@@ -1950,10 +1971,11 @@ Export void GetDrawInfo(const ImageInfo *image_info,DrawInfo *draw_info)
 %
 %    o target: PointInfo representing the (x,y) location in the image.
 %
+%    o fill: only return True if the pixel is in the interior of the
+%      specified graphics primitive.
+%
 %    o image: The address of a structure of type Image.
 %
-%    o interior: InsidePrimitive returns True if the pixel is in the interior
-%      of the graphic primitive.
 %
 %
 */
@@ -2009,8 +2031,7 @@ static Quantum PixelOnLine(const PointInfo *pixel,const PointInfo *p,
 }
 
 static Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
-  const DrawInfo *draw_info,const PointInfo *pixel,Image *image,
-  unsigned int *interior)
+  const DrawInfo *draw_info,const PointInfo *pixel,const int fill,Image *image)
 {
   PixelPacket
     border_color;
@@ -2036,7 +2057,6 @@ static Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
   assert(draw_info != (DrawInfo *) NULL);
   assert(image != (Image *) NULL);
   opacity=Transparent;
-  *interior=False;
   mid=draw_info->linewidth/2.0;
   p=primitive_info;
   while (p->primitive != UndefinedPrimitive)
@@ -2059,6 +2079,15 @@ static Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
       }
       case RectanglePrimitive:
       {
+        if (fill)
+          {
+            if ((pixel->x >= (int) (Min(p->pixel.x,q->pixel.x)+0.5)) &&
+                (pixel->x <= (int) (Max(p->pixel.x,q->pixel.x)+0.5)) &&
+                (pixel->y >= (int) (Min(p->pixel.y,q->pixel.y)+0.5)) &&
+                (pixel->y <= (int) (Max(p->pixel.y,q->pixel.y)+0.5)))
+              opacity=Opaque;
+            break;
+          }
         if (((pixel->x >= (int) (Min(p->pixel.x-mid,q->pixel.x+mid)+0.5)) &&
              (pixel->x < (int) (Max(p->pixel.x-mid,q->pixel.x+mid)+0.5)) &&
              (pixel->y >= (int) (Min(p->pixel.y-mid,q->pixel.y+mid)+0.5)) &&
@@ -2068,15 +2097,6 @@ static Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
              (pixel->y >= (int) (Min(p->pixel.y+mid,q->pixel.y-mid)+0.5)) &&
              (pixel->y < (int) (Max(p->pixel.y+mid,q->pixel.y-mid)+0.5))))
           opacity=Opaque;
-        else
-          if ((pixel->x >= (int) (Min(p->pixel.x,q->pixel.x)+0.5)) &&
-              (pixel->x <= (int) (Max(p->pixel.x,q->pixel.x)+0.5)) &&
-              (pixel->y >= (int) (Min(p->pixel.y,q->pixel.y)+0.5)) &&
-              (pixel->y <= (int) (Max(p->pixel.y,q->pixel.y)+0.5)))
-            {
-              opacity=Opaque;
-              *interior=True;
-            }
         break;
       }
       case CirclePrimitive:
@@ -2087,25 +2107,8 @@ static Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
         alpha=p->pixel.x-q->pixel.x;
         beta=p->pixel.y-q->pixel.y;
         radius=sqrt(alpha*alpha+beta*beta);
-        beta=fabs(distance-radius);
-        if (beta < (mid+0.5))
+        if (fill)
           {
-            if (beta <= (mid-0.5))
-              opacity=Opaque;
-            else
-              {
-                alpha=mid-beta+0.5;
-                opacity=Max(opacity,Opaque*alpha*alpha);
-              }
-          }
-        if (opacity == Transparent)
-          {
-            alpha=p->pixel.x-pixel->x;
-            beta=p->pixel.y-pixel->y;
-            distance=sqrt(alpha*alpha+beta*beta);
-            alpha=p->pixel.x-q->pixel.x;
-            beta=p->pixel.y-q->pixel.y;
-            radius=sqrt(alpha*alpha+beta*beta);
             if (distance <= (radius-1.0))
               opacity=Opaque;
             else
@@ -2114,12 +2117,27 @@ static Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
                   alpha=(radius-distance+1.0)/2.0;
                   opacity=Max(opacity,Opaque*alpha*alpha);
                 }
-            *interior=True;
+            break;
+          }
+        if (fabs(distance-radius) < (mid+0.5))
+          {
+            if (fabs(distance-radius) <= (mid-0.5))
+              opacity=Opaque;
+            else
+              {
+                alpha=mid-fabs(distance-radius)+0.5;
+                opacity=Max(opacity,Opaque*alpha*alpha);
+              }
           }
         break;
       }
+      case ArcPrimitive:
+      case BezierPrimitive:
+      case EllipsePrimitive:
+      case PathPrimitive:
       case PolylinePrimitive:
       case PolygonPrimitive:
+      case RoundRectanglePrimitive:
       {
         double
           minimum_distance;
@@ -2128,20 +2146,18 @@ static Quantum InsidePrimitive(PrimitiveInfo *primitive_info,
           crossing,
           crossings;
 
-        PrimitiveInfo
-          *r;
-
         unsigned int
           poly_opacity;
 
-        poly_opacity=Transparent;
-        for (r=p ; (r < q) && (poly_opacity != Opaque); r++)
-          poly_opacity=PixelOnLine(pixel,&r->pixel,&(r+1)->pixel,mid,
-            Max(opacity,poly_opacity));
-        opacity=Max(opacity,poly_opacity);
-        if (opacity != Transparent)
-          break;
-        *interior=True;
+        if (!fill)
+          {
+            poly_opacity=Transparent;
+            for ( ; (p < q) && (poly_opacity != Opaque); p++)
+              poly_opacity=PixelOnLine(pixel,&p->pixel,&(p+1)->pixel,mid,
+                Max(opacity,poly_opacity));
+            opacity=Max(opacity,poly_opacity);
+            break;
+          }
         minimum_distance=DistanceToLine(pixel,&p->pixel,&q->pixel);
         crossings=0;
         if ((pixel->y < q->pixel.y) != (pixel->y < p->pixel.y))
