@@ -1782,7 +1782,7 @@ static void SVGStartElement(void *context,const xmlChar *name,
           (void) fprintf(svg_info->file,"affine %g 0 0 %g %g %g\n",
             (double) page.width/svg_info->view_box.width,
             (double) page.height/svg_info->view_box.height,
-	    0.0-svg_info->view_box.x,0.0-svg_info->view_box.y);
+            0.0-svg_info->view_box.x,0.0-svg_info->view_box.y);
           svg_info->width=page.width;
           svg_info->height=page.height;
         }
@@ -3101,6 +3101,12 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
                 (void) WriteBlobString(image,"</linearGradient>\n");
                 break;
               }
+            if (LocaleCompare("pattern",token) == 0)
+              {
+                (void) WriteBlobString(image,"</pattern>\n");
+                break;
+              }
+            if (LocaleCompare("defs",token) == 0)
             (void) WriteBlobString(image,"</g>\n");
             break;
           }
@@ -3131,6 +3137,25 @@ static unsigned int WriteSVGImage(const ImageInfo *image_info,Image *image)
               {
                 GetToken(q,&q,token);
                 FormatString(message,"<linearGradient id=\"%s\">\n",token);
+                (void) WriteBlobString(image,message);
+                break;
+              }
+            if (LocaleCompare("pattern",token) == 0)
+              {
+                char
+                  name[MaxTextExtent];
+
+                RectangleInfo
+                  bounds;
+
+                GetToken(q,&q,token);
+                (void) strncpy(name,token,MaxTextExtent-1);
+                GetToken(q,&q,token);
+                (void) ParseGeometry(token,&bounds.x,&bounds.y,&bounds.width,
+                  &bounds.height);
+                FormatString(message,"<pattern id=\"%s\" x=\"%ld\" y=\"%ld\" "
+                  "width=\"%lu\" height=\"%lu\">\n",name,bounds.x,bounds.y,
+                  bounds.width,bounds.height);
                 (void) WriteBlobString(image,message);
                 break;
               }
