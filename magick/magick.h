@@ -111,6 +111,7 @@
 #define HAVE_MMAP
 #define HasXML
 #define HAVE_LIBXML_XML_ERROR_H
+#define HAVE_FREETYPE_FREETYPE_H
 #define HasLCMS
 #endif
 
