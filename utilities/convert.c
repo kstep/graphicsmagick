@@ -50,7 +50,7 @@
 %
 %  The convert program syntax is:
 %
-%  Usage: convert [options ...] file [ files... ] output_file
+%  Usage: convert [ -option value ... ] file [ file ... ] file
 %
 %  Where options include:
 %    -adjoin              join images into a single multi-image file
@@ -577,7 +577,7 @@ static void Usage(void)
 
   (void) printf("Version: %.1024s\n",GetMagickVersion(&version));
   (void) printf("Copyright: %.1024s\n\n",MagickCopyright);
-  (void) printf("Usage: %.1024s [options ...] file [ files... ] output_file\n",
+  (void) printf("Usage: %.1024s [ -option value ... ] file [ file ... ] file\n",
     SetClientName((char *) NULL));
   (void) printf("\nWhere options include:\n");
   for (p=options; *p != (char *) NULL; p++)

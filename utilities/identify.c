@@ -52,7 +52,7 @@
 %
 %  The identify program syntax is:
 %
-%  Usage: identify [options ...] file [ files... ]
+%  Usage: identify [ -option value ... ] file [ file ... ]
 %
 %  Where options include:
 %    -cache threshold  megabytes of memory available to the pixel cache
@@ -112,7 +112,7 @@ static void Usage(void)
 
   (void) printf("Version: %.1024s\n",GetMagickVersion(&version));
   (void) printf("Copyright: %.1024s\n\n",MagickCopyright);
-  (void) printf("Usage: %.1024s [ options ... ] file [ file ... ]\n",
+  (void) printf("Usage: %.1024s [ -option value ... ] file [ file ... ]\n",
     SetClientName((char *) NULL));
   (void) printf("\nWhere options include:\n");
   for (p=options; *p != (char *) NULL; p++)

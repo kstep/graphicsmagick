@@ -57,7 +57,7 @@
 %
 %  The import program command syntax is:
 %
-%  Usage: import [options ...] [file]
+%  Usage: import [ -option value ... ] [ file ]
 %
 %  Where options include:
 %    -adjoin             join images into a single multi-image file
@@ -178,7 +178,7 @@ static void Usage(void)
 
   (void) printf("Version: %.1024s\n",GetMagickVersion(&version));
   (void) printf("Copyright: %.1024s\n\n",MagickCopyright);
-  (void) printf("Usage: %.1024s [options ...] [file]\n",
+  (void) printf("Usage: %.1024s [ -option value ... ] [ file ]\n",
     SetClientName((char *) NULL));
   (void) printf("\nWhere options include:\n");
   for (p=options; *p != (char *) NULL; p++)

@@ -52,7 +52,7 @@
 %
 %  The Mogrify program command syntax is:
 %
-%  Usage: mogrify [options ...] file [ [options ...] file ...]
+%  Usage: mogrify [ -option value ... ] file [ [ -option value ... ] file ... ]
 %
 %  Where options include:
 %    -affine matrix       drawing transform matrix
@@ -290,7 +290,7 @@ static void Usage(void)
   (void) printf("Version: %.1024s\n",GetMagickVersion(&version));
   (void) printf("Copyright: %.1024s\n\n",MagickCopyright);
   (void) printf(
-    "Usage: %.1024s [-options ...] file [ [-options ...] file ...]\n",
+    "Usage: %.1024s [ -option ... ] file [ [ -option value ... ] file ... ]\n",
     SetClientName((char *) NULL));
   (void) printf("\nWhere options include: \n");
   for (p=options; *p != (char *) NULL; p++)

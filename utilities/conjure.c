@@ -148,8 +148,6 @@ int main(int argc,char **argv)
   GetExceptionInfo(&exception);
 	image_info=CloneImageInfo((ImageInfo *) NULL);
   image_info->attributes=AllocateImage(image_info);
-  if (image_info->attributes == (Image *) NULL)
-    MagickError(ResourceLimitError,"Memory allocation failed",(char *) NULL);
   for (i=1; i < (argc-1); i+=2)
   {
     if (*argv[i] != '-') 

@@ -63,7 +63,7 @@
 %
 %  The Display program command syntax is:
 %
-%  Usage: display [options ...] file [ [options ...] file ...]
+%  Usage: display [ -option value ... ] file [ [ -option value ... ] file ... ]
 %
 %  Where options include:
 %    -backdrop          display image centered on a backdrop
@@ -238,9 +238,8 @@ static void Usage(void)
     version;
 
   (void) printf("Version: %.1024s\n",GetMagickVersion(&version));
-  (void) printf(
-    "Usage: %.1024s [-options ...] file [ [-options ...] file ...]\n",
-    SetClientName((char *) NULL));
+  (void) printf("Usage: %.1024s [ option value ... ] file [ [ -option value "
+	  "... ] file ... ]\n",SetClientName((char *) NULL));
   (void) printf("\nWhere options include: \n");
   for (p=options; *p != (char *) NULL; p++)
     (void) printf("  %.1024s\n",*p);

@@ -85,7 +85,7 @@
 %
 %  The Montage program command syntax is:
 %
-%  Usage: montage [options ...] file [ [options ...] file ...] file
+%  Usage: montage [ -option value ... ] file [ [ -option value ... ] file ... ] 
 %
 %  Where options include:
 %    -adjoin             join images into a single multi-image file
@@ -224,9 +224,8 @@ static void Usage(void)
 
   (void) printf("Version: %.1024s\n",GetMagickVersion(&version));
   (void) printf("Copyright: %.1024s\n\n",MagickCopyright);
-  (void) printf(
-    "Usage: %.1024s [-options ...] file [ [-options ...] file ...] file\n",
-    SetClientName((char *) NULL));
+  (void) printf("Usage: %.1024s [ -option value ...] file [ [ -options value "
+	  "... ] file ... ]\n",SetClientName((char *) NULL));
   (void) printf("\nWhere options include: \n");
   for (p=options; *p != (char *) NULL; p++)
     (void) printf("  %.1024s\n",*p);
