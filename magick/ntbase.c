@@ -169,6 +169,22 @@ MagickExport void InitializeTracingCriticalSection(void)
 #endif
 }
 
+static void EnterTracingCriticalSection(void)
+{
+#ifdef ENABLE_TRACING
+  if (critical_section_exists)
+    EnterCriticalSection(&critical_section);
+#endif
+}
+
+static void LeaveTracingCriticalSection(void)
+{
+#ifdef ENABLE_TRACING
+  if (critical_section_exists)
+    LeaveCriticalSection(&critical_section);
+#endif
+}
+
 MagickExport void DebugString(char *format,...)
 {
 #ifdef ENABLE_TRACING
@@ -183,7 +199,7 @@ MagickExport void DebugString(char *format,...)
   EnterTracingCriticalSection();
   (void) _snprintf(string,MaxTextExtent-1,"%08d  ",(int) GetCurrentThreadId());
   (void) _vsnprintf(&string[9],MaxTextExtent-10,format,operands);
-  /* OutputDebugString(string); */
+  OutputDebugString(string);
   if (trace_file == (FILE *) NULL)
     {
       tracings_counter=0;
