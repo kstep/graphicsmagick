@@ -1787,7 +1787,7 @@ public:
       return new DrawableStrokeColor(*this);
     }
 
-  void color( Color color_ )
+  void color( const Color& color_ )
     {
       _color = color_;
     }

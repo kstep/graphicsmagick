@@ -1,3 +1,8 @@
+2002-04-05  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
+
+	* lib/Image.cpp (debug): Added method to set ImageMagick debug
+ 	flag so that it prints debugging information while it runs.
+
 2002-04-03  Bob Friesenhahn  <bfriesen@simple.dallas.tx.us>
 
 	* lib/Drawable.cpp: Fixed a bunch of bugs related to

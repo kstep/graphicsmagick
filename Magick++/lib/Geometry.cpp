@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001
+// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
 //
 // Geometry implementation
 //
@@ -17,7 +17,6 @@
 using namespace std;
 
 #include "Magick++/Geometry.h"
-#include "Magick++/Functions.h"
 
 int Magick::operator == ( const Magick::Geometry& left_,
 			  const Magick::Geometry& right_ )
@@ -88,7 +87,7 @@ Magick::Geometry::Geometry ( unsigned int width_,
 }
 
 // Assignment from C++ string
-Magick::Geometry::Geometry ( const std::string geometry_ )
+Magick::Geometry::Geometry ( const std::string &geometry_ )
   : _width( 0 ),
     _height( 0 ),
     _xOff( 0 ),
@@ -102,12 +101,11 @@ Magick::Geometry::Geometry ( const std::string geometry_ )
     _less( false )
 {
   *this = geometry_; // Use assignment operator
-
 }
 
 
 // Assignment from C character string
-Magick::Geometry::Geometry ( const char * geometry_ )
+Magick::Geometry::Geometry ( const char *geometry_ )
   : _width( 0 ),
     _height( 0 ),
     _xOff( 0 ),
@@ -124,7 +122,7 @@ Magick::Geometry::Geometry ( const char * geometry_ )
 }
 
 // Copy constructor
-Magick::Geometry::Geometry ( const Geometry & geometry_ )
+Magick::Geometry::Geometry ( const Geometry &geometry_ )
   :  _width( geometry_._width ),
      _height( geometry_._height ),
      _xOff( geometry_._xOff ),
@@ -160,7 +158,7 @@ Magick::Geometry::Geometry ( void )
   // Nothing to do
 }
 
-Magick::Geometry Magick::Geometry::operator = ( const Geometry& geometry_ )
+Magick::Geometry& Magick::Geometry::operator = ( const Geometry& geometry_ )
 {
   // If not being set to ourself
   if ( this != &geometry_ )
@@ -197,7 +195,7 @@ Magick::Geometry::operator = ( const std::string &geometry_ )
        !isdigit(static_cast<int>(geom[0])))
     {
       char *pageptr = GetPageGeometry( geom );
-      if ( pageptr )
+      if ( pageptr != 0 )
 	{
 	  strcpy(geom,pageptr);
 	  LiberateMemory( (void **) &pageptr );
@@ -222,13 +220,13 @@ Magick::Geometry::operator = ( const std::string &geometry_ )
 
   if ( ( flags & XValue ) != 0 )
     {
-      _xOff = ::abs(x);
+      _xOff = static_cast<unsigned int>(::abs(x));
       isValid( true );
     }
 
   if ( ( flags & YValue ) != 0 )
     {
-      _yOff = ::abs(y);
+      _yOff = static_cast<unsigned int>(::abs(y));
       isValid( true );
     }
 
@@ -271,21 +269,28 @@ Magick::Geometry::operator std::string() const
     geomStr << _width;
 
   if ( _width && _height )
-    geomStr << "x"
-	    << _height;
+    geomStr << "x" << _height;
 
   if ( _xOff || _yOff )
     {
       if ( _xNegative )
-	geomStr << "-";
+        {
+          geomStr << "-";
+        }
       else
-	geomStr << "+";
+        {
+          geomStr << "+";
+        }
       geomStr << _xOff;
 
       if ( _yNegative )
-	geomStr << "-";
+        {
+          geomStr << "-";
+        }
       else
-	geomStr << "+";
+        {
+          geomStr << "+";
+        }
       geomStr << _yOff;
     }
 
@@ -316,11 +321,9 @@ ostream& operator<<(ostream& stream_, const Magick::Geometry& geometry_)
 }
 
 // Construct from RectangleInfo
-#undef abs
-#define abs(x) ((x) >= 0 ? (x) : -(x))
 Magick::Geometry::Geometry ( const MagickLib::RectangleInfo &rectangle_ )
-  : _width(static_cast<unsigned int>(abs(rectangle_.width))),
-    _height(static_cast<unsigned int>(abs(rectangle_.height))),
+  : _width(static_cast<unsigned int>(rectangle_.width)),
+    _height(static_cast<unsigned int>(rectangle_.height)),
     _xOff(static_cast<unsigned int>(abs(rectangle_.x))),
     _yOff(static_cast<unsigned int>(abs(rectangle_.y))),
     _xNegative(rectangle_.x < 0 ? true : false),
@@ -339,7 +342,7 @@ Magick::Geometry::operator MagickLib::RectangleInfo() const
   RectangleInfo rectangle;
   rectangle.width = _width;
   rectangle.height = _height;
-  _xNegative ? rectangle.x = -_xOff : rectangle.x = _xOff;
-  _yNegative ? rectangle.y = -_yOff : rectangle.y = _yOff;
+  _xNegative ? rectangle.x = static_cast<long>(0-_xOff) : rectangle.x = static_cast<long>(_xOff);
+  _yNegative ? rectangle.y = static_cast<long>(0-_yOff) : rectangle.y = static_cast<long>(_yOff);
   return rectangle;
 }

@@ -507,12 +507,14 @@ Magick::DrawableCompositeImage& Magick::DrawableCompositeImage::operator= (const
       _y = original_._y;
       _width = original_._width;
       _height = original_._height;
+      delete _image;
       _image = new Image(*original_._image);
     }
   return *this;
 }
 void Magick::DrawableCompositeImage::filename( const std::string &filename_ )
 {
+  delete _image;
   _image = new Image(filename_);
 }
 std::string Magick::DrawableCompositeImage::filename( void ) const
@@ -522,6 +524,7 @@ std::string Magick::DrawableCompositeImage::filename( void ) const
 
 void Magick::DrawableCompositeImage::image( const Image &image_ )
 {
+  delete _image;
   _image = new Image(image_);
 }
 Magick::Image Magick::DrawableCompositeImage::image( void ) const
@@ -895,7 +898,9 @@ void Magick::DrawableText::print (std::ostream& stream_) const
   for ( unsigned int i = 0; i < _text.length(); ++i )
     {
       if ( _text[i] == '\'' )
-	stream_ << "\\";
+        {
+          stream_ << "\\";
+        }
       stream_ << _text[i];
     }
   stream_ << "\'";

@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001
+// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
 //
 // Definition of Options
 //
@@ -67,6 +67,10 @@ namespace Magick
     // RunlengthEncodedCompression, or ZipCompression )
     void            compressType ( CompressionType compressType_ );
     CompressionType compressType ( void ) const;
+
+    // Enable printing of debug messages from ImageMagick
+    void            debug ( bool flag_ );
+    bool            debug ( void ) const;
     
     // Vertical and horizontal resolution in pixels of the image
     void            density ( const Geometry &geomery_ );

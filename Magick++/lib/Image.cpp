@@ -2122,6 +2122,17 @@ Magick::CompressionType Magick::Image::compressType ( void ) const
   return constOptions()->compressType( );
 }
 
+// Enable printing of debug messages from ImageMagick
+void Magick::Image::debug ( bool flag_ )
+{
+  modifyImage();
+  options()->debug( flag_ );
+}
+bool Magick::Image::debug ( void ) const
+{
+  return constOptions()->debug();
+}
+
 // Pixel resolution
 void Magick::Image::density ( const Geometry &density_ )
 {

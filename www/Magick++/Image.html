@@ -158,7 +158,8 @@ If you wanted to change the color image to grayscale, you could add the
 lines:
 <p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.quantizeColorSpace(
 GRAYColorspace );</font></tt>
-<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.colors( 256 );</font></tt>
+<br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.quantizeColors(
+256 );</font></tt>
 <br><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.quantize( );</font></tt>
 <p>or, more simply:
 <p><tt><font color="#000066">&nbsp;&nbsp;&nbsp; image.type( GrayscaleType
@@ -1958,6 +1959,21 @@ compressType_</font></td>
 
 <td><font size=-1>Image compresion type. The default is the compression
 type of the specified image file.</font></td>
+</tr>
+
+<tr>
+<td>
+<center><a NAME="debug"></a><font size=-1>debug</font></center>
+</td>
+
+<td><font size=-1>bool</font></td>
+
+<td><font size=-1>void</font></td>
+
+<td><font size=-1>bool flag_</font></td>
+
+<td><font size=-1>Enable printing of internal debug messages from ImageMagick
+as it executes.</font></td>
 </tr>
 
 <tr>

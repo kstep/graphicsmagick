@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001
+// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
 //
 // Color Implementation
 //
@@ -15,7 +15,6 @@
 using namespace std;
 
 #include "Magick++/Color.h"
-#include "Magick++/Functions.h"
 #include "Magick++/Exception.h"
 
 //
@@ -184,7 +183,7 @@ Magick::Color::Color ( const PixelPacket &color_ )
 }
 
 // Set color via ImageMagick PixelPacket
-const Magick::Color& Magick::Color::operator= ( MagickLib::PixelPacket &color_ )
+const Magick::Color& Magick::Color::operator= ( const MagickLib::PixelPacket &color_ )
 {
   *_pixel = color_;
   if ( color_.opacity != OpaqueOpacity )
@@ -522,7 +521,7 @@ Magick::ColorYUV::ColorYUV ( double y_,
 			     double u_,
 			     double v_ )
   : Color ( scaleDoubleToQuantum(y_ + 1.13980 * v_ ),
-	    scaleDoubleToQuantum(y_ - 0.39380 * u_ - 0.58050 * v_ ),
+	    scaleDoubleToQuantum(y_ - (0.39380 * u_) - (0.58050 * v_) ),
 	    scaleDoubleToQuantum(y_ + 2.02790 * u_ ) )
 {
 }
@@ -548,14 +547,14 @@ void Magick::ColorYUV::u ( double u_ )
   double Y = y();
 
   redQuantum   ( scaleDoubleToQuantum( Y + 1.13980 * V ) );
-  greenQuantum ( scaleDoubleToQuantum( Y - 0.39380 * u_ - 0.58050 * V ) );
+  greenQuantum ( scaleDoubleToQuantum( Y - (0.39380 * u_) - (0.58050 * V) ) );
   blueQuantum  ( scaleDoubleToQuantum( Y + 2.02790 * u_ ) );
 }
 
 double Magick::ColorYUV::u ( void ) const
 {
-  return scaleQuantumToDouble( -0.14740 * redQuantum() - 0.28950 *
-			       greenQuantum() + 0.43690 * blueQuantum() );
+  return scaleQuantumToDouble( (-0.14740 * redQuantum()) - (0.28950 *
+			       greenQuantum()) + (0.43690 * blueQuantum()) );
 }
 
 void Magick::ColorYUV::v ( double v_ )
@@ -564,14 +563,15 @@ void Magick::ColorYUV::v ( double v_ )
   double Y = y();
 
   redQuantum   ( scaleDoubleToQuantum( Y + 1.13980 * v_ ) );
-  greenQuantum ( scaleDoubleToQuantum( Y - 0.39380 * U - 0.58050 * v_ ) );
+  greenQuantum ( scaleDoubleToQuantum( Y - (0.39380 * U) - (0.58050 * v_) ) );
   blueQuantum  ( scaleDoubleToQuantum( Y + 2.02790 * U ) );
 }
 
 double Magick::ColorYUV::v ( void ) const
 {
-  return scaleQuantumToDouble(  0.61500 * redQuantum() - 0.51500 *
-				greenQuantum() - 0.10000 * blueQuantum() );
+  return scaleQuantumToDouble((0.61500 * redQuantum()) -
+                              (0.51500 * greenQuantum()) -
+                              (0.10000 * blueQuantum()));
 }
 
 void Magick::ColorYUV::y ( double y_ )
@@ -580,14 +580,15 @@ void Magick::ColorYUV::y ( double y_ )
   double V = v();
 
   redQuantum   ( scaleDoubleToQuantum( y_ + 1.13980 * V ) );
-  greenQuantum ( scaleDoubleToQuantum( y_ - 0.39380 * U - 0.58050 * V ) );
+  greenQuantum ( scaleDoubleToQuantum( y_ - (0.39380 * U) - (0.58050 * V) ) );
   blueQuantum  ( scaleDoubleToQuantum( y_ + 2.02790 * U ) );
 }
 
 double Magick::ColorYUV::y ( void ) const
 {
-  return scaleQuantumToDouble(  0.29900 * redQuantum() + 0.58700 *
-				greenQuantum() + 0.11400 * blueQuantum() );
+  return scaleQuantumToDouble((0.29900 * redQuantum()) + 
+                              (0.58700 * greenQuantum()) +
+                              (0.11400 * blueQuantum()));
 }
 
 // Assignment from base class

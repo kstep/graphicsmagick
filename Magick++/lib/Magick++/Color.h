@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001
+// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
 //
 // Color Implementation
 //
@@ -83,7 +83,7 @@ namespace Magick
     Color ( const PixelPacket &color_ );
 
     // Set color via ImageMagick PixelPacket
-    const Color& operator= ( PixelPacket &color_ );
+    const Color& operator= ( const PixelPacket &color_ );
 
     //
     // Public methods beyond this point are for Magick++ use only.
@@ -430,6 +430,7 @@ inline Magick::Color::~Color( void )
 {
   if ( _pixelOwn )
     delete _pixel;
+  _pixel=0;
 }
 
 

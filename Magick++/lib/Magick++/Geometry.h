@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001
+// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
 //
 // Geometry Definition
 //
@@ -37,9 +37,9 @@ namespace Magick
 	       unsigned int yOff_ = 0,
 	       bool xNegative_ = false,
 	       bool yNegative_ = false );
-    Geometry ( const std::string geometry_ );
+    Geometry ( const std::string &geometry_ );
     Geometry ( const char * geometry_ );
-    Geometry ( const Geometry & geometry_ );
+    Geometry ( const Geometry &geometry_ );
     Geometry ( );
     ~Geometry ( void );
     
@@ -53,11 +53,11 @@ namespace Magick
     
     // X offset from origin
     void          xOff ( unsigned int xOff_ );
-    int           xOff ( void ) const;
+    unsigned int  xOff ( void ) const;
     
     // Y offset from origin
     void          yOff ( unsigned int yOff_ );
-    int           yOff ( void ) const;
+    unsigned int  yOff ( void ) const;
     
     // Sign of X offset negative? (X origin at right)
     void          xNegative ( bool xNegative_ );
@@ -92,7 +92,7 @@ namespace Magick
     const Geometry& operator = ( const char * geometry_ );
 
     // Assignment operator
-    Geometry operator= ( const Geometry& Geometry_ );
+    Geometry& operator= ( const Geometry& Geometry_ );
     
     // Return geometry string
     operator std::string() const;
@@ -166,7 +166,7 @@ inline void Magick::Geometry::xOff ( unsigned int xOff_ )
 {
   _xOff = xOff_;
 }
-inline int Magick::Geometry::xOff ( void ) const
+inline unsigned int Magick::Geometry::xOff ( void ) const
 {
   return _xOff;
 }
@@ -176,7 +176,7 @@ inline void Magick::Geometry::yOff ( unsigned int yOff_ )
 {
   _yOff = yOff_;
 }
-inline int Magick::Geometry::yOff ( void ) const
+inline unsigned int Magick::Geometry::yOff ( void ) const
 {
   return _yOff;
 }

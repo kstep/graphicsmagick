@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999
+// Copyright Bob Friesenhahn, 1999, 2002
 //
 // Simple C++ function wrappers for ImageMagick equivalents
 //
@@ -13,7 +13,6 @@
 using namespace std;
 
 #include "Magick++/Functions.h"
-#include "Magick++/Include.h"
 
 // Clone C++ string as allocated C string, de-allocating any existing string
 void Magick::CloneString( char **destination_, const std::string &source_ )

@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 2001
+// Copyright Bob Friesenhahn, 2001, 2002
 //
 // CoderInfo implementation
 //
@@ -24,16 +24,18 @@ Magick::CoderInfo::CoderInfo ( const std::string &name_ )
   GetExceptionInfo( &exceptionInfo );
   const Magick::MagickInfo *magickInfo = GetMagickInfo( name_.c_str(), &exceptionInfo );
   throwException( exceptionInfo );
-  if( !magickInfo )
-    throwExceptionExplicit(OptionError,
-                           "Coder not found",
-                           name_.c_str() );
-
-  _name         = string(magickInfo->name);
-  _description  = string(magickInfo->description);
-  _isReadable   = static_cast<bool>(magickInfo->decoder);
-  _isWritable   = static_cast<bool>(magickInfo->encoder);
-  _isMultiFrame = static_cast<bool>(magickInfo->adjoin);
+  if( magickInfo == 0 )
+    {
+      throwExceptionExplicit(OptionError, "Coder not found", name_.c_str() );
+    }
+  else
+    {
+      _name         = string(magickInfo->name);
+      _description  = string(magickInfo->description);
+      _isReadable   = static_cast<bool>(magickInfo->decoder);
+      _isWritable   = static_cast<bool>(magickInfo->encoder);
+      _isMultiFrame = static_cast<bool>(magickInfo->adjoin);
+    }
 }
 
 Magick::CoderInfo::~CoderInfo ( void )

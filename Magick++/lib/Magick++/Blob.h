@@ -41,7 +41,7 @@ namespace Magick
     virtual       ~Blob ();
 
     // Assignment operator (reference counted)
-    Blob          operator= ( const Blob& blob_ );
+    Blob&         operator= ( const Blob& blob_ );
 
     // Update object contents, making a copy of the supplied data.
     // Any existing data in the object is deallocated.
@@ -87,7 +87,7 @@ namespace Magick
 
     // Copy constructor and assignment are not supported
     BlobRef (const BlobRef&);
-    BlobRef operator= (const BlobRef&);
+    BlobRef& operator= (const BlobRef&);
 
     void *          _data;     // Blob data
     size_t          _length;   // Blob length

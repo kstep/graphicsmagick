@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001
+// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
 //
 // Implementation of Options
 //
@@ -119,27 +119,27 @@ Magick::Color Magick::Options::boxColor ( void ) const
   return Magick::Color( _drawInfo->box );
 }
 
-void Magick::Options::strokeDashArray ( const double* strokeDashArray_ )
+// Enable printing of debug messages from ImageMagick
+void Magick::Options::debug ( bool flag_ )
 {
-  LiberateMemory(reinterpret_cast<void**>(&_drawInfo->dash_pattern));
-	_drawInfo->dash_pattern = NULL;
-
-  if(strokeDashArray_)
+  if(flag_)
     {
-      // Count elements in dash array
-      int x;
-      for (x=0; strokeDashArray_[x]; x++);
-      // Allocate elements
-      _drawInfo->dash_pattern =
-        static_cast<double*>(AcquireMemory((x+1)*sizeof(double)));
-      // Copy elements
-      memcpy(_drawInfo->dash_pattern,strokeDashArray_,
-             (x+1)*sizeof(double));
+      _imageInfo->debug = 1;
+      _drawInfo->debug = 1;
+    }
+  else
+    {
+      _imageInfo->debug = 0;
+      _drawInfo->debug = 0;
     }
 }
-const double* Magick::Options::strokeDashArray ( void ) const
+bool Magick::Options::debug ( void ) const
 {
-  return _drawInfo->dash_pattern;
+  if( _imageInfo->debug != 0 )
+    {
+      return true;
+    }
+  return false;
 }
 
 void Magick::Options::density ( const Magick::Geometry &density_ )
@@ -338,6 +338,29 @@ void Magick::Options::strokeColor ( const Magick::Color &strokeColor_ )
 Magick::Color Magick::Options::strokeColor ( void ) const
 {
   return _drawInfo->stroke;
+}
+
+void Magick::Options::strokeDashArray ( const double* strokeDashArray_ )
+{
+  LiberateMemory(reinterpret_cast<void**>(&_drawInfo->dash_pattern));
+	_drawInfo->dash_pattern = NULL;
+
+  if(strokeDashArray_)
+    {
+      // Count elements in dash array
+      int x;
+      for (x=0; strokeDashArray_[x]; x++);
+      // Allocate elements
+      _drawInfo->dash_pattern =
+        static_cast<double*>(AcquireMemory((x+1)*sizeof(double)));
+      // Copy elements
+      memcpy(_drawInfo->dash_pattern,strokeDashArray_,
+             (x+1)*sizeof(double));
+    }
+}
+const double* Magick::Options::strokeDashArray ( void ) const
+{
+  return _drawInfo->dash_pattern;
 }
 
 // Pattern image to use for stroked outlines

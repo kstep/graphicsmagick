@@ -94,6 +94,7 @@ inline Magick::Lock::Lock( MutexLock *mutexLock_ )
 inline Magick::Lock::~Lock( void )
 {
   _mutexLock->unlock();
+  _mutexLock=0;
 }
 
 #endif // Magick_Thread_header

@@ -1,6 +1,6 @@
 // This may look like C code, but it is really -*- C++ -*-
 //
-// Copyright Bob Friesenhahn, 1999, 2000, 2001
+// Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
 //
 // Implementation of Blob
 //
@@ -10,7 +10,6 @@
 #include <string.h>
 
 #include "Magick++/Thread.h"
-#include "Magick++/Include.h"
 #include "Magick++/Blob.h"
 
 //
@@ -53,27 +52,30 @@ Magick::Blob::~Blob ()
       // Delete old blob reference with associated data
       delete _blobRef;
     }
+  _blobRef=0;
 }
 
 // Assignment operator (reference counted)
-Magick::Blob Magick::Blob::operator= ( const Magick::Blob& blob_ )
+Magick::Blob& Magick::Blob::operator= ( const Magick::Blob& blob_ )
 {
-  {
-    Lock( &blob_._blobRef->_mutexLock );
-    ++blob_._blobRef->_refCount;
-  }
-  bool doDelete = false;
-  {
-    Lock( &_blobRef->_mutexLock );
-    if ( --_blobRef->_refCount == 0 )
-      doDelete = true;
-  }
-  if ( doDelete )
+  if(this != &blob_)
     {
-      delete _blobRef;
+      {
+        Lock( &blob_._blobRef->_mutexLock );
+        ++blob_._blobRef->_refCount;
+      }
+      bool doDelete = false;
+      {
+        Lock( &_blobRef->_mutexLock );
+        if ( --_blobRef->_refCount == 0 )
+          doDelete = true;
+      }
+      if ( doDelete )
+        {
+          delete[] _blobRef;
+        }
+      _blobRef = blob_._blobRef;
     }
-  _blobRef = blob_._blobRef;
-
   return *this;
 }
 
