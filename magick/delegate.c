@@ -239,12 +239,6 @@ MagickExport unsigned int ExecutePostscriptInterpreter(
   return(SystemCommand(verbose,command));
 #endif
 }
-
-#if defined(__cplusplus) || defined(c_plusplus)
-}
-#endif
-
-#endif
 
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
