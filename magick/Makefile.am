@@ -44,7 +44,7 @@ libMagick_la_LDFLAGS = -version-info $(MAJOR_VERSION):$(MINOR_VERSION)$(MICRO_VE
 # Library sources
 if WITH_MODULES
 libMagick_la_SOURCES = PreRvIcccm.c animate.c annotate.c attributes.c blob.c \
-  cache.c cache_view.c colors.c compress.c decorate.c delegates.c display.c 
+  cache.c cache_view.c colors.c compress.c decorate.c delegates.c display.c \
   draw.c effects.c enhance.c error.c gems.c gradation.c histogram.c html.c \
   image.c label.c magick.c map.c matte.c memory.c monitor.c montage.c \
   pixel_cache.c quantize.c segment.c shear.c signature.c stegano.c timer.c \
