@@ -547,8 +547,15 @@ MAGICK DELEGATES
           http://www.wvware.com/libwmf.html
 
       to read the Windows Meta File image format (16-bit WMF files only,
-      not 32-bit WMF). If libwmf is used, then WMF files are rendered
+      not 32-bit "EMF"). If libwmf is used, then WMF files are rendered
       directly by ImageMagick otherwise the rendering is done by wmftopng.
+
+      In order for text to be rendered when reading WMF files, a set of
+      Windows 3.1 compatible (filenames and outlines) TrueType fonts
+      must be available in the TrueType font search path (set via
+      TT_FONT_PATH). All font file names must be lower case. A set of
+      Windows 3.1 compatible TrueType fonts may be downloaded from
+      Microsoft's web site.
 
     o ImageMagick requires an X server for display and animate to work
       properly.  There is a nearly free X server available for Windows
